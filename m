@@ -2,140 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C0192120FD
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 12:22:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E283B2120F1
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 12:22:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728484AbgGBKWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 06:22:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36936 "EHLO
+        id S1728437AbgGBKWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 06:22:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728402AbgGBKUp (ORCPT
+        with ESMTP id S1728357AbgGBKVV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 06:20:45 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7944C08C5DD
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 03:20:44 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id y10so28652031eje.1
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 03:20:44 -0700 (PDT)
+        Thu, 2 Jul 2020 06:21:21 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E414C08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 03:21:17 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id e13so25086225qkg.5
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 03:21:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=javigon-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=y6QK1uUJZHQuZnFXHjM7RpcCfhjO+BnMr6K6R14LikI=;
-        b=eS2AS63X4xHtWcaWVJuiQnZRL3FS5hl/kitkp/qfhE2U4bn44KsMkcI5ahaIUhkpta
-         6tvJeM0eRhhkkdT/HtD13QyqAXZlJuuAf/hOLUhwUyrVhrIjZLI2hfSmgt0Q4v08rWWl
-         8hS+jEqsMJSVlJnAruXLO3In7Lsa86+0XITBf7uyOLIOrdOeks10qjwobA7CaPzU54OH
-         mdateSDMB8KYldO8l84nBECnC0GG8g0k4bICDJTD3s+k3LkuNDtPYYV+0R3HUmtsZXuS
-         e9+cfSLqkoMb/HgGnCCw/eX3Iyfs42vr/mrFfAeVgD77VV9daKXn2j6SDsAxfRoi+XfU
-         Ak+g==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ytrORF9e9WO5GmQr4Ib8G4OdlaRfZagxt8cdDGYBh88=;
+        b=ae+yR2xba3jzWsYrhjh4aWrHLc9AlRocYJ0JEmq3EQigaJ4RNW9ivnNYinskzxyPUu
+         fYhYUS5ldXzWoyodZAoAGK93++Dzakve65ZcJ70Tc8BlOrTxNP+32/353MwhrRTD8XY7
+         14OM44c2Npm7C5ul7Fr82mjLVW+ElBry0NGWMaQHLKRVkyOLRN1qAaFPdtnsmtm47uFo
+         ZYcfcIGgoqBEHUrj2Xsw/tIlyiIxpiDS9fyCPLpNG+wktz43JazR6iN06WedgCqCZ4tv
+         a5idhRvLXbAHKNmp0u9w2H2ImOyBX2+UTaIjTW9ZtgpwIr4Myn6EQljqPLWeBOkyyZqB
+         hhkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=y6QK1uUJZHQuZnFXHjM7RpcCfhjO+BnMr6K6R14LikI=;
-        b=Y+22rZrL1J0zsDNTXEyNwzvfAUeh8jxrqYreMFg/lGVxVHvMCwEOIcPVyrMHWZPa8g
-         i1KsgmfHmPEqkmO1Nw7rfqXl7gazhtqOzT18J0vOVfmcmZI4ySeE51XGcFjMCTgtuU8R
-         x5h6/bS98c1LhSR3DA+yl797SFhMLftxrDUZceZlXI2CWpDwPN7wt9HBCXYWGBHXB32Q
-         LEzxpOvoe9Y4OqQvK8B48WbUn1opDWCy/6sgSc9spxCgjdNd5qauKDxypffGajGXsXvJ
-         ++6zSubocYdfT4p3C0xA0mQSB9gETNmZeTTIcG+jFjjaiGObOWS6YOq3pvcJCYmCyMz0
-         eEjg==
-X-Gm-Message-State: AOAM532rNc69hRGLz1jeQWdrEidPNyogXZ+/hSV1PzaR91gczzy921di
-        /PV5lwNpyY6LdmEuQ+Y7l2QNdg==
-X-Google-Smtp-Source: ABdhPJznU0cTuSpy44OchlJ/NcoicUfXVthk+RD4AWFPMdlv1FyVBTAxmHOyydYRtWmTGe2aRm0ZCQ==
-X-Received: by 2002:a17:906:c142:: with SMTP id dp2mr28125124ejc.541.1593685243381;
-        Thu, 02 Jul 2020 03:20:43 -0700 (PDT)
-Received: from localhost ([194.62.217.57])
-        by smtp.gmail.com with ESMTPSA id dh16sm9185934edb.3.2020.07.02.03.20.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Jul 2020 03:20:42 -0700 (PDT)
-Date:   Thu, 2 Jul 2020 12:20:41 +0200
-From:   Javier =?utf-8?B?R29uesOhbGV6?= <javier@javigon.com>
-To:     Niklas Cassel <Niklas.Cassel@wdc.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
-        Keith Busch <kbusch@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>
-Subject: Re: [PATCH 2/2] block: add max_active_zones to blk-sysfs
-Message-ID: <20200702102041.qlehlokxel5ed6sf@mpHalley.local>
-References: <20200616102546.491961-1-niklas.cassel@wdc.com>
- <20200616102546.491961-3-niklas.cassel@wdc.com>
- <20200701111330.3vpivrovh3i46maa@mpHalley.local>
- <20200702084104.GA607715@localhost.localdomain>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ytrORF9e9WO5GmQr4Ib8G4OdlaRfZagxt8cdDGYBh88=;
+        b=G2cZs4Fy/1f5EaCWfsQjvJEO3HpTtcZSm4RDTuIH7FAV5nGP2TuOkDl0aHA1qH+FQZ
+         xEeX2E24skVl5wV0SdAp2YIcdJXsTpGyKMO76Rez+wUtb72oy98GK+l8Bv/0hr09hqBM
+         hHi8/iCi4eCm6WTFF7AJ5RmLmSa6EPZGOU+EEpUU/ElBsF23haMAvNBJh80mgN7i4BCF
+         g3jdlb3A0fdHk9Ao38AkFoIxbY3m3HnMtZsrnQwNnp+ICsdY6wCJWtBff3fU4xhTecCp
+         y9LRgL8Mx5CBfyfbZg9T12tCWcT+tuw5fG0wu15jEoRcx2mMJp2BzQj3FUEtURhInWaV
+         fz6w==
+X-Gm-Message-State: AOAM5318HwaJfoYDtgYCt7x4QyXLSYGr7BphZW+ZQsuiHIOMfkfi02Ti
+        nipnm/MTLBHT4ZlVgjG+KhEELwZGR9XacD0D44Q=
+X-Google-Smtp-Source: ABdhPJzM0A+BFVGHroMWch0FzJw1+MEMvaZhzVESe7m3NsLA7Dgwgjuib+pGPpBGn0JhZxxwUIx4/By0QM8fGuBONHU=
+X-Received: by 2002:a37:a458:: with SMTP id n85mr30887579qke.167.1593685276664;
+ Thu, 02 Jul 2020 03:21:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200702084104.GA607715@localhost.localdomain>
+References: <20200702052039.GA2824@192.168.3.9> <20200702081418.GZ4781@hirez.programming.kicks-ass.net>
+In-Reply-To: <20200702081418.GZ4781@hirez.programming.kicks-ass.net>
+From:   Weiping Zhang <zwp10758@gmail.com>
+Date:   Thu, 2 Jul 2020 18:21:05 +0800
+Message-ID: <CAA70yB4zLkizEAHSTag1VQwtuOrEaNEeCa9Er7MAzdpfZRJOeQ@mail.gmail.com>
+Subject: Re: [RFC PATCH] proc: add support detach proccess's autogroup
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02.07.2020 08:41, Niklas Cassel wrote:
->On Wed, Jul 01, 2020 at 01:16:52PM +0200, Javier González wrote:
->> On 16.06.2020 12:25, Niklas Cassel wrote:
->> > Add a new max_active zones definition in the sysfs documentation.
->> > This definition will be common for all devices utilizing the zoned block
->> > device support in the kernel.
->> >
->> > Export max_active_zones according to this new definition for NVMe Zoned
->> > Namespace devices, ZAC ATA devices (which are treated as SCSI devices by
->> > the kernel), and ZBC SCSI devices.
->> >
->> > Add the new max_active_zones struct member to the request_queue, rather
->> > than as a queue limit, since this property cannot be split across stacking
->> > drivers.
->> >
->> > For SCSI devices, even though max active zones is not part of the ZBC/ZAC
->> > spec, export max_active_zones as 0, signifying "no limit".
->> >
->> > Signed-off-by: Niklas Cassel <niklas.cassel@wdc.com>
->> > ---
+On Thu, Jul 2, 2020 at 4:18 PM Peter Zijlstra <peterz@infradead.org> wrote:
 >
->(snip)
+> On Thu, Jul 02, 2020 at 01:20:43PM +0800, Weiping Zhang wrote:
+> > Since setid will create a autogroup for that process, there is no
+> > way to detach a process from that autogroup, this patch add a new interface
+> > to detach a process from its autogroup. You can write anything to
+> > /proc/<pid>/autogroup_detach to do that.
 >
->> Looking a second time at these patches, wouldn't it make sense to move
->> this to queue_limits?
+> This is indeed what the patch does; but it fails to tell me why. Why do
+> we want this? Why should I care about your patch :-)
 >
->Hello Javier,
->
->The problem with having MAR/MOR as queue_limits, is that they
->then would be split across stacking drivers/device-mapper targets.
->However, MAR/MOR are not splittable, at least not the way the
->block layer works today.
->
->If the block layer and drivers ever change so that they do
->accounting of zone conditions, then we could divide the MAR/MOR to
->be split over stacking drivers, but because of performance reasons,
->this will probably never happen.
->In the unlikely event that it did happen, we would still use the
->same sysfs-path for these properties, the only thing that would
->change would be that these would be moved into queue_limits.
->
->
->So the way the code looks right now, these properties cannot
->be split, therefore I chose to put them inside request_queue
->(just like nr_zones), rather than request_queue->limits
->(which is of type struct queue_limits).
->
->nr_zones is also exposed as a sysfs property, even though it
->is part of request_queue, so I don't see why MAR/MOR can't do
->the same. Also see Damien's replies to PATCH 1/2 of this series,
->which reaches the same conclusion.
->
+> Please, always explain why you want things done, that can also help us
+> consider if the proposed solution is the right one.
 
-Thanks for explaining Niklas - makes sense. I just looked at your patch
-again while adding other attributes and thought it would be worth asking
-the reason behind it.
+The reason is that, there are lots of autogroup created in our system, because
+I forgot to disable CONFIG_SCHED_AUTOGROUP, and it leads to a hotspot
+in tg_load_down (kenrel-3.10.0-514.16.1.el7.x86_64).
+When user login system by ssh and launch a background job, it will create a
+new autogroup even user logout ssh.
+I cannot find a way do clear these unused autogroup by current kernel,
+so I write a separate module to clear those unused autogroup for my system.
+I think we should provide a interface to detach a process's autogroup.
 
-You can keep the reviewed-by on the 2 patches.
-
-Javier
+Thanks
