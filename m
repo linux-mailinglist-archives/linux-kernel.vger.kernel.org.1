@@ -2,62 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A485A212667
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 16:37:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39CB82126D0
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 16:49:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729796AbgGBOg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 10:36:57 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7358 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729482AbgGBOg4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 10:36:56 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id BC290DC5CBB87568F7A4;
-        Thu,  2 Jul 2020 22:36:54 +0800 (CST)
-Received: from kernelci-master.huawei.com (10.175.101.6) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 2 Jul 2020 22:36:46 +0800
-From:   Wei Yongjun <weiyongjun1@huawei.com>
-To:     Hulk Robot <hulkci@huawei.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-CC:     Wei Yongjun <weiyongjun1@huawei.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] scftorture: Make symbol 'scf_torture_rand' static
-Date:   Thu, 2 Jul 2020 22:47:00 +0800
-Message-ID: <20200702144700.3602-1-weiyongjun1@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S1730218AbgGBOsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 10:48:00 -0400
+Received: from mx07-00178001.pphosted.com ([62.209.51.94]:2568 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730063AbgGBOrx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 10:47:53 -0400
+Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 062EhC3O028153;
+        Thu, 2 Jul 2020 16:47:40 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=STMicroelectronics;
+ bh=WcS8twTIG5eRGz7Og3l5v3D19BLaLWfcJ+xCR6Mo4yE=;
+ b=O7pej85UNCDZlwiv5nXnUmn4lKrz1yFPgwZlzPPtmOskPPw8jIaPcPt8IEz1wfw9agxH
+ nnLYhQfTEjMGFaAtYY5Cs0BlBcRrgSN2MkSVGV3GqRgZRWUyDlmESP+l5YhZpnz+b2Rj
+ HiKqCIv5JY6wY3WDuWtsTQRgfpJirGvfYXEbCGtF3eews9lZRa2mWzgpLuJ0YdmPVFTt
+ hG5HymVbP5HCVpfMtGttl19tswvv6QRm92U3+QW9cOGKOLJeXQMitHo2JjZj51XNR9ZN
+ bZWNWtI7vmf6e2smitlMgYkdtbDainju/iJN+cJ0to6CaaosnwREYrjEwzziGwRSV1XS 3Q== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 31wuvwgs7t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 02 Jul 2020 16:47:40 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id A9703100038;
+        Thu,  2 Jul 2020 16:47:39 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 324C72BC7BE;
+        Thu,  2 Jul 2020 16:47:39 +0200 (CEST)
+Received: from localhost (10.75.127.49) by SFHDAG3NODE2.st.com (10.75.127.8)
+ with Microsoft SMTP Server (TLS) id 15.0.1347.2; Thu, 2 Jul 2020 16:47:38
+ +0200
+From:   Alain Volmat <alain.volmat@st.com>
+To:     <wsa@kernel.org>, <pierre-yves.mordret@st.com>
+CC:     <alexandre.torgue@st.com>, <linux-i2c@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <fabrice.gasnier@st.com>,
+        <alain.volmat@st.com>
+Subject: [PATCH 0/2] i2c: stm32: add host-notify support via i2c slave
+Date:   Thu, 2 Jul 2020 16:47:03 +0200
+Message-ID: <1593701225-13451-1-git-send-email-alain.volmat@st.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.175.101.6]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.49]
+X-ClientProxiedBy: SFHDAG4NODE3.st.com (10.75.127.12) To SFHDAG3NODE2.st.com
+ (10.75.127.8)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-02_09:2020-07-02,2020-07-02 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix sparse build warning:
+This serie replaces the previous 'stm32-f7: Addition of SMBus Alert /
+Host-notify features' serie to only focus on the SMBus Host-Notify feature.
+It should be applied with "[PATCH] i2c: add binding to mark a bus as SMBus"
+from Wolfram which defines the newly introduced "smbus" binding.
 
-kernel/scftorture.c:124:1: warning:
- symbol '__pcpu_scope_scf_torture_rand' was not declared. Should it be static?
+Alain Volmat (2):
+  i2c: smbus: add core function handling SMBus host-notify
+  i2c: stm32f7: Add SMBus Host-Notify protocol support
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
----
- kernel/scftorture.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/i2c/busses/Kconfig       |   1 +
+ drivers/i2c/busses/i2c-stm32f7.c | 110 +++++++++++++++++++++++++++++++------
+ drivers/i2c/i2c-core-smbus.c     | 114 +++++++++++++++++++++++++++++++++++++++
+ include/linux/i2c-smbus.h        |  12 +++++
+ 4 files changed, 222 insertions(+), 15 deletions(-)
 
-diff --git a/kernel/scftorture.c b/kernel/scftorture.c
-index 52750c564404..d63d700ad297 100644
---- a/kernel/scftorture.c
-+++ b/kernel/scftorture.c
-@@ -121,7 +121,7 @@ static unsigned long scf_sel_totweight;
- static atomic_t n_started;
- static atomic_t n_errs;
- 
--DEFINE_TORTURE_RANDOM_PERCPU(scf_torture_rand);
-+static DEFINE_TORTURE_RANDOM_PERCPU(scf_torture_rand);
- 
- // Print torture statistics.  Caller must ensure serialization.
- static void scf_torture_stats_print(void)
+-- 
+2.7.4
+
 
