@@ -2,217 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4776E2120B0
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 12:12:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A9DF2120B5
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 12:13:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728315AbgGBKMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 06:12:48 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36920 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727057AbgGBKMr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 06:12:47 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 68795AE21;
-        Thu,  2 Jul 2020 10:12:45 +0000 (UTC)
-Subject: Re: [PATCH v3] drm/hisilicon: Code refactoring for hibmc_drv_vdac
-To:     Tian Tao <tiantao6@hisilicon.com>, puck.chen@hisilicon.com,
-        airlied@linux.ie, daniel@ffwll.ch, kraxel@redhat.com,
-        alexander.deucher@amd.com, tglx@linutronix.de,
-        dri-devel@lists.freedesktop.org, xinliang.liu@linaro.org,
-        linux-kernel@vger.kernel.org
-Cc:     linuxarm@huawei.com
-References: <1593680081-60313-1-git-send-email-tiantao6@hisilicon.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Message-ID: <8aac2194-e122-e4bb-dbd1-e6530fc77427@suse.de>
-Date:   Thu, 2 Jul 2020 12:12:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1728306AbgGBKNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 06:13:52 -0400
+Received: from esa1.microchip.iphmx.com ([68.232.147.91]:55304 "EHLO
+        esa1.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726805AbgGBKNv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 06:13:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1593684831; x=1625220831;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=8+cmfMl8STke39loCF9+Y2W12FqffVX09lpGcUyOefo=;
+  b=WtVk/mGDYE6fqJiYTkedsN/LzQta6/s99qRLOqnU/SUeIu/JoFTg4HOH
+   8mEv0CTLzAwCgMAyFCvkfCsad1mMqPauC0F0BFMUiYInqbaWq6wCVqWPt
+   Vh7VY6PMgn2tZRk4ZYswK+1+iCFVKmSrPrMhzSHBNiWXQgI3CFga3kuqV
+   k087ChaUAOcv5JcGJ8ln3Xlob88qyGgHKqn6zitULpaH9sr8uUOyjmk/a
+   Z/sPVSYsHwT30FkWlbyd/fsAOmA9Ka1K2SscQUBOpQxjFqVoaA/Ht3+zL
+   kLBKW4mE7jM8knpHZqT6R6V2Fn5vV0tXhq8S1aMtDuPk8bSdk3PE2Weq8
+   A==;
+IronPort-SDR: +wdcuJ+VBDclE695fkpRHK6OplxcpMoJbk5thf8eMgoPu2i6Aw6nS7XMMrOtms3eNHvzw2KC3B
+ BSUuZ7yDc1YlnFKQ4V47xSxgUcYmjRe32aH6Ao3aU6KT/nlI79Bp0EzYgc5sDWuWfXVPHci34o
+ 3n5U43Bb/LjfWCTSWE3BhuEyx8XFkMjIBo4gtRQEd509hpNKQPtcG7WiAgfSOgALVyFQE7/sP1
+ cmPCJi4wHofADOsHKb/eXMvPyok7iuOVeIVeAUoP8VqcqSrDkNXKZaiU351EaEIUsSenYYJVNB
+ SaU=
+X-IronPort-AV: E=Sophos;i="5.75,304,1589266800"; 
+   d="scan'208";a="85979627"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 02 Jul 2020 03:13:50 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 2 Jul 2020 03:13:50 -0700
+Received: from soft-dev15.microsemi.net (10.10.115.15) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Thu, 2 Jul 2020 03:13:27 -0700
+From:   Lars Povlsen <lars.povlsen@microchip.com>
+To:     Mark Brown <broonie@kernel.org>, Peter Rosin <peda@axentia.se>
+CC:     Lars Povlsen <lars.povlsen@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Subject: [PATCH v3 0/8] spi: Adding support for Microchip Sparx5 SoC
+Date:   Thu, 2 Jul 2020 12:13:23 +0200
+Message-ID: <20200702101331.26375-1-lars.povlsen@microchip.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <1593680081-60313-1-git-send-email-tiantao6@hisilicon.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="1ShJr37g8zar2qtlNIYWZOnPUwVaXoKoz"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---1ShJr37g8zar2qtlNIYWZOnPUwVaXoKoz
-Content-Type: multipart/mixed; boundary="6t19K9gzWJ0ofXHVZhQ5AA7zrVvGCDhrP";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Tian Tao <tiantao6@hisilicon.com>, puck.chen@hisilicon.com,
- airlied@linux.ie, daniel@ffwll.ch, kraxel@redhat.com,
- alexander.deucher@amd.com, tglx@linutronix.de,
- dri-devel@lists.freedesktop.org, xinliang.liu@linaro.org,
- linux-kernel@vger.kernel.org
-Cc: linuxarm@huawei.com
-Message-ID: <8aac2194-e122-e4bb-dbd1-e6530fc77427@suse.de>
-Subject: Re: [PATCH v3] drm/hisilicon: Code refactoring for hibmc_drv_vdac
-References: <1593680081-60313-1-git-send-email-tiantao6@hisilicon.com>
-In-Reply-To: <1593680081-60313-1-git-send-email-tiantao6@hisilicon.com>
+This is an add-on series to the main SoC Sparx5 series
+(Message-ID: <20200615133242.24911-1-lars.povlsen@microchip.com>
 
---6t19K9gzWJ0ofXHVZhQ5AA7zrVvGCDhrP
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+The series add support for the Sparx5 SoC SPI controller in the
+spi-dw-mmio.c spi driver.
 
-Thanks!
+v3 changes:
+- Added mux support for controlling SPI bus interface. This is new mux
+  driver, bindings and added to sparx5 base DT.
+- Removed "microchip,spi-interface2" property in favour of
+  "mux-controls" property in SPI controller (sparx5 only).
+- Changed dw_spi_sparx5_set_cs() to use the mux control instead of
+  directly acessing "mux" register. Associated code/defines moved to mux
+  driver.
+- Changed dw_spi_sparx5_set_cs() to match other similar functions in
+  signature and avoid explicit CS toggling.
+- Spun off duplicated NAND device DT chunks into separate DT file.
 
-Am 02.07.20 um 10:54 schrieb Tian Tao:
-> code refactoring for hibmc_drv_vdac.c, no actual function changes.
->=20
-> v2:
-> remove the debug message.
->=20
-> v3:
-> embedding connector and encoder in struct hibmc_drm_private.
->=20
-> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+v2 changes:
+- Moved all RX sample delay into spi-dw-core.c, using
+  the "snps,rx-sample-delay-ns" device property.
+- Integrated Sparx5 support directly in spi-dw-mmio.c
+- Changed SPI2 configuration to per-slave "microchip,spi-interface2"
+  property.
+- Added bindings to existing snps,dw-apb-ssi.yaml file
+- Dropped patches for polled mode and SPI memory operations.
 
-Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
+Lars Povlsen (8):
+  spi: dw: Add support for RX sample delay register
+  arm64: dts: sparx5: Add SPI controller and SPI mux
+  spi: dw: Add Microchip Sparx5 support
+  mux: sparx5: Add Sparx5 SPI mux driver
+  dt-bindings: snps,dw-apb-ssi: Add sparx5 support, plus
+    snps,rx-sample-delay-ns property
+  dt-bindings: microchip,sparx5-spi-mux: Add Sparx5 SPI mux driver
+    bindings
+  arm64: dts: sparx5: Add spi-nor support
+  arm64: dts: sparx5: Add spi-nand devices
 
-Maybe others want to comment on the patch, so I'll give it a few more
-days before I add it to drm-misc-next. Don't hesitate to ping me if I
-forget about it.
+ .../mux/microchip,sparx5-spi-mux.yaml         |  71 +++++++++
+ .../bindings/spi/snps,dw-apb-ssi.yaml         |  28 ++++
+ arch/arm64/boot/dts/microchip/sparx5.dtsi     |  43 ++++++
+ .../arm64/boot/dts/microchip/sparx5_nand.dtsi |  32 ++++
+ .../boot/dts/microchip/sparx5_pcb125.dts      |  16 ++
+ .../boot/dts/microchip/sparx5_pcb134.dts      |   1 +
+ .../dts/microchip/sparx5_pcb134_board.dtsi    |   9 ++
+ .../boot/dts/microchip/sparx5_pcb135.dts      |   1 +
+ .../dts/microchip/sparx5_pcb135_board.dtsi    |   9 ++
+ drivers/mux/Makefile                          |   2 +
+ drivers/mux/sparx5-spi.c                      | 138 ++++++++++++++++++
+ drivers/spi/Kconfig                           |   1 +
+ drivers/spi/spi-dw-core.c                     |  20 +++
+ drivers/spi/spi-dw-mmio.c                     |  79 +++++++++-
+ drivers/spi/spi-dw.h                          |   2 +
+ 15 files changed, 451 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/mux/microchip,sparx5-spi-mux.yaml
+ create mode 100644 arch/arm64/boot/dts/microchip/sparx5_nand.dtsi
+ create mode 100644 drivers/mux/sparx5-spi.c
 
-Best regards
-Thomas
-
-> ---
->  drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h  |  2 +
->  drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c | 52 +++++-----------=
---------
->  2 files changed, 13 insertions(+), 41 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h b/drivers/=
-gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
-> index 50a0c1f..6097687 100644
-> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
-> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
-> @@ -29,6 +29,8 @@ struct hibmc_drm_private {
-> =20
->  	/* drm */
->  	struct drm_device  *dev;
-> +	struct drm_encoder encoder;
-> +	struct drm_connector connector;
->  	bool mode_config_initialized;
->  };
-> =20
-> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c b/drivers=
-/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
-> index 678ac2e..2ca69c3 100644
-> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
-> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
-> @@ -52,32 +52,6 @@ static const struct drm_connector_funcs hibmc_connec=
-tor_funcs =3D {
->  	.atomic_destroy_state =3D drm_atomic_helper_connector_destroy_state,
->  };
-> =20
-> -static struct drm_connector *
-> -hibmc_connector_init(struct hibmc_drm_private *priv)
-> -{
-> -	struct drm_device *dev =3D priv->dev;
-> -	struct drm_connector *connector;
-> -	int ret;
-> -
-> -	connector =3D devm_kzalloc(dev->dev, sizeof(*connector), GFP_KERNEL);=
-
-> -	if (!connector) {
-> -		DRM_ERROR("failed to alloc memory when init connector\n");
-> -		return ERR_PTR(-ENOMEM);
-> -	}
-> -
-> -	ret =3D drm_connector_init(dev, connector,
-> -				 &hibmc_connector_funcs,
-> -				 DRM_MODE_CONNECTOR_VGA);
-> -	if (ret) {
-> -		DRM_ERROR("failed to init connector: %d\n", ret);
-> -		return ERR_PTR(ret);
-> -	}
-> -	drm_connector_helper_add(connector,
-> -				 &hibmc_connector_helper_funcs);
-> -
-> -	return connector;
-> -}
-> -
->  static void hibmc_encoder_mode_set(struct drm_encoder *encoder,
->  				   struct drm_display_mode *mode,
->  				   struct drm_display_mode *adj_mode)
-> @@ -105,23 +79,10 @@ static const struct drm_encoder_funcs hibmc_encode=
-r_funcs =3D {
->  int hibmc_vdac_init(struct hibmc_drm_private *priv)
->  {
->  	struct drm_device *dev =3D priv->dev;
-> -	struct drm_encoder *encoder;
-> -	struct drm_connector *connector;
-> +	struct drm_encoder *encoder =3D &priv->encoder;
-> +	struct drm_connector *connector =3D &priv->connector;
->  	int ret;
-> =20
-> -	connector =3D hibmc_connector_init(priv);
-> -	if (IS_ERR(connector)) {
-> -		DRM_ERROR("failed to create connector: %ld\n",
-> -			  PTR_ERR(connector));
-> -		return PTR_ERR(connector);
-> -	}
-> -
-> -	encoder =3D devm_kzalloc(dev->dev, sizeof(*encoder), GFP_KERNEL);
-> -	if (!encoder) {
-> -		DRM_ERROR("failed to alloc memory when init encoder\n");
-> -		return -ENOMEM;
-> -	}
-> -
->  	encoder->possible_crtcs =3D 0x1;
->  	ret =3D drm_encoder_init(dev, encoder, &hibmc_encoder_funcs,
->  			       DRM_MODE_ENCODER_DAC, NULL);
-> @@ -131,6 +92,15 @@ int hibmc_vdac_init(struct hibmc_drm_private *priv)=
-
->  	}
-> =20
->  	drm_encoder_helper_add(encoder, &hibmc_encoder_helper_funcs);
-> +
-> +	ret =3D drm_connector_init(dev, connector, &hibmc_connector_funcs,
-> +				 DRM_MODE_CONNECTOR_VGA);
-> +	if (ret) {
-> +		DRM_ERROR("failed to init connector: %d\n", ret);
-> +		return ret;
-> +	}
-> +	drm_connector_helper_add(connector, &hibmc_connector_helper_funcs);
-> +
->  	drm_connector_attach_encoder(connector, encoder);
-> =20
->  	return 0;
->=20
-
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
-
-
---6t19K9gzWJ0ofXHVZhQ5AA7zrVvGCDhrP--
-
---1ShJr37g8zar2qtlNIYWZOnPUwVaXoKoz
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQFIBAEBCAAyFiEEchf7rIzpz2NEoWjlaA3BHVMLeiMFAl79sxkUHHR6aW1tZXJt
-YW5uQHN1c2UuZGUACgkQaA3BHVMLeiN0DAf9HGtMBT+M427+AE7mR4cyVyYUaap6
-+ZMwBHw2ko6W3mfkjKVcxF8CJfBfbd1JtfzDxBoiSCSa+/srv1Ohmm13okye/JfG
-Vk2NRil8Iu29SWNfX+xFCPiofF0fTSPHbHpNhb15gpdLLXr/YijJODa3x0pTJyl3
-xaIZV3xyPyKIv5qvixizkBV+/NqLH08yPUQCiEf7g8ViW1Wud7vlOzrQ9XSC1htW
-XeU4ENti0T1PdzYbXMffVGQ8tLCcqbtFzMTy03p3Wm+VPr0bcR5vf0iIQuST0EII
-6e98HVRSVAf1Ej3+huZwRQcNrQ1Y8vLGwqeIVcZGGDIXIJ8ci5FTLMk5Hg==
-=z4UU
------END PGP SIGNATURE-----
-
---1ShJr37g8zar2qtlNIYWZOnPUwVaXoKoz--
+--
+2.27.0
