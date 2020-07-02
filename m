@@ -2,87 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E283B2120F1
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 12:22:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19156212108
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 12:22:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728437AbgGBKWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 06:22:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728357AbgGBKVV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 06:21:21 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E414C08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 03:21:17 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id e13so25086225qkg.5
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 03:21:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ytrORF9e9WO5GmQr4Ib8G4OdlaRfZagxt8cdDGYBh88=;
-        b=ae+yR2xba3jzWsYrhjh4aWrHLc9AlRocYJ0JEmq3EQigaJ4RNW9ivnNYinskzxyPUu
-         fYhYUS5ldXzWoyodZAoAGK93++Dzakve65ZcJ70Tc8BlOrTxNP+32/353MwhrRTD8XY7
-         14OM44c2Npm7C5ul7Fr82mjLVW+ElBry0NGWMaQHLKRVkyOLRN1qAaFPdtnsmtm47uFo
-         ZYcfcIGgoqBEHUrj2Xsw/tIlyiIxpiDS9fyCPLpNG+wktz43JazR6iN06WedgCqCZ4tv
-         a5idhRvLXbAHKNmp0u9w2H2ImOyBX2+UTaIjTW9ZtgpwIr4Myn6EQljqPLWeBOkyyZqB
-         hhkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ytrORF9e9WO5GmQr4Ib8G4OdlaRfZagxt8cdDGYBh88=;
-        b=G2cZs4Fy/1f5EaCWfsQjvJEO3HpTtcZSm4RDTuIH7FAV5nGP2TuOkDl0aHA1qH+FQZ
-         xEeX2E24skVl5wV0SdAp2YIcdJXsTpGyKMO76Rez+wUtb72oy98GK+l8Bv/0hr09hqBM
-         hHi8/iCi4eCm6WTFF7AJ5RmLmSa6EPZGOU+EEpUU/ElBsF23haMAvNBJh80mgN7i4BCF
-         g3jdlb3A0fdHk9Ao38AkFoIxbY3m3HnMtZsrnQwNnp+ICsdY6wCJWtBff3fU4xhTecCp
-         y9LRgL8Mx5CBfyfbZg9T12tCWcT+tuw5fG0wu15jEoRcx2mMJp2BzQj3FUEtURhInWaV
-         fz6w==
-X-Gm-Message-State: AOAM5318HwaJfoYDtgYCt7x4QyXLSYGr7BphZW+ZQsuiHIOMfkfi02Ti
-        nipnm/MTLBHT4ZlVgjG+KhEELwZGR9XacD0D44Q=
-X-Google-Smtp-Source: ABdhPJzM0A+BFVGHroMWch0FzJw1+MEMvaZhzVESe7m3NsLA7Dgwgjuib+pGPpBGn0JhZxxwUIx4/By0QM8fGuBONHU=
-X-Received: by 2002:a37:a458:: with SMTP id n85mr30887579qke.167.1593685276664;
- Thu, 02 Jul 2020 03:21:16 -0700 (PDT)
+        id S1728565AbgGBKWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 06:22:42 -0400
+Received: from mga02.intel.com ([134.134.136.20]:28946 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727921AbgGBKWj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 06:22:39 -0400
+IronPort-SDR: dsPbSql/bl7ovclrbH0fR67Eg6Ftj9j4Ou09eoffC/yZP9NgoDHiIP0sJaA78u74TMiY+skW9a
+ WTZ2LF0wb/jg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9669"; a="135145707"
+X-IronPort-AV: E=Sophos;i="5.75,304,1589266800"; 
+   d="scan'208";a="135145707"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2020 03:22:37 -0700
+IronPort-SDR: lmbUQJU0DJo2wuEKqO0vUMPiDNNAexulGJc+oSPgo0ui52mcoR0yMDmhg1HWous4a+zz6ERGWc
+ NCI83yhGW0tA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,304,1589266800"; 
+   d="scan'208";a="481648277"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga006.fm.intel.com with ESMTP; 02 Jul 2020 03:22:36 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1jqwMX-00HBXS-6k; Thu, 02 Jul 2020 13:22:37 +0300
+Date:   Thu, 2 Jul 2020 13:22:37 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Ricardo Ribalda <ribalda@kernel.org>
+Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Wolfram Sang <wsa@kernel.org>
+Subject: Re: [PATCH v4] i2c: designware: platdrv: Set class based on DMI
+Message-ID: <20200702102237.GS3703480@smile.fi.intel.com>
+References: <20200702101028.2088666-1-ribalda@kernel.org>
 MIME-Version: 1.0
-References: <20200702052039.GA2824@192.168.3.9> <20200702081418.GZ4781@hirez.programming.kicks-ass.net>
-In-Reply-To: <20200702081418.GZ4781@hirez.programming.kicks-ass.net>
-From:   Weiping Zhang <zwp10758@gmail.com>
-Date:   Thu, 2 Jul 2020 18:21:05 +0800
-Message-ID: <CAA70yB4zLkizEAHSTag1VQwtuOrEaNEeCa9Er7MAzdpfZRJOeQ@mail.gmail.com>
-Subject: Re: [RFC PATCH] proc: add support detach proccess's autogroup
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200702101028.2088666-1-ribalda@kernel.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 2, 2020 at 4:18 PM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Thu, Jul 02, 2020 at 01:20:43PM +0800, Weiping Zhang wrote:
-> > Since setid will create a autogroup for that process, there is no
-> > way to detach a process from that autogroup, this patch add a new interface
-> > to detach a process from its autogroup. You can write anything to
-> > /proc/<pid>/autogroup_detach to do that.
->
-> This is indeed what the patch does; but it fails to tell me why. Why do
-> we want this? Why should I care about your patch :-)
->
-> Please, always explain why you want things done, that can also help us
-> consider if the proposed solution is the right one.
+On Thu, Jul 02, 2020 at 12:10:28PM +0200, Ricardo Ribalda wrote:
+> Current AMD's zen-based APUs use this core for some of its i2c-buses.
+> 
+> With this patch we re-enable autodetection of hwmon-alike devices, so
+> lm-sensors will be able to work automatically.
+> 
+> It does not affect the boot-time of embedded devices, as the class is
+> set based on the DMI information.
 
-The reason is that, there are lots of autogroup created in our system, because
-I forgot to disable CONFIG_SCHED_AUTOGROUP, and it leads to a hotspot
-in tg_load_down (kenrel-3.10.0-514.16.1.el7.x86_64).
-When user login system by ssh and launch a background job, it will create a
-new autogroup even user logout ssh.
-I cannot find a way do clear these unused autogroup by current kernel,
-so I write a separate module to clear those unused autogroup for my system.
-I think we should provide a interface to detach a process's autogroup.
+Thanks for an update, my comments below. Either Wolfram (if he is okay with
+that), or you can address them.
 
-Thanks
+After addressing,
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+> DMI is probed only on Qtechnology QT5222 Industrial Camera Platform
+
+Still missed period at the end.
+
+> DocLink: https://qtec.com/camera-technology-camera-platforms/
+> Fixes: 3eddad96c439 ("i2c: designware: reverts "i2c: designware: Add support for AMD I2C controller"")
+> Signed-off-by: Ricardo Ribalda <ribalda@kernel.org>
+> ---
+> v2: Comments by Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>   - dmi -> DMI
+>   - Doclink
+>   - CodeStyle
+>   (I do not know what you meant by redundant in the dmi match list ...)
+> 
+> 
+>  drivers/i2c/busses/i2c-designware-platdrv.c | 16 +++++++++++++++-
+>  1 file changed, 15 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/i2c/busses/i2c-designware-platdrv.c b/drivers/i2c/busses/i2c-designware-platdrv.c
+> index c2efaaaac252..630e28ef2412 100644
+> --- a/drivers/i2c/busses/i2c-designware-platdrv.c
+> +++ b/drivers/i2c/busses/i2c-designware-platdrv.c
+> @@ -12,6 +12,7 @@
+>  #include <linux/clk-provider.h>
+>  #include <linux/clk.h>
+>  #include <linux/delay.h>
+> +#include <linux/dmi.h>
+>  #include <linux/err.h>
+>  #include <linux/errno.h>
+>  #include <linux/i2c.h>
+> @@ -191,6 +192,18 @@ static int dw_i2c_plat_request_regs(struct dw_i2c_dev *dev)
+>  	return ret;
+>  }
+>  
+> +static const struct dmi_system_id dw_i2c_hwmon_class_dmi[] = {
+> +	{
+> +		.ident = "Qtechnology QT5222",
+> +		.matches = {
+> +			DMI_MATCH(DMI_SYS_VENDOR, "Qtechnology"),
+> +			DMI_MATCH(DMI_PRODUCT_NAME, "QT5222"),
+> +		},
+> +	},
+
+> +
+
+Still not needed blank line.
+
+> +	{ } /* terminate list */
+> +};
+> +
+>  static int dw_i2c_plat_probe(struct platform_device *pdev)
+>  {
+>  	struct dw_i2c_platform_data *pdata = dev_get_platdata(&pdev->dev);
+> @@ -267,7 +280,8 @@ static int dw_i2c_plat_probe(struct platform_device *pdev)
+>  
+>  	adap = &dev->adapter;
+>  	adap->owner = THIS_MODULE;
+> -	adap->class = I2C_CLASS_DEPRECATED;
+> +	adap->class = dmi_check_system(dw_i2c_hwmon_class_dmi) ?
+> +					I2C_CLASS_HWMON : I2C_CLASS_DEPRECATED;
+>  	ACPI_COMPANION_SET(&adap->dev, ACPI_COMPANION(&pdev->dev));
+>  	adap->dev.of_node = pdev->dev.of_node;
+>  	adap->nr = -1;
+> -- 
+> 2.27.0
+> 
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
