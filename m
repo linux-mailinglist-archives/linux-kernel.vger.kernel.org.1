@@ -2,31 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C106B212F1F
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 00:00:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74125212F30
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 00:00:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726276AbgGBV6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 17:58:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52852 "EHLO mail.kernel.org"
+        id S1726782AbgGBV7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 17:59:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52874 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726010AbgGBV6d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726032AbgGBV6d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 2 Jul 2020 17:58:33 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A2DAB20781;
+        by mail.kernel.org (Postfix) with ESMTPSA id C0F0921532;
         Thu,  2 Jul 2020 21:58:32 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.93)
         (envelope-from <rostedt@goodmis.org>)
-        id 1jr7Dz-004BdL-ME; Thu, 02 Jul 2020 17:58:31 -0400
-Message-ID: <20200702215831.571904149@goodmis.org>
+        id 1jr7Dz-004Bdt-R9; Thu, 02 Jul 2020 17:58:31 -0400
+Message-ID: <20200702215831.710770737@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Thu, 02 Jul 2020 17:58:13 -0400
+Date:   Thu, 02 Jul 2020 17:58:14 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [for-next][PATCH 01/18] tracing: Only allow trace_array_printk() to be used by instances
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: [for-next][PATCH 02/18] x86/ftrace: Make non direct case the default in ftrace_regs_caller
 References: <20200702215812.428188663@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -37,39 +38,80 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-To prevent default "trace_printks()" from spamming the top level tracing
-ring buffer, only allow trace instances to use trace_array_printk() (which
-can be used without the trace_printk() start up warning).
+If a direct function is hooked along with one of the ftrace registered
+functions, then the ftrace_regs_caller is attached to the function that
+shares the direct hook as well as the ftrace hook. The ftrace_regs_caller
+will call ftrace_ops_list_func() that iterates through all the registered
+ftrace callbacks, and if there's a direct callback attached to that
+function, the direct ftrace_ops callback is called to notify that
+ftrace_regs_caller to return to the direct caller instead of going back to
+the function that called it.
 
+But this is a very uncommon case. Currently, the code has it as the default
+case. Modify ftrace_regs_caller to make the default case (the non jump) to
+just return normally, and have the jump to the handling of the direct
+caller.
+
+Link: http://lkml.kernel.org/r/20200422162750.350373278@goodmis.org
+
+Cc: Peter Zijlstra <peterz@infradead.org>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- kernel/trace/trace.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ arch/x86/kernel/ftrace_64.S | 31 +++++++++++++++----------------
+ 1 file changed, 15 insertions(+), 16 deletions(-)
 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index bb62269724d5..8241d1448d70 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -3346,12 +3346,16 @@ int trace_array_printk(struct trace_array *tr,
- 	int ret;
- 	va_list ap;
+diff --git a/arch/x86/kernel/ftrace_64.S b/arch/x86/kernel/ftrace_64.S
+index 083a3da7bb73..3ba32cc58f01 100644
+--- a/arch/x86/kernel/ftrace_64.S
++++ b/arch/x86/kernel/ftrace_64.S
+@@ -241,22 +241,9 @@ SYM_INNER_LABEL(ftrace_regs_call, SYM_L_GLOBAL)
+ 	 */
+ 	movq ORIG_RAX(%rsp), %rax
+ 	testq	%rax, %rax
+-	jz	1f
++	jnz	1f
  
--	if (!(global_trace.trace_flags & TRACE_ITER_PRINTK))
--		return 0;
+-	/* Swap the flags with orig_rax */
+-	movq MCOUNT_REG_SIZE(%rsp), %rdi
+-	movq %rdi, MCOUNT_REG_SIZE-8(%rsp)
+-	movq %rax, MCOUNT_REG_SIZE(%rsp)
 -
- 	if (!tr)
- 		return -ENOENT;
+-	restore_mcount_regs 8
+-	/* Restore flags */
+-	popfq
+-
+-SYM_INNER_LABEL(ftrace_regs_caller_ret, SYM_L_GLOBAL);
+-	UNWIND_HINT_RET_OFFSET
+-	jmp	ftrace_epilogue
+-
+-1:	restore_mcount_regs
++	restore_mcount_regs
+ 	/* Restore flags */
+ 	popfq
  
-+	/* This is only allowed for created instances */
-+	if (tr == &global_trace)
-+		return 0;
+@@ -266,9 +253,21 @@ SYM_INNER_LABEL(ftrace_regs_caller_ret, SYM_L_GLOBAL);
+ 	 * The trampoline will add the code to jump
+ 	 * to the return.
+ 	 */
+-SYM_INNER_LABEL(ftrace_regs_caller_end, SYM_L_GLOBAL)
++SYM_INNER_LABEL(ftrace_regs_caller_ret, SYM_L_GLOBAL)
+ 	jmp ftrace_epilogue
+ 
++	/* Swap the flags with orig_rax */
++1:	movq MCOUNT_REG_SIZE(%rsp), %rdi
++	movq %rdi, MCOUNT_REG_SIZE-8(%rsp)
++	movq %rax, MCOUNT_REG_SIZE(%rsp)
 +
-+	if (!(tr->trace_flags & TRACE_ITER_PRINTK))
-+		return 0;
++	restore_mcount_regs 8
++	/* Restore flags */
++	popfq
++SYM_INNER_LABEL(ftrace_regs_caller_end, SYM_L_GLOBAL)
++	UNWIND_HINT_RET_OFFSET
++	jmp	ftrace_epilogue
 +
- 	va_start(ap, fmt);
- 	ret = trace_array_vprintk(tr, ip, fmt, ap);
- 	va_end(ap);
+ SYM_FUNC_END(ftrace_regs_caller)
+ 
+ 
 -- 
 2.26.2
 
