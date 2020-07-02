@@ -2,115 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C099211A7A
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 05:03:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 033D2211A83
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 05:05:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728110AbgGBDC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 23:02:59 -0400
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:37365 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725805AbgGBDC6 (ORCPT
+        id S1728029AbgGBDF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 23:05:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54862 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726094AbgGBDFz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 23:02:58 -0400
-Received: by mail-pg1-f196.google.com with SMTP id d4so12738694pgk.4;
-        Wed, 01 Jul 2020 20:02:58 -0700 (PDT)
+        Wed, 1 Jul 2020 23:05:55 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EBBDC08C5C1
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 20:05:55 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id o1so4134866plk.1
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 20:05:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=LSIXeJkTyhS8zDoxVph+aH1Bdmz06pqtIU5eHol2+kg=;
+        b=IHna+nXuiFtXsW8Y44jarGOecmrNRjmRg+BPWhVHX8oo0+pm750A347UxP8cdyRZtz
+         1rpywCjS09JJX3W5xYBHW4fN6qh+vM7hi/H2OD6gpAR1d3u9DiA5Pm47zTSAAtfjjdt+
+         DZn8k+LOezD7Jt0KucWr934HnBmU0a1UWPHWGTBh8BAcZHGguAvIeqc/nh3qnVhehZlm
+         GWaWs1LN+68mh6kQISH/hddLDYkvv5FgdSG3ICOb2papaV+z/hAE8QEkPQaFCdRM7+Kx
+         9c25ktltyB+cMJEEt0dgNCB6qWPzOBd9cjrq/NU7P6fCRV5baY33f4wuYawgduP7EGxd
+         XeZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=FFJnrg6UejlgMZZiBAQX5IaRF+B2JtFvBIiKkxyCoIE=;
-        b=jlD5E/GzCX8CrZvr/IqxSIIWDcaFiRXBY9sc5FIYZobaNwfBAbml4ygamaTYJ5W/A2
-         YvTAG44GvwgGXMFofYYyCqMIrqVclaDuWFJ5pr+rF6jukwSxF5j3w1NV5sXTuiu3QbpL
-         ByfJOFaRFZ+enQei/JwdDNHVxL1S0NaGqPn6HHeZ3Sm4cGVS1/EXNd6MpBrc7ytgm+P2
-         /e+Ki7SPS2yhkZiK75WZ3oriAr8kYgIeqBcwKeX30i8t1My2EEqO6NXjyCDdifW+JHQ2
-         FkkBjsvGCfXjCjofajpJEFAybkL6QiBwz+fxXNoCkNbnPwnos8ZnPp7Qpp17VGJ+80kn
-         EPhw==
-X-Gm-Message-State: AOAM531cUnHpGUF9QTblFePpqnPVuwO/yqKOTyg39EjFlASP8is+8B+x
-        fHz/L65C+8ttUSq6YSFccfQ=
-X-Google-Smtp-Source: ABdhPJysZ0yeIz06+vtJMNt5bNS3DQ+w6bS2Sd/cKTqkCCZNqRBSB0vrL/IwcxtRbeIXXzb3hwY6XQ==
-X-Received: by 2002:aa7:8b01:: with SMTP id f1mr27531833pfd.223.1593658977917;
-        Wed, 01 Jul 2020 20:02:57 -0700 (PDT)
-Received: from [192.168.50.147] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id m92sm6486981pje.13.2020.07.01.20.02.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Jul 2020 20:02:56 -0700 (PDT)
-Subject: Re: [RFC PATCH v1] scsi: ufs: Quiesce all scsi devices before
- shutdown
-To:     Stanley Chu <stanley.chu@mediatek.com>, linux-scsi@vger.kernel.org,
-        martin.petersen@oracle.com, avri.altman@wdc.com,
-        alim.akhtar@samsung.com, jejb@linux.ibm.com
-Cc:     beanhuo@micron.com, asutoshd@codeaurora.org, cang@codeaurora.org,
-        matthias.bgg@gmail.com, linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kuohong.wang@mediatek.com, peter.wang@mediatek.com,
-        chun-hung.wu@mediatek.com, andy.teng@mediatek.com,
-        chaotian.jing@mediatek.com, cc.chou@mediatek.com
-References: <20200702013210.22958-1-stanley.chu@mediatek.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
- mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
- LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
- fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
- AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
- 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
- AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
- igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
- Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
- jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
- macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
- CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
- RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
- PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
- eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
- lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
- T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
- ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
- CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
- oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
- //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
- mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
- goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <83b1d5a1-c248-87bb-9554-ca10c8064041@acm.org>
-Date:   Wed, 1 Jul 2020 20:02:55 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=LSIXeJkTyhS8zDoxVph+aH1Bdmz06pqtIU5eHol2+kg=;
+        b=RkHknAzqfFcq2dLFjc9boVI7Jy1WdUyNjx4LVkd1J/YR/aplkgzpRBHwRzUA/8vhVG
+         muw3aRMJOuNjnNjQMAQt1vs92k/Pp70GJpfz1zqoSm6D6STvAaV+RlU2LbmzOeZUwMb8
+         dUO6eGXZFIBoQjgv95u8YTFZM6qdyGlbEOlGp8LsvV9OOlJMSqUMqEMLMLsUVmO/beh5
+         SX3AyeWQolr/rVpj4RUbCEQ13lmktc/Zup5q11Mh/7AYri4Rzr8+2hRX5PWEOFykYQ4d
+         KtwrMJrVMyapfz3jMPxutdZxOs8GzZC3YxrWuCKb7GpdNaboyjboSIo1OA5mWH0D9OTE
+         zW7w==
+X-Gm-Message-State: AOAM531FER/TFlqPoNaA4OyFv2slWpzIeJL/Mw5L6hxR7nW3GboRNvCv
+        g6HPKa5LAapeqXKzkRXT1wu3wA==
+X-Google-Smtp-Source: ABdhPJxvwixRnu5/bd9/OEJGu9MtVDUrqOpsYEcjxi3jhAkd3T2UijJV0Xq35KWKIh1AqiCM6n9Qlw==
+X-Received: by 2002:a17:902:a987:: with SMTP id bh7mr12452608plb.197.1593659154871;
+        Wed, 01 Jul 2020 20:05:54 -0700 (PDT)
+Received: from localhost ([223.235.247.110])
+        by smtp.gmail.com with ESMTPSA id n9sm2804781pjo.53.2020.07.01.20.05.53
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 01 Jul 2020 20:05:54 -0700 (PDT)
+Date:   Thu, 2 Jul 2020 08:35:51 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Ionela Voinescu <ionela.voinescu@arm.com>
+Cc:     rjw@rjwysocki.net, catalin.marinas@arm.com, sudeep.holla@arm.com,
+        will@kernel.org, linux@armlinux.org.uk, valentin.schneider@arm.com,
+        mingo@redhat.com, peterz@infradead.org, dietmar.eggemann@arm.com,
+        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Liviu Dudau <liviu.dudau@arm.com>
+Subject: Re: [PATCH 4/8] cpufreq,vexpress-spc: fix Frequency Invariance (FI)
+ for bL switching
+Message-ID: <20200702030551.p4cevaahgfvpum4o@vireshk-i7>
+References: <20200701090751.7543-1-ionela.voinescu@arm.com>
+ <20200701090751.7543-5-ionela.voinescu@arm.com>
+ <20200701095414.2wjcnyhndgcedk2q@vireshk-i7>
+ <20200701140735.GB32736@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20200702013210.22958-1-stanley.chu@mediatek.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200701140735.GB32736@arm.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-07-01 18:32, Stanley Chu wrote:
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index 59358bb75014..cadfa9006972 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -8599,10 +8599,14 @@ EXPORT_SYMBOL(ufshcd_runtime_idle);
->  int ufshcd_shutdown(struct ufs_hba *hba)
->  {
->  	int ret = 0;
-> +	struct scsi_target *starget;
->  
->  	if (!hba->is_powered)
->  		goto out;
->  
-> +	list_for_each_entry(starget, &hba->host->__targets, siblings)
-> +		scsi_target_quiesce(starget);
-> +
->  	if (ufshcd_is_ufs_dev_poweroff(hba) && ufshcd_is_link_off(hba))
->  		goto out;
+On 01-07-20, 15:07, Ionela Voinescu wrote:
+> On Wednesday 01 Jul 2020 at 16:16:19 (+0530), Viresh Kumar wrote:
+> > Is there anyone who cares for this driver and EAS ? I will just skip doing the
+> > FIE thing here and mark it skipped.
+> 
+> That is a good question. The vexpress driver is still used for TC2, but
+> I don't know of any users of this bL switcher functionality that's part
+> of the driver. I think there were a few people wondering recently if
+> it's still used [1].
 
-Please add a comment above the list_for_each_entry() loop that explains
-that there is no matching scsi_target_unquiesce() call and also that
-SCSI commands queued after the scsi_target_quiesce() call returned will
-block until blk_cleanup_queue() is called (see also the blk_queue_dying()
-check in blk_queue_enter()).
+Even if it is used by some, there is no need, I believe, to enable
+freq-invariance for it, which wasn't enabled until now.
 
-Thanks,
+And considering that we are going to enable the flag only for the
+interested parties now, as from the discussion on 1/8, this shouldn't
+be required.
 
-Bart.
+-- 
+viresh
