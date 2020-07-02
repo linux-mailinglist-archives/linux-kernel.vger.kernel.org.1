@@ -2,117 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1C8C212270
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 13:39:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98F7621226B
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 13:36:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728681AbgGBLja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 07:39:30 -0400
-Received: from mout.kundenserver.de ([212.227.126.130]:34081 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727016AbgGBLj3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 07:39:29 -0400
-Received: from mail-qk1-f176.google.com ([209.85.222.176]) by
- mrelayeu.kundenserver.de (mreue010 [212.227.15.129]) with ESMTPSA (Nemesis)
- id 1MyJx6-1isHMh3GRg-00ykb7; Thu, 02 Jul 2020 13:39:27 +0200
-Received: by mail-qk1-f176.google.com with SMTP id e13so25256271qkg.5;
-        Thu, 02 Jul 2020 04:39:27 -0700 (PDT)
-X-Gm-Message-State: AOAM532z0IHA9N1mAsG65XlCWqo+0pwbShicaHgYkplIDL+zOJ4B9Fdd
-        Gx0V0WAJRgyl1kE6Xf/FAxj82S5DvTjR08HdYBs=
-X-Google-Smtp-Source: ABdhPJxZnj5versBmr7lWdCxrevvSnrtGz16SQp4OMCvU87jKF+QYKva7czF6a7gzq//AqJiVHDYLYMn/4Cgp3bsm/o=
-X-Received: by 2002:a37:9dd6:: with SMTP id g205mr30820571qke.352.1593689966522;
- Thu, 02 Jul 2020 04:39:26 -0700 (PDT)
+        id S1728800AbgGBLgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 07:36:19 -0400
+Received: from foss.arm.com ([217.140.110.172]:42058 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726343AbgGBLgR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 07:36:17 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DAB951FB;
+        Thu,  2 Jul 2020 04:36:16 -0700 (PDT)
+Received: from [10.37.12.95] (unknown [10.37.12.95])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 675493F71E;
+        Thu,  2 Jul 2020 04:36:14 -0700 (PDT)
+Subject: Re: [PATCH V5 2/4] arm64/cpufeature: Add remaining feature bits in
+ ID_AA64MMFR1 register
+To:     anshuman.khandual@arm.com, linux-arm-kernel@lists.infradead.org
+Cc:     catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com,
+        linux-kernel@vger.kernel.org
+References: <1590548619-3441-1-git-send-email-anshuman.khandual@arm.com>
+ <1590548619-3441-3-git-send-email-anshuman.khandual@arm.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <8b0529e8-e150-9416-9672-51d4539b57b1@arm.com>
+Date:   Thu, 2 Jul 2020 12:40:58 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.7.0
 MIME-Version: 1.0
-References: <20200630173734.14057-1-will@kernel.org> <20200630173734.14057-5-will@kernel.org>
- <20200702093239.GA15391@C02TD0UTHF1T.local> <20200702094833.GA16248@willie-the-truck>
- <CAK8P3a07G1dLC+RUBDkzDbCRCP_gwZAaVK+k1UxvXT+7Kj=o+g@mail.gmail.com> <20200702111832.GC16418@willie-the-truck>
-In-Reply-To: <20200702111832.GC16418@willie-the-truck>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Thu, 2 Jul 2020 13:39:10 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3VrEkDf8t1CCsY+g7rtXkqBsiPOr97b1yRbz8NpjdfFA@mail.gmail.com>
-Message-ID: <CAK8P3a3VrEkDf8t1CCsY+g7rtXkqBsiPOr97b1yRbz8NpjdfFA@mail.gmail.com>
-Subject: Re: [PATCH 04/18] alpha: Override READ_ONCE() with barriered implementation
-To:     Will Deacon <will@kernel.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Marco Elver <elver@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Matt Turner <mattst88@gmail.com>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Richard Henderson <rth@twiddle.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        alpha <linux-alpha@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:Z8zyvq6vDbeYzAhJCb6eVc2WB9OLAma8FkNnVfzP5LIPHoG/zM3
- H+stHIIcLhAOQVdPGVb+yvmXZS6bZvAlPlPGAb7K3XN/Yf/9tiD+LfyrHyrF2jie4hgS9KZ
- irhd23yNkSatHVfb8y2fRt4J+qOAfrpIFB+YlKB8CPwZ0m5soww1dXiL+e4/fBrJvO0u51V
- FIQm29ysC2PM1GqgInKpw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:MVQPFMqFHCg=:Mc/Fzv3M0wGaJGNRmiZWUe
- KhM7kbvbSIBkOSpRLKpn2mQuHZQiboCZGmj68hm2SMimxXdnYI3wYcK7GopZhk+JR3aBa1wbc
- b1yaKMwUqylhcFZNngxpMvDzlTF1PvFIjy1TTaAhiTRUB9+xeBPFgbS05UWQRwSmi2JAp+DOb
- w9PpjmmcLdJhOqQzTTiFB20BJKu26jnzomBTvGHtCKhc9ykIackRn29iZzaFfpnZvSRmnkvtQ
- nRB1TJtCrCSzEq2cuZ3HgSGJM0VJ7lBsDmQcm5XEh8rI8t/0TOOtezYCP2qeHZMi2E7wldego
- 58hv1Ra6Ath2DLPfjcT9qJbkmo/521T0VPquIdh/1enx7hnlCBxsv8gxG2QnI8BYnZ3fTUTbQ
- qR3eaMFvTbbNBLDZTj2gNWGUbSrcyEqWPBu76Rmq+UU/d+W1zne8vnaUNyNjsJuIZAAqqnG2b
- UU8wfrD4HFvkfBctfr/Fi7vwMMXIF3BMSoOp78QP8Qj4tJwVoeCI1Sd1EBvtrBR2wQPmOrS68
- eREemZPiU1odDD2L1M3yLfpnjayDnchDXD/nZlp6QVeA6t0OqPfXZm0BQaUv98iolzQP8HxjA
- 9XW1RGsmMsY/mMjUh2fyz5dymegWy+bpNe76EEzhw7+laAeDZEGO3I15Mx6eE0MRiuUjwffdQ
- 5It73uUIRMFuiNK89mNjqT2VH+pSxQ4tl28Zqogpjw/CBt72jxVvhtO+89/7RLoZEz1l6X7Gy
- hdJ0rZ5ohsb3nY2vodf3TGVAKZyMGgO9S+QpihT/Ypet1XCDCqkCdn6XMwIkInXyR4v4dvNJm
- Y3SqJsvXjFHzffKoa+nDO8VFyuSx0FcmDugZDFctFRy2lf2Cw4=
+In-Reply-To: <1590548619-3441-3-git-send-email-anshuman.khandual@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 2, 2020 at 1:18 PM Will Deacon <will@kernel.org> wrote:
-> On Thu, Jul 02, 2020 at 12:08:41PM +0200, Arnd Bergmann wrote:
-> > On Thu, Jul 2, 2020 at 11:48 AM Will Deacon <will@kernel.org> wrote:
-> > > On Thu, Jul 02, 2020 at 10:32:39AM +0100, Mark Rutland wrote:
+On 05/27/2020 04:03 AM, Anshuman Khandual wrote:
+> Enable ETS, TWED, XNX and SPECSEI features bits in ID_AA64MMFR1 register as
+> per ARM DDI 0487F.a specification.
+> 
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org
+> Suggested-by: Will Deacon <will@kernel.org>
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+>   arch/arm64/include/asm/sysreg.h | 4 ++++
+>   arch/arm64/kernel/cpufeature.c  | 4 ++++
+>   2 files changed, 8 insertions(+)
+> 
+> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
+> index cf983d03aa4c..a798bb9c0845 100644
+> --- a/arch/arm64/include/asm/sysreg.h
+> +++ b/arch/arm64/include/asm/sysreg.h
+> @@ -731,6 +731,10 @@
+>   #endif
+>   
+>   /* id_aa64mmfr1 */
+> +#define ID_AA64MMFR1_ETS_SHIFT		36
+> +#define ID_AA64MMFR1_TWED_SHIFT		32
+> +#define ID_AA64MMFR1_XNX_SHIFT		28
+> +#define ID_AA64MMFR1_SPECSEI_SHIFT	24
+>   #define ID_AA64MMFR1_PAN_SHIFT		20
+>   #define ID_AA64MMFR1_LOR_SHIFT		16
+>   #define ID_AA64MMFR1_HPD_SHIFT		12
+> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+> index feaa6dcd6f7b..c2253fb3401e 100644
+> --- a/arch/arm64/kernel/cpufeature.c
+> +++ b/arch/arm64/kernel/cpufeature.c
+> @@ -295,6 +295,10 @@ static const struct arm64_ftr_bits ftr_id_aa64mmfr0[] = {
+>   };
+>   
+>   static const struct arm64_ftr_bits ftr_id_aa64mmfr1[] = {
+> +	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64MMFR1_ETS_SHIFT, 4, 0),
+> +	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64MMFR1_TWED_SHIFT, 4, 0),
+> +	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64MMFR1_XNX_SHIFT, 4, 0),
+> +	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_HIGHER_SAFE, ID_AA64MMFR1_SPECSEI_SHIFT, 4, 0),
+>   	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64MMFR1_PAN_SHIFT, 4, 0),
+>   	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64MMFR1_LOR_SHIFT, 4, 0),
+>   	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64MMFR1_HPD_SHIFT, 4, 0),
+> 
 
-> Not sure I follow you here, but I can confirm that what you're worried
-> about doesn't happen for the usual case of a pointer-to-volatile scalar.
->
-> For example, ignoring dependency ordering:
->
-> unsigned long foo(volatile unsigned long *p)
-> {
->         return smp_load_acquire(p) + 1;
-> }
->
-> Ends up looking like:
->
->         unsigned long ___p1 = *(const volatile unsigned long *)p;
->         smp_mb();
->         (volatile unsigned long)___p1;
->
-> My understanding is that casting a non-pointer type to volatile doesn't
-> do anything, so we're good.
-
-Right, I mixed up the correct
-
-        (typeof(*p))___p;
-
-with the incorrect
-
-       *typeof(p)&___p;
-
-which would dereference a volatile pointer and cause the
-problem.
-
-The code is all fine then.
-
-    Arnd
+Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
