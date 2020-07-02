@@ -2,55 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD6A3212BAC
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 19:55:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE69B212B82
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 19:49:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728032AbgGBRzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 13:55:08 -0400
-Received: from foss.arm.com ([217.140.110.172]:48648 "EHLO foss.arm.com"
+        id S1727951AbgGBRtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 13:49:33 -0400
+Received: from muru.com ([72.249.23.125]:60458 "EHLO muru.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727985AbgGBRzH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 13:55:07 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B4C1A1FB;
-        Thu,  2 Jul 2020 10:55:06 -0700 (PDT)
-Received: from [192.168.122.166] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 653B23F71E;
-        Thu,  2 Jul 2020 10:55:06 -0700 (PDT)
-To:     "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>, linux-mm@kvack.org,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        rientjes@google.com, Christoph Hellwig <hch@lst.de>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-From:   Jeremy Linton <jeremy.linton@arm.com>
-Subject: [BUG] XHCI getting ZONE_DMA32 memory > than its bus_dma_limit
-Message-ID: <34619bdf-6527-ae82-7e4d-e2ea7c67ed56@arm.com>
-Date:   Thu, 2 Jul 2020 12:49:14 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1726754AbgGBRtc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 13:49:32 -0400
+Received: from hillo.muru.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTP id 9DD418062;
+        Thu,  2 Jul 2020 17:50:24 +0000 (UTC)
+From:   Tony Lindgren <tony@atomide.com>
+To:     linux-omap@vger.kernel.org
+Cc:     "Andrew F . Davis" <afd@ti.com>, Dave Gerlach <d-gerlach@ti.com>,
+        Faiz Abbas <faiz_abbas@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Keerthy <j-keerthy@ti.com>, Nishanth Menon <nm@ti.com>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Roger Quadros <rogerq@ti.com>, Suman Anna <s-anna@ti.com>,
+        Tero Kristo <t-kristo@ti.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 1/2] bus: ti-sysc: Fix wakeirq sleeping function called from invalid context
+Date:   Thu,  2 Jul 2020 10:49:28 -0700
+Message-Id: <20200702174929.26506-1-tony@atomide.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+With CONFIG_DEBUG_ATOMIC_SLEEP enabled we can see the following with
+wakeirqs and serial console idled:
 
-Using 5.8rc3:
+BUG: sleeping function called from invalid context at drivers/bus/ti-sysc.c:242
+...
+(sysc_wait_softreset) from [<c0606894>] (sysc_enable_module+0x48/0x274)
+(sysc_enable_module) from [<c0606c5c>] (sysc_runtime_resume+0x19c/0x1d8)
+(sysc_runtime_resume) from [<c0606cf0>] (sysc_child_runtime_resume+0x58/0x84)
+(sysc_child_runtime_resume) from [<c06eb7bc>] (__rpm_callback+0x30/0x12c)
+(__rpm_callback) from [<c06eb8d8>] (rpm_callback+0x20/0x80)
+(rpm_callback) from [<c06eb434>] (rpm_resume+0x638/0x7fc)
+(rpm_resume) from [<c06eb658>] (__pm_runtime_resume+0x60/0x9c)
+(__pm_runtime_resume) from [<c06edc08>] (handle_threaded_wake_irq+0x24/0x60)
+(handle_threaded_wake_irq) from [<c01befec>] (irq_thread_fn+0x1c/0x78)
+(irq_thread_fn) from [<c01bf30c>] (irq_thread+0x140/0x26c)
 
-The rpi4 has a 3G dev->bus_dma_limit on its XHCI controller. With a usb3 
-hub, plus a few devices plugged in, randomly devices will fail 
-operations. This appears to because xhci_alloc_container_ctx() is 
-getting buffers > 3G via dma_pool_zalloc().
+We have __pm_runtime_resume() call the sysc_runtime_resume() with spinlock
+held and interrupts disabled.
 
-Tracking that down, it seems to be caused by dma_alloc_from_pool() using 
-dev_to_pool()->dma_direct_optimal_gfp_mask() to "optimistically" select 
-the atomic_pool_dma32 but then failing to verify that the allocations in 
-the pool are less than the dev bus_dma_limit.
+Fixes: d46f9fbec719 ("bus: ti-sysc: Use optional clocks on for enable and wait for softreset bit")
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+---
+ drivers/bus/ti-sysc.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-Thanks,
-
+diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
+--- a/drivers/bus/ti-sysc.c
++++ b/drivers/bus/ti-sysc.c
+@@ -236,15 +236,14 @@ static int sysc_wait_softreset(struct sysc *ddata)
+ 		syss_done = ddata->cfg.syss_mask;
+ 
+ 	if (syss_offset >= 0) {
+-		error = readx_poll_timeout(sysc_read_sysstatus, ddata, rstval,
+-					   (rstval & ddata->cfg.syss_mask) ==
+-					   syss_done,
+-					   100, MAX_MODULE_SOFTRESET_WAIT);
++		error = readx_poll_timeout_atomic(sysc_read_sysstatus, ddata,
++				rstval, (rstval & ddata->cfg.syss_mask) ==
++				syss_done, 100, MAX_MODULE_SOFTRESET_WAIT);
+ 
+ 	} else if (ddata->cfg.quirks & SYSC_QUIRK_RESET_STATUS) {
+-		error = readx_poll_timeout(sysc_read_sysconfig, ddata, rstval,
+-					   !(rstval & sysc_mask),
+-					   100, MAX_MODULE_SOFTRESET_WAIT);
++		error = readx_poll_timeout_atomic(sysc_read_sysconfig, ddata,
++				rstval, !(rstval & sysc_mask),
++				100, MAX_MODULE_SOFTRESET_WAIT);
+ 	}
+ 
+ 	return error;
+-- 
+2.27.0
