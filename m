@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71F842117E5
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 03:27:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF29C2117E8
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 03:28:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728369AbgGBBXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 21:23:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53936 "EHLO mail.kernel.org"
+        id S1728399AbgGBBXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 21:23:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53966 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728307AbgGBBXX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 21:23:23 -0400
+        id S1728226AbgGBBXZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 21:23:25 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 904B82083E;
-        Thu,  2 Jul 2020 01:23:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D94182082F;
+        Thu,  2 Jul 2020 01:23:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593653002;
-        bh=SDsC3WYUWbDqFtf8OSpck0pZHtY5L6+8Nqok/8gyQcQ=;
+        s=default; t=1593653004;
+        bh=/iKWu7yE1HMeDOswpVBK72JghZL76IlXEEd5Zx1knVI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FcJ9tKB7j5g8j0a8UwBj1bJpJHKPL05A85WevbZuVsbSxtQAfi6ZmcdL3/KY8WdvH
-         pQIScTwQmIwERSZOn4lP7IoNN/cn778izu71RLwNRtel9SetSiDRq9asBiBlJUz1ot
-         MdXVWJSBXleo40+8G+YkZtpwQ9/c4gXM1m/HQUEA=
+        b=Km9usEWJPXBYG8qkO67I5YaIPIxrG/CyXZbLivsKycoMfkti9G9e3vNUrIEcjOE1C
+         MjMcdeth2NsMnjsBG3+LUgsfxe9U3JGQATDTHdZZx7TmdeOUmko/WO3ivmnP3gY0bt
+         y3hsB2Y+ckyYbvV0aGWwyggQBCTn38++kBe5il6A=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Sascha Hauer <s.hauer@pengutronix.de>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
+Cc:     David Christensen <drc@linux.vnet.ibm.com>,
+        Michael Chan <michael.chan@broadcom.com>,
         "David S . Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 22/53] net: ethernet: mvneta: Fix Serdes configuration for SoCs without comphy
-Date:   Wed,  1 Jul 2020 21:21:31 -0400
-Message-Id: <20200702012202.2700645-22-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.7 24/53] tg3: driver sleeps indefinitely when EEH errors exceed eeh_max_freezes
+Date:   Wed,  1 Jul 2020 21:21:33 -0400
+Message-Id: <20200702012202.2700645-24-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200702012202.2700645-1-sashal@kernel.org>
 References: <20200702012202.2700645-1-sashal@kernel.org>
@@ -44,168 +44,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sascha Hauer <s.hauer@pengutronix.de>
+From: David Christensen <drc@linux.vnet.ibm.com>
 
-[ Upstream commit b4748553f53f2971e07d2619f13d461daac0f3bb ]
+[ Upstream commit 3a2656a211caf35e56afc9425e6e518fa52f7fbc ]
 
-The MVNETA_SERDES_CFG register is only available on older SoCs like the
-Armada XP. On newer SoCs like the Armada 38x the fields are moved to
-comphy. This patch moves the writes to this register next to the comphy
-initialization, so that depending on the SoC either comphy or
-MVNETA_SERDES_CFG is configured.
-With this we no longer write to the MVNETA_SERDES_CFG on SoCs where it
-doesn't exist.
+The driver function tg3_io_error_detected() calls napi_disable twice,
+without an intervening napi_enable, when the number of EEH errors exceeds
+eeh_max_freezes, resulting in an indefinite sleep while holding rtnl_lock.
 
-Suggested-by: Russell King <rmk+kernel@armlinux.org.uk>
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+Add check for pcierr_recovery which skips code already executed for the
+"Frozen" state.
+
+Signed-off-by: David Christensen <drc@linux.vnet.ibm.com>
+Reviewed-by: Michael Chan <michael.chan@broadcom.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/marvell/mvneta.c | 80 +++++++++++++++------------
- 1 file changed, 44 insertions(+), 36 deletions(-)
+ drivers/net/ethernet/broadcom/tg3.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
-index 43b44a1e8f69e..401eeeca89660 100644
---- a/drivers/net/ethernet/marvell/mvneta.c
-+++ b/drivers/net/ethernet/marvell/mvneta.c
-@@ -106,6 +106,7 @@
- #define      MVNETA_TX_IN_PRGRS                  BIT(1)
- #define      MVNETA_TX_FIFO_EMPTY                BIT(8)
- #define MVNETA_RX_MIN_FRAME_SIZE                 0x247c
-+/* Only exists on Armada XP and Armada 370 */
- #define MVNETA_SERDES_CFG			 0x24A0
- #define      MVNETA_SGMII_SERDES_PROTO		 0x0cc7
- #define      MVNETA_QSGMII_SERDES_PROTO		 0x0667
-@@ -3523,26 +3524,55 @@ static int mvneta_setup_txqs(struct mvneta_port *pp)
- 	return 0;
- }
+diff --git a/drivers/net/ethernet/broadcom/tg3.c b/drivers/net/ethernet/broadcom/tg3.c
+index ff98a82b7bc47..d71ce7634ac19 100644
+--- a/drivers/net/ethernet/broadcom/tg3.c
++++ b/drivers/net/ethernet/broadcom/tg3.c
+@@ -18170,8 +18170,8 @@ static pci_ers_result_t tg3_io_error_detected(struct pci_dev *pdev,
  
--static int mvneta_comphy_init(struct mvneta_port *pp)
-+static int mvneta_comphy_init(struct mvneta_port *pp, phy_interface_t interface)
- {
- 	int ret;
+ 	rtnl_lock();
  
--	if (!pp->comphy)
--		return 0;
--
--	ret = phy_set_mode_ext(pp->comphy, PHY_MODE_ETHERNET,
--			       pp->phy_interface);
-+	ret = phy_set_mode_ext(pp->comphy, PHY_MODE_ETHERNET, interface);
- 	if (ret)
- 		return ret;
+-	/* We probably don't have netdev yet */
+-	if (!netdev || !netif_running(netdev))
++	/* Could be second call or maybe we don't have netdev yet */
++	if (!netdev || tp->pcierr_recovery || !netif_running(netdev))
+ 		goto done;
  
- 	return phy_power_on(pp->comphy);
- }
- 
-+static int mvneta_config_interface(struct mvneta_port *pp,
-+				   phy_interface_t interface)
-+{
-+	int ret = 0;
-+
-+	if (pp->comphy) {
-+		if (interface == PHY_INTERFACE_MODE_SGMII ||
-+		    interface == PHY_INTERFACE_MODE_1000BASEX ||
-+		    interface == PHY_INTERFACE_MODE_2500BASEX) {
-+			ret = mvneta_comphy_init(pp, interface);
-+		}
-+	} else {
-+		switch (interface) {
-+		case PHY_INTERFACE_MODE_QSGMII:
-+			mvreg_write(pp, MVNETA_SERDES_CFG,
-+				    MVNETA_QSGMII_SERDES_PROTO);
-+			break;
-+
-+		case PHY_INTERFACE_MODE_SGMII:
-+		case PHY_INTERFACE_MODE_1000BASEX:
-+			mvreg_write(pp, MVNETA_SERDES_CFG,
-+				    MVNETA_SGMII_SERDES_PROTO);
-+			break;
-+		default:
-+			return -EINVAL;
-+		}
-+	}
-+
-+	pp->phy_interface = interface;
-+
-+	return ret;
-+}
-+
- static void mvneta_start_dev(struct mvneta_port *pp)
- {
- 	int cpu;
- 
--	WARN_ON(mvneta_comphy_init(pp));
-+	WARN_ON(mvneta_config_interface(pp, pp->phy_interface));
- 
- 	mvneta_max_rx_size_set(pp, pp->pkt_size);
- 	mvneta_txq_max_tx_size_set(pp, pp->pkt_size);
-@@ -3920,14 +3950,10 @@ static void mvneta_mac_config(struct phylink_config *config, unsigned int mode,
- 	if (state->speed == SPEED_2500)
- 		new_ctrl4 |= MVNETA_GMAC4_SHORT_PREAMBLE_ENABLE;
- 
--	if (pp->comphy && pp->phy_interface != state->interface &&
--	    (state->interface == PHY_INTERFACE_MODE_SGMII ||
--	     state->interface == PHY_INTERFACE_MODE_1000BASEX ||
--	     state->interface == PHY_INTERFACE_MODE_2500BASEX)) {
--		pp->phy_interface = state->interface;
--
--		WARN_ON(phy_power_off(pp->comphy));
--		WARN_ON(mvneta_comphy_init(pp));
-+	if (pp->phy_interface != state->interface) {
-+		if (pp->comphy)
-+			WARN_ON(phy_power_off(pp->comphy));
-+		WARN_ON(mvneta_config_interface(pp, state->interface));
- 	}
- 
- 	if (new_ctrl0 != gmac_ctrl0)
-@@ -4971,20 +4997,10 @@ static void mvneta_conf_mbus_windows(struct mvneta_port *pp,
- }
- 
- /* Power up the port */
--static int mvneta_port_power_up(struct mvneta_port *pp, int phy_mode)
-+static void mvneta_port_power_up(struct mvneta_port *pp, int phy_mode)
- {
- 	/* MAC Cause register should be cleared */
- 	mvreg_write(pp, MVNETA_UNIT_INTR_CAUSE, 0);
--
--	if (phy_mode == PHY_INTERFACE_MODE_QSGMII)
--		mvreg_write(pp, MVNETA_SERDES_CFG, MVNETA_QSGMII_SERDES_PROTO);
--	else if (phy_mode == PHY_INTERFACE_MODE_SGMII ||
--		 phy_interface_mode_is_8023z(phy_mode))
--		mvreg_write(pp, MVNETA_SERDES_CFG, MVNETA_SGMII_SERDES_PROTO);
--	else if (!phy_interface_mode_is_rgmii(phy_mode))
--		return -EINVAL;
--
--	return 0;
- }
- 
- /* Device initialization routine */
-@@ -5170,11 +5186,7 @@ static int mvneta_probe(struct platform_device *pdev)
- 	if (err < 0)
- 		goto err_netdev;
- 
--	err = mvneta_port_power_up(pp, phy_mode);
--	if (err < 0) {
--		dev_err(&pdev->dev, "can't power up port\n");
--		goto err_netdev;
--	}
-+	mvneta_port_power_up(pp, phy_mode);
- 
- 	/* Armada3700 network controller does not support per-cpu
- 	 * operation, so only single NAPI should be initialized.
-@@ -5328,11 +5340,7 @@ static int mvneta_resume(struct device *device)
- 		}
- 	}
- 	mvneta_defaults_set(pp);
--	err = mvneta_port_power_up(pp, pp->phy_interface);
--	if (err < 0) {
--		dev_err(device, "can't power up port\n");
--		return err;
--	}
-+	mvneta_port_power_up(pp, pp->phy_interface);
- 
- 	netif_device_attach(dev);
- 
+ 	/* We needn't recover from permanent error */
 -- 
 2.25.1
 
