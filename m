@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66A642126F7
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 16:50:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70FB62126A1
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 16:46:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730340AbgGBOte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 10:49:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50156 "EHLO
+        id S1730006AbgGBOqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 10:46:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729944AbgGBOqj (ORCPT
+        with ESMTP id S1729949AbgGBOql (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 10:46:39 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B00FC08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 07:46:39 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id z2so6524681wrp.2
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 07:46:38 -0700 (PDT)
+        Thu, 2 Jul 2020 10:46:41 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44A54C08C5DE
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 07:46:40 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id o11so28804071wrv.9
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 07:46:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=V6gF5OZoL4RS0/p0R84cBC4PkOOgqqKbUR7gNdMwCYM=;
-        b=BjS0+cjbl/ylf9WIsjuuM5KRIKa1tflpMXbUUUReB1WQml9HUW6E7bANNjfQ5fTX/A
-         ePKj5W/F4jTQ5DLni9yk4rEL0mT0PZ8dx/ky2IeK4j26F+tluYD+xaCITBCrSwhHDkG0
-         UjYtzRYY1AZ1XJ9FbJStn9EZ2dOaSQVOz0ZTjAy3qfUFL/OnG1ALFNX/lOhWfCrk0PAA
-         E9iW5PKN2w1rivJs2V0GOJnXF7m6RAcY+Rhv3sFBPzim9PY9lAbUX+LDiXQaJWjLIobh
-         7BZt8ywcNGAKtdq5SRkR8fB6Ov7RYsv3mwiu7mpnDcFkBnkV5Ha2N/0X48uQF+Svx/43
-         Gn0g==
+        bh=tRsQR13PSt+71+KJ9+2KUCB1us21DRhNxaWRJTFi8XY=;
+        b=afE8GxK7+FqqdTQOg0Q4RfL/jq4qaEfxl3bVjnUTU58Byyndjn0zvnx4zWGWaxbd1G
+         8HcC2pPTZrDJOXvWZJw2Srm1mc4TKdMYEgzz5rQHZ/vchbzx961n0WWfiYAMcz4bWORc
+         6yqMFh1JFW3V7a0Jrpihl/434CUzB0yF5qUebR3lgQteVSq+x/MocXFzl8BNYpBbOrNt
+         z7TPIjgB6jtFDr7zIqNK/P9sVMBQ7yuvqAwb7P/Yk2s9AkcxcSmVL5tCjAYNdZyliqQD
+         mvnCt9FkG+r2v32fVSVVcIyAYl4V0Xl60xjM97Dr1WtJxD+AwmzeW240Cm1xUIS5uefk
+         XVrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=V6gF5OZoL4RS0/p0R84cBC4PkOOgqqKbUR7gNdMwCYM=;
-        b=ffXL8EqNSsxHT6sYZ1ceZ92kqXM2E573Q105rm+8xDTLGkAo/nYdzjTYB9H8fQzIag
-         SUEmLCwahh/1XQ4MvYDTJlwKM5YPkfzEWu2czhWISanBkf+Cb6kQA8yUsCF2iEkBJPLK
-         hnyUCnqcp924qSnFrqf+iAa2/v+oxsZ37Oc1+jX2c13NOJBbaiCqWNAlUsWCLqFlRdRL
-         zDpnZegWG8g+0tm0dw3OUQ7wkBn8fj6oxOTfmG537EL60sLcH2Pg8gS742lqidQk0xGR
-         OIcrJuHgMs/C507P/9jJRunWkkTI74B6ciiQP05A0Ca1Iwr/gFG4udtTXaCJn7qid9dr
-         qhEw==
-X-Gm-Message-State: AOAM531y19QB1l4G4ByWBYlEjBJlnOVwcddbnMLAlrENR/halARj929+
-        E86d+xb7/0yPAPPKhvaewHJJPA==
-X-Google-Smtp-Source: ABdhPJxPgeQecG8Qw9IvYuzEGJ3H19n5YN5vEt0bIlABEWuytzwfCAbC88GDg3TzdKAG9CqcWTyTQA==
-X-Received: by 2002:a5d:4984:: with SMTP id r4mr31220077wrq.215.1593701197660;
-        Thu, 02 Jul 2020 07:46:37 -0700 (PDT)
+        bh=tRsQR13PSt+71+KJ9+2KUCB1us21DRhNxaWRJTFi8XY=;
+        b=Wn/EAj9B+zAPvMtzIaUR6lPMFxD7n1Uswg41mbR4kKK/iv+Xojth8OveS0UYi5kJU7
+         9o5kv40VBwm2udCy6TvG5PfQaxzcGNu4/wpDdEcFJ5FDV88Wr3xzR3ynXERCygw+cLFe
+         tNWd5uKrKzI84Lmi2+8SZVEsrQpBqulUVqrSzBrKNuhgFGyFjJfk57ocMK6mbKdN3Ko9
+         VUFSqE0HLy9Ptnd6hxTYhJ9EdDWUDEcMJi1h2PBc9nfUhPyZG8CpIdFTS2vlN7GKtK0e
+         6Yk+CphB2Hv8LbsDqGOH/JxQ2M+h8wjWzyFNvNyyV1JX+eVpj1Rwy4wlB0ltK3bBIe9Q
+         GMnw==
+X-Gm-Message-State: AOAM5301Baca8v259MZFDtmFzuu/gzyyIuH9FHRdgTVnFuU+DnGdbcWw
+        DnVXjpIyjVfRL/ccxhWrvcQXIA==
+X-Google-Smtp-Source: ABdhPJyqONzkjZI9qaxDAqErGMqBbVCt3H11ePJ7rYrmZUiaxTZ0JWbKWEk8+2bN0aTs5d9nufxEOg==
+X-Received: by 2002:a5d:6045:: with SMTP id j5mr31334712wrt.209.1593701198911;
+        Thu, 02 Jul 2020 07:46:38 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id g14sm7002737wrw.83.2020.07.02.07.46.35
+        by smtp.gmail.com with ESMTPSA id g14sm7002737wrw.83.2020.07.02.07.46.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Jul 2020 07:46:37 -0700 (PDT)
+        Thu, 02 Jul 2020 07:46:38 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-usb@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>
-Subject: [PATCH 04/30] usb: common: usb-conn-gpio: Demote comment block which is clearly not kerneldoc
-Date:   Thu,  2 Jul 2020 15:45:59 +0100
-Message-Id: <20200702144625.2533530-5-lee.jones@linaro.org>
+        Felipe Balbi <balbi@kernel.org>, Roger Quadros <rogerq@ti.com>
+Subject: [PATCH 05/30] usb: dwc3: drd: File headers are not doc headers
+Date:   Thu,  2 Jul 2020 15:46:00 +0100
+Message-Id: <20200702144625.2533530-6-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200702144625.2533530-1-lee.jones@linaro.org>
 References: <20200702144625.2533530-1-lee.jones@linaro.org>
@@ -66,32 +66,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This block lacks a title and argument descriptions.
+Demote drd.c's file header to a standard comment block.
 
-Fixes the following W=1 kernel build warning:
+Fixes the following W=1 build warnings:
 
- drivers/usb/common/usb-conn-gpio.c:44: warning: Cannot understand  * "DEVICE" = VBUS and "HOST" = !ID, so we have:
- on line 44 - I thought it was a doc line
+ drivers/usb/dwc3/drd.c:20: warning: Function parameter or member 'dwc' not described in 'dwc3_otg_disable_events'
+ drivers/usb/dwc3/drd.c:20: warning: Function parameter or member 'disable_mask' not described in 'dwc3_otg_disable_events'
 
-Cc: Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc: Felipe Balbi <balbi@kernel.org>
+Cc: Roger Quadros <rogerq@ti.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/usb/common/usb-conn-gpio.c | 2 +-
+ drivers/usb/dwc3/drd.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/usb/common/usb-conn-gpio.c b/drivers/usb/common/usb-conn-gpio.c
-index ed204cbb63ea1..b4051f042c79c 100644
---- a/drivers/usb/common/usb-conn-gpio.c
-+++ b/drivers/usb/common/usb-conn-gpio.c
-@@ -40,7 +40,7 @@ struct usb_conn_info {
- 	int vbus_irq;
- };
- 
+diff --git a/drivers/usb/dwc3/drd.c b/drivers/usb/dwc3/drd.c
+index 2e483448d6959..fd7f9a9f67dc7 100644
+--- a/drivers/usb/dwc3/drd.c
++++ b/drivers/usb/dwc3/drd.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0
 -/**
 +/*
-  * "DEVICE" = VBUS and "HOST" = !ID, so we have:
-  * Both "DEVICE" and "HOST" can't be set as active at the same time
-  * so if "HOST" is active (i.e. ID is 0)  we keep "DEVICE" inactive
+  * drd.c - DesignWare USB3 DRD Controller Dual-role support
+  *
+  * Copyright (C) 2017 Texas Instruments Incorporated - http://www.ti.com
 -- 
 2.25.1
 
