@@ -2,23 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19BE12124B7
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 15:31:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E221F2124BF
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 15:32:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729257AbgGBNbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 09:31:51 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36804 "EHLO mx2.suse.de"
+        id S1729344AbgGBNcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 09:32:35 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37896 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729047AbgGBNbv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 09:31:51 -0400
+        id S1729119AbgGBNcf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 09:32:35 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6A47FBC6A;
-        Thu,  2 Jul 2020 13:31:50 +0000 (UTC)
-Date:   Thu, 2 Jul 2020 15:27:58 +0200
+        by mx2.suse.de (Postfix) with ESMTP id F0F89BC6C;
+        Thu,  2 Jul 2020 13:32:33 +0000 (UTC)
+Date:   Thu, 2 Jul 2020 15:31:10 +0200
 From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
+To:     lijiang <lijiang@redhat.com>
+Cc:     John Ogness <john.ogness@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
         Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
         Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
@@ -28,54 +29,60 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Paul McKenney <paulmck@kernel.org>, kexec@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: Re: buffer allocation: was: [PATCH v3 3/3] printk: use the lockless
- ringbuffer
-Message-ID: <20200702132758.GD14288@alley>
+Subject: Re: [PATCH v3 3/3] printk: use the lockless ringbuffer
+Message-ID: <20200702133110.GE14288@alley>
 References: <20200618144919.9806-1-john.ogness@linutronix.de>
  <20200618144919.9806-4-john.ogness@linutronix.de>
- <20200625082838.GF6156@alley>
- <87sgeh3m5j.fsf@jogness.linutronix.de>
- <20200629140445.GK6156@alley>
- <87ftad8rh4.fsf@jogness.linutronix.de>
+ <ba338fab-9e98-366b-8fd4-05d4daa14f6d@redhat.com>
+ <87zh8imgs5.fsf@jogness.linutronix.de>
+ <585a6a1b-931c-1034-e2cc-da2c4381751e@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <87ftad8rh4.fsf@jogness.linutronix.de>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <585a6a1b-931c-1034-e2cc-da2c4381751e@redhat.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 2020-06-29 23:57:59, John Ogness wrote:
-> On 2020-06-29, Petr Mladek <pmladek@suse.com> wrote:
-> >> @@ @@ void __init setup_log_buf(int early)
-> >> +	prb_init(&printk_rb_dynamic,
-> >> +		 new_log_buf, order_base_2(new_log_buf_len),
-> >> +		 new_dict_buf, order_base_2(new_log_buf_len),
-> >> +		 new_descs, order_base_2(new_descs_count));
-> >
-> > order_base_2() is safe. But the result might be tat some allocated
-> > space is not used.
-> >
-> > I would prefer to make sure that new_log_buf_len is rounded, e.g.
-> > by roundup_pow_of_two(), at the beginning of the function. Then we
-> > could use ilog2() here.
+On Thu 2020-07-02 17:43:22, lijiang wrote:
+> 在 2020年07月02日 17:02, John Ogness 写道:
+> > On 2020-07-02, lijiang <lijiang@redhat.com> wrote:
+> >> About the VMCOREINFO part, I made some tests based on the kernel patch
+> >> v3, the makedumpfile and crash-utility can work as expected with your
+> >> patch(userspace patch), but, unfortunately, the vmcore-dmesg(kexec-tools)
+> >> can't correctly read the printk ring buffer information, and get the
+> >> following error:
+> >>
+> >> "Missing the log_buf symbol"
+> >>
+> >> The kexec-tools(vmcore-dmesg) should also have a similar patch, just like
+> >> in the makedumpfile and crash-utility.
+> > 
+> > Yes, a patch for this is needed (as well as for any other related
+> > software floating around the internet).
+> > 
+> > I have no RFC patches for vmcore-dmesg. Looking at the code, I think it
+> > would be quite straight forward to port the makedumpfile patch. I will
 > 
-> new_log_buf_len can only be set within log_buf_len_update(), and it
-> is already doing exactly what you want:
+> Yes, it should be a similar patch.
 > 
->         if (size)
->                 size = roundup_pow_of_two(size);
->         if (size > log_buf_len)
->                 new_log_buf_len = (unsigned long)size;
+> > try to make some time for this.
+> > 
+> That would be nice. Thank you, John Ogness.
+> 
+> > I do not want to patch any other software for this. I think with 3
+> > examples (crash, makedumpfile, vmcore-dmesg), others should be able to
+> 
+> It's good enough to have the patch for the makedumpfile, crash and vmcore-dmesg,
+> which can ensure the kdump(userspace) work well.
 
-I know. I though about repeating this in setup_log_bug() to make it
-error proof. But it is not really needed. I do not resist on it.
+I agree that this three are the most important ones and should be
+enough.
 
-> I can switch to ilog2() instead of the more conservative order_base_2().
-
-Yes, please change it to ilog2().
+Thanks a lot for working on it and testing it.
 
 Best Regards,
 Petr
