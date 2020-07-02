@@ -2,78 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5E92212739
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 17:01:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46170212777
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 17:13:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729900AbgGBPBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 11:01:41 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:39452 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726032AbgGBPBl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 11:01:41 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 6EEEFAEEB2DD48F10D2E;
-        Thu,  2 Jul 2020 23:01:33 +0800 (CST)
-Received: from kernelci-master.huawei.com (10.175.101.6) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 2 Jul 2020 23:01:26 +0800
-From:   Wei Yongjun <weiyongjun1@huawei.com>
-To:     Hulk Robot <hulkci@huawei.com>, Alasdair Kergon <agk@redhat.com>,
-        "Mike Snitzer" <snitzer@redhat.com>, Hannes Reinecke <hare@suse.de>
-CC:     Wei Yongjun <weiyongjun1@huawei.com>, <dm-devel@redhat.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] dm zoned: fix unused but set variable warnings
-Date:   Thu, 2 Jul 2020 23:11:40 +0800
-Message-ID: <20200702151140.5466-1-weiyongjun1@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S1729917AbgGBPNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 11:13:40 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:59909 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729439AbgGBPNk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 11:13:40 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 49yM740VqWz9v2nf;
+        Thu,  2 Jul 2020 17:13:36 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id Qu-mGGqH2LKJ; Thu,  2 Jul 2020 17:13:35 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 49yM735TG1z9v2nX;
+        Thu,  2 Jul 2020 17:13:35 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id CD50B8B9A0;
+        Thu,  2 Jul 2020 17:13:37 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id MOh1RW9HUzGe; Thu,  2 Jul 2020 17:13:37 +0200 (CEST)
+Received: from [10.25.210.22] (po15451.idsi0.si.c-s.fr [10.25.210.22])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 978428B99A;
+        Thu,  2 Jul 2020 17:13:37 +0200 (CEST)
+Subject: Re: objtool clac/stac handling change..
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christophe Leroy <christophe.leroy@c-s.fr>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <CAHk-=wjc-ktbOr7ZHMY8gfAmHxUK+aMdDsQjeh+BvmQwnQfN_g@mail.gmail.com>
+ <20200701184131.GI2786714@ZenIV.linux.org.uk>
+ <CAHk-=wj_2v9m+yZioE4vOLGW1mc9SBa5+++LdeJ86aEeB5OXcw@mail.gmail.com>
+ <20200701195914.GK2786714@ZenIV.linux.org.uk>
+ <CAHk-=wj-CYhKZR8ZKQgi=VTx=o7n6dtwPXikvgkJ3SdiqRPd8A@mail.gmail.com>
+ <87lfk26nx4.fsf@mpe.ellerman.id.au>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <8be7cf19-9fc9-ce9c-091f-c8824a01a3c8@csgroup.eu>
+Date:   Thu, 2 Jul 2020 17:13:28 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.175.101.6]
-X-CFilter-Loop: Reflected
+In-Reply-To: <87lfk26nx4.fsf@mpe.ellerman.id.au>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix unused but set variable warnings:
 
-drivers/md/dm-zoned-reclaim.c:504:42: warning:
- variable nr_rnd set but not used [-Wunused-but-set-variable]
-  504 |  unsigned int p_unmap, nr_unmap_rnd = 0, nr_rnd = 0;
-      |                                          ^~~~~~
-drivers/md/dm-zoned-reclaim.c:504:24: warning:
- variable nr_unmap_rnd set but not used [-Wunused-but-set-variable]
-  504 |  unsigned int p_unmap, nr_unmap_rnd = 0, nr_rnd = 0;
-      |                        ^~~~~~~~~~~~
 
-Fixes: f97809aec589 ("dm zoned: per-device reclaim")
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
----
- drivers/md/dm-zoned-reclaim.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+Le 02/07/2020 à 15:34, Michael Ellerman a écrit :
+> Linus Torvalds <torvalds@linux-foundation.org> writes:
+>> On Wed, Jul 1, 2020 at 12:59 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+>>> On Wed, Jul 01, 2020 at 12:04:36PM -0700, Linus Torvalds wrote:
+>>>>
+>>>> That's actually for the access granting. Shutting the access down ends
+>>>> up always doing the same thing anyway..
+>>>
+>>> #define user_read_access_end            prevent_current_read_from_user
+>>> #define user_write_access_end           prevent_current_write_to_user
+>>> static inline void prevent_current_read_from_user(void)
+>>> {
+>>>          prevent_user_access(NULL, NULL, ~0UL, KUAP_CURRENT_READ);
+>>> }
+>>>
+>>> static inline void prevent_current_write_to_user(void)
+>>> {
+>>>          prevent_user_access(NULL, NULL, ~0UL, KUAP_CURRENT_WRITE);
+>>> }
+>>>
+>>> and prevent_user_access() has instances that do care about the direction...
+>>
+>> Go and look closer.
+>>
+>> There are three cases:
+>>
+>>   (a) the 32-bit book3s case. It looks like it cares, but when you look
+>> closer, it ends up not caring about the read side, and saving the
+>> "which address to I allow user writes to" in current->thread.kuap
+>>
+>>   (b) the nohash 32-bit case - doesn't care
+>>
+>>   (c) the 64-bit books case - doesn't care
+>>
+>> So yes, in the (a) case it does make a difference between reads and
+>> writes, but at least as far as I can tell, it ignores the read case,
+>> and has code to avoid the unnecessary "disable user writes" case when
+>> there was only a read enable done.
+> 
+> Yeah that's my understanding too.
+> 
+> Christophe is the expert on that code so I'll defer to him if I'm wrong.
+> 
+>> Now, it's possible that I'm wrong, but the upshot of that is that even
+>> on powerpc, I think that if we just made the rule be that "taking a
+>> user exception should automatically do the 'user_access_end()' for us"
+>> is trivial.
+> 
+> I think we can do something to make it work.
+> 
+> We don't have an equivalent of x86's ex_handler_uaccess(), so it's not
+> quite as easy as whacking a user_access_end() in there.
 
-diff --git a/drivers/md/dm-zoned-reclaim.c b/drivers/md/dm-zoned-reclaim.c
-index dd1eebf6e50f..7e0cc2d732cf 100644
---- a/drivers/md/dm-zoned-reclaim.c
-+++ b/drivers/md/dm-zoned-reclaim.c
-@@ -501,7 +501,7 @@ static void dmz_reclaim_work(struct work_struct *work)
- {
- 	struct dmz_reclaim *zrc = container_of(work, struct dmz_reclaim, work.work);
- 	struct dmz_metadata *zmd = zrc->metadata;
--	unsigned int p_unmap, nr_unmap_rnd = 0, nr_rnd = 0;
-+	unsigned int p_unmap;
- 	int ret;
- 
- 	if (dmz_dev_is_dying(zmd))
-@@ -527,9 +527,6 @@ static void dmz_reclaim_work(struct work_struct *work)
- 		zrc->kc_throttle.throttle = min(75U, 100U - p_unmap / 2);
- 	}
- 
--	nr_unmap_rnd = dmz_nr_unmap_rnd_zones(zmd, zrc->dev_idx);
--	nr_rnd = dmz_nr_rnd_zones(zmd, zrc->dev_idx);
--
- 	DMDEBUG("(%s/%u): Reclaim (%u): %s, %u%% free zones (%u/%u cache %u/%u random)",
- 		dmz_metadata_label(zmd), zrc->dev_idx,
- 		zrc->kc_throttle.throttle,
+Isn't it something easy to do in bad_page_fault() ?
 
+Not exactly a call to user_access_end() but altering regs->kuap so that 
+user access is not restored on exception exit.
+
+> 
+> Probably the simplest option for us is to just handle it in our
+> unsafe_op_wrap(). I'll try and come up with something tomorrow.
+
+unsafe_op_wrap() is not used anymore for unsafe_put_user() as we are now 
+using asm goto.
+
+Christophe
