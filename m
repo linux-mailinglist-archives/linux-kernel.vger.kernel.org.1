@@ -2,59 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12CDD212163
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 12:33:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6643221214C
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 12:30:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728588AbgGBKdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 06:33:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35872 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728331AbgGBKda (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 06:33:30 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 67DA42073E;
-        Thu,  2 Jul 2020 10:33:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593686010;
-        bh=qSuu7uAkT+1gy0iK1Dx2XV1S5skvkvweaOvFMBrx8ro=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=koKawob6+XsVXkTQSAtYP8+72nOIXIb2Xug5YeT7iiutUefkwpUA7ASVoKvy+4LkF
-         aUWgAWnfPqian/HcPyZY8gOdSrn+bWIqk8ylr2CncwgNbw5dUxALqn8Iasq7pPZ240
-         nl+6TodZNPE2hHgdlY6IDRrcYZkUA8SnELY2xMtk=
-Date:   Thu, 2 Jul 2020 12:33:33 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Peter Chen <peter.chen@nxp.com>
-Cc:     "balbi@kernel.org" <balbi@kernel.org>,
-        Ran Wang <ran.wang_1@nxp.com>, Leo Li <leoyang.li@nxp.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] USB: phy: fsl-usb: remove character device usage
-Message-ID: <20200702103333.GA1313090@kroah.com>
-References: <20200702072914.1072878-1-gregkh@linuxfoundation.org>
- <20200702072914.1072878-2-gregkh@linuxfoundation.org>
- <AM7PR04MB71575977E680A7F6405D8B3F8B6D0@AM7PR04MB7157.eurprd04.prod.outlook.com>
+        id S1728535AbgGBKaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 06:30:39 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7348 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728552AbgGBKae (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 06:30:34 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id F1E801CDC32E9AD15771;
+        Thu,  2 Jul 2020 18:30:31 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 2 Jul 2020 18:30:23 +0800
+From:   tongtiangen <tongtiangen@huawei.com>
+To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <jolsa@redhat.com>, <namhyung@kernel.org>,
+        <kan.liang@linux.intel.com>, <mhiramat@kernel.org>,
+        <tongtiangen@huawei.com>, <weiyongjun1@huawei.com>
+CC:     <linux-kernel@vger.kernel.org>
+Subject: [PATCH] perf header: Fix possible memory leak when using do_read_string
+Date:   Thu, 2 Jul 2020 18:35:04 +0800
+Message-ID: <20200702103504.119845-1-tongtiangen@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <AM7PR04MB71575977E680A7F6405D8B3F8B6D0@AM7PR04MB7157.eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 02, 2020 at 09:07:43AM +0000, Peter Chen wrote:
->  
-> > 
-> > No idea why this driver is using a char device node, statically allocated, with no
-> > dynamic allocation or hook up with devtmpfs, along with a reserverd major number,
-> > for "special" operations, not all of which ever were implemented.
-> > 
-> > So just rip it out, as no one must be using it because no modern system will ever
-> > actually create the /dev/ node it needs.
-> > 
-> 
-> Add related people from NXP.
+In the header.c file, some functions allocate memory after using
+do_read_string, but the corresponding memory is not released after
+subsequent processing errors, causing memory leaks.
 
-If there are related people, MAINTAINERS should have reflected that :)
+Fixes: acae8b36cded ("perf header: Add die information in CPU topology")
+Fixes: c60da22aca87 ("perf header: Transform nodes string info to struct")
+Fixes: 642aadaa320b ("perf header: Make topology checkers to check return value of strbuf")
+Signed-off-by: tongtiangen <tongtiangen@huawei.com>
+---
+ tools/perf/util/header.c | 22 ++++++++++++++++------
+ 1 file changed, 16 insertions(+), 6 deletions(-)
+
+diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
+index 7a67d017d72c..2f77391e0787 100644
+--- a/tools/perf/util/header.c
++++ b/tools/perf/util/header.c
+@@ -2307,8 +2307,10 @@ static int process_cpu_topology(struct feat_fd *ff, void *data __maybe_unused)
+ 			goto error;
+ 
+ 		/* include a NULL character at the end */
+-		if (strbuf_add(&sb, str, strlen(str) + 1) < 0)
++		if (strbuf_add(&sb, str, strlen(str) + 1) < 0) {
++			free(str);
+ 			goto error;
++		}
+ 		size += string_size(str);
+ 		free(str);
+ 	}
+@@ -2326,8 +2328,10 @@ static int process_cpu_topology(struct feat_fd *ff, void *data __maybe_unused)
+ 			goto error;
+ 
+ 		/* include a NULL character at the end */
+-		if (strbuf_add(&sb, str, strlen(str) + 1) < 0)
++		if (strbuf_add(&sb, str, strlen(str) + 1) < 0) {
++			free(str);
+ 			goto error;
++		}
+ 		size += string_size(str);
+ 		free(str);
+ 	}
+@@ -2390,8 +2394,10 @@ static int process_cpu_topology(struct feat_fd *ff, void *data __maybe_unused)
+ 			goto error;
+ 
+ 		/* include a NULL character at the end */
+-		if (strbuf_add(&sb, str, strlen(str) + 1) < 0)
++		if (strbuf_add(&sb, str, strlen(str) + 1) < 0) {
++			free(str);
+ 			goto error;
++		}
+ 		size += string_size(str);
+ 		free(str);
+ 	}
+@@ -2446,7 +2452,7 @@ static int process_numa_topology(struct feat_fd *ff, void *data __maybe_unused)
+ 
+ 		n->map = perf_cpu_map__new(str);
+ 		if (!n->map)
+-			goto error;
++			goto free_str;
+ 
+ 		free(str);
+ 	}
+@@ -2454,6 +2460,8 @@ static int process_numa_topology(struct feat_fd *ff, void *data __maybe_unused)
+ 	ff->ph->env.numa_nodes = nodes;
+ 	return 0;
+ 
++free_str:
++	free(str);
+ error:
+ 	free(nodes);
+ 	return -1;
+@@ -2487,10 +2495,10 @@ static int process_pmu_mappings(struct feat_fd *ff, void *data __maybe_unused)
+ 			goto error;
+ 
+ 		if (strbuf_addf(&sb, "%u:%s", type, name) < 0)
+-			goto error;
++			goto free_name;
+ 		/* include a NULL character at the end */
+ 		if (strbuf_add(&sb, "", 1) < 0)
+-			goto error;
++			goto free_name;
+ 
+ 		if (!strcmp(name, "msr"))
+ 			ff->ph->env.msr_pmu_type = type;
+@@ -2501,6 +2509,8 @@ static int process_pmu_mappings(struct feat_fd *ff, void *data __maybe_unused)
+ 	ff->ph->env.pmu_mappings = strbuf_detach(&sb, NULL);
+ 	return 0;
+ 
++free_name:
++	free(name);
+ error:
+ 	strbuf_release(&sb);
+ 	return -1;
+-- 
+2.20.1
+
