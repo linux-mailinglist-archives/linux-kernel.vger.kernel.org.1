@@ -2,86 +2,323 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 435272121C3
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 13:09:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E20F2121DF
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 13:11:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728522AbgGBLJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 07:09:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44450 "EHLO
+        id S1728653AbgGBLLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 07:11:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728280AbgGBLJX (ORCPT
+        with ESMTP id S1728337AbgGBLLa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 07:09:23 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94A5BC08C5DC
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 04:09:23 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id 67so8332332pfg.5
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 04:09:23 -0700 (PDT)
+        Thu, 2 Jul 2020 07:11:30 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11C19C08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 04:11:30 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id f7so24682767wrw.1
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 04:11:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=yhigYLbWyjdsAB9RV5ESFpQHrd9hYU8lMH15hyZFCnY=;
-        b=QaFKyhxf8DWdqHCoBR7wcAJtJhSWTLmOq73EfJeILfgTPQ+r3lbxMvn0QaFg3H4Jor
-         kGAGOuAcCDAzQ1pdqJVZ1K+T4iUVnXee+e7lNdaSh8vcgakDnO9X8VjkkxDz8StU4IZ5
-         UFYInc7MKK4e1QfOyuvMtr2CQ0wqdRikn5X2IJanxG1ckNW/VlFmZ9qGV8eKVl2abN+v
-         C5Js25yWSxkq5Hqu5q2ccV7TqXoTnO07k4NTTzGE3VRUx4F5uIT0Piy2CcH22Ra5V4nr
-         4pzuEZx7sVsGblioXc4LUHpXko5GcQag+5UB10RQlOvnLAiWx9uzfUpSYQ4K8Hi37/Kq
-         Tuzw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nLcMYFjK2Mqk6sa9STwGNahU8gUOiBKyhyhKpNx5RCk=;
+        b=yRnF/Wv4aNROFV4Enx2JD9ld3bfFtQjXtHqsFnXnL1TXProw3IjCOTNur3E01wXR32
+         wuLE/5XkxDaiDFtpxgqd+Zw07T4sc7oUtTPAbjBH+Bq7kliSPWpiHkCL5n/U/fv4pR9P
+         YZTfla/9XR4cjmqRuVCu65aDkKo2ZyxGcgzSANurMQ5G15fcZmrGmVSkNH0aG9jpPgNy
+         M4ojVgTvmmqIoxz8slTPgPVioVncno2LKU/iF2jVAggD6F/3R2tO+UlKPFguFxOTysOC
+         4V1+4jvGa7FiWGMNXfS5rK9ymlmdTKJd+BwuJSwMet0QuyvnO2PFiVed/EaJt6l5JXFr
+         LbGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=yhigYLbWyjdsAB9RV5ESFpQHrd9hYU8lMH15hyZFCnY=;
-        b=l72v81AtLoTpYARWfjHaF7bKKcVlmok0jxl7Ier3q0TwBRe8elApzbkYdRamHqEML+
-         zrZAno71SqKfRfYj/I3HATw1DSAB922PQJxSdfDspHUJvrJAacLxGnCuqYKJuThjqhKs
-         tp+FYYxmB6cDXliLvv+nvrLlp+wLhAmPBVwh12ojZ/Es6IXdFYS0n5ohYTDDUn+tPAml
-         uL8C1Y4XfTA/tw7nEL0gCdD8BrHkErOhTzMwznLNjmgxRdeaWywT0L6cM9NfE+3/rYde
-         JxQtnoiyiTiH5KfGdjtJfKvUXjxVvZ0mUm58UYqZg487JY5rTZlkpUuWRt/+wGZLHQe2
-         Ow9Q==
-X-Gm-Message-State: AOAM531wCmyWCHE2Sx4Iqnz4d01wHBfxMzUPWSgVi3VDBhJhu+D0mgw3
-        zfLMbUMJIe8+gf4FfyH2XyyEnJgF0zk=
-X-Google-Smtp-Source: ABdhPJxlVNCwXfn6C22bczd8Htuqow4Tvki3nCCKWAYtAYbsfI1TaTlyTODZ4a2UqF61DIaleZyzWA==
-X-Received: by 2002:aa7:9abc:: with SMTP id x28mr2527763pfi.145.1593688162280;
-        Thu, 02 Jul 2020 04:09:22 -0700 (PDT)
-Received: from localhost ([122.172.40.201])
-        by smtp.gmail.com with ESMTPSA id i125sm8602401pgd.21.2020.07.02.04.09.21
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 02 Jul 2020 04:09:21 -0700 (PDT)
-Date:   Thu, 2 Jul 2020 16:39:19 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Xin Hao <xhao@linux.alibaba.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3] cpufreq: CPPC: simply the code access 'highest_perf'
- value in cppc_perf_caps struct
-Message-ID: <20200702110919.qejdmao5uuodftk6@vireshk-i7>
-References: <20200701042007.13333-1-xhao@linux.alibaba.com>
- <20200701045227.epojzjwuky5kkdzj@vireshk-i7>
- <CAJZ5v0iRW25n9CqvJ=ODbVh2osocx+wJVz62GqaWV9m4sdL12g@mail.gmail.com>
- <20200702023746.li2uf4zl7bwzg62x@vireshk-i7>
- <CAJZ5v0jbsinLBZqNiCPH0NFk0b8H4Uxuf8U5y0R5nkxUH8tX8g@mail.gmail.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nLcMYFjK2Mqk6sa9STwGNahU8gUOiBKyhyhKpNx5RCk=;
+        b=XJC61xFzWy5nWfLJTdJGeXIObJw38VVMrc42nw1j2s63OYu/lMLRY70QtbC1X2J57B
+         Po3Yz0mqLOOOGG7822nuTngvVPM+19ydO+7BSox6/eQyX3hth67lyAh/v1HwfRFZNNlC
+         DD5l8H7Yc4B8Q3J1s3/dqy+cevKDLNwxdNZiFyVqcp1gAiFJaqwxbdgW3eFfm9Uqu9cP
+         RoHicmwzS9FtcqWYB8VJfSEaYEK6FstHueJScxitiTxIzUaNR86Ll31gowJcd0z45nQv
+         BGoaO+PLn/N2nh0yogAHJSZ8r7R8f5ByaDsePKxtadcXp7a9mfQP616VXOMqQuJ0ry2b
+         cE8A==
+X-Gm-Message-State: AOAM533pJWRcEGRixMytUwzy8Aa8STAzWJenUD9350ou2siOXVQhKtQ/
+        7y9qshKXufcoS3Xoo1re9eCUeA==
+X-Google-Smtp-Source: ABdhPJx7r1YY7c/spG+XRYvMbNqHYb3MKBGWcT/vr7200rSOLM0hv1yy0T3E0RP7FPM4sMSKJNbAug==
+X-Received: by 2002:a5d:4e8e:: with SMTP id e14mr29504972wru.134.1593688288645;
+        Thu, 02 Jul 2020 04:11:28 -0700 (PDT)
+Received: from srini-hackbox.lan (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
+        by smtp.gmail.com with ESMTPSA id l190sm10122008wml.12.2020.07.02.04.11.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Jul 2020 04:11:27 -0700 (PDT)
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     vkoul@kernel.org, perex@perex.cz, tiwai@suse.com
+Cc:     lgirdwood@gmail.com, broonie@kernel.org,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        ckeepax@opensource.cirrus.com,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [RFC PATCH] ALSA: compress: add support to change codec profile in gapless playback
+Date:   Thu,  2 Jul 2020 12:11:14 +0100
+Message-Id: <20200702111114.32217-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0jbsinLBZqNiCPH0NFk0b8H4Uxuf8U5y0R5nkxUH8tX8g@mail.gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02-07-20, 13:06, Rafael J. Wysocki wrote:
-> But you could respond to the "applied" message from me. :-)
+For gapless playback its possible that each track can have different
+codec profile with same decoder, for example we have WMA album,
+we may have different tracks as WMA v9, WMA v10 and so on
 
-Haha. I was expecting you to pick the other patches (around governor
-cleanup) from me and I completely missed that you picked cppc one as
-well. In fact, I had to go to the thread again now to check if you
-replied at all :)
+Existing code does not allow to change this profile while doing gapless
+playback.
 
-Sorry about that. My fault.
+This patch adds new SNDRV_COMPRESS_SET_CODEC_PARAMS IOCTL to allow
+userspace to set this new parameters required for new codec profile.
 
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ include/sound/compress_driver.h       |  5 +++
+ include/sound/soc-component.h         |  3 ++
+ include/sound/soc-dai.h               |  5 +++
+ include/uapi/sound/compress_offload.h |  1 +
+ sound/core/compress_offload.c         | 54 ++++++++++++++++++++++++---
+ sound/soc/soc-compress.c              | 30 +++++++++++++++
+ sound/soc/soc-dai.c                   | 14 +++++++
+ 7 files changed, 106 insertions(+), 6 deletions(-)
+
+diff --git a/include/sound/compress_driver.h b/include/sound/compress_driver.h
+index 70cbc5095e72..8d23351f7ad7 100644
+--- a/include/sound/compress_driver.h
++++ b/include/sound/compress_driver.h
+@@ -93,6 +93,9 @@ struct snd_compr_stream {
+  * @set_params: Sets the compressed stream parameters, mandatory
+  * This can be called in during stream creation only to set codec params
+  * and the stream properties
++ * @set_codec_params: Sets the compressed stream codec parameters, mandatory
++ * This can be called in during gapless next track codec change only to set
++ * codec params
+  * @get_params: retrieve the codec parameters, mandatory
+  * @set_metadata: Set the metadata values for a stream
+  * @get_metadata: retrieves the requested metadata values from stream
+@@ -112,6 +115,8 @@ struct snd_compr_ops {
+ 	int (*free)(struct snd_compr_stream *stream);
+ 	int (*set_params)(struct snd_compr_stream *stream,
+ 			struct snd_compr_params *params);
++	int (*set_codec_params)(struct snd_compr_stream *stream,
++			struct snd_codec *params);
+ 	int (*get_params)(struct snd_compr_stream *stream,
+ 			struct snd_codec *params);
+ 	int (*set_metadata)(struct snd_compr_stream *stream,
+diff --git a/include/sound/soc-component.h b/include/sound/soc-component.h
+index 5663891148e3..1e69c54ed0b9 100644
+--- a/include/sound/soc-component.h
++++ b/include/sound/soc-component.h
+@@ -36,6 +36,9 @@ struct snd_compress_ops {
+ 	int (*get_params)(struct snd_soc_component *component,
+ 			  struct snd_compr_stream *stream,
+ 			  struct snd_codec *params);
++	int (*set_codec_params)(struct snd_soc_component *component,
++			  struct snd_compr_stream *stream,
++			  struct snd_codec *params);
+ 	int (*set_metadata)(struct snd_soc_component *component,
+ 			    struct snd_compr_stream *stream,
+ 			    struct snd_compr_metadata *metadata);
+diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+index 212257e84fac..526794ee555b 100644
+--- a/include/sound/soc-dai.h
++++ b/include/sound/soc-dai.h
+@@ -192,6 +192,9 @@ int snd_soc_dai_compr_trigger(struct snd_soc_dai *dai,
+ int snd_soc_dai_compr_set_params(struct snd_soc_dai *dai,
+ 				 struct snd_compr_stream *cstream,
+ 				 struct snd_compr_params *params);
++int snd_soc_dai_compr_set_codec_params(struct snd_soc_dai *dai,
++				 struct snd_compr_stream *cstream,
++				 struct snd_codec *codec);
+ int snd_soc_dai_compr_get_params(struct snd_soc_dai *dai,
+ 				 struct snd_compr_stream *cstream,
+ 				 struct snd_codec *params);
+@@ -292,6 +295,8 @@ struct snd_soc_cdai_ops {
+ 			struct snd_soc_dai *);
+ 	int (*set_params)(struct snd_compr_stream *,
+ 			struct snd_compr_params *, struct snd_soc_dai *);
++	int (*set_codec_params)(struct snd_compr_stream *,
++			struct snd_codec *, struct snd_soc_dai *);
+ 	int (*get_params)(struct snd_compr_stream *,
+ 			struct snd_codec *, struct snd_soc_dai *);
+ 	int (*set_metadata)(struct snd_compr_stream *,
+diff --git a/include/uapi/sound/compress_offload.h b/include/uapi/sound/compress_offload.h
+index 7184265c0b0d..c46286113a4b 100644
+--- a/include/uapi/sound/compress_offload.h
++++ b/include/uapi/sound/compress_offload.h
+@@ -172,6 +172,7 @@ struct snd_compr_metadata {
+ 						 struct snd_compr_metadata)
+ #define SNDRV_COMPRESS_GET_METADATA	_IOWR('C', 0x15,\
+ 						 struct snd_compr_metadata)
++#define SNDRV_COMPRESS_SET_CODEC_PARAMS	_IOW('C', 0x16, struct snd_codec)
+ #define SNDRV_COMPRESS_TSTAMP		_IOR('C', 0x20, struct snd_compr_tstamp)
+ #define SNDRV_COMPRESS_AVAIL		_IOR('C', 0x21, struct snd_compr_avail)
+ #define SNDRV_COMPRESS_PAUSE		_IO('C', 0x30)
+diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
+index 0e53f6f31916..1c4b2cf450a0 100644
+--- a/sound/core/compress_offload.c
++++ b/sound/core/compress_offload.c
+@@ -566,6 +566,18 @@ static int snd_compr_allocate_buffer(struct snd_compr_stream *stream,
+ 	return 0;
+ }
+ 
++static int snd_compress_check_codec_params(struct snd_codec *codec)
++{
++	/* now codec parameters */
++	if (codec->id == 0 || codec->id > SND_AUDIOCODEC_MAX)
++		return -EINVAL;
++
++	if (codec->ch_in == 0 || codec->ch_out == 0)
++		return -EINVAL;
++
++	return 0;
++}
++
+ static int snd_compress_check_input(struct snd_compr_params *params)
+ {
+ 	/* first let's check the buffer parameter's */
+@@ -574,14 +586,41 @@ static int snd_compress_check_input(struct snd_compr_params *params)
+ 	    params->buffer.fragments == 0)
+ 		return -EINVAL;
+ 
+-	/* now codec parameters */
+-	if (params->codec.id == 0 || params->codec.id > SND_AUDIOCODEC_MAX)
+-		return -EINVAL;
++	return snd_compress_check_codec_params(&params->codec);
+ 
+-	if (params->codec.ch_in == 0 || params->codec.ch_out == 0)
+-		return -EINVAL;
++}
+ 
+-	return 0;
++static int snd_compr_set_codec_params(struct snd_compr_stream *stream,
++				      unsigned long arg)
++{
++	struct snd_codec *params;
++	int retval;
++
++	if (!stream->ops->set_codec_params)
++		return -EPERM;
++
++	if (stream->runtime->state != SNDRV_PCM_STATE_RUNNING)
++		return -EPERM;
++
++	/* codec params can be only set when next track has been signalled */
++	if (stream->next_track == false)
++		return -EPERM;
++
++	params = memdup_user((void __user *)arg, sizeof(*params));
++	if (IS_ERR(params))
++		return PTR_ERR(params);
++
++	retval = snd_compress_check_codec_params(params);
++	if (retval)
++		goto out;
++
++	retval = stream->ops->set_codec_params(stream, params);
++	if (retval)
++		goto out;
++
++out:
++	kfree(params);
++	return retval;
+ }
+ 
+ static int
+@@ -964,6 +1003,9 @@ static long snd_compr_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
+ 	case _IOC_NR(SNDRV_COMPRESS_SET_PARAMS):
+ 		retval = snd_compr_set_params(stream, arg);
+ 		break;
++	case _IOC_NR(SNDRV_COMPRESS_SET_CODEC_PARAMS):
++		retval = snd_compr_set_codec_params(stream, arg);
++		break;
+ 	case _IOC_NR(SNDRV_COMPRESS_GET_PARAMS):
+ 		retval = snd_compr_get_params(stream, arg);
+ 		break;
+diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+index 4984b6a2c370..e549e0197aca 100644
+--- a/sound/soc/soc-compress.c
++++ b/sound/soc/soc-compress.c
+@@ -518,6 +518,34 @@ static int soc_compr_set_params_fe(struct snd_compr_stream *cstream,
+ 	return ret;
+ }
+ 
++static int soc_compr_set_codec_params(struct snd_compr_stream *cstream,
++				      struct snd_codec *codec)
++{
++	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
++	struct snd_soc_component *component;
++	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
++	int i, ret;
++
++	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
++
++	ret = snd_soc_dai_compr_set_codec_params(cpu_dai, cstream, codec);
++	if (ret < 0)
++		goto err;
++
++	for_each_rtd_components(rtd, i, component) {
++		if (!component->driver->compress_ops ||
++		    !component->driver->compress_ops->set_codec_params)
++			continue;
++
++		ret = component->driver->compress_ops->set_codec_params(component, cstream,
++								     codec);
++		break;
++	}
++err:
++	mutex_unlock(&rtd->card->pcm_mutex);
++	return ret;
++}
++
+ static int soc_compr_get_params(struct snd_compr_stream *cstream,
+ 				struct snd_codec *params)
+ {
+@@ -728,6 +756,7 @@ static struct snd_compr_ops soc_compr_ops = {
+ 	.open		= soc_compr_open,
+ 	.free		= soc_compr_free,
+ 	.set_params	= soc_compr_set_params,
++	.set_codec_params = soc_compr_set_codec_params,
+ 	.set_metadata   = soc_compr_set_metadata,
+ 	.get_metadata	= soc_compr_get_metadata,
+ 	.get_params	= soc_compr_get_params,
+@@ -744,6 +773,7 @@ static struct snd_compr_ops soc_compr_dyn_ops = {
+ 	.free		= soc_compr_free_fe,
+ 	.set_params	= soc_compr_set_params_fe,
+ 	.get_params	= soc_compr_get_params,
++	.set_codec_params = soc_compr_set_codec_params,
+ 	.set_metadata   = soc_compr_set_metadata,
+ 	.get_metadata	= soc_compr_get_metadata,
+ 	.trigger	= soc_compr_trigger_fe,
+diff --git a/sound/soc/soc-dai.c b/sound/soc/soc-dai.c
+index b05e18b63a1c..06481d0278b8 100644
+--- a/sound/soc/soc-dai.c
++++ b/sound/soc/soc-dai.c
+@@ -594,6 +594,20 @@ int snd_soc_dai_compr_get_params(struct snd_soc_dai *dai,
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dai_compr_get_params);
+ 
++int snd_soc_dai_compr_set_codec_params(struct snd_soc_dai *dai,
++					struct snd_compr_stream *cstream,
++					struct snd_codec *codec)
++{	int ret = 0;
++
++	if (dai->driver->cops &&
++	    dai->driver->cops->set_codec_params)
++		ret = dai->driver->cops->set_codec_params(cstream, codec, dai);
++
++	return soc_dai_ret(dai, ret);
++
++}
++EXPORT_SYMBOL_GPL(snd_soc_dai_compr_set_codec_params);
++
+ int snd_soc_dai_compr_ack(struct snd_soc_dai *dai,
+ 			  struct snd_compr_stream *cstream,
+ 			  size_t bytes)
 -- 
-viresh
+2.21.0
+
