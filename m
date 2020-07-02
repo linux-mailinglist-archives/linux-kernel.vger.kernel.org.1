@@ -2,65 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F201211DD8
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 10:14:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 010D9211DDE
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 10:15:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728216AbgGBIOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 04:14:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725379AbgGBIOg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 04:14:36 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14361C08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 01:14:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:To:From:Date:Sender:Reply-To:Cc:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=DCacNRD1uL4bMLWk5ZZs0zu8Jt+SbmcnTXgs/UtoZFQ=; b=Kjtd2wG6X/EuMYB7A5r5jGda3Z
-        EkTHseW8tbmoRD0/dGNCzxtcd0WS3x/rjcsjNotzrVUt79avnhL6F40MAsjDVgRRcncBlZDUT3sIu
-        3UJFco/GWvVE8DNN3zlXLxf7OG88s8HN1vZEHaVM+wOvcvnDgKTzn0PrE5Bt9wxAs4uRd8cm1LiMA
-        FxNIYZLln7PLgVpKsRo9dvLua6VD8XK6JVBpZBdXyH/zoiuAKyvOLKzR2kXrW5TS+mgqxmJMCmVei
-        UxrqpSgJxPUSZ/YiZisDfPCS8VfV+9FjaXF2MmJiAJ7ZEhoJPzxH5gMgcdStBXTyDg0aVPub65K+6
-        9FGBSmzA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jquMN-0007pF-7N; Thu, 02 Jul 2020 08:14:19 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5CA513011B2;
-        Thu,  2 Jul 2020 10:14:18 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 25BEE264F8CB1; Thu,  2 Jul 2020 10:14:18 +0200 (CEST)
-Date:   Thu, 2 Jul 2020 10:14:18 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] proc: add support detach proccess's autogroup
-Message-ID: <20200702081418.GZ4781@hirez.programming.kicks-ass.net>
-References: <20200702052039.GA2824@192.168.3.9>
+        id S1728290AbgGBIO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 04:14:56 -0400
+Received: from vps.xff.cz ([195.181.215.36]:39322 "EHLO vps.xff.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725379AbgGBIOv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 04:14:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=megous.com; s=mail;
+        t=1593677688; bh=a2NHJHG5QFB78AfgGChp//7c+qQXotdIBgRIWgVfJDE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=TuDIr0w+fvaEOEp60tG2KqaKHJVb92lJc4yrQ0nKOjryG4ilZm9tHPPVcTCAzrkin
+         bpjLMe/r/Q0o8YvLMcIUnIgHLLLp98RTlQzymcEaHoX3N9OUW5servjpbjFikeAIQv
+         3beDDnDl50a/QmKRZ3/YbMhgduvkQVEyF8LHALLc=
+From:   Ondrej Jirman <megous@megous.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>, Icenowy Zheng <icenowy@aosc.io>
+Cc:     Ondrej Jirman <megous@megous.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Samuel Holland <samuel@sholland.org>,
+        Martijn Braam <martijn@brixit.nl>, Luca Weiss <luca@z3ntu.xyz>,
+        Bhushan Shah <bshah@kde.org>
+Subject: [PATCH v8 0/2] Add support for PinePhone LCD panel
+Date:   Thu,  2 Jul 2020 10:14:30 +0200
+Message-Id: <20200702081432.1727696-1-megous@megous.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200702052039.GA2824@192.168.3.9>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 02, 2020 at 01:20:43PM +0800, Weiping Zhang wrote:
-> Since setid will create a autogroup for that process, there is no
-> way to detach a process from that autogroup, this patch add a new interface
-> to detach a process from its autogroup. You can write anything to
-> /proc/<pid>/autogroup_detach to do that.
+This patchset adds support for the LCD panel of PinePhone.
 
-This is indeed what the patch does; but it fails to tell me why. Why do
-we want this? Why should I care about your patch :-)
+I've tested this on PinePhone 1.0 and 1.2.
 
-Please, always explain why you want things done, that can also help us
-consider if the proposed solution is the right one.
+Please take a look.
+
+thank you and regards,
+  Ondrej Jirman
+
+Changes in v8:
+- Drop goodix,gt911 fallback compatible (Icenowy)
+- Drop address/size-cells from &dsi node (Maxime)
+- Drop already applied patches
+- v7->v8 diff: https://megous.com/dl/tmp/v7-v8.patch
+
+Changes in v7:
+- Removed mode.vrefresh, rebased onto next-20200701
+- v6->v7 diff: https://megous.com/dl/tmp/v6-v7.patch
+
+Changes in v6:
+- Fixed spacing in yaml
+- Fixed wrong vccio->iovcc supply name in the bindings doc
+- I noticed that the original driver uses a delay of 20ms in the init
+  function to achieve a combined total of 120ms required from post-reset
+  to display_on. I've added a similar delay to xbd599_init, so that
+  xbd599 panel also has the right timing. (patch 9)
+- v5->v6 diff: https://megous.com/dl/tmp/v5-v6.patch
+- Added review/ack tags
+- Learned to run dt_binding_check by myself ;)
+
+Changes in v5:
+- rewritten on top of rocktech-jh057n00900 driver
+- rocktech-jh057n00900 renamed to st7703 (controller name)
+- converted rocktech-jh057n00900 bindings to yaml and extended for xbd599
+
+Changes in v4:
+- use ->type from the mode instead of hardcoding (Samuel)
+- move init_sequence to ->prepare (Samuel)
+- move anti-flicker delay to ->enable, explain it (Samuel)
+- add enter_sleep after display_off (Samuel)
+- drop ->disable (move code to ->unprepare)
+- add ID bytes dumping (Linus)
+  (I can't test it since allwinner DSI driver has a broken
+   dcs_read function, and I didn't manage to fix it.)
+- document magic bytes (Linus)
+- assert reset during powerup
+- cleanup powerup timings according to the datasheet
+
+Changes in v3:
+- Panel driver renamed to the name of the LCD controller
+- Re-organize the driver slightly to more easily support more panels
+  based on the same controller.
+- Add patch to enable the touchscreen to complete the LCD support
+  on PinePhone.
+- Dropped the "DSI fix" patch (the driver seems to work for me without it)
+- Improved brightness levels handling:
+  - PinePhone 1.0 uses default levels generated by the driver
+  - On PinePhone 1.1 duty cycles < 20% lead to black screen, so
+    default levels can't be used. Martijn Braam came up with a
+    list of duty cycle values that lead to perception of linear
+    brigtness level <-> light intensity on PinePhone 1.1
+- There was some feedback on v2 about this being similar to st7701.
+  It's only similar in name. Most of the "user commands" are different,
+  so I opted to keep this in a new driver instead of creating st770x.
+  
+  Anyone who likes to check the differences, here are datasheets:
+
+  - https://megous.com/dl/tmp/ST7703_DS_v01_20160128.pdf
+  - https://megous.com/dl/tmp/ST7701.pdf
+
+Changes in v2:
+- DT Example fix.
+- DT Format fix.
+- Raised copyright info to 2020.
+- Sort panel operation functions.
+- Sort inclusion.
+
+
+-- For phone owners: --
+
+There's an open question on how to set the backlight brightness values
+on post 1.0 revision phone, since lower duty cycles (< 10-20%) lead
+to backlight being black. It would be nice if more people can test
+the various backlight levels on 1.1 and 1.2 revision with this change
+in dts:
+
+       brightness-levels = <0 1000>;
+       num-interpolated-steps = <1000>;
+
+and report at what brightness level the backlight turns on. So far it
+seems this has a wide range. Lowest useable duty cycle for me is ~7%
+on 1.2 and for Martijn ~20% on 1.1.
+
+Icenowy Zheng (1):
+  arm64: dts: sun50i-a64-pinephone: Enable LCD support on PinePhone
+
+Ondrej Jirman (1):
+  arm64: dts: sun50i-a64-pinephone: Add touchscreen support
+
+ .../allwinner/sun50i-a64-pinephone-1.1.dts    | 19 +++++++
+ .../dts/allwinner/sun50i-a64-pinephone.dtsi   | 52 +++++++++++++++++++
+ 2 files changed, 71 insertions(+)
+
+-- 
+2.27.0
+
