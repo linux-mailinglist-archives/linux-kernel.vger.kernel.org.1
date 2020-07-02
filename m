@@ -2,125 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82561212218
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 13:22:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F7572121FB
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 13:18:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728659AbgGBLWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 07:22:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46428 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728009AbgGBLWT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 07:22:19 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3050BC08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 04:22:19 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id e8so13334873pgc.5
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 04:22:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pesu-pes-edu.20150623.gappssmtp.com; s=20150623;
-        h=from:date:to:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=nt96k6iAKxqAFLPuGZvFYf33kEJ+/jRhegvfMeKc9Xs=;
-        b=fPOtA6Tb7M5g4NKvW+QtMg8fBqYNtKBM0zq7JWAD5tEQeaj7a4EM4Uwc8uLzIuzjWI
-         lbG7Pi2tuDApXckkKxuI9NGIwojlLArPSNCQkO2WZT6Go6TGqWFNIF8agRJawsmk2BUF
-         fxDy/cKeelxjZ/sjBTk2pGEsZs+VLxn4V0OtgejWlUeQ5R63qL9ZVtiaHWobJp516QXY
-         OSoIZN2tdyuLKfX62JLAE9riYDmbWzIrcecj61ogKcf1FvfEJTpzBB/cvYAVRzRsa9TA
-         pLaN7Qpa3lDyBw1JNQrfaojZ1EPM8m5MhRRpFtm7yPOO/g+PnRZYHdz9SImPFIJNEZwr
-         WAmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=nt96k6iAKxqAFLPuGZvFYf33kEJ+/jRhegvfMeKc9Xs=;
-        b=BYH3oc9VNxwIje7xPIXzBIbPnMeWYi3wFj56C5ntODj/Nads19GtIoGXsdXu8YxMvP
-         UO6lEYR6J1/yBS/eETjUT7DojqOvtgRVyJI3gKhoMcG0V6vAC73ki5CwdSLv5HJc3MMW
-         IVv5IO5ev9xIUSKInZm8ATwHiBRQaLFtUJIMshz9W8SLRL0WHnC/mwFb6yTHxaCiFf6S
-         Tgh9KCOvYNV16mp/Jf2bXR+rflbv21yfrvdFYvY3rD+EINiW4nwjMDClkKPGsI+lt7xI
-         EatpFjak52xa5ey7RYM6K4eE86obP2t1fIoW1wdZeoO8ZfrBOFYyoPpibqDCELI0dlo3
-         kNww==
-X-Gm-Message-State: AOAM533Xla6LhHKIQy3lC0RZZ7hlzX3l35oFPLL0cccEptr7d/Qq2KDb
-        gAkv8+FuESRPXeHMkEJjY2sZPg==
-X-Google-Smtp-Source: ABdhPJydMbhu4w4dIm3e/HYEXc5ZMYlZN68Nglf/tCAmFxbrbQ+hA0WwrlNL0s0aS9y6fW5p5PNPhA==
-X-Received: by 2002:a63:f814:: with SMTP id n20mr23250319pgh.92.1593688938793;
-        Thu, 02 Jul 2020 04:22:18 -0700 (PDT)
-Received: from localhost ([2406:7400:73:3271:908:f18a:1156:5c38])
-        by smtp.gmail.com with ESMTPSA id 7sm8674767pgw.85.2020.07.02.04.22.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Jul 2020 04:22:17 -0700 (PDT)
-From:   B K Karthik <bkkarthik@pesu.pes.edu>
-X-Google-Original-From: B K Karthik <karthik.bk2000@live.com>
-Date:   Thu, 2 Jul 2020 07:22:10 -0400
-To:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] staging: rtl8188eu: include: rtw_pwrctrl.h: fixed
- multiple parentheses coding style issues.
-Message-ID: <20200702112210.th4aiiszhdtufbpe@pesu-pes-edu>
+        id S1728639AbgGBLSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 07:18:02 -0400
+Received: from foss.arm.com ([217.140.110.172]:40318 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726475AbgGBLSB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 07:18:01 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F1BAA1FB;
+        Thu,  2 Jul 2020 04:18:00 -0700 (PDT)
+Received: from [10.37.12.95] (unknown [10.37.12.95])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ADF2C3F71E;
+        Thu,  2 Jul 2020 04:17:58 -0700 (PDT)
+Subject: Re: [PATCH V5 1/4] arm64/cpufeature: Add remaining feature bits in
+ ID_AA64MMFR0 register
+To:     anshuman.khandual@arm.com, linux-arm-kernel@lists.infradead.org
+Cc:     catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com,
+        linux-kernel@vger.kernel.org
+References: <1590548619-3441-1-git-send-email-anshuman.khandual@arm.com>
+ <1590548619-3441-2-git-send-email-anshuman.khandual@arm.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <3fde5a19-ffe9-f798-8e4a-fc356e271f19@arm.com>
+Date:   Thu, 2 Jul 2020 12:22:42 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.7.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ekcxpik5lw6jcut3"
-Content-Disposition: inline
-User-Agent: NeoMutt/20180716
+In-Reply-To: <1590548619-3441-2-git-send-email-anshuman.khandual@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 05/27/2020 04:03 AM, Anshuman Khandual wrote:
+> Enable EVC, FGT, EXS features bits in ID_AA64MMFR0 register as per ARM DDI
+> 0487F.a specification.
+> 
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org
+> Suggested-by: Will Deacon <will@kernel.org>
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+>   arch/arm64/include/asm/sysreg.h | 3 +++
+>   arch/arm64/kernel/cpufeature.c  | 3 +++
+>   2 files changed, 6 insertions(+)
+> 
+> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
+> index fa9d02ca4b25..cf983d03aa4c 100644
+> --- a/arch/arm64/include/asm/sysreg.h
+> +++ b/arch/arm64/include/asm/sysreg.h
+> @@ -703,6 +703,9 @@
+>   #define ID_AA64ZFR0_SVEVER_SVE2		0x1
+>   
+>   /* id_aa64mmfr0 */
+> +#define ID_AA64MMFR0_ECV_SHIFT		60
+> +#define ID_AA64MMFR0_FGT_SHIFT		56
+> +#define ID_AA64MMFR0_EXS_SHIFT		44
+>   #define ID_AA64MMFR0_TGRAN4_SHIFT	28
+>   #define ID_AA64MMFR0_TGRAN64_SHIFT	24
+>   #define ID_AA64MMFR0_TGRAN16_SHIFT	20
+> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+> index ada9f6f9b0f6..feaa6dcd6f7b 100644
+> --- a/arch/arm64/kernel/cpufeature.c
+> +++ b/arch/arm64/kernel/cpufeature.c
+> @@ -267,6 +267,9 @@ static const struct arm64_ftr_bits ftr_id_aa64zfr0[] = {
+>   };
+>   
+>   static const struct arm64_ftr_bits ftr_id_aa64mmfr0[] = {
+> +	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64MMFR0_ECV_SHIFT, 4, 0),
+> +	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64MMFR0_FGT_SHIFT, 4, 0),
+> +	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64MMFR0_EXS_SHIFT, 4, 0),
 
---ekcxpik5lw6jcut3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-add parentheses since complex valued macros must be enclosed within parentheses.
-
-Signed-off-by: B K Karthik <karthik.bk2000@live.com>
----
- drivers/staging/rtl8188eu/include/rtw_pwrctrl.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/staging/rtl8188eu/include/rtw_pwrctrl.h b/drivers/staging/rtl8188eu/include/rtw_pwrctrl.h
-index 404634999e35..c89328142731 100644
---- a/drivers/staging/rtl8188eu/include/rtw_pwrctrl.h
-+++ b/drivers/staging/rtl8188eu/include/rtw_pwrctrl.h
-@@ -84,7 +84,7 @@ struct reportpwrstate_parm {
- 	unsigned short rsvd;
- };
-
--#define LPS_DELAY_TIME	1*HZ /*  1 sec */
-+#define LPS_DELAY_TIME	(1*HZ) /*  1 sec */
-
- #define EXE_PWR_NONE	0x01
- #define EXE_PWR_IPS		0x02
-@@ -201,7 +201,7 @@ struct pwrctrl_priv {
- };
-
- #define rtw_get_ips_mode_req(pwrctrlpriv) \
--	(pwrctrlpriv)->ips_mode_req
-+	((pwrctrlpriv)->ips_mode_req)
-
- #define rtw_ips_mode_req(pwrctrlpriv, ips_mode) \
- 	((pwrctrlpriv)->ips_mode_req = (ips_mode))
---
-2.20.1
-
-
---ekcxpik5lw6jcut3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQGzBAEBCgAdFiEEpIrzAt4LvWLJmKjp471Q5AHeZ2oFAl79w2IACgkQ471Q5AHe
-Z2rdZgv+PEEd2Ajt0okuG+6fIqzpISYZ/28PJjGjrCVHhXZtavp3LSNrCKIdMCW6
-ib6K4zOhMrHNgOd97ktSdq/uRaP2dN0cpXOhzbo1zzHcR27F6t4j7wAMnyHwA3o+
-OOK/sPiUkhibXeggNQPqVSVXASBIowpHk4EbJ3QVwSYjhFYGQDz02Jn1qovs1F63
-VSBuRBS0iQ9EDoENbWgnLxdirSL+aeXHEWTc4ZhM44bq2NCcmXdLcoBMdGIc5TUZ
-dliMSNXrehaFZ8yEiT8NAVNzc29MtS2s8Cki9RMEvTH2kxFHTYM3mYacWv9JlJ2u
-BBGB5h61u/TmGuzqcYwcdu1xfAj1FBCFdsMHPD/SKsYjrKD/v/CgiixKuSWc0Kla
-VjKwXYqIXPugV0rH6HZMyBxTezhhKblr0dXectcGErf+6s5RqkBtW2ZcKtOIaaYE
-gbcjSHHgSDhHMZUed9UsfvTzqJn18rJF6K7KVEIbAf2ia5LJLmJ0PWuiBE99Qair
-A8zGIgg/
-=hbqL
------END PGP SIGNATURE-----
-
---ekcxpik5lw6jcut3--
+Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
