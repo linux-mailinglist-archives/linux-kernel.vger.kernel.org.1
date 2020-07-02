@@ -2,125 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62326211BB4
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 07:52:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A750211B9C
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 07:40:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726237AbgGBFwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 01:52:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52060 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725774AbgGBFwN (ORCPT
+        id S1726174AbgGBFkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 01:40:21 -0400
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:50893 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726015AbgGBFkU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 01:52:13 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B0B2C08C5C1;
-        Wed,  1 Jul 2020 22:52:13 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id p20so27705728ejd.13;
-        Wed, 01 Jul 2020 22:52:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PTX8G0FukGDGojl6rKgvGA2fV/um1+DnSL6BGGF5rTk=;
-        b=FquHVBuq7KCtLoqPVvMm9HrqdlxcjXKcG1/+uFCoy9V2e1Xg3bw0d7tBmfSyFAGcha
-         IgZIgf0l9wD2Joq5cTRKEesJYG7anNVjvVKeExREY9By5CJp7ImSJPFfaXLFBp2QG7kr
-         GfcmsNQbJeTmwzK7RPOonHY0aEpzJ3oy+6PpCWlQR9tOE0gkA4aLefcJWAmtGN0DZ/p9
-         0iG9N+XmuuBpFtbWok3DgwEfuMNhasYWjk+6ke3z1OwZh2CFg14Uh0A50qN5upQsO04R
-         JP6Kg95vi7KGsDdV02vBFfzdaqeQWMTYOb2EDR4Wx8hjOIP4w+GxVz5NKeacl1FmgeNQ
-         x0Ow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PTX8G0FukGDGojl6rKgvGA2fV/um1+DnSL6BGGF5rTk=;
-        b=sz3AADI5Fmk3DzlphFAqu6pgihT2DygZFOX/gIjpKlLVJ+WiNaWBJ0fg97XY2ZJT3w
-         iBnMZolPnvXYFtCiIEzpd850a6KnnnpO5DeeqF+dP2pniOA6OxZK1tijWzrWKghYj612
-         DSLeHzOUveutbtVnxASlmTvfmFs5jmQjfLn+k6imlFnMnpr6fL7T2JDLH7IbI951QryI
-         hxLZBMnT9GOU6xVcUmytgH14T+74ptZpWOYRmbWv5LuYbAYWMiurNqLAIG9RwAmROnGV
-         hWI6cB2GyztX94Y3LuIkN7BsaOdYSNOt7wZdRxXAe6nU62BJU50ZIaezHgML13ar2t+X
-         iokw==
-X-Gm-Message-State: AOAM530imByHfxBfe440ANoVuius4lZoEHebstJ3OGmBwGCxXYu3RsJT
-        ovBI1VsZwIFRIojQTaZLM0Fi2ZB19hgK8p2WZZA=
-X-Google-Smtp-Source: ABdhPJwMXcuDstpkLDAVFtfvS+c1kcgVHNxhmQy/o9PberFQHvXcCp+0m6rAm/8+6AsWMhEswSifBPT5RBcN2f7BYoU=
-X-Received: by 2002:a17:906:e215:: with SMTP id gf21mr20475157ejb.310.1593669132029;
- Wed, 01 Jul 2020 22:52:12 -0700 (PDT)
+        Thu, 2 Jul 2020 01:40:20 -0400
+X-IronPort-AV: E=Sophos;i="5.75,303,1589234400"; 
+   d="scan'208";a="457763334"
+Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 02 Jul 2020 07:40:18 +0200
+Date:   Thu, 2 Jul 2020 07:40:18 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Matthew Wilcox <willy@infradead.org>
+cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Markus Elfring <Markus.Elfring@web.de>,
+        linux-doc@vger.kernel.org, Coccinelle <cocci@systeme.lip6.fr>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org,
+        Julia Lawall <julia.lawall@lip6.fr>,
+        Gilles Muller <Gilles.Muller@lip6.fr>,
+        Nicolas Palix <nicolas.palix@imag.fr>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [v2] Documentation: Coccinelle: fix typos and command example
+In-Reply-To: <20200702000843.GV25523@casper.infradead.org>
+Message-ID: <alpine.DEB.2.22.394.2007020739270.2478@hadrien>
+References: <0616dd0c-bb86-be2b-3dc6-1c695a92c3ca@infradead.org> <c2c1dec0-2bd1-b0e2-1aa4-38d0e954d5ba@web.de> <efc8b0c9-db3b-3c9c-d876-897b53a9e278@infradead.org> <2a3940de-6a81-1aff-8109-53c1c5a6aa1b@web.de> <f2aaa91a-f935-bc2d-26f2-712576c1bbd7@infradead.org>
+ <2f80fb10-dc7f-29be-dc3e-2715f8bafc6d@web.de> <dfa2ed9f-fe68-58d1-c3d0-ac436f9bee09@infradead.org> <20200702000843.GV25523@casper.infradead.org>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-References: <1593656074-10092-1-git-send-email-Anson.Huang@nxp.com>
- <1593656074-10092-4-git-send-email-Anson.Huang@nxp.com> <CAA+hA=S0G7Na0ieEpPq3aN6GN1BEHtYp9vbF9x2tjmknDSVjZw@mail.gmail.com>
- <DB3PR0402MB391610595D40C11CF26CD990F56D0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
-In-Reply-To: <DB3PR0402MB391610595D40C11CF26CD990F56D0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
-From:   Dong Aisheng <dongas86@gmail.com>
-Date:   Thu, 2 Jul 2020 13:38:10 +0800
-Message-ID: <CAA+hA=Rtkm_FpkoBvHNnB0TSeTrqXaRVwOzkywsL7QO6ec_K7Q@mail.gmail.com>
-Subject: Re: [PATCH V4 3/5] clk: imx: Support building i.MX common clock
- driver as module
-To:     Anson Huang <anson.huang@nxp.com>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Peng Fan <peng.fan@nxp.com>, Arnd Bergmann <arnd@arndb.de>,
-        Abel Vesa <abel.vesa@nxp.com>,
-        Aisheng Dong <aisheng.dong@nxp.com>,
-        Andy Duan <fugang.duan@nxp.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 2, 2020 at 11:26 AM Anson Huang <anson.huang@nxp.com> wrote:
-[...]
-> > > @@ -143,16 +148,18 @@ void imx_cscmr1_fixup(u32 *val)
-> > >  static int imx_keep_uart_clocks;
-> > >  static struct clk ** const *imx_uart_clocks;
-> > >
-> > > -static int __init imx_keep_uart_clocks_param(char *str)
-> > > +static int __maybe_unused imx_keep_uart_clocks_param(char *str)
-> > >  {
-> > >         imx_keep_uart_clocks = 1;
-> > >
-> > >         return 0;
-> > >  }
-> > > +#ifndef MODULE
-> > >  __setup_param("earlycon", imx_keep_uart_earlycon,
-> > >               imx_keep_uart_clocks_param, 0);
-> > >  __setup_param("earlyprintk", imx_keep_uart_earlyprintk,
-> > >               imx_keep_uart_clocks_param, 0);
+
+
+On Thu, 2 Jul 2020, Matthew Wilcox wrote:
+
+> On Wed, Jul 01, 2020 at 07:52:58AM -0700, Randy Dunlap wrote:
+> > On 7/1/20 6:32 AM, Markus Elfring wrote:
+> > >>> How do you think about to use the following command variant
+> > >>> for the adjustment of the software documentation?
+> > >>>
+> > >>> +    make C=1 CHECK='scripts/coccicheck' 'path/to/file.o'
+> > >>
+> > >> I don't understand the reason for that change...
 > >
-> > I feel not only the __setup_param, the whole logic of keep_uart_clocks
-> > are not needed for Module case. Is it true?
+> > IOW, your "patch" needs justification and/or explanation. It was missing that info.
 >
-> Yes, but the 'keep_uart_clocks' is false by default and the function imx_keep_uart_clocks_param()
-> already has '__maybe_unused', it does NOT impact anything if it is for module build, so I did NOT
-> add the #ifndef check for them, just to keep code easy and clean.
->
+> What Markus is trying so completely ineptly to say is that
+>   make C=1 CHECK=scripts/coccicheck path/to/file.c
+> doesn't work.  You need to use the .o suffix to check the .c file.
 
-IMHO do not compile them is a more easy and clean way. Then users
-don't have to look into the code logic
-which is meaingless for Module case.
+Thanks Matthew for this very helpful information.
 
-BTW, it really does not make any sense to only condionally compile
-__setup_parm() but left
-the param functions definition to be handled by __maybe_unnused.
-They're together part of code, aren't they?
-
-Regards
-Aisheng
-
-Regards
-Aisheng
-
-> Thanks,
-> Anson
->
+julia
