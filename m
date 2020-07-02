@@ -2,78 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 968082129F5
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 18:45:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BDA5212A2E
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 18:48:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726946AbgGBQpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 12:45:11 -0400
-Received: from mga05.intel.com ([192.55.52.43]:18418 "EHLO mga05.intel.com"
+        id S1727116AbgGBQs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 12:48:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55590 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726919AbgGBQpH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 12:45:07 -0400
-IronPort-SDR: BUkgeoyh8IPmMgnH6S6Rvy6yTYWVqQr94Uo9aHe0lua1z4zwzhsyUQDqzDDK12U5YfiYImSK6b
- Y9VZUR8ioYnw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="231818112"
-X-IronPort-AV: E=Sophos;i="5.75,304,1589266800"; 
-   d="scan'208";a="231818112"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2020 09:45:06 -0700
-IronPort-SDR: s1aAgPnprfLMqh4Ml8wsSRlQpczx1MHoQ6hG2j4Ij4wAzX82iu0jl6oE1Kn34mm858brUK1+rf
- MOEd2LrCwkdA==
-X-IronPort-AV: E=Sophos;i="5.75,304,1589266800"; 
-   d="scan'208";a="426011166"
-Received: from nzbastur-mobl1.amr.corp.intel.com (HELO pbossart-mobl3.amr.corp.intel.com) ([10.255.231.182])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2020 09:45:05 -0700
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To:     alsa-devel@alsa-project.org
-Cc:     tiwai@suse.de, broonie@kernel.org,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Ravulapati Vishnu vardhan rao 
-        <Vishnuvardhanrao.Ravulapati@amd.com>,
-        Akshu Agrawal <akshu.agrawal@amd.com>,
-        Wei Yongjun <weiyongjun1@huawei.com>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 6/6] ASoC: amd: raven: acp3x-i2s: remove unused-but-set variable
-Date:   Thu,  2 Jul 2020 11:44:33 -0500
-Message-Id: <20200702164433.162815-7-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200702164433.162815-1-pierre-louis.bossart@linux.intel.com>
-References: <20200702164433.162815-1-pierre-louis.bossart@linux.intel.com>
+        id S1726721AbgGBQs1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 12:48:27 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B2E362084C;
+        Thu,  2 Jul 2020 16:48:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593708506;
+        bh=gWp3jFwoo4iUwOhF7lEopC3ZlQExz1kCNh2JXCd9Fcg=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=2b+9C9Nyes63VcSQV+cryOA7jsr1vqfWy4nwf81la+HGYN7YnBVUyFaf6P20GtKk1
+         qfbrvZKpCWKVPpdhe7T1sk4GaZ7M3aWrCUo//dt4fStvpVZzJQjJj9eUTdC4E4cdgV
+         77Xa30CfU8RtOF8TOrvOgs16YElPGsco2vw9q4vM=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 909F435232F8; Thu,  2 Jul 2020 09:48:26 -0700 (PDT)
+Date:   Thu, 2 Jul 2020 09:48:26 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     joel@joelfernandes.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, dipankar@in.ibm.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com,
+        Uladzislau Rezki <urezki@gmail.com>
+Subject: Re: [PATCH tip/core/rcu 03/17] rcu/tree: Skip entry into the page
+ allocator for PREEMPT_RT
+Message-ID: <20200702164826.GQ9247@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200624201200.GA28901@paulmck-ThinkPad-P72>
+ <20200624201226.21197-3-paulmck@kernel.org>
+ <20200630164543.4mdcf6zb4zfclhln@linutronix.de>
+ <20200630183534.GG9247@paulmck-ThinkPad-P72>
+ <20200702141216.r4rbt5w3hjzafpgg@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200702141216.r4rbt5w3hjzafpgg@linutronix.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix W=1 warning. The variable prtd is set but not used.
+On Thu, Jul 02, 2020 at 04:12:16PM +0200, Sebastian Andrzej Siewior wrote:
+> On 2020-06-30 11:35:34 [-0700], Paul E. McKenney wrote:
+> > > This is not going to work together with the "wait context validator"
+> > > (CONFIG_PROVE_RAW_LOCK_NESTING). As of -rc3 it should complain about
+> > > printk() which is why it is still disabled by default.
+> > 
+> > Fixing that should be "interesting".  In particular, RCU CPU stall
+> > warnings rely on the raw spin lock to reduce false positives due
+> > to race conditions.  Some thought will be required here.
+> 
+> I don't get this part. Can you explain/give me an example where to look
+> at?
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/amd/raven/acp3x-i2s.c | 2 --
- 1 file changed, 2 deletions(-)
+Starting from the scheduler-clock interrupt's call into RCU,
+we have rcu_sched_clock_irq() which calls rcu_pending() which
+calls check_cpu_stall() which calls either print_cpu_stall() or
+print_other_cpu_stall(), depending on whether the stall is happening on
+the current CPU or on some other CPU, respectively.
 
-diff --git a/sound/soc/amd/raven/acp3x-i2s.c b/sound/soc/amd/raven/acp3x-i2s.c
-index a0e14cc91d95..c3eb9b347eaa 100644
---- a/sound/soc/amd/raven/acp3x-i2s.c
-+++ b/sound/soc/amd/raven/acp3x-i2s.c
-@@ -149,11 +149,9 @@ static int acp3x_i2s_trigger(struct snd_pcm_substream *substream,
- 				int cmd, struct snd_soc_dai *dai)
- {
- 	struct i2s_stream_instance *rtd;
--	struct snd_soc_pcm_runtime *prtd;
- 	u32 ret, val, period_bytes, reg_val, ier_val, water_val;
- 	u32 buf_size, buf_reg;
- 
--	prtd = substream->private_data;
- 	rtd = substream->runtime->private_data;
- 	period_bytes = frames_to_bytes(substream->runtime,
- 			substream->runtime->period_size);
--- 
-2.25.1
+Both of these last functions acquire the rcu_node structure's raw ->lock
+and expect to do printk()s while holding it.
 
+Not that the lock matters all that much given that all of this code is
+in hardirq context.  Which is necessary if RCU CPU stall warnings are
+to be at all reliable.  Yeah, yeah, they would be even more reliable if
+invoked in NMI context but that would prevent them from acquiring the
+->lock that is used to resolve races between multiple concurrent stall
+warnings and between a stall warning and the end of that stall.  ;-)
+
+I could imagine accumulating the data in hardirq context and then
+using a workqueue or some such to print it all out, but that
+requires that workqueues be fully operational for RCU CPU stall
+warnings to appear.  :-(
+
+Thoughts?
+
+> > > So assume that this is fixed and enabled then on !PREEMPT_RT it will
+> > > complain that you have a raw_spinlock_t acquired (the one from patch
+> > > 02/17) and attempt to acquire a spinlock_t in the memory allocator.
+> > 
+> > Given that the slab allocator doesn't acquire any locks until it gets
+> > a fair way in, wouldn't it make sense to allow a "shallow" allocation
+> > while a raw spinlock is held?  This would require yet another GFP_ flag,
+> > but that won't make all that much of a difference in the total.  ;-)
+> 
+> That would be one way of dealing with. But we could go back to
+> spinlock_t and keep the memory allocation even for RT as is. I don't see
+> a downside of this. And we would worry about kfree_rcu() from real
+> IRQ-off region once we get to it.
+
+Once we get to it, your thought would be to do per-CPU queuing of
+memory from IRQ-off kfree_rcu(), and have IRQ work or some such clean
+up after it?  Or did you have some other trick in mind?
+
+							Thanx, Paul
+
+> > > >  			bnode = (struct kfree_rcu_bulk_data *)
+> > > >  				__get_free_page(GFP_NOWAIT | __GFP_NOWARN);
+> > > >  		}
+> 
+> Sebastian
