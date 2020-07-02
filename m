@@ -2,115 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 775BA2124E1
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 15:37:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFA1D21250B
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 15:44:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729411AbgGBNhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 09:37:09 -0400
-Received: from mga03.intel.com ([134.134.136.65]:63718 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729254AbgGBNhI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 09:37:08 -0400
-IronPort-SDR: uUf0uHDpozlvX43ME3TExdovp+P7dbY+WiMXpa8I8sA4hizN+O/Bd7p5ne7j7FKZqR6BgdKUQW
- Qn2g4XflFw7g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9669"; a="146892860"
-X-IronPort-AV: E=Sophos;i="5.75,304,1589266800"; 
-   d="scan'208";a="146892860"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2020 06:37:07 -0700
-IronPort-SDR: qD6O/1RKxxZPtysu3PRMimGKQxcacJFbEMoMKBx0VX8iwfD+GHAXRZccM2MSOcex7d8lOcq9OM
- W1NmJMCJHMPg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,304,1589266800"; 
-   d="scan'208";a="278125977"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga003.jf.intel.com with ESMTP; 02 Jul 2020 06:37:05 -0700
-Date:   Thu, 2 Jul 2020 06:43:41 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Auger Eric <eric.auger@redhat.com>
-Cc:     iommu@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Yi Liu <yi.l.liu@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>, jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH v3 6/7] iommu/vt-d: Warn on out-of-range invalidation
- address
-Message-ID: <20200702064341.18d513a5@jacob-builder>
-In-Reply-To: <7c265689-a23c-021b-27e7-beb3cd667a5f@redhat.com>
-References: <1593617636-79385-1-git-send-email-jacob.jun.pan@linux.intel.com>
-        <1593617636-79385-7-git-send-email-jacob.jun.pan@linux.intel.com>
-        <7c265689-a23c-021b-27e7-beb3cd667a5f@redhat.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1729374AbgGBNok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 09:44:40 -0400
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:42938 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729277AbgGBNoh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 09:44:37 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20200702134435euoutp02498e344c140d594f7ea4f3a2a48bbf5d~d82kIVFIo3195031950euoutp025
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 13:44:35 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20200702134435euoutp02498e344c140d594f7ea4f3a2a48bbf5d~d82kIVFIo3195031950euoutp025
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1593697475;
+        bh=Wcn/fZwn0l0I3UrXznsXGlfRgX1zzz/eHT6cU1JUJ98=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=coTUImIXandF5sPwA8906cKi/QS9cqx/iqXawoGD7LBBvkCASPVFfheEvILlvt4J8
+         Y0IHpte5+lkdtPjPpDN9luu9X5+Fq4h9flkYlViCWI1JYmezY1ZHYmowZqLBlLmp+r
+         aUimFdb7LptZhIDZQFTsESvS/hzZgIQxD6/78Pto=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20200702134435eucas1p277a21a6696e124b42c102540c6665951~d82j2tuHL1813018130eucas1p2-;
+        Thu,  2 Jul 2020 13:44:35 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id 92.F2.05997.3C4EDFE5; Thu,  2
+        Jul 2020 14:44:35 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200702134434eucas1p233a3f66f5bdb4b97f4f49d2d43d45297~d82je7wnZ3023830238eucas1p2_;
+        Thu,  2 Jul 2020 13:44:34 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200702134434eusmtrp21c06ae96bce6fb9cbe4c5cc8fdfb920f~d82jeDPk60528405284eusmtrp2c;
+        Thu,  2 Jul 2020 13:44:34 +0000 (GMT)
+X-AuditID: cbfec7f4-677ff7000000176d-fd-5efde4c3265d
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id D4.94.06017.2C4EDFE5; Thu,  2
+        Jul 2020 14:44:34 +0100 (BST)
+Received: from AMDC3748.digital.local (unknown [106.120.51.74]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200702134434eusmtip2c307019c112809392842a9a51d543146~d82ivfvFs2865128651eusmtip2L;
+        Thu,  2 Jul 2020 13:44:34 +0000 (GMT)
+From:   Andrzej Hajda <a.hajda@samsung.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        andy.shevchenko@gmail.com, Mark Brown <broonie@kernel.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org (open list:DRM DRIVERS)
+Subject: [PATCH v8 2/5] driver core: add deferring probe reason to
+ devices_deferred property
+Date:   Thu,  2 Jul 2020 15:44:21 +0200
+Message-Id: <20200702134421.6412-1-a.hajda@samsung.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <CAHp75VegHLG5tgVFjwmpmDfSqELqNXcb9dFSM4jLRx+anW7Lsw@mail.gmail.com>
+X-Brightmail-Tracker: H4sIAAAAAAAAA0WSbUhTYRTHeXbv7r2OFtcZ+KCRtNKySCsDHyrMIuRSBPUhisLVahe13KZb
+        mvpFw/Kl1GYh1lZmZSqmzpeypq1kmktkmi+TaS4xjdJcEmqaNW3z9vLt9/zP/5z/4fBQmKiL
+        70PFKC6wKoU0VkwI8Ia2H51bWsackq2D91egwepOPhrXtABUe0vPRwUjYwRaasjHUN/sFIHS
+        H+oJZJ0bx1D7pBVH2fklJKob7eej3sY7BDIVGAGqarWTyJR3Et2dKcDCaaa3vxtjpmxXSMb4
+        vRhnDFo7yeiybvOZuopsgnmj6eExr+5WkszwNTOPqS9JZfKeVACmOfcmzkzXrTksPCHYLWNj
+        YxJZVXDYaUF01UImFte6PslosYI00LbmKvCgIL0DlnbN864CASWiywEsLW4huccMgFNN9Ty3
+        S0RPA5hz89zfjsXPOpwzlQH4JX+J96+j0vyJdLsIOhA66wcIN6+iQ+B1i3Z5LEYv4NCamcF3
+        F7xoCay1DWBuxml/eHnOCtwspEPhe20WwcX5wcc1zcseD/oINOpLlqMhPU7C3rIPfM60H76e
+        t+Mce8EJ8xOS49VwyXCPx3EqHC6/jHHNWQA+rTFgXGEXHOpccKVRrvUCob4xmJP3wvqefuCW
+        Ib0S2hyebhlz4Y2GQoyThTArQ8S518Jhy9M/A73ho7ezf9ZnYPqHeYI7UAmAn+wfgQb4af+H
+        FQNQAbzZBLU8ilVvV7AXg9RSuTpBERV0VimvA65v1rFonnkOGn+dMQGaAuIVQo3ZKRHxpYnq
+        ZLkJQAoTrxLus3RIREKZNDmFVSlPqRJiWbUJ+FK42FsY8mA8UkRHSS+w51k2jlX9rfIoD580
+        gHd/fZaY0e5/dE+zb2RFn+fEYuD3dYORP/2KqDPHj5myz94PDy0P6ylrCvCZCwLKwnidjd5s
+        SBMLlIcc12wHhswB8Q++rXck1eSllvV4R6CNBZdephdGMEXGiykHlbJjylz7u/wcz5AXI+0E
+        vqFaEf8MrZtw+O8UOI+P6mSTHmJcHS3dtglTqaW/Ad2DKRRiAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrPIsWRmVeSWpSXmKPExsVy+t/xe7qHnvyNM7h5WN/i1rpzrBYvJxxm
+        tNg4Yz2rxdSHT9gs/m+byGxx5et7NovmxevZLK5+f8lscfLNVRaLzolL2C02Pb7GanF51xw2
+        i0NT9zJarD1yl93iUF+0xdwvU5kdBDwuX7vI7PH+Riu7x95vC1g8ds66y+4xu2Mmq8emVZ1s
+        HicmXGLy2D93DbvH/e7jTB6bl9R79G1ZxehxoHcyi8fnTXIBvFF6NkX5pSWpChn5xSW2StGG
+        FkZ6hpYWekYmlnqGxuaxVkamSvp2NimpOZllqUX6dgl6GWt/tTMXHFGp2Hv2KmMD4zG5LkZO
+        DgkBE4l/L2azgNhCAksZJZ7sNoGIi0vsnv+WGcIWlvhzrYsNouYTo8TEpWBxNgFNib+bb4LF
+        RQSMJfrPzmLvYuTiYBZoY5WYe/4JO0hCWCBG4u+Nd4wgNouAqkTL96tgNq+AucS9WR1sEAvk
+        JVZvOAA2lFMgUGLv+iVQBwVInLjZxzaBkW8BI8MqRpHU0uLc9NxiI73ixNzi0rx0veT83E2M
+        wMjaduznlh2MXe+CDzEKcDAq8fBOOP43Tog1say4MvcQowQHs5IIr9PZ03FCvCmJlVWpRfnx
+        RaU5qcWHGE2BjprILCWanA+M+rySeENTQ3MLS0NzY3NjMwslcd4OgYMxQgLpiSWp2ampBalF
+        MH1MHJxSDYyTjA/6fM878yhdRnDj1unBz/knyIXxLsoMf9wm+alsW2Hbv+hL56JtncV9A5MN
+        Jzfqdi9zXNyj+aqoZdd2N67giQGu2Svfp/7KYNl7amWmbbFd8qedM5QzVVRsVG3VQp+t5nTa
+        ftDZrfvXvugrYhb8H07nT7krcb17r8v6gvWhKrtsrKp/r1FiKc5INNRiLipOBABK6oWQwgIA
+        AA==
+X-CMS-MailID: 20200702134434eucas1p233a3f66f5bdb4b97f4f49d2d43d45297
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200702134434eucas1p233a3f66f5bdb4b97f4f49d2d43d45297
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200702134434eucas1p233a3f66f5bdb4b97f4f49d2d43d45297
+References: <CAHp75VegHLG5tgVFjwmpmDfSqELqNXcb9dFSM4jLRx+anW7Lsw@mail.gmail.com>
+        <CGME20200702134434eucas1p233a3f66f5bdb4b97f4f49d2d43d45297@eucas1p2.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eric,
+/sys/kernel/debug/devices_deferred property contains list of deferred devices.
+This list does not contain reason why the driver deferred probe, the patch
+improves it.
+The natural place to set the reason is dev_err_probe function introduced
+recently, ie. if dev_err_probe will be called with -EPROBE_DEFER instead of
+printk the message will be attached to a deferred device and printed when user
+reads devices_deferred property.
 
-On Thu, 2 Jul 2020 10:47:39 +0200
-Auger Eric <eric.auger@redhat.com> wrote:
+Signed-off-by: Andrzej Hajda <a.hajda@samsung.com>
+Reviewed-by: Mark Brown <broonie@kernel.org>
+Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Reviewed-by: Rafael J. Wysocki <rafael@kernel.org>
+---
+v8:
+- improved commit message
+---
+ drivers/base/base.h |  3 +++
+ drivers/base/core.c |  8 ++++++--
+ drivers/base/dd.c   | 23 ++++++++++++++++++++++-
+ 3 files changed, 31 insertions(+), 3 deletions(-)
 
-> Hi,
-> 
-> On 7/1/20 5:33 PM, Jacob Pan wrote:
-> > For guest requested IOTLB invalidation, address and mask are
-> > provided as part of the invalidation data. VT-d HW silently ignores
-> > any address bits below the mask. SW shall also allow such case but
-> > give warning if address does not align with the mask. This patch
-> > relax the fault handling from error to warning and proceed with
-> > invalidation request with the given mask.  
-> What I don't really get is the guest shouldn't do that. Don't we want
-> to be more strict in that case and return an error?
-> 
-My thinking is that the driver should behave the same level of leniency
-as the HW. The other concern is that the consequence is severe, if TLB
-invalidation failed, we have hang the guest to protect security.
+diff --git a/drivers/base/base.h b/drivers/base/base.h
+index 95c22c0f9036..6954fccab3d7 100644
+--- a/drivers/base/base.h
++++ b/drivers/base/base.h
+@@ -93,6 +93,7 @@ struct device_private {
+ 	struct klist_node knode_class;
+ 	struct list_head deferred_probe;
+ 	struct device_driver *async_driver;
++	char *deferred_probe_reason;
+ 	struct device *device;
+ 	u8 dead:1;
+ };
+@@ -134,6 +135,8 @@ extern void device_release_driver_internal(struct device *dev,
+ extern void driver_detach(struct device_driver *drv);
+ extern int driver_probe_device(struct device_driver *drv, struct device *dev);
+ extern void driver_deferred_probe_del(struct device *dev);
++extern void device_set_deferred_probe_reson(const struct device *dev,
++					    struct va_format *vaf);
+ static inline int driver_match_device(struct device_driver *drv,
+ 				      struct device *dev)
+ {
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index 3a827c82933f..fee047f03681 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -3963,6 +3963,8 @@ define_dev_printk_level(_dev_info, KERN_INFO);
+  * This helper implements common pattern present in probe functions for error
+  * checking: print debug or error message depending if the error value is
+  * -EPROBE_DEFER and propagate error upwards.
++ * In case of -EPROBE_DEFER it sets also defer probe reason, which can be
++ * checked later by reading devices_deferred debugfs attribute.
+  * It replaces code sequence:
+  * 	if (err != -EPROBE_DEFER)
+  * 		dev_err(dev, ...);
+@@ -3984,10 +3986,12 @@ int dev_err_probe(const struct device *dev, int err, const char *fmt, ...)
+ 	vaf.fmt = fmt;
+ 	vaf.va = &args;
+ 
+-	if (err != -EPROBE_DEFER)
++	if (err != -EPROBE_DEFER) {
+ 		dev_err(dev, "error %d: %pV", err, &vaf);
+-	else
++	} else {
++		device_set_deferred_probe_reson(dev, &vaf);
+ 		dev_dbg(dev, "error %d: %pV", err, &vaf);
++	}
+ 
+ 	va_end(args);
+ 
+diff --git a/drivers/base/dd.c b/drivers/base/dd.c
+index 9a1d940342ac..dd5683b61f74 100644
+--- a/drivers/base/dd.c
++++ b/drivers/base/dd.c
+@@ -27,6 +27,7 @@
+ #include <linux/async.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/pinctrl/devinfo.h>
++#include <linux/slab.h>
+ 
+ #include "base.h"
+ #include "power/power.h"
+@@ -136,6 +137,8 @@ void driver_deferred_probe_del(struct device *dev)
+ 	if (!list_empty(&dev->p->deferred_probe)) {
+ 		dev_dbg(dev, "Removed from deferred list\n");
+ 		list_del_init(&dev->p->deferred_probe);
++		kfree(dev->p->deferred_probe_reason);
++		dev->p->deferred_probe_reason = NULL;
+ 	}
+ 	mutex_unlock(&deferred_probe_mutex);
+ }
+@@ -211,6 +214,23 @@ void device_unblock_probing(void)
+ 	driver_deferred_probe_trigger();
+ }
+ 
++/**
++ * device_set_deferred_probe_reson() - Set defer probe reason message for device
++ * @dev: the pointer to the struct device
++ * @vaf: the pointer to va_format structure with message
++ */
++void device_set_deferred_probe_reson(const struct device *dev, struct va_format *vaf)
++{
++	const char *drv = dev_driver_string(dev);
++
++	mutex_lock(&deferred_probe_mutex);
++
++	kfree(dev->p->deferred_probe_reason);
++	dev->p->deferred_probe_reason = kasprintf(GFP_KERNEL, "%s: %pV", drv, vaf);
++
++	mutex_unlock(&deferred_probe_mutex);
++}
++
+ /*
+  * deferred_devs_show() - Show the devices in the deferred probe pending list.
+  */
+@@ -221,7 +241,8 @@ static int deferred_devs_show(struct seq_file *s, void *data)
+ 	mutex_lock(&deferred_probe_mutex);
+ 
+ 	list_for_each_entry(curr, &deferred_probe_pending_list, deferred_probe)
+-		seq_printf(s, "%s\n", dev_name(curr->device));
++		seq_printf(s, "%s\t%s", dev_name(curr->device),
++			   curr->device->p->deferred_probe_reason ?: "\n");
+ 
+ 	mutex_unlock(&deferred_probe_mutex);
+ 
+-- 
+2.17.1
 
-> Thanks
-> 
-> Eric
-> > 
-> > Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> > ---
-> >  drivers/iommu/intel/iommu.c | 7 +++----
-> >  1 file changed, 3 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/iommu/intel/iommu.c
-> > b/drivers/iommu/intel/iommu.c index 6a0c62c7395c..2e1b53ade784
-> > 100644 --- a/drivers/iommu/intel/iommu.c
-> > +++ b/drivers/iommu/intel/iommu.c
-> > @@ -5439,13 +5439,12 @@ intel_iommu_sva_invalidate(struct
-> > iommu_domain *domain, struct device *dev, 
-> >  		switch (BIT(cache_type)) {
-> >  		case IOMMU_CACHE_INV_TYPE_IOTLB:
-> > +			/* HW will ignore LSB bits based on
-> > address mask */ if (inv_info->granularity == IOMMU_INV_GRANU_ADDR &&
-> >  			    size &&
-> >  			    (inv_info->addr_info.addr &
-> > ((BIT(VTD_PAGE_SHIFT + size)) - 1))) {
-> > -				pr_err_ratelimited("Address out of
-> > range, 0x%llx, size order %llu\n",
-> > -
-> > inv_info->addr_info.addr, size);
-> > -				ret = -ERANGE;
-> > -				goto out_unlock;
-> > +				pr_err_ratelimited("User address
-> > not aligned, 0x%llx, size order %llu\n",
-> > +
-> > inv_info->addr_info.addr, size); }
-> >  
-> >  			/*
-> >   
-> 
-
-[Jacob Pan]
