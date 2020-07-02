@@ -2,253 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AB3C211B81
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 07:23:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA33F211B7A
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 07:19:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726147AbgGBFXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 01:23:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726003AbgGBFXf (ORCPT
+        id S1726148AbgGBFTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 01:19:44 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:61279 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725872AbgGBFTn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 01:23:35 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B97CC08C5C1;
-        Wed,  1 Jul 2020 22:23:35 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id q3so12414406ilt.8;
-        Wed, 01 Jul 2020 22:23:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MrIiq6DPHqBGLcGy4awQj5Lf7ocfuRcVU3QA0UqcMzc=;
-        b=qYB6Nf4TEwfw/GwxgXjBmvXkwehh+YVaetDdp7hkclhIPnapQdTMsKhe2ZwJ2ruUF8
-         e1lgYhAEKSLmH2ZKQDZEg3h2CgunA+w/9jPoC4+QR0+zUfDov7bkT49g9mb0S2WJrMgH
-         6hXpgV27P+AfqHwMVph6aZfvyHyfx4x6COiw+youi4BeqYymDTT4oIZbd0TcNwFUvnZ0
-         pqG3gqbAk2iDlnAHAAr4ekxxGTSdKrUPqkRDjwvfqzIYOkI6MNYL8DYniIUcqQsn/OvC
-         ScSKZ6NYQ9APjTDmidzRCEM0JeEE81VozY/ncio88zD4UlheNeC8yUVwjG/OEqNsoWpP
-         C+ZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MrIiq6DPHqBGLcGy4awQj5Lf7ocfuRcVU3QA0UqcMzc=;
-        b=VuX1fDlyti3oUT67ae2d1Hi3Eski6mgecd7QTl6Ih2oM9q4qjs1xAULNToUwlD3YST
-         G/ve1cLycbKHnVSf5kgF9Xw55wtUskSuuUZLvLC1Tl487Edmap2n2zmvoJU11tLkqB47
-         ufnZxs4fs/pcnIsLVDwg0cNadeHxYSwf81dKcPxOA+/3tdEM1FH91Lix5oaqqD7q2r9S
-         7MvYNowg0Heyn2M6S88trtq4UwuVdMcLlr+W/KPw4MKi1QIGPM4ZHtC0w41zMWUfkfu9
-         BDsml+X7qLzsKiQilOgtFfUg2rgtZ07dhsbO8KNYgYwAMBGlJCabgkORcZQttKx4IMSZ
-         Lb+A==
-X-Gm-Message-State: AOAM530ZYLSj+DwKwzr+YsnmMmkfDVD4VcS/V0uv8bCUl1zHEchCtair
-        ue+zcpGTzfjOf/3GUIaOUcLpoAc+LAHNokBnOi0=
-X-Google-Smtp-Source: ABdhPJw1rNERV+43T1aSgz1QcWNkBext9nRtzr4Mfiuwrwrl5VMOvx7jOqK/T1tAqNHO9QFkol8bTJx2cfW5MW0tzEM=
-X-Received: by 2002:a92:9a97:: with SMTP id c23mr9634019ill.258.1593667414618;
- Wed, 01 Jul 2020 22:23:34 -0700 (PDT)
+        Thu, 2 Jul 2020 01:19:43 -0400
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200702051939epoutp04c38d8cf0501ef9d21d680f481b5dbf93~d19stCJyh1848918489epoutp04j
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 05:19:39 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200702051939epoutp04c38d8cf0501ef9d21d680f481b5dbf93~d19stCJyh1848918489epoutp04j
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1593667179;
+        bh=zmF5QSVq5UDkoxb9qTSNo2o/MBAjk8aZ5xjOTRB3H8A=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=pks2l2phggkyoMEereq8AxmzSr0u5wyrjLvRTLhHllxwoEtCoxaxMerbFvIlfLPoG
+         0BD9BYJ0ZetlyM0peTf7ojmot6Ii8RYHJhiZjmt1zLKybEcS6ew6RvyqXJ7xlWOLwu
+         aZeSDZ1t2o5ZbNq3aDCWt6Fua4Xumvtd0q7ZE4T4=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20200702051938epcas1p114a89014ed1c5753e604e8e55cef0b92~d19rWOBnO0552605526epcas1p1K;
+        Thu,  2 Jul 2020 05:19:38 +0000 (GMT)
+Received: from epsmges1p5.samsung.com (unknown [182.195.40.153]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 49y5xg5f68zMqYlv; Thu,  2 Jul
+        2020 05:19:35 +0000 (GMT)
+Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
+        epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
+        97.DC.28578.56E6DFE5; Thu,  2 Jul 2020 14:19:33 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20200702051933epcas1p111c52c4ed9fa37e9a1648335dba5e479~d19m_21WD0520905209epcas1p1E;
+        Thu,  2 Jul 2020 05:19:33 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200702051933epsmtrp2102f67d785e96f30fcb2bae48e5ab982~d19m957ZE1271712717epsmtrp2e;
+        Thu,  2 Jul 2020 05:19:33 +0000 (GMT)
+X-AuditID: b6c32a39-e6f5da8000006fa2-9c-5efd6e65d48b
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        B7.BE.08382.56E6DFE5; Thu,  2 Jul 2020 14:19:33 +0900 (KST)
+Received: from [10.113.221.102] (unknown [10.113.221.102]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200702051932epsmtip25824646da779bcc1c979a726e713af94~d19mmeBft2184521845epsmtip2f;
+        Thu,  2 Jul 2020 05:19:32 +0000 (GMT)
+Subject: Re: [PATCH v4 12/37] PM / devfreq: tegra20: Use MC timings for
+ building OPP table
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>
+Cc:     =?UTF-8?B?QXJ0dXIgxZp3aWdvxYQ=?= <a.swigon@samsung.com>,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org
+From:   Chanwoo Choi <cw00.choi@samsung.com>
+Organization: Samsung Electronics
+Message-ID: <2069fb51-f043-795d-7768-0024fc9a9f4e@samsung.com>
+Date:   Thu, 2 Jul 2020 14:30:48 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
+        Thunderbird/59.0
 MIME-Version: 1.0
-References: <20200630044943.3425049-1-rajatja@google.com> <20200630044943.3425049-6-rajatja@google.com>
- <20200630104948.GC856968@kuha.fi.intel.com> <20200630125216.GA1109228@kroah.com>
- <CAJZ5v0iYFKrouQx_b7afPnz7ohjWOKKDhdHj_3HObKYV_rRhiw@mail.gmail.com>
- <20200630153816.GD1785141@kroah.com> <CAJZ5v0jUx-RVhJRDngkOXx-3szFJDOgCJs2yuGKFyo2f1qZAwA@mail.gmail.com>
- <20200630170012.GB1894898@kroah.com> <CACK8Z6Fcrb8PtmbUJLn8RgiGnC8eqTC9GjsgjPmQgU212WPU0Q@mail.gmail.com>
-In-Reply-To: <CACK8Z6Fcrb8PtmbUJLn8RgiGnC8eqTC9GjsgjPmQgU212WPU0Q@mail.gmail.com>
-From:   "Oliver O'Halloran" <oohall@gmail.com>
-Date:   Thu, 2 Jul 2020 15:23:23 +1000
-Message-ID: <CAOSf1CEZ82iXhYnig0UScS+oRRaxHzSCge9LbA1hW3NaQAiSxQ@mail.gmail.com>
-Subject: Re: [PATCH v2 5/7] driver core: Add device location to "struct
- device" and expose it in sysfs
-To:     Rajat Jain <rajatja@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        "open list:AMD IOMMU (AMD-VI)" <iommu@lists.linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>,
-        "Krishnakumar, Lalithambika" <lalithambika.krishnakumar@intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Prashant Malani <pmalani@google.com>,
-        Benson Leung <bleung@google.com>,
-        Todd Broch <tbroch@google.com>,
-        Alex Levin <levinale@google.com>,
-        Mattias Nissler <mnissler@google.com>,
-        Rajat Jain <rajatxjain@gmail.com>,
-        Bernie Keany <bernie.keany@intel.com>,
-        Aaron Durbin <adurbin@google.com>,
-        Diego Rivas <diegorivas@google.com>,
-        Duncan Laurie <dlaurie@google.com>,
-        Furquan Shaikh <furquan@google.com>,
-        Jesse Barnes <jsbarnes@google.com>,
-        Christian Kellner <christian@kellner.me>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <4b22d3ee-f303-d81d-e261-187d4a46e749@gmail.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrHJsWRmVeSWpSXmKPExsWy7bCmgW5q3t84g9OLbCzuz2tltHj36Smr
+        xfwj51gtVn98zGhx5et7NovpezexWbTMWsRicbbpDbvF5V1z2Cw+9x5htOj8MovN4uIpV4vb
+        jSvYLCatncpo0br3CLvFv2sbWSx+7prH4iDo8f5GK7vHzll32T0unfvD7LFpVSebx51re9g8
+        7ncfZ/LobX7H5tG3ZRWjx+dNcgGcUdk2GamJKalFCql5yfkpmXnptkrewfHO8aZmBoa6hpYW
+        5koKeYm5qbZKLj4Bum6ZOUC/KCmUJeaUAoUCEouLlfTtbIryS0tSFTLyi0tslVILUnIKLAv0
+        ihNzi0vz0vWS83OtDA0MjEyBChOyM27e/8decFuyYv1e9gbG1yJdjJwcEgImEjubbjJ2MXJx
+        CAnsYJTYcWoCG4TziVHiZM9JdgjnG6PEm/v32WBaHr27ygSR2Msoce/LRRYI5z2jxI8nW5lB
+        qoQFYiQmdc8AS4gIHGGWWN15HGwLs8BlRomzbV/AZrEJaEnsf3EDzOYXUJS4+uMxI4jNK2An
+        8eTGBRYQm0VARWL9qSawGlGBMImT21qgagQlTs58AlbDKWArcfX1PbAaZgFxiVtP5jNB2PIS
+        zVtnM0Pc3c4pse5EPoTtInHq3i8mCFtY4tXxLewQtpTE53d7of6sllh58gg4NCQEOhgltuy/
+        wAqRMJbYv3QyUDMH0AJNifW79CHCihI7f89lhNjLJ/Huaw8rSImEAK9ER5sQRImyxOUHd6HW
+        Skosbu9km8CoNAvJN7OQfDALyQezEJYtYGRZxSiWWlCcm55abFhgihzdmxjBCV3Lcgfj9Lcf
+        9A4xMnEwHmKU4GBWEuE9bfArTog3JbGyKrUoP76oNCe1+BCjKTB8JzJLiSbnA3NKXkm8oamR
+        sbGxhYmhmamhoZI4r5P1hTghgfTEktTs1NSC1CKYPiYOTqkGps1zXktMkLJsv+MR1nhC6viM
+        8KAPiokuS8L+/TieW27IxaR07lY2Y88yf/POZJMlU1UMnfrPvZvxotDjrX3DizWh75/9i/T8
+        Y3aUL/tz6JJD3vkaLItuyqnxPl5buDbXKcxcJP6BoKCvXOJ5zacXLXtk08VY1b8lvp5/33Xv
+        1ZbGXHVh3bOsO59mtm76YqPhU+q45FdIb+hUpcOrDa/dtPnyirOzi2nqj4uX5mpFOcgrZO0y
+        myl8rLnKplYx657d/zc7lmWtv+puqXd40sYjDNLMHL+uHu7343pZU7fzonVaM/sJI+4D/+Sv
+        JPIsPxywdq1dl8y5/ScKW48u2xTFe/Ua261df91dT27Zty4lWYmlOCPRUIu5qDgRACnbDORx
+        BAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrBIsWRmVeSWpSXmKPExsWy7bCSvG5q3t84g0tzeS3uz2tltHj36Smr
+        xfwj51gtVn98zGhx5et7NovpezexWbTMWsRicbbpDbvF5V1z2Cw+9x5htOj8MovN4uIpV4vb
+        jSvYLCatncpo0br3CLvFv2sbWSx+7prH4iDo8f5GK7vHzll32T0unfvD7LFpVSebx51re9g8
+        7ncfZ/LobX7H5tG3ZRWjx+dNcgGcUVw2Kak5mWWpRfp2CVwZN+//Yy+4LVmxfi97A+NrkS5G
+        Tg4JAROJR++uMnUxcnEICexmlJi+tpURIiEpMe3iUeYuRg4gW1ji8OFikLCQwFtGib4H3CC2
+        sECMxKTuGSwgvSICx5glNp0+DTaIWeAyo8SOzq9sEFPnMUlcmH6fBaSFTUBLYv+LG2wgNr+A
+        osTVH4/BtvEK2Ek8uXEBrIZFQEVi/akmsBpRgTCJnUseM0HUCEqcnPkErIZTwFbi6ut7YDXM
+        AuoSf+ZdYoawxSVuPZnPBGHLSzRvnc08gVF4FpL2WUhaZiFpmYWkZQEjyypGydSC4tz03GLD
+        AsO81HK94sTc4tK8dL3k/NxNjODI1tLcwbh91Qe9Q4xMHIyHGCU4mJVEeE8b/IoT4k1JrKxK
+        LcqPLyrNSS0+xCjNwaIkznujcGGckEB6YklqdmpqQWoRTJaJg1OqgSl4mQOrZOLPdbOtygTZ
+        rO4t5fvAXum4c4Ho1qP9PwP6m+ReMfBuOCe7pmLfzeYDCUe0Tnm2M1+aoPwqUPuy/my9N6lb
+        p18vEHBlUpG3cFiTtsX2j9KOHOubYkVWzPV1k3nXnTl+1HZJlavx+UPKk/5eO/F2Dc/yOyHf
+        pqTdnTF1VY60g8dJ27uZG7dtCxTVmOCv3bDBKEl7lkJizUkOF2P+buNXy9iO5ubMTVGd/Nx3
+        qeC3C4kBdrs5f39KNHiiG6s4qdmsLValyqzzXH7Vtcbim+dCz/1b+nuiYcGOabP830Td26Qs
+        2R0a/n7lpOtMzlz2GRqmoXvmyMfsLFU5f0v20pXWrY/uJWn1H/ji1KTEUpyRaKjFXFScCACf
+        kFbgWwMAAA==
+X-CMS-MailID: 20200702051933epcas1p111c52c4ed9fa37e9a1648335dba5e479
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200609131458epcas1p2c774a0302bcef2c02790c2cb8cad57a0
+References: <20200609131404.17523-1-digetx@gmail.com>
+        <CGME20200609131458epcas1p2c774a0302bcef2c02790c2cb8cad57a0@epcas1p2.samsung.com>
+        <20200609131404.17523-13-digetx@gmail.com>
+        <4ea7fe00-7676-3186-8222-6e0d0eb8ed1f@samsung.com>
+        <4b22d3ee-f303-d81d-e261-187d4a46e749@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 2, 2020 at 4:07 AM Rajat Jain <rajatja@google.com> wrote:
->
-> *snip*
->
-> > > I guess it would make sense to have an attribute for user space to
-> > > write to in order to make the kernel reject device plug-in events
-> > > coming from a given port or connector, but the kernel has no reliable
-> > > means to determine *which* ports or connectors are "safe", and even if
-> > > there was a way for it to do that, it still may not agree with user
-> > > space on which ports or connectors should be regarded as "safe".
-> >
-> > Again, we have been doing this for USB devices for a very long time, PCI
-> > shouldn't be any different.  Why people keep ignoring working solutions
-> > is beyond me, there's nothing "special" about PCI devices here for this
-> > type of "worry" or reasoning to try to create new solutions.
-> >
-> > So, again, I ask, go do what USB does, and to do that, take the logic
-> > out of the USB core, make it bus-agnositic, and _THEN_ add it to the PCI
-> > code. Why the original submitter keeps ignoring my request to do this
-> > is beyond me, I guess they like making patches that will get rejected :(
->
-> IMHO I'm actually trying to precisely do what I think was the
-> conclusion of our discussion, and then some changes because of the
-> further feedback I received on those patches. Let's take a step back
-> and please allow me to explain how I got here (my apologies but this
-> spans a couple of threads, and I"m trying to tie them all together
-> here):
+On 7/2/20 2:07 PM, Dmitry Osipenko wrote:
+> 02.07.2020 07:18, Chanwoo Choi пишет:
+>> Hi Dmitry,
+>>
+>> On 6/9/20 10:13 PM, Dmitry Osipenko wrote:
+>>> The clk_round_rate() won't be usable for building OPP table once
+>>> interconnect support will be added to the EMC driver because that CLK API
+>>> function limits the rounded rate based on the clk rate that is imposed by
+>>> active clk-users, and thus, the rounding won't work as expected if
+>>> interconnect will set the minimum EMC clock rate before devfreq driver is
+>>> loaded. The struct tegra_mc contains memory timings which could be used by
+>>> the devfreq driver for building up OPP table instead of rounding clock
+>>> rate, this patch implements this idea.
+>>>
+>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>>> ---
+>>>  drivers/devfreq/tegra20-devfreq.c | 18 +++++++++++-------
+>>>  1 file changed, 11 insertions(+), 7 deletions(-)
+>>>
+>>> diff --git a/drivers/devfreq/tegra20-devfreq.c b/drivers/devfreq/tegra20-devfreq.c
+>>> index 6469dc69c5e0..bf504ca4dea2 100644
+>>> --- a/drivers/devfreq/tegra20-devfreq.c
+>>> +++ b/drivers/devfreq/tegra20-devfreq.c
+>>> @@ -123,8 +123,7 @@ static int tegra_devfreq_probe(struct platform_device *pdev)
+>>>  {
+>>>  	struct tegra_devfreq *tegra;
+>>>  	struct tegra_mc *mc;
+>>> -	unsigned long max_rate;
+>>> -	unsigned long rate;
+>>> +	unsigned int i;
+>>>  	int err;
+>>>  
+>>>  	mc = tegra_get_memory_controller();
+>>> @@ -151,12 +150,17 @@ static int tegra_devfreq_probe(struct platform_device *pdev)
+>>>  
+>>>  	tegra->regs = mc->regs;
+>>>  
+>>> -	max_rate = clk_round_rate(tegra->emc_clock, ULONG_MAX);
+>>> -
+>>> -	for (rate = 0; rate <= max_rate; rate++) {
+>>> -		rate = clk_round_rate(tegra->emc_clock, rate);
+>>> +	if (!mc->num_timings) {
+>>
+>> Could you explain what is meaning of 'num_timing?
+> 
+> The num_timings is the number of memory timings defined in a
+> device-tree. One timing configuration per memory clock rate.
 
-The previous thread had some suggestions, but no real conclusions.
-That's probably why we're still arguing about it...
+OK. I understand.
 
-> GOAL: To allow user space to control what (PCI) drivers he wants to
-> allow on external (thunderbolt) ports. There was a lot of debate about
-> the need for such a policy at
-> https://lore.kernel.org/linux-pci/CACK8Z6GR7-wseug=TtVyRarVZX_ao2geoLDNBwjtB+5Y7VWNEQ@mail.gmail.com/
-> with the final conclusion that it should be OK to implement such a
-> policy in userspace, as long as the policy is not implemented in the
-> kernel. The kernel only needs to expose bits & info that is needed by
-> the userspace to implement such a policy, and it can be used in
-> conjunction with "drivers_autoprobe" to implement this policy:
-> --------------------------------------------------------------------
-> ....
-> That's an odd thing, but sure, if you want to write up such a policy for
-> your systems, great.  But that policy does not belong in the kernel, it
-> belongs in userspace.
-> ....
-> --------------------------------------------------------------------
-> 1) The post https://lore.kernel.org/linux-pci/20200609210400.GA1461839@bjorn-Precision-5520/
-> lists out the approach that was agreed on. Replicating it here:
-> -----------------------------------------------------------------------
->   - Expose the PCI pdev->untrusted bit in sysfs.  We don't expose this
->     today, but doing so would be trivial.  I think I would prefer a
->     sysfs name like "external" so it's more descriptive and less of a
->     judgment.
->
->     This comes from either the DT "external-facing" property or the
->     ACPI "ExternalFacingPort" property.
->
->   - All devices present at boot are enumerated.  Any statically built
->     drivers will bind to them before any userspace code runs.
->
->     If you want to keep statically built drivers from binding, you'd
->     need to invent some mechanism so pci_driver_init() could clear
->     drivers_autoprobe after registering pci_bus_type.
->
->   - Early userspace code prevents modular drivers from automatically
->     binding to PCI devices:
->
->       echo 0 > /sys/bus/pci/drivers_autoprobe
->
->     This prevents modular drivers from binding to all devices, whether
->     present at boot or hot-added.
->
->   - Userspace code uses the sysfs "bind" file to control which drivers
->     are loaded and can bind to each device, e.g.,
->
->       echo 0000:02:00.0 > /sys/bus/pci/drivers/nvme/bind
+> 
+>> Also, why add the opp entry in case of mc->num_timings is zero?
+> 
+> Timings may be not defined in some device-trees at all and in this case
+> memory always running on a fixed clock rate.
 
-I think this is a reasonable suggestion. However, as Greg pointed out
-it's gratuitously different to what USB does for no real reason.
+You mean that 'timings' information is optional?
 
-> -----------------------------------------------------------------------
-> 2) As part of implementing the above agreed approach, when I exposed
-> PCI "untrusted" attribute to userspace, it ran into discussion that
-> concluded that instead of this, the device core should be enhanced
-> with a location attribute.
-> https://lore.kernel.org/linux-pci/20200618184621.GA446639@kroah.com/
-> -----------------------------------------------------------------------
-> ...
-> The attribute should be called something like "location" or something
-> like that (naming is hard), as you don't always know if something is
-> external or not (it could be internal, it could be unknown, it could be
-> internal to an external device that you trust (think PCI drawers for
-> "super" computers that are hot pluggable but yet really part of the
-> internal bus).
-> ....
-> "trust" has no direct relation to the location, except in a policy of
-> what you wish to do with that device, so as long as you keep them
-> separate that way, I am fine with it.
-> ...
-> -----------------------------------------------------------------------
->
-> And hence this patch. I don't see an attribute in USB comparable to
-> this new attribute, except for the boolean "removable" may be. Are you
-> suggesting to pull that into the device core instead of adding this
-> "physical_location" attribute?
+> 
+> The devfreq driver won't be practically useful if mc->num_timings is
+> zero since memory frequency can't be changed, but anyways we'd want to
+> load the devfreq driver in order to prevent confusion about why it's not
+> loaded.
+> 
+> For example, you may ask somebody to show contents of
+> /sys/class/devfreq/tegra20-devfreq/trans_stat and the person says to you
+> that this file doesn't exist, now you'll have to figure out what
+> happened to the devfreq driver.
 
-He's suggesting you pull the "authorized" attribute into the driver
-core. That's the mechanism USB uses to block drivers binding unless
-userspace authorizes them. I don't see any reason why we can't re-use
-that sysfs interface for PCI devices since the problem being solved is
-fundamentally the same. The main question is what we should do as a
-default policy in the kernel. For USB the default comes from the
-"authorized_default" module param of usbcore:
+I understand why add OPP entry point when timing is not defined on DT.
+But, actually, I think that you better to change 'timings' info is mandatory
+instead of optional. Because the devfreq driver is for DVFS
+and the driver supporting DVFS have to have the frequency information
+like OPP.
 
-> /* authorized_default behaviour:
->  * -1 is authorized for all devices except wireless (old behaviour)
->  * 0 is unauthorized for all devices
->  * 1 is authorized for all devices
->  * 2 is authorized for internal devices
->  */
-> #define USB_AUTHORIZE_WIRED   -1
-> #define USB_AUTHORIZE_NONE    0
-> #define USB_AUTHORIZE_ALL     1
-> #define USB_AUTHORIZE_INTERNAL        2
->
-> static int authorized_default = USB_AUTHORIZE_WIRED;
-> module_param(authorized_default, int, S_IRUGO|S_IWUSR);
+Or, 
+If you want to keep 'timing' is optional on DT,
+I recommend that you add one timing data to tegra mc driver
+when DT doesn't include the any timing information
+I think that is it more clear.
 
-So the default policy for USB is to authorize any wired USB device and
-we can optionally restrict that to just integrated devices. Sounding
-familiar?
-
-The internal / external status is still useful to know so we might
-want to make a sysfs attribute for that too. However, I'd like to
-point out that internal / external isn't the whole story. As I
-mentioned in the last thread if I have a BMC device I *really* don't
-want it to be authorized by default even though it's an internal
-device. Similarly, if I know all my internal cards support PCIe
-Component Authentication then I might choose not to trust any PCI
-devices unless they authenticate successfully.
-
-> 3) The one deviation from the agreed approach in (1) is
-> https://patchwork.kernel.org/patch/11633095/ . The reason is I
-> realized that contrary to what I earlier believed, we might not be
-> able to disable the PCI link to all external PCI devices at boot. So
-> external PCI devices may actually bind to drivers before userspace
-> comes up and does "echo 0 > /sys/bus/pci/drivers_autoprobe").
-
-Yep, that's a problem. If we want to provide a useful mechanism to
-userspace then the default behaviour of the kernel can't undermine
-that mechanism. If that means we need another kernel command line
-parameter then I guess we just have to live with it.
-
-Oliver
+-- 
+Best Regards,
+Chanwoo Choi
+Samsung Electronics
