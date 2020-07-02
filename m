@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B6D0212FEA
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 01:11:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C557212FE8
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 01:11:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726847AbgGBXLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 19:11:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43438 "EHLO
+        id S1726803AbgGBXL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 19:11:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726749AbgGBXLS (ORCPT
+        with ESMTP id S1726756AbgGBXLT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 19:11:18 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BFC1C08C5DD
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 16:11:18 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id p20so31751994ejd.13
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 16:11:18 -0700 (PDT)
+        Thu, 2 Jul 2020 19:11:19 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C18CC08C5DF
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 16:11:19 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id a1so31777567ejg.12
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 16:11:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=jd5OyA62jQVyFQS+Wq/MjJJlFxvsmVOnF8emDjOOsMo=;
-        b=sA1QpfBd76owcllub48ojOBB4hrz5bMN5CFU6w9NpW3Xalt4ecbLf8GgC+08DGZmqq
-         jIkXFUOl6GhEX4/050tdKZ9bWvWUSM50C1MVWudkBOWoHzkgKk1TlHmtOtDokw1Eixnu
-         gNMm6ybIdPku0Y5eh5UF3wbP0F4IxSTjMA5wEiSHY7Acgethvb3iBdFVdfBVQtBy/Jqb
-         yknLtNyTj18LqP7Bu5kKmpXB1rwZG31U9dpSupQUVIFDOIr+s2fTh/ZLHhuiZ43UFlQa
-         BjrOwhmGQ77rPSaMCbI+2un/Joh6LlLj5RXA8n1PkeIyq3Ifa0BMrpIGMhhTj2jmLKIW
-         iWWA==
+        bh=XftDDHJLGP4abIDDD34XPeZJNkIQZFz4M9hvz8t7ynw=;
+        b=sa342xn2HVHfR22KZvlz2pIpNkiA544bdmuwFyl8jqIBDBICuSdecLQUhdgf1vFG9L
+         aKA+smhdeYDMyV5pgAr2m4BNQ3gKG9Ia4U3uUJakayzUp+283ekvLS81AIyjKhkqixKF
+         lyNUj8F4Cqrm1/Es7g7NOOLSqMTpCuaZij6uVRtN1hIywwoiBjfMOtlwTtjfvXL8TkLn
+         x8Om3uUPzW0hMuOY+9RzVeirm+JSRk+KKwl49Q8aCt8Y8MTBqDFmzXa3knOTeN+EUYRR
+         emIoySg35EfQhjKaVuPZG05qo+6uoAAggdugXeP6DrzPwlkwsjjdHHKY3vQWjhyzkMKu
+         aGDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=jd5OyA62jQVyFQS+Wq/MjJJlFxvsmVOnF8emDjOOsMo=;
-        b=skQPr0f018WAisN6JYKinenIann8VNEqEY0dkyY/ZPNtrN9LAksF8Z8lQMA+hB7lW+
-         TPX6hvSQgMcGe+VBvBDTsyKBKuB9Et/ZW7vaqdvkGghxMkffEqsGqtE8kT5A3U16wC0t
-         5zZK3vz2YjuViz/Ns5s0BHqWklcH6FjJAlUC2usZOukx0aNu4NUPNwJZfO/4tS2gi4Nh
-         bIffHiJ3S8wc29znBwu/VXBTSdwD7qNbiCR8aqrsbK4ojXGywOUcCV9ydLfj645pfKX+
-         /Hc85zMkhH/TU4WkCft6EN7zBx3ZF/ovhjxkuQpTJrcx5hAhlyOSUPSaOOdxqq1R+pCS
-         V4xw==
-X-Gm-Message-State: AOAM531l6fq3vqKTVSYui6FPJN7zXrSUZtajdTmOTpB8zWOxhGwWBCTL
-        UCN7whKAG/w84DBJI3drI4TaSLx7
-X-Google-Smtp-Source: ABdhPJyqxw7ZvtPVgnaerdULLZOuq0rT64ji6ODuxQYI7clvuu4PlTcba96E8JEeQHg4hPal2gJKtA==
-X-Received: by 2002:a17:906:784c:: with SMTP id p12mr29556705ejm.123.1593731476582;
-        Thu, 02 Jul 2020 16:11:16 -0700 (PDT)
+        bh=XftDDHJLGP4abIDDD34XPeZJNkIQZFz4M9hvz8t7ynw=;
+        b=COMg0PEkZlhugSYJ3a58SFKcXCk2Cm6pv4LT/mFzS4j0ME3jwRz2sg2+GrxyeCg5I7
+         qUDVR54UGhRseZYdan19qcg4eJk2gt8j7uJvW4TqC0DoPC5zCDADx4riYScQxgLqU2Ay
+         815IIzYnYkhQYJ0bRyPSkymBZd6RJvYt1Gr6/ZGma7BWH4O8ZxzeJ5y4WlAnpnlemrsj
+         gdaQGeMq3cZltiwj3rOZn0FMLojCOpwlPimXCJ/2vW80+fYN5tiJD1PyBPavCcGhXAxq
+         KQG4Szfp1M3K9QMJM275mX+kSDzctp9WBSoZ8LU2ZFQxL0b6H8WRe3G7Z2cO4M8xTMN0
+         tUwg==
+X-Gm-Message-State: AOAM533h0PAyxHcnUlPgG1Dr730voWGMXNPqciQ926zq7ydrIQmFFSoI
+        2x2jY9lCPSAc1TIP/gWX+p99qNCD
+X-Google-Smtp-Source: ABdhPJyB0bbxGkKo34d8X1wyqipu5uIttuzKXyLWFM1vYs9AxN1p3iX7klG+beoKnzeDAKnQsCBHFw==
+X-Received: by 2002:a17:906:fac3:: with SMTP id lu3mr22409948ejb.374.1593731477685;
+        Thu, 02 Jul 2020 16:11:17 -0700 (PDT)
 Received: from localhost.localdomain ([2a02:a03f:b7f9:7600:bd38:c82d:5283:9f1])
-        by smtp.gmail.com with ESMTPSA id x9sm8214031ejw.28.2020.07.02.16.11.15
+        by smtp.gmail.com with ESMTPSA id x9sm8214031ejw.28.2020.07.02.16.11.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Jul 2020 16:11:16 -0700 (PDT)
+        Thu, 02 Jul 2020 16:11:17 -0700 (PDT)
 From:   Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-Subject: [PATCH 12/15] options: keep the options sorted
-Date:   Fri,  3 Jul 2020 01:10:36 +0200
-Message-Id: <20200702231039.55015-13-luc.vanoostenryck@gmail.com>
+Subject: [PATCH 13/15] cleanup: move predefines in a separate file
+Date:   Fri,  3 Jul 2020 01:10:37 +0200
+Message-Id: <20200702231039.55015-14-luc.vanoostenryck@gmail.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200702231039.55015-1-luc.vanoostenryck@gmail.com>
 References: <20200702231039.55015-1-luc.vanoostenryck@gmail.com>
@@ -64,338 +64,505 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The declarations and definitions of the variables corresponding to
-the options half-sorted half-unsorted.
-
-Sort them a little more.
+Now that option parsing have moved to a separate file, move
+everything related to predefined macros to a separate file too.
 
 Signed-off-by: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
 ---
- options.c |  98 +++++++++++++++++++-------------------
- options.h | 137 ++++++++++++++++++++++++++++--------------------------
- 2 files changed, 120 insertions(+), 115 deletions(-)
+ Makefile    |   1 +
+ lib.c       | 221 ---------------------------------------------------
+ lib.h       |   1 +
+ predefine.c | 225 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 227 insertions(+), 221 deletions(-)
+ create mode 100644 predefine.c
 
-diff --git a/options.c b/options.c
-index 092c8690d054..9f05bdf9cf4f 100644
---- a/options.c
-+++ b/options.c
-@@ -18,20 +18,33 @@
- #include <string.h>
+diff --git a/Makefile b/Makefile
+index dce666d27c41..f4483f5a1deb 100644
+--- a/Makefile
++++ b/Makefile
+@@ -54,6 +54,7 @@ LIB_OBJS += opcode.o
+ LIB_OBJS += optimize.o
+ LIB_OBJS += options.o
+ LIB_OBJS += parse.o
++LIB_OBJS += predefine.o
+ LIB_OBJS += pre-process.o
+ LIB_OBJS += ptrlist.o
+ LIB_OBJS += ptrmap.o
+diff --git a/lib.c b/lib.c
+index 53b107d2d063..fd1fe6cb3ba5 100644
+--- a/lib.c
++++ b/lib.c
+@@ -248,227 +248,6 @@ void add_pre_buffer(const char *fmt, ...)
+ 	pre_buffer_end = end;
+ }
  
- 
--int verbose, optimize_level, optimize_size, preprocessing;
--int die_if_error = 0;
--int has_error = 0;
--int do_output = 1;
+-////////////////////////////////////////////////////////////////////////////////
+-// Predefines
 -
- #ifndef __GNUC__
- # define __GNUC__ 2
- # define __GNUC_MINOR__ 95
- # define __GNUC_PATCHLEVEL__ 0
- #endif
+-#define	PTYPE_SIZEOF	(1U << 0)
+-#define	PTYPE_T		(1U << 1)
+-#define	PTYPE_MAX	(1U << 2)
+-#define	PTYPE_MIN	(1U << 3)
+-#define	PTYPE_WIDTH	(1U << 4)
+-#define	PTYPE_TYPE	(1U << 5)
+-#define	PTYPE_ALL	(PTYPE_MAX|PTYPE_SIZEOF|PTYPE_WIDTH)
+-#define	PTYPE_ALL_T	(PTYPE_MAX|PTYPE_SIZEOF|PTYPE_WIDTH|PTYPE_T)
+-
+-static void predefined_sizeof(const char *name, const char *suffix, unsigned bits)
+-{
+-	char buf[32];
+-
+-	snprintf(buf, sizeof(buf), "__SIZEOF_%s%s__", name, suffix);
+-	predefine(buf, 1, "%d", bits/8);
+-}
+-
+-static void predefined_width(const char *name, unsigned bits)
+-{
+-	char buf[32];
+-
+-	snprintf(buf, sizeof(buf), "__%s_WIDTH__", name);
+-	predefine(buf, 1, "%d", bits);
+-}
+-
+-static void predefined_max(const char *name, struct symbol *type)
+-{
+-	const char *suffix = builtin_type_suffix(type);
+-	unsigned bits = type->bit_size - is_signed_type(type);
+-	unsigned long long max = bits_mask(bits);
+-	char buf[32];
+-
+-	snprintf(buf, sizeof(buf), "__%s_MAX__", name);
+-	predefine(buf, 1, "%#llx%s", max, suffix);
+-}
+-
+-static void predefined_min(const char *name, struct symbol *type)
+-{
+-	const char *suffix = builtin_type_suffix(type);
+-	char buf[32];
+-
+-	snprintf(buf, sizeof(buf), "__%s_MIN__", name);
+-
+-	if (is_signed_type(type))
+-		predefine(buf, 1, "(-__%s_MAX__ - 1)", name);
+-	else
+-		predefine(buf, 1, "0%s", suffix);
+-}
+-
+-static void predefined_type(const char *name, struct symbol *type)
+-{
+-	const char *typename = builtin_typename(type);
+-	add_pre_buffer("#weak_define __%s_TYPE__ %s\n", name, typename);
+-}
+-
+-static void predefined_ctype(const char *name, struct symbol *type, int flags)
+-{
+-	unsigned bits = type->bit_size;
+-
+-	if (flags & PTYPE_SIZEOF) {
+-		const char *suffix = (flags & PTYPE_T) ? "_T" : "";
+-		predefined_sizeof(name, suffix, bits);
+-	}
+-	if (flags & PTYPE_MAX)
+-		predefined_max(name, type);
+-	if (flags & PTYPE_MIN)
+-		predefined_min(name, type);
+-	if (flags & PTYPE_TYPE)
+-		predefined_type(name, type);
+-	if (flags & PTYPE_WIDTH)
+-		predefined_width(name, bits);
+-}
+-
+-static void predefined_macros(void)
+-{
+-	predefine("__CHECKER__", 0, "1");
+-	predefine("__GNUC__", 1, "%d", gcc_major);
+-	predefine("__GNUC_MINOR__", 1, "%d", gcc_minor);
+-	predefine("__GNUC_PATCHLEVEL__", 1, "%d", gcc_patchlevel);
+-
+-	predefine("__STDC__", 1, "1");
+-	predefine("__STDC_HOSTED__", 0, fhosted ? "1" : "0");
+-	switch (standard) {
+-	default:
+-		break;
+-
+-	case STANDARD_C94:
+-		predefine("__STDC_VERSION__", 1, "199409L");
+-		break;
+-
+-	case STANDARD_C99:
+-	case STANDARD_GNU99:
+-		predefine("__STDC_VERSION__", 1, "199901L");
+-		break;
+-
+-	case STANDARD_C11:
+-	case STANDARD_GNU11:
+-		predefine("__STDC_VERSION__", 1, "201112L");
+-		break;
+-	case STANDARD_C17:
+-	case STANDARD_GNU17:
+-		predefine("__STDC_VERSION__", 1, "201710L");
+-		break;
+-	}
+-	if (!(standard & STANDARD_GNU) && (standard != STANDARD_NONE))
+-		predefine("__STRICT_ANSI__", 1, "1");
+-	if (standard >= STANDARD_C11) {
+-		predefine("__STDC_NO_ATOMICS__", 1, "1");
+-		predefine("__STDC_NO_COMPLEX__", 1, "1");
+-		predefine("__STDC_NO_THREADS__", 1, "1");
+-	}
+-
+-	predefine("__CHAR_BIT__", 1, "%d", bits_in_char);
+-	if (funsigned_char)
+-		predefine("__CHAR_UNSIGNED__", 1, "1");
+-
+-	predefined_ctype("SHORT",     &short_ctype, PTYPE_SIZEOF);
+-	predefined_ctype("SHRT",      &short_ctype, PTYPE_MAX|PTYPE_WIDTH);
+-	predefined_ctype("SCHAR",     &schar_ctype, PTYPE_MAX|PTYPE_WIDTH);
+-	predefined_ctype("WCHAR",      wchar_ctype, PTYPE_ALL_T|PTYPE_MIN|PTYPE_TYPE);
+-	predefined_ctype("WINT",        wint_ctype, PTYPE_ALL_T|PTYPE_MIN|PTYPE_TYPE);
+-	predefined_ctype("CHAR16",   &ushort_ctype, PTYPE_TYPE);
+-	predefined_ctype("CHAR32",    uint32_ctype, PTYPE_TYPE);
+-
+-	predefined_ctype("INT",         &int_ctype, PTYPE_ALL);
+-	predefined_ctype("LONG",       &long_ctype, PTYPE_ALL);
+-	predefined_ctype("LONG_LONG", &llong_ctype, PTYPE_ALL);
+-
+-	predefined_ctype("INT8",      &schar_ctype, PTYPE_MAX|PTYPE_TYPE);
+-	predefined_ctype("UINT8",     &uchar_ctype, PTYPE_MAX|PTYPE_TYPE);
+-	predefined_ctype("INT16",     &short_ctype, PTYPE_MAX|PTYPE_TYPE);
+-	predefined_ctype("UINT16",   &ushort_ctype, PTYPE_MAX|PTYPE_TYPE);
+-	predefined_ctype("INT32",      int32_ctype, PTYPE_MAX|PTYPE_TYPE);
+-	predefined_ctype("UINT32",    uint32_ctype, PTYPE_MAX|PTYPE_TYPE);
+-	predefined_ctype("INT64",      int64_ctype, PTYPE_MAX|PTYPE_TYPE);
+-	predefined_ctype("UINT64",    uint64_ctype, PTYPE_MAX|PTYPE_TYPE);
+-
+-	predefined_ctype("INTMAX",    intmax_ctype, PTYPE_MAX|PTYPE_TYPE|PTYPE_WIDTH);
+-	predefined_ctype("UINTMAX",  uintmax_ctype, PTYPE_MAX|PTYPE_TYPE);
+-	predefined_ctype("INTPTR",   ssize_t_ctype, PTYPE_MAX|PTYPE_TYPE|PTYPE_WIDTH);
+-	predefined_ctype("UINTPTR",   size_t_ctype, PTYPE_MAX|PTYPE_TYPE);
+-	predefined_ctype("PTRDIFF",  ssize_t_ctype, PTYPE_ALL_T|PTYPE_TYPE);
+-	predefined_ctype("SIZE",      size_t_ctype, PTYPE_ALL_T|PTYPE_TYPE);
+-	predefined_ctype("POINTER",     &ptr_ctype, PTYPE_SIZEOF);
+-
+-	predefined_sizeof("FLOAT", "", bits_in_float);
+-	predefined_sizeof("DOUBLE", "", bits_in_double);
+-	predefined_sizeof("LONG_DOUBLE", "", bits_in_longdouble);
+-
+-	if (arch_target->has_int128)
+-		predefined_sizeof("INT128", "", 128);
+-
+-	predefine("__ORDER_LITTLE_ENDIAN__", 1, "1234");
+-	predefine("__ORDER_BIG_ENDIAN__", 1, "4321");
+-	predefine("__ORDER_PDP_ENDIAN__", 1, "3412");
+-	if (arch_big_endian) {
+-		predefine("__BIG_ENDIAN__", 1, "1");
+-		predefine("__BYTE_ORDER__", 1, "__ORDER_BIG_ENDIAN__");
+-	} else {
+-		predefine("__LITTLE_ENDIAN__", 1, "1");
+-		predefine("__BYTE_ORDER__", 1, "__ORDER_LITTLE_ENDIAN__");
+-	}
+-
+-	if (optimize_level)
+-		predefine("__OPTIMIZE__", 0, "1");
+-	if (optimize_size)
+-		predefine("__OPTIMIZE_SIZE__", 0, "1");
+-
+-	predefine("__PRAGMA_REDEFINE_EXTNAME", 1, "1");
+-
+-	// Temporary hacks
+-	predefine("__extension__", 0, NULL);
+-	predefine("__pragma__", 0, NULL);
+-
+-	switch (arch_m64) {
+-	case ARCH_LP32:
+-		break;
+-	case ARCH_X32:
+-		predefine("__ILP32__", 1, "1");
+-		predefine("_ILP32", 1, "1");
+-		break;
+-	case ARCH_LP64:
+-		predefine("__LP64__", 1, "1");
+-		predefine("_LP64", 1, "1");
+-		break;
+-	case ARCH_LLP64:
+-		predefine("__LLP64__", 1, "1");
+-		break;
+-	}
+-
+-	if (fpic) {
+-		predefine("__pic__", 0, "%d", fpic);
+-		predefine("__PIC__", 0, "%d", fpic);
+-	}
+-	if (fpie) {
+-		predefine("__pie__", 0, "%d", fpie);
+-		predefine("__PIE__", 0, "%d", fpie);
+-	}
+-
+-	if (arch_target->predefine)
+-		arch_target->predefine(arch_target);
+-
+-	if (arch_os >= OS_UNIX) {
+-		predefine("__unix__", 1, "1");
+-		predefine("__unix", 1, "1");
+-		predefine_nostd("unix");
+-	}
+-
+-	if (arch_os == OS_SUNOS) {
+-		predefine("__sun__", 1, "1");
+-		predefine("__sun", 1, "1");
+-		predefine_nostd("sun");
+-		predefine("__svr4__", 1, "1");
+-	}
+-}
+-
+-////////////////////////////////////////////////////////////////////////////////
+-
+ static void create_builtin_stream(void)
+ {
+ 	// Temporary hack
+diff --git a/lib.h b/lib.h
+index b47505f638b4..81253a3e7ee5 100644
+--- a/lib.h
++++ b/lib.h
+@@ -130,6 +130,7 @@ enum phase {
+ extern void add_pre_buffer(const char *fmt, ...) FORMAT_ATTR(1);
+ extern void predefine(const char *name, int weak, const char *fmt, ...) FORMAT_ATTR(3);
+ extern void predefine_nostd(const char *name);
++extern void predefined_macros(void);
  
-+enum flag_type {
-+	FLAG_OFF,
-+	FLAG_ON,
-+	FLAG_FORCE_OFF
-+};
+ 
+ extern void dump_macro_definitions(void);
+diff --git a/predefine.c b/predefine.c
+new file mode 100644
+index 000000000000..ff457b389480
+--- /dev/null
++++ b/predefine.c
+@@ -0,0 +1,225 @@
++// SPDX-License-Identifier: MIT
++// Copyright (C) 2017-2020 Luc Van Oostenryck.
 +
-+int die_if_error = 0;
-+int do_output = 1;
- int gcc_major = __GNUC__;
- int gcc_minor = __GNUC_MINOR__;
- int gcc_patchlevel = __GNUC_PATCHLEVEL__;
-+int has_error = 0;
-+int optimize_level;
-+int optimize_size;
-+int preprocess_only;
-+int preprocessing;
-+int verbose;
++#include <stdio.h>
 +
-+#define CMDLINE_INCLUDE 20
-+int cmdline_include_nr = 0;
-+char *cmdline_include[CMDLINE_INCLUDE];
- 
- const char *base_filename;
- const char *diag_prefix = "";
-@@ -39,11 +52,35 @@ const char *gcc_base_dir = GCC_BASE;
- const char *multiarch_dir = MULTIARCH_TRIPLET;
- const char *outfile = NULL;
- 
--enum flag_type {
--	FLAG_OFF,
--	FLAG_ON,
--	FLAG_FORCE_OFF
--};
-+enum standard standard = STANDARD_GNU89;
++#include "lib.h"
++#include "machine.h"
++#include "symbol.h"
 +
-+int arch_big_endian = ARCH_BIG_ENDIAN;
-+int arch_cmodel = CMODEL_UNKNOWN;
-+int arch_fp_abi = FP_ABI_NATIVE;
-+int arch_m64 = ARCH_M64_DEFAULT;
-+int arch_msize_long = 0;
-+int arch_os = OS_NATIVE;
++#define PTYPE_SIZEOF	(1U << 0)
++#define PTYPE_T		(1U << 1)
++#define PTYPE_MAX	(1U << 2)
++#define PTYPE_MIN	(1U << 3)
++#define PTYPE_WIDTH	(1U << 4)
++#define PTYPE_TYPE	(1U << 5)
++#define PTYPE_ALL	(PTYPE_MAX|PTYPE_SIZEOF|PTYPE_WIDTH)
++#define PTYPE_ALL_T	(PTYPE_MAX|PTYPE_SIZEOF|PTYPE_WIDTH|PTYPE_T)
 +
-+int dbg_compound = 0;
-+int dbg_dead = 0;
-+int dbg_domtree = 0;
-+int dbg_entry = 0;
-+int dbg_ir = 0;
-+int dbg_postorder = 0;
 +
-+int dump_macro_defs = 0;
-+int dump_macros_only = 0;
++static void predefined_sizeof(const char *name, const char *suffix, unsigned bits)
++{
++	char buf[32];
 +
-+unsigned long fdump_ir;
-+int fhosted = 1;
-+unsigned int fmax_warnings = 100;
-+int fmem_report = 0;
-+unsigned long long fmemcpy_max_count = 100000;
-+unsigned long fpasses = ~0UL;
-+int fpic = 0;
-+int fpie = 0;
-+int fshort_wchar = 0;
-+int funsigned_char = 0;
- 
- int Waddress = 0;
- int Waddress_space = 1;
-@@ -60,11 +97,11 @@ int Wdeclarationafterstatement = -1;
- int Wdefault_bitfield_sign = 0;
- int Wdesignated_init = 1;
- int Wdo_while = 0;
-+int Wenum_mismatch = 1;
-+int Wexternal_function_has_definition = 1;
- int Wimplicit_int = 1;
- int Winit_cstring = 0;
- int Wint_to_pointer_cast = 1;
--int Wenum_mismatch = 1;
--int Wexternal_function_has_definition = 1;
- int Wmemcpy_max_count = 1;
- int Wnewline_eof = 1;
- int Wnon_pointer_null = 1;
-@@ -95,43 +132,6 @@ int Wuniversal_initializer = 0;
- int Wunknown_attribute = 0;
- int Wvla = 1;
- 
--int dump_macro_defs = 0;
--int dump_macros_only = 0;
--
--int dbg_compound = 0;
--int dbg_dead = 0;
--int dbg_domtree = 0;
--int dbg_entry = 0;
--int dbg_ir = 0;
--int dbg_postorder = 0;
--
--unsigned long fdump_ir;
--int fhosted = 1;
--unsigned int fmax_warnings = 100;
--int fmem_report = 0;
--unsigned long long fmemcpy_max_count = 100000;
--unsigned long fpasses = ~0UL;
--int fpic = 0;
--int fpie = 0;
--int fshort_wchar = 0;
--int funsigned_char = 0;
--
--int preprocess_only;
--
--enum standard standard = STANDARD_GNU89;
--
--int arch_msize_long = 0;
--int arch_m64 = ARCH_M64_DEFAULT;
--int arch_big_endian = ARCH_BIG_ENDIAN;
--int arch_fp_abi = FP_ABI_NATIVE;
--int arch_os = OS_NATIVE;
--int arch_cmodel = CMODEL_UNKNOWN;
--
--
--#define CMDLINE_INCLUDE 20
--int cmdline_include_nr = 0;
--char *cmdline_include[CMDLINE_INCLUDE];
--
- ////////////////////////////////////////////////////////////////////////////////
- // Helpers for option parsing
- 
-diff --git a/options.h b/options.h
-index 52d1106e7576..7fd01ec6cebe 100644
---- a/options.h
-+++ b/options.h
-@@ -1,26 +1,85 @@
- #ifndef OPTIONS_H
- #define OPTIONS_H
- 
--extern int verbose, optimize_level, optimize_size, preprocessing;
-+enum {
-+	CMODEL_UNKNOWN,
-+	CMODEL_KERNEL,
-+	CMODEL_LARGE,
-+	CMODEL_MEDANY,
-+	CMODEL_MEDIUM,
-+	CMODEL_MEDLOW,
-+	CMODEL_PIC,
-+	CMODEL_SMALL,
-+	CMODEL_TINY,
-+	CMODEL_LAST,
-+};
++	snprintf(buf, sizeof(buf), "__SIZEOF_%s%s__", name, suffix);
++	predefine(buf, 1, "%d", bits/8);
++}
 +
-+enum standard {
-+	STANDARD_NONE,
-+	STANDARD_GNU,
-+	STANDARD_C89,
-+	STANDARD_GNU89 = STANDARD_C89 | STANDARD_GNU,
-+	STANDARD_C94,
-+	STANDARD_GNU94 = STANDARD_C94 | STANDARD_GNU,
-+	STANDARD_C99,
-+	STANDARD_GNU99 = STANDARD_C99 | STANDARD_GNU,
-+	STANDARD_C11,
-+	STANDARD_GNU11 = STANDARD_C11 | STANDARD_GNU,
-+	STANDARD_C17,
-+	STANDARD_GNU17 = STANDARD_C17 | STANDARD_GNU,
-+};
++static void predefined_width(const char *name, unsigned bits)
++{
++	char buf[32];
 +
- extern int die_if_error;
--extern int repeat_phase;
- extern int do_output;
--extern int gcc_major, gcc_minor, gcc_patchlevel;
--extern unsigned int tabstop;
-+extern int gcc_major;
-+extern int gcc_minor;
-+extern int gcc_patchlevel;
-+extern int optimize_level;
-+extern int optimize_size;
-+extern int preprocess_only;
-+extern int preprocessing;
-+extern int repeat_phase;
-+extern int verbose;
++	snprintf(buf, sizeof(buf), "__%s_WIDTH__", name);
++	predefine(buf, 1, "%d", bits);
++}
 +
-+extern int cmdline_include_nr;
-+extern char *cmdline_include[];
- 
- extern const char *base_filename;
- extern const char *diag_prefix;
- extern const char *gcc_base_dir;
- extern const char *multiarch_dir;
- extern const char *outfile;
--extern int cmdline_include_nr;
--extern char *cmdline_include[];
- 
--extern char **handle_switch(char *arg, char **next);
--extern void handle_switch_finalize(void);
-+extern enum standard standard;
-+extern unsigned int tabstop;
- 
-+extern int arch_big_endian;
-+extern int arch_cmodel;
-+extern int arch_fp_abi;
-+extern int arch_m64;
-+extern int arch_msize_long;
-+extern int arch_os;
- 
--extern int preprocess_only;
-+extern int dbg_compound;
-+extern int dbg_dead;
-+extern int dbg_domtree;
-+extern int dbg_entry;
-+extern int dbg_ir;
-+extern int dbg_postorder;
++static void predefined_max(const char *name, struct symbol *type)
++{
++	const char *suffix = builtin_type_suffix(type);
++	unsigned bits = type->bit_size - is_signed_type(type);
++	unsigned long long max = bits_mask(bits);
++	char buf[32];
 +
-+extern int dump_macro_defs;
-+extern int dump_macros_only;
++	snprintf(buf, sizeof(buf), "__%s_MAX__", name);
++	predefine(buf, 1, "%#llx%s", max, suffix);
++}
 +
-+extern unsigned long fdump_ir;
-+extern int fhosted;
-+extern unsigned int fmax_warnings;
-+extern int fmem_report;
-+extern unsigned long long fmemcpy_max_count;
-+extern unsigned long fpasses;
-+extern int fpic;
-+extern int fpie;
-+extern int fshort_wchar;
-+extern int funsigned_char;
- 
- extern int Waddress;
- extern int Waddress_space;
-@@ -39,7 +98,6 @@ extern int Wdesignated_init;
- extern int Wdo_while;
- extern int Wenum_mismatch;
- extern int Wexternal_function_has_definition;
--extern int Wsparse_error;
- extern int Wimplicit_int;
- extern int Winit_cstring;
- extern int Wint_to_pointer_cast;
-@@ -62,6 +120,7 @@ extern int Wshadow;
- extern int Wshift_count_negative;
- extern int Wshift_count_overflow;
- extern int Wsizeof_bool;
-+extern int Wsparse_error;
- extern int Wstrict_prototypes;
- extern int Wtautological_compare;
- extern int Wtransparent_union;
-@@ -72,61 +131,7 @@ extern int Wuniversal_initializer;
- extern int Wunknown_attribute;
- extern int Wvla;
- 
--extern int dump_macro_defs;
--extern int dump_macros_only;
--
--extern int dbg_compound;
--extern int dbg_dead;
--extern int dbg_domtree;
--extern int dbg_entry;
--extern int dbg_ir;
--extern int dbg_postorder;
--
--extern unsigned int fmax_warnings;
--extern int fmem_report;
--extern unsigned long fdump_ir;
--extern int fhosted;
--extern unsigned long long fmemcpy_max_count;
--extern unsigned long fpasses;
--extern int fpic;
--extern int fpie;
--extern int fshort_wchar;
--extern int funsigned_char;
--
--extern int arch_msize_long;
--extern int arch_m64;
--extern int arch_big_endian;
--extern int arch_fp_abi;
--extern int arch_os;
--
--enum {
--	CMODEL_UNKNOWN,
--	CMODEL_KERNEL,
--	CMODEL_LARGE,
--	CMODEL_MEDANY,
--	CMODEL_MEDIUM,
--	CMODEL_MEDLOW,
--	CMODEL_PIC,
--	CMODEL_SMALL,
--	CMODEL_TINY,
--	CMODEL_LAST,
--};
--extern int arch_cmodel;
--
--enum standard {
--	STANDARD_NONE,
--	STANDARD_GNU,
--	STANDARD_C89,
--	STANDARD_GNU89 = STANDARD_C89 | STANDARD_GNU,
--	STANDARD_C94,
--	STANDARD_GNU94 = STANDARD_C94 | STANDARD_GNU,
--	STANDARD_C99,
--	STANDARD_GNU99 = STANDARD_C99 | STANDARD_GNU,
--	STANDARD_C11,
--	STANDARD_GNU11 = STANDARD_C11 | STANDARD_GNU,
--	STANDARD_C17,
--	STANDARD_GNU17 = STANDARD_C17 | STANDARD_GNU,
--};
--extern enum standard standard;
-+extern char **handle_switch(char *arg, char **next);
-+extern void handle_switch_finalize(void);
- 
- #endif
++static void predefined_min(const char *name, struct symbol *type)
++{
++	const char *suffix = builtin_type_suffix(type);
++	char buf[32];
++
++	snprintf(buf, sizeof(buf), "__%s_MIN__", name);
++
++	if (is_signed_type(type))
++		predefine(buf, 1, "(-__%s_MAX__ - 1)", name);
++	else
++		predefine(buf, 1, "0%s", suffix);
++}
++
++static void predefined_type(const char *name, struct symbol *type)
++{
++	const char *typename = builtin_typename(type);
++	add_pre_buffer("#weak_define __%s_TYPE__ %s\n", name, typename);
++}
++
++static void predefined_ctype(const char *name, struct symbol *type, int flags)
++{
++	unsigned bits = type->bit_size;
++
++	if (flags & PTYPE_SIZEOF) {
++		const char *suffix = (flags & PTYPE_T) ? "_T" : "";
++		predefined_sizeof(name, suffix, bits);
++	}
++	if (flags & PTYPE_MAX)
++		predefined_max(name, type);
++	if (flags & PTYPE_MIN)
++		predefined_min(name, type);
++	if (flags & PTYPE_TYPE)
++		predefined_type(name, type);
++	if (flags & PTYPE_WIDTH)
++		predefined_width(name, bits);
++}
++
++void predefined_macros(void)
++{
++	predefine("__CHECKER__", 0, "1");
++	predefine("__GNUC__", 1, "%d", gcc_major);
++	predefine("__GNUC_MINOR__", 1, "%d", gcc_minor);
++	predefine("__GNUC_PATCHLEVEL__", 1, "%d", gcc_patchlevel);
++
++	predefine("__STDC__", 1, "1");
++	predefine("__STDC_HOSTED__", 0, fhosted ? "1" : "0");
++	switch (standard) {
++	default:
++		break;
++
++	case STANDARD_C94:
++		predefine("__STDC_VERSION__", 1, "199409L");
++		break;
++
++	case STANDARD_C99:
++	case STANDARD_GNU99:
++		predefine("__STDC_VERSION__", 1, "199901L");
++		break;
++
++	case STANDARD_C11:
++	case STANDARD_GNU11:
++		predefine("__STDC_VERSION__", 1, "201112L");
++		break;
++	case STANDARD_C17:
++	case STANDARD_GNU17:
++		predefine("__STDC_VERSION__", 1, "201710L");
++		break;
++	}
++	if (!(standard & STANDARD_GNU) && (standard != STANDARD_NONE))
++		predefine("__STRICT_ANSI__", 1, "1");
++	if (standard >= STANDARD_C11) {
++		predefine("__STDC_NO_ATOMICS__", 1, "1");
++		predefine("__STDC_NO_COMPLEX__", 1, "1");
++		predefine("__STDC_NO_THREADS__", 1, "1");
++	}
++
++	predefine("__CHAR_BIT__", 1, "%d", bits_in_char);
++	if (funsigned_char)
++		predefine("__CHAR_UNSIGNED__", 1, "1");
++
++	predefined_ctype("SHORT",     &short_ctype, PTYPE_SIZEOF);
++	predefined_ctype("SHRT",      &short_ctype, PTYPE_MAX|PTYPE_WIDTH);
++	predefined_ctype("SCHAR",     &schar_ctype, PTYPE_MAX|PTYPE_WIDTH);
++	predefined_ctype("WCHAR",      wchar_ctype, PTYPE_ALL_T|PTYPE_MIN|PTYPE_TYPE);
++	predefined_ctype("WINT",        wint_ctype, PTYPE_ALL_T|PTYPE_MIN|PTYPE_TYPE);
++	predefined_ctype("CHAR16",   &ushort_ctype, PTYPE_TYPE);
++	predefined_ctype("CHAR32",    uint32_ctype, PTYPE_TYPE);
++
++	predefined_ctype("INT",         &int_ctype, PTYPE_ALL);
++	predefined_ctype("LONG",       &long_ctype, PTYPE_ALL);
++	predefined_ctype("LONG_LONG", &llong_ctype, PTYPE_ALL);
++
++	predefined_ctype("INT8",      &schar_ctype, PTYPE_MAX|PTYPE_TYPE);
++	predefined_ctype("UINT8",     &uchar_ctype, PTYPE_MAX|PTYPE_TYPE);
++	predefined_ctype("INT16",     &short_ctype, PTYPE_MAX|PTYPE_TYPE);
++	predefined_ctype("UINT16",   &ushort_ctype, PTYPE_MAX|PTYPE_TYPE);
++	predefined_ctype("INT32",      int32_ctype, PTYPE_MAX|PTYPE_TYPE);
++	predefined_ctype("UINT32",    uint32_ctype, PTYPE_MAX|PTYPE_TYPE);
++	predefined_ctype("INT64",      int64_ctype, PTYPE_MAX|PTYPE_TYPE);
++	predefined_ctype("UINT64",    uint64_ctype, PTYPE_MAX|PTYPE_TYPE);
++
++	predefined_ctype("INTMAX",    intmax_ctype, PTYPE_MAX|PTYPE_TYPE|PTYPE_WIDTH);
++	predefined_ctype("UINTMAX",  uintmax_ctype, PTYPE_MAX|PTYPE_TYPE);
++	predefined_ctype("INTPTR",   ssize_t_ctype, PTYPE_MAX|PTYPE_TYPE|PTYPE_WIDTH);
++	predefined_ctype("UINTPTR",   size_t_ctype, PTYPE_MAX|PTYPE_TYPE);
++	predefined_ctype("PTRDIFF",  ssize_t_ctype, PTYPE_ALL_T|PTYPE_TYPE);
++	predefined_ctype("SIZE",      size_t_ctype, PTYPE_ALL_T|PTYPE_TYPE);
++	predefined_ctype("POINTER",     &ptr_ctype, PTYPE_SIZEOF);
++
++	predefined_sizeof("FLOAT", "", bits_in_float);
++	predefined_sizeof("DOUBLE", "", bits_in_double);
++	predefined_sizeof("LONG_DOUBLE", "", bits_in_longdouble);
++
++	if (arch_target->has_int128)
++		predefined_sizeof("INT128", "", 128);
++
++	predefine("__ORDER_LITTLE_ENDIAN__", 1, "1234");
++	predefine("__ORDER_BIG_ENDIAN__", 1, "4321");
++	predefine("__ORDER_PDP_ENDIAN__", 1, "3412");
++	if (arch_big_endian) {
++		predefine("__BIG_ENDIAN__", 1, "1");
++		predefine("__BYTE_ORDER__", 1, "__ORDER_BIG_ENDIAN__");
++	} else {
++		predefine("__LITTLE_ENDIAN__", 1, "1");
++		predefine("__BYTE_ORDER__", 1, "__ORDER_LITTLE_ENDIAN__");
++	}
++
++	if (optimize_level)
++		predefine("__OPTIMIZE__", 0, "1");
++	if (optimize_size)
++		predefine("__OPTIMIZE_SIZE__", 0, "1");
++
++	predefine("__PRAGMA_REDEFINE_EXTNAME", 1, "1");
++
++	// Temporary hacks
++	predefine("__extension__", 0, NULL);
++	predefine("__pragma__", 0, NULL);
++
++	switch (arch_m64) {
++	case ARCH_LP32:
++		break;
++	case ARCH_X32:
++		predefine("__ILP32__", 1, "1");
++		predefine("_ILP32", 1, "1");
++		break;
++	case ARCH_LP64:
++		predefine("__LP64__", 1, "1");
++		predefine("_LP64", 1, "1");
++		break;
++	case ARCH_LLP64:
++		predefine("__LLP64__", 1, "1");
++		break;
++	}
++
++	if (fpic) {
++		predefine("__pic__", 0, "%d", fpic);
++		predefine("__PIC__", 0, "%d", fpic);
++	}
++	if (fpie) {
++		predefine("__pie__", 0, "%d", fpie);
++		predefine("__PIE__", 0, "%d", fpie);
++	}
++
++	if (arch_target->predefine)
++		arch_target->predefine(arch_target);
++
++	if (arch_os >= OS_UNIX) {
++		predefine("__unix__", 1, "1");
++		predefine("__unix", 1, "1");
++		predefine_nostd("unix");
++	}
++
++	if (arch_os == OS_SUNOS) {
++		predefine("__sun__", 1, "1");
++		predefine("__sun", 1, "1");
++		predefine_nostd("sun");
++		predefine("__svr4__", 1, "1");
++	}
++}
 -- 
 2.27.0
 
