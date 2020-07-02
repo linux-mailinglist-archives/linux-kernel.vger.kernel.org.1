@@ -2,81 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FCCE211A25
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 04:31:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60CC5211A29
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 04:32:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726376AbgGBCa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 22:30:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726156AbgGBCa5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 22:30:57 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09CF0C08C5C1
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 19:30:57 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id q7so16430477ljm.1
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 19:30:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sXHqUJJpqKSjt9xGNqXs8qu9p2K7cIVXL2GeW+5CcEc=;
-        b=Bn49y2fx16Vt8RAWv2KM+GyvSoWbOi6Ui1f63lfNOCMy4XNhNb38J5f0IU/WRw2yHS
-         NMHSt1cyPnwuQWK4D/n42S5mwlvL7j8RSbUeFxFxm+A+TpKC7ZFuRJpJRrbLjfsFp+rY
-         OeBdvzvfAeLy+ykaYlvF8rDeZ4DxESTxzsdPQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sXHqUJJpqKSjt9xGNqXs8qu9p2K7cIVXL2GeW+5CcEc=;
-        b=he4J40Ft+dBxSv4hOcS19+W7yqZFCclnfEyZi+mSz2rw5Au0Ald8kaOQDpg0+b7Bx3
-         8DgyJgLyW6eFw6VkO/fALXIjzYhysf3DR5+9iapUfvpu5IgjUOvyfPLaTbPkhcVDmBjG
-         mpWEBiTqzxQ/ZVHRUlCo5t/d4CUyV2rZXbR6hXQYirloYx/AnGmY6imGPoNZsRHvV91n
-         TeD/QiS59rAjUVjwTD1Wbr+/1lEjfZhxUI+uriG1LimLr7wCBkBbAROZ8uHAAKfJdaCB
-         SZjaYQeK0mFehu5L7Ss45euzNvZC8KPKnpIMng87FN2Kc7NStrXMORwgkr4VYhN2m6l2
-         95oQ==
-X-Gm-Message-State: AOAM532GkEUT0m41hKM4nxKz+cgBiaApZwvdU/ErQuKJLezzRA1vqbkC
-        im6/nmFr7E/+nrg/nEll+vq1+0YmxU8=
-X-Google-Smtp-Source: ABdhPJxTaKoIk8Sv5oaUtwX/XYBbSQlbV8FR5tH7bLlEu7dMNBtm2juYzF95psDO22eRKlst7/sc0Q==
-X-Received: by 2002:a2e:8184:: with SMTP id e4mr15677197ljg.334.1593657053356;
-        Wed, 01 Jul 2020 19:30:53 -0700 (PDT)
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com. [209.85.167.51])
-        by smtp.gmail.com with ESMTPSA id w15sm2768790lff.25.2020.07.01.19.30.51
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Jul 2020 19:30:52 -0700 (PDT)
-Received: by mail-lf1-f51.google.com with SMTP id y18so14943403lfh.11
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 19:30:51 -0700 (PDT)
-X-Received: by 2002:ac2:5a5e:: with SMTP id r30mr17040357lfn.30.1593657051528;
- Wed, 01 Jul 2020 19:30:51 -0700 (PDT)
+        id S1728189AbgGBCcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 22:32:08 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7339 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726759AbgGBCcC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 22:32:02 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id E72F6CF4A606805838DC;
+        Thu,  2 Jul 2020 10:31:58 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 2 Jul 2020 10:31:51 +0800
+From:   Meng Yu <yumeng18@huawei.com>
+To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
+CC:     <linux-crypto@vger.kernel.org>, <xuzaibo@huawei.com>,
+        <wangzhou1@hisilicon.com>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH 0/6] crypto: hisilicon/hpre bugfix - misc fixes
+Date:   Thu, 2 Jul 2020 10:31:13 +0800
+Message-ID: <1593657079-31990-1-git-send-email-yumeng18@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-References: <CAHk-=wizu7DA7EDrsHQLmkTFBvCRxNyPMHaeMDYMF_U75s9RvQ@mail.gmail.com>
- <5F1767D0-416A-4BA4-9DFF-E82D1EA3F5EE@amacapital.net> <CAHk-=wh0X1YBQm8b6dqu=FpE8jgHriisXDeqJ7jai41Ob+sJDA@mail.gmail.com>
- <CALCETrXpKAR2A0+96b+RWUE0vUmoPwmp-mfF1u=g2270DNi96w@mail.gmail.com>
-In-Reply-To: <CALCETrXpKAR2A0+96b+RWUE0vUmoPwmp-mfF1u=g2270DNi96w@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 1 Jul 2020 19:30:35 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjXftMyC93Jg8J=_HiuERsHujPOa-RbOmMLuuxVoJCrfQ@mail.gmail.com>
-Message-ID: <CAHk-=wjXftMyC93Jg8J=_HiuERsHujPOa-RbOmMLuuxVoJCrfQ@mail.gmail.com>
-Subject: Re: objtool clac/stac handling change..
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 1, 2020 at 5:48 PM Andy Lutomirski <luto@kernel.org> wrote:
->
-> You inspired me to mock it up.
+Bugfix: crypto: hisilicon/hpre - modify the macros, add a switch in
+	sriov_configure, unified debugfs interface, and disable
+	hardware FLR.
 
-Ahh, you want to just use the jump folding of gcc to avoid the problem.
+Hui Tang (2):
+  crypto: hisilicon/hpre - HPRE_OVERTIME_THRHLD can be written by
+    debugfs
+  crypto: hisilicon/hpre - disable FLR triggered by hardware
 
-I guess we could do that. Are there cases where this actually helps?
+Meng Yu (4):
+  crypto: hisilicon/hpre - Init the value of current_q of debugfs
+  crypto: hisilicon/hpre - Modify the Macro definition and format
+  crypto: hisilicon/hpre - Add a switch in sriov_configure
+  crypto: hisilicon/hpre - update debugfs interface parameters
 
-                 Linus
+ drivers/crypto/hisilicon/hpre/hpre_main.c | 114 ++++++++++++++++--------------
+ 1 file changed, 62 insertions(+), 52 deletions(-)
+
+-- 
+2.8.1
+
