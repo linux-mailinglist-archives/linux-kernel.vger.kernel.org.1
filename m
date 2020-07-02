@@ -2,137 +2,312 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 645D02127DC
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 17:27:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65A872127C8
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 17:25:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729934AbgGBP1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 11:27:45 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:55440 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730251AbgGBP1h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 11:27:37 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id CE0B01A0BEE;
-        Thu,  2 Jul 2020 17:27:34 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id CD1A91A0C3C;
-        Thu,  2 Jul 2020 17:27:24 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id DCEE840314;
-        Thu,  2 Jul 2020 23:27:12 +0800 (SGT)
-From:   Anson Huang <Anson.Huang@nxp.com>
-To:     mturquette@baylibre.com, sboyd@kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        aisheng.dong@nxp.com, arnd@arndb.de, peng.fan@nxp.com,
-        abel.vesa@nxp.com, j.remmet@phytec.de, sfr@canb.auug.org.au,
-        georg.waibel@wiedemann-group.de, Georg.Waibel@wiedemann-group.com,
-        laurent.pinchart@ideasonboard.com, chen.fang@nxp.com,
-        fugang.duan@nxp.com, daniel.baluta@nxp.com, yuehaibing@huawei.com,
-        horia.geanta@nxp.com, andrew.smirnov@gmail.com,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Linux-imx@nxp.com
-Subject: [PATCH V5 6/6] clk: imx8qxp: Support building i.MX8QXP clock driver as module
-Date:   Thu,  2 Jul 2020 23:24:01 +0800
-Message-Id: <1593703441-16944-7-git-send-email-Anson.Huang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1593703441-16944-1-git-send-email-Anson.Huang@nxp.com>
-References: <1593703441-16944-1-git-send-email-Anson.Huang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1730368AbgGBPYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 11:24:37 -0400
+Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:59508 "EHLO
+        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730214AbgGBPYd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 11:24:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
+  t=1593703472; x=1625239472;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=i22HdhTJfY8wQgGxyIyoaw+4TYPhLvEg95EhNweLJkM=;
+  b=W9UPK5UjYi5ESa998CWI0eA6o7FoKHMeczSU/K+Y7Ei6kwpzut2P1lZM
+   H5BspqrpAB2mpNv+0r0yfvJUPlBAnymPPUogK/DXnwkILIWQW2Wt0JrB3
+   KxjoDoK4xJ8geDF7WTz4553pWvTWmFZd7UMrlKD6LdjFb3ypKXT/O1AC8
+   E=;
+IronPort-SDR: FjgJXuOcge30lkpN0wmmU1RbRUjLXQAZjaqbnVc0TwPDPD8G0qmpZeKKCnRZPy14FBKzCGWuDy
+ f8UTriT0bF7g==
+X-IronPort-AV: E=Sophos;i="5.75,304,1589241600"; 
+   d="scan'208";a="39699664"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2c-579b7f5b.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 02 Jul 2020 15:24:25 +0000
+Received: from EX13MTAUWC001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
+        by email-inbound-relay-2c-579b7f5b.us-west-2.amazon.com (Postfix) with ESMTPS id 1F1EAA06EB;
+        Thu,  2 Jul 2020 15:24:25 +0000 (UTC)
+Received: from EX13D20UWC001.ant.amazon.com (10.43.162.244) by
+ EX13MTAUWC001.ant.amazon.com (10.43.162.135) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 2 Jul 2020 15:24:24 +0000
+Received: from 38f9d3867b82.ant.amazon.com (10.43.160.65) by
+ EX13D20UWC001.ant.amazon.com (10.43.162.244) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 2 Jul 2020 15:24:17 +0000
+Subject: Re: [PATCH v4 06/18] nitro_enclaves: Handle out-of-band PCI device
+ events
+To:     Andra Paraschiv <andraprs@amazon.com>,
+        <linux-kernel@vger.kernel.org>
+CC:     Anthony Liguori <aliguori@amazon.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Colm MacCarthaigh <colmmacc@amazon.com>,
+        "Bjoern Doebel" <doebel@amazon.de>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        "Frank van der Linden" <fllinden@amazon.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Martin Pohlack <mpohlack@amazon.de>,
+        Matt Wilson <msw@amazon.com>,
+        "Paolo Bonzini" <pbonzini@redhat.com>,
+        Balbir Singh <sblbir@amazon.com>,
+        "Stefano Garzarella" <sgarzare@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stewart Smith <trawets@amazon.com>,
+        Uwe Dannowski <uwed@amazon.de>, <kvm@vger.kernel.org>,
+        <ne-devel-upstream@amazon.com>
+References: <20200622200329.52996-1-andraprs@amazon.com>
+ <20200622200329.52996-7-andraprs@amazon.com>
+From:   Alexander Graf <graf@amazon.de>
+Message-ID: <82768612-0d23-55a9-dedf-58ade57b37af@amazon.de>
+Date:   Thu, 2 Jul 2020 17:24:11 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.9.0
+MIME-Version: 1.0
+In-Reply-To: <20200622200329.52996-7-andraprs@amazon.com>
+Content-Language: en-US
+X-Originating-IP: [10.43.160.65]
+X-ClientProxiedBy: EX13D16UWB001.ant.amazon.com (10.43.161.17) To
+ EX13D20UWC001.ant.amazon.com (10.43.162.244)
+Content-Type: text/plain; charset="windows-1252"; format="flowed"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change configuration to "tristate", add module author, description and
-license to support building i.MX8QXP clock drivers as module.
 
-Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
----
-Changes since V4:
-	- keep using builtin_platform_driver();
-	- add COMPILE_TEST support.
----
- drivers/clk/imx/Kconfig            | 8 +++++---
- drivers/clk/imx/Makefile           | 9 ++++-----
- drivers/clk/imx/clk-imx8qxp-lpcg.c | 4 ++++
- drivers/clk/imx/clk-imx8qxp.c      | 4 ++++
- 4 files changed, 17 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/clk/imx/Kconfig b/drivers/clk/imx/Kconfig
-index 4f4f86e..51be5e8 100644
---- a/drivers/clk/imx/Kconfig
-+++ b/drivers/clk/imx/Kconfig
-@@ -5,7 +5,8 @@ config MXC_CLK
- 	depends on ARCH_MXC || COMPILE_TEST
- 
- config MXC_CLK_SCU
--	bool
-+	tristate "IMX SCU clock"
-+	depends on ARCH_MXC || COMPILE_TEST
- 	depends on IMX_SCU
- 
- config CLK_IMX1
-@@ -106,8 +107,9 @@ config CLK_IMX8MQ
- 	    Build the driver for i.MX8MQ CCM Clock Driver
- 
- config CLK_IMX8QXP
--	bool "IMX8QXP SCU Clock"
--	depends on ARCH_MXC && IMX_SCU && ARM64
-+	tristate "IMX8QXP SCU Clock"
-+	depends on (ARCH_MXC && ARM64) || COMPILE_TEST
-+	depends on IMX_SCU
- 	select MXC_CLK_SCU
- 	help
- 	  Build the driver for IMX8QXP SCU based clocks.
-diff --git a/drivers/clk/imx/Makefile b/drivers/clk/imx/Makefile
-index 17f5d12..79e53f2 100644
---- a/drivers/clk/imx/Makefile
-+++ b/drivers/clk/imx/Makefile
-@@ -21,15 +21,14 @@ mxc-clk-objs += clk-pll14xx.o
- mxc-clk-objs += clk-sscg-pll.o
- obj-$(CONFIG_MXC_CLK) += mxc-clk.o
- 
--obj-$(CONFIG_MXC_CLK_SCU) += \
--	clk-scu.o \
--	clk-lpcg-scu.o
--
- obj-$(CONFIG_CLK_IMX8MM) += clk-imx8mm.o
- obj-$(CONFIG_CLK_IMX8MN) += clk-imx8mn.o
- obj-$(CONFIG_CLK_IMX8MP) += clk-imx8mp.o
- obj-$(CONFIG_CLK_IMX8MQ) += clk-imx8mq.o
--obj-$(CONFIG_CLK_IMX8QXP) += clk-imx8qxp.o clk-imx8qxp-lpcg.o
-+
-+obj-$(CONFIG_MXC_CLK_SCU) += clk-imx-scu.o clk-imx-lpcg-scu.o
-+clk-imx-scu-$(CONFIG_CLK_IMX8QXP) += clk-scu.o clk-imx8qxp.o
-+clk-imx-lpcg-scu-$(CONFIG_CLK_IMX8QXP) += clk-lpcg-scu.o clk-imx8qxp-lpcg.o
- 
- obj-$(CONFIG_CLK_IMX1)   += clk-imx1.o
- obj-$(CONFIG_CLK_IMX21)  += clk-imx21.o
-diff --git a/drivers/clk/imx/clk-imx8qxp-lpcg.c b/drivers/clk/imx/clk-imx8qxp-lpcg.c
-index 04c8ee3..e947a70 100644
---- a/drivers/clk/imx/clk-imx8qxp-lpcg.c
-+++ b/drivers/clk/imx/clk-imx8qxp-lpcg.c
-@@ -232,3 +232,7 @@ static struct platform_driver imx8qxp_lpcg_clk_driver = {
- };
- 
- builtin_platform_driver(imx8qxp_lpcg_clk_driver);
-+
-+MODULE_AUTHOR("Aisheng Dong <aisheng.dong@nxp.com>");
-+MODULE_DESCRIPTION("NXP i.MX8QXP LPCG clock driver");
-+MODULE_LICENSE("GPL v2");
-diff --git a/drivers/clk/imx/clk-imx8qxp.c b/drivers/clk/imx/clk-imx8qxp.c
-index 5e2903e..d650ca3 100644
---- a/drivers/clk/imx/clk-imx8qxp.c
-+++ b/drivers/clk/imx/clk-imx8qxp.c
-@@ -152,3 +152,7 @@ static struct platform_driver imx8qxp_clk_driver = {
- 	.probe = imx8qxp_clk_probe,
- };
- builtin_platform_driver(imx8qxp_clk_driver);
-+
-+MODULE_AUTHOR("Aisheng Dong <aisheng.dong@nxp.com>");
-+MODULE_DESCRIPTION("NXP i.MX8QXP clock driver");
-+MODULE_LICENSE("GPL v2");
--- 
-2.7.4
+On 22.06.20 22:03, Andra Paraschiv wrote:
+> In addition to the replies sent by the Nitro Enclaves PCI device in
+> response to command requests, out-of-band enclave events can happen e.g.
+> an enclave crashes. In this case, the Nitro Enclaves driver needs to be
+> aware of the event and notify the corresponding user space process that
+> abstracts the enclave.
+> =
+
+> Register an MSI-X interrupt vector to be used for this kind of
+> out-of-band events. The interrupt notifies that the state of an enclave
+> changed and the driver logic scans the state of each running enclave to
+> identify for which this notification is intended.
+> =
+
+> Create an workqueue to handle the out-of-band events. Notify user space
+> enclave process that is using a polling mechanism on the enclave fd.
+> =
+
+> Signed-off-by: Alexandru-Catalin Vasile <lexnv@amazon.com>
+> Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
+> ---
+> Changelog
+> =
+
+> v3 -> v4
+> =
+
+> * Use dev_err instead of custom NE log pattern.
+> * Return IRQ_NONE when interrupts are not handled.
+> =
+
+> v2 -> v3
+> =
+
+> * Remove the WARN_ON calls.
+> * Update static calls sanity checks.
+> * Remove "ratelimited" from the logs that are not in the ioctl call
+>    paths.
+> =
+
+> v1 -> v2
+> =
+
+> * Add log pattern for NE.
+> * Update goto labels to match their purpose.
+> ---
+>   drivers/virt/nitro_enclaves/ne_pci_dev.c | 122 +++++++++++++++++++++++
+>   1 file changed, 122 insertions(+)
+> =
+
+> diff --git a/drivers/virt/nitro_enclaves/ne_pci_dev.c b/drivers/virt/nitr=
+o_enclaves/ne_pci_dev.c
+> index c24230cfe7c0..9a137862cade 100644
+> --- a/drivers/virt/nitro_enclaves/ne_pci_dev.c
+> +++ b/drivers/virt/nitro_enclaves/ne_pci_dev.c
+> @@ -239,6 +239,93 @@ static irqreturn_t ne_reply_handler(int irq, void *a=
+rgs)
+>   	return IRQ_HANDLED;
+>   }
+>   =
+
+> +/**
+> + * ne_event_work_handler - Work queue handler for notifying enclaves on
+> + * a state change received by the event interrupt handler.
+> + *
+> + * An out-of-band event is being issued by the Nitro Hypervisor when at =
+least
+> + * one enclave is changing state without client interaction.
+> + *
+> + * @work: item containing the Nitro Enclaves PCI device for which a
+> + *	  out-of-band event was issued.
+> + */
+> +static void ne_event_work_handler(struct work_struct *work)
+> +{
+> +	struct ne_pci_dev_cmd_reply cmd_reply =3D {};
+> +	struct ne_enclave *ne_enclave =3D NULL;
+> +	struct ne_pci_dev *ne_pci_dev =3D
+> +		container_of(work, struct ne_pci_dev, notify_work);
+> +	int rc =3D -EINVAL;
+> +	struct slot_info_req slot_info_req =3D {};
+> +
+> +	if (!ne_pci_dev)
+> +		return;
+
+How?
+
+> +
+> +	mutex_lock(&ne_pci_dev->enclaves_list_mutex);
+> +
+> +	/*
+> +	 * Iterate over all enclaves registered for the Nitro Enclaves
+> +	 * PCI device and determine for which enclave(s) the out-of-band event
+> +	 * is corresponding to.
+> +	 */
+> +	list_for_each_entry(ne_enclave, &ne_pci_dev->enclaves_list,
+> +			    enclave_list_entry) {
+> +		mutex_lock(&ne_enclave->enclave_info_mutex);
+> +
+> +		/*
+> +		 * Enclaves that were never started cannot receive out-of-band
+> +		 * events.
+> +		 */
+> +		if (ne_enclave->state !=3D NE_STATE_RUNNING)
+> +			goto unlock;
+> +
+> +		slot_info_req.slot_uid =3D ne_enclave->slot_uid;
+> +
+> +		rc =3D ne_do_request(ne_enclave->pdev, SLOT_INFO, &slot_info_req,
+> +				   sizeof(slot_info_req), &cmd_reply,
+> +				   sizeof(cmd_reply));
+> +		if (rc < 0)
+> +			dev_err(&ne_enclave->pdev->dev,
+> +				"Error in slot info [rc=3D%d]\n", rc);
+> +
+> +		/* Notify enclave process that the enclave state changed. */
+> +		if (ne_enclave->state !=3D cmd_reply.state) {
+> +			ne_enclave->state =3D cmd_reply.state;
+> +
+> +			ne_enclave->has_event =3D true;
+> +
+> +			wake_up_interruptible(&ne_enclave->eventq);
+> +		}
+> +
+> +unlock:
+> +		 mutex_unlock(&ne_enclave->enclave_info_mutex);
+> +	}
+> +
+> +	mutex_unlock(&ne_pci_dev->enclaves_list_mutex);
+> +}
+> +
+> +/**
+> + * ne_event_handler - Interrupt handler for PCI device out-of-band
+> + * events. This interrupt does not supply any data in the MMIO region.
+> + * It notifies a change in the state of any of the launched enclaves.
+> + *
+> + * @irq: received interrupt for an out-of-band event.
+> + * @args: PCI device private data structure.
+> + *
+> + * @returns: IRQ_HANDLED on handled interrupt, IRQ_NONE otherwise.
+> + */
+> +static irqreturn_t ne_event_handler(int irq, void *args)
+> +{
+> +	struct ne_pci_dev *ne_pci_dev =3D (struct ne_pci_dev *)args;
+> +
+> +	if (!ne_pci_dev)
+> +		return IRQ_NONE;
+
+How can this happen?
+
+
+Alex
+
+> +
+> +	queue_work(ne_pci_dev->event_wq, &ne_pci_dev->notify_work);
+> +
+> +	return IRQ_HANDLED;
+> +}
+> +
+>   /**
+>    * ne_setup_msix - Setup MSI-X vectors for the PCI device.
+>    *
+> @@ -284,8 +371,37 @@ static int ne_setup_msix(struct pci_dev *pdev)
+>   		goto free_irq_vectors;
+>   	}
+>   =
+
+> +	ne_pci_dev->event_wq =3D create_singlethread_workqueue("ne_pci_dev_wq");
+> +	if (!ne_pci_dev->event_wq) {
+> +		rc =3D -ENOMEM;
+> +
+> +		dev_err(&pdev->dev, "Cannot get wq for dev events [rc=3D%d]\n",
+> +			rc);
+> +
+> +		goto free_reply_irq_vec;
+> +	}
+> +
+> +	INIT_WORK(&ne_pci_dev->notify_work, ne_event_work_handler);
+> +
+> +	/*
+> +	 * This IRQ gets triggered every time any enclave's state changes. Its
+> +	 * handler then scans for the changes and propagates them to the user
+> +	 * space.
+> +	 */
+> +	rc =3D request_irq(pci_irq_vector(pdev, NE_VEC_EVENT),
+> +			 ne_event_handler, 0, "enclave_evt", ne_pci_dev);
+> +	if (rc < 0) {
+> +		dev_err(&pdev->dev, "Error in request irq event [rc=3D%d]\n", rc);
+> +
+> +		goto destroy_wq;
+> +	}
+> +
+>   	return 0;
+>   =
+
+> +destroy_wq:
+> +	destroy_workqueue(ne_pci_dev->event_wq);
+> +free_reply_irq_vec:
+> +	free_irq(pci_irq_vector(pdev, NE_VEC_REPLY), ne_pci_dev);
+>   free_irq_vectors:
+>   	pci_free_irq_vectors(pdev);
+>   =
+
+> @@ -304,6 +420,12 @@ static void ne_teardown_msix(struct pci_dev *pdev)
+>   	if (!ne_pci_dev)
+>   		return;
+>   =
+
+> +	free_irq(pci_irq_vector(pdev, NE_VEC_EVENT), ne_pci_dev);
+> +
+> +	flush_work(&ne_pci_dev->notify_work);
+> +	flush_workqueue(ne_pci_dev->event_wq);
+> +	destroy_workqueue(ne_pci_dev->event_wq);
+> +
+>   	free_irq(pci_irq_vector(pdev, NE_VEC_REPLY), ne_pci_dev);
+>   =
+
+>   	pci_free_irq_vectors(pdev);
+> =
+
+
+
+
+Amazon Development Center Germany GmbH
+Krausenstr. 38
+10117 Berlin
+Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
+Sitz: Berlin
+Ust-ID: DE 289 237 879
+
+
 
