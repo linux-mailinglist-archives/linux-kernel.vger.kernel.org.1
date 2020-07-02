@@ -2,80 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CEA6212752
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 17:07:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B330D21275B
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 17:09:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729932AbgGBPH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 11:07:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41604 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726032AbgGBPH2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 11:07:28 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C9C24206B7;
-        Thu,  2 Jul 2020 15:07:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593702448;
-        bh=Q0FMYaPVSrA10wNzRKcnGhb/N+PbrVbZEAavjZJ3zr0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KIn9XCwWwgqKCymrYhlNVjTfIelcPlc19Gojsw5ejxUUCaOJMwoUh5e1VEpeWJLnX
-         B9f+Sw4LKUJO7g3WscWaHrA/e5r715O15+yrov4QhxI6bI8M/dMptirEbfIlA7HepK
-         kJYY31PmspumNmonmlN92CrI7dBxSIzAPFme40HE=
-Date:   Thu, 2 Jul 2020 16:07:25 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Frieder Schrempf <frieder.schrempf@kontron.de>
-Cc:     linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
-Subject: Re: [PATCH] spi: spidev: Add compatible for external SPI ports on
- Kontron boards
-Message-ID: <20200702150725.GI4483@sirena.org.uk>
-References: <20200702141846.7752-1-frieder.schrempf@kontron.de>
- <20200702142511.GF4483@sirena.org.uk>
- <24ec4eed-de01-28df-ee1f-f7bcfc80051a@kontron.de>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="svExV93C05KqedWb"
-Content-Disposition: inline
-In-Reply-To: <24ec4eed-de01-28df-ee1f-f7bcfc80051a@kontron.de>
-X-Cookie: I'm rated PG-34!!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1729819AbgGBPJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 11:09:16 -0400
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:39723 "EHLO
+        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729232AbgGBPJL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 11:09:11 -0400
+Received: from Internal Mail-Server by MTLPINE1 (envelope-from moshe@mellanox.com)
+        with SMTP; 2 Jul 2020 18:09:08 +0300
+Received: from dev-l-vrt-136.mtl.labs.mlnx (dev-l-vrt-136.mtl.labs.mlnx [10.234.136.1])
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 062F98Tx020252;
+        Thu, 2 Jul 2020 18:09:08 +0300
+Received: from dev-l-vrt-136.mtl.labs.mlnx (localhost [127.0.0.1])
+        by dev-l-vrt-136.mtl.labs.mlnx (8.14.7/8.14.7) with ESMTP id 062F98NR015403;
+        Thu, 2 Jul 2020 18:09:08 +0300
+Received: (from moshe@localhost)
+        by dev-l-vrt-136.mtl.labs.mlnx (8.14.7/8.14.7/Submit) id 062F97af015402;
+        Thu, 2 Jul 2020 18:09:07 +0300
+From:   Moshe Shemesh <moshe@mellanox.com>
+To:     "David S. Miller" <davem@davemloft.net>
+Cc:     Jiri Pirko <jiri@mellanox.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Moshe Shemesh <moshe@mellanox.com>
+Subject: [PATCH net-next 0/7] Add devlink-health support for devlink ports
+Date:   Thu,  2 Jul 2020 18:08:06 +0300
+Message-Id: <1593702493-15323-1-git-send-email-moshe@mellanox.com>
+X-Mailer: git-send-email 1.8.4.3
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Implement support for devlink health reporters on per-port basis. First
+part in the series prepares common functions parts for health reporter
+implementation. Second introduces required API to devlink-health and
+mlx5e ones demonstrate its usage and effectively implement the feature
+for mlx5 driver.
+The per-port reporter functionality is achieved by adding a list of
+devlink_health_reporters to devlink_port struct in a manner similar to
+existing device infrastructure. This is the only major difference and
+it makes possible to fully reuse device reporters operations.
+The effect will be seen in conjunction with iproute2 additions and
+will affect all devlink health commands. User can distinguish between
+device and port reporters by looking at a devlink handle. Port reporters
+have a port index at the end of the address and such addresses can be
+provided as a parameter in every place where devlink-health accepted it.
+These can be obtained from devlink port show command.
+For example:
+$ devlink health show
+pci/0000:00:0a.0:
+  reporter fw
+    state healthy error 0 recover 0 auto_dump true
+pci/0000:00:0a.0/1:
+  reporter tx
+    state healthy error 0 recover 0 grace_period 500 auto_recover true auto_dump true
+$ devlink health set pci/0000:00:0a.0/1 reporter tx grace_period 1000 \
+auto_recover false auto_dump false
+$ devlink health show pci/0000:00:0a.0/1 reporter tx
+pci/0000:00:0a.0/1:
+  reporter tx
+    state healthy error 0 recover 0 grace_period 1000 auto_recover flase auto_dump false
 
---svExV93C05KqedWb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Thu, Jul 02, 2020 at 04:46:09PM +0200, Frieder Schrempf wrote:
+Vladyslav Tarasiuk (7):
+  devlink: Refactor devlink health reporter constructor
+  devlink: Rework devlink health reporter destructor
+  devlink: Create generic devlink health reporter search function
+  devlink: Implement devlink health reporters on per-port basis
+  devlink: Add devlink health port reporters API
+  net/mlx5e: Move devlink port register and unregister calls
+  net/mlx5e: Move devlink-health rx and tx reporters to devlink port
 
-> My intention is to use the spidev driver in the default board DT for an
-> interface that is routed to an extension connector and has no dedicated
-> slave device attached onboard. So users can attach sensors, etc. with
-> userspace drivers without touching the kernel or DT.
+ .../ethernet/mellanox/mlx5/core/en/reporter_rx.c   |   9 +-
+ .../ethernet/mellanox/mlx5/core/en/reporter_tx.c   |  13 +-
+ drivers/net/ethernet/mellanox/mlx5/core/en_main.c  |  15 +-
+ include/net/devlink.h                              |  11 +
+ net/core/devlink.c                                 | 245 ++++++++++++++++-----
+ 5 files changed, 217 insertions(+), 76 deletions(-)
 
-The expected way of doing this is to describe whatever was attached via
-DT when it's attached - the device is what has the compatible, not some
-connector in the middle of the connection.  The way you've got things
-set up if the device has a driver then they won't be able to instantiate
-the driver.
+-- 
+1.8.3.1
 
---svExV93C05KqedWb
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl79+C0ACgkQJNaLcl1U
-h9BXJAf+NE1knwGcyl+LclVgMTjUDqll94imUwZuKczsQY8MXZQotW6ujyrh03G6
-gWg1/eVBISXw/QIZgyFQL59+USxj/8nlEwcMacEIRJgFgoZVedTkN/m76qcAemfV
-z2fZpApk6Istwg98owGK8OkY67l5xbiDdRociNmDgID6TXdixZItsJokFPJIpwNq
-yFK8KOvg4Jcy5Td9JW3rAdkeTQxsT4qidR0A8GpdPPkIRDk6prJi0BPPq84Dtz1a
-9ZT9cwR6ePI0T1fY2+oFBd42wUmpi1E4IcboBBV+fIKk3XCIxg2d/NKCGlUxNrx6
-FGMyQo+cqfsyYyCBCYXKp3qKIdI2nA==
-=gUvE
------END PGP SIGNATURE-----
-
---svExV93C05KqedWb--
