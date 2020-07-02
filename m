@@ -2,114 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8F33212FA0
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 00:39:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3E69212FA8
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 00:44:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726455AbgGBWjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 18:39:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38532 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726163AbgGBWjx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 18:39:53 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 782F6C08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 15:39:53 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id z3so3853117pfn.12
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 15:39:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hpu8XAwtmw+kOkLZIDuQrqRUjCpHBHdYp8QrdsSt1UY=;
-        b=flMT1sP+tqTMlnOZZkcn0W4Ha4XYoXoL/dPj0adpgOuDpi+GIqKpb2CAl7SwumpXo3
-         1sfAWsDzrxpzuwDGfxIa3l3TiwUb+YhcaR4+rtCC7VooizGww9W9jA3yuHQ1jtSsyuBY
-         /EY29vYYv0bpCjtizpWHWOyMApzwLqY0Wn8Gcpdg8OcXcrUjWNxxhL6vkRiUh2ddJ424
-         4N+NuueT+jkgZQg1Z98KrIf+HlKPjBOdnNHeG2BsmwN3jhyBVuVwjsqwITg+qiSKrNrF
-         teGCQGmIYsWo0C2UH0s85xK8J9RLGqsztEPxSMvNsk5WHebrOscwPNdHphEb0D8vHWlY
-         zKbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hpu8XAwtmw+kOkLZIDuQrqRUjCpHBHdYp8QrdsSt1UY=;
-        b=c0gqGCINXSJKIfY/pWcNkTWWjH6B/pN29tLk7A7BzFoBEcWtgLq5ZUfArOOdZlQ35i
-         62yIGEJgo+Md2tOLvOKLDysz7/knRaSFAwfv2+37Fdv92Jc8GKUXq4x1y//D9yKfuI1o
-         S13wTBDJmI9B213ApwxY0gS1CAaefYZr3hziasoWm/TDcYzjpCs07pKrwmDv82DOPlOy
-         YXq7byYLdknJ12xZgEOVJhfS+5m9cHT6Dr+xf+1sRWYaJOm+DAtiXpT+wVmiVV0R3UJB
-         fgit5SWDPNy8aoRcZt8HAkCXZbsg0aGbm8tgvaThHOL0LO4AdC/EFVPUOb0vrehLA8vu
-         /zng==
-X-Gm-Message-State: AOAM532MmG4O3WzeBVn0/RlfeqPNv5WGeqWwx2fVIW0x63tGcWvdtgip
-        vDYP+/IDbtMK3Li8L0TqR7HBXg==
-X-Google-Smtp-Source: ABdhPJw9sBmZpW6b/xmF9uf5wIzxYbJiz9XfJS95WdRI7TvRVNnoc0HEZU0ltp/2qita2GXq82Z4MA==
-X-Received: by 2002:a62:7bc9:: with SMTP id w192mr28293570pfc.255.1593729592836;
-        Thu, 02 Jul 2020 15:39:52 -0700 (PDT)
-Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id m68sm169126pje.24.2020.07.02.15.39.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Jul 2020 15:39:52 -0700 (PDT)
-Date:   Thu, 2 Jul 2020 16:39:50 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Wei Li <liwei391@huawei.com>
-Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Kim Phillips <kim.phillips@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>
-Subject: Re: [PATCH 1/2] perf tools: ARM SPE code cleanup
-Message-ID: <20200702223950.GA471976@xps15>
-References: <20200623123141.27747-1-liwei391@huawei.com>
- <20200623123141.27747-2-liwei391@huawei.com>
+        id S1726425AbgGBWog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 18:44:36 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39414 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726017AbgGBWof (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 18:44:35 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id EE276ABCE;
+        Thu,  2 Jul 2020 22:44:33 +0000 (UTC)
+Date:   Fri, 3 Jul 2020 08:44:22 +1000
+From:   Aleksa Sarai <asarai@suse.de>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        netdev@vger.kernel.org,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        linux-kernel@vger.kernel.org,
+        Matt Bennett <matt.bennett@alliedtelesis.co.nz>,
+        zbr@ioremap.net
+Subject: Re: [PATCH 0/5] RFC: connector: Add network namespace awareness
+Message-ID: <20200702224422.rtbzxuock523o4ls@yavin.dot.cyphar.com>
+References: <20200702002635.8169-1-matt.bennett@alliedtelesis.co.nz>
+ <87h7uqukct.fsf@x220.int.ebiederm.org>
+ <20200702191025.bqxqwsm6kwnhm2p7@wittgenstein>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="7yvvc7bj43wjipa4"
 Content-Disposition: inline
-In-Reply-To: <20200623123141.27747-2-liwei391@huawei.com>
+In-Reply-To: <20200702191025.bqxqwsm6kwnhm2p7@wittgenstein>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 23, 2020 at 08:31:40PM +0800, Wei Li wrote:
-> Remove the useless check code to make it clear.
-> 
-> Signed-off-by: Wei Li <liwei391@huawei.com>
-> ---
->  tools/perf/arch/arm/util/auxtrace.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/tools/perf/arch/arm/util/auxtrace.c b/tools/perf/arch/arm/util/auxtrace.c
-> index 0a6e75b8777a..62b7b03d691a 100644
-> --- a/tools/perf/arch/arm/util/auxtrace.c
-> +++ b/tools/perf/arch/arm/util/auxtrace.c
-> @@ -57,7 +57,7 @@ struct auxtrace_record
->  	struct evsel *evsel;
->  	bool found_etm = false;
->  	bool found_spe = false;
-> -	static struct perf_pmu **arm_spe_pmus = NULL;
-> +	static struct perf_pmu **arm_spe_pmus;
->  	static int nr_spes = 0;
->  	int i = 0;
->  
-> @@ -65,9 +65,7 @@ struct auxtrace_record
->  		return NULL;
->  
->  	cs_etm_pmu = perf_pmu__find(CORESIGHT_ETM_PMU_NAME);
-> -
-> -	if (!arm_spe_pmus)
-> -		arm_spe_pmus = find_all_arm_spe_pmus(&nr_spes, err);
-> +	arm_spe_pmus = find_all_arm_spe_pmus(&nr_spes, err);
 
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+--7yvvc7bj43wjipa4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->  
->  	evlist__for_each_entry(evlist, evsel) {
->  		if (cs_etm_pmu &&
-> -- 
-> 2.17.1
-> 
+On 2020-07-02, Christian Brauner <christian.brauner@ubuntu.com> wrote:
+> On Thu, Jul 02, 2020 at 08:17:38AM -0500, Eric W. Biederman wrote:
+> > Matt Bennett <matt.bennett@alliedtelesis.co.nz> writes:
+> >=20
+> > > Previously the connector functionality could only be used by processe=
+s running in the
+> > > default network namespace. This meant that any process that uses the =
+connector functionality
+> > > could not operate correctly when run inside a container. This is a dr=
+aft patch series that
+> > > attempts to now allow this functionality outside of the default netwo=
+rk namespace.
+> > >
+> > > I see this has been discussed previously [1], but am not sure how my =
+changes relate to all
+> > > of the topics discussed there and/or if there are any unintended side=
+ effects from my draft
+> > > changes.
+> >=20
+> > Is there a piece of software that uses connector that you want to get
+> > working in containers?
+> >=20
+> > I am curious what the motivation is because up until now there has been
+> > nothing very interesting using this functionality.  So it hasn't been
+> > worth anyone's time to make the necessary changes to the code.
+>=20
+> Imho, we should just state once and for all that the proc connector will
+> not be namespaced. This is such a corner-case thing and has been
+> non-namespaced for such a long time without consistent push for it to be
+> namespaced combined with the fact that this needs quite some code to
+> make it work correctly that I fear we end up buying more bugs than we're
+> selling features. And realistically, you and I will end up maintaining
+> this and I feel this is not worth the time(?). Maybe I'm being too
+> pessimistic though.
+
+It would be nice to have the proc connector be namespaced, because it
+would allow you to have init systems that don't depend on cgroups to
+operate -- and it would allow us to have a subset of FreeBSD's kqueue
+functionality that doesn't exist today under Linux. However, arguably
+pidfds might be a better path forward toward implementing such events
+these days -- and is maybe something we should look into.
+
+All of that being said, I agree that doing this is going to be
+particularly hairy and likely not worth the effort. In particular, the
+proc connector is:
+
+ * Almost entirely unused (and largely unknown) by userspace.
+
+ * Fairly fundamentally broken right now (the "security feature" of
+   PROC_CN_MCAST_LISTEN doesn't work because once there is one listener,
+   anyone who opens an cn_proc socket can get all events on the system
+   -- and if the process which opened the socket dies with calling
+   PROC_CN_MCAST_IGNORE then that information is now always streaming).
+   So if we end up supporting this, we'll need to fix those bugs too.
+
+ * Is so deeply intertwined with netlink and thus is so deeply embedded
+   with network namespaces (rather than pid namespaces) meaning that
+   getting it to correctly handle shared-network-namespace cases is
+   going to be a nightmare. I agree with Eric that this patchset looks
+   like it doesn't approach the problem from the right angle (and
+   thinking about how you could fix it makes me a little nervous).
+
+Not to mention that when I brought this up with the maintainer listed in
+MAINTAINERS a few years ago (soon after I posted [1]), I was told that
+they no longer maintain this code -- so whoever touches it next is the
+new maintainer.
+
+In 2017, I wrote that GNU Shepherd uses cn_proc, however I'm pretty sure
+(looking at the code now) that it wasn't true then and isn't true now
+(Shepherd seems to just do basic pidfile liveliness checks). So even the
+niche example I used then doesn't actually use cn_proc.
+
+[1]: https://lore.kernel.org/lkml/a2fa1602-2280-c5e8-cac9-b718eaea5d22@suse=
+=2Ede/
+
+--=20
+Aleksa Sarai
+Senior Software Engineer (Containers)
+SUSE Linux GmbH
+<https://www.cyphar.com/>
+
+--7yvvc7bj43wjipa4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEXzbGxhtUYBJKdfWmnhiqJn3bjbQFAl7+Y0MACgkQnhiqJn3b
+jbQK2w//RnV3LBW6JLU3tXpsEaAW5AWmGYwVXGYOJcz8qZ/svfbKtAiHomv/fZzZ
+VKqpeZylQQjWO/QFQbwKqKAzaLKmt0w0Y9DtlPtjmvp53c3JsJkG0swDAbPMOt4V
+N9wqtKeHxGWQ7JaxT79EN2eehE7/HV8aSSg9FFHKRvvxF5XBdesDJbyVRVCLCdPy
+555+HK315dHBCjp4xf/mrn30/Nmb3mMITuv8jKZ3fNUYicdLikK8S9k759u3pWm0
+hGzKuPjiUfJYXhY5rvNnri2oBvGaBAIWjQqZpzFNgpjP3YWEYxPyIcQaJvqrPHit
+XjJI0XEEqiu3ENwqeeL4qPvbDuIzSRj//2JkZzZpP/RF3gVPBkFkKygyMt0/84NB
+cB9N2GXSK3xeWhRLTlwiUAQjyj7VsrAkPcgDGKrkdF6OuG/OLk4csU5K/iWVi4zj
+rUnBu48OAdZA+FD5rl+sNsNXLDM77MS0Zn5y0fOexD9lfKGq6H7lUFvCaN1E1OxQ
+n5wSYfnpElfw87eS7GSOO/24S1s/gS3tY81iJcqGHjXS7CD78D9+alu/mamDnvKL
+PyPMhRnuelFbUjKpWOyr+jKULaUEwszq3H9EcKoYIibbOiqQrAr04w1CN2bJE6yw
+8uNBUom8o89umkBpuM1GO6S4lsKgymaWzG/frRdAHqG1e6EgrvE=
+=vMyH
+-----END PGP SIGNATURE-----
+
+--7yvvc7bj43wjipa4--
