@@ -2,110 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10492212AC6
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 19:04:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A79E212AB9
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 19:02:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727816AbgGBRED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 13:04:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43372 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726796AbgGBREC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 13:04:02 -0400
-Received: from mail-ua1-x943.google.com (mail-ua1-x943.google.com [IPv6:2607:f8b0:4864:20::943])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFE5AC08C5C1;
-        Thu,  2 Jul 2020 10:04:01 -0700 (PDT)
-Received: by mail-ua1-x943.google.com with SMTP id q15so8940647uap.4;
-        Thu, 02 Jul 2020 10:04:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=W7abyQ+nO1e3zFNQVjcKFt0DBVozSRyUVCzzjyEn7XU=;
-        b=mLb/Puisrsyl9e+9wKRiHp5Tq8N9Qqi7AXkGnpjEMryA62rF5gsqxzAyij4m2HL6JK
-         tkOQpczKTmoudMKJ1io0MWq3hk5u3Z6m++a8HHvikgtlyQw/FDuVxeefDGmVs/QubBIf
-         fo07ggUC666fnwuzvOQIrj5Vbo/u7eYAdiymADO1Z1AH76x932TWNfovz0EdwpGi86Ob
-         q9CYiaxcNx77cukdGp+m33xZVBQC0Sce2Idw3UoDkHb4T4R1panpKoFR3HnbqJj7qIOq
-         ie46ml7vo9rFVOqfirf64zwiOqbpcp7WNuuN8VqETbVItChNFBDnoeAG1RFdTNPi6/yB
-         kWrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=W7abyQ+nO1e3zFNQVjcKFt0DBVozSRyUVCzzjyEn7XU=;
-        b=Oqv8ESsSq+2Ekl68e5cm5/8UiKw7ucFgonKRTqLJ84HYBCjvN5btNmvk/75dISwCyJ
-         2ztLLDPbN2G93lwnmqmOOvdepWl2sXUE0ukwPpFWlQu1nHkTivW5JvmYfwc+2H4NzFbp
-         UYmPh2eOiozTWT5oHVItof8WUw54VxUqauAtYBr1WoK2mGQp7sYHdG1jcPcbqXWlo6el
-         Oj402BkACJLrqzaZ9aH96nzXsqlt6k9UP3tuaZSroMr4gnqJRNhRwVbiFbx386xpN0dO
-         B5C2bsO7498dARHEREh272T9G9gWGKEa3Nf3OI/HPf+YdzuIcIXliAh1iC0+O8PztJjP
-         +DPg==
-X-Gm-Message-State: AOAM533dPZrqMporYCiTBnEVujeO5GI/kAb8B3J5EhB2Cthcaf3CQhh+
-        qZ8gFsfSfX3A58UdgHjgsW3yD8DSyx4nR+mvwtU=
-X-Google-Smtp-Source: ABdhPJxFGYCFDj2+ZKyRT9CJQ3VzeAHEvXOH+lMAstiCkuNZfVamKCSrktgnyH3ne9pM+ZVH+mPwjKvz6JjpBOzcvzM=
-X-Received: by 2002:ab0:7056:: with SMTP id v22mr16569896ual.67.1593709440909;
- Thu, 02 Jul 2020 10:04:00 -0700 (PDT)
+        id S1727084AbgGBRCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 13:02:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32856 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726754AbgGBRCs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 13:02:48 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6F027206E2;
+        Thu,  2 Jul 2020 17:02:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593709367;
+        bh=bDQl5qvzxkTi9ZCnxC0GowCAYQCv6zA9MuDUFOcZCJo=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=dNHu7uwwlByzYKVhuYPFATnwTsNThKdOicvR2SDQ5sqxC1EWT2ma5t6qetH3p5nXQ
+         s30IMGZp9b36Ba7H/OPmmq07+r9roQWe5oYdftQXYo63br5zauxZdJEVDvmQCr0g97
+         YRk1iV7hPxB+jvIsmUlzIoOEFbcGvy9uRoUxrnz4=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 589AE3523164; Thu,  2 Jul 2020 10:02:47 -0700 (PDT)
+Date:   Thu, 2 Jul 2020 10:02:47 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Wei Yongjun <weiyongjun1@huawei.com>
+Cc:     Hulk Robot <hulkci@huawei.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] scftorture: Make symbol 'scf_torture_rand' static
+Message-ID: <20200702170247.GS9247@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200702144700.3602-1-weiyongjun1@huawei.com>
 MIME-Version: 1.0
-References: <20200702063632.289959-1-vaibhavgupta40@gmail.com>
- <20200702063632.289959-3-vaibhavgupta40@gmail.com> <20200702093645.13e0018a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20200702093645.13e0018a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
-Date:   Thu, 2 Jul 2020 22:32:21 +0530
-Message-ID: <CAP+cEONGianqeie9HsVqVm6=LwKn_caF285U=vpdha0-+8B-ZA@mail.gmail.com>
-Subject: Re: [PATCH v1 2/2] qlcninc: use generic power management
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Bjorn Helgaas <bjorn@helgaas.com>,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Manish Chopra <manishc@marvell.com>,
-        Rahul Verma <rahulv@marvell.com>, GR-Linux-NIC-Dev@marvell.com,
-        Shahed Shaikh <shshaikh@marvell.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200702144700.3602-1-weiyongjun1@huawei.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 2, 2020 at 10:06 PM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> On Thu,  2 Jul 2020 12:06:32 +0530 Vaibhav Gupta wrote:
-> > With legacy PM, drivers themselves were responsible for managing the
-> > device's power states and takes care of register states. And they use P=
-CI
-> > helper functions to do it.
-> >
-> > After upgrading to the generic structure, PCI core will take care of
-> > required tasks and drivers should do only device-specific operations.
-> >
-> > .suspend() calls __qlcnic_shutdown, which then calls qlcnic_82xx_shutdo=
-wn;
-> > .resume()  calls __qlcnic_resume,   which then calls qlcnic_82xx_resume=
-;
-> >
-> > Both ...82xx..() are define in
-> > drivers/net/ethernet/qlogic/qlcnic/qlcnic_hw.c and are used only in
-> > drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c.
-> >
-> > Hence upgrade them and remove PCI function calls, like pci_save_state()=
- and
-> > pci_enable_wake(), inside them
-> >
-> > Compile-tested only.
-> >
-> > Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
->
-> drivers/net/ethernet/qlogic/qlcnic/qlcnic_hw.c: In function =E2=80=98qlcn=
-ic_82xx_shutdown=E2=80=99:
-> drivers/net/ethernet/qlogic/qlcnic/qlcnic_hw.c:1652:6: warning: unused va=
-riable =E2=80=98retval=E2=80=99 [-Wunused-variable]
->  1652 |  int retval;
->       |      ^~~~~~
-Fixed in v2.
-Thanks!
+On Thu, Jul 02, 2020 at 10:47:00PM +0800, Wei Yongjun wrote:
+> Fix sparse build warning:
+> 
+> kernel/scftorture.c:124:1: warning:
+>  symbol '__pcpu_scope_scf_torture_rand' was not declared. Should it be static?
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
 
---Vaibhav Gupta
+Good catch, applied, thank you!
+
+Due to recent changes, I hand-applied this as shown below.  Please
+let me know if I messed anything up.
+
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+commit ff9210137b0b8d8f045dd1fd116253ba7686e892
+Author: Wei Yongjun <weiyongjun1@huawei.com>
+Date:   Thu Jul 2 09:56:50 2020 -0700
+
+    scftorture: Make symbol 'scf_torture_rand' static
+    
+    The sparse tool complains as follows
+    
+    kernel/scftorture.c:124:1: warning:
+     symbol '__pcpu_scope_scf_torture_rand' was not declared. Should it be static?
+    
+    And this per-CPU variable is not used outside of scftorture.c,
+    so this commit marks it static.
+    
+    Reported-by: Hulk Robot <hulkci@huawei.com>
+    Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/kernel/scftorture.c b/kernel/scftorture.c
+index 52f74f1..a7fea76 100644
+--- a/kernel/scftorture.c
++++ b/kernel/scftorture.c
+@@ -134,7 +134,7 @@ static atomic_t n_alloc_errs;
+ static bool scfdone;
+ static char *bangstr = "";
+ 
+-DEFINE_TORTURE_RANDOM_PERCPU(scf_torture_rand);
++static DEFINE_TORTURE_RANDOM_PERCPU(scf_torture_rand);
+ 
+ // Print torture statistics.  Caller must ensure serialization.
+ static void scf_torture_stats_print(void)
