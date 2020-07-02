@@ -2,101 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ADBC212AF4
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 19:12:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0DE8212AFD
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 19:13:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726667AbgGBRMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 13:12:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38140 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727792AbgGBRMC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 13:12:02 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E4F9D21473;
-        Thu,  2 Jul 2020 17:12:00 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.93)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1jr2kg-004Asp-C7; Thu, 02 Jul 2020 13:11:58 -0400
-Message-ID: <20200702171158.240195038@goodmis.org>
-User-Agent: quilt/0.66
-Date:   Thu, 02 Jul 2020 13:10:25 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
+        id S1727962AbgGBRNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 13:13:06 -0400
+Received: from mail-ed1-f68.google.com ([209.85.208.68]:41622 "EHLO
+        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727939AbgGBRNF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 13:13:05 -0400
+Received: by mail-ed1-f68.google.com with SMTP id e22so24748166edq.8
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 10:13:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=VVnE4dgvyAySr2AFaA3khkVH7tNEvr0JK5jKeXH+JQw=;
+        b=E88RV0GJ4qfH3ZZ18t4A0aou6wY4Spn0IogKeSbet7ghWERlp3LVTR3KI66YmcbMVV
+         bBbZQ4089uwviSUww5XjCFvmRkuC+aRCvfzeiR/L84tv2hsX/bmVKEGNJDq3V6o/l+nW
+         bXMqcIIGZppAeLObyGemvQ6njzyUoeD27YTIpnViih2qMbZgtEHeF8KlbTz7SGZSnH6s
+         416pSHrwASpqBZRDy6Iq3ND7WJHAaFWeAO8FaKIwXa7/Qq8DnDdeO+X5/5dJwQgy4O7r
+         VTRe0LvQQfwe8zWmam2cHnqczl8Ky9VP2mPq8+d6W/wjoAxqEaNuijWyNi5g2Jlb2RvB
+         1yzg==
+X-Gm-Message-State: AOAM532URzdrj92TWLYVu4xwcuHBt9duhBaKTavbdwbmDT5/7hwFkf0V
+        mKA6vPLasdzwnJMYWPEHZwQ=
+X-Google-Smtp-Source: ABdhPJzsx3bO5yi0V/ckWa7Vrn10ZB0zUEKO/SIIlR9h4BC7fL/R/0EN4AXZgNcI++/I6s3g461IIw==
+X-Received: by 2002:aa7:c50e:: with SMTP id o14mr36265439edq.168.1593709983439;
+        Thu, 02 Jul 2020 10:13:03 -0700 (PDT)
+Received: from localhost (ip-37-188-168-3.eurotel.cz. [37.188.168.3])
+        by smtp.gmail.com with ESMTPSA id x4sm7204449eju.2.2020.07.02.10.13.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Jul 2020 10:13:02 -0700 (PDT)
+Date:   Thu, 2 Jul 2020 19:13:02 +0200
+From:   Michal Hocko <mhocko@kernel.org>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-Subject: [PATCH 9/9] tools lib traceevent: Add more SVM exit reasons
-References: <20200702171016.178196716@goodmis.org>
+        linux-mm <linux-mm@kvack.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org, Chris Down <chris@chrisdown.name>
+Subject: Re: BUG: Bad page state in process - page dumped because: page still
+ charged to cgroup
+Message-ID: <20200702171302.GK18446@dhcp22.suse.cz>
+References: <CA+G9fYs=3UG3k-2trqQuB-gJh9D1YygkNQ4qWiHtcaRMSWTmrQ@mail.gmail.com>
+ <20200701082904.GM2369@dhcp22.suse.cz>
+ <20200701184552.GA61684@carbon.DHCP.thefacebook.com>
+ <20200702162202.GI18446@dhcp22.suse.cz>
+ <20200702163738.GA106423@carbon.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200702163738.GA106423@carbon.dhcp.thefacebook.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kiszka <jan.kiszka@siemens.com>
+On Thu 02-07-20 09:37:38, Roman Gushchin wrote:
+> On Thu, Jul 02, 2020 at 06:22:02PM +0200, Michal Hocko wrote:
+> > On Wed 01-07-20 11:45:52, Roman Gushchin wrote:
+> > [...]
+> > > >From c97afecd32c0db5e024be9ba72f43d22974f5bcd Mon Sep 17 00:00:00 2001
+> > > From: Roman Gushchin <guro@fb.com>
+> > > Date: Wed, 1 Jul 2020 11:05:32 -0700
+> > > Subject: [PATCH] mm: kmem: make memcg_kmem_enabled() irreversible
+> > > 
+> > > Historically the kernel memory accounting was an opt-in feature, which
+> > > could be enabled for individual cgroups. But now it's not true, and
+> > > it's on by default both on cgroup v1 and cgroup v2.  And as long as a
+> > > user has at least one non-root memory cgroup, the kernel memory
+> > > accounting is on. So in most setups it's either always on (if memory
+> > > cgroups are in use and kmem accounting is not disabled), either always
+> > > off (otherwise).
+> > > 
+> > > memcg_kmem_enabled() is used in many places to guard the kernel memory
+> > > accounting code. If memcg_kmem_enabled() can reverse from returning
+> > > true to returning false (as now), we can't rely on it on release paths
+> > > and have to check if it was on before.
+> > > 
+> > > If we'll make memcg_kmem_enabled() irreversible (always returning true
+> > > after returning it for the first time), it'll make the general logic
+> > > more simple and robust. It also will allow to guard some checks which
+> > > otherwise would stay unguarded.
+> > > 
+> > > Signed-off-by: Roman Gushchin <guro@fb.com>
+> > > ---
+> > >  mm/memcontrol.c | 6 ++----
+> > >  1 file changed, 2 insertions(+), 4 deletions(-)
+> > > 
+> > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > > index 50ae77f3985e..2d018a51c941 100644
+> > > --- a/mm/memcontrol.c
+> > > +++ b/mm/memcontrol.c
+> > > @@ -3582,7 +3582,8 @@ static int memcg_online_kmem(struct mem_cgroup *memcg)
+> > >  	objcg->memcg = memcg;
+> > >  	rcu_assign_pointer(memcg->objcg, objcg);
+> > >  
+> > > -	static_branch_inc(&memcg_kmem_enabled_key);
+> > > +	if (!memcg_kmem_enabled())
+> > > +		static_branch_inc(&memcg_kmem_enabled_key);
+> > 
+> > Wouldn't be static_branch_enable() more readable?
+> 
+> Agree, will change, add reported-by and tested-by tags and resend.
+> Thanks!
 
-Exceptions require individual decoding (only feasible intercepts
-listed), XSETBV was missing and the AVIC brought in two new exit codes.
+Feel free to add
+Acked-by: Michal Hocko <mhocko@suse.com>
 
-Link: http://lkml.kernel.org/r/5741D822.3030203@web.de
-Link: http://lore.kernel.org/linux-trace-devel/20200625100516.365338-10-tz.stoyanov@gmail.com
+> Btw, don't we wanna to change memcg_kmem_enabled() definition
+> from static_branch_unlikely() to static_branch_likely()?
 
-Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
-Signed-off-by: Steven Rostedt <rostedt@goodmis.org>
-Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- tools/lib/traceevent/plugins/plugin_kvm.c | 23 +++++++++++++++++++++--
- 1 file changed, 21 insertions(+), 2 deletions(-)
+Honestly, I do not know what would be the impact but considering kmem
+is enabled unless explicitly disabled these days then likely sounds more
+logical from reading POV. I do not think that early allocations until
+the first memcg is created is the case to optimize for.
+Worth a separate patch I guess.
 
-diff --git a/tools/lib/traceevent/plugins/plugin_kvm.c b/tools/lib/traceevent/plugins/plugin_kvm.c
-index c8e623065a7e..768c658f5904 100644
---- a/tools/lib/traceevent/plugins/plugin_kvm.c
-+++ b/tools/lib/traceevent/plugins/plugin_kvm.c
-@@ -155,7 +155,23 @@ static const char *disassemble(unsigned char *insn, int len, uint64_t rip,
- 	_ER(EXIT_WRITE_DR5,	0x035)		\
- 	_ER(EXIT_WRITE_DR6,	0x036)		\
- 	_ER(EXIT_WRITE_DR7,	0x037)		\
--	_ER(EXIT_EXCP_BASE,     0x040)		\
-+	_ER(EXIT_EXCP_DE,	0x040)		\
-+	_ER(EXIT_EXCP_DB,	0x041)		\
-+	_ER(EXIT_EXCP_BP,	0x043)		\
-+	_ER(EXIT_EXCP_OF,	0x044)		\
-+	_ER(EXIT_EXCP_BR,	0x045)		\
-+	_ER(EXIT_EXCP_UD,	0x046)		\
-+	_ER(EXIT_EXCP_NM,	0x047)		\
-+	_ER(EXIT_EXCP_DF,	0x048)		\
-+	_ER(EXIT_EXCP_TS,	0x04a)		\
-+	_ER(EXIT_EXCP_NP,	0x04b)		\
-+	_ER(EXIT_EXCP_SS,	0x04c)		\
-+	_ER(EXIT_EXCP_GP,	0x04d)		\
-+	_ER(EXIT_EXCP_PF,	0x04e)		\
-+	_ER(EXIT_EXCP_MF,	0x050)		\
-+	_ER(EXIT_EXCP_AC,	0x051)		\
-+	_ER(EXIT_EXCP_MC,	0x052)		\
-+	_ER(EXIT_EXCP_XF,	0x053)		\
- 	_ER(EXIT_INTR,		0x060)		\
- 	_ER(EXIT_NMI,		0x061)		\
- 	_ER(EXIT_SMI,		0x062)		\
-@@ -201,7 +217,10 @@ static const char *disassemble(unsigned char *insn, int len, uint64_t rip,
- 	_ER(EXIT_MONITOR,	0x08a)		\
- 	_ER(EXIT_MWAIT,		0x08b)		\
- 	_ER(EXIT_MWAIT_COND,	0x08c)		\
--	_ER(EXIT_NPF,		0x400)		\
-+	_ER(EXIT_XSETBV,	0x08d)		\
-+	_ER(EXIT_NPF, 		0x400)		\
-+	_ER(EXIT_AVIC_INCOMPLETE_IPI,		0x401)	\
-+	_ER(EXIT_AVIC_UNACCELERATED_ACCESS,	0x402)	\
- 	_ER(EXIT_ERR,		-1)
- 
- #define _ER(reason, val)	{ #reason, val },
 -- 
-2.26.2
-
-
+Michal Hocko
+SUSE Labs
