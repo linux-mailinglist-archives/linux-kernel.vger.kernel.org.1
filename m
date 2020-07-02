@@ -2,100 +2,337 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F19C21273C
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 17:02:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28C8E212743
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 17:03:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729956AbgGBPBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 11:01:48 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:52132 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726032AbgGBPBq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 11:01:46 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 062EvRwS018136;
-        Thu, 2 Jul 2020 15:01:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
- bh=EovBjL/VDEJMxYfhQUs2tcfenMAKo6Sk/T/23Jbbdlc=;
- b=YS392JwJ/K+bmWg4R2XF6a0CNZCiwJgA9p8aSAD6auJtb0SaSbKMQBCeqKYZDofftZ/3
- NE7Mvus2/HD90se7QKJYIiJ9QhX/Ob8biOhwHlO6FD28ELUo5EkDMHLFrSQnQNoO3roN
- nkK11EgJebSEomRiILOo2hPmwHB539A0sszif7H4qMk2LWN2bYQ+ns8SJg9Dr2G/aY4N
- VUoZ2kW2KoQuchO1e4UGlLcwTETQ0NyNHPLUCVPGs3zzO02U75COx5S9R2wmfpxPpikx
- BAsOu1HQloDAtl4kNakVCnXFZw98XYQUQ8Vb+aJlPGmk6u4GKfmSpbfvXn9f9QxeqlRI nw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 31ywrby6cd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 02 Jul 2020 15:01:07 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 062Ewpe0090264;
-        Thu, 2 Jul 2020 15:01:06 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 31xg19ggjs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 02 Jul 2020 15:01:04 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 062F0xVD010335;
-        Thu, 2 Jul 2020 15:00:59 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 02 Jul 2020 15:00:58 +0000
-Date:   Thu, 2 Jul 2020 18:00:51 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Markus Elfring <Markus.Elfring@web.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>, Guo Ren <guoren@kernel.org>,
-        linux-csky@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH v4 02/14] irqchip/csky-apb-intc: Fix potential resource
- leaks
-Message-ID: <20200702150051.GR2549@kadam>
-References: <1593569786-11500-1-git-send-email-yangtiezhu@loongson.cn>
- <1593569786-11500-3-git-send-email-yangtiezhu@loongson.cn>
- <564ffff9-6043-7191-2458-f425dd8d0c11@web.de>
- <1a0e007a-db94-501b-4ab9-0bb479ec093b@loongson.cn>
+        id S1730056AbgGBPDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 11:03:08 -0400
+Received: from mga18.intel.com ([134.134.136.126]:43280 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726032AbgGBPCy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 11:02:54 -0400
+IronPort-SDR: V87AtH4oUuDX+rBZsYNecnfk5OGzWEY9tOyW38xpTvXvwa5yElxd1KsMAB2EnxCrTjwGpgQe76
+ 4kYq6+cPSTfw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="134384131"
+X-IronPort-AV: E=Sophos;i="5.75,304,1589266800"; 
+   d="scan'208";a="134384131"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2020 08:02:46 -0700
+IronPort-SDR: 7RsCEVopMFoRUo0eNLpZGOhMMw4kkhYy98dTkVDgdjYli0O0VhARTMsgbGvYO9JbY8nWxTJwvL
+ ZUbKA8Mw4Q/A==
+X-IronPort-AV: E=Sophos;i="5.75,304,1589266800"; 
+   d="scan'208";a="304275493"
+Received: from nchava-mobl1.amr.corp.intel.com (HELO [10.252.135.144]) ([10.252.135.144])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2020 08:02:45 -0700
+Subject: Re: [RFC PATCH] ALSA: compress: add support to change codec profile
+ in gapless playback
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        vkoul@kernel.org, perex@perex.cz, tiwai@suse.com
+Cc:     alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com,
+        lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
+        broonie@kernel.org
+References: <20200702111114.32217-1-srinivas.kandagatla@linaro.org>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <90ed95e0-8b01-6c87-b86b-dfa463181527@linux.intel.com>
+Date:   Thu, 2 Jul 2020 10:00:52 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1a0e007a-db94-501b-4ab9-0bb479ec093b@loongson.cn>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9670 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0
- mlxlogscore=999 suspectscore=1 bulkscore=0 mlxscore=0 adultscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2007020106
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9670 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 mlxlogscore=999
- clxscore=1011 cotscore=-2147483648 priorityscore=1501 lowpriorityscore=0
- malwarescore=0 mlxscore=0 adultscore=0 suspectscore=1 impostorscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2007020106
+In-Reply-To: <20200702111114.32217-1-srinivas.kandagatla@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 01, 2020 at 05:35:35PM +0800, Tiezhu Yang wrote:
-> On 07/01/2020 04:40 PM, Markus Elfring wrote:
-> > > … were not released in a few error cases. …
-> > Another small wording adjustment:
-> >    … in two error cases. …
+
+
+On 7/2/20 6:11 AM, Srinivas Kandagatla wrote:
+> For gapless playback its possible that each track can have different
+> codec profile with same decoder, for example we have WMA album,
+> we may have different tracks as WMA v9, WMA v10 and so on
 > 
-> OK
+> Existing code does not allow to change this profile while doing gapless
+> playback.
+> 
+> This patch adds new SNDRV_COMPRESS_SET_CODEC_PARAMS IOCTL to allow
+> userspace to set this new parameters required for new codec profile.
 
-A lot of people have told Marcus over and over not to comment on commit
-messages.  Greg has an automatic bot to respond to him.
+That does not seem fully correct to me. WMA profiles are actually 
+different encoding schemes - specifically the WMA 10 LBR.
 
-https://lkml.org/lkml/2020/6/13/25
+The premise for gapless playback was that the same codec and profile be 
+used between tracks, so that the same internal delay was used. If you 
+look at the output data, it's made of zeroes for N samples, and then you 
+see decoded data. When you change tracks, the first N samples actually 
+come from the previous track.
 
-Marcus ignores us when we ask him to stop.  Some new developers have
-emailed me privately that they were confused and discouraged with his
-feedback because they assumed he was a senior developer or something.
+If you change coding schemes between tracks, you cannot call this 
+gapless playback. You will both remove the last N samples of the 
+previous track and insert M zeroes (for the new decoder).
 
-regards,
-dan carpenter
+If you wanted to support such a mode, you would need to provide an 
+indication of the delay difference, e.g. by looking at the ID3 tags and 
+let firmware realign. Unfortunately, you don't send this information 
+with the new IOCTL? You would also need firmware tricks for the first 
+decoder to flush out its output and the new decoder to realign.
 
+I also don't see how one might end-up with different profiles for an 
+album in the first place. The gapless use came mostly from ripping live 
+music recorded on audio CDs in different tracks, and it would have taken 
+a twisted mind to select different encodings between tracks.
+
+If the 'album' is really a playlist, then the gapless playback as 
+supported by the ASoC compressed layer is nearly useless. What you would 
+really want is cross-fade but that's a different use case and 
+implementation that would be needed.
+
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>   include/sound/compress_driver.h       |  5 +++
+>   include/sound/soc-component.h         |  3 ++
+>   include/sound/soc-dai.h               |  5 +++
+>   include/uapi/sound/compress_offload.h |  1 +
+>   sound/core/compress_offload.c         | 54 ++++++++++++++++++++++++---
+>   sound/soc/soc-compress.c              | 30 +++++++++++++++
+>   sound/soc/soc-dai.c                   | 14 +++++++
+>   7 files changed, 106 insertions(+), 6 deletions(-)
+> 
+> diff --git a/include/sound/compress_driver.h b/include/sound/compress_driver.h
+> index 70cbc5095e72..8d23351f7ad7 100644
+> --- a/include/sound/compress_driver.h
+> +++ b/include/sound/compress_driver.h
+> @@ -93,6 +93,9 @@ struct snd_compr_stream {
+>    * @set_params: Sets the compressed stream parameters, mandatory
+>    * This can be called in during stream creation only to set codec params
+>    * and the stream properties
+> + * @set_codec_params: Sets the compressed stream codec parameters, mandatory
+> + * This can be called in during gapless next track codec change only to set
+> + * codec params
+>    * @get_params: retrieve the codec parameters, mandatory
+>    * @set_metadata: Set the metadata values for a stream
+>    * @get_metadata: retrieves the requested metadata values from stream
+> @@ -112,6 +115,8 @@ struct snd_compr_ops {
+>   	int (*free)(struct snd_compr_stream *stream);
+>   	int (*set_params)(struct snd_compr_stream *stream,
+>   			struct snd_compr_params *params);
+> +	int (*set_codec_params)(struct snd_compr_stream *stream,
+> +			struct snd_codec *params);
+>   	int (*get_params)(struct snd_compr_stream *stream,
+>   			struct snd_codec *params);
+>   	int (*set_metadata)(struct snd_compr_stream *stream,
+> diff --git a/include/sound/soc-component.h b/include/sound/soc-component.h
+> index 5663891148e3..1e69c54ed0b9 100644
+> --- a/include/sound/soc-component.h
+> +++ b/include/sound/soc-component.h
+> @@ -36,6 +36,9 @@ struct snd_compress_ops {
+>   	int (*get_params)(struct snd_soc_component *component,
+>   			  struct snd_compr_stream *stream,
+>   			  struct snd_codec *params);
+> +	int (*set_codec_params)(struct snd_soc_component *component,
+> +			  struct snd_compr_stream *stream,
+> +			  struct snd_codec *params);
+>   	int (*set_metadata)(struct snd_soc_component *component,
+>   			    struct snd_compr_stream *stream,
+>   			    struct snd_compr_metadata *metadata);
+> diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+> index 212257e84fac..526794ee555b 100644
+> --- a/include/sound/soc-dai.h
+> +++ b/include/sound/soc-dai.h
+> @@ -192,6 +192,9 @@ int snd_soc_dai_compr_trigger(struct snd_soc_dai *dai,
+>   int snd_soc_dai_compr_set_params(struct snd_soc_dai *dai,
+>   				 struct snd_compr_stream *cstream,
+>   				 struct snd_compr_params *params);
+> +int snd_soc_dai_compr_set_codec_params(struct snd_soc_dai *dai,
+> +				 struct snd_compr_stream *cstream,
+> +				 struct snd_codec *codec);
+>   int snd_soc_dai_compr_get_params(struct snd_soc_dai *dai,
+>   				 struct snd_compr_stream *cstream,
+>   				 struct snd_codec *params);
+> @@ -292,6 +295,8 @@ struct snd_soc_cdai_ops {
+>   			struct snd_soc_dai *);
+>   	int (*set_params)(struct snd_compr_stream *,
+>   			struct snd_compr_params *, struct snd_soc_dai *);
+> +	int (*set_codec_params)(struct snd_compr_stream *,
+> +			struct snd_codec *, struct snd_soc_dai *);
+>   	int (*get_params)(struct snd_compr_stream *,
+>   			struct snd_codec *, struct snd_soc_dai *);
+>   	int (*set_metadata)(struct snd_compr_stream *,
+> diff --git a/include/uapi/sound/compress_offload.h b/include/uapi/sound/compress_offload.h
+> index 7184265c0b0d..c46286113a4b 100644
+> --- a/include/uapi/sound/compress_offload.h
+> +++ b/include/uapi/sound/compress_offload.h
+> @@ -172,6 +172,7 @@ struct snd_compr_metadata {
+>   						 struct snd_compr_metadata)
+>   #define SNDRV_COMPRESS_GET_METADATA	_IOWR('C', 0x15,\
+>   						 struct snd_compr_metadata)
+> +#define SNDRV_COMPRESS_SET_CODEC_PARAMS	_IOW('C', 0x16, struct snd_codec)
+>   #define SNDRV_COMPRESS_TSTAMP		_IOR('C', 0x20, struct snd_compr_tstamp)
+>   #define SNDRV_COMPRESS_AVAIL		_IOR('C', 0x21, struct snd_compr_avail)
+>   #define SNDRV_COMPRESS_PAUSE		_IO('C', 0x30)
+> diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
+> index 0e53f6f31916..1c4b2cf450a0 100644
+> --- a/sound/core/compress_offload.c
+> +++ b/sound/core/compress_offload.c
+> @@ -566,6 +566,18 @@ static int snd_compr_allocate_buffer(struct snd_compr_stream *stream,
+>   	return 0;
+>   }
+>   
+> +static int snd_compress_check_codec_params(struct snd_codec *codec)
+> +{
+> +	/* now codec parameters */
+> +	if (codec->id == 0 || codec->id > SND_AUDIOCODEC_MAX)
+> +		return -EINVAL;
+> +
+> +	if (codec->ch_in == 0 || codec->ch_out == 0)
+> +		return -EINVAL;
+> +
+> +	return 0;
+> +}
+> +
+>   static int snd_compress_check_input(struct snd_compr_params *params)
+>   {
+>   	/* first let's check the buffer parameter's */
+> @@ -574,14 +586,41 @@ static int snd_compress_check_input(struct snd_compr_params *params)
+>   	    params->buffer.fragments == 0)
+>   		return -EINVAL;
+>   
+> -	/* now codec parameters */
+> -	if (params->codec.id == 0 || params->codec.id > SND_AUDIOCODEC_MAX)
+> -		return -EINVAL;
+> +	return snd_compress_check_codec_params(&params->codec);
+>   
+> -	if (params->codec.ch_in == 0 || params->codec.ch_out == 0)
+> -		return -EINVAL;
+> +}
+>   
+> -	return 0;
+> +static int snd_compr_set_codec_params(struct snd_compr_stream *stream,
+> +				      unsigned long arg)
+> +{
+> +	struct snd_codec *params;
+> +	int retval;
+> +
+> +	if (!stream->ops->set_codec_params)
+> +		return -EPERM;
+> +
+> +	if (stream->runtime->state != SNDRV_PCM_STATE_RUNNING)
+> +		return -EPERM;
+> +
+> +	/* codec params can be only set when next track has been signalled */
+> +	if (stream->next_track == false)
+> +		return -EPERM;
+> +
+> +	params = memdup_user((void __user *)arg, sizeof(*params));
+> +	if (IS_ERR(params))
+> +		return PTR_ERR(params);
+> +
+> +	retval = snd_compress_check_codec_params(params);
+> +	if (retval)
+> +		goto out;
+> +
+> +	retval = stream->ops->set_codec_params(stream, params);
+> +	if (retval)
+> +		goto out;
+> +
+> +out:
+> +	kfree(params);
+> +	return retval;
+>   }
+>   
+>   static int
+> @@ -964,6 +1003,9 @@ static long snd_compr_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
+>   	case _IOC_NR(SNDRV_COMPRESS_SET_PARAMS):
+>   		retval = snd_compr_set_params(stream, arg);
+>   		break;
+> +	case _IOC_NR(SNDRV_COMPRESS_SET_CODEC_PARAMS):
+> +		retval = snd_compr_set_codec_params(stream, arg);
+> +		break;
+>   	case _IOC_NR(SNDRV_COMPRESS_GET_PARAMS):
+>   		retval = snd_compr_get_params(stream, arg);
+>   		break;
+> diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+> index 4984b6a2c370..e549e0197aca 100644
+> --- a/sound/soc/soc-compress.c
+> +++ b/sound/soc/soc-compress.c
+> @@ -518,6 +518,34 @@ static int soc_compr_set_params_fe(struct snd_compr_stream *cstream,
+>   	return ret;
+>   }
+>   
+> +static int soc_compr_set_codec_params(struct snd_compr_stream *cstream,
+> +				      struct snd_codec *codec)
+> +{
+> +	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
+> +	struct snd_soc_component *component;
+> +	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
+> +	int i, ret;
+> +
+> +	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
+> +
+> +	ret = snd_soc_dai_compr_set_codec_params(cpu_dai, cstream, codec);
+> +	if (ret < 0)
+> +		goto err;
+> +
+> +	for_each_rtd_components(rtd, i, component) {
+> +		if (!component->driver->compress_ops ||
+> +		    !component->driver->compress_ops->set_codec_params)
+> +			continue;
+> +
+> +		ret = component->driver->compress_ops->set_codec_params(component, cstream,
+> +								     codec);
+> +		break;
+> +	}
+> +err:
+> +	mutex_unlock(&rtd->card->pcm_mutex);
+> +	return ret;
+> +}
+> +
+>   static int soc_compr_get_params(struct snd_compr_stream *cstream,
+>   				struct snd_codec *params)
+>   {
+> @@ -728,6 +756,7 @@ static struct snd_compr_ops soc_compr_ops = {
+>   	.open		= soc_compr_open,
+>   	.free		= soc_compr_free,
+>   	.set_params	= soc_compr_set_params,
+> +	.set_codec_params = soc_compr_set_codec_params,
+>   	.set_metadata   = soc_compr_set_metadata,
+>   	.get_metadata	= soc_compr_get_metadata,
+>   	.get_params	= soc_compr_get_params,
+> @@ -744,6 +773,7 @@ static struct snd_compr_ops soc_compr_dyn_ops = {
+>   	.free		= soc_compr_free_fe,
+>   	.set_params	= soc_compr_set_params_fe,
+>   	.get_params	= soc_compr_get_params,
+> +	.set_codec_params = soc_compr_set_codec_params,
+>   	.set_metadata   = soc_compr_set_metadata,
+>   	.get_metadata	= soc_compr_get_metadata,
+>   	.trigger	= soc_compr_trigger_fe,
+> diff --git a/sound/soc/soc-dai.c b/sound/soc/soc-dai.c
+> index b05e18b63a1c..06481d0278b8 100644
+> --- a/sound/soc/soc-dai.c
+> +++ b/sound/soc/soc-dai.c
+> @@ -594,6 +594,20 @@ int snd_soc_dai_compr_get_params(struct snd_soc_dai *dai,
+>   }
+>   EXPORT_SYMBOL_GPL(snd_soc_dai_compr_get_params);
+>   
+> +int snd_soc_dai_compr_set_codec_params(struct snd_soc_dai *dai,
+> +					struct snd_compr_stream *cstream,
+> +					struct snd_codec *codec)
+> +{	int ret = 0;
+> +
+> +	if (dai->driver->cops &&
+> +	    dai->driver->cops->set_codec_params)
+> +		ret = dai->driver->cops->set_codec_params(cstream, codec, dai);
+> +
+> +	return soc_dai_ret(dai, ret);
+> +
+> +}
+> +EXPORT_SYMBOL_GPL(snd_soc_dai_compr_set_codec_params);
+> +
+>   int snd_soc_dai_compr_ack(struct snd_soc_dai *dai,
+>   			  struct snd_compr_stream *cstream,
+>   			  size_t bytes)
+> 
