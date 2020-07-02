@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D3E4211756
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 02:45:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5520321175D
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 02:45:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728042AbgGBApe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 20:45:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33364 "EHLO
+        id S1728114AbgGBApr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 20:45:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726877AbgGBApd (ORCPT
+        with ESMTP id S1728003AbgGBApe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 20:45:33 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BC0AC08C5DC
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 17:45:33 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id k71so8163932pje.0
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 17:45:33 -0700 (PDT)
+        Wed, 1 Jul 2020 20:45:34 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DE86C08C5DC
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 17:45:34 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id l6so8576754pjq.1
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 17:45:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PF6PVg6Qk3aczs+/e1HWRyzHNDndSGQClfFztHhcrJA=;
-        b=IRRN360yDKEMQxG9gT3EO16qJfg/TcpVShQcjRB9jTaTvchyHFTq4oTBH0DuMRu0L/
-         DxZN8IBFt5WiQaBOohCA3SM0pCeDKhTQvwGElidlfN1JBrTftIKRZ2qvUbF7dSX31Ovl
-         unSwAWVPVUgZe91Kk8wFDpHNz8uN3oouD+ZyU=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=jkGcjxRkJ6dCPuaybiPstZAyKU85uMADDKqqgUxYero=;
+        b=AKIHQJeQnAOPNI2gGQrvqd9S3Y7bK1oz1xUxjXASgco2p5Jnkbd+JOewpSZ4lCXVg4
+         onxJ3xvwbcwmLysRT7TDcyysWiMh4Ozitkz6tPoOlIS40R2T00KA+cqLdghcXBdL8FnW
+         jveDSJpqRdDLw9TAHu5CGsM5eclZzjtUsdpOU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PF6PVg6Qk3aczs+/e1HWRyzHNDndSGQClfFztHhcrJA=;
-        b=jF+hwoPqSUS2o5Cp4KmCBTn++uXXyMhJEwq9dmAmviY/fKnK/umGOVgQOajfcpRltE
-         KLGGupbe8RCdvjyihvzy5UvluDMn3YvVwCDo22nV2kaFIVdt4lgdMg+ZIR3TxpQszB60
-         xpSn07teZYUcLMP0B5vTFRV0GBrBasmdl9pnssOVzpL8CD4l5MhIlQAMRtKWWcVBS1pB
-         EQrtHt0rJKvFRulspUhMkxjhBnO52/D6W/awt7lr0HXiubtJDBD9uuT0Inzwv9TBa92V
-         oSVdBh93PA55hJ5TkI0wbT/yl6U65grpohD5Ob4ljUoGEilc37Yclic3qZjZyZqYlE8u
-         e5Pg==
-X-Gm-Message-State: AOAM532ewOYBIIGVY/MI0W3knSF1okGgEqQNd9uMHNcHEHOLi3Tor92T
-        6Q6PXfYcsmzbXsXrw0TuZi4Tag==
-X-Google-Smtp-Source: ABdhPJzPPKTtbw7LrsBUf0ic/Ijm1Yz9qx+hzC3WuV8qdS19siqcooPzbKzryXVcyy89dAYTRcTVbg==
-X-Received: by 2002:a17:902:7896:: with SMTP id q22mr25007062pll.237.1593650732668;
-        Wed, 01 Jul 2020 17:45:32 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=jkGcjxRkJ6dCPuaybiPstZAyKU85uMADDKqqgUxYero=;
+        b=GnouTTV7znOAL381qSCIny8xkIqSB8FWyrXATANucH6iUGoXhGfvyWWBJTsvFc6Bky
+         h54XWo5c0w/m2GaRYZ+lETZEMiRxxSfu8kV1Lk2Ju2RzrK+n7omKI7NUuM9yolvXi5wq
+         D5TdTdQKzjnKgVz4Y5qDbA393DSm78bXdFjODEpU/qS3BXRpRE76U4ioyVQ6y0/bvne+
+         awq6fP1/Odqu+ykM2bdu0i9/mQpI2nDNTZs3HyP1d02YszC+B7nt2pFnq2lqs+33icfl
+         I1S2y/4ERraq4WRMFfA9gkuJxsmwzO/9UtdrLH6EqOKaGnXoiqhxcmtiBH3c3LT9GDbb
+         j7iQ==
+X-Gm-Message-State: AOAM531bh4fxLojF8Ao9Gw7tlgfsAii9QroSfjcHapsacbYq4CcJo5uA
+        NPDKLWhdeBdMEZv+xamiM79mWw==
+X-Google-Smtp-Source: ABdhPJxlhWIfAqHpE6aUGK+1UfUbqkZMAkfT4oF9/Vd/2Zzi+2KGX6ovV/CJ4W2f0mhqUZMvNbVxlA==
+X-Received: by 2002:a17:902:b216:: with SMTP id t22mr23734470plr.181.1593650733748;
+        Wed, 01 Jul 2020 17:45:33 -0700 (PDT)
 Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
-        by smtp.gmail.com with ESMTPSA id w4sm6966212pfd.39.2020.07.01.17.45.31
+        by smtp.gmail.com with ESMTPSA id w4sm6966212pfd.39.2020.07.01.17.45.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Jul 2020 17:45:32 -0700 (PDT)
+        Wed, 01 Jul 2020 17:45:33 -0700 (PDT)
 From:   Douglas Anderson <dianders@chromium.org>
 To:     Mark Brown <broonie@kernel.org>, Andy Gross <agross@kernel.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>
@@ -53,10 +53,12 @@ Cc:     akashast@codeaurora.org, linux-arm-msm@vger.kernel.org,
         georgi.djakov@linaro.org, ctheegal@codeaurora.org,
         mka@chromium.org, Douglas Anderson <dianders@chromium.org>,
         linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
-Subject: [PATCH 0/3] spi: spi-geni-qcom: Avoid a bunch of per-transfer overhead
-Date:   Wed,  1 Jul 2020 17:45:06 -0700
-Message-Id: <20200702004509.2333554-1-dianders@chromium.org>
+Subject: [PATCH 1/3] spi: spi-geni-qcom: Avoid clock setting if not needed
+Date:   Wed,  1 Jul 2020 17:45:07 -0700
+Message-Id: <20200701174506.1.Icfdcee14649fc0a6c38e87477b28523d4e60bab3@changeid>
 X-Mailer: git-send-email 2.27.0.383.g050319c2ae-goog
+In-Reply-To: <20200702004509.2333554-1-dianders@chromium.org>
+References: <20200702004509.2333554-1-dianders@chromium.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -64,27 +66,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series tries to reduce a whole bunch of overhead in each SPI
-transfer.  Much of this overhead is new with the recent interconnect
-changes, but even without those changes we still had some overhead
-that we could avoid.  Let's avoid all of it.
+Every SPI transfer could have a different clock rate.  The
+spi-geni-qcom controller code to deal with this was never very well
+optimized and has always had a lot of code plus some calls into the
+clk framework which, at the very least, would grab a mutex.  However,
+until recently, the overhead wasn't _too_ much.  That changed with
+commit 0e3b8a81f5df ("spi: spi-geni-qcom: Add interconnect support")
+we're now calling geni_icc_set_bw(), which leads to a bunch of math
+plus:
+  geni_icc_set_bw()
+    icc_set_bw()
+      apply_constraints()
+        qcom_icc_set()
+          qcom_icc_bcm_voter_commit()
+            rpmh_invalidate()
+            rpmh_write_batch()
+...and those rpmh commands can be a bit beefy if you call them too
+often.
 
-These changes are atop the Qualcomm tree to avoid merge conflicts.  If
-they look good, the most expedient way to land them is probably to get
-Ack's from Mark and land then via the Qualcomm tree.
+We already know what speed we were running at before, so if we see
+that nothing has changed let's avoid the whole pile of code.
 
-Most testing was done on the Chrome OS 5.4 tree, but sanity check was
-done on mainline.
+On my hardware, this made spi_geni_prepare_message() drop down from
+~145 us down to ~14 us.
 
+NOTE: Potentially it might also make sense to add some code into the
+interconnect framework to avoid executing so much code when bandwidth
+isn't changing, but even if we did that we still want to short circuit
+here to save the extra math / clock calls.
 
-Douglas Anderson (3):
-  spi: spi-geni-qcom: Avoid clock setting if not needed
-  spi: spi-geni-qcom: Set an autosuspend delay of 250 ms
-  spi: spi-geni-qcom: Get rid of most overhead in prepare_message()
+Fixes: 0e3b8a81f5df ("spi: spi-geni-qcom: Add interconnect support")
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
 
- drivers/spi/spi-geni-qcom.c | 67 ++++++++++++++++++-------------------
- 1 file changed, 32 insertions(+), 35 deletions(-)
+ drivers/spi/spi-geni-qcom.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
+diff --git a/drivers/spi/spi-geni-qcom.c b/drivers/spi/spi-geni-qcom.c
+index e01c782ef7d0..bb4cdda2dec8 100644
+--- a/drivers/spi/spi-geni-qcom.c
++++ b/drivers/spi/spi-geni-qcom.c
+@@ -201,6 +201,9 @@ static int geni_spi_set_clock_and_bw(struct spi_geni_master *mas,
+ 	struct geni_se *se = &mas->se;
+ 	int ret;
+ 
++	if (clk_hz == mas->cur_speed_hz)
++		return 0;
++
+ 	ret = get_spi_clk_cfg(clk_hz, mas, &idx, &div);
+ 	if (ret) {
+ 		dev_err(mas->dev, "Err setting clk to %lu: %d\n", clk_hz, ret);
+@@ -339,11 +342,9 @@ static void setup_fifo_xfer(struct spi_transfer *xfer,
+ 	}
+ 
+ 	/* Speed and bits per word can be overridden per transfer */
+-	if (xfer->speed_hz != mas->cur_speed_hz) {
+-		ret = geni_spi_set_clock_and_bw(mas, xfer->speed_hz);
+-		if (ret)
+-			return;
+-	}
++	ret = geni_spi_set_clock_and_bw(mas, xfer->speed_hz);
++	if (ret)
++		return;
+ 
+ 	mas->tx_rem_bytes = 0;
+ 	mas->rx_rem_bytes = 0;
 -- 
 2.27.0.383.g050319c2ae-goog
 
