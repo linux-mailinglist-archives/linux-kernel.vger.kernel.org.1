@@ -2,121 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1336D2126D5
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 16:49:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72E172126B5
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 16:49:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730247AbgGBOsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 10:48:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50270 "EHLO
+        id S1730086AbgGBOrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 10:47:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730039AbgGBOq6 (ORCPT
+        with ESMTP id S1730049AbgGBOq7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 10:46:58 -0400
+        Thu, 2 Jul 2020 10:46:59 -0400
 Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D56EDC08C5DD
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 07:46:57 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id o2so28287735wmh.2
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 07:46:57 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2855AC08C5DD
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 07:46:59 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id o8so27100069wmh.4
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 07:46:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=28X3U4dJc3uramg6kDHLLVs+7HIKsy1aJX4qqakHpps=;
-        b=DoVlnDUG55Z4Fzv9+d1V8Ieq224Bfdh8KlYCNDYO1eP2cAbL9Nih/BvbtIkArPTCgY
-         9VJgpbG9xQ71lm4ghblIel7Ajs+qU1OqUnTyaCshoagZiUE2MzvozTLZotuvn5FmGeP+
-         YOdVX4MTT9x5O+qveBt4kpo/oJKwWt+EU5xKr0VvewkyHWF9badOtmf1EYeDEQ4jvDpf
-         nXl4J32zR7BlkJVzhTaX8z1hR7v+7RgJuKlrcj9CO/hdrTRAw0GKFQCyJ0gIVKfjAL0A
-         RI8wMjBewSNCZsWaWT3urJ4JA12qcvR3+GSQ+TyQyAid8K8Az19vtresRc7nwlXYT8ZC
-         1QKw==
+        bh=Tk9qHYg/pg0juZNf3DyUaHaFVykgS42nSPkB38BS4VI=;
+        b=GiK2yuMf9VW7Z19uG5zEvbRFhcxtXMkMeY4rPH9Zx9s8uYWAYCMypKVT6Y+yt/6rpf
+         WAMPgaN9U6Wb1hOUUyF6qS2KpVrIESS0jlVC/cZiI8MECown7OC4GobHQPZTQbGyz8ZB
+         7fvGBsjm6+LwOPTbQneEItoMZe1tX4XEGxdu0PNP4t+fYFBmNOEZ3xFE1sZrfX6U57so
+         CsjeTWoXQxLX8Q7saQaBB7p8LTSLNTov4O5gqDMpRaYJstZKlvKa/a3L7R7Xz1KrFIR7
+         8h0MKN445JU+sOn0Cy2a2snY9PgjV8i9RE4MkV55pirdqCbmMjSFkawux/M2RHJ4vmHm
+         diuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=28X3U4dJc3uramg6kDHLLVs+7HIKsy1aJX4qqakHpps=;
-        b=hQ7bwJIj4IcctgEOzQj8UFQnI9vh+QaW7pRGiUBknC9ig9mNu2Layvok6wx/Ycq2gy
-         vOmTmnnJ+Htsmk0JsSC5RMUxUeMqpIsvX3R2perxpGYDf2lvctDAf/Wg4j08FvCAaUcm
-         u4w4OoAlnayM/D4GeYdbee8GuFrTmjau6GzmEoaHvfQ6lCo5PRnWGN/WusVLPdEDYzSh
-         GyzE+s3V3t0uTc7PU2lGBCp9qwmV9MyOhdByuVPHqSeMi4htIHHcjAA42AjYCZotiewG
-         2SRhrmUlX/1Ewji0+5CUJP7ttgiRUhOP2kXAMoysUsj2iUlp6k2GMFQVTzBOIx6Y0/PE
-         ozbw==
-X-Gm-Message-State: AOAM533aIByP/C8CZYyKtyIGV0Xz99cRt/6vCi3zcMygLukODxgcw7so
-        FnoR1YCzZZMz8JMoFgSbW5dGpA==
-X-Google-Smtp-Source: ABdhPJyhJBjWN4in2TNPlqyGbZpG7D4RdUGXcarVJruUemj20CkpM1cwqnzu9QOonoxh49cCQh2bmA==
-X-Received: by 2002:a7b:c3d0:: with SMTP id t16mr34760561wmj.117.1593701216646;
-        Thu, 02 Jul 2020 07:46:56 -0700 (PDT)
+        bh=Tk9qHYg/pg0juZNf3DyUaHaFVykgS42nSPkB38BS4VI=;
+        b=S0wiAKBS9bPbr7ye2lW3sHiuepn6/yUKb3TnN+jQCGCOa0yYao1Eu1o2ZUTF0AePht
+         E4WUD3MGWDp1Ma7z3250aQVqxvTfNJVVstUjXbAfoikmXhzyMzT9GdcNU3qJUP8ktnx8
+         jl54HlM/ziDwSq7IUPoBZU7rYj6Fw6c/9pZ0wwm4r/PY85mBq6K5ufYyLwtHvqXsADoL
+         oxp3ZNO18MBSrr6hKWcP+yh8sVRzYntMqRtkw6J6e/0ZNlIQ7vjb5Piqje6nqr6bTuu4
+         igman8KtLAi4A4eJFJiBsoVZyaQC+P4QGAev4tlJhRcY/NGxE2AHlkM6oOLe1YJaPBcX
+         pDKg==
+X-Gm-Message-State: AOAM532+EgSrcsqNRZNphuK15z3Fd0T/Qv/whhRwpYlJljUPlIb84ptz
+        IcSOCQzjYl3uWPyDC79UuZZm8Q==
+X-Google-Smtp-Source: ABdhPJwr5kCUGPxhCkk8QXKgz4YnAOyGhc74VvsL45wpZKCwBUEyj4mXBP6XM5Epl9ziHR3pE3GVuw==
+X-Received: by 2002:a05:600c:2187:: with SMTP id e7mr31551586wme.171.1593701217878;
+        Thu, 02 Jul 2020 07:46:57 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id g14sm7002737wrw.83.2020.07.02.07.46.55
+        by smtp.gmail.com with ESMTPSA id g14sm7002737wrw.83.2020.07.02.07.46.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Jul 2020 07:46:56 -0700 (PDT)
+        Thu, 02 Jul 2020 07:46:57 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-usb@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
         Alan Stern <stern@rowland.harvard.edu>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Thibaut VARENE <varenet@parisc-linux.org>
-Subject: [PATCH 20/30] usb: host: ohci-at91: Demote kerneldoc headers down to basic comment blocks
-Date:   Thu,  2 Jul 2020 15:46:15 +0100
-Message-Id: <20200702144625.2533530-21-lee.jones@linaro.org>
+        Roman Weissgaerber <weissg@vienna.at>,
+        David Brownell <dbrownell@users.sourceforge.net>
+Subject: [PATCH 21/30] usb: host: ohci: Mark cc_to_error as __maybe_unused
+Date:   Thu,  2 Jul 2020 15:46:16 +0100
+Message-Id: <20200702144625.2533530-22-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200702144625.2533530-1-lee.jones@linaro.org>
 References: <20200702144625.2533530-1-lee.jones@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Neither usb_hcd_at91_probe() nor usb_hcd_at91_remove()'s function
-headers reach the standards required of a kerneldoc entry.  Only
-one attempt at describing an argument was made, as it is not
-correct (we're removing that too to save confusion).
+drivers/usb/host/ohci.h in included by a whole much of different
+sourcefiles.  Not all of them make use of cc_to_error.  So mark
+it as __maybe_used to convey that this behaviour is not only
+acceptable it's expected.
 
 Fixes the following kernel build warning(s):
 
- drivers/usb/host/ohci-at91.c:166: warning: Function parameter or member 'driver' not described in 'usb_hcd_at91_probe'
- drivers/usb/host/ohci-at91.c:166: warning: Function parameter or member 'pdev' not described in 'usb_hcd_at91_probe'
- drivers/usb/host/ohci-at91.c:259: warning: Function parameter or member 'hcd' not described in 'usb_hcd_at91_remove'
- drivers/usb/host/ohci-at91.c:259: warning: Function parameter or member 'pdev' not described in 'usb_hcd_at91_remove'
- drivers/usb/host/ohci-at91.c:259: warning: Excess function parameter 'dev' description in 'usb_hcd_at91_remove'
+ In file included from drivers/usb/host/ohci-pci.c:25:
+ drivers/usb/host/ohci.h:165:18: warning: ‘cc_to_error’ defined but not used [-Wunused-const-variable=]
+ 165 | static const int cc_to_error 1 = {
+ | ^~~~~~~~~~~
+ In file included from drivers/usb/host/ohci-platform.c:32:
+ drivers/usb/host/ohci.h:165:18: warning: ‘cc_to_error’ defined but not used [-Wunused-const-variable=]
+ 165 | static const int cc_to_error 1 = {
+ | ^~~~~~~~~~~
+ In file included from drivers/usb/host/ohci-exynos.c:20:
+ drivers/usb/host/ohci.h:165:18: warning: ‘cc_to_error’ defined but not used [-Wunused-const-variable=]
+ 165 | static const int cc_to_error 1 = {
+ | ^~~~~~~~~~~
+ In file included from drivers/usb/host/ohci-spear.c:22:
+ drivers/usb/host/ohci.h:165:18: warning: ‘cc_to_error’ defined but not used [-Wunused-const-variable=]
+ 165 | static const int cc_to_error 1 = {
+ | ^~~~~~~~~~~
+ In file included from drivers/usb/host/ohci-st.c:26:
+ drivers/usb/host/ohci.h:165:18: warning: ‘cc_to_error’ defined but not used [-Wunused-const-variable=]
+ 165 | static const int cc_to_error 1 = {
+ | ^~~~~~~~~~~
+ In file included from drivers/usb/host/ohci-at91.c:31:
+ drivers/usb/host/ohci.h:165:18: warning: ‘cc_to_error’ defined but not used [-Wunused-const-variable=]
+ 165 | static const int cc_to_error 1 = {
+ | ^~~~~~~~~~~
+ In file included from drivers/usb/host/ohci-s3c2410.c:32:
+ drivers/usb/host/ohci.h:165:18: warning: ‘cc_to_error’ defined but not used [-Wunused-const-variable=]
+ 165 | static const int cc_to_error 1 = {
+ | ^~~~~~~~~~~
 
 Cc: Alan Stern <stern@rowland.harvard.edu>
-Cc: Nicolas Ferre <nicolas.ferre@microchip.com>
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
-Cc: Thibaut VARENE <varenet@parisc-linux.org>
+Cc: Roman Weissgaerber <weissg@vienna.at>
+Cc: David Brownell <dbrownell@users.sourceforge.net>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/usb/host/ohci-at91.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/usb/host/ohci.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/usb/host/ohci-at91.c b/drivers/usb/host/ohci-at91.c
-index b635c6a1b1a91..0487a4b0501ec 100644
---- a/drivers/usb/host/ohci-at91.c
-+++ b/drivers/usb/host/ohci-at91.c
-@@ -153,7 +153,7 @@ static struct regmap *at91_dt_syscon_sfr(void)
- /* always called with process context; sleeping is OK */
+diff --git a/drivers/usb/host/ohci.h b/drivers/usb/host/ohci.h
+index b85a39588f9d9..aac6285b37f80 100644
+--- a/drivers/usb/host/ohci.h
++++ b/drivers/usb/host/ohci.h
+@@ -162,7 +162,7 @@ struct td {
  
  
--/**
-+/*
-  * usb_hcd_at91_probe - initialize AT91-based HCDs
-  * Context: !in_interrupt()
-  *
-@@ -244,9 +244,8 @@ static int usb_hcd_at91_probe(const struct hc_driver *driver,
- 
- /* may be called with controller, bus, and devices active */
- 
--/**
-+/*
-  * usb_hcd_at91_remove - shutdown processing for AT91-based HCDs
-- * @dev: USB Host Controller being removed
-  * Context: !in_interrupt()
-  *
-  * Reverses the effect of usb_hcd_at91_probe(), first invoking
+ /* map OHCI TD status codes (CC) to errno values */
+-static const int cc_to_error [16] = {
++static const int __maybe_unused cc_to_error [16] = {
+ 	/* No  Error  */               0,
+ 	/* CRC Error  */               -EILSEQ,
+ 	/* Bit Stuff  */               -EPROTO,
 -- 
 2.25.1
 
