@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA9A2212DBD
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 22:17:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DC4A212DB8
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 22:17:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726291AbgGBURS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 16:17:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44768 "EHLO
+        id S1726194AbgGBURF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 16:17:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726048AbgGBURB (ORCPT
+        with ESMTP id S1726150AbgGBURC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 16:17:01 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCC65C08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 13:17:00 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id s9so33811545ljm.11
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 13:17:00 -0700 (PDT)
+        Thu, 2 Jul 2020 16:17:02 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AE82C08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 13:17:02 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id s9so33811635ljm.11
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 13:17:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=semihalf-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=eJKWwwb5sZNIMmtDeQlyT8Jj6wSl1CFV9/fEuSXAZwU=;
-        b=awIazyPjnY7Ozy4WBmf6iohjAWMeVLUmfItYZqGlKzRi8S3I0MoV5VXXXlo1rju0he
-         jH/oGOQOZv88hF8lDWgEo1s+4BfuzWa0QW51ddyQhfF5yiTZefpWoWrFOHbqARF2pRXL
-         g/lRtzvGd7SRzaQMda6Nh8Rel7M7ZksicGl8MPm9NICfmZAYzCd+N3rn7NUmSg3Wu99B
-         tjismAzWn1MJMSeY+kzWTBb+IMhWnpx7M0jT7x4z/64ov+8UKR/FANC8VIPhGBKdvQdL
-         xAQT61yrooLnwYiKogRqY3HmOcbJlMFI37eJKIzd19v+3BkvmVrNraFkxIbCy6Pzda7L
-         1RAQ==
+        bh=9HqU9qZ8LmsuIM9rC8wWt6FyyRyxinkgL6r/PQ1v140=;
+        b=NsMNCLtvpw+rfbkzZ7WMHoUxkhwYpEr7ti2zDzD4RO214DSM61TASKnJ70FUtvL8Xe
+         OPkb+gbm15X1yDJx8XxVSNyulMFihrw0kGMzp8vrp1BuuVpeJX/44bcILZU1krIWZ1ij
+         TCU/iBWbRN7DpMH6Osw8VUjMetNmm0b7KEZZj4o1KCjJjNrY8KaBojlb9ezzxTtQVnmh
+         ciCxQfncvCUnyTDyh/AyZkjjtzGGjrpW0bj/UIgKdP1x6X/BPSLWc/7Qb/0pwsUDF8WI
+         pCfcE1Jy0ZYxCK29bhuFMsA3hjr0CQFi6Yq6smYXJZhNjvpLa4GTNN/vGt8GXvyzOIqP
+         7kRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=eJKWwwb5sZNIMmtDeQlyT8Jj6wSl1CFV9/fEuSXAZwU=;
-        b=i+GC7zVsb7XEp26Te8pEGq7R8bppnQbNH1CThsSvH/nSu0EMcfxBJ6BY7rDAiSeTQt
-         YKuvIVKNhIbEVO9qIm0seEmEjpkYzVm+X49g8BO5QjhMkryqmnBFzYb9iz4XBLOQWulN
-         rtbXUIVcOW4AXsK/ZMys6xNFizoJHpiNuEHLNLAaj7bWsc8FJPwLSf7L6w3TTyuMwRiq
-         lg7+9cU1kqV/JT+e1sLCoEoVziCACcIPE+kTx+tTbHe4OTa4jCFE+1rBEMkbDTf4IqNa
-         iCENqKnBIlotifIFFkJIWevrPOVsNye9A/5RRJj4rLgbYJ+QRGlbVsUW2PblD0OhIGyh
-         VXxA==
-X-Gm-Message-State: AOAM532NXtBrJm8xJayNIYuXllacUM+5x7yq8zB6qLUHCX47gQirvcIF
-        jrvmF7WmGF/jwW1qQrnTJbm2sQ==
-X-Google-Smtp-Source: ABdhPJwhWFHlehhdaC1EHXHyukD2VZsiZOAASUSH4+v3yoslhRemMCOLsyiK2U3r+dNAOF51WBRqZw==
-X-Received: by 2002:a2e:b554:: with SMTP id a20mr16177178ljn.108.1593721019380;
-        Thu, 02 Jul 2020 13:16:59 -0700 (PDT)
+        bh=9HqU9qZ8LmsuIM9rC8wWt6FyyRyxinkgL6r/PQ1v140=;
+        b=tMi3ezIe5UT4/9eOw4elfqihSw69AxGFUAmJ1crvxAO3ZOKczuaJty0v9FLta8QIlO
+         52Bif5CXmMo5ofDhAtxM69rArde10+KI0KgsDhlh4jHhQXXQDqacH3NTAH7hDqPnmJiy
+         WJgngzlVnHIUxwJqrP23V1L+EfAQEbdMlr3n9NMbTDNUE1HFPT864KhmIrqVma4Ol7qJ
+         x35AYKoAa0obdImjKh0c86vDhSmdAnaOVj/ub/VAEBhMWNc8FwgTnRCBZiGMEZuIZaq3
+         +ezLBwkqNXi5x+2wz1Rh6lmrzHywjKCtlbQT4IN97tAT3R3W4OKCNEfL3t/dZ0YdFFis
+         +ooA==
+X-Gm-Message-State: AOAM530mGpLsTq3YXNKv37BpFoLao9zKsfPS3jvVZLWJxHIibBsELvU1
+        FbwKbl4n++8TU+CibPdgtuf5AQ==
+X-Google-Smtp-Source: ABdhPJxGJkhWxJ6CLztWNrISccJQIv1xdDY/rNe/lZBtJ1m/1dz/spNq4FMTtpQYU5jq8Ot1Y9n/tA==
+X-Received: by 2002:a2e:2c18:: with SMTP id s24mr10019389ljs.291.1593721020921;
+        Thu, 02 Jul 2020 13:17:00 -0700 (PDT)
 Received: from localhost.localdomain ([83.68.95.66])
-        by smtp.gmail.com with ESMTPSA id y2sm3320372lji.8.2020.07.02.13.16.57
+        by smtp.gmail.com with ESMTPSA id y2sm3320372lji.8.2020.07.02.13.16.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Jul 2020 13:16:58 -0700 (PDT)
+        Thu, 02 Jul 2020 13:17:00 -0700 (PDT)
 From:   Tomasz Nowicki <tn@semihalf.com>
 To:     will@kernel.org, robin.murphy@arm.com, joro@8bytes.org,
         gregory.clement@bootlin.com, robh+dt@kernel.org, hannah@marvell.com
@@ -54,9 +54,9 @@ Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
         devicetree@vger.kernel.org, catalin.marinas@arm.com,
         nadavh@marvell.com, linux-arm-kernel@lists.infradead.org,
         mw@semihalf.com, Tomasz Nowicki <tn@semihalf.com>
-Subject: [PATCH v3 1/4] iommu/arm-smmu: Add SMMU ID2 register fixup hook
-Date:   Thu,  2 Jul 2020 22:16:30 +0200
-Message-Id: <20200702201633.22693-2-tn@semihalf.com>
+Subject: [PATCH v3 2/4] iommu/arm-smmu: Workaround for Marvell Armada-AP806 SoC erratum #582743
+Date:   Thu,  2 Jul 2020 22:16:31 +0200
+Message-Id: <20200702201633.22693-3-tn@semihalf.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200702201633.22693-1-tn@semihalf.com>
 References: <20200702201633.22693-1-tn@semihalf.com>
@@ -65,45 +65,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We already have 'cfg_probe' hook which meant to override and apply
-workarounds while probing ID registers. However, 'cfg_probe' is called
-at the very end and therefore for some cases fixing up things becomes complex
-or requires exporting of SMMU driver structures. Hence, seems it is better and
-cleaner to do ID fixup right away. In preparation for adding Marvell
-errata add an extra ID2 fixup hook.
+From: Hanna Hawa <hannah@marvell.com>
 
+Due to erratum #582743, the Marvell Armada-AP806 can't access 64bit to
+ARM SMMUv2 registers.
+
+Provide implementation relevant hooks:
+- split the writeq/readq to two accesses of writel/readl.
+- mask the MMU_IDR2.PTFSv8 fields to not use AArch64 format (but
+only AARCH32_L) since with AArch64 format 32 bits access is not supported.
+
+Note that separate writes/reads to 2 is not problem regards to
+atomicity, because the driver use the readq/writeq while initialize
+the SMMU, report for SMMU fault, and use spinlock in one
+case (iova_to_phys).
+
+Signed-off-by: Hanna Hawa <hannah@marvell.com>
+Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 Signed-off-by: Tomasz Nowicki <tn@semihalf.com>
 ---
- drivers/iommu/arm-smmu.c | 3 +++
- drivers/iommu/arm-smmu.h | 1 +
- 2 files changed, 4 insertions(+)
+ Documentation/arm64/silicon-errata.rst |  3 ++
+ drivers/iommu/arm-smmu-impl.c          | 52 ++++++++++++++++++++++++++
+ 2 files changed, 55 insertions(+)
 
-diff --git a/drivers/iommu/arm-smmu.c b/drivers/iommu/arm-smmu.c
-index 243bc4cb2705..17c92e319754 100644
---- a/drivers/iommu/arm-smmu.c
-+++ b/drivers/iommu/arm-smmu.c
-@@ -1857,6 +1857,9 @@ static int arm_smmu_device_cfg_probe(struct arm_smmu_device *smmu)
+diff --git a/Documentation/arm64/silicon-errata.rst b/Documentation/arm64/silicon-errata.rst
+index 936cf2a59ca4..157214d3abe1 100644
+--- a/Documentation/arm64/silicon-errata.rst
++++ b/Documentation/arm64/silicon-errata.rst
+@@ -125,6 +125,9 @@ stable kernels.
+ | Cavium         | ThunderX2 Core  | #219            | CAVIUM_TX2_ERRATUM_219      |
+ +----------------+-----------------+-----------------+-----------------------------+
+ +----------------+-----------------+-----------------+-----------------------------+
++| Marvell        | ARM-MMU-500     | #582743         | N/A                         |
+++----------------+-----------------+-----------------+-----------------------------+
+++----------------+-----------------+-----------------+-----------------------------+
+ | Freescale/NXP  | LS2080A/LS1043A | A-008585        | FSL_ERRATUM_A008585         |
+ +----------------+-----------------+-----------------+-----------------------------+
+ +----------------+-----------------+-----------------+-----------------------------+
+diff --git a/drivers/iommu/arm-smmu-impl.c b/drivers/iommu/arm-smmu-impl.c
+index c75b9d957b70..c1fc5e1b8193 100644
+--- a/drivers/iommu/arm-smmu-impl.c
++++ b/drivers/iommu/arm-smmu-impl.c
+@@ -147,6 +147,53 @@ static const struct arm_smmu_impl arm_mmu500_impl = {
+ 	.reset = arm_mmu500_reset,
+ };
  
- 	/* ID2 */
- 	id = arm_smmu_gr0_read(smmu, ARM_SMMU_GR0_ID2);
-+	if (smmu->impl && smmu->impl->cfg_id2_fixup)
-+		id = smmu->impl->cfg_id2_fixup(id);
++static u64 mrvl_mmu500_readq(struct arm_smmu_device *smmu, int page, int off)
++{
++	u64 val;
 +
- 	size = arm_smmu_id_size_to_bits(FIELD_GET(ARM_SMMU_ID2_IAS, id));
- 	smmu->ipa_size = size;
++	/*
++	 * Marvell Armada-AP806 erratum #582743.
++	 * Split all the readq to double readl
++	 */
++	val = (u64)readl_relaxed(arm_smmu_page(smmu, page) + off + 4) << 32;
++	val |= readl_relaxed(arm_smmu_page(smmu, page) + off);
++
++	return val;
++}
++
++static void mrvl_mmu500_writeq(struct arm_smmu_device *smmu, int page, int off,
++			       u64 val)
++{
++	/*
++	 * Marvell Armada-AP806 erratum #582743.
++	 * Split all the writeq to double writel
++	 */
++	writel_relaxed(upper_32_bits(val), arm_smmu_page(smmu, page) + off + 4);
++	writel_relaxed(lower_32_bits(val), arm_smmu_page(smmu, page) + off);
++}
++
++static u32 mrvl_mmu500_cfg_id2_fixup(u32 id)
++{
++
++	/*
++	 * Armada-AP806 erratum #582743.
++	 * Hide the SMMU_IDR2.PTFSv8 fields to sidestep the AArch64
++	 * formats altogether and allow using 32 bits access on the
++	 * interconnect.
++	 */
++	id &= ~(ARM_SMMU_ID2_PTFS_4K | ARM_SMMU_ID2_PTFS_16K |
++		ARM_SMMU_ID2_PTFS_64K);
++
++	return id;
++}
++
++static const struct arm_smmu_impl mrvl_mmu500_impl = {
++	.read_reg64 = mrvl_mmu500_readq,
++	.write_reg64 = mrvl_mmu500_writeq,
++	.cfg_id2_fixup = mrvl_mmu500_cfg_id2_fixup,
++	.reset = arm_mmu500_reset,
++};
++
  
-diff --git a/drivers/iommu/arm-smmu.h b/drivers/iommu/arm-smmu.h
-index d172c024be61..f4c8bd7d0b34 100644
---- a/drivers/iommu/arm-smmu.h
-+++ b/drivers/iommu/arm-smmu.h
-@@ -382,6 +382,7 @@ struct arm_smmu_impl {
- 	void (*write_reg64)(struct arm_smmu_device *smmu, int page, int offset,
- 			    u64 val);
- 	int (*cfg_probe)(struct arm_smmu_device *smmu);
-+	u32 (*cfg_id2_fixup)(u32 id);
- 	int (*reset)(struct arm_smmu_device *smmu);
- 	int (*init_context)(struct arm_smmu_domain *smmu_domain);
- 	void (*tlb_sync)(struct arm_smmu_device *smmu, int page, int sync,
+ struct arm_smmu_device *arm_smmu_impl_init(struct arm_smmu_device *smmu)
+ {
+@@ -160,6 +207,11 @@ struct arm_smmu_device *arm_smmu_impl_init(struct arm_smmu_device *smmu)
+ 	 */
+ 	switch (smmu->model) {
+ 	case ARM_MMU500:
++		if (of_device_is_compatible(smmu->dev->of_node,
++					    "marvell,ap806-smmu-500")) {
++			smmu->impl = &mrvl_mmu500_impl;
++			return smmu;
++		}
+ 		smmu->impl = &arm_mmu500_impl;
+ 		break;
+ 	case CAVIUM_SMMUV2:
 -- 
 2.17.1
 
