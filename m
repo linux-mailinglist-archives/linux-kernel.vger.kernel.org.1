@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40734212F20
+	by mail.lfdr.de (Postfix) with ESMTP id B1B92212F21
 	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 00:00:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726309AbgGBV6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 17:58:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52912 "EHLO mail.kernel.org"
+        id S1726352AbgGBV6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 17:58:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52978 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726112AbgGBV6d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726152AbgGBV6d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 2 Jul 2020 17:58:33 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2161521883;
+        by mail.kernel.org (Postfix) with ESMTPSA id 7B2F521534;
         Thu,  2 Jul 2020 21:58:33 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.93)
         (envelope-from <rostedt@goodmis.org>)
-        id 1jr7E0-004Bev-5l; Thu, 02 Jul 2020 17:58:32 -0400
-Message-ID: <20200702215832.049969400@goodmis.org>
+        id 1jr7E0-004BfR-AI; Thu, 02 Jul 2020 17:58:32 -0400
+Message-ID: <20200702215832.199933166@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Thu, 02 Jul 2020 17:58:16 -0400
+Date:   Thu, 02 Jul 2020 17:58:17 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: [for-next][PATCH 04/18] x86/ftrace: Do not jump to direct code in created trampolines
+        Wei Yang <richard.weiyang@linux.alibaba.com>
+Subject: [for-next][PATCH 05/18] tracing: not necessary to undefine DEFINE_EVENT again
 References: <20200702215812.428188663@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -36,85 +36,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+From: Wei Yang <richard.weiyang@linux.alibaba.com>
 
-When creating a trampoline based on the ftrace_regs_caller code, nop out the
-jnz test that would jmup to the code that would return to a direct caller
-(stored in the ORIG_RAX field) and not back to the function that called it.
+After un-define DEFINE_EVENT in Stage 2, DEFINE_EVENT is not defined to a
+specific form. It is not necessary to un-define it again.
 
-Link: http://lkml.kernel.org/r/20200422162750.638839749@goodmis.org
+Let's skip this.
 
-Cc: Peter Zijlstra <peterz@infradead.org>
+Link: http://lkml.kernel.org/r/20200612092844.56107-2-richard.weiyang@linux.alibaba.com
+
+Signed-off-by: Wei Yang <richard.weiyang@linux.alibaba.com>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- arch/x86/kernel/ftrace.c    | 15 +++++++++++++++
- arch/x86/kernel/ftrace_64.S |  1 +
- 2 files changed, 16 insertions(+)
+ include/trace/trace_events.h | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/arch/x86/kernel/ftrace.c b/arch/x86/kernel/ftrace.c
-index d1a0190fef5b..7edbd5ee5ed4 100644
---- a/arch/x86/kernel/ftrace.c
-+++ b/arch/x86/kernel/ftrace.c
-@@ -286,6 +286,7 @@ extern void ftrace_regs_caller_ret(void);
- extern void ftrace_caller_end(void);
- extern void ftrace_caller_op_ptr(void);
- extern void ftrace_regs_caller_op_ptr(void);
-+extern void ftrace_regs_caller_jmp(void);
+diff --git a/include/trace/trace_events.h b/include/trace/trace_events.h
+index 502c7be50b8d..a4994761bdaf 100644
+--- a/include/trace/trace_events.h
++++ b/include/trace/trace_events.h
+@@ -443,9 +443,6 @@ static struct trace_event_fields trace_event_fields_##call[] = {	\
+ 	tstruct								\
+ 	{} };
  
- /* movq function_trace_op(%rip), %rdx */
- /* 0x48 0x8b 0x15 <offset-to-ftrace_trace_op (4 bytes)> */
-@@ -316,6 +317,7 @@ create_trampoline(struct ftrace_ops *ops, unsigned int *tramp_size)
- 	unsigned long end_offset;
- 	unsigned long op_offset;
- 	unsigned long call_offset;
-+	unsigned long jmp_offset;
- 	unsigned long offset;
- 	unsigned long npages;
- 	unsigned long size;
-@@ -333,11 +335,13 @@ create_trampoline(struct ftrace_ops *ops, unsigned int *tramp_size)
- 		end_offset = (unsigned long)ftrace_regs_caller_end;
- 		op_offset = (unsigned long)ftrace_regs_caller_op_ptr;
- 		call_offset = (unsigned long)ftrace_regs_call;
-+		jmp_offset = (unsigned long)ftrace_regs_caller_jmp;
- 	} else {
- 		start_offset = (unsigned long)ftrace_caller;
- 		end_offset = (unsigned long)ftrace_caller_end;
- 		op_offset = (unsigned long)ftrace_caller_op_ptr;
- 		call_offset = (unsigned long)ftrace_call;
-+		jmp_offset = 0;
- 	}
+-#undef DEFINE_EVENT
+-#define DEFINE_EVENT(template, name, proto, args)
+-
+ #undef DEFINE_EVENT_PRINT
+ #define DEFINE_EVENT_PRINT(template, name, proto, args, print)	\
+ 	DEFINE_EVENT(template, name, PARAMS(proto), PARAMS(args))
+@@ -523,9 +520,6 @@ static inline notrace int trace_event_get_offsets_##call(		\
+ 	return __data_size;						\
+ }
  
- 	size = end_offset - start_offset;
-@@ -367,6 +371,17 @@ create_trampoline(struct ftrace_ops *ops, unsigned int *tramp_size)
- 	if (WARN_ON(ret < 0))
- 		goto fail;
- 
-+	/* No need to test direct calls on created trampolines */
-+	if (ops->flags & FTRACE_OPS_FL_SAVE_REGS) {
-+		/* NOP the jnz 1f; but make sure it's a 2 byte jnz */
-+		ip = trampoline + (jmp_offset - start_offset);
-+		if (WARN_ON(*(char *)ip != 0x75))
-+			goto fail;
-+		ret = copy_from_kernel_nofault(ip, ideal_nops[2], 2);
-+		if (ret < 0)
-+			goto fail;
-+	}
-+
- 	/*
- 	 * The address of the ftrace_ops that is used for this trampoline
- 	 * is stored at the end of the trampoline. This will be used to
-diff --git a/arch/x86/kernel/ftrace_64.S b/arch/x86/kernel/ftrace_64.S
-index 43cf9a2b52c7..ac3d5f22fe64 100644
---- a/arch/x86/kernel/ftrace_64.S
-+++ b/arch/x86/kernel/ftrace_64.S
-@@ -241,6 +241,7 @@ SYM_INNER_LABEL(ftrace_regs_call, SYM_L_GLOBAL)
- 	 */
- 	movq ORIG_RAX(%rsp), %rax
- 	testq	%rax, %rax
-+SYM_INNER_LABEL(ftrace_regs_caller_jmp, SYM_L_GLOBAL)
- 	jnz	1f
- 
- 	restore_mcount_regs
+-#undef DEFINE_EVENT
+-#define DEFINE_EVENT(template, name, proto, args)
+-
+ #undef DEFINE_EVENT_PRINT
+ #define DEFINE_EVENT_PRINT(template, name, proto, args, print)	\
+ 	DEFINE_EVENT(template, name, PARAMS(proto), PARAMS(args))
 -- 
 2.26.2
 
