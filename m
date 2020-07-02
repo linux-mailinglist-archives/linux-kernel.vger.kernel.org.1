@@ -2,150 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C287211E48
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 10:23:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AE84211E31
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 10:23:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728623AbgGBIXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 04:23:25 -0400
-Received: from mout.web.de ([212.227.15.4]:46825 "EHLO mout.web.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728529AbgGBIXH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 04:23:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1593678148;
-        bh=r50khE4f8sNvlXWIvRv2gpF4lDQ2DJgm5qYt9RNo5BA=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Cc:Date:In-Reply-To;
-        b=HhjnybzjP2ZwI6CK8BVSRo8XS/Zrz5h9d8dgROS1MZP9mUkCuhM4JroZpQz28b/6w
-         PY9IdEnm3Efz0zJvcR0ciHWXvR310+cz0KqJSDJ8TrKxL9be3rsrkObAZ8ZrOxAw2V
-         nSY1Txa6xrd5jyQslm1u/AOJQjrmg7BakL6Ut+iI=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.2] ([93.132.138.52]) by smtp.web.de (mrweb001
- [213.165.67.108]) with ESMTPSA (Nemesis) id 0M24vT-1iy72t2hD9-00u21X; Thu, 02
- Jul 2020 10:22:28 +0200
-Subject: Re: [v2] Documentation: Coccinelle: fix typos and command example
-To:     Julia Lawall <julia.lawall@inria.fr>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Coccinelle <cocci@systeme.lip6.fr>, linux-doc@vger.kernel.org
-References: <0616dd0c-bb86-be2b-3dc6-1c695a92c3ca@infradead.org>
- <c2c1dec0-2bd1-b0e2-1aa4-38d0e954d5ba@web.de>
- <efc8b0c9-db3b-3c9c-d876-897b53a9e278@infradead.org>
- <2a3940de-6a81-1aff-8109-53c1c5a6aa1b@web.de>
- <f2aaa91a-f935-bc2d-26f2-712576c1bbd7@infradead.org>
- <2f80fb10-dc7f-29be-dc3e-2715f8bafc6d@web.de>
- <dfa2ed9f-fe68-58d1-c3d0-ac436f9bee09@infradead.org>
- <648d287e-3636-1858-1439-103d317f8571@web.de>
- <34065299-03cf-5b62-db37-0acc9830be72@infradead.org>
- <65db3f88-1ac8-374d-e3fe-2ea0970ffd67@web.de>
- <30b722ca-1bd8-2b96-ca41-1e9bc7212b66@infradead.org>
- <bd4033cd-f564-0414-4dbf-4ff58f841648@web.de>
- <05f8cb2b-c76e-e2ba-24a8-5676c1792255@infradead.org>
- <5e83b473-8764-fbfc-394c-1acffa74943c@web.de>
- <alpine.DEB.2.22.394.2007012232510.2540@hadrien>
-From:   Markus Elfring <Markus.Elfring@web.de>
-Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
- 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 FEE=
-Cc:     kernel-janitors@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nicolas Palix <nicolas.palix@imag.fr>,
-        Gilles Muller <Gilles.Muller@lip6.fr>
-Message-ID: <0b4bdb33-2b67-bc08-cfc1-0cd82c8551d0@web.de>
-Date:   Thu, 2 Jul 2020 10:22:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1728450AbgGBIWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 04:22:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46888 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728423AbgGBIWq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 04:22:46 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB69FC08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 01:22:45 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id j4so24640448wrp.10
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 01:22:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fooishbar-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3t9GLwryJTaOdXMZTnjC4mjz71cq4jtvm6cibUFNxhQ=;
+        b=L0zwwvq4BVdjvUIxi+uPw5MuIa6xxrKv8PXWwwOqBnqQQayVI8X4r7GkFILmCbJVyx
+         mGgsy107fK8syh3GtAmoXiKVwyVnUX5lFUIp3s9ZYD4uD3Yx903cMfVj48UJTzTmUTqh
+         vKf8CinW3GqwTCffXrOsQH08fw02qBc+ShhaX3aMyDutoBmCQelhqd/pK9U9prEpvsyD
+         4mnkRzzurB/44dgQElYhlUjjV4Qh0YcqpRbdA2sxhXAlW2fR9j1XcDe9jT6ErKzD7sWH
+         HBcord3lfJqekNCuTV0MWM8j/1Po4uHSF5gpOIrseByAyfBFfmb/R0id4E+U7V7joXar
+         cH1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3t9GLwryJTaOdXMZTnjC4mjz71cq4jtvm6cibUFNxhQ=;
+        b=mSZOf30exmD5YtZETPQeUfuE1wL+dLaK3hcokCPu7rGtyO6dkigpeAZ4+yPbhJ0WT1
+         8scUMMwHCA3n8ag7bEQGEwZ4DeYERSkiGh1dMKZEft05sifFyFq12SFOwFrDrN33Nm5J
+         Zwh6dpV9A39cp03aLeUQHvaeSqAccvonB8QAkTAa1xS9hZe4nzMhfJqu6DfcYnJ87xGM
+         nSFlOw/qx6T7VhzIAOEcG++ZIt5Xq35z5XQfpNB73wCEWiuM8uFeAwheTb3se5jVxuuI
+         CfITlyQ/0TP3+M5NJRAXKeX8hcJQJpTqHUEcJxKI6KuHJLe0RhBDnZKzNYfHJNQSt7wY
+         pVpg==
+X-Gm-Message-State: AOAM531xrGG9zDgEpXEdm6UXVLElk8YPbbb7C18haEEkgI0Tc2Gai83n
+        1jwwRY652YuD2vkyXB6Ks2uukUrGP6B9kyoYkVNO4w==
+X-Google-Smtp-Source: ABdhPJyIghecqPkmAYT+NI4s3yizDvT3Zx51BClqfp89CAi6K5ZYAPyQ1gPIGKCHrwC6RltmFFPoxv5AIS11N9RWTM0=
+X-Received: by 2002:a5d:6288:: with SMTP id k8mr29524832wru.373.1593678163746;
+ Thu, 02 Jul 2020 01:22:43 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.22.394.2007012232510.2540@hadrien>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:9yvsi1GEbaoTzPF2KcVG7QWBwCdu+yQyAfxOuTUMqMROIVS7DPl
- oSXq6Waw8yw8sbwdbv3ohNMCh3W+nv7qhvHo2ug4C/lmem4HZT1/Vf27MxOPKykTMBiprUl
- Z1XFhFEEsKWg+T4XH2Z/rjzJc3od+TeVYiXMLXCu8L08kZBR4vitM+NbYdpMhIhs2yCKgZL
- WOgiQNUtUswZ+83/msunQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:VBNkLLNT1Fw=:i/f1Oa5UZovOwvZ/B0crOg
- zSvTxVOn1XQUqWSaLBcthT7JUyrAqldZ9TU/ruO7srPBrhogN+9rbHNolfZOxOq5oZu57CIwU
- JPFFSO/6HSQKqsjq3Vb+KbTLr9cTqjm1+hCvINH4dx8GaGjYNE9vVODhqS9bYSV4tJYdEWEbL
- XW2FUaFS54lFzSjI02nnUnQHPHsAvVLNDKlPa6lNY37C/TO2hxZZ2jwW+FvZS/i95HxmZ7bWJ
- waNLNkvx2Ke4Rx/RTrAs4ipO+x2uVyACeziRMfr2sSH8tLPvAzWq0AGZwQY4F3xuEh/k21O1C
- fes/URR2HBLzC1ynaCYDqVvaxUXcS2Obsms6+hubaGERCuaIKtz7iDINDQ+EuoepbuFaw/9zn
- 3d4ltOnFa+YcohK+vuhTfvkxkR3WHawo5KocDcr6KSBXs59UdKqsMiG7fSFpQQ7EY3Is8GRCc
- BDKEgR2g9OfxmVcfmBeKtQlD3D6edleSlhUxXjYgoVnrvuY6dsreLMPlOnDI2DPYVOu0tD2xT
- wk4uzeKLfiCk8sOoPdOth7EiprHZnuVJyHfRzWOQCVy2Ys9BFj9tU8NucBYbjwrh/c+fZVJA4
- lMf8tVpcB54ywZJUejKZr+XHbLg1lf5j8oFhxMzWB3QPdmdb37uQzfn6SB55ep1uWvMbRTcUh
- eY1Bvs4nl64SrY3zXYLq9bQ3z+t6RulwK6Mafn4Liglx5lzPXoBAeZdv2czZEMUSmSRJdiHk+
- 4siYmdM5pAJjChU5s2FYwjNQmJoErEejicrrejPtAxa7r6JrYj1W35A7vteddTaRHzq5l+KL8
- R6HIaOwhwAl6+XIvod+LRv5Yik7FbKCFcSaVWbuELcWFYO7XTQfRxF5d1Pxgrw8n9k6WkBiDv
- paCyETvl6P2T+4DHdifxwBw8XD9TeYY+yZoov5upfBR2fWIFJuyvztRI9K/pnQJ2QjitQQasl
- /B3FK+EtYv+Pvpb8VGUA6D+w6aYb2K+JdJ+QJk889SUSbyn2JwhpEEI1D/WX81Byapd6MEG+X
- Z/GGWYDppyBuH0nCEKkYpxV90OioYbxtx6U9P6bYHg1d76F6d3amU2V8o/qQcRT/pLiMUh93H
- ps/oi2GGyO4mSaB9c6X4c8EDbYD2EiHORO0TAHjf3aHZOMoMdLaa+s5i0mYhjtwUqKyTbESNy
- Xz2wqxbO99sa3Foz4n5Lm2ELn5+xvYWad51oFnj/5fVZHlTTaOCAgRzqSTPjjNyQ3+OEFUcuq
- DtpTKpncQlZYJyImPWik80tTUQCu3xR4tjZxD3w==
+References: <CAPM=9txGww+omvateOTizZRV9_wLdAbq6uAz3DRa_S6bn1jQuQ@mail.gmail.com>
+ <20200630230808.wj2xlt44vrszqfzx@box> <ef7816b4-72ee-9e0e-8cac-4d80d8343f9f@nvidia.com>
+ <20200701075719.p7h5zypdtlhqxtgv@box> <20200701075902.hhmaskxtjsm4bcx7@box> <77e744b9-b5e2-9e9b-44c1-98584d2ae2f3@nvidia.com>
+In-Reply-To: <77e744b9-b5e2-9e9b-44c1-98584d2ae2f3@nvidia.com>
+From:   Daniel Stone <daniel@fooishbar.org>
+Date:   Thu, 2 Jul 2020 09:22:32 +0100
+Message-ID: <CAPj87rOrUHBZZR3cw+iqUMtZL1ZQyjd=RoM2yHt5oUeRO5uDTA@mail.gmail.com>
+Subject: Re: [git pull] drm for 5.8-rc1
+To:     James Jones <jajones@nvidia.com>
+Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->>   elfring@Sonne:~/Projekte/Linux/next-patched> make J=3D1 C=3D1 CHECK=
-=3D'scripts/coccicheck' MODE=3Dcontext COCCI=3D~/Projekte/Linux/next-patch=
-ed/scripts/coccinelle/null/show_pointer_usage_before_null_check-20200701.c=
-occi drivers/usb/mtu3/mtu3_gadget.o
+Hi,
+
+On Wed, 1 Jul 2020 at 20:45, James Jones <jajones@nvidia.com> wrote:
+> OK, I think I see what's going on.  In the Xorg modesetting driver, the
+> logic is basically:
 >
-> This is not what is intended.  What is intended has never worked.  The
-> coccicheck script expects that the file name is received on its command
-> line, and that is not the case.
+> if (gbm_has_modifiers && DRM_CAP_ADDFB2_MODIFIERS != 0) {
+>    drmModeAddFB2WithModifiers(..., gbm_bo_get_modifier(bo->gbm));
+> } else {
+>    drmModeAddFB(...);
+> }
 
-I suggest to take another look at information from the verbose execution v=
-ariant
-for such a command example.
+I read this thread expecting to explain the correct behaviour we
+implement in Weston and how modesetting needs to be fixed, but ...
+that seems OK to me? As long as `gbm_has_modifiers` is a proxy for 'we
+used gbm_(bo|surface)_create_with_modifiers to allocate the buffer'.
 
-* Do the generated program calls look more appropriate then?
+> There's no attempt to verify the DRM-KMS device supports the modifier,
+> but then, why would there be?  GBM presumably chose a supported modifier
+> at buffer creation time, and we don't know which plane the FB is going
+> to be used with yet.  GBM doesn't actually ask the kernel which
+> modifiers it supports here either though.
 
-* Are you still missing any relevant data (or corresponding descriptions)?
+Right, it doesn't ask, because userspace tells it which modifiers to
+use. The correct behaviour is to take the list from the KMS
+`IN_FORMATS` property and then pass that to
+`gbm_(bo|surface)_create_with_modifiers`; GBM must then select from
+that list and only that list. If that call does not succeed and Xorg
+falls back to `gbm_surface_create`, then it must not call
+`gbm_bo_get_modifier` - so that would be a modesetting bug. If that
+call does succeed and `gbm_bo_get_modifier` subsequently reports a
+modifier which was not in the list, that's a Mesa driver bug.
 
-Regards,
-Markus
+> It just goes into Mesa via
+> DRI and reports the modifier (unpatched) Mesa chose on its own.  Mesa
+> just hard-codes the modifiers in its driver backends since its thinking
+> in terms of a device's 3D engine, not display.  In theory, Mesa's DRI
+> drivers could query KMS for supported modifiers if allocating from GBM
+> using the non-modifiers path and the SCANOUT flag is set (perhaps some
+> drivers do this or its equivalent?  Haven't checked.), but that seems
+> pretty gnarly and doesn't fix the modifier-based GBM allocation path
+> AFAIK.  Bit of a mess.
+
+Two options for GBM users:
+* call gbm_*_create_with_modifiers, it succeeds, call
+gbm_bo_get_modifier, pass modifier into AddFB
+* call gbm_*_create (without modifiers), it succeeds, do not call
+gbm_bo_get_modifier, do not pass a modifier into AddFB
+
+Anything else is a bug in the user. Note that falling back from 1 to 2
+is fine: if `gbm_*_create_with_modifiers()` fails, you can fall back
+to the non-modifier path, provided you don't later try to get a
+modifier back out.
+
+> For a quick userspace fix that could probably be pushed out everywhere
+> (Only affects Xorg server 1.20+ AFAIK), just retrying
+> drmModeAddFB2WithModifiers() without the DRM_MODE_FB_MODIFIERS flag on
+> failure should be sufficient.
+
+This would break other drivers.
+
+> Still need to verify as I'm having
+> trouble wrangling my Xorg build at the moment and I'm pressed for time.
+> A more complete fix would be quite involved, as modesetting isn't really
+> properly plumbed to validate GBM's modifiers against KMS planes, and it
+> doesn't seem like GBM/Mesa/DRI should be responsible for this as noted
+> above given the general modifier workflow/design.
+>
+> Most importantly, options I've considered for fixing from the kernel side:
+>
+> -Accept "legacy" modifiers in nouveau in addition to the new modifiers,
+> though avoid reporting them to userspace as supported to avoid further
+> proliferation.  This is pretty straightforward.  I'll need to modify
+> both the AddFB2 handler (nouveau_validate_decode_mod) and the mode set
+> plane validation logic (nv50_plane_format_mod_supported), but it should
+> end up just being a few lines of code.
+
+I do think that they should also be reported to userspace if they are
+accepted. Other users can and do look at the modifier list to see if
+the buffer is acceptable for a given plane, so the consistency is good
+here. Of course, in Mesa you would want to prioritise the new
+modifiers over the legacy ones, and not allocate or return the legacy
+ones unless that was all you were asked for. This would involve
+tracking the used modifier explicitly through Mesa, rather than
+throwing it away at alloc time and then later divining it from the
+tiling mode.
+
+Cheers,
+Daniel
