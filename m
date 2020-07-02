@@ -2,65 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 154B1212210
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 13:21:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82561212218
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 13:22:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728699AbgGBLUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 07:20:54 -0400
-Received: from vps.xff.cz ([195.181.215.36]:43376 "EHLO vps.xff.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728388AbgGBLUt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 07:20:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=megous.com; s=mail;
-        t=1593688847; bh=kwgWUPQHVNL5P7EKwsJlCg0NIkarJ3r+wsUpQ/WUKtQ=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=hMUlCpFcAbnfx+ZjZRBBrRmbEJyF0KwxvMCu1S2D3kSxndg5t1N5OP+CI7cIMZ7ra
-         9o3sZ4hIBngB4F7s0ndKjHUSgIKpJprKQO7sr87RKEMnvh9iRRS1YrUZySpLkV7T7s
-         BWIICoFQljF2Fr/S6vV2wV5mrAaiDBSN1qfM+DVY=
-From:   Ondrej Jirman <megous@megous.com>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>
-Cc:     Ondrej Jirman <megous@megous.com>, Luca Weiss <luca@z3ntu.xyz>,
-        Tomas Novotny <tomas@novotny.cz>, linux-input@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v3 4/4] ARM: dts: sun8i-a83t-tbs-a711: Increase voltage on the vibrator
-Date:   Thu,  2 Jul 2020 13:20:41 +0200
-Message-Id: <20200702112041.1942707-5-megous@megous.com>
-In-Reply-To: <20200702112041.1942707-1-megous@megous.com>
-References: <20200702112041.1942707-1-megous@megous.com>
+        id S1728659AbgGBLWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 07:22:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46428 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728009AbgGBLWT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 07:22:19 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3050BC08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 04:22:19 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id e8so13334873pgc.5
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 04:22:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=pesu-pes-edu.20150623.gappssmtp.com; s=20150623;
+        h=from:date:to:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=nt96k6iAKxqAFLPuGZvFYf33kEJ+/jRhegvfMeKc9Xs=;
+        b=fPOtA6Tb7M5g4NKvW+QtMg8fBqYNtKBM0zq7JWAD5tEQeaj7a4EM4Uwc8uLzIuzjWI
+         lbG7Pi2tuDApXckkKxuI9NGIwojlLArPSNCQkO2WZT6Go6TGqWFNIF8agRJawsmk2BUF
+         fxDy/cKeelxjZ/sjBTk2pGEsZs+VLxn4V0OtgejWlUeQ5R63qL9ZVtiaHWobJp516QXY
+         OSoIZN2tdyuLKfX62JLAE9riYDmbWzIrcecj61ogKcf1FvfEJTpzBB/cvYAVRzRsa9TA
+         pLaN7Qpa3lDyBw1JNQrfaojZ1EPM8m5MhRRpFtm7yPOO/g+PnRZYHdz9SImPFIJNEZwr
+         WAmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=nt96k6iAKxqAFLPuGZvFYf33kEJ+/jRhegvfMeKc9Xs=;
+        b=BYH3oc9VNxwIje7xPIXzBIbPnMeWYi3wFj56C5ntODj/Nads19GtIoGXsdXu8YxMvP
+         UO6lEYR6J1/yBS/eETjUT7DojqOvtgRVyJI3gKhoMcG0V6vAC73ki5CwdSLv5HJc3MMW
+         IVv5IO5ev9xIUSKInZm8ATwHiBRQaLFtUJIMshz9W8SLRL0WHnC/mwFb6yTHxaCiFf6S
+         Tgh9KCOvYNV16mp/Jf2bXR+rflbv21yfrvdFYvY3rD+EINiW4nwjMDClkKPGsI+lt7xI
+         EatpFjak52xa5ey7RYM6K4eE86obP2t1fIoW1wdZeoO8ZfrBOFYyoPpibqDCELI0dlo3
+         kNww==
+X-Gm-Message-State: AOAM533Xla6LhHKIQy3lC0RZZ7hlzX3l35oFPLL0cccEptr7d/Qq2KDb
+        gAkv8+FuESRPXeHMkEJjY2sZPg==
+X-Google-Smtp-Source: ABdhPJydMbhu4w4dIm3e/HYEXc5ZMYlZN68Nglf/tCAmFxbrbQ+hA0WwrlNL0s0aS9y6fW5p5PNPhA==
+X-Received: by 2002:a63:f814:: with SMTP id n20mr23250319pgh.92.1593688938793;
+        Thu, 02 Jul 2020 04:22:18 -0700 (PDT)
+Received: from localhost ([2406:7400:73:3271:908:f18a:1156:5c38])
+        by smtp.gmail.com with ESMTPSA id 7sm8674767pgw.85.2020.07.02.04.22.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Jul 2020 04:22:17 -0700 (PDT)
+From:   B K Karthik <bkkarthik@pesu.pes.edu>
+X-Google-Original-From: B K Karthik <karthik.bk2000@live.com>
+Date:   Thu, 2 Jul 2020 07:22:10 -0400
+To:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] staging: rtl8188eu: include: rtw_pwrctrl.h: fixed
+ multiple parentheses coding style issues.
+Message-ID: <20200702112210.th4aiiszhdtufbpe@pesu-pes-edu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ekcxpik5lw6jcut3"
+Content-Disposition: inline
+User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Vibrator motor is weak at the current voltage. Increase the voltage.
 
-Signed-off-by: Ondrej Jirman <megous@megous.com>
+--ekcxpik5lw6jcut3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+add parentheses since complex valued macros must be enclosed within parentheses.
+
+Signed-off-by: B K Karthik <karthik.bk2000@live.com>
 ---
- arch/arm/boot/dts/sun8i-a83t-tbs-a711.dts | 4 ++--
+ drivers/staging/rtl8188eu/include/rtw_pwrctrl.h | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/sun8i-a83t-tbs-a711.dts b/arch/arm/boot/dts/sun8i-a83t-tbs-a711.dts
-index a278a1e33930..1e086e979348 100644
---- a/arch/arm/boot/dts/sun8i-a83t-tbs-a711.dts
-+++ b/arch/arm/boot/dts/sun8i-a83t-tbs-a711.dts
-@@ -434,8 +434,8 @@ &reg_ldo_io0 {
+diff --git a/drivers/staging/rtl8188eu/include/rtw_pwrctrl.h b/drivers/staging/rtl8188eu/include/rtw_pwrctrl.h
+index 404634999e35..c89328142731 100644
+--- a/drivers/staging/rtl8188eu/include/rtw_pwrctrl.h
++++ b/drivers/staging/rtl8188eu/include/rtw_pwrctrl.h
+@@ -84,7 +84,7 @@ struct reportpwrstate_parm {
+ 	unsigned short rsvd;
  };
- 
- &reg_ldo_io1 {
--	regulator-min-microvolt = <3100000>;
--	regulator-max-microvolt = <3100000>;
-+	regulator-min-microvolt = <3300000>;
-+	regulator-max-microvolt = <3300000>;
- 	regulator-name = "vcc-vb";
- 	status = "okay";
- };
--- 
-2.27.0
 
+-#define LPS_DELAY_TIME	1*HZ /*  1 sec */
++#define LPS_DELAY_TIME	(1*HZ) /*  1 sec */
+
+ #define EXE_PWR_NONE	0x01
+ #define EXE_PWR_IPS		0x02
+@@ -201,7 +201,7 @@ struct pwrctrl_priv {
+ };
+
+ #define rtw_get_ips_mode_req(pwrctrlpriv) \
+-	(pwrctrlpriv)->ips_mode_req
++	((pwrctrlpriv)->ips_mode_req)
+
+ #define rtw_ips_mode_req(pwrctrlpriv, ips_mode) \
+ 	((pwrctrlpriv)->ips_mode_req = (ips_mode))
+--
+2.20.1
+
+
+--ekcxpik5lw6jcut3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQGzBAEBCgAdFiEEpIrzAt4LvWLJmKjp471Q5AHeZ2oFAl79w2IACgkQ471Q5AHe
+Z2rdZgv+PEEd2Ajt0okuG+6fIqzpISYZ/28PJjGjrCVHhXZtavp3LSNrCKIdMCW6
+ib6K4zOhMrHNgOd97ktSdq/uRaP2dN0cpXOhzbo1zzHcR27F6t4j7wAMnyHwA3o+
+OOK/sPiUkhibXeggNQPqVSVXASBIowpHk4EbJ3QVwSYjhFYGQDz02Jn1qovs1F63
+VSBuRBS0iQ9EDoENbWgnLxdirSL+aeXHEWTc4ZhM44bq2NCcmXdLcoBMdGIc5TUZ
+dliMSNXrehaFZ8yEiT8NAVNzc29MtS2s8Cki9RMEvTH2kxFHTYM3mYacWv9JlJ2u
+BBGB5h61u/TmGuzqcYwcdu1xfAj1FBCFdsMHPD/SKsYjrKD/v/CgiixKuSWc0Kla
+VjKwXYqIXPugV0rH6HZMyBxTezhhKblr0dXectcGErf+6s5RqkBtW2ZcKtOIaaYE
+gbcjSHHgSDhHMZUed9UsfvTzqJn18rJF6K7KVEIbAf2ia5LJLmJ0PWuiBE99Qair
+A8zGIgg/
+=hbqL
+-----END PGP SIGNATURE-----
+
+--ekcxpik5lw6jcut3--
