@@ -2,136 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 408D8211F3A
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 10:53:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7010D211F4D
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 10:57:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727116AbgGBIxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 04:53:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35422 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726042AbgGBIxW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 04:53:22 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2A99F20772;
-        Thu,  2 Jul 2020 08:53:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593680002;
-        bh=GU8qixS9fAOtO82Uw0rNTtOko0myo+qCuTOuTEd/SAI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1ItUuoES1h0v3eTLIL64lDR8a3BGKgy4TOglPFVMlBMrYuUlVEQnGkwsHH6OScxBJ
-         PtEFCb45jL+7ZwDWZmKtFMlBKirPOiRefYa+jvwW/a7wk4i9GbrHt5cJOnIIO3SWnS
-         nCG7vSDhamWHFnzMchw/prFqbBFczWERopXPolRM=
-Date:   Thu, 2 Jul 2020 10:53:25 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Oliver O'Halloran <oohall@gmail.com>
-Cc:     Rajat Jain <rajatja@google.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        "open list:AMD IOMMU (AMD-VI)" <iommu@lists.linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>,
-        "Krishnakumar, Lalithambika" <lalithambika.krishnakumar@intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Prashant Malani <pmalani@google.com>,
-        Benson Leung <bleung@google.com>,
-        Todd Broch <tbroch@google.com>,
-        Alex Levin <levinale@google.com>,
-        Mattias Nissler <mnissler@google.com>,
-        Rajat Jain <rajatxjain@gmail.com>,
-        Bernie Keany <bernie.keany@intel.com>,
-        Aaron Durbin <adurbin@google.com>,
-        Diego Rivas <diegorivas@google.com>,
-        Duncan Laurie <dlaurie@google.com>,
-        Furquan Shaikh <furquan@google.com>,
-        Jesse Barnes <jsbarnes@google.com>,
-        Christian Kellner <christian@kellner.me>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v2 5/7] driver core: Add device location to "struct
- device" and expose it in sysfs
-Message-ID: <20200702085325.GA1090194@kroah.com>
-References: <20200630125216.GA1109228@kroah.com>
- <CAJZ5v0iYFKrouQx_b7afPnz7ohjWOKKDhdHj_3HObKYV_rRhiw@mail.gmail.com>
- <20200630153816.GD1785141@kroah.com>
- <CAJZ5v0jUx-RVhJRDngkOXx-3szFJDOgCJs2yuGKFyo2f1qZAwA@mail.gmail.com>
- <20200630170012.GB1894898@kroah.com>
- <CACK8Z6Fcrb8PtmbUJLn8RgiGnC8eqTC9GjsgjPmQgU212WPU0Q@mail.gmail.com>
- <CAOSf1CEZ82iXhYnig0UScS+oRRaxHzSCge9LbA1hW3NaQAiSxQ@mail.gmail.com>
- <20200702073226.GB1073011@kroah.com>
- <24f56c0ed6d10ef565cf83d47d0538d37ac0d8ef.camel@gmail.com>
- <20200702085212.GA1089671@kroah.com>
+        id S1728034AbgGBI5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 04:57:18 -0400
+Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:46763 "EHLO
+        wnew1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726810AbgGBI5Q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 04:57:16 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailnew.west.internal (Postfix) with ESMTP id 38122A00;
+        Thu,  2 Jul 2020 04:57:15 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Thu, 02 Jul 2020 04:57:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kdrag0n.dev; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm1; bh=s7+5045RDL/6bm3EmBYWa1nF0t
+        eYes17mVjN68BsV4s=; b=MEUQxuCJJ1r4h/+JpF2w5cBdcKo6cDBS0qRTs19J75
+        ehTV09Hy2WMOV7jwHl1Q028sdcT3iloru0DPf/OAV+zF0Tc8YHCbQnMezjrQ8SBl
+        8JXqnEnayyz1lMXeKqxS6saV5yo+tnfbbljChCpicXScJkaVZMmS70AbU51AhOrf
+        2lPuOgWC8+NoaL9yUZwEsoizZe8tBXv38R2Yi28b44EcGFsh/I+fBuasnGQd8JHU
+        hnAO0XP4qnzzLiSXes9lkelCifwYLwtb+TkyOd7hagtijYzMNNAVDv4jtJP2loN6
+        pPDlKhli20iC2ZK5jF/eovd+4QerMRwWgN9lQquNWlug==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=s7+5045RDL/6bm3Em
+        BYWa1nF0teYes17mVjN68BsV4s=; b=uIwJGEKl9OOX7XH8TGS0ED0QdtB9UaPg5
+        RRmSP3NzkSLLkhg/BmQFJXHUNlsGbiApl5d3zM6CEh039IzO6lWl9ZioOjfWJuci
+        XgG+V3wUuU787MzEjfZCDBjPcfAAH0yueAWkbhD84pl5IRyeNdv5znqWhzfZlHbn
+        79jzloU/Lhd9lRGLlXon+DPLGCsDHC5tRZVTCtCLFraCpVj8avbHatr7aDrP9YgS
+        mVt86StWW4vTo361/uoMyRCgTjTw0M+Yp/3g1xdgY3NlVN6LP4eTelTB9hUhJyQM
+        JQs/Fb/T9AdvU417ZVIo8nqDTLVBj+UCG+MiJPgfmeyZaDkNEOYlQ==
+X-ME-Sender: <xms:aqH9XvJgSq0_pjEr9zmnGVQ2yFBbyLAW7divZolljUhUTT26hDl-JQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrtdeggddtgecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepffgrnhhnhicunfhi
+    nhcuoegurghnnhihsehkughrrghgtdhnrdguvghvqeenucggtffrrghtthgvrhhnpedtvd
+    etffeukeefuefffeeufedvtddvieegvefffeejfefhtdevjeetfefhgfehheenucffohhm
+    rghinhepghhithhhuhgsrdgtohhmpdhlphgsgidruggrthgrnecukfhppedugeelrddvge
+    ekrdefkedruddunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhf
+    rhhomhepuggrnhhnhieskhgurhgrghdtnhdruggvvh
+X-ME-Proxy: <xmx:aqH9XjLP0h57_1VRP570Kx4CnKB0JVK0ngAGTPwGHljHkEj2uOpvLA>
+    <xmx:aqH9Xnt8YdtZJRT3uT8bXqtWKQ44obxNb5j5OYfInqNKGoCJXRH5xA>
+    <xmx:aqH9Xobun66ZchYsENWT79A71NqQsrIInjKBwoos_CqiqyeE0lP2Wg>
+    <xmx:aqH9Xu6JNg460E4TCYLAZpdaLKmUc3aN2xWaOajU6nNI-q7yLRneUeAPjwQ>
+Received: from pinwheel.localdomain (vsrv_sea01.kdrag0n.dev [149.248.38.11])
+        by mail.messagingengine.com (Postfix) with ESMTPA id CB7AC306005C;
+        Thu,  2 Jul 2020 04:57:12 -0400 (EDT)
+From:   Danny Lin <danny@kdrag0n.dev>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Fangrui Song <maskray@google.com>, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Danny Lin <danny@kdrag0n.dev>, stable@vger.kernel.org
+Subject: [PATCH] vmlinux.lds.h: Coalesce transient LLVM dead code elimination sections
+Date:   Thu,  2 Jul 2020 01:54:00 -0700
+Message-Id: <20200702085400.2643527-1-danny@kdrag0n.dev>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200702085212.GA1089671@kroah.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 02, 2020 at 10:52:12AM +0200, Greg Kroah-Hartman wrote:
-> On Thu, Jul 02, 2020 at 06:40:09PM +1000, Oliver O'Halloran wrote:
-> > On Thu, 2020-07-02 at 09:32 +0200, Greg Kroah-Hartman wrote:
-> > > On Thu, Jul 02, 2020 at 03:23:23PM +1000, Oliver O'Halloran wrote:
-> > > > Yep, that's a problem. If we want to provide a useful mechanism to
-> > > > userspace then the default behaviour of the kernel can't undermine
-> > > > that mechanism. If that means we need another kernel command line
-> > > > parameter then I guess we just have to live with it.
-> > > 
-> > > I really do not want yet-another-kernel-command-line-option if we can
-> > > help it at all.  Sane defaults are the best thing to do here.  Userspace
-> > > comes up really early, put your policy in there, not in blobs passed
-> > > from your bootloader.
-> > 
-> > Userspace comes up early, but builtin drivers will bind before init is
-> > started. e.g.
-> > 
-> > # dmesg | egrep '0002:01:00.0|/init'
-> > [    0.976800][    T1] pci 0002:01:00.0: [8086:1589] type 00 class 0x020000
-> > [    0.976923][    T1] pci 0002:01:00.0: reg 0x10: [mem 0x220000000000-0x2200007fffff 64bit pref]
-> > [    0.977004][    T1] pci 0002:01:00.0: reg 0x1c: [mem 0x220002000000-0x220002007fff 64bit pref]
-> > [    0.977068][    T1] pci 0002:01:00.0: reg 0x30: [mem 0x00000000-0x0007ffff pref]
-> > [    0.977122][    T1] pci 0002:01:00.0: BAR3 [mem size 0x00008000 64bit pref]: requesting alignment to 0x10000
-> > [    0.977401][    T1] pci 0002:01:00.0: PME# supported from D0 D3hot
-> > [    1.011929][    T1] pci 0002:01:00.0: BAR 0: assigned [mem 0x220000000000-0x2200007fffff 64bit pref]
-> > [    1.012085][    T1] pci 0002:01:00.0: BAR 6: assigned [mem 0x3fe100000000-0x3fe10007ffff pref]
-> > [    1.012127][    T1] pci 0002:01:00.0: BAR 3: assigned [mem 0x220002000000-0x220002007fff 64bit pref]
-> > [    4.399588][   T12] i40e 0002:01:00.0: enabling device (0140 -> 0142)
-> > [    4.410891][   T12] i40e 0002:01:00.0: fw 5.1.40981 api 1.5 nvm 5.03 0x80002469 1.1313.0 [8086:1589] [15d9:0000]
-> > [    4.647524][   T12] i40e 0002:01:00.0: MAC address: 0c:c4:7a:b7:fc:74
-> > [    4.647685][   T12] i40e 0002:01:00.0: FW LLDP is enabled
-> > [    4.653918][   T12] i40e 0002:01:00.0 eth0: NIC Link is Up, 1000 Mbps Full Duplex, Flow Control: None
-> > [    4.655552][   T12] i40e 0002:01:00.0: PCI-Express: Speed 8.0GT/s Width x8
-> > [    4.656071][   T12] i40e 0002:01:00.0: Features: PF-id[0] VSIs: 34 QP: 80 RSS FD_ATR FD_SB NTUPLE VxLAN Geneve PTP VEPA
-> > [   13.803709][    T1] Run /init as init process
-> > [   13.963242][  T711] i40e 0002:01:00.0 enP2p1s0f0: renamed from eth0
-> > 
-> > Building everything into the kernel is admittedly pretty niche. I only
-> > do it to avoid re-building the initramfs for my test kernels. It does
-> > seem relatively common on embedded systems, but I'm not sure how many
-> > of those care about PCIe. It would be nice to provide *something* to
-> > cover that case for the people who care.
-> 
-> Those people who care should not build those drivers into their kernel :)
+A recent LLVM 11 commit [1] made LLD stop implicitly coalescing some
+temporary LLVM sections, namely .{data,bss}..compoundliteral.XXX:
 
-That being said, that is the _last_ thing to worry about in this type of
-patchset, lots of work needs to be done before we can care about this.
-In fact, that should just be a totally separate patch after all of the
-real work is done here first.
+  [30] .data..compoundli PROGBITS         ffffffff9ac9a000  19e9a000
+       000000000000cea0  0000000000000000  WA       0     0     32
+  [31] .rela.data..compo RELA             0000000000000000  40965440
+       0000000000001d88  0000000000000018   I      2238    30     8
+  [32] .data..compoundli PROGBITS         ffffffff9aca6ea0  19ea6ea0
+       00000000000033c0  0000000000000000  WA       0     0     32
+  [33] .rela.data..compo RELA             0000000000000000  409671c8
+       0000000000000948  0000000000000018   I      2238    32     8
+  [...]
+  [2213] .bss..compoundlit NOBITS           ffffffffa3000000  1d85c000
+       00000000000000a0  0000000000000000  WA       0     0     32
+  [2214] .bss..compoundlit NOBITS           ffffffffa30000a0  1d85c000
+       0000000000000040  0000000000000000  WA       0     0     32
+  [...]
 
-thanks,
+While these extra sections don't typically cause any breakage, they do
+inflate the vmlinux size due to the overhead of storing metadata for
+thousands of extra sections.
 
-greg k-h
+It's also worth noting that for some reason, some downstream Android
+kernels can't boot at all if these sections aren't coalesced.
+
+This issue isn't limited to any specific architecture; it affects arm64
+and x86 if CONFIG_LD_DEAD_CODE_DATA_ELIMINATION is forced on.
+
+Example on x86 allyesconfig:
+    Before: 2241 sections, 1170972 KiB
+    After:    56 sections, 1171169 KiB
+
+[1] https://github.com/llvm/llvm-project/commit/9e33c096476ab5e02ab1c8442cc3cb4e32e29f17
+
+Link: https://github.com/ClangBuiltLinux/linux/issues/958
+Cc: stable@vger.kernel.org # v4.4+
+Suggested-by: Fangrui Song <maskray@google.com>
+Signed-off-by: Danny Lin <danny@kdrag0n.dev>
+---
+ include/asm-generic/vmlinux.lds.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+index db600ef218d7..18968cba87c7 100644
+--- a/include/asm-generic/vmlinux.lds.h
++++ b/include/asm-generic/vmlinux.lds.h
+@@ -94,10 +94,10 @@
+  */
+ #ifdef CONFIG_LD_DEAD_CODE_DATA_ELIMINATION
+ #define TEXT_MAIN .text .text.[0-9a-zA-Z_]*
+-#define DATA_MAIN .data .data.[0-9a-zA-Z_]* .data..LPBX*
++#define DATA_MAIN .data .data.[0-9a-zA-Z_]* .data..LPBX* .data..compoundliteral*
+ #define SDATA_MAIN .sdata .sdata.[0-9a-zA-Z_]*
+ #define RODATA_MAIN .rodata .rodata.[0-9a-zA-Z_]*
+-#define BSS_MAIN .bss .bss.[0-9a-zA-Z_]*
++#define BSS_MAIN .bss .bss.[0-9a-zA-Z_]* .bss..compoundliteral*
+ #define SBSS_MAIN .sbss .sbss.[0-9a-zA-Z_]*
+ #else
+ #define TEXT_MAIN .text
+-- 
+2.27.0
+
