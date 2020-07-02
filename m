@@ -2,84 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8B62212729
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 16:57:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F21D21270E
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 16:54:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729939AbgGBO5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 10:57:30 -0400
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:38659 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726032AbgGBO52 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 10:57:28 -0400
-Received: by mail-oi1-f193.google.com with SMTP id r8so23882369oij.5;
-        Thu, 02 Jul 2020 07:57:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4Uyr88816PZugcDabz3B+8YDv9OegHQr/fvn7LXL7Q8=;
-        b=KpfN1XMmjZXaeuccgakxXYkgbrczna12RJrU4uGKE3uWzAXPBdl97OU5RZYs6Msvec
-         VgvYq0//1wMhdyWeFvrDHes88SeJIzqtjp55SWUQR5NOkrMGL8YC/OIFxsW+IeXm6fLX
-         7Rwu+kh+H8XFfeRweH/wnlkl/RzQGjzbQl5JtGQdPfdzME03a5dR935WwN2VIJr11Y0R
-         5//gO8n1hzuYvvicVsQpLFOokezAd2lxTbAX1nkXwXG/RYY4cgMxHEdLNGYPJfpB5pZ8
-         yirO9Vmiibz19T/J9Eh5CxdSfAUXNhU8GL2S13Um4jl6a31wP7Tog3tkd1qnfOMwCe6o
-         gl0Q==
-X-Gm-Message-State: AOAM533IAG924FGstZ34+jwQaTEwc2eMe+fffuSFBygI4tSkn0snYYr8
-        X+8Q1MoJBY/Uo0jNN/ubUX9OPai/xhffc1/B/IA=
-X-Google-Smtp-Source: ABdhPJx/jvawRsi+Z9Sgj6edBFdRwzz34sAQe2zWDP2cqfDS3WNm1w/Tyw6Lk0ofZGhde6JwQgAimZPRvBA30LYdYZE=
-X-Received: by 2002:aca:ac10:: with SMTP id v16mr4965871oie.153.1593701847154;
- Thu, 02 Jul 2020 07:57:27 -0700 (PDT)
+        id S1730083AbgGBOxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 10:53:39 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:6809 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730044AbgGBOxh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 10:53:37 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 1384A23D8D7C17A1D939;
+        Thu,  2 Jul 2020 22:53:32 +0800 (CST)
+Received: from kernelci-master.huawei.com (10.175.101.6) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 2 Jul 2020 22:53:22 +0800
+From:   Wei Yongjun <weiyongjun1@huawei.com>
+To:     Hulk Robot <hulkci@huawei.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Randy Dunlap <rd.dunlap@gmail.com>
+CC:     Wei Yongjun <weiyongjun1@huawei.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] lib/test_bits: make some functions static
+Date:   Thu, 2 Jul 2020 23:03:36 +0800
+Message-ID: <20200702150336.4756-1-weiyongjun1@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20200702141846.7752-1-frieder.schrempf@kontron.de>
- <20200702142511.GF4483@sirena.org.uk> <24ec4eed-de01-28df-ee1f-f7bcfc80051a@kontron.de>
-In-Reply-To: <24ec4eed-de01-28df-ee1f-f7bcfc80051a@kontron.de>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 2 Jul 2020 16:57:15 +0200
-Message-ID: <CAMuHMdUkHxOqqX95R5BEET-aSF5SYw2zufnxWuqmKnSY0NENcQ@mail.gmail.com>
-Subject: Re: [PATCH] spi: spidev: Add compatible for external SPI ports on
- Kontron boards
-To:     Frieder Schrempf <frieder.schrempf@kontron.de>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.175.101.6]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Frieder,
+Fix sparse build warnings:
 
-On Thu, Jul 2, 2020 at 4:46 PM Frieder Schrempf
-<frieder.schrempf@kontron.de> wrote:
-> On 02.07.20 16:25, Mark Brown wrote:
-> > On Thu, Jul 02, 2020 at 04:18:46PM +0200, Schrempf Frieder wrote:
-> >> From: Frieder Schrempf <frieder.schrempf@kontron.de>
-> >>
-> >> Allow external SPI ports on Kontron boards to use the spidev driver.
-> >
-> > I'd have expected this to require loading a DT overlay for whatever's
-> > attached?
->
-> My intention is to use the spidev driver in the default board DT for an
-> interface that is routed to an extension connector and has no dedicated
-> slave device attached onboard. So users can attach sensors, etc. with
-> userspace drivers without touching the kernel or DT.
->
-> See https://patchwork.kernel.org/patch/11639075/ for the boards DT.
+lib/test_bits.c:10:6: warning:
+ symbol 'genmask_test' was not declared. Should it be static?
+lib/test_bits.c:27:6: warning:
+ symbol 'genmask_ull_test' was not declared. Should it be static?
+lib/test_bits.c:42:6: warning:
+ symbol 'genmask_input_check_test' was not declared. Should it be static?
 
-You can bind "kontron,user-spi" devices to spidev from userspace:
-[PATCH v2 0/3] device tree spidev solution - driver_override for SPI
-https://spinics.net/lists/linux-spi/msg13951.html
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+---
+ lib/test_bits.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Gr{oetje,eeting}s,
+diff --git a/lib/test_bits.c b/lib/test_bits.c
+index 89e0ea83511f..c9368a2314e7 100644
+--- a/lib/test_bits.c
++++ b/lib/test_bits.c
+@@ -7,7 +7,7 @@
+ #include <linux/bits.h>
+ 
+ 
+-void genmask_test(struct kunit *test)
++static void genmask_test(struct kunit *test)
+ {
+ 	KUNIT_EXPECT_EQ(test, 1ul, GENMASK(0, 0));
+ 	KUNIT_EXPECT_EQ(test, 3ul, GENMASK(1, 0));
+@@ -24,7 +24,7 @@ void genmask_test(struct kunit *test)
+ 
+ }
+ 
+-void genmask_ull_test(struct kunit *test)
++static void genmask_ull_test(struct kunit *test)
+ {
+ 	KUNIT_EXPECT_EQ(test, 1ull, GENMASK_ULL(0, 0));
+ 	KUNIT_EXPECT_EQ(test, 3ull, GENMASK_ULL(1, 0));
+@@ -39,7 +39,7 @@ void genmask_ull_test(struct kunit *test)
+ #endif
+ }
+ 
+-void genmask_input_check_test(struct kunit *test)
++static void genmask_input_check_test(struct kunit *test)
+ {
+ 	unsigned int x, y;
+ 	int z, w;
 
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
