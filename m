@@ -2,86 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88AB9212D23
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 21:31:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CDD7212D2B
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 21:35:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726030AbgGBTbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 15:31:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37708 "EHLO
+        id S1726112AbgGBTfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 15:35:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725847AbgGBTbX (ORCPT
+        with ESMTP id S1726065AbgGBTfR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 15:31:23 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7213CC08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 12:31:23 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id gc9so6359210pjb.2
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 12:31:23 -0700 (PDT)
+        Thu, 2 Jul 2020 15:35:17 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85950C08C5DD
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 12:35:17 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id h23so22260455qtr.0
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 12:35:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=OGY4T8Zcs1wcon8HLlPhq3ExfaPukK8uw6n/UEszhf8=;
-        b=vMukI+8Yv8X+JxDkvnM5hqEvcXbDyO4isuhU2PoyffLpuGKnfl2sXMKAEAK180NxbE
-         vDFj55MDco7WU2fFqrEk42iWq2F+virb1m6p3rDPERupGTxifDdqE9Y5NU2G22V/1KkT
-         yKpZPbFjw1X9l0nJ1p72s7jp9M65suzdx8q+nRxbfAiZtYj9s3zbF3aTS1+s5OvO3eJz
-         tjtEMVxV8gXCg+McmXhFbBclhFf8Ylr86FiEVpqSmL3wq902s59FD5qMB9pD9qWc/wap
-         VfVRtxTkTpb/bb1j3lscTUwiMx9NlrcWonpuhi+7wnyu+iBu8mad38gtGNM4lCvR3hEN
-         TPdA==
+        d=arista.com; s=googlenew;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vMrH7R2vPu3gkZfS+H01Ns/eTvn1XgH9B+3gDwbQS4Q=;
+        b=P9akivtIL9OPr+h9G/Fq5VLuJfJuZFU9rGS5Kge23ZeuGNoA7zxXxtsApOQceAsw6N
+         zYga8mXjNlZK5Mvgsfb2jIlScoppXGu5RrJ7BabzEAKp2/k0ffQlljRgcBnNx9qC5h0R
+         O6EofygNMl6l/Y/YTNgauT/ckyh7h2hTXn/7ydmUbt3BpC45FLu+/6eN9d3Ywp//sb+V
+         PAExWPcfBHhw5fS0k41aMb/xwvvM0qaTW+fsjqhA5ynNn9ftJRVGxBZ3pSo7GYlHaEmO
+         u6+mrBt7xUelVphkgi6lJCm+2qg8x9rWmdTENTwnBzTCnzfoqXMge5J9Vq5JWYibWus2
+         n8FQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=OGY4T8Zcs1wcon8HLlPhq3ExfaPukK8uw6n/UEszhf8=;
-        b=YAbp1sLGwrkY2GOfn2/erAeIRePtaC8W0lPutYli5qM/9rEuurf9353PoVC6lRy0ft
-         Cnb5wp0Klp41IALsUZscN+ui8uc8DaSr9y6AF0r1eDjkKyjlFFo9FwYH2tCrWlp1e68N
-         rOBZgOxjDHtg6crO1F3XunyeKHxbqMPSDIAVFKA60VNAKD94pvb1AAR8UkGJcd59VS9z
-         C5NOALz3p93Ty6Rg+VCkMi2re9JU41I3qYOTYggbR2XQc0jPzxjKmMAyKtoJ1BhLmtCm
-         B1Zew/zYP1baJ9hUojn9hNKdQpmqRFBJPy6yMK8S5ER440PT+Fb5v88pYoJ9mXk+kyQP
-         28Sg==
-X-Gm-Message-State: AOAM532wgpguuEBpCPG+6T++NTzNnS29K2HP9Ft0hI+zLakKLmxeuIYE
-        uvwCekcDotCey1g9uwDkL64=
-X-Google-Smtp-Source: ABdhPJzMUcvdYtFO3zsputaplxh/6FPWCjBX+jSLUSWbLPvXQRFShaLna9JWCkpgdfDYCFe1M5jHRA==
-X-Received: by 2002:a17:902:c408:: with SMTP id k8mr28530471plk.279.1593718282774;
-        Thu, 02 Jul 2020 12:31:22 -0700 (PDT)
-Received: from Asurada-Nvidia.nvidia.com (searspoint.nvidia.com. [216.228.112.21])
-        by smtp.gmail.com with ESMTPSA id n63sm9735707pfd.209.2020.07.02.12.31.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Jul 2020 12:31:22 -0700 (PDT)
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     broonie@kernel.org
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Li.Xiubo@freescale.com, timur@tabi.org, shengjiu.wang@nxp.com,
-        linuxppc-dev@lists.ozlabs.org, festevam@gmail.com
-Subject: [PATCH] MAINTAINERS: Add Shengjiu to reviewer list of sound/soc/fsl
-Date:   Thu,  2 Jul 2020 12:31:02 -0700
-Message-Id: <20200702193102.25282-1-nicoleotsuka@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vMrH7R2vPu3gkZfS+H01Ns/eTvn1XgH9B+3gDwbQS4Q=;
+        b=U4joqZiwMrc1uUH7nDoAbWRZsdNEMzLO/D8OvqK91fp+Vbvw1o+/inG3df5fwfyVm8
+         cUzhqT6fPWpfOhpQwVGaA9m+kCHBjFTb9PWwbVK8LCs07UnPtcG2hf040v2tsdfnRapJ
+         t30dRXPOZQTD+Vu3oxZfUPejmmUmKmzxpf98Ui1yBYkv60RBpVMOjrrf6SN6+XNurCaD
+         7zulWtXxFQMph66UECkrndlR3WQKUkLhso16aP3s60U4EWOPEkzDgjuQj2vCZc2E48/2
+         JeYiHbbgiCEyyHb+YYily/TI0lR6raOPAAJwL5Luuo/BNvdNHcuJpjr23tse8X6Q6y/7
+         XxRA==
+X-Gm-Message-State: AOAM531cTfaGR8VpPDhaO8Rye+XUnm64MSb/hpKBouMoPMDdmPmLbJoE
+        Fom+Uq45aGiYlAE3xhf0FDTROHKvgi0xH35fdk47OycDT9Y=
+X-Google-Smtp-Source: ABdhPJzY/c3o9AVELnYdRdQGQ5SGjtPMLSoJTN+S95yvl3HqiQ5qFGNKsi2igRT/SjswXN+cm3rHq5ojlC52o2axmxA=
+X-Received: by 2002:ac8:7a90:: with SMTP id x16mr32827703qtr.233.1593718516626;
+ Thu, 02 Jul 2020 12:35:16 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200629211801.C3D7095C0900@us180.sjc.aristanetworks.com>
+ <20200629171612.49efbdaa@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CA+HUmGjHQPUh1frfy5E28Om9WTVr0W+UQVDsm99beC_mbTeMog@mail.gmail.com> <61CC2BC414934749BD9F5BF3D5D940449874358A@ORSMSX112.amr.corp.intel.com>
+In-Reply-To: <61CC2BC414934749BD9F5BF3D5D940449874358A@ORSMSX112.amr.corp.intel.com>
+From:   Francesco Ruggeri <fruggeri@arista.com>
+Date:   Thu, 2 Jul 2020 12:35:05 -0700
+Message-ID: <CA+HUmGhfxYY5QiwF8_UYbp0TY-k3u+cTYZDSqV1s=SUFnGCn8g@mail.gmail.com>
+Subject: Re: [PATCH] igb: reinit_locked() should be called with rtnl_lock
+To:     "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        open list <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Shengjiu who's actively working on the latest fsl/nxp audio drivers.
+> Do not worry about the other Intel drivers, I have our developers looking at each of our drivers for the locking issue.
+>
+> @David Miller - I am picking up this patch
 
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Shengjiu Wang <shengjiu.wang@nxp.com>
----
-To Shengjiu, please ack if you feel okay with this (your email address too).
+There seems to be a second race, independent from the
+original one, that results in a divide error:
 
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+kworker         reboot -f       tx packet
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 496fd4eafb68..54aab083bb88 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -6956,6 +6956,7 @@ M:	Timur Tabi <timur@kernel.org>
- M:	Nicolin Chen <nicoleotsuka@gmail.com>
- M:	Xiubo Li <Xiubo.Lee@gmail.com>
- R:	Fabio Estevam <festevam@gmail.com>
-+R:	Shengjiu Wang <shengjiu.wang@nxp.com>
- L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
- L:	linuxppc-dev@lists.ozlabs.org
- S:	Maintained
--- 
-2.17.1
+igb_reset_task
+                __igb_shutdown
+                rtnl_lock()
+                ...
+                igb_clear_interrupt_scheme
+                igb_free_q_vectors
+                adapter->num_tx_queues = 0
+                ...
+                rtnl_unlock()
+rtnl_lock()
+igb_reinit_locked
+igb_down
+igb_up
+netif_tx_start_all_queues
+                                dev_hard_start_xmit
+                                igb_xmit_frame
+                                igb_tx_queue_mapping
+                                Panics on
+                                r_idx % adapter->num_tx_queues
 
+Using in igb_reset_task a logic similar to the one in
+ixgbe_reset_subtask (bailing if __IGB_DOWN or __IGB_RESETTING
+is set) seems to avoid the panic.
+That logic was first introduced in ixgbe as part of commit
+2f90b8657ec ('ixgbe: this patch adds support for DCB to the
+kernel and ixgbe driver').
+Both fixes seem to be needed.
