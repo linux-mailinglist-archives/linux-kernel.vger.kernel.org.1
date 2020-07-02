@@ -2,112 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95E3C212469
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 15:18:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FC5C2124AD
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 15:29:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729126AbgGBNSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 09:18:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726560AbgGBNSj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 09:18:39 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF409C08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 06:18:38 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id g75so26731711wme.5
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 06:18:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Cuvm4PH9ymZejClh9/IRJruxX3XybrluMfPe5pcP0ik=;
-        b=eGu8Bzdjv2Xqb78qCTzwgtJgVA38HsDO3DGT9ZmJH3Q+H8c4RcNNutL98+WSuTQbu9
-         KEsOqEyXvy5AJTLhH7zsr6WVXJ/2xkTTcxjU/AKDadOCUJ+MfKid0+RVbgqG9/2wBZ0l
-         4Cy9lOPEBPLmQ33W40GnOmEgKAZ8Mt8Y5cXII=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=Cuvm4PH9ymZejClh9/IRJruxX3XybrluMfPe5pcP0ik=;
-        b=UyBmSgqgkZLiQhnZCkJQzVZJu08POKH3iyQ3vy5NJTPJaTjHpoMti67azMniKnla+I
-         Ue3YJaRq4iNJftNtErlxtPqgh3s8jcSzcQzKMBvgtSTPPFKGpTbB6j/Lekb/BST769Mm
-         /n2PUWtYahJz16rx9l7i4cIiDr0qG+enCIANivNaBgQk2sKlxqaExRasn3k/xezEdmQs
-         GfhEDx9MuRIHfxum+PSlPimktSz/Xk2TI07iAIF6pbzrlsumQzVO8FVVFbwS3C+dWQ56
-         Yvy9LbMFfhYmAUtvPdKlfa0I4JIekewEP01FXmBh2atUX11xrgcrJ1wOfBSo2ulrTxM2
-         vYFg==
-X-Gm-Message-State: AOAM530gMmkL0lfxnuizJ2ukEt6aCWK55MyT4DajLhFno8bAelzke7xq
-        fbMczwDxleXWqUb7Mk/3zWrIOQ==
-X-Google-Smtp-Source: ABdhPJws7m0llQgCQ3WJpZXwOAgYwXtJKDNub/jxlHaBemJ1pVcESAzqOIr1Y2qhVoHzQpn8e5986g==
-X-Received: by 2002:a1c:2183:: with SMTP id h125mr33648435wmh.83.1593695917752;
-        Thu, 02 Jul 2020 06:18:37 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id v5sm10646766wre.87.2020.07.02.06.18.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Jul 2020 06:18:36 -0700 (PDT)
-Date:   Thu, 2 Jul 2020 15:18:34 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Simon Ser <contact@emersion.fr>
-Cc:     Neil Armstrong <narmstrong@baylibre.com>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "jianxin.pan@amlogic.com" <jianxin.pan@amlogic.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-amlogic@lists.infradead.org" 
-        <linux-amlogic@lists.infradead.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v8 1/6] drm/fourcc: Add modifier definitions for
- describing Amlogic Video Framebuffer Compression
-Message-ID: <20200702131834.GZ3278063@phenom.ffwll.local>
-Mail-Followup-To: Simon Ser <contact@emersion.fr>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "jianxin.pan@amlogic.com" <jianxin.pan@amlogic.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-amlogic@lists.infradead.org" <linux-amlogic@lists.infradead.org>,
-        "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-References: <20200702074759.32356-1-narmstrong@baylibre.com>
- <20200702074759.32356-2-narmstrong@baylibre.com>
- <8cBfZpkc4pHBLhihlvJMD_Hq1DEsNRcSY4Y8JaGwklMWcxiYzUMVEx7wH9f_DuCBMVUhXvOR0PcHVslILtKI2wdw79Nfih0N3VnrxfMQd08=@emersion.fr>
+        id S1729246AbgGBN3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 09:29:43 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34510 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729051AbgGBN3n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 09:29:43 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 8DE30BA17;
+        Thu,  2 Jul 2020 13:29:41 +0000 (UTC)
+Date:   Thu, 2 Jul 2020 14:20:58 +0100
+From:   Mel Gorman <mgorman@suse.de>
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     Peter Puhov <peter.puhov@linaro.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        linux-kernel@vger.kernel.org,
+        Robert Foley <robert.foley@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>
+Subject: Re: [PATCH] sched/fair: update_pick_idlest() Select group with
+ lowest group_util when idle_cpus are equal
+Message-ID: <20200702132058.GN3129@suse.de>
+References: <20200616164801.18644-1-peter.puhov@linaro.org>
+ <jhjo8pidl01.mognet@arm.com>
+ <CAMDPZ0iNtaZ7p3bre31-m6E4Rb92EFshxrcsTjj3cm6=yr_ctw@mail.gmail.com>
+ <106350c5-c2b7-a63c-2b06-761f523ee67c@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <8cBfZpkc4pHBLhihlvJMD_Hq1DEsNRcSY4Y8JaGwklMWcxiYzUMVEx7wH9f_DuCBMVUhXvOR0PcHVslILtKI2wdw79Nfih0N3VnrxfMQd08=@emersion.fr>
-X-Operating-System: Linux phenom 5.6.0-1-amd64 
+In-Reply-To: <106350c5-c2b7-a63c-2b06-761f523ee67c@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 02, 2020 at 09:23:11AM +0000, Simon Ser wrote:
-> On Thursday, July 2, 2020 9:47 AM, Neil Armstrong <narmstrong@baylibre.com> wrote:
+On Thu, Jul 02, 2020 at 11:27:52AM +0200, Dietmar Eggemann wrote:
+> On 17/06/2020 16:52, Peter Puhov wrote:
+> > On Wed, 17 Jun 2020 at 06:50, Valentin Schneider
+> > <valentin.schneider@arm.com> wrote:
+> >>
+> >>
+> >> On 16/06/20 17:48, peter.puhov@linaro.org wrote:
+> >>> From: Peter Puhov <peter.puhov@linaro.org>
+> >>> We tested this patch with following benchmarks:
+> >>>   perf bench -f simple sched pipe -l 4000000
+> >>>   perf bench -f simple sched messaging -l 30000
+> >>>   perf bench -f simple  mem memset -s 3GB -l 15 -f default
+> >>>   perf bench -f simple futex wake -s -t 640 -w 1
+> >>>   sysbench cpu --threads=8 --cpu-max-prime=10000 run
+> >>>   sysbench memory --memory-access-mode=rnd --threads=8 run
+> >>>   sysbench threads --threads=8 run
+> >>>   sysbench mutex --mutex-num=1 --threads=8 run
+> >>>   hackbench --loops 20000
+> >>>   hackbench --pipe --threads --loops 20000
+> >>>   hackbench --pipe --threads --loops 20000 --datasize 4096
+> >>>
+> >>> and found some performance improvements in:
+> >>>   sysbench threads
+> >>>   sysbench mutex
+> >>>   perf bench futex wake
+> >>> and no regressions in others.
+> >>>
+> >>
+> >> One nitpick for the results of those: condensing them in a table form would
+> >> make them more reader-friendly. Perhaps something like:
+> >>
+> >> | Benchmark        | Metric   | Lower is better? | BASELINE | SERIES | DELTA |
+> >> |------------------+----------+------------------+----------+--------+-------|
+> >> | Sysbench threads | # events | No               |    45526 |  56567 |  +24% |
+> >> | Sysbench mutex   | ...      |                  |          |        |       |
+> >>
+> >> If you want to include more stats for each benchmark, you could have one table
+> >> per (e.g. see [1]) - it'd still be a more readable form (or so I believe).
 > 
-> > Finally is also adds the Scatter Memory layout, meaning the header contains IOMMU
-> > references to the compressed frames content to optimize memory access
-> > and layout.
-> >
-> > In this mode, only the header memory address is needed, thus the content
-> > memory organization is tied to the current producer execution and cannot
-> > be saved/dumped neither transferrable between Amlogic SoCs supporting this
-> > modifier.
+> Wouldn't Unix Bench's 'execl' and 'spawn' be the ultimate test cases
+> for those kind of changes?
 > 
-> Still not sure how to handle this one, since this breaks fundamental
-> assumptions about modifiers.
+> I only see minor improvements with tip/sched/core as base on hikey620
+> (Arm64 octa-core).
+> 
+> 				base		w/ patch
+> ./Run spawn -c 8 -i 10		 633.6		 635.1
+> 
+> ./Run execl -c 8 -i 10		1187.5		1190.7	
+> 
+> 
+> At the end of find_idlest_group(), when comparing local and idlest, it
+> is explicitly mentioned that number of idle_cpus is used instead of
+> utilization.
+> The comparision between potential idle groups and local & idlest group
+> should probably follow the same rules.
+> 
 
-I wonder whether we should require special allocations for these, and then
-just outright reject mmap on these buffers. mmap on dma-buf isn't a
-required feature.
+There is the secondary hazard that what update_sd_pick_busiest returns
+is checked later by find_busiest_group when considering the imbalance
+between NUMA nodes. This particular patch splits basic communicating tasks
+cross-node again at fork time so cross node communication is reintroduced
+(same applies if sum_nr_running is used instead of group_util).
 
-That would make sure that userspace cannot look at them.
-
-Also I'm kinda suspecting that there's not unlimited amounts of this magic
-invisible storage available anyway.
--Daniel
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Mel Gorman
+SUSE Labs
