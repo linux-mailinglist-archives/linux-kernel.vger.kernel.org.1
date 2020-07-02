@@ -2,129 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D153C212C42
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 20:24:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D508212C3D
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 20:24:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728256AbgGBSXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 14:23:33 -0400
-Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:38543 "EHLO
-        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728148AbgGBSXY (ORCPT
+        id S1728233AbgGBSXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 14:23:21 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:32424 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728148AbgGBSXS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 14:23:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1593714204; x=1625250204;
-  h=date:from:to:subject:message-id:references:mime-version:
-   in-reply-to;
-  bh=I7turOllMrL/CNEMBFGxOPTAV9RKwwcOD5Qzsp0RMCI=;
-  b=c7fmKlSS9D6/IpT70PI5fH9mttjKMj5kvfM9pbdiE05xxjXwgnLe847s
-   +vjzfqCLbXAwpMN9LnXKImKE5DG6XVgYNmdgsn5DvvPKGcUM/kIDFvp9r
-   kknU0wIyk2LNukqQ9w0I+YFgMrW5O5TEQH2VjwpiHqPVuYdcBIutRKMO/
-   c=;
-IronPort-SDR: gtZOu0dMiB3ehEJQSAxthJy8slH3FlYoulPxQjoZIUWyHzAH9qA9TfOTryU3wg6sLJrulv+kzq
- yxHeXV2LgO7A==
-X-IronPort-AV: E=Sophos;i="5.75,305,1589241600"; 
-   d="scan'208";a="39736466"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2c-4e7c8266.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 02 Jul 2020 18:23:16 +0000
-Received: from EX13MTAUEE002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2c-4e7c8266.us-west-2.amazon.com (Postfix) with ESMTPS id A0D51A2540;
-        Thu,  2 Jul 2020 18:23:14 +0000 (UTC)
-Received: from EX13D08UEE002.ant.amazon.com (10.43.62.92) by
- EX13MTAUEE002.ant.amazon.com (10.43.62.24) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 2 Jul 2020 18:22:51 +0000
-Received: from EX13MTAUEE002.ant.amazon.com (10.43.62.24) by
- EX13D08UEE002.ant.amazon.com (10.43.62.92) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 2 Jul 2020 18:22:51 +0000
-Received: from dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com
- (172.22.96.68) by mail-relay.amazon.com (10.43.62.224) with Microsoft SMTP
- Server id 15.0.1497.2 via Frontend Transport; Thu, 2 Jul 2020 18:22:51 +0000
-Received: by dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com (Postfix, from userid 4335130)
-        id 651F840844; Thu,  2 Jul 2020 18:22:51 +0000 (UTC)
-Date:   Thu, 2 Jul 2020 18:22:51 +0000
-From:   Anchal Agarwal <anchalag@amazon.com>
-To:     <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
-        <hpa@zytor.com>, <x86@kernel.org>, <boris.ostrovsky@oracle.com>,
-        <jgross@suse.com>, <linux-pm@vger.kernel.org>,
-        <linux-mm@kvack.org>, <kamatam@amazon.com>,
-        <sstabellini@kernel.org>, <konrad.wilk@oracle.com>,
-        <roger.pau@citrix.com>, <axboe@kernel.dk>, <davem@davemloft.net>,
-        <rjw@rjwysocki.net>, <len.brown@intel.com>, <pavel@ucw.cz>,
-        <peterz@infradead.org>, <eduval@amazon.com>, <sblbir@amazon.com>,
-        <anchalag@amazon.com>, <xen-devel@lists.xenproject.org>,
-        <vkuznets@redhat.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <dwmw@amazon.co.uk>,
-        <benh@kernel.crashing.org>
-Subject: [PATCH v2 08/11] x86/xen: save and restore steal clock during PM
- hibernation
-Message-ID: <20200702182251.GA3606@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
-References: <cover.1593665947.git.anchalag@amazon.com>
+        Thu, 2 Jul 2020 14:23:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593714198;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=N4n2qeDClQPShAlOepg3+xUXJF0gLP+gI9YS4+e3wWo=;
+        b=UJtMhqlQ9GgiUVGjEoKEI6yxDOQMBua1vYQv8Z895+zWEc9/oCd7XnDjOQA1KvVY1ShgaB
+        iplx0W6PPwqfvhtGEew6NNRN+ce76yIdIU8AXdeI6t5ndDyo3SqwCcU9UMxUfSzjy8jm57
+        y3hEK5iUneQrzOOVqTrYul9o2u+e6O0=
+Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com
+ [209.85.210.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-503-SvaBzjqvNkWb_BXtGgUtWQ-1; Thu, 02 Jul 2020 14:23:15 -0400
+X-MC-Unique: SvaBzjqvNkWb_BXtGgUtWQ-1
+Received: by mail-ot1-f72.google.com with SMTP id j37so6407362ota.4
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 11:23:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=N4n2qeDClQPShAlOepg3+xUXJF0gLP+gI9YS4+e3wWo=;
+        b=jn1oU4xEKN+KCSk/4FwkDELnq4i3w77pvUQx3kKCOQ/jILlLFtnBpo5huMEc9hDs1c
+         FoiXAXJpIlfZxvWo9cRxZ0wwgPv1BMP5D857IkMTX8Tw1newC3kfKwEcjx6m528n/Tl6
+         +sOp+Cucdie1t2i4JBEzoOi3kEXnuhS9vSNK4SJPWWcoW5Ce5WTHd+RUJfokWYvzMRcg
+         4r8QzwXahfjqbJHgw9CosR4Hyj7PB9ZkxXtETmn28eBIr+abbtphcRbkiRmyxYJKv1ET
+         pFBfaUMCOc9o2hssC9zcYdgHiqGlfjFyPfS0rQD9Xa9WdWzJnBJTy362O9naW866amJV
+         bXrA==
+X-Gm-Message-State: AOAM531MafEXuxXgoSRc6sEItXGVZPwVQkBDiGxtADrDRu38HUHxvLKA
+        MOaOVAogX0FG5G+FVvmXQVy4xut29YOuQ+/GSCTxAlHyo6JFZtiMsi1uR9AFNhWg83anDukvo2a
+        +OMUHaiXruEd1vpET4WmJOWMC2EMVSIvS1WH03aOr
+X-Received: by 2002:a9d:5f92:: with SMTP id g18mr12102135oti.95.1593714194841;
+        Thu, 02 Jul 2020 11:23:14 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxvm7EcRvsfCto8/PgbdopuIxxPcMOqqa27XvyoeidGOQ9Dab1I7ij1VwHb4T6hC4Paewj6S+oUpsnH5rz8W5I=
+X-Received: by 2002:a9d:5f92:: with SMTP id g18mr12102114oti.95.1593714194564;
+ Thu, 02 Jul 2020 11:23:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <cover.1593665947.git.anchalag@amazon.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+References: <20200702165120.1469875-1-agruenba@redhat.com> <CAHk-=whb4H3ywKcwGxgjFSTEap_WuFj5SW7CYw0J2j=WGUs4nQ@mail.gmail.com>
+In-Reply-To: <CAHk-=whb4H3ywKcwGxgjFSTEap_WuFj5SW7CYw0J2j=WGUs4nQ@mail.gmail.com>
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+Date:   Thu, 2 Jul 2020 20:23:03 +0200
+Message-ID: <CAHc6FU7ZWJb308yfMaskFeSwNxgxqn89pxT4F7Ud4HthhrC5CA@mail.gmail.com>
+Subject: Re: [RFC 0/4] Fix gfs2 readahead deadlocks
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Dave Chinner <david@fromorbit.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Save/restore steal times in syscore suspend/resume during PM
-hibernation. Commit '5e25f5db6abb9: ("xen/time: do not
-decrease steal time after live migration on xen")' fixes xen
-guest steal time handling during migration. A similar issue is seen
-during PM hibernation.
-Currently, steal time accounting code in scheduler expects steal clock
-callback to provide monotonically increasing value. If the accounting
-code receives a smaller value than previous one, it uses a negative
-value to calculate steal time and results in incorrectly updated idle
-and steal time accounting. This breaks userspace tools which read
-/proc/stat.
+On Thu, Jul 2, 2020 at 8:11 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+> On Thu, Jul 2, 2020 at 9:51 AM Andreas Gruenbacher <agruenba@redhat.com> wrote:
+> >
+> > Of this patch queue, either only the first patch or all four patches can
+> > be applied to fix gfs2's current issues in 5.8.  Please let me know what
+> > you think.
+>
+> I think the IOCB_NOIO flag looks fine (apart from the nit I pointed
+> out), and we could do that.
 
-top - 08:05:35 up  2:12,  3 users,  load average: 0.00, 0.07, 0.23
-Tasks:  80 total,   1 running,  79 sleeping,   0 stopped,   0 zombie
-Cpu(s):  0.0%us,  0.0%sy,  0.0%ni,30100.0%id,  0.0%wa,  0.0%hi, 0.0%si,-1253874204672.0%st
+Ok, that's a step forward.
 
-This can actually happen when a Xen PVHVM guest gets restored from
-hibernation, because such a restored guest is just a fresh domain from
-Xen perspective and the time information in runstate info starts over
-from scratch.
+> However, is the "revert and reinstate" looks odd. Is the reinstate so
+> different from the original that it makes sense to do that way?
+>
+> Or was it done that way only to give the choice of just doing the revert?
+>
+> Because if so, I think I'd rather just see a "fix" rather than
+> "revert+reinstate".
 
-Changelog:
-v1->v2: Removed patches that introduced new function calls for saving/restoring
-        sched clock offset and using existing ones that are used during LM
+I only did the "revert and reinstate" so that the revert alone will
+give us a working gfs2 in 5.8. If there's agreement to add the
+IOCB_NOIO flag, then we can just fix gfs2 (basically
+https://lore.kernel.org/linux-fsdevel/20200619093916.1081129-3-agruenba@redhat.com/
+with IOCB_CACHED renamed to IOCB_NOIO).
 
-Signed-off-by: Anchal Agarwal <anchalag@amazon.com>
----
- arch/x86/xen/suspend.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/arch/x86/xen/suspend.c b/arch/x86/xen/suspend.c
-index e8c924e93fc5..10cd14326472 100644
---- a/arch/x86/xen/suspend.c
-+++ b/arch/x86/xen/suspend.c
-@@ -94,10 +94,9 @@ static int xen_syscore_suspend(void)
- 	int ret;
- 
- 	gnttab_suspend();
--
-+	xen_manage_runstate_time(-1);
- 	xrfp.domid = DOMID_SELF;
- 	xrfp.gpfn = __pa(HYPERVISOR_shared_info) >> PAGE_SHIFT;
--
- 	ret = HYPERVISOR_memory_op(XENMEM_remove_from_physmap, &xrfp);
- 	if (!ret)
- 		HYPERVISOR_shared_info = &xen_dummy_shared_info;
-@@ -111,7 +110,7 @@ static void xen_syscore_resume(void)
- 	xen_hvm_map_shared_info();
- 
- 	pvclock_resume();
--
-+	xen_manage_runstate_time(0);
- 	gnttab_resume();
- }
- 
--- 
-2.20.1
+Thanks,
+Andreas
 
