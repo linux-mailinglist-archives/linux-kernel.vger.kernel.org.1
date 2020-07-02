@@ -2,107 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 171A0212B42
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 19:30:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D376212B7B
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 19:48:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727104AbgGBRaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 13:30:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47418 "EHLO
+        id S1727894AbgGBRsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 13:48:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726120AbgGBRa3 (ORCPT
+        with ESMTP id S1727005AbgGBRsG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 13:30:29 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63413C08C5C1;
-        Thu,  2 Jul 2020 10:30:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=lMEXGkg9/1lKgDiiMTcrjkxDHT1PVSiTcXNRYHyvJiM=; b=nR1VN3uWw+bi70Q8kmATNOE5xc
-        RIzIGoeaBwT8SyB4q4B6QocuAW3sKI5wdTS/6q9ENDIfzAXAp/A4MyWAYb44Tn/bAQQ2SUjR9NUG/
-        1O7bDHuTp+b7UgXiYwainOhDFiy4FUrnPNclJ8Y+60riDfL6nXD+yRa4rlN3QcEnaY8tPyBxOMEuH
-        w1/G0LU8A+lSq/adOGCPix7P/ATW+gSefXiYU75DrOIeieGJnS5svifbdXCbZgFO5izeIwSPvX8/Y
-        G1EfSOa3KYcsHJdG+vBnQIcmbSYQ/HRkeEbQgQbpm0LE/xCzh2SOdOFIitjiRvQ70Ll+VN702Uted
-        bYYbbIIA==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jr32Y-0003zn-Cl; Thu, 02 Jul 2020 17:30:26 +0000
-Date:   Thu, 2 Jul 2020 18:30:26 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC] Bypass filesystems for reading cached pages
-Message-ID: <20200702173026.GA25523@casper.infradead.org>
-References: <20200619155036.GZ8681@bombadil.infradead.org>
- <20200622003215.GC2040@dread.disaster.area>
- <CAHc6FU4b_z+vhjVPmaU46VhqoD+Y7jLN3=BRDZPrS2v=_pVpfw@mail.gmail.com>
- <20200622181338.GA21350@casper.infradead.org>
- <CAHc6FU7R2vMZ9+aXLsQ+ubECbfrBTR+yh03b_T++PRxd479vsQ@mail.gmail.com>
- <CAHc6FU5jZfz3Kv-Aa6MWbELhTscSp5eEAXTWBoVysrQg6f1moA@mail.gmail.com>
+        Thu, 2 Jul 2020 13:48:06 -0400
+X-Greylist: delayed 1933 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 02 Jul 2020 10:48:06 PDT
+Received: from scorn.kernelslacker.org (scorn.kernelslacker.org [IPv6:2600:3c03:e000:2fb::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AB18C08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 10:48:06 -0700 (PDT)
+Received: from [2601:196:4600:6634:ae9e:17ff:feb7:72ca] (helo=wopr.kernelslacker.org)
+        by scorn.kernelslacker.org with esmtp (Exim 4.92)
+        (envelope-from <davej@codemonkey.org.uk>)
+        id 1jr2oO-0007xq-D4; Thu, 02 Jul 2020 13:15:48 -0400
+Received: by wopr.kernelslacker.org (Postfix, from userid 1026)
+        id 2CC4056011F; Thu,  2 Jul 2020 13:15:48 -0400 (EDT)
+Date:   Thu, 2 Jul 2020 13:15:48 -0400
+From:   Dave Jones <davej@codemonkey.org.uk>
+To:     Linux Kernel <linux-kernel@vger.kernel.org>
+Cc:     peterz@infradead.org, mgorman@techsingularity.net,
+        mingo@kernel.org, Linus Torvalds <torvalds@linux-foundation.org>
+Subject: weird loadavg on idle machine post 5.7
+Message-ID: <20200702171548.GA11813@codemonkey.org.uk>
+Mail-Followup-To: Dave Jones <davej@codemonkey.org.uk>,
+        Linux Kernel <linux-kernel@vger.kernel.org>, peterz@infradead.org,
+        mgorman@techsingularity.net, mingo@kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHc6FU5jZfz3Kv-Aa6MWbELhTscSp5eEAXTWBoVysrQg6f1moA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Note: SpamAssassin invocation failed
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 02, 2020 at 05:16:43PM +0200, Andreas Gruenbacher wrote:
-> On Wed, Jun 24, 2020 at 2:35 PM Andreas Gruenbacher <agruenba@redhat.com> wrote:
-> > On Mon, Jun 22, 2020 at 8:13 PM Matthew Wilcox <willy@infradead.org> wrote:
-> > > On Mon, Jun 22, 2020 at 04:35:05PM +0200, Andreas Gruenbacher wrote:
-> > > > I'm fine with not moving that functionality into the VFS. The problem
-> > > > I have in gfs2 is that taking glocks is really expensive. Part of that
-> > > > overhead is accidental, but we definitely won't be able to fix it in
-> > > > the short term. So something like the IOCB_CACHED flag that prevents
-> > > > generic_file_read_iter from issuing readahead I/O would save the day
-> > > > for us. Does that idea stand a chance?
-> > >
-> > > For the short-term fix, is switching to a trylock in gfs2_readahead()
-> > > acceptable?
-> >
-> > Well, it's the only thing we can do for now, right?
-> 
-> It turns out that gfs2 can still deadlock with a trylock in
-> gfs2_readahead, just differently: in this instance, gfs2_glock_nq will
-> call inode_dio_wait. When there is pending direct I/O, we'll end up
-> waiting for iomap_dio_complete, which will call
-> invalidate_inode_pages2_range, which will try to lock the pages
-> already locked for gfs2_readahead.
+When I upgraded my firewall to 5.7-rc2 I noticed that on a mostly
+idle machine (that usually sees loadavg hover in the 0.xx range)
+that it was consistently above 1.00 even when there was nothing running.
+All that perf showed was the kernel was spending time in the idle loop
+(and running perf).
 
-That seems like a bug in trylock.  If I trylock something I'm not
-expecting it to wait; i'm expecting it to fail because it would have to wait.
-ie something like this:
+For the first hour or so after boot, everything seems fine, but over
+time loadavg creeps up, and once it's established a new baseline, it
+never seems to ever drop below that again.
 
-diff --git a/fs/gfs2/glops.c b/fs/gfs2/glops.c
-index c84887769b5a..97ca8f5ed22b 100644
---- a/fs/gfs2/glops.c
-+++ b/fs/gfs2/glops.c
-@@ -470,7 +470,10 @@ static int inode_go_lock(struct gfs2_holder *gh)
-                        return error;
-        }
- 
--       if (gh->gh_state != LM_ST_DEFERRED)
-+       if (gh->gh_flags & LM_FLAG_TRY) {
-+               if (atomic_read(&ip->i_inode.i_dio_count))
-+                       return -EWOULDBLOCK;
-+       } else if (gh->gh_state != LM_ST_DEFERRED)
-                inode_dio_wait(&ip->i_inode);
- 
-        if ((ip->i_diskflags & GFS2_DIF_TRUNC_IN_PROG) &&
+One morning I woke up to find loadavg at '7.xx', after almost as many
+hours of uptime, which makes me wonder if perhaps this is triggered
+by something in cron.  I have a bunch of scripts that fire off
+every hour that involve thousands of shortlived runs of iptables/ipset,
+but running them manually didn't seem to automatically trigger the bug.
 
-... but probably not exactly that because I didn't try to figure out the
-calling conventions or whether I should set some state in the gfs2_holder.
+Given it took a few hours of runtime to confirm good/bad, bisecting this
+took the last two weeks. I did it four different times, the first
+producing bogus results from over-eager 'good', but the last two runs
+both implicated this commit:
 
-> This late in the 5.8 release cycle, I'd like to propose converting
-> gfs2 back to use mpage_readpages. This requires reinstating
-> mpage_readpages, but it's otherwise relatively trivial.
-> We can then introduce an IOCB_CACHED or equivalent flag, fix the
-> locking order in gfs2, convert gfs2 to mpage_readahead, and finally
-> remove mage_readpages in 5.9.
+commit c6e7bd7afaeb3af55ffac122828035f1c01d1d7b (refs/bisect/bad)
+Author: Peter Zijlstra <peterz@infradead.org>
+Date:   Sun May 24 21:29:55 2020 +0100
 
-I would rather not do that.
+    sched/core: Optimize ttwu() spinning on p->on_cpu
+    
+    Both Rik and Mel reported seeing ttwu() spend significant time on:
+    
+      smp_cond_load_acquire(&p->on_cpu, !VAL);
+    
+    Attempt to avoid this by queueing the wakeup on the CPU that owns the
+    p->on_cpu value. This will then allow the ttwu() to complete without
+    further waiting.
+    
+    Since we run schedule() with interrupts disabled, the IPI is
+    guaranteed to happen after p->on_cpu is cleared, this is what makes it
+    safe to queue early.
+    
+    Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+    Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+    Signed-off-by: Ingo Molnar <mingo@kernel.org>
+    Cc: Jirka Hladky <jhladky@redhat.com>
+    Cc: Vincent Guittot <vincent.guittot@linaro.org>
+    Cc: valentin.schneider@arm.com
+    Cc: Hillf Danton <hdanton@sina.com>
+    Cc: Rik van Riel <riel@surriel.com>
+    Link: https://lore.kernel.org/r/20200524202956.27665-2-mgorman@techsingularity.net
+
+Unfortunatly it doesn't revert cleanly on top of rc3 so I haven't
+confirmed 100% that it's the cause yet, but the two separate bisects
+seem promising.
+
+I don't see any obvious correlation between what's changing there and
+the symtoms (other than "scheduler magic") but maybe those closer to
+this have ideas what could be going awry ?
+
+	Dave
