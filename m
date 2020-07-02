@@ -2,100 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3624A212613
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 16:20:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35DE021261A
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 16:24:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729821AbgGBOUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 10:20:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728651AbgGBOUs (ORCPT
+        id S1729635AbgGBOWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 10:22:36 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:47278 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728516AbgGBOWf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 10:20:48 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49165C08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 07:20:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=x2l3UQ1LnNvnh7vdkqLglXGyJtnaXge3J21AHjk9zjY=; b=JCIWj9l8B+Tkd7lJF/AyeT9+BF
-        RE6tfRd4AZ6VMNSVcHPf3mREt1c9NTlTdSrI3OJxTW4qfr2HjatHBF+md1xyY7COPSmCM08LqS9rX
-        46tgLGVKgvisjJJ59JE7pXxYAbWWSyPa1A9/AtQT5Ce+Z150U7OR3Ho/cxE/DPbFPesf0VaoMTEea
-        gT8ErM8gDJLKmotbXSApWrFto551L1nceFKLrkVyLoQITk6lW0Aqwo6jUo5fVB4WFL7/lxflBnah/
-        bEiG0As7gRldfVNsHvoSUhtcHPsXWm1zoy6sxkShVn1WGJDFKuoGDKkzvTL5Nn6RojGhYCd6hfjSV
-        XhSMO8PA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jr04y-00013f-Ck; Thu, 02 Jul 2020 14:20:44 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1E9293059DE;
-        Thu,  2 Jul 2020 16:20:43 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0657820108659; Thu,  2 Jul 2020 16:20:43 +0200 (CEST)
-Date:   Thu, 2 Jul 2020 16:20:42 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        morten.rasmussen@arm.com
-Subject: Re: [PATCH v3 3/7] sched/topology: Verify SD_* flags setup when
- sched_debug is on
-Message-ID: <20200702142042.GI4817@hirez.programming.kicks-ass.net>
-References: <20200701190656.10126-1-valentin.schneider@arm.com>
- <20200701190656.10126-4-valentin.schneider@arm.com>
+        Thu, 2 Jul 2020 10:22:35 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1jr06Z-0000Sf-K0; Thu, 02 Jul 2020 14:22:23 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        xen-devel@lists.xenproject.org, netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] xen-netfront: remove redundant assignment to variable 'act'
+Date:   Thu,  2 Jul 2020 15:22:23 +0100
+Message-Id: <20200702142223.48178-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200701190656.10126-4-valentin.schneider@arm.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 01, 2020 at 08:06:51PM +0100, Valentin Schneider wrote:
+From: Colin Ian King <colin.king@canonical.com>
 
-> @@ -29,6 +29,7 @@ static int sched_domain_debug_one(struct sched_domain *sd, int cpu, int level,
->  				  struct cpumask *groupmask)
->  {
->  	struct sched_group *group = sd->groups;
-> +	int flags = sd->flags;
+The variable act is being initialized with a value that is
+never read and it is being updated later with a new value. The
+initialization is redundant and can be removed.
 
-	unsigned long flags = sd->flags;
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/net/xen-netfront.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->  
->  	cpumask_clear(groupmask);
->  
-> @@ -43,6 +44,22 @@ static int sched_domain_debug_one(struct sched_domain *sd, int cpu, int level,
->  		printk(KERN_ERR "ERROR: domain->groups does not contain CPU%d\n", cpu);
->  	}
->  
-> +	for (; flags; flags &= flags - 1) {
-> +		unsigned int idx = __ffs(flags);
+diff --git a/drivers/net/xen-netfront.c b/drivers/net/xen-netfront.c
+index 468f3f6f1425..860a0cce346d 100644
+--- a/drivers/net/xen-netfront.c
++++ b/drivers/net/xen-netfront.c
+@@ -856,7 +856,7 @@ static u32 xennet_run_xdp(struct netfront_queue *queue, struct page *pdata,
+ {
+ 	struct xdp_frame *xdpf;
+ 	u32 len = rx->status;
+-	u32 act = XDP_PASS;
++	u32 act;
+ 	int err;
+ 
+ 	xdp->data_hard_start = page_address(pdata);
+-- 
+2.27.0
 
-	for_each_set_bit(idx, &flags, SD_MAX_BIT) {
-
-Yes, it's a bit yuck, but far more readable imo.
-
-> +		unsigned int flag = BIT(idx);
-> +		unsigned int meta_flags = sd_flag_debug[idx].meta_flags;
-> +
-> +		if ((meta_flags & SDF_SHARED_CHILD) && sd->child &&
-> +		    !(sd->child->flags & flag))
-> +			printk(KERN_ERR "ERROR: flag %s set here but not in child\n",
-> +			       sd_flag_debug[idx].name);
-> +
-> +		if ((meta_flags & SDF_SHARED_PARENT) && sd->parent &&
-> +		    !(sd->parent->flags & flag))
-> +			printk(KERN_ERR "ERROR: flag %s set here but not in parent\n",
-> +			       sd_flag_debug[idx].name);
-> +	}
-> +
->  	printk(KERN_DEBUG "%*s groups:", level + 1, "");
->  	do {
->  		if (!group) {
-> -- 
-> 2.27.0
-> 
