@@ -2,155 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74E44212230
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 13:25:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB64C212242
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 13:27:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728762AbgGBLZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 07:25:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46972 "EHLO
+        id S1728806AbgGBL11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 07:27:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728709AbgGBLZr (ORCPT
+        with ESMTP id S1728502AbgGBL10 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 07:25:47 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E110CC08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 04:25:46 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id h16so530613ilj.11
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 04:25:46 -0700 (PDT)
+        Thu, 2 Jul 2020 07:27:26 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1E54C08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 04:27:26 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id w2so12526865pgg.10
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 04:27:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=YkfiTq5tt8RJ4gOurpcHW32dq+36I8L6RxM8zDS/4AA=;
-        b=UzH8YakneCqJqH1tFEOb2nj8+dJfVaj/zytEeJIHQQDXQbYDW3bCHjw2PAtD4h3L9M
-         LXUGkchUf/yeia6QdS1K6Mw7QQYf2JsjLsZDKBklfHly5URrJqv6kyo5729z9gdsW5H2
-         rmEzs2Ya3x239k5lsrHh6JbNsP97MgxaJeuQan0teDhJRh7yCQulMwB/k4nvaP3GT7/d
-         ffsBVP4QZPA/okRwXBJCaRAXsDSzp35vPWKzHFFFPs9omWP1jFVw1fyIvJ+D+LY/VHTA
-         rG1CtSd2M4cU/DlMv5z4KDLHPifKY7onXgD8eebB3O4lMJ7TRalXNVgyXqqbG0ktZYo0
-         RDVA==
+        d=pesu-pes-edu.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=xxVvosb2amin9BFIRGrxAO+BSau+UIIa0mUkKu+/RSI=;
+        b=HwiYMHSNLGiPTj+eLoFYYCv8STpwSN+aakDFtwggFi06ZTR2rO9t4ieR6D8DYjOnFF
+         CvtbEtrGTAyfxb4OVQhaeoHY0A4C5Oyt96WExj+7OQhIjay3oIbipdAZkjWqKoVKvdvu
+         jD8rD+Pps9oMy05HYAhqiociLu200xBOfYthTHu04k5Y6Lg3jnXDh6sg+aOXm30V6Tpy
+         LsgniJQH7U8PCY6WgucdlS6pUhxa1xf4IMN+Q0iRzF+OIU8Lksk0jJTArBvZFp3EvfO1
+         7fidzsSCCg4bpmWczHlIYqiujSidsEdQ4q7HCdhSmzwX+oV7/DSaDvpkIuLmntvxfFMv
+         oXSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=YkfiTq5tt8RJ4gOurpcHW32dq+36I8L6RxM8zDS/4AA=;
-        b=JkgQlssnB552J/Y/T0iR5LUirBSfz2sUpt/kIIn1CSZfpNwRKPVC5u+p4+lAq9tlR4
-         QjpjhlZ7+UoVe1t0I+BA+kmMDd+/R5KjNtrzvx45HjnHZqRwb8Jxbqwz1zka7pqsJpmJ
-         +1sQjRhxgSsz5ajA0QWUg76FSRJx4hnTW9ri3BfjTW3+P1yh5oNmLCTpQs+9mkdmYY2d
-         fiqN0udzDcsONAXM3BjGbuFR6cANu3CCC1VhzTRmBiZKA2GVnYTai/vHjighnDLaH5oo
-         PajCqb6dIxZgphPUOT2hR4tcn+tOo+vgn88SIDeeG3kACj2eBie0pypRlIkcZjTudiZo
-         SjuQ==
-X-Gm-Message-State: AOAM5302PgXHylfXVK8kr0XClZf7CQNNMneHgZF8vpd7i8DmzcGdNR0g
-        R9iGIOMrBSxs/KYW+jwHDdG61Q==
-X-Google-Smtp-Source: ABdhPJzXraDXXUyCKq2Os7WRGHytUfZRnMfhNCNmRH0/tHh21HJ+6+K/qXeGDUE5mo1OBjjV54QkqQ==
-X-Received: by 2002:a05:6e02:6cf:: with SMTP id p15mr12241242ils.206.1593689146157;
-        Thu, 02 Jul 2020 04:25:46 -0700 (PDT)
-Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id c3sm4692842ilj.31.2020.07.02.04.25.45
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=xxVvosb2amin9BFIRGrxAO+BSau+UIIa0mUkKu+/RSI=;
+        b=QDR3Xg5RPQjZIzlT9t93psZfmZpYNjt6HrD+MS5SCiBqKuDqcfy9GpB0UxH0nuFg9d
+         inn9oDcfdknBLiBt6HgB4dIlo+lySoAShhDN4RZwOTVzyj2wbgv05PxPTms+S7hOOl4o
+         PjuAWGM4XzlOrhl0qtPfF7zKwSSe62eEYWpNMLVeV/Nz4cfQiqdON4W9MYlztogaARFp
+         1Wp752BWBzLSXexwy7I6wb2dTjyne3HuYcFuTkswr7DbY7JuyyMET3u7MjvBUZjuQRud
+         bBmH1XoudvXdPuvvoN80jjj2v8sv5LK+4CN/h68HA3mSqCWkZg6Hb0t9JcQf0mk6ju6k
+         fOmg==
+X-Gm-Message-State: AOAM531wMI5Ru1i3U+37OFXLy8Uc5SbKxVicxBhF4xkqLn2eqnma6LS7
+        qjb/r7uh3GPaFJmSuMSOvivO5Q==
+X-Google-Smtp-Source: ABdhPJx0kIoo4VzR6JkF+6ePeKECGCTXNBmGrMrL+khrUcm1al6vHhwWigbEzCR55cqth/kw9a2/1g==
+X-Received: by 2002:a65:478a:: with SMTP id e10mr23853468pgs.146.1593689246428;
+        Thu, 02 Jul 2020 04:27:26 -0700 (PDT)
+Received: from localhost ([2406:7400:73:3271:908:f18a:1156:5c38])
+        by smtp.gmail.com with ESMTPSA id k92sm7885691pje.30.2020.07.02.04.27.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Jul 2020 04:25:45 -0700 (PDT)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     evgreen@chromium.org, subashab@codeaurora.org,
-        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 4/4] net: ipa: simplify ipa_endpoint_program()
-Date:   Thu,  2 Jul 2020 06:25:37 -0500
-Message-Id: <20200702112537.347994-5-elder@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200702112537.347994-1-elder@linaro.org>
-References: <20200702112537.347994-1-elder@linaro.org>
+        Thu, 02 Jul 2020 04:27:25 -0700 (PDT)
+Date:   Thu, 2 Jul 2020 07:27:18 -0400
+From:   B K Karthik <bkkarthik@pesu.pes.edu>
+To:     B K Karthik <karthik.bk2000@live.com>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 2/2] staging: rtl8188eu: include: rtw_pwrctrl.h: fixed a
+ blank space coding style issue.
+Message-ID: <20200702112718.igdpcicprid74pyj@pesu-pes-edu>
+References: <20200702112210.th4aiiszhdtufbpe@pesu-pes-edu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="il2oqzpbqvyo7t3t"
+Content-Disposition: inline
+In-Reply-To: <20200702112210.th4aiiszhdtufbpe@pesu-pes-edu>
+User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Have functions that write endpoint configuration registers return
-immediately if they are not valid for the direction of transfer for
-the endpoint.  This allows most of the calls in ipa_endpoint_program()
-to be made unconditionally.  Reorder the register writes to match
-the order of their definition (based on offset).
 
-Signed-off-by: Alex Elder <elder@linaro.org>
+--il2oqzpbqvyo7t3t
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+add blank spaces to improve code readability.
+
+Signed-off-by: B K Karthik <karthik.bk2000@live.com>
 ---
- drivers/net/ipa/ipa_endpoint.c | 31 ++++++++++++++++++++-----------
- 1 file changed, 20 insertions(+), 11 deletions(-)
+ drivers/staging/rtl8188eu/include/rtw_pwrctrl.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ipa/ipa_endpoint.c b/drivers/net/ipa/ipa_endpoint.c
-index df4202794e69..99115a2a29ae 100644
---- a/drivers/net/ipa/ipa_endpoint.c
-+++ b/drivers/net/ipa/ipa_endpoint.c
-@@ -588,6 +588,9 @@ static void ipa_endpoint_init_hdr_metadata_mask(struct ipa_endpoint *endpoint)
- 	u32 val = 0;
- 	u32 offset;
- 
-+	if (endpoint->toward_ipa)
-+		return;		/* Register not valid for TX endpoints */
-+
- 	offset = IPA_REG_ENDP_INIT_HDR_METADATA_MASK_N_OFFSET(endpoint_id);
- 
- 	/* Note that HDR_ENDIANNESS indicates big endian header fields */
-@@ -602,6 +605,9 @@ static void ipa_endpoint_init_mode(struct ipa_endpoint *endpoint)
- 	u32 offset = IPA_REG_ENDP_INIT_MODE_N_OFFSET(endpoint->endpoint_id);
- 	u32 val;
- 
-+	if (!endpoint->toward_ipa)
-+		return;		/* Register not valid for RX endpoints */
-+
- 	if (endpoint->data->dma_mode) {
- 		enum ipa_endpoint_name name = endpoint->data->dma_endpoint;
- 		u32 dma_endpoint_id;
-@@ -760,6 +766,9 @@ static void ipa_endpoint_init_deaggr(struct ipa_endpoint *endpoint)
- 	u32 offset = IPA_REG_ENDP_INIT_DEAGGR_N_OFFSET(endpoint->endpoint_id);
- 	u32 val = 0;
- 
-+	if (!endpoint->toward_ipa)
-+		return;		/* Register not valid for RX endpoints */
-+
- 	/* DEAGGR_HDR_LEN is 0 */
- 	/* PACKET_OFFSET_VALID is 0 */
- 	/* PACKET_OFFSET_LOCATION is ignored (not valid) */
-@@ -774,6 +783,9 @@ static void ipa_endpoint_init_seq(struct ipa_endpoint *endpoint)
- 	u32 seq_type = endpoint->seq_type;
- 	u32 val = 0;
- 
-+	if (!endpoint->toward_ipa)
-+		return;		/* Register not valid for RX endpoints */
-+
- 	/* Sequencer type is made up of four nibbles */
- 	val |= u32_encode_bits(seq_type & 0xf, HPS_SEQ_TYPE_FMASK);
- 	val |= u32_encode_bits((seq_type >> 4) & 0xf, DPS_SEQ_TYPE_FMASK);
-@@ -1330,21 +1342,18 @@ static void ipa_endpoint_reset(struct ipa_endpoint *endpoint)
- 
- static void ipa_endpoint_program(struct ipa_endpoint *endpoint)
- {
--	if (endpoint->toward_ipa) {
-+	if (endpoint->toward_ipa)
- 		ipa_endpoint_program_delay(endpoint, false);
--		ipa_endpoint_init_hdr_ext(endpoint);
--		ipa_endpoint_init_aggr(endpoint);
--		ipa_endpoint_init_deaggr(endpoint);
--		ipa_endpoint_init_seq(endpoint);
--		ipa_endpoint_init_mode(endpoint);
--	} else {
-+	else
- 		(void)ipa_endpoint_program_suspend(endpoint, false);
--		ipa_endpoint_init_hdr_ext(endpoint);
--		ipa_endpoint_init_aggr(endpoint);
--		ipa_endpoint_init_hdr_metadata_mask(endpoint);
--	}
- 	ipa_endpoint_init_cfg(endpoint);
- 	ipa_endpoint_init_hdr(endpoint);
-+	ipa_endpoint_init_hdr_ext(endpoint);
-+	ipa_endpoint_init_hdr_metadata_mask(endpoint);
-+	ipa_endpoint_init_mode(endpoint);
-+	ipa_endpoint_init_aggr(endpoint);
-+	ipa_endpoint_init_deaggr(endpoint);
-+	ipa_endpoint_init_seq(endpoint);
- 	ipa_endpoint_status(endpoint);
- }
- 
--- 
-2.25.1
+diff --git a/drivers/staging/rtl8188eu/include/rtw_pwrctrl.h b/drivers/staging/rtl8188eu/include/rtw_pwrctrl.h
+index c89328142731..b4cf0f1ce6d3 100644
+--- a/drivers/staging/rtl8188eu/include/rtw_pwrctrl.h
++++ b/drivers/staging/rtl8188eu/include/rtw_pwrctrl.h
+@@ -84,7 +84,7 @@ struct reportpwrstate_parm {
+        unsigned short rsvd;
+ };
 
+-#define LPS_DELAY_TIME (1*HZ) /*  1 sec */
++#define LPS_DELAY_TIME (1 * HZ) /*  1 sec */
+
+ #define EXE_PWR_NONE   0x01
+ #define EXE_PWR_IPS            0x02
+--
+2.20.1
+
+
+--il2oqzpbqvyo7t3t
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQGzBAEBCgAdFiEEpIrzAt4LvWLJmKjp471Q5AHeZ2oFAl79xJUACgkQ471Q5AHe
+Z2os7wv+NYI8O0JJ4pDIYcg7pg3GvyVcwoP6mQWhqjP8V6ffl4iQ81Fra9bVxY3D
+Zk6il9x7b1OQPpg1IcroQ26+asY/i7m6cPyYEOCmZbm89NmHNY9jFNtZB6tGMWp+
+vQeCf8Bxh0VVlKB1/pDdSq3xYLR5xvFwYwsLT77bHjxIDuB2JPw5UauJdluPDmOH
+7+/cP48TcWe+xR77TNWCnL+ldOStSCOJ3IlmxZqXyX4gsVyIKoXFGyg4YK8rPNR7
+efKbpdwK761IfpfzW2FYiakJculdkQ2xtQWvgvLdqai5KMv+r1hcChVCOo3kYch0
+oGfVol+YaONoLlSFkKuB8oS2rbhHKePSsPuoLKIcSVke6hGulUVq7zfR6NMXmnQw
+wnPDsubkTlRRTxcMoVF5TEWWPGxi72TLFgZZengE9q6zdbkCmCN7cyFg4Xr17qT2
+/6FHmJNt45tvOFDMhywLAb9z/uB3HOY/7NyczbZ6gTtn396CwV/xMpjrPNcj8THm
+Ku0TDAFC
+=P3nI
+-----END PGP SIGNATURE-----
+
+--il2oqzpbqvyo7t3t--
