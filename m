@@ -2,32 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A184A212F2C
+	by mail.lfdr.de (Postfix) with ESMTP id 35BFD212F2B
 	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 00:00:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726733AbgGBV7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 17:59:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53010 "EHLO mail.kernel.org"
+        id S1726715AbgGBV7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 17:59:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52912 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726228AbgGBV6e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726196AbgGBV6e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 2 Jul 2020 17:58:34 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A8CF921941;
+        by mail.kernel.org (Postfix) with ESMTPSA id D243521973;
         Thu,  2 Jul 2020 21:58:33 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.93)
         (envelope-from <rostedt@goodmis.org>)
-        id 1jr7E0-004Bgz-O6; Thu, 02 Jul 2020 17:58:32 -0400
-Message-ID: <20200702215832.625932449@goodmis.org>
+        id 1jr7E0-004BhV-TS; Thu, 02 Jul 2020 17:58:32 -0400
+Message-ID: <20200702215832.784471709@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Thu, 02 Jul 2020 17:58:20 -0400
+Date:   Thu, 02 Jul 2020 17:58:21 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>
-Subject: [for-next][PATCH 08/18] tracing: not necessary to define DEFINE_EVENT_PRINT to be empty again
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [for-next][PATCH 09/18] tracing: Move pipe reference to trace array instead of current_tracer
 References: <20200702215812.428188663@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -36,34 +35,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wei Yang <richard.weiyang@linux.alibaba.com>
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-After the previous cleanup, DEFINE_EVENT_PRINT's definition has no
-relationship with DEFINE_EVENT. So After we re-define DEFINE_EVENT, it
-is not necessary to define DEFINE_EVENT_PRINT to be empty again.
+If a process has the trace_pipe open on a trace_array, the current tracer
+for that trace array should not be changed. This was original enforced by a
+global lock, but when instances were introduced, it was moved to the
+current_trace. But this structure is shared by all instances, and a
+trace_pipe is for a single instance. There's no reason that a process that
+has trace_pipe open on one instance should prevent another instance from
+changing its current tracer. Move the reference counter to the trace_array
+instead.
 
-Link: http://lkml.kernel.org/r/20200612092844.56107-5-richard.weiyang@linux.alibaba.com
+This is marked as "Fixes" but is more of a clean up than a true fix.
+Backport if you want, but its not critical.
 
-Signed-off-by: Wei Yang <richard.weiyang@linux.alibaba.com>
+Fixes: cf6ab6d9143b1 ("tracing: Add ref count to tracer for when they are being read by pipe")
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- include/trace/trace_events.h | 3 ---
- 1 file changed, 3 deletions(-)
+ kernel/trace/trace.c | 12 ++++++------
+ kernel/trace/trace.h |  2 +-
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/include/trace/trace_events.h b/include/trace/trace_events.h
-index 43023c3e9d74..1bc3e7bba9a4 100644
---- a/include/trace/trace_events.h
-+++ b/include/trace/trace_events.h
-@@ -709,9 +709,6 @@ static inline void ftrace_test_probe_##call(void)			\
- 	check_trace_callback_type_##call(trace_event_raw_event_##template); \
- }
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index 8241d1448d70..64c5b8146cca 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -5891,7 +5891,7 @@ int tracing_set_tracer(struct trace_array *tr, const char *buf)
+ 	}
  
--#undef DEFINE_EVENT_PRINT
--#define DEFINE_EVENT_PRINT(template, name, proto, args, print)
--
- #include TRACE_INCLUDE(TRACE_INCLUDE_FILE)
+ 	/* If trace pipe files are being read, we can't change the tracer */
+-	if (tr->current_trace->ref) {
++	if (tr->trace_ref) {
+ 		ret = -EBUSY;
+ 		goto out;
+ 	}
+@@ -6107,7 +6107,7 @@ static int tracing_open_pipe(struct inode *inode, struct file *filp)
  
- #undef __entry
+ 	nonseekable_open(inode, filp);
+ 
+-	tr->current_trace->ref++;
++	tr->trace_ref++;
+ out:
+ 	mutex_unlock(&trace_types_lock);
+ 	return ret;
+@@ -6126,7 +6126,7 @@ static int tracing_release_pipe(struct inode *inode, struct file *file)
+ 
+ 	mutex_lock(&trace_types_lock);
+ 
+-	tr->current_trace->ref--;
++	tr->trace_ref--;
+ 
+ 	if (iter->trace->pipe_close)
+ 		iter->trace->pipe_close(iter);
+@@ -7428,7 +7428,7 @@ static int tracing_buffers_open(struct inode *inode, struct file *filp)
+ 
+ 	filp->private_data = info;
+ 
+-	tr->current_trace->ref++;
++	tr->trace_ref++;
+ 
+ 	mutex_unlock(&trace_types_lock);
+ 
+@@ -7529,7 +7529,7 @@ static int tracing_buffers_release(struct inode *inode, struct file *file)
+ 
+ 	mutex_lock(&trace_types_lock);
+ 
+-	iter->tr->current_trace->ref--;
++	iter->tr->trace_ref--;
+ 
+ 	__trace_array_put(iter->tr);
+ 
+@@ -8737,7 +8737,7 @@ static int __remove_instance(struct trace_array *tr)
+ 	int i;
+ 
+ 	/* Reference counter for a newly created trace array = 1. */
+-	if (tr->ref > 1 || (tr->current_trace && tr->current_trace->ref))
++	if (tr->ref > 1 || (tr->current_trace && tr->trace_ref))
+ 		return -EBUSY;
+ 
+ 	list_del(&tr->list);
+diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
+index 13db4000af3f..f21607f87189 100644
+--- a/kernel/trace/trace.h
++++ b/kernel/trace/trace.h
+@@ -356,6 +356,7 @@ struct trace_array {
+ 	struct trace_event_file *trace_marker_file;
+ 	cpumask_var_t		tracing_cpumask; /* only trace on set CPUs */
+ 	int			ref;
++	int			trace_ref;
+ #ifdef CONFIG_FUNCTION_TRACER
+ 	struct ftrace_ops	*ops;
+ 	struct trace_pid_list	__rcu *function_pids;
+@@ -547,7 +548,6 @@ struct tracer {
+ 	struct tracer		*next;
+ 	struct tracer_flags	*flags;
+ 	int			enabled;
+-	int			ref;
+ 	bool			print_max;
+ 	bool			allow_instances;
+ #ifdef CONFIG_TRACER_MAX_TRACE
 -- 
 2.26.2
 
