@@ -2,121 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57E052120A0
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 12:10:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F7EC2120B2
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 12:12:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728277AbgGBKKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 06:10:34 -0400
-Received: from mail-ej1-f67.google.com ([209.85.218.67]:42377 "EHLO
-        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727057AbgGBKKd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 06:10:33 -0400
-Received: by mail-ej1-f67.google.com with SMTP id f12so2413965eja.9;
-        Thu, 02 Jul 2020 03:10:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7d50t2/RpZ/PiovsO4JjL17UaNTTmolWjPQh23qo5pE=;
-        b=oMey2+O5+1bdfJKXMUEZO8Y5ACk/bTTp18+8b+47sPQmpryJ79WP6w1LwLbc3q24FD
-         dUI0Cgb2xXbK0j7zH18v7fljAFV3QL5lTDyR3DhICz2+V/AyTqJGEkf/ykvKVWvBraJ4
-         ht7D3AqmsaTSESMc42yFCue0NmoDNZrAwZPfhrANq2Yjgm1AGqm6OK02EBJRvVncxcdT
-         fwmoBAe1FLxbKjIu9VlUv1UVMWKURc77vmfg9eshXK9Gdkto5uqP7XH/RZ9b+8QNHEtk
-         QrL4rr35LF+1IsdHrK72GCTUS55nRHJjc+aQyjSwbx5vuwBd3p+AeCw8O2y1UBWe68N8
-         OczQ==
-X-Gm-Message-State: AOAM5301sDY7+t9nGtiTMxi+7l4DyhFeNt4YuFx1miEacE/NooE4cy3v
-        yveJ0YWWxp8g+lo3Rrab3i4=
-X-Google-Smtp-Source: ABdhPJxI/V8uEi3oMTLgVbbtsoAsRym2GpSEjCa8GEntdArvfCRjcWgCA9SFGnytSDnB0RlEftu4Wg==
-X-Received: by 2002:a17:906:7cc4:: with SMTP id h4mr10504032ejp.339.1593684631010;
-        Thu, 02 Jul 2020 03:10:31 -0700 (PDT)
-Received: from neopili.qtec.com (cpe.xe-3-0-1-778.vbrnqe10.dk.customer.tdc.net. [80.197.57.18])
-        by smtp.gmail.com with ESMTPSA id w18sm8988609edv.11.2020.07.02.03.10.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Jul 2020 03:10:30 -0700 (PDT)
-From:   Ricardo Ribalda <ribalda@kernel.org>
-To:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Wolfram Sang <wsa@kernel.org>
-Cc:     Ricardo Ribalda <ribalda@kernel.org>
-Subject: [PATCH v4] i2c: designware: platdrv: Set class based on DMI
-Date:   Thu,  2 Jul 2020 12:10:28 +0200
-Message-Id: <20200702101028.2088666-1-ribalda@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        id S1728363AbgGBKMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 06:12:55 -0400
+Received: from elvis.franken.de ([193.175.24.41]:46108 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728210AbgGBKMz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 06:12:55 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1jqwD4-0001E1-00; Thu, 02 Jul 2020 12:12:50 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 151F3C0725; Thu,  2 Jul 2020 12:12:29 +0200 (CEST)
+Date:   Thu, 2 Jul 2020 12:12:29 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Fabio Estevam <festevam@gmail.com>
+Cc:     =?utf-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
+        <zhouyanjie@wanyeetech.com>, linux-mips@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        paul@crapouillou.net, dongsheng.qiu@ingenic.com,
+        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
+        yanfei.li@ingenic.com, sernia.zhou@foxmail.com,
+        zhenwenjin@gmail.com
+Subject: Re: [PATCH v2 1/1] dt-bindings: MIPS: Document Ingenic SoCs binding.
+Message-ID: <20200702101229.GA9924@alpha.franken.de>
+References: <20200602183354.39707-1-zhouyanjie@wanyeetech.com>
+ <20200602183354.39707-2-zhouyanjie@wanyeetech.com>
+ <20200619110524.GA9391@alpha.franken.de>
+ <CAOMZO5CuxzMm+XFX6-mh55mcw5jgf5iYs-ej5NqjCsD6hSnr7Q@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOMZO5CuxzMm+XFX6-mh55mcw5jgf5iYs-ej5NqjCsD6hSnr7Q@mail.gmail.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Current AMD's zen-based APUs use this core for some of its i2c-buses.
+On Mon, Jun 29, 2020 at 04:28:31PM -0300, Fabio Estevam wrote:
+> On Fri, Jun 19, 2020 at 9:48 AM Thomas Bogendoerfer
+> <tsbogend@alpha.franken.de> wrote:
+> >
+> > On Wed, Jun 03, 2020 at 02:33:54AM +0800, 周琰杰 (Zhou Yanjie) wrote:
+> > > Document the available properties for the SoC root node and the
+> > > CPU nodes of the devicetree for the Ingenic XBurst SoCs.
+> > >
+> > > Tested-by: H. Nikolaus Schaller <hns@goldelico.com>
+> > > Tested-by: Paul Boddie <paul@boddie.org.uk>
+> > > Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+> > > ---
+> > >
+> > > Notes:
+> > >     v1->v2:
+> > >     1.Remove unnecessary "items".
+> > >     2.Add "clocks" as suggested by Paul Cercueil.
+> > >
+> > >  .../bindings/mips/ingenic/ingenic,cpu.yaml         | 67 ++++++++++++++++++++++
+> > >  1 file changed, 67 insertions(+)
+> > >  create mode 100644 Documentation/devicetree/bindings/mips/ingenic/ingenic,cpu.yaml
+> >
+> > applied to mips-next.
+> 
+> This causes 'make dt_binding_check' to fail:
+> 
+> $ make dt_binding_check
+>   CHKDT   Documentation/devicetree/bindings/mips/ingenic/ingenic,cpu.yaml
+> Documentation/devicetree/bindings/mips/ingenic/ingenic,cpu.yaml:
+> while scanning a block scalar
+>   in "<unicode string>", line 42, column 5
+> found a tab character where an indentation space is expected
+>   in "<unicode string>", line 46, column 1
+> Documentation/devicetree/bindings/Makefile:20: recipe for target
+> 'Documentation/devicetree/bindings/mips/ingenic/ingenic,cpu.example.dts'
+> failed
+> make[1]: *** [Documentation/devicetree/bindings/mips/ingenic/ingenic,cpu.example.dts]
+> Error 1
+> Makefile:1343: recipe for target 'dt_binding_check' failed
+> make: *** [dt_binding_check] Error 2
 
-With this patch we re-enable autodetection of hwmon-alike devices, so
-lm-sensors will be able to work automatically.
 
-It does not affect the boot-time of embedded devices, as the class is
-set based on the DMI information.
+thank you for noticing. It's my fault, I've changed spaces into tabs while
+applying, which is of course wrong for yaml files... I've commited a fix
+for this to mips-next and 'make dt_binding_check' now passes for me.
 
-DMI is probed only on Qtechnology QT5222 Industrial Camera Platform
+Thomas.
 
-DocLink: https://qtec.com/camera-technology-camera-platforms/
-Fixes: 3eddad96c439 ("i2c: designware: reverts "i2c: designware: Add support for AMD I2C controller"")
-Signed-off-by: Ricardo Ribalda <ribalda@kernel.org>
----
-v2: Comments by Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-  - dmi -> DMI
-  - Doclink
-  - CodeStyle
-  (I do not know what you meant by redundant in the dmi match list ...)
-
-
- drivers/i2c/busses/i2c-designware-platdrv.c | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/i2c/busses/i2c-designware-platdrv.c b/drivers/i2c/busses/i2c-designware-platdrv.c
-index c2efaaaac252..630e28ef2412 100644
---- a/drivers/i2c/busses/i2c-designware-platdrv.c
-+++ b/drivers/i2c/busses/i2c-designware-platdrv.c
-@@ -12,6 +12,7 @@
- #include <linux/clk-provider.h>
- #include <linux/clk.h>
- #include <linux/delay.h>
-+#include <linux/dmi.h>
- #include <linux/err.h>
- #include <linux/errno.h>
- #include <linux/i2c.h>
-@@ -191,6 +192,18 @@ static int dw_i2c_plat_request_regs(struct dw_i2c_dev *dev)
- 	return ret;
- }
- 
-+static const struct dmi_system_id dw_i2c_hwmon_class_dmi[] = {
-+	{
-+		.ident = "Qtechnology QT5222",
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Qtechnology"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "QT5222"),
-+		},
-+	},
-+
-+	{ } /* terminate list */
-+};
-+
- static int dw_i2c_plat_probe(struct platform_device *pdev)
- {
- 	struct dw_i2c_platform_data *pdata = dev_get_platdata(&pdev->dev);
-@@ -267,7 +280,8 @@ static int dw_i2c_plat_probe(struct platform_device *pdev)
- 
- 	adap = &dev->adapter;
- 	adap->owner = THIS_MODULE;
--	adap->class = I2C_CLASS_DEPRECATED;
-+	adap->class = dmi_check_system(dw_i2c_hwmon_class_dmi) ?
-+					I2C_CLASS_HWMON : I2C_CLASS_DEPRECATED;
- 	ACPI_COMPANION_SET(&adap->dev, ACPI_COMPANION(&pdev->dev));
- 	adap->dev.of_node = pdev->dev.of_node;
- 	adap->nr = -1;
 -- 
-2.27.0
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
