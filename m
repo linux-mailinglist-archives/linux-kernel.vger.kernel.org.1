@@ -2,164 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47C41212FE9
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 01:11:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64AD1212FE5
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 01:11:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726831AbgGBXLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 19:11:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726770AbgGBXLV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 19:11:21 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BAE1C08C5DD
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 16:11:21 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id by13so15890474edb.11
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 16:11:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=dgtvhZLfdp9O3gftKqMBNkndvT7e8+IujNOk46Vo20Q=;
-        b=EuFKcEEIAwfc+2XGtQbcgo9h2Y0W+5HOUpZ2phmxvet9ddeCeDx+HNYvTJEYJoXSe9
-         v+VBEWsuhH94XMwurpQpXtrqH2fIToDxj6w18Yp/rQyqsR9Y1C2sFMetG2U3zfJepHVv
-         MHYjf4wwnyVONwLWkUFGIXb/Dyj9O8p6LYM/Thimgf+Dm4d3w1x9W7dsNLCbCs/Zwx8a
-         dko46RJ36/qeDkq12VRR6FHOIHVV8H1LEWpnL3nCYqtozacr8XJvK6lS9OypwE9ouyLe
-         RHF7vhmvBz7fC9VY6lAmjtBCrIR1Px1qatmuyTF94nIkfksnB1NEi9kFkKXZsRzzCRK2
-         RtFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=dgtvhZLfdp9O3gftKqMBNkndvT7e8+IujNOk46Vo20Q=;
-        b=mBEw8bjSEXQTK8nvImh3lDBYNqeDCbDI+wWQzanvWncVmlXDK+wEoulMDnsUg3rLAb
-         /DJs+lLpUJ7IwH3OT4hjKKlgBU9nuPzoQya5WAv4edkuSTA6AwKPBkZzBW7PJ/3oBfce
-         iwLxBFcc7p5gL+Gc2Z/m+GZP8BZiHBnbmUP8JLG2Li28Sg2gnzW6PgnuJeKk9rHjGDrF
-         HrWqZBqkX9cnuHNxQT2XMnbg3cMDaqRj/R4vhDIMZTVWsnk4hdJp+dh4yPrnDTKdt9nq
-         SF8ZIMPtyqQqqTIlkV/is3Q4YHLSFX5T7wE1YZPOHa83YTh3AKL7Q6PtM1kFHiUXiIcW
-         aiFg==
-X-Gm-Message-State: AOAM532Qz2JJNYWbcmwkGJHj4ibCOZyGHVS2AHAybgT26ByoMJTgAiYG
-        W/B3DqHFxE7HmWZlhvDtqEASic/8
-X-Google-Smtp-Source: ABdhPJzC3j8T6SI1HIOwjx4ZdlMkG6TwTrsQgIkxp4vEA485iAUEdt6NmjbzkdSlKWL3fleS9EDU1Q==
-X-Received: by 2002:a05:6402:13d0:: with SMTP id a16mr37351450edx.269.1593731479679;
-        Thu, 02 Jul 2020 16:11:19 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:a03f:b7f9:7600:bd38:c82d:5283:9f1])
-        by smtp.gmail.com with ESMTPSA id x9sm8214031ejw.28.2020.07.02.16.11.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Jul 2020 16:11:19 -0700 (PDT)
-From:   Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-Subject: [PATCH 15/15] cleanup: move hexval() to utils.c
-Date:   Fri,  3 Jul 2020 01:10:39 +0200
-Message-Id: <20200702231039.55015-16-luc.vanoostenryck@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200702231039.55015-1-luc.vanoostenryck@gmail.com>
-References: <20200702231039.55015-1-luc.vanoostenryck@gmail.com>
+        id S1726792AbgGBXL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 19:11:26 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47238 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726753AbgGBXLU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 19:11:20 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E973BAD3A;
+        Thu,  2 Jul 2020 23:11:18 +0000 (UTC)
+Received: by lion.mk-sys.cz (Postfix, from userid 1000)
+        id 2D8A4604BB; Fri,  3 Jul 2020 01:11:18 +0200 (CEST)
+Date:   Fri, 3 Jul 2020 01:11:18 +0200
+From:   Michal Kubecek <mkubecek@suse.cz>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Dave Jones <davej@codemonkey.org.uk>,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        peterz@infradead.org, mingo@kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Paul Gortmaker <paul.gortmaker@windriver.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: weird loadavg on idle machine post 5.7
+Message-ID: <20200702231118.gjgbi64c55gf7fvf@lion.mk-sys.cz>
+References: <20200702171548.GA11813@codemonkey.org.uk>
+ <20200702213627.GF3183@techsingularity.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200702213627.GF3183@techsingularity.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now lib.c contains almost nothing else than library entrypoints.
+On Thu, Jul 02, 2020 at 10:36:27PM +0100, Mel Gorman wrote:
+> 
+> It builds, not booted, it's for discussion but maybe Dave is feeling brave!
+> 
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index ca5db40392d4..52c73598b18a 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -2592,9 +2592,6 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
+>  	}
+>  
+>  #ifdef CONFIG_SMP
+> -	p->sched_contributes_to_load = !!task_contributes_to_load(p);
+> -	p->state = TASK_WAKING;
+> -
+>  	/*
+>  	 * Ensure we load p->on_cpu _after_ p->on_rq, otherwise it would be
+>  	 * possible to, falsely, observe p->on_cpu == 0.
+> @@ -2650,6 +2647,13 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
+>  	 */
+>  	smp_cond_load_acquire(&p->on_cpu, !VAL);
+>  
+> +	/*
+> +	 * p is off the cpu and pi_lock is held to p->state is stable
+> +	 * for calculating whether it contributes to load.
+> +	 */
+> +	p->sched_contributes_to_load = !!task_contributes_to_load(p);
+> +	p->state = TASK_WAKING;
+> +
+>  	cpu = select_task_rq(p, p->wake_cpu, SD_BALANCE_WAKE, wake_flags);
+>  	if (task_cpu(p) != cpu) {
+>  		wake_flags |= WF_MIGRATED;
+> 
+> -- 
 
-Move a small utility, hexval(), to utils.c to complete this cleanup.
+I felt brave but something is probably wrong: I tried to boot three
+times and all three attempts crashed during boot, all three in scheduler
+related functions:
 
-Signed-off-by: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
----
- lib.c   | 17 -----------------
- lib.h   |  2 --
- utils.c | 17 +++++++++++++++++
- utils.h |  4 ++++
- 4 files changed, 21 insertions(+), 19 deletions(-)
+  set_next_entity()
+  check_preempt_wakeup()
+  finish_task_switch()
 
-diff --git a/lib.c b/lib.c
-index f512be2e1a43..57c89a16448e 100644
---- a/lib.c
-+++ b/lib.c
-@@ -50,23 +50,6 @@
- #include "bits.h"
- 
- 
--unsigned int hexval(unsigned int c)
--{
--	int retval = 256;
--	switch (c) {
--	case '0'...'9':
--		retval = c - '0';
--		break;
--	case 'a'...'f':
--		retval = c - 'a' + 10;
--		break;
--	case 'A'...'F':
--		retval = c - 'A' + 10;
--		break;
--	}
--	return retval;
--}
--
- static void do_warn(const char *type, struct position pos, const char * fmt, va_list args)
- {
- 	static char buffer[512];
-diff --git a/lib.h b/lib.h
-index 81253a3e7ee5..46483f2bed5c 100644
---- a/lib.h
-+++ b/lib.h
-@@ -45,8 +45,6 @@
- #endif
- 
- 
--extern unsigned int hexval(unsigned int c);
--
- struct position {
- 	unsigned int type:6,
- 		     stream:14,
-diff --git a/utils.c b/utils.c
-index 094df3f9bf1c..72fff00ff91b 100644
---- a/utils.c
-+++ b/utils.c
-@@ -8,6 +8,23 @@
- #include <stdio.h>
- 
- 
-+unsigned int hexval(unsigned int c)
-+{
-+	int retval = 256;
-+	switch (c) {
-+	case '0'...'9':
-+		retval = c - '0';
-+		break;
-+	case 'a'...'f':
-+		retval = c - 'a' + 10;
-+		break;
-+	case 'A'...'F':
-+		retval = c - 'A' + 10;
-+		break;
-+	}
-+	return retval;
-+}
-+
- void *xmemdup(const void *src, size_t len)
- {
- 	return memcpy(__alloc_bytes(len), src, len);
-diff --git a/utils.h b/utils.h
-index 7bd14f467799..079fb02a3e94 100644
---- a/utils.h
-+++ b/utils.h
-@@ -8,6 +8,10 @@
- #include <stddef.h>
- #include <stdarg.h>
- 
-+///
-+// return the value coresponding to an hexadecimal digit
-+unsigned int hexval(unsigned int c);
-+
- ///
- // duplicate a memory buffer in a newly allocated buffer.
- // @src: a pointer to the memory buffer to be duplicated
--- 
-2.27.0
+I left my USB-to-serial adapter in the office but I'll try again
+tomorrow on a test machine with serial console.
 
+Michal
