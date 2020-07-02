@@ -2,153 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F7B1212DBA
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 22:17:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8789C212DBF
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 22:18:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726251AbgGBURJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 16:17:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44790 "EHLO
+        id S1726035AbgGBUSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 16:18:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726203AbgGBURG (ORCPT
+        with ESMTP id S1726048AbgGBUSL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 16:17:06 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAE3CC08C5DE
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 13:17:05 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id 9so33832554ljv.5
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 13:17:05 -0700 (PDT)
+        Thu, 2 Jul 2020 16:18:11 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6281C08C5DD
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 13:18:10 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id f8so21599253ljc.2
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 13:18:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=gzH+omRURB7g5dnoNMP6PMHslLf/Y7F/kj6XzNA/QUw=;
-        b=mGVQsM1OHmkNMuQKfEJYsFI5quyzsuJsFTAUZWJ/6KyBegagF4WknJv8hivqEbilbd
-         0iqCOMqN0lqbLtp6iy0H6LpC2Me+ocoD+Q2lm7mfie7rwf/yhiPBDkl60nOiuIs9/1JV
-         Q6l/zKH9YBlnHxcV2R6Bp/FhIh+Jimc5V+21skqNt29/8oNAgjYRHEGBxLqlUdG9NsiB
-         842yg9EimH7LtQKfGIM2EptqxVipxSrbMkoYSSiRpUsZEUPtdud1fFvHZ6ex+csGIwai
-         TaKVOpdNjWEhMuAaqmf+XoPlc45UO6X/u9lb8TRI3aUJgBeA2CGOhduk3EnpZsnB1vc2
-         8/zQ==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NKAvQ3x/jWOWfzX8imS+F5oUhVjtLTNjNSuHV7D48w8=;
+        b=DbkIc3d98XP5MNyq8UNDBoqdCdN6zpg0tDrAIVNEKlHBrkulQdNCWA1kMFQ1JWAhdY
+         D9gz+IcXmp0gFrT7uBcGwZNLc4wUtGiSlpOL0zA548LxhAFt3suKnCpuLomExQY2ykrW
+         cglfpMCov0y4JxtIPrn8/cPBQMpAcOqVZ5MUE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=gzH+omRURB7g5dnoNMP6PMHslLf/Y7F/kj6XzNA/QUw=;
-        b=cHwsvp9OQJ9Dv/m4mnXSe3vZ72eRIjhlFIeg10I8tkTR/hGNLHgZF50J57LH5dIpNL
-         O8DqQpDsHdnAo246pjvKqxLuL9/E7TO9B3lLj0xAp2E12bDAKxi/3HkGiEFLFCCbOTos
-         2Dtde+IAJ+Dg4goe1Fuv957C9jEJ/tP8Lu0R1pLswTQN0LGaSK93Pofg0u7ZKZzELF/Z
-         D+Vr/HaWBOeIQ49bdJ17Trmu0sxjFJ4eklMmacDEVk/xwvHvKU/ELbBMq14ZAjsh9lYw
-         JYrwJcYWedtq9E70hbh6VbI3BF71eNdxaNdOLuNmtx6NcTNFnLRAqm3VKVMyx1fKDCvu
-         VttA==
-X-Gm-Message-State: AOAM531pcOqFIyRUv/34wJPqcLPJvFcbEL3LT/pdrdk2BG5p4W8jLiSi
-        Q11pkoA7GHx+3bDU+p+9yZrYhg==
-X-Google-Smtp-Source: ABdhPJyAEBFVxmo+Nfl2SUUNGRJI1G7JcT5WyW5G2pp8pha1D7djhhHUEvpahtR9RO3iOMUzRApxJg==
-X-Received: by 2002:a2e:98d0:: with SMTP id s16mr7703772ljj.457.1593721024303;
-        Thu, 02 Jul 2020 13:17:04 -0700 (PDT)
-Received: from localhost.localdomain ([83.68.95.66])
-        by smtp.gmail.com with ESMTPSA id y2sm3320372lji.8.2020.07.02.13.17.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Jul 2020 13:17:03 -0700 (PDT)
-From:   Tomasz Nowicki <tn@semihalf.com>
-To:     will@kernel.org, robin.murphy@arm.com, joro@8bytes.org,
-        gregory.clement@bootlin.com, robh+dt@kernel.org, hannah@marvell.com
-Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        devicetree@vger.kernel.org, catalin.marinas@arm.com,
-        nadavh@marvell.com, linux-arm-kernel@lists.infradead.org,
-        mw@semihalf.com, Tomasz Nowicki <tn@semihalf.com>
-Subject: [PATCH v3 4/4] arm64: dts: marvell: add SMMU support
-Date:   Thu,  2 Jul 2020 22:16:33 +0200
-Message-Id: <20200702201633.22693-5-tn@semihalf.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200702201633.22693-1-tn@semihalf.com>
-References: <20200702201633.22693-1-tn@semihalf.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NKAvQ3x/jWOWfzX8imS+F5oUhVjtLTNjNSuHV7D48w8=;
+        b=VGcSZ2i8zHUerd/Ss3Hg6Cnik8MYg05axZjTpkpSIuDqvEmyssn1Z8RBYbNlSmFbxj
+         KCYxChtUBM3clcam67OK/aLpHSbK/iH7q5PQPgdLoh+Oi0IMDYC9zVJQ7Ca6NWfHvrKh
+         YL8qw9WBnsESsLs8sgIsK9FpEAI/aoRIXVogwGfDc+WEywUV4gwwgqFmYIJkrr7nTP3A
+         WtL+B5734Wox8u4q73Eu36RWOcoeKnnDx0g7VTjH8RFppKGuSa3N7rdEA7qk+3Tl1iYo
+         8dxnmLBzYN/DZp4vBnix8jllP7ddWlW9Mx3FxxQWCdMOoMM4K3oiQKdjfU38CI3B+AMJ
+         2JzA==
+X-Gm-Message-State: AOAM530fzmjzOKCJvadtZ2lUKft2zxu4J+IM3Vh1v78CTkLK0UfmHsGK
+        1ST7czVOoXtM0gT1qN6tybG7qE0C3jE=
+X-Google-Smtp-Source: ABdhPJxdubANq/ZNLN8JOT4AWBsoENK9NUt6TeUhJYzfAQhfMGfUq6OaV2LSm/LENxo/qg6r6WqSPw==
+X-Received: by 2002:a2e:b541:: with SMTP id a1mr16052197ljn.4.1593721089049;
+        Thu, 02 Jul 2020 13:18:09 -0700 (PDT)
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
+        by smtp.gmail.com with ESMTPSA id m6sm3295122ljc.134.2020.07.02.13.18.08
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Jul 2020 13:18:08 -0700 (PDT)
+Received: by mail-lf1-f49.google.com with SMTP id u25so17008451lfm.1
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 13:18:08 -0700 (PDT)
+X-Received: by 2002:a19:8a07:: with SMTP id m7mr19422159lfd.31.1593721087764;
+ Thu, 02 Jul 2020 13:18:07 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200702165120.1469875-1-agruenba@redhat.com> <20200702165120.1469875-3-agruenba@redhat.com>
+ <CAHk-=wgpsuC6ejzr3pn5ej5Yn5z4xthNUUOvmA7KXHHGynL15Q@mail.gmail.com> <CAHc6FU5_JnK=LHtLL9or6E2+XMwNgmftdM_V71hDqk8apawC4A@mail.gmail.com>
+In-Reply-To: <CAHc6FU5_JnK=LHtLL9or6E2+XMwNgmftdM_V71hDqk8apawC4A@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 2 Jul 2020 13:17:51 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiDA9wm09e1aOSwqq9=e5iTEP5ncheux=C=p62h7dWvbA@mail.gmail.com>
+Message-ID: <CAHk-=wiDA9wm09e1aOSwqq9=e5iTEP5ncheux=C=p62h7dWvbA@mail.gmail.com>
+Subject: Re: [RFC 2/4] fs: Add IOCB_NOIO flag for generic_file_read_iter
+To:     Andreas Gruenbacher <agruenba@redhat.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Dave Chinner <david@fromorbit.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marcin Wojtas <mw@semihalf.com>
+On Thu, Jul 2, 2020 at 12:58 PM Andreas Gruenbacher <agruenba@redhat.com> wrote:
+>
+> > Of course, if you want to avoid both new reads to be submitted _and_
+> > avoid waiting for existing pending reads, you should just set both
+> > flags, and you get the semantics you want. So for your case, this may
+> > not make any difference.
+>
+> Indeed, in the gfs2 case, waiting for existing pending reads should be
+> fine. I'll send an update after some testing.
 
-Add IOMMU node for Marvell AP806 based SoCs together with platform
-and PCI device Stream ID mapping.
+Do note that "wait for pending reads" very much does imply "wait for
+those reads to _complete_".
 
-Signed-off-by: Marcin Wojtas <mw@semihalf.com>
-Signed-off-by: Tomasz Nowicki <tn@semihalf.com>
----
- arch/arm64/boot/dts/marvell/armada-8040.dtsi  | 36 +++++++++++++++++++
- arch/arm64/boot/dts/marvell/armada-ap80x.dtsi | 17 +++++++++
- 2 files changed, 53 insertions(+)
+And maybe the IO completion handler itself ends up having to finalize
+something and take the lock to do that?
 
-diff --git a/arch/arm64/boot/dts/marvell/armada-8040.dtsi b/arch/arm64/boot/dts/marvell/armada-8040.dtsi
-index 7699b19224c2..25c1df709f72 100644
---- a/arch/arm64/boot/dts/marvell/armada-8040.dtsi
-+++ b/arch/arm64/boot/dts/marvell/armada-8040.dtsi
-@@ -23,3 +23,39 @@
- &cp0_rtc {
- 	status = "disabled";
- };
-+
-+&cp0_usb3_0 {
-+	iommus = <&smmu 0x440>;
-+};
-+
-+&cp0_usb3_1 {
-+	iommus = <&smmu 0x441>;
-+};
-+
-+&cp0_sata0 {
-+	iommus = <&smmu 0x444>;
-+};
-+
-+&cp0_sdhci0 {
-+	iommus = <&smmu 0x445>;
-+};
-+
-+&cp1_sata0 {
-+	iommus = <&smmu 0x454>;
-+};
-+
-+&cp1_usb3_0 {
-+	iommus = <&smmu 0x450>;
-+};
-+
-+&cp1_usb3_1 {
-+	iommus = <&smmu 0x451>;
-+};
-+
-+&cp0_pcie0 {
-+	iommu-map =
-+		<0x0   &smmu 0x480 0x20>,
-+		<0x100 &smmu 0x4a0 0x20>,
-+		<0x200 &smmu 0x4c0 0x20>;
-+	iommu-map-mask = <0x031f>;
-+};
-diff --git a/arch/arm64/boot/dts/marvell/armada-ap80x.dtsi b/arch/arm64/boot/dts/marvell/armada-ap80x.dtsi
-index 7f9b9a647717..ded8b8082d79 100644
---- a/arch/arm64/boot/dts/marvell/armada-ap80x.dtsi
-+++ b/arch/arm64/boot/dts/marvell/armada-ap80x.dtsi
-@@ -56,6 +56,23 @@
- 			compatible = "simple-bus";
- 			ranges = <0x0 0x0 0xf0000000 0x1000000>;
- 
-+			smmu: iommu@5000000 {
-+				compatible = "marvell,ap806-smmu-500", "arm,mmu-500";
-+				reg = <0x100000 0x100000>;
-+				dma-coherent;
-+				#iommu-cells = <1>;
-+				#global-interrupts = <1>;
-+				interrupts = <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>,
-+					     <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>,
-+					     <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>,
-+					     <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>,
-+					     <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>,
-+					     <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>,
-+					     <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>,
-+					     <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>,
-+					     <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>;
-+			};
-+
- 			gic: interrupt-controller@210000 {
- 				compatible = "arm,gic-400";
- 				#interrupt-cells = <3>;
--- 
-2.17.1
+So in that case, even just "waiting" will cause a deadlock. Not
+because the waiter itself needs the lock, but because the thing it
+waits for might possibly need it.
 
+But in many simple cases, IO completion shouldn't need any filesystem
+locks. I just don't know the gfs2 code at all, so I'm not even going
+to guess. I just wanted to mention it.
+
+               Linus
