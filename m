@@ -2,157 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 423BF2128FB
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 18:06:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D2B92128DD
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 18:02:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726435AbgGBQG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 12:06:57 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:35464 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726082AbgGBQG5 (ORCPT
+        id S1726257AbgGBQCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 12:02:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725379AbgGBQCp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 12:06:57 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out01.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jr1je-0001Ce-Ig; Thu, 02 Jul 2020 10:06:50 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jr1jd-0001tc-9M; Thu, 02 Jul 2020 10:06:50 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        linux-kernel@vger.kernel.org, David Miller <davem@davemloft.net>,
-        Greg Kroah-Hartman <greg@kroah.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-References: <20200625095725.GA3303921@kroah.com>
-        <778297d2-512a-8361-cf05-42d9379e6977@i-love.sakura.ne.jp>
-        <20200625120725.GA3493334@kroah.com>
-        <20200625.123437.2219826613137938086.davem@davemloft.net>
-        <CAHk-=whuTwGHEPjvtbBvneHHXeqJC=q5S09mbPnqb=Q+MSPMag@mail.gmail.com>
-        <87pn9mgfc2.fsf_-_@x220.int.ebiederm.org>
-        <87y2oac50p.fsf@x220.int.ebiederm.org>
-        <87bll17ili.fsf_-_@x220.int.ebiederm.org>
-        <20200629221231.jjc2czk3ul2roxkw@ast-mbp.dhcp.thefacebook.com>
-        <87eepwzqhd.fsf@x220.int.ebiederm.org>
-        <1f4d8b7e-bcff-f950-7dac-76e3c4a65661@i-love.sakura.ne.jp>
-        <87pn9euks9.fsf@x220.int.ebiederm.org>
-        <757f37f8-5641-91d2-be80-a96ebc74cacb@i-love.sakura.ne.jp>
-Date:   Thu, 02 Jul 2020 11:02:13 -0500
-In-Reply-To: <757f37f8-5641-91d2-be80-a96ebc74cacb@i-love.sakura.ne.jp>
-        (Tetsuo Handa's message of "Thu, 2 Jul 2020 22:40:09 +0900")
-Message-ID: <87h7upucqi.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Thu, 2 Jul 2020 12:02:45 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA3D9C08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 09:02:44 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id b25so29319641ljp.6
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 09:02:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qL79Nq3oCLFzOTMGpWbet7Io9CHFHxAF6y2OIH7P7B4=;
+        b=RqGpjMEFoC3lPt7KB5/BrJPpVJGiDboNINqnwfCYmwDrhIvPjrU8U25m/Sjjsza80o
+         gwFlMK3yYzKmar3WB1+skx2vfiyQIUhmkGMckZnhQOgw7kQFuXw7s26o6FwmY5Ialcq9
+         mRWAxhnwDxCbuZPYuVI8jOPnzFzUVRGvsygQtP+VMypMmGE0tvuJwmlp1vbGuhgq8To0
+         /pmULktjB/VuQnV8+bwdvvgkTOpuiMJ5UN7U7K44+WoZ1bJ1fy9SSpt3I9WYn9K6vMPC
+         RXG5tl9aFn5Dl0iSVKQxdnoVYpGRdYuF1bThn0bYrsmSotKsa4hU4euoPK4GC/XCGbr4
+         dRTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qL79Nq3oCLFzOTMGpWbet7Io9CHFHxAF6y2OIH7P7B4=;
+        b=bkcE9dxSNIxY4YoBZhig1JpMlK17XviKu93b0UCp/cFSODvOgiR5OvV1RROCXKezlX
+         pk8UaRienwZoXUsP7yeppvZcdBiQUr2hkGaPFI+c/rikcSOetROkh/C05nKZMVT0s7aq
+         xiR3UH7rDC7iSQhlNeQWsNqv+Ib3Q3jmr0CaEL1bt9+eBcZBZwaKtsnOaE3ouQ6HdR+t
+         3ri+N94w8sETyUvjcoeotYeKMMYA6KnuKWtaH2WjXLtbcHq/xw0uxW4eo4zl3M+lRfs6
+         mCqzr5l7sa1ksfGtly+MT+INEAuGnK5RiRKbLNDLFZf644/9h6kCD39YugEcoBd62QPw
+         jw2Q==
+X-Gm-Message-State: AOAM530B7f4wLu8QznkBU023iY+Nhohdqmvbmi9+nJINx342u2W4RpS1
+        Gb+OKjTzR5BVHyw+mUJh+n1Q2AFazntnbOpsn1ADLw==
+X-Google-Smtp-Source: ABdhPJzCSv9gW+kUPkCq9nD0isczBmSZEYe52kFZeGBvtWJCQvuyMUHN2aap+/6Q57WOe2Z+S0BUzBeDFfKgGNHmdBI=
+X-Received: by 2002:a2e:8e36:: with SMTP id r22mr16765350ljk.77.1593705763073;
+ Thu, 02 Jul 2020 09:02:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1jr1jd-0001tc-9M;;;mid=<87h7upucqi.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1+Qp30pcQd+q4FhKljd+sR/8XsbQDCsYXo=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa05.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong autolearn=disabled
-        version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa05 0; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: ; sa05 0; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 932 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 11 (1.2%), b_tie_ro: 9 (1.0%), parse: 1.00 (0.1%),
-         extract_message_metadata: 12 (1.3%), get_uri_detail_list: 1.61 (0.2%),
-         tests_pri_-1000: 6 (0.6%), tests_pri_-950: 1.27 (0.1%),
-        tests_pri_-900: 1.01 (0.1%), tests_pri_-90: 135 (14.5%), check_bayes:
-        132 (14.2%), b_tokenize: 9 (0.9%), b_tok_get_all: 11 (1.1%),
-        b_comp_prob: 3.1 (0.3%), b_tok_touch_all: 106 (11.4%), b_finish: 1.12
-        (0.1%), tests_pri_0: 706 (75.7%), check_dkim_signature: 1.02 (0.1%),
-        check_dkim_adsp: 3.0 (0.3%), poll_dns_idle: 0.37 (0.0%), tests_pri_10:
-        3.1 (0.3%), tests_pri_500: 53 (5.7%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH v2 00/15] Make the user mode driver code a better citizen
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+References: <CA+G9fYs=3UG3k-2trqQuB-gJh9D1YygkNQ4qWiHtcaRMSWTmrQ@mail.gmail.com>
+ <20200701082904.GM2369@dhcp22.suse.cz> <20200701184552.GA61684@carbon.DHCP.thefacebook.com>
+In-Reply-To: <20200701184552.GA61684@carbon.DHCP.thefacebook.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Thu, 2 Jul 2020 09:02:31 -0700
+Message-ID: <CALvZod6hZ4R=pZsURg4zKYNO2GTOsCumiQc32cvWUQe01ZB0vw@mail.gmail.com>
+Subject: Re: BUG: Bad page state in process - page dumped because: page still
+ charged to cgroup
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org, Chris Down <chris@chrisdown.name>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp> writes:
-
-> On 2020/07/02 22:08, Eric W. Biederman wrote:
->> Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp> writes:
->> 
->>> On 2020/06/30 21:29, Eric W. Biederman wrote:
->>>> Hmm.  The wake up happens just of tgid->wait_pidfd happens just before
->>>> release_task is called so there is a race.  As it is possible to wake
->>>> up and then go back to sleep before pid_has_task becomes false.
->>>
->>> What is the reason we want to wait until pid_has_task() becomes false?
->>>
->>> - wait_event(tgid->wait_pidfd, !pid_has_task(tgid, PIDTYPE_TGID));
->>> + while (!wait_event_timeout(tgid->wait_pidfd, !pid_has_task(tgid, PIDTYPE_TGID), 1));
->> 
->> So that it is safe to call bpfilter_umh_cleanup.  The previous code
->> performed the wait by having a callback in do_exit.
+On Wed, Jul 1, 2020 at 11:46 AM Roman Gushchin <guro@fb.com> wrote:
+...
+> --
 >
-> But bpfilter_umh_cleanup() does only
+> From c97afecd32c0db5e024be9ba72f43d22974f5bcd Mon Sep 17 00:00:00 2001
+> From: Roman Gushchin <guro@fb.com>
+> Date: Wed, 1 Jul 2020 11:05:32 -0700
+> Subject: [PATCH] mm: kmem: make memcg_kmem_enabled() irreversible
 >
-> 	fput(info->pipe_to_umh);
-> 	fput(info->pipe_from_umh);
-> 	put_pid(info->tgid);
-> 	info->tgid = NULL;
+> Historically the kernel memory accounting was an opt-in feature, which
+> could be enabled for individual cgroups. But now it's not true, and
+> it's on by default both on cgroup v1 and cgroup v2.  And as long as a
+> user has at least one non-root memory cgroup, the kernel memory
+> accounting is on. So in most setups it's either always on (if memory
+> cgroups are in use and kmem accounting is not disabled), either always
+> off (otherwise).
 >
-> which is (I think) already safe regardless of the usermode process because
-> bpfilter_umh_cleanup() merely closes one side of two pipes used between
-> two processes and forgets about the usermode process.
-
-It is not safe.
-
-Baring bugs there is only one use of shtudown_umh that matters.  The one
-in fini_umh.  The use of the file by the mm must be finished before
-umd_unload_blob.  AKA unmount.  Which completely frees the filesystem.
-
->> It might be possible to call bpf_umh_cleanup early but I have not done
->> that analysis.
->> 
->> To perform the test correctly what I have right now is:
+> memcg_kmem_enabled() is used in many places to guard the kernel memory
+> accounting code. If memcg_kmem_enabled() can reverse from returning
+> true to returning false (as now), we can't rely on it on release paths
+> and have to check if it was on before.
 >
-> Waiting for the termination of a SIGKILLed usermode process is not
-> such simple.
+> If we'll make memcg_kmem_enabled() irreversible (always returning true
+> after returning it for the first time), it'll make the general logic
+> more simple and robust. It also will allow to guard some checks which
+> otherwise would stay unguarded.
+>
+> Signed-off-by: Roman Gushchin <guro@fb.com>
 
-The waiting is that simple.
-
-You are correct it might not be a quick process.
-
-A good general principle is to start with something simple and correct
-for what it does, and then to make it more complicated when real world
-cases show up, and it can be understood what the real challenges are.
-
-I am not going to merge known broken code but I am also not going to
-overcomplicate it.
-
-Dealing with very rare and pathological cases that are not handled or
-considered today is out of scope for my patchset.
-
-Eric
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
