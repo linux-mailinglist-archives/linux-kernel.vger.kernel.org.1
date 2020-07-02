@@ -2,206 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CEAB212F15
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 23:55:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D922212F1E
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 00:00:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726116AbgGBVzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 17:55:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725937AbgGBVzk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 17:55:40 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5788C08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 14:55:39 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id f5so18298381ljj.10
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 14:55:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eBWPla4w5ZuOBmVLN7OJnV2oMF3mSL1a7GCrqtrKS3A=;
-        b=Ev//laQVkymL94Qm+NV56VPEufh6b8dOZXynnO02WXI1HnLvH6P1xe7qBSinHA5+Lq
-         5wi159sABHwiNZqyO9GrfOcDGMjBgqJC74DJJVex1qMcndlFOOA6eaQYfVhdHBCJV8yd
-         ixKPGna/B0HbbsQEfF8FO6fSdpsKcaXqAPZc0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eBWPla4w5ZuOBmVLN7OJnV2oMF3mSL1a7GCrqtrKS3A=;
-        b=QLZwoqHhQrgbiKAMWGABFS/hfBJlwH3eb59BMkxr642IR4PiFfubc6Xb7cedXKRyvM
-         KKasRn6/Fwu9NhyfY1N4ESnWBJMTMMWACwPGkut9pj8oUFC3CZvhbtP82yCf6W8+41BZ
-         30kJBsUAphqG8tkQnmg3CKLEp86CQH8yHRrcinuDdzO3d5CPWxpGLfJu2/bOljt7JEAW
-         JatIZ+lt5emK90gAdQFo0eYiandix5V5XlmOfXf6y47CSUO1ojkSf7paQr1Ecg8Gy4LP
-         XiL+zViGTyV3teP0ATFVDIpdsYW9scldi0ty/MTtWGj14tyiZcCDD0n+KBZ3w4DDbnqx
-         Bddg==
-X-Gm-Message-State: AOAM530e1NVn1G93NQWPKwZsVNanJqNBFdshmzC5m4j7ydjfI45GQQ8U
-        9iVbkIt1dfWkR/ZDfpQfUVwWWvM9tcQ=
-X-Google-Smtp-Source: ABdhPJySFqm2LQ9Mx4BxtkQtjeCvMHqsZX5pohPIZkp4OkfYPzdwU28DGCHq9/+j611fkkOARLFRLw==
-X-Received: by 2002:a05:651c:1105:: with SMTP id d5mr5583942ljo.62.1593726937792;
-        Thu, 02 Jul 2020 14:55:37 -0700 (PDT)
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
-        by smtp.gmail.com with ESMTPSA id w19sm2191241ljm.120.2020.07.02.14.55.36
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Jul 2020 14:55:36 -0700 (PDT)
-Received: by mail-lf1-f53.google.com with SMTP id t74so17158362lff.2
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 14:55:36 -0700 (PDT)
-X-Received: by 2002:ac2:5093:: with SMTP id f19mr19902332lfm.10.1593726935733;
- Thu, 02 Jul 2020 14:55:35 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAHk-=wjc-ktbOr7ZHMY8gfAmHxUK+aMdDsQjeh+BvmQwnQfN_g@mail.gmail.com>
- <20200701184131.GI2786714@ZenIV.linux.org.uk> <CAHk-=wj_2v9m+yZioE4vOLGW1mc9SBa5+++LdeJ86aEeB5OXcw@mail.gmail.com>
- <20200701195914.GK2786714@ZenIV.linux.org.uk> <CAHk-=wj-CYhKZR8ZKQgi=VTx=o7n6dtwPXikvgkJ3SdiqRPd8A@mail.gmail.com>
- <87lfk26nx4.fsf@mpe.ellerman.id.au> <CAHk-=wicOPQwuDUzFyDTBgr4UvQJHPdCX7_6BLaK6cve6CqBSg@mail.gmail.com>
- <20200702201755.GO2786714@ZenIV.linux.org.uk> <CAHk-=whW7qYEK-MJMS9gKf-K4cBNGTq0pv-5wo4bqE_QtUfkDw@mail.gmail.com>
- <20200702205902.GP2786714@ZenIV.linux.org.uk>
-In-Reply-To: <20200702205902.GP2786714@ZenIV.linux.org.uk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 2 Jul 2020 14:55:19 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whm66UhcEQgXHr8hPkzyDTOdbGikLbSg0zJ4-b93aSg8w@mail.gmail.com>
-Message-ID: <CAHk-=whm66UhcEQgXHr8hPkzyDTOdbGikLbSg0zJ4-b93aSg8w@mail.gmail.com>
-Subject: Re: objtool clac/stac handling change..
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: multipart/mixed; boundary="000000000000dfc4eb05a97c77fc"
+        id S1726142AbgGBV6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 17:58:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52836 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726003AbgGBV6d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 17:58:33 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9FA8E20780;
+        Thu,  2 Jul 2020 21:58:32 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.93)
+        (envelope-from <rostedt@goodmis.org>)
+        id 1jr7Dz-004Bch-Hf; Thu, 02 Jul 2020 17:58:31 -0400
+Message-ID: <20200702215812.428188663@goodmis.org>
+User-Agent: quilt/0.66
+Date:   Thu, 02 Jul 2020 17:58:12 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [for-next][PATCH 00/18] tracing: Updatse for 5.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000dfc4eb05a97c77fc
-Content-Type: text/plain; charset="UTF-8"
+  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
+for-next
 
-On Thu, Jul 2, 2020 at 1:59 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
->
-> I'm not sure it's the right solution in this case.  Look at the call chain
-> and the stuff done nearby (that __clear_user(), for example)...
->
-> I'm not saying that this code is not awful - it certainly is.  But it's
-> not that simple, unfortunately ;-/
+Head SHA1: 29ce24519c0692ca7d998d7444a9e016a4c44fa7
 
-Well, the minimal thing to do would probably be to just change that
-particular place to use asm_volatile_goto() for the error handling.
 
-Even aside from anything else, it would improve code generation and
-avoid that extra "err" variable.
+Nicholas Piggin (1):
+      ring-buffer: speed up buffer resets by avoiding synchronize_rcu for each CPU
 
-So something like this (ENTIRELY UNTESTED!!).
+Steven Rostedt (VMware) (13):
+      tracing: Only allow trace_array_printk() to be used by instances
+      x86/ftrace: Make non direct case the default in ftrace_regs_caller
+      x86/ftrace: Only have the builtin ftrace_regs_caller call direct hooks
+      x86/ftrace: Do not jump to direct code in created trampolines
+      tracing: Move pipe reference to trace array instead of current_tracer
+      ring-buffer: Have nested events still record running time stamp
+      ring-buffer: Incorporate absolute timestamp into add_timestamp logic
+      ring-buffer: Add rb_time_t 64 bit operations for speeding up 32 bit
+      ring-buffer: Mark the !tail (crossing a page) as unlikely
+      ring-buffer: Consolidate add_timestamp to remove some branches
+      ring-buffer: Move the add_timestamp into its own function
+      ring-buffer: Call trace_clock_local() directly for RETPOLINE kernels
+      ring-buffer: Do not trigger a WARN if clock going backwards is detected
 
-It removes lines of code, and it must improve code generation too.
+Wei Yang (4):
+      tracing: not necessary to undefine DEFINE_EVENT again
+      tracing: not necessary re-define DEFINE_EVENT_PRINT
+      tracing: define DEFINE_EVENT_PRINT not related to DEFINE_EVENT
+      tracing: not necessary to define DEFINE_EVENT_PRINT to be empty again
 
-And while XSTATE_OP() is still disgusting, it's
-
- (a) slightly less disgusting than it used to be
-
- (b) now easily fixable if we do the "exceptions clear AC" thing.
-
-so it's an improvement all around.
-
-If it works, that is. As mentioned: IT HAS NO TESTING.
-
-                   Linus
-
---000000000000dfc4eb05a97c77fc
-Content-Type: application/octet-stream; name=patch
-Content-Disposition: attachment; filename=patch
-Content-Transfer-Encoding: base64
-Content-ID: <f_kc5buvf30>
-X-Attachment-Id: f_kc5buvf30
-
-IGFyY2gveDg2L2luY2x1ZGUvYXNtL2ZwdS9pbnRlcm5hbC5oIHwgNTUgKysrKysrKysrKysrKysr
-KystLS0tLS0tLS0tLS0tLS0tLS0tLQogYXJjaC94ODYva2VybmVsL2ZwdS94c3RhdGUuYyAgICAg
-ICAgfCAxMSArKysrLS0tLQogMiBmaWxlcyBjaGFuZ2VkLCAzMSBpbnNlcnRpb25zKCspLCAzNSBk
-ZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9hcmNoL3g4Ni9pbmNsdWRlL2FzbS9mcHUvaW50ZXJu
-YWwuaCBiL2FyY2gveDg2L2luY2x1ZGUvYXNtL2ZwdS9pbnRlcm5hbC5oCmluZGV4IDQyMTU5ZjQ1
-YmY5Yy4uMzJlYjQyY2FlMDdiIDEwMDY0NAotLS0gYS9hcmNoL3g4Ni9pbmNsdWRlL2FzbS9mcHUv
-aW50ZXJuYWwuaAorKysgYi9hcmNoL3g4Ni9pbmNsdWRlL2FzbS9mcHUvaW50ZXJuYWwuaApAQCAt
-MjExLDE4ICsyMTEsMTIgQEAgc3RhdGljIGlubGluZSB2b2lkIGNvcHlfZnhyZWdzX3RvX2tlcm5l
-bChzdHJ1Y3QgZnB1ICpmcHUpCiAjZGVmaW5lIFhSU1RPUgkJIi5ieXRlICIgUkVYX1BSRUZJWCAi
-MHgwZiwweGFlLDB4MmYiCiAjZGVmaW5lIFhSU1RPUlMJCSIuYnl0ZSAiIFJFWF9QUkVGSVggIjB4
-MGYsMHhjNywweDFmIgogCi0jZGVmaW5lIFhTVEFURV9PUChvcCwgc3QsIGxtYXNrLCBobWFzaywg
-ZXJyKQkJCQlcCi0JYXNtIHZvbGF0aWxlKCIxOiIgb3AgIlxuXHQiCQkJCQlcCi0JCSAgICAgInhv
-ciAlW2Vycl0sICVbZXJyXVxuIgkJCQlcCi0JCSAgICAgIjI6XG5cdCIJCQkJCQlcCi0JCSAgICAg
-Ii5wdXNoc2VjdGlvbiAuZml4dXAsXCJheFwiXG5cdCIJCQlcCi0JCSAgICAgIjM6IG1vdmwgJC0y
-LCVbZXJyXVxuXHQiCQkJCVwKLQkJICAgICAiam1wIDJiXG5cdCIJCQkJCVwKLQkJICAgICAiLnBv
-cHNlY3Rpb25cblx0IgkJCQkJXAotCQkgICAgIF9BU01fRVhUQUJMRSgxYiwgM2IpCQkJCVwKLQkJ
-ICAgICA6IFtlcnJdICI9ciIgKGVycikJCQkJCVwKLQkJICAgICA6ICJEIiAoc3QpLCAibSIgKCpz
-dCksICJhIiAobG1hc2spLCAiZCIgKGhtYXNrKQlcCi0JCSAgICAgOiAibWVtb3J5IikKKyNkZWZp
-bmUgWFNUQVRFX09QKG9wLCBzdCwgbG1hc2ssIGhtYXNrLCBsYWJlbCkJCQkJXAorCWFzbV92b2xh
-dGlsZV9nb3RvKCIxOiIgb3AgIlxuXHQiCQkJCVwKKwkJICBfQVNNX0VYVEFCTEUoMWIsICVsNCkJ
-CQkJCVwKKwkJOiAvKiBubyBvdXRwdXRzICovCQkJCQlcCisJCTogIkQiIChzdCksICJtIiAoKnN0
-KSwgImEiIChsbWFzayksICJkIiAoaG1hc2spCQlcCisJCTogIm1lbW9yeSIgOiBsYWJlbCkKIAog
-LyoKICAqIElmIFhTQVZFUyBpcyBlbmFibGVkLCBpdCByZXBsYWNlcyBYU0FWRU9QVCBiZWNhdXNl
-IGl0IHN1cHBvcnRzIGEgY29tcGFjdApAQCAtMjc3LDcgKzI3MSw2IEBAIHN0YXRpYyBpbmxpbmUg
-dm9pZCBjb3B5X3hyZWdzX3RvX2tlcm5lbF9ib290aW5nKHN0cnVjdCB4cmVnc19zdGF0ZSAqeHN0
-YXRlKQogCXU2NCBtYXNrID0gLTE7CiAJdTMyIGxtYXNrID0gbWFzazsKIAl1MzIgaG1hc2sgPSBt
-YXNrID4+IDMyOwotCWludCBlcnI7CiAKIAlXQVJOX09OKHN5c3RlbV9zdGF0ZSAhPSBTWVNURU1f
-Qk9PVElORyk7CiAKQEAgLTI4NSw5ICsyNzgsMTEgQEAgc3RhdGljIGlubGluZSB2b2lkIGNvcHlf
-eHJlZ3NfdG9fa2VybmVsX2Jvb3Rpbmcoc3RydWN0IHhyZWdzX3N0YXRlICp4c3RhdGUpCiAJCVhT
-VEFURV9PUChYU0FWRVMsIHhzdGF0ZSwgbG1hc2ssIGhtYXNrLCBlcnIpOwogCWVsc2UKIAkJWFNU
-QVRFX09QKFhTQVZFLCB4c3RhdGUsIGxtYXNrLCBobWFzaywgZXJyKTsKKwlyZXR1cm47CiAKK2Vy
-cjoKIAkvKiBXZSBzaG91bGQgbmV2ZXIgZmF1bHQgd2hlbiBjb3B5aW5nIHRvIGEga2VybmVsIGJ1
-ZmZlcjogKi8KLQlXQVJOX09OX0ZQVShlcnIpOworCVdBUk5fT05fRlBVKDEpOwogfQogCiAvKgpA
-QCAtMjk5LDcgKzI5NCw2IEBAIHN0YXRpYyBpbmxpbmUgdm9pZCBjb3B5X2tlcm5lbF90b194cmVn
-c19ib290aW5nKHN0cnVjdCB4cmVnc19zdGF0ZSAqeHN0YXRlKQogCXU2NCBtYXNrID0gLTE7CiAJ
-dTMyIGxtYXNrID0gbWFzazsKIAl1MzIgaG1hc2sgPSBtYXNrID4+IDMyOwotCWludCBlcnI7CiAK
-IAlXQVJOX09OKHN5c3RlbV9zdGF0ZSAhPSBTWVNURU1fQk9PVElORyk7CiAKQEAgLTMwNywxMiAr
-MzAxLDEwIEBAIHN0YXRpYyBpbmxpbmUgdm9pZCBjb3B5X2tlcm5lbF90b194cmVnc19ib290aW5n
-KHN0cnVjdCB4cmVnc19zdGF0ZSAqeHN0YXRlKQogCQlYU1RBVEVfT1AoWFJTVE9SUywgeHN0YXRl
-LCBsbWFzaywgaG1hc2ssIGVycik7CiAJZWxzZQogCQlYU1RBVEVfT1AoWFJTVE9SLCB4c3RhdGUs
-IGxtYXNrLCBobWFzaywgZXJyKTsKKwlyZXR1cm47CiAKLQkvKgotCSAqIFdlIHNob3VsZCBuZXZl
-ciBmYXVsdCB3aGVuIGNvcHlpbmcgZnJvbSBhIGtlcm5lbCBidWZmZXIsIGFuZCB0aGUgRlBVCi0J
-ICogc3RhdGUgd2Ugc2V0IGF0IGJvb3QgdGltZSBzaG91bGQgYmUgdmFsaWQuCi0JICovCi0JV0FS
-Tl9PTl9GUFUoZXJyKTsKK2VycjoKKwlXQVJOX09OX0ZQVSgxKTsKIH0KIAogLyoKQEAgLTM1Niwy
-MSArMzQ4LDIxIEBAIHN0YXRpYyBpbmxpbmUgdm9pZCBjb3B5X2tlcm5lbF90b194cmVncyhzdHJ1
-Y3QgeHJlZ3Nfc3RhdGUgKnhzdGF0ZSwgdTY0IG1hc2spCiAgKi8KIHN0YXRpYyBpbmxpbmUgaW50
-IGNvcHlfeHJlZ3NfdG9fdXNlcihzdHJ1Y3QgeHJlZ3Nfc3RhdGUgX191c2VyICpidWYpCiB7Ci0J
-aW50IGVycjsKLQogCS8qCiAJICogQ2xlYXIgdGhlIHhzYXZlIGhlYWRlciBmaXJzdCwgc28gdGhh
-dCByZXNlcnZlZCBmaWVsZHMgYXJlCiAJICogaW5pdGlhbGl6ZWQgdG8gemVyby4KIAkgKi8KLQll
-cnIgPSBfX2NsZWFyX3VzZXIoJmJ1Zi0+aGVhZGVyLCBzaXplb2YoYnVmLT5oZWFkZXIpKTsKLQlp
-ZiAodW5saWtlbHkoZXJyKSkKKwlpZiAodW5saWtlbHkoX19jbGVhcl91c2VyKCZidWYtPmhlYWRl
-ciwgc2l6ZW9mKGJ1Zi0+aGVhZGVyKSkpKQogCQlyZXR1cm4gLUVGQVVMVDsKIAogCXN0YWMoKTsK
-IAlYU1RBVEVfT1AoWFNBVkUsIGJ1ZiwgLTEsIC0xLCBlcnIpOwogCWNsYWMoKTsKIAotCXJldHVy
-biBlcnI7CisJcmV0dXJuIDA7CitlcnI6CisJY2xhYygpOworCXJldHVybiAtRUZBVUxUOwogfQog
-CiAvKgpAQCAtMzgxLDEzICszNzMsMTQgQEAgc3RhdGljIGlubGluZSBpbnQgY29weV91c2VyX3Rv
-X3hyZWdzKHN0cnVjdCB4cmVnc19zdGF0ZSBfX3VzZXIgKmJ1ZiwgdTY0IG1hc2spCiAJc3RydWN0
-IHhyZWdzX3N0YXRlICp4c3RhdGUgPSAoKF9fZm9yY2Ugc3RydWN0IHhyZWdzX3N0YXRlICopYnVm
-KTsKIAl1MzIgbG1hc2sgPSBtYXNrOwogCXUzMiBobWFzayA9IG1hc2sgPj4gMzI7Ci0JaW50IGVy
-cjsKIAogCXN0YWMoKTsKIAlYU1RBVEVfT1AoWFJTVE9SLCB4c3RhdGUsIGxtYXNrLCBobWFzaywg
-ZXJyKTsKIAljbGFjKCk7Ci0KLQlyZXR1cm4gZXJyOworCXJldHVybiAwOworZXJyOgorCWNsYWMo
-KTsKKwlyZXR1cm4gLUVGQVVMVDsKIH0KIAogLyoKQEAgLTM5OCwxNCArMzkxLDE2IEBAIHN0YXRp
-YyBpbmxpbmUgaW50IGNvcHlfa2VybmVsX3RvX3hyZWdzX2VycihzdHJ1Y3QgeHJlZ3Nfc3RhdGUg
-KnhzdGF0ZSwgdTY0IG1hc2spCiB7CiAJdTMyIGxtYXNrID0gbWFzazsKIAl1MzIgaG1hc2sgPSBt
-YXNrID4+IDMyOwotCWludCBlcnI7CiAKIAlpZiAoc3RhdGljX2NwdV9oYXMoWDg2X0ZFQVRVUkVf
-WFNBVkVTKSkKIAkJWFNUQVRFX09QKFhSU1RPUlMsIHhzdGF0ZSwgbG1hc2ssIGhtYXNrLCBlcnIp
-OwogCWVsc2UKIAkJWFNUQVRFX09QKFhSU1RPUiwgeHN0YXRlLCBsbWFzaywgaG1hc2ssIGVycik7
-CiAKLQlyZXR1cm4gZXJyOworCXJldHVybiAwOworZXJyOgorCS8qIFdoYXQgd291bGQgdGhlIHJp
-Z2h0IGVycm9yIGJlPyAqLworCXJldHVybiAtRUlOVkFMOwogfQogCiAvKgpkaWZmIC0tZ2l0IGEv
-YXJjaC94ODYva2VybmVsL2ZwdS94c3RhdGUuYyBiL2FyY2gveDg2L2tlcm5lbC9mcHUveHN0YXRl
-LmMKaW5kZXggYmRhMmU1ZWFjYTBlLi4xODdlZDA2MzBiNGIgMTAwNjQ0Ci0tLSBhL2FyY2gveDg2
-L2tlcm5lbC9mcHUveHN0YXRlLmMKKysrIGIvYXJjaC94ODYva2VybmVsL2ZwdS94c3RhdGUuYwpA
-QCAtMTMxMSw3ICsxMzExLDcgQEAgdm9pZCBjb3B5X3N1cGVydmlzb3JfdG9fa2VybmVsKHN0cnVj
-dCB4cmVnc19zdGF0ZSAqeHN0YXRlKQogCXN0cnVjdCB4c3RhdGVfaGVhZGVyICpoZWFkZXI7CiAJ
-dTY0IG1heF9iaXQsIG1pbl9iaXQ7CiAJdTMyIGxtYXNrLCBobWFzazsKLQlpbnQgZXJyLCBpOwor
-CWludCBpOwogCiAJaWYgKFdBUk5fT04oIWJvb3RfY3B1X2hhcyhYODZfRkVBVFVSRV9YU0FWRVMp
-KSkKIAkJcmV0dXJuOwpAQCAtMTMyNiwxMCArMTMyNiw2IEBAIHZvaWQgY29weV9zdXBlcnZpc29y
-X3RvX2tlcm5lbChzdHJ1Y3QgeHJlZ3Nfc3RhdGUgKnhzdGF0ZSkKIAlobWFzayA9IHhmZWF0dXJl
-c19tYXNrX3N1cGVydmlzb3IoKSA+PiAzMjsKIAlYU1RBVEVfT1AoWFNBVkVTLCB4c3RhdGUsIGxt
-YXNrLCBobWFzaywgZXJyKTsKIAotCS8qIFdlIHNob3VsZCBuZXZlciBmYXVsdCB3aGVuIGNvcHlp
-bmcgdG8gYSBrZXJuZWwgYnVmZmVyOiAqLwotCWlmIChXQVJOX09OX0ZQVShlcnIpKQotCQlyZXR1
-cm47Ci0KIAkvKgogCSAqIEF0IHRoaXMgcG9pbnQsIHRoZSBidWZmZXIgaGFzIG9ubHkgc3VwZXJ2
-aXNvciBzdGF0ZXMgYW5kIG11c3QgYmUKIAkgKiBjb252ZXJ0ZWQgYmFjayB0byBub3JtYWwga2Vy
-bmVsIGZvcm1hdC4KQEAgLTEzNTQsNiArMTM1MCwxMSBAQCB2b2lkIGNvcHlfc3VwZXJ2aXNvcl90
-b19rZXJuZWwoc3RydWN0IHhyZWdzX3N0YXRlICp4c3RhdGUpCiAJCQl4YnVmICsgeHN0YXRlX3N1
-cGVydmlzb3Jfb25seV9vZmZzZXRzW2ldLAogCQkJeHN0YXRlX3NpemVzW2ldKTsKIAl9CisJcmV0
-dXJuOworCitlcnI6CisJLyogV2Ugc2hvdWxkIG5ldmVyIGZhdWx0IHdoZW4gY29weWluZyB0byBh
-IGtlcm5lbCBidWZmZXI6ICovCisJV0FSTl9PTl9GUFUoMSk7CiB9CiAKICNpZmRlZiBDT05GSUdf
-UFJPQ19QSURfQVJDSF9TVEFUVVMK
---000000000000dfc4eb05a97c77fc--
+----
+ arch/x86/kernel/ftrace.c     |  14 +-
+ arch/x86/kernel/ftrace_64.S  |  29 +-
+ include/linux/ring_buffer.h  |   1 +
+ include/trace/trace_events.h |  19 +-
+ kernel/trace/ftrace.c        |   8 +
+ kernel/trace/ring_buffer.c   | 694 ++++++++++++++++++++++++++++++++++---------
+ kernel/trace/trace.c         |  26 +-
+ kernel/trace/trace.h         |   2 +-
+ 8 files changed, 600 insertions(+), 193 deletions(-)
