@@ -2,135 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6277211EBC
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 10:27:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F36A211EC8
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 10:28:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728159AbgGBI14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 04:27:56 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48690 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726475AbgGBI1z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 04:27:55 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D6975ADC5;
-        Thu,  2 Jul 2020 08:27:53 +0000 (UTC)
-Subject: Re: [PATCH v3] drm/hisilicon: Use drmm_kzalloc() instead of
- devm_kzalloc()
-To:     Tian Tao <tiantao6@hisilicon.com>, puck.chen@hisilicon.com,
-        airlied@linux.ie, daniel@ffwll.ch, kraxel@redhat.com,
-        alexander.deucher@amd.com, tglx@linutronix.de,
-        dri-devel@lists.freedesktop.org, xinliang.liu@linaro.org,
-        linux-kernel@vger.kernel.org
-Cc:     linuxarm@huawei.com
-References: <1593676183-28525-1-git-send-email-tiantao6@hisilicon.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Message-ID: <55c1bdad-774c-816e-e4a9-2618c753af31@suse.de>
-Date:   Thu, 2 Jul 2020 10:27:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1728025AbgGBI2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 04:28:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726042AbgGBI2v (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 04:28:51 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49BFDC08C5C1;
+        Thu,  2 Jul 2020 01:28:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=1j2DrlcbUugnfL/BNKwgbBGwdXe1p5YiDNDgH1lziiA=; b=Gw3bFkBiw7lSr8XB4zKQSY2gM3
+        tJk/ji3zgpfflj/zaSGFhyr7KMwLj+Oe+0Sm+KHfgrWViOHfPxx7b/QpCRZnd7QyWyLqPOjt5u4M+
+        VT2c7Tj/WbWZ13AD1/9R0UzoNtp4d+F1m8batuj5Xl7qdQTZYJNIcpd7a6z0ADN51FPDOud+x2inb
+        vaWHcRWO38JcCO7v+Lm2XkFcXbg2GQMLv/ahw7WmAbTz34o8N8P/o1BFnXY9TMJge7Bqawg2gEdUW
+        veyOYqGH2bZGaUNyWTxK59SurZc9DII4ezuMOTRrJmJ1ycOYDis9O0xqtG1x7WpxmweqV5UnoKy94
+        H7QDMhfg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jquaH-0000Gw-TV; Thu, 02 Jul 2020 08:28:42 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1CDA230015A;
+        Thu,  2 Jul 2020 10:28:40 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 0AA3620CC68A2; Thu,  2 Jul 2020 10:28:40 +0200 (CEST)
+Date:   Thu, 2 Jul 2020 10:28:40 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Nicholas Piggin <npiggin@gmail.com>
+Cc:     Will Deacon <will@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Waiman Long <longman@redhat.com>,
+        Anton Blanchard <anton@ozlabs.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, kvm-ppc@vger.kernel.org,
+        linux-arch@vger.kernel.org
+Subject: Re: [PATCH 2/8] powerpc/pseries: use smp_rmb() in H_CONFER spin yield
+Message-ID: <20200702082840.GC4781@hirez.programming.kicks-ass.net>
+References: <20200702074839.1057733-1-npiggin@gmail.com>
+ <20200702074839.1057733-3-npiggin@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1593676183-28525-1-git-send-email-tiantao6@hisilicon.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="Lgq7URjLO88AKaZN3vvii7yT64qitiixJ"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200702074839.1057733-3-npiggin@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Lgq7URjLO88AKaZN3vvii7yT64qitiixJ
-Content-Type: multipart/mixed; boundary="UO1V1ZdZPJnmIhbjKwFrgdm7sAetUj1rd";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Tian Tao <tiantao6@hisilicon.com>, puck.chen@hisilicon.com,
- airlied@linux.ie, daniel@ffwll.ch, kraxel@redhat.com,
- alexander.deucher@amd.com, tglx@linutronix.de,
- dri-devel@lists.freedesktop.org, xinliang.liu@linaro.org,
- linux-kernel@vger.kernel.org
-Cc: linuxarm@huawei.com
-Message-ID: <55c1bdad-774c-816e-e4a9-2618c753af31@suse.de>
-Subject: Re: [PATCH v3] drm/hisilicon: Use drmm_kzalloc() instead of
- devm_kzalloc()
-References: <1593676183-28525-1-git-send-email-tiantao6@hisilicon.com>
-In-Reply-To: <1593676183-28525-1-git-send-email-tiantao6@hisilicon.com>
+On Thu, Jul 02, 2020 at 05:48:33PM +1000, Nicholas Piggin wrote:
+> There is no need for rmb(), this allows faster lwsync here.
 
---UO1V1ZdZPJnmIhbjKwFrgdm7sAetUj1rd
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Since you determined this; I'm thinking you actually understand the
+ordering here. How about recording this understanding in a comment?
 
-Thanks! Applied to drm-misc-next
+Also, should the lock->slock load not use READ_ONCE() ?
 
-Best regards
-Thomas
-
-Am 02.07.20 um 09:49 schrieb Tian Tao:
-> using the new API drmm_kzalloc() instead of devm_kzalloc()
->=20
-> v3:
-> still fixed include statements sorted alphabetically.
->=20
-> v2:
-> keep the DRM include statements sorted alphabetically.
->=20
-> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
-> Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
-> ---
->  drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c b/drivers/=
-gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-> index a6fd0c2..249c298 100644
-> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-> @@ -20,6 +20,7 @@
->  #include <drm/drm_fb_helper.h>
->  #include <drm/drm_gem_vram_helper.h>
->  #include <drm/drm_irq.h>
-> +#include <drm/drm_managed.h>
->  #include <drm/drm_print.h>
->  #include <drm/drm_probe_helper.h>
->  #include <drm/drm_vblank.h>
-> @@ -267,7 +268,7 @@ static int hibmc_load(struct drm_device *dev)
->  	struct hibmc_drm_private *priv;
->  	int ret;
-> =20
-> -	priv =3D devm_kzalloc(dev->dev, sizeof(*priv), GFP_KERNEL);
-> +	priv =3D drmm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
->  	if (!priv) {
->  		DRM_ERROR("no memory to allocate for hibmc_drm_private\n");
->  		return -ENOMEM;
->=20
-
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
-
-
---UO1V1ZdZPJnmIhbjKwFrgdm7sAetUj1rd--
-
---Lgq7URjLO88AKaZN3vvii7yT64qitiixJ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQFIBAEBCAAyFiEEchf7rIzpz2NEoWjlaA3BHVMLeiMFAl79moMUHHR6aW1tZXJt
-YW5uQHN1c2UuZGUACgkQaA3BHVMLeiNTCwf/TxN8IsqjACFZOPAKYEzO8uPYKkC2
-QfBJ+4MomJDKjP8NFxVCuCH0GDDAUeiG5+alvSlDNPcqvvHScVW2QA95T7gGwHYU
-1JSUk6iBby8i6g7OItxGCsiplQV2eTGNgrtLCotZoSeZxUFFeRAmvCuv75E2KJxw
-u06O9UN1Awfy2JGuGtryocLBXhP77tH7g0jOLCYSG5DlWnyWpVTAYlbpnECh8veX
-XlkU07Ro6FU+9CGknR7d0l/J2xjPJBoT69UvQklMNUCYi9tZ4tI2ilLAckEkn46G
-5b5DPbPQXuv8FcKz8BpXUm68nKAxX3gH0JgvE1EQ/mYQnuzgOxiyGOHABw==
-=QT2O
------END PGP SIGNATURE-----
-
---Lgq7URjLO88AKaZN3vvii7yT64qitiixJ--
