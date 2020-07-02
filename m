@@ -2,92 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F2DB212DDA
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 22:29:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3194212DDE
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 22:30:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726237AbgGBU2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 16:28:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46604 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725915AbgGBU2r (ORCPT
+        id S1726272AbgGBU3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 16:29:46 -0400
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:42177 "EHLO
+        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725937AbgGBU3q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 16:28:47 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D518CC08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 13:28:46 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: tonyk)
-        with ESMTPSA id 40B322A6103
-From:   =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>
-To:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        peterz@infradead.org
-Cc:     mingo@redhat.com, dvhart@infradead.org, kernel@collabora.com,
-        krisman@collabora.com,
-        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>
-Subject: [RESEND PATCH 4/4] futex: Consistently use fshared as boolean
-Date:   Thu,  2 Jul 2020 17:28:43 -0300
-Message-Id: <20200702202843.520764-5-andrealmeid@collabora.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200702202843.520764-1-andrealmeid@collabora.com>
-References: <20200702202843.520764-1-andrealmeid@collabora.com>
+        Thu, 2 Jul 2020 16:29:46 -0400
+X-Originating-IP: 90.65.108.121
+Received: from localhost (lfbn-lyo-1-1676-121.w90-65.abo.wanadoo.fr [90.65.108.121])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 8A1391C0003;
+        Thu,  2 Jul 2020 20:29:43 +0000 (UTC)
+Date:   Thu, 2 Jul 2020 22:29:43 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     "Tales L. da Aparecida" <tales.aparecida@gmail.com>,
+        a.zummo@towertech.it, linux-arm-kernel@lists.infradead.org,
+        kernel@pengutronix.de, linux-kernel@vger.kernel.org,
+        linux-imx@nxp.com, shawnguo@kernel.org, festevam@gmail.com,
+        s.hauer@pengutronix.de, linux-rtc@vger.kernel.org
+Cc:     andrealmeid@collabora.com
+Subject: Re: [PATCH] rtc: imxdi: fix trivial typos
+Message-ID: <159372166563.58845.16228028270667988480.b4-ty@bootlin.com>
+References: <20200624012119.54768-1-tales.aparecida@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200624012119.54768-1-tales.aparecida@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since fshared is meant to true/false values, declare it as bool. If the
-code ever reaches the code beneath again label, we are sure that the
-futex is shared, so we can use the true value instead of the variable.
+On Tue, 23 Jun 2020 22:21:19 -0300, Tales L. da Aparecida wrote:
+> Fix typos 'pionter' -> 'pointer' and 'softwere' -> 'software'
 
-Signed-off-by: André Almeida <andrealmeid@collabora.com>
----
- kernel/futex.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+Applied, thanks!
 
-diff --git a/kernel/futex.c b/kernel/futex.c
-index 697835ad5bff..d56c9310d734 100644
---- a/kernel/futex.c
-+++ b/kernel/futex.c
-@@ -458,7 +458,7 @@ static u64 get_inode_sequence_number(struct inode *inode)
- /**
-  * get_futex_key() - Get parameters which are the keys for a futex
-  * @uaddr:	virtual address of the futex
-- * @fshared:	0 for a PROCESS_PRIVATE futex, 1 for PROCESS_SHARED
-+ * @fshared:	false for a PROCESS_PRIVATE futex, true for PROCESS_SHARED
-  * @key:	address where result is stored.
-  * @rw:		mapping needs to be read/write (values: FUTEX_READ,
-  *              FUTEX_WRITE)
-@@ -483,7 +483,8 @@ static u64 get_inode_sequence_number(struct inode *inode)
-  * lock_page() might sleep, the caller should not hold a spinlock.
-  */
- static int
--get_futex_key(u32 __user *uaddr, int fshared, union futex_key *key, enum futex_access rw)
-+get_futex_key(u32 __user *uaddr, bool fshared, union futex_key *key,
-+	      enum futex_access rw)
- {
- 	unsigned long address = (unsigned long)uaddr;
- 	struct mm_struct *mm = current->mm;
-@@ -520,7 +521,7 @@ get_futex_key(u32 __user *uaddr, int fshared, union futex_key *key, enum futex_a
- 
- again:
- 	/* Ignore any VERIFY_READ mapping (futex common case) */
--	if (unlikely(should_fail_futex(fshared)))
-+	if (unlikely(should_fail_futex(true)))
- 		return -EFAULT;
- 
- 	err = get_user_pages_fast(address, 1, FOLL_WRITE, &page);
-@@ -608,7 +609,7 @@ get_futex_key(u32 __user *uaddr, int fshared, union futex_key *key, enum futex_a
- 		 * A RO anonymous page will never change and thus doesn't make
- 		 * sense for futex operations.
- 		 */
--		if (unlikely(should_fail_futex(fshared)) || ro) {
-+		if (unlikely(should_fail_futex(true)) || ro) {
- 			err = -EFAULT;
- 			goto out;
- 		}
+[1/1] rtc: imxdi: fix trivial typos
+      commit: a8220fcf35014eacb4529b986e8d04fc68ea0315
+
 -- 
-2.27.0
-
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
