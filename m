@@ -2,98 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C914A211781
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 02:59:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA114211752
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 02:45:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727775AbgGBA7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 20:59:38 -0400
-Received: from mga18.intel.com ([134.134.136.126]:36580 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726637AbgGBA7i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 20:59:38 -0400
-IronPort-SDR: E39jGFPxKgcQR13ZbuAHIdV5uR3poGiAjRuL0VO9y88aiSPNS2Cy5oXUclwdyfTsgfeWgJ247H
- 0tfwQIiFWA5w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9669"; a="134215309"
-X-IronPort-AV: E=Sophos;i="5.75,302,1589266800"; 
-   d="scan'208";a="134215309"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2020 17:59:37 -0700
-IronPort-SDR: k5ecF3Q6zcI3nWdx6Qxil4zw34HSk4hd+mydaYVi7w6tm8PQg46p6c+8WxquLmwqn9ztPbCacq
- Z4wN3zre0KZw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,302,1589266800"; 
-   d="scan'208";a="304061442"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.139]) ([10.239.159.139])
-  by fmsmga004.fm.intel.com with ESMTP; 01 Jul 2020 17:59:34 -0700
-Cc:     baolu.lu@linux.intel.com, Yi Liu <yi.l.liu@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Eric Auger <eric.auger@redhat.com>
-Subject: Re: [PATCH v3 6/7] iommu/vt-d: Warn on out-of-range invalidation
- address
-To:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        iommu@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        David Woodhouse <dwmw2@infradead.org>
-References: <1593617636-79385-1-git-send-email-jacob.jun.pan@linux.intel.com>
- <1593617636-79385-7-git-send-email-jacob.jun.pan@linux.intel.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <a960a831-e763-6ee6-e012-64f8acb365b6@linux.intel.com>
-Date:   Thu, 2 Jul 2020 08:55:11 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1727970AbgGBApH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 20:45:07 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:21114 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726389AbgGBApH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 20:45:07 -0400
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20200702004504epoutp030d7893fa46d93ef358a00c7dd3e54f74~dyN9EJOV21762217622epoutp03U
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 00:45:04 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20200702004504epoutp030d7893fa46d93ef358a00c7dd3e54f74~dyN9EJOV21762217622epoutp03U
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1593650704;
+        bh=cr1O3j0g2Qo31hxYu1nd+OKIhFic8UjzEN5/LrLf1Rg=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=BW5hWve/DGwbURL4rnA3BbmktMggL9hcf6OpJpX0ekc/FH42UcvsO4zWSdDpowEp9
+         hi6X75NDnOoq2AXT8B9NJWlhTkURU7yhEXB6l+HX9cN5eFRtBz20T5bsnke1XtWCHd
+         YxgtPJQEZesAoDw/gvQt+QuHXcmstGpwkBEeyttE=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
+        20200702004503epcas1p487e96ff72e39c320da2c74cd5f44c81e~dyN8e4WAR1635916359epcas1p4L;
+        Thu,  2 Jul 2020 00:45:03 +0000 (GMT)
+Received: from epsmges1p2.samsung.com (unknown [182.195.40.154]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 49xzrp6tKbzMqYkh; Thu,  2 Jul
+        2020 00:44:58 +0000 (GMT)
+Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
+        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        EB.C8.19033.A0E2DFE5; Thu,  2 Jul 2020 09:44:58 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
+        20200702004458epcas1p4fdfcf011b6e880ad886ad5022a51c6b5~dyN3RyhPq1281412814epcas1p46;
+        Thu,  2 Jul 2020 00:44:58 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200702004458epsmtrp244a74758c68d61794b2991b37abc29b9~dyN3Q1iT62661626616epsmtrp2k;
+        Thu,  2 Jul 2020 00:44:58 +0000 (GMT)
+X-AuditID: b6c32a36-16fff70000004a59-06-5efd2e0adc0c
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        2E.62.08382.A0E2DFE5; Thu,  2 Jul 2020 09:44:58 +0900 (KST)
+Received: from [10.113.221.102] (unknown [10.113.221.102]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200702004457epsmtip27c5c6690082e9279945405425055c242~dyN27uuPo0248402484epsmtip2Q;
+        Thu,  2 Jul 2020 00:44:57 +0000 (GMT)
+Subject: Re: [PATCH v4 10/37] PM / devfreq: tegra20: Silence deferred probe
+ error
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>
+Cc:     =?UTF-8?B?QXJ0dXIgxZp3aWdvxYQ=?= <a.swigon@samsung.com>,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org
+From:   Chanwoo Choi <cw00.choi@samsung.com>
+Organization: Samsung Electronics
+Message-ID: <14271aed-5fb6-14e1-3fe9-ef8d0c5013c4@samsung.com>
+Date:   Thu, 2 Jul 2020 09:56:13 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
+        Thunderbird/59.0
 MIME-Version: 1.0
-In-Reply-To: <1593617636-79385-7-git-send-email-jacob.jun.pan@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20200609131404.17523-11-digetx@gmail.com>
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA02TbUxbZRTH9/S2ty2xeCkwHnDOcl3MwFFaoOxiAGWWpRM/oE00EKVc6V1L
+        KG1ti3HDOOaAAXMbYAax4UVGpttFFBDYAEkVOhE7cIhuOEeQbEsWBmVQIEh5sZfrIt9+55z/
+        ec7zf14EiPguGibINdooi5E04Kgft3swQhblJ93Ikn21EE9MNZQAwr34gEc0Okd5RMvCPUD8
+        vjyPErX9HShRbL/IJUY+meUT4711KOE56wRE+ZIdJcZ+SSX+OnkZJapbLwCipN/JJzZvtXOJ
+        f3obuK8EqOYnSviqHvskX/Xb6Dqi6qDLUdXdW9+jqqkzQxzV2VNuVHWukwYqT8fedGFmXqKe
+        IrWURUIZc0zaXKMuCU9Ta17VKOJl8ih5AnEQlxjJfCoJV76eHnU41+Dzgks+IA0FvlQ6abXi
+        0cmJFlOBjZLoTVZbEk6ZtQZzgllqJfOtBUadNMeU/5JcJotR+ITZefqapla++cunPuw4uQ6K
+        wKqwAggFEIuDffQWtwL4CcTYNQCdS8UoGywCOOf91VcR+IIVAMvUTxoqr6zyWE2/T1Pv5rPB
+        PIDfVQ8CRhWIqWHVSBGHKQRhTgS2lA8BJkCwcQBHSpdQRoVikdDxcGKbn8bC4R+r9wAzToQl
+        w4keKYNcbB+kG3WMIhh7Cw53F2+vL8IC4PDn97kMC7GD8Mz1qm1GsBB4534jh+Xn4NW5OoQZ
+        C7HTQvhwbYbHWlDC881uhOVAODPUyWc5DHrc/SjLhfDKsBNlm8sA7HTc/K85FjoufcZhNodg
+        EfDb3mg2HQ57vPWAHewP3cuf8hgJxESwrFTMSp6H439PclgOhc2ny9FKgNt32LHvsGDfYcH+
+        /7AvAJcGuymzNV9HWeXmmJ2X3QG2n3lk/DVQPfdYOgA4AjAAoADBg0Qu2VqWWKQljx2nLCaN
+        pcBAWQeAwne+VUhYcI7J90+MNo1cERMbG0vEyeMVcjkeInphz80sMaYjbVQeRZkpy5M+jkAY
+        VsRRa7C2RbV4zLSnatKh/TlVeWgz5TD6zZvn0LU3dqXVuVxdqWl9ouQMerHtz0T/Gcsjmk//
+        uEA79tbMqh0es3+hVOPav//r68H2hEy361hpSfTK7refIT9W/FAW8K6iqcKgHFghpyOOntg4
+        HvJic1xzXebRef+Qxx6n9/bw7YQJfXpx60dHTsWk0jemKqcz0KbR0PRlUb9/xXsP4qPf2djQ
+        SW5o/Vyh2RcXa81Bms1pXeedjJSJ2Z9Wp5Nrsr319L7C9iOlDYFL3M2xwdcu99Ve0K8HeVu2
+        HmWEv9wGU94353SfuBqKHUAOrbRXI7s4q13K4vADEaEziZeehetb3ugunGvVk/JIxGIl/wX8
+        QUYkbwQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrBIsWRmVeSWpSXmKPExsWy7bCSvC6X3t84gxOfmC3uz2tltHj36Smr
+        xfwj51gtVn98zGhx5et7NovpezexWbTMWsRicbbpDbvF5V1z2Cw+9x5htOj8MovN4uIpV4vb
+        jSvYLCatncpo0br3CLvFv2sbWSx+7prH4iDo8f5GK7vHzll32T0unfvD7LFpVSebx51re9g8
+        7ncfZ/LobX7H5tG3ZRWjx+dNcgGcUVw2Kak5mWWpRfp2CVwZ0xauZS9YxlOxqfEPYwPjD84u
+        Rk4OCQETiQkrf7B2MXJxCAnsZpR4eukuI0RCUmLaxaPMXYwcQLawxOHDxRA1bxkl7uzfDVYj
+        LBAsMfFsAxNIQkTgGLPEptOnwRxmgcuMEjs6v7JBtGxjlJh+ahkbSAubgJbE/hc3wGx+AUWJ
+        qz8eM4Ks4BWwk7ixUw/EZBFQkVg1Px2kQlQgTGLnksdMIDavgKDEyZlPWEBsTgFzie6jE8Fs
+        ZgF1iT/zLjFD2OISt57MZ4Kw5SW2v53DPIFReBaS9llIWmYhaZmFpGUBI8sqRsnUguLc9Nxi
+        wwLDvNRyveLE3OLSvHS95PzcTYzgyNbS3MG4fdUHvUOMTByMhxglOJiVRHhPG/yKE+JNSays
+        Si3Kjy8qzUktPsQozcGiJM57o3BhnJBAemJJanZqakFqEUyWiYNTqoFp+cSdUo++b9nbpR7J
+        8GTClhVp4jMu2T2dbmb32S2v+3+k9LHPzt6lLMVFPq/qPDyPvP4UPVNCZcVNeUm9Z/JH15fO
+        MsnJ0n78qfpisHD7zn0Xrgitdp5Q/f27d/wi81huBddtrBGJC2K0epkO5DZP81LIO8qs8Gum
+        M1NDySNe90iul6yXTnybu4LnbNKjydv109xCaxdc756SGzxPTPDJh6iT2/O4TudlZO6OutCd
+        xn/R6uzEI2E3JaU2FL32ifkdv1DuQNhNT80tM+Rac9mlYiRXXta4IFPxZ2n0kxUdjOlyM2dW
+        Xeq/rJA9Y76yz/e536XZX2jNUufS31pR++D8GaO485qXjv1JnsMokf5HiaU4I9FQi7moOBEA
+        1HYv0lsDAAA=
+X-CMS-MailID: 20200702004458epcas1p4fdfcf011b6e880ad886ad5022a51c6b5
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200609131843epcas1p352d1dfcbca81988d3363036d762dd47f
+References: <20200609131404.17523-1-digetx@gmail.com>
+        <CGME20200609131843epcas1p352d1dfcbca81988d3363036d762dd47f@epcas1p3.samsung.com>
+        <20200609131404.17523-11-digetx@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/1/20 11:33 PM, Jacob Pan wrote:
-> For guest requested IOTLB invalidation, address and mask are provided as
-> part of the invalidation data. VT-d HW silently ignores any address bits
-> below the mask. SW shall also allow such case but give warning if
-> address does not align with the mask. This patch relax the fault
-> handling from error to warning and proceed with invalidation request
-> with the given mask.
+Hi Dmitry,
+
+On 6/9/20 10:13 PM, Dmitry Osipenko wrote:
+> Tegra EMC driver was turned into a regular kernel driver, it also could
+> be compiled as a loadable kernel module now. Hence EMC clock isn't
+
+Looks good to me. But, you better to add the commit information
+about Tegra EMC driver with commit-id ("patch title") format
+into patch descritpion.
+
+> guaranteed to be available and clk_get("emc") may return -EPROBE_DEFER and
+> there is no good reason to spam KMSG with a error about missing EMC clock
+> in this case, so let's silence the deferred probe error.
 > 
-> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
-
-Fixes: 6ee1b77ba3ac0 ("iommu/vt-d: Add svm/sva invalidate function")
-Acked-by: Lu Baolu <baolu.lu@linux.intel.com>
-
-Best regards,
-baolu
-
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 > ---
->   drivers/iommu/intel/iommu.c | 7 +++----
->   1 file changed, 3 insertions(+), 4 deletions(-)
+>  drivers/devfreq/tegra20-devfreq.c | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
 > 
-> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-> index 6a0c62c7395c..2e1b53ade784 100644
-> --- a/drivers/iommu/intel/iommu.c
-> +++ b/drivers/iommu/intel/iommu.c
-> @@ -5439,13 +5439,12 @@ intel_iommu_sva_invalidate(struct iommu_domain *domain, struct device *dev,
->   
->   		switch (BIT(cache_type)) {
->   		case IOMMU_CACHE_INV_TYPE_IOTLB:
-> +			/* HW will ignore LSB bits based on address mask */
->   			if (inv_info->granularity == IOMMU_INV_GRANU_ADDR &&
->   			    size &&
->   			    (inv_info->addr_info.addr & ((BIT(VTD_PAGE_SHIFT + size)) - 1))) {
-> -				pr_err_ratelimited("Address out of range, 0x%llx, size order %llu\n",
-> -						   inv_info->addr_info.addr, size);
-> -				ret = -ERANGE;
-> -				goto out_unlock;
-> +				pr_err_ratelimited("User address not aligned, 0x%llx, size order %llu\n",
-> +					  inv_info->addr_info.addr, size);
->   			}
->   
->   			/*
+> diff --git a/drivers/devfreq/tegra20-devfreq.c b/drivers/devfreq/tegra20-devfreq.c
+> index ff82bac9ee4e..6469dc69c5e0 100644
+> --- a/drivers/devfreq/tegra20-devfreq.c
+> +++ b/drivers/devfreq/tegra20-devfreq.c
+> @@ -141,9 +141,11 @@ static int tegra_devfreq_probe(struct platform_device *pdev)
+>  
+>  	/* EMC is a system-critical clock that is always enabled */
+>  	tegra->emc_clock = devm_clk_get(&pdev->dev, "emc");
+> -	if (IS_ERR(tegra->emc_clock)) {
+> -		err = PTR_ERR(tegra->emc_clock);
+> -		dev_err(&pdev->dev, "failed to get emc clock: %d\n", err);
+> +	err = PTR_ERR_OR_ZERO(tegra->emc_clock);
+> +	if (err) {
+> +		if (err != -EPROBE_DEFER)
+> +			dev_err(&pdev->dev, "failed to get emc clock: %d\n",
+> +				err);
+>  		return err;
+>  	}
+>  
 > 
+
+
+-- 
+Best Regards,
+Chanwoo Choi
+Samsung Electronics
