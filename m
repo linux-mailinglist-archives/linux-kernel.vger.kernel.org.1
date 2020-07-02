@@ -2,221 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 166A4211AD9
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 06:14:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31AFE211AD1
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 06:07:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726345AbgGBEOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 00:14:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37050 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725857AbgGBEOZ (ORCPT
+        id S1726262AbgGBEHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 00:07:12 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:19043 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725857AbgGBEHL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 00:14:25 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D43CC08C5C1
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 21:14:25 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id k71so8360649pje.0
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 21:14:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9+qX1WR+/gY97AaJQlkMfUlyzd/SfBNCNoFC77bQsTs=;
-        b=lbeCyT/DAkeQAHhQ5m+WLWcWjrSEnlmLRE83XTDyxwUGaKQJLoPzJvkpW7XDC60AOu
-         3c1vrs4JK+eHFPnRvaMdq8HllHWtbOxT1w42NIc/JBGf+Rtp4f+IdjiQsZHJQd6TAZZV
-         5x3X0Tf1hTlZ02jeKfK+ZV9U6395ts6u9rZiSm5kyASWzg+gBNJi9UdcLo8YnqkowlhV
-         mm4RTl5ijWvUWTx+fnbfLBUamlUFrJy2ouCXMBIxifOeVAR4y03qZGHiAiU6mSsbWD+z
-         bbFeu7Jg9eGC9xqmI9JsmhfT0j9U/DHD7o4CKK2EP4PMTrUOWZLYDMFtOF3vJG1yAUUR
-         hlxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9+qX1WR+/gY97AaJQlkMfUlyzd/SfBNCNoFC77bQsTs=;
-        b=bss4SuGAmPGVlIrEFJYzHHQkfziEhCRslQkO7NdOPZuuO2NbIDkygHe05ROZ0Hqg6G
-         x2tfp3yW3stBDhGfyreujPMjOr7xkmJtpvUce/hqe29VY6DyATyaS2ScmHxo+XSyaJ4r
-         uw6JDojpoHC7UrBmuVBmFs4FpXWiZRQcjYs43MCxdvkNC54QELmZJ6q4oyOOU3JHTDF/
-         //InkjBVTtTsGLbjTUU8KlAtaexSxkSyi3g+HEj3CzmO7prFRW877zB0CEpl8fr9oTGd
-         2xVMW0kiEELu0i3P5QTaR7ruRf4g3aBHNjyiXJdS5rq4HHnOtkmbfA5VF6TdVPpWolAV
-         r2Mw==
-X-Gm-Message-State: AOAM530TX84c1Fukq97P1X3XQwayfUIkEpTMaF+UDwomF7LEeTCKA3o8
-        NalPV4WeSsNDOQ3818O1G88oVlCS
-X-Google-Smtp-Source: ABdhPJx6AOnqfO2ng21YQ93yxGxgEIlpQuRdxJr8ZZAUKpzhtmUNz8VBWieLaSp82cA4IpT2r1qxig==
-X-Received: by 2002:a17:90a:fd03:: with SMTP id cv3mr30490284pjb.111.1593663263997;
-        Wed, 01 Jul 2020 21:14:23 -0700 (PDT)
-Received: from daehojeong1.seo.corp.google.com ([2401:fa00:d:1:a6ae:11ff:fe18:6ce2])
-        by smtp.gmail.com with ESMTPSA id m140sm7569714pfd.195.2020.07.01.21.14.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Jul 2020 21:14:23 -0700 (PDT)
-From:   Daeho Jeong <daeho43@gmail.com>
-To:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
-Cc:     Daeho Jeong <daehojeong@google.com>
-Subject: [PATCH v2] f2fs: add GC_URGENT_LOW mode in gc_urgent
-Date:   Thu,  2 Jul 2020 13:14:14 +0900
-Message-Id: <20200702041414.3017119-1-daeho43@gmail.com>
-X-Mailer: git-send-email 2.27.0.383.g050319c2ae-goog
+        Thu, 2 Jul 2020 00:07:11 -0400
+Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200702040706epoutp04c3ada092ca7bc3d8a6918de7878c24b5~d0_W1R5pV2029820298epoutp043
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 04:07:06 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200702040706epoutp04c3ada092ca7bc3d8a6918de7878c24b5~d0_W1R5pV2029820298epoutp043
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1593662826;
+        bh=nSBloLjBMkhEq6dBnL0Yut7t5IwUXxI09+5uuRC+GYI=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=AnwkEP3HZjzGy38t1rKrQ5Sq4bEi/VXmO+tZcn0w5+L4qn2Y3qoONPfDE5gM5Z1iS
+         6chLBFWVaLxAX0X6AJcz7dZ6+Yp1MKNpUGkRKriyyhG5pebPa4sBBiLn9KGRg42JVw
+         7FtrZtEJ9PV5nFBOAe/DQHd/Y2aBJxQ2fQy3+vRk=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
+        20200702040706epcas1p4ded8bc0a4377b2e65a53400e4c98d717~d0_WUindx2564425644epcas1p4A;
+        Thu,  2 Jul 2020 04:07:06 +0000 (GMT)
+Received: from epsmges1p3.samsung.com (unknown [182.195.40.158]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 49y4Kz693gzMqYm7; Thu,  2 Jul
+        2020 04:07:03 +0000 (GMT)
+Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
+        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        59.D0.29173.76D5DFE5; Thu,  2 Jul 2020 13:07:03 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
+        20200702040703epcas1p3f8b2c6f5a3a9c49ce121659d0de215bd~d0_TY4jwO2343023430epcas1p3c;
+        Thu,  2 Jul 2020 04:07:03 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200702040702epsmtrp1b8419846011fd7e80cd260570f732743~d0_TX5xR50526105261epsmtrp1-;
+        Thu,  2 Jul 2020 04:07:02 +0000 (GMT)
+X-AuditID: b6c32a37-9b7ff700000071f5-9a-5efd5d6783da
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        68.C8.08303.66D5DFE5; Thu,  2 Jul 2020 13:07:02 +0900 (KST)
+Received: from [10.113.221.102] (unknown [10.113.221.102]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200702040702epsmtip24222edcb032c7d2c57cc9c880c4e3847~d0_TGzNf71793117931epsmtip2x;
+        Thu,  2 Jul 2020 04:07:02 +0000 (GMT)
+Subject: Re: [PATCH v4 12/37] PM / devfreq: tegra20: Use MC timings for
+ building OPP table
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>
+Cc:     =?UTF-8?B?QXJ0dXIgxZp3aWdvxYQ=?= <a.swigon@samsung.com>,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org
+From:   Chanwoo Choi <cw00.choi@samsung.com>
+Organization: Samsung Electronics
+Message-ID: <4ea7fe00-7676-3186-8222-6e0d0eb8ed1f@samsung.com>
+Date:   Thu, 2 Jul 2020 13:18:18 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
+        Thunderbird/59.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200609131404.17523-13-digetx@gmail.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrPJsWRmVeSWpSXmKPExsWy7bCmrm567N84g0X/DSzuz2tltHj36Smr
+        xfwj51gtVn98zGhx5et7NovpezexWbTMWsRicbbpDbvF5V1z2Cw+9x5htOj8MovN4uIpV4vb
+        jSvYLCatncpo0br3CLvFv2sbWSx+7prH4iDo8f5GK7vHzll32T0unfvD7LFpVSebx51re9g8
+        7ncfZ/LobX7H5tG3ZRWjx+dNcgGcUdk2GamJKalFCql5yfkpmXnptkrewfHO8aZmBoa6hpYW
+        5koKeYm5qbZKLj4Bum6ZOUC/KCmUJeaUAoUCEouLlfTtbIryS0tSFTLyi0tslVILUnIKLAv0
+        ihNzi0vz0vWS83OtDA0MjEyBChOyM2Y072EqeCBYMXf2OqYGxql8XYycHBICJhJHzjxi6mLk
+        4hAS2MEo0by/lRHC+cQo0b7vEZTzmVFi9totjDAtly+8YIZI7GKUmPZuCjtIQkjgPaPEh/MF
+        ILawQIzEpO4ZLCBFIgJHmCVWdx4HG8UscJlR4mzbFzaQKjYBLYn9L26A2fwCihJXfzwGW8Er
+        YCexunULK4jNIqAi0fD8EtgGUYEwiZPbWqBqBCVOznzCAmJzCphLrN+yGMxmFhCXuPVkPhOE
+        LS+x/e0csFMlBNo5JU6vP8MK8YOLxNxpV5khbGGJV8e3sEPYUhIv+9ug7GqJlSePsEE0dzBK
+        bNl/AarZWGL/0slAGziANmhKrN+lDxFWlNj5ey4jxGI+iXdfe1hBSiQEeCU62oQgSpQlLj+4
+        ywRhS0osbu9km8CoNAvJO7OQvDALyQuzEJYtYGRZxSiWWlCcm55abFhgjBzfmxjBKV3LfAfj
+        tLcf9A4xMnEwHmKU4GBWEuE9bfArTog3JbGyKrUoP76oNCe1+BCjKTCAJzJLiSbnA7NKXkm8
+        oamRsbGxhYmhmamhoZI4r6/VhTghgfTEktTs1NSC1CKYPiYOTqkGJk8T1qV9QYZ+fMpX4lPz
+        1kTXzjSbs+bv3ynn87l5N/Qu1jVUv2TXO/N3wMR9W1wKXcw/ejw+0Hw+uvulrc2/tAoR57zN
+        7z+FV7xVNQ/wV6qK/CLlL+zXq279ZoJ5q5Th1VMFLPse1fw6s8aL/Wx9ZuK5A6unPt3ZzP6x
+        dNexH4znpSNEl/ic/sG96qn9gvwNj/l+P+9wyhZZZ+x8JYCL8Tjb9oONbWcvxOrHOW2fHeY4
+        IXTHVO4/O7ibSqfrPltZ5/iS/+uaBOaTzWo+Hw693jJt9zaTzZu/uUQZMy85v7f24Gqn55/+
+        uFcaXZz2ZN3Tc5+Z8+8F8/1JTdo0f4/hwbsFnUnO67w59t1Z7LXhKp8SS3FGoqEWc1FxIgBk
+        GHfccgQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrJIsWRmVeSWpSXmKPExsWy7bCSvG5a7N84gyMzzS3uz2tltHj36Smr
+        xfwj51gtVn98zGhx5et7NovpezexWbTMWsRicbbpDbvF5V1z2Cw+9x5htOj8MovN4uIpV4vb
+        jSvYLCatncpo0br3CLvFv2sbWSx+7prH4iDo8f5GK7vHzll32T0unfvD7LFpVSebx51re9g8
+        7ncfZ/LobX7H5tG3ZRWjx+dNcgGcUVw2Kak5mWWpRfp2CVwZM5r3MBU8EKyYO3sdUwPjVL4u
+        Rk4OCQETicsXXjB3MXJxCAnsYJS4MbeZDSIhKTHt4lGgBAeQLSxx+HAxSFhI4C2jxI7DoiC2
+        sECMxKTuGSwgvSICx5glNp0+zQTiMAtcBirq/MoGMXUbo8S1X29ZQVrYBLQk9r+4AbaBX0BR
+        4uqPx4wgNq+AncTq1i1gNSwCKhINzy+xg9iiAmESO5c8ZoKoEZQ4OfMJC4jNKWAusX7LYjCb
+        WUBd4s+8S8wQtrjErSfzmSBseYntb+cwT2AUnoWkfRaSlllIWmYhaVnAyLKKUTK1oDg3PbfY
+        sMAoL7Vcrzgxt7g0L10vOT93EyM4trW0djDuWfVB7xAjEwfjIUYJDmYlEd7TBr/ihHhTEiur
+        Uovy44tKc1KLDzFKc7AoifN+nbUwTkggPbEkNTs1tSC1CCbLxMEp1cCkxNAkkT6zc9XpY5I3
+        LAU0WFhFnlvEVesIsn76c3xj5VqVKZu2FUxy+LHOLTeOL0ZOI+3C1kTxinKX3p0/ZmUsCzjK
+        E73/xe6dV6N7XjE9yez9u+N7n+zf1pXrpZufbOoQO7bVTmW9oddH3TWpjSnPl0XZFhZvnhK2
+        /fvUKcHH2+a/aiuQfORX7VhXevj58psla/Vq2J9ckJKbF1ewep3qAt9DMgstOOdJMDK7ng9f
+        25gZZ+lQo8jYNdXOaePFQm4PhZ4dTWl7zzCl5xRs6E76sTg1cXbMhj6Dg1GxG1sP7rUojJX2
+        +60aopcaeP/o1KdGXx/mzw+eH3Iz8rXU0Rd56n7LosR07za8jeYpZVBiKc5INNRiLipOBACK
+        Lp0uXAMAAA==
+X-CMS-MailID: 20200702040703epcas1p3f8b2c6f5a3a9c49ce121659d0de215bd
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200609131458epcas1p2c774a0302bcef2c02790c2cb8cad57a0
+References: <20200609131404.17523-1-digetx@gmail.com>
+        <CGME20200609131458epcas1p2c774a0302bcef2c02790c2cb8cad57a0@epcas1p2.samsung.com>
+        <20200609131404.17523-13-digetx@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daeho Jeong <daehojeong@google.com>
+Hi Dmitry,
 
-Added a new gc_urgent mode, GC_URGENT_LOW, in which mode
-F2FS will lower the bar of checking idle in order to
-process outstanding discard commands and GC a little bit
-aggressively.
+On 6/9/20 10:13 PM, Dmitry Osipenko wrote:
+> The clk_round_rate() won't be usable for building OPP table once
+> interconnect support will be added to the EMC driver because that CLK API
+> function limits the rounded rate based on the clk rate that is imposed by
+> active clk-users, and thus, the rounding won't work as expected if
+> interconnect will set the minimum EMC clock rate before devfreq driver is
+> loaded. The struct tegra_mc contains memory timings which could be used by
+> the devfreq driver for building up OPP table instead of rounding clock
+> rate, this patch implements this idea.
+> 
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/devfreq/tegra20-devfreq.c | 18 +++++++++++-------
+>  1 file changed, 11 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/devfreq/tegra20-devfreq.c b/drivers/devfreq/tegra20-devfreq.c
+> index 6469dc69c5e0..bf504ca4dea2 100644
+> --- a/drivers/devfreq/tegra20-devfreq.c
+> +++ b/drivers/devfreq/tegra20-devfreq.c
+> @@ -123,8 +123,7 @@ static int tegra_devfreq_probe(struct platform_device *pdev)
+>  {
+>  	struct tegra_devfreq *tegra;
+>  	struct tegra_mc *mc;
+> -	unsigned long max_rate;
+> -	unsigned long rate;
+> +	unsigned int i;
+>  	int err;
+>  
+>  	mc = tegra_get_memory_controller();
+> @@ -151,12 +150,17 @@ static int tegra_devfreq_probe(struct platform_device *pdev)
+>  
+>  	tegra->regs = mc->regs;
+>  
+> -	max_rate = clk_round_rate(tegra->emc_clock, ULONG_MAX);
+> -
+> -	for (rate = 0; rate <= max_rate; rate++) {
+> -		rate = clk_round_rate(tegra->emc_clock, rate);
+> +	if (!mc->num_timings) {
 
-Signed-off-by: Daeho Jeong <daehojeong@google.com>
----
- Documentation/ABI/testing/sysfs-fs-f2fs |  4 +++-
- fs/f2fs/f2fs.h                          | 10 ++++++++--
- fs/f2fs/gc.c                            |  6 +++---
- fs/f2fs/segment.c                       |  4 ++--
- fs/f2fs/sysfs.c                         | 10 +++++++---
- 5 files changed, 23 insertions(+), 11 deletions(-)
+Could you explain what is meaning of 'num_timing?
+Also, why add the opp entry in case of mc->num_timings is zero?
 
-diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
-index 4bb93a06d8ab..7f730c4c8df2 100644
---- a/Documentation/ABI/testing/sysfs-fs-f2fs
-+++ b/Documentation/ABI/testing/sysfs-fs-f2fs
-@@ -229,7 +229,9 @@ Date:		August 2017
- Contact:	"Jaegeuk Kim" <jaegeuk@kernel.org>
- Description:	Do background GC agressively when set. When gc_urgent = 1,
- 		background thread starts to do GC by given gc_urgent_sleep_time
--		interval. It is set to 0 by default.
-+		interval. When gc_urgent = 2, F2FS will lower the bar of
-+		checking idle in order to process outstanding discard commands
-+		and GC a little bit aggressively. It is set to 0 by default.
- 
- What:		/sys/fs/f2fs/<disk>/gc_urgent_sleep_time
- Date:		August 2017
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index e6e47618a357..4b28fd42fdbc 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -1283,7 +1283,8 @@ enum {
- 	GC_NORMAL,
- 	GC_IDLE_CB,
- 	GC_IDLE_GREEDY,
--	GC_URGENT,
-+	GC_URGENT_HIGH,
-+	GC_URGENT_LOW,
- };
- 
- enum {
-@@ -1540,6 +1541,7 @@ struct f2fs_sb_info {
- 	unsigned int cur_victim_sec;		/* current victim section num */
- 	unsigned int gc_mode;			/* current GC state */
- 	unsigned int next_victim_seg[2];	/* next segment in victim section */
-+
- 	/* for skip statistic */
- 	unsigned int atomic_files;              /* # of opened atomic file */
- 	unsigned long long skipped_atomic_files[2];	/* FG_GC and BG_GC */
-@@ -2480,7 +2482,7 @@ static inline void *f2fs_kmem_cache_alloc(struct kmem_cache *cachep,
- 
- static inline bool is_idle(struct f2fs_sb_info *sbi, int type)
- {
--	if (sbi->gc_mode == GC_URGENT)
-+	if (sbi->gc_mode == GC_URGENT_HIGH)
- 		return true;
- 
- 	if (get_pages(sbi, F2FS_RD_DATA) || get_pages(sbi, F2FS_RD_NODE) ||
-@@ -2498,6 +2500,10 @@ static inline bool is_idle(struct f2fs_sb_info *sbi, int type)
- 			atomic_read(&SM_I(sbi)->fcc_info->queued_flush))
- 		return false;
- 
-+	if (sbi->gc_mode == GC_URGENT_LOW &&
-+			(type == DISCARD_TIME || type == GC_TIME))
-+		return true;
-+
- 	return f2fs_time_over(sbi, type);
- }
- 
-diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
-index 6eec3b2d606d..3b718da69910 100644
---- a/fs/f2fs/gc.c
-+++ b/fs/f2fs/gc.c
-@@ -82,7 +82,7 @@ static int gc_thread_func(void *data)
- 		 * invalidated soon after by user update or deletion.
- 		 * So, I'd like to wait some time to collect dirty segments.
- 		 */
--		if (sbi->gc_mode == GC_URGENT) {
-+		if (sbi->gc_mode == GC_URGENT_HIGH) {
- 			wait_ms = gc_th->urgent_sleep_time;
- 			down_write(&sbi->gc_lock);
- 			goto do_gc;
-@@ -176,7 +176,7 @@ static int select_gc_type(struct f2fs_sb_info *sbi, int gc_type)
- 		gc_mode = GC_CB;
- 		break;
- 	case GC_IDLE_GREEDY:
--	case GC_URGENT:
-+	case GC_URGENT_HIGH:
- 		gc_mode = GC_GREEDY;
- 		break;
- 	}
-@@ -211,7 +211,7 @@ static void select_policy(struct f2fs_sb_info *sbi, int gc_type,
- 	 * foreground GC and urgent GC cases.
- 	 */
- 	if (gc_type != FG_GC &&
--			(sbi->gc_mode != GC_URGENT) &&
-+			(sbi->gc_mode != GC_URGENT_HIGH) &&
- 			p->max_search > sbi->max_victim_search)
- 		p->max_search = sbi->max_victim_search;
- 
-diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-index b45e473508a9..5924b3965ae4 100644
---- a/fs/f2fs/segment.c
-+++ b/fs/f2fs/segment.c
-@@ -174,7 +174,7 @@ bool f2fs_need_SSR(struct f2fs_sb_info *sbi)
- 
- 	if (f2fs_lfs_mode(sbi))
- 		return false;
--	if (sbi->gc_mode == GC_URGENT)
-+	if (sbi->gc_mode == GC_URGENT_HIGH)
- 		return true;
- 	if (unlikely(is_sbi_flag_set(sbi, SBI_CP_DISABLED)))
- 		return true;
-@@ -1759,7 +1759,7 @@ static int issue_discard_thread(void *data)
- 			continue;
- 		}
- 
--		if (sbi->gc_mode == GC_URGENT)
-+		if (sbi->gc_mode == GC_URGENT_HIGH)
- 			__init_discard_policy(sbi, &dpolicy, DPOLICY_FORCE, 1);
- 
- 		sb_start_intwrite(sbi->sb);
-diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
-index e877c59b9fdb..2a140657fc4d 100644
---- a/fs/f2fs/sysfs.c
-+++ b/fs/f2fs/sysfs.c
-@@ -350,16 +350,20 @@ static ssize_t __sbi_store(struct f2fs_attr *a,
- 		return -EINVAL;
- 
- 	if (!strcmp(a->attr.name, "gc_urgent")) {
--		if (t >= 1) {
--			sbi->gc_mode = GC_URGENT;
-+		if (t == 0) {
-+			sbi->gc_mode = GC_NORMAL;
-+		} else if (t == 1) {
-+			sbi->gc_mode = GC_URGENT_HIGH;
- 			if (sbi->gc_thread) {
- 				sbi->gc_thread->gc_wake = 1;
- 				wake_up_interruptible_all(
- 					&sbi->gc_thread->gc_wait_queue_head);
- 				wake_up_discard_thread(sbi, true);
- 			}
-+		} else if (t == 2) {
-+			sbi->gc_mode = GC_URGENT_LOW;
- 		} else {
--			sbi->gc_mode = GC_NORMAL;
-+			return -EINVAL;
- 		}
- 		return count;
- 	}
+> +		err = dev_pm_opp_add(&pdev->dev,
+> +				     clk_get_rate(tegra->emc_clock), 0);
+> +		if (err) {
+> +			dev_err(&pdev->dev, "failed to add OPP: %d\n", err);
+> +			return err;
+> +		}
+> +	}
+>  
+> -		err = dev_pm_opp_add(&pdev->dev, rate, 0);
+> +	for (i = 0; i < mc->num_timings; i++) {
+> +		err = dev_pm_opp_add(&pdev->dev, mc->timings[i].rate, 0);
+>  		if (err) {
+>  			dev_err(&pdev->dev, "failed to add opp: %d\n", err);
+>  			goto remove_opps;
+> 
+
+
 -- 
-2.27.0.383.g050319c2ae-goog
-
+Best Regards,
+Chanwoo Choi
+Samsung Electronics
