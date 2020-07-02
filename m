@@ -2,76 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E1D7212B8E
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 19:50:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1805C212BA0
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 19:54:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728003AbgGBRuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 13:50:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49662 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726120AbgGBRuY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 13:50:24 -0400
-Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 94BD020737;
-        Thu,  2 Jul 2020 17:50:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593712224;
-        bh=gONodLYvSEBI/VzAFQ+qoexk3Hoaqs926kGYVFbfaAs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VRg2kfoDvSMpz8T8I1Y4Kz/0JTymw6S1ArHLqCNfOB+D8jka05iOV6NSdXFQmRgeD
-         6Pn4a5wS13qlHgdpyoeS1QMCFlIP1blXzcTlWQpSEyI+hfee+SUdCvDsX40qmTVIEq
-         d9ltZHdjUiRYKjCQmiKUdhbvtC9GHJcqvQZtsUk4=
-Date:   Thu, 2 Jul 2020 10:50:22 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Ard Biesheuvel <ardb@kernel.org>, linux-wireless@vger.kernel.org,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Denis Kenzior <denkenz@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        id S1727947AbgGBRx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 13:53:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51042 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726980AbgGBRx5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 13:53:57 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64710C08C5C1;
+        Thu,  2 Jul 2020 10:53:57 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id 80so26466416qko.7;
+        Thu, 02 Jul 2020 10:53:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=0/GQxXxfGsYnBic5/RL6CAFNUaN6B/gl7pdQ8fVaHoY=;
+        b=bb1PyoLTqgnmqpoyjiIqzjmgwRxbIg8/iGsNGwpirVNTcqI/GQWWEP9KFFNsCcQ10Y
+         Ni/imIv6X56JStRHswX9whmutnIkp9Jwpyw17nRT4ye+1zS2B8WHUkvehHf6HtkRirUr
+         zzJuHZC5HZrpJA0wVOqSeUSYAsh3oBtm0I5eOe8bKLXC8dpfaODBFsJFDB2Vn8gFNR/v
+         WdX5Squi+dYMgYQR2SYNp5wy2DwPLQaCVC2RpOSHbFUfVtMI/q97tPM2I/aAwfNXWWpB
+         imEUZFoBTZD10dU53SjxXkOV4t3X3K2X7Uq9ooGbmCV9xzi9qS/uULtffIR1Y/+AZ3qS
+         Mmew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=0/GQxXxfGsYnBic5/RL6CAFNUaN6B/gl7pdQ8fVaHoY=;
+        b=hv+9ayLtqIwGTYryFqBE4lxzVoWWLIzgE9AP3yBBZzHSnOdKtpklipRJkv52lecWH9
+         42yNcil/GdDyeWf+Zv2s4PSFcH/TdqbaIs2jSEefks77fe0nb2Td67/ktKv/pon9X0a2
+         alaRwnYGrs5k8PA8EaeN7if0Saawvra4CO5JBXHiSxYznKLwwJcjr6s3+ALNnLZ60I7w
+         uyBZC7J0NYZa7+eyIHNiuW6TjaD93iqmITGK2vPvhgT0hH+1CuZR+uY30XF3gWoUc7Ta
+         PsD0PFgIX8RFBxNIJvxh/8qgZ4zj54SpIKkJtGLGpe85/qDqDEhppBMbQpd8PGBEAwyf
+         aS5g==
+X-Gm-Message-State: AOAM532zxJ+PysimTj9ZOoXIaRIjcUw84LwmPH1RCoFfU7n/T3bbhnfN
+        QU4gzV/HfY8P3HWkrM6QFok=
+X-Google-Smtp-Source: ABdhPJyHl0z1SgQYig6I2fdY7EXsTetGozQfTeorJpNp1pG+z4UU5fykSc183B/FAVq+lx8x9BbPzQ==
+X-Received: by 2002:a37:689:: with SMTP id 131mr22871561qkg.468.1593712436222;
+        Thu, 02 Jul 2020 10:53:56 -0700 (PDT)
+Received: from localhost.localdomain ([72.53.229.195])
+        by smtp.gmail.com with ESMTPSA id w204sm9149937qka.41.2020.07.02.10.53.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Jul 2020 10:53:55 -0700 (PDT)
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+X-Google-Original-From: Sven Van Asbroeck <TheSven73@gmail.com>
+To:     shawnguo@kernel.org, fugang.duan@nxp.com, robh+dt@kernel.org
+Cc:     Fabio Estevam <festevam@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        linux-crypto@vger.kernel.org, netdev@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-nfs@vger.kernel.org
-Subject: Re: [RFC PATCH 4/7] crypto: remove ARC4 support from the skcipher API
-Message-ID: <20200702175022.GA2753@sol.localdomain>
-References: <20200702101947.682-1-ardb@kernel.org>
- <20200702101947.682-5-ardb@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200702101947.682-5-ardb@kernel.org>
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v5 1/3] ARM: imx: mach-imx6q: Search for fsl,imx6q-iomuxc-gpr earlier
+Date:   Thu,  2 Jul 2020 13:53:50 -0400
+Message-Id: <20200702175352.19223-1-TheSven73@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+linux-wireless, Marcel Holtmann, and Denis Kenzior]
+From: Fabio Estevam <festevam@gmail.com>
 
-On Thu, Jul 02, 2020 at 12:19:44PM +0200, Ard Biesheuvel wrote:
-> Remove the generic ecb(arc4) skcipher, which is slightly cumbersome from
-> a maintenance perspective, since it does not quite behave like other
-> skciphers do in terms of key vs IV lifetime. Since we are leaving the
-> library interface in place, which is used by the various WEP and TKIP
-> implementations we have in the tree, we can safely drop this code now
-> it no longer has any users.
-> 
-> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Check the presence of fsl,imx6q-iomuxc-gpr earlier and exit in case
+of failure.
 
-Last year there was a discussion where it was mentioned that iwd uses
-"ecb(arc4)" via AF_ALG.  So can we really remove it yet?
-See https://lkml.kernel.org/r/97BB95F6-4A4C-4984-9EAB-6069E19B4A4F@holtmann.org
-Note that the code isn't in "iwd" itself but rather in "libell" which iwd
-depends on: https://git.kernel.org/pub/scm/libs/ell/ell.git/
+This is done in preparation for adding support for configuring the
+GPR5 register for i.MX6QP a bit easier.
 
-Apparently it also uses md4 and ecb(des) too.
+Signed-off-by: Fabio Estevam <festevam@gmail.com>
+---
 
-Marcel and Denis, what's your deprecation plan for these obsolete and insecure
-algorithms?
+Tree: v5.8-rc3
 
-- Eric
+Patch history: see [PATCH v5 3/3]
+
+To: Shawn Guo <shawnguo@kernel.org>
+To: Andy Duan <fugang.duan@nxp.com>
+To: Rob Herring <robh+dt@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: netdev@vger.kernel.org
+Cc: devicetree@vger.kernel.org
+Cc: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: Pengutronix Kernel Team <kernel@pengutronix.de>
+Cc: Fabio Estevam <festevam@gmail.com>
+Cc: NXP Linux Team <linux-imx@nxp.com>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+
+ arch/arm/mach-imx/mach-imx6q.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
+
+diff --git a/arch/arm/mach-imx/mach-imx6q.c b/arch/arm/mach-imx/mach-imx6q.c
+index 85c084a716ab..ae89ad93ca83 100644
+--- a/arch/arm/mach-imx/mach-imx6q.c
++++ b/arch/arm/mach-imx/mach-imx6q.c
+@@ -169,6 +169,12 @@ static void __init imx6q_1588_init(void)
+ 	struct regmap *gpr;
+ 	u32 clksel;
+ 
++	gpr = syscon_regmap_lookup_by_compatible("fsl,imx6q-iomuxc-gpr");
++	if (IS_ERR(gpr)) {
++		pr_err("failed to find fsl,imx6q-iomuxc-gpr regmap\n");
++		return;
++	}
++
+ 	np = of_find_compatible_node(NULL, NULL, "fsl,imx6q-fec");
+ 	if (!np) {
+ 		pr_warn("%s: failed to find fec node\n", __func__);
+@@ -195,13 +201,8 @@ static void __init imx6q_1588_init(void)
+ 	clksel = clk_is_match(ptp_clk, enet_ref) ?
+ 				IMX6Q_GPR1_ENET_CLK_SEL_ANATOP :
+ 				IMX6Q_GPR1_ENET_CLK_SEL_PAD;
+-	gpr = syscon_regmap_lookup_by_compatible("fsl,imx6q-iomuxc-gpr");
+-	if (!IS_ERR(gpr))
+-		regmap_update_bits(gpr, IOMUXC_GPR1,
+-				IMX6Q_GPR1_ENET_CLK_SEL_MASK,
+-				clksel);
+-	else
+-		pr_err("failed to find fsl,imx6q-iomuxc-gpr regmap\n");
++	regmap_update_bits(gpr, IOMUXC_GPR1, IMX6Q_GPR1_ENET_CLK_SEL_MASK,
++			   clksel);
+ 
+ 	clk_put(enet_ref);
+ put_ptp_clk:
+-- 
+2.17.1
+
