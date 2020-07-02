@@ -2,96 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFFC22122F8
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 14:09:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A835721230E
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 14:17:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728837AbgGBMJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 08:09:26 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:55693 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728778AbgGBMJZ (ORCPT
+        id S1728926AbgGBMRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 08:17:49 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:48804 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728901AbgGBMRn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 08:09:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593691763;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xHNyDKxONfk5ZuiA6wqr2UGhxhodt5B2XvkEDH0Vso4=;
-        b=KuvzaAvqkaHHCOvkgYrNvZJxfEv1CIg50xT+ZgGCShLYkq0wUbL70u2yLuwd4N2emHxfd/
-        FFJIa9V9aOtZTS/nKuelvEg+/lgHRdiOu5gjrO/3yiKBrX+6MIeFDFPTkIR+H+IEjlS7rs
-        0B2UcEig1B3RYAbAhS2eEQt7PRgJFnY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-322-zAl8HdTEN3u_pbMtHfe0Qg-1; Thu, 02 Jul 2020 08:09:20 -0400
-X-MC-Unique: zAl8HdTEN3u_pbMtHfe0Qg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F407F18CA26C;
-        Thu,  2 Jul 2020 12:09:16 +0000 (UTC)
-Received: from dhcp-128-65.nay.redhat.com (ovpn-13-96.pek2.redhat.com [10.72.13.96])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id CD4245C1D0;
-        Thu,  2 Jul 2020 12:08:58 +0000 (UTC)
-Date:   Thu, 2 Jul 2020 20:08:55 +0800
-From:   Dave Young <dyoung@redhat.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Bhupesh Sharma <bhsharma@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Kazuhito Hagio <k-hagio@ab.jp.nec.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, x86@kernel.org,
-        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Paul Mackerras <paulus@samba.org>,
-        James Morse <james.morse@arm.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Boris Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>, bhupesh.linux@gmail.com,
-        linuxppc-dev@lists.ozlabs.org, Ingo Molnar <mingo@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Dave Anderson <anderson@redhat.com>
-Subject: Re: [PATCH v6 1/2] crash_core, vmcoreinfo: Append 'MAX_PHYSMEM_BITS'
- to vmcoreinfo
-Message-ID: <20200702120855.GD21026@dhcp-128-65.nay.redhat.com>
-References: <1589395957-24628-1-git-send-email-bhsharma@redhat.com>
- <1589395957-24628-2-git-send-email-bhsharma@redhat.com>
- <20200702110003.GC22241@gaia>
+        Thu, 2 Jul 2020 08:17:43 -0400
+Received: from 89-64-84-242.dynamic.chello.pl (89.64.84.242) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.415)
+ id 160ca2da34263fd4; Thu, 2 Jul 2020 14:17:41 +0200
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Bob Moore <robert.moore@intel.com>,
+        Len Brown <len.brown@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dan Williams <dan.j.williams.korg@gmail.com>
+Subject: [PATCH 0/3] ACPI: OSL: Always use deferred unmapping of memory
+Date:   Thu, 02 Jul 2020 14:09:38 +0200
+Message-ID: <22474080.3crLlKV2y5@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200702110003.GC22241@gaia>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Catalin,
-On 07/02/20 at 12:00pm, Catalin Marinas wrote:
-> On Thu, May 14, 2020 at 12:22:36AM +0530, Bhupesh Sharma wrote:
-> > diff --git a/kernel/crash_core.c b/kernel/crash_core.c
-> > index 9f1557b98468..18175687133a 100644
-> > --- a/kernel/crash_core.c
-> > +++ b/kernel/crash_core.c
-> > @@ -413,6 +413,7 @@ static int __init crash_save_vmcoreinfo_init(void)
-> >  	VMCOREINFO_LENGTH(mem_section, NR_SECTION_ROOTS);
-> >  	VMCOREINFO_STRUCT_SIZE(mem_section);
-> >  	VMCOREINFO_OFFSET(mem_section, section_mem_map);
-> > +	VMCOREINFO_NUMBER(MAX_PHYSMEM_BITS);
-> >  #endif
-> >  	VMCOREINFO_STRUCT_SIZE(page);
-> >  	VMCOREINFO_STRUCT_SIZE(pglist_data);
-> 
-> I can queue this patch via the arm64 tree (together with the second one)
-> but I'd like an ack from the kernel/crash_core.c maintainers. They don't
-> seem to have been cc'ed either (only the kexec list).
+Hi All,
 
-For the VMCOREINFO part, I'm fine with the changes, but since I do not
-understand the arm64 pieces so I would like to leave to arm64 people to
-review.  If arm64 bits are good enough, feel free to add:
+This series is on top of the git branch at
 
-Acked-by: Dave Young <dyoung@redhat.com>
+ git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+ acpica-osl
 
-Thanks
-Dave
+and it basically makes the deferred unmapping of ACPI memory introduced by
+the first commit in that branch be the only option.
+
+Arguably, it could be done in a single patch, but I prefer to do that in
+smaller steps in case something breaks, to make it easier to identify
+the point of breakage.
+
+Patch [1/3] causes acpi_os_unmap_generic_address() to use the deferred
+unmapping, patch [2/3] makes acpi_os_unmap_iomem() use it too and patch
+[3/3] is a cleanup of top of the latter.
+
+Thanks,
+Rafael
+
+
 
