@@ -2,155 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D90B2127AE
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 17:22:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04E0321279A
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 17:18:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730231AbgGBPWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 11:22:14 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:44848 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729443AbgGBPWM (ORCPT
+        id S1730163AbgGBPSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 11:18:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55264 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726807AbgGBPSs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 11:22:12 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 062EwIEf146381;
-        Thu, 2 Jul 2020 15:21:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
- bh=GpJrQPhTZvvSbMWNjOm498MhcaQbFbCs10gESS1+0xI=;
- b=xYlA/A8hRbkqMTvdtKZOVGdKV+BSjnSV/43Pi/fygIdrOenXgv4+GmaJN/F4wQ2WZbCJ
- yIg9OwlXh2R4AzumhH287b9NF1P9w86VblqV/44sTZnoMLBgLIkvhzcwHMGtkRy3F0kC
- btnfwexegvANmurtCzl5mCfjdh104w7fvR2hlccUsRQX3PunNGWxNTqrus/N6mzxng85
- 7s1H7o8wfAF6gfPR74O7+e0SIPyLXJ07pTig3Ksl2uI66SyhP5R5WyES1JkS2EnqfhOr
- jy0pXPsYXRbLVMJqP/2sKgiRIie0mZpecxCShYc3lyFZs7Phlj5a/kS3jowkxmoGo/nR 7g== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 31wxrnh2he-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 02 Jul 2020 15:21:47 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 062EwoKn090063;
-        Thu, 2 Jul 2020 15:21:46 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 31xg19j71x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 02 Jul 2020 15:21:46 +0000
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 062FLkXm000822;
-        Thu, 2 Jul 2020 15:21:46 GMT
-Received: from mihai.localdomain (/10.153.73.25)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 02 Jul 2020 15:20:55 +0000
-From:   Mihai Carabas <mihai.carabas@oracle.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        Mihai Carabas <mihai.carabas@oracle.com>
-Subject: [PATCH RFC 7/7] x86: cpu: update blacklist spec features for late loading
-Date:   Thu,  2 Jul 2020 18:18:27 +0300
-Message-Id: <1593703107-8852-8-git-send-email-mihai.carabas@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1593703107-8852-1-git-send-email-mihai.carabas@oracle.com>
-References: <1593703107-8852-1-git-send-email-mihai.carabas@oracle.com>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9670 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0
- mlxlogscore=999 suspectscore=1 bulkscore=0 mlxscore=0 adultscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2007020106
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9670 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999
- priorityscore=1501 impostorscore=0 bulkscore=0 clxscore=1015
- malwarescore=0 phishscore=0 adultscore=0 cotscore=-2147483648
- lowpriorityscore=0 suspectscore=1 spamscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2007020106
+        Thu, 2 Jul 2020 11:18:48 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07FA4C08C5DD
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 08:18:48 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id d4so13615849pgk.4
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 08:18:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ZoZRqj79509W+zskyZYR+5ZRtTQjElio5nf3SxUK6Lg=;
+        b=i2/zLzcCZwqyCEyCmbGH0DgqG1xZii1BrbGzixiC6SqNv9zW9vtxMyduhe7cJVlM/S
+         avL9+fyIy0AxlMy4jH+e6u2XYkc+K44JhOC5s3s0iGjNLnR7Y03lH+yYQ3rd0JARDNhw
+         deuZfSDE7JrYDO0TOVYntZ/jxqBq4V2zFVjEA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZoZRqj79509W+zskyZYR+5ZRtTQjElio5nf3SxUK6Lg=;
+        b=CN4Lrl4FGFCxP1AU+w3IiLPRX4BjWVDIi5EGdkSMFi8q1bO1C0zJJpjY5FqkRRvBOh
+         SqS/PkJyIbAxXkpTaa4FdWd+ycHDSFQba32eAYcWZiaqDe0+h9SlJzGVfVEG0pK8dbd8
+         zkK8HljykAke4EgsZceLxs9MJI2euOeJBUx+tjpupNtnc8kLRvt+sYjakk0yBhPs4zoY
+         OzizdIGkuYKZ9ZzfNR2q4FrgVPDBD3hUqM0aTXjnPG7Ax4LOn/IAXo3Ak+Rv07No8neW
+         ZD2Fjr7mo63JU18oooCfClueon7vPsg8VN+t5dLsPnxJLPUdqickIPu6hW69sx6dAK+N
+         scLw==
+X-Gm-Message-State: AOAM533e5fOeA41pwE6yZS2pnXWdqyOTmmogX63STyTGXehlRwFKUmDC
+        gCPBvga9nMwXVpLplUemuPE8wA==
+X-Google-Smtp-Source: ABdhPJyDT39ApMmhu3R+RsMDMocrgz+h34f1a0sxmX8XLpY/OiD4ypQApRdsmsl674UurYNSKifffA==
+X-Received: by 2002:a63:20d:: with SMTP id 13mr25094225pgc.166.1593703127475;
+        Thu, 02 Jul 2020 08:18:47 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id w1sm2384911pfc.55.2020.07.02.08.18.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Jul 2020 08:18:46 -0700 (PDT)
+Date:   Thu, 2 Jul 2020 08:18:45 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>
+Cc:     linux-kernel@vger.kernel.org,
+        Nick Terrell <nickrterrell@gmail.com>,
+        Nick Terrell <terrelln@fb.com>,
+        Norbert Lange <nolange79@gmail.com>, Chris Mason <clm@fb.com>,
+        linux-kbuild@vger.kernel.org, x86@kernel.org,
+        gregkh@linuxfoundation.org, Petr Malat <oss@malat.biz>,
+        Kernel Team <Kernel-team@fb.com>,
+        Adam Borowski <kilobyte@angband.pl>,
+        Patrick Williams <patrickw3@fb.com>, rmikey@fb.com,
+        mingo@kernel.org, Patrick Williams <patrick@stwcx.xyz>,
+        Sedat Dilek <sedat.dilek@gmail.com>
+Subject: Re: Kernel compression benchmarks
+Message-ID: <202007020818.87EA89106@keescook>
+References: <1588791882.08g1378g67.none.ref@localhost>
+ <1588791882.08g1378g67.none@localhost>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1588791882.08g1378g67.none@localhost>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If we have loaded a broken microcode at boot time, all the
-speculation features will be blacklisted. Created a new
-function for Intel CPUs to verify if we have a broken microcode
-loaded or not and whitelist/blacklist features as needed.
+On Wed, Jul 01, 2020 at 10:35:48AM -0400, Alex Xu (Hello71) wrote:
+> ZSTD compression patches have been sent in a number of times over the 
+> past few years. Every time, someone asks for benchmarks. Every time, 
+> someone is concerned about compression time. Sometimes, someone provides 
+> benchmarks.
 
-This has to be done before get_cpu_cap because it uses these
-black/white lists.
+Where's the latest series for this, btw? I thought it had landed. :P It
+seemed like it was done.
 
-Signed-off-by: Mihai Carabas <mihai.carabas@oracle.com>
----
- arch/x86/include/asm/microcode_intel.h |  1 +
- arch/x86/kernel/cpu/intel.c            | 28 ++++++++++++++++++++++++++++
- arch/x86/kernel/cpu/microcode/intel.c  |  5 ++++-
- 3 files changed, 33 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/include/asm/microcode_intel.h b/arch/x86/include/asm/microcode_intel.h
-index d85a07d..74c87cc 100644
---- a/arch/x86/include/asm/microcode_intel.h
-+++ b/arch/x86/include/asm/microcode_intel.h
-@@ -74,6 +74,7 @@ static inline u32 intel_get_microcode_revision(void)
- extern void show_ucode_info_early(void);
- extern int __init save_microcode_in_initrd_intel(void);
- void reload_ucode_intel(void);
-+void check_intel_bad_spectre_microcode(struct cpuinfo_x86 *c);
- #else
- static inline __init void load_ucode_intel_bsp(void) {}
- static inline void load_ucode_intel_ap(void) {}
-diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
-index c25a67a..286168e 100644
---- a/arch/x86/kernel/cpu/intel.c
-+++ b/arch/x86/kernel/cpu/intel.c
-@@ -170,6 +170,34 @@ static bool bad_spectre_microcode(struct cpuinfo_x86 *c)
- 	return false;
- }
- 
-+/*
-+ * check_intel_bad_spectre_microcode verifies if a valid microcode was
-+ * loaded and whitelist/blacklist the features related to speculation control.
-+ */
-+void check_intel_bad_spectre_microcode(struct cpuinfo_x86 *c)
-+{
-+	int i;
-+	unsigned int features[] = {
-+		X86_FEATURE_IBRS,
-+		X86_FEATURE_IBPB,
-+		X86_FEATURE_STIBP,
-+		X86_FEATURE_SPEC_CTRL,
-+		X86_FEATURE_MSR_SPEC_CTRL,
-+		X86_FEATURE_INTEL_STIBP,
-+		X86_FEATURE_SSBD,
-+		X86_FEATURE_SPEC_CTRL_SSBD
-+	};
-+
-+	if (bad_spectre_microcode(c)) {
-+		for (i = 0; i < ARRAY_SIZE(features); i++)
-+			set_bit(features[i], (unsigned long *)cpu_caps_cleared);
-+	} else {
-+		for (i = 0; i < ARRAY_SIZE(features); i++)
-+			clear_bit(features[i],
-+				  (unsigned long *)cpu_caps_cleared);
-+	}
-+}
-+
- static void early_init_intel(struct cpuinfo_x86 *c)
- {
- 	u64 misc_enable;
-diff --git a/arch/x86/kernel/cpu/microcode/intel.c b/arch/x86/kernel/cpu/microcode/intel.c
-index 2ef4338..73a5a52 100644
---- a/arch/x86/kernel/cpu/microcode/intel.c
-+++ b/arch/x86/kernel/cpu/microcode/intel.c
-@@ -854,8 +854,11 @@ static enum ucode_state apply_microcode_intel(int cpu)
- 	c->microcode	 = rev;
- 
- 	/* Update boot_cpu_data's revision too, if we're on the BSP: */
--	if (bsp)
-+	if (bsp) {
- 		boot_cpu_data.microcode = rev;
-+		/* Whitelist/blacklist speculation control features. */
-+		check_intel_bad_spectre_microcode(c);
-+	}
- 
- 	return ret;
- }
 -- 
-1.8.3.1
-
+Kees Cook
