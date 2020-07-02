@@ -2,128 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA7D4211D7E
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 09:50:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92C47211D8A
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 09:52:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728126AbgGBHuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 03:50:32 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:59857 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726042AbgGBHuc (ORCPT
+        id S1728200AbgGBHwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 03:52:08 -0400
+Received: from mout.kundenserver.de ([217.72.192.74]:60685 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725994AbgGBHwI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 03:50:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593676230;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=siZTOIfPD9T2MnCdUtEwr4YB3Ao/TtbkwOBgLqvQBKk=;
-        b=Iy6q1YUMaAawWYkEIDew9xHSJ3TS1n9GcWCn+QLy1Z+xMtEHJGmUMsZi5ncRkgwg8gMpnL
-        ZsZdPPtxCGzJtRyiUTt7BNXImWytLLLdG3yaKb7nuZsle9aZ1mEG8EGJJ9C0DhOvydplUR
-        VS8SxlacVC7lOumjXzOTokUiY0jQKKs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-287-YfE5AYJQMdOWPk_ilgXALg-1; Thu, 02 Jul 2020 03:50:25 -0400
-X-MC-Unique: YfE5AYJQMdOWPk_ilgXALg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5BC7819253C0;
-        Thu,  2 Jul 2020 07:50:23 +0000 (UTC)
-Received: from [10.36.112.70] (ovpn-112-70.ams2.redhat.com [10.36.112.70])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 691291002397;
-        Thu,  2 Jul 2020 07:50:21 +0000 (UTC)
-Subject: Re: [PATCH v3 4/7] iommu/vt-d: Handle non-page aligned address
-To:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        iommu@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        David Woodhouse <dwmw2@infradead.org>
-Cc:     Yi Liu <yi.l.liu@intel.com>, "Tian, Kevin" <kevin.tian@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>
-References: <1593617636-79385-1-git-send-email-jacob.jun.pan@linux.intel.com>
- <1593617636-79385-5-git-send-email-jacob.jun.pan@linux.intel.com>
-From:   Auger Eric <eric.auger@redhat.com>
-Message-ID: <40a83912-f8ad-9887-38d0-39a70ecc062c@redhat.com>
-Date:   Thu, 2 Jul 2020 09:50:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Thu, 2 Jul 2020 03:52:08 -0400
+Received: from mail-qv1-f50.google.com ([209.85.219.50]) by
+ mrelayeu.kundenserver.de (mreue109 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1N2V8T-1ioGAD2WER-013wOK; Thu, 02 Jul 2020 09:52:06 +0200
+Received: by mail-qv1-f50.google.com with SMTP id el4so8149078qvb.13;
+        Thu, 02 Jul 2020 00:52:06 -0700 (PDT)
+X-Gm-Message-State: AOAM530L5cNzli5ifsPhspQq7j4kva1brURfKmbAp0QJO9J01YlCA//U
+        x3KOfjW0P1NBN2y4RprjGeGe6BGEuQDzLlrPYuM=
+X-Google-Smtp-Source: ABdhPJwiJUPMCqWnBbIV5x5xxsO/4qntI7KoZTnqIAyLRr87ITypaM11g24i6m5gKU/156opHDiB4/9MJjwq3CgPKes=
+X-Received: by 2002:a0c:ba0e:: with SMTP id w14mr28987642qvf.222.1593676325385;
+ Thu, 02 Jul 2020 00:52:05 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1593617636-79385-5-git-send-email-jacob.jun.pan@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+References: <20200701200950.30314-1-rikard.falkeborn@gmail.com> <20200701200950.30314-3-rikard.falkeborn@gmail.com>
+In-Reply-To: <20200701200950.30314-3-rikard.falkeborn@gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 2 Jul 2020 09:51:49 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1tQn02j-MkJGhAd7udVuGcKuve0nFAhM57ifn1hTq7pA@mail.gmail.com>
+Message-ID: <CAK8P3a1tQn02j-MkJGhAd7udVuGcKuve0nFAhM57ifn1hTq7pA@mail.gmail.com>
+Subject: Re: [PATCH 2/5] hwrng: nomadik - Constify nmk_rng_ids[]
+To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:d1tmNuojY+mL4cI3CvhR2qDsP/HPRJvB0uSJsNMVYwF0zKjETWR
+ npcz9L3d9oRU7r1ro6NiUtsBerrsuovpzvIN15Sayu0QGY84xZerQBAphBvKZTHQO4u5o3b
+ dcBPd0I4c1PesJT/ymWfV7JNtIHs4cBx/02ds5/n9qPKU1gMn4mruRtK1aQr7lV7imNZmve
+ w9c05zN5jmFLHGiQAd7DQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:UsM3UdRzDus=:UqrKfHMQQQywpZ+0i+IklE
+ 9exShB5ll0IGYGN8kZvefEPCar6RUVOb3DvRL+wdBX+MV4/TdYCj7phri1dr8Re+7Hnt9Uy1W
+ HiPEQXnQZMvJFZhLq9jsp9uU4RcV0hwxTyWg7R2o8tybl0WnolCa6DZSuy74W842Ku23CVCzP
+ mPeKB7GSxYY2bKSdtlBSAABDUXCSt4Ado+MJQkxM0yxCQJMXun0j5l5AMs0xze4YrWSHvrRTR
+ 832OKpmwnWhlwd/X1nRS7mT0FtEl0M3gZOZzc83awowaSFUZygyBrBzEkALlY7Ahai+3aZVKF
+ Ta5Z/I8Q6UerNcLhHnsrmP2h4dtABqLZ7qkENqBK55UqnT9GXgdlTW1GRxge94rX2wiGjO1So
+ iIm/XOhK26/dlRG7CVYIsyiIv+DBH97qxrr8sGdrdGcDT1aQHpVaBxUx2/ib+jlQbJ6avHdyx
+ vqycD19ao8zleInIDLKsVmiZlf37xLRogwCMTrX2YIXLdL5xKvVigvEii2OBvI/hEKUoJ9wOz
+ tPx9lfv0u01iagcVZZZM6HtgluBtqFh0mFzwuTPbE6K2R0VW6BS/4l8CSI2no/GYtnRzvgafS
+ Qm+0ruyil6XVhYhe/oiXZCvSjMY5SqWOJpGTL+o1789MrrpNgyEu293FReAM2xZDn054VYChK
+ dOgEdOOCME/9NVkI2TI+z1A/9g5sExqtOliHaaMLvfWXMBzyJr45CTL0ZGSm+c7iEgpC17Uoj
+ zuVE2UKk+MDwiANed8N2bZZDN7Z0iQ7RfaXBP4OzEynCsgE9O4zsuEJ3EstLShNA0u4AKD87c
+ zOblnxct6sHLGTakJ31dEh8UfcmuN8hDVclg/wXycj9A61lFik=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jacob,
+On Wed, Jul 1, 2020 at 11:48 PM Rikard Falkeborn
+<rikard.falkeborn@gmail.com> wrote:
+>
+> nmk_rng_ids[] is not modified and can be made const to allow the
+> compiler to put it in read-only memory.
+>
+> Before:
+>    text    data     bss     dec     hex filename
+>     652     216       4     872     368 drivers/char/hw_random/nomadik-rng.o
+>
+> After:
+>    text    data     bss     dec     hex filename
+>     676     192       4     872     368 drivers/char/hw_random/nomadik-rng.o
 
-On 7/1/20 5:33 PM, Jacob Pan wrote:
-> From: Liu Yi L <yi.l.liu@intel.com>
-> 
-> Address information for device TLB invalidation comes from userspace
-> when device is directly assigned to a guest with vIOMMU support.
-> VT-d requires page aligned address. This patch checks and enforce
-> address to be page aligned, otherwise reserved bits can be set in the
-> invalidation descriptor. Unrecoverable fault will be reported due to
-> non-zero value in the reserved bits.
-on the other hand if user space sends unaligned invalidations, shouldn't
-it be reported in some way?
-> 
-> Fixes: 61a06a16e36d8 ("iommu/vt-d: Support flushing more translation
-> cache types")
-> Acked-by: Lu Baolu <baolu.lu@linux.intel.com>
-> Signed-off-by: Liu Yi L <yi.l.liu@intel.com>
-> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> 
-> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+Moving 24 bytes into the .rodata section is probably not a worth
+the change, but the patch is correct and I agree this should be
+.rodata anway.
+
+> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+
+Acked-by: Arnd Bergmann <arnd@arndb.de>
+
 > ---
->  drivers/iommu/intel/dmar.c | 20 ++++++++++++++++++--
->  1 file changed, 18 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
-> index d9f973fa1190..3899f3161071 100644
-> --- a/drivers/iommu/intel/dmar.c
-> +++ b/drivers/iommu/intel/dmar.c
-> @@ -1455,9 +1455,25 @@ void qi_flush_dev_iotlb_pasid(struct intel_iommu *iommu, u16 sid, u16 pfsid,
->  	 * Max Invs Pending (MIP) is set to 0 for now until we have DIT in
->  	 * ECAP.
->  	 */
-> -	desc.qw1 |= addr & ~mask;
-> -	if (size_order)
-> +	if (addr & ~VTD_PAGE_MASK)
-> +		pr_warn_ratelimited("Invalidate non-page aligned address %llx\n", addr);
-> +
-> +	/* Take page address */
-> +	desc.qw1 |= QI_DEV_EIOTLB_ADDR(addr);
-> +
-> +	if (size_order) {
-> +		/*
-> +		 * Existing 0s in address below size_order may be the least
-> +		 * significant bit, we must set them to 1s to avoid having
-> +		 * smaller size than desired.
-Shouldn't you test the input addr against the size_order. Aren't they
-supposed to be consistent? Otherwise one should emit a warning at least?
-> +		 */
-> +		desc.qw1 |= GENMASK_ULL(size_order + VTD_PAGE_SHIFT,
-> +					VTD_PAGE_SHIFT);
-nit: instead of working directly on .qw1, couldn't you perform all those
-manipulations directly on addr? and eventually override qw1 at the end?
-> +		/* Clear size_order bit to indicate size */
-> +		desc.qw1 &= ~mask;
-> +		/* Set the S bit to indicate flushing more than 1 page */
->  		desc.qw1 |= QI_DEV_EIOTLB_SIZE;
-> +	}
->  
->  	qi_submit_sync(iommu, &desc, 1, 0);
+>  drivers/char/hw_random/nomadik-rng.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/char/hw_random/nomadik-rng.c b/drivers/char/hw_random/nomadik-rng.c
+> index 74ed29f42e4f..b0ded41eb865 100644
+> --- a/drivers/char/hw_random/nomadik-rng.c
+> +++ b/drivers/char/hw_random/nomadik-rng.c
+> @@ -76,7 +76,7 @@ static int nmk_rng_remove(struct amba_device *dev)
+>         return 0;
 >  }
-> 
-Thanks
-
-Eric
-
+>
+> -static struct amba_id nmk_rng_ids[] = {
+> +static const struct amba_id nmk_rng_ids[] = {
+>         {
+>                 .id     = 0x000805e1,
+>                 .mask   = 0x000fffff, /* top bits are rev and cfg: accept all */
+> --
+> 2.27.0
+>
