@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24BE02129EF
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 18:44:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31B232129ED
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 18:44:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726834AbgGBQo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 12:44:57 -0400
-Received: from mga17.intel.com ([192.55.52.151]:50620 "EHLO mga17.intel.com"
+        id S1726739AbgGBQow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 12:44:52 -0400
+Received: from mga09.intel.com ([134.134.136.24]:42960 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726374AbgGBQox (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 12:44:53 -0400
-IronPort-SDR: nHUQS9GkRxcT2ioIgLaoo3XCGv3n/eh6loT+KOhTnsWTwzUO+j2O2tc37Eiu90QXCA2BEa21Ox
- vWUKriZ3P+eA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="127046390"
+        id S1726374AbgGBQow (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 12:44:52 -0400
+IronPort-SDR: t4aYe6itqftRvXSSw0JPh7+NJk45FNoNocpGL/YnYJFlaa5txsrHffgArbTbn8YgcN68TIIl3h
+ 69wnXPWYBe1w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="148498382"
 X-IronPort-AV: E=Sophos;i="5.75,304,1589266800"; 
-   d="scan'208";a="127046390"
+   d="scan'208";a="148498382"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2020 09:44:52 -0700
-IronPort-SDR: 9eoImVRv2XSgQHUlE47Gp8TxvvfpxnNlpCtCfz8dV1g36uYCIpLF/SxDzKft6bY3TFoKEG2of2
- SyGaKWrGe64w==
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2020 09:44:51 -0700
+IronPort-SDR: i3NhLhGla1TLJtx6cdRU3Gq7NArPh6JUpM2jI3nUGE5l9kemQJdcJlo5Ac32g69IgxCRcyiq/k
+ 5moSeOZZNEqQ==
 X-IronPort-AV: E=Sophos;i="5.75,304,1589266800"; 
-   d="scan'208";a="426011055"
+   d="scan'208";a="426011059"
 Received: from nzbastur-mobl1.amr.corp.intel.com (HELO pbossart-mobl3.amr.corp.intel.com) ([10.255.231.182])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2020 09:44:48 -0700
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2020 09:44:50 -0700
 From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To:     alsa-devel@alsa-project.org
 Cc:     tiwai@suse.de, broonie@kernel.org,
@@ -33,11 +33,15 @@ Cc:     tiwai@suse.de, broonie@kernel.org,
         Liam Girdwood <lgirdwood@gmail.com>,
         Jaroslav Kysela <perex@perex.cz>,
         Takashi Iwai <tiwai@suse.com>,
+        Ravulapati Vishnu vardhan rao 
+        <Vishnuvardhanrao.Ravulapati@amd.com>,
+        Akshu Agrawal <akshu.agrawal@amd.com>,
+        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
         Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
         linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 2/6] ASoC: amd: acp-rt5645: fix 'defined but not used' warning
-Date:   Thu,  2 Jul 2020 11:44:29 -0500
-Message-Id: <20200702164433.162815-3-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 3/6] ASoC: amd: raven: acp3x-pcm-dma: fix 'set but not used' warning
+Date:   Thu,  2 Jul 2020 11:44:30 -0500
+Message-Id: <20200702164433.162815-4-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200702164433.162815-1-pierre-louis.bossart@linux.intel.com>
 References: <20200702164433.162815-1-pierre-louis.bossart@linux.intel.com>
@@ -48,31 +52,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix W=1 warning
+Fix W=1 warning. the card variable is useless here.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/amd/acp-rt5645.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/amd/raven/acp3x-pcm-dma.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/sound/soc/amd/acp-rt5645.c b/sound/soc/amd/acp-rt5645.c
-index 73b31f88a6b5..87f0060e771f 100644
---- a/sound/soc/amd/acp-rt5645.c
-+++ b/sound/soc/amd/acp-rt5645.c
-@@ -182,11 +182,13 @@ static int cz_probe(struct platform_device *pdev)
- 	return 0;
- }
+diff --git a/sound/soc/amd/raven/acp3x-pcm-dma.c b/sound/soc/amd/raven/acp3x-pcm-dma.c
+index 5bd458e0fe31..1f0fe5aaab1d 100644
+--- a/sound/soc/amd/raven/acp3x-pcm-dma.c
++++ b/sound/soc/amd/raven/acp3x-pcm-dma.c
+@@ -302,14 +302,12 @@ static snd_pcm_uframes_t acp3x_dma_pointer(struct snd_soc_component *component,
+ 					   struct snd_pcm_substream *substream)
+ {
+ 	struct snd_soc_pcm_runtime *prtd;
+-	struct snd_soc_card *card;
+ 	struct i2s_stream_instance *rtd;
+ 	u32 pos;
+ 	u32 buffersize;
+ 	u64 bytescount;
  
-+#ifdef CONFIG_ACPI
- static const struct acpi_device_id cz_audio_acpi_match[] = {
- 	{ "AMDI1002", 0 },
- 	{},
- };
- MODULE_DEVICE_TABLE(acpi, cz_audio_acpi_match);
-+#endif
+ 	prtd = substream->private_data;
+-	card = prtd->card;
+ 	rtd = substream->runtime->private_data;
  
- static struct platform_driver cz_pcm_driver = {
- 	.driver = {
+ 	buffersize = frames_to_bytes(substream->runtime,
 -- 
 2.25.1
 
