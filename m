@@ -2,89 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90209212E62
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 23:01:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0A90212E6E
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 23:02:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726206AbgGBVBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 17:01:12 -0400
-Received: from mail-il1-f193.google.com ([209.85.166.193]:37639 "EHLO
-        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725954AbgGBVBL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 17:01:11 -0400
-Received: by mail-il1-f193.google.com with SMTP id r12so18254962ilh.4;
-        Thu, 02 Jul 2020 14:01:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pscTNcsjG1XyDNybUCclf+10YKpfbDpJLW+4tpO0I0g=;
-        b=DscBjMpD5Esl9EJdSnGB+jxWPVxUupU/DRz/J7S4i4zrlgVnHykRrkVbK4lRO0se79
-         YWzS41bQ3PNw2s1BqlerVl7QjqfpPCajAaAvefQpYcyx9pkMSwRW0K8ixousiD542EuO
-         6qpeHBgcDNkkUwiBPhUKhQQ5dxVkjF9KxIxV1D/1+tR5fDLih+uYI20JjJ+DqM1QScfR
-         q9NSu3mGbitNGtEcRhzQtM+wD3GIsK+BkiuIsrDHF6CH7fBe5BstWW+3ZPm9nDTw/i3C
-         and4x7nfY5nEFhA9aJ+qMq1KumI4YgE/mNGwHERdJPUQjl4NV0iMociAkt0tWhzbVyq9
-         0m4g==
-X-Gm-Message-State: AOAM531cc+JpmZwbYUUgWVFjWhZA1UNpBjDiIxyhE15US+fi/YZ11ECs
-        ZEHrIySGT7ryG76vRglTLw==
-X-Google-Smtp-Source: ABdhPJx8jwlcMouahR/BuXTgcuLkyDO9yZTlxRTMKgJ5NjIwLEuwuuawN9mS4qRzGHIaU+GVKuFSmg==
-X-Received: by 2002:a05:6e02:1043:: with SMTP id p3mr13788707ilj.245.1593723670409;
-        Thu, 02 Jul 2020 14:01:10 -0700 (PDT)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id q15sm5487720ilt.60.2020.07.02.14.01.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Jul 2020 14:01:09 -0700 (PDT)
-Received: (nullmailer pid 1687042 invoked by uid 1000);
-        Thu, 02 Jul 2020 21:01:07 -0000
-Date:   Thu, 2 Jul 2020 15:01:07 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Robin Gong <yibin.gong@nxp.com>
-Cc:     will@kernel.org, festevam@gmail.com, vkoul@kernel.org,
-        dan.j.williams@intel.com, kernel@pengutronix.de,
-        catalin.marinas@arm.com, robh+dt@kernel.org, linux-imx@nxp.com,
-        dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, angelo@sysam.it, devicetree@vger.kernel.org
-Subject: Re: [PATCH v1 6/9] dt-bindings: dma: add fsl-edma3 yaml
-Message-ID: <20200702210107.GA1686199@bogus>
-References: <1593702489-21648-1-git-send-email-yibin.gong@nxp.com>
- <1593702489-21648-7-git-send-email-yibin.gong@nxp.com>
+        id S1726244AbgGBVCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 17:02:45 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:36223 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726003AbgGBVCo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 17:02:44 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1593723764; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=N0Ded94Yw/A97ejOt/Byw9brMZzuEH1tTLERSwoMMfg=; b=e+KGmqngERNIJy0+BRmIUPi8uiOYh0EQDsHFR/FRxW5qnvH5ykuMk9h2lKzoXtkUCFQ3Zy86
+ 4tO+p81gT+CcH92ZNepYC24BchES40b4XzlmUrFN2xmZa/gXIS+9otE9ToH2bX9cFv8ES5yK
+ /HiVPmpqTNfXr+4IUc8ubhFnlNQ=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 5efe4b63117610c7ff6eed26 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 02 Jul 2020 21:02:27
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B5E81C43391; Thu,  2 Jul 2020 21:02:26 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.1.117] (ip70-179-20-127.sd.sd.cox.net [70.179.20.127])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: mdtipton)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C160DC433C6;
+        Thu,  2 Jul 2020 21:02:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C160DC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=mdtipton@codeaurora.org
+Subject: Re: [PATCH 4/4] interconnect: qcom: Fix small BW votes being
+ truncated to zero
+To:     Georgi Djakov <georgi.djakov@linaro.org>
+Cc:     bjorn.andersson@linaro.org, agross@kernel.org,
+        linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200623040814.23791-1-mdtipton@codeaurora.org>
+ <20200623040814.23791-5-mdtipton@codeaurora.org>
+ <09f21847-33bc-64fb-aeb7-df5bafa5593c@linaro.org>
+From:   Mike Tipton <mdtipton@codeaurora.org>
+Message-ID: <d093fed9-dede-93dc-2990-80769d0d4439@codeaurora.org>
+Date:   Thu, 2 Jul 2020 14:02:21 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1593702489-21648-7-git-send-email-yibin.gong@nxp.com>
+In-Reply-To: <09f21847-33bc-64fb-aeb7-df5bafa5593c@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 02 Jul 2020 23:08:06 +0800, Robin Gong wrote:
-> Add device binding doc for fsl-edma3 driver.
+On 7/2/2020 4:11 AM, Georgi Djakov wrote:
+> Hi Mike,
 > 
-> Signed-off-by: Robin Gong <yibin.gong@nxp.com>
-> ---
->  .../devicetree/bindings/dma/nxp,fsl-edma3.yaml     | 129 +++++++++++++++++++++
->  1 file changed, 129 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/dma/nxp,fsl-edma3.yaml
+> On 6/23/20 07:08, Mike Tipton wrote:
+>> Small BW votes that translate to less than a single BCM unit are
+>> currently truncated to zero. Ensure that non-zero BW requests always
+>> result in at least a vote of 1 to BCM.
+>>
+>> Fixes: 976daac4a1c5 ("interconnect: qcom: Consolidate interconnect RPMh support")
+>> Signed-off-by: Mike Tipton <mdtipton@codeaurora.org>
+>> ---
+>>   drivers/interconnect/qcom/bcm-voter.c | 27 +++++++++++++++++++--------
+>>   1 file changed, 19 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/drivers/interconnect/qcom/bcm-voter.c b/drivers/interconnect/qcom/bcm-voter.c
+>> index a68c858ca6b7..9e2612fe7fad 100644
+>> --- a/drivers/interconnect/qcom/bcm-voter.c
+>> +++ b/drivers/interconnect/qcom/bcm-voter.c
+>> @@ -54,8 +54,20 @@ static int cmp_vcd(void *priv, struct list_head *a, struct list_head *b)
+>>   		return 1;
+>>   }
+>>   
+>> +static u64 bcm_div(u64 num, u64 base)
+>> +{
+>> +	/* Ensure that small votes aren't lost. */
+>> +	if (num && num < base)
+>> +		return 1;
+>> +
+>> +	do_div(num, base);
 > 
+> do_div() does a 64-by-32 division, which will truncate these to 32-bit.
+I can change base to a u32. It doesn't need anything more than that.
 
-
-My bot found errors running 'make dt_binding_check' on your patch:
-
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/dma/nxp,fsl-edma3.example.dt.yaml: dma-controller@5a1f0000: 'power-domain-names' does not match any of the regexes: 'pinctrl-[0-9]+'
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/dma/nxp,fsl-edma3.example.dt.yaml: dma-controller@5a1f0000: interrupt-names:1: 'edma2-chan9-tx' does not match '^edma[0-2]-chan[0-31]-tx|rx+$'
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/dma/nxp,fsl-edma3.example.dt.yaml: dma-controller@5a1f0000: interrupt-names:3: 'edma2-chan11-tx' does not match '^edma[0-2]-chan[0-31]-tx|rx+$'
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/dma/nxp,fsl-edma3.example.dt.yaml: dma-controller@5a1f0000: interrupt-names:5: 'edma2-chan13-tx' does not match '^edma[0-2]-chan[0-31]-tx|rx+$'
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/dma/nxp,fsl-edma3.example.dt.yaml: dma-controller@5a1f0000: interrupt-names:7: 'edma2-chan15-tx' does not match '^edma[0-2]-chan[0-31]-tx|rx+$'
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/dma/nxp,fsl-edma3.example.dt.yaml: dma-controller@5a1f0000: reg: [[1512570880, 65536], [1512636416, 65536], [1512701952, 65536], [1512767488, 65536], [1512833024, 65536], [1512898560, 65536], [1512964096, 65536], [1513029632, 65536]] is too long
-
-
-See https://patchwork.ozlabs.org/patch/1321003
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure dt-schema is up to date:
-
-pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
-
-Please check and re-submit.
-
+> 
+>> +
+>> +	return num;
+>> +}
+>> +
+>>   static void bcm_aggregate(struct qcom_icc_bcm *bcm)
+>>   {
+>> +	struct qcom_icc_node *node;
+>>   	size_t i, bucket;
+>>   	u64 agg_avg[QCOM_ICC_NUM_BUCKETS] = {0};
+>>   	u64 agg_peak[QCOM_ICC_NUM_BUCKETS] = {0};
+>> @@ -63,22 +75,21 @@ static void bcm_aggregate(struct qcom_icc_bcm *bcm)
+>>   
+>>   	for (bucket = 0; bucket < QCOM_ICC_NUM_BUCKETS; bucket++) {
+>>   		for (i = 0; i < bcm->num_nodes; i++) {
+>> -			temp = bcm->nodes[i]->sum_avg[bucket] * bcm->aux_data.width;
+>> -			do_div(temp, bcm->nodes[i]->buswidth * bcm->nodes[i]->channels);
+>> +			node = bcm->nodes[i];
+>> +			temp = bcm_div(node->sum_avg[bucket] * bcm->aux_data.width,
+>> +				       node->buswidth * node->channels);
+>>   			agg_avg[bucket] = max(agg_avg[bucket], temp);
+>>   
+>> -			temp = bcm->nodes[i]->max_peak[bucket] * bcm->aux_data.width;
+>> -			do_div(temp, bcm->nodes[i]->buswidth);
+>> +			temp = bcm_div(node->max_peak[bucket] * bcm->aux_data.width,
+>> +				       node->buswidth);
+>>   			agg_peak[bucket] = max(agg_peak[bucket], temp);
+>>   		}
+>>   
+>>   		temp = agg_avg[bucket] * bcm->vote_scale;
+>> -		do_div(temp, bcm->aux_data.unit);
+>> -		bcm->vote_x[bucket] = temp;
+>> +		bcm->vote_x[bucket] = bcm_div(temp, bcm->aux_data.unit);
+>>   
+>>   		temp = agg_peak[bucket] * bcm->vote_scale;
+>> -		do_div(temp, bcm->aux_data.unit);
+>> -		bcm->vote_y[bucket] = temp;
+>> +		bcm->vote_y[bucket] = bcm_div(temp, bcm->aux_data.unit);
+>>   	}
+>>   
+>>   	if (bcm->keepalive && bcm->vote_x[QCOM_ICC_BUCKET_AMC] == 0 &&
+>>
+> 
+> The rest looks good.
+> 
+> Thanks,
+> Georgi
+> 
