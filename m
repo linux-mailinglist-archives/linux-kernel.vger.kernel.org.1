@@ -2,193 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89A43212AFF
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 19:13:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F0BA212B31
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 19:25:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727083AbgGBRN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 13:13:26 -0400
-Received: from mail-co1nam11on2051.outbound.protection.outlook.com ([40.107.220.51]:6033
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726865AbgGBRNY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 13:13:24 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AWyt31VFsJfq3zc5l+DWfPZlmUJ3Pmlb2jVydo8l94jWu8tezp35TUWVq0p4HPkAdu0PjqJpSnuhjbArMJE9+6jKNzdAcQ3RcE6/cUUy1M/7MXOSlY8Q1/teG6XBkluDwRR7UQ0Y6XJSnJrJksiIIEoVZwDRNosldyJNlXXrIZ1vM379nm2i9sIV1P5GduKOmQnPyyF0oUsrRrQUnbSBn3ehcqDFEyPzlhH8TLUyfGaZ5Q6dFwhe/vF/h5qSLGbHh52qZUASwtz9D6ORCleWkutQAbmcOP7epy3tojK+tWicBtgPQl9TIgNkaJY79/rE6IPf35bdIdZCe2xQLtFhcA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KA3tlyiIJAjO1PnWEeoltXP+m0H4Wcn22hmM1Y9arpk=;
- b=TAvSnGRaIUz90eD925v1Y/w/9WINzgJtkh+pGUIHVkpxPm7Py2YeybFPwwjweSZV6TIC02OAqVFZ30op+eFQjPeP7P/FgK6W9XKPV9Z++e7meCOzk0VNSik7C1PfG+sChu/MRIi9O39MbuRCEgVcT0qgIKKiwovvizwt0e5kkirwqr/Z0zu6qkfdvna9vO8MtG6I3AYhAjQIYPHq44WiDiYHmOtpQBP+qfFCLgDJ8FCBnCn6V1kKtIylGjbCpKHQqqpRj+XJYkGZTFcCPGE7lkNAB7W7N1z2fytEnHz8MNYkuzg+Gaq8Z6Ffe7xsqg4GAXGWne9PLw9MtL/rvYmMNQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none (sender ip is
- 165.204.84.17) smtp.rcpttodomain=alsa-project.org smtp.mailfrom=amd.com;
- dmarc=permerror action=none header.from=amd.com; dkim=none (message not
- signed); arc=none
+        id S1727922AbgGBRZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 13:25:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46692 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726829AbgGBRZq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 13:25:46 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55829C08C5C1;
+        Thu,  2 Jul 2020 10:25:46 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id dp18so30693227ejc.8;
+        Thu, 02 Jul 2020 10:25:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KA3tlyiIJAjO1PnWEeoltXP+m0H4Wcn22hmM1Y9arpk=;
- b=ujmTdaceZts98nyoxJlVsIXGh+15XNmT8KHcNPAzrpmiFyTforQFQ8pI/cfY35BNrm7BMY5PlgooibXOrPj2rSq3HRAD9ju1lJFvR7I0paDfdiOZUwoIyK5D3O5nRZ+cwqZrlX+nuDL/AwnRUyCLXhT+J2Bs+41EJ5WOpUU63uI=
-Received: from MWHPR15CA0056.namprd15.prod.outlook.com (2603:10b6:301:4c::18)
- by MWHPR12MB1261.namprd12.prod.outlook.com (2603:10b6:300:10::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.24; Thu, 2 Jul
- 2020 17:13:20 +0000
-Received: from CO1NAM11FT050.eop-nam11.prod.protection.outlook.com
- (2603:10b6:301:4c:cafe::d2) by MWHPR15CA0056.outlook.office365.com
- (2603:10b6:301:4c::18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.24 via Frontend
- Transport; Thu, 2 Jul 2020 17:13:20 +0000
-X-MS-Exchange-Authentication-Results: spf=none (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; alsa-project.org; dkim=none (message not signed)
- header.d=none;alsa-project.org; dmarc=permerror action=none
- header.from=amd.com;
-Received-SPF: None (protection.outlook.com: amd.com does not designate
- permitted sender hosts)
-Received: from SATLEXMB02.amd.com (165.204.84.17) by
- CO1NAM11FT050.mail.protection.outlook.com (10.13.174.79) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.3153.24 via Frontend Transport; Thu, 2 Jul 2020 17:13:19 +0000
-Received: from SATLEXMB05.amd.com (10.181.40.146) by SATLEXMB02.amd.com
- (10.181.40.143) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5; Thu, 2 Jul 2020
- 12:13:18 -0500
-Received: from SATLEXMB02.amd.com (10.181.40.143) by SATLEXMB05.amd.com
- (10.181.40.146) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5; Thu, 2 Jul 2020
- 12:13:18 -0500
-Received: from LinuxHost.amd.com (10.180.168.240) by SATLEXMB02.amd.com
- (10.181.40.143) with Microsoft SMTP Server id 15.1.1713.5 via Frontend
- Transport; Thu, 2 Jul 2020 12:13:15 -0500
-From:   Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-To:     <alsa-devel@alsa-project.org>
-CC:     <perex@perex.cz>, <hui.wang@canonical.com>,
-        <Alexander.Deucher@amd.com>,
-        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: [RESEND PATCH V3] ASoC: amd: add logic to check dmic hardware runtime
-Date:   Thu, 2 Jul 2020 22:56:52 +0530
-Message-ID: <1593710826-1106-1-git-send-email-Vijendar.Mukunda@amd.com>
-X-Mailer: git-send-email 2.7.4
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NnTRoWjTfYr2A0Uu+ecfb7UTjmUGA+TKhWtn9pkCD0I=;
+        b=MrrLRE8T6J2vS9TQARvXwu8USGzuPxgmYm6BHRL88aSYWsp3/l4n6dmpJvUr0iagtS
+         eFsSyzjvWmZt7fgTlOsHnBEWVciouvhP8n4iPEo9N6bPJ5ajUdKIz7gTXUfHeqTrG1iT
+         QmiJ1bSxWZHNQxL5T2kf4oWF+kWadTdaAkTQmBCKUpdSCS7IBVMNoBe5XTOgjQisemaS
+         IE+o+wVwfVuf5/+BljBz1U7dGInj9bsIDlhHgSB3QJroDQNGjUOByJ/OBvw2a0ubKTZn
+         8c7+LXrloX9CIcVuRx2Ozx/yqVS8WWtva1A1SpxCl3B586MkWlsXTPOqi4UsMZ+yjLEC
+         CL9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NnTRoWjTfYr2A0Uu+ecfb7UTjmUGA+TKhWtn9pkCD0I=;
+        b=nkcSW4O5XJsRcQV08qu3U1pVqmAXdITtipWeok+V4uU+18hxeyH7k3/vUchTsqpBMf
+         Ur1e6LanA2Tvo+EpzOhx3aH9Qiq70XKq5beon0gRYXLSRIsccktn/67ejdl8UhP7nX6a
+         Onq+nstbMs6ST3OegnUxln2oG7mSCv5O5C/asZuHCadt8jRssZ+yqKEy2JqtJhFrbX0y
+         oWQ1EApHlqiRWZpVaCCsFhiAfnm0JGMqprfr6KsDoQaVo38kOu4+obzgOm/Dc2pHUCn7
+         4wf0ocg8Sf9ub04o3QLUw+a6XjiwitAl9ZzrHpEq07KB0avZjgN8OEeiM9LjjhDzsmdm
+         3brw==
+X-Gm-Message-State: AOAM532A+nHYOyI96JRr+3DtoNMjb4yvP9uhbpz2Lk/p1vrB8BjMZbuJ
+        TSv/lTVvN4HgBQyiadFGMVhb1BNhLLQ=
+X-Google-Smtp-Source: ABdhPJwiP2P0UIlaSVwrUUaua3N8zGJ8j3nQZeobo/IS6TbPfAs6R7ZnqLBuwhXOUApwiNHibGuQ+w==
+X-Received: by 2002:a17:907:20c4:: with SMTP id qq4mr27836954ejb.85.1593710745093;
+        Thu, 02 Jul 2020 10:25:45 -0700 (PDT)
+Received: from localhost.localdomain ([2a04:2413:8140:6d80:2142:c138:da0:5086])
+        by smtp.gmail.com with ESMTPSA id p4sm7427033eji.123.2020.07.02.10.25.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Jul 2020 10:25:44 -0700 (PDT)
+From:   Adrian Pop <pop.adrian61@gmail.com>
+To:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>
+Cc:     linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Adrian Pop <pop.adrian61@gmail.com>
+Subject: [PATCH v2 1/2] ARM: dt-bindings: stm32: Add missing DSI clock.
+Date:   Thu,  2 Jul 2020 20:27:13 +0300
+Message-Id: <20200702172714.158786-1-pop.adrian61@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SATLEXMB02.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFTY:;SFS:(4636009)(136003)(396003)(376002)(39860400002)(346002)(46966005)(81166007)(2906002)(82310400002)(86362001)(5660300002)(83380400001)(6916009)(8936002)(8676002)(70586007)(70206006)(36756003)(356005)(186003)(26005)(426003)(336012)(4326008)(2616005)(316002)(54906003)(478600001)(7696005)(6666004)(47076004)(82740400003);DIR:OUT;SFP:1101;
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 90459b76-77c6-4d12-f26e-08d81eab37ce
-X-MS-TrafficTypeDiagnostic: MWHPR12MB1261:
-X-Microsoft-Antispam-PRVS: <MWHPR12MB1261897D08948FA0E0666407976D0@MWHPR12MB1261.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-Forefront-PRVS: 0452022BE1
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /N3Kadan+NMAA3GjvKk7nLN7J/Cq2xICrtFn8PH137f3Cn+tDUl3feB0YD2qNvjE5E/ZJK8B+Zsn47QGEN0+4SEh3u8se5mb50raFCGPJ+REwlmHwZQAWpzzwBg6SxtFi26CXrl0nOy8XILJeU+YydgodbpX7/lpOZ44CVBVrbdymxCsYZ6mF+hmV3WefXBNFOClc5sKA/XvHWPbG99HEMsYg16QHS6e898MJZacWVdTT/fuXirRT3L4UiIdN8zp7rcdJ/0o6XYyG+FSJ+iQ6PfluVgELke1Q+43jiIl4x332WZP+7cgurt8xSSXuKU1NhbEUjabqLENl5S2SICp8O08ucqgk473LSYpN/zmnt24irzcIcnFfsisiDnuDFdXQXZZFus5ZoTfqz6/85imHg==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jul 2020 17:13:19.5766
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 90459b76-77c6-4d12-f26e-08d81eab37ce
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB02.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT050.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1261
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add logic to check DMIC hardware exists or not on
-the platform at runtime.
-
-Add module param for overriding DMIC hardware check
-at runtime.
-
-Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Signed-off-by: Adrian Pop <pop.adrian61@gmail.com>
 ---
-v3: changed  dmic_acpi_check module param as bint
-v2: changed module param usage -1 as default, 0 - skip, 1 - force
- sound/soc/amd/renoir/rn-pci-acp3x.c | 29 +++++++++++++++++++++++++++++
- sound/soc/amd/renoir/rn_acp3x.h     |  2 ++
- 2 files changed, 31 insertions(+)
+ include/dt-bindings/mfd/stm32f7-rcc.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/amd/renoir/rn-pci-acp3x.c b/sound/soc/amd/renoir/rn-pci-acp3x.c
-index 859ed67..d1faea5 100644
---- a/sound/soc/amd/renoir/rn-pci-acp3x.c
-+++ b/sound/soc/amd/renoir/rn-pci-acp3x.c
-@@ -5,6 +5,7 @@
- //Copyright 2020 Advanced Micro Devices, Inc.
+diff --git a/include/dt-bindings/mfd/stm32f7-rcc.h b/include/dt-bindings/mfd/stm32f7-rcc.h
+index a90f3613c584..ba5cb7456ee4 100644
+--- a/include/dt-bindings/mfd/stm32f7-rcc.h
++++ b/include/dt-bindings/mfd/stm32f7-rcc.h
+@@ -107,6 +107,7 @@
+ #define STM32F7_RCC_APB2_SAI1		22
+ #define STM32F7_RCC_APB2_SAI2		23
+ #define STM32F7_RCC_APB2_LTDC		26
++#define STM32F7_RCC_APB2_DSI		27
  
- #include <linux/pci.h>
-+#include <linux/acpi.h>
- #include <linux/module.h>
- #include <linux/io.h>
- #include <linux/delay.h>
-@@ -18,6 +19,16 @@ static int acp_power_gating;
- module_param(acp_power_gating, int, 0644);
- MODULE_PARM_DESC(acp_power_gating, "Enable acp power gating");
- 
-+/**
-+ * dmic_acpi_check = -1 - Checks ACPI method to know DMIC hardware status runtime
-+ *                 = 0 - Skips the DMIC device creation and returns probe failure
-+ *                 = 1 - Assumes that platform has DMIC support and skips ACPI
-+ *                       method check
-+ */
-+static int dmic_acpi_check = ACP_DMIC_AUTO;
-+module_param(dmic_acpi_check, bint, 0644);
-+MODULE_PARM_DESC(dmic_acpi_check, "checks Dmic hardware runtime");
-+
- struct acp_dev_data {
- 	void __iomem *acp_base;
- 	struct resource *res;
-@@ -157,6 +168,8 @@ static int snd_rn_acp_probe(struct pci_dev *pci,
- {
- 	struct acp_dev_data *adata;
- 	struct platform_device_info pdevinfo[ACP_DEVS];
-+	acpi_handle handle;
-+	acpi_integer dmic_status;
- 	unsigned int irqflags;
- 	int ret, index;
- 	u32 addr;
-@@ -201,6 +214,22 @@ static int snd_rn_acp_probe(struct pci_dev *pci,
- 	if (ret)
- 		goto disable_msi;
- 
-+	if (!dmic_acpi_check) {
-+		ret = -ENODEV;
-+		goto de_init;
-+	} else if (dmic_acpi_check == ACP_DMIC_AUTO) {
-+		handle = ACPI_HANDLE(&pci->dev);
-+		ret = acpi_evaluate_integer(handle, "_WOV", NULL, &dmic_status);
-+		if (ACPI_FAILURE(ret)) {
-+			ret = -EINVAL;
-+			goto de_init;
-+		}
-+		if (!dmic_status) {
-+			ret = -ENODEV;
-+			goto de_init;
-+		}
-+	}
-+
- 	adata->res = devm_kzalloc(&pci->dev,
- 				  sizeof(struct resource) * 2,
- 				  GFP_KERNEL);
-diff --git a/sound/soc/amd/renoir/rn_acp3x.h b/sound/soc/amd/renoir/rn_acp3x.h
-index 75228e3..1462039 100644
---- a/sound/soc/amd/renoir/rn_acp3x.h
-+++ b/sound/soc/amd/renoir/rn_acp3x.h
-@@ -55,6 +55,8 @@
- 
- #define MAX_BUFFER (CAPTURE_MAX_PERIOD_SIZE * CAPTURE_MAX_NUM_PERIODS)
- #define MIN_BUFFER MAX_BUFFER
-+#define	ACP_DMIC_AUTO   -1
-+
- struct pdm_dev_data {
- 	u32 pdm_irq;
- 	void __iomem *acp_base;
+ #define STM32F7_APB2_RESET(bit)	(STM32F7_RCC_APB2_##bit + (0x24 * 8))
+ #define STM32F7_APB2_CLOCK(bit)	(STM32F7_RCC_APB2_##bit + 0xA0)
 -- 
-2.7.4
+2.27.0
 
