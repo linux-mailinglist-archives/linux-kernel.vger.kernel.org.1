@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F174921196E
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 03:37:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3980F2118A1
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 03:36:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729139AbgGBBe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 21:34:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54226 "EHLO mail.kernel.org"
+        id S1728333AbgGBBZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 21:25:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54350 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728410AbgGBBXh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 21:23:37 -0400
+        id S1728435AbgGBBXm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 21:23:42 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DE7212088E;
-        Thu,  2 Jul 2020 01:23:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4B6172088E;
+        Thu,  2 Jul 2020 01:23:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593653017;
-        bh=YTaFIXKUgmcdP1e9IE1EuXcT+y6FsRB2iZKzwevw40I=;
+        s=default; t=1593653021;
+        bh=pP6UoV5HtTEawae4zhlirnmneCJYpIEdWrhtJ3aklGY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SFE+0cW5RBNlPt8/ttmNZhznXFnqv/ynMlpUqZTnr1AglOFUZaDkKpdVSiBjjV0CU
-         JhHtnSUuYOl2B31rWtemc9tBoCcbQ6nUo98GLFZJHXShbidS0tlaCeh6GzSsQtsF5y
-         D3gWAVZDG72s8kLjUSamgGYBT5ZhQ+FX0KH6m8Tw=
+        b=bHRMATpt84iWLYN9eUYC2h3eWuCBi+zyGmS6lYieDLEDsiJ5qZmE3EKlqnjPmHk2q
+         AWRCQgbVQtTmQnUd0aBEPS7Y1w9mjONye13VgxZhn0+IASstx6zhff2gICQA6USxJQ
+         zFbu73SXRTABGPPjTKeyT4+TS/fCjgNbJTh9S7gw=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Emil Velikov <emil.l.velikov@gmail.com>,
-        Sasha Levin <sashal@kernel.org>,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 5.7 34/53] drm: panel-orientation-quirks: Use generic orientation-data for Acer S1003
-Date:   Wed,  1 Jul 2020 21:21:43 -0400
-Message-Id: <20200702012202.2700645-34-sashal@kernel.org>
+Cc:     Zhang Xiaoxu <zhangxiaoxu5@huawei.com>,
+        Hulk Robot <hulkci@huawei.com>,
+        Steve French <stfrench@microsoft.com>,
+        Ronnie Sahlberg <lsahlber@redhat.com>,
+        Sasha Levin <sashal@kernel.org>, linux-cifs@vger.kernel.org,
+        samba-technical@lists.samba.org
+Subject: [PATCH AUTOSEL 5.7 37/53] cifs: Fix double add page to memcg when cifs_readpages
+Date:   Wed,  1 Jul 2020 21:21:46 -0400
+Message-Id: <20200702012202.2700645-37-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200702012202.2700645-1-sashal@kernel.org>
 References: <20200702012202.2700645-1-sashal@kernel.org>
@@ -44,50 +46,143 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
 
-[ Upstream commit a05caf9e62a85d12da27e814ac13195f4683f21c ]
+[ Upstream commit 95a3d8f3af9b0d63b43f221b630beaab9739d13a ]
 
-The Acer S1003 has proper DMI strings for sys-vendor and product-name,
-so we do not need to match by BIOS-date.
+When xfstests generic/451, there is an BUG at mm/memcontrol.c:
+  page:ffffea000560f2c0 refcount:2 mapcount:0 mapping:000000008544e0ea
+       index:0xf
+  mapping->aops:cifs_addr_ops dentry name:"tst-aio-dio-cycle-write.451"
+  flags: 0x2fffff80000001(locked)
+  raw: 002fffff80000001 ffffc90002023c50 ffffea0005280088 ffff88815cda0210
+  raw: 000000000000000f 0000000000000000 00000002ffffffff ffff88817287d000
+  page dumped because: VM_BUG_ON_PAGE(page->mem_cgroup)
+  page->mem_cgroup:ffff88817287d000
+  ------------[ cut here ]------------
+  kernel BUG at mm/memcontrol.c:2659!
+  invalid opcode: 0000 [#1] SMP
+  CPU: 2 PID: 2038 Comm: xfs_io Not tainted 5.8.0-rc1 #44
+  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20190727_
+    073836-buildvm-ppc64le-16.ppc.4
+  RIP: 0010:commit_charge+0x35/0x50
+  Code: 0d 48 83 05 54 b2 02 05 01 48 89 77 38 c3 48 c7
+        c6 78 4a ea ba 48 83 05 38 b2 02 05 01 e8 63 0d9
+  RSP: 0018:ffffc90002023a50 EFLAGS: 00010202
+  RAX: 0000000000000000 RBX: ffff88817287d000 RCX: 0000000000000000
+  RDX: 0000000000000000 RSI: ffff88817ac97ea0 RDI: ffff88817ac97ea0
+  RBP: ffffea000560f2c0 R08: 0000000000000203 R09: 0000000000000005
+  R10: 0000000000000030 R11: ffffc900020237a8 R12: 0000000000000000
+  R13: 0000000000000001 R14: 0000000000000001 R15: ffff88815a1272c0
+  FS:  00007f5071ab0800(0000) GS:ffff88817ac80000(0000) knlGS:0000000000000000
+  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  CR2: 000055efcd5ca000 CR3: 000000015d312000 CR4: 00000000000006e0
+  DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+  DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+  Call Trace:
+   mem_cgroup_charge+0x166/0x4f0
+   __add_to_page_cache_locked+0x4a9/0x710
+   add_to_page_cache_locked+0x15/0x20
+   cifs_readpages+0x217/0x1270
+   read_pages+0x29a/0x670
+   page_cache_readahead_unbounded+0x24f/0x390
+   __do_page_cache_readahead+0x3f/0x60
+   ondemand_readahead+0x1f1/0x470
+   page_cache_async_readahead+0x14c/0x170
+   generic_file_buffered_read+0x5df/0x1100
+   generic_file_read_iter+0x10c/0x1d0
+   cifs_strict_readv+0x139/0x170
+   new_sync_read+0x164/0x250
+   __vfs_read+0x39/0x60
+   vfs_read+0xb5/0x1e0
+   ksys_pread64+0x85/0xf0
+   __x64_sys_pread64+0x22/0x30
+   do_syscall_64+0x69/0x150
+   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+  RIP: 0033:0x7f5071fcb1af
+  Code: Bad RIP value.
+  RSP: 002b:00007ffde2cdb8e0 EFLAGS: 00000293 ORIG_RAX: 0000000000000011
+  RAX: ffffffffffffffda RBX: 00007ffde2cdb990 RCX: 00007f5071fcb1af
+  RDX: 0000000000001000 RSI: 000055efcd5ca000 RDI: 0000000000000003
+  RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000000
+  R10: 0000000000001000 R11: 0000000000000293 R12: 0000000000000001
+  R13: 000000000009f000 R14: 0000000000000000 R15: 0000000000001000
+  Modules linked in:
+  ---[ end trace 725fa14a3e1af65c ]---
 
-This means that the Acer S1003 can use the generic lcd800x1280_rightside_up
-drm_dmi_panel_orientation_data struct which is also used by other quirks.
+Since commit 3fea5a499d57 ("mm: memcontrol: convert page cache to a new
+mem_cgroup_charge() API") not cancel the page charge, the pages maybe
+double add to pagecache:
+thread1                       | thread2
+cifs_readpages
+readpages_get_pages
+ add_to_page_cache_locked(head,index=n)=0
+                              | readpages_get_pages
+                              | add_to_page_cache_locked(head,index=n+1)=0
+ add_to_page_cache_locked(head, index=n+1)=-EEXIST
+ then, will next loop with list head page's
+ index=n+1 and the page->mapping not NULL
+readpages_get_pages
+add_to_page_cache_locked(head, index=n+1)
+ commit_charge
+  VM_BUG_ON_PAGE
 
-Reviewed-by: Emil Velikov <emil.l.velikov@gmail.com>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200531093025.28050-2-hdegoede@redhat.com
+So, we should not do the next loop when any page add to page cache
+failed.
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
+Signed-off-by: Steve French <stfrench@microsoft.com>
+Acked-by: Ronnie Sahlberg <lsahlber@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/drm_panel_orientation_quirks.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+ fs/cifs/file.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/drm_panel_orientation_quirks.c b/drivers/gpu/drm/drm_panel_orientation_quirks.c
-index d11d83703931e..d00ea384dcbfe 100644
---- a/drivers/gpu/drm/drm_panel_orientation_quirks.c
-+++ b/drivers/gpu/drm/drm_panel_orientation_quirks.c
-@@ -30,12 +30,6 @@ struct drm_dmi_panel_orientation_data {
- 	int orientation;
- };
+diff --git a/fs/cifs/file.c b/fs/cifs/file.c
+index 75ddce8ef456d..bc958fdb0143f 100644
+--- a/fs/cifs/file.c
++++ b/fs/cifs/file.c
+@@ -4332,7 +4332,8 @@ readpages_get_pages(struct address_space *mapping, struct list_head *page_list,
+ 			break;
  
--static const struct drm_dmi_panel_orientation_data acer_s1003 = {
--	.width = 800,
--	.height = 1280,
--	.orientation = DRM_MODE_PANEL_ORIENTATION_RIGHT_UP,
--};
--
- static const struct drm_dmi_panel_orientation_data asus_t100ha = {
- 	.width = 800,
- 	.height = 1280,
-@@ -114,7 +108,7 @@ static const struct dmi_system_id orientation_data[] = {
- 		  DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Acer"),
- 		  DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "One S1003"),
- 		},
--		.driver_data = (void *)&acer_s1003,
-+		.driver_data = (void *)&lcd800x1280_rightside_up,
- 	}, {	/* Asus T100HA */
- 		.matches = {
- 		  DMI_EXACT_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+ 		__SetPageLocked(page);
+-		if (add_to_page_cache_locked(page, mapping, page->index, gfp)) {
++		rc = add_to_page_cache_locked(page, mapping, page->index, gfp);
++		if (rc) {
+ 			__ClearPageLocked(page);
+ 			break;
+ 		}
+@@ -4348,6 +4349,7 @@ static int cifs_readpages(struct file *file, struct address_space *mapping,
+ 	struct list_head *page_list, unsigned num_pages)
+ {
+ 	int rc;
++	int err = 0;
+ 	struct list_head tmplist;
+ 	struct cifsFileInfo *open_file = file->private_data;
+ 	struct cifs_sb_info *cifs_sb = CIFS_FILE_SB(file);
+@@ -4392,7 +4394,7 @@ static int cifs_readpages(struct file *file, struct address_space *mapping,
+ 	 * the order of declining indexes. When we put the pages in
+ 	 * the rdata->pages, then we want them in increasing order.
+ 	 */
+-	while (!list_empty(page_list)) {
++	while (!list_empty(page_list) && !err) {
+ 		unsigned int i, nr_pages, bytes, rsize;
+ 		loff_t offset;
+ 		struct page *page, *tpage;
+@@ -4425,9 +4427,10 @@ static int cifs_readpages(struct file *file, struct address_space *mapping,
+ 			return 0;
+ 		}
+ 
+-		rc = readpages_get_pages(mapping, page_list, rsize, &tmplist,
++		nr_pages = 0;
++		err = readpages_get_pages(mapping, page_list, rsize, &tmplist,
+ 					 &nr_pages, &offset, &bytes);
+-		if (rc) {
++		if (!nr_pages) {
+ 			add_credits_and_wake_if(server, credits, 0);
+ 			break;
+ 		}
 -- 
 2.25.1
 
