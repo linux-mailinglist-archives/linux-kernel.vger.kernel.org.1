@@ -2,96 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E7392129C1
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 18:38:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCBBE2129DA
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 18:38:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726948AbgGBQh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 12:37:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39286 "EHLO
+        id S1726972AbgGBQil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 12:38:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726912AbgGBQhx (ORCPT
+        with ESMTP id S1726747AbgGBQik (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 12:37:53 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C982C08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 09:37:53 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id g75so27701827wme.5
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 09:37:53 -0700 (PDT)
+        Thu, 2 Jul 2020 12:38:40 -0400
+Received: from mail-ua1-x943.google.com (mail-ua1-x943.google.com [IPv6:2607:f8b0:4864:20::943])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5331EC08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 09:38:40 -0700 (PDT)
+Received: by mail-ua1-x943.google.com with SMTP id b13so9122617uav.3
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 09:38:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fnuWmlXLjirzYouN6+gZo7kUrpDYboNODzPAe5CcqpQ=;
-        b=ve3ytCGDue3yKA4w4IeO9pBH60YZ2lezY/MIWMAeI8GC8DhvGZtRWivTpbJbJ+tXjZ
-         APwXScg0Ro0qDkuU5u24m1rYjO3lPuAe4YaLbhPgr1EIbSXhfq7llLvYRx6rRuym2R6o
-         grxmhiP8D4WVq1zXmYH8yCV+CYFxzVVxhEWf41cduprGGFqY5+K+BuHpVgTxbPLj8inb
-         tIYQIDP/6ovb8uLn3ysDaSemvtMxKK1JAIaz3/Abe5oxhgcVcd9mqzOGi3uNZRm3mhzJ
-         md+hEZAcI7iCGRl6yzsX/x37D+qVz9LsystgrRp03g1h8JRK/6jzIAdot5t3WEcNORsZ
-         r7Eg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FEtyZGHGPJIZFNjI/Ip4xEzWQIwRU4IYgLEED0Ona/I=;
+        b=jo67aa/lHzYqjfYskLWKW5quEITA5FiC6PWEwsrYI0aMCYXg4HY7LncYRG9WkKyXDj
+         7BOU8BGXvkvEN2Q3XjgBl5MKhKWUMKGtaCA7meltTOvUmo0nm1QZurL7IYfJGwqnR8dm
+         c41ogPba76PP5CTQrvGAHBqF70Qu9M4yFRZSG7CUKlo+tp0GsaGMt79ZKwyBgAr6NDiK
+         rGrUPl8FW4kvGT+0gKpgTOHJ1422EOyUD/ab/axNgRiQMdrLLFYdTkHa6uKWZZsl87iE
+         +3pVhBssylZ8qgB4tO80LGaZAdWXdcmPQqF2rc6o4BbLErNMrD9Apy3l5feTNLqbmDOP
+         QBxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fnuWmlXLjirzYouN6+gZo7kUrpDYboNODzPAe5CcqpQ=;
-        b=P8hvFHef/+0ozg3FZ65kkK8hWMQj6lMJSYTKNz6QTMfbfkUi/bZadRjyDgBEPCSw3n
-         NUKBx9TeSJX1scGW9UpE7/H4yk1P6j7RHe4lwnKRh+7lEcSokh/MlfXtNJtjDyVeTXKw
-         7yJUEEUQ5OfpeWsKlVbwvh4y4vF5AvHmIJ6avC+sRwak40Lgculq++h4HaeYsO1J6DmZ
-         1otiGazCGBgJb7EbDvg+SSScuVR6koH/GRlE2FCCc1t3wldr4TXD+Yr0CttZc0M8HBvW
-         0kHAegi2JeL5ByBaQgruCLW7Fqhx8a6rnor8F63JAACYP98WOcY0Ex80IslOKdi9oHER
-         pFPQ==
-X-Gm-Message-State: AOAM530OLFtUH6M6rEt1LtaWV2LZBI8yRIwNOyaFOAnECRjSym49abKI
-        Hf1gWz0A8xgXBs14OttRwB32RA==
-X-Google-Smtp-Source: ABdhPJxIFC+lrryIN81TaC5Mkvjoi8Nger8ERK6Pbz7y69ACzpAiwuCqd7taGuAJSz6C6AapmDEfEw==
-X-Received: by 2002:a7b:c38c:: with SMTP id s12mr32283269wmj.136.1593707871931;
-        Thu, 02 Jul 2020 09:37:51 -0700 (PDT)
-Received: from google.com ([2a00:79e0:d:110:f693:9fff:fef4:a7ef])
-        by smtp.gmail.com with ESMTPSA id z8sm8954938wmg.39.2020.07.02.09.37.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Jul 2020 09:37:51 -0700 (PDT)
-Date:   Thu, 2 Jul 2020 17:37:48 +0100
-From:   Quentin Perret <qperret@google.com>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
-        peterz@infradead.org, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, morten.rasmussen@arm.com
-Subject: Re: [PATCH v3 2/7] sched/topology: Define and assign sched_domain
- flag metadata
-Message-ID: <20200702163748.GA1125675@google.com>
-References: <20200701190656.10126-1-valentin.schneider@arm.com>
- <20200701190656.10126-3-valentin.schneider@arm.com>
- <20200702121536.GA765585@google.com>
- <jhjk0zm7zv8.mognet@arm.com>
- <20200702154514.GA1072702@google.com>
- <jhjfta9994q.mognet@arm.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FEtyZGHGPJIZFNjI/Ip4xEzWQIwRU4IYgLEED0Ona/I=;
+        b=FTaOqPmqDlwNGsa7SagWkgv91qG0tXwBwXV8s7V5zLBmI+1Ghula9rwpfIRLy7e6JF
+         sNBuwqOHInOIMr4YFE7VrPDNMylDrec9qrTOtiv/kKIS2SxFfR4l7UIOewmPVMlzcE1t
+         fSZaT4PFvvdACa3Atk4WqDRgjH5F9RdilGwThuyYm1gVuP0ZICgdEAB1zYn02tbAi6pP
+         r2Ov7iQz9ZlvGY7d5RbA7kdlNTAd3jbQWAXe1xCRMcqqeFKpWf+I672oLTMg8oUWmAeW
+         hF/Odre5NLJc6LqDEF9JbkrIS8DH6jPIh91oNQ+2jg+zTTOKKZR4Nl8oMHZQpraJzTRU
+         vLaw==
+X-Gm-Message-State: AOAM533W0AuoqJjlc6UI0gGl9YIctoENOx+p8kWBUUEGONytqAifGLS5
+        PowHozZFukSd+Kj3dvES3u0/yR0qNe0ToAyLCMN3Kg==
+X-Google-Smtp-Source: ABdhPJzy3R8feg5WOHFZEWnBC021WeM1muKk3BvjvajYrjfmItC3J16JyyfE80+c2pVrKZr1W0y8O2p4UVxT2Y/Hars=
+X-Received: by 2002:ab0:6510:: with SMTP id w16mr14005307uam.97.1593707919367;
+ Thu, 02 Jul 2020 09:38:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <jhjfta9994q.mognet@arm.com>
+References: <20200630174350.2842555-1-linchuyuan@google.com>
+ <20200702014223.4096977-1-linchuyuan@google.com> <20200702051453.GA235128@roeck-us.net>
+In-Reply-To: <20200702051453.GA235128@roeck-us.net>
+From:   Chu Lin <linchuyuan@google.com>
+Date:   Thu, 2 Jul 2020 09:38:28 -0700
+Message-ID: <CAKCA56D-jHF80J7u=YGcwE-+d6AjNfrbkin5AbavKAJPCqkygg@mail.gmail.com>
+Subject: Re: [PATCH] hwmon:max6697: Allow max6581 to create tempX_offset attributes
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     jdelvare@suse.com, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jason Ling <jasonling@google.com>,
+        Kais Belgaied <belgaied@google.com>,
+        Zhongqi Li <zhongqil@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 02 Jul 2020 at 17:25:41 (+0100), Valentin Schneider wrote:
-> It's actually pretty close to what happens with the LLC domain on SMP -
-> select_idle_sibling() doesn't look outside of it. The wake_affine() stuff
-> might steer the task towards a different LLC, but that's about it for
-> wakeups. We rely on load balancing (fork/exec, newidle, nohz and periodic)
-> to spread this further - and we would here too.
+On Wed, Jul 1, 2020 at 10:14 PM Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> On Thu, Jul 02, 2020 at 01:42:23AM +0000, Chu Lin wrote:
+> > Per max6581, reg 4d and reg 4e is used for temperature read offset.
+> > This patch will let the user specify the temperature read offset for
+> > max6581. This patch is tested on max6581 and only applies to max6581.
+> >
+> Patchwork received four versions of this patch, with two different
+> subject lines.
+>
+> How am I supposed to know which one to look at ?
 
-Sure, but on SMP the search space in select_idle_sibling is always
-consistent -- you search within the LLC. With the fix you suggested,
-CPUs 0-3 will search within their LLCs, while CPU4 searches the entire
-system, which creates an imbalanced mess IMO.
+Sorry for the confusion.
+I was learning how to send amendments to a patch and forget that
+it may create confusion for the reviewers. The latest one with headline
+hwmon:max6697: Allow max6581 to create tempX_offset attributes is the one that
+should be reviewed.
 
-For affine wake-ups, you could migrate from CPU4 -> CPU0-3, but CPU0-3
-to CPU4 is not possible, so this asymmetry is almost guaranteed to
-actively create imbalance. And sure, the periodic load balancer ought to
-fix it, but really wake-up balance and periodic load balance should be
-pushing in the same direction and not fighting against each other.
-
-Anyways, enough bikeshedding for today, I'll try and have look at the
-rest of the series :)
-
-Cheers,
-Quentin
+Chu
