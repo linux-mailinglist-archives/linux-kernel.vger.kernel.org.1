@@ -2,50 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2277211F92
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 11:15:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45543211F95
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 11:15:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728182AbgGBJPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 05:15:35 -0400
-Received: from mail-dm6nam11on2052.outbound.protection.outlook.com ([40.107.223.52]:17633
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        id S1728209AbgGBJPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 05:15:39 -0400
+Received: from mail-dm6nam10on2088.outbound.protection.outlook.com ([40.107.93.88]:14619
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726462AbgGBJPe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 05:15:34 -0400
+        id S1728187AbgGBJPh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 05:15:37 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kKvBjRmBwNTIqUcvreUld9KOcwc+OUxY8vWhj0/rZZx6iBY4RWRKlR5agerDeLzLMYLbeG11eS0HLyzdF9YBnELzy0PBSG1Z/z0v94GXEJLbwFAmOr2T33bpAD1Pg9Dp0lP+5UIQTx/UT5679WIzvOYFGsyQa6yUfXliJuFw02W8WDAKAQNmAWqFg7al+ZBfkDsy92GpU8Y7OO/fe4Q3uPV536skpqMAwWWx4YBPL9MwrSarN1AXqdYuksQLy0fpbKqUWfqycn6XjQ62GY9Q5FilkpzYeBGENaezv9DFYDKDa6vd75abuWd2GRzlRwO0AMu3vrh4WE5kBAd4EFd8Tw==
+ b=NAFJMdCFCXnnWY9YtPX04tiq0hfJxQ2wtrnez935U5OOyXof/6FrjvcdwDkk7s3K2CrLzvDKQtjcEtLs7XR7NUnEZ/U3zdcK9AxnRY33OFQKJkFPiKuUOXjC4wEoPWxh3VFMVj1BShnzlIXOS3+xd3YwGuldQmRvcoIJ4SfvGHDviK1D3XPVE2oCSQ2aL4hpTLQJ0sX9DpazHpsoWi3SClg6YsbNND5+oC0DO9lvLOep+RwgLH/9tIlo884Dtdk94Qf3h9w9omrmKx08cX0cYRWb4rQ8E3sULf2Jk09rmnsq1f6GiGeDdAGT1bT9z08SVeTo2wgvUvTsm3g/LkRaFw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SVZkx6FRJN5JWnK2dO3iV06+2O2ob1Lknq2M9fcjV0g=;
- b=Qo1LS3zVrgirMydN7i0oKaNec4I/9Jb16+YKg+AB7mI9YjtFa8HQyQGsaql5d8LB2yXGugj+2UA8EGSJ7zaRe40wbxZ5JjkJJ8HEvC5yetvAYT9dCqnJ/GK7Qyr/1U85PQrfcKTY9FLzuYUJWDPDFWbOrj+i6aECNOgoP74ymncD07eN5Z8IR71hGxfp3J417Ek6ke6liZOixCGSxPtDNmZ+i335lgDmTbHJnEf2buxMeegRPj/ZJ0wB2K2vZ3rgPHM9FHSXCm9/wAhtI4rN+wl/laguX4tZbED9NAP3rG7OAvJcSB3TtLjBKFinv+H60QLoaTi68Uz5eMnL3fCvag==
+ bh=wV89JFu9rUPiJGobhvq4B5ArQDzjFsQmakH2OqRbPxA=;
+ b=hhR/kDV7Q3tkHXnxngwF9B+DyWNEp9rg+saT7mk5PJERFyWm+KNnZgSLWsE3MVHAt0BQliQeH967QCqkumgVOo5X+tFXB8vAwFckeKIHmEjCh9owQInqN8dd7VfVTnG2Koo/eX9vJfeP3FW8Yc7u+V8pi1Fnf4nGusFacNLNsc7L5qsCwuwoU2N+c876uKgvENkhYj7gVKuZa5DuZcr49C4PWBUy+oymWVcAwHVYPp0wX+u6RlojT2nagbaKM4gNMrrY4+2StOLmDsBV7gQff8HXkThg6N+5rgCkO1qUcEJUr1i2Pb7txfw6qW/voLR64D3VC3sI7dlmezS5Cuq9/A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=synaptics.com; dmarc=pass action=none
  header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SVZkx6FRJN5JWnK2dO3iV06+2O2ob1Lknq2M9fcjV0g=;
- b=QaIN66L0MaVj8y4qHTksKndzxOKrlXE4JXBmXjHHvLkO8jhQFP658AIt36tqngp+p9t/TJL51x99aqoQw9ORAnlpk/WKoKS2MgtlECNjmKyMs7VH5u/862Np3cXHi93kULjsOl1qz9RSuY2HiCJIMk9uMocjCgvLLr69SxleOPA=
+ bh=wV89JFu9rUPiJGobhvq4B5ArQDzjFsQmakH2OqRbPxA=;
+ b=URGnyEZHFHdPfIkgr7k3Pl2uYsU2mHixDnXB9cw66AEZFZmTSHpEFQdANCuWaL4yMgxOxNgDyk0IpwHRsSTg2lMSbCOxcH1v9FA77qZseRas2Nxtz1vFkesbPWWgznbyuallcw0+utEvGlzaOgn6OVO542d2MW6T6VLlfQi7g50=
 Authentication-Results: gmail.com; dkim=none (message not signed)
  header.d=none;gmail.com; dmarc=none action=none header.from=synaptics.com;
 Received: from BYAPR03MB3573.namprd03.prod.outlook.com (2603:10b6:a02:ae::15)
  by BYAPR03MB3574.namprd03.prod.outlook.com (2603:10b6:a02:aa::27) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.21; Thu, 2 Jul
- 2020 09:15:31 +0000
+ 2020 09:15:34 +0000
 Received: from BYAPR03MB3573.namprd03.prod.outlook.com
  ([fe80::d1ae:8ea7:ea:8998]) by BYAPR03MB3573.namprd03.prod.outlook.com
  ([fe80::d1ae:8ea7:ea:8998%7]) with mapi id 15.20.3153.022; Thu, 2 Jul 2020
- 09:15:30 +0000
-Date:   Thu, 2 Jul 2020 17:13:04 +0800
+ 09:15:34 +0000
+Date:   Thu, 2 Jul 2020 17:13:35 +0800
 From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
 To:     Liam Girdwood <lgirdwood@gmail.com>,
         Mark Brown <broonie@kernel.org>,
         Rob Herring <robh+dt@kernel.org>
 Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH 0/2] regulator: add support for SY8827N regulator
-Message-ID: <20200702171304.68928e88@xhacker.debian>
+Subject: [PATCH 1/2] dt-bindings: regulator: add document bindings for
+ sy8827n
+Message-ID: <20200702171335.59f5e79b@xhacker.debian>
+In-Reply-To: <20200702171304.68928e88@xhacker.debian>
+References: <20200702171304.68928e88@xhacker.debian>
 X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -54,51 +57,95 @@ X-ClientProxiedBy: HK2PR02CA0144.apcprd02.prod.outlook.com
  (2603:10b6:a02:ae::15)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from xhacker.debian (124.74.246.114) by HK2PR02CA0144.apcprd02.prod.outlook.com (2603:1096:202:16::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.23 via Frontend Transport; Thu, 2 Jul 2020 09:15:29 +0000
+Received: from xhacker.debian (124.74.246.114) by HK2PR02CA0144.apcprd02.prod.outlook.com (2603:1096:202:16::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.23 via Frontend Transport; Thu, 2 Jul 2020 09:15:32 +0000
 X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 X-Originating-IP: [124.74.246.114]
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 41002daf-ba28-4ebe-d4c8-08d81e68778c
+X-MS-Office365-Filtering-Correlation-Id: 352ae42d-c7e5-4066-2cf6-08d81e6879d9
 X-MS-TrafficTypeDiagnostic: BYAPR03MB3574:
-X-Microsoft-Antispam-PRVS: <BYAPR03MB35749F11DD82AF939E02F2F7ED6D0@BYAPR03MB3574.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3513;
+X-Microsoft-Antispam-PRVS: <BYAPR03MB3574B1164B0641852C7CF987ED6D0@BYAPR03MB3574.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
 X-Forefront-PRVS: 0452022BE1
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: rZiGV1gpNSFQoGinMcXDsKasZGI+13DGTvlS8OeXFeGW+b33XxyxsCxFlR5d4bTWvQ84kBC2E80wIzgXCEutWJBQYqNwr74+aDTorc4ti/oswd50fp1mUqPwYg4x4ESLW3L+9Cu31lTRhFrxla8DOpXIVlfXb8GQZvwBC82RknUVQIXngn11gSMHqh4N82GB+OtTuu4ryqjkbqO+AL0MGU4hKS9EkCgoczaLLPQuttL07TcsuFUgY2IShaiaqaBnwbMom3udmjlFva9iPv9SnS8opjFflvP+X9A7Ua5+p75MvnVVFOT4+TfNMFoYMkBXa0QjYWyouCsgYEQn6vvbZQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR03MB3573.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(366004)(376002)(396003)(39850400004)(346002)(136003)(956004)(478600001)(2906002)(66476007)(66556008)(66946007)(8676002)(8936002)(9686003)(4326008)(55016002)(16526019)(26005)(186003)(316002)(110136005)(86362001)(7696005)(1076003)(52116002)(6666004)(6506007)(4744005)(5660300002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: MY/alwbgSDH9UluAfmJFLUvjaqflBlIit3KP9LVD379+73tMEr7N8mF9ddWVQL1gww8VdY0Nygui0tYpHMw6FkmdktE67n+LcNWlz/VZQVydIesgGRJeqF3sqZVeZe2IH3YL/pRJHFJsFvPpg+YK8VnMg5GFU+p0sk8NaMIGWJCHVxgOfrRGOrSw5Pq4MMqNM+LYb5EDNReBV5O3siKsLq4839CoIFTJoRGijl9mQ6SHQ7nYaE0yU+TIUjgfFdp3p7G59H2MMVbFzSEJ73vpLPI3G/ZlNRxqsL80+VV1Tkm5DOR2Z1p8TSIqOaEAiq8Lhzbhao7yr/dugNr41wlU1qh4ZEw/AksqoF9LEOOCtFFUSRlUyt2Y3foArM4LVg7VjdPl21lZ57DRgnurJWWXSAgwhYa2yatsVpYHKYsXJNgQg1c0X4BdS7HoQq6DNiPee9vnATtQbJhkqlk1WpKbEdTN5ivejK9m6IO66tB6xBKBPlFb2Y4EOdyDK+kQiYgJ
+X-Microsoft-Antispam-Message-Info: yFyvO+n7p3innBrHw1KfXNR++ytTtp/IzNBuxlcTqir+rUu0fgamblZWatmZZQ5pRlv3lpjmKpN4UVuWteu2xfPZFzLHKpCMLa/x2bBm2DKv19PYxG9H/ji8grzk6i7W+49GxvRs3/mWTaQ8J/66alwhLme3Ji6odhmMtxo3NKtJoi/V1BXlNi6JzCjA8U5k8asqBqUOVKHmkfQi+t3BVUSYYZuv5jTMhIsXZUalOe1b2RqdV5Tp8KzYqAJgR2t6Pp7zWQTcmxfq6NkCu52+DPchZIKHRMDBeD5Q7a4M3wkhjr5dcezYllPayYKzi3Ifr3AsjaX/JnmHiXNIXwsgXMibucwNRu8pg8SUGV3465xw13sXLMBI4xDgkuweWjPJzfUoR7G/HKmr6NB0bEMWwg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR03MB3573.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(366004)(376002)(396003)(39850400004)(346002)(136003)(956004)(478600001)(2906002)(66476007)(66556008)(66946007)(8676002)(8936002)(9686003)(4326008)(55016002)(16526019)(26005)(966005)(186003)(316002)(110136005)(86362001)(7696005)(1076003)(52116002)(6506007)(5660300002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: 4QoJM+xHtgkRpW/n8wfBARu+owos3C8IkMStJkRiBFOAN7yuUreGChTbGdbbqr9idz7v1iWzZdg8psJw0z3sCJ/LSBWsYwmQbPOaJLjJADX4M/yhpkRzD64Kva9nM8ofHZozGiwRP5bMmFhk61kt/mXDe283cZ3P6/l96SC1sdxMAP2OwDdchk7aooFv+9AlfEZorvrD8mlazFs5CehntjYDe2aYnprZK3UrtCnHX8KDfEuNiw1S6hg1vEpzg99t1PfID/kox3qtZ6EcSlDx8Bq0BtssVgcM0lIkhwYZnvOoU4R9MoXN+U/WRSOOM5qYRO8IbQzAuBFlOngk5UHtfUC+s05jdvof9gmmmjmtJTtp31h1jzkZ/6xDp1p9lVmHlIGYbaK8Ftewib/86tQj+aO+2yTTLMOiedx5xNnDxUwdbjG/vPjgDM8LISMXTDQZOw26NqCHVJnuMaTRKsmQgpjlKoJoDzmJ48h1+C2Y1EYYq+cs2rFn5W2djb1xJxAD
 X-OriginatorOrg: synaptics.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 41002daf-ba28-4ebe-d4c8-08d81e68778c
+X-MS-Exchange-CrossTenant-Network-Message-Id: 352ae42d-c7e5-4066-2cf6-08d81e6879d9
 X-MS-Exchange-CrossTenant-AuthSource: BYAPR03MB3573.namprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jul 2020 09:15:30.7413
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jul 2020 09:15:34.5261
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: i+cM9s/LzVheP5l0qPbq23jQphjoOO++qdOXVDhdJmg0tvMY146YdVQ5B9qn66T+qygNKtnQPU6UzY7R5NGHgQ==
+X-MS-Exchange-CrossTenant-UserPrincipalName: Z3ox3VFBkTz1mTC1LYK5z5vzAYlqPlt/wG21GSzJ6yG0wJRf74cxxYVeeDbRJ4+hy4f60mY+pQwMhSoxMdFBbg==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR03MB3574
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The SY8827N from Silergy Corp is a single output DC/DC converter. The
-voltage can be controlled via I2C.
+Add device tree binding information for sy8827n regulator driver.
 
-Jisheng Zhang (2):
-  dt-bindings: regulator: add document bindings for sy8827n
-  regulator: add support for SY8827N regulator
-
- .../bindings/regulator/silergy,sy8827n.yaml   |  45 +++++
- drivers/regulator/Kconfig                     |   7 +
- drivers/regulator/Makefile                    |   1 +
- drivers/regulator/sy8827n.c                   | 185 ++++++++++++++++++
- 4 files changed, 238 insertions(+)
+Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+---
+ .../bindings/regulator/silergy,sy8827n.yaml   | 45 +++++++++++++++++++
+ 1 file changed, 45 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/regulator/silergy,sy8827n.yaml
- create mode 100644 drivers/regulator/sy8827n.c
 
+diff --git a/Documentation/devicetree/bindings/regulator/silergy,sy8827n.yaml b/Documentation/devicetree/bindings/regulator/silergy,sy8827n.yaml
+new file mode 100644
+index 000000000000..15983cdc7c28
+--- /dev/null
++++ b/Documentation/devicetree/bindings/regulator/silergy,sy8827n.yaml
+@@ -0,0 +1,45 @@
++# SPDX-License-Identifier: GPL-2.0
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/regulator/silergy,sy8827n.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: silergy sy8827n PMIC
++
++maintainers:
++  - Jisheng Zhang <jszhang@kernel.org>
++
++properties:
++  compatible:
++    enum:
++      - silergy,sy8827n
++
++  reg:
++    maxItems: 1
++
++  enable-gpios:
++    description: GPIO to enable/disable the regulator.
++    maxItems: 1
++
++  silergy,vsel-state-high:
++    type: boolean
++    description:
++      Indicates if the VSEL pin is set to high.
++      If this property is missing, assume the VSEL pin is set to low.
++
++required:
++  - compatible
++  - reg
++
++examples:
++  - |
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++        regulator@60 {
++          compatible = "silergy,sy8827n";
++          reg = <0x60>;
++        };
++    };
++
++...
 -- 
 2.27.0
 
