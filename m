@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31B232129ED
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 18:44:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20BBC2129F4
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 18:45:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726739AbgGBQow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 12:44:52 -0400
-Received: from mga09.intel.com ([134.134.136.24]:42960 "EHLO mga09.intel.com"
+        id S1726925AbgGBQpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 12:45:07 -0400
+Received: from mga05.intel.com ([192.55.52.43]:18398 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726374AbgGBQow (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 12:44:52 -0400
-IronPort-SDR: t4aYe6itqftRvXSSw0JPh7+NJk45FNoNocpGL/YnYJFlaa5txsrHffgArbTbn8YgcN68TIIl3h
- 69wnXPWYBe1w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="148498382"
+        id S1726892AbgGBQpC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 12:45:02 -0400
+IronPort-SDR: /27DttMOUTtVxtsEx7EmfT/TA2t26RR1OTtuz7o2mMysnQIVTRA6BwRc0w2y2GuhDPRt99K8ZJ
+ UI/dxPoZpkFA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="231818046"
 X-IronPort-AV: E=Sophos;i="5.75,304,1589266800"; 
-   d="scan'208";a="148498382"
+   d="scan'208";a="231818046"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2020 09:44:51 -0700
-IronPort-SDR: i3NhLhGla1TLJtx6cdRU3Gq7NArPh6JUpM2jI3nUGE5l9kemQJdcJlo5Ac32g69IgxCRcyiq/k
- 5moSeOZZNEqQ==
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2020 09:45:01 -0700
+IronPort-SDR: 1BYtnU1QvnJ0SaGRufgPIkJdUX/d4RO1VRyBiwHCqYwA+1N/ku7nEm/U18cdKSsp7/Fj26s4eB
+ FTDKRkOCvNMw==
 X-IronPort-AV: E=Sophos;i="5.75,304,1589266800"; 
-   d="scan'208";a="426011059"
+   d="scan'208";a="426011084"
 Received: from nzbastur-mobl1.amr.corp.intel.com (HELO pbossart-mobl3.amr.corp.intel.com) ([10.255.231.182])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2020 09:44:50 -0700
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2020 09:45:00 -0700
 From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To:     alsa-devel@alsa-project.org
 Cc:     tiwai@suse.de, broonie@kernel.org,
@@ -36,12 +36,11 @@ Cc:     tiwai@suse.de, broonie@kernel.org,
         Ravulapati Vishnu vardhan rao 
         <Vishnuvardhanrao.Ravulapati@amd.com>,
         Akshu Agrawal <akshu.agrawal@amd.com>,
-        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Wei Yongjun <weiyongjun1@huawei.com>,
         linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 3/6] ASoC: amd: raven: acp3x-pcm-dma: fix 'set but not used' warning
-Date:   Thu,  2 Jul 2020 11:44:30 -0500
-Message-Id: <20200702164433.162815-4-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 4/6] ASoC: amd: raven: acp3x-i2s: fix 'set but not used' warning
+Date:   Thu,  2 Jul 2020 11:44:31 -0500
+Message-Id: <20200702164433.162815-5-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200702164433.162815-1-pierre-louis.bossart@linux.intel.com>
 References: <20200702164433.162815-1-pierre-louis.bossart@linux.intel.com>
@@ -52,32 +51,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix W=1 warning. the card variable is useless here.
+Fix W=1 warning. the card variable is useless here
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/amd/raven/acp3x-pcm-dma.c | 2 --
+ sound/soc/amd/raven/acp3x-i2s.c | 2 --
  1 file changed, 2 deletions(-)
 
-diff --git a/sound/soc/amd/raven/acp3x-pcm-dma.c b/sound/soc/amd/raven/acp3x-pcm-dma.c
-index 5bd458e0fe31..1f0fe5aaab1d 100644
---- a/sound/soc/amd/raven/acp3x-pcm-dma.c
-+++ b/sound/soc/amd/raven/acp3x-pcm-dma.c
-@@ -302,14 +302,12 @@ static snd_pcm_uframes_t acp3x_dma_pointer(struct snd_soc_component *component,
- 					   struct snd_pcm_substream *substream)
+diff --git a/sound/soc/amd/raven/acp3x-i2s.c b/sound/soc/amd/raven/acp3x-i2s.c
+index 14607563abd2..a0e14cc91d95 100644
+--- a/sound/soc/amd/raven/acp3x-i2s.c
++++ b/sound/soc/amd/raven/acp3x-i2s.c
+@@ -150,13 +150,11 @@ static int acp3x_i2s_trigger(struct snd_pcm_substream *substream,
  {
+ 	struct i2s_stream_instance *rtd;
  	struct snd_soc_pcm_runtime *prtd;
 -	struct snd_soc_card *card;
- 	struct i2s_stream_instance *rtd;
- 	u32 pos;
- 	u32 buffersize;
- 	u64 bytescount;
+ 	u32 ret, val, period_bytes, reg_val, ier_val, water_val;
+ 	u32 buf_size, buf_reg;
  
  	prtd = substream->private_data;
--	card = prtd->card;
  	rtd = substream->runtime->private_data;
- 
- 	buffersize = frames_to_bytes(substream->runtime,
+-	card = prtd->card;
+ 	period_bytes = frames_to_bytes(substream->runtime,
+ 			substream->runtime->period_size);
+ 	buf_size = frames_to_bytes(substream->runtime,
 -- 
 2.25.1
 
