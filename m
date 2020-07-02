@@ -2,106 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91C38212D3E
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 21:42:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85FB9212D49
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 21:44:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726028AbgGBTmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 15:42:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39460 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725915AbgGBTmr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 15:42:47 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C70AC08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 12:42:47 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id f18so29900098wml.3
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 12:42:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=boCB++59YR1MS+YXDEsix8grOvspQ3z1Y08y0ZLgZ3M=;
-        b=PQF+y8KNYwb22Q8KdP3OAcdMJA4IqMbKEHL0VW2HKOSAifxvWv7JV3/2jSaAMwQKmC
-         yyrqxksTOJuDhBpap8LABoL21w9yiPKPgAcBHvQ6mQUqZd1ObsFhLXukaTkela0tkKkY
-         u+xQcjPcxExrm1ORvBwlxnQ2Op6CsKYkAjzms=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=boCB++59YR1MS+YXDEsix8grOvspQ3z1Y08y0ZLgZ3M=;
-        b=TlAudpFjifSpcoXiLaJ8CI9Or4KPdPLNkYZae8fJece5JkXYVUk0emuPF3L3uY4QDf
-         9UJTw365PsfCTWrctrPjcG54x4BULZMGwXzHpzFQTcVfgHLiBkNH4A5SHjN2cR22svIH
-         zYooRmA5haCcc03Hgv3E975f+oOu7lSMhnA5HGtJR4DGDIKXtd3+9hxiQndcySMVsEbp
-         6bOiyZztbg78GWS85kD0VKR3bN76am2dH1fF4sO7RVyVsJ1uquA8FQ5KWUAdtjXsnTCJ
-         BwWHvhENoaA561fOsgsypPiEH5dduG23yf0JBvywqiWPA1nB4iKyX4KSfeLZpflbJ/QQ
-         vJ/A==
-X-Gm-Message-State: AOAM533KVSTzlaW0hRnokyN3M3W95S1Yr5uAtPkuP7NziSS1tWKXNyp5
-        1mC5P4dUpWFpZfrPcDsNJN78NA==
-X-Google-Smtp-Source: ABdhPJzMRYhWDDE1A6uTlQOnn160yt2vebFmKVc0TguTYEF2G0upJ3FMfPQL5UatjdrLA7BjMU02Bw==
-X-Received: by 2002:a7b:c746:: with SMTP id w6mr35078507wmk.171.1593718965566;
-        Thu, 02 Jul 2020 12:42:45 -0700 (PDT)
-Received: from [10.136.13.65] ([192.19.228.250])
-        by smtp.gmail.com with ESMTPSA id y6sm11965936wmy.0.2020.07.02.12.42.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Jul 2020 12:42:44 -0700 (PDT)
-Subject: Re: [PATCH 15/15] mmc: host: sdhci-iproc: Tell the compiler that ACPI
- functions may not be used
-To:     Lee Jones <lee.jones@linaro.org>, ulf.hansson@linaro.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com
-References: <20200701124702.908713-1-lee.jones@linaro.org>
- <20200701124702.908713-16-lee.jones@linaro.org>
-From:   Scott Branden <scott.branden@broadcom.com>
-Message-ID: <3a32b98c-45c6-6f8d-0853-161f91e65b57@broadcom.com>
-Date:   Thu, 2 Jul 2020 12:42:40 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1726102AbgGBTox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 15:44:53 -0400
+Received: from mga18.intel.com ([134.134.136.126]:5385 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725937AbgGBTox (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 15:44:53 -0400
+IronPort-SDR: 1t0tLXLFVra7Tc12dqK9rZ3OAKEKe2oE/MA6/JsncQJROVljLKxlXd56GM8N2is1HXjz09kZZz
+ 0LFGbbbWQUBQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="134474655"
+X-IronPort-AV: E=Sophos;i="5.75,305,1589266800"; 
+   d="scan'208";a="134474655"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2020 12:44:52 -0700
+IronPort-SDR: Zywr3ldWei8/LIeUJeTPM6lvkCxsULkQd9GBaC0hsSX9Jgx0hUtKk1vrwZa3EodiWQXny9irbt
+ ClkuoJnM9zbg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,305,1589266800"; 
+   d="scan'208";a="387429233"
+Received: from frichard-mobl.ger.corp.intel.com (HELO localhost) ([10.249.44.59])
+  by fmsmga001.fm.intel.com with ESMTP; 02 Jul 2020 12:44:49 -0700
+Date:   Thu, 2 Jul 2020 22:44:48 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Pengfei Xu <pengfei.xu@intel.com>, Shuah Khan <shuah@kernel.org>
+Cc:     Qiuxu Zhuo <qiuxu.zhuo@intel.com>, Heng Su <heng.su@intel.com>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kai Svahn <kai.svahn@intel.com>
+Subject: Re: [PATCH v4] selftests: tpm: upgrade TPM2 tests from Python 2 to
+ Python 3
+Message-ID: <20200702194435.GA28988@linux.intel.com>
+References: <20200626034052.25263-1-pengfei.xu@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200701124702.908713-16-lee.jones@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200626034052.25263-1-pengfei.xu@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lee,
+On Fri, Jun 26, 2020 at 11:40:52AM +0800, Pengfei Xu wrote:
+> Python 2 is no longer supported by the Python upstream project, so
+> upgrade TPM2 tests to Python 3.
+> 
+> Signed-off-by: Pengfei Xu <pengfei.xu@intel.com>
 
-On 2020-07-01 5:47 a.m., Lee Jones wrote:
-> ... as is the case when !CONFIG_ACPI.
->
-> Fixes the following W=1 kernel build warning:
->
->   mmc/host/sdhci-iproc.c:297:36: warning: ‘sdhci_iproc_acpi_ids’ defined but not used [-Wunused-const-variable=]
->
-> Cc: Adrian Hunter <adrian.hunter@intel.com>
-> Cc: Ray Jui <rjui@broadcom.com>
-> Cc: Scott Branden <sbranden@broadcom.com>
-> Cc: bcm-kernel-feedback-list@broadcom.com
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->   drivers/mmc/host/sdhci-iproc.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/mmc/host/sdhci-iproc.c b/drivers/mmc/host/sdhci-iproc.c
-> index 225603148d7de..9c7d130205edd 100644
-> --- a/drivers/mmc/host/sdhci-iproc.c
-> +++ b/drivers/mmc/host/sdhci-iproc.c
-> @@ -294,7 +294,7 @@ static const struct of_device_id sdhci_iproc_of_match[] = {
->   };
->   MODULE_DEVICE_TABLE(of, sdhci_iproc_of_match);
->   
-Would it better to compile this in if CONFIG_ACPI is defined instead?
-#if CONFIG_ACPI
-> -static const struct acpi_device_id sdhci_iproc_acpi_ids[] = {
-> +static const struct acpi_device_id __maybe_unused sdhci_iproc_acpi_ids[] = {
->   	{ .id = "BRCM5871", .driver_data = (kernel_ulong_t)&iproc_cygnus_data },
->   	{ .id = "BRCM5872", .driver_data = (kernel_ulong_t)&iproc_data },
->   	{ /* sentinel */ }
+I think that it's perfect now. Thank you.
 
+Also
+
+1. I checked that scripts/checkpatch.pl did not report any errors.
+2. sudo python3 -m unittest -v tpm2_tests.SmokeTest
+3. sudo python3 -m unittest -v tpm2_tests.SpaceTest
+
+Reviewed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Tested-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+
+Shuah, I could pick this up after your PR (with my earlier fixes) lands
+to mainline, and sort out possible merge conflicts if they uprise. Is
+this fine by you?
+
+/Jarkko
