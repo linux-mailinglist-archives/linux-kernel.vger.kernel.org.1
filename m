@@ -2,102 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CDD7212D2B
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 21:35:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E85A212D3F
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 21:43:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726112AbgGBTfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 15:35:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38322 "EHLO
+        id S1726053AbgGBTm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 15:42:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726065AbgGBTfR (ORCPT
+        with ESMTP id S1725915AbgGBTm4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 15:35:17 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85950C08C5DD
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 12:35:17 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id h23so22260455qtr.0
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 12:35:17 -0700 (PDT)
+        Thu, 2 Jul 2020 15:42:56 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85351C08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 12:42:56 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id b25so30159929ljp.6
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 12:42:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=googlenew;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vMrH7R2vPu3gkZfS+H01Ns/eTvn1XgH9B+3gDwbQS4Q=;
-        b=P9akivtIL9OPr+h9G/Fq5VLuJfJuZFU9rGS5Kge23ZeuGNoA7zxXxtsApOQceAsw6N
-         zYga8mXjNlZK5Mvgsfb2jIlScoppXGu5RrJ7BabzEAKp2/k0ffQlljRgcBnNx9qC5h0R
-         O6EofygNMl6l/Y/YTNgauT/ckyh7h2hTXn/7ydmUbt3BpC45FLu+/6eN9d3Ywp//sb+V
-         PAExWPcfBHhw5fS0k41aMb/xwvvM0qaTW+fsjqhA5ynNn9ftJRVGxBZ3pSo7GYlHaEmO
-         u6+mrBt7xUelVphkgi6lJCm+2qg8x9rWmdTENTwnBzTCnzfoqXMge5J9Vq5JWYibWus2
-         n8FQ==
+         :cc:content-transfer-encoding;
+        bh=+r53KkXjZK6X/YP4U/7mih9+WzJuu5mUo2Ez1QHbKCs=;
+        b=Rk4RBvhHIxqE+t63y4J9FplOopkeMM9EQgH5Tl4KhBHYcjFS04RVuL2G5TQb/4RcSC
+         pArZxZMY9ot6xIrTJ7GaFWc9cau+XbYwcrHqWkjH6F+3gdtCFeoaEYVm/IEa0Z6UBBr+
+         gxHLZuf9CuL986liZSn1ZkGZW8MaT8TOadzfc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vMrH7R2vPu3gkZfS+H01Ns/eTvn1XgH9B+3gDwbQS4Q=;
-        b=U4joqZiwMrc1uUH7nDoAbWRZsdNEMzLO/D8OvqK91fp+Vbvw1o+/inG3df5fwfyVm8
-         cUzhqT6fPWpfOhpQwVGaA9m+kCHBjFTb9PWwbVK8LCs07UnPtcG2hf040v2tsdfnRapJ
-         t30dRXPOZQTD+Vu3oxZfUPejmmUmKmzxpf98Ui1yBYkv60RBpVMOjrrf6SN6+XNurCaD
-         7zulWtXxFQMph66UECkrndlR3WQKUkLhso16aP3s60U4EWOPEkzDgjuQj2vCZc2E48/2
-         JeYiHbbgiCEyyHb+YYily/TI0lR6raOPAAJwL5Luuo/BNvdNHcuJpjr23tse8X6Q6y/7
-         XxRA==
-X-Gm-Message-State: AOAM531cTfaGR8VpPDhaO8Rye+XUnm64MSb/hpKBouMoPMDdmPmLbJoE
-        Fom+Uq45aGiYlAE3xhf0FDTROHKvgi0xH35fdk47OycDT9Y=
-X-Google-Smtp-Source: ABdhPJzY/c3o9AVELnYdRdQGQ5SGjtPMLSoJTN+S95yvl3HqiQ5qFGNKsi2igRT/SjswXN+cm3rHq5ojlC52o2axmxA=
-X-Received: by 2002:ac8:7a90:: with SMTP id x16mr32827703qtr.233.1593718516626;
- Thu, 02 Jul 2020 12:35:16 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=+r53KkXjZK6X/YP4U/7mih9+WzJuu5mUo2Ez1QHbKCs=;
+        b=qn5zgEw2vdQlHaRJfVSn6sXSAFVj+z05cYyvOaNzp1eMrNEwC0dgzZAzAANG19pMiI
+         0hHn+WqIfwtRe/rm+FctSVm9SnNI4HOMFOjh1cGjLzJcbeRKkJSpFEL3ecHHNFB+lexF
+         +WYoTZ9p/luAuumuBsY9SmMxEkHnGTCMm/ea/1q0VP02kQhuj918ZJlcxyCHhA3JFPOT
+         XYwezVnkRlnYHNzTop4DPlZQSwWnV6B30ABVUslliDzT/W5fpN9HOsTCNyfGQAeusdEs
+         FlP7CM+M+Isoily66IlGUpTRx5S1Vxm3HP+wBpqfUFMr8yJ+EU+OE1L12iQg76kKxueq
+         3CxA==
+X-Gm-Message-State: AOAM533EcFvr/koWGm/GMS9HAOFs7gCaRwr1gsvm2KV3qn2rMfeiZdw9
+        qdmKGNQzNQj2FRf0ACH3CxAeLJMIdN4=
+X-Google-Smtp-Source: ABdhPJxkgTM+P/MAc6KCIelZErLLrBl3peEZVRq5W2gRN6wzsdXhDYbwq/FcSnx93KARj7UazOXMtg==
+X-Received: by 2002:a2e:5d8:: with SMTP id 207mr16413483ljf.257.1593718974681;
+        Thu, 02 Jul 2020 12:42:54 -0700 (PDT)
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com. [209.85.208.172])
+        by smtp.gmail.com with ESMTPSA id a16sm3364907ljj.108.2020.07.02.12.42.53
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Jul 2020 12:42:53 -0700 (PDT)
+Received: by mail-lj1-f172.google.com with SMTP id z24so8846105ljn.8
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 12:42:53 -0700 (PDT)
+X-Received: by 2002:a2e:86c4:: with SMTP id n4mr2490210ljj.312.1593718973053;
+ Thu, 02 Jul 2020 12:42:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200629211801.C3D7095C0900@us180.sjc.aristanetworks.com>
- <20200629171612.49efbdaa@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CA+HUmGjHQPUh1frfy5E28Om9WTVr0W+UQVDsm99beC_mbTeMog@mail.gmail.com> <61CC2BC414934749BD9F5BF3D5D940449874358A@ORSMSX112.amr.corp.intel.com>
-In-Reply-To: <61CC2BC414934749BD9F5BF3D5D940449874358A@ORSMSX112.amr.corp.intel.com>
-From:   Francesco Ruggeri <fruggeri@arista.com>
-Date:   Thu, 2 Jul 2020 12:35:05 -0700
-Message-ID: <CA+HUmGhfxYY5QiwF8_UYbp0TY-k3u+cTYZDSqV1s=SUFnGCn8g@mail.gmail.com>
-Subject: Re: [PATCH] igb: reinit_locked() should be called with rtnl_lock
-To:     "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        open list <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>
+References: <20200702140102.26129-1-pmenzel@molgen.mpg.de> <7c31d918-c967-5ebb-970e-7f6e913237e8@amd.com>
+In-Reply-To: <7c31d918-c967-5ebb-970e-7f6e913237e8@amd.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 2 Jul 2020 12:42:37 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wimBucBdC+tzFEuFJU5X1UFTVWo+AHMvQTSkCcVnTT-ww@mail.gmail.com>
+Message-ID: <CAHk-=wimBucBdC+tzFEuFJU5X1UFTVWo+AHMvQTSkCcVnTT-ww@mail.gmail.com>
+Subject: Re: [PATCH 1/2] moduleparams: Add hex type parameter
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     Paul Menzel <pmenzel@molgen.mpg.de>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        amd-gfx@lists.freedesktop.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Do not worry about the other Intel drivers, I have our developers looking at each of our drivers for the locking issue.
+On Thu, Jul 2, 2020 at 7:42 AM Christian K=C3=B6nig <christian.koenig@amd.c=
+om> wrote:
 >
-> @David Miller - I am picking up this patch
+> I'm just not sure how well this is received upstream because it only
+> covers u32
+>
+> On the other hand that is probably also the most used.
 
-There seems to be a second race, independent from the
-original one, that results in a divide error:
+Not necessarily true. I'd argue that "unsigned long"  is equally
+possible for some bit mask (or other hex-likely) type.
 
-kworker         reboot -f       tx packet
+So don't call it just "hex". Call it "hexint" (the hex does imply
+"unsigned", I feel - showing hex numbers with a sign sounds insane).
 
-igb_reset_task
-                __igb_shutdown
-                rtnl_lock()
-                ...
-                igb_clear_interrupt_scheme
-                igb_free_q_vectors
-                adapter->num_tx_queues = 0
-                ...
-                rtnl_unlock()
-rtnl_lock()
-igb_reinit_locked
-igb_down
-igb_up
-netif_tx_start_all_queues
-                                dev_hard_start_xmit
-                                igb_xmit_frame
-                                igb_tx_queue_mapping
-                                Panics on
-                                r_idx % adapter->num_tx_queues
+That way, if somebody ends up wanting it for unsigned long values,
+we're not stuck.
 
-Using in igb_reset_task a logic similar to the one in
-ixgbe_reset_subtask (bailing if __IGB_DOWN or __IGB_RESETTING
-is set) seems to avoid the panic.
-That logic was first introduced in ixgbe as part of commit
-2f90b8657ec ('ixgbe: this patch adds support for DCB to the
-kernel and ixgbe driver').
-Both fixes seem to be needed.
+Another option is to just say that hex values always have bit _sizes_.
+So "hex32" and "hex64" would also make sense as names to me.
+
+While at it, should the hex numbers always be padded out to the size?
+The example Paul used doesn't have that issue (high bit being set).
+
+Bbut often it may make sense to show a 32-bit hex number as "%#08x"
+because it really makes things clearer when you're looking at high
+bits, say.
+
+It's really hard to tell the difference between "just bit 27 set" and
+"just bit 31" set otherwise, and that's not all that uncommon when the
+bitmasks are sparse.
+
+             Linus
