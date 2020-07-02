@@ -2,109 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 074E6212962
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 18:28:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 896A1212954
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 18:27:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726828AbgGBQ2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 12:28:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37760 "EHLO
+        id S1726753AbgGBQ1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 12:27:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726779AbgGBQ17 (ORCPT
+        with ESMTP id S1726371AbgGBQ1B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 12:27:59 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 284DDC08C5C1;
-        Thu,  2 Jul 2020 09:27:59 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id n26so16546343ejx.0;
-        Thu, 02 Jul 2020 09:27:59 -0700 (PDT)
+        Thu, 2 Jul 2020 12:27:01 -0400
+Received: from mail-oo1-xc42.google.com (mail-oo1-xc42.google.com [IPv6:2607:f8b0:4864:20::c42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 799B7C08C5DD
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 09:27:01 -0700 (PDT)
+Received: by mail-oo1-xc42.google.com with SMTP id s190so2132492ooa.13
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 09:27:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=BKGyNwdE3y4ef1pbkDUWx2wEahUUqC/tey8vsP66t3k=;
-        b=oXmeu34tul/Eh7uALk3qd8uoJLsyESkwDkrlTEhQDnvTGG809iGcWCvYZ2j+ILjUqn
-         JqZrk62Ibi+SpIVMkR6J1oI4k1WXEwAxiJ6+9Yb0+GlECA4h5/ZKb4EaSMfLyTQZ4uuC
-         8WBb4havLLiRJbCifA811Zvi3+Mf4uOkrRpcyJbA0vfcDxOS7DhRT7QWbmNoIHPatlY5
-         3VgNFME8sgYVSRnaAyloi6snVT/coZIQ7ijlbZ+dL3HN2g9q4BfQiIJREVknD3Dh35/d
-         8YclbBRtRktjzIW3H1Cs690UjsUJ8VrgEeNmFu6PZOfq5M1tAuiVbiHsKhd9qd//6B+u
-         eIBw==
+        d=linuxfoundation.org; s=google;
+        h=to:from:subject:cc:message-id:date:user-agent:mime-version
+         :content-language;
+        bh=+HQPPeKFIejGiV86yMGdqBrbHg3TiXW0sg4eTbb57QY=;
+        b=ZnRwDcNdKT12L60bjWxeAZ/j55/odGKh7b6lNVs8Y7PiBzOaUuAqRuvhDb1+GMNHW7
+         gyAOD8ca/GJ7gFj5h11+m8V431lTUfqotMZ3yAbwbEA051halP0Bm5ljqLggDR178fn0
+         DQ1SYuzFImuQbXIALp8X1bX4SLlQBsQsM/xxA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=BKGyNwdE3y4ef1pbkDUWx2wEahUUqC/tey8vsP66t3k=;
-        b=F9Z7tmYpQ+orsW2hDDh6DgPKYlDl8fP5baXcZbhDmn3ssXp3V/TOhRjHONogh7WI1z
-         G/vNu355G3BDGk79bhUPqm+sENsu/R+/I++2DWQHWAhpKBrWn9h4fpyfhU9iIQWBT+/2
-         HcBBxpI7z8FN92/5UeNlE6xiOc/Whvtvbmm8llryRtdiif/vpun5f3+U0F5tO7WFIvg/
-         IVV2JrtsSgjFejvQy9bTa4H3crsf7Gg5kql7PwAlDIzxx08EQbALH8zVUyIKrYl4YEAi
-         Msq6RyrDHna5kl4VtT66qbjbDAySuKbNGj3TOiMZNlkWqRhakH8jntkP65Dwia2IKmYb
-         d8dw==
-X-Gm-Message-State: AOAM533q+sfweLehP3M52n57Vh4NXY9sIFH8sE6H+v/ii1T9J90D1Exi
-        PgE+e2VVxlv4O7p+XPRmjG4=
-X-Google-Smtp-Source: ABdhPJwIDcSGwPz0FbI0llipZVkAtHj5PxwwFRXYEVZYr1hCckr2gQQXUIJ5Pq19jE6TG7TU84vHXA==
-X-Received: by 2002:a17:906:57da:: with SMTP id u26mr29223325ejr.157.1593707277882;
-        Thu, 02 Jul 2020 09:27:57 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:a03f:b7f9:7600:4932:71ef:3c73:a14f])
-        by smtp.gmail.com with ESMTPSA id gu15sm7375188ejb.111.2020.07.02.09.27.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Jul 2020 09:27:57 -0700 (PDT)
-From:   Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-Subject: [PATCH v2 3/3] pci: update to doc to use 'pci_channel_state_t'
-Date:   Thu,  2 Jul 2020 18:26:51 +0200
-Message-Id: <20200702162651.49526-4-luc.vanoostenryck@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200702162651.49526-1-luc.vanoostenryck@gmail.com>
-References: <20200702162651.49526-1-luc.vanoostenryck@gmail.com>
+        h=x-gm-message-state:to:from:subject:cc:message-id:date:user-agent
+         :mime-version:content-language;
+        bh=+HQPPeKFIejGiV86yMGdqBrbHg3TiXW0sg4eTbb57QY=;
+        b=Z265wr6IKsY/r2MpNwjCnuJ2WqJl4FgZsD3t4xCkHr8lSXarpuG8yArGzPuiRfIPjb
+         TWhz5t4ggb1Qsl5AjB+nTpxGLh+zUXeRbNwrKcPQG17ESy9CWfSuMnQ49Ht6MEdXXFYK
+         KhFpTmR8J93QKl1OzmogtLJ0Sx0yp8+QepaIpSTHmsxbeMT3nzTCPOoc2Pxe81n7V6m0
+         5kO5nACIlJS7Ev+VVa4iEF96xlvy3aj2h9U29s8sUThtRT/C67Ae94Vvtp+wkw/Ypft2
+         XYQycwSXm/xY6UesQnxHXiU3p/IgATiwyqBzOJnlanvrZmlbD5ZochVJou8VZI+FszmT
+         liWg==
+X-Gm-Message-State: AOAM5331ukM/yJPDsae4ffu4QhzpaQK4I2VF8cpf3IX4zaENYOLfRSLj
+        8a4ko7WmjvShQwRjqKfEYD8x/WsMhz4=
+X-Google-Smtp-Source: ABdhPJxqqV5v5JxyQMfvIA/8/KzIDufypGIk+mmqtOiMddVrepIJcizENTmMohNnN2mwxalpz+tcWA==
+X-Received: by 2002:a4a:b109:: with SMTP id a9mr19183218ooo.83.1593707220433;
+        Thu, 02 Jul 2020 09:27:00 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id 72sm2699953oii.43.2020.07.02.09.26.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Jul 2020 09:26:59 -0700 (PDT)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Subject: [GIT PULL] Kselftest fixes update for Linux 5.8-rc4
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        skhan@linuxfoundation.org, linux-kselftest@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Message-ID: <c97a669c-02d8-24c6-3bbf-295124d8261a@linuxfoundation.org>
+Date:   Thu, 2 Jul 2020 10:26:58 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed;
+ boundary="------------723C156AC411040FCB61D4F9"
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The type used to describe the PCI channel state is a combination
-of a bitwise typedef 'pci_channel_state_t' and an enumeration
-of constant __force casted to this typedef: enum pci_channel_state.
+This is a multi-part message in MIME format.
+--------------723C156AC411040FCB61D4F9
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-It's a bit complex and quite ugly because:
-* in C enums are weakly typed (they're essentially the same as 'int')
-* sparse only allow to define bitwise ints, not bitwise enums.
-But the idea is clearly to enforce typechecking and thus to
-use 'pci_channel_state_t' everywhere.
+Hi Linus,
 
-So, update the documentation to use 'pci_chanell_state_t' and hide
-'enum pci_channel_state' by showing a simplified but somehow equivalent
-definition:
-	typedef enum { ... } pci_channel_state_t;
-which makes abstraction of the '__bitwise' which would otherwise
-just bring unneeded complications here.
+Please pull the following Kselftest fixes update for Linux 5.8-rc4.
 
-Signed-off-by: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
----
- Documentation/PCI/pci-error-recovery.rst | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+This kselftest fixes update for Linux 5.8-rc4 consists of tpm test
+fixes from Jarkko Sakkinen.
 
-diff --git a/Documentation/PCI/pci-error-recovery.rst b/Documentation/PCI/pci-error-recovery.rst
-index c055deec8c56..ccd713423133 100644
---- a/Documentation/PCI/pci-error-recovery.rst
-+++ b/Documentation/PCI/pci-error-recovery.rst
-@@ -87,11 +87,11 @@ This structure has the form::
+diff is attached.
+
+thanks,
+-- Shuah
+
+----------------------------------------------------------------
+The following changes since commit 9ebcfadb0610322ac537dd7aa5d9cbc2b2894c68:
+
+   Linux 5.8-rc3 (2020-06-28 15:00:24 -0700)
+
+are available in the Git repository at:
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest 
+tags/linux-kselftest-fixes-5.8-rc4
+
+for you to fetch changes up to 377ff83083c953dd58c5a030b3c9b5b85d8cc727:
+
+   selftests: tpm: Use /bin/sh instead of /bin/bash (2020-06-29 14:19:38 
+-0600)
+
+----------------------------------------------------------------
+linux-kselftest-fixes-5.8-rc4
+
+This kselftest fixes update for Linux 5.8-rc4 consists of tpm test
+fixes from Jarkko Sakkinen.
+
+----------------------------------------------------------------
+Jarkko Sakkinen (3):
+       Revert "tpm: selftest: cleanup after unseal with wrong 
+auth/policy test"
+       selftests: tpm: Use 'test -e' instead of 'test -f'
+       selftests: tpm: Use /bin/sh instead of /bin/bash
+
+  tools/testing/selftests/tpm2/test_smoke.sh | 9 ++-------
+  tools/testing/selftests/tpm2/test_space.sh | 4 ++--
+  2 files changed, 4 insertions(+), 9 deletions(-)
+
+----------------------------------------------------------------
+
+--------------723C156AC411040FCB61D4F9
+Content-Type: text/x-patch; charset=UTF-8;
+ name="linux-kselftest-fixes-5.8-rc4.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="linux-kselftest-fixes-5.8-rc4.diff"
+
+diff --git a/tools/testing/selftests/tpm2/test_smoke.sh b/tools/testing/selftests/tpm2/test_smoke.sh
+index 663062701d5a..1334e301d2a0 100755
+--- a/tools/testing/selftests/tpm2/test_smoke.sh
++++ b/tools/testing/selftests/tpm2/test_smoke.sh
+@@ -1,15 +1,10 @@
+-#!/bin/bash
++#!/bin/sh
+ # SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
  
- The possible channel states are::
+ # Kselftest framework requirement - SKIP code is 4.
+ ksft_skip=4
  
--	enum pci_channel_state {
-+	typedef enum {
- 		pci_channel_io_normal,  /* I/O channel is in normal state */
- 		pci_channel_io_frozen,  /* I/O to channel is blocked */
- 		pci_channel_io_perm_failure, /* PCI card is dead */
--	};
-+	} pci_channel_state_t;
+-[ -f /dev/tpm0 ] || exit $ksft_skip
++[ -e /dev/tpm0 ] || exit $ksft_skip
  
- Possible return values are::
+ python -m unittest -v tpm2_tests.SmokeTest
+ python -m unittest -v tpm2_tests.AsyncTest
+-
+-CLEAR_CMD=$(which tpm2_clear)
+-if [ -n $CLEAR_CMD ]; then
+-	tpm2_clear -T device
+-fi
+diff --git a/tools/testing/selftests/tpm2/test_space.sh b/tools/testing/selftests/tpm2/test_space.sh
+index 36c9d030a1c6..00259cb746cf 100755
+--- a/tools/testing/selftests/tpm2/test_space.sh
++++ b/tools/testing/selftests/tpm2/test_space.sh
+@@ -1,9 +1,9 @@
+-#!/bin/bash
++#!/bin/sh
+ # SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
  
--- 
-2.27.0
+ # Kselftest framework requirement - SKIP code is 4.
+ ksft_skip=4
+ 
+-[ -f /dev/tpmrm0 ] || exit $ksft_skip
++[ -e /dev/tpmrm0 ] || exit $ksft_skip
+ 
+ python -m unittest -v tpm2_tests.SpaceTest
 
+--------------723C156AC411040FCB61D4F9--
