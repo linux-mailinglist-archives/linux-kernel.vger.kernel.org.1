@@ -2,140 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD500211B9E
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 07:40:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31FED211BA3
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 07:43:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726305AbgGBFkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 01:40:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50268 "EHLO
+        id S1726342AbgGBFnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 01:43:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726015AbgGBFki (ORCPT
+        with ESMTP id S1725263AbgGBFne (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 01:40:38 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 940C0C08C5C1
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 22:40:38 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id e18so12908061pgn.7
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 22:40:38 -0700 (PDT)
+        Thu, 2 Jul 2020 01:43:34 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 435FAC08C5C1;
+        Wed,  1 Jul 2020 22:43:34 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id h22so22975382lji.9;
+        Wed, 01 Jul 2020 22:43:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=joxvKotI6picrAUcS02GkmtYLqsOXW4f1Zm4dCFSTkM=;
-        b=ZIDObpBZEn6qdf4iGXJO9sFOOMqprwvBQx/LmZm1l+NI17ooFzASttkYT4J/BmuTBl
-         eeLcLF5Yn0zMKww/p7euG+QSNHgCbxiw2Dsvwu8sHFApxDpvxKdcuMCv6zHxHofz2KLx
-         T5sey77dv6SmHBdwozwxPOBuPwYITzgEJy5bvBEt9cNFqkWAwapDz2ogqxfrxcOUV8kl
-         uwDV9fWX4S2V8QMuibLNvV3OuiadaWIXo0GuAadCTg7Eqew/3dcM/NzzABgSQzzWCMST
-         Nray+KQAF9/tPMlMeB6G1aq/0zhh708PJIQt9pr+Md0kfWU5r7XZiH0FZziB0/69ywlf
-         quKw==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=8q209O2LZaPOsMqrkcwLXZ9FBAITgOWF27/Mx+CT9XE=;
+        b=m6mNKjiOin5lgFBuoN5BSEkJnGnaqUFj0LyH9vfXAI5kXFAMaAD6Gk3FH/jPRl178h
+         fQQTlpUePeq4EXUm+oADV3rXutKG7wXyJp3IncAg0FLgPdK/lnLbIYinqm7vTd5aTomr
+         bRsdSbtBZyNLj8Cmo9hNk0ljmnqAHKyZaHUxC2Krf5RbVQPtqeBl/I1c+fH6u/cU4H0e
+         o7KEvY2B/Zd/aMNH0/sxZjXV+Y1pDAzxvquulWy91PqKwp6x8Iv7ZGcv4rrLL+7Ze3nq
+         zIAOFLXLO4GSLT/gZxs45TYfQE8HBqC6n+Zd1SBHCeT736pqB73Rpxq0lCY03gtwKQK7
+         kjdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=joxvKotI6picrAUcS02GkmtYLqsOXW4f1Zm4dCFSTkM=;
-        b=ESlvW/FoOSbW9wBK7bhab37pGbKbFdwdNRKJaobyUc81DbHC2Zd2xTVBswrfPGjj0o
-         5AnDkHVDyP2uwWxH3Dr0F8GrIetHGbtLmwxKmiNXp9ILPfSvndFPgilaG/IhHnf6JSWQ
-         38DfnX7H2HS4Hg7NI3szm2S4EbvPDTQlhMGpTg4qCWp+N3YEVgyxkEjlxmeVgB3mjvyR
-         y3A7WgWHlJ4WOqNwEPlsJ2C6A47pbiosQ9HeBxvjAfLP9+PIVl9wKmcHcbxkIQJzLaWa
-         iWiXYxRQ8qRLjv03hbTEd5rF42SMmqN6BCPUaJSn3gYNzlkSkSDJWK4y/V+dBhNkt5yE
-         154g==
-X-Gm-Message-State: AOAM530ZxEwqZMbr13sgrE8p5izL4UXd6S663c7jQQ4tCd3i9Wq7rg0r
-        pWmilOF8+U8rI7bf1XKnBnY=
-X-Google-Smtp-Source: ABdhPJwW+LPezYKBPME+QT/SS3oi5Ex2zMGUpnQ3dLqn4v/c862WuDoAh/rYoC4V1p2CnKnAM13y8Q==
-X-Received: by 2002:a63:725c:: with SMTP id c28mr22457908pgn.156.1593668438031;
-        Wed, 01 Jul 2020 22:40:38 -0700 (PDT)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id a3sm7275161pgd.73.2020.07.01.22.40.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Jul 2020 22:40:37 -0700 (PDT)
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-X-Google-Original-From: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-Date:   Thu, 2 Jul 2020 14:40:33 +0900
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Raul Rangel <rrangel@google.com>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        kurt@linutronix.de, "S, Shirish" <Shirish.S@amd.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Subject: Re: UART/TTY console deadlock
-Message-ID: <20200702054033.GC3450@jagdpanzerIV.localdomain>
-References: <CAHQZ30BnfX+gxjPm1DUd5psOTqbyDh4EJE=2=VAMW_VDafctkA@mail.gmail.com>
- <CAHp75Vd8nTzmZdnhpTDChdc11zyCaSfeigbxaCpOWZ1Lv9ZBMw@mail.gmail.com>
- <20200630035816.GA21591@jagdpanzerIV.localdomain>
- <20200630102141.GA11587@alley>
- <20200630105512.GA530@jagdpanzerIV.localdomain>
- <20200630122239.GD6173@alley>
- <20200630130534.GB145027@jagdpanzerIV.localdomain>
- <20200630180255.GD37466@atomide.com>
- <20200702051213.GB3450@jagdpanzerIV.localdomain>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=8q209O2LZaPOsMqrkcwLXZ9FBAITgOWF27/Mx+CT9XE=;
+        b=bPHXNhJSU7y/SPcPP2TiZmVqkeOg6nufoxFvLdcx9VMZSkn/kg5oydqsqWX+mgj5yR
+         YP8Nwy8TMbO1J6zpVGeRA9OfdBgkH/av4pCBP9Kjiht4JFGyl8yU/KvE0NWX4r2G42CV
+         b+SmnUKGQYvl4VPCgRGFKA0EUy4SbGsgDVTDQYuCoXi0jnwLyipyP4DuNSFOBe5e0VFU
+         LKNpj+wZUBYjPE6pG458rsCjyyHCqN3igY120j+jBGvgDqCsrF2f7rtJt8mqzCwoCqkT
+         +SwXsI6/qpo9ogNmEnj2kIJrWzh7wJnFfYPNy64horoSacCu0mVQ8i6lZMggwSU+UUxG
+         mSkw==
+X-Gm-Message-State: AOAM533KuPA8IbtEkWnvPCc79rUA9mUdNcauxjyStIM4kaiNvHRY52mC
+        SKVElh5D4YBamJLqELkAJTe458BhVrQ=
+X-Google-Smtp-Source: ABdhPJzNDK/EGBA1dP+Bkg8lYhHrdYDFzeDuloBP68+sx4P4oGWh2smxM3ZdupKE9ncqdIA0J+glXQ==
+X-Received: by 2002:a2e:9c51:: with SMTP id t17mr6402902ljj.333.1593668612201;
+        Wed, 01 Jul 2020 22:43:32 -0700 (PDT)
+Received: from [192.168.2.145] (79-139-237-54.dynamic.spd-mgts.ru. [79.139.237.54])
+        by smtp.googlemail.com with ESMTPSA id w24sm2937288lfl.17.2020.07.01.22.43.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Jul 2020 22:43:31 -0700 (PDT)
+Subject: Re: [PATCH v4 12/37] PM / devfreq: tegra20: Use MC timings for
+ building OPP table
+To:     Chanwoo Choi <cw00.choi@samsung.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>
+Cc:     =?UTF-8?B?QXJ0dXIgxZp3aWdvxYQ=?= <a.swigon@samsung.com>,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org
+References: <20200609131404.17523-1-digetx@gmail.com>
+ <CGME20200609131458epcas1p2c774a0302bcef2c02790c2cb8cad57a0@epcas1p2.samsung.com>
+ <20200609131404.17523-13-digetx@gmail.com>
+ <4ea7fe00-7676-3186-8222-6e0d0eb8ed1f@samsung.com>
+ <4b22d3ee-f303-d81d-e261-187d4a46e749@gmail.com>
+ <2069fb51-f043-795d-7768-0024fc9a9f4e@samsung.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <7988b6cf-e60c-7e5c-ffc3-8075c20af3d3@gmail.com>
+Date:   Thu, 2 Jul 2020 08:43:30 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200702051213.GB3450@jagdpanzerIV.localdomain>
+In-Reply-To: <2069fb51-f043-795d-7768-0024fc9a9f4e@samsung.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (20/07/02 14:12), Sergey Senozhatsky wrote:
-> Date: Thu, 2 Jul 2020 14:12:13 +0900
-> From: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-> To: Tony Lindgren <tony@atomide.com>
-> Cc: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>, Petr Mladek
->  <pmladek@suse.com>, Andy Shevchenko <andy.shevchenko@gmail.com>, Raul
->  Rangel <rrangel@google.com>, Sergey Senozhatsky
->  <sergey.senozhatsky.work@gmail.com>, linux-kernel
->  <linux-kernel@vger.kernel.org>, Greg Kroah-Hartman
->  <gregkh@linuxfoundation.org>, Andy Shevchenko
->  <andriy.shevchenko@linux.intel.com>, kurt@linutronix.de, "S, Shirish"
->  <Shirish.S@amd.com>, Peter Zijlstra <peterz@infradead.org>, John Ogness
->  <john.ogness@linutronix.de>, Steven Rostedt <rostedt@goodmis.org>
-> Subject: Re: UART/TTY console deadlock
-> Message-ID: <20200702051213.GB3450@jagdpanzerIV.localdomain>
+02.07.2020 08:30, Chanwoo Choi пишет:
+> On 7/2/20 2:07 PM, Dmitry Osipenko wrote:
+>> 02.07.2020 07:18, Chanwoo Choi пишет:
+>>> Hi Dmitry,
+>>>
+>>> On 6/9/20 10:13 PM, Dmitry Osipenko wrote:
+>>>> The clk_round_rate() won't be usable for building OPP table once
+>>>> interconnect support will be added to the EMC driver because that CLK API
+>>>> function limits the rounded rate based on the clk rate that is imposed by
+>>>> active clk-users, and thus, the rounding won't work as expected if
+>>>> interconnect will set the minimum EMC clock rate before devfreq driver is
+>>>> loaded. The struct tegra_mc contains memory timings which could be used by
+>>>> the devfreq driver for building up OPP table instead of rounding clock
+>>>> rate, this patch implements this idea.
+>>>>
+>>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>>>> ---
+>>>>  drivers/devfreq/tegra20-devfreq.c | 18 +++++++++++-------
+>>>>  1 file changed, 11 insertions(+), 7 deletions(-)
+>>>>
+>>>> diff --git a/drivers/devfreq/tegra20-devfreq.c b/drivers/devfreq/tegra20-devfreq.c
+>>>> index 6469dc69c5e0..bf504ca4dea2 100644
+>>>> --- a/drivers/devfreq/tegra20-devfreq.c
+>>>> +++ b/drivers/devfreq/tegra20-devfreq.c
+>>>> @@ -123,8 +123,7 @@ static int tegra_devfreq_probe(struct platform_device *pdev)
+>>>>  {
+>>>>  	struct tegra_devfreq *tegra;
+>>>>  	struct tegra_mc *mc;
+>>>> -	unsigned long max_rate;
+>>>> -	unsigned long rate;
+>>>> +	unsigned int i;
+>>>>  	int err;
+>>>>  
+>>>>  	mc = tegra_get_memory_controller();
+>>>> @@ -151,12 +150,17 @@ static int tegra_devfreq_probe(struct platform_device *pdev)
+>>>>  
+>>>>  	tegra->regs = mc->regs;
+>>>>  
+>>>> -	max_rate = clk_round_rate(tegra->emc_clock, ULONG_MAX);
+>>>> -
+>>>> -	for (rate = 0; rate <= max_rate; rate++) {
+>>>> -		rate = clk_round_rate(tegra->emc_clock, rate);
+>>>> +	if (!mc->num_timings) {
+>>>
+>>> Could you explain what is meaning of 'num_timing?
+>>
+>> The num_timings is the number of memory timings defined in a
+>> device-tree. One timing configuration per memory clock rate.
 > 
-> On (20/06/30 11:02), Tony Lindgren wrote:
-> > This conditional disable for irq_shared does not look nice to me
-> > from the other device point of view :)
-> > 
-> > Would it be possible to just set up te dummy interrupt handler
-> > for the startup, then change it back afterwards? See for example
-> > omap8250_no_handle_irq().
+> OK. I understand.
 > 
-> I think we can do it. serial8250_do_startup() and irq handler take
-> port->lock, so they should be synchronized.
+>>
+>>> Also, why add the opp entry in case of mc->num_timings is zero?
+>>
+>> Timings may be not defined in some device-trees at all and in this case
+>> memory always running on a fixed clock rate.
+> 
+> You mean that 'timings' information is optional?
 
-Hmm, hold on. Why does it disable IRQ in the first place? IRQ handlers
-should grab the port->lock. So if there is already running IRQ, then
-serial8250_do_startup() will wait until IRQ handler unlocks the port->lock.
-If serial8250_do_startup() grabs the port->lock first, then IRQ will wait
-for serial8250_do_startup() to unlock it. serial8250_do_startup() does
-not release the port->unlock until its done:
+Yes
 
-		spin_lock_irqsave(&port->lock, flags);
+Actually, looks like I missed to properly test this case where timings
+are missing in DT and it shouldn't work with the current code. I'll fix
+it in the next version.
 
-		wait_for_xmitr(up, UART_LSR_THRE);
-		serial_port_out_sync(port, UART_IER, UART_IER_THRI);
-		udelay(1); /* allow THRE to set */
-		iir1 = serial_port_in(port, UART_IIR);
-		serial_port_out(port, UART_IER, 0);
-		serial_port_out_sync(port, UART_IER, UART_IER_THRI);
-		udelay(1); /* allow a working UART time to re-assert THRE */
-		iir = serial_port_in(port, UART_IIR);
-		serial_port_out(port, UART_IER, 0);
+>>
+>> The devfreq driver won't be practically useful if mc->num_timings is
+>> zero since memory frequency can't be changed, but anyways we'd want to
+>> load the devfreq driver in order to prevent confusion about why it's not
+>> loaded.
+>>
+>> For example, you may ask somebody to show contents of
+>> /sys/class/devfreq/tegra20-devfreq/trans_stat and the person says to you
+>> that this file doesn't exist, now you'll have to figure out what
+>> happened to the devfreq driver.
+> 
+> I understand why add OPP entry point when timing is not defined on DT.
+> But, actually, I think that you better to change 'timings' info is mandatory
+> instead of optional. Because the devfreq driver is for DVFS
+> and the driver supporting DVFS have to have the frequency information
+> like OPP.
+> 
+> Or, 
+> If you want to keep 'timing' is optional on DT,
+> I recommend that you add one timing data to tegra mc driver
+> when DT doesn't include the any timing information
+> I think that is it more clear.
 
-		spin_unlock_irqrestore(&port->lock, flags);
+Okay, I'll move it into the MC driver in the next version.
 
-so IRQ will not see the inconsistent device state.
-
-What exactly is the purpose of disable_irq_nosync()? Can we just remove
-disable_irq_nosync()/enable_irq() instead? Are there any IRQ handlers
-that don't acquire the port->lock?
-
-	-ss
+Thank you for the review!
