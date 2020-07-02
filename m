@@ -2,163 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 896A1212954
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 18:27:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63369212965
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 18:28:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726753AbgGBQ1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 12:27:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37604 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726371AbgGBQ1B (ORCPT
+        id S1726839AbgGBQ2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 12:28:32 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:59746 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726379AbgGBQ2b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 12:27:01 -0400
-Received: from mail-oo1-xc42.google.com (mail-oo1-xc42.google.com [IPv6:2607:f8b0:4864:20::c42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 799B7C08C5DD
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 09:27:01 -0700 (PDT)
-Received: by mail-oo1-xc42.google.com with SMTP id s190so2132492ooa.13
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 09:27:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=to:from:subject:cc:message-id:date:user-agent:mime-version
-         :content-language;
-        bh=+HQPPeKFIejGiV86yMGdqBrbHg3TiXW0sg4eTbb57QY=;
-        b=ZnRwDcNdKT12L60bjWxeAZ/j55/odGKh7b6lNVs8Y7PiBzOaUuAqRuvhDb1+GMNHW7
-         gyAOD8ca/GJ7gFj5h11+m8V431lTUfqotMZ3yAbwbEA051halP0Bm5ljqLggDR178fn0
-         DQ1SYuzFImuQbXIALp8X1bX4SLlQBsQsM/xxA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:from:subject:cc:message-id:date:user-agent
-         :mime-version:content-language;
-        bh=+HQPPeKFIejGiV86yMGdqBrbHg3TiXW0sg4eTbb57QY=;
-        b=Z265wr6IKsY/r2MpNwjCnuJ2WqJl4FgZsD3t4xCkHr8lSXarpuG8yArGzPuiRfIPjb
-         TWhz5t4ggb1Qsl5AjB+nTpxGLh+zUXeRbNwrKcPQG17ESy9CWfSuMnQ49Ht6MEdXXFYK
-         KhFpTmR8J93QKl1OzmogtLJ0Sx0yp8+QepaIpSTHmsxbeMT3nzTCPOoc2Pxe81n7V6m0
-         5kO5nACIlJS7Ev+VVa4iEF96xlvy3aj2h9U29s8sUThtRT/C67Ae94Vvtp+wkw/Ypft2
-         XYQycwSXm/xY6UesQnxHXiU3p/IgATiwyqBzOJnlanvrZmlbD5ZochVJou8VZI+FszmT
-         liWg==
-X-Gm-Message-State: AOAM5331ukM/yJPDsae4ffu4QhzpaQK4I2VF8cpf3IX4zaENYOLfRSLj
-        8a4ko7WmjvShQwRjqKfEYD8x/WsMhz4=
-X-Google-Smtp-Source: ABdhPJxqqV5v5JxyQMfvIA/8/KzIDufypGIk+mmqtOiMddVrepIJcizENTmMohNnN2mwxalpz+tcWA==
-X-Received: by 2002:a4a:b109:: with SMTP id a9mr19183218ooo.83.1593707220433;
-        Thu, 02 Jul 2020 09:27:00 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id 72sm2699953oii.43.2020.07.02.09.26.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Jul 2020 09:26:59 -0700 (PDT)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Subject: [GIT PULL] Kselftest fixes update for Linux 5.8-rc4
-Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        skhan@linuxfoundation.org, linux-kselftest@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Message-ID: <c97a669c-02d8-24c6-3bbf-295124d8261a@linuxfoundation.org>
-Date:   Thu, 2 Jul 2020 10:26:58 -0600
+        Thu, 2 Jul 2020 12:28:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593707308;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=pnlNDy7ujCkThYhfgbphAy3jEPnIKMybqtU8WhwBYYU=;
+        b=iyC70tafS2g7u24Yt+bl+t2DCIXaDIV0jnFIlcUySopDgr9UtTc/NRNfsSO8BjzSneZ26C
+        wzupZWyU+2ALFaDQbBWauWOS1NWKPR+vjPMIS/W5DolwjUYh4mIcu8ldNypNiLQIIVWfwq
+        GzKORWWJECvn8sn2EYTcxiTicgGKFPk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-424-UImTSbjUPxWwzxl1EfVJlg-1; Thu, 02 Jul 2020 12:28:24 -0400
+X-MC-Unique: UImTSbjUPxWwzxl1EfVJlg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BDD2180058A;
+        Thu,  2 Jul 2020 16:28:22 +0000 (UTC)
+Received: from [10.36.114.38] (ovpn-114-38.ams2.redhat.com [10.36.114.38])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4CF9D7BEAC;
+        Thu,  2 Jul 2020 16:28:20 +0000 (UTC)
+Subject: Re: [PATCH] mm: define pte_add_end for consistency
+To:     Wei Yang <richard.weiyang@linux.alibaba.com>
+Cc:     dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        akpm@linux-foundation.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        linux-mm@kvack.org
+References: <20200630031852.45383-1-richard.weiyang@linux.alibaba.com>
+ <40362e99-a354-c44f-8645-e2326a6df680@redhat.com>
+ <20200701021113.GA51306@L-31X9LVDL-1304.local>
+ <da4a470e-f34c-fbf8-c95a-93a7d30a215b@redhat.com>
+ <20200701115441.GA4979@L-31X9LVDL-1304.local>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
+ 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
+Organization: Red Hat GmbH
+Message-ID: <7562991b-c1e7-4037-a3f0-124acd0669b7@redhat.com>
+Date:   Thu, 2 Jul 2020 18:28:19 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------723C156AC411040FCB61D4F9"
+In-Reply-To: <20200701115441.GA4979@L-31X9LVDL-1304.local>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------723C156AC411040FCB61D4F9
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+On 01.07.20 13:54, Wei Yang wrote:
+> On Wed, Jul 01, 2020 at 10:29:08AM +0200, David Hildenbrand wrote:
+>> On 01.07.20 04:11, Wei Yang wrote:
+>>> On Tue, Jun 30, 2020 at 02:44:00PM +0200, David Hildenbrand wrote:
+>>>> On 30.06.20 05:18, Wei Yang wrote:
+>>>>> When walking page tables, we define several helpers to get the address of
+>>>>> the next boundary. But we don't have one for pte level.
+>>>>>
+>>>>> Let's define it and consolidate the code in several places.
+>>>>>
+>>>>> Signed-off-by: Wei Yang <richard.weiyang@linux.alibaba.com>
+>>>>> ---
+>>>>>  arch/x86/mm/init_64.c   | 6 ++----
+>>>>>  include/linux/pgtable.h | 7 +++++++
+>>>>>  mm/kasan/init.c         | 4 +---
+>>>>>  3 files changed, 10 insertions(+), 7 deletions(-)
+>>>>>
+>>>>> diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
+>>>>> index dbae185511cd..f902fbd17f27 100644
+>>>>> --- a/arch/x86/mm/init_64.c
+>>>>> +++ b/arch/x86/mm/init_64.c
+>>>>> @@ -973,9 +973,7 @@ remove_pte_table(pte_t *pte_start, unsigned long addr, unsigned long end,
+>>>>>  
+>>>>>  	pte = pte_start + pte_index(addr);
+>>>>>  	for (; addr < end; addr = next, pte++) {
+>>>>> -		next = (addr + PAGE_SIZE) & PAGE_MASK;
+>>>>> -		if (next > end)
+>>>>> -			next = end;
+>>>>> +		next = pte_addr_end(addr, end);
+>>>>>  
+>>>>>  		if (!pte_present(*pte))
+>>>>>  			continue;
+>>>>> @@ -1558,7 +1556,7 @@ void register_page_bootmem_memmap(unsigned long section_nr,
+>>>>>  		get_page_bootmem(section_nr, pud_page(*pud), MIX_SECTION_INFO);
+>>>>>  
+>>>>>  		if (!boot_cpu_has(X86_FEATURE_PSE)) {
+>>>>> -			next = (addr + PAGE_SIZE) & PAGE_MASK;
+>>>>> +			next = pte_addr_end(addr, end);
+>>>>>  			pmd = pmd_offset(pud, addr);
+>>>>>  			if (pmd_none(*pmd))
+>>>>>  				continue;
+>>>>> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+>>>>> index 32b6c52d41b9..0de09c6c89d2 100644
+>>>>> --- a/include/linux/pgtable.h
+>>>>> +++ b/include/linux/pgtable.h
+>>>>> @@ -706,6 +706,13 @@ static inline pgprot_t pgprot_modify(pgprot_t oldprot, pgprot_t newprot)
+>>>>>  })
+>>>>>  #endif
+>>>>>  
+>>>>> +#ifndef pte_addr_end
+>>>>> +#define pte_addr_end(addr, end)						\
+>>>>> +({	unsigned long __boundary = ((addr) + PAGE_SIZE) & PAGE_MASK;	\
+>>>>> +	(__boundary - 1 < (end) - 1) ? __boundary : (end);		\
+>>>>> +})
+>>>>> +#endif
+>>>>> +
+>>>>>  /*
+>>>>>   * When walking page tables, we usually want to skip any p?d_none entries;
+>>>>>   * and any p?d_bad entries - reporting the error before resetting to none.
+>>>>> diff --git a/mm/kasan/init.c b/mm/kasan/init.c
+>>>>> index fe6be0be1f76..89f748601f74 100644
+>>>>> --- a/mm/kasan/init.c
+>>>>> +++ b/mm/kasan/init.c
+>>>>> @@ -349,9 +349,7 @@ static void kasan_remove_pte_table(pte_t *pte, unsigned long addr,
+>>>>>  	unsigned long next;
+>>>>>  
+>>>>>  	for (; addr < end; addr = next, pte++) {
+>>>>> -		next = (addr + PAGE_SIZE) & PAGE_MASK;
+>>>>> -		if (next > end)
+>>>>> -			next = end;
+>>>>> +		next = pte_addr_end(addr, end);
+>>>>>  
+>>>>>  		if (!pte_present(*pte))
+>>>>>  			continue;
+>>>>>
+>>>>
+>>>> I'm not really a friend of this I have to say. We're simply iterating
+>>>> over single pages, not much magic ....
+>>>
+>>> Hmm... yes, we are iterating on Page boundary, while we many have the case
+>>> when addr or end is not PAGE_ALIGN.
+>>
+>> I really do wonder if not having page aligned addresses actually happens
+>> in real life. Page tables operate on page granularity, and
+>> adding/removing unaligned parts feels wrong ... and that's also why I
+>> dislike such a helper.
+>>
+>> 1. kasan_add_zero_shadow()/kasan_remove_zero_shadow(). If I understand
+>> the logic (WARN_ON()) correctly, we bail out in case we would ever end
+>> up in such a scenario, where we would want to add/remove things not
+>> aligned to PAGE_SIZE.
+>>
+>> 2. remove_pagetable()...->remove_pte_table()
+>>
+>> vmemmap_free() should never try to de-populate sub-pages. Even with
+>> sub-section hot-add/remove (2MB / 512 pages), with valid struct page
+>> sizes (56, 64, 72, 80), we always end up with full pages.
+>>
+>> kernel_physical_mapping_remove() is only called via
+>> arch_remove_memory(). That will never remove unaligned parts.
+>>
+> 
+> I don't have a very clear mind now, while when you look into
+> remove_pte_table(), it has two cases based on alignment of addr and next.
+> 
+> If we always remove a page, the second case won't happen?
 
-Hi Linus,
+So, the code talks about that the second case can only happen for
+vmemmap, never for direct mappings.
 
-Please pull the following Kselftest fixes update for Linux 5.8-rc4.
+I don't see a way how this could ever happen with current page sizes,
+even with sub-section hotadd (2MB). Maybe that is a legacy leftover or
+was never relevant? Or I am missing something important, where we could
+have sub-4k-page vmemmap data.
 
-This kselftest fixes update for Linux 5.8-rc4 consists of tpm test
-fixes from Jarkko Sakkinen.
+-- 
+Thanks,
 
-diff is attached.
+David / dhildenb
 
-thanks,
--- Shuah
-
-----------------------------------------------------------------
-The following changes since commit 9ebcfadb0610322ac537dd7aa5d9cbc2b2894c68:
-
-   Linux 5.8-rc3 (2020-06-28 15:00:24 -0700)
-
-are available in the Git repository at:
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest 
-tags/linux-kselftest-fixes-5.8-rc4
-
-for you to fetch changes up to 377ff83083c953dd58c5a030b3c9b5b85d8cc727:
-
-   selftests: tpm: Use /bin/sh instead of /bin/bash (2020-06-29 14:19:38 
--0600)
-
-----------------------------------------------------------------
-linux-kselftest-fixes-5.8-rc4
-
-This kselftest fixes update for Linux 5.8-rc4 consists of tpm test
-fixes from Jarkko Sakkinen.
-
-----------------------------------------------------------------
-Jarkko Sakkinen (3):
-       Revert "tpm: selftest: cleanup after unseal with wrong 
-auth/policy test"
-       selftests: tpm: Use 'test -e' instead of 'test -f'
-       selftests: tpm: Use /bin/sh instead of /bin/bash
-
-  tools/testing/selftests/tpm2/test_smoke.sh | 9 ++-------
-  tools/testing/selftests/tpm2/test_space.sh | 4 ++--
-  2 files changed, 4 insertions(+), 9 deletions(-)
-
-----------------------------------------------------------------
-
---------------723C156AC411040FCB61D4F9
-Content-Type: text/x-patch; charset=UTF-8;
- name="linux-kselftest-fixes-5.8-rc4.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="linux-kselftest-fixes-5.8-rc4.diff"
-
-diff --git a/tools/testing/selftests/tpm2/test_smoke.sh b/tools/testing/selftests/tpm2/test_smoke.sh
-index 663062701d5a..1334e301d2a0 100755
---- a/tools/testing/selftests/tpm2/test_smoke.sh
-+++ b/tools/testing/selftests/tpm2/test_smoke.sh
-@@ -1,15 +1,10 @@
--#!/bin/bash
-+#!/bin/sh
- # SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
- 
- # Kselftest framework requirement - SKIP code is 4.
- ksft_skip=4
- 
--[ -f /dev/tpm0 ] || exit $ksft_skip
-+[ -e /dev/tpm0 ] || exit $ksft_skip
- 
- python -m unittest -v tpm2_tests.SmokeTest
- python -m unittest -v tpm2_tests.AsyncTest
--
--CLEAR_CMD=$(which tpm2_clear)
--if [ -n $CLEAR_CMD ]; then
--	tpm2_clear -T device
--fi
-diff --git a/tools/testing/selftests/tpm2/test_space.sh b/tools/testing/selftests/tpm2/test_space.sh
-index 36c9d030a1c6..00259cb746cf 100755
---- a/tools/testing/selftests/tpm2/test_space.sh
-+++ b/tools/testing/selftests/tpm2/test_space.sh
-@@ -1,9 +1,9 @@
--#!/bin/bash
-+#!/bin/sh
- # SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
- 
- # Kselftest framework requirement - SKIP code is 4.
- ksft_skip=4
- 
--[ -f /dev/tpmrm0 ] || exit $ksft_skip
-+[ -e /dev/tpmrm0 ] || exit $ksft_skip
- 
- python -m unittest -v tpm2_tests.SpaceTest
-
---------------723C156AC411040FCB61D4F9--
