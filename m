@@ -2,117 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB774212E33
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 22:51:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C982212E39
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 22:51:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726309AbgGBUvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 16:51:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50018 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726100AbgGBUvB (ORCPT
+        id S1726292AbgGBUvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 16:51:48 -0400
+Received: from mail-io1-f66.google.com ([209.85.166.66]:40554 "EHLO
+        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726100AbgGBUvs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 16:51:01 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F4A9C08C5C1;
-        Thu,  2 Jul 2020 13:51:01 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id a8so24188338edy.1;
-        Thu, 02 Jul 2020 13:51:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ufie2CDrhQ/r4KkbF9WWsSi4czhI/yseQTh/49H/EYA=;
-        b=dGfKjGqOosSamvdrgWcRCV0ymB4gV9kROaMvgyKQsEZVq2gwsQeWvHGIfTyUSjhzQw
-         P+gEUd3QePrewPSAwY7CQjZ3yfh0hrB03KxI4xvnnspX8T/4dgV6qxLE6G4Zlqc+bf0J
-         uDIoTxVtqi9Jaf24z4Hlw+o/KIgSyIRTuESdGYsM/V+SgptlFPDJ27YhaPerjHw4r0cr
-         XMxLdmS+4qu+foLql6mUAlb8qJmebfvdFJohbaiVbrkHnWjMvQrD3dZ1iSe6vviu7T0D
-         z5EA+YAe53qh3orxBuZaMk8gKk+BdmzBCxGtBoRVMu3KHkjr38KpOFJbpvS/pJvq5YeZ
-         vcbA==
+        Thu, 2 Jul 2020 16:51:48 -0400
+Received: by mail-io1-f66.google.com with SMTP id q8so30350426iow.7;
+        Thu, 02 Jul 2020 13:51:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ufie2CDrhQ/r4KkbF9WWsSi4czhI/yseQTh/49H/EYA=;
-        b=CzZeMnzm35aCDQkfY13NLSgbIa8uFPGKjMk6d9DvVPcp+0a9jw2skGqe58QJC+fOVw
-         HemH+VYf1Zj++h+CmFAU5bc/zskfGaDAwtpWO9rtTFA2wkFyLzyMWf/S3WIAcOjX/eqF
-         Ju9ODQdqFU3yakNtNzXJi0U86hTcmFjHwx60UtPCH4QUVgXBM9rI/1W4hsk8JU/8w+yZ
-         TlZBLUCcahYmm8hbcizfr1LZHxSgJmKu1sUIDwDJEcEBF2XfJSQZmLssfh5X+yv/NpxM
-         fdSeDGNC1+HrwVab5vbS7JvHBGm3yhVOdFKWBf0QPmcO+6sdZUucdDmwsPlF5TdVk0Dj
-         yKGg==
-X-Gm-Message-State: AOAM533d66BY6zcON/kpEOGDW1F1HE4iO/JpynD3XNJjoDg+0n0LCtwU
-        AtO6OwOh67RpJLDTmLzkLOSGblIv
-X-Google-Smtp-Source: ABdhPJycjQwX4+oNVImACY03PvV89lnvZCJAQc0HM4ZfEg1DbOqvUmAaCyQb4XoSPsVXewoYViDVAQ==
-X-Received: by 2002:aa7:c2cf:: with SMTP id m15mr12345977edp.27.1593723060101;
-        Thu, 02 Jul 2020 13:51:00 -0700 (PDT)
-Received: from ?IPv6:2a01:110f:b59:fd00:55bc:8b0a:d3af:949c? ([2a01:110f:b59:fd00:55bc:8b0a:d3af:949c])
-        by smtp.gmail.com with ESMTPSA id da20sm10014362edb.27.2020.07.02.13.50.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Jul 2020 13:50:59 -0700 (PDT)
-Subject: Re: [PATCH v2] leds: core: Flush scheduled work for system suspend
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>, pavel@ucw.cz
-Cc:     anthony.wong@canonical.com, Dan Murphy <dmurphy@ti.com>,
-        "open list:LED SUBSYSTEM" <linux-leds@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20200702054500.11251-1-kai.heng.feng@canonical.com>
-From:   Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Message-ID: <a5a931e5-771d-3356-89c2-b0e49f74161c@gmail.com>
-Date:   Thu, 2 Jul 2020 22:50:58 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rcmf522YzRsjQGuzsW0MDCpwiVqvv14uH+p7wGyNLDs=;
+        b=OmwadRaG+tgvqG5NAEmsqLQ9ouKDJ9/iKeplK3tm6Lwyp8fgqwXGICeyG6XWPTVK30
+         Cs1/D8Qhn2XxgkFJJtXoUNAmkndEA7GoJuD0Dou5qL1ULRXVa8UpfXmnGbbZh8QaUolP
+         xfrwz6gA0n96fg7DyJ+unO3jXkxuNE7SaXw6iQh9Rr/Ru6EDbw0qDMaNFT8KEXdGVZSx
+         UF05Die7h/lYzXfXWxiM7dDBkhYDsFk9XscYaP9chHLta+eAwCJBuep/k2VWUgLH5nEB
+         dCX/hUF2K2nfBDNDZXhkHv715cXZGu9hNgb5KW7rklJy5d7yGF6TYq9xIW9p01sfzT7A
+         FfEw==
+X-Gm-Message-State: AOAM531fL67NhkYc6eoFz1Okkf2D4OHiHaa/XtUlvTurMQdVN9F0Ktsj
+        aLYsDOswy8o2GAMsVYInRQ==
+X-Google-Smtp-Source: ABdhPJySM9jU/gTpvtpT3zaOet81vYx3jYRYc+7n0XVexCFz3T+hidfEsgv5ZE431Xid0foaBnN57Q==
+X-Received: by 2002:a6b:ee02:: with SMTP id i2mr9168719ioh.110.1593723107239;
+        Thu, 02 Jul 2020 13:51:47 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id w10sm5427766ilo.10.2020.07.02.13.51.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Jul 2020 13:51:46 -0700 (PDT)
+Received: (nullmailer pid 1671716 invoked by uid 1000);
+        Thu, 02 Jul 2020 20:51:43 -0000
+Date:   Thu, 2 Jul 2020 14:51:43 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Ondrej Jirman <megous@megous.com>
+Cc:     David Airlie <airlied@linux.ie>, Sam Ravnborg <sam@ravnborg.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>,
+        linux-kernel@vger.kernel.org, Purism Kernel Team <kernel@puri.sm>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Samuel Holland <samuel@sholland.org>,
+        devicetree@vger.kernel.org, Bhushan Shah <bshah@kde.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        linux-sunxi@googlegroups.com, Luca Weiss <luca@z3ntu.xyz>,
+        Martijn Braam <martijn@brixit.nl>,
+        Icenowy Zheng <icenowy@aosc.io>,
+        Maxime Ripard <mripard@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        dri-devel@lists.freedesktop.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH v7 02/13] dt-bindings: panel: Convert rocktech,
+ jh057n00900 to yaml
+Message-ID: <20200702205143.GA1670522@bogus>
+References: <20200701162928.1638874-1-megous@megous.com>
+ <20200701162928.1638874-3-megous@megous.com>
 MIME-Version: 1.0
-In-Reply-To: <20200702054500.11251-1-kai.heng.feng@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200701162928.1638874-3-megous@megous.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kai-Heng,
-
-Thank you for the update.
-
-On 7/2/20 7:45 AM, Kai-Heng Feng wrote:
-> Sometimes LED won't be turned off by LED_CORE_SUSPENDRESUME flag upon
-> system suspend.
+On Wed, 01 Jul 2020 18:29:17 +0200, Ondrej Jirman wrote:
+> Convert Rocktech MIPI DSI panel driver from txt to yaml bindings.
 > 
-> led_set_brightness_nopm() uses schedule_work() to set LED brightness.
-> However, there's no guarantee that the scheduled work gets executed
-> because no one flushes the work.
-> 
-> So flush the scheduled work to make sure LED gets turned off.
-> 
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> Signed-off-by: Ondrej Jirman <megous@megous.com>
 > ---
-> v2:
->   - Use flush_work() instead.
-> 
->   drivers/leds/led-class.c | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/leds/led-class.c b/drivers/leds/led-class.c
-> index 3363a6551a70..cc3929f858b6 100644
-> --- a/drivers/leds/led-class.c
-> +++ b/drivers/leds/led-class.c
-> @@ -173,6 +173,7 @@ void led_classdev_suspend(struct led_classdev *led_cdev)
->   {
->   	led_cdev->flags |= LED_SUSPENDED;
->   	led_set_brightness_nopm(led_cdev, 0);
-> +	flush_work(&led_cdev->set_brightness_work);
->   }
->   EXPORT_SYMBOL_GPL(led_classdev_suspend);
->   
+>  .../display/panel/rocktech,jh057n00900.txt    | 23 -------
+>  .../display/panel/rocktech,jh057n00900.yaml   | 66 +++++++++++++++++++
+>  2 files changed, 66 insertions(+), 23 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/display/panel/rocktech,jh057n00900.txt
+>  create mode 100644 Documentation/devicetree/bindings/display/panel/rocktech,jh057n00900.yaml
 > 
 
-Acked-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
 
-Pavel, this needs to go to stable as well, so let's add the tag:
+My bot found errors running 'make dt_binding_check' on your patch:
 
-Fixes: 81fe8e5b73e3 ("leds: core: Add led_set_brightness_nosleep{nopm} 
-functions")
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/display/bridge/nwl-dsi.example.dt.yaml: panel@0: '#address-cells', '#size-cells', 'port@0' do not match any of the regexes: 'pinctrl-[0-9]+'
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/display/bridge/nwl-dsi.example.dt.yaml: panel@0: 'vcc-supply' is a required property
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/display/bridge/nwl-dsi.example.dt.yaml: panel@0: 'iovcc-supply' is a required property
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/display/bridge/nwl-dsi.example.dt.yaml: panel@0: 'reset-gpios' is a required property
 
--- 
-Best regards,
-Jacek Anaszewski
+
+See https://patchwork.ozlabs.org/patch/1320690
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure dt-schema is up to date:
+
+pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
+
+Please check and re-submit.
+
