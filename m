@@ -2,111 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 553AA212E5F
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 23:00:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89AF4212E7D
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 23:04:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726265AbgGBVAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 17:00:18 -0400
-Received: from mail-il1-f196.google.com ([209.85.166.196]:45862 "EHLO
-        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725954AbgGBVAR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 17:00:17 -0400
-Received: by mail-il1-f196.google.com with SMTP id o3so8077643ilo.12;
-        Thu, 02 Jul 2020 14:00:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7QtfLSG5iCWPjoGkb/dcO4GKpTdA5wfHStXRPpTbvZk=;
-        b=cXipTB0LRZOzF1JnhvRqnl1LXNSQKvh3Rz0ADICmdduGvjkqAf98m+BmUlS7j3Qnxw
-         VwASuUEmCoi6xi3xk7/swq+LljtUC7NZJlMXdKqytidnqnbhp27Bzxrmv8lmvpEYuPaF
-         k+MUWZkVoJpOioFE6IhHmtZdfBzLsxFBtG265a6IC/kQ3chzMGrgjyFKR9jwp0l4rOLp
-         uPZ2DNj3/tukseB9oFQPa5qsdDHsyo49D6Za0sThOK34If6J4FjsG8uAPLqO1ptfdeIF
-         ijfCg+FutRaaZS/8ng/hyxYNfHpls6WbM5MNCLOoqOn3g+WItCmqf8QyTKxoB9JkAEC9
-         AlWQ==
-X-Gm-Message-State: AOAM533A6NWe06dlSfpqGFa/pODLjBB/i/iRw89In7T+Z193IEr707iY
-        hjtjZUpJIp477pjpTCO+vw==
-X-Google-Smtp-Source: ABdhPJx4JIDBC5UZXyrO0sUArTcLxJrGCbl1Te2M8TG8q68takA1sojfUFtwJPO7crhAeVasbkKPLg==
-X-Received: by 2002:a05:6e02:1253:: with SMTP id j19mr14732392ilq.145.1593723616609;
-        Thu, 02 Jul 2020 14:00:16 -0700 (PDT)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id v4sm5382970ilo.44.2020.07.02.14.00.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Jul 2020 14:00:16 -0700 (PDT)
-Received: (nullmailer pid 1685550 invoked by uid 1000);
-        Thu, 02 Jul 2020 21:00:14 -0000
-Date:   Thu, 2 Jul 2020 15:00:14 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Amit Singh Tomar <amittomer25@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, afaerber@suse.de,
-        andre.przywara@arm.com, cristian.ciocaltea@gmail.com,
-        robh+dt@kernel.org, vkoul@kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        manivannan.sadhasivam@linaro.org, dan.j.williams@intel.com,
-        linux-actions@lists.infradead.org
-Subject: Re: [PATCH v5 01/10] dt-bindings: dmaengine: convert Actions Semi
- Owl SoCs bindings to yaml
-Message-ID: <20200702210014.GA1685248@bogus>
-References: <1593701576-28580-1-git-send-email-amittomer25@gmail.com>
- <1593701576-28580-2-git-send-email-amittomer25@gmail.com>
-MIME-Version: 1.0
+        id S1726147AbgGBVEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 17:04:42 -0400
+Received: from wind.enjellic.com ([76.10.64.91]:48392 "EHLO wind.enjellic.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725994AbgGBVEm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 17:04:42 -0400
+X-Greylist: delayed 1010 seconds by postgrey-1.27 at vger.kernel.org; Thu, 02 Jul 2020 17:04:41 EDT
+Received: from wind.enjellic.com (localhost [127.0.0.1])
+        by wind.enjellic.com (8.15.2/8.15.2) with ESMTP id 062KlAFL022258;
+        Thu, 2 Jul 2020 15:47:10 -0500
+Received: (from greg@localhost)
+        by wind.enjellic.com (8.15.2/8.15.2/Submit) id 062KlAIo022257;
+        Thu, 2 Jul 2020 15:47:10 -0500
+Date:   Thu, 2 Jul 2020 15:47:10 -0500
+From:   "Dr. Greg" <greg@enjellic.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Jethro Beekman <jethro@fortanix.com>,
+        Andy Lutomirski <luto@kernel.org>, akpm@linux-foundation.org,
+        andriy.shevchenko@linux.intel.com, asapek@google.com,
+        cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, nhorman@redhat.com,
+        npmccallum@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v33 12/21] x86/sgx: Allow a limited use of ATTRIBUTE.PROVISIONKEY for attestation
+Message-ID: <20200702204709.GA21504@wind.enjellic.com>
+Reply-To: "Dr. Greg" <greg@enjellic.com>
+References: <20200617220844.57423-1-jarkko.sakkinen@linux.intel.com> <20200617220844.57423-13-jarkko.sakkinen@linux.intel.com> <20200629160242.GB32176@zn.tnic> <20200629220400.GI12312@linux.intel.com> <20200630084956.GB1093@zn.tnic>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1593701576-28580-2-git-send-email-amittomer25@gmail.com>
+In-Reply-To: <20200630084956.GB1093@zn.tnic>
+User-Agent: Mutt/1.4i
+X-Greylist: Sender passed SPF test, not delayed by milter-greylist-4.2.3 (wind.enjellic.com [127.0.0.1]); Thu, 02 Jul 2020 15:47:11 -0500 (CDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 02 Jul 2020 20:22:47 +0530, Amit Singh Tomar wrote:
-> Converts the device tree bindings for the Actions Semi Owl SoCs DMA
-> Controller over to YAML schemas.
-> 
-> It also adds new compatible string "actions,s700-dma".
-> 
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Amit Singh Tomar <amittomer25@gmail.com>
-> ---
-> Changes since v4:
-> 	* Added Rob's Reviewed-by tag.
-> 	* Re-order it from 05/10 to 01/10.
-> Changes since v3:
->         * No change.
-> Changes since v2:
->         * Addressed Rob's comments:
->            - removed unnecessary description.
->            - added unevaluatedProperties
->            - added relevant information about
->              dma-channels and dma-request
->         * Added power-domain property.
-> Change since v1:
->         * Updated the description field to reflect
->           only the necessary information.
->         * replaced the maxItems field with description for each
->           controller attribute(except interrupts).
->         * Replaced the clock macro with number to keep the example
->           as independent as possible.
-> ---
->  Documentation/devicetree/bindings/dma/owl-dma.txt  | 47 -------------
->  Documentation/devicetree/bindings/dma/owl-dma.yaml | 79 ++++++++++++++++++++++
->  2 files changed, 79 insertions(+), 47 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/dma/owl-dma.txt
->  create mode 100644 Documentation/devicetree/bindings/dma/owl-dma.yaml
-> 
+Good afternoon, I hope the week is progressing productively to an end
+for everyone.
 
+I think it was almost two months ago now that Thomas Gleixner
+indicated that security and privacy issues that we were raising with
+respect to this driver, with what we believe is legitimate domain
+expertise, threatened the upstreaming of the driver.  I think the case
+can be made that those claims were somewhat specious given a fast
+forward to today and the continued uncertainty regarding the
+architecture of this driver.
 
-My bot found errors running 'make dt_binding_check' on your patch:
+So I will take that risk once again in order to provide some context
+for this thread.
 
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/dma/owl-dma.example.dt.yaml: example-0: dma-controller@e0260000:reg:0: [0, 3760586752, 0, 4096] is too long
+On Tue, Jun 30, 2020 at 10:49:56AM +0200, Borislav Petkov wrote:
+> On Mon, Jun 29, 2020 at 03:04:00PM -0700, Sean Christopherson wrote:
+> > > I don't see this acronym resolved anywhere in the whole patchset.
+> > 
+> > Quoting Enclave.
 
+> Yah, pls add it somewhere.
 
-See https://patchwork.ozlabs.org/patch/1321538
+For the benefit of everyone not deeply involved with this and perhaps
+something that Jarkko can cut and paste if he desires.
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure dt-schema is up to date:
+The Quoting Enclave (QE) is the trusted endpoint that is responsible
+for signing the report of an enclave's initialized status on a
+platform.
 
-pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
+In Enhanced Privacy ID (EPID) based attestation, the QE is the
+custodian of one of the private EPID group keys that is provisioned to
+the platform by the Intel Attestation Service (IAS).  The quoting
+enclave generates a signature over the attesting enclave's report
+structure using that key.  The IAS uses its public copy of the group
+key to verify that the signature is from a trusted endpoint running on
+a member of the group.
 
-Please check and re-submit.
+The EPID provisioning process 'trusts' that the platform, to which the
+private group key is being delegated to, is a known Intel platform by
+virtue of the fact that the Platform Certification Enclave (PCE) is
+able to generate an identifier that could only be generated by having
+access to a specific symmetric encryption key.  A key that is
+available only to enclaves that have been initialized with the
+PROVISION_KEY attribute bit.
 
+The QE encrypts the private group key using a signer specific
+(MRSIGNER) symmetric encryption key that only the QE can generate
+while in a trusted initialization state.  That provides a mechanisum
+for persisting this chain of trust outside the context of execution of
+the QE.
+
+Things are slightly different from a mechanistic perspective when the
+Data Center Attestation Protocol (DCAP) is being used, but
+conceptually the same.  In that attestation variant, the QE carries
+the PROVISION_KEY attribute so that it can certify that the report
+signature, generated with the Elliptic Curve Digital Signature
+Algorithm (ECDSA) rather then EPID, is from a known platform.
+
+> > /dev/sgx/provision is root-only by default, the expectation is
+> > that the admin will configure the system to grant only specific
+> > enclaves access to the PROVISION_KEY.
+
+> Uuh, I don't like "the expectation is" - the reality happens to turn
+> differently, more often than not.
+
+Indeed, which is why we have consistently maintained that the platform
+owner should be allowed to use cryptographic access controls over
+which enclaves can possess the PROVISION_KEY attribute.
+
+Given the security threat on a platform that is capable of supporting
+Enclave Dynamic Memory Management (EDMM), the ability to initialize an
+enclave is also a legitimate candidate for cryptographic access
+control.
+
+We can bikeshed the significance of these issues all day, but for the
+record, access to the PROVISION_KEY allows platforms to be absolutely
+and precisely fingerprinted for their entire lifespan.
+
+Initialized enclaves on an EDMM capable platform have the ability to
+execute arbitrary code, over which the kernel security infrastructure
+has no visibility into or control over.
+
+There is little doubt that EDMM will be a mainstay of the Confidential
+Computing Initiative (CCI), which is the target of this driver.  A
+review of the archives will indicate that RedHat/IBM has already
+confirmed that their candidate for this infrastructure (Enarx)
+requires EDMM.
+
+To refresh everyone further, the last version of the SFLC patches that
+we proposed, allows a platform owner to run the driver in a default
+mode, which uses the proposed DAC controls over all of this or to opt
+for stronger cryptographic controls.  The approach that we took has
+virtually no impact on the architecture and footprint of the driver.
+
+> > In this series, access is fairly binary, i.e. there's no
+> > additional kernel infrastructure to help userspace make
+> > per-enclave decisions.  There have been more than a few proposals
+> > on how to extend the kernel to help provide better granularity,
+> > e.g. LSM hooks, but it was generally agreed to punt that stuff to
+> > post-upstreaming to keep things "simple" once we went far enough
+> > down various paths to ensure we weren't painting ourselves into a
+> > corner.
+
+> So this all sounds to me like we should not upstream
+> /dev/sgx/provision now but delay it until the infrastructure for
+> that has been made more concrete. We can always add it
+> then. Changing it after the fact - if we have to and for whatever
+> reason - would be a lot harder for a user-visible interface which
+> someone has started using already.
+>
+> So I'd leave that out from the initial patchset.
+
+Without access to the PROVISION_KEY attribute, the two standard
+mechanisms for attestation will not function, the technology is
+arguably useless for its intended purposes without attestation.
+
+Once again, I will leave it to community bike shedding as to whether
+or not Linux wants the ability to support unfettered deterministic
+platform fingerprinting that can be conducted for the physical
+lifespan of the platform.
+
+Once again, for the record, our approach affords compatibility with
+the now 6+ year old out-of-tree user interface, without requiring its
+use.  I would argue that the continually voiced concerns about
+'painting ourselves into a corner', with respect to access
+authorization, is significantly less of a problem with our approach
+rather then without it.
+
+> > If you want super gory details, Intel's whitepaper on attestation
+> > in cloud environments is a good starting point[*], but I don't
+> > recommended doing much more than skimming unless you really like
+> > attestation stuff or are masochistic, which IMO amount to the same
+> > thing :-)
+
+> No thanks. :)
+
+Interesting reflections and perhaps worthy of some introspection by
+the Linux development community.
+
+I will concede that there are a lot of musty corners that need to be
+explored in order to understand how all of this works and the
+security/privacy issues involved.  I certainly wouldn't wish
+exploration on those corners on anyone.
+
+I think everyone will concede that my ideas and suggestions on these
+issues have been deemed to be unpopular, if not without merit.  They
+do, however, come from the perspective of someone who directed a
+complete and independent implementation of all of this infrastructure.
+
+A process which has left me with no uncertainty whatsoever with
+respect to the issues involved in all of this.
+
+> Regards/Gruss,
+>     Boris.
+
+Best wishes for a pleasant and productive weekend to everyone.
+
+Dr. Greg
+
+As always,
+Dr. Greg Wettstein, Ph.D, Worker      Autonomously self-defensive
+Enjellic Systems Development, LLC     IOT platforms and edge devices.
+4206 N. 19th Ave.
+Fargo, ND  58102
+PH: 701-281-1686                      EMAIL: greg@enjellic.com
+------------------------------------------------------------------------------
+"I suppose that could happen but he wouldn't know a Galois Field
+ if it kicked him in the nuts."
+                                -- Anonymous mathematician
+                                   Resurrection.
