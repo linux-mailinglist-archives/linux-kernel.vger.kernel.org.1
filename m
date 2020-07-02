@@ -2,137 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00B2B2117A0
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 03:21:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ABB12117A4
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 03:22:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728049AbgGBBVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 21:21:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727805AbgGBBU7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 21:20:59 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAB03C08C5C1;
-        Wed,  1 Jul 2020 18:20:58 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id t25so24927495lji.12;
-        Wed, 01 Jul 2020 18:20:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=dYCeMOPmLDd6YkOtzFpnQl9uCIfo9ocTM9gPN7zgGLs=;
-        b=d9j4CswU2NFZCBq45rswJjWthlpogrZnyxU2Y3/qFx3SzQ/Yg010yg+KHPckVLMK7E
-         sPM8Vl3sG/AcQaGYeiyAu0/y2NWDRFpN1cCGWZfSvqzvHm5OiyAxAO1Dt97pMU2E0dmk
-         iS7KuYi16IoF64egljBq4I2PpWLZDdd95183IIuQ7d7bgik4N+IndnkWEQhQKukAgMZA
-         s+JpJag5nHTBtAfKONT0BOIODyFke/y2jPMJiBL+CegXb4WhTK5iNesdPuPjBHoOitij
-         010J4brz2P8aTqBd6+yMM3QatHxh0kZo1oOmAU8jRZ0M8hgVNeF73mXnCW8JE/+4P82m
-         R9qQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=dYCeMOPmLDd6YkOtzFpnQl9uCIfo9ocTM9gPN7zgGLs=;
-        b=YC6fEuv8hQgsxL5mbKztMb2innT7OnhnNF4HqcD5xTW+u9yly7Cmlf+uSa3mzyybgK
-         m8pu3VQn1Cxdl/Q5mbR97v226SLQHsfYT8KXDQGnj0HjrJ1wfj44AonMdt3eIxxckHJq
-         C68JCzlAgSeflTxVijmfeH3+/tbiw8Lm3LFXmaD1a6XLeI4jalGzCwh9/KPErjwyFHJT
-         LJCv2769IMQJ3FAKzte2VyXp9eJn6EqjzYB77EamhkNrgSmbssBHY9nvWWC2dr+mqScF
-         szRdu1EqSen8Qo3oNxqlvCl+2TDu/dt04QICs04jCVWKrb/8Q6N8EZ2VtRHJncVTLtaq
-         FJLQ==
-X-Gm-Message-State: AOAM532Kzwo/s220/HRqHhhwt1ddR/YYfgy02sHtWfRqJJxT2CCaE3eK
-        BQAoVn7QRYCFqgVxJDpj+5ZRtJomzjw=
-X-Google-Smtp-Source: ABdhPJxfVjfn28q5t97TdXNmIK+RNFjKEXIoVX+Bw+Pu1pBF7C+yZ6DON9DioM1xmYHgdH2FopVzAw==
-X-Received: by 2002:a2e:9818:: with SMTP id a24mr13554159ljj.280.1593652857102;
-        Wed, 01 Jul 2020 18:20:57 -0700 (PDT)
-Received: from [192.168.2.145] (79-139-237-54.dynamic.spd-mgts.ru. [79.139.237.54])
-        by smtp.googlemail.com with ESMTPSA id d18sm2380862lja.116.2020.07.01.18.20.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Jul 2020 18:20:56 -0700 (PDT)
-Subject: Re: [PATCH v4 11/37] PM / devfreq: tegra30: Silence deferred probe
- error
-To:     Chanwoo Choi <cw00.choi@samsung.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>
-Cc:     =?UTF-8?B?QXJ0dXIgxZp3aWdvxYQ=?= <a.swigon@samsung.com>,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org
-References: <20200609131404.17523-1-digetx@gmail.com>
- <CGME20200609131843epcas1p3a5b06308559ff03ef1b27521f412b656@epcas1p3.samsung.com>
- <20200609131404.17523-12-digetx@gmail.com>
- <136b430d-2097-7b2b-d7dd-b438deee8f5d@samsung.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <fda8aa80-04f1-af00-7a0d-f9b589cdb37e@gmail.com>
-Date:   Thu, 2 Jul 2020 04:20:55 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1728104AbgGBBWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 21:22:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52992 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726028AbgGBBWE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 21:22:04 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6FA2820748;
+        Thu,  2 Jul 2020 01:22:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593652924;
+        bh=t48+Xhwq9/p8QGgsPqjcI4Z6WeMmsCy0ku+QepkjvXw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=qAd8IP2f4neblwS824klCsrbfs/Dt0tGiYA40MPNSzrrD1YEtog/X9DE/fAYCJqWi
+         P7A5ZI19v82gLz512OkZlOaODixU1crtq1E07KF2fS3rEBbMvwCe/ac0+g1bJcYwG2
+         AXhmk0U7jDAVjyCS3eEhsVcDUS9ZKnCjFyjIr1xQ=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Tero Kristo <t-kristo@ti.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.7 01/53] soc: ti: omap-prm: use atomic iopoll instead of sleeping one
+Date:   Wed,  1 Jul 2020 21:21:10 -0400
+Message-Id: <20200702012202.2700645-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <136b430d-2097-7b2b-d7dd-b438deee8f5d@samsung.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-02.07.2020 03:59, Chanwoo Choi пишет:
-> Hi,
-> 
-> On 6/9/20 10:13 PM, Dmitry Osipenko wrote:
->> Tegra EMC driver was turned into a regular kernel driver, it also could
->> be compiled as a loadable kernel module now. Hence EMC clock isn't
->> guaranteed to be available and clk_get("emc") may return -EPROBE_DEFER and
->> there is no good reason to spam KMSG with a error about missing EMC clock
->> in this case, so let's silence the deferred probe error.
->>
->> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->> ---
->>  drivers/devfreq/tegra30-devfreq.c | 9 ++++++---
->>  1 file changed, 6 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/devfreq/tegra30-devfreq.c b/drivers/devfreq/tegra30-devfreq.c
->> index e94a27804c20..423dd35c95b3 100644
->> --- a/drivers/devfreq/tegra30-devfreq.c
->> +++ b/drivers/devfreq/tegra30-devfreq.c
->> @@ -801,9 +801,12 @@ static int tegra_devfreq_probe(struct platform_device *pdev)
->>  	}
->>  
->>  	tegra->emc_clock = devm_clk_get(&pdev->dev, "emc");
->> -	if (IS_ERR(tegra->emc_clock)) {
->> -		dev_err(&pdev->dev, "Failed to get emc clock\n");
->> -		return PTR_ERR(tegra->emc_clock);
->> +	err = PTR_ERR_OR_ZERO(tegra->emc_clock);
->> +	if (err) {
->> +		if (err != -EPROBE_DEFER)
->> +			dev_err(&pdev->dev, "Failed to get emc clock: %d\n",
->> +				err);
->> +		return err;
->>  	}
->>  
->>  	err = platform_get_irq(pdev, 0);
->>
-> 
-> As I commented on patch10, I recommend that you add the Tegra EMC driver
-> commit information into patch description and Looks good to me.
-> 
+From: Tero Kristo <t-kristo@ti.com>
 
-Hello, Chanwoo!
+[ Upstream commit 98ece19f247159a51003796ede7112fef2df5d7f ]
 
-This patch11 and patch10 are depending on the patches 4/5 (the Tegra EMC
-driver patches) of *this* series, hence there is no commit information.
-I'm expecting that this whole series will go via tegra tree once all the
-patches will be reviewed and collect all the necessary acks from you,
-ICC and CLK subsystem maintainers.
+The reset handling APIs for omap-prm can be invoked PM runtime which
+runs in atomic context. For this to work properly, switch to atomic
+iopoll version instead of the current which can sleep. Otherwise,
+this throws a "BUG: scheduling while atomic" warning. Issue is seen
+rather easily when CONFIG_PREEMPT is enabled.
 
-Please feel free to give yours ack to the patches 10/11 if they are good
-to you :)
+Signed-off-by: Tero Kristo <t-kristo@ti.com>
+Acked-by: Santosh Shilimkar <ssantosh@kernel.org>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/soc/ti/omap_prm.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/soc/ti/omap_prm.c b/drivers/soc/ti/omap_prm.c
+index 96c6f777519c0..c9b3f9ebf0bbf 100644
+--- a/drivers/soc/ti/omap_prm.c
++++ b/drivers/soc/ti/omap_prm.c
+@@ -256,10 +256,10 @@ static int omap_reset_deassert(struct reset_controller_dev *rcdev,
+ 		goto exit;
+ 
+ 	/* wait for the status to be set */
+-	ret = readl_relaxed_poll_timeout(reset->prm->base +
+-					 reset->prm->data->rstst,
+-					 v, v & BIT(st_bit), 1,
+-					 OMAP_RESET_MAX_WAIT);
++	ret = readl_relaxed_poll_timeout_atomic(reset->prm->base +
++						 reset->prm->data->rstst,
++						 v, v & BIT(st_bit), 1,
++						 OMAP_RESET_MAX_WAIT);
+ 	if (ret)
+ 		pr_err("%s: timedout waiting for %s:%lu\n", __func__,
+ 		       reset->prm->data->name, id);
+-- 
+2.25.1
+
