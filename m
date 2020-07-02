@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50CB5212A9D
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 18:59:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49B47212AA3
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 18:59:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727051AbgGBQ7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 12:59:25 -0400
+        id S1726737AbgGBQ7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 12:59:37 -0400
 Received: from mga14.intel.com ([192.55.52.115]:59112 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726975AbgGBQ7V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 12:59:21 -0400
-IronPort-SDR: mdsCa6kvT4GwmZk6vKjPwUuo2yh5LAOOuRCj6zFhIPywu9HZRutQ+/AQB3EysMdnfWSoYpt6aW
- TwmI1GC6+r+A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="146051839"
+        id S1727014AbgGBQ7X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 12:59:23 -0400
+IronPort-SDR: 8bfqraMKyd9wdlZbsgRiiqBtsV+2p7tEKVQ3ZsWnSdrmfVlafH8JUZOD5pG5vknAf38R768fgy
+ 5u8CiaBPFhxA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="146051857"
 X-IronPort-AV: E=Sophos;i="5.75,304,1589266800"; 
-   d="scan'208";a="146051839"
+   d="scan'208";a="146051857"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2020 09:59:20 -0700
-IronPort-SDR: i9CiqsV5lsyMGzCNdHKjR/vtk4OgK7iJgc7KjIEVXGYiGpG4HpPzB07/LFtBAWU0Usmxff0QlC
- rqeHwdQaX1rw==
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2020 09:59:22 -0700
+IronPort-SDR: pzbZZcBN80J3dCNKD5PVu1O5ighELMNMf2O0sGtwLEpgGN4rb01n+bh9dvzjajtD43mdwoulcU
+ jMZRFeWX8Q7g==
 X-IronPort-AV: E=Sophos;i="5.75,304,1589266800"; 
-   d="scan'208";a="426014887"
+   d="scan'208";a="426014892"
 Received: from nzbastur-mobl1.amr.corp.intel.com (HELO pbossart-mobl3.amr.corp.intel.com) ([10.255.231.182])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2020 09:59:19 -0700
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2020 09:59:21 -0700
 From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To:     alsa-devel@alsa-project.org
 Cc:     tiwai@suse.de, broonie@kernel.org,
@@ -35,12 +35,15 @@ Cc:     tiwai@suse.de, broonie@kernel.org,
         Takashi Iwai <tiwai@suse.com>,
         Maxime Ripard <mripard@kernel.org>,
         Chen-Yu Tsai <wens@csie.org>,
-        Marcus Cooper <codekipper@gmail.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
         linux-arm-kernel@lists.infradead.org (moderated list:ARM/Allwinner
         sunXi SoC support), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 5/8] ASoC: sunxi: sun4i-i2s: fix kernel-doc
-Date:   Thu,  2 Jul 2020 11:58:58 -0500
-Message-Id: <20200702165901.164100-6-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 6/8] ASoC: sunxi: sun4i-spdif: fix kernel-doc
+Date:   Thu,  2 Jul 2020 11:58:59 -0500
+Message-Id: <20200702165901.164100-7-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200702165901.164100-1-pierre-louis.bossart@linux.intel.com>
 References: <20200702165901.164100-1-pierre-louis.bossart@linux.intel.com>
@@ -51,40 +54,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix W=1 warnings - missing fields in description
+Fix W=1 warning - typo in field description
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sunxi/sun4i-i2s.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ sound/soc/sunxi/sun4i-spdif.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index d0a8d5810c0a..f23ff29e7c1d 100644
---- a/sound/soc/sunxi/sun4i-i2s.c
-+++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -128,13 +128,21 @@ struct sun4i_i2s;
- 
+diff --git a/sound/soc/sunxi/sun4i-spdif.c b/sound/soc/sunxi/sun4i-spdif.c
+index 86779a99df75..326dd45e39da 100644
+--- a/sound/soc/sunxi/sun4i-spdif.c
++++ b/sound/soc/sunxi/sun4i-spdif.c
+@@ -167,7 +167,7 @@
  /**
-  * struct sun4i_i2s_quirks - Differences between SoC variants.
-- *
+  * struct sun4i_spdif_quirks - Differences between SoC variants.
+  *
+- * @reg_dac_tx_data: TX FIFO offset for DMA config.
++ * @reg_dac_txdata: TX FIFO offset for DMA config.
   * @has_reset: SoC needs reset deasserted.
-  * @reg_offset_txdata: offset of the tx fifo.
-  * @sun4i_i2s_regmap: regmap config to use.
-  * @field_clkdiv_mclk_en: regmap field to enable mclk output.
-  * @field_fmt_wss: regmap field to set word select size.
-  * @field_fmt_sr: regmap field to set sample resolution.
-+ * @bclk_dividers: bit clock dividers array
-+ * @num_bclk_dividers: number of bit clock dividers
-+ * @mclk_dividers: mclk dividers array
-+ * @num_mclk_dividers: number of mclk dividers
-+ * @get_bclk_parent_rate: callback to get bclk parent rate
-+ * @get_sr: callback to get sample resolution
-+ * @get_wss: callback to get word select size
-+ * @set_chan_cfg: callback to set channel configuration
-+ * @set_fmt: callback to set format
+  * @val_fctl_ftx: TX FIFO flush bitmask.
   */
- struct sun4i_i2s_quirks {
- 	bool				has_reset;
 -- 
 2.25.1
 
