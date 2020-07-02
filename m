@@ -2,83 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5C882117A2
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 03:21:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E553D2117A7
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 03:22:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728075AbgGBBVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 21:21:18 -0400
-Received: from ozlabs.org ([203.11.71.1]:49953 "EHLO ozlabs.org"
+        id S1728150AbgGBBWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 21:22:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53048 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726038AbgGBBVS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 21:21:18 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1728108AbgGBBWH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 21:22:07 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49y0fg5NgRz9sRN;
-        Thu,  2 Jul 2020 11:21:15 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1593652875;
-        bh=SNDM3Ebesqm1/WP0xmTozgFdT1xUcQvv4Uv50jRwNK0=;
-        h=Date:From:To:Cc:Subject:From;
-        b=d0d8UCbIDdHJNx3His5M9ih2D03iEW/iwIHK/FtTqNNyJ003Vm3ArnVbeviAOVEeh
-         ZUhCQga4t6I+55iWWiE7H/Tf8yCGqgyoc5CcYSZbhSmKu8O9SD7cTdvpNlDJh9rUPE
-         +I3Srhe73I2eOzcErU+8Jd4H0bzEuxwKZOpVr0v5hP7lvSURtyEQMaTCK6y9u4rZfs
-         9zdcXioMNDUb4u+ljd4cEMlM5gNEMkHBa1PhOYePeBSbRLZzAlJIYI6pdrVHST7a0n
-         u2K599FDa0SSr1jdgpxH5GRxkEpK+CEipO/yfCO4Hpnh9VUycxu2ATSRSE7LwvorNN
-         469P6VMukVANw==
-Date:   Thu, 2 Jul 2020 11:21:12 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>
-Subject: linux-next: build warning after merge of the block tree
-Message-ID: <20200702112112.04d3f992@canb.auug.org.au>
+        by mail.kernel.org (Postfix) with ESMTPSA id E822B2085B;
+        Thu,  2 Jul 2020 01:22:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593652926;
+        bh=Sc6/7a4ZFbtbmwQKk3K67o57mnr8p/wUtpto7eiLetM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=QD8JIKCM/hOx3Mew1Js1i2YKrCyXNOpXYkqL/odaOJzF4a12DGhBZF2hb8Y9WTlUr
+         OiLZvZk3LE73RfrIEmExxTwmU1BOwhmxHTL6DWNmeVppmDNN8EHNswS9m6srX8iFmw
+         g71iOGQyTgAPtB7yLhlgFjd4ohRF0CMk8RuLuAJw=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Stephane Eranian <eranian@google.com>,
+        Ingo Molnar <mingo@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.7 03/53] perf/x86/rapl: Move RAPL support to common x86 code
+Date:   Wed,  1 Jul 2020 21:21:12 -0400
+Message-Id: <20200702012202.2700645-3-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200702012202.2700645-1-sashal@kernel.org>
+References: <20200702012202.2700645-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/m7.HGDHfzDuDAf_vqraKDJP";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/m7.HGDHfzDuDAf_vqraKDJP
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From: Stephane Eranian <eranian@google.com>
 
-Hi all,
+[ Upstream commit fd3ae1e1587d64ef8cc8e361903d33625458073e ]
 
-After merging the block tree, today's linux-next build (powerpc
-ppc64_defconfig) produced this warning:
+To prepare for support of both Intel and AMD RAPL.
 
-drivers/md/dm.c: In function '__map_bio':
-drivers/md/dm.c:1296:24: warning: unused variable 'md' [-Wunused-variable]
- 1296 |  struct mapped_device *md =3D io->md;
-      |                        ^~
+As per the AMD PPR, Fam17h support Package RAPL counters to monitor power usage.
+The RAPL counter operates as with Intel RAPL, and as such it is beneficial
+to share the code.
 
-Introduced by commit
+No change in functionality.
 
-  5a6c35f9af41 ("block: remove direct_make_request")
+Signed-off-by: Stephane Eranian <eranian@google.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/20200527224659.206129-2-eranian@google.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ arch/x86/events/Kconfig            | 6 +++---
+ arch/x86/events/Makefile           | 1 +
+ arch/x86/events/intel/Makefile     | 2 --
+ arch/x86/events/{intel => }/rapl.c | 9 ++++++---
+ 4 files changed, 10 insertions(+), 8 deletions(-)
+ rename arch/x86/events/{intel => }/rapl.c (98%)
 
---=20
-Cheers,
-Stephen Rothwell
+diff --git a/arch/x86/events/Kconfig b/arch/x86/events/Kconfig
+index 9a7a1446cb3a0..4a809c6cbd2f5 100644
+--- a/arch/x86/events/Kconfig
++++ b/arch/x86/events/Kconfig
+@@ -10,11 +10,11 @@ config PERF_EVENTS_INTEL_UNCORE
+ 	available on NehalemEX and more modern processors.
+ 
+ config PERF_EVENTS_INTEL_RAPL
+-	tristate "Intel rapl performance events"
+-	depends on PERF_EVENTS && CPU_SUP_INTEL && PCI
++	tristate "Intel/AMD rapl performance events"
++	depends on PERF_EVENTS && (CPU_SUP_INTEL || CPU_SUP_AMD) && PCI
+ 	default y
+ 	---help---
+-	Include support for Intel rapl performance events for power
++	Include support for Intel and AMD rapl performance events for power
+ 	monitoring on modern processors.
+ 
+ config PERF_EVENTS_INTEL_CSTATE
+diff --git a/arch/x86/events/Makefile b/arch/x86/events/Makefile
+index 9e07f554333fb..b418ef6878796 100644
+--- a/arch/x86/events/Makefile
++++ b/arch/x86/events/Makefile
+@@ -1,5 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ obj-y					+= core.o probe.o
++obj-$(PERF_EVENTS_INTEL_RAPL)		+= rapl.o
+ obj-y					+= amd/
+ obj-$(CONFIG_X86_LOCAL_APIC)            += msr.o
+ obj-$(CONFIG_CPU_SUP_INTEL)		+= intel/
+diff --git a/arch/x86/events/intel/Makefile b/arch/x86/events/intel/Makefile
+index 3468b0c1dc7c9..e67a5886336c1 100644
+--- a/arch/x86/events/intel/Makefile
++++ b/arch/x86/events/intel/Makefile
+@@ -2,8 +2,6 @@
+ obj-$(CONFIG_CPU_SUP_INTEL)		+= core.o bts.o
+ obj-$(CONFIG_CPU_SUP_INTEL)		+= ds.o knc.o
+ obj-$(CONFIG_CPU_SUP_INTEL)		+= lbr.o p4.o p6.o pt.o
+-obj-$(CONFIG_PERF_EVENTS_INTEL_RAPL)	+= intel-rapl-perf.o
+-intel-rapl-perf-objs			:= rapl.o
+ obj-$(CONFIG_PERF_EVENTS_INTEL_UNCORE)	+= intel-uncore.o
+ intel-uncore-objs			:= uncore.o uncore_nhmex.o uncore_snb.o uncore_snbep.o
+ obj-$(CONFIG_PERF_EVENTS_INTEL_CSTATE)	+= intel-cstate.o
+diff --git a/arch/x86/events/intel/rapl.c b/arch/x86/events/rapl.c
+similarity index 98%
+rename from arch/x86/events/intel/rapl.c
+rename to arch/x86/events/rapl.c
+index a5dbd25852cb7..ece043fb7b494 100644
+--- a/arch/x86/events/intel/rapl.c
++++ b/arch/x86/events/rapl.c
+@@ -1,11 +1,14 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ /*
+- * Support Intel RAPL energy consumption counters
++ * Support Intel/AMD RAPL energy consumption counters
+  * Copyright (C) 2013 Google, Inc., Stephane Eranian
+  *
+  * Intel RAPL interface is specified in the IA-32 Manual Vol3b
+  * section 14.7.1 (September 2013)
+  *
++ * AMD RAPL interface for Fam17h is described in the public PPR:
++ * https://bugzilla.kernel.org/show_bug.cgi?id=206537
++ *
+  * RAPL provides more controls than just reporting energy consumption
+  * however here we only expose the 3 energy consumption free running
+  * counters (pp0, pkg, dram).
+@@ -58,8 +61,8 @@
+ #include <linux/nospec.h>
+ #include <asm/cpu_device_id.h>
+ #include <asm/intel-family.h>
+-#include "../perf_event.h"
+-#include "../probe.h"
++#include "perf_event.h"
++#include "probe.h"
+ 
+ MODULE_LICENSE("GPL");
+ 
+-- 
+2.25.1
 
---Sig_/m7.HGDHfzDuDAf_vqraKDJP
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl79NogACgkQAVBC80lX
-0Gws4wgAoSLcCudGe+r3OTLt9GR83BQ8imeImAWsb2xj1gav/efyaRNEiYj6F80V
-n/6KbJmzpkXg4p6u6bQsY1yRsR8w+iGy5YTFJ6lPlO+qXNkxfvAZndfw0XDCB6S8
-mSElNYSbmkD5g11s85dZtz+NdSq4yzSQHwpYruIYzNlNjxM9FOOBepGVzv7dKcsc
-sTwNzvMH/mPz+udQEsvyx4wmV96uvfGrDKMfRt1B0klgdEq8oXiDqkBqtd5TnvV1
-HHDcor2UgGtwwGMqgMfYQQd158/Xh3Dtl9Z7mox8gaXAmKlGv5cltOk5ogQ+bd/E
-RgiEiGlaSoGhu64C9In3X10+HOkvVQ==
-=yZnc
------END PGP SIGNATURE-----
-
---Sig_/m7.HGDHfzDuDAf_vqraKDJP--
