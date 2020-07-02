@@ -2,94 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE402212C97
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 20:56:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 622FD212CA2
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 20:57:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726121AbgGBS4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 14:56:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60526 "EHLO
+        id S1726474AbgGBS5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 14:57:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725915AbgGBS4B (ORCPT
+        with ESMTP id S1726163AbgGBS5k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 14:56:01 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD596C08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 11:56:01 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id p1so2388144pls.4
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 11:56:01 -0700 (PDT)
+        Thu, 2 Jul 2020 14:57:40 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9F8BC08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 11:57:40 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id f2so11654051plr.8
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 11:57:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=qBFSIEqb3Ng7/lC0JUelHpDcsFXn4/YiY3KJn+e0D5Y=;
-        b=A3G4MtANzT6glf9L54RU8hc1oacj7n2KB3QD7g0+kHEo/8S28CgBxelB4vKRcvhnc3
-         RSnK4atX1dx5Qih53uU7m0JQvP9hx1zMxNvFzp7+kEavqGXpPcfBUUXibPw5AEBVkSUW
-         CpQ82qvhwyIsH9H84QtLcbpcR5C0Xe9EKZhqpVrvMckIzbA8EvZNHDCRzqpqWXVmOo6u
-         2b25n3RkYBpMCZnTiTlNwEQDAhnVecoxMzHzgobV4ZxLWKRAqqPFu5bcBygECag2dI2x
-         IT9Nf76Z1P0cPoKdTmSIC3Y+fSJeUwVLG1Z0Jj2dgYvKb9bZ3p8Wq1jYn9xzLe1y6b1T
-         D9hg==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=hz4Mj/iQWQ1Gm0J6ofti89mpz3pTQ7LpeTX5svYgVDU=;
+        b=vIYTYR0m8trV9lrGh8PSvAGnzTxA5G6rFm/vi7ItU7DM4fvPTm/3Rl6ME1n7it2B1M
+         T30gPbuZtIE6zll34iGAqLPSdG6bmMkAT7qZrHG23Iy2IrCRlFaNzAsYQxUBUtDS7maR
+         lsMpgjIPLbqvPDQlAxBB7JqNjvFBayTSyW6uH39IJTaZMduCtQ7pwgshj2ZogHfR0AYK
+         rC+JXeUG8Ftfy0mqFWAjEeGKNCPSA+bU+DULdd9p41k1p8IbO6nixuAiWR3klbBC35vM
+         ims47ez4t1jO7VNTh6Q4ji0M92+FQztMbbM3vX5S4RlQYC9J2EyktcqMDI2JKUeROJQS
+         ApcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=qBFSIEqb3Ng7/lC0JUelHpDcsFXn4/YiY3KJn+e0D5Y=;
-        b=b6M1KGLSCY6uwclhjUgmv5jjovev//4GgG3bdQDZDB8v8kXXhUFme/h/nuj1HjoIDq
-         pJnqLpVZ2GP+IrSmJqyjyetCVT2VsPemjP67nMugrLfBaqojiepFWjj++SemzHW7yI6N
-         j28SbXfia0V6lGS0662LwJXldY28ze+m0DFoUBxNpFpIqGJR/r+Qej1p7rcSOKxLiOMk
-         iurnRhH+QJqjtH3fcAcYUR6DxqiRZtUKspq1n6/qlppmaQhhKcM/zWc2Pzg6uGgq3l/b
-         NS5v95M6bzF4iiYQOpHOdJ6Z9XfLRp/4r7vgQMJmG9qKnd5KkwVh0L680fptZUCJ+6n6
-         zlzQ==
-X-Gm-Message-State: AOAM533QiQPI0XVdZ5p2n2oAsAfxznh35KDS/Ijx93xk/JOukos0MqrZ
-        Xcg6CQuXUYZlDLcDFIlTM6I=
-X-Google-Smtp-Source: ABdhPJzmLnrOT4bL83BOEWHbMjWQcuvAWjX4ZOEdS5WteN03EusTe1EhtKuJZhn9XxejD3G2LQnkxw==
-X-Received: by 2002:a17:90a:2465:: with SMTP id h92mr3998120pje.26.1593716161116;
-        Thu, 02 Jul 2020 11:56:01 -0700 (PDT)
-Received: from Asurada-Nvidia (searspoint.nvidia.com. [216.228.112.21])
-        by smtp.gmail.com with ESMTPSA id m92sm8863055pje.13.2020.07.02.11.56.00
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 02 Jul 2020 11:56:00 -0700 (PDT)
-Date:   Thu, 2 Jul 2020 11:55:56 -0700
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     alsa-devel@alsa-project.org, tiwai@suse.de, broonie@kernel.org,
-        Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        "open list:FREESCALE SOC SOUND DRIVERS" 
-        <linuxppc-dev@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 6/6] ASoC: fsl: fsl_esai: fix kernel-doc
-Message-ID: <20200702185556.GG23935@Asurada-Nvidia>
-References: <20200702172227.164474-1-pierre-louis.bossart@linux.intel.com>
- <20200702172227.164474-7-pierre-louis.bossart@linux.intel.com>
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=hz4Mj/iQWQ1Gm0J6ofti89mpz3pTQ7LpeTX5svYgVDU=;
+        b=cexo+GpSiqeoefb3kboLb2hb20nillkRQrDCwpfCme27gNEkDgj3VeLFkWKXG/iuWs
+         /7fqPlagKYu2F4//OCd2MWfbjEO0y/I/iWqWWCeTEKldnBW9kpt3Hj2oR5eK4OnYid0e
+         SqJnKw+dA33EPWrog6ynabSKJa/nvhBEAOVrxO3A57kvAaXpu2/xpF2sI6iWtk0zmnPA
+         J9dtBJEg0FGAj6GRXGT/ovoejewXWqNvV4G9gT8bGCQaPzrOpU52MDgg4IdcxhgsbjBX
+         1maY5a50h3See+hC5KF8sgXST4uwSSXcxPoNKolIGjqUW3VBqqSAVSkO3ehqWjPt+oEl
+         a9YQ==
+X-Gm-Message-State: AOAM533zJyd4JHBi1N6XfTYdnHMKHcT2Ko1cfzi3EDwaKjBb2QSFORVD
+        N8HYA4YyXpbtG8mmVtE62beo5Q==
+X-Google-Smtp-Source: ABdhPJy7+DRCrQWC1YEAlkN5Qs9h2rvj2F4QBQqw8k6R6J/7z34EhuVEi87Gs/fBbFtsm5CKS4/LNw==
+X-Received: by 2002:a17:90a:f695:: with SMTP id cl21mr35145208pjb.86.1593716260173;
+        Thu, 02 Jul 2020 11:57:40 -0700 (PDT)
+Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
+        by smtp.gmail.com with ESMTPSA id c71sm7396890pje.32.2020.07.02.11.57.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Jul 2020 11:57:39 -0700 (PDT)
+From:   Kevin Hilman <khilman@baylibre.com>
+To:     Neil Armstrong <narmstrong@baylibre.com>, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org
+Cc:     jianxin.pan@amlogic.com, Neil Armstrong <narmstrong@baylibre.com>,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 0/6] drm/meson: add support for Amlogic Video FBC
+In-Reply-To: <20200702074759.32356-1-narmstrong@baylibre.com>
+References: <20200702074759.32356-1-narmstrong@baylibre.com>
+Date:   Thu, 02 Jul 2020 11:57:38 -0700
+Message-ID: <7himf5iw2l.fsf@baylibre.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200702172227.164474-7-pierre-louis.bossart@linux.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 02, 2020 at 12:22:27PM -0500, Pierre-Louis Bossart wrote:
-> Fix W=1 warnings. Fix kernel-doc syntax and add missing parameters.
-> 
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Neil Armstrong <narmstrong@baylibre.com> writes:
 
-> + * fsl_esai_set_dai_sysclk - This function mainly configures the clock frequency of MCLK (HCKT/HCKR)
+> Amlogic uses a proprietary lossless image compression protocol and format
+> for their hardware video codec accelerators, either video decoders or
+> video input encoders.
+>
+> It considerably reduces memory bandwidth while writing and reading
+> frames in memory.
+>
+> The underlying storage is considered to be 3 components, 8bit or 10-bit
+> per component, YCbCr 420, single plane :
+> - DRM_FORMAT_YUV420_8BIT
+> - DRM_FORMAT_YUV420_10BIT
+>
+> This modifier will be notably added to DMA-BUF frames imported from the V4L2
+> Amlogic VDEC decoder.
+>
+> At least two layout are supported :
+> - Basic: composed of a body and a header
+> - Scatter: the buffer is filled with a IOMMU scatter table referring
+>   to the encoder current memory layout. This mode if more efficient in terms
+>   of memory allocation but frames are not dumpable and only valid during until
+>   the buffer is freed and back in control of the encoder
+>
+> At least two options are supported :
+> - Memory saving: when the pixel bpp is 8b, the size of the superblock can
+>   be reduced, thus saving memory.
+>
+> This serie adds the missing register, updated the FBC decoder registers
+> content to be committed by the crtc code.
+>
+> The Amlogic FBC has been tested with compressed content from the Amlogic
+> HW VP9 decoder on S905X (GXL), S905D2 (G12A) and S905X3 (SM1) in 8bit
+> (Scatter+Mem Saving on G12A/SM1, Mem Saving on GXL) and 10bit
+> (Scatter on G12A/SM1, default on GXL).
+>
+> It's expected to work as-is on GXM and G12B SoCs.
 
-Can drop "This function mainly"
+Reviewed-by: Kevin Hilman <khilman@baylibre.com>
 
->  /**
-> - * This function configures the related dividers according to the bclk rate
-> + * fsl_esai_set_bclk - This function configures the related dividers according to the bclk rate
-
-Here too -- dropping "This function"
-
-Otherwise,
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
-
-Thanks!
+Kevin
