@@ -2,106 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2E3D212D7E
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 21:59:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 423FA212DB2
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 22:16:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726265AbgGBT7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 15:59:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41994 "EHLO
+        id S1726030AbgGBUQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 16:16:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725915AbgGBT7P (ORCPT
+        with ESMTP id S1725937AbgGBUQ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 15:59:15 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC27CC08C5C1;
-        Thu,  2 Jul 2020 12:59:14 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id o8so28704897wmh.4;
-        Thu, 02 Jul 2020 12:59:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=Sn8FkMa3krbqM8mmfm6ud5V1sSg7l8Y8Fkbs+NZhIHk=;
-        b=pW3OTAOnVEGuX+d9PS4rXy5WEU6yN/BeJXnezhxh50m2JTgSCrclOfQ1qWilAtkUw1
-         IuPFMFAy7M2qwsfmJvM5Ws9EuLGFyg+eTqx6EfNWdVmWl5Qhnf9Iz4zUwp4iPBHErUf+
-         VW6wdvFAp4AXrMO2912e/baqJVly/MFmcSOKnw6nfHRueOIhudKE6TmCTs3V6OzJ9mNG
-         Hkp9ihaNJG9RCwaCpJfnLpsUQa+97HWfJ18DuBDNnxNIJtSRgt77S7FPVirQrd9DfRCH
-         A7fP4tKYte+W0Oq4HM2jPs7W3kgHpC+y9yE/cKXxGczDGflwQXkzygMPb7441UDHtspg
-         JL/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Sn8FkMa3krbqM8mmfm6ud5V1sSg7l8Y8Fkbs+NZhIHk=;
-        b=HRKQJCR0K9hB7vBbbUw/e5hG2PfvI3iQE9D5mBcpx6ZBi+GsBZTGU0QzfyZR3PSRa/
-         g4cF3bF8I0w48PsR1fdOpoo/u6gLMxiojT3zG/PSAVw2hQI7dEgD38QUoRlIDOZ1AMX7
-         YfBAbX+suBalh7TRCFVtKyr3hDnLQ1rOjffwhc7H+9TnrpS3L6KcolgUmH+nD0GszK/B
-         +n++iT0EFOowstc7OFW9Kdtut1vlccIxL1dTWnpVfFSZ8UKtP94v/A9+T2tqr3eLuGYj
-         WjEvNJ9rV3seuNUDPTp4g5kBqbuxI870VbfHRi7tu8RM1ltzzpXlVU9BAZDsLHXcp/2r
-         nYXw==
-X-Gm-Message-State: AOAM533oFmVroDjPhe6GId8mLuTk0Ygv4d7a8Bzhd2Q1llbKJ4fLKJHI
-        0Rde00GNLDq9igW8wnDsaDs=
-X-Google-Smtp-Source: ABdhPJwJiDR/PXzZEsvkH2mruteSVvKaUqVs/VBrynpu4Ag0rUBsGLoSfBkfYHGnonZIkZozd2RLjQ==
-X-Received: by 2002:a1c:f60d:: with SMTP id w13mr34925368wmc.51.1593719953696;
-        Thu, 02 Jul 2020 12:59:13 -0700 (PDT)
-Received: from [192.168.1.3] (ip68-111-84-250.oc.oc.cox.net. [68.111.84.250])
-        by smtp.gmail.com with ESMTPSA id j24sm13143317wrd.43.2020.07.02.12.59.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Jul 2020 12:59:13 -0700 (PDT)
-Subject: Re: [net-next,PATCH 2/4] net: mdio-ipq4019: add clock support
-To:     Robert Marko <robert.marko@sartura.hr>, andrew@lunn.ch,
-        hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org
-References: <20200702103001.233961-1-robert.marko@sartura.hr>
- <20200702103001.233961-3-robert.marko@sartura.hr>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <e4921b83-0c80-65ad-6ddd-be2a12347d9c@gmail.com>
-Date:   Thu, 2 Jul 2020 12:59:09 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Firefox/68.0 Thunderbird/68.10.0
+        Thu, 2 Jul 2020 16:16:57 -0400
+X-Greylist: delayed 1080 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 02 Jul 2020 13:16:56 PDT
+Received: from mail.default.ilande.uk0.bigv.io (mail.ilande.co.uk [IPv6:2001:41c9:1:41f::167])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6112C08C5C1;
+        Thu,  2 Jul 2020 13:16:56 -0700 (PDT)
+Received: from host86-182-221-233.range86-182.btcentralplus.com ([86.182.221.233] helo=[192.168.1.65])
+        by mail.default.ilande.uk0.bigv.io with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <mark.cave-ayland@ilande.co.uk>)
+        id 1jr5MA-0004jV-BV; Thu, 02 Jul 2020 20:58:55 +0100
+To:     Corentin Labbe <clabbe@baylibre.com>, davem@davemloft.net
+Cc:     linux-kernel@vger.kernel.org, sparclinux@vger.kernel.org
+References: <1593694973-34113-1-git-send-email-clabbe@baylibre.com>
+From:   Mark Cave-Ayland <mark.cave-ayland@ilande.co.uk>
+Autocrypt: addr=mark.cave-ayland@ilande.co.uk; keydata=
+ mQENBFQJuzwBCADAYvxrwUh1p/PvUlNFwKosVtVHHplgWi5p29t58QlOUkceZG0DBYSNqk93
+ 3JzBTbtd4JfFcSupo6MNNOrCzdCbCjZ64ik8ycaUOSzK2tKbeQLEXzXoaDL1Y7vuVO7nL9bG
+ E5Ru3wkhCFc7SkoypIoAUqz8EtiB6T89/D9TDEyjdXUacc53R5gu8wEWiMg5MQQuGwzbQy9n
+ PFI+mXC7AaEUqBVc2lBQVpAYXkN0EyqNNT12UfDLdxaxaFpUAE2pCa2LTyo5vn5hEW+i3VdN
+ PkmjyPvL6DdY03fvC01PyY8zaw+UI94QqjlrDisHpUH40IUPpC/NB0LwzL2aQOMkzT2NABEB
+ AAG0ME1hcmsgQ2F2ZS1BeWxhbmQgPG1hcmsuY2F2ZS1heWxhbmRAaWxhbmRlLmNvLnVrPokB
+ OAQTAQIAIgUCVAm7PAIbAwYLCQgHAwIGFQgCCQoLBBYCAwECHgECF4AACgkQW8LFb64PMh9f
+ NAgAuc3ObOEY8NbZko72AGrg2tWKdybcMVITxmcor4hb9155o/OWcA4IDbeATR6cfiDL/oxU
+ mcmtXVgPqOwtW3NYAKr5g/FrZZ3uluQ2mtNYAyTFeALy8YF7N3yhs7LOcpbFP7tEbkSzoXNG
+ z8iYMiYtKwttt40WaheWuRs0ZOLbs6yoczZBDhna3Nj0LA3GpeJKlaV03O4umjKJgACP1c/q
+ T2Pkg+FCBHHFP454+waqojHp4OCBo6HyK+8I4wJRa9Z0EFqXIu8lTDYoggeX0Xd6bWeCFHK3
+ DhD0/Xi/kegSW33unsp8oVcM4kcFxTkpBgj39dB4KwAUznhTJR0zUHf63LkBDQRUCbs8AQgA
+ y7kyevA4bpetM/EjtuqQX4U05MBhEz/2SFkX6IaGtTG2NNw5wbcAfhOIuNNBYbw6ExuaJ3um
+ 2uLseHnudmvN4VSJ5Hfbd8rhqoMmmO71szgT/ZD9MEe2KHzBdmhmhxJdp+zQNivy215j6H27
+ 14mbC2dia7ktwP1rxPIX1OOfQwPuqlkmYPuVwZP19S4EYnCELOrnJ0m56tZLn5Zj+1jZX9Co
+ YbNLMa28qsktYJ4oU4jtn6V79H+/zpERZAHmH40IRXdR3hA+Ye7iC/ZpWzT2VSDlPbGY9Yja
+ Sp7w2347L5G+LLbAfaVoejHlfy/msPeehUcuKjAdBLoEhSPYzzdvEQARAQABiQEfBBgBAgAJ
+ BQJUCbs8AhsMAAoJEFvCxW+uDzIfabYIAJXmBepHJpvCPiMNEQJNJ2ZSzSjhic84LTMWMbJ+
+ opQgr5cb8SPQyyb508fc8b4uD8ejlF/cdbbBNktp3BXsHlO5BrmcABgxSP8HYYNsX0n9kERv
+ NMToU0oiBuAaX7O/0K9+BW+3+PGMwiu5ml0cwDqljxfVN0dUBZnQ8kZpLsY+WDrIHmQWjtH+
+ Ir6VauZs5Gp25XLrL6bh/SL8aK0BX6y79m5nhfKI1/6qtzHAjtMAjqy8ChPvOqVVVqmGUzFg
+ KPsrrIoklWcYHXPyMLj9afispPVR8e0tMKvxzFBWzrWX1mzljbBlnV2n8BIwVXWNbgwpHSsj
+ imgcU9TTGC5qd9g=
+Message-ID: <275363bb-2f36-f7f3-aa7e-4a2fc6901d63@ilande.co.uk>
+Date:   Thu, 2 Jul 2020 20:58:40 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <20200702103001.233961-3-robert.marko@sartura.hr>
+In-Reply-To: <1593694973-34113-1-git-send-email-clabbe@baylibre.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 86.182.221.233
+X-SA-Exim-Mail-From: mark.cave-ayland@ilande.co.uk
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on
+        mail.default.ilande.uk0.bigv.io
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.2
+Subject: Re: [PATCH] sparc: sparc64_defconfig: add necessary configs for qemu
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.default.ilande.uk0.bigv.io)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 02/07/2020 14:02, Corentin Labbe wrote:
+
+> The sparc64 qemu machines uses pcnet32 network hardware by default, so for
+> simple boot testing using qemu, having PCNET32 is useful.
+> Same for its storage which is a PATA_CMD64.
+
+Which version of QEMU are you using? qemu-system-sparc64 switched to using a hme NIC
+by default in version 2.11 (see
+https://wiki.qemu.org/Documentation/Platforms/SPARC#Changes_to_sun4u_machine_from_2.11_onwards)
+which is well over 2 years ago...
 
 
-On 7/2/2020 3:29 AM, Robert Marko wrote:
-> Some newer SoC-s have a separate MDIO clock that needs to be enabled.
-> So lets add support for handling the clocks to the driver.
-> 
-> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-> ---
->  drivers/net/phy/mdio-ipq4019.c | 28 +++++++++++++++++++++++++++-
->  1 file changed, 27 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/phy/mdio-ipq4019.c b/drivers/net/phy/mdio-ipq4019.c
-> index 0e78830c070b..7660bf006da0 100644
-> --- a/drivers/net/phy/mdio-ipq4019.c
-> +++ b/drivers/net/phy/mdio-ipq4019.c
-> @@ -9,6 +9,7 @@
->  #include <linux/iopoll.h>
->  #include <linux/of_address.h>
->  #include <linux/of_mdio.h>
-> +#include <linux/clk.h>
->  #include <linux/phy.h>
->  #include <linux/platform_device.h>
->  
-> @@ -24,8 +25,12 @@
->  #define IPQ4019_MDIO_TIMEOUT	10000
->  #define IPQ4019_MDIO_SLEEP		10
->  
-> +#define QCA_MDIO_CLK_DEFAULT_RATE	100000000
+ATB,
 
-100MHz? Is not that going to be a tad too much for most MDIO devices out
-there?
--- 
-Florian
+Mark.
