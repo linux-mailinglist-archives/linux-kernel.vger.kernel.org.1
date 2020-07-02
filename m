@@ -2,116 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89CE92121FC
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 13:18:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 706AD212203
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 13:18:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728647AbgGBLSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 07:18:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45850 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726475AbgGBLSc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 07:18:32 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AEA1C08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 04:18:32 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id j19so6456085pgm.11
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 04:18:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pesu-pes-edu.20150623.gappssmtp.com; s=20150623;
-        h=from:date:to:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=hpv92noNXKFQIELCQobv5aGCxAJ2KsOj9UAoixtSt6c=;
-        b=X2XS2kqy/bZIyOyu1ULA/H+QtfgfiMDyKEjsIahG+lHzJ6q/B5q4ZANbPgDuV7lNRm
-         I1h5lL4PqjnF5tKD304rVXRptyus1gzSwccHT+ImHIn09zB/bLT0Re7LzC0QD7yNHOKi
-         VaPizAN5JgXCUzsmJV+0USOOcMJGcaaMkmEhp5/h1sa4iYsBIn9bvXhYZXg+QhaLwrD2
-         1CJcbqNa+VOrpHkKfkdbPmEJZ5QosoQFQsZvV9cKmIrtT5QOk2/lBJGynRAkC8VChEPE
-         g8cjqTN4Nemxa4Td2TOaGqc+y4pJvKxNRnj++6HhcweJSqksDHctQyXhiECVsMtL+7Gs
-         bm6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=hpv92noNXKFQIELCQobv5aGCxAJ2KsOj9UAoixtSt6c=;
-        b=tmJNok+1G/XcIB4N/RdebL/ulzYYvmOIRKOd95g/Z8TKOcinWIjgMqFFgaJZ9yjdvj
-         Vp+4zaqoMQhJCq/6LEMSI1t9RgFClLD2iNtCVkhicxzzSGQLrDJhhASgsLIPLzNl2iuO
-         GasNQVifMQ0nAdJ/IQPualWOG7NWjjCZ9boR4ko2/BlDW3Ie7+4DV7JEzaCAUIPTbNHp
-         iADdOHacJj8liSckjCa6Dqv885BmYGVSS3zuFsc9jMiRN1PFpsZbTxA296rVboJg7HEJ
-         yOtgPneU1WY2n7cb55vCcMwA89mu0hICYflcn6dKiMOgZPU3U0Q+wROOEOGO92SvShcX
-         kZXA==
-X-Gm-Message-State: AOAM533FeCftoBQeoorq8MaTA7Gu0vLsOsP/pVcaE2tR2JmveYZgQOwj
-        +WQTZliLvFvl+5BZsNN/4d/osg==
-X-Google-Smtp-Source: ABdhPJyUJQcGKm9KgClqnWTupG+/Bs3x9/Q2gimX0+YV6o5xHjuThoNrYM7Iv2Vy1pVRMEEth0kUJg==
-X-Received: by 2002:a65:640c:: with SMTP id a12mr23929517pgv.88.1593688711513;
-        Thu, 02 Jul 2020 04:18:31 -0700 (PDT)
-Received: from localhost ([2406:7400:73:3271:908:f18a:1156:5c38])
-        by smtp.gmail.com with ESMTPSA id 4sm8637361pgk.68.2020.07.02.04.18.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Jul 2020 04:18:30 -0700 (PDT)
-From:   B K Karthik <bkkarthik@pesu.pes.edu>
-X-Google-Original-From: B K Karthik <karthik.bk2000@live.com>
-Date:   Thu, 2 Jul 2020 07:18:23 -0400
-To:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: rtl8188eu: include: rtw_cmd.h: fixed a blank space
- coding style issue.
-Message-ID: <20200702111823.hzvtrmag62plph5m@pesu-pes-edu>
+        id S1728670AbgGBLSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 07:18:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46614 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726475AbgGBLSk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 07:18:40 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 70F432070C;
+        Thu,  2 Jul 2020 11:18:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593688719;
+        bh=h84qaL3tEGgL2zFfFCmV5wFzP3FSpcWjx8fMB+KEr/4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TEOri34UXEVBKgcj4rLGB/bJmudCDMyJL+tLvCgKpyoj8RzaK4APPbgu5RGOTP3p5
+         5oXOCWMbf39NFuDmH+wlYd4Dc7VUwtHetvygZjh2VEHqUUXg8xiVgAGsUh4qOeP1r9
+         KRGIfHHvKVj65yixb+M3JOkgh2dE76YFoeN4R2m4=
+Date:   Thu, 2 Jul 2020 12:18:33 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Marco Elver <elver@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Matt Turner <mattst88@gmail.com>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Richard Henderson <rth@twiddle.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        alpha <linux-alpha@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Android Kernel Team <kernel-team@android.com>
+Subject: Re: [PATCH 04/18] alpha: Override READ_ONCE() with barriered
+ implementation
+Message-ID: <20200702111832.GC16418@willie-the-truck>
+References: <20200630173734.14057-1-will@kernel.org>
+ <20200630173734.14057-5-will@kernel.org>
+ <20200702093239.GA15391@C02TD0UTHF1T.local>
+ <20200702094833.GA16248@willie-the-truck>
+ <CAK8P3a07G1dLC+RUBDkzDbCRCP_gwZAaVK+k1UxvXT+7Kj=o+g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="cotxqrvu6kfbsmy5"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: NeoMutt/20180716
+In-Reply-To: <CAK8P3a07G1dLC+RUBDkzDbCRCP_gwZAaVK+k1UxvXT+7Kj=o+g@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jul 02, 2020 at 12:08:41PM +0200, Arnd Bergmann wrote:
+> On Thu, Jul 2, 2020 at 11:48 AM Will Deacon <will@kernel.org> wrote:
+> > On Thu, Jul 02, 2020 at 10:32:39AM +0100, Mark Rutland wrote:
+> > > On Tue, Jun 30, 2020 at 06:37:20PM +0100, Will Deacon wrote:
+> > > > -#define read_barrier_depends() __asm__ __volatile__("mb": : :"memory")
+> > > > +#define __smp_load_acquire(p)                                              \
+> > > > +({                                                                 \
+> > > > +   __unqual_scalar_typeof(*p) ___p1 =                              \
+> > > > +           (*(volatile typeof(___p1) *)(p));                       \
+> > > > +   compiletime_assert_atomic_type(*p);                             \
+> > > > +   ___p1;                                                          \
+> > > > +})
+> > >
+> > > Sorry if I'm being thick, but doesn't this need a barrier after the
+> > > volatile access to provide the acquire semantic?
+> > >
+> > > IIUC prior to this commit alpha would have used the asm-generic
+> > > __smp_load_acquire, i.e.
+> > >
+> > > | #ifndef __smp_load_acquire
+> > > | #define __smp_load_acquire(p)                                           \
+> > > | ({                                                                      \
+> > > |         __unqual_scalar_typeof(*p) ___p1 = READ_ONCE(*p);               \
+> > > |         compiletime_assert_atomic_type(*p);                             \
+> > > |         __smp_mb();                                                     \
+> > > |         (typeof(*p))___p1;                                              \
+> > > | })
+> > > | #endif
+> 
+> I also have a question that I didn't dare ask when the same
+> code came up before (I guess it's also what's in the kernel today):
+> 
+> With the cast to 'typeof(*p)' at the end, doesn't that mean we
+> lose the effect of __unqual_scalar_typeof() again, so any "volatile"
+> pointer passed into __READ_ONCE_SCALAR() or
+> __smp_load_acquire() still leads to a volatile load of the original
+> variable, plus another volatile access to ___p1 after
+> spilling it to the stack as a non-volatile variable?
 
---cotxqrvu6kfbsmy5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Not sure I follow you here, but I can confirm that what you're worried
+about doesn't happen for the usual case of a pointer-to-volatile scalar.
 
-add blank spaces for improved code readability.
+For example, ignoring dependency ordering:
 
-Signed-off-by: B K Karthik <karthik.bk2000@live.com>
----
- drivers/staging/rtl8188eu/include/rtw_cmd.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+unsigned long foo(volatile unsigned long *p)
+{
+	return smp_load_acquire(p) + 1;
+}
 
-diff --git a/drivers/staging/rtl8188eu/include/rtw_cmd.h b/drivers/staging/rtl8188eu/include/rtw_cmd.h
-index fa5e212fc9e0..002a797c6d0a 100644
---- a/drivers/staging/rtl8188eu/include/rtw_cmd.h
-+++ b/drivers/staging/rtl8188eu/include/rtw_cmd.h
-@@ -115,7 +115,7 @@ struct	setopmode_parm {
-  */
+Ends up looking like:
 
- #define RTW_SSID_SCAN_AMOUNT 9 /*  for WEXT_CSCAN_AMOUNT 9 */
--#define RTW_CHANNEL_SCAN_AMOUNT (14+37)
-+#define RTW_CHANNEL_SCAN_AMOUNT (14 + 37)
- struct sitesurvey_parm {
- 	int scan_mode;	/* active: 1, passive: 0 */
- 	u8 ssid_num;
---
-2.20.1
+	unsigned long ___p1 = *(const volatile unsigned long *)p;
+	smp_mb();
+	(volatile unsigned long)___p1;
 
+My understanding is that casting a non-pointer type to volatile doesn't
+do anything, so we're good.
 
---cotxqrvu6kfbsmy5
-Content-Type: application/pgp-signature; name="signature.asc"
+On the other hand, you can still cause the stack reload if you use volatile
+pointers to volatile:
 
------BEGIN PGP SIGNATURE-----
+volatile unsigned long *bar(volatile unsigned long * volatile *ptr)
+{
+	return READ_ONCE(*ptr);
+}
 
-iQGzBAEBCgAdFiEEpIrzAt4LvWLJmKjp471Q5AHeZ2oFAl79wn4ACgkQ471Q5AHe
-Z2r1CQv8C2v6LH61YRDS0MeO1cNSBKoSjWzYL6gleqHuL0QLkCu9rCA1gdVjyk3L
-ji2xAMrLnlqU6jh64b8933Xcj1030X5hkbVFHBrdYzxldhNw2lqpWfLxnXn+7N53
-kDgjj0WFDVxZpRFpxdmwMYZ/xlg38X2p+4YNal34JUaIFmML3GyjikWZL5k6Q9c8
-NsiYKFtQbF7J3BLv0giXi5IkBYb0zEmNhTv/AjBKeokhLNE6eA0q4+RpvB2bEu1K
-vSqT74C/RZkyovnLG+v0C+uxLuhS9WeaUBUQk+AurO+HRmM2NIZONkVqxtgPuIzk
-FBSFbtWXsd7X7y7dGG+8vU8aebZK1wGIplBj6SNu8520uCziK7zoJz7eCV5p4oUp
-Iy3OnC6yRBWXwWURZTg8/XILiIR9KWuOB9/V/4YaiL7YumGu6XkMN00LtRK/t3/p
-hYgk7ISq96yrnmOW1JxJdx59vfG1Uana0Ta63XXsHq1NvBSAIRkmpZFB3YXcbI5L
-J9WhLaX3
-=kgxc
------END PGP SIGNATURE-----
+but this is pretty weird code, I think.
 
---cotxqrvu6kfbsmy5--
+Will
