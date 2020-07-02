@@ -2,90 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB676212E36
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 22:51:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6C0D212E15
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 22:48:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726364AbgGBUvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 16:51:09 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:58061 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726100AbgGBUvI (ORCPT
+        id S1726265AbgGBUsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 16:48:00 -0400
+Received: from mail-il1-f195.google.com ([209.85.166.195]:43140 "EHLO
+        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726028AbgGBUsA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 16:51:08 -0400
-Received: from ip5f5af08c.dynamic.kabel-deutschland.de ([95.90.240.140] helo=wittgenstein.fritz.box)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jr6Ak-0005ov-C1; Thu, 02 Jul 2020 20:51:06 +0000
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] fixes for v5.8-rc4
-Date:   Thu,  2 Jul 2020 22:47:33 +0200
-Message-Id: <20200702204732.1114343-1-christian.brauner@ubuntu.com>
-X-Mailer: git-send-email 2.27.0
+        Thu, 2 Jul 2020 16:48:00 -0400
+Received: by mail-il1-f195.google.com with SMTP id i18so25450897ilk.10;
+        Thu, 02 Jul 2020 13:48:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=j1yxY9w2G0JH7eLYcGH9QwyTEXy3U6l8gD1SgwfkI04=;
+        b=AEbHIITstXE7khfgmafMWAuJaxqqfK0uC5Bg2NIx9V6erj5PXdj/TothOzBFiUHtGp
+         B06w9KK2LRY6hI5byj9fv5T1QTBSrQUUjf+aQHKBHFAaT2jTftINttXP/T+wxABRNfZI
+         Y2ABGMXlHty5yjYicQqWiLdviyWeyiyCGydG0IuAp5wjtAKm23ktrOGn3aCLf/oBFqyC
+         SompqvFovre6kO/uZ6iyIzuNR2WQwlpw6ZuXsdAOIjo4O9wzSvT4q7hDZJ2Jwr3/sGNV
+         yn7V2AaQ8PCq2T5WDlxElYw2R1v2e5gjpl333WqmIhbjLXht+Oig6DVkodNEFo8GtiPH
+         AaaQ==
+X-Gm-Message-State: AOAM533StEuCdkur2uwHy0Roq412Lw+UVJwx1pKUo4zzyDECY/61gS5W
+        Y1xK7F53h8PpP3zeRfCpxw==
+X-Google-Smtp-Source: ABdhPJy4b9+p/Hb1STLVnu17+0DErUUOFe1/yUfp0AF2GZxEa4Co/j7n7em7RC9H7qtWSAkf3s7C/Q==
+X-Received: by 2002:a92:5ecf:: with SMTP id f76mr13730600ilg.281.1593722879810;
+        Thu, 02 Jul 2020 13:47:59 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id a24sm4949711ioe.46.2020.07.02.13.47.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Jul 2020 13:47:59 -0700 (PDT)
+Received: (nullmailer pid 1665628 invoked by uid 1000);
+        Thu, 02 Jul 2020 20:47:58 -0000
+Date:   Thu, 2 Jul 2020 14:47:58 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Roger Quadros <rogerq@ti.com>
+Cc:     vigneshr@ti.com, linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        kishon@ti.com, nsekhar@ti.com, devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] dt-binding: phy: convert ti,omap-usb2 to YAML
+Message-ID: <20200702204758.GA1665250@bogus>
+References: <20200630092729.15346-1-rogerq@ti.com>
+ <20200630092729.15346-2-rogerq@ti.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200630092729.15346-2-rogerq@ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Linus,
+On Tue, 30 Jun 2020 12:27:27 +0300, Roger Quadros wrote:
+> Move ti,omap-usb2 to its own YAML schema.
+> 
+> Signed-off-by: Roger Quadros <rogerq@ti.com>
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> ---
+>  .../devicetree/bindings/phy/ti,omap-usb2.yaml | 69 +++++++++++++++++++
+>  .../devicetree/bindings/phy/ti-phy.txt        | 37 ----------
+>  2 files changed, 69 insertions(+), 37 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/phy/ti,omap-usb2.yaml
+> 
 
-/* Summary */
-This contains an annotation patch for a data race in copy_process() reported by
-KCSAN when reading and writing nr_threads. The data race is intentional and
-benign. This is obvious from the comment above the relevant code and based on
-general consensus when discussing this issue. So simply using data_race() to
-annotate this as an intentional race seems the best option.
 
-A few comments on this since doing a grep data_race() reveals that currently
-only kernel/rcu/* is making use of this new annotation and this seems to be the
-first annotation in core kernel: when this was first sent to me I was obviously
-aware of the existence of KCSAN but not whether we had established a consenus
-around annotating places in the (core) kernel where we currently have benign
-data races that KCSAN complains about. I don't know whether we have reached a
-consensus in general yet or we're just doing this subsystem specific. We had a
-bit of a back and forth on this topic related to this patch here. Most people
-argued that because this is an intentional and benign data race that we should
-simply annotate it. Now, we're obviously doing this for the sake of KCSAN and
-given that KCSAN is now upstream and starting to report data races I guess
-doing this is sensible. The linux-next tree contains various mm/* patches that
-push in the same direction of annotating benign data races. So it seems going
-forward we'll just funnel such patches upstream where they make sense.
+My bot found errors running 'make dt_binding_check' on your patch:
 
-/* Testing */
-All patches have seen exposure in linux-next and are based on v5.8-rc1.
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/phy/ti,omap-usb2.example.dt.yaml: example-0: phy@4100000:reg:0: [0, 68157440, 0, 84] is too long
 
-/* Conflicts */
-At the time of creating this pr no merge conflicts were reported.
-Fyi, I applied this patch right on top of the previous fixes before -rc2 was
-out and hence didn't rebase my fixes tree on top of -rc3 because of that.
 
-The following changes since commit 86f56395feb2b106b125c47e72192e37da5dd088:
+See https://patchwork.ozlabs.org/patch/1319665
 
-  tests: test for setns() EINVAL regression (2020-06-17 00:48:54 +0200)
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure dt-schema is up to date:
 
-are available in the Git repository at:
+pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
 
-  git@gitolite.kernel.org:pub/scm/linux/kernel/git/brauner/linux tags/for-linus-2020-07-02
+Please check and re-submit.
 
-for you to fetch changes up to c17d1a3a8ee4dac7539d5c976b45d9300f6f10bc:
-
-  fork: annotate data race in copy_process() (2020-06-26 01:05:29 +0200)
-
-Please consider pulling these changes from the signed for-linus-2020-07-02 tag.
-
-Thanks!
-Christian
-
-----------------------------------------------------------------
-for-linus-2020-07-02
-
-----------------------------------------------------------------
-Weilong Chen (1):
-      fork: annotate data race in copy_process()
-
- kernel/fork.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
