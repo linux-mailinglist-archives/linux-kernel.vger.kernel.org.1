@@ -2,174 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA114211752
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 02:45:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40344211783
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 02:59:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727970AbgGBApH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 20:45:07 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:21114 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726389AbgGBApH (ORCPT
+        id S1727930AbgGBA7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 20:59:41 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:30861 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726814AbgGBA7j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 20:45:07 -0400
-Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20200702004504epoutp030d7893fa46d93ef358a00c7dd3e54f74~dyN9EJOV21762217622epoutp03U
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 00:45:04 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20200702004504epoutp030d7893fa46d93ef358a00c7dd3e54f74~dyN9EJOV21762217622epoutp03U
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1593650704;
-        bh=cr1O3j0g2Qo31hxYu1nd+OKIhFic8UjzEN5/LrLf1Rg=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=BW5hWve/DGwbURL4rnA3BbmktMggL9hcf6OpJpX0ekc/FH42UcvsO4zWSdDpowEp9
-         hi6X75NDnOoq2AXT8B9NJWlhTkURU7yhEXB6l+HX9cN5eFRtBz20T5bsnke1XtWCHd
-         YxgtPJQEZesAoDw/gvQt+QuHXcmstGpwkBEeyttE=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
-        20200702004503epcas1p487e96ff72e39c320da2c74cd5f44c81e~dyN8e4WAR1635916359epcas1p4L;
-        Thu,  2 Jul 2020 00:45:03 +0000 (GMT)
-Received: from epsmges1p2.samsung.com (unknown [182.195.40.154]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 49xzrp6tKbzMqYkh; Thu,  2 Jul
-        2020 00:44:58 +0000 (GMT)
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        EB.C8.19033.A0E2DFE5; Thu,  2 Jul 2020 09:44:58 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
-        20200702004458epcas1p4fdfcf011b6e880ad886ad5022a51c6b5~dyN3RyhPq1281412814epcas1p46;
-        Thu,  2 Jul 2020 00:44:58 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200702004458epsmtrp244a74758c68d61794b2991b37abc29b9~dyN3Q1iT62661626616epsmtrp2k;
-        Thu,  2 Jul 2020 00:44:58 +0000 (GMT)
-X-AuditID: b6c32a36-16fff70000004a59-06-5efd2e0adc0c
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        2E.62.08382.A0E2DFE5; Thu,  2 Jul 2020 09:44:58 +0900 (KST)
-Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20200702004457epsmtip27c5c6690082e9279945405425055c242~dyN27uuPo0248402484epsmtip2Q;
-        Thu,  2 Jul 2020 00:44:57 +0000 (GMT)
-Subject: Re: [PATCH v4 10/37] PM / devfreq: tegra20: Silence deferred probe
- error
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>
-Cc:     =?UTF-8?B?QXJ0dXIgxZp3aWdvxYQ=?= <a.swigon@samsung.com>,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-Organization: Samsung Electronics
-Message-ID: <14271aed-5fb6-14e1-3fe9-ef8d0c5013c4@samsung.com>
-Date:   Thu, 2 Jul 2020 09:56:13 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
-        Thunderbird/59.0
-MIME-Version: 1.0
-In-Reply-To: <20200609131404.17523-11-digetx@gmail.com>
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA02TbUxbZRTH9/S2ty2xeCkwHnDOcl3MwFFaoOxiAGWWpRM/oE00EKVc6V1L
-        KG1ti3HDOOaAAXMbYAax4UVGpttFFBDYAEkVOhE7cIhuOEeQbEsWBmVQIEh5sZfrIt9+55z/
-        ec7zf14EiPguGibINdooi5E04Kgft3swQhblJ93Ikn21EE9MNZQAwr34gEc0Okd5RMvCPUD8
-        vjyPErX9HShRbL/IJUY+meUT4711KOE56wRE+ZIdJcZ+SSX+OnkZJapbLwCipN/JJzZvtXOJ
-        f3obuK8EqOYnSviqHvskX/Xb6Dqi6qDLUdXdW9+jqqkzQxzV2VNuVHWukwYqT8fedGFmXqKe
-        IrWURUIZc0zaXKMuCU9Ta17VKOJl8ih5AnEQlxjJfCoJV76eHnU41+Dzgks+IA0FvlQ6abXi
-        0cmJFlOBjZLoTVZbEk6ZtQZzgllqJfOtBUadNMeU/5JcJotR+ITZefqapla++cunPuw4uQ6K
-        wKqwAggFEIuDffQWtwL4CcTYNQCdS8UoGywCOOf91VcR+IIVAMvUTxoqr6zyWE2/T1Pv5rPB
-        PIDfVQ8CRhWIqWHVSBGHKQRhTgS2lA8BJkCwcQBHSpdQRoVikdDxcGKbn8bC4R+r9wAzToQl
-        w4keKYNcbB+kG3WMIhh7Cw53F2+vL8IC4PDn97kMC7GD8Mz1qm1GsBB4534jh+Xn4NW5OoQZ
-        C7HTQvhwbYbHWlDC881uhOVAODPUyWc5DHrc/SjLhfDKsBNlm8sA7HTc/K85FjoufcZhNodg
-        EfDb3mg2HQ57vPWAHewP3cuf8hgJxESwrFTMSp6H439PclgOhc2ny9FKgNt32LHvsGDfYcH+
-        /7AvAJcGuymzNV9HWeXmmJ2X3QG2n3lk/DVQPfdYOgA4AjAAoADBg0Qu2VqWWKQljx2nLCaN
-        pcBAWQeAwne+VUhYcI7J90+MNo1cERMbG0vEyeMVcjkeInphz80sMaYjbVQeRZkpy5M+jkAY
-        VsRRa7C2RbV4zLSnatKh/TlVeWgz5TD6zZvn0LU3dqXVuVxdqWl9ouQMerHtz0T/Gcsjmk//
-        uEA79tbMqh0es3+hVOPav//r68H2hEy361hpSfTK7refIT9W/FAW8K6iqcKgHFghpyOOntg4
-        HvJic1xzXebRef+Qxx6n9/bw7YQJfXpx60dHTsWk0jemKqcz0KbR0PRlUb9/xXsP4qPf2djQ
-        SW5o/Vyh2RcXa81Bms1pXeedjJSJ2Z9Wp5Nrsr319L7C9iOlDYFL3M2xwdcu99Ve0K8HeVu2
-        HmWEv9wGU94353SfuBqKHUAOrbRXI7s4q13K4vADEaEziZeehetb3ugunGvVk/JIxGIl/wX8
-        QUYkbwQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrBIsWRmVeSWpSXmKPExsWy7bCSvC6X3t84gxOfmC3uz2tltHj36Smr
-        xfwj51gtVn98zGhx5et7NovpezexWbTMWsRicbbpDbvF5V1z2Cw+9x5htOj8MovN4uIpV4vb
-        jSvYLCatncpo0br3CLvFv2sbWSx+7prH4iDo8f5GK7vHzll32T0unfvD7LFpVSebx51re9g8
-        7ncfZ/LobX7H5tG3ZRWjx+dNcgGcUVw2Kak5mWWpRfp2CVwZ0xauZS9YxlOxqfEPYwPjD84u
-        Rk4OCQETiQkrf7B2MXJxCAnsZpR4eukuI0RCUmLaxaPMXYwcQLawxOHDxRA1bxkl7uzfDVYj
-        LBAsMfFsAxNIQkTgGLPEptOnwRxmgcuMEjs6v7JBtGxjlJh+ahkbSAubgJbE/hc3wGx+AUWJ
-        qz8eM4Ks4BWwk7ixUw/EZBFQkVg1Px2kQlQgTGLnksdMIDavgKDEyZlPWEBsTgFzie6jE8Fs
-        ZgF1iT/zLjFD2OISt57MZ4Kw5SW2v53DPIFReBaS9llIWmYhaZmFpGUBI8sqRsnUguLc9Nxi
-        wwLDvNRyveLE3OLSvHS95PzcTYzgyNbS3MG4fdUHvUOMTByMhxglOJiVRHhPG/yKE+JNSays
-        Si3Kjy8qzUktPsQozcGiJM57o3BhnJBAemJJanZqakFqEUyWiYNTqoFp+cSdUo++b9nbpR7J
-        8GTClhVp4jMu2T2dbmb32S2v+3+k9LHPzt6lLMVFPq/qPDyPvP4UPVNCZcVNeUm9Z/JH15fO
-        MsnJ0n78qfpisHD7zn0Xrgitdp5Q/f27d/wi81huBddtrBGJC2K0epkO5DZP81LIO8qs8Gum
-        M1NDySNe90iul6yXTnybu4LnbNKjydv109xCaxdc756SGzxPTPDJh6iT2/O4TudlZO6OutCd
-        xn/R6uzEI2E3JaU2FL32ifkdv1DuQNhNT80tM+Rac9mlYiRXXta4IFPxZ2n0kxUdjOlyM2dW
-        Xeq/rJA9Y76yz/e536XZX2jNUufS31pR++D8GaO485qXjv1JnsMokf5HiaU4I9FQi7moOBEA
-        1HYv0lsDAAA=
-X-CMS-MailID: 20200702004458epcas1p4fdfcf011b6e880ad886ad5022a51c6b5
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200609131843epcas1p352d1dfcbca81988d3363036d762dd47f
-References: <20200609131404.17523-1-digetx@gmail.com>
-        <CGME20200609131843epcas1p352d1dfcbca81988d3363036d762dd47f@epcas1p3.samsung.com>
-        <20200609131404.17523-11-digetx@gmail.com>
+        Wed, 1 Jul 2020 20:59:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593651578;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=Sh4KPebLPMiQTSq94J+ueizqXBs0f85eCZhJCTEhzNY=;
+        b=IRhMEajkdDGIXMrKMMAmIchS1uCPQ7B5cjPeK6QVnECxG6ZvaG9zxKCrqJk4+eh9CMhh9X
+        n8w/ryyndBPg7UeDV6CAaU4HSGsh0sm8AqH+/qrDkKtZJNiulwhfQPBG/ggaMVB9HsfewH
+        dTh4ORQdzuKpe7MMPuA7lRRgCKxOs/I=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-336-sz62XHqhMWyXVzIL3G8wBQ-1; Wed, 01 Jul 2020 20:59:37 -0400
+X-MC-Unique: sz62XHqhMWyXVzIL3G8wBQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F1FF6185B39B;
+        Thu,  2 Jul 2020 00:59:35 +0000 (UTC)
+Received: from llong.com (ovpn-118-140.rdu2.redhat.com [10.10.118.140])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1CCEA73FD2;
+        Thu,  2 Jul 2020 00:59:28 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Dave Chinner <david@fromorbit.com>, Qian Cai <cai@lca.pw>,
+        Eric Sandeen <sandeen@redhat.com>,
+        Waiman Long <longman@redhat.com>
+Subject: [PATCH v5] xfs: Fix false positive lockdep warning with sb_internal & fs_reclaim
+Date:   Wed,  1 Jul 2020 20:59:23 -0400
+Message-Id: <20200702005923.10064-1-longman@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dmitry,
+Depending on the workloads, the following circular locking dependency
+warning between sb_internal (a percpu rwsem) and fs_reclaim (a pseudo
+lock) may show up:
 
-On 6/9/20 10:13 PM, Dmitry Osipenko wrote:
-> Tegra EMC driver was turned into a regular kernel driver, it also could
-> be compiled as a loadable kernel module now. Hence EMC clock isn't
+======================================================
+WARNING: possible circular locking dependency detected
+5.0.0-rc1+ #60 Tainted: G        W
+------------------------------------------------------
+fsfreeze/4346 is trying to acquire lock:
+0000000026f1d784 (fs_reclaim){+.+.}, at:
+fs_reclaim_acquire.part.19+0x5/0x30
 
-Looks good to me. But, you better to add the commit information
-about Tegra EMC driver with commit-id ("patch title") format
-into patch descritpion.
+but task is already holding lock:
+0000000072bfc54b (sb_internal){++++}, at: percpu_down_write+0xb4/0x650
 
-> guaranteed to be available and clk_get("emc") may return -EPROBE_DEFER and
-> there is no good reason to spam KMSG with a error about missing EMC clock
-> in this case, so let's silence the deferred probe error.
-> 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/devfreq/tegra20-devfreq.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/devfreq/tegra20-devfreq.c b/drivers/devfreq/tegra20-devfreq.c
-> index ff82bac9ee4e..6469dc69c5e0 100644
-> --- a/drivers/devfreq/tegra20-devfreq.c
-> +++ b/drivers/devfreq/tegra20-devfreq.c
-> @@ -141,9 +141,11 @@ static int tegra_devfreq_probe(struct platform_device *pdev)
->  
->  	/* EMC is a system-critical clock that is always enabled */
->  	tegra->emc_clock = devm_clk_get(&pdev->dev, "emc");
-> -	if (IS_ERR(tegra->emc_clock)) {
-> -		err = PTR_ERR(tegra->emc_clock);
-> -		dev_err(&pdev->dev, "failed to get emc clock: %d\n", err);
-> +	err = PTR_ERR_OR_ZERO(tegra->emc_clock);
-> +	if (err) {
-> +		if (err != -EPROBE_DEFER)
-> +			dev_err(&pdev->dev, "failed to get emc clock: %d\n",
-> +				err);
->  		return err;
->  	}
->  
-> 
+which lock already depends on the new lock.
+  :
+ Possible unsafe locking scenario:
 
+       CPU0                    CPU1
+       ----                    ----
+  lock(sb_internal);
+                               lock(fs_reclaim);
+                               lock(sb_internal);
+  lock(fs_reclaim);
 
+ *** DEADLOCK ***
+
+4 locks held by fsfreeze/4346:
+ #0: 00000000b478ef56 (sb_writers#8){++++}, at: percpu_down_write+0xb4/0x650
+ #1: 000000001ec487a9 (&type->s_umount_key#28){++++}, at: freeze_super+0xda/0x290
+ #2: 000000003edbd5a0 (sb_pagefaults){++++}, at: percpu_down_write+0xb4/0x650
+ #3: 0000000072bfc54b (sb_internal){++++}, at: percpu_down_write+0xb4/0x650
+
+stack backtrace:
+Call Trace:
+ dump_stack+0xe0/0x19a
+ print_circular_bug.isra.10.cold.34+0x2f4/0x435
+ check_prev_add.constprop.19+0xca1/0x15f0
+ validate_chain.isra.14+0x11af/0x3b50
+ __lock_acquire+0x728/0x1200
+ lock_acquire+0x269/0x5a0
+ fs_reclaim_acquire.part.19+0x29/0x30
+ fs_reclaim_acquire+0x19/0x20
+ kmem_cache_alloc+0x3e/0x3f0
+ kmem_zone_alloc+0x79/0x150
+ xfs_trans_alloc+0xfa/0x9d0
+ xfs_sync_sb+0x86/0x170
+ xfs_log_sbcount+0x10f/0x140
+ xfs_quiesce_attr+0x134/0x270
+ xfs_fs_freeze+0x4a/0x70
+ freeze_super+0x1af/0x290
+ do_vfs_ioctl+0xedc/0x16c0
+ ksys_ioctl+0x41/0x80
+ __x64_sys_ioctl+0x73/0xa9
+ do_syscall_64+0x18f/0xd23
+ entry_SYSCALL_64_after_hwframe+0x49/0xbe
+
+This is a false positive as all the dirty pages are flushed out before
+the filesystem can be frozen.
+
+One way to avoid this splat is to add GFP_NOFS to the affected allocation
+calls. This is what PF_MEMALLOC_NOFS per-process flag is for. This does
+reduce the potential source of memory where reclaim can be done. This
+shouldn't matter unless the system is really running out of memory.
+In that particular case, the filesystem freeze operation may fail while
+it was succeeding previously.
+
+Without this patch, the command sequence below will show that the lock
+dependency chain sb_internal -> fs_reclaim exists.
+
+ # fsfreeze -f /home
+ # fsfreeze --unfreeze /home
+ # grep -i fs_reclaim -C 3 /proc/lockdep_chains | grep -C 5 sb_internal
+
+After applying the patch, such sb_internal -> fs_reclaim lock dependency
+chain can no longer be found. Because of that, the locking dependency
+warning will not be shown.
+
+Suggested-by: Dave Chinner <david@fromorbit.com>
+Signed-off-by: Waiman Long <longman@redhat.com>
+---
+ fs/xfs/xfs_super.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
+index 379cbff438bc..dcc97bad950a 100644
+--- a/fs/xfs/xfs_super.c
++++ b/fs/xfs/xfs_super.c
+@@ -913,11 +913,21 @@ xfs_fs_freeze(
+ 	struct super_block	*sb)
+ {
+ 	struct xfs_mount	*mp = XFS_M(sb);
++	unsigned long		pflags;
++	int			ret;
+ 
++	/*
++	 * Disable fs reclaim in memory allocation for fs freeze to avoid
++	 * causing a possible circular locking dependency lockdep splat
++	 * relating to fs reclaim.
++	 */
++	current_set_flags_nested(&pflags, PF_MEMALLOC_NOFS);
+ 	xfs_stop_block_reaping(mp);
+ 	xfs_save_resvblks(mp);
+ 	xfs_quiesce_attr(mp);
+-	return xfs_sync_sb(mp, true);
++	ret = xfs_sync_sb(mp, true);
++	current_restore_flags_nested(&pflags, PF_MEMALLOC_NOFS);
++	return ret;
+ }
+ 
+ STATIC int
 -- 
-Best Regards,
-Chanwoo Choi
-Samsung Electronics
+2.18.1
+
