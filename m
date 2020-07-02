@@ -2,106 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D9C021213D
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 12:29:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEC41212141
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 12:30:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728425AbgGBK3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 06:29:06 -0400
-Received: from foss.arm.com ([217.140.110.172]:36076 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728376AbgGBK3F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 06:29:05 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C9CFDD6E;
-        Thu,  2 Jul 2020 03:29:04 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.12.193])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A141E3F71E;
-        Thu,  2 Jul 2020 03:29:02 -0700 (PDT)
-Date:   Thu, 2 Jul 2020 11:28:59 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com
-Subject: Re: [PATCH 2/3] arm64: arch_timer: Allow an workaround descriptor to
- provide vdso_clock_mode
-Message-ID: <20200702102859.GC15391@C02TD0UTHF1T.local>
-References: <20200701161824.1346732-1-maz@kernel.org>
- <20200701161824.1346732-3-maz@kernel.org>
+        id S1728210AbgGBKaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 06:30:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38402 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728320AbgGBKaK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 06:30:10 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B0A0C08C5DC
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 03:30:10 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id o2so27314029wmh.2
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 03:30:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rGcFFw5Nzu6VhZiGQetAIFUMxgGvSVZizNqBhV84xWg=;
+        b=0Ydm4tR4j2q0OjR55gGolBuZ26NjGFaA/Zr+e35oxw2/eIWErBddN4dRlLVATg7zLt
+         onwvPRrG0Nv9JQFUaSvA5BMYNMeTs28ceuyDAcnfp/Wfs1A24cz5WwJRq6Fh8Nb1KnXU
+         jihJI2brvS1X7f6H3uNArluDzQ/4j0Qfogp8jHe8siMGwYsSYAhp35iH3N5/LbwJSO1d
+         pwLqKGQuNYD3rr7iOp3nE7ynrrUQZUTwKxfdNhlIhDvmepvJjeehdNxz7gNi6VGYe6OG
+         tQmvh3/FwyFX+2x17bM3zIT4u4rI3qYmNgNg1QREC6ljBEGzf+GMEs6YsMZhzysGoAa2
+         BdyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rGcFFw5Nzu6VhZiGQetAIFUMxgGvSVZizNqBhV84xWg=;
+        b=PtzO9drH+NfIw8jyzjEKMzUNS7mlCesisD27Si9654ftmt2Dm0XuFvmjlgbDZtWMng
+         ehpnggqCqLMwZkjiYkRjWkFFzwQsRNjGQHW2F3lSeozGY82s7Xy2UhLvjVI+bB92Bisp
+         pR9jzbACMN6963TFb0SEk6fXKc0yUtKzggNE/IeWxR951oWRAuCmgacBI79p2u5QAI7r
+         Z82gwN6nChZ9IB3Zcxh1UbouL+cUiOTy2UjsjGUHvYlI9gTqDc1b0TVNhJR+5KgG0Sdy
+         D+Zv826SRr8luO1AjSPzJc76Zyfwbwv5OuE80FqRDxWmYKKL2SAQqcIvy3XgOGeqJVBq
+         Ww4Q==
+X-Gm-Message-State: AOAM533At2ZZcxMnk4zcphJa2knLLMiQdJIAUiO9AYwM78gRMLQx8i6X
+        BULR0M6JgfAMo4SPxPomNl5Mww==
+X-Google-Smtp-Source: ABdhPJwJNE/SVDANdbxD71ir1Np5JakGw8nIvAnHDnXJBL7Jt2Lw0x7bxBRiYZl34MN3Gf22EcIujA==
+X-Received: by 2002:a1c:c902:: with SMTP id f2mr30428182wmb.53.1593685809206;
+        Thu, 02 Jul 2020 03:30:09 -0700 (PDT)
+Received: from localhost.localdomain (dh207-99-59.xnet.hr. [88.207.99.59])
+        by smtp.googlemail.com with ESMTPSA id 68sm10406912wmz.40.2020.07.02.03.30.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Jul 2020 03:30:08 -0700 (PDT)
+From:   Robert Marko <robert.marko@sartura.hr>
+To:     andrew@lunn.ch, f.fainelli@gmail.com, hkallweit1@gmail.com,
+        linux@armlinux.org.uk, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, robh+dt@kernel.org
+Cc:     Robert Marko <robert.marko@sartura.hr>
+Subject: [net-next,PATCH 0/4] net: mdio-ipq4019: add Clause 45 and clock support
+Date:   Thu,  2 Jul 2020 12:29:57 +0200
+Message-Id: <20200702103001.233961-1-robert.marko@sartura.hr>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200701161824.1346732-3-maz@kernel.org>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 01, 2020 at 05:18:23PM +0100, Marc Zyngier wrote:
-> As we are about to disable the vdso for compat tasks in some circumstances,
-> let's allow a workaround descriptor to provide the vdso_clock_mode that
-> matches the platform.
-> 
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
-> ---
->  arch/arm64/include/asm/arch_timer.h  | 3 +++
->  drivers/clocksource/arm_arch_timer.c | 3 +++
->  2 files changed, 6 insertions(+)
-> 
-> diff --git a/arch/arm64/include/asm/arch_timer.h b/arch/arm64/include/asm/arch_timer.h
-> index 7ae54d7d333a..fb8dfcbf9c01 100644
-> --- a/arch/arm64/include/asm/arch_timer.h
-> +++ b/arch/arm64/include/asm/arch_timer.h
-> @@ -18,6 +18,8 @@
->  #include <linux/smp.h>
->  #include <linux/types.h>
->  
-> +#include <vdso/clocksource.h>
-> +
->  #include <clocksource/arm_arch_timer.h>
->  
->  #if IS_ENABLED(CONFIG_ARM_ARCH_TIMER_OOL_WORKAROUND)
-> @@ -58,6 +60,7 @@ struct arch_timer_erratum_workaround {
->  	u64 (*read_cntvct_el0)(void);
->  	int (*set_next_event_phys)(unsigned long, struct clock_event_device *);
->  	int (*set_next_event_virt)(unsigned long, struct clock_event_device *);
-> +	enum vdso_clock_mode vdso_clock_mode;
->  };
->  
->  DECLARE_PER_CPU(const struct arch_timer_erratum_workaround *,
-> diff --git a/drivers/clocksource/arm_arch_timer.c b/drivers/clocksource/arm_arch_timer.c
-> index ecf7b7db2d05..f828835c568f 100644
-> --- a/drivers/clocksource/arm_arch_timer.c
-> +++ b/drivers/clocksource/arm_arch_timer.c
-> @@ -566,6 +566,9 @@ void arch_timer_enable_workaround(const struct arch_timer_erratum_workaround *wa
->  	if (wa->read_cntvct_el0) {
->  		clocksource_counter.vdso_clock_mode = VDSO_CLOCKMODE_NONE;
->  		vdso_default = VDSO_CLOCKMODE_NONE;
-> +	} else {
-> +		clocksource_counter.vdso_clock_mode = wa->vdso_clock_mode;
-> +		vdso_default = wa->vdso_clock_mode;
->  	}
+This patch series adds support for Clause 45 and clock handling support to
+the driver.
 
-I fear that we're liable to forget to set vdso_clock_mode on new errata
-that don't need a read_cntvct_el0 hook, and if so we'll happen to set
-these to 0 (i.e. VDSO_CLOCKMODE_NONE).
+While at it also change some defines to upper case to match rest of the driver.
 
-For now could we instead have a boolan disable_compat_vdso, with this
-being:
+Robert Marko (4):
+  net: mdio-ipq4019: change defines to upper case
+  net: mdio-ipq4019: add clock support
+  net: mdio-ipq4019: add Clause 45 support
+  dt-bindings: mdio-ipq4019: add clock support
 
-| if (wa->read_cntvct_el0) {
-| 	clocksource_counter.vdso_clock_mode = VDSO_CLOCKMODE_NONE;
-| 	vdso_default = VDSO_CLOCKMODE_NONE;
-| } else if (wa->disable_compat_vdso) {
-| 	clocksource_counter.vdso_clock_mode = VDSO_CLOCKMODE_ARCHTIMER_NOCOMPAT;
-| 	vdso_default = wa->vdso_clock_mode = VDSO_CLOCKMODE_ARCHTIMER_NOCOMPAT;
-| }
+ .../bindings/net/qcom,ipq4019-mdio.yaml       |  11 ++
+ drivers/net/phy/mdio-ipq4019.c                | 141 +++++++++++++++---
+ 2 files changed, 132 insertions(+), 20 deletions(-)
 
-Do we need to handle the comination of a workaround seeting NONE and one
-setting ARCHTIMER_NOCOMPAT?
+-- 
+2.26.2
 
-Mark.
