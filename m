@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18127212849
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 17:45:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB48C212862
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 17:46:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726035AbgGBPpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 11:45:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59392 "EHLO
+        id S1726357AbgGBPp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 11:45:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726010AbgGBPpT (ORCPT
+        with ESMTP id S1726010AbgGBPpU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 11:45:19 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5FE5C08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 08:45:17 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id t11so7843985pfq.11
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 08:45:17 -0700 (PDT)
+        Thu, 2 Jul 2020 11:45:20 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26381C08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 08:45:20 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id e8so13663764pgc.5
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 08:45:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :in-reply-to:references;
-        bh=5+axulHBFG80o0OaU9aOnx+9TZZxhZZELeuFYpmONSM=;
-        b=PG8Gwq3rWJPcVF+jFxr5uuHm11vnxhR+0IQYKA4dwUKgCs+TqST48oRFgXWCvmAQuZ
-         vcuv/JCn8i9YN+jUlt7/NmUXJox3VYX75dXPLgIp8Y8Wa55O9uDI4MFAPFkDzFMJoD9j
-         1rh6pT8u50HIJxnBzvtEtNLhW18jBUuJtX7oeaQGZ3RK14lOsTO9zbygqBmfLKAe4w5D
-         Y84pfO5EgUzmWu/Dciu7jhQGi3UFGGYpzA3EPmnxFPgH0r5BeX6el4KXyaWQBxZsOn+P
-         dMnHB7RLTL7uPERZvVDgAoHaeFe4W416gWNnue3l4c3Ehie2sP1sZ3mTMbyo+3oM3fK6
-         pFJg==
+        bh=M5epT+ZnUgKP+WCCXExIrVbl9Uf15MOmZ2N+7978elE=;
+        b=DKYPBWm73CUJPwZ5vWCd5nexOuLCVv9xz7Z+H6m7w+/pjgI/1+jIO+Mm6dTdAeDkox
+         rmSVdm1HuYFB3c1wisNEbkB+WQdaFb4Gm7uvcYeKasyZbx+YS1nhN4jrwT21rPLMCnwb
+         pua0fKKHoJOBlwzOouwBIWN3f+lprwa0uZfi3FMoT15r+kYqn5ydb3gDQ4G0XNA/SWYf
+         C3OM4i7DAZZcy5nEKryodmsrI+TtUDxMdYHO40TfKd0UnynRoA9g8IeIW8Tw0sDODAvy
+         cZGHH3n8PW4EdGNYhR7Q11Z0BF0TqGN/p9QC/qWgZaqX1eeNWDMmdALVOLGfBMkK4GpO
+         ZFxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:in-reply-to:references;
-        bh=5+axulHBFG80o0OaU9aOnx+9TZZxhZZELeuFYpmONSM=;
-        b=LxUd3oKl8QJJhBWOzhmgO2HfyPs+hRfgNIj1X9vJua1WVIXDGD2D/NaR8M5zVJexY9
-         EYXWdKDYU1Mvt3bhg6Y7IyKufLUd4s0lMuuGXcIMEaE/tjD8X8g2J+51ecgsPYlzUMLJ
-         o8sWH27nRlmFytjeQUcZ8zgIUf+tOGxzPtrLLpalhGX3d9LoPtiyUOxzWY7epPRHRAfe
-         qCx5YkZTZdOsNN8vzBHEzWAfmoFLH8Y8rcy3CtUm+6elIp4X7KUrR2jGXT5ts/XzyqaN
-         vUh8BKljhkY5QOPYAERO+bYv58jbJAeVdjwedAXpLv+jlEwO83m0usLuPNo/M1OU7qSZ
-         W2KA==
-X-Gm-Message-State: AOAM531IDFkFy39uHZu9dDuOe2jqm8C3dfgK+4xyV8U887MYuz2fAzi8
-        f2yOnA1ZILpowZisTLYtpiMHkZIJ
-X-Google-Smtp-Source: ABdhPJxUXWrtR21f3aQL9Tj8/iND7zjSPCdCy5fkuDbaVbgwT3J0BZlwyr2far/zF7nepSBrzUsxNg==
-X-Received: by 2002:aa7:8f03:: with SMTP id x3mr27786612pfr.64.1593704717537;
-        Thu, 02 Jul 2020 08:45:17 -0700 (PDT)
+        bh=M5epT+ZnUgKP+WCCXExIrVbl9Uf15MOmZ2N+7978elE=;
+        b=Mw5zXnX1mpU0YC7kZthSl5IkBd5c6CSeAtUoqpLvQ4D0AFFgCuzz2crf6ZsBgJdY1M
+         j0ug9xQpXFhuOrOPSRSlclQDgKj7SNDAAom3hmD/t7IhbJlsGUlQl7/5s1HQKJt2nwN6
+         hS4yX/j8Bso4Iv//xhsHrfgODOmAjEeqhG+FNqJGAVxX7LYi+1BfKJRmVwDyMvguyBFI
+         YNcbR5zB6rfZkmGYrB2CaTP6HhiOGp3KQZvRhyxnUE1DVgHnlY8mciarcydMNeh6Iz/6
+         /OGi3A0q8omBkborg0UUWErwXJv54pFU33aTMP+zVmMo6KpvVZTk41XjXESfAnaip5qH
+         N8kw==
+X-Gm-Message-State: AOAM532ruLsNHQQzsELfpo+HjgO61I5hV7S+yWWOFyVquDMBZ88hWzev
+        dKg5t1tdV/0R7Tuh0ilS1aA=
+X-Google-Smtp-Source: ABdhPJykLlKwL2WPoDRiAMRqYEo7wDo2RE5ICzKdbcSkxAQcLiK6SiEHTdjf/LEr4/ls1rQTcN3S6w==
+X-Received: by 2002:a63:8b4c:: with SMTP id j73mr24643165pge.209.1593704719681;
+        Thu, 02 Jul 2020 08:45:19 -0700 (PDT)
 Received: from localhost.localdomain (n11923716050.netvigator.com. [119.237.16.50])
-        by smtp.gmail.com with ESMTPSA id f15sm7166804pgr.36.2020.07.02.08.45.15
+        by smtp.gmail.com with ESMTPSA id f15sm7166804pgr.36.2020.07.02.08.45.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Jul 2020 08:45:17 -0700 (PDT)
+        Thu, 02 Jul 2020 08:45:19 -0700 (PDT)
 From:   Simon Fong <simon.fodin@gmail.com>
 To:     Larry.Finger@lwfinger.net
 Cc:     Simon Fong <simon.fodin@gmail.com>, gregkh@linuxfoundation.org,
         devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] staging: rtl8188eu: Fix CHECK of coding style
-Date:   Thu,  2 Jul 2020 23:44:19 +0800
-Message-Id: <9f1f9d7d4723aa8d9bc2d7149fd01aacc1191860.1593703689.git.simon.fodin@gmail.com>
+Subject: [PATCH 2/2] staging: rtl8188eu: Fix WARNINGs of Block comments
+Date:   Thu,  2 Jul 2020 23:44:20 +0800
+Message-Id: <239f5c7f4761dd2ef0df8ee6966fca8ed2a13a9c.1593703689.git.simon.fodin@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <cover.1593703689.git.simon.fodin@gmail.com>
 References: <cover.1593703689.git.simon.fodin@gmail.com>
@@ -65,31 +65,112 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed a CHECK of Lines should not end with a '('.
+Fixed 5 WARNINGs of Block comments use * on subsequent lines.
 
 Signed-off-by: Simon Fong <simon.fodin@gmail.com>
 ---
- drivers/staging/rtl8188eu/core/rtw_recv.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ drivers/staging/rtl8188eu/core/rtw_xmit.c | 62 +++++++++++------------
+ 1 file changed, 31 insertions(+), 31 deletions(-)
 
-diff --git a/drivers/staging/rtl8188eu/core/rtw_recv.c b/drivers/staging/rtl8188eu/core/rtw_recv.c
-index 282d0f869758..656fe70ae4fb 100644
---- a/drivers/staging/rtl8188eu/core/rtw_recv.c
-+++ b/drivers/staging/rtl8188eu/core/rtw_recv.c
-@@ -702,10 +702,9 @@ static int sta2sta_data_frame(struct adapter *adapter,
- 	return ret;
+diff --git a/drivers/staging/rtl8188eu/core/rtw_xmit.c b/drivers/staging/rtl8188eu/core/rtw_xmit.c
+index 258531bc1408..9a3e5d5bade9 100644
+--- a/drivers/staging/rtl8188eu/core/rtw_xmit.c
++++ b/drivers/staging/rtl8188eu/core/rtw_xmit.c
+@@ -49,8 +49,8 @@ s32 _rtw_init_xmit_priv(struct xmit_priv *pxmitpriv, struct adapter *padapter)
+ 	spin_lock_init(&pxmitpriv->lock);
+ 
+ 	/*
+-	Please insert all the queue initializaiton using _rtw_init_queue below
+-	*/
++	 * Please insert all the queue initializaiton using _rtw_init_queue below
++	 */
+ 
+ 	pxmitpriv->adapter = padapter;
+ 
+@@ -63,10 +63,10 @@ s32 _rtw_init_xmit_priv(struct xmit_priv *pxmitpriv, struct adapter *padapter)
+ 	_rtw_init_queue(&pxmitpriv->free_xmit_queue);
+ 
+ 	/*
+-	Please allocate memory with the sz = (struct xmit_frame) * NR_XMITFRAME,
+-	and initialize free_xmit_frame below.
+-	Please also apply  free_txobj to link_up all the xmit_frames...
+-	*/
++	 * Please allocate memory with the sz = (struct xmit_frame) * NR_XMITFRAME,
++	 * and initialize free_xmit_frame below.
++	 * Please also apply  free_txobj to link_up all the xmit_frames...
++	 */
+ 
+ 	pxmitpriv->pallocated_frame_buf = vzalloc(NR_XMITFRAME * sizeof(struct xmit_frame) + 4);
+ 
+@@ -893,17 +893,17 @@ s32 rtw_txframes_sta_ac_pending(struct adapter *padapter, struct pkt_attrib *pat
  }
  
--static int ap2sta_data_frame(
--	struct adapter *adapter,
--	struct recv_frame *precv_frame,
--	struct sta_info **psta)
-+static int ap2sta_data_frame(struct adapter *adapter,
-+			     struct recv_frame *precv_frame,
-+			     struct sta_info **psta)
+ /*
+-
+-This sub-routine will perform all the following:
+-
+-1. remove 802.3 header.
+-2. create wlan_header, based on the info in pxmitframe
+-3. append sta's iv/ext-iv
+-4. append LLC
+-5. move frag chunk from pframe to pxmitframe->mem
+-6. apply sw-encrypt, if necessary.
+-
+-*/
++ *
++ * This sub-routine will perform all the following:
++ *
++ * 1. remove 802.3 header.
++ * 2. create wlan_header, based on the info in pxmitframe
++ * 3. append sta's iv/ext-iv
++ * 4. append LLC
++ * 5. move frag chunk from pframe to pxmitframe->mem
++ * 6. apply sw-encrypt, if necessary.
++ *
++ */
+ s32 rtw_xmitframe_coalesce(struct adapter *padapter, struct sk_buff *pkt, struct xmit_frame *pxmitframe)
  {
- 	u8 *ptr = precv_frame->pkt->data;
- 	struct rx_pkt_attrib *pattrib = &precv_frame->attrib;
+ 	s32 frg_inx, frg_len, mpdu_len, llc_sz, mem_sz;
+@@ -1233,25 +1233,25 @@ s32 rtw_free_xmitbuf(struct xmit_priv *pxmitpriv, struct xmit_buf *pxmitbuf)
+ }
+ 
+ /*
+-Calling context:
+-1. OS_TXENTRY
+-2. RXENTRY (rx_thread or RX_ISR/RX_CallBack)
+-
+-If we turn on USE_RXTHREAD, then, no need for critical section.
+-Otherwise, we must use _enter/_exit critical to protect free_xmit_queue...
+-
+-Must be very very cautious...
+-
+-*/
++ * Calling context:
++ * 1. OS_TXENTRY
++ * 2. RXENTRY (rx_thread or RX_ISR/RX_CallBack)
++ *
++ * If we turn on USE_RXTHREAD, then, no need for critical section.
++ * Otherwise, we must use _enter/_exit critical to protect free_xmit_queue...
++ *
++ * Must be very very cautious...
++ *
++ */
+ 
+ struct xmit_frame *rtw_alloc_xmitframe(struct xmit_priv *pxmitpriv)
+ 				/* _queue *pfree_xmit_queue) */
+ {
+ 	/*
+-		Please remember to use all the osdep_service api,
+-		and lock/unlock or _enter/_exit critical to protect
+-		pfree_xmit_queue
+-	*/
++	 *	Please remember to use all the osdep_service api,
++	 *	and lock/unlock or _enter/_exit critical to protect
++	 *	pfree_xmit_queue
++	 */
+ 	struct xmit_frame *pxframe;
+ 	struct __queue *pfree_xmit_queue = &pxmitpriv->free_xmit_queue;
+ 
 -- 
 2.17.1
 
