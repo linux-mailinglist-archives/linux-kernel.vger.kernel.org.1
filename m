@@ -2,80 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0763212F6A
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 00:21:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFF6B212F75
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 00:23:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726364AbgGBWUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 18:20:46 -0400
-Received: from www.zeus03.de ([194.117.254.33]:37300 "EHLO mail.zeus03.de"
+        id S1726554AbgGBWWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 18:22:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59604 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726102AbgGBWUn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 18:20:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=k1; bh=11stCWHVtl+XFCsSu8Wb6D+1uMN
-        DsBQ1VAOfPwW4dNo=; b=e+VUpj8LQ0c1yoeXo1v+82f+Jx/CWZElcaHFJtNc9eU
-        NgPzIcrcCiDrPmxwkmqOzTs++jjjKyHkfF/CdHRZTdavI5atImc19jNmm1qyehj3
-        /dt4US9d1Rsk6CaNSrDABoJL50rHPwETznK1xUd48MP6Plaj+xuAxTMzVhiwj7II
-        =
-Received: (qmail 1031761 invoked from network); 3 Jul 2020 00:20:37 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 3 Jul 2020 00:20:37 +0200
-X-UD-Smtp-Session: l3s3148p1@iSxU0XyptsAgAwDPXwopAMEIVZ8qCmOC
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: [PATCH v2] lib: update DEBUG_SHIRQ docs to match reality
-Date:   Fri,  3 Jul 2020 00:20:24 +0200
-Message-Id: <20200702222024.6915-1-wsa+renesas@sang-engineering.com>
-X-Mailer: git-send-email 2.27.0
+        id S1726139AbgGBWWG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 18:22:06 -0400
+Received: from [10.44.0.192] (unknown [103.48.210.53])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7735820780;
+        Thu,  2 Jul 2020 22:22:04 +0000 (UTC)
+From:   Greg Ungerer <gerg@linux-m68k.org>
+Subject: [git pull] m68knommu changes for v5.8-rc4
+To:     torvalds@linux-foundation.org
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux/m68k <linux-m68k@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Message-ID: <85548a92-b917-08e2-e89c-833bf5cb97b4@linux-m68k.org>
+Date:   Fri, 3 Jul 2020 08:21:59 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no extra interrupt when registering a shared interrupt handler
-since 2011. Update the Kconfig text to make it clear and to avoid wrong
-assumptions when debugging issues found by it.
+Hi Linus,
 
-Fixes: 6d83f94db95c ("genirq: Disable the SHIRQ_DEBUG call in request_threaded_irq for now")
-Link: https://lore.kernel.org/linux-i2c/859e8211-2c56-8dd5-d6fb-33e4358e4128@pengutronix.de/T/#mf24d7070d7e0c8f17b6be6ceb51df94b7d7613b3
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
-Acked-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
----
+Please pull important m68knommu fixes for v5.8-rc4
 
-Greg, could you pick this one up as well?
+Regards
+Greg
 
-Change since v1:
-* add two tags from developers bitten by the misleading text
 
- lib/Kconfig.debug | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 9ad9210d70a1..2bff6315224d 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -844,10 +844,10 @@ config DEBUG_SHIRQ
- 	bool "Debug shared IRQ handlers"
- 	depends on DEBUG_KERNEL
- 	help
--	  Enable this to generate a spurious interrupt as soon as a shared
--	  interrupt handler is registered, and just before one is deregistered.
--	  Drivers ought to be able to handle interrupts coming in at those
--	  points; some don't and need to be caught.
-+	  Enable this to generate a spurious interrupt just before a shared
-+	  interrupt handler is deregistered (generating one when registering
-+	  is currently disabled). Drivers need to handle this correctly. Some
-+	  don't and need to be caught.
- 
- menu "Debug Oops, Lockups and Hangs"
- 
--- 
-2.27.0
+The following changes since commit 9ebcfadb0610322ac537dd7aa5d9cbc2b2894c68:
 
+   Linux 5.8-rc3 (2020-06-28 15:00:24 -0700)
+
+are available in the Git repository at:
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v5.8-rc4
+
+for you to fetch changes up to c43e55796dd4d13f4855971a4d7970ce2cd94db4:
+
+   m68k: mm: fix node memblock init (2020-06-29 23:58:05 +1000)
+
+----------------------------------------------------------------
+m68knommu: mm fixes needed for v5.8
+
+Two critical mm related fixes that affect booting of m68k/ColdFire devices.
+Both fix problems caused by recent system init memblock changes.
+
+----------------------------------------------------------------
+Angelo Dureghello (1):
+       m68k: mm: fix node memblock init
+
+Mike Rapoport (1):
+       m68k: nommu: register start of the memory with memblock
+
+  arch/m68k/kernel/setup_no.c | 3 ++-
+  arch/m68k/mm/mcfmmu.c       | 2 +-
+  2 files changed, 3 insertions(+), 2 deletions(-)
