@@ -2,81 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 288EB21193B
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 03:37:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68D602119AC
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 03:38:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729413AbgGBBcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 21:32:42 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:32759 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728551AbgGBBcj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 21:32:39 -0400
-X-UUID: 362059a602234cf295d44ba4d16ec340-20200702
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=Fi9mrlEmH73T+Qs6zhoiNlw3NLg/Wea1yifZo8JP4Y0=;
-        b=CgwZgTOhBxzcJIIsXa1MesRryiPmjqC2lXgtysirnwkJ1Xsey+fsObHbO3yYDM+QY7wYeMLonWegUj8sTU7RByWh/LN13iAEPyohjXt8+AOKEZ4OaipRhRC9ZWsEB2djGRmfbiuZlC+0AX0J1RKwW3fSwz/whxBtTqc8vCI0kWQ=;
-X-UUID: 362059a602234cf295d44ba4d16ec340-20200702
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 261882455; Thu, 02 Jul 2020 09:32:35 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 2 Jul 2020 09:32:24 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 2 Jul 2020 09:32:20 +0800
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
-        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
-        <jejb@linux.ibm.com>, <bvanassche@acm.org>
-CC:     <beanhuo@micron.com>, <asutoshd@codeaurora.org>,
-        <cang@codeaurora.org>, <matthias.bgg@gmail.com>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kuohong.wang@mediatek.com>,
-        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
-        <andy.teng@mediatek.com>, <chaotian.jing@mediatek.com>,
-        <cc.chou@mediatek.com>, Stanley Chu <stanley.chu@mediatek.com>
-Subject: [RFC PATCH v1] scsi: ufs: Quiesce all scsi devices before shutdown
-Date:   Thu, 2 Jul 2020 09:32:10 +0800
-Message-ID: <20200702013210.22958-1-stanley.chu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        id S1728984AbgGBBg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 21:36:57 -0400
+Received: from mga05.intel.com ([192.55.52.43]:62645 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728214AbgGBBgy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 21:36:54 -0400
+IronPort-SDR: TZBpTelp9mVVdw+E83ac5/hjCpSkxuO9Vw4Xoa2JzKcoiA5H7Cnzh7AoDZU4+/hIfCITNTKtGH
+ TQ+M5mWVzAug==
+X-IronPort-AV: E=McAfee;i="6000,8403,9669"; a="231639030"
+X-IronPort-AV: E=Sophos;i="5.75,302,1589266800"; 
+   d="scan'208";a="231639030"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2020 18:36:46 -0700
+IronPort-SDR: WkKQyRyyqk5ma2TxGzRlpWt9aUvcoXaeaKhhIOT8ecUHVr18IikLb5bXNbGzjSNv+vu2aYJSOH
+ JT/Lsj+Ot3yw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,302,1589266800"; 
+   d="scan'208";a="304068748"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.139]) ([10.239.159.139])
+  by fmsmga004.fm.intel.com with ESMTP; 01 Jul 2020 18:36:44 -0700
+Cc:     baolu.lu@linux.intel.com, Kevin Tian <kevin.tian@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>, kvm@vger.kernel.org,
+        Cornelia Huck <cohuck@redhat.com>,
+        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
+Subject: Re: [PATCH 1/2] iommu: Add iommu_group_get/set_domain()
+To:     Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Alex Williamson <alex.williamson@redhat.com>
+References: <20200627031532.28046-1-baolu.lu@linux.intel.com>
+ <acc0a8fd-bd23-fc34-aecc-67796ab216e7@arm.com>
+ <5dc1cece-6111-9b56-d04c-9553d592675b@linux.intel.com>
+ <48dd9f1e-c18b-77b7-650a-c35ecbb69f2b@arm.com>
+ <c38784ad-9dba-0840-3a61-e2c21e781f1e@linux.intel.com>
+ <ffbb405b-5617-5659-3fc1-302c530aceef@arm.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <122f0e0a-5220-f00a-a329-6679d5aa8077@linux.intel.com>
+Date:   Thu, 2 Jul 2020 09:32:20 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: 18A2182863CD6381535D3CFD5930C92F55638ED85AF7A2AFA65EACC53C1742932000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <ffbb405b-5617-5659-3fc1-302c530aceef@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Q3VycmVudGx5IEkvTyByZXF1ZXN0IGNvdWxkIGJlIHN0aWxsIHN1Ym1pdHRlZCB0byBVRlMgZGV2
-aWNlIHdoaWxlDQpVRlMgaXMgd29ya2luZyBvbiBzaHV0ZG93biBmbG93LiBUaGlzIG1heSBsZWFk
-IHRvIHJhY2luZyBhcyBiZWxvdw0Kc2NlbmFyaW9zIGFuZCBmaW5hbGx5IHN5c3RlbSBtYXkgY3Jh
-c2ggZHVlIHRvIHVuY2xvY2tlZCByZWdpc3Rlcg0KYWNjZXNzZXMuDQoNClRvIGZpeCB0aGlzIGtp
-bmQgb2YgaXNzdWVzLCBzcGVjaWZpY2FsbHkgcXVpZXNjZSBhbGwgU0NTSSBkZXZpY2VzDQpiZWZv
-cmUgVUZTIHNodXRkb3duIHRvIGJsb2NrIGFsbCBJL08gcmVxdWVzdCBzZW5kaW5nIGZyb20gYmxv
-Y2sNCmxheWVyLg0KDQpFeGFtcGxlIG9mIHJhY2luZyBzY2VuYXJpbzogV2hpbGUgVUZTIGRldmlj
-ZSBpcyBydW50aW1lLXN1c3BlbmRlZA0KDQpUaHJlYWQgIzE6IEV4ZWN1dGluZyBVRlMgc2h1dGRv
-d24gZmxvdywgZS5nLiwNCiAgICAgICAgICAgdWZzaGNkX3N1c3BlbmQoVUZTX1NIVVRET1dOX1BN
-KQ0KVGhyZWFkICMyOiBFeGVjdXRpbmcgcnVudGltZSByZXN1bWUgZmxvdyB0cmlnZ2VyZWQgYnkg
-SS9PIHJlcXVlc3QsDQogICAgICAgICAgIGUuZy4sIHVmc2hjZF9yZXN1bWUoVUZTX1JVTlRJTUVf
-UE0pDQoNClRoaXMgYnJlYWtzIHRoZSBhc3N1bXB0aW9uIHRoYXQgVUZTIFBNIGZsb3dzIGNhbiBu
-b3QgYmUgcnVubmluZw0KY29uY3VycmVudGx5IGFuZCB0aHVzIHNvbWUgdW5leHBlY3RlZCByYWNp
-bmcgYmVoYXZpb3IgbWF5IGhhcHBlbi4NCg0KU2lnbmVkLW9mZi1ieTogU3RhbmxleSBDaHUgPHN0
-YW5sZXkuY2h1QG1lZGlhdGVrLmNvbT4NCi0tLQ0KIGRyaXZlcnMvc2NzaS91ZnMvdWZzaGNkLmMg
-fCA0ICsrKysNCiAxIGZpbGUgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspDQoNCmRpZmYgLS1naXQg
-YS9kcml2ZXJzL3Njc2kvdWZzL3Vmc2hjZC5jIGIvZHJpdmVycy9zY3NpL3Vmcy91ZnNoY2QuYw0K
-aW5kZXggNTkzNThiYjc1MDE0Li5jYWRmYTkwMDY5NzIgMTAwNjQ0DQotLS0gYS9kcml2ZXJzL3Nj
-c2kvdWZzL3Vmc2hjZC5jDQorKysgYi9kcml2ZXJzL3Njc2kvdWZzL3Vmc2hjZC5jDQpAQCAtODU5
-OSwxMCArODU5OSwxNCBAQCBFWFBPUlRfU1lNQk9MKHVmc2hjZF9ydW50aW1lX2lkbGUpOw0KIGlu
-dCB1ZnNoY2Rfc2h1dGRvd24oc3RydWN0IHVmc19oYmEgKmhiYSkNCiB7DQogCWludCByZXQgPSAw
-Ow0KKwlzdHJ1Y3Qgc2NzaV90YXJnZXQgKnN0YXJnZXQ7DQogDQogCWlmICghaGJhLT5pc19wb3dl
-cmVkKQ0KIAkJZ290byBvdXQ7DQogDQorCWxpc3RfZm9yX2VhY2hfZW50cnkoc3RhcmdldCwgJmhi
-YS0+aG9zdC0+X190YXJnZXRzLCBzaWJsaW5ncykNCisJCXNjc2lfdGFyZ2V0X3F1aWVzY2Uoc3Rh
-cmdldCk7DQorDQogCWlmICh1ZnNoY2RfaXNfdWZzX2Rldl9wb3dlcm9mZihoYmEpICYmIHVmc2hj
-ZF9pc19saW5rX29mZihoYmEpKQ0KIAkJZ290byBvdXQ7DQogDQotLSANCjIuMTguMA0K
+Hello,
 
+On 7/1/20 8:18 PM, Robin Murphy wrote:
+> On 2020-07-01 08:32, Lu Baolu wrote:
+>> Hi Robin,
+>>
+>> On 2020/7/1 0:51, Robin Murphy wrote:
+>>> On 2020-06-30 02:03, Lu Baolu wrote:
+>>>> Hi Robin,
+>>>>
+>>>> On 6/29/20 7:56 PM, Robin Murphy wrote:
+>>>>> On 2020-06-27 04:15, Lu Baolu wrote:
+>>>>>> The hardware assistant vfio mediated device is a use case of iommu
+>>>>>> aux-domain. The interactions between vfio/mdev and iommu during mdev
+>>>>>> creation and passthr are:
+>>>>>>
+>>>>>> - Create a group for mdev with iommu_group_alloc();
+>>>>>> - Add the device to the group with
+>>>>>>          group = iommu_group_alloc();
+>>>>>>          if (IS_ERR(group))
+>>>>>>                  return PTR_ERR(group);
+>>>>>>
+>>>>>>          ret = iommu_group_add_device(group, &mdev->dev);
+>>>>>>          if (!ret)
+>>>>>>                  dev_info(&mdev->dev, "MDEV: group_id = %d\n",
+>>>>>>                           iommu_group_id(group));
+>>>>>> - Allocate an aux-domain
+>>>>>>     iommu_domain_alloc()
+>>>>>> - Attach the aux-domain to the physical device from which the mdev is
+>>>>>>    created.
+>>>>>>     iommu_aux_attach_device()
+>>>>>>
+>>>>>> In the whole process, an iommu group was allocated for the mdev 
+>>>>>> and an
+>>>>>> iommu domain was attached to the group, but the group->domain leaves
+>>>>>> NULL. As the result, iommu_get_domain_for_dev() doesn't work anymore.
+>>>>>>
+>>>>>> This adds iommu_group_get/set_domain() so that group->domain could be
+>>>>>> managed whenever a domain is attached or detached through the 
+>>>>>> aux-domain
+>>>>>> api's.
+>>>>>
+>>>>> Letting external callers poke around directly in the internals of 
+>>>>> iommu_group doesn't look right to me.
+>>>>
+>>>> Unfortunately, it seems that the vifo iommu abstraction is deeply bound
+>>>> to the IOMMU subsystem. We can easily find other examples:
+>>>>
+>>>> iommu_group_get/set_iommudata()
+>>>> iommu_group_get/set_name()
+>>>> ...
+>>>
+>>> Sure, but those are ways for users of a group to attach useful 
+>>> information of their own to it, that doesn't matter to the IOMMU 
+>>> subsystem itself. The interface you've proposed gives callers rich 
+>>> new opportunities to fundamentally break correct operation of the API:
+>>>
+>>>      dom = iommu_domain_alloc();
+>>>      iommu_attach_group(dom, grp);
+>>>      ...
+>>>      iommu_group_set_domain(grp, NULL);
+>>>      // oops, leaked and can't ever detach properly now
+>>>
+>>> or perhaps:
+>>>
+>>>      grp = iommu_group_alloc();
+>>>      iommu_group_add_device(grp, dev);
+>>>      iommu_group_set_domain(grp, dom);
+>>>      ...
+>>>      iommu_detach_group(dom, grp);
+>>>      // oops, IOMMU driver might not handle this
+>>>
+>>>>> If a regular device is attached to one or more aux domains for 
+>>>>> PASID use, iommu_get_domain_for_dev() is still going to return the 
+>>>>> primary domain, so why should it be expected to behave differently 
+>>>>> for mediated
+>>>>
+>>>> Unlike the normal device attach, we will encounter two devices when it
+>>>> comes to aux-domain.
+>>>>
+>>>> - Parent physical device - this might be, for example, a PCIe device
+>>>> with PASID feature support, hence it is able to tag an unique PASID
+>>>> for DMA transfers originated from its subset. The device driver hence
+>>>> is able to wrapper this subset into an isolated:
+>>>>
+>>>> - Mediated device - a fake device created by the device driver 
+>>>> mentioned
+>>>> above.
+>>>>
+>>>> Yes. All you mentioned are right for the parent device. But for 
+>>>> mediated
+>>>> device, iommu_get_domain_for_dev() doesn't work even it has an valid
+>>>> iommu_group and iommu_domain.
+>>>>
+>>>> iommu_get_domain_for_dev() is a necessary interface for device drivers
+>>>> which want to support aux-domain. For example,
+>>>
+>>> Only if they want to follow this very specific notion of using 
+>>> made-up devices and groups to represent aux attachments. Even if a 
+>>> driver managing its own aux domains entirely privately does create 
+>>> child devices for them, it's not like it can't keep its domain 
+>>> pointers in drvdata if it wants to ;)
+>>>
+>>> Let's not conflate the current implementation of vfio_mdev with the 
+>>> general concepts involved here.
+>>>
+>>>>            struct iommu_domain *domain;
+>>>>            struct device *dev = mdev_dev(mdev);
+>>>>        unsigned long pasid;
+>>>>
+>>>>            domain = iommu_get_domain_for_dev(dev);
+>>>>            if (!domain)
+>>>>                    return -ENODEV;
+>>>>
+>>>>            pasid = iommu_aux_get_pasid(domain, dev->parent);
+>>>>        if (pasid == IOASID_INVALID)
+>>>>            return -EINVAL;
+>>>>
+>>>>        /* Program the device context with the PASID value */
+>>>>        ....
+>>>>
+>>>> Without this fix, iommu_get_domain_for_dev() always returns NULL and 
+>>>> the
+>>>> device driver has no means to support aux-domain.
+>>>
+>>> So either the IOMMU API itself is missing the ability to do the right 
+>>> thing internally, or the mdev layer isn't using it appropriately. 
+>>> Either way, simply punching holes in the API for mdev to hack around 
+>>> its own mess doesn't seem like the best thing to do.
+>>>
+>>> The initial impression I got was that it's implicitly assumed here 
+>>> that the mdev itself is attached to exactly one aux domain and 
+>>> nothing else, at which point I would wonder why it's using aux at 
+>>> all, but are you saying that in fact no attach happens with the mdev 
+>>> group either way, only to the parent device?
+>>>
+>>> I'll admit I'm not hugely familiar with any of this, but it seems to 
+>>> me that the logical flow should be:
+>>>
+>>>      - allocate domain
+>>>      - attach as aux to parent
+>>>      - retrieve aux domain PASID
+>>>      - create mdev child based on PASID
+>>>      - attach mdev to domain (normally)
+>>>
+>>> Of course that might require giving the IOMMU API a proper 
+>>> first-class notion of mediated devices, such that it knows the mdev 
+>>> represents the PASID, and can recognise the mdev attach is equivalent 
+>>> to the earlier parent aux attach so not just blindly hand it down to 
+>>> an IOMMU driver that's never heard of this new device before. Or 
+>>> perhaps the IOMMU drivers do their own bookkeeping for the mdev bus, 
+>>> such that they do handle the attach call, and just validate it 
+>>> internally based on the associated parent device and PASID. Either 
+>>> way, the inside maintains self-consistency and from the outside it 
+>>> looks like standard API usage without nasty hacks.
+>>>
+>>> I'm pretty sure I've heard suggestions of using mediated devices 
+>>> beyond VFIO (e.g. within the kernel itself), so chances are this is a 
+>>> direction that we'll have to take at some point anyway.
+>>>
+>>> And, that said, even if people do want an immediate quick fix 
+>>> regardless of technical debt, I'd still be a lot happier to see 
+>>> iommu_group_set_domain() lightly respun as iommu_attach_mdev() ;)
+>>
+>> Get your point and I agree with your concerns.
+>>
+>> To maintain the relationship between mdev's iommu_group and
+>> iommu_domain, how about extending below existing aux_attach api
+>>
+>> int iommu_aux_attach_device(struct iommu_domain *domain,
+>>                  struct device *dev)
+>>
+>> by adding the mdev's iommu_group?
+>>
+>> int iommu_aux_attach_device(struct iommu_domain *domain,
+>>                  struct device *dev,
+>>                  struct iommu_group *group)
+>>
+>> And, in iommu_aux_attach_device(), we require,
+>>   - @group only has a single device;
+>>   - @group hasn't been attached by any devices;
+>>   - Set the @domain to @group
+>>
+>> Just like what we've done in iommu_attach_device().
+>>
+>> Any thoughts?
+> 
+> Rather than pass a bare iommu_group with implicit restrictions, it might 
+> be neater to just pass an mdev_device, so that the IOMMU core can also 
+> take care of allocating and setting up the group. Then we flag the group 
+> internally as a special "mdev group" such that we can prevent callers 
+> from subsequently trying to add/remove devices or attach/detach its 
+> domain directly. That seems like it would make a pretty straightforward 
+> and robust API extension, as long as the mdev argument here is optional 
+> so that SVA and other aux users don't have to care. Other than the 
+> slightly different ordering where caller would have to allocate the mdev 
+> first, then finish it's PASID-based configuration afterwards, I guess 
+> it's not far off what I was thinking yesterday :)
+
+Hi Alex, Joerg and others, any comments here?
+
+Best regards,
+baolu
