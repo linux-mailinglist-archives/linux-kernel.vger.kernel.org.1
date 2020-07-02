@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3341F211985
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 03:37:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D81B5211982
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 03:37:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728887AbgGBBfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 21:35:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53954 "EHLO mail.kernel.org"
+        id S1728555AbgGBBf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 21:35:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54008 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728316AbgGBBXY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 21:23:24 -0400
+        id S1728337AbgGBBX1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 21:23:27 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C1C5720748;
-        Thu,  2 Jul 2020 01:23:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1F12F2085B;
+        Thu,  2 Jul 2020 01:23:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593653003;
-        bh=KWQ4e3p+UIInG0QsWaTKjw4uJUmUUZQzFdKT60LPMKs=;
+        s=default; t=1593653006;
+        bh=yJmYPEf+/ys7oNlquKCxhblkgjIgqsa8v9szg++uPC0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Yy3it853cghdNRbF9XTBt2aPNvrQfUClzx4xpBjFSWdHCtVHpo2YFxAR5+R29gSHw
-         KMYk9ms4sns9EdfEoYwGuWSXaMs9ue1i3h1pqBANBZjO+Kp0w1+5txJumekHhqF21i
-         CE4PE+GM2fKr4TSsI4yzYPrqJs+CuJTtDVaLgK7I=
+        b=kZZHsZTHN04GvCxNSDXAJbMvVcMe7GsBmV2hdPps0f6w9Yf3XoVbmfmxFXyPH/Cw3
+         7dOzc1DtP4+RhQa1LGBfp4gVkbJcJiPw6ElROuRuaJlJFo2zP8nLXgGAsikpVFTeJX
+         n0sInxXylMwEkrYo6qM7eud5HXMH9HsaolipWczU=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Sascha Hauer <s.hauer@pengutronix.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 23/53] net: ethernet: mvneta: Add 2500BaseX support for SoCs without comphy
-Date:   Wed,  1 Jul 2020 21:21:32 -0400
-Message-Id: <20200702012202.2700645-23-sashal@kernel.org>
+Cc:     Ciara Loftus <ciara.loftus@intel.com>,
+        Andrew Bowers <andrewx.bowers@intel.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.7 25/53] ixgbe: protect ring accesses with READ- and WRITE_ONCE
+Date:   Wed,  1 Jul 2020 21:21:34 -0400
+Message-Id: <20200702012202.2700645-25-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200702012202.2700645-1-sashal@kernel.org>
 References: <20200702012202.2700645-1-sashal@kernel.org>
@@ -43,48 +46,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sascha Hauer <s.hauer@pengutronix.de>
+From: Ciara Loftus <ciara.loftus@intel.com>
 
-[ Upstream commit 1a642ca7f38992b086101fe204a1ae3c90ed8016 ]
+[ Upstream commit f140ad9fe2ae16f385f8fe4dc9cf67bb4c51d794 ]
 
-The older SoCs like Armada XP support a 2500BaseX mode in the datasheets
-referred to as DR-SGMII (Double rated SGMII) or HS-SGMII (High Speed
-SGMII). This is an upclocked 1000BaseX mode, thus
-PHY_INTERFACE_MODE_2500BASEX is the appropriate mode define for it.
-adding support for it merely means writing the correct magic value into
-the MVNETA_SERDES_CFG register.
+READ_ONCE should be used when reading rings prior to accessing the
+statistics pointer. Introduce this as well as the corresponding WRITE_ONCE
+usage when allocating and freeing the rings, to ensure protected access.
 
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Ciara Loftus <ciara.loftus@intel.com>
+Tested-by: Andrew Bowers <andrewx.bowers@intel.com>
+Signed-off-by: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/marvell/mvneta.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c  | 12 ++++++------
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 14 +++++++++++---
+ 2 files changed, 17 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
-index 401eeeca89660..af578a5813bd2 100644
---- a/drivers/net/ethernet/marvell/mvneta.c
-+++ b/drivers/net/ethernet/marvell/mvneta.c
-@@ -110,6 +110,7 @@
- #define MVNETA_SERDES_CFG			 0x24A0
- #define      MVNETA_SGMII_SERDES_PROTO		 0x0cc7
- #define      MVNETA_QSGMII_SERDES_PROTO		 0x0667
-+#define      MVNETA_HSGMII_SERDES_PROTO		 0x1107
- #define MVNETA_TYPE_PRIO                         0x24bc
- #define      MVNETA_FORCE_UNI                    BIT(21)
- #define MVNETA_TXQ_CMD_1                         0x24e4
-@@ -3558,6 +3559,11 @@ static int mvneta_config_interface(struct mvneta_port *pp,
- 			mvreg_write(pp, MVNETA_SERDES_CFG,
- 				    MVNETA_SGMII_SERDES_PROTO);
- 			break;
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
+index fd9f5d41b5942..2e35c5706cf10 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
+@@ -921,7 +921,7 @@ static int ixgbe_alloc_q_vector(struct ixgbe_adapter *adapter,
+ 		ring->queue_index = txr_idx;
+ 
+ 		/* assign ring to adapter */
+-		adapter->tx_ring[txr_idx] = ring;
++		WRITE_ONCE(adapter->tx_ring[txr_idx], ring);
+ 
+ 		/* update count and index */
+ 		txr_count--;
+@@ -948,7 +948,7 @@ static int ixgbe_alloc_q_vector(struct ixgbe_adapter *adapter,
+ 		set_ring_xdp(ring);
+ 
+ 		/* assign ring to adapter */
+-		adapter->xdp_ring[xdp_idx] = ring;
++		WRITE_ONCE(adapter->xdp_ring[xdp_idx], ring);
+ 
+ 		/* update count and index */
+ 		xdp_count--;
+@@ -991,7 +991,7 @@ static int ixgbe_alloc_q_vector(struct ixgbe_adapter *adapter,
+ 		ring->queue_index = rxr_idx;
+ 
+ 		/* assign ring to adapter */
+-		adapter->rx_ring[rxr_idx] = ring;
++		WRITE_ONCE(adapter->rx_ring[rxr_idx], ring);
+ 
+ 		/* update count and index */
+ 		rxr_count--;
+@@ -1020,13 +1020,13 @@ static void ixgbe_free_q_vector(struct ixgbe_adapter *adapter, int v_idx)
+ 
+ 	ixgbe_for_each_ring(ring, q_vector->tx) {
+ 		if (ring_is_xdp(ring))
+-			adapter->xdp_ring[ring->queue_index] = NULL;
++			WRITE_ONCE(adapter->xdp_ring[ring->queue_index], NULL);
+ 		else
+-			adapter->tx_ring[ring->queue_index] = NULL;
++			WRITE_ONCE(adapter->tx_ring[ring->queue_index], NULL);
+ 	}
+ 
+ 	ixgbe_for_each_ring(ring, q_vector->rx)
+-		adapter->rx_ring[ring->queue_index] = NULL;
++		WRITE_ONCE(adapter->rx_ring[ring->queue_index], NULL);
+ 
+ 	adapter->q_vector[v_idx] = NULL;
+ 	napi_hash_del(&q_vector->napi);
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+index ea6834bae04c0..a32a072761aa2 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+@@ -7065,7 +7065,10 @@ void ixgbe_update_stats(struct ixgbe_adapter *adapter)
+ 	}
+ 
+ 	for (i = 0; i < adapter->num_rx_queues; i++) {
+-		struct ixgbe_ring *rx_ring = adapter->rx_ring[i];
++		struct ixgbe_ring *rx_ring = READ_ONCE(adapter->rx_ring[i]);
 +
-+		case PHY_INTERFACE_MODE_2500BASEX:
-+			mvreg_write(pp, MVNETA_SERDES_CFG,
-+				    MVNETA_HSGMII_SERDES_PROTO);
-+			break;
- 		default:
- 			return -EINVAL;
- 		}
++		if (!rx_ring)
++			continue;
+ 		non_eop_descs += rx_ring->rx_stats.non_eop_descs;
+ 		alloc_rx_page += rx_ring->rx_stats.alloc_rx_page;
+ 		alloc_rx_page_failed += rx_ring->rx_stats.alloc_rx_page_failed;
+@@ -7086,15 +7089,20 @@ void ixgbe_update_stats(struct ixgbe_adapter *adapter)
+ 	packets = 0;
+ 	/* gather some stats to the adapter struct that are per queue */
+ 	for (i = 0; i < adapter->num_tx_queues; i++) {
+-		struct ixgbe_ring *tx_ring = adapter->tx_ring[i];
++		struct ixgbe_ring *tx_ring = READ_ONCE(adapter->tx_ring[i]);
++
++		if (!tx_ring)
++			continue;
+ 		restart_queue += tx_ring->tx_stats.restart_queue;
+ 		tx_busy += tx_ring->tx_stats.tx_busy;
+ 		bytes += tx_ring->stats.bytes;
+ 		packets += tx_ring->stats.packets;
+ 	}
+ 	for (i = 0; i < adapter->num_xdp_queues; i++) {
+-		struct ixgbe_ring *xdp_ring = adapter->xdp_ring[i];
++		struct ixgbe_ring *xdp_ring = READ_ONCE(adapter->xdp_ring[i]);
+ 
++		if (!xdp_ring)
++			continue;
+ 		restart_queue += xdp_ring->tx_stats.restart_queue;
+ 		tx_busy += xdp_ring->tx_stats.tx_busy;
+ 		bytes += xdp_ring->stats.bytes;
 -- 
 2.25.1
 
