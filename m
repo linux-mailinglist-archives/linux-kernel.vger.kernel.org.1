@@ -2,118 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2833C211764
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 02:48:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B414211776
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 02:53:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727898AbgGBAsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 20:48:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45146 "EHLO mail.kernel.org"
+        id S1727823AbgGBAw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 20:52:58 -0400
+Received: from mail5.windriver.com ([192.103.53.11]:57022 "EHLO mail5.wrs.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726508AbgGBAsC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 20:48:02 -0400
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 823CB2083E
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 00:48:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593650881;
-        bh=XEyn4rciJR68bCOMhcqvZPsUAaqbl3LjFAxVl5+yEJ8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=L0xUkYlUw943INWmd8Up0ldWkOlWr7zMj1L52awGzU4rl7zqrhskjKCw/nOnaWLLS
-         WzCMhOa6hdmImfVBvVzZ67H8cGVCqDdSWG/Py6Ny2ffr6ia6kxYwghKafHnjssq1Kl
-         8l2fUs/3R+dErhPCz7GqiXsTvsNoGdeIv7RMtE64=
-Received: by mail-wm1-f48.google.com with SMTP id o8so24630999wmh.4
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 17:48:01 -0700 (PDT)
-X-Gm-Message-State: AOAM532/vqXb7D8yKezmdj5PI0JrAUBACcezgebyxvrs5aHUqxx/sTuM
-        edtu0xhEZIJ3JrU7uK3wFh+fPejrC9hhXSsRZyHQcQ==
-X-Google-Smtp-Source: ABdhPJy/HEndSetfwvrT6mNXQnAH45hzDb8dDLtpYyndeldFdAxMTjx1eo18q6uOa+xzdpbjx95LmJarr/FnbO4zKow=
-X-Received: by 2002:a1c:2402:: with SMTP id k2mr29132297wmk.138.1593650880105;
- Wed, 01 Jul 2020 17:48:00 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAHk-=wizu7DA7EDrsHQLmkTFBvCRxNyPMHaeMDYMF_U75s9RvQ@mail.gmail.com>
- <5F1767D0-416A-4BA4-9DFF-E82D1EA3F5EE@amacapital.net> <CAHk-=wh0X1YBQm8b6dqu=FpE8jgHriisXDeqJ7jai41Ob+sJDA@mail.gmail.com>
-In-Reply-To: <CAHk-=wh0X1YBQm8b6dqu=FpE8jgHriisXDeqJ7jai41Ob+sJDA@mail.gmail.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Wed, 1 Jul 2020 17:47:48 -0700
-X-Gmail-Original-Message-ID: <CALCETrXpKAR2A0+96b+RWUE0vUmoPwmp-mfF1u=g2270DNi96w@mail.gmail.com>
-Message-ID: <CALCETrXpKAR2A0+96b+RWUE0vUmoPwmp-mfF1u=g2270DNi96w@mail.gmail.com>
-Subject: Re: objtool clac/stac handling change..
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
+        id S1726388AbgGBAw6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 20:52:58 -0400
+Received: from ALA-HCA.corp.ad.wrs.com (ala-hca.corp.ad.wrs.com [147.11.189.40])
+        by mail5.wrs.com (8.15.2/8.15.2) with ESMTPS id 0620p0UZ025910
+        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL);
+        Wed, 1 Jul 2020 17:51:21 -0700
+Received: from yow-pgortmak-d4.wrs.com (128.224.56.60) by
+ ALA-HCA.corp.ad.wrs.com (147.11.189.40) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 1 Jul 2020 17:51:06 -0700
+From:   Paul Gortmaker <paul.gortmaker@windriver.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     Paul Gortmaker <paul.gortmaker@windriver.com>,
+        Scott Wood <swood@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: multipart/mixed; boundary="0000000000009b04ad05a96ac2b9"
+        "Frederic Weisbecker" <fweisbec@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: [PATCH] sched: nohz: drop calc_load_nohz_remote with mismatched ifdefs
+Date:   Wed, 1 Jul 2020 20:49:44 -0400
+Message-ID: <1593650984-58400-1-git-send-email-paul.gortmaker@windriver.com>
+X-Mailer: git-send-email 1.9.1
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000009b04ad05a96ac2b9
-Content-Type: text/plain; charset="UTF-8"
+In commit ebc0f83c78a2 ("timers/nohz: Update NOHZ load in remote tick")
+we got calc_load_nohz_remote(rq) as a one-line wrapper function around
+calc_load_nohz_fold(rq) and with sched_tick_remote() as the only user.
 
-On Wed, Jul 1, 2020 at 1:51 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Wed, Jul 1, 2020 at 1:36 PM Andy Lutomirski <luto@amacapital.net> wrote:
-> >
-> > We ought to be able to do it the way I described and get decent code generation too.
->
-> No, we really can't.
->
-> Each access really needs to jump to an exception label. Otherwise any
-> time you have multiple operations (think "strncpy()" and friends) you
-> have to test in between each access.
->
-> That is why *fundamnetally* the interface to "unsafe_get/put_user()"
-> takes a label for the error case. There is absolutely no way to make
-> any other interface work efficiently.
+However, we build the sched_tick_remote only for NO_HZ_FULL but the
+wrapper inside a block for NO_HZ_COMMON.  So users that parallel the
+defconfig with COMMON=y and FULL=n get an unused stub built in.
 
-You inspired me to mock it up.  I don't think I did anything special
-here, except that I mocked up unsafe_put_user() and a fudged it a
-little bit because I'm using gcc 9.3.1 which doesn't support asm goto
-outputs.  Code like this:
+  (gdb) p calc_load_nohz_remote
+  $227 = {void (struct rq *)} 0xffffffff8110a5c0 <calc_load_nohz_remote>
+  (gdb) p sched_tick_remote
+  No symbol "sched_tick_remote" in current context.
 
-    if (unsafe_put_user(&a, user_a))
-        goto error;
-    if (unsafe_put_user(&b, user_b))
-        goto error;
-    if (unsafe_put_user(&c, user_c))
-        goto error;
-    if (unsafe_put_user(&d, user_d))
-        goto error;
+Rather than fix the ifdeffery, we note that calc_load_nohz_remote was
+most likely introduced to be self-documenting of the "remote" aspect.
 
-generates a series of movs.  The conditions are entirely omitted from
-the generated assembly output because gcc is smart enough to figure
-out that the return value of unsafe_put_user() indicates which way the
-asm goto went.  I don't think I could generate better output by hand
-than gcc generated from my test.
+And yet, inside sched_tick_remote, it is fairly clear that all the code
+there are acting on behalf of the remote cpu and the corresponding
+remote rq without them each adding specific remote named wrappers.
 
-So I stand by my claim. :)  Each access does need to jump, but that
-jump can be entirely within the exception entry, and we don't need to
-generate any actual jump instructions.
+Hence it seems to make sense to just dispense with the stub entirely
+and simplify the code code in the process.
 
---Andy
+Ensure at the same time, that nohz.h is aware of what a rq is - since
+that implicit header dependency was introduced by the same commit.
 
---0000000000009b04ad05a96ac2b9
-Content-Type: text/x-csrc; charset="US-ASCII"; name="asm_goto_opt.c"
-Content-Disposition: attachment; filename="asm_goto_opt.c"
-Content-Transfer-Encoding: base64
-Content-ID: <f_kc42gtow0>
-X-Attachment-Id: f_kc42gtow0
+Fixes: ebc0f83c78a2 ("timers/nohz: Update NOHZ load in remote tick")
+Cc: Scott Wood <swood@redhat.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Frederic Weisbecker <fweisbec@gmail.com>
+Cc: Ingo Molnar <mingo@kernel.org>
+Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
+---
+ include/linux/sched/nohz.h |  5 +++--
+ kernel/sched/core.c        |  2 +-
+ kernel/sched/loadavg.c     | 11 +----------
+ 3 files changed, 5 insertions(+), 13 deletions(-)
 
-I2RlZmluZSBFRkFVTFQgMTQKCnN0YXRpYyBpbnQgdW5zYWZlX3B1dF91c2VyKGludCAqdmFsdWUs
-IGludCAqcHRyKQp7Cglhc20gZ290byAoIjE6IG1vdmwgJVt2YWx1ZV0sICVbbWVtXVxuXHQiCgkJ
-ICAiLnB1c2hzZWN0aW9uIF9fZXhfdGFibGVcblx0IgoJCSAgIi5sb25nIDFiIC0gLlxuXHQiCgkJ
-ICAiLmxvbmcgZXJyIC0gLlxuXHQiCgkJICAiLnBvcHNlY3Rpb24iCgkJICA6OiBbdmFsdWVdICJy
-bWkiICgqdmFsdWUpLCBbbWVtXSAibSIgKCpwdHIpCgkJICA6OiBlcnIgKTsKCXJldHVybiAwOwoK
-ZXJyOgoJcmV0dXJuIC1FRkFVTFQ7Cn0KCmludCB0ZXN0KGludCAqdXNlcl9hLCBpbnQgKnVzZXJf
-YiwgaW50ICp1c2VyX2MsIGludCAqdXNlcl9kKQp7CglpbnQgYSA9IDEsIGIgPSAyLCBjID0gMywg
-ZCA9IDQ7CgoJaWYgKHVuc2FmZV9wdXRfdXNlcigmYSwgdXNlcl9hKSkKCQlnb3RvIGVycm9yOwoJ
-aWYgKHVuc2FmZV9wdXRfdXNlcigmYiwgdXNlcl9iKSkKCQlnb3RvIGVycm9yOwoJaWYgKHVuc2Fm
-ZV9wdXRfdXNlcigmYywgdXNlcl9jKSkKCQlnb3RvIGVycm9yOwoJaWYgKHVuc2FmZV9wdXRfdXNl
-cigmZCwgdXNlcl9kKSkKCQlnb3RvIGVycm9yOwoKCXJldHVybiAwOwoJCmVycm9yOgoJcmV0dXJu
-IC1FRkFVTFQ7Cn0K
---0000000000009b04ad05a96ac2b9--
+diff --git a/include/linux/sched/nohz.h b/include/linux/sched/nohz.h
+index 6d67e9a5af6b..58459fdf6758 100644
+--- a/include/linux/sched/nohz.h
++++ b/include/linux/sched/nohz.h
+@@ -6,6 +6,8 @@
+  * This is the interface between the scheduler and nohz/dynticks:
+  */
+ 
++struct rq;
++
+ #if defined(CONFIG_SMP) && defined(CONFIG_NO_HZ_COMMON)
+ extern void nohz_balance_enter_idle(int cpu);
+ extern int get_nohz_timer_target(void);
+@@ -15,11 +17,10 @@ static inline void nohz_balance_enter_idle(int cpu) { }
+ 
+ #ifdef CONFIG_NO_HZ_COMMON
+ void calc_load_nohz_start(void);
+-void calc_load_nohz_remote(struct rq *rq);
+ void calc_load_nohz_stop(void);
++void calc_load_nohz_fold(struct rq *rq);
+ #else
+ static inline void calc_load_nohz_start(void) { }
+-static inline void calc_load_nohz_remote(struct rq *rq) { }
+ static inline void calc_load_nohz_stop(void) { }
+ #endif /* CONFIG_NO_HZ_COMMON */
+ 
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index f518af52d0fb..23d3b2282c09 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -3763,7 +3763,7 @@ static void sched_tick_remote(struct work_struct *work)
+ 	}
+ 	curr->sched_class->task_tick(rq, curr, 0);
+ 
+-	calc_load_nohz_remote(rq);
++	calc_load_nohz_fold(rq);
+ out_unlock:
+ 	rq_unlock_irq(rq, &rf);
+ out_requeue:
+diff --git a/kernel/sched/loadavg.c b/kernel/sched/loadavg.c
+index d2a655643a02..5bab95e1bde4 100644
+--- a/kernel/sched/loadavg.c
++++ b/kernel/sched/loadavg.c
+@@ -231,7 +231,7 @@ static inline int calc_load_read_idx(void)
+ 	return calc_load_idx & 1;
+ }
+ 
+-static void calc_load_nohz_fold(struct rq *rq)
++void calc_load_nohz_fold(struct rq *rq)
+ {
+ 	long delta;
+ 
+@@ -252,15 +252,6 @@ void calc_load_nohz_start(void)
+ 	calc_load_nohz_fold(this_rq());
+ }
+ 
+-/*
+- * Keep track of the load for NOHZ_FULL, must be called between
+- * calc_load_nohz_{start,stop}().
+- */
+-void calc_load_nohz_remote(struct rq *rq)
+-{
+-	calc_load_nohz_fold(rq);
+-}
+-
+ void calc_load_nohz_stop(void)
+ {
+ 	struct rq *this_rq = this_rq();
+-- 
+1.9.1
+
