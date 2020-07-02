@@ -2,76 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7AE7212C9D
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 20:57:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9BCE212C90
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 20:54:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726342AbgGBS5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 14:57:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48528 "EHLO mail.kernel.org"
+        id S1726074AbgGBSyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 14:54:04 -0400
+Received: from mga07.intel.com ([134.134.136.100]:33859 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726074AbgGBS5I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 14:57:08 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 137B02186A;
-        Thu,  2 Jul 2020 18:57:07 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.93)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1jr4OP-004BHY-SP; Thu, 02 Jul 2020 14:57:05 -0400
-Message-ID: <20200702185705.759824282@goodmis.org>
-User-Agent: quilt/0.66
-Date:   Thu, 02 Jul 2020 14:53:59 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-Subject: [PATCH v2 15/15] tools lib traceevent: Fix reporting of unknown SVM exit reasons
-References: <20200702185344.913492689@goodmis.org>
+        id S1725878AbgGBSyD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 14:54:03 -0400
+IronPort-SDR: S9ILGZcGBBcjMcL0lYqjP9z3mJWEqF6tNU7eVKyQikHXNJddRwGCWqzZQ+r1y9L8LCaK5Aplah
+ zEEO4Xodtzaw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="212034227"
+X-IronPort-AV: E=Sophos;i="5.75,305,1589266800"; 
+   d="scan'208";a="212034227"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2020 11:54:03 -0700
+IronPort-SDR: CC/vtgNsaWOz//xrtb6pWysiLk9porL5m+VulPA8Ik9jNfAKqYSRTILgihgSFwQbuTT8sMN++q
+ BRAUNlUi0hxg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,305,1589266800"; 
+   d="scan'208";a="455622731"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
+  by orsmga005.jf.intel.com with ESMTP; 02 Jul 2020 11:54:03 -0700
+Date:   Thu, 2 Jul 2020 11:54:03 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Xiaoyao Li <xiaoyao.li@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/7] KVM: X86: Go on updating other CPUID leaves when
+ leaf 1 is absent
+Message-ID: <20200702185403.GH3575@linux.intel.com>
+References: <20200623115816.24132-1-xiaoyao.li@intel.com>
+ <20200623115816.24132-3-xiaoyao.li@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200623115816.24132-3-xiaoyao.li@intel.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kiszka <jan.kiszka@siemens.com>
+On Tue, Jun 23, 2020 at 07:58:11PM +0800, Xiaoyao Li wrote:
+> As handling of bits other leaf 1 added over time, kvm_update_cpuid()
+> should not return directly if leaf 1 is absent, but should go on
+> updateing other CPUID leaves.
+> 
+> Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
 
-On AMD, exist code -1 is also a possible value, but we use it for
-terminating the list of known exit reasons. This leads to EXIT_ERR
-being reported for unkown ones. Fix this by using an NULL string
-pointer as terminal.
+This should probably be marked for stable.
 
-Link: http://lkml.kernel.org/r/5741D817.3070902@web.de
-Link: http://lore.kernel.org/linux-trace-devel/20200702174950.123454-7-tz.stoyanov@gmail.com
+> ---
+>  arch/x86/kvm/cpuid.c | 23 +++++++++++------------
+>  1 file changed, 11 insertions(+), 12 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+> index 1d13bad42bf9..0164dac95ef5 100644
+> --- a/arch/x86/kvm/cpuid.c
+> +++ b/arch/x86/kvm/cpuid.c
+> @@ -60,22 +60,21 @@ int kvm_update_cpuid(struct kvm_vcpu *vcpu)
+>  	struct kvm_lapic *apic = vcpu->arch.apic;
+>  
+>  	best = kvm_find_cpuid_entry(vcpu, 1, 0);
+> -	if (!best)
+> -		return 0;
 
-Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
-Signed-off-by: Steven Rostedt <rostedt@goodmis.org>
-[ Ported from trace-cmd.git ]
-Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- tools/lib/traceevent/plugins/plugin_kvm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Rather than wrap the existing code, what about throwing it in a separate
+helper?  That generates an easier to read diff and also has the nice
+property of getting 'apic' out of the common code.
 
-diff --git a/tools/lib/traceevent/plugins/plugin_kvm.c b/tools/lib/traceevent/plugins/plugin_kvm.c
-index de76a1e79d9e..51ceeb9147eb 100644
---- a/tools/lib/traceevent/plugins/plugin_kvm.c
-+++ b/tools/lib/traceevent/plugins/plugin_kvm.c
-@@ -245,7 +245,7 @@ static const char *find_exit_reason(unsigned isa, int val)
- 		}
- 	if (!strings)
- 		return "UNKNOWN-ISA";
--	for (i = 0; strings[i].val >= 0; i++)
-+	for (i = 0; strings[i].str; i++)
- 		if (strings[i].val == val)
- 			break;
- 
--- 
-2.26.2
-
-
+> -
+> -	/* Update OSXSAVE bit */
+> -	if (boot_cpu_has(X86_FEATURE_XSAVE) && best->function == 0x1)
+> -		cpuid_entry_change(best, X86_FEATURE_OSXSAVE,
+> +	if (best) {
+> +		/* Update OSXSAVE bit */
+> +		if (boot_cpu_has(X86_FEATURE_XSAVE))
+> +			cpuid_entry_change(best, X86_FEATURE_OSXSAVE,
+>  				   kvm_read_cr4_bits(vcpu, X86_CR4_OSXSAVE));
+>  
+> -	cpuid_entry_change(best, X86_FEATURE_APIC,
+> +		cpuid_entry_change(best, X86_FEATURE_APIC,
+>  			   vcpu->arch.apic_base & MSR_IA32_APICBASE_ENABLE);
+>  
+> -	if (apic) {
+> -		if (cpuid_entry_has(best, X86_FEATURE_TSC_DEADLINE_TIMER))
+> -			apic->lapic_timer.timer_mode_mask = 3 << 17;
+> -		else
+> -			apic->lapic_timer.timer_mode_mask = 1 << 17;
+> +		if (apic) {
+> +			if (cpuid_entry_has(best, X86_FEATURE_TSC_DEADLINE_TIMER))
+> +				apic->lapic_timer.timer_mode_mask = 3 << 17;
+> +			else
+> +				apic->lapic_timer.timer_mode_mask = 1 << 17;
+> +		}
+>  	}
+>  
+>  	best = kvm_find_cpuid_entry(vcpu, 7, 0);
+> -- 
+> 2.18.2
+> 
