@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B66562118A0
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 03:36:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC91A211969
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 03:37:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728818AbgGBBZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 21:25:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54400 "EHLO mail.kernel.org"
+        id S1729125AbgGBBeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 21:34:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56346 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728450AbgGBBXn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 21:23:43 -0400
+        id S1728366AbgGBBZ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 21:25:28 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A4DB52082F;
-        Thu,  2 Jul 2020 01:23:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B1ECE20748;
+        Thu,  2 Jul 2020 01:25:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593653022;
-        bh=3ku+PiRpae9Jp7+rrfv+SYcIAqrcFJfFgtBJfoDHm7o=;
+        s=default; t=1593653128;
+        bh=sIUlAmhTnfBS1jKcMvo/2Rk0jPaABNfNX5aq1FKva4I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=heD5aE2fAswYC8ttjnyGyuMkU8MLAZJvyQMWGL1rThusub83f2COfL60q9IC3O96F
-         TM31FeFmgqDBhMgWx7BWOQ9pGdmxNO035u6TGpJScJGUVLFGY1E2vf7L3w/AnBu/wO
-         vhHvlPai6Ydcfn5ievT45oSMb02YbmvIkfKYldKs=
+        b=rEh0HavWZPIC3UI4p6rfcFjLA3I/cx7X2AgPo2vJzpCU+W/jsCjko/3mGbB6wwA6+
+         JfbkWVn2JueOE7+vZF3xqTdja0dMFbtu3SfLafhUE6CdR+3h8sYuFZPAKsM2IyN8t3
+         6nSlL8juyyv63SGdoktMQNBWy2TJ9H6ARdB+NqFk=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Maxime Ripard <maxime@cerno.tech>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Sasha Levin <sashal@kernel.org>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.7 38/53] drm/sun4i: mixer: Call of_dma_configure if there's an IOMMU
-Date:   Wed,  1 Jul 2020 21:21:47 -0400
-Message-Id: <20200702012202.2700645-38-sashal@kernel.org>
+Cc:     Stephane Eranian <eranian@google.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 03/40] perf/x86/rapl: Fix RAPL config variable bug
+Date:   Wed,  1 Jul 2020 21:23:24 -0400
+Message-Id: <20200702012402.2701121-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200702012202.2700645-1-sashal@kernel.org>
-References: <20200702012202.2700645-1-sashal@kernel.org>
+In-Reply-To: <20200702012402.2701121-1-sashal@kernel.org>
+References: <20200702012402.2701121-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -45,53 +45,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maxime Ripard <maxime@cerno.tech>
+From: Stephane Eranian <eranian@google.com>
 
-[ Upstream commit 842ec61f4006a6477a9deaedd69131e9f46e4cb5 ]
+[ Upstream commit 16accae3d97f97d7f61c4ee5d0002bccdef59088 ]
 
-The main DRM device is actually a virtual device so it doesn't have the
-iommus property, which is instead on the DMA masters, in this case the
-mixers.
+This patch fixes a bug introduced by:
 
-Add a call to of_dma_configure with the mixers DT node but on the DRM
-virtual device to configure it in the same way than the mixers.
+  fd3ae1e1587d6 ("perf/x86/rapl: Move RAPL support to common x86 code")
 
-Reviewed-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Link: https://patchwork.freedesktop.org/patch/msgid/9a4daf438dd3f2fe07afb23688bfb793a0613d7d.1589378833.git-series.maxime@cerno.tech
-(cherry picked from commit b718102dbdfd0285ad559687a30e27cc9124e592)
-[Maxime: Applied to -fixes since it missed the merge window and display is
-         broken without it]
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+The Kconfig variable name was wrong. It was missing the CONFIG_ prefix.
+
+Signed-off-by: Stephane Eranian <eraniangoogle.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Tested-by: Kim Phillips <kim.phillips@amd.com>
+Acked-by: Peter Zijlstra <peterz@infradead.org>
+Link: https://lore.kernel.org/r/20200528201614.250182-1-eranian@google.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/sun4i/sun8i_mixer.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ arch/x86/events/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/sun4i/sun8i_mixer.c b/drivers/gpu/drm/sun4i/sun8i_mixer.c
-index 4a64f7ae437a8..19b3b41847046 100644
---- a/drivers/gpu/drm/sun4i/sun8i_mixer.c
-+++ b/drivers/gpu/drm/sun4i/sun8i_mixer.c
-@@ -452,6 +452,19 @@ static int sun8i_mixer_bind(struct device *dev, struct device *master,
- 	mixer->engine.ops = &sun8i_engine_ops;
- 	mixer->engine.node = dev->of_node;
- 
-+	if (of_find_property(dev->of_node, "iommus", NULL)) {
-+		/*
-+		 * This assume we have the same DMA constraints for
-+		 * all our the mixers in our pipeline. This sounds
-+		 * bad, but it has always been the case for us, and
-+		 * DRM doesn't do per-device allocation either, so we
-+		 * would need to fix DRM first...
-+		 */
-+		ret = of_dma_configure(drm->dev, dev->of_node, true);
-+		if (ret)
-+			return ret;
-+	}
-+
- 	/*
- 	 * While this function can fail, we shouldn't do anything
- 	 * if this happens. Some early DE2 DT entries don't provide
+diff --git a/arch/x86/events/Makefile b/arch/x86/events/Makefile
+index b418ef6878796..726e83c0a31a1 100644
+--- a/arch/x86/events/Makefile
++++ b/arch/x86/events/Makefile
+@@ -1,6 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ obj-y					+= core.o probe.o
+-obj-$(PERF_EVENTS_INTEL_RAPL)		+= rapl.o
++obj-$(CONFIG_PERF_EVENTS_INTEL_RAPL)	+= rapl.o
+ obj-y					+= amd/
+ obj-$(CONFIG_X86_LOCAL_APIC)            += msr.o
+ obj-$(CONFIG_CPU_SUP_INTEL)		+= intel/
 -- 
 2.25.1
 
