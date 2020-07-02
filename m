@@ -2,175 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F141211F87
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 11:13:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2277211F92
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 11:15:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727905AbgGBJM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 05:12:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726183AbgGBJM7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 05:12:59 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8278C08C5C1;
-        Thu,  2 Jul 2020 02:12:58 -0700 (PDT)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id AC46622EEB;
-        Thu,  2 Jul 2020 11:12:56 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1593681177;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sYkGBHvaNTyBI74MG9qO6W/wGpDKi9edSCvGAhgdkmw=;
-        b=Z5NTFwtsFTYlze4XpyzMl067BvWkIbwhHTjSbiqKRE16dig9ea7I8Zhk/I9+hsAgGHhoHk
-        4pPkMKBrrjJp3+gbmZNXUe5DHCPV8JllhP1smmyGy3tt6bg4fn+kz2tky67/5dmfpzXYK1
-        eiaDSv/hOT3BDEbjpFFUsNa07btoD34=
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+        id S1728182AbgGBJPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 05:15:35 -0400
+Received: from mail-dm6nam11on2052.outbound.protection.outlook.com ([40.107.223.52]:17633
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726462AbgGBJPe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 05:15:34 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kKvBjRmBwNTIqUcvreUld9KOcwc+OUxY8vWhj0/rZZx6iBY4RWRKlR5agerDeLzLMYLbeG11eS0HLyzdF9YBnELzy0PBSG1Z/z0v94GXEJLbwFAmOr2T33bpAD1Pg9Dp0lP+5UIQTx/UT5679WIzvOYFGsyQa6yUfXliJuFw02W8WDAKAQNmAWqFg7al+ZBfkDsy92GpU8Y7OO/fe4Q3uPV536skpqMAwWWx4YBPL9MwrSarN1AXqdYuksQLy0fpbKqUWfqycn6XjQ62GY9Q5FilkpzYeBGENaezv9DFYDKDa6vd75abuWd2GRzlRwO0AMu3vrh4WE5kBAd4EFd8Tw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SVZkx6FRJN5JWnK2dO3iV06+2O2ob1Lknq2M9fcjV0g=;
+ b=Qo1LS3zVrgirMydN7i0oKaNec4I/9Jb16+YKg+AB7mI9YjtFa8HQyQGsaql5d8LB2yXGugj+2UA8EGSJ7zaRe40wbxZ5JjkJJ8HEvC5yetvAYT9dCqnJ/GK7Qyr/1U85PQrfcKTY9FLzuYUJWDPDFWbOrj+i6aECNOgoP74ymncD07eN5Z8IR71hGxfp3J417Ek6ke6liZOixCGSxPtDNmZ+i335lgDmTbHJnEf2buxMeegRPj/ZJ0wB2K2vZ3rgPHM9FHSXCm9/wAhtI4rN+wl/laguX4tZbED9NAP3rG7OAvJcSB3TtLjBKFinv+H60QLoaTi68Uz5eMnL3fCvag==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synaptics.com; dmarc=pass action=none
+ header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SVZkx6FRJN5JWnK2dO3iV06+2O2ob1Lknq2M9fcjV0g=;
+ b=QaIN66L0MaVj8y4qHTksKndzxOKrlXE4JXBmXjHHvLkO8jhQFP658AIt36tqngp+p9t/TJL51x99aqoQw9ORAnlpk/WKoKS2MgtlECNjmKyMs7VH5u/862Np3cXHi93kULjsOl1qz9RSuY2HiCJIMk9uMocjCgvLLr69SxleOPA=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=synaptics.com;
+Received: from BYAPR03MB3573.namprd03.prod.outlook.com (2603:10b6:a02:ae::15)
+ by BYAPR03MB3574.namprd03.prod.outlook.com (2603:10b6:a02:aa::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.21; Thu, 2 Jul
+ 2020 09:15:31 +0000
+Received: from BYAPR03MB3573.namprd03.prod.outlook.com
+ ([fe80::d1ae:8ea7:ea:8998]) by BYAPR03MB3573.namprd03.prod.outlook.com
+ ([fe80::d1ae:8ea7:ea:8998%7]) with mapi id 15.20.3153.022; Thu, 2 Jul 2020
+ 09:15:30 +0000
+Date:   Thu, 2 Jul 2020 17:13:04 +0800
+From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: [PATCH 0/2] regulator: add support for SY8827N regulator
+Message-ID: <20200702171304.68928e88@xhacker.debian>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Date:   Thu, 02 Jul 2020 11:12:56 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Wolfram Sang <wsa@kernel.org>, robh+dt@kernel.org,
-        broonie@kernel.org, gregkh@linuxfoundation.org,
-        andriy.shevchenko@linux.intel.com, devicetree@vger.kernel.org,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com, arnd@arndb.de,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/1] mfd: Add I2C based System Configuaration (SYSCON)
- access
-In-Reply-To: <20200702081825.GR1179328@dell>
-References: <20200622075145.1464020-1-lee.jones@linaro.org>
- <e436fd60bf0ebb6d72a76034d0fc35de@walle.cc>
- <f505c52d565ba7dbf05eef895782c410@walle.cc> <20200701070434.GP1179328@dell>
- <5d1d41504172d86d395b0135923f6f02@walle.cc> <20200702065412.GO1179328@dell>
- <c20e8009fadbdc032090a493074396c8@walle.cc> <20200702081825.GR1179328@dell>
-User-Agent: Roundcube Webmail/1.4.6
-Message-ID: <58ae64ebf22707ad1725987615b355c2@walle.cc>
-X-Sender: michael@walle.cc
+X-ClientProxiedBy: HK2PR02CA0144.apcprd02.prod.outlook.com
+ (2603:1096:202:16::28) To BYAPR03MB3573.namprd03.prod.outlook.com
+ (2603:10b6:a02:ae::15)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from xhacker.debian (124.74.246.114) by HK2PR02CA0144.apcprd02.prod.outlook.com (2603:1096:202:16::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.23 via Frontend Transport; Thu, 2 Jul 2020 09:15:29 +0000
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+X-Originating-IP: [124.74.246.114]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 41002daf-ba28-4ebe-d4c8-08d81e68778c
+X-MS-TrafficTypeDiagnostic: BYAPR03MB3574:
+X-Microsoft-Antispam-PRVS: <BYAPR03MB35749F11DD82AF939E02F2F7ED6D0@BYAPR03MB3574.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3513;
+X-Forefront-PRVS: 0452022BE1
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: rZiGV1gpNSFQoGinMcXDsKasZGI+13DGTvlS8OeXFeGW+b33XxyxsCxFlR5d4bTWvQ84kBC2E80wIzgXCEutWJBQYqNwr74+aDTorc4ti/oswd50fp1mUqPwYg4x4ESLW3L+9Cu31lTRhFrxla8DOpXIVlfXb8GQZvwBC82RknUVQIXngn11gSMHqh4N82GB+OtTuu4ryqjkbqO+AL0MGU4hKS9EkCgoczaLLPQuttL07TcsuFUgY2IShaiaqaBnwbMom3udmjlFva9iPv9SnS8opjFflvP+X9A7Ua5+p75MvnVVFOT4+TfNMFoYMkBXa0QjYWyouCsgYEQn6vvbZQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR03MB3573.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(366004)(376002)(396003)(39850400004)(346002)(136003)(956004)(478600001)(2906002)(66476007)(66556008)(66946007)(8676002)(8936002)(9686003)(4326008)(55016002)(16526019)(26005)(186003)(316002)(110136005)(86362001)(7696005)(1076003)(52116002)(6666004)(6506007)(4744005)(5660300002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: MY/alwbgSDH9UluAfmJFLUvjaqflBlIit3KP9LVD379+73tMEr7N8mF9ddWVQL1gww8VdY0Nygui0tYpHMw6FkmdktE67n+LcNWlz/VZQVydIesgGRJeqF3sqZVeZe2IH3YL/pRJHFJsFvPpg+YK8VnMg5GFU+p0sk8NaMIGWJCHVxgOfrRGOrSw5Pq4MMqNM+LYb5EDNReBV5O3siKsLq4839CoIFTJoRGijl9mQ6SHQ7nYaE0yU+TIUjgfFdp3p7G59H2MMVbFzSEJ73vpLPI3G/ZlNRxqsL80+VV1Tkm5DOR2Z1p8TSIqOaEAiq8Lhzbhao7yr/dugNr41wlU1qh4ZEw/AksqoF9LEOOCtFFUSRlUyt2Y3foArM4LVg7VjdPl21lZ57DRgnurJWWXSAgwhYa2yatsVpYHKYsXJNgQg1c0X4BdS7HoQq6DNiPee9vnATtQbJhkqlk1WpKbEdTN5ivejK9m6IO66tB6xBKBPlFb2Y4EOdyDK+kQiYgJ
+X-OriginatorOrg: synaptics.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 41002daf-ba28-4ebe-d4c8-08d81e68778c
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR03MB3573.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jul 2020 09:15:30.7413
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: i+cM9s/LzVheP5l0qPbq23jQphjoOO++qdOXVDhdJmg0tvMY146YdVQ5B9qn66T+qygNKtnQPU6UzY7R5NGHgQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR03MB3574
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2020-07-02 10:18, schrieb Lee Jones:
-> On Thu, 02 Jul 2020, Michael Walle wrote:
-> 
->> Am 2020-07-02 08:54, schrieb Lee Jones:
->> > On Wed, 01 Jul 2020, Michael Walle wrote:
->> >
->> > > Am 2020-07-01 09:04, schrieb Lee Jones:
->> > > > On Wed, 01 Jul 2020, Michael Walle wrote:
->> > > >
->> > > > > Hi Lee,
->> > > > >
->> > > > > Am 2020-06-30 11:16, schrieb Michael Walle:
->> > > > > > I'm just trying to use this for my sl28 driver. Some remarks, see below.
->> > > > > >
->> > > > > > Am 2020-06-22 09:51, schrieb Lee Jones:
->> > > > > > > The existing SYSCON implementation only supports MMIO (memory mapped)
->> > > > > > > accesses, facilitated by Regmap.  This extends support for registers
->> > > > > > > held behind I2C busses.
->> > > > > > >
->> > > > > > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
->> > > > > > > ---
->> > > > > > > Changelog:
->> > > > > > >
->> > > > > > > v3 => v4
->> > > > > > >   - Add ability to provide a non-default Regmap configuration
->> > > > > > >
->> > > > > > > v2 => v3
->> > > > > > >   - Change 'is CONFIG' present check to include loadable modules
->> > > > > > >     - s/#ifdef CONFIG_MFD_SYSCON_I2C/#if
->> > > > > > > IS_ENABLED(CONFIG_MFD_SYSCON_I2C)/
->> > > > > > >
->> > > > > > > v1 => v2
->> > > > > > >   - Remove legacy references to OF
->> > > > > > >   - Allow building as a module (fixes h8300 0-day issue)
->> > > > > > >
->> > > > > > > drivers/mfd/Kconfig            |   7 +++
->> > > > > > >  drivers/mfd/Makefile           |   1 +
->> > > > > > >  drivers/mfd/syscon-i2c.c       | 104
->> > > > > > > +++++++++++++++++++++++++++++++++
->> > > > > > >  include/linux/mfd/syscon-i2c.h |  36 ++++++++++++
->> > > > > > >  4 files changed, 148 insertions(+)
->> > > > > > >  create mode 100644 drivers/mfd/syscon-i2c.c
->> > > > > > >  create mode 100644 include/linux/mfd/syscon-i2c.h
->> >
->> > [...]
->> >
->> > > > > > This way, (a) a driver doesn't have to use "#include <linux/i2c.h>" just
->> > > > > > to call to_i2c_client() (or i2c_verify_client()) and (b) you won't do it
->> > > > > > all over again in all sub drivers.
->> > > > > >
->> > > > > > So you could just do a
->> > > > > >   regmap = syscon_i2c_to_regmap(pdev->dev.parent);
->> > > > > >
->> > > > > > I've also noticed that the mmio syscon uses device_node as parameter.
->> > > > > > What
->> > > > > > was the reason to divert from that? Just curious.
->> > > > >
->> > > > > How is this supposed to be used?
->> > > > >
->> > > > > I had something like the following in mind:
->> > > > >
->> > > > > &i2c {
->> > > > >   cpld@4a {
->> > > > >     compatible = "simple-mfd";
->> > > > >     reg = <0x4a>;
->> > > > >
->> > > > >     gpio@4 {
->> > > > >       compatible = "vendor,gpio";
->> > > > >       reg = <0x4>;
->> > > > >     };
->> > > > >   };
->> > > > > };
->> > > >
->> > > > Yes, that was the idea.
->> > > >
->> > > > > But I think the childen are not enumerated if its an I2C device. And
->> > > > > the actual i2c driver is also missing.
->> > > >
->> > > > What do you mean?  Can you elaborate?
->> > >
->> > > There is no i2c_driver instance who would create the regmap.
->> >
->> > The regmap is created by the first caller of:
->> >
->> >  syscon_i2c_to_regmap{_config}()
->> 
->> But which one is an i2c_driver? All the sub devices are platform 
->> drivers
->> and there should be no need for them to know that they are behind an
->> i2c driver (or spi driver or just mmio). All they have to know is how
->> to access the registers.
->> 
->> > > If I'm
->> > > reading the I2C code correctly, it won't probe any i2c device of a
->> > > bus if there is no i2c_driver with an associated .probe() or
->> > > .probe_new().
->> >
->> > Why wouldn't the children be registered using i2c_driver?
->> 
->> Where is the code which enumerates the children?
-> 
-> Yes, I see the problem now.  So I2C devices depend on a device
-> registering with the i2c_driver framework, which then probes the
-> device accordingly.  Thus a physical driver is required to convert I2C
-> devices to platform devices.  So this stops being an MFD problem and
-> starts being a 'simple-i2c' issue. :)
+The SY8827N from Silergy Corp is a single output DC/DC converter. The
+voltage can be controlled via I2C.
 
-Yes, but this is still MFD specifc, because no other normal (in lack of
-a better word, think of one-function-devices) I2C device has sub-nodes.
-Thus my proposal for that simple-mfd-i2c driver. And keep in mind that
-this likely isn't specific to I2C but also to SPI (without having
-looked at it). So in theory that simple-mfd-i2c, could also register
-a spi_driver which then registers an SPI regmap and enumerates the
-children. So this is not only an I2C topic, but IMHO still MFD.
+Jisheng Zhang (2):
+  dt-bindings: regulator: add document bindings for sy8827n
+  regulator: add support for SY8827N regulator
 
--michael
+ .../bindings/regulator/silergy,sy8827n.yaml   |  45 +++++
+ drivers/regulator/Kconfig                     |   7 +
+ drivers/regulator/Makefile                    |   1 +
+ drivers/regulator/sy8827n.c                   | 185 ++++++++++++++++++
+ 4 files changed, 238 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/regulator/silergy,sy8827n.yaml
+ create mode 100644 drivers/regulator/sy8827n.c
+
+-- 
+2.27.0
+
