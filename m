@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 262AE212B1B
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 19:23:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24274212B1F
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 19:23:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727834AbgGBRWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 13:22:51 -0400
+        id S1727913AbgGBRXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 13:23:02 -0400
 Received: from mga02.intel.com ([134.134.136.20]:2609 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727072AbgGBRWt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 13:22:49 -0400
-IronPort-SDR: IDdxLJ8MkQDNg9QQaRBe+OJWIoxJ4dIwLaeHSH1AMaxvIa9YGVINRrUWghrH88K3QOrC4R+7Jh
- MvYyq93BGfVg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="135255661"
+        id S1727800AbgGBRWu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 13:22:50 -0400
+IronPort-SDR: 9ESxcAu6PMdU9k9NdENdzH9fUtio89sCC3u/SwoKOqQnm46n7w7VqNdYcD5P8zcA5GdxLras8w
+ jK9v3dGn5hdQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="135255667"
 X-IronPort-AV: E=Sophos;i="5.75,304,1589266800"; 
-   d="scan'208";a="135255661"
+   d="scan'208";a="135255667"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2020 10:22:48 -0700
-IronPort-SDR: mAjwL2tKlw+8j+DkGoWVLnlP8CIn6QoiOCfJJKopCnLuikTcm3HZo/+RhJsu9GbTHbE/l9bvp0
- GBUyMbj0BL5A==
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2020 10:22:50 -0700
+IronPort-SDR: RiTgTQk3fHWT/BkPJoX8V4mWcBRWNDSfzqBkheyiCJUMEM/DQDXDsXJnMWraYLhMAyu+pqaclt
+ yOroQqoYtMaw==
 X-IronPort-AV: E=Sophos;i="5.75,304,1589266800"; 
-   d="scan'208";a="356521253"
+   d="scan'208";a="356521255"
 Received: from nzbastur-mobl1.amr.corp.intel.com (HELO pbossart-mobl3.amr.corp.intel.com) ([10.255.231.182])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2020 10:22:47 -0700
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2020 10:22:48 -0700
 From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To:     alsa-devel@alsa-project.org
 Cc:     tiwai@suse.de, broonie@kernel.org,
@@ -39,9 +39,9 @@ Cc:     tiwai@suse.de, broonie@kernel.org,
         Takashi Iwai <tiwai@suse.com>,
         linuxppc-dev@lists.ozlabs.org (open list:FREESCALE SOC SOUND DRIVERS),
         linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 3/6] ASoC: fsl: fsl-asoc-card: fix kernel-doc
-Date:   Thu,  2 Jul 2020 12:22:24 -0500
-Message-Id: <20200702172227.164474-4-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 4/6] ASoC: fsl: fsl_spdif: fix kernel-doc
+Date:   Thu,  2 Jul 2020 12:22:25 -0500
+Message-Id: <20200702172227.164474-5-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200702172227.164474-1-pierre-louis.bossart@linux.intel.com>
 References: <20200702172227.164474-1-pierre-louis.bossart@linux.intel.com>
@@ -52,66 +52,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix W=1 warnings. Kernel-doc syntax was not properly used.
+Fix W=1 warnings. kernel-doc syntax was not followed and missing parameter
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/fsl/fsl-asoc-card.c | 21 +++++++++------------
- 1 file changed, 9 insertions(+), 12 deletions(-)
+ sound/soc/fsl/fsl_spdif.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
-index 57ea1b072326..91220b96e043 100644
---- a/sound/soc/fsl/fsl-asoc-card.c
-+++ b/sound/soc/fsl/fsl-asoc-card.c
-@@ -33,8 +33,7 @@
- #define DAI_FMT_BASE (SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF)
- 
- /**
-- * CODEC private data
-- *
-+ * struct codec_priv - CODEC private data
-  * @mclk_freq: Clock rate of MCLK
-  * @mclk_id: MCLK (or main clock) id for set_sysclk()
-  * @fll_id: FLL (or secordary clock) id for set_sysclk()
-@@ -48,11 +47,10 @@ struct codec_priv {
+diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
+index 5b2689ae63d4..9fb95c6ee7ba 100644
+--- a/sound/soc/fsl/fsl_spdif.c
++++ b/sound/soc/fsl/fsl_spdif.c
+@@ -81,8 +81,8 @@ struct spdif_mixer_control {
  };
  
  /**
-- * CPU private data
+- * fsl_spdif_priv: Freescale SPDIF private data
 - *
-- * @sysclk_freq[2]: SYSCLK rates for set_sysclk()
-- * @sysclk_dir[2]: SYSCLK directions for set_sysclk()
-- * @sysclk_id[2]: SYSCLK ids for set_sysclk()
-+ * struct cpu_priv - CPU private data
-+ * @sysclk_freq: SYSCLK rates for set_sysclk()
-+ * @sysclk_dir: SYSCLK directions for set_sysclk()
-+ * @sysclk_id: SYSCLK ids for set_sysclk()
-  * @slot_width: Slot width of each frame
-  *
-  * Note: [1] for tx and [0] for rx
-@@ -65,9 +63,8 @@ struct cpu_priv {
- };
- 
- /**
-- * Freescale Generic ASOC card private data
-- *
-- * @dai_link[3]: DAI link structure including normal one and DPCM link
-+ * struct fsl_asoc_card_priv - struct Freescale Generic ASOC card private data
-+ * @dai_link: DAI link structure including normal one and DPCM link
++ * struct fsl_spdif_priv - Freescale SPDIF private data
++ * @soc: SPDIF soc data
+  * @fsl_spdif_control: SPDIF control data
+  * @cpu_dai_drv: cpu dai driver
   * @pdev: platform device pointer
-  * @codec_priv: CODEC private data
-  * @cpu_priv: CPU private data
-@@ -94,8 +91,8 @@ struct fsl_asoc_card_priv {
- 	char name[32];
- };
- 
--/**
-- * This dapm route map exsits for DPCM link only.
-+/*
-+ * This dapm route map exits for DPCM link only.
-  * The other routes shall go through Device Tree.
-  *
-  * Note: keep all ASRC routes in the second half
+@@ -100,6 +100,7 @@ struct spdif_mixer_control {
+  * @spbaclk: SPBA clock (optional, depending on SoC design)
+  * @dma_params_tx: DMA parameters for transmit channel
+  * @dma_params_rx: DMA parameters for receive channel
++ * @regcache_srpc: regcache for SRPC
+  */
+ struct fsl_spdif_priv {
+ 	const struct fsl_spdif_soc_data *soc;
 -- 
 2.25.1
 
