@@ -2,178 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0986212E8F
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 23:14:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CA1B212E9E
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 23:17:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726039AbgGBVN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 17:13:58 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:18918 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725937AbgGBVN6 (ORCPT
+        id S1726236AbgGBVRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 17:17:03 -0400
+Received: from mail.windriver.com ([147.11.1.11]:51903 "EHLO
+        mail.windriver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725937AbgGBVRB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 17:13:58 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5efe4e090000>; Thu, 02 Jul 2020 14:13:45 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Thu, 02 Jul 2020 14:13:57 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Thu, 02 Jul 2020 14:13:57 -0700
-Received: from [172.20.40.54] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 2 Jul
- 2020 21:13:57 +0000
-Subject: Re: [git pull] drm for 5.8-rc1
-To:     Daniel Stone <daniel@fooishbar.org>
-CC:     "Kirill A. Shutemov" <kirill@shutemov.name>,
-        LKML <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-References: <CAPM=9txGww+omvateOTizZRV9_wLdAbq6uAz3DRa_S6bn1jQuQ@mail.gmail.com>
- <20200630230808.wj2xlt44vrszqfzx@box>
- <ef7816b4-72ee-9e0e-8cac-4d80d8343f9f@nvidia.com>
- <20200701075719.p7h5zypdtlhqxtgv@box> <20200701075902.hhmaskxtjsm4bcx7@box>
- <77e744b9-b5e2-9e9b-44c1-98584d2ae2f3@nvidia.com>
- <CAPj87rOrUHBZZR3cw+iqUMtZL1ZQyjd=RoM2yHt5oUeRO5uDTA@mail.gmail.com>
-From:   James Jones <jajones@nvidia.com>
-X-Nvconfidentiality: public
-Message-ID: <5ffa32db-4383-80f6-c0cf-a9bb12e729aa@nvidia.com>
-Date:   Thu, 2 Jul 2020 14:14:01 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Thu, 2 Jul 2020 17:17:01 -0400
+Received: from ALA-HCB.corp.ad.wrs.com (ala-hcb.corp.ad.wrs.com [147.11.189.41])
+        by mail.windriver.com (8.15.2/8.15.2) with ESMTPS id 062LGABj018020
+        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL);
+        Thu, 2 Jul 2020 14:16:10 -0700 (PDT)
+Received: from yow-pgortmak-d1.corp.ad.wrs.com (128.224.56.57) by
+ ALA-HCB.corp.ad.wrs.com (147.11.189.41) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 2 Jul 2020 14:15:57 -0700
+Received: by yow-pgortmak-d1.corp.ad.wrs.com (Postfix, from userid 1000)        id
+ 589E22E0BF2; Thu,  2 Jul 2020 17:15:57 -0400 (EDT)
+Date:   Thu, 2 Jul 2020 17:15:57 -0400
+From:   Paul Gortmaker <paul.gortmaker@windriver.com>
+To:     Dave Jones <davej@codemonkey.org.uk>,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        <peterz@infradead.org>, <mgorman@techsingularity.net>,
+        <mingo@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>
+CC:     Michal Kubecek <mkubecek@suse.cz>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: weird loadavg on idle machine post 5.7
+Message-ID: <20200702211555.GA27819@windriver.com>
+References: <20200702171548.GA11813@codemonkey.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <CAPj87rOrUHBZZR3cw+iqUMtZL1ZQyjd=RoM2yHt5oUeRO5uDTA@mail.gmail.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1593724425; bh=zRMa3tFNrvFTLZm34tiIHjXWilkhurLRyVAaSrk7gpA=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=I2TRX/YhTsv5dRWqwj55ta7jfuKrhC1JoW5WY9R1KTJwKq/Z7wvNDiwSSdxmCW/6I
-         5LB9AYm0riLqoyvcjb9lyuzYVFWeB3TxVLYIXgJVuVgQPlcm/YwnBVAiP1I5cfTVpj
-         SX8p0hRHKK+W25AcxLKruGCZme1pgqOoiwZokoaYtf0bD/H+iqgXrMVLmPxgRtFqKQ
-         FheB1hMO/Z3tykZcV2X2AxnxMJIv8bAowB0BaL3/L7ATH8VjNsWAn6V8OJSsBbk73a
-         SN1eOsGGPOZZ0U39bdFcp3fsXtvow3dSzeDgbtJ+lvc3G9AAsafW8pUDqRgTWuO9v1
-         f8Jhj0cECSkIw==
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20200702171548.GA11813@codemonkey.org.uk>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/2/20 1:22 AM, Daniel Stone wrote:
-> Hi,
-> 
-> On Wed, 1 Jul 2020 at 20:45, James Jones <jajones@nvidia.com> wrote:
->> OK, I think I see what's going on.  In the Xorg modesetting driver, the
->> logic is basically:
->>
->> if (gbm_has_modifiers && DRM_CAP_ADDFB2_MODIFIERS != 0) {
->>     drmModeAddFB2WithModifiers(..., gbm_bo_get_modifier(bo->gbm));
->> } else {
->>     drmModeAddFB(...);
->> }
-> 
-> I read this thread expecting to explain the correct behaviour we
-> implement in Weston and how modesetting needs to be fixed, but ...
-> that seems OK to me? As long as `gbm_has_modifiers` is a proxy for 'we
-> used gbm_(bo|surface)_create_with_modifiers to allocate the buffer'.
+[weird loadavg on idle machine post 5.7] On 02/07/2020 (Thu 13:15) Dave Jones wrote:
 
-Yes, the hazards of reporting findings before verifying.  I now see 
-modesetting does query the DRM-KMS modifiers and attempt to allocate 
-with them if it found any.  However, I still see a lot of ways things 
-can go wrong, but I'm not going to share my speculation again until I've 
-actually verified it, which is taking a frustratingly long time.  The 
-modesetting driver is not my friend right now.
+> When I upgraded my firewall to 5.7-rc2 I noticed that on a mostly
+> idle machine (that usually sees loadavg hover in the 0.xx range)
+> that it was consistently above 1.00 even when there was nothing running.
+> All that perf showed was the kernel was spending time in the idle loop
+> (and running perf).
+> 
+> For the first hour or so after boot, everything seems fine, but over
+> time loadavg creeps up, and once it's established a new baseline, it
+> never seems to ever drop below that again.
+> 
+> One morning I woke up to find loadavg at '7.xx', after almost as many
+> hours of uptime, which makes me wonder if perhaps this is triggered
+> by something in cron.  I have a bunch of scripts that fire off
+> every hour that involve thousands of shortlived runs of iptables/ipset,
+> but running them manually didn't seem to automatically trigger the bug.
+> 
+> Given it took a few hours of runtime to confirm good/bad, bisecting this
+> took the last two weeks. I did it four different times, the first
 
->> There's no attempt to verify the DRM-KMS device supports the modifier,
->> but then, why would there be?  GBM presumably chose a supported modifier
->> at buffer creation time, and we don't know which plane the FB is going
->> to be used with yet.  GBM doesn't actually ask the kernel which
->> modifiers it supports here either though.
-> 
-> Right, it doesn't ask, because userspace tells it which modifiers to
-> use. The correct behaviour is to take the list from the KMS
-> `IN_FORMATS` property and then pass that to
-> `gbm_(bo|surface)_create_with_modifiers`; GBM must then select from
-> that list and only that list. If that call does not succeed and Xorg
-> falls back to `gbm_surface_create`, then it must not call
-> `gbm_bo_get_modifier` - so that would be a modesetting bug. If that
-> call does succeed and `gbm_bo_get_modifier` subsequently reports a
-> modifier which was not in the list, that's a Mesa driver bug.
-> 
->> It just goes into Mesa via
->> DRI and reports the modifier (unpatched) Mesa chose on its own.  Mesa
->> just hard-codes the modifiers in its driver backends since its thinking
->> in terms of a device's 3D engine, not display.  In theory, Mesa's DRI
->> drivers could query KMS for supported modifiers if allocating from GBM
->> using the non-modifiers path and the SCANOUT flag is set (perhaps some
->> drivers do this or its equivalent?  Haven't checked.), but that seems
->> pretty gnarly and doesn't fix the modifier-based GBM allocation path
->> AFAIK.  Bit of a mess.
-> 
-> Two options for GBM users:
-> * call gbm_*_create_with_modifiers, it succeeds, call
-> gbm_bo_get_modifier, pass modifier into AddFB
-> * call gbm_*_create (without modifiers), it succeeds, do not call
-> gbm_bo_get_modifier, do not pass a modifier into AddFB
-> 
-> Anything else is a bug in the user. Note that falling back from 1 to 2
-> is fine: if `gbm_*_create_with_modifiers()` fails, you can fall back
-> to the non-modifier path, provided you don't later try to get a
-> modifier back out.
->
->> For a quick userspace fix that could probably be pushed out everywhere
->> (Only affects Xorg server 1.20+ AFAIK), just retrying
->> drmModeAddFB2WithModifiers() without the DRM_MODE_FB_MODIFIERS flag on
->> failure should be sufficient.
-> 
-> This would break other drivers.
+I've seen pretty much the same thing - I was helping paulmck test
+rcu-dev for something hopefully unrelated, when I 1st saw it, and
+assumed it came in with the sched-core merge and was using one under
+that as "good" to attempt bisect.
 
-I think this could be done in a way that wouldn't, though it wouldn't be 
-quite as simple.  Let's see what the true root cause is first though.
+> producing bogus results from over-eager 'good', but the last two runs
 
->> Still need to verify as I'm having
->> trouble wrangling my Xorg build at the moment and I'm pressed for time.
->> A more complete fix would be quite involved, as modesetting isn't really
->> properly plumbed to validate GBM's modifiers against KMS planes, and it
->> doesn't seem like GBM/Mesa/DRI should be responsible for this as noted
->> above given the general modifier workflow/design.
->>
->> Most importantly, options I've considered for fixing from the kernel side:
->>
->> -Accept "legacy" modifiers in nouveau in addition to the new modifiers,
->> though avoid reporting them to userspace as supported to avoid further
->> proliferation.  This is pretty straightforward.  I'll need to modify
->> both the AddFB2 handler (nouveau_validate_decode_mod) and the mode set
->> plane validation logic (nv50_plane_format_mod_supported), but it should
->> end up just being a few lines of code.
+Yeah - it sucks.  I was using Paul's TREE03 rcu-torture for loading and
+even after a two hour test I'd still get "false good" results.  Only
+after 7h was I quite confident that good was really good.
+
+> both implicated this commit:
 > 
-> I do think that they should also be reported to userspace if they are
-> accepted. Other users can and do look at the modifier list to see if
-> the buffer is acceptable for a given plane, so the consistency is good
-> here. Of course, in Mesa you would want to prioritise the new
-> modifiers over the legacy ones, and not allocate or return the legacy
-> ones unless that was all you were asked for. This would involve
-> tracking the used modifier explicitly through Mesa, rather than
-> throwing it away at alloc time and then later divining it from the
-> tiling mode.
-
-Reporting them as supported is equivalent to reporting support for a 
-memory layout the chips don't actually support (It corresponds to a 
-valid layout on Tegra chips, but not on discrete NV chips).  This is 
-what the new modifiers are trying to avoid in the first place: Implying 
-buffers can be shared between these Tegra chips and discrete NV GPUs.
-
-Thanks,
--James
-
-> Cheers,
-> Daniel
+> commit c6e7bd7afaeb3af55ffac122828035f1c01d1d7b (refs/bisect/bad)
+> Author: Peter Zijlstra <peterz@infradead.org>
+> Date:   Sun May 24 21:29:55 2020 +0100
 > 
+>     sched/core: Optimize ttwu() spinning on p->on_cpu
+
+I was down to 10 commits roughly above and below this guy before hearing
+you were working the same problem.
+
+I just got this guy to reveal a false load after a 2h test as well.
+I want to let the one underneath soak overnight just to also confirm it
+is "good" - so that is pending.
+
+What I can add, is that it is like we are "leaking" an instance into
+calc_load_tasks -- which isn't anything new -- see when tglx fixed it
+before in d60585c5766.  Unfortunate we don't have some low overhead leak
+checks on that... ?
+
+Anyway, if I "fix" the leak, then everything seems back to normal:
+
+   (gdb) p calc_load_tasks
+   $2 = {counter = 1}
+   (gdb) set variable calc_load_tasks = { 0 }
+   (gdb) p calc_load_tasks
+   $4 = {counter = 0}
+   (gdb) continue
+   Continuing.
+   
+   [ ... watching decay on resumed target ....]
+   
+    10:13:14 up  9:54,  4 users,  load average: 0.92, 0.98, 1.15
+    10:13:54 up  9:55,  4 users,  load average: 0.47, 0.86, 1.10
+    10:15:17 up  9:56,  4 users,  load average: 0.12, 0.65, 1.00
+    10:19:20 up 10:00,  4 users,  load average: 0.00, 0.28, 0.76
+    10:26:07 up 10:07,  4 users,  load average: 0.00, 0.06, 0.48
+    10:32:48 up 10:14,  4 users,  load average: 0.00, 0.00, 0.29
+
+Obviously that isn't a fix, but it shows it is an accounting thing.
+I've also used gdb to snoop all the cfs->avg fields and they look as
+expected for a completely idle machine.  Nothing hiding in avg_rt or
+avg_dl either.
+
+>     
+>     Both Rik and Mel reported seeing ttwu() spend significant time on:
+>     
+>       smp_cond_load_acquire(&p->on_cpu, !VAL);
+>     
+>     Attempt to avoid this by queueing the wakeup on the CPU that owns the
+>     p->on_cpu value. This will then allow the ttwu() to complete without
+>     further waiting.
+>     
+>     Since we run schedule() with interrupts disabled, the IPI is
+>     guaranteed to happen after p->on_cpu is cleared, this is what makes it
+>     safe to queue early.
+>     
+>     Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+>     Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+>     Signed-off-by: Ingo Molnar <mingo@kernel.org>
+>     Cc: Jirka Hladky <jhladky@redhat.com>
+>     Cc: Vincent Guittot <vincent.guittot@linaro.org>
+>     Cc: valentin.schneider@arm.com
+>     Cc: Hillf Danton <hdanton@sina.com>
+>     Cc: Rik van Riel <riel@surriel.com>
+>     Link: https://lore.kernel.org/r/20200524202956.27665-2-mgorman@techsingularity.net
+> 
+> Unfortunatly it doesn't revert cleanly on top of rc3 so I haven't
+> confirmed 100% that it's the cause yet, but the two separate bisects
+> seem promising.
+
+I've not tried the revert (yet) - but Kyle saw me boring people on
+#kernel with the details of bisecting this and gave me the heads-up you
+were looking at it too (thanks Kyle!).   So I figured I'd better add
+what I'd seen so far.
+
+I'm testing with what is largely a defconfig, plus KVM_INTEL (needed for
+paulmck TREE03 rcu-torture), plus I enabled KGDB and DEBUG_INFO after a
+while so I could poke and prod - but was reproducing it before that.
+
+For completeness, the test was:
+
+  tools/testing/selftests/rcutorture/bin/kvm.sh --cpus 24 --duration 120 \
+	--configs TREE03 --trust-make
+
+...on a 24 core 2013 vintage xeon-v2 COTS box.   As above, the 120m
+seemed to give between 60-75% confidence on not getting a false good.
+
+Anyway - so that is all I know so far...
+
+Paul.
+--
+
+> 
+> I don't see any obvious correlation between what's changing there and
+> the symtoms (other than "scheduler magic") but maybe those closer to
+> this have ideas what could be going awry ?
+> 
+> 	Dave
