@@ -2,169 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D613E212E8D
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 23:10:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16EA9212E83
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 23:09:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726203AbgGBVKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 17:10:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53026 "EHLO
+        id S1726082AbgGBVJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 17:09:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725954AbgGBVKl (ORCPT
+        with ESMTP id S1725954AbgGBVJo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 17:10:41 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC4CEC08C5C1;
-        Thu,  2 Jul 2020 14:10:40 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id dp18so31434889ejc.8;
-        Thu, 02 Jul 2020 14:10:40 -0700 (PDT)
+        Thu, 2 Jul 2020 17:09:44 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CD8FC08C5C1;
+        Thu,  2 Jul 2020 14:09:44 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id e15so25464267edr.2;
+        Thu, 02 Jul 2020 14:09:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=googlemail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=1BedfZLLtUv8+jct9K4ydZAXp2NUQdx/2FyFkLNGA7s=;
-        b=neOCc8Na9y+e/dxihMt1n/W5sPpq0Xa2v/yiLGXRoJpsLIgmilxcjiubzVjRhDZ2i2
-         WJMolOqMMfnKwg+XXde8AV/uE5qIjeXvL/tTeRkB053knUpEVbBSJu2bb9mbFLkCVX+z
-         Kf0OjPMel/Xmx54HLfdkaPb10ajbyZSz8H/J5l9Wdwxoj9Iix3OZl5Onye/utImcbrOx
-         lU42IY+A6/UnUf0WrXbGGZpI61RUDFaFAc9QWDhrC6+kEkLGBVOMeNYeCzKQSX1FifAy
-         xw20JrfCt39DvQ1o1GZG8vLy7BjeP3fxld8YO5uEKjuDeDJsdw1fcW49WOlaE+qvNNeE
-         fFaA==
+        h=message-id:subject:from:reply-to:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=EkunRhJM+IkygFCZmaALMwwKbp/kSgWlsm+guHw4JbU=;
+        b=dOC6J1VcHKL5h0ZDOdlDfP/efShY2nX4Vy+8HFAKynlK3ugprnrqloghR9FDWGiORY
+         A43Ts1yJWRvMTyx0BXYPG4XiGCMToub9kNfstS3LXLqKCBm/JRxgeGJJJ7wlzUSoSY5/
+         PpP4CGZaM8HNXIsQrJF3CJCqPqwt2hyG+CDu5oWJ0uFXPkfC8mjF1uJeXtOzLqo+wUzQ
+         yBxbIye8KQ7wYm4EqiOnZfP+2R2pv56lkFlt18tQgzbPOGJr+5P6YM7e70+scy3+q0mI
+         8VTmx5oUpPRmo/tVjZhYbwufG2hE8HH6EcJb3uZ1hsD3S4HHvw0/PIx8DzISMUYIUtsT
+         Unag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=1BedfZLLtUv8+jct9K4ydZAXp2NUQdx/2FyFkLNGA7s=;
-        b=MT2yM3MMOHvPmZ347SRd4eOAOd2AF73mifQxyXGK5I4Benjonvf+8sVFq02DLLZskK
-         bJytsC3pmZnBH3VRwlusb7gKS8ahGepE9GchDzp496j8DLSNr7ETXYipJVsEy3PSLl57
-         G+iCxS4iTxigjG/3OJg8U/UbGaQBKOsYCerzGqb1xxpAyXUw0E/Fl8EM5/ym2jZA+JCr
-         fpX28AdZcGc2YoCCoXvJF0y8UIWUAeJybLvOTnEM3u9BZXfFnFJopJiCnN7c9H/2vqSa
-         cxuEhUjalHn8SKPv2JY6HpFx8z7GnydUFZZNRlzhXIoQlHsyr9vX2QG5Pw4IDlqDikYG
-         XY0A==
-X-Gm-Message-State: AOAM532oEMWln4uidN3jOgmYxxA0hfyIzYSj+j7bpBFNe9raMMC3c59/
-        9gj/w7pz8A3Dyy6bxVkiiVE=
-X-Google-Smtp-Source: ABdhPJzcFVv+ZyTEeMYFa3T6ppFANThAYYmYUoxagvBjbEslqdeHSaQvfCWeL72bMnXGsLrbsKFC7g==
-X-Received: by 2002:a17:906:aac1:: with SMTP id kt1mr30856158ejb.408.1593724239598;
-        Thu, 02 Jul 2020 14:10:39 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:8070:bb9:bc00::fc])
-        by smtp.googlemail.com with ESMTPSA id x19sm10176353eds.43.2020.07.02.14.10.38
+        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc:date
+         :in-reply-to:references:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=EkunRhJM+IkygFCZmaALMwwKbp/kSgWlsm+guHw4JbU=;
+        b=D+6seRdzUspY9H2uWAeOPy+BTL3tgDaidx1Ew8xIdUo4aA3Pb7NGO14rwNVrXDh55f
+         UDZTvg8HQKBSUOt55hBIzrqD+xUR1mi5B0X/25TLWJvwG55+4oCnyROIn5mbAzVR8D6s
+         fL+EmePuFfGB7sssidbh6sYfDDq0VmT/yjkmnhA0cWS/Kpt7fDz8tO8MVZunyPCksOx8
+         zhEm1rb739qZ5NAoL3EZGKi4llH24045ZNPCsmebXvtHszgef974Emha1Cy9WdJRIjpc
+         bSnLfkSvI20zlVg/QDBYXT0gW1Uwc6g/rdtJ7HftLvjcFALoNG6jX2g6m1vW7QCEPEfo
+         x8Gg==
+X-Gm-Message-State: AOAM531uiMlxkEWblubxrNQjeatiWwFI6Mvxge8jThWXcQXZmgDlxSnL
+        lUEKLk4B3ke/f8hkGf50GsR9iFLd
+X-Google-Smtp-Source: ABdhPJyeWSXeYCuVNmTy9igyqXsTXNocb94mp7qBR8VLY897EGH+9Swx9Y4YSmQBYLvePnPP9W8czw==
+X-Received: by 2002:a50:b0a1:: with SMTP id j30mr37051783edd.387.1593724182913;
+        Thu, 02 Jul 2020 14:09:42 -0700 (PDT)
+Received: from ?IPv6:2a02:8070:bb9:bc00::fc? ([2a02:8070:bb9:bc00::fc])
+        by smtp.gmail.com with ESMTPSA id p20sm7663314ejy.107.2020.07.02.14.09.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Jul 2020 14:10:39 -0700 (PDT)
+        Thu, 02 Jul 2020 14:09:42 -0700 (PDT)
+Message-ID: <7ee7829c08f45f5b6907877e0f3b11320c178867.camel@googlemail.com>
+Subject: Re: [PATCH 1/2] regulator: fan53880: Add initial support
 From:   Christoph Fritz <chf.fritz@googlemail.com>
+Reply-To: chf.fritz@googlemail.com
 To:     Mark Brown <broonie@kernel.org>
 Cc:     Liam Girdwood <lgirdwood@gmail.com>,
         Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org
-Subject: [PATCH v2 2/2] dt-bindings: regulator: Document bindings for fan53880
-Date:   Thu,  2 Jul 2020 23:08:46 +0200
-Message-Id: <20200702210846.31659-3-chf.fritz@googlemail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200702210846.31659-1-chf.fritz@googlemail.com>
-References: <20200702210846.31659-1-chf.fritz@googlemail.com>
+Date:   Thu, 02 Jul 2020 23:09:41 +0200
+In-Reply-To: <20200701180913.GA22871@sirena.org.uk>
+References: <20200630185203.22882-1-chf.fritz@googlemail.com>
+         <20200630185203.22882-2-chf.fritz@googlemail.com>
+         <20200701180913.GA22871@sirena.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add device tree binding information for fan53880 regulator driver.
+On Wed, 2020-07-01 at 19:09 +0100, Mark Brown wrote:
+> /mnt/kernel/drivers/regulator/fan53880.c:63:2: note: in expansion of
+> macro 'FAN53880_LDO'
+>   FAN53880_LDO(1, "VIN12", 2800000),
+>   ^~~~~~~~~~~~
+> /mnt/kernel/include/linux/regulator/driver.h:47:2: error: field name
+> not in record or union initializer
+>   .min_sel = _min_sel,     \
+>   ^
+> 
+> most likely due to the conversion introduced in 60ab7f4153b6af46
+> (regulator: use linear_ranges helper).  Please rebase against current
+> code.
 
-Signed-off-by: Christoph Fritz <chf.fritz@googlemail.com>
----
- .../bindings/regulator/onnn,fan53880.yaml     | 85 +++++++++++++++++++
- 1 file changed, 85 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/regulator/onnn,fan53880.yaml
+Thanks for the hint, yeah that's it. After picking up a recent linux-
+next and adapting it works on current too.
 
-diff --git a/Documentation/devicetree/bindings/regulator/onnn,fan53880.yaml b/Documentation/devicetree/bindings/regulator/onnn,fan53880.yaml
-new file mode 100644
-index 000000000000..eb61e04ef852
---- /dev/null
-+++ b/Documentation/devicetree/bindings/regulator/onnn,fan53880.yaml
-@@ -0,0 +1,85 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/regulator/onnn,fan53880.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Onsemi FAN53880 PMIC
-+
-+maintainers:
-+  - Christoph Fritz <chf.fritz@googlemail.com>
-+
-+description: |
-+  The FAN53880 is an I2C porgrammable power management IC (PMIC)
-+  that contains a BUCK (step-down converter), four low dropouts (LDO)
-+  and one BOOST (step-up converter) output. It is designed for mobile
-+  power applications.
-+
-+properties:
-+  $nodename:
-+    pattern: "pmic@[0-9a-f]{1,2}"
-+  compatible:
-+    enum:
-+      - onnn,fan53880
-+
-+  reg:
-+    maxItems: 1
-+
-+  VIN12-supply:
-+    description: Input supply phandle(s) for LDO1 and LDO2
-+
-+  VIN3-supply:
-+    description: Input supply phandle(s) for LDO3
-+
-+  VIN4-supply:
-+    description: Input supply phandle(s) for LDO4
-+
-+  PVIN-supply:
-+    description: Input supply phandle(s) for BUCK and BOOST
-+
-+  regulators:
-+    type: object
-+    $ref: regulator.yaml#
-+    description: |
-+      list of regulators provided by this controller, must be named
-+      after their hardware counterparts LDO[1-4], BUCK and BOOST
-+
-+    patternProperties:
-+      "^LDO[1-4]$":
-+        type: object
-+        $ref: regulator.yaml#
-+
-+      "^BUCK|BOOST$":
-+        type: object
-+        $ref: regulator.yaml#
-+
-+    additionalProperties: false
-+
-+required:
-+  - compatible
-+  - reg
-+  - regulators
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        pmic@35 {
-+            compatible = "onnn,fan53880";
-+            reg = <0x35>;
-+
-+            PVIN-supply = <&fixreg_example_vcc>;
-+
-+            regulators {
-+                BUCK {
-+                    regulator-min-microvolt = <1200000>;
-+                    regulator-max-microvolt = <1200000>;
-+                };
-+            };
-+       };
-+     };
-+...
--- 
-2.20.1
+Please let me respin the patches in a v2.
 
