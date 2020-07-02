@@ -2,146 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD932212FFD
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 01:25:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53F2B212FF9
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 01:24:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726374AbgGBXZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 19:25:08 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:42973 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726298AbgGBXZG (ORCPT
+        id S1726237AbgGBXYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 19:24:13 -0400
+Received: from esa4.hc3370-68.iphmx.com ([216.71.155.144]:44850 "EHLO
+        esa4.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726017AbgGBXYM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 19:25:06 -0400
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200702232502epoutp016f547bb79bed5b44d3d0f1bf3bd6ae4b~eExXMdWMp2434524345epoutp01f
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 23:25:02 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200702232502epoutp016f547bb79bed5b44d3d0f1bf3bd6ae4b~eExXMdWMp2434524345epoutp01f
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1593732302;
-        bh=Ef6z+BYrVNvEtpfdpNOMBycjh5kFbQ9tKidtwH6Adw4=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=BmP2SKNQJMSPbGlgd5vyS1MrmR1dGyuEo0Sfrnk0LNu4AaKD/PcET8ngkbweqE9XO
-         tQRgAP0J5CuVD7f5Qq/KimNGzO4nhr+44HP+Ajr/7jGzwQxY4Xs36A5S1kmuYuKcaT
-         OtGAunpC1qSYjvQCHhPXH5AePxQGpBPJjFKKwUJE=
-Received: from epcpadp1 (unknown [182.195.40.11]) by epcas1p1.samsung.com
-        (KnoxPortal) with ESMTP id
-        20200702232502epcas1p1b2b6e60309b0a556c674d45a8cf975bc~eExWxg31j1764017640epcas1p1t;
-        Thu,  2 Jul 2020 23:25:02 +0000 (GMT)
-Mime-Version: 1.0
-Subject: [PATCH v5 1/5] scsi: ufs: Add UFS feature related parameter
-Reply-To: daejun7.park@samsung.com
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Daejun Park <daejun7.park@samsung.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        Sang-yoon Oh <sangyoon.oh@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Adel Choi <adel.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <963815509.21593732182531.JavaMail.epsvc@epcpadp2>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <231786897.01593732302018.JavaMail.epsvc@epcpadp1>
-Date:   Fri, 03 Jul 2020 08:23:54 +0900
-X-CMS-MailID: 20200702232354epcms2p21b1f24b5fbe1d5a0926422c11021106b
-Content-Transfer-Encoding: 7bit
+        Thu, 2 Jul 2020 19:24:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=citrix.com; s=securemail; t=1593732252;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=DD/40Qz8qZ78c4jky0R8eJwe8SV5DGFlqxwDiyq60pw=;
+  b=dSkUvgeHtKGv8ckYivVY5J7d7/bFXIX60d6R2n8P14Cg/5guSF2fcJIN
+   ayhG79qAW3QIAAHZ46z3oHU0wdFYBLZQwEuIFeeu7/nNwGgFDU1nvzrlu
+   PiXF94l4++psFputDy+FfWtXcocL4FwJMNRallnLRMYV+uJ5qr5v939pE
+   o=;
+Authentication-Results: esa4.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
+IronPort-SDR: EHdLL4zhLW9bpSAxAYvRa35rsjy9utSWkFNwQ8GKYJ+LgLEnAwpznR4lbdlktDiJaHK1o4M5lZ
+ S9HVefjH7PkelGMqcFH6RJL0JqHfpf9IcxUSI8VAQovcbJluYYMeF1D8rqexJXsykDNol2W6J9
+ zkUhu+rXVjkd5mxogyU8jPVFs0w0NNcM6Mrh4UdjXGLcHhpaa7BnEGf9ra8xsTjZKldT9NTuNF
+ qTi/2UdOord7K58h1mQXpcGPw8obNGNY7+e1hE0eYiOjt5TnUJpkspi3E+mRNaXVAAtuQJ4Dr7
+ fRM=
+X-SBRS: 2.7
+X-MesageID: 22346397
+X-Ironport-Server: esa4.hc3370-68.iphmx.com
+X-Remote-IP: 162.221.158.21
+X-Policy: $RELAYED
+X-IronPort-AV: E=Sophos;i="5.75,305,1589256000"; 
+   d="scan'208";a="22346397"
+Subject: Re: [PATCH v2 1/4] x86/xen: remove 32-bit Xen PV guest support
+To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        <xen-devel@lists.xenproject.org>, <x86@kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Stefano Stabellini <sstabellini@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+References: <20200701110650.16172-1-jgross@suse.com>
+ <20200701110650.16172-2-jgross@suse.com>
+ <6d0b517a-6c53-61d3-117b-40e33e013037@oracle.com>
+From:   Andrew Cooper <andrew.cooper3@citrix.com>
+Message-ID: <9f8cc440-82f0-d6d8-945d-19c48f69a6b0@citrix.com>
+Date:   Fri, 3 Jul 2020 00:24:06 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
+MIME-Version: 1.0
+In-Reply-To: <6d0b517a-6c53-61d3-117b-40e33e013037@oracle.com>
 Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Hop-Count: 3
-X-CMS-RootMailID: 20200702231936epcms2p81557f83504ef1c1e81bfc81a0143a5b4
-References: <963815509.21593732182531.JavaMail.epsvc@epcpadp2>
-        <CGME20200702231936epcms2p81557f83504ef1c1e81bfc81a0143a5b4@epcms2p2>
+Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
+X-ClientProxiedBy: AMSPEX02CAS02.citrite.net (10.69.22.113) To
+ AMSPEX02CL02.citrite.net (10.69.22.126)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a patch for parameters to be used for UFS features layer and HPB
-module.
+On 02/07/2020 23:59, Boris Ostrovsky wrote:
+> On 7/1/20 7:06 AM, Juergen Gross wrote:
+>>  
+>> -#ifdef CONFIG_X86_PAE
+>> -static void xen_set_pte_atomic(pte_t *ptep, pte_t pte)
+>> -{
+>> -	trace_xen_mmu_set_pte_atomic(ptep, pte);
+>> -	__xen_set_pte(ptep, pte);
+>
+> Probably not for this series but I wonder whether __xen_set_pte() should
+> continue to use hypercall now that we are 64-bit only.
 
-Signed-off-by: Daejun Park <daejun7.park@samsung.com>
----
- drivers/scsi/ufs/ufs.h | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+The hypercall path is a SYSCALL (and SYSRET out).
 
-diff --git a/drivers/scsi/ufs/ufs.h b/drivers/scsi/ufs/ufs.h
-index f8ab16f30fdc..ae557b8d3eba 100644
---- a/drivers/scsi/ufs/ufs.h
-+++ b/drivers/scsi/ufs/ufs.h
-@@ -122,6 +122,7 @@ enum flag_idn {
- 	QUERY_FLAG_IDN_WB_EN                            = 0x0E,
- 	QUERY_FLAG_IDN_WB_BUFF_FLUSH_EN                 = 0x0F,
- 	QUERY_FLAG_IDN_WB_BUFF_FLUSH_DURING_HIBERN8     = 0x10,
-+	QUERY_FLAG_IDN_HPB_RESET                        = 0x11,
- };
- 
- /* Attribute idn for Query requests */
-@@ -195,6 +196,9 @@ enum unit_desc_param {
- 	UNIT_DESC_PARAM_PHY_MEM_RSRC_CNT	= 0x18,
- 	UNIT_DESC_PARAM_CTX_CAPABILITIES	= 0x20,
- 	UNIT_DESC_PARAM_LARGE_UNIT_SIZE_M1	= 0x22,
-+	UNIT_DESC_HPB_LU_MAX_ACTIVE_REGIONS	= 0x23,
-+	UNIT_DESC_HPB_LU_PIN_REGION_START_OFFSET	= 0x25,
-+	UNIT_DESC_HPB_LU_NUM_PIN_REGIONS	= 0x27,
- 	UNIT_DESC_PARAM_WB_BUF_ALLOC_UNITS	= 0x29,
- };
- 
-@@ -235,6 +239,8 @@ enum device_desc_param {
- 	DEVICE_DESC_PARAM_PSA_MAX_DATA		= 0x25,
- 	DEVICE_DESC_PARAM_PSA_TMT		= 0x29,
- 	DEVICE_DESC_PARAM_PRDCT_REV		= 0x2A,
-+	DEVICE_DESC_PARAM_HPB_VER		= 0x40,
-+	DEVICE_DESC_PARAM_HPB_CONTROL		= 0x42,
- 	DEVICE_DESC_PARAM_EXT_UFS_FEATURE_SUP	= 0x4F,
- 	DEVICE_DESC_PARAM_WB_PRESRV_USRSPC_EN	= 0x53,
- 	DEVICE_DESC_PARAM_WB_TYPE		= 0x54,
-@@ -283,6 +289,10 @@ enum geometry_desc_param {
- 	GEOMETRY_DESC_PARAM_ENM4_MAX_NUM_UNITS	= 0x3E,
- 	GEOMETRY_DESC_PARAM_ENM4_CAP_ADJ_FCTR	= 0x42,
- 	GEOMETRY_DESC_PARAM_OPT_LOG_BLK_SIZE	= 0x44,
-+	GEOMETRY_DESC_HPB_REGION_SIZE		= 0x48,
-+	GEOMETRY_DESC_HPB_NUMBER_LU		= 0x49,
-+	GEOMETRY_DESC_HPB_SUBREGION_SIZE	= 0x4A,
-+	GEOMETRY_DESC_HPB_DEVICE_MAX_ACTIVE_REGIONS	= 0x4B,
- 	GEOMETRY_DESC_PARAM_WB_MAX_ALLOC_UNITS	= 0x4F,
- 	GEOMETRY_DESC_PARAM_WB_MAX_WB_LUNS	= 0x53,
- 	GEOMETRY_DESC_PARAM_WB_BUFF_CAP_ADJ	= 0x54,
-@@ -327,6 +337,7 @@ enum {
- 
- /* Possible values for dExtendedUFSFeaturesSupport */
- enum {
-+	UFS_DEV_HPB_SUPPORT		= BIT(7),
- 	UFS_DEV_WRITE_BOOSTER_SUP	= BIT(8),
- };
- 
-@@ -537,6 +548,7 @@ struct ufs_dev_info {
- 	u8 *model;
- 	u16 wspecversion;
- 	u32 clk_gating_wait_us;
-+	u8 b_ufs_feature_sup;
- 	u32 d_ext_ufs_feature_sup;
- 	u8 b_wb_buffer_type;
- 	u32 d_wb_alloc_units;
--- 
-2.17.1
+The "writeable" PTE path is a #PF, followed by an x86 instruction
+emulation, which then reaches the same logic as the hypercall path (and
+an IRET out).
 
-
+~Andrew
