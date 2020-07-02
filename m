@@ -2,103 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1568212697
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 16:46:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A26202126AF
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 16:48:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729829AbgGBOqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 10:46:15 -0400
-Received: from mail-eopbgr40135.outbound.protection.outlook.com ([40.107.4.135]:53688
-        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728179AbgGBOqP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 10:46:15 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nOI2in0eqNkP9F7qWd0mOCi8og1JuFwTRXhFmNVnJsmG+43/3fVGn9NFHlye1O9nSYQuf58ghaGsYNrv+75iJVZWK4RVc3/H9e9jqNZ+NNQs2sy5B8R0iCDXvcOe2AJ6dSNP8s9BumDxpFABHfvaukXNddjaBdKNmlO/IUvuwO2CZH2w3BK4tQyRsnGkeuAIs5UQ4Hgms8WkkuIFlicDh0zP9xTNuasPdJ5bVysZgy4qgwSlFOOoQnnLtVkgIo6jdmSLNzD3U9jPfZWZmiea35M7T6soGA9E0CWyxKsJJCB9zEpqUMwtorWgxK3CbRkfRIeec6C003RXJVwsGTB3Rg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3Q4ksBxAshyL4W2gLyNVZcRzdT3bGO8r0WZJ/eFW3vI=;
- b=hjhSV/mGRlekoG07Z/1IxjmJcpiUq3FNJ9d+/+SJ7LLI68o66qe1wbCeu1Z5i33aC+LvIx3QMW7HeS1qa6f0i/1AA4Gw8d1Ut2VKr1/XCTV/vqahzC77CXAmJxoiLFSRtrv6LmXRa6QPSh8QKrPG4Ggmce8ZeqtnDlfFHzeTfGX9ymjxhEetfa1UeLlTEiIWgOqMPARdFGTKA1vNzf44URcAe6SA0KJf65c4hOA3p4yWIMUt40xKgkBAto+3rwXWus/iUf58ipyTNu6CfY/73yhIxiQiHxIEZLVMnJtjWL0ZL1W7jvaD9N8haowvz8BEkFuxgdrwj7LaTOjRXu6KJw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=kontron.de; dmarc=pass action=none header.from=kontron.de;
- dkim=pass header.d=kontron.de; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mysnt.onmicrosoft.com;
- s=selector2-mysnt-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3Q4ksBxAshyL4W2gLyNVZcRzdT3bGO8r0WZJ/eFW3vI=;
- b=VnE9cToqd0e73SRAhwreyElTm8u83mf0yo9o7AUiOfQHINE12VcUfSu/nsyloOtKp8L+hqQqOaEe+fcOFbP2qx/imN8xtWhF6dfbK91skd6yzZF5mh2wAh4QY1sgJr39FUa6jJJXNVKHcztjGXF7XEl/NJy+sxK5Z4ViILm5pLI=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=kontron.de;
-Received: from DB7PR10MB2490.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:50::12)
- by DB8PR10MB3276.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:11a::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.22; Thu, 2 Jul
- 2020 14:46:11 +0000
-Received: from DB7PR10MB2490.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::ac04:ef33:baf3:36f3]) by DB7PR10MB2490.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::ac04:ef33:baf3:36f3%4]) with mapi id 15.20.3131.036; Thu, 2 Jul 2020
- 14:46:11 +0000
-Subject: Re: [PATCH] spi: spidev: Add compatible for external SPI ports on
- Kontron boards
-To:     Mark Brown <broonie@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
-References: <20200702141846.7752-1-frieder.schrempf@kontron.de>
- <20200702142511.GF4483@sirena.org.uk>
-From:   Frieder Schrempf <frieder.schrempf@kontron.de>
-Message-ID: <24ec4eed-de01-28df-ee1f-f7bcfc80051a@kontron.de>
-Date:   Thu, 2 Jul 2020 16:46:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-In-Reply-To: <20200702142511.GF4483@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AM0PR02CA0096.eurprd02.prod.outlook.com
- (2603:10a6:208:154::37) To DB7PR10MB2490.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:10:50::12)
+        id S1730037AbgGBOq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 10:46:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730005AbgGBOqv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 10:46:51 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DEBCC08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 07:46:50 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id 22so27109469wmg.1
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 07:46:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=kl7sz8QA1tp3BsjE/r0OSQuznzm9IU6toz3QDXE6srY=;
+        b=C4y+MyvzGjWT5mo+mg50PzeIgmLfB6enO3CDM4ud6BHtsMBDG6WYTz5E/zlNT5bdVN
+         uqOGQzeXk+cQ9C88ep5Os/SO4JLiJpIMBtkWnibMng/BdShwRCdWzGivNel5W0u3loQo
+         kA9lKtjOxrgy/hdPR3YBZZdVmRYNRZQY5zkRqOB5KvC2jAoY0BasgzIweMUopiIXCw6h
+         nSFj2pB8cwQoI/PgQzlyWAUKi0Zhb7CX58t3cqgORy4DcYy93PevYKZRsF7oDt5MeJUA
+         mwb9uf/Cl44mu/3TC9lpgE4PNlm+bJknnnITiHC5ced76dYl7/QC6pirP7P+PJ8GC3NT
+         LfIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=kl7sz8QA1tp3BsjE/r0OSQuznzm9IU6toz3QDXE6srY=;
+        b=K1aVqqDvxs1JlrSEVjOvItylYgGlun6HT/RqwKcrxc2I8MGzOXCbsxL2/ke/PKQl9k
+         qnwxveDntHLUwTNupEwarWdN/dLoWTRfUFmRMMleMYC1prWPeOoivgFS576epfR3UEtr
+         55mAeyriBFRBa2ZQmjD6udYO2DsrlnX6X1Gek6ZL/Y+PPAricndBNxbwdbKrJfTcQxrK
+         qy5M/xIIafx9bPFT/tVxib1Cc+z2MLphdFJ8gy1NDOZzMOP3d+83Abi42RvSI6RSSXLx
+         UY9OsR5ZS1crhk73uliOr6gocIUr6q4rJIkX+35LTaG7RpDk4OeG8e3aAzv8zQ5SSGu1
+         s7JA==
+X-Gm-Message-State: AOAM533Dn/QgYOsCLwKXpD21KGw7yv0bG+fPVRtO6J4gQfjJQdBMlWEb
+        8ZPuKWqKZ86h04mgd55jiC3hMg==
+X-Google-Smtp-Source: ABdhPJx7VJnF3IZsz1knssd5zApJ5vUeYhNVJHgmwD44/LNnJPIxKZZCahG6RssJD9o76EkSSK6XMA==
+X-Received: by 2002:a1c:e914:: with SMTP id q20mr30734859wmc.145.1593701209352;
+        Thu, 02 Jul 2020 07:46:49 -0700 (PDT)
+Received: from localhost.localdomain ([2.27.35.144])
+        by smtp.gmail.com with ESMTPSA id g14sm7002737wrw.83.2020.07.02.07.46.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Jul 2020 07:46:48 -0700 (PDT)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        Pawel Laszczak <pawell@cadence.com>,
+        Pawel Jez <pjez@cadence.com>, Peter Chen <peter.chen@nxp.com>
+Subject: [PATCH 14/30] usb: cdns3: ep0: Fix a bunch of kerneldoc issues
+Date:   Thu,  2 Jul 2020 15:46:09 +0100
+Message-Id: <20200702144625.2533530-15-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200702144625.2533530-1-lee.jones@linaro.org>
+References: <20200702144625.2533530-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.10.17] (46.142.79.231) by AM0PR02CA0096.eurprd02.prod.outlook.com (2603:10a6:208:154::37) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.23 via Frontend Transport; Thu, 2 Jul 2020 14:46:10 +0000
-X-Originating-IP: [46.142.79.231]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4935247c-4c94-4fd2-3f0b-08d81e96a922
-X-MS-TrafficTypeDiagnostic: DB8PR10MB3276:
-X-Microsoft-Antispam-PRVS: <DB8PR10MB3276E9F95FCB725EECFB99F4E96D0@DB8PR10MB3276.EURPRD10.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-Forefront-PRVS: 0452022BE1
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: f6Zr8UNnbphVSrdE8H7eTcRynJskZgkKx7tuFfN7+nTSiD5ZeI1o8snrKMCF3URsXLRfmplUdkDuzU4hVMmJMm3MyN0TSOjOAL48JY1nCEr2JmRwDtrQMPU0+lCHRqGVP9SUupVGcXoWZW8QDOPVykJW02Mp4VHxFrdSk06fQqbq+2pFS5OUMP1uQt6iHqJf30sTnY/p1O2VVVV5q9KHrVJnlOG5ZUNd8y+ysU6EFMZDRnUlcw4Jhm6tjesyVlaPQcdkzK51g19LgyZfsH4FIKVKpVZjWfCel9rrlvhvP8szo3bv4fVsuJL3B13QzWamnRnL7BwFAl1IKjYGDae9aAWhH6lr8Qbsy3HHzthgwJA6ehDRJ9w4XUf4w0eeawi7SDnFhjkt8ymGS1CHs6FsXAvk+PYYW/87z9q3+JHUHJiLyhN3ten1nvCn5FnuDMXTMfH1n6lbSSGwY1714dggUg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB7PR10MB2490.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(39860400002)(376002)(136003)(346002)(396003)(16576012)(44832011)(66556008)(53546011)(966005)(66476007)(6486002)(66946007)(86362001)(478600001)(31686004)(31696002)(16526019)(4326008)(8676002)(36756003)(186003)(26005)(8936002)(4744005)(956004)(2616005)(316002)(6916009)(5660300002)(2906002)(52116002)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: udRDO0mphqLqc5cxp8u63Qg5XTpiZ2SaXrhl7wSt/YlFdQhVUE54Vk40aYcQOYyzX8HqpWAEjiGmNOUlLHi6+PzQE/lBKdPwBuP451g+/S7wbfKLB7YOZerNBWx1Lpc+kVaddYUpJ03FLd0dZO27OoKdmjpwhPB08rGbIS4cpPkm8m7/u1FG77naVXc9h2+hDrrwUbUk9TWYOYHIyxnW2Mgo0/Wodo3afBYvKuh9suZZa/et9CaRg+7cYrG7hRQj5XT2sBz4MDqQsTqhayGKp0MQcg2VdD1SBxsGznYEoMMFiffUlyp6ryCqfo9rjN9SB09YK3W8X9MhXIhkAEcAdwcVkgzM+q1/8mzI8QweAPQcZl1cFlFKgV4JtsjG+Z2RsYZbPhLWgPlzDwxCtMVKjdDxCVqLZJQpYF2KXzThlptAdjxmh6PuNP+tlf7nX4PMZAhgIIeLlI20nUL+ZyTNM8/Z/+mYEaUPduUi7weoR1c=
-X-OriginatorOrg: kontron.de
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4935247c-4c94-4fd2-3f0b-08d81e96a922
-X-MS-Exchange-CrossTenant-AuthSource: DB7PR10MB2490.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jul 2020 14:46:10.6545
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8c9d3c97-3fd9-41c8-a2b1-646f3942daf1
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jBECmXvnd7s7CIEIxJyQtYPBGSE40h3czSGSfRNKfx4YXQGbav4uC1Y2ravRVcdi38tQ+C4+W4TrCnMiuPtxdZA2+oN3VnoJ1tpydvMS+wE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR10MB3276
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02.07.20 16:25, Mark Brown wrote:
-> On Thu, Jul 02, 2020 at 04:18:46PM +0200, Schrempf Frieder wrote:
->> From: Frieder Schrempf <frieder.schrempf@kontron.de>
->>
->> Allow external SPI ports on Kontron boards to use the spidev driver.
-> 
-> I'd have expected this to require loading a DT overlay for whatever's
-> attached?
+Add some missing function argument descriptions for 'ep', 'desc'
+and 'zlp', and correct spelling/bitrot issues surrounding the
+correct spelling of present args.
 
-My intention is to use the spidev driver in the default board DT for an 
-interface that is routed to an extension connector and has no dedicated 
-slave device attached onboard. So users can attach sensors, etc. with
-userspace drivers without touching the kernel or DT.
+Fixes the following W=1 warnings:
 
-See https://patchwork.kernel.org/patch/11639075/ for the boards DT.
+ drivers/usb/cdns3/ep0.c:36: warning: Function parameter or member 'zlp' not described in 'cdns3_ep0_run_transfer'
+ drivers/usb/cdns3/ep0.c:236: warning: Function parameter or member 'ctrl' not described in 'cdns3_req_ep0_get_status'
+ drivers/usb/cdns3/ep0.c:236: warning: Excess function parameter 'ctrl_req' description in 'cdns3_req_ep0_get_status'
+ drivers/usb/cdns3/ep0.c:411: warning: Function parameter or member 'ctrl' not described in 'cdns3_req_ep0_handle_feature'
+ drivers/usb/cdns3/ep0.c:411: warning: Excess function parameter 'ctrl_req' description in 'cdns3_req_ep0_handle_feature'
+ drivers/usb/cdns3/ep0.c:661: warning: Function parameter or member 'ep' not described in 'cdns3_gadget_ep0_enable'
+ drivers/usb/cdns3/ep0.c:661: warning: Function parameter or member 'desc' not described in 'cdns3_gadget_ep0_enable'
+ drivers/usb/cdns3/ep0.c:671: warning: Function parameter or member 'ep' not described in 'cdns3_gadget_ep0_disable'
+ drivers/usb/cdns3/ep0.c:867: warning: Function parameter or member 'priv_ep' not described in 'cdns3_init_ep0'
+ drivers/usb/cdns3/ep0.c:867: warning: Excess function parameter 'ep_priv' description in 'cdns3_init_ep0'
+
+Cc: Pawel Laszczak <pawell@cadence.com>
+Cc: Pawel Jez <pjez@cadence.com>
+Cc: Peter Chen <peter.chen@nxp.com>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ drivers/usb/cdns3/ep0.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/usb/cdns3/ep0.c b/drivers/usb/cdns3/ep0.c
+index 82645a2a0f529..5b3f682338e50 100644
+--- a/drivers/usb/cdns3/ep0.c
++++ b/drivers/usb/cdns3/ep0.c
+@@ -227,7 +227,7 @@ static int cdns3_req_ep0_set_address(struct cdns3_device *priv_dev,
+ /**
+  * cdns3_req_ep0_get_status - Handling of GET_STATUS standard USB request
+  * @priv_dev: extended gadget object
+- * @ctrl_req: pointer to received setup packet
++ * @ctrl: pointer to received setup packet
+  *
+  * Returns 0 if success, error code on error
+  */
+@@ -400,7 +400,7 @@ static int cdns3_ep0_feature_handle_endpoint(struct cdns3_device *priv_dev,
+  * Handling of GET/SET_FEATURE standard USB request
+  *
+  * @priv_dev: extended gadget object
+- * @ctrl_req: pointer to received setup packet
++ * @ctrl: pointer to received setup packet
+  * @set: must be set to 1 for SET_FEATURE request
+  *
+  * Returns 0 if success, error code on error
+@@ -653,6 +653,9 @@ void cdns3_check_ep0_interrupt_proceed(struct cdns3_device *priv_dev, int dir)
+ 
+ /**
+  * cdns3_gadget_ep0_enable
++ * @ep: pointer to endpoint zero object
++ * @desc: pointer to usb endpoint descriptor
++ *
+  * Function shouldn't be called by gadget driver,
+  * endpoint 0 is allways active
+  */
+@@ -664,6 +667,8 @@ static int cdns3_gadget_ep0_enable(struct usb_ep *ep,
+ 
+ /**
+  * cdns3_gadget_ep0_disable
++ * @ep: pointer to endpoint zero object
++ *
+  * Function shouldn't be called by gadget driver,
+  * endpoint 0 is allways active
+  */
+@@ -690,6 +695,7 @@ static int cdns3_gadget_ep0_set_halt(struct usb_ep *ep, int value)
+  * @ep: pointer to endpoint zero object
+  * @request: pointer to request object
+  * @gfp_flags: gfp flags
++ * @zlp: add zero length packet
+  *
+  * Returns 0 on success, error code elsewhere
+  */
+@@ -858,7 +864,7 @@ void cdns3_ep0_config(struct cdns3_device *priv_dev)
+ /**
+  * cdns3_init_ep0 Initializes software endpoint 0 of gadget
+  * @priv_dev: extended gadget object
+- * @ep_priv: extended endpoint object
++ * @priv_ep: extended endpoint object
+  *
+  * Returns 0 on success else error code.
+  */
+-- 
+2.25.1
+
