@@ -2,109 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C872D211D28
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 09:39:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38AA3211D30
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 09:41:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728133AbgGBHjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 03:39:19 -0400
-Received: from mail-ej1-f66.google.com ([209.85.218.66]:42993 "EHLO
-        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726362AbgGBHjS (ORCPT
+        id S1727961AbgGBHld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 03:41:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40532 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726362AbgGBHlc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 03:39:18 -0400
-Received: by mail-ej1-f66.google.com with SMTP id f12so1879027eja.9;
-        Thu, 02 Jul 2020 00:39:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=L+qtrKeUknobDsiDsqcsCQWN3hO9VKyL68T69UrtNic=;
-        b=Z+X5rHOyWUGQQOzN0IvKFPjnX2Va0khS9K5AeUUIiLQ/mTihQNddWS5PsFeaw8w2Dj
-         otOu36jRIrb3uEW0elavruCI/tXU9YqrUNR1mIEOeeNBwASQ/n8ylR8CFNGWH/DXvU40
-         5yH825HY6KUpkRKaqLaEl+oG8DQOctBreFN0GCBJk83B3ih1UwPwal7NflnHc/VQqSg0
-         PJLfBS1CaszE6y0S0otolOydQw3cHrF9W4ZZoKxq/XEHjxLXCt1xBqoStByBXcFbuWjd
-         0av0J2/66e8UcSIzZVSDSA7x8wh+JmUyi6z+JSpB0mllt0XbFJi0vLR3joX+7wy6uNt5
-         SU6Q==
-X-Gm-Message-State: AOAM53334Ybj0QrPVr6luojHQgFgicSwbXCQds5OluFntIMSrg+/OoFg
-        yUCJ/whlFtLZ/TAI8hEJYvk=
-X-Google-Smtp-Source: ABdhPJwAvhXIPghcOcmZpMa7MJoAcsGQ9JyVGobacO92qgnYbbeRf3sNWsQ+8MdyqKFuV4Agxd2xTA==
-X-Received: by 2002:a17:906:899:: with SMTP id n25mr24916943eje.298.1593675556682;
-        Thu, 02 Jul 2020 00:39:16 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.195])
-        by smtp.googlemail.com with ESMTPSA id w8sm6284760ejb.10.2020.07.02.00.39.14
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 02 Jul 2020 00:39:15 -0700 (PDT)
-Date:   Thu, 2 Jul 2020 09:39:13 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     Sylwester Nawrocki <snawrocki@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kukjin Kim <kgene@kernel.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Pankaj Dubey <pankaj.dubey@samsung.com>
-Subject: Re: [PATCH v2] ARM: dts: exynos: Fix missing empty reg/ranges
- property regulators on Trats
-Message-ID: <20200702073913.GA1187@kozik-lap>
-References: <CGME20200629210025eucas1p219a52e75ecce9e813aa80f0126780189@eucas1p2.samsung.com>
- <20200629205948.32250-1-krzk@kernel.org>
- <97651868-30f3-6b91-1ea2-551ee1ebad8f@samsung.com>
- <20200702061611.GC4175@kozik-lap>
+        Thu, 2 Jul 2020 03:41:32 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3F09C08C5C1;
+        Thu,  2 Jul 2020 00:41:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=XTabvSLO7S5tELpoXrJiNFuMzsHwzZp5WpQClf4PKdk=; b=sFgSl9Gcs3uRIVF548A0umcLQi
+        AYzzAb0cgK1h5LwXjvrGL5QlYbYgclSEKGtQ5tkEMf9oqwvekDTGpGihN6spqQLWxbkv/xGizG/Y9
+        WWbPTB0Iq57rX8tmEYegHLfU11KypvtrGRBwXATY74N33TY8slcS0ZuB3KmZzMu4Ec9XG7HKckpdu
+        rOFuSDmVjg5Xrt7ubIC7FrM3G/SvlhhnOCBwz/THMKv05SdGA07BTmTeMHazs9aLXXO6tNurvl+DJ
+        GRdsJmn5y8ZcZwdJsvQNTXJH4R1hW+S8N/7bfXH860MbylzsTrc9vCqhkRsCYb+e5JvsiNKhHQ/jH
+        Z+kv+yYA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jqtq9-0006AV-NN; Thu, 02 Jul 2020 07:41:04 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7240E3003D8;
+        Thu,  2 Jul 2020 09:40:59 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 366CA23D44E56; Thu,  2 Jul 2020 09:40:59 +0200 (CEST)
+Date:   Thu, 2 Jul 2020 09:40:59 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Like Xu <like.xu@linux.intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, ak@linux.intel.com,
+        wei.w.wang@intel.com, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, "Liang, Kan" <kan.liang@intel.com>
+Subject: Re: [PATCH v12 00/11] Guest Last Branch Recording Enabling
+Message-ID: <20200702074059.GX4781@hirez.programming.kicks-ass.net>
+References: <20200613080958.132489-1-like.xu@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200702061611.GC4175@kozik-lap>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200613080958.132489-1-like.xu@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 02, 2020 at 08:16:11AM +0200, Krzysztof Kozlowski wrote:
-> On Tue, Jun 30, 2020 at 08:27:01AM +0200, Marek Szyprowski wrote:
-> > Hi Krzysztof,
-> > 
-> > On 29.06.2020 22:59, Krzysztof Kozlowski wrote:
-> > > Remove the regulators node entirely because its children do not have any
-> > > unit addresses.  This fixes DTC warning:
-> > >
-> > >      Warning (simple_bus_reg): /regulators/regulator-0: missing or empty reg/ranges property
-> > >
-> > > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> > 
-> > Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> > 
-> > What about removing the regulators node from other boards: 
-> > exynos4412-origen.dts, exynos5420-smdk5420.dts and exynos5250-arndale.dts?
-> > 
-> > On the other hand, maybe it would be really easier to add missing 
-> > address/size-cells properties to exynos4210-trats.dts/regulators node?
-> 
-> Indeed let's keep it consistent so in such case better to add here
-> proper address/size-cells.
+On Sat, Jun 13, 2020 at 04:09:45PM +0800, Like Xu wrote:
+> Like Xu (10):
+>   perf/x86/core: Refactor hw->idx checks and cleanup
+>   perf/x86/lbr: Add interface to get LBR information
+>   perf/x86: Add constraint to create guest LBR event without hw counter
+>   perf/x86: Keep LBR records unchanged in host context for guest usage
 
-Actually more of DTSes put fixed regulators directly in root node, not
-under "regulators" node:
-exynos3250-monk.dts
-exynos4210-i9100.dts
-exynos4210-origen.dts
-exynos4210-universal_c210.dts
-exynos4412-galaxy-s3.dtsi
-exynos4412-midas.dtsi
-exynos4412-n710x.dts
-exynos4412-odroidx.dts
-exynos5250-smdk5250.dts
-exynos5250-snow-common.dtsi
-exynos5420-peach-pit.dts
-exynos5800-peach-pi.dts
+> Wei Wang (1):
+>   perf/x86: Fix variable types for LBR registers
 
-If we want it to be consistent, it's easier to remove the regulator
-nodes from exynos4412-origen.dts, exynos5420-smdk5420.dts and
-exynos5250-arndale.dts.
+>  arch/x86/events/core.c            |  26 +--
+>  arch/x86/events/intel/core.c      | 109 ++++++++-----
+>  arch/x86/events/intel/lbr.c       |  51 +++++-
+>  arch/x86/events/perf_event.h      |   8 +-
+>  arch/x86/include/asm/perf_event.h |  34 +++-
 
-Best regards,
-Krzysztof
+These look good to me; but at the same time Kan is sending me
+Architectural LBR patches.
 
+Kan, if I take these perf patches and stick them in a tip/perf/vlbr
+topic branch, can you rebase the arch lbr stuff on top, or is there
+anything in the arch-lbr series that badly conflicts with this work?
+
+Paolo, would that topic branch work for you too, to then stick these
+patches in top?
+
+>   KVM: vmx/pmu: Expose LBR to guest via MSR_IA32_PERF_CAPABILITIES
+>   KVM: vmx/pmu: Unmask LBR fields in the MSR_IA32_DEBUGCTLMSR emualtion
+>   KVM: vmx/pmu: Pass-through LBR msrs when guest LBR event is scheduled
+>   KVM: vmx/pmu: Emulate legacy freezing LBRs on virtual PMI
+>   KVM: vmx/pmu: Reduce the overhead of LBR pass-through or cancellation
+>   KVM: vmx/pmu: Release guest LBR event via lazy release mechanism
+
+>  arch/x86/kvm/pmu.c                |  12 +-
+>  arch/x86/kvm/pmu.h                |   5 +
+>  arch/x86/kvm/vmx/capabilities.h   |  23 ++-
+>  arch/x86/kvm/vmx/pmu_intel.c      | 253 +++++++++++++++++++++++++++++-
+>  arch/x86/kvm/vmx/vmx.c            |  86 +++++++++-
+>  arch/x86/kvm/vmx/vmx.h            |  17 ++
+>  arch/x86/kvm/x86.c                |  13 --
+
+>  12 files changed, 559 insertions(+), 78 deletions(-)
