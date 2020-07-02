@@ -2,136 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7FF4211F43
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 10:56:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B09C211F55
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 10:58:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727853AbgGBI4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 04:56:23 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:49549 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725379AbgGBI4W (ORCPT
+        id S1726810AbgGBI6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 04:58:33 -0400
+Received: from mout.kundenserver.de ([217.72.192.74]:56067 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725774AbgGBI6d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 04:56:22 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1593680182; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=HtJyaDx29b1fnJMB/cy87u6Jgv4WnAhUPAzely5Z90E=; b=FbdtbuW4yOBz3aRScu2o3tOkNU63qptRkqXOa8K3tUAG+w8AJ06FhM6EMECJ0nLPEORXjZkB
- JPCmC900R5B3YjOn9WuOG8DvaeQtL3hijERsFL1xwZmrSH2kM6dlb+cMEkY0tkMNFiaSL8nU
- cW/K3R5A+rgKhG0xPaK5GiEr3ec=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n15.prod.us-east-1.postgun.com with SMTP id
- 5efda135a6e154319f438fbe (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 02 Jul 2020 08:56:21
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id CA047C433CB; Thu,  2 Jul 2020 08:56:20 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.1.11] (unknown [117.247.20.6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B59C3C433CA;
-        Thu,  2 Jul 2020 08:56:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B59C3C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rnayak@codeaurora.org
-Subject: Re: [PATCH 3/3] arm64: dts: sc7180: Add OPP tables and power-domains
- for venus
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     stanimir.varbanov@linaro.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, linux-media@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1593603638-19296-1-git-send-email-rnayak@codeaurora.org>
- <1593603638-19296-4-git-send-email-rnayak@codeaurora.org>
- <20200701165414.GB3191083@google.com>
-From:   Rajendra Nayak <rnayak@codeaurora.org>
-Message-ID: <1ce702e1-6deb-8f13-3e17-38170b136b2c@codeaurora.org>
-Date:   Thu, 2 Jul 2020 14:26:14 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 2 Jul 2020 04:58:33 -0400
+Received: from mail-qt1-f177.google.com ([209.85.160.177]) by
+ mrelayeu.kundenserver.de (mreue108 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1Mo73N-1j2S442p8F-00pe9z; Thu, 02 Jul 2020 10:58:31 +0200
+Received: by mail-qt1-f177.google.com with SMTP id g13so20623334qtv.8;
+        Thu, 02 Jul 2020 01:58:31 -0700 (PDT)
+X-Gm-Message-State: AOAM533Eg/P25auzgSikOYE2N0afRG5pz/O32/U4HxvA6kzoqNr4uMDD
+        MEeb3YsRMnjVXJMJcb8hIHgz84qFUUx4buh4P1c=
+X-Google-Smtp-Source: ABdhPJwmVhcWIjW9naHQ+EtJIo8qem6eHT7ix06ZnfalWEEgAsXZpi1xlLnmHrPnhvrb+Fee92Gc5bSzX/y8gl2q00Y=
+X-Received: by 2002:ac8:33d7:: with SMTP id d23mr30244902qtb.204.1593680310449;
+ Thu, 02 Jul 2020 01:58:30 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200701165414.GB3191083@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200701200950.30314-1-rikard.falkeborn@gmail.com>
+In-Reply-To: <20200701200950.30314-1-rikard.falkeborn@gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 2 Jul 2020 10:58:14 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0iVY54EMWYDLdn3QoqmO0CkZMJk-P2G19epm8FCTX8bg@mail.gmail.com>
+Message-ID: <CAK8P3a0iVY54EMWYDLdn3QoqmO0CkZMJk-P2G19epm8FCTX8bg@mail.gmail.com>
+Subject: Re: [PATCH 0/5] drivers/char: Constify static variables
+To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Amit Shah <amit@kernel.org>, Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Corey Minyard <minyard@acm.org>,
+        virtualization@lists.linux-foundation.org,
+        openipmi-developer@lists.sourceforge.net,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>,
+        "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:X4WDxqLnMY//GuO5GkWcxG5AuR2KIVPWcsP0LiXl1LEXCZ8EhPQ
+ ESfjxRT0AnrKWXL28Gu3ZH2M8e4Jwq/I8Rb5sesX1IWHBAmmJvrSlcoEsFbD+F/fZX7/qsC
+ eQb/aAz0jQtrFR5gOSa2RRlhPNkvSI7Gk8ABDh/75Sv1FR8fzsHDNza9aHmbd1GKodowVGr
+ gm+446HngpPd00YZjpKlw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:SzJyyVuymJs=:J+e7cacCsvkyKcF8v1hwuW
+ VThheARzn/clwjOffSCydjROhCKUm2b6s8Pbs98ciwSatCWlTVxPvwBJ0esdhKyrZAXOYEbgV
+ 0hy/sHaxCVZaJ0q+YZc4C5ShJyR+E5rWr6D4OH4Zce7a+76PVHm6cMPKAXhSuH+PTqSlLL/sY
+ oOfX5FhYgLhpYugRtRTJ3jwKENrKPLzRhLpXD6u4JKBVYaUtrcRbefC7zA/GS5y1ngkYmUrR3
+ SodB2QCxqyrGqcD5ANuwQ8nSvSiyA/icR6AWJgkaTqcrpnnwH5zMJiG9Or9+OM6VkCxw/j2Mj
+ /3qnSDQjugLk9ishsWCV9MBzljKJDF8uL9craFwvxtjhfbYWw6TkNJOJrenj0mepNuM+MMm5P
+ unfgWbpfduAXruzJhHpI/4IG0vL8/0Ehms178iMS/HyL9Da/mkXOxv5JseiLxseUG4xnpczDU
+ I7JKQuhOXFzz3rvLCmAKUbH7xw/mt3cCP6kf1QZ9wH1PFhdVgg8vuKSyF8V4z2CW9Rx2wA+AD
+ KayNXRQNLCS/UPZbx2I8kcairQukkyfAvQXkAkx0Iaz31XJ3+CcHKH2o1hyVRwRcpiNI2Qxq6
+ mcp3PjAjBz2xfhsFB+/cpFKetn7w0fO4n1FA8naWQbF5FBwaWISKUooGosxe8ICms6RUOithb
+ 6xssVY1ZAt9cWYPmmGaDfQBmCNreOXUVAY9bqym7zvujbrFS1/1K/6vAX+dCNSrmU2SZRh3p5
+ Rj+wPLQ4ptsDN+FMAe58N3HRxqXZXckDaAytpxzbmxRtWoZhn34pCdWLMYI0eP+BMx5L3IIhr
+ zzP+7p+I8pDxZQlfunLVQ4O+SUYtazgNul6lMnqezcpXzsUH5w=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jul 1, 2020 at 11:48 PM Rikard Falkeborn
+<rikard.falkeborn@gmail.com> wrote:
+>
+> Constify some static variables (mostly structs) that are not modified.
+>
+> Rikard Falkeborn (5):
+>   hwrng: bcm2835 - Constify bcm2835_rng_devtype[]
+>   hwrng: nomadik - Constify nmk_rng_ids[]
+>   hwrng: virtio - Constify id_table[]
+>   ipmi: watchdog: Constify ident
+>   virtio_console: Constify some static variables
 
-On 7/1/2020 10:24 PM, Matthias Kaehlcke wrote:
-> On Wed, Jul 01, 2020 at 05:10:38PM +0530, Rajendra Nayak wrote:
->> Add the OPP tables in order to be able to vote on the performance state
->> of a power-domain
->>
->> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
->> ---
->>   arch/arm64/boot/dts/qcom/sc7180.dtsi | 35 +++++++++++++++++++++++++++++++++--
->>   1 file changed, 33 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
->> index ad57df2..738a741 100644
->> --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
->> @@ -2392,8 +2392,10 @@
->>   			reg = <0 0x0aa00000 0 0xff000>;
->>   			interrupts = <GIC_SPI 174 IRQ_TYPE_LEVEL_HIGH>;
->>   			power-domains = <&videocc VENUS_GDSC>,
->> -					<&videocc VCODEC0_GDSC>;
->> -			power-domain-names = "venus", "vcodec0";
->> +					<&videocc VCODEC0_GDSC>,
->> +					<&rpmhpd SC7180_CX>;
->> +			power-domain-names = "venus", "vcodec0", "opp-pd";
->> +			operating-points-v2 = <&venus_opp_table>;
->>   			clocks = <&videocc VIDEO_CC_VENUS_CTL_CORE_CLK>,
->>   				 <&videocc VIDEO_CC_VENUS_AHB_CLK>,
->>   				 <&videocc VIDEO_CC_VENUS_CTL_AXI_CLK>,
->> @@ -2414,6 +2416,35 @@
->>   			video-encoder {
->>   				compatible = "venus-encoder";
->>   			};
->> +
->> +			venus_opp_table: venus-opp-table {
->> +				compatible = "operating-points-v2";
->> +
->> +				opp-200000000 {
->> +					opp-hz = /bits/ 64 <150000000>;
->> +					required-opps = <&rpmhpd_opp_low_svs>;
->> +				};
->> +
->> +				opp-320000000 {
->> +					opp-hz = /bits/ 64 <270000000>;
->> +					required-opps = <&rpmhpd_opp_svs>;
->> +				};
->> +
->> +				opp-380000000 {
->> +					opp-hz = /bits/ 64 <340000000>;
->> +					required-opps = <&rpmhpd_opp_svs_l1>;
->> +				};
->> +
->> +				opp-444000000 {
->> +					opp-hz = /bits/ 64 <434000000>;
->> +					required-opps = <&rpmhpd_opp_nom>;
->> +				};
->> +
->> +				opp-533000000 {
->> +					opp-hz = /bits/ 64 <500000000>;
->> +					required-opps = <&rpmhpd_opp_turbo>;
->> +				};
-> 
-> the labels of the OPP nodes don't match the specified frequencies
+I just realized it was a series rather than a single patch I received. They
+all look correct, so
 
-Oops, I'll fix and respin.
+Acked-by: Arnd Bergmann <arnd@arndb.de>
 
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+but if you do more of those, I would suggest not including the 'size'
+output for the small variables as that is not the main point here.
