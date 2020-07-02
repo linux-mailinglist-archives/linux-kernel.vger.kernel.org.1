@@ -2,150 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B06D3212742
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 17:03:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D677E212744
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 17:03:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730026AbgGBPC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 11:02:58 -0400
-Received: from mga18.intel.com ([134.134.136.126]:43273 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729987AbgGBPCz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 11:02:55 -0400
-IronPort-SDR: E0qYAWZBeA4GBazMfm3ssNwVWqF/nFr8pg/BO+SX3Aj5joSYmsl5XSlrOKFYiJ6gt0Zlx/Nst0
- eLxUOQbwGCVw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="134384152"
-X-IronPort-AV: E=Sophos;i="5.75,304,1589266800"; 
-   d="scan'208";a="134384152"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2020 08:02:48 -0700
-IronPort-SDR: 8NAIp4cDCc3muxHVReeY1Ie+1bQ3zuO3HF1mAWNYARkco+6VdXe7su/ieLRgqDvpIPQdPU9dJQ
- VFrMfrZbfvVQ==
-X-IronPort-AV: E=Sophos;i="5.75,304,1589266800"; 
-   d="scan'208";a="304275519"
-Received: from nchava-mobl1.amr.corp.intel.com (HELO [10.252.135.144]) ([10.252.135.144])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2020 08:02:47 -0700
-Subject: Re: [PATCH 7/9] soundwire: intel/cadence: merge Soundwire interrupt
- handlers/threads
-To:     "Liao, Bard" <bard.liao@intel.com>, Vinod Koul <vkoul@kernel.org>
-Cc:     "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "tiwai@suse.de" <tiwai@suse.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "ranjani.sridharan@linux.intel.com" 
-        <ranjani.sridharan@linux.intel.com>,
-        "hui.wang@canonical.com" <hui.wang@canonical.com>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "srinivas.kandagatla@linaro.org" <srinivas.kandagatla@linaro.org>,
-        "jank@cadence.com" <jank@cadence.com>,
-        "Lin, Mengdong" <mengdong.lin@intel.com>,
-        "Blauciak, Slawomir" <slawomir.blauciak@intel.com>,
-        "Kale, Sanyog R" <sanyog.r.kale@intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        "rander.wang@linux.intel.com" <rander.wang@linux.intel.com>
-References: <20200623173546.21870-1-yung-chuan.liao@linux.intel.com>
- <20200623173546.21870-8-yung-chuan.liao@linux.intel.com>
- <20200630162448.GS2599@vkoul-mobl>
- <55fbc41e-cb41-8bdf-bdbd-1d1b76938683@linux.intel.com>
- <20200701054224.GV2599@vkoul-mobl>
- <MN2PR11MB4080CF23D00A3AF817AC1E7CFF6D0@MN2PR11MB4080.namprd11.prod.outlook.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <077d4430-bb76-df2c-2c39-8077998e6fdc@linux.intel.com>
-Date:   Thu, 2 Jul 2020 10:01:40 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1730084AbgGBPDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 11:03:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52874 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726032AbgGBPDQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 11:03:16 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D3D4C08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 08:03:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=9GqeEnwkAqHsgBWKwxmrirDR71p/Vge6NVyXyAYx/0E=; b=BaDVylXRZL0pdJE5czcfL4wmwv
+        qfULwWYJKq73NIrRzbGZDSvsvN2oEGD3uctDfVJefjgfIdTbEHg3NJ5LLEQO79nvIfz4DvEKRMi1p
+        P5xjbOZ4S3teL17sTOkiJMO8ymXRRGgPHKiCmtr95vVz+J9M/6+7wUQY9XGXnQrpwidjNv6dPn8WY
+        sIuYbZy/UYdxPeT6/COktMQ3mfxoNjHWKygiJuFotUukMiL7J5E+DpkumINLFsCOeoQaUgfEllbKk
+        aU9xsnKo7JLNK+kEg7sCmhk3l6N188vUTpvOdeJ7g9EX4tRSaQP3Fqms5GFRWODPNtfxUfQNPF+NA
+        3BiVMjkg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jr0jm-0005xW-C6; Thu, 02 Jul 2020 15:02:54 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5DFAE3013E5;
+        Thu,  2 Jul 2020 17:02:50 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4124925F1BEE2; Thu,  2 Jul 2020 17:02:50 +0200 (CEST)
+Date:   Thu, 2 Jul 2020 17:02:50 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Andy Lutomirski <luto@amacapital.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        X86 ML <x86@kernel.org>, cj.chengjian@huawei.com,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
+        Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michel Lespinasse <walken@google.com>,
+        lkft-triage@lists.linaro.org,
+        Dave Hansen <dave.hansen@linux.intel.com>
+Subject: Re: Perf: WARNING: arch/x86/entry/common.c:624
+ idtentry_exit_cond_rcu+0x92/0xc0
+Message-ID: <20200702150250.GS4800@hirez.programming.kicks-ass.net>
+References: <87imfwd5f6.fsf@nanos.tec.linutronix.de>
+ <8DD3180E-0E69-4FD6-92C3-311AAB3F688F@amacapital.net>
+ <87d064d13p.fsf@nanos.tec.linutronix.de>
+ <CA+G9fYvVEMVaF=qzhCpJ8NMb1-VN4cEh6sw8P_eNFCLQYOjCzA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <MN2PR11MB4080CF23D00A3AF817AC1E7CFF6D0@MN2PR11MB4080.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYvVEMVaF=qzhCpJ8NMb1-VN4cEh6sw8P_eNFCLQYOjCzA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 7/2/20 2:35 AM, Liao, Bard wrote:
->> -----Original Message-----
->> From: Vinod Koul <vkoul@kernel.org>
->> Sent: Wednesday, July 1, 2020 1:42 PM
->> To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->> Cc: Bard Liao <yung-chuan.liao@linux.intel.com>; alsa-devel@alsa-project.org;
->> tiwai@suse.de; gregkh@linuxfoundation.org; linux-kernel@vger.kernel.org;
->> ranjani.sridharan@linux.intel.com; hui.wang@canonical.com;
->> broonie@kernel.org; srinivas.kandagatla@linaro.org; jank@cadence.com; Lin,
->> Mengdong <mengdong.lin@intel.com>; Blauciak, Slawomir
->> <slawomir.blauciak@intel.com>; Kale, Sanyog R <sanyog.r.kale@intel.com>;
->> rander.wang@linux.intel.com; Liao, Bard <bard.liao@intel.com>
->> Subject: Re: [PATCH 7/9] soundwire: intel/cadence: merge Soundwire interrupt
->> handlers/threads
->>
->> On 30-06-20, 11:46, Pierre-Louis Bossart wrote:
->>
->>>> Is this called from irq context or irq thread or something else?
->>>
->>> from IRQ thread, hence the name, see pointers above.
->>>
->>> The key part is that we could only make the hardware work as intended by
->>> using a single thread for all interrupt sources, and that patch is just the
->>> generalization of what was implemented for HDaudio in mid-2019 after
->> months
->>> of lost interrupts and IPC errors. See below the code from
->>> sound/soc/sof/intel/hda.c for interrupt handling.
->>
->> Sounds good. Now that you are already in irq thread, does it make sense
->> to spawn a worker thread for this and handle it there? Why not do in the
->> irq thread itself. Using a thread kind of defeats the whole point behind
->> concept of irq threads
+On Thu, Jul 02, 2020 at 07:57:54PM +0530, Naresh Kamboju wrote:
+> I have reported this warning on linux-next and now it is happening on
+> linux mainline tree.
+> May I know , are we missing a fix patch on linus 's tree ?
 > 
-> Not sure If you are talking about cdns_update_slave_status_work().
-> The reason we need to spawn a worker thread in sdw_cdns_irq() is
-> that we will do sdw transfer which will generate an interrupt when
-> a slave interrupt is triggered. And the handler will not be invoked if the
-> previous handler is not return yet.
-> Please see the scenario below for better explanation.
-> 1. Slave interrupt arrives
-> 	2.1 Try to read Slave register and waiting for the transfer response
-> 	2.2 Get the transfer response interrupt and finish the sdw transfer.
-> 3. Finish the Slave interrupt handling.
+> - Naresh
+> ---
+> While running selftest x86 single_step_syscall_32 on
+> i386 kernel linux 5.8.0-rc3 kernel warning noticed.
 > 
-> Interrupts are triggered in step 1 and 2.2, but step 2.2's handler will not be
-> invoked if step 1's handler is not return yet.
-> What we do is to spawn a worker thread to do step 2 and return from step 1.
-> So the handler can be invoked when the transfer response interrupt arrives.
+> steps to reproduce:
+> --------------------------
+> perf test
+> and
+> cd /opt/kselftests/default-in-kernel/x86
+> ./single_step_syscall_32
+> 
+> crash dump,
+> [ 1324.774385] kselftest: Running tests in x86
+> [ 1324.830187] ------------[ cut here ]------------
+> [ 1324.834820] IRQs not disabled as expected
+> [ 1324.838838] WARNING: CPU: 2 PID: 5365 at
+> /usr/src/kernel/arch/x86/entry/common.c:645
+> idtentry_exit_cond_rcu+0x92/0xc0
 
-To build on Bard's correct answer, the irq thread only takes care of 
-'immediate' actions, such as command completion, parity or bus clash 
-errors. The rest of the work can be split in
-a) changes to device state, usually for attachment and enumeration. This 
-is rather slow and will entail regmap syncs.
-b) device interrupts - typically only for jack detection which is also 
-rather slow.
+How's this?
 
-Since this irq thread function is actually part of the entire HDaudio 
-controller interrupt handling, we have to defer the work for cases a) 
-and b) and re-enable the HDaudio interrupts at the end of the irq thread 
-function - see the code I shared earlier.
+DEFINE_IDTENTRY_DEBUG() is DEFINE_IDTENTRY_RAW on x86_64
+                           DEFINE_IDTENTRY on i386
 
-In addition, both a) and b) will result  in transactions over the bus, 
-which will trigger interrupts to signal the command completions. In 
-other words, because of the asynchronous nature of the transactions, we 
-need a two-level implementation. If you look at the previous solution it 
-was the same, the commands were issued in the irq thread and the command 
-completion was handled in the handler, since we had to make the handler 
-minimal with a global GIE interrupt disable we kept the same hierarchy 
-to deal with commands but move it up one level.
+calling exc_debug_*() from DEFINE_IDTENTRY() does a double layer of
+idtentry_{enter,exit}*() functions.
 
-You could argue that maybe a worker thread is not optimal and could be 
-replaced by something better/faster. Since the jack detection is 
-typically handled with a worker thread in all ASoC codec drivers, we 
-didn't feel the need to optimize further. We did not see any performance 
-impact with this change.
+Also, handle_debug() is still a trainwreck, we should never get to
+cond_local_irq_enable() when !user.
 
-Does this answer to your concern?
+Completely untested...
 
+---
+ arch/x86/kernel/traps.c | 49 +++++++++++++++++++++++--------------------------
+ 1 file changed, 23 insertions(+), 26 deletions(-)
 
-
-
+diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
+index b0195771c932..47d6b46e1564 100644
+--- a/arch/x86/kernel/traps.c
++++ b/arch/x86/kernel/traps.c
+@@ -806,8 +806,17 @@ static void handle_debug(struct pt_regs *regs, unsigned long dr6, bool user)
+ 	 * If DR6 is zero, no point in trying to handle it. The kernel is
+ 	 * not using INT1.
+ 	 */
+-	if (!user && !dr6)
+-		return;
++	if (!user) {
++		/*
++		 * Catch SYSENTER with TF set and clear DR_STEP. If this hit a
++		 * watchpoint at the same time then that will still be handled.
++		 */
++		if ((dr6 & DR_STEP) && is_sysenter_singlestep(regs))
++			dr6 &= ~DR_STEP;
++
++		if (!dr6)
++			return;
++	}
+ 
+ 	/*
+ 	 * If dr6 has no reason to give us about the origin of this trap,
+@@ -859,25 +868,29 @@ static void handle_debug(struct pt_regs *regs, unsigned long dr6, bool user)
+ 	cond_local_irq_disable(regs);
+ }
+ 
++#ifdef CONFIG_X86_64
+ static __always_inline void exc_debug_kernel(struct pt_regs *regs,
+ 					     unsigned long dr6)
+ {
+ 	bool irq_state = idtentry_enter_nmi(regs);
+ 	instrumentation_begin();
+ 
+-	/*
+-	 * Catch SYSENTER with TF set and clear DR_STEP. If this hit a
+-	 * watchpoint at the same time then that will still be handled.
+-	 */
+-	if ((dr6 & DR_STEP) && is_sysenter_singlestep(regs))
+-		dr6 &= ~DR_STEP;
+-
+ 	handle_debug(regs, dr6, false);
+ 
+ 	instrumentation_end();
+ 	idtentry_exit_nmi(regs, irq_state);
+ }
+ 
++/* IST stack entry */
++DEFINE_IDTENTRY_DEBUG(exc_debug)
++{
++	unsigned long dr6, dr7;
++
++	debug_enter(&dr6, &dr7);
++	exc_debug_kernel(regs, dr6);
++	debug_exit(dr7);
++}
++
+ static __always_inline void exc_debug_user(struct pt_regs *regs,
+ 					   unsigned long dr6)
+ {
+@@ -890,17 +903,6 @@ static __always_inline void exc_debug_user(struct pt_regs *regs,
+ 	idtentry_exit_user(regs);
+ }
+ 
+-#ifdef CONFIG_X86_64
+-/* IST stack entry */
+-DEFINE_IDTENTRY_DEBUG(exc_debug)
+-{
+-	unsigned long dr6, dr7;
+-
+-	debug_enter(&dr6, &dr7);
+-	exc_debug_kernel(regs, dr6);
+-	debug_exit(dr7);
+-}
+-
+ /* User entry, runs on regular task stack */
+ DEFINE_IDTENTRY_DEBUG_USER(exc_debug)
+ {
+@@ -917,12 +919,7 @@ DEFINE_IDTENTRY_DEBUG(exc_debug)
+ 	unsigned long dr6, dr7;
+ 
+ 	debug_enter(&dr6, &dr7);
+-
+-	if (user_mode(regs))
+-		exc_debug_user(regs, dr6);
+-	else
+-		exc_debug_kernel(regs, dr6);
+-
++	handle_debug(regs, dr6, user_mode(regs));
+ 	debug_exit(dr7);
+ }
+ #endif
