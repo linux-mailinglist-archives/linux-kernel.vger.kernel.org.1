@@ -2,114 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A0AC2127DE
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 17:28:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79F142127E9
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 17:30:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730319AbgGBP2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 11:28:09 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:60060 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728105AbgGBP2I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 11:28:08 -0400
-Received: from [IPv6:2a01:e35:2fb5:1510:315a:ecf0:6250:a3ed] (unknown [IPv6:2a01:e35:2fb5:1510:315a:ecf0:6250:a3ed])
+        id S1730182AbgGBPaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 11:30:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50268 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726353AbgGBPaA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 11:30:00 -0400
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        (Authenticated sender: aferraris)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id DF3732A5F5D;
-        Thu,  2 Jul 2020 16:28:05 +0100 (BST)
-Subject: Re: [PATCH 1/2] dt-bindings: sound: fsl-asoc-card: add new compatible
- for I2S slave
-To:     Mark Brown <broonie@kernel.org>
-Cc:     kernel@collabora.com, Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Timur Tabi <timur@kernel.org>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-References: <20200702141114.232688-1-arnaud.ferraris@collabora.com>
- <20200702141114.232688-2-arnaud.ferraris@collabora.com>
- <20200702143145.GG4483@sirena.org.uk>
-From:   Arnaud Ferraris <arnaud.ferraris@collabora.com>
-Autocrypt: addr=arnaud.ferraris@collabora.com; keydata=
- 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
- xZQG6fKWuIur3RI=
-Message-ID: <5de5ea5b-0716-8ed1-28b0-9ad3da7a2d47@collabora.com>
-Date:   Thu, 2 Jul 2020 17:28:03 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        by mail.kernel.org (Postfix) with ESMTPSA id 29307208B6
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 15:29:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593703799;
+        bh=ibiaSjCpDSZZJylu3ozkYv+WYHYMgOffizACy47r7gw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ZRg/pu+ABrs/KdKFGTQj9nrQTR9DK6Qv8G8XTx+FZY0lq1ipd5OL0WqIVrTlloB5l
+         S7XNYxTfUSooMJ/IQ5c7OOCpw/WAA51zskW2OY+1AaFjljVnQob5h3ELB8H1UAicqN
+         h6AVubuBVod20bnOu+lyZMCy4nU0YOyOIykGzciU=
+Received: by mail-wr1-f46.google.com with SMTP id z15so17750125wrl.8
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 08:29:59 -0700 (PDT)
+X-Gm-Message-State: AOAM533D13ZqkK8TDaQRqbSkBDvfadJ/GItHLU1HRipsBMzI8jVu2zGe
+        6omZq3sH2gmIsR5XhyLczHjOfkryOxTBu3cKFLU4Sw==
+X-Google-Smtp-Source: ABdhPJzvh1jSZwTR0P/Tfnn8c8bQElkLW3f4MnXmGL8GLh44z97J+WTcfcbc/psDObtgUEhnYIYqv7s0HYDlAeLcKBE=
+X-Received: by 2002:a5d:630d:: with SMTP id i13mr32495482wru.208.1593703797718;
+ Thu, 02 Jul 2020 08:29:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200702143145.GG4483@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200623011803.91232-1-saravanak@google.com>
+In-Reply-To: <20200623011803.91232-1-saravanak@google.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Thu, 2 Jul 2020 17:29:46 +0200
+X-Gmail-Original-Message-ID: <CAKv+Gu8rwTntUjd83+s07n+4ki+ON0Gkqao0ZgAF9haAw71dTA@mail.gmail.com>
+Message-ID: <CAKv+Gu8rwTntUjd83+s07n+4ki+ON0Gkqao0ZgAF9haAw71dTA@mail.gmail.com>
+Subject: Re: [PATCH v2] arm64/module: Optimize module load time by optimizing
+ PLT counting
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
+On Tue, 23 Jun 2020 at 03:27, Saravana Kannan <saravanak@google.com> wrote:
+>
+> When loading a module, module_frob_arch_sections() tries to figure out
+> the number of PLTs that'll be needed to handle all the RELAs. While
+> doing this, it tries to dedupe PLT allocations for multiple
+> R_AARCH64_CALL26 relocations to the same symbol. It does the same for
+> R_AARCH64_JUMP26 relocations.
+>
+> To make checks for duplicates easier/faster, it sorts the relocation
+> list by type, symbol and addend. That way, to check for a duplicate
+> relocation, it just needs to compare with the previous entry.
+>
+> However, sorting the entire relocation array is unnecessary and
+> expensive (O(n log n)) because there are a lot of other relocation types
+> that don't need deduping or can't be deduped.
+>
+> So this commit partitions the array into entries that need deduping and
+> those that don't. And then sorts just the part that needs deduping. And
+> when CONFIG_RANDOMIZE_BASE is disabled, the sorting is skipped entirely
+> because PLTs are not allocated for R_AARCH64_CALL26 and R_AARCH64_JUMP26
+> if it's disabled.
+>
+> This gives significant reduction in module load time for modules with
+> large number of relocations with no measurable impact on modules with a
+> small number of relocations. In my test setup with CONFIG_RANDOMIZE_BASE
+> enabled, these were the results for a few downstream modules:
+>
+> Module          Size (MB)
+> wlan            14
+> video codec     3.8
+> drm             1.8
+> IPA             2.5
+> audio           1.2
+> gpu             1.8
+>
+> Without this patch:
+> Module          Number of entries sorted        Module load time (ms)
+> wlan            243739                          283
+> video codec     74029                           138
+> drm             53837                           67
+> IPA             42800                           90
+> audio           21326                           27
+> gpu             20967                           32
+>
+> Total time to load all these module: 637 ms
+>
+> With this patch:
+> Module          Number of entries sorted        Module load time (ms)
+> wlan            22454                           61
+> video codec     10150                           47
+> drm             13014                           40
+> IPA             8097                            63
+> audio           4606                            16
+> gpu             6527                            20
+>
+> Total time to load all these modules: 247
+>
+> Time saved during boot for just these 6 modules: 390 ms
+>
+> Cc: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 
-Le 02/07/2020 à 16:31, Mark Brown a écrit :
-> On Thu, Jul 02, 2020 at 04:11:14PM +0200, Arnaud Ferraris wrote:
->> fsl-asoc-card currently doesn't support generic codecs with the SoC
->> acting as I2S slave.
->>
->> This commit adds a new `fsl,imx-audio-i2s-slave` for this use-case, as
->> well as the following mandatory properties:
-> 
-> Why require that the CODEC be clock master here - why not make this
-> configurable, reusing the properties from the generic and audio graph
-> cards?
+[I am no longer at Linaro so please don't use my @linaro.org address]
 
-This is partly because I'm not sure how to do it (yet), but mostly
-because I don't have the hardware to test this (the 2 CODECs present on
-my only i.MX6 board are both clock master)
+> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> ---
+>
+> v1 -> v2:
+> - Provided more details in the commit text
+> - Pulled in Will's comments on the coding style
+> - Pulled in Ard's suggestion about skipping jumps with the same section
+>   index (parts of Will's suggested code)
+>
+>  arch/arm64/kernel/module-plts.c | 46 ++++++++++++++++++++++++++++++---
+>  1 file changed, 43 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/arm64/kernel/module-plts.c b/arch/arm64/kernel/module-plts.c
+> index 65b08a74aec6..0ce3a28e3347 100644
+> --- a/arch/arm64/kernel/module-plts.c
+> +++ b/arch/arm64/kernel/module-plts.c
+> @@ -253,6 +253,40 @@ static unsigned int count_plts(Elf64_Sym *syms, Elf64_Rela *rela, int num,
+>         return ret;
+>  }
+>
+> +static bool branch_rela_needs_plt(Elf64_Sym *syms, Elf64_Rela *rela,
+> +                                 Elf64_Word dstidx)
+> +{
+> +
+> +       Elf64_Sym *s = syms + ELF64_R_SYM(rela->r_info);
+> +
+> +       if (s->st_shndx == dstidx)
+> +               return false;
+> +
+> +       return ELF64_R_TYPE(rela->r_info) == R_AARCH64_JUMP26 ||
+> +              ELF64_R_TYPE(rela->r_info) == R_AARCH64_CALL26;
+> +}
+> +
+> +/* Group branch PLT relas at the front end of the array. */
+> +static int partition_branch_plt_relas(Elf64_Sym *syms, Elf64_Rela *rela,
+> +                                     int numrels, Elf64_Word dstidx)
+> +{
+> +       int i = 0, j = numrels - 1;
+> +
+> +       if (!IS_ENABLED(CONFIG_RANDOMIZE_BASE))
+> +               return 0;
+> +
+> +       while (i < j) {
+> +               if (branch_rela_needs_plt(syms, &rela[i], dstidx))
+> +                       i++;
+> +               else if (branch_rela_needs_plt(syms, &rela[j], dstidx))
+> +                       swap(rela[i], rela[j]);
 
-Regards,
-Arnaud
+Nit: would be slightly better to put
+
+  swap(rela[i++], rela[j]);
+
+here so the next iteration of the loop will not call
+branch_rela_needs_plt() on rela[i] redundantly. But the current code
+is also correct.
+
+
+
+
+
+> +               else
+> +                       j--;
+> +       }
+> +
+> +       return i;
+> +}
+> +
+>  int module_frob_arch_sections(Elf_Ehdr *ehdr, Elf_Shdr *sechdrs,
+>                               char *secstrings, struct module *mod)
+>  {
+> @@ -290,7 +324,7 @@ int module_frob_arch_sections(Elf_Ehdr *ehdr, Elf_Shdr *sechdrs,
+>
+>         for (i = 0; i < ehdr->e_shnum; i++) {
+>                 Elf64_Rela *rels = (void *)ehdr + sechdrs[i].sh_offset;
+> -               int numrels = sechdrs[i].sh_size / sizeof(Elf64_Rela);
+> +               int nents, numrels = sechdrs[i].sh_size / sizeof(Elf64_Rela);
+>                 Elf64_Shdr *dstsec = sechdrs + sechdrs[i].sh_info;
+>
+>                 if (sechdrs[i].sh_type != SHT_RELA)
+> @@ -300,8 +334,14 @@ int module_frob_arch_sections(Elf_Ehdr *ehdr, Elf_Shdr *sechdrs,
+>                 if (!(dstsec->sh_flags & SHF_EXECINSTR))
+>                         continue;
+>
+> -               /* sort by type, symbol index and addend */
+> -               sort(rels, numrels, sizeof(Elf64_Rela), cmp_rela, NULL);
+> +               /*
+> +                * sort branch relocations requiring a PLT by type, symbol index
+> +                * and addend
+> +                */
+> +               nents = partition_branch_plt_relas(syms, rels, numrels,
+> +                                                  sechdrs[i].sh_info);
+> +               if (nents)
+> +                       sort(rels, nents, sizeof(Elf64_Rela), cmp_rela, NULL);
+>
+>                 if (!str_has_prefix(secstrings + dstsec->sh_name, ".init"))
+>                         core_plts += count_plts(syms, rels, numrels,
+> --
+> 2.27.0.111.gc72c7da667-goog
+>
