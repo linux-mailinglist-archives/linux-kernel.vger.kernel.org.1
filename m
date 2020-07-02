@@ -2,142 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40C9E212A39
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 18:49:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B2D62129E8
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 18:43:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727812AbgGBQsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 12:48:42 -0400
-Received: from out02.mta.xmission.com ([166.70.13.232]:35290 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726721AbgGBQsh (ORCPT
+        id S1726751AbgGBQnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 12:43:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40202 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726140AbgGBQnu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 12:48:37 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out02.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jr2O4-0007e6-OQ; Thu, 02 Jul 2020 10:48:36 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.int.ebiederm.org)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jr2Nx-0007up-Jp; Thu, 02 Jul 2020 10:48:30 -0600
-From:   "Eric W. Biederman" <ebiederm@xmission.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     David Miller <davem@davemloft.net>,
-        Greg Kroah-Hartman <greg@kroah.com>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Date:   Thu,  2 Jul 2020 11:41:40 -0500
-Message-Id: <20200702164140.4468-16-ebiederm@xmission.com>
-X-Mailer: git-send-email 2.25.0
-In-Reply-To: <87y2o1swee.fsf_-_@x220.int.ebiederm.org>
-References: <87y2o1swee.fsf_-_@x220.int.ebiederm.org>
+        Thu, 2 Jul 2020 12:43:50 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBD37C08C5C1;
+        Thu,  2 Jul 2020 09:43:49 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id b6so29286436wrs.11;
+        Thu, 02 Jul 2020 09:43:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=mVvrzT69sPx+FSAmQUk8XmkOHty6XEaiuNJ0f0jrwM4=;
+        b=IHRlxDmyjPsclh0OA124VbwKZqP9sEDMZ6Q3DB8U9cy/6EMYt8b4yFHnCEqkXvUVNy
+         2x+kD8tlx7KrDqE8vnopsQhtLNaxmx6tU0x/4kBPO0zXkGbXK7vgLL0h+8KmbPKFPiEX
+         H8yaJZd1o2iSirX5xQ6bpve2XGQLb+E9CBLN3JUOeCIWtxQORRzK7w+wZlJnq0KyWqlP
+         dYA92Qfvxf0Z5pavWZ7SjBu36DVd/LHi5CEcuHgDCJeb3yVChG3VpwbAlDSs5JUdyix1
+         AF9ZfX4R+g6evdE8qRfa3N859EBKED/NIq1JPmn2IMbEU00DwroMgh5xvFGx6a098LNE
+         Xn+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mVvrzT69sPx+FSAmQUk8XmkOHty6XEaiuNJ0f0jrwM4=;
+        b=azishzSsFGAK4JQdAu5AEZp5P7FExjXiKWmvO1iDhOj6X9D8iFltNf5DnoOGKmH3T4
+         P/AUOW0vQnXFu0X8DKKFZ7+kxFxir1L7GOcj//zy3791BBUCAq4xsbUrnaCkoGHvQhUa
+         Wzjqk3jg4RoyEqcy6H03feGQBPCW4RSCfTcrq70FD7xiw7TiWNYW+ewjb48aQooBwI5r
+         0aVLm9Qo97eWZsSn1WGI8Rmi2yIwsmBH4AVOsaaLqrNzse9pXAoZqiyAyDGcDJQFYPWj
+         IVN/kDUam+dQTqXM4vXcmEuHxRJH/TAymx7YS1K2ELm8xh5284vGe52Z/9rZ38deJlsB
+         ezOA==
+X-Gm-Message-State: AOAM53043Ctu5hehJqxspzRzY7xJLn4xp/SIQdFbV/LuYmR8i7ARK3gT
+        XhK80SFHtRExT5FyLfiWfcyfIp/J
+X-Google-Smtp-Source: ABdhPJwmmdwPpUiA4P0T3jwUOKiUkxW9JiBulft1eV8T6xeji3M4mr6nQOOQQmBMRC8+5GzQpSKehg==
+X-Received: by 2002:adf:b312:: with SMTP id j18mr30476393wrd.195.1593708228114;
+        Thu, 02 Jul 2020 09:43:48 -0700 (PDT)
+Received: from [192.168.1.3] (ip68-111-84-250.oc.oc.cox.net. [68.111.84.250])
+        by smtp.gmail.com with ESMTPSA id d63sm11692366wmc.22.2020.07.02.09.43.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Jul 2020 09:43:47 -0700 (PDT)
+Subject: Re: [PATCH net-next 0/4] net: ethtool: Untangle PHYLIB dependency
+To:     Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>
+Cc:     Michal Kubecek <mkubecek@suse.cz>, netdev@vger.kernel.org,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20200702042942.76674-1-f.fainelli@gmail.com>
+ <20200702155652.ivokudjptoect6ch@lion.mk-sys.cz>
+ <20200702163424.GG752507@lunn.ch>
+ <20200702093545.5ee3371a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <47965786-9a12-6f09-cf23-1d342334fbc0@gmail.com>
+Date:   Thu, 2 Jul 2020 09:43:45 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Firefox/68.0 Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-XM-SPF: eid=1jr2Nx-0007up-Jp;;;mid=<20200702164140.4468-16-ebiederm@xmission.com>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18OB1SGxTOeo4/dzJbPeWbHPytle+s5LkM=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa02.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01
-        autolearn=disabled version=3.4.2
-X-Spam-Virus: No
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4999]
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa02 0; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: ; sa02 0; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;linux-kernel@vger.kernel.org
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 396 ms - load_scoreonly_sql: 0.03 (0.0%),
-        signal_user_changed: 4.5 (1.1%), b_tie_ro: 3.1 (0.8%), parse: 1.17
-        (0.3%), extract_message_metadata: 12 (3.0%), get_uri_detail_list: 1.63
-        (0.4%), tests_pri_-1000: 11 (2.9%), tests_pri_-950: 1.04 (0.3%),
-        tests_pri_-900: 0.84 (0.2%), tests_pri_-90: 160 (40.5%), check_bayes:
-        159 (40.1%), b_tokenize: 6 (1.5%), b_tok_get_all: 6 (1.6%),
-        b_comp_prob: 1.84 (0.5%), b_tok_touch_all: 142 (35.7%), b_finish: 0.79
-        (0.2%), tests_pri_0: 192 (48.6%), check_dkim_signature: 0.40 (0.1%),
-        check_dkim_adsp: 2.4 (0.6%), poll_dns_idle: 0.96 (0.2%), tests_pri_10:
-        2.5 (0.6%), tests_pri_500: 7 (1.8%), rewrite_mail: 0.00 (0.0%)
-Subject: [PATCH v3 16/16] umd: Stop using split_argv
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+In-Reply-To: <20200702093545.5ee3371a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is exactly one argument so there is nothing to split.  All
-split_argv does now is cause confusion and avoid the need for a cast
-when passing a "const char *" string to call_usermodehelper_setup.
 
-So avoid confusion and the possibility of an odd driver name causing
-problems by just using a fixed argv array with a cast in the call to
-call_usermodehelper_setup.
 
-v1: https://lkml.kernel.org/r/87sged3a9n.fsf_-_@x220.int.ebiederm.org
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
----
- kernel/usermode_driver.c | 12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
+On 7/2/2020 9:35 AM, Jakub Kicinski wrote:
+> On Thu, 2 Jul 2020 18:34:24 +0200 Andrew Lunn wrote:
+>> On Thu, Jul 02, 2020 at 05:56:52PM +0200, Michal Kubecek wrote:
+>>> On Wed, Jul 01, 2020 at 09:29:38PM -0700, Florian Fainelli wrote:  
+>>>> Hi all,
+>>>>
+>>>> This patch series untangles the ethtool netlink dependency with PHYLIB
+>>>> which exists because the cable test feature calls directly into PHY
+>>>> library functions. The approach taken here is to utilize a new set of
+>>>> net_device_ops function pointers which are automatically set to the PHY
+>>>> library variants when a network device driver attaches to a PHY device.  
+>>>
+>>> I'm not sure about the idea of creating a copy of netdev_ops for each
+>>> device using phylib. First, there would be some overhead (just checked
+>>> my 5.8-rc3 kernel, struct netdev_ops is 632 bytes). Second, there is
+>>> quite frequent pattern of comparing dev->netdev_ops against known
+>>> constants to check if a network device is of certain type; I can't say
+>>> for sure if it is also used with devices using phylib in existing code
+>>> but it feels risky.  
+>>
+>> I agree with Michal here. I don't like this.
+>>
+>> I think we need phylib to register a set of ops with ethtool when it
+>> loads. It would also allow us to clean up phy_ethtool_get_strings(),
+>> phy_ethtool_get_sset_count(), phy_ethtool_get_stats().
+> 
+> +1
 
-diff --git a/kernel/usermode_driver.c b/kernel/usermode_driver.c
-index cd136f86f799..0b35212ffc3d 100644
---- a/kernel/usermode_driver.c
-+++ b/kernel/usermode_driver.c
-@@ -160,27 +160,21 @@ static void umd_cleanup(struct subprocess_info *info)
- int fork_usermode_driver(struct umd_info *info)
- {
- 	struct subprocess_info *sub_info;
--	char **argv = NULL;
-+	const char *argv[] = { info->driver_name, NULL };
- 	int err;
- 
- 	if (WARN_ON_ONCE(info->tgid))
- 		return -EBUSY;
- 
- 	err = -ENOMEM;
--	argv = argv_split(GFP_KERNEL, info->driver_name, NULL);
--	if (!argv)
--		goto out;
--
--	sub_info = call_usermodehelper_setup(info->driver_name, argv, NULL,
--					     GFP_KERNEL,
-+	sub_info = call_usermodehelper_setup(info->driver_name,
-+					     (char **)argv, NULL, GFP_KERNEL,
- 					     umd_setup, umd_cleanup, info);
- 	if (!sub_info)
- 		goto out;
- 
- 	err = call_usermodehelper_exec(sub_info, UMH_WAIT_EXEC);
- out:
--	if (argv)
--		argv_free(argv);
- 	return err;
- }
- EXPORT_SYMBOL_GPL(fork_usermode_driver);
+OK, that makes sense, I will work on that.
 -- 
-2.25.0
-
+Florian
