@@ -2,50 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B32C4212DB5
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 22:17:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA9A2212DBD
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 22:17:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726053AbgGBURC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 16:17:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44762 "EHLO
+        id S1726291AbgGBURS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 16:17:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726033AbgGBUQ7 (ORCPT
+        with ESMTP id S1726048AbgGBURB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 16:16:59 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 893EAC08C5DD
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 13:16:59 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id t74so17005017lff.2
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 13:16:59 -0700 (PDT)
+        Thu, 2 Jul 2020 16:17:01 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCC65C08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 13:17:00 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id s9so33811545ljm.11
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 13:17:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=semihalf-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id;
-        bh=89gsiA7+bVZ+IYsObbOq4QNYGioS8fOEnycohDBafRU=;
-        b=SeQg6bRxsTjFsGcwQzWxB3XEisRTzLRjuA/ey7GHDgP74NdLIBJfhgpiwkuG8gxBi/
-         SxnYxKq6ynMP6io4YDnNy600UZzu/Sa45BZSat9qzIe7XAt4ejdl0IH5y4zCBbsJlsVX
-         OXIUx0SQmXiNInOWt5+pA4ItNwYlN0TFKGsyO11KkE8OcuwLXDAw8h35wvjv+zJ+2UTH
-         RfWeuIdKRmTaki9jspbxz11H34agHKTuKmuB4a6HwoThOFqkAKkBgURdC2Ayk+xeecVB
-         Tqa3upQVxqHI+BxZsMpjM71loT+buTuFxaVzjuei6+9apVYIH+pUeIj6csgvgEFozEzU
-         SLrg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=eJKWwwb5sZNIMmtDeQlyT8Jj6wSl1CFV9/fEuSXAZwU=;
+        b=awIazyPjnY7Ozy4WBmf6iohjAWMeVLUmfItYZqGlKzRi8S3I0MoV5VXXXlo1rju0he
+         jH/oGOQOZv88hF8lDWgEo1s+4BfuzWa0QW51ddyQhfF5yiTZefpWoWrFOHbqARF2pRXL
+         g/lRtzvGd7SRzaQMda6Nh8Rel7M7ZksicGl8MPm9NICfmZAYzCd+N3rn7NUmSg3Wu99B
+         tjismAzWn1MJMSeY+kzWTBb+IMhWnpx7M0jT7x4z/64ov+8UKR/FANC8VIPhGBKdvQdL
+         xAQT61yrooLnwYiKogRqY3HmOcbJlMFI37eJKIzd19v+3BkvmVrNraFkxIbCy6Pzda7L
+         1RAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=89gsiA7+bVZ+IYsObbOq4QNYGioS8fOEnycohDBafRU=;
-        b=uSFZyG3SzfX2e5wWAtxjosLFHU9Bg5GuC4nj4BcfwPwp+so/Im4FZgFYe9ceEiViGz
-         PWSthp8Qa2H2QJxSFo6lpq+PniEdNfWvzl0zsOLhG2JDrwC43ZDcN+2N+4fYpdbuaZC7
-         9X52qxuyt8K1DvPaKiA/Tp/Bj6/6WXyuZulXOU3F22wh1cmJDCG2pBPKZGYY5QI27Hp2
-         jAg19b6uBpiKS+KmQGKESXpZgelW4Dr+iOYj8FORzNCJmaTbk3g4YJ5k3XrM65O5hO/F
-         ekiIikB99nOLtqoBeToLtd/rBc1Nd9FslYUhc1JtuhItjBb3oX1FV6rt20WHnEaxTogE
-         GDpw==
-X-Gm-Message-State: AOAM533tcnQ9UcoeQzWYJqTQnDsTTrquQ8XYVfcfihK1/1yGr03Pi58O
-        9oEAV6gjsGr4JBgT2QQKKxw1CQ==
-X-Google-Smtp-Source: ABdhPJwDloDr2B+qvX8EPRVRO/2+akigxPEfLX/jJsPdos8x1RrqHbztjXXuOrcBB7+Bw8UKZx+ukg==
-X-Received: by 2002:a19:8806:: with SMTP id k6mr19203409lfd.189.1593721017874;
-        Thu, 02 Jul 2020 13:16:57 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=eJKWwwb5sZNIMmtDeQlyT8Jj6wSl1CFV9/fEuSXAZwU=;
+        b=i+GC7zVsb7XEp26Te8pEGq7R8bppnQbNH1CThsSvH/nSu0EMcfxBJ6BY7rDAiSeTQt
+         YKuvIVKNhIbEVO9qIm0seEmEjpkYzVm+X49g8BO5QjhMkryqmnBFzYb9iz4XBLOQWulN
+         rtbXUIVcOW4AXsK/ZMys6xNFizoJHpiNuEHLNLAaj7bWsc8FJPwLSf7L6w3TTyuMwRiq
+         lg7+9cU1kqV/JT+e1sLCoEoVziCACcIPE+kTx+tTbHe4OTa4jCFE+1rBEMkbDTf4IqNa
+         iCENqKnBIlotifIFFkJIWevrPOVsNye9A/5RRJj4rLgbYJ+QRGlbVsUW2PblD0OhIGyh
+         VXxA==
+X-Gm-Message-State: AOAM532NXtBrJm8xJayNIYuXllacUM+5x7yq8zB6qLUHCX47gQirvcIF
+        jrvmF7WmGF/jwW1qQrnTJbm2sQ==
+X-Google-Smtp-Source: ABdhPJwhWFHlehhdaC1EHXHyukD2VZsiZOAASUSH4+v3yoslhRemMCOLsyiK2U3r+dNAOF51WBRqZw==
+X-Received: by 2002:a2e:b554:: with SMTP id a20mr16177178ljn.108.1593721019380;
+        Thu, 02 Jul 2020 13:16:59 -0700 (PDT)
 Received: from localhost.localdomain ([83.68.95.66])
-        by smtp.gmail.com with ESMTPSA id y2sm3320372lji.8.2020.07.02.13.16.56
+        by smtp.gmail.com with ESMTPSA id y2sm3320372lji.8.2020.07.02.13.16.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Jul 2020 13:16:57 -0700 (PDT)
+        Thu, 02 Jul 2020 13:16:58 -0700 (PDT)
 From:   Tomasz Nowicki <tn@semihalf.com>
 To:     will@kernel.org, robin.murphy@arm.com, joro@8bytes.org,
         gregory.clement@bootlin.com, robh+dt@kernel.org, hannah@marvell.com
@@ -53,52 +54,56 @@ Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
         devicetree@vger.kernel.org, catalin.marinas@arm.com,
         nadavh@marvell.com, linux-arm-kernel@lists.infradead.org,
         mw@semihalf.com, Tomasz Nowicki <tn@semihalf.com>
-Subject: [PATCH v3 0/4] Add system mmu support for Armada-806
-Date:   Thu,  2 Jul 2020 22:16:29 +0200
-Message-Id: <20200702201633.22693-1-tn@semihalf.com>
+Subject: [PATCH v3 1/4] iommu/arm-smmu: Add SMMU ID2 register fixup hook
+Date:   Thu,  2 Jul 2020 22:16:30 +0200
+Message-Id: <20200702201633.22693-2-tn@semihalf.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200702201633.22693-1-tn@semihalf.com>
+References: <20200702201633.22693-1-tn@semihalf.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There were already two versions of series to support SMMU for AP806,
-including workaround for accessing ARM SMMU 64bit registers.
-First [1] by Hanna Hawa and second [2] by Gregory CLEMENT.
-Since it got stuck this is yet another try. I incorporated the V2 comments,
-mainly by moving workaround code to arm-smmu-impl.c as requested.
+We already have 'cfg_probe' hook which meant to override and apply
+workarounds while probing ID registers. However, 'cfg_probe' is called
+at the very end and therefore for some cases fixing up things becomes complex
+or requires exporting of SMMU driver structures. Hence, seems it is better and
+cleaner to do ID fixup right away. In preparation for adding Marvell
+errata add an extra ID2 fixup hook.
 
-For the record, AP-806 can't access SMMU registers with 64bit width,
-this patches split the readq/writeq into two 32bit accesses instead
-and update DT bindings.
+Signed-off-by: Tomasz Nowicki <tn@semihalf.com>
+---
+ drivers/iommu/arm-smmu.c | 3 +++
+ drivers/iommu/arm-smmu.h | 1 +
+ 2 files changed, 4 insertions(+)
 
-The series was successfully tested on a vanilla v5.8-rc3 kernel and
-Intel e1000e PCIe NIC. The same for platform devices like SATA and USB.
-
-[1]: https://lkml.org/lkml/2018/10/15/373
-[2]: https://lkml.org/lkml/2019/7/11/426
-
-Hanna Hawa (1):
-  iommu/arm-smmu: Workaround for Marvell Armada-AP806 SoC erratum
-    #582743
-
-Marcin Wojtas (1):
-  arm64: dts: marvell: add SMMU support
-
-Tomasz Nowicki (2):
-  iommu/arm-smmu: Add SMMU ID2 register fixup hook
-  dt-bindings: arm-smmu: add compatible string for Marvell Armada-AP806
-    SMMU-500
-
- Documentation/arm64/silicon-errata.rst        |  3 ++
- .../devicetree/bindings/iommu/arm,smmu.yaml   |  5 ++
- arch/arm64/boot/dts/marvell/armada-8040.dtsi  | 36 +++++++++++++
- arch/arm64/boot/dts/marvell/armada-ap80x.dtsi | 17 ++++++
- drivers/iommu/arm-smmu-impl.c                 | 52 +++++++++++++++++++
- drivers/iommu/arm-smmu.c                      |  3 ++
- drivers/iommu/arm-smmu.h                      |  1 +
- 7 files changed, 117 insertions(+)
-
+diff --git a/drivers/iommu/arm-smmu.c b/drivers/iommu/arm-smmu.c
+index 243bc4cb2705..17c92e319754 100644
+--- a/drivers/iommu/arm-smmu.c
++++ b/drivers/iommu/arm-smmu.c
+@@ -1857,6 +1857,9 @@ static int arm_smmu_device_cfg_probe(struct arm_smmu_device *smmu)
+ 
+ 	/* ID2 */
+ 	id = arm_smmu_gr0_read(smmu, ARM_SMMU_GR0_ID2);
++	if (smmu->impl && smmu->impl->cfg_id2_fixup)
++		id = smmu->impl->cfg_id2_fixup(id);
++
+ 	size = arm_smmu_id_size_to_bits(FIELD_GET(ARM_SMMU_ID2_IAS, id));
+ 	smmu->ipa_size = size;
+ 
+diff --git a/drivers/iommu/arm-smmu.h b/drivers/iommu/arm-smmu.h
+index d172c024be61..f4c8bd7d0b34 100644
+--- a/drivers/iommu/arm-smmu.h
++++ b/drivers/iommu/arm-smmu.h
+@@ -382,6 +382,7 @@ struct arm_smmu_impl {
+ 	void (*write_reg64)(struct arm_smmu_device *smmu, int page, int offset,
+ 			    u64 val);
+ 	int (*cfg_probe)(struct arm_smmu_device *smmu);
++	u32 (*cfg_id2_fixup)(u32 id);
+ 	int (*reset)(struct arm_smmu_device *smmu);
+ 	int (*init_context)(struct arm_smmu_domain *smmu_domain);
+ 	void (*tlb_sync)(struct arm_smmu_device *smmu, int page, int sync,
 -- 
 2.17.1
 
