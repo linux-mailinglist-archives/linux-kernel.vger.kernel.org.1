@@ -2,115 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07115212137
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 12:27:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E459E212138
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 12:28:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728518AbgGBK1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 06:27:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38038 "EHLO
+        id S1728485AbgGBK2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 06:28:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727991AbgGBK1w (ORCPT
+        with ESMTP id S1727991AbgGBK2N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 06:27:52 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B46FBC08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 03:27:52 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id o11so27532146wrv.9
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 03:27:52 -0700 (PDT)
+        Thu, 2 Jul 2020 06:28:13 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72FCDC08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 03:28:13 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id d17so16486850ljl.3
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 03:28:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=43XB0eC1/F767YChsoswsUl8WKG5LpvTnDvwDbF5waY=;
-        b=lcB1OsgavV6AS6xXpHASRHbQIS9mdi+5CWDIKAPK6byFGjS2kShfucTE6wRte8SXdA
-         xnb/NH/QzB1T34ITNbyEh9iRkUFAasKd/cDPVKWtG9msCV4MWqkj0MBQnVKb6bxSqw0X
-         Jinj71DqZs8L9cvTp+vcCb0iHjTPx1QKxEE2mmwWnKDodM7YZE4biJv01RwYPOuosSHm
-         GWnWTrjgzmvp0fsRu310N6f7b/oQTXQYjYiivWeAOJ+05ZWNWq0sZDLJjIeZpI8GStFq
-         t4rmjQn0HjLvuTLx3g9Kbek7aYxR7kXcRPexu4CJDJ0Kp9qW66pvjCP/gmVErnjkReQt
-         o6Yw==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=He9kpFQwq1I68wdOjeNvE0LON5OL4PlSGVKoCJBAUEM=;
+        b=RnaU5XOEEr6dvWoKcI4E5jE4ujRM8VonY7c8x2YFXyn+Vt1CJnxyAdaJWG7P5mRXcf
+         lpkIJkJ/1Sa2TBPc6E1+5y9PnoS/XxNUUsnBd9AF4yG3SzKXrFFJSksqj34fdFvdaOxF
+         t2vzSb1hoBIs4dEMzU1XHxj6YjbwKlr6gC/zfkqnDL+d+Ifq7LuRbVoUAzw0iGQKFA7F
+         to8Dgs/v2u7lKf2vkkUMzGQfGjs93b1zq7iCz/LNyzssRterNAQmL44IOe1IgEO6MO9T
+         mrDqH2rUHn8/l8eNWA6FEA08KTyfjCXZVzkz3uMvxnKXBCJWaR81Eg3Kt6+nO6bxoKWP
+         7I5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=43XB0eC1/F767YChsoswsUl8WKG5LpvTnDvwDbF5waY=;
-        b=cyxoboEu8Kys9sP/PKkbwzMIZmzsIFjSmV7gVP4nlj0XRN4TEqnsaxAubXUb/r3VG9
-         VlJV9EBqdLSRxbBSkmcpZyQ9z4d2gydGflUfSunRQRFE/O+WNFzWAkx1D0zsTZurWqGd
-         hczLYwW+j8UEPysX+P5hIlMbmX6y1hQvkd7ELR4pCJG0+E7PmQuLF/Nz/aeoRUJbqAul
-         dmjUs06E0yd2gxlYHhxNDKBj7RqJraLLSj+IFmQ0ayqhaf6G8QtvbX+L4MU4TPTNAtoQ
-         UFIa0hcOWeZ7jSIO3E26bmtM4z5mKrPxpkYc0fKZmsuFmqbymghHbpvtQdfzAP0YBV6y
-         82Rw==
-X-Gm-Message-State: AOAM533uJPPW+umSxpYnhnc2adRn6jmFhMvEJDa3QZmJol4N4EWpo1TS
-        6iLOTyEpAm3MgMTq6hEgpLlZ+A==
-X-Google-Smtp-Source: ABdhPJxfvipf12m9Fun1ABvXSxv8cHUNe7t7xgAGmyrBPnhrmnJtU/sJ2LuWrBq69N6HUDPIIlbzwA==
-X-Received: by 2002:adf:fac8:: with SMTP id a8mr1728275wrs.368.1593685671492;
-        Thu, 02 Jul 2020 03:27:51 -0700 (PDT)
-Received: from dell ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id 65sm10874282wre.6.2020.07.02.03.27.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Jul 2020 03:27:50 -0700 (PDT)
-Date:   Thu, 2 Jul 2020 11:27:48 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Gene Chen <gene.chen.richtek@gmail.com>
-Cc:     jic23@kernel.org, jacek.anaszewski@gmail.com, pavel@ucw.cz,
-        matthias.bgg@gmail.com, knaack.h@gmx.de, lars@metafoo.de,
-        pmeerw@pmeerw.net, dmurphy@ti.com, lgirdwood@gmail.com,
-        Mark Brown <broonie@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Gene Chen <gene_chen@richtek.com>, shufan_lee@richtek.com,
-        cy_huang@richtek.com, benjamin.chao@mediatek.com
-Subject: Re: [PATCH v2 2/4] mfd: mt6360: implement i2c R/W with CRC
-Message-ID: <20200702102748.GS1179328@dell>
-References: <1592567631-20363-1-git-send-email-gene.chen.richtek@gmail.com>
- <1592567631-20363-3-git-send-email-gene.chen.richtek@gmail.com>
- <20200701071620.GQ1179328@dell>
- <CAE+NS35Kj_H9uSgBiff4hogTWmwh6z+vmPNWDh_yU1=p68xQZA@mail.gmail.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=He9kpFQwq1I68wdOjeNvE0LON5OL4PlSGVKoCJBAUEM=;
+        b=SlPTyFIwbjh9KFi8NrRuwmmqHmTC1+W/aH/tk+4Rl7MtFp9EQmp8GdzwlyX1jujTkQ
+         TmTaD+dQbYT6K1FnrxhMdLL7kk3KHTGf5FmbtdZapOlAZ2GGBRUvdUTVhKfabLq/SJem
+         /DxdFRbPtm4MRfw8CMn5lWeHN0ES3/jXH2k8FJRrCOS6q3BCc+PnFiH6l9+JxKgGueFL
+         qCFv/+f6MC1NfjhrTMrTLM22VLgDywnYEoZ49LSFZEG83d4HTeckhCzaT2MpqHgjIxOS
+         LnY/qUqRXlRnhtE9FjL4zXpSmqhZ8sObbgqCIOqtTcsSjmVF7qSKcMq9cdjH+pA0czO7
+         lDIw==
+X-Gm-Message-State: AOAM530z3YGlWPE1WlGg2OWVsmhRy2a5MOCVelfLednXV0QoPIn5Duyf
+        n1JrRujxUzLhtBW2zuYLKkfVPGENWzmoFoym39g=
+X-Google-Smtp-Source: ABdhPJwggRYC/MteU3+9YF+6EQNMSWkgGEo0tgQPW26/JGw3CfC92cQA27xfLt/y4VlsT7A76SLPpa4G+huv6nn9jSI=
+X-Received: by 2002:a2e:984e:: with SMTP id e14mr3756802ljj.169.1593685691879;
+ Thu, 02 Jul 2020 03:28:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAE+NS35Kj_H9uSgBiff4hogTWmwh6z+vmPNWDh_yU1=p68xQZA@mail.gmail.com>
+Received: by 2002:ab3:714b:0:0:0:0:0 with HTTP; Thu, 2 Jul 2020 03:28:11 -0700 (PDT)
+Reply-To: mrs_kad4233@hotmail.com
+From:   mrs kadi <mrsalice593@gmail.com>
+Date:   Thu, 2 Jul 2020 03:28:11 -0700
+Message-ID: <CACBFW8MyjWPuiiLZ5iixCzcrrNZvQP2waJ7MHxX-Mc1ahJkW1Q@mail.gmail.com>
+Subject: Compliment of the day,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 02 Jul 2020, Gene Chen wrote:
+Dear sir/madam
 
-> Lee Jones <lee.jones@linaro.org> 於 2020年7月1日 週三 下午3:16寫道：
-> >
-> > On Fri, 19 Jun 2020, Gene Chen wrote:
-> >
-> > > From: Gene Chen <gene_chen@richtek.com>
-> > >
-> > > imlement i2c R/W with CRC when access sub-device PMIC and LDO part
-> >
-> > Please use proper grammar, including capital letters at the start of
-> > the sentence and for abbreviations such as "I2C" and full stops.
-> >
-> > Also this doesn't make sense to me.  Please elaborate.
-> >
-> 
-> ACK
-> 
-> > > Signed-off-by: Gene Chen <gene_chen@richtek.com>
-> > > ---
-> > >  drivers/mfd/Kconfig        |   1 +
-> > >  drivers/mfd/mt6360-core.c  | 541 +++++++++++++++++++++++++++++----------------
-> >
-> > This patch is doing way too much wacky stuff all at once, making it
-> > very difficult to review.  Please break it up into functional pieces
-> > and submit as separate logical patches (in a set of course).
-> >
-> 
-> If I understand correctly, I need to separate patch[2/4] but not
-> entire mt6362-core.c into several patches.
+My name is Mrs Kadi Hamanin.I have decided to seek a confidential
+co-operation with you for the execution of the deal described
+hereunder for our mutual benefit. I Hope you will keep it a secret due
+to the nature of the transaction. During the course of our audit last
+month, I discovered an unclaimed/abandoned fund total US$3.5 million
+in a bank account that belongs to a customer who unfortunately lost
+his life and entire family in a car accident.
 
-Yes please.
+Now our bank has been waiting for any of the relatives to come-up for
+the claim but nobody has done that. I personally has been unsuccessful
+in locating any of the relatives, now, I sincerely seek your consent
+to present you as the next of kin / Will Beneficiary to the deceased
+so that the proceeds of this account valued at {US$3.5 Million United
+State Dollars} can be paid to you, which we will share in these
+percentages ratio, 60% to me and 40% to you. All I request is your
+utmost sincere co- operation; trust and maximum confidentiality to
+achieve this project successfully. I have carefully mapped out the
+moralities for execution of this transaction under a legitimate
+arrangement to protect you from any breach of the law both in your
+country and here in my country when the fund is being transferred to
+your bank account.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+I will have to provide the entire relevant document that will be
+requested to indicate that you are the rightful beneficiary of this
+legacy and our bank will release the fund to you without any further
+delay, upon your consideration and acceptance of this offer, please
+send me the following information as stated below so we can proceed
+and get this fund transferred to your designated bank account
+immediately. I know much about the existence of this fund and the
+secrets surrounding this money.
+
+-Your Full Name:
+-Your Contact Address:
+-Your direct Mobile telephone Number:
+-Your Date of Birth:
