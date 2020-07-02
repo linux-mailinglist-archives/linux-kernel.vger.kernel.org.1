@@ -2,185 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95285211C3E
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 08:54:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4703B211C4C
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 08:56:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727839AbgGBGyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 02:54:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727097AbgGBGyS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 02:54:18 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3137C08C5DC
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 23:54:15 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id z13so26755195wrw.5
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 23:54:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=jkGYYfe2hXwlfT92r1IHKv+smCrZ9H0RHjhvrcwG6RM=;
-        b=uue4Ct1O77dMDRlgPX47t639kQvvOkI806ekC1sY2KMQm/rN7jIHuIYUIwwRir6yGN
-         FC6aKbB50VTkvX/qj9HCtX/WgTnlI0Qp1Sfx0c+wMQI6cqxxg+h/1ZA8o9wiBgrJyKkC
-         qxQuGj0uCmb8q8EApRFYhieNgy0As6sq3kAmVyE1CRzMf4CgbINob/Ndo4KO176Y3NAF
-         PqlrE0ZpDDMIbmOI/qz+kDgDBslJmDVn9fcfn08kikjRMVB7gihB+3/zHA+GcFLp8pwE
-         PXHjdf20mEY55LmI0dUCXScOKEzMJIIIy7rBi6ouF1p15hFPiPsIQIv4OsVTLg6dk3Yy
-         dI+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=jkGYYfe2hXwlfT92r1IHKv+smCrZ9H0RHjhvrcwG6RM=;
-        b=noibAu5lMklCIwRKcgPN3HVMBDfkFe6VHiEV0CGQIGWiUZb1x2zfWRR0hbeVXrCoWJ
-         wQSRgY2s2wca+oclQ72aJsK+5+By4GF4LvawyRJFC1S5yV9ovCCgKOWn3EeOYnC7ggi1
-         85Nym0hHlVw7QBbyw//5xEZtWB4lL9qKrLYgFVmm4DPYvgTf5BRPESMSXXgxUoAvvxSL
-         57hUN99DldlK0wPgI23bawdViiWsU6f2arfut8rX+9TRA42fKhurGCCA6DDLdrxFQBqH
-         /HuXWrx/8vmXma4Pw2FUkX0mZ8jK+e+9E9OGTaiSPSE+3TAasYxQ3lD+peTAIbDA94qk
-         2zLw==
-X-Gm-Message-State: AOAM532fnxMxTCPWNFwYWGhezLaT31V+luiqW38WMsMikdve98aXmdDP
-        AZIZ9Xs8QGa+UmXS73VAfNhyGTUj2Pg=
-X-Google-Smtp-Source: ABdhPJydX7owlhIb52/jlcBSck3LcH0Z4kO4QGJwnzYSBGCkzFe4tct2dW83VZ6L2kb1EOVAkOxFBg==
-X-Received: by 2002:adf:f20a:: with SMTP id p10mr31837380wro.41.1593672854471;
-        Wed, 01 Jul 2020 23:54:14 -0700 (PDT)
-Received: from dell ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id k11sm10540596wrd.23.2020.07.01.23.54.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Jul 2020 23:54:13 -0700 (PDT)
-Date:   Thu, 2 Jul 2020 07:54:12 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Michael Walle <michael@walle.cc>
-Cc:     robh+dt@kernel.org, broonie@kernel.org, gregkh@linuxfoundation.org,
-        andriy.shevchenko@linux.intel.com, devicetree@vger.kernel.org,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com, arnd@arndb.de,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/1] mfd: Add I2C based System Configuaration (SYSCON)
- access
-Message-ID: <20200702065412.GO1179328@dell>
-References: <20200622075145.1464020-1-lee.jones@linaro.org>
- <e436fd60bf0ebb6d72a76034d0fc35de@walle.cc>
- <f505c52d565ba7dbf05eef895782c410@walle.cc>
- <20200701070434.GP1179328@dell>
- <5d1d41504172d86d395b0135923f6f02@walle.cc>
+        id S1726748AbgGBG4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 02:56:50 -0400
+Received: from mout.web.de ([212.227.15.14]:34369 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726068AbgGBG4t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 02:56:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1593672987;
+        bh=wp+PJBfgkRhB2JTIRaWDN1CBab8hu15mzsFK977Zf0k=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=YL+eeP32eGnMvkQ1ob4993ZDbYXnDBJVXEDNlfcV/yywQcfpX9jUCGpg2617fdDWP
+         1Z9YmRCj3PdtUpKwdMSkvrUedRcCuHuiOtL/0EyK0FdHCnqG9inu9iHKAWC9uKUadd
+         lyaecvqjNHZFrb683sz0eIgZQZwCQ1vE9QeEwfL0=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.2] ([93.132.138.52]) by smtp.web.de (mrweb002
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 0MLyCC-1jjD6N1gpY-007j8X; Thu, 02
+ Jul 2020 08:56:27 +0200
+Subject: Re: [PATCH v3] Documentation: Coccinelle: fix various typos etc.
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-doc@vger.kernel.org,
+        Coccinelle <cocci@systeme.lip6.fr>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Julia Lawall <julia.lawall@lip6.fr>,
+        Gilles Muller <Gilles.Muller@lip6.fr>,
+        Nicolas Palix <nicolas.palix@imag.fr>,
+        Michal Marek <michal.lkml@markovi.net>
+References: <def28907-18b9-5b7a-e743-79b0418c946c@infradead.org>
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+Message-ID: <63450b02-93f1-1ea0-9e39-c5bb14086ce2@web.de>
+Date:   Thu, 2 Jul 2020 08:56:24 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
+In-Reply-To: <def28907-18b9-5b7a-e743-79b0418c946c@infradead.org>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5d1d41504172d86d395b0135923f6f02@walle.cc>
+Content-Language: en-GB
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:0HvnEXe+l0OBvUyXfyxLXzJZPhe9tFXOgjrAAApriXLQv4g/d3s
+ AV9iMaLhXEhhuDTH5tqiOfEMeWqN9Mtm7BsuPkyXRajQkQvUHsUjOb5iLrldA7ktCESQAoK
+ 3VJOFc6+MNxK47VTI3ovtFMBZzh4R8SfIlYwqeQIhlwJlULg4bksK4HELcXQrrgAAj3xylt
+ ChQObkNkLt3MrMEPBRTiA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:F1efwYzKYGg=:G12g1cu9a81Ot7AKe480Fj
+ KoWkSk2b/dSSZCVGNdgtq0r+eiWvCsqu1abvpQNzEl07hw3vgu5cMKNCqrAjOApjCq8a/kVou
+ UELvL/UV0JS7qFeuTmOhT/SG3xVA8TQRZ04Pi5GUGM/yuKNy9LNLIX8b/6be0ye/5td3/1oAU
+ FzrZ3gxQm4HAEjdxDImsIrBG6le9nB7t1mSCBoSy0yoPnOcKwH51BSNs4E5BtQWKD8pRuCcZI
+ +6qh40s4ZbK81FvalfwH0hrxgcq5iXWPs8vFCrYMMDsnY82w7qQUvqChSkoUM+XK9VPKKWt4w
+ 4I2l2MjZ64UpeKFXQ5oXwEGO215OxP4r8XGjHBqRtR1Msnks02qOGqzZIrtAWv1TDoA25iWSQ
+ rakHlQkCPX6hf32LlYfiABAazr0m5nOXsQNtebRd3djy8+Qf5Tm1YT8FTTZgo0Oe2ZZLCv/cS
+ gf5TSD8Dx2WqRy5hK7rk4emurVEzmz3H8agFn3kieEMzbgZL/GUtulSO94YF64R8j9pBXnbM+
+ nF7lfyjAC14rNKk78QZDAvFqOi8xM/nwvgG/jsoERQo9maI/1pE77ddB/TQwPT2mVsmK2tuEL
+ lu4be2Bo5MRC5HZxLaKYpuo2JhVvUxT7gO7EMtJ/jCtPKQBtvxYPJDjzHFju6EAQGUAyAI/42
+ 7sC4t3MYOzoIfbmvYL2/WckDT1dJM1g1Oj9kLA8Qt1Ef0QQjMoMH9UB2c8mGJxPwg3cmwa9i4
+ GVLNEbOj447k6H4n6bmPxl6hSdOmOqdxsvDJoWjrdU8O56vHI5sxR57yTTC8/zDnt2Sdy8d2B
+ nkqgsbIRLD6GQWOAPzOWf9WdSUmPGvq1LbnbkXEBVg2g3XHDc3CT2hE8iIUv+Jv0ufFjXXz4K
+ 49Xv6lWzB8Bcfq5CZA5yUUl7AgESpulRd9K/IOEpuTxRs+H3qhVJfJvKlq5bRzTz8AGEPFkvq
+ RDFAZKnGriJRP9IciaCZ14L9K62yblBiJ9WCFC0tNjYM9EimNBlsxjcWQLJ4WspRwcE2Fs8RJ
+ Sy0ulelL/fsizjQG8VnijMNjROnw4cP9AQ6W3f7gNlJnEB3h6wiS7O2CaeREvRqBKoyRay7ha
+ BSfEeeJNG9ixMh0G+rDHhhpd99T8sKgZtkBV+iFPby3j+srUL7rq6Vd11Dn/dALyJh3bkhDLA
+ zSfbC25zy5ghf7JSNr3zsOEQZecu5FrsaGEDyPxLWgwYlDhkIKIPltCoKgtuOpc3W2D6ltfcj
+ oK2inGRPaOV3Cim9K
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 01 Jul 2020, Michael Walle wrote:
+=E2=80=A6
+> +++ linux-next-20200629/Documentation/dev-tools/coccinelle.rst
+=E2=80=A6
+> @@ -260,13 +260,13 @@ If not using the kernel's coccicheck tar
+=E2=80=A6
+> -We help Coccinelle when used against Linux with a set of sensible defau=
+lts
+> +We help Coccinelle when used against Linux with a set of sensible defau=
+lt
+>  options for Linux with our own Linux .cocciconfig. This hints to coccin=
+elle
 
-> Am 2020-07-01 09:04, schrieb Lee Jones:
-> > On Wed, 01 Jul 2020, Michael Walle wrote:
-> > 
-> > > Hi Lee,
-> > > 
-> > > Am 2020-06-30 11:16, schrieb Michael Walle:
-> > > > I'm just trying to use this for my sl28 driver. Some remarks, see below.
-> > > >
-> > > > Am 2020-06-22 09:51, schrieb Lee Jones:
-> > > > > The existing SYSCON implementation only supports MMIO (memory mapped)
-> > > > > accesses, facilitated by Regmap.  This extends support for registers
-> > > > > held behind I2C busses.
-> > > > >
-> > > > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > > > > ---
-> > > > > Changelog:
-> > > > >
-> > > > > v3 => v4
-> > > > >   - Add ability to provide a non-default Regmap configuration
-> > > > >
-> > > > > v2 => v3
-> > > > >   - Change 'is CONFIG' present check to include loadable modules
-> > > > >     - s/#ifdef CONFIG_MFD_SYSCON_I2C/#if
-> > > > > IS_ENABLED(CONFIG_MFD_SYSCON_I2C)/
-> > > > >
-> > > > > v1 => v2
-> > > > >   - Remove legacy references to OF
-> > > > >   - Allow building as a module (fixes h8300 0-day issue)
-> > > > >
-> > > > > drivers/mfd/Kconfig            |   7 +++
-> > > > >  drivers/mfd/Makefile           |   1 +
-> > > > >  drivers/mfd/syscon-i2c.c       | 104
-> > > > > +++++++++++++++++++++++++++++++++
-> > > > >  include/linux/mfd/syscon-i2c.h |  36 ++++++++++++
-> > > > >  4 files changed, 148 insertions(+)
-> > > > >  create mode 100644 drivers/mfd/syscon-i2c.c
-> > > > >  create mode 100644 include/linux/mfd/syscon-i2c.h
+Another small wording adjustment:
+  =E2=80=A6 These hints =E2=80=A6
 
-[...]
-
-> > > > This way, (a) a driver doesn't have to use "#include <linux/i2c.h>" just
-> > > > to call to_i2c_client() (or i2c_verify_client()) and (b) you won't do it
-> > > > all over again in all sub drivers.
-> > > >
-> > > > So you could just do a
-> > > >   regmap = syscon_i2c_to_regmap(pdev->dev.parent);
-> > > >
-> > > > I've also noticed that the mmio syscon uses device_node as parameter.
-> > > > What
-> > > > was the reason to divert from that? Just curious.
-> > > 
-> > > How is this supposed to be used?
-> > > 
-> > > I had something like the following in mind:
-> > > 
-> > > &i2c {
-> > >   cpld@4a {
-> > >     compatible = "simple-mfd";
-> > >     reg = <0x4a>;
-> > > 
-> > >     gpio@4 {
-> > >       compatible = "vendor,gpio";
-> > >       reg = <0x4>;
-> > >     };
-> > >   };
-> > > };
-> > 
-> > Yes, that was the idea.
-> > 
-> > > But I think the childen are not enumerated if its an I2C device. And
-> > > the actual i2c driver is also missing.
-> > 
-> > What do you mean?  Can you elaborate?
-> 
-> There is no i2c_driver instance who would create the regmap.
-
-The regmap is created by the first caller of:
-
- syscon_i2c_to_regmap{_config}()
-
-> If I'm
-> reading the I2C code correctly, it won't probe any i2c device of a
-> bus if there is no i2c_driver with an associated .probe() or
-> .probe_new().
-
-Why wouldn't the children be registered using i2c_driver?
-
-> And even if it is probed, its subnodes won't be
-> enumerated; the "simple-mfd" code only works for MMIO busses, right?
-> Or I'm getting something really wrong here..
-
-Then how are these I2C based devices able to call of_platform_populate()?
-
- drivers/mfd/gateworks-gsc.c
- drivers/mfd/lochnagar-i2c.c
- drivers/mfd/palmas.c
- drivers/mfd/smsc-ece1099.c
- drivers/mfd/stpmic1.c
- drivers/mfd/twl-core.c
-
-Might require some more research into where your use-case is breaking
-down.
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Regards,
+Markus
