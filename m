@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16349211892
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 03:29:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FA89211890
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 03:29:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729809AbgGBB3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 21:29:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59146 "EHLO mail.kernel.org"
+        id S1729519AbgGBB3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 21:29:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59200 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729448AbgGBB1U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 21:27:20 -0400
+        id S1729111AbgGBB1W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 21:27:22 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4816620748;
-        Thu,  2 Jul 2020 01:27:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BBDD221473;
+        Thu,  2 Jul 2020 01:27:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593653240;
-        bh=MeKeOAlNFA1dCY/9kVwr8uC2xH0StdwaBh9S8iz1+GQ=;
+        s=default; t=1593653242;
+        bh=HQ0RL3PqNuqnPSDpWahWC774iELBt8xrsGRygVPHgJ0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=19Fjp8hwvpFSTMPzuqR78Hu7fVHsTzAAf4JnVaw5elvfv1AaqYVLpgQtJgi1GLDQv
-         vr4Y23Vh9gwAliH5GbsX72koDmYVsC6nqBjA6cnwijYpRP70/56e9shoy6VkSvVnzV
-         ENnA3Xk+mBhePq5i4C6PVKiDitxZp9FOTAdNVJAg=
+        b=RvgjfNRPIgMaHNMRdAdCrgEuOwajU88Vte4npnAyLxpFAdqcgwbEppCJSUxFptyGv
+         2pocrGr+8mxZTbhGwVVZEcGR0yvROvviL1O2eezD4svY/Nu9EzYq23qIFG+/wmkHqh
+         swGVeV88uezgd8sIt3kcQezy54lMS8OEjsca8xkM=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     David Christensen <drc@linux.vnet.ibm.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 06/13] tg3: driver sleeps indefinitely when EEH errors exceed eeh_max_freezes
-Date:   Wed,  1 Jul 2020 21:27:05 -0400
-Message-Id: <20200702012712.2701986-6-sashal@kernel.org>
+Cc:     Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Egorenkov <egorenar@linux.ibm.com>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Sasha Levin <sashal@kernel.org>, linux-s390@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.9 08/13] s390/kasan: fix early pgm check handler execution
+Date:   Wed,  1 Jul 2020 21:27:07 -0400
+Message-Id: <20200702012712.2701986-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200702012712.2701986-1-sashal@kernel.org>
 References: <20200702012712.2701986-1-sashal@kernel.org>
@@ -44,40 +44,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Christensen <drc@linux.vnet.ibm.com>
+From: Vasily Gorbik <gor@linux.ibm.com>
 
-[ Upstream commit 3a2656a211caf35e56afc9425e6e518fa52f7fbc ]
+[ Upstream commit 998f5bbe3dbdab81c1cfb1aef7c3892f5d24f6c7 ]
 
-The driver function tg3_io_error_detected() calls napi_disable twice,
-without an intervening napi_enable, when the number of EEH errors exceeds
-eeh_max_freezes, resulting in an indefinite sleep while holding rtnl_lock.
+Currently if early_pgm_check_handler is called it ends up in pgm check
+loop. The problem is that early_pgm_check_handler is instrumented by
+KASAN but executed without DAT flag enabled which leads to addressing
+exception when KASAN checks try to access shadow memory.
 
-Add check for pcierr_recovery which skips code already executed for the
-"Frozen" state.
+Fix that by executing early handlers with DAT flag on under KASAN as
+expected.
 
-Signed-off-by: David Christensen <drc@linux.vnet.ibm.com>
-Reviewed-by: Michael Chan <michael.chan@broadcom.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Reported-and-tested-by: Alexander Egorenkov <egorenar@linux.ibm.com>
+Reviewed-by: Heiko Carstens <heiko.carstens@de.ibm.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Signed-off-by: Heiko Carstens <heiko.carstens@de.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/broadcom/tg3.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/s390/kernel/early.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/ethernet/broadcom/tg3.c b/drivers/net/ethernet/broadcom/tg3.c
-index c069a04a6e7e2..5790b35064a8d 100644
---- a/drivers/net/ethernet/broadcom/tg3.c
-+++ b/drivers/net/ethernet/broadcom/tg3.c
-@@ -18174,8 +18174,8 @@ static pci_ers_result_t tg3_io_error_detected(struct pci_dev *pdev,
+diff --git a/arch/s390/kernel/early.c b/arch/s390/kernel/early.c
+index a651c2bc94ef8..f862cc27fe98f 100644
+--- a/arch/s390/kernel/early.c
++++ b/arch/s390/kernel/early.c
+@@ -288,6 +288,8 @@ static noinline __init void setup_lowcore_early(void)
+ 	psw_t psw;
  
- 	rtnl_lock();
- 
--	/* We probably don't have netdev yet */
--	if (!netdev || !netif_running(netdev))
-+	/* Could be second call or maybe we don't have netdev yet */
-+	if (!netdev || tp->pcierr_recovery || !netif_running(netdev))
- 		goto done;
- 
- 	/* We needn't recover from permanent error */
+ 	psw.mask = PSW_MASK_BASE | PSW_DEFAULT_KEY | PSW_MASK_EA | PSW_MASK_BA;
++	if (IS_ENABLED(CONFIG_KASAN))
++		psw.mask |= PSW_MASK_DAT;
+ 	psw.addr = (unsigned long) s390_base_ext_handler;
+ 	S390_lowcore.external_new_psw = psw;
+ 	psw.addr = (unsigned long) s390_base_pgm_handler;
 -- 
 2.25.1
 
