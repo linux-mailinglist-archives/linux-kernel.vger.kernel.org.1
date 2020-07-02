@@ -2,94 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6060621282B
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 17:42:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E93D212837
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 17:42:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729428AbgGBPmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 11:42:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56136 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728493AbgGBPmK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 11:42:10 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5A6AB208B8;
-        Thu,  2 Jul 2020 15:42:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593704530;
-        bh=3KFnK04vEi7SoR61rRMArD9b+BR7w1+k2R0YFZiePIs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uXPoXcMNttT4jMn3+4BYmyeU01d4W2Mwcu1xJ7hI/S7P7RDqiNSek7TOZGa01uyLt
-         URHmF5er8VNTpSNU52TEL/qkdUTT7kai/UGGQpku5+C/5aqPwntmUilLbQXqKC7Lbx
-         PYdK7osKLzpwAWRFGK8g2ISveoUzKfhXMwmkJV8I=
-Date:   Thu, 2 Jul 2020 16:42:07 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Arnaud Ferraris <arnaud.ferraris@collabora.com>
-Cc:     kernel@collabora.com, Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Timur Tabi <timur@kernel.org>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 1/2] dt-bindings: sound: fsl-asoc-card: add new
- compatible for I2S slave
-Message-ID: <20200702154207.GK4483@sirena.org.uk>
-References: <20200702141114.232688-1-arnaud.ferraris@collabora.com>
- <20200702141114.232688-2-arnaud.ferraris@collabora.com>
- <20200702143145.GG4483@sirena.org.uk>
- <5de5ea5b-0716-8ed1-28b0-9ad3da7a2d47@collabora.com>
+        id S1730213AbgGBPmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 11:42:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730229AbgGBPmV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 11:42:21 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58924C08C5E1
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 08:42:20 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id x8so10567277plm.10
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 08:42:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Kybd0zpVtDTcpe4L/HEboaUKNNgAnXPFcQy8ZwcEJuI=;
+        b=MwGxMiEp5/dtTA3ogef34O3PctcdhAV3Nj892QYS7iq/+bdlneIKDksIISF88MZTJs
+         551vB7jwtgzZZvtq6shJNSIVEPChNMunEoUB8LbEsFmwqHkuUWtxgcXHKQhYMgExY7+k
+         RjFrm4VGnLlBn/66+5Gz+fn0C9B0GHrDhf0l0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Kybd0zpVtDTcpe4L/HEboaUKNNgAnXPFcQy8ZwcEJuI=;
+        b=C+ltP+tnaGDFvimgGhGAdn9zgKLQJ+d2tf73osXa/isrmRXI0YKapDeU1QPHuyBcY1
+         b/7DBsrZQmfhLnjnnDfQM7p6inyItn/cxOrGatMvI2JhHrx0qGhpmzBLUw1DWMT8pVry
+         3QCgMqwm54jq3BOcdZK32CXL8Jv+vFoLO4kzy0KW7Ezrxlxe1j4K7v4kfpxLy/vwMDHm
+         wmmRrBY8G/Owo6MD4YCFI4pZcIaSa7KXHVh++IYEV3rrwrn1b9nhPF+rtsZEZc0OkF7d
+         Ii4m+LM7fE8jGgElVbJ6KcuuocaamMRkJtORbQM1CY44v7xXea+qizzHprLdsvEX043R
+         grWA==
+X-Gm-Message-State: AOAM5314p6/FBUKDKIvIu0Eo7pRXZ4gJPy3IYXLZTTb5VfARkrrGjfpX
+        Cm7GHYKu0Hfvmml4863f0r3MxA==
+X-Google-Smtp-Source: ABdhPJx/V021h2YOrPd2qoUZY3+ajz3Yf7zbLlvvx3ojyPgvvotTbq49bzs576UQiATe81OrpVMgog==
+X-Received: by 2002:a17:90a:7785:: with SMTP id v5mr35048412pjk.31.1593704539711;
+        Thu, 02 Jul 2020 08:42:19 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id l191sm9749876pfd.149.2020.07.02.08.42.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Jul 2020 08:42:18 -0700 (PDT)
+Date:   Thu, 2 Jul 2020 08:42:17 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Joe Perches <joe@perches.com>,
+        Andy Whitcroft <apw@canonical.com>, x86@kernel.org,
+        drbd-dev@lists.linbit.com, linux-block@vger.kernel.org,
+        b43-dev@lists.infradead.org, netdev@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-ide@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-spi@vger.kernel.org, linux-mm@kvack.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH v2 08/16] spi: davinci: Remove uninitialized_var() usage
+Message-ID: <202007020839.545A571CA4@keescook>
+References: <20200620033007.1444705-1-keescook@chromium.org>
+ <20200620033007.1444705-9-keescook@chromium.org>
+ <20200701203920.GC3776@sirena.org.uk>
+ <202007020819.318824DA@keescook>
+ <20200702152335.GJ4483@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="2feizKym29CxAecD"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5de5ea5b-0716-8ed1-28b0-9ad3da7a2d47@collabora.com>
-X-Cookie: I'm rated PG-34!!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200702152335.GJ4483@sirena.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jul 02, 2020 at 04:23:35PM +0100, Mark Brown wrote:
+> On Thu, Jul 02, 2020 at 08:21:40AM -0700, Kees Cook wrote:
+> > On Wed, Jul 01, 2020 at 09:39:20PM +0100, Mark Brown wrote:
+> 
+> > > Please copy maintainers on patches :(
+> 
+> > Hi! Sorry about that; the CC list was giant, so I had opted for using
+> > subsystem mailing lists where possible.
+> 
+> If you're going to err in a direction there I'd err in the direction of
+> CCing the people not the list - I only saw this since I was looking for
+> something else, I don't normally see stuff in the mailing list folder.
 
---2feizKym29CxAecD
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yeah, I've gotten conflicting feedback on treewide changes:
+- please CC me on only the one patch, I don't want to see everything else
+- please CC me on the whole series, I want the full context for the change
 
-On Thu, Jul 02, 2020 at 05:28:03PM +0200, Arnaud Ferraris wrote:
-> Le 02/07/2020 =E0 16:31, Mark Brown a =E9crit=A0:
+I opted toward "CC me on this series", but then I get stuck when the CC
+is giant. I think I may switch back to individual CCs for specific
+patches, and point people to lore if they want greater context. (lore
+didn't exist before...)
 
-> > Why require that the CODEC be clock master here - why not make this
-> > configurable, reusing the properties from the generic and audio graph
-> > cards?
+Thanks for the poke to make me reconsider this workflow. :)
 
-> This is partly because I'm not sure how to do it (yet), but mostly
-> because I don't have the hardware to test this (the 2 CODECs present on
-> my only i.MX6 board are both clock master)
-
-Take a look at what the generic cards are doing, it's a library function=20
-asoc_simple_parse_daifmt().  It's not the end of the world if you can't
-test it properly - if it turns out it's buggy somehow someone can always
-fix the code later but an ABI is an ABI so we can't change it.
-
---2feizKym29CxAecD
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7+AE4ACgkQJNaLcl1U
-h9BYwQf+LRu606rmfYnqmbLMDcS82XnfLlMQpCccSxt5qRFkxPvsZqA1zoQUrt0n
-o8061rU3fHuwt17/Mp4D0SbC4g9EGRIon64yUii1nqoPIHEgYWVQ+F7sOPTKVKD5
-Z3LD+zP06AyjJxRDJ4+4pHRWpzQL2jxziBsxgQdp4W5mfU6fV3x5BvqdN1chcOPa
-TmgXdbKXfoR1Q/HIaU0CH2PVjh94BZqRRMPs5++X7xDcCUCsYUY6GW+GS1tEXQPj
-IdJ2Rgmt3M0273RzUlFQX8+akH03BBTlIJ8eCUYIp4H8dedN5w/2eXqjIOUIMnsT
-zv1pY4Ufcdm6Uzc6A47isxUHlg565Q==
-=K6iJ
------END PGP SIGNATURE-----
-
---2feizKym29CxAecD--
+-- 
+Kees Cook
