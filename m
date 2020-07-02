@@ -2,81 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65A90212C8A
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 20:51:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45404212C98
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 20:57:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726015AbgGBSvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 14:51:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725878AbgGBSvq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 14:51:46 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98132C08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 11:51:46 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id bf7so2330005plb.2
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 11:51:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=SzSS54e5bq1IFnXIIvO4DspIsZygQN1CJ03qjOV/T6I=;
-        b=skU5G1aDBzVI2snI8XGozUM7qQgxSd7izAiIeccwo4I7Feqpn4pyqzAVSPUer3Hh9K
-         ffAmWdo8GyUfJFsyP7cmkrrW7M1e2X+hUKPGrnAkFg8CAwC3gT9CSfTzHwSq1GKySJ0O
-         vFMwTAdHDlGmu9ueRb4d+g+TqMhxaReiZkJXYFYUvAL8Wdi0Yo/sBMtddDC+7T/rWfA2
-         v6wFmnA0WemapDZdoTwgnXs7cjFEKDjTyh8NYs6ojyToUh8XP0qfpYb4CGnspQG4EMLC
-         qQje0LZHREcJ+w1lmTu1ZmCByBBdJDSai4Ig8RmibzE7Yi9BlTY+AZAZR5uijxh5Kaj8
-         0fmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=SzSS54e5bq1IFnXIIvO4DspIsZygQN1CJ03qjOV/T6I=;
-        b=nwXLn6XKMZn4Dn/vLlGE2ni3uri6WZK8fN6/qB00kpaM3GYLMFQRxYjBbUZCe2jWo1
-         GxZginUUCpS8rBQpemY6JwwiFW0UZPzXGakM76UymE+zAaJOedtZFpn8Sz9nLGE9chRH
-         dRxaZcL15nFKUrW02CfbctBXiOWyu2eY5mfziPZGnk3V7pbDqLW9cMxzhziMCIbcKyWO
-         8OjH0bJeUY1FmJ0wcmoEk7mQlmnwsC1F6FzBtuEDU5ZTWGuxbg1iXSn6umB7JsOqssHw
-         Pt7b2VNvgOIkvcg0I1Tx8aHY4uvcj9d08LAqO2iSJ8uSpygZLyF4ufDZ12WOzvdlQEYY
-         557A==
-X-Gm-Message-State: AOAM533Fu+dft455MXxX8pqaO+oV01Sg1GW1dJqn9LfkuwERIl7LEOH8
-        r0IE+BaU941Jb1fWfrwt504=
-X-Google-Smtp-Source: ABdhPJwafFGUWpt7uEzkYfqLdRUfoFvIEPIx2vTSqVn++JfBTlcWmD7vrAtYfcS3N6QfDZ/QQ/XpWg==
-X-Received: by 2002:a17:90a:dc09:: with SMTP id i9mr34272574pjv.122.1593715905957;
-        Thu, 02 Jul 2020 11:51:45 -0700 (PDT)
-Received: from Asurada-Nvidia (searspoint.nvidia.com. [216.228.112.21])
-        by smtp.gmail.com with ESMTPSA id s10sm8949429pjl.41.2020.07.02.11.51.45
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 02 Jul 2020 11:51:45 -0700 (PDT)
-Date:   Thu, 2 Jul 2020 11:51:41 -0700
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     alsa-devel@alsa-project.org, tiwai@suse.de, broonie@kernel.org,
-        Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        "open list:FREESCALE SOC SOUND DRIVERS" 
-        <linuxppc-dev@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 5/6] ASoC: fsl: fsl_asrc: fix kernel-doc
-Message-ID: <20200702185141.GF23935@Asurada-Nvidia>
-References: <20200702172227.164474-1-pierre-louis.bossart@linux.intel.com>
- <20200702172227.164474-6-pierre-louis.bossart@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200702172227.164474-6-pierre-louis.bossart@linux.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1726203AbgGBS5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 14:57:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48294 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725994AbgGBS5F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 14:57:05 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AB2E121532;
+        Thu,  2 Jul 2020 18:57:04 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.93)
+        (envelope-from <rostedt@goodmis.org>)
+        id 1jr4ON-004B9e-JJ; Thu, 02 Jul 2020 14:57:03 -0400
+Message-ID: <20200702185344.913492689@goodmis.org>
+User-Agent: quilt/0.66
+Date:   Thu, 02 Jul 2020 14:53:44 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH v2 00/15] tools lib traceevent: Patches from the trace-cmd repo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 02, 2020 at 12:22:26PM -0500, Pierre-Louis Bossart wrote:
-> Fix W=1 warnings. fix kernel doc and describe arguments.
-> 
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Hi Arnaldo,
 
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+I was missing a few patches, here's take two. I also changed some of the
+patches to state that they are coming from trace-cmd.git.
+
+-- Steve
+
+We noticed that the libtraceevent in trace-cmd.git is a bit out of sync with
+what is in the kernel. These patches can help bring it by in sync again.
+
+
+Jan Kiszka (2):
+      tools lib traceevent: Add more SVM exit reasons
+      tools lib traceevent: Fix reporting of unknown SVM exit reasons
+
+Julia Cartwright (1):
+      tools lib traceevent: Add plugin for decoding syscalls/sys_enter_futex
+
+Steven Rostedt (Red Hat) (2):
+      tools lib traceevent: Add API to read time information from kbuffer
+      tools lib traceevent: Add plugin for tlb_flush
+
+Steven Rostedt (VMware) (3):
+      tools lib traceevent: Add offset option for function plugin
+      tools lib traceevent: Add builtin handler for trace_marker_raw
+      tools lib traceevent: Change to SPDX License format
+
+Tom Zanussi (1):
+      tools lib traceevent: Add proper KBUFFER_TYPE_TIME_STAMP handling
+
+Tzvetomir Stoyanov (VMware) (6):
+      tools lib traceevent: Add tep_load_plugins_hook() API
+      tools lib traceevent: Add interface for options to plugins
+      tools lib traceevent: Introduced new traceevent API, for adding new plugins directories.
+      tools lib traceevent: Add support for more printk format specifiers
+      tools lib traceevent: Optimize pretty_print() function
+      tools lib traceevent: Move kernel_stack event handler to "function" plugin.
+
+----
+ tools/lib/traceevent/event-parse-local.h           |   22 +-
+ tools/lib/traceevent/event-parse.c                 | 1004 +++++++++++++++-----
+ tools/lib/traceevent/event-parse.h                 |   34 +-
+ tools/lib/traceevent/event-plugin.c                |  261 ++++-
+ tools/lib/traceevent/kbuffer-parse.c               |   43 +-
+ tools/lib/traceevent/kbuffer.h                     |   19 +-
+ tools/lib/traceevent/plugins/Build                 |    2 +
+ tools/lib/traceevent/plugins/Makefile              |    2 +
+ tools/lib/traceevent/plugins/plugin_function.c     |  123 ++-
+ tools/lib/traceevent/plugins/plugin_futex.c        |  123 +++
+ tools/lib/traceevent/plugins/plugin_hrtimer.c      |   17 +-
+ tools/lib/traceevent/plugins/plugin_jbd2.c         |   17 +-
+ tools/lib/traceevent/plugins/plugin_kmem.c         |   17 +-
+ tools/lib/traceevent/plugins/plugin_kvm.c          |   42 +-
+ tools/lib/traceevent/plugins/plugin_mac80211.c     |   17 +-
+ tools/lib/traceevent/plugins/plugin_sched_switch.c |   17 +-
+ tools/lib/traceevent/plugins/plugin_tlb.c          |   66 ++
+ 17 files changed, 1406 insertions(+), 420 deletions(-)
+ create mode 100644 tools/lib/traceevent/plugins/plugin_futex.c
+ create mode 100644 tools/lib/traceevent/plugins/plugin_tlb.c
