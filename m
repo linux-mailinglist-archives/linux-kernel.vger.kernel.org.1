@@ -2,90 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB3E9212E43
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 22:53:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6437212E50
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 22:58:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726260AbgGBUxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 16:53:23 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:44792 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725937AbgGBUxX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 16:53:23 -0400
-Received: by mail-io1-f66.google.com with SMTP id i4so30313875iov.11;
-        Thu, 02 Jul 2020 13:53:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oh0ojXSvKscMca+XjhHcGyOP8dOhT/m5i/K/haYmk+E=;
-        b=SrRb5TxnF/+5ymNYfOOnVnRO2RSJ+vFc9VO7FkVIb0yhYfU/lrGT0k12BZyK4RyLxo
-         n4cljSB1DUngJolj8G18QVMKZOgWMFc+3l/Yi6zsJ6mcU7R7oXKrsJ/Av3bsFSdtY2Na
-         2/Sla6pc1Yzt7neyfMkPlTbvqe9yxrhwaD3J1ahR8caTIrBlhsXGvu0O6jyyIeqAyRd3
-         6QsdC2iFv06qsvtiR8TWNDhcahI2/rWKg1pYyU7zUpzxhcp1QUNZ9YKL2XWv4EXY0mw+
-         hqW9oLFcJA3rrl+AFi3qR6z1mvD91l34rmIS0psnQ7jsrYWOQGXVdjIVOtnKSwglK+MH
-         5h+Q==
-X-Gm-Message-State: AOAM5326aZSayDwIb5sMaeiRd4KDP0VyCSNC6i+HYDMlzvbLLAr/Hw0W
-        riueVWxx3Y6UI6kny44Xhg==
-X-Google-Smtp-Source: ABdhPJx/TmnR0LTk/pC3KSj9IjuHHg3LMmIVMg2xX2biyKHnhrUV9Nv30tL/EfzFIU3xAf94ER1kDA==
-X-Received: by 2002:a5e:9309:: with SMTP id k9mr9038052iom.135.1593723201897;
-        Thu, 02 Jul 2020 13:53:21 -0700 (PDT)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id l10sm5458644ilc.52.2020.07.02.13.53.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Jul 2020 13:53:21 -0700 (PDT)
-Received: (nullmailer pid 1674380 invoked by uid 1000);
-        Thu, 02 Jul 2020 20:53:20 -0000
-Date:   Thu, 2 Jul 2020 14:53:20 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Ricardo Rivera-Matos <r-rivera-matos@ti.com>
-Cc:     pali@kernel.org, linux-pm@vger.kernel.org, sspatil@android.com,
-        linux-kernel@vger.kernel.org, afd@ti.com, dmurphy@ti.com,
-        sre@kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v15 2/4] dt-bindings: power: Convert battery.txt to
- battery.yaml
-Message-ID: <20200702205320.GA1672139@bogus>
-References: <20200701211044.18590-1-r-rivera-matos@ti.com>
- <20200701211044.18590-3-r-rivera-matos@ti.com>
+        id S1726065AbgGBU6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 16:58:36 -0400
+Received: from muru.com ([72.249.23.125]:60560 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725937AbgGBU6f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 16:58:35 -0400
+Received: from hillo.muru.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTP id BC9F48062;
+        Thu,  2 Jul 2020 20:59:27 +0000 (UTC)
+From:   Tony Lindgren <tony@atomide.com>
+To:     linux-omap@vger.kernel.org
+Cc:     "Andrew F . Davis" <afd@ti.com>, Dave Gerlach <d-gerlach@ti.com>,
+        Faiz Abbas <faiz_abbas@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Keerthy <j-keerthy@ti.com>, Nishanth Menon <nm@ti.com>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Roger Quadros <rogerq@ti.com>, Suman Anna <s-anna@ti.com>,
+        Tero Kristo <t-kristo@ti.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH] bus: ti-sysc: Do not disable on suspend for no-idle
+Date:   Thu,  2 Jul 2020 13:58:31 -0700
+Message-Id: <20200702205831.470-1-tony@atomide.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200701211044.18590-3-r-rivera-matos@ti.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 01 Jul 2020 16:10:42 -0500, Ricardo Rivera-Matos wrote:
-> From: Dan Murphy <dmurphy@ti.com>
-> 
-> Convert the battery.txt file to yaml and fix up the examples.
-> 
-> Signed-off-by: Dan Murphy <dmurphy@ti.com>
-> ---
->  .../bindings/power/supply/battery.txt         |  86 +---------
->  .../bindings/power/supply/battery.yaml        | 157 ++++++++++++++++++
->  2 files changed, 158 insertions(+), 85 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/power/supply/battery.yaml
-> 
+If we have "ti,no-idle" specified for a module we must not disable
+the the module on suspend to keep things backwards compatible.
 
+Fixes: 386cb76681ca ("bus: ti-sysc: Handle missed no-idle property in addition to no-idle-on-init")
+Reported-by: Grygorii Strashko <grygorii.strashko@ti.com>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+---
+ drivers/bus/ti-sysc.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-My bot found errors running 'make dt_binding_check' on your patch:
-
-Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.6/dist-packages/dtschema/schema/types.yaml'
-Documentation/devicetree/bindings/Makefile:20: recipe for target 'Documentation/devicetree/bindings/power/supply/battery.example.dts' failed
-make[1]: *** [Documentation/devicetree/bindings/power/supply/battery.example.dts] Error 255
-make[1]: *** Waiting for unfinished jobs....
-Makefile:1347: recipe for target 'dt_binding_check' failed
-make: *** [dt_binding_check] Error 2
-
-
-See https://patchwork.ozlabs.org/patch/1320813
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure dt-schema is up to date:
-
-pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
-
-Please check and re-submit.
-
+diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
+--- a/drivers/bus/ti-sysc.c
++++ b/drivers/bus/ti-sysc.c
+@@ -1278,7 +1278,8 @@ static int __maybe_unused sysc_noirq_suspend(struct device *dev)
+ 
+ 	ddata = dev_get_drvdata(dev);
+ 
+-	if (ddata->cfg.quirks & SYSC_QUIRK_LEGACY_IDLE)
++	if (ddata->cfg.quirks &
++	    (SYSC_QUIRK_LEGACY_IDLE | SYSC_QUIRK_NO_IDLE))
+ 		return 0;
+ 
+ 	return pm_runtime_force_suspend(dev);
+@@ -1290,7 +1291,8 @@ static int __maybe_unused sysc_noirq_resume(struct device *dev)
+ 
+ 	ddata = dev_get_drvdata(dev);
+ 
+-	if (ddata->cfg.quirks & SYSC_QUIRK_LEGACY_IDLE)
++	if (ddata->cfg.quirks &
++	    (SYSC_QUIRK_LEGACY_IDLE | SYSC_QUIRK_NO_IDLE))
+ 		return 0;
+ 
+ 	return pm_runtime_force_resume(dev);
+-- 
+2.27.0
