@@ -2,65 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE3A2211B95
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 07:36:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62326211BB4
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 07:52:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726288AbgGBFg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 01:36:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44358 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726015AbgGBFg1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 01:36:27 -0400
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5B51120724;
-        Thu,  2 Jul 2020 05:36:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593668186;
-        bh=w80HNCQd43j8lsfGDknlfMWRCtxh8+ZfOTuzLjUb+Tg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=CiLGW4fQE83/yPSoaLNjNXxWdQztSEnfSUvobWj5SL08wFtpj7ITwNpTCpr8fXJG6
-         v6LQ82S6Iopo0IEnBC03ZMkH1MPLHvkJL0OmNAg4PDKmTLqsnglMl5I7VLK6hBNzY0
-         Hln49f0USlhkO3bp1JcuqHNbQ5T9o97V4VbFqjxw=
-Received: by mail-lj1-f181.google.com with SMTP id 9so30093459ljv.5;
-        Wed, 01 Jul 2020 22:36:26 -0700 (PDT)
-X-Gm-Message-State: AOAM5302EguksHGyx96McGzP+vV2RAVmZBDx1EaWZ+TwumcXBHDsn2h5
-        R3h7HgXRHajHkaz9f7jIRk/c+HS3t9Ql2rUoykU=
-X-Google-Smtp-Source: ABdhPJymqO+8A/ON6cgRlyAmaadzhb/A3ETkgEahkbFx3Wp1rU/jFwtY3MDkzrSEOGWene4L2hOwuUlW51s/XrqmVQI=
-X-Received: by 2002:a2e:7f06:: with SMTP id a6mr4621445ljd.446.1593668184748;
- Wed, 01 Jul 2020 22:36:24 -0700 (PDT)
+        id S1726237AbgGBFwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 01:52:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725774AbgGBFwN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 01:52:13 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B0B2C08C5C1;
+        Wed,  1 Jul 2020 22:52:13 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id p20so27705728ejd.13;
+        Wed, 01 Jul 2020 22:52:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PTX8G0FukGDGojl6rKgvGA2fV/um1+DnSL6BGGF5rTk=;
+        b=FquHVBuq7KCtLoqPVvMm9HrqdlxcjXKcG1/+uFCoy9V2e1Xg3bw0d7tBmfSyFAGcha
+         IgZIgf0l9wD2Joq5cTRKEesJYG7anNVjvVKeExREY9By5CJp7ImSJPFfaXLFBp2QG7kr
+         GfcmsNQbJeTmwzK7RPOonHY0aEpzJ3oy+6PpCWlQR9tOE0gkA4aLefcJWAmtGN0DZ/p9
+         0iG9N+XmuuBpFtbWok3DgwEfuMNhasYWjk+6ke3z1OwZh2CFg14Uh0A50qN5upQsO04R
+         JP6Kg95vi7KGsDdV02vBFfzdaqeQWMTYOb2EDR4Wx8hjOIP4w+GxVz5NKeacl1FmgeNQ
+         x0Ow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PTX8G0FukGDGojl6rKgvGA2fV/um1+DnSL6BGGF5rTk=;
+        b=sz3AADI5Fmk3DzlphFAqu6pgihT2DygZFOX/gIjpKlLVJ+WiNaWBJ0fg97XY2ZJT3w
+         iBnMZolPnvXYFtCiIEzpd850a6KnnnpO5DeeqF+dP2pniOA6OxZK1tijWzrWKghYj612
+         DSLeHzOUveutbtVnxASlmTvfmFs5jmQjfLn+k6imlFnMnpr6fL7T2JDLH7IbI951QryI
+         hxLZBMnT9GOU6xVcUmytgH14T+74ptZpWOYRmbWv5LuYbAYWMiurNqLAIG9RwAmROnGV
+         hWI6cB2GyztX94Y3LuIkN7BsaOdYSNOt7wZdRxXAe6nU62BJU50ZIaezHgML13ar2t+X
+         iokw==
+X-Gm-Message-State: AOAM530imByHfxBfe440ANoVuius4lZoEHebstJ3OGmBwGCxXYu3RsJT
+        ovBI1VsZwIFRIojQTaZLM0Fi2ZB19hgK8p2WZZA=
+X-Google-Smtp-Source: ABdhPJwMXcuDstpkLDAVFtfvS+c1kcgVHNxhmQy/o9PberFQHvXcCp+0m6rAm/8+6AsWMhEswSifBPT5RBcN2f7BYoU=
+X-Received: by 2002:a17:906:e215:: with SMTP id gf21mr20475157ejb.310.1593669132029;
+ Wed, 01 Jul 2020 22:52:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200701090622.3354860-1-hch@lst.de> <20200701090622.3354860-5-hch@lst.de>
-In-Reply-To: <20200701090622.3354860-5-hch@lst.de>
-From:   Song Liu <song@kernel.org>
-Date:   Wed, 1 Jul 2020 22:36:13 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW7QShNMnbCK-OrKkE8F5XyH45-ML-w5qKLVrO=VTt6npw@mail.gmail.com>
-Message-ID: <CAPhsuW7QShNMnbCK-OrKkE8F5XyH45-ML-w5qKLVrO=VTt6npw@mail.gmail.com>
-Subject: Re: [PATCH 4/4] writeback: remove bdi->congested_fn
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
-        dm-devel@redhat.com, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, drbd-dev@lists.linbit.com,
-        linux-bcache@vger.kernel.org,
-        linux-raid <linux-raid@vger.kernel.org>,
-        linux-btrfs@vger.kernel.org, Linux-MM <linux-mm@kvack.org>,
-        open list <linux-kernel@vger.kernel.org>
+References: <1593656074-10092-1-git-send-email-Anson.Huang@nxp.com>
+ <1593656074-10092-4-git-send-email-Anson.Huang@nxp.com> <CAA+hA=S0G7Na0ieEpPq3aN6GN1BEHtYp9vbF9x2tjmknDSVjZw@mail.gmail.com>
+ <DB3PR0402MB391610595D40C11CF26CD990F56D0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+In-Reply-To: <DB3PR0402MB391610595D40C11CF26CD990F56D0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+From:   Dong Aisheng <dongas86@gmail.com>
+Date:   Thu, 2 Jul 2020 13:38:10 +0800
+Message-ID: <CAA+hA=Rtkm_FpkoBvHNnB0TSeTrqXaRVwOzkywsL7QO6ec_K7Q@mail.gmail.com>
+Subject: Re: [PATCH V4 3/5] clk: imx: Support building i.MX common clock
+ driver as module
+To:     Anson Huang <anson.huang@nxp.com>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Peng Fan <peng.fan@nxp.com>, Arnd Bergmann <arnd@arndb.de>,
+        Abel Vesa <abel.vesa@nxp.com>,
+        Aisheng Dong <aisheng.dong@nxp.com>,
+        Andy Duan <fugang.duan@nxp.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        dl-linux-imx <linux-imx@nxp.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 1, 2020 at 2:06 AM Christoph Hellwig <hch@lst.de> wrote:
+On Thu, Jul 2, 2020 at 11:26 AM Anson Huang <anson.huang@nxp.com> wrote:
+[...]
+> > > @@ -143,16 +148,18 @@ void imx_cscmr1_fixup(u32 *val)
+> > >  static int imx_keep_uart_clocks;
+> > >  static struct clk ** const *imx_uart_clocks;
+> > >
+> > > -static int __init imx_keep_uart_clocks_param(char *str)
+> > > +static int __maybe_unused imx_keep_uart_clocks_param(char *str)
+> > >  {
+> > >         imx_keep_uart_clocks = 1;
+> > >
+> > >         return 0;
+> > >  }
+> > > +#ifndef MODULE
+> > >  __setup_param("earlycon", imx_keep_uart_earlycon,
+> > >               imx_keep_uart_clocks_param, 0);
+> > >  __setup_param("earlyprintk", imx_keep_uart_earlyprintk,
+> > >               imx_keep_uart_clocks_param, 0);
+> >
+> > I feel not only the __setup_param, the whole logic of keep_uart_clocks
+> > are not needed for Module case. Is it true?
 >
-> Except for pktdvd, the only places setting congested bits are file
-> systems that allocate their own backing_dev_info structures.  And
-> pktdvd is a deprecated driver that isn't useful in stack setup
-> either.  So remove the dead congested_fn stacking infrastructure.
+> Yes, but the 'keep_uart_clocks' is false by default and the function imx_keep_uart_clocks_param()
+> already has '__maybe_unused', it does NOT impact anything if it is for module build, so I did NOT
+> add the #ifndef check for them, just to keep code easy and clean.
 >
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-For md bits:
+IMHO do not compile them is a more easy and clean way. Then users
+don't have to look into the code logic
+which is meaingless for Module case.
 
-Acked-by: Song Liu <song@kernel.org>
+BTW, it really does not make any sense to only condionally compile
+__setup_parm() but left
+the param functions definition to be handled by __maybe_unnused.
+They're together part of code, aren't they?
+
+Regards
+Aisheng
+
+Regards
+Aisheng
+
+> Thanks,
+> Anson
+>
