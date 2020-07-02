@@ -2,20 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89737212EDA
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 23:29:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2CD3212EDF
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 23:29:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726285AbgGBV3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 17:29:03 -0400
-Received: from hostingweb31-40.netsons.net ([89.40.174.40]:35850 "EHLO
+        id S1726310AbgGBV3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 17:29:08 -0400
+Received: from hostingweb31-40.netsons.net ([89.40.174.40]:55688 "EHLO
         hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726028AbgGBV26 (ORCPT
+        by vger.kernel.org with ESMTP id S1726048AbgGBV27 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 17:28:58 -0400
+        Thu, 2 Jul 2020 17:28:59 -0400
 Received: from [88.147.89.201] (port=34632 helo=melee.dev.aim)
         by hostingweb31.netsons.net with esmtpa (Exim 4.93)
         (envelope-from <luca@lucaceresoli.net>)
-        id 1jr6lK-000AXd-Lc; Thu, 02 Jul 2020 23:28:54 +0200
+        id 1jr6lK-000AXd-TL; Thu, 02 Jul 2020 23:28:54 +0200
 From:   Luca Ceresoli <luca@lucaceresoli.net>
 To:     linux-clk@vger.kernel.org
 Cc:     Luca Ceresoli <luca@lucaceresoli.net>,
@@ -23,9 +23,9 @@ Cc:     Luca Ceresoli <luca@lucaceresoli.net>,
         Stephen Boyd <sboyd@kernel.org>,
         Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>
-Subject: [PATCH 2/5] clk: vc5: use a dedicated struct to describe the output drivers
-Date:   Thu,  2 Jul 2020 23:28:33 +0200
-Message-Id: <20200702212837.10657-2-luca@lucaceresoli.net>
+Subject: [PATCH 3/5] dt-bindings: clk: versaclock5: convert to yaml
+Date:   Thu,  2 Jul 2020 23:28:34 +0200
+Message-Id: <20200702212837.10657-3-luca@lucaceresoli.net>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200702212837.10657-1-luca@lucaceresoli.net>
 References: <20200702212837.10657-1-luca@lucaceresoli.net>
@@ -46,82 +46,255 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reusing the generic struct vc5_hw_data for all blocks is handy. However
-it implies we allocate space the div_int and div_frc fields even for
-the output drivers where they are unused. Moreover a follow-up commit
-will add a new field needed only for output drivers, thus the memory
-waste would increase.
-
-Use a dedicated struct for the output drivers so that each block uses
-exactly the fields it needs, not more.
+Convert to yaml the VersaClock bindings document. The mapping between
+clock specifier and physical pins cannot be described formally in yaml
+schema, then keep it verbatim in the description field.
 
 Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
 ---
- drivers/clk/clk-versaclock5.c | 16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+ .../bindings/clock/idt,versaclock5.txt        |  92 --------------
+ .../bindings/clock/idt,versaclock5.yaml       | 120 ++++++++++++++++++
+ MAINTAINERS                                   |   1 +
+ 3 files changed, 121 insertions(+), 92 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/clock/idt,versaclock5.txt
+ create mode 100644 Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
 
-diff --git a/drivers/clk/clk-versaclock5.c b/drivers/clk/clk-versaclock5.c
-index fa96659f8023..60c7cf9acde3 100644
---- a/drivers/clk/clk-versaclock5.c
-+++ b/drivers/clk/clk-versaclock5.c
-@@ -145,6 +145,12 @@ struct vc5_hw_data {
- 	unsigned int		num;
- };
- 
-+struct vc5_out_data {
-+	struct clk_hw		hw;
-+	struct vc5_driver_data	*vc5;
-+	unsigned int		num;
-+};
+diff --git a/Documentation/devicetree/bindings/clock/idt,versaclock5.txt b/Documentation/devicetree/bindings/clock/idt,versaclock5.txt
+deleted file mode 100644
+index bcff681a4bd0..000000000000
+--- a/Documentation/devicetree/bindings/clock/idt,versaclock5.txt
++++ /dev/null
+@@ -1,92 +0,0 @@
+-Binding for IDT VersaClock 5,6 programmable i2c clock generators.
+-
+-The IDT VersaClock 5 and VersaClock 6 are programmable i2c clock
+-generators providing from 3 to 12 output clocks.
+-
+-==I2C device node==
+-
+-Required properties:
+-- compatible:	shall be one of
+-		"idt,5p49v5923"
+-		"idt,5p49v5925"
+-		"idt,5p49v5933"
+-		"idt,5p49v5935"
+-		"idt,5p49v6901"
+-		"idt,5p49v6965"
+-- reg:		i2c device address, shall be 0x68 or 0x6a.
+-- #clock-cells:	from common clock binding; shall be set to 1.
+-- clocks:	from common clock binding; list of parent clock handles,
+-		- 5p49v5923 and
+-		  5p49v5925 and
+-		  5p49v6901: (required) either or both of XTAL or CLKIN
+-					reference clock.
+-		- 5p49v5933 and
+-		- 5p49v5935: (optional) property not present (internal
+-					Xtal used) or CLKIN reference
+-					clock.
+-- clock-names:	from common clock binding; clock input names, can be
+-		- 5p49v5923 and
+-		  5p49v5925 and
+-		  5p49v6901: (required) either or both of "xin", "clkin".
+-		- 5p49v5933 and
+-		- 5p49v5935: (optional) property not present or "clkin".
+-
+-==Mapping between clock specifier and physical pins==
+-
+-When referencing the provided clock in the DT using phandle and
+-clock specifier, the following mapping applies:
+-
+-5P49V5923:
+-	0 -- OUT0_SEL_I2CB
+-	1 -- OUT1
+-	2 -- OUT2
+-
+-5P49V5933:
+-	0 -- OUT0_SEL_I2CB
+-	1 -- OUT1
+-	2 -- OUT4
+-
+-5P49V5925 and
+-5P49V5935:
+-	0 -- OUT0_SEL_I2CB
+-	1 -- OUT1
+-	2 -- OUT2
+-	3 -- OUT3
+-	4 -- OUT4
+-
+-5P49V6901:
+-	0 -- OUT0_SEL_I2CB
+-	1 -- OUT1
+-	2 -- OUT2
+-	3 -- OUT3
+-	4 -- OUT4
+-
+-==Example==
+-
+-/* 25MHz reference crystal */
+-ref25: ref25m {
+-	compatible = "fixed-clock";
+-	#clock-cells = <0>;
+-	clock-frequency = <25000000>;
+-};
+-
+-i2c-master-node {
+-
+-	/* IDT 5P49V5923 i2c clock generator */
+-	vc5: clock-generator@6a {
+-		compatible = "idt,5p49v5923";
+-		reg = <0x6a>;
+-		#clock-cells = <1>;
+-
+-		/* Connect XIN input to 25MHz reference */
+-		clocks = <&ref25m>;
+-		clock-names = "xin";
+-	};
+-};
+-
+-/* Consumer referencing the 5P49V5923 pin OUT1 */
+-consumer {
+-	...
+-	clocks = <&vc5 1>;
+-	...
+-}
+diff --git a/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml b/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
+new file mode 100644
+index 000000000000..d8b8e35f16d2
+--- /dev/null
++++ b/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
+@@ -0,0 +1,120 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/clock/idt,versaclock5.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- struct vc5_driver_data {
- 	struct i2c_client	*client;
- 	struct regmap		*regmap;
-@@ -158,7 +164,7 @@ struct vc5_driver_data {
- 	struct clk_hw		clk_pfd;
- 	struct vc5_hw_data	clk_pll;
- 	struct vc5_hw_data	clk_fod[VC5_MAX_FOD_NUM];
--	struct vc5_hw_data	clk_out[VC5_MAX_CLK_OUT_NUM];
-+	struct vc5_out_data	clk_out[VC5_MAX_CLK_OUT_NUM];
- };
++title: Binding for IDT VersaClock 5 and 6 programmable I2C clock generators
++
++description: |
++  The IDT VersaClock 5 and VersaClock 6 are programmable I2C
++  clock generators providing from 3 to 12 output clocks.
++
++  When referencing the provided clock in the DT using phandle and clock
++  specifier, the following mapping applies:
++
++  - 5P49V5923:
++    0 -- OUT0_SEL_I2CB
++    1 -- OUT1
++    2 -- OUT2
++
++  - 5P49V5933:
++    0 -- OUT0_SEL_I2CB
++    1 -- OUT1
++    2 -- OUT4
++
++  - other parts:
++    0 -- OUT0_SEL_I2CB
++    1 -- OUT1
++    2 -- OUT2
++    3 -- OUT3
++    4 -- OUT4
++
++maintainers:
++  - Luca Ceresoli <luca@lucaceresoli.net>
++
++properties:
++  compatible:
++    enum:
++      - idt,5p49v5923
++      - idt,5p49v5925
++      - idt,5p49v5933
++      - idt,5p49v5935
++      - idt,5p49v6901
++      - idt,5p49v6965
++
++  reg:
++    maxItems: 1
++    description: I2C device address, shall be 0x68 or 0x6a.
++
++  '#clock-cells':
++    const: 1
++
++required:
++  - compatible
++  - reg
++  - '#clock-cells'
++
++allOf:
++  - if:
++      properties:
++        compatible:
++          contains:
++            enum:
++              - idt,5p49v5933
++              - idt,5p49v5935
++    then:
++      # Devices with builtin crystal, optional external input
++      properties:
++        clock-names:
++          const: clkin
++        clocks:
++          maxItems: 1
++    else:
++      # Devices without builtin crystal
++      properties:
++        clock-names:
++          anyOf:
++            - required: [ xin ]
++            - required: [ clkin ]
++        clocks:
++          minItems: 1
++          maxItems: 2
++      required:
++        - clock-names
++        - clocks
++
++examples:
++  - |
++    /* 25MHz reference crystal */
++    ref25: ref25m {
++        compatible = "fixed-clock";
++        #clock-cells = <0>;
++        clock-frequency = <25000000>;
++    };
++
++    i2c@0 {
++        reg = <0x0 0x100>;
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        /* IDT 5P49V5923 I2C clock generator */
++        vc5: clock-generator@6a {
++            compatible = "idt,5p49v5923";
++            reg = <0x6a>;
++            #clock-cells = <1>;
++
++            /* Connect XIN input to 25MHz reference */
++            clocks = <&ref25m>;
++            clock-names = "xin";
++        };
++    };
++
++    /* Consumer referencing the 5P49V5923 pin OUT1 */
++    consumer {
++        /* ... */
++        clocks = <&vc5 1>;
++        /* ... */
++    };
++
++...
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 079e19ed2ec9..e979f5026353 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -8326,6 +8326,7 @@ F:	drivers/input/misc/ideapad_slidebar.c
+ IDT VersaClock 5 CLOCK DRIVER
+ M:	Luca Ceresoli <luca@lucaceresoli.net>
+ S:	Maintained
++F:	Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
+ F:	drivers/clk/clk-versaclock5.c
  
- static const char * const vc5_mux_names[] = {
-@@ -565,7 +571,7 @@ static const struct clk_ops vc5_fod_ops = {
- 
- static int vc5_clk_out_prepare(struct clk_hw *hw)
- {
--	struct vc5_hw_data *hwdata = container_of(hw, struct vc5_hw_data, hw);
-+	struct vc5_out_data *hwdata = container_of(hw, struct vc5_out_data, hw);
- 	struct vc5_driver_data *vc5 = hwdata->vc5;
- 	const u8 mask = VC5_OUT_DIV_CONTROL_SELB_NORM |
- 			VC5_OUT_DIV_CONTROL_SEL_EXT |
-@@ -596,7 +602,7 @@ static int vc5_clk_out_prepare(struct clk_hw *hw)
- 
- static void vc5_clk_out_unprepare(struct clk_hw *hw)
- {
--	struct vc5_hw_data *hwdata = container_of(hw, struct vc5_hw_data, hw);
-+	struct vc5_out_data *hwdata = container_of(hw, struct vc5_out_data, hw);
- 	struct vc5_driver_data *vc5 = hwdata->vc5;
- 
- 	/* Disable the clock buffer */
-@@ -606,7 +612,7 @@ static void vc5_clk_out_unprepare(struct clk_hw *hw)
- 
- static unsigned char vc5_clk_out_get_parent(struct clk_hw *hw)
- {
--	struct vc5_hw_data *hwdata = container_of(hw, struct vc5_hw_data, hw);
-+	struct vc5_out_data *hwdata = container_of(hw, struct vc5_out_data, hw);
- 	struct vc5_driver_data *vc5 = hwdata->vc5;
- 	const u8 mask = VC5_OUT_DIV_CONTROL_SELB_NORM |
- 			VC5_OUT_DIV_CONTROL_SEL_EXT |
-@@ -636,7 +642,7 @@ static unsigned char vc5_clk_out_get_parent(struct clk_hw *hw)
- 
- static int vc5_clk_out_set_parent(struct clk_hw *hw, u8 index)
- {
--	struct vc5_hw_data *hwdata = container_of(hw, struct vc5_hw_data, hw);
-+	struct vc5_out_data *hwdata = container_of(hw, struct vc5_out_data, hw);
- 	struct vc5_driver_data *vc5 = hwdata->vc5;
- 	const u8 mask = VC5_OUT_DIV_CONTROL_RESET |
- 			VC5_OUT_DIV_CONTROL_SELB_NORM |
+ IEEE 802.15.4 SUBSYSTEM
 -- 
 2.27.0
 
