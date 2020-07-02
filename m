@@ -2,134 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6643221214C
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 12:30:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26837212168
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 12:35:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728535AbgGBKaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 06:30:39 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7348 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728552AbgGBKae (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 06:30:34 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id F1E801CDC32E9AD15771;
-        Thu,  2 Jul 2020 18:30:31 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 2 Jul 2020 18:30:23 +0800
-From:   tongtiangen <tongtiangen@huawei.com>
-To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
-        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
-        <jolsa@redhat.com>, <namhyung@kernel.org>,
-        <kan.liang@linux.intel.com>, <mhiramat@kernel.org>,
-        <tongtiangen@huawei.com>, <weiyongjun1@huawei.com>
-CC:     <linux-kernel@vger.kernel.org>
-Subject: [PATCH] perf header: Fix possible memory leak when using do_read_string
-Date:   Thu, 2 Jul 2020 18:35:04 +0800
-Message-ID: <20200702103504.119845-1-tongtiangen@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        id S1728414AbgGBKfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 06:35:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36160 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727769AbgGBKfM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 06:35:12 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AFF482073E;
+        Thu,  2 Jul 2020 10:35:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593686111;
+        bh=e2d7EoUGfBMQ8iAjxxfS9uLE6JsRVlpFYnf0i0i/9QQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=zx19RhhCYndjeyr3Ntyuk/b/dG1YRNEW2u11qyAF1MnPiVC3uoqkfkflQnUQ20Q/V
+         BRTJ4Go1k5kA4mHEeVWUTjblN4KXUh4EbOTxrozGkgaGXWwXaH767ODZtDY1/VBx5m
+         Bh2iVabMtfwri5eKLtL7CGst/N2IPX3sUadygBbk=
+Date:   Thu, 2 Jul 2020 11:35:06 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Nicholas Piggin <npiggin@gmail.com>
+Cc:     Anton Blanchard <anton@ozlabs.org>,
+        Boqun Feng <boqun.feng@gmail.com>, kvm-ppc@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, Waiman Long <longman@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH 5/8] powerpc/64s: implement queued spinlocks and rwlocks
+Message-ID: <20200702103506.GA16418@willie-the-truck>
+References: <20200702074839.1057733-1-npiggin@gmail.com>
+ <20200702074839.1057733-6-npiggin@gmail.com>
+ <20200702080219.GB16113@willie-the-truck>
+ <1593685459.r2tfxtfdp6.astroid@bobo.none>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1593685459.r2tfxtfdp6.astroid@bobo.none>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the header.c file, some functions allocate memory after using
-do_read_string, but the corresponding memory is not released after
-subsequent processing errors, causing memory leaks.
+On Thu, Jul 02, 2020 at 08:25:43PM +1000, Nicholas Piggin wrote:
+> Excerpts from Will Deacon's message of July 2, 2020 6:02 pm:
+> > On Thu, Jul 02, 2020 at 05:48:36PM +1000, Nicholas Piggin wrote:
+> >> diff --git a/arch/powerpc/include/asm/qspinlock.h b/arch/powerpc/include/asm/qspinlock.h
+> >> new file mode 100644
+> >> index 000000000000..f84da77b6bb7
+> >> --- /dev/null
+> >> +++ b/arch/powerpc/include/asm/qspinlock.h
+> >> @@ -0,0 +1,20 @@
+> >> +/* SPDX-License-Identifier: GPL-2.0 */
+> >> +#ifndef _ASM_POWERPC_QSPINLOCK_H
+> >> +#define _ASM_POWERPC_QSPINLOCK_H
+> >> +
+> >> +#include <asm-generic/qspinlock_types.h>
+> >> +
+> >> +#define _Q_PENDING_LOOPS	(1 << 9) /* not tuned */
+> >> +
+> >> +#define smp_mb__after_spinlock()   smp_mb()
+> >> +
+> >> +static __always_inline int queued_spin_is_locked(struct qspinlock *lock)
+> >> +{
+> >> +	smp_mb();
+> >> +	return atomic_read(&lock->val);
+> >> +}
+> > 
+> > Why do you need the smp_mb() here?
+> 
+> A long and sad tale that ends here 51d7d5205d338
+> 
+> Should probably at least refer to that commit from here, since this one 
+> is not going to git blame back there. I'll add something.
 
-Fixes: acae8b36cded ("perf header: Add die information in CPU topology")
-Fixes: c60da22aca87 ("perf header: Transform nodes string info to struct")
-Fixes: 642aadaa320b ("perf header: Make topology checkers to check return value of strbuf")
-Signed-off-by: tongtiangen <tongtiangen@huawei.com>
----
- tools/perf/util/header.c | 22 ++++++++++++++++------
- 1 file changed, 16 insertions(+), 6 deletions(-)
+Is this still an issue, though?
 
-diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
-index 7a67d017d72c..2f77391e0787 100644
---- a/tools/perf/util/header.c
-+++ b/tools/perf/util/header.c
-@@ -2307,8 +2307,10 @@ static int process_cpu_topology(struct feat_fd *ff, void *data __maybe_unused)
- 			goto error;
- 
- 		/* include a NULL character at the end */
--		if (strbuf_add(&sb, str, strlen(str) + 1) < 0)
-+		if (strbuf_add(&sb, str, strlen(str) + 1) < 0) {
-+			free(str);
- 			goto error;
-+		}
- 		size += string_size(str);
- 		free(str);
- 	}
-@@ -2326,8 +2328,10 @@ static int process_cpu_topology(struct feat_fd *ff, void *data __maybe_unused)
- 			goto error;
- 
- 		/* include a NULL character at the end */
--		if (strbuf_add(&sb, str, strlen(str) + 1) < 0)
-+		if (strbuf_add(&sb, str, strlen(str) + 1) < 0) {
-+			free(str);
- 			goto error;
-+		}
- 		size += string_size(str);
- 		free(str);
- 	}
-@@ -2390,8 +2394,10 @@ static int process_cpu_topology(struct feat_fd *ff, void *data __maybe_unused)
- 			goto error;
- 
- 		/* include a NULL character at the end */
--		if (strbuf_add(&sb, str, strlen(str) + 1) < 0)
-+		if (strbuf_add(&sb, str, strlen(str) + 1) < 0) {
-+			free(str);
- 			goto error;
-+		}
- 		size += string_size(str);
- 		free(str);
- 	}
-@@ -2446,7 +2452,7 @@ static int process_numa_topology(struct feat_fd *ff, void *data __maybe_unused)
- 
- 		n->map = perf_cpu_map__new(str);
- 		if (!n->map)
--			goto error;
-+			goto free_str;
- 
- 		free(str);
- 	}
-@@ -2454,6 +2460,8 @@ static int process_numa_topology(struct feat_fd *ff, void *data __maybe_unused)
- 	ff->ph->env.numa_nodes = nodes;
- 	return 0;
- 
-+free_str:
-+	free(str);
- error:
- 	free(nodes);
- 	return -1;
-@@ -2487,10 +2495,10 @@ static int process_pmu_mappings(struct feat_fd *ff, void *data __maybe_unused)
- 			goto error;
- 
- 		if (strbuf_addf(&sb, "%u:%s", type, name) < 0)
--			goto error;
-+			goto free_name;
- 		/* include a NULL character at the end */
- 		if (strbuf_add(&sb, "", 1) < 0)
--			goto error;
-+			goto free_name;
- 
- 		if (!strcmp(name, "msr"))
- 			ff->ph->env.msr_pmu_type = type;
-@@ -2501,6 +2509,8 @@ static int process_pmu_mappings(struct feat_fd *ff, void *data __maybe_unused)
- 	ff->ph->env.pmu_mappings = strbuf_detach(&sb, NULL);
- 	return 0;
- 
-+free_name:
-+	free(name);
- error:
- 	strbuf_release(&sb);
- 	return -1;
--- 
-2.20.1
+See 38b850a73034 (where we added a similar barrier on arm64) and then
+c6f5d02b6a0f (where we removed it).
 
+Will
