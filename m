@@ -2,184 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19C3C212BAA
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 19:54:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54DFF212BAF
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 19:55:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728018AbgGBRy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 13:54:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51054 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727895AbgGBRy3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 13:54:29 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728043AbgGBRzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 13:55:13 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:24409 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727980AbgGBRzH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 13:55:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593712505;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=A7QTdTMTUaPeS9uufDmmu78eQSwCA8n+MLasIB1vQ58=;
+        b=esmb2hZlBTy4G9SAO0K6ca+UxBJDHL5XoUQGD31IQltKUu1dPq2dj8O1CoMfFhxI7eNYZC
+        OfGyGemGygCtWDdp2MEXS7uHBk+FLkwWuvPrHa/1bcLjH90gIGCQfh0n469fIs3//LVMm/
+        Sw7h6cR5XSDBV4aANwmjH5mS2vL/En0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-225-dln7jSl0PfmDf3E1d450jA-1; Thu, 02 Jul 2020 13:55:04 -0400
+X-MC-Unique: dln7jSl0PfmDf3E1d450jA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2B76720737;
-        Thu,  2 Jul 2020 17:54:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593712468;
-        bh=CweWMMu7PLdPE/4i4jZuP/tEfhtGXtOLafsmlGCzXGg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Qbp6HwkcvfR1IULQwGE0aykzqd8vd3GG1GIp0bvJwDxiIepIbjRXXHCL6jxh4xzbD
-         ix2myEkw1+3AVtdXp0TMGhKs1Cyf4mDfZw7iWiqWlI4vghVLUEl5ggySHqa9TLr3Zj
-         E52sdBu8L/DeEg2MycTiE/hmvIzeRpVnWJs3iO8s=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1jr3Pm-008VCD-KD; Thu, 02 Jul 2020 18:54:26 +0100
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1088B1005513;
+        Thu,  2 Jul 2020 17:55:02 +0000 (UTC)
+Received: from x1.home (ovpn-112-156.phx2.redhat.com [10.3.112.156])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0C96779255;
+        Thu,  2 Jul 2020 17:54:54 +0000 (UTC)
+Date:   Thu, 2 Jul 2020 11:54:54 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Liu Yi L <yi.l.liu@intel.com>
+Cc:     eric.auger@redhat.com, baolu.lu@linux.intel.com, joro@8bytes.org,
+        kevin.tian@intel.com, jacob.jun.pan@linux.intel.com,
+        ashok.raj@intel.com, jun.j.tian@intel.com, yi.y.sun@intel.com,
+        jean-philippe@linaro.org, peterx@redhat.com, hao.wu@intel.com,
+        iommu@lists.linux-foundation.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 02/14] iommu: Report domain nesting info
+Message-ID: <20200702115454.058bd198@x1.home>
+In-Reply-To: <1592988927-48009-3-git-send-email-yi.l.liu@intel.com>
+References: <1592988927-48009-1-git-send-email-yi.l.liu@intel.com>
+        <1592988927-48009-3-git-send-email-yi.l.liu@intel.com>
+Organization: Red Hat
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Date:   Thu, 02 Jul 2020 18:54:26 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-Cc:     tglx@linutronix.de, jason@lakedaemon.net, s-anna@ti.com,
-        robh+dt@kernel.org, lee.jones@linaro.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        david@lechnology.com, wmills@ti.com
-Subject: Re: [PATCHv3 4/6] irqchip/irq-pruss-intc: Implement
- irq_{get,set}_irqchip_state ops
-In-Reply-To: <1593699479-1445-5-git-send-email-grzegorz.jaszczyk@linaro.org>
-References: <1593699479-1445-1-git-send-email-grzegorz.jaszczyk@linaro.org>
- <1593699479-1445-5-git-send-email-grzegorz.jaszczyk@linaro.org>
-User-Agent: Roundcube Webmail/1.4.5
-Message-ID: <658e3a8d3374eca91387932a9a246add@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: grzegorz.jaszczyk@linaro.org, tglx@linutronix.de, jason@lakedaemon.net, s-anna@ti.com, robh+dt@kernel.org, lee.jones@linaro.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, david@lechnology.com, wmills@ti.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-07-02 15:17, Grzegorz Jaszczyk wrote:
-> From: David Lechner <david@lechnology.com>
+On Wed, 24 Jun 2020 01:55:15 -0700
+Liu Yi L <yi.l.liu@intel.com> wrote:
+
+> IOMMUs that support nesting translation needs report the capability info
+> to userspace, e.g. the format of first level/stage paging structures.
 > 
-> This implements the irq_get_irqchip_state and irq_set_irqchip_state
-> callbacks for the TI PRUSS INTC driver. The set callback can be used
-> by drivers to "kick" a PRU by enabling a PRU system event.
-
-"enabling"? That'd be unmasking an interrupt, which isn't what this
-does. "injecting", maybe?
-
+> This patch reports nesting info by DOMAIN_ATTR_NESTING. Caller can get
+> nesting info after setting DOMAIN_ATTR_NESTING.
 > 
-> Example:
->      irq_set_irqchip_state(irq, IRQCHIP_STATE_PENDING, true);
-
-Nice example.
-
-What this example does explain is how you are actually going to kick
-a PRU via this interface. For that to happen, you'd have to have on
-the Linux side an interrupt that is actually routed to a PRU.
-And from what I have understood of the previous patches, this can't
-be the case. What didi I miss?
-
+> v2 -> v3:
+> *) remvoe cap/ecap_mask in iommu_nesting_info.
+> *) reuse DOMAIN_ATTR_NESTING to get nesting info.
+> *) return an empty iommu_nesting_info for SMMU drivers per Jean'
+>    suggestion.
 > 
-> Signed-off-by: David Lechner <david@lechnology.com>
-> Signed-off-by: Suman Anna <s-anna@ti.com>
-> Signed-off-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-> Reviewed-by: Lee Jones <lee.jones@linaro.org>
+> Cc: Kevin Tian <kevin.tian@intel.com>
+> CC: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> Cc: Alex Williamson <alex.williamson@redhat.com>
+> Cc: Eric Auger <eric.auger@redhat.com>
+> Cc: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: Lu Baolu <baolu.lu@linux.intel.com>
+> Signed-off-by: Liu Yi L <yi.l.liu@intel.com>
+> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
 > ---
-> v2->v3:
-> - Get rid of unnecessary pruss_intc_check_write() and use
->   pruss_intc_write_reg directly.
-> v1->v2:
-> - https://patchwork.kernel.org/patch/11069769/
-> ---
->  drivers/irqchip/irq-pruss-intc.c | 43 
-> ++++++++++++++++++++++++++++++++++++++--
->  1 file changed, 41 insertions(+), 2 deletions(-)
+>  drivers/iommu/arm-smmu-v3.c | 29 ++++++++++++++++++++--
+>  drivers/iommu/arm-smmu.c    | 29 ++++++++++++++++++++--
+>  include/uapi/linux/iommu.h  | 59 +++++++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 113 insertions(+), 4 deletions(-)
 > 
-> diff --git a/drivers/irqchip/irq-pruss-intc.c 
-> b/drivers/irqchip/irq-pruss-intc.c
-> index 49c936f..19b3d38 100644
-> --- a/drivers/irqchip/irq-pruss-intc.c
-> +++ b/drivers/irqchip/irq-pruss-intc.c
-> @@ -7,6 +7,7 @@
->   *	Suman Anna <s-anna@ti.com>
->   */
-> 
-> +#include <linux/interrupt.h>
->  #include <linux/irq.h>
->  #include <linux/irqchip/chained_irq.h>
->  #include <linux/irqdomain.h>
-> @@ -39,8 +40,7 @@
->  #define PRU_INTC_HIEISR		0x0034
->  #define PRU_INTC_HIDISR		0x0038
->  #define PRU_INTC_GPIR		0x0080
-> -#define PRU_INTC_SRSR0		0x0200
-> -#define PRU_INTC_SRSR1		0x0204
-> +#define PRU_INTC_SRSR(x)	(0x0200 + (x) * 4)
->  #define PRU_INTC_SECR0		0x0280
->  #define PRU_INTC_SECR1		0x0284
->  #define PRU_INTC_ESR0		0x0300
-> @@ -145,6 +145,43 @@ static void pruss_intc_irq_relres(struct irq_data 
-> *data)
->  	module_put(THIS_MODULE);
+> diff --git a/drivers/iommu/arm-smmu-v3.c b/drivers/iommu/arm-smmu-v3.c
+> index f578677..0c45d4d 100644
+> --- a/drivers/iommu/arm-smmu-v3.c
+> +++ b/drivers/iommu/arm-smmu-v3.c
+> @@ -3019,6 +3019,32 @@ static struct iommu_group *arm_smmu_device_group(struct device *dev)
+>  	return group;
 >  }
-> 
-> +static int pruss_intc_irq_get_irqchip_state(struct irq_data *data,
-> +					    enum irqchip_irq_state which,
-> +					    bool *state)
+>  
+> +static int arm_smmu_domain_nesting_info(struct arm_smmu_domain *smmu_domain,
+> +					void *data)
 > +{
-> +	struct pruss_intc *intc = irq_data_get_irq_chip_data(data);
-> +	u32 reg, mask, srsr;
+> +	struct iommu_nesting_info *info = (struct iommu_nesting_info *) data;
+> +	u32 size;
 > +
-> +	if (which != IRQCHIP_STATE_PENDING)
-> +		return -EINVAL;
+> +	if (!info || smmu_domain->stage != ARM_SMMU_DOMAIN_NESTED)
+> +		return -ENODEV;
 > +
-> +	reg = PRU_INTC_SRSR(data->hwirq / 32);
-
-I assume the register file scales as more interrupts are added in the
-subsequent patch?
-
-> +	mask = BIT(data->hwirq % 32);
+> +	size = sizeof(struct iommu_nesting_info);
 > +
-> +	srsr = pruss_intc_read_reg(intc, reg);
+> +	/*
+> +	 * if provided buffer size is not equal to the size, should
+> +	 * return 0 and also the expected buffer size to caller.
+> +	 */
+> +	if (info->size != size) {
+> +		info->size = size;
+> +		return 0;
+> +	}
 > +
-> +	*state = !!(srsr & mask);
-> +
+> +	/* report an empty iommu_nesting_info for now */
+> +	memset(info, 0x0, size);
+> +	info->size = size;
 > +	return 0;
 > +}
 > +
-> +static int pruss_intc_irq_set_irqchip_state(struct irq_data *data,
-> +					    enum irqchip_irq_state which,
-> +					    bool state)
+>  static int arm_smmu_domain_get_attr(struct iommu_domain *domain,
+>  				    enum iommu_attr attr, void *data)
+>  {
+> @@ -3028,8 +3054,7 @@ static int arm_smmu_domain_get_attr(struct iommu_domain *domain,
+>  	case IOMMU_DOMAIN_UNMANAGED:
+>  		switch (attr) {
+>  		case DOMAIN_ATTR_NESTING:
+> -			*(int *)data = (smmu_domain->stage == ARM_SMMU_DOMAIN_NESTED);
+> -			return 0;
+> +			return arm_smmu_domain_nesting_info(smmu_domain, data);
+>  		default:
+>  			return -ENODEV;
+>  		}
+> diff --git a/drivers/iommu/arm-smmu.c b/drivers/iommu/arm-smmu.c
+> index 243bc4c..908607d 100644
+> --- a/drivers/iommu/arm-smmu.c
+> +++ b/drivers/iommu/arm-smmu.c
+> @@ -1506,6 +1506,32 @@ static struct iommu_group *arm_smmu_device_group(struct device *dev)
+>  	return group;
+>  }
+>  
+> +static int arm_smmu_domain_nesting_info(struct arm_smmu_domain *smmu_domain,
+> +					void *data)
 > +{
-> +	struct pruss_intc *intc = irq_data_get_irq_chip_data(data);
+> +	struct iommu_nesting_info *info = (struct iommu_nesting_info *) data;
+> +	u32 size;
 > +
-> +	if (which != IRQCHIP_STATE_PENDING)
-> +		return -EINVAL;
+> +	if (!info || smmu_domain->stage != ARM_SMMU_DOMAIN_NESTED)
+> +		return -ENODEV;
 > +
-> +	if (state)
-> +		pruss_intc_write_reg(intc, PRU_INTC_SISR, data->hwirq);
-> +	else
-> +		pruss_intc_write_reg(intc, PRU_INTC_SICR, data->hwirq);
+> +	size = sizeof(struct iommu_nesting_info);
 > +
+> +	/*
+> +	 * if provided buffer size is not equal to the size, should
+> +	 * return 0 and also the expected buffer size to caller.
+> +	 */
+> +	if (info->size != size) {
+> +		info->size = size;
+> +		return 0;
+> +	}
+> +
+> +	/* report an empty iommu_nesting_info for now */
+> +	memset(info, 0x0, size);
+> +	info->size = size;
 > +	return 0;
 > +}
 > +
->  static struct irq_chip pruss_irqchip = {
->  	.name = "pruss-intc",
->  	.irq_ack = pruss_intc_irq_ack,
-> @@ -152,6 +189,8 @@ static struct irq_chip pruss_irqchip = {
->  	.irq_unmask = pruss_intc_irq_unmask,
->  	.irq_request_resources = pruss_intc_irq_reqres,
->  	.irq_release_resources = pruss_intc_irq_relres,
-> +	.irq_get_irqchip_state = pruss_intc_irq_get_irqchip_state,
-> +	.irq_set_irqchip_state = pruss_intc_irq_set_irqchip_state,
+>  static int arm_smmu_domain_get_attr(struct iommu_domain *domain,
+>  				    enum iommu_attr attr, void *data)
+>  {
+> @@ -1515,8 +1541,7 @@ static int arm_smmu_domain_get_attr(struct iommu_domain *domain,
+>  	case IOMMU_DOMAIN_UNMANAGED:
+>  		switch (attr) {
+>  		case DOMAIN_ATTR_NESTING:
+> -			*(int *)data = (smmu_domain->stage == ARM_SMMU_DOMAIN_NESTED);
+> -			return 0;
+> +			return arm_smmu_domain_nesting_info(smmu_domain, data);
+>  		default:
+>  			return -ENODEV;
+>  		}
+> diff --git a/include/uapi/linux/iommu.h b/include/uapi/linux/iommu.h
+> index 1afc661..898c99a 100644
+> --- a/include/uapi/linux/iommu.h
+> +++ b/include/uapi/linux/iommu.h
+> @@ -332,4 +332,63 @@ struct iommu_gpasid_bind_data {
+>  	} vendor;
 >  };
-> 
->  static int pruss_intc_irq_domain_map(struct irq_domain *d, unsigned 
-> int virq,
+>  
+> +/*
+> + * struct iommu_nesting_info - Information for nesting-capable IOMMU.
+> + *				user space should check it before using
+> + *				nesting capability.
+> + *
+> + * @size:	size of the whole structure
+> + * @format:	PASID table entry format, the same definition with
+> + *		@format of struct iommu_gpasid_bind_data.
+> + * @features:	supported nesting features.
+> + * @flags:	currently reserved for future extension.
+> + * @data:	vendor specific cap info.
+> + *
+> + * +---------------+----------------------------------------------------+
+> + * | feature       |  Notes                                             |
+> + * +===============+====================================================+
+> + * | SYSWIDE_PASID |  Kernel manages PASID in system wide, PASIDs used  |
+> + * |               |  in the system should be allocated by host kernel  |
+> + * +---------------+----------------------------------------------------+
+> + * | BIND_PGTBL    |  bind page tables to host PASID, the PASID could   |
+> + * |               |  either be a host PASID passed in bind request or  |
+> + * |               |  default PASIDs (e.g. default PASID of aux-domain) |
+> + * +---------------+----------------------------------------------------+
+> + * | CACHE_INVLD   |  mandatory feature for nesting capable IOMMU       |
+> + * +---------------+----------------------------------------------------+
 
-Thanks,
+Agree with the previous comments on these descriptions and Kevin's
+suggestions.
 
-         M.
--- 
-Jazz is not dead. It just smells funny...
+> + *
+> + */
+> +struct iommu_nesting_info {
+> +	__u32	size;
+> +	__u32	format;
+> +	__u32	features;
+> +#define IOMMU_NESTING_FEAT_SYSWIDE_PASID	(1 << 0)
+> +#define IOMMU_NESTING_FEAT_BIND_PGTBL		(1 << 1)
+> +#define IOMMU_NESTING_FEAT_CACHE_INVLD		(1 << 2)
+> +	__u32	flags;
+> +	__u8	data[];
+
+How does the user determine which vendor structure is provided in
+data[]?  Thanks,
+
+Alex
+
+> +};
+> +
+> +/*
+> + * struct iommu_nesting_info_vtd - Intel VT-d specific nesting info
+> + *
+> + *
+> + * @flags:	VT-d specific flags. Currently reserved for future
+> + *		extension.
+> + * @addr_width:	The output addr width of first level/stage translation
+> + * @pasid_bits:	Maximum supported PASID bits, 0 represents no PASID
+> + *		support.
+> + * @cap_reg:	Describe basic capabilities as defined in VT-d capability
+> + *		register.
+> + * @ecap_reg:	Describe the extended capabilities as defined in VT-d
+> + *		extended capability register.
+> + */
+> +struct iommu_nesting_info_vtd {
+> +	__u32	flags;
+> +	__u16	addr_width;
+> +	__u16	pasid_bits;
+> +	__u64	cap_reg;
+> +	__u64	ecap_reg;
+> +};
+> +
+>  #endif /* _UAPI_IOMMU_H */
+
