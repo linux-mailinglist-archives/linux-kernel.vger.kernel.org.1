@@ -2,108 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AB91212121
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 12:25:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB82C21212D
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 12:27:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728402AbgGBKZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 06:25:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37714 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728332AbgGBKZu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 06:25:50 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E9A4C08C5C1;
-        Thu,  2 Jul 2020 03:25:50 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id l6so9165309pjq.1;
-        Thu, 02 Jul 2020 03:25:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=2dEmOOaTKGF4Qlb49VhQf6A9PlFA3b36H9rV7z7cwEs=;
-        b=fwrGZyQ5ZsT9XNpr3/IOWdRZ6ocaZNwfSU2kbuorYXlEEdLE5/x5p3TVpSz28QRp1G
-         Rq97XWBtS9UIquZ9RJU/9RJJsvs3vSblV7P3bcy3AJKNZxupjf8CAIH6Vx5/rgUgktkk
-         duzXAxjb/9SdEDlWvBSKLc74Js/6Hemi2omyXcEecBxTRXPd6QyrD+31gJzLltU6iW8n
-         JF08jA85kpDrr4bA2nZyBfxoqXA5dQqxwaS7+++ll1ExbDrK2qXYBnMpcyDzOvT90egd
-         caLSXaJhoRisXKEQ9uGYLW2o3jDa/MNsoH7QZe8RRqAZWZ+dpbslBRZd5PEW6CLytugN
-         5Hfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=2dEmOOaTKGF4Qlb49VhQf6A9PlFA3b36H9rV7z7cwEs=;
-        b=crHdoLsOAH+pib/GilJMwAx0lEpkC5C6Y6pFIE0yITds7lB7vvIU1greZXTVvOo9W9
-         jEW3QI8howa3FG28xGVNPNTjffb51lvho76Xy52kO8QdN3OLGLR7OpAVOTjYO02nZPJC
-         gFjQE8HUzb9y2N9ESGYetjJB0anbFSXaclj+ocl1wICCGsMKNUEgr4pc6F/8Fc5U7QsA
-         vg5kqCF/zYBNGUQFLM5tMHwRoRjOEA9FAjA4HKbZLpVgK8lb22M4Smnogsi2qEaAyGKZ
-         AJVF+dnwtaMruhGdJkv6S8mKpaqPoyakHnuukq8n2hYa4q8FK5HXunXskXPAdbpyECuo
-         fC2A==
-X-Gm-Message-State: AOAM531+lEe3SClN/nK0EerXq7b/drtz1hm9C+TYIgtW/eFAkVNUwCp3
-        GNBKxuewwkfxjzl3IVRqAQU=
-X-Google-Smtp-Source: ABdhPJx/3IphE9S504xPgr16qEBAcS0ylg8qERwwjyz6fVgDCXDiKIqknM6KTZc4U4Q2EmZZ4gfQeA==
-X-Received: by 2002:a17:90a:17ab:: with SMTP id q40mr29264299pja.152.1593685549611;
-        Thu, 02 Jul 2020 03:25:49 -0700 (PDT)
-Received: from localhost (61-68-186-125.tpgi.com.au. [61.68.186.125])
-        by smtp.gmail.com with ESMTPSA id g18sm8571288pfk.40.2020.07.02.03.25.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Jul 2020 03:25:48 -0700 (PDT)
-Date:   Thu, 02 Jul 2020 20:25:43 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH 5/8] powerpc/64s: implement queued spinlocks and rwlocks
-To:     Will Deacon <will@kernel.org>
-Cc:     Anton Blanchard <anton@ozlabs.org>,
-        Boqun Feng <boqun.feng@gmail.com>, kvm-ppc@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, Waiman Long <longman@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        virtualization@lists.linux-foundation.org
-References: <20200702074839.1057733-1-npiggin@gmail.com>
-        <20200702074839.1057733-6-npiggin@gmail.com>
-        <20200702080219.GB16113@willie-the-truck>
-In-Reply-To: <20200702080219.GB16113@willie-the-truck>
+        id S1728459AbgGBK1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 06:27:17 -0400
+Received: from foss.arm.com ([217.140.110.172]:35888 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728335AbgGBK1Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 06:27:16 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4E3D51FB;
+        Thu,  2 Jul 2020 03:27:15 -0700 (PDT)
+Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C80BE3F71E;
+        Thu,  2 Jul 2020 03:27:12 -0700 (PDT)
+Date:   Thu, 2 Jul 2020 11:27:06 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Navid Emamdoost <navid.emamdoost@gmail.com>
+Cc:     Stanimir Varbanov <svarbanov@mm-sol.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        emamd001@umn.edu, wu000273@umn.edu, kjlu@umn.edu,
+        mccamant@cs.umn.edu
+Subject: Re: [PATCH] PCI: qcom: handle pm_runtime_get_sync failure case
+Message-ID: <20200702102706.GA21978@e121166-lin.cambridge.arm.com>
+References: <20200605031643.18171-1-navid.emamdoost@gmail.com>
 MIME-Version: 1.0
-Message-Id: <1593685459.r2tfxtfdp6.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200605031643.18171-1-navid.emamdoost@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Will Deacon's message of July 2, 2020 6:02 pm:
-> On Thu, Jul 02, 2020 at 05:48:36PM +1000, Nicholas Piggin wrote:
->> diff --git a/arch/powerpc/include/asm/qspinlock.h b/arch/powerpc/include=
-/asm/qspinlock.h
->> new file mode 100644
->> index 000000000000..f84da77b6bb7
->> --- /dev/null
->> +++ b/arch/powerpc/include/asm/qspinlock.h
->> @@ -0,0 +1,20 @@
->> +/* SPDX-License-Identifier: GPL-2.0 */
->> +#ifndef _ASM_POWERPC_QSPINLOCK_H
->> +#define _ASM_POWERPC_QSPINLOCK_H
->> +
->> +#include <asm-generic/qspinlock_types.h>
->> +
->> +#define _Q_PENDING_LOOPS	(1 << 9) /* not tuned */
->> +
->> +#define smp_mb__after_spinlock()   smp_mb()
->> +
->> +static __always_inline int queued_spin_is_locked(struct qspinlock *lock=
-)
->> +{
->> +	smp_mb();
->> +	return atomic_read(&lock->val);
->> +}
->=20
-> Why do you need the smp_mb() here?
+On Thu, Jun 04, 2020 at 10:16:43PM -0500, Navid Emamdoost wrote:
+> Calling pm_runtime_get_sync increments the counter even in case of
+> failure, causing incorrect ref count. Call pm_runtime_put if
+> pm_runtime_get_sync fails.
+> 
+> Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
+> ---
+>  drivers/pci/controller/dwc/pcie-qcom.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
 
-A long and sad tale that ends here 51d7d5205d338
+Navid, I will review and merge Dinghao's version of these patches[1]
+since he posted them first, I will drop yours from the PCI patch
+queue, thanks anyway for posting them.
 
-Should probably at least refer to that commit from here, since this one=20
-is not going to git blame back there. I'll add something.
+Lorenzo
 
-Thanks,
-Nick
+[1] https://patchwork.kernel.org/patch/11559819/
+
+> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+> index 138e1a2d21cc..48c434e6e915 100644
+> --- a/drivers/pci/controller/dwc/pcie-qcom.c
+> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+> @@ -1339,10 +1339,8 @@ static int qcom_pcie_probe(struct platform_device *pdev)
+>  
+>  	pm_runtime_enable(dev);
+>  	ret = pm_runtime_get_sync(dev);
+> -	if (ret < 0) {
+> -		pm_runtime_disable(dev);
+> -		return ret;
+> -	}
+> +	if (ret < 0)
+> +		goto err_pm_runtime_put;
+>  
+>  	pci->dev = dev;
+>  	pci->ops = &dw_pcie_ops;
+> -- 
+> 2.17.1
+> 
