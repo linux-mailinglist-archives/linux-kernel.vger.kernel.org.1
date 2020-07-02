@@ -2,147 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31CC5211F46
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 10:56:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58FE9211F40
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 10:55:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727916AbgGBI4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 04:56:30 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:6801 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726862AbgGBI4a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 04:56:30 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id DC9D7E2B65F69A5A6435;
-        Thu,  2 Jul 2020 16:56:27 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 2 Jul 2020 16:56:17 +0800
-From:   Tian Tao <tiantao6@hisilicon.com>
-To:     <puck.chen@hisilicon.com>, <airlied@linux.ie>, <daniel@ffwll.ch>,
-        <tzimmermann@suse.de>, <kraxel@redhat.com>,
-        <alexander.deucher@amd.com>, <tglx@linutronix.de>,
-        <dri-devel@lists.freedesktop.org>, <xinliang.liu@linaro.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <linuxarm@huawei.com>
-Subject: [PATCH v3] drm/hisilicon: Code refactoring for hibmc_drv_vdac
-Date:   Thu, 2 Jul 2020 16:54:41 +0800
-Message-ID: <1593680081-60313-1-git-send-email-tiantao6@hisilicon.com>
-X-Mailer: git-send-email 2.7.4
+        id S1727820AbgGBIzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 04:55:43 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:36564 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725379AbgGBIzn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 04:55:43 -0400
+Received: from [222.129.43.254] (helo=localhost.localdomain)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <aaron.ma@canonical.com>)
+        id 1jqv0H-0000UW-GJ; Thu, 02 Jul 2020 08:55:34 +0000
+From:   Aaron Ma <aaron.ma@canonical.com>
+To:     aaron.ma@canonical.com, mapengyu@gmail.com, ibm-acpi@hmh.eng.br,
+        dvhart@infradead.org, andy@infradead.org,
+        ibm-acpi-devel@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] platform/x86: thinkpad_acpi: not loading brightness_init when _BCL invalid
+Date:   Thu,  2 Jul 2020 16:55:20 +0800
+Message-Id: <20200702085520.16901-1-aaron.ma@canonical.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-code refactoring for hibmc_drv_vdac.c, no actual function changes.
+When _BCL invalid, disable thinkpad_acpi backlight brightness control.
 
-v2:
-remove the debug message.
+brightness_enable is already checked at the beginning,
+Always print notice when enabled brightness control.
 
-v3:
-embedding connector and encoder in struct hibmc_drm_private.
-
-Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+Signed-off-by: Aaron Ma <aaron.ma@canonical.com>
 ---
- drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h  |  2 +
- drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c | 52 +++++-------------------
- 2 files changed, 13 insertions(+), 41 deletions(-)
+ drivers/platform/x86/thinkpad_acpi.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
-index 50a0c1f..6097687 100644
---- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
-+++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
-@@ -29,6 +29,8 @@ struct hibmc_drm_private {
- 
- 	/* drm */
- 	struct drm_device  *dev;
-+	struct drm_encoder encoder;
-+	struct drm_connector connector;
- 	bool mode_config_initialized;
- };
- 
-diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
-index 678ac2e..2ca69c3 100644
---- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
-+++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
-@@ -52,32 +52,6 @@ static const struct drm_connector_funcs hibmc_connector_funcs = {
- 	.atomic_destroy_state = drm_atomic_helper_connector_destroy_state,
- };
- 
--static struct drm_connector *
--hibmc_connector_init(struct hibmc_drm_private *priv)
--{
--	struct drm_device *dev = priv->dev;
--	struct drm_connector *connector;
--	int ret;
--
--	connector = devm_kzalloc(dev->dev, sizeof(*connector), GFP_KERNEL);
--	if (!connector) {
--		DRM_ERROR("failed to alloc memory when init connector\n");
--		return ERR_PTR(-ENOMEM);
--	}
--
--	ret = drm_connector_init(dev, connector,
--				 &hibmc_connector_funcs,
--				 DRM_MODE_CONNECTOR_VGA);
--	if (ret) {
--		DRM_ERROR("failed to init connector: %d\n", ret);
--		return ERR_PTR(ret);
--	}
--	drm_connector_helper_add(connector,
--				 &hibmc_connector_helper_funcs);
--
--	return connector;
--}
--
- static void hibmc_encoder_mode_set(struct drm_encoder *encoder,
- 				   struct drm_display_mode *mode,
- 				   struct drm_display_mode *adj_mode)
-@@ -105,23 +79,10 @@ static const struct drm_encoder_funcs hibmc_encoder_funcs = {
- int hibmc_vdac_init(struct hibmc_drm_private *priv)
- {
- 	struct drm_device *dev = priv->dev;
--	struct drm_encoder *encoder;
--	struct drm_connector *connector;
-+	struct drm_encoder *encoder = &priv->encoder;
-+	struct drm_connector *connector = &priv->connector;
- 	int ret;
- 
--	connector = hibmc_connector_init(priv);
--	if (IS_ERR(connector)) {
--		DRM_ERROR("failed to create connector: %ld\n",
--			  PTR_ERR(connector));
--		return PTR_ERR(connector);
--	}
--
--	encoder = devm_kzalloc(dev->dev, sizeof(*encoder), GFP_KERNEL);
--	if (!encoder) {
--		DRM_ERROR("failed to alloc memory when init encoder\n");
--		return -ENOMEM;
--	}
--
- 	encoder->possible_crtcs = 0x1;
- 	ret = drm_encoder_init(dev, encoder, &hibmc_encoder_funcs,
- 			       DRM_MODE_ENCODER_DAC, NULL);
-@@ -131,6 +92,15 @@ int hibmc_vdac_init(struct hibmc_drm_private *priv)
+diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
+index ff7f0a4f2475..a52d6d457d6c 100644
+--- a/drivers/platform/x86/thinkpad_acpi.c
++++ b/drivers/platform/x86/thinkpad_acpi.c
+@@ -6955,10 +6955,13 @@ static int __init brightness_init(struct ibm_init_struct *iibm)
+ 			pr_warn("Cannot enable backlight brightness support, ACPI is already handling it.  Refer to the acpi_backlight kernel parameter.\n");
+ 			return 1;
+ 		}
+-	} else if (tp_features.bright_acpimode && brightness_enable > 1) {
+-		pr_notice("Standard ACPI backlight interface not available, thinkpad_acpi native brightness control enabled\n");
++	} else if (!tp_features.bright_acpimode) {
++		pr_notice("thinkpad_acpi backlight interface not available\n");
++		return 1;
  	}
  
- 	drm_encoder_helper_add(encoder, &hibmc_encoder_helper_funcs);
++	pr_notice("thinkpad_acpi native brightness control enabled\n");
 +
-+	ret = drm_connector_init(dev, connector, &hibmc_connector_funcs,
-+				 DRM_MODE_CONNECTOR_VGA);
-+	if (ret) {
-+		DRM_ERROR("failed to init connector: %d\n", ret);
-+		return ret;
-+	}
-+	drm_connector_helper_add(connector, &hibmc_connector_helper_funcs);
-+
- 	drm_connector_attach_encoder(connector, encoder);
- 
- 	return 0;
+ 	/*
+ 	 * Check for module parameter bogosity, note that we
+ 	 * init brightness_mode to TPACPI_BRGHT_MODE_MAX in order to be
 -- 
-2.7.4
+2.26.2
 
