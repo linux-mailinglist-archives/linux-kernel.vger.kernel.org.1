@@ -2,133 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13110212CD4
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 21:13:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B66A4212CD7
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 21:13:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726035AbgGBTNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 15:13:13 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:48721 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725847AbgGBTNM (ORCPT
+        id S1726142AbgGBTNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 15:13:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34990 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725878AbgGBTNg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 15:13:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593717190;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FzBxpCXjYpYykVqIIHvJqM6p4BizB/f7pG6TYVbhSrc=;
-        b=KvkswkY+IXgiBLS8E4T87/8vw2/nkqiUtP0SydJXr5glJWPAfxSpJ8fiImdhUsuU3Ye59T
-        KhOk484AbacwdlcMaOkHimNgDwlTw1ZHLVyZhojxOtc1rA5CUR4LXJlf2Zo810rfqG+Hjd
-        NIvTPNZw5fwfHbmhkNUDYb0vWpYKek8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-211-agXmqbaCMZaa2Q3O-dcvyA-1; Thu, 02 Jul 2020 15:12:58 -0400
-X-MC-Unique: agXmqbaCMZaa2Q3O-dcvyA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 52D8980B70D;
-        Thu,  2 Jul 2020 19:12:52 +0000 (UTC)
-Received: from localhost (ovpn-116-143.gru2.redhat.com [10.97.116.143])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E627A79258;
-        Thu,  2 Jul 2020 19:12:51 +0000 (UTC)
-Date:   Thu, 2 Jul 2020 16:12:50 -0300
-From:   Bruno Meneguele <bmeneg@redhat.com>
-To:     Mimi Zohar <zohar@linux.ibm.com>
-Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        erichte@linux.ibm.com, nayna@linux.ibm.com
-Subject: Re: [PATCH v3 2/2] ima: move APPRAISE_BOOTPARAM dependency on
- ARCH_POLICY to runtime
-Message-ID: <20200702191250.GB3669@glitch>
-References: <20200623202640.4936-1-bmeneg@redhat.com>
- <20200623202640.4936-3-bmeneg@redhat.com>
- <1593204023.27152.476.camel@linux.ibm.com>
- <20200629234744.GA2756@glitch>
- <1593514848.5085.82.camel@linux.ibm.com>
- <20200630170043.GE2944@glitch>
+        Thu, 2 Jul 2020 15:13:36 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5E4BC08C5C1;
+        Thu,  2 Jul 2020 12:13:35 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: koike)
+        with ESMTPSA id 9EDE02A5F9E
+From:   Helen Koike <helen.koike@collabora.com>
+To:     devicetree@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-rockchip@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
+        robh+dt@kernel.org, heiko@sntech.de, hverkuil-cisco@xs4all.nl,
+        kernel@collabora.com, dafna.hirschfeld@collabora.com,
+        ezequiel@collabora.com, mark.rutland@arm.com,
+        karthik.poduval@gmail.com, jbx6244@gmail.com, tfiga@chromium.org,
+        eddie.cai.linux@gmail.com, zhengsq@rock-chips.com,
+        robin.murphy@arm.com
+Subject: [PATCH v4 0/9] move Rockchip ISP bindings out of staging / add ISP DT nodes for RK3399
+Date:   Thu,  2 Jul 2020 16:13:13 -0300
+Message-Id: <20200702191322.2639681-1-helen.koike@collabora.com>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-In-Reply-To: <20200630170043.GE2944@glitch>
-X-PGP-Key: http://keys.gnupg.net/pks/lookup?op=get&search=0x3823031E4660608D
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=bmeneg@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="+g7M9IMkV8truYOl"
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---+g7M9IMkV8truYOl
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Move the bindings out of drivers/staging and place them in
+Documentation/devicetree/bindings instead.
 
-On Tue, Jun 30, 2020 at 02:00:43PM -0300, Bruno Meneguele wrote:
-> On Tue, Jun 30, 2020 at 07:00:48AM -0400, Mimi Zohar wrote:
-> > On Mon, 2020-06-29 at 20:47 -0300, Bruno Meneguele wrote:
-> >=20
-> > >=20
-> > > > I'm not if the "secure_boot" flag is available prior to calling
-> > > > default_appraise_setup(), but if it is, you could modify the test
-> > > > there to also check if the system is booted in secure boot mode (eg=
-.
-> > > > IS_ENABLED(CONFIG_IMA_APPRAISE_BOOTPARAM) &&
-> > > > !arch_ima_get_secureboot())
-> > > >=20
-> > >=20
-> > > Well pointed. I built a custom x86 kernel with some workaround to get
-> > > this flag status within default_appraise_setup() and as a result the
-> > > flag is was correctly available.=20
-> > >=20
-> > > Considering the nature of this flag (platform's firmware (in all
-> > > arches?)) can we trust that every arch supporting secure/trusted boot
-> > > will have it available in the __setup() call time?
-> >=20
-> > Calling=A0default_appraise_setup() could be deferred.
-> >=20
->=20
-> Hmmm.. ok, I'm going to investigate it further.
-> Didn't really know that.
->=20
+Also, add DT nodes for RK3399 and verify with make ARCH=arm64 dtbs_check
+and make ARCH=arm64 dt_binding_check.
 
-After some research on powerpc, x86 and s390 (the only users of arch
-policies) codes it's clear that, no matter what, the secure boot flag
-will be available even before the kernel cmdline is actually
-copied/saved in kernel's memory.
+Tested by verifying images streamed from Scarlet Chromebook
 
-Both powerpc and x86 populate it through setup_arch() call in
-init/main.c:kernel_start(), where some early_params are handled, but
-nothing about normal (non-early) __setup() params. s390 is a bit deeper
-where it gets the flag, right down its boot code, even before
-start_kernel().
+Changes in v4:
+- simplify clocks with "isp", "aclk" and "hclk" as suggested by
+Robin Murphy on https://patchwork.kernel.org/patch/11475007/
 
-With that said, it's safe checking it directly from
-default_appraise_setup(). I'm going to prepare a v4, test it and post it
-tomorrow.=20
+Changes in v3:
+- dropped accepted patches
+- cleanup clocks
+- fix "no reg" error in dt-bindings parent@0 example
+- add linux-rockchip list in MAINTAINERS and reorder items
+- add Scarlet sensors dt nodes to the series
 
---=20
-bmeneg=20
-PGP Key: http://bmeneg.com/pubkey.txt
+Changes in v2:
+Add patches modifying bindings, as sugested by Johan Jonker in v1,
+before moving them out of staging.
 
---+g7M9IMkV8truYOl
-Content-Type: application/pgp-signature; name="signature.asc"
+Eddie Cai (1):
+  arm64: dts: rockchip: add isp and sensors for Scarlet
 
------BEGIN PGP SIGNATURE-----
+Helen Koike (7):
+  media: staging: dt-bindings: rkisp1: add missing required nodes
+  media: staging: dt-bindings: rkisp1: add required items in i2c example
+  media: staging: dt-bindings: rkisp1: re-order properties
+  media: staging: dt-bindings: rkisp1: fix "no reg" error in parent node
+  media: staging: rkisp1: remove unecessary clocks
+  dt-bindings: media: rkisp1: move rockchip-isp1 bindings out of staging
+  media: MAINTAINERS: rkisp1: add path to dt-bindings
 
-iQEzBAEBCAAdFiEEdWo6nTbnZdbDmXutYdRkFR+RokMFAl7+MbIACgkQYdRkFR+R
-okOE9wgAtlCT2xp0XdlQd9PXMOlQZrofYigVUIMXsGtC0ln+HzCr87RDqf6ZGir4
-z0TApF2+fb6SvtW654EDJiXQM8WalA++rsuXSzW47jPUuwkrvyHoaykHDKVbwm8h
-WoYoylK8wMNo/sjO6m+78O3j3qnE0vESewUimHf5PIv8ihFS2FwNY7B6oO0P2ygu
-YHpIg93bZfkSxUSWe/XA+0OvbMlsC7cS5PVEl/Cf81HR5G6knavZe9jFpGPY7rNi
-QxhJQAyDfSUmZNnIQWdWn+SBKQSxsILJ9sylvDtprR8fD13fknuERlyRHjMCg83E
-I04QUaw5LwbE9GhpXn0zSr/13JfuJg==
-=sFZi
------END PGP SIGNATURE-----
+Shunqian Zheng (1):
+  arm64: dts: rockchip: add isp0 node for rk3399
 
---+g7M9IMkV8truYOl--
+ .../bindings/media/rockchip-isp1.yaml         | 64 +++++++++-------
+ MAINTAINERS                                   |  2 +
+ .../boot/dts/rockchip/rk3399-gru-scarlet.dtsi | 74 +++++++++++++++++++
+ arch/arm64/boot/dts/rockchip/rk3399.dtsi      | 25 +++++++
+ drivers/staging/media/rkisp1/rkisp1-dev.c     |  8 +-
+ 5 files changed, 142 insertions(+), 31 deletions(-)
+ rename {drivers/staging/media/rkisp1/Documentation => Documentation}/devicetree/bindings/media/rockchip-isp1.yaml (83%)
+
+-- 
+2.26.0
 
