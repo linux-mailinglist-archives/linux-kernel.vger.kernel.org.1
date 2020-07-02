@@ -2,155 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E528E2121CE
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 13:10:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 435272121C3
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 13:09:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728579AbgGBLKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 07:10:04 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:20080 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728584AbgGBLKD (ORCPT
+        id S1728522AbgGBLJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 07:09:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44450 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728280AbgGBLJX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 07:10:03 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1593688203; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=OKu1EM6eiLid9WUfX5EOnISzTQlacwjoK78xIqopTHw=; b=AHcAmehG/okVv481BRB85b244Qr2ZKzlA4BMjsPp8k2kWyRXvhgTs4EAorcut0xV55LktcNU
- e8EQIkQMErFzD5o2C7yovxxDdZLQUOtp4OjhHBVwQSFopfx/iTvqC9ZFOYVGMzKDdM41HGBd
- pemj6LNq7ZPdXq4IS6fMInorTxU=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 5efdc08a3a8a8b20b8812c4c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 02 Jul 2020 11:10:02
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C58F9C433B2; Thu,  2 Jul 2020 11:10:01 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-173.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8AC49C433CA;
-        Thu,  2 Jul 2020 11:09:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8AC49C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rnayak@codeaurora.org
-From:   Rajendra Nayak <rnayak@codeaurora.org>
-To:     robdclark@gmail.com, sean@poorly.run, agross@kernel.org,
-        bjorn.andersson@linaro.org
-Cc:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mka@chromium.org, Rajendra Nayak <rnayak@codeaurora.org>
-Subject: [PATCH v2 4/4] arm64: dts: sc7180: Add DSI and MDP OPP tables and power-domains
-Date:   Thu,  2 Jul 2020 16:39:11 +0530
-Message-Id: <1593688151-22616-5-git-send-email-rnayak@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1593688151-22616-1-git-send-email-rnayak@codeaurora.org>
-References: <1593688151-22616-1-git-send-email-rnayak@codeaurora.org>
+        Thu, 2 Jul 2020 07:09:23 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94A5BC08C5DC
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 04:09:23 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id 67so8332332pfg.5
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 04:09:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=yhigYLbWyjdsAB9RV5ESFpQHrd9hYU8lMH15hyZFCnY=;
+        b=QaFKyhxf8DWdqHCoBR7wcAJtJhSWTLmOq73EfJeILfgTPQ+r3lbxMvn0QaFg3H4Jor
+         kGAGOuAcCDAzQ1pdqJVZ1K+T4iUVnXee+e7lNdaSh8vcgakDnO9X8VjkkxDz8StU4IZ5
+         UFYInc7MKK4e1QfOyuvMtr2CQ0wqdRikn5X2IJanxG1ckNW/VlFmZ9qGV8eKVl2abN+v
+         C5Js25yWSxkq5Hqu5q2ccV7TqXoTnO07k4NTTzGE3VRUx4F5uIT0Piy2CcH22Ra5V4nr
+         4pzuEZx7sVsGblioXc4LUHpXko5GcQag+5UB10RQlOvnLAiWx9uzfUpSYQ4K8Hi37/Kq
+         Tuzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=yhigYLbWyjdsAB9RV5ESFpQHrd9hYU8lMH15hyZFCnY=;
+        b=l72v81AtLoTpYARWfjHaF7bKKcVlmok0jxl7Ier3q0TwBRe8elApzbkYdRamHqEML+
+         zrZAno71SqKfRfYj/I3HATw1DSAB922PQJxSdfDspHUJvrJAacLxGnCuqYKJuThjqhKs
+         tp+FYYxmB6cDXliLvv+nvrLlp+wLhAmPBVwh12ojZ/Es6IXdFYS0n5ohYTDDUn+tPAml
+         uL8C1Y4XfTA/tw7nEL0gCdD8BrHkErOhTzMwznLNjmgxRdeaWywT0L6cM9NfE+3/rYde
+         JxQtnoiyiTiH5KfGdjtJfKvUXjxVvZ0mUm58UYqZg487JY5rTZlkpUuWRt/+wGZLHQe2
+         Ow9Q==
+X-Gm-Message-State: AOAM531wCmyWCHE2Sx4Iqnz4d01wHBfxMzUPWSgVi3VDBhJhu+D0mgw3
+        zfLMbUMJIe8+gf4FfyH2XyyEnJgF0zk=
+X-Google-Smtp-Source: ABdhPJxlVNCwXfn6C22bczd8Htuqow4Tvki3nCCKWAYtAYbsfI1TaTlyTODZ4a2UqF61DIaleZyzWA==
+X-Received: by 2002:aa7:9abc:: with SMTP id x28mr2527763pfi.145.1593688162280;
+        Thu, 02 Jul 2020 04:09:22 -0700 (PDT)
+Received: from localhost ([122.172.40.201])
+        by smtp.gmail.com with ESMTPSA id i125sm8602401pgd.21.2020.07.02.04.09.21
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 02 Jul 2020 04:09:21 -0700 (PDT)
+Date:   Thu, 2 Jul 2020 16:39:19 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Xin Hao <xhao@linux.alibaba.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3] cpufreq: CPPC: simply the code access 'highest_perf'
+ value in cppc_perf_caps struct
+Message-ID: <20200702110919.qejdmao5uuodftk6@vireshk-i7>
+References: <20200701042007.13333-1-xhao@linux.alibaba.com>
+ <20200701045227.epojzjwuky5kkdzj@vireshk-i7>
+ <CAJZ5v0iRW25n9CqvJ=ODbVh2osocx+wJVz62GqaWV9m4sdL12g@mail.gmail.com>
+ <20200702023746.li2uf4zl7bwzg62x@vireshk-i7>
+ <CAJZ5v0jbsinLBZqNiCPH0NFk0b8H4Uxuf8U5y0R5nkxUH8tX8g@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0jbsinLBZqNiCPH0NFk0b8H4Uxuf8U5y0R5nkxUH8tX8g@mail.gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the OPP tables for DSI and MDP based on the perf state/clk
-requirements, and add the power-domains property to specify the
-scalable power domain.
+On 02-07-20, 13:06, Rafael J. Wysocki wrote:
+> But you could respond to the "applied" message from me. :-)
 
-Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
-Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
----
- arch/arm64/boot/dts/qcom/sc7180.dtsi | 49 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 49 insertions(+)
+Haha. I was expecting you to pick the other patches (around governor
+cleanup) from me and I completely missed that you picked cppc one as
+well. In fact, I had to go to the thread again now to check if you
+replied at all :)
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-index ad57df2..3430c33f 100644
---- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-@@ -2482,6 +2482,8 @@
- 						       <19200000>,
- 						       <19200000>,
- 						       <19200000>;
-+				operating-points-v2 = <&mdp_opp_table>;
-+				power-domains = <&rpmhpd SC7180_CX>;
- 
- 				interrupt-parent = <&mdss>;
- 				interrupts = <0 IRQ_TYPE_LEVEL_HIGH>;
-@@ -2499,6 +2501,31 @@
- 						};
- 					};
- 				};
-+
-+				mdp_opp_table: mdp-opp-table {
-+					compatible = "operating-points-v2";
-+
-+					opp-200000000 {
-+						opp-hz = /bits/ 64 <200000000>;
-+						required-opps = <&rpmhpd_opp_low_svs>;
-+					};
-+
-+					opp-300000000 {
-+						opp-hz = /bits/ 64 <300000000>;
-+						required-opps = <&rpmhpd_opp_svs>;
-+					};
-+
-+					opp-345000000 {
-+						opp-hz = /bits/ 64 <345000000>;
-+						required-opps = <&rpmhpd_opp_svs_l1>;
-+					};
-+
-+					opp-460000000 {
-+						opp-hz = /bits/ 64 <460000000>;
-+						required-opps = <&rpmhpd_opp_nom>;
-+					};
-+				};
-+
- 			};
- 
- 			dsi0: dsi@ae94000 {
-@@ -2522,6 +2549,9 @@
- 					      "iface",
- 					      "bus";
- 
-+				operating-points-v2 = <&dsi_opp_table>;
-+				power-domains = <&rpmhpd SC7180_CX>;
-+
- 				phys = <&dsi_phy>;
- 				phy-names = "dsi";
- 
-@@ -2547,6 +2577,25 @@
- 						};
- 					};
- 				};
-+
-+				dsi_opp_table: dsi-opp-table {
-+					compatible = "operating-points-v2";
-+
-+					opp-187500000 {
-+						opp-hz = /bits/ 64 <187500000>;
-+						required-opps = <&rpmhpd_opp_low_svs>;
-+					};
-+
-+					opp-300000000 {
-+						opp-hz = /bits/ 64 <300000000>;
-+						required-opps = <&rpmhpd_opp_svs>;
-+					};
-+
-+					opp-358000000 {
-+						opp-hz = /bits/ 64 <358000000>;
-+						required-opps = <&rpmhpd_opp_svs_l1>;
-+					};
-+				};
- 			};
- 
- 			dsi_phy: dsi-phy@ae94400 {
+Sorry about that. My fault.
+
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
-
+viresh
