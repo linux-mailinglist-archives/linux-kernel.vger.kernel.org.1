@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 284602127BE
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 17:25:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 882E42127AF
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 17:22:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730300AbgGBPX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 11:23:59 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:46388 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730011AbgGBPXy (ORCPT
+        id S1730240AbgGBPWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 11:22:23 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:53272 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729934AbgGBPWN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 11:23:54 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 062FMXc1004060;
-        Thu, 2 Jul 2020 15:23:46 GMT
+        Thu, 2 Jul 2020 11:22:13 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 062EuQ7V133054;
+        Thu, 2 Jul 2020 15:21:47 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
- bh=plEcjH4/pGPGRyfYdsLYzLVT5ymotiodyrZ8qXUrINM=;
- b=aW1KSTIhEet7W+djvC54DWVXOMWchbNpur3x0SAsVtv7RNC9StwDYL0mO5yDLSSTNo/P
- OLEH2c8PNU9eY//Ciift7R6MgjBxO+lGcMip044btU43oQCixUL7fu5Xu5fdlGtWWi4F
- 45cuPIiGoxgupSSWi7fg2CY853rJH/aZEfgS1hoX2ognNH1dgfaLBNdJwT5lSckSY9ub
- eUS90gcFuwDQUIL2Wu/k6x7iY95L2HVBFk84kCnJHoKnJCvPEvMle1n1API98cXlBt+W
- UuaKYyM8GzaSFBMfqkoZiaS/q/nZcVksxRpcHA+aQA5184r90b7LcGW0wfuWneguO3GL 0A== 
+ bh=bDBnEagVBGyloOOLaZ5VGU/OtU6T8N2gifh7nDCHKBA=;
+ b=tNT0E7/DLeh/aLiFeQPOskGV96OvZV1IheuwtSGZ0VF22ZM4WifKpMYsCGIkJYUml7LD
+ cvKgbQXU0ZCx5MkL4M8EHgapcDDxh2lvr/wqok7MFdkUXPR60mYwaUSr4B1PkoLtLJY1
+ VG+pn+75NHT5t+I+EXP80N7/hNJgE6M9hAMP1qULDB3OXobyoCNMo2fczCPoClveLKtk
+ c/os+quyv+gbpnN95pXE9/zFslTJeQhyfcmxx6Skd7CZUUTAPuPnW2I9IjvnUrFoqLt5
+ B7olRhEqEX6XfzkUqKq7tLRYu0kLQhHhFN36Biuww0K8Pwftr6/KOygFk2g2Mw5Tmwbd 5A== 
 Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 31wxrnh2wa-1
+        by aserp2120.oracle.com with ESMTP id 31xx1e5xcp-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 02 Jul 2020 15:23:46 +0000
+        Thu, 02 Jul 2020 15:21:47 +0000
 Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 062Evrjv162732;
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 062EvsHi162796;
         Thu, 2 Jul 2020 15:21:46 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 31xg2144f5-1
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 31xg2144f1-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
         Thu, 02 Jul 2020 15:21:46 +0000
 Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 062FLjaa022711;
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 062FLjE5021065;
         Thu, 2 Jul 2020 15:21:45 GMT
 Received: from mihai.localdomain (/10.153.73.25)
         by default (Oracle Beehive Gateway v4.0)
@@ -45,9 +45,9 @@ To:     linux-kernel@vger.kernel.org
 Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
         boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
         Mihai Carabas <mihai.carabas@oracle.com>
-Subject: [PATCH RFC 5/7] x86: microcode: late loading feature and bug evaluation
-Date:   Thu,  2 Jul 2020 18:18:25 +0300
-Message-Id: <1593703107-8852-6-git-send-email-mihai.carabas@oracle.com>
+Subject: [PATCH RFC 6/7] x86: cpu: bugs.c: reprobe bugs at runtime
+Date:   Thu,  2 Jul 2020 18:18:26 +0300
+Message-Id: <1593703107-8852-7-git-send-email-mihai.carabas@oracle.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1593703107-8852-1-git-send-email-mihai.carabas@oracle.com>
 References: <1593703107-8852-1-git-send-email-mihai.carabas@oracle.com>
@@ -57,169 +57,123 @@ X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spams
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
  definitions=main-2007020106
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9670 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999
- priorityscore=1501 impostorscore=0 bulkscore=0 clxscore=1015
- malwarescore=0 phishscore=0 adultscore=0 cotscore=-2147483648
- lowpriorityscore=0 suspectscore=1 spamscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2007020107
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 clxscore=1015 adultscore=0
+ suspectscore=1 mlxlogscore=999 cotscore=-2147483648 lowpriorityscore=0
+ malwarescore=0 phishscore=0 impostorscore=0 mlxscore=0 spamscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2007020106
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While doing microcode late loading, need to probe again all the
-CPU features after the microcode has been loaded. Before probing
-the CPU features and bug, need to clear the current bug bits. The
-new function, cpu_clear_bug_bits, will clear all the bug bits and
-then set them.
+Adapt check_bugs to be callable at runtime after the
+microcode late loading has been done.
 
-The logic is as follows:
-
-- for boot cpu call cpu_clear_bug_bits, get_cpu_cap and then
-cpu_set_bug_bits
-
-- meanwhile all the other cores are waiting because they need
-information from boot cpu about the forced caps
-
-- in the last step every cpu is calling cpu_clear_bug_bits and
-the bug bits will be set by get_cpu_cap through the apply_forced_caps
-
-- also when the microcode feature for disabling TSX is not available
-at boot time, taa_select_mitigation will not disable TSX to ensure
-proper mitigation for TAA. Call tsx_init on each CPU after the new
-microcode has been loaded
+Also update SRBDS to reset the default value for srbds_mitigation and call
+update_srbds_msr on all CPUs.
 
 Signed-off-by: Mihai Carabas <mihai.carabas@oracle.com>
 ---
- arch/x86/include/asm/microcode.h     |  3 +++
- arch/x86/kernel/cpu/common.c         | 28 +++++++++++++++++++++++++++-
- arch/x86/kernel/cpu/microcode/core.c | 26 ++++++++++++++++++++++++++
- 3 files changed, 56 insertions(+), 1 deletion(-)
+ arch/x86/kernel/cpu/bugs.c           | 37 ++++++++++++++++++++++++++----------
+ arch/x86/kernel/cpu/microcode/core.c |  2 ++
+ 2 files changed, 29 insertions(+), 10 deletions(-)
 
-diff --git a/arch/x86/include/asm/microcode.h b/arch/x86/include/asm/microcode.h
-index 2b7cc53..7a6a5aa 100644
---- a/arch/x86/include/asm/microcode.h
-+++ b/arch/x86/include/asm/microcode.h
-@@ -142,4 +142,7 @@ static inline void reload_early_microcode(void)			{ }
- get_builtin_firmware(struct cpio_data *cd, const char *name)	{ return false; }
- #endif
+diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
+index 21b9df3..c4084d7 100644
+--- a/arch/x86/kernel/cpu/bugs.c
++++ b/arch/x86/kernel/cpu/bugs.c
+@@ -77,17 +77,19 @@
  
-+void cpu_set_bug_bits(struct cpuinfo_x86 *c);
-+void cpu_clear_bug_bits(struct cpuinfo_x86 *c);
-+
- #endif /* _ASM_X86_MICROCODE_H */
-diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-index c11daa6..f722c1e 100644
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -1101,6 +1101,32 @@ static bool cpu_matches(const struct x86_cpu_id *table, unsigned long which)
- 	return m && !!(m->driver_data & which);
- }
- 
-+void cpu_clear_bug_bits(struct cpuinfo_x86 *c)
-+{
-+	int i;
-+	unsigned int bugs[] = {
-+		X86_BUG_SPECTRE_V1,
-+		X86_BUG_SPECTRE_V2,
-+		X86_BUG_SPEC_STORE_BYPASS,
-+		X86_FEATURE_IBRS_ENHANCED,
-+		X86_BUG_MDS,
-+		X86_BUG_MSBDS_ONLY,
-+		X86_BUG_SWAPGS,
-+		X86_BUG_TAA,
-+		X86_BUG_SRBDS,
-+		X86_BUG_CPU_MELTDOWN,
-+		X86_BUG_L1TF
-+	};
-+
-+	for (i = 0; i < ARRAY_SIZE(bugs); i++)
-+		clear_cpu_cap(c, bugs[i]);
-+
-+	if (c->cpu_index == boot_cpu_data.cpu_index) {
-+		for (i = 0; i < ARRAY_SIZE(bugs); i++)
-+			setup_clear_cpu_cap(bugs[i]);
-+	}
-+}
-+
- u64 x86_read_arch_cap_msr(void)
+ void __ref check_bugs(void)
  {
- 	u64 ia32_cap = 0;
-@@ -1111,7 +1137,7 @@ u64 x86_read_arch_cap_msr(void)
- 	return ia32_cap;
- }
+-	identify_boot_cpu();
++	if (system_state != SYSTEM_RUNNING) {
++		identify_boot_cpu();
  
--static void __init cpu_set_bug_bits(struct cpuinfo_x86 *c)
-+void cpu_set_bug_bits(struct cpuinfo_x86 *c)
- {
- 	u64 ia32_cap = x86_read_arch_cap_msr();
+-	/*
+-	 * identify_boot_cpu() initialized SMT support information, let the
+-	 * core code know.
+-	 */
+-	cpu_smt_check_topology();
++		/*
++		 * identify_boot_cpu() initialized SMT support information,
++		 * let the core code know.
++		 */
++		cpu_smt_check_topology();
  
-diff --git a/arch/x86/kernel/cpu/microcode/core.c b/arch/x86/kernel/cpu/microcode/core.c
-index baec68b..2cd983a 100644
---- a/arch/x86/kernel/cpu/microcode/core.c
-+++ b/arch/x86/kernel/cpu/microcode/core.c
-@@ -40,6 +40,8 @@
- #include <asm/cmdline.h>
- #include <asm/setup.h>
- 
-+#include "../cpu.h"
-+
- #define DRIVER_VERSION	"2.2"
- 
- static struct microcode_ops	*microcode_ops;
-@@ -542,6 +544,20 @@ static int __wait_for_cpus(atomic_t *t, long long timeout)
- 	return 0;
- }
- 
-+static void update_cpu_caps(struct cpuinfo_x86 *c)
-+{
-+	cpu_clear_bug_bits(c);
-+
-+	/*
-+	 * If we are at late loading, we need to re-initialize tsx because
-+	 * MSR_IA32_TSX_CTRL might be available as result of the microcode
-+	 * update.
-+	 */
-+	tsx_init();
-+
-+	get_cpu_cap(c);
-+}
-+
- /*
-  * Returns:
-  * < 0 - on error
-@@ -550,6 +566,7 @@ static int __wait_for_cpus(atomic_t *t, long long timeout)
- static int __reload_late(void *info)
- {
- 	int cpu = smp_processor_id();
-+	struct cpuinfo_x86 *c = &cpu_data(cpu);
- 	enum ucode_state err;
- 	int ret = 0;
- 
-@@ -579,6 +596,12 @@ static int __reload_late(void *info)
- 		ret = -1;
+-	if (!IS_ENABLED(CONFIG_SMP)) {
+-		pr_info("CPU: ");
+-		print_cpu_info(&boot_cpu_data);
++		if (!IS_ENABLED(CONFIG_SMP)) {
++			pr_info("CPU: ");
++			print_cpu_info(&boot_cpu_data);
++		}
  	}
  
-+	if (ret == 0 && c->cpu_index == boot_cpu_data.cpu_index) {
-+		update_cpu_caps(c);
-+		memcpy(&boot_cpu_data, c, sizeof(boot_cpu_data));
-+		cpu_set_bug_bits(c);
-+	}
-+
- wait_for_siblings:
- 	if (__wait_for_cpus(&late_cpus_out, NSEC_PER_SEC))
- 		panic("Timeout during microcode update!\n");
-@@ -592,6 +615,9 @@ static int __reload_late(void *info)
- 	if (cpumask_first(topology_sibling_cpumask(cpu)) != cpu)
- 		apply_microcode_local(&err);
+ 	/*
+@@ -112,6 +114,13 @@ void __ref check_bugs(void)
+ 	srbds_select_mitigation();
  
-+	if (ret == 0 && c->cpu_index != boot_cpu_data.cpu_index)
-+		update_cpu_caps(c);
+ 	/*
++	 * If we are late loading the microcode, code below should
++	 * not be executed --- it is only needed during boot.
++	 */
++	if (system_state == SYSTEM_RUNNING)
++		return;
 +
- 	return ret;
++	/*
+ 	 * As MDS and TAA mitigations are inter-related, print MDS
+ 	 * mitigation until after TAA mitigation selection is done.
+ 	 */
+@@ -452,10 +461,17 @@ void update_srbds_msr(void)
+ 	wrmsrl(MSR_IA32_MCU_OPT_CTRL, mcu_ctrl);
  }
  
++static void _update_srbds_msr(void *p)
++{
++	update_srbds_msr();
++}
++
+ static void srbds_select_mitigation(void)
+ {
+ 	u64 ia32_cap;
+ 
++	srbds_mitigation = SRBDS_MITIGATION_FULL;
++
+ 	if (!boot_cpu_has_bug(X86_BUG_SRBDS))
+ 		return;
+ 
+@@ -473,7 +489,8 @@ static void srbds_select_mitigation(void)
+ 	else if (cpu_mitigations_off() || srbds_off)
+ 		srbds_mitigation = SRBDS_MITIGATION_OFF;
+ 
+-	update_srbds_msr();
++	on_each_cpu(_update_srbds_msr, NULL, 1);
++
+ 	pr_info("%s\n", srbds_strings[srbds_mitigation]);
+ }
+ 
+diff --git a/arch/x86/kernel/cpu/microcode/core.c b/arch/x86/kernel/cpu/microcode/core.c
+index 2cd983a..6d327a0 100644
+--- a/arch/x86/kernel/cpu/microcode/core.c
++++ b/arch/x86/kernel/cpu/microcode/core.c
+@@ -31,6 +31,7 @@
+ #include <linux/fs.h>
+ #include <linux/mm.h>
+ 
++#include <asm/bugs.h>
+ #include <asm/microcode_intel.h>
+ #include <asm/cpu_device_id.h>
+ #include <asm/microcode_amd.h>
+@@ -669,6 +670,7 @@ static ssize_t reload_store(struct device *dev,
+ 
+ 	mutex_lock(&microcode_mutex);
+ 	ret = microcode_reload_late();
++	check_bugs();
+ 	mutex_unlock(&microcode_mutex);
+ 
+ put:
 -- 
 1.8.3.1
 
