@@ -2,75 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 240B42131F1
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 04:58:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A75F42131F9
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 05:02:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726098AbgGCC6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 22:58:39 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:37544 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725915AbgGCC6j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 22:58:39 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: ezequiel)
-        with ESMTPSA id D2BD32A2D53
-Message-ID: <dd6d28589e098c3f83b630fa9abf943870780fa6.camel@collabora.com>
-Subject: Re: [PATCH 4/9] media: rkvdec: h264: Fix bit depth wrap in pps
- packet
-From:   Ezequiel Garcia <ezequiel@collabora.com>
-To:     Jonas Karlman <jonas@kwiboo.se>, linux-media@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Hans Verkuil <hans.verkuil@cisco.com>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Alexandre Courbot <acourbot@chromium.org>
-Date:   Thu, 02 Jul 2020 23:58:29 -0300
-In-Reply-To: <20200701215616.30874-5-jonas@kwiboo.se>
-References: <20200701215616.30874-1-jonas@kwiboo.se>
-         <20200701215616.30874-5-jonas@kwiboo.se>
-Organization: Collabora
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.0-1 
+        id S1726116AbgGCDCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 23:02:34 -0400
+Received: from mail5.windriver.com ([192.103.53.11]:52016 "EHLO mail5.wrs.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725915AbgGCDCe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 23:02:34 -0400
+Received: from ALA-HCA.corp.ad.wrs.com (ala-hca.corp.ad.wrs.com [147.11.189.40])
+        by mail5.wrs.com (8.15.2/8.15.2) with ESMTPS id 06330CNh013393
+        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL);
+        Thu, 2 Jul 2020 20:00:45 -0700
+Received: from pek-lpg-core1-vm1.wrs.com (128.224.156.106) by
+ ALA-HCA.corp.ad.wrs.com (147.11.189.40) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 2 Jul 2020 20:00:06 -0700
+From:   <qiang.zhang@windriver.com>
+To:     <ben.dooks@codethink.co.uk>, <bfields@redhat.com>,
+        <cl@rock-chips.com>, <peterz@infradead.org>
+CC:     <linux-kernel@vger.kernel.org>
+Subject: [PATCH] kthread: Don't cancel a work that is being cancelled
+Date:   Thu, 2 Jul 2020 09:13:50 +0800
+Message-ID: <20200702011350.32125-1-qiang.zhang@windriver.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-07-01 at 21:56 +0000, Jonas Karlman wrote:
-> The luma and chroma bit depth fields in the pps packet is 3 bits wide.
-> 8 is wrongly added to the bit depth value written to these 3-bit fields.
-> Because only the 3 LSB is written the hardware is configured correctly.
-> 
-> Correct this by not adding 8 to the luma and chroma bit depth value.
-> 
-> Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
+From: Zhang Qiang <qiang.zhang@windriver.com>
 
-Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
+When canceling a work, if it is found that the work is in
+the cancelling state, we should directly exit the cancelled
+operation.
 
-Thanks!
-Ezequiel
+Signed-off-by: Zhang Qiang <qiang.zhang@windriver.com>
+---
+ kernel/kthread.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-> ---
->  drivers/staging/media/rkvdec/rkvdec-h264.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/staging/media/rkvdec/rkvdec-h264.c b/drivers/staging/media/rkvdec/rkvdec-h264.c
-> index c9aebeb8f9b3..9c8e49642cd9 100644
-> --- a/drivers/staging/media/rkvdec/rkvdec-h264.c
-> +++ b/drivers/staging/media/rkvdec/rkvdec-h264.c
-> @@ -662,8 +662,8 @@ static void assemble_hw_pps(struct rkvdec_ctx *ctx,
->  	WRITE_PPS(0xff, PROFILE_IDC);
->  	WRITE_PPS(1, CONSTRAINT_SET3_FLAG);
->  	WRITE_PPS(sps->chroma_format_idc, CHROMA_FORMAT_IDC);
-> -	WRITE_PPS(sps->bit_depth_luma_minus8 + 8, BIT_DEPTH_LUMA);
-> -	WRITE_PPS(sps->bit_depth_chroma_minus8 + 8, BIT_DEPTH_CHROMA);
-> +	WRITE_PPS(sps->bit_depth_luma_minus8, BIT_DEPTH_LUMA);
-> +	WRITE_PPS(sps->bit_depth_chroma_minus8, BIT_DEPTH_CHROMA);
->  	WRITE_PPS(0, QPPRIME_Y_ZERO_TRANSFORM_BYPASS_FLAG);
->  	WRITE_PPS(sps->log2_max_frame_num_minus4, LOG2_MAX_FRAME_NUM_MINUS4);
->  	WRITE_PPS(sps->max_num_ref_frames, MAX_NUM_REF_FRAMES);
-
+diff --git a/kernel/kthread.c b/kernel/kthread.c
+index bfbfa481be3a..1166f2043e67 100644
+--- a/kernel/kthread.c
++++ b/kernel/kthread.c
+@@ -1103,6 +1103,9 @@ static bool __kthread_cancel_work_sync(struct kthread_work *work, bool is_dwork)
+ 	/* Work must not be used with >1 worker, see kthread_queue_work(). */
+ 	WARN_ON_ONCE(work->worker != worker);
+ 
++	if (work->canceling)
++		goto out_fast;
++
+ 	ret = __kthread_cancel_work(work, is_dwork, &flags);
+ 
+ 	if (worker->current_work != work)
+-- 
+2.24.1
 
