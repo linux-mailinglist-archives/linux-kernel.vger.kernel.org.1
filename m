@@ -2,219 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03D042123D7
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 14:58:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A1CB2123E1
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 14:58:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729203AbgGBM5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 08:57:46 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:44195 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729136AbgGBM5f (ORCPT
+        id S1729266AbgGBM6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 08:58:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729218AbgGBM57 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 08:57:35 -0400
-X-UUID: 51ebda30417346e089043b17e5e015dc-20200702
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=dERh6I/vJVcTazXqkTKN7Yo51qnb6WJoQhInZFIvwoY=;
-        b=QDaVzHsjoK5012cQggPfS+aGl382i/0e/qcapInUH69YR5uco13qX7735MkfqdwIosSyPw7fawk7S7dlC5iW2SNR5x+dkBkYmHuf465fHiQyoiOpy9CdYwZFx//Lis4zvqmLwnlXTaLf8bi7KCUmtn1tfxbHm2wZxS6mL0xtih4=;
-X-UUID: 51ebda30417346e089043b17e5e015dc-20200702
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
-        (envelope-from <hanks.chen@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 903875390; Thu, 02 Jul 2020 20:57:28 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 2 Jul 2020 20:57:24 +0800
-Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 2 Jul 2020 20:57:26 +0800
-From:   Hanks Chen <hanks.chen@mediatek.com>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sean Wang <sean.wang@kernel.org>
-CC:     mtk01761 <wendell.lin@mediatek.com>,
-        Andy Teng <andy.teng@mediatek.com>,
-        <linux-gpio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>,
-        CC Hwang <cc.hwang@mediatek.com>,
-        Loda Chou <loda.chou@mediatek.com>,
-        Hanks Chen <hanks.chen@mediatek.com>
-Subject: [PATCH v7 7/7] arm64: dts: add dts nodes for MT6779
-Date:   Thu, 2 Jul 2020 20:57:10 +0800
-Message-ID: <1593694630-26604-9-git-send-email-hanks.chen@mediatek.com>
-X-Mailer: git-send-email 1.7.9.5
-In-Reply-To: <1593694630-26604-1-git-send-email-hanks.chen@mediatek.com>
-References: <1593694630-26604-1-git-send-email-hanks.chen@mediatek.com>
+        Thu, 2 Jul 2020 08:57:59 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CAECC08C5DC
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 05:57:59 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id m9so12603176qvx.5
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 05:57:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9SWGnubDWqg/t2WsVA0LlntzVzjp9DweIcUd8FpWx0c=;
+        b=HW4qqfzQl3zi9IpbnSdop+NeCDE2cAIEPclDJQJa7yfeofwC955o1D5TwSgfCpzdys
+         j8KL9SCqcXxqdttZOSNOsd9m2+MehTVTm4nHLlzNK8q0PoQws1QFDCjj3jDJNQ/pftsZ
+         KEQ1SsOPVNXykmJZB5iWF5BSK+xEo7yDkUf8w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9SWGnubDWqg/t2WsVA0LlntzVzjp9DweIcUd8FpWx0c=;
+        b=DlDh6+UE8nHjvNIUpHwFZcsu40IqkL04O+VHeZRlw25nl2lS5wW1fQH3jd+LQWBScM
+         +e1WVgG3cICmnjbTXaB0WOilXsNC4nc0BPaJE0h3M8VMV78LtqnAktmyWKUwjVeIZ2PK
+         MHs/vMBgkoQTls8JQDO/g01rPqpJjRdVzpQjMpxSDZ+dwk333zcOL49gvT99eAPcanFy
+         VVrFd+Ubwds93mo/wAbWQeqDVC5RPhlIrAxdK6RvV2eaSi3/ufNrVmO4FZ44dFiodhQ8
+         pl1McLBdP7MoWbhIirDf0rYfgyoPAXNov6EiFpv+6NfgGk+6shW8yCfQ1ndrEDuYhp40
+         FdTQ==
+X-Gm-Message-State: AOAM530zeF7ikOhurs4XqlKocQ1tzc3ex09f1vjLABgStnFVOhZeEEZ7
+        zwOtDQ+f6iRPPIEJdO4bPAaedQ==
+X-Google-Smtp-Source: ABdhPJxWYIcxMrGOwlVVjhse4DwsG1ruRLL36p51s+ouSOvVH0/rCvAdUYzop90Kphypjo9TODSIbw==
+X-Received: by 2002:a0c:bda0:: with SMTP id n32mr30978862qvg.164.1593694678083;
+        Thu, 02 Jul 2020 05:57:58 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:cad3:ffff:feb3:bd59])
+        by smtp.gmail.com with ESMTPSA id p7sm7930994qki.61.2020.07.02.05.57.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Jul 2020 05:57:57 -0700 (PDT)
+Date:   Thu, 2 Jul 2020 08:57:57 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Tim Chen <tim.c.chen@linux.intel.com>
+Cc:     Vineeth Remanan Pillai <vpillai@digitalocean.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        tglx@linutronix.de, pjt@google.com, torvalds@linux-foundation.org,
+        linux-kernel@vger.kernel.org, subhra.mazumdar@oracle.com,
+        mingo@kernel.org, fweisbec@gmail.com, keescook@chromium.org,
+        kerrnel@google.com, Phil Auld <pauld@redhat.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineethrp@gmail.com,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Aaron Lu <aaron.lu@linux.alibaba.com>, paulmck@kernel.org
+Subject: Re: [RFC PATCH 06/16] sched: Add core wide task selection and
+ scheduling.
+Message-ID: <20200702125757.GB439212@google.com>
+References: <cover.1593530334.git.vpillai@digitalocean.com>
+ <ed924e2cb450a4cce4a1b5a2c44d29e968467154.1593530334.git.vpillai@digitalocean.com>
+ <20200701232847.GA439212@google.com>
+ <200c81ef-c961-dcd5-1221-84897c459b05@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <200c81ef-c961-dcd5-1221-84897c459b05@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dGhpcyBhZGRzIGluaXRpYWwgTVQ2Nzc5IGR0cyBzZXR0aW5ncyBmb3IgYm9hcmQgc3VwcG9ydCwN
-CmluY2x1ZGluZyBjcHUsIGdpYywgdGltZXIsIGNjZiwgcGluY3RybCwgdWFydCwgc3lzaXJxLi4u
-ZXRjLg0KDQpTaWduZWQtb2ZmLWJ5OiBIYW5rcyBDaGVuIDxoYW5rcy5jaGVuQG1lZGlhdGVrLmNv
-bT4NCi0tLQ0KIGFyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvTWFrZWZpbGUgICAgICAgfCAg
-ICAxICsNCiBhcmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL210Njc3OS1ldmIuZHRzIHwgICAz
-MSArKysNCiBhcmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL210Njc3OS5kdHNpICAgIHwgIDI3
-MSArKysrKysrKysrKysrKysrKysrKysrKysrKysNCiAzIGZpbGVzIGNoYW5nZWQsIDMwMyBpbnNl
-cnRpb25zKCspDQogY3JlYXRlIG1vZGUgMTAwNjQ0IGFyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0
-ZWsvbXQ2Nzc5LWV2Yi5kdHMNCiBjcmVhdGUgbW9kZSAxMDA2NDQgYXJjaC9hcm02NC9ib290L2R0
-cy9tZWRpYXRlay9tdDY3NzkuZHRzaQ0KDQpkaWZmIC0tZ2l0IGEvYXJjaC9hcm02NC9ib290L2R0
-cy9tZWRpYXRlay9NYWtlZmlsZSBiL2FyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvTWFrZWZp
-bGUNCmluZGV4IGE1N2FmOWQuLjRkMWIwZjkgMTAwNjQ0DQotLS0gYS9hcmNoL2FybTY0L2Jvb3Qv
-ZHRzL21lZGlhdGVrL01ha2VmaWxlDQorKysgYi9hcmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVr
-L01ha2VmaWxlDQpAQCAtMSw2ICsxLDcgQEANCiAjIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBH
-UEwtMi4wDQogZHRiLSQoQ09ORklHX0FSQ0hfTUVESUFURUspICs9IG10MjcxMi1ldmIuZHRiDQog
-ZHRiLSQoQ09ORklHX0FSQ0hfTUVESUFURUspICs9IG10Njc1NS1ldmIuZHRiDQorZHRiLSQoQ09O
-RklHX0FSQ0hfTUVESUFURUspICs9IG10Njc3OS1ldmIuZHRiDQogZHRiLSQoQ09ORklHX0FSQ0hf
-TUVESUFURUspICs9IG10Njc5NS1ldmIuZHRiDQogZHRiLSQoQ09ORklHX0FSQ0hfTUVESUFURUsp
-ICs9IG10Njc5Ny1ldmIuZHRiDQogZHRiLSQoQ09ORklHX0FSQ0hfTUVESUFURUspICs9IG10Njc5
-Ny14MjAtZGV2LmR0Yg0KZGlmZiAtLWdpdCBhL2FyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsv
-bXQ2Nzc5LWV2Yi5kdHMgYi9hcmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL210Njc3OS1ldmIu
-ZHRzDQpuZXcgZmlsZSBtb2RlIDEwMDY0NA0KaW5kZXggMDAwMDAwMC4uMTY0ZjVjYg0KLS0tIC9k
-ZXYvbnVsbA0KKysrIGIvYXJjaC9hcm02NC9ib290L2R0cy9tZWRpYXRlay9tdDY3NzktZXZiLmR0
-cw0KQEAgLTAsMCArMSwzMSBAQA0KKy8vIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4w
-Kw0KKy8qDQorICogQ29weXJpZ2h0IChjKSAyMDE5IE1lZGlhVGVrIEluYy4NCisgKiBBdXRob3I6
-IE1hcnMuQyA8bWFycy5jaGVuZ0BtZWRpYXRlay5jb20+DQorICoNCisgKi8NCisNCisvZHRzLXYx
-LzsNCisjaW5jbHVkZSAibXQ2Nzc5LmR0c2kiDQorDQorLyB7DQorCW1vZGVsID0gIk1lZGlhVGVr
-IE1UNjc3OSBFVkIiOw0KKwljb21wYXRpYmxlID0gIm1lZGlhdGVrLG10Njc3OS1ldmIiLCAibWVk
-aWF0ZWssbXQ2Nzc5IjsNCisNCisJYWxpYXNlcyB7DQorCQlzZXJpYWwwID0gJnVhcnQwOw0KKwl9
-Ow0KKw0KKwltZW1vcnlANDAwMDAwMDAgew0KKwkJZGV2aWNlX3R5cGUgPSAibWVtb3J5IjsNCisJ
-CXJlZyA9IDwwIDB4NDAwMDAwMDAgMCAweDFlODAwMDAwPjsNCisJfTsNCisNCisJY2hvc2VuIHsN
-CisJCXN0ZG91dC1wYXRoID0gInNlcmlhbDA6OTIxNjAwbjgiOw0KKwl9Ow0KK307DQorDQorJnVh
-cnQwIHsNCisJc3RhdHVzID0gIm9rYXkiOw0KK307DQpkaWZmIC0tZ2l0IGEvYXJjaC9hcm02NC9i
-b290L2R0cy9tZWRpYXRlay9tdDY3NzkuZHRzaSBiL2FyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0
-ZWsvbXQ2Nzc5LmR0c2kNCm5ldyBmaWxlIG1vZGUgMTAwNjQ0DQppbmRleCAwMDAwMDAwLi5kYjIx
-ZjIzDQotLS0gL2Rldi9udWxsDQorKysgYi9hcmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL210
-Njc3OS5kdHNpDQpAQCAtMCwwICsxLDI3MSBAQA0KKy8vIFNQRFgtTGljZW5zZS1JZGVudGlmaWVy
-OiBHUEwtMi4wKw0KKy8qDQorICogQ29weXJpZ2h0IChjKSAyMDE5IE1lZGlhVGVrIEluYy4NCisg
-KiBBdXRob3I6IE1hcnMuQyA8bWFycy5jaGVuZ0BtZWRpYXRlay5jb20+DQorICoNCisgKi8NCisN
-CisjaW5jbHVkZSA8ZHQtYmluZGluZ3MvY2xvY2svbXQ2Nzc5LWNsay5oPg0KKyNpbmNsdWRlIDxk
-dC1iaW5kaW5ncy9pbnRlcnJ1cHQtY29udHJvbGxlci9pcnEuaD4NCisjaW5jbHVkZSA8ZHQtYmlu
-ZGluZ3MvaW50ZXJydXB0LWNvbnRyb2xsZXIvYXJtLWdpYy5oPg0KKyNpbmNsdWRlIDxkdC1iaW5k
-aW5ncy9waW5jdHJsL210Njc3OS1waW5mdW5jLmg+DQorDQorLyB7DQorCWNvbXBhdGlibGUgPSAi
-bWVkaWF0ZWssbXQ2Nzc5IjsNCisJaW50ZXJydXB0LXBhcmVudCA9IDwmc3lzaXJxPjsNCisJI2Fk
-ZHJlc3MtY2VsbHMgPSA8Mj47DQorCSNzaXplLWNlbGxzID0gPDI+Ow0KKw0KKwlwc2NpIHsNCisJ
-CWNvbXBhdGlibGUgPSAiYXJtLHBzY2ktMC4yIjsNCisJCW1ldGhvZCA9ICJzbWMiOw0KKwl9Ow0K
-Kw0KKwljcHVzIHsNCisJCSNhZGRyZXNzLWNlbGxzID0gPDE+Ow0KKwkJI3NpemUtY2VsbHMgPSA8
-MD47DQorDQorCQljcHUwOiBjcHVAMCB7DQorCQkJZGV2aWNlX3R5cGUgPSAiY3B1IjsNCisJCQlj
-b21wYXRpYmxlID0gImFybSxjb3J0ZXgtYTU1IjsNCisJCQllbmFibGUtbWV0aG9kID0gInBzY2ki
-Ow0KKwkJCXJlZyA9IDwweDAwMD47DQorCQl9Ow0KKw0KKwkJY3B1MTogY3B1QDEgew0KKwkJCWRl
-dmljZV90eXBlID0gImNwdSI7DQorCQkJY29tcGF0aWJsZSA9ICJhcm0sY29ydGV4LWE1NSI7DQor
-CQkJZW5hYmxlLW1ldGhvZCA9ICJwc2NpIjsNCisJCQlyZWcgPSA8MHgxMDA+Ow0KKwkJfTsNCisN
-CisJCWNwdTI6IGNwdUAyIHsNCisJCQlkZXZpY2VfdHlwZSA9ICJjcHUiOw0KKwkJCWNvbXBhdGli
-bGUgPSAiYXJtLGNvcnRleC1hNTUiOw0KKwkJCWVuYWJsZS1tZXRob2QgPSAicHNjaSI7DQorCQkJ
-cmVnID0gPDB4MjAwPjsNCisJCX07DQorDQorCQljcHUzOiBjcHVAMyB7DQorCQkJZGV2aWNlX3R5
-cGUgPSAiY3B1IjsNCisJCQljb21wYXRpYmxlID0gImFybSxjb3J0ZXgtYTU1IjsNCisJCQllbmFi
-bGUtbWV0aG9kID0gInBzY2kiOw0KKwkJCXJlZyA9IDwweDMwMD47DQorCQl9Ow0KKw0KKwkJY3B1
-NDogY3B1QDQgew0KKwkJCWRldmljZV90eXBlID0gImNwdSI7DQorCQkJY29tcGF0aWJsZSA9ICJh
-cm0sY29ydGV4LWE1NSI7DQorCQkJZW5hYmxlLW1ldGhvZCA9ICJwc2NpIjsNCisJCQlyZWcgPSA8
-MHg0MDA+Ow0KKwkJfTsNCisNCisJCWNwdTU6IGNwdUA1IHsNCisJCQlkZXZpY2VfdHlwZSA9ICJj
-cHUiOw0KKwkJCWNvbXBhdGlibGUgPSAiYXJtLGNvcnRleC1hNTUiOw0KKwkJCWVuYWJsZS1tZXRo
-b2QgPSAicHNjaSI7DQorCQkJcmVnID0gPDB4NTAwPjsNCisJCX07DQorDQorCQljcHU2OiBjcHVA
-NiB7DQorCQkJZGV2aWNlX3R5cGUgPSAiY3B1IjsNCisJCQljb21wYXRpYmxlID0gImFybSxjb3J0
-ZXgtYTc1IjsNCisJCQllbmFibGUtbWV0aG9kID0gInBzY2kiOw0KKwkJCXJlZyA9IDwweDYwMD47
-DQorCQl9Ow0KKw0KKwkJY3B1NzogY3B1QDcgew0KKwkJCWRldmljZV90eXBlID0gImNwdSI7DQor
-CQkJY29tcGF0aWJsZSA9ICJhcm0sY29ydGV4LWE3NSI7DQorCQkJZW5hYmxlLW1ldGhvZCA9ICJw
-c2NpIjsNCisJCQlyZWcgPSA8MHg3MDA+Ow0KKwkJfTsNCisJfTsNCisNCisJcG11IHsNCisJCWNv
-bXBhdGlibGUgPSAiYXJtLGFybXY4LXBtdXYzIjsNCisJCWludGVycnVwdC1wYXJlbnQgPSA8Jmdp
-Yz47DQorCQlpbnRlcnJ1cHRzID0gPEdJQ19QUEkgNyBJUlFfVFlQRV9MRVZFTF9MT1cgMD47DQor
-CX07DQorDQorCWNsazI2bTogb3NjaWxsYXRvckAwIHsNCisJCWNvbXBhdGlibGUgPSAiZml4ZWQt
-Y2xvY2siOw0KKwkJI2Nsb2NrLWNlbGxzID0gPDA+Ow0KKwkJY2xvY2stZnJlcXVlbmN5ID0gPDI2
-MDAwMDAwPjsNCisJCWNsb2NrLW91dHB1dC1uYW1lcyA9ICJjbGsyNm0iOw0KKwl9Ow0KKw0KKwlj
-bGszMms6IG9zY2lsbGF0b3JAMSB7DQorCQljb21wYXRpYmxlID0gImZpeGVkLWNsb2NrIjsNCisJ
-CSNjbG9jay1jZWxscyA9IDwwPjsNCisJCWNsb2NrLWZyZXF1ZW5jeSA9IDwzMjc2OD47DQorCQlj
-bG9jay1vdXRwdXQtbmFtZXMgPSAiY2xrMzJrIjsNCisJfTsNCisNCisJdGltZXIgew0KKwkJY29t
-cGF0aWJsZSA9ICJhcm0sYXJtdjgtdGltZXIiOw0KKwkJaW50ZXJydXB0LXBhcmVudCA9IDwmZ2lj
-PjsNCisJCWludGVycnVwdHMgPSA8R0lDX1BQSSAxMyBJUlFfVFlQRV9MRVZFTF9MT1cgMD4sDQor
-CQkJICAgICA8R0lDX1BQSSAxNCBJUlFfVFlQRV9MRVZFTF9MT1cgMD4sDQorCQkJICAgICA8R0lD
-X1BQSSAxMSBJUlFfVFlQRV9MRVZFTF9MT1cgMD4sDQorCQkJICAgICA8R0lDX1BQSSAxMCBJUlFf
-VFlQRV9MRVZFTF9MT1cgMD47DQorCX07DQorDQorCXNvYyB7DQorCQkjYWRkcmVzcy1jZWxscyA9
-IDwyPjsNCisJCSNzaXplLWNlbGxzID0gPDI+Ow0KKwkJY29tcGF0aWJsZSA9ICJzaW1wbGUtYnVz
-IjsNCisJCXJhbmdlczsNCisNCisJCWdpYzogaW50ZXJydXB0LWNvbnRyb2xsZXJAMGMwMDAwMDAg
-ew0KKwkJCWNvbXBhdGlibGUgPSAiYXJtLGdpYy12MyI7DQorCQkJI2ludGVycnVwdC1jZWxscyA9
-IDw0PjsNCisJCQlpbnRlcnJ1cHQtcGFyZW50ID0gPCZnaWM+Ow0KKwkJCWludGVycnVwdC1jb250
-cm9sbGVyOw0KKwkJCXJlZyA9IDwwIDB4MGMwMDAwMDAgMCAweDQwMDAwPiwgIC8qIEdJQ0QgKi8N
-CisJCQkgICAgICA8MCAweDBjMDQwMDAwIDAgMHgyMDAwMDA+OyAvKiBHSUNSICovDQorCQkJaW50
-ZXJydXB0cyA9IDxHSUNfUFBJIDkgSVJRX1RZUEVfTEVWRUxfSElHSCAwPjsNCisNCisJCQlwcGkt
-cGFydGl0aW9ucyB7DQorCQkJCXBwaV9jbHVzdGVyMDogaW50ZXJydXB0LXBhcnRpdGlvbi0wIHsN
-CisJCQkJCWFmZmluaXR5ID0gPCZjcHUwICZjcHUxIFwNCisJCQkJCQkmY3B1MiAmY3B1MyAmY3B1
-NCAmY3B1NT47DQorCQkJCX07DQorCQkJCXBwaV9jbHVzdGVyMTogaW50ZXJydXB0LXBhcnRpdGlv
-bi0xIHsNCisJCQkJCWFmZmluaXR5ID0gPCZjcHU2ICZjcHU3PjsNCisJCQkJfTsNCisJCQl9Ow0K
-Kw0KKwkJfTsNCisNCisJCXN5c2lycTogaW50cG9sLWNvbnRyb2xsZXJAMGM1M2E2NTAgew0KKwkJ
-CWNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ2Nzc5LXN5c2lycSIsDQorCQkJCSAgICAgIm1lZGlh
-dGVrLG10NjU3Ny1zeXNpcnEiOw0KKwkJCWludGVycnVwdC1jb250cm9sbGVyOw0KKwkJCSNpbnRl
-cnJ1cHQtY2VsbHMgPSA8Mz47DQorCQkJaW50ZXJydXB0LXBhcmVudCA9IDwmZ2ljPjsNCisJCQly
-ZWcgPSA8MCAweDBjNTNhNjUwIDAgMHg1MD47DQorCQl9Ow0KKw0KKwkJdG9wY2tnZW46IGNsb2Nr
-LWNvbnRyb2xsZXJAMTAwMDAwMDAgew0KKwkJCWNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ2Nzc5
-LXRvcGNrZ2VuIiwgInN5c2NvbiI7DQorCQkJcmVnID0gPDAgMHgxMDAwMDAwMCAwIDB4MTAwMD47
-DQorCQkJI2Nsb2NrLWNlbGxzID0gPDE+Ow0KKwkJfTsNCisNCisJCWluZnJhY2ZnX2FvOiBjbG9j
-ay1jb250cm9sbGVyQDEwMDAxMDAwIHsNCisJCQljb21wYXRpYmxlID0gIm1lZGlhdGVrLG10Njc3
-OS1pbmZyYWNmZ19hbyIsICJzeXNjb24iOw0KKwkJCXJlZyA9IDwwIDB4MTAwMDEwMDAgMCAweDEw
-MDA+Ow0KKwkJCSNjbG9jay1jZWxscyA9IDwxPjsNCisJCX07DQorDQorCQlwaW86IHBpbmN0cmxA
-MTAwMDUwMDAgew0KKwkJCWNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ2Nzc5LXBpbmN0cmwiLCAi
-c3lzY29uIjsNCisJCQlyZWcgPSA8MCAweDEwMDA1MDAwIDAgMHgxMDAwPiwNCisJCQkgICAgICA8
-MCAweDExYzIwMDAwIDAgMHgxMDAwPiwNCisJCQkgICAgICA8MCAweDExZDEwMDAwIDAgMHgxMDAw
-PiwNCisJCQkgICAgICA8MCAweDExZTIwMDAwIDAgMHgxMDAwPiwNCisJCQkgICAgICA8MCAweDEx
-ZTcwMDAwIDAgMHgxMDAwPiwNCisJCQkgICAgICA8MCAweDExZWEwMDAwIDAgMHgxMDAwPiwNCisJ
-CQkgICAgICA8MCAweDExZjIwMDAwIDAgMHgxMDAwPiwNCisJCQkgICAgICA8MCAweDExZjMwMDAw
-IDAgMHgxMDAwPiwNCisJCQkgICAgICA8MCAweDEwMDBiMDAwIDAgMHgxMDAwPjsNCisJCQlyZWct
-bmFtZXMgPSAiZ3BpbyIsICJpb2NmZ19ybSIsDQorCQkJCSAgICAiaW9jZmdfYnIiLCAiaW9jZmdf
-bG0iLA0KKwkJCQkgICAgImlvY2ZnX2xiIiwgImlvY2ZnX3J0IiwNCisJCQkJICAgICJpb2NmZ19s
-dCIsICJpb2NmZ190bCIsDQorCQkJCSAgICAiZWludCI7DQorCQkJZ3Bpby1jb250cm9sbGVyOw0K
-KwkJCSNncGlvLWNlbGxzID0gPDI+Ow0KKwkJCWdwaW8tcmFuZ2VzID0gPCZwaW8gMCAwIDIxMD47
-DQorCQkJaW50ZXJydXB0LWNvbnRyb2xsZXI7DQorCQkJI2ludGVycnVwdC1jZWxscyA9IDwyPjsN
-CisJCQlpbnRlcnJ1cHRzID0gPEdJQ19TUEkgMjA0IElSUV9UWVBFX0xFVkVMX0hJR0g+Ow0KKwkJ
-fTsNCisNCisJCWFwbWl4ZWQ6IGNsb2NrLWNvbnRyb2xsZXJAMTAwMGMwMDAgew0KKwkJCWNvbXBh
-dGlibGUgPSAibWVkaWF0ZWssbXQ2Nzc5LWFwbWl4ZWQiLCAic3lzY29uIjsNCisJCQlyZWcgPSA8
-MCAweDEwMDBjMDAwIDAgMHhlMDA+Ow0KKwkJCSNjbG9jay1jZWxscyA9IDwxPjsNCisJCX07DQor
-DQorCQl1YXJ0MDogc2VyaWFsQDExMDAyMDAwIHsNCisJCQljb21wYXRpYmxlID0gIm1lZGlhdGVr
-LG10Njc3OS11YXJ0IiwNCisJCQkJICAgICAibWVkaWF0ZWssbXQ2NTc3LXVhcnQiOw0KKwkJCXJl
-ZyA9IDwwIDB4MTEwMDIwMDAgMCAweDQwMD47DQorCQkJaW50ZXJydXB0cyA9IDxHSUNfU1BJIDEx
-NSBJUlFfVFlQRV9MRVZFTF9MT1c+Ow0KKwkJCWNsb2NrcyA9IDwmY2xrMjZtPiwgPCZpbmZyYWNm
-Z19hbyBDTEtfSU5GUkFfVUFSVDA+Ow0KKwkJCWNsb2NrLW5hbWVzID0gImJhdWQiLCAiYnVzIjsN
-CisJCQlzdGF0dXMgPSAiZGlzYWJsZWQiOw0KKwkJfTsNCisNCisJCXVhcnQxOiBzZXJpYWxAMTEw
-MDMwMDAgew0KKwkJCWNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ2Nzc5LXVhcnQiLA0KKwkJCQkg
-ICAgICJtZWRpYXRlayxtdDY1NzctdWFydCI7DQorCQkJcmVnID0gPDAgMHgxMTAwMzAwMCAwIDB4
-NDAwPjsNCisJCQlpbnRlcnJ1cHRzID0gPEdJQ19TUEkgMTE2IElSUV9UWVBFX0xFVkVMX0xPVz47
-DQorCQkJY2xvY2tzID0gPCZjbGsyNm0+LCA8JmluZnJhY2ZnX2FvIENMS19JTkZSQV9VQVJUMT47
-DQorCQkJY2xvY2stbmFtZXMgPSAiYmF1ZCIsICJidXMiOw0KKwkJCXN0YXR1cyA9ICJkaXNhYmxl
-ZCI7DQorCQl9Ow0KKw0KKwkJdWFydDI6IHNlcmlhbEAxMTAwNDAwMCB7DQorCQkJY29tcGF0aWJs
-ZSA9ICJtZWRpYXRlayxtdDY3NzktdWFydCIsDQorCQkJCSAgICAgIm1lZGlhdGVrLG10NjU3Ny11
-YXJ0IjsNCisJCQlyZWcgPSA8MCAweDExMDA0MDAwIDAgMHg0MDA+Ow0KKwkJCWludGVycnVwdHMg
-PSA8R0lDX1NQSSAxMTcgSVJRX1RZUEVfTEVWRUxfTE9XPjsNCisJCQljbG9ja3MgPSA8JmNsazI2
-bT4sIDwmaW5mcmFjZmdfYW8gQ0xLX0lORlJBX1VBUlQxPjsNCisJCQljbG9jay1uYW1lcyA9ICJi
-YXVkIiwgImJ1cyI7DQorCQkJc3RhdHVzID0gImRpc2FibGVkIjsNCisJCX07DQorDQorCQlhdWRp
-bzogY2xvY2stY29udHJvbGxlckAxMTIxMDAwMCB7DQorCQkJY29tcGF0aWJsZSA9ICJtZWRpYXRl
-ayxtdDY3NzktYXVkaW8iLCAic3lzY29uIjsNCisJCQlyZWcgPSA8MCAweDExMjEwMDAwIDAgMHgx
-MDAwPjsNCisJCQkjY2xvY2stY2VsbHMgPSA8MT47DQorCQl9Ow0KKw0KKwkJbWZnY2ZnOiBjbG9j
-ay1jb250cm9sbGVyQDEzZmJmMDAwIHsNCisJCQljb21wYXRpYmxlID0gIm1lZGlhdGVrLG10Njc3
-OS1tZmdjZmciLCAic3lzY29uIjsNCisJCQlyZWcgPSA8MCAweDEzZmJmMDAwIDAgMHgxMDAwPjsN
-CisJCQkjY2xvY2stY2VsbHMgPSA8MT47DQorCQl9Ow0KKw0KKwkJbW1zeXM6IHN5c2NvbkAxNDAw
-MDAwMCB7DQorCQkJY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDY3NzktbW1zeXMiLCAic3lzY29u
-IjsNCisJCQlyZWcgPSA8MCAweDE0MDAwMDAwIDAgMHgxMDAwPjsNCisJCQkjY2xvY2stY2VsbHMg
-PSA8MT47DQorCQl9Ow0KKw0KKwkJaW1nc3lzOiBjbG9jay1jb250cm9sbGVyQDE1MDIwMDAwIHsN
-CisJCQljb21wYXRpYmxlID0gIm1lZGlhdGVrLG10Njc3OS1pbWdzeXMiLCAic3lzY29uIjsNCisJ
-CQlyZWcgPSA8MCAweDE1MDIwMDAwIDAgMHgxMDAwPjsNCisJCQkjY2xvY2stY2VsbHMgPSA8MT47
-DQorCQl9Ow0KKw0KKwkJdmRlY3N5czogY2xvY2stY29udHJvbGxlckAxNjAwMDAwMCB7DQorCQkJ
-Y29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDY3NzktdmRlY3N5cyIsICJzeXNjb24iOw0KKwkJCXJl
-ZyA9IDwwIDB4MTYwMDAwMDAgMCAweDEwMDA+Ow0KKwkJCSNjbG9jay1jZWxscyA9IDwxPjsNCisJ
-CX07DQorDQorCQl2ZW5jc3lzOiBjbG9jay1jb250cm9sbGVyQDE3MDAwMDAwIHsNCisJCQljb21w
-YXRpYmxlID0gIm1lZGlhdGVrLG10Njc3OS12ZW5jc3lzIiwgInN5c2NvbiI7DQorCQkJcmVnID0g
-PDAgMHgxNzAwMDAwMCAwIDB4MTAwMD47DQorCQkJI2Nsb2NrLWNlbGxzID0gPDE+Ow0KKwkJfTsN
-CisNCisJCWNhbXN5czogY2xvY2stY29udHJvbGxlckAxYTAwMDAwMCB7DQorCQkJY29tcGF0aWJs
-ZSA9ICJtZWRpYXRlayxtdDY3NzktY2Ftc3lzIiwgInN5c2NvbiI7DQorCQkJcmVnID0gPDAgMHgx
-YTAwMDAwMCAwIDB4MTAwMDA+Ow0KKwkJCSNjbG9jay1jZWxscyA9IDwxPjsNCisJCX07DQorDQor
-CQlpcGVzeXM6IGNsb2NrLWNvbnRyb2xsZXJAMWIwMDAwMDAgew0KKwkJCWNvbXBhdGlibGUgPSAi
-bWVkaWF0ZWssbXQ2Nzc5LWlwZXN5cyIsICJzeXNjb24iOw0KKwkJCXJlZyA9IDwwIDB4MWIwMDAw
-MDAgMCAweDEwMDA+Ow0KKwkJCSNjbG9jay1jZWxscyA9IDwxPjsNCisJCX07DQorDQorCX07DQor
-fTsNCi0tIA0KMS43LjkuNQ0K
+On Wed, Jul 01, 2020 at 05:54:11PM -0700, Tim Chen wrote:
+> 
+> 
+> On 7/1/20 4:28 PM, Joel Fernandes wrote:
+> > On Tue, Jun 30, 2020 at 09:32:27PM +0000, Vineeth Remanan Pillai wrote:
+> >> From: Peter Zijlstra <peterz@infradead.org>
+> >>
+> >> Instead of only selecting a local task, select a task for all SMT
+> >> siblings for every reschedule on the core (irrespective which logical
+> >> CPU does the reschedule).
+> >>
+> >> There could be races in core scheduler where a CPU is trying to pick
+> >> a task for its sibling in core scheduler, when that CPU has just been
+> >> offlined.  We should not schedule any tasks on the CPU in this case.
+> >> Return an idle task in pick_next_task for this situation.
+> >>
+> >> NOTE: there is still potential for siblings rivalry.
+> >> NOTE: this is far too complicated; but thus far I've failed to
+> >>       simplify it further.
+> >>
+> >> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> >> Signed-off-by: Julien Desfossez <jdesfossez@digitalocean.com>
+> >> Signed-off-by: Vineeth Remanan Pillai <vpillai@digitalocean.com>
+> >> Signed-off-by: Aaron Lu <aaron.lu@linux.alibaba.com>
+> >> Signed-off-by: Tim Chen <tim.c.chen@linux.intel.com>
+> > 
+> > Hi Peter, Tim, all, the below patch fixes the hotplug issue described in the
+> > below patch's Link tag. Patch description below describes the issues fixed
+> > and it applies on top of this patch.
+> > 
+> > ------8<----------
+> > 
+> > From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+> > Subject: [PATCH] sched: Fix CPU hotplug causing crashes in task selection logic
+> > 
+> > The selection logic does not run correctly if the current CPU is not in the
+> > cpu_smt_mask (which it is not because the CPU is offlined when the stopper
+> > finishes running and needs to switch to idle).  There are also other issues
+> > fixed by the patch I think such as: if some other sibling set core_pick to
+> > something, however the selection logic on current cpu resets it before
+> > selecting. In this case, we need to run the task selection logic again to
+> > make sure it picks something if there is something to run. It might end up
+> > picking the wrong task.  Yet another issue was, if the stopper thread is an
 
+"It might end up picking the wrong task" needs to be: "We might end up
+picking a different task but that's Ok".
+
+> > unconstrained pick, then rq->core_pick is set. The next time task selection
+> > logic runs when stopper needs to switch to idle, the current CPU is not in
+> > the smt_mask. This causes the previous ->core_pick to be picked again which
+> > happens to be the unconstrained task! so the stopper keeps getting selected
+> > forever.
+> > 
+> > That and there are a few more safe guards and checks around checking/setting
+> > rq->core_pick. To test it, I ran rcutorture and made it tag all torture
+> > threads. Then ran it in hotplug mode (hotplugging every 200ms) and it hit the
+> > issue. Now it runs for an hour or so without issue. (Torture testing debug
+> > changes: https://bit.ly/38htfqK ).
+> > 
+> > Various fixes were tried causing varying degrees of crashes.  Finally I found
+> > that it is easiest to just add current CPU to the smt_mask's copy always.
+> > This is so that task selection logic always runs on the current CPU which
+> > called schedule().
+> 
+> 
+> It looks good to me. 
+
+Thank you for your review! Could I add your Reviewed-by tag to the patch?
+
+ - Joel
+
+
+> Thanks.
+> 
+> Tim
