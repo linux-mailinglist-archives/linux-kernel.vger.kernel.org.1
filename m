@@ -2,120 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 246D5211BF8
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 08:28:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 389E6211C12
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 08:40:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726272AbgGBG2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 02:28:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57646 "EHLO
+        id S1726578AbgGBGkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 02:40:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725263AbgGBG2v (ORCPT
+        with ESMTP id S1726068AbgGBGkC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 02:28:51 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E9D6C08C5C1
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Jul 2020 23:28:51 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id z2so4402561wrp.2
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Jul 2020 23:28:50 -0700 (PDT)
+        Thu, 2 Jul 2020 02:40:02 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2AA4C08C5C1;
+        Wed,  1 Jul 2020 23:40:01 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id o18so23460704eje.7;
+        Wed, 01 Jul 2020 23:40:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=jCQkFD83b8Tutn+WMP/3bAr1jQFc8WLuHymNCikYf+w=;
-        b=mKWkAyXewZEZnOTna5MEn54RJSrzCeMHT4RFOmf6zybQtHEtHBNxM1fg/d3wZYPHhO
-         dcXlW/mOLWGEXsNn00XmM1Lmt1NUqFtJVRpDDUVcM3yuLdd7RSN/R1OAmsiaofkK9nzJ
-         08rmCXu7dpoV8MA+0OFS9Tv8OpaFPV2Fqh6BkG5B6izCQ9/9a5L/Pk9JoZAO5EJRcM4L
-         UfvznEs81QPynMTSWULmJT+kXoSFl8/KECF/FylYPtuvkdW5+vgoX+iyr+4UKVd3X9kZ
-         opSFhpuhXcRQGwcfl76FG9MCrpAxkxXH7RrWDmjq51DTi1VUZnVUstdZamJ7mmr+nPmg
-         96+A==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uZyzkTpWxxyp2jCpCr/H7AQhJTt+1oFIYiYjR40e5k8=;
+        b=ef+WvaDI5Nclj/K3DxyTqSSIiMNT70CBd5IP2Oh8mSLH15FENPmZiNclUE54Cef5Y1
+         6RdTuKtBentGIP3A2y8+jhPffGc8jn/LJ9ZRvpS5+cdnzDueqkGsNMqAdcQ2qDgBL5Wo
+         TR4r7Hj7hcW9Fa31FslEK/MC3djVQaGhgL5PXCN9hyKpqXfd/D5LUR9QMeFLkJwfYtGr
+         c1VXFt8rx4+GEz8F2KbqvYBf/wvZh0x/lbvGYN/D1ov/QRi+rZmxUa3/YX4Lp7CDGsUp
+         Sn3a39dv13S3DaJ9HcJYmVLqtzeQxsXEN+7YZhkVNi19zDnEO52Wpn6Vu3zpvqI6+MYJ
+         bJGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=jCQkFD83b8Tutn+WMP/3bAr1jQFc8WLuHymNCikYf+w=;
-        b=skGd9ngXqBavTCAYFotxdKnAskKcOBOXv4jZsMfCcR+UR1lwUNl/RuoxIQD1N6+kVs
-         PPHnOGacNMd1HdedtJvE7Zy7Rv2UoFu4g8bQukQQxSkaiYqYGf6QNvvK3WSU8Klp/kSV
-         WYBdwltWmisYHpoYqUSZom63SrtU/VTbCFh4CjPXOolBTTSa7E9CzIMrduMIiD/uSjZi
-         qMl0BIecpWqsr13+c5l7xIFp1cmPdKkrJlqR4bbEdJiaI0p2fJBTTQhlA8vvvBbyGAoE
-         l9z0OkTQ7rL+/5yesJIpo0/C7Yy3ppp6PAg2FaJykjjp0ZPpt1KSS8+w3UP+QRyNvpgI
-         0oog==
-X-Gm-Message-State: AOAM532ZYCX+7C+8rr6EOnWmZSGeY8tQ2zAgKEcbyJOcFloy0JNbj1IX
-        ruNbs7IlIp2i0g18KU5e9TD6CQ==
-X-Google-Smtp-Source: ABdhPJyNY8z3/hUMig6bxMXp9IPqQqAaIUQPnJl/6+xb3OWV+NBYXC2pezBLPGqZPjnpGpOuT1lSjg==
-X-Received: by 2002:a5d:5388:: with SMTP id d8mr29514405wrv.35.1593671328298;
-        Wed, 01 Jul 2020 23:28:48 -0700 (PDT)
-Received: from dell ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id w12sm10112507wrm.79.2020.07.01.23.28.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Jul 2020 23:28:47 -0700 (PDT)
-Date:   Thu, 2 Jul 2020 07:28:45 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Thor Thayer <thor.thayer@linux.intel.com>
-Subject: Re: [PATCH 04/10] mfd: altera-sysmgr: Fix physical address storing
- hacks
-Message-ID: <20200702062845.GK1179328@dell>
-References: <20200624150704.2729736-5-lee.jones@linaro.org>
- <20200701193325.097F920853@mail.kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uZyzkTpWxxyp2jCpCr/H7AQhJTt+1oFIYiYjR40e5k8=;
+        b=uKWo4w+TlCG5dFN3sc9xxZU++xqI6+87TKZoy3rDiDlXPvkug6vh4idyUrWH8KSa9x
+         TeR7GOmt4ejRkYoNT95R6LxhmbbVeUZgVaT4Es2QC0iWThGoBeiJNj9dlcfREKglpfTy
+         O1inPAXrMt4NA4ywBkmkkDLlTXMFztqcRozHMWVDyGWHGlGtyLAnvTlA56LyCPJ7zfIz
+         CinBHN62PKgJkZtUxID+8O1q67T+UxS9fDsx0BsJTzRKdYrwuSBVsJNYkuYkryU5SO1t
+         AbgEmxMM5RiZ+BO60ja2c3L0rmn6YHrdLJxaZaQpMj9TMYXlEwufv+4L1/dHfmcxdQTe
+         yFzA==
+X-Gm-Message-State: AOAM533y0TlOKBeIZiVmxpV7mqE/3UtZedfMj77/rn+zOSZrXfdkwtuA
+        rui9s2GNWSZ/5Enj/1aDc10aKgWx4nCLoPoJJBs=
+X-Google-Smtp-Source: ABdhPJwcdJc+U6kh8u/dlaQKuEdG1Rr872beSa67XPYZJ6AgnTMmZLhLlp9wvGZneXlCk1gmpjEyS7JQdHyVAthcVa8=
+X-Received: by 2002:a17:907:7245:: with SMTP id ds5mr27575294ejc.67.1593672000556;
+ Wed, 01 Jul 2020 23:40:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200701193325.097F920853@mail.kernel.org>
+References: <1593656074-10092-1-git-send-email-Anson.Huang@nxp.com>
+ <1593656074-10092-4-git-send-email-Anson.Huang@nxp.com> <CAA+hA=S0G7Na0ieEpPq3aN6GN1BEHtYp9vbF9x2tjmknDSVjZw@mail.gmail.com>
+ <DB3PR0402MB391610595D40C11CF26CD990F56D0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+ <CAA+hA=Rtkm_FpkoBvHNnB0TSeTrqXaRVwOzkywsL7QO6ec_K7Q@mail.gmail.com> <AM6PR0402MB3911049CC1B136327345F11CF56D0@AM6PR0402MB3911.eurprd04.prod.outlook.com>
+In-Reply-To: <AM6PR0402MB3911049CC1B136327345F11CF56D0@AM6PR0402MB3911.eurprd04.prod.outlook.com>
+From:   Dong Aisheng <dongas86@gmail.com>
+Date:   Thu, 2 Jul 2020 14:25:58 +0800
+Message-ID: <CAA+hA=S9ENXtD7q362=y84qKAtR090pZOd6MF6uN8W223UK-+Q@mail.gmail.com>
+Subject: Re: [PATCH V4 3/5] clk: imx: Support building i.MX common clock
+ driver as module
+To:     Anson Huang <anson.huang@nxp.com>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Peng Fan <peng.fan@nxp.com>, Arnd Bergmann <arnd@arndb.de>,
+        Abel Vesa <abel.vesa@nxp.com>,
+        Aisheng Dong <aisheng.dong@nxp.com>,
+        Andy Duan <fugang.duan@nxp.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        dl-linux-imx <linux-imx@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 01 Jul 2020, Sasha Levin wrote:
+On Thu, Jul 2, 2020 at 2:11 PM Anson Huang <anson.huang@nxp.com> wrote:
+>
+> > Subject: Re: [PATCH V4 3/5] clk: imx: Support building i.MX common clock
+> > driver as module
+> >
+> > On Thu, Jul 2, 2020 at 11:26 AM Anson Huang <anson.huang@nxp.com>
+> > wrote:
+> > [...]
+> > > > > @@ -143,16 +148,18 @@ void imx_cscmr1_fixup(u32 *val)  static int
+> > > > > imx_keep_uart_clocks;  static struct clk ** const
+> > > > > *imx_uart_clocks;
+> > > > >
+> > > > > -static int __init imx_keep_uart_clocks_param(char *str)
+> > > > > +static int __maybe_unused imx_keep_uart_clocks_param(char *str)
+> > > > >  {
+> > > > >         imx_keep_uart_clocks = 1;
+> > > > >
+> > > > >         return 0;
+> > > > >  }
+> > > > > +#ifndef MODULE
+> > > > >  __setup_param("earlycon", imx_keep_uart_earlycon,
+> > > > >               imx_keep_uart_clocks_param, 0);
+> > > > > __setup_param("earlyprintk", imx_keep_uart_earlyprintk,
+> > > > >               imx_keep_uart_clocks_param, 0);
+> > > >
+> > > > I feel not only the __setup_param, the whole logic of
+> > > > keep_uart_clocks are not needed for Module case. Is it true?
+> > >
+> > > Yes, but the 'keep_uart_clocks' is false by default and the function
+> > > imx_keep_uart_clocks_param() already has '__maybe_unused', it does NOT
+> > > impact anything if it is for module build, so I did NOT add the #ifndef check
+> > for them, just to keep code easy and clean.
+> > >
+> >
+> > IMHO do not compile them is a more easy and clean way. Then users don't
+> > have to look into the code logic which is meaingless for Module case.
+> >
+> > BTW, it really does not make any sense to only condionally compile
+> > __setup_parm() but left
+> > the param functions definition to be handled by __maybe_unnused.
+> > They're together part of code, aren't they?
+>
+> I am fine of adding the '#ifndef MODULE' to imx_clk_disable_uart() and imx_keep_uart_clocks_param()
+> as well in next patch series. Others like ' imx_keep_uart_clocks ' and imx_register_uart_clocks() need to
+> be kept always built, since they are used by each clock driver no matter built-in or module build.
+>
+> So that means I have to add another 'ifndef MODULE' or I need to adjust some code sequence to make
+> those code can be built-out in same block and just use single 'ifndef MODULE', I think adjust the code
+> sequence should be better, will go with this way.
 
-> Hi
-> 
-> [This is an automated email]
-> 
-> This commit has been processed because it contains a -stable tag.
-> The stable tag indicates that it's relevant for the following trees: all
-> 
-> The bot has tested the following trees: v5.7.6, v5.4.49, v4.19.130, v4.14.186, v4.9.228, v4.4.228.
-> 
-> v5.7.6: Build OK!
-> v5.4.49: Build OK!
-> v4.19.130: Failed to apply! Possible dependencies:
->     51908d2e9b7c7 ("mfd: stpmic1: Add STPMIC1 driver")
->     f36e789a1f8d0 ("mfd: altera-sysmgr: Add SOCFPGA System Manager")
-> 
-> v4.14.186: Failed to apply! Possible dependencies:
->     51908d2e9b7c7 ("mfd: stpmic1: Add STPMIC1 driver")
->     f36e789a1f8d0 ("mfd: altera-sysmgr: Add SOCFPGA System Manager")
-> 
-> v4.9.228: Failed to apply! Possible dependencies:
->     51908d2e9b7c7 ("mfd: stpmic1: Add STPMIC1 driver")
->     937d3a0af521e ("mfd: Add support for Allwinner SoCs ADC")
->     d0f949e220fdf ("mfd: Add STM32 Timers driver")
->     f36e789a1f8d0 ("mfd: altera-sysmgr: Add SOCFPGA System Manager")
-> 
-> v4.4.228: Failed to apply! Possible dependencies:
->     51908d2e9b7c7 ("mfd: stpmic1: Add STPMIC1 driver")
->     8ce064bfe7c8c ("MAINTAINERS: Add Altera Arria10 System Resource Chip")
->     937d3a0af521e ("mfd: Add support for Allwinner SoCs ADC")
->     9787f5e28b507 ("mfd: altr_a10sr: Add Altera Arria10 DevKit System Resource Chip")
->     b25c6b7d2801f ("mfd: act8945a: Add Active-semi ACT8945A PMIC MFD driver")
->     d0f949e220fdf ("mfd: Add STM32 Timers driver")
->     f36e789a1f8d0 ("mfd: altera-sysmgr: Add SOCFPGA System Manager")
-> 
-> 
-> NOTE: The patch will not be queued to stable trees until it is upstream.
-> 
-> How should we proceed with this patch?
+What if we  condionally compile it in clk.h? Will that be easiser?
 
-Please drop it.
+Regards
+Aisheng
 
-Greg indicated that these should not be bound for Stable.
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+>
+> Anson
