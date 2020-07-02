@@ -2,115 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADAD5212515
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 15:46:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 775BA2124E1
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 15:37:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729422AbgGBNqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 09:46:48 -0400
-Received: from esa3.microchip.iphmx.com ([68.232.153.233]:40176 "EHLO
-        esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729047AbgGBNqr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 09:46:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1593697607; x=1625233607;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=npTNr8twP/tyLNtM3PSd3ahFvXvXe/yaEybXuDL7ItU=;
-  b=H7qg5TDCWJd4LCgSbz64hN631JCpsmHFHRqAJlPnJ3OwKCbGOd/hSAUZ
-   e4klBvWqg9gKpohMvZQcOM/1H2QEWwmFfNmpufBV3OToCg72Fs0xq+nic
-   Aptep0L35ZQQd/GCM9fhkElAxTqiwQXVcSJG1BNLDohNJAW05hsLjpBTq
-   Wu/exJfMKVM66SdFr1/EOa0G0EoeaW1vslAqBuZ+WEjnWQPyLLYeryGmD
-   1KZzZ9asrv9g+89F8uOja4f/6PwJ0o4T9U3/D78vCLRD7Vcy+AX2R5DCc
-   0HE5/j2+UoHt8mkp8MUE/ljBcpylj5x+4FnWF/6FweR1yQz/ySXx5tTZL
-   A==;
-IronPort-SDR: OGNPd1Jr05acijLqDonYJw21klvbQUik4rG4Uo+B+UvaJ9paa1izCinxXA64RieVLRcf+RS61G
- qvsDcMBeQEulK8aHy8XRx+OZBOG7sfVu1t7xY/4GlVow410jmtbpI2x3JuVCXtOg33Xp6Jtb2a
- b7sUrKxb7lOeiMn1O+CGzBox9gy3wUnpzCDw4RyuFxERXIIsexEDn8aY67SeQ1KU7wNp/TFing
- J0MdUYaVsL6t3NQfwhXWit//au+7oWsmuVvGpzVKw4MxMybd3kd9WXFZLawDvqR/Jq3ThVDDcU
- ihM=
+        id S1729411AbgGBNhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 09:37:09 -0400
+Received: from mga03.intel.com ([134.134.136.65]:63718 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729254AbgGBNhI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 09:37:08 -0400
+IronPort-SDR: uUf0uHDpozlvX43ME3TExdovp+P7dbY+WiMXpa8I8sA4hizN+O/Bd7p5ne7j7FKZqR6BgdKUQW
+ Qn2g4XflFw7g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9669"; a="146892860"
 X-IronPort-AV: E=Sophos;i="5.75,304,1589266800"; 
-   d="scan'208";a="82397838"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 02 Jul 2020 06:46:46 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 2 Jul 2020 06:46:46 -0700
-Received: from localhost.localdomain (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Thu, 2 Jul 2020 06:46:21 -0700
-From:   <nicolas.ferre@microchip.com>
-To:     <linux-arm-kernel@lists.infradead.org>, <sre@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        "Codrin Ciubotariu" <codrin.ciubotariu@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        <linux-spi@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>
-Subject: [PATCH] MAINTAINERS: Change Maintainer for some at91 drivers
-Date:   Thu, 2 Jul 2020 15:42:24 +0200
-Message-ID: <20200702134224.3750-1-nicolas.ferre@microchip.com>
-X-Mailer: git-send-email 2.27.0
+   d="scan'208";a="146892860"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2020 06:37:07 -0700
+IronPort-SDR: qD6O/1RKxxZPtysu3PRMimGKQxcacJFbEMoMKBx0VX8iwfD+GHAXRZccM2MSOcex7d8lOcq9OM
+ W1NmJMCJHMPg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,304,1589266800"; 
+   d="scan'208";a="278125977"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga003.jf.intel.com with ESMTP; 02 Jul 2020 06:37:05 -0700
+Date:   Thu, 2 Jul 2020 06:43:41 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Auger Eric <eric.auger@redhat.com>
+Cc:     iommu@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Yi Liu <yi.l.liu@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>, jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH v3 6/7] iommu/vt-d: Warn on out-of-range invalidation
+ address
+Message-ID: <20200702064341.18d513a5@jacob-builder>
+In-Reply-To: <7c265689-a23c-021b-27e7-beb3cd667a5f@redhat.com>
+References: <1593617636-79385-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        <1593617636-79385-7-git-send-email-jacob.jun.pan@linux.intel.com>
+        <7c265689-a23c-021b-27e7-beb3cd667a5f@redhat.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicolas Ferre <nicolas.ferre@microchip.com>
+Hi Eric,
 
-I hand over the maintenance of these drivers to my colleagues. Claudiu,
-Codrin and Tudor already have experience with these controllers and
-sub-systems.
+On Thu, 2 Jul 2020 10:47:39 +0200
+Auger Eric <eric.auger@redhat.com> wrote:
 
-Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
----
-Mark, Sebastian,
+> Hi,
+> 
+> On 7/1/20 5:33 PM, Jacob Pan wrote:
+> > For guest requested IOTLB invalidation, address and mask are
+> > provided as part of the invalidation data. VT-d HW silently ignores
+> > any address bits below the mask. SW shall also allow such case but
+> > give warning if address does not align with the mask. This patch
+> > relax the fault handling from error to warning and proceed with
+> > invalidation request with the given mask.  
+> What I don't really get is the guest shouldn't do that. Don't we want
+> to be more strict in that case and return an error?
+> 
+My thinking is that the driver should behave the same level of leniency
+as the HW. The other concern is that the consequence is severe, if TLB
+invalidation failed, we have hang the guest to protect security.
 
-I kept these entries together as it may generate conflicts if handled
-separately. I suggest that Mark take the chunk as maintainer of SPI and
-Audio sub-systems.
-Anyway, don't hesitate to tell me if I should handle this change
-differently or at another time during the development cycle.
+> Thanks
+> 
+> Eric
+> > 
+> > Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> > ---
+> >  drivers/iommu/intel/iommu.c | 7 +++----
+> >  1 file changed, 3 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/drivers/iommu/intel/iommu.c
+> > b/drivers/iommu/intel/iommu.c index 6a0c62c7395c..2e1b53ade784
+> > 100644 --- a/drivers/iommu/intel/iommu.c
+> > +++ b/drivers/iommu/intel/iommu.c
+> > @@ -5439,13 +5439,12 @@ intel_iommu_sva_invalidate(struct
+> > iommu_domain *domain, struct device *dev, 
+> >  		switch (BIT(cache_type)) {
+> >  		case IOMMU_CACHE_INV_TYPE_IOTLB:
+> > +			/* HW will ignore LSB bits based on
+> > address mask */ if (inv_info->granularity == IOMMU_INV_GRANU_ADDR &&
+> >  			    size &&
+> >  			    (inv_info->addr_info.addr &
+> > ((BIT(VTD_PAGE_SHIFT + size)) - 1))) {
+> > -				pr_err_ratelimited("Address out of
+> > range, 0x%llx, size order %llu\n",
+> > -
+> > inv_info->addr_info.addr, size);
+> > -				ret = -ERANGE;
+> > -				goto out_unlock;
+> > +				pr_err_ratelimited("User address
+> > not aligned, 0x%llx, size order %llu\n",
+> > +
+> > inv_info->addr_info.addr, size); }
+> >  
+> >  			/*
+> >   
+> 
 
-Best regards,
-  Nicolas
-
- MAINTAINERS | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 496fd4eafb68..1c1527a34d99 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -11333,17 +11333,17 @@ F:	drivers/iio/adc/at91-sama5d2_adc.c
- F:	include/dt-bindings/iio/adc/at91-sama5d2_adc.h
- 
- MICROCHIP SAMA5D2-COMPATIBLE SHUTDOWN CONTROLLER
--M:	Nicolas Ferre <nicolas.ferre@microchip.com>
-+M:	Claudiu Beznea <claudiu.beznea@microchip.com>
- S:	Supported
- F:	drivers/power/reset/at91-sama5d2_shdwc.c
- 
- MICROCHIP SPI DRIVER
--M:	Nicolas Ferre <nicolas.ferre@microchip.com>
-+M:	Tudor Ambarus <tudor.ambarus@microchip.com>
- S:	Supported
- F:	drivers/spi/spi-atmel.*
- 
- MICROCHIP SSC DRIVER
--M:	Nicolas Ferre <nicolas.ferre@microchip.com>
-+M:	Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
- L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
- S:	Supported
- F:	drivers/misc/atmel-ssc.c
--- 
-2.27.0
-
+[Jacob Pan]
