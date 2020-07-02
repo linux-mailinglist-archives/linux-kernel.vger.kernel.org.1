@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B3E4211857
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 03:28:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 678A9211859
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 03:28:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729354AbgGBB1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 21:27:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57814 "EHLO mail.kernel.org"
+        id S1729393AbgGBB1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 21:27:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57954 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729166AbgGBB00 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 21:26:26 -0400
+        id S1729206AbgGBB0e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 21:26:34 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EFB96206BE;
-        Thu,  2 Jul 2020 01:26:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8DD6F206BE;
+        Thu,  2 Jul 2020 01:26:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593653186;
-        bh=5Jqa8Rm0KG4BHotO3qQqwn+APEvLoSbIZoKJA2xGqj0=;
+        s=default; t=1593653194;
+        bh=CEY62XlbzwgiW5Lf2uBoRurdb/wAA8yCa81CH4PGnhI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rw40hWweISIhDHboCj5uGiSpxctJPbjY+rXOZ0m5NVU7sga7X+rMqcKb0BbJ96KBt
-         6/WieUKV79dGm2A+m3v7U/602TXxwUVvNYO1kqhZeUmnVANLz7ZVX81n3EzVL1znJd
-         3BUmmBP/s5ChPQ5/VyqUcbNjb0xodRoW2TYCo+nU=
+        b=vGPzYe6y6k0HJM+IWAHS3hYKvJv7YWwlfZqBr1wOWsKv4BRggik/MfUho0g8c60sB
+         BvuUV1hVYbjBYjDopvMKCS97X4Fb6hdX5bneNLY1B/xwgGQUsEDVseJsF5Vc46Oz7r
+         5ub1vxi/osDw5dvSoWw5H5T+4e1rbS3/VW0BlK00=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Zhenzhong Duan <zhenzhong.duan@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, linux-spi@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 09/27] spi: spidev: fix a potential use-after-free in spidev_release()
-Date:   Wed,  1 Jul 2020 21:25:57 -0400
-Message-Id: <20200702012615.2701532-9-sashal@kernel.org>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Emil Velikov <emil.l.velikov@gmail.com>,
+        Sasha Levin <sashal@kernel.org>,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 4.19 15/27] drm: panel-orientation-quirks: Use generic orientation-data for Acer S1003
+Date:   Wed,  1 Jul 2020 21:26:03 -0400
+Message-Id: <20200702012615.2701532-15-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200702012615.2701532-1-sashal@kernel.org>
 References: <20200702012615.2701532-1-sashal@kernel.org>
@@ -43,74 +44,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhenzhong Duan <zhenzhong.duan@gmail.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit 06096cc6c5a84ced929634b0d79376b94c65a4bd ]
+[ Upstream commit a05caf9e62a85d12da27e814ac13195f4683f21c ]
 
-If an spi device is unbounded from the driver before the release
-process, there will be an NULL pointer reference when it's
-referenced in spi_slave_abort().
+The Acer S1003 has proper DMI strings for sys-vendor and product-name,
+so we do not need to match by BIOS-date.
 
-Fix it by checking it's already freed before reference.
+This means that the Acer S1003 can use the generic lcd800x1280_rightside_up
+drm_dmi_panel_orientation_data struct which is also used by other quirks.
 
-Signed-off-by: Zhenzhong Duan <zhenzhong.duan@gmail.com>
-Link: https://lore.kernel.org/r/20200618032125.4650-2-zhenzhong.duan@gmail.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Reviewed-by: Emil Velikov <emil.l.velikov@gmail.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200531093025.28050-2-hdegoede@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spidev.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+ drivers/gpu/drm/drm_panel_orientation_quirks.c | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
 
-diff --git a/drivers/spi/spidev.c b/drivers/spi/spidev.c
-index 5edf4029a3486..167047760d79a 100644
---- a/drivers/spi/spidev.c
-+++ b/drivers/spi/spidev.c
-@@ -607,15 +607,20 @@ static int spidev_open(struct inode *inode, struct file *filp)
- static int spidev_release(struct inode *inode, struct file *filp)
- {
- 	struct spidev_data	*spidev;
-+	int			dofree;
+diff --git a/drivers/gpu/drm/drm_panel_orientation_quirks.c b/drivers/gpu/drm/drm_panel_orientation_quirks.c
+index de7837efbbfce..fa5c25d36d3dc 100644
+--- a/drivers/gpu/drm/drm_panel_orientation_quirks.c
++++ b/drivers/gpu/drm/drm_panel_orientation_quirks.c
+@@ -30,12 +30,6 @@ struct drm_dmi_panel_orientation_data {
+ 	int orientation;
+ };
  
- 	mutex_lock(&device_list_lock);
- 	spidev = filp->private_data;
- 	filp->private_data = NULL;
- 
-+	spin_lock_irq(&spidev->spi_lock);
-+	/* ... after we unbound from the underlying device? */
-+	dofree = (spidev->spi == NULL);
-+	spin_unlock_irq(&spidev->spi_lock);
-+
- 	/* last close? */
- 	spidev->users--;
- 	if (!spidev->users) {
--		int		dofree;
- 
- 		kfree(spidev->tx_buffer);
- 		spidev->tx_buffer = NULL;
-@@ -623,19 +628,14 @@ static int spidev_release(struct inode *inode, struct file *filp)
- 		kfree(spidev->rx_buffer);
- 		spidev->rx_buffer = NULL;
- 
--		spin_lock_irq(&spidev->spi_lock);
--		if (spidev->spi)
--			spidev->speed_hz = spidev->spi->max_speed_hz;
+-static const struct drm_dmi_panel_orientation_data acer_s1003 = {
+-	.width = 800,
+-	.height = 1280,
+-	.orientation = DRM_MODE_PANEL_ORIENTATION_RIGHT_UP,
+-};
 -
--		/* ... after we unbound from the underlying device? */
--		dofree = (spidev->spi == NULL);
--		spin_unlock_irq(&spidev->spi_lock);
--
- 		if (dofree)
- 			kfree(spidev);
-+		else
-+			spidev->speed_hz = spidev->spi->max_speed_hz;
- 	}
- #ifdef CONFIG_SPI_SLAVE
--	spi_slave_abort(spidev->spi);
-+	if (!dofree)
-+		spi_slave_abort(spidev->spi);
- #endif
- 	mutex_unlock(&device_list_lock);
- 
+ static const struct drm_dmi_panel_orientation_data asus_t100ha = {
+ 	.width = 800,
+ 	.height = 1280,
+@@ -100,7 +94,7 @@ static const struct dmi_system_id orientation_data[] = {
+ 		  DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Acer"),
+ 		  DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "One S1003"),
+ 		},
+-		.driver_data = (void *)&acer_s1003,
++		.driver_data = (void *)&lcd800x1280_rightside_up,
+ 	}, {	/* Asus T100HA */
+ 		.matches = {
+ 		  DMI_EXACT_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
 -- 
 2.25.1
 
