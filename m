@@ -2,99 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CD06212D97
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 22:05:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE6DD212D9F
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 22:06:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726151AbgGBUFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 16:05:33 -0400
-Received: from mga11.intel.com ([192.55.52.93]:18071 "EHLO mga11.intel.com"
+        id S1726272AbgGBUFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 16:05:51 -0400
+Received: from smtp.al2klimov.de ([78.46.175.9]:58610 "EHLO smtp.al2klimov.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725915AbgGBUFc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 16:05:32 -0400
-IronPort-SDR: 9ft6KvDZ9dwfN7yLSj+PNN7F503I/9OxQ7B3w4m9A9tkpx5B6a6LmelR2C095sUpZtSMIHl7Cj
- nunWeObn/fMQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="145162150"
-X-IronPort-AV: E=Sophos;i="5.75,305,1589266800"; 
-   d="scan'208";a="145162150"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2020 13:05:32 -0700
-IronPort-SDR: Q/gMPJiB6RjmXVuXgFEPbhUuLmyUUtjMCNwUQ7XfBya73W9GOueOE2SPvpa4bXF+cDwKsCTH60
- 7srsWZ0HJW3Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,305,1589266800"; 
-   d="scan'208";a="455640157"
-Received: from orsmsx109.amr.corp.intel.com ([10.22.240.7])
-  by orsmga005.jf.intel.com with ESMTP; 02 Jul 2020 13:05:32 -0700
-Received: from orsmsx112.amr.corp.intel.com ([169.254.3.199]) by
- ORSMSX109.amr.corp.intel.com ([169.254.11.7]) with mapi id 14.03.0439.000;
- Thu, 2 Jul 2020 13:05:32 -0700
-From:   "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>
-To:     Francesco Ruggeri <fruggeri@arista.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>
-CC:     Jakub Kicinski <kuba@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        "open list" <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>
-Subject: RE: [PATCH] igb: reinit_locked() should be called with rtnl_lock
-Thread-Topic: [PATCH] igb: reinit_locked() should be called with rtnl_lock
-Thread-Index: AQHWTlrL81g79hVuZ0aaoDgUuhrbt6jwv/UAgABMxoCAAOZwIIADNT2A//+SuOA=
-Date:   Thu, 2 Jul 2020 20:05:31 +0000
-Message-ID: <61CC2BC414934749BD9F5BF3D5D9404498748B57@ORSMSX112.amr.corp.intel.com>
-References: <20200629211801.C3D7095C0900@us180.sjc.aristanetworks.com>
- <20200629171612.49efbdaa@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CA+HUmGjHQPUh1frfy5E28Om9WTVr0W+UQVDsm99beC_mbTeMog@mail.gmail.com>
- <61CC2BC414934749BD9F5BF3D5D940449874358A@ORSMSX112.amr.corp.intel.com>
- <CA+HUmGhfxYY5QiwF8_UYbp0TY-k3u+cTYZDSqV1s=SUFnGCn8g@mail.gmail.com>
-In-Reply-To: <CA+HUmGhfxYY5QiwF8_UYbp0TY-k3u+cTYZDSqV1s=SUFnGCn8g@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-version: 11.2.0.6
-dlp-reaction: no-action
-x-originating-ip: [10.22.254.138]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1725915AbgGBUFu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 16:05:50 -0400
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id 3EF90BC122;
+        Thu,  2 Jul 2020 20:05:47 +0000 (UTC)
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+To:     pmladek@suse.com, rostedt@goodmis.org,
+        sergey.senozhatsky@gmail.com, andriy.shevchenko@linux.intel.com,
+        linux@rasmusvillemoes.dk, corbet@lwn.net,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Subject: [PATCH] Replace HTTP links with HTTPS ones: vsprintf
+Date:   Thu,  2 Jul 2020 22:05:36 +0200
+Message-Id: <20200702200536.13389-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: ++++++
+X-Spam-Level: ******
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+X-Spam: Yes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBGcmFuY2VzY28gUnVnZ2VyaSA8
-ZnJ1Z2dlcmlAYXJpc3RhLmNvbT4NCj4gU2VudDogVGh1cnNkYXksIEp1bHkgMiwgMjAyMCAxMjoz
-NQ0KPiBUbzogS2lyc2hlciwgSmVmZnJleSBUIDxqZWZmcmV5LnQua2lyc2hlckBpbnRlbC5jb20+
-DQo+IENjOiBKYWt1YiBLaWNpbnNraSA8a3ViYUBrZXJuZWwub3JnPjsgRGF2aWQgTWlsbGVyIDxk
-YXZlbUBkYXZlbWxvZnQubmV0PjsNCj4gb3BlbiBsaXN0IDxsaW51eC1rZXJuZWxAdmdlci5rZXJu
-ZWwub3JnPjsgbmV0ZGV2IDxuZXRkZXZAdmdlci5rZXJuZWwub3JnPjsNCj4gaW50ZWwtd2lyZWQt
-bGFuQGxpc3RzLm9zdW9zbC5vcmcNCj4gU3ViamVjdDogUmU6IFtQQVRDSF0gaWdiOiByZWluaXRf
-bG9ja2VkKCkgc2hvdWxkIGJlIGNhbGxlZCB3aXRoIHJ0bmxfbG9jaw0KPiANCj4gPiBEbyBub3Qg
-d29ycnkgYWJvdXQgdGhlIG90aGVyIEludGVsIGRyaXZlcnMsIEkgaGF2ZSBvdXIgZGV2ZWxvcGVy
-cyBsb29raW5nIGF0DQo+IGVhY2ggb2Ygb3VyIGRyaXZlcnMgZm9yIHRoZSBsb2NraW5nIGlzc3Vl
-Lg0KPiA+DQo+ID4gQERhdmlkIE1pbGxlciAtIEkgYW0gcGlja2luZyB1cCB0aGlzIHBhdGNoDQo+
-IA0KPiBUaGVyZSBzZWVtcyB0byBiZSBhIHNlY29uZCByYWNlLCBpbmRlcGVuZGVudCBmcm9tIHRo
-ZSBvcmlnaW5hbCBvbmUsIHRoYXQNCj4gcmVzdWx0cyBpbiBhIGRpdmlkZSBlcnJvcjoNCj4gDQo+
-IGt3b3JrZXIgICAgICAgICByZWJvb3QgLWYgICAgICAgdHggcGFja2V0DQo+IA0KPiBpZ2JfcmVz
-ZXRfdGFzaw0KPiAgICAgICAgICAgICAgICAgX19pZ2Jfc2h1dGRvd24NCj4gICAgICAgICAgICAg
-ICAgIHJ0bmxfbG9jaygpDQo+ICAgICAgICAgICAgICAgICAuLi4NCj4gICAgICAgICAgICAgICAg
-IGlnYl9jbGVhcl9pbnRlcnJ1cHRfc2NoZW1lDQo+ICAgICAgICAgICAgICAgICBpZ2JfZnJlZV9x
-X3ZlY3RvcnMNCj4gICAgICAgICAgICAgICAgIGFkYXB0ZXItPm51bV90eF9xdWV1ZXMgPSAwDQo+
-ICAgICAgICAgICAgICAgICAuLi4NCj4gICAgICAgICAgICAgICAgIHJ0bmxfdW5sb2NrKCkNCj4g
-cnRubF9sb2NrKCkNCj4gaWdiX3JlaW5pdF9sb2NrZWQNCj4gaWdiX2Rvd24NCj4gaWdiX3VwDQo+
-IG5ldGlmX3R4X3N0YXJ0X2FsbF9xdWV1ZXMNCj4gICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICBkZXZfaGFyZF9zdGFydF94bWl0DQo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgaWdiX3htaXRfZnJhbWUNCj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBpZ2Jf
-dHhfcXVldWVfbWFwcGluZw0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFBhbmlj
-cyBvbg0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJfaWR4ICUgYWRhcHRlci0+
-bnVtX3R4X3F1ZXVlcw0KPiANCj4gVXNpbmcgaW4gaWdiX3Jlc2V0X3Rhc2sgYSBsb2dpYyBzaW1p
-bGFyIHRvIHRoZSBvbmUgaW4gaXhnYmVfcmVzZXRfc3VidGFzayAoYmFpbGluZw0KPiBpZiBfX0lH
-Ql9ET1dOIG9yIF9fSUdCX1JFU0VUVElORyBpcyBzZXQpIHNlZW1zIHRvIGF2b2lkIHRoZSBwYW5p
-Yy4NCj4gVGhhdCBsb2dpYyB3YXMgZmlyc3QgaW50cm9kdWNlZCBpbiBpeGdiZSBhcyBwYXJ0IG9m
-IGNvbW1pdCAyZjkwYjg2NTdlYyAoJ2l4Z2JlOg0KPiB0aGlzIHBhdGNoIGFkZHMgc3VwcG9ydCBm
-b3IgRENCIHRvIHRoZSBrZXJuZWwgYW5kIGl4Z2JlIGRyaXZlcicpLg0KPiBCb3RoIGZpeGVzIHNl
-ZW0gdG8gYmUgbmVlZGVkLg0KDQpTbyB3aWxsIHlvdSBiZSBzZW5kaW5nIGEgdjIgb2YgeW91ciBw
-YXRjaCB0byBpbmNsdWRlIHRoZSBzZWNvbmQgZml4Pw0K
+Rationale:
+Reduces attack surface on kernel devs opening the links for MITM
+as HTTPS traffic is much harder to manipulate.
+
+Deterministic algorithm:
+For each file:
+  If not .svg:
+    For each line:
+      If doesn't contain `\bxmlns\b`:
+        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+          If both the HTTP and HTTPS versions
+          return 200 OK and serve the same content:
+            Replace HTTP with HTTPS.
+
+Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+---
+ Continuing my work started at 93431e0607e5.
+
+ If there are any URLs to be removed completely or at least not HTTPSified:
+ Just clearly say so and I'll *undo my change*.
+ See also https://lkml.org/lkml/2020/6/27/64
+
+ If there are any valid, but yet not changed URLs:
+ See https://lkml.org/lkml/2020/6/26/837
+
+ Documentation/core-api/printk-formats.rst | 4 ++--
+ lib/vsprintf.c                            | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/Documentation/core-api/printk-formats.rst b/Documentation/core-api/printk-formats.rst
+index 8c9aba262b1e..1beac4719e43 100644
+--- a/Documentation/core-api/printk-formats.rst
++++ b/Documentation/core-api/printk-formats.rst
+@@ -317,7 +317,7 @@ colon-separators. Leading zeros are always used.
+ 
+ The additional ``c`` specifier can be used with the ``I`` specifier to
+ print a compressed IPv6 address as described by
+-http://tools.ietf.org/html/rfc5952
++https://tools.ietf.org/html/rfc5952
+ 
+ Passed by reference.
+ 
+@@ -341,7 +341,7 @@ The additional ``p``, ``f``, and ``s`` specifiers are used to specify port
+ flowinfo a ``/`` and scope a ``%``, each followed by the actual value.
+ 
+ In case of an IPv6 address the compressed IPv6 address as described by
+-http://tools.ietf.org/html/rfc5952 is being used if the additional
++https://tools.ietf.org/html/rfc5952 is being used if the additional
+ specifier ``c`` is given. The IPv6 address is surrounded by ``[``, ``]`` in
+ case of additional specifiers ``p``, ``f`` or ``s`` as suggested by
+ https://tools.ietf.org/html/draft-ietf-6man-text-addr-representation-07
+diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+index 259e55895933..31a674dd2674 100644
+--- a/lib/vsprintf.c
++++ b/lib/vsprintf.c
+@@ -2134,7 +2134,7 @@ char *fwnode_string(char *buf, char *end, struct fwnode_handle *fwnode,
+  *       [4] or [6] and is able to print port [p], flowinfo [f], scope [s]
+  * - '[Ii][4S][hnbl]' IPv4 addresses in host, network, big or little endian order
+  * - 'I[6S]c' for IPv6 addresses printed as specified by
+- *       http://tools.ietf.org/html/rfc5952
++ *       https://tools.ietf.org/html/rfc5952
+  * - 'E[achnops]' For an escaped buffer, where rules are defined by combination
+  *                of the following flags (see string_escape_mem() for the
+  *                details):
+-- 
+2.27.0
+
