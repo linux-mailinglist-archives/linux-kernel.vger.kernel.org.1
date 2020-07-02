@@ -2,117 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AC39212458
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 15:14:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6A16212455
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 15:13:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729291AbgGBNOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 09:14:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35770 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729177AbgGBNN7 (ORCPT
+        id S1729274AbgGBNNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 09:13:45 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:38948 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729257AbgGBNNi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 09:13:59 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05391C08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 06:13:59 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id f18so20224618wrs.0
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 06:13:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zILgKaetTBwolch6rF03SRdkX/5q6atkzkbETazvBAE=;
-        b=UBVcKDgtdhC6vC/FuLh+o8LKBbatbmZ82QTPSPB4E2XeAGBQYES5PswiSDVsB1y35/
-         YTn38PmXCqwZ0qnV/PV4WaldiK66HTXlVCYGArJv6UF2ZJNDOosueBQKbkTnPbw7TOdj
-         Rz4iWXQLrMyp/jnasqHu//tr3/nYCwDgNE0f8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=zILgKaetTBwolch6rF03SRdkX/5q6atkzkbETazvBAE=;
-        b=VqBjyX6ps5fkiaUX4GAUGlstEB65ADOzFI/+N1hmVL/V92alb5Q+wr97ou9IZGR5Am
-         Dhnb7TcGCwIEtkaRzrSuo22n5Yx+vtmgFl/cg68hc+LunuxMJ4PHpVip+CfH32q/AMvj
-         po5Gqqu6xf+se0yisml1p/84MRaxOyJdRXvblZA8lwuBmcKYTraQ4ZcUWvF/hq+fIuv9
-         AAHrKgT5xzCSuZOe1otiOtSQXdLSXFo/eBsLRMxezpVbGr3xzAXYAiAIy9ny+SMSMV1M
-         8Mx1gfSlY+cn+TsidcLv8MP32OBdZovcOkmfdQuiziOJe8lT5J3wW+Mv0Co8OiTcphOp
-         Xk+g==
-X-Gm-Message-State: AOAM53273Fk9tnk+/cQLs9MCK8oAS5+RoZduHzyy7YhE/KwUoKsbkgGs
-        4d2w8yAHlpLmRwpHxvS49E8dow==
-X-Google-Smtp-Source: ABdhPJzw5CpFHu7RNQ5l+6PpSRit16K2KOdpRIIkkIx1cqWsAls2OKTWgQ6li418LbgC3qx1vw+Ehw==
-X-Received: by 2002:a5d:628b:: with SMTP id k11mr31781751wru.107.1593695637756;
-        Thu, 02 Jul 2020 06:13:57 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id c15sm348250wme.23.2020.07.02.06.13.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Jul 2020 06:13:57 -0700 (PDT)
-Date:   Thu, 2 Jul 2020 15:13:55 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Sidong Yang <realwakka@gmail.com>
-Cc:     Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
-        Emil Velikov <emil.l.velikov@gmail.com>,
-        Haneen Mohammed <hamohammed.sa@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/vkms: add wait_for_vblanks in atomic_commit_tail
-Message-ID: <20200702131355.GX3278063@phenom.ffwll.local>
-Mail-Followup-To: Sidong Yang <realwakka@gmail.com>,
-        Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
-        Emil Velikov <emil.l.velikov@gmail.com>,
-        Haneen Mohammed <hamohammed.sa@gmail.com>,
-        David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20200701153134.4187-1-realwakka@gmail.com>
+        Thu, 2 Jul 2020 09:13:38 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 062DDRY4028105;
+        Thu, 2 Jul 2020 08:13:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1593695607;
+        bh=E9ZXMX0J4uAqFIUOK8a+Zeoabh9L1MjhyY9iL70MnSY=;
+        h=From:To:CC:Subject:Date;
+        b=YQHjvMGyWMzK/ZiR8ZunsTBOuzxTInh6qDXedbzPhsjKjM2bDqLHfy/f2icCCRo5L
+         p6ogUDVN8rjXaJs4Lw7G0FlQh0oA2kcmV8oFnwCHyJBmH2tDy5YbT43hUAens/0wrp
+         zhuOUs06oHOi0lcCNqCPDHYC7IvKYbqaA8OsUXg0=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 062DDRY9109705
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 2 Jul 2020 08:13:27 -0500
+Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 2 Jul
+ 2020 08:13:27 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 2 Jul 2020 08:13:27 -0500
+Received: from feketebors.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 062DDOap130577;
+        Thu, 2 Jul 2020 08:13:25 -0500
+From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
+To:     <t-kristo@ti.com>, <nm@ti.com>
+CC:     <devicetree@vger.kernel.org>, <robh+dt@kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <vigneshr@ti.com>
+Subject: [PATCH 0/2] arm64: dts: ti: k3-j721e-common-proc-board: Enable audio support
+Date:   Thu, 2 Jul 2020 16:14:22 +0300
+Message-ID: <20200702131424.21241-1-peter.ujfalusi@ti.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200701153134.4187-1-realwakka@gmail.com>
-X-Operating-System: Linux phenom 5.6.0-1-amd64 
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 01, 2020 at 03:31:34PM +0000, Sidong Yang wrote:
-> there is an error when igt test is run continuously. vkms_atomic_commit_tail()
-> need to call drm_atomic_helper_wait_for_vblanks() for give up ownership of
-> vblank events. without this code, next atomic commit will not enable vblank
-> and raise timeout error.
-> 
-> Signed-off-by: Sidong Yang <realwakka@gmail.com>
-> ---
->  drivers/gpu/drm/vkms/vkms_drv.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/vkms/vkms_drv.c b/drivers/gpu/drm/vkms/vkms_drv.c
-> index 1e8b2169d834..10b9be67a068 100644
-> --- a/drivers/gpu/drm/vkms/vkms_drv.c
-> +++ b/drivers/gpu/drm/vkms/vkms_drv.c
-> @@ -93,6 +93,8 @@ static void vkms_atomic_commit_tail(struct drm_atomic_state *old_state)
->  		flush_work(&vkms_state->composer_work);
->  	}
->  
-> +	drm_atomic_helper_wait_for_vblanks(dev, old_state);
+Hi,
 
-Uh, we have a wait_for_flip_done right above, which should be doing
-exactly the same, but more precisely: Instead of just waiting for any
-vblank to happen, we wait for exactly the vblank corresponding to this
-atomic commit. So no races possible. If this is papering over some issue,
-then I think more debugging is needed.
+the DT binding document and the driver is now in linux-next:
+https://lore.kernel.org/lkml/159364215574.10630.2058528286314798186.b4-ty@kernel.org/
 
-What exactly is going wrong here for you?
--Daniel
+Before adding the audio support, first fix up the DTS file by removing the
+duplicated main_i2c1_exp4_pins_default.
 
-> +
->  	drm_atomic_helper_cleanup_planes(dev, old_state);
->  }
->  
-> -- 
-> 2.17.1
-> 
+Regards,
+Peter
+---
+Peter Ujfalusi (2):
+  arm64: dts: ti: k3-j721e-common-proc-board: Remove duplicated
+    main_i2c1_exp4_pins_default
+  arm64: dts: ti: j721e-common-proc-board: Analog audio support
+
+ .../dts/ti/k3-j721e-common-proc-board.dts     | 137 +++++++++++++++++-
+ 1 file changed, 134 insertions(+), 3 deletions(-)
 
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Peter
+
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+
