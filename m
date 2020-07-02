@@ -2,112 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0251F211C44
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 08:54:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E81A4211C58
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 09:02:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727922AbgGBGyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 02:54:37 -0400
-Received: from mail-eopbgr60071.outbound.protection.outlook.com ([40.107.6.71]:12347
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727860AbgGBGy2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 02:54:28 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UZhf5iVOhsOEbDZUzZc6+6T7DqcleXc1wwhHKXBrmRj5mYV0pwURtbDlHKQ3BmECoU6mADo+IixXFrFBnsUdfrW4YVKMjckToHLYSroFN109HN3sq+Myqp9GxasUMRko2V6aN36O0YOiYkNJytWZKhr7OQb7Z1O8Iq5EIZ5YJJ0P2EjZ0QzvihqHhf73HiisBxgiHAvVo6IUrozFywaSSsemTLVb5vEA+tm27AErBUd3QphjJ4jf2fbRWi3bgjsDE2IkM0zLVSNjfS9SRmU8BwcaokeJ+0FIAn5ErDfWzrFBjv4CTRvBCCbejj6ozYcmgXr8WA1Ior88PSNDquXy3Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=A2NdxpnZ7ORXZIN0STWcEdx/uXHR9LGHSHi6z30B7x0=;
- b=T7aEvnweowQFqwHU5iHsBjrMVsnBdIz9EKzQYKDoXjmWrPbJeS0kBZmlovmMnMwoYx5DQZZXzy6oINiDGZjyUECTG9tazN8Gv5Z5xf8Xk+3iDKOoMw18t+7q2zXkujWutBHRPFNhRJiC41xzFcpuEq6FvPFuxJvSpXt3YNcPOYMKXRboGHkx2grEQY4JOdbiowtBddRisl4QShh9I6U4+RBCcpNp1Kd9ZjQTfN1V5ZIrmOzft9ct6PmCEsNzyj8og7q3Yix+yWJWAKesvCGYxqZhW7Rom/rknn/DlvxTD8W2eYexshDietybcsZJyxV/KhO12FKmzjc/A9D71pTdCA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=A2NdxpnZ7ORXZIN0STWcEdx/uXHR9LGHSHi6z30B7x0=;
- b=UlPPQ4kNWquRaX55jWmgKMW3WGh7x897fsPFs2kJyjOx4sc0dr7yCk5/j5EPzj+rNCSuzetHpR6GuLgXXp1rTIeZP9TWA57sXwICox1hgKkfuuFhXkZ0CRKtktQ2zQWefBu1MHjWR584nAnDRkf6q+gcm6Vz6b0uURqk9e517ss=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-Received: from VE1PR04MB6638.eurprd04.prod.outlook.com (2603:10a6:803:119::15)
- by VI1PR04MB6943.eurprd04.prod.outlook.com (2603:10a6:803:13a::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.22; Thu, 2 Jul
- 2020 06:54:21 +0000
-Received: from VE1PR04MB6638.eurprd04.prod.outlook.com
- ([fe80::5cc4:23a5:ca17:da7d]) by VE1PR04MB6638.eurprd04.prod.outlook.com
- ([fe80::5cc4:23a5:ca17:da7d%6]) with mapi id 15.20.3153.024; Thu, 2 Jul 2020
- 06:54:21 +0000
-From:   Robin Gong <yibin.gong@nxp.com>
-To:     vkoul@kernel.org, robh+dt@kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, festevam@gmail.com,
-        catalin.marinas@arm.com, will@kernel.org, dan.j.williams@intel.com,
-        angelo@sysam.it
-Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
-        dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v1 9/9] arm64: configs: defconfig: add CONFIG_FSL_EDMA3
-Date:   Thu,  2 Jul 2020 23:08:09 +0800
-Message-Id: <1593702489-21648-10-git-send-email-yibin.gong@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1593702489-21648-1-git-send-email-yibin.gong@nxp.com>
-References: <1593702489-21648-1-git-send-email-yibin.gong@nxp.com>
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR01CA0172.apcprd01.prod.exchangelabs.com
- (2603:1096:4:28::28) To VE1PR04MB6638.eurprd04.prod.outlook.com
- (2603:10a6:803:119::15)
+        id S1726776AbgGBHCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 03:02:13 -0400
+Received: from ssl.serverraum.org ([176.9.125.105]:48969 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726068AbgGBHCM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 03:02:12 -0400
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 905E6226F6;
+        Thu,  2 Jul 2020 09:02:07 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1593673328;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pQTu4YMfujJ6SsFKBNKHKnCTWInZclRPA0DmiPcnXYk=;
+        b=HZaoPNovjNwu6Yk/SOwWYw1fhIdC38F9BrryUbHU8llqhJMlKSvgQMMyA0Z8KtxVxvD9P1
+        2VZfRjm8Vl+MptUj/8XoC1+VWT58nEGQfdbsgKadyjtWyWGEaYmau91kEkBY0Lv1qkJOJ1
+        gcCM9ZC/sJFsMEnIEVAO3Pa0kWmJliU=
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from robin-OptiPlex-790.ap.freescale.net (119.31.174.67) by SG2PR01CA0172.apcprd01.prod.exchangelabs.com (2603:1096:4:28::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3153.24 via Frontend Transport; Thu, 2 Jul 2020 06:54:16 +0000
-X-Mailer: git-send-email 2.7.4
-X-Originating-IP: [119.31.174.67]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 10863af6-0982-45af-b54e-08d81e54bf20
-X-MS-TrafficTypeDiagnostic: VI1PR04MB6943:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB694356E963068EAC5E4ED81E896D0@VI1PR04MB6943.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:843;
-X-Forefront-PRVS: 0452022BE1
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jGFG4eB+Bu/LQgwWFM0sXqnoknm2ibsM7R8CMSWh5An1fTN+g2T+SvWzs0W1We9j4HECer0d10TmDysRaBgflD/2yKk9X49BGhtkcv6Qaq4gH1hylp3O5D3WoLFhwzyYW2cVmtpN+t9yFQSTEorTLNICBh823cvcuj7JTLRHKNyqZegzqwD4kAqB3Adp4r0+g9LY0ogzbdLSBMuqwvMVxNYnjyqrne8gX/bePyvhMoILjdFDliQB2XIRLqggZrAq7HFWhhIMIXp81MvuzHJRLOo0f9k7v4YiPX8EvRPDrxfPBdCTjQMuexSqximMyBEFbGzAoMU/iMAhEEfbcnocmw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6638.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(136003)(366004)(376002)(39860400002)(346002)(66476007)(6666004)(66946007)(66556008)(52116002)(36756003)(8936002)(2616005)(6486002)(956004)(6512007)(186003)(7416002)(4326008)(26005)(2906002)(8676002)(86362001)(16526019)(4744005)(478600001)(6506007)(5660300002)(316002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: T128/5vYyRZ6l25+y79xZWixw+CxxkwFUiVoiHB5/rXyAiOEPWIDNxQ2WQbH8P5AjvB53YxbDCq6PKLIL5gz5x9lEO4RNHvfcgrH0epn3fj6mUbgiuS75ka/OROVQSohcACSOO3AKFjwD/xaZ3f+kAA1GMRbHVRjVBVuKLbmbQnEHWrpmVhJcX0nbllQSM/eUsJ+2Oj0gRJfq5+cblv6+Q3vRQL2/sd1pQG0p9/A7NUd1Age1GrlymMULkVBi7PcX41aFdGfcIBh48rB2DVEOtYE1sh7VrW/Bg1W/tERx011+KSqgbzSR0q7ylC3415TNy2qt08IShlRw+fCHlsnoNDdVChYq+Lqe/7gFra2GTmTCpv40DB71GuVuifcoeujHpFDxksumK4/rQeFwmiHEo4BY7OUKCi1F8dAz5waGHUj7RQPBda5D+WExmeXnvZpru/tCUxVJ5ItqZmNlZfi4Jjl1nhNCh0dKjzPjjsDRzI=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 10863af6-0982-45af-b54e-08d81e54bf20
-X-MS-Exchange-CrossTenant-AuthSource: VE1PR04MB6638.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jul 2020 06:54:20.8981
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9r0myXAh4MsxYhv3yceY8e7MyiEjOLQXdZpTUCX0KVedkNLnbWvzBeH7zs78dDZkSCve1kGeQH1iHCa4NcX4BA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB6943
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 02 Jul 2020 09:02:05 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     robh+dt@kernel.org, broonie@kernel.org, gregkh@linuxfoundation.org,
+        andriy.shevchenko@linux.intel.com, devicetree@vger.kernel.org,
+        linus.walleij@linaro.org, bgolaszewski@baylibre.com, arnd@arndb.de,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/1] mfd: Add I2C based System Configuaration (SYSCON)
+ access
+In-Reply-To: <20200702065412.GO1179328@dell>
+References: <20200622075145.1464020-1-lee.jones@linaro.org>
+ <e436fd60bf0ebb6d72a76034d0fc35de@walle.cc>
+ <f505c52d565ba7dbf05eef895782c410@walle.cc> <20200701070434.GP1179328@dell>
+ <5d1d41504172d86d395b0135923f6f02@walle.cc> <20200702065412.GO1179328@dell>
+User-Agent: Roundcube Webmail/1.4.6
+Message-ID: <c20e8009fadbdc032090a493074396c8@walle.cc>
+X-Sender: michael@walle.cc
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add CONFIG_FSL_EDMA3 for i.mx8qxp/i.mx8qm.
+Am 2020-07-02 08:54, schrieb Lee Jones:
+> On Wed, 01 Jul 2020, Michael Walle wrote:
+> 
+>> Am 2020-07-01 09:04, schrieb Lee Jones:
+>> > On Wed, 01 Jul 2020, Michael Walle wrote:
+>> >
+>> > > Hi Lee,
+>> > >
+>> > > Am 2020-06-30 11:16, schrieb Michael Walle:
+>> > > > I'm just trying to use this for my sl28 driver. Some remarks, see below.
+>> > > >
+>> > > > Am 2020-06-22 09:51, schrieb Lee Jones:
+>> > > > > The existing SYSCON implementation only supports MMIO (memory mapped)
+>> > > > > accesses, facilitated by Regmap.  This extends support for registers
+>> > > > > held behind I2C busses.
+>> > > > >
+>> > > > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+>> > > > > ---
+>> > > > > Changelog:
+>> > > > >
+>> > > > > v3 => v4
+>> > > > >   - Add ability to provide a non-default Regmap configuration
+>> > > > >
+>> > > > > v2 => v3
+>> > > > >   - Change 'is CONFIG' present check to include loadable modules
+>> > > > >     - s/#ifdef CONFIG_MFD_SYSCON_I2C/#if
+>> > > > > IS_ENABLED(CONFIG_MFD_SYSCON_I2C)/
+>> > > > >
+>> > > > > v1 => v2
+>> > > > >   - Remove legacy references to OF
+>> > > > >   - Allow building as a module (fixes h8300 0-day issue)
+>> > > > >
+>> > > > > drivers/mfd/Kconfig            |   7 +++
+>> > > > >  drivers/mfd/Makefile           |   1 +
+>> > > > >  drivers/mfd/syscon-i2c.c       | 104
+>> > > > > +++++++++++++++++++++++++++++++++
+>> > > > >  include/linux/mfd/syscon-i2c.h |  36 ++++++++++++
+>> > > > >  4 files changed, 148 insertions(+)
+>> > > > >  create mode 100644 drivers/mfd/syscon-i2c.c
+>> > > > >  create mode 100644 include/linux/mfd/syscon-i2c.h
+> 
+> [...]
+> 
+>> > > > This way, (a) a driver doesn't have to use "#include <linux/i2c.h>" just
+>> > > > to call to_i2c_client() (or i2c_verify_client()) and (b) you won't do it
+>> > > > all over again in all sub drivers.
+>> > > >
+>> > > > So you could just do a
+>> > > >   regmap = syscon_i2c_to_regmap(pdev->dev.parent);
+>> > > >
+>> > > > I've also noticed that the mmio syscon uses device_node as parameter.
+>> > > > What
+>> > > > was the reason to divert from that? Just curious.
+>> > >
+>> > > How is this supposed to be used?
+>> > >
+>> > > I had something like the following in mind:
+>> > >
+>> > > &i2c {
+>> > >   cpld@4a {
+>> > >     compatible = "simple-mfd";
+>> > >     reg = <0x4a>;
+>> > >
+>> > >     gpio@4 {
+>> > >       compatible = "vendor,gpio";
+>> > >       reg = <0x4>;
+>> > >     };
+>> > >   };
+>> > > };
+>> >
+>> > Yes, that was the idea.
+>> >
+>> > > But I think the childen are not enumerated if its an I2C device. And
+>> > > the actual i2c driver is also missing.
+>> >
+>> > What do you mean?  Can you elaborate?
+>> 
+>> There is no i2c_driver instance who would create the regmap.
+> 
+> The regmap is created by the first caller of:
+> 
+>  syscon_i2c_to_regmap{_config}()
 
-Signed-off-by: Robin Gong <yibin.gong@nxp.com>
----
- arch/arm64/configs/defconfig | 1 +
- 1 file changed, 1 insertion(+)
+But which one is an i2c_driver? All the sub devices are platform drivers
+and there should be no need for them to know that they are behind an
+i2c driver (or spi driver or just mmio). All they have to know is how
+to access the registers.
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index ae76fae..d786bd9 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -770,6 +770,7 @@ CONFIG_DMADEVICES=y
- CONFIG_DMA_BCM2835=y
- CONFIG_DMA_SUN6I=m
- CONFIG_FSL_EDMA=y
-+CONFIG_FSL_EDMA3=y
- CONFIG_IMX_SDMA=y
- CONFIG_K3_DMA=y
- CONFIG_MV_XOR=y
--- 
-2.7.4
+>> If I'm
+>> reading the I2C code correctly, it won't probe any i2c device of a
+>> bus if there is no i2c_driver with an associated .probe() or
+>> .probe_new().
+> 
+> Why wouldn't the children be registered using i2c_driver?
 
+Where is the code which enumerates the children?
+
+>> And even if it is probed, its subnodes won't be
+>> enumerated; the "simple-mfd" code only works for MMIO busses, right?
+>> Or I'm getting something really wrong here..
+> 
+> Then how are these I2C based devices able to call 
+> of_platform_populate()?
+
+I don't mean they can't do it, I mean, I'm calling 
+of_platform_populate()
+myself. But who is actually calling it when one uses the this patch
+series?
+
+-michael
+
+>  drivers/mfd/gateworks-gsc.c
+>  drivers/mfd/lochnagar-i2c.c
+>  drivers/mfd/palmas.c
+>  drivers/mfd/smsc-ece1099.c
+>  drivers/mfd/stpmic1.c
+>  drivers/mfd/twl-core.c
+> 
+> Might require some more research into where your use-case is breaking
+> down.
