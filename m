@@ -2,98 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33DDE211D11
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 09:34:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFDAE211D12
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 09:35:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727923AbgGBHev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 03:34:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39514 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726862AbgGBHeu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 03:34:50 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2893AC08C5DC
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 00:34:50 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id el4so8133925qvb.13
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 00:34:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
-        b=pTyNG5o0k/sDwo8OTFOp+1mY9mp8iFiypOU+G0KGvA3C2KmQInOIenbvtc3UqW33Q/
-         ZLtgnGOVR4tP6b4vLE0LFjvZ8/gZLBwjWsR9RQa2I5hc+raPooYNyncM5oaTUBKSgPmH
-         eIhG27uICaRcagosZf3hunxYITBBV4bVknSlZYfN+CIWIuw9AIXQCRJiiZ2cLDwOLsni
-         yfIM6MsinKJ3Z5cjEaVTTdIF9h76dSDsbi+qCRhuIsqq8j6Eiweysoi3PQD2gfrLIWxC
-         IVuuPFsVAj/EFTCIuxLnLlG2T8yL3WbuPvHJNjoAHGnebia9LLvp8nYuQEfjXb6hd5ap
-         Z13w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
-        b=COVom1zOohC0YzVHgrKt5wd+5/isvJFaOcLQ2bJrORkDcAPn/EmXLKm8WtI2S1jDnX
-         p2kdbTIoD+lgYpXsk9s8wIPTY97vNp/j+qVZW5SpodXWStVamI9O8e2WY9OhBY9OMVu7
-         x7tqXaPzh8nXy3LJOpH9PNzcbEHftw9D38bHUDbeSDKC1fydDoOYV2B6UdpJMaEApEhy
-         kCINC6DVz549lrZMAAnXOZuaSR4okZ77nNAaCfW42s0be3W8yTU3swJUI1OtKlHULzcc
-         C30tls7I1mZATWmEUyPAbdbqPX5z5RgyS8gGfj+QPAqxnaGPEJ/mY2uXbYQbLbL7VJgQ
-         tKSQ==
-X-Gm-Message-State: AOAM530ozcyfREi6hfwRop1d/6rT9d4GxVSuPcCM/Sw6f1e4fXqBBaYi
-        OiqmGbZIAUnjG3AprYNA0JkNkHwoepUO8Hk6GGA=
-X-Google-Smtp-Source: ABdhPJxE/IvxhaZVYSRyD30ZS0DfYt/Op8kkca7ZSQZ+VKag/S4VWIAgfBe+LlffUlEdLhaARi22NK4id4n0eqJnObA=
-X-Received: by 2002:ad4:4b62:: with SMTP id m2mr29723335qvx.68.1593675289128;
- Thu, 02 Jul 2020 00:34:49 -0700 (PDT)
-MIME-Version: 1.0
-Received: by 2002:a0c:b993:0:0:0:0:0 with HTTP; Thu, 2 Jul 2020 00:34:48 -0700 (PDT)
-Reply-To: ayishagddafio@mail.ru
-From:   Aisha Gaddafi <mrzakirhossain4444@gmail.com>
-Date:   Thu, 2 Jul 2020 00:34:48 -0700
-Message-ID: <CAJGJQuZBbOM2DCmC_Ur8Le=ioXVG0tJieFeOfm16tEVVXZfSJQ@mail.gmail.com>
-Subject: Lieber Freund (Assalamu Alaikum),?
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+        id S1728004AbgGBHfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 03:35:20 -0400
+Received: from mga02.intel.com ([134.134.136.20]:14226 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726858AbgGBHfU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 03:35:20 -0400
+IronPort-SDR: sq8sJLRaj/HWX5iUAzoHxogygqRujKq5MA4y/Ssq5wyncIy6RGV0IvSut+tUK7XjSDutogFZjX
+ 4WcKxWf7q1yQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9669"; a="135116066"
+X-IronPort-AV: E=Sophos;i="5.75,303,1589266800"; 
+   d="scan'208";a="135116066"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2020 00:35:19 -0700
+IronPort-SDR: ubZVH0Cvjow8acJF1a3yf1bLmV+27TThH1joze1Vs4+6qibm60CxAV/5a+Oi95Eq9TF65VVVK8
+ EiCtg7nKZi5A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,303,1589266800"; 
+   d="scan'208";a="321453454"
+Received: from orsmsx102.amr.corp.intel.com ([10.22.225.129])
+  by FMSMGA003.fm.intel.com with ESMTP; 02 Jul 2020 00:35:18 -0700
+Received: from orsmsx122.amr.corp.intel.com (10.22.225.227) by
+ ORSMSX102.amr.corp.intel.com (10.22.225.129) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Thu, 2 Jul 2020 00:35:18 -0700
+Received: from ORSEDG001.ED.cps.intel.com (10.7.248.4) by
+ ORSMSX122.amr.corp.intel.com (10.22.225.227) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Thu, 2 Jul 2020 00:35:18 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.172)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Thu, 2 Jul 2020 00:35:18 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YQsk5VLm8qZBrxeDlfm4P9D8wgzpaw2jGnqDOkZb5TD2WgN8Z5uupe/fi0DNqc+Vl/Y+sSgdRbE5XAyJcQFfm9KvJH6CsQeyery61a/O5dthOpz/Ck23F+LXrLdHRn6tavwW8jh61o4UXciAzqjZ+gNeiTGKEYm7Fw0enVETW8usAOOwMzsoahyy5jpjCFEEHjZ/eln/dr8XdVwLpWPLx0wSYT3Hlf4uP/UR2Hh9omD/uCI4Cfv35X528BODtwp9hYiBw/qflE7TC6nSEzyKVcNE0hsVhcxXyDio/o5nOId07AzG2tyF39tdphzg32L62ExLbabK0IUf6dOiiobleA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=N5j/5uQ/aUieLdeXoPikFHxwouzXeMABwmRg88xAkX0=;
+ b=kT+MYWpFmhEgdCg+WIjp9DjbRGsBLtwhbMAa8GZEoJr0xEMF9D50W9eBOANLsSfHBVDyhhTqSueeSkube5U/4Q0ujTqwbNH46+mkoBuSVZ0CU7rAwdzyjGrDG9+h78j6N/NeT+rdiLBVfWzCXokNsrj1llvvky/nrCcDwPKXJiy/Gp5XlRYH7QN8LKmcXnenVx/+L9qKZKIFVdM212VPTgrW1cst+FVXS6YNEhpTamWXz2WG/L79g9URR/SSEOMrRgolUzmJUumw0ChHJZ+aYEmbXkM2e8UE8R6UK/fr9V5DTJHHjRgJ/3YZxMA42S/Ld3FMhWRWpjs18/nzA2SpnA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=N5j/5uQ/aUieLdeXoPikFHxwouzXeMABwmRg88xAkX0=;
+ b=AoJlUpa2zBYmSsLnbvtvXGgkl6Fq4zxf2FHQm1dlOy2P1LcTPy3D11714ZZotVh+pY4x0mfWzWpnIlUFCCS7Tz6wYKNXAR9DuwuULtAW8v5vHHrNZ32hrqzg0hZRCWwOMFfihXQDAl4xF1vC9P/heej7Fzv5RemJrd9dyPOApHA=
+Received: from MN2PR11MB4080.namprd11.prod.outlook.com (2603:10b6:208:137::27)
+ by MN2PR11MB4238.namprd11.prod.outlook.com (2603:10b6:208:188::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.20; Thu, 2 Jul
+ 2020 07:35:16 +0000
+Received: from MN2PR11MB4080.namprd11.prod.outlook.com
+ ([fe80::9fd:f54f:62f9:a24e]) by MN2PR11MB4080.namprd11.prod.outlook.com
+ ([fe80::9fd:f54f:62f9:a24e%6]) with mapi id 15.20.3131.028; Thu, 2 Jul 2020
+ 07:35:16 +0000
+From:   "Liao, Bard" <bard.liao@intel.com>
+To:     Vinod Koul <vkoul@kernel.org>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+CC:     Bard Liao <yung-chuan.liao@linux.intel.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "tiwai@suse.de" <tiwai@suse.de>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "ranjani.sridharan@linux.intel.com" 
+        <ranjani.sridharan@linux.intel.com>,
+        "hui.wang@canonical.com" <hui.wang@canonical.com>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "srinivas.kandagatla@linaro.org" <srinivas.kandagatla@linaro.org>,
+        "jank@cadence.com" <jank@cadence.com>,
+        "Lin, Mengdong" <mengdong.lin@intel.com>,
+        "Blauciak, Slawomir" <slawomir.blauciak@intel.com>,
+        "Kale, Sanyog R" <sanyog.r.kale@intel.com>,
+        "rander.wang@linux.intel.com" <rander.wang@linux.intel.com>
+Subject: RE: [PATCH 7/9] soundwire: intel/cadence: merge Soundwire interrupt
+ handlers/threads
+Thread-Topic: [PATCH 7/9] soundwire: intel/cadence: merge Soundwire interrupt
+ handlers/threads
+Thread-Index: AQHWSeihfI1JFQJUyEWaiZs1lVW7K6jxYiAAgAAGM4CAANimAIABonmg
+Date:   Thu, 2 Jul 2020 07:35:16 +0000
+Message-ID: <MN2PR11MB4080CF23D00A3AF817AC1E7CFF6D0@MN2PR11MB4080.namprd11.prod.outlook.com>
+References: <20200623173546.21870-1-yung-chuan.liao@linux.intel.com>
+ <20200623173546.21870-8-yung-chuan.liao@linux.intel.com>
+ <20200630162448.GS2599@vkoul-mobl>
+ <55fbc41e-cb41-8bdf-bdbd-1d1b76938683@linux.intel.com>
+ <20200701054224.GV2599@vkoul-mobl>
+In-Reply-To: <20200701054224.GV2599@vkoul-mobl>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.2.0.6
+dlp-reaction: no-action
+dlp-product: dlpe-windows
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [220.133.4.96]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 2fbc1e39-9fa3-4b64-03e8-08d81e5a76cd
+x-ms-traffictypediagnostic: MN2PR11MB4238:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MN2PR11MB42385665A4AD145D4E8BE623FF6D0@MN2PR11MB4238.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-forefront-prvs: 0452022BE1
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: UUUCOPRTOv2wKsuQnqKsw1SP6ZHaXTBTNHMDYCbh2XeVm9sOyLVcAblYokCQJKfsFQKPp+x7bI2ZXVipBaFdvTavlCP/K9Jwi3SelA6dVSxb3PqW5SrwodLlsoPbBRI8t1UbEUofQUy8w94KW0nhOrdMPhIHQ2I9PD8NKURnUNsFnUr0f8vKojlpAsSDP/rgaY7Ex/sRE1D67T4qOEjwv01yuqv0CJn2i8mrE/TrxGpXvIH/7Moxy7H/gzLgRlNJO7cFEJMm9NBTZzthaugWjMGFKnkF0ruZlbr0ZMwIRel0PoNgH6SgUIb/2rq/Au9X1sy4AeGeaPJ7C8abr1Ce5g==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR11MB4080.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(376002)(39860400002)(366004)(136003)(396003)(83380400001)(55016002)(8676002)(8936002)(86362001)(7416002)(478600001)(54906003)(110136005)(316002)(33656002)(9686003)(7696005)(2906002)(26005)(6506007)(4326008)(186003)(76116006)(53546011)(66446008)(66556008)(64756008)(66476007)(52536014)(5660300002)(66946007)(71200400001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: A+D+rOdiT67zNP/qGldB8P9Vwe3tmgTAAZcREzyklL4ZiiLDWDpIDXNA+1G3+r9HhNGrsvsGxJhqXQkwWHQv1RMdLObKisgbzlXpiTkpB2nl0Sr0nH3scFAyZZ0xOd7Gdgc/TnrN8bCChfCRsxQv+N8tYTn9oTBX4TJi6HJQfqAT4Vhefjvjm3j9chhwcQg34mZJ7bXmuS8z6xTh3Yta67n0FBNhDhaqaZVxeFEUp26bzrNIrvgfGJHf122jGmOIobB9uGgFtwGmUCevOZBCtq8j0CrtaBDgk86T13DboKiF6hDI+9AOEDFOve25d0VklwMP4iqb4/PALqAOi9FbzYXUbxFddmPLySBDQ5cElpRE4SxqTFycpQbcLNGH2CPMNaq5hjnA3ISBIqXnnFF+j/rVSDa5q7/3xDS2ufk3ONwe1LC6Y3KEReTYw2y4wQgqTj8tRSyAI5spZ95+PZMd39rQ0xBEOiIVE69HqEyQBys=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR11MB4080.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2fbc1e39-9fa3-4b64-03e8-08d81e5a76cd
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Jul 2020 07:35:16.0723
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: GbEGflzLV3eAZhiYNiqEQGjyKdWpZMPvc8YRzd84m/QN8MVv2gmor4qN5DyYWCK6km/3WS/8uymcbiDZ7VY3yg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB4238
+X-OriginatorOrg: intel.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=20
-Lieber Freund (Assalamu Alaikum),
+> -----Original Message-----
+> From: Vinod Koul <vkoul@kernel.org>
+> Sent: Wednesday, July 1, 2020 1:42 PM
+> To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Cc: Bard Liao <yung-chuan.liao@linux.intel.com>; alsa-devel@alsa-project.=
+org;
+> tiwai@suse.de; gregkh@linuxfoundation.org; linux-kernel@vger.kernel.org;
+> ranjani.sridharan@linux.intel.com; hui.wang@canonical.com;
+> broonie@kernel.org; srinivas.kandagatla@linaro.org; jank@cadence.com; Lin=
+,
+> Mengdong <mengdong.lin@intel.com>; Blauciak, Slawomir
+> <slawomir.blauciak@intel.com>; Kale, Sanyog R <sanyog.r.kale@intel.com>;
+> rander.wang@linux.intel.com; Liao, Bard <bard.liao@intel.com>
+> Subject: Re: [PATCH 7/9] soundwire: intel/cadence: merge Soundwire interr=
+upt
+> handlers/threads
+>=20
+> On 30-06-20, 11:46, Pierre-Louis Bossart wrote:
+>=20
+> > > Is this called from irq context or irq thread or something else?
+> >
+> > from IRQ thread, hence the name, see pointers above.
+> >
+> > The key part is that we could only make the hardware work as intended b=
+y
+> > using a single thread for all interrupt sources, and that patch is just=
+ the
+> > generalization of what was implemented for HDaudio in mid-2019 after
+> months
+> > of lost interrupts and IPC errors. See below the code from
+> > sound/soc/sof/intel/hda.c for interrupt handling.
+>=20
+> Sounds good. Now that you are already in irq thread, does it make sense
+> to spawn a worker thread for this and handle it there? Why not do in the
+> irq thread itself. Using a thread kind of defeats the whole point behind
+> concept of irq threads
 
-Ich bin vor einer privaten Suche auf Ihren E-Mail-Kontakt gesto=C3=9Fen
-Ihre Hilfe. Mein Name ist Aisha Al-Qaddafi, eine alleinerziehende
-Mutter und eine Witwe
-mit drei Kindern. Ich bin die einzige leibliche Tochter des Sp=C3=A4tlibysc=
-hen
-Pr=C3=A4sident (verstorbener Oberst Muammar Gaddafi).
+Not sure If you are talking about cdns_update_slave_status_work().
+The reason we need to spawn a worker thread in sdw_cdns_irq() is
+that we will do sdw transfer which will generate an interrupt when
+a slave interrupt is triggered. And the handler will not be invoked if the
+previous handler is not return yet.=20
+Please see the scenario below for better explanation.
+1. Slave interrupt arrives
+	2.1 Try to read Slave register and waiting for the transfer response
+	2.2 Get the transfer response interrupt and finish the sdw transfer.
+3. Finish the Slave interrupt handling.
 
-Ich habe Investmentfonds im Wert von siebenundzwanzig Millionen
-f=C3=BCnfhunderttausend
-United State Dollar ($ 27.500.000.00) und ich brauche eine
-vertrauensw=C3=BCrdige Investition
-Manager / Partner aufgrund meines aktuellen Fl=C3=BCchtlingsstatus bin ich =
-jedoch
-M=C3=B6glicherweise interessieren Sie sich f=C3=BCr die Unterst=C3=BCtzung =
-von
-Investitionsprojekten in Ihrem Land
-Von dort aus k=C3=B6nnen wir in naher Zukunft Gesch=C3=A4ftsbeziehungen auf=
-bauen.
+Interrupts are triggered in step 1 and 2.2, but step 2.2's handler will not=
+ be
+invoked if step 1's handler is not return yet.
+What we do is to spawn a worker thread to do step 2 and return from step 1.
+So the handler can be invoked when the transfer response interrupt arrives.
 
-Ich bin bereit, mit Ihnen =C3=BCber das Verh=C3=A4ltnis zwischen Investitio=
-n und
-Unternehmensgewinn zu verhandeln
-Basis f=C3=BCr die zuk=C3=BCnftige Investition Gewinne zu erzielen.
-
-Wenn Sie bereit sind, dieses Projekt in meinem Namen zu bearbeiten,
-antworten Sie bitte dringend
-Damit ich Ihnen mehr Informationen =C3=BCber die Investmentfonds geben kann=
-.
-
-Ihre dringende Antwort wird gesch=C3=A4tzt. schreibe mir an diese email adr=
-esse (
-ayishagddafio@mail.ru ) zur weiteren Diskussion.
-
-Freundliche Gr=C3=BC=C3=9Fe
-Frau Aisha Al-Qaddafi
+>=20
+> --
+> ~Vinod
