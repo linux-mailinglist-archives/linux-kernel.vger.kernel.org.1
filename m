@@ -2,405 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18C482125EB
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 16:15:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA2102125E2
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 16:15:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729812AbgGBOPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 10:15:39 -0400
-Received: from mail-ej1-f66.google.com ([209.85.218.66]:36653 "EHLO
-        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729353AbgGBOPi (ORCPT
+        id S1729800AbgGBOOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 10:14:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729479AbgGBOOu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 10:15:38 -0400
-Received: by mail-ej1-f66.google.com with SMTP id dr13so29846671ejc.3;
-        Thu, 02 Jul 2020 07:15:35 -0700 (PDT)
+        Thu, 2 Jul 2020 10:14:50 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98939C08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 07:14:49 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id c30so21875948qka.10
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 07:14:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=lca.pw; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=RzUm9VxzKzkIyvUG74YkClh+nm0piu2thkPG5KLlZEQ=;
+        b=Ova5dqxpfnBaFgc4ydCLeIXoIr2iQY4e2CQEU/16yply0i1tuSiMVsJnRmHmQk2vLb
+         B3ynzsnj+3K7gWz9NTLsyaCtF5fOY9X3zpjyrsL3bYmxf/+ggZR+IkdSOtouWsJ1KzCF
+         p2EMYvJwm19KH5XHMd1CbvkLHi4aEJrr/x8UAUioRnbiZ318SAPsLPlZRLHNWoXprOF1
+         sdyerZrfpBvqntATvILWadp4vrpvVdZVexhi59pLJ2fYt7IO6BcM1YHn2262s1TT72sG
+         xZwDKtKXXCQTDquIv1Q/xJaNezOgEMxVNV4f/kXOsyIXx41olLDJXWCw8x2zsKb9KMZb
+         5B3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=xKBi0nSTMNFgZZlMu5ixIplMnKQbkbUnfaBBIy3bv9I=;
-        b=ZNpBSueOK+m2roziYrnLxkzX5HaA81iI7jjEtYm7mqpzOd9ybC+oiEDexwDSs4/fOY
-         CH5rbYJVhctLszOURcsDr7bWmTctBQwn8QpLpDQTrK49Zvajv8uiLoJOB96UBUT8Jmw3
-         Updsd5BDWFDlIeyILy5NNF8Hm9wI3+cYEaH8LICLXrK8Vts/ILhvM6OjgMiK6/3S0jlu
-         bnDEsVSzDHA7db2g7UJwm8vp7SBU5DoSf/wAnR7sqvr+YVAA1idVcuaIzdch7177RgvX
-         iWZqvQVrSTDN5Ifo8Hx3vqoTEKqHgGXgU7+HhzTJH30GSP4C7E7o5Lj9+YzmgFq9DDdD
-         gQ/g==
-X-Gm-Message-State: AOAM5310rbVAflHigUgcxOrnvR+LrlRLi8UIOSqhSVKZt+U1RmxAHw6d
-        fYg0HQpXH+0X4rMJBH+OVW0igUzU1ksFTg==
-X-Google-Smtp-Source: ABdhPJw79E6H0yTBcGr91I/9Ml3iDqZMy4Iqflxu2Za9eIDOkY+bQALg7WyifFLvILxlLRZcgDVzEw==
-X-Received: by 2002:a17:906:2b12:: with SMTP id a18mr27352485ejg.186.1593699334300;
-        Thu, 02 Jul 2020 07:15:34 -0700 (PDT)
-Received: from msft-t490s.lan ([2001:b07:5d26:7f46:d7c1:f090:1563:f81f])
-        by smtp.gmail.com with ESMTPSA id fi29sm6841274ejb.83.2020.07.02.07.15.32
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RzUm9VxzKzkIyvUG74YkClh+nm0piu2thkPG5KLlZEQ=;
+        b=MkxMOVIcw50h2FHkSSR6J4/STqJd/4Ap4vn+VbJqRmFGAXnJ2h6RycwlpANwwzbVpr
+         rmiP/ToCdFbJeHKn5Rx63o4gZfIY+JS1PBWZOk0DEcyifimQMSkZbD9Y8YjMQ8eXWtFY
+         qC9YJmHaYtWfotct8ex7PA9OG9sH1wR5FP9Q2QD3Bvm9KZx1qtC0xFUFPCqTYCG6GIgg
+         uJaFRDkWiC8+HhK3yFKcF/8vrrOea/TumIxULhJR0nTJlqEsZV+9dJNUeTaAoUHybsDF
+         jilJFyyVg1SgmSJDBT8/8y5vG13tWu3DDyenDmJN4UUa27xqI6LJoDG8wwy7jbqklYf0
+         ULsw==
+X-Gm-Message-State: AOAM531Iiw6MVi/akOFCxVPMA1QlXL9rVgt3HIeUsvOCSMNGBil8NC1N
+        zx2dYOMdb5hTxehGwo9yuUAdLQ==
+X-Google-Smtp-Source: ABdhPJxyfLrupSaU78RF5M1IjPeTSU911dUpEP27iP/ObDC4UnJ0McTslyCZcGDuU/8JiL2gHmGXiQ==
+X-Received: by 2002:a05:620a:81c:: with SMTP id s28mr28901165qks.133.1593699288771;
+        Thu, 02 Jul 2020 07:14:48 -0700 (PDT)
+Received: from lca.pw (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
+        by smtp.gmail.com with ESMTPSA id y40sm9042248qtc.29.2020.07.02.07.14.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Jul 2020 07:15:33 -0700 (PDT)
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-To:     netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        Sven Auhagen <sven.auhagen@voleatech.de>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Stefan Chulski <stefanc@marvell.com>,
-        Marcin Wojtas <mw@semihalf.com>, maxime.chevallier@bootlin.com,
-        antoine.tenart@bootlin.com, thomas.petazzoni@bootlin.com,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Russell King <rmk+kernel@armlinux.org.uk>
-Subject: [PATCH net-next v2 5/5] mvpp2: xdp ethtool stats
-Date:   Thu,  2 Jul 2020 16:12:44 +0200
-Message-Id: <20200702141244.51295-6-mcroce@linux.microsoft.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200702141244.51295-1-mcroce@linux.microsoft.com>
-References: <20200702141244.51295-1-mcroce@linux.microsoft.com>
+        Thu, 02 Jul 2020 07:14:48 -0700 (PDT)
+Date:   Thu, 2 Jul 2020 10:14:37 -0400
+From:   Qian Cai <cai@lca.pw>
+To:     syzbot <syzbot+bf04628c1f6179269b0b@syzkaller.appspotmail.com>
+Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
+        sfr@canb.auug.org.au, syzkaller-bugs@googlegroups.com
+Subject: Re: linux-next test error: KASAN: stack-out-of-bounds Read in
+ bio_alloc_bioset
+Message-ID: <20200702141437.GA4240@lca.pw>
+References: <000000000000bcdeaa05a97280e4@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <000000000000bcdeaa05a97280e4@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sven Auhagen <sven.auhagen@voleatech.de>
+On Thu, Jul 02, 2020 at 03:02:14AM -0700, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following crash on:
+> 
+> HEAD commit:    d37d5704 Add linux-next specific files for 20200702
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1549d0a3100000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=a0a0972a399422ff
+> dashboard link: https://syzkaller.appspot.com/bug?extid=bf04628c1f6179269b0b
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> 
+> IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> Reported-by: syzbot+bf04628c1f6179269b0b@syzkaller.appspotmail.com
+> 
+> ==================================================================
+> BUG: KASAN: stack-out-of-bounds in bio_list_empty include/linux/bio.h:561 [inline]
+> BUG: KASAN: stack-out-of-bounds in bio_alloc_bioset+0x5b2/0x5d0 block/bio.c:482
+> Read of size 8 at addr ffffc90000fc7150 by task kworker/u4:4/169
 
-Add ethtool statistics for XDP.
+I can also reproduce this. It needs to revert 3 commits,
 
-Signed-off-by: Sven Auhagen <sven.auhagen@voleatech.de>
----
- drivers/net/ethernet/marvell/mvpp2/mvpp2.h    |   8 +
- .../net/ethernet/marvell/mvpp2/mvpp2_main.c   | 158 ++++++++++++++++--
- 2 files changed, 148 insertions(+), 18 deletions(-)
+https://lore.kernel.org/lkml/20200702141001.GA3834@lca.pw/
 
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-index c52955b33fab..ebec47087b27 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-@@ -846,6 +846,14 @@ struct mvpp2_pcpu_stats {
- 	u64	rx_bytes;
- 	u64	tx_packets;
- 	u64	tx_bytes;
-+	/* XDP */
-+	u64	xdp_redirect;
-+	u64	xdp_pass;
-+	u64	xdp_drop;
-+	u64	xdp_xmit;
-+	u64	xdp_xmit_err;
-+	u64	xdp_tx;
-+	u64	xdp_tx_err;
- };
- 
- /* Per-CPU port control */
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-index d49a814311be..d8e238ed533e 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-@@ -1485,6 +1485,16 @@ static void mvpp2_port_loopback_set(struct mvpp2_port *port,
- 	writel(val, port->base + MVPP2_GMAC_CTRL_1_REG);
- }
- 
-+enum {
-+	ETHTOOL_XDP_REDIRECT,
-+	ETHTOOL_XDP_PASS,
-+	ETHTOOL_XDP_DROP,
-+	ETHTOOL_XDP_TX,
-+	ETHTOOL_XDP_TX_ERR,
-+	ETHTOOL_XDP_XMIT,
-+	ETHTOOL_XDP_XMIT_ERR,
-+};
-+
- struct mvpp2_ethtool_counter {
- 	unsigned int offset;
- 	const char string[ETH_GSTRING_LEN];
-@@ -1577,10 +1587,21 @@ static const struct mvpp2_ethtool_counter mvpp2_ethtool_rxq_regs[] = {
- 	{ MVPP2_RX_PKTS_BM_DROP_CTR, "rxq_%d_packets_bm_drops" },
- };
- 
-+static const struct mvpp2_ethtool_counter mvpp2_ethtool_xdp[] = {
-+	{ ETHTOOL_XDP_REDIRECT, "rx_xdp_redirect", },
-+	{ ETHTOOL_XDP_PASS, "rx_xdp_pass", },
-+	{ ETHTOOL_XDP_DROP, "rx_xdp_drop", },
-+	{ ETHTOOL_XDP_TX, "rx_xdp_tx", },
-+	{ ETHTOOL_XDP_TX_ERR, "rx_xdp_tx_errors", },
-+	{ ETHTOOL_XDP_XMIT, "tx_xdp_xmit", },
-+	{ ETHTOOL_XDP_XMIT_ERR, "tx_xdp_xmit_errors", },
-+};
-+
- #define MVPP2_N_ETHTOOL_STATS(ntxqs, nrxqs)	(ARRAY_SIZE(mvpp2_ethtool_mib_regs) + \
- 						 ARRAY_SIZE(mvpp2_ethtool_port_regs) + \
- 						 (ARRAY_SIZE(mvpp2_ethtool_txq_regs) * (ntxqs)) + \
--						 (ARRAY_SIZE(mvpp2_ethtool_rxq_regs) * (nrxqs)))
-+						 (ARRAY_SIZE(mvpp2_ethtool_rxq_regs) * (nrxqs)) + \
-+						 ARRAY_SIZE(mvpp2_ethtool_xdp))
- 
- static void mvpp2_ethtool_get_strings(struct net_device *netdev, u32 sset,
- 				      u8 *data)
-@@ -1619,10 +1640,57 @@ static void mvpp2_ethtool_get_strings(struct net_device *netdev, u32 sset,
- 			data += ETH_GSTRING_LEN;
- 		}
- 	}
-+
-+	for (i = 0; i < ARRAY_SIZE(mvpp2_ethtool_xdp); i++) {
-+		strscpy(data, mvpp2_ethtool_xdp[i].string,
-+			ETH_GSTRING_LEN);
-+		data += ETH_GSTRING_LEN;
-+	}
-+}
-+
-+static void
-+mvpp2_get_xdp_stats(struct mvpp2_port *port, struct mvpp2_pcpu_stats *xdp_stats)
-+{
-+	unsigned int start;
-+	unsigned int cpu;
-+
-+	/* Gather XDP Statistics */
-+	for_each_possible_cpu(cpu) {
-+		struct mvpp2_pcpu_stats *cpu_stats;
-+		u64	xdp_redirect;
-+		u64	xdp_pass;
-+		u64	xdp_drop;
-+		u64	xdp_xmit;
-+		u64	xdp_xmit_err;
-+		u64	xdp_tx;
-+		u64	xdp_tx_err;
-+
-+		cpu_stats = per_cpu_ptr(port->stats, cpu);
-+		do {
-+			start = u64_stats_fetch_begin_irq(&cpu_stats->syncp);
-+			xdp_redirect = cpu_stats->xdp_redirect;
-+			xdp_pass   = cpu_stats->xdp_pass;
-+			xdp_drop = cpu_stats->xdp_drop;
-+			xdp_xmit   = cpu_stats->xdp_xmit;
-+			xdp_xmit_err   = cpu_stats->xdp_xmit_err;
-+			xdp_tx   = cpu_stats->xdp_tx;
-+			xdp_tx_err   = cpu_stats->xdp_tx_err;
-+		} while (u64_stats_fetch_retry_irq(&cpu_stats->syncp, start));
-+
-+		xdp_stats->xdp_redirect += xdp_redirect;
-+		xdp_stats->xdp_pass   += xdp_pass;
-+		xdp_stats->xdp_drop += xdp_drop;
-+		xdp_stats->xdp_xmit   += xdp_xmit;
-+		xdp_stats->xdp_xmit_err   += xdp_xmit_err;
-+		xdp_stats->xdp_tx   += xdp_tx;
-+		xdp_stats->xdp_tx_err   += xdp_tx_err;
-+	}
- }
- 
- static void mvpp2_read_stats(struct mvpp2_port *port)
- {
-+	struct mvpp2_pcpu_stats xdp_stats = {};
-+	const struct mvpp2_ethtool_counter *s;
- 	u64 *pstats;
- 	int i, q;
- 
-@@ -1650,6 +1718,37 @@ static void mvpp2_read_stats(struct mvpp2_port *port)
- 			*pstats++ += mvpp2_read_index(port->priv,
- 						      port->first_rxq + q,
- 						      mvpp2_ethtool_rxq_regs[i].offset);
-+
-+	/* Gather XDP Statistics */
-+	mvpp2_get_xdp_stats(port, &xdp_stats);
-+
-+	for (i = 0, s = mvpp2_ethtool_xdp;
-+		 s < mvpp2_ethtool_xdp + ARRAY_SIZE(mvpp2_ethtool_xdp);
-+	     s++, i++) {
-+		switch (s->offset) {
-+		case ETHTOOL_XDP_REDIRECT:
-+			*pstats++ = xdp_stats.xdp_redirect;
-+			break;
-+		case ETHTOOL_XDP_PASS:
-+			*pstats++ = xdp_stats.xdp_pass;
-+			break;
-+		case ETHTOOL_XDP_DROP:
-+			*pstats++ = xdp_stats.xdp_drop;
-+			break;
-+		case ETHTOOL_XDP_TX:
-+			*pstats++ = xdp_stats.xdp_tx;
-+			break;
-+		case ETHTOOL_XDP_TX_ERR:
-+			*pstats++ = xdp_stats.xdp_tx_err;
-+			break;
-+		case ETHTOOL_XDP_XMIT:
-+			*pstats++ = xdp_stats.xdp_xmit;
-+			break;
-+		case ETHTOOL_XDP_XMIT_ERR:
-+			*pstats++ = xdp_stats.xdp_xmit_err;
-+			break;
-+		}
-+	}
- }
- 
- static void mvpp2_gather_hw_statistics(struct work_struct *work)
-@@ -3063,7 +3162,6 @@ static u32 mvpp2_skb_tx_csum(struct mvpp2_port *port, struct sk_buff *skb)
- static void mvpp2_xdp_finish_tx(struct mvpp2_port *port, u16 txq_id, int nxmit, int nxmit_byte)
- {
- 	unsigned int thread = mvpp2_cpu_to_thread(port->priv, smp_processor_id());
--	struct mvpp2_pcpu_stats *stats = per_cpu_ptr(port->stats, thread);
- 	struct mvpp2_tx_queue *aggr_txq;
- 	struct mvpp2_txq_pcpu *txq_pcpu;
- 	struct mvpp2_tx_queue *txq;
-@@ -3085,11 +3183,6 @@ static void mvpp2_xdp_finish_tx(struct mvpp2_port *port, u16 txq_id, int nxmit,
- 	if (txq_pcpu->count >= txq_pcpu->stop_threshold)
- 		netif_tx_stop_queue(nq);
- 
--	u64_stats_update_begin(&stats->syncp);
--	stats->tx_bytes += nxmit_byte;
--	stats->tx_packets += nxmit;
--	u64_stats_update_end(&stats->syncp);
--
- 	/* Finalize TX processing */
- 	if (!port->has_tx_irqs && txq_pcpu->count >= txq->done_pkts_coal)
- 		mvpp2_txq_done(port, txq, txq_pcpu);
-@@ -3162,6 +3255,7 @@ mvpp2_xdp_submit_frame(struct mvpp2_port *port, u16 txq_id,
- static int
- mvpp2_xdp_xmit_back(struct mvpp2_port *port, struct xdp_buff *xdp)
- {
-+	struct mvpp2_pcpu_stats *stats = this_cpu_ptr(port->stats);
- 	struct xdp_frame *xdpf;
- 	u16 txq_id;
- 	int ret;
-@@ -3176,8 +3270,19 @@ mvpp2_xdp_xmit_back(struct mvpp2_port *port, struct xdp_buff *xdp)
- 	txq_id = mvpp2_cpu_to_thread(port->priv, smp_processor_id()) + (port->ntxqs / 2);
- 
- 	ret = mvpp2_xdp_submit_frame(port, txq_id, xdpf, false);
--	if (ret == MVPP2_XDP_TX)
-+	if (ret == MVPP2_XDP_TX) {
-+		u64_stats_update_begin(&stats->syncp);
-+		stats->tx_bytes += xdpf->len;
-+		stats->tx_packets++;
-+		stats->xdp_tx++;
-+		u64_stats_update_end(&stats->syncp);
-+
- 		mvpp2_xdp_finish_tx(port, txq_id, 1, xdpf->len);
-+	} else {
-+		u64_stats_update_begin(&stats->syncp);
-+		stats->xdp_tx_err++;
-+		u64_stats_update_end(&stats->syncp);
-+	}
- 
- 	return ret;
- }
-@@ -3188,6 +3293,7 @@ mvpp2_xdp_xmit(struct net_device *dev, int num_frame,
- {
- 	struct mvpp2_port *port = netdev_priv(dev);
- 	int i, nxmit_byte = 0, nxmit = num_frame;
-+	struct mvpp2_pcpu_stats *stats;
- 	u16 txq_id;
- 	u32 ret;
- 
-@@ -3212,16 +3318,24 @@ mvpp2_xdp_xmit(struct net_device *dev, int num_frame,
- 		}
- 	}
- 
--	if (nxmit > 0)
-+	if (likely(nxmit > 0))
- 		mvpp2_xdp_finish_tx(port, txq_id, nxmit, nxmit_byte);
- 
-+	stats = this_cpu_ptr(port->stats);
-+	u64_stats_update_begin(&stats->syncp);
-+	stats->tx_bytes += nxmit_byte;
-+	stats->tx_packets += nxmit;
-+	stats->xdp_xmit += nxmit;
-+	stats->xdp_xmit_err += num_frame - nxmit;
-+	u64_stats_update_end(&stats->syncp);
-+
- 	return nxmit;
- }
- 
- static int
- mvpp2_run_xdp(struct mvpp2_port *port, struct mvpp2_rx_queue *rxq,
- 	      struct bpf_prog *prog, struct xdp_buff *xdp,
--	      struct page_pool *pp)
-+	      struct page_pool *pp, struct mvpp2_pcpu_stats *stats)
- {
- 	unsigned int len, sync, err;
- 	struct page *page;
-@@ -3236,6 +3350,7 @@ mvpp2_run_xdp(struct mvpp2_port *port, struct mvpp2_rx_queue *rxq,
- 
- 	switch (act) {
- 	case XDP_PASS:
-+		stats->xdp_pass++;
- 		ret = MVPP2_XDP_PASS;
- 		break;
- 	case XDP_REDIRECT:
-@@ -3246,6 +3361,7 @@ mvpp2_run_xdp(struct mvpp2_port *port, struct mvpp2_rx_queue *rxq,
- 			page_pool_put_page(pp, page, sync, true);
- 		} else {
- 			ret = MVPP2_XDP_REDIR;
-+			stats->xdp_redirect++;
- 		}
- 		break;
- 	case XDP_TX:
-@@ -3265,6 +3381,7 @@ mvpp2_run_xdp(struct mvpp2_port *port, struct mvpp2_rx_queue *rxq,
- 		page = virt_to_head_page(xdp->data);
- 		page_pool_put_page(pp, page, sync, true);
- 		ret = MVPP2_XDP_DROPPED;
-+		stats->xdp_drop++;
- 		break;
- 	}
- 
-@@ -3276,14 +3393,13 @@ static int mvpp2_rx(struct mvpp2_port *port, struct napi_struct *napi,
- 		    int rx_todo, struct mvpp2_rx_queue *rxq)
- {
- 	struct net_device *dev = port->dev;
-+	struct mvpp2_pcpu_stats ps = {};
- 	enum dma_data_direction dma_dir;
- 	struct bpf_prog *xdp_prog;
- 	struct xdp_buff xdp;
- 	int rx_received;
- 	int rx_done = 0;
- 	u32 xdp_ret = 0;
--	u32 rcvd_pkts = 0;
--	u32 rcvd_bytes = 0;
- 
- 	rcu_read_lock();
- 
-@@ -3358,7 +3474,7 @@ static int mvpp2_rx(struct mvpp2_port *port, struct napi_struct *napi,
- 
- 			xdp_set_data_meta_invalid(&xdp);
- 
--			ret = mvpp2_run_xdp(port, rxq, xdp_prog, &xdp, pp);
-+			ret = mvpp2_run_xdp(port, rxq, xdp_prog, &xdp, pp, &ps);
- 
- 			if (ret) {
- 				xdp_ret |= ret;
-@@ -3368,6 +3484,8 @@ static int mvpp2_rx(struct mvpp2_port *port, struct napi_struct *napi,
- 					goto err_drop_frame;
- 				}
- 
-+				ps.rx_packets++;
-+				ps.rx_bytes += rx_bytes;
- 				continue;
- 			}
- 		}
-@@ -3391,8 +3509,8 @@ static int mvpp2_rx(struct mvpp2_port *port, struct napi_struct *napi,
- 					       bm_pool->buf_size, DMA_FROM_DEVICE,
- 					       DMA_ATTR_SKIP_CPU_SYNC);
- 
--		rcvd_pkts++;
--		rcvd_bytes += rx_bytes;
-+		ps.rx_packets++;
-+		ps.rx_bytes += rx_bytes;
- 
- 		skb_reserve(skb, MVPP2_MH_SIZE + MVPP2_SKB_HEADROOM);
- 		skb_put(skb, rx_bytes);
-@@ -3414,12 +3532,16 @@ static int mvpp2_rx(struct mvpp2_port *port, struct napi_struct *napi,
- 	if (xdp_ret & MVPP2_XDP_REDIR)
- 		xdp_do_flush_map();
- 
--	if (rcvd_pkts) {
-+	if (ps.rx_packets) {
- 		struct mvpp2_pcpu_stats *stats = this_cpu_ptr(port->stats);
- 
- 		u64_stats_update_begin(&stats->syncp);
--		stats->rx_packets += rcvd_pkts;
--		stats->rx_bytes   += rcvd_bytes;
-+		stats->rx_packets += ps.rx_packets;
-+		stats->rx_bytes   += ps.rx_bytes;
-+		/* xdp */
-+		stats->xdp_redirect += ps.xdp_redirect;
-+		stats->xdp_pass += ps.xdp_pass;
-+		stats->xdp_drop += ps.xdp_drop;
- 		u64_stats_update_end(&stats->syncp);
- 	}
- 
--- 
-2.26.2
-
+> 
+> CPU: 0 PID: 169 Comm: kworker/u4:4 Not tainted 5.8.0-rc3-next-20200702-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Workqueue: writeback wb_workfn (flush-8:0)
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:77 [inline]
+>  dump_stack+0x18f/0x20d lib/dump_stack.c:118
+>  print_address_description.constprop.0.cold+0x5/0x436 mm/kasan/report.c:383
+>  __kasan_report mm/kasan/report.c:513 [inline]
+>  kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
+>  bio_list_empty include/linux/bio.h:561 [inline]
+>  bio_alloc_bioset+0x5b2/0x5d0 block/bio.c:482
+>  bio_clone_fast+0x21/0x1b0 block/bio.c:710
+>  bio_split+0xc7/0x2c0 block/bio.c:1477
+>  blk_bio_segment_split block/blk-merge.c:281 [inline]
+>  __blk_queue_split+0x10e2/0x1650 block/blk-merge.c:331
+>  blk_mq_submit_bio+0x1b0/0x1760 block/blk-mq.c:2169
+>  __submit_bio_noacct_mq block/blk-core.c:1181 [inline]
+>  submit_bio_noacct+0xc9e/0x12d0 block/blk-core.c:1214
+>  submit_bio+0x263/0x5b0 block/blk-core.c:1284
+>  ext4_io_submit fs/ext4/page-io.c:382 [inline]
+>  io_submit_add_bh fs/ext4/page-io.c:423 [inline]
+>  ext4_bio_write_page+0x9a8/0x1c27 fs/ext4/page-io.c:550
+>  mpage_submit_page+0x140/0x2c0 fs/ext4/inode.c:2082
+>  mpage_map_and_submit_buffers fs/ext4/inode.c:2330 [inline]
+>  mpage_map_and_submit_extent fs/ext4/inode.c:2469 [inline]
+>  ext4_writepages+0x237e/0x3960 fs/ext4/inode.c:2782
+>  do_writepages+0xec/0x290 mm/page-writeback.c:2352
+>  __writeback_single_inode+0x125/0x1400 fs/fs-writeback.c:1461
+>  writeback_sb_inodes+0x53d/0xf40 fs/fs-writeback.c:1721
+>  __writeback_inodes_wb+0xc6/0x280 fs/fs-writeback.c:1790
+>  wb_writeback+0x8bb/0xd40 fs/fs-writeback.c:1896
+>  wb_check_background_flush fs/fs-writeback.c:1964 [inline]
+>  wb_do_writeback fs/fs-writeback.c:2052 [inline]
+>  wb_workfn+0xb20/0x13e0 fs/fs-writeback.c:2080
+>  process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
+>  worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
+>  kthread+0x3b5/0x4a0 kernel/kthread.c:292
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+> 
+> 
+> addr ffffc90000fc7150 is located in stack of task kworker/u4:4/169 at offset 80 in frame:
+>  arch_atomic64_read arch/x86/include/asm/atomic64_64.h:22 [inline]
+>  arch_atomic64_fetch_add_unless include/linux/atomic-arch-fallback.h:2195 [inline]
+>  arch_atomic64_add_unless include/linux/atomic-arch-fallback.h:2220 [inline]
+>  arch_atomic64_inc_not_zero include/linux/atomic-arch-fallback.h:2236 [inline]
+>  atomic64_inc_not_zero include/asm-generic/atomic-instrumented.h:1609 [inline]
+>  atomic_long_inc_not_zero include/asm-generic/atomic-long.h:497 [inline]
+>  percpu_ref_tryget_live include/linux/percpu-refcount.h:282 [inline]
+>  submit_bio_noacct+0x0/0x12d0 block/blk-core.c:433
+> 
+> this frame has 3 objects:
+>  [32, 40) 'bio'
+>  [64, 80) 'bio_list'
+>  [96, 128) 'bio_list_on_stack'
+> 
+> Memory state around the buggy address:
+>  ffffc90000fc7000: 00 00 00 f2 f2 f2 00 00 00 00 00 f3 f3 f3 f3 f3
+>  ffffc90000fc7080: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> >ffffc90000fc7100: f1 f1 f1 f1 00 f2 f2 f2 00 00 f2 f2 00 00 00 00
+>                                                  ^
+>  ffffc90000fc7180: f3 f3 f3 f3 00 00 00 00 00 00 00 00 00 00 00 00
+>  ffffc90000fc7200: 00 00 00 f1 f1 f1 f1 00 f2 f2 f2 00 00 00 00 f3
+> ==================================================================
+> 
+> 
+> ---
+> This bug is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this bug report. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
