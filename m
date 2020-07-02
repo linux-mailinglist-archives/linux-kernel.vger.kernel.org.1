@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F39C211846
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 03:28:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC357211849
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 03:28:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729204AbgGBB0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 21:26:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57320 "EHLO mail.kernel.org"
+        id S1729229AbgGBB0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 21:26:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57444 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729075AbgGBB0H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 21:26:07 -0400
+        id S1729105AbgGBB0M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 21:26:12 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3C8DF2083E;
-        Thu,  2 Jul 2020 01:26:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2375D2083E;
+        Thu,  2 Jul 2020 01:26:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593653167;
-        bh=d57Z06bRJknnqjS3Wp/YqNK1f++WDqjwuAwuq9k2yN4=;
+        s=default; t=1593653171;
+        bh=fSt4TwcoOm/uEpQtZN433CVrqFJwCh0iluC37WxKGoY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZwqHZR7htj68mVopc/JqdaH8Fum/3vKEs0DfXppvciA9n+HSAG3nzqEWdR83AdvNj
-         GsJIYVnkTtlPxbyq87+1RAkMhKk6YhNazpbEknrO0cZEn74giVyby46YzZA2Zm1TKf
-         MkS7+7sni7VeFBtqEuqU5xbg3X1O65s5AigJ3Bog=
+        b=P6TReOZi8QXabJ7jyT+6PN5+zs/q8u9PjXA4KsKTHJidYRDHpTg1xalT3cUIntnbX
+         gtqgboqyF7o7ywrT5NOrouGA/qxfaAGK72EFOdXvuAaYFipctcv/cR2REm+sFkbEus
+         JQlyxl/r09yRJHaenhq3jRPi2xlG/iduwmf7fcR4=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Tomas Henzl <thenzl@redhat.com>,
-        Stanislav Saner <ssaner@redhat.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>,
-        MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 34/40] scsi: mptscsih: Fix read sense data size
-Date:   Wed,  1 Jul 2020 21:23:55 -0400
-Message-Id: <20200702012402.2701121-34-sashal@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Marco Elver <elver@google.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 38/40] x86/entry: Increase entry_stack size to a full page
+Date:   Wed,  1 Jul 2020 21:23:59 -0400
+Message-Id: <20200702012402.2701121-38-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200702012402.2701121-1-sashal@kernel.org>
 References: <20200702012402.2701121-1-sashal@kernel.org>
@@ -45,48 +45,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tomas Henzl <thenzl@redhat.com>
+From: Peter Zijlstra <peterz@infradead.org>
 
-[ Upstream commit afe89f115e84edbc76d316759e206580a06c6973 ]
+[ Upstream commit c7aadc09321d8f9a1d3bd1e6d8a47222ecddf6c5 ]
 
-The sense data buffer in sense_buf_pool is allocated with size of
-MPT_SENSE_BUFFER_ALLOC(64) (multiplied by req_depth) while SNS_LEN(sc)(96)
-is used when reading the data.  That may lead to a read from unallocated
-area, sometimes from another (unallocated) page.  To fix this, limit the
-read size to MPT_SENSE_BUFFER_ALLOC.
+Marco crashed in bad_iret with a Clang11/KCSAN build due to
+overflowing the stack. Now that we run C code on it, expand it to a
+full page.
 
-Link: https://lore.kernel.org/r/20200616150446.4840-1-thenzl@redhat.com
-Co-developed-by: Stanislav Saner <ssaner@redhat.com>
-Signed-off-by: Stanislav Saner <ssaner@redhat.com>
-Signed-off-by: Tomas Henzl <thenzl@redhat.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Suggested-by: Andy Lutomirski <luto@amacapital.net>
+Reported-by: Marco Elver <elver@google.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Lai Jiangshan <jiangshanlai@gmail.com>
+Tested-by: Marco Elver <elver@google.com>
+Link: https://lkml.kernel.org/r/20200618144801.819246178@infradead.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/message/fusion/mptscsih.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ arch/x86/include/asm/processor.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/message/fusion/mptscsih.c b/drivers/message/fusion/mptscsih.c
-index f0737c57ed5fc..1491561d2e5c9 100644
---- a/drivers/message/fusion/mptscsih.c
-+++ b/drivers/message/fusion/mptscsih.c
-@@ -118,8 +118,6 @@ int 		mptscsih_suspend(struct pci_dev *pdev, pm_message_t state);
- int 		mptscsih_resume(struct pci_dev *pdev);
- #endif
+diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
+index 54f5d54280f60..a07dfdf7759ec 100644
+--- a/arch/x86/include/asm/processor.h
++++ b/arch/x86/include/asm/processor.h
+@@ -334,7 +334,7 @@ struct x86_hw_tss {
+ #define INVALID_IO_BITMAP_OFFSET	0x8000
  
--#define SNS_LEN(scp)	SCSI_SENSE_BUFFERSIZE
--
+ struct entry_stack {
+-	unsigned long		words[64];
++	char	stack[PAGE_SIZE];
+ };
  
- /*=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=*/
- /*
-@@ -2422,7 +2420,7 @@ mptscsih_copy_sense_data(struct scsi_cmnd *sc, MPT_SCSI_HOST *hd, MPT_FRAME_HDR
- 		/* Copy the sense received into the scsi command block. */
- 		req_index = le16_to_cpu(mf->u.frame.hwhdr.msgctxu.fld.req_idx);
- 		sense_data = ((u8 *)ioc->sense_buf_pool + (req_index * MPT_SENSE_BUFFER_ALLOC));
--		memcpy(sc->sense_buffer, sense_data, SNS_LEN(sc));
-+		memcpy(sc->sense_buffer, sense_data, MPT_SENSE_BUFFER_ALLOC);
- 
- 		/* Log SMART data (asc = 0x5D, non-IM case only) if required.
- 		 */
+ struct entry_stack_page {
 -- 
 2.25.1
 
