@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ED402127D7
+	by mail.lfdr.de (Postfix) with ESMTP id 9B5E22127D8
 	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 17:27:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730249AbgGBP1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 11:27:35 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:55326 "EHLO inva020.nxp.com"
+        id S1730268AbgGBP1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 11:27:37 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:55374 "EHLO inva020.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729993AbgGBP1b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 11:27:31 -0400
+        id S1730195AbgGBP1d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 11:27:33 -0400
 Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 757D61A1722;
-        Thu,  2 Jul 2020 17:27:28 +0200 (CEST)
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 794EE1A0AE6;
+        Thu,  2 Jul 2020 17:27:30 +0200 (CEST)
 Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 877731A0BEE;
-        Thu,  2 Jul 2020 17:27:18 +0200 (CEST)
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id AC4DC1A0C15;
+        Thu,  2 Jul 2020 17:27:20 +0200 (CEST)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 93959402E7;
-        Thu,  2 Jul 2020 23:27:06 +0800 (SGT)
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id AAB3C402F7;
+        Thu,  2 Jul 2020 23:27:08 +0800 (SGT)
 From:   Anson Huang <Anson.Huang@nxp.com>
 To:     mturquette@baylibre.com, sboyd@kernel.org, shawnguo@kernel.org,
         s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
@@ -32,9 +32,9 @@ To:     mturquette@baylibre.com, sboyd@kernel.org, shawnguo@kernel.org,
         linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org
 Cc:     Linux-imx@nxp.com
-Subject: [PATCH V5 3/6] clk: imx: Support building i.MX common clock driver as module
-Date:   Thu,  2 Jul 2020 23:23:58 +0800
-Message-Id: <1593703441-16944-4-git-send-email-Anson.Huang@nxp.com>
+Subject: [PATCH V5 4/6] clk: imx: Add clock configuration for ARMv7 platforms
+Date:   Thu,  2 Jul 2020 23:23:59 +0800
+Message-Id: <1593703441-16944-5-git-send-email-Anson.Huang@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1593703441-16944-1-git-send-email-Anson.Huang@nxp.com>
 References: <1593703441-16944-1-git-send-email-Anson.Huang@nxp.com>
@@ -44,348 +44,147 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are more and more requirements of building SoC specific drivers
-as modules, add support for building i.MX common clock driver as module
-to meet the requirement.
+Add CONFIG_CLK_xxx for i.MX ARMv7 platforms, and use it as build option
+instead of CONFIG_SOC_xxx, the CONFIG_CLK_xxx will be selected by default
+according to CONFIG_SOC_xxx, COMPILE_TEST will be also supported.
 
 Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+Reviewed-by: Dong Aisheng <aisheng.dong@nxp.com>
 ---
 Changes since V4:
-	- add empty function of imx_register_uart_clocks() for MODULE build, and
-	  exclude all uart clock related handler when building MODULE.
+	- remove COMPILE_TEST support for i.MX1/2/3;
+	- add COMPILE_TEST support for i.MX ARMv7 platform ONLY when the corresponding SOC
+	  config is NOT set.
 ---
- drivers/clk/imx/Kconfig            |  8 ++++++--
- drivers/clk/imx/Makefile           | 40 +++++++++++++++++++-------------------
- drivers/clk/imx/clk-composite-8m.c |  2 ++
- drivers/clk/imx/clk-cpu.c          |  2 ++
- drivers/clk/imx/clk-frac-pll.c     |  2 ++
- drivers/clk/imx/clk-gate2.c        |  2 ++
- drivers/clk/imx/clk-pll14xx.c      |  5 +++++
- drivers/clk/imx/clk-sscg-pll.c     |  2 ++
- drivers/clk/imx/clk.c              | 17 ++++++++++++----
- drivers/clk/imx/clk.h              |  6 ++++++
- 10 files changed, 60 insertions(+), 26 deletions(-)
+ drivers/clk/imx/Kconfig  | 71 +++++++++++++++++++++++++++++++++++++++++++++++-
+ drivers/clk/imx/Makefile | 30 ++++++++++----------
+ 2 files changed, 85 insertions(+), 16 deletions(-)
 
 diff --git a/drivers/clk/imx/Kconfig b/drivers/clk/imx/Kconfig
-index db0253f..ee854ac 100644
+index ee854ac..595c435 100644
 --- a/drivers/clk/imx/Kconfig
 +++ b/drivers/clk/imx/Kconfig
-@@ -1,8 +1,8 @@
- # SPDX-License-Identifier: GPL-2.0
+@@ -2,12 +2,81 @@
  # common clock support for NXP i.MX SoC family.
  config MXC_CLK
--	bool
--	def_bool ARCH_MXC
-+	tristate "IMX clock"
-+	depends on ARCH_MXC
+ 	tristate "IMX clock"
+-	depends on ARCH_MXC
++	depends on ARCH_MXC || COMPILE_TEST
  
  config MXC_CLK_SCU
  	bool
-@@ -11,24 +11,28 @@ config MXC_CLK_SCU
+ 	depends on IMX_SCU
+ 
++config CLK_IMX1
++	def_bool SOC_IMX1
++	select CLK_MXC
++
++config CLK_IMX21
++	def_bool SOC_IMX21
++	select CLK_MXC
++
++config CLK_IMX25
++	def_bool SOC_IMX25
++	select CLK_MXC
++
++config CLK_IMX27
++	def_bool SOC_IMX27
++	select CLK_MXC
++
++config CLK_IMX31
++	def_bool SOC_IMX31
++	select CLK_MXC
++
++config CLK_IMX35
++	def_bool SOC_IMX35
++	select CLK_MXC
++
++config CLK_IMX5
++	tristate "IMX5 CCM Clock Driver" if COMPILE_TEST && !SOC_IMX5
++	default SOC_IMX5
++	select MXC_CLK
++
++config CLK_IMX6Q
++	tristate "IMX6Q CCM Clock Driver" if COMPILE_TEST && !SOC_IMX6Q
++	default SOC_IMX6Q
++	select MXC_CLK
++
++config CLK_IMX6SL
++	tristate "IMX6SL CCM Clock Driver" if COMPILE_TEST && !SOC_IMX6SL
++	default SOC_IMX6SL
++	select MXC_CLK
++
++config CLK_IMX6SLL
++	tristate "IMX6SLL CCM Clock Driver" if COMPILE_TEST && !SOC_IMX6SLL
++	default SOC_IMX6SLL
++	select MXC_CLK
++
++config CLK_IMX6SX
++	tristate "IMX6SX CCM Clock Driver" if COMPILE_TEST && !SOC_IMX6SX
++	default SOC_IMX6SX
++	select MXC_CLK
++
++config CLK_IMX6UL
++	tristate "IMX6UL CCM Clock Driver" if COMPILE_TEST && !SOC_IMX6UL
++	default SOC_IMX6UL
++	select MXC_CLK
++
++config CLK_IMX7D
++	tristate "IMX7D CCM Clock Driver" if COMPILE_TEST && !SOC_IMX7D
++	default SOC_IMX7D
++	select MXC_CLK
++
++config CLK_IMX7ULP
++	tristate "IMX7ULP Clock Driver" if COMPILE_TEST && !SOC_IMX7ULP
++	default SOC_IMX7ULP
++	select MXC_CLK
++
++config CLK_VF610
++	tristate "VF610 Clock Driver" if COMPILE_TEST && !SOC_VF610
++	default SOC_VF610
++	select MXC_CLK
++
  config CLK_IMX8MM
  	bool "IMX8MM CCM Clock Driver"
  	depends on ARCH_MXC
-+	select MXC_CLK
- 	help
- 	    Build the driver for i.MX8MM CCM Clock Driver
- 
- config CLK_IMX8MN
- 	bool "IMX8MN CCM Clock Driver"
- 	depends on ARCH_MXC
-+	select MXC_CLK
- 	help
- 	    Build the driver for i.MX8MN CCM Clock Driver
- 
- config CLK_IMX8MP
- 	bool "IMX8MP CCM Clock Driver"
- 	depends on ARCH_MXC
-+	select MXC_CLK
- 	help
- 	    Build the driver for i.MX8MP CCM Clock Driver
- 
- config CLK_IMX8MQ
- 	bool "IMX8MQ CCM Clock Driver"
- 	depends on ARCH_MXC
-+	select MXC_CLK
- 	help
- 	    Build the driver for i.MX8MQ CCM Clock Driver
- 
 diff --git a/drivers/clk/imx/Makefile b/drivers/clk/imx/Makefile
-index 928f874..687207d 100644
+index 687207d..17f5d12 100644
 --- a/drivers/clk/imx/Makefile
 +++ b/drivers/clk/imx/Makefile
-@@ -1,25 +1,25 @@
- # SPDX-License-Identifier: GPL-2.0
+@@ -31,18 +31,18 @@ obj-$(CONFIG_CLK_IMX8MP) += clk-imx8mp.o
+ obj-$(CONFIG_CLK_IMX8MQ) += clk-imx8mq.o
+ obj-$(CONFIG_CLK_IMX8QXP) += clk-imx8qxp.o clk-imx8qxp-lpcg.o
  
--obj-$(CONFIG_MXC_CLK) += \
--	clk.o \
--	clk-busy.o \
--	clk-composite-8m.o \
--	clk-cpu.o \
--	clk-composite-7ulp.o \
--	clk-divider-gate.o \
--	clk-fixup-div.o \
--	clk-fixup-mux.o \
--	clk-frac-pll.o \
--	clk-gate-exclusive.o \
--	clk-gate2.o \
--	clk-pfd.o \
--	clk-pfdv2.o \
--	clk-pllv1.o \
--	clk-pllv2.o \
--	clk-pllv3.o \
--	clk-pllv4.o \
--	clk-sscg-pll.o \
--	clk-pll14xx.o
-+mxc-clk-objs += clk.o
-+mxc-clk-objs += clk-busy.o
-+mxc-clk-objs += clk-composite-7ulp.o
-+mxc-clk-objs += clk-composite-8m.o
-+mxc-clk-objs += clk-cpu.o
-+mxc-clk-objs += clk-divider-gate.o
-+mxc-clk-objs += clk-fixup-div.o
-+mxc-clk-objs += clk-fixup-mux.o
-+mxc-clk-objs += clk-frac-pll.o
-+mxc-clk-objs += clk-gate2.o
-+mxc-clk-objs += clk-gate-exclusive.o
-+mxc-clk-objs += clk-pfd.o
-+mxc-clk-objs += clk-pfdv2.o
-+mxc-clk-objs += clk-pllv1.o
-+mxc-clk-objs += clk-pllv2.o
-+mxc-clk-objs += clk-pllv3.o
-+mxc-clk-objs += clk-pllv4.o
-+mxc-clk-objs += clk-pll14xx.o
-+mxc-clk-objs += clk-sscg-pll.o
-+obj-$(CONFIG_MXC_CLK) += mxc-clk.o
- 
- obj-$(CONFIG_MXC_CLK_SCU) += \
- 	clk-scu.o \
-diff --git a/drivers/clk/imx/clk-composite-8m.c b/drivers/clk/imx/clk-composite-8m.c
-index d2b5af8..78fb7e5 100644
---- a/drivers/clk/imx/clk-composite-8m.c
-+++ b/drivers/clk/imx/clk-composite-8m.c
-@@ -5,6 +5,7 @@
- 
- #include <linux/clk-provider.h>
- #include <linux/errno.h>
-+#include <linux/export.h>
- #include <linux/io.h>
- #include <linux/slab.h>
- 
-@@ -243,3 +244,4 @@ struct clk_hw *imx8m_clk_hw_composite_flags(const char *name,
- 	kfree(mux);
- 	return ERR_CAST(hw);
- }
-+EXPORT_SYMBOL_GPL(imx8m_clk_hw_composite_flags);
-diff --git a/drivers/clk/imx/clk-cpu.c b/drivers/clk/imx/clk-cpu.c
-index cb182be..cb6ca4c 100644
---- a/drivers/clk/imx/clk-cpu.c
-+++ b/drivers/clk/imx/clk-cpu.c
-@@ -5,6 +5,7 @@
- 
- #include <linux/clk.h>
- #include <linux/clk-provider.h>
-+#include <linux/export.h>
- #include <linux/slab.h>
- #include "clk.h"
- 
-@@ -104,3 +105,4 @@ struct clk_hw *imx_clk_hw_cpu(const char *name, const char *parent_name,
- 
- 	return hw;
- }
-+EXPORT_SYMBOL_GPL(imx_clk_hw_cpu);
-diff --git a/drivers/clk/imx/clk-frac-pll.c b/drivers/clk/imx/clk-frac-pll.c
-index 101e0a3..c703056 100644
---- a/drivers/clk/imx/clk-frac-pll.c
-+++ b/drivers/clk/imx/clk-frac-pll.c
-@@ -10,6 +10,7 @@
- 
- #include <linux/clk-provider.h>
- #include <linux/err.h>
-+#include <linux/export.h>
- #include <linux/io.h>
- #include <linux/iopoll.h>
- #include <linux/slab.h>
-@@ -233,3 +234,4 @@ struct clk_hw *imx_clk_hw_frac_pll(const char *name,
- 
- 	return hw;
- }
-+EXPORT_SYMBOL_GPL(imx_clk_hw_frac_pll);
-diff --git a/drivers/clk/imx/clk-gate2.c b/drivers/clk/imx/clk-gate2.c
-index b87ab3c..512f675 100644
---- a/drivers/clk/imx/clk-gate2.c
-+++ b/drivers/clk/imx/clk-gate2.c
-@@ -7,6 +7,7 @@
-  */
- 
- #include <linux/clk-provider.h>
-+#include <linux/export.h>
- #include <linux/module.h>
- #include <linux/slab.h>
- #include <linux/io.h>
-@@ -177,3 +178,4 @@ struct clk_hw *clk_hw_register_gate2(struct device *dev, const char *name,
- 
- 	return hw;
- }
-+EXPORT_SYMBOL_GPL(clk_hw_register_gate2);
-diff --git a/drivers/clk/imx/clk-pll14xx.c b/drivers/clk/imx/clk-pll14xx.c
-index f9eb189..f5c3e7e 100644
---- a/drivers/clk/imx/clk-pll14xx.c
-+++ b/drivers/clk/imx/clk-pll14xx.c
-@@ -6,6 +6,7 @@
- #include <linux/bitops.h>
- #include <linux/clk-provider.h>
- #include <linux/err.h>
-+#include <linux/export.h>
- #include <linux/io.h>
- #include <linux/iopoll.h>
- #include <linux/slab.h>
-@@ -68,6 +69,7 @@ struct imx_pll14xx_clk imx_1443x_pll = {
- 	.rate_table = imx_pll1443x_tbl,
- 	.rate_count = ARRAY_SIZE(imx_pll1443x_tbl),
- };
-+EXPORT_SYMBOL_GPL(imx_1443x_pll);
- 
- struct imx_pll14xx_clk imx_1443x_dram_pll = {
- 	.type = PLL_1443X,
-@@ -75,12 +77,14 @@ struct imx_pll14xx_clk imx_1443x_dram_pll = {
- 	.rate_count = ARRAY_SIZE(imx_pll1443x_tbl),
- 	.flags = CLK_GET_RATE_NOCACHE,
- };
-+EXPORT_SYMBOL_GPL(imx_1443x_dram_pll);
- 
- struct imx_pll14xx_clk imx_1416x_pll = {
- 	.type = PLL_1416X,
- 	.rate_table = imx_pll1416x_tbl,
- 	.rate_count = ARRAY_SIZE(imx_pll1416x_tbl),
- };
-+EXPORT_SYMBOL_GPL(imx_1416x_pll);
- 
- static const struct imx_pll14xx_rate_table *imx_get_pll_settings(
- 		struct clk_pll14xx *pll, unsigned long rate)
-@@ -436,3 +440,4 @@ struct clk_hw *imx_dev_clk_hw_pll14xx(struct device *dev, const char *name,
- 
- 	return hw;
- }
-+EXPORT_SYMBOL_GPL(imx_dev_clk_hw_pll14xx);
-diff --git a/drivers/clk/imx/clk-sscg-pll.c b/drivers/clk/imx/clk-sscg-pll.c
-index 773d8a5..9d6cdff 100644
---- a/drivers/clk/imx/clk-sscg-pll.c
-+++ b/drivers/clk/imx/clk-sscg-pll.c
-@@ -10,6 +10,7 @@
- 
- #include <linux/clk-provider.h>
- #include <linux/err.h>
-+#include <linux/export.h>
- #include <linux/io.h>
- #include <linux/iopoll.h>
- #include <linux/slab.h>
-@@ -537,3 +538,4 @@ struct clk_hw *imx_clk_hw_sscg_pll(const char *name,
- 
- 	return hw;
- }
-+EXPORT_SYMBOL_GPL(imx_clk_hw_sscg_pll);
-diff --git a/drivers/clk/imx/clk.c b/drivers/clk/imx/clk.c
-index 87ab8db..547cade 100644
---- a/drivers/clk/imx/clk.c
-+++ b/drivers/clk/imx/clk.c
-@@ -3,6 +3,7 @@
- #include <linux/clk-provider.h>
- #include <linux/err.h>
- #include <linux/io.h>
-+#include <linux/module.h>
- #include <linux/of.h>
- #include <linux/slab.h>
- #include <linux/spinlock.h>
-@@ -13,6 +14,7 @@
- #define CCDR_MMDC_CH1_MASK		BIT(16)
- 
- DEFINE_SPINLOCK(imx_ccm_lock);
-+EXPORT_SYMBOL_GPL(imx_ccm_lock);
- 
- void imx_unregister_clocks(struct clk *clks[], unsigned int count)
- {
-@@ -29,8 +31,9 @@ void imx_unregister_hw_clocks(struct clk_hw *hws[], unsigned int count)
- 	for (i = 0; i < count; i++)
- 		clk_hw_unregister(hws[i]);
- }
-+EXPORT_SYMBOL_GPL(imx_unregister_hw_clocks);
- 
--void __init imx_mmdc_mask_handshake(void __iomem *ccm_base,
-+void imx_mmdc_mask_handshake(void __iomem *ccm_base,
- 				    unsigned int chn)
- {
- 	unsigned int reg;
-@@ -59,8 +62,9 @@ void imx_check_clk_hws(struct clk_hw *clks[], unsigned int count)
- 			pr_err("i.MX clk %u: register failed with %ld\n",
- 			       i, PTR_ERR(clks[i]));
- }
-+EXPORT_SYMBOL_GPL(imx_check_clk_hws);
- 
--static struct clk * __init imx_obtain_fixed_clock_from_dt(const char *name)
-+static struct clk *imx_obtain_fixed_clock_from_dt(const char *name)
- {
- 	struct of_phandle_args phandle;
- 	struct clk *clk = ERR_PTR(-ENODEV);
-@@ -80,7 +84,7 @@ static struct clk * __init imx_obtain_fixed_clock_from_dt(const char *name)
- 	return clk;
- }
- 
--struct clk * __init imx_obtain_fixed_clock(
-+struct clk *imx_obtain_fixed_clock(
- 			const char *name, unsigned long rate)
- {
- 	struct clk *clk;
-@@ -91,7 +95,7 @@ struct clk * __init imx_obtain_fixed_clock(
- 	return clk;
- }
- 
--struct clk_hw * __init imx_obtain_fixed_clock_hw(
-+struct clk_hw *imx_obtain_fixed_clock_hw(
- 			const char *name, unsigned long rate)
- {
- 	struct clk *clk;
-@@ -113,6 +117,7 @@ struct clk_hw * imx_obtain_fixed_clk_hw(struct device_node *np,
- 
- 	return __clk_get_hw(clk);
- }
-+EXPORT_SYMBOL_GPL(imx_obtain_fixed_clk_hw);
- 
- /*
-  * This fixups the register CCM_CSCMR1 write value.
-@@ -140,6 +145,7 @@ void imx_cscmr1_fixup(u32 *val)
- 	return;
- }
- 
-+#ifndef MODULE
- static int imx_keep_uart_clocks;
- static struct clk ** const *imx_uart_clocks;
- 
-@@ -177,3 +183,6 @@ static int __init imx_clk_disable_uart(void)
- 	return 0;
- }
- late_initcall_sync(imx_clk_disable_uart);
-+#endif
-+
-+MODULE_LICENSE("GPL v2");
-diff --git a/drivers/clk/imx/clk.h b/drivers/clk/imx/clk.h
-index 16adbc3..dd47c19 100644
---- a/drivers/clk/imx/clk.h
-+++ b/drivers/clk/imx/clk.h
-@@ -11,7 +11,13 @@ extern spinlock_t imx_ccm_lock;
- 
- void imx_check_clocks(struct clk *clks[], unsigned int count);
- void imx_check_clk_hws(struct clk_hw *clks[], unsigned int count);
-+#ifndef MODULE
- void imx_register_uart_clocks(struct clk ** const clks[]);
-+#else
-+static inline void imx_register_uart_clocks(struct clk ** const clks[])
-+{
-+}
-+#endif
- void imx_mmdc_mask_handshake(void __iomem *ccm_base, unsigned int chn);
- void imx_unregister_clocks(struct clk *clks[], unsigned int count);
- void imx_unregister_hw_clocks(struct clk_hw *hws[], unsigned int count);
+-obj-$(CONFIG_SOC_IMX1)   += clk-imx1.o
+-obj-$(CONFIG_SOC_IMX21)  += clk-imx21.o
+-obj-$(CONFIG_SOC_IMX25)  += clk-imx25.o
+-obj-$(CONFIG_SOC_IMX27)  += clk-imx27.o
+-obj-$(CONFIG_SOC_IMX31)  += clk-imx31.o
+-obj-$(CONFIG_SOC_IMX35)  += clk-imx35.o
+-obj-$(CONFIG_SOC_IMX5)   += clk-imx5.o
+-obj-$(CONFIG_SOC_IMX6Q)  += clk-imx6q.o
+-obj-$(CONFIG_SOC_IMX6SL) += clk-imx6sl.o
+-obj-$(CONFIG_SOC_IMX6SLL) += clk-imx6sll.o
+-obj-$(CONFIG_SOC_IMX6SX) += clk-imx6sx.o
+-obj-$(CONFIG_SOC_IMX6UL) += clk-imx6ul.o
+-obj-$(CONFIG_SOC_IMX7D)  += clk-imx7d.o
+-obj-$(CONFIG_SOC_IMX7ULP) += clk-imx7ulp.o
+-obj-$(CONFIG_SOC_VF610)  += clk-vf610.o
++obj-$(CONFIG_CLK_IMX1)   += clk-imx1.o
++obj-$(CONFIG_CLK_IMX21)  += clk-imx21.o
++obj-$(CONFIG_CLK_IMX25)  += clk-imx25.o
++obj-$(CONFIG_CLK_IMX27)  += clk-imx27.o
++obj-$(CONFIG_CLK_IMX31)  += clk-imx31.o
++obj-$(CONFIG_CLK_IMX35)  += clk-imx35.o
++obj-$(CONFIG_CLK_IMX5)   += clk-imx5.o
++obj-$(CONFIG_CLK_IMX6Q)  += clk-imx6q.o
++obj-$(CONFIG_CLK_IMX6SL) += clk-imx6sl.o
++obj-$(CONFIG_CLK_IMX6SLL) += clk-imx6sll.o
++obj-$(CONFIG_CLK_IMX6SX) += clk-imx6sx.o
++obj-$(CONFIG_CLK_IMX6UL) += clk-imx6ul.o
++obj-$(CONFIG_CLK_IMX7D)  += clk-imx7d.o
++obj-$(CONFIG_CLK_IMX7ULP) += clk-imx7ulp.o
++obj-$(CONFIG_CLK_VF610)  += clk-vf610.o
 -- 
 2.7.4
 
