@@ -2,61 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B3C2212DD4
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 22:23:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D180212DD6
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 22:29:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726140AbgGBUXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 16:23:38 -0400
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:38753 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725937AbgGBUXi (ORCPT
+        id S1726028AbgGBU2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 16:28:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46572 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725915AbgGBU2f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 16:23:38 -0400
-X-Originating-IP: 90.65.108.121
-Received: from localhost (lfbn-lyo-1-1676-121.w90-65.abo.wanadoo.fr [90.65.108.121])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 4F1D260005;
-        Thu,  2 Jul 2020 20:23:35 +0000 (UTC)
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Dev Null <devnull@uvos.xyz>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Sebastian Reichel <sre@kernel.org>
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-omap@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
-        linux-kernel@vger.kernel.org, Merlijn Wajer <merlijn@wizzup.org>,
-        Tony Lindgren <tony@atomide.com>, linux-rtc@vger.kernel.org,
-        "Sicelo A . Mhlongo" <absicsz@gmail.com>
-Subject: Re: [PATCH] rtc: cpcap: fix range
-Date:   Thu,  2 Jul 2020 22:23:10 +0200
-Message-Id: <159372105822.57284.8366488507603282804.b4-ty@bootlin.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200629114123.27956-1-sebastian.reichel@collabora.com>
-References: <20200629002917.0a2045380a0fe022f852e067@uvos.xyz> <20200629114123.27956-1-sebastian.reichel@collabora.com>
+        Thu, 2 Jul 2020 16:28:35 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8769BC08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 13:28:35 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: tonyk)
+        with ESMTPSA id C0DF02A60FC
+From:   =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>
+To:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        peterz@infradead.org
+Cc:     mingo@redhat.com, dvhart@infradead.org, kernel@collabora.com,
+        krisman@collabora.com,
+        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>
+Subject: [RESEND PATCH 0/4] futex: Minor code improvements 
+Date:   Thu,  2 Jul 2020 17:28:39 -0300
+Message-Id: <20200702202843.520764-1-andrealmeid@collabora.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 29 Jun 2020 13:41:23 +0200, Sebastian Reichel wrote:
-> Unbreak CPCAP driver, which has one more bit in the day counter
-> increasing the max. range from 2014 to 2058. The original commit
-> introducing the range limit was obviously wrong, since the driver
-> has only been written in 2017 (3 years after 14 bits would have
-> run out).
+Hello,
 
-Applied, thanks!
+This series aims to make some small code improvements that I found in
+futex.c, removing some lines and trying to make the code easier to read
+and understand.
 
-What happen is that I can't count bits and so I though PCAP had 13 bits and
-CPCAP 14 bits while it is indeed 14 and 15. I did the correct thing in the PCAP
-driver though.
+All commits tested with futex tests from kselftest.
 
-Thanks for the fix!
+Thanks,
+	André
 
-[1/1] rtc: cpcap: fix range
-      commit: d6ac11f677ded28180fc9e59b01db79036c3ec31
+André Almeida (4):
+  futex: Remove put_futex_key()
+  futex: Remove needless goto's
+  futex: Remove unused or redundant includes
+  futex: Consistently use fshared as boolean
 
-Best regards,
+ kernel/futex.c | 114 +++++++++++--------------------------------------
+ 1 file changed, 26 insertions(+), 88 deletions(-)
+
 -- 
-Alexandre Belloni <alexandre.belloni@bootlin.com>
+2.27.0
+
