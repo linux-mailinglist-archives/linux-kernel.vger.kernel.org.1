@@ -2,137 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D6A421265F
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 16:35:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F148212669
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 16:37:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729856AbgGBOfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 10:35:15 -0400
-Received: from mail-eopbgr20110.outbound.protection.outlook.com ([40.107.2.110]:57177
-        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729556AbgGBOfO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 10:35:14 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MnSHRhGMDqtJqMwTLcig6K4PFLsovbN1LjZ5KIwJdaV3Bom0mZkH7ttbTVS6/PYH/ZeiEm7c2hXV4qEmR4qhfhxV40KtORo9/OiiPk4+GmxlhxwcT8GzC6PmlMNzFAq8wz1YHe2rrrRJ2OXs/J8XWtzltFzHjAUAtKqYZILmwDbXWsHg/EJebJXqMNVoZMcusDxu6mYXOtnCTuDDdlwUbUJoZpjYJvjrrcQlbyfZmAmW482/5B9OqQ470Ex6m0P1my2bHr+HKy6jDGg26UKT0lMOUtH3HMy1mOjCRi1416+UdDIzo76b/Nyx/WMASxW6FcWjvtVb1Sb8pSOcWu/J/w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=R5e3TUdZ9UfbslgM4YbaIMxwbpd+RfHk30fRhK02Y5M=;
- b=g0oGuOANILhSb0rJ70jETi7jg86Ee1iKktIOBKsyZnrkMiW7zqbLHkRH7E6QCDm4cLYZp0kqYOHGLCjt7q9Iu6X283gkiwSiMy+KtN2MnVR6rzHDnOrQ8KxSAZBtBOwv08dvDx1d6KeE4ue5dOODpRwp3+YyucyLRIEKNn81Ox29O4/j98tBboGI47U+bO4vaV1g/hI+S7O0A520idVegmOVEyPWg+VoJdywIXZHoKz91Dq374OT2/RLx0Be/+B7lRcLbNo8OoqsJssk58tPK+rTnGa7z10U7/j5JkHrWSNsQ7WPrNnymiGx0b0mJi6mP+CRZJ80pk1uKnPHBkQNQQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=kontron.de; dmarc=pass action=none header.from=kontron.de;
- dkim=pass header.d=kontron.de; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mysnt.onmicrosoft.com;
- s=selector2-mysnt-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=R5e3TUdZ9UfbslgM4YbaIMxwbpd+RfHk30fRhK02Y5M=;
- b=C2Rd3wErEQymJCSL7IBhwHtAxfsT3K+tWkENhS8SXYDdY/xw7ycRLNstTxZaMsnH2EZE0gUgNT8NItldWcRcTX75vhVU108nkBRizoJ+Uh+d11h9y2OsMGargV7wtCxdi55YGsvAZplcnV6p6M1q4h07uxIdvnF7t4KktGIv1XM=
-Authentication-Results: nxp.com; dkim=none (message not signed)
- header.d=none;nxp.com; dmarc=none action=none header.from=kontron.de;
-Received: from DB7PR10MB2490.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:50::12)
- by DB8PR10MB2842.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:ac::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.25; Thu, 2 Jul
- 2020 14:35:10 +0000
-Received: from DB7PR10MB2490.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::ac04:ef33:baf3:36f3]) by DB7PR10MB2490.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::ac04:ef33:baf3:36f3%4]) with mapi id 15.20.3131.036; Thu, 2 Jul 2020
- 14:35:10 +0000
-From:   Schrempf Frieder <frieder.schrempf@kontron.de>
-To:     Anson Huang <Anson.Huang@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Li Yang <leoyang.li@nxp.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
-        Michael Walle <michael@walle.cc>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Robert Jones <rjones@gateworks.com>,
-        Rob Herring <robh@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        =?UTF-8?q?S=C3=A9bastien=20Szymanski?= 
-        <sebastien.szymanski@armadeus.com>, Shawn Guo <shawnguo@kernel.org>
-Cc:     Andreas Kemnade <andreas@kemnade.info>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] dt-bindings: arm: fsl: Add Kontron i.MX8MM SoMs and boards
-Date:   Thu,  2 Jul 2020 16:33:07 +0200
-Message-Id: <20200702143337.8590-3-frieder.schrempf@kontron.de>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200702143337.8590-1-frieder.schrempf@kontron.de>
-References: <20200702143337.8590-1-frieder.schrempf@kontron.de>
-Content-Type: text/plain
-X-ClientProxiedBy: FR2P281CA0036.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:14::23) To DB7PR10MB2490.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:10:50::12)
+        id S1729880AbgGBOhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 10:37:01 -0400
+Received: from mga14.intel.com ([192.55.52.115]:42838 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729482AbgGBOhA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 10:37:00 -0400
+IronPort-SDR: xO8tR+mowZn4yl3flv0a/xv2gmfy6RHxIVwX/X9Rkv5YkZ5jgiYSgLBhtZuK5YD/KK5+9NMUm3
+ 1OnDx79CB4qg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="145983041"
+X-IronPort-AV: E=Sophos;i="5.75,304,1589266800"; 
+   d="scan'208";a="145983041"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2020 07:36:58 -0700
+IronPort-SDR: CM3DPPkyiJe3vZfIlaCmnewZRAKk5YPUkoRGcE7QBybvRLtdhW5RJJyrKnQtmfWFVSnytDV68M
+ XVzKzjSILfbw==
+X-IronPort-AV: E=Sophos;i="5.75,304,1589266800"; 
+   d="scan'208";a="455540658"
+Received: from rapyeatx-mobl3.amr.corp.intel.com (HELO [10.255.2.31]) ([10.255.2.31])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2020 07:36:57 -0700
+Subject: Re: [PATCH 1/3] mm/vmscan: restore zone_reclaim_mode ABI
+To:     "Huang, Ying" <ying.huang@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        ben.widawsky@intel.com, alex.shi@linux.alibaba.com,
+        dwagner@suse.de, tobin@kernel.org, cl@linux.com,
+        akpm@linux-foundation.org, dan.j.williams@intel.com, cai@lca.pw,
+        stable@vger.kernel.org
+References: <20200701152621.D520E62B@viggo.jf.intel.com>
+ <20200701152623.384AF0A7@viggo.jf.intel.com>
+ <87d05ejgug.fsf@yhuang-dev.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <0c1e01bb-bd10-50ab-ded0-9d4f37951f25@intel.com>
+Date:   Thu, 2 Jul 2020 07:36:56 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from fs-work.localdomain (46.142.79.231) by FR2P281CA0036.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:14::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.8 via Frontend Transport; Thu, 2 Jul 2020 14:35:09 +0000
-X-Mailer: git-send-email 2.17.1
-X-Originating-IP: [46.142.79.231]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 13d5216a-dfed-46fa-90dd-08d81e951fe3
-X-MS-TrafficTypeDiagnostic: DB8PR10MB2842:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB8PR10MB28426CADD410FD7B04A787E0E96D0@DB8PR10MB2842.EURPRD10.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:262;
-X-Forefront-PRVS: 0452022BE1
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: tGDDEa97rJ1uvPiSZkgpQ2tEvdydH6nAAP90pmWWU5EVseTcxOKU4As4mI6O1HKaNNSnmRFAZfs2c9cYjnRJFd4Igj6aaXA9gS+hP9ytllJDuGJYFBeTmdjSrtX31R4oYxoGHwCgn9u/UYyGJ77wLpt70LNoTf3St2bNkoaixzzaApv89uTNNFFUf1Zqwt1PZCstX3/YqAQ8C3gIJ2C94uc/JFoVG5jFZZXGlV/kYDVNt+Zl96bYG1zLXAmvPei7ls0AU/lCcQ4xe8zDXMG2Ci2025vqsZCNsK2mXNtu+n0mQw5voxmkzt8c167J6r/oFsBlKrCJJXIwGzJLsy4sJadPRcfR1foqoJxklq3UruMu7zDLADagq+wq5uaqGFYY
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB7PR10MB2490.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFTY:;SFS:(6029001)(4636009)(136003)(396003)(366004)(39850400004)(376002)(346002)(66476007)(66556008)(110136005)(316002)(2906002)(8676002)(66946007)(956004)(186003)(2616005)(5660300002)(16526019)(26005)(1076003)(36756003)(8936002)(86362001)(6506007)(52116002)(7416002)(4326008)(6486002)(478600001)(6512007)(921003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: OCi4XKDejog3SDZR3VtTABrLprcWhz6NxlbTFs4q77+LD8B6EgmCemU53440zq/9gUWzYIiTyuFnY4drh2oftgkZgTmrEgRFl5l2yP1DBKS7qfouUD4fm/5uSy4d1kXiVuVgilFlY7lKtqHbwxyIHwoXffOx7K4kbtJoE7a/0e6OxZUUSBu7FggqfgUJJmn3JNn2Y/X8abRu3QASnuIKL+VxILdHRTkb5rtPw79agzV1d1uHavVbRF+QNDg0eV34Njv4K1iXahKuHh0wF0gkv1Y7W2D10yQXhfy6A7edTFg+bhHle5U8nhfTCJFwLcqK988VDWZ9rjUcILneJ4ahCF7dE0y4+96rp0aXDHOCXKcmMTtlP1TBAzI6vbTAMFwG96uzL5qrxxyMhrBI1pUjZBL2m93wBsQPKXdAc5/mM1pnS0yH25/uItkDl0YZWLjekMzJNMfF0+S1yD/XV6H7KbhCTueDSLbrLYWDhBu8SLA=
-X-OriginatorOrg: kontron.de
-X-MS-Exchange-CrossTenant-Network-Message-Id: 13d5216a-dfed-46fa-90dd-08d81e951fe3
-X-MS-Exchange-CrossTenant-AuthSource: DB7PR10MB2490.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jul 2020 14:35:10.8522
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8c9d3c97-3fd9-41c8-a2b1-646f3942daf1
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Rw/MOYaa+3gZZv0XilZ/qIPcDsNoe+whv5AHeK7KhQLrhWSSpfTL9cLuO8bJgkKq9xmupr/Vrn4E/WUjZbNqKioe7GChEo/6TNQBgVwhjq4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR10MB2842
+In-Reply-To: <87d05ejgug.fsf@yhuang-dev.intel.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Frieder Schrempf <frieder.schrempf@kontron.de>
+On 7/2/20 4:28 AM, Huang, Ying wrote:
+>> But, when the bit was removed (bit 0) the _other_ bit locations also
+>> got changed.  That's not OK because the bit values are documented to
+>> mean one specific thing and users surely rely on them meaning that one
+>> thing and not changing from kernel to kernel.  The end result is that
+>> if someone had a script that did:
+>>
+>> 	sysctl vm.zone_reclaim_mode=1
+>>
+>> That script went from doing nothing
+> Per my understanding, this script would have enabled node reclaim for
+> clean unmapped pages before commit 648b5cf368e0 ("mm/vmscan: remove
+> unused RECLAIM_OFF/RECLAIM_ZONE").  So we should revise the description
+> here?
 
-Add entries for the SoMs and boards based on i.MX8MM from Kontron
-Electronics GmbH.
-
-Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
----
- Documentation/devicetree/bindings/arm/fsl.yaml | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
-index 05906e291e38..a99b1c3320b7 100644
---- a/Documentation/devicetree/bindings/arm/fsl.yaml
-+++ b/Documentation/devicetree/bindings/arm/fsl.yaml
-@@ -337,6 +337,20 @@ properties:
-         items:
-           - enum:
-               - fsl,imx8mm-evk            # i.MX8MM EVK Board
-+              - kontron,imx8mm-n8010-som  # Kontron N8010 SOM
-+              - kontron,imx8mm-n8011-som  # Kontron N8011 SOM
-+          - const: fsl,imx8mm
-+
-+      - description: Kontron N8010 S Board
-+        items:
-+          - const: kontron,imx8mm-n8010-s
-+          - const: kontron,imx8mm-n8010-som
-+          - const: fsl,imx8mm
-+
-+      - description: Kontron N8011 S Board
-+        items:
-+          - const: kontron,imx8mm-n8011-s
-+          - const: kontron,imx8mm-n8011-som
-           - const: fsl,imx8mm
- 
-       - description: i.MX8MN based Boards
--- 
-2.17.1
+Yes, you're right.  I updated the patch with the updated understanding
+about the implicit use of the bit but didn't update the changelog.  I'll
+do that for v3.
 
