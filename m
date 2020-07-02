@@ -2,102 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D376212B7B
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 19:48:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E25D212B46
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 19:31:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727894AbgGBRsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 13:48:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50116 "EHLO
+        id S1727879AbgGBRbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 13:31:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727005AbgGBRsG (ORCPT
+        with ESMTP id S1726120AbgGBRbe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 13:48:06 -0400
-X-Greylist: delayed 1933 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 02 Jul 2020 10:48:06 PDT
-Received: from scorn.kernelslacker.org (scorn.kernelslacker.org [IPv6:2600:3c03:e000:2fb::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AB18C08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 10:48:06 -0700 (PDT)
-Received: from [2601:196:4600:6634:ae9e:17ff:feb7:72ca] (helo=wopr.kernelslacker.org)
-        by scorn.kernelslacker.org with esmtp (Exim 4.92)
-        (envelope-from <davej@codemonkey.org.uk>)
-        id 1jr2oO-0007xq-D4; Thu, 02 Jul 2020 13:15:48 -0400
-Received: by wopr.kernelslacker.org (Postfix, from userid 1026)
-        id 2CC4056011F; Thu,  2 Jul 2020 13:15:48 -0400 (EDT)
-Date:   Thu, 2 Jul 2020 13:15:48 -0400
-From:   Dave Jones <davej@codemonkey.org.uk>
-To:     Linux Kernel <linux-kernel@vger.kernel.org>
-Cc:     peterz@infradead.org, mgorman@techsingularity.net,
-        mingo@kernel.org, Linus Torvalds <torvalds@linux-foundation.org>
-Subject: weird loadavg on idle machine post 5.7
-Message-ID: <20200702171548.GA11813@codemonkey.org.uk>
-Mail-Followup-To: Dave Jones <davej@codemonkey.org.uk>,
-        Linux Kernel <linux-kernel@vger.kernel.org>, peterz@infradead.org,
-        mgorman@techsingularity.net, mingo@kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
+        Thu, 2 Jul 2020 13:31:34 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB022C08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 10:31:34 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id q8so29735874iow.7
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 10:31:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qS9aKixWg8M2HwkRwLxIhre1iwIBiL08luFNH178zko=;
+        b=dlardQB2kRCLmJxUeHCCJ1I//DtST1JMzmk2zK2iYoauEZmj8YlzMayYjIs8nTaonS
+         etg4Ag4rCqNDLBYKFt2YxlJ7IsVmzeOEMu7xoCYebrrw/y9piCzD7+NrUIKt0Q/3l1UT
+         etQxxjV7IZ0iyC3qlWPNbBYh0mW28oml8cxYs6Kk3y4qDW/U1PsEGy5y3E8sFzC0EY0Q
+         Qb4GgY6BdqGv5MT61oqVVem0THpeS3KdnPmEKSeTGFRLV6076ASt+Ts3Sc5XHNA177VE
+         lj1Siv1c6nDNc06rawhTBbQpydFWRRhZsu2BedcpPsSsVW1t5HZRKlufOzdJzYGTbUak
+         5Ppg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qS9aKixWg8M2HwkRwLxIhre1iwIBiL08luFNH178zko=;
+        b=YB+VoleCuq8Py/YFW9ate1/kjEqV8L8i0hb/Xufn9ZrvWwk03uCjpnweIRv7MNdaUu
+         hTqZi87xl4JiwpSWCTfGOC3Bo2W9EZPVvpJ1ewPYA4AIY8wcAsA/AgFXt3B3uRqGJAzZ
+         5gCrErwvWgpBugHZm7GOkegge/jzeshFSaO7dr5AGM9SxkH0QRoKv2Uj1gCMSN0MCBJ/
+         3qh5FwA1+qfHhIl36dpI2/lfEAFtO8cKu3KnW8+9wMiVWLPdqm/06I4acmspYxgtmX5z
+         VGBIDajutHj7V+JhyqXhWP6vDcO/qXcYnVMmtqNBXtZvBI31Du48PAOoEY1Pco2Sl+qJ
+         J/5w==
+X-Gm-Message-State: AOAM53104vB8wyQ5580HGPdrbxnw/66GlDb1vPMWLhl/5SSIg3d9EY/1
+        A94Nwfy7Zw6n+BNPdiFuSAXy1DEuSP8QSSpVkh2iJA==
+X-Google-Smtp-Source: ABdhPJzLKR5y/4qxmdCN5zOuywjt8u2E+3dsyGdmjEwUOvRQTg/hQElVu0bbAUkE1Z5HPhVEQOaIOwv1coyY7vNqIl8=
+X-Received: by 2002:a02:7f89:: with SMTP id r131mr34382094jac.98.1593711094007;
+ Thu, 02 Jul 2020 10:31:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Note: SpamAssassin invocation failed
+References: <20200702082143.25259-1-kishon@ti.com> <20200702055026-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20200702055026-mutt-send-email-mst@kernel.org>
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+Date:   Thu, 2 Jul 2020 11:31:23 -0600
+Message-ID: <CANLsYky4ZrgYGZUyg4iVwbM3TQk5dvOSBwPFER8qofixjn4vyA@mail.gmail.com>
+Subject: Re: [RFC PATCH 00/22] Enhance VHOST to enable SoC-to-SoC communication
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Jon Mason <jdmason@kudzu.us>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Allen Hubbe <allenbh@gmail.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-remoteproc <linux-remoteproc@vger.kernel.org>,
+        linux-ntb@googlegroups.com, linux-pci@vger.kernel.org,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When I upgraded my firewall to 5.7-rc2 I noticed that on a mostly
-idle machine (that usually sees loadavg hover in the 0.xx range)
-that it was consistently above 1.00 even when there was nothing running.
-All that perf showed was the kernel was spending time in the idle loop
-(and running perf).
+On Thu, 2 Jul 2020 at 03:51, Michael S. Tsirkin <mst@redhat.com> wrote:
+>
+> On Thu, Jul 02, 2020 at 01:51:21PM +0530, Kishon Vijay Abraham I wrote:
+> > This series enhances Linux Vhost support to enable SoC-to-SoC
+> > communication over MMIO. This series enables rpmsg communication between
+> > two SoCs using both PCIe RC<->EP and HOST1-NTB-HOST2
+> >
+> > 1) Modify vhost to use standard Linux driver model
+> > 2) Add support in vring to access virtqueue over MMIO
+> > 3) Add vhost client driver for rpmsg
+> > 4) Add PCIe RC driver (uses virtio) and PCIe EP driver (uses vhost) for
+> >    rpmsg communication between two SoCs connected to each other
+> > 5) Add NTB Virtio driver and NTB Vhost driver for rpmsg communication
+> >    between two SoCs connected via NTB
+> > 6) Add configfs to configure the components
+> >
+> > UseCase1 :
+> >
+> >  VHOST RPMSG                     VIRTIO RPMSG
+> >       +                               +
+> >       |                               |
+> >       |                               |
+> >       |                               |
+> >       |                               |
+> > +-----v------+                 +------v-------+
+> > |   Linux    |                 |     Linux    |
+> > |  Endpoint  |                 | Root Complex |
+> > |            <----------------->              |
+> > |            |                 |              |
+> > |    SOC1    |                 |     SOC2     |
+> > +------------+                 +--------------+
+> >
+> > UseCase 2:
+> >
+> >      VHOST RPMSG                                      VIRTIO RPMSG
+> >           +                                                 +
+> >           |                                                 |
+> >           |                                                 |
+> >           |                                                 |
+> >           |                                                 |
+> >    +------v------+                                   +------v------+
+> >    |             |                                   |             |
+> >    |    HOST1    |                                   |    HOST2    |
+> >    |             |                                   |             |
+> >    +------^------+                                   +------^------+
+> >           |                                                 |
+> >           |                                                 |
+> > +---------------------------------------------------------------------+
+> > |  +------v------+                                   +------v------+  |
+> > |  |             |                                   |             |  |
+> > |  |     EP      |                                   |     EP      |  |
+> > |  | CONTROLLER1 |                                   | CONTROLLER2 |  |
+> > |  |             <----------------------------------->             |  |
+> > |  |             |                                   |             |  |
+> > |  |             |                                   |             |  |
+> > |  |             |  SoC With Multiple EP Instances   |             |  |
+> > |  |             |  (Configured using NTB Function)  |             |  |
+> > |  +-------------+                                   +-------------+  |
+> > +---------------------------------------------------------------------+
+> >
+> > Software Layering:
+> >
+> > The high-level SW layering should look something like below. This series
+> > adds support only for RPMSG VHOST, however something similar should be
+> > done for net and scsi. With that any vhost device (PCI, NTB, Platform
+> > device, user) can use any of the vhost client driver.
+> >
+> >
+> >     +----------------+  +-----------+  +------------+  +----------+
+> >     |  RPMSG VHOST   |  | NET VHOST |  | SCSI VHOST |  |    X     |
+> >     +-------^--------+  +-----^-----+  +-----^------+  +----^-----+
+> >             |                 |              |              |
+> >             |                 |              |              |
+> >             |                 |              |              |
+> > +-----------v-----------------v--------------v--------------v----------+
+> > |                            VHOST CORE                                |
+> > +--------^---------------^--------------------^------------------^-----+
+> >          |               |                    |                  |
+> >          |               |                    |                  |
+> >          |               |                    |                  |
+> > +--------v-------+  +----v------+  +----------v----------+  +----v-----+
+> > |  PCI EPF VHOST |  | NTB VHOST |  |PLATFORM DEVICE VHOST|  |    X     |
+> > +----------------+  +-----------+  +---------------------+  +----------+
+> >
+> > This was initially proposed here [1]
+> >
+> > [1] -> https://lore.kernel.org/r/2cf00ec4-1ed6-f66e-6897-006d1a5b6390@ti.com
+>
+>
+> I find this very interesting. A huge patchset so will take a bit
+> to review, but I certainly plan to do that. Thanks!
 
-For the first hour or so after boot, everything seems fine, but over
-time loadavg creeps up, and once it's established a new baseline, it
-never seems to ever drop below that again.
+Same here - it will take time.  This patchset is sizable and sits
+behind a few others that are equally big.
 
-One morning I woke up to find loadavg at '7.xx', after almost as many
-hours of uptime, which makes me wonder if perhaps this is triggered
-by something in cron.  I have a bunch of scripts that fire off
-every hour that involve thousands of shortlived runs of iptables/ipset,
-but running them manually didn't seem to automatically trigger the bug.
-
-Given it took a few hours of runtime to confirm good/bad, bisecting this
-took the last two weeks. I did it four different times, the first
-producing bogus results from over-eager 'good', but the last two runs
-both implicated this commit:
-
-commit c6e7bd7afaeb3af55ffac122828035f1c01d1d7b (refs/bisect/bad)
-Author: Peter Zijlstra <peterz@infradead.org>
-Date:   Sun May 24 21:29:55 2020 +0100
-
-    sched/core: Optimize ttwu() spinning on p->on_cpu
-    
-    Both Rik and Mel reported seeing ttwu() spend significant time on:
-    
-      smp_cond_load_acquire(&p->on_cpu, !VAL);
-    
-    Attempt to avoid this by queueing the wakeup on the CPU that owns the
-    p->on_cpu value. This will then allow the ttwu() to complete without
-    further waiting.
-    
-    Since we run schedule() with interrupts disabled, the IPI is
-    guaranteed to happen after p->on_cpu is cleared, this is what makes it
-    safe to queue early.
-    
-    Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-    Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
-    Signed-off-by: Ingo Molnar <mingo@kernel.org>
-    Cc: Jirka Hladky <jhladky@redhat.com>
-    Cc: Vincent Guittot <vincent.guittot@linaro.org>
-    Cc: valentin.schneider@arm.com
-    Cc: Hillf Danton <hdanton@sina.com>
-    Cc: Rik van Riel <riel@surriel.com>
-    Link: https://lore.kernel.org/r/20200524202956.27665-2-mgorman@techsingularity.net
-
-Unfortunatly it doesn't revert cleanly on top of rc3 so I haven't
-confirmed 100% that it's the cause yet, but the two separate bisects
-seem promising.
-
-I don't see any obvious correlation between what's changing there and
-the symtoms (other than "scheduler magic") but maybe those closer to
-this have ideas what could be going awry ?
-
-	Dave
+>
+> >
+> > Kishon Vijay Abraham I (22):
+> >   vhost: Make _feature_ bits a property of vhost device
+> >   vhost: Introduce standard Linux driver model in VHOST
+> >   vhost: Add ops for the VHOST driver to configure VHOST device
+> >   vringh: Add helpers to access vring in MMIO
+> >   vhost: Add MMIO helpers for operations on vhost virtqueue
+> >   vhost: Introduce configfs entry for configuring VHOST
+> >   virtio_pci: Use request_threaded_irq() instead of request_irq()
+> >   rpmsg: virtio_rpmsg_bus: Disable receive virtqueue callback when
+> >     reading messages
+> >   rpmsg: Introduce configfs entry for configuring rpmsg
+> >   rpmsg: virtio_rpmsg_bus: Add Address Service Notification support
+> >   rpmsg: virtio_rpmsg_bus: Move generic rpmsg structure to
+> >     rpmsg_internal.h
+> >   virtio: Add ops to allocate and free buffer
+> >   rpmsg: virtio_rpmsg_bus: Use virtio_alloc_buffer() and
+> >     virtio_free_buffer()
+> >   rpmsg: Add VHOST based remote processor messaging bus
+> >   samples/rpmsg: Setup delayed work to send message
+> >   samples/rpmsg: Wait for address to be bound to rpdev for sending
+> >     message
+> >   rpmsg.txt: Add Documentation to configure rpmsg using configfs
+> >   virtio_pci: Add VIRTIO driver for VHOST on Configurable PCIe Endpoint
+> >     device
+> >   PCI: endpoint: Add EP function driver to provide VHOST interface
+> >   NTB: Add a new NTB client driver to implement VIRTIO functionality
+> >   NTB: Add a new NTB client driver to implement VHOST functionality
+> >   NTB: Describe the ntb_virtio and ntb_vhost client in the documentation
+> >
+> >  Documentation/driver-api/ntb.rst              |   11 +
+> >  Documentation/rpmsg.txt                       |   56 +
+> >  drivers/ntb/Kconfig                           |   18 +
+> >  drivers/ntb/Makefile                          |    2 +
+> >  drivers/ntb/ntb_vhost.c                       |  776 +++++++++++
+> >  drivers/ntb/ntb_virtio.c                      |  853 ++++++++++++
+> >  drivers/ntb/ntb_virtio.h                      |   56 +
+> >  drivers/pci/endpoint/functions/Kconfig        |   11 +
+> >  drivers/pci/endpoint/functions/Makefile       |    1 +
+> >  .../pci/endpoint/functions/pci-epf-vhost.c    | 1144 ++++++++++++++++
+> >  drivers/rpmsg/Kconfig                         |   10 +
+> >  drivers/rpmsg/Makefile                        |    3 +-
+> >  drivers/rpmsg/rpmsg_cfs.c                     |  394 ++++++
+> >  drivers/rpmsg/rpmsg_core.c                    |    7 +
+> >  drivers/rpmsg/rpmsg_internal.h                |  136 ++
+> >  drivers/rpmsg/vhost_rpmsg_bus.c               | 1151 +++++++++++++++++
+> >  drivers/rpmsg/virtio_rpmsg_bus.c              |  184 ++-
+> >  drivers/vhost/Kconfig                         |    1 +
+> >  drivers/vhost/Makefile                        |    2 +-
+> >  drivers/vhost/net.c                           |   10 +-
+> >  drivers/vhost/scsi.c                          |   24 +-
+> >  drivers/vhost/test.c                          |   17 +-
+> >  drivers/vhost/vdpa.c                          |    2 +-
+> >  drivers/vhost/vhost.c                         |  730 ++++++++++-
+> >  drivers/vhost/vhost_cfs.c                     |  341 +++++
+> >  drivers/vhost/vringh.c                        |  332 +++++
+> >  drivers/vhost/vsock.c                         |   20 +-
+> >  drivers/virtio/Kconfig                        |    9 +
+> >  drivers/virtio/Makefile                       |    1 +
+> >  drivers/virtio/virtio_pci_common.c            |   25 +-
+> >  drivers/virtio/virtio_pci_epf.c               |  670 ++++++++++
+> >  include/linux/mod_devicetable.h               |    6 +
+> >  include/linux/rpmsg.h                         |    6 +
+> >  {drivers/vhost => include/linux}/vhost.h      |  132 +-
+> >  include/linux/virtio.h                        |    3 +
+> >  include/linux/virtio_config.h                 |   42 +
+> >  include/linux/vringh.h                        |   46 +
+> >  samples/rpmsg/rpmsg_client_sample.c           |   32 +-
+> >  tools/virtio/virtio_test.c                    |    2 +-
+> >  39 files changed, 7083 insertions(+), 183 deletions(-)
+> >  create mode 100644 drivers/ntb/ntb_vhost.c
+> >  create mode 100644 drivers/ntb/ntb_virtio.c
+> >  create mode 100644 drivers/ntb/ntb_virtio.h
+> >  create mode 100644 drivers/pci/endpoint/functions/pci-epf-vhost.c
+> >  create mode 100644 drivers/rpmsg/rpmsg_cfs.c
+> >  create mode 100644 drivers/rpmsg/vhost_rpmsg_bus.c
+> >  create mode 100644 drivers/vhost/vhost_cfs.c
+> >  create mode 100644 drivers/virtio/virtio_pci_epf.c
+> >  rename {drivers/vhost => include/linux}/vhost.h (66%)
+> >
+> > --
+> > 2.17.1
+> >
+>
