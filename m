@@ -2,115 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 909C72124F7
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 15:41:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADAD5212515
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 15:46:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729333AbgGBNl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 09:41:27 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:56554 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729171AbgGBNl0 (ORCPT
+        id S1729422AbgGBNqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 09:46:48 -0400
+Received: from esa3.microchip.iphmx.com ([68.232.153.233]:40176 "EHLO
+        esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729047AbgGBNqr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 09:41:26 -0400
-Received: from fsav303.sakura.ne.jp (fsav303.sakura.ne.jp [153.120.85.134])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 062DeGHr064859;
-        Thu, 2 Jul 2020 22:40:16 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav303.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav303.sakura.ne.jp);
- Thu, 02 Jul 2020 22:40:16 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav303.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 062DeAdE064698
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
-        Thu, 2 Jul 2020 22:40:16 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [PATCH v2 00/15] Make the user mode driver code a better citizen
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        linux-kernel@vger.kernel.org, David Miller <davem@davemloft.net>,
-        Greg Kroah-Hartman <greg@kroah.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-References: <20200625095725.GA3303921@kroah.com>
- <778297d2-512a-8361-cf05-42d9379e6977@i-love.sakura.ne.jp>
- <20200625120725.GA3493334@kroah.com>
- <20200625.123437.2219826613137938086.davem@davemloft.net>
- <CAHk-=whuTwGHEPjvtbBvneHHXeqJC=q5S09mbPnqb=Q+MSPMag@mail.gmail.com>
- <87pn9mgfc2.fsf_-_@x220.int.ebiederm.org>
- <87y2oac50p.fsf@x220.int.ebiederm.org>
- <87bll17ili.fsf_-_@x220.int.ebiederm.org>
- <20200629221231.jjc2czk3ul2roxkw@ast-mbp.dhcp.thefacebook.com>
- <87eepwzqhd.fsf@x220.int.ebiederm.org>
- <1f4d8b7e-bcff-f950-7dac-76e3c4a65661@i-love.sakura.ne.jp>
- <87pn9euks9.fsf@x220.int.ebiederm.org>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <757f37f8-5641-91d2-be80-a96ebc74cacb@i-love.sakura.ne.jp>
-Date:   Thu, 2 Jul 2020 22:40:09 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 2 Jul 2020 09:46:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1593697607; x=1625233607;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=npTNr8twP/tyLNtM3PSd3ahFvXvXe/yaEybXuDL7ItU=;
+  b=H7qg5TDCWJd4LCgSbz64hN631JCpsmHFHRqAJlPnJ3OwKCbGOd/hSAUZ
+   e4klBvWqg9gKpohMvZQcOM/1H2QEWwmFfNmpufBV3OToCg72Fs0xq+nic
+   Aptep0L35ZQQd/GCM9fhkElAxTqiwQXVcSJG1BNLDohNJAW05hsLjpBTq
+   Wu/exJfMKVM66SdFr1/EOa0G0EoeaW1vslAqBuZ+WEjnWQPyLLYeryGmD
+   1KZzZ9asrv9g+89F8uOja4f/6PwJ0o4T9U3/D78vCLRD7Vcy+AX2R5DCc
+   0HE5/j2+UoHt8mkp8MUE/ljBcpylj5x+4FnWF/6FweR1yQz/ySXx5tTZL
+   A==;
+IronPort-SDR: OGNPd1Jr05acijLqDonYJw21klvbQUik4rG4Uo+B+UvaJ9paa1izCinxXA64RieVLRcf+RS61G
+ qvsDcMBeQEulK8aHy8XRx+OZBOG7sfVu1t7xY/4GlVow410jmtbpI2x3JuVCXtOg33Xp6Jtb2a
+ b7sUrKxb7lOeiMn1O+CGzBox9gy3wUnpzCDw4RyuFxERXIIsexEDn8aY67SeQ1KU7wNp/TFing
+ J0MdUYaVsL6t3NQfwhXWit//au+7oWsmuVvGpzVKw4MxMybd3kd9WXFZLawDvqR/Jq3ThVDDcU
+ ihM=
+X-IronPort-AV: E=Sophos;i="5.75,304,1589266800"; 
+   d="scan'208";a="82397838"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 02 Jul 2020 06:46:46 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 2 Jul 2020 06:46:46 -0700
+Received: from localhost.localdomain (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Thu, 2 Jul 2020 06:46:21 -0700
+From:   <nicolas.ferre@microchip.com>
+To:     <linux-arm-kernel@lists.infradead.org>, <sre@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        "Codrin Ciubotariu" <codrin.ciubotariu@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+        <linux-spi@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>
+Subject: [PATCH] MAINTAINERS: Change Maintainer for some at91 drivers
+Date:   Thu, 2 Jul 2020 15:42:24 +0200
+Message-ID: <20200702134224.3750-1-nicolas.ferre@microchip.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <87pn9euks9.fsf@x220.int.ebiederm.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/07/02 22:08, Eric W. Biederman wrote:
-> Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp> writes:
-> 
->> On 2020/06/30 21:29, Eric W. Biederman wrote:
->>> Hmm.  The wake up happens just of tgid->wait_pidfd happens just before
->>> release_task is called so there is a race.  As it is possible to wake
->>> up and then go back to sleep before pid_has_task becomes false.
->>
->> What is the reason we want to wait until pid_has_task() becomes false?
->>
->> - wait_event(tgid->wait_pidfd, !pid_has_task(tgid, PIDTYPE_TGID));
->> + while (!wait_event_timeout(tgid->wait_pidfd, !pid_has_task(tgid, PIDTYPE_TGID), 1));
-> 
-> So that it is safe to call bpfilter_umh_cleanup.  The previous code
-> performed the wait by having a callback in do_exit.
+From: Nicolas Ferre <nicolas.ferre@microchip.com>
 
-But bpfilter_umh_cleanup() does only
+I hand over the maintenance of these drivers to my colleagues. Claudiu,
+Codrin and Tudor already have experience with these controllers and
+sub-systems.
 
-	fput(info->pipe_to_umh);
-	fput(info->pipe_from_umh);
-	put_pid(info->tgid);
-	info->tgid = NULL;
+Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+---
+Mark, Sebastian,
 
-which is (I think) already safe regardless of the usermode process because
-bpfilter_umh_cleanup() merely closes one side of two pipes used between
-two processes and forgets about the usermode process.
+I kept these entries together as it may generate conflicts if handled
+separately. I suggest that Mark take the chunk as maintainer of SPI and
+Audio sub-systems.
+Anyway, don't hesitate to tell me if I should handle this change
+differently or at another time during the development cycle.
 
-> 
-> It might be possible to call bpf_umh_cleanup early but I have not done
-> that analysis.
-> 
-> To perform the test correctly what I have right now is:
+Best regards,
+  Nicolas
 
-Waiting for the termination of a SIGKILLed usermode process is not
-such simple. If a usermode process was killed by the OOM killer, it
-might take minutes for the killed process to reach do_exit() due to
-invisible memory allocation dependency chain. Since the OOM killer
-kicks the OOM reaper, and the OOM reaper forgets about the killed
-process after one second if mmap_sem could not be held (in order to
-avoid OOM deadlock), the OOM situation will be eventually solved; but
-there is no guarantee that the killed process can reach do_exit()
-in a short period.
+ MAINTAINERS | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 496fd4eafb68..1c1527a34d99 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -11333,17 +11333,17 @@ F:	drivers/iio/adc/at91-sama5d2_adc.c
+ F:	include/dt-bindings/iio/adc/at91-sama5d2_adc.h
+ 
+ MICROCHIP SAMA5D2-COMPATIBLE SHUTDOWN CONTROLLER
+-M:	Nicolas Ferre <nicolas.ferre@microchip.com>
++M:	Claudiu Beznea <claudiu.beznea@microchip.com>
+ S:	Supported
+ F:	drivers/power/reset/at91-sama5d2_shdwc.c
+ 
+ MICROCHIP SPI DRIVER
+-M:	Nicolas Ferre <nicolas.ferre@microchip.com>
++M:	Tudor Ambarus <tudor.ambarus@microchip.com>
+ S:	Supported
+ F:	drivers/spi/spi-atmel.*
+ 
+ MICROCHIP SSC DRIVER
+-M:	Nicolas Ferre <nicolas.ferre@microchip.com>
++M:	Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+ S:	Supported
+ F:	drivers/misc/atmel-ssc.c
+-- 
+2.27.0
 
