@@ -2,90 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98F7621226B
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 13:36:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C87E1212278
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 13:42:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728800AbgGBLgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 07:36:19 -0400
-Received: from foss.arm.com ([217.140.110.172]:42058 "EHLO foss.arm.com"
+        id S1728716AbgGBLlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 07:41:55 -0400
+Received: from foss.arm.com ([217.140.110.172]:42548 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726343AbgGBLgR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 07:36:17 -0400
+        id S1727016AbgGBLlz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 07:41:55 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DAB951FB;
-        Thu,  2 Jul 2020 04:36:16 -0700 (PDT)
-Received: from [10.37.12.95] (unknown [10.37.12.95])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 675493F71E;
-        Thu,  2 Jul 2020 04:36:14 -0700 (PDT)
-Subject: Re: [PATCH V5 2/4] arm64/cpufeature: Add remaining feature bits in
- ID_AA64MMFR1 register
-To:     anshuman.khandual@arm.com, linux-arm-kernel@lists.infradead.org
-Cc:     catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com,
-        linux-kernel@vger.kernel.org
-References: <1590548619-3441-1-git-send-email-anshuman.khandual@arm.com>
- <1590548619-3441-3-git-send-email-anshuman.khandual@arm.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <8b0529e8-e150-9416-9672-51d4539b57b1@arm.com>
-Date:   Thu, 2 Jul 2020 12:40:58 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.7.0
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 829D41FB;
+        Thu,  2 Jul 2020 04:41:54 -0700 (PDT)
+Received: from localhost (unknown [10.1.198.53])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 239563F71E;
+        Thu,  2 Jul 2020 04:41:54 -0700 (PDT)
+Date:   Thu, 2 Jul 2020 12:41:52 +0100
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     rjw@rjwysocki.net, catalin.marinas@arm.com, sudeep.holla@arm.com,
+        will@kernel.org, linux@armlinux.org.uk, valentin.schneider@arm.com,
+        mingo@redhat.com, peterz@infradead.org, dietmar.eggemann@arm.com,
+        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Liviu Dudau <liviu.dudau@arm.com>
+Subject: Re: [PATCH 4/8] cpufreq,vexpress-spc: fix Frequency Invariance (FI)
+ for bL switching
+Message-ID: <20200702114123.GA28120@arm.com>
+References: <20200701090751.7543-1-ionela.voinescu@arm.com>
+ <20200701090751.7543-5-ionela.voinescu@arm.com>
+ <20200701095414.2wjcnyhndgcedk2q@vireshk-i7>
+ <20200701140735.GB32736@arm.com>
+ <20200702030551.p4cevaahgfvpum4o@vireshk-i7>
 MIME-Version: 1.0
-In-Reply-To: <1590548619-3441-3-git-send-email-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200702030551.p4cevaahgfvpum4o@vireshk-i7>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/27/2020 04:03 AM, Anshuman Khandual wrote:
-> Enable ETS, TWED, XNX and SPECSEI features bits in ID_AA64MMFR1 register as
-> per ARM DDI 0487F.a specification.
+Hi,
+
+On Thursday 02 Jul 2020 at 08:35:51 (+0530), Viresh Kumar wrote:
+> On 01-07-20, 15:07, Ionela Voinescu wrote:
+> > On Wednesday 01 Jul 2020 at 16:16:19 (+0530), Viresh Kumar wrote:
+> > > Is there anyone who cares for this driver and EAS ? I will just skip doing the
+> > > FIE thing here and mark it skipped.
+> > 
+> > That is a good question. The vexpress driver is still used for TC2, but
+> > I don't know of any users of this bL switcher functionality that's part
+> > of the driver. I think there were a few people wondering recently if
+> > it's still used [1].
 > 
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> Suggested-by: Will Deacon <will@kernel.org>
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
->   arch/arm64/include/asm/sysreg.h | 4 ++++
->   arch/arm64/kernel/cpufeature.c  | 4 ++++
->   2 files changed, 8 insertions(+)
-> 
-> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
-> index cf983d03aa4c..a798bb9c0845 100644
-> --- a/arch/arm64/include/asm/sysreg.h
-> +++ b/arch/arm64/include/asm/sysreg.h
-> @@ -731,6 +731,10 @@
->   #endif
->   
->   /* id_aa64mmfr1 */
-> +#define ID_AA64MMFR1_ETS_SHIFT		36
-> +#define ID_AA64MMFR1_TWED_SHIFT		32
-> +#define ID_AA64MMFR1_XNX_SHIFT		28
-> +#define ID_AA64MMFR1_SPECSEI_SHIFT	24
->   #define ID_AA64MMFR1_PAN_SHIFT		20
->   #define ID_AA64MMFR1_LOR_SHIFT		16
->   #define ID_AA64MMFR1_HPD_SHIFT		12
-> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-> index feaa6dcd6f7b..c2253fb3401e 100644
-> --- a/arch/arm64/kernel/cpufeature.c
-> +++ b/arch/arm64/kernel/cpufeature.c
-> @@ -295,6 +295,10 @@ static const struct arm64_ftr_bits ftr_id_aa64mmfr0[] = {
->   };
->   
->   static const struct arm64_ftr_bits ftr_id_aa64mmfr1[] = {
-> +	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64MMFR1_ETS_SHIFT, 4, 0),
-> +	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64MMFR1_TWED_SHIFT, 4, 0),
-> +	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64MMFR1_XNX_SHIFT, 4, 0),
-> +	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_HIGHER_SAFE, ID_AA64MMFR1_SPECSEI_SHIFT, 4, 0),
->   	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64MMFR1_PAN_SHIFT, 4, 0),
->   	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64MMFR1_LOR_SHIFT, 4, 0),
->   	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64MMFR1_HPD_SHIFT, 4, 0),
+> Even if it is used by some, there is no need, I believe, to enable
+> freq-invariance for it, which wasn't enabled until now.
+>
+
+It was enabled until now, but it was partially broken. If you look over
+the driver you'll see arch_set_freq_scale() being called for both
+is_bL_switching_enabled() and for when it's not [1].
+
+For !is_bL_switching_enabled() this is fine. But for
+is_bL_switching_enabled(), it is broken as described in 4/8.
+
+[1]
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/cpufreq/vexpress-spc-cpufreq.c?h=v5.8-rc3#n203
+
+> And considering that we are going to enable the flag only for the
+> interested parties now, as from the discussion on 1/8, this shouldn't
+> be required.
 > 
 
-Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+If we just don't want frequency invariance for
+is_bL_switching_enabled(), I can just guard the setting of the flag
+suggested by Rafael at 1/8 by !CONFIG_BL_SWITCHER.
+
+I'll proceed to do that and remove the fix at 4/8.
+
+Many thanks!
+Ionela.
+
+> -- 
+> viresh
