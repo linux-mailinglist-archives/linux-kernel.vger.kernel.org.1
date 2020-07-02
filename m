@@ -2,88 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26837212168
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 12:35:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C23F121216C
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 12:36:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728414AbgGBKfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 06:35:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36160 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727769AbgGBKfM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 06:35:12 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AFF482073E;
-        Thu,  2 Jul 2020 10:35:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593686111;
-        bh=e2d7EoUGfBMQ8iAjxxfS9uLE6JsRVlpFYnf0i0i/9QQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=zx19RhhCYndjeyr3Ntyuk/b/dG1YRNEW2u11qyAF1MnPiVC3uoqkfkflQnUQ20Q/V
-         BRTJ4Go1k5kA4mHEeVWUTjblN4KXUh4EbOTxrozGkgaGXWwXaH767ODZtDY1/VBx5m
-         Bh2iVabMtfwri5eKLtL7CGst/N2IPX3sUadygBbk=
-Date:   Thu, 2 Jul 2020 11:35:06 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Nicholas Piggin <npiggin@gmail.com>
-Cc:     Anton Blanchard <anton@ozlabs.org>,
-        Boqun Feng <boqun.feng@gmail.com>, kvm-ppc@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, Waiman Long <longman@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH 5/8] powerpc/64s: implement queued spinlocks and rwlocks
-Message-ID: <20200702103506.GA16418@willie-the-truck>
-References: <20200702074839.1057733-1-npiggin@gmail.com>
- <20200702074839.1057733-6-npiggin@gmail.com>
- <20200702080219.GB16113@willie-the-truck>
- <1593685459.r2tfxtfdp6.astroid@bobo.none>
+        id S1728398AbgGBKg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 06:36:26 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:8627 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727900AbgGBKg0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 06:36:26 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5efdb8450000>; Thu, 02 Jul 2020 03:34:45 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Thu, 02 Jul 2020 03:36:26 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Thu, 02 Jul 2020 03:36:26 -0700
+Received: from [10.25.97.252] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 2 Jul
+ 2020 10:36:18 +0000
+CC:     <spujar@nvidia.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        <perex@perex.cz>, <tiwai@suse.com>, <robh+dt@kernel.org>,
+        <lgirdwood@gmail.com>, <thierry.reding@gmail.com>,
+        <jonathanh@nvidia.com>, <digetx@gmail.com>,
+        <alsa-devel@alsa-project.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <sharadg@nvidia.com>,
+        <mkumard@nvidia.com>, <viswanathl@nvidia.com>,
+        <rlokhande@nvidia.com>, <dramesh@nvidia.com>,
+        <atalambedu@nvidia.com>, <nwartikar@nvidia.com>,
+        <swarren@nvidia.com>, <nicoleotsuka@gmail.com>
+Subject: Re: Re: Re: [PATCH v4 12/23] ASoC: simple-card: Support DPCM DAI link
+ with multiple Codecs
+To:     Mark Brown <broonie@kernel.org>
+References: <1593233625-14961-1-git-send-email-spujar@nvidia.com>
+ <1593233625-14961-13-git-send-email-spujar@nvidia.com>
+ <874kqu1x70.wl-kuninori.morimoto.gx@renesas.com>
+ <1e0cf6d1-bf4e-8808-5390-c8a3b7c7fe7e@nvidia.com>
+ <87mu4lz6pt.wl-kuninori.morimoto.gx@renesas.com>
+ <1d7888c7-a8cc-e891-01aa-016e31cc9113@nvidia.com>
+ <87ftadyrec.wl-kuninori.morimoto.gx@renesas.com>
+ <492079e9-4518-78ba-a227-859d31594369@nvidia.com>
+ <20200630110100.GH5272@sirena.org.uk>
+ <81d106c0-e1c8-a79a-8caf-1f3be0d61f0c@nvidia.com>
+ <20200630153220.GL5272@sirena.org.uk>
+From:   Sameer Pujar <spujar@nvidia.com>
+Message-ID: <fb286ab7-21f2-43ad-2751-c76b7b6e4cf2@nvidia.com>
+Date:   Thu, 2 Jul 2020 16:06:14 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1593685459.r2tfxtfdp6.astroid@bobo.none>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200630153220.GL5272@sirena.org.uk>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1593686085; bh=UhnflAwDmheF6iWSFj2l1i5hhV4k8BcKcVrUdRQwc8s=;
+        h=X-PGP-Universal:CC:Subject:To:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
+         Content-Language;
+        b=F1rkM9cPVeb7rPxjtk0sAt/FK+bVJMWr4+G+nzSwwSzPOhJZy4bNSnY9lsDXLZB6s
+         E13ynpqjMwugH2lHSR7csU9Aif915rGDThTt0pM8Gwxbbi/sAbLsGaUkZDclgplWlh
+         nhmByXvOq0Cj+gF0gd8bgi0guTosvpDKEcTIPOqEGuCDfPnk7aC31at8iCwh8iCvcc
+         /gtuk6RBsvmyrLeFDE1+WbHmlJRDPo7qiJKrNyf/Vn4O1TfB2Cfzgl9j6nA1dahXgx
+         gVBPxZ/da40o08tRHb+QRfUinkRHmxO7E1Ay1cciUBoxC6xtCi75FifrgXKZLb0gBS
+         CnX7QtdScbmNA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 02, 2020 at 08:25:43PM +1000, Nicholas Piggin wrote:
-> Excerpts from Will Deacon's message of July 2, 2020 6:02 pm:
-> > On Thu, Jul 02, 2020 at 05:48:36PM +1000, Nicholas Piggin wrote:
-> >> diff --git a/arch/powerpc/include/asm/qspinlock.h b/arch/powerpc/include/asm/qspinlock.h
-> >> new file mode 100644
-> >> index 000000000000..f84da77b6bb7
-> >> --- /dev/null
-> >> +++ b/arch/powerpc/include/asm/qspinlock.h
-> >> @@ -0,0 +1,20 @@
-> >> +/* SPDX-License-Identifier: GPL-2.0 */
-> >> +#ifndef _ASM_POWERPC_QSPINLOCK_H
-> >> +#define _ASM_POWERPC_QSPINLOCK_H
-> >> +
-> >> +#include <asm-generic/qspinlock_types.h>
-> >> +
-> >> +#define _Q_PENDING_LOOPS	(1 << 9) /* not tuned */
-> >> +
-> >> +#define smp_mb__after_spinlock()   smp_mb()
-> >> +
-> >> +static __always_inline int queued_spin_is_locked(struct qspinlock *lock)
-> >> +{
-> >> +	smp_mb();
-> >> +	return atomic_read(&lock->val);
-> >> +}
-> > 
-> > Why do you need the smp_mb() here?
-> 
-> A long and sad tale that ends here 51d7d5205d338
-> 
-> Should probably at least refer to that commit from here, since this one 
-> is not going to git blame back there. I'll add something.
 
-Is this still an issue, though?
 
-See 38b850a73034 (where we added a similar barrier on arm64) and then
-c6f5d02b6a0f (where we removed it).
+On 6/30/2020 9:02 PM, Mark Brown wrote:
+> On Tue, Jun 30, 2020 at 06:23:49PM +0530, Sameer Pujar wrote:
+>> On 6/30/2020 4:31 PM, Mark Brown wrote:
+>>> Why simple-card and not audio-graph-card?
+>> Frankly speaking I have not used audio-graph-card before. I had a brief look
+>> at the related binding. It seems it can use similar DT properties that
+>> simple-card uses, although the binding style appears to be different.
+>> However I am not sure if it offers better solutions to the problems I am
+>> facing. For example, the ability to connect or form a chain of components to
+>> realize more complicated use cases with DPCM, some of which were discussed
+>> in [0]. Can you please help me understand why it could be preferred?
+>> [0] https://lkml.org/lkml/2020/4/30/519
+> It's the more modern thing which covers everything simple-card does and
+> more, I'd expect new development to go into that rather than
+> simple-card.
 
-Will
+Hi Mark & Kuninori,
+
+For the HW I am using, there are no fixed endpoints and I am not sure if 
+it is allowed to have empty endpoints in audio-graph-card. 
+Crossbar/router provides the flexibility to connect the components in 
+any required order. Patch [05/23] exposes required graph and MUX 
+controls for the flexible configurations. Mostly, in DT, I am trying to 
+model the component itself and finally router can help me specify the 
+audio path to interconnect various components. Hence I was trying to 
+understand if it is really necessary to represent the links using 
+audio-graph-card. Kindly help me understand what more it offers. If 
+simple-card works fine, are we allowed to use it?
+
+Thank you,
+Sameer.
+
