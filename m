@@ -2,191 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D54B22120C8
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 12:15:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27FBA2120D8
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 12:18:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728461AbgGBKP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 06:15:26 -0400
-Received: from esa1.microchip.iphmx.com ([68.232.147.91]:55450 "EHLO
-        esa1.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728320AbgGBKO4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 06:14:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1593684895; x=1625220895;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=yDoDZ8DYA1T1BTptNVBI6RCIZ5mnmw6dAD6Z4C4BIDY=;
-  b=SUZxIus9E3VrgmqgzwjuvZa8297WIORcfP3re1KN7Vps5ZQNblyo6xs9
-   lJJoICo5jbuTg9tku03NpBgg6Ef6YmagfLYdtVvs3aMZhuNq8nP4uy4e+
-   2kZxJfoejg4Qn3qOCPVn7Xi9SZ7ue3gX7x3yEnARZmu6RqZS5Q4dpQm2T
-   Xtive6xPMx2sFae+4uZdsr8AirgWL2mXIwRIkkUDgijZtWyKlUg7/LHam
-   MgNappg5SoCiapC21mDqfqzzbyDCzB7mwdbHkUDoVCvECSf9SAflZrhs9
-   mZiE95PlcjnCrkdIGXj6zODiRp03uWXF5Ygl6DFT1S/BHdTftvboCfOrU
-   g==;
-IronPort-SDR: jEhWsPE+LDqDVAmyQIpuCdTd4oDnF77M08tpqeObMABRJ/eP49yEeEbG8eyZxUb0Wn7U5zt0bt
- 5CRI/A/znJINmkNoeoXn4lkBhBYUXRZzHfI+E/p4qfLlkXDIqWO6D7vlZZc86N7PuOU8xkGY4a
- +lg8HCM7j98dsgoQ2jbNeo71bBY04L5r2lRe245/p74LBIlDxEX3hL270lxgW8e2Oc8zQqaSgT
- WeEjCjer9E//rZnMXRPxnCEc1J0j32hzpzxSKg4xxxH/O2yIxGQujy3noaxyj2O+ZB/ZBZ585x
- CCM=
-X-IronPort-AV: E=Sophos;i="5.75,304,1589266800"; 
-   d="scan'208";a="85979797"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 02 Jul 2020 03:14:54 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 2 Jul 2020 03:14:54 -0700
-Received: from soft-dev15.microsemi.net (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Thu, 2 Jul 2020 03:14:31 -0700
-From:   Lars Povlsen <lars.povlsen@microchip.com>
-To:     Mark Brown <broonie@kernel.org>, Peter Rosin <peda@axentia.se>
-CC:     Lars Povlsen <lars.povlsen@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Subject: [PATCH v3 8/8] arm64: dts: sparx5: Add spi-nand devices
-Date:   Thu, 2 Jul 2020 12:13:31 +0200
-Message-ID: <20200702101331.26375-9-lars.povlsen@microchip.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200702101331.26375-1-lars.povlsen@microchip.com>
-References: <20200702101331.26375-1-lars.povlsen@microchip.com>
+        id S1728193AbgGBKS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 06:18:26 -0400
+Received: from foss.arm.com ([217.140.110.172]:35036 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727769AbgGBKSZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 06:18:25 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E240D1FB;
+        Thu,  2 Jul 2020 03:18:24 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.12.193])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9EA193F71E;
+        Thu,  2 Jul 2020 03:18:22 -0700 (PDT)
+Date:   Thu, 2 Jul 2020 11:18:19 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com
+Subject: Re: [PATCH 1/3] arm64: Introduce a way to disable the 32bit vdso
+Message-ID: <20200702101819.GB15391@C02TD0UTHF1T.local>
+References: <20200701161824.1346732-1-maz@kernel.org>
+ <20200701161824.1346732-2-maz@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200701161824.1346732-2-maz@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch add spi-nand DT nodes to the applicable Sparx5 boards.
+On Wed, Jul 01, 2020 at 05:18:22PM +0100, Marc Zyngier wrote:
+> We have a class of errata (grouped under the ARM64_WORKAROUND_1418040
+> banner) that force the trapping of counter access from 32bit EL0.
+> 
+> We would normally disable the whole vdso for such defect, except that
+> it would disable it for 64bit userspace as well, which is a shame.
+> 
+> Instead, add a new vdso_clock_mode, which signals that the vdso
+> isn't usable for compat tasks.  This gets checked in the new
+> vdso_clocksource_ok() helper, now provided for the 32bit vdso.
+> 
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
 
-Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
----
- arch/arm64/boot/dts/microchip/sparx5.dtsi     | 20 ++++++++++++
- .../arm64/boot/dts/microchip/sparx5_nand.dtsi | 32 +++++++++++++++++++
- .../boot/dts/microchip/sparx5_pcb125.dts      |  7 ++++
- .../boot/dts/microchip/sparx5_pcb134.dts      |  1 +
- .../boot/dts/microchip/sparx5_pcb135.dts      |  1 +
- 5 files changed, 61 insertions(+)
- create mode 100644 arch/arm64/boot/dts/microchip/sparx5_nand.dtsi
+As-is this looks sound to me. It's not entirely clear to me how this
+will compose with VDSO_CLOCKMODE_TIMENS, but given this series is fixing
+an existing brokenness I think this has higher priority.
 
-diff --git a/arch/arm64/boot/dts/microchip/sparx5.dtsi b/arch/arm64/boot/dts/microchip/sparx5.dtsi
-index 2831935a489e1..21a85359d3492 100644
---- a/arch/arm64/boot/dts/microchip/sparx5.dtsi
-+++ b/arch/arm64/boot/dts/microchip/sparx5.dtsi
-@@ -210,6 +210,26 @@ gpio: pinctrl@6110101e0 {
- 			interrupts = <GIC_SPI 20 IRQ_TYPE_LEVEL_HIGH>;
- 			#interrupt-cells = <2>;
- 
-+			cs1_pins: cs1-pins {
-+				pins = "GPIO_16";
-+				function = "si";
-+			};
-+
-+			cs2_pins: cs2-pins {
-+				pins = "GPIO_17";
-+				function = "si";
-+			};
-+
-+			cs3_pins: cs3-pins {
-+				pins = "GPIO_18";
-+				function = "si";
-+			};
-+
-+			si2_pins: si2-pins {
-+				pins = "GPIO_39", "GPIO_40", "GPIO_41";
-+				function = "si2";
-+			};
-+
- 			uart_pins: uart-pins {
- 				pins = "GPIO_10", "GPIO_11";
- 				function = "uart";
-diff --git a/arch/arm64/boot/dts/microchip/sparx5_nand.dtsi b/arch/arm64/boot/dts/microchip/sparx5_nand.dtsi
-new file mode 100644
-index 0000000000000..fd9523d9efbe3
---- /dev/null
-+++ b/arch/arm64/boot/dts/microchip/sparx5_nand.dtsi
-@@ -0,0 +1,32 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright (c) 2020 Microchip Technology Inc. and its subsidiaries.
-+ */
-+
-+&gpio {
-+	cs14_pins: cs14-pins {
-+		pins = "GPIO_44";
-+		function = "si";
-+	};
-+};
-+
-+&mux {
-+	/* CS14 (NAND) is on SPI2 */
-+	mux@e {
-+		reg = <14>;
-+		microchip,bus-interface = <1>;
-+	};
-+};
-+
-+&spi0 {
-+	pinctrl-0 = <&si2_pins>;
-+	pinctrl-names = "default";
-+	spi-flash@e {
-+		compatible = "spi-nand";
-+		pinctrl-0 = <&cs14_pins>;
-+		pinctrl-names = "default";
-+		spi-max-frequency = <42000000>;
-+		reg = <14>;
-+		snps,rx-sample-delay-ns = <7>;  /* Tune for speed */
-+	};
-+};
-diff --git a/arch/arm64/boot/dts/microchip/sparx5_pcb125.dts b/arch/arm64/boot/dts/microchip/sparx5_pcb125.dts
-index d8b5d23abfab0..94c4c3fd5a786 100644
---- a/arch/arm64/boot/dts/microchip/sparx5_pcb125.dts
-+++ b/arch/arm64/boot/dts/microchip/sparx5_pcb125.dts
-@@ -46,6 +46,13 @@ spi-flash@0 {
- 		spi-max-frequency = <8000000>; /* input clock */
- 		reg = <0>; /* CS0 */
- 	};
-+	spi-flash@1 {
-+		compatible = "spi-nand";
-+		pinctrl-0 = <&cs1_pins>;
-+		pinctrl-names = "default";
-+		spi-max-frequency = <8000000>;
-+		reg = <1>; /* CS1 */
-+	};
- };
- 
- &i2c1 {
-diff --git a/arch/arm64/boot/dts/microchip/sparx5_pcb134.dts b/arch/arm64/boot/dts/microchip/sparx5_pcb134.dts
-index feee4e99ff57c..45ca1af7e8500 100644
---- a/arch/arm64/boot/dts/microchip/sparx5_pcb134.dts
-+++ b/arch/arm64/boot/dts/microchip/sparx5_pcb134.dts
-@@ -5,6 +5,7 @@
- 
- /dts-v1/;
- #include "sparx5_pcb134_board.dtsi"
-+#include "sparx5_nand.dtsi"
- 
- / {
- 	model = "Sparx5 PCB134 Reference Board (NAND)";
-diff --git a/arch/arm64/boot/dts/microchip/sparx5_pcb135.dts b/arch/arm64/boot/dts/microchip/sparx5_pcb135.dts
-index 20e409a9be196..647cdb38b1130 100644
---- a/arch/arm64/boot/dts/microchip/sparx5_pcb135.dts
-+++ b/arch/arm64/boot/dts/microchip/sparx5_pcb135.dts
-@@ -5,6 +5,7 @@
- 
- /dts-v1/;
- #include "sparx5_pcb135_board.dtsi"
-+#include "sparx5_nand.dtsi"
- 
- / {
- 	model = "Sparx5 PCB135 Reference Board (NAND)";
--- 
-2.27.0
+Minor comment below, but regardless:
 
+Acked-by: Mark Rutland <mark.rutland@arm.com>
+
+> ---
+>  arch/arm64/include/asm/vdso/clocksource.h         | 7 +++++--
+>  arch/arm64/include/asm/vdso/compat_gettimeofday.h | 8 +++++++-
+>  2 files changed, 12 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/vdso/clocksource.h b/arch/arm64/include/asm/vdso/clocksource.h
+> index df6ea65c1dec..b054d9febfb5 100644
+> --- a/arch/arm64/include/asm/vdso/clocksource.h
+> +++ b/arch/arm64/include/asm/vdso/clocksource.h
+> @@ -2,7 +2,10 @@
+>  #ifndef __ASM_VDSOCLOCKSOURCE_H
+>  #define __ASM_VDSOCLOCKSOURCE_H
+>  
+> -#define VDSO_ARCH_CLOCKMODES	\
+> -	VDSO_CLOCKMODE_ARCHTIMER
+> +#define VDSO_ARCH_CLOCKMODES					\
+> +	/* vdso clocksource for both 32 and 64bit tasks */	\
+> +	VDSO_CLOCKMODE_ARCHTIMER,				\
+> +	/* vdso clocksource for 64bit tasks only */		\
+> +	VDSO_CLOCKMODE_ARCHTIMER_NOCOMPAT
+>  
+>  #endif
+> diff --git a/arch/arm64/include/asm/vdso/compat_gettimeofday.h b/arch/arm64/include/asm/vdso/compat_gettimeofday.h
+> index b6907ae78e53..9a625e8947ff 100644
+> --- a/arch/arm64/include/asm/vdso/compat_gettimeofday.h
+> +++ b/arch/arm64/include/asm/vdso/compat_gettimeofday.h
+> @@ -111,7 +111,7 @@ static __always_inline u64 __arch_get_hw_counter(s32 clock_mode)
+>  	 * update. Return something. Core will do another round and then
+>  	 * see the mode change and fallback to the syscall.
+>  	 */
+> -	if (clock_mode == VDSO_CLOCKMODE_NONE)
+> +	if (clock_mode != VDSO_CLOCKMODE_ARCHTIMER)
+>  		return 0;
+>  
+>  	/*
+> @@ -152,6 +152,12 @@ static __always_inline const struct vdso_data *__arch_get_vdso_data(void)
+>  	return ret;
+>  }
+>  
+> +static inline bool vdso_clocksource_ok(const struct vdso_data *vd)
+> +{
+> +	return vd->clock_mode == VDSO_CLOCKMODE_ARCHTIMER;
+> +}
+> +#define vdso_clocksource_ok	vdso_clocksource_ok
+
+Existing issue, but it's a shame this doesn't take the clock mode
+directly, then we wouldn't have to duplicate the conditions (as above,
+inverted).
+
+Mark.
