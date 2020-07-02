@@ -2,62 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 320402126EC
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 16:49:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ACD12126E3
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 16:49:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730326AbgGBOtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 10:49:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50190 "EHLO
+        id S1729925AbgGBOtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 10:49:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729966AbgGBOqo (ORCPT
+        with ESMTP id S1729985AbgGBOqs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 10:46:44 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F9C5C08C5E0
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 07:46:43 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id l17so27117679wmj.0
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 07:46:43 -0700 (PDT)
+        Thu, 2 Jul 2020 10:46:48 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CF2BC08C5E1
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 07:46:44 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id z13so28794003wrw.5
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 07:46:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=zCvEYr43bmvAI4c/u02EnPe5wklhcOBr52WpV3Wdhnc=;
-        b=rnd7ZVz1ZhbElscG9Bkyx7lA4/DyNELrmIlS9pFIxHeR0jZ64UUgjYI7/xmq7V/nBQ
-         ZjeYBcOXpxnMVFhStvkm3qSrrk39Vbmp5EY9GY7i2drA52md+rN3AH5t9d8r0TgeFZNz
-         tw/ORXRpXc9E6zjDPBTC35hNIHMr+7X2+Bt/wd9jC/lvPleiDxFGAMeKNMn6tZwOKAMw
-         +Fr6OtBOW8Ck2cXOQadIEhvAe9qMjojndUc9IB+nRn8EfKDQNJv3QpZ+jbkkt3DrMn/x
-         Qq4i23HE176PnzXDn8TVDQOGIPyiW8rEvw2ymMaPpVPUI/C+iiH4DcU3ekAl1SEKJ2/j
-         EL8A==
+        bh=K724gNBq1+8gJuUosuyXSMvH+REcJBS2sGMOEUVIfWc=;
+        b=bxMpXkgMVaIQhUosfclwMUUcexKCyxfNvmHDbmWxGE6fnfTamN5u0EjbZj6xscXTJO
+         KIqwSDdDoUdpSQjaH5gfR2j3bPAjelzx07KQNxL5h1MuR11ckg4jcR5+LCNbnF7m0LyX
+         uc+hTJBCiFR8J/aHBmIrhWw+iCM8BO8LXIO9UZm+GQk+ettGaEC+svC5PHWO9knyxcxq
+         Eyx45/1OtfW7w8v3xhWVQYzHpRGQvw0Iu6TXfXbdmUcCnnO7yuLErpt3TcRveMRqx4t5
+         9j6tlz681kwT2hbuts1GpJis58KKUpqBVck9dSa7i7jQ4OzcB3v+7hlHUu2FUQP7ik3B
+         tWIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=zCvEYr43bmvAI4c/u02EnPe5wklhcOBr52WpV3Wdhnc=;
-        b=Vk6u9LY32KjHPbj5wEHRWRVNw6fhKBiuPswD7QV+uYOlh421xMf+lFGY4vsXsFMYKh
-         Gx+Eu7mLaXn4+UhdHkZy54hv+kV0phaC2FaJrV6p2HKQetXSCtcGMq8bX7BhM/6V4ZTr
-         F+a0XsV2t4bv3/YyG5DGWJM84lgCCWkq1Lv4LAIwuc/uuhN8xr6/MaeaJCvZJCwEMbMM
-         uo6gVPTO9DrkAnOsq4BiBZ/IT7I3m7K5zUTAPrbNCTHo58BsqPVsBUmOsCYqcpQPR1Hh
-         VVXuhkycdF2L04FRYG4MObAa5C+M3NRk4KQjFwLGqkzhcRgG6u905nMWDmu7ANollngS
-         yuEA==
-X-Gm-Message-State: AOAM530NXO2RwudcFv+UYIFTrrsBdWERXFECjG9SGexL/xwiZps9DMkZ
-        H56u8bGKaR5Zd4rPZL+6vvvtyg==
-X-Google-Smtp-Source: ABdhPJxTZlxUGKYXKggwnjvqFMcBCaf45y5q+liL9GM89JskjMNjlM3bEhXyNhYs3yNR7dMSBMPRZA==
-X-Received: by 2002:a1c:cc12:: with SMTP id h18mr30459205wmb.3.1593701202335;
-        Thu, 02 Jul 2020 07:46:42 -0700 (PDT)
+        bh=K724gNBq1+8gJuUosuyXSMvH+REcJBS2sGMOEUVIfWc=;
+        b=soda8/k2KA6USTPNuHxBiOpu9i6AmYYt9dRrE3wT38gMNiFrpqj9Mu0xKtTVaQd8V/
+         1+TLkD3dLYgzFrcCdFtyDVYWxMF30MCElnUX5+CscczXh2dAhRx7WshyXWvbwEM3ZGky
+         aOdkRhAL3SSKndTwfmF/veJtlHyn3sE1NEgpn5jB2BM8jp15oaOTJiqBGJ1qsvS2z58p
+         kwys5/z6KyQWjpIlV/4wX0z90ztDmWFykEnqRVpJyG9w1TG0azoDHAGYbczCwliNf6Sb
+         Cm8s1mz+Xs7VMX1Ef6f+vtGkq8j6Lo6bxIbmqNC3lFnfTQ2yRCgcTcVE9uiVEtZ484HR
+         ridg==
+X-Gm-Message-State: AOAM53033bw9khkS5UquKVNERjD3KlApSwBzuOHSAT69MmVtP4VICzKb
+        lRvx4aO3vCVFq5vh9gpXudNU8w==
+X-Google-Smtp-Source: ABdhPJy4S926IqfqG9+GjXBGJlktkqEcFIY2+P6+GBBzSak8NQL0ghDJYlnEAQjhrd4dBc3MisUR1Q==
+X-Received: by 2002:a5d:4051:: with SMTP id w17mr30549831wrp.183.1593701203410;
+        Thu, 02 Jul 2020 07:46:43 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id g14sm7002737wrw.83.2020.07.02.07.46.41
+        by smtp.gmail.com with ESMTPSA id g14sm7002737wrw.83.2020.07.02.07.46.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Jul 2020 07:46:41 -0700 (PDT)
+        Thu, 02 Jul 2020 07:46:42 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-usb@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-omap@vger.kernel.org
-Subject: [PATCH 08/30] usb: dwc3: dwc3-omap: Do not read DMA status
-Date:   Thu,  2 Jul 2020 15:46:03 +0100
-Message-Id: <20200702144625.2533530-9-lee.jones@linaro.org>
+        Minas Harutyunyan <hminas@synopsys.com>,
+        Ben Dooks <ben@simtec.co.uk>
+Subject: [PATCH 09/30] usb: dwc2: gadget: Do not read GINTMSK2
+Date:   Thu,  2 Jul 2020 15:46:04 +0100
+Message-Id: <20200702144625.2533530-10-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200702144625.2533530-1-lee.jones@linaro.org>
 References: <20200702144625.2533530-1-lee.jones@linaro.org>
@@ -69,56 +68,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit af566a0be6e49 ("usb: dwc3: omap: get rid of dma_status") rendered
-reading DMA status from the H/W even more redundant.  The variable hasn't
-been read/used since 2016.  Remove the set but unused variable and the call
-which populates it.
+The value of GINTMSK2 hasn't been checked since the inception of
+dwc2_gadget_wkup_alert_handler() in 2018.
 
 Fixes the following W=1 warning:
 
- drivers/usb/dwc3/dwc3-omap.c: In function ‘dwc3_omap_probe’:
- drivers/usb/dwc3/dwc3-omap.c:460:8: warning: variable ‘reg’ set but not used [-Wunused-but-set-variable]
- 460 | u32 reg;
- | ^~~
+ drivers/usb/dwc2/gadget.c: In function ‘dwc2_gadget_wkup_alert_handler’:
+ drivers/usb/dwc2/gadget.c:259:6: warning: variable ‘gintmsk2’ set but not used [-Wunused-but-set-variable]
+ 259 | u32 gintmsk2;
+ | ^~~~~~~~
 
-Cc: Felipe Balbi <balbi@kernel.org>
-Cc: Andrzej Siewior <bigeasy@linutronix.de>
-Cc: linux-omap@vger.kernel.org
+Cc: Minas Harutyunyan <hminas@synopsys.com>
+Cc: Ben Dooks <ben@simtec.co.uk>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/usb/dwc3/dwc3-omap.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+ drivers/usb/dwc2/gadget.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/usb/dwc3/dwc3-omap.c b/drivers/usb/dwc3/dwc3-omap.c
-index 8c3de2d258bf7..11288a370828c 100644
---- a/drivers/usb/dwc3/dwc3-omap.c
-+++ b/drivers/usb/dwc3/dwc3-omap.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0
--/**
-+/*
-  * dwc3-omap.c - OMAP Specific Glue layer
-  *
-  * Copyright (C) 2010-2011 Texas Instruments Incorporated - http://www.ti.com
-@@ -457,8 +457,6 @@ static int dwc3_omap_probe(struct platform_device *pdev)
- 	int			ret;
- 	int			irq;
+diff --git a/drivers/usb/dwc2/gadget.c b/drivers/usb/dwc2/gadget.c
+index 12b98b4662872..14c422ee6a069 100644
+--- a/drivers/usb/dwc2/gadget.c
++++ b/drivers/usb/dwc2/gadget.c
+@@ -256,10 +256,8 @@ int dwc2_hsotg_tx_fifo_total_depth(struct dwc2_hsotg *hsotg)
+ static void dwc2_gadget_wkup_alert_handler(struct dwc2_hsotg *hsotg)
+ {
+ 	u32 gintsts2;
+-	u32 gintmsk2;
  
--	u32			reg;
--
- 	void __iomem		*base;
+ 	gintsts2 = dwc2_readl(hsotg, GINTSTS2);
+-	gintmsk2 = dwc2_readl(hsotg, GINTMSK2);
  
- 	if (!node) {
-@@ -503,9 +501,6 @@ static int dwc3_omap_probe(struct platform_device *pdev)
- 	dwc3_omap_map_offset(omap);
- 	dwc3_omap_set_utmi_mode(omap);
- 
--	/* check the DMA Status */
--	reg = dwc3_omap_readl(omap->base, USBOTGSS_SYSCONFIG);
--
- 	ret = dwc3_omap_extcon_register(omap);
- 	if (ret < 0)
- 		goto err1;
+ 	if (gintsts2 & GINTSTS2_WKUP_ALERT_INT) {
+ 		dev_dbg(hsotg->dev, "%s: Wkup_Alert_Int\n", __func__);
 -- 
 2.25.1
 
