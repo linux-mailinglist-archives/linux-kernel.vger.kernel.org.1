@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 633BB21273F
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 17:02:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37E11212741
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 17:03:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729983AbgGBPCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 11:02:53 -0400
+        id S1730010AbgGBPC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 11:02:56 -0400
 Received: from mga18.intel.com ([134.134.136.126]:43273 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726032AbgGBPCw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 11:02:52 -0400
-IronPort-SDR: ucuLy4blN1beFdCOl9mgxRgssnjxOXGLMVduG8jc/EjBU7ISPWxphFCNrwwCN4oBY3/gix4IST
- rRJ7aYF7/HtA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="134384102"
+        id S1729912AbgGBPCx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 11:02:53 -0400
+IronPort-SDR: 4S2xJdLjwzVAd0XXrWFKhp95KePCP12VaxeWRUeXq1CgYLLqalEC0/RI31pDqJrBzzA5EpyVwf
+ nlQvAHrn00/g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="134384116"
 X-IronPort-AV: E=Sophos;i="5.75,304,1589266800"; 
-   d="scan'208";a="134384102"
+   d="scan'208";a="134384116"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2020 08:02:41 -0700
-IronPort-SDR: W/iS25Y2HU7wr+H0UDFRVD3TdGcuFXMVpdLnjPeZ9a4kObj1kYA7x++obbTVf6rR1WgJA/yPNp
- LlVVPdTUSaZw==
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2020 08:02:43 -0700
+IronPort-SDR: g9KHZtn+dpB+rln7D4IWEm3Us2IMiwL8/XfFecXINP8MXWWwUKauOb0QsNJMRNpXH3rPFpB9fO
+ yvwINN8+Yj6A==
 X-IronPort-AV: E=Sophos;i="5.75,304,1589266800"; 
-   d="scan'208";a="304275473"
+   d="scan'208";a="304275487"
 Received: from nchava-mobl1.amr.corp.intel.com (HELO [10.252.135.144]) ([10.252.135.144])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2020 08:02:40 -0700
-Subject: Re: [PATCH] riscv: asm/gdb_xml.h: use __maybe_used to make W=1
- warnings go away
-To:     Vincent Chen <vincent.chen@sifive.com>
-Cc:     alsa-devel@alsa-project.org, tiwai@suse.de, broonie@kernel.org,
-        kernel test robot <lkp@intel.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "open list:RISC-V ARCHITECTURE" <linux-riscv@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20200701184751.84008-1-pierre-louis.bossart@linux.intel.com>
- <CABvJ_xhm9a0nzBJ2YKvwm5vKZt3Xp0H9z6QakD0EYK7vRR-_AA@mail.gmail.com>
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2020 08:02:42 -0700
+Subject: Re: [PATCH][next] ASoC: Intel: bxt-da7219-max98357a: return -EINVAL
+ on unrecognized speaker amplifier
+To:     Colin King <colin.king@canonical.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, Brent Lu <brent.lu@intel.com>,
+        alsa-devel@alsa-project.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200702114835.37889-1-colin.king@canonical.com>
 From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <f148580a-f97d-3416-ca03-c3a425189568@linux.intel.com>
-Date:   Thu, 2 Jul 2020 09:20:52 -0500
+Message-ID: <d79c5d6b-5bb6-3552-d1a6-bbd40f6c3081@linux.intel.com>
+Date:   Thu, 2 Jul 2020 09:40:49 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <CABvJ_xhm9a0nzBJ2YKvwm5vKZt3Xp0H9z6QakD0EYK7vRR-_AA@mail.gmail.com>
+In-Reply-To: <20200702114835.37889-1-colin.king@canonical.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -55,57 +55,37 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 7/1/20 9:04 PM, Vincent Chen wrote:
-> On Thu, Jul 2, 2020 at 2:48 AM Pierre-Louis Bossart
-> <pierre-louis.bossart@linux.intel.com> wrote:
->>
->> 0day/kbuild reports warnings with the ASoC codecs compiled with W=1.
->>
->> In file included from arch/riscv/include/asm/kgdb.h:109,
->>                   from include/linux/kgdb.h:20,
->>                   from include/linux/fb.h:5,
->>                   from include/drm/drm_crtc.h:31,
->>                   from sound/soc/codecs/hdmi-codec.c:19:
->>
->> arch/riscv/include/asm/gdb_xml.h:23:19: warning:
->> 'riscv_gdb_stub_cpuxml' defined but not used [-Wunused-const-variable=]
->>     23 | static const char riscv_gdb_stub_cpuxml[2048] =
->>        |                   ^~~~~~~~~~~~~~~~~~~~~
->> arch/riscv/include/asm/gdb_xml.h:16:19: warning:
->> 'riscv_gdb_stub_target_desc' defined but not used [-Wunused-const-variable=]
->>     16 | static const char riscv_gdb_stub_target_desc[256] =
->>        |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~
->> arch/riscv/include/asm/gdb_xml.h:13:19: warning:
->> 'gdb_xfer_read_cpuxml' defined but not used [-Wunused-const-variable=]
->>     13 | static const char gdb_xfer_read_cpuxml[39] =
->>        |                   ^~~~~~~~~~~~~~~~~~~~
->> arch/riscv/include/asm/gdb_xml.h:10:19: warning:
->> 'gdb_xfer_read_target' defined but not used [-Wunused-const-variable=]
->>     10 | static const char gdb_xfer_read_target[31] = "qXfer:features:read:target.xml:";
->>        |                   ^~~~~~~~~~~~~~~~~~~~
->> arch/riscv/include/asm/gdb_xml.h:7:19: warning:
->> 'riscv_gdb_stub_feature' defined but not used [-Wunused-const-variable=]
->>      7 | static const char riscv_gdb_stub_feature[64] =
->>        |                   ^~~~~~~~~~~~~~~~~~~~~~
->>
->> Reported-by: kernel test robot <lkp@intel.com>
->> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->> ---
->>
->> I don't know if this is the right way of solving this issue but this
->> error is now consistently thrown in kbuild compile-test reports w/
->> W=1.
->>
+On 7/2/20 6:48 AM, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> Dear Pierre-Louis Bossart:
-> Thanks for your modifications. I have fixed the warnings in my latest
-> KGDB patchset and sent it out, but the merged KGDB patchset is not my
-> latest version.
-> I have sent a patch set to complement the missing ports, and I think
-> these warnings would disappear after this patch has been accepted and
-> merged.
+> Currently if the ctx->spkamp is not recognized an error message is
+> reported but the code continues to set up the device with uninitialized
+> variables such as the number of widgets.  Fix this by returning -EINVAL
+> for unrecognized speaker amplifier types.
 > 
-> Here is the patch to fix this warning:
-> http://lists.infradead.org/pipermail/linux-riscv/2020-June/000660.html
+> Addresses-Coverity: ("Uninitialized scalar variable")
+> Fixes: e1435a1feb18 ("ASoC: Intel: bxt-da7219-max98357a: support MAX98390 speaker amp")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-Thank you Vincent, let's drop my hacky patch then.
+Sounds good, thanks Colin.
+
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+
+> ---
+>   sound/soc/intel/boards/bxt_da7219_max98357a.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+> index 4d39253e796b..0c0a717823c4 100644
+> --- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
+> +++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+> @@ -677,7 +677,7 @@ static int bxt_card_late_probe(struct snd_soc_card *card)
+>   		break;
+>   	default:
+>   		dev_err(card->dev, "Invalid speaker amplifier %d\n", ctx->spkamp);
+> -		break;
+> +		return -EINVAL;
+>   	}
+>   
+>   	err = snd_soc_dapm_new_controls(&card->dapm, widgets, num_widgets);
+> 
