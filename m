@@ -2,91 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3D51212510
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 15:45:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C242621252C
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 15:48:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729406AbgGBNp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 09:45:29 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45060 "EHLO mx2.suse.de"
+        id S1729403AbgGBNsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 09:48:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39526 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729047AbgGBNp1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 09:45:27 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1EAA1AD88;
-        Thu,  2 Jul 2020 13:45:26 +0000 (UTC)
-Subject: Re: [PATCH v6 6/6] mm/vmscan: restore active/inactive ratio for
- anonymous LRU
-To:     js1304@gmail.com, Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Hugh Dickins <hughd@google.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>, kernel-team@lge.com,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Matthew Wilcox <willy@infradead.org>
-References: <1592371583-30672-1-git-send-email-iamjoonsoo.kim@lge.com>
- <1592371583-30672-7-git-send-email-iamjoonsoo.kim@lge.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <ed5a75ea-42bb-9acf-c567-3ff2d2af4fcb@suse.cz>
-Date:   Thu, 2 Jul 2020 15:45:22 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1729051AbgGBNsg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 09:48:36 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 90487207D4;
+        Thu,  2 Jul 2020 13:48:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593697715;
+        bh=tMT/0/rWJ4mOlBloPAfcxWTRK0Bw2NaOowE/acDSAtw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ay2vfvlwROBwHeQy4Mn+6qoiF4tF9B477V1+7ICkTcE41dA8y22/vIFebFAuJ1JsE
+         aq/MC52NhMc0fcocodpQAqzef8EKOe7hIQFNdvUfXPNqHw+I5/KevedfJlGWps6FZd
+         5vVID4duEyxGbCWCdjqh9y8FkabfAig4OEMN5DYk=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1jqzZq-008Q8V-5U; Thu, 02 Jul 2020 14:48:34 +0100
 MIME-Version: 1.0
-In-Reply-To: <1592371583-30672-7-git-send-email-iamjoonsoo.kim@lge.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Thu, 02 Jul 2020 14:48:34 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Russell King <linux@arm.linux.org.uk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>, kernel-team@android.com
+Subject: Re: [PATCH v2 06/17] irqchip/gic-v3: Configure SGIs as standard
+ interrupts
+In-Reply-To: <jhjmu4i830n.mognet@arm.com>
+References: <20200624195811.435857-1-maz@kernel.org>
+ <20200624195811.435857-7-maz@kernel.org> <jhjimffgfyt.mognet@arm.com>
+ <f9502c41d941e56ffcc30c51f2d23ab9@kernel.org> <jhjmu4i830n.mognet@arm.com>
+User-Agent: Roundcube Webmail/1.4.5
+Message-ID: <1f3ac757acd15f6804917e222194c9cf@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: valentin.schneider@arm.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, will@kernel.org, catalin.marinas@arm.com, linux@arm.linux.org.uk, tglx@linutronix.de, jason@lakedaemon.net, sumit.garg@linaro.org, f.fainelli@gmail.com, gregory.clement@bootlin.com, andrew@lunn.ch, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/17/20 7:26 AM, js1304@gmail.com wrote:
-> From: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+On 2020-07-02 14:23, Valentin Schneider wrote:
+> On 30/06/20 11:15, Marc Zyngier wrote:
+>> On 2020-06-25 19:25, Valentin Schneider wrote:
+>>> Also, while staring at this it dawned on me that IPI's don't need the
+>>> eoimode=0 isb(): due to how the IPI flow-handler is structured, we'll
+>>> get a
+>>> gic_eoi_irq() just before calling into the irqaction. Dunno how much 
+>>> we
+>>> care about it.
+>> 
+>> That's interesting. This ISB is a leftover from the loop we had before
+>> the pseudo-NMI code, where we had to make sure the write to EOIR was
+>> ordered with the read from IAR.
+>> 
+>> Given that we have an exception return right after the interrupt
+>> handling, I *think* we could get rid of it (but that would need
+>> mode checking on broken systems such as TX1...).  I don't think
+>> this is specific to IPIs though.
+>> 
 > 
-> Now, workingset detection is implemented for anonymous LRU.
-> We don't have to worry about the misfound for workingset due to
-> the ratio of active/inactive. Let's restore the ratio.
-
-How about:
-
-Now that workingset detection is implemented for anonymous LRU, we don't need
-large inactive list to allow detecting frequently accessed pages before they are
-reclaimed, anymore. This effectively reverts the temporary measure put in by
-commit "mm/vmscan: make active/inactive ratio as 1:1 for anon lru".
-
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-> Signed-off-by: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
-
-Thanks!
-I still hope Matthew can review updated patch 4/6 (I'm not really familiar with
-proper xarray handling), and Johannes patch 5/6.
-
-And then we just need a nice Documentation file describing how reclaim really
-works after all the recent changes :)
-
-Vlastimil
-
-> ---
->  mm/vmscan.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> If I got this one right:
 > 
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index eb02d18..ec77691 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -2211,7 +2211,7 @@ static bool inactive_is_low(struct lruvec *lruvec, enum lru_list inactive_lru)
->  	active = lruvec_page_state(lruvec, NR_LRU_BASE + active_lru);
->  
->  	gb = (inactive + active) >> (30 - PAGE_SHIFT);
-> -	if (gb && is_file_lru(inactive_lru))
-> +	if (gb)
->  		inactive_ratio = int_sqrt(10 * gb);
->  	else
->  		inactive_ratio = 1;
+>   39a06b67c2c1 ("irqchip/gic: Ensure we have an ISB between ack and
+> ->handle_irq")
 > 
+> you're describing case 2, which is indeed gone on gic-v3. However IIUC 
+> we
+> also want an ISB between poking IAR and calling into the irqaction 
+> (case 1)
+> - we get just that with IPIs due to the early gic_eoi_irq(), but we 
+> don't
+> for the other flows.
 
+You just made me realise something amazing: I've started to forget about
+all this crap. Which is wonderful! ;-)
+
+More seriously, you are absolutely right. If we wanted to address this,
+we'd probably have to give IPIs their own irqchip so that they get their
+own eoi callback. Not sure that's worth it.
+
+         M.
+-- 
+Jazz is not dead. It just smells funny...
