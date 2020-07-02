@@ -2,117 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BDA5212A2E
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 18:48:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47920212A4D
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 18:49:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727116AbgGBQs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 12:48:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55590 "EHLO mail.kernel.org"
+        id S1726856AbgGBQtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 12:49:42 -0400
+Received: from foss.arm.com ([217.140.110.172]:42966 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726721AbgGBQs1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 12:48:27 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B2E362084C;
-        Thu,  2 Jul 2020 16:48:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593708506;
-        bh=gWp3jFwoo4iUwOhF7lEopC3ZlQExz1kCNh2JXCd9Fcg=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=2b+9C9Nyes63VcSQV+cryOA7jsr1vqfWy4nwf81la+HGYN7YnBVUyFaf6P20GtKk1
-         qfbrvZKpCWKVPpdhe7T1sk4GaZ7M3aWrCUo//dt4fStvpVZzJQjJj9eUTdC4E4cdgV
-         77Xa30CfU8RtOF8TOrvOgs16YElPGsco2vw9q4vM=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 909F435232F8; Thu,  2 Jul 2020 09:48:26 -0700 (PDT)
-Date:   Thu, 2 Jul 2020 09:48:26 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, dipankar@in.ibm.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com,
-        Uladzislau Rezki <urezki@gmail.com>
-Subject: Re: [PATCH tip/core/rcu 03/17] rcu/tree: Skip entry into the page
- allocator for PREEMPT_RT
-Message-ID: <20200702164826.GQ9247@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200624201200.GA28901@paulmck-ThinkPad-P72>
- <20200624201226.21197-3-paulmck@kernel.org>
- <20200630164543.4mdcf6zb4zfclhln@linutronix.de>
- <20200630183534.GG9247@paulmck-ThinkPad-P72>
- <20200702141216.r4rbt5w3hjzafpgg@linutronix.de>
+        id S1726300AbgGBQtl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 12:49:41 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4ED211FB;
+        Thu,  2 Jul 2020 09:49:41 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4DCAF3F71E;
+        Thu,  2 Jul 2020 09:49:40 -0700 (PDT)
+References: <20200701190656.10126-1-valentin.schneider@arm.com> <20200701190656.10126-3-valentin.schneider@arm.com> <20200702121536.GA765585@google.com> <jhjk0zm7zv8.mognet@arm.com> <20200702154514.GA1072702@google.com> <jhjfta9994q.mognet@arm.com> <20200702163748.GA1125675@google.com>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Quentin Perret <qperret@google.com>
+Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
+        peterz@infradead.org, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, morten.rasmussen@arm.com
+Subject: Re: [PATCH v3 2/7] sched/topology: Define and assign sched_domain flag metadata
+In-reply-to: <20200702163748.GA1125675@google.com>
+Date:   Thu, 02 Jul 2020 17:49:38 +0100
+Message-ID: <jhjeept980t.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200702141216.r4rbt5w3hjzafpgg@linutronix.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 02, 2020 at 04:12:16PM +0200, Sebastian Andrzej Siewior wrote:
-> On 2020-06-30 11:35:34 [-0700], Paul E. McKenney wrote:
-> > > This is not going to work together with the "wait context validator"
-> > > (CONFIG_PROVE_RAW_LOCK_NESTING). As of -rc3 it should complain about
-> > > printk() which is why it is still disabled by default.
-> > 
-> > Fixing that should be "interesting".  In particular, RCU CPU stall
-> > warnings rely on the raw spin lock to reduce false positives due
-> > to race conditions.  Some thought will be required here.
-> 
-> I don't get this part. Can you explain/give me an example where to look
-> at?
 
-Starting from the scheduler-clock interrupt's call into RCU,
-we have rcu_sched_clock_irq() which calls rcu_pending() which
-calls check_cpu_stall() which calls either print_cpu_stall() or
-print_other_cpu_stall(), depending on whether the stall is happening on
-the current CPU or on some other CPU, respectively.
+On 02/07/20 17:37, Quentin Perret wrote:
+> On Thursday 02 Jul 2020 at 17:25:41 (+0100), Valentin Schneider wrote:
+>> It's actually pretty close to what happens with the LLC domain on SMP -
+>> select_idle_sibling() doesn't look outside of it. The wake_affine() stuff
+>> might steer the task towards a different LLC, but that's about it for
+>> wakeups. We rely on load balancing (fork/exec, newidle, nohz and periodic)
+>> to spread this further - and we would here too.
+>
+> Sure, but on SMP the search space in select_idle_sibling is always
+> consistent -- you search within the LLC. With the fix you suggested,
+> CPUs 0-3 will search within their LLCs, while CPU4 searches the entire
+> system, which creates an imbalanced mess IMO.
+>
 
-Both of these last functions acquire the rcu_node structure's raw ->lock
-and expect to do printk()s while holding it.
+Yeah, it is a mess.
 
-Not that the lock matters all that much given that all of this code is
-in hardirq context.  Which is necessary if RCU CPU stall warnings are
-to be at all reliable.  Yeah, yeah, they would be even more reliable if
-invoked in NMI context but that would prevent them from acquiring the
-->lock that is used to resolve races between multiple concurrent stall
-warnings and between a stall warning and the end of that stall.  ;-)
+> For affine wake-ups, you could migrate from CPU4 -> CPU0-3, but CPU0-3
+> to CPU4 is not possible
 
-I could imagine accumulating the data in hardirq context and then
-using a workqueue or some such to print it all out, but that
-requires that workqueues be fully operational for RCU CPU stall
-warnings to appear.  :-(
+AIU the wake_affine bits, you get to steer the wakeup towards the waking
+CPU. So if the task previously ran on CPU0-3, wake_affine can make the
+target CPU4 (waking CPU), so it would become a possible candidate.
 
-Thoughts?
+But as you say, this thing is still an ugly asymmetric mess.
 
-> > > So assume that this is fixed and enabled then on !PREEMPT_RT it will
-> > > complain that you have a raw_spinlock_t acquired (the one from patch
-> > > 02/17) and attempt to acquire a spinlock_t in the memory allocator.
-> > 
-> > Given that the slab allocator doesn't acquire any locks until it gets
-> > a fair way in, wouldn't it make sense to allow a "shallow" allocation
-> > while a raw spinlock is held?  This would require yet another GFP_ flag,
-> > but that won't make all that much of a difference in the total.  ;-)
-> 
-> That would be one way of dealing with. But we could go back to
-> spinlock_t and keep the memory allocation even for RT as is. I don't see
-> a downside of this. And we would worry about kfree_rcu() from real
-> IRQ-off region once we get to it.
+> so this asymmetry is almost guaranteed to
+> actively create imbalance. And sure, the periodic load balancer ought to
+> fix it, but really wake-up balance and periodic load balance should be
+> pushing in the same direction and not fighting against each other.
+>
+> Anyways, enough bikeshedding for today, I'll try and have look at the
+> rest of the series :)
+>
 
-Once we get to it, your thought would be to do per-CPU queuing of
-memory from IRQ-off kfree_rcu(), and have IRQ work or some such clean
-up after it?  Or did you have some other trick in mind?
+Thanks!
 
-							Thanx, Paul
-
-> > > >  			bnode = (struct kfree_rcu_bulk_data *)
-> > > >  				__get_free_page(GFP_NOWAIT | __GFP_NOWARN);
-> > > >  		}
-> 
-> Sebastian
+> Cheers,
+> Quentin
