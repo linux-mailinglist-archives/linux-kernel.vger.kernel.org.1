@@ -2,73 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E2FE212363
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 14:34:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46F9021236C
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 14:36:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728988AbgGBMeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 08:34:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44606 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728830AbgGBMd7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 08:33:59 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1729026AbgGBMgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 08:36:12 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:59181 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729013AbgGBMgJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 08:36:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593693368;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zoS32aEetNA7WukhLGFWUUUslXaekp29CK8PuqfIdFc=;
+        b=itMn6AcGNEDJXvtRpDlvqJqE4Y6P1FmKfV8NsVi8D+Xw0BW22VXH8QYOlOhT00UCf+pHif
+        cP4q2qmTTjCn5MgBK9GAjnTQAZUxQox3cbc0J6gGO2xfznqHEC5apqC2Ti0MK2UIUcrMDX
+        bH+MI+kzLWVhbz8PZe3EH8dlaNoHMvk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-257-LX71wF1AMamum0V7EvPErQ-1; Thu, 02 Jul 2020 08:36:04 -0400
+X-MC-Unique: LX71wF1AMamum0V7EvPErQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 34A6A20836;
-        Thu,  2 Jul 2020 12:33:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593693238;
-        bh=FR7gQI0JtDDU8HzfE1z90MM9ea8ghQIPgiGtlWFQUYE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=y1J6G/OMYpCJV4JjWF9eu6XnlyheeAkFYIv+qy1KHruLldpkRV4ecXaWqZbsfB7sp
-         /w4WsxmcLy3aOhtt+a89rrLfx5WUOkuIdW35iJEiSkOx5YDNmciQb5qi0W6YX+gex3
-         pR9oghru9fKNvYqS1PzHyrXD0SW2uEDAoKB4Oa9k=
-Date:   Thu, 2 Jul 2020 14:34:02 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org,
-        John Warthog9 Hawley <warthog9@kernel.org>
-Subject: Re: [for-next][PATCH 8/8] ktest.pl: Add MAIL_MAX_SIZE to limit the
- amount of log emailed
-Message-ID: <20200702123402.GA1773770@kroah.com>
-References: <20200701231717.757834010@goodmis.org>
- <20200701231756.790637968@goodmis.org>
- <20200702074103.GA1076415@kroah.com>
- <20200702081949.2bfd2417@oasis.local.home>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E6A47106B243;
+        Thu,  2 Jul 2020 12:35:57 +0000 (UTC)
+Received: from treble (ovpn-117-134.rdu2.redhat.com [10.10.117.134])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 44A4378800;
+        Thu,  2 Jul 2020 12:35:57 +0000 (UTC)
+Date:   Thu, 2 Jul 2020 07:35:55 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Miroslav Benes <mbenes@suse.cz>
+Subject: Re: linux-next: Tree for Jun 23 (objtool (2))
+Message-ID: <20200702123555.bjioosahrs5vjovu@treble>
+References: <20200623162820.3f45feae@canb.auug.org.au>
+ <61df2e8f-75e8-d233-9c3c-5b4fa2b7fbdc@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200702081949.2bfd2417@oasis.local.home>
+In-Reply-To: <61df2e8f-75e8-d233-9c3c-5b4fa2b7fbdc@infradead.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 02, 2020 at 08:19:49AM -0400, Steven Rostedt wrote:
-> On Thu, 2 Jul 2020 09:41:03 +0200
-> Greg KH <gregkh@linuxfoundation.org> wrote:
-> 
-> > On Wed, Jul 01, 2020 at 07:17:25PM -0400, Steven Rostedt wrote:
-> > > From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-> > > 
-> > > Add the ktest config option MAIL_MAX_SIZE that will limit the size of the
-> > > log file that is placed into the email on failure.
-> > > 
-> > > Cc: Greg KH <gregkh@linuxfoundation.org>
-> > > Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> > > ---
-> > >  tools/testing/ktest/ktest.pl    | 12 +++++++++++-
-> > >  tools/testing/ktest/sample.conf | 13 +++++++++++++
-> > >  2 files changed, 24 insertions(+), 1 deletion(-)  
+On Tue, Jun 23, 2020 at 08:06:07AM -0700, Randy Dunlap wrote:
+> On 6/22/20 11:28 PM, Stephen Rothwell wrote:
+> > Hi all,
 > > 
-> > Interesting, but I like full log files for my reports :)
+> > Changes since 20200622:
+> > 
 > 
-> I can add an option to do that if you want. My full logs end up being a
-> few hundred megabytes. Perhaps I could add a compress option too.
+> on x86_64:
+> 
+> arch/x86/kernel/cpu/mce/core.o: warning: objtool: mce_timed_out()+0x24: unreachable instruction
+> kernel/exit.o: warning: objtool: __x64_sys_exit_group()+0x14: unreachable instruction
+> 
+> Full randconfig file is attached.
 
-It's fine, the default should be good enough for me for now.  If not,
-I'll just bump the value, or add compression.
+More livepatch...
 
-thanks,
+-- 
+Josh
 
-greg k-h-
