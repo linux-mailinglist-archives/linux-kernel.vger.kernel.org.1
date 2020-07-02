@@ -2,113 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FC5C2124AD
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 15:29:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EFE8212474
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 15:21:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729246AbgGBN3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 09:29:43 -0400
-Received: from mx2.suse.de ([195.135.220.15]:34510 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729051AbgGBN3n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 09:29:43 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8DE30BA17;
-        Thu,  2 Jul 2020 13:29:41 +0000 (UTC)
-Date:   Thu, 2 Jul 2020 14:20:58 +0100
-From:   Mel Gorman <mgorman@suse.de>
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     Peter Puhov <peter.puhov@linaro.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel@vger.kernel.org,
-        Robert Foley <robert.foley@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
+        id S1729104AbgGBNVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 09:21:39 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:49682 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726560AbgGBNVi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 09:21:38 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1593696096;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Dr+rwKS8kMHxBGCrHdWXmIO5ZUZ2IrLOttV64ewpf9c=;
+        b=BEYw8e9mK7WOC37cATlq0VbQtfE0rEwVPiQez5FOdRNuZ0PQn/oKvm2R2ICpYhf45GhuJI
+        qucX4pIB+2EnqobtZceTNtrTvZDQg6GJeWJ27dfLG1wHu+RjY7y5BsRsv7YFUFydw6MsGL
+        l80DWnPWxYxE+oaGFqlEJCs/728ZNKLGdc64Wy+S6UG34uafo1NJMLXfrXRMZHP/XZyciD
+        pY2QgLqHidEMoc18ij2W+3eFspIQzpqwSx2SV3D5vjvTHpF5LE/dZWyRch1XRcv3XejCSP
+        N4EkOxfAw84J8qr0b9NEPy6EsG6mQrx+TLRsTeGhOKNsynNgr/LP2II7gz9Z6Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1593696096;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Dr+rwKS8kMHxBGCrHdWXmIO5ZUZ2IrLOttV64ewpf9c=;
+        b=UU8G9SGcGPn4CxxyR+BGOu0SmXsEWigEdMDKdLMPQqbBG2qeFvK6bJOoPmiQ2l3d5PDZ7o
+        8NNafAPZ/Bh9VxDg==
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Anna-Maria Gleixner <anna-maria@linutronix.de>,
         Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>
-Subject: Re: [PATCH] sched/fair: update_pick_idlest() Select group with
- lowest group_util when idle_cpus are equal
-Message-ID: <20200702132058.GN3129@suse.de>
-References: <20200616164801.18644-1-peter.puhov@linaro.org>
- <jhjo8pidl01.mognet@arm.com>
- <CAMDPZ0iNtaZ7p3bre31-m6E4Rb92EFshxrcsTjj3cm6=yr_ctw@mail.gmail.com>
- <106350c5-c2b7-a63c-2b06-761f523ee67c@arm.com>
+        Juri Lelli <juri.lelli@redhat.com>
+Subject: Re: [RFC PATCH 10/10] timer: Lower base clock forwarding threshold
+In-Reply-To: <20200701011030.14324-11-frederic@kernel.org>
+References: <20200701011030.14324-1-frederic@kernel.org> <20200701011030.14324-11-frederic@kernel.org>
+Date:   Thu, 02 Jul 2020 15:21:35 +0200
+Message-ID: <878sg2t5ls.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <106350c5-c2b7-a63c-2b06-761f523ee67c@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 02, 2020 at 11:27:52AM +0200, Dietmar Eggemann wrote:
-> On 17/06/2020 16:52, Peter Puhov wrote:
-> > On Wed, 17 Jun 2020 at 06:50, Valentin Schneider
-> > <valentin.schneider@arm.com> wrote:
-> >>
-> >>
-> >> On 16/06/20 17:48, peter.puhov@linaro.org wrote:
-> >>> From: Peter Puhov <peter.puhov@linaro.org>
-> >>> We tested this patch with following benchmarks:
-> >>>   perf bench -f simple sched pipe -l 4000000
-> >>>   perf bench -f simple sched messaging -l 30000
-> >>>   perf bench -f simple  mem memset -s 3GB -l 15 -f default
-> >>>   perf bench -f simple futex wake -s -t 640 -w 1
-> >>>   sysbench cpu --threads=8 --cpu-max-prime=10000 run
-> >>>   sysbench memory --memory-access-mode=rnd --threads=8 run
-> >>>   sysbench threads --threads=8 run
-> >>>   sysbench mutex --mutex-num=1 --threads=8 run
-> >>>   hackbench --loops 20000
-> >>>   hackbench --pipe --threads --loops 20000
-> >>>   hackbench --pipe --threads --loops 20000 --datasize 4096
-> >>>
-> >>> and found some performance improvements in:
-> >>>   sysbench threads
-> >>>   sysbench mutex
-> >>>   perf bench futex wake
-> >>> and no regressions in others.
-> >>>
-> >>
-> >> One nitpick for the results of those: condensing them in a table form would
-> >> make them more reader-friendly. Perhaps something like:
-> >>
-> >> | Benchmark        | Metric   | Lower is better? | BASELINE | SERIES | DELTA |
-> >> |------------------+----------+------------------+----------+--------+-------|
-> >> | Sysbench threads | # events | No               |    45526 |  56567 |  +24% |
-> >> | Sysbench mutex   | ...      |                  |          |        |       |
-> >>
-> >> If you want to include more stats for each benchmark, you could have one table
-> >> per (e.g. see [1]) - it'd still be a more readable form (or so I believe).
-> 
-> Wouldn't Unix Bench's 'execl' and 'spawn' be the ultimate test cases
-> for those kind of changes?
-> 
-> I only see minor improvements with tip/sched/core as base on hikey620
-> (Arm64 octa-core).
-> 
-> 				base		w/ patch
-> ./Run spawn -c 8 -i 10		 633.6		 635.1
-> 
-> ./Run execl -c 8 -i 10		1187.5		1190.7	
-> 
-> 
-> At the end of find_idlest_group(), when comparing local and idlest, it
-> is explicitly mentioned that number of idle_cpus is used instead of
-> utilization.
-> The comparision between potential idle groups and local & idlest group
-> should probably follow the same rules.
-> 
+Frederic Weisbecker <frederic@kernel.org> writes:
+> There is no apparent reason for not forwarding base->clk when it's 2
+> jiffies late, except perhaps for past optimizations. But since forwarding
+> has to be done at some point now anyway, this doesn't stand anymore.
+>
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Anna-Maria Gleixner <anna-maria@linutronix.de>
+> Cc: Juri Lelli <juri.lelli@redhat.com>
+> ---
+>  kernel/time/timer.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/kernel/time/timer.c b/kernel/time/timer.c
+> index 439fee098e76..25a55c043297 100644
+> --- a/kernel/time/timer.c
+> +++ b/kernel/time/timer.c
+> @@ -883,7 +883,7 @@ static inline void forward_timer_base(struct timer_base *base)
+>  	 * Also while executing timers, base->clk is 1 offset ahead
+>  	 * of jiffies to avoid endless requeuing to current jffies.
+>  	 */
+> -	if ((long)(jnow - base->clk) < 2)
+> +	if ((long)(jnow - base->clk) < 1)
+>  		return;
 
-There is the secondary hazard that what update_sd_pick_busiest returns
-is checked later by find_busiest_group when considering the imbalance
-between NUMA nodes. This particular patch splits basic communicating tasks
-cross-node again at fork time so cross node communication is reintroduced
-(same applies if sum_nr_running is used instead of group_util).
+The apparent reason is in the comment right above the condition ...
 
--- 
-Mel Gorman
-SUSE Labs
+Thanks,
+
+        tglx
