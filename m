@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF29C2117E8
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 03:28:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6226E2117EB
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 03:28:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728399AbgGBBXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 21:23:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53966 "EHLO mail.kernel.org"
+        id S1728428AbgGBBXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 21:23:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54060 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728226AbgGBBXZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 21:23:25 -0400
+        id S1728366AbgGBBXa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 21:23:30 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D94182082F;
-        Thu,  2 Jul 2020 01:23:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 71A002085B;
+        Thu,  2 Jul 2020 01:23:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593653004;
-        bh=/iKWu7yE1HMeDOswpVBK72JghZL76IlXEEd5Zx1knVI=;
+        s=default; t=1593653010;
+        bh=veRgKsegTkK+mGLSlUJksyux8IRzvf0/wRoMvomENGE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Km9usEWJPXBYG8qkO67I5YaIPIxrG/CyXZbLivsKycoMfkti9G9e3vNUrIEcjOE1C
-         MjMcdeth2NsMnjsBG3+LUgsfxe9U3JGQATDTHdZZx7TmdeOUmko/WO3ivmnP3gY0bt
-         y3hsB2Y+ckyYbvV0aGWwyggQBCTn38++kBe5il6A=
+        b=iUsvnQgMbwLbTnH40KkwLIOH82/I842ScfwaXOH18hiM+at4JF1N0vXnXxgB43pL0
+         Jj09pEzEbb8JhuJfsXkt+LaaZCu1IhNLdQv32g1ARsw/21rfvh1K6Z6RAxDOuKpkB9
+         QY09pH8pCVGRGi0Lnjft1tuXPT2MEY+NJeU3MYv0=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     David Christensen <drc@linux.vnet.ibm.com>,
-        Michael Chan <michael.chan@broadcom.com>,
+Cc:     Dany Madden <drt@linux.ibm.com>,
         "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 24/53] tg3: driver sleeps indefinitely when EEH errors exceed eeh_max_freezes
-Date:   Wed,  1 Jul 2020 21:21:33 -0400
-Message-Id: <20200702012202.2700645-24-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH AUTOSEL 5.7 28/53] ibmvnic: continue to init in CRQ reset returns H_CLOSED
+Date:   Wed,  1 Jul 2020 21:21:37 -0400
+Message-Id: <20200702012202.2700645-28-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200702012202.2700645-1-sashal@kernel.org>
 References: <20200702012202.2700645-1-sashal@kernel.org>
@@ -44,40 +44,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Christensen <drc@linux.vnet.ibm.com>
+From: Dany Madden <drt@linux.ibm.com>
 
-[ Upstream commit 3a2656a211caf35e56afc9425e6e518fa52f7fbc ]
+[ Upstream commit 8b40eb73509f5704a0e8cd25de0163876299f1a7 ]
 
-The driver function tg3_io_error_detected() calls napi_disable twice,
-without an intervening napi_enable, when the number of EEH errors exceeds
-eeh_max_freezes, resulting in an indefinite sleep while holding rtnl_lock.
+Continue the reset path when partner adapter is not ready or H_CLOSED is
+returned from reset crq. This patch allows the CRQ init to proceed to
+establish a valid CRQ for traffic to flow after reset.
 
-Add check for pcierr_recovery which skips code already executed for the
-"Frozen" state.
-
-Signed-off-by: David Christensen <drc@linux.vnet.ibm.com>
-Reviewed-by: Michael Chan <michael.chan@broadcom.com>
+Signed-off-by: Dany Madden <drt@linux.ibm.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/broadcom/tg3.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/ibm/ibmvnic.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/broadcom/tg3.c b/drivers/net/ethernet/broadcom/tg3.c
-index ff98a82b7bc47..d71ce7634ac19 100644
---- a/drivers/net/ethernet/broadcom/tg3.c
-+++ b/drivers/net/ethernet/broadcom/tg3.c
-@@ -18170,8 +18170,8 @@ static pci_ers_result_t tg3_io_error_detected(struct pci_dev *pdev,
+diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm/ibmvnic.c
+index 1b4d04e4474bb..2dbcbdbb0e4ad 100644
+--- a/drivers/net/ethernet/ibm/ibmvnic.c
++++ b/drivers/net/ethernet/ibm/ibmvnic.c
+@@ -1958,13 +1958,18 @@ static int do_reset(struct ibmvnic_adapter *adapter,
+ 			release_sub_crqs(adapter, 1);
+ 		} else {
+ 			rc = ibmvnic_reset_crq(adapter);
+-			if (!rc)
++			if (rc == H_CLOSED || rc == H_SUCCESS) {
+ 				rc = vio_enable_interrupts(adapter->vdev);
++				if (rc)
++					netdev_err(adapter->netdev,
++						   "Reset failed to enable interrupts. rc=%d\n",
++						   rc);
++			}
+ 		}
  
- 	rtnl_lock();
+ 		if (rc) {
+ 			netdev_err(adapter->netdev,
+-				   "Couldn't initialize crq. rc=%d\n", rc);
++				   "Reset couldn't initialize crq. rc=%d\n", rc);
+ 			goto out;
+ 		}
  
--	/* We probably don't have netdev yet */
--	if (!netdev || !netif_running(netdev))
-+	/* Could be second call or maybe we don't have netdev yet */
-+	if (!netdev || tp->pcierr_recovery || !netif_running(netdev))
- 		goto done;
- 
- 	/* We needn't recover from permanent error */
 -- 
 2.25.1
 
