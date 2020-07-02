@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4FCC2117EE
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 03:28:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A53F92117F4
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 03:28:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728467AbgGBBXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Jul 2020 21:23:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54306 "EHLO mail.kernel.org"
+        id S1728519AbgGBBXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Jul 2020 21:23:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54342 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728411AbgGBBXj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Jul 2020 21:23:39 -0400
+        id S1728420AbgGBBXk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Jul 2020 21:23:40 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 04B422083E;
-        Thu,  2 Jul 2020 01:23:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 390332082F;
+        Thu,  2 Jul 2020 01:23:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593653018;
-        bh=ONj7aKbHlOlgWW2rGPQ0J/OhBHcYbrSt/+Ss/muTSBQ=;
+        s=default; t=1593653019;
+        bh=c+QW1mE2tGRPZcQtySA3Jab8B8UJPsk/3gFArtC+8zc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2uwEfIuxQEe4d1vHrxOJ7TvJO8s4QfgyLUvmknhf9xO39+/33f7kmmXxJWjRgemUt
-         koLb4gpJE1u/Yf2WoGT1oFuyt5d1G3Nri3hO/XMuuaIV0fUJEydem0gjhOvbVVe59V
-         MqCFeog9hWAj8kIins1AwporA2vikWe0FB6mf1wM=
+        b=btQvHiLpFGmzLH9ySps5JeEWsRGhSMg7GRTHTOr6JF7LFmy1xR0Qnp1kt2vCT8/W1
+         VADRqPOrz0gyIZpRLITTbGWDqgDpbaPWq5FPxiyZfJVHag8UV7Q9JJwZuzi1iTQ01P
+         QTdG5oOPZGi/pn2VAPjIw6zV/VssUsrEn1gXZJbo=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Egorenkov <egorenar@linux.ibm.com>,
+Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
         Heiko Carstens <heiko.carstens@de.ibm.com>,
         Sasha Levin <sashal@kernel.org>, linux-s390@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 35/53] s390/kasan: fix early pgm check handler execution
-Date:   Wed,  1 Jul 2020 21:21:44 -0400
-Message-Id: <20200702012202.2700645-35-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.7 36/53] s390/debug: avoid kernel warning on too large number of pages
+Date:   Wed,  1 Jul 2020 21:21:45 -0400
+Message-Id: <20200702012202.2700645-36-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200702012202.2700645-1-sashal@kernel.org>
 References: <20200702012202.2700645-1-sashal@kernel.org>
@@ -44,40 +43,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasily Gorbik <gor@linux.ibm.com>
+From: Christian Borntraeger <borntraeger@de.ibm.com>
 
-[ Upstream commit 998f5bbe3dbdab81c1cfb1aef7c3892f5d24f6c7 ]
+[ Upstream commit 827c4913923e0b441ba07ba4cc41e01181102303 ]
 
-Currently if early_pgm_check_handler is called it ends up in pgm check
-loop. The problem is that early_pgm_check_handler is instrumented by
-KASAN but executed without DAT flag enabled which leads to addressing
-exception when KASAN checks try to access shadow memory.
+When specifying insanely large debug buffers a kernel warning is
+printed. The debug code does handle the error gracefully, though.
+Instead of duplicating the check let us silence the warning to
+avoid crashes when panic_on_warn is used.
 
-Fix that by executing early handlers with DAT flag on under KASAN as
-expected.
-
-Reported-and-tested-by: Alexander Egorenkov <egorenar@linux.ibm.com>
+Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
 Reviewed-by: Heiko Carstens <heiko.carstens@de.ibm.com>
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
 Signed-off-by: Heiko Carstens <heiko.carstens@de.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/kernel/early.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/s390/kernel/debug.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/s390/kernel/early.c b/arch/s390/kernel/early.c
-index cd241ee66eff4..0782772318580 100644
---- a/arch/s390/kernel/early.c
-+++ b/arch/s390/kernel/early.c
-@@ -170,6 +170,8 @@ static noinline __init void setup_lowcore_early(void)
- 	psw_t psw;
- 
- 	psw.mask = PSW_MASK_BASE | PSW_DEFAULT_KEY | PSW_MASK_EA | PSW_MASK_BA;
-+	if (IS_ENABLED(CONFIG_KASAN))
-+		psw.mask |= PSW_MASK_DAT;
- 	psw.addr = (unsigned long) s390_base_ext_handler;
- 	S390_lowcore.external_new_psw = psw;
- 	psw.addr = (unsigned long) s390_base_pgm_handler;
+diff --git a/arch/s390/kernel/debug.c b/arch/s390/kernel/debug.c
+index 6d321f5f101d6..7184d55d87aae 100644
+--- a/arch/s390/kernel/debug.c
++++ b/arch/s390/kernel/debug.c
+@@ -198,9 +198,10 @@ static debug_entry_t ***debug_areas_alloc(int pages_per_area, int nr_areas)
+ 	if (!areas)
+ 		goto fail_malloc_areas;
+ 	for (i = 0; i < nr_areas; i++) {
++		/* GFP_NOWARN to avoid user triggerable WARN, we handle fails */
+ 		areas[i] = kmalloc_array(pages_per_area,
+ 					 sizeof(debug_entry_t *),
+-					 GFP_KERNEL);
++					 GFP_KERNEL | __GFP_NOWARN);
+ 		if (!areas[i])
+ 			goto fail_malloc_areas2;
+ 		for (j = 0; j < pages_per_area; j++) {
 -- 
 2.25.1
 
