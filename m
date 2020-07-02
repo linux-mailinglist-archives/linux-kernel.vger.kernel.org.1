@@ -2,190 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A140212267
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 13:36:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1C8C212270
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 13:39:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728761AbgGBLgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 07:36:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52090 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728677AbgGBLgJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 07:36:09 -0400
-Received: from localhost (unknown [122.182.251.219])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 676F220780;
-        Thu,  2 Jul 2020 11:36:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593689768;
-        bh=p0YH01x3WZMVkR6PI1s0jg/nyY9gF98YHIOHeOJG2qU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tq3OfLtPV4nIin6WJOdiCHY+Fp4eQINFGZqFEKQ5d6Oa9jg74lBzERCVcEZ72HuTF
-         mpQAeWsX9xDWsdZ5ZCKyWnooffexQoeC14qG1o8pywKtyZNVNi1KQCFTbdN9hQRHwB
-         ZnF/0hg/D30ZG0bdkbV+hD62oO6PAt3rW5b0eHtI=
-Date:   Thu, 2 Jul 2020 17:06:02 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     perex@perex.cz, tiwai@suse.com, lgirdwood@gmail.com,
-        broonie@kernel.org, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, ckeepax@opensource.cirrus.com
-Subject: Re: [RFC PATCH] ALSA: compress: add support to change codec profile
- in gapless playback
-Message-ID: <20200702113602.GA273932@vkoul-mobl>
-References: <20200702111114.32217-1-srinivas.kandagatla@linaro.org>
+        id S1728681AbgGBLja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 07:39:30 -0400
+Received: from mout.kundenserver.de ([212.227.126.130]:34081 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727016AbgGBLj3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 07:39:29 -0400
+Received: from mail-qk1-f176.google.com ([209.85.222.176]) by
+ mrelayeu.kundenserver.de (mreue010 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1MyJx6-1isHMh3GRg-00ykb7; Thu, 02 Jul 2020 13:39:27 +0200
+Received: by mail-qk1-f176.google.com with SMTP id e13so25256271qkg.5;
+        Thu, 02 Jul 2020 04:39:27 -0700 (PDT)
+X-Gm-Message-State: AOAM532z0IHA9N1mAsG65XlCWqo+0pwbShicaHgYkplIDL+zOJ4B9Fdd
+        Gx0V0WAJRgyl1kE6Xf/FAxj82S5DvTjR08HdYBs=
+X-Google-Smtp-Source: ABdhPJxZnj5versBmr7lWdCxrevvSnrtGz16SQp4OMCvU87jKF+QYKva7czF6a7gzq//AqJiVHDYLYMn/4Cgp3bsm/o=
+X-Received: by 2002:a37:9dd6:: with SMTP id g205mr30820571qke.352.1593689966522;
+ Thu, 02 Jul 2020 04:39:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200702111114.32217-1-srinivas.kandagatla@linaro.org>
+References: <20200630173734.14057-1-will@kernel.org> <20200630173734.14057-5-will@kernel.org>
+ <20200702093239.GA15391@C02TD0UTHF1T.local> <20200702094833.GA16248@willie-the-truck>
+ <CAK8P3a07G1dLC+RUBDkzDbCRCP_gwZAaVK+k1UxvXT+7Kj=o+g@mail.gmail.com> <20200702111832.GC16418@willie-the-truck>
+In-Reply-To: <20200702111832.GC16418@willie-the-truck>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 2 Jul 2020 13:39:10 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3VrEkDf8t1CCsY+g7rtXkqBsiPOr97b1yRbz8NpjdfFA@mail.gmail.com>
+Message-ID: <CAK8P3a3VrEkDf8t1CCsY+g7rtXkqBsiPOr97b1yRbz8NpjdfFA@mail.gmail.com>
+Subject: Re: [PATCH 04/18] alpha: Override READ_ONCE() with barriered implementation
+To:     Will Deacon <will@kernel.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Marco Elver <elver@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Matt Turner <mattst88@gmail.com>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Richard Henderson <rth@twiddle.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        alpha <linux-alpha@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Android Kernel Team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:Z8zyvq6vDbeYzAhJCb6eVc2WB9OLAma8FkNnVfzP5LIPHoG/zM3
+ H+stHIIcLhAOQVdPGVb+yvmXZS6bZvAlPlPGAb7K3XN/Yf/9tiD+LfyrHyrF2jie4hgS9KZ
+ irhd23yNkSatHVfb8y2fRt4J+qOAfrpIFB+YlKB8CPwZ0m5soww1dXiL+e4/fBrJvO0u51V
+ FIQm29ysC2PM1GqgInKpw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:MVQPFMqFHCg=:Mc/Fzv3M0wGaJGNRmiZWUe
+ KhM7kbvbSIBkOSpRLKpn2mQuHZQiboCZGmj68hm2SMimxXdnYI3wYcK7GopZhk+JR3aBa1wbc
+ b1yaKMwUqylhcFZNngxpMvDzlTF1PvFIjy1TTaAhiTRUB9+xeBPFgbS05UWQRwSmi2JAp+DOb
+ w9PpjmmcLdJhOqQzTTiFB20BJKu26jnzomBTvGHtCKhc9ykIackRn29iZzaFfpnZvSRmnkvtQ
+ nRB1TJtCrCSzEq2cuZ3HgSGJM0VJ7lBsDmQcm5XEh8rI8t/0TOOtezYCP2qeHZMi2E7wldego
+ 58hv1Ra6Ath2DLPfjcT9qJbkmo/521T0VPquIdh/1enx7hnlCBxsv8gxG2QnI8BYnZ3fTUTbQ
+ qR3eaMFvTbbNBLDZTj2gNWGUbSrcyEqWPBu76Rmq+UU/d+W1zne8vnaUNyNjsJuIZAAqqnG2b
+ UU8wfrD4HFvkfBctfr/Fi7vwMMXIF3BMSoOp78QP8Qj4tJwVoeCI1Sd1EBvtrBR2wQPmOrS68
+ eREemZPiU1odDD2L1M3yLfpnjayDnchDXD/nZlp6QVeA6t0OqPfXZm0BQaUv98iolzQP8HxjA
+ 9XW1RGsmMsY/mMjUh2fyz5dymegWy+bpNe76EEzhw7+laAeDZEGO3I15Mx6eE0MRiuUjwffdQ
+ 5It73uUIRMFuiNK89mNjqT2VH+pSxQ4tl28Zqogpjw/CBt72jxVvhtO+89/7RLoZEz1l6X7Gy
+ hdJ0rZ5ohsb3nY2vodf3TGVAKZyMGgO9S+QpihT/Ypet1XCDCqkCdn6XMwIkInXyR4v4dvNJm
+ Y3SqJsvXjFHzffKoa+nDO8VFyuSx0FcmDugZDFctFRy2lf2Cw4=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Srini,
+On Thu, Jul 2, 2020 at 1:18 PM Will Deacon <will@kernel.org> wrote:
+> On Thu, Jul 02, 2020 at 12:08:41PM +0200, Arnd Bergmann wrote:
+> > On Thu, Jul 2, 2020 at 11:48 AM Will Deacon <will@kernel.org> wrote:
+> > > On Thu, Jul 02, 2020 at 10:32:39AM +0100, Mark Rutland wrote:
 
-On 02-07-20, 12:11, Srinivas Kandagatla wrote:
-> For gapless playback its possible that each track can have different
+> Not sure I follow you here, but I can confirm that what you're worried
+> about doesn't happen for the usual case of a pointer-to-volatile scalar.
+>
+> For example, ignoring dependency ordering:
+>
+> unsigned long foo(volatile unsigned long *p)
+> {
+>         return smp_load_acquire(p) + 1;
+> }
+>
+> Ends up looking like:
+>
+>         unsigned long ___p1 = *(const volatile unsigned long *)p;
+>         smp_mb();
+>         (volatile unsigned long)___p1;
+>
+> My understanding is that casting a non-pointer type to volatile doesn't
+> do anything, so we're good.
 
-s/its/it is 
+Right, I mixed up the correct
 
-> codec profile with same decoder, for example we have WMA album,
-> we may have different tracks as WMA v9, WMA v10 and so on
-> 
-> Existing code does not allow to change this profile while doing gapless
-> playback.
-> 
-> This patch adds new SNDRV_COMPRESS_SET_CODEC_PARAMS IOCTL to allow
-> userspace to set this new parameters required for new codec profile.
+        (typeof(*p))___p;
 
-Thanks, this looks good and in line with discussions done in Audio uConf
+with the incorrect
 
-> 
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> ---
->  include/sound/compress_driver.h       |  5 +++
->  include/sound/soc-component.h         |  3 ++
->  include/sound/soc-dai.h               |  5 +++
->  include/uapi/sound/compress_offload.h |  1 +
->  sound/core/compress_offload.c         | 54 ++++++++++++++++++++++++---
->  sound/soc/soc-compress.c              | 30 +++++++++++++++
->  sound/soc/soc-dai.c                   | 14 +++++++
+       *typeof(p)&___p;
 
-Can we split the ALSA changes and ASoC changes to different patches
-please?
+which would dereference a volatile pointer and cause the
+problem.
 
-Also please post driver support for this API..
+The code is all fine then.
 
-Lastly, documentation needs update about this call
-
->  7 files changed, 106 insertions(+), 6 deletions(-)
-> 
-> diff --git a/include/sound/compress_driver.h b/include/sound/compress_driver.h
-> index 70cbc5095e72..8d23351f7ad7 100644
-> --- a/include/sound/compress_driver.h
-> +++ b/include/sound/compress_driver.h
-> @@ -93,6 +93,9 @@ struct snd_compr_stream {
->   * @set_params: Sets the compressed stream parameters, mandatory
->   * This can be called in during stream creation only to set codec params
->   * and the stream properties
-> + * @set_codec_params: Sets the compressed stream codec parameters, mandatory
-
-This should be optional as gapless is optional
-
-> --- a/include/uapi/sound/compress_offload.h
-> +++ b/include/uapi/sound/compress_offload.h
-> @@ -172,6 +172,7 @@ struct snd_compr_metadata {
->  						 struct snd_compr_metadata)
->  #define SNDRV_COMPRESS_GET_METADATA	_IOWR('C', 0x15,\
->  						 struct snd_compr_metadata)
-> +#define SNDRV_COMPRESS_SET_CODEC_PARAMS	_IOW('C', 0x16, struct snd_codec)
->  #define SNDRV_COMPRESS_TSTAMP		_IOR('C', 0x20, struct snd_compr_tstamp)
->  #define SNDRV_COMPRESS_AVAIL		_IOR('C', 0x21, struct snd_compr_avail)
->  #define SNDRV_COMPRESS_PAUSE		_IO('C', 0x30)
-
-I think we should bump the compress version too for checking in userland
-about this support
-
->  static int snd_compress_check_input(struct snd_compr_params *params)
->  {
->  	/* first let's check the buffer parameter's */
-> @@ -574,14 +586,41 @@ static int snd_compress_check_input(struct snd_compr_params *params)
->  	    params->buffer.fragments == 0)
->  		return -EINVAL;
->  
-> -	/* now codec parameters */
-> -	if (params->codec.id == 0 || params->codec.id > SND_AUDIOCODEC_MAX)
-> -		return -EINVAL;
-> +	return snd_compress_check_codec_params(&params->codec);
-
-Can this be 1st patch to prepare for this change?
-
->  
-> -	if (params->codec.ch_in == 0 || params->codec.ch_out == 0)
-> -		return -EINVAL;
-> +}
->  
-> -	return 0;
-> +static int snd_compr_set_codec_params(struct snd_compr_stream *stream,
-> +				      unsigned long arg)
-> +{
-> +	struct snd_codec *params;
-> +	int retval;
-> +
-> +	if (!stream->ops->set_codec_params)
-> +		return -EPERM;
-> +
-> +	if (stream->runtime->state != SNDRV_PCM_STATE_RUNNING)
-> +		return -EPERM;
-> +
-> +	/* codec params can be only set when next track has been signalled */
-> +	if (stream->next_track == false)
-> +		return -EPERM;
-> +
-> +	params = memdup_user((void __user *)arg, sizeof(*params));
-> +	if (IS_ERR(params))
-> +		return PTR_ERR(params);
-> +
-> +	retval = snd_compress_check_codec_params(params);
-> +	if (retval)
-> +		goto out;
-> +
-> +	retval = stream->ops->set_codec_params(stream, params);
-> +	if (retval)
-> +		goto out;
-
-this jump is superfluous
-
-> +
-> +out:
-> +	kfree(params);
-> +	return retval;
->  }
-
-...
-
-> +static int soc_compr_set_codec_params(struct snd_compr_stream *cstream,
-> +				      struct snd_codec *codec)
-> +{
-> +	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
-> +	struct snd_soc_component *component;
-> +	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-> +	int i, ret;
-> +
-> +	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
-> +
-> +	ret = snd_soc_dai_compr_set_codec_params(cpu_dai, cstream, codec);
-> +	if (ret < 0)
-> +		goto err;
-> +
-> +	for_each_rtd_components(rtd, i, component) {
-> +		if (!component->driver->compress_ops ||
-> +		    !component->driver->compress_ops->set_codec_params)
-> +			continue;
-> +
-> +		ret = component->driver->compress_ops->set_codec_params(component, cstream,
-> +								     codec);
-
-maybe use a compress_ops pointer to make this look and read better :)
--- 
-~Vinod
+    Arnd
