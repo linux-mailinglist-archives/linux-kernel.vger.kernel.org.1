@@ -2,91 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B5212123FB
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 14:59:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 720C7212413
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Jul 2020 15:04:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729113AbgGBM6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 08:58:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53698 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728967AbgGBM6w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 08:58:52 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3041420772;
-        Thu,  2 Jul 2020 12:58:51 +0000 (UTC)
-Date:   Thu, 2 Jul 2020 08:58:49 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        John Warthog9 Hawley <warthog9@kernel.org>
-Subject: Re: [for-next][PATCH 8/8] ktest.pl: Add MAIL_MAX_SIZE to limit the
- amount of log emailed
-Message-ID: <20200702085849.16999b39@oasis.local.home>
-In-Reply-To: <20200702123402.GA1773770@kroah.com>
-References: <20200701231717.757834010@goodmis.org>
-        <20200701231756.790637968@goodmis.org>
-        <20200702074103.GA1076415@kroah.com>
-        <20200702081949.2bfd2417@oasis.local.home>
-        <20200702123402.GA1773770@kroah.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1729144AbgGBNEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 09:04:30 -0400
+Received: from esa3.microchip.iphmx.com ([68.232.153.233]:35305 "EHLO
+        esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729017AbgGBNE2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 09:04:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1593695068; x=1625231068;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=AXbjniwuszyxWpVmXzYI6N4oJcnifghlxot0w5Is/xU=;
+  b=KudU7RaNzTJWFH/rdEyLFMRjkdmcqwDuCQd5ozDf3L6Yi+L5dk85wSZ0
+   MCN0aaduSFdz6DgcyVm5EGp/yEvAkp6uxVf1+3NWz7Um3Vr8xXOZ4Oe/6
+   v9dcZKqMjhNBW0GuO1Bk/gVojvu8huy+5lQ3533cbpnHPcuEqma2/ek8o
+   CLec38HYRc1wPEGZfSJCz9QdpljU+l3c9YJfOJhAuWrGQ4225HqbKcY2e
+   HA7YTL0XrRNLDlgrFfs5+f6uyU97TsZWGfiShpwu9OhGjI2K0Sg/U8Xwr
+   BEqprwWhW1M6n77wRw4x7msk4/JEvsl9SrJJNW77oxRfnE1lH4V0b4CA0
+   g==;
+IronPort-SDR: AFFxMP1lNuUdTuox+VSl6R5uLEwnBtFm3a94pektJdYNOMsLdOug1iHZJAVytmBN5GIItsbk7i
+ LZPu8nmw8gVdu5IIZrJxyuNJoMCjAAhWFm1PqtGidvTQIb0mFmiPzCZZONTCPKUBFNzyPRwliY
+ t/Ai3yWoz9jdLOBBH48txhvtk9rfX4xzrRCyYFpsQo9K4gSAjo++NrWpAXULCsiNEIyp/YjzMH
+ LbLM2OfakTKsE/Y4ZweRqyX1BVj6t9C/mMb3bNfsFoP2/NgFTYKovF82eSSGKv+Qteb5VXb09g
+ DPE=
+X-IronPort-AV: E=Sophos;i="5.75,304,1589266800"; 
+   d="scan'208";a="82389501"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 02 Jul 2020 06:04:27 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 2 Jul 2020 06:04:27 -0700
+Received: from localhost.localdomain (10.10.115.15) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Thu, 2 Jul 2020 06:04:05 -0700
+From:   <nicolas.ferre@microchip.com>
+To:     <netdev@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>,
+        "Claudiu Beznea" <claudiu.beznea@microchip.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>
+Subject: [PATCH] MAINTAINERS: net: macb: add Claudiu as co-maintainer
+Date:   Thu, 2 Jul 2020 15:00:21 +0200
+Message-ID: <20200702130021.32694-1-nicolas.ferre@microchip.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2 Jul 2020 14:34:02 +0200
-Greg KH <gregkh@linuxfoundation.org> wrote:
+From: Nicolas Ferre <nicolas.ferre@microchip.com>
 
-> > I can add an option to do that if you want. My full logs end up being a
-> > few hundred megabytes. Perhaps I could add a compress option too.  
-> 
-> It's fine, the default should be good enough for me for now.  If not,
-> I'll just bump the value, or add compression.
+I would like that Claudiu becomes co-maintainer of the Cadence macb
+driver. He's already participating to lots of reviews and enhancements
+to this driver and knows the different versions of this controller.
 
-If we compress, it would need to be an attachment. I'm guessing you are
-fine with that. Do you already make it an attachment?
+Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+---
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
 
-BTW, my test just failed and for some reason it created a 13162697 byte
-log file to include in my email, which failed to send :-p 
-
-Strange that it did that, as I had the max set to 950000. Thus, I've
-changed this code to be:
-
-diff --git a/tools/testing/ktest/ktest.pl b/tools/testing/ktest/ktest.pl
-index 917810fa4c85..9363a5b27339 100755
---- a/tools/testing/ktest/ktest.pl
-+++ b/tools/testing/ktest/ktest.pl
-@@ -1499,18 +1499,21 @@ sub dodie {
-        my $log_file;
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 63c4cc4a04d6..5f14938a5985 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -2929,6 +2929,7 @@ F:	include/uapi/linux/atm*
  
-        if (defined($opt{"LOG_FILE"})) {
--           my $size = 0;
-+           my $whence = 0; # beginning of file
-+           my $pos = $test_log_start;
-+
-            if (defined($mail_max_size)) {
-                my $log_size = tell LOG;
-                $log_size -= $test_log_start;
-                if ($log_size > $mail_max_size) {
--                   $size = $log_size - $mail_max_size;
-+                   $whence = 2; # end of file
-+                   $pos = - $mail_max_size;
-                }
-            }
-            $log_file = "$tmpdir/log";
-            open (L, "$opt{LOG_FILE}") or die "Can't open $opt{LOG_FILE} to read)";
-            open (O, "> $tmpdir/log") or die "Can't open $tmpdir/log\n";
--           seek(L, $test_log_start + $size, 0);
-+           seek(L, $pos, $whence);
-            while (<L>) {
-                print O;
-            }
+ ATMEL MACB ETHERNET DRIVER
+ M:	Nicolas Ferre <nicolas.ferre@microchip.com>
++M:	Claudiu Beznea <claudiu.beznea@microchip.com>
+ S:	Supported
+ F:	drivers/net/ethernet/cadence/
+ 
+-- 
+2.27.0
 
-Let's see if this now limits it :-/
-
--- Steve
