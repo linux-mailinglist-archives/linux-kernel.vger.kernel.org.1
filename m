@@ -2,162 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7CEB213D13
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 17:57:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9E77213D15
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 17:58:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726750AbgGCP5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 11:57:01 -0400
-Received: from foss.arm.com ([217.140.110.172]:46938 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726638AbgGCP46 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 11:56:58 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8F6F31045;
-        Fri,  3 Jul 2020 08:56:57 -0700 (PDT)
-Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 8FC373F73C;
-        Fri,  3 Jul 2020 08:56:56 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     linux-kernel@vger.kernel.org, sparclinux@vger.kernel.org
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>
-Subject: [PATCH 2/2] genirq: Remove preflow handler support
-Date:   Fri,  3 Jul 2020 16:56:45 +0100
-Message-Id: <20200703155645.29703-3-valentin.schneider@arm.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200703155645.29703-1-valentin.schneider@arm.com>
-References: <20200703155645.29703-1-valentin.schneider@arm.com>
+        id S1726669AbgGCP5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 11:57:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726111AbgGCP5x (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Jul 2020 11:57:53 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59CE4C061794
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Jul 2020 08:57:53 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id t74so18795080lff.2
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Jul 2020 08:57:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=nJfTZsg6zGpN4LZZod8fa0dun7XM75S7cDWAFPDQlzE=;
+        b=a8YSI/EHpQyrMqboBcug3Bi3PbNtG8hdkBOtonmFDp4/WYV51C1PhyeogwwCZXzQPv
+         fCyNJn/rKxuxBw1gO8DoX1c1Hui8hifWeN59qkQcvQl+/mNEcW1bTOhZQsxa23bsGlVC
+         cXdLXnsSRmQMuhgUxL9X9ct9jUmCEMDDpan0PjAWmSViLTMrx0YFVU5se+lxFN0M+wQ4
+         JJlJvpmsOTnSQVm65C5nxQK/LE7Hdhq5+gz/4MStKuNKu7dsmRqW+7zBrdUN308AeN6L
+         z7q7HNRNg/eIiZCCry8hx8kvN5wou4DlQPtFgUnmnBGaxU6GFM7BHacn+clwgHFb9MZB
+         0Uhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=nJfTZsg6zGpN4LZZod8fa0dun7XM75S7cDWAFPDQlzE=;
+        b=S4hmXAU9J/MI3SQSM14JFA4diRLcE9J3n/C0I7TgJShPrps6pak5wGD4s1hs4ws2Qa
+         X0VLGelmGWocH900Jz9QqqUgvBvXeo9zzQo216GMrDu9SSlEbrO7XXpQLzWpSHBjNMbq
+         yxMvo2DI2KlJ6LMVvwhW/DiUyUXsHM3RhklWM08XZrwZL43XqwH+wudo+YPpoJPRzfAN
+         9bH2K9LcBqCXdjiQ6gHFwC+MWCQuTWCiSnXDKaystKWF9ThcS/lAWDaRvqMwBBo8jS4Z
+         frFdr1+HJDKU4fiGaaNnWxH49PoPfcKqMGZV01nUmK3kPWViL3zbdiMTTsC/LZxk2UrR
+         6tsw==
+X-Gm-Message-State: AOAM533UmGr2EgXGcZSUv1z1slXBgwXt8NOiVsOka+WPUDe1lcxKJZ8Y
+        9RM5fuPb5i8i9u3cJqZf9YmK/opb03/aaA==
+X-Google-Smtp-Source: ABdhPJz+VDfZjsli5UxFGTdOGf24yXTHZox6rW9tCpirhNrxUNQKHIiy+mmSmxF/RWSNOhzpLh4wSQ==
+X-Received: by 2002:a19:8608:: with SMTP id i8mr9811691lfd.54.1593791871508;
+        Fri, 03 Jul 2020 08:57:51 -0700 (PDT)
+Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
+        by smtp.gmail.com with ESMTPSA id q2sm4901973ljp.135.2020.07.03.08.57.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Jul 2020 08:57:51 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Fri, 3 Jul 2020 17:57:49 +0200
+To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        GregKroah-Hartmangregkh@linuxfoundation.org, peterz@infradead.org
+Subject: nr_cpu_ids vs AMD 3970x(32 physical CPUs)
+Message-ID: <20200703155749.GA6255@pc636>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-That was put in place for sparc64, and blackfin also used it for some time;
-sparc64 no longer uses those, and blackfin is dead.
+Hello, folk.
 
-As there are no more users, remove preflow handlers.
+I have a system based on AMD 3970x CPUs. It has 32 physical cores
+and 64 threads. It seems that "nr_cpu_ids" variable is not correctly
+set on latest 5.8-rc3 kernel. Please have a look below on dmesg output:
 
-Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
----
- include/linux/irqdesc.h    | 15 ---------------
- include/linux/irqhandler.h |  1 -
- kernel/irq/Kconfig         |  4 ----
- kernel/irq/chip.c          | 13 -------------
- 4 files changed, 33 deletions(-)
+<snip>
+urezki@pc638:~$ sudo dmesg | grep 128
+[    0.000000] IOAPIC[0]: apic_id 128, version 33, address 0xfec00000, GSI 0-23
+[    0.000000] smpboot: Allowing 128 CPUs, 64 hotplug CPUs
+[    0.000000] setup_percpu: NR_CPUS:512 nr_cpumask_bits:512 nr_cpu_ids:128 nr_node_ids:1
+...
+[    0.000000] SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=128, Nodes=1
+[    0.000000] rcu:     RCU restricting CPUs from NR_CPUS=512 to nr_cpu_ids=128.
+[    0.000000] rcu: Adjusting geometry for rcu_fanout_leaf=16, nr_cpu_ids=128
+urezki@pc638:~$
+<snip>
 
-diff --git a/include/linux/irqdesc.h b/include/linux/irqdesc.h
-index 8f2820c5e69e..5745491303e0 100644
---- a/include/linux/irqdesc.h
-+++ b/include/linux/irqdesc.h
-@@ -22,7 +22,6 @@ struct pt_regs;
-  * @irq_common_data:	per irq and chip data passed down to chip functions
-  * @kstat_irqs:		irq stats per cpu
-  * @handle_irq:		highlevel irq-events handler
-- * @preflow_handler:	handler called before the flow handler (currently used by sparc)
-  * @action:		the irq action chain
-  * @status_use_accessors: status information
-  * @core_internal_state__do_not_mess_with_it: core internal status information
-@@ -58,9 +57,6 @@ struct irq_desc {
- 	struct irq_data		irq_data;
- 	unsigned int __percpu	*kstat_irqs;
- 	irq_flow_handler_t	handle_irq;
--#ifdef CONFIG_IRQ_PREFLOW_FASTEOI
--	irq_preflow_handler_t	preflow_handler;
--#endif
- 	struct irqaction	*action;	/* IRQ action list */
- 	unsigned int		status_use_accessors;
- 	unsigned int		core_internal_state__do_not_mess_with_it;
-@@ -268,15 +264,4 @@ irq_set_lockdep_class(unsigned int irq, struct lock_class_key *lock_class,
- 	}
- }
- 
--#ifdef CONFIG_IRQ_PREFLOW_FASTEOI
--static inline void
--__irq_set_preflow_handler(unsigned int irq, irq_preflow_handler_t handler)
--{
--	struct irq_desc *desc;
--
--	desc = irq_to_desc(irq);
--	desc->preflow_handler = handler;
--}
--#endif
--
- #endif
-diff --git a/include/linux/irqhandler.h b/include/linux/irqhandler.h
-index 1e6f4e7123d6..c30f454a9518 100644
---- a/include/linux/irqhandler.h
-+++ b/include/linux/irqhandler.h
-@@ -10,6 +10,5 @@
- struct irq_desc;
- struct irq_data;
- typedef	void (*irq_flow_handler_t)(struct irq_desc *desc);
--typedef	void (*irq_preflow_handler_t)(struct irq_data *data);
- 
- #endif
-diff --git a/kernel/irq/Kconfig b/kernel/irq/Kconfig
-index d63c324895ea..58f0e996a2c3 100644
---- a/kernel/irq/Kconfig
-+++ b/kernel/irq/Kconfig
-@@ -51,10 +51,6 @@ config GENERIC_IRQ_INJECTION
- config HARDIRQS_SW_RESEND
-        bool
- 
--# Preflow handler support for fasteoi (sparc64)
--config IRQ_PREFLOW_FASTEOI
--       bool
--
- # Edge style eoi based handler (cell)
- config IRQ_EDGE_EOI_HANDLER
-        bool
-diff --git a/kernel/irq/chip.c b/kernel/irq/chip.c
-index 41e7e37a0928..75bbaa8b38f1 100644
---- a/kernel/irq/chip.c
-+++ b/kernel/irq/chip.c
-@@ -656,16 +656,6 @@ void handle_level_irq(struct irq_desc *desc)
- }
- EXPORT_SYMBOL_GPL(handle_level_irq);
- 
--#ifdef CONFIG_IRQ_PREFLOW_FASTEOI
--static inline void preflow_handler(struct irq_desc *desc)
--{
--	if (desc->preflow_handler)
--		desc->preflow_handler(&desc->irq_data);
--}
--#else
--static inline void preflow_handler(struct irq_desc *desc) { }
--#endif
--
- static void cond_unmask_eoi_irq(struct irq_desc *desc, struct irq_chip *chip)
- {
- 	if (!(desc->istate & IRQS_ONESHOT)) {
-@@ -721,7 +711,6 @@ void handle_fasteoi_irq(struct irq_desc *desc)
- 	if (desc->istate & IRQS_ONESHOT)
- 		mask_irq(desc);
- 
--	preflow_handler(desc);
- 	handle_irq_event(desc);
- 
- 	cond_unmask_eoi_irq(desc, chip);
-@@ -1231,7 +1220,6 @@ void handle_fasteoi_ack_irq(struct irq_desc *desc)
- 	/* Start handling the irq */
- 	desc->irq_data.chip->irq_ack(&desc->irq_data);
- 
--	preflow_handler(desc);
- 	handle_irq_event(desc);
- 
- 	cond_unmask_eoi_irq(desc, chip);
-@@ -1281,7 +1269,6 @@ void handle_fasteoi_mask_irq(struct irq_desc *desc)
- 	if (desc->istate & IRQS_ONESHOT)
- 		mask_irq(desc);
- 
--	preflow_handler(desc);
- 	handle_irq_event(desc);
- 
- 	cond_unmask_eoi_irq(desc, chip);
--- 
-2.27.0
+For example SLUB thinks that it deals with 128 CPUs in the system what is
+wrong if i do not miss something. Since nr_cpu_ids is broken(?), thus the
+"cpu_possible_mask" does not correspond to reality as well.
 
+Any thoughts?
+
+Thanks!
+
+--
+Vlad Rezki
