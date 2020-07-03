@@ -2,64 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F012C213692
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 10:39:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C89C213691
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 10:39:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726385AbgGCIja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 04:39:30 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7368 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725648AbgGCIj3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 04:39:29 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id B08A2E2E8CD71AA10A17;
-        Fri,  3 Jul 2020 16:39:28 +0800 (CST)
-Received: from szvp000203569.huawei.com (10.120.216.130) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 3 Jul 2020 16:39:21 +0800
-From:   Chao Yu <yuchao0@huawei.com>
-To:     <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
-        Chao Yu <yuchao0@huawei.com>
-Subject: [PATCH] f2fs: fix wrong description of compress feature in f2fs.rst
-Date:   Fri, 3 Jul 2020 16:39:09 +0800
-Message-ID: <20200703083909.42479-1-yuchao0@huawei.com>
-X-Mailer: git-send-email 2.26.2
+        id S1726356AbgGCIjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 04:39:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53814 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725648AbgGCIjT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Jul 2020 04:39:19 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 23E57206DF;
+        Fri,  3 Jul 2020 08:39:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593765559;
+        bh=MvXrb6r67qib7/+nzgg82KcxzQJ/w/+5fImFL7ixVXw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1odqj4HK1/iPAdyy6hPR85RJNmhvOSqeJj0AoSlxcxvwXLmgdDm4KVPy2NoOPuhKD
+         ZfzXhNoNv9YqTrL8/QU9WZe35bgzjVj3yyuKx04MjDdx9j1JZh7EWr2MBiP4lo76LM
+         ryzdngx7FCwDMwXW/NtAxhCxP0c+eklbSHDza558=
+Date:   Fri, 3 Jul 2020 09:39:14 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Keno Fischer <keno@juliacomputing.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>
+Subject: Re: ptrace: seccomp: Return value when the call was already invalid
+Message-ID: <20200703083914.GA18516@willie-the-truck>
+References: <CABV8kRxA9mXPZwtYrjbAfOfFewhABHddipccgk-LQJO+ZYu4Xg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.120.216.130]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABV8kRxA9mXPZwtYrjbAfOfFewhABHddipccgk-LQJO+ZYu4Xg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-f2fs will try compressing data in cluster only when "all logical
-blocks in cluster contain valid data" rather than "all logical
-blocks in file are valid".
+Hi Keno,
 
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
----
- Documentation/filesystems/f2fs.rst | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On Fri, May 22, 2020 at 09:01:01PM -0400, Keno Fischer wrote:
+> I'm seeing the following while porting a ptracer from
+> x86_64 to arm64 (cc'ing arm64 folks, but in this case
+> x86_64 is the odd one out, I think other archs would
+> be consistent with arm64).
+> 
+> Consider userspace code like the following:
+> ```
+> int ret = syscall(-10, 0);
+> assert(ret == -ENOSYS);
+> ```
+> 
+> (Never mind the fact that this is something userspace
+> shouldn't do, I saw this in our test suite that tests
+> corner cases where the ptracer shouldn't affect behavior).
+> 
+> Now, if we have a seccomp filter that simply does
+> SECCOMP_RET_TRACE, and a ptracer that simply
+> does PTRACE_CONT
 
-diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
-index 535021c46260..de43239a3c31 100644
---- a/Documentation/filesystems/f2fs.rst
-+++ b/Documentation/filesystems/f2fs.rst
-@@ -739,8 +739,8 @@ Compression implementation
- 
- - In order to eliminate write amplification during overwrite, F2FS only
-   support compression on write-once file, data can be compressed only when
--  all logical blocks in file are valid and cluster compress ratio is lower
--  than specified threshold.
-+  all logical blocks in cluster contain valid data and compress ratio of
-+  cluster data is lower than specified threshold.
- 
- - To enable compression on regular inode, there are three ways:
- 
--- 
-2.26.2
+Ok, so this means that we're _skipping_ the system call, right?
 
+> then the assert will fire/fail on arm64, but not on x86_64.
+
+It feels weird to me that skipping the system call has any effect on the
+tracee registers...
+
+> Interestingly, arm64 does do something different
+> if the syscall is -1 rather than -10, where early
+> in the ptrace stop it does.
+> ```
+> /* set default errno for user-issued syscall(-1) */
+> if (scno == NO_SYSCALL)
+>     regs->regs[0] = -ENOSYS;
+
+... so I think this should be fixed too. How about the diff below?
+
+Will
+
+--->8
+
+diff --git a/arch/arm64/kernel/ptrace.c b/arch/arm64/kernel/ptrace.c
+index 68b7f34a08f5..cb3f653c9688 100644
+--- a/arch/arm64/kernel/ptrace.c
++++ b/arch/arm64/kernel/ptrace.c
+@@ -1833,12 +1833,12 @@ int syscall_trace_enter(struct pt_regs *regs)
+ 	if (flags & (_TIF_SYSCALL_EMU | _TIF_SYSCALL_TRACE)) {
+ 		tracehook_report_syscall(regs, PTRACE_SYSCALL_ENTER);
+ 		if (!in_syscall(regs) || (flags & _TIF_SYSCALL_EMU))
+-			return -1;
++			return -ENOSYS;
+ 	}
+ 
+ 	/* Do the secure computing after ptrace; failures should be fast. */
+ 	if (secure_computing() == -1)
+-		return -1;
++		return -ENOSYS;
+ 
+ 	if (test_thread_flag(TIF_SYSCALL_TRACEPOINT))
+ 		trace_sys_enter(regs, regs->syscallno);
+@@ -1846,7 +1846,7 @@ int syscall_trace_enter(struct pt_regs *regs)
+ 	audit_syscall_entry(regs->syscallno, regs->orig_x0, regs->regs[1],
+ 			    regs->regs[2], regs->regs[3]);
+ 
+-	return regs->syscallno;
++	return 0;
+ }
+ 
+ void syscall_trace_exit(struct pt_regs *regs)
+diff --git a/arch/arm64/kernel/syscall.c b/arch/arm64/kernel/syscall.c
+index 5f5b868292f5..a13661f44818 100644
+--- a/arch/arm64/kernel/syscall.c
++++ b/arch/arm64/kernel/syscall.c
+@@ -121,12 +121,10 @@ static void el0_svc_common(struct pt_regs *regs, int scno, int sc_nr,
+ 	user_exit();
+ 
+ 	if (has_syscall_work(flags)) {
+-		/* set default errno for user-issued syscall(-1) */
+-		if (scno == NO_SYSCALL)
+-			regs->regs[0] = -ENOSYS;
+-		scno = syscall_trace_enter(regs);
+-		if (scno == NO_SYSCALL)
++		if (syscall_trace_enter(regs))
+ 			goto trace_exit;
++
++		scno = regs->syscallno;
+ 	}
+ 
+ 	invoke_syscall(regs, scno, sc_nr, syscall_table);
