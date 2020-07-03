@@ -2,161 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CFB7213B41
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 15:40:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB40E213B49
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 15:41:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726737AbgGCNky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 09:40:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35590 "EHLO
+        id S1726787AbgGCNlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 09:41:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726415AbgGCNkv (ORCPT
+        with ESMTP id S1726771AbgGCNlU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 09:40:51 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFDECC08C5DD
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Jul 2020 06:40:50 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id h10so8129829ybk.19
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Jul 2020 06:40:50 -0700 (PDT)
+        Fri, 3 Jul 2020 09:41:20 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9455C08C5DD
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Jul 2020 06:41:19 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id dr13so34288910ejc.3
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Jul 2020 06:41:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=3Gmx+1m3BOyGv6VzEOTfZTqEoVFzEpPgTLwNy+kSFG4=;
-        b=diNoF7ySymy4zPRwmpQy+gtgmoPYXEPoArOg5rtg1nToK6yCx8tUvb3yPFbEp7A6K8
-         ZM2EpqPxNo6/qxHumZoZqnPKPC8WJDX5gjRmPI6NCyopd108M63jlckY7ExG4rR0BgRR
-         +8w89dlvkq1CO27KLxmJCN26+BoKLFUoGzDdVPfyk8IS0fEMCf6mMrurebSIM6PcJVtN
-         VjwAlphtTW/LLafZmZhm1li8Y/3MLJ3Wom4TeBXcpl6QON55pzvevPg2u2SMdTs1Z+9F
-         9ZHzusBnTHsnE3tiLwQvrCuzMDSVl7QctZadMrPl5RHnDonQOVAO92o67HKAwbaE2myQ
-         QwcQ==
+        bh=7uF7g65N0fhkNRDQWLvCnLMIuNK+JZWHI0AnyxJK8Ns=;
+        b=shE8AZUMuHa+plAY8kdqJ26qAxglWyfSH6fdVPYwlmVcDEkh1j5qvjrIp7eKosz+aC
+         dIYm0vFYM6EQarWE6oLSjSqIQXZ/XdjNmF6ijeWHIb0NW6dUA9cyVWIePctQG7+n9wTn
+         OT2EcWhiP253VfIZbu0p6lTC2/SnRSrZ4McxgnQJ4YJEphTSHdYJ+SJ1puzMQbe0ZkW+
+         iSi6HCpVGvhvrfQ7wwXQaVMsqq0EJi9OXgZ1c+ik+MtmyydS/FtDF/pzV5t7sllg/oBL
+         zRTxMAKK7hR772F5HS3HiJniRdTDt2QTuHQmLs3slrpI3HAyb2xVrvi1uFiQASPj/yos
+         naaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=3Gmx+1m3BOyGv6VzEOTfZTqEoVFzEpPgTLwNy+kSFG4=;
-        b=FXkm1ulroj6YgXN6QiHBZN8gTscsGK4f9z+asLKBj81viFMd0DjYKOBveKGKnFiO3R
-         AjMrPzxGQkjtZBXk7JX/1CX77Mrz8LiC1Vdou+wol3nHZQdVYwZ//gLunvAtKo4Umysz
-         IoCinLVa0w7HFoOm8lAeviEysVmcNeYveCDCMf0EaM24HZFp17+fp4FWn1c7KlGKLHdp
-         /3Y8+AhQgwrhByvbD5KGlY0IogVE8dEeqa0AeKluIE/YzRkPz0+PVrPEzlHEY4X2/Vtp
-         33UQVt4U/jo/X4vxghkpFS/AmRJTx1H/cQ2p4S08apbeg7z6w/bLxVY20YXM1RHs0KvF
-         ks2A==
-X-Gm-Message-State: AOAM532Muo9/GAUQ3oU4J0eNWVT562fNuhFI6QdMPWXxfojybnWvzrYe
-        nX82zyswU0bshyKBhcnwzKerXiCSOQ==
-X-Google-Smtp-Source: ABdhPJxrqnXGYOoLVp2G048EcgVJFugVLCCkStGamtQFMj1VIgHXfDROY90AXEygaGTnDWaN3zPKZox2Dg==
-X-Received: by 2002:a25:ac4d:: with SMTP id r13mr19733119ybd.171.1593783650090;
- Fri, 03 Jul 2020 06:40:50 -0700 (PDT)
-Date:   Fri,  3 Jul 2020 15:40:31 +0200
-In-Reply-To: <20200703134031.3298135-1-elver@google.com>
-Message-Id: <20200703134031.3298135-3-elver@google.com>
-Mime-Version: 1.0
-References: <20200703134031.3298135-1-elver@google.com>
-X-Mailer: git-send-email 2.27.0.212.ge8ba1cc988-goog
-Subject: [PATCH 3/3] kcsan: Add atomic builtin test case
-From:   Marco Elver <elver@google.com>
-To:     elver@google.com, paulmck@kernel.org
-Cc:     dvyukov@google.com, glider@google.com, andreyknvl@google.com,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7uF7g65N0fhkNRDQWLvCnLMIuNK+JZWHI0AnyxJK8Ns=;
+        b=qPDNN8erGa//Te9y9NuZSpzWEZyR/EgCkGlFe1mYXXZsLmKqqlQkOF7dVrmbTPeAug
+         b88m2hWIGiwW9VgQf93l/3dmJml0y3jRHFdnvFc6eLaTd2O191dP4J2gXlFl0kSS0iYp
+         8HmE21bjfry29O9IcYe6XgG2BvXqsD1PeV1i6Q+av8fUqD7RfXKXNx5oFWhb8rsmocn4
+         Zx9cEFqfR/Nnp/6wg1z7zqTs2xYS3PFA+WbBRz8xBk3G0jgB8emRyVELjj+Fa447EPz2
+         THdvlKwl/f9umdW8YXuiwQ+ell8Dv/4ktqKenYQt5+2L1hWpk60IqaMxWAj2K3obB1+0
+         J/Qw==
+X-Gm-Message-State: AOAM532vAGNE83tBQDtln3DJ8q5aT4lVWdzGPR3F2BItnfNqLyOE1Qs+
+        nIDKU9DoZZjEHsGAwTtCQCE34qWjBfRJDPzhVAAVuSn52A==
+X-Google-Smtp-Source: ABdhPJzEh3lYbHXZEZtaKYGhHDXIHK+g9iZaSuhvY5ttt1AM1p+O7sOeZk0mCwWZe6VIAYYHBFBu95zncE/y13PnKdA=
+X-Received: by 2002:a17:906:456:: with SMTP id e22mr26778131eja.178.1593783678300;
+ Fri, 03 Jul 2020 06:41:18 -0700 (PDT)
+MIME-Version: 1.0
+References: <3eda864fb69977252a061c8c3ccd2d8fcd1f3a9b.1593278952.git.rgb@redhat.com>
+ <CAGdUbJEwoxEFJZDUjF7ZwKurKNibPW86=s3yFSA6BBt-YsC=Nw@mail.gmail.com>
+In-Reply-To: <CAGdUbJEwoxEFJZDUjF7ZwKurKNibPW86=s3yFSA6BBt-YsC=Nw@mail.gmail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Fri, 3 Jul 2020 09:41:07 -0400
+Message-ID: <CAHC9VhTYy5Zd6kB77xYL6HbnqL29AL6jF8RzVAN6=UC6eVLqCg@mail.gmail.com>
+Subject: Re: [PATCH ghak124 v3fix] audit: add gfp parameter to audit_log_nfcfg
+To:     Jones Desougi <jones.desougi+netfilter@gmail.com>,
+        Richard Guy Briggs <rgb@redhat.com>
+Cc:     Linux-Audit Mailing List <linux-audit@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netfilter-devel@vger.kernel.org, sgrubb@redhat.com,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        Florian Westphal <fw@strlen.de>, twoerner@redhat.com,
+        Eric Paris <eparis@parisplace.org>, tgraf@infradead.org,
+        dan.carpenter@oracle.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds test case to kcsan-test module, to test atomic builtin
-instrumentation works.
+On Fri, Jul 3, 2020 at 8:41 AM Jones Desougi
+<jones.desougi+netfilter@gmail.com> wrote:
+>
+> Doesn't seem entirely consistent now either though. Two cases below.
 
-Signed-off-by: Marco Elver <elver@google.com>
----
- kernel/kcsan/kcsan-test.c | 63 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 63 insertions(+)
+Yes, you're right, that patch was incorrect; thanks for catching that.
+I just posted a fix (lore link below) that fixes the two problems you
+pointed out as well as converts a call in a RCU protected section to
+an ATOMIC.
 
-diff --git a/kernel/kcsan/kcsan-test.c b/kernel/kcsan/kcsan-test.c
-index fed6fcb5768c..721180cbbab1 100644
---- a/kernel/kcsan/kcsan-test.c
-+++ b/kernel/kcsan/kcsan-test.c
-@@ -390,6 +390,15 @@ static noinline void test_kernel_seqlock_writer(void)
- 	write_sequnlock_irqrestore(&test_seqlock, flags);
- }
- 
-+static noinline void test_kernel_atomic_builtins(void)
-+{
-+	/*
-+	 * Generate concurrent accesses, expecting no reports, ensuring KCSAN
-+	 * treats builtin atomics as actually atomic.
-+	 */
-+	__atomic_load_n(&test_var, __ATOMIC_RELAXED);
-+}
-+
- /* ===== Test cases ===== */
- 
- /* Simple test with normal data race. */
-@@ -852,6 +861,59 @@ static void test_seqlock_noreport(struct kunit *test)
- 	KUNIT_EXPECT_FALSE(test, match_never);
- }
- 
-+/*
-+ * Test atomic builtins work and required instrumentation functions exist. We
-+ * also test that KCSAN understands they're atomic by racing with them via
-+ * test_kernel_atomic_builtins(), and expect no reports.
-+ *
-+ * The atomic builtins _SHOULD NOT_ be used in normal kernel code!
-+ */
-+static void test_atomic_builtins(struct kunit *test)
-+{
-+	bool match_never = false;
-+
-+	begin_test_checks(test_kernel_atomic_builtins, test_kernel_atomic_builtins);
-+	do {
-+		long tmp;
-+
-+		kcsan_enable_current();
-+
-+		__atomic_store_n(&test_var, 42L, __ATOMIC_RELAXED);
-+		KUNIT_EXPECT_EQ(test, 42L, __atomic_load_n(&test_var, __ATOMIC_RELAXED));
-+
-+		KUNIT_EXPECT_EQ(test, 42L, __atomic_exchange_n(&test_var, 20, __ATOMIC_RELAXED));
-+		KUNIT_EXPECT_EQ(test, 20L, test_var);
-+
-+		tmp = 20L;
-+		KUNIT_EXPECT_TRUE(test, __atomic_compare_exchange_n(&test_var, &tmp, 30L,
-+								    0, __ATOMIC_RELAXED,
-+								    __ATOMIC_RELAXED));
-+		KUNIT_EXPECT_EQ(test, tmp, 20L);
-+		KUNIT_EXPECT_EQ(test, test_var, 30L);
-+		KUNIT_EXPECT_FALSE(test, __atomic_compare_exchange_n(&test_var, &tmp, 40L,
-+								     1, __ATOMIC_RELAXED,
-+								     __ATOMIC_RELAXED));
-+		KUNIT_EXPECT_EQ(test, tmp, 30L);
-+		KUNIT_EXPECT_EQ(test, test_var, 30L);
-+
-+		KUNIT_EXPECT_EQ(test, 30L, __atomic_fetch_add(&test_var, 1, __ATOMIC_RELAXED));
-+		KUNIT_EXPECT_EQ(test, 31L, __atomic_fetch_sub(&test_var, 1, __ATOMIC_RELAXED));
-+		KUNIT_EXPECT_EQ(test, 30L, __atomic_fetch_and(&test_var, 0xf, __ATOMIC_RELAXED));
-+		KUNIT_EXPECT_EQ(test, 14L, __atomic_fetch_xor(&test_var, 0xf, __ATOMIC_RELAXED));
-+		KUNIT_EXPECT_EQ(test, 1L, __atomic_fetch_or(&test_var, 0xf0, __ATOMIC_RELAXED));
-+		KUNIT_EXPECT_EQ(test, 241L, __atomic_fetch_nand(&test_var, 0xf, __ATOMIC_RELAXED));
-+		KUNIT_EXPECT_EQ(test, -2L, test_var);
-+
-+		__atomic_thread_fence(__ATOMIC_SEQ_CST);
-+		__atomic_signal_fence(__ATOMIC_SEQ_CST);
-+
-+		kcsan_disable_current();
-+
-+		match_never = report_available();
-+	} while (!end_test_checks(match_never));
-+	KUNIT_EXPECT_FALSE(test, match_never);
-+}
-+
- /*
-  * Each test case is run with different numbers of threads. Until KUnit supports
-  * passing arguments for each test case, we encode #threads in the test case
-@@ -891,6 +953,7 @@ static struct kunit_case kcsan_test_cases[] = {
- 	KCSAN_KUNIT_CASE(test_assert_exclusive_access_scoped),
- 	KCSAN_KUNIT_CASE(test_jiffies_noreport),
- 	KCSAN_KUNIT_CASE(test_seqlock_noreport),
-+	KCSAN_KUNIT_CASE(test_atomic_builtins),
- 	{},
- };
- 
+https://lore.kernel.org/linux-audit/159378341669.5956.13490174029711421419.stgit@sifl
+
 -- 
-2.27.0.212.ge8ba1cc988-goog
-
+paul moore
+www.paul-moore.com
