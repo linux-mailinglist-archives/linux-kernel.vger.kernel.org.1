@@ -2,67 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28D1721331D
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 06:48:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AEBF213323
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 06:50:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726323AbgGCEsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 00:48:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34208 "EHLO mail.kernel.org"
+        id S1726236AbgGCEuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 00:50:01 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:40276 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726203AbgGCEsy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 00:48:54 -0400
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6540420760;
-        Fri,  3 Jul 2020 04:48:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593751733;
-        bh=qCwA4YWH7p37GAZMeu+hKOmjvj572O6tQitBU9AkFA8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=tu1u0P0WWAPSlKRhONp69ryOgimZiASL7tdbV191VzQwJFsTuQHdnuMY0QNyJzODN
-         GITk7H/2ElwWxOt5dvfAI2AMjUzs2rks/bAvD1NlqTS51CVe/LEDKB46tq5x6aEcOP
-         nT4Ccl9OGEgmV5nZJEe3M9y8p1vx5OZ8u5tebPho=
-Date:   Thu, 2 Jul 2020 21:48:52 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-mm@kvack.org, Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>
-Subject: Re: [PATCH v2 1/2] mm/memblock: expose only miminal interface to
- add/walk physmem
-Message-Id: <20200702214852.f6ab03dc8d072abf35359d3b@linux-foundation.org>
-In-Reply-To: <9a6728b2-05d3-0e98-dc45-a3e4821e0539@redhat.com>
-References: <20200701141830.18749-1-david@redhat.com>
-        <20200701141830.18749-2-david@redhat.com>
-        <20200701150643.GA2999146@linux.ibm.com>
-        <20200701153157.GC5008@osiris>
-        <9a6728b2-05d3-0e98-dc45-a3e4821e0539@redhat.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1725764AbgGCEuB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Jul 2020 00:50:01 -0400
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1jrDeA-00085o-Lx; Fri, 03 Jul 2020 14:49:59 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 03 Jul 2020 14:49:58 +1000
+Date:   Fri, 3 Jul 2020 14:49:58 +1000
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        David Miller <davem@davemloft.net>,
+        John Allen <john.allen@amd.com>,
+        Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: [PATCH v2] crypto: ccp - Update CCP driver maintainer information
+Message-ID: <20200703044958.GE23200@gondor.apana.org.au>
+References: <0a2a04b15abc35af1ec651b3f45d43365e286ac4.1593198579.git.thomas.lendacky@amd.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0a2a04b15abc35af1ec651b3f45d43365e286ac4.1593198579.git.thomas.lendacky@amd.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2 Jul 2020 09:23:10 +0200 David Hildenbrand <david@redhat.com> wrote:
-
-> >>> ---
-> >>>  arch/s390/kernel/crash_dump.c |  6 ++--
-> >>>  include/linux/memblock.h      | 28 ++++++++++++++---
-> >>>  mm/memblock.c                 | 57 ++++++++++++++++++-----------------
-> >>>  3 files changed, 55 insertions(+), 36 deletions(-)
-> > 
-> > So I guess this should go via the s390 tree, since the second patch of
-> > this series can go only upstream if both this patch and a patch which
-> > is currently only on our features are merged before.
-> > 
-> > Any objections?
+On Fri, Jun 26, 2020 at 02:09:39PM -0500, Tom Lendacky wrote:
+> From: Tom Lendacky <thomas.lendacky@amd.com>
 > 
-> @Andrew, fine with you if this goes via the s390 tree?
+> Add John Allen as a new CCP driver maintainer. Additionally, break out
+> the driver SEV support and create a new maintainer entry, with Brijesh
+> Singh and Tom Lendacky as maintainers.
+> 
+> Cc: John Allen <john.allen@amd.com>
+> Cc: Brijesh Singh <brijesh.singh@amd.com>
+> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+> 
+> ---
+> 
+> Changes from v1:
+> - Change the email for Brijesh. The previous one is an alias, use the
+>   proper email address in case the alias is ever removed.
+> ---
+>  MAINTAINERS | 9 +++++++++
+>  1 file changed, 9 insertions(+)
 
-Sure, please go ahead.
+Patch applied.  Thanks.
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
