@@ -2,98 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AC12213889
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 12:19:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C36BF213891
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 12:22:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726074AbgGCKTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 06:19:07 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:24183 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725891AbgGCKTE (ORCPT
+        id S1726053AbgGCKWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 06:22:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33386 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725891AbgGCKWW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 06:19:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593771542;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=44JtbJMmCSQYDS81jJeGZeKwGH9kWwFJF0hFzZPWY1Y=;
-        b=fV5+RbrL2fPl17ujfKUTdtqWvHC9sUGTRhcxSJzOfj1wyYrZ+R47RpLtyz/sj1WPNw7cwf
-        c/vPZXK/IG5UqoSCuVXMyfMstD0BKDOLOqSw0sya/GFovztJXoO1x3DiHK64xwXQ9FR2Z9
-        9eb+1zekqL9bp2AWXRY/EKlPF9EBzmw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-382-ad3CzcCVNfaKibVH21oFBQ-1; Fri, 03 Jul 2020 06:19:00 -0400
-X-MC-Unique: ad3CzcCVNfaKibVH21oFBQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E3FAB18A8221;
-        Fri,  3 Jul 2020 10:18:59 +0000 (UTC)
-Received: from max.home.com (unknown [10.40.192.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id F32B19CA0;
-        Fri,  3 Jul 2020 10:18:55 +0000 (UTC)
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     cluster-devel@redhat.com, linux-kernel@vger.kernel.org,
-        Andreas Gruenbacher <agruenba@redhat.com>
-Subject: [GIT PULL] Additional gfs2 fixes for 5.8
-Date:   Fri,  3 Jul 2020 12:18:54 +0200
-Message-Id: <20200703101854.1493930-1-agruenba@redhat.com>
+        Fri, 3 Jul 2020 06:22:22 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1384DC08C5C1
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Jul 2020 03:22:22 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id 72so26360499otc.3
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Jul 2020 03:22:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Pd7yLV/SO1LXlgw6apJI4TFl8BhIVhbdOA/baiOJLT4=;
+        b=UoJLWgeGLocz0e8pv9iFzBeVk+4kJpSQGN1VfpjZUStopG6omp+MBlHC6v609VEzAK
+         wc2/eax8OtTaoTSnq/K4T1mNIGGZVs5/MhpSD7T0OT+TPXP74gxLIBDPJeFO/w/B96sk
+         GLWHjUEAzT1UWQZsdNTG1DN7xoSCQv1eUOoH23Qh/ktfbcZ/oMlnL7UmF0b5dWXG+Nr5
+         uS15lN2GyTjCjhbsU2jDW/04BjcQaTmrTyCH+oXu2K3S2uMLNWIMsH27ltqQZvMzSJw2
+         /FQhi/A8Daqyd9sSt3WxBKm2SaitpFSa2AdLNwAChtUHLca8qXyy6kuGB+OVhbjBFexh
+         S02g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Pd7yLV/SO1LXlgw6apJI4TFl8BhIVhbdOA/baiOJLT4=;
+        b=FMv3/Cc/v9OaEtkt9RZfkBK9qPWECmJCRnrgaV4eDNVEbEwL1fjhK//O4HYZWtodRG
+         8bewk7KWzA6WP8il6S94dAAfmeDsPmpdr6ArIIm+KsdnKaBjGsw+kef6Z88k3Fr+k9xi
+         hsArRnFB7NvEmwDOM2ER0hjC8cwJUDJdFhZj/XK7F93GviYEBnfVq9/6dcLpIsgoGc6c
+         iN5u+Q8IC0AqIC64XTnVZQAr3wwHMAwUk2ZQG1bYHwlam7E+frc8tX3cbHVb8D9e8HJO
+         xvk0s9wOwXXG0x7iN+CU3paqdumPyuB552cI5P65dRdCRVpcb1hWjynO8R9sX8R+IjNq
+         CHCA==
+X-Gm-Message-State: AOAM533f9sVhLCl7jbhOEfUfM05UjyidJ2RtIGdwB4gbifWEXNdD0Q/A
+        t4ciF/1Pg/QigFJc/9NiF7noQkzYpWJupqdaXrc3qwoM
+X-Google-Smtp-Source: ABdhPJx2f3pVaLOQ8x/apSBaKeTS8NPWTPXF2TKzer6LRMMteZ3+UafBjvjdhGIG4cyvSiqTRvLljgt7ok/1TXPHEcY=
+X-Received: by 2002:a9d:3a36:: with SMTP id j51mr31045607otc.129.1593771741510;
+ Fri, 03 Jul 2020 03:22:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+References: <050476a0ee608046569588936394159d650ab535.1593763492.git.zong.li@sifive.com>
+ <80902e5d0d5ef752e71672e9c5794d0f5f9ccd15.camel@perches.com>
+ <CANiq72=Qakg1HAW8XggsBqiu=6-GVtQNDzeefmXxVG_RNA8MkA@mail.gmail.com> <9f0f19938130cbe9fd9412091254bacb8dd8bee1.camel@perches.com>
+In-Reply-To: <9f0f19938130cbe9fd9412091254bacb8dd8bee1.camel@perches.com>
+From:   Zong Li <zong.li@sifive.com>
+Date:   Fri, 3 Jul 2020 18:22:11 +0800
+Message-ID: <CANXhq0q=kEmXjBoSYrdKCHB=X_kksPro3gBQg8LCaSJcfLowqQ@mail.gmail.com>
+Subject: Re: [PATCH] scripts/Lindent: increase the maximum line length to 100
+To:     Joe Perches <joe@perches.com>
+Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Fri, Jul 3, 2020 at 5:51 PM Joe Perches <joe@perches.com> wrote:
+>
+> On Fri, 2020-07-03 at 11:41 +0200, Miguel Ojeda wrote:
+> > On Fri, Jul 3, 2020 at 10:51 AM Joe Perches <joe@perches.com> wrote:
+> > > I'd prefer to delete Lindent instead.
+> >
+> > +1, especially since there is `clang-format` now.
 
-could you please pull the following additional gfs2 fixes?
+Agree, it is often used.
 
-These don't conflict with the IOCB_NOIO / readahead deadlock fixes.
+>
+> Awhile back I did send a patch:
+> https://lore.kernel.org/lkml/1360610974.28491.6.camel@joe-AO722/
+>
+>
 
-Thanks a lot,
-Andreas
-
-The following changes since commit 9ebcfadb0610322ac537dd7aa5d9cbc2b2894c68:
-
-  Linux 5.8-rc3 (2020-06-28 15:00:24 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2.git tags/gfs2-v5.8-rc3.fixes
-
-for you to fetch changes up to c860f8ffbea8924de05a281b937128773d30a77c:
-
-  gfs2: The freeze glock should never be frozen (2020-07-03 12:05:35 +0200)
-
-----------------------------------------------------------------
-Various gfs2 fixes
-
-----------------------------------------------------------------
-Andreas Gruenbacher (2):
-      gfs2: Don't return NULL from gfs2_inode_lookup
-      gfs2: Don't sleep during glock hash walk
-
-Bob Peterson (6):
-      gfs2: fix trans slab error when withdraw occurs inside log_flush
-      gfs2: eliminate GIF_ORDERED in favor of list_empty
-      gfs2: freeze should work on read-only mounts
-      gfs2: read-only mounts should grab the sd_freeze_gl glock
-      gfs2: When freezing gfs2, use GL_EXACT and not GL_NOCACHE
-      gfs2: The freeze glock should never be frozen
-
- fs/gfs2/glock.c      |  5 ++++-
- fs/gfs2/glops.c      | 10 ++++++----
- fs/gfs2/incore.h     |  1 -
- fs/gfs2/inode.c      |  3 ++-
- fs/gfs2/log.c        | 25 +++++++++++++++++++------
- fs/gfs2/log.h        |  4 ++--
- fs/gfs2/main.c       |  1 +
- fs/gfs2/ops_fstype.c | 13 ++++++++++++-
- fs/gfs2/recovery.c   |  4 ++--
- fs/gfs2/super.c      | 20 ++++++++++----------
- 10 files changed, 58 insertions(+), 28 deletions(-)
-
+Cool, let us go the patch above.
