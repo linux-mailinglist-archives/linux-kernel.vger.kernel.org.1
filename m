@@ -2,152 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F775213C0B
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 16:49:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C30F9213BD7
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 16:32:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726621AbgGCOt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 10:49:29 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:36872 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726053AbgGCOt2 (ORCPT
+        id S1726460AbgGCOcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 10:32:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726048AbgGCOcX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 10:49:28 -0400
-Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20200703144924epoutp0385e2de1a9a35960ae4f7b2396351e230~eRYcSm86y1072310723epoutp03B
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Jul 2020 14:49:24 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20200703144924epoutp0385e2de1a9a35960ae4f7b2396351e230~eRYcSm86y1072310723epoutp03B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1593787764;
-        bh=bsE6QLvTDojRwXialKZVHCrDPPKOpbZsYkXHSf/L++M=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=tcpAFjwEuU8UUZY+NN5rAS9/FcxDddOvA0ETQkXisUW87JY4CdBLMeNNLAvb0h9un
-         kbq2mhEwQLgOPqLwjB+64vLz19uvNSkJKZ7ecPEjKwLiCzMpufv297abZcQorAKCgO
-         UjW4Rgpztrkicjptdr4PR45nadPmrGnrl+dQxA2M=
-Received: from epsmges5p1new.samsung.com (unknown [182.195.42.73]) by
-        epcas5p3.samsung.com (KnoxPortal) with ESMTP id
-        20200703144923epcas5p3e3660f508f10bcb6e2c11cbc776205bb~eRYbospYP1094310943epcas5p3g;
-        Fri,  3 Jul 2020 14:49:23 +0000 (GMT)
-X-AuditID: b6c32a49-a29ff700000024fb-8f-5eff4573fac8
-Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
-        epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        0A.F0.09467.3754FFE5; Fri,  3 Jul 2020 23:49:23 +0900 (KST)
-Mime-Version: 1.0
-Subject: RE: [PATCH] fs: fat: add check for dir size in fat_calc_dir_size
-Reply-To: anupam.al@samsung.com
-From:   Anupam Aggarwal <anupam.al@samsung.com>
-To:     OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        AMIT SAHRAWAT <a.sahrawat@samsung.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <20200630170748epcms5p87fa9b4348c1448d2d5a5f6cdddbc021e@epcms5p8>
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20200703142939epcms5p1440ec65f7e8a3e4741ade2496135d747@epcms5p1>
-Date:   Fri, 03 Jul 2020 19:59:39 +0530
-X-CMS-MailID: 20200703142939epcms5p1440ec65f7e8a3e4741ade2496135d747
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrPIsWRmVeSWpSXmKPExsWy7bCmlm6x6/84g/8LjCwu7k61mD53A4vF
-        5V1z2ByYPe6/TfTo27KK0ePzJrkA5igum5TUnMyy1CJ9uwSujBmnlzIVXFGrmLb4PXsD43eV
-        LkZODgkBE4nfj8+ydTFycQgJ7GaUONL5B8jh4OAVEJT4u0MYpEZYwFPi36l9LCC2kIC8xPcF
-        n5gh4voSC073sIHYbAK6EnNfzGYFaRURiJL4/husnFnAUeL23rdMEKt4JWa0P2WBsKUlti/f
-        yghicwr4SRyYNB+qRlTi5uq37DD2+2PzGSFsEYnWe2eZIWxBiQc/d0PFZSROrFvDCHK+hEA/
-        o8Szj61MEM4MRomrax5DbTOX2L1hHpjNK+ArMe/EZLBuFgFViZXbpoMdLSHgItGzrxbiaG2J
-        ZQtfM4OEmQU0Jdbv0oeYIisx9dQ6JogSPone30/g/toxD8ZWlph67TUrhC0p8bizFepmD4nJ
-        m6eyQ4L5PpPE9elPWScwKsxChPQsJJtnIWxewMi8ilEytaA4Nz212LTAMC+1XK84Mbe4NC9d
-        Lzk/dxMjOE1oee5gvPvgg94hRiYOxkOMEhzMSiK8Car/4oR4UxIrq1KL8uOLSnNSiw8xSnOw
-        KInzKv04EyckkJ5YkpqdmlqQWgSTZeLglGpgUur60NI8ZS7LHSeVh5cOb/mfW69jVaIom9lo
-        3Gx9O/Poy8ktauIVsxlX3a1ebF2cwKZzUjHC5dQxtgP/3v31Ug2Zsb6ra7Vy5odtTDGMtx1L
-        tQSOvt7JHbtiyvm/6xc6bpyuerH7Nev9JBdm7ydv4x26XpXJXAx33J25Sm63/tWU7KtXaiwf
-        bLAS6Xdfu3OnV4w/wzP++IrHQm4/7PTWqrzdE9JZExHYrOeSYfcgTXfrX+5tJw6ET9O+fHjR
-        0SSPyIX57++vnvhf7Fe3WtCjY4rags6n+HRUYlf7er59ah0aWpqx4df7iCUO7OvnXva9x3Bc
-        /uym/YZi82w826VLVXIXr32se3v5/KJbf45sVGIpzkg01GIuKk4EAEqZ95aCAwAA
-X-CMS-RootMailID: 20200629110320epcas5p34ccccc7c293f077b34b350935c328215
-References: <20200630170748epcms5p87fa9b4348c1448d2d5a5f6cdddbc021e@epcms5p8>
-        <875zb8o6zh.fsf@mail.parknet.co.jp> <87ftacolpf.fsf@mail.parknet.co.jp>
-        <1593428559-13920-1-git-send-email-anupam.al@samsung.com>
-        <20200630123355epcms5p602efe0e4ceedcfe11eae2153c8466678@epcms5p6>
-        <CGME20200629110320epcas5p34ccccc7c293f077b34b350935c328215@epcms5p1>
+        Fri, 3 Jul 2020 10:32:23 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39FDCC08C5C1;
+        Fri,  3 Jul 2020 07:32:23 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id z13so32924805wrw.5;
+        Fri, 03 Jul 2020 07:32:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aBK4xIyiQPwE9WexL/fXXMXlCGSw5m4ZqDOwI6txEYA=;
+        b=RQPqUTY/F6g+PNFqX25BZvfKdVEOIfpvm1iucZNgnLH0Uo7mOKxWs9L/PqTHdkwK19
+         vMFosRcSQ8YZJUJysCLrmlKLR2+l057HDLryRgbpVpg2Gzd3Qt6xDw+sRqVVvH7EkKKg
+         KFsTmfNDanq88GCZzjUiAM1EYQL34FW/B0TNYAABXppTitTgFoXv5RW4jXH6Z3H+Su9y
+         GFm6OPx4y+e+If22oOm9KQcbZhfTyuxVB2+Ps9ndEiKiXU0+VqUBDyxIe/xp39bVadij
+         44UM6YJxwVC4fTLozxqX5kPEDmAgb9ZKKrTfVJXhlhBcTxv55KfvHGyP6yrEbBTW5JrW
+         BBoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aBK4xIyiQPwE9WexL/fXXMXlCGSw5m4ZqDOwI6txEYA=;
+        b=G0XEGvJvrPo+A2xn5QRu0fmNwQd7f9voy5ceyyCNBbIcVQGBVDHSpKZSzqpuXGp/D8
+         3CcEtRNZajyL3P1ci8IrWK4XJ8Pk1WMqWt0nnzFqwVh861Ju3UCFItTeMen+8FY6JKM0
+         XEVAcm2aIk7vTvrBf6/t9k1KD980gsbmQa0RMhf/Z87hBy3PmmWTb4W6QTm18Pz+BWjW
+         nH/lYHQ0Nag50Rp96Rh/dQYMFxHbedARkaaGRZ9d3FDPFtrlhi3Y2t1oRYRRs455n13S
+         Fcg8UX+WHXE9zzpEdnuqXuXDZopgZnaWjnXKurCHZDl8Md9ZHNMOhWAgfT7yVNnjNcO8
+         CpZA==
+X-Gm-Message-State: AOAM530IF39d5zbQ+26BlJHFWgKEF5jgO0X7Ms2nI1i+JVOF/w942wC3
+        1UXtUzFp2RsJ2crtaY53oLg=
+X-Google-Smtp-Source: ABdhPJwnKV/whFu7kraxtSUgzHib+rERP9qi2bi30aMo/ssL/efH5f0+XW3EGBRUQ7bFUmgcDy6v3Q==
+X-Received: by 2002:a05:6000:1006:: with SMTP id a6mr35476948wrx.332.1593786741925;
+        Fri, 03 Jul 2020 07:32:21 -0700 (PDT)
+Received: from localhost.localdomain ([46.114.106.37])
+        by smtp.gmail.com with ESMTPSA id z16sm14116810wrr.35.2020.07.03.07.32.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Jul 2020 07:32:21 -0700 (PDT)
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Cc:     Sedat Dilek <sedat.dilek@gmail.com>,
+        Craig Topper <craig.topper@intel.com>,
+        Craig Topper <craig.topper@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: [PATCH v5] x86/crypto: aesni: Fix build with LLVM_IAS=1
+Date:   Fri,  3 Jul 2020 16:32:06 +0200
+Message-Id: <20200703143206.3994-1-sedat.dilek@gmail.com>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ogawa,
+When building with LLVM_IAS=1 means using Clang's Integrated Assembly (IAS)
+from LLVM/Clang >= v10.0.1-rc1+ instead of GNU/as from GNU/binutils
+I see the following breakage in Debian/testing AMD64:
 
->So what was the root cause of slowness on big directory?
+<instantiation>:15:74: error: too many positional arguments
+ PRECOMPUTE 8*3+8(%rsp), %xmm1, %xmm2, %xmm3, %xmm4, %xmm5, %xmm6, %xmm7,
+                                                                         ^
+ arch/x86/crypto/aesni-intel_asm.S:1598:2: note: while in macro instantiation
+ GCM_INIT %r9, 8*3 +8(%rsp), 8*3 +16(%rsp), 8*3 +24(%rsp)
+ ^
+<instantiation>:47:2: error: unknown use of instruction mnemonic without a size suffix
+ GHASH_4_ENCRYPT_4_PARALLEL_dec %xmm9, %xmm10, %xmm11, %xmm12, %xmm13, %xmm14, %xmm0, %xmm1, %xmm2, %xmm3, %xmm4, %xmm5, %xmm6, %xmm7, %xmm8, enc
+ ^
+arch/x86/crypto/aesni-intel_asm.S:1599:2: note: while in macro instantiation
+ GCM_ENC_DEC dec
+ ^
+<instantiation>:15:74: error: too many positional arguments
+ PRECOMPUTE 8*3+8(%rsp), %xmm1, %xmm2, %xmm3, %xmm4, %xmm5, %xmm6, %xmm7,
+                                                                         ^
+arch/x86/crypto/aesni-intel_asm.S:1686:2: note: while in macro instantiation
+ GCM_INIT %r9, 8*3 +8(%rsp), 8*3 +16(%rsp), 8*3 +24(%rsp)
+ ^
+<instantiation>:47:2: error: unknown use of instruction mnemonic without a size suffix
+ GHASH_4_ENCRYPT_4_PARALLEL_enc %xmm9, %xmm10, %xmm11, %xmm12, %xmm13, %xmm14, %xmm0, %xmm1, %xmm2, %xmm3, %xmm4, %xmm5, %xmm6, %xmm7, %xmm8, enc
+ ^
+arch/x86/crypto/aesni-intel_asm.S:1687:2: note: while in macro instantiation
+ GCM_ENC_DEC enc
 
-Problem happened on FAT32 formatted 32GB USB 3.0 pendrive, which has 20GB o=
-f data, cluster size is 16KB
-It has one corrupted directory whose size calculated by fat_calc_dir_size()=
- is 1146896384 bytes i.e. 1.06 GB.
+Craig Topper suggested me in ClangBuiltLinux issue #1050:
 
-When directory traversal of corrupted directory starts, directory entries l=
-ooks to be corrupted
-and lookup fails for these directory entries.
-Some directory entries name are having format abc/xyz,
-following are the few observed directory entry names:
+> I think the "too many positional arguments" is because the parser isn't able
+> to handle the trailing commas.
+>
+> The "unknown use of instruction mnemonic" is because the macro was named
+> GHASH_4_ENCRYPT_4_PARALLEL_DEC but its being instantiated with
+> GHASH_4_ENCRYPT_4_PARALLEL_dec I guess gas ignores case on the
+> macro instantiation, but llvm doesn't.
 
-eqk/hb*
-*=C3=B9=C3=AF/=C3=B2=C2=A27=C3=B4.=C3=BAB=C3=A6=0D=0Aty7=40o/<=60=0D=0A-=C3=
-=B2%/=C3=A73=7B.9q=0D=0A'=C3=BBu/=C3=B6y<=C3=B6.=5Em=C3=B6=0D=0APh=E2=95=A4=
-Cf=E2=94=8C6g.=C3=9F/k=0D=0A=0D=0ANow=20when=20path=20lookup=20happens=20fo=
-r=20above=20directory=20entries,=20it=20will=20search=20for=20name=20before=
-=20=E2=80=98/=E2=80=99=20in=20corrupted=20directory=20e.g.=0D=0A=0D=0Aeqk=
-=0D=0A*=C3=B9=C3=AF=0D=0Aty7=40o=0D=0A-=C3=B2%=0D=0A'=C3=BBu=0D=0APh=E2=95=
-=A4Cf=E2=94=8C6g.=C3=9F=0D=0A=0D=0AThere=20are=20also=20directory=20entries=
-=20with=20garbage=20name=20for=20which=20lookup=20fails,=20e.g.=0D=0A=C3=A1=
-)Y=C2=BA&q=C2=BC(.=C3=AE=C2=BB.=0D=0A=C3=86=E2=88=9E=E2=94=B4=C3=87=E2=96=
-=80=E2=95=9Cr=E2=95=9F.=E2=95=A3g=C2=BD=0D=0A4=E2=96=92h1=E2=96=93x0=E2=94=
-=A4.p3=E2=95=A3=0D=0A=0D=0ADuring=20search=20for=20single=20name=20in=20fat=
-_search_long()=20function,=20whole=20corrupted=20directory=20of=20size=201.=
-06GB=20is=20traversed,=0D=0Awhich=20takes=20around=20230=20to=20240=20secs,=
-=20which=20finally=20ends=20up=20with=20returning=20ENOENT.=0D=0A=0D=0ANow=
-=20multiple=20lookups=20in=20corrupted=20directory=20makes=20=E2=80=9Cls=20=
--lR=E2=80=9D=20never-ending=20e.g.=20in=20overnite=20test=20of=20running=20=
-=E2=80=9Cls=20=E2=80=93lR=E2=80=9D=0D=0Aon=20USB=20having=20corrupted=20dir=
-ectory,=20around=20200=20such=20lookups=20in=20corrupted=20directory=20took=
-=2014hrs=20and=20still=20=E2=80=9Dls=20=E2=80=93lR=E2=80=9D=20is=20running.=
-=0D=0A=0D=0ATotal=20number=20of=20directory=20entries=20in=20corrupted=20di=
-rectory=20of=20size=201146896384=20bytes=20=3D=201146896384/32=20=3D=203584=
-0512,=0D=0Aso=20lookup=20for=2035840512=20looks=20very=20exhaustive,=20ther=
-efore=20we=20have=20put=20size=20check=20of=20directory=20in=20fat_calc_dir=
-_size()=0D=0Aand=20prevented=20the=20directory=20traversal=20by=20returning=
-=20-EIO.=0D=0A=0D=0AWhile=20browsing=20corrupted=20directory(=5CCorruptedDI=
-R)=20on=20Windows=2010=20PC,=0D=0A2623=20directory=20entries=20were=20liste=
-d=20and=20timestamps=20were=20wrong=0D=0A=0D=0AFollowing=20is=20the=20reado=
-nly=20chkdsk=20output=20of=20USB.=0D=0A=0D=0A------------------------------=
---------------------------------------------------------=0D=0Achkdsk=20I:=
-=0D=0AThe=20type=20of=20the=20file=20system=20is=20FAT32.=0D=0AVolume=20AAA=
-=20created=2012/28/2018=203:15=20PM=0D=0AVolume=20Serial=20Number=20is=2016=
-06-72DC=0D=0AWindows=20is=20verifying=20files=20and=20folders...=0D=0AWindo=
-ws=20found=20errors=20on=20the=20disk,=20but=20will=20not=20fix=20them=0D=
-=0Abecause=20disk=20checking=20was=20run=20without=20the=20/F=20(fix)=20par=
-ameter.=0D=0AThe=20=5C=24TXRAJNL.DAT=20entry=20contains=20a=20nonvalid=20li=
-nk.=0D=0AThe=20size=20of=20the=20=5C=24TXRAJNL.DAT=20entry=20is=20not=20val=
-id.=0D=0AUnrecoverable=20error=20in=20folder=20=5CCorruptedDIR.=0D=0AConver=
-t=20folder=20to=20file=20(Y/N)?=20n=0D=0AThe=20=5CBBB=5Cfile1.txt=20entry=
-=20contains=20a=20nonvalid=20link.=0D=0AThe=20size=20of=20the=20=5CBBB=5Cfi=
-le1.txt=20entry=20is=20not=20valid.=0D=0AThe=20=5CCCC=5Cfile1.txt=20entry=
-=20contains=20a=20nonvalid=20link.=0D=0AThe=20size=20of=20the=20=5CCCC=5Cfi=
-le1.txt=20entry=20is=20not=20valid.=0D=0AFile=20and=20folder=20verification=
-=20is=20complete.=0D=0AConvert=20lost=20chains=20to=20files=20(Y/N)?=20n=0D=
-=0A3531520=20KB=20of=20free=20disk=20space=20would=20be=20added.=0D=0A=0D=
-=0AWindows=20has=20checked=20the=20file=20system=20and=20found=20problems.=
-=0D=0ARun=20CHKDSK=20with=20the=20/F=20(fix)=20option=20to=20correct=20thes=
-e.=0D=0A=20=20=2030,015,472=20KB=20total=20disk=20space.=0D=0A=20=20=20=20=
-=20=20=20=20=20=20400=20KB=20in=202=20hidden=20files.=0D=0A=20=20=20=20=20=
-=20=20=202,800=20KB=20in=2048=20folders.=0D=0A=20=20=2016,479,312=20KB=20in=
-=207,583=20files.=0D=0A=20=20=20=209,999,392=20KB=20are=20available.=0D=0A=
-=0D=0A=20=20=20=20=20=20=2016,384=20bytes=20in=20each=20allocation=20unit.=
-=0D=0A=20=20=20=201,875,967=20total=20allocation=20units=20on=20disk.=0D=0A=
-=20=20=20=20=20=20624,962=20allocation=20units=20available=20on=20disk.=0D=
-=0A------------------------------------------------------------------------=
---------------=0D=0A=0D=0APlease=20let=20us=20know=20for=20any=20queries,=
-=0D=0Aand=20please=20suggest=20if=20something=20better=20can=20be=20done.=
-=0D=0A=0D=0ARegards,=0D=0AAnupam=0D=0A
+First, I removed the trailing comma in the PRECOMPUTE line.
+
+Second, I substituted:
+1. GHASH_4_ENCRYPT_4_PARALLEL_DEC -> GHASH_4_ENCRYPT_4_PARALLEL_dec
+2. GHASH_4_ENCRYPT_4_PARALLEL_ENC -> GHASH_4_ENCRYPT_4_PARALLEL_enc
+
+With these changes I was able to build with LLVM_IAS=1 and boot on bare metal.
+
+I confirmed that this works with Linux-kernel v5.7.5 final.
+
+NOTE: This patch is on top of Linux v5.7 final.
+
+Thanks to Craig and especially Nick for double-checking and his comments.
+
+Suggested-by: Craig Topper <craig.topper@intel.com>
+Suggested-by: Craig Topper <craig.topper@gmail.com>
+Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Cc: "ClangBuiltLinux" <clang-built-linux@googlegroups.com>
+Link: https://github.com/ClangBuiltLinux/linux/issues/1050
+Link: https://bugs.llvm.org/show_bug.cgi?id=24494
+Signed-off-by: Sedat Dilek <sedat.dilek@gmail.com>
+---
+Changes v4->v5:
+- Drop "5.7" tag from subject line as requested by Herbert Xu
+- Add Link to LLVM bug #24494 (thanks Nick)
+
+Changes v3->v4:
+- Add <> around email address as desired by Nick
+- Add Nick's Reviewed-by
+
+Changes v2->v3:
+- Add this Changelog
+
+Changes v1->v2:
+- Replace Cc by Suggested-by for Craig
+- Replace Cc by Suggested-by for Nick (dropped Cc as desired)
+- Really follow the suggestions of Craig
+- Drop unneeded comments for my build-environment and Links
+
+ arch/x86/crypto/aesni-intel_asm.S | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/x86/crypto/aesni-intel_asm.S b/arch/x86/crypto/aesni-intel_asm.S
+index cad6e1bfa7d5..c216de287742 100644
+--- a/arch/x86/crypto/aesni-intel_asm.S
++++ b/arch/x86/crypto/aesni-intel_asm.S
+@@ -266,7 +266,7 @@ ALL_F:      .octa 0xffffffffffffffffffffffffffffffff
+ 	PSHUFB_XMM %xmm2, %xmm0
+ 	movdqu %xmm0, CurCount(%arg2) # ctx_data.current_counter = iv
+ 
+-	PRECOMPUTE \SUBKEY, %xmm1, %xmm2, %xmm3, %xmm4, %xmm5, %xmm6, %xmm7,
++	PRECOMPUTE \SUBKEY, %xmm1, %xmm2, %xmm3, %xmm4, %xmm5, %xmm6, %xmm7
+ 	movdqu HashKey(%arg2), %xmm13
+ 
+ 	CALC_AAD_HASH %xmm13, \AAD, \AADLEN, %xmm0, %xmm1, %xmm2, %xmm3, \
+@@ -978,7 +978,7 @@ _initial_blocks_done\@:
+ * arg1, %arg3, %arg4 are used as pointers only, not modified
+ * %r11 is the data offset value
+ */
+-.macro GHASH_4_ENCRYPT_4_PARALLEL_ENC TMP1 TMP2 TMP3 TMP4 TMP5 \
++.macro GHASH_4_ENCRYPT_4_PARALLEL_enc TMP1 TMP2 TMP3 TMP4 TMP5 \
+ TMP6 XMM0 XMM1 XMM2 XMM3 XMM4 XMM5 XMM6 XMM7 XMM8 operation
+ 
+ 	movdqa	  \XMM1, \XMM5
+@@ -1186,7 +1186,7 @@ aes_loop_par_enc_done\@:
+ * arg1, %arg3, %arg4 are used as pointers only, not modified
+ * %r11 is the data offset value
+ */
+-.macro GHASH_4_ENCRYPT_4_PARALLEL_DEC TMP1 TMP2 TMP3 TMP4 TMP5 \
++.macro GHASH_4_ENCRYPT_4_PARALLEL_dec TMP1 TMP2 TMP3 TMP4 TMP5 \
+ TMP6 XMM0 XMM1 XMM2 XMM3 XMM4 XMM5 XMM6 XMM7 XMM8 operation
+ 
+ 	movdqa	  \XMM1, \XMM5
+-- 
+2.27.0
+
