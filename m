@@ -2,89 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B25772135DB
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 10:08:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41DB92135E0
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 10:10:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726488AbgGCIIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 04:08:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41122 "EHLO
+        id S1726343AbgGCIKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 04:10:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726022AbgGCIIt (ORCPT
+        with ESMTP id S1726148AbgGCIKM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 04:08:49 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3B0CC08C5C1
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Jul 2020 01:08:49 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id m22so4386794pgv.9
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Jul 2020 01:08:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LopYcBReotgDbclY6Ugi+8EmAR3M5tNcqkkP14Z9nTg=;
-        b=Xld7pf9N8UfN4jsDJAe6Hh2FF4L9lb6K+ue4w+tAfAhL+MRotWDvoia9rVLGVgyso8
-         Koy0WouCABcH6Jl10YYmNuAkOXiCVECGQMRRftSQk6+AD/5ItW45Y2TqY/pZhzXEo0KP
-         Izu+ASc4AJ13gdCQnkXVZ+YIw7JbOY87mwwejNf0jXfz8v+Bbdah8qavy6oaSkaMZlCX
-         LJ/vQGOCgCdYUuSaS1dALl/gL3sMNJyDfJhMvj1hUF/2FHHr8UUVDCfez4C2jrQNWEJK
-         Se2c/f20NK8h9rEY3y2QKS5xqaNS7+Z62CoCG833UHCFYEm8lNyi6dsC4ct03KlyiJCX
-         ecyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LopYcBReotgDbclY6Ugi+8EmAR3M5tNcqkkP14Z9nTg=;
-        b=KlLWcS3YvqG+UiFvr5ewNXAio2x7ATk0KfULaorZxjcAYzCJzU1QsA454VhVK//afu
-         SIGDUy3Oe0ZP2+fbzHbHz31MXUlMcAIZ8hrGOLVhSwalwQc8EwFP6kQ7NW11F4Hc1Bm5
-         gLl7ml24LjmlzBEJjUNECJ0J9SB8wDcrv1M32qHEwxln5rpTzE72ZKSqAGQtUKlNbUNJ
-         yfBGsdWsn5lwDcsvY3iDxoFlw295OL97JG1g2OP1sbx0eGUIDxjnN9sywwBsNzWgr27u
-         3vrN4Pk0qGEqsCJRWtDUnvKx4yfZn6ZqPIv3AJ1Ovmdk3qqKe51qk9848ZzcND4JrmP1
-         A0cg==
-X-Gm-Message-State: AOAM532DPNfpN60JgaOX0LKnIYgPFKvnjWZI3C39QVLdf6+GNS9s+3f2
-        f4JVKPD6J7QjJQ9UF0Eipa3CzcwOYxQ=
-X-Google-Smtp-Source: ABdhPJwnYnV9njrlub0/lwcAaqAnvuBLHb2JW8nngjF9lqyE5Ss1u8InN5KxnculbcWRKRVlJn1kGA==
-X-Received: by 2002:a62:c584:: with SMTP id j126mr8539951pfg.213.1593763729126;
-        Fri, 03 Jul 2020 01:08:49 -0700 (PDT)
-Received: from hsinchu02.internal.sifive.com (114-34-229-221.HINET-IP.hinet.net. [114.34.229.221])
-        by smtp.gmail.com with ESMTPSA id n63sm11079988pfd.209.2020.07.03.01.08.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Jul 2020 01:08:48 -0700 (PDT)
-From:   Zong Li <zong.li@sifive.com>
-To:     joe@perches.com, akpm@linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Cc:     Zong Li <zong.li@sifive.com>
-Subject: [PATCH] scripts/Lindent: increase the maximum line length to 100
-Date:   Fri,  3 Jul 2020 16:08:44 +0800
-Message-Id: <050476a0ee608046569588936394159d650ab535.1593763492.git.zong.li@sifive.com>
-X-Mailer: git-send-email 2.27.0
+        Fri, 3 Jul 2020 04:10:12 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAABDC08C5C1
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Jul 2020 01:10:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=qyNKhWWtlbghyMESKDS3JubVL54HiFWDnruxbzE7Xw8=; b=XawvvmmpHuGQQlPhfd1bcRl64S
+        IWJBcd0ypywV6TYO+lFH6oKsQ+P+3/iwA40JeKlPJ+8iwnf1T6FutzijP06qAChmz3Eu8ygjQ1Rlr
+        Mg1wYMUWBrG8NrXuuWDIqF3RvzxPrRitbYzGmOcuQtiveC++clYPSkSVOpGb0m83nys4OGfXAcUDk
+        Q5yMHFddnVxVchyKN9s/DgiHrEATeEbhrKVX5qUD31wcDf1Y3FhxIKwTaf1tGFfas9do+haihsAGx
+        7cDSnzmj1rckIkexXTiSBdlBbO3E9I89aGpVcqAh9AnWGmD5sGo3u0usDv4gddFMf7tYTkPx8LYm+
+        p2BpcMGw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jrGlo-0000He-Ds; Fri, 03 Jul 2020 08:10:06 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1782F30377D;
+        Fri,  3 Jul 2020 10:10:00 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id BFEF3236502FC; Fri,  3 Jul 2020 10:10:00 +0200 (CEST)
+Date:   Fri, 3 Jul 2020 10:10:00 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [for-next][PATCH 04/18] x86/ftrace: Do not jump to direct code
+ in created trampolines
+Message-ID: <20200703081000.GT4800@hirez.programming.kicks-ass.net>
+References: <20200702215812.428188663@goodmis.org>
+ <20200702215832.049969400@goodmis.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200702215832.049969400@goodmis.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As the patch 'bdc48fa11e46 ("checkpatch/coding-style: deprecate
-80-column warning")', increase the default limit to 100 characters,
-we also increase the maximum line length to 100 for indent script.
+On Thu, Jul 02, 2020 at 05:58:16PM -0400, Steven Rostedt wrote:
 
-Signed-off-by: Zong Li <zong.li@sifive.com>
----
- scripts/Lindent | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> +	/* No need to test direct calls on created trampolines */
+> +	if (ops->flags & FTRACE_OPS_FL_SAVE_REGS) {
+> +		/* NOP the jnz 1f; but make sure it's a 2 byte jnz */
+> +		ip = trampoline + (jmp_offset - start_offset);
+> +		if (WARN_ON(*(char *)ip != 0x75))
+> +			goto fail;
+> +		ret = copy_from_kernel_nofault(ip, ideal_nops[2], 2);
 
-diff --git a/scripts/Lindent b/scripts/Lindent
-index 1688c44c2df6..11f14a4f2048 100755
---- a/scripts/Lindent
-+++ b/scripts/Lindent
-@@ -1,7 +1,7 @@
- #!/bin/sh
- # SPDX-License-Identifier: GPL-2.0
+I really don't get this paranoia, what's wrong with memcpy() ?
+
+> +		if (ret < 0)
+> +			goto fail;
+> +	}
+
+How about something like this?
+
+--- a/arch/x86/kernel/ftrace.c
++++ b/arch/x86/kernel/ftrace.c
+@@ -359,17 +359,11 @@ create_trampoline(struct ftrace_ops *ops
+ 	npages = DIV_ROUND_UP(*tramp_size, PAGE_SIZE);
  
--PARAM="-npro -kr -i8 -ts8 -sob -l80 -ss -ncs -cp1"
-+PARAM="-npro -kr -i8 -ts8 -sob -l100 -ss -ncs -cp1"
+ 	/* Copy ftrace_caller onto the trampoline memory */
+-	ret = copy_from_kernel_nofault(trampoline, (void *)start_offset, size);
+-	if (WARN_ON(ret < 0))
+-		goto fail;
+-
+-	ip = trampoline + size;
++	memcpy(trampoline, (void *)start_offset, size);
  
- RES=`indent --version | cut -d' ' -f3`
- if [ "$RES" = "" ]; then
--- 
-2.27.0
-
+ 	/* The trampoline ends with ret(q) */
+-	retq = (unsigned long)ftrace_stub;
+-	ret = copy_from_kernel_nofault(ip, (void *)retq, RET_SIZE);
+-	if (WARN_ON(ret < 0))
+-		goto fail;
++	ip = trampoline + size;
++	memcpy(ip, text_gen_insn(RET_INSN_OPCODE, NULL, NULL), RET_INSN_SIZE);
+ 
+ 	/* No need to test direct calls on created trampolines */
+ 	if (ops->flags & FTRACE_OPS_FL_SAVE_REGS) {
+@@ -377,9 +371,7 @@ create_trampoline(struct ftrace_ops *ops
+ 		ip = trampoline + (jmp_offset - start_offset);
+ 		if (WARN_ON(*(char *)ip != 0x75))
+ 			goto fail;
+-		ret = copy_from_kernel_nofault(ip, ideal_nops[2], 2);
+-		if (ret < 0)
+-			goto fail;
++		memcpy(ip, ideal_nops[2], 2);
+ 	}
+ 
+ 	/*
