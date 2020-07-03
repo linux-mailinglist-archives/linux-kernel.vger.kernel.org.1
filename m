@@ -2,72 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF69721313C
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 04:02:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFC2D213140
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 04:06:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726121AbgGCCC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 22:02:29 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:58862 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726032AbgGCCC2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 22:02:28 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id BA02E231593B7C3B0C58;
-        Fri,  3 Jul 2020 10:02:26 +0800 (CST)
-Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
- (10.3.19.204) with Microsoft SMTP Server (TLS) id 14.3.487.0; Fri, 3 Jul 2020
- 10:02:26 +0800
-Subject: Re: [f2fs-dev] [PATCH] f2fs: add symbolic link to kobject in sysfs
-To:     Daeho Jeong <daeho43@gmail.com>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        <kernel-team@android.com>, Daeho Jeong <daehojeong@google.com>
-References: <20200630005625.2405062-1-daeho43@gmail.com>
- <961072bb-4c8f-b01e-666d-1f5e35a8b76d@huawei.com>
- <CACOAw_wQx5wjdWDX_WFebNS42t=wBuSh_k7oQ4v7abBv80SZXw@mail.gmail.com>
- <9d1afacc-6033-2bae-d55d-909d50f1904b@huawei.com>
- <CACOAw_zFLgeoomdHhRmzYMtCocTugW5AVxb2wZnoRAC9+hR9Gw@mail.gmail.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <ee97fa6e-33df-04f9-ec37-6b7d7b495acb@huawei.com>
-Date:   Fri, 3 Jul 2020 10:02:26 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1726142AbgGCCGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 22:06:21 -0400
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:39515 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726030AbgGCCGS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 22:06:18 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01355;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0U1XOPYA_1593741974;
+Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U1XOPYA_1593741974)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 03 Jul 2020 10:06:14 +0800
+From:   Wei Yang <richard.weiyang@linux.alibaba.com>
+To:     rostedt@goodmis.org, mingo@redhat.com
+Cc:     linux-kernel@vger.kernel.org,
+        Wei Yang <richard.weiyang@linux.alibaba.com>
+Subject: [PATCH 1/5] tracing: use union to simplify the trace_event_functions initialization
+Date:   Fri,  3 Jul 2020 10:06:08 +0800
+Message-Id: <20200703020612.12930-1-richard.weiyang@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1 (Apple Git-117)
 MIME-Version: 1.0
-In-Reply-To: <CACOAw_zFLgeoomdHhRmzYMtCocTugW5AVxb2wZnoRAC9+hR9Gw@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.134.22.195]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/7/1 20:12, Daeho Jeong wrote:
->> On 2020/7/1 15:04, Daeho Jeong wrote:
->>> Actually, I want to keep the mount number remaining to the same
->>> number, even if it's re-mounted.
->>
->> Then once there is f2fs umounter, the order will be incorrect...
-> 
-> Actually, we prepared this patch for a strictly controlled system like
-> Android to easily access the sysfs node for a specific partition like
-> userdata partition using a specific number.
+There are for 4 fields in trace_event_functions with the same type of
+trace_print_func. Initialize them in register_trace_event() one by one
+looks redundant.
 
-I'm not against Android defined interfaces, just be confused about the
-behavior that does not fully documented (at least, we should add this
-into f2fs doc, and specify this is android specified interface), something
-like once one mount point was umounted, that sequential number @x in
-'mount_@x" could be reused by later newly mounted point, it breaks the
-description: "in the order of mounting filesystem".
+Let's take advantage of union to simplify the procedure.
 
-> In this system, we don't worry about another unexpected f2fs umounter
-> interfering in between unmounting and mounting a partition.
-> 
-> When we are under the condition that we can keep track of how many
-> times the userdata partition has been re-mounted, we might as well use
-> the original partition name like "/sys/fs/f2fs/dm-9".
-> This is for when we couldn't do that.
-> .
-> 
+Signed-off-by: Wei Yang <richard.weiyang@linux.alibaba.com>
+---
+ include/linux/trace_events.h | 13 +++++++++----
+ kernel/trace/trace_output.c  | 14 +++++---------
+ 2 files changed, 14 insertions(+), 13 deletions(-)
+
+diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
+index 5c6943354049..1a421246f4a2 100644
+--- a/include/linux/trace_events.h
++++ b/include/linux/trace_events.h
+@@ -122,10 +122,15 @@ typedef enum print_line_t (*trace_print_func)(struct trace_iterator *iter,
+ 				      int flags, struct trace_event *event);
+ 
+ struct trace_event_functions {
+-	trace_print_func	trace;
+-	trace_print_func	raw;
+-	trace_print_func	hex;
+-	trace_print_func	binary;
++	union {
++		struct {
++			trace_print_func	trace;
++			trace_print_func	raw;
++			trace_print_func	hex;
++			trace_print_func	binary;
++		};
++		trace_print_func print_funcs[4];
++	};
+ };
+ 
+ struct trace_event {
+diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
+index 73976de7f8cc..47bf9f042b97 100644
+--- a/kernel/trace/trace_output.c
++++ b/kernel/trace/trace_output.c
+@@ -728,7 +728,7 @@ void trace_event_read_unlock(void)
+ int register_trace_event(struct trace_event *event)
+ {
+ 	unsigned key;
+-	int ret = 0;
++	int i, ret = 0;
+ 
+ 	down_write(&trace_event_sem);
+ 
+@@ -770,14 +770,10 @@ int register_trace_event(struct trace_event *event)
+ 			goto out;
+ 	}
+ 
+-	if (event->funcs->trace == NULL)
+-		event->funcs->trace = trace_nop_print;
+-	if (event->funcs->raw == NULL)
+-		event->funcs->raw = trace_nop_print;
+-	if (event->funcs->hex == NULL)
+-		event->funcs->hex = trace_nop_print;
+-	if (event->funcs->binary == NULL)
+-		event->funcs->binary = trace_nop_print;
++	for (i = 0; i < ARRAY_SIZE(event->funcs->print_funcs); i++) {
++		if (!event->funcs->print_funcs[i])
++			event->funcs->print_funcs[i] = trace_nop_print;
++	}
+ 
+ 	key = event->type & (EVENT_HASHSIZE - 1);
+ 
+-- 
+2.20.1 (Apple Git-117)
+
