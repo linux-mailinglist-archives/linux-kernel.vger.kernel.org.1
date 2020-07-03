@@ -2,61 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A507A213ECA
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 19:44:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CE49213EE4
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 19:45:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726965AbgGCRms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 13:42:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44564 "EHLO
+        id S1727783AbgGCRns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 13:43:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726905AbgGCRmp (ORCPT
+        with ESMTP id S1726955AbgGCRmq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 13:42:45 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DD85C061794
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Jul 2020 10:42:45 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id f139so34882048wmf.5
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Jul 2020 10:42:45 -0700 (PDT)
+        Fri, 3 Jul 2020 13:42:46 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 529A0C061794
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Jul 2020 10:42:46 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id f2so5599353wrp.7
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Jul 2020 10:42:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=iR7UBjy9b+GnDxxSAohGssAzGZu9g74Tp/QmVOl6H2Q=;
-        b=ducnwHyYnt1Euvl0f4+BWCbuzEg8Fov/NpURhw5+20HmnMl1J/sAR30xHQb54zWlsc
-         8ylR62njZpvZKMYJmXQzbyCwGAGVC8pDWzbyYh2po23NCMBqyIkNgsIyxX/9JgCgQJfu
-         I7QGyxJMasm839b6jGVpSsPgPAzSGAsHKJmm7kTyFg+rp1Y95hEhQdGu/Du80koYKyPI
-         WAdK4rpXnQ5sgM9wxlRx6YPlGLmvvxZXNCMjFdWC2cqVVfV1lkU01XJjo9uvmAuMZ3PY
-         pR9Z4zPWOgalslyfm3pr3/mQgbVeJFyzo4rb8b/EaMS/2q/D4HOl0yVvz21fy5HYW2es
-         6iyw==
+        bh=BRma9lRqEYDVOCUnxuxL1ar6KYSuaKRVNlo6MvalKh8=;
+        b=mWYGekfinDDvmP/iCmqV/aGkYJf6TP1fCPcz7wB25vsA8+FLckg8N9Orh4YU9GBn/J
+         LnXRemGrce3PfQHQ02bLqOsJwHZSgzTTaFULUBk7HNn6wHu/7bJM2WWusHZKqVQseNTF
+         TUmfsyRjzeqzo7RG5Arncs7yNnvFLUcMyADe7l3VoDzFTFRXeCc/P4bBM/NE4J9N4xRz
+         uiuCZAVBHkjJ2NG1VnhYVRhKfwuMfIFpsty3kYsap8/Aa7O5rfvZCED2Jpn+WZsIuk/n
+         6huQcc3LZJY6QqbtVD/W7yN5yad9GobhUVi6igXsbAQcfy04fJ1fVqcE1mmm/UtI1ixZ
+         B7Pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=iR7UBjy9b+GnDxxSAohGssAzGZu9g74Tp/QmVOl6H2Q=;
-        b=APMohBv9+spXI9pbomTBSVNjlykDGduQX+diwpbyoF0c0F74N1g5ssMyRMSoZLJY/1
-         69xQcbfL6tSinkM4muqGGcDrxy7ijBUXAaKOn/qem2Ab/T9z5c0r+h2RPtkGOtOR7QTP
-         aXoNlXaZ7sBfFLC8L1Jxo/D4SWWKXWO+HIWIHTwhixfjMdHDY4/C0IF7iLvthQNsWu0J
-         WFYMXS3u25PMOO8xu8geE25h7mCLLtid2OPezWuxBesIRv0DrE80FDRk4Mc2zxpfO/qt
-         teBF3TVNLDHeq/pe+jtLIh+SKFGpB9rGnz2oxF2rz8teAzAMRYTiP+7qqcVDmuFdsdYB
-         UbCA==
-X-Gm-Message-State: AOAM531qZyJDqLdTSC4Q8Q1zoG0XpkR1lcZAbskmPWjco8j6Hco2StHa
-        AW8fZtBA/ePek1Eh+kYb496tyg==
-X-Google-Smtp-Source: ABdhPJzWDElIsWsgZs5aFyQnkGgXFAh1NXyvJLsupvxSIpseD/CGSj1lFbaE7ttaa7WKZibdweL68Q==
-X-Received: by 2002:a1c:81d3:: with SMTP id c202mr24362378wmd.54.1593798163896;
-        Fri, 03 Jul 2020 10:42:43 -0700 (PDT)
+        bh=BRma9lRqEYDVOCUnxuxL1ar6KYSuaKRVNlo6MvalKh8=;
+        b=eJ3+1Alm7JA6bwxbnYgKIK5qMOQSabpEOF03Sy12kClB3Cq8Oc1mVIeJSaHgeAwLV2
+         k5TvQjtmLCFZuwuZC8lKNiLkTdfyIVCNBV7vBYIplraaUarVvmkdlvmdyxJvbBjAivcX
+         e8ffNF1bIYRac1O5n0rkKp6wPVi/4F1qR+mAxKCKf/OBEGoo2IXhq8UiFjek02lIG11j
+         MOBvDVClxl/96XQgsXG59afdktmbIDuMfalAn2KS8fe83T6Le6JOHNcFhgO8n7rCLTrO
+         gy6zjZfl1/QkBiBTjcHMuRBrJoPjAouarluRgOqvtCF0/jK6qCt/nh7LKejsbBp4BsT/
+         wYHQ==
+X-Gm-Message-State: AOAM533eQBEqVdNWq2Tzy0GgjJERmFd8AKmVh6S275WtTw7QWVQomOxX
+        9MCD2yLzgcgQ8c0xOVlLMyeXCA==
+X-Google-Smtp-Source: ABdhPJyONWDFPwyDvztIk4FcoSOK/rZ5PGRPGACL6sxaodQwaxlQC+PL+MLJ6JrU2yDAbU41YE1QXA==
+X-Received: by 2002:a05:6000:d0:: with SMTP id q16mr4673145wrx.166.1593798165048;
+        Fri, 03 Jul 2020 10:42:45 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id x11sm13625799wmc.26.2020.07.03.10.42.43
+        by smtp.gmail.com with ESMTPSA id x11sm13625799wmc.26.2020.07.03.10.42.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Jul 2020 10:42:43 -0700 (PDT)
+        Fri, 03 Jul 2020 10:42:44 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Lee Jones <lee.jones@linaro.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>
-Subject: [PATCH 18/30] usb: host: xhci-debugfs: Use 'gnu_printf' format notation
-Date:   Fri,  3 Jul 2020 18:41:36 +0100
-Message-Id: <20200703174148.2749969-19-lee.jones@linaro.org>
+        Alan Stern <stern@rowland.harvard.edu>,
+        Daniel Drake <dsd@gentoo.org>,
+        usb-storage@lists.one-eyed-alien.net
+Subject: [PATCH 19/30] usb: storage: alauda: Remove set but unchecked variable
+Date:   Fri,  3 Jul 2020 18:41:37 +0100
+Message-Id: <20200703174148.2749969-20-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200703174148.2749969-1-lee.jones@linaro.org>
 References: <20200703174148.2749969-1-lee.jones@linaro.org>
@@ -68,31 +69,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The return value of alauda_get_media_status() hasn't been checked
+since the driver's inception back in 2005.  If nothing have gone
+wrong/been detected until this point, it's probably safe to just
+remove the variable.
+
 Fixes the following W=1 kernel build warning(s):
 
- drivers/usb/host/xhci-debugfs.c:128:2: warning: function ‘xhci_debugfs_regset’ might be a candidate for ‘gnu_printf’ format attribute [-Wsuggest-attribute=format]
- 128 | vsnprintf(rgs->name, sizeof(rgs->name), fmt, args);
- | ^~~~~~~~~
+ drivers/usb/storage/alauda.c: In function ‘alauda_check_media’:
+ drivers/usb/storage/alauda.c:456:6: warning: variable ‘rc’ set but not used [-Wunused-but-set-variable]
+ 456 | int rc;
+ | ^~
 
-Cc: Mathias Nyman <mathias.nyman@intel.com>
-Cc: Lu Baolu <baolu.lu@linux.intel.com>
+Cc: Alan Stern <stern@rowland.harvard.edu>
+Cc: Daniel Drake <dsd@gentoo.org>
+Cc: usb-storage@lists.one-eyed-alien.net
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/usb/host/xhci-debugfs.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/usb/storage/alauda.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/usb/host/xhci-debugfs.c b/drivers/usb/host/xhci-debugfs.c
-index 76c3f29562d2b..92e25a62fdb5b 100644
---- a/drivers/usb/host/xhci-debugfs.c
-+++ b/drivers/usb/host/xhci-debugfs.c
-@@ -110,6 +110,7 @@ static void xhci_debugfs_free_regset(struct xhci_regset *regset)
- 	kfree(regset);
- }
+diff --git a/drivers/usb/storage/alauda.c b/drivers/usb/storage/alauda.c
+index ddab2cd3d2e75..20b857e97e60c 100644
+--- a/drivers/usb/storage/alauda.c
++++ b/drivers/usb/storage/alauda.c
+@@ -453,9 +453,8 @@ static int alauda_check_media(struct us_data *us)
+ {
+ 	struct alauda_info *info = (struct alauda_info *) us->extra;
+ 	unsigned char status[2];
+-	int rc;
  
-+__printf(6, 7)
- static void xhci_debugfs_regset(struct xhci_hcd *xhci, u32 base,
- 				const struct debugfs_reg32 *regs,
- 				size_t nregs, struct dentry *parent,
+-	rc = alauda_get_media_status(us, status);
++	alauda_get_media_status(us, status);
+ 
+ 	/* Check for no media or door open */
+ 	if ((status[0] & 0x80) || ((status[0] & 0x1F) == 0x10)
 -- 
 2.25.1
 
