@@ -2,101 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D1DE2133EE
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 08:14:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 523542133FB
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 08:17:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726098AbgGCGOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 02:14:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51732 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725648AbgGCGOB (ORCPT
+        id S1726163AbgGCGRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 02:17:24 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:38277 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725764AbgGCGRY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 02:14:01 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4F97C08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 23:14:00 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id q17so13551245pfu.8
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 23:14:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4EZwpgmE4SueL7e7tjK8HJwbAvV8gZoeqD/srGZ37yk=;
-        b=oSQ4BQepwwyKGLVXlKk03nr1hWc+SmjA2W/HfDTlNPSxskF4OqVSmq0RMfGPlr/07R
-         jUStXAHktVZXZG0cPzgnjsKTVf+I0J4y3B5qwWKX/h6HWRuy5Sn4M6T1/rvgXFnTntqB
-         QmV1YtU8u0/ouw6WR6qHgg60SwBEFbm1OOAdHCY83r+SuuM/40DPg1FpAvx8IVedaQco
-         XjQ7JBAPt4NROlIEax0eclbVYoQIuyl8KwdxZBsw6zsVkBdNzgqM4YGmeYEEU/iSEiKP
-         0ISl6rX9NzISWAMIexq81r5lXa/MVr6J9dqm2GWZ+b4m7ILLaBLmu17+cEQik0P3B1lv
-         5WnQ==
+        Fri, 3 Jul 2020 02:17:24 -0400
+Received: by mail-wr1-f68.google.com with SMTP id z13so31378267wrw.5
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 23:17:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4EZwpgmE4SueL7e7tjK8HJwbAvV8gZoeqD/srGZ37yk=;
-        b=ZPP1xZgeO+wX+AkwzBtHvrodim7us4cmlaCvlyzOh0s5rVsmZPTjAa0GEGBTcr2qln
-         QbxqLeJAF9WrtJhFWRAdlKE8It7tRljqAjovivUtYtuVwgfE6ONY+BO7RzL3IX6ps1ps
-         yTz0FWlKp538ZB0PZKg8zp4aR2PMbQg3K3SH8rwgQMiO4Z49yYq0Luxx3VzQrWQtRtee
-         GOmT8S1E9L8+tOKq8HT3TJbQhHsVpCqURgNlz9u3+85QDrUaTjplpwR2S1Jj6VUFqujf
-         kPRg5jqYFLtpJgvsWvZddY1bDObPqL5ZquE+zwxhwcw6HUS96Bq8LSVuVpStblMboj5a
-         UvEw==
-X-Gm-Message-State: AOAM530KU73Dy0jsoiVjkdjTI2Jz9YVQC+UDz17tnJw4jZ9SuakqjcJa
-        TUWgU7p25qhjWuY8JWTVGS/ucQ==
-X-Google-Smtp-Source: ABdhPJxCmD4c8IFGSzGHPg50n9TH1o+RaiKai1/irHgNYxcYmZIzLRcPtjtjRFKBn/GHQ0WBvLeYOg==
-X-Received: by 2002:a63:1c23:: with SMTP id c35mr26767213pgc.91.1593756840219;
-        Thu, 02 Jul 2020 23:14:00 -0700 (PDT)
-Received: from Smcdef-MBP.local.net ([103.136.220.68])
-        by smtp.gmail.com with ESMTPSA id y7sm8642784pjp.47.2020.07.02.23.13.57
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 02 Jul 2020 23:13:59 -0700 (PDT)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     akpm@linux-foundation.org, david@redhat.com
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH RESEND] mm/page_alloc: skip setting nodemask when we are in interrupt
-Date:   Fri,  3 Jul 2020 14:13:50 +0800
-Message-Id: <20200703061350.94474-1-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XQo/Rd+xHPmGgmIcOXUptpIYqJIjEhRxjJjwkv3wZFI=;
+        b=Wie+xtDAvAwWBXbi4/yP7vQ4nDAQiF2GdEufERB9liab+KBJocGiyI6ZxxFXOakZuE
+         xa3oyrjrnUBJdIirgnMvt/SQEFjASFLkUtxjpW3ASTEkArMbfSTd9h22Xj6BJ/CFZxOk
+         cYCTB0pX2JaZ6W5nrudfpZFRsaI+jUAIMGs/6GgQV0NSlTb/Eom3YQKHlmB0YVTXW0AE
+         uo25Wk9UlbHt2wZy5IBRoas1AmdhGJZm7o9MD+FfY6hB3qnf0nnBgCKCX1aF+D9m1vNX
+         Pf/V/23EoXpYKIDlfsxdtWmFWRPPLCN61zgUjmTj85PQJIs7QWV/nx/rqIzNJAMUf1N8
+         8zdA==
+X-Gm-Message-State: AOAM531F3GdslPfGBbUQ2KP+pihD0mvRR4Dw73hK+dQSmBkcYeL0NL9P
+        PXSsOoc+VCwfEVmjW4VIuU0MJK/CPHHsv3sXLdg=
+X-Google-Smtp-Source: ABdhPJwBMXQlurLy8cM/1IC3M7Tdh9XzAktBL8oNObjKKNSPpO6SiR8eMtFvqghg6aa33QMGRehJe3KvSnmAMSc0lo4=
+X-Received: by 2002:a5d:538e:: with SMTP id d14mr35161491wrv.21.1593757042208;
+ Thu, 02 Jul 2020 23:17:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200627133654.64863-1-changbin.du@gmail.com> <20200627133654.64863-7-changbin.du@gmail.com>
+In-Reply-To: <20200627133654.64863-7-changbin.du@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Fri, 3 Jul 2020 15:17:04 +0900
+Message-ID: <CAM9d7cjM6p8pMLjzAoiGpT4RX-htL8GvmFRmTP8mXqk0oUfHAA@mail.gmail.com>
+Subject: Re: [PATCH v2 06/15] perf ftrace: add option '-m/--buffer-size' to
+ set per-cpu buffer size
+To:     Changbin Du <changbin.du@gmail.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When we are in the interrupt context, it is irrelevant to the
-current task context. If we use current task's mems_allowed, we
-can fair to alloc pages in the fast path and fall back to slow
-path memory allocation when the current node(which is the current
-task mems_allowed) does not have enough memory to allocate. In
-this case, it slows down the memory allocation speed of interrupt
-context. So we can skip setting the nodemask to allow any node
-to allocate memory, so that fast path allocation can success.
+On Sat, Jun 27, 2020 at 10:38 PM Changbin Du <changbin.du@gmail.com> wrote:
+>
+> This adds an option '-m/--buffer-size' to allow us set the size of per-cpu
+> tracing buffer.
+>
+> Signed-off-by: Changbin Du <changbin.du@gmail.com>
+> ---
+[SNIP]
+> @@ -555,6 +575,8 @@ int cmd_ftrace(int argc, const char **argv)
+>                     "Max depth for function graph tracer"),
+>         OPT_UINTEGER('d', "delay", &ftrace.initial_delay,
+>                      "ms to wait before starting tracing after program start"),
+> +       OPT_UINTEGER('m', "buffer-size", &ftrace.buffer_size_kb,
+> +                    "size of per cpu buffer in kb"),
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
- mm/page_alloc.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+It'd be nice if we support units as a suffix (like perf record). e.g. -m 4M
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index b48336e20bdcd..a6c36cd557d1d 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -4726,10 +4726,12 @@ static inline bool prepare_alloc_pages(gfp_t gfp_mask, unsigned int order,
- 
- 	if (cpusets_enabled()) {
- 		*alloc_mask |= __GFP_HARDWALL;
--		if (!ac->nodemask)
--			ac->nodemask = &cpuset_current_mems_allowed;
--		else
-+		if (!ac->nodemask) {
-+			if (!in_interrupt())
-+				ac->nodemask = &cpuset_current_mems_allowed;
-+		} else {
- 			*alloc_flags |= ALLOC_CPUSET;
-+		}
- 	}
- 
- 	fs_reclaim_acquire(gfp_mask);
--- 
-2.11.0
+Thanks
+Namhyung
 
+>         OPT_END()
+>         };
+>
+> --
+> 2.25.1
+>
