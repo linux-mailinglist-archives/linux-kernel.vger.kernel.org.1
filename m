@@ -2,132 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60A5F213867
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 12:09:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7FE921386B
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 12:10:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726063AbgGCKJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 06:09:00 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:39116 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725796AbgGCKJA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 06:09:00 -0400
-Received: from p5b127e6f.dip0.t-ipconnect.de ([91.18.126.111] helo=phil.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1jrIco-0005Z1-B5; Fri, 03 Jul 2020 12:08:54 +0200
-From:   Heiko Stuebner <heiko@sntech.de>
-To:     John Keeping <john@metanate.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] i2c: rk3x: support master_xfer_atomic
-Date:   Fri, 03 Jul 2020 12:08:53 +0200
-Message-ID: <2391901.EFyQHPvyDf@phil>
-In-Reply-To: <20200623120646.2175569-1-john@metanate.com>
-References: <20200623120646.2175569-1-john@metanate.com>
+        id S1726112AbgGCKKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 06:10:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59732 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726048AbgGCKKB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Jul 2020 06:10:01 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40DF1C08C5C1
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Jul 2020 03:10:01 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id rk21so33631137ejb.2
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Jul 2020 03:10:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=ujiHBwaaGNuMhzojZ2C69RM25MjRj77aVtoAsKFcXTM=;
+        b=ngWkmeS89+Mrvx4X8/czIqPtSBc7gh78lwma0+nZaJ+6XHSc6BlhFJXOZt/wcpOWp4
+         hzQfJkyy2KfglyCzBXiUYPRB4TDuQtB9R63cFj3yyd8lRfEHlYPxS5y90O7UloVBq8t7
+         HiAwSJcP1xnEzRHFWLdWrR5haf5qx+kTLUKOCnsCLT0PGqrCRDKUO45Kn1W6iNmYgA9T
+         jXS0OMWRj67z6IKIribTvTL2pZZeOeniWCyER4E2yntxp8MJeQ2e8hPy9sgr0gZUrcZd
+         FABttfHEJOtRPDayiMBCI1QOOHKQFHH8KUC6afAQtI1mH/EdBcyW6JKCsFUjyQZaqDFq
+         vF8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=ujiHBwaaGNuMhzojZ2C69RM25MjRj77aVtoAsKFcXTM=;
+        b=eWbiUlAsdj3dOAhZHCKwZq6tl9C5Buv8feSEGlZMdM8BakSTgfrXW6IR+SO1RDpfmh
+         xAuF0NIrBZC3V/SACEojUx/uLu6a7+s1XqCzfoFubTukgRens9FFd8B57GP8SUkX+pln
+         dFDt8IoMIhs/IHxFnM6f/6K8nC4U0H9QUj/MWi8x3ppwEpD1ohHQX83JR2I9q5Gbd+qI
+         KCvMgSWq5EehCDN0ZDRjD+WVABVV4MPcMQw/8DWEKVUPeHeHNbK/kyiJBuA0UHv5dsHF
+         PT2HNmzn8XZ04i5p9TTkZO72+32JNWvpExULcR9Rf64hiMkSAKY3gidz+W0uBYXJnTmo
+         65Gw==
+X-Gm-Message-State: AOAM533KpRcM/SvQlBhN5s9Wu4vU3Lo1Nb4mZD0cEjV+9G7FXZjpGRbb
+        lSomrY2mlhWLMcrn8vJ4oHxHlvys+BTufDuLUHY=
+X-Google-Smtp-Source: ABdhPJw3E+GBLgwG65F1PpKxr8QZ9O8xiJrqJizfzO2UyxhYCsaX2ZlKdQIabbtUlg5M4Jo3Cn/INXaYWedG4bxbmPQ=
+X-Received: by 2002:a17:906:3984:: with SMTP id h4mr25301519eje.254.1593771000095;
+ Fri, 03 Jul 2020 03:10:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Received: by 2002:aa7:d703:0:0:0:0:0 with HTTP; Fri, 3 Jul 2020 03:09:59 -0700 (PDT)
+Reply-To: jessicavail020@gmail.com
+From:   Jessica Vail <steveraymond3415@gmail.com>
+Date:   Fri, 3 Jul 2020 11:09:59 +0100
+Message-ID: <CAEtFjNJVQoXaYhX1Kdu591_5HFtcnEoU7f0KWwXSPJ3nrmSehg@mail.gmail.com>
+Subject: Hi
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Dienstag, 23. Juni 2020, 14:06:46 CEST schrieb John Keeping:
-> Enable i2c transactions in irq disabled contexts like poweroff where the
-> PMIC is connected via i2c.
-> 
-> Signed-off-by: John Keeping <john@metanate.com>
+Hi dear,
 
-on a rk3288:
-Tested-by: Heiko Stuebner <heiko@sntech.de>
-Reviewed-by: Heiko Stuebner <heiko@sntech.de>
+I'm Jessica Vail, from the United States,please i wish to have a
+communication with you.
 
-> ---
->  drivers/i2c/busses/i2c-rk3x.c | 39 +++++++++++++++++++++++++++++++----
->  1 file changed, 35 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/i2c/busses/i2c-rk3x.c b/drivers/i2c/busses/i2c-rk3x.c
-> index 15324bfbc6cb..8e3cc85d1921 100644
-> --- a/drivers/i2c/busses/i2c-rk3x.c
-> +++ b/drivers/i2c/busses/i2c-rk3x.c
-> @@ -10,6 +10,7 @@
->  #include <linux/module.h>
->  #include <linux/i2c.h>
->  #include <linux/interrupt.h>
-> +#include <linux/iopoll.h>
->  #include <linux/errno.h>
->  #include <linux/err.h>
->  #include <linux/platform_device.h>
-> @@ -1040,8 +1041,21 @@ static int rk3x_i2c_setup(struct rk3x_i2c *i2c, struct i2c_msg *msgs, int num)
->  	return ret;
->  }
->  
-> -static int rk3x_i2c_xfer(struct i2c_adapter *adap,
-> -			 struct i2c_msg *msgs, int num)
-> +static int rk3x_i2c_wait_xfer_poll(struct rk3x_i2c *i2c)
-> +{
-> +	ktime_t timeout = ktime_add_ms(ktime_get(), WAIT_TIMEOUT);
-> +
-> +	while (READ_ONCE(i2c->busy) &&
-> +	       ktime_compare(ktime_get(), timeout) < 0) {
-> +		udelay(5);
-> +		rk3x_i2c_irq(0, i2c);
-> +	}
-> +
-> +	return !i2c->busy;
-> +}
-> +
-> +static int rk3x_i2c_xfer_common(struct i2c_adapter *adap,
-> +				struct i2c_msg *msgs, int num, bool polling)
->  {
->  	struct rk3x_i2c *i2c = (struct rk3x_i2c *)adap->algo_data;
->  	unsigned long timeout, flags;
-> @@ -1075,8 +1089,12 @@ static int rk3x_i2c_xfer(struct i2c_adapter *adap,
->  
->  		rk3x_i2c_start(i2c);
->  
-> -		timeout = wait_event_timeout(i2c->wait, !i2c->busy,
-> -					     msecs_to_jiffies(WAIT_TIMEOUT));
-> +		if (!polling) {
-> +			timeout = wait_event_timeout(i2c->wait, !i2c->busy,
-> +						     msecs_to_jiffies(WAIT_TIMEOUT));
-> +		} else {
-> +			timeout = rk3x_i2c_wait_xfer_poll(i2c);
-> +		}
->  
->  		spin_lock_irqsave(&i2c->lock, flags);
->  
-> @@ -1110,6 +1128,18 @@ static int rk3x_i2c_xfer(struct i2c_adapter *adap,
->  	return ret < 0 ? ret : num;
->  }
->  
-> +static int rk3x_i2c_xfer(struct i2c_adapter *adap,
-> +			 struct i2c_msg *msgs, int num)
-> +{
-> +	return rk3x_i2c_xfer_common(adap, msgs, num, false);
-> +}
-> +
-> +static int rk3x_i2c_xfer_polling(struct i2c_adapter *adap,
-> +				 struct i2c_msg *msgs, int num)
-> +{
-> +	return rk3x_i2c_xfer_common(adap, msgs, num, true);
-> +}
-> +
->  static __maybe_unused int rk3x_i2c_resume(struct device *dev)
->  {
->  	struct rk3x_i2c *i2c = dev_get_drvdata(dev);
-> @@ -1126,6 +1156,7 @@ static u32 rk3x_i2c_func(struct i2c_adapter *adap)
->  
->  static const struct i2c_algorithm rk3x_i2c_algorithm = {
->  	.master_xfer		= rk3x_i2c_xfer,
-> +	.master_xfer_atomic	= rk3x_i2c_xfer_polling,
->  	.functionality		= rk3x_i2c_func,
->  };
->  
-> 
+I wait for your answer.
 
-
-
-
+Jessica Vail.
