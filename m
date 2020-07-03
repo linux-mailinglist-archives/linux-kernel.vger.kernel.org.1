@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 096FD213EEC
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 19:45:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82884213EC3
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 19:44:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727820AbgGCRoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 13:44:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44508 "EHLO
+        id S1726909AbgGCRmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 13:42:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726875AbgGCRmd (ORCPT
+        with ESMTP id S1726889AbgGCRmf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 13:42:33 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BD74C08C5DD
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Jul 2020 10:42:33 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id g10so11353795wmc.1
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Jul 2020 10:42:33 -0700 (PDT)
+        Fri, 3 Jul 2020 13:42:35 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F281C08C5DF
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Jul 2020 10:42:34 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id l17so32762734wmj.0
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Jul 2020 10:42:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=hkP3qVBNEk6Kc5YTDzguCBFbl645cyK8MIjoauSGcJc=;
-        b=DMqJkwcMFbE16h4BXCAlhproq9OY9OTMS6yMlTWhnyElmGkSam1Nhg2OxHZdPKcjAV
-         fWMh1JQtMrUG+nF+S5TM02kB7g2XlgSG0aUiH2N7fo4tvH0W6QcegBqOL5TlgE4Tb8uU
-         sD9IP3QVUcbeuuFmEbW75bpiS8sTsnVeAORASEMdFtjTrJ4paWH3MEuIz3TiYhm7/jdO
-         pYSCxncRB6biQIICoD2NYpo69H8bsraYRPIqQXuhynZl7lIBGzwCSQfo53knK+w9zgNW
-         mlKrkddtqqQsp49JGkEEW3Fcd2AHsUc5Epv0TXK3FjLoSF05qYCsLrQGcCTF3+iVJENG
-         UPdQ==
+        bh=friu7Jy2tbGy4d1jkwCWtPbcYZ7luQZlKvwgWbPNKHg=;
+        b=puwTBHNe/kKkCwFXmN8z3mDpSXWfiQead8Enhc8NAveHB7gPPpt7FdFAXjUpGKqRzB
+         5UCtk2MkA/aOAi6ZLSNSue9EVSnABo8Bar7fdGElfaNvOVIxa6hYraT6+FwH8zCkKuLD
+         D0JYQtlRicpA3up3Bg/z46LJD9lLCKBo0RA6Tbe/TR1br6YxNhgJuwc7aqueQusdxSPb
+         hcp50co1fGmITC2AKrpJLLcxXraOWoPk3cxehodDCbNn4rDK41bGFXvUuMBT+EXct2Wp
+         72BK4A6l39lw/1nZInaeNeFhqmsZdnIxwJEvlFDnyKyU9M7PeM4E6oy811xI3BB+2b/m
+         VMKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=hkP3qVBNEk6Kc5YTDzguCBFbl645cyK8MIjoauSGcJc=;
-        b=kSH88pwVmK2RZnGf2M8EOYajb0igzmJGJ/S9QZxakdtRARyAu0UkJHmkZ92PJ5Z6SI
-         T1NahYQx3zARRtiTez7gf2GFQJlVQhAN0Qk4RXZIPKS8NI2Dg24mDGkyS2GOHABU8HGX
-         2COEdgmgGkSUITCoILIrJFYTVv82dItvU3kVprVRvu9eCtlI/gY1xGYV9vf9ppLt+/uG
-         Eaxs3hr062bRPN9d0kJsDADYM0SjAkZrz25u7Xzt3/cZrHZCieQIwVbjwRMX+04M4iX8
-         PUBKKkta3IRamXDg1Kf5JCQwCxBldxd7JaQAkyqS9wmT3EFXc+i6JJWi2OIXmHzfT6yS
-         svRw==
-X-Gm-Message-State: AOAM532LrXyoMvxW13ft9zr1jYFKoyxVWAIQ82CrT7KIE3ZeJ1LdC/ei
-        8LL346/Ji7CdiDwB9vps0ncicQ==
-X-Google-Smtp-Source: ABdhPJyBCYm3ryMjBcp1zoZ4Rl9KiNphQ9CcsrkGIBJR3Mk9yN41fsP6rocveGpS/R7FreNKHpirUg==
-X-Received: by 2002:a1c:2d0d:: with SMTP id t13mr22258434wmt.43.1593798151974;
-        Fri, 03 Jul 2020 10:42:31 -0700 (PDT)
+        bh=friu7Jy2tbGy4d1jkwCWtPbcYZ7luQZlKvwgWbPNKHg=;
+        b=J0U1cW7fesRXefnqdV3Yn9HP43u7CbKlfLpksthciAhI1QtS0nkWiNPJJFTsmyhbxh
+         hba5IbIvucRnJ3WvVdKt9afgyS+Uo3N3plUU+A9nuGK14CLyx3cABnbyLcRlklNq1FQq
+         Mm9E3lVGsKoW4q1169NFT283DBd6ee3Ro3eYxkLrQKAWg713IzPPrAmxDteMLItPDu16
+         5xPchCx/GxFTD5T38VDls+4nxkMoNv9vocWMpDyplQBkEGboOL9yMilWA26REVAPC+Cb
+         Gt4a7sNCT7kmdFQTDI3DiaT8HknguZM/c/N/vdASxwlgdzKBELaZvle8L+L4BrGVaUqL
+         ceYw==
+X-Gm-Message-State: AOAM5310X9qF/kCdZr8J618nr89ZTYnFqJJ0sjG+D2jyApLyGBkkVCak
+        RjWGtq8CysGGWBfyN76ed7B9yA==
+X-Google-Smtp-Source: ABdhPJzXpNP74qpR3EeiVntXOr7SPzrzUEG4ppyJ5gSdCrYd4MG9xzn0OnsJRyIkwygTnHOUwNwQtQ==
+X-Received: by 2002:a1c:1d46:: with SMTP id d67mr40352418wmd.152.1593798153264;
+        Fri, 03 Jul 2020 10:42:33 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id x11sm13625799wmc.26.2020.07.03.10.42.30
+        by smtp.gmail.com with ESMTPSA id x11sm13625799wmc.26.2020.07.03.10.42.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Jul 2020 10:42:31 -0700 (PDT)
+        Fri, 03 Jul 2020 10:42:32 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Lee Jones <lee.jones@linaro.org>,
         Peter Chen <Peter.Chen@nxp.com>
-Subject: [PATCH 11/30] usb: chipidea: udc: Add missing descriptions for function arg 'ci'
-Date:   Fri,  3 Jul 2020 18:41:29 +0100
-Message-Id: <20200703174148.2749969-12-lee.jones@linaro.org>
+Subject: [PATCH 12/30] usb: chipidea: udc: Help out kerneldoc headers that have tried, demote the others
+Date:   Fri,  3 Jul 2020 18:41:30 +0100
+Message-Id: <20200703174148.2749969-13-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200703174148.2749969-1-lee.jones@linaro.org>
 References: <20200703174148.2749969-1-lee.jones@linaro.org>
@@ -66,118 +66,202 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks like a very popular argument to omit descriptions for.
+Help with adding the odd description where they have been omitted or
+where the format isn't quite right.  Demote all function headers which
+are lacking any attempt of describing their arguments.
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/usb/chipidea/udc.c:80: warning: Function parameter or member 'ci' not described in 'hw_device_state'
- drivers/usb/chipidea/udc.c:100: warning: Function parameter or member 'ci' not described in 'hw_ep_flush'
- drivers/usb/chipidea/udc.c:121: warning: Function parameter or member 'ci' not described in 'hw_ep_disable'
- drivers/usb/chipidea/udc.c:136: warning: Function parameter or member 'ci' not described in 'hw_ep_enable'
- drivers/usb/chipidea/udc.c:170: warning: Function parameter or member 'ci' not described in 'hw_ep_get_halt'
- drivers/usb/chipidea/udc.c:185: warning: Function parameter or member 'ci' not described in 'hw_ep_prime'
- drivers/usb/chipidea/udc.c:215: warning: Function parameter or member 'ci' not described in 'hw_ep_set_halt'
- drivers/usb/chipidea/udc.c:238: warning: Function parameter or member 'ci' not described in 'hw_port_is_high_speed'
- drivers/usb/chipidea/udc.c:251: warning: Function parameter or member 'ci' not described in 'hw_test_and_clear_complete'
- drivers/usb/chipidea/udc.c:263: warning: Function parameter or member 'ci' not described in 'hw_test_and_clear_intr_active'
- drivers/usb/chipidea/udc.c:277: warning: Function parameter or member 'ci' not described in 'hw_test_and_clear_setup_guard'
- drivers/usb/chipidea/udc.c:288: warning: Function parameter or member 'ci' not described in 'hw_test_and_set_setup_guard'
- drivers/usb/chipidea/udc.c:300: warning: Function parameter or member 'ci' not described in 'hw_usb_set_address'
- drivers/usb/chipidea/udc.c:312: warning: Function parameter or member 'ci' not described in 'hw_usb_reset'
+ drivers/usb/chipidea/udc.c:645: warning: Function parameter or member 'hwreq' not described in '_hardware_dequeue'
+ drivers/usb/chipidea/udc.c:645: warning: Excess function parameter 'gadget' description in '_hardware_dequeue'
+ drivers/usb/chipidea/udc.c:1326: warning: Function parameter or member 'ep' not described in 'ep_enable'
+ drivers/usb/chipidea/udc.c:1326: warning: Function parameter or member 'desc' not described in 'ep_enable'
+ drivers/usb/chipidea/udc.c:1393: warning: Function parameter or member 'ep' not described in 'ep_disable'
+ drivers/usb/chipidea/udc.c:1433: warning: Function parameter or member 'ep' not described in 'ep_alloc_request'
+ drivers/usb/chipidea/udc.c:1433: warning: Function parameter or member 'gfp_flags' not described in 'ep_alloc_request'
+ drivers/usb/chipidea/udc.c:1454: warning: Function parameter or member 'ep' not described in 'ep_free_request'
+ drivers/usb/chipidea/udc.c:1454: warning: Function parameter or member 'req' not described in 'ep_free_request'
+ drivers/usb/chipidea/udc.c:1488: warning: Function parameter or member 'ep' not described in 'ep_queue'
+ drivers/usb/chipidea/udc.c:1488: warning: Function parameter or member 'req' not described in 'ep_queue'
+ drivers/usb/chipidea/udc.c:1488: warning: Function parameter or member 'gfp_flags' not described in 'ep_queue'
+ drivers/usb/chipidea/udc.c:1512: warning: Function parameter or member 'ep' not described in 'ep_dequeue'
+ drivers/usb/chipidea/udc.c:1512: warning: Function parameter or member 'req' not described in 'ep_dequeue'
+ drivers/usb/chipidea/udc.c:1556: warning: Function parameter or member 'ep' not described in 'ep_set_halt'
+ drivers/usb/chipidea/udc.c:1556: warning: Function parameter or member 'value' not described in 'ep_set_halt'
+ drivers/usb/chipidea/udc.c:1566: warning: Function parameter or member 'ep' not described in 'ep_set_wedge'
+ drivers/usb/chipidea/udc.c:1586: warning: Function parameter or member 'ep' not described in 'ep_fifo_flush'
+ drivers/usb/chipidea/udc.c:1610: warning: cannot understand function prototype: 'const struct usb_ep_ops usb_ep_ops = '
+ drivers/usb/chipidea/udc.c:1629: warning: Function parameter or member '_gadget' not described in 'ci_hdrc_gadget_connect'
+ drivers/usb/chipidea/udc.c:1629: warning: Function parameter or member 'is_active' not described in 'ci_hdrc_gadget_connect'
+ drivers/usb/chipidea/udc.c:1780: warning: cannot understand function prototype: 'const struct usb_gadget_ops usb_gadget_ops = '
+ drivers/usb/chipidea/udc.c:1931: warning: Function parameter or member 'gadget' not described in 'ci_udc_stop'
+ drivers/usb/chipidea/udc.c:1965: warning: Function parameter or member 'ci' not described in 'udc_irq'
+ drivers/usb/chipidea/udc.c:2095: warning: Function parameter or member 'ci' not described in 'ci_hdrc_gadget_destroy'
+ drivers/usb/chipidea/udc.c:2144: warning: Function parameter or member 'ci' not described in 'ci_hdrc_gadget_init'
 
 Cc: Peter Chen <Peter.Chen@nxp.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/usb/chipidea/udc.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ drivers/usb/chipidea/udc.c | 34 +++++++++++++++++-----------------
+ 1 file changed, 17 insertions(+), 17 deletions(-)
 
 diff --git a/drivers/usb/chipidea/udc.c b/drivers/usb/chipidea/udc.c
-index db0cfde0cc3cb..c42b98c84f2f1 100644
+index c42b98c84f2f1..0dfbc31843fc8 100644
 --- a/drivers/usb/chipidea/udc.c
 +++ b/drivers/usb/chipidea/udc.c
-@@ -72,6 +72,7 @@ static inline int ep_to_bit(struct ci_hdrc *ci, int n)
- 
+@@ -647,7 +647,7 @@ static int reprime_dtd(struct ci_hdrc *ci, struct ci_hw_ep *hwep,
  /**
-  * hw_device_state: enables/disables interrupts (execute without interruption)
-+ * @ci: the controller
-  * @dma: 0 => disable, !0 => enable and set dma engine
+  * _hardware_dequeue: handles a request at hardware level
+  * @gadget: gadget
+- * @hwep:   endpoint
++ * @hwreq:  request
   *
   * This function returns an error code
-@@ -91,6 +92,7 @@ static int hw_device_state(struct ci_hdrc *ci, u32 dma)
- 
- /**
-  * hw_ep_flush: flush endpoint fifo (execute without interruption)
-+ * @ci: the controller
-  * @num: endpoint number
-  * @dir: endpoint direction
+  */
+@@ -1326,7 +1326,7 @@ __acquires(ci->lock)
+ /******************************************************************************
+  * ENDPT block
+  *****************************************************************************/
+-/**
++/*
+  * ep_enable: configure endpoint, making it usable
   *
-@@ -112,6 +114,7 @@ static int hw_ep_flush(struct ci_hdrc *ci, int num, int dir)
- 
- /**
-  * hw_ep_disable: disables endpoint (execute without interruption)
-+ * @ci: the controller
-  * @num: endpoint number
-  * @dir: endpoint direction
-  *
-@@ -126,6 +129,7 @@ static int hw_ep_disable(struct ci_hdrc *ci, int num, int dir)
- 
- /**
-  * hw_ep_enable: enables endpoint (execute without interruption)
-+ * @ci: the controller
-  * @num:  endpoint number
-  * @dir:  endpoint direction
-  * @type: endpoint type
-@@ -161,6 +165,7 @@ static int hw_ep_enable(struct ci_hdrc *ci, int num, int dir, int type)
- 
- /**
-  * hw_ep_get_halt: return endpoint halt status
-+ * @ci: the controller
-  * @num: endpoint number
-  * @dir: endpoint direction
-  *
-@@ -175,6 +180,7 @@ static int hw_ep_get_halt(struct ci_hdrc *ci, int num, int dir)
- 
- /**
-  * hw_ep_prime: primes endpoint (execute without interruption)
-+ * @ci: the controller
-  * @num:     endpoint number
-  * @dir:     endpoint direction
-  * @is_ctrl: true if control endpoint
-@@ -205,6 +211,7 @@ static int hw_ep_prime(struct ci_hdrc *ci, int num, int dir, int is_ctrl)
- /**
-  * hw_ep_set_halt: configures ep halt & resets data toggle after clear (execute
-  *                 without interruption)
-+ * @ci: the controller
-  * @num:   endpoint number
-  * @dir:   endpoint direction
-  * @value: true => stall, false => unstall
-@@ -243,6 +250,7 @@ static int hw_port_is_high_speed(struct ci_hdrc *ci)
- /**
-  * hw_test_and_clear_complete: test & clear complete status (execute without
-  *                             interruption)
-+ * @ci: the controller
-  * @n: endpoint number
-  *
-  * This function returns complete status
-@@ -291,6 +299,7 @@ static int hw_test_and_set_setup_guard(struct ci_hdrc *ci)
- 
- /**
-  * hw_usb_set_address: configures USB address (execute without interruption)
-+ * @ci: the controller
-  * @value: new USB address
-  *
-  * This function explicitly sets the address, without the "USBADRA" (advance)
-@@ -610,8 +619,9 @@ static int _hardware_enqueue(struct ci_hw_ep *hwep, struct ci_hw_req *hwreq)
- 	return ret;
+  * Check usb_ep_enable() at "usb_gadget.h" for details
+@@ -1394,7 +1394,7 @@ static int ep_enable(struct usb_ep *ep,
+ 	return retval;
  }
  
--/*
-+/**
-  * free_pending_td: remove a pending request for the endpoint
-+ * @ci: the controller
-  * @hwep: endpoint
+-/**
++/*
+  * ep_disable: endpoint is no longer usable
+  *
+  * Check usb_ep_disable() at "usb_gadget.h" for details
+@@ -1434,7 +1434,7 @@ static int ep_disable(struct usb_ep *ep)
+ 	return retval;
+ }
+ 
+-/**
++/*
+  * ep_alloc_request: allocate a request object to use with this endpoint
+  *
+  * Check usb_ep_alloc_request() at "usb_gadget.h" for details
+@@ -1455,7 +1455,7 @@ static struct usb_request *ep_alloc_request(struct usb_ep *ep, gfp_t gfp_flags)
+ 	return (hwreq == NULL) ? NULL : &hwreq->req;
+ }
+ 
+-/**
++/*
+  * ep_free_request: frees a request object
+  *
+  * Check usb_ep_free_request() at "usb_gadget.h" for details
+@@ -1488,7 +1488,7 @@ static void ep_free_request(struct usb_ep *ep, struct usb_request *req)
+ 	spin_unlock_irqrestore(hwep->lock, flags);
+ }
+ 
+-/**
++/*
+  * ep_queue: queues (submits) an I/O request to an endpoint
+  *
+  * Check usb_ep_queue()* at usb_gadget.h" for details
+@@ -1513,7 +1513,7 @@ static int ep_queue(struct usb_ep *ep, struct usb_request *req,
+ 	return retval;
+ }
+ 
+-/**
++/*
+  * ep_dequeue: dequeues (cancels, unlinks) an I/O request from an endpoint
+  *
+  * Check usb_ep_dequeue() at "usb_gadget.h" for details
+@@ -1557,7 +1557,7 @@ static int ep_dequeue(struct usb_ep *ep, struct usb_request *req)
+ 	return 0;
+ }
+ 
+-/**
++/*
+  * ep_set_halt: sets the endpoint halt feature
+  *
+  * Check usb_ep_set_halt() at "usb_gadget.h" for details
+@@ -1567,7 +1567,7 @@ static int ep_set_halt(struct usb_ep *ep, int value)
+ 	return _ep_set_halt(ep, value, true);
+ }
+ 
+-/**
++/*
+  * ep_set_wedge: sets the halt feature and ignores clear requests
+  *
+  * Check usb_ep_set_wedge() at "usb_gadget.h" for details
+@@ -1587,7 +1587,7 @@ static int ep_set_wedge(struct usb_ep *ep)
+ 	return usb_ep_set_halt(ep);
+ }
+ 
+-/**
++/*
+  * ep_fifo_flush: flushes contents of a fifo
+  *
+  * Check usb_ep_fifo_flush() at "usb_gadget.h" for details
+@@ -1613,7 +1613,7 @@ static void ep_fifo_flush(struct usb_ep *ep)
+ 	spin_unlock_irqrestore(hwep->lock, flags);
+ }
+ 
+-/**
++/*
+  * Endpoint-specific part of the API to the USB controller hardware
+  * Check "usb_gadget.h" for details
   */
- static void free_pending_td(struct ci_hw_ep *hwep)
+@@ -1632,7 +1632,7 @@ static const struct usb_ep_ops usb_ep_ops = {
+ /******************************************************************************
+  * GADGET block
+  *****************************************************************************/
+-/**
++/*
+  * ci_hdrc_gadget_connect: caller makes sure gadget driver is binded
+  */
+ static void ci_hdrc_gadget_connect(struct usb_gadget *_gadget, int is_active)
+@@ -1782,7 +1782,7 @@ static struct usb_ep *ci_udc_match_ep(struct usb_gadget *gadget,
+ 	return NULL;
+ }
+ 
+-/**
++/*
+  * Device operations part of the API to the USB controller hardware,
+  * which don't involve endpoints (or i/o)
+  * Check  "usb_gadget.h" for details
+@@ -1934,7 +1934,7 @@ static void ci_udc_stop_for_otg_fsm(struct ci_hdrc *ci)
+ 	mutex_unlock(&ci->fsm.lock);
+ }
+ 
+-/**
++/*
+  * ci_udc_stop: unregister a gadget driver
+  */
+ static int ci_udc_stop(struct usb_gadget *gadget)
+@@ -1965,7 +1965,7 @@ static int ci_udc_stop(struct usb_gadget *gadget)
+ /******************************************************************************
+  * BUS block
+  *****************************************************************************/
+-/**
++/*
+  * udc_irq: ci interrupt handler
+  *
+  * This function returns IRQ_HANDLED if the IRQ has been handled
+@@ -2096,7 +2096,7 @@ static int udc_start(struct ci_hdrc *ci)
+ 	return retval;
+ }
+ 
+-/**
++/*
+  * ci_hdrc_gadget_destroy: parent remove must call this to remove UDC
+  *
+  * No interrupts active, the IRQ has been released
+@@ -2146,7 +2146,7 @@ static void udc_id_switch_for_host(struct ci_hdrc *ci)
+ 
+ /**
+  * ci_hdrc_gadget_init - initialize device related bits
+- * ci: the controller
++ * @ci: the controller
+  *
+  * This function initializes the gadget, if the device is "device capable".
+  */
 -- 
 2.25.1
 
