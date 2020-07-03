@@ -2,108 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68B262130D2
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 03:07:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D8042130D4
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 03:07:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726590AbgGCBHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 21:07:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48122 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725915AbgGCBHC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 21:07:02 -0400
-Received: from lenoir.home (lfbn-ncy-1-317-216.w83-196.abo.wanadoo.fr [83.196.152.216])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CE8AF20781;
-        Fri,  3 Jul 2020 01:07:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593738422;
-        bh=k73IeEdgQUZj1/5rKGHi3+j/vUAAnWYfM2N+k8D5unE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=GDnxLU2au+Cexq1VUINfJgjKmArvqILKPNTdsp6XGWdexOZ1T0iJNv7mrScoo+0dc
-         bu8zOZTokXHjzZywKAXcXVlmrzrBVgkUP+p+JEbiV0hSyV2UMYtWI8SBL08s5gYjWC
-         V16Cfg9bR7wLW/oVNU3UXVeoEY6mdcOYITlXcPNg=
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Anna-Maria Gleixner <anna-maria@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>, Stable <stable@kernel.org>
-Subject: [PATCH] timer: Prevent base->clk from moving backward
-Date:   Fri,  3 Jul 2020 03:06:57 +0200
-Message-Id: <20200703010657.2302-1-frederic@kernel.org>
-X-Mailer: git-send-email 2.26.2
+        id S1726630AbgGCBHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 21:07:25 -0400
+Received: from mail107.syd.optusnet.com.au ([211.29.132.53]:52253 "EHLO
+        mail107.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725915AbgGCBHZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 21:07:25 -0400
+Received: from dread.disaster.area (pa49-180-53-24.pa.nsw.optusnet.com.au [49.180.53.24])
+        by mail107.syd.optusnet.com.au (Postfix) with ESMTPS id 3DA22D59879;
+        Fri,  3 Jul 2020 11:07:21 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1jrAAi-0001mh-CL; Fri, 03 Jul 2020 11:07:20 +1000
+Date:   Fri, 3 Jul 2020 11:07:20 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Waiman Long <longman@redhat.com>
+Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
+        linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Qian Cai <cai@lca.pw>, Eric Sandeen <sandeen@redhat.com>
+Subject: Re: [PATCH v5] xfs: Fix false positive lockdep warning with
+ sb_internal & fs_reclaim
+Message-ID: <20200703010720.GH5369@dread.disaster.area>
+References: <20200702005923.10064-1-longman@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200702005923.10064-1-longman@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=W5xGqiek c=1 sm=1 tr=0
+        a=moVtWZxmCkf3aAMJKIb/8g==:117 a=moVtWZxmCkf3aAMJKIb/8g==:17
+        a=kj9zAlcOel0A:10 a=_RQrkK6FrEwA:10 a=7-415B0cAAAA:8 a=20KFwNOVAAAA:8
+        a=DRpurTtVrwkqR7YIFl8A:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a timer is enqueued with a negative delta (ie: expiry is below
-base->clk), it gets added to the wheel as expiring now (base->clk).
+On Wed, Jul 01, 2020 at 08:59:23PM -0400, Waiman Long wrote:
+> Suggested-by: Dave Chinner <david@fromorbit.com>
+> Signed-off-by: Waiman Long <longman@redhat.com>
+> ---
+>  fs/xfs/xfs_super.c | 12 +++++++++++-
+>  1 file changed, 11 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
+> index 379cbff438bc..dcc97bad950a 100644
+> --- a/fs/xfs/xfs_super.c
+> +++ b/fs/xfs/xfs_super.c
+> @@ -913,11 +913,21 @@ xfs_fs_freeze(
+>  	struct super_block	*sb)
+>  {
+>  	struct xfs_mount	*mp = XFS_M(sb);
+> +	unsigned long		pflags;
+> +	int			ret;
+>  
+> +	/*
+> +	 * Disable fs reclaim in memory allocation for fs freeze to avoid
+> +	 * causing a possible circular locking dependency lockdep splat
+> +	 * relating to fs reclaim.
+> +	 */
 
-Yet the value that gets stored in base->next_expiry, while calling
-trigger_dyntick_cpu(), is the initial timer->expires value. The
-resulting state becomes:
+	/*
+	 * The filesystem is now frozen far enough that memory reclaim
+	 * cannot safely operate on the filesystem. Hence we need to
+	 * set a GFP_NOFS context here to avoid recursion deadlocks.
+	 */
 
-	base->next_expiry < base->clk
+> +	current_set_flags_nested(&pflags, PF_MEMALLOC_NOFS);
 
-On the next timer enqueue, forward_timer_base() may accidentally
-rewind base->clk. As a possible outcome, timers may expire way too
-early, the worst case being that the highest wheel levels get spuriously
-processed again.
+memalloc_nofs_save/restore(), please.
 
-To prevent from that, make sure that base->next_expiry doesn't get below
-base->clk.
-
-Fixes: a683f390b93f ("timers: Forward the wheel clock whenever possible")
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Anna-Maria Gleixner <anna-maria@linutronix.de>
-Cc: Juri Lelli <juri.lelli@redhat.com>
----
- kernel/time/timer.c | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
-
-diff --git a/kernel/time/timer.c b/kernel/time/timer.c
-index 398e6eadb861..9a838d38dbe6 100644
---- a/kernel/time/timer.c
-+++ b/kernel/time/timer.c
-@@ -584,7 +584,15 @@ trigger_dyntick_cpu(struct timer_base *base, struct timer_list *timer)
- 	 * Set the next expiry time and kick the CPU so it can reevaluate the
- 	 * wheel:
- 	 */
--	base->next_expiry = timer->expires;
-+	if (time_before(timer->expires, base->clk)) {
-+		/*
-+		 * Prevent from forward_timer_base() moving the base->clk
-+		 * backward
-+		 */
-+		base->next_expiry = base->clk;
-+	} else {
-+		base->next_expiry = timer->expires;
-+	}
- 	wake_up_nohz_cpu(base->cpu);
- }
- 
-@@ -896,10 +904,13 @@ static inline void forward_timer_base(struct timer_base *base)
- 	 * If the next expiry value is > jiffies, then we fast forward to
- 	 * jiffies otherwise we forward to the next expiry value.
- 	 */
--	if (time_after(base->next_expiry, jnow))
-+	if (time_after(base->next_expiry, jnow)) {
- 		base->clk = jnow;
--	else
-+	} else {
-+		if (WARN_ON_ONCE(time_before(base->next_expiry, base->clk)))
-+			return;
- 		base->clk = base->next_expiry;
-+	}
- #endif
- }
- 
+-Dave.
 -- 
-2.26.2
-
+Dave Chinner
+david@fromorbit.com
