@@ -2,117 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6579213B91
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 16:12:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F289213BA1
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 16:14:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726581AbgGCOMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 10:12:49 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:60047 "EHLO ozlabs.org"
+        id S1726741AbgGCON5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 10:13:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45712 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726048AbgGCOMs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 10:12:48 -0400
-Received: by ozlabs.org (Postfix, from userid 1034)
-        id 49yxkP0Qtvz9sQt; Sat,  4 Jul 2020 00:12:40 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1593785565;
-        bh=iJLzyrD0mSXbnY/Tz9omAWs9L9QI/h7liXKr6O9US4g=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R1XWoceIh1er+HxFITiIIMeGhPinNcb6T44FNYAYX046dtcwEtP3WQog2SNeeHSlD
-         rO1mXLbJ/WkCxQVOoCdBef7XBMYkGiOrJwXUcU5otiIb7RT+3YTcYSrehBvlQyKwJa
-         VSlMZbS/MK+3hr3P8hRE/nndp8BrvQBIMwCU+OZjbwRAZgQlc9yJd87ZymkHtAajPL
-         xhtBzubHYva6b/YIVoLWCCv3Ra2t7s8GUJJ6erl7ikvyls0maOFlX1aUxEqFnGtkUB
-         9pZiy9xd5nXBwgZjSs2SFQ2lpGxXVWpB2vYcoJnP86q1GVB1w39PBetTO9Agyrk8LM
-         gMowuznbfCpPA==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     linuxppc-dev@ozlabs.org
-Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hughd@google.com
-Subject: [RFC PATCH 5/5] selftests/powerpc: Remove powerpc special cases from stack expansion test
-Date:   Sat,  4 Jul 2020 00:13:27 +1000
-Message-Id: <20200703141327.1732550-5-mpe@ellerman.id.au>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200703141327.1732550-1-mpe@ellerman.id.au>
-References: <20200703141327.1732550-1-mpe@ellerman.id.au>
+        id S1726098AbgGCON5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Jul 2020 10:13:57 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F1D46206BE;
+        Fri,  3 Jul 2020 14:13:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593785636;
+        bh=PsIKumf3rYwghoEYKnSPlB30VQJPntaNJu+MX4yG8zU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Wz2RQlj56qd9dwtqd+LeV7sedWyVH2ZPMf1HK2LvrTbdZ/TkJjSZboqSrWkT3CbsY
+         M/j5gN40UqBhZTJdjMBXNnwzN+hZ6ZA3JraAyIADJHmIi8shJNlL5uXryraYIwSYKv
+         kfDYLyjG0YPFnDAzP/3JXd/j7j2aSBwvyL0O26Hg=
+Date:   Fri, 3 Jul 2020 16:13:59 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Daeho Jeong <daeho43@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Daeho Jeong <daehojeong@google.com>
+Subject: Re: [PATCH v3] f2fs: add symbolic link to kobject in sysfs
+Message-ID: <20200703141359.GA2953162@kroah.com>
+References: <20200703065420.3544269-1-daeho43@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200703065420.3544269-1-daeho43@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that the powerpc code behaves the same as other architectures we
-can drop the special cases we had.
+On Fri, Jul 03, 2020 at 03:54:20PM +0900, Daeho Jeong wrote:
+> From: Daeho Jeong <daehojeong@google.com>
+> 
+> Added a symbolic link to directory of sysfs. It will
+> create a symbolic link such as "mount_0" and "mount_1" to
+> each f2fs mount in the order of mounting filesystem. But
+> once one mount point was umounted, that sequential number
+> @x in "mount_@x" could be reused by later newly mounted
+> point. It will provide easy access to sysfs node even if
+> not knowing the specific device node name like sda19 and
+> dm-3.
+> 
+> Signed-off-by: Daeho Jeong <daehojeong@google.com>
+> ---
+>  Documentation/filesystems/f2fs.rst | 13 ++++++++++++-
 
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
----
- .../powerpc/mm/stack_expansion_ldst.c         | 41 +++----------------
- 1 file changed, 5 insertions(+), 36 deletions(-)
+No Documentation/ABI/ entry for your new sysfs file/link?
 
-diff --git a/tools/testing/selftests/powerpc/mm/stack_expansion_ldst.c b/tools/testing/selftests/powerpc/mm/stack_expansion_ldst.c
-index 95c3f3de16a1..ed9143990888 100644
---- a/tools/testing/selftests/powerpc/mm/stack_expansion_ldst.c
-+++ b/tools/testing/selftests/powerpc/mm/stack_expansion_ldst.c
-@@ -56,13 +56,7 @@ int consume_stack(unsigned long target_sp, unsigned long stack_high, int delta,
- #else
- 		asm volatile ("mov %%rsp, %[sp]" : [sp] "=r" (stack_top_sp));
- #endif
--
--		// Kludge, delta < 0 indicates relative to SP
--		if (delta < 0)
--			target = stack_top_sp + delta;
--		else
--			target = stack_high - delta + 1;
--
-+		target = stack_high - delta + 1;
- 		volatile char *p = (char *)target;
- 
- 		if (type == STORE)
-@@ -162,41 +156,16 @@ static int test_one(unsigned int stack_used, int delta, enum access_type type)
- 
- static void test_one_type(enum access_type type, unsigned long page_size, unsigned long rlim_cur)
- {
--	assert(test_one(DEFAULT_SIZE, 512 * _KB, type) == 0);
-+	unsigned long delta;
- 
--	// powerpc has a special case to allow up to 1MB
--	assert(test_one(DEFAULT_SIZE, 1 * _MB, type) == 0);
--
--#ifdef __powerpc__
--	// This fails on powerpc because it's > 1MB and is not a stdu &
--	// not close to r1
--	assert(test_one(DEFAULT_SIZE, 1 * _MB + 8, type) != 0);
--#else
--	assert(test_one(DEFAULT_SIZE, 1 * _MB + 8, type) == 0);
--#endif
--
--#ifdef __powerpc__
--	// Accessing way past the stack pointer is not allowed on powerpc
--	assert(test_one(DEFAULT_SIZE, rlim_cur, type) != 0);
--#else
- 	// We should be able to access anywhere within the rlimit
-+	for (delta = page_size; delta <= rlim_cur; delta += page_size)
-+		assert(test_one(DEFAULT_SIZE, delta, type) == 0);
-+
- 	assert(test_one(DEFAULT_SIZE, rlim_cur, type) == 0);
--#endif
- 
- 	// But if we go past the rlimit it should fail
- 	assert(test_one(DEFAULT_SIZE, rlim_cur + 1, type) != 0);
--
--	// Above 1MB powerpc only allows accesses within 4096 bytes of
--	// r1 for accesses that aren't stdu
--	assert(test_one(1 * _MB + page_size - 128, -4096, type) == 0);
--#ifdef __powerpc__
--	assert(test_one(1 * _MB + page_size - 128, -4097, type) != 0);
--#else
--	assert(test_one(1 * _MB + page_size - 128, -4097, type) == 0);
--#endif
--
--	// By consuming 2MB of stack we test the stdu case
--	assert(test_one(2 * _MB + page_size - 128, -4096, type) == 0);
- }
- 
- static int test(void)
--- 
-2.25.1
+And what does this help with?
 
+If it's really needed, why don't we do this for all filesystem types?
+
+thanks,
+
+greg k-h
