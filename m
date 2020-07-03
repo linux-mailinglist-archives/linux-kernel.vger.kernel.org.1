@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0B7E213561
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 09:46:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCA33213570
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 09:47:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726465AbgGCHqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 03:46:21 -0400
-Received: from mga18.intel.com ([134.134.136.126]:2292 "EHLO mga18.intel.com"
+        id S1726772AbgGCHrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 03:47:01 -0400
+Received: from mga09.intel.com ([134.134.136.24]:42623 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725779AbgGCHqU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 03:46:20 -0400
-IronPort-SDR: 8cGbqs2XFj6IfoeqPJ9AU8ky3wsZmyLxSfooB2LtKgCyWVWAu1qXVPUvwUt3uRxRlhS5zAB4pO
- uByQGlpa8Ctg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="134568478"
+        id S1726367AbgGCHqz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Jul 2020 03:46:55 -0400
+IronPort-SDR: xEhtSenn9E5KsNQTt8KNw3LKNTKrDY9/pH21rSTMj/K9f8nd6YHADx+JdHJZnCBneO3oGeMKHR
+ 0x9qcilIc4Mw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="148636438"
 X-IronPort-AV: E=Sophos;i="5.75,307,1589266800"; 
-   d="scan'208";a="134568478"
+   d="scan'208";a="148636438"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jul 2020 00:46:20 -0700
-IronPort-SDR: gKkmDHpbpUqOLFeLsfdUKfUHV7hwEQ+pMuYmdgnYHV4hnpVYka7+SEbAwnMrzptEOm9KkIB4GZ
- yPCOAIGxS7gQ==
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jul 2020 00:46:54 -0700
+IronPort-SDR: 0ULLdtDRsPgaFtjVns5/qwyqLZKkd1Kys4QfnSz9TrGqkxdCDIEElfV18hRA/1jXKejlqg+4hh
+ OiAzsKEy8awQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,307,1589266800"; 
-   d="scan'208";a="455813534"
+   d="scan'208";a="314390398"
 Received: from linux.intel.com ([10.54.29.200])
-  by orsmga005.jf.intel.com with ESMTP; 03 Jul 2020 00:46:20 -0700
+  by fmsmga002.fm.intel.com with ESMTP; 03 Jul 2020 00:46:53 -0700
 Received: from [10.249.231.67] (abudanko-mobl.ccr.corp.intel.com [10.249.231.67])
-        by linux.intel.com (Postfix) with ESMTP id 5CEDD580781;
-        Fri,  3 Jul 2020 00:46:17 -0700 (PDT)
-Subject: [PATCH v9 09/15] perf stat: factor out event handling loop into
- dispatch_events()
+        by linux.intel.com (Postfix) with ESMTP id D8B85580781;
+        Fri,  3 Jul 2020 00:46:51 -0700 (PDT)
+Subject: [PATCH v9 10/15] perf stat: extend -D,--delay option with -1 value
 From:   Alexey Budankov <alexey.budankov@linux.intel.com>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Jiri Olsa <jolsa@redhat.com>
@@ -43,8 +42,8 @@ Cc:     Namhyung Kim <namhyung@kernel.org>,
         linux-kernel <linux-kernel@vger.kernel.org>
 References: <a4d5db4a-f25c-38dc-1c41-321a886cb122@linux.intel.com>
 Organization: Intel Corp.
-Message-ID: <e4ccb3e9-5f5e-36bf-4a87-dd9d7098d83b@linux.intel.com>
-Date:   Fri, 3 Jul 2020 10:46:15 +0300
+Message-ID: <165b6d30-b038-1579-3f16-4ba780041179@linux.intel.com>
+Date:   Fri, 3 Jul 2020 10:46:50 +0300
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
@@ -58,88 +57,103 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Consolidate event dispatching loops for fork, attach and system
-wide monitoring use cases into common dispatch_events() function.
+Extend -D,--delay option with -1 value to start monitoring with
+events disabled to be enabled later by enable command provided
+via control file descriptor.
 
 Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
 ---
- tools/perf/builtin-stat.c | 42 +++++++++++++++++++++++++--------------
- 1 file changed, 27 insertions(+), 15 deletions(-)
+ tools/perf/Documentation/perf-stat.txt |  5 +++--
+ tools/perf/builtin-stat.c              | 18 ++++++++++++++----
+ tools/perf/util/evlist.h               |  3 +++
+ tools/perf/util/stat.h                 |  2 +-
+ 4 files changed, 21 insertions(+), 7 deletions(-)
 
+diff --git a/tools/perf/Documentation/perf-stat.txt b/tools/perf/Documentation/perf-stat.txt
+index b029ee728a0b..9f32f6cd558d 100644
+--- a/tools/perf/Documentation/perf-stat.txt
++++ b/tools/perf/Documentation/perf-stat.txt
+@@ -238,8 +238,9 @@ mode, use --per-node in addition to -a. (system-wide).
+ 
+ -D msecs::
+ --delay msecs::
+-After starting the program, wait msecs before measuring. This is useful to
+-filter out the startup phase of the program, which is often very different.
++After starting the program, wait msecs before measuring (-1: start with events
++disabled). This is useful to filter out the startup phase of the program,
++which is often very different.
+ 
+ -T::
+ --transaction::
 diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-index 3e11f854ffc8..723f1fe27d63 100644
+index 723f1fe27d63..9e4288ecf2b8 100644
 --- a/tools/perf/builtin-stat.c
 +++ b/tools/perf/builtin-stat.c
-@@ -550,6 +550,30 @@ static bool is_target_alive(struct target *_target,
- 	return false;
- }
+@@ -487,16 +487,26 @@ static bool handle_interval(unsigned int interval, int *times)
  
-+static int dispatch_events(bool forks, int timeout, int interval, int *times, struct timespec *ts)
-+{
-+	bool stop = false;
-+	int child_exited = 0, status = 0;
-+
-+	while (1) {
-+		if (forks)
-+			child_exited = waitpid(child_pid, &status, WNOHANG);
-+		else
-+			child_exited = !is_target_alive(&target, evsel_list->core.threads) ? 1 : 0;
-+
-+		if (done || stop || child_exited)
-+			break;
-+
-+		nanosleep(ts, NULL);
-+		if (timeout)
-+			stop = true;
-+		else
-+			stop = handle_interval(interval, times);
+ static void enable_counters(void)
+ {
+-	if (stat_config.initial_delay)
++	if (stat_config.initial_delay < 0) {
++		pr_info(EVLIST_DISABLED_MSG);
++		return;
 +	}
 +
-+	return status;
-+}
++	if (stat_config.initial_delay > 0) {
++		pr_info(EVLIST_DISABLED_MSG);
+ 		usleep(stat_config.initial_delay * USEC_PER_MSEC);
++	}
+ 
+ 	/*
+ 	 * We need to enable counters only if:
+ 	 * - we don't have tracee (attaching to task or cpu)
+ 	 * - we have initial delay configured
+ 	 */
+-	if (!target__none(&target) || stat_config.initial_delay)
++	if (!target__none(&target) || stat_config.initial_delay) {
+ 		evlist__enable(evsel_list);
++		if (stat_config.initial_delay > 0)
++			pr_info(EVLIST_ENABLED_MSG);
++	}
+ }
+ 
+ static void disable_counters(void)
+@@ -1056,8 +1066,8 @@ static struct option stat_options[] = {
+ 		     "aggregate counts per thread", AGGR_THREAD),
+ 	OPT_SET_UINT(0, "per-node", &stat_config.aggr_mode,
+ 		     "aggregate counts per numa node", AGGR_NODE),
+-	OPT_UINTEGER('D', "delay", &stat_config.initial_delay,
+-		     "ms to wait before starting measurement after program start"),
++	OPT_INTEGER('D', "delay", &stat_config.initial_delay,
++		    "ms to wait before starting measurement after program start (-1: start with events disabled)"),
+ 	OPT_CALLBACK_NOOPT(0, "metric-only", &stat_config.metric_only, NULL,
+ 			"Only print computed metrics. No raw values", enable_metric_only),
+ 	OPT_BOOLEAN(0, "metric-no-group", &stat_config.metric_no_group,
+diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
+index 7e7abc621366..0728a4c35f7d 100644
+--- a/tools/perf/util/evlist.h
++++ b/tools/perf/util/evlist.h
+@@ -376,4 +376,7 @@ int evlist__initialize_ctlfd(struct evlist *evlist, int ctl_fd, int ctl_fd_ack);
+ int evlist__finalize_ctlfd(struct evlist *evlist);
+ int evlist__ctlfd_process(struct evlist *evlist, enum evlist_ctl_cmd *cmd);
+ 
++#define EVLIST_ENABLED_MSG "Events enabled\n"
++#define EVLIST_DISABLED_MSG "Events disabled\n"
 +
- enum counter_recovery {
- 	COUNTER_SKIP,
- 	COUNTER_RETRY,
-@@ -621,7 +645,6 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
- 	struct affinity affinity;
- 	int i, cpu;
- 	bool second_pass = false;
--	bool stop = false;
- 
- 	if (interval) {
- 		ts.tv_sec  = interval / USEC_PER_MSEC;
-@@ -790,14 +813,8 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
- 		perf_evlist__start_workload(evsel_list);
- 		enable_counters();
- 
--		if (interval || timeout) {
--			while (!stop && !waitpid(child_pid, &status, WNOHANG)) {
--				nanosleep(&ts, NULL);
--				if (timeout)
--					break;
--				stop = handle_interval(interval, &times);
--			}
--		}
-+		if (interval || timeout)
-+			status = dispatch_events(forks, timeout, interval, &times, &ts);
- 		if (child_pid != -1) {
- 			if (timeout)
- 				kill(child_pid, SIGTERM);
-@@ -814,12 +831,7 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
- 			psignal(WTERMSIG(status), argv[0]);
- 	} else {
- 		enable_counters();
--		while (!done && !stop && is_target_alive(&target, evsel_list->core.threads)) {
--			nanosleep(&ts, NULL);
--			if (timeout)
--				break;
--			stop = handle_interval(interval, &times);
--		}
-+		status = dispatch_events(forks, timeout, interval, &times, &ts);
- 	}
- 
- 	disable_counters();
+ #endif /* __PERF_EVLIST_H */
+diff --git a/tools/perf/util/stat.h b/tools/perf/util/stat.h
+index 6911c7249199..41d59f192931 100644
+--- a/tools/perf/util/stat.h
++++ b/tools/perf/util/stat.h
+@@ -116,7 +116,7 @@ struct perf_stat_config {
+ 	FILE			*output;
+ 	unsigned int		 interval;
+ 	unsigned int		 timeout;
+-	unsigned int		 initial_delay;
++	int			 initial_delay;
+ 	unsigned int		 unit_width;
+ 	unsigned int		 metric_only_len;
+ 	int			 times;
 -- 
 2.24.1
 
