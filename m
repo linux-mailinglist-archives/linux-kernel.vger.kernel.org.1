@@ -2,95 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31850213600
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 10:13:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23D19213609
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 10:16:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726236AbgGCINN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 04:13:13 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:33205 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725764AbgGCINN (ORCPT
+        id S1726417AbgGCIQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 04:16:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725648AbgGCIQN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 04:13:13 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-42-PNfofCLOMwuIdfmJ0GldaQ-1; Fri, 03 Jul 2020 09:13:09 +0100
-X-MC-Unique: PNfofCLOMwuIdfmJ0GldaQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Fri, 3 Jul 2020 09:13:08 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Fri, 3 Jul 2020 09:13:08 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Kars Mulder' <kerneldev@karsmulder.nl>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>
-Subject: RE: Writing to a const pointer: is this  supposed to happen?
-Thread-Topic: Writing to a const pointer: is this  supposed to happen?
-Thread-Index: AQHWSju/rqA8ozob6UepcWuq3RM2GKjsP5LwgAcSxwCAAKR74IAA2NwAgAC9wfA=
-Date:   Fri, 3 Jul 2020 08:13:08 +0000
-Message-ID: <0c2bda4dd9e64a019d69339cf9054586@AcuMS.aculab.com>
-References: <32182d4126fd49dabac4091b7a6c89e7@AcuMS.aculab.com>
- <297d-5efe5600-1cf-7eab9a80@67481175>
-In-Reply-To: <297d-5efe5600-1cf-7eab9a80@67481175>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Fri, 3 Jul 2020 04:16:13 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6ABFC08C5C1;
+        Fri,  3 Jul 2020 01:16:13 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id bj10so7149990plb.11;
+        Fri, 03 Jul 2020 01:16:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dX1y3EZXLwuCJAuG+s638H9srGw+Bv0i5V3KBJVUxbU=;
+        b=HY9dYLnm3ErI+evPVxOOELTSXIrSfRXLyBecauxWz+4akfnnMTqeBHYlJ451fUPJJN
+         nWCJDx0OyqnWliWCFUyRi2agBVfLxFPIJyaD57p1oPUynCuMYU/01uIWxkyPhwPhnYL3
+         Oy0kE9SGnQEl4LcpTR4JIpYR/QncK76BYew3gOH2XMWDwOssy1obyTQqdoFiuQuD0q9Z
+         qDK91+lQS5p8fTYJBsShymdiKb4+L/Fpyzi7Sipw+4WMVGLSOVyxCKgNMblxZ4BiR7YO
+         2ty+ZbQ19OCGlOIB7idbdZS6JjgLj/ydJZ8dCvRP6JVnaphdtqIn+13rO8+zvJHuEuC/
+         9W1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dX1y3EZXLwuCJAuG+s638H9srGw+Bv0i5V3KBJVUxbU=;
+        b=kSLtJJ6rhTgwdKxiYP1t2xU1QPJSWZMmUCJvifDZKFRZ/XJN5+lZ98spHVG/DuPKCs
+         441FT1Y+Ns69tS9y9P+IzlfxUN/mFxy19APe2PjWx7oPR5wwIDMsr5byVa6lZeZ6nHHt
+         sGBvKI3bltDp1quPpB29qeAqLHfChOGFwrMKJk/uSsul2Tf4XP75gGtgZB0eo71fhDes
+         ioyK0T52wDj0ujLzyheMhwH7IAyqoar0hpcjUWde/WHri1cfNBzEK8LQLVqSvSEu0rJN
+         aIlRVKnekwjw50HEtjmVGZ1xuoB/QxpRcVqSkolAlauVoUxyp7AOwqbkqsplD6OlhFSg
+         MHYg==
+X-Gm-Message-State: AOAM533D+EJIruRhe5UGaavjcV9VxaGxsgDSU5m5BZYOcLr4K/BYzeRt
+        SH6WgI8EVi2VBtMpLc9r8GA=
+X-Google-Smtp-Source: ABdhPJyu7elHooqc3ZPVMwTGcHHv784cEG5qJZel5gkB1yqKLwT51/PoIU1mh380wOPhTtCkGk/CIQ==
+X-Received: by 2002:a17:90a:728d:: with SMTP id e13mr22595947pjg.51.1593764173155;
+        Fri, 03 Jul 2020 01:16:13 -0700 (PDT)
+Received: from varodek.iballbatonwifi.com ([103.105.153.57])
+        by smtp.gmail.com with ESMTPSA id y198sm8437085pfg.116.2020.07.03.01.16.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Jul 2020 01:16:12 -0700 (PDT)
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, bjorn@helgaas.com,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        skhan@linuxfoundation.org, linux-ide@vger.kernel.org
+Subject: [PATCH v2 0/4] drivers: ide: use generic power management
+Date:   Fri,  3 Jul 2020 13:44:24 +0530
+Message-Id: <20200703081428.1011527-1-vaibhavgupta40@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogS2FycyBNdWxkZXINCj4gU2VudDogMDIgSnVseSAyMDIwIDIyOjQ4DQo+IA0KPiBPbiBU
-aHVyc2RheSwgSnVseSAwMiwgMjAyMCAwOTo1NSBDRVNULCBEYXZpZCBMYWlnaHQgd3JvdGU6DQo+
-ID4gSG1tLi4uIHNzY2FuZigpIGlzIGFsc28gaG9ycmlkLg0KPiA+IFN1cnByaXNpbmdseSBkaWZm
-aWN1bHQgdG8gdXNlIGNvcnJlY3RseS4NCj4gPg0KPiA+IEl0IGlzIHVzdWFsbHkgYmVzdCB0byB1
-c2Ugc3RyY2hyKCkgKGFuZCBtYXliZSBzdHJbY11zY24oKSkNCj4gPiB0byBwYXJzZSBzdHJpbmdz
-Lg0KPiA+IEZvciBudW1iZXJzIHVzZSB3aGF0ZXZlciB0aGUga2VybmVscyBjdXJyZW50ICdmYXZv
-dXJpdGUnIGltcGxlbWVudGF0aW9uDQo+ID4gb2Ygc3RydG91bCgpIGlzIGNhbGxlZC4NCj4gDQo+
-IEkgdGhvdWdodCB0aGF0IHVzaW5nIHNzY2FuZiB3b3VsZCBjbGVhbiB1cCB0aGUgY29kZSBhIGJp
-dCBjb21wYXJlZCB0bw0KPiBzZXZlcmFsIGhhcGhhemFyZCBjYWxscywgYnV0IEkgY2FuIHNlZSB5
-b3VyIHBvaW50IGFib3V0IHNzY2FuZiBiZWluZw0KPiBkaWZmaWN1bHQgdG8gdXNlIGNvcnJlY3Rs
-eS4NCj4gDQo+IFRoZSBrZXJuZWwgZnVuY3Rpb25zIGtzdHJ0b3UxNiBzZWVtIHRvIGV4cGVjdCBh
-IG51bGwtdGVybWluYXRlZCBzdHJpbmcNCj4gYXMgYXJndW1lbnQuIFNpbmNlIHRoZXJlIGFyZSBu
-byBudWxsLWJ5dGVzIGFmdGVyIHRoZSBudW1iZXJzIHdlIHdhbnQgdG8NCj4gcGFyc2UsIGl0IGJl
-Y29tZXMgbmVjZXNzYXJ5IHRvIGNvcHkgYXQgbGVhc3QgcGFydCBvZiB0aGUgc3RyaW5ncyB0byBh
-DQo+IGJ1ZmZlci4NCg0KVGhlcmUgb3VnaHQgdG8gYmUgb25lIHRoYXQgcmV0dXJucyBhIHBvaW50
-ZXIgdG8gdGhlIGZpcnN0IGNoYXJhY3Rlcg0KdGhhdCBpc24ndCBjb252ZXJ0ZWQgLSBidXQgSSdt
-IG5vIGV4cGVydCBvbiB0aGUgZnVsbCByYW5nZSBvZiB0aGVzZQ0KZnVuY3Rpb25zLg0KDQo+IElm
-IHdlJ3JlIGNvcHlpbmcgc3RyaW5ncyB0byBidWZmZXJzIGFueXdheSwgSSB0aGluayB0aGUgc2lt
-cGxlc3QNCj4gc29sdXRpb24gd291bGQgYmUgdG8ganVzdCBrc3RyZHVwIHRoZSBlbnRpcmUgcGFy
-YW1ldGVyIGFuZCBub3QgdG91Y2gNCj4gdGhlIHJlc3Qgb2YgdGhlIHN0cmluZyBwYXJzaW5nIGNv
-ZGUuIFRoaXMgaGFzIHRoZSBkaXNhZHZhbnRhZ2Ugb2YNCj4gaGF2aW5nIGFuIGV4dHJhIG1lbW9y
-eSBhbGxvY2F0aW9uIHRvIGtlZXAgdHJhY2sgb2YuDQo+IA0KPiBTaW5jZSB0aGUgcGFyYW1ldGVy
-IGlzIGN1cnJlbnRseSByZXN0cmljdGVkIHRvIDEyOCBjaGFyYWN0ZXJzIGF0DQo+IG1vc3QsIGl0
-IG1heSBhbHRlcm5hdGl2ZWx5IGJlIHBvc3NpYmxlIHRvIGNvcHkgdGhlIHBhcmFtZXRlciB0bw0K
-PiBhIDEyOC1ieXRlIGJ1ZmZlciBvbiB0aGUgc3RhY2suIFRoaXMgaGFzIHRoZSBhZHZhbnRhZ2Ug
-b2YgaGF2aW5nDQo+IHRvIGtlZXAgdHJhY2sgb2Ygb25lIGxlc3MgbWVtb3J5IGFsbG9jYXRpb24s
-IGJ1dCB0aGUgZGlzYWR2YW50YWdlDQo+IG9mIHVzaW5nIDEyOCBieXRlcyBtb3JlIHN0YWNrIHNw
-YWNlOyBJJ20gbm90IHN1cmUgd2hldGhlciB0aGF0J3MNCj4gYWNjZXB0YWJsZS4NCg0KVGhlIHBy
-b2JsZW0gd2l0aCBzdHJkdXAoKSBpcyB5b3UgZ2V0IHRoZSBleHRyYSAodW5saWtlbHkpIGZhaWx1
-cmUgcGF0aC4NCjEyOCBieXRlcyBvZiBzdGFjayB3b24ndCBiZSBhIHByb2JsZW0gaWYgdGhlIGZ1
-bmN0aW9uIGlzIChlc3NlbnRpYWxseSkNCmEgbGVhZi4NCkRlZXAgc3RhY2sgdXNlIGlzIGFjdHVh
-bGx5IGxpa2VseSB0byBiZSBpbiB0aGUgYm93ZWxzIG9mIHByaW50ZigpKQ0KaW5zaWRlIGFuIG9i
-c2N1cmUgZXJyb3IgcGF0aC4NCk1hbnkgeWVhcnMgYWdvIChhYm91dCAxOTg0KSBJIHBhcnNlZCB0
-aGUgb2JqZWN0IGNvZGUgb2YgYSBwcm9ncmFtDQp0byBmaW5kIHRoZSBkZWVwZXN0IHN0YWNrIHVz
-ZSAobm8gcmVjdXJzaW9uIGFuZCBubyBmdW5jdGlvbiBwb2ludGVycykNCnNvIHdlIGNvdWxkIHNl
-dCB0aGUgc3RhY2sgc2l6ZXMgY29ycmVjdGx5IC0gdGhlcmUgd2Fzbid0IGVub3VnaA0KbWVtb3J5
-IHRvIGRvIGl0IHByb3Blcmx5IQ0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExh
-a2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQs
-IFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
+Linux Kernel Mentee: Remove Legacy Power Management.
+
+The purpose of this patch series is to remove legacy power management callbacks
+from ide drivers.
+
+The suspend() and resume() callbacks operations are still invoking
+pci_save/restore_state(), pci_set_power_state(), pci_enable/disable_state(),
+etc. and handling the power management themselves, which is not recommended.
+
+The conversion requires the removal of the those function calls and change the
+callback definition accordingly and make use of dev_pm_ops structure.
+
+All patches are compile-tested only.
+
+V2: Kbuild had modpost error for undefined reference in v1.
+
+Testing by:
+  Compiler: gcc (GCC) 10.1.0
+  Build: make -j$(nproc) W=1 all
+
+Vaibhav Gupta (4):
+  ide: use generic power management
+  ide: triflex: use generic power management
+  ide: sc1200: use generic power management
+  ide: delkin_cb: use generic power management
+
+ drivers/ide/aec62xx.c         |  3 +--
+ drivers/ide/alim15x3.c        |  3 +--
+ drivers/ide/amd74xx.c         |  3 +--
+ drivers/ide/atiixp.c          |  3 +--
+ drivers/ide/cmd64x.c          |  3 +--
+ drivers/ide/cs5520.c          |  3 +--
+ drivers/ide/cs5530.c          |  3 +--
+ drivers/ide/cs5535.c          |  3 +--
+ drivers/ide/cs5536.c          |  3 +--
+ drivers/ide/cy82c693.c        |  3 +--
+ drivers/ide/delkin_cb.c       | 30 +++++-------------------
+ drivers/ide/hpt366.c          |  3 +--
+ drivers/ide/ide-pci-generic.c |  3 +--
+ drivers/ide/it8172.c          |  3 +--
+ drivers/ide/it8213.c          |  3 +--
+ drivers/ide/it821x.c          |  3 +--
+ drivers/ide/jmicron.c         |  3 +--
+ drivers/ide/ns87415.c         |  3 +--
+ drivers/ide/opti621.c         |  3 +--
+ drivers/ide/pdc202xx_new.c    |  3 +--
+ drivers/ide/pdc202xx_old.c    |  3 +--
+ drivers/ide/piix.c            |  3 +--
+ drivers/ide/sc1200.c          | 43 ++++++++++++-----------------------
+ drivers/ide/serverworks.c     |  3 +--
+ drivers/ide/setup-pci.c       | 29 +++++------------------
+ drivers/ide/siimage.c         |  3 +--
+ drivers/ide/sis5513.c         |  3 +--
+ drivers/ide/sl82c105.c        |  3 +--
+ drivers/ide/slc90e66.c        |  3 +--
+ drivers/ide/triflex.c         | 24 +++++++++----------
+ drivers/ide/via82cxxx.c       |  3 +--
+ include/linux/ide.h           |  8 +------
+ 32 files changed, 65 insertions(+), 150 deletions(-)
+
+-- 
+2.27.0
 
