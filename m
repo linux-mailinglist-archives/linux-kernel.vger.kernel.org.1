@@ -2,74 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98D0B213F46
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 20:30:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F8C7213F60
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 20:45:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726488AbgGCS3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 14:29:52 -0400
-Received: from smtprelay0132.hostedemail.com ([216.40.44.132]:57106 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726148AbgGCS3v (ORCPT
+        id S1726806AbgGCSpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 14:45:49 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:18532 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726703AbgGCSps (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 14:29:51 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id B474F4DD0;
-        Fri,  3 Jul 2020 18:29:50 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:152:355:379:599:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:4321:5007:6691:7903:8957:10004:10400:10471:10848:11026:11232:11473:11658:11914:12043:12296:12297:12740:12895:13069:13161:13229:13255:13311:13357:13894:14659:14721:21080:21451:21627:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: steam78_241640d26e94
-X-Filterd-Recvd-Size: 2347
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf14.hostedemail.com (Postfix) with ESMTPA;
-        Fri,  3 Jul 2020 18:29:49 +0000 (UTC)
-Message-ID: <af66b6e94a26ebd500c1376631891b0bdd0912f0.camel@perches.com>
-Subject: Re: [PATCH 04/30] usb: misc: sisusbvga: sisusb_init: Mark all
- 'static const' arrays as __maybe_unused
-From:   Joe Perches <joe@perches.com>
-To:     Lee Jones <lee.jones@linaro.org>, gregkh@linuxfoundation.org,
-        linux-usb@vger.kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Thomas Winischhofer <thomas@winischhofer.net>
-Date:   Fri, 03 Jul 2020 11:29:48 -0700
-In-Reply-To: <20200703174148.2749969-5-lee.jones@linaro.org>
-References: <20200703174148.2749969-1-lee.jones@linaro.org>
-         <20200703174148.2749969-5-lee.jones@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3-0ubuntu1 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Fri, 3 Jul 2020 14:45:48 -0400
+Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200703184545epoutp01cd414374ac46377d6bc65584ebe431e3~eUmy8olx60975309753epoutp01X
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Jul 2020 18:45:45 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200703184545epoutp01cd414374ac46377d6bc65584ebe431e3~eUmy8olx60975309753epoutp01X
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1593801945;
+        bh=ZYub6H8gQX1Iy/PZwDCY/s4lpFyG7k81rGHbPOmeFUc=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=fVsIrEfv4oSj0jyRtYdMihBrfhqArDArQ/1BKRedShXJYFgre7RkmxSGI/BNXddXl
+         XLNKKQhxnbEiqXnaR0AN9UNpWCdjkwm3u6kxDBw9cl8WlTcfGuEFT1GBzvaM7Zir65
+         ZTpymyZ+UMZ/7/sOZM5A3Cr2VoUFOIZ945jqnza4=
+Received: from epsmges5p3new.samsung.com (unknown [182.195.42.75]) by
+        epcas5p3.samsung.com (KnoxPortal) with ESMTP id
+        20200703184544epcas5p32650181d3d75a5c7aa5e71eb2cf1a74e~eUmyi8VKc1350513505epcas5p3L;
+        Fri,  3 Jul 2020 18:45:44 +0000 (GMT)
+Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
+        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        6C.DD.09475.8DC7FFE5; Sat,  4 Jul 2020 03:45:44 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
+        20200703184543epcas5p4adb3db7693094c72477b8469d9f205ba~eUmxO8UcQ1251212512epcas5p4J;
+        Fri,  3 Jul 2020 18:45:43 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200703184543epsmtrp22554f4300cbcdb7fff0b9551671820c2~eUmxOQWmb2407924079epsmtrp2_;
+        Fri,  3 Jul 2020 18:45:43 +0000 (GMT)
+X-AuditID: b6c32a4b-389ff70000002503-bc-5eff7cd8e914
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        4F.E5.08382.7DC7FFE5; Sat,  4 Jul 2020 03:45:43 +0900 (KST)
+Received: from Jaguar.sa.corp.samsungelectronics.net (unknown
+        [107.108.73.139]) by epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20200703184542epsmtip1af93ed4f5baeed3ff8936c34e753026f~eUmwFu7wm1737817378epsmtip1J;
+        Fri,  3 Jul 2020 18:45:41 +0000 (GMT)
+From:   Alim Akhtar <alim.akhtar@samsung.com>
+To:     rzk@kernel.org
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        robh+dt@kernel.org, Alim Akhtar <alim.akhtar@samsung.com>
+Subject: [PATCH] arm64: dts: exynos: Add minimal bootargs
+Date:   Fri,  3 Jul 2020 23:55:36 +0530
+Message-Id: <20200703182536.9190-1-alim.akhtar@samsung.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrMIsWRmVeSWpSXmKPExsWy7bCmlu6Nmv9xBjfOKFk8mLeNzWL+kXOs
+        FpseX2O1uLxrDpvFjPP7mCxa9x5ht9j5/gOjA7vHplWdbB6bl9R79G1ZxejxeZNcAEsUl01K
+        ak5mWWqRvl0CV8b364+YCrrZKuY9mcXSwDiLtYuRg0NCwETi/8HALkYuDiGB3YwSm29/Z4Nw
+        PjFK3J2wFMr5xihx6d8huI6HN8sh4nuB4s8bmboYOYGcFiaJ7VvzQGw2AW2Ju9O3gMVFBIQk
+        DjT8YgFpYBY4wijRcP4FWEJYwFJi9a0VzCA2i4CqRPetPrA4r4C1xP0v78HiEgLyEqs3HGAG
+        aZYQWMUu8fzrHHaIhIvE3P7HLBC2sMSr41ug4lISn9/tZYO4NFuiZ5cxRLhGYum8Y1Dl9hIH
+        rsxhASlhFtCUWL9LHyTMLMAn0fv7CRNEJ69ER5sQRLWqRPO7q1Cd0hITu7tZIWwPiT13H7FD
+        vB4rMePbA6YJjDKzEIYuYGRcxSiZWlCcm55abFpgnJdarlecmFtcmpeul5yfu4kRHM9a3jsY
+        Hz34oHeIkYmD8RCjBAezkghvguq/OCHelMTKqtSi/Pii0pzU4kOM0hwsSuK8Sj/OxAkJpCeW
+        pGanphakFsFkmTg4pRqYIn9zXMie53H48LHS54ozVlmVLkzvf/eU4a7n1KPtW4zKNiw9MP/u
+        90N7wzhenPnR9G5t4720pv3NLb84eFgdWTYULfx/JlySw/zznEQmz66rbbUfnkxb5cbpZ/7S
+        qjk9/9Ekl7Q5jm57Xf94n9o5L/bxudSY/p/2VRIiXiKa+37ec/4bfed/bu935yM5u79f2nGt
+        g8lo6cZJiXYnzEV/7OGT3WdjX356eYfow/39STnnN5/tedJzsSTiTfPhwspTbb6nXnh0CopO
+        CZb49uRS41WjlxNyFrUv877cEqP/YPfNRzxvbrlU9p5TLb7ZvVRAbiHbfdnZ0aZfQp1MeNY/
+        n2q/P3WuzeTPnFkpkZcnySuxFGckGmoxFxUnAgA4lJbQVgMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrJJMWRmVeSWpSXmKPExsWy7bCSnO71mv9xBrv3sls8mLeNzWL+kXOs
+        FpseX2O1uLxrDpvFjPP7mCxa9x5ht9j5/gOjA7vHplWdbB6bl9R79G1ZxejxeZNcAEsUl01K
+        ak5mWWqRvl0CV8b364+YCrrZKuY9mcXSwDiLtYuRg0NCwETi4c3yLkYuDiGB3YwSb9+9Y+li
+        5ASKS0tc3ziBHcIWllj57zk7RFETk8Sza3PAEmwC2hJ3p29hArFFBIQkDjT8YgEpYhY4xSjR
+        v30zWJGwgKXE6lsrmEFsFgFVie5bfWANvALWEve/vGeG2CAvsXrDAeYJjDwLGBlWMUqmFhTn
+        pucWGxYY5qWW6xUn5haX5qXrJefnbmIEh46W5g7G7as+6B1iZOJgPMQowcGsJMKboPovTog3
+        JbGyKrUoP76oNCe1+BCjNAeLkjjvjcKFcUIC6YklqdmpqQWpRTBZJg5OqQYmWY6Hutu+Nqn9
+        KOPZX6MSelTNeEITX6daudyTCTFGu1NnHUm8V8XvXs/3k1PEJn0fg5vls8sr5k9xvi5jr+u/
+        bZXzeet3bqILy2c0PE3dwctqYZRw3Pj6r18afyV/3vZSvShy7fohzbv7FxtMa/kvHqFaKf47
+        6ve3WDkHvdB9Lm3n439O93fgu/DlBG87u5zTBbZaD5to+/3HTr/xlio8KXUq49DrqENfzm6S
+        Fqve9/PHq/9a0fMP3LFINmd0nHHFaGX7uwczbnHtX+kkvST+f/v5dE8GzxZffZaCMOfOM0ab
+        0h+uSVz1tmr7oY40b63ihSYTntrfKHu6e2es6o/4d55r7zDzVhU9ant9wnWqEktxRqKhFnNR
+        cSIAq30LnIwCAAA=
+X-CMS-MailID: 20200703184543epcas5p4adb3db7693094c72477b8469d9f205ba
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+CMS-TYPE: 105P
+X-CMS-RootMailID: 20200703184543epcas5p4adb3db7693094c72477b8469d9f205ba
+References: <CGME20200703184543epcas5p4adb3db7693094c72477b8469d9f205ba@epcas5p4.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-07-03 at 18:41 +0100, Lee Jones wrote:
-> drivers/usb/misc/sisusbvga/sisusb_init.h is included by a few
-> source files.  Most of which do not use the majority of the
-> shared static const arrays which have been declared.  This
-> causes the build system to spew 100's of warnings.
-> 
-> Fixes the following W=1 kernel build warning(s) - and a whole lot more:
-> 
->  In file included from drivers/usb/misc/sisusbvga/sisusb.c:54:
->  drivers/usb/misc/sisusbvga/sisusb_init.h:695:34: warning: ‘SiSUSB_VCLKData’ defined but not used [-Wunused-const-variable=]
->  695 | static const struct SiS_VCLKData SiSUSB_VCLKData[] = {
->  | ^~~~~~~~~~~~~~~
-> [10's of lines snipped]
->  drivers/usb/misc/sisusbvga/sisusb_init.h:206:28: warning: ‘SiS_VGA_DAC’ defined but not used [-Wunused-const-variable=]
->  206 | static const unsigned char SiS_VGA_DAC[] = {
->  | ^~~~~~~~~~~
-> [10's of lines snipped]
->  drivers/usb/misc/sisusbvga/sisusb_init.h:171:29: warning: ‘ModeIndex_1280x1024’ defined but not used [-Wunused-const-variable=]
->  171 | static const unsigned short ModeIndex_1280x1024[] = { 0x3a, 0x4d, 0x00, 0x65 };
->  | ^~~~~~~~~~~~~~~~~~~
-> [10's of lines snipped]
+Add minimal bootargs to enable earlycon and console.
+This really useful in case kernel has crashed early in
+boot process.
 
-They are not __maybe_unused, they _are_ used.
+Signed-off-by: Alim Akhtar <alim.akhtar@samsung.com>
+---
+ arch/arm64/boot/dts/exynos/exynos7-espresso.dts | 1 +
+ 1 file changed, 1 insertion(+)
 
-I think these instead should be moved to where
-they are used instead of being declared in an
-#include file.
+diff --git a/arch/arm64/boot/dts/exynos/exynos7-espresso.dts b/arch/arm64/boot/dts/exynos/exynos7-espresso.dts
+index 790f12ca8981..d7b42d5a3b2d 100644
+--- a/arch/arm64/boot/dts/exynos/exynos7-espresso.dts
++++ b/arch/arm64/boot/dts/exynos/exynos7-espresso.dts
+@@ -24,6 +24,7 @@
+ 
+ 	chosen {
+ 		stdout-path = &serial_2;
++		bootargs = "earlycon=exynos4210,0x14c30000 console=ttySAC0,115200n8";
+ 	};
+ 
+ 	memory@40000000 {
 
+base-commit: 9e50b94b3eb0d859a2586b5a40d7fd6e5afd9210
+-- 
+2.17.1
 
