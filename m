@@ -2,213 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0155921357B
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 09:48:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6FA521357F
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 09:49:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726501AbgGCHsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 03:48:54 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:38340 "EHLO gloria.sntech.de"
+        id S1726675AbgGCHtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 03:49:11 -0400
+Received: from mga07.intel.com ([134.134.136.100]:32645 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725960AbgGCHsy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 03:48:54 -0400
-Received: from p5b127e6f.dip0.t-ipconnect.de ([91.18.126.111] helo=phil.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1jrGR9-0003AF-4z; Fri, 03 Jul 2020 09:48:43 +0200
-From:   Heiko Stuebner <heiko@sntech.de>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     knaack.h@gmx.de, lars@metafoo.de, pmeerw@pmeerw.net,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, xxm@rock-chips.com
-Subject: Re: [PATCH v6 1/3] iio: adc: rockchip_saradc: move all of probe to devm-functions
-Date:   Fri, 03 Jul 2020 09:48:42 +0200
-Message-ID: <3183602.Ou33jPcMzM@phil>
-In-Reply-To: <20200627130329.66d7102f@archlinux>
-References: <20200623233011.2319035-1-heiko@sntech.de> <20200627130329.66d7102f@archlinux>
+        id S1726575AbgGCHtJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Jul 2020 03:49:09 -0400
+IronPort-SDR: 2eo2iJ7eJlfj+zdz7wNCglZPq1Fy+f3lrWK0juC+tmOQRCsD4MESWHgZIXd5u5dtdmzovzqwAR
+ kxpKKoXmdTSQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="212129219"
+X-IronPort-AV: E=Sophos;i="5.75,307,1589266800"; 
+   d="scan'208";a="212129219"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jul 2020 00:49:09 -0700
+IronPort-SDR: DKg7Hs0kvNu84Rc9qF431K802eYTWMJvAFOKUps3LZiIboOhvU/G6G4f9EsBX/eOjhHAvhkW9P
+ +8eSRSiTLk4Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,307,1589266800"; 
+   d="scan'208";a="426219926"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga004.jf.intel.com with ESMTP; 03 Jul 2020 00:49:07 -0700
+Received: from [10.249.231.67] (abudanko-mobl.ccr.corp.intel.com [10.249.231.67])
+        by linux.intel.com (Postfix) with ESMTP id EC337580784;
+        Fri,  3 Jul 2020 00:49:04 -0700 (PDT)
+Subject: [PATCH v9 14/15] perf record: implement control commands handling
+From:   Alexey Budankov <alexey.budankov@linux.intel.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>
+Cc:     Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <a4d5db4a-f25c-38dc-1c41-321a886cb122@linux.intel.com>
+Organization: Intel Corp.
+Message-ID: <11d03d88-ebc8-10ed-00ed-310233c50772@linux.intel.com>
+Date:   Fri, 3 Jul 2020 10:49:03 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <a4d5db4a-f25c-38dc-1c41-321a886cb122@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Samstag, 27. Juni 2020, 14:03:29 CEST schrieb Jonathan Cameron:
-> On Wed, 24 Jun 2020 01:30:09 +0200
-> Heiko Stuebner <heiko@sntech.de> wrote:
-> 
-> > From: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
-> > 
-> > Parts of the saradc probe rely on devm functions and later parts do not.
-> > This makes it more difficult to for example enable triggers via their
-> > devm-functions and would need more undo-work in remove.
-> > 
-> > So to make life easier for the driver, move the rest of probe calls
-> > also to their devm-equivalents.
-> > 
-> > This includes moving the clk- and regulator-disabling to a devm_action
-> > so that they gets disabled both during remove and in the error case
-> > in probe, after the action is registered.
-> > 
-> > Signed-off-by: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
-> Looks good to me. Applied to the togreg branch of iio.git with one small
-> tweak. See inline.
-> 
-> One other thing whilst we are here. Why do we need the build dependence
-> on ARM?
 
-I guess originally it was there simply, because Rockchip only makes
-ARM-SoCs so as not to pollute the config with too many unusable
-options and it had the COMPILE_TEST for the test-builds.
+Implement handling of 'enable' and 'disable' control commands
+coming from control file descriptor.
 
-But if one driver more doesn't really matter, it can of course also just
-go away.
+Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
+---
+ tools/perf/builtin-record.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-> I just scrapped it and the driver builds fine on x86 so would
-> be good to get the additional build coverage if we can.
-
-So I guess you'd like a patch removing that part, right?
-Because I guess the "I just scrapped it" meant locally, as I can't find
-a commit of that sort in the testing branch ;-)
-
-
-Heiko
-
-
-> > ---
-> > changes in v6:
-> > - move devm actions into separate functions as suggested by Jonathan
-> > changes in v5:
-> > - none
-> > changes in v4:
-> > - new patch as suggested by Jonathan
-> > 
-> >  drivers/iio/adc/rockchip_saradc.c | 72 ++++++++++++++++++++-----------
-> >  1 file changed, 46 insertions(+), 26 deletions(-)
-> > 
-> > diff --git a/drivers/iio/adc/rockchip_saradc.c b/drivers/iio/adc/rockchip_saradc.c
-> > index 582ba047c4a6..1a7990d60f9f 100644
-> > --- a/drivers/iio/adc/rockchip_saradc.c
-> > +++ b/drivers/iio/adc/rockchip_saradc.c
-> > @@ -193,6 +193,27 @@ static void rockchip_saradc_reset_controller(struct reset_control *reset)
-> >  	reset_control_deassert(reset);
-> >  }
-> >  
-> > +static void rockchip_saradc_clk_disable(void *data)
-> > +{
-> > +	struct rockchip_saradc *info = data;
-> > +
-> > +	clk_disable_unprepare(info->clk);
-> > +}
-> > +
-> > +static void rockchip_saradc_pclk_disable(void *data)
-> > +{
-> > +	struct rockchip_saradc *info = data;
-> > +
-> > +	clk_disable_unprepare(info->pclk);
-> > +}
-> > +
-> > +static void rockchip_saradc_regulator_disable(void *data)
-> > +{
-> > +	struct rockchip_saradc *info = data;
-> > +
-> > +	regulator_disable(info->vref);
-> > +}
-> > +
-> >  static int rockchip_saradc_probe(struct platform_device *pdev)
-> >  {
-> >  	struct rockchip_saradc *info = NULL;
-> > @@ -291,17 +312,38 @@ static int rockchip_saradc_probe(struct platform_device *pdev)
-> >  		dev_err(&pdev->dev, "failed to enable vref regulator\n");
-> >  		return ret;
-> >  	}
-> > +	ret = devm_add_action_or_reset(&pdev->dev,
-> > +				       rockchip_saradc_regulator_disable, info);
-> > +	if (ret) {
-> > +		dev_err(&pdev->dev, "failed to register devm action, %d\n",
-> > +			ret);
-> > +		return ret;
-> > +	}
-> >  
-> >  	ret = clk_prepare_enable(info->pclk);
-> >  	if (ret < 0) {
-> >  		dev_err(&pdev->dev, "failed to enable pclk\n");
-> > -		goto err_reg_voltage;
-> > +		return ret;
-> > +	}
-> > +	ret = devm_add_action_or_reset(&pdev->dev,
-> > +				       rockchip_saradc_pclk_disable, info);
-> > +	if (ret) {
-> > +		dev_err(&pdev->dev, "failed to register devm action, %d\n",
-> > +			ret);
-> > +		return ret;
-> >  	}
-> >  
-> >  	ret = clk_prepare_enable(info->clk);
-> >  	if (ret < 0) {
-> >  		dev_err(&pdev->dev, "failed to enable converter clock\n");
-> > -		goto err_pclk;
-> > +		return ret;
-> > +	}
-> > +	ret = devm_add_action_or_reset(&pdev->dev,
-> > +				       rockchip_saradc_clk_disable, info);
-> > +	if (ret) {
-> > +		dev_err(&pdev->dev, "failed to register devm action, %d\n",
-> > +			ret);
-> > +		return ret;
-> >  	}
-> >  
-> >  	platform_set_drvdata(pdev, indio_dev);
-> > @@ -315,30 +357,9 @@ static int rockchip_saradc_probe(struct platform_device *pdev)
-> >  	indio_dev->channels = info->data->channels;
-> >  	indio_dev->num_channels = info->data->num_channels;
-> >  
-> > -	ret = iio_device_register(indio_dev);
-> > +	ret = devm_iio_device_register(&pdev->dev, indio_dev);
-> >  	if (ret)
-> > -		goto err_clk;
-> > -
-> > -	return 0;
-> > -
-> > -err_clk:
-> > -	clk_disable_unprepare(info->clk);
-> > -err_pclk:
-> > -	clk_disable_unprepare(info->pclk);
-> > -err_reg_voltage:
-> > -	regulator_disable(info->vref);
-> > -	return ret;
-> > -}
-> > -
-> > -static int rockchip_saradc_remove(struct platform_device *pdev)
-> > -{
-> > -	struct iio_dev *indio_dev = platform_get_drvdata(pdev);
-> > -	struct rockchip_saradc *info = iio_priv(indio_dev);
-> > -
-> > -	iio_device_unregister(indio_dev);
-> > -	clk_disable_unprepare(info->clk);
-> > -	clk_disable_unprepare(info->pclk);
-> > -	regulator_disable(info->vref);
-> > +		return ret;
-> Small tweak rather hidden by how diff presents this but
-> might as well just
-> 
-> return devm_iio_device_register
-> 
-> >  
-> >  	return 0;
-> >  }
-> > @@ -383,7 +404,6 @@ static SIMPLE_DEV_PM_OPS(rockchip_saradc_pm_ops,
-> >  
-> >  static struct platform_driver rockchip_saradc_driver = {
-> >  	.probe		= rockchip_saradc_probe,
-> > -	.remove		= rockchip_saradc_remove,
-> >  	.driver		= {
-> >  		.name	= "rockchip-saradc",
-> >  		.of_match_table = rockchip_saradc_match,
-> 
-> 
-
-
+diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+index cd1892c4844b..632e61fe70bd 100644
+--- a/tools/perf/builtin-record.c
++++ b/tools/perf/builtin-record.c
+@@ -1527,6 +1527,7 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+ 	bool disabled = false, draining = false;
+ 	int fd;
+ 	float ratio = 0;
++	enum evlist_ctl_cmd cmd = EVLIST_CTL_CMD_UNSUPPORTED;
+ 
+ 	atexit(record__sig_exit);
+ 	signal(SIGCHLD, sig_handler);
+@@ -1846,6 +1847,21 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+ 				draining = true;
+ 		}
+ 
++		if (evlist__ctlfd_process(rec->evlist, &cmd) > 0) {
++			switch (cmd) {
++			case EVLIST_CTL_CMD_ENABLE:
++				pr_info(EVLIST_ENABLED_MSG);
++				break;
++			case EVLIST_CTL_CMD_DISABLE:
++				pr_info(EVLIST_DISABLED_MSG);
++				break;
++			case EVLIST_CTL_CMD_ACK:
++			case EVLIST_CTL_CMD_UNSUPPORTED:
++			default:
++				break;
++			}
++		}
++
+ 		/*
+ 		 * When perf is starting the traced process, at the end events
+ 		 * die with the process and we wait for that. Thus no need to
+-- 
+2.24.1
 
 
