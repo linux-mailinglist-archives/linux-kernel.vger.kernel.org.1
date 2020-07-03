@@ -2,184 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDDDC213E06
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 19:05:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E42EE213DFF
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 19:04:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727023AbgGCREd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 13:04:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38592 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727012AbgGCREb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 13:04:31 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5A20C061794
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Jul 2020 10:04:30 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id l6so29346365qkc.6
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Jul 2020 10:04:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kekVEpbIO7y7Zy2ic+9W88OAlfyvYXO9F0MmrWuPMes=;
-        b=BsQbt2a2KxuCsEJCULjMcy0w8Huw7ZYVidvCJLn4GTSqKIYQBX6EFxWqAmV5lJVFcK
-         fChr0d12IgjEhlw4a+1RR1RaVFZt4VLvv/E1QCHnzBwjTAH+BF/u4MvGn/Vv3gGvPRC1
-         5ooFYrDK/os5YIT5k11pbkxkHT4ZnJpwCMjErn5TT5Q9Tp0qBtyHp/APu8tMzc2s1yMi
-         3HLpyJoG8ilG0WYMKsS4sKriEHqjFU3yuJ5/KJnP8bBpcZwkQCSeWnX2a7YuALgxVbsT
-         omzWIn4rzPVxspWRXYzOP1X6ffdX13kMVji2FqbVOPmZEYdEzWcqLu5YsQjelTjLG0xy
-         e9uQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kekVEpbIO7y7Zy2ic+9W88OAlfyvYXO9F0MmrWuPMes=;
-        b=hzaQKnaTXUwr8a7YrFAoea+11DNuU8M08rZLPUHynO8PnOZNNGwaCrNg1Q8BEQMNb5
-         NPsXUsB30QqwZrxlXWoJdiKa6iJXyKaUSL79nWRIXYCoSBrqZ6AUnFXznHes3JISPSCe
-         1qYnj7jPHtSySKxuSQLl6sla5eXgakXNMWF8GdTK+ymexRwpaSPKXNteG92prMrJuH3B
-         r6XNZDiL5K7zY0LUSP3dRQlLH0bgkt2xTTN7cLS/IU54To6hbHjFg5Fk6vBbRcMlr8Wc
-         jKjdKxcUN9wv6M/Ni2Nju/v1w2T0RjYuj7LmgZxPwy73GMKRGOoOm+1HH+G2Fw2xFhlW
-         fQjw==
-X-Gm-Message-State: AOAM532zngqF7QOzFey+Tn20uQHOPGIGKMQYfZf7kXAuVs11tEuZRcsA
-        Gic/3XhDOiVv2sd5flg/oVQsOsHU65aFuUY53F2bkw==
-X-Google-Smtp-Source: ABdhPJxh/pON8HZYRKACgaenguZaBxueymNnPYNgshbUR2pBl+67NWCnbO7L0Sk9aTNbXWHiF93mGRGobhPj7u9WQ48=
-X-Received: by 2002:a37:64cd:: with SMTP id y196mr28956840qkb.303.1593795870000;
- Fri, 03 Jul 2020 10:04:30 -0700 (PDT)
-MIME-Version: 1.0
-References: <1593699479-1445-1-git-send-email-grzegorz.jaszczyk@linaro.org>
- <1593699479-1445-5-git-send-email-grzegorz.jaszczyk@linaro.org> <658e3a8d3374eca91387932a9a246add@kernel.org>
-In-Reply-To: <658e3a8d3374eca91387932a9a246add@kernel.org>
-From:   Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-Date:   Fri, 3 Jul 2020 19:04:18 +0200
-Message-ID: <CAMxfBF5oB9=qkA8G4jD=KPht+OmZdOaTpsoqvRE881da51S2AA@mail.gmail.com>
-Subject: Re: [PATCHv3 4/6] irqchip/irq-pruss-intc: Implement
- irq_{get,set}_irqchip_state ops
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     tglx@linutronix.de, jason@lakedaemon.net,
-        "Anna, Suman" <s-anna@ti.com>, robh+dt@kernel.org,
-        Lee Jones <lee.jones@linaro.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, david@lechnology.com,
-        "Mills, William" <wmills@ti.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726995AbgGCREX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 13:04:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33988 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726560AbgGCREW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Jul 2020 13:04:22 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CC8FC208C7;
+        Fri,  3 Jul 2020 17:04:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593795862;
+        bh=/bHCXUtCQnJvcopt0WJM7dRf94ru/1B7osnqoMSQf5M=;
+        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+        b=Oh/Tqa+7ZTrM036HV+frLGeev1dOeWV6LGGqzfIDlMwvP3iQ/OefBKVKIQjI5OEOE
+         POjsYDgQhmodPMX+TyNLZiTct3BfMDzgxChnPbWHNUs+alC4pxxnHZa9PpJUAjpj40
+         x6p2pl6gCbKR2ORU3nvjaRltQVdwfTU4XfX1xnBM=
+Date:   Fri, 03 Jul 2020 18:04:20 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     linux-kernel@vger.kernel.org,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>
+In-Reply-To: <20200703103315.267996-1-mkl@pengutronix.de>
+References: <20200703103315.267996-1-mkl@pengutronix.de>
+Subject: Re: [PATCH] regmap: dev_get_regmap_match(): fix string comparison
+Message-Id: <159379586016.55960.11665038090774501749.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2 Jul 2020 at 19:54, Marc Zyngier <maz@kernel.org> wrote:
->
-> On 2020-07-02 15:17, Grzegorz Jaszczyk wrote:
-> > From: David Lechner <david@lechnology.com>
-> >
-> > This implements the irq_get_irqchip_state and irq_set_irqchip_state
-> > callbacks for the TI PRUSS INTC driver. The set callback can be used
-> > by drivers to "kick" a PRU by enabling a PRU system event.
->
-> "enabling"? That'd be unmasking an interrupt, which isn't what this
-> does. "injecting", maybe?
+On Fri, 3 Jul 2020 12:33:15 +0200, Marc Kleine-Budde wrote:
+> This function is used by dev_get_regmap() to retrieve a regmap for the
+> specified device. If the device has more than one regmap, the name parameter
+> can be used to specify one.
+> 
+> The code here uses a pointer comparison to check for equal strings. This
+> however will probably always fail, as the regmap->name is allocated via
+> kstrdup_const() from the regmap's config->name.
+> 
+> [...]
 
-Yes "injecting" is much better.
+Applied to
 
->
-> >
-> > Example:
-> >      irq_set_irqchip_state(irq, IRQCHIP_STATE_PENDING, true);
->
-> Nice example.
->
-> What this example does explain is how you are actually going to kick
-> a PRU via this interface. For that to happen, you'd have to have on
-> the Linux side an interrupt that is actually routed to a PRU.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git for-next
 
-Correct.
+Thanks!
 
-> And from what I have understood of the previous patches, this can't
-> be the case. What didi I miss?
+[1/1] regmap: dev_get_regmap_match(): fix string comparison
+      commit: e84861fec32dee8a2e62bbaa52cded6b05a2a456
 
-The hwirq's handled by this driver are so called system events in
-PRUSS nomenclature. This driver is responsible for the entire mapping
-of those system events to PRUSS specific channels which are next
-mapped to host_irq (patch #6 https://lkml.org/lkml/2020/7/2/612).
-There are 8 host_irqs that are routed to the main cpu (running Linux)
-and they are called host_intr0..host_intr7 (were seen in previous
-patches of this series). But there are other "host_interrupts" that
-are routed not to the main CPU but to PRU cores and this driver is
-responsible for creating proper mapping (system
-event/channel/host_irq) for them, and allowing to kick PRU via the
-introduced interface.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-It is worth noting that the PRUSS is quite flexible and allows various
-things e.g.:
-- map any of 160/64 internal system events to any of the 20/10 channels
-- map any of the 20/10 channels to any of the 20/10 host interrupts.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-So e.g. it is possible to map e.g. system event 17 to the main CPU
-(through e.g. channel 1 which is the next map to e.g. host_intr0). Or
-(exclusively) map the same system event 17 to PRU core (through e.g.
-channel 1 which is the next map to PRU0).
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
->
-> >
-> > Signed-off-by: David Lechner <david@lechnology.com>
-> > Signed-off-by: Suman Anna <s-anna@ti.com>
-> > Signed-off-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-> > Reviewed-by: Lee Jones <lee.jones@linaro.org>
-> > ---
-> > v2->v3:
-> > - Get rid of unnecessary pruss_intc_check_write() and use
-> >   pruss_intc_write_reg directly.
-> > v1->v2:
-> > - https://patchwork.kernel.org/patch/11069769/
-> > ---
-> >  drivers/irqchip/irq-pruss-intc.c | 43
-> > ++++++++++++++++++++++++++++++++++++++--
-> >  1 file changed, 41 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/irqchip/irq-pruss-intc.c
-> > b/drivers/irqchip/irq-pruss-intc.c
-> > index 49c936f..19b3d38 100644
-> > --- a/drivers/irqchip/irq-pruss-intc.c
-> > +++ b/drivers/irqchip/irq-pruss-intc.c
-> > @@ -7,6 +7,7 @@
-> >   *   Suman Anna <s-anna@ti.com>
-> >   */
-> >
-> > +#include <linux/interrupt.h>
-> >  #include <linux/irq.h>
-> >  #include <linux/irqchip/chained_irq.h>
-> >  #include <linux/irqdomain.h>
-> > @@ -39,8 +40,7 @@
-> >  #define PRU_INTC_HIEISR              0x0034
-> >  #define PRU_INTC_HIDISR              0x0038
-> >  #define PRU_INTC_GPIR                0x0080
-> > -#define PRU_INTC_SRSR0               0x0200
-> > -#define PRU_INTC_SRSR1               0x0204
-> > +#define PRU_INTC_SRSR(x)     (0x0200 + (x) * 4)
-> >  #define PRU_INTC_SECR0               0x0280
-> >  #define PRU_INTC_SECR1               0x0284
-> >  #define PRU_INTC_ESR0                0x0300
-> > @@ -145,6 +145,43 @@ static void pruss_intc_irq_relres(struct irq_data
-> > *data)
-> >       module_put(THIS_MODULE);
-> >  }
-> >
-> > +static int pruss_intc_irq_get_irqchip_state(struct irq_data *data,
-> > +                                         enum irqchip_irq_state which,
-> > +                                         bool *state)
-> > +{
-> > +     struct pruss_intc *intc = irq_data_get_irq_chip_data(data);
-> > +     u32 reg, mask, srsr;
-> > +
-> > +     if (which != IRQCHIP_STATE_PENDING)
-> > +             return -EINVAL;
-> > +
-> > +     reg = PRU_INTC_SRSR(data->hwirq / 32);
->
-> I assume the register file scales as more interrupts are added in the
-> subsequent patch?
->
-Yes, after I will move part of the next patch to patch #2 as you
-suggested it will stop being confusing.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-Thank you,
-Grzegorz
+Thanks,
+Mark
