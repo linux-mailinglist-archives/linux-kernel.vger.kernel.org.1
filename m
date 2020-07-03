@@ -2,90 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38568213573
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 09:47:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20FF8213555
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 09:44:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726228AbgGCHrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 03:47:06 -0400
-Received: from esa1.microchip.iphmx.com ([68.232.147.91]:46463 "EHLO
-        esa1.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725779AbgGCHq5 (ORCPT
+        id S1726631AbgGCHo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 03:44:29 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:40315 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726244AbgGCHo2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 03:46:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1593762417; x=1625298417;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=fmDRosteDtE+IMlkhAt1snIWAZ0oO40wspsHahgvM4Q=;
-  b=C9h96cDiEAUDs35ahbkUQ+qgYAd42lw3jZxdm3y9hySM/lxGy/xpcUQ2
-   bjUzdaYvBB5nl0qJrSpS8w8T7JrbT6nDp4cQdsfXr3Poii/8G3GUm68Dr
-   rh/8Fpm9L7+sL7x1EmajqtlrrRIK90BU+109MuNhO6EwCx2Haknu+/E2v
-   RcxSzp7kjC/TNMnRnaClaWjA3eMdBn7DuZE1rJsop6q921lliUykt8i0J
-   OiW/svHo4eu/n3XI6RCc0k+6aAn3VcoV9sraHR+GAoRl2ya6JknQ2IiBt
-   joAIexA4Br2PIGoS9BkdZCxIVQoSh1falSdAhT/4zVV45WE1PuU+H18x5
-   Q==;
-IronPort-SDR: ILLHhhsqHmSGGsp6QD4FzecUzJY5YEGGqQjDfL0czVI8WW8fyB+0Bj7wUqO6oZlupFd5hiNGG7
- iL3Echal3uefcMr/DJY0CoFpVuIKEW/Ue1hKL0JoBmd+08L75Jyxc5dQIi80qy3tndpIOwRI3/
- 4Gz5lSkfCjdpz60iVzpew76mpEZHJDu9TSP1C+uTW8HwcaQIGZ3QPP2DzaiR489euFWVXBZfrc
- CZThS0Zw5tMz79awUozIGhw3lIgdZ4I100imwFNu0yc2eX6GXLlzLLP/rSk9c6RVbpgS9Jp3Q1
- 7DE=
-X-IronPort-AV: E=Sophos;i="5.75,307,1589266800"; 
-   d="scan'208";a="86113150"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 03 Jul 2020 00:46:56 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 3 Jul 2020 00:46:35 -0700
-Received: from ROB-ULT-M18282.microchip.com (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Fri, 3 Jul 2020 00:46:31 -0700
-From:   Eugen Hristev <eugen.hristev@microchip.com>
-To:     <mchehab@kernel.org>, <hverkuil@xs4all.nl>, <robh+dt@kernel.org>,
-        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-CC:     Eugen Hristev <eugen.hristev@microchip.com>
-Subject: [PATCH v2 4/4] MAINTAINERS: add microchip csi2dc
-Date:   Fri, 3 Jul 2020 10:44:16 +0300
-Message-ID: <20200703074416.55272-5-eugen.hristev@microchip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200703074416.55272-1-eugen.hristev@microchip.com>
-References: <20200703074416.55272-1-eugen.hristev@microchip.com>
+        Fri, 3 Jul 2020 03:44:28 -0400
+Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20200703074426epoutp029905a2d747445d32c7499bcdd8eebd71~eLlZJPtgE0270102701epoutp02_
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Jul 2020 07:44:26 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20200703074426epoutp029905a2d747445d32c7499bcdd8eebd71~eLlZJPtgE0270102701epoutp02_
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1593762266;
+        bh=lPMeYwOy7PJvL4PiGPR3iEpjHHoNHu6J67zq0+kO+uE=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=slIeKbSsWtaPI9u3CSE4sKNIz5tv1MnT2yEFnPLvqKUROHzmUCaASut6+RgQrIiI4
+         5ZL61vIc0ceTnUgwlGot6VXRvS27gVKA3MWMtlJLvw20mn7a8U3hw3Fk3FQtOE/4W2
+         ddx04ikzpk4C16fRsc3WFtwBp0BK30px5BKSOVHA=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas2p2.samsung.com (KnoxPortal) with ESMTP id
+        20200703074426epcas2p2fd6f37284ed2d91e6eb8dde36fafd9df~eLlY7D_kH1385713857epcas2p2z;
+        Fri,  3 Jul 2020 07:44:26 +0000 (GMT)
+Received: from epsmges2p1.samsung.com (unknown [182.195.40.186]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 49yn6H6csHzMqYkr; Fri,  3 Jul
+        2020 07:44:23 +0000 (GMT)
+Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
+        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        A7.F1.19322.5D1EEFE5; Fri,  3 Jul 2020 16:44:21 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTPA id
+        20200703074421epcas2p177b67a55997c00b3b6ad8126a7ce8a6d~eLlU0mzK21152511525epcas2p1p;
+        Fri,  3 Jul 2020 07:44:21 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200703074421epsmtrp1660b8e4d153784c690d62529a1a0413b~eLlUz-14j0579405794epsmtrp1F;
+        Fri,  3 Jul 2020 07:44:21 +0000 (GMT)
+X-AuditID: b6c32a45-7adff70000004b7a-60-5efee1d5f596
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        52.AA.08303.5D1EEFE5; Fri,  3 Jul 2020 16:44:21 +0900 (KST)
+Received: from KORDD001994 (unknown [12.36.185.71]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20200703074421epsmtip1376f555c4bbf84a93d55be1b260127c5~eLlUo_p8K2985429854epsmtip1d;
+        Fri,  3 Jul 2020 07:44:21 +0000 (GMT)
+From:   =?ks_c_5601-1987?B?sejDorHi?= <changki.kim@samsung.com>
+To:     <mathieu.poirier@linaro.org>
+Cc:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <suzuki.poulose@arm.com>,
+        <alexander.shishkin@linux.intel.com>
+Subject: Could you support the modules of the coresight drivers?
+Date:   Fri, 3 Jul 2020 16:44:21 +0900
+Message-ID: <000001d6510d$c3bfcd00$4b3f6700$@samsung.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset="ks_c_5601-1987"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AdZRDahDmKGCDgDLQ6Oxikk2jlLrEA==
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupik+LIzCtJLcpLzFFi42LZdljTQvfaw39xBgenclh0bJrJarHp8TVW
+        i8u75rBZbN1zgMli5u3bjA6sHmvmrWH0uHNtD5vHvJOBHpuX1Ht83iQXwBqVY5ORmpiSWqSQ
+        mpecn5KZl26r5B0c7xxvamZgqGtoaWGupJCXmJtqq+TiE6DrlpkDtFpJoSwxpxQoFJBYXKyk
+        b2dTlF9akqqQkV9cYquUWpCSU2BoWKBXnJhbXJqXrpecn2tlaGBgZApUmZCTcXDyC7aCNpaK
+        l0tEGxgXMHcxcnJICJhIXHnaA2YLCexglHixHcjmArI/MUr03t7NBuF8ZpSYe7iTHabjyccO
+        RojELkaJjSsb2SDaXzBKrDzJCWKzCdhKtHc+AGrg4BARUJBoWWoOUs8s0MMoMePhRkaQGmEB
+        B4llD7uYQGwWARWJ2ZeWsYDYvAKWEnvbprBB2IISJ2c+AYszCxhJLFk9nwnClpfY/nYO1AsK
+        Ej+fLmMFsUUE9CR+3vvCCFEjIjG7sw3sHQmBt+wSvzc+gmpwkTjwcTsThC0s8er4FqjPpCRe
+        9rdB2fUS3/oXsEA0A139t+s4G0TCWGLWs3ZGkM8kBJQljtyCOo5PouPwX3aIMK9ER5sQhKkq
+        0T1ZH8KUlviwwwZihofEnOvvGScwKs5C8uQsJE/OQvLkLCTPLGBkWcUollpQnJueWmxUYIgc
+        1ZsYwYlSy3UH4+S3H/QOMTJxMB5ilOBgVhLhTVD9FyfEm5JYWZValB9fVJqTWnyI0RQY7hOZ
+        pUST84GpOq8k3tDUyMzMwNLUwtTMyEJJnDdX8UKckEB6YklqdmpqQWoRTB8TB6dUA1OhB99F
+        5mYtg8tfjwq91J8cWjZPyXVr9GJ/m8xZk+ZUN34TWdp4c4L11q3vq7b/bqvg8L5gY71xboHJ
+        w/YywY7vX2r/qTrn6kzUXfrTW6A2YeWb91sb/okWqDJeumAfeXLplSsXZufMWW3yf0FditxJ
+        x9Xnjk97aOMSrZa1UULYvPC32Z2L1pmKjnU/Av9VFCVxyrySUs5NYMl/5cq1ak3PCiE91/D0
+        jdbVb/2ZZnl43VM2LW3gOTWxa9q5X3Pmx0m6qEjPfWJ6zOFgUKP0nsCTXzPj/QViDvG+vmlz
+        Y75By5zJp+0Npdu6fbKnf715pUbMouNomr59XuZcrZp2j8T/b7r7lbXvzkqQdYl4osRSnJFo
+        qMVcVJwIAIOmrXsdBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrLLMWRmVeSWpSXmKPExsWy7bCSnO7Vh//iDLp2KFl0bJrJarHp8TVW
+        i8u75rBZbN1zgMli5u3bjA6sHmvmrWH0uHNtD5vHvJOBHpuX1Ht83iQXwBrFZZOSmpNZllqk
+        b5fAlXFw8gu2gjaWipdLRBsYFzB3MXJySAiYSDz52MHYxcjFISSwg1Hi3MqXjBAJaYnjr2az
+        Q9jCEvdbjrCC2EICzxglNj1VBbHZBGwl2jsfANVwcIgIKEi0LDUHmcMsMIFRovn+ZrA5wgIO
+        EssedjGB2CwCKhKzLy1jAbF5BSwl9rZNYYOwBSVOznwCFmcGOqjxcDeULS+x/e0cqEMVJH4+
+        XQZ2g4iAnsTPe18YIWpEJGZ3tjFPYBSchWTULCSjZiEZNQtJywJGllWMkqkFxbnpucWGBUZ5
+        qeV6xYm5xaV56XrJ+bmbGMExoKW1g3HPqg96hxiZOBgPMUpwMCuJ8Cao/osT4k1JrKxKLcqP
+        LyrNSS0+xCjNwaIkzvt11sI4IYH0xJLU7NTUgtQimCwTB6dUA1Ny144X9gcjah+KM909v8f+
+        1UnXZUmfH96IjMicWOxgGcvLOGXjsrjSMtlHc+dd5lYIWuUz48vCI2VyQr+WLTuQEi63OJEp
+        UK7P+t7Tjus/NFLXfgi0PhfduHmKO8OOtDU3VdOWbfGfmOK2xdvRteDDujUH2kU01i99f/Lh
+        lQtztoduNW/bpvp8yR2pDkWdjns1bA8fK8UfnWisd0WJqzxgZ4ZcZ8mCxZcnLzCud506de2f
+        nyzpnxYdP8/n83WTUdsbF+2cEoEw58TlBnIW9jtWaR/4tmrSyQ0/Oetbb6xddP7Z1mVRmTE7
+        bz7wzmo1PuheUWFyK19itnfTklnzeN0y+Ew133+SZ/317MCtYq4LSizFGYmGWsxFxYkAKmfc
+        N/ACAAA=
+X-CMS-MailID: 20200703074421epcas2p177b67a55997c00b3b6ad8126a7ce8a6d
+X-Msg-Generator: CA
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200703074421epcas2p177b67a55997c00b3b6ad8126a7ce8a6d
+References: <CGME20200703074421epcas2p177b67a55997c00b3b6ad8126a7ce8a6d@epcas2p1.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Microchip CSI2DC driver in the list.
+Hello.
 
-Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
----
- MAINTAINERS | 7 +++++++
- 1 file changed, 7 insertions(+)
+I am software engineer in charge of BSP (Samsung SOC vendor).
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 791d2a862e41..a65b8d28c7d2 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -11069,6 +11069,13 @@ L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
- S:	Supported
- F:	sound/soc/atmel
- 
-+MICROCHIP CSI2DC DRIVER
-+M:	Eugen Hristev <eugen.hristev@microchip.com>
-+L:	linux-media@vger.kernel.org
-+S:	Supported
-+F:	Documentation/devicetree/bindings/media/microchip,csi2dc.yaml
-+F:	drivers/media/misc/microchip_csi2dc.c
-+
- MICROCHIP DMA DRIVER
- M:	Ludovic Desroches <ludovic.desroches@microchip.com>
- L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
--- 
-2.25.1
+Recently, Google introduced GKI from Android 11(R) version.
+So we can't modified kernel code except module drivers.
+
+Coresight drivers doesn't support module.
+I need the module support because our SoC should set value to vendor
+specific register to run ETMv4.
+And in GKI, ETM has disabled in recommend defconfig.
+So if we use ETM in Android 12(S), it should support module.
+
+Could you support the modules of the coresight drivers?
 
