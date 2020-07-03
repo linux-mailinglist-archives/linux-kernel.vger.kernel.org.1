@@ -2,170 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 022D2213411
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 08:20:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4288D213416
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 08:23:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726554AbgGCGUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 02:20:46 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:52930 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726157AbgGCGUp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 02:20:45 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 372C85F891DCB3A9CC79;
-        Fri,  3 Jul 2020 14:20:42 +0800 (CST)
-Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
- (10.3.19.210) with Microsoft SMTP Server (TLS) id 14.3.487.0; Fri, 3 Jul 2020
- 14:20:40 +0800
-Subject: Re: [f2fs-dev] [PATCH v2] f2fs: add symbolic link to kobject in sysfs
-To:     Daeho Jeong <daeho43@gmail.com>, <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>, <kernel-team@android.com>
-CC:     Daeho Jeong <daehojeong@google.com>
-References: <20200703041929.3290946-1-daeho43@gmail.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <121cf26c-b026-c604-4945-4db4657f3bdf@huawei.com>
-Date:   Fri, 3 Jul 2020 14:20:38 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1726142AbgGCGXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 02:23:55 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:53571 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725764AbgGCGXy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Jul 2020 02:23:54 -0400
+Received: from epcas5p4.samsung.com (unknown [182.195.41.42])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20200703062353epoutp03c0428d2d1436096de3d08641a3b6b5bf~eKfD3DiIV2919929199epoutp03j
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Jul 2020 06:23:53 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20200703062353epoutp03c0428d2d1436096de3d08641a3b6b5bf~eKfD3DiIV2919929199epoutp03j
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1593757433;
+        bh=wf+fydZyBcX1y3wQWBM/V8mRpwY1GdNat8dvYrhiqAQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=PBkD/F97m2A4l2lIIPz8RiaaLJZi07Rmo6G1BaCNJuDdrShUo3l1chv+UjgaL0Fs2
+         X819Nwyyu7E7ciyi/3Pwgroz7KM/Jti/QNx7iZruxtETtFBV510Ucf9ehINKqBIJvF
+         0smpzmtIb+LL+aFb1PG5KNBLStsbqvt+ecowrcIQ=
+Received: from epsmges5p2new.samsung.com (unknown [182.195.42.74]) by
+        epcas5p2.samsung.com (KnoxPortal) with ESMTP id
+        20200703062352epcas5p25738828f4392f22d6038f378461d3048~eKfDaJNDR1329713297epcas5p2c;
+        Fri,  3 Jul 2020 06:23:52 +0000 (GMT)
+Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
+        epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        25.99.09703.8FECEFE5; Fri,  3 Jul 2020 15:23:52 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas5p1.samsung.com (KnoxPortal) with ESMTPA id
+        20200703062352epcas5p18d1fdaa1c52e3607dee464b6bdd8240f~eKfC-QTa60667506675epcas5p1D;
+        Fri,  3 Jul 2020 06:23:52 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200703062352epsmtrp10b72ed0e345ed0f533408f527e7a7f67~eKfC_n0pw2823328233epsmtrp1l;
+        Fri,  3 Jul 2020 06:23:52 +0000 (GMT)
+X-AuditID: b6c32a4a-4cbff700000025e7-e9-5efecef81535
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        36.03.08303.7FECEFE5; Fri,  3 Jul 2020 15:23:51 +0900 (KST)
+Received: from test-zns (unknown [107.110.206.5]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20200703062350epsmtip26f4e374480b820059f7862f038499f0d~eKfBoKnIg2126121261epsmtip2m;
+        Fri,  3 Jul 2020 06:23:50 +0000 (GMT)
+Date:   Fri, 3 Jul 2020 11:50:55 +0530
+From:   Kanchan Joshi <joshi.k@samsung.com>
+To:     Damien Le Moal <Damien.LeMoal@wdc.com>
+Cc:     "axboe@kernel.dk" <axboe@kernel.dk>,
+        "kbusch@kernel.org" <kbusch@kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "hch@lst.de" <hch@lst.de>, Selvakumar S <selvakuma.s1@samsung.com>,
+        Nitesh Shetty <nj.shetty@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>
+Subject: Re: [PATCH 1/2] block: fix error code for zone-append
+Message-ID: <20200703062055.GA26058@test-zns>
 MIME-Version: 1.0
-In-Reply-To: <20200703041929.3290946-1-daeho43@gmail.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.134.22.195]
-X-CFilter-Loop: Reflected
+In-Reply-To: <CY4PR04MB3751B8037BE65D573667A6D5E76A0@CY4PR04MB3751.namprd04.prod.outlook.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Se0hTcRTH+9273d0Jy9tMPCmtWlls0tTUuEUvqGiI9qCH9Foud/M915Zm
+        L1hFqVkamqKjzGBZPrJaNkpT7IoNNUOxp5U500VlYQq1Flpt16D/Pud8zzlfvj9+JC4u5/uT
+        idoDjF6rTpESXjxri0y20PlkQhXSYQmgq9/mE/SprO8YXVnditHv34wJ6AL2OaIbe4PonvqL
+        BG39dRmnPzvbiFVCZU9nutJSlUMoG14ZCWVeXRVSjlkkyqzmXGwjscNrmYZJScxg9MErYr0S
+        HGUFhG7IO7Pvjg0Z0SXRGSQkgQqHyis1vDPIixRTDQhuVHfjXDGK4HnJaz5XjCFw2L79VUjP
+        yiPzFq5fjyDr7U+MKxwI8mxm5B7iUfPAmYO5kaBk0FWY7nabTsmhoumr5yZODWNw6qEVdws+
+        1AooHijz3BdRC4GtOeRui6hp0FY6yHOzkNoNX66V8t3sS82FZqvNYwtUEQlGy28BF2cNFFd2
+        T7IPfLLVTbI/fMw/PckGcL1pxbnlbAQvjKU8TlgJ3Q/GMTfjVAK0/2AFHE+Fc78GMS68CLJP
+        i7nxOdBXMMTn2A/sJeZJVsKofYDg3sSMQX9NO/88kpj+C2T6z4LjpZAzcoJv+muBUwFwbYLk
+        UAY364PLEb8KzWB0htR4xhChW6RlDioM6lRDujZeEZeWakGeTySPvIfs/SMKFmEkYhGQuHS6
+        KDZwQiUWadSHDjP6tD369BTGwKIAkif1E0mdj1ViKl59gElmGB2j/6dipNDfiJ2vlzwNKhwp
+        3l3UmBQWma07tsC8ZNa8H8SrcQt+POKB3L/DtHRR6jft4uFdXVf3kXWKrJfh9qG216udrmDi
+        LovlCnjfcTrm7mKVKzGpfKcudvaUoqrI0tqxTsnmgRL6XtlwRmZQSK450PvnpqEb7Z8GVWvD
+        XbdsaR9NvjOjrifej12iKE8jMjdIwhwRe56Ndj07/r4wZyDJr/ZxnlFU8SVas73B5GBP8qOb
+        jfm2vfvLPsevz2gObKvoiumUfYhJttGbBEdCrE3ysz3CNYWaVnsvW5B5tYgYv3CpcWryNtfR
+        I726UJ+tOxK++q7TRMbINvhFhbUsFzTF1S6YP/jusPdtKc+QoA6V43qD+g+7dlekswMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrGLMWRmVeSWpSXmKPExsWy7bCSvO73c//iDI7ft7FYfbefzaK1/RuT
+        xcrVR5ksHt/5zG4x6dA1Rou9t7QtLu+aw2ax7fd8ZovXP06yOXB6XD5b6rFpVSebx+6bDWwe
+        fVtWMXp83iTn0X6gmymALYrLJiU1J7MstUjfLoErY1bPZbaC6bwVS8+9ZWpgfMnVxcjBISFg
+        InFsSUgXIxeHkMAORokFT7ezdDFyAsXFJZqv/WCHsIUlVv57DmYLCTxhlGh7xw7SyyKgIvGj
+        kwnEZBPQlLgwuRSkQkRAS2LZvnesICOZBd4xSVxfeIAJJCEsYCcx7dE8ZpB6XgFdiUNrKiEm
+        LmGSWNRmDWLzCghKnJz5BOwCZgEziXmbH4KVMwtISyz/xwES5hSIlXi7fCYriC0qoCxxYNtx
+        pgmMgrOQdM9C0j0LoXsBI/MqRsnUguLc9NxiwwKjvNRyveLE3OLSvHS95PzcTYzgqNDS2sG4
+        Z9UHvUOMTByMhxglOJiVRHgTVP/FCfGmJFZWpRblxxeV5qQWH2KU5mBREuf9OmthnJBAemJJ
+        anZqakFqEUyWiYNTqoFpKYeRg5O12eUttXO23IpY3CW32tR3zawHpRa3LvGpyW7aFD0zcetB
+        qYV9TkGcU74FyvE+/eCxK0Zjlev17rvhloxRJ07c+XRAtWFq0cm1nrwlPmkKOms59gfp/5Sp
+        5ri94cPyVX3CpmcElxuLFZmeVfxcv+wu87fd87hyu/+t32Eyr+j3S9OCZ5EtLX6b2Y1OdQdl
+        3RLv/L2DR+DpRe72OcbrFeN2+x1a83nO8jNTOT5umPO9W6BV51lYlnh/0MoZk7yXz2bicKq1
+        Sru4SGHdlYSusoPJb55EOQsb8LJ/O/hqmfkW/xkbmbvmd/tvyLF8cf+ajs8p86z2aSFf0/64
+        uDFMfJ/kYHmo89mF+Z9ilViKMxINtZiLihMBMhlxePkCAAA=
+X-CMS-MailID: 20200703062352epcas5p18d1fdaa1c52e3607dee464b6bdd8240f
+X-Msg-Generator: CA
+Content-Type: multipart/mixed;
+        boundary="----FBC7EIImzEv-3WQrgwRbJYn4xAlwhlhWWV1zALX9mq8rjZSB=_c4a69_"
+CMS-TYPE: 105P
+X-CMS-RootMailID: 20200702154208epcas5p39fe202f642a9d5c8dde9b911645c594c
+References: <1593704330-11540-1-git-send-email-joshi.k@samsung.com>
+        <CGME20200702154208epcas5p39fe202f642a9d5c8dde9b911645c594c@epcas5p3.samsung.com>
+        <1593704330-11540-2-git-send-email-joshi.k@samsung.com>
+        <CY4PR04MB3751B8037BE65D573667A6D5E76A0@CY4PR04MB3751.namprd04.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/7/3 12:19, Daeho Jeong wrote:
-> From: Daeho Jeong <daehojeong@google.com>
-> 
-> Added a symbolic link to directory of sysfs. It will
-> create a symbolic link such as "mount_0" and "mount_1" to
-> each f2fs mount in the order of mounting filesystem. But
-> once one mount point was umounted, that sequential number
-> @x in "mount_@x" could be reused by later newly mounted
-> point. It will provide easy access to sysfs node even if
-> not knowing the specific device node name like sda19 and
-> dm-3.
+------FBC7EIImzEv-3WQrgwRbJYn4xAlwhlhWWV1zALX9mq8rjZSB=_c4a69_
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Disposition: inline
 
-Oh, I meant adding description into Documentation/filesystems/f2fs.rst,
-and maybe add simple sample like below to introduce to non-android
-developers or users how this works?
+On Fri, Jul 03, 2020 at 05:29:50AM +0000, Damien Le Moal wrote:
+>On 2020/07/03 0:42, Kanchan Joshi wrote:
+>> avoid returning success when it should report failure, preventing
+>> odd behavior in caller.
+>
+>You can be more precise here: the odd behavior is an infinite loop in
+>bio_iov_iter_get_pages() whcih is is the only user of __bio_iov_append_get_pages().
+Sure. Kept that in cover letter, but missed here.
+>>
+>> Signed-off-by: Kanchan Joshi <joshi.k@samsung.com>
+>> Signed-off-by: Selvakumar S <selvakuma.s1@samsung.com>
+>> Signed-off-by: Nitesh Shetty <nj.shetty@samsung.com>
+>> Signed-off-by: Javier Gonzalez <javier.gonz@samsung.com>
+>> ---
+>>  block/bio.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/block/bio.c b/block/bio.c
+>> index a7366c0..0cecdbc 100644
+>> --- a/block/bio.c
+>> +++ b/block/bio.c
+>> @@ -1044,7 +1044,7 @@ static int __bio_iov_append_get_pages(struct bio *bio, struct iov_iter *iter)
+>>  	size_t offset;
+>>
+>>  	if (WARN_ON_ONCE(!max_append_sectors))
+>> -		return 0;
+>> +		return -EINVAL;
+>>
+>>  	/*
+>>  	 * Move page array up in the allocated memory for the bio vecs as far as
+>>
+>
+>Note: the odd behavior mentioned in the commit message cannot currently be
+>triggered since only zonefs issues REQ_OP_ZONE_APPEND BIOs so we are guaranteed
+>that max_append_sectors is not 0 in that case. But this fix certainly makes
+>things more solid. So:
+Yes, zonefs will not run into this. Future users of zone-append may. I
+encountered this endless loop while testing user zone-append path.
+>Reviewed-by: Damien Le Moal <damien.lemoal@wdc.com>
+>
+>-- 
+>Damien Le Moal
+>Western Digital Research
+>
 
-mount dev0 mount0 (mount_0 -> dev0)
-mount dev1 mount1 (mount_1 -> dev1)
-umount mount0
-mount dev2 (mount_0 -> dev2)
+------FBC7EIImzEv-3WQrgwRbJYn4xAlwhlhWWV1zALX9mq8rjZSB=_c4a69_
+Content-Type: text/plain; charset="utf-8"
 
-> 
-> Signed-off-by: Daeho Jeong <daehojeong@google.com>
-> ---
->  fs/f2fs/f2fs.h  |  4 ++++
->  fs/f2fs/sysfs.c | 31 +++++++++++++++++++++++++++----
->  2 files changed, 31 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-> index 4b28fd42fdbc..7d6c5f8ce16b 100644
-> --- a/fs/f2fs/f2fs.h
-> +++ b/fs/f2fs/f2fs.h
-> @@ -1419,6 +1419,8 @@ struct decompress_io_ctx {
->  #define MAX_COMPRESS_LOG_SIZE		8
->  #define MAX_COMPRESS_WINDOW_SIZE	((PAGE_SIZE) << MAX_COMPRESS_LOG_SIZE)
->  
-> +#define MOUNT_NAME_SIZE			20
-> +
->  struct f2fs_sb_info {
->  	struct super_block *sb;			/* pointer to VFS super block */
->  	struct proc_dir_entry *s_proc;		/* proc entry */
-> @@ -1599,6 +1601,8 @@ struct f2fs_sb_info {
->  	/* For sysfs suppport */
->  	struct kobject s_kobj;
->  	struct completion s_kobj_unregister;
-> +	int s_mount_id;
-> +	char s_mount_name[MOUNT_NAME_SIZE];
->  
->  	/* For shrinker support */
->  	struct list_head s_list;
-> diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
-> index 2a140657fc4d..703d9f460d03 100644
-> --- a/fs/f2fs/sysfs.c
-> +++ b/fs/f2fs/sysfs.c
-> @@ -18,6 +18,7 @@
->  #include <trace/events/f2fs.h>
->  
->  static struct proc_dir_entry *f2fs_proc_root;
-> +static struct ida f2fs_mount_ida;
->  
->  /* Sysfs support for f2fs */
->  enum {
-> @@ -908,6 +909,9 @@ int __init f2fs_init_sysfs(void)
->  	} else {
->  		f2fs_proc_root = proc_mkdir("fs/f2fs", NULL);
->  	}
-> +
-> +	ida_init(&f2fs_mount_ida);
-> +
->  	return ret;
->  }
->  
-> @@ -917,6 +921,7 @@ void f2fs_exit_sysfs(void)
->  	kset_unregister(&f2fs_kset);
->  	remove_proc_entry("fs/f2fs", NULL);
->  	f2fs_proc_root = NULL;
-> +	ida_destroy(&f2fs_mount_ida);
->  }
->  
->  int f2fs_register_sysfs(struct f2fs_sb_info *sbi)
-> @@ -928,12 +933,22 @@ int f2fs_register_sysfs(struct f2fs_sb_info *sbi)
->  	init_completion(&sbi->s_kobj_unregister);
->  	err = kobject_init_and_add(&sbi->s_kobj, &f2fs_sb_ktype, NULL,
->  				"%s", sb->s_id);
-> -	if (err) {
-> -		kobject_put(&sbi->s_kobj);
-> -		wait_for_completion(&sbi->s_kobj_unregister);
-> -		return err;
-> +	if (err)
-> +		goto err1;
-> +
-> +	sbi->s_mount_id = ida_simple_get(&f2fs_mount_ida, 0, 0, GFP_KERNEL);
-> +	if (sbi->s_mount_id < 0) {
-> +		err = sbi->s_mount_id;
-> +		goto err1;
->  	}
->  
-> +	snprintf(sbi->s_mount_name, MOUNT_NAME_SIZE, "mount_%d",
-> +			sbi->s_mount_id);
-> +	err = sysfs_create_link(&f2fs_kset.kobj, &sbi->s_kobj,
-> +			sbi->s_mount_name);
-> +	if (err)
-> +		goto err2;
-> +
->  	if (f2fs_proc_root)
->  		sbi->s_proc = proc_mkdir(sb->s_id, f2fs_proc_root);
->  
-> @@ -948,6 +963,12 @@ int f2fs_register_sysfs(struct f2fs_sb_info *sbi)
->  				victim_bits_seq_show, sb);
->  	}
->  	return 0;
-> +err2:
-> +	ida_simple_remove(&f2fs_mount_ida, sbi->s_mount_id);
-> +err1:
-> +	kobject_put(&sbi->s_kobj);
-> +	wait_for_completion(&sbi->s_kobj_unregister);
-> +	return err;
->  }
->  
->  void f2fs_unregister_sysfs(struct f2fs_sb_info *sbi)
-> @@ -959,6 +980,8 @@ void f2fs_unregister_sysfs(struct f2fs_sb_info *sbi)
->  		remove_proc_entry("victim_bits", sbi->s_proc);
->  		remove_proc_entry(sbi->sb->s_id, f2fs_proc_root);
->  	}
-> +	sysfs_remove_link(&f2fs_kset.kobj, sbi->s_mount_name);
-> +	ida_simple_remove(&f2fs_mount_ida, sbi->s_mount_id);
->  	kobject_del(&sbi->s_kobj);
->  	kobject_put(&sbi->s_kobj);
->  }
-> 
+
+------FBC7EIImzEv-3WQrgwRbJYn4xAlwhlhWWV1zALX9mq8rjZSB=_c4a69_--
