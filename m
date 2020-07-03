@@ -2,128 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61EFC21328A
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 06:04:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD654213291
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 06:06:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726187AbgGCEEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 00:04:34 -0400
-Received: from mga06.intel.com ([134.134.136.31]:9178 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725949AbgGCEE0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 00:04:26 -0400
-IronPort-SDR: Iuq7oc6dDYlnwGYknM/40ml2xolX0hmIpeM03w/zcq3JnmJo11Fh9tA46nH6wfLFGNpTXXjFL5
- vKQu0Z7Wkqcw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="208604067"
-X-IronPort-AV: E=Sophos;i="5.75,306,1589266800"; 
-   d="scan'208";a="208604067"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2020 21:04:23 -0700
-IronPort-SDR: Q/KdMvKOGpwTXRrxlJ2FH54DTG3o+9WXOLFVKg/WygCplSJHYImhvF234IWvHU/8PNoPS0Pbk1
- pDHQycIha25g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,306,1589266800"; 
-   d="scan'208";a="387520215"
-Received: from sjchrist-coffee.jf.intel.com ([10.54.74.152])
-  by fmsmga001.fm.intel.com with ESMTP; 02 Jul 2020 21:04:23 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] KVM: VMX: Use KVM_POSSIBLE_CR*_GUEST_BITS to initialize guest/host masks
-Date:   Thu,  2 Jul 2020 21:04:22 -0700
-Message-Id: <20200703040422.31536-3-sean.j.christopherson@intel.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200703040422.31536-1-sean.j.christopherson@intel.com>
-References: <20200703040422.31536-1-sean.j.christopherson@intel.com>
+        id S1726227AbgGCEGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 00:06:21 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:33186 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725294AbgGCEGV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Jul 2020 00:06:21 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id C812CD09CA642B69DF95;
+        Fri,  3 Jul 2020 12:06:18 +0800 (CST)
+Received: from [10.174.178.63] (10.174.178.63) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 3 Jul 2020 12:06:17 +0800
+From:   "liwei (GF)" <liwei391@huawei.com>
+Subject: Re: [PATCH 2/2] perf tools: Fix record failure when mixed with ARM
+ SPE event
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        "Mark Rutland" <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        "Namhyung Kim" <namhyung@kernel.org>,
+        Kim Phillips <kim.phillips@arm.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        "Peter Zijlstra" <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, <leo.yan@linaro.org>
+References: <20200623123141.27747-1-liwei391@huawei.com>
+ <20200623123141.27747-3-liwei391@huawei.com> <20200702230322.GB471976@xps15>
+Message-ID: <5d872f6f-3665-5abd-7251-13926a70f793@huawei.com>
+Date:   Fri, 3 Jul 2020 12:06:15 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200702230322.GB471976@xps15>
+Content-Type: text/plain; charset="gbk"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.63]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the "common" KVM_POSSIBLE_CR*_GUEST_BITS defines to initialize the
-CR0/CR4 guest host masks instead of duplicating most of the CR4 mask and
-open coding the CR0 mask.  SVM doesn't utilize the masks, i.e. the masks
-are effectively VMX specific even if they're not named as such.  This
-avoids duplicate code, better documents the guest owned CR0 bit, and
-eliminates the need for a build-time assertion to keep VMX and x86
-synchronized.
+Hi Mathieu,
 
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
----
- arch/x86/kvm/vmx/nested.c |  4 ++--
- arch/x86/kvm/vmx/vmx.c    | 15 +++++----------
- 2 files changed, 7 insertions(+), 12 deletions(-)
+On 2020/7/3 7:03, Mathieu Poirier wrote:
+> Hi Li,
+> 
+> On Tue, Jun 23, 2020 at 08:31:41PM +0800, Wei Li wrote:
+>> When recording with cache-misses and arm_spe_x event, i found that
+>> it will just fail without showing any error info if i put cache-misses
+>> after arm_spe_x event.
+>>
+>> [root@localhost 0620]# perf record -e cache-misses -e \
+>> arm_spe_0/ts_enable=1,pct_enable=1,pa_enable=1,load_filter=1,\
+>> jitter=1,store_filter=1,min_latency=0/ sleep 1
+>> [ perf record: Woken up 1 times to write data ]
+>> [ perf record: Captured and wrote 0.067 MB perf.data ]
+>> [root@localhost 0620]# perf record -e \
+>> arm_spe_0/ts_enable=1,pct_enable=1,pa_enable=1,load_filter=1,jitter=1,\
+>> store_filter=1,min_latency=0/ -e cache-misses sleep 1
+>> [root@localhost 0620]#
+>>
+>> Finally, i found the reason is that the parameter 'arm_spe_pmu' passed to
+>> arm_spe_recording_init() in auxtrace_record__init() is wrong. When the
+>> arm_spe_x event is not the last event, 'arm_spe_pmus[i]' will be out of
+>> bounds.
+> 
+> Yes, this indeed broken.  
+> 
+> The current code can only work if the only event to be
+> traced is an arm_spe_X, or if it is the last event to be specified.
+> Otherwise the last event type will be checked against all the
+> arm_spe_pmus[i]->types, none will match and an out of bound i index will be
+> used in arm_spc_recording_init().
+> 
+> Since this problem is not easy to figure out please include the above
+> explanation in the changelog.
 
-diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index d1af20b050a8..b26655104d4a 100644
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -4109,7 +4109,7 @@ static void load_vmcs12_host_state(struct kvm_vcpu *vcpu,
- 	 * CR0_GUEST_HOST_MASK is already set in the original vmcs01
- 	 * (KVM doesn't change it);
- 	 */
--	vcpu->arch.cr0_guest_owned_bits = X86_CR0_TS;
-+	vcpu->arch.cr0_guest_owned_bits = KVM_POSSIBLE_CR0_GUEST_BITS;
- 	vmx_set_cr0(vcpu, vmcs12->host_cr0);
- 
- 	/* Same as above - no reason to call set_cr4_guest_host_mask().  */
-@@ -4259,7 +4259,7 @@ static void nested_vmx_restore_host_state(struct kvm_vcpu *vcpu)
- 	 */
- 	vmx_set_efer(vcpu, nested_vmx_get_vmcs01_guest_efer(vmx));
- 
--	vcpu->arch.cr0_guest_owned_bits = X86_CR0_TS;
-+	vcpu->arch.cr0_guest_owned_bits = KVM_POSSIBLE_CR0_GUEST_BITS;
- 	vmx_set_cr0(vcpu, vmcs_readl(CR0_READ_SHADOW));
- 
- 	vcpu->arch.cr4_guest_owned_bits = ~vmcs_readl(CR4_GUEST_HOST_MASK);
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 7fc5ca9cb5a0..2a42c86746f7 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -133,9 +133,6 @@ module_param_named(preemption_timer, enable_preemption_timer, bool, S_IRUGO);
- #define KVM_VM_CR0_ALWAYS_ON				\
- 	(KVM_VM_CR0_ALWAYS_ON_UNRESTRICTED_GUEST | 	\
- 	 X86_CR0_WP | X86_CR0_PG | X86_CR0_PE)
--#define KVM_CR4_GUEST_OWNED_BITS				      \
--	(X86_CR4_PVI | X86_CR4_DE | X86_CR4_PCE | X86_CR4_OSFXSR      \
--	 | X86_CR4_OSXMMEXCPT | X86_CR4_LA57 | X86_CR4_TSD)
- 
- #define KVM_VM_CR4_ALWAYS_ON_UNRESTRICTED_GUEST X86_CR4_VMXE
- #define KVM_PMODE_VM_CR4_ALWAYS_ON (X86_CR4_PAE | X86_CR4_VMXE)
-@@ -4034,11 +4031,9 @@ void vmx_set_constant_host_state(struct vcpu_vmx *vmx)
- 
- void set_cr4_guest_host_mask(struct vcpu_vmx *vmx)
- {
--	BUILD_BUG_ON(KVM_CR4_GUEST_OWNED_BITS & ~KVM_POSSIBLE_CR4_GUEST_BITS);
--
--	vmx->vcpu.arch.cr4_guest_owned_bits = KVM_CR4_GUEST_OWNED_BITS;
--	if (enable_ept)
--		vmx->vcpu.arch.cr4_guest_owned_bits |= X86_CR4_PGE;
-+	vmx->vcpu.arch.cr4_guest_owned_bits = KVM_POSSIBLE_CR4_GUEST_BITS;
-+	if (!enable_ept)
-+		vmx->vcpu.arch.cr4_guest_owned_bits &= ~X86_CR4_PGE;
- 	if (is_guest_mode(&vmx->vcpu))
- 		vmx->vcpu.arch.cr4_guest_owned_bits &=
- 			~get_vmcs12(&vmx->vcpu)->cr4_guest_host_mask;
-@@ -4335,8 +4330,8 @@ static void init_vmcs(struct vcpu_vmx *vmx)
- 	/* 22.2.1, 20.8.1 */
- 	vm_entry_controls_set(vmx, vmx_vmentry_ctrl());
- 
--	vmx->vcpu.arch.cr0_guest_owned_bits = X86_CR0_TS;
--	vmcs_writel(CR0_GUEST_HOST_MASK, ~X86_CR0_TS);
-+	vmx->vcpu.arch.cr0_guest_owned_bits = KVM_POSSIBLE_CR0_GUEST_BITS;
-+	vmcs_writel(CR0_GUEST_HOST_MASK, ~vmx->vcpu.arch.cr0_guest_owned_bits);
- 
- 	set_cr4_guest_host_mask(vmx);
- 
--- 
-2.26.0
+OK.
+>>
+>> It seems that the code can't support concurrent multiple different
+>> arm_spe_x events currently. So add the code to check and record the
+>> found 'arm_spe_pmu' to fix this issue.
+>>
+>> In fact, we don't support concurrent multiple same arm_spe_x events either,
+>> that is checked in arm_spe_recording_options(), and it will show the
+>> relevant info.
+>>
+>> Fixes: ffd3d18c20b8d ("perf tools: Add ARM Statistical Profiling Extensions (SPE) support")
+>> Signed-off-by: Wei Li <liwei391@huawei.com>
+>> ---
+>>  tools/perf/arch/arm/util/auxtrace.c | 10 +++++++++-
+>>  1 file changed, 9 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/tools/perf/arch/arm/util/auxtrace.c b/tools/perf/arch/arm/util/auxtrace.c
+>> index 62b7b03d691a..7bb6f29e766c 100644
+>> --- a/tools/perf/arch/arm/util/auxtrace.c
+>> +++ b/tools/perf/arch/arm/util/auxtrace.c
+>> @@ -58,6 +58,7 @@ struct auxtrace_record
+>>  	bool found_etm = false;
+>>  	bool found_spe = false;
+>>  	static struct perf_pmu **arm_spe_pmus;
+>> +	static struct perf_pmu *arm_spe_pmu;
+> 
+> As far as I can tell the "static" doesn't do anything.
+> 
+I will remove that in v2.
+>>  	static int nr_spes = 0;
+>>  	int i = 0;
+>>  
+>> @@ -77,6 +78,13 @@ struct auxtrace_record
+>>  
+>>  		for (i = 0; i < nr_spes; i++) {
+>>  			if (evsel->core.attr.type == arm_spe_pmus[i]->type) {
+>> +				if (found_spe && (arm_spe_pmu != arm_spe_pmus[i])) {
+>> +					pr_err("Concurrent multiple SPE operation not currently supported\n");
+>> +					*err = -EOPNOTSUPP;
+>> +					return NULL;
+>> +				}
+> 
+> Instead of the above, which as you rightly pointed out, is also done in
+> arm_spe_recording_options() it might be best to just fix the "if (!nr_spes)"
+> condition:
+>                 if (!nr_spes || arm_spe_pmu)
+>                         continue
 
+This is more brief, i will use 'found_spe' as 'arm_spe_pmu' is not initialized.
+> Furthermore, instead of having a new arm_spe_pmu variable you could simply make
+> found_spe a struct perf_pmu.  That would be one less variable to take care of.
+> 
+>> +
+>> +				arm_spe_pmu = arm_spe_pmus[i];
+>>  				found_spe = true;
+> 
+> Last but not least do you know where the memory allocated for array arm_spe_pmus
+> is released?  If you can't find it either then we have a memory leak and it
+> would be nice to have that fixed.
+Yes, we have a memory leak here indeed, i forgot to free it in this function.
+As 'arm_spe_pmus' is defined as static, i think the author meant to assign it only at the first call,
+but this function is only called once when we executing 'record', should i go on fixing it
+or just drop the patch 1?
+
+> Regards
+> Mathieu
+> 
+> PS: Leo Yan has spent a fair amount of time in the SPE code - please CC him on
+> your next revision.
+> 
+Thanks,
+Wei
