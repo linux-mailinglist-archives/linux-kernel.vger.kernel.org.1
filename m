@@ -2,166 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88F6D21397B
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 13:40:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A898C213982
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 13:41:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726417AbgGCLk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 07:40:26 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:50695 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726324AbgGCLkZ (ORCPT
+        id S1726451AbgGCLlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 07:41:42 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:24128 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726112AbgGCLll (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 07:40:25 -0400
-Received: by mail-il1-f197.google.com with SMTP id l17so21771707ilj.17
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Jul 2020 04:40:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=C+xZpCu+1aqH0Q22E41rew5k7JF4gXiZv3aVoYwcaB0=;
-        b=WcWEFXaAqyRbgq/1Ss0/8Di5u6aYDP2x949YFxXA/qmk9lth5TV3U3ynw/BMhGbmY9
-         ZyHCEdhGOeHCbVnh0OyZoYMnyCLRqOQeV/CxtlVy7FrLHBlgTcMgh5BJ/OmewTDBE9OK
-         2Q0Z7HcebhL06v7zf8yHNNPiJAXB9WKOXG44bWqiSI1jZeAANVXMxU83YdoSlwraEK24
-         Xodn/o+xLim5dVyD1XpGP8/W0iDn4GlRqe+M3zd82ezSrj+zAUlHf5bJW01GQ3a494ET
-         6zrL1OAKJCMNhxCdNu4XipLGD4tYLDvllkmBsN6zzD6O82fDS0UIHSmJBBM2229pMJ79
-         xJHA==
-X-Gm-Message-State: AOAM530jEh0/43kMnOjRZRvY7CbCjshZrNKEpRbBPUwBZUhMZBxATR6s
-        ayDkNWAIPsIjVNM6HO9JWSkFTC7C1g/gsmPBscqYtts2kIc7
-X-Google-Smtp-Source: ABdhPJzan7DItbKw7hDeRJWpKWe6g+PyhxicS26IVff1Jc+DFsjUDurp+UsrXWLz9ZOKEfU0b02Cro5YZwrU47RQ0z2cMYGLs1mJ
+        Fri, 3 Jul 2020 07:41:41 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 063BUv1Y000696;
+        Fri, 3 Jul 2020 07:40:46 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 320wmq5k82-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 03 Jul 2020 07:40:46 -0400
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 063BWGpg004464;
+        Fri, 3 Jul 2020 07:40:45 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 320wmq5k77-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 03 Jul 2020 07:40:45 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 063BaVop023875;
+        Fri, 3 Jul 2020 11:40:43 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 31wwch6rqn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 03 Jul 2020 11:40:43 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 063BefcM63570196
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 3 Jul 2020 11:40:41 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7E3B9A405B;
+        Fri,  3 Jul 2020 11:40:41 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7FCE2A405C;
+        Fri,  3 Jul 2020 11:40:39 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.148.204.195])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Fri,  3 Jul 2020 11:40:39 +0000 (GMT)
+Date:   Fri, 3 Jul 2020 14:40:37 +0300
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     Abhishek Bhardwaj <abhishekbh@google.com>
+Cc:     Anthony Steinhauser <asteinhauser@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tony Luck <tony.luck@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>, kvm@vger.kernel.org,
+        x86 <x86@kernel.org>, Doug Anderson <dianders@google.com>
+Subject: Re: [PATCH v3] x86/speculation/l1tf: Add KConfig for setting the L1D
+ cache flush mode
+Message-ID: <20200703114037.GD2999146@linux.ibm.com>
+References: <20200702221237.2517080-1-abhishekbh@google.com>
+ <e7bc00fc-fe53-800e-8439-f1fbdca5dd26@redhat.com>
+ <CAN_oZf2t+gUqXe19Yo1mTzAgk2xNhssE-9p58EvH-gw5jpuvzA@mail.gmail.com>
+ <CA+noqoj6u9n_KKohZw+QCpD-Qj0EgoCXaPEsryD7ABZ7QpqQfg@mail.gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a6b:c910:: with SMTP id z16mr11785836iof.120.1593776424237;
- Fri, 03 Jul 2020 04:40:24 -0700 (PDT)
-Date:   Fri, 03 Jul 2020 04:40:24 -0700
-In-Reply-To: <000000000000961dea05a95c9558@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000009e40fa05a987fde8@google.com>
-Subject: Re: INFO: task hung in request_key_tag
-From:   syzbot <syzbot+46c77dc7e98c732de754@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, dhowells@redhat.com,
-        ebiederm@xmission.com, hch@infradead.org,
-        herbert@gondor.apana.org.au, jarkko.sakkinen@linux.intel.com,
-        jmorris@namei.org, keyrings@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, mcgrof@kernel.org,
-        naresh.kamboju@linaro.org, penguin-kernel@i-love.sakura.ne.jp,
-        serge@hallyn.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+noqoj6u9n_KKohZw+QCpD-Qj0EgoCXaPEsryD7ABZ7QpqQfg@mail.gmail.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-03_03:2020-07-02,2020-07-03 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ impostorscore=0 adultscore=0 cotscore=-2147483648 suspectscore=1
+ phishscore=0 priorityscore=1501 mlxscore=0 spamscore=0 bulkscore=0
+ mlxlogscore=999 lowpriorityscore=0 clxscore=1011 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2007030078
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following crash on:
+On Thu, Jul 02, 2020 at 11:43:47PM -0700, Abhishek Bhardwaj wrote:
+> We have tried to steer away from kernel command line args for a few reasons.
+> 
+> I am paraphrasing my colleague Doug's argument here (CC'ed him as well) -
+> 
+> - The command line args are getting unwieldy. Kernel command line
+> parameters are not a scalable way to set kernel config. It's intended
+> as a super limited way for the bootloader to pass info to the kernel
+> and also as a way for end users who are not compiling the kernel
+> themselves to tweak kernel behavior.
 
-HEAD commit:    aab20039 Add linux-next specific files for 20200701
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=14000a5b100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=739f6fbf326049f4
-dashboard link: https://syzkaller.appspot.com/bug?extid=46c77dc7e98c732de754
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=127e085b100000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=107ffaa7100000
+Why cannot you simply add this option to CONFIG_CMDLINE at your kernel build
+scripts?
+ 
+> - Also, we know we want this setting from the start. This is a
+> definite smell that it deserves to be a compile time thing rather than
+> adding extra code + whatever miniscule time at runtime to pass an
+> extra arg.
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+46c77dc7e98c732de754@syzkaller.appspotmail.com
+This might be a compile time thing in your environment, but not
+necessarily it must be the same in others. For instance, what option
+should distro kernels select?
 
-INFO: task syz-executor067:6800 blocked for more than 143 seconds.
-      Not tainted 5.8.0-rc3-next-20200701-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-syz-executor067 D27632  6800   6794 0x00004000
-Call Trace:
- context_switch kernel/sched/core.c:3445 [inline]
- __schedule+0x8b4/0x1e80 kernel/sched/core.c:4169
- schedule+0xd0/0x2a0 kernel/sched/core.c:4244
- bit_wait+0x12/0xa0 kernel/sched/wait_bit.c:199
- __wait_on_bit+0x60/0x190 kernel/sched/wait_bit.c:49
- out_of_line_wait_on_bit+0xd5/0x110 kernel/sched/wait_bit.c:64
- wait_on_bit include/linux/wait_bit.h:76 [inline]
- wait_for_key_construction+0x10b/0x140 security/keys/request_key.c:664
- request_key_tag+0x7a/0xb0 security/keys/request_key.c:705
- dns_query+0x257/0x6c3 net/dns_resolver/dns_query.c:128
- ceph_dns_resolve_name net/ceph/messenger.c:1887 [inline]
- ceph_parse_server_name net/ceph/messenger.c:1922 [inline]
- ceph_parse_ips+0x77f/0x8c0 net/ceph/messenger.c:1949
- ceph_parse_mon_ips+0x59/0xc0 net/ceph/ceph_common.c:411
- ceph_parse_source fs/ceph/super.c:271 [inline]
- ceph_parse_mount_param+0x1239/0x17e0 fs/ceph/super.c:322
- vfs_parse_fs_param fs/fs_context.c:117 [inline]
- vfs_parse_fs_param+0x203/0x550 fs/fs_context.c:98
- vfs_parse_fs_string+0xe6/0x150 fs/fs_context.c:161
- do_new_mount fs/namespace.c:2905 [inline]
- do_mount+0x1222/0x1df0 fs/namespace.c:3237
- __do_sys_mount fs/namespace.c:3447 [inline]
- __se_sys_mount fs/namespace.c:3424 [inline]
- __x64_sys_mount+0x18f/0x230 fs/namespace.c:3424
- do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:359
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x4401b9
-Code: Bad RIP value.
-RSP: 002b:00007fff4cd307c8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 0030656c69662f2e RCX: 00000000004401b9
-RDX: 0000000020000040 RSI: 0000000020000080 RDI: 00000000200002c0
-RBP: 00000000006ca018 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000401a40
-R13: 0000000000401ad0 R14: 0000000000000000 R15: 0000000000000000
+> I think this was what CONFIGS were intended for. I'm happy to add all
+> this to the commit message once it's approved in spirit by the
+> maintainers.
+> 
+> On Thu, Jul 2, 2020 at 8:18 PM Anthony Steinhauser
+> <asteinhauser@google.com> wrote:
+> >
+> > Yes, this probably requires an explanation why the change is necessary
+> > or useful. Without that it is difficult to give some meaningful
+> > feedback.
+> 
+> 
+> 
+> -- 
+> Abhishek
 
-Showing all locks held in the system:
-1 lock held by khungtaskd/1146:
- #0: ffffffff89bc3000 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:5779
-1 lock held by in:imklog/6692:
- #0: ffff88809a086af0 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:928
-
-=============================================
-
-NMI backtrace for cpu 0
-CPU: 0 PID: 1146 Comm: khungtaskd Not tainted 5.8.0-rc3-next-20200701-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x18f/0x20d lib/dump_stack.c:118
- nmi_cpu_backtrace.cold+0x70/0xb1 lib/nmi_backtrace.c:101
- nmi_trigger_cpumask_backtrace+0x1b3/0x223 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:147 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:253 [inline]
- watchdog+0xd89/0xf30 kernel/hung_task.c:339
- kthread+0x3b5/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-Sending NMI from CPU 0 to CPUs 1:
-NMI backtrace for cpu 1
-CPU: 1 PID: 3852 Comm: systemd-journal Not tainted 5.8.0-rc3-next-20200701-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:pmd_none arch/x86/include/asm/pgtable.h:825 [inline]
-RIP: 0010:pmd_none_or_trans_huge_or_clear_bad include/linux/pgtable.h:1198 [inline]
-RIP: 0010:pmd_trans_unstable include/linux/pgtable.h:1223 [inline]
-RIP: 0010:pmd_devmap_trans_unstable mm/memory.c:3496 [inline]
-RIP: 0010:pmd_devmap_trans_unstable mm/memory.c:3494 [inline]
-RIP: 0010:handle_pte_fault mm/memory.c:4198 [inline]
-RIP: 0010:__handle_mm_fault mm/memory.c:4360 [inline]
-RIP: 0010:handle_mm_fault+0x1da0/0x43f0 mm/memory.c:4397
-Code: ff e9 9d f3 ff ff e8 0f 93 cf ff 48 89 ea 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 80 3c 02 00 0f 85 b9 20 00 00 4c 8b 65 00 <4c> 89 e3 31 ff 48 83 e3 9f 48 89 de e8 7f 8f cf ff 48 85 db 0f 84
-RSP: 0000:ffffc900015d7d70 EFLAGS: 00000246
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffffff81a44fec
-RDX: 1ffff11012ad8f4a RSI: ffffffff81a45861 RDI: 0000000000000007
-RBP: ffff8880956c7a50 R08: 0000000000000000 R09: ffffffff8aaeb0e7
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000091cd0067
-R13: 0000000000000000 R14: 0000000000000040 R15: 0000000000000001
-FS:  00007fdaac0718c0(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fdaa9411000 CR3: 0000000094cdd000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- do_user_addr_fault+0x5a2/0xd00 arch/x86/mm/fault.c:1295
- handle_page_fault arch/x86/mm/fault.c:1365 [inline]
- exc_page_fault+0xab/0x170 arch/x86/mm/fault.c:1418
- asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:565
-RIP: 0033:0x7fdaab37b124
-Code: Bad RIP value.
-RSP: 002b:00007ffcfb2ef578 EFLAGS: 00010202
-RAX: 00007fdaa9410fe0 RBX: 0000000000000090 RCX: 000000000021ffa0
-RDX: 0000000000000090 RSI: 00007ffcfb2ef620 RDI: 00007fdaa9410fe0
-RBP: 0000000000000000 R08: 0000000000220070 R09: 00007ffcfb2f26b0
-R10: 000000000001b706 R11: 00007fdaa9410fa0 R12: 00005652b21dbe80
-R13: 715c95999b8098ed R14: 00007ffcfb2ef810 R15: 00007ffcfb2ef620
-
+-- 
+Sincerely yours,
+Mike.
