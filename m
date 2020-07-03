@@ -2,89 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B61D92134F4
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 09:27:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74B502134EE
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 09:27:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726228AbgGCH1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 03:27:25 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:50578 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726100AbgGCH1Y (ORCPT
+        id S1726129AbgGCH1L convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 3 Jul 2020 03:27:11 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:46473 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725648AbgGCH1L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 03:27:24 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0637R6X8008612;
-        Fri, 3 Jul 2020 02:27:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1593761226;
-        bh=JAgfQZyZ5OCclljqyFUtrQi+fTILtIzhg4LOfF6ffNg=;
-        h=Subject:To:References:From:Date:In-Reply-To;
-        b=qq2T15TP8855E5+LM7HzRbH6C9+JEVm70rVxuj2SW/sudOvyVS7UL+qdm4YLdl9N6
-         ckrL7qObLBsqCSce5xhNyZNi+vTrwNEzo3Xo6vWYMms5ojoX+BJfHSyeMj4f8Ff8Tg
-         hd2086CZRwGgXUIcTV4FvgxwaHrFDLJRt8GkY2K0=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0637R6if050745
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 3 Jul 2020 02:27:06 -0500
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 3 Jul
- 2020 02:27:05 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 3 Jul 2020 02:27:05 -0500
-Received: from [10.250.232.87] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0637R1SF002523;
-        Fri, 3 Jul 2020 02:27:02 -0500
-Subject: Re: [PATCH 0/7] Add support for SD card in AM654x-evm
-To:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-mmc@vger.kernel.org>, <adrian.hunter@intel.com>,
-        <will@kernel.org>, <catalin.marinas@arm.com>, <robh+dt@kernel.org>,
-        <ulf.hansson@linaro.org>
-References: <20200619125801.9530-1-faiz_abbas@ti.com>
-From:   Faiz Abbas <faiz_abbas@ti.com>
-Message-ID: <10f765e4-d9ac-324d-623f-83720c997042@ti.com>
-Date:   Fri, 3 Jul 2020 12:57:00 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <20200619125801.9530-1-faiz_abbas@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        Fri, 3 Jul 2020 03:27:11 -0400
+Received: from marcel-macpro.fritz.box (p5b3d2638.dip0.t-ipconnect.de [91.61.38.56])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 26A0DCED23;
+        Fri,  3 Jul 2020 09:37:05 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
+Subject: Re: [PATCH] Bluetooth: btusb: add Realtek 8822CE to blacklist_table
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20200703091124.1.I63705bf6abab9cb79c14f7959a59b201af2b8827@changeid>
+Date:   Fri, 3 Jul 2020 09:27:09 +0200
+Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        josephsih@google.com,
+        chromeos-bluetooth-upstreaming 
+        <chromeos-bluetooth-upstreaming@chromium.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <5B5301EF-4C71-4EBC-8753-C872071D4DC5@holtmann.org>
+References: <20200703091124.1.I63705bf6abab9cb79c14f7959a59b201af2b8827@changeid>
+To:     Joseph Hwang <josephsih@chromium.org>
+X-Mailer: Apple Mail (2.3608.80.23.2.2)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Joseph,
 
-On 19/06/20 6:27 pm, Faiz Abbas wrote:
-> The following patches add driver support for SD card on the
-> am654x-evm. It only enables high speed mode with UHS mode
-> support coming in a future series.
+> This patch adds the Realtek 8822CE controller to the blacklist_table
+> to support the wideband speech capability.
 > 
-> DTS support will be added in another series as well.
+> Signed-off-by: Joseph Hwang <josephsih@chromium.org>
+> ---
 > 
-> Faiz Abbas (7):
->   dt-bindings: mmc: sdhci-am654: Add ti,clkbuf-sel binding
->   mmc: sdhci_am654: Add flag for PHY calibration
->   mmc: sdhci_am654: Add Support for SR2.0
->   mmc: sdhci_am654: Fix conditions for enabling dll
->   mmc: sdhci_am654: Update delay chain configuration
->   mmc: sdhci_am654: Add support for clkbuf_sel property
->   arm64: defconfig: Enable AM654x SDHCI controller
+> drivers/bluetooth/btusb.c | 4 ++++
+> 1 file changed, 4 insertions(+)
 > 
->  .../devicetree/bindings/mmc/sdhci-am654.txt   |  1 +
->  arch/arm64/configs/defconfig                  |  1 +
->  drivers/mmc/host/sdhci_am654.c                | 86 ++++++++++++++-----
->  3 files changed, 65 insertions(+), 23 deletions(-)
+> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+> index 0e143c0cecf2a1..34a84c64e4c83e 100644
+> --- a/drivers/bluetooth/btusb.c
+> +++ b/drivers/bluetooth/btusb.c
+> @@ -359,6 +359,10 @@ static const struct usb_device_id blacklist_table[] = {
+> 	{ USB_VENDOR_AND_INTERFACE_INFO(0x8087, 0xe0, 0x01, 0x01),
+> 	  .driver_info = BTUSB_IGNORE },
 > 
+> +	/* Realtek 8822CE Bluetooth devices */
+> +	{ USB_DEVICE(0x0bda, 0xb00c), .driver_info = BTUSB_REALTEK |
+> +						     BTUSB_WIDEBAND_SPEECH },
+> +
+> 	/* Realtek Bluetooth devices */
+> 	{ USB_VENDOR_AND_INTERFACE_INFO(0x0bda, 0xe0, 0x01, 0x01),
+> 	  .driver_info = BTUSB_REALTEK },
 
-Gentle ping.
+I rather not have to list these one-by-one. Can we just not globally declare support for this? Or can we have a Realtek vendor command to read this out?
 
-Thanks,
-Faiz
+Regards
+
+Marcel
+
