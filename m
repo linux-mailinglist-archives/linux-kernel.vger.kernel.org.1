@@ -2,120 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A5F421357E
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 09:49:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80D42213579
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 09:48:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726615AbgGCHtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 03:49:09 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:64764 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725891AbgGCHtI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 03:49:08 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1593762548; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=F8C4p45eDeF3kiFralAK4R76DZV1JAilKVV14GqSHNI=; b=HAVFroHy/v2d3xKWn/W4igauHmxDUv1YjGrnV9Bhr5nDp/g6s+5Ubw+dAadsCmVGv+MtJCxu
- fTo1y7lchOM/DW+1PP6KeNdgHLep39Q9N2RavoSNcsveQfOEOH/1DNvke4hEJ1SSy9blrTpZ
- gmpuXdr9xCD/JpMhHEHP2Nj/JWo=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n12.prod.us-west-2.postgun.com with SMTP id
- 5efee2e6117610c7ff3e9ec1 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 03 Jul 2020 07:48:54
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 8F366C433CB; Fri,  3 Jul 2020 07:48:54 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-173.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6199CC433CA;
-        Fri,  3 Jul 2020 07:48:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6199CC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rnayak@codeaurora.org
-From:   Rajendra Nayak <rnayak@codeaurora.org>
-To:     bjorn.andersson@linaro.org, linus.walleij@linaro.org,
-        agross@kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mkshah@codeaurora.org,
-        ilina@codeaurora.org, Rajendra Nayak <rnayak@codeaurora.org>
-Subject: [PATCH v2] pinctrl: qcom: sc7180: Make gpio28 non wakeup capable for google,lazor
-Date:   Fri,  3 Jul 2020 13:18:26 +0530
-Message-Id: <1593762506-32680-1-git-send-email-rnayak@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S1726327AbgGCHsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 03:48:40 -0400
+Received: from mga18.intel.com ([134.134.136.126]:2450 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725960AbgGCHsk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Jul 2020 03:48:40 -0400
+IronPort-SDR: 72bpS47KC4w4eJ6KvQpgDa2F4l345XgFGCDpPbgft85+ey5695GlxGFaVIdU4J1eh7p/9oV2wJ
+ kK/1zOZ62bCg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="134568689"
+X-IronPort-AV: E=Sophos;i="5.75,307,1589266800"; 
+   d="scan'208";a="134568689"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jul 2020 00:48:39 -0700
+IronPort-SDR: /j1tsSXjFR0vnNWDzjK0WLM+KOg4C7+DPHllx7KtgULIplnkR2OGbCb9dQTK4vqcDXMF3/YGbC
+ WJmYObUS+J1g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,307,1589266800"; 
+   d="scan'208";a="426219824"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga004.jf.intel.com with ESMTP; 03 Jul 2020 00:48:39 -0700
+Received: from [10.249.231.67] (abudanko-mobl.ccr.corp.intel.com [10.249.231.67])
+        by linux.intel.com (Postfix) with ESMTP id 71EF6580781;
+        Fri,  3 Jul 2020 00:48:34 -0700 (PDT)
+Subject: [PATCH v9 13/15] perf record: extend -D,--delay option with -1 value
+From:   Alexey Budankov <alexey.budankov@linux.intel.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>
+Cc:     Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <a4d5db4a-f25c-38dc-1c41-321a886cb122@linux.intel.com>
+Organization: Intel Corp.
+Message-ID: <f72b5558-11db-c550-2dba-b14eda8ab415@linux.intel.com>
+Date:   Fri, 3 Jul 2020 10:48:32 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <a4d5db4a-f25c-38dc-1c41-321a886cb122@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The PDC irqchip driver currently does not handle dual-edge interrupts,
-and we have google,lazor board with sc7180 designed to configure gpio28
-as a dual-edge interrupt. This interrupt is however not expected to be
-wakeup capable on this board, so an easy way to fix this, seems to be to
-make this gpio non wakeup capable and let TLMM handle it (which is capable
-of handling dual-edge irqs)
 
-To be able to do so only on this board, so other boards designed with
-this SoC can continue to use gpio28 as a wakeup capable one, make a
-copy of msm_gpio_wakeirq_map for lazor and remove gpio28 from the
-list.
+Extend -D,--delay option with -1 to start collection with events
+disabled to be enabled later by 'enable' command provided via
+control file descriptor.
 
-Reported-by: Jimmy Cheng-Yi Chiang <cychiang@google.com>
-Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
 ---
- drivers/pinctrl/qcom/pinctrl-sc7180.c | 23 ++++++++++++++++++++++-
- 1 file changed, 22 insertions(+), 1 deletion(-)
+ tools/perf/Documentation/perf-record.txt |  5 +++--
+ tools/perf/builtin-record.c              | 12 ++++++++----
+ tools/perf/builtin-trace.c               |  2 +-
+ tools/perf/util/record.h                 |  2 +-
+ 4 files changed, 13 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/pinctrl/qcom/pinctrl-sc7180.c b/drivers/pinctrl/qcom/pinctrl-sc7180.c
-index 1b6465a..0668933 100644
---- a/drivers/pinctrl/qcom/pinctrl-sc7180.c
-+++ b/drivers/pinctrl/qcom/pinctrl-sc7180.c
-@@ -1135,7 +1135,24 @@ static const struct msm_gpio_wakeirq_map sc7180_pdc_map[] = {
- 	{117, 114}, {118, 119},
- };
+diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
+index fa8a5fcd27ab..a84376605805 100644
+--- a/tools/perf/Documentation/perf-record.txt
++++ b/tools/perf/Documentation/perf-record.txt
+@@ -407,8 +407,9 @@ if combined with -a or -C options.
  
--static const struct msm_pinctrl_soc_data sc7180_pinctrl = {
-+/* Dropped gpio28 from the map for the google,lazor board */
-+static const struct msm_gpio_wakeirq_map sc7180_lazor_pdc_map[] = {
-+	{0, 40}, {3, 50}, {4, 42}, {5, 70}, {6, 41}, {9, 35},
-+	{10, 80}, {11, 51}, {16, 20}, {21, 55}, {22, 90}, {23, 21},
-+	{24, 61}, {26, 52}, {30, 100}, {31, 33}, {32, 81},
-+	{33, 62}, {34, 43}, {36, 91}, {37, 53}, {38, 63}, {39, 72},
-+	{41, 101}, {42, 7}, {43, 34}, {45, 73}, {47, 82}, {49, 17},
-+	{52, 109}, {53, 102}, {55, 92}, {56, 56}, {57, 57}, {58, 83},
-+	{59, 37}, {62, 110}, {63, 111}, {64, 74}, {65, 44}, {66, 93},
-+	{67, 58}, {68, 112}, {69, 32}, {70, 54}, {72, 59}, {73, 64},
-+	{74, 71}, {78, 31}, {82, 30}, {85, 103}, {86, 38}, {87, 39},
-+	{88, 45}, {89, 46}, {90, 47}, {91, 48}, {92, 60}, {93, 49},
-+	{94, 84}, {95, 94}, {98, 65}, {101, 66}, {104, 67}, {109, 104},
-+	{110, 68}, {113, 69}, {114, 113}, {115, 108}, {116, 121},
-+	{117, 114}, {118, 119},
-+};
-+
-+static struct msm_pinctrl_soc_data sc7180_pinctrl = {
- 	.pins = sc7180_pins,
- 	.npins = ARRAY_SIZE(sc7180_pins),
- 	.functions = sc7180_functions,
-@@ -1151,6 +1168,10 @@ static const struct msm_pinctrl_soc_data sc7180_pinctrl = {
+ -D::
+ --delay=::
+-After starting the program, wait msecs before measuring. This is useful to
+-filter out the startup phase of the program, which is often very different.
++After starting the program, wait msecs before measuring (-1: start with events
++disabled). This is useful to filter out the startup phase of the program, which
++is often very different.
  
- static int sc7180_pinctrl_probe(struct platform_device *pdev)
- {
-+	if (of_machine_is_compatible("google,lazor")) {
-+		sc7180_pinctrl.wakeirq_map = sc7180_lazor_pdc_map;
-+		sc7180_pinctrl.nwakeirq_map = ARRAY_SIZE(sc7180_lazor_pdc_map);
-+	}
- 	return msm_pinctrl_probe(pdev, &sc7180_pinctrl);
- }
+ -I::
+ --intr-regs::
+diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+index 19b1d5effb7a..cd1892c4844b 100644
+--- a/tools/perf/builtin-record.c
++++ b/tools/perf/builtin-record.c
+@@ -1749,8 +1749,12 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+ 	}
  
+ 	if (opts->initial_delay) {
+-		usleep(opts->initial_delay * USEC_PER_MSEC);
+-		evlist__enable(rec->evlist);
++		pr_info(EVLIST_DISABLED_MSG);
++		if (opts->initial_delay > 0) {
++			usleep(opts->initial_delay * USEC_PER_MSEC);
++			evlist__enable(rec->evlist);
++			pr_info(EVLIST_ENABLED_MSG);
++		}
+ 	}
+ 
+ 	trigger_ready(&auxtrace_snapshot_trigger);
+@@ -2462,8 +2466,8 @@ static struct option __record_options[] = {
+ 	OPT_CALLBACK('G', "cgroup", &record.evlist, "name",
+ 		     "monitor event in cgroup name only",
+ 		     parse_cgroups),
+-	OPT_UINTEGER('D', "delay", &record.opts.initial_delay,
+-		  "ms to wait before starting measurement after program start"),
++	OPT_INTEGER('D', "delay", &record.opts.initial_delay,
++		  "ms to wait before starting measurement after program start (-1: start with events disabled)"),
+ 	OPT_BOOLEAN(0, "kcore", &record.opts.kcore, "copy /proc/kcore"),
+ 	OPT_STRING('u', "uid", &record.opts.target.uid_str, "user",
+ 		   "user to profile"),
+diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
+index a333a9a64f27..bea461b6f937 100644
+--- a/tools/perf/builtin-trace.c
++++ b/tools/perf/builtin-trace.c
+@@ -4812,7 +4812,7 @@ int cmd_trace(int argc, const char **argv)
+ 			"per thread proc mmap processing timeout in ms"),
+ 	OPT_CALLBACK('G', "cgroup", &trace, "name", "monitor event in cgroup name only",
+ 		     trace__parse_cgroups),
+-	OPT_UINTEGER('D', "delay", &trace.opts.initial_delay,
++	OPT_INTEGER('D', "delay", &trace.opts.initial_delay,
+ 		     "ms to wait before starting measurement after program "
+ 		     "start"),
+ 	OPTS_EVSWITCH(&trace.evswitch),
+diff --git a/tools/perf/util/record.h b/tools/perf/util/record.h
+index 39d1de4b2a36..da138dcb4d34 100644
+--- a/tools/perf/util/record.h
++++ b/tools/perf/util/record.h
+@@ -61,7 +61,7 @@ struct record_opts {
+ 	const char    *auxtrace_snapshot_opts;
+ 	const char    *auxtrace_sample_opts;
+ 	bool	      sample_transaction;
+-	unsigned      initial_delay;
++	int	      initial_delay;
+ 	bool	      use_clockid;
+ 	clockid_t     clockid;
+ 	u64	      clockid_res_ns;
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+2.24.1
+
 
