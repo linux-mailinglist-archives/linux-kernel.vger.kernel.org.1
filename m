@@ -2,61 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02F6C2135CC
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 10:07:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0653C2135D1
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 10:07:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726283AbgGCIHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 04:07:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40928 "EHLO
+        id S1726734AbgGCIHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 04:07:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725891AbgGCIHj (ORCPT
+        with ESMTP id S1726287AbgGCIHm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 04:07:39 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1ED8C08C5C1
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Jul 2020 01:07:38 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id a6so31683506wrm.4
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Jul 2020 01:07:38 -0700 (PDT)
+        Fri, 3 Jul 2020 04:07:42 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8936DC08C5C1
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Jul 2020 01:07:41 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id b6so31663849wrs.11
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Jul 2020 01:07:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=c1TNzycKuUCG/Lpw8LCZ7YtLXjAvDFp2TFsGPUACq2s=;
-        b=s0Mz/Wdq8iqu3dPfohf7u7IAcdckwYBi+DxKcwrRE4abFYeLQqdL+pBXBr4ow5g9cq
-         3n8fkCLWPAbRJ/wTcif1Iv8lrF2TD7HwYVov6GvAh3CNLk39Sme8m26ckcqGhUnkn6Bn
-         VZF4v5m3IpLhAUmGAoBdpDq2DdhnkWO5x2+R/s4xz68MmnHXJ1yDy2Jb9U+wKO+SX+7g
-         SXMozQhnUH5lOON2n3f2IlmKZNCC16CkEW7qxClyJ6/zaUmnUJ/yBIM2fXaUru47gjyV
-         vwSuqsxqUeNitO+JKHdCp2N2h8vZ292KsnBh+XdsYxhz4KSX//OyJzLvbOzJMAGHP8mq
-         Oc+Q==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=S/mjHwVM8f0rq/Zev4sBdcwtGb3gRo37tSIraZ81Plk=;
+        b=irvooNni8ppF3zhYSkb/ma6Pn6BlcuWTZojl7IUEdTWT36NOdSsRD7FBBpzx1dKc8V
+         bHL83/EEdFaG4ln+dbldWAHt3tysxIGry6zJbQCDHs1ic6yUaWjCtwpVlIJOUr/DbeI4
+         gj7InTpRBK+jW4ZY8HJGoEnGI/+Gj5FkuUwqwgzImwxdUrHtDUpnRwhD6xW71WXwngaM
+         59H2nEh0/s3yO91j0l/BeQ5zenmqSKX2pxb3U0loZqupj8XUqoCzsl2D92mP9YhbLxzg
+         BZuRrPE3qsgAVBEDdaCGopVWl9gCfSC94SERSvCLnz5cQyp8uq6IrGiMaKVrQ+gz1pF7
+         MCIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=c1TNzycKuUCG/Lpw8LCZ7YtLXjAvDFp2TFsGPUACq2s=;
-        b=jZRhPFSRcrlQP+915Pql6rWkrp8YdDRgt26DFoEAiWAvpyApkGWTCtSe3SdXl3arMq
-         I2o2t42djBloIFzATupxsb9W1Ol1EMOWRL041cytoQy3YhHZdql9amczPdst1E0vqaVG
-         14QFfyY/HVeMhpbnXH6YqcLW5kjIXaT17BMrVBnzg0KhtnQtKmMKnMgqhBaVVaUEjx0/
-         TL9g6pNm5SDPVZXhFVdQmT0VNWutXrmge4fmkjxQymJ6DRNLTF/yqmlZBS726lBlVJ8r
-         8EnPKpoBxhnB2E0ObO4Tjhr7aLnTSNVLHCNVC5vRbTJZRzsWuP4lYdZkvxpiSi9LzCCp
-         lWYw==
-X-Gm-Message-State: AOAM532rviXOfLg+o+F0mdgIMWfJMYG8ASHazkUVmUZAcj1cLUGfsFPU
-        jkn6z4PMhQbBSS1ONA+EzIxlUg==
-X-Google-Smtp-Source: ABdhPJyg7KEBrWbXbNhkwuxhamaT+87wYHYXZdWBW6ZFOSDlt0fJRgbFVLhpqyvx5pqYzjUvi5GUlQ==
-X-Received: by 2002:adf:e40e:: with SMTP id g14mr38512820wrm.271.1593763657349;
-        Fri, 03 Jul 2020 01:07:37 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=S/mjHwVM8f0rq/Zev4sBdcwtGb3gRo37tSIraZ81Plk=;
+        b=iryGK2sZuZfnWnBDCcMuqeYZq6Zy3PDT54IB+70O5yuFCerIgLGWAAfQKdbPME7hRa
+         NKIjGNQZBYqmK3peDXJW+QwGj0v0/r/VvTFR2aBzQVUURAnyM19gcD8kBX1bLcdXtQnI
+         xrvR1Gw4GrTmn0MQFT0ulVqBbX0naD6D96bGcW/f6RDKDDoZHXRA66LAtz39LoNOT90H
+         WWxWI3UO6gDCHgaO9Af1tzcB5ZWnLlsxLuV+hRr1JqP/9C5E+j9AeeM6fzsbOjBCbr55
+         qqSai9KwQXk2U/s4+2WPwwVeM9DNkn7E0L7CYZj7m8/ihgn9tiQcKtCQPHon9SUJ0Vu7
+         wu4g==
+X-Gm-Message-State: AOAM532fAELrbHT8RezgG9cR1duO29B/27syxD9wmX0P6WzRyTINFBGt
+        FFGWGdZdLacAUh41U/nxF3aKzw==
+X-Google-Smtp-Source: ABdhPJxJJLudOK1rkxvKjKdG1LD8N7XgXA9RJ1vkVwlFVeqM2UG9fzwUDJOU18lmeGymV5QC28y1RQ==
+X-Received: by 2002:adf:e74e:: with SMTP id c14mr37517057wrn.143.1593763658916;
+        Fri, 03 Jul 2020 01:07:38 -0700 (PDT)
 Received: from bender.baylibre.local ([2a01:e35:2ec0:82b0:6959:e617:6562:cabf])
-        by smtp.gmail.com with ESMTPSA id 1sm12682403wmf.0.2020.07.03.01.07.36
+        by smtp.gmail.com with ESMTPSA id 1sm12682403wmf.0.2020.07.03.01.07.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Jul 2020 01:07:36 -0700 (PDT)
+        Fri, 03 Jul 2020 01:07:38 -0700 (PDT)
 From:   Neil Armstrong <narmstrong@baylibre.com>
 To:     daniel@ffwll.ch, dri-devel@lists.freedesktop.org
 Cc:     jianxin.pan@amlogic.com, Neil Armstrong <narmstrong@baylibre.com>,
         linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v9 0/6] drm/meson: add support for Amlogic Video FBC
-Date:   Fri,  3 Jul 2020 10:07:22 +0200
-Message-Id: <20200703080728.25207-1-narmstrong@baylibre.com>
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Kevin Hilman <khilman@baylibre.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Subject: [PATCH v9 1/6] drm/fourcc: Add modifier definitions for describing Amlogic Video Framebuffer Compression
+Date:   Fri,  3 Jul 2020 10:07:23 +0200
+Message-Id: <20200703080728.25207-2-narmstrong@baylibre.com>
 X-Mailer: git-send-email 2.22.0
+In-Reply-To: <20200703080728.25207-1-narmstrong@baylibre.com>
+References: <20200703080728.25207-1-narmstrong@baylibre.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -79,91 +83,132 @@ per component, YCbCr 420, single plane :
 This modifier will be notably added to DMA-BUF frames imported from the V4L2
 Amlogic VDEC decoder.
 
-At least two layout are supported :
-- Basic: composed of a body and a header
-- Scatter: the buffer is filled with a IOMMU scatter table referring
-  to the encoder current memory layout. This mode if more efficient in terms
-  of memory allocation but frames are not dumpable and only valid during until
-  the buffer is freed and back in control of the encoder
+This introduces the basic layout composed of:
+- a body content organized in 64x32 superblocks with 4096 bytes per
+  superblock in default mode.
+- a 32 bytes per 128x64 header block
 
-At least two options are supported :
-- Memory saving: when the pixel bpp is 8b, the size of the superblock can
-  be reduced, thus saving memory.
+This layout is tranferrable between Amlogic SoCs supporting this modifier.
 
-This serie adds the missing register, updated the FBC decoder registers
-content to be committed by the crtc code.
+The Memory Saving option exist changing the layout superblock size to save memory when
+using 8bit components pixels size.
 
-The Amlogic FBC has been tested with compressed content from the Amlogic
-HW VP9 decoder on S905X (GXL), S905D2 (G12A) and S905X3 (SM1) in 8bit
-(Scatter+Mem Saving on G12A/SM1, Mem Saving on GXL) and 10bit
-(Scatter on G12A/SM1, default on GXL).
+Finally is also adds the Scatter Memory layout, meaning the header contains IOMMU
+references to the compressed frames content to optimize memory access
+and layout.
 
-It's expected to work as-is on GXM and G12B SoCs.
+In this mode, only the header memory address is needed, thus the content
+memory organization is tied to the current producer execution and cannot
+be saved/dumped neither transferrable between Amlogic SoCs supporting this
+modifier.
 
-Changes since v8 at [8]:
-- added clarification of scatter mmap behavior as suggested by daniel
-- added ack and review tags
+Tested-by: Kevin Hilman <khilman@baylibre.com>
+Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Reviewed-by: Kevin Hilman <khilman@baylibre.com>
+---
+ include/uapi/drm/drm_fourcc.h | 81 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 81 insertions(+)
 
-Changes since v7 at [7]:
-- rebased on drm-misc-next
-- removed spurious DEBUG in drivers/gpu/drm/meson/meson_overlay.c
-
-Changes since v6 at [6]:
-- rebased on drm-misc-next (after drm-misc-next-2020-05-14)
-- updated patch 1 commit log for completion
-
-Changes since v5 at [5]:
-- merged all fourcc patches in 1
-- fixed fourcc definition to have only a single DRM_MOD_
-- fixed 2 checkpatch issues
-
-Changes since v4 at [4]:
-- added layout and options mask
-- cosmetic changes in fourcc.h
-- fixed mod check using the masks
-- fixed plane apply using the masks
-
-Changes since v3 at [3]:
-- added dropped fourcc patch for scatter
-- fixed build of last patch
-
-Changes since v2 at [2]:
-- Added "BASIC" layout and moved the SCATTER mode as layout, making
-  BASIC and SCATTER layout exclusives
-- Moved the Memory Saving at bit 8 for options fields
-- Split fourcc and overlay patch to introduce basic, mem saving and then
-  scatter in separate patches
-- Added comment about "transferability" of the buffers
-
-Changes since v1 at [1]:
-- s/VD1_AXI_SEL_AFB/VD1_AXI_SEL_AFBC/ into meson_registers.h
-
-[1] https://patchwork.freedesktop.org/series/73722/#rev1
-[2] https://patchwork.freedesktop.org/series/73722/#rev2
-[3] https://patchwork.freedesktop.org/series/73722/#rev3
-[4] https://patchwork.freedesktop.org/series/73722/#rev4
-[5] https://patchwork.freedesktop.org/series/73722/#rev5
-[6] https://patchwork.freedesktop.org/series/73722/#rev6
-[7] https://patchwork.freedesktop.org/series/73722/#rev7
-[7] https://patchwork.freedesktop.org/series/73722/#rev8
-
-Neil Armstrong (6):
-  drm/fourcc: Add modifier definitions for describing Amlogic Video
-    Framebuffer Compression
-  drm/meson: add Amlogic Video FBC registers
-  drm/meson: overlay: setup overlay for Amlogic FBC
-  drm/meson: overlay: setup overlay for Amlogic FBC Memory Saving mode
-  drm/meson: overlay: setup overlay for Amlogic FBC Scatter Memory
-    layout
-  drm/meson: crtc: handle commit of Amlogic FBC frames
-
- drivers/gpu/drm/meson/meson_crtc.c      | 118 +++++++---
- drivers/gpu/drm/meson/meson_drv.h       |  16 ++
- drivers/gpu/drm/meson/meson_overlay.c   | 289 +++++++++++++++++++++++-
- drivers/gpu/drm/meson/meson_registers.h |  22 ++
- include/uapi/drm/drm_fourcc.h           |  81 +++++++
- 5 files changed, 488 insertions(+), 38 deletions(-)
-
+diff --git a/include/uapi/drm/drm_fourcc.h b/include/uapi/drm/drm_fourcc.h
+index 993c1b342315..cbf92fdf2712 100644
+--- a/include/uapi/drm/drm_fourcc.h
++++ b/include/uapi/drm/drm_fourcc.h
+@@ -331,6 +331,7 @@ extern "C" {
+ #define DRM_FORMAT_MOD_VENDOR_BROADCOM 0x07
+ #define DRM_FORMAT_MOD_VENDOR_ARM     0x08
+ #define DRM_FORMAT_MOD_VENDOR_ALLWINNER 0x09
++#define DRM_FORMAT_MOD_VENDOR_AMLOGIC 0x0a
+ 
+ /* add more to the end as needed */
+ 
+@@ -950,6 +951,86 @@ drm_fourcc_canonicalize_nvidia_format_mod(__u64 modifier)
+  */
+ #define DRM_FORMAT_MOD_ALLWINNER_TILED fourcc_mod_code(ALLWINNER, 1)
+ 
++/*
++ * Amlogic Video Framebuffer Compression modifiers
++ *
++ * Amlogic uses a proprietary lossless image compression protocol and format
++ * for their hardware video codec accelerators, either video decoders or
++ * video input encoders.
++ *
++ * It considerably reduces memory bandwidth while writing and reading
++ * frames in memory.
++ *
++ * The underlying storage is considered to be 3 components, 8bit or 10-bit
++ * per component YCbCr 420, single plane :
++ * - DRM_FORMAT_YUV420_8BIT
++ * - DRM_FORMAT_YUV420_10BIT
++ *
++ * The first 8 bits of the mode defines the layout, then the following 8 bits
++ * defines the options changing the layout.
++ *
++ * Not all combinations are valid, and different SoCs may support different
++ * combinations of layout and options.
++ */
++#define __fourcc_mod_amlogic_layout_mask 0xf
++#define __fourcc_mod_amlogic_options_shift 8
++#define __fourcc_mod_amlogic_options_mask 0xf
++
++#define DRM_FORMAT_MOD_AMLOGIC_FBC(__layout, __options) \
++	fourcc_mod_code(AMLOGIC, \
++			((__layout) & __fourcc_mod_amlogic_layout_mask) | \
++			((__options) & __fourcc_mod_amlogic_options_mask \
++			 << __fourcc_mod_amlogic_options_shift))
++
++/* Amlogic FBC Layouts */
++
++/*
++ * Amlogic FBC Basic Layout
++ *
++ * The basic layout is composed of:
++ * - a body content organized in 64x32 superblocks with 4096 bytes per
++ *   superblock in default mode.
++ * - a 32 bytes per 128x64 header block
++ *
++ * This layout is transferrable between Amlogic SoCs supporting this modifier.
++ */
++#define AMLOGIC_FBC_LAYOUT_BASIC		(1ULL)
++
++/*
++ * Amlogic FBC Scatter Memory layout
++ *
++ * Indicates the header contains IOMMU references to the compressed
++ * frames content to optimize memory access and layout.
++ *
++ * In this mode, only the header memory address is needed, thus the
++ * content memory organization is tied to the current producer
++ * execution and cannot be saved/dumped neither transferrable between
++ * Amlogic SoCs supporting this modifier.
++ *
++ * Due to the nature of the layout, these buffers are not expected to
++ * be accessible by the user-space clients, but only accessible by the
++ * hardware producers and consumers.
++ *
++ * The user-space clients should expect a failure while trying to mmap
++ * the DMA-BUF handle returned by the producer.
++ */
++#define AMLOGIC_FBC_LAYOUT_SCATTER		(2ULL)
++
++/* Amlogic FBC Layout Options Bit Mask */
++
++/*
++ * Amlogic FBC Memory Saving mode
++ *
++ * Indicates the storage is packed when pixel size is multiple of word
++ * boudaries, i.e. 8bit should be stored in this mode to save allocation
++ * memory.
++ *
++ * This mode reduces body layout to 3072 bytes per 64x32 superblock with
++ * the basic layout and 3200 bytes per 64x32 superblock combined with
++ * the scatter layout.
++ */
++#define AMLOGIC_FBC_OPTION_MEM_SAVING		(1ULL << 0)
++
+ #if defined(__cplusplus)
+ }
+ #endif
 -- 
 2.22.0
 
