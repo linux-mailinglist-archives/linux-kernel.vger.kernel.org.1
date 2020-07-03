@@ -2,86 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B45942136F8
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 11:02:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E52AF21374F
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 11:09:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726035AbgGCJCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 05:02:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49392 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725648AbgGCJCg (ORCPT
+        id S1726427AbgGCJJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 05:09:22 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:57195 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725779AbgGCJJT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 05:02:36 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EA74C08C5C1
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Jul 2020 02:02:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=TR87TYbOJPVddeAI363WO0ZDHvRAdSQLPveW9L3ReRs=; b=EmuP6JyoP5AddLYU++0xWDDucU
-        ntbrGzdXGCS+xNvFO2WA2oLfnCSWM59oEAJdgE8sCJEIrspjrt4r3m0NOB6EzSXlGA+dAmzuzodmM
-        Risqb2jO4BoCCPefwNMFL32Cx2Q/ZNPsIYm96WFV/JEiLyYIVt3iHWwDr6dKMync+U5njxwb+/oXL
-        m1ixu1aMg4OZfZMuN1FoM4YLX966QDH0W0RT6HN8/H5HlsUh3BYBc/aQySqYc/9Fiypp9liLJjhYS
-        k+ujxk6zguXFzNNZyIY0wjdELxtX6OWT4UPVaPK3jQN3bLTKAkwXfMfGsVbLMv/CESw4BFRzMlw/x
-        elNKp5qg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jrHaY-0003ar-1J; Fri, 03 Jul 2020 09:02:30 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 318E8301124;
-        Fri,  3 Jul 2020 11:02:26 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 18CAB2010865A; Fri,  3 Jul 2020 11:02:26 +0200 (CEST)
-Date:   Fri, 3 Jul 2020 11:02:26 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Dave Jones <davej@codemonkey.org.uk>,
-        Linux Kernel <linux-kernel@vger.kernel.org>, mingo@kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: weird loadavg on idle machine post 5.7
-Message-ID: <20200703090226.GV4800@hirez.programming.kicks-ass.net>
-References: <20200702171548.GA11813@codemonkey.org.uk>
- <20200702213627.GF3183@techsingularity.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200702213627.GF3183@techsingularity.net>
+        Fri, 3 Jul 2020 05:09:19 -0400
+X-Greylist: delayed 364 seconds by postgrey-1.27 at vger.kernel.org; Fri, 03 Jul 2020 05:09:15 EDT
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 03 Jul 2020 02:03:15 -0700
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 03 Jul 2020 02:03:13 -0700
+Received: from gokulsri-linux.qualcomm.com ([10.201.2.207])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 03 Jul 2020 14:32:53 +0530
+Received: by gokulsri-linux.qualcomm.com (Postfix, from userid 432570)
+        id 8113E21691; Fri,  3 Jul 2020 14:32:52 +0530 (IST)
+From:   Gokul Sriram Palanisamy <gokulsri@codeaurora.org>
+To:     gokulsri@codeaurora.org, sboyd@kernel.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, david.brown@linaro.org,
+        devicetree@vger.kernel.org, jassisinghbrar@gmail.com,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        mark.rutland@arm.com, mturquette@baylibre.com, ohad@wizery.com,
+        robh+dt@kernel.org, sricharan@codeaurora.org,
+        nprakash@codeaurora.org
+Subject: [PATCH V6 00/10] remoteproc: qcom: q6v5-wcss: Add support for secure pil
+Date:   Fri,  3 Jul 2020 14:32:42 +0530
+Message-Id: <1593766972-29101-1-git-send-email-gokulsri@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 02, 2020 at 10:36:27PM +0100, Mel Gorman wrote:
+IPQ8074 needs support for secure pil as well.
+Also, currently only unified firmware is supported.
+IPQ8074 supports split firmware for q6 and m3, so
+adding support for that.
 
-> > commit c6e7bd7afaeb3af55ffac122828035f1c01d1d7b (refs/bisect/bad)
-> > Author: Peter Zijlstra <peterz@infradead.org>
+This series is based on Govind's
+"[v7] Add non PAS wcss Q6 support for QCS404"
 
-> Peter, I'm not supremely confident about this but could it be because
-> "p->sched_contributes_to_load = !!task_contributes_to_load(p)" potentially
-> happens while a task is still being dequeued? In the final stages of a
-> task switch we have
-> 
->         prev_state = prev->state;
->         vtime_task_switch(prev);
->         perf_event_task_sched_in(prev, current);
->         finish_task(prev);
-> 
-> finish_task is when p->on_cpu is cleared after the state is updated.
-> With the patch, we potentially update sched_contributes_to_load while
-> p->state is transient so if the check below is true and ttwu_queue_wakelist
-> is used then sched_contributes_to_load was based on a transient value
-> and potentially wrong.
+changes since v5:
+ - Rebased on top of linux-5.8-rc3
 
-I'm not seeing it. Once a task hits schedule(), p->state doesn't change,
-except through wakeup.
+changes since v4:
+ - Rebased patch 8
 
-And while dequeue depends on p->state, it doesn't change it.
+changes since v3:
+ - In patch 10, Added release_firmware to free up
+   memory requested for m3 firmware.
 
-At this point in ttwu() we know p->on_rq == 0, which implies dequeue has
-started, which means we've (at least) stopped executing the task -- we
-started or finished schedule().
+changes since v2:
+ - In patch 5, Added a driver data 'bcr_reset_required'
+   to select if bcr reset is required
+ - In patch 10, Removed syscon implementation and moved
+   to mailbox framework to access APCS IPC
 
-Let me stare at this more...
+changes since v1:
+ - In patch 10, Addressed minor review comments.
+
+Gokul Sriram Palanisamy (10):
+  remoteproc: qcom: Add PRNG proxy clock
+  remoteproc: qcom: Add secure PIL support
+  remoteproc: qcom: Add support for split q6 + m3 wlan firmware
+  remoteproc: qcom: Add ssr subdevice identifier
+  remoteproc: qcom: Update regmap offsets for halt register
+  dt-bindings: clock: qcom: Add reset for WCSSAON
+  clk: qcom: Add WCSSAON reset
+  dt-bindings: firmware: qcom: Add compatible for IPQ8074 SoC
+  arm64: dts: Add support for scm on IPQ8074 SoCs
+  arm64: dts: qcom: Enable Q6v5 WCSS for ipq8074 SoC
+
+ .../devicetree/bindings/firmware/qcom,scm.txt      |   1 +
+ arch/arm64/boot/dts/qcom/ipq8074.dtsi              | 127 +++++++++++++++++
+ drivers/clk/qcom/gcc-ipq8074.c                     |   1 +
+ drivers/remoteproc/qcom_q6v5_wcss.c                | 157 +++++++++++++++++----
+ include/dt-bindings/clock/qcom,gcc-ipq8074.h       |   1 +
+ 5 files changed, 258 insertions(+), 29 deletions(-)
+
+-- 
+2.7.4
+
