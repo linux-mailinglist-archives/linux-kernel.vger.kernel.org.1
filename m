@@ -2,226 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A0362136CC
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 10:58:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB3892136C8
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 10:58:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726416AbgGCI6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 04:58:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726347AbgGCI6F (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 04:58:05 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF847C08C5C1
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Jul 2020 01:58:04 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id h22so13737440pjf.1
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Jul 2020 01:58:04 -0700 (PDT)
+        id S1726236AbgGCI56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 04:57:58 -0400
+Received: from mail-eopbgr700060.outbound.protection.outlook.com ([40.107.70.60]:45553
+        "EHLO NAM04-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725648AbgGCI56 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Jul 2020 04:57:58 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UABVl9GBD95oL03GDxYME/Uuf9awABjhjp7OPiqGPyQjKKzKL6hgZqXpm4p6AS8KUVweOeCQNoQWWUnxCddi3gHq5ZcRXt2YN4SlF3A810QY5KPq40y8k0Uzte1Ny52v6orm/vPNiQJ6FkJPq5hqnQ4K0Qvki6MMpjnPx71PRwRqeErOf93lm6JHj8H1oL0AORFex0Y7gzTTZqmDsqhfCSZlk9i/EWYk/ww5iReupeAn+EMRKJ4nzuP79ZOh+v1ZaNvS7tZg+nsB1R6aEw3IYUraoskfoub5a+9hqA37domb0ZF8vKjhSJ1HeON03cngzRMQuX2DS4p7yB/pWJG10w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JD9dM/lBndTRjz54gPVBIEYWLFiE2W5vOPD4ByKWNSQ=;
+ b=DJRsoFvfWGfMT9ISmzYztutP4Q1pLPG0aES5yHEAzC56uEZyXX3eE+9q9KKlxCB0QyBMVggRMwm4WT0k0lIgYOQOKPi1ESEf3BlUexSJxhjc1kVSHJgw+hO8aXqAqiPY/5GAc8RFW8h3uAHeZaSPlECuH5W854dQDxVm45jnNifsQjX+nW0qFHcwH8ZDCHlGFODPege8IlPq5NXk00oSndQyEfIHcqGIn7d4dad47lFZ6tPMEA2m0LtsuUF0sGmVpCa6tGQqNq7FT64MdPApGXRNs8rCIRZOhPEd1+Nu5eOBYfa3Zm4UX4XUu4fQzJM35/WOuwgMfYKqQZw30HGbaA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=k5L8NObQEzyS+/JLPwFcEH2ZHcXncJHg+hMC0oanQIM=;
-        b=lrQzB7Ekjzc0cdr3gHo1HfR/yMcchGFdyAFKx9DU60Rc5yHUbn0Lx3CAUA8k4VwGGs
-         uTHooG0TVm1cP47El3ohXhymEdIf3zhq29247azDfApabPx5kf7GxT44LhiQfiKMc4w4
-         58qqA9yCZq19OkKXtzdkOAjsL2ONOLlfj4ICN+qC2ac+0ZZlmtPrwNZJxYrgs/2tTzJy
-         oV0lT53Nlfpzy1CBOpS9dh/MjyEQfaM4evClnqDtQoz0lxy2lDO74Af9bDJ1B+h8rDvU
-         32v7+PN8/vGHmoOk7uLDkT/OFK5+EGuUmZ6e3YX5dI+nSnh86GoXylI/DVhLK+ViFyEI
-         SnHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=k5L8NObQEzyS+/JLPwFcEH2ZHcXncJHg+hMC0oanQIM=;
-        b=YM4HWO1ia8fUCrDCVetmh3UmkTVJ+II0LI7QSkvYnRNShC1Bfam1/OtDW/ET2OUQmz
-         1eOmrlSBcGvCVtU62VMFV+UCETqzLZRoVSY956hKrNcFXeY4VNwuQa+K9yiHx2na24Qy
-         wfk6eAOmnDy1rR1DzQuC3/UL4Q7vXM+iS/Wtq53j1v2GQPMlgdB8PgrCW/Z0t6iZGCFf
-         3M1br1M99L9j0opWFkMz2v/Hivqno0WMWgvZjDs9DVQBqbhHnrvJWST8ZpnCA6Od+4d7
-         KRoUKzBB8U+nL3RhVjQQQR+cPCC4aXgC8juX+ihh4KV7n20/b8pCdmVGovrsjocbPAd3
-         dQeA==
-X-Gm-Message-State: AOAM531UOX5i9HNO4j/5Z4M9oew5p9Ln9ELUHq71yWajtlQSEZWHrLMa
-        FF5oqN1+ANNjUYm1FHLcNl9LqQ==
-X-Google-Smtp-Source: ABdhPJw5vxhyVn4tFLalV8PwqFsfed5R2PePhZXSqwfXgfj6LHXDeCv2va1ofYEgUSg6CR85YmXbtw==
-X-Received: by 2002:a17:902:9042:: with SMTP id w2mr20339410plz.8.1593766684385;
-        Fri, 03 Jul 2020 01:58:04 -0700 (PDT)
-Received: from hsinchu02.internal.sifive.com (114-34-229-221.HINET-IP.hinet.net. [114.34.229.221])
-        by smtp.gmail.com with ESMTPSA id l23sm2126287pjy.45.2020.07.03.01.58.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Jul 2020 01:58:04 -0700 (PDT)
-From:   Zong Li <zong.li@sifive.com>
-To:     palmer@dabbelt.com, paul.walmsley@sifive.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Zong Li <zong.li@sifive.com>
-Subject: [PATCH 3/3] riscv: Add cache information in AUX vector
-Date:   Fri,  3 Jul 2020 16:57:55 +0800
-Message-Id: <aa7675dda78d3d595617d8d56b7fdd7f279a884f.1593766028.git.zong.li@sifive.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <cover.1593766028.git.zong.li@sifive.com>
-References: <cover.1593766028.git.zong.li@sifive.com>
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JD9dM/lBndTRjz54gPVBIEYWLFiE2W5vOPD4ByKWNSQ=;
+ b=WkybO6WkshTnaZEesZ/3KQs241MptkSG7YakTkU4VTWAloq5y4O80BPXmFQ6ivj5HXgmCFmsmbRPNwPEjYXhwk4o2UHl/9FRIdJo8T8I3Js3ei5dOwgNtfqU5E1Z3AyuW+gXLw1okAaFyf52OJknFOd60r3EgpehTcGq2M7Kx5Y=
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com (2603:10b6:a02:c4::17)
+ by BY5PR11MB4260.namprd11.prod.outlook.com (2603:10b6:a03:1ba::30) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.23; Fri, 3 Jul
+ 2020 08:57:55 +0000
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::3d7d:dfc1:b35d:63d1]) by BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::3d7d:dfc1:b35d:63d1%7]) with mapi id 15.20.3153.027; Fri, 3 Jul 2020
+ 08:57:55 +0000
+From:   "Zhang, Qiang" <Qiang.Zhang@windriver.com>
+To:     Petr Mladek <pmladek@suse.com>
+CC:     "ben.dooks@codethink.co.uk" <ben.dooks@codethink.co.uk>,
+        "bfields@redhat.com" <bfields@redhat.com>,
+        "cl@rock-chips.com" <cl@rock-chips.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "tj@kernel.org" <tj@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: =?gb2312?B?u9i4tDogW1BBVENIXSBrdGhyZWFkOiBEb24ndCBjYW5jZWwgYSB3b3JrIHRo?=
+ =?gb2312?Q?at_is_being_cancelled?=
+Thread-Topic: [PATCH] kthread: Don't cancel a work that is being cancelled
+Thread-Index: AQHWUQOAJajxNwV5lUikAJdXb6GaDaj1dQMAgAAXGwk=
+Date:   Fri, 3 Jul 2020 08:57:55 +0000
+Message-ID: <BYAPR11MB2632739E5D4E396955CE29CBFF6A0@BYAPR11MB2632.namprd11.prod.outlook.com>
+References: <20200702044324.32927-1-qiang.zhang@windriver.com>,<20200703072818.GC11587@alley>
+In-Reply-To: <20200703072818.GC11587@alley>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: suse.com; dkim=none (message not signed)
+ header.d=none;suse.com; dmarc=none action=none header.from=windriver.com;
+x-originating-ip: [60.247.85.82]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 443d7497-5eea-48cd-2928-08d81f2f2d16
+x-ms-traffictypediagnostic: BY5PR11MB4260:
+x-microsoft-antispam-prvs: <BY5PR11MB4260A65374FE768E53701A1CFF6A0@BY5PR11MB4260.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-forefront-prvs: 045315E1EE
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: XpmLX47Pq55SaPwqaJ9oFdSafulWZ/DXmQhSoxuikaZjYRU7EdPjf1cj1GvJTYudz2rPs/pm/jmKhqfOyjXB1ni9PL9JuZDswQIb0A2kt6cLY7UwCHZ6TTWA6ix5i8DpkY/5NIxeN6LGG0UbthB6AEI3W8uZpOuGc2E8TsARz/xjefZ4cYLoVvKrRN2zsGDR7PRzToVfpQzWwjccUa270dvrTOSlsuBodpTDXXAu2Jr1T4mdOgL1g2d/mgqbLDd/dWDreSpd4pqrjnjltupSlyHE01m7tjsKHpgTPLVfJH/sfVMwmt8+MANZ766qXq0KNRSmT19CQZg4DoA0FBPRLQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2632.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(376002)(136003)(346002)(366004)(396003)(39850400004)(86362001)(54906003)(55016002)(316002)(4326008)(33656002)(71200400001)(9686003)(186003)(7696005)(76116006)(91956017)(26005)(8936002)(66556008)(66476007)(64756008)(52536014)(66446008)(6506007)(478600001)(5660300002)(6916009)(66946007)(2906002)(224303003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: lm+3kFHEtzxALImFFJZwXyj/JxpROysObGFdTiRCpJsO9tcnF5wvRlUy8AtUrACbi9a+Z/aHenD66bbyFnPLDMviQnT6xLL5sJ8YbqFpkukEBulXfAx6wHBJsm+iWoKMzytzP5ELTqbMH1qQdiUXjC2twNFHUdlCwgKm7VvYXZ1/EF2c71KPdBsUvz6jnv6r/eYeqvWBLzXtQbFrXhR8t5bLl5M48N0wXJ3dgouDIorSES+UbVp9NuoH4NqMyEwnncex51lVjzltTG7JMBibAFSDXUIjK6cbkr+f3lBA6vYN1txxTJwCHksKbFX9kBjDh+4lt85XQ2gPUXIS+rmK1VhsPrvTjzEG1faUfyav0RYo/pSVzjPReNE6lePqAwVTENVny209hH/UMxgieVRBJPlT8jMeCVe4dtlWz/mq553Bjpt7BVY0OonUOz84i7ngVmDy/JCAGXqYQPpzAskVIEbMTgIR9n6pyszKRJSUxEQ=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2632.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 443d7497-5eea-48cd-2928-08d81f2f2d16
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Jul 2020 08:57:55.1986
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: hUi7Xrsc2XFMR7cxmMLPIIs4mdUnJ5ra9DhzdjpYz5roimRpVJ2qM0bObRzymcj1CYy00nZjUOHgyzlhCx9kt9foU9Y0F6USCC+h8iAOarg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4260
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are no standard CSR registers to provide cache information, the
-way for RISC-V is to get this information from DT. Currently, AT_L1I_X,
-AT_L1D_X and AT_L2_X are present in glibc header, and sysconf syscall
-could use them to get information of cache through AUX vector.
-
-The result of 'getconf -a' as follows:
-LEVEL1_ICACHE_SIZE                 32768
-LEVEL1_ICACHE_ASSOC                8
-LEVEL1_ICACHE_LINESIZE             64
-LEVEL1_DCACHE_SIZE                 32768
-LEVEL1_DCACHE_ASSOC                8
-LEVEL1_DCACHE_LINESIZE             64
-LEVEL2_CACHE_SIZE                  2097152
-LEVEL2_CACHE_ASSOC                 32
-LEVEL2_CACHE_LINESIZE              64
-
-Signed-off-by: Zong Li <zong.li@sifive.com>
----
- arch/riscv/include/asm/cacheinfo.h   | 14 ++++++++++++
- arch/riscv/include/asm/elf.h         | 13 +++++++++++
- arch/riscv/include/uapi/asm/auxvec.h | 23 ++++++++++++++++++-
- arch/riscv/kernel/cacheinfo.c        | 33 +++++++++++++++++++++++++++-
- 4 files changed, 81 insertions(+), 2 deletions(-)
- create mode 100644 arch/riscv/include/asm/cacheinfo.h
-
-diff --git a/arch/riscv/include/asm/cacheinfo.h b/arch/riscv/include/asm/cacheinfo.h
-new file mode 100644
-index 000000000000..ba179cd198b9
---- /dev/null
-+++ b/arch/riscv/include/asm/cacheinfo.h
-@@ -0,0 +1,14 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Copyright (C) 2020 SiFive
-+ */
-+
-+#ifndef _ASM_RISCV_CACHEINFO_H
-+#define _ASM_RISCV_CACHEINFO_H
-+
-+#include <linux/cacheinfo.h>
-+
-+uintptr_t get_cache_size(u32 level, enum cache_type type);
-+uintptr_t get_cache_geometry(u32 level, enum cache_type type);
-+
-+#endif /* _ASM_RISCV_CACHEINFO_H */
-diff --git a/arch/riscv/include/asm/elf.h b/arch/riscv/include/asm/elf.h
-index d83a4efd052b..5c725e1df58b 100644
---- a/arch/riscv/include/asm/elf.h
-+++ b/arch/riscv/include/asm/elf.h
-@@ -11,6 +11,7 @@
- #include <uapi/asm/elf.h>
- #include <asm/auxvec.h>
- #include <asm/byteorder.h>
-+#include <asm/cacheinfo.h>
- 
- /*
-  * These are used to set parameters in the core dumps.
-@@ -61,6 +62,18 @@ extern unsigned long elf_hwcap;
- do {								\
- 	NEW_AUX_ENT(AT_SYSINFO_EHDR,				\
- 		(elf_addr_t)current->mm->context.vdso);		\
-+	NEW_AUX_ENT(AT_L1I_CACHESIZE,				\
-+		get_cache_size(1, CACHE_TYPE_INST));		\
-+	NEW_AUX_ENT(AT_L1I_CACHEGEOMETRY,			\
-+		get_cache_geometry(1, CACHE_TYPE_INST));	\
-+	NEW_AUX_ENT(AT_L1D_CACHESIZE,				\
-+		get_cache_size(1, CACHE_TYPE_DATA));		\
-+	NEW_AUX_ENT(AT_L1D_CACHEGEOMETRY,			\
-+		get_cache_geometry(1, CACHE_TYPE_DATA));	\
-+	NEW_AUX_ENT(AT_L2_CACHESIZE,				\
-+		get_cache_size(2, CACHE_TYPE_UNIFIED));		\
-+	NEW_AUX_ENT(AT_L2_CACHEGEOMETRY,			\
-+		get_cache_geometry(2, CACHE_TYPE_UNIFIED));	\
- } while (0)
- #define ARCH_HAS_SETUP_ADDITIONAL_PAGES
- struct linux_binprm;
-diff --git a/arch/riscv/include/uapi/asm/auxvec.h b/arch/riscv/include/uapi/asm/auxvec.h
-index 22e0ae888406..32c73ba1d531 100644
---- a/arch/riscv/include/uapi/asm/auxvec.h
-+++ b/arch/riscv/include/uapi/asm/auxvec.h
-@@ -10,7 +10,28 @@
- /* vDSO location */
- #define AT_SYSINFO_EHDR 33
- 
-+/*
-+ * The set of entries below represent more extensive information
-+ * about the caches, in the form of two entry per cache type,
-+ * one entry containing the cache size in bytes, and the other
-+ * containing the cache line size in bytes in the bottom 16 bits
-+ * and the cache associativity in the next 16 bits.
-+ *
-+ * The associativity is such that if N is the 16-bit value, the
-+ * cache is N way set associative. A value if 0xffff means fully
-+ * associative, a value of 1 means directly mapped.
-+ *
-+ * For all these fields, a value of 0 means that the information
-+ * is not known.
-+ */
-+#define AT_L1I_CACHESIZE	40
-+#define AT_L1I_CACHEGEOMETRY	41
-+#define AT_L1D_CACHESIZE	42
-+#define AT_L1D_CACHEGEOMETRY	43
-+#define AT_L2_CACHESIZE		44
-+#define AT_L2_CACHEGEOMETRY	45
-+
- /* entries in ARCH_DLINFO */
--#define AT_VECTOR_SIZE_ARCH	1
-+#define AT_VECTOR_SIZE_ARCH	7
- 
- #endif /* _UAPI_ASM_RISCV_AUXVEC_H */
-diff --git a/arch/riscv/kernel/cacheinfo.c b/arch/riscv/kernel/cacheinfo.c
-index cdd35e53fd98..263335def44b 100644
---- a/arch/riscv/kernel/cacheinfo.c
-+++ b/arch/riscv/kernel/cacheinfo.c
-@@ -3,10 +3,41 @@
-  * Copyright (C) 2017 SiFive
-  */
- 
--#include <linux/cacheinfo.h>
- #include <linux/cpu.h>
- #include <linux/of.h>
- #include <linux/of_device.h>
-+#include <asm/cacheinfo.h>
-+
-+static struct cacheinfo *get_cacheinfo(u32 level, enum cache_type type)
-+{
-+	struct cpu_cacheinfo *this_cpu_ci = get_cpu_cacheinfo(smp_processor_id());
-+	struct cacheinfo *this_leaf;
-+	int index;
-+
-+	for (index = 0; index < this_cpu_ci->num_leaves; index++) {
-+		this_leaf = this_cpu_ci->info_list + index;
-+		if (this_leaf->level == level && this_leaf->type == type)
-+			return this_leaf;
-+	}
-+
-+	return 0;
-+}
-+
-+uintptr_t get_cache_size(u32 level, enum cache_type type)
-+{
-+	struct cacheinfo *this_leaf = get_cacheinfo(level, type);
-+
-+	return this_leaf ? this_leaf->size : 0;
-+}
-+
-+uintptr_t get_cache_geometry(u32 level, enum cache_type type)
-+{
-+	struct cacheinfo *this_leaf = get_cacheinfo(level, type);
-+	uintptr_t ret = (this_leaf->ways_of_associativity << 16 |
-+			 this_leaf->coherency_line_size);
-+
-+	return this_leaf ? ret : 0;
-+}
- 
- static void ci_leaf_init(struct cacheinfo *this_leaf, enum cache_type type,
- 			 unsigned int level, unsigned int size,
--- 
-2.27.0
-
+VGhhbmsgeW91IGZvciB5b3VyIGFkdmljZSwgICBpZiBhZGQga3RocmVhZF9jYW5jZWxfd29yaygp
+IHdpdGhvdXQgdGhlICJfc3luYyIKaXQgaXMgYmUgZGFuZ2Vyb3VzLCBCdXQgSSB0aGluayBpdCBp
+cyB1bm5lY2Vzc2FyeSB0byBjYW5jZWwgIHdvcmsgd2hpY2ggaXMgYmUgY2FuY2VsaW5nLgpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCreivP7IyzogbGludXgta2VybmVs
+LW93bmVyQHZnZXIua2VybmVsLm9yZyA8bGludXgta2VybmVsLW93bmVyQHZnZXIua2VybmVsLm9y
+Zz4gtPqx7SBQZXRyIE1sYWRlayA8cG1sYWRla0BzdXNlLmNvbT4Kt6LLzcqxvOQ6IDIwMjDE6jfU
+wjPI1SAxNToyOArK1bz+yMs6IFpoYW5nLCBRaWFuZwqzrcvNOiBiZW4uZG9va3NAY29kZXRoaW5r
+LmNvLnVrOyBiZmllbGRzQHJlZGhhdC5jb207IGNsQHJvY2stY2hpcHMuY29tOyBwZXRlcnpAaW5m
+cmFkZWFkLm9yZzsgdGpAa2VybmVsLm9yZzsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZwrW
+98ziOiBSZTogW1BBVENIXSBrdGhyZWFkOiBEb24ndCBjYW5jZWwgYSB3b3JrIHRoYXQgaXMgYmVp
+bmcgY2FuY2VsbGVkCgpPbiBUaHUgMjAyMC0wNy0wMiAxMjo0MzoyNCwgcWlhbmcuemhhbmdAd2lu
+ZHJpdmVyLmNvbSB3cm90ZToKPiBGcm9tOiBaaGFuZyBRaWFuZyA8cWlhbmcuemhhbmdAd2luZHJp
+dmVyLmNvbT4KPgo+IFdoZW4gY2FuY2VsaW5nIGEgd29yaywgaWYgaXQgaXMgZm91bmQgdGhhdCB0
+aGUgd29yayBpcyBpbgo+IHRoZSBjYW5jZWxsaW5nIHN0YXRlLCB3ZSBzaG91bGQgZGlyZWN0bHkg
+ZXhpdCB0aGUgY2FuY2VsbGVkCj4gb3BlcmF0aW9uLgoKTm8sIHRoZSBmdW5jdGlvbiBndWFyYW50
+ZWVzIHRoYXQgdGhlIHdvcmsgaXMgbm90IGxvbmdlciBydW5uaW5nCndoZW4gaXQgcmV0dXJucy4g
+VGhpcyBpcyB3aHkgaXQgaGFzIHRoZSBzdWZmaXggIl9zeW5jIiBpbiB0aGUgbmFtZS4KCldlIHdv
+dWxkIG5lZWQgdG8gYWRkIGt0aHJlYWRfY2FuY2VsX3dvcmsoKSB3aXRob3V0IHRoZSAiX3N5bmMi
+CndyYXBwZXJzIHRoYXQgd291bGQgbm90IHdhaXQgZm9yIHRoZSB3b3JrIGluIHByb2dyZXNzLiBC
+dXQgaXQKbWlnaHQgYmUgZGFuZ2Vyb3VzLiBUaGUgQVBJIHVzZXJzIHVzdWFsbHkgd2FudCB0byBt
+YWtlIHN1cmUKdGhhdCB0aGUgd29yayBpbiBub3QgbG9uZ2VyIHJ1bm5pbmcgdG8gYXZvaWQgcmFj
+ZXMuCgpXaGF0IGlzIHRoZSB1c2UgY2FzZSBmb3IgdGhlIG5vbi1zeW5jIGJlaGF2aW9yLCBwbGVh
+c2U/CgpCZXN0IFJlZ2FyZHMsClBldHIK
