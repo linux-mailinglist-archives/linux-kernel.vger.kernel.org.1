@@ -2,113 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6202821307C
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 02:36:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98F4E213088
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 02:43:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726074AbgGCAgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 20:36:17 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:53680 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726015AbgGCAgQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 20:36:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593736575;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=H02gDnpUqaBFoqy+Gmqb6/mcQ7fzguEDru28MyLbZRk=;
-        b=cq47F5TLkgV9BvdNcebCxJMBVjlpEDlWtIqIgkpNxfvLC/Fph2t+Seeq3WglTO0Qj0UU1c
-        eWkCIejrTpaIoMFqS6UO04aR9wvjPUstCOxiIJiNRDWLzb89mGHLpmnxb1gEvuFMnPyFzm
-        5q/wdaucl9Ev9Xo0FxZzfAAjT907Ygs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-130-GreJcrfjNq-bNoQeshMd9Q-1; Thu, 02 Jul 2020 20:36:11 -0400
-X-MC-Unique: GreJcrfjNq-bNoQeshMd9Q-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9851D1009616;
-        Fri,  3 Jul 2020 00:36:09 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-112-121.rdu2.redhat.com [10.10.112.121])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8EAD779256;
-        Fri,  3 Jul 2020 00:36:07 +0000 (UTC)
-Subject: Re: [PATCH 6/8] powerpc/pseries: implement paravirt qspinlocks for
- SPLPAR
-To:     Nicholas Piggin <npiggin@gmail.com>
-Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Anton Blanchard <anton@ozlabs.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-References: <20200702074839.1057733-7-npiggin@gmail.com>
- <202007030059.nT5quxzB%lkp@intel.com>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <3730577a-1e14-0e3e-7f7b-0c6cb68fb1f2@redhat.com>
-Date:   Thu, 2 Jul 2020 20:36:07 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
-MIME-Version: 1.0
-In-Reply-To: <202007030059.nT5quxzB%lkp@intel.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+        id S1726297AbgGCAnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 20:43:16 -0400
+Received: from mga01.intel.com ([192.55.52.88]:44080 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726017AbgGCAnQ (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 20:43:16 -0400
+IronPort-SDR: nbIl1QTTtlJIsUzwnP8Gu+eJKM43RF7TdGqA3/NJBPf6GexnUL5Kp13c9V1l8pN8e5nYKNizBu
+ gTl4vbD7Aesw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="165119489"
+X-IronPort-AV: E=Sophos;i="5.75,306,1589266800"; 
+   d="scan'208";a="165119489"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2020 17:43:15 -0700
+IronPort-SDR: +3BATNlpnb2LhdaxdKRXQ83hMGdtC/P2mVh6XB5Up5u23Hh6dO5qDqdPK/s72/zJvMJyE5gAJA
+ qXkHLfcIJ1vQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,306,1589266800"; 
+   d="scan'208";a="356619200"
+Received: from kbl-ppc.sh.intel.com ([10.239.159.118])
+  by orsmga001.jf.intel.com with ESMTP; 02 Jul 2020 17:43:13 -0700
+From:   Jin Yao <yao.jin@linux.intel.com>
+To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com
+Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com, irogers@google.com,
+        Jin Yao <yao.jin@linux.intel.com>
+Subject: [PATCH] perf evsel: Don't set sample_regs_intr/sample_regs_user for dummy event
+Date:   Fri,  3 Jul 2020 08:42:15 +0800
+Message-Id: <20200703004215.24418-1-yao.jin@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/2/20 12:15 PM, kernel test robot wrote:
-> Hi Nicholas,
->
-> I love your patch! Yet something to improve:
->
-> [auto build test ERROR on powerpc/next]
-> [also build test ERROR on tip/locking/core v5.8-rc3 next-20200702]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use  as documented in
-> https://git-scm.com/docs/git-format-patch]
->
-> url:    https://github.com/0day-ci/linux/commits/Nicholas-Piggin/powerpc-queued-spinlocks-and-rwlocks/20200702-155158
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git next
-> config: powerpc-allyesconfig (attached as .config)
-> compiler: powerpc64-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->          chmod +x ~/bin/make.cross
->          # save the attached .config to linux build tree
->          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=powerpc
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All errors (new ones prefixed by >>):
->
->     kernel/locking/lock_events.c:61:16: warning: no previous prototype for 'lockevent_read' [-Wmissing-prototypes]
->        61 | ssize_t __weak lockevent_read(struct file *file, char __user *user_buf,
->           |                ^~~~~~~~~~~~~~
->     kernel/locking/lock_events.c: In function 'skip_lockevent':
->>> kernel/locking/lock_events.c:126:12: error: implicit declaration of function 'pv_is_native_spin_unlock' [-Werror=implicit-function-declaration]
->       126 |   pv_on = !pv_is_native_spin_unlock();
->           |            ^~~~~~~~~~~~~~~~~~~~~~~~
->     cc1: some warnings being treated as errors
->
-> vim +/pv_is_native_spin_unlock +126 kernel/locking/lock_events.c
+Since commit 0a892c1c9472 ("perf record: Add dummy event during system wide synthesis"),
+a dummy event is added to capture mmaps.
 
-I think you will need to add the following into 
-arch/powerpc/include/asm/qspinlock_paravirt.h:
+But if we run perf-record as,
 
-static inline pv_is_native_spin_unlock(void)
+ # perf record -e cycles:p -IXMM0 -a -- sleep 1
+ Error:
+ dummy:HG: PMU Hardware doesn't support sampling/overflow-interrupts. Try 'perf stat'
+
+The issue is, if we enable the extended regs (-IXMM0), but the
+pmu->capabilities is not set with PERF_PMU_CAP_EXTENDED_REGS, the kernel
+will return -EOPNOTSUPP error.
+
+See following code pieces.
+
+/* in kernel/events/core.c */
+static int perf_try_init_event(struct pmu *pmu, struct perf_event *event)
+
 {
-     return !is_shared_processor();
+	....
+	if (!(pmu->capabilities & PERF_PMU_CAP_EXTENDED_REGS) &&
+	    has_extended_regs(event))
+		ret = -EOPNOTSUPP;
+	....
 }
 
-Cheers,
-Longman
+For software dummy event, the PMU should be not set with
+PERF_PMU_CAP_EXTENDED_REGS. But unfortunately in current code, the dummy
+event has possibility to be set with PERF_REG_EXTENDED_MASK bit.
+
+In evsel__config, /* tools/perf/util/evsel.c */
+
+if (opts->sample_intr_regs) {
+	attr->sample_regs_intr = opts->sample_intr_regs;
+}
+
+If we use -IXMM0, the attr>sample_regs_intr will be set with
+PERF_REG_EXTENDED_MASK bit.
+
+It doesn't make sense to set attr->sample_regs_intr for a
+software dummy event.
+
+This patch adds dummy event checking before setting
+attr->sample_regs_intr.
+
+After:
+  # ./perf record -e cycles:p -IXMM0 -a -- sleep 1
+  [ perf record: Woken up 1 times to write data ]
+  [ perf record: Captured and wrote 0.413 MB perf.data (45 samples) ]
+
+Fixes: 0a892c1c9472 ("perf record: Add dummy event during system wide synthesis")
+Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+---
+ tools/perf/util/evsel.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+index 96e5171dce41..df3315543e86 100644
+--- a/tools/perf/util/evsel.c
++++ b/tools/perf/util/evsel.c
+@@ -1020,12 +1020,12 @@ void evsel__config(struct evsel *evsel, struct record_opts *opts,
+ 	if (callchain && callchain->enabled && !evsel->no_aux_samples)
+ 		evsel__config_callchain(evsel, opts, callchain);
+ 
+-	if (opts->sample_intr_regs) {
++	if (opts->sample_intr_regs && !is_dummy_event(evsel)) {
+ 		attr->sample_regs_intr = opts->sample_intr_regs;
+ 		evsel__set_sample_bit(evsel, REGS_INTR);
+ 	}
+ 
+-	if (opts->sample_user_regs) {
++	if (opts->sample_user_regs && !is_dummy_event(evsel)) {
+ 		attr->sample_regs_user |= opts->sample_user_regs;
+ 		evsel__set_sample_bit(evsel, REGS_USER);
+ 	}
+-- 
+2.17.1
 
