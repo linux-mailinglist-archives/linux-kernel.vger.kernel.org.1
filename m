@@ -2,111 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A883213C26
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 16:53:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F307F213C2B
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 16:55:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726794AbgGCOxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 10:53:49 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60512 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726053AbgGCOxs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 10:53:48 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2C652AF69;
-        Fri,  3 Jul 2020 14:53:47 +0000 (UTC)
-Message-ID: <a9058fd2c54bbea69fdf97e30277338a61b5c0b4.camel@suse.de>
-Subject: Re: [BUG] XHCI getting ZONE_DMA32 memory > than its bus_dma_limit
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Jeremy Linton <jeremy.linton@arm.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>, linux-mm@kvack.org,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        rientjes@google.com, Christoph Hellwig <hch@lst.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     linux-rpi-kernel <linux-rpi-kernel@lists.infradead.org>
-Date:   Fri, 03 Jul 2020 16:53:45 +0200
-In-Reply-To: <34619bdf-6527-ae82-7e4d-e2ea7c67ed56@arm.com>
-References: <34619bdf-6527-ae82-7e4d-e2ea7c67ed56@arm.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-jPh4P4ef6IRIm8gZjo2Z"
-User-Agent: Evolution 3.36.3 
+        id S1726803AbgGCOzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 10:55:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46986 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726053AbgGCOzC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Jul 2020 10:55:02 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB821C08C5C1
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Jul 2020 07:55:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=CvKKH16oZBhNB/eW42Qi1UVOuy1Z/Oy4YKpmWORlVSo=; b=OC/CRBEsrpuFKEbrcoPlPOG7BW
+        ll9zEEMzc5rte9m9HmvaDfQpBGIavsHMgaAHtrSjIWV7cmXKKPTuZ2AOjXx0YOpNKW3rMlwXtQ8/l
+        XOP5tbE0W+8A/axbVKtN7mQ0ufGvVhBH8YHcfxT08Nab1skrcbycqTmVqZ8jJDK8REcOKpiXxXnRM
+        /7hwmjnaYrCjZxaES/Pv7wL1pnntuKWS+cIAt+Rjr29IFGbLMRDRw/O2cF4y6u7WWc3HZH7bhb/jt
+        L2usbH/cgRWXS7YC2YEVnvSpYHKHkFlfG7IZqT1xkYtSJenXKYjfwPCPnRrgzL8u9S/dR/zFxOGQ7
+        GEhBtufw==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jrN5a-000827-VW; Fri, 03 Jul 2020 14:54:55 +0000
+Date:   Fri, 3 Jul 2020 15:54:54 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     trix@redhat.com
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: initialize return of vm_insert_pages
+Message-ID: <20200703145454.GH25523@casper.infradead.org>
+References: <20200703145202.10629-1-trix@redhat.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200703145202.10629-1-trix@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jul 03, 2020 at 07:52:02AM -0700, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
+> 
+> clang static analysis reports a garbage return
+> 
+> In file included from mm/memory.c:84:
+> mm/memory.c:1612:2: warning: Undefined or garbage value returned to caller [core.uninitialized.UndefReturn]
+>         return err;
+>         ^~~~~~~~~~
+> 
+> The setting of err depends on a loop executing.
+> So initialize err.
 
---=-jPh4P4ef6IRIm8gZjo2Z
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-Hi Jeremy,
-thanks for the bug report.
-
-Just for the record the offending commit is: c84dc6e68a1d2 ("dma-pool: add
-additional coherent pools to map to gfp mask").
-
-On Thu, 2020-07-02 at 12:49 -0500, Jeremy Linton wrote:
-> Hi,
->=20
-> Using 5.8rc3:
->=20
-> The rpi4 has a 3G dev->bus_dma_limit on its XHCI controller. With a usb3=
-=20
-> hub, plus a few devices plugged in, randomly devices will fail=20
-> operations. This appears to because xhci_alloc_container_ctx() is=20
-> getting buffers > 3G via dma_pool_zalloc().
->=20
-> Tracking that down, it seems to be caused by dma_alloc_from_pool() using=
-=20
-> dev_to_pool()->dma_direct_optimal_gfp_mask() to "optimistically" select=
-=20
-> the atomic_pool_dma32 but then failing to verify that the allocations in=
-=20
-> the pool are less than the dev bus_dma_limit.
-
-I can reproduce this too.
-
-The way I see it, dev_to_pool() wants a strict dma_direct_optimal_gfp_mask(=
-)
-that is never wrong, since it's going to stick to that pool for the device'=
-s
-lifetime. I've been looking at how to implement it, and it's not so trivial=
- as
-I can't see a failproof way to make a distinction between who needs DMA32 a=
-nd
-who is OK with plain KERNEL memory.
-
-Otherwise, as Jeremy points out, the patch needs to implement allocations w=
-ith
-an algorithm similar to __dma_direct_alloc_pages()'s, which TBH I don't kno=
-w if
-it's a little overkill for the atomic context.
-
-Short of finding a fix in the coming rc's, I suggest we revert this.
-
-Regards,
-Nicolas
-
-
---=-jPh4P4ef6IRIm8gZjo2Z
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl7/RnkACgkQlfZmHno8
-x/7Hzwf9EK5UZ/nU0kNYHFn34OzNUw81RBxAseEJjDNzqtbLPFOnBapN7FTeMf3t
-SEVbR4NXtItrMqKjppBcAhqjw6geoWvgonDnZlMKZhV4CNSGqgBc8U1kn5FRY4H/
-6/nJ2yzcRtuYCmoIK/Rtc6g53+lJoM+Cmor1Bdp9RG+qOc9cylECc1FI6zx3HaZv
-vBfaKbqF6relsISrxWkD/iRne99hINnTvdE2LTz8VoZWWbN3G+lUkDw9KJbm4WaT
-3lFAMPf2XQ9pJVmDj+M2TYMLkCGTelhml4o1ngHvugQFfjaueuFdOcbXiTikx7RP
-IJWc4W/+qG6zKC3cOjN6oj6fLNCQaw==
-=5wyW
------END PGP SIGNATURE-----
-
---=-jPh4P4ef6IRIm8gZjo2Z--
-
+I'd argue that returning zero is wrong.  If someone's asked to insert
+zero pages, that's a nonsense thing to do so it should return -EINVAL..
