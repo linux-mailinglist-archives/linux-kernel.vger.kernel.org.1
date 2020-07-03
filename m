@@ -2,60 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A9E721364F
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 10:22:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1C82213647
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 10:20:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726449AbgGCIWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 04:22:12 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:60580 "EHLO inva021.nxp.com"
+        id S1726304AbgGCIUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 04:20:31 -0400
+Received: from foss.arm.com ([217.140.110.172]:36058 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725915AbgGCIWL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 04:22:11 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id B5164200BF4;
-        Fri,  3 Jul 2020 10:22:09 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 4722F200BE3;
-        Fri,  3 Jul 2020 10:22:07 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id CF37E402B1;
-        Fri,  3 Jul 2020 16:22:03 +0800 (SGT)
-From:   Richard Zhu <hongxing.zhu@nxp.com>
-To:     shawnguo@kernel.org
-Cc:     linux-imx@nxp.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Richard Zhu <hongxing.zhu@nxp.com>
-Subject: [PATCH] ARM: dts: imx6qp-sabresd: enable sata on imx6qp sabresd board
-Date:   Fri,  3 Jul 2020 16:18:57 +0800
-Message-Id: <1593764337-8267-2-git-send-email-hongxing.zhu@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1593764337-8267-1-git-send-email-hongxing.zhu@nxp.com>
-References: <1593764337-8267-1-git-send-email-hongxing.zhu@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1725779AbgGCIUa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Jul 2020 04:20:30 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7FEA82F;
+        Fri,  3 Jul 2020 01:20:30 -0700 (PDT)
+Received: from entos-d05.shanghai.arm.com (entos-d05.shanghai.arm.com [10.169.212.212])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 6624A3F73C;
+        Fri,  3 Jul 2020 01:20:27 -0700 (PDT)
+From:   Jianyong Wu <jianyong.wu@arm.com>
+To:     ericvh@gmail.com, lucho@ionkov.net, asmadeus@codewreck.org,
+        v9fs-developer@lists.sourceforge.net
+Cc:     linux-kernel@vger.kernel.org, Steve.Capper@arm.com,
+        Kaly.Xin@arm.com, justin.he@arm.com, jianyong.wu@arm.com,
+        wei.chen@arm.com
+Subject: [PATCH v3] 9p: retrieve fid from file when file instance exist.
+Date:   Fri,  3 Jul 2020 16:20:18 +0800
+Message-Id: <20200703082018.8160-1-jianyong.wu@arm.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable SATA on iMX6QP SABRESD board.
+In the current setattr implementation in 9p, fid is always retrieved
+from dentry no matter file instance exists or not. Thus, there may be
+some info related to opened file instance dropped. So it's better
+to retrieve fid from file instance when it has passed to setattr.
 
-Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
+for example:
+fd=open("tmp", O_RDWR);
+ftruncate(fd, 10);
+
+The file context related with the fd will be lost as fid is
+retrieved from dentry, then the backend can't get the info of
+file context. It is against the original intention of user and
+may lead to bug.
+
+Signed-off-by: Jianyong Wu <jianyong.wu@arm.com>
 ---
- arch/arm/boot/dts/imx6qp-sabresd.dts | 5 +++++
- 1 file changed, 5 insertions(+)
+ fs/9p/vfs_inode.c      | 7 ++++++-
+ fs/9p/vfs_inode_dotl.c | 7 ++++++-
+ 2 files changed, 12 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/imx6qp-sabresd.dts b/arch/arm/boot/dts/imx6qp-sabresd.dts
-index f1b9cb104fdd..7e1e0aa0a475 100644
---- a/arch/arm/boot/dts/imx6qp-sabresd.dts
-+++ b/arch/arm/boot/dts/imx6qp-sabresd.dts
-@@ -53,3 +53,8 @@
- &pcie {
- 	status = "disabled";
- };
-+
-+&sata {
-+	status = "okay";
-+};
-+
+diff --git a/fs/9p/vfs_inode.c b/fs/9p/vfs_inode.c
+index c9255d399917..7cd4b67c345b 100644
+--- a/fs/9p/vfs_inode.c
++++ b/fs/9p/vfs_inode.c
+@@ -1100,7 +1100,12 @@ static int v9fs_vfs_setattr(struct dentry *dentry, struct iattr *iattr)
+ 
+ 	retval = -EPERM;
+ 	v9ses = v9fs_dentry2v9ses(dentry);
+-	fid = v9fs_fid_lookup(dentry);
++	if (iattr->ia_valid & ATTR_FILE) {
++		fid = iattr->ia_file->private_data;
++		WARN_ON(!fid);
++	}
++	if (!fid)
++		fid = v9fs_fid_lookup(dentry);
+ 	if(IS_ERR(fid))
+ 		return PTR_ERR(fid);
+ 
+diff --git a/fs/9p/vfs_inode_dotl.c b/fs/9p/vfs_inode_dotl.c
+index 60328b21c5fb..dc53fb6b3b31 100644
+--- a/fs/9p/vfs_inode_dotl.c
++++ b/fs/9p/vfs_inode_dotl.c
+@@ -560,7 +560,12 @@ int v9fs_vfs_setattr_dotl(struct dentry *dentry, struct iattr *iattr)
+ 	p9attr.mtime_sec = iattr->ia_mtime.tv_sec;
+ 	p9attr.mtime_nsec = iattr->ia_mtime.tv_nsec;
+ 
+-	fid = v9fs_fid_lookup(dentry);
++	if (iattr->ia_valid & ATTR_FILE) {
++		fid = iattr->ia_file->private_data;
++		WARN_ON(!fid);
++	}
++	if (!fid)
++		fid = v9fs_fid_lookup(dentry);
+ 	if (IS_ERR(fid))
+ 		return PTR_ERR(fid);
+ 
 -- 
 2.17.1
 
