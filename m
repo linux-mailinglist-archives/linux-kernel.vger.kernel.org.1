@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD5AC21408F
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 22:57:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40A2A214095
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 22:57:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726926AbgGCU5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 16:57:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46174 "EHLO
+        id S1726948AbgGCU5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 16:57:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726379AbgGCU5G (ORCPT
+        with ESMTP id S1726923AbgGCU5I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 16:57:06 -0400
+        Fri, 3 Jul 2020 16:57:08 -0400
 Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6A66C061794;
-        Fri,  3 Jul 2020 13:57:05 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1DCDC061794;
+        Fri,  3 Jul 2020 13:57:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
         References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
         Content-Type:Content-ID:Content-Description;
-        bh=M6C6YySqQi70TS5xHaBxSfjFdMg/sJtCXqPgg4DcCHY=; b=tbW7Ee+d3uWUKqGcHQH4L9RyvS
-        n+/Ob0cWxgvUBrVuv7LdiEXZyjt2BbPVfSbMucpgNrnbJPjkZRp7R9Vwf2lb6A5sXn2Vz1Ooypv0q
-        VylyX/hPfdiN1F5GhAJrhABm2bWhQhJFDooqMMgUVO8JolZQFV9sYL9FXH/a4y5wymhi59BiOi70p
-        VCXp6N1Aebe5JtpsOJpZzQWCKFUEfghrJkoTYGNfXhO7P9b9VRe7eJV80RNcvPpI8diyWC+1vizV6
-        WWI0HKgGyV+hHHCa5pf4Z5vH3jFeI/5wG+B/FK1A22wvztgm1IN56KO+QzUfCe0SH/QitK3r4MU0z
-        ZEnhHwdg==;
+        bh=ER9INp1xkSyqdiyLU3ujpdio8GueQUvIZBaizd2Mgo4=; b=U3U0QbtPmGoxRFNfTjHazOebZX
+        nZsMOdt7Xl3NLG0vKOpUxKfNz5JjHau2Urq3mbuxRHu48HTRk7AzH98aY3uNSBUrejTyS3Q6eLVrk
+        tC+c93kdUqMfXEQMmyMddnV8bcik+uy88QH+XHe+5RucwApBPIID2y0KvN/pOxLw0hv3QyuLBrAlY
+        B2hED+14k8jtQWzmhwfZtfQ0aHCQRoMc7/fTLTf0vA79XvmBKCWfoKMMCdCkOcOeQnFFw9YyIzz4K
+        i+fhK75nWcpB2CP34OFvFqATaURVizH0rm1LP3NIjEahFdqA4psFC7ezN7d3Pm07HBe/rc9pxLZRK
+        SmDjcVBQ==;
 Received: from [2601:1c0:6280:3f0::19c2] (helo=smtpauth.infradead.org)
         by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jrSk3-0003a5-Jv; Fri, 03 Jul 2020 20:57:04 +0000
+        id 1jrSk6-0003a5-Bw; Fri, 03 Jul 2020 20:57:06 +0000
 From:   Randy Dunlap <rdunlap@infradead.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Randy Dunlap <rdunlap@infradead.org>,
         Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
         Jean Delvare <jdelvare@suse.com>,
         Guenter Roeck <linux@roeck-us.net>, linux-hwmon@vger.kernel.org
-Subject: [PATCH 3/5] Documenation: hwmon/nct7665: drop duplicate words
-Date:   Fri,  3 Jul 2020 13:56:47 -0700
-Message-Id: <20200703205649.30125-4-rdunlap@infradead.org>
+Subject: [PATCH 4/5] Documenation: hwmon/w83627ehf: drop duplicate words
+Date:   Fri,  3 Jul 2020 13:56:48 -0700
+Message-Id: <20200703205649.30125-5-rdunlap@infradead.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200703205649.30125-1-rdunlap@infradead.org>
 References: <20200703205649.30125-1-rdunlap@infradead.org>
@@ -47,7 +47,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop the doubled word "be".
+Drop the doubled word "and".
 
 Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
 Cc: Jonathan Corbet <corbet@lwn.net>
@@ -56,15 +56,17 @@ Cc: Jean Delvare <jdelvare@suse.com>
 Cc: Guenter Roeck <linux@roeck-us.net>
 Cc: linux-hwmon@vger.kernel.org
 ---
- Documentation/hwmon/nct6775.rst |    2 +-
+ Documentation/hwmon/w83627ehf.rst |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- linux-next-20200701.orig/Documentation/hwmon/nct6775.rst
-+++ linux-next-20200701/Documentation/hwmon/nct6775.rst
-@@ -276,5 +276,5 @@ temperature measurement device. As a res
- will not reflect a usable value. It often reports unreasonably high
- temperatures, and in some cases the reported temperature declines if the actual
- temperature increases (similar to the raw PECI temperature value - see PECI
--specification for details). CPUTIN should therefore be be ignored on ASUS
-+specification for details). CPUTIN should therefore be ignored on ASUS
- boards. The CPU temperature on ASUS boards is reported from PECI 0.
+--- linux-next-20200701.orig/Documentation/hwmon/w83627ehf.rst
++++ linux-next-20200701/Documentation/hwmon/w83627ehf.rst
+@@ -96,7 +96,7 @@ sensors. The configured source for each
+ in tempX_label.
+ 
+ Temperatures are measured in degrees Celsius and measurement resolution is 1
+-degC for temp1 and and 0.5 degC for temp2 and temp3. For temp4 and higher,
++degC for temp1 and 0.5 degC for temp2 and temp3. For temp4 and higher,
+ resolution is 1 degC for W83667HG-B and 0.0 degC for NCT6775F and NCT6776F.
+ An alarm is triggered when the temperature gets higher than high limit;
+ it stays on until the temperature falls below the hysteresis value.
