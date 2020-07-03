@@ -2,54 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEFC72133EA
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 08:10:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D1DE2133EE
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 08:14:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726357AbgGCGKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 02:10:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36890 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726310AbgGCGKI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 02:10:08 -0400
-Subject: Re: [GIT PULL] Devicetree fixes for 5.8, v2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593756608;
-        bh=IgOm6mouFSgR99piDXnQhDddzJYnW4R+V63BCxmxNqU=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=pMXIgRC8bQtzDY5eVctjWyuLfE98upX/5tsXEheVAKzqgvhs9XKi9TlgpmaY1rC9K
-         f8T7plPv0ngR+6uxfwV3kbPs9w/tzfCIee3q98lA3X/d4Z2hqEwjYko+2frhu01lhC
-         f2i0WFlSV6S0NZEaOOrK8CWV6lVE87CUypJbfnvE=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200702213924.GA1763915@bogus>
-References: <20200702213924.GA1763915@bogus>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200702213924.GA1763915@bogus>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git
- tags/devicetree-fixes-for-5.8-2
-X-PR-Tracked-Commit-Id: 0115e6c98c22f3fc7ff7da2a41480483abe95b37
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 684c8ccc40d7e5408d597a43712bad3827d3fb94
-Message-Id: <159375660808.4799.7782720631875361090.pr-tracker-bot@kernel.org>
-Date:   Fri, 03 Jul 2020 06:10:08 +0000
-To:     Rob Herring <robh@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Frank Rowand <frowand.list@gmail.com>
+        id S1726098AbgGCGOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 02:14:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51732 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725648AbgGCGOB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Jul 2020 02:14:01 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4F97C08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 23:14:00 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id q17so13551245pfu.8
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 23:14:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4EZwpgmE4SueL7e7tjK8HJwbAvV8gZoeqD/srGZ37yk=;
+        b=oSQ4BQepwwyKGLVXlKk03nr1hWc+SmjA2W/HfDTlNPSxskF4OqVSmq0RMfGPlr/07R
+         jUStXAHktVZXZG0cPzgnjsKTVf+I0J4y3B5qwWKX/h6HWRuy5Sn4M6T1/rvgXFnTntqB
+         QmV1YtU8u0/ouw6WR6qHgg60SwBEFbm1OOAdHCY83r+SuuM/40DPg1FpAvx8IVedaQco
+         XjQ7JBAPt4NROlIEax0eclbVYoQIuyl8KwdxZBsw6zsVkBdNzgqM4YGmeYEEU/iSEiKP
+         0ISl6rX9NzISWAMIexq81r5lXa/MVr6J9dqm2GWZ+b4m7ILLaBLmu17+cEQik0P3B1lv
+         5WnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4EZwpgmE4SueL7e7tjK8HJwbAvV8gZoeqD/srGZ37yk=;
+        b=ZPP1xZgeO+wX+AkwzBtHvrodim7us4cmlaCvlyzOh0s5rVsmZPTjAa0GEGBTcr2qln
+         QbxqLeJAF9WrtJhFWRAdlKE8It7tRljqAjovivUtYtuVwgfE6ONY+BO7RzL3IX6ps1ps
+         yTz0FWlKp538ZB0PZKg8zp4aR2PMbQg3K3SH8rwgQMiO4Z49yYq0Luxx3VzQrWQtRtee
+         GOmT8S1E9L8+tOKq8HT3TJbQhHsVpCqURgNlz9u3+85QDrUaTjplpwR2S1Jj6VUFqujf
+         kPRg5jqYFLtpJgvsWvZddY1bDObPqL5ZquE+zwxhwcw6HUS96Bq8LSVuVpStblMboj5a
+         UvEw==
+X-Gm-Message-State: AOAM530KU73Dy0jsoiVjkdjTI2Jz9YVQC+UDz17tnJw4jZ9SuakqjcJa
+        TUWgU7p25qhjWuY8JWTVGS/ucQ==
+X-Google-Smtp-Source: ABdhPJxCmD4c8IFGSzGHPg50n9TH1o+RaiKai1/irHgNYxcYmZIzLRcPtjtjRFKBn/GHQ0WBvLeYOg==
+X-Received: by 2002:a63:1c23:: with SMTP id c35mr26767213pgc.91.1593756840219;
+        Thu, 02 Jul 2020 23:14:00 -0700 (PDT)
+Received: from Smcdef-MBP.local.net ([103.136.220.68])
+        by smtp.gmail.com with ESMTPSA id y7sm8642784pjp.47.2020.07.02.23.13.57
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 02 Jul 2020 23:13:59 -0700 (PDT)
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     akpm@linux-foundation.org, david@redhat.com
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: [PATCH RESEND] mm/page_alloc: skip setting nodemask when we are in interrupt
+Date:   Fri,  3 Jul 2020 14:13:50 +0800
+Message-Id: <20200703061350.94474-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 2 Jul 2020 15:39:24 -0600:
+When we are in the interrupt context, it is irrelevant to the
+current task context. If we use current task's mems_allowed, we
+can fair to alloc pages in the fast path and fall back to slow
+path memory allocation when the current node(which is the current
+task mems_allowed) does not have enough memory to allocate. In
+this case, it slows down the memory allocation speed of interrupt
+context. So we can skip setting the nodemask to allow any node
+to allocate memory, so that fast path allocation can success.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git tags/devicetree-fixes-for-5.8-2
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+---
+ mm/page_alloc.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/684c8ccc40d7e5408d597a43712bad3827d3fb94
-
-Thank you!
-
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index b48336e20bdcd..a6c36cd557d1d 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -4726,10 +4726,12 @@ static inline bool prepare_alloc_pages(gfp_t gfp_mask, unsigned int order,
+ 
+ 	if (cpusets_enabled()) {
+ 		*alloc_mask |= __GFP_HARDWALL;
+-		if (!ac->nodemask)
+-			ac->nodemask = &cpuset_current_mems_allowed;
+-		else
++		if (!ac->nodemask) {
++			if (!in_interrupt())
++				ac->nodemask = &cpuset_current_mems_allowed;
++		} else {
+ 			*alloc_flags |= ALLOC_CPUSET;
++		}
+ 	}
+ 
+ 	fs_reclaim_acquire(gfp_mask);
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+2.11.0
+
