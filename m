@@ -2,61 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 236922140C1
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 23:24:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BADD2140C3
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 23:24:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727012AbgGCVXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 17:23:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50222 "EHLO
+        id S1727042AbgGCVXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 17:23:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726474AbgGCVXj (ORCPT
+        with ESMTP id S1727011AbgGCVXk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 17:23:39 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06C77C061794
+        Fri, 3 Jul 2020 17:23:40 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0CCFC08C5DD
         for <linux-kernel@vger.kernel.org>; Fri,  3 Jul 2020 14:23:39 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id k6so28262537ili.6
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Jul 2020 14:23:38 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id a6so11549056ilq.13
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Jul 2020 14:23:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Gx3ro+7hYW73BWz9veCWu8rMHewSiF/ZuzOQ8imNba4=;
-        b=elRomxe6h/jBmzyLMRms1Eo1Wmjjplls52Em3UQshvd5ZV7fwFe5+QzTScbvFQJWaU
-         TD5tUxrFaRikuu4NUaX4/K/vcq/caScUom3pqtTdhfmvc/PbjhnWsnI4vPCWdP0ZN1eE
-         49wom30XEmZgkJGkDiO0wdRXhX8T1E0jsu/MvtRFALXQ7fgp3iBN6OnutICOIceOI/IF
-         ubQW6iog4YqwzZo7SBTH80l44owqsmQzU16t2BS22OAS9HzcPDWSsNZeRkEU+wXWISyi
-         gGVZIh5FDMLS7k3EGp9tD4xDr5gLo50RgGI4YMEBd8o9bkwQ1BeKp/626JCPCE966O2p
-         8z0A==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=GOZruoDFDXv5kLGp9J9FoBUytV2ZuP8UVxYNd0ERIPw=;
+        b=SFF7IduqK8G6MhS5t5x3A4loCCSNpXlU/vcFEq44zuOhsuUIuL9X3xebW5rn37ffhK
+         vReqYlp/FW149sVy2BhJUkAuTw9y1wGoVmsdpv/eqHR/iu7GmOr4D3gy8Y6TLmYi1K/T
+         MuwR3Qtgm63pdp5TN2QJN5i7Z/4Cm+vq2+BPEW2UlO8xL5odTRCvfsjTtySnYh50RTwk
+         1dCSOUA5jVUDHSNZrAxnspSMXOlUr1G+Qf7IKjPVrAa57hHGJ+I6qps+0H3OUWO68ZPY
+         oNwr1AJLa58H609yScK+jSqGsRmWZbtjJFeipgUJExrrp+DIH+vUhVIGqSLPmvmH+dv0
+         qnSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Gx3ro+7hYW73BWz9veCWu8rMHewSiF/ZuzOQ8imNba4=;
-        b=a6t0goq3k4AtbJ5y4NTGVSUT12f++m1dtEMCXUwCXwMxip7IUCeBuCgdHD9OROwWe1
-         VMDvk6LvkqELIrju4jrm5VUy3SJd9lJwX/tJWurYv4DlzEdzzRkzYUa1J3FccH4tfxU+
-         yzRsWOr7m7l01byc6HE11aXDNWhP5Q1Qrp70gWf+xqheAPCNdU2fVzyugxOf6L1RLRcF
-         3wpmpxVc/3A5AdUAV7Z7O+wVYl/j21NuTbNWNNFTgq4ZngUDDtEZ3ub6+bpQxcpM+iyO
-         H7e4jeJsonLjtAMHCvqH2VQst6nWGesj8tY2/BBJnTy7vm/LemIFnixmCScERsJvNWV8
-         zjZA==
-X-Gm-Message-State: AOAM532Uk6BEQ37oBK1nluLPqUGPDwSUXp1XJMS/t8j16ylPerCMRwWv
-        oYv8jQo1op6NWwOVUmzPq5OrVA==
-X-Google-Smtp-Source: ABdhPJwcM+deFPGS0PFDYtDoLUKkJy5L2HHjjmyFwapVXGkF6ri+O5PSIi3EReCFe9Av4KUldXtlxA==
-X-Received: by 2002:a92:50f:: with SMTP id q15mr20125796ile.38.1593811418307;
-        Fri, 03 Jul 2020 14:23:38 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=GOZruoDFDXv5kLGp9J9FoBUytV2ZuP8UVxYNd0ERIPw=;
+        b=ZZkXR7ayatYxsDIS1zKM/XvEwScv9BDkWFHb6ps7NoChmJ0+jt6HdLDXnwHQt9zoZz
+         aVjlwImNaoynhy93PD0lWtCZRrblgN4ubG5yXe8OjzvkfSJY4Td1dDJjtsX7T7MmuRlp
+         3+S3ltBYaDmT9Osb2vef3fpR6XTK2zWIqKagr/kiMhMSjstpju8GsYIYs7ZreAc47Hq/
+         K1qTLC1yrd7VWLJj6HMd1XILDMkS5Uq0mwQjhtU5t4kloOWuAve4dQCGtqkbnJ0fc+Xf
+         IJQmhhk2lNbtaOTPceMEh9/tDXIm795XDR2M4Uqw83qI8znoO0fmWoFdse2KvMX+esmq
+         VbdQ==
+X-Gm-Message-State: AOAM5317ipuFcyNoAMBstiET0u0/FnILsemRTYfR3vSYSGJAydV3CWH0
+        qnjqI6poxXYyeoBW2tihVhCXuA==
+X-Google-Smtp-Source: ABdhPJzd2ewsFruwmxIfzsQDQR1WJ6igBFAXPgq3+XijH73+x/sX+9JIniWbRhBLw7MHTREUQRVdjg==
+X-Received: by 2002:a92:c530:: with SMTP id m16mr20147548ili.300.1593811419265;
+        Fri, 03 Jul 2020 14:23:39 -0700 (PDT)
 Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id m6sm7485292ilb.39.2020.07.03.14.23.36
+        by smtp.gmail.com with ESMTPSA id m6sm7485292ilb.39.2020.07.03.14.23.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Jul 2020 14:23:37 -0700 (PDT)
+        Fri, 03 Jul 2020 14:23:38 -0700 (PDT)
 From:   Alex Elder <elder@linaro.org>
 To:     davem@davemloft.net, kuba@kernel.org
 Cc:     evgreen@chromium.org, subashab@codeaurora.org,
         cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 0/2] net: ipa: fix HOLB timer register use
-Date:   Fri,  3 Jul 2020 16:23:33 -0500
-Message-Id: <20200703212335.465355-1-elder@linaro.org>
+Subject: [PATCH net-next 1/2] net: ipa: introduce ipa_clock_rate()
+Date:   Fri,  3 Jul 2020 16:23:34 -0500
+Message-Id: <20200703212335.465355-2-elder@linaro.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200703212335.465355-1-elder@linaro.org>
+References: <20200703212335.465355-1-elder@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -64,33 +66,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function ipa_reg_init_hol_block_timer_val() generates the value
-to write into the HOL_BLOCK_TIMER endpoint configuration register,
-to represent a given timeout value (in microseconds).  It only
-supports a timer value of 0 though, in part because that's
-sufficient, but mainly because there was some confusion about
-how the register is formatted in newer hardware.
+Create a new function that returns the current rate of the IPA core
+clock.
 
-I got clarification about the register format, so this series fixes 
-ipa_reg_init_hol_block_timer_val() to work for any supported delay
-value.
+Signed-off-by: Alex Elder <elder@linaro.org>
+---
+ drivers/net/ipa/ipa_clock.c | 6 ++++++
+ drivers/net/ipa/ipa_clock.h | 8 ++++++++
+ 2 files changed, 14 insertions(+)
 
-The delay is based on the IPA core clock, so determining the value
-to write for a given period requires access to the current core
-clock rate.  So the first patch just creates a new function to
-provide that.
-
-					-Alex
-
-Alex Elder (2):
-  net: ipa: introduce ipa_clock_rate()
-  net: ipa: fix HOLB timer calculation
-
- drivers/net/ipa/ipa_clock.c    |  6 +++
- drivers/net/ipa/ipa_clock.h    |  8 ++++
- drivers/net/ipa/ipa_endpoint.c | 78 +++++++++++++++++++---------------
- 3 files changed, 57 insertions(+), 35 deletions(-)
-
+diff --git a/drivers/net/ipa/ipa_clock.c b/drivers/net/ipa/ipa_clock.c
+index c5204fd58ac4..0fbc8b1bdf41 100644
+--- a/drivers/net/ipa/ipa_clock.c
++++ b/drivers/net/ipa/ipa_clock.c
+@@ -256,6 +256,12 @@ void ipa_clock_put(struct ipa *ipa)
+ 	mutex_unlock(&clock->mutex);
+ }
+ 
++/* Return the current IPA core clock rate */
++u32 ipa_clock_rate(struct ipa *ipa)
++{
++	return ipa->clock ? (u32)clk_get_rate(ipa->clock->core) : 0;
++}
++
+ /* Initialize IPA clocking */
+ struct ipa_clock *ipa_clock_init(struct device *dev)
+ {
+diff --git a/drivers/net/ipa/ipa_clock.h b/drivers/net/ipa/ipa_clock.h
+index bc52b35e6bb2..0f4e2877a6df 100644
+--- a/drivers/net/ipa/ipa_clock.h
++++ b/drivers/net/ipa/ipa_clock.h
+@@ -10,6 +10,14 @@ struct device;
+ 
+ struct ipa;
+ 
++/**
++ * ipa_clock_rate() - Return the current IPA core clock rate
++ * @ipa:	IPA structure
++ *
++ * Return: The current clock rate (in Hz), or 0.
++ */
++u32 ipa_clock_rate(struct ipa *ipa);
++
+ /**
+  * ipa_clock_init() - Initialize IPA clocking
+  * @dev:	IPA device
 -- 
 2.25.1
 
