@@ -2,71 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFABD213DC5
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 18:56:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 665F5213DD5
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 18:59:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726484AbgGCQ4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 12:56:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37380 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726147AbgGCQ4e (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 12:56:34 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D11E3C061794
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Jul 2020 09:56:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ABg7NPFpv6+3fRjIjwbJfH0UuoJwtQBPMUCkpYS7fPM=; b=j6shZpyy1OUE9JhmDPF76zXks7
-        cAIx5QavH4ZH0UFFz7ycfhvbHvVrpLAOkgaOzu7sN0GRQE0GlyaDjP7Wli6wr/Gn7v59kwDWZQsfW
-        5JUbVXEwGUOL2V/XVmDJ/fm6dkBCQXAV4ZljaqS0btPsispu4YwKjF8v32Z4riyP5/y4uNWQ/Eohm
-        OG3YtJ17U+WnFN/QtYgWnAVKJ+GJZY6lse0CSgqHCzfL80vhnyNqtv/SPiNdEVDVR47I5nBwQcQCF
-        ChUqQYm5CB865YzTERIusgrKxcWQSzaLHSbFpvmTfWJMJPXgeETEZQZDUaCHodFI/ceVHeYVujItC
-        A6TOTdfw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jrOzD-0004Bq-Oa; Fri, 03 Jul 2020 16:56:28 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 37F4C301124;
-        Fri,  3 Jul 2020 18:56:27 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1AE4920A9E7A6; Fri,  3 Jul 2020 18:56:27 +0200 (CEST)
-Date:   Fri, 3 Jul 2020 18:56:27 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        GregKroah-Hartmangregkh@linuxfoundation.org
-Subject: Re: nr_cpu_ids vs AMD 3970x(32 physical CPUs)
-Message-ID: <20200703165627.GG4781@hirez.programming.kicks-ass.net>
-References: <20200703155749.GA6255@pc636>
+        id S1726675AbgGCQ7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 12:59:20 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:22184 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726148AbgGCQ7U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Jul 2020 12:59:20 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1593795559; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=+gnWJZLQFOi3Y3xgbq+Jj83g8jf7HMQgZHy7FN5ldrA=;
+ b=fDmiVC3/UUDh81x2fPLdbadyxJH4jm5fhdKF2HrnItzWXJY8XBT/Ox7Y7x+ggbt4KMtzRE6P
+ pHfnmM8MegU/7n+BxWqEJBhkf2K8SfULnDHzyQ4zgSLw/DK+ABSYaCPL35oT1uQehqPrZqSH
+ S0c/d1A8odRb5I4O+O31CZbeTVA=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 5eff63e7356bcc26abeb13a4 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 03 Jul 2020 16:59:19
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 93A4CC433B1; Fri,  3 Jul 2020 16:59:17 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6CB36C433C6;
+        Fri,  3 Jul 2020 16:59:16 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200703155749.GA6255@pc636>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 03 Jul 2020 22:29:16 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     Sean Paul <sean@poorly.run>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        David Airlie <airlied@linux.ie>, Will Deacon <will@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        "list@263.net:IOMMU DRIVERS , Joerg Roedel <joro@8bytes.org>," 
+        <iommu@lists.linux-foundation.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "Kristian H . Kristensen" <hoegsberg@google.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Emil Velikov <emil.velikov@collabora.com>
+Subject: Re: [PATCHv3 7/7] drm/msm/a6xx: Add support for using system
+ cache(LLC)
+In-Reply-To: <CAF6AEGsCROVTsi2R7_aUkmH9Luoc_guMR0w0KUJc2cEgpfj79w@mail.gmail.com>
+References: <cover.1593344119.git.saiprakash.ranjan@codeaurora.org>
+ <449a6544b10f0035d191ac52283198343187c153.1593344120.git.saiprakash.ranjan@codeaurora.org>
+ <20200703133732.GD18953@willie-the-truck>
+ <ecfda7ca80f6d7b4ff3d89b8758f4dc9@codeaurora.org>
+ <CAF6AEGsCROVTsi2R7_aUkmH9Luoc_guMR0w0KUJc2cEgpfj79w@mail.gmail.com>
+Message-ID: <c925406446bb2f6c7aead8e047672cae@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 03, 2020 at 05:57:49PM +0200, Uladzislau Rezki wrote:
-> Hello, folk.
+On 2020-07-03 21:34, Rob Clark wrote:
+> On Fri, Jul 3, 2020 at 7:53 AM Sai Prakash Ranjan
+> <saiprakash.ranjan@codeaurora.org> wrote:
+>> 
+>> Hi Will,
+>> 
+>> On 2020-07-03 19:07, Will Deacon wrote:
+>> > On Mon, Jun 29, 2020 at 09:22:50PM +0530, Sai Prakash Ranjan wrote:
+>> >> diff --git a/drivers/gpu/drm/msm/msm_iommu.c
+>> >> b/drivers/gpu/drm/msm/msm_iommu.c
+>> >> index f455c597f76d..bd1d58229cc2 100644
+>> >> --- a/drivers/gpu/drm/msm/msm_iommu.c
+>> >> +++ b/drivers/gpu/drm/msm/msm_iommu.c
+>> >> @@ -218,6 +218,9 @@ static int msm_iommu_map(struct msm_mmu *mmu,
+>> >> uint64_t iova,
+>> >>              iova |= GENMASK_ULL(63, 49);
+>> >>
+>> >>
+>> >> +    if (mmu->features & MMU_FEATURE_USE_SYSTEM_CACHE)
+>> >> +            prot |= IOMMU_SYS_CACHE_ONLY;
+>> >
+>> > Given that I think this is the only user of IOMMU_SYS_CACHE_ONLY, then
+>> > it
+>> > looks like it should actually be a property on the domain because we
+>> > never
+>> > need to configure it on a per-mapping basis within a domain, and
+>> > therefore
+>> > it shouldn't be exposed by the IOMMU API as a prot flag.
+>> >
+>> > Do you agree?
+>> >
+>> 
+>> GPU being the only user is for now, but there are other clients which
+>> can use this.
+>> Plus how do we set the memory attributes if we do not expose this as
+>> prot flag?
 > 
-> I have a system based on AMD 3970x CPUs. It has 32 physical cores
-> and 64 threads. It seems that "nr_cpu_ids" variable is not correctly
-> set on latest 5.8-rc3 kernel. Please have a look below on dmesg output:
+> It does appear that the downstream kgsl driver sets this for basically
+> all mappings.. well there is some conditional stuff around
+> DOMAIN_ATTR_USE_LLC_NWA but it seems based on the property of the
+> domain.  (Jordan may know more about what that is about.)  But looks
+> like there are a lot of different paths into iommu_map in kgsl so I
+> might have missed something.
 > 
-> <snip>
-> urezki@pc638:~$ sudo dmesg | grep 128
-> [    0.000000] IOAPIC[0]: apic_id 128, version 33, address 0xfec00000, GSI 0-23
-> [    0.000000] smpboot: Allowing 128 CPUs, 64 hotplug CPUs
+> Assuming there isn't some case where we specifically don't want to use
+> the system cache for some mapping, I think it could be a domain
+> attribute that sets an io_pgtable_cfg::quirks flag
+> 
 
-This is your BIOS saying it needs 128 ids, 64 of which are 'empty'.
+Ok then we are good to remove unused sys cache prot flag which Will has 
+posted.
 
-I have a box like that as well, if it bothers you boot with:
-"possible_cpus=64" or something.
+Thanks,
+Sai
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
