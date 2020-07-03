@@ -2,211 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 088FC21384D
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 11:59:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5694213845
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 11:57:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726163AbgGCJ7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 05:59:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725796AbgGCJ7H (ORCPT
+        id S1726361AbgGCJ5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 05:57:04 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:14402 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725972AbgGCJ5D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 05:59:07 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B786C08C5C1;
-        Fri,  3 Jul 2020 02:59:06 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id o8so31463427wmh.4;
-        Fri, 03 Jul 2020 02:59:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QUEUp6b8vPDcIaWddrAW3ZEk4ffVMz6gDvJ97V6JC3I=;
-        b=s7T3av6Zlf5LjNrAlTJRA/DPxA46Drkl8vngBzMoKPYFaKzxUCVL2uIUWNUJ5W1jGh
-         u3MRA5hewnpD7T6n3k22zJBGdg1QLXyq6T4oq57RIl/2EzjkGZnc4dPqxSHDnf5KLpxO
-         Dys9uPs8RhVjo2UK3QPe14QRzGNFIR0RFgniZB1Lzd2Xu+OhNRMumiBS16o90jnzSsNT
-         u4F0TefJjTDfNL0h+VepvzhDJjXY+1p68Wnu+e8GJhoDOhWWQj47RocEzpcW17cBP2Tu
-         T807cj0Nw4S1ALktlqHnsMnzVcdzp9GZylj7exjeeycf5Fl/khg5Zbv2imP/WNCC9uEj
-         5GuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QUEUp6b8vPDcIaWddrAW3ZEk4ffVMz6gDvJ97V6JC3I=;
-        b=DviFCZ6wfkx0lHwmmzXXFQb1tfu7aTj8E+fmnhmsRC+ZTgGenqtcqiCMcBgEQddeDY
-         RuNeuTbGN03Erh45hKrqr1WLUSRfTcgpsC+M4+WOoL82F6R71tnv6OA8XbVdL+noqjDP
-         C9bfn/Jp1FzOeA0DrJ4gP4ZzRdBDTejZlLgFzPuQYomptfovN9QY2B8Q3rtEeRE6LlfV
-         A7Vy0QvZqDN6R+zQM7uoc0z5SM1jTsR5HTtzqqVpJEnf7jc9KzcGu4JYcJZbqVymXcBr
-         INp6sRncuIksSaaO5yBECC0Nv7Z5FYBcPQKXlDDreRc44pQi+GbQBIMYd0dA3/XyZfyi
-         i5nw==
-X-Gm-Message-State: AOAM5315ss6QGcVPCXDabfXxthKctjMGw/WRuTrB+lyiw7p724hOParY
-        l6zciRVDTWzgF4nbvnhxwd4=
-X-Google-Smtp-Source: ABdhPJx9V3qkXxE6+xfAnBW+gkh8aYYsqnhCRO2ir1LYp4KS6eyYLQGPC4beUpoKXhlPxe9nr7Xy3w==
-X-Received: by 2002:a1c:f30a:: with SMTP id q10mr35060334wmq.3.1593770345218;
-        Fri, 03 Jul 2020 02:59:05 -0700 (PDT)
-Received: from localhost ([51.15.41.238])
-        by smtp.gmail.com with ESMTPSA id l1sm851038wrb.12.2020.07.03.02.59.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Jul 2020 02:59:04 -0700 (PDT)
-Date:   Fri, 3 Jul 2020 10:59:02 +0100
-From:   Stefan Hajnoczi <stefanha@gmail.com>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     "Liu, Yi L" <yi.l.liu@intel.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Tian, Jun J" <jun.j.tian@intel.com>,
-        "Sun, Yi Y" <yi.y.sun@intel.com>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "Wu, Hao" <hao.wu@intel.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 02/14] iommu: Report domain nesting info
-Message-ID: <20200703095902.GA178149@stefanha-x1.localdomain>
-References: <1592988927-48009-1-git-send-email-yi.l.liu@intel.com>
- <1592988927-48009-3-git-send-email-yi.l.liu@intel.com>
- <20200629092448.GB31392@stefanha-x1.localdomain>
- <DM5PR11MB1435FC14F2E8AC075DE41205C36E0@DM5PR11MB1435.namprd11.prod.outlook.com>
- <MWHPR11MB1645B09EBDC76514ADC897A68C6F0@MWHPR11MB1645.namprd11.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="xHFwDpU9dbj6ez1V"
-Content-Disposition: inline
-In-Reply-To: <MWHPR11MB1645B09EBDC76514ADC897A68C6F0@MWHPR11MB1645.namprd11.prod.outlook.com>
+        Fri, 3 Jul 2020 05:57:03 -0400
+Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200703095701epoutp01221813389bfb9991931ad51d918f48f3~eNZJxFdG22876528765epoutp01o
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Jul 2020 09:57:01 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200703095701epoutp01221813389bfb9991931ad51d918f48f3~eNZJxFdG22876528765epoutp01o
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1593770221;
+        bh=XPVFGQQ0V5rIApWlccYE1gKpTH76cMyrzVu+/htoC4Q=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=axZ2gdeOlNgfdb0/OsEj/gsgPCGkkxFEkvCvVHz+Mwe4Uxz+12ogymu1wTEzoMKsO
+         GETecDIkkOAlL4hRLuDv3HK3HnQ3x9IwxFhn2phMJvSnA3cEIWwy4mzzRYOTNKMTrw
+         /ekgKMoyW17IUa56xettjEG4VYr0x8bGQfreTBiU=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
+        20200703095700epcas1p3d6fcdb0dadac94488f86733c991eb78a~eNZI9VFAV0807208072epcas1p3_;
+        Fri,  3 Jul 2020 09:57:00 +0000 (GMT)
+Received: from epsmges1p5.samsung.com (unknown [182.195.40.157]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 49yr3G18bCzMqYkZ; Fri,  3 Jul
+        2020 09:56:58 +0000 (GMT)
+Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
+        epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
+        F7.26.28578.AE00FFE5; Fri,  3 Jul 2020 18:56:58 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
+        20200703095657epcas1p4347374f533f0cd84430d548a3af12b79~eNZGXy1s32581025810epcas1p4a;
+        Fri,  3 Jul 2020 09:56:57 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200703095657epsmtrp135a8beb715c763a0e0cef6546732de3e~eNZGWzYIf1126511265epsmtrp1p;
+        Fri,  3 Jul 2020 09:56:57 +0000 (GMT)
+X-AuditID: b6c32a39-8c9ff70000006fa2-52-5eff00ea506c
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        7A.15.08382.9E00FFE5; Fri,  3 Jul 2020 18:56:57 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.113.221.102]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20200703095657epsmtip1221f184935bf1f55415c22d0ab74d2c3~eNZGFwEjF0487104871epsmtip1C;
+        Fri,  3 Jul 2020 09:56:57 +0000 (GMT)
+From:   Chanwoo Choi <cw00.choi@samsung.com>
+To:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     leonard.crestez@nxp.com, lukasz.luba@arm.com,
+        enric.balletbo@collabora.com, hl@rock-chips.com, digetx@gmail.com,
+        thierry.reding@gmail.com, jonathanh@nvidia.com, abel.vesa@nxp.com,
+        cw00.choi@samsung.com, chanwoo@kernel.org,
+        myungjoo.ham@samsung.com, kyungmin.park@samsung.com
+Subject: [PATCH 0/2] PM / devfreq: Add governor flags
+Date:   Fri,  3 Jul 2020 19:08:08 +0900
+Message-Id: <20200703100810.12304-1-cw00.choi@samsung.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmplk+LIzCtJLcpLzFFi42LZdlhTV/cVw/84gz9bWC2WXTrKaDHxxhUW
+        i+tfnrNarP74mNFize1DjBY/NpxitmiZtYjF4mzTG3aLFXc/slpc3jWHzeJz7xFGi4VNLewW
+        txtXsFn83DWPxYHPY828NYweO+4uYfTYOesuu8emVZ1sHr3N79g8Nr7bweTxd9Z+Fo++LasY
+        PT5vkgvgjMq2yUhNTEktUkjNS85PycxLt1XyDo53jjc1MzDUNbS0MFdSyEvMTbVVcvEJ0HXL
+        zAG6XkmhLDGnFCgUkFhcrKRvZ1OUX1qSqpCRX1xiq5RakJJTYFmgV5yYW1yal66XnJ9rZWhg
+        YGQKVJiQnXHmv2DBdcGKg235DYzb+boYOTkkBEwkpp/4zdLFyMUhJLCDUeLOgQVQzidGiakX
+        lrJBON8YJT4s/ccG07L8wBlmiMReRokp1/+wQjhfGCUuN09jBKliE9CS2P/iBliHiICVxOn/
+        HWAdzALzmCQWn74KtISDQ1jAVOLJ/ziQGhYBVYljxw4ygoR5geofb+eHWCYvsXrDAbBWCYFG
+        Dol5q74zQyRcJGbcbICyhSVeHd/CDmFLSbzsb4OyqyVWnjzCBtHcwSixZf8FVoiEscT+pZOZ
+        QJYxC2hKrN+lDxFWlNj5ey7Y/cwCfBLvvvawgpRICPBKdLQJQZQoS1x+cJcJwpaUWNzeCQ0U
+        D4nfV+6DrRUSiJV4f+sq0wRG2VkICxYwMq5iFEstKM5NTy02LDBFjqNNjOD0qGW5g3H62w96
+        hxiZOBgPMUpwMCuJ8Cao/osT4k1JrKxKLcqPLyrNSS0+xGgKDK+JzFKiyfnABJ1XEm9oamRs
+        bGxhYmhmamioJM7rZH0hTkggPbEkNTs1tSC1CKaPiYNTqoFJOiOS4TJPT+m0F04nWE7POvHg
+        Y3jT5HulT8+E3SyuOt1ksGu2lPjBg/WaE+Z++nI6bLZfuem3oye2KLLsEfHaeWeFT8rV2B38
+        e089k+x9sFzw1uP3ktr5Zl1r2J4arFq61PfSkeYzU1b7Leh49TtC5MV/zSvcf9UOa7ttEU1X
+        0xbLfs++tmLuhITw6eVvO7WCbTxXtSwPFrwXeIpjgcSz11/YhaMeBJvvCL0e7GaxtNC5zIpj
+        Smp2isB6l8+qHs2pDna+R1eGe7za2jutSYbr/+8diTcve1u2rH19J/TlUinDL7cbNf81Bz1f
+        v4eh/MHb15Vr3BpuxWe/8nRhbapf19TVHuc3Y6nKk7cnGBa+VWIpzkg01GIuKk4EAObdRBwY
+        BAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrILMWRmVeSWpSXmKPExsWy7bCSnO5Lhv9xBp+WyVosu3SU0WLijSss
+        Fte/PGe1WP3xMaPFmtuHGC1+bDjFbNEyaxGLxdmmN+wWK+5+ZLW4vGsOm8Xn3iOMFgubWtgt
+        bjeuYLP4uWseiwOfx5p5axg9dtxdwuixc9Zddo9NqzrZPHqb37F5bHy3g8nj76z9LB59W1Yx
+        enzeJBfAGcVlk5Kak1mWWqRvl8CVcea/YMF1wYqDbfkNjNv5uhg5OSQETCSWHzjDDGILCexm
+        lPhw1wwiLikx7eJRoDgHkC0scfhwcRcjF1DJJ0aJ5TNOMYHUsAloSex/cYMNxBYRsJG4u/ga
+        C0gRs8AaJol32w8xgTQLC5hKPPkfB1LDIqAqcezYQUaQMK+AlcTj7fwQq+QlVm84wDyBkWcB
+        I8MqRsnUguLc9NxiwwLDvNRyveLE3OLSvHS95PzcTYzgUNXS3MG4fdUHvUOMTByMhxglOJiV
+        RHgTVP/FCfGmJFZWpRblxxeV5qQWH2KU5mBREue9UbgwTkggPbEkNTs1tSC1CCbLxMEp1cA0
+        O0Dz1MYNFn+VVhyfIrA7VmXKsnulwSv0ryw4PMX92PGJmwv2bLi+9+zsA52Zzk97U0sMpjCo
+        nX+sPO2b6CLx1Z28RU9UP8dFdKd8mn3hOrdRdWfhjSM8U7wd8owm/WX8zrxGYlvTqiNJ3jkP
+        H7BoWp1ZESYglWnv9rXMX3//ZIHgzknptvKONaqlvacc2b/9/5rQu/rR5wvBvHcPzkw7o9x3
+        JVnJeKpjeWObv9jUE4pyy2JDi5ZGPPnrV73og/FrmxPzymdF1Tlv43859d/++ubDkk91Kn4E
+        pnRMKr69dkt82B7pZOcP2YdvTfndPYU1eoGS68XKZjO/fM6eSRMzha+57y+6X2VgcSNPMUtX
+        iaU4I9FQi7moOBEATZZbEcQCAAA=
+X-CMS-MailID: 20200703095657epcas1p4347374f533f0cd84430d548a3af12b79
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200703095657epcas1p4347374f533f0cd84430d548a3af12b79
+References: <CGME20200703095657epcas1p4347374f533f0cd84430d548a3af12b79@epcas1p4.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Devfreq provides the multiple governors and sysfs interface for user.
+But, some sysfs attributes are useful or not useful. Prior to that
+the user can access all sysfs attributes regardless of availability.
 
---xHFwDpU9dbj6ez1V
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+So, clarify the access permission of sysfs attributes according to governor.
+Provide the governor flag to specify what is necessary or not.
+When adding the devfreq governor, governor can specify the available
+attributes with DEVFREQ_GOV_ATTR_ATTR_* defintion as following.
 
-On Tue, Jun 30, 2020 at 02:00:49AM +0000, Tian, Kevin wrote:
-> > From: Liu, Yi L <yi.l.liu@intel.com>
-> > Sent: Monday, June 29, 2020 8:23 PM
-> >=20
-> > Hi Stefan,
-> >=20
-> > > From: Stefan Hajnoczi <stefanha@gmail.com>
-> > > Sent: Monday, June 29, 2020 5:25 PM
-> > >
-> > > On Wed, Jun 24, 2020 at 01:55:15AM -0700, Liu Yi L wrote:
-> > > > +/*
-> > > > + * struct iommu_nesting_info - Information for nesting-capable IOM=
-MU.
-> > > > + *				user space should check it before using
-> > > > + *				nesting capability.
-> > > > + *
-> > > > + * @size:	size of the whole structure
-> > > > + * @format:	PASID table entry format, the same definition with
-> > > > + *		@format of struct iommu_gpasid_bind_data.
-> > > > + * @features:	supported nesting features.
-> > > > + * @flags:	currently reserved for future extension.
-> > > > + * @data:	vendor specific cap info.
-> > > > + *
-> > > > + * +---------------+----------------------------------------------=
-------+
-> > > > + * | feature       |  Notes                                       =
-      |
-> > > > + *
-> > >
-> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D+=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > =3D=3D=3D=3D
-> > > =3D+
-> > > > + * | SYSWIDE_PASID |  Kernel manages PASID in system wide, PASIDs
-> > used  |
-> > > > + * |               |  in the system should be allocated by host ke=
-rnel  |
-> > > > + * +---------------+----------------------------------------------=
-------+
-> > > > + * | BIND_PGTBL    |  bind page tables to host PASID, the PASID co=
-uld   |
-> > > > + * |               |  either be a host PASID passed in bind reques=
-t or  |
-> > > > + * |               |  default PASIDs (e.g. default PASID of aux-do=
-main) |
-> > > > + * +---------------+----------------------------------------------=
-------+
-> > > > + * | CACHE_INVLD   |  mandatory feature for nesting capable IOMMU
-> > |
-> > > > + * +---------------+----------------------------------------------=
-------+
-> > >
-> > > This feature description is vague about what CACHE_INVLD does and how
-> > to
-> > > use it. If I understand correctly, the presence of this feature means
-> > > that VFIO_IOMMU_NESTING_OP_CACHE_INVLD must be used?
-> > >
-> > > The same kind of clarification could be done for SYSWIDE_PASID and
-> > > BIND_PGTBL too.
-> >=20
-> > For SYSWIDE_PASID and BIND_PGTBL, yes, presence of the feature bit
-> > means must use. So the two are requirements to user space if it wants
-> > to setup nesting. While for CACHE_INVLD, it's kind of availability
-> > here. How about removing CACHE_INVLD as presence of BIND_PGTBL should
-> > indicates support of CACHE_INVLD?
-> >=20
->=20
-> So far this assumption is correct but it may not be true when thinking fo=
-rward.
-> For example, a vendor might find a way to allow the owner of 1st-level pa=
-ge
-> table to directly invalidate cache w/o going through host IOMMU driver. F=
-rom
-> this angle I feel explicitly reporting this capability is more robust.
->=20
-> Regarding to the description, what about below?
->=20
-> --
-> SYSWIDE_PASID: PASIDs are managed in system-wide, instead of per device.
-> When a device is assigned to userspace or VM, proper uAPI (provided by=20
-> userspace driver framework, e.g. VFIO) must be used to allocate/free PASI=
-Ds
-> for the assigned device.
->=20
-> BIND_PGTBL: The owner of the first-level/stage-1 page table must explicit=
-ly=20
-> bind the page table to associated PASID (either the one specified in bind=
-=20
-> request or the default PASID of the iommu domain), through VFIO_IOMMU
-> _NESTING_OP
->=20
-> CACHE_INVLD: The owner of the first-level/stage-1 page table must
-> explicitly invalidate the IOMMU cache through VFIO_IOMMU_NESTING_OP,
-> according to vendor-specific requirement when changing the page table.
-> --
+[Definition for sysfs attributes]
+- DEVFREQ_GOV_ATTR_GOVERNOR
+- DEVFREQ_GOV_ATTR_AVAIL_GOVERNORS
+- DEVFREQ_GOV_ATTR_AVAIL_FREQUENCIES
+- DEVFREQ_GOV_ATTR_CUR_FREQ
+- DEVFREQ_GOV_ATTR_TARGET_FREQ
+- DEVFREQ_GOV_ATTR_MIN_FREQ
+- DEVFREQ_GOV_ATTR_MAX_FREQ
+- DEVFREQ_GOV_ATTR_TRANS_STAT
+- DEVFREQ_GOV_ATTR_POLLING_INTERVAL
+- DEVFREQ_GOV_ATTR_TIMER
 
-Mentioning the API to allocate/free PASIDs and VFIO_IOMMU_NESTING_OP has
-made this clearer. This lets someone reading the documentation know
-where to look for further information on using these features.
+Also, the devfreq governor is able to have the specific flag as follows
+in order to implement the specific feature with DEVFREQ_GOV_FLA_*.
+For exmaple, the devfreq deivce using passive governor cannot change
+their own governor because passive governor requires the 'immutable'
+feature with DEVFREQ_GOV_FLAG_IMMUTABLE.
 
-Thank you!
+[Definition for governor flag]
+- DEVFREQ_GOV_FLAG_IMMUTABLE
+: If immutable flag is set, governor is never changeable to other governors.
+- DEVFREQ_GOV_FLAG_IRQ_DRIVEN
+: Devfreq core won't schedule polling work for this governor if value is set.
 
-Stefan
 
---xHFwDpU9dbj6ez1V
-Content-Type: application/pgp-signature; name="signature.asc"
+Based on:
+- This series is based on v5.8-rc3 and patchset[1].
+- [1] https://patchwork.kernel.org/cover/11640919/
+  ("[RFC,0/2] PM / devfreq: Add delayed timer for polling")
 
------BEGIN PGP SIGNATURE-----
+Chanwoo Choi (2):
+  PM / devfreq: Clean up the devfreq instance name in sysfs attr
+  PM / devfreq: Add governor flags to clarify the features
 
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAl7/AWYACgkQnKSrs4Gr
-c8gjgAf+Nal5JGppiGxNvF8o+N4PQxI9ucEsipPeQkGzfMdGwEPBPWyLHEhwTEKG
-4sbBPMw8FjPaBGk54Za1CxjNMXuIAFIaFV/srTfaHYVHrZq4CeUOlR02+bKqTnb6
-bGjUkIQ3GNb3zwGsi2FFeamD0WeKl4ccQ1CrVH0vpMXqF7m9mEa5YXx1VUyN9p0A
-VyranfGTurVQctbIa0iG02d5iMqGPPHKhFhRFpsQ66cS0m3yMXO72z+nFJs8tBCy
-ezdnCkNMkeBXEHQrpdm1HnOtcMCUxZV13jPs7advb1Xv+oZnEQrfMzwzmG5N3z2w
-PHoBHT/EpP06jcjIcGOcBFS8KVXJ6w==
-=1OHs
------END PGP SIGNATURE-----
+ drivers/devfreq/devfreq.c                 | 188 +++++++++++++++++-----
+ drivers/devfreq/governor.h                |  45 +++++-
+ drivers/devfreq/governor_passive.c        |   3 +-
+ drivers/devfreq/governor_performance.c    |   1 +
+ drivers/devfreq/governor_powersave.c      |   1 +
+ drivers/devfreq/governor_simpleondemand.c |   3 +
+ drivers/devfreq/governor_userspace.c      |   1 +
+ drivers/devfreq/tegra30-devfreq.c         |   6 +-
+ 8 files changed, 195 insertions(+), 53 deletions(-)
 
---xHFwDpU9dbj6ez1V--
+-- 
+2.17.1
+
