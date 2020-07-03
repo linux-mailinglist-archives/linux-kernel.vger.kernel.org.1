@@ -2,98 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C44721358E
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 09:55:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4687C213592
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 09:57:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725984AbgGCHz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 03:55:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39046 "EHLO
+        id S1726208AbgGCH5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 03:57:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725648AbgGCHz3 (ORCPT
+        with ESMTP id S1725648AbgGCH5Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 03:55:29 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C90CC08C5C1;
-        Fri,  3 Jul 2020 00:55:29 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id ga4so33164769ejb.11;
-        Fri, 03 Jul 2020 00:55:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fTwxTX3lFaXQfpGF8WrHjZ4nudeN/Udeni+zhLUnCvc=;
-        b=SpaVPjaMnFzQwxkrqren2c5gluTMM06oLE3DokQdyhlOp29LwESSWmcHl4qYLGbfBO
-         +O9YBgdzUkvyCsVtcqVBJfyR18toE3sxz2TmgS3dajJ0peuT5Swl+z27NlYlOPgewf7t
-         UH39mxwb8R3cSiWarOqX34Dpp6LC0UI/7vcZieY7z3Cx72mGvMtjjTfkcw8IKGqY5W0q
-         BhO4lVfAiV+YVqwOdtVs4CUwAfzX2qKs/DKoglIgOSBUG48A4pBqFxe3uQZbCG+lpRlL
-         g2wvdps1w2yIUKbhx4WFRHbMd1cI8dJyAcih6rz/Bl0yM68oCyl73VdMW8m/dVVr4d9W
-         B7vQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fTwxTX3lFaXQfpGF8WrHjZ4nudeN/Udeni+zhLUnCvc=;
-        b=LZb77FGxz7FORwMPIDbKnHtlr965Nscr0tVDxxboLpQaH6rBxyvDi4wsVe/oDz8nNs
-         m2Ce2MA0Od1HMs2KjX3jcAUpJo/82vAg43u6FcQXzosmCuP9b+b7D1gLRSghg+VrxbqW
-         +yruXEdQuA3T+ix9KajqlqCzDhhElnvLHY4Bzsq09xpd6zV402Q0eDuDW4D1c+Lf30zg
-         Zst9K4uLCVk1aXUHr6zTdn5XxBYSIgqv532SWaO+h/z6zAx5rpQT1lHHMZVmpETq3Tkc
-         Nan2GaD3qle1tIpCMG2662b2sXRPxHUMcIoSzg7QBl7L/vuOBeuIHSYsJ3vTPXRAXf6Z
-         ftag==
-X-Gm-Message-State: AOAM531c589pQD/4brtGgZkjzqunxqAIukd30g5Rrm/sKrYOtauYpPYH
-        pVdwQeHMk5/sM+0vI8MhPC4cstsrBr17g6gmdRg=
-X-Google-Smtp-Source: ABdhPJz6fwPZkrY9L42bGm444d1WyCatcvdmy6Wi9LsWodQ4QxiW0oZszOLBWn9xc7ILi9PYDvUjDDttttJeURkP40c=
-X-Received: by 2002:a17:906:1414:: with SMTP id p20mr30410902ejc.247.1593762927651;
- Fri, 03 Jul 2020 00:55:27 -0700 (PDT)
+        Fri, 3 Jul 2020 03:57:16 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2837FC08C5C1;
+        Fri,  3 Jul 2020 00:57:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=JV8hwZUbSwUCZKyuwgk4vToHzbaTKqDD4etCB411ay8=; b=LMbY8QJnU8h++lYC9Ixlw/dQWa
+        1WEUFZqzw7FpCURd1afG1Z6IWgkxwJebjf4YhQAGW5RoJJPc4LqTTJyzUkwXliHl97EBO2gCoRXIl
+        FA/OuG6pcbp879DUMmHe4MDL26QdmEMvu+pnAuY322ePYwqXIRH5bXR0s4AxkGj4yVu/m0KghQBay
+        owjS3vKCk3yMSTbz0oa2ugslQDKcabPuvXSJEvf7VizjnY8vgIU07t69wd/3clPscDBZ0oIJjwtG2
+        FSlDfZI1AlrLwieVW8Lz1yKfYcVr+tmt1usfsdKKWL9bMyaZczj7L90f7l39mHhwg87qNdo9QOOil
+        fSxvRchA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jrGZ3-0000Uj-0I; Fri, 03 Jul 2020 07:56:53 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D481630377D;
+        Fri,  3 Jul 2020 09:56:46 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id BFD8D203A6153; Fri,  3 Jul 2020 09:56:46 +0200 (CEST)
+Date:   Fri, 3 Jul 2020 09:56:46 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Liang, Kan" <kan.liang@linux.intel.com>
+Cc:     Like Xu <like.xu@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, ak@linux.intel.com,
+        wei.w.wang@intel.com, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, "Liang, Kan" <kan.liang@intel.com>
+Subject: Re: [PATCH v12 00/11] Guest Last Branch Recording Enabling
+Message-ID: <20200703075646.GJ117543@hirez.programming.kicks-ass.net>
+References: <20200613080958.132489-1-like.xu@linux.intel.com>
+ <20200702074059.GX4781@hirez.programming.kicks-ass.net>
+ <5d3980e3-1c49-4174-4cdb-f40fc21ee6c1@linux.intel.com>
+ <20200702135842.GR4800@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <1593701576-28580-1-git-send-email-amittomer25@gmail.com>
- <1593701576-28580-2-git-send-email-amittomer25@gmail.com> <20200702210014.GA1685248@bogus>
- <CABHD4K8=8+fFu=ZjQHEgR44x+QsvLZ+LW7w=XKH7O4oXu+QY4A@mail.gmail.com>
-In-Reply-To: <CABHD4K8=8+fFu=ZjQHEgR44x+QsvLZ+LW7w=XKH7O4oXu+QY4A@mail.gmail.com>
-From:   Amit Tomer <amittomer25@gmail.com>
-Date:   Fri, 3 Jul 2020 13:24:50 +0530
-Message-ID: <CABHD4K-_jmC512_ckmw66FppJHitkU8j-M9TQ316+M9zou3Fmg@mail.gmail.com>
-Subject: Re: [PATCH v5 01/10] dt-bindings: dmaengine: convert Actions Semi Owl
- SoCs bindings to yaml
-To:     Rob Herring <robh@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
-        Andre Przywara <andre.przywara@arm.com>,
-        cristian.ciocaltea@gmail.com, Rob Herring <robh+dt@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        devicetree@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        dan.j.williams@intel.com, linux-actions@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200702135842.GR4800@hirez.programming.kicks-ass.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 3, 2020 at 12:48 PM Amit Tomer <amittomer25@gmail.com> wrote:
->
-> Hi Rob,
->
->
-> > If you already ran 'make dt_binding_check' and didn't see the above
-> > error(s), then make sure dt-schema is up to date:
-> >
-> > pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
-> >
-> > Please check and re-submit.
->
-> I wasn't able to reproduce it, even after updating the dt-schema.
-> Kindly have a look at logs:
->
-> https://pastebin.ubuntu.com/p/xTBNNyBdFv/
+On Thu, Jul 02, 2020 at 03:58:42PM +0200, Peter Zijlstra wrote:
+> On Thu, Jul 02, 2020 at 09:11:06AM -0400, Liang, Kan wrote:
+> > On 7/2/2020 3:40 AM, Peter Zijlstra wrote:
+> > > On Sat, Jun 13, 2020 at 04:09:45PM +0800, Like Xu wrote:
+> > > > Like Xu (10):
+> > > >    perf/x86/core: Refactor hw->idx checks and cleanup
+> > > >    perf/x86/lbr: Add interface to get LBR information
+> > > >    perf/x86: Add constraint to create guest LBR event without hw counter
+> > > >    perf/x86: Keep LBR records unchanged in host context for guest usage
+> > > 
+> > > > Wei Wang (1):
+> > > >    perf/x86: Fix variable types for LBR registers
+> > > 
+> > > >   arch/x86/events/core.c            |  26 +--
+> > > >   arch/x86/events/intel/core.c      | 109 ++++++++-----
+> > > >   arch/x86/events/intel/lbr.c       |  51 +++++-
+> > > >   arch/x86/events/perf_event.h      |   8 +-
+> > > >   arch/x86/include/asm/perf_event.h |  34 +++-
+> > > 
+> > > These look good to me; but at the same time Kan is sending me
+> > > Architectural LBR patches.
+> > > 
+> > > Kan, if I take these perf patches and stick them in a tip/perf/vlbr
+> > > topic branch, can you rebase the arch lbr stuff on top, or is there
+> > > anything in the arch-lbr series that badly conflicts with this work?
+> > > 
+> > 
+> > Yes, I can rebase the arch lbr patches on top of them.
+> > Please push the tip/perf/vlbr branch, so I can pull and rebase my patches.
+> 
+> For now I have:
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git perf/vlbr
+> 
+> Once the 0day robot comes back all-green, I'll push it out to
+> tip/perf/vlbr and merge it into tip/perf/core.
 
-Looks like, dtschema even after upgrade pointing to older commit "6a941d46b9f5".
-Wondering why it has not been pointing to latest commit "6a941d46b9f5"
-
-After upgrading the pip version for python3, and upgrading the dt-schema again
-https://pastebin.ubuntu.com/p/Rd9knQgvKH/
-
-Issue is still reproduced.
-
-Thanks
--Amit
+tip/perf/vlbr now exists, thanks!
