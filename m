@@ -2,121 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98F4E213088
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 02:43:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BC67213077
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 02:33:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726297AbgGCAnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 20:43:16 -0400
-Received: from mga01.intel.com ([192.55.52.88]:44080 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726017AbgGCAnQ (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 20:43:16 -0400
-IronPort-SDR: nbIl1QTTtlJIsUzwnP8Gu+eJKM43RF7TdGqA3/NJBPf6GexnUL5Kp13c9V1l8pN8e5nYKNizBu
- gTl4vbD7Aesw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="165119489"
-X-IronPort-AV: E=Sophos;i="5.75,306,1589266800"; 
-   d="scan'208";a="165119489"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2020 17:43:15 -0700
-IronPort-SDR: +3BATNlpnb2LhdaxdKRXQ83hMGdtC/P2mVh6XB5Up5u23Hh6dO5qDqdPK/s72/zJvMJyE5gAJA
- qXkHLfcIJ1vQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,306,1589266800"; 
-   d="scan'208";a="356619200"
-Received: from kbl-ppc.sh.intel.com ([10.239.159.118])
-  by orsmga001.jf.intel.com with ESMTP; 02 Jul 2020 17:43:13 -0700
-From:   Jin Yao <yao.jin@linux.intel.com>
-To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com
-Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com, irogers@google.com,
-        Jin Yao <yao.jin@linux.intel.com>
-Subject: [PATCH] perf evsel: Don't set sample_regs_intr/sample_regs_user for dummy event
-Date:   Fri,  3 Jul 2020 08:42:15 +0800
-Message-Id: <20200703004215.24418-1-yao.jin@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726150AbgGCAdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 20:33:13 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:18337 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726017AbgGCAdM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 20:33:12 -0400
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200703003310epoutp01dd2e1eb7fce2eafd9b0dd8ea16aaa264~eFs2RIF7v1534515345epoutp01Q
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Jul 2020 00:33:10 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200703003310epoutp01dd2e1eb7fce2eafd9b0dd8ea16aaa264~eFs2RIF7v1534515345epoutp01Q
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1593736390;
+        bh=WgDPUYOS70hgOg400YBVb5DhaHc/yBFjmgoXoUJmDMw=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=r8p9duiMBKndbOsMEPllv2s58Cu+2nfi05VcJX8bELHBNIh5xaGhiy1AFIktpxo1E
+         3eBYRGrqYol8TvVJAz+qQF2yTW90FrceeeOS3vatEOm1QibV718Kp2gIxmXlVV+kUK
+         /33+DTFnb3PsoVaLo/9ElqMYE4atDOSTWf5aVrRc=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
+        20200703003309epcas1p3caf2fd985ec2c237f1e0bcbf83990f01~eFs18fMzl2651926519epcas1p33;
+        Fri,  3 Jul 2020 00:33:09 +0000 (GMT)
+Received: from epsmges1p1.samsung.com (unknown [182.195.40.154]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 49ybXg5G4szMqYkv; Fri,  3 Jul
+        2020 00:33:07 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        4A.4E.18978.3CC7EFE5; Fri,  3 Jul 2020 09:33:07 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200703003307epcas1p20b58f82e8e7e0beb335410cd4b877884~eFsziTrw82396023960epcas1p2Z;
+        Fri,  3 Jul 2020 00:33:07 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200703003307epsmtrp233b13333867cbb0d370434cc05862122~eFszhjaJP0418304183epsmtrp2X;
+        Fri,  3 Jul 2020 00:33:07 +0000 (GMT)
+X-AuditID: b6c32a35-b8298a8000004a22-25-5efe7cc36538
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        EA.CB.08382.3CC7EFE5; Fri,  3 Jul 2020 09:33:07 +0900 (KST)
+Received: from [10.113.221.102] (unknown [10.113.221.102]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200703003307epsmtip285aa2853c809377373831f3619fdd8db~eFszSmAja2432224322epsmtip2Q;
+        Fri,  3 Jul 2020 00:33:07 +0000 (GMT)
+Subject: Re: [PATCH v2] PM / devfreq: tegra: Add Dmitry as a maintainer
+From:   Chanwoo Choi <cw00.choi@samsung.com>
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Organization: Samsung Electronics
+Message-ID: <a08f16bc-df90-2199-91c8-f2acfe0f94ad@samsung.com>
+Date:   Fri, 3 Jul 2020 09:44:22 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
+        Thunderbird/59.0
+MIME-Version: 1.0
+In-Reply-To: <921abb5e-8c12-db8b-b345-fbe49080dc1c@samsung.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrEJsWRmVeSWpSXmKPExsWy7bCmvu7hmn9xBu/ua1is/viY0aJl1iIW
+        i7NNb9gtLu+aw2bxufcIo0Xnl1lsFrcbV7BZnDl9idXi5655LA6cHjtn3WX36G1+x+ax5Wo7
+        i0ffllWMHp83yQWwRmXbZKQmpqQWKaTmJeenZOal2yp5B8c7x5uaGRjqGlpamCsp5CXmptoq
+        ufgE6Lpl5gAdpKRQlphTChQKSCwuVtK3synKLy1JVcjILy6xVUotSMkpsCzQK07MLS7NS9dL
+        zs+1MjQwMDIFKkzIzli2+QFrwQ7eip/3XzM1ML7j6mLk5JAQMJHoP/6SGcQWEtjBKLHjfGgX
+        IxeQ/YlRYu6N2+wQzjdGiU+3PrHCdKzdto0JIrGXUeLK37+MEM57RomGn1uAWjg4hAXcJfrn
+        24I0sAloSex/cYMNpEZE4A+jxIXbl8AmMQtEShzeuZoJxOYXUJS4+uMxI4jNK2AnMbN3AjuI
+        zSKgIvF68l6wuKhAmMTJbS1QNYISJ2c+YQGxOQXsJc6t/sAEMVNc4taT+VC2vMT2t3OYQRZL
+        CKzkkHj9tJ0J4gUXiTef/zFD2MISr45vYYewpSQ+v9vLBmFXS6w8eYQNormDUWLL/gtQ/xtL
+        7F86mQnkS2YBTYn1u/QhwooSO3/PZYRYzCfx7msPK0iJhACvREebEESJssTlB3ehTpCUWNze
+        yTaBUWkWkndmIXlhFpIXZiEsW8DIsopRLLWgODc9tdiwwBA5tjcxghOrlukOxolvP+gdYmTi
+        YDzEKMHBrCTCm6D6L06INyWxsiq1KD++qDQntfgQoykwgCcyS4km5wNTe15JvKGpkbGxsYWJ
+        oZmpoaGSOK+4zIU4IYH0xJLU7NTUgtQimD4mDk6pBqbz135auy2ZVHHP8Wtw7+Ha9/91Z61r
+        2tI2t2DH5veb98zZ+zR22z9ZxdyEJaVrpBgsXlpP+zyz8sC5z5z7/p9mL8nPbnyzj/Xy29wv
+        +npXD0kE2LrFOxXvFFZcuqrviHaI/Sop/fr9Jz2e7Y+P/sA3ZaGOoCBHf/YScfmzsvuS+N9v
+        6lKvjY1TfpW93n6DXeUUnWlZt4yrXD4c39i1VEF6epRSpmzu84sG20+FNzmkOWsuSI23Ttu5
+        r8V4wWKb2yyhPxWk9j9+sD3b5o74hxnF03d+1y1vcj034+6dRPcnG+efyzBQvvdG3ivaWXu/
+        0FX7W6JHTgovYrkc7Xwp5l3OOY3mcLfKE6s8fr9N27hJiaU4I9FQi7moOBEABYj04TUEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFuplkeLIzCtJLcpLzFFi42LZdlhJXvdwzb84g33reC1Wf3zMaNEyaxGL
+        xdmmN+wWl3fNYbP43HuE0aLzyyw2i9uNK9gszpy+xGrxc9c8FgdOj52z7rJ79Da/Y/PYcrWd
+        xaNvyypGj8+b5AJYo7hsUlJzMstSi/TtErgylm1+wFqwg7fi5/3XTA2M77i6GDk5JARMJNZu
+        28bUxcjFISSwm1Fi5u8LLBAJSYlpF48ydzFyANnCEocPF0PUvGWUeHnmPCtIXFjAXaJ/vi1I
+        OZuAlsT+FzfYQGpEBBqYJFoXLWMCSTALREr0zN3CBtG8l1Hi/byFzCAJfgFFias/HjOC2LwC
+        dhIzeyewg9gsAioSryfvBYuLCoRJ7FzymAmiRlDi5MwnYMdxCthLnFv9AWqBusSfeZeYIWxx
+        iVtP5kPF5SW2v53DPIFReBaS9llIWmYhaZmFpGUBI8sqRsnUguLc9NxiwwLDvNRyveLE3OLS
+        vHS95PzcTYzgGNPS3MG4fdUHvUOMTByMhxglOJiVRHgTVP/FCfGmJFZWpRblxxeV5qQWH2KU
+        5mBREue9UbgwTkggPbEkNTs1tSC1CCbLxMEp1cBUrbgk5NH3by+fb5g5pT5wkpb0Xu0J11pO
+        Clq9/D3p5MbTWf4d1kWX1RjX39dV5vXgiN9slsWewC8T8b/+r/Anq8cx0iFe3Jsm87sUNS5u
+        YzwQra78wN006MyP0Bds+YumfUuXYt4++2iFqHaBqM6zJY/ain9s79kaFWb6YLv3okrWnM1l
+        3IefnLG5HM/+zodBfm58jJn/a/12sz45F52j4WbCLAEBxm9O6lcuF7dsEPknPu2n8vKtqSf/
+        9r3qZE1/eTqgRfAL2wv/m8dCFJVd6lL5Zk//cX7ftoUJi81vnpDpXCX3y69mhXLDnZbEjc8C
+        bGKqvl2fFlP+8sWjsnCB2OmicxQT3qfcDVv8+YkSS3FGoqEWc1FxIgDb/Ma6IAMAAA==
+X-CMS-MailID: 20200703003307epcas1p20b58f82e8e7e0beb335410cd4b877884
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200402222006epcas1p4027cd509b32ba2d2bdf90e9e84cf4bec
+References: <CGME20200402222006epcas1p4027cd509b32ba2d2bdf90e9e84cf4bec@epcas1p4.samsung.com>
+        <20200402221723.6064-1-digetx@gmail.com>
+        <921abb5e-8c12-db8b-b345-fbe49080dc1c@samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit 0a892c1c9472 ("perf record: Add dummy event during system wide synthesis"),
-a dummy event is added to capture mmaps.
+Dear all,
 
-But if we run perf-record as,
+On 5/8/20 1:04 PM, Chanwoo Choi wrote:
+> Hi Rafael,
+> 
+> Could you please apply it to linux-pm directly?
+> 
+> I think that it is better to be applied directly
+> for preventing the possible merge conflict of MAINTAINERS file.
+> 
+> Best Regards,
+> Chanwoo Choi
+> 
+> On 4/3/20 7:17 AM, Dmitry Osipenko wrote:
+>> I was contributing to the NVIDIA Tegra20+ devfreq drivers recently and
+>> want to help keep them working and evolving in the future.
+>>
+>> Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
+>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>> ---
+>>
+>> Changelog:
+>>
+>> v2: - Addressed review comments made by Chanwoo Choi to v1 by correcting
+>>       git's address, making this patch standalone and adding Rafael Wysocki
+>>       to the list of email recipients.
+>>
+>>  MAINTAINERS | 9 +++++++++
+>>  1 file changed, 9 insertions(+)
+>>
+>> diff --git a/MAINTAINERS b/MAINTAINERS
+>> index 245a96316636..0a694e20ea19 100644
+>> --- a/MAINTAINERS
+>> +++ b/MAINTAINERS
+>> @@ -10922,6 +10922,15 @@ F:	include/linux/memblock.h
+>>  F:	mm/memblock.c
+>>  F:	Documentation/core-api/boot-time-mm.rst
+>>  
+>> +MEMORY FREQUENCY SCALING DRIVERS FOR NVIDIA TEGRA
+>> +M:	Dmitry Osipenko <digetx@gmail.com>
+>> +L:	linux-pm@vger.kernel.org
+>> +L:	linux-tegra@vger.kernel.org
+>> +T:	git git://git.kernel.org/pub/scm/linux/kernel/git/chanwoo/linux.git
+>> +S:	Maintained
+>> +F:	drivers/devfreq/tegra20-devfreq.c
+>> +F:	drivers/devfreq/tegra30-devfreq.c
+>> +
+>>  MEMORY MANAGEMENT
+>>  M:	Andrew Morton <akpm@linux-foundation.org>
+>>  L:	linux-mm@kvack.org
+>>
+> 
+> 
 
- # perf record -e cycles:p -IXMM0 -a -- sleep 1
- Error:
- dummy:HG: PMU Hardware doesn't support sampling/overflow-interrupts. Try 'perf stat'
+I applied it to devfreq-next branch. Thanks.
 
-The issue is, if we enable the extended regs (-IXMM0), but the
-pmu->capabilities is not set with PERF_PMU_CAP_EXTENDED_REGS, the kernel
-will return -EOPNOTSUPP error.
 
-See following code pieces.
-
-/* in kernel/events/core.c */
-static int perf_try_init_event(struct pmu *pmu, struct perf_event *event)
-
-{
-	....
-	if (!(pmu->capabilities & PERF_PMU_CAP_EXTENDED_REGS) &&
-	    has_extended_regs(event))
-		ret = -EOPNOTSUPP;
-	....
-}
-
-For software dummy event, the PMU should be not set with
-PERF_PMU_CAP_EXTENDED_REGS. But unfortunately in current code, the dummy
-event has possibility to be set with PERF_REG_EXTENDED_MASK bit.
-
-In evsel__config, /* tools/perf/util/evsel.c */
-
-if (opts->sample_intr_regs) {
-	attr->sample_regs_intr = opts->sample_intr_regs;
-}
-
-If we use -IXMM0, the attr>sample_regs_intr will be set with
-PERF_REG_EXTENDED_MASK bit.
-
-It doesn't make sense to set attr->sample_regs_intr for a
-software dummy event.
-
-This patch adds dummy event checking before setting
-attr->sample_regs_intr.
-
-After:
-  # ./perf record -e cycles:p -IXMM0 -a -- sleep 1
-  [ perf record: Woken up 1 times to write data ]
-  [ perf record: Captured and wrote 0.413 MB perf.data (45 samples) ]
-
-Fixes: 0a892c1c9472 ("perf record: Add dummy event during system wide synthesis")
-Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
----
- tools/perf/util/evsel.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-index 96e5171dce41..df3315543e86 100644
---- a/tools/perf/util/evsel.c
-+++ b/tools/perf/util/evsel.c
-@@ -1020,12 +1020,12 @@ void evsel__config(struct evsel *evsel, struct record_opts *opts,
- 	if (callchain && callchain->enabled && !evsel->no_aux_samples)
- 		evsel__config_callchain(evsel, opts, callchain);
- 
--	if (opts->sample_intr_regs) {
-+	if (opts->sample_intr_regs && !is_dummy_event(evsel)) {
- 		attr->sample_regs_intr = opts->sample_intr_regs;
- 		evsel__set_sample_bit(evsel, REGS_INTR);
- 	}
- 
--	if (opts->sample_user_regs) {
-+	if (opts->sample_user_regs && !is_dummy_event(evsel)) {
- 		attr->sample_regs_user |= opts->sample_user_regs;
- 		evsel__set_sample_bit(evsel, REGS_USER);
- 	}
 -- 
-2.17.1
-
+Best Regards,
+Chanwoo Choi
+Samsung Electronics
