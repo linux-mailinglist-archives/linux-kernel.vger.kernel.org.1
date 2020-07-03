@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9B89213545
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 09:43:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2E9F21354E
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 09:44:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726309AbgGCHnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 03:43:06 -0400
-Received: from mga06.intel.com ([134.134.136.31]:59496 "EHLO mga06.intel.com"
+        id S1726477AbgGCHn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 03:43:56 -0400
+Received: from mga02.intel.com ([134.134.136.20]:11644 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725984AbgGCHnG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 03:43:06 -0400
-IronPort-SDR: oRoxPi+IzPIA0RAEDk+7gbVgoK5vMz7B0GyJn4LnrtfXMjK90nipU5qARW9yzfA16+0nkE34sb
- oOwYo/0RhNcg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="208625248"
+        id S1726428AbgGCHnw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Jul 2020 03:43:52 -0400
+IronPort-SDR: KA+Xs+hbJMaabQ6zTRtuBJku/AO4SVjvF7JJYaQykWowl1Jy8slVWDFv2bVyazsugS8K8go5qh
+ RcvEIowvQhbQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="135389433"
 X-IronPort-AV: E=Sophos;i="5.75,307,1589266800"; 
-   d="scan'208";a="208625248"
+   d="scan'208";a="135389433"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jul 2020 00:43:06 -0700
-IronPort-SDR: 8Qmih3QH/RpDAcak/HvY2nMw4NcXX94scNZEqKXz0App8odjnO0Qz/20L2eG56I/CuSsihRdj8
- expNcK/dwpQQ==
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jul 2020 00:43:51 -0700
+IronPort-SDR: k50JRPDidDd44Syss+uY6Td3LNhfXXMH1gg2a5WOkxgfkrXD/bs33TfwFp70OcOB0bpDWIo1uY
+ k8obntHKymdw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,307,1589266800"; 
-   d="scan'208";a="304511534"
+   d="scan'208";a="313257995"
 Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga004.fm.intel.com with ESMTP; 03 Jul 2020 00:43:05 -0700
+  by orsmga008.jf.intel.com with ESMTP; 03 Jul 2020 00:43:51 -0700
 Received: from [10.249.231.67] (abudanko-mobl.ccr.corp.intel.com [10.249.231.67])
-        by linux.intel.com (Postfix) with ESMTP id 7E092580784;
-        Fri,  3 Jul 2020 00:43:02 -0700 (PDT)
-Subject: [PATCH v9 04/15] perf evlist: introduce control file descriptors
+        by linux.intel.com (Postfix) with ESMTP id 7BFAE580784;
+        Fri,  3 Jul 2020 00:43:49 -0700 (PDT)
+Subject: [PATCH v9 05/15] perf evlist: implement control command handling
+ functions
 From:   Alexey Budankov <alexey.budankov@linux.intel.com>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Jiri Olsa <jolsa@redhat.com>
@@ -42,8 +43,8 @@ Cc:     Namhyung Kim <namhyung@kernel.org>,
         linux-kernel <linux-kernel@vger.kernel.org>
 References: <a4d5db4a-f25c-38dc-1c41-321a886cb122@linux.intel.com>
 Organization: Intel Corp.
-Message-ID: <662b1c03-210a-1945-c02b-ac6c0445c7c7@linux.intel.com>
-Date:   Fri, 3 Jul 2020 10:43:00 +0300
+Message-ID: <bb5a8e97-ab15-41fa-99f2-dc781d4ddc71@linux.intel.com>
+Date:   Fri, 3 Jul 2020 10:43:48 +0300
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
@@ -57,44 +58,185 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Define and initialize control file descriptors.
+Implement functions of initialization, finalization and processing
+of control command messages coming from control file descriptors.
+Allocate control file descriptor as descriptor at struct pollfd
+object of evsel_list for atomic poll() operation.
 
 Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
 ---
- tools/perf/util/evlist.c | 3 +++
- tools/perf/util/evlist.h | 5 +++++
- 2 files changed, 8 insertions(+)
+ tools/perf/util/evlist.c | 134 +++++++++++++++++++++++++++++++++++++++
+ tools/perf/util/evlist.h |  17 +++++
+ 2 files changed, 151 insertions(+)
 
 diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
-index 7b1beffec6a1..ee545a122b52 100644
+index ee545a122b52..bd0b2efa2e4a 100644
 --- a/tools/perf/util/evlist.c
 +++ b/tools/perf/util/evlist.c
-@@ -63,6 +63,9 @@ void evlist__init(struct evlist *evlist, struct perf_cpu_map *cpus,
- 	perf_evlist__set_maps(&evlist->core, cpus, threads);
- 	evlist->workload.pid = -1;
- 	evlist->bkw_mmap_state = BKW_MMAP_NOTREADY;
-+	evlist->ctl_fd.fd = -1;
-+	evlist->ctl_fd.ack = -1;
-+	evlist->ctl_fd.pos = -1;
+@@ -1714,3 +1714,137 @@ struct evsel *perf_evlist__reset_weak_group(struct evlist *evsel_list,
+ 	}
+ 	return leader;
  }
- 
- struct evlist *evlist__new(void)
++
++int evlist__initialize_ctlfd(struct evlist *evlist, int fd, int ack)
++{
++	if (fd == -1) {
++		pr_debug("Control descriptor is not initialized\n");
++		return 0;
++	}
++
++	evlist->ctl_fd.pos = perf_evlist__add_pollfd(&evlist->core, fd, NULL, POLLIN,
++						     fdarray_prop__nonfilterable);
++	if (evlist->ctl_fd.pos < 0) {
++		evlist->ctl_fd.pos = -1;
++		pr_err("Failed to add ctl fd entry: %m\n");
++		return -1;
++	}
++
++	evlist->ctl_fd.fd = fd;
++	evlist->ctl_fd.ack = ack;
++
++	return 0;
++}
++
++int evlist__finalize_ctlfd(struct evlist *evlist)
++{
++	struct pollfd *entries = evlist->core.pollfd.entries;
++
++	if (evlist->ctl_fd.pos == -1)
++		return 0;
++
++	entries[evlist->ctl_fd.pos].fd = -1;
++	entries[evlist->ctl_fd.pos].events = 0;
++	entries[evlist->ctl_fd.pos].revents = 0;
++
++	evlist->ctl_fd.pos = -1;
++	evlist->ctl_fd.ack = -1;
++	evlist->ctl_fd.fd = -1;
++
++	return 0;
++}
++
++static int evlist__ctlfd_recv(struct evlist *evlist, enum evlist_ctl_cmd *cmd,
++			      char *cmd_data, size_t data_size)
++{
++	int err;
++	char c;
++	size_t bytes_read = 0;
++
++	memset(cmd_data, 0, data_size--);
++
++	do {
++		err = read(evlist->ctl_fd.fd, &c, 1);
++		if (err > 0) {
++			if (c == '\n' || c == '\0')
++				break;
++			cmd_data[bytes_read++] = c;
++			if (bytes_read == data_size)
++				break;
++		} else {
++			if (err == -1)
++				pr_err("Failed to read from ctlfd %d: %m\n", evlist->ctl_fd.fd);
++			break;
++		}
++	} while (1);
++
++	pr_debug("Message from ctl_fd: \"%s%s\"\n", cmd_data,
++		 bytes_read == data_size ? "" : c == '\n' ? "\\n" : "\\0");
++
++	if (err > 0) {
++		if (!strncmp(cmd_data, EVLIST_CTL_CMD_ENABLE_TAG,
++			     (sizeof(EVLIST_CTL_CMD_ENABLE_TAG)-1))) {
++			*cmd = EVLIST_CTL_CMD_ENABLE;
++		} else if (!strncmp(cmd_data, EVLIST_CTL_CMD_DISABLE_TAG,
++				    (sizeof(EVLIST_CTL_CMD_DISABLE_TAG)-1))) {
++			*cmd = EVLIST_CTL_CMD_DISABLE;
++		}
++	}
++
++	return err;
++}
++
++static int evlist__ctlfd_ack(struct evlist *evlist)
++{
++	int err;
++
++	if (evlist->ctl_fd.ack == -1)
++		return 0;
++
++	err = write(evlist->ctl_fd.ack, EVLIST_CTL_CMD_ACK_TAG,
++		    sizeof(EVLIST_CTL_CMD_ACK_TAG));
++	if (err == -1)
++		pr_err("failed to write to ctl_ack_fd %d: %m\n", evlist->ctl_fd.ack);
++
++	return err;
++}
++
++int evlist__ctlfd_process(struct evlist *evlist, enum evlist_ctl_cmd *cmd)
++{
++	int err = 0;
++	char cmd_data[EVLIST_CTL_CMD_MAX_LEN];
++	int ctlfd_pos = evlist->ctl_fd.pos;
++	struct pollfd *entries = evlist->core.pollfd.entries;
++
++	if (ctlfd_pos == -1 || !entries[ctlfd_pos].revents)
++		return 0;
++
++	if (entries[ctlfd_pos].revents & POLLIN) {
++		err = evlist__ctlfd_recv(evlist, cmd, cmd_data,
++					 EVLIST_CTL_CMD_MAX_LEN);
++		if (err > 0) {
++			switch (*cmd) {
++			case EVLIST_CTL_CMD_ENABLE:
++				evlist__enable(evlist);
++				break;
++			case EVLIST_CTL_CMD_DISABLE:
++				evlist__disable(evlist);
++				break;
++			case EVLIST_CTL_CMD_ACK:
++			case EVLIST_CTL_CMD_UNSUPPORTED:
++			default:
++				pr_debug("ctlfd: unsupported %d\n", *cmd);
++				break;
++			}
++			if (!(*cmd == EVLIST_CTL_CMD_ACK || *cmd == EVLIST_CTL_CMD_UNSUPPORTED))
++				evlist__ctlfd_ack(evlist);
++		}
++	}
++
++	if (entries[ctlfd_pos].revents & (POLLHUP | POLLERR))
++		evlist__finalize_ctlfd(evlist);
++	else
++		entries[ctlfd_pos].revents = 0;
++
++	return err;
++}
 diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
-index 38901c0d1599..2caf19fb87a8 100644
+index 2caf19fb87a8..7e7abc621366 100644
 --- a/tools/perf/util/evlist.h
 +++ b/tools/perf/util/evlist.h
-@@ -74,6 +74,11 @@ struct evlist {
- 		pthread_t		th;
- 		volatile int		done;
- 	} thread;
-+	struct {
-+		int	fd;
-+		int	ack;
-+		int	pos;
-+	} ctl_fd;
- };
- 
- struct evsel_str_handler {
+@@ -359,4 +359,21 @@ void perf_evlist__force_leader(struct evlist *evlist);
+ struct evsel *perf_evlist__reset_weak_group(struct evlist *evlist,
+ 						 struct evsel *evsel,
+ 						bool close);
++#define EVLIST_CTL_CMD_ENABLE_TAG  "enable"
++#define EVLIST_CTL_CMD_DISABLE_TAG "disable"
++#define EVLIST_CTL_CMD_ACK_TAG     "ack\n"
++
++#define EVLIST_CTL_CMD_MAX_LEN 64
++
++enum evlist_ctl_cmd {
++	EVLIST_CTL_CMD_UNSUPPORTED = 0,
++	EVLIST_CTL_CMD_ENABLE,
++	EVLIST_CTL_CMD_DISABLE,
++	EVLIST_CTL_CMD_ACK
++};
++
++int evlist__initialize_ctlfd(struct evlist *evlist, int ctl_fd, int ctl_fd_ack);
++int evlist__finalize_ctlfd(struct evlist *evlist);
++int evlist__ctlfd_process(struct evlist *evlist, enum evlist_ctl_cmd *cmd);
++
+ #endif /* __PERF_EVLIST_H */
 -- 
 2.24.1
 
