@@ -2,112 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C53B021322E
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 05:28:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58599213236
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 05:30:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726309AbgGCD2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 23:28:31 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:33631 "EHLO
-        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726151AbgGCD2V (ORCPT
+        id S1726140AbgGCDaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 23:30:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54934 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726033AbgGCDaH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 23:28:21 -0400
-Received: from Internal Mail-Server by MTLPINE1 (envelope-from moshe@mellanox.com)
-        with SMTP; 3 Jul 2020 06:28:16 +0300
-Received: from dev-l-vrt-136.mtl.labs.mlnx (dev-l-vrt-136.mtl.labs.mlnx [10.234.136.1])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 0633SGM9006803;
-        Fri, 3 Jul 2020 06:28:16 +0300
-Received: from dev-l-vrt-136.mtl.labs.mlnx (localhost [127.0.0.1])
-        by dev-l-vrt-136.mtl.labs.mlnx (8.14.7/8.14.7) with ESMTP id 0633SG5b006669;
-        Fri, 3 Jul 2020 06:28:16 +0300
-Received: (from moshe@localhost)
-        by dev-l-vrt-136.mtl.labs.mlnx (8.14.7/8.14.7/Submit) id 0633SGC2006668;
-        Fri, 3 Jul 2020 06:28:16 +0300
-From:   Moshe Shemesh <moshe@mellanox.com>
-To:     "David S. Miller" <davem@davemloft.net>
-Cc:     Jiri Pirko <jiri@mellanox.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Vladyslav Tarasiuk <vladyslavt@mellanox.com>
-Subject: [PATCH net-next v2 7/7] net/mlx5e: Move devlink-health rx and tx reporters to devlink port
-Date:   Fri,  3 Jul 2020 06:27:38 +0300
-Message-Id: <1593746858-6548-8-git-send-email-moshe@mellanox.com>
-X-Mailer: git-send-email 1.8.4.3
-In-Reply-To: <1593746858-6548-1-git-send-email-moshe@mellanox.com>
-References: <1593746858-6548-1-git-send-email-moshe@mellanox.com>
+        Thu, 2 Jul 2020 23:30:07 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A335C08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 20:30:07 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id d4so14456172pgk.4
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 20:30:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mhHWKWz4+7rswG/cVf5u/2XBys3C/A1wtkJS52atwvM=;
+        b=iaD8iCHT2tH5aaetOxDpmb+hp2NNKCSgqWir0PneWlfh4jPSqWmG3Fq/6hs0On7hGp
+         gI0BLO0U6dRmbAGhJjcsNID08E0c6sOnvn+Y0TDwzf4kOTQ8/QUp/wdQzgZVNfTKxMpZ
+         pED1PF+Nfrmmp0Zu8JYR/O0h5j4QoT8142OiY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mhHWKWz4+7rswG/cVf5u/2XBys3C/A1wtkJS52atwvM=;
+        b=EV05ewFAcI5XPb9utm8rBBHjpSPVIlLwVoC8xmb/fqwD6PB1WwzKHuLlJ1UkVq0U43
+         wVkyBi6XiTxCAmJgBsK7Xu4LkWwaAEx4zZiKvVTW5AxJdntveqXS8mlkKpXmZiTp/gjS
+         vzzDiH6PkUrFpy5lKCJeF59+bbRLM2Y1miJ3IeWnKDLTyelHYoMKutPTxu6d0TlXotcX
+         ijNaK2NXox318Z1RCUO33hjEkwgKqeRjf4TV0EJXJ0n16S8WWhjrv8aoV2ugFHX5X+6n
+         l3948YrQL4pXU6iasdQ/+plrAl67QYFKe20hcLkoRK8919rmDCKMr4GLrGybCmgP/3gk
+         +nEw==
+X-Gm-Message-State: AOAM5324n7X3u//8ffTLP6H6a6wqbbMFqZ2g6GwuJ9jlJhovC5ziUhye
+        u2aW0tekttu6yh9x5A3MhbGxjpV/CiToKQ==
+X-Google-Smtp-Source: ABdhPJwOdorMAP4NfsHg8xE4MqSzD2/7knFWxWKzUNwHu1GYKFX+989l2/Yd0xXOGX/+GHWBW8hGOA==
+X-Received: by 2002:a65:448c:: with SMTP id l12mr26586535pgq.234.1593747006589;
+        Thu, 02 Jul 2020 20:30:06 -0700 (PDT)
+Received: from localhost ([2401:fa00:1:10:725a:fff:fe46:44eb])
+        by smtp.gmail.com with ESMTPSA id 204sm10372466pfc.18.2020.07.02.20.30.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Jul 2020 20:30:05 -0700 (PDT)
+From:   Yu-Hsuan Hsu <yuhsuan@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Tzung-Bi Shih <tzungbi@google.com>,
+        Cheng-Yi Chiang <cychiang@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Benson Leung <bleung@chromium.org>,
+        alsa-devel@alsa-project.org, Yu-Hsuan Hsu <yuhsuan@chromium.org>
+Subject: [PATCH] ASoC: cros_ec_codec: Log results when EC commands fail
+Date:   Fri,  3 Jul 2020 11:29:48 +0800
+Message-Id: <20200703032948.2185290-1-yuhsuan@chromium.org>
+X-Mailer: git-send-email 2.27.0.212.ge8ba1cc988-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladyslav Tarasiuk <vladyslavt@mellanox.com>
+Log results of failed EC commands to identify a problem more easily.
 
-Utilize new devlink-health port reporters API to move rx and tx
-reporters from device to port.
-
-Signed-off-by: Vladyslav Tarasiuk <vladyslavt@mellanox.com>
-Reviewed-by: Moshe Shemesh <moshe@mellanox.com>
-Reviewed-by: Jiri Pirko <jiri@mellanox.com>
+Signed-off-by: Yu-Hsuan Hsu <yuhsuan@chromium.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en/reporter_rx.c |  9 +++------
- drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c | 13 ++++---------
- 2 files changed, 7 insertions(+), 15 deletions(-)
+ sound/soc/codecs/cros_ec_codec.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_rx.c
-index c209579..35df79d 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_rx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_rx.c
-@@ -565,13 +565,10 @@ void mlx5e_reporter_icosq_cqe_err(struct mlx5e_icosq *icosq)
+diff --git a/sound/soc/codecs/cros_ec_codec.c b/sound/soc/codecs/cros_ec_codec.c
+index 8d45c628e988e..a4ab62f59efa6 100644
+--- a/sound/soc/codecs/cros_ec_codec.c
++++ b/sound/soc/codecs/cros_ec_codec.c
+@@ -90,10 +90,17 @@ static int send_ec_host_command(struct cros_ec_device *ec_dev, uint32_t cmd,
+ 	if (outsize)
+ 		memcpy(msg->data, out, outsize);
  
- int mlx5e_reporter_rx_create(struct mlx5e_priv *priv)
- {
--	struct devlink *devlink = priv_to_devlink(priv->mdev);
- 	struct devlink_health_reporter *reporter;
+-	ret = cros_ec_cmd_xfer_status(ec_dev, msg);
++	ret = cros_ec_cmd_xfer(ec_dev, msg);
+ 	if (ret < 0)
+ 		goto error;
  
--	reporter = devlink_health_reporter_create(devlink,
--						  &mlx5_rx_reporter_ops,
--						  MLX5E_REPORTER_RX_GRACEFUL_PERIOD,
--						  priv);
-+	reporter = devlink_port_health_reporter_create(&priv->dl_port, &mlx5_rx_reporter_ops,
-+						       MLX5E_REPORTER_RX_GRACEFUL_PERIOD, priv);
- 	if (IS_ERR(reporter)) {
- 		netdev_warn(priv->netdev, "Failed to create rx reporter, err = %ld\n",
- 			    PTR_ERR(reporter));
-@@ -586,5 +583,5 @@ void mlx5e_reporter_rx_destroy(struct mlx5e_priv *priv)
- 	if (!priv->rx_reporter)
- 		return;
- 
--	devlink_health_reporter_destroy(priv->rx_reporter);
-+	devlink_port_health_reporter_destroy(priv->rx_reporter);
- }
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c b/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c
-index 9805fc0..917aef9 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c
-@@ -409,14 +409,9 @@ int mlx5e_reporter_tx_timeout(struct mlx5e_txqsq *sq)
- int mlx5e_reporter_tx_create(struct mlx5e_priv *priv)
- {
- 	struct devlink_health_reporter *reporter;
--	struct mlx5_core_dev *mdev = priv->mdev;
--	struct devlink *devlink;
--
--	devlink = priv_to_devlink(mdev);
--	reporter =
--		devlink_health_reporter_create(devlink, &mlx5_tx_reporter_ops,
--					       MLX5_REPORTER_TX_GRACEFUL_PERIOD,
--					       priv);
++	if (msg->result != EC_RES_SUCCESS) {
++		dev_err(ec_dev->dev, "Command %d failed: %d\n", cmd,
++			msg->result);
++		ret = -EPROTO;
++		goto error;
++	}
 +
-+	reporter = devlink_port_health_reporter_create(&priv->dl_port, &mlx5_tx_reporter_ops,
-+						       MLX5_REPORTER_TX_GRACEFUL_PERIOD, priv);
- 	if (IS_ERR(reporter)) {
- 		netdev_warn(priv->netdev,
- 			    "Failed to create tx reporter, err = %ld\n",
-@@ -432,5 +427,5 @@ void mlx5e_reporter_tx_destroy(struct mlx5e_priv *priv)
- 	if (!priv->tx_reporter)
- 		return;
+ 	if (insize)
+ 		memcpy(in, msg->data, insize);
  
--	devlink_health_reporter_destroy(priv->tx_reporter);
-+	devlink_port_health_reporter_destroy(priv->tx_reporter);
- }
 -- 
-1.8.3.1
+2.27.0.212.ge8ba1cc988-goog
 
