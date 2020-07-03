@@ -2,77 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63688213141
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 04:06:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2956B213145
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 04:13:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726203AbgGCCG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 22:06:26 -0400
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:57602 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726107AbgGCCGT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 22:06:19 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R841e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07484;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0U1XOPYX_1593741976;
-Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U1XOPYX_1593741976)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 03 Jul 2020 10:06:17 +0800
-From:   Wei Yang <richard.weiyang@linux.alibaba.com>
-To:     rostedt@goodmis.org, mingo@redhat.com
-Cc:     linux-kernel@vger.kernel.org,
-        Wei Yang <richard.weiyang@linux.alibaba.com>
-Subject: [PATCH 5/5] tracing: toplevel d_entry already initialized
-Date:   Fri,  3 Jul 2020 10:06:12 +0800
-Message-Id: <20200703020612.12930-5-richard.weiyang@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1 (Apple Git-117)
-In-Reply-To: <20200703020612.12930-1-richard.weiyang@linux.alibaba.com>
-References: <20200703020612.12930-1-richard.weiyang@linux.alibaba.com>
+        id S1726082AbgGCCNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 22:13:23 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:60292 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726030AbgGCCNX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 22:13:23 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id ABB822F59E07BC97FD66;
+        Fri,  3 Jul 2020 10:13:20 +0800 (CST)
+Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server (TLS) id 14.3.487.0; Fri, 3 Jul 2020
+ 10:13:17 +0800
+Subject: Re: [PATCH RFC 2/5] f2fs: record average update time of segment
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>
+References: <20200630100428.19105-1-yuchao0@huawei.com>
+ <20200630100428.19105-2-yuchao0@huawei.com>
+ <20200701161927.GD1724572@google.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <70776961-0430-0a9f-cf26-09a2cc192b07@huawei.com>
+Date:   Fri, 3 Jul 2020 10:13:17 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200701161927.GD1724572@google.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.134.22.195]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently we have following call flow:
+On 2020/7/2 0:19, Jaegeuk Kim wrote:
+> On 06/30, Chao Yu wrote:
+>> Previously, once we update one block in segment, we will update mtime of
+>> segment to last time, making aged segment becoming freshest, result in
+>> that GC with cost benefit algorithm missing such segment, So this patch
+>> changes to record mtime as average block updating time instead of last
+>> updating time.
+>>
+>> It's not needed to reset mtime for prefree segment, as se->valid_blocks
+>> is zero, then old se->mtime won't take any weight with below calculation:
+>>
+>> 	se->mtime = (se->mtime * se->valid_blocks + mtime) /
+>> 				(se->valid_blocks + 1);
+>>
+>> Signed-off-by: Chao Yu <yuchao0@huawei.com>
+>> ---
+>>  fs/f2fs/segment.c | 21 ++++++++++++++++++---
+>>  1 file changed, 18 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+>> index 863ec6f1fb87..906c313835ad 100644
+>> --- a/fs/f2fs/segment.c
+>> +++ b/fs/f2fs/segment.c
+>> @@ -2150,6 +2150,22 @@ static void __set_sit_entry_type(struct f2fs_sb_info *sbi, int type,
+>>  		__mark_sit_entry_dirty(sbi, segno);
+>>  }
+>>  
+>> +static void update_segment_mtime(struct f2fs_sb_info *sbi, block_t blkaddr)
+>> +{
+>> +	unsigned int segno = GET_SEGNO(sbi, blkaddr);
+>> +	struct seg_entry *se = get_seg_entry(sbi, segno);
+>> +	unsigned long long mtime = get_mtime(sbi, false);
+>> +
+>> +	if (!se->mtime) {
+> 
+> Don't need {}.
 
-    tracer_init_tracefs()
-        tracing_init_dentry()
-        event_trace_init()
-            tracing_init_dentry()
+Updated,
 
-This shows tracing_init_dentry() is called twice in this flow and this
-is not necessary.
+BTW, have fixed below compile error:
 
-Let's remove the second one when it is for sure be properly initialized.
+   m68k-linux-ld: fs/f2fs/segment.o: in function `update_segment_mtime':
+   fs/f2fs/segment.c:2162: undefined reference to `__udivdi3'
 
-Signed-off-by: Wei Yang <richard.weiyang@linux.alibaba.com>
----
- kernel/trace/trace_events.c | 5 -----
- 1 file changed, 5 deletions(-)
+Thanks,
 
-diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
-index 8b3aa57dcea6..76879b29cf33 100644
---- a/kernel/trace/trace_events.c
-+++ b/kernel/trace/trace_events.c
-@@ -3434,7 +3434,6 @@ early_initcall(event_trace_enable_again);
- __init int event_trace_init(void)
- {
- 	struct trace_array *tr;
--	struct dentry *d_tracer;
- 	struct dentry *entry;
- 	int ret;
- 
-@@ -3442,10 +3441,6 @@ __init int event_trace_init(void)
- 	if (!tr)
- 		return -ENODEV;
- 
--	d_tracer = tracing_init_dentry();
--	if (IS_ERR(d_tracer))
--		return 0;
--
- 	entry = tracefs_create_file("available_events", 0444, NULL,
- 				    tr, &ftrace_avail_fops);
- 	if (!entry)
--- 
-2.20.1 (Apple Git-117)
-
+> 
+>> +		se->mtime = mtime;
+>> +	} else {
+>> +		se->mtime = (se->mtime * se->valid_blocks + mtime) /
+>> +						(se->valid_blocks + 1);
+>> +	}
+>> +	if (mtime > SIT_I(sbi)->max_mtime)
+>> +		SIT_I(sbi)->max_mtime = mtime;
+>> +}
+>> +
+>>  static void update_sit_entry(struct f2fs_sb_info *sbi, block_t blkaddr, int del)
+>>  {
+>>  	struct seg_entry *se;
+>> @@ -2169,10 +2185,9 @@ static void update_sit_entry(struct f2fs_sb_info *sbi, block_t blkaddr, int del)
+>>  	f2fs_bug_on(sbi, (new_vblocks >> (sizeof(unsigned short) << 3) ||
+>>  				(new_vblocks > sbi->blocks_per_seg)));
+>>  
+>> +	update_segment_mtime(sbi, blkaddr);
+>> +
+>>  	se->valid_blocks = new_vblocks;
+>> -	se->mtime = get_mtime(sbi, false);
+>> -	if (se->mtime > SIT_I(sbi)->max_mtime)
+>> -		SIT_I(sbi)->max_mtime = se->mtime;
+>>  
+>>  	/* Update valid block bitmap */
+>>  	if (del > 0) {
+>> -- 
+>> 2.26.2
+> .
+> 
