@@ -2,119 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE7C0213277
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 05:57:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2702213258
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 05:52:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726260AbgGCD5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 23:57:33 -0400
-Received: from server-x.ipv4.hkg02.ds.network ([27.111.83.178]:51992 "EHLO
-        mail.gtsys.com.hk" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
-        with ESMTP id S1725915AbgGCD5U (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 23:57:20 -0400
-X-Greylist: delayed 494 seconds by postgrey-1.27 at vger.kernel.org; Thu, 02 Jul 2020 23:57:19 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by mail.gtsys.com.hk (Postfix) with ESMTP id 3C55B2015B70;
-        Fri,  3 Jul 2020 11:49:08 +0800 (HKT)
-X-Virus-Scanned: Debian amavisd-new at gtsys.com.hk
-Received: from mail.gtsys.com.hk ([127.0.0.1])
-        by localhost (mail.gtsys.com.hk [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id qtIOi6QXlNpH; Fri,  3 Jul 2020 11:49:08 +0800 (HKT)
-Received: from s01.gtsys.com.hk (unknown [10.128.4.2])
-        by mail.gtsys.com.hk (Postfix) with ESMTP id 23A982039367;
-        Fri,  3 Jul 2020 11:49:08 +0800 (HKT)
-Received: from armhf2.gtsys.com.hk (unknown [10.128.4.15])
-        by s01.gtsys.com.hk (Postfix) with ESMTP id 1C349C01B7B;
-        Fri,  3 Jul 2020 11:49:08 +0800 (HKT)
-Received: by armhf2.gtsys.com.hk (Postfix, from userid 1000)
-        id 18CC62002E9; Fri,  3 Jul 2020 11:49:08 +0800 (HKT)
-From:   Chris Ruehl <chris.ruehl@gtsys.com.hk>
-To:     Chris Ruehl <chris.ruehl@gtsys.com.hk>
-Cc:     Jack Lo <jack.lo@gtsys.com.hk>, devicetree@vger.kernel.org,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rob Herring <robh+dt@kernel.org>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] devicetree: hwmon: shtc1: Add sensirion,shtc1.yaml
-Date:   Fri,  3 Jul 2020 11:48:55 +0800
-Message-Id: <20200703034856.12846-3-chris.ruehl@gtsys.com.hk>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200703034856.12846-1-chris.ruehl@gtsys.com.hk>
-References: <20200703034856.12846-1-chris.ruehl@gtsys.com.hk>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726098AbgGCDwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 23:52:09 -0400
+Received: from foss.arm.com ([217.140.110.172]:41516 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725937AbgGCDwJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 23:52:09 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 91CF431B;
+        Thu,  2 Jul 2020 20:52:08 -0700 (PDT)
+Received: from p8cg001049571a15.arm.com (unknown [10.163.85.168])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 3C6E13F71E;
+        Thu,  2 Jul 2020 20:52:04 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org
+Subject: [PATCH V5 (RESEND) 0/4] arm64/cpufeature: Introduce ID_PFR2, ID_DFR1, ID_MMFR5 and other changes
+Date:   Fri,  3 Jul 2020 09:21:33 +0530
+Message-Id: <1593748297-1965-1-git-send-email-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add documentation for the newly added DTS support in the shtc1 driver.
+These are remaining patches from V4 series which had some pending reviews
+from Suzuki (https://patchwork.kernel.org/cover/11557333/). Also dropped
+[PATCH 15/17] as that will need some more investigation and rework.
 
-Signed-off-by: Chris Ruehl <chris.ruehl@gtsys.com.hk>
----
- .../bindings/hwmon/sensirion,shtc1.yaml       | 53 +++++++++++++++++++
- 1 file changed, 53 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/hwmon/sensirion,shtc1.yaml
+This series applies on 5.8-rc3.
 
-diff --git a/Documentation/devicetree/bindings/hwmon/sensirion,shtc1.yaml b/Documentation/devicetree/bindings/hwmon/sensirion,shtc1.yaml
-new file mode 100644
-index 000000000000..e3e292bc6d7d
---- /dev/null
-+++ b/Documentation/devicetree/bindings/hwmon/sensirion,shtc1.yaml
-@@ -0,0 +1,53 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/hwmon/sensirion,shtc1.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Sensirion SHTC1 Humidity and Temperature Sensor IC
-+
-+maintainers:
-+  - jdelvare@suse.com
-+
-+description: |
-+  The SHTC1, SHTW1 and SHTC3 are digital humidity and temperature sensor
-+  designed especially for battery-driven high-volume consumer electronics
-+  applications.
-+  For further information refere to Documentation/hwmon/shtc1.rst
-+
-+  This binding document describes the binding for the hardware monitor
-+  portion of the driver.
-+
-+properties:
-+  compatible:
-+    enum:
-+      - sensirion,shtc1
-+      - sensirion,shtw1
-+      - sensirion,shtc3
-+
-+  reg: I2C address 0x70
-+
-+Optional properties:
-+  sensirion,blocking_io: |
-+    u8, if > 0 the i2c bus hold until measure finished (default 0)
-+  sensirion,high_precision: |
-+    u8, if > 0 aquire data with high precision (default 1)
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: false
-+
-+Example:
-+  &i2c1 {
-+    status = "okay";
-+    clock-frequency = <400000>;
-+
-+    shtc3@70 {
-+      compatible = "sensirion,shtc3";
-+      reg = <0x70>
-+      sensirion,blocking_io = <1>;
-+      status = "okay";
-+    };
-+  };
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com> 
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: James Morse <james.morse@arm.com>
+Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc: kvmarm@lists.cs.columbia.edu
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+
+Changes in V5: (https://patchwork.kernel.org/project/linux-arm-kernel/list/?series=293885)
+
+- Dropped TGRAN features along with it's macros from ID_AA64MMFR0 per Suzuki
+- Replaced with FTR_HIGHER_SAFE for SpecSEI feature in ID_AA64MMFR1 per Suzuki
+- Dropped patch "arm64/cpufeature: Add remaining feature bits in ID_AA64DFR0 register"
+
+Changes in V4: (https://patchwork.kernel.org/project/linux-arm-kernel/list/?series=290085)
+
+- Updated ftr_id_dfr0[] with a documentation for now missing [31:28] Tracfilt per Will
+- Fixed erroneous bit width value from 28 to 4 for double lock feature per Will
+- Replaced ID_SANITIZED() with ID_HIDDEN() for SYS_ID_DFR1_EL1 per Suzuki
+- Fixed positions for register definitions as per new name based grouping per Will
+- Replaced FTR_VISIBLE with FTR_HIDDEN for TLB feature in ID_AA64ISAR0 per Suzuki
+- Replaced FTR_VISIBLE with FTR_HIDDEN for MPAM and SEL2 in ID_AA64PFR0 per Suzuki
+- Replaced FTR_VISIBLE with FTR_HIDDEN for MPAMFRAC and RASFRAC in ID_AA64PFR1 per Suzuki
+- Dropped both MTE and BT features from ftr_id_aa64pfr1[] to be added later per Suzuki
+- Added ID_MMFR4_EL1 into the cpuinfo_arm64 context per Will
+
+Changes in V3: (https://patchwork.kernel.org/project/linux-arm-kernel/list/?series=281211)
+
+- Rebased on git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git (for-next/cpufeature)
+
+Changes in V2: (https://patchwork.kernel.org/project/linux-arm-kernel/list/?series=270605)
+
+- Added Suggested-by tag from Mark Rutland for all changes he had proposed
+- Added comment for SpecSEI feature on why it is HIGHER_SAFE per Suzuki
+- Added a patch which makes ID_AA64DFR0_DOUBLELOCK a signed feature per Suzuki
+- Added ID_DFR1 and ID_MMFR5 system register definitions per Will
+- Added remaining features bits for relevant 64 bit system registers per Will
+- Changed commit message on [PATCH 5/7] regarding TraceFilt feature per Suzuki
+- Changed ID_PFR2.CSV3 (FTR_STRICT -> FTR_NONSTRICT) as 64 bit registers per Will
+- Changed ID_PFR0.CSV2 (FTR_STRICT -> FTR_NONSTRICT) as 64 bit registers per Will 
+- Changed some commit messages
+
+Changes in V1: (https://patchwork.kernel.org/project/linux-arm-kernel/list/?series=234093)
+
+
+Anshuman Khandual (4):
+  arm64/cpufeature: Add remaining feature bits in ID_AA64MMFR0 register
+  arm64/cpufeature: Add remaining feature bits in ID_AA64MMFR1 register
+  arm64/cpufeature: Add remaining feature bits in ID_AA64MMFR2 register
+  arm64/cpufeature: Replace all open bits shift encodings with macros
+
+ arch/arm64/include/asm/sysreg.h | 42 +++++++++++++++++++++
+ arch/arm64/kernel/cpufeature.c  | 67 ++++++++++++++++++++-------------
+ 2 files changed, 83 insertions(+), 26 deletions(-)
+
 -- 
 2.20.1
 
