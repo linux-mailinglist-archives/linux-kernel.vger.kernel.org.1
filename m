@@ -2,89 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5D63213D0B
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 17:56:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8798A213D0E
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 17:57:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726469AbgGCP4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 11:56:34 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57216 "EHLO mx2.suse.de"
+        id S1726703AbgGCP45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 11:56:57 -0400
+Received: from foss.arm.com ([217.140.110.172]:46912 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726035AbgGCP4e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 11:56:34 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 65440AD79;
-        Fri,  3 Jul 2020 15:56:33 +0000 (UTC)
-Subject: Re: [PATCH v3 6/8] mm/gup: use a standard migration target allocation
- callback
-To:     js1304@gmail.com, Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        kernel-team@lge.com, Christoph Hellwig <hch@infradead.org>,
-        Roman Gushchin <guro@fb.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-References: <1592892828-1934-1-git-send-email-iamjoonsoo.kim@lge.com>
- <1592892828-1934-7-git-send-email-iamjoonsoo.kim@lge.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <1693d7a8-4384-8fd8-69a2-55552329a34d@suse.cz>
-Date:   Fri, 3 Jul 2020 17:56:29 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1726638AbgGCP4z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Jul 2020 11:56:55 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1D4EA1042;
+        Fri,  3 Jul 2020 08:56:55 -0700 (PDT)
+Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 12BC43F73C;
+        Fri,  3 Jul 2020 08:56:53 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     linux-kernel@vger.kernel.org, sparclinux@vger.kernel.org
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>
+Subject: [PATCH 0/2] genirq: Kill preflow handlers
+Date:   Fri,  3 Jul 2020 16:56:43 +0100
+Message-Id: <20200703155645.29703-1-valentin.schneider@arm.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <1592892828-1934-7-git-send-email-iamjoonsoo.kim@lge.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/23/20 8:13 AM, js1304@gmail.com wrote:
-> From: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-> 
-> There is a well-defined migration target allocation callback.
-> It's mostly similar with new_non_cma_page() except considering CMA pages.
-> 
-> This patch adds a CMA consideration to the standard migration target
-> allocation callback and use it on gup.c.
-> 
-> Signed-off-by: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Hi,
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+while strolling around the different flow handlers, I tried to make sense of
+what preflow_handler() was about. Turns out no one uses those anymore, but the
+genirq support has remained in place.
 
-But a suggestion below.
+Unless we can see another user of those in the near future, this seems like as
+good a time as any for a little housecleaning.
 
-> ---
->  mm/gup.c      | 57 ++++++++-------------------------------------------------
->  mm/internal.h |  1 +
->  mm/migrate.c  |  4 +++-
->  3 files changed, 12 insertions(+), 50 deletions(-)
-> 
-> diff --git a/mm/gup.c b/mm/gup.c
-> index 15be281..f6124e3 100644
-> --- a/mm/gup.c
-> +++ b/mm/gup.c
-> @@ -1608,56 +1608,15 @@ static bool check_dax_vmas(struct vm_area_struct **vmas, long nr_pages)
->  }
->  
->  #ifdef CONFIG_CMA
-> -static struct page *new_non_cma_page(struct page *page, unsigned long private)
-> +static struct page *alloc_migration_target_non_cma(struct page *page, unsigned long private)
->  {
+- Patch 1 simply deselects the (unexploited) preflow Kconfig for sparc64
+- Patch 2 is the actual cleanup
 
-...
+Cheers,
+Valentin
 
-> +	struct migration_target_control mtc = {
-> +		.nid = page_to_nid(page),
-> +		.gfp_mask = GFP_USER | __GFP_NOWARN,
-> +		.skip_cma = true,
-> +	};
->  
-> -	return __alloc_pages_node(nid, gfp_mask, 0);
-> +	return alloc_migration_target(page, (unsigned long)&mtc);
+Valentin Schneider (2):
+  sparc64: Deselect IRQ_PREFLOW_FASTEOI
+  genirq: Remove preflow handler support
 
-Do we really need this wrapper? The only user is check_and_migrate_cma_pages so
-just opencode it?
+ arch/sparc/Kconfig         |  1 -
+ include/linux/irqdesc.h    | 15 ---------------
+ include/linux/irqhandler.h |  1 -
+ kernel/irq/Kconfig         |  4 ----
+ kernel/irq/chip.c          | 13 -------------
+ 5 files changed, 34 deletions(-)
+
+--
+2.27.0
+
