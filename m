@@ -2,106 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE61A2130C3
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 03:00:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A012C2130CF
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 03:06:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726340AbgGCBA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 21:00:26 -0400
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:40199 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726017AbgGCBAZ (ORCPT
+        id S1726435AbgGCBGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 21:06:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726015AbgGCBGE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 21:00:25 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 8BD135C0194;
-        Thu,  2 Jul 2020 21:00:24 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Thu, 02 Jul 2020 21:00:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kdrag0n.dev; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm1; bh=mq9RgoRCE9wTH
-        brhBmftiU2UbhFxdZX3j8GQgZzYBpQ=; b=kx3IekKb88Ei2lpN8Iq9x+jond/Gn
-        1tcRJTyDPkFGJAxuWJCJTjO2kS/O42BEvrCiTBNUqsAYMEA5itwfnUZl3goWQL5t
-        Fi87OUuM+wXlACurK50AUf6I7n/oIAJq8Dd8jyh/QSoXYnFJCmzEhDRLZulrS5/j
-        gU8PD7YGU82PUo/mEPi0SCIYYVF+X83v0FHfesZinB1wOuRTBvqpVeJ4pJ7WGrYn
-        o7bdE7HQI2OdcZwLbPWGPkGbHOOXJsSn6dAwzc10o34hWHjjEG86F0G6qyRQk+le
-        i3FuHwi0qirO1k0vg1kDHKkaBda5DBuveM89Xvs6ouVXf1aG8ZtTjCdzg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=mq9RgoRCE9wTHbrhBmftiU2UbhFxdZX3j8GQgZzYBpQ=; b=BU5zMkut
-        7SS7BDm0SFqhj7tGVLSaTZLkTbZNV2r2U73NOxeOnBANQcMcHsjNHvqYcZx9qT+M
-        hik5I3ZyLvyg1xMDF0FUqtcMf+XjfomPVR7zjgEJ+9GgvNj8+qHvlY157WMgBbqz
-        zdgOhArat44+kZABgjX4AzaNgnWZ7biZu1dBuKZ2i4U3E7/HXWb6OvXNaFL/1vlm
-        Icsphs2ZIh5fiTw5WTJfZbfgORoJSc0qUf/gS6vsdIQR9QqOWIkI72JsWzAPoXhX
-        EwgyUELQbqkCQ4qWS3pSCuxQ05QhTzHXrJHCL28EhJ/l4DGpspw5QcP1EmSkLnUu
-        J6pPBPpGj5OvFw==
-X-ME-Sender: <xms:KIP-XqZWyorwo4VI90KX4YNGQWlptatzkrJEMMrkfMZbnwym4r8oPw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrtdehgdegtdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepffgrnhhnhicu
-    nfhinhcuoegurghnnhihsehkughrrghgtdhnrdguvghvqeenucggtffrrghtthgvrhhnpe
-    etgffhheetueeggfeuveeiuddtudehteehgefhveejleevhffgteeludehudeuudenucfk
-    phepjeefrddvvdehrdegrddufeeknecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
-    hmpehmrghilhhfrhhomhepuggrnhhnhieskhgurhgrghdtnhdruggvvh
-X-ME-Proxy: <xmx:KIP-XtYk_v6rj47vBfjd4QrlEUSyu9NmVt7uP5TLLlErBOSVQ5t2-A>
-    <xmx:KIP-Xk9L9mdCPAncCU6efz-Eh6MEFzQ9_WmJ2qje9boBfGfjGpwxJg>
-    <xmx:KIP-Xsp2Pr99dZdXbLwgnrY480VICvwAQ7uGFEX1jhBQJ9hkr3dyMQ>
-    <xmx:KIP-XsV4xyEUBULrTRpp_hfV-Bq_1Ckrc4xHdq9xdkyN2oPjTHU8Iw>
-Received: from pinwheel.hsd1.wa.comcast.net (c-73-225-4-138.hsd1.wa.comcast.net [73.225.4.138])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 091863280059;
-        Thu,  2 Jul 2020 21:00:22 -0400 (EDT)
-From:   Danny Lin <danny@kdrag0n.dev>
-To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Danny Lin <danny@kdrag0n.dev>
-Subject: Re: [PATCH] cpufreq: Record stats when fast switching is enabled
-Date:   Thu,  2 Jul 2020 18:00:09 -0700
-Message-Id: <20200703010009.220363-1-danny@kdrag0n.dev>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <3268787.3OZuCagV1k@aspire.rjw.lan>
-References: <3268787.3OZuCagV1k@aspire.rjw.lan>
+        Thu, 2 Jul 2020 21:06:04 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C3B6C08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 18:06:03 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id d17so19943183ljl.3
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 18:06:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xhJ/3m0KcF51XQMCDykPvx6FH+Zxv6t6Wm2boNZX4GA=;
+        b=HRnc8Z/UWD1VH3SDqiH4lfspf3ok3r+xS7c66s+ynb3ZzlBkN2PSz5kYMKHrzl7TQ4
+         fZ8+IFqVBJWm7YWqXIR8IP8nkdyQC3joTYpIj49kaBTa633kHTrhJhFkqzD8TramRmM1
+         Yo4ZUFvd4iiBdz/qOIz2C16Di7gBSp0vYJurQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xhJ/3m0KcF51XQMCDykPvx6FH+Zxv6t6Wm2boNZX4GA=;
+        b=HAlj8pvaiCkkftpSoV36G0AA+ubuIMvJRYj1GwGb3Ud95ULzC31TWUnuYWSyIrL0jM
+         nPutkE7hcGlAOLTBm5VJnJpN4nKzHpxvbZ4Qipfo+nuPHOAZc1n5OeecNvqIDzCPu2Nt
+         7gOYVFurLy1v746b/CUqhyBp7bj/XrAbMPRCe6YQwKEL7zuGpe7i8f0ahKvgjRa7bHVo
+         MWf47rolY2trVpMsSGuudbXGT18HMadeTAXOrNq6jAdzIVTej6vBNlmzdDRDpWPi4+wW
+         M33KwwF2h8NgWs7ls3Np7yrYsyKJaZQtlAKLz4IMFr118Fk4P00VsndAQb/twQiw65Ql
+         l8rA==
+X-Gm-Message-State: AOAM530T5YwaUVbsT45sxmX0zFliH4ynbBEpb2idZKy89PJ+65GVPDL/
+        0OcviURnzpEEJ+Bye6TfrErm4GIaZX8=
+X-Google-Smtp-Source: ABdhPJw1PDtkkVCtMxJ1LyS1ghtgis8TvSRRf9y+M7bbCy2LupG28dmqjqZIydby/hqF4e3nLEUQ8g==
+X-Received: by 2002:a2e:b4ce:: with SMTP id r14mr9004514ljm.88.1593738361260;
+        Thu, 02 Jul 2020 18:06:01 -0700 (PDT)
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com. [209.85.208.178])
+        by smtp.gmail.com with ESMTPSA id v24sm3997209lfo.4.2020.07.02.18.06.00
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Jul 2020 18:06:01 -0700 (PDT)
+Received: by mail-lj1-f178.google.com with SMTP id d17so19943124ljl.3
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 18:06:00 -0700 (PDT)
+X-Received: by 2002:a2e:9c92:: with SMTP id x18mr12604594lji.70.1593738033657;
+ Thu, 02 Jul 2020 18:00:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200702232638.2946421-1-keescook@chromium.org> <20200702232638.2946421-5-keescook@chromium.org>
+In-Reply-To: <20200702232638.2946421-5-keescook@chromium.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 2 Jul 2020 18:00:17 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiZi-v8Xgu_B3wV0B4RQYngKyPeONdiXNgrHJFU5jbe1w@mail.gmail.com>
+Message-ID: <CAHk-=wiZi-v8Xgu_B3wV0B4RQYngKyPeONdiXNgrHJFU5jbe1w@mail.gmail.com>
+Subject: Re: [PATCH 4/5] kprobes: Do not expose probe addresses to non-CAP_SYSLOG
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Dominik Czarnota <dominik.czarnota@trailofbits.com>,
+        stable <stable@vger.kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        KP Singh <kpsingh@chromium.org>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Matteo Croce <mcroce@redhat.com>,
+        Edward Cree <ecree@solarflare.com>,
+        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
+        Alexander Lobakin <alobakin@dlink.ru>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 31, 2019 at 2:14 AM, Rafael J. Wysocki wrote:
-> On Thu, Jan 31, 2019 at 11:07 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> >
-> > On 31-01-19, 11:03, Rafael J. Wysocki wrote:
-> > > On Thu, Jan 31, 2019 at 9:30 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> > > >
-> > > > The only problem that I can think of (or recall) is that this routine
-> > > > also gets called when time_in_state sysfs file is read and that can
-> > > > end up taking lock which the scheduler's hotpath will wait for.
-> > >
-> > > What about the extra locking overhead in the scheduler context?
-> >
-> > What about using READ_ONCE/WRITE_ONCE here ? Not sure if we really
-> > need locking in this particular case.
-> 
-> If that works, then fine, but ISTR some synchronization issues related to that.
+On Thu, Jul 2, 2020 at 4:26 PM Kees Cook <keescook@chromium.org> wrote:
+>
+> The kprobe show() functions were using "current"'s creds instead
+> of the file opener's creds for kallsyms visibility. Fix to use
+> seq_file->file->f_cred.
 
-Maybe using READ/WRITE_ONCE for time_in_state is problematic, but is
-there any reason why atomics wouldn't work for this? As far as I can
-tell, atomics are necessary to protect time_in_state due to its
-multi-step add operation, and READ/WRITE_ONCE can be used for last_time
-because all operations on it are single-op sets/gets.
+Side note: I have a distinct - but despite that possibly quite
+incorrect - memory that I've discussed with somebody several years ago
+about making "current_cred()" simply warn in any IO context.
 
-I've been using the setup described above on a downstream arm64 4.14
-kernel for nearly a year with no issues. I haven't noticed any
-significant anomalies in the stats so far. The system in question has 8
-CPUs split into 3 cpufreq policies and fast switch is used with the
-schedutil governor, so it should be exercising the stats update path
-enough.
+IOW, we could have read and write just increment/decrement a
+per-thread counter, and have current_cred() do a WARN_ON_ONCE() if
+it's called with that counter incremented.
 
-Sorry for bumping an old thread.
+The issue of ioctl's is a bit less obvious - there are reasons to
+argue those should also use open-time credentials, but on the other
+hand I think it's reasonable to pass a file descriptor to a suid app
+in order for that app to do things that the normal user cannot.
 
+But read/write are dangerous because of the "it's so easy to fool suid
+apps to read/write stdin/stdout".
+
+So pread/pwrite/ioctl/splice etc are things that suid applications
+very much do on purpose to affect a file descriptor. But plain
+read/write are things that might be accidental and used by attack
+vectors.
+
+If somebody is interested in looking into things like that, it might
+be a good idea to have kernel threads with that counter incremented by
+default.
+
+Just throwing this idea out in case somebody wants to try it. It's not
+just "current_cred", of course. It's all the current_cred_xxx() users
+too. But it may be that there are a ton of false positives because
+maybe some code on purpose ends up doing things like just *comparing*
+current_cred with file->f_cred and then that would warn too.
+
+              Linus
