@@ -2,134 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F25F121326B
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 05:54:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62283213276
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 05:57:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726437AbgGCDyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 23:54:13 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7366 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726338AbgGCDyC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 23:54:02 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 0D2316C849A0024B651F;
-        Fri,  3 Jul 2020 11:54:00 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 3 Jul 2020 11:53:53 +0800
-From:   Chen Zhou <chenzhou10@huawei.com>
-To:     <tglx@linutronix.de>, <mingo@redhat.com>, <dyoung@redhat.com>,
-        <bhe@redhat.com>, <catalin.marinas@arm.com>, <will@kernel.org>,
-        <james.morse@arm.com>, <robh+dt@kernel.org>, <arnd@arndb.de>,
-        <John.P.donnelly@oracle.com>, <prabhakar.pkin@gmail.com>,
-        <nsaenzjulienne@suse.de>, <corbet@lwn.net>, <bhsharma@redhat.com>,
-        <horms@verge.net.au>
-CC:     <guohanjun@huawei.com>, <xiexiuqi@huawei.com>,
-        <huawei.libin@huawei.com>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <kexec@lists.infradead.org>, <linux-doc@vger.kernel.org>,
-        <chenzhou10@huawei.com>
-Subject: [PATCH v10 5/5] kdump: update Documentation about crashkernel on arm64
-Date:   Fri, 3 Jul 2020 11:58:16 +0800
-Message-ID: <20200703035816.31289-6-chenzhou10@huawei.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200703035816.31289-1-chenzhou10@huawei.com>
-References: <20200703035816.31289-1-chenzhou10@huawei.com>
+        id S1726208AbgGCD50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 23:57:26 -0400
+Received: from ozlabs.org ([203.11.71.1]:45449 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726039AbgGCD5Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 23:57:24 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49yh4K5vY8z9sR4;
+        Fri,  3 Jul 2020 13:57:21 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1593748641;
+        bh=0FP7DbOrN/cYY/DD+/5F6Rm6Xxx7RN241hFaijl6Wco=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=NKXAWMb4QHaALgYOYJn8VBYhcqM1Ccx5r/41Dij6CfI+ILSzt6mICcoO7imLy8yAK
+         zY6i1jt3rTnJMC2k3NqKibN8h/WEecuYt2RoyjR4IoaUSIe4OZalzxh/S8SVY9/IFW
+         wnou+hEieLZewmhV5FIuFO6IyDoHZ4aPQRvu/G/N/nRjU0c3Bn7i7WqOC5/c/QxCV1
+         gXMBIYLh7sJG4wJwa1KeSOHBp5WBwMu0ozeJI2ds7al0v4o6KiHVfM5IzzmCBNs5XA
+         GSrzr4WnMhdCENH8Ho9z70YINABf39djwZu721UsVzLZvQJp1JaPpjMuLIyCs+SXQi
+         iLoDrooEgercg==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: objtool clac/stac handling change..
+In-Reply-To: <CAHk-=whNbR76bJSkYKSd4-iHBcksZaw=_3Dy7eELxPVuv5wa5g@mail.gmail.com>
+References: <CAHk-=wjc-ktbOr7ZHMY8gfAmHxUK+aMdDsQjeh+BvmQwnQfN_g@mail.gmail.com> <20200701184131.GI2786714@ZenIV.linux.org.uk> <CAHk-=wj_2v9m+yZioE4vOLGW1mc9SBa5+++LdeJ86aEeB5OXcw@mail.gmail.com> <20200701195914.GK2786714@ZenIV.linux.org.uk> <CAHk-=wj-CYhKZR8ZKQgi=VTx=o7n6dtwPXikvgkJ3SdiqRPd8A@mail.gmail.com> <87lfk26nx4.fsf@mpe.ellerman.id.au> <8be7cf19-9fc9-ce9c-091f-c8824a01a3c8@csgroup.eu> <CAHk-=whNbR76bJSkYKSd4-iHBcksZaw=_3Dy7eELxPVuv5wa5g@mail.gmail.com>
+Date:   Fri, 03 Jul 2020 13:59:37 +1000
+Message-ID: <87eept6yfq.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now we support crashkernel=X,[low] on arm64, update the Documentation.
-We could use parameters "crashkernel=X crashkernel=Y,low" to reserve
-memory above 4G.
+Linus Torvalds <torvalds@linux-foundation.org> writes:
+> On Thu, Jul 2, 2020 at 8:13 AM Christophe Leroy
+> <christophe.leroy@csgroup.eu> wrote:
+>>
+>> Isn't it something easy to do in bad_page_fault() ?
+>
+> Can't the user access functions take any other faults on ppc?
 
-Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
-Tested-by: John Donnelly <John.p.donnelly@oracle.com>
-Tested-by: Prabhakar Kushwaha <pkushwaha@marvell.com>
----
- Documentation/admin-guide/kdump/kdump.rst       | 14 ++++++++++++--
- Documentation/admin-guide/kernel-parameters.txt | 17 +++++++++++++++--
- 2 files changed, 27 insertions(+), 4 deletions(-)
+Yes they definitely can.
 
-diff --git a/Documentation/admin-guide/kdump/kdump.rst b/Documentation/admin-guide/kdump/kdump.rst
-index 2da65fef2a1c..e80fc9e28a9a 100644
---- a/Documentation/admin-guide/kdump/kdump.rst
-+++ b/Documentation/admin-guide/kdump/kdump.rst
-@@ -299,7 +299,15 @@ Boot into System Kernel
-    "crashkernel=64M@16M" tells the system kernel to reserve 64 MB of memory
-    starting at physical address 0x01000000 (16MB) for the dump-capture kernel.
- 
--   On x86 and x86_64, use "crashkernel=64M@16M".
-+   On x86 use "crashkernel=64M@16M".
-+
-+   On x86_64, use "crashkernel=Y" to select a region under 4G first, and
-+   fall back to reserve region above 4G.
-+   We can also use "crashkernel=X,high" to select a region above 4G, which
-+   also tries to allocate at least 256M below 4G automatically and
-+   "crashkernel=Y,low" can be used to allocate specified size low memory.
-+   Use "crashkernel=Y@X" if we really have to reserve memory from specified
-+   start address X.
- 
-    On ppc64, use "crashkernel=128M@32M".
- 
-@@ -316,8 +324,10 @@ Boot into System Kernel
-    kernel will automatically locate the crash kernel image within the
-    first 512MB of RAM if X is not given.
- 
--   On arm64, use "crashkernel=Y[@X]".  Note that the start address of
-+   On arm64, use "crashkernel=Y[@X]". Note that the start address of
-    the kernel, X if explicitly specified, must be aligned to 2MiB (0x200000).
-+   If crashkernel=Z,low is specified simultaneously, reserve spcified size
-+   low memory firstly and then reserve memory above 4G.
- 
- Load the Dump-capture Kernel
- ============================
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index fb95fad81c79..58a731eed011 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -722,6 +722,9 @@
- 			[KNL, x86_64] select a region under 4G first, and
- 			fall back to reserve region above 4G when '@offset'
- 			hasn't been specified.
-+			[KNL, arm64] If crashkernel=X,low is specified, reserve
-+			spcified size low memory firstly, and then reserve memory
-+			above 4G.
- 			See Documentation/admin-guide/kdump/kdump.rst for further details.
- 
- 	crashkernel=range1:size1[,range2:size2,...][@offset]
-@@ -746,13 +749,23 @@
- 			requires at least 64M+32K low memory, also enough extra
- 			low memory is needed to make sure DMA buffers for 32-bit
- 			devices won't run out. Kernel would try to allocate at
--			at least 256M below 4G automatically.
-+			least 256M below 4G automatically.
- 			This one let user to specify own low range under 4G
- 			for second kernel instead.
- 			0: to disable low allocation.
- 			It will be ignored when crashkernel=X,high is not used
- 			or memory reserved is below 4G.
--
-+			[KNL, arm64] range under 4G.
-+			This one let user to specify own low range under 4G
-+			for crash dump kernel instead.
-+			Be different from x86_64, kernel reserves specified size
-+			physical memory region only when this parameter is specified
-+			instead of trying to reserve at least 256M below 4G
-+			automatically.
-+			Use this parameter along with crashkernel=X when we want
-+			to reserve crashkernel above 4G. If there are devices
-+			need to use ZONE_DMA in crash dump kernel, it is also
-+			a good choice.
- 	cryptomgr.notests
- 			[KNL] Disable crypto self-tests
- 
--- 
-2.20.1
+I think I can enumerate all the possibilities on 64-bit, but I don't
+know all the possibilities on all the 32-bit variants.
 
+> On x86-64, we have the "address is non-canonical" case which doesn't
+> take a page fault at all, but takes a general protection fault
+> instead.
+
+Right. On P9 radix we have an address-out-of-page-table-range exception
+which I guess is similar, though that does end up at bad_page_fault() in
+our case.
+
+> But note that depending on how you nest and save/restore the state,
+> things can be very subtle.
+>
+> For example, what can happen is:
+>
+>  (a) user_access_begin()..
+>
+>  (b) we take a normal interrupt
+>
+>  (c) the interrupt code does something that has an exception handling
+> case entirely unrelated to the user access (on x86, it might be the
+> "unsafe_msr' logic, for example.
+>
+>  (d) we take that exception, do "fixup_exception()" for whatever that
+> interrupt did.
+>
+>  (e) we return from that exception to the fixed up state
+>
+>  (d) we return from the interrupt
+>
+>  (e) we should still have user accesses enabled.
+
+Yes.
+
+We broke that a few times when developing the KUAP support, which is why
+I added bad_kuap_fault() to report the case where we are in a uaccess
+region but are being blocked unexpectedly by KUAP.
+
+> NOTE! on x86, we can have "all fixup_exceptions() will clear AC in the
+> exception pt_regs", because AC is part of rflags which is saved on
+> (and cleared for the duration of) all interrupt and exceptions.
+>
+> So what happens is that on x86 all of (b)-(d) will run with AC clear
+> and no user accesses allowed, and (e) will have user accesses enabled
+> again, because the "fixup_exception()" at (d) only affected the state
+> of the interrupt hander (which already had AC clear anyway).
+>
+> But I don't think exceptions and interrupts save/restore the user
+> access state on powerpc, do they?
+
+Not implicitly.
+
+We manually save it into pt_regs on the stack in the exception entry. On
+64-bit it's done in kuap_save_amr_and_lock. 32-bit does it in
+kuap_save_and_lock.
+
+And then on the return path it's kuap_restore_amr() on 64-bit, and
+kuap_restore on 32-bit.
+
+> So on powerpc you do need to be more careful. You would only need to
+> disable user access on exceptions that happen _on_ user accesses.
+>
+> The easiest way to do that is to do what x86 does: different
+> exceptions have different handlers. It's not what we did originally,
+> but it's been useful.
+>
+> Hmm.
+>
+> And again, on x86, this all works fine because of how exceptions
+> save/restore the user_access state and it all nests fine. But I'm
+> starting to wonder how the nesting works AT ALL for powerpc?
+>
+> Because that nesting happens even without
+>
+> IOW, even aside from this whole thing, what happens on PPC, when you have
+
+I'll annotate what happens for the 64-bit case as it's the one I know
+best:
+
+>  (a) user_access_begin();
+         - mtspr(SPRN_AMR, 0)	// 0 means loads & stores permitted
+
+>      - profile NMI or interrupt happens
+         - pt_regs->kuap = mfspr(SPRN_AMR)
+         - mtspr(SPRN_AMR, AMR_KUAP_BLOCKED)
+
+>      - it wants to do user stack tracing so does
+>                 pagefault_disable();
+>        (b)         get_user();
+                     mtspr(SPRN_AMR, 0)
+                     ld rN, <user pointer)
+                     mtspr(SPRN_AMR, AMR_KUAP_BLOCKED)
+                     
+>                 pagefault_enable();
+>    - profile NMI/interrupt returns
+       - mtspr(SPRN_AMR, pt_regs->kuap)
+       - return from interrupt
+
+>  (c) user accesss should work here!
+>
+> even if the "get_user()" in (b) would have done a
+> "user_access_begin/end" pair, and regardless of whether (b) might have
+> triggered a "fixup_exception()", and whether that fixup_exception()
+> then did the user_access_end().
+>
+> On x86, this is all ok exactly because of how we only have the AC bit,
+> and it nests very naturally with any exception handling.
+>
+> Is the ppc code nesting-safe? Particularly since it has that whole
+> range-handling?
+
+Yeah I think it is.
+
+The range handling on 32-bit books follows the same pattern as above,
+except that on exception entry we don't save the content of an SPR to
+pt_regs, instead we save current->thread.kuap. (Because there isn't a
+single SPR that contains the KUAP state).
+
+cheers
