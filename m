@@ -2,50 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F23FA2133A1
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 07:40:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 989E92133A5
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 07:40:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726157AbgGCFkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 01:40:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48268 "EHLO mail.kernel.org"
+        id S1726263AbgGCFkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 01:40:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48378 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725779AbgGCFkC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 01:40:02 -0400
-Subject: Re: [GIT PULL] nfsd bugfixes for 5.8
+        id S1726110AbgGCFkI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Jul 2020 01:40:08 -0400
+Subject: Re: [GIT PULL] Kselftest fixes update for Linux 5.8-rc4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593754801;
-        bh=kNleJkAWKZvx+iwUJt4yKWIGyM7h176BHp1WjJbIc+c=;
+        s=default; t=1593754808;
+        bh=1PQoSFGeykjYBraSRM8kS0DiUCQhGPxof6Uw1hWDvQc=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=WAtSYguye5SVxrjo49NlzbjbIu1qTJpOrWsJrzXpia3Ki9qXMFuxod9ngPqU201n3
-         CBLGzhTCyr3l2a/A7bOaTpvklgH5Htcu9x9mVqSvHQNyMXRGqZ2SQmZPm7KOZWkssh
-         jnQfJKHaSoRA976xLCO51ssZ6eDVMY3f0OYjlJ+Y=
+        b=AwMbDadJMS8hNPexaeV4AFen14i+AZsKTII1MUWNkKB65+KOagJhMPvrbQYbW3lae
+         wlAnhESpgFnefBcIggyNjcBZ/OC5XeB2WYjWGiyo/WT9u+hak9q0Wvi8YDhwt2kd8F
+         U8hrPJPTYD6NizNYO612OOcz9T89VT/6k/9Fm93s=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200702151039.GC6904@fieldses.org>
-References: <20200702151039.GC6904@fieldses.org>
-X-PR-Tracked-List-Id: <linux-nfs.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200702151039.GC6904@fieldses.org>
-X-PR-Tracked-Remote: git://linux-nfs.org/~bfields/linux.git tags/nfsd-5.8-1
-X-PR-Tracked-Commit-Id: becd2014923ff259b8155df58199f605dd50cb8f
+In-Reply-To: <c97a669c-02d8-24c6-3bbf-295124d8261a@linuxfoundation.org>
+References: <c97a669c-02d8-24c6-3bbf-295124d8261a@linuxfoundation.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <c97a669c-02d8-24c6-3bbf-295124d8261a@linuxfoundation.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest
+ tags/linux-kselftest-fixes-5.8-rc4
+X-PR-Tracked-Commit-Id: 377ff83083c953dd58c5a030b3c9b5b85d8cc727
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 083176c86ffae8c9b467358eca5ba05a54a27898
-Message-Id: <159375480186.400.10690168272088373129.pr-tracker-bot@kernel.org>
-Date:   Fri, 03 Jul 2020 05:40:01 +0000
-To:     "J. Bruce Fields" <bfields@fieldses.org>
+X-PR-Merge-Commit-Id: 0dce88451f9c1cc5f1b73818e0608d5f84499e9a
+Message-Id: <159375480825.400.6437519329876320973.pr-tracker-bot@kernel.org>
+Date:   Fri, 03 Jul 2020 05:40:08 +0000
+To:     Shuah Khan <skhan@linuxfoundation.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Chuck Lever <chuck.lever@oracle.com>
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        skhan@linuxfoundation.org, linux-kselftest@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 2 Jul 2020 11:10:39 -0400:
+The pull request you sent on Thu, 2 Jul 2020 10:26:58 -0600:
 
-> git://linux-nfs.org/~bfields/linux.git tags/nfsd-5.8-1
+> git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux-kselftest-fixes-5.8-rc4
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/083176c86ffae8c9b467358eca5ba05a54a27898
+https://git.kernel.org/torvalds/c/0dce88451f9c1cc5f1b73818e0608d5f84499e9a
 
 Thank you!
 
