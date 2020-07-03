@@ -2,76 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 702C0213DDD
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 19:02:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C53CE213DE3
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 19:03:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726682AbgGCRCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 13:02:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60386 "EHLO mail.kernel.org"
+        id S1726744AbgGCRDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 13:03:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60788 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726148AbgGCRCA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 13:02:00 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        id S1726148AbgGCRDB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Jul 2020 13:03:01 -0400
+Received: from localhost (c-67-180-165-146.hsd1.ca.comcast.net [67.180.165.146])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 64A2920870;
-        Fri,  3 Jul 2020 17:01:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 79EFE20870;
+        Fri,  3 Jul 2020 17:03:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593795719;
-        bh=AVJrPOjfhMUmYb1TDhafBafhvg6rnvMe4npAxWh18Dg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Wkf3VcfsBj9P8AZjTyoNjuZOMdIVGUF3QYBhfuog8lBLpeBBntWKfEPEu1bASEQcR
-         BcoEJkf3pROoo8iPLK5oTahEk/gw05ZLqnPjBVvlILijD7ZL3jE8CpwVCFHD5M/pz/
-         tM0gR1Y5pf+hEwIO6g+OnYxtG3Z8cxzC+i9Wi3nw=
-Date:   Fri, 3 Jul 2020 18:01:57 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Rajendra Nayak <rnayak@codeaurora.org>
-Cc:     bjorn.andersson@linaro.org, agross@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        mka@chromium.org, Alok Chauhan <alokc@codeaurora.org>,
-        Akash Asthana <akashast@codeaurora.org>
-Subject: Re: [PATCH 1/3] spi: spi-qcom-qspi: Use OPP API to set clk/perf state
-Message-ID: <20200703170157.GA54804@sirena.org.uk>
-References: <1593769293-6354-1-git-send-email-rnayak@codeaurora.org>
- <1593769293-6354-2-git-send-email-rnayak@codeaurora.org>
+        s=default; t=1593795781;
+        bh=Kl4Bwj85//LM40HE3a7a0PfezbN7/BWnzIk7Y5H2afo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=sJSigZZdcVxsSzZLDKMJ+dS3AWpix07MgvySG4oLGsZwlQmX5ThKwDR4fVZO+t2Z2
+         tgl2bjn2ZLBC08/6Kt2b9qp8RoqacKL2jGs7K88YtRKNrKHJ1qyP+UCkDn+RE5xPn0
+         FhVSrTWcbi0TbcDyAx1QlxvI2ByqT5n+gAGUg8Wc=
+From:   Andy Lutomirski <luto@kernel.org>
+To:     x86@kernel.org
+Cc:     Andrew Cooper <andrew.cooper3@citrix.com>,
+        Juergen Gross <jgross@suse.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>
+Subject: [PATCH entry v2 0/6] x86/entry: Fixes and cleanups
+Date:   Fri,  3 Jul 2020 10:02:52 -0700
+Message-Id: <cover.1593795633.git.luto@kernel.org>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="NzB8fVQJ5HfG6fxh"
-Content-Disposition: inline
-In-Reply-To: <1593769293-6354-2-git-send-email-rnayak@codeaurora.org>
-X-Cookie: Think honk if you're a telepath.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+These are in priority order.  Patch 1 could be folded into the patch
+it fixes.  The selftests improve my confidence in the correctness of
+the whole pile.  The next two patches fix IDTENTRY miswiring.  The
+last two are optional and could easily wait until the next merge
+window.
 
---NzB8fVQJ5HfG6fxh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Andy Lutomirski (6):
+  x86/entry/compat: Clear RAX high bits on Xen PV SYSENTER
+  x86/entry, selftests: Further improve user entry sanity checks
+  x86/entry/xen: Route #DB correctly on Xen PV
+  x86/entry/32: Fix #MC and #DB wiring on x86_32
+  x86/ldt: Disable 16-bit segments on Xen PV
+  x86/entry: Rename idtentry_enter/exit_cond_rcu() to
+    idtentry_enter/exit()
 
-On Fri, Jul 03, 2020 at 03:11:31PM +0530, Rajendra Nayak wrote:
-> QSPI needs to vote on a performance state of a power domain depending on
-> the clock rate. Add support for it by specifying the perf state/clock rate
-> as an OPP table in device tree.
+ arch/x86/entry/common.c                  | 69 +++++++++++++++-------
+ arch/x86/entry/entry_64_compat.S         | 19 +++---
+ arch/x86/include/asm/idtentry.h          | 75 +++++++++++-------------
+ arch/x86/kernel/cpu/mce/core.c           |  4 +-
+ arch/x86/kernel/kvm.c                    |  6 +-
+ arch/x86/kernel/ldt.c                    | 35 ++++++++++-
+ arch/x86/kernel/traps.c                  | 20 +++++--
+ arch/x86/mm/fault.c                      |  6 +-
+ arch/x86/xen/enlighten_pv.c              | 28 +++++++--
+ arch/x86/xen/xen-asm_64.S                |  5 +-
+ kernel/time/tick-sched.c                 |  1 +
+ tools/testing/selftests/x86/syscall_nt.c | 11 ++++
+ 12 files changed, 189 insertions(+), 90 deletions(-)
 
-This doesn't apply against current code, please check and resend.
+-- 
+2.25.4
 
---NzB8fVQJ5HfG6fxh
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7/ZIQACgkQJNaLcl1U
-h9Aj6Af/dYdA3cL8GaheYWhZs8vCjA6NUcA4NrW+BJ5F/+4RGRN47h4pPc6eXiEI
-Ppr5ZbEPhkJg5s/RZLbQDZIXZPMlnW+pUY+XuUcRu9iSuSv//YMOfr2q/jkwE0c4
-TIRj73HH6jK49Mfwlf5tNYuzyjGyN7Sc80yc7TnSuczz03KAnWWUUKXVS2ZwXW5z
-BB4dOtfgSzr+r/KlS1kmaI8+FwbkRAelhSWstX3tMxcYs4XZ4I+SQESx0sGVRLzx
-g8R5TmM2ksb1gvF7FySNqQ2Pgdgh0rsdoYP6lPMUjYyCTIgOLzMNGlhrDuVICRL/
-IZJT/Id+JEFVxnHBKWmeOHJXT/wnYg==
-=0VKA
------END PGP SIGNATURE-----
-
---NzB8fVQJ5HfG6fxh--
