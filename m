@@ -2,155 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25E362141E0
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 01:01:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0344D2141E2
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 01:04:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726616AbgGCXBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 19:01:37 -0400
-Received: from mga14.intel.com ([192.55.52.115]:54839 "EHLO mga14.intel.com"
+        id S1726750AbgGCXEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 19:04:34 -0400
+Received: from mga04.intel.com ([192.55.52.120]:10153 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726188AbgGCXBg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 19:01:36 -0400
-IronPort-SDR: xuHXB9F5xmuoMun2c9RtgTvImyfJmfYlVLpUG7lqJZQWV3q76cix885UI7gtxTBJM9pGWQ3k2i
- rj1GGQhnvqZg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9671"; a="146292637"
+        id S1726379AbgGCXEe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Jul 2020 19:04:34 -0400
+IronPort-SDR: YdTAHe3hcPFWhDYNT3f4TFRh0XJlc8ko16y62KOfDNh9e4/LVqCYoGMAQ6bN5kLxj/B4FYMsyb
+ X8r6fs+AOgZg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9671"; a="144722418"
 X-IronPort-AV: E=Sophos;i="5.75,309,1589266800"; 
-   d="scan'208";a="146292637"
+   d="scan'208";a="144722418"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jul 2020 16:01:35 -0700
-IronPort-SDR: NRiAxMx9RtTvKIvKBwVJSIGP0xi0nJ2tR6ASsFlHrRnMuyQ7M/EfUa6f5zSXtpaF8c+LP2yf65
- kHOwgR91NwtA==
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jul 2020 16:04:33 -0700
+IronPort-SDR: JyuK2FYE/yBdERc+4D1NOJZ7N0JJg+gCfVSVJ/LJ4h0rRpghX+gjWdxYshCfKx1IW4im/D3h4V
+ /WOU9Vp5CXkQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,309,1589266800"; 
-   d="scan'208";a="282394205"
-Received: from lkp-server01.sh.intel.com (HELO 6dc8ab148a5d) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 03 Jul 2020 16:01:34 -0700
-Received: from kbuild by 6dc8ab148a5d with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1jrUgX-0000RU-Df; Fri, 03 Jul 2020 23:01:33 +0000
-Date:   Sat, 4 Jul 2020 07:01:21 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Cristian Marussi <cristian.marussi@arm.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     kbuild-all@lists.01.org, sudeep.holla@arm.com,
-        cristian.marussi@arm.com
-Subject: Re: [PATCH] firmware: arm_scmi: fix notifications macros argument
- reuse
-Message-ID: <202007040619.62IIIoeR%lkp@intel.com>
-References: <20200630162547.40824-1-cristian.marussi@arm.com>
+   d="scan'208";a="456023767"
+Received: from ntohan-mobl.ger.corp.intel.com (HELO localhost) ([10.252.53.15])
+  by orsmga005.jf.intel.com with ESMTP; 03 Jul 2020 16:04:17 -0700
+Date:   Sat, 4 Jul 2020 02:04:13 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Jethro Beekman <jethro@fortanix.com>,
+        Haitao Huang <haitao.huang@linux.intel.com>,
+        Chunyang Hui <sanqian.hcy@antfin.com>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Seth Moore <sethmo@google.com>,
+        Suresh Siddha <suresh.b.siddha@intel.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v33 11/21] x86/sgx: Linux Enclave Driver
+Message-ID: <20200703230413.GA104749@linux.intel.com>
+References: <20200617220844.57423-1-jarkko.sakkinen@linux.intel.com>
+ <20200617220844.57423-12-jarkko.sakkinen@linux.intel.com>
+ <20200626091419.GB27151@zn.tnic>
+ <20200626141627.GA6583@linux.intel.com>
+ <20200626142019.GD27151@zn.tnic>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200630162547.40824-1-cristian.marussi@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200626142019.GD27151@zn.tnic>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Cristian,
+On Fri, Jun 26, 2020 at 04:20:19PM +0200, Borislav Petkov wrote:
+> On Fri, Jun 26, 2020 at 07:16:27AM -0700, Sean Christopherson wrote:
+> > That being said, I agree that it would be safer to move sgx_calc_ssaframesize()
+> > inside sgx_validate_secs() and only compute encl_size after the secs is
+> > validated.
+> 
 
-Thank you for the patch! Perhaps something to improve:
+Changed as
 
-[auto build test WARNING on next-20200630]
-[cannot apply to linux/master soc/for-next linus/master v5.8-rc3 v5.8-rc2 v5.8-rc1 v5.8-rc3]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use  as documented in
-https://git-scm.com/docs/git-format-patch]
+if (!secs->ssa_frame_size)
+	return -EINVAL;
 
-url:    https://github.com/0day-ci/linux/commits/Cristian-Marussi/firmware-arm_scmi-fix-notifications-macros-argument-reuse/20200701-002818
-base:    f2b92b14533e646e434523abdbafddb727c23898
-compiler: gcc-9 (Debian 9.3.0-14) 9.3.0
+if (sgx_calc_ssa_frame_size(secs->miscselect, secs->xfrm) >
+    secs->ssa_frame_size)
+	return -EINVAL;
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-
-cppcheck warnings: (new ones prefixed by >>)
-
-   drivers/firmware/arm_scmi/notify.c:660:9: warning: Identical condition 'ret', second condition is always false [identicalConditionAfterEarlyExit]
-    return ret;
-           ^
-   drivers/firmware/arm_scmi/notify.c:654:6: note: first condition
-    if (ret)
-        ^
-   drivers/firmware/arm_scmi/notify.c:660:9: note: second condition
-    return ret;
-           ^
->> drivers/firmware/arm_scmi/notify.c:1125:9: warning: Variable 'r' is reassigned a value before the old one has been used. [redundantAssignment]
-       r = REVT_NOTIFY_ENABLE(r_evt,
-           ^
-   drivers/firmware/arm_scmi/notify.c:1125:7: note: Variable 'r' is reassigned a value before the old one has been used.
-       r = REVT_NOTIFY_ENABLE(r_evt,
-         ^
-   drivers/firmware/arm_scmi/notify.c:1125:9: note: Variable 'r' is reassigned a value before the old one has been used.
-       r = REVT_NOTIFY_ENABLE(r_evt,
-           ^
-
-vim +/r +1125 drivers/firmware/arm_scmi/notify.c
-
-7a57069e9daf95a Cristian Marussi 2020-06-19  1090  
-5b352c5379300ec Cristian Marussi 2020-06-19  1091  /**
-5b352c5379300ec Cristian Marussi 2020-06-19  1092   * __scmi_enable_evt()  - Enable/disable events generation
-5b352c5379300ec Cristian Marussi 2020-06-19  1093   * @r_evt: The registered event to act upon
-5b352c5379300ec Cristian Marussi 2020-06-19  1094   * @src_id: The src_id to act upon
-5b352c5379300ec Cristian Marussi 2020-06-19  1095   * @enable: The action to perform: true->Enable, false->Disable
-5b352c5379300ec Cristian Marussi 2020-06-19  1096   *
-5b352c5379300ec Cristian Marussi 2020-06-19  1097   * Takes care of proper refcounting while performing enable/disable: handles
-5b352c5379300ec Cristian Marussi 2020-06-19  1098   * the special case of ALL sources requests by itself.
-5b352c5379300ec Cristian Marussi 2020-06-19  1099   *
-5b352c5379300ec Cristian Marussi 2020-06-19  1100   * Return: True when the required action has been successfully executed
-5b352c5379300ec Cristian Marussi 2020-06-19  1101   */
-5b352c5379300ec Cristian Marussi 2020-06-19  1102  static inline bool __scmi_enable_evt(struct scmi_registered_event *r_evt,
-5b352c5379300ec Cristian Marussi 2020-06-19  1103  				     u32 src_id, bool enable)
-5b352c5379300ec Cristian Marussi 2020-06-19  1104  {
-5b352c5379300ec Cristian Marussi 2020-06-19  1105  	int ret = 0;
-5b352c5379300ec Cristian Marussi 2020-06-19  1106  	u32 num_sources;
-5b352c5379300ec Cristian Marussi 2020-06-19  1107  	refcount_t *sid;
-5b352c5379300ec Cristian Marussi 2020-06-19  1108  
-5b352c5379300ec Cristian Marussi 2020-06-19  1109  	if (src_id == SRC_ID_MASK) {
-5b352c5379300ec Cristian Marussi 2020-06-19  1110  		src_id = 0;
-5b352c5379300ec Cristian Marussi 2020-06-19  1111  		num_sources = r_evt->num_sources;
-5b352c5379300ec Cristian Marussi 2020-06-19  1112  	} else if (src_id < r_evt->num_sources) {
-5b352c5379300ec Cristian Marussi 2020-06-19  1113  		num_sources = 1;
-5b352c5379300ec Cristian Marussi 2020-06-19  1114  	} else {
-5b352c5379300ec Cristian Marussi 2020-06-19  1115  		return ret;
-5b352c5379300ec Cristian Marussi 2020-06-19  1116  	}
-5b352c5379300ec Cristian Marussi 2020-06-19  1117  
-5b352c5379300ec Cristian Marussi 2020-06-19  1118  	mutex_lock(&r_evt->sources_mtx);
-5b352c5379300ec Cristian Marussi 2020-06-19  1119  	if (enable) {
-5b352c5379300ec Cristian Marussi 2020-06-19  1120  		for (; num_sources; src_id++, num_sources--) {
-5b352c5379300ec Cristian Marussi 2020-06-19  1121  			bool r;
-5b352c5379300ec Cristian Marussi 2020-06-19  1122  
-5b352c5379300ec Cristian Marussi 2020-06-19  1123  			sid = &r_evt->sources[src_id];
-5b352c5379300ec Cristian Marussi 2020-06-19  1124  			if (refcount_read(sid) == 0) {
-5b352c5379300ec Cristian Marussi 2020-06-19 @1125  				r = REVT_NOTIFY_ENABLE(r_evt,
-5b352c5379300ec Cristian Marussi 2020-06-19  1126  						       r_evt->evt->id, src_id);
-5b352c5379300ec Cristian Marussi 2020-06-19  1127  				if (r)
-5b352c5379300ec Cristian Marussi 2020-06-19  1128  					refcount_set(sid, 1);
-5b352c5379300ec Cristian Marussi 2020-06-19  1129  			} else {
-5b352c5379300ec Cristian Marussi 2020-06-19  1130  				refcount_inc(sid);
-5b352c5379300ec Cristian Marussi 2020-06-19  1131  				r = true;
-5b352c5379300ec Cristian Marussi 2020-06-19  1132  			}
-5b352c5379300ec Cristian Marussi 2020-06-19  1133  			ret += r;
-5b352c5379300ec Cristian Marussi 2020-06-19  1134  		}
-5b352c5379300ec Cristian Marussi 2020-06-19  1135  	} else {
-5b352c5379300ec Cristian Marussi 2020-06-19  1136  		for (; num_sources; src_id++, num_sources--) {
-5b352c5379300ec Cristian Marussi 2020-06-19  1137  			sid = &r_evt->sources[src_id];
-5b352c5379300ec Cristian Marussi 2020-06-19  1138  			if (refcount_dec_and_test(sid))
-5b352c5379300ec Cristian Marussi 2020-06-19  1139  				REVT_NOTIFY_DISABLE(r_evt,
-5b352c5379300ec Cristian Marussi 2020-06-19  1140  						    r_evt->evt->id, src_id);
-5b352c5379300ec Cristian Marussi 2020-06-19  1141  		}
-5b352c5379300ec Cristian Marussi 2020-06-19  1142  		ret = 1;
-5b352c5379300ec Cristian Marussi 2020-06-19  1143  	}
-5b352c5379300ec Cristian Marussi 2020-06-19  1144  	mutex_unlock(&r_evt->sources_mtx);
-5b352c5379300ec Cristian Marussi 2020-06-19  1145  
-5b352c5379300ec Cristian Marussi 2020-06-19  1146  	return ret;
-5b352c5379300ec Cristian Marussi 2020-06-19  1147  }
-5b352c5379300ec Cristian Marussi 2020-06-19  1148  
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+/Jarkko
