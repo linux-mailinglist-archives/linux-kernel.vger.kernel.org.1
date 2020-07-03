@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E400E2135BE
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 10:06:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53AAC2135BA
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 10:05:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726338AbgGCIGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 04:06:05 -0400
-Received: from mail-db8eur05on2074.outbound.protection.outlook.com ([40.107.20.74]:40128
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        id S1726455AbgGCIFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 04:05:39 -0400
+Received: from mail-eopbgr70052.outbound.protection.outlook.com ([40.107.7.52]:41397
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725891AbgGCIGC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 04:06:02 -0400
+        id S1725786AbgGCIFi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Jul 2020 04:05:38 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=A9xNR90DsOuX14flHlmG7Wl4fLuOJM9TsiDV0na9/ts7FdnttYGRxIqQuiHIKmG9RSxFgYIvf04Hno7+jiIHo7Ipn1md34BjvRv6qKzAyzmqVnth3S8UDOs976XGsWKl2+djl19PDmJGoQi9ZEwVwN5KwkH+11u4o6FckWLTJ1TfUnyqJ1dbOIzTa6lSV/rM5WKAlFOqCIids9FS0AOt1zk5uQbFBnOZfqUuW/BEonRSDRq8VT6g+HsQdbeDInqeBHknZ7T4nWAkSYmpxiGeoKeRE6zJU1C62MnC/5IdFi3XSzRh51A85mupKr/RKObBNzGOrRclNJEuDaKsy6iprQ==
+ b=JGsFNUq/hIU0eiN9DGGvFEpxz0V8vLkuI7oxPZ8lbPWBVovYh0CkPViklixFPlRxz+rjnGEJkhpMcoYGb0CY+J4D4gG7xpNsRAh7XeYlor1gqBjyXTHG38u/bOdfI7jUNnxJVHjPmUeWTLwakSkj8wtzYl/Yev/DZnYykhLsz4OANCIO52UFK67EXksCMKfAwpvejQckSRCinna+ZIABJBboE1wfj1A48ntEXTNsqcQ9qcD3n1lsqokhKex9WzlkwlM6Kg7CpqSVzFqIBX58wkh9QURjQvMjqR8CVz1qGhgit/qk97Y5vjsFg9jUKms8p0i7hwqER6fIWDC1mDiJfw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LU3HOonPFW03LpdtWfjDvYKUozaaKvRwmMxDOeBtCuQ=;
- b=btDF5RhGfTwTQ63udDChMJpeChZ2RVSWba/NSpu0FcEnHhNSmPhJzMvE+N5CtzlonX03Y7D6kVJr7ScwU0VMfvSYUWvvfbXvn5zsdG0qqwTKXlgtlvqQQF6LfV/oCgu1GTCRxraOHcJvIOEnoIWMUL+25TY/UKR78q9jWeL4nt+P7HKc7SYuxK1CCF2nqQQ00j5Xs4MwlmXtnLeTVc6ERJqpJChnkZOWXJgf4SnngYSCdRnwGckdXM0XdhZFRjadlG11rn5SCRU8ErpTQWpQd+LpoYRaAGkSnj4iP1Q3ij0upKsE6bvw6GR6UeqUFp35nVUZOUg0jF+6umMHFaesbA==
+ bh=4eKYCm3r0qd7bjdPJFFz0vFYhbjqrHJVjxi+QUp/GV8=;
+ b=N0FT3bhlm9mSe3D54JivE2+SJDSjjvlU/d4PaBtTO+1egWiqdgw9m6GB+2fibaYrs7oM2bglgVbzzYMyfWgwdSjlpPcMgm91NZmN55QzAay4/JX+MmZpxsbkonJfth5gLZvz+9kM2pighhbjim9MkbdT0UaEdn61+kClqQCIoM/MfoVNU3YOBVPZhU2E7Yn7PFVYFnhy3sIBqPsbORfrRRUAIv1IUYqcNxOn6Z3Hbb2fSGeXoscTa/QDWX5NXDTOIxZgVaR27VyV4mOnHao9ed2kWs+I9FSjDsZZETEACvR9rIVTT37Z96vMqzbdklciHbloaCl5RXtFwuVjlxa/jw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
  header.d=nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LU3HOonPFW03LpdtWfjDvYKUozaaKvRwmMxDOeBtCuQ=;
- b=dkYhkScDGWMElIXet1LGPvkFJkjRVVBrdZSkiUCFzjoXtP6JWMthYo7RnyMUXYTsAnD+iYIs4EWAP7uTV6kTaqNMIgeUiimpOn5PONae/rCmU3cVy+8kY8e76oH6mP9cuuxkEn0aKx4mWAFL+UgNU+w81FRgMX0PMLm0UZyCeik=
+ bh=4eKYCm3r0qd7bjdPJFFz0vFYhbjqrHJVjxi+QUp/GV8=;
+ b=bmeI5lYYw+xKczL6/57ujnZ/4/GUHrKv7APiSJ2HOcFkBpizzHl7215FsaKC0mDHrcLkjDochIxS+OWZFP8yStZRWFlbxIYo0eZteGeL5i0qypp0K804ARqUe8+Lmf+NDjUITvb4vla4AVLfP4BDH00OTgCW6TI1MgMQxYj3P5Q=
 Authentication-Results: gmail.com; dkim=none (message not signed)
  header.d=none;gmail.com; dmarc=none action=none header.from=nxp.com;
 Received: from VE1PR04MB6638.eurprd04.prod.outlook.com (2603:10a6:803:119::15)
- by VI1PR0401MB2302.eurprd04.prod.outlook.com (2603:10a6:800:2b::14) with
+ by VI1PR04MB5344.eurprd04.prod.outlook.com (2603:10a6:803:4b::31) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.23; Fri, 3 Jul
- 2020 08:05:27 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.20; Fri, 3 Jul
+ 2020 08:05:34 +0000
 Received: from VE1PR04MB6638.eurprd04.prod.outlook.com
  ([fe80::5cc4:23a5:ca17:da7d]) by VE1PR04MB6638.eurprd04.prod.outlook.com
  ([fe80::5cc4:23a5:ca17:da7d%6]) with mapi id 15.20.3153.028; Fri, 3 Jul 2020
- 08:05:27 +0000
+ 08:05:34 +0000
 From:   Robin Gong <yibin.gong@nxp.com>
 To:     lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
         frieder.schrempf@kontron.de, catalin.marinas@arm.com,
@@ -45,9 +45,9 @@ To:     lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
 Cc:     kernel@pengutronix.de, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-imx@nxp.com
-Subject: [PATCH v2 3/4] arm64: dts: imx8mn-evk: add pca9450 for i.mx8mn-evk board
-Date:   Sat,  4 Jul 2020 00:19:37 +0800
-Message-Id: <1593793178-9737-4-git-send-email-yibin.gong@nxp.com>
+Subject: [PATCH v2 4/4] arm64: configs: add pca9450 pmic driver
+Date:   Sat,  4 Jul 2020 00:19:38 +0800
+Message-Id: <1593793178-9737-5-git-send-email-yibin.gong@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1593793178-9737-1-git-send-email-yibin.gong@nxp.com>
 References: <1593793178-9737-1-git-send-email-yibin.gong@nxp.com>
@@ -57,170 +57,57 @@ X-ClientProxiedBy: SG2PR01CA0160.apcprd01.prod.exchangelabs.com
  (2603:10a6:803:119::15)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from robin-OptiPlex-790.ap.freescale.net (119.31.174.67) by SG2PR01CA0160.apcprd01.prod.exchangelabs.com (2603:1096:4:28::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3153.21 via Frontend Transport; Fri, 3 Jul 2020 08:05:22 +0000
+Received: from robin-OptiPlex-790.ap.freescale.net (119.31.174.67) by SG2PR01CA0160.apcprd01.prod.exchangelabs.com (2603:1096:4:28::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3153.21 via Frontend Transport; Fri, 3 Jul 2020 08:05:27 +0000
 X-Mailer: git-send-email 2.7.4
 X-Originating-IP: [119.31.174.67]
 X-MS-PublicTrafficType: Email
 X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: f4132ecb-3af0-47e8-abfc-08d81f27d8bb
-X-MS-TrafficTypeDiagnostic: VI1PR0401MB2302:
+X-MS-Office365-Filtering-Correlation-Id: 6270e9a2-6649-440d-d83c-08d81f27dcc4
+X-MS-TrafficTypeDiagnostic: VI1PR04MB5344:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR0401MB23025E727C12D76724E12307896A0@VI1PR0401MB2302.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:949;
+X-Microsoft-Antispam-PRVS: <VI1PR04MB534456C08FA74F69C83D5A70896A0@VI1PR04MB5344.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:296;
 X-Forefront-PRVS: 045315E1EE
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9FzQTUsRpr16dzgR2SDfccL1MWCZnVCWf+ihQ66gMCyca8IvCURVP3S7YlfH7PaTz7yOZRZ2VsoVZIvhH3QWuUTSE9pCLjlHaBv+UbflCjxVO2gCc4yI67h5d5MJiL7OV7+E7W6v5x3G0HzjAkHOMtRcFXKYffafEoknv/86QHrNTFwAU5dj0fYoRtrurGyfH1mIDNLgOE8jcGtA44KR+pv5EPdWFABpXOAenEqTujgriZbo9UABJNRWcYykW/R1/4q26VcZxawHj24GswJlTmmSwj7UKm6X390ua6x+qoWcafTPO5AnQ4Rrf48OdogP38r0wKsTcCAO4w7//XeABt4UHpwSfDsXFy+LNldMQwbK2dbuyJkAtGz9MdGr2UPdw8Jv+zKh1Xh+Z8Hh5zdoKg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6638.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(136003)(346002)(376002)(39860400002)(366004)(7416002)(6512007)(8676002)(6636002)(6666004)(8936002)(86362001)(52116002)(478600001)(5660300002)(16526019)(316002)(6506007)(2906002)(4326008)(2616005)(83380400001)(66556008)(26005)(186003)(66946007)(36756003)(956004)(6486002)(66476007)(921003)(32563001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: vLuWEieK3SS6766cK7C3ctJ81zaVa+2/pUBd2Q++iDBVcdKJizYvWyvcPcnYnLQsvUliLVnrzCnMQxgLBizziv2HEwu/g6tAplQTUM3N2AuIpbvy5Hjka1UZCGjOYmrZRuwAurSEubm3es67sB1OB48NeYUQTlgkI3J9YuAZEhdjjmtK6GCBa88BOT22zPxnKlzGKEQA4YeJRKliZZfjY5K8Stg95FgARBYU1YrFqjvUGfRZjofVqqCMI8otwSZQLxWzGGoGR4XItBGVp9spGZsqKkmuHXcee7QHUkdHGIPcoLPZa5CWnSrh2I9UNMgkYQgsQGJqbhgYhF2N4iHH/vexwGHVJjBQsGns0ChgPBMm1DxPrVWjkqHS3zBAOKvkx1AgJa1mKPvdDCK96ftkl3sE/DgL0fuscnhCc2OYmjMeRSIBGqLRqfPAd6R9b8vlvNKZDmv6MGiZ09xD8pMV3mhvY4X/i9bMhUWs4fnf+s0=
+X-Microsoft-Antispam-Message-Info: g1q6Zh2b5PYc3s4oGE6LpvpUpj89oiZvHB/BHAKjhQSbWdejlw029E2HXspJlsbyUeFjPEZ4GTYY7G9mfMQFpQaOyO1R06Ez6BvvfvPKMe8BVl3m7XIkYXkaXqJAomN90sqaqf26JwTiLaHAgf4dnPQEBAbAh0xF2hiFIFL2aQU6BRyJNv21kL1Wv5/4Z5ohEFFMfh5nioKOJvCBdcl6VN3WazpbinCoumRHjjWXSODUlzDGuPHz/RmxHmBkRogIcAQFZzg1Z1KyEnVuTdAjIbvtXAAWY8D/Yoh6Uib0SuGxpIiZc/3yzQ/+khTQz+5iad04KQkmDhDgthj/6hDkfHC4qW7KWgZioNSdkq0EyXGG32MuoV8sAb31JNCcf5Yg
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6638.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(346002)(366004)(376002)(39860400002)(136003)(8936002)(6666004)(4326008)(6512007)(7416002)(2906002)(86362001)(36756003)(6506007)(2616005)(66476007)(66556008)(66946007)(956004)(52116002)(26005)(8676002)(186003)(16526019)(6486002)(5660300002)(316002)(6636002)(478600001)(4744005)(921003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: FoLFlGcHYO2JIQB47i29rN6HnnJEyiTiXnusBmQIcYbc5rfNGqyuYqanMIusKJP0w2tSjNm4L3tRiFZqjIzMKYT0tl1mGqHUYCIi4/yWuAfNnOdKcPdIPPRCSIB0aCfv3erRp0gV5ybjFO+J3L21pVVdHDpZRyiOkRxJXyXr4copMawiA0gf154f5tJw8CcGY6436pLYR3gwtmXHJ9MjKTguibk6lyg6oHRsUkh/t6wiS7QhOqsPmxm/hALwT6MMFkOGCqq1E77bcrDr1ROKrlxZgZQWmUFQcFUKEEc1DZa99UVKCXov9m+4d+t2lcw0F0c240mJUUmy62Ou5QAhIdATyyRx/fTpDhhg7oHiAZHI7ovO/7ObkH9AaBHvYxCxJZjeMble1Ni7lkL7nGZvui20TbAkDATvQ2+pcx0v+TY7wtu63DAFEj0NastikUWWf9cVZsYfdFdXNvbGflfwzC6GfTXwnk6okGmHBOBlUFk=
 X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f4132ecb-3af0-47e8-abfc-08d81f27d8bb
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6270e9a2-6649-440d-d83c-08d81f27dcc4
 X-MS-Exchange-CrossTenant-AuthSource: VE1PR04MB6638.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Jul 2020 08:05:27.5617
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Jul 2020 08:05:34.4606
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YkE+jXZrSPOok8UQZY6L0j4P/FgapbTc1LflwooXPq5ELLanOaA1lST9TXrAnHoiV9rJFTS57TLQpD88LFesmw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0401MB2302
+X-MS-Exchange-CrossTenant-UserPrincipalName: f6SzLGBgn1eNVjpKAv5XY2UcPZO6l21Q9TZuV/J1Gna70Sr0xiWlTbxsrxa4P7O9jgT2BIpcd18Rfwomh2Ihkw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5344
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add pca9450 pmic driver for i.mx8mn-evk board.
+Add pca9450 pmic driver.
 
 Signed-off-by: Robin Gong <yibin.gong@nxp.com>
 ---
- arch/arm64/boot/dts/freescale/imx8mn-evk.dts  | 96 +++++++++++++++++++++++++++
- arch/arm64/boot/dts/freescale/imx8mn-evk.dtsi |  6 ++
- 2 files changed, 102 insertions(+)
+ arch/arm64/configs/defconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mn-evk.dts b/arch/arm64/boot/dts/freescale/imx8mn-evk.dts
-index 61f3519..b846526 100644
---- a/arch/arm64/boot/dts/freescale/imx8mn-evk.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mn-evk.dts
-@@ -13,6 +13,102 @@
- 	compatible = "fsl,imx8mn-evk", "fsl,imx8mn";
- };
- 
-+&i2c1 {
-+	pmic: pmic@25 {
-+		compatible = "nxp,pca9450b";
-+		reg = <0x25>;
-+		pinctrl-0 = <&pinctrl_pmic>;
-+		interrupt-parent = <&gpio1>;
-+		interrupts = <3 GPIO_ACTIVE_LOW>;
-+
-+		regulators {
-+			buck1: BUCK1{
-+				regulator-name = "BUCK1";
-+				regulator-min-microvolt = <600000>;
-+				regulator-max-microvolt = <2187500>;
-+				regulator-boot-on;
-+				regulator-always-on;
-+				regulator-ramp-delay = <3125>;
-+			};
-+
-+			buck2: BUCK2 {
-+				regulator-name = "BUCK2";
-+				regulator-min-microvolt = <600000>;
-+				regulator-max-microvolt = <2187500>;
-+				regulator-boot-on;
-+				regulator-always-on;
-+				regulator-ramp-delay = <3125>;
-+				nxp,dvs-run-voltage = <950000>;
-+				nxp,dvs-standby-voltage = <850000>;
-+			};
-+
-+			buck4: BUCK4{
-+				regulator-name = "BUCK4";
-+				regulator-min-microvolt = <600000>;
-+				regulator-max-microvolt = <3400000>;
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+
-+			buck5: BUCK5{
-+				regulator-name = "BUCK5";
-+				regulator-min-microvolt = <600000>;
-+				regulator-max-microvolt = <3400000>;
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+
-+			buck6: BUCK6 {
-+				regulator-name = "BUCK6";
-+				regulator-min-microvolt = <600000>;
-+				regulator-max-microvolt = <3400000>;
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+
-+			ldo1: LDO1 {
-+				regulator-name = "LDO1";
-+				regulator-min-microvolt = <1600000>;
-+				regulator-max-microvolt = <3300000>;
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+
-+			ldo2: LDO2 {
-+				regulator-name = "LDO2";
-+				regulator-min-microvolt = <800000>;
-+				regulator-max-microvolt = <1150000>;
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+
-+			ldo3: LDO3 {
-+				regulator-name = "LDO3";
-+				regulator-min-microvolt = <800000>;
-+				regulator-max-microvolt = <3300000>;
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+
-+			ldo4: LDO4 {
-+				regulator-name = "LDO4";
-+				regulator-min-microvolt = <800000>;
-+				regulator-max-microvolt = <3300000>;
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+
-+			ldo5: LDO5 {
-+				regulator-name = "LDO5";
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <3300000>;
-+				regulator-boot-on;
-+				regulator-always-on;
-+			};
-+		};
-+	};
-+};
-+
- &A53_0 {
- 	/delete-property/operating-points-v2;
- };
-diff --git a/arch/arm64/boot/dts/freescale/imx8mn-evk.dtsi b/arch/arm64/boot/dts/freescale/imx8mn-evk.dtsi
-index 85fc0aa..98f5324 100644
---- a/arch/arm64/boot/dts/freescale/imx8mn-evk.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mn-evk.dtsi
-@@ -223,6 +223,12 @@
- 		>;
- 	};
- 
-+	pinctrl_pmic: pmicirq {
-+		fsl,pins = <
-+			MX8MN_IOMUXC_GPIO1_IO03_GPIO1_IO3	0x41
-+		>;
-+	};
-+
- 	pinctrl_reg_usdhc2_vmmc: regusdhc2vmmc {
- 		fsl,pins = <
- 			MX8MN_IOMUXC_SD2_RESET_B_GPIO2_IO19	0x41
+diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+index d786bd9..abd0438 100644
+--- a/arch/arm64/configs/defconfig
++++ b/arch/arm64/configs/defconfig
+@@ -557,6 +557,7 @@ CONFIG_REGULATOR_HI6421V530=y
+ CONFIG_REGULATOR_HI655X=y
+ CONFIG_REGULATOR_MAX77620=y
+ CONFIG_REGULATOR_MAX8973=y
++CONFIG_REGULATOR_PCA9450=y
+ CONFIG_REGULATOR_PFUZE100=y
+ CONFIG_REGULATOR_PWM=y
+ CONFIG_REGULATOR_QCOM_RPMH=y
 -- 
 2.7.4
 
