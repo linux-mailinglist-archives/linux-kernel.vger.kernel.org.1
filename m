@@ -2,79 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE31C213C98
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 17:32:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE03D213CEE
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 17:45:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726560AbgGCPcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 11:32:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37936 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726098AbgGCPck (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 11:32:40 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726573AbgGCPpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 11:45:23 -0400
+Received: from p-impout008aa.msg.pkvw.co.charter.net ([47.43.26.139]:49659
+        "EHLO p-impout001.msg.pkvw.co.charter.net" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726035AbgGCPpW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Jul 2020 11:45:22 -0400
+X-Greylist: delayed 427 seconds by postgrey-1.27 at vger.kernel.org; Fri, 03 Jul 2020 11:45:22 EDT
+Received: from opius.danweeks.net ([74.70.107.6])
+        by cmsmtp with ESMTP
+        id rNlVjtwY2rzR3rNlWj41C8; Fri, 03 Jul 2020 15:38:14 +0000
+X-Authority-Analysis: v=2.3 cv=Ne6YKFL4 c=1 sm=1 tr=0
+ a=h7kw2a+/6g3zdzmQNwjrbw==:117 a=h7kw2a+/6g3zdzmQNwjrbw==:17
+ a=xqWC_Br6kY4A:10 a=kj9zAlcOel0A:10 a=_RQrkK6FrEwA:10 a=7kYe3NcsAAAA:8
+ a=noYv9r6eKZTnZH2xmfQA:9 a=CjuIK1q_8ugA:10 a=4VldaCG94jXMVy0yUZtu:22
+Received: from dev.danweeks.net (dev.danweeks.net [IPv6:2001:470:1f07:699::91])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B8D6F208C7;
-        Fri,  3 Jul 2020 15:32:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593790360;
-        bh=E5WBMBWpc0DU8roMGj9Z8eOIghgWwVOfWI+Jkv8oYHE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NbF7K+rP+Lo7TK7VAT8lb6KkN5ajc8sINPfixyJa21OL3wnZEL5eag5gC7uqJkddx
-         ZAyrCNVXLTqcjI9X9xFQbNqTSFQjvyc+xZnxCOrhwQ45IAzfPMuwXTARz0dgB4jAq4
-         nVsqvwd2vB3bG/qxclE1tWY187qwflM5vN2SNO0M=
-Date:   Fri, 3 Jul 2020 16:32:37 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        alsa-devel@alsa-project.org, Tim Gover <tim.gover@raspberrypi.com>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        linux-kernel@vger.kernel.org, Phil Elwell <phil@raspberrypi.com>
-Subject: Re: [PATCH] ASoC: core: Remove only the registered component in devm
- functions
-Message-ID: <20200703153237.GA16747@sirena.org.uk>
-References: <20200703074935.884736-1-maxime@cerno.tech>
+        by opius.danweeks.net (Postfix) with ESMTPSA id 083624410F;
+        Fri,  3 Jul 2020 11:37:54 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=danweeks.net;
+        s=opius.danweeks.net; t=1593790693;
+        bh=V2T+2N4lCCiebjUmaYDIhM8VGLdRvfUsoZG/BWe/uvY=;
+        h=Date:From:To:Cc:Subject;
+        b=FMXGToUTze8pdU99NXtup5gP8ln27pg5Sze2mTtacMLbZ18QtO0Phj15tOpE4y3oq
+         xD8YuO7vdX8OnBr+a9WJ144W146v83avFJ4MPqlGdy1GFVP7D4F+/dBP5vhjK0JOiA
+         4IChXZNY90RU7oZCCbzOXBBOE2Xg0ysNk4T1tgGQ=
+Date:   Fri, 3 Jul 2020 11:37:48 -0400
+From:   "Daniel M. Weeks" <dan@danweeks.net>
+To:     jdelvare@suse.com, linux@roeck-us.net, robh+dt@kernel.org
+Cc:     linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] dt-bindings: hwmon: Correct vendor for mcp980x
+Message-ID: <20200703153748.GA16156@dev.danweeks.net>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="pWyiEgJYm5f9v55/"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200703074935.884736-1-maxime@cerno.tech>
-X-Cookie: Without fools there would be no wisdom.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-CMAE-Envelope: MS4wfD9asncUoSFNcBiXAB2gHJXmvbabag/zMKGlIzoo9k3WTWdB0wpT8dB8m7/cIaBridhqyOJZ4vaRLy/C4qfX3QFpRPGowuxWj5I1BcAQO4kRZLaju3oZ
+ s2pEKcPfIGD+DzLSSI+y950AXz+OfXrXYbnwlAepaXRcFrIriGTLcsmF+C7kq9xHiY0UG5MNDHDmrLCVMHj3rdw8CJ81b7fRbOsKdrOaiG94JUBwzdgVOB5V
+ 8bzhWh4CvZFMAPuU880e1DCBS0UlARlw9Elg6bDN5k5cBD1pn5l397hKb2F5Bfj/7czbFi+xHejDqdDJEVVtSR+sU7dQDguMDwb0rqhXB/IJ9CydMic1jcYJ
+ dPJrwtux
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Signed-off-by: Daniel M. Weeks <dan@danweeks.net>
+---
+ Documentation/devicetree/bindings/hwmon/lm75.txt | 2 +-
+ drivers/hwmon/lm75.c                             | 8 ++++----
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
---pWyiEgJYm5f9v55/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Jul 03, 2020 at 09:49:35AM +0200, Maxime Ripard wrote:
-> The ASoC devm_ functions that register a component
-> (devm_snd_soc_register_component and devm_snd_dmaengine_pcm_register) will
-> clean their component by running snd_soc_unregister_component.
-
-This doesn't apply against current code, please check and resend.  Looks
-like a genuine issue and sensible fix :/
-
---pWyiEgJYm5f9v55/
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7/T5UACgkQJNaLcl1U
-h9CblQf8Cyrz/i6w3dI9uFuMBRAn8YEfVAoLAnWIIdNku8olQBF8OVzq8h6luaBy
-EqFNggt9cdVR146AImJEXdxJZgwig1sC9li1fMtSSiNKW35/5+IZsH28Pi+/7BTJ
-Y2mJbLi0s7gpd1XsNj7UsGuR/JELG+bpVPhf4vy+LcCbjJsFYniybNlzElYR/uux
-5YTbnzPGgXK3uMUHRnA5c2ehu+af7V/TgVnrtlbyQAA/8d0IPAyXQ1nYzX8NRslV
-4i2lF859MNZROH8t5J6eApiecWQprbXADzzvXqO63G4Cc0Qj6/b2wEj/p2W9chwe
-mULcSb4O9IOPOEcQpU1fs12HfHYD0A==
-=5nPY
------END PGP SIGNATURE-----
-
---pWyiEgJYm5f9v55/--
+diff --git a/Documentation/devicetree/bindings/hwmon/lm75.txt b/Documentation/devicetree/bindings/hwmon/lm75.txt
+index 273616702c51..e5bb554cd2c3 100644
+--- a/Documentation/devicetree/bindings/hwmon/lm75.txt
++++ b/Documentation/devicetree/bindings/hwmon/lm75.txt
+@@ -14,10 +14,10 @@ Required properties:
+ 		"maxim,max6626",
+ 		"maxim,max31725",
+ 		"maxim,max31726",
+-		"maxim,mcp980x",
+ 		"nxp,pct2075",
+ 		"st,stds75",
+ 		"st,stlm75",
++		"microchip,mcp980x",
+ 		"microchip,tcn75",
+ 		"ti,tmp100",
+ 		"ti,tmp101",
+diff --git a/drivers/hwmon/lm75.c b/drivers/hwmon/lm75.c
+index ba0be48aeadd..a8cfc7e4a685 100644
+--- a/drivers/hwmon/lm75.c
++++ b/drivers/hwmon/lm75.c
+@@ -690,10 +690,6 @@ static const struct of_device_id __maybe_unused lm75_of_match[] = {
+ 		.compatible = "maxim,max31726",
+ 		.data = (void *)max31725
+ 	},
+-	{
+-		.compatible = "maxim,mcp980x",
+-		.data = (void *)mcp980x
+-	},
+ 	{
+ 		.compatible = "nxp,pct2075",
+ 		.data = (void *)pct2075
+@@ -706,6 +702,10 @@ static const struct of_device_id __maybe_unused lm75_of_match[] = {
+ 		.compatible = "st,stlm75",
+ 		.data = (void *)stlm75
+ 	},
++	{
++		.compatible = "microchip,mcp980x",
++		.data = (void *)mcp980x
++	},
+ 	{
+ 		.compatible = "microchip,tcn75",
+ 		.data = (void *)tcn75
+-- 
+Daniel M. Weeks
