@@ -2,51 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FE2821409F
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 23:15:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4909E2140A1
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 23:15:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726894AbgGCVPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 17:15:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56232 "EHLO mail.kernel.org"
+        id S1726914AbgGCVPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 17:15:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56274 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726474AbgGCVPI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 17:15:08 -0400
-Subject: Re: [GIT PULL] Additional gfs2 fixes for 5.8
+        id S1726903AbgGCVPJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Jul 2020 17:15:09 -0400
+Subject: Re: [GIT PULL] PCI fixes for v5.8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593810907;
-        bh=ctPSV8r6NWu+b3y1KFgMQ0FA4GIl5K00veLAKseYkV0=;
+        s=default; t=1593810908;
+        bh=3RFNe7O4/XnANe+AF6v/cwBPi/6xSUP2qXTlQ9fyF5U=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=fQcqqJH56+sL+GXdF6uWUR1XtzWV+POEDcOG4NV0soKp4WFxfe4ZBc9eLzufSd0B0
-         7rdPZ8Tn5L4aIVES5hO+XBV/Ej/T1iccwDPfR08TKcfPObxvnRisKGtyC/cElvlYly
-         70DOe7ELv4hQ/0dztpAZ7nIMG77aKgQBHacBnp40=
+        b=TR/2R00xpe3/z5oOJT+t/HuRWfrIQEoG+ePGRlZfkf1u8Hao0vaQl6EOMckdcs11V
+         MyESI1LXCUt3dduXDL5v1QJ9Tcw17GTovlaa1V00feNUoLEm226nJrKJrSOdwH55uy
+         Y2hoLdbRk930d5XNzctJXQswZA5p/SeOmO0eQFS0=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200703101854.1493930-1-agruenba@redhat.com>
-References: <20200703101854.1493930-1-agruenba@redhat.com>
+In-Reply-To: <20200703160455.GA3899841@bjorn-Precision-5520>
+References: <20200703160455.GA3899841@bjorn-Precision-5520>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200703101854.1493930-1-agruenba@redhat.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2.git
- tags/gfs2-v5.8-rc3.fixes
-X-PR-Tracked-Commit-Id: c860f8ffbea8924de05a281b937128773d30a77c
+X-PR-Tracked-Message-Id: <20200703160455.GA3899841@bjorn-Precision-5520>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git
+ pci-v5.8-fixes-1
+X-PR-Tracked-Commit-Id: 5396956cc7c6874180c9bfc1ceceb02b739a6a87
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: bf2d63694e9ed5142711325e0039b017d40fae4c
-Message-Id: <159381090787.9451.11625675407027186843.pr-tracker-bot@kernel.org>
-Date:   Fri, 03 Jul 2020 21:15:07 +0000
-To:     Andreas Gruenbacher <agruenba@redhat.com>
+X-PR-Merge-Commit-Id: 7fec3ce50a5d3fc54de9c0e9d43682ea9320b199
+Message-Id: <159381090863.9451.6625199989743957374.pr-tracker-bot@kernel.org>
+Date:   Fri, 03 Jul 2020 21:15:08 +0000
+To:     Bjorn Helgaas <helgaas@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        cluster-devel@redhat.com, linux-kernel@vger.kernel.org,
-        Andreas Gruenbacher <agruenba@redhat.com>
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Yicong Yang <yangyicong@hisilicon.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri,  3 Jul 2020 12:18:54 +0200:
+The pull request you sent on Fri, 3 Jul 2020 11:04:55 -0500:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2.git tags/gfs2-v5.8-rc3.fixes
+> git://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git pci-v5.8-fixes-1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/bf2d63694e9ed5142711325e0039b017d40fae4c
+https://git.kernel.org/torvalds/c/7fec3ce50a5d3fc54de9c0e9d43682ea9320b199
 
 Thank you!
 
