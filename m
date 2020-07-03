@@ -2,113 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BEC4213066
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 02:15:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F1FC21306C
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 02:18:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726268AbgGCAPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 20:15:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53428 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725937AbgGCAPm (ORCPT
+        id S1726106AbgGCASG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 20:18:06 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:50238 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725937AbgGCASG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 20:15:42 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCE52C08C5C1;
-        Thu,  2 Jul 2020 17:15:41 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id s14so11934616plq.6;
-        Thu, 02 Jul 2020 17:15:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=nuJRvdB0NXvVZz7pZcV4N1oDW2dnoBAuVAW0OAoXK2w=;
-        b=LSEdiF8O8c0k36FJz+J/p1Xm+032fT22eON16GPFoOrZL6GDx9jPsHusIL7FEU0XAV
-         lLDoHY9NSZfpcd5oNSgz7AXGqRLd1dfAW9ad86/buGeCa4uTE/vU9OPIKwfaZyBXfnsJ
-         uG05dXYdVlfndLY83LDfB7lzK6ZqRQP5RvYyTLEoAscx9LtDbk1kTfrj/Cwbbvqz6uxW
-         IUIYgXT0pd0DwhOqvL6wEv82lwldnFjq8WUAnvh0BthjGb+v++4h6R72lTgxl5Ir5SPV
-         KaijBTzwUbf0D6ex6rU/rFRlvvyVHMSFetaS1LKZRTYt3D1mhdMNSiJCFStkUNFQKfnS
-         w0+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=nuJRvdB0NXvVZz7pZcV4N1oDW2dnoBAuVAW0OAoXK2w=;
-        b=Hz5uPoOmI34jNibxFQgzG8dcvyTpPuwttGzgdY/dGS6GK8euGDlfSxLRaOd54uwZ7e
-         wg1iiQ1X2096xLB0jcr6U3QIZMnPvBS8sNWAwADZWzEAu7D8NKhAnoUq62vCcS6uwXAu
-         /WqcPecuG/yIXPQznZMzrrVoyJ5a0k8+GD8XSyIxviX+1bcoEwxfqJEDD3ENPhPrN3wS
-         80c7jzkC8CbweoPS71I664qGUHr7W0l4GNgVbip/eVDHWsTt23mSguKcinRIzVT0/4+7
-         WWapd1+dgB0ICBKKTBZpwu+F3gZWnFCqpzb7gX6mw3OSq8+WQFmkeKWYPfvBx1g8Mlkm
-         sq1A==
-X-Gm-Message-State: AOAM532WY+cpTtymdk9IBnjP7f1YFDQiWTyXYeWI9wDg38bzd1wrpoJE
-        GyZKyYga0cxBZwowUHIi4lGqmzE3
-X-Google-Smtp-Source: ABdhPJzVARbnUoiUECgH/rt6gF7oxr/jO/Or3UFnEeEEE5zO8Q2uC+eAackVR4Z456AOo0TJ+H99Rw==
-X-Received: by 2002:a17:902:b78a:: with SMTP id e10mr28875186pls.34.1593735341316;
-        Thu, 02 Jul 2020 17:15:41 -0700 (PDT)
-Received: from localhost (61-68-186-125.tpgi.com.au. [61.68.186.125])
-        by smtp.gmail.com with ESMTPSA id b11sm10202251pfr.179.2020.07.02.17.15.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Jul 2020 17:15:40 -0700 (PDT)
-Date:   Fri, 03 Jul 2020 10:15:34 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH v2 4/4] mm/vmalloc: Hugepage vmalloc mappings
-To:     linux-mm@kvack.org, Zefan Li <lizefan@huawei.com>
-Cc:     =?iso-8859-1?q?Borislav=0A?= Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, Ingo Molnar <mingo@redhat.com>,
-        =?iso-8859-1?q?Thomas=0A?= Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>, x86@kernel.org
-References: <20200413125303.423864-1-npiggin@gmail.com>
-        <20200413125303.423864-5-npiggin@gmail.com>
-        <d148f86c-b27b-63fb-31d2-35b8f52ec540@huawei.com>
-In-Reply-To: <d148f86c-b27b-63fb-31d2-35b8f52ec540@huawei.com>
+        Thu, 2 Jul 2020 20:18:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593735484;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hIQsc7L3mlUnsPjNRq6vMDMF6qPjtCUsaG1+ltKNRpk=;
+        b=E0nVOexq2JH16WWUL3uKxMRBYHCN3xvZs3764D173OT2sEY3HMmwArYaTCHEdV5V197hS3
+        x1CV7QJNCdI6kzcgSGmoykjlW/+dfAkwF8b3H7fUH2mLt477+IPp/rbY74ynaKCmwbSwUu
+        Wq+bFfB6fRHez97K//dhJNCeXLe4Fbo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-155-DW0ViCadM4GSoHNNdXZJGg-1; Thu, 02 Jul 2020 20:18:03 -0400
+X-MC-Unique: DW0ViCadM4GSoHNNdXZJGg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D1B22800C60;
+        Fri,  3 Jul 2020 00:18:00 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-112-121.rdu2.redhat.com [10.10.112.121])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0D9555C1B0;
+        Fri,  3 Jul 2020 00:17:57 +0000 (UTC)
+Subject: Re: [PATCH v3] x86/speculation/l1tf: Add KConfig for setting the L1D
+ cache flush mode
+To:     Abhishek Bhardwaj <abhishekbh@google.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Anthony Steinhauser <asteinhauser@google.com>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tony Luck <tony.luck@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>, kvm@vger.kernel.org,
+        x86@kernel.org
+References: <20200702221237.2517080-1-abhishekbh@google.com>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <e7bc00fc-fe53-800e-8439-f1fbdca5dd26@redhat.com>
+Date:   Thu, 2 Jul 2020 20:17:57 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Message-Id: <1593735251.svr5r5cxle.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200702221237.2517080-1-abhishekbh@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Zefan Li's message of July 1, 2020 5:10 pm:
->>  static void *__vmalloc_node(unsigned long size, unsigned long align,
->> -			    gfp_t gfp_mask, pgprot_t prot,
->> -			    int node, const void *caller);
->> +			gfp_t gfp_mask, pgprot_t prot, unsigned long vm_flags,
->> +			int node, const void *caller);
->>  static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask=
-,
->> -				 pgprot_t prot, int node)
->> +				 pgprot_t prot, unsigned int page_shift,
->> +				 int node)
->>  {
->>  	struct page **pages;
->> +	unsigned long addr =3D (unsigned long)area->addr;
->> +	unsigned long size =3D get_vm_area_size(area);
->> +	unsigned int page_order =3D page_shift - PAGE_SHIFT;
->>  	unsigned int nr_pages, array_size, i;
->>  	const gfp_t nested_gfp =3D (gfp_mask & GFP_RECLAIM_MASK) | __GFP_ZERO;
->>  	const gfp_t alloc_mask =3D gfp_mask | __GFP_NOWARN;
->>  	const gfp_t highmem_mask =3D (gfp_mask & (GFP_DMA | GFP_DMA32)) ?
->> -					0 :
->> -					__GFP_HIGHMEM;
->> +					0 : __GFP_HIGHMEM;
->> =20
->> -	nr_pages =3D get_vm_area_size(area) >> PAGE_SHIFT;
->> +	nr_pages =3D size >> page_shift;
->=20
-> while try out this patchset, we encountered a BUG_ON in account_kernel_st=
-ack()
-> in kernel/fork.c.
->=20
-> BUG_ON(vm->nr_pages !=3D THREAD_SIZE / PAGE_SIZE);
->=20
-> which obviously should be updated accordingly.
+On 7/2/20 6:12 PM, Abhishek Bhardwaj wrote:
+> This change adds a new kernel configuration that sets the l1d cache
+> flush setting at compile time rather than at run time.
+>
+> Signed-off-by: Abhishek Bhardwaj <abhishekbh@google.com>
 
-Thanks for finding that. We may have to change this around a bit so=20
-nr_pages still appears to be in PAGE_SIZE units for anybody looking.
+Can you explain in the commit log why you need a compile time option 
+whereas the desired mitigation can also be set via a boot command line 
+option?
 
-Thanks,
-Nick
+The code looks OK, but the question I have is why.
+
+Cheers,
+Longman
+
