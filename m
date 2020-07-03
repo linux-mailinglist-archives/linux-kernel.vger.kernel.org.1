@@ -2,151 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34C85213B3A
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 15:40:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89C62213B40
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 15:40:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726749AbgGCNjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 09:39:52 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:26321 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726147AbgGCNjt (ORCPT
+        id S1726382AbgGCNks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 09:40:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35576 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726039AbgGCNkr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 09:39:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593783587;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3i/7HG3E2Y5FgAWZXKhOsCstaQ5rwPr72fTo1BaNePY=;
-        b=cKMguHnecJQzkcQzlXMnm53I0BAcmDsYvOcSyS4fmhZ6X7Uv3Oz2g81IIEgVDgRQiD3MWm
-        j/M5HHSaYtw4TR4RTJGwfYdqJgyHvSdpQEcCWEaDj9JrlgSR7Rxbg0GqVEOKdAc8ruO/Uq
-        rDR8mFc8e5d1skPaVHBqz0FNaH/iF+M=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-478-FLh4HO9OO-SgYyk7VG0xvQ-1; Fri, 03 Jul 2020 09:39:44 -0400
-X-MC-Unique: FLh4HO9OO-SgYyk7VG0xvQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A04642268;
-        Fri,  3 Jul 2020 13:39:42 +0000 (UTC)
-Received: from t480s.redhat.com (ovpn-114-0.ams2.redhat.com [10.36.114.0])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3FBA97AC75;
-        Fri,  3 Jul 2020 13:39:38 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-s390@vger.kernel.org, linux-mm@kvack.org,
-        David Hildenbrand <david@redhat.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@de.ibm.com>
-Subject: [PATCH v1 9/9] s390/vmemmap: avoid memset(PAGE_UNUSED) when adding consecutive sections
-Date:   Fri,  3 Jul 2020 15:39:17 +0200
-Message-Id: <20200703133917.39045-10-david@redhat.com>
-In-Reply-To: <20200703133917.39045-1-david@redhat.com>
-References: <20200703133917.39045-1-david@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+        Fri, 3 Jul 2020 09:40:47 -0400
+Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCF73C08C5C1
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Jul 2020 06:40:46 -0700 (PDT)
+Received: by mail-wr1-x449.google.com with SMTP id i10so31552264wrn.21
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Jul 2020 06:40:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=ls5EQRkUxBZzP7EqUh1IKI2XSD94zleYx8ufPET2dw8=;
+        b=QC8bEzwgWYyccfeOKyfq0/UYYEp93ZxZUOAiCO8YzRcyfA7lAnkrsVlew9+moU4MUG
+         DRDuXkCWla9vIaEJM3cvP237L651k/4hOV7IA9Jnh0mfEtb6gJmtwes/S2tn7UYkxeX6
+         a5a4LiHhgo2yaFtlDPTvAV4ShhZ5OH/8MOZcHKSMjq3celIQHtn88022nkpy0uWnqtm9
+         Wd8s5msxoBlY6XDBITplJoG520KVNOtyBJReU2/jx3IjWjpSPfXdyFjVuvMxp8zbiGVo
+         xf5tFrp+Lm079l47jdaV/s4a5AqD7dGSXAY4Pc5qlLsnU0Z+Kx9mVqSCHzdKRUu1YU81
+         Kogw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=ls5EQRkUxBZzP7EqUh1IKI2XSD94zleYx8ufPET2dw8=;
+        b=NVV1BXdApatqJf+g/Sy5Zj2WqtTlZv9ZeaAS34MW7rTVuak22G2y8L/zqJL/ubmu2A
+         aIMCKaAMKHhLwDDRNftY9CIzfjl8e46BXkxCYS97jc1tB1SpZXjAwL9VXy227qK1nA/w
+         p+WsJntB32+I96ncH6yZZSLWXxZPQe1NBsn/hDTxAz+faFfP0UCsgwEAzE8a0IK3bGkv
+         9nnzAaIwMRqtfSgcAFdjr3il0KSf+mEQncJbpQ5h0CraT+qiwFP3UMAUmqz9fWRIkgtk
+         bPYj+ERczOtbgJPqGeAHlpwh3xAMOzBLSb/IzzMgUhWFunZvIreaAe2mZCROqAzJfrw3
+         mOhg==
+X-Gm-Message-State: AOAM533hD782IyrjvkXClDfqDbiWz+KMc8XnUqQAm3dSJdRacrLQhgvX
+        wY7OiVMGjO7M2MZ7NCPERYeVdZm3eA==
+X-Google-Smtp-Source: ABdhPJzQRn6zHi1Z9vLMAq4p2396wY3gPl6nh8x8/wacERQCIkGGGDaBzXhNJgylDDwcvlwNXQoHSrWWlA==
+X-Received: by 2002:a7b:c4c3:: with SMTP id g3mr38298704wmk.126.1593783645449;
+ Fri, 03 Jul 2020 06:40:45 -0700 (PDT)
+Date:   Fri,  3 Jul 2020 15:40:29 +0200
+Message-Id: <20200703134031.3298135-1-elver@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.27.0.212.ge8ba1cc988-goog
+Subject: [PATCH 1/3] kcsan: Add support for atomic builtins
+From:   Marco Elver <elver@google.com>
+To:     elver@google.com, paulmck@kernel.org
+Cc:     dvyukov@google.com, glider@google.com, andreyknvl@google.com,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's avoid memset(PAGE_UNUSED) when adding consecutive sections,
-whereby the vmemmap of a single section does not span full PMDs.
+Some architectures (currently e.g. s390 partially) implement atomics
+using the compiler's atomic builtins (__atomic_*, __sync_*). To support
+enabling KCSAN on such architectures in future, or support experimental
+use of these builtins, implement support for them.
 
-Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
-Cc: Vasily Gorbik <gor@linux.ibm.com>
-Cc: Christian Borntraeger <borntraeger@de.ibm.com>
-Cc: Gerald Schaefer <gerald.schaefer@de.ibm.com>
-Signed-off-by: David Hildenbrand <david@redhat.com>
+We should also avoid breaking KCSAN kernels due to use (accidental or
+otherwise) of atomic builtins in drivers, as has happened in the past:
+https://lkml.kernel.org/r/5231d2c0-41d9-6721-e15f-a7eedf3ce69e@infradead.org
+
+The instrumentation is subtly different from regular reads/writes: TSAN
+instrumentation replaces the use of atomic builtins with a call into the
+runtime, and the runtime's job is to also execute the desired atomic
+operation. We rely on the __atomic_* compiler builtins, available with
+all KCSAN-supported compilers, to implement each TSAN atomic
+instrumentation function.
+
+Signed-off-by: Marco Elver <elver@google.com>
 ---
- arch/s390/mm/vmem.c | 45 ++++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 42 insertions(+), 3 deletions(-)
+ kernel/kcsan/core.c | 110 ++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 110 insertions(+)
 
-diff --git a/arch/s390/mm/vmem.c b/arch/s390/mm/vmem.c
-index a981ff5d47223..9db15fc864fc8 100644
---- a/arch/s390/mm/vmem.c
-+++ b/arch/s390/mm/vmem.c
-@@ -74,7 +74,22 @@ static void vmem_pte_free(unsigned long *table)
- 
- #define PAGE_UNUSED 0xFD
- 
--static void vmemmap_use_sub_pmd(unsigned long start, unsigned long end)
+diff --git a/kernel/kcsan/core.c b/kernel/kcsan/core.c
+index d803765603fb..6843169da759 100644
+--- a/kernel/kcsan/core.c
++++ b/kernel/kcsan/core.c
+@@ -856,3 +856,113 @@ void __tsan_init(void)
+ {
+ }
+ EXPORT_SYMBOL(__tsan_init);
++
 +/*
-+ * The unused vmemmap range, which was not yet memset(PAGE_UNUSED) ranges
-+ * from unused_pmd_start to next PMD_SIZE boundary.
++ * Instrumentation for atomic builtins (__atomic_*, __sync_*).
++ *
++ * Normal kernel code _should not_ be using them directly, but some
++ * architectures may implement some or all atomics using the compilers'
++ * builtins.
++ *
++ * Note: If an architecture decides to fully implement atomics using the
++ * builtins, because they are implicitly instrumented by KCSAN (and KASAN,
++ * etc.), implementing the ARCH_ATOMIC interface (to get instrumentation via
++ * atomic-instrumented) is no longer necessary.
++ *
++ * TSAN instrumentation replaces atomic accesses with calls to any of the below
++ * functions, whose job is to also execute the operation itself.
 + */
-+unsigned long unused_pmd_start;
 +
-+static void vmemmap_flush_unused_pmd(void)
++#define DEFINE_TSAN_ATOMIC_LOAD_STORE(bits)                                                        \
++	u##bits __tsan_atomic##bits##_load(const u##bits *ptr, int memorder);                      \
++	u##bits __tsan_atomic##bits##_load(const u##bits *ptr, int memorder)                       \
++	{                                                                                          \
++		check_access(ptr, bits / BITS_PER_BYTE, KCSAN_ACCESS_ATOMIC);                      \
++		return __atomic_load_n(ptr, memorder);                                             \
++	}                                                                                          \
++	EXPORT_SYMBOL(__tsan_atomic##bits##_load);                                                 \
++	void __tsan_atomic##bits##_store(u##bits *ptr, u##bits v, int memorder);                   \
++	void __tsan_atomic##bits##_store(u##bits *ptr, u##bits v, int memorder)                    \
++	{                                                                                          \
++		check_access(ptr, bits / BITS_PER_BYTE, KCSAN_ACCESS_WRITE | KCSAN_ACCESS_ATOMIC); \
++		__atomic_store_n(ptr, v, memorder);                                                \
++	}                                                                                          \
++	EXPORT_SYMBOL(__tsan_atomic##bits##_store)
++
++#define DEFINE_TSAN_ATOMIC_RMW(op, bits, suffix)                                                   \
++	u##bits __tsan_atomic##bits##_##op(u##bits *ptr, u##bits v, int memorder);                 \
++	u##bits __tsan_atomic##bits##_##op(u##bits *ptr, u##bits v, int memorder)                  \
++	{                                                                                          \
++		check_access(ptr, bits / BITS_PER_BYTE, KCSAN_ACCESS_WRITE | KCSAN_ACCESS_ATOMIC); \
++		return __atomic_##op##suffix(ptr, v, memorder);                                    \
++	}                                                                                          \
++	EXPORT_SYMBOL(__tsan_atomic##bits##_##op)
++
++/*
++ * Note: CAS operations are always classified as write, even in case they
++ * fail. We cannot perform check_access() after a write, as it might lead to
++ * false positives, in cases such as:
++ *
++ *	T0: __atomic_compare_exchange_n(&p->flag, &old, 1, ...)
++ *
++ *	T1: if (__atomic_load_n(&p->flag, ...)) {
++ *		modify *p;
++ *		p->flag = 0;
++ *	    }
++ *
++ * The only downside is that, if there are 3 threads, with one CAS that
++ * succeeds, another CAS that fails, and an unmarked racing operation, we may
++ * point at the wrong CAS as the source of the race. However, if we assume that
++ * all CAS can succeed in some other execution, the data race is still valid.
++ */
++#define DEFINE_TSAN_ATOMIC_CMPXCHG(bits, strength, weak)                                           \
++	int __tsan_atomic##bits##_compare_exchange_##strength(u##bits *ptr, u##bits *exp,          \
++							      u##bits val, int mo, int fail_mo);   \
++	int __tsan_atomic##bits##_compare_exchange_##strength(u##bits *ptr, u##bits *exp,          \
++							      u##bits val, int mo, int fail_mo)    \
++	{                                                                                          \
++		check_access(ptr, bits / BITS_PER_BYTE, KCSAN_ACCESS_WRITE | KCSAN_ACCESS_ATOMIC); \
++		return __atomic_compare_exchange_n(ptr, exp, val, weak, mo, fail_mo);              \
++	}                                                                                          \
++	EXPORT_SYMBOL(__tsan_atomic##bits##_compare_exchange_##strength)
++
++#define DEFINE_TSAN_ATOMIC_CMPXCHG_VAL(bits)                                                       \
++	u##bits __tsan_atomic##bits##_compare_exchange_val(u##bits *ptr, u##bits exp, u##bits val, \
++							   int mo, int fail_mo);                   \
++	u##bits __tsan_atomic##bits##_compare_exchange_val(u##bits *ptr, u##bits exp, u##bits val, \
++							   int mo, int fail_mo)                    \
++	{                                                                                          \
++		check_access(ptr, bits / BITS_PER_BYTE, KCSAN_ACCESS_WRITE | KCSAN_ACCESS_ATOMIC); \
++		__atomic_compare_exchange_n(ptr, &exp, val, 0, mo, fail_mo);                       \
++		return exp;                                                                        \
++	}                                                                                          \
++	EXPORT_SYMBOL(__tsan_atomic##bits##_compare_exchange_val)
++
++#define DEFINE_TSAN_ATOMIC_OPS(bits)                                                               \
++	DEFINE_TSAN_ATOMIC_LOAD_STORE(bits);                                                       \
++	DEFINE_TSAN_ATOMIC_RMW(exchange, bits, _n);                                                \
++	DEFINE_TSAN_ATOMIC_RMW(fetch_add, bits, );                                                 \
++	DEFINE_TSAN_ATOMIC_RMW(fetch_sub, bits, );                                                 \
++	DEFINE_TSAN_ATOMIC_RMW(fetch_and, bits, );                                                 \
++	DEFINE_TSAN_ATOMIC_RMW(fetch_or, bits, );                                                  \
++	DEFINE_TSAN_ATOMIC_RMW(fetch_xor, bits, );                                                 \
++	DEFINE_TSAN_ATOMIC_RMW(fetch_nand, bits, );                                                \
++	DEFINE_TSAN_ATOMIC_CMPXCHG(bits, strong, 0);                                               \
++	DEFINE_TSAN_ATOMIC_CMPXCHG(bits, weak, 1);                                                 \
++	DEFINE_TSAN_ATOMIC_CMPXCHG_VAL(bits)
++
++DEFINE_TSAN_ATOMIC_OPS(8);
++DEFINE_TSAN_ATOMIC_OPS(16);
++DEFINE_TSAN_ATOMIC_OPS(32);
++DEFINE_TSAN_ATOMIC_OPS(64);
++
++void __tsan_atomic_thread_fence(int memorder);
++void __tsan_atomic_thread_fence(int memorder)
 +{
-+	if (!unused_pmd_start)
-+		return;
-+	memset(__va(unused_pmd_start), PAGE_UNUSED,
-+	       ALIGN(unused_pmd_start, PMD_SIZE) - unused_pmd_start);
-+	unused_pmd_start = 0;
++	__atomic_thread_fence(memorder);
 +}
++EXPORT_SYMBOL(__tsan_atomic_thread_fence);
 +
-+static void __vmemmap_use_sub_pmd(unsigned long start, unsigned long end)
- {
- 	/*
- 	 * As we expect to add in the same granularity as we remove, it's
-@@ -85,18 +100,41 @@ static void vmemmap_use_sub_pmd(unsigned long start, unsigned long end)
- 	memset(__va(start), 0, sizeof(struct page));
- }
- 
-+static void vmemmap_use_sub_pmd(unsigned long start, unsigned long end)
-+{
-+	/*
-+	 * We only optimize if the new used range directly follows the
-+	 * previously unused range (esp., when populating consecutive sections).
-+	 */
-+	if (unused_pmd_start == start) {
-+		unused_pmd_start = end;
-+		if (likely(IS_ALIGNED(unused_pmd_start, PMD_SIZE)))
-+			unused_pmd_start = 0;
-+		return;
-+	}
-+	vmemmap_flush_unused_pmd();
-+	__vmemmap_use_sub_pmd(start, end);
-+}
-+
- static void vmemmap_use_new_sub_pmd(unsigned long start, unsigned long end)
- {
- 	void *page = __va(ALIGN_DOWN(start, PMD_SIZE));
- 
-+	vmemmap_flush_unused_pmd();
-+
- 	/* Could be our memmap page is filled with PAGE_UNUSED already ... */
--	vmemmap_use_sub_pmd(start, end);
-+	__vmemmap_use_sub_pmd(start, end);
- 
- 	/* Mark the unused parts of the new memmap page PAGE_UNUSED. */
- 	if (!IS_ALIGNED(start, PMD_SIZE))
- 		memset(page, PAGE_UNUSED, start - __pa(page));
-+	/*
-+	 * We want to avoid memset(PAGE_UNUSED) when populating the vmemmap of
-+	 * consecutive sections. Remember for the last added PMD the last
-+	 * unused range in the populated PMD.
-+	 */
- 	if (!IS_ALIGNED(end, PMD_SIZE))
--		memset(__va(end), PAGE_UNUSED, __pa(page) + PMD_SIZE - end);
-+		unused_pmd_start = end;
- }
- 
- /* Returns true if the PMD is completely unused and can be freed. */
-@@ -104,6 +142,7 @@ static bool vmemmap_unuse_sub_pmd(unsigned long start, unsigned long end)
- {
- 	void *page = __va(ALIGN_DOWN(start, PMD_SIZE));
- 
-+	vmemmap_flush_unused_pmd();
- 	memset(__va(start), PAGE_UNUSED, end - start);
- 	return !memchr_inv(page, PAGE_UNUSED, PMD_SIZE);
- }
++void __tsan_atomic_signal_fence(int memorder);
++void __tsan_atomic_signal_fence(int memorder) { }
++EXPORT_SYMBOL(__tsan_atomic_signal_fence);
 -- 
-2.26.2
+2.27.0.212.ge8ba1cc988-goog
 
