@@ -2,214 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ABE5213580
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 09:49:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52D75213583
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 09:50:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726737AbgGCHtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 03:49:40 -0400
-Received: from mga18.intel.com ([134.134.136.126]:2504 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726100AbgGCHtk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 03:49:40 -0400
-IronPort-SDR: Zr4JrwbIxu5kKIomnAqOsIbn87jUinmHfkl9t+ALvwPwZwehOUbM37M6PyZvbW+tWS40ZVCmAT
- xCxJh83E0ULA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="134568782"
-X-IronPort-AV: E=Sophos;i="5.75,307,1589266800"; 
-   d="scan'208";a="134568782"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jul 2020 00:49:39 -0700
-IronPort-SDR: WFthDZHBbL+ICWgQ4zh72coZAd/soDiye/oCdpLOoDeJpwB1C8o3xmelt8eBnouNGGque7nBGU
- nDO55WVrOlaA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,307,1589266800"; 
-   d="scan'208";a="267286151"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga008.fm.intel.com with ESMTP; 03 Jul 2020 00:49:39 -0700
-Received: from [10.249.231.67] (abudanko-mobl.ccr.corp.intel.com [10.249.231.67])
-        by linux.intel.com (Postfix) with ESMTP id 7613B580784;
-        Fri,  3 Jul 2020 00:49:37 -0700 (PDT)
-Subject: [PATCH v9 15/15] perf record: introduce --control fd:ctl-fd[,ack-fd]
- options
-From:   Alexey Budankov <alexey.budankov@linux.intel.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <a4d5db4a-f25c-38dc-1c41-321a886cb122@linux.intel.com>
-Organization: Intel Corp.
-Message-ID: <2f860f76-7d65-d319-8727-70f59824ca59@linux.intel.com>
-Date:   Fri, 3 Jul 2020 10:49:36 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726807AbgGCHtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 03:49:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726100AbgGCHtv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Jul 2020 03:49:51 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B117C08C5C1;
+        Fri,  3 Jul 2020 00:49:51 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id e8so1589426ljb.0;
+        Fri, 03 Jul 2020 00:49:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jPH2st2Pqe2VTT1oPxnRHqMVaOG4iEFkIyKYIfsbc+U=;
+        b=NTyBfb6MC/K5Sd6KyVNZKzEbpAik9J+b6aw3s41DDaJeWEtVid9Gy9Mulpo9CQT/qk
+         WlfNGgGBRtzo6y86l+XsTPfiDRqYrrlJPY6Fn86X41UWfKF/6fhmH1iUikQ3qVctS/8Y
+         Y3qNr2/REEG9OU5BtskvsuhN50jOTU9dsU4xwTth1z6rjwPpTO1QEiRA9tUgfH41FaC2
+         YBXVDlMFkmochv4W7tg2yOy2YABH2d8Pcv4d6jQrbIVCkNn3u6VgMk3Mb4K+Tf83fHxV
+         bhTeIJqut0rRowIe2OO7ZtRqKsFPZysWZ6lubgc8v86cR0t9DFk3ABf3eBEob8xso9+4
+         kF/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jPH2st2Pqe2VTT1oPxnRHqMVaOG4iEFkIyKYIfsbc+U=;
+        b=mBZdU1vdb9JAF+8AFVd4TK8eeFPw3lrWM+HgPf9IWCX9ZlOERbE40fsEvH5pme3I2z
+         K1ZGlQEaAHR59UxjeOMzfqzwmdUMgsCrLAh4tWJj3gN047GH36aW9N4aDjhEIMts3JCX
+         ZhYPQLta2RxlTpCYGzzeCzse4xf0ny3GdYwBt7Xow+8SMtFPuUhuDY2ykmw57wcc7XSI
+         CULdYAGixQnJWiAZJQU6bDuD/2ljud9EBER8RdebVGc2jD80gHZ4Wj0oO+RgYThscjci
+         B61JPWL9AodO2ZJzjwamP0L37gsXaC/uFfxsVYrgPO/cYvajS4+5FD02XQ2KJGVnKWqh
+         NbjA==
+X-Gm-Message-State: AOAM530VB7qV3yqB4Ugz8PJpKn75okmYgrg3RwE/Spi33iQhRXT4yfOX
+        c8B0bPHHej9YEcS1zZmdphvSlf/SVfoWpR++Klszmcpn9M4=
+X-Google-Smtp-Source: ABdhPJyaP/rrmSPjy3RcimVB0S5EWbzspouE7IaasobfxWfTADJFI9jmKIiPw6kf4/ctQru1yOUTfnH56mocespH/JE=
+X-Received: by 2002:a2e:b167:: with SMTP id a7mr9779767ljm.83.1593762589556;
+ Fri, 03 Jul 2020 00:49:49 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <a4d5db4a-f25c-38dc-1c41-321a886cb122@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200703001212.207565-1-danny@kdrag0n.dev> <CANiq72k2rrByxzj1c4azAVJq-V7BqQcmBwtm3XM9T8r3r3-ysQ@mail.gmail.com>
+ <16043769.gqpzGLO8mG@pinwheel>
+In-Reply-To: <16043769.gqpzGLO8mG@pinwheel>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Fri, 3 Jul 2020 09:49:37 +0200
+Message-ID: <CANiq72k_DrinWLNUVdc_DoOQu5wB8uD5Yns=Jw7PMDC_TbEETw@mail.gmail.com>
+Subject: Re: [PATCH] editorconfig: Add automatic editor configuration file
+To:     Danny Lin <danny@kdrag0n.dev>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andy Whitcroft <apw@canonical.com>,
+        Joe Perches <joe@perches.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jul 3, 2020 at 9:31 AM Danny Lin <danny@kdrag0n.dev> wrote:
+>
+> Most of the other exceptions can be accomodated for with more specific
+> rules below the base [*] section. I just went through most of the
+> kernel's files and added rules for the vast majority of the exceptinos
+> to the 8-column tab indent style, though there are still some that
+> haven't been covered.
 
-Introduce --control fd:ctl-fd[,ack-fd] options to pass open file
-descriptors numbers from command line. Extend perf-record.txt file
-with --control fd:ctl-fd[,ack-fd] options description. Document
-possible usage model introduced by --control fd:ctl-fd[,ack-fd]
-options by providing example bash shell script.
+Very good! That looks much better.
 
-Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
----
- tools/perf/Documentation/perf-record.txt | 39 ++++++++++++++++++++++++
- tools/perf/builtin-record.c              | 37 ++++++++++++++++++++++
- tools/perf/util/record.h                 |  2 ++
- 3 files changed, 78 insertions(+)
+Are there too many file types that use tabs? If not, then I think it
+is best to add a section for "General tab" files like for the others,
+in order to be explicit and to have the list around.
 
-diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
-index a84376605805..3f72d8e261f3 100644
---- a/tools/perf/Documentation/perf-record.txt
-+++ b/tools/perf/Documentation/perf-record.txt
-@@ -627,6 +627,45 @@ option. The -e option and this one can be mixed and matched.  Events
- can be grouped using the {} notation.
- endif::HAVE_LIBPFM[]
- 
-+--control fd:ctl-fd[,ack-fd]
-+Listen on ctl-fd descriptor for command to control measurement ('enable': enable events,
-+'disable': disable events). Measurements can be started with events disabled using
-+--delay=-1 option. Optionally send control command completion ('ack\n') to ack-fd descriptor
-+to synchronize with the controlling process. Example of bash shell script to enable and
-+disable events during measurements:
-+
-+#!/bin/bash
-+
-+ctl_dir=/tmp/
-+
-+ctl_fifo=${ctl_dir}perf_ctl.fifo
-+test -p ${ctl_fifo} && unlink ${ctl_fifo}
-+mkfifo ${ctl_fifo}
-+exec {ctl_fd}<>${ctl_fifo}
-+
-+ctl_ack_fifo=${ctl_dir}perf_ctl_ack.fifo
-+test -p ${ctl_ack_fifo} && unlink ${ctl_ack_fifo}
-+mkfifo ${ctl_ack_fifo}
-+exec {ctl_fd_ack}<>${ctl_ack_fifo}
-+
-+perf record -D -1 -e cpu-cycles -a               \
-+            --control fd:${ctl_fd},${ctl_fd_ack} \
-+            -- sleep 30 &
-+perf_pid=$!
-+
-+sleep 5  && echo 'enable' >&${ctl_fd} && read -u ${ctl_fd_ack} e1 && echo "enabled(${e1})"
-+sleep 10 && echo 'disable' >&${ctl_fd} && read -u ${ctl_fd_ack} d1 && echo "disabled(${d1})"
-+
-+exec {ctl_fd_ack}>&-
-+unlink ${ctl_ack_fifo}
-+
-+exec {ctl_fd}>&-
-+unlink ${ctl_fifo}
-+
-+wait -n ${perf_pid}
-+exit $?
-+
-+
- SEE ALSO
- --------
- linkperf:perf-stat[1], linkperf:perf-list[1], linkperf:perf-intel-pt[1]
-diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-index 632e61fe70bd..0718aa71b4ba 100644
---- a/tools/perf/builtin-record.c
-+++ b/tools/perf/builtin-record.c
-@@ -1749,6 +1749,9 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
- 		perf_evlist__start_workload(rec->evlist);
- 	}
- 
-+	if (evlist__initialize_ctlfd(rec->evlist, opts->ctl_fd, opts->ctl_fd_ack))
-+		goto out_child;
-+
- 	if (opts->initial_delay) {
- 		pr_info(EVLIST_DISABLED_MSG);
- 		if (opts->initial_delay > 0) {
-@@ -1895,6 +1898,7 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
- 		record__synthesize_workload(rec, true);
- 
- out_child:
-+	evlist__finalize_ctlfd(rec->evlist);
- 	record__mmap_read_all(rec, true);
- 	record__aio_mmap_read_sync(rec);
- 
-@@ -2244,6 +2248,33 @@ static int record__parse_mmap_pages(const struct option *opt,
- 	return ret;
- }
- 
-+static int parse_control_option(const struct option *opt,
-+				const char *str,
-+				int unset __maybe_unused)
-+{
-+	char *comma = NULL, *endptr = NULL;
-+	struct record_opts *config = (struct record_opts *)opt->value;
-+
-+	if (strncmp(str, "fd:", 3))
-+		return -EINVAL;
-+
-+	config->ctl_fd = strtoul(&str[3], &endptr, 0);
-+	if (endptr == &str[3])
-+		return -EINVAL;
-+
-+	comma = strchr(str, ',');
-+	if (comma) {
-+		if (endptr != comma)
-+			return -EINVAL;
-+
-+		config->ctl_fd_ack = strtoul(comma + 1, &endptr, 0);
-+		if (endptr == comma + 1 || *endptr != '\0')
-+			return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
- static void switch_output_size_warn(struct record *rec)
- {
- 	u64 wakeup_size = evlist__mmap_size(rec->opts.mmap_pages);
-@@ -2380,6 +2411,8 @@ static struct record record = {
- 		},
- 		.mmap_flush          = MMAP_FLUSH_DEFAULT,
- 		.nr_threads_synthesize = 1,
-+		.ctl_fd              = -1,
-+		.ctl_fd_ack          = -1,
- 	},
- 	.tool = {
- 		.sample		= process_sample_event,
-@@ -2581,6 +2614,10 @@ static struct option __record_options[] = {
- 		"libpfm4 event selector. use 'perf list' to list available events",
- 		parse_libpfm_events_option),
- #endif
-+	OPT_CALLBACK(0, "control", &record.opts, "fd:ctl-fd[,ack-fd]",
-+		     "Listen on ctl-fd descriptor for command to control measurement ('enable': enable events, 'disable': disable events).\n"
-+		     "\t\t\t  Optionally send control command completion ('ack\\n') to ack-fd descriptor.",
-+		      parse_control_option),
- 	OPT_END()
- };
- 
-diff --git a/tools/perf/util/record.h b/tools/perf/util/record.h
-index da138dcb4d34..4cb72a478af1 100644
---- a/tools/perf/util/record.h
-+++ b/tools/perf/util/record.h
-@@ -70,6 +70,8 @@ struct record_opts {
- 	int	      mmap_flush;
- 	unsigned int  comp_level;
- 	unsigned int  nr_threads_synthesize;
-+	int	      ctl_fd;
-+	int	      ctl_fd_ack;
- };
- 
- extern const char * const *record_usage;
--- 
-2.24.1
+> It looks like some types of files lack consistent indentation, e.g.
+> arch/mips/*/Platform and some shell scripts in scripts/ tools/testing/
+> selftests/ftrace/test.d/kprobe/*.tc. There are also some files that were
+> highly inconsistent even within themselves (e.g. drivers/gpu/drm/amd/
+> amdkfd/cwsr_trap_handler_gfx*.asm), so setting indentation settings to
+> something sane by default doesn't make them any worse. After all, no
+> automated code style tooling is perfect and there will be edge cases
+> where it breaks down.
 
+Yeah, do not worry about inconsistencies. For `.clang-format`, I
+picked the options based on 1) whether there was an official code
+style guideline and 2) if not, the one that minimizes the number of
+changes, i.e. the most popular one across files.
+
+Cheers,
+Miguel
