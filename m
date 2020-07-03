@@ -2,51 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89C62213B40
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 15:40:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20067213B42
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 15:41:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726382AbgGCNks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 09:40:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35576 "EHLO
+        id S1726594AbgGCNkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 09:40:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726039AbgGCNkr (ORCPT
+        with ESMTP id S1726039AbgGCNkt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 09:40:47 -0400
-Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCF73C08C5C1
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Jul 2020 06:40:46 -0700 (PDT)
-Received: by mail-wr1-x449.google.com with SMTP id i10so31552264wrn.21
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Jul 2020 06:40:46 -0700 (PDT)
+        Fri, 3 Jul 2020 09:40:49 -0400
+Received: from mail-wm1-x349.google.com (mail-wm1-x349.google.com [IPv6:2a00:1450:4864:20::349])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FC2EC08C5C1
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Jul 2020 06:40:49 -0700 (PDT)
+Received: by mail-wm1-x349.google.com with SMTP id y204so23886461wmd.2
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Jul 2020 06:40:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=ls5EQRkUxBZzP7EqUh1IKI2XSD94zleYx8ufPET2dw8=;
-        b=QC8bEzwgWYyccfeOKyfq0/UYYEp93ZxZUOAiCO8YzRcyfA7lAnkrsVlew9+moU4MUG
-         DRDuXkCWla9vIaEJM3cvP237L651k/4hOV7IA9Jnh0mfEtb6gJmtwes/S2tn7UYkxeX6
-         a5a4LiHhgo2yaFtlDPTvAV4ShhZ5OH/8MOZcHKSMjq3celIQHtn88022nkpy0uWnqtm9
-         Wd8s5msxoBlY6XDBITplJoG520KVNOtyBJReU2/jx3IjWjpSPfXdyFjVuvMxp8zbiGVo
-         xf5tFrp+Lm079l47jdaV/s4a5AqD7dGSXAY4Pc5qlLsnU0Z+Kx9mVqSCHzdKRUu1YU81
-         Kogw==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=3lMmHnjpBeXU7bC7LazFD6+XAe//tACHyc53+6mLoHk=;
+        b=f3HS4AQx1Y+8vqBhOgefZNnQpp5bLpjpN1J/CtgcF7oouLAE9LhlGvZqsg7iDaPUyF
+         3gK5iII8OmnTgFAp6PzMeO156pxXmeyn5w1kIbASNvGEqWlAD8xQNWnvccVOk/ui0qmo
+         NRRKv5OlXNRSSJ3IXDMGexM4/8bvtluotyNcbIzKAwl3ZjyMHkh3DvE13lMyNKsgDoNc
+         B5bf5KzW6XTZvaHSBn9IknscfpcDrlBOWvnsYyhERzfs58ERLQJYqW0X7Lu9FuvOTo2E
+         oZHz6qte+lVKQgcuKxdA4YIo7BYLo7DPwuWelPShxtbG+NGT2Imujj3NOmgsSA7eWg1O
+         Fa9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=ls5EQRkUxBZzP7EqUh1IKI2XSD94zleYx8ufPET2dw8=;
-        b=NVV1BXdApatqJf+g/Sy5Zj2WqtTlZv9ZeaAS34MW7rTVuak22G2y8L/zqJL/ubmu2A
-         aIMCKaAMKHhLwDDRNftY9CIzfjl8e46BXkxCYS97jc1tB1SpZXjAwL9VXy227qK1nA/w
-         p+WsJntB32+I96ncH6yZZSLWXxZPQe1NBsn/hDTxAz+faFfP0UCsgwEAzE8a0IK3bGkv
-         9nnzAaIwMRqtfSgcAFdjr3il0KSf+mEQncJbpQ5h0CraT+qiwFP3UMAUmqz9fWRIkgtk
-         bPYj+ERczOtbgJPqGeAHlpwh3xAMOzBLSb/IzzMgUhWFunZvIreaAe2mZCROqAzJfrw3
-         mOhg==
-X-Gm-Message-State: AOAM533hD782IyrjvkXClDfqDbiWz+KMc8XnUqQAm3dSJdRacrLQhgvX
-        wY7OiVMGjO7M2MZ7NCPERYeVdZm3eA==
-X-Google-Smtp-Source: ABdhPJzQRn6zHi1Z9vLMAq4p2396wY3gPl6nh8x8/wacERQCIkGGGDaBzXhNJgylDDwcvlwNXQoHSrWWlA==
-X-Received: by 2002:a7b:c4c3:: with SMTP id g3mr38298704wmk.126.1593783645449;
- Fri, 03 Jul 2020 06:40:45 -0700 (PDT)
-Date:   Fri,  3 Jul 2020 15:40:29 +0200
-Message-Id: <20200703134031.3298135-1-elver@google.com>
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=3lMmHnjpBeXU7bC7LazFD6+XAe//tACHyc53+6mLoHk=;
+        b=ZL5sVxZ9ay+0gxYctwLuwyJ/ucxYNCdQTtmwkAbRp+yfWbJjvzNLaTqsQ8t9EVAErX
+         /BL4HA00Gple1bWPIjNbJ+9hXFGTf+x30l89UPMkaE6s63EP4kFzIqQoxCT1V2Uja/XK
+         owfcCGywOO3Rc5t5JDceoYIpgzjeOG42bSEtiq6UqgKTfqnCMc2bQGcUjYETMU1saZnR
+         dA9oAJD4F0XeRfbNdH2n/9dXvhlERhRg7R3L0HTG7sTHdcQ0gObPSG0+zfwcNT0nX36P
+         7nrN+wYUMnPXNaAZOlPoSbHSeamRqi+X6yUmBnig6KpVconDTB9KDFZakPh67U961/av
+         oB4A==
+X-Gm-Message-State: AOAM532S0UPr9P/NHUo+kJpabB/0RiH91GvHL/43Tjk07oEBL7hhnn3W
+        mXvOUFnpAbyZi9M9rG1OWqI/MKw0eg==
+X-Google-Smtp-Source: ABdhPJwkzVOV68Lv+LWfn57wnNkY5JjdeFSnWGYlqShq4Os8o0O24ewPmY4vT1CI/xQ/UIPr5naMbGHWZw==
+X-Received: by 2002:a1c:6102:: with SMTP id v2mr37906503wmb.6.1593783647766;
+ Fri, 03 Jul 2020 06:40:47 -0700 (PDT)
+Date:   Fri,  3 Jul 2020 15:40:30 +0200
+In-Reply-To: <20200703134031.3298135-1-elver@google.com>
+Message-Id: <20200703134031.3298135-2-elver@google.com>
 Mime-Version: 1.0
+References: <20200703134031.3298135-1-elver@google.com>
 X-Mailer: git-send-email 2.27.0.212.ge8ba1cc988-goog
-Subject: [PATCH 1/3] kcsan: Add support for atomic builtins
+Subject: [PATCH 2/3] objtool: Add atomic builtin TSAN instrumentation to
+ uaccess whitelist
 From:   Marco Elver <elver@google.com>
 To:     elver@google.com, paulmck@kernel.org
 Cc:     dvyukov@google.com, glider@google.com, andreyknvl@google.com,
@@ -57,145 +62,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some architectures (currently e.g. s390 partially) implement atomics
-using the compiler's atomic builtins (__atomic_*, __sync_*). To support
-enabling KCSAN on such architectures in future, or support experimental
-use of these builtins, implement support for them.
-
-We should also avoid breaking KCSAN kernels due to use (accidental or
-otherwise) of atomic builtins in drivers, as has happened in the past:
-https://lkml.kernel.org/r/5231d2c0-41d9-6721-e15f-a7eedf3ce69e@infradead.org
-
-The instrumentation is subtly different from regular reads/writes: TSAN
-instrumentation replaces the use of atomic builtins with a call into the
-runtime, and the runtime's job is to also execute the desired atomic
-operation. We rely on the __atomic_* compiler builtins, available with
-all KCSAN-supported compilers, to implement each TSAN atomic
-instrumentation function.
+Adds the new TSAN functions that may be emitted for atomic builtins to
+objtool's uaccess whitelist.
 
 Signed-off-by: Marco Elver <elver@google.com>
 ---
- kernel/kcsan/core.c | 110 ++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 110 insertions(+)
+ tools/objtool/check.c | 50 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 50 insertions(+)
 
-diff --git a/kernel/kcsan/core.c b/kernel/kcsan/core.c
-index d803765603fb..6843169da759 100644
---- a/kernel/kcsan/core.c
-+++ b/kernel/kcsan/core.c
-@@ -856,3 +856,113 @@ void __tsan_init(void)
- {
- }
- EXPORT_SYMBOL(__tsan_init);
-+
-+/*
-+ * Instrumentation for atomic builtins (__atomic_*, __sync_*).
-+ *
-+ * Normal kernel code _should not_ be using them directly, but some
-+ * architectures may implement some or all atomics using the compilers'
-+ * builtins.
-+ *
-+ * Note: If an architecture decides to fully implement atomics using the
-+ * builtins, because they are implicitly instrumented by KCSAN (and KASAN,
-+ * etc.), implementing the ARCH_ATOMIC interface (to get instrumentation via
-+ * atomic-instrumented) is no longer necessary.
-+ *
-+ * TSAN instrumentation replaces atomic accesses with calls to any of the below
-+ * functions, whose job is to also execute the operation itself.
-+ */
-+
-+#define DEFINE_TSAN_ATOMIC_LOAD_STORE(bits)                                                        \
-+	u##bits __tsan_atomic##bits##_load(const u##bits *ptr, int memorder);                      \
-+	u##bits __tsan_atomic##bits##_load(const u##bits *ptr, int memorder)                       \
-+	{                                                                                          \
-+		check_access(ptr, bits / BITS_PER_BYTE, KCSAN_ACCESS_ATOMIC);                      \
-+		return __atomic_load_n(ptr, memorder);                                             \
-+	}                                                                                          \
-+	EXPORT_SYMBOL(__tsan_atomic##bits##_load);                                                 \
-+	void __tsan_atomic##bits##_store(u##bits *ptr, u##bits v, int memorder);                   \
-+	void __tsan_atomic##bits##_store(u##bits *ptr, u##bits v, int memorder)                    \
-+	{                                                                                          \
-+		check_access(ptr, bits / BITS_PER_BYTE, KCSAN_ACCESS_WRITE | KCSAN_ACCESS_ATOMIC); \
-+		__atomic_store_n(ptr, v, memorder);                                                \
-+	}                                                                                          \
-+	EXPORT_SYMBOL(__tsan_atomic##bits##_store)
-+
-+#define DEFINE_TSAN_ATOMIC_RMW(op, bits, suffix)                                                   \
-+	u##bits __tsan_atomic##bits##_##op(u##bits *ptr, u##bits v, int memorder);                 \
-+	u##bits __tsan_atomic##bits##_##op(u##bits *ptr, u##bits v, int memorder)                  \
-+	{                                                                                          \
-+		check_access(ptr, bits / BITS_PER_BYTE, KCSAN_ACCESS_WRITE | KCSAN_ACCESS_ATOMIC); \
-+		return __atomic_##op##suffix(ptr, v, memorder);                                    \
-+	}                                                                                          \
-+	EXPORT_SYMBOL(__tsan_atomic##bits##_##op)
-+
-+/*
-+ * Note: CAS operations are always classified as write, even in case they
-+ * fail. We cannot perform check_access() after a write, as it might lead to
-+ * false positives, in cases such as:
-+ *
-+ *	T0: __atomic_compare_exchange_n(&p->flag, &old, 1, ...)
-+ *
-+ *	T1: if (__atomic_load_n(&p->flag, ...)) {
-+ *		modify *p;
-+ *		p->flag = 0;
-+ *	    }
-+ *
-+ * The only downside is that, if there are 3 threads, with one CAS that
-+ * succeeds, another CAS that fails, and an unmarked racing operation, we may
-+ * point at the wrong CAS as the source of the race. However, if we assume that
-+ * all CAS can succeed in some other execution, the data race is still valid.
-+ */
-+#define DEFINE_TSAN_ATOMIC_CMPXCHG(bits, strength, weak)                                           \
-+	int __tsan_atomic##bits##_compare_exchange_##strength(u##bits *ptr, u##bits *exp,          \
-+							      u##bits val, int mo, int fail_mo);   \
-+	int __tsan_atomic##bits##_compare_exchange_##strength(u##bits *ptr, u##bits *exp,          \
-+							      u##bits val, int mo, int fail_mo)    \
-+	{                                                                                          \
-+		check_access(ptr, bits / BITS_PER_BYTE, KCSAN_ACCESS_WRITE | KCSAN_ACCESS_ATOMIC); \
-+		return __atomic_compare_exchange_n(ptr, exp, val, weak, mo, fail_mo);              \
-+	}                                                                                          \
-+	EXPORT_SYMBOL(__tsan_atomic##bits##_compare_exchange_##strength)
-+
-+#define DEFINE_TSAN_ATOMIC_CMPXCHG_VAL(bits)                                                       \
-+	u##bits __tsan_atomic##bits##_compare_exchange_val(u##bits *ptr, u##bits exp, u##bits val, \
-+							   int mo, int fail_mo);                   \
-+	u##bits __tsan_atomic##bits##_compare_exchange_val(u##bits *ptr, u##bits exp, u##bits val, \
-+							   int mo, int fail_mo)                    \
-+	{                                                                                          \
-+		check_access(ptr, bits / BITS_PER_BYTE, KCSAN_ACCESS_WRITE | KCSAN_ACCESS_ATOMIC); \
-+		__atomic_compare_exchange_n(ptr, &exp, val, 0, mo, fail_mo);                       \
-+		return exp;                                                                        \
-+	}                                                                                          \
-+	EXPORT_SYMBOL(__tsan_atomic##bits##_compare_exchange_val)
-+
-+#define DEFINE_TSAN_ATOMIC_OPS(bits)                                                               \
-+	DEFINE_TSAN_ATOMIC_LOAD_STORE(bits);                                                       \
-+	DEFINE_TSAN_ATOMIC_RMW(exchange, bits, _n);                                                \
-+	DEFINE_TSAN_ATOMIC_RMW(fetch_add, bits, );                                                 \
-+	DEFINE_TSAN_ATOMIC_RMW(fetch_sub, bits, );                                                 \
-+	DEFINE_TSAN_ATOMIC_RMW(fetch_and, bits, );                                                 \
-+	DEFINE_TSAN_ATOMIC_RMW(fetch_or, bits, );                                                  \
-+	DEFINE_TSAN_ATOMIC_RMW(fetch_xor, bits, );                                                 \
-+	DEFINE_TSAN_ATOMIC_RMW(fetch_nand, bits, );                                                \
-+	DEFINE_TSAN_ATOMIC_CMPXCHG(bits, strong, 0);                                               \
-+	DEFINE_TSAN_ATOMIC_CMPXCHG(bits, weak, 1);                                                 \
-+	DEFINE_TSAN_ATOMIC_CMPXCHG_VAL(bits)
-+
-+DEFINE_TSAN_ATOMIC_OPS(8);
-+DEFINE_TSAN_ATOMIC_OPS(16);
-+DEFINE_TSAN_ATOMIC_OPS(32);
-+DEFINE_TSAN_ATOMIC_OPS(64);
-+
-+void __tsan_atomic_thread_fence(int memorder);
-+void __tsan_atomic_thread_fence(int memorder)
-+{
-+	__atomic_thread_fence(memorder);
-+}
-+EXPORT_SYMBOL(__tsan_atomic_thread_fence);
-+
-+void __tsan_atomic_signal_fence(int memorder);
-+void __tsan_atomic_signal_fence(int memorder) { }
-+EXPORT_SYMBOL(__tsan_atomic_signal_fence);
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index 5e0d70a89fb8..63d8b630c67a 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -528,6 +528,56 @@ static const char *uaccess_safe_builtin[] = {
+ 	"__tsan_write4",
+ 	"__tsan_write8",
+ 	"__tsan_write16",
++	"__tsan_atomic8_load",
++	"__tsan_atomic16_load",
++	"__tsan_atomic32_load",
++	"__tsan_atomic64_load",
++	"__tsan_atomic8_store",
++	"__tsan_atomic16_store",
++	"__tsan_atomic32_store",
++	"__tsan_atomic64_store",
++	"__tsan_atomic8_exchange",
++	"__tsan_atomic16_exchange",
++	"__tsan_atomic32_exchange",
++	"__tsan_atomic64_exchange",
++	"__tsan_atomic8_fetch_add",
++	"__tsan_atomic16_fetch_add",
++	"__tsan_atomic32_fetch_add",
++	"__tsan_atomic64_fetch_add",
++	"__tsan_atomic8_fetch_sub",
++	"__tsan_atomic16_fetch_sub",
++	"__tsan_atomic32_fetch_sub",
++	"__tsan_atomic64_fetch_sub",
++	"__tsan_atomic8_fetch_and",
++	"__tsan_atomic16_fetch_and",
++	"__tsan_atomic32_fetch_and",
++	"__tsan_atomic64_fetch_and",
++	"__tsan_atomic8_fetch_or",
++	"__tsan_atomic16_fetch_or",
++	"__tsan_atomic32_fetch_or",
++	"__tsan_atomic64_fetch_or",
++	"__tsan_atomic8_fetch_xor",
++	"__tsan_atomic16_fetch_xor",
++	"__tsan_atomic32_fetch_xor",
++	"__tsan_atomic64_fetch_xor",
++	"__tsan_atomic8_fetch_nand",
++	"__tsan_atomic16_fetch_nand",
++	"__tsan_atomic32_fetch_nand",
++	"__tsan_atomic64_fetch_nand",
++	"__tsan_atomic8_compare_exchange_strong",
++	"__tsan_atomic16_compare_exchange_strong",
++	"__tsan_atomic32_compare_exchange_strong",
++	"__tsan_atomic64_compare_exchange_strong",
++	"__tsan_atomic8_compare_exchange_weak",
++	"__tsan_atomic16_compare_exchange_weak",
++	"__tsan_atomic32_compare_exchange_weak",
++	"__tsan_atomic64_compare_exchange_weak",
++	"__tsan_atomic8_compare_exchange_val",
++	"__tsan_atomic16_compare_exchange_val",
++	"__tsan_atomic32_compare_exchange_val",
++	"__tsan_atomic64_compare_exchange_val",
++	"__tsan_atomic_thread_fence",
++	"__tsan_atomic_signal_fence",
+ 	/* KCOV */
+ 	"write_comp_data",
+ 	"check_kcov_mode",
 -- 
 2.27.0.212.ge8ba1cc988-goog
 
