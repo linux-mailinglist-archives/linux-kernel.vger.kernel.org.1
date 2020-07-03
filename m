@@ -2,100 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD57C2136C6
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 10:56:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A5802136C9
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 10:58:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726147AbgGCI4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 04:56:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48416 "EHLO
+        id S1726319AbgGCI6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 04:58:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725891AbgGCI4U (ORCPT
+        with ESMTP id S1725648AbgGCI6A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 04:56:20 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4C5EC08C5DE
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Jul 2020 01:56:19 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id l17so31307664wmj.0
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Jul 2020 01:56:19 -0700 (PDT)
+        Fri, 3 Jul 2020 04:58:00 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 248FBC08C5C1
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Jul 2020 01:58:00 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id mn17so319645pjb.4
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Jul 2020 01:58:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=r7BjWiHF5iYlX2CVgTeV2f/a1gA2UGUMeK1lcaxyUj0=;
-        b=lhf7FRCgOdl3W3PX38x3CN2gEjJEBTyXb+Oh8vv+/MB2/FNLqmpK03jqgQy+Ildsjp
-         cGcIaD7nzKUtTrzMp+In9qJKvvLPRYyUowt/f8D2axAj8/gbIlYkWUW931xjw4j6p+9t
-         ZhqXgxECyiqwkBvGnz67+luZvB6NciJ8E5L4sfChw3kkFXMHOqJ06o8p+1eqdnkWyrso
-         R5JkZPxT0sFKhvwEF0e/gNg6HBaXrMB4n5BGRW9CMKOyU/IyUyZWCPfa9sLSTvGwcs5i
-         JZ0Vk4E0Av9rArNiyCXRez58Y6hyqjo8+0Ukg39BDVTHgIcN+CIIQ/XUn9H4rIECNHn6
-         36EQ==
+        d=sifive.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=l5krbZyzVlqtJlOtCzvF9lWot4EaX2wFJODMLjpfT4I=;
+        b=UYyFvt0yHy8s+GaHXFDWNpCmUSIIUi1ARn1Nol8baUVBhpIIPAvw//y55ov/JDYZ9E
+         DcIzzfh7GLHhx7zBBS2T/noiqaLvQdRYIVsvbapYFWozPXkRSqMdDYptpp/J68qPJbVs
+         PuZlS69ZvO2fuKtpWKI9YGWVG293nIWvJGUQ8M0yySw1WJhkPDKsxKY3cSrbVK7RX6Wx
+         40MeCtPwwA25KJ4/SF9fp8Xa2f7vZr46RMz9dzrcvdRpNkfsz0CXSBgTAJ/G2zyJYBhY
+         dl/8a9rInKt8BA9505EvF6SVg9U9MgQLAMJbQVeGdEsxJH+PsbIzskM1fdx+ctoHn8hs
+         wPSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=r7BjWiHF5iYlX2CVgTeV2f/a1gA2UGUMeK1lcaxyUj0=;
-        b=llvhQFyD13l/PJ459x3rDswuiKN0db3AAg/+8Lc5A4CSGhmPIyoDZ+0y0eLj294fe5
-         flEH/qC6IUz6droNGdArIP1kd/loboY6abmmYYsi8bGfT0xlSXMP4QNcg+kaG7YEkB1G
-         BMurGsn9nODX3NB0m2V5yOvsrArV/m2HwtuXZqafOu6WlKo3KGpU4t2kT0yZiGSJeEwP
-         iLO6jzg4P8KCtVMG8Jw+/UKG7HfQdox1sNK2B60Kl3cGeRBWj6I0mTVHoLz3RcH5KMd0
-         HNUTnINalkeH5rD1mzwB24fqaRCows1NXNbRTNvhvMvHaMpXMKUN4ViXje0R6ydGfCCQ
-         hOeg==
-X-Gm-Message-State: AOAM53314nDGiqNOjJguQrKGi+MVVeKOEmiQBrioiO10NWLhOcdIQSuY
-        T4zdlxEYefQQ/CC3r5SHF7efKRDYgeB0bfR21wM=
-X-Google-Smtp-Source: ABdhPJzgORi87NHQeSWoew07rDuo30GVcIqmubSIYlFMiX+BeEHq6YHoo8b7i502eZJss/jjIBhtzSC3bUKy5z/2/hk=
-X-Received: by 2002:a7b:cc92:: with SMTP id p18mr36802359wma.4.1593766578242;
- Fri, 03 Jul 2020 01:56:18 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=l5krbZyzVlqtJlOtCzvF9lWot4EaX2wFJODMLjpfT4I=;
+        b=qsKsLKEIsmVZRk7qcUXCBaphHtyCc4co1uRV/i1cF+gO3zvuIxfo44ETFqgCX1efk/
+         FxKJAbHsjQGbPHIIie4mqL+Cd4eSWiYdfeigy0aqlYKCiEpBdMKWA5+Wqgmk43+c7aNo
+         6LcwAZezdDYj261PlYzrBFZi67Xw/WHQHtAnti+jygONKpMRzXIyjucOnQG7wBR5qG7L
+         tMRF0QtUiSa2cjusmBxc4NWg8d+NNrKHrQ4yAwvOC1Nu7jKiYXWrRR7pG2fQ70zMna5k
+         JVceKQQLIa/NpRh72rudaufqPN4ey29SOTOVY4zsBVJZBZxkm4TDNpI5BUv4MnvGcTsj
+         pefA==
+X-Gm-Message-State: AOAM5311tUcfHZBZgOf5JXbfeijOO3ywbRlZHf+Ww+yK7YLJYkm/NSsm
+        tz7l89e7gQAwN5HEQ86Pp88Fo/bh9zI=
+X-Google-Smtp-Source: ABdhPJziBzbhbh7LkHtY3EnPldKzpWtTLtYu7SsscIuCrPkd9X2YdWZoAir/RegXx6s4AkyF+pNL6Q==
+X-Received: by 2002:a17:90b:1386:: with SMTP id hr6mr35394676pjb.93.1593766679662;
+        Fri, 03 Jul 2020 01:57:59 -0700 (PDT)
+Received: from hsinchu02.internal.sifive.com (114-34-229-221.HINET-IP.hinet.net. [114.34.229.221])
+        by smtp.gmail.com with ESMTPSA id l23sm2126287pjy.45.2020.07.03.01.57.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Jul 2020 01:57:59 -0700 (PDT)
+From:   Zong Li <zong.li@sifive.com>
+To:     palmer@dabbelt.com, paul.walmsley@sifive.com,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Zong Li <zong.li@sifive.com>
+Subject: [PATCH 0/3] Get cache information from userland
+Date:   Fri,  3 Jul 2020 16:57:52 +0800
+Message-Id: <cover.1593766028.git.zong.li@sifive.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Received: by 2002:adf:f109:0:0:0:0:0 with HTTP; Fri, 3 Jul 2020 01:56:17 -0700 (PDT)
-Reply-To: mrs.sophia202@list.ru
-From:   "Mrs. Sophia Robin" <mrs.aishamuammar.gaddafi@gmail.com>
-Date:   Fri, 3 Jul 2020 01:56:17 -0700
-Message-ID: <CAKDKtgzJoJ58NQHx9qjA1yAmEbzSQeCVNjbfbkAP_8QRUhwsYw@mail.gmail.com>
-Subject: Hello My Dearest
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello My Dearest
+There are no standard CSR registers to provide cache information, the
+way for RISC-V is to get this information from DT. Currently, AT_L1I_X,
+AT_L1D_X and AT_L2_X are present in glibc header, and sysconf syscall
+could use them to get information of cache through AUX vector. We
+exploit 'struct cacheinfo' to obtain the information of cache, then we
+don't need additional variable or data structure to record it.
 
-Please I appeal to you to exercise a little patience and read through
-my mail carefully, I am contacting you personally for investment
-assistance and a long term business relationship in your Country.
+We also need some works in glibc, but we have to support the function in
+kernel first by rule of glibc, then post the patch to glibc site.
 
-I am Mrs. Sophia Robin a citizen of the united state of America, I
-work in HSBC Bank in Milan Italy as a Telex Manager charge of wire
-transfer department.
+The result of 'getconf -a' as follows:
 
-I am contacting you for an important and  urgent business transaction,
-I  want the bank to transfer the money left by Dr. Cheng Chao,  A
-Chinese  Politicians who  died, March 17th 2020 without any trace of
-his family member,  he used our bank to launder money overseas through
-the help of their Political advisers. And most of the funds which they
-transferred out of the shores of China were gold and oil money that
-was supposed to have been used to develop the continent.
+LEVEL1_ICACHE_SIZE                 32768
+LEVEL1_ICACHE_ASSOC                8
+LEVEL1_ICACHE_LINESIZE             64
+LEVEL1_DCACHE_SIZE                 32768
+LEVEL1_DCACHE_ASSOC                8
+LEVEL1_DCACHE_LINESIZE             64
+LEVEL2_CACHE_SIZE                  2097152
+LEVEL2_CACHE_ASSOC                 32
+LEVEL2_CACHE_LINESIZE              64
 
-Can you invest this money and also help the poor? The amount value at
-($15.5million Dollars), left in his account still unclaimed, if you
-know that you are capable to invest this fund into any  profitable
-business in your country kindly send me your details information as
-listed below to enable me draft you an application form of claim along
-with the deposit certificate which you are going to fill with your
-bank account detail necessary and contact the HSBC Bank in Italy  for
-immediate transfer of the Amounted sum into your bank account direct.
+Zong Li (3):
+  riscv: Set more data to cacheinfo
+  riscv: Define AT_VECTOR_SIZE_ARCH for ARCH_DLINFO
+  riscv: Add cache information in AUX vector
 
-Percentage share will be 60, for me/ 40, for you.
+ arch/riscv/include/asm/cacheinfo.h   | 14 +++++
+ arch/riscv/include/asm/elf.h         | 13 ++++
+ arch/riscv/include/uapi/asm/auxvec.h | 24 ++++++++
+ arch/riscv/kernel/cacheinfo.c        | 92 +++++++++++++++++++++++-----
+ 4 files changed, 127 insertions(+), 16 deletions(-)
+ create mode 100644 arch/riscv/include/asm/cacheinfo.h
 
-(1) Your full name..................................................
-(2) Your address....................................................
-(3) Your Nationality.................................................
-(4) Your Age / Sex.....................................................
-(5) Your Occupation............................................
-(6) Your marital status......................................
-(7) Your direct telephone number..................
-(8) your ID Card.......................................
+-- 
+2.27.0
 
-Thanks with my best regards.
-Mrs. Sophia Robin
-Telex Manager
-Milan Italy  (H.S.B.C)
