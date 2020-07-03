@@ -2,103 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7FCA214177
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 00:17:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0D5A21417A
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 00:20:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726676AbgGCWRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 18:17:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58544 "EHLO
+        id S1726660AbgGCWUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 18:20:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726188AbgGCWRr (ORCPT
+        with ESMTP id S1726188AbgGCWUf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 18:17:47 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0D98C061794;
-        Fri,  3 Jul 2020 15:17:46 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id a9so3938883pjh.5;
-        Fri, 03 Jul 2020 15:17:46 -0700 (PDT)
+        Fri, 3 Jul 2020 18:20:35 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EF30C08C5DD
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Jul 2020 15:20:35 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id h19so38631695ljg.13
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Jul 2020 15:20:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=sejNlP1ktqM/yqhWQBlfvEYEbrTSoZNaZ4fFsOcMXyo=;
-        b=M/toDlrRcsBGClLXYYdtDWkvG3zMdTI3iAiO+yGwHaD7RuH8ssfG3JkLAjRNJ3GOgL
-         emfRB5ok5rhARi30EPkLIJcne0S6+vyf89L+daajIxm+3jV32o1nm7IMWZ/2BXs17A+p
-         ppSQXeUl+n57RSdqkEiPjuzk+ER8PF5bE8YfGaknJwHPyseEYDYisKCkHmRlQDZOnsGL
-         8K8+SmPmDePzNISqaV0VptSe623mvWiiMHkXcNeuetOL1zOFL0SZe5EzlKSLuy1Dls1m
-         hyKXBzq0ZbT6WFWRlmi0TVHcdRVB8zcnl2+L7kP7RXrRg8E8mti3kbXcTke3CVrClKei
-         QYwQ==
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=rjiSU3c+ad6P9dGU2QzTndVOYHt5aITkN0GdkCXZmRU=;
+        b=Ip+qBxgSIHZNXZpGMn/ZD9QPav0U6EriS3wsMfRhVluPSDRshOUN2zw+zbn61r0VRM
+         fJ/EB7iS7Ji3A7ymMSRxgZWxzrYMY6Vqtkbhlzxi5WO8EzZxD3QG8UzpjYWoK2eMnVE2
+         3VpFUGidrbszabfbkXIKFbJ8i57e6K4y3gNKU+xi/+FJxpuSfdLyV+fzMJVRNXbokEB4
+         p6ToDEWJ0P8zE7LsxLu1TABHE94qrvDhc1NxzIskI7jmdHhIbtvSIOH1gAKXwZbmwYSV
+         Yx/e2cQAlvG17V5u1/a+gwlcbFvIAe7y504MoYhY78HEAmjyN8vEE9FX9TYCYX8E3BVJ
+         Rycg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=sejNlP1ktqM/yqhWQBlfvEYEbrTSoZNaZ4fFsOcMXyo=;
-        b=rIJKZtU6M1VQR4+ENI/8M+nELVzQo5CdtptW6zihiRlw1s3jToKiRjvYCfhT0o6N0d
-         QYVuRfDWCMFXoApawpWQpKeEnhuSgky3YX1Qc3rZANJ2UMwwObZPD1oNlD52xOfA+XkJ
-         dW3+lcmXTTULrCUK0pLj0IptEP7dhRwwL4gQU25QEw/Xb7igapM/fy1xgE8XB/xFhCDw
-         S4JsuxsRYqSPHksZHpOZbcyK5MA50TUj4hT9epehv6GQSGXCmicsNenMx1NNgFxi16YK
-         08Z1B3bwc2P3HyQEY6bO/WjIuI0Kwz53eCon9ajnatFZMO34eAPrkbNDK2/aoeMDiQQ+
-         9aOQ==
-X-Gm-Message-State: AOAM5330dq6pDoRykj5Dr3PnX8Um7XKX6DPhMdqgNmhq3p75r4pESdPU
-        9GDKZeQQhLq6tSLHLmksV8zVk6nWOYQ=
-X-Google-Smtp-Source: ABdhPJwd/f3TDfBVQj4VriwSYuAQ/lXojI58EaxlEBXVyYKB7TscoLWXYlzy0uHffDXMh89/mAefyQ==
-X-Received: by 2002:a17:90a:718b:: with SMTP id i11mr37047631pjk.150.1593814665429;
-        Fri, 03 Jul 2020 15:17:45 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id k2sm12728448pgm.11.2020.07.03.15.17.44
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 03 Jul 2020 15:17:45 -0700 (PDT)
-Date:   Fri, 3 Jul 2020 15:17:44 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Evgeny Novikov <novikov@ispras.ru>
-Cc:     Jean Delvare <jdelvare@suse.com>, Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>, linux-hwmon@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        ldv-project@linuxtesting.org
-Subject: Re: [PATCH] hwmon: (aspeed-pwm-tacho) Avoid possible buffer overflow
-Message-ID: <20200703221744.GA34644@roeck-us.net>
-References: <20200703111518.9644-1-novikov@ispras.ru>
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=rjiSU3c+ad6P9dGU2QzTndVOYHt5aITkN0GdkCXZmRU=;
+        b=DENV+hGTcXvQhsUj8Ukx3WKkoai467tvt1VWUnaAuIsuJtqJonaiBEjAGOrDI6GENg
+         XT7fwUJbku/GTZaKP9T/8RQzToJSXM/PvPFKyw+AhJ72OPT5yG+6/XR8nETAquZB9wBZ
+         55uAgrhKXkJv48mVB30bm1S38hl6YgrmYs09OaEnUhWi905ftGvNUL1gAgznJO2fATYM
+         zrUs77uneqO2ytIq4iyVbmCmLFlzYTu7klyOtCp6cENnipi6/yRgnPSCQ54c9dsv/Ezj
+         4YE4dCYfDIpi0BhHcaXNRdjgJLQnruK5BUijoBv73z6ZwwQxJAY5ekZa2o/kgmZ2074/
+         nZgw==
+X-Gm-Message-State: AOAM530ggyRfC9bXzMMno7PB3yxcV8w+F5PVy6KMKkNdIrwviOb1lb7s
+        wx2gwJgcbuO/sxm9Dm3OubU/LxhTcPr5+NvLtw==
+X-Google-Smtp-Source: ABdhPJzB2cVro2v7UYS2uWrqWBjvufnBX6tERNt2nIkCt6MUZwvnNPS550XJxbVoK841ORafeDmeBn+qXDSFO1wnIyI=
+X-Received: by 2002:a2e:9410:: with SMTP id i16mr7715762ljh.406.1593814833694;
+ Fri, 03 Jul 2020 15:20:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200703111518.9644-1-novikov@ispras.ru>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Received: by 2002:ab3:7787:0:0:0:0:0 with HTTP; Fri, 3 Jul 2020 15:20:33 -0700 (PDT)
+From:   Miss Ayesha Gaddafi <aisha0gaddafix@gmail.com>
+Date:   Fri, 3 Jul 2020 15:20:33 -0700
+X-Google-Sender-Auth: KxJnrEjh66RVpOB5M4uV03jzHQ8
+Message-ID: <CAO=7yz60=bjjwd7KtVEGk2GY_rtj_ys_cy+-H9MkqAn-FHL3Yg@mail.gmail.com>
+Subject: From Mrs Aisha Gaddafi
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 03, 2020 at 02:15:18PM +0300, Evgeny Novikov wrote:
-> aspeed_create_fan() reads a pwm_port value using of_property_read_u32().
-> If pwm_port will be more than ARRAY_SIZE(pwm_port_params), there will be
-> a buffer overflow in
-> aspeed_create_pwm_port()->aspeed_set_pwm_port_enable(). The patch fixes
-> the potential buffer overflow.
-> 
-> Found by Linux Driver Verification project (linuxtesting.org).
-> 
-> Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
+Assalamu Alaikum Wa Rahmatullahi Wa Barakatuh,
 
-Applied.
+My name is Aisha Gaddafi the only biological Daughter of Late Colonel
+Muammar Gaddafi, Libyan formar President.
 
-Thanks,
-Guenter
+I'm a Widow with three Children, presently living in Oman as a refugee
+with my three children, i have been under political asylum protection
+by the Government of Oman however, I have an investment funds which i
+want to entrust on you for investment project in your country or your
+company.
 
-> ---
->  drivers/hwmon/aspeed-pwm-tacho.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/hwmon/aspeed-pwm-tacho.c b/drivers/hwmon/aspeed-pwm-tacho.c
-> index 33fb54845bf6..3d8239fd66ed 100644
-> --- a/drivers/hwmon/aspeed-pwm-tacho.c
-> +++ b/drivers/hwmon/aspeed-pwm-tacho.c
-> @@ -851,6 +851,8 @@ static int aspeed_create_fan(struct device *dev,
->  	ret = of_property_read_u32(child, "reg", &pwm_port);
->  	if (ret)
->  		return ret;
-> +	if (pwm_port >= ARRAY_SIZE(pwm_port_params))
-> +		return -EINVAL;
->  	aspeed_create_pwm_port(priv, (u8)pwm_port);
->  
->  	ret = of_property_count_u8_elems(child, "cooling-levels");
+I hope to hear from you for more details if you're interested,
+
+Contact me through this email for urgent attention:  aisha0gaddafix@gmail.com
+
+Warmest regards
+Mrs Aisha Gaddafi
