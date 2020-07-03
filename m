@@ -2,104 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E37732138EF
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 12:49:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEF672138F7
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 12:53:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726178AbgGCKtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 06:49:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37600 "EHLO
+        id S1726157AbgGCKxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 06:53:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725915AbgGCKtv (ORCPT
+        with ESMTP id S1725915AbgGCKxG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 06:49:51 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C5EBC08C5C1;
-        Fri,  3 Jul 2020 03:49:51 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49ysDD0gdYz9sSy;
-        Fri,  3 Jul 2020 20:49:48 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1593773388;
-        bh=RfcGFiZqerkVV2+Xy8mk+CmXEwgXM5XeAEZk9tVyLEo=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=jE5FAgWTrhkfhhz6BYzecTvfdbDagKlkEWrYP3L0gbYhUVcSmlNc1lC6f2ixexXfj
-         QMnhT3le4DAgIHjrdKH22ewB074mqgaY+h4/qPtQCqXxPj1aL8oLqf9cRSSFg+ZpER
-         kOBkntxdcz0tYKdN5N9tEC3tWly5GI/no1ixwSUH2ll5U30V57HbQBu863Xoilh+tH
-         faLA8P2ykdWIk2tfZCnjGNmZvES09DuT2hr7WHCNOOgcbnej88JykIeo5CrGmWKVP4
-         mhpmHq+ygewJ07zs3nF7tn1T8SdxHp2Y2ozRdDw+CH0ePoLytwGYkTSssCCGuyHwKH
-         P9M8prScLig4Q==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Nicholas Piggin <npiggin@gmail.com>, Will Deacon <will@kernel.org>
-Cc:     Anton Blanchard <anton@ozlabs.org>,
-        Boqun Feng <boqun.feng@gmail.com>, kvm-ppc@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, Waiman Long <longman@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
+        Fri, 3 Jul 2020 06:53:06 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B439CC08C5C1
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Jul 2020 03:53:05 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id x11so12523604plo.7
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Jul 2020 03:53:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=OGpuzxy+MIp1rENc9jMCC/mFYHbkQY9vYIT5QTgbmWY=;
+        b=Y8omVD//GCbGlXcKzoFyVJ3TZNxqpcQrcXvYGjk7s8ZSMiLHmndCYMhy5FFzSfehLp
+         +mqnAq6R85+kF02ylNBK0KRxaiJ7WkJCk74+Fr7X9dsfhjbsO6jCzLXrvaeAgccJXtiV
+         khACNA2bp67N58fQGUDb9MZ8tKy2vSmU4NrEL9a870Y135yTSJCz/iFzbH8A0/02/UDx
+         vUtppSY4IwBNT5TcFm6Jqy8MS464JomSUzShRLYXbS8UMBrvMeq6E6DStDBhLvADvPae
+         VLwfnjVVSFN/Ja1M0zMOxyxpKSBNam0bRKJSyMjebYT75vleYgFhjKfOJ8nnBshSQYiO
+         vTXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=OGpuzxy+MIp1rENc9jMCC/mFYHbkQY9vYIT5QTgbmWY=;
+        b=WAUE6G2iYui2yvYuHuVLIjtfjmDbA1ukAsV5e7rVCNvxG7vLsij0t6T7GFjcZXhjFK
+         pFUXfkWbFFJ4lQmZqMlqts9r38TaOtO+T1KduJOqC7QFdcLMwKQ71hbgFJMDrV0SKkLu
+         vf1SU3FRNf3e4a2RxDusyyHgQy1qNApYhXsoTSZhzNdKgqId9OlAx9caUVIAh6Qd7fNy
+         mk1IvQqD6L+Sps9mn0jQlFcWbZJFc+cOcB2RuscQ/+UKNLBhFF/G4oKlX4liTxIhSMjg
+         9tOG2lVbFgkx8E/aDzIQ+vpnkFpfvihk2TbiI9D6RKFyzCzCI2yX9TPU38eENBbG/yEY
+         nqnw==
+X-Gm-Message-State: AOAM531zFtoN53MDjzENpFlrRgfhRQHy8Af+7q0JhrlCanBob7p9vA4p
+        Q+LdPLnwbgDWxf1bW+KkiDR0L28+
+X-Google-Smtp-Source: ABdhPJyLQAQGnk4XRz3gN+ixe6a2o3AdtA5zjeR+MJs2FiKIZLMplBB5KZldIizrcPDWU61tm/ALAw==
+X-Received: by 2002:a17:90a:db48:: with SMTP id u8mr6673988pjx.169.1593773584539;
+        Fri, 03 Jul 2020 03:53:04 -0700 (PDT)
+Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
+        by smtp.gmail.com with ESMTPSA id x10sm528364pfp.144.2020.07.03.03.53.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Jul 2020 03:53:03 -0700 (PDT)
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+X-Google-Original-From: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
+Date:   Fri, 3 Jul 2020 19:53:02 +0900
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Raul Rangel <rrangel@google.com>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        kurt@linutronix.de, "S, Shirish" <Shirish.S@amd.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH 5/8] powerpc/64s: implement queued spinlocks and rwlocks
-In-Reply-To: <1593686722.w9psaqk7yp.astroid@bobo.none>
-References: <20200702074839.1057733-1-npiggin@gmail.com> <20200702074839.1057733-6-npiggin@gmail.com> <20200702080219.GB16113@willie-the-truck> <1593685459.r2tfxtfdp6.astroid@bobo.none> <20200702103506.GA16418@willie-the-truck> <1593686722.w9psaqk7yp.astroid@bobo.none>
-Date:   Fri, 03 Jul 2020 20:52:02 +1000
-Message-ID: <878sg07twt.fsf@mpe.ellerman.id.au>
+        John Ogness <john.ogness@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: UART/TTY console deadlock
+Message-ID: <20200703105302.GC182102@jagdpanzerIV.localdomain>
+References: <CAHp75Vd8nTzmZdnhpTDChdc11zyCaSfeigbxaCpOWZ1Lv9ZBMw@mail.gmail.com>
+ <20200630035816.GA21591@jagdpanzerIV.localdomain>
+ <20200630102141.GA11587@alley>
+ <20200630105512.GA530@jagdpanzerIV.localdomain>
+ <20200630122239.GD6173@alley>
+ <20200630130534.GB145027@jagdpanzerIV.localdomain>
+ <20200630180255.GD37466@atomide.com>
+ <20200702051213.GB3450@jagdpanzerIV.localdomain>
+ <20200702054033.GC3450@jagdpanzerIV.localdomain>
+ <20200702082008.GE3703480@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200702082008.GE3703480@smile.fi.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nicholas Piggin <npiggin@gmail.com> writes:
-> Excerpts from Will Deacon's message of July 2, 2020 8:35 pm:
->> On Thu, Jul 02, 2020 at 08:25:43PM +1000, Nicholas Piggin wrote:
->>> Excerpts from Will Deacon's message of July 2, 2020 6:02 pm:
->>> > On Thu, Jul 02, 2020 at 05:48:36PM +1000, Nicholas Piggin wrote:
->>> >> diff --git a/arch/powerpc/include/asm/qspinlock.h b/arch/powerpc/include/asm/qspinlock.h
->>> >> new file mode 100644
->>> >> index 000000000000..f84da77b6bb7
->>> >> --- /dev/null
->>> >> +++ b/arch/powerpc/include/asm/qspinlock.h
->>> >> @@ -0,0 +1,20 @@
->>> >> +/* SPDX-License-Identifier: GPL-2.0 */
->>> >> +#ifndef _ASM_POWERPC_QSPINLOCK_H
->>> >> +#define _ASM_POWERPC_QSPINLOCK_H
->>> >> +
->>> >> +#include <asm-generic/qspinlock_types.h>
->>> >> +
->>> >> +#define _Q_PENDING_LOOPS	(1 << 9) /* not tuned */
->>> >> +
->>> >> +#define smp_mb__after_spinlock()   smp_mb()
->>> >> +
->>> >> +static __always_inline int queued_spin_is_locked(struct qspinlock *lock)
->>> >> +{
->>> >> +	smp_mb();
->>> >> +	return atomic_read(&lock->val);
->>> >> +}
->>> > 
->>> > Why do you need the smp_mb() here?
->>> 
->>> A long and sad tale that ends here 51d7d5205d338
->>> 
->>> Should probably at least refer to that commit from here, since this one 
->>> is not going to git blame back there. I'll add something.
->> 
->> Is this still an issue, though?
->> 
->> See 38b850a73034 (where we added a similar barrier on arm64) and then
->> c6f5d02b6a0f (where we removed it).
->> 
->
-> Oh nice, I didn't know that went away. Thanks for the heads up.
+On (20/07/02 11:20), Andy Shevchenko wrote:
+> 
+> I didn't look into this deeply, but my understanding that this is something for
+> special case when you have several UART ports sharing the IRQ (multi-port card)
+> and IRQ even maybe undesirable b/c it will confuse real IRQ handler. I don't
+> remember details, but AFAIR IRQ handler does a busyloop to service as much as
+> possible and in between it may release the lock (again, multi-port UART cards),
+> that's why we better avoid IRQ event in the first place.
+> But it's my pure speculation.
 
-Argh! I spent so much time chasing that damn bug in the ipc code.
+Hmm. Would different IRQ handlers use different UART port structures? ->irq
+might be the only thing they share. Even if they use the same port, we
+keep IRQs disabled on local CPU, and UART port locked. To unlock the UART
+port during IRQ, the handler (on another CPU) first needs to acquire the
+port->lock, which is locked by serial8250_do_startup().
 
-> I'm going to say I'm too scared to remove it while changing the
-> spinlock algorithm, but I'll open an issue and we should look at 
-> removing it.
-
-Sounds good.
-
-cheers
+	-ss
