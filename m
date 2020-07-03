@@ -2,136 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABAC2213AAC
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 15:13:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1CB3213AC7
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 15:20:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726152AbgGCNNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 09:13:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59686 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725984AbgGCNNj (ORCPT
+        id S1726309AbgGCNU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 09:20:27 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:64056 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726022AbgGCNUZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 09:13:39 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3842C08C5C1;
-        Fri,  3 Jul 2020 06:13:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=uqsQimSA3ZVIJmzJ+g3hxvE+rQFiKwkEojhvCeRdahw=; b=ItGZjDRIImf27YsAGtOG8yy/um
-        tHTSFrVgQyOISf1u9ovbSydWGKTsYFOu1QdZqaIrPrVC+BQULRRFgfurUr+UHbhbVAjFYXc0yCGNH
-        NRV6Ty0xvDowLbPzhWsEfUHzZqw0FT874nx/34bvhnQsXXmIDYEOYRNqxPNQYH8rAHKE2/8AwTRk8
-        wHLizFfF5+qhuvmcj3dz1f5NSP8/5ZJsGkhy1O/RcYnmb5zr+RExexvUuyCwYq8Luedw4dSOP2EUv
-        Sin4pSha9/RbjtlWc8OZlJovtZ17d+oq5poGsjxjQDDenUnzl1rkiSj26lYRo48qjQPCyZuX1TsWH
-        IDaagGpA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jrLVT-0003j1-Sa; Fri, 03 Jul 2020 13:13:32 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 71D12301124;
-        Fri,  3 Jul 2020 15:13:30 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 30A0521476E91; Fri,  3 Jul 2020 15:13:30 +0200 (CEST)
-Date:   Fri, 3 Jul 2020 15:13:30 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Marco Elver <elver@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Fri, 3 Jul 2020 09:20:25 -0400
+Received: from fsav402.sakura.ne.jp (fsav402.sakura.ne.jp [133.242.250.101])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 063DJNb2024792;
+        Fri, 3 Jul 2020 22:19:23 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav402.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav402.sakura.ne.jp);
+ Fri, 03 Jul 2020 22:19:23 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav402.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 063DJMxC024786
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
+        Fri, 3 Jul 2020 22:19:23 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [PATCH v2 00/15] Make the user mode driver code a better citizen
+To:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Casey Schaufler <casey@schaufler-ca.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        linux-kernel@vger.kernel.org, David Miller <davem@davemloft.net>,
+        Greg Kroah-Hartman <greg@kroah.com>,
         Kees Cook <keescook@chromium.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-pci@vger.kernel.org,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>
-Subject: Re: [PATCH 00/22] add support for Clang LTO
-Message-ID: <20200703131330.GX4800@hirez.programming.kicks-ass.net>
-References: <20200630191931.GA884155@elver.google.com>
- <20200630201243.GD4817@hirez.programming.kicks-ass.net>
- <20200630203016.GI9247@paulmck-ThinkPad-P72>
- <CANpmjNP+7TtE0WPU=nX5zs3T2+4hPkkm08meUm2VDVY3RgsHDw@mail.gmail.com>
- <20200701114027.GO4800@hirez.programming.kicks-ass.net>
- <20200701140654.GL9247@paulmck-ThinkPad-P72>
- <20200701150512.GH4817@hirez.programming.kicks-ass.net>
- <20200701160338.GN9247@paulmck-ThinkPad-P72>
- <20200702082040.GB4781@hirez.programming.kicks-ass.net>
- <20200702175948.GV9247@paulmck-ThinkPad-P72>
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <20200625095725.GA3303921@kroah.com>
+ <778297d2-512a-8361-cf05-42d9379e6977@i-love.sakura.ne.jp>
+ <20200625120725.GA3493334@kroah.com>
+ <20200625.123437.2219826613137938086.davem@davemloft.net>
+ <CAHk-=whuTwGHEPjvtbBvneHHXeqJC=q5S09mbPnqb=Q+MSPMag@mail.gmail.com>
+ <87pn9mgfc2.fsf_-_@x220.int.ebiederm.org>
+ <87y2oac50p.fsf@x220.int.ebiederm.org>
+ <87bll17ili.fsf_-_@x220.int.ebiederm.org>
+ <20200629221231.jjc2czk3ul2roxkw@ast-mbp.dhcp.thefacebook.com>
+ <87eepwzqhd.fsf@x220.int.ebiederm.org>
+ <1f4d8b7e-bcff-f950-7dac-76e3c4a65661@i-love.sakura.ne.jp>
+ <87pn9euks9.fsf@x220.int.ebiederm.org>
+ <757f37f8-5641-91d2-be80-a96ebc74cacb@i-love.sakura.ne.jp>
+ <87h7upucqi.fsf@x220.int.ebiederm.org>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <d0266a24-dfab-83d0-e178-aa67c9f5ebc0@i-love.sakura.ne.jp>
+Date:   Fri, 3 Jul 2020 22:19:17 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200702175948.GV9247@paulmck-ThinkPad-P72>
+In-Reply-To: <87h7upucqi.fsf@x220.int.ebiederm.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 02, 2020 at 10:59:48AM -0700, Paul E. McKenney wrote:
-> On Thu, Jul 02, 2020 at 10:20:40AM +0200, Peter Zijlstra wrote:
-> > On Wed, Jul 01, 2020 at 09:03:38AM -0700, Paul E. McKenney wrote:
-> > 
-> > > But it looks like we are going to have to tell the compiler.
-> > 
-> > What does the current proposal look like? I can certainly annotate the
-> > seqcount latch users, but who knows what other code is out there....
+On 2020/07/02 22:08, Eric W. Biederman wrote:
+>> By the way, commit 4a9d4b024a3102fc ("switch fput to task_work_add") says
+>> that use of flush_delayed_fput() has to be careful. Al, is it safe to call
+>> flush_delayed_fput() from blob_to_mnt() from umd_load_blob() (which might be
+>> called from both kernel thread and from process context (e.g. init_module()
+>> syscall by /sbin/insmod )) ?
 > 
-> For pointers, yes, within the Linux kernel it is hopeless, thus the
-> thought of a -fall-dependent-ptr or some such that makes the compiler
-> pretend that each and every pointer is marked with the _Dependent_ptr
-> qualifier.
-> 
-> New non-Linux-kernel code might want to use his qualifier explicitly,
-> perhaps something like the following:
-> 
-> 	_Dependent_ptr struct foo *p;  // Or maybe after the "*"?
+> And __fput_sync needs to be even more careful.
+> umd_load_blob is called in these changes without any locks held.
 
-After, as you've written it, it's a pointer to a '_Dependent struct
-foo'.
+But where is the guarantee that a thread which called flush_delayed_fput() waits for
+the completion of processing _all_ "struct file" linked into delayed_fput_list ?
+If some other thread or delayed_fput_work (scheduled by fput_many()) called
+flush_delayed_fput() between blob_to_mnt()'s fput(file) and flush_delayed_fput()
+sequence? blob_to_mnt()'s flush_delayed_fput() can miss the "struct file" which
+needs to be processed before execve(), can't it?
+
+Also, I don't know how convoluted the dependency of all "struct file" linked into
+delayed_fput_list might be, for there can be "struct file" which will not be a
+simple close of tmpfs file created by blob_to_mnt()'s file_open_root() request.
+
+On the other hand, although __fput_sync() cannot be called from !PF_KTHREAD threads,
+there is a guarantee that __fput_sync() waits for the completion of "struct file"
+which needs to be flushed before execve(), isn't there?
 
 > 
-> 	rcu_read_lock();
-> 	p = rcu_dereference(gp);
-> 	// And so on...
+> We fundamentally AKA in any correct version of this code need to flush
+> the file descriptor before we call exec or exec can not open it a
+> read-only denying all writes from any other opens.
 > 
-> If a function is to take a dependent pointer as a function argument,
-> then the corresponding parameter need the _Dependent_ptr marking.
-> Ditto for return values.
+> The use case of flush_delayed_fput is exactly the same as that used
+> when loading the initramfs.
+
+When loading the initramfs, the number of threads is quite few (which
+means that the possibility of hitting the race window and convoluted
+dependency is small).
+
+But like EXPORT_SYMBOL_GPL(umd_load_blob) indicates, blob_to_mnt()'s
+flush_delayed_fput() might be called after many number of threads already
+started running.
+
+
+
+On 2020/07/03 1:02, Eric W. Biederman wrote:
+>>>> On 2020/06/30 21:29, Eric W. Biederman wrote:
+>>>>> Hmm.  The wake up happens just of tgid->wait_pidfd happens just before
+>>>>> release_task is called so there is a race.  As it is possible to wake
+>>>>> up and then go back to sleep before pid_has_task becomes false.
+>>>>
+>>>> What is the reason we want to wait until pid_has_task() becomes false?
+>>>>
+>>>> - wait_event(tgid->wait_pidfd, !pid_has_task(tgid, PIDTYPE_TGID));
+>>>> + while (!wait_event_timeout(tgid->wait_pidfd, !pid_has_task(tgid, PIDTYPE_TGID), 1));
+>>>
+>>> So that it is safe to call bpfilter_umh_cleanup.  The previous code
+>>> performed the wait by having a callback in do_exit.
+>>
+>> But bpfilter_umh_cleanup() does only
+>>
+>> 	fput(info->pipe_to_umh);
+>> 	fput(info->pipe_from_umh);
+>> 	put_pid(info->tgid);
+>> 	info->tgid = NULL;
+>>
+>> which is (I think) already safe regardless of the usermode process because
+>> bpfilter_umh_cleanup() merely closes one side of two pipes used between
+>> two processes and forgets about the usermode process.
 > 
-> The proposal did not cover integers due to concerns about the number of
-> optimization passes that would need to be reviewed to make that work.
-> Nevertheless, using a marked integer would be safer than using an unmarked
-> one, and if the review can be carried out, why not?  Maybe something
-> like this:
+> It is not safe.
 > 
-> 	_Dependent_ptr int idx;
-> 
-> 	rcu_read_lock();
-> 	idx = READ_ONCE(gidx);
-> 	d = rcuarray[idx];
-> 	rcu_read_unlock();
-> 	do_something_with(d);
-> 
-> So use of this qualifier is quite reasonable.
+> Baring bugs there is only one use of shtudown_umh that matters.  The one
+> in fini_umh.  The use of the file by the mm must be finished before
+> umd_unload_blob.  AKA unmount.  Which completely frees the filesystem.
 
-The above usage might warrant a rename of the qualifier though, since
-clearly there isn't anything ptr around.
+Do we really need to mount upon umd_load_blob() and unmount upon umd_unload_blob() ?
+LSM modules might prefer only one instance of filesystem for umd blobs.
 
-> The prototype for GCC is here: https://github.com/AKG001/gcc/
+For pathname based LSMs, since that filesystem is not visible from mount tree, only
+info->driver_name can be used for distinction. Therefore, one instance of filesystem
+with files created with file_open_root(O_CREAT | O_WRONLY | O_EXCL) might be preferable.
 
-Thanks! Those test cases are somewhat over qualified though:
+For inode based LSMs, reusing one instance of filesystem created upon early boot might
+be convenient for labeling.
 
-       static volatile _Atomic (TYPE) * _Dependent_ptr a;     		\
+Also, we might want a dedicated filesystem (say, "umdfs") instead of regular tmpfs in
+order to implement protections without labeling files. Then, we might also be able to
+implement minimal protections without LSMs.
 
-Also, if C goes and specifies load dependencies, in any form, is then
-not the corrolary that they need to specify control dependencies? How
-else can they exclude the transformation.
-
-And of course, once we're there, can we get explicit support for control
-dependencies too? :-) :-)
