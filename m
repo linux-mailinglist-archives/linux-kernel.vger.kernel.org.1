@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4909E2140A1
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 23:15:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B0ED2140A6
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 23:15:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726914AbgGCVPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 17:15:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56274 "EHLO mail.kernel.org"
+        id S1726939AbgGCVPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 17:15:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56244 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726903AbgGCVPJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 17:15:09 -0400
-Subject: Re: [GIT PULL] PCI fixes for v5.8
+        id S1726752AbgGCVPI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Jul 2020 17:15:08 -0400
+Subject: Re: [GIT PULL] ACPI updates for v5.8-rc4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1593810908;
-        bh=3RFNe7O4/XnANe+AF6v/cwBPi/6xSUP2qXTlQ9fyF5U=;
+        bh=BiiuFfciXWQEYUr5uWX4rxR/KCq8/ad5qu3PDtQ5Fe8=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=TR/2R00xpe3/z5oOJT+t/HuRWfrIQEoG+ePGRlZfkf1u8Hao0vaQl6EOMckdcs11V
-         MyESI1LXCUt3dduXDL5v1QJ9Tcw17GTovlaa1V00feNUoLEm226nJrKJrSOdwH55uy
-         Y2hoLdbRk930d5XNzctJXQswZA5p/SeOmO0eQFS0=
+        b=RZRB6+2gEj/oBcy/xyzapKdiPJq8Fj1nwWyq5amoQMbZmxNlarvYBXW1rapylIDjw
+         2MvZZUHYi0MImGDrlOYow9ykaBSv9SCZbzhhMUwOgEkPUme9/qU7RD53zmXZapLzBo
+         kQq9UonNoO5iUw2S1ya7fBnJPcRvidVjDxQymjCg=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200703160455.GA3899841@bjorn-Precision-5520>
-References: <20200703160455.GA3899841@bjorn-Precision-5520>
+In-Reply-To: <CAJZ5v0i=ovJcb+0PkVj=_RR4FaUVgSiR4ON0ay1RvOk7t8UUZg@mail.gmail.com>
+References: <CAJZ5v0i=ovJcb+0PkVj=_RR4FaUVgSiR4ON0ay1RvOk7t8UUZg@mail.gmail.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200703160455.GA3899841@bjorn-Precision-5520>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git
- pci-v5.8-fixes-1
-X-PR-Tracked-Commit-Id: 5396956cc7c6874180c9bfc1ceceb02b739a6a87
+X-PR-Tracked-Message-Id: <CAJZ5v0i=ovJcb+0PkVj=_RR4FaUVgSiR4ON0ay1RvOk7t8UUZg@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git
+ acpi-5.8-rc4
+X-PR-Tracked-Commit-Id: ef0c44c3e51ba051c500620685ee0b476ef2cbdf
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 7fec3ce50a5d3fc54de9c0e9d43682ea9320b199
-Message-Id: <159381090863.9451.6625199989743957374.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 718b7a570a346323cd80dc28d0a41892036b050b
+Message-Id: <159381090808.9451.17608478322776044630.pr-tracker-bot@kernel.org>
 Date:   Fri, 03 Jul 2020 21:15:08 +0000
-To:     Bjorn Helgaas <helgaas@kernel.org>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Yicong Yang <yangyicong@hisilicon.com>
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 3 Jul 2020 11:04:55 -0500:
+The pull request you sent on Fri, 3 Jul 2020 16:50:01 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git pci-v5.8-fixes-1
+> git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git acpi-5.8-rc4
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/7fec3ce50a5d3fc54de9c0e9d43682ea9320b199
+https://git.kernel.org/torvalds/c/718b7a570a346323cd80dc28d0a41892036b050b
 
 Thank you!
 
