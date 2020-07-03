@@ -2,52 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD6D1213DF3
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 19:04:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45007213DFA
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 19:04:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726926AbgGCRDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 13:03:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33428 "EHLO mail.kernel.org"
+        id S1726960AbgGCREC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 13:04:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33626 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726911AbgGCRDv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 13:03:51 -0400
+        id S1726632AbgGCREB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Jul 2020 13:04:01 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B2B5A20870;
-        Fri,  3 Jul 2020 17:03:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BDB8220B80;
+        Fri,  3 Jul 2020 17:04:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593795831;
-        bh=avVmBYE85HqmZGz24vFbJj580KfAPUe9Qy5+/5Manoc=;
+        s=default; t=1593795841;
+        bh=6qbXbqZcal6qUM8m7y1H835971AOT3MG+/JeJM4Mvvo=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=kAxCMucRahfO2ghUeJK+MEqOP+R0sb8agJKsi5oXJcHuMs4fZ6Ol7ftUCaB5qerV1
-         gO7asNnUfNJ9DL/jfAdBrO1MlU6niawzdHr4C2MS9vF84zwDWKMmOdnJK6DQo0eaA3
-         qkEHs36FuA9MxZpytVjmfm9EfEzEnd01vTyCN2qI=
-Date:   Fri, 03 Jul 2020 18:03:48 +0100
+        b=kL89XxMCD1uP1P9nfTCwFTRCu7eRiXWQYekGDxRPBArb+k7sr1jh9+gY3jlLl7K+q
+         l3n9qQ4RV6nf2VcW3ZugUBQElUI2uF7AHQuci4M1KqhABFD3TXliGf6tCH/v3b4zU/
+         QVPfD/x5ctycONXovCHTF3GnPm3gHfGY9hS8kCh0=
+Date:   Fri, 03 Jul 2020 18:03:59 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     Jaroslav Kysela <perex@perex.cz>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
-        Colin King <colin.king@canonical.com>,
-        Brent Lu <brent.lu@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20200702114835.37889-1-colin.king@canonical.com>
-References: <20200702114835.37889-1-colin.king@canonical.com>
-Subject: Re: [PATCH][next] ASoC: Intel: bxt-da7219-max98357a: return -EINVAL on unrecognized speaker amplifier
-Message-Id: <159379581380.55795.4909094479360848314.b4-ty@kernel.org>
+To:     Wei Yongjun <weiyongjun1@huawei.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     Hulk Robot <hulkci@huawei.com>, kernel-janitors@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20200703030910.75047-1-weiyongjun1@huawei.com>
+References: <20200703030910.75047-1-weiyongjun1@huawei.com>
+Subject: Re: [PATCH -next] ASoC: ti: j721e-evm: Fix missing unlock on error in j721e_audio_hw_params()
+Message-Id: <159379581381.55795.18016494611644548015.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2 Jul 2020 12:48:35 +0100, Colin King wrote:
-> Currently if the ctx->spkamp is not recognized an error message is
-> reported but the code continues to set up the device with uninitialized
-> variables such as the number of widgets.  Fix this by returning -EINVAL
-> for unrecognized speaker amplifier types.
+On Fri, 3 Jul 2020 03:09:10 +0000, Wei Yongjun wrote:
+> Add the missing unlock before return from function j721e_audio_hw_params()
+> in the error handling case.
 
 Applied to
 
@@ -55,8 +51,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: Intel: bxt-da7219-max98357a: return -EINVAL on unrecognized speaker amplifier
-      commit: c950e9fcc79b8fedd3126ede4dcd70add8ea5339
+[1/1] ASoC: ti: j721e-evm: Fix missing unlock on error in j721e_audio_hw_params()
+      commit: 59b44649a8f2380dfbf282db9922ef863c8812a6
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
