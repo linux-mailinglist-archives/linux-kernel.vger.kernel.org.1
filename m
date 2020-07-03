@@ -2,154 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC0B2213080
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 02:36:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D58882130A0
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 02:51:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726345AbgGCAgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 20:36:46 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:20036 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726263AbgGCAgp (ORCPT
+        id S1726357AbgGCAvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 20:51:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58820 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726028AbgGCAvL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 20:36:45 -0400
-Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200703003642epoutp01a1e9adcfc20bea4e2f72b65ea20813d5~eFv7pB_e-1936519365epoutp01N
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Jul 2020 00:36:42 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200703003642epoutp01a1e9adcfc20bea4e2f72b65ea20813d5~eFv7pB_e-1936519365epoutp01N
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1593736602;
-        bh=UWuWCf1OfZKP+vcvQ2033IsVriWDyx0bdaBJZNtx+cM=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=RgtMdJuuf26N7aZInHfURi6ZiZujxNh9M28ZkA68BJjrJUpVTGDhPxWWRdSdkwBXZ
-         u4DyTz4EEntF5e061HASdFORTnOSnjUalJBNNE20xC/ng1vwPGYGOAH6KjtaO+dSqZ
-         3T4U4gSkzPTjLboDet0ue++fS/VVtNo4Zkespab0=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
-        20200703003641epcas1p3c22a707cbedd7b2ebfe0fb9b83ec5375~eFv66bJ6h0263502635epcas1p3m;
-        Fri,  3 Jul 2020 00:36:41 +0000 (GMT)
-Received: from epsmges1p2.samsung.com (unknown [182.195.40.153]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 49ybcj3FG8zMqYkw; Fri,  3 Jul
-        2020 00:36:37 +0000 (GMT)
-Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
-        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        B8.AF.19033.19D7EFE5; Fri,  3 Jul 2020 09:36:33 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20200703003633epcas1p2654ef23e56eb19c0203ff1680f1e75c8~eFvzOZX-a2749027490epcas1p2U;
-        Fri,  3 Jul 2020 00:36:33 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200703003633epsmtrp29b912f24b4f495ce70d54f6281235dd8~eFvzNdi8h0657606576epsmtrp2e;
-        Fri,  3 Jul 2020 00:36:33 +0000 (GMT)
-X-AuditID: b6c32a36-159ff70000004a59-fe-5efe7d91899d
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        7A.1C.08382.19D7EFE5; Fri,  3 Jul 2020 09:36:33 +0900 (KST)
-Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20200703003632epsmtip276e73622b711bde99e3232f7d961dcc8~eFvy5BX1N2844528445epsmtip2O;
-        Fri,  3 Jul 2020 00:36:32 +0000 (GMT)
-Subject: Re: [PATCH RFC v6 1/6] dt-bindings: exynos-bus: Add documentation
- for interconnect properties
-To:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        georgi.djakov@linaro.org, krzk@kernel.org
-Cc:     devicetree@vger.kernel.org, robh+dt@kernel.org,
-        a.swigon@samsung.com, myungjoo.ham@samsung.com,
-        inki.dae@samsung.com, sw0312.kim@samsung.com,
-        b.zolnierkie@samsung.com, m.szyprowski@samsung.com,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-Organization: Samsung Electronics
-Message-ID: <8795ad20-1193-8009-bec4-5ae2c72a782a@samsung.com>
-Date:   Fri, 3 Jul 2020 09:47:47 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
-        Thunderbird/59.0
+        Thu, 2 Jul 2020 20:51:11 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C6F8C08C5C1;
+        Thu,  2 Jul 2020 17:51:11 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id 12so18698141oir.4;
+        Thu, 02 Jul 2020 17:51:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cLLLMZUR/6NcDoIAUKZCfeEO4cTwXIXp/IGipSTCgM8=;
+        b=GwQaxRGCbnasx8DWiHFhDlrwzmWBOHcGheJtKYUqjVVyFtfbKusmoontyMuHgAOfaP
+         o4SV+UDvZzHnj+lJN4NppeSVXutG3t51HIceKc4RT9lcnI4udody5Pdk8jPRFfY9htJ8
+         iY5qtSY+20XTzfWAb5w30z7Yq2RdmZAD6otOFQo6rWPri9NZ9CnCZZ7KZ26bgJyzoyoO
+         I+DlI561Wa27wG4kEgWb4CHc7ey71nz/0YdBhp1xhHrbsq4Otlr+RU9ZyCyJDHN7F277
+         NMXH1Z3a6FbofPm8MKnb+5g02JfKfk2X0XLY/fdTR4Yq+zniOu1q/qe6R+YNx8TAHVcp
+         ckWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cLLLMZUR/6NcDoIAUKZCfeEO4cTwXIXp/IGipSTCgM8=;
+        b=X7R5SoBTb/urthC3iAWWFWylIr3iyrvwhpJZ1sO6L71y8KS4ZUZkOo4xytJFi3E/58
+         yQOPbyfcRvD5irorFkaTbgqhA4M4kg51iwM7cRY8GrsXosh7JjfoR2prz6Y3nC9Gczq+
+         NlRiEprVGTe3g0ctnPsOTcdDI4EP53S0DDGG+N7z7dUYcq8/GZFO2AslkVCbhXkU8zj0
+         N6JQOBUCyRhZeVcu/VM2YUfH60PGv1SCN90XBIbs9adtr8f2H+r0IzmBJQmuecV0oHBB
+         a8CG9LzevkxKrhgyy7tgmJL5sd0aaO3G2ZPIjcAwwURaa91tMP9N8yguHW1t747lqLN9
+         aF4g==
+X-Gm-Message-State: AOAM533o4rgntvvuHdyJYcpOaCrRhhMMyjsAr8h7n/LiVfOVrv0iAdny
+        4knX/cF4njX7BN82U+Sc5no4bOQeZTAxcgVHQyU=
+X-Google-Smtp-Source: ABdhPJy61q3Idfrag2OeVEA2neP+3T4xxQKco9bEs1E0DjbYJOa8bO6QRIyg9Ssc31gOmEgKy1boa6OKXkw8U9LJzIk=
+X-Received: by 2002:aca:b205:: with SMTP id b5mr27298242oif.103.1593737470608;
+ Thu, 02 Jul 2020 17:51:10 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200702163724.2218-2-s.nawrocki@samsung.com>
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrBJsWRmVeSWpSXmKPExsWy7bCmvu7E2n9xBq+ny1rcn9fKaLFxxnpW
-        i/lHzrFaXPn6ns1i+t5NbBaT7k9gsTh/fgO7xabH11gtLu+aw2bxufcIo8WM8/uYLNYeuctu
-        cbtxBZtF694j7BaH37SzWsyY/JLNQcBj06pONo871/awedzvPs7ksXlJvUffllWMHp83yQWw
-        RWXbZKQmpqQWKaTmJeenZOal2yp5B8c7x5uaGRjqGlpamCsp5CXmptoqufgE6Lpl5gDdraRQ
-        lphTChQKSCwuVtK3synKLy1JVcjILy6xVUotSMkpsCzQK07MLS7NS9dLzs+1MjQwMDIFKkzI
-        zji6eDVrwQf2iu8bvrI2MO5j62Lk4JAQMJFouhvaxcjFISSwg1Hi+tI+NgjnE6PE/alvWSCc
-        b4wSL+fdB8pwgnVsnb4VKrGXUeJs5z12COc9o8SS8ytYQaqEBTIkfm7vAdshIhAjsf5dBEgN
-        s8AHJon/rx4ygdSwCWhJ7H9xA2wqv4CixNUfjxlB6nkF7CSab+SDhFkEVCSOPt0ONlJUIEzi
-        5LYWRhCbV0BQ4uTMJywgNqeAtUTjhQtgNcwC4hK3nsxngrDlJZq3zmYG2Ssh8IJD4seM58wQ
-        H7hInPm+G8oWlnh1fAs7hC0l8fndXqgvqyVWnjzCBtHcwSixZT/EBgkBY4n9SyczgRzKLKAp
-        sX6XPkRYUWLn77mMEIv5JN597WGFhC+vREebEESJssTlB3eZIGxJicXtnWwTGJVmIXlnFpIX
-        ZiF5YRbCsgWMLKsYxVILinPTU4sNC4yQI3sTIzhJa5ntYJz09oPeIUYmDsZDjBIczEoivAmq
-        /+KEeFMSK6tSi/Lji0pzUosPMZoCA3gis5Rocj4wT+SVxBuaGhkbG1uYGJqZGhoqifOqyVyI
-        ExJITyxJzU5NLUgtgulj4uCUamAS3vI6gt/2RZfMG2YOhoPXljU597zdLcp9z1Rg2Z5zFw4/
-        Sb52cvtiboXlC940sRkG39f2/MCs/lF3VbTJ1i6bribdP3lmVtvlVrqYX1f8bvqdc6aJdUDr
-        5sTojxl/zWz9+n9eSjx1me1hZJN59amp836WRuXOWXh81sPV134ab2HzOPTnU1He/pe8u/b4
-        n9no+qnHxrDsfEGzeCHvNssgucvP725/tnvHFg1jo6d1X+ed9X+lqZBy5KpL2+Wlzerz9FKu
-        PbvSIfukk3EaS9+i+HXR+aVP/YQ073xzWXnuxqT610w9h6OfLX1ln3DgRoPd2bCH4Qm351aI
-        OeaGbJlnZCX66sr9+2vED9fkPRbVU2Ipzkg01GIuKk4EANxDsXhbBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrMIsWRmVeSWpSXmKPExsWy7bCSvO7E2n9xBsu/MVvcn9fKaLFxxnpW
-        i/lHzrFaXPn6ns1i+t5NbBaT7k9gsTh/fgO7xabH11gtLu+aw2bxufcIo8WM8/uYLNYeuctu
-        cbtxBZtF694j7BaH37SzWsyY/JLNQcBj06pONo871/awedzvPs7ksXlJvUffllWMHp83yQWw
-        RXHZpKTmZJalFunbJXBlHF28mrXgA3vF9w1fWRsY97F1MXJySAiYSGydvpUFxBYS2M0osWUu
-        I0RcUmLaxaPMXYwcQLawxOHDxV2MXEAlbxklnj5axgxSIyyQIbFs3wuwehGBGIlTk2exgBQx
-        C3xgkjg0t5MRomM/o8T0BZvANrAJaEnsf3EDbDO/gKLE1R+PGUE28ArYSTTfyAcJswioSBx9
-        up0VxBYVCJPYueQxE4jNKyAocXLmE7AxnALWEo0XLoDVMAuoS/yZd4kZwhaXuPVkPhOELS/R
-        vHU28wRG4VlI2mchaZmFpGUWkpYFjCyrGCVTC4pz03OLDQsM81LL9YoTc4tL89L1kvNzNzGC
-        41VLcwfj9lUf9A4xMnEwHmKU4GBWEuFNUP0XJ8SbklhZlVqUH19UmpNafIhRmoNFSZz3RuHC
-        OCGB9MSS1OzU1ILUIpgsEwenVANTyNp5XBz69+N2n7xp49Z8TriI2dXWZKqH2qsHRudfBm8T
-        na3h7v3T9lnfo3VXz3E/TnupqRv9dvmt6Xdrc6aYfjh+d9ZxMd+772Ysmuts8L5gz8QMl6O5
-        sfPNz7/uSxa0zlx672Ci1pvYNT2nH2mYbXi+UUTw3GzhiZaP0mTWWYimxMt0/q0rNyl9x1Fq
-        5B2mb3t0pVOedMKDqqhLhUcN/8pMnX9w451/LqoeKrUsVw7ySlTlCF6+KuaYFeeZcPp7y3qD
-        Rrn1SyV+aLx+tuW09ulLHR1uhRrWBgW3czYxXXm/eNb5mKqim7v1rQOest+uz3D3fTTrxU8+
-        D5NFRyKSi2e6bF62e8aTiX+2PFlvrMRSnJFoqMVcVJwIAKDh9EFGAwAA
-X-CMS-MailID: 20200703003633epcas1p2654ef23e56eb19c0203ff1680f1e75c8
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200702163748eucas1p2cf7eab70bc072dea9a95183018b38ad3
-References: <20200702163724.2218-1-s.nawrocki@samsung.com>
-        <CGME20200702163748eucas1p2cf7eab70bc072dea9a95183018b38ad3@eucas1p2.samsung.com>
-        <20200702163724.2218-2-s.nawrocki@samsung.com>
+References: <20200702175352.19223-1-TheSven73@gmail.com> <20200702175352.19223-3-TheSven73@gmail.com>
+ <CAOMZO5DxUeXH8ZYxmKynA7xO3uF6SP_Kt-g=8MPgsF7tqkRvAA@mail.gmail.com>
+In-Reply-To: <CAOMZO5DxUeXH8ZYxmKynA7xO3uF6SP_Kt-g=8MPgsF7tqkRvAA@mail.gmail.com>
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+Date:   Thu, 2 Jul 2020 20:50:59 -0400
+Message-ID: <CAGngYiUEx98QUAHrzFNWzMr5+oPS4-7Nqq91JzhtzGUG7=kagQ@mail.gmail.com>
+Subject: Re: [PATCH v5 3/3] ARM: imx6plus: optionally enable internal routing
+ of clk_enet_ref
+To:     Fabio Estevam <festevam@gmail.com>
+Cc:     Shawn Guo <shawnguo@kernel.org>, Fugang Duan <fugang.duan@nxp.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sylwester,
+Hi Fabio,
 
+On Thu, Jul 2, 2020 at 6:29 PM Fabio Estevam <festevam@gmail.com> wrote:
+>
+> With the device tree approach, I think that a better place to touch
+> GPR5 would be inside the fec driver.
+>
 
-On 7/3/20 1:37 AM, Sylwester Nawrocki wrote:
-> Add documentation for new optional properties in the exynos bus nodes:
-> samsung,interconnect-parent, #interconnect-cells, bus-width.
-> These properties allow to specify the SoC interconnect structure which
-> then allows the interconnect consumer devices to request specific
-> bandwidth requirements.
-> 
-> Signed-off-by: Artur Świgoń <a.swigon@samsung.com>
-> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-> ---
-> Changes for v6:
->  - added dts example of bus hierarchy definition and the interconnect
->    consumer,
->  - added new bus-width property.
-> 
-> Changes for v5:
->  - exynos,interconnect-parent-node renamed to samsung,interconnect-parent
-> ---
->  .../devicetree/bindings/devfreq/exynos-bus.txt     | 68 +++++++++++++++++++++-
->  1 file changed, 66 insertions(+), 2 deletions(-)
+Cool idea. I notice that the latest FEC driver (v5.8-rc3) accesses individual
+bits inside the gpr (via fsl,stop-mode). So perhaps I can do the same here,
+and populate that gpr node in imx6qp.dtsi - because it doesn't exist on other
+SoCs.
 
-Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
+> For the property name, what about fsl,txclk-from-pll?
 
-
-(snip)
-
--- 
-Best Regards,
-Chanwoo Choi
-Samsung Electronics
+Sounds good. Does anyone have more suggestions?
