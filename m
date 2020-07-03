@@ -2,179 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62283213276
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 05:57:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C835213283
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 06:04:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726208AbgGCD50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 23:57:26 -0400
-Received: from ozlabs.org ([203.11.71.1]:45449 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726039AbgGCD5Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 23:57:24 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49yh4K5vY8z9sR4;
-        Fri,  3 Jul 2020 13:57:21 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1593748641;
-        bh=0FP7DbOrN/cYY/DD+/5F6Rm6Xxx7RN241hFaijl6Wco=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=NKXAWMb4QHaALgYOYJn8VBYhcqM1Ccx5r/41Dij6CfI+ILSzt6mICcoO7imLy8yAK
-         zY6i1jt3rTnJMC2k3NqKibN8h/WEecuYt2RoyjR4IoaUSIe4OZalzxh/S8SVY9/IFW
-         wnou+hEieLZewmhV5FIuFO6IyDoHZ4aPQRvu/G/N/nRjU0c3Bn7i7WqOC5/c/QxCV1
-         gXMBIYLh7sJG4wJwa1KeSOHBp5WBwMu0ozeJI2ds7al0v4o6KiHVfM5IzzmCBNs5XA
-         GSrzr4WnMhdCENH8Ho9z70YINABf39djwZu721UsVzLZvQJp1JaPpjMuLIyCs+SXQi
-         iLoDrooEgercg==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: objtool clac/stac handling change..
-In-Reply-To: <CAHk-=whNbR76bJSkYKSd4-iHBcksZaw=_3Dy7eELxPVuv5wa5g@mail.gmail.com>
-References: <CAHk-=wjc-ktbOr7ZHMY8gfAmHxUK+aMdDsQjeh+BvmQwnQfN_g@mail.gmail.com> <20200701184131.GI2786714@ZenIV.linux.org.uk> <CAHk-=wj_2v9m+yZioE4vOLGW1mc9SBa5+++LdeJ86aEeB5OXcw@mail.gmail.com> <20200701195914.GK2786714@ZenIV.linux.org.uk> <CAHk-=wj-CYhKZR8ZKQgi=VTx=o7n6dtwPXikvgkJ3SdiqRPd8A@mail.gmail.com> <87lfk26nx4.fsf@mpe.ellerman.id.au> <8be7cf19-9fc9-ce9c-091f-c8824a01a3c8@csgroup.eu> <CAHk-=whNbR76bJSkYKSd4-iHBcksZaw=_3Dy7eELxPVuv5wa5g@mail.gmail.com>
-Date:   Fri, 03 Jul 2020 13:59:37 +1000
-Message-ID: <87eept6yfq.fsf@mpe.ellerman.id.au>
+        id S1726100AbgGCEER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 00:04:17 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:47042 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725984AbgGCEER (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Jul 2020 00:04:17 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06341T68158538;
+        Fri, 3 Jul 2020 04:04:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=corp-2020-01-29;
+ bh=4L+MvHZ8M0MvEMta2g/UXgscdME5fkuFvt18ijNsUvo=;
+ b=Dv0YDx32DKkhCTdrcTlPqRsXzlU7vadB3rutxYdtUFV19ufD4QAZU90xAouj8L2D7Usk
+ laShj28q5iHavmbWCF8PURH/TmK1yRk4XbY/ewzXXO15GNrp0aZRlkZo8UHyeWChgTaf
+ 7rIM6cKDYUMMVuM53wutvXveqdaVHvPDPrv1+tv4c4DHe0Muo0H/OJhcNZKY0mOi+5+u
+ GIgW95vOHExJc6vsmV+WmytryJWZQZpfJES4QNaiZbPWOHiShiaHkQxvgVpCMxJOpuSL
+ u5opThqHZYq34SAAxj8HN5yVqXwHmYIkSZ9hbzFv/ADD2+AeqiSnTAXQagJg+JYsjsNu tw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 31ywrc1wrg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 03 Jul 2020 04:04:04 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0633wp5d161637;
+        Fri, 3 Jul 2020 04:04:03 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 31xg1b5p4f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 03 Jul 2020 04:04:03 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 06343xPM005839;
+        Fri, 3 Jul 2020 04:03:59 GMT
+Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 03 Jul 2020 04:03:58 +0000
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+To:     linux@armlinux.org.uk,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        jejb@linux.ibm.com
+Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-scsi@vger.kernel.org
+Subject: Re: [PATCH V2] scsi: eesox: Fix different dev_id between 'request_irq()' and 'free_irq()'
+Date:   Fri,  3 Jul 2020 00:03:52 -0400
+Message-Id: <159374899165.14731.1540154014107361984.b4-ty@oracle.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200626040553.944352-1-christophe.jaillet@wanadoo.fr>
+References: <26d388f5-be67-b643-c76c-b9fe52f111f7@wanadoo.fr> <20200626040553.944352-1-christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9670 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0
+ mlxlogscore=907 suspectscore=0 bulkscore=0 mlxscore=0 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2007030027
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9670 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 mlxlogscore=916
+ clxscore=1015 cotscore=-2147483648 priorityscore=1501 lowpriorityscore=0
+ malwarescore=0 mlxscore=0 adultscore=0 suspectscore=0 impostorscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2007030027
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus Torvalds <torvalds@linux-foundation.org> writes:
-> On Thu, Jul 2, 2020 at 8:13 AM Christophe Leroy
-> <christophe.leroy@csgroup.eu> wrote:
->>
->> Isn't it something easy to do in bad_page_fault() ?
->
-> Can't the user access functions take any other faults on ppc?
+On Fri, 26 Jun 2020 06:05:53 +0200, Christophe JAILLET wrote:
 
-Yes they definitely can.
+> The dev_id used in 'request_irq()' and 'free_irq()' should match.
+> So use 'info' in both cases.
 
-I think I can enumerate all the possibilities on 64-bit, but I don't
-know all the possibilities on all the 32-bit variants.
+Applied to 5.9/scsi-queue, thanks!
 
-> On x86-64, we have the "address is non-canonical" case which doesn't
-> take a page fault at all, but takes a general protection fault
-> instead.
+[1/1] scsi: eesox: Fix different dev_id between request_irq() and free_irq()
+      https://git.kernel.org/mkp/scsi/c/86f2da1112cc
 
-Right. On P9 radix we have an address-out-of-page-table-range exception
-which I guess is similar, though that does end up at bad_page_fault() in
-our case.
-
-> But note that depending on how you nest and save/restore the state,
-> things can be very subtle.
->
-> For example, what can happen is:
->
->  (a) user_access_begin()..
->
->  (b) we take a normal interrupt
->
->  (c) the interrupt code does something that has an exception handling
-> case entirely unrelated to the user access (on x86, it might be the
-> "unsafe_msr' logic, for example.
->
->  (d) we take that exception, do "fixup_exception()" for whatever that
-> interrupt did.
->
->  (e) we return from that exception to the fixed up state
->
->  (d) we return from the interrupt
->
->  (e) we should still have user accesses enabled.
-
-Yes.
-
-We broke that a few times when developing the KUAP support, which is why
-I added bad_kuap_fault() to report the case where we are in a uaccess
-region but are being blocked unexpectedly by KUAP.
-
-> NOTE! on x86, we can have "all fixup_exceptions() will clear AC in the
-> exception pt_regs", because AC is part of rflags which is saved on
-> (and cleared for the duration of) all interrupt and exceptions.
->
-> So what happens is that on x86 all of (b)-(d) will run with AC clear
-> and no user accesses allowed, and (e) will have user accesses enabled
-> again, because the "fixup_exception()" at (d) only affected the state
-> of the interrupt hander (which already had AC clear anyway).
->
-> But I don't think exceptions and interrupts save/restore the user
-> access state on powerpc, do they?
-
-Not implicitly.
-
-We manually save it into pt_regs on the stack in the exception entry. On
-64-bit it's done in kuap_save_amr_and_lock. 32-bit does it in
-kuap_save_and_lock.
-
-And then on the return path it's kuap_restore_amr() on 64-bit, and
-kuap_restore on 32-bit.
-
-> So on powerpc you do need to be more careful. You would only need to
-> disable user access on exceptions that happen _on_ user accesses.
->
-> The easiest way to do that is to do what x86 does: different
-> exceptions have different handlers. It's not what we did originally,
-> but it's been useful.
->
-> Hmm.
->
-> And again, on x86, this all works fine because of how exceptions
-> save/restore the user_access state and it all nests fine. But I'm
-> starting to wonder how the nesting works AT ALL for powerpc?
->
-> Because that nesting happens even without
->
-> IOW, even aside from this whole thing, what happens on PPC, when you have
-
-I'll annotate what happens for the 64-bit case as it's the one I know
-best:
-
->  (a) user_access_begin();
-         - mtspr(SPRN_AMR, 0)	// 0 means loads & stores permitted
-
->      - profile NMI or interrupt happens
-         - pt_regs->kuap = mfspr(SPRN_AMR)
-         - mtspr(SPRN_AMR, AMR_KUAP_BLOCKED)
-
->      - it wants to do user stack tracing so does
->                 pagefault_disable();
->        (b)         get_user();
-                     mtspr(SPRN_AMR, 0)
-                     ld rN, <user pointer)
-                     mtspr(SPRN_AMR, AMR_KUAP_BLOCKED)
-                     
->                 pagefault_enable();
->    - profile NMI/interrupt returns
-       - mtspr(SPRN_AMR, pt_regs->kuap)
-       - return from interrupt
-
->  (c) user accesss should work here!
->
-> even if the "get_user()" in (b) would have done a
-> "user_access_begin/end" pair, and regardless of whether (b) might have
-> triggered a "fixup_exception()", and whether that fixup_exception()
-> then did the user_access_end().
->
-> On x86, this is all ok exactly because of how we only have the AC bit,
-> and it nests very naturally with any exception handling.
->
-> Is the ppc code nesting-safe? Particularly since it has that whole
-> range-handling?
-
-Yeah I think it is.
-
-The range handling on 32-bit books follows the same pattern as above,
-except that on exception entry we don't save the content of an SPR to
-pt_regs, instead we save current->thread.kuap. (Because there isn't a
-single SPR that contains the KUAP state).
-
-cheers
+-- 
+Martin K. Petersen	Oracle Linux Engineering
