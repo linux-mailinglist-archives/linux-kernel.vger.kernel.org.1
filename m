@@ -2,145 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ABE9213A2E
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 14:41:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59C32213A37
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 14:47:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726310AbgGCMlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 08:41:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54722 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726074AbgGCMlJ (ORCPT
+        id S1726265AbgGCMrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 08:47:13 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:50080 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726074AbgGCMrL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 08:41:09 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 952C5C08C5C1;
-        Fri,  3 Jul 2020 05:41:09 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id q8so32315301iow.7;
-        Fri, 03 Jul 2020 05:41:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/3fARxYuRtacDsta1lOXw0YQpGPHS40fG/Dlgh9w8EI=;
-        b=M366pNrbiKkM1b6xE+0QpdAMagpAv24Q5q/wfLwg/Zn4G2nQo7mZSjDNcn53v8l93O
-         LMbZ8qdFaFY105cX6XMyqohfH8jK3qqaI5DP67W8PXgL/6Cgb0q6/GmGNXsU2POpYPCL
-         iM3iTrfKRwaXArU7FD/Y1N7YcvL9hz1pDgBJeonDWapwxCta/9/j5LSfvkYf7m1IbaUI
-         COFr5y58ROXvmTzGHKZ4S4VyhFnEQDOObewoqX4pSHvS5DQkcFMlY4YSBNKD5hed8950
-         Kyjty+p33+9ceSZjOrTT4kbOEkI1cO4UTDWngFqKU82lQL6uyrRODK+wAFPUZIR1a7uL
-         MQDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/3fARxYuRtacDsta1lOXw0YQpGPHS40fG/Dlgh9w8EI=;
-        b=YYzkjH1TjF1JndDVYI/zia5IJuRqgwoVfPv1DmfM+N/NhotXeVZlP/5fj/unnKVATq
-         w43chRj8bECvZYmCLFolp8IJz+LnDJyV2ArKMotPIgYv7+RjvUbUQ8LPBHbYiiRtIJDG
-         QDsvWP63e0Fymhngk5gFjnWpKArdmYSZqTBe7rFNcf2qWaWX//XtDF5mWsiezLXlDKd7
-         ScmeihpLK/nBn4ljQNswdlhIII9Ch8T+jOvXCKrmtZvS4/Umf8WJ1uH4lrPF2E5UCzcy
-         7JTtUa71A7aaTHm/3h2XslaJJ+bYIczRyqog5rIosnukplvIDrY26SDVO2UZyXqS0X2P
-         wGRg==
-X-Gm-Message-State: AOAM532QtC8ugNWTlu2Cs7AGa9FMMkZD2IJGra+hgYELc0d8RF+bTzFi
-        xqIE2hn3ENzdOLVicxzOxkBV1LnQqPlBhmFWIrY=
-X-Google-Smtp-Source: ABdhPJyaKBMDtXfp8jmSH/dLZJsnXIMsz48usB6Up3Wt1Y1DSANqMYxTz/l4fcbEYrunGZop8YhtM9fwEPOtlnfn92U=
-X-Received: by 2002:a6b:5b0e:: with SMTP id v14mr12102540ioh.145.1593780068905;
- Fri, 03 Jul 2020 05:41:08 -0700 (PDT)
+        Fri, 3 Jul 2020 08:47:11 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 063CVpfd179346;
+        Fri, 3 Jul 2020 08:46:48 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 321yqvhde5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 03 Jul 2020 08:46:48 -0400
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 063CVqgQ179534;
+        Fri, 3 Jul 2020 08:46:47 -0400
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 321yqvhddm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 03 Jul 2020 08:46:47 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 063CkAxU009024;
+        Fri, 3 Jul 2020 12:46:46 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma03fra.de.ibm.com with ESMTP id 31wwr8be7u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 03 Jul 2020 12:46:46 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 063CkhEa63635488
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 3 Jul 2020 12:46:43 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 03D674C050;
+        Fri,  3 Jul 2020 12:46:43 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2E1824C040;
+        Fri,  3 Jul 2020 12:46:41 +0000 (GMT)
+Received: from pratiks-thinkpad.ibmuc.com (unknown [9.85.102.88])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri,  3 Jul 2020 12:46:40 +0000 (GMT)
+From:   Pratik Rajesh Sampat <psampat@linux.ibm.com>
+To:     mpe@ellerman.id.au, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, benh@kernel.crashing.org,
+        paulus@samba.org, ego@linux.vnet.ibm.com, svaidy@linux.ibm.com,
+        psampat@linux.ibm.com, pratik.r.sampat@gmail.com
+Subject: [PATCH 1/2] powerpc/powernv/idle: Exclude mfspr on HID1,4,5 on P9 and above
+Date:   Fri,  3 Jul 2020 18:16:39 +0530
+Message-Id: <20200703124640.42820-1-psampat@linux.ibm.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-References: <3eda864fb69977252a061c8c3ccd2d8fcd1f3a9b.1593278952.git.rgb@redhat.com>
-In-Reply-To: <3eda864fb69977252a061c8c3ccd2d8fcd1f3a9b.1593278952.git.rgb@redhat.com>
-From:   Jones Desougi <jones.desougi+netfilter@gmail.com>
-Date:   Fri, 3 Jul 2020 14:40:57 +0200
-Message-ID: <CAGdUbJEwoxEFJZDUjF7ZwKurKNibPW86=s3yFSA6BBt-YsC=Nw@mail.gmail.com>
-Subject: Re: [PATCH ghak124 v3fix] audit: add gfp parameter to audit_log_nfcfg
-To:     Richard Guy Briggs <rgb@redhat.com>
-Cc:     Linux-Audit Mailing List <linux-audit@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netfilter-devel@vger.kernel.org, Paul Moore <paul@paul-moore.com>,
-        sgrubb@redhat.com, omosnace@redhat.com,
-        Florian Westphal <fw@strlen.de>, twoerner@redhat.com,
-        eparis@parisplace.org, tgraf@infradead.org,
-        dan.carpenter@oracle.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-03_06:2020-07-02,2020-07-03 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 bulkscore=0
+ clxscore=1011 priorityscore=1501 malwarescore=0 phishscore=0
+ suspectscore=0 cotscore=-2147483648 lowpriorityscore=0 mlxscore=0
+ impostorscore=0 mlxlogscore=999 adultscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2007030086
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Doesn't seem entirely consistent now either though. Two cases below.
+POWER9 onwards the support for the registers HID1, HID4, HID5 has been
+receded.
+Although mfspr on the above registers worked in Power9, In Power10
+simulator is unrecognized. Moving their assignment under the
+check for machines lower than Power9
 
-   /Jones
+Signed-off-by: Pratik Rajesh Sampat <psampat@linux.ibm.com>
+---
+ arch/powerpc/platforms/powernv/idle.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-On Sun, Jun 28, 2020 at 5:27 AM Richard Guy Briggs <rgb@redhat.com> wrote:
->
-> Fixed an inconsistent use of GFP flags in nft_obj_notify() that used
-> GFP_KERNEL when a GFP flag was passed in to that function.  Given this
-> allocated memory was then used in audit_log_nfcfg() it led to an audit
-> of all other GFP allocations in net/netfilter/nf_tables_api.c and a
-> modification of audit_log_nfcfg() to accept a GFP parameter.
->
-> Reported-by: Dan Carptenter <dan.carpenter@oracle.com>
-> Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
-> ---
-> Passes audit-testsuite.
->
->  include/linux/audit.h           |  8 ++++----
->  kernel/auditsc.c                |  4 ++--
->  net/bridge/netfilter/ebtables.c |  6 +++---
->  net/netfilter/nf_tables_api.c   | 33 +++++++++++++++++++++------------
->  net/netfilter/x_tables.c        |  5 +++--
->  5 files changed, 33 insertions(+), 23 deletions(-)
->
-...
-> diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-> index 164700273947..f7ff91479647 100644
-> --- a/net/netfilter/nf_tables_api.c
-> +++ b/net/netfilter/nf_tables_api.c
-...
-> @@ -6071,13 +6077,14 @@ static int nf_tables_getobj(struct net *net, struct sock *nlsk,
->                 reset = true;
->
->         if (reset) {
-> -               char *buf = kasprintf(GFP_KERNEL, "%s:%llu;?:0",
-> +               char *buf = kasprintf(GFP_ATOMIC, "%s:%llu;?:0",
->                                       table->name, table->handle);
->
->                 audit_log_nfcfg(buf,
->                                 family,
->                                 obj->handle,
-> -                               AUDIT_NFT_OP_OBJ_RESET);
-> +                               AUDIT_NFT_OP_OBJ_RESET,
-> +                               GFP_KERNEL);
->                 kfree(buf);
->         }
->
+diff --git a/arch/powerpc/platforms/powernv/idle.c b/arch/powerpc/platforms/powernv/idle.c
+index 2dd467383a88..19d94d021357 100644
+--- a/arch/powerpc/platforms/powernv/idle.c
++++ b/arch/powerpc/platforms/powernv/idle.c
+@@ -73,9 +73,6 @@ static int pnv_save_sprs_for_deep_states(void)
+ 	 */
+ 	uint64_t lpcr_val	= mfspr(SPRN_LPCR);
+ 	uint64_t hid0_val	= mfspr(SPRN_HID0);
+-	uint64_t hid1_val	= mfspr(SPRN_HID1);
+-	uint64_t hid4_val	= mfspr(SPRN_HID4);
+-	uint64_t hid5_val	= mfspr(SPRN_HID5);
+ 	uint64_t hmeer_val	= mfspr(SPRN_HMEER);
+ 	uint64_t msr_val = MSR_IDLE;
+ 	uint64_t psscr_val = pnv_deepest_stop_psscr_val;
+@@ -117,6 +114,9 @@ static int pnv_save_sprs_for_deep_states(void)
+ 
+ 			/* Only p8 needs to set extra HID regiters */
+ 			if (!cpu_has_feature(CPU_FTR_ARCH_300)) {
++				uint64_t hid1_val = mfspr(SPRN_HID1);
++				uint64_t hid4_val = mfspr(SPRN_HID4);
++				uint64_t hid5_val = mfspr(SPRN_HID5);
+ 
+ 				rc = opal_slw_set_reg(pir, SPRN_HID1, hid1_val);
+ 				if (rc != 0)
+-- 
+2.25.4
 
-Replaces one GFP_KERNEL (with GFP_ATOMIC) but also adds a new one in
-the following statement.
-Is that intentional?
-
-> @@ -6156,7 +6163,7 @@ void nft_obj_notify(struct net *net, const struct nft_table *table,
->  {
->         struct sk_buff *skb;
->         int err;
-> -       char *buf = kasprintf(GFP_KERNEL, "%s:%llu;?:0",
-> +       char *buf = kasprintf(gfp, "%s:%llu;?:0",
->                               table->name, table->handle);
->
->         audit_log_nfcfg(buf,
-> @@ -6164,7 +6171,8 @@ void nft_obj_notify(struct net *net, const struct nft_table *table,
->                         obj->handle,
->                         event == NFT_MSG_NEWOBJ ?
->                                 AUDIT_NFT_OP_OBJ_REGISTER :
-> -                               AUDIT_NFT_OP_OBJ_UNREGISTER);
-> +                               AUDIT_NFT_OP_OBJ_UNREGISTER,
-> +                       GFP_KERNEL);
->         kfree(buf);
->
->         if (!report &&
-
-It would seem these two hunks form a similar discrepancy.
-
-...
-
-> --
-> 1.8.3.1
->
