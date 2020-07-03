@@ -2,124 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 667AD213439
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 08:34:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05E6521343D
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 08:35:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726257AbgGCGel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 02:34:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725764AbgGCGek (ORCPT
+        id S1726288AbgGCGfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 02:35:52 -0400
+Received: from mail-ej1-f47.google.com ([209.85.218.47]:39578 "EHLO
+        mail-ej1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725764AbgGCGfw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 02:34:40 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6666AC08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 23:34:40 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id g13so23172976qtv.8
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 23:34:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=u3qUOwsLsxiI6rED0QEYL5qR8wzRy0UEcKjWHFa8UvI=;
-        b=j179t90FJYaHQ8HrtSupONgPsJoyTJ/0hYShVlyk5GgeN4gfTvp0PrqUpIGefV6oDd
-         RmvOZIjjs5Kmax3U05y02v290UF7xB3UhruS01xuLJMEDTMomlsgJo3epZsHwwf8JBEG
-         W535mzODdv7E0+RPlUcNGU6VnY5Wkl0xgbZ6/aTtP5LagZt4veLnACzgg3gJZnxHlPYM
-         66BLAfjbv68vHAazNY+f10Q7sbsiscMIAtGIvy4VIXJGDJ3wMT/EvajAdXMeFZeYP6FE
-         yl0dvptsEmOYuGHG/nX3SRE/wW4aPIlSJ3OTAeabW1hVvrjGKwnvXRVfx+Z+LOLjbo4h
-         ZUJw==
+        Fri, 3 Jul 2020 02:35:52 -0400
+Received: by mail-ej1-f47.google.com with SMTP id w6so33016532ejq.6;
+        Thu, 02 Jul 2020 23:35:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=u3qUOwsLsxiI6rED0QEYL5qR8wzRy0UEcKjWHFa8UvI=;
-        b=pNl36TJN5fYdYwklPXc96OdojPINJUZC1/59kxVaAvKVekeSOtl0pk0EJH4BlvCYov
-         /21ZsQPGEmiE3mjHAA94e8lvBb2yrJn5HR2S0Ud/tisOXPpGSlhz3B84f/zrTwDLpU20
-         T/NFafld417jPpz0O5soE27eXeIB7mJvtNwtZd/YQyi+9gH/1hOGoBzHAZHD1Am36gqm
-         E/UQTY0LGwSmolNLvN1RwYyL1XmRqa7kJCWwCFdGiJ2leGsHziFi96uVC5NO4H08WYM1
-         Nm92SUIKUgpao2tjlGw364lvRz5n8S8e1oeQactLR5OaDAqWJj4w4XrcVPnC+KR4NbEa
-         u11g==
-X-Gm-Message-State: AOAM530sHbYBgL49tZ/OrM/1214glsiRXDYQGbyF/FIy2MMX7VYRffEm
-        /nhNCRkPAGkPb8OVC1ZhW/h566n8t269hTHRRRg=
-X-Google-Smtp-Source: ABdhPJxp99OgQObzPF0as7boQdLWlTQnTQqoQluZE28e6gu3A2d44LTgDPnGhHIijm2s/ty9DSHmsis/xk6UUCzE/C8=
-X-Received: by 2002:ac8:18b2:: with SMTP id s47mr21636760qtj.114.1593758079511;
- Thu, 02 Jul 2020 23:34:39 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NojDtPHgyU04BZgerYd3+yccFVPzYnZ7F9ygI7w4DNc=;
+        b=VtRda+Ecd2HlpxEH1hLDOocC4PXPYGM0mm9nskZDOVQ8+TJ20ky9Z68YXdPeZwtvqX
+         b4sQO1NCOPaMUqrXGL+Xk//ZEupQsBXOy7SmFYhQ/XsghIvTsz9c4E8hI0WpS1AfawbT
+         gYKqJwgb5OiVchrOm1YljNi9ThiF+WX7v3+lEbjuMvcsr6OGATr6ElFRGMwXw/uNOiT0
+         YeCF+1gYXok1pwtz3T+SzsmsevqQWQz+jSvqQlW8VkF09EZDOm0k7q3Qekjjtv68vR1X
+         nZKKP8XEfRkNlcUwS0flOhPEcqoW9cavpOBlv51yTeZmuvIlANeJd97RnBhmGkuB8Wh1
+         GMmg==
+X-Gm-Message-State: AOAM533h11ikhUboI0iUz4OWKWmQ7jKzNkyrypgwedQ6XUWDBR2pxouy
+        ajY2VcozHvKEVaCc+SSokBw=
+X-Google-Smtp-Source: ABdhPJwihp/EUddRgogAcW9jNPLdXKXMVfUNhqWuG6Q0n58p0Pz12bOw5FOZ3ev6WXaFzNeayEZexQ==
+X-Received: by 2002:a17:906:71d4:: with SMTP id i20mr32649859ejk.533.1593758150250;
+        Thu, 02 Jul 2020 23:35:50 -0700 (PDT)
+Received: from localhost (ip-37-188-168-3.eurotel.cz. [37.188.168.3])
+        by smtp.gmail.com with ESMTPSA id b11sm11620695edw.76.2020.07.02.23.35.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Jul 2020 23:35:49 -0700 (PDT)
+Date:   Fri, 3 Jul 2020 08:35:48 +0200
+From:   Michal Hocko <mhocko@kernel.org>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        David Rientjes <rientjes@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [RFC PROPOSAL] memcg: per-memcg user space reclaim interface
+Message-ID: <20200703063548.GM18446@dhcp22.suse.cz>
+References: <20200702152222.2630760-1-shakeelb@google.com>
 MIME-Version: 1.0
-References: <20200703061350.94474-1-songmuchun@bytedance.com>
-In-Reply-To: <20200703061350.94474-1-songmuchun@bytedance.com>
-From:   Pekka Enberg <penberg@gmail.com>
-Date:   Fri, 3 Jul 2020 09:34:24 +0300
-Message-ID: <CAOJsxLGc-o1Os7HAoQmhd1DNxGWVrfbw2R8NroTQg0wHNyWX1w@mail.gmail.com>
-Subject: Re: [PATCH RESEND] mm/page_alloc: skip setting nodemask when we are
- in interrupt
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, david@redhat.com,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200702152222.2630760-1-shakeelb@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 3, 2020 at 9:14 AM Muchun Song <songmuchun@bytedance.com> wrote:
->
-> When we are in the interrupt context, it is irrelevant to the
-> current task context. If we use current task's mems_allowed, we
-> can fair to alloc pages in the fast path and fall back to slow
-> path memory allocation when the current node(which is the current
-> task mems_allowed) does not have enough memory to allocate. In
-> this case, it slows down the memory allocation speed of interrupt
-> context. So we can skip setting the nodemask to allow any node
-> to allocate memory, so that fast path allocation can success.
->
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> ---
->  mm/page_alloc.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
->
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index b48336e20bdcd..a6c36cd557d1d 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -4726,10 +4726,12 @@ static inline bool prepare_alloc_pages(gfp_t gfp_mask, unsigned int order,
->
->         if (cpusets_enabled()) {
->                 *alloc_mask |= __GFP_HARDWALL;
-> -               if (!ac->nodemask)
-> -                       ac->nodemask = &cpuset_current_mems_allowed;
-> -               else
-> +               if (!ac->nodemask) {
-> +                       if (!in_interrupt())
-> +                               ac->nodemask = &cpuset_current_mems_allowed;
+On Thu 02-07-20 08:22:22, Shakeel Butt wrote:
+[...]
+> Interface options:
+> ------------------
+> 
+> 1) memcg interface e.g. 'echo 10M > memory.reclaim'
+> 
+> + simple
+> + can be extended to target specific type of memory (anon, file, kmem).
+> - most probably restricted to cgroup v2.
+> 
+> 2) fadvise(PAGEOUT) on cgroup_dir_fd
+> 
+> + more general and applicable to other FSes (actually we are using
+> something similar for tmpfs).
+> + can be extended in future to just age the LRUs instead of reclaim or
+> some new use cases.
 
-If !ac->nodemask and in_interrupt() the ALLOC_CPUSET flag is not set,
-which by-passes the __cpuset_zone_allowed() check for allocations.
-This works fine because in the case if in_interrupt() the function
-allows allocation on any zone/node.
-
-> +               } else {
->                         *alloc_flags |= ALLOC_CPUSET;
-> +               }
->         }
-
-However, if you write the condition as follows:
-
-        if (cpusets_enabled()) {
-                *alloc_mask |= __GFP_HARDWALL;
-                if (!in_interrupt() && !ac->nodemask)
-                        ac->nodemask = &cpuset_current_mems_allowed;
-                else
-                        *alloc_flags |= ALLOC_CPUSET;
-        }
-
-then the code is future-proof in case of __cpuset_zone_allowed() is
-one day extended to support IRQ context too (it probably should
-eventually respect IRQ SMP affinity).
-
->
->         fs_reclaim_acquire(gfp_mask);
-> --
-> 2.11.0
->
->
+Could you explain why memory.high as an interface to trigger pro-active
+memory reclaim is not sufficient. Also memory.low limit to protect
+latency sensitve workloads?
+-- 
+Michal Hocko
+SUSE Labs
