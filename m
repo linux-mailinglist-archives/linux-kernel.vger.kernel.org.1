@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D7BD213DE4
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 19:03:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3399213DED
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 19:04:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726767AbgGCRDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 13:03:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60824 "EHLO mail.kernel.org"
+        id S1726863AbgGCRDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 13:03:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60858 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726148AbgGCRDC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 13:03:02 -0400
+        id S1726747AbgGCRDD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Jul 2020 13:03:03 -0400
 Received: from localhost (c-67-180-165-146.hsd1.ca.comcast.net [67.180.165.146])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2E6E9208E4;
+        by mail.kernel.org (Postfix) with ESMTPSA id DBE5A2088E;
         Fri,  3 Jul 2020 17:03:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593795782;
-        bh=VtVahXR24bIQ7uZKPTBuNdjH+qDT1E7QMPYElGUQZMk=;
+        s=default; t=1593795783;
+        bh=0k4H7Q91aKB86OEDNFKolR/4CT2CooJBHkKZWNLbmzs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jkXxwqjFMdCLzXd+2SYBs7TngFpP2CmsJ0N15TpRaVpAXyx37y36pzLGo/NlHUhtV
-         A/6SzgfAbFnAiv/hMjayfwaw7RwPjeMoptxhu0gjp1z0RKRi7E1TEn9veXi6ppILQ2
-         19Rmaj3jrboNkq+yyWqpEL+Pd51Cl+4MSIssZMRE=
+        b=hu4PR9XikPauhuDQ+wvF9gKVgvvvIMe6HEQ01uhCDIlYo7v8//dFQA0h2Oop1bZLm
+         /8DsAjZxwObD1qIM8k3K8a8ElZE3qQSTR/1/yZ4KbsVf3kEXpS4aHVVWDdYy+rbHlx
+         KKaII9h09eOpNfzQCihfVsYcgqw0qw5JJISdOj8U=
 From:   Andy Lutomirski <luto@kernel.org>
 To:     x86@kernel.org
 Cc:     Andrew Cooper <andrew.cooper3@citrix.com>,
         Juergen Gross <jgross@suse.com>,
         LKML <linux-kernel@vger.kernel.org>,
         Andy Lutomirski <luto@kernel.org>
-Subject: [PATCH entry v2 1/6] x86/entry/compat: Clear RAX high bits on Xen PV SYSENTER
-Date:   Fri,  3 Jul 2020 10:02:53 -0700
-Message-Id: <9d33b3f3216dcab008070f1c28b6091ae7199969.1593795633.git.luto@kernel.org>
+Subject: [PATCH entry v2 2/6] x86/entry, selftests: Further improve user entry sanity checks
+Date:   Fri,  3 Jul 2020 10:02:54 -0700
+Message-Id: <881de09e786ab93ce56ee4a2437ba2c308afe7a9.1593795633.git.luto@kernel.org>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <cover.1593795633.git.luto@kernel.org>
 References: <cover.1593795633.git.luto@kernel.org>
@@ -42,55 +42,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move the cleari the high bits of RAX after Xen PV joins the SYSENTER
-path so that Xen PV doesn't skip it.
+Chasing down a Xen bug caused me to realize that the new entry sanity
+checks are still fairly weak.  Add some more checks.
 
-Arguably we should delete this code instead, but that would belong
-in the merge window.
-
-Fixes: ffae641f5747 ("x86/entry/64/compat: Fix Xen PV SYSENTER frame setup")
 Signed-off-by: Andy Lutomirski <luto@kernel.org>
 ---
- arch/x86/entry/entry_64_compat.S | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+ arch/x86/entry/common.c                  | 19 +++++++++++++++++++
+ tools/testing/selftests/x86/syscall_nt.c | 11 +++++++++++
+ 2 files changed, 30 insertions(+)
 
-diff --git a/arch/x86/entry/entry_64_compat.S b/arch/x86/entry/entry_64_compat.S
-index 381a6de7de9c..541fdaf64045 100644
---- a/arch/x86/entry/entry_64_compat.S
-+++ b/arch/x86/entry/entry_64_compat.S
-@@ -57,15 +57,6 @@ SYM_CODE_START(entry_SYSENTER_compat)
- 
- 	movq	PER_CPU_VAR(cpu_current_top_of_stack), %rsp
- 
--	/*
--	 * User tracing code (ptrace or signal handlers) might assume that
--	 * the saved RAX contains a 32-bit number when we're invoking a 32-bit
--	 * syscall.  Just in case the high bits are nonzero, zero-extend
--	 * the syscall number.  (This could almost certainly be deleted
--	 * with no ill effects.)
--	 */
--	movl	%eax, %eax
--
- 	/* Construct struct pt_regs on stack */
- 	pushq	$__USER32_DS		/* pt_regs->ss */
- 	pushq	$0			/* pt_regs->sp = 0 (placeholder) */
-@@ -80,6 +71,16 @@ SYM_CODE_START(entry_SYSENTER_compat)
- 	pushq	$__USER32_CS		/* pt_regs->cs */
- 	pushq	$0			/* pt_regs->ip = 0 (placeholder) */
- SYM_INNER_LABEL(entry_SYSENTER_compat_after_hwframe, SYM_L_GLOBAL)
+diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
+index f392a8bcd1c3..e83b3f14897c 100644
+--- a/arch/x86/entry/common.c
++++ b/arch/x86/entry/common.c
+@@ -49,6 +49,23 @@
+ static void check_user_regs(struct pt_regs *regs)
+ {
+ 	if (IS_ENABLED(CONFIG_DEBUG_ENTRY)) {
++		/*
++		 * Make sure that the entry code gave us a sensible EFLAGS
++		 * register.  Native because we want to check the actual CPU
++		 * state, not the interrupt state as imagined by Xen.
++		 */
++		unsigned long flags = native_save_fl();
++		WARN_ON_ONCE(flags & (X86_EFLAGS_AC | X86_EFLAGS_DF |
++				      X86_EFLAGS_NT));
 +
++		/* We think we came from user mode. Make sure pt_regs agrees. */
++		WARN_ON_ONCE(!user_mode(regs));
++
++		/*
++		 * All entries from user mode (except #DF) should be on the
++		 * normal thread stack and should have user pt_regs in the
++		 * correct location.
++		 */
+ 		WARN_ON_ONCE(!on_thread_stack());
+ 		WARN_ON_ONCE(regs != task_pt_regs(current));
+ 	}
+@@ -577,6 +594,7 @@ SYSCALL_DEFINE0(ni_syscall)
+ bool noinstr idtentry_enter_cond_rcu(struct pt_regs *regs)
+ {
+ 	if (user_mode(regs)) {
++		check_user_regs(regs);
+ 		enter_from_user_mode();
+ 		return false;
+ 	}
+@@ -710,6 +728,7 @@ void noinstr idtentry_exit_cond_rcu(struct pt_regs *regs, bool rcu_exit)
+  */
+ void noinstr idtentry_enter_user(struct pt_regs *regs)
+ {
++	check_user_regs(regs);
+ 	enter_from_user_mode();
+ }
+ 
+diff --git a/tools/testing/selftests/x86/syscall_nt.c b/tools/testing/selftests/x86/syscall_nt.c
+index 970e5e14d96d..a108b80dd082 100644
+--- a/tools/testing/selftests/x86/syscall_nt.c
++++ b/tools/testing/selftests/x86/syscall_nt.c
+@@ -81,5 +81,16 @@ int main(void)
+ 	printf("[RUN]\tSet NT|AC|TF and issue a syscall\n");
+ 	do_it(X86_EFLAGS_NT | X86_EFLAGS_AC | X86_EFLAGS_TF);
+ 
 +	/*
-+	 * User tracing code (ptrace or signal handlers) might assume that
-+	 * the saved RAX contains a 32-bit number when we're invoking a 32-bit
-+	 * syscall.  Just in case the high bits are nonzero, zero-extend
-+	 * the syscall number.  (This could almost certainly be deleted
-+	 * with no ill effects.)
++	 * Now try DF.  This is evil and it's plausible that we will crash
++	 * glibc, but glibc would have to do something rather surprising
++	 * for this to happen.
 +	 */
-+	movl	%eax, %eax
++	printf("[RUN]\tSet DF and issue a syscall\n");
++	do_it(X86_EFLAGS_DF);
 +
- 	pushq	%rax			/* pt_regs->orig_ax */
- 	pushq	%rdi			/* pt_regs->di */
- 	pushq	%rsi			/* pt_regs->si */
++	printf("[RUN]\tSet TF|DF and issue a syscall\n");
++	do_it(X86_EFLAGS_TF | X86_EFLAGS_DF);
++
+ 	return nerrs == 0 ? 0 : 1;
+ }
 -- 
 2.25.4
 
