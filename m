@@ -2,102 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7423213564
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 09:46:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CD7E213554
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 09:44:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726676AbgGCHqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 03:46:42 -0400
-Received: from esa2.microchip.iphmx.com ([68.232.149.84]:51125 "EHLO
-        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725779AbgGCHqm (ORCPT
+        id S1726594AbgGCHoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 03:44:17 -0400
+Received: from smtprelay0126.hostedemail.com ([216.40.44.126]:49652 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726082AbgGCHoR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 03:46:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1593762401; x=1625298401;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=Qe3AsKz/1NWtVp1Lygpm/UXyvvks8ItOId5LZbRDzSE=;
-  b=yyklb0++eQ5MbSXtAogkfn1kylatS8DUgSxNSgDV0yHMGg8pdw84mb4t
-   hcpei09jp/DvHab2M+W1BNssXTnHjfOWQXqPcCtyL+Q1ffF3qEyX6s1t1
-   9DocxPzIeS2pXSNU9EiEM2pi7xlwxUEn8CLYwH8LyumUKPOXyfeAL1FBw
-   4xUiIttu3duCo7XbHBA5adEkw3WjaKMk7xhnzWGoEdhLYaMp4TdLuWxAW
-   eInrrgL6DbRuhKcmP6qZfYELuiihSdr/iSfNr67t3cLZHuWxI4wUP/Da7
-   8M4yN9BD/kTmZsNIEa3s2q0X0tU18zGptAmfU111dQ5FmQ0wrC6PWViHi
-   w==;
-IronPort-SDR: AfTzNOcXbRjSM3KS+KI3U/gtKHXSrMqBkFwBiCYJNjQMzDG0zc1q7RvSLo6ksFiDlZnyMJvVAC
- 5ouKWWhV+IbsIlil6Zu4QdH8vX6OW2GXIUE7saiPq75jeSHXTUlTyvAUvnuqjFnvP7578tYV85
- RNV1vgd5Fib+L0KA1hzxgBS6lOtAKhaJkmrjEaZU93MZsfAnjrewxIna1tCi4Vswi4jPhI3902
- BNAYFHeJsKiUcQJokCf/WGfDy9b10yRUJ3i92kgOh+gxh3oasQHhV82U2QDy9e2iiS/mOrYjOD
- LWw=
-X-IronPort-AV: E=Sophos;i="5.75,307,1589266800"; 
-   d="scan'208";a="80602013"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 03 Jul 2020 00:46:41 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 3 Jul 2020 00:46:39 -0700
-Received: from ROB-ULT-M18282.microchip.com (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Fri, 3 Jul 2020 00:46:14 -0700
-From:   Eugen Hristev <eugen.hristev@microchip.com>
-To:     <mchehab@kernel.org>, <hverkuil@xs4all.nl>, <robh+dt@kernel.org>,
-        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-CC:     Eugen Hristev <eugen.hristev@microchip.com>
-Subject: [PATCH v2 0/4] media: introduce microchip csi2dc driver
-Date:   Fri, 3 Jul 2020 10:44:12 +0300
-Message-ID: <20200703074416.55272-1-eugen.hristev@microchip.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 3 Jul 2020 03:44:17 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 01971182CF665;
+        Fri,  3 Jul 2020 07:44:16 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2736:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3872:3873:3874:4321:5007:10004:10400:10848:11232:11658:11914:12297:12740:12760:12895:13069:13255:13311:13357:13439:14096:14097:14181:14659:14721:21080:21212:21324:21627:21740:21990:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: peace82_23082f326e90
+X-Filterd-Recvd-Size: 2150
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf20.hostedemail.com (Postfix) with ESMTPA;
+        Fri,  3 Jul 2020 07:44:13 +0000 (UTC)
+Message-ID: <d7c902f9eecffc51f3a5761fa343bedad89dff7e.camel@perches.com>
+Subject: Re: [PATCH 16/23] seq_file: switch over direct seq_read method
+ calls to seq_read_iter
+From:   Joe Perches <joe@perches.com>
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Christoph Hellwig <hch@lst.de>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Date:   Fri, 03 Jul 2020 00:44:12 -0700
+In-Reply-To: <CANiq72=8facdt7HBtoUZiJW5zfki-gYYESJzxjXf7wK7dYLm1Q@mail.gmail.com>
+References: <20200701200951.3603160-1-hch@lst.de>
+         <20200701200951.3603160-17-hch@lst.de>
+         <CANiq72=CaKKzXSayH9bRpzMkU2zyHGLA4a-XqTH--_mpTvO7ZQ@mail.gmail.com>
+         <20200702135054.GA29240@lst.de>
+         <CANiq72=8facdt7HBtoUZiJW5zfki-gYYESJzxjXf7wK7dYLm1Q@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.3-0ubuntu1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, 2020-07-03 at 07:56 +0200, Miguel Ojeda wrote:
+> On Thu, Jul 2, 2020 at 3:50 PM Christoph Hellwig <hch@lst.de> wrote:
+> > Do you have a suggestion for an automated replacement which does?
+> > I'll happily switch over to that.
+> 
+> I guess I'd simply find the unique set of cases that occur and create
+> a replacement for each manually. A handful of them or so may already
+> cover the majority of cases. CC'ing Joe since he deals with this sort
+> of stuff all the time.
 
-This series adds support for the Microchip csi2dc csi-2 demux controller.
+I do that with a diff and emacs script.
 
-I was not fully sure where is the best place for such a helper chip, thus
-I added the driver in a separate 'misc' menu under the media menu.
+And I'd generally not bother with 80 column rewrapping
+here as it both makes a diff harder for not much value and
+it's only a few characters added to a few lines that might
+now exceed 80 columns.
 
-There are references in the binding driver to the Synopsys IDI interface,
-which is not yet in kernel mainline, as per the patch series at [1].
-
-As this driver is still new, it still can get plenty of improvement, so,
-waiting for feedback.
-
-Thanks everyone for reviewing !
-
-Changes in v2:
-- fixed warnings for binding yaml check
-
-[1] https://lwn.net/Articles/790917/
-
-Eugen Hristev (4):
-  dt-bindings: media: csi2dc: add bindings for microchip csi2dc
-  media: misc: introduce miscellaneous menu for helper chips
-  media: misc: introduce microchip_csi2dc driver
-  MAINTAINERS: add microchip csi2dc
-
- .../bindings/media/microchip,csi2dc.yaml      | 185 +++++
- MAINTAINERS                                   |   7 +
- drivers/media/Kconfig                         |   1 +
- drivers/media/Makefile                        |   2 +-
- drivers/media/misc/Kconfig                    |  22 +
- drivers/media/misc/Makefile                   |   2 +
- drivers/media/misc/microchip_csi2dc.c         | 705 ++++++++++++++++++
- 7 files changed, 923 insertions(+), 1 deletion(-)
- create mode 100644 Documentation/devicetree/bindings/media/microchip,csi2dc.yaml
- create mode 100644 drivers/media/misc/Kconfig
- create mode 100644 drivers/media/misc/Makefile
- create mode 100644 drivers/media/misc/microchip_csi2dc.c
-
--- 
-2.25.1
+I presume that clang-format would work well enough too.
 
