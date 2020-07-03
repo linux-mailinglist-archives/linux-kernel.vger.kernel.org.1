@@ -2,79 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6354213538
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 09:40:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E95F21353C
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 09:41:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726272AbgGCHkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 03:40:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60476 "EHLO mail.kernel.org"
+        id S1726297AbgGCHlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 03:41:12 -0400
+Received: from mga18.intel.com ([134.134.136.126]:1900 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725891AbgGCHkV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 03:40:21 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 92A03206B6;
-        Fri,  3 Jul 2020 07:40:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593762021;
-        bh=93w9+i+IaO6NzhJCK0/eWazfc8scMFK/UwVaQVfiLvQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YIMkNTFqhu1IwD8Nn5tAIY3P4/t8VD8TT9yz3A69VrbVljqzvH7r652mcJzxBOmVF
-         KwDJ1OJxxJ1zH+zsIpnKVmYhMDJsPBra0tKqq3zlJdvbgD6on2GPfJGBwEpsCYyFr1
-         c1xiHB0Ly+4Em+v6gZ1mClkcH/jpRiABfQjItrFo=
-Date:   Fri, 3 Jul 2020 09:40:25 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ingo Molnar <mingo@redhat.com>,
+        id S1725786AbgGCHlL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Jul 2020 03:41:11 -0400
+IronPort-SDR: EnZ/DYdGQihTUnMLtADm/LoiibOzS82zVObqhc9a3EouVqfJ/AtfieUAZOBxLNuIB61uzNLb0S
+ ZuB3bZWvm8ow==
+X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="134568072"
+X-IronPort-AV: E=Sophos;i="5.75,307,1589266800"; 
+   d="scan'208";a="134568072"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jul 2020 00:41:10 -0700
+IronPort-SDR: MDyv9VQ2IIy6XBdNtztElGXRi80rdNI7mDcStk3vWG7fiPpU3SW3WVDgArsSftlQVTCZNFBXbi
+ azll2LPcV0iw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,307,1589266800"; 
+   d="scan'208";a="387557133"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga001.fm.intel.com with ESMTP; 03 Jul 2020 00:41:10 -0700
+Received: from [10.249.231.67] (abudanko-mobl.ccr.corp.intel.com [10.249.231.67])
+        by linux.intel.com (Postfix) with ESMTP id 1CCD2580784;
+        Fri,  3 Jul 2020 00:41:07 -0700 (PDT)
+Subject: [PATCH v9 01/15] tools/libperf: avoid fds moving by fdarray__filter()
+From:   Alexey Budankov <alexey.budankov@linux.intel.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>
+Cc:     Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Subject: Re: [FOR-STABLE-3.9+] sched/rt: Show the 'sched_rr_timeslice'
- SCHED_RR timeslice tuning knob in milliseconds
-Message-ID: <20200703074025.GA2390868@kroah.com>
-References: <ffdfb849a11b9cd66e0aded2161869e36aec7fc0.1593757471.git.viresh.kumar@linaro.org>
+        Ingo Molnar <mingo@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <a4d5db4a-f25c-38dc-1c41-321a886cb122@linux.intel.com>
+Organization: Intel Corp.
+Message-ID: <11f89bd4-ddec-d625-7740-2c3dd1f59b23@linux.intel.com>
+Date:   Fri, 3 Jul 2020 10:41:07 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ffdfb849a11b9cd66e0aded2161869e36aec7fc0.1593757471.git.viresh.kumar@linaro.org>
+In-Reply-To: <a4d5db4a-f25c-38dc-1c41-321a886cb122@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 03, 2020 at 12:54:04PM +0530, Viresh Kumar wrote:
-> From: Shile Zhang <shile.zhang@nokia.com>
-> 
-> We added the 'sched_rr_timeslice_ms' SCHED_RR tuning knob in this commit:
-> 
->   ce0dbbbb30ae ("sched/rt: Add a tuning knob to allow changing SCHED_RR timeslice")
-> 
-> ... which name suggests to users that it's in milliseconds, while in reality
-> it's being set in milliseconds but the result is shown in jiffies.
-> 
-> This is obviously confusing when HZ is not 1000, it makes it appear like the
-> value set failed, such as HZ=100:
-> 
->   root# echo 100 > /proc/sys/kernel/sched_rr_timeslice_ms
->   root# cat /proc/sys/kernel/sched_rr_timeslice_ms
->   10
-> 
-> Fix this to be milliseconds all around.
-> 
-> Cc: <stable@vger.kernel.org> # v3.9+
-> Signed-off-by: Shile Zhang <shile.zhang@nokia.com>
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Cc: Linus Torvalds <torvalds@linux-foundation.org>
-> Cc: Mike Galbraith <efault@gmx.de>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Link: http://lkml.kernel.org/r/1485612049-20923-1-git-send-email-shile.zhang@nokia.com
-> Signed-off-by: Ingo Molnar <mingo@kernel.org>
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 
-What is the git commit id of this patch in Linus's tree?
+Avoid fds moving by fdarray__filter() so fds indices returned
+by fdarray__add() can be used for access and processing of
+objects at struct pollfd *entries.
 
-thanks,
+Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
+---
+ tools/lib/api/fd/array.c   | 11 +++++------
+ tools/perf/tests/fdarray.c | 20 ++------------------
+ 2 files changed, 7 insertions(+), 24 deletions(-)
 
-greg k-h
+diff --git a/tools/lib/api/fd/array.c b/tools/lib/api/fd/array.c
+index 58d44d5eee31..89f9a2193c2d 100644
+--- a/tools/lib/api/fd/array.c
++++ b/tools/lib/api/fd/array.c
+@@ -93,22 +93,21 @@ int fdarray__filter(struct fdarray *fda, short revents,
+ 		return 0;
+ 
+ 	for (fd = 0; fd < fda->nr; ++fd) {
++		if (!fda->entries[fd].events)
++			continue;
++
+ 		if (fda->entries[fd].revents & revents) {
+ 			if (entry_destructor)
+ 				entry_destructor(fda, fd, arg);
+ 
++			fda->entries[fd].revents = fda->entries[fd].events = 0;
+ 			continue;
+ 		}
+ 
+-		if (fd != nr) {
+-			fda->entries[nr] = fda->entries[fd];
+-			fda->priv[nr]	 = fda->priv[fd];
+-		}
+-
+ 		++nr;
+ 	}
+ 
+-	return fda->nr = nr;
++	return nr;
+ }
+ 
+ int fdarray__poll(struct fdarray *fda, int timeout)
+diff --git a/tools/perf/tests/fdarray.c b/tools/perf/tests/fdarray.c
+index c7c81c4a5b2b..d0c8a05aab2f 100644
+--- a/tools/perf/tests/fdarray.c
++++ b/tools/perf/tests/fdarray.c
+@@ -12,6 +12,7 @@ static void fdarray__init_revents(struct fdarray *fda, short revents)
+ 
+ 	for (fd = 0; fd < fda->nr; ++fd) {
+ 		fda->entries[fd].fd	 = fda->nr - fd;
++		fda->entries[fd].events  = revents;
+ 		fda->entries[fd].revents = revents;
+ 	}
+ }
+@@ -29,7 +30,7 @@ static int fdarray__fprintf_prefix(struct fdarray *fda, const char *prefix, FILE
+ 
+ int test__fdarray__filter(struct test *test __maybe_unused, int subtest __maybe_unused)
+ {
+-	int nr_fds, expected_fd[2], fd, err = TEST_FAIL;
++	int nr_fds, err = TEST_FAIL;
+ 	struct fdarray *fda = fdarray__new(5, 5);
+ 
+ 	if (fda == NULL) {
+@@ -55,7 +56,6 @@ int test__fdarray__filter(struct test *test __maybe_unused, int subtest __maybe_
+ 
+ 	fdarray__init_revents(fda, POLLHUP);
+ 	fda->entries[2].revents = POLLIN;
+-	expected_fd[0] = fda->entries[2].fd;
+ 
+ 	pr_debug("\nfiltering all but fda->entries[2]:");
+ 	fdarray__fprintf_prefix(fda, "before", stderr);
+@@ -66,17 +66,9 @@ int test__fdarray__filter(struct test *test __maybe_unused, int subtest __maybe_
+ 		goto out_delete;
+ 	}
+ 
+-	if (fda->entries[0].fd != expected_fd[0]) {
+-		pr_debug("\nfda->entries[0].fd=%d != %d\n",
+-			 fda->entries[0].fd, expected_fd[0]);
+-		goto out_delete;
+-	}
+-
+ 	fdarray__init_revents(fda, POLLHUP);
+ 	fda->entries[0].revents = POLLIN;
+-	expected_fd[0] = fda->entries[0].fd;
+ 	fda->entries[3].revents = POLLIN;
+-	expected_fd[1] = fda->entries[3].fd;
+ 
+ 	pr_debug("\nfiltering all but (fda->entries[0], fda->entries[3]):");
+ 	fdarray__fprintf_prefix(fda, "before", stderr);
+@@ -88,14 +80,6 @@ int test__fdarray__filter(struct test *test __maybe_unused, int subtest __maybe_
+ 		goto out_delete;
+ 	}
+ 
+-	for (fd = 0; fd < 2; ++fd) {
+-		if (fda->entries[fd].fd != expected_fd[fd]) {
+-			pr_debug("\nfda->entries[%d].fd=%d != %d\n", fd,
+-				 fda->entries[fd].fd, expected_fd[fd]);
+-			goto out_delete;
+-		}
+-	}
+-
+ 	pr_debug("\n");
+ 
+ 	err = 0;
+-- 
+2.24.1
+
+
