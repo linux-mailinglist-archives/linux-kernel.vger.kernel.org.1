@@ -2,98 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51278213D4C
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 18:08:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E42F7213D33
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 18:04:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726707AbgGCQI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 12:08:28 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:54824 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726236AbgGCQI1 (ORCPT
+        id S1726291AbgGCQEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 12:04:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726035AbgGCQEV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 12:08:27 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 063G53N1062422;
-        Fri, 3 Jul 2020 12:08:15 -0400
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3224f162f3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Jul 2020 12:08:15 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 063Fsr7e028220;
-        Fri, 3 Jul 2020 15:59:19 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma04fra.de.ibm.com with ESMTP id 31wwr83gt6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Jul 2020 15:59:19 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 063FxGSv55771310
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 3 Jul 2020 15:59:16 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 65FD04203F;
-        Fri,  3 Jul 2020 15:59:16 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 05CEA42042;
-        Fri,  3 Jul 2020 15:59:16 +0000 (GMT)
-Received: from pomme.tlslab.ibm.com (unknown [9.145.68.59])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri,  3 Jul 2020 15:59:15 +0000 (GMT)
-From:   Laurent Dufour <ldufour@linux.ibm.com>
-To:     linux-kernel@vger.kernel.org, kvm-ppc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, mpe@ellerman.id.au, paulus@samba.org
-Cc:     bharata@linux.ibm.com, bauerman@linux.ibm.com,
-        sukadev@linux.ibm.com, sathnaga@linux.vnet.ibm.com
-Subject: [PATCH 0/2] Rework secure memslot dropping
-Date:   Fri,  3 Jul 2020 17:59:12 +0200
-Message-Id: <20200703155914.40262-1-ldufour@linux.ibm.com>
-X-Mailer: git-send-email 2.27.0
+        Fri, 3 Jul 2020 12:04:21 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E7ADC061794;
+        Fri,  3 Jul 2020 09:04:21 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id a8so27005514edy.1;
+        Fri, 03 Jul 2020 09:04:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=X/kUxjEepXtiPp+5nrjETtriBB7vp52saJU42L3Q0Ek=;
+        b=NXTOyAOQ4GoupnlWcTajW/yNVeDnYrfHcp4BtrD8hDhof+ZevAzYJm3TxuAGYtrvIX
+         rXs7IFYPAFaAYkPSaGYVPBBgx6wUXpVU7Tf2ZSfU3HSQNZuIfqmfnlHdR+0A3wooDual
+         nww+ROO2dUWuJ2ti+hBkqVqEvZ4/hV0oUVxIg0fkD2qdrTqnRvFxJTPvp4CItzB1qJ33
+         WDZPCtPVHuafx+0x1a3uAUjL2W/abTWpcNOi1zYqkyWNo9TnJ1r8zsPjqs3p1NNLj7+e
+         BcY9+L3RcT/CUwC72p1r8dLp4ozaSzFkg9YeIqLuX1w6Y0NorfG4CmhwiljG3gO09s6G
+         0jOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=X/kUxjEepXtiPp+5nrjETtriBB7vp52saJU42L3Q0Ek=;
+        b=S/pCxciyGt6f046/XruNxusNMHnULFpGjhegCjy0jPaJ9dmigjcfKSc5Uf/kc0c4Jk
+         qDgD3jiC44Sb2UBW1LTjW4nv+OftaiQ7bA3qcZeJ95wmYNiSpB5X6UZ1I5sy3NA8B0hR
+         /ABq3mXWvYj8LK072KvIh8eEhUX4zQP3P17BRwel5qQJfcGafml+KhDkrZks9mpWyUyj
+         SOWpcgL99JNn04zV+DpvVxSTgTHqjOWGYwOzBfUdxoeNApNgfO1V51RIiUHJGogss3kW
+         CLaHG07UlltiaFtXdDUstJbNW+3p5P64VcTN3OKXO7WTQvqrrnERJm9FQlL+Q5Ezi6z+
+         osNg==
+X-Gm-Message-State: AOAM531To2qTPpiVcY6txR/Y1jd6hivmqAaBDUgLlMkSbNsaO1o5QFvW
+        4ZdxgCh0olP3zWd10o/S/t/0JJGAhLBQ8Pdb5dk=
+X-Google-Smtp-Source: ABdhPJwY+TDU+zLAlj3AXwzh91hebM+nK4d4Q98sJyCJl1eumLSurp18Wh0DJ0XCpOtgEb4A9pmtUBcHSW9aUnmJcXw=
+X-Received: by 2002:aa7:c656:: with SMTP id z22mr28236616edr.101.1593792259297;
+ Fri, 03 Jul 2020 09:04:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-03_13:2020-07-02,2020-07-03 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- clxscore=1015 mlxlogscore=409 suspectscore=0 phishscore=0 adultscore=0
- impostorscore=0 priorityscore=1501 mlxscore=0 malwarescore=0 spamscore=0
- cotscore=-2147483648 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2007030110
+References: <cover.1593344119.git.saiprakash.ranjan@codeaurora.org>
+ <449a6544b10f0035d191ac52283198343187c153.1593344120.git.saiprakash.ranjan@codeaurora.org>
+ <20200703133732.GD18953@willie-the-truck> <ecfda7ca80f6d7b4ff3d89b8758f4dc9@codeaurora.org>
+In-Reply-To: <ecfda7ca80f6d7b4ff3d89b8758f4dc9@codeaurora.org>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Fri, 3 Jul 2020 09:04:49 -0700
+Message-ID: <CAF6AEGsCROVTsi2R7_aUkmH9Luoc_guMR0w0KUJc2cEgpfj79w@mail.gmail.com>
+Subject: Re: [PATCHv3 7/7] drm/msm/a6xx: Add support for using system cache(LLC)
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sean Paul <sean@poorly.run>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Emil Velikov <emil.velikov@collabora.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "Kristian H . Kristensen" <hoegsberg@google.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When doing memory hotplug on a secure VM, the secure pages are not well
-cleaned from the secure device when dropping the memslot.  This silent
-error, is then preventing the SVM to reboot properly after the following
-sequence of commands are run in the Qemu monitor:
+On Fri, Jul 3, 2020 at 7:53 AM Sai Prakash Ranjan
+<saiprakash.ranjan@codeaurora.org> wrote:
+>
+> Hi Will,
+>
+> On 2020-07-03 19:07, Will Deacon wrote:
+> > On Mon, Jun 29, 2020 at 09:22:50PM +0530, Sai Prakash Ranjan wrote:
+> >> diff --git a/drivers/gpu/drm/msm/msm_iommu.c
+> >> b/drivers/gpu/drm/msm/msm_iommu.c
+> >> index f455c597f76d..bd1d58229cc2 100644
+> >> --- a/drivers/gpu/drm/msm/msm_iommu.c
+> >> +++ b/drivers/gpu/drm/msm/msm_iommu.c
+> >> @@ -218,6 +218,9 @@ static int msm_iommu_map(struct msm_mmu *mmu,
+> >> uint64_t iova,
+> >>              iova |= GENMASK_ULL(63, 49);
+> >>
+> >>
+> >> +    if (mmu->features & MMU_FEATURE_USE_SYSTEM_CACHE)
+> >> +            prot |= IOMMU_SYS_CACHE_ONLY;
+> >
+> > Given that I think this is the only user of IOMMU_SYS_CACHE_ONLY, then
+> > it
+> > looks like it should actually be a property on the domain because we
+> > never
+> > need to configure it on a per-mapping basis within a domain, and
+> > therefore
+> > it shouldn't be exposed by the IOMMU API as a prot flag.
+> >
+> > Do you agree?
+> >
+>
+> GPU being the only user is for now, but there are other clients which
+> can use this.
+> Plus how do we set the memory attributes if we do not expose this as
+> prot flag?
 
-device_add pc-dimm,id=dimm1,memdev=mem1
-device_del dimm1
-device_add pc-dimm,id=dimm1,memdev=mem1
+It does appear that the downstream kgsl driver sets this for basically
+all mappings.. well there is some conditional stuff around
+DOMAIN_ATTR_USE_LLC_NWA but it seems based on the property of the
+domain.  (Jordan may know more about what that is about.)  But looks
+like there are a lot of different paths into iommu_map in kgsl so I
+might have missed something.
 
-At reboot time, when the kernel is booting again and switching to the
-secure mode, the page_in is failing for the pages in the memslot because
-the cleanup was not done properly, because the memslot is flagged as
-invalid during the hot unplug and thus the page fault mechanism is not
-triggered.
+Assuming there isn't some case where we specifically don't want to use
+the system cache for some mapping, I think it could be a domain
+attribute that sets an io_pgtable_cfg::quirks flag
 
-To prevent that during the memslot dropping, instead of belonging on the
-page fault mechanism to trigger the page out of the secured pages, it seems
-simpler to directly call the function doing the page out. This way the
-state of the memslot is not interfering on the page out process.
-
-This series applies on top of the Ram's one titled:
-"PATCH v3 0/4] Migrate non-migrated pages of a SVM."
-https://lore.kernel.org/linuxppc-dev/1592606622-29884-1-git-send-email-linuxram@us.ibm.com/#r
-
-Laurent Dufour (2):
-  KVM: PPC: Book3S HV: move kvmppc_svm_page_out up
-  KVM: PPC: Book3S HV: rework secure mem slot dropping
-
- arch/powerpc/kvm/book3s_hv_uvmem.c | 220 +++++++++++++++++------------
- 1 file changed, 127 insertions(+), 93 deletions(-)
-
--- 
-2.27.0
-
+BR,
+-R
