@@ -2,107 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0061C2141FE
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 01:52:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E69F214200
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 01:55:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726639AbgGCXvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 19:51:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45022 "EHLO
+        id S1726765AbgGCXzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 19:55:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726188AbgGCXvk (ORCPT
+        with ESMTP id S1726188AbgGCXzo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 19:51:40 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA451C061794
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Jul 2020 16:51:39 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id o18so31487996eje.7
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Jul 2020 16:51:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=t0TLC5mt6zw20J38nO6UV1Kz+5E95WBtIXeRkoxQ4a0=;
-        b=kA5cN3BQQIDn+ta3F5MgSZopfc2+JCwPqrmwDWf/UVQK9pbylvFOzXJhKHczhXSS2z
-         +pTxiMwjDarIoMBE8p4V/DxJgAFpUwi2ZWkZgQkpSKxAIZlulsi9d37uawTHp617oLOL
-         VbpRt1LNDz2ARGkSwECYsnYNbASxRKqzc4vk/cnZACBxGf8NAxby02qPWbFbubjqtKgp
-         BwhEYgUUucCZrNa/P4BdYmgTRrnZuBl/kHi2d74vY6G5+MFBjk3lhZTi7rf2X+9h9QFU
-         o9QtvCN+YB4wifXbRFSh6QWUqDHJrBwoBqWNQc7UO6PeTFYfTCJqNLzrWgZsy6P7fsLZ
-         lh8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=t0TLC5mt6zw20J38nO6UV1Kz+5E95WBtIXeRkoxQ4a0=;
-        b=lN2pGIeo1eON1sRQeSCVrxUdLM/xSdGQ8kAg3FAie8Lec4xjTSuIBjXUNKCVpfR2ze
-         Tc4+f1OaES6+Q2duNYxUoPkiGC3jSng65Wk8SFsZyQLLkTxfqjoaL2jT88Gsx5OSnU9C
-         cYAEniquHsCETmLX6Xh1tK2I8Dxv8lM1WMFPKgOj3FjzQkOM45c5cFH+Zr4J7wX/njal
-         kOCPmGjRyUcx2P6YoBqYpGxObArw7vsqE0vPIlEJbxcFdkUzNFQpm+XLC9MhXGKV+aib
-         mrMlZ3BUCIUSW9VBiiYf8eJ2Wdkj7IAWOLsJ/SHs1bpQcSuKBLdC/6Qb07Yg08Fa17WP
-         /3/Q==
-X-Gm-Message-State: AOAM532awRagmeyeQyEMkHcF0Jm2DdFuU5T7XAxnijuPVCQ/BJqKO6Iw
-        vKdWTr2USJio6QbPw8XkC0eduOj6VYjqGU3yPnE=
-X-Google-Smtp-Source: ABdhPJyHJU/UIUiU96pE9gQ1bqvLKja6DuJFKgW0Urw8L4s3GWTLghTulAE9GuVj6gns4BygPbc5+Lp25wDPbfjMrnQ=
-X-Received: by 2002:a17:906:538a:: with SMTP id g10mr36318626ejo.354.1593820298368;
- Fri, 03 Jul 2020 16:51:38 -0700 (PDT)
+        Fri, 3 Jul 2020 19:55:44 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21D3DC061794;
+        Fri,  3 Jul 2020 16:55:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=jfzvkgWh97c/J/HuSFPbL01MXXhAVUclVv/9CBF7KcU=; b=aVjWqI2JTeUPiLa4tf5DxDCe8/
+        0io6O6niuWTsh+5xMaMcq3k1WZVpehcayS8+LY9J4Hu7oynubrYMSTf0Zj8C2NkvbuYjzoIjwD21a
+        rt/vYj28j2RNUn2igQwWh+y29VUpu/zgu7SLV6RbZxZ0rhjvUD32N9qwot1dcfrcgr7tGGbfAsHwH
+        fw92tg9lWJKkMiPRepGjNHKCQpepDGPEkk3/tZtlIczrD10xxVfwPtz2knGWq9UrwQ+9bqjMbq8ro
+        Q7c1DdXc1PWymYhc+A8N8OqcL+eiUywLX+nDvYttGOGkk61h+zHpbQq3zZnXmuuRun0isEGm6jvIk
+        w9bKy9ow==;
+Received: from [2601:1c0:6280:3f0::19c2] (helo=smtpauth.infradead.org)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jrVWv-0005uW-2z; Fri, 03 Jul 2020 23:55:41 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org
+Subject: [PATCH 00/11] Documentation: userspace-api/media: eliminate duplicated words
+Date:   Fri,  3 Jul 2020 16:55:25 -0700
+Message-Id: <20200703235536.30416-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Reply-To: mrsanna.h.bruun119@gmail.com
-Received: by 2002:a17:907:2150:0:0:0:0 with HTTP; Fri, 3 Jul 2020 16:51:37
- -0700 (PDT)
-From:   "Mrs. Anna H. Bruun" <mrsanna.h.bruun119@gmail.com>
-Date:   Fri, 3 Jul 2020 16:51:37 -0700
-X-Google-Sender-Auth: A55hwUKUkfxNbWeRcmazjvzGwJs
-Message-ID: <CAMrr=JhOn-FjDq_qADc4Pu6BA_+eLuhRHkQ34nf7CqwR=4nCuQ@mail.gmail.com>
-Subject: My Greetings
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-My Dear
+Drop all doubled words in Documenation/userspace-api/media/ files.
 
-My Name is Mrs. Anna H. Bruun, from Norway. I know that this message
-will be a surprise to you. Firstly, I am married to Mr. Patrick Bruun,
-A gold merchant who owns a small gold Mine in Burkina Faso; He died of
-Cardiovascular Disease in mid-March 2011. During his life time he
-deposited the sum of =E2=82=AC 8.5 Million Euro) Eight million, Five hundre=
-d
-thousand Euros in a bank in Ouagadougou the capital city of Burkina
-Faso. The deposited money was from the sale of the shares, death
-benefits payment and entitlements of my deceased husband by his
-company.
 
-I am sending this message to you praying that it will reach you in
-good health, since I am not in good health condition in which I sleep
-every night without knowing if I may be alive to see the next day. I
-am suffering from long time cancer and presently i am partially
-suffering from a stroke illness which has become almost impossible for
-me to move around. I am married to my late husband for over 4 years
-before he died and is unfortunately that we don't have a child, my
-doctor confided in me that i have less chance to live. Having known my
-health condition, I decided to contact you to claim the fund since I
-don't have any relation I grew up from the orphanage home,
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: linux-doc@vger.kernel.org
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc: linux-media@vger.kernel.org
 
-I have decided to donate what I have to you for the support of helping
-Motherless babies/Less privileged/Widows' because I am dying and
-diagnosed of cancer for about 2 years ago. I have been touched by God
-Almighty to donate from what I have inherited from my late husband to
-you for good work of God Almighty. I have asked Almighty God to
-forgive me and believe he has, because He is a Merciful God I will be
-going in for an operation surgery soon
-
-This is the reason i need your services to stand as my next of kin or
-an executor to claim the funds for charity purposes. If this money
-remains unclaimed after my death, the bank executives or the
-government will take the money as unclaimed fund and maybe use it for
-selfish and worthless ventures, I need a very honest person who can
-claim this money and use it for Charity works, for orphanages, widows
-and also build schools for less privilege that will be named after my
-late husband and my name; I need your urgent answer to know if you
-will be able to execute this project, and I will give you more
-Information on how the fund will be transferred to your bank account.
-
-Thanks
-Mrs. Anna H.
+ Documentation/userspace-api/media/dvb/audio.rst                       |    2 +-
+ Documentation/userspace-api/media/dvb/ca.rst                          |    2 +-
+ Documentation/userspace-api/media/dvb/demux.rst                       |    2 +-
+ Documentation/userspace-api/media/dvb/dmx-qbuf.rst                    |    2 +-
+ Documentation/userspace-api/media/dvb/net.rst                         |    2 +-
+ Documentation/userspace-api/media/dvb/video.rst                       |    2 +-
+ Documentation/userspace-api/media/v4l/buffer.rst                      |    2 +-
+ Documentation/userspace-api/media/v4l/selection-api-configuration.rst |    2 +-
+ Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst          |    2 +-
+ Documentation/userspace-api/media/v4l/vidioc-g-output.rst             |    2 +-
+ Documentation/userspace-api/media/v4l/vidioc-qbuf.rst                 |    2 +-
+ 11 files changed, 11 insertions(+), 11 deletions(-)
