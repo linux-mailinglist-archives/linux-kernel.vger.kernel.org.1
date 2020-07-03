@@ -2,120 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D46BE213605
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 10:15:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 739A021362A
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 10:17:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726244AbgGCIPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 04:15:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725648AbgGCIPc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 04:15:32 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCEC9C08C5C1;
-        Fri,  3 Jul 2020 01:15:32 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id t18so6664942ilh.2;
-        Fri, 03 Jul 2020 01:15:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=STO53GF8jJ9fwooJ/PR+LY6ObOQA6eXVQnYnb1oX2YQ=;
-        b=nVrVFHObmfwCc4EDiskqGuhvjiuURaIWWhH9VmEsXrXQKhMokPft9UjpBZZKwZ8Kw5
-         qtr5MtQN6wIOpNY0A27FMpEWWEuU9P+QcbhArU2WcaXFvLQxzLTzxLDx8r2zpyNUvqeK
-         /ttn5Y+hzeSetuUVHHlAp5pnE/7JWwZabaEgPER1I8ARjIw+iwOt9TErXo1e+OD35hI+
-         KSgVoS3ChcYlpfB/GSoWhGxe41EAUCr2dmbU+KToUaL9wVfRSY+I6+7xkjfaMaaba0Xn
-         D6EqUXv9PjEepW6cHh6w7KXyd5SbeLZypnu1wTHXGbOlG37ejLZP29uEDUDTFmd4a0PM
-         ASZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=STO53GF8jJ9fwooJ/PR+LY6ObOQA6eXVQnYnb1oX2YQ=;
-        b=TonItFMecAlOAEZ/w863ZBg0ClqpXOAa9kUdd3lvhNNhDFlCqkyfez3s8qxzUCBHWs
-         Hnx1zvj7hVepb98LMxehfMfec2E1+HiigyB6KPGcEjhA6zLNck2GfFlpm/SU0PtD6y9C
-         i5OQNN11o8YZ+im1pqSsjIk6xg7ndOEGkOja6gts0g9aKiFcSSZ6GrEjfcbBWyVKqq1W
-         k8HKXg0rXiTgFEB4nXiJ2hNa87PamZbMipSIXrzuBCWij50WCXwmM64igrXl8v907BfJ
-         BSZrUb4rrUG3Tqx8X5ZT/iXbOa8ljpxkuJinA6e7HFN6lQuFGrlXbC1IfPpYGiL9OegC
-         xN/Q==
-X-Gm-Message-State: AOAM530XSAnCELj51M0nHN+TONp1+7bLAsKcM+tyrfaGtsZXRvRmkJTj
-        7lX24TdzEUaWTyQMD8XxbI+wg8h7U9NVyaSXmzc=
-X-Google-Smtp-Source: ABdhPJwYkSTd8ot4rjgU2UsFNopOo9xCIiSptSonbdFkDXH1DxQN1/G8cLqz9aGySz4jhdPugh78yI5qv2AYvapETB8=
-X-Received: by 2002:a92:dc09:: with SMTP id t9mr16946661iln.226.1593764131855;
- Fri, 03 Jul 2020 01:15:31 -0700 (PDT)
+        id S1726903AbgGCIRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 04:17:06 -0400
+Received: from mga09.intel.com ([134.134.136.24]:45092 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726779AbgGCIRG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Jul 2020 04:17:06 -0400
+IronPort-SDR: eHSbjsiWDcn8zpdECIDehcpkMoqeQ44Bc0karUoFkZ/GvQ3BSNVY1SW2QIQ/Idm8nfzPU5TMhL
+ 2Y9WJv4cIdbw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="148639022"
+X-IronPort-AV: E=Sophos;i="5.75,307,1589266800"; 
+   d="scan'208";a="148639022"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jul 2020 01:17:05 -0700
+IronPort-SDR: mmyVcPnKNhWPtdhKZHwUNRm45Eg3WXZX2TJ84kJ0fFf+zqHYi/0httrLcowvplyskKhwoRgyoQ
+ 6FNFe66QqMdg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,307,1589266800"; 
+   d="scan'208";a="387565433"
+Received: from black.fi.intel.com (HELO black.fi.intel.com.) ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 03 Jul 2020 01:17:03 -0700
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Prashant Malani <pmalani@chromium.org>,
+        Benson Leung <bleung@chromium.org>
+Cc:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        "Mani, Rajmohan" <rajmohan.mani@intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] platform/chrome: cros_ec_typec: USB4 support
+Date:   Fri,  3 Jul 2020 11:17:03 +0300
+Message-Id: <20200703081703.87720-1-heikki.krogerus@linux.intel.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <1588791882.08g1378g67.none.ref@localhost> <1588791882.08g1378g67.none@localhost>
- <202007020818.87EA89106@keescook>
-In-Reply-To: <202007020818.87EA89106@keescook>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Fri, 3 Jul 2020 10:15:20 +0200
-Message-ID: <CA+icZUUBAzBNwqThSF=YS1zg9EVCuSZ-XDc5Pu3NrO6R3Fi2Zw@mail.gmail.com>
-Subject: Re: Kernel compression benchmarks
-To:     Kees Cook <keescook@chromium.org>
-Cc:     "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>,
-        linux-kernel@vger.kernel.org,
-        Nick Terrell <nickrterrell@gmail.com>,
-        Nick Terrell <terrelln@fb.com>,
-        Norbert Lange <nolange79@gmail.com>, Chris Mason <clm@fb.com>,
-        linux-kbuild@vger.kernel.org, x86@kernel.org,
-        gregkh@linuxfoundation.org, Petr Malat <oss@malat.biz>,
-        Kernel Team <Kernel-team@fb.com>,
-        Adam Borowski <kilobyte@angband.pl>,
-        Patrick Williams <patrickw3@fb.com>, rmikey@fb.com,
-        mingo@kernel.org, Patrick Williams <patrick@stwcx.xyz>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 2, 2020 at 5:18 PM Kees Cook <keescook@chromium.org> wrote:
->
-> On Wed, Jul 01, 2020 at 10:35:48AM -0400, Alex Xu (Hello71) wrote:
-> > ZSTD compression patches have been sent in a number of times over the
-> > past few years. Every time, someone asks for benchmarks. Every time,
-> > someone is concerned about compression time. Sometimes, someone provides
-> > benchmarks.
->
-> Where's the latest series for this, btw? I thought it had landed. :P It
-> seemed like it was done.
->
+With USB4 mode the mux driver needs the Enter_USB Data
+Object (EUDO) that was used when the USB mode was entered.
+Though the object is not available in the driver, it is
+possible to construct it from the information we have.
 
+Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+---
 Hi,
 
-Again, I would like to see this upstream, too.
+This patch depends on latest usb-next from Greg KH, this commit in
+particular:
+https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git/commit/?h=usb-next&id=ad8db94d6813dc659bd4de0531a8a1150559eafb
 
-Last I asked for a rebase against Linux v5.8-rc1 or later.
+Prashant, can you take over the development of this patch (in case it
+still needs work)? I will take a few weeks vacation starting from next
+week (July 6th). I was hoping to get this feature into v5.9 if that's
+possible. But if you guys think there is no hurry, let's forget about
+it. Then we can just wait for 5.9-rc1 and not worry about the
+dependency on Greg's usb-next.
 
-Beyond above adaptations, the latest series "zstd-v5" of Nick T.s
-patchset needs some addition of zstd to the patch (see [1]):
+thanks,
 
-commit 8dfb61dcbaceb19a5ded5e9c9dcf8d05acc32294
-"kbuild: add variables for compression tools"
+---
+ drivers/platform/chrome/cros_ec_typec.c | 42 ++++++++++++++++++++++++-
+ 1 file changed, 41 insertions(+), 1 deletion(-)
 
-NOTE:
-"zstd-v5" was against Linux-next 20200408 or download the series from
-patchwork LKML which applies cleanly against Linux v5.7 - last is what
-I did.
+diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
+index 0c041b79cbbac..c9713aab9b6b0 100644
+--- a/drivers/platform/chrome/cros_ec_typec.c
++++ b/drivers/platform/chrome/cros_ec_typec.c
+@@ -13,6 +13,7 @@
+ #include <linux/platform_data/cros_ec_proto.h>
+ #include <linux/platform_data/cros_usbpd_notify.h>
+ #include <linux/platform_device.h>
++#include <linux/usb/pd.h>
+ #include <linux/usb/typec.h>
+ #include <linux/usb/typec_altmode.h>
+ #include <linux/usb/typec_dp.h>
+@@ -494,6 +495,43 @@ static int cros_typec_enable_dp(struct cros_typec_data *typec,
+ 	return typec_mux_set(port->mux, &port->state);
+ }
+ 
++static int cros_typec_enable_usb4(struct cros_typec_data *typec,
++				  int port_num,
++				  struct ec_response_usb_pd_control_v2 *pd_ctrl)
++{
++	struct cros_typec_port *port = typec->ports[port_num];
++	struct enter_usb_data data;
++
++	data.eudo = EUDO_USB_MODE_USB4 << EUDO_USB_MODE_SHIFT;
++
++	/* Cable Speed */
++	data.eudo |= pd_ctrl->cable_speed << EUDO_CABLE_SPEED_SHIFT;
++
++	/* Cable Type */
++	if (pd_ctrl->control_flags & USB_PD_CTRL_OPTICAL_CABLE)
++		data.eudo |= EUDO_CABLE_TYPE_OPTICAL << EUDO_CABLE_TYPE_SHIFT;
++	else if (pd_ctrl->control_flags & USB_PD_CTRL_ACTIVE_CABLE)
++		data.eudo |= EUDO_CABLE_TYPE_RE_TIMER << EUDO_CABLE_TYPE_SHIFT;
++
++	/* REVISIT: Cable Current? */
++
++	/* REVISIT: Claiming unconditionally that all tunnels are supported. */
++	data.eudo |= EUDO_PCIE_SUPPORT;
++	data.eudo |= EUDO_DP_SUPPORT;
++
++	data.eudo |= EUDO_TBT_SUPPORT;
++	data.eudo |= EUDO_HOST_PRESENT;
++
++	data.active_link_training = !!(pd_ctrl->control_flags &
++				       USB_PD_CTRL_ACTIVE_LINK_UNIDIR);
++
++	port->state.alt = NULL;
++	port->state.data = &data;
++	port->state.mode = TYPEC_MODE_USB4;
++
++	return typec_mux_set(port->mux, &port->state);
++}
++
+ static int cros_typec_configure_mux(struct cros_typec_data *typec, int port_num,
+ 				uint8_t mux_flags,
+ 				struct ec_response_usb_pd_control_v2 *pd_ctrl)
+@@ -514,7 +552,9 @@ static int cros_typec_configure_mux(struct cros_typec_data *typec, int port_num,
+ 	if (ret)
+ 		return ret;
+ 
+-	if (mux_flags & USB_PD_MUX_TBT_COMPAT_ENABLED) {
++	if (mux_flags & USB_PD_MUX_USB4_ENABLED) {
++		ret = cros_typec_enable_usb4(typec, port_num, pd_ctrl);
++	} else if (mux_flags & USB_PD_MUX_TBT_COMPAT_ENABLED) {
+ 		ret = cros_typec_enable_tbt(typec, port_num, pd_ctrl);
+ 	} else if (mux_flags & USB_PD_MUX_DP_ENABLED) {
+ 		ret = cros_typec_enable_dp(typec, port_num, pd_ctrl);
+-- 
+2.27.0
 
-There was a follow-up to the above patch (see [2]):
-
-commit e4a42c82e943b97ce124539fcd7a47445b43fa0d
-"kbuild: fix broken builds because of GZIP,BZIP2,LZOP variables"
-
-Nevertheless, this is the kernel-side of doing - user-space like for
-example Debian's initramfs-tools needs adaptations (see [3]).
-
-@Kees: Can you aid Nick T. to get this upstream? You know the
-processes a bit better than me.
-
-Regards,
-- Sedat -
-
-[0] https://github.com/terrelln/linux/tree/zstd-v5
-[0] https://lore.kernel.org/patchwork/project/lkml/list/?series=437934
-[1] https://git.kernel.org/linus/8dfb61dcbaceb19a5ded5e9c9dcf8d05acc32294
-[2] https://git.kernel.org/linus/e4a42c82e943b97ce124539fcd7a47445b43fa0d
-[2] https://bugs.debian.org/955469
