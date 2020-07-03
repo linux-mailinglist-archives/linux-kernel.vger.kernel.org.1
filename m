@@ -2,102 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 432AE2135AC
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 10:04:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0367A2135C0
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 10:06:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726112AbgGCIEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 04:04:11 -0400
-Received: from mga04.intel.com ([192.55.52.120]:52311 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725648AbgGCIEL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 04:04:11 -0400
-IronPort-SDR: Dn229BWwKJqBlu1KVYhxAXyM8jmjxxWZBRTLv8NfopFnXZ/a+3GzGslbBBboSLQfirCDqFUQCC
- psYF8x8IkT4w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="144635504"
-X-IronPort-AV: E=Sophos;i="5.75,307,1589266800"; 
-   d="scan'208";a="144635504"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jul 2020 01:04:10 -0700
-IronPort-SDR: GRIZLHlnhU/QaE2cFWz1y1zrS2QBl46fG2xKdUbPD2Bxojs26x5cUhZW3UKpQnWZPq4inLc1jB
- mi4DqQ/63sMQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,307,1589266800"; 
-   d="scan'208";a="481955282"
-Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.128]) ([10.238.4.128])
-  by fmsmga006.fm.intel.com with ESMTP; 03 Jul 2020 01:04:07 -0700
-Reply-To: like.xu@intel.com
-Subject: Re: [PATCH v12 00/11] Guest Last Branch Recording Enabling
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     "Liang, Kan" <kan.liang@linux.intel.com>,
-        Like Xu <like.xu@linux.intel.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, ak@linux.intel.com,
-        wei.w.wang@intel.com, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, "Liang, Kan" <kan.liang@intel.com>
-References: <20200613080958.132489-1-like.xu@linux.intel.com>
- <20200702074059.GX4781@hirez.programming.kicks-ass.net>
- <5d3980e3-1c49-4174-4cdb-f40fc21ee6c1@linux.intel.com>
- <20200702135842.GR4800@hirez.programming.kicks-ass.net>
- <20200703075646.GJ117543@hirez.programming.kicks-ass.net>
-From:   "Xu, Like" <like.xu@intel.com>
-Organization: Intel OTC
-Message-ID: <84a75c42-8a97-6771-9aab-3f9d3285486e@intel.com>
-Date:   Fri, 3 Jul 2020 16:04:06 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726581AbgGCIGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 04:06:20 -0400
+Received: from lb3-smtp-cloud8.xs4all.net ([194.109.24.29]:46349 "EHLO
+        lb3-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725891AbgGCIGT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Jul 2020 04:06:19 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud8.xs4all.net with ESMTPA
+        id rGi2j86C1mVFqrGi5j7GWZ; Fri, 03 Jul 2020 10:06:15 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
+        t=1593763575; bh=b4jvdZMiRl+wQlE8aK7iGvK92VjV3a/6aX4pFQUlAY4=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=uqKM0qgkfVWerqlbG6o3xBiv6+lkwTSdn60vng7VtUX2pCKAfz2b12dNbn4UJ5vsi
+         /B3ivaZOlPPDlw+I9/SyuEsyK9WRAdLWaQ+O/4mfNSw49CA0uoFERSqBRcpNXwADUU
+         s2DYzRfN8c1z9hSRV8JWH8szoCVvgtfCFZy0lsDDaQyYSbb2dOQZvHYY4F6HRnA2fm
+         p/knxlfOEA3ND2IsaeHeX87zsidWl/1CprmWYbzWMu5NCm+X+gspdYYjA+/lIH6ipM
+         F2J4TffZHGM6u99C2dz41Z6HQADENLofvftmn1nACb499MaCVYEomW1emX8Y/7ExNv
+         QMNhQ80petZlw==
+Subject: Re: [RFC PATCH v2 12/18] media: tegra-video: Add support for
+ selection ioctl ops
+To:     Sowjanya Komatineni <skomatineni@nvidia.com>,
+        thierry.reding@gmail.com, jonathanh@nvidia.com, frankc@nvidia.com,
+        sakari.ailus@iki.fi, robh+dt@kernel.org, helen.koike@collabora.com
+Cc:     digetx@gmail.com, sboyd@kernel.org, gregkh@linuxfoundation.org,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-i2c@vger.kernel.org
+References: <1592358094-23459-1-git-send-email-skomatineni@nvidia.com>
+ <1592358094-23459-13-git-send-email-skomatineni@nvidia.com>
+ <efc84cff-76d5-78a2-e84e-0342459d3756@xs4all.nl>
+ <c82a000a-7766-c933-fd69-24eb4885fc14@nvidia.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <a95717b6-e2ee-78df-5145-de265805b3d4@xs4all.nl>
+Date:   Fri, 3 Jul 2020 10:06:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <20200703075646.GJ117543@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <c82a000a-7766-c933-fd69-24eb4885fc14@nvidia.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfJibOq/j4tqoc36sc4WrtRfP/A0osTMUl1TNKLANrgu56/SySM9PwU8/7zlFaI92I2Zm+b7yAimCBtoVhEq0JGdG/Qu6rWHiZR2VRfdU8v3TAesoYmCf
+ 12+lmuLHRoPvH8otC/RKqgD6o2UUMxNGygKPVInnM34BF/htxuI8rRF6jG8IbW+Y05Ebu5IdKMwEu/FtgiAnQCvhSLMvGxIVTMF01lScqwjNQ/P/elK9XYLK
+ DCsRPHwA+4jMO4dF+3QmpcHeAsKsAdN3bjqSYSho3E6zHZYEP9a7V4HEjL2J66sJ/IYpfJD8zVYapSUiU9Si6ArWPuN1OkLmpmzy+07A1MybGJJf5TrZuz4/
+ mvSK/CItcwqWHuLoxQDh2IbdL7+Hp52d7L6QTMFWZQoXBXQujIRJckCIgnZDvueyk+AyhjMt8ZGAViX6dB01sBUyIzznC1nEweu7Rw5EkEJmj2UFrhJJfHUN
+ 5HtqnX3wzLVieIf0NHPwb0Fdj1ddMehpgkMmA4w0PzD1DLe4Ideui72Y7suyfaEy7GXK0/WwkTTu1C7/wlrLvMwUrQEVIMcxMyc080Eyo6CeFoje9z4iuiHy
+ USmgj20dEE+T9RxO/0IEl8dU61xTek0qZACAwgVjimcDDrD4JCV+RfscsZjN3urSkOLgUPAQlyOySgTitx1SJKDV
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/7/3 15:56, Peter Zijlstra wrote:
-> On Thu, Jul 02, 2020 at 03:58:42PM +0200, Peter Zijlstra wrote:
->> On Thu, Jul 02, 2020 at 09:11:06AM -0400, Liang, Kan wrote:
->>> On 7/2/2020 3:40 AM, Peter Zijlstra wrote:
->>>> On Sat, Jun 13, 2020 at 04:09:45PM +0800, Like Xu wrote:
->>>>> Like Xu (10):
->>>>>     perf/x86/core: Refactor hw->idx checks and cleanup
->>>>>     perf/x86/lbr: Add interface to get LBR information
->>>>>     perf/x86: Add constraint to create guest LBR event without hw counter
->>>>>     perf/x86: Keep LBR records unchanged in host context for guest usage
->>>>> Wei Wang (1):
->>>>>     perf/x86: Fix variable types for LBR registers
->>>>>    arch/x86/events/core.c            |  26 +--
->>>>>    arch/x86/events/intel/core.c      | 109 ++++++++-----
->>>>>    arch/x86/events/intel/lbr.c       |  51 +++++-
->>>>>    arch/x86/events/perf_event.h      |   8 +-
->>>>>    arch/x86/include/asm/perf_event.h |  34 +++-
->>>> These look good to me; but at the same time Kan is sending me
->>>> Architectural LBR patches.
->>>>
->>>> Kan, if I take these perf patches and stick them in a tip/perf/vlbr
->>>> topic branch, can you rebase the arch lbr stuff on top, or is there
->>>> anything in the arch-lbr series that badly conflicts with this work?
->>>>
->>> Yes, I can rebase the arch lbr patches on top of them.
->>> Please push the tip/perf/vlbr branch, so I can pull and rebase my patches.
->> For now I have:
+On 02/07/2020 23:20, Sowjanya Komatineni wrote:
+> 
+> On 7/2/20 6:54 AM, Hans Verkuil wrote:
+>> On 17/06/2020 03:41, Sowjanya Komatineni wrote:
+>>> This patch adds selection v4l2 ioctl operations to allow configuring
+>>> a selection rectangle in the sensor through the Tegra video device
+>>> node.
+>>>
+>>> Some sensor drivers supporting crop uses try_crop rectangle from
+>>> v4l2_subdev_pad_config during try format for computing binning.
+>>>
+>>> So with selection ops support, this patch also updates try format
+>>> to use try crop rectangle either from subdev frame size enumeration
+>>> or from subdev crop boundary.
+>>>
+>>> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+>>> ---
+>>>   drivers/staging/media/tegra-video/vi.c | 106 +++++++++++++++++++++++++++++++++
+>>>   1 file changed, 106 insertions(+)
+>>>
+>>> diff --git a/drivers/staging/media/tegra-video/vi.c b/drivers/staging/media/tegra-video/vi.c
+>>> index 506c263..f9eb96b 100644
+>>> --- a/drivers/staging/media/tegra-video/vi.c
+>>> +++ b/drivers/staging/media/tegra-video/vi.c
+>>> @@ -427,6 +427,13 @@ static int __tegra_channel_try_format(struct tegra_vi_channel *chan,
+>>>   	struct v4l2_subdev *subdev;
+>>>   	struct v4l2_subdev_format fmt;
+>>>   	struct v4l2_subdev_pad_config *pad_cfg;
+>>> +	struct v4l2_subdev_frame_size_enum fse = {
+>>> +		.which = V4L2_SUBDEV_FORMAT_TRY,
+>>> +	};
+>>> +	struct v4l2_subdev_selection sdsel = {
+>>> +		.which = V4L2_SUBDEV_FORMAT_ACTIVE,
+>>> +		.target = V4L2_SEL_TGT_CROP_BOUNDS,
+>>> +	};
+>>>   	int ret;
+>>>   
+>>>   	subdev = tegra_channel_get_remote_subdev(chan, true);
+>>> @@ -449,6 +456,24 @@ static int __tegra_channel_try_format(struct tegra_vi_channel *chan,
+>>>   	fmt.which = V4L2_SUBDEV_FORMAT_TRY;
+>>>   	fmt.pad = 0;
+>>>   	v4l2_fill_mbus_format(&fmt.format, pix, fmtinfo->code);
+>>> +
+>>> +	/*
+>>> +	 * Attempt to obtain the format size from subdev.
+>>> +	 * If not available, try to get crop boundary from subdev.
+>>> +	 */
+>>> +	fse.code = fmtinfo->code;
+>>> +	ret = v4l2_subdev_call(subdev, pad, enum_frame_size, pad_cfg, &fse);
+>>> +	if (ret) {
+>>> +		ret = v4l2_subdev_call(subdev, pad, get_selection, NULL, &sdsel);
+>>> +		if (ret)
+>>> +			return -EINVAL;
+>>> +		pad_cfg->try_crop.width = sdsel.r.width;
+>>> +		pad_cfg->try_crop.height = sdsel.r.height;
+>>> +	} else {
+>>> +		pad_cfg->try_crop.width = fse.max_width;
+>>> +		pad_cfg->try_crop.height = fse.max_height;
+>>> +	}
+>>> +
+>>>   	ret = v4l2_subdev_call(subdev, pad, set_fmt, pad_cfg, &fmt);
+>>>   	if (ret < 0)
+>>>   		return ret;
+>>> @@ -540,6 +565,85 @@ static int tegra_channel_set_subdev_active_fmt(struct tegra_vi_channel *chan)
+>>>   	return 0;
+>>>   }
+>>>   
+>>> +static int tegra_channel_g_selection(struct file *file, void *priv,
+>>> +				     struct v4l2_selection *sel)
+>>> +{
+>>> +	struct tegra_vi_channel *chan = video_drvdata(file);
+>>> +	struct v4l2_subdev *subdev;
+>>> +	struct v4l2_subdev_format fmt = {
+>>> +		.which = V4L2_SUBDEV_FORMAT_ACTIVE,
+>>> +	};
+>>> +	struct v4l2_subdev_selection sdsel = {
+>>> +		.which = V4L2_SUBDEV_FORMAT_ACTIVE,
+>>> +		.target = sel->target,
+>>> +	};
+>>> +	int ret;
+>>> +
+>>> +	if (IS_ENABLED(CONFIG_VIDEO_TEGRA_TPG))
+>>> +		return -ENOTTY;
+>>> +
+>>> +	if (sel->type != V4L2_BUF_TYPE_VIDEO_CAPTURE)
+>>> +		return -EINVAL;
+>>> +	/*
+>>> +	 * Try the get selection operation and fallback to get format if not
+>>> +	 * implemented.
+>>> +	 */
+>>> +	subdev = tegra_channel_get_remote_subdev(chan, true);
+>>> +	ret = v4l2_subdev_call(subdev, pad, get_selection, NULL, &sdsel);
+>>> +	if (!ret)
+>>> +		sel->r = sdsel.r;
+>>> +	if (ret != -ENOIOCTLCMD)
+>>> +		return ret;
+>>> +
+>>> +	ret = v4l2_subdev_call(subdev, pad, get_fmt, NULL, &fmt);
+>>> +	if (ret < 0)
+>>> +		return ret;
+>>> +
+>>> +	sel->r.left = 0;
+>>> +	sel->r.top = 0;
+>>> +	sel->r.width = fmt.format.width;
+>>> +	sel->r.height = fmt.format.height;
+>>> +
+>>> +	return 0;
+>>> +}
+>>> +
+>>> +static int tegra_channel_s_selection(struct file *file, void *fh,
+>>> +				     struct v4l2_selection *sel)
+>>> +{
+>>> +	struct tegra_vi_channel *chan = video_drvdata(file);
+>>> +	struct v4l2_subdev *subdev;
+>>> +	int ret;
+>>> +	struct v4l2_subdev_selection sdsel = {
+>>> +		.which = V4L2_SUBDEV_FORMAT_ACTIVE,
+>>> +		.target = sel->target,
+>>> +		.flags = sel->flags,
+>>> +		.r = sel->r,
+>>> +	};
+>>> +
+>> This function doesn't check if the subdev actually supports set_selection.
+>> The imx219 is one such driver: it supports get_selection, but not set_selection.
 >>
->>    git://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git perf/vlbr
+>> So this code should add these lines to fix the v4l2-compliance fail:
 >>
->> Once the 0day robot comes back all-green, I'll push it out to
->> tip/perf/vlbr and merge it into tip/perf/core.
-> tip/perf/vlbr now exists, thanks!
-Hi Peter,
+>>         subdev = tegra_channel_get_remote_subdev(chan, true);
+>>
+>>         if (!v4l2_subdev_has_op(subdev, pad, set_selection))
+>>                 return -ENOTTY;
+>>
+> v4l2_subdev_call() does that check and returns -ENOIOCTLCMD when 
+> specified subdev ops does not exist.
 
-Thanks for your patience and professional support on this feature!
+But that test happens too late. In the v4l2-compliance test it fails in the
+sel->type test below, so it returns EINVAL instead of ENOTTY.
 
-Thanks,
-Like Xu
+>>> +	if (IS_ENABLED(CONFIG_VIDEO_TEGRA_TPG))
+>>> +		return -ENOTTY;
+
+I think this test should come before the v4l2_subdev_has_op test since there
+is probably no subdev if the TPG is enabled. So:
+
+	if (IS_ENABLED(CONFIG_VIDEO_TEGRA_TPG))
+		return -ENOTTY;
+
+        subdev = tegra_channel_get_remote_subdev(chan, true);
+        if (!v4l2_subdev_has_op(subdev, pad, set_selection))
+                return -ENOTTY;
+
+
+Regards,
+
+	Hans
+
+>>> +
+>>> +	if (sel->type != V4L2_BUF_TYPE_VIDEO_CAPTURE)
+>>> +		return -EINVAL;
+>>> +
+>>> +	if (vb2_is_busy(&chan->queue))
+>>> +		return -EBUSY;
+>>> +
+>>> +	subdev = tegra_channel_get_remote_subdev(chan, true);
+>> And this line can be dropped.
+>>
+>> Regards,
+>>
+>> 	Hans
+>>
+>>> +	ret = v4l2_subdev_call(subdev, pad, set_selection, NULL, &sdsel);
+>>> +	if (!ret) {
+>>> +		sel->r = sdsel.r;
+>>> +		/*
+>>> +		 * Subdev active format resolution may have changed during
+>>> +		 * set selection operation. So, update channel format to
+>>> +		 * the sub-device active format.
+>>> +		 */
+>>> +		return tegra_channel_set_subdev_active_fmt(chan);
+>>> +	}
+>>> +
+>>> +	return ret;
+>>> +}
+>>> +
+>>>   static int tegra_channel_enum_input(struct file *file, void *fh,
+>>>   				    struct v4l2_input *inp)
+>>>   {
+>>> @@ -597,6 +701,8 @@ static const struct v4l2_ioctl_ops tegra_channel_ioctl_ops = {
+>>>   	.vidioc_streamoff		= vb2_ioctl_streamoff,
+>>>   	.vidioc_subscribe_event		= v4l2_ctrl_subscribe_event,
+>>>   	.vidioc_unsubscribe_event	= v4l2_event_unsubscribe,
+>>> +	.vidioc_g_selection		= tegra_channel_g_selection,
+>>> +	.vidioc_s_selection		= tegra_channel_s_selection,
+>>>   };
+>>>   
+>>>   /*
+>>>
 
