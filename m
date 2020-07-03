@@ -2,66 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A80A213326
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 06:55:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 071D5213332
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 07:01:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726118AbgGCEzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 00:55:24 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:47274 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725294AbgGCEzX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 00:55:23 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 747E7F9BDDF3B4225495;
-        Fri,  3 Jul 2020 12:55:21 +0800 (CST)
-Received: from kernelci-master.huawei.com (10.175.101.6) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 3 Jul 2020 12:55:14 +0800
-From:   Wei Yongjun <weiyongjun1@huawei.com>
-To:     Hulk Robot <hulkci@huawei.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>
-CC:     Wei Yongjun <weiyongjun1@huawei.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] locktorture: make function torture_percpu_rwsem_init() static
-Date:   Fri, 3 Jul 2020 13:05:27 +0800
-Message-ID: <20200703050527.67249-1-weiyongjun1@huawei.com>
+        id S1726194AbgGCFBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 01:01:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725764AbgGCFBw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Jul 2020 01:01:52 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0D5BC08C5C1;
+        Thu,  2 Jul 2020 22:01:51 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id q15so30502720wmj.2;
+        Thu, 02 Jul 2020 22:01:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=6CSz1t21P1s1QIl9drzthPclFfgp444pHgQTTwZGkmQ=;
+        b=WUfuaAYEalJm2sFaTpMXXet+97GEzCAVWd/iNCgAzj6QWaNBYjDdZ+2u1oDS7DYjbW
+         RPcRf9DIXb1L8u4hRSz1jmV0FulcqktY4eaug/Of328YC8xbKogvAV+uG5erAVbGNx1D
+         faXVIVT1IaGda5Kx/F+uzCDX+rtz8ZJbbJ8OVZ94iMaE7DhXfyYSlAXW72sjlz04ZtU0
+         KJA/g+nM8S2QqUBU+acGxZmznjeimE+Vl3P9IuE6Suk9SmKBEiTr97Yb3MGiSdftUVJZ
+         TFYSFIenl8pgzQ7/8wFQfCFoMnBUeXc+efOWJc0aCSH3TuAo4XOvszaXMjB8PSOI6JSO
+         GFbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=6CSz1t21P1s1QIl9drzthPclFfgp444pHgQTTwZGkmQ=;
+        b=onI51TfUvsiGVMsjj+R8xyNzVRXV1wPNJ8In4sdSwUVWj0vdsM6dpOE4Oky+kXoMvs
+         p6hTwSEjKlsZC5dbL+cS0loRAu3IbRLLrDZLRW4ZFFFBQz9eWXGO1LI0ltd0iMaDnyks
+         +okC3juRbudwtXaGOhzrX3bQ3dag5YJUD15iCDlYo6UW4k0nV42dcg6o6zXrEfs3MLDB
+         SGOq4cCsDErOMl8D2ir6yO+q+kRg1RiCnXTLQ4su/vJNGkmGVIlAdQIZNfAi+AeJ23JH
+         pphz5WFHxZ7LJnahNJi/v8IEpVkO/f7xEMzcHkj0W9IJIuduPSu/Lae7wmI5KQbvxE+H
+         bvhA==
+X-Gm-Message-State: AOAM533R3sq/iPUJeFklNllF9v1ir70aQkyUkq7TSe0j6DeeXHAFU64B
+        WyeE2oPVoCL/IvcPH9R7a6V7GyVF
+X-Google-Smtp-Source: ABdhPJynSKlEqRb/diSRVpUGdPQ5MaWQTUnWAFqpAeaVknbLbirBgTTn9hhSBOI8Xy5+dT9iJGPBvA==
+X-Received: by 2002:a1c:7313:: with SMTP id d19mr21986941wmb.147.1593752510024;
+        Thu, 02 Jul 2020 22:01:50 -0700 (PDT)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id g14sm12397967wrm.93.2020.07.02.22.01.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Jul 2020 22:01:49 -0700 (PDT)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Doug Berger <opendmb@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com (open list:BROADCOM GENET
+        ETHERNET DRIVER), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH net-next] net: bcmgenet: Allow changing carrier from user-space
+Date:   Thu,  2 Jul 2020 21:57:00 -0700
+Message-Id: <20200703045701.18996-1-f.fainelli@gmail.com>
 X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.175.101.6]
-X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The sparse tool complains as follows:
+The GENET driver interfaces with internal MoCA interface as well as
+external MoCA chips like the BCM6802/6803 through a fixed link
+interface. It is desirable for the mocad user-space daemon to be able to
+control the carrier state based upon out of band messages that it
+receives from the MoCA chip.
 
-kernel/locking/locktorture.c:569:6: warning:
- symbol 'torture_percpu_rwsem_init' was not declared. Should it be static?
-
-And this function is not used outside of locktorture.c,
-so this commit marks it static.
-
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 ---
- kernel/locking/locktorture.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/broadcom/genet/bcmgenet.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
-diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
-index 9cfa5e89cff7..62d215b2e39f 100644
---- a/kernel/locking/locktorture.c
-+++ b/kernel/locking/locktorture.c
-@@ -566,7 +566,7 @@ static struct lock_torture_ops rwsem_lock_ops = {
- #include <linux/percpu-rwsem.h>
- static struct percpu_rw_semaphore pcpu_rwsem;
- 
--void torture_percpu_rwsem_init(void)
-+static void torture_percpu_rwsem_init(void)
- {
- 	BUG_ON(percpu_init_rwsem(&pcpu_rwsem));
+diff --git a/drivers/net/ethernet/broadcom/genet/bcmgenet.c b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
+index af924a8b885f..ee84a26bd8f3 100644
+--- a/drivers/net/ethernet/broadcom/genet/bcmgenet.c
++++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
+@@ -3647,6 +3647,22 @@ static struct net_device_stats *bcmgenet_get_stats(struct net_device *dev)
+ 	return &dev->stats;
  }
+ 
++static int bcmgenet_change_carrier(struct net_device *dev, bool new_carrier)
++{
++	struct bcmgenet_priv *priv = netdev_priv(dev);
++
++	if (!dev->phydev || !phy_is_pseudo_fixed_link(dev->phydev) ||
++	    priv->phy_interface != PHY_INTERFACE_MODE_MOCA)
++		return -EOPNOTSUPP;
++
++	if (new_carrier)
++		netif_carrier_on(dev);
++	else
++		netif_carrier_off(dev);
++
++	return 0;
++}
++
+ static const struct net_device_ops bcmgenet_netdev_ops = {
+ 	.ndo_open		= bcmgenet_open,
+ 	.ndo_stop		= bcmgenet_close,
+@@ -3660,6 +3676,7 @@ static const struct net_device_ops bcmgenet_netdev_ops = {
+ 	.ndo_poll_controller	= bcmgenet_poll_controller,
+ #endif
+ 	.ndo_get_stats		= bcmgenet_get_stats,
++	.ndo_change_carrier	= bcmgenet_change_carrier,
+ };
+ 
+ /* Array of GENET hardware parameters/characteristics */
+-- 
+2.17.1
 
