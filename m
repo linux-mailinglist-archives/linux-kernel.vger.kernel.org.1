@@ -2,121 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F8C7213F60
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 20:45:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B081213F4A
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 20:34:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726806AbgGCSpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 14:45:49 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:18532 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726703AbgGCSps (ORCPT
+        id S1726502AbgGCSeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 14:34:03 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:46846 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726147AbgGCSeD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 14:45:48 -0400
-Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200703184545epoutp01cd414374ac46377d6bc65584ebe431e3~eUmy8olx60975309753epoutp01X
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Jul 2020 18:45:45 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200703184545epoutp01cd414374ac46377d6bc65584ebe431e3~eUmy8olx60975309753epoutp01X
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1593801945;
-        bh=ZYub6H8gQX1Iy/PZwDCY/s4lpFyG7k81rGHbPOmeFUc=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=fVsIrEfv4oSj0jyRtYdMihBrfhqArDArQ/1BKRedShXJYFgre7RkmxSGI/BNXddXl
-         XLNKKQhxnbEiqXnaR0AN9UNpWCdjkwm3u6kxDBw9cl8WlTcfGuEFT1GBzvaM7Zir65
-         ZTpymyZ+UMZ/7/sOZM5A3Cr2VoUFOIZ945jqnza4=
-Received: from epsmges5p3new.samsung.com (unknown [182.195.42.75]) by
-        epcas5p3.samsung.com (KnoxPortal) with ESMTP id
-        20200703184544epcas5p32650181d3d75a5c7aa5e71eb2cf1a74e~eUmyi8VKc1350513505epcas5p3L;
-        Fri,  3 Jul 2020 18:45:44 +0000 (GMT)
-Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
-        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        6C.DD.09475.8DC7FFE5; Sat,  4 Jul 2020 03:45:44 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
-        20200703184543epcas5p4adb3db7693094c72477b8469d9f205ba~eUmxO8UcQ1251212512epcas5p4J;
-        Fri,  3 Jul 2020 18:45:43 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200703184543epsmtrp22554f4300cbcdb7fff0b9551671820c2~eUmxOQWmb2407924079epsmtrp2_;
-        Fri,  3 Jul 2020 18:45:43 +0000 (GMT)
-X-AuditID: b6c32a4b-389ff70000002503-bc-5eff7cd8e914
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        4F.E5.08382.7DC7FFE5; Sat,  4 Jul 2020 03:45:43 +0900 (KST)
-Received: from Jaguar.sa.corp.samsungelectronics.net (unknown
-        [107.108.73.139]) by epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200703184542epsmtip1af93ed4f5baeed3ff8936c34e753026f~eUmwFu7wm1737817378epsmtip1J;
-        Fri,  3 Jul 2020 18:45:41 +0000 (GMT)
-From:   Alim Akhtar <alim.akhtar@samsung.com>
-To:     rzk@kernel.org
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        robh+dt@kernel.org, Alim Akhtar <alim.akhtar@samsung.com>
-Subject: [PATCH] arm64: dts: exynos: Add minimal bootargs
-Date:   Fri,  3 Jul 2020 23:55:36 +0530
-Message-Id: <20200703182536.9190-1-alim.akhtar@samsung.com>
-X-Mailer: git-send-email 2.17.1
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrMIsWRmVeSWpSXmKPExsWy7bCmlu6Nmv9xBjfOKFk8mLeNzWL+kXOs
-        FpseX2O1uLxrDpvFjPP7mCxa9x5ht9j5/gOjA7vHplWdbB6bl9R79G1ZxejxeZNcAEsUl01K
-        ak5mWWqRvl0CV8b364+YCrrZKuY9mcXSwDiLtYuRg0NCwETi/8HALkYuDiGB3YwSm29/Z4Nw
-        PjFK3J2wFMr5xihx6d8huI6HN8sh4nuB4s8bmboYOYGcFiaJ7VvzQGw2AW2Ju9O3gMVFBIQk
-        DjT8YgFpYBY4wijRcP4FWEJYwFJi9a0VzCA2i4CqRPetPrA4r4C1xP0v78HiEgLyEqs3HGAG
-        aZYQWMUu8fzrHHaIhIvE3P7HLBC2sMSr41ug4lISn9/tZYO4NFuiZ5cxRLhGYum8Y1Dl9hIH
-        rsxhASlhFtCUWL9LHyTMLMAn0fv7CRNEJ69ER5sQRLWqRPO7q1Cd0hITu7tZIWwPiT13H7FD
-        vB4rMePbA6YJjDKzEIYuYGRcxSiZWlCcm55abFpgnJdarlecmFtcmpeul5yfu4kRHM9a3jsY
-        Hz34oHeIkYmD8RCjBAezkghvguq/OCHelMTKqtSi/Pii0pzU4kOM0hwsSuK8Sj/OxAkJpCeW
-        pGanphakFsFkmTg4pRqYIn9zXMie53H48LHS54ozVlmVLkzvf/eU4a7n1KPtW4zKNiw9MP/u
-        90N7wzhenPnR9G5t4720pv3NLb84eFgdWTYULfx/JlySw/zznEQmz66rbbUfnkxb5cbpZ/7S
-        qjk9/9Ekl7Q5jm57Xf94n9o5L/bxudSY/p/2VRIiXiKa+37ec/4bfed/bu935yM5u79f2nGt
-        g8lo6cZJiXYnzEV/7OGT3WdjX356eYfow/39STnnN5/tedJzsSTiTfPhwspTbb6nXnh0CopO
-        CZb49uRS41WjlxNyFrUv877cEqP/YPfNRzxvbrlU9p5TLb7ZvVRAbiHbfdnZ0aZfQp1MeNY/
-        n2q/P3WuzeTPnFkpkZcnySuxFGckGmoxFxUnAgA4lJbQVgMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrJJMWRmVeSWpSXmKPExsWy7bCSnO71mv9xBrv3sls8mLeNzWL+kXOs
-        FpseX2O1uLxrDpvFjPP7mCxa9x5ht9j5/gOjA7vHplWdbB6bl9R79G1ZxejxeZNcAEsUl01K
-        ak5mWWqRvl0CV8b364+YCrrZKuY9mcXSwDiLtYuRg0NCwETi4c3yLkYuDiGB3YwSb9+9Y+li
-        5ASKS0tc3ziBHcIWllj57zk7RFETk8Sza3PAEmwC2hJ3p29hArFFBIQkDjT8YgEpYhY4xSjR
-        v30zWJGwgKXE6lsrmEFsFgFVie5bfWANvALWEve/vGeG2CAvsXrDAeYJjDwLGBlWMUqmFhTn
-        pucWGxYY5qWW6xUn5haX5qXrJefnbmIEh46W5g7G7as+6B1iZOJgPMQowcGsJMKboPovTog3
-        JbGyKrUoP76oNCe1+BCjNAeLkjjvjcKFcUIC6YklqdmpqQWpRTBZJg5OqQYmWY6Hutu+Nqn9
-        KOPZX6MSelTNeEITX6daudyTCTFGu1NnHUm8V8XvXs/3k1PEJn0fg5vls8sr5k9xvi5jr+u/
-        bZXzeet3bqILy2c0PE3dwctqYZRw3Pj6r18afyV/3vZSvShy7fohzbv7FxtMa/kvHqFaKf47
-        6ve3WDkHvdB9Lm3n439O93fgu/DlBG87u5zTBbZaD5to+/3HTr/xlio8KXUq49DrqENfzm6S
-        Fqve9/PHq/9a0fMP3LFINmd0nHHFaGX7uwczbnHtX+kkvST+f/v5dE8GzxZffZaCMOfOM0ab
-        0h+uSVz1tmr7oY40b63ihSYTntrfKHu6e2es6o/4d55r7zDzVhU9ant9wnWqEktxRqKhFnNR
-        cSIAq30LnIwCAAA=
-X-CMS-MailID: 20200703184543epcas5p4adb3db7693094c72477b8469d9f205ba
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-CMS-TYPE: 105P
-X-CMS-RootMailID: 20200703184543epcas5p4adb3db7693094c72477b8469d9f205ba
-References: <CGME20200703184543epcas5p4adb3db7693094c72477b8469d9f205ba@epcas5p4.samsung.com>
+        Fri, 3 Jul 2020 14:34:03 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id E75842A65E6
+Message-ID: <c76893775a8c2ecee5093f9a7dfa872ec2afcefe.camel@collabora.com>
+Subject: Re: [PATCH v2] clk: rockchip: use separate compatibles for
+ rk3288w-cru
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Heiko Stuebner <heiko@sntech.de>,
+        linux-rockchip@lists.infradead.org
+Cc:     mylene.josserand@collabora.com, mturquette@baylibre.com,
+        sboyd@kernel.org, jagan@amarulasolutions.com,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
+Date:   Fri, 03 Jul 2020 15:33:52 -0300
+In-Reply-To: <20200703154948.260369-1-heiko@sntech.de>
+References: <20200703154948.260369-1-heiko@sntech.de>
+Organization: Collabora
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.0-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add minimal bootargs to enable earlycon and console.
-This really useful in case kernel has crashed early in
-boot process.
+On Fri, 2020-07-03 at 17:49 +0200, Heiko Stuebner wrote:
+> From: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
+> 
+> Commit 1627f683636d ("clk: rockchip: Handle clock tree for rk3288w variant")
+> added the check for rk3288w-specific clock-tree changes but in turn would
+> require a double-compatible due to re-using the main rockchip,rk3288-cru
+> compatible as entry point.
+> 
+> The binding change actually describes the compatibles as one or the other
+> so adapt the code accordingly and add a real second entry-point for the
+> clock controller.
+> 
+> Signed-off-by: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
 
-Signed-off-by: Alim Akhtar <alim.akhtar@samsung.com>
----
- arch/arm64/boot/dts/exynos/exynos7-espresso.dts | 1 +
- 1 file changed, 1 insertion(+)
+Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
 
-diff --git a/arch/arm64/boot/dts/exynos/exynos7-espresso.dts b/arch/arm64/boot/dts/exynos/exynos7-espresso.dts
-index 790f12ca8981..d7b42d5a3b2d 100644
---- a/arch/arm64/boot/dts/exynos/exynos7-espresso.dts
-+++ b/arch/arm64/boot/dts/exynos/exynos7-espresso.dts
-@@ -24,6 +24,7 @@
- 
- 	chosen {
- 		stdout-path = &serial_2;
-+		bootargs = "earlycon=exynos4210,0x14c30000 console=ttySAC0,115200n8";
- 	};
- 
- 	memory@40000000 {
+Now all we need is someone to wire the U-Boot bits :)
 
-base-commit: 9e50b94b3eb0d859a2586b5a40d7fd6e5afd9210
--- 
-2.17.1
+Thanks a lot Heiko,
+Ezequiel
+
+> ---
+> changes in v2:
+> - type enum instead of boolean (Ezequiel)
+> 
+>  drivers/clk/rockchip/clk-rk3288.c | 21 +++++++++++++++++++--
+>  1 file changed, 19 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/clk/rockchip/clk-rk3288.c b/drivers/clk/rockchip/clk-rk3288.c
+> index 204976e2d0cb..93c794695c46 100644
+> --- a/drivers/clk/rockchip/clk-rk3288.c
+> +++ b/drivers/clk/rockchip/clk-rk3288.c
+> @@ -15,6 +15,11 @@
+>  #define RK3288_GRF_SOC_CON(x)	(0x244 + x * 4)
+>  #define RK3288_GRF_SOC_STATUS1	0x284
+>  
+> +enum rk3288_variant {
+> +	RK3288_CRU,
+> +	RK3288W_CRU,
+> +};
+> +
+>  enum rk3288_plls {
+>  	apll, dpll, cpll, gpll, npll,
+>  };
+> @@ -922,7 +927,8 @@ static struct syscore_ops rk3288_clk_syscore_ops = {
+>  	.resume = rk3288_clk_resume,
+>  };
+>  
+> -static void __init rk3288_clk_init(struct device_node *np)
+> +static void __init rk3288_common_init(struct device_node *np,
+> +				      enum rk3288_variant soc)
+>  {
+>  	struct rockchip_clk_provider *ctx;
+>  
+> @@ -945,7 +951,7 @@ static void __init rk3288_clk_init(struct device_node *np)
+>  	rockchip_clk_register_branches(ctx, rk3288_clk_branches,
+>  				  ARRAY_SIZE(rk3288_clk_branches));
+>  
+> -	if (of_device_is_compatible(np, "rockchip,rk3288w-cru"))
+> +	if (soc == RK3288W_CRU)
+>  		rockchip_clk_register_branches(ctx, rk3288w_hclkvio_branch,
+>  					       ARRAY_SIZE(rk3288w_hclkvio_branch));
+>  	else
+> @@ -970,4 +976,15 @@ static void __init rk3288_clk_init(struct device_node *np)
+>  
+>  	rockchip_clk_of_add_provider(np, ctx);
+>  }
+> +
+> +static void __init rk3288_clk_init(struct device_node *np)
+> +{
+> +	rk3288_common_init(np, RK3288_CRU);
+> +}
+>  CLK_OF_DECLARE(rk3288_cru, "rockchip,rk3288-cru", rk3288_clk_init);
+> +
+> +static void __init rk3288w_clk_init(struct device_node *np)
+> +{
+> +	rk3288_common_init(np, RK3288W_CRU);
+> +}
+> +CLK_OF_DECLARE(rk3288w_cru, "rockchip,rk3288w-cru", rk3288w_clk_init);
+
 
