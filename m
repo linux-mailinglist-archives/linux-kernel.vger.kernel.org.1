@@ -2,206 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3893621318E
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 04:36:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBD022131CD
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 04:40:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726707AbgGCCgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 22:36:51 -0400
-Received: from mga05.intel.com ([192.55.52.43]:33754 "EHLO mga05.intel.com"
+        id S1726863AbgGCCiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 22:38:21 -0400
+Received: from mga09.intel.com ([134.134.136.24]:3344 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726340AbgGCCgO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 22:36:14 -0400
-IronPort-SDR: IyXpnycBF/0e9BKehCqWmgftuZtlsPvg0JuO0l3i+JLyoDDHhJLMC0/xAiPqqRED7+mM6iZ8BW
- qR81kPB8z4Mw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="231938505"
+        id S1726269AbgGCCiQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 22:38:16 -0400
+IronPort-SDR: riDIuJg/zuRCu7DtUsQqoJxORIY5dFBaRC87FEiNEYJHwKtZsoOzirKusJODJogV+fWSHY5VpH
+ yuaSPP33toCQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="148600082"
 X-IronPort-AV: E=Sophos;i="5.75,306,1589266800"; 
-   d="scan'208";a="231938505"
+   d="scan'208";a="148600082"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2020 19:36:06 -0700
-IronPort-SDR: 6X1DufKoQvQTpLpsvtwmDMN38UaAa1O/P6Vpk8YDJlCUTWf0Wz+eIPQ52K4cnL2azvNBK0Uxgf
- MSYTYl4MQC2Q==
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2020 19:38:15 -0700
+IronPort-SDR: eq/Gd5Op0HkHX1MJSxSEhYIo8rjJAtdM032Jr+9u59Wjrns1XLdLqs+40J6K40UDPviXwlt1xw
+ GaQKjxl557jA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,306,1589266800"; 
-   d="scan'208";a="278295793"
-Received: from sjchrist-coffee.jf.intel.com ([10.54.74.152])
-  by orsmga003.jf.intel.com with ESMTP; 02 Jul 2020 19:36:06 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Marc Zyngier <maz@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ben Gardon <bgardon@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Peter Shier <pshier@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Christoffer Dall <christoffer.dall@arm.com>
-Subject: [PATCH v3 21/21] KVM: MIPS: Use common KVM implementation of MMU memory caches
-Date:   Thu,  2 Jul 2020 19:35:45 -0700
-Message-Id: <20200703023545.8771-22-sean.j.christopherson@intel.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200703023545.8771-1-sean.j.christopherson@intel.com>
-References: <20200703023545.8771-1-sean.j.christopherson@intel.com>
+   d="scan'208";a="282151668"
+Received: from skochetx-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.55.66])
+  by orsmga006.jf.intel.com with ESMTP; 02 Jul 2020 19:38:03 -0700
+Date:   Fri, 3 Jul 2020 05:38:02 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Jethro Beekman <jethro@fortanix.com>,
+        Andy Lutomirski <luto@kernel.org>, akpm@linux-foundation.org,
+        andriy.shevchenko@linux.intel.com, asapek@google.com,
+        cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, nhorman@redhat.com,
+        npmccallum@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v33 12/21] x86/sgx: Allow a limited use of
+ ATTRIBUTE.PROVISIONKEY for attestation
+Message-ID: <20200703023802.GB306897@linux.intel.com>
+References: <20200617220844.57423-1-jarkko.sakkinen@linux.intel.com>
+ <20200617220844.57423-13-jarkko.sakkinen@linux.intel.com>
+ <20200629160242.GB32176@zn.tnic>
+ <20200629220400.GI12312@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200629220400.GI12312@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move to the common MMU memory cache implementation now that the common
-code and MIPS's existing code are semantically compatible.
+On Mon, Jun 29, 2020 at 03:04:00PM -0700, Sean Christopherson wrote:
+> On Mon, Jun 29, 2020 at 06:02:42PM +0200, Borislav Petkov wrote:
+> > On Thu, Jun 18, 2020 at 01:08:34AM +0300, Jarkko Sakkinen wrote:
+> > > Provisioning Certification Enclave (PCE), the root of trust for other
+> > > enclaves, generates a signing key from a fused key called Provisioning
+> > > Certification Key. PCE can then use this key to certify an attestation key
+> > > of a QE, e.g. we get the chain of trust down to the hardware if the Intel
+> > 
+> > What's a QE?
+> > 
+> > I don't see this acronym resolved anywhere in the whole patchset.
+> 
+> Quoting Enclave.
+> 
+> > > signed PCE is used.
+> > > 
+> > > To use the needed keys, ATTRIBUTE.PROVISIONKEY is required but should be
+> > > only allowed for those who actually need it so that only the trusted
+> > > parties can certify QE's.
+> > > 
+> > > Obviously the attestation service should know the public key of the used
+> > > PCE and that way detect illegit attestation, but whitelisting the legit
+> > > users still adds an additional layer of defence.
+> > > 
+> > > Add new device file called /dev/sgx/provision. The sole purpose of this
+> > > file is to provide file descriptors that act as privilege tokens to allow
+> > > to build enclaves with ATTRIBUTE.PROVISIONKEY set. A new ioctl called
+> > > SGX_IOC_ENCLAVE_SET_ATTRIBUTE is used to assign this token to an enclave.
+> > 
+> > So I'm sure I'm missing something here: what controls which
+> > enclave can open /dev/sgx/provision and thus pass the FD to
+> > SGX_IOC_ENCLAVE_SET_ATTRIBUTE?
+> 
+> /dev/sgx/provision is root-only by default, the expectation is that the admin
+> will configure the system to grant only specific enclaves access to the
+> PROVISION_KEY.
+> 
+> > And in general, how does that whole flow look like: what calls
+> > SGX_IOC_ENCLAVE_SET_ATTRIBUTE when?
+> 
+> The basic gist is that the host process of an enclave that needs/wants access
+> to the PROVISION_KEY will invoke SGX_IOC_ENCLAVE_SET_ATTRIBUTE when building
+> the enclave.  Any enclave can request access to PROVISION_KEY, but practically
+> speaking only the PCE and QE (or their non-Intel equivalents) actually need
+> access to the key.  KVM (future series) will also respect /dev/sgx/provision,
+> i.e. require a similar ioctl() to expose the PROVISION_KEY to a guest.
+> 
+> E.g. for my own personal testing, I never do anything attestation related, so
+> none of the enclaves I run request PROVISION_KEY, but I do expose it to VMs to
+> test the KVM paths.
+> 
+> In this series, access is fairly binary, i.e. there's no additional kernel
+> infrastructure to help userspace make per-enclave decisions.  There have been
+> more than a few proposals on how to extend the kernel to help provide better
+> granularity, e.g. LSM hooks, but it was generally agreed to punt that stuff
+> to post-upstreaming to keep things "simple" once we went far enough down
+> various paths to ensure we weren't painting ourselves into a corner.
+> 
+> If you want super gory details, Intel's whitepaper on attestation in cloud
+> environments is a good starting point[*], but I don't recommended doing much
+> more than skimming unless you really like attestation stuff or are
+> masochistic, which IMO amount to the same thing :-)
+> 
+> [*] https://download.01.org/intel-sgx/dcap-1.0/docs/SGX_ECDSA_QuoteGenReference_DCAP_API_Linux_1.0.pdf
 
-No functional change intended.
+Section 3 in [*] is what describes the infrastructure. DCAP is only a
+component in the whole attestation infrastructure.
 
-Suggested-by: Christoffer Dall <christoffer.dall@arm.com>
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
----
- arch/mips/include/asm/Kbuild      |  1 -
- arch/mips/include/asm/kvm_host.h  | 11 ---------
- arch/mips/include/asm/kvm_types.h |  7 ++++++
- arch/mips/kvm/mmu.c               | 40 ++++---------------------------
- 4 files changed, 12 insertions(+), 47 deletions(-)
- create mode 100644 arch/mips/include/asm/kvm_types.h
+[*] https://software.intel.com/sites/default/files/managed/f1/b8/intel-sgx-support-for-third-party-attestation.pdf
 
-diff --git a/arch/mips/include/asm/Kbuild b/arch/mips/include/asm/Kbuild
-index 397e6d24d2ab..8643d313890e 100644
---- a/arch/mips/include/asm/Kbuild
-+++ b/arch/mips/include/asm/Kbuild
-@@ -5,7 +5,6 @@ generated-y += syscall_table_64_n32.h
- generated-y += syscall_table_64_n64.h
- generated-y += syscall_table_64_o32.h
- generic-y += export.h
--generic-y += kvm_types.h
- generic-y += local64.h
- generic-y += mcs_spinlock.h
- generic-y += parport.h
-diff --git a/arch/mips/include/asm/kvm_host.h b/arch/mips/include/asm/kvm_host.h
-index 363e7a89d173..f49617175f60 100644
---- a/arch/mips/include/asm/kvm_host.h
-+++ b/arch/mips/include/asm/kvm_host.h
-@@ -335,17 +335,6 @@ struct kvm_mips_tlb {
- 	long tlb_lo[2];
- };
- 
--#define KVM_NR_MEM_OBJS     4
--
--/*
-- * We don't want allocation failures within the mmu code, so we preallocate
-- * enough memory for a single page fault in a cache.
-- */
--struct kvm_mmu_memory_cache {
--	int nobjs;
--	void *objects[KVM_NR_MEM_OBJS];
--};
--
- #define KVM_MIPS_AUX_FPU	0x1
- #define KVM_MIPS_AUX_MSA	0x2
- 
-diff --git a/arch/mips/include/asm/kvm_types.h b/arch/mips/include/asm/kvm_types.h
-new file mode 100644
-index 000000000000..213754d9ef6b
---- /dev/null
-+++ b/arch/mips/include/asm/kvm_types.h
-@@ -0,0 +1,7 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _ASM_MIPS_KVM_TYPES_H
-+#define _ASM_MIPS_KVM_TYPES_H
-+
-+#define KVM_ARCH_NR_OBJS_PER_MEMORY_CACHE     4
-+
-+#endif /* _ASM_MIPS_KVM_TYPES_H */
-diff --git a/arch/mips/kvm/mmu.c b/arch/mips/kvm/mmu.c
-index 9d3c8c025624..87fa8d8a1031 100644
---- a/arch/mips/kvm/mmu.c
-+++ b/arch/mips/kvm/mmu.c
-@@ -25,39 +25,9 @@
- #define KVM_MMU_CACHE_MIN_PAGES 2
- #endif
- 
--static int mmu_topup_memory_cache(struct kvm_mmu_memory_cache *cache, int min)
--{
--	void *page;
--
--	if (cache->nobjs >= min)
--		return 0;
--	while (cache->nobjs < ARRAY_SIZE(cache->objects)) {
--		page = (void *)__get_free_page(GFP_KERNEL_ACCOUNT);
--		if (!page)
--			return -ENOMEM;
--		cache->objects[cache->nobjs++] = page;
--	}
--	return 0;
--}
--
--static void mmu_free_memory_cache(struct kvm_mmu_memory_cache *mc)
--{
--	while (mc->nobjs)
--		free_page((unsigned long)mc->objects[--mc->nobjs]);
--}
--
--static void *mmu_memory_cache_alloc(struct kvm_mmu_memory_cache *mc)
--{
--	void *p;
--
--	BUG_ON(!mc || !mc->nobjs);
--	p = mc->objects[--mc->nobjs];
--	return p;
--}
--
- void kvm_mmu_free_memory_caches(struct kvm_vcpu *vcpu)
- {
--	mmu_free_memory_cache(&vcpu->arch.mmu_page_cache);
-+	kvm_mmu_free_memory_cache(&vcpu->arch.mmu_page_cache);
- }
- 
- /**
-@@ -151,7 +121,7 @@ static pte_t *kvm_mips_walk_pgd(pgd_t *pgd, struct kvm_mmu_memory_cache *cache,
- 
- 		if (!cache)
- 			return NULL;
--		new_pmd = mmu_memory_cache_alloc(cache);
-+		new_pmd = kvm_mmu_memory_cache_alloc(cache);
- 		pmd_init((unsigned long)new_pmd,
- 			 (unsigned long)invalid_pte_table);
- 		pud_populate(NULL, pud, new_pmd);
-@@ -162,7 +132,7 @@ static pte_t *kvm_mips_walk_pgd(pgd_t *pgd, struct kvm_mmu_memory_cache *cache,
- 
- 		if (!cache)
- 			return NULL;
--		new_pte = mmu_memory_cache_alloc(cache);
-+		new_pte = kvm_mmu_memory_cache_alloc(cache);
- 		clear_page(new_pte);
- 		pmd_populate_kernel(NULL, pmd, new_pte);
- 	}
-@@ -709,7 +679,7 @@ static int kvm_mips_map_page(struct kvm_vcpu *vcpu, unsigned long gpa,
- 		goto out;
- 
- 	/* We need a minimum of cached pages ready for page table creation */
--	err = mmu_topup_memory_cache(memcache, KVM_MMU_CACHE_MIN_PAGES);
-+	err = kvm_mmu_topup_memory_cache(memcache, KVM_MMU_CACHE_MIN_PAGES);
- 	if (err)
- 		goto out;
- 
-@@ -793,7 +763,7 @@ static pte_t *kvm_trap_emul_pte_for_gva(struct kvm_vcpu *vcpu,
- 	int ret;
- 
- 	/* We need a minimum of cached pages ready for page table creation */
--	ret = mmu_topup_memory_cache(memcache, KVM_MMU_CACHE_MIN_PAGES);
-+	ret = kvm_mmu_topup_memory_cache(memcache, KVM_MMU_CACHE_MIN_PAGES);
- 	if (ret)
- 		return NULL;
- 
--- 
-2.26.0
-
+/Jarkko
