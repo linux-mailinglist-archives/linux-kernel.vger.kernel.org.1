@@ -2,110 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEA212137EE
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 11:45:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C35072137DA
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 11:43:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726356AbgGCJpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 05:45:06 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:37982 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726309AbgGCJpF (ORCPT
+        id S1726150AbgGCJn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 05:43:56 -0400
+Received: from smtprelay0019.hostedemail.com ([216.40.44.19]:41798 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725786AbgGCJnz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 05:45:05 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1593769505; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=dl0rgC/HhlVxkyXbeJ+jwvTvXNECw4L3SLbh6WDhKSM=; b=Q7FuNIKP5qBhj0LgjL9N2FHYXZmPOTuhxPIrAIBgfbmMWPdKoCn6l2YaULD3fwXYRmuf+VxU
- bYneOibvk9mBAxWLllrAxlmpW5J+YXnH8jlNcNMN8SwrKkwWe6uQwU+55O7ONw4gvpaExIOJ
- GAqMMHxcBHfAuifA4ddi7c9R/X0=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 5efefe0d567385e8e707101c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 03 Jul 2020 09:44:45
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 950E2C433AF; Fri,  3 Jul 2020 09:44:44 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-173.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D9747C433AD;
-        Fri,  3 Jul 2020 09:44:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D9747C433AD
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rnayak@codeaurora.org
-From:   Rajendra Nayak <rnayak@codeaurora.org>
-To:     bjorn.andersson@linaro.org, agross@kernel.org, broonie@kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        mka@chromium.org, Rajendra Nayak <rnayak@codeaurora.org>
-Subject: [PATCH 3/3] arm64: dts: sc7180: Add qspi opps and power-domains
-Date:   Fri,  3 Jul 2020 15:11:33 +0530
-Message-Id: <1593769293-6354-4-git-send-email-rnayak@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1593769293-6354-1-git-send-email-rnayak@codeaurora.org>
-References: <1593769293-6354-1-git-send-email-rnayak@codeaurora.org>
+        Fri, 3 Jul 2020 05:43:55 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 736CC182CF665;
+        Fri,  3 Jul 2020 09:43:54 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3871:3874:4321:4823:5007:7875:7903:10004:10400:10848:11026:11232:11658:11914:12296:12297:12663:12740:12760:12895:13018:13019:13069:13255:13311:13357:13439:14181:14659:14721:21080:21212:21324:21433:21627:21987:30006:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: limit47_4e12c1126e90
+X-Filterd-Recvd-Size: 2311
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf16.hostedemail.com (Postfix) with ESMTPA;
+        Fri,  3 Jul 2020 09:43:52 +0000 (UTC)
+Message-ID: <2f1128bd916cebe01730528b5de47680d8721179.camel@perches.com>
+Subject: Re: [PATCH 16/23] seq_file: switch over direct seq_read method
+ calls to seq_read_iter
+From:   Joe Perches <joe@perches.com>
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Date:   Fri, 03 Jul 2020 02:43:51 -0700
+In-Reply-To: <CANiq72=LekNWFbK8_+88T2oGSqA5A0fjnvn28cY-tEOfKbSqdw@mail.gmail.com>
+References: <20200701200951.3603160-1-hch@lst.de>
+         <20200701200951.3603160-17-hch@lst.de>
+         <CANiq72=CaKKzXSayH9bRpzMkU2zyHGLA4a-XqTH--_mpTvO7ZQ@mail.gmail.com>
+         <20200702135054.GA29240@lst.de>
+         <CANiq72=8facdt7HBtoUZiJW5zfki-gYYESJzxjXf7wK7dYLm1Q@mail.gmail.com>
+         <d7c902f9eecffc51f3a5761fa343bedad89dff7e.camel@perches.com>
+         <CANiq72=LekNWFbK8_+88T2oGSqA5A0fjnvn28cY-tEOfKbSqdw@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.3-0ubuntu1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the power domain supporting performance state and the corresponding
-OPP tables for the qspi device on sc7180
+On Fri, 2020-07-03 at 11:35 +0200, Miguel Ojeda wrote:
+> On Fri, Jul 3, 2020 at 9:44 AM Joe Perches <joe@perches.com> wrote:
+> > And I'd generally not bother with 80 column rewrapping
+> 
+> Thanks for the quick answer Joe -- here I was referring to the cases
+> where one needs to move all the `=`s to the right like:
+> 
+>  static const struct file_operations memtype_fops = {
+>   .open    = memtype_seq_open,
+> - .read    = seq_read,
+> + .read_iter    = seq_read_iter,
+>   .llseek  = seq_lseek,
+>   .release = seq_release,
+>  };
+> 
+> (I don't think there is any/many cases of 80-column rewrapping here).
 
-Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
----
- arch/arm64/boot/dts/qcom/sc7180.dtsi | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+OK.
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-index 2be81a2..34a6d83 100644
---- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-@@ -2407,6 +2407,25 @@
- 			status = "disabled";
- 		};
- 
-+		qspi_opp_table: qspi-opp-table {
-+			compatible = "operating-points-v2";
-+
-+			opp-75000000 {
-+				opp-hz = /bits/ 64 <75000000>;
-+				required-opps = <&rpmhpd_opp_low_svs>;
-+			};
-+
-+			opp-150000000 {
-+				opp-hz = /bits/ 64 <150000000>;
-+				required-opps = <&rpmhpd_opp_svs>;
-+			};
-+
-+			opp-300000000 {
-+				opp-hz = /bits/ 64 <300000000>;
-+				required-opps = <&rpmhpd_opp_nom>;
-+			};
-+		};
-+
- 		qspi: spi@88dc000 {
- 			compatible = "qcom,qspi-v1";
- 			reg = <0 0x088dc000 0 0x600>;
-@@ -2419,6 +2438,8 @@
- 			interconnects = <&gem_noc MASTER_APPSS_PROC
- 					&config_noc SLAVE_QSPI_0>;
- 			interconnect-names = "qspi-config";
-+			power-domains = <&rpmhpd SC7180_CX>;
-+			operating-points-v2 = <&qspi_opp_table>;
- 			status = "disabled";
- 		};
- 
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+I'm not much bothered much by alignments like that and
+I don't see a good way to automate such conversions as
+some might, as here, use spaces to align to = and most
+would use tabs.
+
+
+
 
