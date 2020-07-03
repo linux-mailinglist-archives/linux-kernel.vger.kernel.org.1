@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BD2B2140D6
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 23:29:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E54F32140DB
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 23:31:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726992AbgGCV3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 17:29:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51098 "EHLO
+        id S1727000AbgGCVbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 17:31:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726885AbgGCV3T (ORCPT
+        with ESMTP id S1726858AbgGCVbQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 17:29:19 -0400
+        Fri, 3 Jul 2020 17:31:16 -0400
 Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18A1BC08C5DD;
-        Fri,  3 Jul 2020 14:29:19 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05269C061794;
+        Fri,  3 Jul 2020 14:31:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=LEnyADWq/NophE7qSmBDDcjekGbN+O2yg5twkO086Ws=; b=Ohk6zx8UKR9hjpJwDA+AHyUcse
-        0veg3vAUlr1Lou7KeF2FRi9/P+fF07lrd3F5dC+03oh6eoMKw+DgxtHKKEv7zdu4jos2gkz0zFGuH
-        arNR1YP13zwB67hzPHIMGPyzBplFSesAC0NZx+ld0CH/eebc5S/np4OUBheEWSJpw9k9UonFjAxul
-        Rz6gdNzE9j0880c3uyKVusR+9/juD6K5m7g6YAPDkNqGWjaJT8fpLJVdxeTc2pnKJp/HBaUbyLIKW
-        5IWFcbSxkopPbeJC+tIC94OA+Wc4ej4Hoi9OgDJGQRqryTlnWiO64a0+F8s48MExSoUtplv9yC4qz
-        5DVaz5jg==;
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=3rUy7W6J3A1nt55ZYo4Uy0+DrIitznYqvXbwzlIymh8=; b=LKkoB+z5fvtJRfzMTQDWGDgdxe
+        pbzJn2Y64uY3gPNJ/FOca40kY+gyJE+i+cEDvpUKLW1CUSQmUFM5QAU9E7IVKNpv+7xgV5fZMXFQ8
+        9ZJb8aMtITeMeZmIXOYMOVLsHervk9uKiMXUpL+iNjd2UT2+9gfcCO1j0E2jVtvlmw7nfLR8v0ANG
+        p2su+FA1+EoCELpm0ywyvI/Drk3EFXNbWvPmJ/i9BFOl/n+K3hgrjQx4y5s+fMBJK4/iewvp/jFWE
+        cqTW6q1rFbpA901pJgSQZFVSN0NGvyr9ZvuoMqSnBc+gZ76deBmh/XubhoVxp2hTb6lAXp0y0lLCh
+        J63ODJkA==;
 Received: from [2601:1c0:6280:3f0::19c2] (helo=smtpauth.infradead.org)
         by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jrTFE-0006KB-O3; Fri, 03 Jul 2020 21:29:17 +0000
+        id 1jrTH6-0006Rx-RX; Fri, 03 Jul 2020 21:31:13 +0000
 From:   Randy Dunlap <rdunlap@infradead.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Randy Dunlap <rdunlap@infradead.org>,
         Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
-Subject: [PATCH 1/2] Documentation: virt: kvm/api: drop doubled words
-Date:   Fri,  3 Jul 2020 14:29:06 -0700
-Message-Id: <20200703212906.30655-3-rdunlap@infradead.org>
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+Subject: [PATCH 0/2] Documentation: x86: eliminate duplicated words
+Date:   Fri,  3 Jul 2020 14:31:05 -0700
+Message-Id: <20200703213107.30758-1-rdunlap@infradead.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200703212906.30655-1-rdunlap@infradead.org>
-References: <20200703212906.30655-1-rdunlap@infradead.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -46,88 +46,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop multiple doubled words.
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Drop doubled words in Documentation/x86/.
+
 Cc: Jonathan Corbet <corbet@lwn.net>
 Cc: linux-doc@vger.kernel.org
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Cc: kvm@vger.kernel.org
----
- Documentation/virt/kvm/api.rst |   16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: x86@kernel.org
+Cc: "H. Peter Anvin" <hpa@zytor.com>
 
---- linux-next-20200701.orig/Documentation/virt/kvm/api.rst
-+++ linux-next-20200701/Documentation/virt/kvm/api.rst
-@@ -65,7 +65,7 @@ not be freed until both the parent (orig
- put their references to the VM's file descriptor.
- 
- Because a VM's resources are not freed until the last reference to its
--file descriptor is released, creating additional references to a VM via
-+file descriptor is released, creating additional references to a VM
- via fork(), dup(), etc... without careful consideration is strongly
- discouraged and may have unwanted side effects, e.g. memory allocated
- by and on behalf of the VM's process may not be freed/unaccounted when
-@@ -536,7 +536,7 @@ X86:
- 	========= ===================================
- 	  0       on success,
- 	 -EEXIST  if an interrupt is already enqueued
--	 -EINVAL  the the irq number is invalid
-+	 -EINVAL  the irq number is invalid
- 	 -ENXIO   if the PIC is in the kernel
- 	 -EFAULT  if the pointer is invalid
- 	========= ===================================
-@@ -3167,7 +3167,7 @@ not mandatory.
- 
- The information returned by this ioctl can be used to prepare an instance
- of struct kvm_vcpu_init for KVM_ARM_VCPU_INIT ioctl which will result in
--in VCPU matching underlying host.
-+VCPU matching underlying host.
- 
- 
- 4.84 KVM_GET_REG_LIST
-@@ -5855,7 +5855,7 @@ features of the KVM implementation.
- :Architectures: ppc
- 
- This capability, if KVM_CHECK_EXTENSION indicates that it is
--available, means that that the kernel has an implementation of the
-+available, means that the kernel has an implementation of the
- H_RANDOM hypercall backed by a hardware random-number generator.
- If present, the kernel H_RANDOM handler can be enabled for guest use
- with the KVM_CAP_PPC_ENABLE_HCALL capability.
-@@ -5866,7 +5866,7 @@ with the KVM_CAP_PPC_ENABLE_HCALL capabi
- :Architectures: x86
- 
- This capability, if KVM_CHECK_EXTENSION indicates that it is
--available, means that that the kernel has an implementation of the
-+available, means that the kernel has an implementation of the
- Hyper-V Synthetic interrupt controller(SynIC). Hyper-V SynIC is
- used to support Windows Hyper-V based guest paravirt drivers(VMBus).
- 
-@@ -5881,7 +5881,7 @@ by the CPU, as it's incompatible with Sy
- :Architectures: ppc
- 
- This capability, if KVM_CHECK_EXTENSION indicates that it is
--available, means that that the kernel can support guests using the
-+available, means that the kernel can support guests using the
- radix MMU defined in Power ISA V3.00 (as implemented in the POWER9
- processor).
- 
-@@ -5891,7 +5891,7 @@ processor).
- :Architectures: ppc
- 
- This capability, if KVM_CHECK_EXTENSION indicates that it is
--available, means that that the kernel can support guests using the
-+available, means that the kernel can support guests using the
- hashed page table MMU defined in Power ISA V3.00 (as implemented in
- the POWER9 processor), including in-memory segment tables.
- 
-@@ -5996,7 +5996,7 @@ run->kvm_valid_regs or run->kvm_dirty_re
- 
- If KVM_CAP_ARM_USER_IRQ is supported, the KVM_CHECK_EXTENSION ioctl returns a
- number larger than 0 indicating the version of this capability is implemented
--and thereby which bits in in run->s.regs.device_irq_level can signal values.
-+and thereby which bits in run->s.regs.device_irq_level can signal values.
- 
- Currently the following bits are defined for the device_irq_level bitmap::
- 
+
+ Documentation/x86/earlyprintk.rst         |    2 +-
+ Documentation/x86/x86_64/machinecheck.rst |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
