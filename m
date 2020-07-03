@@ -2,120 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81FF6213556
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 09:44:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5FD221354A
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 09:43:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726648AbgGCHok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 03:44:40 -0400
-Received: from mga12.intel.com ([192.55.52.136]:31137 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726082AbgGCHok (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 03:44:40 -0400
-IronPort-SDR: HQEXlKY1h2Fnemgsykq2iDWUFeVV4M45L4JNW6+i2DSQQPD1By9quwThGYWrboQQ78mWUgSMw8
- XMZVVQM9o8dg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="126723726"
-X-IronPort-AV: E=Sophos;i="5.75,307,1589266800"; 
-   d="scan'208";a="126723726"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jul 2020 00:44:39 -0700
-IronPort-SDR: gXU0nCLFEgxjOMI/X5UovLo8FqS4mohcrkXT2k/z/bsqbwEMHxgzpva8NjjMr8q6ilqz7qfqYo
- msBBmJccm7Iw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,307,1589266800"; 
-   d="scan'208";a="455813132"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga005.jf.intel.com with ESMTP; 03 Jul 2020 00:44:37 -0700
-Received: from [10.249.231.67] (abudanko-mobl.ccr.corp.intel.com [10.249.231.67])
-        by linux.intel.com (Postfix) with ESMTP id A629C580781;
-        Fri,  3 Jul 2020 00:44:35 -0700 (PDT)
-Subject: [PATCH v9 06/15] perf stat: factor out body of event handling loop
- for system wide
-From:   Alexey Budankov <alexey.budankov@linux.intel.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <a4d5db4a-f25c-38dc-1c41-321a886cb122@linux.intel.com>
-Organization: Intel Corp.
-Message-ID: <84dc0a4f-3b47-5969-c78f-426d3b0438df@linux.intel.com>
-Date:   Fri, 3 Jul 2020 10:44:34 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726237AbgGCHnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 03:43:49 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:55376 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725786AbgGCHnt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Jul 2020 03:43:49 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0637hkXL045469;
+        Fri, 3 Jul 2020 02:43:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1593762226;
+        bh=h5djLFPsArRTkD/MPeDP9hPD0238gUacEpCc7VkMb0s=;
+        h=From:To:CC:Subject:Date;
+        b=NpMfzUwh3I8Sx9KcPc/KarS4kGCWCGrJc2+O36vhr0KDyNrsB0O4X8yCfj/oLBM+L
+         BfgcPiL8VvoBEm9+uOtELpj3Pvo2o+KdrUsVkV/DOftJDH0OYvdfRH1KsI15/3CyLA
+         1j8p7BT0gM9e5Zgm9xhDwKrP/UWfK21ZB5P34aKo=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0637hjhk069397
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 3 Jul 2020 02:43:45 -0500
+Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 3 Jul
+ 2020 02:43:45 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 3 Jul 2020 02:43:45 -0500
+Received: from feketebors.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0637hhdo098446;
+        Fri, 3 Jul 2020 02:43:43 -0500
+From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
+To:     <t-kristo@ti.com>, <nm@ti.com>
+CC:     <devicetree@vger.kernel.org>, <robh+dt@kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <vigneshr@ti.com>
+Subject: [PATCH v2 0/2] arm64: dts: ti: k3-j721e-common-proc-board: Enable audio support
+Date:   Fri, 3 Jul 2020 10:44:41 +0300
+Message-ID: <20200703074443.27142-1-peter.ujfalusi@ti.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <a4d5db4a-f25c-38dc-1c41-321a886cb122@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-Introduce handle_interval() function that factors out body of event
-handling loop for attach and system wide monitoring use cases.
+Change since v1:
+- not including dt-bindings/sound/ti-mcasp.h as it is not needed
 
-Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
+the DT binding document and the driver is now in linux-next:
+https://lore.kernel.org/lkml/159364215574.10630.2058528286314798186.b4-ty@kernel.org/
+
+Before adding the audio support, first fix up the DTS file by removing the
+duplicated main_i2c1_exp4_pins_default.
+
+Regards,
+Peter
 ---
- tools/perf/builtin-stat.c | 19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
+Peter Ujfalusi (2):
+  arm64: dts: ti: k3-j721e-common-proc-board: Remove duplicated
+    main_i2c1_exp4_pins_default
+  arm64: dts: ti: j721e-common-proc-board: Analog audio support
 
-diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-index 922d9961ba98..c74e8f94375c 100644
---- a/tools/perf/builtin-stat.c
-+++ b/tools/perf/builtin-stat.c
-@@ -475,6 +475,16 @@ static void process_interval(void)
- 	print_counters(&rs, 0, NULL);
- }
- 
-+static bool handle_interval(unsigned int interval, int *times)
-+{
-+	if (interval) {
-+		process_interval();
-+		if (interval_count && !(--(*times)))
-+			return true;
-+	}
-+	return false;
-+}
-+
- static void enable_counters(void)
- {
- 	if (stat_config.initial_delay)
-@@ -611,6 +621,7 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
- 	struct affinity affinity;
- 	int i, cpu;
- 	bool second_pass = false;
-+	bool stop = false;
- 
- 	if (interval) {
- 		ts.tv_sec  = interval / USEC_PER_MSEC;
-@@ -805,17 +816,13 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
- 			psignal(WTERMSIG(status), argv[0]);
- 	} else {
- 		enable_counters();
--		while (!done) {
-+		while (!done && !stop) {
- 			nanosleep(&ts, NULL);
- 			if (!is_target_alive(&target, evsel_list->core.threads))
- 				break;
- 			if (timeout)
- 				break;
--			if (interval) {
--				process_interval();
--				if (interval_count && !(--times))
--					break;
--			}
-+			stop = handle_interval(interval, &times);
- 		}
- 	}
- 
+ .../dts/ti/k3-j721e-common-proc-board.dts     | 136 +++++++++++++++++-
+ 1 file changed, 133 insertions(+), 3 deletions(-)
+
 -- 
-2.24.1
+Peter
 
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
 
