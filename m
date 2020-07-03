@@ -2,66 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 918C3213200
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 05:04:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C604F21320B
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 05:09:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726288AbgGCDEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 23:04:41 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7362 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726033AbgGCDEk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 23:04:40 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 22DB6E5DE6A194980ED4;
-        Fri,  3 Jul 2020 11:04:37 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 3 Jul 2020 11:04:27 +0800
-From:   Wei Yongjun <weiyongjun1@huawei.com>
-To:     Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-CC:     Wei Yongjun <weiyongjun1@huawei.com>,
-        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <kernel-janitors@vger.kernel.org>, Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH -next] ASoC: ti: j721e-evm: Fix missing unlock on error in j721e_audio_hw_params()
-Date:   Fri, 3 Jul 2020 03:09:10 +0000
-Message-ID: <20200703030910.75047-1-weiyongjun1@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        id S1726100AbgGCDJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 23:09:44 -0400
+Received: from mga17.intel.com ([192.55.52.151]:43112 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725915AbgGCDJo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Jul 2020 23:09:44 -0400
+IronPort-SDR: Oh2U5pS+1iJOcn5ffAEMiQLvZ7/K5CqCouF7fxnmbCMFHzhix/p9hoZ+GMFsfXfiV3ZXGrAtd/
+ zeKaE8Lt9H0A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="127166618"
+X-IronPort-AV: E=Sophos;i="5.75,306,1589266800"; 
+   d="scan'208";a="127166618"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2020 20:09:43 -0700
+IronPort-SDR: aPFCC2Rjr2grbjLW42eLLUBa1wZ2Pj6RM0b2nYbGW7eym/tg1+xXFs6GGgWYXShSYtcTco/gLx
+ R/ivR5oK335g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,306,1589266800"; 
+   d="scan'208";a="455744536"
+Received: from skochetx-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.55.66])
+  by orsmga005.jf.intel.com with ESMTP; 02 Jul 2020 20:09:29 -0700
+Date:   Fri, 3 Jul 2020 06:09:28 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Jethro Beekman <jethro@fortanix.com>,
+        Haitao Huang <haitao.huang@linux.intel.com>,
+        Chunyang Hui <sanqian.hcy@antfin.com>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Seth Moore <sethmo@google.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Suresh Siddha <suresh.b.siddha@intel.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v33 11/21] x86/sgx: Linux Enclave Driver
+Message-ID: <20200703030928.GE306897@linux.intel.com>
+References: <20200617220844.57423-1-jarkko.sakkinen@linux.intel.com>
+ <20200617220844.57423-12-jarkko.sakkinen@linux.intel.com>
+ <20200626091419.GB27151@zn.tnic>
 MIME-Version: 1.0
-Content-Type:   text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200626091419.GB27151@zn.tnic>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the missing unlock before return from function j721e_audio_hw_params()
-in the error handling case.
+On Fri, Jun 26, 2020 at 11:14:19AM +0200, Borislav Petkov wrote:
+> On Thu, Jun 18, 2020 at 01:08:33AM +0300, Jarkko Sakkinen wrote:
+> > diff --git a/Documentation/userspace-api/ioctl/ioctl-number.rst b/Documentation/userspace-api/ioctl/ioctl-number.rst
+> > index 59472cd6a11d..35f713e3a267 100644
+> > --- a/Documentation/userspace-api/ioctl/ioctl-number.rst
+> > +++ b/Documentation/userspace-api/ioctl/ioctl-number.rst
+> > @@ -323,6 +323,7 @@ Code  Seq#    Include File                                           Comments
+> >                                                                       <mailto:tlewis@mindspring.com>
+> >  0xA3  90-9F  linux/dtlk.h
+> >  0xA4  00-1F  uapi/linux/tee.h                                        Generic TEE subsystem
+> > +0xA4  00-1F  uapi/asm/sgx.h                                          Intel SGX subsystem (a legit conflict as TEE and SGX do not co-exist)
+> 
+> Maybe add <mailto:linux-sgx@vger.kernel.org> ?
+> 
+> >  0xAA  00-3F  linux/uapi/linux/userfaultfd.h
+> >  0xAB  00-1F  linux/nbd.h
+> >  0xAC  00-1F  linux/raw.h
+> 
+> ...
+> 
+> > +static int sgx_encl_create(struct sgx_encl *encl, struct sgx_secs *secs)
+> > +{
+> > +	unsigned long encl_size = secs->size + PAGE_SIZE;
+> 
+> Wait, you just copied @secs from user memory in sgx_ioc_enclave_create()
+> and now use ->size unverified? You're kidding, right?
 
-Fixes: 6748d0559059 ("ASoC: ti: Add custom machine driver for j721e EVM (CPB and IVI)")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
----
- sound/soc/ti/j721e-evm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The validation is done in sgx_validate_secs().
 
-diff --git a/sound/soc/ti/j721e-evm.c b/sound/soc/ti/j721e-evm.c
-index 3a2a8b1f3aa3..174306cf53ad 100644
---- a/sound/soc/ti/j721e-evm.c
-+++ b/sound/soc/ti/j721e-evm.c
-@@ -330,7 +330,7 @@ static int j721e_audio_hw_params(struct snd_pcm_substream *substream,
- 		ret = snd_soc_dai_set_tdm_slot(codec_dai, 0x3, 0x3, 2,
- 					       slot_width);
- 		if (ret && ret != -ENOTSUPP)
--			return ret;
-+			goto out;
- 	}
- 
- 	ret = j721e_configure_refclk(priv, domain_id, params_rate(params));
+> 
+> > +	struct sgx_epc_page *secs_epc;
+> > +	unsigned long ssaframesize;
+> > +	struct sgx_pageinfo pginfo;
+> > +	struct sgx_secinfo secinfo;
+> > +	struct file *backing;
+> > +	long ret;
+> > +
+> > +	if (atomic_read(&encl->flags) & SGX_ENCL_CREATED)
+> > +		return -EINVAL;
+> > +
+> > +	ssaframesize = sgx_calc_ssaframesize(secs->miscselect, secs->xfrm);
+> 
+> So this is using more un-validated user input to do further calculations.
+> What can possibly go wrong?
+> 
+> I sure hope *I* am wrong and am missing something here.
+> 
+> If not, please, for the next version, audit all your user input and
+> validate it before using it. Srsly.
 
+It works but is unclean. I'd guess reason for this is just that code has
+evolved into this state over time.
 
+I'd just move the call to sgx_calc_ssaframesize() inside
+sgx_validate_secs().
 
+/Jarkko
