@@ -2,61 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2C942133B3
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 07:48:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5A2D2133BA
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 07:50:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726122AbgGCFsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 01:48:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47902 "EHLO
+        id S1726251AbgGCFt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 01:49:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725779AbgGCFsx (ORCPT
+        with ESMTP id S1725648AbgGCFt5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 01:48:53 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03690C08C5C1;
-        Thu,  2 Jul 2020 22:48:53 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id x3so7997095pfo.9;
-        Thu, 02 Jul 2020 22:48:52 -0700 (PDT)
+        Fri, 3 Jul 2020 01:49:57 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F005FC08C5C1;
+        Thu,  2 Jul 2020 22:49:56 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id l63so14575345pge.12;
+        Thu, 02 Jul 2020 22:49:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:subject:to:cc:references:from:autocrypt:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=xggNeQQkKQTMcykW7pls8KqjnSbZo3eU0HBpywIP0Oo=;
-        b=iAQ3NNZtzHZJsUVnV6xvw5rLLHcrLPrpLBNSnPFDcHccUhrpy+2bn/nL/1C99XUGBw
-         g/Xvrp5XV20/VkAQqpTRZ1rDvJIu/F37GSBn2iAcrrOPjoo2a2Xhz2RInBOXPqwdgP51
-         JgCuvqvFzaTwR8JUN/erwRBYJlTIPehQFPBc8unMMtB+iBEZfvrxnQmbw18EJ7PhNeFc
-         eA+FDyG2d6+HNFg9YVksLXC2tsqe36/1ykDGqLvGl+2ldmeiDGCsoD1hGvOWVJnQUXcG
-         s80uM7X9CJL/lj8sHL4COK3YT0EmYelEsIsjSWch2vTvfM4xoMzZKd1yOG49biZNxk96
-         /UXQ==
+        bh=zMyMWURY7xbF8dyktqTQMI8KGW4nu/R/8zvs5MFNXPQ=;
+        b=cESGzUS+DxQLcfGk5i/cILhy16+De2UsJBMU87iQNup8kkceIQqEU7YifXGR4uhOiH
+         FUezDiDP79IjUe5jWFkrZg4EBTXWVGfDkTKw82tVFP+Q2kUqYECNc1YPBDZ4xEvIlWH4
+         RLMw8ZxfuIhj0guYdtGIUIgL2VxDqvxpnsJi2tgPf4fe5XiVIUctEjcRAfNmuXuiBZtu
+         lq4T7oh/9VsdJd3n5xwD47O5eSYpmDR0iH5LIOzwXQa7Qygn10v/RcGG8ZOGEDaUDMzx
+         ctuD0gnEj+Hfk5uoAgevrF6wHBI/IFi+VuuVfAcNtrs3/nMmDDsWuahLCid435zJNmZt
+         thuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=xggNeQQkKQTMcykW7pls8KqjnSbZo3eU0HBpywIP0Oo=;
-        b=Fzw880kZfQH3bWMSrX9aRM1ictbHPEk54+YtRAv6zzubB4N1V1zrfXzzaamXbN5gx4
-         ZZJrRRz+ojOdjh+o8vwBfKBkzg6AGQljCfsiAd1p6AD4ay0I1lhPDDsHPM0FIeW/NeT6
-         seI4BfautgrX7cfepR9YTE1YxV0OlEWbvgF0nOp02R2n96Iu+6Otgtc2N+Prya3BXDv5
-         L6RuS4zubV8ucI//kaBQ38NwScKaZggUf+CKEwI+VMYu0ZgGUlFriBeTlwWc+Xx8inQ6
-         jb2H9HSPP9ylYIo76MqKXdvZ4Ngt5gNvpUIryw1Ls8DGAZcX8gq4b/UbZwCgtqQ4inPg
-         Px3g==
-X-Gm-Message-State: AOAM533okHX4JFM4+nVZuLb37Ni3Webcpc/YMtsZ2BaGrIrcY3O5nDRj
-        AthUghkwO3dmSjt0PuUMghKgnL/iLdo=
-X-Google-Smtp-Source: ABdhPJxandp0SqaiKJ6v16u8uYdHi68WYcJyPtjvXPax47gf97Oxdgr7/9JgzXuNTBFd3HF4/BMwog==
-X-Received: by 2002:a63:fc59:: with SMTP id r25mr4650294pgk.336.1593755332242;
-        Thu, 02 Jul 2020 22:48:52 -0700 (PDT)
+        bh=zMyMWURY7xbF8dyktqTQMI8KGW4nu/R/8zvs5MFNXPQ=;
+        b=YYp2P12sMXglj2c9zLwfnHIO2mkS0BWL1uf8XmdDiZHd0BaHPNoSrmTV+5eUNjxN2o
+         EMbkhLr++TN11495RTr1z7m1cK9iEwd4Pv5ru1yyZQ0cEfS9R5hqr5AwOtLSMcixc0mf
+         xBctnXkprqMc0k5YZ/LqIpuk2WAjk9My2ZlKACvj6AWaLCOU/IklS0Hwjd/Fs4poafXI
+         yrVYvgIZ0z2FWmLdmK7Pjvhwaqk+dmZcVkfoLtJ1c/NRKeVVHO2xrvhASqHMwFNY9yM0
+         nphjM/o84hELW4b5hmIYsGU1X+H3U30wE8ws9wFfkhrYb9i4MS930kqVFa5CRBI0JN45
+         zb4g==
+X-Gm-Message-State: AOAM5337w+oVs8nsqZ8cF7ax0gOGFe/i4f+HVv8qxIWNVQGhAgtYGJui
+        aMQ+ps9Rp+UCLD8gMJRtSFStC8AvXkQ=
+X-Google-Smtp-Source: ABdhPJy+MuTXU1MrtuID2xvSLzIxQ2wBvFsJL57FuxX+fE+/syatU0UbbvekAlFahLrzVZDaO2ubzA==
+X-Received: by 2002:a05:6a00:807:: with SMTP id m7mr32607613pfk.246.1593755396390;
+        Thu, 02 Jul 2020 22:49:56 -0700 (PDT)
 Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id q14sm10197381pgk.86.2020.07.02.22.48.51
+        by smtp.gmail.com with ESMTPSA id 140sm10555990pfa.92.2020.07.02.22.49.55
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Jul 2020 22:48:51 -0700 (PDT)
-Subject: Re: [PATCH 1/2] hwmon: shtc1: add support for device tree bindings
+        Thu, 02 Jul 2020 22:49:56 -0700 (PDT)
+Subject: Re: [PATCH 2/2] devicetree: hwmon: shtc1: Add sensirion,shtc1.yaml
 To:     Chris Ruehl <chris.ruehl@gtsys.com.hk>
 Cc:     Jack Lo <jack.lo@gtsys.com.hk>, devicetree@vger.kernel.org,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        Jean Delvare <jdelvare@suse.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-hwmon@vger.kernel.org,
         linux-kernel@vger.kernel.org
 References: <20200703034856.12846-1-chris.ruehl@gtsys.com.hk>
- <20200703034856.12846-2-chris.ruehl@gtsys.com.hk>
+ <20200703034856.12846-3-chris.ruehl@gtsys.com.hk>
 From:   Guenter Roeck <linux@roeck-us.net>
 Autocrypt: addr=linux@roeck-us.net; keydata=
  xsFNBE6H1WcBEACu6jIcw5kZ5dGeJ7E7B2uweQR/4FGxH10/H1O1+ApmcQ9i87XdZQiB9cpN
@@ -101,111 +102,92 @@ Autocrypt: addr=linux@roeck-us.net; keydata=
  WkRwrSuCn7UG+qVWZeKEsFKFOkynOs3pVbcbq1pxbhk3TRWCGRU5JolI4ohy/7JV1TVbjiDI
  HP/aVnm6NC8of26P40Pg8EdAhajZnHHjA7FrJXsy3cyIGqvg9os4rNkUWmrCfLLsZDHD8FnU
  mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <94043e67-1899-8e80-064c-50489cf7e4b2@roeck-us.net>
-Date:   Thu, 2 Jul 2020 22:48:50 -0700
+Message-ID: <00c1b143-46c4-2621-bd77-fa465fb77774@roeck-us.net>
+Date:   Thu, 2 Jul 2020 22:49:54 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <20200703034856.12846-2-chris.ruehl@gtsys.com.hk>
+In-Reply-To: <20200703034856.12846-3-chris.ruehl@gtsys.com.hk>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 7/2/20 8:48 PM, Chris Ruehl wrote:
-> Add support for DTS bindings to the shtc driver, use CONFIG_OF
-> to compile in the code if needed.
+> Add documentation for the newly added DTS support in the shtc1 driver.
 > 
-
-Ah, here it is. The introducing patch should say something like "[PATCH 0/2]".
-
 > Signed-off-by: Chris Ruehl <chris.ruehl@gtsys.com.hk>
 > ---
->  drivers/hwmon/shtc1.c | 30 ++++++++++++++++++++++++++++++
->  1 file changed, 30 insertions(+)
+>  .../bindings/hwmon/sensirion,shtc1.yaml       | 53 +++++++++++++++++++
+>  1 file changed, 53 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/hwmon/sensirion,shtc1.yaml
 > 
-> diff --git a/drivers/hwmon/shtc1.c b/drivers/hwmon/shtc1.c
-> index a0078ccede03..3bcabc1cbce8 100644
-> --- a/drivers/hwmon/shtc1.c
-> +++ b/drivers/hwmon/shtc1.c
-> @@ -14,6 +14,9 @@
->  #include <linux/err.h>
->  #include <linux/delay.h>
->  #include <linux/platform_data/shtc1.h>
-> +#ifdef CONFIG_OF
-
-No. Please no conditional includes.
-
-> +#include <linux/of.h>
-> +#endif
->  
->  /* commands (high precision mode) */
->  static const unsigned char shtc1_cmd_measure_blocking_hpm[]    = { 0x7C, 0xA2 };
-> @@ -196,6 +199,10 @@ static int shtc1_probe(struct i2c_client *client,
->  	enum shtcx_chips chip = id->driver_data;
->  	struct i2c_adapter *adap = client->adapter;
->  	struct device *dev = &client->dev;
-> +#ifdef CONFIG_OF
-> +	struct device_node *np = dev->of_node;
-> +	u8 value;
-> +#endif
->  
->  	if (!i2c_check_functionality(adap, I2C_FUNC_I2C)) {
->  		dev_err(dev, "plain i2c transactions not supported\n");
-> @@ -235,6 +242,20 @@ static int shtc1_probe(struct i2c_client *client,
->  
->  	if (client->dev.platform_data)
->  		data->setup = *(struct shtc1_platform_data *)dev->platform_data;
+> diff --git a/Documentation/devicetree/bindings/hwmon/sensirion,shtc1.yaml b/Documentation/devicetree/bindings/hwmon/sensirion,shtc1.yaml
+> new file mode 100644
+> index 000000000000..e3e292bc6d7d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/hwmon/sensirion,shtc1.yaml
+> @@ -0,0 +1,53 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/hwmon/sensirion,shtc1.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +#ifdef CONFIG_OF
-
-Unnecessary ifdef. Selection of devicetree data or not can be made
-based on np != NULL. Also, if devictree data is available, platform
-data should be ignored to avoid confusion.
-
-> +	if (np) {
-> +		if (of_property_read_bool(np, "sensirion,blocking_io")) {
-> +			of_property_read_u8(np, "sensirion,blocking_io", &value);
-> +			data->setup.blocking_io = (value > 0) ? true : false;
-> +		}
-Why this complexity, and why not just make the property a boolean ?
-
-> +		if (of_property_read_bool(np, "sensicon,high_precision")) {
-> +			of_property_read_u8(np, "sensirion,high_precision", &value);
-> +			data->setup.high_precision = (value > 0) ? true : false;
-
-"sensicon,high_precision" should also be a boolean.
-
-> +		}
-> +	}
-> +#endif
+> +title: Sensirion SHTC1 Humidity and Temperature Sensor IC
 > +
->  	shtc1_select_command(data);
->  	mutex_init(&data->update_lock);
->  
-> @@ -257,6 +278,15 @@ static const struct i2c_device_id shtc1_id[] = {
->  };
->  MODULE_DEVICE_TABLE(i2c, shtc1_id);
->  
-> +#ifdef CONFIG_OF
-> +static const struct of_device_id shtc1_of_match[] = {
-> +	{ .compatible = "sensirion,shtc1" },
-> +	{ .compatible = "sensirion,shtw1" },
-> +	{ .compatible = "sensirion,shtc3" },
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(of, shtc1_of_match);
-> +#endif
->  static struct i2c_driver shtc1_i2c_driver = {
->  	.driver.name  = "shtc1",
->  	.probe        = shtc1_probe,
-> 
-Not sure how this works without setting of_match_table. I guess it just works
-accidentally because .id_table also provides a devicetree match. Still,
-of_match_table should be set.
+> +maintainers:
+> +  - jdelvare@suse.com
+> +
+> +description: |
+> +  The SHTC1, SHTW1 and SHTC3 are digital humidity and temperature sensor
+> +  designed especially for battery-driven high-volume consumer electronics
+> +  applications.
+> +  For further information refere to Documentation/hwmon/shtc1.rst
+> +
+> +  This binding document describes the binding for the hardware monitor
+> +  portion of the driver.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - sensirion,shtc1
+> +      - sensirion,shtw1
+> +      - sensirion,shtc3
+> +
+> +  reg: I2C address 0x70
+> +
+> +Optional properties:
+> +  sensirion,blocking_io: |
+> +    u8, if > 0 the i2c bus hold until measure finished (default 0)
+> +  sensirion,high_precision: |
+> +    u8, if > 0 aquire data with high precision (default 1)
+> +
+
+Why u8 and not boolean ?
 
 Guenter
+
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+> +
+> +Example:
+> +  &i2c1 {
+> +    status = "okay";
+> +    clock-frequency = <400000>;
+> +
+> +    shtc3@70 {
+> +      compatible = "sensirion,shtc3";
+> +      reg = <0x70>
+> +      sensirion,blocking_io = <1>;
+> +      status = "okay";
+> +    };
+> +  };
+> 
 
