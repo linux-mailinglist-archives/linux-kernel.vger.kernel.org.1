@@ -2,156 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07559213489
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 08:55:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7AA821348E
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 08:57:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726196AbgGCGzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 02:55:45 -0400
-Received: from o1.b.az.sendgrid.net ([208.117.55.133]:55025 "EHLO
-        o1.b.az.sendgrid.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725972AbgGCGzo (ORCPT
+        id S1726129AbgGCG5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 02:57:34 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:18016 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725891AbgGCG5e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 02:55:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiboo.se;
-        h=subject:references:from:mime-version:in-reply-to:to:cc:content-type:
-        content-transfer-encoding;
-        s=001; bh=bXBX9AqKrpqo2PvMRRcHawGUdglyj9K4bWgKMbLBmSA=;
-        b=b4lGXOZ+rGATeNBg/RrABOYpi2F1tlLKmD/2P57/GzWMy4jYzMZMywZGnJZgnEbq7AeN
-        HeeGW91YLI9sR/4/2hegUb4LWLwgaJg5LHs4A+cxEKyQVy8JLrqdAVmCRgPOIZgLlMNqhX
-        M77njjWCqajYBJCDx5FPCbT5EViNNLtSY=
-Received: by filterdrecv-p3iad2-5b55dcd864-t97fw with SMTP id filterdrecv-p3iad2-5b55dcd864-t97fw-17-5EFED66F-9
-        2020-07-03 06:55:43.176672884 +0000 UTC m=+567984.810966751
-Received: from [192.168.1.14] (unknown)
-        by ismtpd0007p1lon1.sendgrid.net (SG) with ESMTP
-        id M5lUjmBcRDyWB4rIzm5Tdw
-        Fri, 03 Jul 2020 06:55:42.063 +0000 (UTC)
-Subject: Re: [PATCH 8/9] media: rkvdec: Add validate_fmt ops for pixelformat
- validation
-References: <20200701215616.30874-1-jonas@kwiboo.se>
- <20200701215616.30874-9-jonas@kwiboo.se>
- <67a130a8fd8874c5dc639c924de959f88357b480.camel@collabora.com>
-From:   Jonas Karlman <jonas@kwiboo.se>
-Message-ID: <f817d682-ec76-1879-4324-39cf7993493e@kwiboo.se>
-Date:   Fri, 03 Jul 2020 06:55:43 +0000 (UTC)
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 3 Jul 2020 02:57:34 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0636XCU3158021;
+        Fri, 3 Jul 2020 02:57:26 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32041gn4gq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 03 Jul 2020 02:57:26 -0400
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0636XxgO160747;
+        Fri, 3 Jul 2020 02:57:25 -0400
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32041gn4fx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 03 Jul 2020 02:57:25 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0636o48L020525;
+        Fri, 3 Jul 2020 06:57:23 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma03fra.de.ibm.com with ESMTP id 31wwr8b9e9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 03 Jul 2020 06:57:23 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0636vKUi57737468
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 3 Jul 2020 06:57:21 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CCBBAAE058;
+        Fri,  3 Jul 2020 06:57:20 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A3C74AE045;
+        Fri,  3 Jul 2020 06:57:16 +0000 (GMT)
+Received: from localhost.localdomain.com (unknown [9.199.63.144])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri,  3 Jul 2020 06:57:16 +0000 (GMT)
+From:   Kajol Jain <kjain@linux.ibm.com>
+To:     acme@kernel.org
+Cc:     peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, pc@us.ibm.com,
+        jolsa@redhat.com, namhyung@kernel.org, ak@linux.intel.com,
+        yao.jin@linux.intel.com, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, irogers@google.com,
+        maddy@linux.ibm.com, ravi.bangoria@linux.ibm.com,
+        anju@linux.vnet.ibm.com, kan.liang@linux.intel.com,
+        nasastry@in.ibm.com, kjain@linux.ibm.com
+Subject: [PATCH] perf/tools/pmu-events/powerpc: Added nest imc metric events
+Date:   Fri,  3 Jul 2020 12:26:58 +0530
+Message-Id: <20200703065658.377467-1-kjain@linux.ibm.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <67a130a8fd8874c5dc639c924de959f88357b480.camel@collabora.com>
-X-SG-EID: =?us-ascii?Q?TdbjyGynYnRZWhH+7lKUQJL+ZxmxpowvO2O9SQF5CwCVrYgcwUXgU5DKUU3QxA?=
- =?us-ascii?Q?fZekEeQsTe+RrMu3cja6a0h6sHjUdwPJ2Gv904R?=
- =?us-ascii?Q?cSBw1tmCZqqkY+AOXJh=2FTNkFHeTtWLg9RIc7mVK?=
- =?us-ascii?Q?sznxuZOh=2FgL2IIT3stWUvJuEs=2FnHP=2Fh3ljz56i=2F?=
- =?us-ascii?Q?apsZXZmSHQPij7vbL63seY9xMZSHGRiPt3mec3o?=
- =?us-ascii?Q?AVdlFGzlZMUWpyNGTPcoQm+R5iXkVPkD19mV7e+?=
- =?us-ascii?Q?ovE329ptmgwg0sLxuTFRg=3D=3D?=
-To:     Ezequiel Garcia <ezequiel@collabora.com>,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Hans Verkuil <hans.verkuil@cisco.com>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Alexandre Courbot <acourbot@chromium.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Language: sv
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-03_02:2020-07-02,2020-07-03 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
+ priorityscore=1501 spamscore=0 mlxscore=0 suspectscore=1 adultscore=0
+ clxscore=1015 phishscore=0 lowpriorityscore=0 mlxlogscore=999
+ malwarescore=0 impostorscore=0 cotscore=-2147483648 classifier=spam
+ adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2007030048
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-07-03 05:14, Ezequiel Garcia wrote:
-> Hi Jonas,
-> 
-> Thanks for working on this.
-> 
-> On Wed, 2020-07-01 at 21:56 +0000, Jonas Karlman wrote:
->> Add an optional validate_fmt operation that is used to validate the
->> pixelformat of CAPTURE buffers.
->>
->> This is used in next patch to ensure correct pixelformat is used for 10-bit
->> and 4:2:2 content.
->>
->> Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
->> ---
->>  drivers/staging/media/rkvdec/rkvdec.c | 8 ++++++++
->>  drivers/staging/media/rkvdec/rkvdec.h | 1 +
->>  2 files changed, 9 insertions(+)
->>
->> diff --git a/drivers/staging/media/rkvdec/rkvdec.c b/drivers/staging/media/rkvdec/rkvdec.c
->> index b1de55aa6535..465444c58f13 100644
->> --- a/drivers/staging/media/rkvdec/rkvdec.c
->> +++ b/drivers/staging/media/rkvdec/rkvdec.c
->> @@ -239,6 +239,14 @@ static int rkvdec_try_capture_fmt(struct file *file, void *priv,
->>  	if (WARN_ON(!coded_desc))
->>  		return -EINVAL;
->>  
->> +	if (coded_desc->ops->validate_fmt) {
->> +		int ret;
->> +
->> +		ret = coded_desc->ops->validate_fmt(ctx, pix_mp->pixelformat);
->> +		if (ret)
->> +			return ret;
->> +	}
->> + 
-> 
-> I don't think this approach will be enough. Unless I'm mistaken,
-> it's perfectly legal as per the stateless spec to first
-> call S_FMT on the OUTPUT queue (which is propagated to the CAPTURE side),
-> and then set the SPS and other controls.
+Added nest imc metric events.
 
-I agree that this will not be enough to cover all use cases stated in the spec.
+Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
+---
+ .../arch/powerpc/power9/nest_metrics.json     | 35 +++++++++++++++++++
+ 1 file changed, 35 insertions(+)
 
-> 
-> The application is not required to do a TRY_FMT after S_EXT_CTRLS.
+diff --git a/tools/perf/pmu-events/arch/powerpc/power9/nest_metrics.json b/tools/perf/pmu-events/arch/powerpc/power9/nest_metrics.json
+index c121e526442a..8383a37647ad 100644
+--- a/tools/perf/pmu-events/arch/powerpc/power9/nest_metrics.json
++++ b/tools/perf/pmu-events/arch/powerpc/power9/nest_metrics.json
+@@ -15,5 +15,40 @@
+ 	"MetricExpr": "(hv_24x7@PM_PB_CYC\\,chip\\=?@ )",
+         "MetricName": "PowerBUS_Frequency",
+         "ScaleUnit": "2.5e-7GHz"
++    },
++    {
++	"MetricExpr" : "nest_mcs01_imc@PM_MCS01_128B_RD_DISP_PORT01@ + nest_mcs01_imc@PM_MCS01_128B_RD_DISP_PORT23@",
++	"MetricName" : "mcs01-read",
++	"MetricGroup" : "memory_bw",
++	"ScaleUnit": "6.1e-5MB"
++    },
++    {
++	"MetricExpr" : "nest_mcs23_imc@PM_MCS23_128B_RD_DISP_PORT01@ + nest_mcs23_imc@PM_MCS23_128B_RD_DISP_PORT23@",
++	"MetricName" : "mcs23-read",
++	"MetricGroup" : "memory_bw",
++	"ScaleUnit": "6.1e-5MB"
++    },
++    {
++	"MetricExpr" : "nest_mcs01_imc@PM_MCS01_128B_WR_DISP_PORT01@ + nest_mcs01_imc@PM_MCS01_128B_WR_DISP_PORT23@",
++	"MetricName" : "mcs01-write",
++	"MetricGroup" : "memory_bw",
++	"ScaleUnit": "6.1e-5MB"
++    },
++    {
++	"MetricExpr" : "nest_mcs23_imc@PM_MCS23_128B_WR_DISP_PORT01@ + nest_mcs23_imc@PM_MCS23_128B_WR_DISP_PORT23@",
++	"MetricName" : "mcs23-write",
++	"MetricGroup" : "memory-bandwidth",
++	"ScaleUnit": "6.1e-5MB"
++    },
++    {
++	"MetricExpr" : "nest_powerbus0_imc@PM_PB_CYC@",
++	"MetricName" : "powerbus_freq",
++	"ScaleUnit": "1e-9GHz"
++    },
++    {
++	"MetricExpr" : "(nest_mcs01_imc@PM_MCS01_128B_RD_DISP_PORT01@ + nest_mcs01_imc@PM_MCS01_128B_RD_DISP_PORT23@ + nest_mcs23_imc@PM_MCS23_128B_RD_DISP_PORT01@ + nest_mcs23_imc@PM_MCS23_128B_RD_DISP_PORT23@ + nest_mcs01_imc@PM_MCS01_128B_WR_DISP_PORT01@ + nest_mcs01_imc@PM_MCS01_128B_WR_DISP_PORT23@ + nest_mcs23_imc@PM_MCS23_128B_WR_DISP_PORT01@ + nest_mcs23_imc@PM_MCS23_128B_WR_DISP_PORT23@)",
++	"MetricName" : "Memory-bandwidth-MCS",
++	"MetricGroup" : "memory_bw",
++	"ScaleUnit": "6.1e-5MB"
+     }
+ ]
+-- 
+2.17.1
 
-If I remember correctly we were required to implement a TRY_FMT loop in
-ffmpeg due to cedrus defaulting to SUNXI_TILED_NV12 instead of linear NV12
-on platforms where display controller did not support the tiled modifier.
-
-So having TRY_FMT as part of the init sequence has been my only test-case.
-
-> 
-> What I believe is needed is for the S_EXT_CTRLS to modify
-> and restrict the CAPTURE format accordingly, so the application
-> gets the correct format on G_FMT (and restrict future TRY_FMT).
-
-This sounds like a proper solution, I do belive we may have a chicken or
-the egg problem depending on if application call S_EXT_CTRLS or S_FMT first.
-
-I guess we may need to lock down on a format at whatever comes first,
-S_FMT on CAPTURE or S_EXT_CTRLS with SPS ctrl.
-
-I have an idea on how this could be addressed, will explore and see
-if I can come up with something new.
-
-Regards,
-Jonas
-
-> 
-> Also, V4L2 spec asks drivers not to fail on S_FMT
-> format mismatch, but instead to adjust and return a legal format
-> back to the application [1].
-> 
-> Let me know what you think and thanks again.
-> 
-> Ezequiel
-> 
-> [1] Documentation/userspace-api/media/v4l/vidioc-g-fmt.rst
-> 
->>  	for (i = 0; i < coded_desc->num_decoded_fmts; i++) {
->>  		if (coded_desc->decoded_fmts[i] == pix_mp->pixelformat)
->>  			break;
->> diff --git a/drivers/staging/media/rkvdec/rkvdec.h b/drivers/staging/media/rkvdec/rkvdec.h
->> index 2fc9f46b6910..be4fc3645cde 100644
->> --- a/drivers/staging/media/rkvdec/rkvdec.h
->> +++ b/drivers/staging/media/rkvdec/rkvdec.h
->> @@ -64,6 +64,7 @@ vb2_to_rkvdec_decoded_buf(struct vb2_buffer *buf)
->>  struct rkvdec_coded_fmt_ops {
->>  	int (*adjust_fmt)(struct rkvdec_ctx *ctx,
->>  			  struct v4l2_format *f);
->> +	int (*validate_fmt)(struct rkvdec_ctx *ctx, u32 pixelformat);
->>  	int (*start)(struct rkvdec_ctx *ctx);
->>  	void (*stop)(struct rkvdec_ctx *ctx);
->>  	int (*run)(struct rkvdec_ctx *ctx);
-> 
-> 
