@@ -2,60 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44068213C0E
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 16:50:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 990D8213C11
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 16:50:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726749AbgGCOuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 10:50:05 -0400
-Received: from foss.arm.com ([217.140.110.172]:41038 "EHLO foss.arm.com"
+        id S1726766AbgGCOuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 10:50:13 -0400
+Received: from foss.arm.com ([217.140.110.172]:41056 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726682AbgGCOuD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 10:50:03 -0400
+        id S1726693AbgGCOuE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Jul 2020 10:50:04 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7B11A1063;
-        Fri,  3 Jul 2020 07:50:02 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B72DE106F;
+        Fri,  3 Jul 2020 07:50:03 -0700 (PDT)
 Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 3DE9E3F73C;
-        Fri,  3 Jul 2020 07:50:01 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id AF21A3F73C;
+        Fri,  3 Jul 2020 07:50:02 -0700 (PDT)
 From:   Sudeep Holla <sudeep.holla@arm.com>
 To:     Sudeep Holla <sudeep.holla@arm.com>,
         Cristian Marussi <cristian.marussi@arm.com>,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
-        lukasz.luba@arm.com, Arnd Bergmann <arnd@arndb.de>,
-        Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH] firmware: arm_scmi: Use HAVE_ARM_SMCCC_DISCOVERY instead of ARM_PSCI_FW
-Date:   Fri,  3 Jul 2020 15:49:49 +0100
-Message-Id: <159378750699.7612.3747943343943399740.b4-ty@arm.com>
+        lukasz.luba@arm.com
+Subject: Re: [PATCH] firmware: arm_scmi: Use signed integer to report transfer status
+Date:   Fri,  3 Jul 2020 15:49:50 +0100
+Message-Id: <159378739973.7506.1185547126081306222.b4-ty@arm.com>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <159378754443.7674.9124886575137501969.b4-ty@arm.com>
+In-Reply-To: <159378750699.7612.3747943343943399740.b4-ty@arm.com>
 References: <159378759580.7741.1360234334350850998.b4-ty@arm.com>
  <159378764840.7835.7289029317816454363.b4-ty@arm.com>
  <159378754443.7674.9124886575137501969.b4-ty@arm.com>
-In-Reply-To: <20200625101937.51939-1-sudeep.holla@arm.com>
-References: <20200625101937.51939-1-sudeep.holla@arm.com>
+ <159378750699.7612.3747943343943399740.b4-ty@arm.com>
+In-Reply-To: <20200609134503.55860-1-sudeep.holla@arm.com>
+References: <20200609134503.55860-1-sudeep.holla@arm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Jun 2020 11:19:37 +0100, Sudeep Holla wrote:
-> Commit e5bfb21d98b6 ("firmware: smccc: Add HAVE_ARM_SMCCC_DISCOVERY to
-> identify SMCCC v1.1 and above") introduced new config option to identify
-> the availability of SMCCC discoverability of version and features
-> transparently hiding the indirect dependency on ARM_PSCI_FW.
+On Tue, 9 Jun 2020 14:45:03 +0100, Sudeep Holla wrote:
+> Currently the trace event 'scmi_xfer_end' reports the status of the
+> transfer using the unsigned status field read from the firmware. This
+> may not be easy to interpret and also may miss to present any timeouts
+> that happen in the driver.
 > 
-> Commit 5a897e3ab429 ("firmware: arm_scmi: fix psci dependency") just
-> worked around the build dependency making SCMI SMC/HVC transport depend
-> on ARM_PSCI_FW at the time. Since it really just relies on SMCCC directly
-> and not on ARM_PSCI_FW, let us move to use CONFIG_HAVE_ARM_SMCCC_DISCOVERY
-> instead of CONFIG_ARM_PSCI_FW.
+> Let us use signed integer so that error values are emitted out after
+> they are mapped from firmware errors to standard linux error codes.
+> While at this, let us also include any timeouts in the driver itself.
 
 
 Applied to sudeep.holla/linux (for-next/scmi), thanks!
 
-[1/1] firmware: arm_scmi: Use HAVE_ARM_SMCCC_DISCOVERY instead of ARM_PSCI_FW
-      https://git.kernel.org/sudeep.holla/c/d764282377
+[1/1] firmware: arm_scmi: Use signed integer to report transfer status
+      https://git.kernel.org/sudeep.holla/c/bad0d73b65
 
 --
 Regards,
