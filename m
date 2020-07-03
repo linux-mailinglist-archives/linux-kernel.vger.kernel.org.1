@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55747213A63
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 14:54:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB980213A59
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 14:54:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726946AbgGCMyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 08:54:46 -0400
-Received: from mga18.intel.com ([134.134.136.126]:25720 "EHLO mga18.intel.com"
+        id S1726703AbgGCMxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 08:53:47 -0400
+Received: from mga18.intel.com ([134.134.136.126]:25737 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726546AbgGCMxh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 08:53:37 -0400
-IronPort-SDR: 4e51CoRbBILPk34kgr4noGKuwI0x5T430Al2ZGLrDznsGSgCwDunCcpNVF3ADy7SXjkKbcMBUA
- 7bIpoL5U3gHQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="134598377"
+        id S1726575AbgGCMxj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Jul 2020 08:53:39 -0400
+IronPort-SDR: MZG/MuXnQL8zCKngamNY/y2EVPrHHnQd1WdiVI9NHp0IDHSzxKK5acDpKvEqhfM0kAruTwOV1j
+ aOsszT4X/bUA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="134598379"
 X-IronPort-AV: E=Sophos;i="5.75,308,1589266800"; 
-   d="scan'208";a="134598377"
+   d="scan'208";a="134598379"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jul 2020 05:53:37 -0700
-IronPort-SDR: rT9rIsAgLF6BHwScu3dW92J6WMcLoq4HPzH0xrFizAW+cM8tl6Z2gKtefEeKhoEB2foeY7WdEz
- uusvEbQyeeiQ==
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jul 2020 05:53:38 -0700
+IronPort-SDR: VhssFHKJyNeB50G5kYaIzZVgQp8fRLUNKEXdnDcAtXxa3IwzUTYGt+hmdxvsvQJIrT4eFa4tyJ
+ gHxwR4lqPBiQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,308,1589266800"; 
-   d="scan'208";a="265964001"
+   d="scan'208";a="265964005"
 Received: from otc-lr-04.jf.intel.com ([10.54.39.143])
-  by fmsmga007.fm.intel.com with ESMTP; 03 Jul 2020 05:53:36 -0700
+  by fmsmga007.fm.intel.com with ESMTP; 03 Jul 2020 05:53:38 -0700
 From:   kan.liang@linux.intel.com
 To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
         tglx@linutronix.de, bp@alien8.de, x86@kernel.org,
@@ -38,9 +38,9 @@ Cc:     mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
         ak@linux.intel.com, like.xu@linux.intel.com,
         yao.jin@linux.intel.com, wei.w.wang@intel.com,
         Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH V3 10/23] perf/x86/intel/lbr: Unify the stored format of LBR information
-Date:   Fri,  3 Jul 2020 05:49:16 -0700
-Message-Id: <1593780569-62993-11-git-send-email-kan.liang@linux.intel.com>
+Subject: [PATCH V3 11/23] perf/x86/intel/lbr: Mark the {rd,wr}lbr_{to,from} wrappers __always_inline
+Date:   Fri,  3 Jul 2020 05:49:17 -0700
+Message-Id: <1593780569-62993-12-git-send-email-kan.liang@linux.intel.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1593780569-62993-1-git-send-email-kan.liang@linux.intel.com>
 References: <1593780569-62993-1-git-send-email-kan.liang@linux.intel.com>
@@ -51,114 +51,55 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Kan Liang <kan.liang@linux.intel.com>
 
-Current LBR information in the structure x86_perf_task_context is stored
-in a different format from the PEBS LBR record and Architecture LBR,
-which prevents the sharing of the common codes.
+The {rd,wr}lbr_{to,from} wrappers are invoked in hot paths, e.g. context
+switch and NMI handler. They should be always inline to achieve better
+performance. However, the CONFIG_OPTIMIZE_INLINING allows the compiler
+to uninline functions marked 'inline'.
 
-Use the format of the PEBS LBR record as a unified format. Use a generic
-name lbr_entry to replace pebs_lbr_entry.
+Mark the {rd,wr}lbr_{to,from} wrappers as __always_inline to force
+inline the wrappers.
 
+Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 ---
- arch/x86/events/intel/ds.c        |  4 ++--
- arch/x86/events/intel/lbr.c       | 12 ++++++------
- arch/x86/events/perf_event.h      |  4 +---
- arch/x86/include/asm/perf_event.h |  4 ++--
- 4 files changed, 11 insertions(+), 13 deletions(-)
+ arch/x86/events/intel/lbr.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/events/intel/ds.c b/arch/x86/events/intel/ds.c
-index dc43cc1..0d33f85 100644
---- a/arch/x86/events/intel/ds.c
-+++ b/arch/x86/events/intel/ds.c
-@@ -954,7 +954,7 @@ static void adaptive_pebs_record_size_update(void)
- 	if (pebs_data_cfg & PEBS_DATACFG_XMMS)
- 		sz += sizeof(struct pebs_xmm);
- 	if (pebs_data_cfg & PEBS_DATACFG_LBRS)
--		sz += x86_pmu.lbr_nr * sizeof(struct pebs_lbr_entry);
-+		sz += x86_pmu.lbr_nr * sizeof(struct lbr_entry);
- 
- 	cpuc->pebs_record_size = sz;
- }
-@@ -1598,7 +1598,7 @@ static void setup_pebs_adaptive_sample_data(struct perf_event *event,
- 		struct pebs_lbr *lbr = next_record;
- 		int num_lbr = ((format_size >> PEBS_DATACFG_LBR_SHIFT)
- 					& 0xff) + 1;
--		next_record = next_record + num_lbr*sizeof(struct pebs_lbr_entry);
-+		next_record = next_record + num_lbr * sizeof(struct lbr_entry);
- 
- 		if (has_branch_stack(event)) {
- 			intel_pmu_store_pebs_lbrs(lbr);
 diff --git a/arch/x86/events/intel/lbr.c b/arch/x86/events/intel/lbr.c
-index 7742562..815b3ce 100644
+index 815b3ce..e3574a8 100644
 --- a/arch/x86/events/intel/lbr.c
 +++ b/arch/x86/events/intel/lbr.c
-@@ -372,11 +372,11 @@ void intel_pmu_lbr_restore(void *ctx)
- 	mask = x86_pmu.lbr_nr - 1;
- 	for (i = 0; i < task_ctx->valid_lbrs; i++) {
- 		lbr_idx = (tos - i) & mask;
--		wrlbr_from(lbr_idx, task_ctx->lbr_from[i]);
--		wrlbr_to  (lbr_idx, task_ctx->lbr_to[i]);
-+		wrlbr_from(lbr_idx, task_ctx->lbr[i].from);
-+		wrlbr_to(lbr_idx, task_ctx->lbr[i].to);
+@@ -332,18 +332,18 @@ static u64 lbr_from_signext_quirk_rd(u64 val)
+ 	return val;
+ }
  
- 		if (x86_pmu.intel_cap.lbr_format == LBR_FORMAT_INFO)
--			wrmsrl(MSR_LBR_INFO_0 + lbr_idx, task_ctx->lbr_info[i]);
-+			wrmsrl(MSR_LBR_INFO_0 + lbr_idx, task_ctx->lbr[i].info);
- 	}
+-static inline void wrlbr_from(unsigned int idx, u64 val)
++static __always_inline void wrlbr_from(unsigned int idx, u64 val)
+ {
+ 	val = lbr_from_signext_quirk_wr(val);
+ 	wrmsrl(x86_pmu.lbr_from + idx, val);
+ }
  
- 	for (; i < x86_pmu.lbr_nr; i++) {
-@@ -440,10 +440,10 @@ void intel_pmu_lbr_save(void *ctx)
- 		from = rdlbr_from(lbr_idx);
- 		if (!from)
- 			break;
--		task_ctx->lbr_from[i] = from;
--		task_ctx->lbr_to[i]   = rdlbr_to(lbr_idx);
-+		task_ctx->lbr[i].from = from;
-+		task_ctx->lbr[i].to = rdlbr_to(lbr_idx);
- 		if (x86_pmu.intel_cap.lbr_format == LBR_FORMAT_INFO)
--			rdmsrl(MSR_LBR_INFO_0 + lbr_idx, task_ctx->lbr_info[i]);
-+			rdmsrl(MSR_LBR_INFO_0 + lbr_idx, task_ctx->lbr[i].info);
- 	}
- 	task_ctx->valid_lbrs = i;
- 	task_ctx->tos = tos;
-diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
-index ba89e56..5689036 100644
---- a/arch/x86/events/perf_event.h
-+++ b/arch/x86/events/perf_event.h
-@@ -765,13 +765,11 @@ struct x86_perf_task_context_opt {
- };
+-static inline void wrlbr_to(unsigned int idx, u64 val)
++static __always_inline void wrlbr_to(unsigned int idx, u64 val)
+ {
+ 	wrmsrl(x86_pmu.lbr_to + idx, val);
+ }
  
- struct x86_perf_task_context {
--	u64 lbr_from[MAX_LBR_ENTRIES];
--	u64 lbr_to[MAX_LBR_ENTRIES];
--	u64 lbr_info[MAX_LBR_ENTRIES];
- 	u64 lbr_sel;
- 	int tos;
- 	int valid_lbrs;
- 	struct x86_perf_task_context_opt opt;
-+	struct lbr_entry lbr[MAX_LBR_ENTRIES];
- };
+-static inline u64 rdlbr_from(unsigned int idx)
++static __always_inline u64 rdlbr_from(unsigned int idx)
+ {
+ 	u64 val;
  
- #define x86_add_quirk(func_)						\
-diff --git a/arch/x86/include/asm/perf_event.h b/arch/x86/include/asm/perf_event.h
-index 9ffce7d..8aea47a 100644
---- a/arch/x86/include/asm/perf_event.h
-+++ b/arch/x86/include/asm/perf_event.h
-@@ -282,12 +282,12 @@ struct pebs_xmm {
- 	u64 xmm[16*2];	/* two entries for each register */
- };
+@@ -352,7 +352,7 @@ static inline u64 rdlbr_from(unsigned int idx)
+ 	return lbr_from_signext_quirk_rd(val);
+ }
  
--struct pebs_lbr_entry {
-+struct lbr_entry {
- 	u64 from, to, info;
- };
+-static inline u64 rdlbr_to(unsigned int idx)
++static __always_inline u64 rdlbr_to(unsigned int idx)
+ {
+ 	u64 val;
  
- struct pebs_lbr {
--	struct pebs_lbr_entry lbr[0]; /* Variable length */
-+	struct lbr_entry lbr[0]; /* Variable length */
- };
- 
- /*
 -- 
 2.7.4
 
