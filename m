@@ -2,213 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F0102137B7
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 11:30:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2AB32137AE
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 11:29:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726534AbgGCJa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 05:30:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725949AbgGCJa0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 05:30:26 -0400
-Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 599E6C08C5DD
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Jul 2020 02:30:26 -0700 (PDT)
-Received: by mail-ua1-x944.google.com with SMTP id b24so2344500uak.2
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Jul 2020 02:30:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xcsxPutAbHr/mERBmd96crXO04cWIJ7hy0vhKC8AGU0=;
-        b=jSKPhcUSHMEypMHqbJIvmqOdB6MoqhYFP+UdXIWdtUaD5gMAGiBLLVSSk6x6AL3TWl
-         6KStgsjU4ggE96icmj3wUf04KgjO16HfJNYs0ErJB0WVNxka5bVctbuzetiOh2qTRYOc
-         ztOOijNjZdXAobpi0yRAXmIN4H2k9op/m1EKS5In5/rCwbH0zH2U2KGLrvxfmy1CaCRO
-         4roXMw790D/JRbOYPzdxliRtoxjOO9nqC3+sG1bnMtygejon4ygJn4bkjuHizMEJclXA
-         NGe+IuRrwNrtpLhjztRDVB+0oFultaE3bLqLytJIGj+VmnyUXSw82Zx82PaZeS7oybez
-         gvYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xcsxPutAbHr/mERBmd96crXO04cWIJ7hy0vhKC8AGU0=;
-        b=FCs0lfTE3FVYLl8USEalrwRoiawSp2BQTifinnvbKkweiE5kWqh5GtmabeHq/RX2aN
-         JXSVjtEq9+G7hLh7DVGHEhkaFwMhyqwYTWmpOHg8IPeHI01dwfwlxSs5iAEqWLtRYziS
-         sfqDgqxNrRy98W1diVtxt0xmxAG60V4gvGpMhFu1dox8g+r8fz8m8OX6PEVmkQcckBQY
-         uZ8r+WalakvgNIv4zGi1McOhwzFXoor28cWHhZrmE+qMBTUxAtJP4nRFhHIMmZtTS2q4
-         SiRJr2vSdSJ8W/EiCrVPEiYnsSp13AXP/3aQvFWiGtOHfjhJtxUnkwSpvik/N3mqDUH7
-         1oAQ==
-X-Gm-Message-State: AOAM53364eBvYE4JQ1RZC6gFsHtxZHygtAXEqItA3tHfJE6AjpSrzYtc
-        qVwGFdlZP2zYTrs3AbqN5JL8rzgVdsMqZR0VbIcgdg==
-X-Google-Smtp-Source: ABdhPJw9s0J0hfM2gTo7WpZ1wTpHvdFC6pFKsOmZ7sp1LL+8H/6oQSpOVgupyqgG9KWLLbaasxoM8UImu03yB5/tEbQ=
-X-Received: by 2002:ab0:6c4b:: with SMTP id q11mr23540206uas.94.1593768625138;
- Fri, 03 Jul 2020 02:30:25 -0700 (PDT)
+        id S1726502AbgGCJ3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 05:29:11 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:6816 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725796AbgGCJ3K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Jul 2020 05:29:10 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 180C814964524D981A9D;
+        Fri,  3 Jul 2020 17:29:09 +0800 (CST)
+Received: from huawei.com (10.175.113.25) by DGGEMS407-HUB.china.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server id 14.3.487.0; Fri, 3 Jul 2020
+ 17:29:02 +0800
+From:   Zheng Zengkai <zhengzengkai@huawei.com>
+To:     <acme@kernel.org>, <mark.rutland@arm.com>,
+        <alexander.shishkin@linux.intel.com>, <jolsa@redhat.com>,
+        <namhyung@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <huawei.libin@huawei.com>,
+        <zhengzengkai@huawei.com>
+Subject: [PATCH -next] perf util: Fix memory leak in __parse_regs()
+Date:   Fri, 3 Jul 2020 17:33:44 +0800
+Message-ID: <20200703093344.189450-1-zhengzengkai@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20200703085309.32166-1-daniel.lezcano@linaro.org> <20200703085309.32166-4-daniel.lezcano@linaro.org>
-In-Reply-To: <20200703085309.32166-4-daniel.lezcano@linaro.org>
-From:   Amit Kucheria <amit.kucheria@linaro.org>
-Date:   Fri, 3 Jul 2020 15:00:14 +0530
-Message-ID: <CAHLCerPicxHbx1K+riKeuDkXQ4yNDAimrK0TN780c3SsXL7q6g@mail.gmail.com>
-Subject: Re: [PATCH v3 4/4] thermal: core: Add notifications call in the framework
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     Zhang Rui <rui.zhang@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Ram Chandrasekar <rkumbako@codeaurora.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 3, 2020 at 2:23 PM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
->
-> The generic netlink protocol is implemented but the different
-> notification functions are not yet connected to the core code.
->
-> These changes add the notification calls in the different
-> corresponding places.
->
-> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+when using perf record option '-I' or '--user-regs='
+along with argument '?' to list available register names,
+memory of variable 'os' allocated by strdup() needs to be released
+before __parse_regs() returns, otherwise memory leak will occur.
 
-Reviewed-by: Amit Kucheria <amit.kucheria@linaro.org>
+Fixes: bcc84ec65ad1 ("perf record: Add ability to name registers to record")
+Signed-off-by: Zheng Zengkai <zhengzengkai@huawei.com>
+---
+ tools/perf/util/parse-regs-options.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> ---
->  drivers/thermal/thermal_core.c    | 21 +++++++++++++++++++++
->  drivers/thermal/thermal_helpers.c | 11 +++++++++--
->  drivers/thermal/thermal_sysfs.c   | 15 ++++++++++++++-
->  3 files changed, 44 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
-> index 5fae1621fb01..25ef29123f72 100644
-> --- a/drivers/thermal/thermal_core.c
-> +++ b/drivers/thermal/thermal_core.c
-> @@ -215,6 +215,8 @@ int thermal_zone_device_set_policy(struct thermal_zone_device *tz,
->         mutex_unlock(&tz->lock);
->         mutex_unlock(&thermal_governor_lock);
->
-> +       thermal_notify_tz_gov_change(tz->id, policy);
-> +
->         return ret;
->  }
->
-> @@ -406,12 +408,25 @@ static void handle_critical_trips(struct thermal_zone_device *tz,
->  static void handle_thermal_trip(struct thermal_zone_device *tz, int trip)
->  {
->         enum thermal_trip_type type;
-> +       int trip_temp, hyst = 0;
->
->         /* Ignore disabled trip points */
->         if (test_bit(trip, &tz->trips_disabled))
->                 return;
->
-> +       tz->ops->get_trip_temp(tz, trip, &trip_temp);
->         tz->ops->get_trip_type(tz, trip, &type);
-> +       if (tz->ops->get_trip_hyst)
-> +               tz->ops->get_trip_hyst(tz, trip, &hyst);
-> +
-> +       if (tz->last_temperature != THERMAL_TEMP_INVALID) {
-> +               if (tz->last_temperature < trip_temp &&
-> +                   tz->temperature >= trip_temp)
-> +                       thermal_notify_tz_trip_up(tz->id, trip);
-> +               if (tz->last_temperature >= trip_temp &&
-> +                   tz->temperature < (trip_temp - hyst))
-> +                       thermal_notify_tz_trip_down(tz->id, trip);
-> +       }
->
->         if (type == THERMAL_TRIP_CRITICAL || type == THERMAL_TRIP_HOT)
->                 handle_critical_trips(tz, trip, type);
-> @@ -443,6 +458,8 @@ static void update_temperature(struct thermal_zone_device *tz)
->         mutex_unlock(&tz->lock);
->
->         trace_thermal_temperature(tz);
-> +
-> +       thermal_genl_sampling_temp(tz->id, temp);
->  }
->
->  static void thermal_zone_device_init(struct thermal_zone_device *tz)
-> @@ -1405,6 +1422,8 @@ thermal_zone_device_register(const char *type, int trips, int mask,
->         if (atomic_cmpxchg(&tz->need_update, 1, 0))
->                 thermal_zone_device_update(tz, THERMAL_EVENT_UNSPECIFIED);
->
-> +       thermal_notify_tz_create(tz->id, tz->type);
-> +
->         return tz;
->
->  unregister:
-> @@ -1476,6 +1495,8 @@ void thermal_zone_device_unregister(struct thermal_zone_device *tz)
->         ida_destroy(&tz->ida);
->         mutex_destroy(&tz->lock);
->         device_unregister(&tz->device);
-> +
-> +       thermal_notify_tz_delete(tz->id);
->  }
->  EXPORT_SYMBOL_GPL(thermal_zone_device_unregister);
->
-> diff --git a/drivers/thermal/thermal_helpers.c b/drivers/thermal/thermal_helpers.c
-> index 87b1256fa2f2..53dd92ccfd19 100644
-> --- a/drivers/thermal/thermal_helpers.c
-> +++ b/drivers/thermal/thermal_helpers.c
-> @@ -175,6 +175,14 @@ void thermal_zone_set_trips(struct thermal_zone_device *tz)
->         mutex_unlock(&tz->lock);
->  }
->
-> +void thermal_cdev_set_cur_state(struct thermal_cooling_device *cdev, int target)
-> +{
-> +       if (cdev->ops->set_cur_state(cdev, target))
-> +               return;
-> +       thermal_notify_cdev_update(cdev->id, target);
-> +       thermal_cooling_device_stats_update(cdev, target);
-> +}
-> +
->  void thermal_cdev_update(struct thermal_cooling_device *cdev)
->  {
->         struct thermal_instance *instance;
-> @@ -197,8 +205,7 @@ void thermal_cdev_update(struct thermal_cooling_device *cdev)
->                         target = instance->target;
->         }
->
-> -       if (!cdev->ops->set_cur_state(cdev, target))
-> -               thermal_cooling_device_stats_update(cdev, target);
-> +       thermal_cdev_set_cur_state(cdev, target);
->
->         cdev->updated = true;
->         mutex_unlock(&cdev->lock);
-> diff --git a/drivers/thermal/thermal_sysfs.c b/drivers/thermal/thermal_sysfs.c
-> index aa99edb4dff7..ff449943f757 100644
-> --- a/drivers/thermal/thermal_sysfs.c
-> +++ b/drivers/thermal/thermal_sysfs.c
-> @@ -124,7 +124,8 @@ trip_point_temp_store(struct device *dev, struct device_attribute *attr,
->  {
->         struct thermal_zone_device *tz = to_thermal_zone(dev);
->         int trip, ret;
-> -       int temperature;
-> +       int temperature, hyst = 0;
-> +       enum thermal_trip_type type;
->
->         if (!tz->ops->set_trip_temp)
->                 return -EPERM;
-> @@ -139,6 +140,18 @@ trip_point_temp_store(struct device *dev, struct device_attribute *attr,
->         if (ret)
->                 return ret;
->
-> +       if (tz->ops->get_trip_hyst) {
-> +               ret = tz->ops->get_trip_hyst(tz, trip, &hyst);
-> +               if (ret)
-> +                       return ret;
-> +       }
-> +
-> +       ret = tz->ops->get_trip_type(tz, trip, &type);
-> +       if (ret)
-> +               return ret;
-> +
-> +       thermal_notify_tz_trip_change(tz->id, trip, type, temperature, hyst);
-> +
->         thermal_zone_device_update(tz, THERMAL_EVENT_UNSPECIFIED);
->
->         return count;
-> --
-> 2.17.1
->
+diff --git a/tools/perf/util/parse-regs-options.c b/tools/perf/util/parse-regs-options.c
+index e687497b3aac..a4a100425b3a 100644
+--- a/tools/perf/util/parse-regs-options.c
++++ b/tools/perf/util/parse-regs-options.c
+@@ -54,7 +54,7 @@ __parse_regs(const struct option *opt, const char *str, int unset, bool intr)
+ #endif
+ 				fputc('\n', stderr);
+ 				/* just printing available regs */
+-				return -1;
++				goto error;
+ 			}
+ #ifdef HAVE_PERF_REGS_SUPPORT
+ 			for (r = sample_reg_masks; r->name; r++) {
+-- 
+2.20.1
+
