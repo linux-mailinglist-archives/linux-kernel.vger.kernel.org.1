@@ -2,75 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E5F62136B4
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 10:51:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C24602136B6
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 10:53:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726022AbgGCIvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 04:51:55 -0400
-Received: from smtprelay0208.hostedemail.com ([216.40.44.208]:43960 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725648AbgGCIvy (ORCPT
+        id S1726157AbgGCIx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 04:53:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725764AbgGCIxZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 04:51:54 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id C8DFD181D207E;
-        Fri,  3 Jul 2020 08:51:53 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:421:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:1963:2393:2559:2562:2693:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3871:4321:5007:6119:6691:10004:10400:11232:11658:11914:12297:12555:12740:12760:12895:12986:13069:13146:13230:13311:13357:13439:14181:14659:14721:21080:21451:21627:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: joke15_500b9db26e90
-X-Filterd-Recvd-Size: 1972
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf15.hostedemail.com (Postfix) with ESMTPA;
-        Fri,  3 Jul 2020 08:51:52 +0000 (UTC)
-Message-ID: <80902e5d0d5ef752e71672e9c5794d0f5f9ccd15.camel@perches.com>
-Subject: Re: [PATCH] scripts/Lindent: increase the maximum line length to 100
-From:   Joe Perches <joe@perches.com>
-To:     Zong Li <zong.li@sifive.com>, akpm@linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Fri, 03 Jul 2020 01:51:51 -0700
-In-Reply-To: <050476a0ee608046569588936394159d650ab535.1593763492.git.zong.li@sifive.com>
-References: <050476a0ee608046569588936394159d650ab535.1593763492.git.zong.li@sifive.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.3-0ubuntu1 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        Fri, 3 Jul 2020 04:53:25 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 908C3C08C5DD
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Jul 2020 01:53:25 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id l17so31298059wmj.0
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Jul 2020 01:53:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=yPw5lE3p/HPrYy0OQ0kH4UKHdhOsft7/FKkXJ1qoZ7Q=;
+        b=Lis8QvmH5PzzVHtd85M4asu+1O1H23q5wkNJUm+SMiCcn2q1Py15QGu367B8vrtS8G
+         f7lGIyo1oT3cvLeEoipcrKTsJjSFshWnMH71oScyxh3qvpBmNlFobIHF0963SBx8d+xX
+         uhHTTxg9KjiimbrwPuXGh41eI+gruKOz26ivRqh/lirR082eMZuczXvSZ/30LC4NU7Hl
+         N+/ccLih4RBT7jmslziBTKeSSTY5lhkgET2XwgUkuPKEmtMae6KAh/jfheKFbdlRp0pc
+         7o0LSNfYQ38sV3K0f730HaZMAaYI873PgKPvIGZ/DAUybjRFFM0zEXzIk3hzaosTOov5
+         eAXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=yPw5lE3p/HPrYy0OQ0kH4UKHdhOsft7/FKkXJ1qoZ7Q=;
+        b=nI9H3UWyr7cWurw57LN3dlKWla0AucGI3rD4SXziBlpPeet9PSG5QjP2sqmmdiHRJI
+         tka38EsSKnnxhvl5KOQ7z3MiDnuZEaQ1Ah5Ld4MxUcQTQivf9qbYdfSEqGU+yhG0YX9C
+         gv6DySBWi5ZP+lQ8oVLb62taPRRctbWE0a/TUBYuCaP33FlanO8Mm0eF3tlzEuy0iUGD
+         pCpISO5/o1FpKAqFONqrgvRIpzV8W0soOqUNlCCX+juDBcEICO3ZxqpIXSfySef/GFHy
+         CuGjb6mTu3g24Lp3PuzieRGDGWo6hpcAOE+DrDI/Nk6Y0iJnE613u7cMGFwc8d1ANoyn
+         LOtA==
+X-Gm-Message-State: AOAM530InfUAnIj70gw2/1VXkpe4BHe/f9UWfOJ1ZealGCXWDhjnsG0p
+        Aucy+U5BUNf8fNx2G2h3waqxjA==
+X-Google-Smtp-Source: ABdhPJzDgajaDjS89mcroLneStpY3qZEMwnifDxsPC5MHXH88Ftlz3mw8Dl39thzEsAQnRk4HF3Eiw==
+X-Received: by 2002:a1c:8094:: with SMTP id b142mr33312393wmd.122.1593766404091;
+        Fri, 03 Jul 2020 01:53:24 -0700 (PDT)
+Received: from localhost.localdomain (lns-bzn-59-82-252-131-168.adsl.proxad.net. [82.252.131.168])
+        by smtp.gmail.com with ESMTPSA id z6sm12543611wmf.33.2020.07.03.01.53.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Jul 2020 01:53:23 -0700 (PDT)
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+To:     rui.zhang@intel.com, daniel.lezcano@linaro.org
+Cc:     srinivas.pandruvada@linux.intel.com, rkumbako@codeaurora.org,
+        amit.kucheria@linaro.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: [PATCH v3 1/4] thermal: core: Add helpers to browse the cdev, tz and governor list
+Date:   Fri,  3 Jul 2020 10:53:06 +0200
+Message-Id: <20200703085309.32166-1-daniel.lezcano@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-07-03 at 16:08 +0800, Zong Li wrote:
-> As the patch 'bdc48fa11e46 ("checkpatch/coding-style: deprecate
-> 80-column warning")', increase the default limit to 100 characters,
-> we also increase the maximum line length to 100 for indent script.
+The cdev, tz and governor list, as well as their respective locks are
+statically defined in the thermal_core.c file.
 
-I'd prefer to delete Lindent instead.
+In order to give a sane access to these list, like browsing all the
+thermal zones or all the cooling devices, let's define a set of
+helpers where we pass a callback as a parameter to be called for each
+thermal entity.
 
-Also any reformatting tool like this will
-_always_ use up to whatever the maximum
-line length is rather than use a preferred
-length of 80 and and only use the allowed
-maximum length of 100 when necessary for
-human readability.
+We keep the self-encapsulation and ensure the locks are correctly
+taken when looking at the list.
 
-> Signed-off-by: Zong Li <zong.li@sifive.com>
-> ---
->  scripts/Lindent | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/scripts/Lindent b/scripts/Lindent
-> index 1688c44c2df6..11f14a4f2048 100755
-> --- a/scripts/Lindent
-> +++ b/scripts/Lindent
-> @@ -1,7 +1,7 @@
->  #!/bin/sh
->  # SPDX-License-Identifier: GPL-2.0
->  
-> -PARAM="-npro -kr -i8 -ts8 -sob -l80 -ss -ncs -cp1"
-> +PARAM="-npro -kr -i8 -ts8 -sob -l100 -ss -ncs -cp1"
->  
->  RES=`indent --version | cut -d' ' -f3`
->  if [ "$RES" = "" ]; then
+Acked-by: Zhang Rui <rui.zhang@intel.com>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+---
+ drivers/thermal/thermal_core.c | 51 ++++++++++++++++++++++++++++++++++
+ drivers/thermal/thermal_core.h |  9 ++++++
+ 2 files changed, 60 insertions(+)
+
+diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
+index b71196eaf90e..9caaa0b6d662 100644
+--- a/drivers/thermal/thermal_core.c
++++ b/drivers/thermal/thermal_core.c
+@@ -617,6 +617,57 @@ void thermal_zone_device_rebind_exception(struct thermal_zone_device *tz,
+ 	mutex_unlock(&thermal_list_lock);
+ }
+ 
++int for_each_thermal_governor(int (*cb)(struct thermal_governor *, void *),
++			      void *data)
++{
++	struct thermal_governor *gov;
++	int ret = 0;
++
++	mutex_lock(&thermal_governor_lock);
++	list_for_each_entry(gov, &thermal_governor_list, governor_list) {
++		ret = cb(gov, data);
++		if (ret)
++			break;
++	}
++	mutex_unlock(&thermal_governor_lock);
++
++	return ret;
++}
++
++int for_each_thermal_cooling_device(int (*cb)(struct thermal_cooling_device *,
++					      void *), void *data)
++{
++	struct thermal_cooling_device *cdev;
++	int ret = 0;
++
++	mutex_lock(&thermal_list_lock);
++	list_for_each_entry(cdev, &thermal_cdev_list, node) {
++		ret = cb(cdev, data);
++		if (ret)
++			break;
++	}
++	mutex_unlock(&thermal_list_lock);
++
++	return ret;
++}
++
++int for_each_thermal_zone(int (*cb)(struct thermal_zone_device *, void *),
++			  void *data)
++{
++	struct thermal_zone_device *tz;
++	int ret = 0;
++
++	mutex_lock(&thermal_list_lock);
++	list_for_each_entry(tz, &thermal_tz_list, node) {
++		ret = cb(tz, data);
++		if (ret)
++			break;
++	}
++	mutex_unlock(&thermal_list_lock);
++
++	return ret;
++}
++
+ void thermal_zone_device_unbind_exception(struct thermal_zone_device *tz,
+ 					  const char *cdev_type, size_t size)
+ {
+diff --git a/drivers/thermal/thermal_core.h b/drivers/thermal/thermal_core.h
+index c95689586e19..71d88dac0791 100644
+--- a/drivers/thermal/thermal_core.h
++++ b/drivers/thermal/thermal_core.h
+@@ -41,6 +41,15 @@ extern struct thermal_governor *__governor_thermal_table_end[];
+ 	     __governor < __governor_thermal_table_end;	\
+ 	     __governor++)
+ 
++int for_each_thermal_zone(int (*cb)(struct thermal_zone_device *, void *),
++			  void *);
++
++int for_each_thermal_cooling_device(int (*cb)(struct thermal_cooling_device *,
++					      void *), void *);
++
++int for_each_thermal_governor(int (*cb)(struct thermal_governor *, void *),
++			      void *thermal_governor);
++
+ struct thermal_attr {
+ 	struct device_attribute attr;
+ 	char name[THERMAL_NAME_LENGTH];
+-- 
+2.17.1
 
