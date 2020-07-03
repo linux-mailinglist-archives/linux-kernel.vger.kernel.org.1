@@ -2,142 +2,323 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 665F5213DD5
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 18:59:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 161CE213DDF
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 19:02:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726675AbgGCQ7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 12:59:20 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:22184 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726148AbgGCQ7U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 12:59:20 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1593795559; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=+gnWJZLQFOi3Y3xgbq+Jj83g8jf7HMQgZHy7FN5ldrA=;
- b=fDmiVC3/UUDh81x2fPLdbadyxJH4jm5fhdKF2HrnItzWXJY8XBT/Ox7Y7x+ggbt4KMtzRE6P
- pHfnmM8MegU/7n+BxWqEJBhkf2K8SfULnDHzyQ4zgSLw/DK+ABSYaCPL35oT1uQehqPrZqSH
- S0c/d1A8odRb5I4O+O31CZbeTVA=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 5eff63e7356bcc26abeb13a4 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 03 Jul 2020 16:59:19
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 93A4CC433B1; Fri,  3 Jul 2020 16:59:17 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        id S1726724AbgGCRCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 13:02:17 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:28939 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726147AbgGCRCQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Jul 2020 13:02:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593795734;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=TxK+vWw3a62FPtfGM3WWnImuJcfnAPcGLKjAB1aH4XE=;
+        b=LwDR33toLg4o/wfxNuA1yhQ2R4YmJhPDtZQipoNwh+UXYGpguJBjz8lTrYxb37s8mLmqEj
+        6qZQUGRGI5lFLeM2gIopitz5WSbjugsJ2hO9jIm/L7UFlfWR+Rf270Ij82S/nu0FqVaBsR
+        g1xDqaRf3aONR4w4DUt/Pu+Y+kj+rsg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-91-T3cTgGwvMq-Kn2hTltZKYw-1; Fri, 03 Jul 2020 13:02:09 -0400
+X-MC-Unique: T3cTgGwvMq-Kn2hTltZKYw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6CB36C433C6;
-        Fri,  3 Jul 2020 16:59:16 +0000 (UTC)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 03 Jul 2020 22:29:16 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     Sean Paul <sean@poorly.run>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        David Airlie <airlied@linux.ie>, Will Deacon <will@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        "list@263.net:IOMMU DRIVERS , Joerg Roedel <joro@8bytes.org>," 
-        <iommu@lists.linux-foundation.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "Kristian H . Kristensen" <hoegsberg@google.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Emil Velikov <emil.velikov@collabora.com>
-Subject: Re: [PATCHv3 7/7] drm/msm/a6xx: Add support for using system
- cache(LLC)
-In-Reply-To: <CAF6AEGsCROVTsi2R7_aUkmH9Luoc_guMR0w0KUJc2cEgpfj79w@mail.gmail.com>
-References: <cover.1593344119.git.saiprakash.ranjan@codeaurora.org>
- <449a6544b10f0035d191ac52283198343187c153.1593344120.git.saiprakash.ranjan@codeaurora.org>
- <20200703133732.GD18953@willie-the-truck>
- <ecfda7ca80f6d7b4ff3d89b8758f4dc9@codeaurora.org>
- <CAF6AEGsCROVTsi2R7_aUkmH9Luoc_guMR0w0KUJc2cEgpfj79w@mail.gmail.com>
-Message-ID: <c925406446bb2f6c7aead8e047672cae@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C6A09107ACCA;
+        Fri,  3 Jul 2020 17:02:07 +0000 (UTC)
+Received: from madcap2.tricolour.ca (unknown [10.10.110.3])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 785585BACF;
+        Fri,  3 Jul 2020 17:01:59 +0000 (UTC)
+From:   Richard Guy Briggs <rgb@redhat.com>
+To:     Linux-Audit Mailing List <linux-audit@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>
+Cc:     Paul Moore <paul@paul-moore.com>, eparis@parisplace.org,
+        john.johansen@canonical.com, Richard Guy Briggs <rgb@redhat.com>
+Subject: [PATCH ghak84 v2] audit: purge audit_log_string from the intra-kernel audit API
+Date:   Fri,  3 Jul 2020 13:01:32 -0400
+Message-Id: <a8263fc3668077e0d6b5151bcb31274755bdd838.1593789083.git.rgb@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-07-03 21:34, Rob Clark wrote:
-> On Fri, Jul 3, 2020 at 7:53 AM Sai Prakash Ranjan
-> <saiprakash.ranjan@codeaurora.org> wrote:
->> 
->> Hi Will,
->> 
->> On 2020-07-03 19:07, Will Deacon wrote:
->> > On Mon, Jun 29, 2020 at 09:22:50PM +0530, Sai Prakash Ranjan wrote:
->> >> diff --git a/drivers/gpu/drm/msm/msm_iommu.c
->> >> b/drivers/gpu/drm/msm/msm_iommu.c
->> >> index f455c597f76d..bd1d58229cc2 100644
->> >> --- a/drivers/gpu/drm/msm/msm_iommu.c
->> >> +++ b/drivers/gpu/drm/msm/msm_iommu.c
->> >> @@ -218,6 +218,9 @@ static int msm_iommu_map(struct msm_mmu *mmu,
->> >> uint64_t iova,
->> >>              iova |= GENMASK_ULL(63, 49);
->> >>
->> >>
->> >> +    if (mmu->features & MMU_FEATURE_USE_SYSTEM_CACHE)
->> >> +            prot |= IOMMU_SYS_CACHE_ONLY;
->> >
->> > Given that I think this is the only user of IOMMU_SYS_CACHE_ONLY, then
->> > it
->> > looks like it should actually be a property on the domain because we
->> > never
->> > need to configure it on a per-mapping basis within a domain, and
->> > therefore
->> > it shouldn't be exposed by the IOMMU API as a prot flag.
->> >
->> > Do you agree?
->> >
->> 
->> GPU being the only user is for now, but there are other clients which
->> can use this.
->> Plus how do we set the memory attributes if we do not expose this as
->> prot flag?
-> 
-> It does appear that the downstream kgsl driver sets this for basically
-> all mappings.. well there is some conditional stuff around
-> DOMAIN_ATTR_USE_LLC_NWA but it seems based on the property of the
-> domain.  (Jordan may know more about what that is about.)  But looks
-> like there are a lot of different paths into iommu_map in kgsl so I
-> might have missed something.
-> 
-> Assuming there isn't some case where we specifically don't want to use
-> the system cache for some mapping, I think it could be a domain
-> attribute that sets an io_pgtable_cfg::quirks flag
-> 
+audit_log_string() was inteded to be an internal audit function and
+since there are only two internal uses, remove them.  Purge all external
+uses of it by restructuring code to use an existing audit_log_format()
+or using audit_log_format().
 
-Ok then we are good to remove unused sys cache prot flag which Will has 
-posted.
+Please see the upstream issue
+https://github.com/linux-audit/audit-kernel/issues/84
 
-Thanks,
-Sai
+Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
+---
+Passes audit-testsuite.
 
+Changelog:
+v2
+- restructure to piggyback on existing audit_log_format() calls, checking quoting needs for each.
+
+v1 Vlad Dronov
+- https://github.com/nefigtut/audit-kernel/commit/dbbcba46335a002f44b05874153a85b9cc18aebf
+
+ include/linux/audit.h     |  5 -----
+ kernel/audit.c            |  4 ++--
+ security/apparmor/audit.c | 10 ++++------
+ security/apparmor/file.c  | 25 +++++++------------------
+ security/apparmor/ipc.c   | 44 +++++++++++++++++++++-----------------------
+ security/apparmor/net.c   | 14 ++++++++------
+ security/lsm_audit.c      |  4 ++--
+ 7 files changed, 44 insertions(+), 62 deletions(-)
+
+diff --git a/include/linux/audit.h b/include/linux/audit.h
+index 604ede630580..5ad7cd65d76f 100644
+--- a/include/linux/audit.h
++++ b/include/linux/audit.h
+@@ -695,9 +695,4 @@ static inline bool audit_loginuid_set(struct task_struct *tsk)
+ 	return uid_valid(audit_get_loginuid(tsk));
+ }
+ 
+-static inline void audit_log_string(struct audit_buffer *ab, const char *buf)
+-{
+-	audit_log_n_string(ab, buf, strlen(buf));
+-}
+-
+ #endif
+diff --git a/kernel/audit.c b/kernel/audit.c
+index 8c201f414226..a2f3e34aa724 100644
+--- a/kernel/audit.c
++++ b/kernel/audit.c
+@@ -2080,13 +2080,13 @@ void audit_log_d_path(struct audit_buffer *ab, const char *prefix,
+ 	/* We will allow 11 spaces for ' (deleted)' to be appended */
+ 	pathname = kmalloc(PATH_MAX+11, ab->gfp_mask);
+ 	if (!pathname) {
+-		audit_log_string(ab, "<no_memory>");
++		audit_log_format(ab, "\"<no_memory>\"");
+ 		return;
+ 	}
+ 	p = d_path(path, pathname, PATH_MAX+11);
+ 	if (IS_ERR(p)) { /* Should never happen since we send PATH_MAX */
+ 		/* FIXME: can we save some information here? */
+-		audit_log_string(ab, "<too_long>");
++		audit_log_format(ab, "\"<too_long>\"");
+ 	} else
+ 		audit_log_untrustedstring(ab, p);
+ 	kfree(pathname);
+diff --git a/security/apparmor/audit.c b/security/apparmor/audit.c
+index 597732503815..335b5b8d300b 100644
+--- a/security/apparmor/audit.c
++++ b/security/apparmor/audit.c
+@@ -57,18 +57,16 @@ static void audit_pre(struct audit_buffer *ab, void *ca)
+ 	struct common_audit_data *sa = ca;
+ 
+ 	if (aa_g_audit_header) {
+-		audit_log_format(ab, "apparmor=");
+-		audit_log_string(ab, aa_audit_type[aad(sa)->type]);
++		audit_log_format(ab, "apparmor=%s",
++				 aa_audit_type[aad(sa)->type]);
+ 	}
+ 
+ 	if (aad(sa)->op) {
+-		audit_log_format(ab, " operation=");
+-		audit_log_string(ab, aad(sa)->op);
++		audit_log_format(ab, " operation=%s", aad(sa)->op);
+ 	}
+ 
+ 	if (aad(sa)->info) {
+-		audit_log_format(ab, " info=");
+-		audit_log_string(ab, aad(sa)->info);
++		audit_log_format(ab, " info=\"%s\"", aad(sa)->info);
+ 		if (aad(sa)->error)
+ 			audit_log_format(ab, " error=%d", aad(sa)->error);
+ 	}
+diff --git a/security/apparmor/file.c b/security/apparmor/file.c
+index 9a2d14b7c9f8..70f27124d051 100644
+--- a/security/apparmor/file.c
++++ b/security/apparmor/file.c
+@@ -35,20 +35,6 @@ static u32 map_mask_to_chr_mask(u32 mask)
+ }
+ 
+ /**
+- * audit_file_mask - convert mask to permission string
+- * @buffer: buffer to write string to (NOT NULL)
+- * @mask: permission mask to convert
+- */
+-static void audit_file_mask(struct audit_buffer *ab, u32 mask)
+-{
+-	char str[10];
+-
+-	aa_perm_mask_to_str(str, sizeof(str), aa_file_perm_chrs,
+-			    map_mask_to_chr_mask(mask));
+-	audit_log_string(ab, str);
+-}
+-
+-/**
+  * file_audit_cb - call back for file specific audit fields
+  * @ab: audit_buffer  (NOT NULL)
+  * @va: audit struct to audit values of  (NOT NULL)
+@@ -57,14 +43,17 @@ static void file_audit_cb(struct audit_buffer *ab, void *va)
+ {
+ 	struct common_audit_data *sa = va;
+ 	kuid_t fsuid = current_fsuid();
++	char str[10];
+ 
+ 	if (aad(sa)->request & AA_AUDIT_FILE_MASK) {
+-		audit_log_format(ab, " requested_mask=");
+-		audit_file_mask(ab, aad(sa)->request);
++		aa_perm_mask_to_str(str, sizeof(str), aa_file_perm_chrs,
++				    map_mask_to_chr_mask(aad(sa)->request));
++		audit_log_format(ab, " requested_mask=%s", str);
+ 	}
+ 	if (aad(sa)->denied & AA_AUDIT_FILE_MASK) {
+-		audit_log_format(ab, " denied_mask=");
+-		audit_file_mask(ab, aad(sa)->denied);
++		aa_perm_mask_to_str(str, sizeof(str), aa_file_perm_chrs,
++				    map_mask_to_chr_mask(aad(sa)->denied));
++		audit_log_format(ab, " denied_mask=%s", str);
+ 	}
+ 	if (aad(sa)->request & AA_AUDIT_FILE_MASK) {
+ 		audit_log_format(ab, " fsuid=%d",
+diff --git a/security/apparmor/ipc.c b/security/apparmor/ipc.c
+index 4ecedffbdd33..18ca807e7872 100644
+--- a/security/apparmor/ipc.c
++++ b/security/apparmor/ipc.c
+@@ -20,24 +20,21 @@
+ 
+ /**
+  * audit_ptrace_mask - convert mask to permission string
+- * @buffer: buffer to write string to (NOT NULL)
+  * @mask: permission mask to convert
++ *
++ * Returns: pointer to static string
+  */
+-static void audit_ptrace_mask(struct audit_buffer *ab, u32 mask)
++static const char *audit_ptrace_mask(u32 mask)
+ {
+ 	switch (mask) {
+ 	case MAY_READ:
+-		audit_log_string(ab, "read");
+-		break;
++		return "read";
+ 	case MAY_WRITE:
+-		audit_log_string(ab, "trace");
+-		break;
++		return "trace";
+ 	case AA_MAY_BE_READ:
+-		audit_log_string(ab, "readby");
+-		break;
++		return "readby";
+ 	case AA_MAY_BE_TRACED:
+-		audit_log_string(ab, "tracedby");
+-		break;
++		return "tracedby";
+ 	}
+ }
+ 
+@@ -47,12 +44,12 @@ static void audit_ptrace_cb(struct audit_buffer *ab, void *va)
+ 	struct common_audit_data *sa = va;
+ 
+ 	if (aad(sa)->request & AA_PTRACE_PERM_MASK) {
+-		audit_log_format(ab, " requested_mask=");
+-		audit_ptrace_mask(ab, aad(sa)->request);
++		audit_log_format(ab, " requested_mask=%s",
++				 audit_ptrace_mask(aad(sa)->request));
+ 
+ 		if (aad(sa)->denied & AA_PTRACE_PERM_MASK) {
+-			audit_log_format(ab, " denied_mask=");
+-			audit_ptrace_mask(ab, aad(sa)->denied);
++			audit_log_format(ab, " denied_mask=%s",
++					 audit_ptrace_mask(aad(sa)->denied));
+ 		}
+ 	}
+ 	audit_log_format(ab, " peer=");
+@@ -142,16 +139,17 @@ static inline int map_signal_num(int sig)
+ }
+ 
+ /**
+- * audit_file_mask - convert mask to permission string
+- * @buffer: buffer to write string to (NOT NULL)
++ * audit_signal_mask - convert mask to permission string
+  * @mask: permission mask to convert
++ *
++ * Returns: pointer to static string
+  */
+-static void audit_signal_mask(struct audit_buffer *ab, u32 mask)
++static const char *audit_signal_mask(u32 mask)
+ {
+ 	if (mask & MAY_READ)
+-		audit_log_string(ab, "receive");
++		return "receive";
+ 	if (mask & MAY_WRITE)
+-		audit_log_string(ab, "send");
++		return "send";
+ }
+ 
+ /**
+@@ -164,11 +162,11 @@ static void audit_signal_cb(struct audit_buffer *ab, void *va)
+ 	struct common_audit_data *sa = va;
+ 
+ 	if (aad(sa)->request & AA_SIGNAL_PERM_MASK) {
+-		audit_log_format(ab, " requested_mask=");
+-		audit_signal_mask(ab, aad(sa)->request);
++		audit_log_format(ab, " requested_mask=%s",
++				 audit_signal_mask(aad(sa)->request));
+ 		if (aad(sa)->denied & AA_SIGNAL_PERM_MASK) {
+-			audit_log_format(ab, " denied_mask=");
+-			audit_signal_mask(ab, aad(sa)->denied);
++			audit_log_format(ab, " denied_mask=%s",
++					 audit_signal_mask(aad(sa)->denied));
+ 		}
+ 	}
+ 	if (aad(sa)->signal == SIGUNKNOWN)
+diff --git a/security/apparmor/net.c b/security/apparmor/net.c
+index d8afc39f663a..fa0e85568450 100644
+--- a/security/apparmor/net.c
++++ b/security/apparmor/net.c
+@@ -72,16 +72,18 @@ void audit_net_cb(struct audit_buffer *ab, void *va)
+ {
+ 	struct common_audit_data *sa = va;
+ 
+-	audit_log_format(ab, " family=");
+ 	if (address_family_names[sa->u.net->family])
+-		audit_log_string(ab, address_family_names[sa->u.net->family]);
++		audit_log_format(ab, " family=\"%s\"",
++				 address_family_names[sa->u.net->family]);
+ 	else
+-		audit_log_format(ab, "\"unknown(%d)\"", sa->u.net->family);
+-	audit_log_format(ab, " sock_type=");
++		audit_log_format(ab, " family=\"unknown(%d)\"",
++				 sa->u.net->family);
+ 	if (sock_type_names[aad(sa)->net.type])
+-		audit_log_string(ab, sock_type_names[aad(sa)->net.type]);
++		audit_log_format(ab, " sock_type=\"%s\"",
++				 sock_type_names[aad(sa)->net.type]);
+ 	else
+-		audit_log_format(ab, "\"unknown(%d)\"", aad(sa)->net.type);
++		audit_log_format(ab, " sock_type=\"unknown(%d)\"",
++				 aad(sa)->net.type);
+ 	audit_log_format(ab, " protocol=%d", aad(sa)->net.protocol);
+ 
+ 	if (aad(sa)->request & NET_PERMS_MASK) {
+diff --git a/security/lsm_audit.c b/security/lsm_audit.c
+index 2d2bf49016f4..221370794d14 100644
+--- a/security/lsm_audit.c
++++ b/security/lsm_audit.c
+@@ -427,8 +427,8 @@ static void dump_common_audit_data(struct audit_buffer *ab,
+ 				 a->u.ibendport->port);
+ 		break;
+ 	case LSM_AUDIT_DATA_LOCKDOWN:
+-		audit_log_format(ab, " lockdown_reason=");
+-		audit_log_string(ab, lockdown_reasons[a->u.reason]);
++		audit_log_format(ab, " lockdown_reason=\"%s\"",
++				 lockdown_reasons[a->u.reason]);
+ 		break;
+ 	} /* switch (a->type) */
+ }
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+1.8.3.1
+
