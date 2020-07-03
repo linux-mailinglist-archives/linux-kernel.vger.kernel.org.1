@@ -2,245 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1759213A67
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 14:55:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A9AF213A3B
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 14:49:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726975AbgGCMzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 08:55:00 -0400
-Received: from mga18.intel.com ([134.134.136.126]:25720 "EHLO mga18.intel.com"
+        id S1726283AbgGCMtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 08:49:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45992 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726446AbgGCMxc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 08:53:32 -0400
-IronPort-SDR: zIcFegxIcQbo4r5bHj//yy+MOUt79hh0bhCj4jZEb0uMsL8FRIbuYUn7kKAa+TcSi+vWz/nkgd
- M59HcRDFTL4Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="134598362"
-X-IronPort-AV: E=Sophos;i="5.75,308,1589266800"; 
-   d="scan'208";a="134598362"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jul 2020 05:53:32 -0700
-IronPort-SDR: lhz7ssSAs0zrD9cuZJwkksYBAI3tSb6dCoKWRdWal6tV4j0PyrOvf+L88OX0vsFO6ABaEI2kzL
- NNXAwvgeWJew==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,308,1589266800"; 
-   d="scan'208";a="265963985"
-Received: from otc-lr-04.jf.intel.com ([10.54.39.143])
-  by fmsmga007.fm.intel.com with ESMTP; 03 Jul 2020 05:53:31 -0700
-From:   kan.liang@linux.intel.com
-To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        tglx@linutronix.de, bp@alien8.de, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, namhyung@kernel.org, dave.hansen@intel.com,
-        yu-cheng.yu@intel.com, bigeasy@linutronix.de, gorcunov@gmail.com,
-        hpa@zytor.com, alexey.budankov@linux.intel.com, eranian@google.com,
-        ak@linux.intel.com, like.xu@linux.intel.com,
-        yao.jin@linux.intel.com, wei.w.wang@intel.com,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH V3 06/23] perf/x86/intel/lbr: Use dynamic data structure for task_ctx
-Date:   Fri,  3 Jul 2020 05:49:12 -0700
-Message-Id: <1593780569-62993-7-git-send-email-kan.liang@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1593780569-62993-1-git-send-email-kan.liang@linux.intel.com>
-References: <1593780569-62993-1-git-send-email-kan.liang@linux.intel.com>
+        id S1726053AbgGCMtV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Jul 2020 08:49:21 -0400
+Received: from localhost (unknown [122.182.251.219])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CE8D520899;
+        Fri,  3 Jul 2020 12:49:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593780560;
+        bh=+/21p5rQ6k7dd6nmGPMmmCDHBK6ejZw314j+mhRM2/A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Z0x5onKcdtJbw5KpysufxQzolTSYRNWscUBkmrJIyVgHOUpN4EpEYuX8M/6MlvrEB
+         pLC3Brtgq8rq8cNtRHsAW6nCIbTIxSoeeAEKEWkuMh8GhEggrx4G7bcxJgzjNMxq7D
+         aLKqoFJhW8+9+7Yxoqi6EMs7/8vbQn0K+zONJh2Q=
+Date:   Fri, 3 Jul 2020 18:19:12 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Will Deacon <will@kernel.org>, John Stultz <john.stultz@linaro.org>
+Cc:     Marc Zyngier <maz@kernel.org>, lkml <linux-kernel@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Lina Iyer <ilina@codeaurora.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Todd Kjos <tkjos@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        iommu@lists.linux-foundation.org, linux-gpio@vger.kernel.org
+Subject: Re: [RFC][PATCH 5/5] firmware: QCOM_SCM: Allow qcom_scm driver to be
+ loadable as a permenent module
+Message-ID: <20200703124912.GM273932@vkoul-mobl>
+References: <20200616061338.109499-1-john.stultz@linaro.org>
+ <20200616061338.109499-6-john.stultz@linaro.org>
+ <0be86735238a0f8b0c25934e2ed39eee@kernel.org>
+ <CALAqxLUZBdiLBRcp1GW9rGxt1KhgNVQ86MuPXZcXdx2wFLZk6w@mail.gmail.com>
+ <20200703122343.GB18652@willie-the-truck>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200703122343.GB18652@willie-the-truck>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kan Liang <kan.liang@linux.intel.com>
+On 03-07-20, 13:23, Will Deacon wrote:
+> On Tue, Jun 16, 2020 at 01:52:32PM -0700, John Stultz wrote:
+> > On Tue, Jun 16, 2020 at 12:55 AM Marc Zyngier <maz@kernel.org> wrote:
+> > > On 2020-06-16 07:13, John Stultz wrote:
+> > > > diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
+> > > > index b510f67dfa49..714893535dd2 100644
+> > > > --- a/drivers/iommu/Kconfig
+> > > > +++ b/drivers/iommu/Kconfig
+> > > > @@ -381,6 +381,7 @@ config SPAPR_TCE_IOMMU
+> > > >  config ARM_SMMU
+> > > >       tristate "ARM Ltd. System MMU (SMMU) Support"
+> > > >       depends on (ARM64 || ARM || (COMPILE_TEST && !GENERIC_ATOMIC64)) &&
+> > > > MMU
+> > > > +     depends on QCOM_SCM || !QCOM_SCM #if QCOM_SCM=m this can't be =y
+> > >
+> > > This looks a bit ugly. Could you explain why we need this at the SMMU
+> > > level? I'd have expected the dependency to flow the other way around...
+> > 
+> > Yea, so the arm-smmu-qcom.c file calls directly into the qcom-scm code
+> > via qcom_scm_qsmmu500_wait_safe_toggle()
+> >   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/iommu/arm-smmu-qcom.c?h=v5.8-rc1#n44
+> > 
+> > So if ARM_SMMU=y and QCOM_SCM=m we get:
+> > drivers/iommu/arm-smmu-qcom.o: In function `qcom_smmu500_reset':
+> > arm-smmu-qcom.c:(.text+0xb4): undefined reference to
+> > `qcom_scm_qsmmu500_wait_safe_toggle'
+> > 
+> > Do you have a suggestion for an alternative approach?
+> 
+> Can you use symbol_get() or something like that? How are module dependencies
+> handled by other drivers?
 
-The type of task_ctx is hardcoded as struct x86_perf_task_context,
-which doesn't apply for Architecture LBR. For example, Architecture LBR
-doesn't have the TOS MSR. The number of LBR entries is variable. A new
-struct will be introduced for Architecture LBR. Perf has to determine
-the type of task_ctx at run time.
+So drivers deal with this by making rules in Kconfig which will prohibit
+this case. QCOM_SCM depends on ARM_SMMU with the caveat that if ARM_SMMU
+is a module, QCOM_SCM cant be inbuilt.
 
-The type of task_ctx pointer is changed to 'void *', which will be
-determined at run time.
+This can be done by adding below line in Kconfig for QCOM_SCM:
 
-The generic LBR optimization can be shared between Architecture LBR and
-model-specific LBR. Both need to access the structure for the generic
-LBR optimization. A helper task_context_opt() is introduced to retrieve
-the pointer of the structure at run time.
+        depends on ARM_SMMU || !ARM_SMMU
 
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
----
- arch/x86/events/intel/lbr.c  | 59 +++++++++++++++++++-------------------------
- arch/x86/events/perf_event.h |  7 +++++-
- 2 files changed, 32 insertions(+), 34 deletions(-)
+This is quite prevalent is drivers to ensure dependency like this
 
-diff --git a/arch/x86/events/intel/lbr.c b/arch/x86/events/intel/lbr.c
-index bba9939..e62baa9 100644
---- a/arch/x86/events/intel/lbr.c
-+++ b/arch/x86/events/intel/lbr.c
-@@ -355,18 +355,17 @@ void intel_pmu_lbr_restore(void *ctx)
- 		wrmsrl(MSR_LBR_SELECT, task_ctx->lbr_sel);
- }
- 
--static __always_inline bool
--lbr_is_reset_in_cstate(struct x86_perf_task_context *task_ctx)
-+static __always_inline bool lbr_is_reset_in_cstate(void *ctx)
- {
--	return !rdlbr_from(task_ctx->tos);
-+	return !rdlbr_from(((struct x86_perf_task_context *)ctx)->tos);
- }
- 
--static void __intel_pmu_lbr_restore(struct x86_perf_task_context *task_ctx)
-+static void __intel_pmu_lbr_restore(void *ctx)
- {
- 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
- 
--	if (task_ctx->opt.lbr_callstack_users == 0 ||
--	    task_ctx->opt.lbr_stack_state == LBR_NONE) {
-+	if (task_context_opt(ctx)->lbr_callstack_users == 0 ||
-+	    task_context_opt(ctx)->lbr_stack_state == LBR_NONE) {
- 		intel_pmu_lbr_reset();
- 		return;
- 	}
-@@ -376,16 +375,16 @@ static void __intel_pmu_lbr_restore(struct x86_perf_task_context *task_ctx)
- 	 * - No one else touched them, and
- 	 * - Was not cleared in Cstate
- 	 */
--	if ((task_ctx == cpuc->last_task_ctx) &&
--	    (task_ctx->opt.log_id == cpuc->last_log_id) &&
--	    !lbr_is_reset_in_cstate(task_ctx)) {
--		task_ctx->opt.lbr_stack_state = LBR_NONE;
-+	if ((ctx == cpuc->last_task_ctx) &&
-+	    (task_context_opt(ctx)->log_id == cpuc->last_log_id) &&
-+	    !lbr_is_reset_in_cstate(ctx)) {
-+		task_context_opt(ctx)->lbr_stack_state = LBR_NONE;
- 		return;
- 	}
- 
--	x86_pmu.lbr_restore(task_ctx);
-+	x86_pmu.lbr_restore(ctx);
- 
--	task_ctx->opt.lbr_stack_state = LBR_NONE;
-+	task_context_opt(ctx)->lbr_stack_state = LBR_NONE;
- }
- 
- void intel_pmu_lbr_save(void *ctx)
-@@ -415,27 +414,27 @@ void intel_pmu_lbr_save(void *ctx)
- 		rdmsrl(MSR_LBR_SELECT, task_ctx->lbr_sel);
- }
- 
--static void __intel_pmu_lbr_save(struct x86_perf_task_context *task_ctx)
-+static void __intel_pmu_lbr_save(void *ctx)
- {
- 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
- 
--	if (task_ctx->opt.lbr_callstack_users == 0) {
--		task_ctx->opt.lbr_stack_state = LBR_NONE;
-+	if (task_context_opt(ctx)->lbr_callstack_users == 0) {
-+		task_context_opt(ctx)->lbr_stack_state = LBR_NONE;
- 		return;
- 	}
- 
--	x86_pmu.lbr_save(task_ctx);
-+	x86_pmu.lbr_save(ctx);
- 
--	task_ctx->opt.lbr_stack_state = LBR_VALID;
-+	task_context_opt(ctx)->lbr_stack_state = LBR_VALID;
- 
--	cpuc->last_task_ctx = task_ctx;
--	cpuc->last_log_id = ++task_ctx->opt.log_id;
-+	cpuc->last_task_ctx = ctx;
-+	cpuc->last_log_id = ++task_context_opt(ctx)->log_id;
- }
- 
- void intel_pmu_lbr_swap_task_ctx(struct perf_event_context *prev,
- 				 struct perf_event_context *next)
- {
--	struct x86_perf_task_context *prev_ctx_data, *next_ctx_data;
-+	void *prev_ctx_data, *next_ctx_data;
- 
- 	swap(prev->task_ctx_data, next->task_ctx_data);
- 
-@@ -451,14 +450,14 @@ void intel_pmu_lbr_swap_task_ctx(struct perf_event_context *prev,
- 	if (!prev_ctx_data || !next_ctx_data)
- 		return;
- 
--	swap(prev_ctx_data->opt.lbr_callstack_users,
--	     next_ctx_data->opt.lbr_callstack_users);
-+	swap(task_context_opt(prev_ctx_data)->lbr_callstack_users,
-+	     task_context_opt(next_ctx_data)->lbr_callstack_users);
- }
- 
- void intel_pmu_lbr_sched_task(struct perf_event_context *ctx, bool sched_in)
- {
- 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
--	struct x86_perf_task_context *task_ctx;
-+	void *task_ctx;
- 
- 	if (!cpuc->lbr_users)
- 		return;
-@@ -495,7 +494,6 @@ static inline bool branch_user_callstack(unsigned br_sel)
- void intel_pmu_lbr_add(struct perf_event *event)
- {
- 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
--	struct x86_perf_task_context *task_ctx;
- 
- 	if (!x86_pmu.lbr_nr)
- 		return;
-@@ -505,10 +503,8 @@ void intel_pmu_lbr_add(struct perf_event *event)
- 
- 	cpuc->br_sel = event->hw.branch_reg.reg;
- 
--	if (branch_user_callstack(cpuc->br_sel) && event->ctx->task_ctx_data) {
--		task_ctx = event->ctx->task_ctx_data;
--		task_ctx->opt.lbr_callstack_users++;
--	}
-+	if (branch_user_callstack(cpuc->br_sel) && event->ctx->task_ctx_data)
-+		task_context_opt(event->ctx->task_ctx_data)->lbr_callstack_users++;
- 
- 	/*
- 	 * Request pmu::sched_task() callback, which will fire inside the
-@@ -539,16 +535,13 @@ void intel_pmu_lbr_add(struct perf_event *event)
- void intel_pmu_lbr_del(struct perf_event *event)
- {
- 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
--	struct x86_perf_task_context *task_ctx;
- 
- 	if (!x86_pmu.lbr_nr)
- 		return;
- 
- 	if (branch_user_callstack(cpuc->br_sel) &&
--	    event->ctx->task_ctx_data) {
--		task_ctx = event->ctx->task_ctx_data;
--		task_ctx->opt.lbr_callstack_users--;
--	}
-+	    event->ctx->task_ctx_data)
-+		task_context_opt(event->ctx->task_ctx_data)->lbr_callstack_users--;
- 
- 	if (event->hw.flags & PERF_X86_EVENT_LBR_SELECT)
- 		cpuc->lbr_select = 0;
-diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
-index 96d73cd..7dbf148 100644
---- a/arch/x86/events/perf_event.h
-+++ b/arch/x86/events/perf_event.h
-@@ -247,7 +247,7 @@ struct cpu_hw_events {
- 	struct perf_branch_entry	lbr_entries[MAX_LBR_ENTRIES];
- 	struct er_account		*lbr_sel;
- 	u64				br_sel;
--	struct x86_perf_task_context	*last_task_ctx;
-+	void				*last_task_ctx;
- 	int				last_log_id;
- 	int				lbr_select;
- 
-@@ -800,6 +800,11 @@ static struct perf_pmu_events_ht_attr event_attr_##v = {		\
- struct pmu *x86_get_pmu(void);
- extern struct x86_pmu x86_pmu __read_mostly;
- 
-+static __always_inline struct x86_perf_task_context_opt *task_context_opt(void *ctx)
-+{
-+	return &((struct x86_perf_task_context *)ctx)->opt;
-+}
-+
- static inline bool x86_pmu_has_lbr_callstack(void)
- {
- 	return  x86_pmu.lbr_sel_map &&
+Thanks
 -- 
-2.7.4
-
+~Vinod
