@@ -2,71 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC8FB214096
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 22:57:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C013214098
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 23:00:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726958AbgGCU5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 16:57:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46192 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726931AbgGCU5L (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 16:57:11 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 628C2C061794;
-        Fri,  3 Jul 2020 13:57:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=R+4UIuti3Yu59cS66T9z4T8p1dcbvO0NXfdkUzsABzc=; b=vvE61Ffi4Hwlw3EuRItCseBtlH
-        yOUftxdUl5Hn7hu+Zj1EUKMId6MpcqaO9kqPc4JogUt5Zp5KZ+YZIXTYuXmJDdfDKPXtbWgfuq4FK
-        IXlj8Z5eyZAMAmsyCSKhf78kVLf6NN4gnvbQ3WWe+fju55qoa8MxFhZaqXBo0VcVONfyoR5eVWY/M
-        NFrH/06j8axeriq10rBKNn3J6c/cWdLmJoPl8P2WfbaWW3KAVXxZHRSxFl2P4PVTkPq/fjeBahfhp
-        pNTzUHbbwUPyNDcWfcsYEsoEwUPM/G13DJLkWINjFKSlQkibDrT5mlvC7n1Co/h9kRkj+FlsacPbF
-        csfrUUtg==;
-Received: from [2601:1c0:6280:3f0::19c2] (helo=smtpauth.infradead.org)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jrSk9-0003a5-3D; Fri, 03 Jul 2020 20:57:09 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>, linux-hwmon@vger.kernel.org
-Subject: [PATCH 5/5] Documenation: hwmon/w83l786ng: drop duplicate words
-Date:   Fri,  3 Jul 2020 13:56:49 -0700
-Message-Id: <20200703205649.30125-6-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200703205649.30125-1-rdunlap@infradead.org>
-References: <20200703205649.30125-1-rdunlap@infradead.org>
+        id S1726802AbgGCU7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 16:59:54 -0400
+Received: from mga07.intel.com ([134.134.136.100]:44919 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726474AbgGCU7y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Jul 2020 16:59:54 -0400
+IronPort-SDR: zah4OS1iSVIxcr45z9FCC9P2IPOJZWEOa/lfqYEujy0LtkRavMRa6wwoDkbdwmQbuTzoejVAKr
+ JN4xMrwT/ThA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9671"; a="212209816"
+X-IronPort-AV: E=Sophos;i="5.75,309,1589266800"; 
+   d="scan'208";a="212209816"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jul 2020 13:59:53 -0700
+IronPort-SDR: MKaEulu0QJJcDM0CaSEvQlUHhMQoXr7jtcsNAlVWyLBekn2M8wq/gxzlg5iMmAxeZRez5Nc7ek
+ 0zmn7r2xMofw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,309,1589266800"; 
+   d="scan'208";a="321871448"
+Received: from linux.intel.com ([10.54.29.200])
+  by FMSMGA003.fm.intel.com with ESMTP; 03 Jul 2020 13:59:53 -0700
+Received: from [10.252.135.177] (kliang2-mobl.ccr.corp.intel.com [10.252.135.177])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 0668E580428;
+        Fri,  3 Jul 2020 13:59:50 -0700 (PDT)
+Subject: Re: [PATCH V3 13/23] perf/x86/intel/lbr: Factor out
+ intel_pmu_store_lbr
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     mingo@redhat.com, acme@kernel.org, tglx@linutronix.de,
+        bp@alien8.de, x86@kernel.org, linux-kernel@vger.kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, namhyung@kernel.org, dave.hansen@intel.com,
+        yu-cheng.yu@intel.com, bigeasy@linutronix.de, gorcunov@gmail.com,
+        hpa@zytor.com, alexey.budankov@linux.intel.com, eranian@google.com,
+        ak@linux.intel.com, like.xu@linux.intel.com,
+        yao.jin@linux.intel.com, wei.w.wang@intel.com
+References: <1593780569-62993-1-git-send-email-kan.liang@linux.intel.com>
+ <1593780569-62993-14-git-send-email-kan.liang@linux.intel.com>
+ <20200703195024.GI2483@worktop.programming.kicks-ass.net>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+Message-ID: <bf63dee4-d25f-89d8-1893-572d84cfa667@linux.intel.com>
+Date:   Fri, 3 Jul 2020 16:59:49 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200703195024.GI2483@worktop.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop the doubled word "readings".
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: linux-doc@vger.kernel.org
-Cc: Jean Delvare <jdelvare@suse.com>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Cc: linux-hwmon@vger.kernel.org
----
- Documentation/hwmon/w83l786ng.rst |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- linux-next-20200701.orig/Documentation/hwmon/w83l786ng.rst
-+++ linux-next-20200701/Documentation/hwmon/w83l786ng.rst
-@@ -36,7 +36,7 @@ Temperatures are measured in degrees Cel
- degC for temp1 and temp2.
- 
- Fan rotation speeds are reported in RPM (rotations per minute). Fan readings
--readings can be divided by a programmable divider (1, 2, 4, 8, 16, 32, 64
-+can be divided by a programmable divider (1, 2, 4, 8, 16, 32, 64
- or 128 for fan 1/2) to give the readings more range or accuracy.
- 
- Voltage sensors (also known as IN sensors) report their values in millivolts.
+On 7/3/2020 3:50 PM, Peter Zijlstra wrote:
+> On Fri, Jul 03, 2020 at 05:49:19AM -0700, kan.liang@linux.intel.com wrote:
+>> +static void intel_pmu_store_lbr(struct cpu_hw_events *cpuc,
+>> +				struct lbr_entry *entries)
+>> +{
+>> +	struct perf_branch_entry *e;
+>> +	struct lbr_entry *lbr;
+>> +	u64 from, to, info;
+>> +	int i;
+>> +
+>> +	for (i = 0; i < x86_pmu.lbr_nr; i++) {
+>> +		lbr = entries ? &entries[i] : NULL;
+>> +		e = &cpuc->lbr_entries[i];
+>> +
+>> +		from = rdlbr_from(i, lbr);
+>> +		/*
+>> +		 * Read LBR entries until invalid entry (0s) is detected.
+>> +		 */
+>> +		if (!from)
+>> +			break;
+>> +
+>> +		to = rdlbr_to(i, lbr);
+>> +		info = rdlbr_info(i, lbr);
+>> +
+>> +		e->from		= from;
+>> +		e->to		= to;
+>> +		e->mispred	= !!(info & LBR_INFO_MISPRED);
+>> +		e->predicted	= !(info & LBR_INFO_MISPRED);
+>> +		e->in_tx	= !!(info & LBR_INFO_IN_TX);
+>> +		e->abort	= !!(info & LBR_INFO_ABORT);
+>> +		e->cycles	= info & LBR_INFO_CYCLES;
+>> +		e->type		= 0;
+>> +		e->reserved	= 0;
+>> +	}
+>> +
+>> +	cpuc->lbr_stack.nr = i;
+>> +}
+> 
+> If I'm not mistaken, this correctly deals with LBR_FORMAT_INFO, so can't
+> we also use the intel_pmu_arch_lbr_read() function for that case?
+
+But the intel_pmu_arch_lbr_read() doesn't have the optimization 
+(LBR_NO_INFO) for the LBR_FORMAT_INFO.
+https://lkml.kernel.org/r/tip-b16a5b52eb90d92b597257778e51e1fdc6423e64@git.kernel.org
+
+To apply the optimization, we need extra codes as below.
+
+The problem is that the arch LBR XSAVES read and the adaptive PEBS read 
+don't need the optimization.
+
+Also, the name intel_pmu_arch_lbr_read() becomes misleading. 
+LBR_FORMAT_INFO doesn't have an exact format as arch LBR.
+
+
+diff --git a/arch/x86/events/intel/lbr.c b/arch/x86/events/intel/lbr.c
+index 213e814..9ff5ab7 100644
+--- a/arch/x86/events/intel/lbr.c
++++ b/arch/x86/events/intel/lbr.c
+@@ -929,7 +929,8 @@ static __always_inline bool get_lbr_cycles(u64 info)
+  }
+
+  static void intel_pmu_store_lbr(struct cpu_hw_events *cpuc,
+-				struct lbr_entry *entries)
++				struct lbr_entry *entries,
++				bool need_info)
+  {
+  	struct perf_branch_entry *e;
+  	struct lbr_entry *lbr;
+@@ -948,25 +949,36 @@ static void intel_pmu_store_lbr(struct 
+cpu_hw_events *cpuc,
+  			break;
+
+  		to = rdlbr_to(i, lbr);
+-		info = rdlbr_info(i, lbr);
+
+  		e->from		= from;
+  		e->to		= to;
+-		e->mispred	= get_lbr_mispred(info);
+-		e->predicted	= get_lbr_predicted(info);
+-		e->in_tx	= !!(info & LBR_INFO_IN_TX);
+-		e->abort	= !!(info & LBR_INFO_ABORT);
+-		e->cycles	= get_lbr_cycles(info);
+-		e->type		= get_lbr_br_type(info);
++		if (need_info) {
++			info = rdlbr_info(i, lbr);
++			e->mispred	= get_lbr_mispred(info);
++			e->predicted	= get_lbr_predicted(info);
++			e->in_tx	= !!(info & LBR_INFO_IN_TX);
++			e->abort	= !!(info & LBR_INFO_ABORT);
++			e->cycles	= get_lbr_cycles(info);
++			e->type		= get_lbr_br_type(info);
++		}
++
+  		e->reserved	= 0;
+  	}
+
+  	cpuc->lbr_stack.nr = i;
+  }
+
++static __always_inline bool lbr_need_info(struct cpu_hw_events *cpuc)
++{
++	if (cpuc->lbr_sel)
++		return !(cpuc->lbr_sel->config & LBR_NO_INFO);
++
++	return false;
++}
++
+  static void intel_pmu_arch_lbr_read(struct cpu_hw_events *cpuc)
+  {
+-	intel_pmu_store_lbr(cpuc, NULL);
++	intel_pmu_store_lbr(cpuc, NULL, lbr_need_info(cpuc));
+  }
+
+  static void intel_pmu_arch_lbr_read_xsave(struct cpu_hw_events *cpuc)
+@@ -974,12 +986,12 @@ static void intel_pmu_arch_lbr_read_xsave(struct 
+cpu_hw_events *cpuc)
+  	struct x86_perf_task_context_arch_lbr_xsave *xsave = cpuc->lbr_xsave;
+
+  	if (!xsave) {
+-		intel_pmu_store_lbr(cpuc, NULL);
++		intel_pmu_store_lbr(cpuc, NULL, lbr_need_info(cpuc));
+  		return;
+  	}
+  	copy_dynamic_supervisor_to_kernel(&xsave->xsave, XFEATURE_MASK_LBR);
+
+-	intel_pmu_store_lbr(cpuc, xsave->lbr.entries);
++	intel_pmu_store_lbr(cpuc, xsave->lbr.entries, lbr_need_info(cpuc));
+  }
+
+  void intel_pmu_lbr_read(void)
+@@ -1460,7 +1472,7 @@ void intel_pmu_store_pebs_lbrs(struct pebs_lbr *lbr)
+  	else
+  		cpuc->lbr_stack.hw_idx = intel_pmu_lbr_tos();
+
+-	intel_pmu_store_lbr(cpuc, lbr->lbr);
++	intel_pmu_store_lbr(cpuc, lbr->lbr, lbr_need_info(cpuc));
+
+  	intel_pmu_lbr_filter(cpuc);
+  }
+
+Thanks,
+Kan
+
+> 
+> Then we can delete that section from read_64...
+> 
+> Index: linux-2.6/arch/x86/events/intel/core.c
+> ===================================================================
+> --- linux-2.6.orig/arch/x86/events/intel/core.c
+> +++ linux-2.6/arch/x86/events/intel/core.c
+> @@ -4664,6 +4664,9 @@ __init int intel_pmu_init(void)
+>   		x86_pmu.lbr_read = intel_pmu_lbr_read_32;
+>   	}
+>   
+> +	if (x86_pmu.intel_cap.lbr_format == LBR_FORMAT_INFO)
+> +		x86_pmu.lbr_read = intel_pmu_arch_lbr_read;
+> +
+>   	if (boot_cpu_has(X86_FEATURE_ARCH_LBR))
+>   		intel_pmu_arch_lbr_init();
+>
