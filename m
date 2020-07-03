@@ -2,153 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27BBB21361B
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 10:16:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D46BE213605
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 10:15:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726836AbgGCIQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 04:16:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42336 "EHLO
+        id S1726244AbgGCIPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 04:15:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726819AbgGCIQo (ORCPT
+        with ESMTP id S1725648AbgGCIPc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 04:16:44 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7970AC08C5C1;
-        Fri,  3 Jul 2020 01:16:44 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id 72so1801600ple.0;
-        Fri, 03 Jul 2020 01:16:44 -0700 (PDT)
+        Fri, 3 Jul 2020 04:15:32 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCEC9C08C5C1;
+        Fri,  3 Jul 2020 01:15:32 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id t18so6664942ilh.2;
+        Fri, 03 Jul 2020 01:15:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=x4o+ZvPMksH/mCK/c/HDn/RkcQN7O7pX0UDd4MLfNlo=;
-        b=AtQYdBra+JVvn7sj0HuVvPfyV1r50bN0iVzn7jdSs2k+//yzu6cTSzWBMz8S1hW31d
-         bOKth8SXUtKb7zsPAxXQ+ON/CROJ0PfiTI2wxUkgefQcR3dI9E1lowVXGbGhNS3SHBb8
-         p2Il4tpZmjvqUQU2Vpn3mI1k3QecOwv6y9Q0dX9IJCO4dClSRVNqfsPzA6T0CrqJJGN8
-         9PPnc9lnfT77XLRLLEp39G2LnAt/V417LsYwto6Dr3NYKay0aSL/2yX9cBTifRBVDfqr
-         Bb5fIJy39QsBGnAR+r2lLk6PXv9+/kv8mKlUvbTn6TmgfgFTscUHOeXFcRADOBiTk4ey
-         dXIw==
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=STO53GF8jJ9fwooJ/PR+LY6ObOQA6eXVQnYnb1oX2YQ=;
+        b=nVrVFHObmfwCc4EDiskqGuhvjiuURaIWWhH9VmEsXrXQKhMokPft9UjpBZZKwZ8Kw5
+         qtr5MtQN6wIOpNY0A27FMpEWWEuU9P+QcbhArU2WcaXFvLQxzLTzxLDx8r2zpyNUvqeK
+         /ttn5Y+hzeSetuUVHHlAp5pnE/7JWwZabaEgPER1I8ARjIw+iwOt9TErXo1e+OD35hI+
+         KSgVoS3ChcYlpfB/GSoWhGxe41EAUCr2dmbU+KToUaL9wVfRSY+I6+7xkjfaMaaba0Xn
+         D6EqUXv9PjEepW6cHh6w7KXyd5SbeLZypnu1wTHXGbOlG37ejLZP29uEDUDTFmd4a0PM
+         ASZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=x4o+ZvPMksH/mCK/c/HDn/RkcQN7O7pX0UDd4MLfNlo=;
-        b=j2JAIe8SSG+c4KLD7vhc6CtK4CxIX6YJN2i1COhu/eGGvOtMN+Jvgx0YODszQJnNC6
-         V/PCvZXxXUm3ph1E5ZrIihyg2JcX4agXnMSgeSasaEGI5Oq+vawxvcAVJ5oJm3dKek0F
-         Y9Af5wSdJqneJKx46jpZqPLn3jOgxiwzMn4t06pnfzGcfB8wEwhVkH1IzleZ99Ggudwi
-         5gtEEm1yVgo9Fy4gx8TpEigFifyqzWGkn3cNXJnpm3UsAO70NtBg5PVUpqtVNOd8OcQ5
-         4Hqt7OH+OF77M4kZ18BkpCLx3eBoMy2ywb8+1pj1khs2mSx4adeizsHtN/WivppFuKCF
-         SJJQ==
-X-Gm-Message-State: AOAM531g9HvLHbEldPiCLdIydBIum8HZasDfjwXuxrhO3XcJ2n0B0Uxm
-        O/X+vQ4rQk/dT/N4EbRVng0=
-X-Google-Smtp-Source: ABdhPJwcLuW1N9f00/vsxYLUKzRnYyskZOoTPkdh2DaBblE/O9vUa5fbHi6nQfPhfqUr2oI7fnv7Lw==
-X-Received: by 2002:a17:90a:20ad:: with SMTP id f42mr25987368pjg.96.1593764203990;
-        Fri, 03 Jul 2020 01:16:43 -0700 (PDT)
-Received: from varodek.iballbatonwifi.com ([103.105.153.57])
-        by smtp.gmail.com with ESMTPSA id y198sm8437085pfg.116.2020.07.03.01.16.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Jul 2020 01:16:43 -0700 (PDT)
-From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, bjorn@helgaas.com,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        skhan@linuxfoundation.org, linux-ide@vger.kernel.org
-Subject: [PATCH v2 4/4] ide: delkin_cb: use generic power management
-Date:   Fri,  3 Jul 2020 13:44:28 +0530
-Message-Id: <20200703081428.1011527-5-vaibhavgupta40@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200703081428.1011527-1-vaibhavgupta40@gmail.com>
-References: <20200703081428.1011527-1-vaibhavgupta40@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=STO53GF8jJ9fwooJ/PR+LY6ObOQA6eXVQnYnb1oX2YQ=;
+        b=TonItFMecAlOAEZ/w863ZBg0ClqpXOAa9kUdd3lvhNNhDFlCqkyfez3s8qxzUCBHWs
+         Hnx1zvj7hVepb98LMxehfMfec2E1+HiigyB6KPGcEjhA6zLNck2GfFlpm/SU0PtD6y9C
+         i5OQNN11o8YZ+im1pqSsjIk6xg7ndOEGkOja6gts0g9aKiFcSSZ6GrEjfcbBWyVKqq1W
+         k8HKXg0rXiTgFEB4nXiJ2hNa87PamZbMipSIXrzuBCWij50WCXwmM64igrXl8v907BfJ
+         BSZrUb4rrUG3Tqx8X5ZT/iXbOa8ljpxkuJinA6e7HFN6lQuFGrlXbC1IfPpYGiL9OegC
+         xN/Q==
+X-Gm-Message-State: AOAM530XSAnCELj51M0nHN+TONp1+7bLAsKcM+tyrfaGtsZXRvRmkJTj
+        7lX24TdzEUaWTyQMD8XxbI+wg8h7U9NVyaSXmzc=
+X-Google-Smtp-Source: ABdhPJwYkSTd8ot4rjgU2UsFNopOo9xCIiSptSonbdFkDXH1DxQN1/G8cLqz9aGySz4jhdPugh78yI5qv2AYvapETB8=
+X-Received: by 2002:a92:dc09:: with SMTP id t9mr16946661iln.226.1593764131855;
+ Fri, 03 Jul 2020 01:15:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1588791882.08g1378g67.none.ref@localhost> <1588791882.08g1378g67.none@localhost>
+ <202007020818.87EA89106@keescook>
+In-Reply-To: <202007020818.87EA89106@keescook>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Fri, 3 Jul 2020 10:15:20 +0200
+Message-ID: <CA+icZUUBAzBNwqThSF=YS1zg9EVCuSZ-XDc5Pu3NrO6R3Fi2Zw@mail.gmail.com>
+Subject: Re: Kernel compression benchmarks
+To:     Kees Cook <keescook@chromium.org>
+Cc:     "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>,
+        linux-kernel@vger.kernel.org,
+        Nick Terrell <nickrterrell@gmail.com>,
+        Nick Terrell <terrelln@fb.com>,
+        Norbert Lange <nolange79@gmail.com>, Chris Mason <clm@fb.com>,
+        linux-kbuild@vger.kernel.org, x86@kernel.org,
+        gregkh@linuxfoundation.org, Petr Malat <oss@malat.biz>,
+        Kernel Team <Kernel-team@fb.com>,
+        Adam Borowski <kilobyte@angband.pl>,
+        Patrick Williams <patrickw3@fb.com>, rmikey@fb.com,
+        mingo@kernel.org, Patrick Williams <patrick@stwcx.xyz>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the support of generic PM callbacks, drivers no longer need to use
-legacy .suspend() and .resume() in which they had to maintain PCI states
-changes and device's power state themselves. All required operations are
-done by PCI core.
+On Thu, Jul 2, 2020 at 5:18 PM Kees Cook <keescook@chromium.org> wrote:
+>
+> On Wed, Jul 01, 2020 at 10:35:48AM -0400, Alex Xu (Hello71) wrote:
+> > ZSTD compression patches have been sent in a number of times over the
+> > past few years. Every time, someone asks for benchmarks. Every time,
+> > someone is concerned about compression time. Sometimes, someone provides
+> > benchmarks.
+>
+> Where's the latest series for this, btw? I thought it had landed. :P It
+> seemed like it was done.
+>
 
-After converting it into generic model, suspend() became an empty function.
-Hence, it is defined as NULL.
+Hi,
 
-Compile-tested only.
+Again, I would like to see this upstream, too.
 
-Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
----
- drivers/ide/delkin_cb.c | 30 ++++++------------------------
- 1 file changed, 6 insertions(+), 24 deletions(-)
+Last I asked for a rebase against Linux v5.8-rc1 or later.
 
-diff --git a/drivers/ide/delkin_cb.c b/drivers/ide/delkin_cb.c
-index 300daabaa575..a8a1af6aa1c1 100644
---- a/drivers/ide/delkin_cb.c
-+++ b/drivers/ide/delkin_cb.c
-@@ -123,28 +123,13 @@ delkin_cb_remove (struct pci_dev *dev)
- 	pci_disable_device(dev);
- }
- 
--#ifdef CONFIG_PM
--static int delkin_cb_suspend(struct pci_dev *dev, pm_message_t state)
--{
--	pci_save_state(dev);
--	pci_disable_device(dev);
--	pci_set_power_state(dev, pci_choose_state(dev, state));
--
--	return 0;
--}
-+#define delkin_cb_suspend NULL
- 
--static int delkin_cb_resume(struct pci_dev *dev)
-+static int __maybe_unused delkin_cb_resume(struct device *dev_d)
- {
-+	struct pci_dev *dev = to_pci_dev(dev_d);
- 	struct ide_host *host = pci_get_drvdata(dev);
--	int rc;
- 
--	pci_set_power_state(dev, PCI_D0);
--
--	rc = pci_enable_device(dev);
--	if (rc)
--		return rc;
--
--	pci_restore_state(dev);
- 	pci_set_master(dev);
- 
- 	if (host->init_chipset)
-@@ -152,10 +137,6 @@ static int delkin_cb_resume(struct pci_dev *dev)
- 
- 	return 0;
- }
--#else
--#define delkin_cb_suspend NULL
--#define delkin_cb_resume NULL
--#endif
- 
- static struct pci_device_id delkin_cb_pci_tbl[] = {
- 	{ 0x1145, 0xf021, PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0},
-@@ -164,13 +145,14 @@ static struct pci_device_id delkin_cb_pci_tbl[] = {
- };
- MODULE_DEVICE_TABLE(pci, delkin_cb_pci_tbl);
- 
-+static SIMPLE_DEV_PM_OPS(delkin_cb_pm_ops, delkin_cb_suspend, delkin_cb_resume);
-+
- static struct pci_driver delkin_cb_pci_driver = {
- 	.name		= "Delkin-ASKA-Workbit Cardbus IDE",
- 	.id_table	= delkin_cb_pci_tbl,
- 	.probe		= delkin_cb_probe,
- 	.remove		= delkin_cb_remove,
--	.suspend	= delkin_cb_suspend,
--	.resume		= delkin_cb_resume,
-+	.driver.pm	= &delkin_cb_pm_ops,
- };
- 
- module_pci_driver(delkin_cb_pci_driver);
--- 
-2.27.0
+Beyond above adaptations, the latest series "zstd-v5" of Nick T.s
+patchset needs some addition of zstd to the patch (see [1]):
 
+commit 8dfb61dcbaceb19a5ded5e9c9dcf8d05acc32294
+"kbuild: add variables for compression tools"
+
+NOTE:
+"zstd-v5" was against Linux-next 20200408 or download the series from
+patchwork LKML which applies cleanly against Linux v5.7 - last is what
+I did.
+
+There was a follow-up to the above patch (see [2]):
+
+commit e4a42c82e943b97ce124539fcd7a47445b43fa0d
+"kbuild: fix broken builds because of GZIP,BZIP2,LZOP variables"
+
+Nevertheless, this is the kernel-side of doing - user-space like for
+example Debian's initramfs-tools needs adaptations (see [3]).
+
+@Kees: Can you aid Nick T. to get this upstream? You know the
+processes a bit better than me.
+
+Regards,
+- Sedat -
+
+[0] https://github.com/terrelln/linux/tree/zstd-v5
+[0] https://lore.kernel.org/patchwork/project/lkml/list/?series=437934
+[1] https://git.kernel.org/linus/8dfb61dcbaceb19a5ded5e9c9dcf8d05acc32294
+[2] https://git.kernel.org/linus/e4a42c82e943b97ce124539fcd7a47445b43fa0d
+[2] https://bugs.debian.org/955469
