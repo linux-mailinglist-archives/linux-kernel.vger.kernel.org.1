@@ -2,73 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B09CE2140E1
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 23:32:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B8AF2140E6
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 23:33:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727050AbgGCVb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 17:31:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38402 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726856AbgGCVb6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 17:31:58 -0400
-Received: from localhost (c-67-169-218-210.hsd1.or.comcast.net [67.169.218.210])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7255F20782;
-        Fri,  3 Jul 2020 21:31:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593811918;
-        bh=12HoUnAnObPB1mx09APSYcuqlEl+FkuZnLvcO1zbS9Y=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Vn5JskN0tBDSaPDk/NSa7Q1v9Okrd+Q6RYCIw4AU//mdO2NBqFcSYfBHssGMJ8WmN
-         lqvFrMp+MnbFAdv7eDv8blEVN6mSbHzfwmXIIZYHg/q1L5JJEaWabujy/V8IWEZJbO
-         aqT56LosIoGQZrTMDR4utIqMBnLriRJLcyrBhalU=
-Date:   Fri, 3 Jul 2020 14:31:58 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        david@fromorbit.com, linux-kernel@vger.kernel.org,
-        sandeen@sandeen.net, hch@lst.de
-Subject: [GIT PULL] xfs: bug fixes for 5.8-rc4
-Message-ID: <20200703213158.GF7606@magnolia>
+        id S1726906AbgGCVdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 17:33:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51812 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726379AbgGCVdx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Jul 2020 17:33:53 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46D81C061794;
+        Fri,  3 Jul 2020 14:33:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=vOGqrnW744UKt2k+wSHRufoFzD8n+k5o7+pIfnL3bUg=; b=VLvUnj2LkH29bha04e2c+nizH9
+        WlzZt2UA6SI387b10X9b+8BR5SUrYVsAOF01yM8A7mpvCe2eHwN0IZyyAhz2jXFrpLr1dW/eCxGy2
+        cQdVRmsliPLYbNwQe4i2nBdotEIugr5DJYQWL0HbqtAFqjY1hMi7sMZg9Uadkw80dEy0gv32POkel
+        uZahkt/qbh14mb02EJurg3nlUWk3uJ4WM3l0/ADh0pfcAXXh4AYse5+jr8T6Jatg0sz9h5Y6z97EO
+        1w6slbSkC0bqOWTSvV49NcK9WcjR9VftUnYg0yIBT6upvwz3b2u049a3VTQlrP4dPJ0ICqOYGSCo2
+        KCt1fYUA==;
+Received: from [2601:1c0:6280:3f0::19c2] (helo=smtpauth.infradead.org)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jrTJc-0006YP-W3; Fri, 03 Jul 2020 21:33:49 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
+Subject: [PATCH 0/2] Documentation: RCU: eliminate duplicated words
+Date:   Fri,  3 Jul 2020 14:33:40 -0700
+Message-Id: <20200703213342.30842-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Drop all doubled words from RCU documentation.
 
-Please pull this single UAF bug fix for -rc4.
 
-This branch merges cleanly with master as of a few minutes ago, so
-please let me know if anything strange happens.
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: linux-doc@vger.kernel.org
+Cc: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Josh Triplett <josh@joshtriplett.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+Cc: Joel Fernandes <joel@joelfernandes.org>
+Cc: rcu@vger.kernel.org
 
---D
 
-The following changes since commit b3a9e3b9622ae10064826dccb4f7a52bd88c7407:
 
-  Linux 5.8-rc1 (2020-06-14 12:45:04 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/xfs-5.8-fixes-1
-
-for you to fetch changes up to c7f87f3984cfa1e6d32806a715f35c5947ad9c09:
-
-  xfs: fix use-after-free on CIL context on shutdown (2020-06-22 19:22:57 -0700)
-
-----------------------------------------------------------------
-Changes for 5.8-rc4:
-- Fix a use-after-free bug when the fs shuts down.
-
-----------------------------------------------------------------
-Dave Chinner (1):
-      xfs: fix use-after-free on CIL context on shutdown
-
- fs/xfs/xfs_log_cil.c  | 10 +++++-----
- fs/xfs/xfs_log_priv.h |  2 +-
- 2 files changed, 6 insertions(+), 6 deletions(-)
+ Documentation/RCU/Design/Data-Structures/Data-Structures.rst |    2 +-
+ Documentation/RCU/Design/Requirements/Requirements.rst       |    4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
