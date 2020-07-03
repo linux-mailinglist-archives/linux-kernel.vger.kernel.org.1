@@ -2,210 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6CBE213A57
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 14:54:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9DCB213A3E
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 14:49:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726823AbgGCMyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 08:54:04 -0400
-Received: from mga18.intel.com ([134.134.136.126]:25759 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726772AbgGCMx4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 08:53:56 -0400
-IronPort-SDR: R0T/UwHRT4Wiq6PdkYk+5E5ICj/5vfVwLoplTS/u8IjOGcnmysFc51pkZ9Hnv5ISxU+vH1TD2t
- aD398+4BHCoA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="134598419"
-X-IronPort-AV: E=Sophos;i="5.75,308,1589266800"; 
-   d="scan'208";a="134598419"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jul 2020 05:53:54 -0700
-IronPort-SDR: j774a5Cul7EJSoBqP4DSfkfP8h6n0vJ4y9qZDgNG5LUzvE8p3MWx+YoJ0D5CqLLF3YH0HkZCWN
- hDM3gwbRmBPw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,308,1589266800"; 
-   d="scan'208";a="265964065"
-Received: from otc-lr-04.jf.intel.com ([10.54.39.143])
-  by fmsmga007.fm.intel.com with ESMTP; 03 Jul 2020 05:53:53 -0700
-From:   kan.liang@linux.intel.com
-To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        tglx@linutronix.de, bp@alien8.de, x86@kernel.org,
+        id S1726317AbgGCMts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 08:49:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56036 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726035AbgGCMtr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Jul 2020 08:49:47 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F92EC08C5C1;
+        Fri,  3 Jul 2020 05:49:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=VMSzCqiPU0UwJ1IxHxA0ouN7RVM3z3sQz/cKALPThE8=; b=qXX0f0LOoxo/HMlK+xkEsj19uj
+        ZBGcv1f03nhihT/+45lxEYy7mXw1jsKBmMf8bqC9GDB4wrVcvD4A05WeZUC6zTZ4v04wNki5LiZt3
+        suIpPJaVUQmgcS3dfP9yvXrw4WEX6/jeegsNlN47b20YG3XXFexSGoeQoa1rabELibqOJww9vsOZN
+        AyMmFfWkp8oVs8QlyyJvXLTC9254GjtlmeboD1IgK/upsCAC834Qd1Q40AmsmFLklWNwpQfmfz/OC
+        xdAvnpEvW9crxlRulpYs87eJW2qcP9iggcQStDMa9VbNh87SGEIlk+SwC0GenNn4yVk/29oq8B3mN
+        QszlCi4A==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jrL8N-0002iY-H2; Fri, 03 Jul 2020 12:49:39 +0000
+Date:   Fri, 3 Jul 2020 13:49:39 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Danny Lin <danny@kdrag0n.dev>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andy Whitcroft <apw@canonical.com>,
+        Joe Perches <joe@perches.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, namhyung@kernel.org, dave.hansen@intel.com,
-        yu-cheng.yu@intel.com, bigeasy@linutronix.de, gorcunov@gmail.com,
-        hpa@zytor.com, alexey.budankov@linux.intel.com, eranian@google.com,
-        ak@linux.intel.com, like.xu@linux.intel.com,
-        yao.jin@linux.intel.com, wei.w.wang@intel.com,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH V3 23/23] perf/x86/intel/lbr: Support XSAVES for arch LBR read
-Date:   Fri,  3 Jul 2020 05:49:29 -0700
-Message-Id: <1593780569-62993-24-git-send-email-kan.liang@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1593780569-62993-1-git-send-email-kan.liang@linux.intel.com>
-References: <1593780569-62993-1-git-send-email-kan.liang@linux.intel.com>
+Subject: Re: [PATCH v2] editorconfig: Add automatic editor configuration file
+Message-ID: <20200703124939.GG25523@casper.infradead.org>
+References: <16043769.gqpzGLO8mG@pinwheel>
+ <20200703073143.423557-1-danny@kdrag0n.dev>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200703073143.423557-1-danny@kdrag0n.dev>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kan Liang <kan.liang@linux.intel.com>
+On Fri, Jul 03, 2020 at 12:31:43AM -0700, Danny Lin wrote:
+> +# This avoids introducing too many unnecessary changes in trivial commits
+> +trim_trailing_whitespace = false
 
-Reading LBR registers in a perf NMI handler for a non-PEBS event
-causes a high overhead because the number of LBR registers is huge.
-To reduce the overhead, the XSAVES instruction should be used to replace
-the LBR registers' reading method.
+I think we prefer trailing whitespace to be trimmed, even for trivial commits.
 
-The XSAVES buffer used for LBR read has to be per-CPU because the NMI
-handler invoked the lbr_read(). The existing task_ctx_data buffer
-cannot be used which is per-task and only be allocated for the LBR call
-stack mode. A new lbr_xsave pointer is introduced in the cpu_hw_events
-as an XSAVES buffer for LBR read.
+> +# General 4-space files
+> +[*.{pl,pm,py,tc,json,tc}]
+> +indent_style = space
+> +indent_size = 4
+> +
+> +# General 2-space files
+> +[*.{rb,rst,yaml,cocci,xsl,svg,bconf,clang-format}]
+> +indent_style = space
+> +indent_size = 2
 
-The XSAVES buffer should be allocated only when LBR is used by a
-non-PEBS event on the CPU because the total size of the lbr_xsave is
-not small (~1.4KB).
-
-The XSAVES buffer is allocated when a non-PEBS event is added, but it
-is lazily released in x86_release_hardware() when perf releases the
-entire PMU hardware resource, because perf may frequently schedule the
-event, e.g. high context switch. The lazy release method reduces the
-overhead of frequently allocate/free the buffer.
-
-If the lbr_xsave fails to be allocated, roll back to normal Arch LBR
-lbr_read().
-
-Reviewed-by: Dave Hansen <dave.hansen@intel.com>
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
----
- arch/x86/events/core.c       |  1 +
- arch/x86/events/intel/lbr.c  | 40 +++++++++++++++++++++++++++++++++++++++-
- arch/x86/events/perf_event.h |  7 +++++++
- 3 files changed, 47 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-index 6b1228a..1cbf57d 100644
---- a/arch/x86/events/core.c
-+++ b/arch/x86/events/core.c
-@@ -358,6 +358,7 @@ void x86_release_hardware(void)
- 	if (atomic_dec_and_mutex_lock(&pmc_refcount, &pmc_reserve_mutex)) {
- 		release_pmc_hardware();
- 		release_ds_buffers();
-+		release_lbr_buffers();
- 		mutex_unlock(&pmc_reserve_mutex);
- 	}
- }
-diff --git a/arch/x86/events/intel/lbr.c b/arch/x86/events/intel/lbr.c
-index a98f44c..213e814 100644
---- a/arch/x86/events/intel/lbr.c
-+++ b/arch/x86/events/intel/lbr.c
-@@ -658,6 +658,7 @@ static inline bool branch_user_callstack(unsigned br_sel)
- 
- void intel_pmu_lbr_add(struct perf_event *event)
- {
-+	struct kmem_cache *kmem_cache = event->pmu->task_ctx_cache;
- 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
- 
- 	if (!x86_pmu.lbr_nr)
-@@ -695,6 +696,29 @@ void intel_pmu_lbr_add(struct perf_event *event)
- 	perf_sched_cb_inc(event->ctx->pmu);
- 	if (!cpuc->lbr_users++ && !event->total_time_running)
- 		intel_pmu_lbr_reset();
-+
-+	if (static_cpu_has(X86_FEATURE_ARCH_LBR) &&
-+	    kmem_cache && !cpuc->lbr_xsave &&
-+	    (cpuc->lbr_users != cpuc->lbr_pebs_users))
-+		cpuc->lbr_xsave = kmem_cache_alloc(kmem_cache, GFP_KERNEL);
-+}
-+
-+void release_lbr_buffers(void)
-+{
-+	struct kmem_cache *kmem_cache = x86_get_pmu()->task_ctx_cache;
-+	struct cpu_hw_events *cpuc;
-+	int cpu;
-+
-+	if (!static_cpu_has(X86_FEATURE_ARCH_LBR))
-+		return;
-+
-+	for_each_possible_cpu(cpu) {
-+		cpuc = per_cpu_ptr(&cpu_hw_events, cpu);
-+		if (kmem_cache && cpuc->lbr_xsave) {
-+			kmem_cache_free(kmem_cache, cpuc->lbr_xsave);
-+			cpuc->lbr_xsave = NULL;
-+		}
-+	}
- }
- 
- void intel_pmu_lbr_del(struct perf_event *event)
-@@ -945,6 +969,19 @@ static void intel_pmu_arch_lbr_read(struct cpu_hw_events *cpuc)
- 	intel_pmu_store_lbr(cpuc, NULL);
- }
- 
-+static void intel_pmu_arch_lbr_read_xsave(struct cpu_hw_events *cpuc)
-+{
-+	struct x86_perf_task_context_arch_lbr_xsave *xsave = cpuc->lbr_xsave;
-+
-+	if (!xsave) {
-+		intel_pmu_store_lbr(cpuc, NULL);
-+		return;
-+	}
-+	copy_dynamic_supervisor_to_kernel(&xsave->xsave, XFEATURE_MASK_LBR);
-+
-+	intel_pmu_store_lbr(cpuc, xsave->lbr.entries);
-+}
-+
- void intel_pmu_lbr_read(void)
- {
- 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
-@@ -1768,14 +1805,15 @@ void __init intel_pmu_arch_lbr_init(void)
- 		x86_pmu.lbr_ctl_map = NULL;
- 
- 	x86_pmu.lbr_reset = intel_pmu_arch_lbr_reset;
--	x86_pmu.lbr_read = intel_pmu_arch_lbr_read;
- 	if (arch_lbr_xsave) {
- 		x86_pmu.lbr_save = intel_pmu_arch_lbr_xsaves;
- 		x86_pmu.lbr_restore = intel_pmu_arch_lbr_xrstors;
-+		x86_pmu.lbr_read = intel_pmu_arch_lbr_read_xsave;
- 		pr_cont("XSAVE ");
- 	} else {
- 		x86_pmu.lbr_save = intel_pmu_arch_lbr_save;
- 		x86_pmu.lbr_restore = intel_pmu_arch_lbr_restore;
-+		x86_pmu.lbr_read = intel_pmu_arch_lbr_read;
- 	}
- 
- 	pr_cont("Architectural LBR, ");
-diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
-index 13dd1e4..ddffdca 100644
---- a/arch/x86/events/perf_event.h
-+++ b/arch/x86/events/perf_event.h
-@@ -253,6 +253,7 @@ struct cpu_hw_events {
- 	void				*last_task_ctx;
- 	int				last_log_id;
- 	int				lbr_select;
-+	void				*lbr_xsave;
- 
- 	/*
- 	 * Intel host/guest exclude bits
-@@ -1068,6 +1069,8 @@ void release_ds_buffers(void);
- 
- void reserve_ds_buffers(void);
- 
-+void release_lbr_buffers(void);
-+
- extern struct event_constraint bts_constraint;
- extern struct event_constraint vlbr_constraint;
- 
-@@ -1209,6 +1212,10 @@ static inline void release_ds_buffers(void)
- {
- }
- 
-+static inline void release_lbr_buffers(void)
-+{
-+}
-+
- static inline int intel_pmu_init(void)
- {
- 	return 0;
--- 
-2.7.4
+The rst files I've seen either use tabs or three spaces for indent.
+Where did this 2 come from?
 
