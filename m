@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89802213842
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 11:55:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 044C0213843
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 11:56:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726374AbgGCJzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 05:55:53 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:14100 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725972AbgGCJzh (ORCPT
+        id S1726147AbgGCJzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 05:55:37 -0400
+Received: from mx07-00178001.pphosted.com ([62.209.51.94]:18218 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725891AbgGCJzh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 3 Jul 2020 05:55:37 -0400
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0639dPXH030770;
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0639a9s6022705;
         Fri, 3 Jul 2020 11:55:25 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-type; s=STMicroelectronics;
- bh=ydaCcNlIAAbZsmEQJWCB1IJ7M36EGiwXLo/DeKRtPRE=;
- b=ftsrRftaVp6e0DRjaVQxUmqUVMDmwEct+p1BjzQ32e0KT6TfnhQsHaKFZAfI3YQpJBa2
- gwauFD0PF4kE0notiNVWugTnqd3QM8Kn7uzv/wkTYClGvQvrm2KU2TulDTSRpYLrW9RF
- zposwZsf9W1Vbn44JRfi59ogOo4kx2XvWepX+NDbtu0EbvRvmKa0yqLNG/cxROsdvpRK
- bXmgcxxhDy0eaFb+1kBQ8oWA3yaWyKeXBUH//BId0TGSzoxiJyJTJrxhDJbwMWK5Vhbw
- XdKXXwiNVfLewViQyQGXmT0Ex6db91lAbgFVLjrbJ7ykWENeqgsJiMChYVrpTejYkolP rw== 
+ bh=PVOnG26nR/CRWabuDYAL1Uq7FjpVqBMfgAQ38turMBg=;
+ b=xZIM+taBziWls9RDtsRA566QiuKlbGAzL1h8dt5RS2IV3CgPzFUc2g5nQAiC7df9+g6B
+ 6gnKiLUNI0zRLn0zBEUrmqQhYzcEkxFqkiHYi+4obzIRa36jYj6xyq6rn8HNmubGkCSh
+ oeT6LpTbSoxY6kY0pDYYT6zM0VZOPAcDmdQwCYZvlSfccT4PPXLbiLKbaRh1CZPwbSc8
+ 9OPGR6wgp2cLW9jYHm8N0626RFJf1XyzT/8ul5qaX6VCesN54sCH2HxN8plJG39n922f
+ gBDLGzIpccqal9RSoYf4Oyc8H5SKVVhsKr+dbg1iw0gQWRmcZlT/ygy1sYjC3LYRzjDB wA== 
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 31wu8a6ddn-1
+        by mx07-00178001.pphosted.com with ESMTP id 31wuk1wsw2-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Fri, 03 Jul 2020 11:55:25 +0200
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id AB4A7100034;
-        Fri,  3 Jul 2020 11:55:24 +0200 (CEST)
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 40CC6100038;
+        Fri,  3 Jul 2020 11:55:25 +0200 (CEST)
 Received: from Webmail-eu.st.com (sfhdag3node3.st.com [10.75.127.9])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 9AD282BAC64;
-        Fri,  3 Jul 2020 11:55:24 +0200 (CEST)
-Received: from localhost (10.75.127.50) by SFHDAG3NODE3.st.com (10.75.127.9)
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 362852BAC64;
+        Fri,  3 Jul 2020 11:55:25 +0200 (CEST)
+Received: from localhost (10.75.127.51) by SFHDAG3NODE3.st.com (10.75.127.9)
  with Microsoft SMTP Server (TLS) id 15.0.1347.2; Fri, 3 Jul 2020 11:55:24
  +0200
 From:   Benjamin Gaignard <benjamin.gaignard@st.com>
@@ -45,16 +45,16 @@ CC:     <devicetree@vger.kernel.org>,
         <linux-stm32@st-md-mailman.stormreply.com>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>
-Subject: [PATCH 1/5] dt-bingings: arm: stm32: Add compatibles for syscon nodes
-Date:   Fri, 3 Jul 2020 11:55:16 +0200
-Message-ID: <20200703095520.30264-2-benjamin.gaignard@st.com>
+Subject: [PATCH 2/5] ARM: dts: stm32: Add compatibles for syscon for stm32f426
+Date:   Fri, 3 Jul 2020 11:55:17 +0200
+Message-ID: <20200703095520.30264-3-benjamin.gaignard@st.com>
 X-Mailer: git-send-email 2.15.0
 In-Reply-To: <20200703095520.30264-1-benjamin.gaignard@st.com>
 References: <20200703095520.30264-1-benjamin.gaignard@st.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.75.127.50]
-X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG3NODE3.st.com
+X-Originating-IP: [10.75.127.51]
+X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG3NODE3.st.com
  (10.75.127.9)
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-07-03_03:2020-07-02,2020-07-03 signatures=0
@@ -63,46 +63,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit ad440432d1f9 ("dt-bindings: mfd: Ensure 'syscon' has a more specific compatible")
-it is required to provide at least 2 compatibles string for syscon node.
-This patch document the missing compatibles for stm32 SoCs.
+Syscon nodes needs at least 2 compatibles to be compliant why yaml documentation.
 
 Signed-off-by: Benjamin Gaignard <benjamin.gaignard@st.com>
 ---
- .../devicetree/bindings/arm/stm32/st,stm32-syscon.yaml     | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ arch/arm/boot/dts/stm32f429.dtsi | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml b/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml
-index cf5db5e273f3..6f1cd0103c74 100644
---- a/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml
-+++ b/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml
-@@ -16,6 +16,9 @@ properties:
-       - items:
-           - enum:
-               - st,stm32mp157-syscfg
-+              - st,stm32mp151-pwr-mcu
-+              - st,stm32-syscfg
-+              - st,stm32-power-config
-           - const: syscon
+diff --git a/arch/arm/boot/dts/stm32f429.dtsi b/arch/arm/boot/dts/stm32f429.dtsi
+index 393f43c85a3c..f3a8d43993c9 100644
+--- a/arch/arm/boot/dts/stm32f429.dtsi
++++ b/arch/arm/boot/dts/stm32f429.dtsi
+@@ -586,8 +586,8 @@
+ 			status = "disabled";
+ 		};
  
-   reg:
-@@ -27,7 +30,16 @@ properties:
- required:
-   - compatible
-   - reg
--  - clocks
-+
-+if:
-+  properties:
-+    compatible:
-+      contains:
-+        enum:
-+          - st,stm32mp157-syscfg
-+then:
-+  required:
-+    - clocks
+-		syscfg: system-config@40013800 {
+-			compatible = "syscon";
++		syscfg: syscon@40013800 {
++			compatible = "st,stm32-syscfg", "syscon";
+ 			reg = <0x40013800 0x400>;
+ 		};
  
- additionalProperties: false
+@@ -674,7 +674,7 @@
+ 		};
+ 
+ 		pwrcfg: power-config@40007000 {
+-			compatible = "syscon";
++			compatible = "st,stm32-power-config", "syscon";
+ 			reg = <0x40007000 0x400>;
+ 		};
  
 -- 
 2.15.0
