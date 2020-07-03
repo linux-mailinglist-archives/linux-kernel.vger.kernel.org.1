@@ -2,110 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE686213550
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 09:44:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7423213564
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 09:46:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726505AbgGCHn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 03:43:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726428AbgGCHn5 (ORCPT
+        id S1726676AbgGCHqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 03:46:42 -0400
+Received: from esa2.microchip.iphmx.com ([68.232.149.84]:51125 "EHLO
+        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725779AbgGCHqm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 03:43:57 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12F37C08C5C1
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Jul 2020 00:43:57 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id m22so4357537pgv.9
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Jul 2020 00:43:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=YMA1iG2DR+aP68KXSdCOsvrFA0oomq7Nb72Iy6OynAc=;
-        b=eOjpfDnUhW2ER3jbX+CxmRW1kTHS4ha9+B04YjM9WkSWY+zXrVbJT2nho+GrVniC88
-         BnCjbPqTEu6VpWFtFGMj8bLBasFsETuYhAbwBNQCzQFS7/Vb+t1pLMbXFG835Zj+IsRL
-         0W4UyF6ZzUUbTTsMtdXLYyxRplXcQDfKVICAn/Few/slDEK1DkowMQLsI/xXyPvDgh5c
-         l5elsPzMyrdTcr9fRdsfHJcByOUqB70ZECB//QgmXcR/LBlYIPBy314lkiaUv/SDGmeh
-         hiuDlBOP9XLlVd7AXYw11Cei7ORRt06qDlfLL14hhhgAbJmIEOQbm9V+1tOSQeCRD51I
-         TVvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=YMA1iG2DR+aP68KXSdCOsvrFA0oomq7Nb72Iy6OynAc=;
-        b=BMpKpLoO0OaQhiAmzPMqOYwallHr/tei0YheaRcp1WZOVkHHBr2jhrMuuFGT6lLp7O
-         nLHPPm2c93E3tf3S3joYcmiNa6Md1Wk4aZgh1OUfmbRREd20J2BLlwaP7M6br61ch/rs
-         77Izi6F/3bZ0c/BSjA2lq100b05L9t4FMIJ3MgltO1395/flOyip5nqK8O+TrY7j1yzZ
-         o85mxUVcOdilksLvOXOh5aeNk5FZqgh9yPvhV7F3vxg2p6k7tvOzVWwIQHCacc/mPnZW
-         wRv1byojkzQWp2aggGC0UrN55VmgiSRTEXK///U9wblhORMkkR6HroM9ymK8HaWbeePR
-         JMmA==
-X-Gm-Message-State: AOAM5338fByE2Kba0AovQ57vLPJcAYOErRAuMCELqy+Gq0+9YG355mUQ
-        tAJjZjNcas6Ua8CxEEIAjl02aA==
-X-Google-Smtp-Source: ABdhPJxs34VyOJKNvK67gXc9kQBjJa6obMlUr6G9NDi43bUnL4tffZoy9+osusLsDh0iM0haQ0giAQ==
-X-Received: by 2002:a65:63c4:: with SMTP id n4mr15600593pgv.230.1593762236641;
-        Fri, 03 Jul 2020 00:43:56 -0700 (PDT)
-Received: from localhost ([122.172.40.201])
-        by smtp.gmail.com with ESMTPSA id 73sm10987491pfy.24.2020.07.03.00.43.55
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 03 Jul 2020 00:43:55 -0700 (PDT)
-Date:   Fri, 3 Jul 2020 13:13:54 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Subject: Re: [FOR-STABLE-3.9+] sched/rt: Show the 'sched_rr_timeslice'
- SCHED_RR timeslice tuning knob in milliseconds
-Message-ID: <20200703074354.btmylgn5mxhbxywc@vireshk-i7>
-References: <ffdfb849a11b9cd66e0aded2161869e36aec7fc0.1593757471.git.viresh.kumar@linaro.org>
- <20200703074025.GA2390868@kroah.com>
+        Fri, 3 Jul 2020 03:46:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1593762401; x=1625298401;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Qe3AsKz/1NWtVp1Lygpm/UXyvvks8ItOId5LZbRDzSE=;
+  b=yyklb0++eQ5MbSXtAogkfn1kylatS8DUgSxNSgDV0yHMGg8pdw84mb4t
+   hcpei09jp/DvHab2M+W1BNssXTnHjfOWQXqPcCtyL+Q1ffF3qEyX6s1t1
+   9DocxPzIeS2pXSNU9EiEM2pi7xlwxUEn8CLYwH8LyumUKPOXyfeAL1FBw
+   4xUiIttu3duCo7XbHBA5adEkw3WjaKMk7xhnzWGoEdhLYaMp4TdLuWxAW
+   eInrrgL6DbRuhKcmP6qZfYELuiihSdr/iSfNr67t3cLZHuWxI4wUP/Da7
+   8M4yN9BD/kTmZsNIEa3s2q0X0tU18zGptAmfU111dQ5FmQ0wrC6PWViHi
+   w==;
+IronPort-SDR: AfTzNOcXbRjSM3KS+KI3U/gtKHXSrMqBkFwBiCYJNjQMzDG0zc1q7RvSLo6ksFiDlZnyMJvVAC
+ 5ouKWWhV+IbsIlil6Zu4QdH8vX6OW2GXIUE7saiPq75jeSHXTUlTyvAUvnuqjFnvP7578tYV85
+ RNV1vgd5Fib+L0KA1hzxgBS6lOtAKhaJkmrjEaZU93MZsfAnjrewxIna1tCi4Vswi4jPhI3902
+ BNAYFHeJsKiUcQJokCf/WGfDy9b10yRUJ3i92kgOh+gxh3oasQHhV82U2QDy9e2iiS/mOrYjOD
+ LWw=
+X-IronPort-AV: E=Sophos;i="5.75,307,1589266800"; 
+   d="scan'208";a="80602013"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 03 Jul 2020 00:46:41 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Fri, 3 Jul 2020 00:46:39 -0700
+Received: from ROB-ULT-M18282.microchip.com (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Fri, 3 Jul 2020 00:46:14 -0700
+From:   Eugen Hristev <eugen.hristev@microchip.com>
+To:     <mchehab@kernel.org>, <hverkuil@xs4all.nl>, <robh+dt@kernel.org>,
+        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     Eugen Hristev <eugen.hristev@microchip.com>
+Subject: [PATCH v2 0/4] media: introduce microchip csi2dc driver
+Date:   Fri, 3 Jul 2020 10:44:12 +0300
+Message-ID: <20200703074416.55272-1-eugen.hristev@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200703074025.GA2390868@kroah.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03-07-20, 09:40, Greg KH wrote:
-> On Fri, Jul 03, 2020 at 12:54:04PM +0530, Viresh Kumar wrote:
-> > From: Shile Zhang <shile.zhang@nokia.com>
-> > 
-> > We added the 'sched_rr_timeslice_ms' SCHED_RR tuning knob in this commit:
-> > 
-> >   ce0dbbbb30ae ("sched/rt: Add a tuning knob to allow changing SCHED_RR timeslice")
-> > 
-> > ... which name suggests to users that it's in milliseconds, while in reality
-> > it's being set in milliseconds but the result is shown in jiffies.
-> > 
-> > This is obviously confusing when HZ is not 1000, it makes it appear like the
-> > value set failed, such as HZ=100:
-> > 
-> >   root# echo 100 > /proc/sys/kernel/sched_rr_timeslice_ms
-> >   root# cat /proc/sys/kernel/sched_rr_timeslice_ms
-> >   10
-> > 
-> > Fix this to be milliseconds all around.
-> > 
-> > Cc: <stable@vger.kernel.org> # v3.9+
-> > Signed-off-by: Shile Zhang <shile.zhang@nokia.com>
-> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> > Cc: Linus Torvalds <torvalds@linux-foundation.org>
-> > Cc: Mike Galbraith <efault@gmx.de>
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > Link: http://lkml.kernel.org/r/1485612049-20923-1-git-send-email-shile.zhang@nokia.com
-> > Signed-off-by: Ingo Molnar <mingo@kernel.org>
-> > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> 
-> What is the git commit id of this patch in Linus's tree?
+Hi,
 
-I am really sorry for missing the only thing I was required to do :(
+This series adds support for the Microchip csi2dc csi-2 demux controller.
 
-commit 975e155ed8732cb81f55c021c441ae662dd040b5 upstream.
+I was not fully sure where is the best place for such a helper chip, thus
+I added the driver in a separate 'misc' menu under the media menu.
+
+There are references in the binding driver to the Synopsys IDI interface,
+which is not yet in kernel mainline, as per the patch series at [1].
+
+As this driver is still new, it still can get plenty of improvement, so,
+waiting for feedback.
+
+Thanks everyone for reviewing !
+
+Changes in v2:
+- fixed warnings for binding yaml check
+
+[1] https://lwn.net/Articles/790917/
+
+Eugen Hristev (4):
+  dt-bindings: media: csi2dc: add bindings for microchip csi2dc
+  media: misc: introduce miscellaneous menu for helper chips
+  media: misc: introduce microchip_csi2dc driver
+  MAINTAINERS: add microchip csi2dc
+
+ .../bindings/media/microchip,csi2dc.yaml      | 185 +++++
+ MAINTAINERS                                   |   7 +
+ drivers/media/Kconfig                         |   1 +
+ drivers/media/Makefile                        |   2 +-
+ drivers/media/misc/Kconfig                    |  22 +
+ drivers/media/misc/Makefile                   |   2 +
+ drivers/media/misc/microchip_csi2dc.c         | 705 ++++++++++++++++++
+ 7 files changed, 923 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/media/microchip,csi2dc.yaml
+ create mode 100644 drivers/media/misc/Kconfig
+ create mode 100644 drivers/media/misc/Makefile
+ create mode 100644 drivers/media/misc/microchip_csi2dc.c
 
 -- 
-viresh
+2.25.1
+
