@@ -2,130 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3B432138DB
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 12:44:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C15D72138E7
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 12:46:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726406AbgGCKow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 06:44:52 -0400
-Received: from vps.xff.cz ([195.181.215.36]:40334 "EHLO vps.xff.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726150AbgGCKov (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 06:44:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=megous.com; s=mail;
-        t=1593773088; bh=nrh0KH3J1yRnIENV/8zoqi7FGv+zeQdvh0IitngxK0Y=;
-        h=Date:From:To:Cc:Subject:References:X-My-GPG-KeyId:From;
-        b=bOsFxfpm7+YVeVF6lMZ7ESyBG9Mwl6LGVE+CCno+DbO2ejqDClY6BUiSyoPu0TRYk
-         Xa8+qSCWumhmlSTrd90JG6QCyWwxVOeP0KYLZVFFnmjy/fM6mfauaQF3X0jXFZQG+H
-         FZw9vAu834beeDCk2qCS7l0BIkK+VRwyUrOKCbHM=
-Date:   Fri, 3 Jul 2020 12:44:48 +0200
-From:   =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     Rob Herring <robh@kernel.org>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Guido =?utf-8?Q?G=C3=BCnther?= <agx@sigxcpu.org>,
-        linux-kernel@vger.kernel.org, Purism Kernel Team <kernel@puri.sm>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Samuel Holland <samuel@sholland.org>,
-        devicetree@vger.kernel.org, Bhushan Shah <bshah@kde.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        linux-sunxi@googlegroups.com, Luca Weiss <luca@z3ntu.xyz>,
-        Martijn Braam <martijn@brixit.nl>,
-        Icenowy Zheng <icenowy@aosc.io>,
-        Maxime Ripard <mripard@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v7 02/13] dt-bindings: panel: Convert rocktech,
- jh057n00900 to yaml
-Message-ID: <20200703104448.iwhxk77d2hyrr3x5@core.my.home>
-Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
-        Sam Ravnborg <sam@ravnborg.org>, Rob Herring <robh@kernel.org>,
-        David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Guido =?utf-8?Q?G=C3=BCnther?= <agx@sigxcpu.org>,
-        linux-kernel@vger.kernel.org, Purism Kernel Team <kernel@puri.sm>,
-        Chen-Yu Tsai <wens@csie.org>, Samuel Holland <samuel@sholland.org>,
-        devicetree@vger.kernel.org, Bhushan Shah <bshah@kde.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        linux-sunxi@googlegroups.com, Luca Weiss <luca@z3ntu.xyz>,
-        Martijn Braam <martijn@brixit.nl>, Icenowy Zheng <icenowy@aosc.io>,
-        Maxime Ripard <mripard@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-References: <20200701162928.1638874-1-megous@megous.com>
- <20200701162928.1638874-3-megous@megous.com>
- <20200702205143.GA1670522@bogus>
- <20200702210354.562wkzpdmyrlwojx@core.my.home>
- <20200703051155.GA1685118@ravnborg.org>
+        id S1726427AbgGCKqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 06:46:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37108 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725915AbgGCKqj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Jul 2020 06:46:39 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08BF2C08C5C1;
+        Fri,  3 Jul 2020 03:46:39 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id 5so24369508oty.11;
+        Fri, 03 Jul 2020 03:46:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0c5wHg9VNJDHK0sa3QsCKAxp+om6hYF0jilSpO9w9y4=;
+        b=BiGOeYGCax7/oPiLMt4Z6w4thxBd15Pucyb6wzwm9ayylbBXjPbKcPMn3l4US3gxKl
+         3a9P3ymozjwGGbmCmfJkcEWBPFCjum2ytt4KF/NMM2a+TMkIMUhOZRBvmaQSrdWe8HxO
+         SRA4YAcWn4+aGzYPu5ia7biJCoQ+g6NwB+pdnRvO6KDOxZGLv4ZJfBEkege93pDsNm9m
+         0YqE+A6uO1o/11+Qz7Enq7db/XzHol53RA4CjLs66Tx931mv0sYxpPecF3a8vBdKkmdr
+         FxxjTK46Z4H86QU0qoCCgFxUuB9imHVi4fnVs1DbXo8twCcjvc6LU0+FKz1ErihB+eHF
+         1rgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0c5wHg9VNJDHK0sa3QsCKAxp+om6hYF0jilSpO9w9y4=;
+        b=nva5cordZ1UAt1popQZRQSUg8Sfy8F9457zQgOqtyBhq/Apj+LU539VxnIKeRFZisd
+         Md+235uYrIJ+EMCD9w7cAeOORNOKSL82jHmdTyU379aZQU4pR/lXxojBlFL8V2Ym2Fam
+         OKjtDhkKf5ZWHOjqtt1TqJJDJ/7c6AUMGM2cbfRqZD0FB1g5zFeLRMkjkSMR6IbWcNIt
+         caZUEbVL+W1RzNICzDZoRJVNp9c7QY7Ie8wjdZ2iYO6Ba5wY+s0MLldztFjRZGdrIXjo
+         L+ETTrqmpMvE19N7+La12C23bfGN/z8imm31knkNGB4ngLrjSMmnVLW+IuqXRLrGn8zd
+         8mXQ==
+X-Gm-Message-State: AOAM533+KXASeDeyGOPn6KsmgCaxae02VPom6JzKY3vfIPOkbZwe11jS
+        JLDKdXsvxQWqvd3jYXxXO0Fiij18BhzY+eSORIA=
+X-Google-Smtp-Source: ABdhPJy21MyHS89arWOkjOjzCKkhAW8rJyKdTPBlC3SxBSlhm8uBhnJ/okQbnyg8Agy85BzoVoq1mGIP+zq0w/SMlmA=
+X-Received: by 2002:a05:6830:1510:: with SMTP id k16mr10884514otp.336.1593773198367;
+ Fri, 03 Jul 2020 03:46:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200703051155.GA1685118@ravnborg.org>
-X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
- <https://xff.cz/key.txt>
+References: <20200629201845.28138-1-ruslan.bilovol@gmail.com> <20200630015843.GB12443@b29397-desktop>
+In-Reply-To: <20200630015843.GB12443@b29397-desktop>
+From:   Ruslan Bilovol <ruslan.bilovol@gmail.com>
+Date:   Fri, 3 Jul 2020 13:46:27 +0300
+Message-ID: <CAB=otbSnP7ecO9W5osxqSHSa4JRCUU4KR-g2BjBweDBUwjWobA@mail.gmail.com>
+Subject: Re: [PATCH v2] usb: gadget: epautoconf: claim smallest endpoints first
+To:     Peter Chen <peter.chen@nxp.com>
+Cc:     "balbi@kernel.org" <balbi@kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Sam,
+On Tue, Jun 30, 2020 at 4:58 AM Peter Chen <peter.chen@nxp.com> wrote:
+>
+> On 20-06-29 23:18:45, Ruslan Bilovol wrote:
+> > UDC hardware may have endpoints with different maxpacket
+> > size. Current endpoint matching code takes first matching
+> > endpoint from the list.
+> >
+> > It's always possible that gadget allocates endpoints for
+> > small transfers (maxpacket size) first, then larger ones.
+> > That works fine if all matching UDC endpoints have same
+> > maxpacket size or are big enough to serve that allocation.
+> >
+> > However, some UDCs have first endpoints in the list with
+> > bigger maxpacket size, whereas last endpoints are much
+> > smaller. In this case endpoint allocation will fail for
+> > the gadget (which allocates smaller endpoints first) on
+> > final endpoint allocations.
+> >
+> > To make endpoint allocation fair, pick up smallest
+> > matching endpoints first, leaving bigger ones for
+> > heavier applications.
+> >
+> > Signed-off-by: Ruslan Bilovol <ruslan.bilovol@gmail.com>
+> > ---
+> >
+> > v2: rebased onto latest balbi/next branch
+> >
+> >  drivers/usb/gadget/epautoconf.c | 23 ++++++++++++++++++-----
+> >  1 file changed, 18 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/drivers/usb/gadget/epautoconf.c b/drivers/usb/gadget/epautoconf.c
+> > index 1eb4fa2e623f..6c453b5d87bb 100644
+> > --- a/drivers/usb/gadget/epautoconf.c
+> > +++ b/drivers/usb/gadget/epautoconf.c
+> > @@ -66,7 +66,7 @@ struct usb_ep *usb_ep_autoconfig_ss(
+> >       struct usb_ss_ep_comp_descriptor *ep_comp
+> >  )
+> >  {
+> > -     struct usb_ep   *ep;
+> > +     struct usb_ep   *ep, *ep_min = NULL;
+> >
+> >       if (gadget->ops->match_ep) {
+> >               ep = gadget->ops->match_ep(gadget, desc, ep_comp);
+> > @@ -74,14 +74,27 @@ struct usb_ep *usb_ep_autoconfig_ss(
+> >                       goto found_ep;
+> >       }
+> >
+> > -     /* Second, look at endpoints until an unclaimed one looks usable */
+> > +     /*
+> > +      * Second, look at endpoints until an unclaimed one looks usable.
+> > +      * Try to find one with smallest maxpacket limit, leaving larger
+> > +      * endpoints for heavier applications
+> > +      */
+> >       list_for_each_entry (ep, &gadget->ep_list, ep_list) {
+> > -             if (usb_gadget_ep_match_desc(gadget, ep, desc, ep_comp))
+> > -                     goto found_ep;
+> > +             if (usb_gadget_ep_match_desc(gadget, ep, desc, ep_comp)) {
+> > +                     if (desc->wMaxPacketSize == 0)
+> > +                             goto found_ep;
+>
+> Why you do special handling for this? You still could give the smallest
+> maxpacket_limit EP for it, right?
 
-On Fri, Jul 03, 2020 at 07:11:55AM +0200, Sam Ravnborg wrote:
-> Hi Ondrej.
-> 
-> > > My bot found errors running 'make dt_binding_check' on your patch:
-> > > 
-> > > /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/display/bridge/nwl-dsi.example.dt.yaml: panel@0: '#address-cells', '#size-cells', 'port@0' do not match any of the regexes: 'pinctrl-[0-9]+'
-> > > /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/display/bridge/nwl-dsi.example.dt.yaml: panel@0: 'vcc-supply' is a required property
-> > > /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/display/bridge/nwl-dsi.example.dt.yaml: panel@0: 'iovcc-supply' is a required property
-> > > /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/display/bridge/nwl-dsi.example.dt.yaml: panel@0: 'reset-gpios' is a required property
-> > 
-> > Paths look bogus ^^^^
-> > 
-> > It should be .../rocktech,jh057n00900.yaml: ...
-> 
-> The example in nwl-dsi.yaml contains:
-> 	compatible = "rocktech,jh057n00900";
-> 
-> So the example is checked against your updated binding.
-> And the binding check fails because the example is no longer valid.
+Of course it's technically possible. However in case "wMaxPacketSize == 0"
+gadget driver wants to get maximum possible wMaxPacketSize from endpoint
+configuration and I was thinking about avoiding regressions if we always provide
+smaller endpoints.
 
-Ah, now I understand.
+As I can see, providing smallest endpoint that matches requested wMaxPacketSize
+is OK, but if gadget driver just wants autoconf core to use it with
+maximum possible
+value, I'm thinking now if we can even change this part and if wMaxPacketSize
+is zero, find endpoint with maximum possible wMaxPacketSize
 
-> This needs to be fixed as we do not wat to introduce new errors.
-> Either the example or the binding needs the fix.
+Does it make sense?
 
-I think we can unrequire the supplies, but reset is needed really.
+Thanks
+Ruslan
 
-The panel only has one port, so there should be no address/size-cells
-in the example, and port@0 should be just port to match existing binding.
-If it had  multiple ports, port@0 would have to be inside ports { } node
-anyway, according to the existing binding. Then add reset-gpios to
-the example...
-
-And that should fix it.
-
-I'll prepare the patch shortly.
-
-regards,
-	o.
-
-> 	Sam
-> 
-> 
-> > 
-> > regards,
-> > 	o.
-> > 
-> > > 
-> > > See https://patchwork.ozlabs.org/patch/1320690
-> > > 
-> > > If you already ran 'make dt_binding_check' and didn't see the above
-> > > error(s), then make sure dt-schema is up to date:
-> > > 
-> > > pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
-> > > 
-> > > Please check and re-submit.
-> > > 
+>
+> Peter
+>
+> > +                     else if (!ep_min)
+> > +                             ep_min = ep;
+> > +                     else if (ep->maxpacket_limit < ep_min->maxpacket_limit)
+> > +                             ep_min = ep;
+> > +             }
+> >       }
+> >
+> >       /* Fail */
+> > -     return NULL;
+> > +     if (!ep_min)
+> > +             return NULL;
+> > +
+> > +     ep = ep_min;
+> >  found_ep:
+> >
+> >       /*
+> > --
+> > 2.17.1
+> >
+>
+> --
+>
+> Thanks,
+> Peter Chen
