@@ -2,216 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 001EC213577
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 09:48:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A5F421357E
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 09:49:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726416AbgGCHsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 03:48:07 -0400
-Received: from mga06.intel.com ([134.134.136.31]:59965 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725779AbgGCHsG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 03:48:06 -0400
-IronPort-SDR: 8WEoWKfBQQWqpVl1R8NQUbLGA4BSg9SB1u+YvigY5XlD+rgv/xUqDEtB6sjpksbsU+WUgLMtbp
- 9S3WEmP/sJLA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="208625653"
-X-IronPort-AV: E=Sophos;i="5.75,307,1589266800"; 
-   d="scan'208";a="208625653"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jul 2020 00:48:06 -0700
-IronPort-SDR: W0ix7Zzwpv8urGhxvdd6PLhp2hKbiPqSojTOHmVHm8YT9IcZHwP50wvss9cyaUIS1As77Nhat+
- Yok3iTzhTf6w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,307,1589266800"; 
-   d="scan'208";a="481951820"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga006.fm.intel.com with ESMTP; 03 Jul 2020 00:48:05 -0700
-Received: from [10.249.231.67] (abudanko-mobl.ccr.corp.intel.com [10.249.231.67])
-        by linux.intel.com (Postfix) with ESMTP id 4E9B7580781;
-        Fri,  3 Jul 2020 00:48:00 -0700 (PDT)
-Subject: [PATCH v9 12/15] perf stat: introduce --control fd:ctl-fd[,ack-fd]
- options
-From:   Alexey Budankov <alexey.budankov@linux.intel.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <a4d5db4a-f25c-38dc-1c41-321a886cb122@linux.intel.com>
-Organization: Intel Corp.
-Message-ID: <a70cdcf5-cf95-a9c6-29e5-54eb02af3fb3@linux.intel.com>
-Date:   Fri, 3 Jul 2020 10:47:58 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <a4d5db4a-f25c-38dc-1c41-321a886cb122@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1726615AbgGCHtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 03:49:09 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:64764 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725891AbgGCHtI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Jul 2020 03:49:08 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1593762548; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=F8C4p45eDeF3kiFralAK4R76DZV1JAilKVV14GqSHNI=; b=HAVFroHy/v2d3xKWn/W4igauHmxDUv1YjGrnV9Bhr5nDp/g6s+5Ubw+dAadsCmVGv+MtJCxu
+ fTo1y7lchOM/DW+1PP6KeNdgHLep39Q9N2RavoSNcsveQfOEOH/1DNvke4hEJ1SSy9blrTpZ
+ gmpuXdr9xCD/JpMhHEHP2Nj/JWo=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n12.prod.us-west-2.postgun.com with SMTP id
+ 5efee2e6117610c7ff3e9ec1 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 03 Jul 2020 07:48:54
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8F366C433CB; Fri,  3 Jul 2020 07:48:54 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-173.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rnayak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6199CC433CA;
+        Fri,  3 Jul 2020 07:48:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6199CC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rnayak@codeaurora.org
+From:   Rajendra Nayak <rnayak@codeaurora.org>
+To:     bjorn.andersson@linaro.org, linus.walleij@linaro.org,
+        agross@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mkshah@codeaurora.org,
+        ilina@codeaurora.org, Rajendra Nayak <rnayak@codeaurora.org>
+Subject: [PATCH v2] pinctrl: qcom: sc7180: Make gpio28 non wakeup capable for google,lazor
+Date:   Fri,  3 Jul 2020 13:18:26 +0530
+Message-Id: <1593762506-32680-1-git-send-email-rnayak@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The PDC irqchip driver currently does not handle dual-edge interrupts,
+and we have google,lazor board with sc7180 designed to configure gpio28
+as a dual-edge interrupt. This interrupt is however not expected to be
+wakeup capable on this board, so an easy way to fix this, seems to be to
+make this gpio non wakeup capable and let TLMM handle it (which is capable
+of handling dual-edge irqs)
 
-Introduce --control fd:ctl-fd[,ack-fd] options to pass open file
-descriptors numbers from command line. Extend perf-stat.txt file
-with --control fd:ctl-fd[,ack-fd] options description. Document
-possible usage model introduced by --control fd:ctl-fd[,ack-fd]
-options by providing example bash shell script.
+To be able to do so only on this board, so other boards designed with
+this SoC can continue to use gpio28 as a wakeup capable one, make a
+copy of msm_gpio_wakeirq_map for lazor and remove gpio28 from the
+list.
 
-Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
+Reported-by: Jimmy Cheng-Yi Chiang <cychiang@google.com>
+Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
 ---
- tools/perf/Documentation/perf-stat.txt | 39 ++++++++++++++++++++++++++
- tools/perf/builtin-stat.c              | 38 +++++++++++++++++++++++++
- tools/perf/util/stat.h                 |  2 ++
- 3 files changed, 79 insertions(+)
+ drivers/pinctrl/qcom/pinctrl-sc7180.c | 23 ++++++++++++++++++++++-
+ 1 file changed, 22 insertions(+), 1 deletion(-)
 
-diff --git a/tools/perf/Documentation/perf-stat.txt b/tools/perf/Documentation/perf-stat.txt
-index 9f32f6cd558d..c9bfefc051fb 100644
---- a/tools/perf/Documentation/perf-stat.txt
-+++ b/tools/perf/Documentation/perf-stat.txt
-@@ -176,6 +176,45 @@ with it.  --append may be used here.  Examples:
-      3>results  perf stat --log-fd 3          -- $cmd
-      3>>results perf stat --log-fd 3 --append -- $cmd
- 
-+--control fd:ctl-fd[,ack-fd]
-+Listen on ctl-fd descriptor for command to control measurement ('enable': enable events,
-+'disable': disable events). Measurements can be started with events disabled using
-+--delay=-1 option. Optionally send control command completion ('ack\n') to ack-fd descriptor
-+to synchronize with the controlling process. Example of bash shell script to enable and
-+disable events during measurements:
-+
-+#!/bin/bash
-+
-+ctl_dir=/tmp/
-+
-+ctl_fifo=${ctl_dir}perf_ctl.fifo
-+test -p ${ctl_fifo} && unlink ${ctl_fifo}
-+mkfifo ${ctl_fifo}
-+exec {ctl_fd}<>${ctl_fifo}
-+
-+ctl_ack_fifo=${ctl_dir}perf_ctl_ack.fifo
-+test -p ${ctl_ack_fifo} && unlink ${ctl_ack_fifo}
-+mkfifo ${ctl_ack_fifo}
-+exec {ctl_fd_ack}<>${ctl_ack_fifo}
-+
-+perf stat -D -1 -e cpu-cycles -a -I 1000       \
-+          --control fd:${ctl_fd},${ctl_fd_ack} \
-+          -- sleep 30 &
-+perf_pid=$!
-+
-+sleep 5  && echo 'enable' >&${ctl_fd} && read -u ${ctl_fd_ack} e1 && echo "enabled(${e1})"
-+sleep 10 && echo 'disable' >&${ctl_fd} && read -u ${ctl_fd_ack} d1 && echo "disabled(${d1})"
-+
-+exec {ctl_fd_ack}>&-
-+unlink ${ctl_ack_fifo}
-+
-+exec {ctl_fd}>&-
-+unlink ${ctl_fifo}
-+
-+wait -n ${perf_pid}
-+exit $?
-+
-+
- --pre::
- --post::
- 	Pre and post measurement hooks, e.g.:
-diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-index 5021f7286422..72fe310b7241 100644
---- a/tools/perf/builtin-stat.c
-+++ b/tools/perf/builtin-stat.c
-@@ -188,6 +188,8 @@ static struct perf_stat_config stat_config = {
- 	.metric_only_len	= METRIC_ONLY_LEN,
- 	.walltime_nsecs_stats	= &walltime_nsecs_stats,
- 	.big_num		= true,
-+	.ctl_fd			= -1,
-+	.ctl_fd_ack		= -1
+diff --git a/drivers/pinctrl/qcom/pinctrl-sc7180.c b/drivers/pinctrl/qcom/pinctrl-sc7180.c
+index 1b6465a..0668933 100644
+--- a/drivers/pinctrl/qcom/pinctrl-sc7180.c
++++ b/drivers/pinctrl/qcom/pinctrl-sc7180.c
+@@ -1135,7 +1135,24 @@ static const struct msm_gpio_wakeirq_map sc7180_pdc_map[] = {
+ 	{117, 114}, {118, 119},
  };
  
- static bool cpus_map_matched(struct evsel *a, struct evsel *b)
-@@ -1030,6 +1032,33 @@ static int parse_metric_groups(const struct option *opt,
- 					 &stat_config.metric_events);
+-static const struct msm_pinctrl_soc_data sc7180_pinctrl = {
++/* Dropped gpio28 from the map for the google,lazor board */
++static const struct msm_gpio_wakeirq_map sc7180_lazor_pdc_map[] = {
++	{0, 40}, {3, 50}, {4, 42}, {5, 70}, {6, 41}, {9, 35},
++	{10, 80}, {11, 51}, {16, 20}, {21, 55}, {22, 90}, {23, 21},
++	{24, 61}, {26, 52}, {30, 100}, {31, 33}, {32, 81},
++	{33, 62}, {34, 43}, {36, 91}, {37, 53}, {38, 63}, {39, 72},
++	{41, 101}, {42, 7}, {43, 34}, {45, 73}, {47, 82}, {49, 17},
++	{52, 109}, {53, 102}, {55, 92}, {56, 56}, {57, 57}, {58, 83},
++	{59, 37}, {62, 110}, {63, 111}, {64, 74}, {65, 44}, {66, 93},
++	{67, 58}, {68, 112}, {69, 32}, {70, 54}, {72, 59}, {73, 64},
++	{74, 71}, {78, 31}, {82, 30}, {85, 103}, {86, 38}, {87, 39},
++	{88, 45}, {89, 46}, {90, 47}, {91, 48}, {92, 60}, {93, 49},
++	{94, 84}, {95, 94}, {98, 65}, {101, 66}, {104, 67}, {109, 104},
++	{110, 68}, {113, 69}, {114, 113}, {115, 108}, {116, 121},
++	{117, 114}, {118, 119},
++};
++
++static struct msm_pinctrl_soc_data sc7180_pinctrl = {
+ 	.pins = sc7180_pins,
+ 	.npins = ARRAY_SIZE(sc7180_pins),
+ 	.functions = sc7180_functions,
+@@ -1151,6 +1168,10 @@ static const struct msm_pinctrl_soc_data sc7180_pinctrl = {
+ 
+ static int sc7180_pinctrl_probe(struct platform_device *pdev)
+ {
++	if (of_machine_is_compatible("google,lazor")) {
++		sc7180_pinctrl.wakeirq_map = sc7180_lazor_pdc_map;
++		sc7180_pinctrl.nwakeirq_map = ARRAY_SIZE(sc7180_lazor_pdc_map);
++	}
+ 	return msm_pinctrl_probe(pdev, &sc7180_pinctrl);
  }
  
-+static int parse_control_option(const struct option *opt,
-+				const char *str,
-+				int unset __maybe_unused)
-+{
-+	char *comma = NULL, *endptr = NULL;
-+	struct perf_stat_config *config = (struct perf_stat_config *)opt->value;
-+
-+	if (strncmp(str, "fd:", 3))
-+		return -EINVAL;
-+
-+	config->ctl_fd = strtoul(&str[3], &endptr, 0);
-+	if (endptr == &str[3])
-+		return -EINVAL;
-+
-+	comma = strchr(str, ',');
-+	if (comma) {
-+		if (endptr != comma)
-+			return -EINVAL;
-+
-+		config->ctl_fd_ack = strtoul(comma + 1, &endptr, 0);
-+		if (endptr == comma + 1 || *endptr != '\0')
-+			return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
- static struct option stat_options[] = {
- 	OPT_BOOLEAN('T', "transaction", &transaction_run,
- 		    "hardware transaction statistics"),
-@@ -1131,6 +1160,10 @@ static struct option stat_options[] = {
- 		"libpfm4 event selector. use 'perf list' to list available events",
- 		parse_libpfm_events_option),
- #endif
-+	OPT_CALLBACK(0, "control", &stat_config, "fd:ctl-fd[,ack-fd]",
-+		     "Listen on ctl-fd descriptor for command to control measurement ('enable': enable events, 'disable': disable events).\n"
-+		     "\t\t\t  Optionally send control command completion ('ack\\n') to ack-fd descriptor.",
-+		      parse_control_option),
- 	OPT_END()
- };
- 
-@@ -2300,6 +2333,9 @@ int cmd_stat(int argc, const char **argv)
- 	signal(SIGALRM, skip_signal);
- 	signal(SIGABRT, skip_signal);
- 
-+	if (evlist__initialize_ctlfd(evsel_list, stat_config.ctl_fd, stat_config.ctl_fd_ack))
-+		goto out;
-+
- 	status = 0;
- 	for (run_idx = 0; forever || run_idx < stat_config.run_count; run_idx++) {
- 		if (stat_config.run_count != 1 && verbose > 0)
-@@ -2319,6 +2355,8 @@ int cmd_stat(int argc, const char **argv)
- 	if (!forever && status != -1 && (!interval || stat_config.summary))
- 		print_counters(NULL, argc, argv);
- 
-+	evlist__finalize_ctlfd(evsel_list);
-+
- 	if (STAT_RECORD) {
- 		/*
- 		 * We synthesize the kernel mmap record just so that older tools
-diff --git a/tools/perf/util/stat.h b/tools/perf/util/stat.h
-index 41d59f192931..f8778cffd941 100644
---- a/tools/perf/util/stat.h
-+++ b/tools/perf/util/stat.h
-@@ -133,6 +133,8 @@ struct perf_stat_config {
- 	struct perf_cpu_map		*cpus_aggr_map;
- 	u64			*walltime_run;
- 	struct rblist		 metric_events;
-+	int			 ctl_fd;
-+	int			 ctl_fd_ack;
- };
- 
- void perf_stat__set_big_num(int set);
 -- 
-2.24.1
-
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
 
