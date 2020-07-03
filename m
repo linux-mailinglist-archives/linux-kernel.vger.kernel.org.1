@@ -2,195 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72DE5214005
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 21:33:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D51F21400A
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 21:34:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726707AbgGCTdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 15:33:23 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:47252 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726379AbgGCTdX (ORCPT
+        id S1726806AbgGCTer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 15:34:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726368AbgGCTel (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 15:33:23 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: ezequiel)
-        with ESMTPSA id 649D62A663B
-Message-ID: <ecedd1b8be4d9187c733000e10feceafbb1d8018.camel@collabora.com>
-Subject: Re: [PATCH 8/9] media: rkvdec: Add validate_fmt ops for pixelformat
- validation
-From:   Ezequiel Garcia <ezequiel@collabora.com>
-To:     Jonas Karlman <jonas@kwiboo.se>, linux-media@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Hans Verkuil <hans.verkuil@cisco.com>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Alexandre Courbot <acourbot@chromium.org>
-Date:   Fri, 03 Jul 2020 16:33:12 -0300
-In-Reply-To: <0353b993-907d-2dfe-993f-94b82aa27e00@kwiboo.se>
-References: <20200701215616.30874-1-jonas@kwiboo.se>
-         <20200701215616.30874-9-jonas@kwiboo.se>
-         <67a130a8fd8874c5dc639c924de959f88357b480.camel@collabora.com>
-         <f817d682-ec76-1879-4324-39cf7993493e@kwiboo.se>
-         <7abec9992460dcd84a2c951fce55bc8e46f2a0ed.camel@collabora.com>
-         <0353b993-907d-2dfe-993f-94b82aa27e00@kwiboo.se>
-Organization: Collabora
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.0-1 
+        Fri, 3 Jul 2020 15:34:41 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8106CC061794
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Jul 2020 12:34:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=WzmtxrUO4Ple/7+YgsF3RUJqdfZS1ARciQH0T44RBVE=; b=YExb5ZVWksVTapEWchkSOLXJB5
+        +0jofWFlJ2srFX5b/we3bdjgR5MZVdFap8C0hbES+jfAWD7dg725JcyO/NRGDUnUkzyVkLt0XDS6m
+        +QJl3LF9jHDB4R2/J+hN9ID+Bco9uv5UXmLUrYU0bKoqPg5HLAphd/Ba1KkstuFuxUeLDa0qJMPGQ
+        YON8oFy1j3sLhP5EslqDEs0tTJtEMuBLIhetniD4zedJzfsxeTEikZSQfiGp7PiQHPCqlT5itbLV9
+        Ll8IIYcNeBJUoedLEpcXgzSo6moEgEJ1SUbrWntysq4yTh2C/dU1EyyBdCIfyjliW+MnWZDJ9hYMI
+        FtWzf0og==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jrRRr-0001zI-QJ; Fri, 03 Jul 2020 19:34:12 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 37C6E984C50; Fri,  3 Jul 2020 21:34:08 +0200 (CEST)
+Date:   Fri, 3 Jul 2020 21:34:08 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     kan.liang@linux.intel.com
+Cc:     mingo@redhat.com, acme@kernel.org, tglx@linutronix.de,
+        bp@alien8.de, x86@kernel.org, linux-kernel@vger.kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, namhyung@kernel.org, dave.hansen@intel.com,
+        yu-cheng.yu@intel.com, bigeasy@linutronix.de, gorcunov@gmail.com,
+        hpa@zytor.com, alexey.budankov@linux.intel.com, eranian@google.com,
+        ak@linux.intel.com, like.xu@linux.intel.com,
+        yao.jin@linux.intel.com, wei.w.wang@intel.com
+Subject: Re: [PATCH V3 00/23] Support Architectural LBR
+Message-ID: <20200703193408.GH2483@worktop.programming.kicks-ass.net>
+References: <1593780569-62993-1-git-send-email-kan.liang@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1593780569-62993-1-git-send-email-kan.liang@linux.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-07-03 at 19:17 +0000, Jonas Karlman wrote:
-> On 2020-07-03 16:58, Ezequiel Garcia wrote:
-> > On Fri, 2020-07-03 at 06:55 +0000, Jonas Karlman wrote:
-> > > On 2020-07-03 05:14, Ezequiel Garcia wrote:
-> > > > Hi Jonas,
-> > > > 
-> > > > Thanks for working on this.
-> > > > 
-> > > > On Wed, 2020-07-01 at 21:56 +0000, Jonas Karlman wrote:
-> > > > > Add an optional validate_fmt operation that is used to validate the
-> > > > > pixelformat of CAPTURE buffers.
-> > > > > 
-> > > > > This is used in next patch to ensure correct pixelformat is used for 10-bit
-> > > > > and 4:2:2 content.
-> > > > > 
-> > > > > Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
-> > > > > ---
-> > > > >  drivers/staging/media/rkvdec/rkvdec.c | 8 ++++++++
-> > > > >  drivers/staging/media/rkvdec/rkvdec.h | 1 +
-> > > > >  2 files changed, 9 insertions(+)
-> > > > > 
-> > > > > diff --git a/drivers/staging/media/rkvdec/rkvdec.c b/drivers/staging/media/rkvdec/rkvdec.c
-> > > > > index b1de55aa6535..465444c58f13 100644
-> > > > > --- a/drivers/staging/media/rkvdec/rkvdec.c
-> > > > > +++ b/drivers/staging/media/rkvdec/rkvdec.c
-> > > > > @@ -239,6 +239,14 @@ static int rkvdec_try_capture_fmt(struct file *file, void *priv,
-> > > > >  	if (WARN_ON(!coded_desc))
-> > > > >  		return -EINVAL;
-> > > > >  
-> > > > > +	if (coded_desc->ops->validate_fmt) {
-> > > > > +		int ret;
-> > > > > +
-> > > > > +		ret = coded_desc->ops->validate_fmt(ctx, pix_mp->pixelformat);
-> > > > > +		if (ret)
-> > > > > +			return ret;
-> > > > > +	}
-> > > > > + 
-> > > > 
-> > > > I don't think this approach will be enough. Unless I'm mistaken,
-> > > > it's perfectly legal as per the stateless spec to first
-> > > > call S_FMT on the OUTPUT queue (which is propagated to the CAPTURE side),
-> > > > and then set the SPS and other controls.
-> > > 
-> > > I agree that this will not be enough to cover all use cases stated in the spec.
-> > > 
-> > > > The application is not required to do a TRY_FMT after S_EXT_CTRLS.
-> > > 
-> > > If I remember correctly we were required to implement a TRY_FMT loop in
-> > > ffmpeg due to cedrus defaulting to SUNXI_TILED_NV12 instead of linear NV12
-> > > on platforms where display controller did not support the tiled modifier.
-> > > 
-> > > So having TRY_FMT as part of the init sequence has been my only test-case.
-> > > 
-> > > > What I believe is needed is for the S_EXT_CTRLS to modify
-> > > > and restrict the CAPTURE format accordingly, so the application
-> > > > gets the correct format on G_FMT (and restrict future TRY_FMT).
-> > > 
-> > > This sounds like a proper solution, I do belive we may have a chicken or
-> > > the egg problem depending on if application call S_EXT_CTRLS or S_FMT first.
-> > > 
-> > 
-> > IIUC, the order is specified in the stateless spec [1].
-> > 
-> > 1) S_FMT on OUTPUT (to set the coded pixelformat). CAPTURE format
-> > format is propagated here and a default format is set.
-> > 
-> > 2) S_EXT_CTRLS, parameters are set. We don't do anything here,
-> > but here we'd validate the SPS and restrict the CAPTURE pixelformat
-> > (and perhaps reset the default CAPTURE pixelformat).
-> > 
-> > 3) G_FMT on CAPTURE.
-> > 
-> > 4) (optional) ENUM_FMT / S_FMT on CAPTURE, to negotiate
-> > something different from default.
-> 
-> There is also the following scenario that we may need to support:
-> 
-> 1) S_FMT on OUTPUT, default CAPTURE format is set.
-> 
-> 2) skip S_EXT_CTRLS, mandatory controls is only validated in req_validate.
-> 
-> 3) G_FMT on CAPTURE, returns default CAPTURE format.
-> 
-> 4) S_FMT on CAPTURE, CAPTURE format is changed from default to selected format.
-> 
-> 5) STREAMON
-> 
-> From this point on I would expect S_EXT_CTRLS with a V4L2_CTRL_WHICH_REQUEST_VAL
-> flag to reject any SPS not matching the selected CAPTURE format. Effectively
-> allowing S_FMT to lock down a format instead of an initial S_EXT_CTRLS during init.
-> 
-> This means that we have to both allow and reject a SPS depending on the state.
-> 
 
-Isn't it cleaner from an API to require the SPS at (2), right before
-G_FMT on CAPTURE?
+So far so good; I'll merge in these little changes.
 
-Unless you think it has clear advantages to provide more flexibility
-to the user, i.e. it will allow to support specific use-cases,
-then I would avoid making this flexible.
+I have one more question, but I'll reply for that seperately and we can
+do that on top if so.
 
-The spec currently doesn mention step 2 as being optional, although
-there is a note mentioning controls can be overwritten.
+---
+Index: linux-2.6/arch/x86/events/intel/lbr.c
+===================================================================
+--- linux-2.6.orig/arch/x86/events/intel/lbr.c
++++ linux-2.6/arch/x86/events/intel/lbr.c
+@@ -411,7 +411,7 @@ static __always_inline u64 rdlbr_info(un
+ 	return val;
+ }
 
-Thanks,
-Ezequiel
+-static __always_inline void
++static inline void
+ wrlbr_all(struct lbr_entry *lbr, unsigned int idx, bool need_info)
+ {
+ 	wrlbr_from(idx, lbr->from);
+@@ -420,7 +420,7 @@ wrlbr_all(struct lbr_entry *lbr, unsigne
+ 		wrlbr_info(idx, lbr->info);
+ }
 
-> Regards,
-> Jonas
-> 
-> > Regards,
-> > Ezequiel 
-> > 
-> > [1] Documentation/userspace-api/media/v4l/dev-stateless-decoder.rst
-> > 
-> > > I guess we may need to lock down on a format at whatever comes first,
-> > > S_FMT on CAPTURE or S_EXT_CTRLS with SPS ctrl.
-> > > 
-> > > I have an idea on how this could be addressed, will explore and see
-> > > if I can come up with something new.
-> > > 
-> > > Regards,
-> > > Jonas
-> > > 
-> > > > Also, V4L2 spec asks drivers not to fail on S_FMT
-> > > > format mismatch, but instead to adjust and return a legal format
-> > > > back to the application [1].
-> > > > 
-> > > > Let me know what you think and thanks again.
-> > > > 
-> > > > Ezequiel
-> > > > 
-> > > > [1] Documentation/userspace-api/media/v4l/vidioc-g-fmt.rst
-> > > > 
-> > > > >  	for (i = 0; i < coded_desc->num_decoded_fmts; i++) {
-> > > > >  		if (coded_desc->decoded_fmts[i] == pix_mp->pixelformat)
-> > > > >  			break;
-> > > > > diff --git a/drivers/staging/media/rkvdec/rkvdec.h b/drivers/staging/media/rkvdec/rkvdec.h
-> > > > > index 2fc9f46b6910..be4fc3645cde 100644
-> > > > > --- a/drivers/staging/media/rkvdec/rkvdec.h
-> > > > > +++ b/drivers/staging/media/rkvdec/rkvdec.h
-> > > > > @@ -64,6 +64,7 @@ vb2_to_rkvdec_decoded_buf(struct vb2_buffer *buf)
-> > > > >  struct rkvdec_coded_fmt_ops {
-> > > > >  	int (*adjust_fmt)(struct rkvdec_ctx *ctx,
-> > > > >  			  struct v4l2_format *f);
-> > > > > +	int (*validate_fmt)(struct rkvdec_ctx *ctx, u32 pixelformat);
-> > > > >  	int (*start)(struct rkvdec_ctx *ctx);
-> > > > >  	void (*stop)(struct rkvdec_ctx *ctx);
-> > > > >  	int (*run)(struct rkvdec_ctx *ctx);
+-static __always_inline bool
++static inline bool
+ rdlbr_all(struct lbr_entry *lbr, unsigned int idx, bool need_info)
+ {
+ 	u64 from = rdlbr_from(idx, NULL);
+Index: linux-2.6/arch/x86/events/perf_event.h
+===================================================================
+--- linux-2.6.orig/arch/x86/events/perf_event.h
++++ linux-2.6/arch/x86/events/perf_event.h
+@@ -775,7 +775,7 @@ struct x86_perf_task_context {
 
+ struct x86_perf_task_context_arch_lbr {
+ 	struct x86_perf_task_context_opt opt;
+-	struct lbr_entry  entries[0];
++	struct lbr_entry entries[];
+ };
+
+ /*
+@@ -787,17 +787,15 @@ struct x86_perf_task_context_arch_lbr {
+  * Do not put anything after the LBR state.
+  */
+ struct x86_perf_task_context_arch_lbr_xsave {
+-	union {
+-		struct x86_perf_task_context_opt	opt;
+-		u8					padding[64];
+-	};
++	struct x86_perf_task_context_opt		opt;
++
+ 	union {
+ 		struct xregs_state			xsave;
+ 		struct {
+ 			struct fxregs_state		i387;
+ 			struct xstate_header		header;
+ 			struct arch_lbr_state		lbr;
+-		};
++		} __attribute__ ((packed, aligned (XSAVE_ALIGNMENT)));
+ 	};
+ };
+
+Index: linux-2.6/arch/x86/include/asm/fpu/types.h
+===================================================================
+--- linux-2.6.orig/arch/x86/include/asm/fpu/types.h
++++ linux-2.6/arch/x86/include/asm/fpu/types.h
+@@ -253,7 +253,7 @@ struct arch_lbr_state {
+ 	u64 ler_from;
+ 	u64 ler_to;
+ 	u64 ler_info;
+-	struct lbr_entry		entries[0];
++	struct lbr_entry		entries[];
+ } __packed;
+
+ struct xstate_header {
+@@ -280,8 +280,8 @@ struct xstate_header {
+ struct xregs_state {
+ 	struct fxregs_state		i387;
+ 	struct xstate_header		header;
+-	u8				extended_state_area[0];
+-} __attribute__ ((packed, aligned (64)));
++	u8				extended_state_area[];
++} __attribute__ ((packed, aligned (XSAVE_ALIGNMENT)));
+
+ /*
+  * This is a union of all the possible FPU state formats
+Index: linux-2.6/arch/x86/include/asm/perf_event.h
+===================================================================
+--- linux-2.6.orig/arch/x86/include/asm/perf_event.h
++++ linux-2.6/arch/x86/include/asm/perf_event.h
+@@ -283,7 +283,7 @@ struct pebs_xmm {
+ };
+
+ struct pebs_lbr {
+-	struct lbr_entry lbr[0]; /* Variable length */
++	struct lbr_entry lbr[]; /* Variable length */
+ };
+
+ /*
 
