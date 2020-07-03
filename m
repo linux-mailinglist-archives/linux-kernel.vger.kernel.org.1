@@ -2,82 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D8042130D4
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 03:07:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 870DB2130D9
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 03:11:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726630AbgGCBHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 21:07:25 -0400
-Received: from mail107.syd.optusnet.com.au ([211.29.132.53]:52253 "EHLO
-        mail107.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725915AbgGCBHZ (ORCPT
+        id S1726396AbgGCBLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 21:11:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33750 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725937AbgGCBLs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Jul 2020 21:07:25 -0400
-Received: from dread.disaster.area (pa49-180-53-24.pa.nsw.optusnet.com.au [49.180.53.24])
-        by mail107.syd.optusnet.com.au (Postfix) with ESMTPS id 3DA22D59879;
-        Fri,  3 Jul 2020 11:07:21 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1jrAAi-0001mh-CL; Fri, 03 Jul 2020 11:07:20 +1000
-Date:   Fri, 3 Jul 2020 11:07:20 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Waiman Long <longman@redhat.com>
-Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Qian Cai <cai@lca.pw>, Eric Sandeen <sandeen@redhat.com>
-Subject: Re: [PATCH v5] xfs: Fix false positive lockdep warning with
- sb_internal & fs_reclaim
-Message-ID: <20200703010720.GH5369@dread.disaster.area>
-References: <20200702005923.10064-1-longman@redhat.com>
+        Thu, 2 Jul 2020 21:11:48 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08925C08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Jul 2020 18:11:48 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id o13so11349280pgf.0
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Jul 2020 18:11:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GR99GIZZjMuYiZzLF19Koiioj28kl/2jLD/QPVbsMmo=;
+        b=Gf70XC+FENM8wk9LD/IhT3t17C7HyY4bCdWxH2/yBHTDClzfDME3YPjnA3reqYxscT
+         tan/vmiTxI4TScYutZAEUAubtTfmezTcSfcMxG8/xTshXGM4haDnyswOHyd4QuZXFPwT
+         FPrSXRYFiRANfbKgOi9wsvCyIvCwZ/PkLVkqQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GR99GIZZjMuYiZzLF19Koiioj28kl/2jLD/QPVbsMmo=;
+        b=ozaP9521sbGUhSkT7zGjWFYy9fDS0EOAxjMoQPGuPQW0mohHumgi0zGSTRZwdqqeYx
+         KcD9kfxi/JirJwXCZZo5jDH6g3JsxxtU8aOetUboWMUWgKAETzAPopTdAk5wyOtG9sXP
+         IUbOFKwI6a3OAcPc1UU2ACjK+h4WGOqyY5OsPO2n4tRi0ENwi0e3HDN8fqbupEHTtqcf
+         h8PdmiyqHqh5g0+Q2vo3aN5ZaEO8nAqb89lxveloxL0tIVrBxVZvRLoZr2kZR9iXTGzy
+         Ao3VMFVgUxGRCOrphEY5vGUX5buRbXbcbGOUOqJ1o8hsRicJXCPnQzHI5yqK9rSrUbpZ
+         op2g==
+X-Gm-Message-State: AOAM530Al51G8tdu2i7YOu1kkUbf//LZWZbulXST8y3O5Cl95FNoBdpt
+        cF1g/X6JB6uXwekpZx1ls/g7hQ==
+X-Google-Smtp-Source: ABdhPJytWvIWeK1ATDg3B20v4sgj59qnn+uhC1n/GMs05mdtVBs9Gt4NyvBkIjNx6BlJ/vdoEyr9xQ==
+X-Received: by 2002:a62:cdc4:: with SMTP id o187mr9910453pfg.200.1593738707606;
+        Thu, 02 Jul 2020 18:11:47 -0700 (PDT)
+Received: from josephsih-z840.tpe.corp.google.com ([2401:fa00:1:10:de4a:3eff:fe7d:ff5f])
+        by smtp.gmail.com with ESMTPSA id e12sm9662721pfd.69.2020.07.02.18.11.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Jul 2020 18:11:47 -0700 (PDT)
+From:   Joseph Hwang <josephsih@chromium.org>
+To:     linux-bluetooth@vger.kernel.org, marcel@holtmann.org,
+        luiz.dentz@gmail.com
+Cc:     josephsih@google.com, chromeos-bluetooth-upstreaming@chromium.org,
+        Joseph Hwang <josephsih@chromium.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] Bluetooth: btusb: add Realtek 8822CE to blacklist_table
+Date:   Fri,  3 Jul 2020 09:11:32 +0800
+Message-Id: <20200703091124.1.I63705bf6abab9cb79c14f7959a59b201af2b8827@changeid>
+X-Mailer: git-send-email 2.27.0.212.ge8ba1cc988-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200702005923.10064-1-longman@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=W5xGqiek c=1 sm=1 tr=0
-        a=moVtWZxmCkf3aAMJKIb/8g==:117 a=moVtWZxmCkf3aAMJKIb/8g==:17
-        a=kj9zAlcOel0A:10 a=_RQrkK6FrEwA:10 a=7-415B0cAAAA:8 a=20KFwNOVAAAA:8
-        a=DRpurTtVrwkqR7YIFl8A:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 01, 2020 at 08:59:23PM -0400, Waiman Long wrote:
-> Suggested-by: Dave Chinner <david@fromorbit.com>
-> Signed-off-by: Waiman Long <longman@redhat.com>
-> ---
->  fs/xfs/xfs_super.c | 12 +++++++++++-
->  1 file changed, 11 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
-> index 379cbff438bc..dcc97bad950a 100644
-> --- a/fs/xfs/xfs_super.c
-> +++ b/fs/xfs/xfs_super.c
-> @@ -913,11 +913,21 @@ xfs_fs_freeze(
->  	struct super_block	*sb)
->  {
->  	struct xfs_mount	*mp = XFS_M(sb);
-> +	unsigned long		pflags;
-> +	int			ret;
->  
-> +	/*
-> +	 * Disable fs reclaim in memory allocation for fs freeze to avoid
-> +	 * causing a possible circular locking dependency lockdep splat
-> +	 * relating to fs reclaim.
-> +	 */
+This patch adds the Realtek 8822CE controller to the blacklist_table
+to support the wideband speech capability.
 
-	/*
-	 * The filesystem is now frozen far enough that memory reclaim
-	 * cannot safely operate on the filesystem. Hence we need to
-	 * set a GFP_NOFS context here to avoid recursion deadlocks.
-	 */
+Signed-off-by: Joseph Hwang <josephsih@chromium.org>
+---
 
-> +	current_set_flags_nested(&pflags, PF_MEMALLOC_NOFS);
+ drivers/bluetooth/btusb.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-memalloc_nofs_save/restore(), please.
-
--Dave.
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index 0e143c0cecf2a1..34a84c64e4c83e 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -359,6 +359,10 @@ static const struct usb_device_id blacklist_table[] = {
+ 	{ USB_VENDOR_AND_INTERFACE_INFO(0x8087, 0xe0, 0x01, 0x01),
+ 	  .driver_info = BTUSB_IGNORE },
+ 
++	/* Realtek 8822CE Bluetooth devices */
++	{ USB_DEVICE(0x0bda, 0xb00c), .driver_info = BTUSB_REALTEK |
++						     BTUSB_WIDEBAND_SPEECH },
++
+ 	/* Realtek Bluetooth devices */
+ 	{ USB_VENDOR_AND_INTERFACE_INFO(0x0bda, 0xe0, 0x01, 0x01),
+ 	  .driver_info = BTUSB_REALTEK },
 -- 
-Dave Chinner
-david@fromorbit.com
+2.27.0.212.ge8ba1cc988-goog
+
