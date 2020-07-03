@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 629D9213142
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 04:06:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63688213141
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 04:06:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726169AbgGCCGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Jul 2020 22:06:24 -0400
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:50766 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726032AbgGCCGT (ORCPT
+        id S1726203AbgGCCG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Jul 2020 22:06:26 -0400
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:57602 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726107AbgGCCGT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 2 Jul 2020 22:06:19 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04397;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0U1X8AZ._1593741976;
-Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U1X8AZ._1593741976)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R841e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07484;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0U1XOPYX_1593741976;
+Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U1XOPYX_1593741976)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 03 Jul 2020 10:06:16 +0800
+          Fri, 03 Jul 2020 10:06:17 +0800
 From:   Wei Yang <richard.weiyang@linux.alibaba.com>
 To:     rostedt@goodmis.org, mingo@redhat.com
 Cc:     linux-kernel@vger.kernel.org,
         Wei Yang <richard.weiyang@linux.alibaba.com>
-Subject: [PATCH 4/5] tracing: use NULL directly to create root level tracefs
-Date:   Fri,  3 Jul 2020 10:06:11 +0800
-Message-Id: <20200703020612.12930-4-richard.weiyang@linux.alibaba.com>
+Subject: [PATCH 5/5] tracing: toplevel d_entry already initialized
+Date:   Fri,  3 Jul 2020 10:06:12 +0800
+Message-Id: <20200703020612.12930-5-richard.weiyang@linux.alibaba.com>
 X-Mailer: git-send-email 2.20.1 (Apple Git-117)
 In-Reply-To: <20200703020612.12930-1-richard.weiyang@linux.alibaba.com>
 References: <20200703020612.12930-1-richard.weiyang@linux.alibaba.com>
@@ -33,43 +33,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tracing_init_dentry() has two types of return value:
+Currently we have following call flow:
 
-  * NULL if succeed
-  * IS_ERR() if failed
+    tracer_init_tracefs()
+        tracing_init_dentry()
+        event_trace_init()
+            tracing_init_dentry()
 
-If the function return error, the following check would return from the
-function. So we are sure d_tracer passed in here is NULL.
+This shows tracing_init_dentry() is called twice in this flow and this
+is not necessary.
 
-This is a preparation for following cleanup.
+Let's remove the second one when it is for sure be properly initialized.
 
 Signed-off-by: Wei Yang <richard.weiyang@linux.alibaba.com>
 ---
- kernel/trace/trace_events.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ kernel/trace/trace_events.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
 diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
-index f6f55682d3e2..8b3aa57dcea6 100644
+index 8b3aa57dcea6..76879b29cf33 100644
 --- a/kernel/trace/trace_events.c
 +++ b/kernel/trace/trace_events.c
-@@ -3446,7 +3446,7 @@ __init int event_trace_init(void)
- 	if (IS_ERR(d_tracer))
- 		return 0;
+@@ -3434,7 +3434,6 @@ early_initcall(event_trace_enable_again);
+ __init int event_trace_init(void)
+ {
+ 	struct trace_array *tr;
+-	struct dentry *d_tracer;
+ 	struct dentry *entry;
+ 	int ret;
  
--	entry = tracefs_create_file("available_events", 0444, d_tracer,
-+	entry = tracefs_create_file("available_events", 0444, NULL,
+@@ -3442,10 +3441,6 @@ __init int event_trace_init(void)
+ 	if (!tr)
+ 		return -ENODEV;
+ 
+-	d_tracer = tracing_init_dentry();
+-	if (IS_ERR(d_tracer))
+-		return 0;
+-
+ 	entry = tracefs_create_file("available_events", 0444, NULL,
  				    tr, &ftrace_avail_fops);
  	if (!entry)
- 		pr_warn("Could not create tracefs 'available_events' entry\n");
-@@ -3457,7 +3457,7 @@ __init int event_trace_init(void)
- 	if (trace_define_common_fields())
- 		pr_warn("tracing: Failed to allocate common fields");
- 
--	ret = early_event_add_tracer(d_tracer, tr);
-+	ret = early_event_add_tracer(NULL, tr);
- 	if (ret)
- 		return ret;
- 
 -- 
 2.20.1 (Apple Git-117)
 
