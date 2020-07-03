@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D58ED213A62
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 14:54:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57EDF213A52
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 14:53:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726933AbgGCMyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 08:54:38 -0400
-Received: from mga18.intel.com ([134.134.136.126]:25737 "EHLO mga18.intel.com"
+        id S1726737AbgGCMxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 08:53:49 -0400
+Received: from mga18.intel.com ([134.134.136.126]:25740 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726610AbgGCMxl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 08:53:41 -0400
-IronPort-SDR: Bo/hlnEZDLc3AM10q7RE7P1fNAcXIezzFMebrKGs+XtSEF2kfP6GQlH4XWwWfXJrJ2Q42id1vx
- w4nZ0ZrOS6kQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="134598381"
+        id S1726615AbgGCMxm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Jul 2020 08:53:42 -0400
+IronPort-SDR: YUS+Qio5X7vvlWocC8iOtWG3AQypGZQIK5S31MVh2LF5tWTa+HVMsv6EkbUA3/LFkL8WkmNKy5
+ Ad141xaiLDWw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="134598383"
 X-IronPort-AV: E=Sophos;i="5.75,308,1589266800"; 
-   d="scan'208";a="134598381"
+   d="scan'208";a="134598383"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jul 2020 05:53:39 -0700
-IronPort-SDR: GsdvwcRlBDvX+uzXFljDrM/2iLKi9EUuJtmXeheISW4VMgA5dgZ7wwO1xUPC2bwAwYsQgBY7+e
- VheKNQi69y1w==
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jul 2020 05:53:41 -0700
+IronPort-SDR: XodbBF0rkGvusx20r6PSXkammHTJyd1LHF06QUxwnHrV8HsdpQrj/kf0vQCuQbtPR+Q5v8FXQU
+ VASruU7V0Y4g==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,308,1589266800"; 
-   d="scan'208";a="265964010"
+   d="scan'208";a="265964014"
 Received: from otc-lr-04.jf.intel.com ([10.54.39.143])
-  by fmsmga007.fm.intel.com with ESMTP; 03 Jul 2020 05:53:39 -0700
+  by fmsmga007.fm.intel.com with ESMTP; 03 Jul 2020 05:53:40 -0700
 From:   kan.liang@linux.intel.com
 To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
         tglx@linutronix.de, bp@alien8.de, x86@kernel.org,
@@ -38,9 +38,9 @@ Cc:     mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
         ak@linux.intel.com, like.xu@linux.intel.com,
         yao.jin@linux.intel.com, wei.w.wang@intel.com,
         Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH V3 12/23] perf/x86/intel/lbr: Factor out rdlbr_all() and wrlbr_all()
-Date:   Fri,  3 Jul 2020 05:49:18 -0700
-Message-Id: <1593780569-62993-13-git-send-email-kan.liang@linux.intel.com>
+Subject: [PATCH V3 13/23] perf/x86/intel/lbr: Factor out intel_pmu_store_lbr
+Date:   Fri,  3 Jul 2020 05:49:19 -0700
+Message-Id: <1593780569-62993-14-git-send-email-kan.liang@linux.intel.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1593780569-62993-1-git-send-email-kan.liang@linux.intel.com>
 References: <1593780569-62993-1-git-send-email-kan.liang@linux.intel.com>
@@ -51,184 +51,197 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Kan Liang <kan.liang@linux.intel.com>
 
-The previous model-specific LBR and Architecture LBR (legacy way) use a
-similar method to save/restore the LBR information, which directly
-accesses the LBR registers. The codes which read/write a set of LBR
-registers can be shared between them.
+The way to store the LBR information from a PEBS LBR record can be
+reused in Architecture LBR, because
+- The LBR information is stored like a stack. Entry 0 is always the
+  youngest branch.
+- The layout of the LBR INFO MSR is similar.
 
-Factor out two functions which are used to read/write a set of LBR
-registers.
+The LBR information may be retrieved from either the LBR registers
+(non-PEBS event) or a buffer (PEBS event). Extend rdlbr_*() to support
+both methods.
 
-Add lbr_info into structure x86_pmu, and use it to replace the hardcoded
-LBR INFO MSR, because the LBR INFO MSR address of the previous
-model-specific LBR is different from Architecture LBR. The MSR address
-should be assigned at boot time. For now, only Sky Lake and later
-platforms have the LBR INFO MSR.
+Explicitly check the invalid entry (0s), which can avoid unnecessary MSR
+access if using a non-PEBS event. For a PEBS event, the check should
+slightly improve the performance as well. The invalid entries are cut.
+The intel_pmu_lbr_filter() doesn't need to check and filter them out.
+
+Cannot share the function with current model-specific LBR read, because
+the direction of the LBR growth is opposite.
 
 Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 ---
- arch/x86/events/intel/lbr.c  | 66 +++++++++++++++++++++++++++++++++-----------
- arch/x86/events/perf_event.h |  2 +-
- 2 files changed, 51 insertions(+), 17 deletions(-)
+ arch/x86/events/intel/lbr.c | 81 +++++++++++++++++++++++++++++++--------------
+ 1 file changed, 56 insertions(+), 25 deletions(-)
 
 diff --git a/arch/x86/events/intel/lbr.c b/arch/x86/events/intel/lbr.c
-index e3574a8..f47f41e 100644
+index f47f41e..7186751 100644
 --- a/arch/x86/events/intel/lbr.c
 +++ b/arch/x86/events/intel/lbr.c
-@@ -237,7 +237,7 @@ void intel_pmu_lbr_reset_64(void)
- 		wrmsrl(x86_pmu.lbr_from + i, 0);
- 		wrmsrl(x86_pmu.lbr_to   + i, 0);
- 		if (x86_pmu.intel_cap.lbr_format == LBR_FORMAT_INFO)
--			wrmsrl(MSR_LBR_INFO_0 + i, 0);
-+			wrmsrl(x86_pmu.lbr_info + i, 0);
- 	}
+@@ -348,28 +348,37 @@ static __always_inline void wrlbr_info(unsigned int idx, u64 val)
+ 	wrmsrl(x86_pmu.lbr_info + idx, val);
  }
  
-@@ -343,6 +343,11 @@ static __always_inline void wrlbr_to(unsigned int idx, u64 val)
- 	wrmsrl(x86_pmu.lbr_to + idx, val);
- }
- 
-+static __always_inline void wrlbr_info(unsigned int idx, u64 val)
-+{
-+	wrmsrl(x86_pmu.lbr_info + idx, val);
-+}
-+
- static __always_inline u64 rdlbr_from(unsigned int idx)
+-static __always_inline u64 rdlbr_from(unsigned int idx)
++static __always_inline u64 rdlbr_from(unsigned int idx, struct lbr_entry *lbr)
  {
  	u64 val;
-@@ -361,8 +366,44 @@ static __always_inline u64 rdlbr_to(unsigned int idx)
+ 
++	if (lbr)
++		return lbr->from;
++
+ 	rdmsrl(x86_pmu.lbr_from + idx, val);
+ 
+ 	return lbr_from_signext_quirk_rd(val);
+ }
+ 
+-static __always_inline u64 rdlbr_to(unsigned int idx)
++static __always_inline u64 rdlbr_to(unsigned int idx, struct lbr_entry *lbr)
+ {
+ 	u64 val;
+ 
++	if (lbr)
++		return lbr->to;
++
+ 	rdmsrl(x86_pmu.lbr_to + idx, val);
+ 
  	return val;
  }
  
-+static __always_inline u64 rdlbr_info(unsigned int idx)
-+{
-+	u64 val;
-+
-+	rdmsrl(x86_pmu.lbr_info + idx, val);
-+
-+	return val;
-+}
-+
-+static __always_inline void
-+wrlbr_all(struct lbr_entry *lbr, unsigned int idx, bool need_info)
-+{
-+	wrlbr_from(idx, lbr->from);
-+	wrlbr_to(idx, lbr->to);
-+	if (need_info)
-+		wrlbr_info(idx, lbr->info);
-+}
-+
-+static __always_inline bool
-+rdlbr_all(struct lbr_entry *lbr, unsigned int idx, bool need_info)
-+{
-+	u64 from = rdlbr_from(idx);
-+
-+	/* Don't read invalid entry */
-+	if (!from)
-+		return false;
-+
-+	lbr->from = from;
-+	lbr->to = rdlbr_to(idx);
-+	if (need_info)
-+		lbr->info = rdlbr_info(idx);
-+
-+	return true;
-+}
-+
- void intel_pmu_lbr_restore(void *ctx)
+-static __always_inline u64 rdlbr_info(unsigned int idx)
++static __always_inline u64 rdlbr_info(unsigned int idx, struct lbr_entry *lbr)
  {
-+	bool need_info = x86_pmu.intel_cap.lbr_format == LBR_FORMAT_INFO;
- 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
- 	struct x86_perf_task_context *task_ctx = ctx;
- 	int i;
-@@ -372,11 +413,7 @@ void intel_pmu_lbr_restore(void *ctx)
- 	mask = x86_pmu.lbr_nr - 1;
- 	for (i = 0; i < task_ctx->valid_lbrs; i++) {
- 		lbr_idx = (tos - i) & mask;
--		wrlbr_from(lbr_idx, task_ctx->lbr[i].from);
--		wrlbr_to(lbr_idx, task_ctx->lbr[i].to);
--
--		if (x86_pmu.intel_cap.lbr_format == LBR_FORMAT_INFO)
--			wrmsrl(MSR_LBR_INFO_0 + lbr_idx, task_ctx->lbr[i].info);
-+		wrlbr_all(&task_ctx->lbr[i], lbr_idx, need_info);
- 	}
+ 	u64 val;
  
- 	for (; i < x86_pmu.lbr_nr; i++) {
-@@ -384,7 +421,7 @@ void intel_pmu_lbr_restore(void *ctx)
- 		wrlbr_from(lbr_idx, 0);
- 		wrlbr_to(lbr_idx, 0);
- 		if (x86_pmu.intel_cap.lbr_format == LBR_FORMAT_INFO)
--			wrmsrl(MSR_LBR_INFO_0 + lbr_idx, 0);
-+			wrlbr_info(lbr_idx, 0);
- 	}
++	if (lbr)
++		return lbr->info;
++
+ 	rdmsrl(x86_pmu.lbr_info + idx, val);
  
- 	wrmsrl(x86_pmu.lbr_tos, tos);
-@@ -427,23 +464,19 @@ static void __intel_pmu_lbr_restore(void *ctx)
- 
- void intel_pmu_lbr_save(void *ctx)
+ 	return val;
+@@ -387,16 +396,16 @@ wrlbr_all(struct lbr_entry *lbr, unsigned int idx, bool need_info)
+ static __always_inline bool
+ rdlbr_all(struct lbr_entry *lbr, unsigned int idx, bool need_info)
  {
-+	bool need_info = x86_pmu.intel_cap.lbr_format == LBR_FORMAT_INFO;
- 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
- 	struct x86_perf_task_context *task_ctx = ctx;
- 	unsigned lbr_idx, mask;
--	u64 tos, from;
-+	u64 tos;
- 	int i;
+-	u64 from = rdlbr_from(idx);
++	u64 from = rdlbr_from(idx, NULL);
  
- 	mask = x86_pmu.lbr_nr - 1;
- 	tos = intel_pmu_lbr_tos();
- 	for (i = 0; i < x86_pmu.lbr_nr; i++) {
- 		lbr_idx = (tos - i) & mask;
+ 	/* Don't read invalid entry */
+ 	if (!from)
+ 		return false;
+ 
+ 	lbr->from = from;
+-	lbr->to = rdlbr_to(idx);
++	lbr->to = rdlbr_to(idx, NULL);
+ 	if (need_info)
+-		lbr->info = rdlbr_info(idx);
++		lbr->info = rdlbr_info(idx, NULL);
+ 
+ 	return true;
+ }
+@@ -432,7 +441,7 @@ void intel_pmu_lbr_restore(void *ctx)
+ 
+ static __always_inline bool lbr_is_reset_in_cstate(void *ctx)
+ {
+-	return !rdlbr_from(((struct x86_perf_task_context *)ctx)->tos);
++	return !rdlbr_from(((struct x86_perf_task_context *)ctx)->tos, NULL);
+ }
+ 
+ static void __intel_pmu_lbr_restore(void *ctx)
+@@ -709,8 +718,8 @@ void intel_pmu_lbr_read_64(struct cpu_hw_events *cpuc)
+ 		u16 cycles = 0;
+ 		int lbr_flags = lbr_desc[lbr_format];
+ 
 -		from = rdlbr_from(lbr_idx);
--		if (!from)
-+		if (!rdlbr_all(&task_ctx->lbr[i], lbr_idx, need_info))
- 			break;
--		task_ctx->lbr[i].from = from;
--		task_ctx->lbr[i].to = rdlbr_to(lbr_idx);
--		if (x86_pmu.intel_cap.lbr_format == LBR_FORMAT_INFO)
--			rdmsrl(MSR_LBR_INFO_0 + lbr_idx, task_ctx->lbr[i].info);
- 	}
- 	task_ctx->valid_lbrs = i;
- 	task_ctx->tos = tos;
-@@ -689,7 +722,7 @@ void intel_pmu_lbr_read_64(struct cpu_hw_events *cpuc)
+-		to   = rdlbr_to(lbr_idx);
++		from = rdlbr_from(lbr_idx, NULL);
++		to   = rdlbr_to(lbr_idx, NULL);
+ 
+ 		/*
+ 		 * Read LBR call stack entries
+@@ -722,7 +731,7 @@ void intel_pmu_lbr_read_64(struct cpu_hw_events *cpuc)
  		if (lbr_format == LBR_FORMAT_INFO && need_info) {
  			u64 info;
  
--			rdmsrl(MSR_LBR_INFO_0 + lbr_idx, info);
-+			info = rdlbr_info(lbr_idx);
+-			info = rdlbr_info(lbr_idx);
++			info = rdlbr_info(lbr_idx, NULL);
  			mis = !!(info & LBR_INFO_MISPRED);
  			pred = !mis;
  			in_tx = !!(info & LBR_INFO_IN_TX);
-@@ -1336,6 +1369,7 @@ __init void intel_pmu_lbr_init_skl(void)
- 	x86_pmu.lbr_tos	 = MSR_LBR_TOS;
- 	x86_pmu.lbr_from = MSR_LBR_NHM_FROM;
- 	x86_pmu.lbr_to   = MSR_LBR_NHM_TO;
-+	x86_pmu.lbr_info = MSR_LBR_INFO_0;
- 
- 	x86_pmu.lbr_sel_mask = LBR_SEL_MASK;
- 	x86_pmu.lbr_sel_map  = hsw_lbr_sel_map;
-@@ -1421,7 +1455,7 @@ int x86_perf_get_lbr(struct x86_pmu_lbr *lbr)
- 	lbr->nr = x86_pmu.lbr_nr;
- 	lbr->from = x86_pmu.lbr_from;
- 	lbr->to = x86_pmu.lbr_to;
--	lbr->info = (lbr_fmt == LBR_FORMAT_INFO) ? MSR_LBR_INFO_0 : 0;
-+	lbr->info = (lbr_fmt == LBR_FORMAT_INFO) ? x86_pmu.lbr_info : 0;
- 
- 	return 0;
+@@ -777,6 +786,42 @@ void intel_pmu_lbr_read_64(struct cpu_hw_events *cpuc)
+ 	cpuc->lbr_stack.hw_idx = tos;
  }
-diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
-index 5689036..06c1fd0 100644
---- a/arch/x86/events/perf_event.h
-+++ b/arch/x86/events/perf_event.h
-@@ -690,7 +690,7 @@ struct x86_pmu {
- 	 * Intel LBR
- 	 */
- 	unsigned int	lbr_tos, lbr_from, lbr_to,
--			lbr_nr;			   /* LBR base regs and size */
-+			lbr_info, lbr_nr;	   /* LBR base regs and size */
- 	union {
- 		u64	lbr_sel_mask;		   /* LBR_SELECT valid bits */
- 		u64	lbr_ctl_mask;		   /* LBR_CTL valid bits */
+ 
++static void intel_pmu_store_lbr(struct cpu_hw_events *cpuc,
++				struct lbr_entry *entries)
++{
++	struct perf_branch_entry *e;
++	struct lbr_entry *lbr;
++	u64 from, to, info;
++	int i;
++
++	for (i = 0; i < x86_pmu.lbr_nr; i++) {
++		lbr = entries ? &entries[i] : NULL;
++		e = &cpuc->lbr_entries[i];
++
++		from = rdlbr_from(i, lbr);
++		/*
++		 * Read LBR entries until invalid entry (0s) is detected.
++		 */
++		if (!from)
++			break;
++
++		to = rdlbr_to(i, lbr);
++		info = rdlbr_info(i, lbr);
++
++		e->from		= from;
++		e->to		= to;
++		e->mispred	= !!(info & LBR_INFO_MISPRED);
++		e->predicted	= !(info & LBR_INFO_MISPRED);
++		e->in_tx	= !!(info & LBR_INFO_IN_TX);
++		e->abort	= !!(info & LBR_INFO_ABORT);
++		e->cycles	= info & LBR_INFO_CYCLES;
++		e->type		= 0;
++		e->reserved	= 0;
++	}
++
++	cpuc->lbr_stack.nr = i;
++}
++
+ void intel_pmu_lbr_read(void)
+ {
+ 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+@@ -1215,9 +1260,6 @@ intel_pmu_lbr_filter(struct cpu_hw_events *cpuc)
+ void intel_pmu_store_pebs_lbrs(struct pebs_lbr *lbr)
+ {
+ 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+-	int i;
+-
+-	cpuc->lbr_stack.nr = x86_pmu.lbr_nr;
+ 
+ 	/* Cannot get TOS for large PEBS */
+ 	if (cpuc->n_pebs == cpuc->n_large_pebs)
+@@ -1225,19 +1267,8 @@ void intel_pmu_store_pebs_lbrs(struct pebs_lbr *lbr)
+ 	else
+ 		cpuc->lbr_stack.hw_idx = intel_pmu_lbr_tos();
+ 
+-	for (i = 0; i < x86_pmu.lbr_nr; i++) {
+-		u64 info = lbr->lbr[i].info;
+-		struct perf_branch_entry *e = &cpuc->lbr_entries[i];
++	intel_pmu_store_lbr(cpuc, lbr->lbr);
+ 
+-		e->from		= lbr->lbr[i].from;
+-		e->to		= lbr->lbr[i].to;
+-		e->mispred	= !!(info & LBR_INFO_MISPRED);
+-		e->predicted	= !(info & LBR_INFO_MISPRED);
+-		e->in_tx	= !!(info & LBR_INFO_IN_TX);
+-		e->abort	= !!(info & LBR_INFO_ABORT);
+-		e->cycles	= info & LBR_INFO_CYCLES;
+-		e->reserved	= 0;
+-	}
+ 	intel_pmu_lbr_filter(cpuc);
+ }
+ 
 -- 
 2.7.4
 
