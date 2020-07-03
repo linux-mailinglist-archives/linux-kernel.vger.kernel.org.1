@@ -2,154 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A974B2136BE
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 10:54:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD57C2136C6
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 10:56:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726379AbgGCIyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 04:54:03 -0400
-Received: from mail-db8eur05on2085.outbound.protection.outlook.com ([40.107.20.85]:6204
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725779AbgGCIyC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 04:54:02 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CEgpjvpQydyVXrw3WnYliAerUJG1Dug68WtHe838f9iRsMvTQtK+r3VEiRXlbFaqnfhblsnsUt6VCqp67dFlvoj2jMHIaDsd/72Zks4WFeUMmbqZrZnqWWa6uhgcr/Id+zbqAtS/FDHds6KPGEXlX/CTj5+XaxCrVJYveGdmVH/zZE8m0RwgfRSJeNOjSxT43Xr0xWHVb8cAUy8oWIKGFZff4mgmEcaVwHtg0mui+iYY3irrIfiuI0JWIhzXZbkRmyEzg72JEq3wfgeFTMfyKePZQVoZIfVV9QCTvQidldrH9moN6HUj8FNbY77Kvll+O3pmzV2jONBLC3qkD4pBKQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=u4xUNkT7fc4Wckq8RgxskTANBLRkLgbu55kstAC1OmI=;
- b=LpG0dSDbLcvAQHjpDO4Kt6cS0u6RP/WKSJEIq5Qxq0Jk1dSpx63+bEYYe6FiECJXxhu8u8WqGzNI9TycORheU3WPiEsnuU/QxPmepgFT9KfHHu13RGS0KI42xHSGh4bc1lEFmn8yCtHjR9colnGL9wjUGW7+lxNi5K+uVvFSnfTpUTN5H7yoBMHKM1OQCNc9+D2tVYs3ck4E2Czq0TXHzZhBmIPTnGLkRKBIN0Jbus7+V4S0yWfcOV/ODKX+B93vl+pZCiYtN4VgkspuzzTYz0Lku1rVOSfd8CoQ7tshvZBVogBHpvPwaxxPXkC5wuP7kkS89sMlGF3jhVsDj4/EAQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=u4xUNkT7fc4Wckq8RgxskTANBLRkLgbu55kstAC1OmI=;
- b=ByhR3cZuNxHsr9IRh8KVP1WbhLb3tZSwHBh2UNyuR7QoNzAatxDQiT5BIkjYvjhuQrFOguCQoScicqWJtjazjJQ0ZDK2yWAB4qzxFX2RsvyJFpaYtV0yaWE0Ma2OoS3qhMLz/z+uuj1WhLCJHurRbiqCJQsGOLzhY1/MJ5Fq5mQ=
-Authentication-Results: nxp.com; dkim=none (message not signed)
- header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
-Received: from VI1PR04MB4046.eurprd04.prod.outlook.com (2603:10a6:803:4d::29)
- by VI1PR04MB5710.eurprd04.prod.outlook.com (2603:10a6:803:df::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.24; Fri, 3 Jul
- 2020 08:53:59 +0000
-Received: from VI1PR04MB4046.eurprd04.prod.outlook.com
- ([fe80::8459:4be8:7034:7a81]) by VI1PR04MB4046.eurprd04.prod.outlook.com
- ([fe80::8459:4be8:7034:7a81%6]) with mapi id 15.20.3153.028; Fri, 3 Jul 2020
- 08:53:59 +0000
-Subject: Re: [PATCH V3 0/3] ARM: imx: move cpu code to drivers/soc/imx
-To:     Peng Fan <peng.fan@nxp.com>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>
-Cc:     "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "allison@lohutok.net" <allison@lohutok.net>,
-        "info@metux.net" <info@metux.net>,
-        Anson Huang <anson.huang@nxp.com>,
-        Leonard Crestez <leonard.crestez@nxp.com>,
-        "git@andred.net" <git@andred.net>, Abel Vesa <abel.vesa@nxp.com>,
-        "andrew.smirnov@gmail.com" <andrew.smirnov@gmail.com>,
-        "cphealy@gmail.com" <cphealy@gmail.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Huan Wang <alison.wang@nxp.com>
-References: <1589953889-30955-1-git-send-email-peng.fan@nxp.com>
-From:   =?UTF-8?Q?Horia_Geant=c4=83?= <horia.geanta@nxp.com>
-Message-ID: <fd6a7452-25f6-4ced-7b3f-4aa92388ad09@nxp.com>
-Date:   Fri, 3 Jul 2020 11:53:54 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-In-Reply-To: <1589953889-30955-1-git-send-email-peng.fan@nxp.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AM3PR07CA0141.eurprd07.prod.outlook.com
- (2603:10a6:207:8::27) To VI1PR04MB4046.eurprd04.prod.outlook.com
- (2603:10a6:803:4d::29)
+        id S1726147AbgGCI4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 04:56:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725891AbgGCI4U (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Jul 2020 04:56:20 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4C5EC08C5DE
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Jul 2020 01:56:19 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id l17so31307664wmj.0
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Jul 2020 01:56:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=r7BjWiHF5iYlX2CVgTeV2f/a1gA2UGUMeK1lcaxyUj0=;
+        b=lhf7FRCgOdl3W3PX38x3CN2gEjJEBTyXb+Oh8vv+/MB2/FNLqmpK03jqgQy+Ildsjp
+         cGcIaD7nzKUtTrzMp+In9qJKvvLPRYyUowt/f8D2axAj8/gbIlYkWUW931xjw4j6p+9t
+         ZhqXgxECyiqwkBvGnz67+luZvB6NciJ8E5L4sfChw3kkFXMHOqJ06o8p+1eqdnkWyrso
+         R5JkZPxT0sFKhvwEF0e/gNg6HBaXrMB4n5BGRW9CMKOyU/IyUyZWCPfa9sLSTvGwcs5i
+         JZ0Vk4E0Av9rArNiyCXRez58Y6hyqjo8+0Ukg39BDVTHgIcN+CIIQ/XUn9H4rIECNHn6
+         36EQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=r7BjWiHF5iYlX2CVgTeV2f/a1gA2UGUMeK1lcaxyUj0=;
+        b=llvhQFyD13l/PJ459x3rDswuiKN0db3AAg/+8Lc5A4CSGhmPIyoDZ+0y0eLj294fe5
+         flEH/qC6IUz6droNGdArIP1kd/loboY6abmmYYsi8bGfT0xlSXMP4QNcg+kaG7YEkB1G
+         BMurGsn9nODX3NB0m2V5yOvsrArV/m2HwtuXZqafOu6WlKo3KGpU4t2kT0yZiGSJeEwP
+         iLO6jzg4P8KCtVMG8Jw+/UKG7HfQdox1sNK2B60Kl3cGeRBWj6I0mTVHoLz3RcH5KMd0
+         HNUTnINalkeH5rD1mzwB24fqaRCows1NXNbRTNvhvMvHaMpXMKUN4ViXje0R6ydGfCCQ
+         hOeg==
+X-Gm-Message-State: AOAM53314nDGiqNOjJguQrKGi+MVVeKOEmiQBrioiO10NWLhOcdIQSuY
+        T4zdlxEYefQQ/CC3r5SHF7efKRDYgeB0bfR21wM=
+X-Google-Smtp-Source: ABdhPJzgORi87NHQeSWoew07rDuo30GVcIqmubSIYlFMiX+BeEHq6YHoo8b7i502eZJss/jjIBhtzSC3bUKy5z/2/hk=
+X-Received: by 2002:a7b:cc92:: with SMTP id p18mr36802359wma.4.1593766578242;
+ Fri, 03 Jul 2020 01:56:18 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.0.129] (84.117.251.185) by AM3PR07CA0141.eurprd07.prod.outlook.com (2603:10a6:207:8::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.8 via Frontend Transport; Fri, 3 Jul 2020 08:53:57 +0000
-X-Originating-IP: [84.117.251.185]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: fc949618-6b4f-426a-d7ab-08d81f2ea066
-X-MS-TrafficTypeDiagnostic: VI1PR04MB5710:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB5710D6A8352AC69DF1C498D9986A0@VI1PR04MB5710.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-Forefront-PRVS: 045315E1EE
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: mewu3KrJDad2v+KWFG9/HZ61M4NzfJjTORMwsOf/vgRnIOxPBjORy4JdL4XEp8k28Eb+2qG+5rS5U4HyY5bMVjhUSBnNgv/WbWmf0NDzjAzpOyj26P+Ohl9ujgItdPFAYOqxf7lOZKHO3WY4X3l6R3ibzVu2PjILtUiBHP6eXO4TbkNSKRkiUQlBECl+zjGTLXsJ9ZIDElvOq9ZrCcIQrU/TyUEZlfTSoC2RsJg2A0xj8cYlsfjycra2v8eKhtPu18PP8vAkLSoJ8kxNxjJlDwd/s91r0IjNjxf7xKgdPdLkevtcTtMvcPK3G/vlQt9BpIci7BBUNllS+e0FH4D056TrihREzO2ilK9VWznf1Tk6G3M5z81u1dcCUFr5UFC075n0vmrBlb0qg/gDzI5C3WT+XsXp9GdLKW8wd/zTSTzZ72Nk0tp6ODAndrK/0FkpwkynnXbGmTRBkN7ooA5ZIw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB4046.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(136003)(366004)(39860400002)(376002)(346002)(6486002)(31696002)(4326008)(8676002)(66476007)(26005)(66556008)(16526019)(66946007)(186003)(54906003)(86362001)(16576012)(110136005)(966005)(52116002)(83380400001)(5660300002)(7416002)(8936002)(53546011)(316002)(2906002)(478600001)(36756003)(6666004)(2616005)(956004)(31686004)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: rMZOU97G7IKgUBwaRWnqFpumxRczS4EvBSidXmF32tyY+XGMI5BSw5G/EJZ7cN3l/+a/c7ALt3Q8gGX86glP7Sq6kU21Qa8HzcoFUr/72OFZ5xVGObBEi14+5k3xyR+mZ/24jiF/FbucI0zBrehCagbIQgP6Fa0cFoVxiE6o50AXV9rj5LI9MT0Q/bL4ljULwZcD/WmNV0a6t4fXUrxRyikH0yK/VaqvgZSsM9+vsJ37Fc2dxlQJp7Sfo2MDgVUEIGwLM5fMCHmMhGnG9j5Ws+rt6Vnbpwv3IsXStdLJ2C4NgMIgfW2iK2IGmJsXc0NwQTMocsR4IhmW3X3CyvcYu1MJwJi9+pTFR90sk+TJqNEe+fWuYtMGuHIWiutfdEJS7lQc02qCUqw6W8YFTIvfyFqkHQYHF6Bb58ajZPt9pl7WTeGtWOc1MchUGvaLdDoSKk+btZ0jncM2j0wAggQ3pH6EpQsFcMzLZEIC58WgpwG79ignk5yL6T2mpOPmhAZW
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fc949618-6b4f-426a-d7ab-08d81f2ea066
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB4046.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Jul 2020 08:53:59.6694
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: OAQ0TZCvyG2U2sRpor+aQADu1CmOFp3fheZdXsrZJH5VU3pBc5PiGQMRjBvr20WV/M8TdqRisrpIFV4gnSJ0WA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5710
+Received: by 2002:adf:f109:0:0:0:0:0 with HTTP; Fri, 3 Jul 2020 01:56:17 -0700 (PDT)
+Reply-To: mrs.sophia202@list.ru
+From:   "Mrs. Sophia Robin" <mrs.aishamuammar.gaddafi@gmail.com>
+Date:   Fri, 3 Jul 2020 01:56:17 -0700
+Message-ID: <CAKDKtgzJoJ58NQHx9qjA1yAmEbzSQeCVNjbfbkAP_8QRUhwsYw@mail.gmail.com>
+Subject: Hello My Dearest
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/20/2020 9:01 AM, Peng Fan wrote:
-> From: Peng Fan <peng.fan@nxp.com>
-> 
-> V3:
->  Rebased to latest next tree
->  Resolved the conflicts with vf610 soc patch
-> 
-> V2:
->  Keep i.MX1/2/3/5 cpu type for completness
->  Correct return value in patch 1/3
->  use CONFIG_ARM to guard compile soc-imx.c in patch 3/3
-> 
-> V1:
-> https://patchwork.kernel.org/cover/11433689/
-> RFC version :
-> https://patchwork.kernel.org/cover/11336433/
-> 
-> Nothing changed in v1, just rename to formal patches
-> 
-> Shawn,
->  The original concern has been eliminated in RFC discussion,
->  so this patchset is ready to be in next.
-> Thanks.
-> 
-> Follow i.MX8, move the soc device register code to drivers/soc/imx
-> to simplify arch/arm/mach-imx/cpu.c
-> 
-> I planned to use similar logic as soc-imx8m.c to restructure soc-imx.c
-> and merged the two files into one. But not sure, so still keep
-> the logic in cpu.c.
-> 
-> There is one change is the platform devices are not under
-> /sys/devices/soc0 after patch 1/4. Actually ARM64 platform
-> devices are not under /sys/devices/soc0, such as i.MX8/8M.
-> So it should not hurt to let the platform devices under platform dir.
-> 
-> Peng Fan (3):
->   ARM: imx: use device_initcall for imx_soc_device_init
->   ARM: imx: move cpu definitions into a header
->   soc: imx: move cpu code to drivers/soc/imx
-> 
-This patch series has the side effect of LS1021A platform now reporting
-that it's part of "i.MX family".
+Hello My Dearest
 
-caam driver relies on the SoC bus / SoC attributes (ID, family) to determine
-if it's running on an i.MX SoC or other (Layerscape, QorIQ).
+Please I appeal to you to exercise a little patience and read through
+my mail carefully, I am contacting you personally for investment
+assistance and a long term business relationship in your Country.
 
-With this patch set, driver fails to probe on LS1021A:
-[    5.998928] caam 1700000.crypto: No clock data provided for i.MX SoC
-[    6.005306] caam: probe of 1700000.crypto failed with error -22
+I am Mrs. Sophia Robin a citizen of the united state of America, I
+work in HSBC Bank in Milan Italy as a Telex Manager charge of wire
+transfer department.
 
-Horia
+I am contacting you for an important and  urgent business transaction,
+I  want the bank to transfer the money left by Dr. Cheng Chao,  A
+Chinese  Politicians who  died, March 17th 2020 without any trace of
+his family member,  he used our bank to launder money overseas through
+the help of their Political advisers. And most of the funds which they
+transferred out of the shores of China were gold and oil money that
+was supposed to have been used to develop the continent.
+
+Can you invest this money and also help the poor? The amount value at
+($15.5million Dollars), left in his account still unclaimed, if you
+know that you are capable to invest this fund into any  profitable
+business in your country kindly send me your details information as
+listed below to enable me draft you an application form of claim along
+with the deposit certificate which you are going to fill with your
+bank account detail necessary and contact the HSBC Bank in Italy  for
+immediate transfer of the Amounted sum into your bank account direct.
+
+Percentage share will be 60, for me/ 40, for you.
+
+(1) Your full name..................................................
+(2) Your address....................................................
+(3) Your Nationality.................................................
+(4) Your Age / Sex.....................................................
+(5) Your Occupation............................................
+(6) Your marital status......................................
+(7) Your direct telephone number..................
+(8) your ID Card.......................................
+
+Thanks with my best regards.
+Mrs. Sophia Robin
+Telex Manager
+Milan Italy  (H.S.B.C)
