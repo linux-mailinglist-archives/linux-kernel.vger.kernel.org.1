@@ -2,62 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86C72213EB8
+	by mail.lfdr.de (Postfix) with ESMTP id 17170213EB7
 	for <lists+linux-kernel@lfdr.de>; Fri,  3 Jul 2020 19:44:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726753AbgGCRmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 13:42:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44422 "EHLO
+        id S1726733AbgGCRmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 13:42:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726669AbgGCRmI (ORCPT
+        with ESMTP id S1726670AbgGCRmJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 13:42:08 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E94AC08C5DD
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Jul 2020 10:42:07 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id z13so33570571wrw.5
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Jul 2020 10:42:07 -0700 (PDT)
+        Fri, 3 Jul 2020 13:42:09 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE627C061794
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Jul 2020 10:42:08 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id o2so34855985wmh.2
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Jul 2020 10:42:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=F6U6du2cLEW6hsEFJ/YlMHhYAq991XScHIIikwh94ck=;
-        b=Y2SU5Y10snNBVm4aLkU7fk0EzfCxFtMtC2t6XTYj/cZvEvyIk4JHi4IzvP1Q84NMJb
-         wp3/StQ4VnPEvn10ZvSQjYAQoaEXHwEQT4aUyHcryjLofn34gYEQYBX9KR5uIygZqkN6
-         c8U7oJkzVqsT/LFEegC/GHVUwFXrl2/ZhWuLrxRxPNjIUcCh5M1zV79xpQ30M6cB6ga7
-         QWgSinALKbHXOtbxbW8M3V/Iiah/Cu+ACH7HTP3WaFgoG4gBY45UTg5GU2giIEBzvnLg
-         iBZ1Uq8pwToe0JQnN0zwI96iPtfuryHBRuGoe5iyK5uIGgRfcs1vA3hqc87ZlrAGsbuR
-         pCCg==
+        bh=rg3aFGb8OfRKBHM94n8q4FN1ZasqFE+4EzVqNDg7yKc=;
+        b=YxY130FyIPR9Gm07AHbGYOGYZ5uDSYNgEhKE/C8aNhqL0yl8qgwg6rJUkdr2CCU2YW
+         AtopIVNMNXMk47KxDB72Sj9A0L+dPsHtfXJA12sLuN2SWhKv+LkgOVOmMbDdpCr2Br75
+         OmCUEdF/2uQ58MLoN0jVA4nrwnOU7TVriTfuR2ggV0OueDEdCv0f27/TDEJKITw+vl2c
+         X9eJHC4Z6ZZC594uHVV1hjOQpMWfai3gaKh2m+Map4HqjdepflZHEKdAbyCzC0gpr14j
+         MBKxodujMzGU+ZAD48XZM8Gx6heyNRAfAjRvj9Z2FUJNpiG/EVBOcsd+KbZYw2BG6Rnw
+         t5+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=F6U6du2cLEW6hsEFJ/YlMHhYAq991XScHIIikwh94ck=;
-        b=lbgJgIh58wNXh+XcQteRuJrl02w14Qs8UjgOrJ1gbyVBFW0olY1FYASNb9r41LxvXA
-         DsKfVIOYiOT84C262PEZoheLLUJ9p76QLplAsu9Dtvu9AazU1u7OtCPQ1seRr9s+auHM
-         E0Nuhn7tT7pjm5ebFxnlXZRky8ku+cqhkVIK4eUd1Yrwy6BWWM5GYONdI5jb+BRr0Xgd
-         PypeEZePxK75Zvkw4KrLCPFbs7a7iFu4rbVmjMMFQRFyUb3yVJaQIfD1MYVWOZlOPUcX
-         VHC3lw4GxBGHrdSINOHIcUHqkiX+zcb76gcUvlEgPk8L5q8Ja+aRI7jmItoOp83opBz1
-         dp6Q==
-X-Gm-Message-State: AOAM533gbpHsRSSwg5qOl8mEFWRuLLXrcGCPOlly03hr3NZwSwxG3URi
-        Di5pvNh8wiNLZv3Ah2NqtkzsEA==
-X-Google-Smtp-Source: ABdhPJzRUz7YIJkc5rXRh4EaTG+LenxNZrmqTf7CVLD+POjSpAcpZFSCLy+UvmQirb+yuYnlUSpq1g==
-X-Received: by 2002:adf:fcc5:: with SMTP id f5mr41966929wrs.60.1593798126416;
-        Fri, 03 Jul 2020 10:42:06 -0700 (PDT)
+        bh=rg3aFGb8OfRKBHM94n8q4FN1ZasqFE+4EzVqNDg7yKc=;
+        b=g7TvKwtq9/6XgZJatafPifCb/U23qafDWEjVFDlIKMJvy1qs/A81x+YYRQ/dRJIFsz
+         1WT9IjapdQ6NuRHaLkkvqoK2FgdqK+fQABir6wDQw9AFgj9j18o91q6xf6sRu1ayR+qw
+         HH8nRmWThW0HtNLQRfpxGOE0dERbVycQHolt/lJHIXnRdjrmvPF8Qwahq9csSQCSd+a6
+         7ibtGpH0sZjoJXdjjXljgudqTz9esSsDIRgeIeqWs+R1/vI1YDf62cav4gzGDfQ/f6Pa
+         Jw+RUuI0Nsst1CGvoVcFLpAifaCha/r0xeV1UytMfaLmxPVV6Is0GEItZ1fOlQUNPTrs
+         pkGg==
+X-Gm-Message-State: AOAM531dTBTRCiy1sXpFQyUZy+KyitY+CXZqWNUIDY9oWYxaNXfCGDAN
+        +HOgU7lijyKF9ksFG+v7YqrkkA==
+X-Google-Smtp-Source: ABdhPJy+9vIk0iVFK825nCyPVCUC0qAi9muP8YyXvlu55JUrNIhVbPA9fpJn844SKSTCo2SOUdiiIg==
+X-Received: by 2002:a7b:c5c1:: with SMTP id n1mr39360654wmk.21.1593798127542;
+        Fri, 03 Jul 2020 10:42:07 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id x11sm13625799wmc.26.2020.07.03.10.42.05
+        by smtp.gmail.com with ESMTPSA id x11sm13625799wmc.26.2020.07.03.10.42.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Jul 2020 10:42:05 -0700 (PDT)
+        Fri, 03 Jul 2020 10:42:06 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Lee Jones <lee.jones@linaro.org>,
-        Johan Hovold <johan@kernel.org>,
-        David Glance <davidgsf@sourceforge.net>,
-        Juergen Stuber <stuber@loria.fr>
-Subject: [PATCH 06/30] usb: misc: adutux: Demote obvious misuse of kerneldoc to standard comment blocks
-Date:   Fri,  3 Jul 2020 18:41:24 +0100
-Message-Id: <20200703174148.2749969-7-lee.jones@linaro.org>
+        Peter Chen <Peter.Chen@nxp.com>,
+        David Lopo <dlopo@chipidea.mips.com>
+Subject: [PATCH 07/30] usb: chipidea: core: Document hw_port_test_set()'s missing 'ci' argument
+Date:   Fri,  3 Jul 2020 18:41:25 +0100
+Message-Id: <20200703174148.2749969-8-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200703174148.2749969-1-lee.jones@linaro.org>
 References: <20200703174148.2749969-1-lee.jones@linaro.org>
@@ -68,54 +67,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No attempt has been made to document any of the functions here.
-
 Fixes the following W=1 kernel build warning(s):
 
- drivers/usb/misc/adutux.c:117: warning: Function parameter or member 'dev' not described in 'adu_abort_transfers'
- drivers/usb/misc/adutux.c:653: warning: Function parameter or member 'interface' not described in 'adu_probe'
- drivers/usb/misc/adutux.c:653: warning: Function parameter or member 'id' not described in 'adu_probe'
- drivers/usb/misc/adutux.c:762: warning: Function parameter or member 'interface' not described in 'adu_disconnect'
+ drivers/usb/chipidea/core.c:163: warning: Function parameter or member 'ci' not described in 'hw_port_test_set'
 
-Cc: Johan Hovold <johan@kernel.org>
-Cc: David Glance <davidgsf@sourceforge.net>
-Cc: Juergen Stuber <stuber@loria.fr>
+Cc: Peter Chen <Peter.Chen@nxp.com>
+Cc: David Lopo <dlopo@chipidea.mips.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/usb/misc/adutux.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/usb/chipidea/core.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/usb/misc/adutux.c b/drivers/usb/misc/adutux.c
-index d8d157c4c271d..a7eefe11f31aa 100644
---- a/drivers/usb/misc/adutux.c
-+++ b/drivers/usb/misc/adutux.c
-@@ -109,7 +109,7 @@ static inline void adu_debug_data(struct device *dev, const char *function,
- 		function, size, size, data);
- }
+diff --git a/drivers/usb/chipidea/core.c b/drivers/usb/chipidea/core.c
+index 9a7c53d09ab4f..1016596532a9e 100644
+--- a/drivers/usb/chipidea/core.c
++++ b/drivers/usb/chipidea/core.c
+@@ -155,6 +155,7 @@ u32 hw_read_intr_status(struct ci_hdrc *ci)
  
--/**
-+/*
-  * adu_abort_transfers
-  *      aborts transfers and frees associated data structures
-  */
-@@ -642,7 +642,7 @@ static struct usb_class_driver adu_class = {
- 	.minor_base = ADU_MINOR_BASE,
- };
- 
--/**
-+/*
-  * adu_probe
+ /**
+  * hw_port_test_set: writes port test mode (execute without interruption)
++ * @ci: the controller
+  * @mode: new value
   *
-  * Called by the usb core when a new device is connected that it thinks
-@@ -753,7 +753,7 @@ static int adu_probe(struct usb_interface *interface,
- 	return retval;
- }
- 
--/**
-+/*
-  * adu_disconnect
-  *
-  * Called by the usb core when the device is removed from the system.
+  * This function returns an error code
 -- 
 2.25.1
 
