@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19B942148B3
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 22:46:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E0C32148B6
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 22:47:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727914AbgGDUqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Jul 2020 16:46:46 -0400
-Received: from smtp90.iad3b.emailsrvr.com ([146.20.161.90]:54027 "EHLO
+        id S1727991AbgGDUqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Jul 2020 16:46:54 -0400
+Received: from smtp90.iad3b.emailsrvr.com ([146.20.161.90]:53526 "EHLO
         smtp90.iad3b.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726922AbgGDUqp (ORCPT
+        by vger.kernel.org with ESMTP id S1727908AbgGDUqr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Jul 2020 16:46:45 -0400
+        Sat, 4 Jul 2020 16:46:47 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=g001.emailsrvr.com;
-        s=20190322-9u7zjiwi; t=1593895105;
-        bh=5ney8wcxoUhFdBKeDod8XwHkj/JVxEXiRTZE1kuy1qg=;
+        s=20190322-9u7zjiwi; t=1593895106;
+        bh=lr75QF2in2wcP8L+bTcON/4LbYMnulpodkBOzczEdWI=;
         h=From:To:Subject:Date:From;
-        b=Y8nQNkZf158j1IGCkq1nUI4RkRqBZ0+rcD5dwm071St6+qtXiCWUwXIgbHd8hXn//
-         fOHF1cuCnbJdQReUcnTqCJewXe9z7wrB/eh2UwxOSSWdg4QGTBGozTxYeTM5Z88wTO
-         OaHKVPYDsWih0akvxT0DkiA5Y3e4WnGXG799z18U=
+        b=sV+GXz01AXRsv3bM23s4w+JNvMnJwCXp0Zh0tTR5g6YGa9RA7m7qTssJfOe3+kBBw
+         i19fA0dJmmEyJqDbxSysbjeSF1TZtjJ8X638cQEGvXadj1YzkLhp26C/39+Ycv0flg
+         rUdl6ZhfgvWX/1wqqwsld9po2hUPquhsoT9KCCoM=
 X-Auth-ID: dpreed@deepplum.com
-Received: by smtp20.relay.iad3b.emailsrvr.com (Authenticated sender: dpreed-AT-deepplum.com) with ESMTPSA id 93375A00CD;
-        Sat,  4 Jul 2020 16:38:24 -0400 (EDT)
+Received: by smtp20.relay.iad3b.emailsrvr.com (Authenticated sender: dpreed-AT-deepplum.com) with ESMTPSA id 7D7C5A00D3;
+        Sat,  4 Jul 2020 16:38:25 -0400 (EDT)
 From:   "David P. Reed" <dpreed@deepplum.com>
 To:     Sean Christopherson <sean.j.christopherson@intel.com>
 Cc:     "David P. Reed" <dpreed@deepplum.com>,
@@ -41,36 +41,72 @@ Cc:     "David P. Reed" <dpreed@deepplum.com>,
         Jann Horn <jannh@google.com>,
         Dave Hansen <dave.hansen@linux.intel.com>,
         LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 0/3] Fix undefined operation VMXOFF during reboot and crash
-Date:   Sat,  4 Jul 2020 16:38:06 -0400
-Message-Id: <20200704203809.76391-1-dpreed@deepplum.com>
+Subject: [PATCH v3 1/3] Correct asm VMXOFF side effects
+Date:   Sat,  4 Jul 2020 16:38:07 -0400
+Message-Id: <20200704203809.76391-2-dpreed@deepplum.com>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200629214956.GA12962@linux.intel.com>
+In-Reply-To: <20200704203809.76391-1-dpreed@deepplum.com>
 References: <20200629214956.GA12962@linux.intel.com>
+ <20200704203809.76391-1-dpreed@deepplum.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Classification-ID: 64370b40-6b65-46c7-a817-521193c95a46-1-1
+X-Classification-ID: 64370b40-6b65-46c7-a817-521193c95a46-2-1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-At the request of Sean Christopherson, the original patch was split
-into three patches, each fixing a distinct issue related to the original
-bug, of a hang due to VMXOFF causing an undefined operation fault
-when the kernel reboots with CR4.VMXE set. The combination of
-the patches is the complete fix to the reported bug, and a lurking
-error in asm side effects.
+Tell gcc that VMXOFF instruction clobbers condition codes
+and memory when executed.
+Also, correct original comments to remove kernel-doc syntax
+per Randy Dunlap's request.
 
-David P. Reed (3):
-  Correct asm VMXOFF side effects
-  Fix undefined operation fault that can hang a cpu on crash or panic
-  Force all cpus to exit VMX root operation on crash/panic reliably
+Suggested-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: David P. Reed <dpreed@deepplum.com>
+---
+ arch/x86/include/asm/virtext.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
- arch/x86/include/asm/virtext.h | 24 ++++++++++++++++--------
- arch/x86/kernel/reboot.c       | 20 +++++++-------------
- 2 files changed, 23 insertions(+), 21 deletions(-)
-
+diff --git a/arch/x86/include/asm/virtext.h b/arch/x86/include/asm/virtext.h
+index 9aad0e0876fb..0ede8d04535a 100644
+--- a/arch/x86/include/asm/virtext.h
++++ b/arch/x86/include/asm/virtext.h
+@@ -30,7 +30,7 @@ static inline int cpu_has_vmx(void)
+ }
+ 
+ 
+-/** Disable VMX on the current CPU
++/* Disable VMX on the current CPU
+  *
+  * vmxoff causes a undefined-opcode exception if vmxon was not run
+  * on the CPU previously. Only call this function if you know VMX
+@@ -38,7 +38,7 @@ static inline int cpu_has_vmx(void)
+  */
+ static inline void cpu_vmxoff(void)
+ {
+-	asm volatile ("vmxoff");
++	asm volatile ("vmxoff" ::: "cc", "memory");
+ 	cr4_clear_bits(X86_CR4_VMXE);
+ }
+ 
+@@ -47,7 +47,7 @@ static inline int cpu_vmx_enabled(void)
+ 	return __read_cr4() & X86_CR4_VMXE;
+ }
+ 
+-/** Disable VMX if it is enabled on the current CPU
++/* Disable VMX if it is enabled on the current CPU
+  *
+  * You shouldn't call this if cpu_has_vmx() returns 0.
+  */
+@@ -57,7 +57,7 @@ static inline void __cpu_emergency_vmxoff(void)
+ 		cpu_vmxoff();
+ }
+ 
+-/** Disable VMX if it is supported and enabled on the current CPU
++/* Disable VMX if it is supported and enabled on the current CPU
+  */
+ static inline void cpu_emergency_vmxoff(void)
+ {
 -- 
 2.26.2
 
