@@ -2,89 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6532214784
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 18:46:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87EA421479D
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 19:10:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727120AbgGDQqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Jul 2020 12:46:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60318 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726643AbgGDQqf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Jul 2020 12:46:35 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9EB7C20724;
-        Sat,  4 Jul 2020 16:46:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593881195;
-        bh=jx6BcDQqoU5gzBE7O7So04LZrR1uSY7zCUAFC7GLsnc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Kd7eQUoNpcwZURqEHe3xfxO7zG0rQd1U+UnAneN4giuCjZkKUdgdZwIzsbXouK5AC
-         v6zNivIxziVX/pQfqCKsiokJQwEanb+FDvu30haMbfl06wKo4J9ShJ2q2uHAB5qE2G
-         3HLee4Bne0wq2XHdSPYkRbQ2xmtJEBvbvy2OSV7Q=
-Date:   Sat, 4 Jul 2020 17:46:30 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Rob Herring <robh+dt@kernel.org>, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] iio: magnetometer: bmc150: Add proper compatible
- for BMM150
-Message-ID: <20200704174630.381cc2d3@archlinux>
-In-Reply-To: <20200629100537.20365-2-krzk@kernel.org>
-References: <20200629100537.20365-1-krzk@kernel.org>
-        <20200629100537.20365-2-krzk@kernel.org>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1727105AbgGDRK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Jul 2020 13:10:27 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:8334 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726639AbgGDRK1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 4 Jul 2020 13:10:27 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 064H1CVw181054;
+        Sat, 4 Jul 2020 13:10:21 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 322kcw1ybu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 04 Jul 2020 13:10:20 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 064H676w014967;
+        Sat, 4 Jul 2020 17:10:19 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma02fra.de.ibm.com with ESMTP id 322hd80hkh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 04 Jul 2020 17:10:19 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 064H7fO965077590
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 4 Jul 2020 17:07:41 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A9C6AA404D;
+        Sat,  4 Jul 2020 17:09:01 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9A2C7A4040;
+        Sat,  4 Jul 2020 17:09:00 +0000 (GMT)
+Received: from swastik.ibm.com (unknown [9.65.197.207])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Sat,  4 Jul 2020 17:09:00 +0000 (GMT)
+From:   Nayna Jain <nayna@linux.ibm.com>
+To:     linuxppc-dev@ozlabs.org
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Mimi Zohar <zohar@linux.ibm.com>, linux-kernel@vger.kernel.org,
+        Nayna Jain <nayna@linux.ibm.com>
+Subject: [PATCH] powerpc/pseries: detect secure and trusted boot state of the system.
+Date:   Sat,  4 Jul 2020 13:08:55 -0400
+Message-Id: <1593882535-21368-1-git-send-email-nayna@linux.ibm.com>
+X-Mailer: git-send-email 1.8.3.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-04_12:2020-07-02,2020-07-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 suspectscore=1
+ spamscore=0 cotscore=-2147483648 mlxlogscore=791 mlxscore=0 malwarescore=0
+ clxscore=1011 bulkscore=0 phishscore=0 lowpriorityscore=0
+ priorityscore=1501 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2007040119
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 29 Jun 2020 12:05:37 +0200
-Krzysztof Kozlowski <krzk@kernel.org> wrote:
+The device-tree property to check secure and trusted boot state is
+different for guests(pseries) compared to baremetal(powernv).
 
-> The compatible for BMM150 should not have "_magn" suffix because, unlike
-> two other Bosch devices, it is only a magnetometer.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+This patch updates the existing is_ppc_secureboot_enabled() and
+is_ppc_trustedboot_enabled() function to add support for pseries.
 
-Both applied to the togreg branch of iio.git and pushed out
-as testing for the autobuilders to ignore them.
+Signed-off-by: Nayna Jain <nayna@linux.ibm.com>
+---
+ arch/powerpc/kernel/secure_boot.c | 31 +++++++++++++++++++++++++------
+ 1 file changed, 25 insertions(+), 6 deletions(-)
 
-Thanks for tidying this up.
-
-Jonathan
-
-> 
-> ---
-> 
-> Changes since v2:
-> 1. Add compatible only for bmm150.
-> 
-> Changes since v1:
-> 1. New patch.
-> ---
->  drivers/iio/magnetometer/bmc150_magn_i2c.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/iio/magnetometer/bmc150_magn_i2c.c b/drivers/iio/magnetometer/bmc150_magn_i2c.c
-> index fb45b63c56e4..876e96005e33 100644
-> --- a/drivers/iio/magnetometer/bmc150_magn_i2c.c
-> +++ b/drivers/iio/magnetometer/bmc150_magn_i2c.c
-> @@ -58,7 +58,8 @@ MODULE_DEVICE_TABLE(i2c, bmc150_magn_i2c_id);
->  static const struct of_device_id bmc150_magn_of_match[] = {
->  	{ .compatible = "bosch,bmc150_magn" },
->  	{ .compatible = "bosch,bmc156_magn" },
-> -	{ .compatible = "bosch,bmm150_magn" },
-> +	{ .compatible = "bosch,bmm150_magn" }, /* deprecated compatible */
-> +	{ .compatible = "bosch,bmm150" },
->  	{ }
->  };
->  MODULE_DEVICE_TABLE(of, bmc150_magn_of_match);
+diff --git a/arch/powerpc/kernel/secure_boot.c b/arch/powerpc/kernel/secure_boot.c
+index 4b982324d368..43fc6607c7a5 100644
+--- a/arch/powerpc/kernel/secure_boot.c
++++ b/arch/powerpc/kernel/secure_boot.c
+@@ -6,6 +6,7 @@
+ #include <linux/types.h>
+ #include <linux/of.h>
+ #include <asm/secure_boot.h>
++#include <asm/machdep.h>
+ 
+ static struct device_node *get_ppc_fw_sb_node(void)
+ {
+@@ -23,11 +24,20 @@ bool is_ppc_secureboot_enabled(void)
+ {
+ 	struct device_node *node;
+ 	bool enabled = false;
++	const u32 *secureboot;
+ 
+-	node = get_ppc_fw_sb_node();
+-	enabled = of_property_read_bool(node, "os-secureboot-enforcing");
++	if (machine_is(powernv)) {
++		node = get_ppc_fw_sb_node();
++		enabled =
++		    of_property_read_bool(node, "os-secureboot-enforcing");
++		of_node_put(node);
++	}
+ 
+-	of_node_put(node);
++	if (machine_is(pseries)) {
++		secureboot = of_get_property(of_root, "ibm,secure-boot", NULL);
++		if (secureboot)
++			enabled = (*secureboot > 1) ? true : false;
++	}
+ 
+ 	pr_info("Secure boot mode %s\n", enabled ? "enabled" : "disabled");
+ 
+@@ -38,11 +48,20 @@ bool is_ppc_trustedboot_enabled(void)
+ {
+ 	struct device_node *node;
+ 	bool enabled = false;
++	const u32 *trustedboot;
+ 
+-	node = get_ppc_fw_sb_node();
+-	enabled = of_property_read_bool(node, "trusted-enabled");
++	if (machine_is(powernv)) {
++		node = get_ppc_fw_sb_node();
++		enabled = of_property_read_bool(node, "trusted-enabled");
++		of_node_put(node);
++	}
+ 
+-	of_node_put(node);
++	if (machine_is(pseries)) {
++		trustedboot =
++		    of_get_property(of_root, "ibm,trusted-boot", NULL);
++		if (trustedboot)
++			enabled = (*trustedboot > 0) ? true : false;
++	}
+ 
+ 	pr_info("Trusted boot mode %s\n", enabled ? "enabled" : "disabled");
+ 
+-- 
+2.18.1
 
