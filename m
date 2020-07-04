@@ -2,32 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B25B214631
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 15:47:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0658F214642
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 16:03:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728072AbgGDNq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Jul 2020 09:46:59 -0400
-Received: from relay6-d.mail.gandi.net ([217.70.183.198]:59243 "EHLO
-        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726643AbgGDNq7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Jul 2020 09:46:59 -0400
-X-Originating-IP: 82.66.179.123
-Received: from localhost (unknown [82.66.179.123])
-        (Authenticated sender: repk@triplefau.lt)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 406D1C0003;
-        Sat,  4 Jul 2020 13:46:54 +0000 (UTC)
-From:   Remi Pommarel <repk@triplefau.lt>
-To:     Johannes Berg <johannes@sipsolutions.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Bob Copeland <me@bobcopeland.com>, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Remi Pommarel <repk@triplefau.lt>
-Subject: [PATCH] mac80211: mesh: Free pending skb when destroying a mpath
-Date:   Sat,  4 Jul 2020 15:54:19 +0200
-Message-Id: <20200704135419.27703-1-repk@triplefau.lt>
-X-Mailer: git-send-email 2.26.2
+        id S1728132AbgGDODE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Jul 2020 10:03:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51506 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728086AbgGDODD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 4 Jul 2020 10:03:03 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8842A21707;
+        Sat,  4 Jul 2020 14:03:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593871383;
+        bh=URxPKIHQL7SkJXwUkdzXDCnSnjDxxoHjfZVsU7XPN0c=;
+        h=From:To:Cc:Subject:Date:From;
+        b=lNw6k9kfAw5gsYe5uk+i6vpwYxW8sPZrQ3zJh/DdSYq5sBWnedFlAfvfydfdhzSd/
+         5pD7iKApSSjp/0/TIeK4LE8RucNAdRx2g8DQbmGxgcmX0CicZUyaelPskm+wN3Udro
+         ecZ+W68QdR9MKn44hzZwB/Q+1X+dQevcyOI6Dnlw=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     viro@zeniv.linux.org.uk, mtk.manpages@gmail.com, shuah@kernel.org,
+        linux-api@vger.kernel.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-man@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH 0/3] readfile(2): a new syscall to make open/read/close faster
+Date:   Sat,  4 Jul 2020 16:02:46 +0200
+Message-Id: <20200704140250.423345-1-gregkh@linuxfoundation.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -35,65 +40,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A mpath object can hold reference on a list of skb that are waiting for
-mpath resolution to be sent. When destroying a mpath this skb list
-should be cleaned up in order to not leak memory.
+Here is a tiny new syscall, readfile, that makes it simpler to read
+small/medium sized files all in one shot, no need to do open/read/close.
+This is especially helpful for tools that poke around in procfs or
+sysfs, making a little bit of a less system load than before, especially
+as syscall overheads go up over time due to various CPU bugs being
+addressed.
 
-Fixing that kind of leak:
+There are 4 patches in this series, the first 3 are against the kernel
+tree, adding the syscall logic, wiring up the syscall, and adding some
+tests for it.
 
-unreferenced object 0xffff0000181c9300 (size 1088):
-  comm "openvpn", pid 1782, jiffies 4295071698 (age 80.416s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 f9 80 36 00 00 00 00 00  ..........6.....
-    02 00 07 40 00 00 00 00 00 00 00 00 00 00 00 00  ...@............
-  backtrace:
-    [<000000004bc6a443>] kmem_cache_alloc+0x1a4/0x2f0
-    [<000000002caaef13>] sk_prot_alloc.isra.39+0x34/0x178
-    [<00000000ceeaa916>] sk_alloc+0x34/0x228
-    [<00000000ca1f1d04>] inet_create+0x198/0x518
-    [<0000000035626b1c>] __sock_create+0x134/0x328
-    [<00000000a12b3a87>] __sys_socket+0xb0/0x158
-    [<00000000ff859f23>] __arm64_sys_socket+0x40/0x58
-    [<00000000263486ec>] el0_svc_handler+0xd0/0x1a0
-    [<0000000005b5157d>] el0_svc+0x8/0xc
-unreferenced object 0xffff000012973a40 (size 216):
-  comm "openvpn", pid 1782, jiffies 4295082137 (age 38.660s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 c0 06 16 00 00 ff ff 00 93 1c 18 00 00 ff ff  ................
-  backtrace:
-    [<000000004bc6a443>] kmem_cache_alloc+0x1a4/0x2f0
-    [<0000000023c8c8f9>] __alloc_skb+0xc0/0x2b8
-    [<000000007ad950bb>] alloc_skb_with_frags+0x60/0x320
-    [<00000000ef90023a>] sock_alloc_send_pskb+0x388/0x3c0
-    [<00000000104fb1a3>] sock_alloc_send_skb+0x1c/0x28
-    [<000000006919d2dd>] __ip_append_data+0xba4/0x11f0
-    [<0000000083477587>] ip_make_skb+0x14c/0x1a8
-    [<0000000024f3d592>] udp_sendmsg+0xaf0/0xcf0
-    [<000000005aabe255>] inet_sendmsg+0x5c/0x80
-    [<000000008651ea08>] __sys_sendto+0x15c/0x218
-    [<000000003505c99b>] __arm64_sys_sendto+0x74/0x90
-    [<00000000263486ec>] el0_svc_handler+0xd0/0x1a0
-    [<0000000005b5157d>] el0_svc+0x8/0xc
+The last patch is agains the man-pages project, adding a tiny man page
+to try to describe the new syscall.
 
-Fixes: 2bdaf386f99c (mac80211: mesh: move path tables into if_mesh)
-Signed-off-by: Remi Pommarel <repk@triplefau.lt>
----
- net/mac80211/mesh_pathtbl.c | 1 +
- 1 file changed, 1 insertion(+)
+Greg Kroah-Hartman (3):
+  readfile: implement readfile syscall
+  arch: wire up the readfile syscall
+  selftests: add readfile(2) selftests
 
-diff --git a/net/mac80211/mesh_pathtbl.c b/net/mac80211/mesh_pathtbl.c
-index 117519bf33d6..aca608ae313f 100644
---- a/net/mac80211/mesh_pathtbl.c
-+++ b/net/mac80211/mesh_pathtbl.c
-@@ -521,6 +521,7 @@ static void mesh_path_free_rcu(struct mesh_table *tbl,
- 	del_timer_sync(&mpath->timer);
- 	atomic_dec(&sdata->u.mesh.mpaths);
- 	atomic_dec(&tbl->entries);
-+	mesh_path_flush_pending(mpath);
- 	kfree_rcu(mpath, rcu);
- }
- 
+ arch/alpha/kernel/syscalls/syscall.tbl        |   1 +
+ arch/arm/tools/syscall.tbl                    |   1 +
+ arch/arm64/include/asm/unistd.h               |   2 +-
+ arch/arm64/include/asm/unistd32.h             |   2 +
+ arch/ia64/kernel/syscalls/syscall.tbl         |   1 +
+ arch/m68k/kernel/syscalls/syscall.tbl         |   1 +
+ arch/microblaze/kernel/syscalls/syscall.tbl   |   1 +
+ arch/mips/kernel/syscalls/syscall_n32.tbl     |   1 +
+ arch/mips/kernel/syscalls/syscall_n64.tbl     |   1 +
+ arch/mips/kernel/syscalls/syscall_o32.tbl     |   1 +
+ arch/parisc/kernel/syscalls/syscall.tbl       |   1 +
+ arch/powerpc/kernel/syscalls/syscall.tbl      |   1 +
+ arch/s390/kernel/syscalls/syscall.tbl         |   1 +
+ arch/sh/kernel/syscalls/syscall.tbl           |   1 +
+ arch/sparc/kernel/syscalls/syscall.tbl        |   1 +
+ arch/x86/entry/syscalls/syscall_32.tbl        |   1 +
+ arch/x86/entry/syscalls/syscall_64.tbl        |   1 +
+ arch/xtensa/kernel/syscalls/syscall.tbl       |   1 +
+ fs/open.c                                     |  50 +++
+ include/linux/syscalls.h                      |   2 +
+ include/uapi/asm-generic/unistd.h             |   4 +-
+ tools/testing/selftests/Makefile              |   1 +
+ tools/testing/selftests/readfile/.gitignore   |   3 +
+ tools/testing/selftests/readfile/Makefile     |   7 +
+ tools/testing/selftests/readfile/readfile.c   | 285 +++++++++++++++++
+ .../selftests/readfile/readfile_speed.c       | 301 ++++++++++++++++++
+ 26 files changed, 671 insertions(+), 2 deletions(-)
+ create mode 100644 tools/testing/selftests/readfile/.gitignore
+ create mode 100644 tools/testing/selftests/readfile/Makefile
+ create mode 100644 tools/testing/selftests/readfile/readfile.c
+ create mode 100644 tools/testing/selftests/readfile/readfile_speed.c
+
 -- 
-2.26.2
+2.27.0
 
