@@ -2,17 +2,17 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 182952147D0
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 19:49:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C08E2147D3
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 19:49:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727834AbgGDRtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Jul 2020 13:49:14 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:40540 "EHLO
+        id S1727894AbgGDRtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Jul 2020 13:49:18 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:40548 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726643AbgGDRtM (ORCPT
+        with ESMTP id S1726739AbgGDRtN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Jul 2020 13:49:12 -0400
-Date:   Sat, 04 Jul 2020 17:49:08 -0000
+        Sat, 4 Jul 2020 13:49:13 -0400
+Date:   Sat, 04 Jul 2020 17:49:09 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1593884950;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -20,12 +20,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=TyT8hkQlhVSj6KK8bDYHft0bbGZKUG7cdvK5Ql2oBEk=;
-        b=Cp+/esIZ1NBLvhXGIhXL4XCo8lg4r4WZ/Iuk9PfZJJaXLvIlX57JQY+OvexePMrOvbPgXm
-        ABK9ssFB8b7V9JZMH7j3xR1KANRm/VDNvEOARor5ZrBLlcxKpkLgFEclQT6wazKyyrKm8L
-        d5zoTWbjf5cXVUGqDBiGt1xtHb4IdY+sajxx7b7PqpdxW2nGm75Imnrch8uZf0JeIfvKqv
-        dgpQgLLrMw8HiGNw1aokf0/nanM/2TEbNttq1MiwC8lQFt7OZjV3VcOz22PQmf0LKRRnQf
-        b31VsjZWprpL3IVegbgW/uvyYyym2hB4LlpYt+OYYbfG+gEWv1c1sGwKVLWEmw==
+        bh=TpLP0mh+Au9bFNc6nKf4AsXTb4Yu473K/TjbX/v+joM=;
+        b=PumsAjBR+KBvLfpvTX4prg6D2YAwbZDt53dcN8cVasdwkzJ1sEKR1AVT2fdogrIddcy8YH
+        +rDHI5MB0icbUW7dNgTcH4BMuimkXgshkJH4DD3Q3P7yYKmDbPKyo0Lgb1ZPHmtMW60z+6
+        qiI/WB44rYLiDwTrWI15BaydnUPVDsGBnzHmq98Q+29mGhkW4CMHJndrYS5TcL1e6VVWmx
+        qIRHseoNOIExe1DgYll605H/coTZSrQyL3AEO7pt5sgVEj+6Pq2i/JjJOKLHrnqRZ9mUrM
+        OGWpJI3mWJEtmQBOsI25iQ80pGV/+o0s3ui8seCgHdgGGPZaEs6EV4BphVnFfw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1593884950;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -33,21 +33,21 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=TyT8hkQlhVSj6KK8bDYHft0bbGZKUG7cdvK5Ql2oBEk=;
-        b=JPxhG4RxpDTkhyU805vAlyGjka1batxkqxegjWicD+YbpRYZgvTwWQ3PRi6HHd34uEFqAP
-        rkn1kaUjN8lle1CQ==
+        bh=TpLP0mh+Au9bFNc6nKf4AsXTb4Yu473K/TjbX/v+joM=;
+        b=yb2LA+YBz5v0a+AGNqAo0+RWP1UE8ysH6G+FWH3kNSsXnXczWAPH2uvaI/r0NOn6InaSpq
+        +/1SLZwKwczedhBA==
 From:   "tip-bot2 for Andy Lutomirski" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/ldt: Disable 16-bit segments on Xen PV
+Subject: [tip: x86/urgent] x86/entry/xen: Route #DB correctly on Xen PV
 Cc:     Andy Lutomirski <luto@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <92b2975459dfe5929ecf34c3896ad920bd9e3f2d.1593795633.git.luto@kernel.org>
-References: <92b2975459dfe5929ecf34c3896ad920bd9e3f2d.1593795633.git.luto@kernel.org>
+In-Reply-To: <4163e733cce0b41658e252c6c6b3464f33fdff17.1593795633.git.luto@kernel.org>
+References: <4163e733cce0b41658e252c6c6b3464f33fdff17.1593795633.git.luto@kernel.org>
 MIME-Version: 1.0
-Message-ID: <159388494850.4006.16547568050354289956.tip-bot2@tip-bot2>
+Message-ID: <159388494977.4006.13168066916301921485.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -59,88 +59,189 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/urgent branch of tip:
 
-Commit-ID:     cc801833a171163edb6385425349ba8903bd1b20
-Gitweb:        https://git.kernel.org/tip/cc801833a171163edb6385425349ba8903bd1b20
+Commit-ID:     f41f0824224eb12ad84de8972962dd54be5abe3b
+Gitweb:        https://git.kernel.org/tip/f41f0824224eb12ad84de8972962dd54be5abe3b
 Author:        Andy Lutomirski <luto@kernel.org>
-AuthorDate:    Fri, 03 Jul 2020 10:02:57 -07:00
+AuthorDate:    Fri, 03 Jul 2020 10:02:55 -07:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Sat, 04 Jul 2020 19:47:26 +02:00
+CommitterDate: Sat, 04 Jul 2020 19:47:25 +02:00
 
-x86/ldt: Disable 16-bit segments on Xen PV
+x86/entry/xen: Route #DB correctly on Xen PV
 
-Xen PV doesn't implement ESPFIX64, so they don't work right.  Disable
-them.  Also print a warning the first time anyone tries to use a
-16-bit segment on a Xen PV guest that would otherwise allow it
-to help people diagnose this change in behavior.
+On Xen PV, #DB doesn't use IST. It still needs to be correctly routed
+depending on whether it came from user or kernel mode.
 
-This gets us closer to having all x86 selftests pass on Xen PV.
+Get rid of DECLARE/DEFINE_IDTENTRY_XEN -- it was too hard to follow the
+logic.  Instead, route #DB and NMI through DECLARE/DEFINE_IDTENTRY_RAW on
+Xen, and do the right thing for #DB.  Also add more warnings to the
+exc_debug* handlers to make this type of failure more obvious.
 
+This fixes various forms of corruption that happen when usermode
+triggers #DB on Xen PV.
+
+Fixes: 4c0dcd8350a0 ("x86/entry: Implement user mode C entry points for #DB and #MCE")
 Signed-off-by: Andy Lutomirski <luto@kernel.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/92b2975459dfe5929ecf34c3896ad920bd9e3f2d.1593795633.git.luto@kernel.org
+Link: https://lkml.kernel.org/r/4163e733cce0b41658e252c6c6b3464f33fdff17.1593795633.git.luto@kernel.org
 
 ---
- arch/x86/kernel/ldt.c | 35 ++++++++++++++++++++++++++++++++++-
- 1 file changed, 34 insertions(+), 1 deletion(-)
+ arch/x86/include/asm/idtentry.h | 24 ++++++------------------
+ arch/x86/kernel/traps.c         | 12 ++++++++++++
+ arch/x86/xen/enlighten_pv.c     | 28 ++++++++++++++++++++++++----
+ arch/x86/xen/xen-asm_64.S       |  5 ++---
+ 4 files changed, 44 insertions(+), 25 deletions(-)
 
-diff --git a/arch/x86/kernel/ldt.c b/arch/x86/kernel/ldt.c
-index 8748321..34e918a 100644
---- a/arch/x86/kernel/ldt.c
-+++ b/arch/x86/kernel/ldt.c
-@@ -29,6 +29,8 @@
- #include <asm/mmu_context.h>
- #include <asm/pgtable_areas.h>
+diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
+index cf51c50..94333ac 100644
+--- a/arch/x86/include/asm/idtentry.h
++++ b/arch/x86/include/asm/idtentry.h
+@@ -398,18 +398,6 @@ __visible noinstr void func(struct pt_regs *regs,			\
+ #define DEFINE_IDTENTRY_DEBUG		DEFINE_IDTENTRY_IST
+ #define DEFINE_IDTENTRY_DEBUG_USER	DEFINE_IDTENTRY_NOIST
  
-+#include <xen/xen.h>
+-/**
+- * DECLARE_IDTENTRY_XEN - Declare functions for XEN redirect IDT entry points
+- * @vector:	Vector number (ignored for C)
+- * @func:	Function name of the entry point
+- *
+- * Used for xennmi and xendebug redirections. No DEFINE as this is all ASM
+- * indirection magic.
+- */
+-#define DECLARE_IDTENTRY_XEN(vector, func)				\
+-	asmlinkage void xen_asm_exc_xen##func(void);			\
+-	asmlinkage void asm_exc_xen##func(void)
+-
+ #else /* !__ASSEMBLY__ */
+ 
+ /*
+@@ -469,10 +457,6 @@ __visible noinstr void func(struct pt_regs *regs,			\
+ /* No ASM code emitted for NMI */
+ #define DECLARE_IDTENTRY_NMI(vector, func)
+ 
+-/* XEN NMI and DB wrapper */
+-#define DECLARE_IDTENTRY_XEN(vector, func)				\
+-	idtentry vector asm_exc_xen##func exc_##func has_error_code=0
+-
+ /*
+  * ASM code to emit the common vector entry stubs where each stub is
+  * packed into 8 bytes.
+@@ -570,11 +554,15 @@ DECLARE_IDTENTRY_MCE(X86_TRAP_MC,	exc_machine_check);
+ 
+ /* NMI */
+ DECLARE_IDTENTRY_NMI(X86_TRAP_NMI,	exc_nmi);
+-DECLARE_IDTENTRY_XEN(X86_TRAP_NMI,	nmi);
++#ifdef CONFIG_XEN_PV
++DECLARE_IDTENTRY_RAW(X86_TRAP_NMI,	xenpv_exc_nmi);
++#endif
+ 
+ /* #DB */
+ DECLARE_IDTENTRY_DEBUG(X86_TRAP_DB,	exc_debug);
+-DECLARE_IDTENTRY_XEN(X86_TRAP_DB,	debug);
++#ifdef CONFIG_XEN_PV
++DECLARE_IDTENTRY_RAW(X86_TRAP_DB,	xenpv_exc_debug);
++#endif
+ 
+ /* #DF */
+ DECLARE_IDTENTRY_DF(X86_TRAP_DF,	exc_double_fault);
+diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
+index f9727b9..c17f9b5 100644
+--- a/arch/x86/kernel/traps.c
++++ b/arch/x86/kernel/traps.c
+@@ -866,6 +866,12 @@ static __always_inline void exc_debug_kernel(struct pt_regs *regs,
+ 	trace_hardirqs_off_finish();
+ 
+ 	/*
++	 * If something gets miswired and we end up here for a user mode
++	 * #DB, we will malfunction.
++	 */
++	WARN_ON_ONCE(user_mode(regs));
 +
- /* This is a multiple of PAGE_SIZE. */
- #define LDT_SLOT_STRIDE (LDT_ENTRIES * LDT_ENTRY_SIZE)
++	/*
+ 	 * Catch SYSENTER with TF set and clear DR_STEP. If this hit a
+ 	 * watchpoint at the same time then that will still be handled.
+ 	 */
+@@ -883,6 +889,12 @@ static __always_inline void exc_debug_kernel(struct pt_regs *regs,
+ static __always_inline void exc_debug_user(struct pt_regs *regs,
+ 					   unsigned long dr6)
+ {
++	/*
++	 * If something gets miswired and we end up here for a kernel mode
++	 * #DB, we will malfunction.
++	 */
++	WARN_ON_ONCE(!user_mode(regs));
++
+ 	idtentry_enter_user(regs);
+ 	instrumentation_begin();
  
-@@ -543,6 +545,37 @@ static int read_default_ldt(void __user *ptr, unsigned long bytecount)
- 	return bytecount;
+diff --git a/arch/x86/xen/enlighten_pv.c b/arch/x86/xen/enlighten_pv.c
+index acc49fa..0d68948 100644
+--- a/arch/x86/xen/enlighten_pv.c
++++ b/arch/x86/xen/enlighten_pv.c
+@@ -598,6 +598,26 @@ static void xen_write_ldt_entry(struct desc_struct *dt, int entrynum,
  }
  
-+static bool allow_16bit_segments(void)
+ #ifdef CONFIG_X86_64
++void noist_exc_debug(struct pt_regs *regs);
++
++DEFINE_IDTENTRY_RAW(xenpv_exc_nmi)
 +{
-+	if (!IS_ENABLED(CONFIG_X86_16BIT))
-+		return false;
-+
-+#ifdef CONFIG_XEN_PV
-+	/*
-+	 * Xen PV does not implement ESPFIX64, which means that 16-bit
-+	 * segments will not work correctly.  Until either Xen PV implements
-+	 * ESPFIX64 and can signal this fact to the guest or unless someone
-+	 * provides compelling evidence that allowing broken 16-bit segments
-+	 * is worthwhile, disallow 16-bit segments under Xen PV.
-+	 */
-+	if (xen_pv_domain()) {
-+		static DEFINE_MUTEX(xen_warning);
-+		static bool warned;
-+
-+		mutex_lock(&xen_warning);
-+		if (!warned) {
-+			pr_info("Warning: 16-bit segments do not work correctly in a Xen PV guest\n");
-+			warned = true;
-+		}
-+		mutex_unlock(&xen_warning);
-+
-+		return false;
-+	}
-+#endif
-+
-+	return true;
++	/* On Xen PV, NMI doesn't use IST.  The C part is the sane as native. */
++	exc_nmi(regs);
 +}
 +
- static int write_ldt(void __user *ptr, unsigned long bytecount, int oldmode)
- {
- 	struct mm_struct *mm = current->mm;
-@@ -574,7 +607,7 @@ static int write_ldt(void __user *ptr, unsigned long bytecount, int oldmode)
- 		/* The user wants to clear the entry. */
- 		memset(&ldt, 0, sizeof(ldt));
- 	} else {
--		if (!IS_ENABLED(CONFIG_X86_16BIT) && !ldt_info.seg_32bit) {
-+		if (!ldt_info.seg_32bit && !allow_16bit_segments()) {
- 			error = -EINVAL;
- 			goto out;
- 		}
++DEFINE_IDTENTRY_RAW(xenpv_exc_debug)
++{
++	/*
++	 * There's no IST on Xen PV, but we still need to dispatch
++	 * to the correct handler.
++	 */
++	if (user_mode(regs))
++		noist_exc_debug(regs);
++	else
++		exc_debug(regs);
++}
++
+ struct trap_array_entry {
+ 	void (*orig)(void);
+ 	void (*xen)(void);
+@@ -609,18 +629,18 @@ struct trap_array_entry {
+ 	.xen		= xen_asm_##func,		\
+ 	.ist_okay	= ist_ok }
+ 
+-#define TRAP_ENTRY_REDIR(func, xenfunc, ist_ok) {	\
++#define TRAP_ENTRY_REDIR(func, ist_ok) {		\
+ 	.orig		= asm_##func,			\
+-	.xen		= xen_asm_##xenfunc,		\
++	.xen		= xen_asm_xenpv_##func,		\
+ 	.ist_okay	= ist_ok }
+ 
+ static struct trap_array_entry trap_array[] = {
+-	TRAP_ENTRY_REDIR(exc_debug, exc_xendebug,	true  ),
++	TRAP_ENTRY_REDIR(exc_debug,			true  ),
+ 	TRAP_ENTRY(exc_double_fault,			true  ),
+ #ifdef CONFIG_X86_MCE
+ 	TRAP_ENTRY(exc_machine_check,			true  ),
+ #endif
+-	TRAP_ENTRY_REDIR(exc_nmi, exc_xennmi,		true  ),
++	TRAP_ENTRY_REDIR(exc_nmi,			true  ),
+ 	TRAP_ENTRY(exc_int3,				false ),
+ 	TRAP_ENTRY(exc_overflow,			false ),
+ #ifdef CONFIG_IA32_EMULATION
+diff --git a/arch/x86/xen/xen-asm_64.S b/arch/x86/xen/xen-asm_64.S
+index e1e1c7e..aab1d99 100644
+--- a/arch/x86/xen/xen-asm_64.S
++++ b/arch/x86/xen/xen-asm_64.S
+@@ -29,10 +29,9 @@ _ASM_NOKPROBE(xen_\name)
+ .endm
+ 
+ xen_pv_trap asm_exc_divide_error
+-xen_pv_trap asm_exc_debug
+-xen_pv_trap asm_exc_xendebug
++xen_pv_trap asm_xenpv_exc_debug
+ xen_pv_trap asm_exc_int3
+-xen_pv_trap asm_exc_xennmi
++xen_pv_trap asm_xenpv_exc_nmi
+ xen_pv_trap asm_exc_overflow
+ xen_pv_trap asm_exc_bounds
+ xen_pv_trap asm_exc_invalid_op
