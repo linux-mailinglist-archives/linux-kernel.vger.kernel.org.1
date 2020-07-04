@@ -2,111 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF6AB2148AB
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 22:32:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19B942148B3
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 22:46:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727951AbgGDUcy convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 4 Jul 2020 16:32:54 -0400
-Received: from relay12.mail.gandi.net ([217.70.178.232]:44577 "EHLO
-        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726895AbgGDUcy (ORCPT
+        id S1727914AbgGDUqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Jul 2020 16:46:46 -0400
+Received: from smtp90.iad3b.emailsrvr.com ([146.20.161.90]:54027 "EHLO
+        smtp90.iad3b.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726922AbgGDUqp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Jul 2020 16:32:54 -0400
-Received: from sogo6.sd4.0x35.net (sogo6.sd4.0x35.net [10.200.201.56])
-        (Authenticated sender: kerneldev@karsmulder.nl)
-        by relay12.mail.gandi.net (Postfix) with ESMTPA id 1EAAE200003;
-        Sat,  4 Jul 2020 20:32:50 +0000 (UTC)
-From:   "Kars Mulder" <kerneldev@karsmulder.nl>
-In-Reply-To: <CAHp75Ve4O+OmVttjhtKepFWwZLU6tFMx5vNpPVJdB58mcLFm3w@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-X-Forward: 127.0.0.1
-Date:   Sat, 04 Jul 2020 22:32:50 +0200
-Cc:     "David Laight" <David.Laight@aculab.com>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        "Pavel Machek" <pavel@ucw.cz>,
-        =?utf-8?q?linux-kernel=40vger=2Ekernel=2Eorg?= 
-        <linux-kernel@vger.kernel.org>,
-        "Kai-Heng Feng" <kai.heng.feng@canonical.com>
-To:     "Andy Shevchenko" <andy.shevchenko@gmail.com>
+        Sat, 4 Jul 2020 16:46:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=g001.emailsrvr.com;
+        s=20190322-9u7zjiwi; t=1593895105;
+        bh=5ney8wcxoUhFdBKeDod8XwHkj/JVxEXiRTZE1kuy1qg=;
+        h=From:To:Subject:Date:From;
+        b=Y8nQNkZf158j1IGCkq1nUI4RkRqBZ0+rcD5dwm071St6+qtXiCWUwXIgbHd8hXn//
+         fOHF1cuCnbJdQReUcnTqCJewXe9z7wrB/eh2UwxOSSWdg4QGTBGozTxYeTM5Z88wTO
+         OaHKVPYDsWih0akvxT0DkiA5Y3e4WnGXG799z18U=
+X-Auth-ID: dpreed@deepplum.com
+Received: by smtp20.relay.iad3b.emailsrvr.com (Authenticated sender: dpreed-AT-deepplum.com) with ESMTPSA id 93375A00CD;
+        Sat,  4 Jul 2020 16:38:24 -0400 (EDT)
+From:   "David P. Reed" <dpreed@deepplum.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     "David P. Reed" <dpreed@deepplum.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Allison Randal <allison@lohutok.net>,
+        Enrico Weigelt <info@metux.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Martin Molnar <martin.molnar.programming@gmail.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Jann Horn <jannh@google.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3 0/3] Fix undefined operation VMXOFF during reboot and crash
+Date:   Sat,  4 Jul 2020 16:38:06 -0400
+Message-Id: <20200704203809.76391-1-dpreed@deepplum.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200629214956.GA12962@linux.intel.com>
+References: <20200629214956.GA12962@linux.intel.com>
 MIME-Version: 1.0
-Message-ID: <613b-5f00e780-a9-10028e00@255553491>
-Subject: =?utf-8?q?Re=3A?= Writing to a const =?utf-8?q?pointer=3A?= is this 
- supposed to =?utf-8?q?happen=3F?=
-User-Agent: SOGoMail 4.3.2
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
+X-Classification-ID: 64370b40-6b65-46c7-a817-521193c95a46-1-1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Saturday, July 04, 2020 16:39 CEST, Andy Shevchenko wrote: 
-> > I've searched for a function that parses an int from a string and
-> > stores a pointer to the end; I can find some function simple_strtoul
-> > that matches this criterion, but it's documented as
-> >
-> >     "This function has caveats. Please use kstrtoul instead."
-> >
-> > ... and kstrtoul does not store a pointer to the end. The documentation
-> > of kstrtoul describes simple_strtoul as obsolete as well.
-> 
-> 
->  Where? We need to fix that, because using simple_strto*() is fairly legal
-> in cases like this, but "has caveats".
+At the request of Sean Christopherson, the original patch was split
+into three patches, each fixing a distinct issue related to the original
+bug, of a hang due to VMXOFF causing an undefined operation fault
+when the kernel reboots with CR4.VMXE set. The combination of
+the patches is the complete fix to the reported bug, and a lurking
+error in asm side effects.
 
-In lib/vsprintf.c, the comments before the function's implementation say:
+David P. Reed (3):
+  Correct asm VMXOFF side effects
+  Fix undefined operation fault that can hang a cpu on crash or panic
+  Force all cpus to exit VMX root operation on crash/panic reliably
 
-    /**
-     * simple_strtoul - convert a string to an unsigned long
-     * @cp: The start of the string
-     * @endp: A pointer to the end of the parsed string will be placed here
-     * @base: The number base to use
-     *
-     * This function has caveats. Please use kstrtoul instead.
-     */
+ arch/x86/include/asm/virtext.h | 24 ++++++++++++++++--------
+ arch/x86/kernel/reboot.c       | 20 +++++++-------------
+ 2 files changed, 23 insertions(+), 21 deletions(-)
 
-Many variants upon kstrtoul, such as kstrtoull, defined in lib/kstrtox.c,
-describe the simple_strtoull function as obsolete:
-
-    /**
-     * kstrtoull - convert a string to an unsigned long long
-     * [...]
-     *
-     * Returns 0 on success, -ERANGE on overflow and -EINVAL on parsing error.
-     * Used as a replacement for the obsolete simple_strtoull. Return code must
-     * be checked.
-     */
-
-I seem to have been slightly inaccurate about my claim that "kstrtoul"
-describes simple_strtoul as "obsolete" though, because in the specific
-case of kstrtoul, include/linux/kernel.h only says:
-
-    /**
-     * kstrtoul - convert a string to an unsigned long
-     * [...]
-     *
-     * Returns 0 on success, -ERANGE on overflow and -EINVAL on parsing error.
-     * Used as a replacement for the simple_strtoull. Return code must be checked.
-    */
-
-(Also, there may be a documentation error here: all kstrto* functions in
-kstrtox.c and kernel.h describe themselves as replacements of simple_strtoull.
-E.g. kstrtol and kstrtoul also describe themselves as replacements of
-simple_strtoull rather than as a replacements of simple_strtol and
-simple_strtoul respectively.)
-
-By the way, I found the documentation of the caveat somewhere in
-include/linux/kernel.h:
-
-    /*
-     * Use kstrto<foo> instead.
-     *
-     * NOTE: simple_strto<foo> does not check for the range overflow and,
-     *	 depending on the input, may give interesting results.
-     *
-     * Use these functions if and only if you cannot use kstrto<foo>, because
-     * the conversion ends on the first non-digit character, which may be far
-     * beyond the supported range. It might be useful to parse the strings like
-     * 10x50 or 12:21 without altering original string or temporary buffer in use.
-     * Keep in mind above caveat.
-     */
+-- 
+2.26.2
 
