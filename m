@@ -2,95 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5125B2145BD
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 14:10:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E85E2145C4
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 14:14:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727855AbgGDMJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Jul 2020 08:09:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45058 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727108AbgGDMJy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Jul 2020 08:09:54 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0BDFC061794
-        for <linux-kernel@vger.kernel.org>; Sat,  4 Jul 2020 05:09:54 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id s10so35445270wrw.12
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Jul 2020 05:09:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=q6/l6gbVd+4D3HhCjT+3idiCPEiasxsjgaH+81aczFE=;
-        b=b9IRhHrzCgesVbckByioxGPz8FlQfkEkVf1NAa+4MF96GTovlwurUQsUsys1b5Ts4U
-         ZoMO+/4NqCZOuk9mZuFSTIzqIvoCiTdOlygnvwJC2XxNUu38v/5vQyJP/L8OftsGaf54
-         xmBDeimTuhrrVORWJCPd8tsTVsan5nSaASspLFjclUJqabNc3IgaNOO5zaMvfLGn1SgM
-         qNz06vmFzuCymAFXe7A3ZxuFxVP7+iQFduXf12UNDfmfj4Z30Kr31ASgbLhIfdYanhER
-         sKJnedGfLrmRiXrJw6KpcQmPi1syhPyDV5ZMEH4UMi0Dcupi5RHeRSDW8WmJtiOO2ffD
-         0Evw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=q6/l6gbVd+4D3HhCjT+3idiCPEiasxsjgaH+81aczFE=;
-        b=bG5Fw86RpuDzgEskalP/Md6x2bg7TT9BANqSjUS86LGspUFPhQsrYPJ8eTR+nL922O
-         LiaS50hyR0g9iUQtp0i/DRkMW7dB4i3uIc5oJD4duW4KxTITjjIpc5beY0UqC7+begRB
-         yfmSGvR1TGu/fZDYZUu0xkLed5zw64G+WddAB08TmGUR7Hp3Y8EzCGGrB0HWOFrDXGVI
-         n37sA5D+sCmMfb4uF7Q+Cyl42rRCC8Ey9rwOVSZO58SaryWYA+qJWjKqiLSvstLkR+iB
-         2hJ71pV+hqgfpJaSEjDZIeD/VwNOSfxNAdSYJlMZTVaDr0D0uvVzgi3OPRTBdAzQ409G
-         pD8Q==
-X-Gm-Message-State: AOAM530K5bLj5FYxfUMniq9/qMzVpaCZLDozlWme4Duan9J4Rx4HyeqG
-        aL53wGwrPrWjbwIxoY2x0o9UIaUNkWtRpKtzjB5wCIon
-X-Google-Smtp-Source: ABdhPJwB9vVrA8j1YWUIpC/xHJschuvr8/Zcw6GKLce+xK6MBdOXF17mnIqhhLFLxsor2Wf7JWJi6AF5eWi6o8zAgcQ=
-X-Received: by 2002:adf:ec90:: with SMTP id z16mr40439204wrn.52.1593864593453;
- Sat, 04 Jul 2020 05:09:53 -0700 (PDT)
+        id S1727884AbgGDMOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Jul 2020 08:14:09 -0400
+Received: from mout.gmx.net ([212.227.17.20]:38363 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726667AbgGDMOI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 4 Jul 2020 08:14:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1593864784;
+        bh=ntqtRXriEvlTQZX7E9tgu9xYlAp6y6JNcyiMi9Omzoc=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=JUkMJUai3QzWrXqWeQMRITAMx7R/NnfqOVFG3I/eAblyTfZcqnZfDhhN5uxnrYnj6
+         PD1dk/Zthh5vvRXSTl3SFcGggwHsyXTIVwbtuZGpZ0e9YE94oqnk3xTsAXEznlDJ4l
+         H7U4NCPMEs+io6untnzXIA+3BRGJFaqLDlvUpC7s=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from ubuntu ([79.150.73.70]) by mail.gmx.com (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MLzBp-1k9V0T04DB-00HwEN; Sat, 04
+ Jul 2020 14:13:04 +0200
+Date:   Sat, 4 Jul 2020 14:12:36 +0200
+From:   Oscar Carter <oscar.carter@gmx.com>
+To:     Helge Deller <deller@gmx.de>
+Cc:     Oscar Carter <oscar.carter@gmx.com>,
+        Kees Cook <keescook@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
+        kernel-hardening@lists.openwall.com, linux-parisc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] parisc/kernel/ftrace: Remove function callback casts
+Message-ID: <20200704121236.GA3143@ubuntu>
+References: <20200627134348.30601-1-oscar.carter@gmx.com>
+ <97375269-f6f1-6157-c8a8-3b925232f00c@gmx.de>
 MIME-Version: 1.0
-References: <20200702200727.239348-1-kernel@esmil.dk> <CANBLGczQ51LQCiubvu2HTYrdnW2q_6GY_dfVNrV6M+dnRh1KQw@mail.gmail.com>
- <CAJ+HfNh38DwrwKrDi-S_3rzyF+=B4N3kXfAOoMEnXOyoq3LkSg@mail.gmail.com> <CANBLGcxf_vZ6b75Nm52-p0W-1h+Yft77gW+j+U5Wa-9uUo=pxw@mail.gmail.com>
-In-Reply-To: <CANBLGcxf_vZ6b75Nm52-p0W-1h+Yft77gW+j+U5Wa-9uUo=pxw@mail.gmail.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Sat, 4 Jul 2020 14:09:42 +0200
-Message-ID: <CAJ+HfNhe=esLaRfDXfp93+GYSr+nGEoOswn=puggBPF8ikGw6g@mail.gmail.com>
-Subject: Re: [RFC] riscv: Add jump-label implementation
-To:     Emil Renner Berthing <kernel@esmil.dk>
-Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <97375269-f6f1-6157-c8a8-3b925232f00c@gmx.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Provags-ID: V03:K1:/qNr8bYfFud/XeUItqhmgkKVnnfxe46IOngSaoy6F0Qcr6uUaIc
+ Tgljscv4oMiCP4kLp3uYe06SW9rXv5lRQMjr9C0q6HbdQanooc+Z07KPmfppUHLRZNG99n2
+ GPyUSy5I5OAZttmQrI1+V3i34fhg6yOS704KXOiebV+gtwcorRToTiEyVpGRBPqu7ytjhFw
+ q+zGA+Z+KRwc26UH0t85A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:co0hVsy69TI=:ANUkg5pptO4ssqtSkfsBjf
+ SSolZ8XyQPs+cBQnZcJZ/p5PnlE8RJivOzLU/FrI/AUQa4xlX70G3zFEYK985+2TxWNcbUYHU
+ PZSGx9pSTm7spZqJRJ5IbVVSTqg47tp11PMpSOOtvYSnIJhkrj+0fFlcoqLYa49SFdD5iVIQR
+ 97RCnqhjwnIGzXEmNFSrtIlpIbfdwp+EI9V2mTihRRXgIuKMvsZO4Z2Go/HnB+efD4J0dV2BK
+ oaIdzjrB5oOjpXb83PCH7BFtASQNXuraqLazHEJiwdQ7SXW0pcPSGtPcDHfY480Vf2dZvBIvc
+ uqicLGn5vdGJGAXsK30mLLsBmOdmLB0U4CJevkk/NolXL7n72VNF3Y+HzOoMDktfERGeaA9hx
+ Gajsduj26xTYXN8ItPqAvMfgs0PB1jvpedoLcmKHQ1Wt9SwqMT5jdeUZ2VsfiyNfAd3cRVvh6
+ EYbiZwYsApSemwB803jsmAgHcVePGyTEBxi6g6c2RZhYaZgu/hkFMGrPrkSfR2CmcqeFHrqdh
+ fA178SJ1iHqqvrBtEqHTVVs93T+825EJ8NPx5OHQxo8FddAlj93oG4cBOaekbWFpK31QxSrEN
+ uTSV1cEg+SO/NODCR5Hbi1Pdso4DnsqkkyxesbM2+DqYGKfCqNOJzvajt8O++B9tT89W/kSpu
+ AcMC/0IJH/tdjXvPzVw6XgYKzZqjnqROr76YUoHDEP2u+gPz6c9/vF96Q7K7DpHkPGNcsq3p1
+ e9vNO5SBNs5Xzd8GP4hP0dhuh7SfUhTC7KdnmgUNypFF3RcOCVO2w5NFFe6fEFMDbP+rM1Ft3
+ +AXoogsSqr1YAaIpoICgpy6my+28a6YhbQn/tW8ghLGoKSRJdsYcVCQTRIUQdL8hUC/Hi41mK
+ VPbfdtDl9B/hmMBzAXv5LIkW0DFDeB76KxD7YRyx34T3r+5EeHADmSS9YCnZIolMR2YrYaF5W
+ Nt8jFni+/NfOUA/5fGY7IOoOzHHlFFpskZgIPY7bVTFYIj8Eu+rgrrqHfPSpBZ6j6BtXsz1BK
+ uIhDEDCOFo2eIlq6fKMRXGWhplcUg2jqY4+xQ/fHiZz793u+wgNV6Ora7fm3H2Lcgojewl6c5
+ NBhlkf2baB1n0u7OEoYSjnM3mhRzNta5QepPsHI0WA3VpHWB1H5ENzJ2rhAdrnF2yChHMPx2j
+ 1eYDzUuvUOQVC9ubFi5Oxkmlcf1sn4uykGFiaKSXAj4SguoxDh0bC9hmsGTerT0ItUNDNzN0F
+ Ba77Texv2mtuEph8g
 Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 4 Jul 2020 at 13:35, Emil Renner Berthing <kernel@esmil.dk> wrote:
+On Sat, Jun 27, 2020 at 10:09:40PM +0200, Helge Deller wrote:
+> On 27.06.20 15:43, Oscar Carter wrote:
+> > In an effort to enable -Wcast-function-type in the top-level Makefile =
+to
+> > support Control Flow Integrity builds, remove all the function callbac=
+k
+> > casts.
+> >
+> > To do this remove the cast to a function pointer type in the compariso=
+n
+> > statement and add to the right and left operand a cast to unsigned lon=
+g
+> > type. This can be done since the comparison is against function addres=
+s
+> > (these operands are not function calls).
 >
-> On Sat, 4 Jul 2020 at 13:23, Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com=
-> wrote:
-[...]
-> > Indeed. And nice work! Can you respin the patch with the 32b fix
-> > above, and also without the RFC tag?
->
-> Yes, of course. If you don't mind I'll wait a bit and let this collect
-> a bit more comments.
->
+> On some architectures (namely ia64, ppc64 and parisc64) function pointer=
+s
+> actually refer to function descriptors, which in turn point to the real
+> function address. The compiler usually takes care of such comparism.
+> That said, casting to "unsigned long" might break this...
 
-Certainly!
+Ok, thanks for the clarification. Today I have learned about function
+descriptors.
 
-> > Curious; Why is [branch ? 1 : 0] needed when coding the boolean into
-> > the key pointer (arm64 is just [branch]). Different encoding of
-> > booleans (branch in this case)?
+> > Signed-off-by: Oscar Carter <oscar.carter@gmx.com>
+> > ---
+> >  arch/parisc/kernel/ftrace.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/arch/parisc/kernel/ftrace.c b/arch/parisc/kernel/ftrace.c
+> > index 1df0f67ed667..86b49a5fc049 100644
+> > --- a/arch/parisc/kernel/ftrace.c
+> > +++ b/arch/parisc/kernel/ftrace.c
+> > @@ -64,7 +64,7 @@ void notrace __hot ftrace_function_trampoline(unsign=
+ed long parent,
+> >  				function_trace_op, regs);
+> >
+> >  #ifdef CONFIG_FUNCTION_GRAPH_TRACER
+> > -	if (ftrace_graph_return !=3D (trace_func_graph_ret_t) ftrace_stub ||
+> > +	if ((unsigned long)ftrace_graph_return !=3D (unsigned long)ftrace_st=
+ub ||
 >
-> No, that was just me being unsure exactly how bool works when used as
-> an index. After reading up on it it seems the original code is right,
-> you can actually trust that _Bool is either 0 or 1. I'll fix it in the
-> next version. Thanks!
->
+> Untested, but maybe better use:
+> 	dereference_function_descriptor(ftrace_graph_return) !=3D
+> 		dereference_function_descriptor(ftrace_stub)
 
-Cool! Thanks for clearing that up for me!
+Thanks for point me to the right direction about this theme. I will do a
+new version and I will resend.
 
-Cheers,
-Bj=C3=B6rn
+> ?
+> Helge
+
+Regards,
+Oscar Carter
