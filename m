@@ -2,177 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 970C02147C5
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 19:42:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 182952147D0
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 19:49:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727818AbgGDRmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Jul 2020 13:42:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726643AbgGDRml (ORCPT
+        id S1727834AbgGDRtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Jul 2020 13:49:14 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:40540 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726643AbgGDRtM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Jul 2020 13:42:41 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13AEAC061794;
-        Sat,  4 Jul 2020 10:42:41 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id dm19so24361295edb.13;
-        Sat, 04 Jul 2020 10:42:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=s+WjqQhLnrBI9EZzuDqm8X/T4+BDu4Hvw8Pd6T2GP/0=;
-        b=bGJue6eFu/VA4Z82viDrc/TOb1htLvh2SOgSDczNVO7YU7sdfkKY28+EU8afJih10q
-         0N8YaAE/AmpRF6dp640fwh2aIEClOc56Zzav7IhwuCCIQMXGV6if3oeuYbKBWQu+ttlB
-         QSXNrork0ZteL5K5kxxc7oaaLoWxaN+xARlgoWRL6Cuv64rfoHyjMh980DsyvOLaynjR
-         K0UgWIugk+qbiApkZC9cKu2BfujP19Eu3jtymgrqJhYJR56xXgK8r/UgIHYnVhr8myrp
-         bd3Bb7hC2Gjq8H1hERABJXPPmgiFQpOD12As09QpFCPPWdVI1psRm4k36AKXbOJ5vNxk
-         EXYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=s+WjqQhLnrBI9EZzuDqm8X/T4+BDu4Hvw8Pd6T2GP/0=;
-        b=tVbzpDiLNbvt02kkKtppX6qjFIYSRFmUFtBJnKUxuMD1zMKBwqGnbu2TIkjwgBxwNH
-         BnLeA3CC0eS3ZWfzOtDdFTM6P+VeXfrFIXIZyiY1bQ91h84xA1A75pP6w5LwyZgId4n0
-         SA+gg3QoRjPwi8g6Z1IS+ugq0mUOJEKZWWL2Jl3O6tWrcyB59vkYaTk69bTzkXOjEeO5
-         J2c29jLYeWkQysSod38t7FofguD5nWO8IXwIuYRyqyDbfzAsSuNGM6KGbFroJjxpX3S0
-         SW7ft20N+hzXBcC/VHFrtqKQ/9rnxX6fAzCh8IAy0n7atDWm7m1neqCFxGoRm9Pv9EP4
-         04eA==
-X-Gm-Message-State: AOAM5334wtRk4ecCH7SGmCpQhO4wY/q70Wr6mYyXzpHwL5QfXbLDlmDx
-        HddsPAVAeoKIlNMkPxilB+4=
-X-Google-Smtp-Source: ABdhPJy0vTlYXslUqGyC33YSMiLi8X29/Je6nWzHxrmFVdZsP3IEJRoSrq69lLr/vXKxSdAkeSt+Cg==
-X-Received: by 2002:a05:6402:2c2:: with SMTP id b2mr46631661edx.184.1593884559571;
-        Sat, 04 Jul 2020 10:42:39 -0700 (PDT)
-Received: from localhost.localdomain (p200300f137244200428d5cfffeb99db8.dip0.t-ipconnect.de. [2003:f1:3724:4200:428d:5cff:feb9:9db8])
-        by smtp.googlemail.com with ESMTPSA id f17sm17671650edj.32.2020.07.04.10.42.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 04 Jul 2020 10:42:39 -0700 (PDT)
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-To:     amelie.delaunay@st.com
-Cc:     alexandre.torgue@st.com, balbi@kernel.org,
-        devicetree@vger.kernel.org, fabrice.gasnier@st.com,
-        gregkh@linuxfoundation.org, hminas@synopsys.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-usb@vger.kernel.org, mcoquelin.stm32@gmail.com,
-        robh+dt@kernel.org
-Subject: RE: [PATCH 1/3] usb: dwc2: override PHY input signals with usb role switch support
-Date:   Sat,  4 Jul 2020 19:42:19 +0200
-Message-Id: <20200704174219.612060-1-martin.blumenstingl@googlemail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200616140717.28465-2-amelie.delaunay@st.com>
-References: <20200616140717.28465-2-amelie.delaunay@st.com>
+        Sat, 4 Jul 2020 13:49:12 -0400
+Date:   Sat, 04 Jul 2020 17:49:08 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1593884950;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TyT8hkQlhVSj6KK8bDYHft0bbGZKUG7cdvK5Ql2oBEk=;
+        b=Cp+/esIZ1NBLvhXGIhXL4XCo8lg4r4WZ/Iuk9PfZJJaXLvIlX57JQY+OvexePMrOvbPgXm
+        ABK9ssFB8b7V9JZMH7j3xR1KANRm/VDNvEOARor5ZrBLlcxKpkLgFEclQT6wazKyyrKm8L
+        d5zoTWbjf5cXVUGqDBiGt1xtHb4IdY+sajxx7b7PqpdxW2nGm75Imnrch8uZf0JeIfvKqv
+        dgpQgLLrMw8HiGNw1aokf0/nanM/2TEbNttq1MiwC8lQFt7OZjV3VcOz22PQmf0LKRRnQf
+        b31VsjZWprpL3IVegbgW/uvyYyym2hB4LlpYt+OYYbfG+gEWv1c1sGwKVLWEmw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1593884950;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TyT8hkQlhVSj6KK8bDYHft0bbGZKUG7cdvK5Ql2oBEk=;
+        b=JPxhG4RxpDTkhyU805vAlyGjka1batxkqxegjWicD+YbpRYZgvTwWQ3PRi6HHd34uEFqAP
+        rkn1kaUjN8lle1CQ==
+From:   "tip-bot2 for Andy Lutomirski" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/ldt: Disable 16-bit segments on Xen PV
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <92b2975459dfe5929ecf34c3896ad920bd9e3f2d.1593795633.git.luto@kernel.org>
+References: <92b2975459dfe5929ecf34c3896ad920bd9e3f2d.1593795633.git.luto@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <159388494850.4006.16547568050354289956.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Amelie,
+The following commit has been merged into the x86/urgent branch of tip:
 
-thank you for this patch - I am hoping that it will help us on Amlogic
-Meson8, Meson8b, Meson8m2 and GXBB SoCs as well.
-On these SoCs the ID detection is performed by the PHY IP and needs to
-be polled.
-I think usb_role_switch is the perfect framework for this on dwc2 side.
-For the PHY driver I'm going to implement the cable state using the
-extcon framework and then having a new usb-conn-extcon driver. This is
-just to give you an overview why I'm interested in this.
+Commit-ID:     cc801833a171163edb6385425349ba8903bd1b20
+Gitweb:        https://git.kernel.org/tip/cc801833a171163edb6385425349ba8903bd1b20
+Author:        Andy Lutomirski <luto@kernel.org>
+AuthorDate:    Fri, 03 Jul 2020 10:02:57 -07:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Sat, 04 Jul 2020 19:47:26 +02:00
 
-[...]
-> +static int dwc2_drd_role_sw_set(struct usb_role_switch *sw, enum usb_role role)
-> +{
-> +	struct dwc2_hsotg *hsotg = usb_role_switch_get_drvdata(sw);
-> +	unsigned long flags;
-> +
-> +	/* Skip session not in line with dr_mode */
-> +	if ((role == USB_ROLE_DEVICE && hsotg->dr_mode == USB_DR_MODE_HOST) ||
-> +	    (role == USB_ROLE_HOST && hsotg->dr_mode == USB_DR_MODE_PERIPHERAL))
-> +		return -EINVAL;
-> +
-> +	/* Skip session if core is in test mode */
-> +	if (role == USB_ROLE_NONE && hsotg->test_mode) {
-> +		dev_dbg(hsotg->dev, "Core is in test mode\n");
-> +		return -EBUSY;
-> +	}
-> +
-> +	spin_lock_irqsave(&hsotg->lock, flags);
-due to this spin_lock_irqsave() ...
+x86/ldt: Disable 16-bit segments on Xen PV
 
-> +	if (role == USB_ROLE_HOST) {
-> +		if (dwc2_ovr_avalid(hsotg, true))
-> +			goto unlock;
-> +
-> +		if (hsotg->dr_mode == USB_DR_MODE_OTG)
-> +			/*
-> +			 * This will raise a Connector ID Status Change
-> +			 * Interrupt - connID A
-> +			 */
-> +			dwc2_force_mode(hsotg, true);
-... we cannot sleep in here. the call flow is:
-dwc2_drd_role_sw_set
-  spin_lock_irqsave
-  dwc2_force_mode
-    dwc2_wait_for_mode
-      usleep_range
+Xen PV doesn't implement ESPFIX64, so they don't work right.  Disable
+them.  Also print a warning the first time anyone tries to use a
+16-bit segment on a Xen PV guest that would otherwise allow it
+to help people diagnose this change in behavior.
 
-> +	} else if (role == USB_ROLE_DEVICE) {
-> +		if (dwc2_ovr_bvalid(hsotg, true))
-> +			goto unlock;
-> +
-> +		if (hsotg->dr_mode == USB_DR_MODE_OTG)
-> +			/*
-> +			 * This will raise a Connector ID Status Change
-> +			 * Interrupt - connID B
-> +			 */
-> +			dwc2_force_mode(hsotg, false);
-(same sleeping issue here)
+This gets us closer to having all x86 selftests pass on Xen PV.
 
-[...]
-+int dwc2_drd_init(struct dwc2_hsotg *hsotg)
-+{
-+	struct usb_role_switch_desc role_sw_desc = {0};
-+	struct usb_role_switch *role_sw;
-+	int ret;
-+
-+	if (!device_property_read_bool(hsotg->dev, "usb-role-switch"))
-+		return 0;
-should we also return early here if dr_mode != "otg"?
+Signed-off-by: Andy Lutomirski <luto@kernel.org>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/92b2975459dfe5929ecf34c3896ad920bd9e3f2d.1593795633.git.luto@kernel.org
 
-[...]
-@@ -532,6 +534,13 @@ static int dwc2_driver_probe(struct platform_device *dev)
- 		dwc2_writel(hsotg, ggpio, GGPIO);
- 	}
+---
+ arch/x86/kernel/ldt.c | 35 ++++++++++++++++++++++++++++++++++-
+ 1 file changed, 34 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/kernel/ldt.c b/arch/x86/kernel/ldt.c
+index 8748321..34e918a 100644
+--- a/arch/x86/kernel/ldt.c
++++ b/arch/x86/kernel/ldt.c
+@@ -29,6 +29,8 @@
+ #include <asm/mmu_context.h>
+ #include <asm/pgtable_areas.h>
  
-+	retval = dwc2_drd_init(hsotg);
-+	if (retval) {
-+		if (retval != -EPROBE_DEFER)
-+			dev_err(hsotg->dev, "failed to initialize dual-role\n");
-+		goto error_init;
-+	}
++#include <xen/xen.h>
 +
- 	if (hsotg->dr_mode != USB_DR_MODE_HOST) {
- 		retval = dwc2_gadget_init(hsotg);
- 		if (retval)
-I think dwc2_driver_probe() needs a new label (for example named
-error_drd) which then calls dwc2_drd_exit. See [0] which I have
-submitted as a patch for Linux 5.8, so it's not in usb-next yet.
-
-Also in general I think you need to submit a dt-bindings patch that
-documents the usb-role-switch property. Personally I would use
-Documentation/devicetree/bindings/usb/renesas,usb3-peri.yaml as
-reference for that.
-
-Can you please keep me Cc'ed on a v2 because I'm not subscribed to the
-linux-usb mailing list?
-I am going to test this on Amlogic SoCs - once I made "everything else"
-work I can give my Tested-by as well.
-
-
-Thank you!
-Martin
-
-
-[0] https://patchwork.kernel.org/patch/11642957/
+ /* This is a multiple of PAGE_SIZE. */
+ #define LDT_SLOT_STRIDE (LDT_ENTRIES * LDT_ENTRY_SIZE)
+ 
+@@ -543,6 +545,37 @@ static int read_default_ldt(void __user *ptr, unsigned long bytecount)
+ 	return bytecount;
+ }
+ 
++static bool allow_16bit_segments(void)
++{
++	if (!IS_ENABLED(CONFIG_X86_16BIT))
++		return false;
++
++#ifdef CONFIG_XEN_PV
++	/*
++	 * Xen PV does not implement ESPFIX64, which means that 16-bit
++	 * segments will not work correctly.  Until either Xen PV implements
++	 * ESPFIX64 and can signal this fact to the guest or unless someone
++	 * provides compelling evidence that allowing broken 16-bit segments
++	 * is worthwhile, disallow 16-bit segments under Xen PV.
++	 */
++	if (xen_pv_domain()) {
++		static DEFINE_MUTEX(xen_warning);
++		static bool warned;
++
++		mutex_lock(&xen_warning);
++		if (!warned) {
++			pr_info("Warning: 16-bit segments do not work correctly in a Xen PV guest\n");
++			warned = true;
++		}
++		mutex_unlock(&xen_warning);
++
++		return false;
++	}
++#endif
++
++	return true;
++}
++
+ static int write_ldt(void __user *ptr, unsigned long bytecount, int oldmode)
+ {
+ 	struct mm_struct *mm = current->mm;
+@@ -574,7 +607,7 @@ static int write_ldt(void __user *ptr, unsigned long bytecount, int oldmode)
+ 		/* The user wants to clear the entry. */
+ 		memset(&ldt, 0, sizeof(ldt));
+ 	} else {
+-		if (!IS_ENABLED(CONFIG_X86_16BIT) && !ldt_info.seg_32bit) {
++		if (!ldt_info.seg_32bit && !allow_16bit_segments()) {
+ 			error = -EINVAL;
+ 			goto out;
+ 		}
