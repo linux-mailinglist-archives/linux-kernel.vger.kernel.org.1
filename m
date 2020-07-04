@@ -2,176 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89AC221479E
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 19:10:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E9C82147B5
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 19:23:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727041AbgGDRKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Jul 2020 13:10:10 -0400
-Received: from relay5.mymailcheap.com ([159.100.248.207]:39053 "EHLO
-        relay5.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726669AbgGDRKJ (ORCPT
+        id S1727111AbgGDRXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Jul 2020 13:23:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36874 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726703AbgGDRXk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Jul 2020 13:10:09 -0400
-Received: from relay2.mymailcheap.com (relay2.mymailcheap.com [217.182.66.162])
-        by relay5.mymailcheap.com (Postfix) with ESMTPS id F0645262A8;
-        Sat,  4 Jul 2020 17:10:05 +0000 (UTC)
-Received: from filter2.mymailcheap.com (filter2.mymailcheap.com [91.134.140.82])
-        by relay2.mymailcheap.com (Postfix) with ESMTPS id 8A11E3EDBF;
-        Sat,  4 Jul 2020 19:10:04 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by filter2.mymailcheap.com (Postfix) with ESMTP id 6A12B2A471;
-        Sat,  4 Jul 2020 19:10:04 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
-        s=default; t=1593882604;
-        bh=Oh89PeufN+3MyJsfzfSuPCx1RHymIRgAAncoA5AuOco=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=jQPvRMERojRiKHXXS5VsZ2FdputuBBgGb/ivmH/yq4eS4XZ54BMIfx2djLrtaRrCq
-         deT2nGKg6h1b+RNYt7WuQ5opReYyw6KIyO6BJZGY/cYWoIVD9DQ6aQLWUI86w6xSaz
-         xdxtRBMUEGKSGfBFFYUV0yRZaAQZh6f/bCBmnT5U=
-X-Virus-Scanned: Debian amavisd-new at filter2.mymailcheap.com
-Received: from filter2.mymailcheap.com ([127.0.0.1])
-        by localhost (filter2.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Fj_ruD_uNVqs; Sat,  4 Jul 2020 19:10:02 +0200 (CEST)
-Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by filter2.mymailcheap.com (Postfix) with ESMTPS;
-        Sat,  4 Jul 2020 19:10:02 +0200 (CEST)
-Received: from [148.251.23.173] (ml.mymailcheap.com [148.251.23.173])
-        by mail20.mymailcheap.com (Postfix) with ESMTP id 1C63F41AE2;
-        Sat,  4 Jul 2020 17:10:01 +0000 (UTC)
-Authentication-Results: mail20.mymailcheap.com;
-        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="Ndl0uG5U";
-        dkim-atps=neutral
-AI-Spam-Status: Not processed
-Received: from ice-e5v2.lan (unknown [59.41.163.119])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 663EA41AE2;
-        Sat,  4 Jul 2020 17:09:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
-        t=1593882594; bh=Oh89PeufN+3MyJsfzfSuPCx1RHymIRgAAncoA5AuOco=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=Ndl0uG5UzmdNKSLEFghArUx2osSyHvOAXbigKPqF5aUOSyfQ9XFpBm/sJ21VzxJbL
-         Q+jlcjSY/4eOTP7TX0EKJHB+w0B+DWwL0fHEBWNnNol+Sbu8wgLFR0V9+7K4L9lp1M
-         DzwLbjhCqdqUPwjvxpRaqBBrQ7CpVToXOvMIr33U=
-Message-ID: <d2df561c8db7e11eb6937f824f483e33be1db7bc.camel@aosc.io>
-Subject: Re: [PATCH] iio: light: stk3310: add chip id for STK3311-X variant
-From:   Icenowy Zheng <icenowy@aosc.io>
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Ondrej Jirman <megous@megous.com>
-Cc:     linux-kernel@vger.kernel.org, Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Luca Weiss <luca@z3ntu.xyz>,
-        "open list:IIO SUBSYSTEM AND DRIVERS" <linux-iio@vger.kernel.org>
-Date:   Sun, 05 Jul 2020 01:09:37 +0800
-In-Reply-To: <20200704172916.7a8a7359@archlinux>
-References: <20200703194406.110855-1-megous@megous.com>
-         <20200704172916.7a8a7359@archlinux>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.0 
+        Sat, 4 Jul 2020 13:23:40 -0400
+Received: from the.earth.li (the.earth.li [IPv6:2a00:1098:86:4d:c0ff:ee:15:900d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1BCFC061794;
+        Sat,  4 Jul 2020 10:23:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=earth.li;
+         s=the; h=Content-Type:MIME-Version:Message-ID:Subject:To:From:Date:Sender:
+        Reply-To:Cc:Content-Transfer-Encoding:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=G8yXxDShVwrQA0v5h9br4pp8LoK+D/7j1foC/3SaMd0=; b=iqfnV0fXgswM+NU9tB7/k/igqY
+        NP9n+DzJ7C6kJj2L2NRdKOUqo8j6rHsEL0aj7MnPiPazV1Nx8I6H5+SvI8u/RM/Q24EAIZhwYnkX2
+        fQWScbSibNM1uo+zLJZz78GiIDtTztunonFuK/r1nhmrd55dIrKmGeFMpGJo22EhD2zKHK8kzXgaZ
+        fNvxIpLsb7rcSmf8u/a947Qvjn2wjU/rW56GyfKfjOERIRvCg94Fzl1T79/IIL80pds6mW/sndC4k
+        xk1PG0HpGnESFBsYjFZIh/1qdecXHaWlQcvi+O8zS9X3SCahSvh593D39m3FPGLHln2kunSy8/Z1S
+        wXbVsL1g==;
+Received: from noodles by the.earth.li with local (Exim 4.92)
+        (envelope-from <noodles@earth.li>)
+        id 1jrlt0-0000EO-OQ; Sat, 04 Jul 2020 18:23:34 +0100
+Date:   Sat, 4 Jul 2020 18:23:34 +0100
+From:   Jonathan McDowell <noodles@earth.li>
+To:     Elliot Berman <eberman@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] firmware: qcom_scm: Fix legacy convention SCM accessors
+Message-ID: <20200704172334.GA759@earth.li>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 1C63F41AE2
-X-Spamd-Result: default: False [-0.10 / 10.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         ARC_NA(0.00)[];
-         R_DKIM_ALLOW(0.00)[aosc.io:s=default];
-         HFILTER_HELO_BAREIP(3.00)[148.251.23.173,1];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmx.de];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         DMARC_NA(0.00)[aosc.io];
-         R_SPF_SOFTFAIL(0.00)[~all];
-         RECEIVED_SPAMHAUS_PBL(0.00)[59.41.163.119:received];
-         ML_SERVERS(-3.10)[148.251.23.173];
-         DKIM_TRACE(0.00)[aosc.io:+];
-         RCPT_COUNT_SEVEN(0.00)[8];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         ASN(0.00)[asn:24940, ipnet:148.251.0.0/16, country:DE];
-         FREEMAIL_CC(0.00)[vger.kernel.org,gmx.de,metafoo.de,pmeerw.net,z3ntu.xyz];
-         MID_RHS_MATCH_FROM(0.00)[];
-         RCVD_COUNT_TWO(0.00)[2]
-X-Rspamd-Server: mail20.mymailcheap.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-在 2020-07-04星期六的 17:29 +0100，Jonathan Cameron写道：
-> On Fri,  3 Jul 2020 21:44:05 +0200
-> Ondrej Jirman <megous@megous.com> wrote:
-> 
-> > From: Icenowy Zheng <icenowy@aosc.io>
-> > 
-> > The STK3311 chip has a variant called STK3311-X, which has a
-> > different
-> > chip id of 0x12.
-> > 
-> > Add the chip id to the driver.
-> > 
-> > Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
-> > Signed-off-by: Ondrej Jirman <megous@megous.com>
-> 
-> Given this is clearly not quite compatible with the stk3311 probably
-> best to also add a an id to the of id table.  Any idea what else
-> is different?
+The move to a combined driver for the QCOM SCM hardware changed the
+io_writel and io_readl helpers to use non-atomic calls, despite the
+commit message saying that atomic was a better option. This breaks these
+helpers on hardware that uses the old legacy convention (access fails
+with a -95 return code). Switch back to using the atomic calls.
 
-By the way, STK3311 seems to have many variants lying around, and all
-of them have different IDs. The pinouts seem to be different but the
-registers are compatible.
+Observed as a failure routing GPIO interrupts to the Apps processor on
+an IPQ8064; fix is confirmed as correctly allowing the interrupts to be
+routed and observed.
 
-[1] is a datasheet of STK3311-S34 with ID 0x1e.
-[2] is a datasheet of STK3311-A with ID 0x15.
+Fixes: 57d3b816718c ("firmware: qcom_scm: Remove thin wrappers")
+Cc: stable@vger.kernel.org
+Signed-off-by: Jonathan McDowell <noodles@earth.li>
+---
+ drivers/firmware/qcom_scm.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-I cannot find the datasheet of STK3311-X, 0x12 is read from the device.
-The model number itself is mentioned at [3], the official website of
-sensortek.
+diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
+index 0e7233a20f34..d4fda210adfe 100644
+--- a/drivers/firmware/qcom_scm.c
++++ b/drivers/firmware/qcom_scm.c
+@@ -391,7 +391,7 @@ static int __qcom_scm_set_dload_mode(struct device *dev, bool enable)
+ 
+ 	desc.args[1] = enable ? QCOM_SCM_BOOT_SET_DLOAD_MODE : 0;
+ 
+-	return qcom_scm_call(__scm->dev, &desc, NULL);
++	return qcom_scm_call_atomic(__scm->dev, &desc, NULL);
+ }
+ 
+ static void qcom_scm_set_download_mode(bool enable)
+@@ -650,7 +650,7 @@ int qcom_scm_io_readl(phys_addr_t addr, unsigned int *val)
+ 	int ret;
+ 
+ 
+-	ret = qcom_scm_call(__scm->dev, &desc, &res);
++	ret = qcom_scm_call_atomic(__scm->dev, &desc, &res);
+ 	if (ret >= 0)
+ 		*val = res.result[0];
+ 
+@@ -669,8 +669,7 @@ int qcom_scm_io_writel(phys_addr_t addr, unsigned int val)
+ 		.owner = ARM_SMCCC_OWNER_SIP,
+ 	};
+ 
+-
+-	return qcom_scm_call(__scm->dev, &desc, NULL);
++	return qcom_scm_call_atomic(__scm->dev, &desc, NULL);
+ }
+ EXPORT_SYMBOL(qcom_scm_io_writel);
+ 
+-- 
+2.20.1
 
-[1] 
-http://pro0fc108.hkpic1.websiteonline.cn/upload/STK3311-S34Datasheetv1.pdf
-
-[2] 
-http://pro0fc108.hkpic1.websiteonline.cn/upload/STK3311-ADatasheetv1.pdf
-
-[3] 
-http://www.sensortek.com.tw/index.php/en/products/proximity-sensor-with-als/
-
-> 
-> Thanks,
-> 
-> Jonathan
-> 
-> > ---
-> >  drivers/iio/light/stk3310.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> > 
-> > diff --git a/drivers/iio/light/stk3310.c
-> > b/drivers/iio/light/stk3310.c
-> > index 185c24a75ae6..1a8401d198a4 100644
-> > --- a/drivers/iio/light/stk3310.c
-> > +++ b/drivers/iio/light/stk3310.c
-> > @@ -37,6 +37,7 @@
-> >  
-> >  #define STK3310_CHIP_ID_VAL			0x13
-> >  #define STK3311_CHIP_ID_VAL			0x1D
-> > +#define STK3311X_CHIP_ID_VAL			0x12
-> >  #define STK3335_CHIP_ID_VAL			0x51
-> >  #define STK3310_PSINT_EN			0x01
-> >  #define STK3310_PS_MAX_VAL			0xFFFF
-> > @@ -453,6 +454,7 @@ static int stk3310_init(struct iio_dev
-> > *indio_dev)
-> >  
-> >  	if (chipid != STK3310_CHIP_ID_VAL &&
-> >  	    chipid != STK3311_CHIP_ID_VAL &&
-> > +	    chipid != STK3311X_CHIP_ID_VAL &&
-> >  	    chipid != STK3335_CHIP_ID_VAL) {
-> >  		dev_err(&client->dev, "invalid chip id: 0x%x\n",
-> > chipid);
-> >  		return -ENODEV;
