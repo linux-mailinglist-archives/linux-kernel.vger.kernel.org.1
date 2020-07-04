@@ -2,97 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CF92214621
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 15:30:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 115B2214626
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 15:33:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728088AbgGDNaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Jul 2020 09:30:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57418 "EHLO
+        id S1728098AbgGDNdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Jul 2020 09:33:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727970AbgGDNay (ORCPT
+        with ESMTP id S1726643AbgGDNdx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Jul 2020 09:30:54 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54C7BC061794
-        for <linux-kernel@vger.kernel.org>; Sat,  4 Jul 2020 06:30:54 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49zXlZ64Rcz9sQt;
-        Sat,  4 Jul 2020 23:30:50 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1593869451;
-        bh=kl3Szk98khoM6Tava7Ark0liKf7Bf/9XtdkjUx8UehE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=YYtFOD02SJ+Z95vV0SU0mcnzuEcEXFtst9RCGHimsC2xBczbeQEGppOxEc2vo5/Cg
-         qWKV11xIQD1fPXyjr0RAFNrri0LyoK3evnjAI21c6hfG7CTEP3ZtwNR76mN59xqppo
-         y/y4oznH/CTmardWUfbWCa0VuZxtfkMISeoPmXcwC2iTbmgOJuT4wZ+zGP7vL9mcvC
-         p+kIXmoN3e75YjhaPE20GOJMDtK5CLFencgoSAbu+14/lOr61bMgrxwnAc0Y8mdQCL
-         PekNEixvhO7L6O/DTA411VM75pAMzxToyg2bF52YsAm924wzMwyeuaamyUQlQUmm7X
-         +/fb8zUUwl/VQ==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     aneesh.kumar@linux.ibm.com, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: [GIT PULL] Please pull powerpc/linux.git powerpc-5.8-5 tag
-Date:   Sat, 04 Jul 2020 23:33:05 +1000
-Message-ID: <87366776cu.fsf@mpe.ellerman.id.au>
+        Sat, 4 Jul 2020 09:33:53 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B88F7C061794;
+        Sat,  4 Jul 2020 06:33:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=WX43RKw0+FGdp9bNmImS/2sAa8MNXnNJwwbZw51kMdQ=; b=P6cgPErml8i03xIAD2T2msZxIG
+        m8LjhA4KE1VmUJ/jww8W5OIDqMwXNvGXmLJGm4V84vgiHw1Q1sLRBY/KET+hmBWm6YagHqDZOxy1S
+        1Cl5YP8V6suzo6wGWC78gJS46MGJpjwrQBxUv7MUsIRJcX5aG7Y+vlV7q/wTWzQA54upC4dU6oywQ
+        vNfwjiOvGOpXyTBDyxyFo9KCpqLv4grXWw6HZGrK8fRYYgmfV9wk7OjDtMPRq144R4RlYp+6bxG0r
+        b8KTCgPZUJhUs9VACBdSKb2OCv3N6WdQNjMqc6ky2TBcBYCmQnMTCLhZTAfd9qaKHaEari7D+2tOb
+        do6pVwFg==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jriIM-0002wM-5j; Sat, 04 Jul 2020 13:33:30 +0000
+Date:   Sat, 4 Jul 2020 14:33:30 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     Konstantin Khlebnikov <koct9i@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Tejun Heo <tj@kernel.org>, Hugh Dickins <hughd@google.com>,
+        =?utf-8?B?0JrQvtC90YHRgtCw0L3RgtC40L0g0KXQu9C10LHQvdC40LrQvtCy?= 
+        <khlebnikov@yandex-team.ru>, daniel.m.jordan@oracle.com,
+        yang.shi@linux.alibaba.com, Johannes Weiner <hannes@cmpxchg.org>,
+        lkp@intel.com, linux-mm@kvack.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>, shakeelb@google.com,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, richard.weiyang@gmail.com
+Subject: Re: [PATCH v14 15/20] mm/swap: serialize memcg changes during
+ pagevec_lru_move_fn
+Message-ID: <20200704133330.GP25523@casper.infradead.org>
+References: <1593752873-4493-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1593752873-4493-16-git-send-email-alex.shi@linux.alibaba.com>
+ <CALYGNiOkA_ZsycF_hqm3XLk55Ek1Mo9w1gO=6EeE35fUtA0i_w@mail.gmail.com>
+ <56e395c6-81e7-7163-0d4f-42b91573289f@linux.alibaba.com>
+ <20200704113944.GN25523@casper.infradead.org>
+ <b6caf0d7-266e-55ea-0c88-656c800af1e3@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <b6caf0d7-266e-55ea-0c88-656c800af1e3@linux.alibaba.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA256
+On Sat, Jul 04, 2020 at 09:12:46PM +0800, Alex Shi wrote:
+> 在 2020/7/4 下午7:39, Matthew Wilcox 写道:
+> > On Sat, Jul 04, 2020 at 07:34:59PM +0800, Alex Shi wrote:
+> >> That's a great idea! Guess what the new struct we need would be like this?
+> >> I like to try this. :)
+> >>
+> >>
+> >> diff --git a/include/linux/pagevec.h b/include/linux/pagevec.h
+> >> index 081d934eda64..d62778c8c184 100644
+> >> --- a/include/linux/pagevec.h
+> >> +++ b/include/linux/pagevec.h
+> >> @@ -20,7 +20,7 @@
+> >>  struct pagevec {
+> >>         unsigned char nr;
+> >>         bool percpu_pvec_drained;
+> >> -       struct page *pages[PAGEVEC_SIZE];
+> >> +       struct list_head veclist;
+> >>  };
+> > 
+> > pagevecs are used not just for LRU.  If you want to use a list_head for
+> > LRU then define a new structure.
+> 
+> yes, there are much page don't use page->lru, like slab etc. we need a new struct.
 
-Hi Linus,
+That's not what I mean.  Slab pages aren't on the LRU anyway.
 
-Please pull some more powerpc fixes for 5.8:
-
-The following changes since commit 896066aa0685af3434637998b76218c2045142a8:
-
-  selftests/powerpc: Fix build failure in ebb tests (2020-06-26 12:53:09 +1000)
-
-are available in the git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.8-5
-
-for you to fetch changes up to 19ab500edb5d6020010caba48ce3b4ce4182ab63:
-
-  powerpc/mm/pkeys: Make pkey access check work on execute_only_key (2020-06-29 16:17:02 +1000)
-
-- ------------------------------------------------------------------
-powerpc fixes for 5.8 #5
-
-One fix for a regression in our pkey handling, which exhibits as PROT_EXEC
-mappings taking continuous page faults.
-
-Thanks to:
-  Jan Stancek, Aneesh Kumar K.V.
-
-- ------------------------------------------------------------------
-Aneesh Kumar K.V (1):
-      powerpc/mm/pkeys: Make pkey access check work on execute_only_key
-
-
- arch/powerpc/mm/book3s64/pkeys.c | 3 ---
- 1 file changed, 3 deletions(-)
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJFGtCPCthwEv2Y/bUevqPMjhpYAFAl8AhNcACgkQUevqPMjh
-pYCpbw//Zuq2ibM2b4lIEYCxCeI1gh1owthd6fHAmRKLV190CTy5LlXjc/Qr1uNg
-gnW5H4+/8LC9wlN+ypzm2/ZGr4GfFEZTbodXm40uF8iT06pb3arULB1Tu3YcScpE
-8mwLSE4oz8rqq7f/jGc6u3Ozwr47KkiSfCRKNMIVOCGQMg6nwPLO+sbWjfwSv0W6
-pi+GE+GVWe5sEyftWoO+s2FMELX1O6vOvaQId0H8JqKI/FXCGYZzHJ/SWjMx7rJ9
-VJYqLOuuHp8diw4PYsfUoxKQc/uDT0EswloaDcYwi1bQu9XzgbSP1QHA15bwVBCh
-uqT/+CpZN8adjWk+vHeEeJurqCYf4gkAwaT4NJFA3oQIMvV7eVEoGgUj0ssjTSAd
-8qudKtBkQauXMaPXD9arN389mW45Zfzg0O313lvXr5HEWAg3vrMtLTaBTxFuMwnt
-+REfBTJTS9S2hPcn2w2vK9SNOL5PAt/cTg/z7ekuw9gvDdX10ahyF1X2AQbtKN5U
-tSBH74b1eR8dlg3jcvmWtRbFCvWtZRZVVQN5RzNgVz0J5cLuyLuDIlr6eVhxGzwo
-OwjO/wmTmwbyJwpvg/zNhs4leKUlp3s0JYmKswYUx/rWdnqzpOmPseb1YkGujN7Z
-iSIO0CPhAkQGXrdh6USuQ+ed5QhDp72NoKZUY+F4XQz+j7mH3iU=
-=PJ8Y
------END PGP SIGNATURE-----
+Consider the callers of page_cache_delete_batch().  These use a pagevec
+for a non-LRU purpose, and they will be much slower with a list_head than
+with an array.
