@@ -2,65 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 624D221489E
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 22:16:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F4602148A7
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 22:29:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728031AbgGDUQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Jul 2020 16:16:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35160 "EHLO
+        id S1727889AbgGDU30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Jul 2020 16:29:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727897AbgGDUQj (ORCPT
+        with ESMTP id S1726895AbgGDU3Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Jul 2020 16:16:39 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66685C08C5DE;
-        Sat,  4 Jul 2020 13:16:39 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jroaS-005Oey-SN; Sat, 04 Jul 2020 20:16:36 +0000
-Date:   Sat, 4 Jul 2020 21:16:36 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>, shuah@kernel.org,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-man <linux-man@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 1/3] readfile: implement readfile syscall
-Message-ID: <20200704201636.GE2786714@ZenIV.linux.org.uk>
-References: <20200704140250.423345-1-gregkh@linuxfoundation.org>
- <20200704140250.423345-2-gregkh@linuxfoundation.org>
- <CAJfpegusi8BjWFzEi05926d4RsEQvPnRW-w7My=ibBHQ8NgCuw@mail.gmail.com>
- <20200704201206.GD2786714@ZenIV.linux.org.uk>
+        Sat, 4 Jul 2020 16:29:25 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E107DC061794
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Jul 2020 13:29:24 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id a30so1728731ybj.5
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Jul 2020 13:29:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=PttaXRzdoubqrU8NlKxK6QuJqeqDE8bW+/y2ufbhArg=;
+        b=r3r/TGwpS+s9RYGIkhWfW5qLqrVwZSiXbM2rmaroosXuECbCfhfp1EAOlW9CQDP+tq
+         qMYMi61B9cMxAN6vVmrjCAxx4X8Tjl3uCuoFsJdIg7l9VGdVYeCKWhKDP8FHdY1C0S+i
+         z5QfR1vsa4zq6aGsHhtHsIOfsed3eAw4kfuFfVjy2HnwdhGBLVQq72gbU3J8mTbuOqVJ
+         T2ZPSr8mClKnnmobkDsyhMziLi0IgttGY7hR9NGuvtsARF0o/uazE/xU1PG+77STff76
+         /OtFcnEeeUnl7Fi4hEtuyrOz+0xmIssOAK1q8N4zJWxcnsQs86XTNoIoPr4eAlkGmM2A
+         KebA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=PttaXRzdoubqrU8NlKxK6QuJqeqDE8bW+/y2ufbhArg=;
+        b=bBSyUgTsQIPelu2HG8QVRfz1uXKzaDjLVkNRf8chJq6ZxwiG1a42Ky8gr2BKBFdBwF
+         wHGZPdiiXqUH9QwqH/56m29yqLLYFxAFqbxad2iy5S0XkKARupcfEkk8c7cEoEzxzfQz
+         nuu6PqvH624ugLKOTZERby8YpEOf88V/uhRwQ213x9PNjL1W/cK3RjYqfBRATTFWuEGz
+         xSVsQDhLI/F/TmKuFcbZj0maKfaoEhe8Pwp8on61sAlK2zL+JFI36njQhynT9nhujre2
+         D4KicbvqU2jv4P43b79yYheRidwl2FJqBTxvIe+E4V6Ogj2BvLK7cYVUtELtrvIcLjC4
+         0Trw==
+X-Gm-Message-State: AOAM532czUIeecjLtZrKv9NfdNxvShZA6RiLaTPk0vKU6vn+SuBBN48O
+        2+/Rh/1X8p+UGwjBigSB9BTrS5dR727IcbHMDxMVro+hwbc=
+X-Google-Smtp-Source: ABdhPJwlfur/XyYcYgjKsUXAAOPAt0Zp9AKs1CjYvRDKEFFvSIT3Q9k13JpiJ9bgparJGJD/gYx6A0Nd98W/oDa5plQ=
+X-Received: by 2002:a25:23c7:: with SMTP id j190mr2855173ybj.167.1593894561632;
+ Sat, 04 Jul 2020 13:29:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200704201206.GD2786714@ZenIV.linux.org.uk>
+From:   Steve French <smfrench@gmail.com>
+Date:   Sat, 4 Jul 2020 15:29:11 -0500
+Message-ID: <CAH2r5msW7s-5dphNrvGCEqOGQ6tO=K5_aDVbw4ZS995oDk2Agw@mail.gmail.com>
+Subject: 5.8-rc1 and later breaks chrome browser
+To:     LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 04, 2020 at 09:12:06PM +0100, Al Viro wrote:
-> On Sat, Jul 04, 2020 at 09:41:09PM +0200, Miklos Szeredi wrote:
-> > And "If the size of file is smaller than the value provided in count
-> > then the whole file will be copied into buf", which is simply a lie;
-> > for example seq_file will happily return a smaller-than-PAGE_SIZE
-> > chunk if at least one record fits in there.  You'll have a very hard
-> > time explaining that in the man page.  So I think there are two
-> > possible ways forward:
-> > 
-> >  1) just leave the first explanation (it's an open + read + close
-> > equivalent) and leave out the rest
-> > 
-> >  2) add a loop around the vfs_read() in the code.
-> 
-> 3) don't bother with the entire thing, until somebody manages to demonstrate
-> a setup where it does make a real difference (compared to than the obvious
-> sequence of syscalls, that is).  At which point we'll need to figure out
-> what's going on and deal with the underlying problem of that setup.
+I noticed that chrome crashes immediately on startup  on my desktop
+booting to 5.8-rc2 or later kernels (whether I build the kernel or
+using the prebuilt weekly Ubuntu mainline kernel downloads).  Works
+fine with default kernels or 5.7 or 5.7.7 stable kernel etc. - just
+breaks if I boot 5.8-rc2 or later.  I even tried building with today's
+mainline kernel and same thing.  Any ideas how to work around this.
 
-Incidentally, if that's intended for use on _sysfs_, I would like to see the
-effects of that sucker being called by many processes in parallel, seeing that
-sysfs has, er, certain scalability problems in its lookups.  And I would be
-very surprised if they were not heavier than said overhead of two extra syscalls.
+Message logged to dmesg is:
+
+[  131.366543] ThreadPoolServi[2526]: segfault at 415048 ip
+00005652def3370d sp 00007fcdc3b37df0 error 6 in
+chrome[5652daa7e000+785b000]
+[  131.366546] Code: Bad RIP value.
+
+-- 
+Thanks,
+
+Steve
