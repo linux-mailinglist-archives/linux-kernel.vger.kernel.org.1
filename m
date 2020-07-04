@@ -2,52 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15F4F214461
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 08:47:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E1BA214450
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 08:32:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727097AbgGDGri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Jul 2020 02:47:38 -0400
-Received: from mail2.directv.syn-alias.com ([69.168.106.50]:21107 "EHLO
-        mail.directv.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725849AbgGDGrh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Jul 2020 02:47:37 -0400
-X-Greylist: delayed 1201 seconds by postgrey-1.27 at vger.kernel.org; Sat, 04 Jul 2020 02:47:37 EDT
-DKIM-Signature: v=1; a=rsa-sha1; d=wildblue.net; s=20170921; c=relaxed/simple;
-        q=dns/txt; i=@wildblue.net; t=1593844056;
-        h=From:Subject:Date:To:MIME-Version:Content-Type;
-        bh=k9q+cxcxJWNxcadoUdtoKumdTzs=;
-        b=AdujSHeF+Gqz5bOozrvZNeE/TleFBJ20RRXykECDM7ZieCP4eUB3Z47zGgfOT2oe
-        peTE+PIzViRBNAZSSzWR0k8s/QVDtgpyWSwdOkv3/VcyhqwO8Vjxk2zQyp85VB/y
-        JiuoCmu/x/rfmn0iX7y4mLfVlW6vLKsu7Wwd1VfYXNs37JVNFIc2BcvUqoXW9+F+
-        aWNGrzyxcCWN0hgzxzH0aZYRapiUrsGskyuKDB+fBT6WEAjeOz+0auPs7ytORCdI
-        4yUmXA1coN7UO8oNAglepGbkts/F8vAFWR38ZISNXevy+aqIQpOXy6uuxYVekr2N
-        YdbXgnSJIUBW/vUgseL5fQ==;
-X_CMAE_Category: , ,
-X-CNFS-Analysis: v=2.3 cv=Ps3tkDE3 c=1 sm=1 tr=0 a=4yk97B3yQiU+fkK3asfMng==:117 a=9cW_t1CCXrUA:10 a=KGjhK52YXX0A:10 a=FKkrIqjQGGEA:10 a=iWJ84AsqYasA:10 a=1k9HjyQHpwIA:10 a=IkcTkHD0fZMA:10 a=x7bEGLp0ZPQA:10 a=_RQrkK6FrEwA:10 a=Hoox4JtUdzEA:10 a=pDJVyaSLxP0A:10 a=RSgyfC8lJJjT_0A46W4A:9 a=QEXdDO2ut3YA:10 a=xo5jKAKm-U-Zyk2_beg_:22 a=YUl3_RxMn35AnVxMuRbm:22 a=pHzHmUro8NiASowvMSCR:22 a=nt3jZW36AmriUCFCBwmW:22
-X-CM-Score: 0
-X-Scanned-by: Cloudmark Authority Engine
-X-Authed-Username: YmVoZXJlbm93QHdpbGRibHVlLm5ldA==
-Received: from [10.80.118.1] ([10.80.118.1:39624] helo=md02.jasper.bos.sync.lan)
-        by mail2.directv.syn-alias.com (envelope-from <beherenow@wildblue.net>)
-        (ecelerity 3.6.25.56547 r(Core:3.6.25.0)) with ESMTP
-        id D2/11-12587-751200F5; Sat, 04 Jul 2020 02:27:35 -0400
-Date:   Sat, 4 Jul 2020 02:27:35 -0400 (EDT)
-From:   George <beherenow@wildblue.net>
-Reply-To: geowrdm11@gmail.com
-Message-ID: <1340136028.143144365.1593844055176.JavaMail.zimbra@wildblue.net>
-Subject: 
+        id S1726839AbgGDGcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Jul 2020 02:32:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58500 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726178AbgGDGcU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 4 Jul 2020 02:32:20 -0400
+Received: from localhost (p54b3324c.dip0.t-ipconnect.de [84.179.50.76])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 82F112075D;
+        Sat,  4 Jul 2020 06:32:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593844340;
+        bh=M1LITLgZWedAqPaeDFmPN578cGEKoPhgwQmTWgqw0Aw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QPY5JS4UhHL9aOYiaU9qHYn8pt+hZjL11z8SyOMmqFPOjzf9GtxMHNe6Vb2WKWhD+
+         qjZWBuXrz8tqiy327Eq63yO/wIW19B1jBJQ/sbKYhFkBcwJniGdFobkfPpuI4SLHbI
+         dd3xizy1kZySr8bbWYMbinS1rt3RrUw36ITnA4HQ=
+Date:   Sat, 4 Jul 2020 08:32:17 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Paul Cercueil <paul@crapouillou.net>, linux-i2c@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] i2c: jz4780: remove redundant assignment to variable i
+Message-ID: <20200704063217.GG1041@kunai>
+References: <20200610125901.1134204-1-colin.king@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [87.49.146.115]
-X-Mailer: Zimbra 8.7.6_GA_1776 (zclient/8.7.6_GA_1776)
-Thread-Index: 0blJQUH2V/RvqE4OlkXV1PQL8Xd1kA==
-Thread-Topic: 
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="w/VI3ydZO+RcZ3Ux"
+Content-Disposition: inline
+In-Reply-To: <20200610125901.1134204-1-colin.king@canonical.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Did you receive my last mail
+
+--w/VI3ydZO+RcZ3Ux
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Jun 10, 2020 at 01:59:01PM +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+>=20
+> The variable i is being initialized with a value that is
+> never read and it is being updated later with a new value. The
+> initialization is redundant and can be removed.
+>=20
+> Addresses-Coverity: ("Unused value")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+
+What about 'ret'? Doesn't the same reasoning apply for it?
+
+
+--w/VI3ydZO+RcZ3Ux
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl8AInEACgkQFA3kzBSg
+Kbb+Bw/8DjdHpZF7hd2HqBySqH1zWA9Pq7rs0E0odz5AgngsAIREXgm9jq3NpF8q
+tN5W0f8rRuaBOyslXuR/v3FKU9ISAwGroDputlZW/O3yS4yYs6GPHxgiXqetKCq3
+sCB3my5jdtugp0pndjFn36UbzFxKANCxq3I15ZhQ2S3MVXbaKo6DzmBSiodihJY5
+QqG1RaKkLZoLCVlgO80CU6wCaoUOXkXlx4kurNuVSe8/3XhrbmHBylT9w8fMsxFq
+uWljyt1kLMhUlkBBcA9PQmGhwh31fCzWPBsP2T8Ti8oYm82oSqxlC69MLXZYYeEf
+3mIN+HjsVS1t4d2yW4li3UgMj7bBSFc1j1taOYFSxbGkxbGqMkcf6P7FnvNoIVum
+czPIXeA4JkYTsn3XZGM53l/sy+eSUr4/LF01DEqksHBcvTMBGAULlOLTuXWTGE97
+GEnM8aZ5fRqRa3ozV5BGbqDOhoMBvOgVoZR4jAhPVG2F8dat4UfRvu/e7V1dVS5P
+1vs5L/VNDIura6ZHofk5AMKZU2rDl5NQLkSeHlo7b2fhZaRBTn9329mIPm7rOixA
+jEw75Mu926qVeRnWhGRC0m4ADwSqZdsz3DGiR3WPZHY3G5JGQmqFNusfwhhJfOWj
+C+dDbTmVTKNSlAV9nhFuEOpW/GtyZ3PzQeFo0C5krvzglLUWpgs=
+=ZgOV
+-----END PGP SIGNATURE-----
+
+--w/VI3ydZO+RcZ3Ux--
