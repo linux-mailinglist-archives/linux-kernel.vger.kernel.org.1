@@ -2,95 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02918214624
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 15:33:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CF92214621
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 15:30:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728002AbgGDNdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Jul 2020 09:33:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57844 "EHLO
+        id S1728088AbgGDNaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Jul 2020 09:30:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726643AbgGDNdm (ORCPT
+        with ESMTP id S1727970AbgGDNay (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Jul 2020 09:33:42 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC64FC061794;
-        Sat,  4 Jul 2020 06:33:41 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id k6so35662593wrn.3;
-        Sat, 04 Jul 2020 06:33:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:date:from:user-agent:mime-version:to:cc:subject
-         :references:in-reply-to:content-transfer-encoding;
-        bh=0aUfXSg0arZGZKHdkJrpGOCQDAyLG7wmioIxcwMAyxM=;
-        b=SdgV3wv0ScOuelLJmjQxFQhn1lIRRiktglhLerZhhRYqL/tTxI6eYsLM8MXM4DuqDN
-         Ah/0AVQL7osE2lF74X93Rv2L/1FNt3aeUY+s06TEMsCXRbk8REC3mk+WP/veVdpq7/d0
-         Vn3k8X8h//RlKM0Jhyg6X8TfNN2ANC6lfqdLKOlcOxm7FEX5zkpvF0bOYgZY0DFHzbED
-         mcIxZortfF1Y44xXDvdZvmADv1vz1rstcmaP1aEx8bdOewL7E/qUuvS45xvfyTS2sR+V
-         6v+FvdTPz15nOVHqsHy2GyEWMmys1TTk45p394TsXgMu4cep1prh4KQ6HIHz5NS0DjTC
-         L9Xg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:from:user-agent:mime-version:to
-         :cc:subject:references:in-reply-to:content-transfer-encoding;
-        bh=0aUfXSg0arZGZKHdkJrpGOCQDAyLG7wmioIxcwMAyxM=;
-        b=iLSc0brBB13MM5eyWb7DoqsbFKdWw0GRr/t/8I10ytV6I2af7nIjfTwmoazkx3Jlqe
-         newxf2mMS371iyhKMoBjWFLoUUh2EfhLYOWJi8Ponc6+siLUS3g72PP73Rd4Lqvw5CuD
-         m5y34vg2qmnWOYVOwBVzM+ts8sh08GiCMUhphsxeuLQ5D79tPu8T3Q4gp2SCz/xocDZ7
-         xIKmtqDYoQfHRxgwuh+EWLZFacx5U/aZYrxHM/C/7ioOPEG3XQybX1jd+8blNWnnyF1l
-         8dEyFp2OK2u++F/szRyMRM7cDOe9/MuJOFa3fM0YJ4LXC8kj2g4auLb3DqBP9yo7qCVz
-         Gv7Q==
-X-Gm-Message-State: AOAM533Nkxf6CxbpfVENkyvPua5u4XKRoB+PjF0JB5/rwKExAOfwBNFe
-        jeZ8XnkmfEyyKEB5yBxOTErHwOPMrqw=
-X-Google-Smtp-Source: ABdhPJy754Y72mstvVjug3N3ZrLOsxRHrDZhOujfHBx/qdK++rzuLVOgEp0B7FaL1FkeGiu/ZSxBkQ==
-X-Received: by 2002:adf:e944:: with SMTP id m4mr41804071wrn.252.1593869620501;
-        Sat, 04 Jul 2020 06:33:40 -0700 (PDT)
-Received: from [46.117.43.200] (46-117-43-200.bb.netvision.net.il. [46.117.43.200])
-        by smtp.gmail.com with ESMTPSA id q7sm18235625wrs.27.2020.07.04.06.33.39
-        (version=TLS1 cipher=AES128-SHA bits=128/128);
-        Sat, 04 Jul 2020 06:33:39 -0700 (PDT)
-Message-ID: <5F00850C.6010803@gmail.com>
-Date:   Sat, 04 Jul 2020 16:33:00 +0300
-From:   Eli Billauer <eli.billauer@gmail.com>
-User-Agent: Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.1.12) Gecko/20100907 Fedora/3.0.7-1.fc12 Thunderbird/3.0.7
+        Sat, 4 Jul 2020 09:30:54 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54C7BC061794
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Jul 2020 06:30:54 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49zXlZ64Rcz9sQt;
+        Sat,  4 Jul 2020 23:30:50 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1593869451;
+        bh=kl3Szk98khoM6Tava7Ark0liKf7Bf/9XtdkjUx8UehE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=YYtFOD02SJ+Z95vV0SU0mcnzuEcEXFtst9RCGHimsC2xBczbeQEGppOxEc2vo5/Cg
+         qWKV11xIQD1fPXyjr0RAFNrri0LyoK3evnjAI21c6hfG7CTEP3ZtwNR76mN59xqppo
+         y/y4oznH/CTmardWUfbWCa0VuZxtfkMISeoPmXcwC2iTbmgOJuT4wZ+zGP7vL9mcvC
+         p+kIXmoN3e75YjhaPE20GOJMDtK5CLFencgoSAbu+14/lOr61bMgrxwnAc0Y8mdQCL
+         PekNEixvhO7L6O/DTA411VM75pAMzxToyg2bF52YsAm924wzMwyeuaamyUQlQUmm7X
+         +/fb8zUUwl/VQ==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     aneesh.kumar@linux.ibm.com, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: [GIT PULL] Please pull powerpc/linux.git powerpc-5.8-5 tag
+Date:   Sat, 04 Jul 2020 23:33:05 +1000
+Message-ID: <87366776cu.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-To:     Randy Dunlap <rdunlap@infradead.org>
-CC:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH 17/17] Documentation/driver-api: xillybus: drop doubled
- word
-References: <20200704034502.17199-1-rdunlap@infradead.org> <20200704034502.17199-18-rdunlap@infradead.org>
-In-Reply-To: <20200704034502.17199-18-rdunlap@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Acked-by: Eli Billauer <eli.billauer@gmail.com>
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
 
-On 04/07/20 06:45, Randy Dunlap wrote:
-> Drop the doubled word "the".
->
-> Signed-off-by: Randy Dunlap<rdunlap@infradead.org>
-> Cc: Jonathan Corbet<corbet@lwn.net>
-> Cc: linux-doc@vger.kernel.org
-> Cc: Eli Billauer<eli.billauer@gmail.com>
-> ---
->   Documentation/driver-api/xillybus.rst |    2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> --- linux-next-20200701.orig/Documentation/driver-api/xillybus.rst
-> +++ linux-next-20200701/Documentation/driver-api/xillybus.rst
-> @@ -273,7 +273,7 @@ buffer is full, the FPGA informs the hos
->   XILLYMSG_OPCODE_RELEASEBUF message channel 0 and sending an interrupt if
->   necessary). The host responds by making the data available for reading through
->   the character device. When all data has been read, the host writes on the
-> -the FPGA's buffer control register, allowing the buffer's overwriting. Flow
-> +FPGA's buffer control register, allowing the buffer's overwriting. Flow
->   control mechanisms exist on both sides to prevent underflows and overflows.
->
->   This is not good enough for creating a TCP/IP-like stream: If the data flow
->
->    
+Hi Linus,
 
+Please pull some more powerpc fixes for 5.8:
+
+The following changes since commit 896066aa0685af3434637998b76218c2045142a8:
+
+  selftests/powerpc: Fix build failure in ebb tests (2020-06-26 12:53:09 +1000)
+
+are available in the git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.8-5
+
+for you to fetch changes up to 19ab500edb5d6020010caba48ce3b4ce4182ab63:
+
+  powerpc/mm/pkeys: Make pkey access check work on execute_only_key (2020-06-29 16:17:02 +1000)
+
+- ------------------------------------------------------------------
+powerpc fixes for 5.8 #5
+
+One fix for a regression in our pkey handling, which exhibits as PROT_EXEC
+mappings taking continuous page faults.
+
+Thanks to:
+  Jan Stancek, Aneesh Kumar K.V.
+
+- ------------------------------------------------------------------
+Aneesh Kumar K.V (1):
+      powerpc/mm/pkeys: Make pkey access check work on execute_only_key
+
+
+ arch/powerpc/mm/book3s64/pkeys.c | 3 ---
+ 1 file changed, 3 deletions(-)
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJFGtCPCthwEv2Y/bUevqPMjhpYAFAl8AhNcACgkQUevqPMjh
+pYCpbw//Zuq2ibM2b4lIEYCxCeI1gh1owthd6fHAmRKLV190CTy5LlXjc/Qr1uNg
+gnW5H4+/8LC9wlN+ypzm2/ZGr4GfFEZTbodXm40uF8iT06pb3arULB1Tu3YcScpE
+8mwLSE4oz8rqq7f/jGc6u3Ozwr47KkiSfCRKNMIVOCGQMg6nwPLO+sbWjfwSv0W6
+pi+GE+GVWe5sEyftWoO+s2FMELX1O6vOvaQId0H8JqKI/FXCGYZzHJ/SWjMx7rJ9
+VJYqLOuuHp8diw4PYsfUoxKQc/uDT0EswloaDcYwi1bQu9XzgbSP1QHA15bwVBCh
+uqT/+CpZN8adjWk+vHeEeJurqCYf4gkAwaT4NJFA3oQIMvV7eVEoGgUj0ssjTSAd
+8qudKtBkQauXMaPXD9arN389mW45Zfzg0O313lvXr5HEWAg3vrMtLTaBTxFuMwnt
++REfBTJTS9S2hPcn2w2vK9SNOL5PAt/cTg/z7ekuw9gvDdX10ahyF1X2AQbtKN5U
+tSBH74b1eR8dlg3jcvmWtRbFCvWtZRZVVQN5RzNgVz0J5cLuyLuDIlr6eVhxGzwo
+OwjO/wmTmwbyJwpvg/zNhs4leKUlp3s0JYmKswYUx/rWdnqzpOmPseb1YkGujN7Z
+iSIO0CPhAkQGXrdh6USuQ+ed5QhDp72NoKZUY+F4XQz+j7mH3iU=
+=PJ8Y
+-----END PGP SIGNATURE-----
