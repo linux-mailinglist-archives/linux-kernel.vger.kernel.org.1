@@ -2,105 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 249CE2146FA
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 17:43:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A469214708
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 17:47:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726906AbgGDPnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Jul 2020 11:43:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726669AbgGDPnV (ORCPT
+        id S1726946AbgGDPrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Jul 2020 11:47:55 -0400
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:47953 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726501AbgGDPry (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Jul 2020 11:43:21 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEC14C061794
-        for <linux-kernel@vger.kernel.org>; Sat,  4 Jul 2020 08:43:21 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1jrkJx-0007Ek-3w; Sat, 04 Jul 2020 17:43:17 +0200
-Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1jrkJw-0007cZ-2M; Sat, 04 Jul 2020 17:43:16 +0200
-Date:   Sat, 4 Jul 2020 17:43:13 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-pwm@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v6] gpio: pca953x: Add Maxim MAX7313 PWM support
-Message-ID: <20200704154313.qjaxtlz62y6kjytj@pengutronix.de>
-References: <20200503105453.23658-1-miquel.raynal@bootlin.com>
- <20200703145313.vwjsh5crdqx2u76a@pengutronix.de>
- <CAHp75Vdii+w4nNErG_z_YHwsTYWR9PeJsKk53szk4p-rop-Htw@mail.gmail.com>
+        Sat, 4 Jul 2020 11:47:54 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R381e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0U1ffIy7_1593877655;
+Received: from IT-FVFX43SYHV2H.lan(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U1ffIy7_1593877655)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sat, 04 Jul 2020 23:47:36 +0800
+Subject: Re: [PATCH v14 15/20] mm/swap: serialize memcg changes during
+ pagevec_lru_move_fn
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Konstantin Khlebnikov <koct9i@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Tejun Heo <tj@kernel.org>, Hugh Dickins <hughd@google.com>,
+        =?UTF-8?B?0JrQvtC90YHRgtCw0L3RgtC40L0g0KXQu9C10LHQvdC40LrQvtCy?= 
+        <khlebnikov@yandex-team.ru>, daniel.m.jordan@oracle.com,
+        yang.shi@linux.alibaba.com, Johannes Weiner <hannes@cmpxchg.org>,
+        lkp@intel.com, linux-mm@kvack.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>, shakeelb@google.com,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, richard.weiyang@gmail.com
+References: <1593752873-4493-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1593752873-4493-16-git-send-email-alex.shi@linux.alibaba.com>
+ <CALYGNiOkA_ZsycF_hqm3XLk55Ek1Mo9w1gO=6EeE35fUtA0i_w@mail.gmail.com>
+ <56e395c6-81e7-7163-0d4f-42b91573289f@linux.alibaba.com>
+ <20200704113944.GN25523@casper.infradead.org>
+ <b6caf0d7-266e-55ea-0c88-656c800af1e3@linux.alibaba.com>
+ <20200704133330.GP25523@casper.infradead.org>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <4a42888e-4d7e-0d76-358c-9a073e6e4794@linux.alibaba.com>
+Date:   Sat, 4 Jul 2020 23:47:11 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="nbvhjrv6doy6cgjl"
-Content-Disposition: inline
-In-Reply-To: <CAHp75Vdii+w4nNErG_z_YHwsTYWR9PeJsKk53szk4p-rop-Htw@mail.gmail.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20200704133330.GP25523@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---nbvhjrv6doy6cgjl
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Sat, Jul 04, 2020 at 02:23:09PM +0300, Andy Shevchenko wrote:
-> On Fri, Jul 3, 2020 at 5:53 PM Uwe Kleine-K=F6nig
-> <u.kleine-koenig@pengutronix.de> wrote:
-> > On Sun, May 03, 2020 at 12:54:53PM +0200, Miquel Raynal wrote:
->=20
-> ...
->=20
-> > > +     ret =3D regmap_read(pca_chip->regmap, reg, &val);
-> > > +     mutex_unlock(&pca_chip->i2c_lock);
-> > > +     if (ret < 0) {
-> > > +             dev_err(dev, "Cannot retrieve PWM intensity (%d)\n", re=
-t);
-> >
-> > Please use %pe for error codes.
->=20
-> %pe is mainly for error pointers, with plain integers it will look
-> awkward a bit.
+在 2020/7/4 下午9:33, Matthew Wilcox 写道:
+> On Sat, Jul 04, 2020 at 09:12:46PM +0800, Alex Shi wrote:
+>> 在 2020/7/4 下午7:39, Matthew Wilcox 写道:
+>>> On Sat, Jul 04, 2020 at 07:34:59PM +0800, Alex Shi wrote:
+>>>> That's a great idea! Guess what the new struct we need would be like this?
+>>>> I like to try this. :)
+>>>>
+>>>>
+>>>> diff --git a/include/linux/pagevec.h b/include/linux/pagevec.h
+>>>> index 081d934eda64..d62778c8c184 100644
+>>>> --- a/include/linux/pagevec.h
+>>>> +++ b/include/linux/pagevec.h
+>>>> @@ -20,7 +20,7 @@
+>>>>  struct pagevec {
+>>>>         unsigned char nr;
+>>>>         bool percpu_pvec_drained;
+>>>> -       struct page *pages[PAGEVEC_SIZE];
+>>>> +       struct list_head veclist;
+>>>>  };
+>>>
+>>> pagevecs are used not just for LRU.  If you want to use a list_head for
+>>> LRU then define a new structure.
+>>
+>> yes, there are much page don't use page->lru, like slab etc. we need a new struct> 
+> That's not what I mean.  Slab pages aren't on the LRU anyway.
 
-Yeah, the right usage is:
+Right. I mean, that's reason for a new struct if we change to list.
 
-	dev_err(dev, "Cannot retrieve PWM intensity (%pe)\n", ERR_PTR(ret));
+> 
+> Consider the callers of page_cache_delete_batch().  These use a pagevec
+> for a non-LRU purpose, and they will be much slower with a list_head than
+> with an array.
+> 
 
-Best regards
-Uwe
+Thanks for the info.
+If the list is slower than pagevec, maybe it's not worth to do the change.
+Since pagevec could handle any kind of pages, anon/file, non-active/active, but one
+list only fit for just one kind of list. 5 kinds of list adding would increase the
+complexity. Consider this, I am wondering if it's worth?
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---nbvhjrv6doy6cgjl
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl8Ao44ACgkQwfwUeK3K
-7AndkAf/VoVfxQww+BvyjBD+Vd05dYxw5ADB0MHirOdCfxKKnri7eYlXBGfEdlCB
-/MFlEhNXyr3sKDizZYtutASSaoncUhCRpxPMMWdRLo2B+ABWwbM0g/gWkLOyqDci
-RDaMvOYHkYSJrKsj05aDUUFLl3LsJP0Pd6Ie2F7ME1FtmElZ6RUL2+16OMEo1Mtu
-pEKjKy3ekggM4K94GtzboiFOPqf3OtExBCXnsNs8dZ0khSZVQXlrAQnd1WkKQRP8
-/i3VZ1Ak0RNWPJkC4zX3OcQC9j4BsvXFmlHpN8raGXhFqkhJlXL10+fYuZLdyN24
-z5XiVw9YzHcxhofr+108N7KU3Emt4A==
-=neRI
------END PGP SIGNATURE-----
-
---nbvhjrv6doy6cgjl--
+Thanks
+Alex
