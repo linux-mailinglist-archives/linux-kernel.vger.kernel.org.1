@@ -2,106 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B36E9214440
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 08:04:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3604214447
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 08:08:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727071AbgGDGEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Jul 2020 02:04:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54594 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725822AbgGDGEu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Jul 2020 02:04:50 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B1DCC207D4;
-        Sat,  4 Jul 2020 06:04:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593842690;
-        bh=/8vSxFn9V0oswGlBEN5dRRU1JZ7ExkRloN1fTwm5oNE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iItwMtHdFCkvptr3+wC5oBSGGXbOgDNx2gPwmgsCTOB9hZaNp9x1NukOjke8PsoZm
-         LU6UKJAFh7leBTlINaLmf8/tik/QF8IhaHYbr1woCmpOwenN8aJ6AMdSu0uNm3QREh
-         su1Am+O/L4hv41K8lDOtafcHW541qbu7l2T4hx4A=
-Date:   Sat, 4 Jul 2020 08:04:46 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        Ben Dooks <ben@simtec.co.uk>
-Subject: Re: [PATCH 11/30] usb: dwc2: gadget: Avoid pointless read of EP
- control register
-Message-ID: <20200704060446.GA20254@kroah.com>
-References: <20200702144625.2533530-1-lee.jones@linaro.org>
- <20200702144625.2533530-12-lee.jones@linaro.org>
- <20200703072926.GA2322133@kroah.com>
- <e88abd64-4acf-31f6-f76a-5a333df3d46a@synopsys.com>
- <20200703171626.GC2743379@dell>
+        id S1727080AbgGDGIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Jul 2020 02:08:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725822AbgGDGIt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 4 Jul 2020 02:08:49 -0400
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BB45C061794;
+        Fri,  3 Jul 2020 23:08:49 -0700 (PDT)
+Received: by mail-vs1-xe41.google.com with SMTP id u133so4557813vsc.0;
+        Fri, 03 Jul 2020 23:08:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=Y/a/zbYT3mheg8JLw87yQei4Q/XEwYAs7jxL9Z5JTyA=;
+        b=cKJb+1anPH5nx0QokPkWHc1eslRDIE7n2q60lYmUJZe1VQK3oYQhMrfx+BSxBinah9
+         EkqH0pkjTZGeG/+jqTt7xVcuR22gO8kdN8uz4cyurD7XJHeZbvIpZem9aGVqfBgX9ju2
+         f/Qz5CdmVy9m2YOcz21Sk31SKm2KC+0Oh3N8UPjBHz47iAXbwa09kmYfzzgGtcuA45Kw
+         LCDX/ImEHUUPPcaUyorYRBTz986sb+bzkItcwKHjcqKwo3UpGfoVA0xkhWXJ2omjASpM
+         cgy4zz4SxaNh4Pt2dnFF2TKPNuCU+Ox02PyROhOuzAAW1Z/ppBmO0S6tda8FA5ZbfGvV
+         H1zg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=Y/a/zbYT3mheg8JLw87yQei4Q/XEwYAs7jxL9Z5JTyA=;
+        b=lfeBu7NmCOtl4ajUlxVEygPgC995Bgl67uvzPBCa7cjN7QEhHor7lnQw3ac6gSbgVj
+         6d8+fHjDSkkDtoVgI7VospZUZg4scs8E0tkDoYelfGGExALdz9MLuA3cQ21tbxP+9rys
+         kQ7Ipe04Z2/5i5+wKHyY7MfDdl/NAMT4Ra9eQtCT38U3tDqGcncQBTmCFhjd3QQb5PFb
+         e0wNmfLRmk8b0avN26Rttw3QNua1a8DFR3tX/y92t3r0rCmO3uH2PeGeNdB8UMjBWpgi
+         r29FchRoz/oetP2ujSkNVgULsKLLjMNXauguqjupDY54Phz+vmJHmECY05OPD5nYUqdd
+         kUCQ==
+X-Gm-Message-State: AOAM532tA6NGAZFqwITZMXlioyP+qYyY8QJnwGUk0KHOgJtv0+lzqzsm
+        UFAQ5dRjBylAYQLLiHIXK0dtkmvAv4g5bDjpSRo=
+X-Google-Smtp-Source: ABdhPJxmPJv+Coy9OsgrxrRmX/6vRF26FjAiHxnnt+EkjQKkjggARFe9Os8KR1MbhyAbMfgRBsxJclA/7NIzZx7L18g=
+X-Received: by 2002:a05:6102:5e1:: with SMTP id w1mr21239002vsf.147.1593842928615;
+ Fri, 03 Jul 2020 23:08:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200703171626.GC2743379@dell>
+References: <20200703212156.30453-1-rdunlap@infradead.org> <20200703212156.30453-4-rdunlap@infradead.org>
+In-Reply-To: <20200703212156.30453-4-rdunlap@infradead.org>
+Reply-To: linasvepstas@gmail.com
+From:   Linas Vepstas <linasvepstas@gmail.com>
+Date:   Sat, 4 Jul 2020 01:08:36 -0500
+Message-ID: <CAHrUA35-ocneW=B+P+qjTTtBztS3ZtDcoESXOBz0sc5nSw1xew@mail.gmail.com>
+Subject: Re: [PATCH 3/4] Documentation: PCI: pci-error-recovery: drop doubled words
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        linux-pci@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 03, 2020 at 06:16:26PM +0100, Lee Jones wrote:
-> On Fri, 03 Jul 2020, Minas Harutyunyan wrote:
-> 
-> > Hi,
-> > 
-> > On 7/3/2020 11:29 AM, Greg KH wrote:
-> > > On Thu, Jul 02, 2020 at 03:46:06PM +0100, Lee Jones wrote:
-> > >> Commit ec1f9d9f01384 ("usb: dwc2: gadget: parity fix in isochronous mode") moved
-> > >> these checks to dwc2_hsotg_change_ep_iso_parity() back in 2015.  The assigned
-> > >> value hasn't been read back since.  Let's remove the unnecessary H/W read.
-> > >>
-> > >> Fixes the following W=1 warning:
-> > >>
-> > >>   drivers/usb/dwc2/gadget.c: In function ‘dwc2_hsotg_epint’:
-> > >>   drivers/usb/dwc2/gadget.c:2981:6: warning: variable ‘ctrl’ set but not used [-Wunused-but-set-variable]
-> > >>   2981 | u32 ctrl;
-> > >>   | ^~~~
-> > >>
-> > >> Cc: Minas Harutyunyan <hminas@synopsys.com>
-> > >> Cc: Ben Dooks <ben@simtec.co.uk>
-> > >> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > >> ---
-> > >>   drivers/usb/dwc2/gadget.c | 2 --
-> > >>   1 file changed, 2 deletions(-)
-> > >>
-> > >> diff --git a/drivers/usb/dwc2/gadget.c b/drivers/usb/dwc2/gadget.c
-> > >> index 116e6175c7a48..fa07e3fcb8841 100644
-> > >> --- a/drivers/usb/dwc2/gadget.c
-> > >> +++ b/drivers/usb/dwc2/gadget.c
-> > >> @@ -2975,10 +2975,8 @@ static void dwc2_hsotg_epint(struct dwc2_hsotg *hsotg, unsigned int idx,
-> > >>   	u32 epctl_reg = dir_in ? DIEPCTL(idx) : DOEPCTL(idx);
-> > >>   	u32 epsiz_reg = dir_in ? DIEPTSIZ(idx) : DOEPTSIZ(idx);
-> > >>   	u32 ints;
-> > >> -	u32 ctrl;
-> > >>   
-> > >>   	ints = dwc2_gadget_read_ep_interrupts(hsotg, idx, dir_in);
-> > >> -	ctrl = dwc2_readl(hsotg, epctl_reg);
-> > > 
-> > > As you know, lots of hardware requires reads to happen to do things, so
-> > > are you sure it is safe to remove this read call?
-> > > 
-> > 
-> > Greg, yes, it's Ok to remove this unnecessary read which remained from 
-> > previous implementations.
-> > 
-> > Lee, please add "Fixes:" tag and resubmit v2.
-> 
-> Is this suitable for Stable Greg?
+Acked-by: Linas Vepstas <linasvepstas@gmail.com>
 
-Does it fix something that people have ever noticed or care about?
-Given the age of the bug, I doubt it :)
+for this and the other patches in the series.
 
-thanks,
 
-greg k-h
+On Fri, Jul 3, 2020 at 4:22 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+>
+> Drop the doubled word "the".
+>
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Cc: linux-doc@vger.kernel.org
+> Cc: Bjorn Helgaas <bhelgaas@google.com>
+> Cc: Linas Vepstas <linasvepstas@gmail.com>
+> Cc: linux-pci@vger.kernel.org
+> ---
+>  Documentation/PCI/pci-error-recovery.rst |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> --- linux-next-20200701.orig/Documentation/PCI/pci-error-recovery.rst
+> +++ linux-next-20200701/Documentation/PCI/pci-error-recovery.rst
+> @@ -248,7 +248,7 @@ STEP 4: Slot Reset
+>  ------------------
+>
+>  In response to a return value of PCI_ERS_RESULT_NEED_RESET, the
+> -the platform will perform a slot reset on the requesting PCI device(s).
+> +platform will perform a slot reset on the requesting PCI device(s).
+>  The actual steps taken by a platform to perform a slot reset
+>  will be platform-dependent. Upon completion of slot reset, the
+>  platform will call the device slot_reset() callback.
+
+
+
+-- 
+Verbogeny is one of the pleasurettes of a creatific thinkerizer.
+        --Peter da Silva
