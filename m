@@ -2,205 +2,362 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13D95214510
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 13:23:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DA6621454E
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 13:34:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727952AbgGDLUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Jul 2020 07:20:10 -0400
-Received: from mga11.intel.com ([192.55.52.93]:48334 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727868AbgGDLUB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Jul 2020 07:20:01 -0400
-IronPort-SDR: QKmiwYB6FvWs5fGHC5IpXYhT4uiiaTV87STyTc7y9TyVdVp2zqdFgcjIsDCX0S628Y2yZ7yDhB
- CldrEuCaBJqA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9671"; a="145371360"
-X-IronPort-AV: E=Sophos;i="5.75,311,1589266800"; 
-   d="scan'208";a="145371360"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jul 2020 04:19:54 -0700
-IronPort-SDR: h1ON9ETzssuBh2NUHeKx3XWaxFJYgjZnBju22b4lJCMGJch1c4hNBI03NqOWz88xQEFNWlU7ri
- JlOT6KXhzlxA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,311,1589266800"; 
-   d="scan'208";a="282521463"
-Received: from jacob-builder.jf.intel.com ([10.7.199.155])
-  by orsmga006.jf.intel.com with ESMTP; 04 Jul 2020 04:19:53 -0700
-From:   Liu Yi L <yi.l.liu@intel.com>
-To:     alex.williamson@redhat.com, eric.auger@redhat.com,
-        baolu.lu@linux.intel.com, joro@8bytes.org
-Cc:     kevin.tian@intel.com, jacob.jun.pan@linux.intel.com,
-        ashok.raj@intel.com, yi.l.liu@intel.com, jun.j.tian@intel.com,
-        yi.y.sun@intel.com, jean-philippe@linaro.org, peterx@redhat.com,
-        hao.wu@intel.com, stefanha@gmail.com,
-        iommu@lists.linux-foundation.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 15/15] iommu/vt-d: Support reporting nesting capability info
-Date:   Sat,  4 Jul 2020 04:26:29 -0700
-Message-Id: <1593861989-35920-16-git-send-email-yi.l.liu@intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1593861989-35920-1-git-send-email-yi.l.liu@intel.com>
-References: <1593861989-35920-1-git-send-email-yi.l.liu@intel.com>
+        id S1727895AbgGDLev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Jul 2020 07:34:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726621AbgGDLev (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 4 Jul 2020 07:34:51 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA96FC061794
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Jul 2020 04:34:50 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id j18so34348588wmi.3
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Jul 2020 04:34:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ZhZK32moMwNKC3Zi3SUMtlpuiUvUgXFLuf1hMzSDJJo=;
+        b=VYPSW47KW7mN/gi3095AnWTz/O4bIs9XY1WHoJfN9kHp1hvFuKHxtQutSr/Uf842gF
+         gb/fHu1JgOyoafTpuSJSh3kV5LyFcBwLLX9h5yEs6221ky3oVcqy4oBmxrpy/dPbw8EY
+         e+57TMDgoga8PPraCj9hQMzA2IVqyLb1ui+co=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ZhZK32moMwNKC3Zi3SUMtlpuiUvUgXFLuf1hMzSDJJo=;
+        b=LiDjMWk8cTnyfWv1wFeQa8QsLoNifPKCWd/DG0UjWVUigp7Gcoh6RFrVY9PzZFcvYE
+         HeXP0tXtsiRpa2vqHuwH58kyRUHUFn69C5lmkoM+tGHJU7zP5eMAI7+DhNWwq2Q0TlXX
+         sCFvuIt8ndDp9QWECtnY/Xi/sTJ+Q1MNPq5yKVDJ0u7SKPCVUE72hLr/2b/U6bFPLkS3
+         VIbHlQNmdfQ1l2Cpjt/VS7Om3RsejYmTKrMtE7Vmg8LaABWjGq4IMNMrXHbslUiyzOSm
+         /vDR2qFE/qIftXXdF85s48uoxvE8kY45BVV4ZQSXHbb6nTrHCIEkYxqsjbiftROesF/g
+         NH2w==
+X-Gm-Message-State: AOAM5325bHCywrOyVlc0E59O3RV86BHvbtkZzPiXGvxltPiuZEPfolhd
+        6TO4ofRsSUBlBf4gMvJfZlytaiRETvEVaGEgkNeRiA==
+X-Google-Smtp-Source: ABdhPJwYx8vitLOJRot4DkoWUXEeX2/iSZOylj7pbyMaJtgtnxXR4z9c1TdXevNToMHrYi25FgTMNtpCiHYcQw1wbs4=
+X-Received: by 2002:a1c:6788:: with SMTP id b130mr42087381wmc.100.1593862489252;
+ Sat, 04 Jul 2020 04:34:49 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200703071913.2358882-1-yuhsuan@chromium.org>
+ <8d21fc0c-b43e-75a0-d5d4-ed4872ec92cb@collabora.com> <CAGvk5Pqx475MOsefchcgs=CnVJiwFJxa+-J6eHcp1VgscVkTeg@mail.gmail.com>
+ <cea2bc7e-035b-2c97-73bf-25dc55ab8801@collabora.com> <CAGvk5PoiWDchYCsaR_tqQ5mE0XA_hBXHy-hS5o3vFtuPzm_JiA@mail.gmail.com>
+ <d5634533-3cf3-b52a-ff24-2bda3230927d@collabora.com> <CABXOdTcP0DagxzUrBh5H_TXzSAZjMAG4UaV++0sW99W4ypC78w@mail.gmail.com>
+ <CAGvk5PpKTHGgp5v3FLGARE7EX7F7nZUJucnpcncbf4epDfZ7jw@mail.gmail.com> <CABXOdTemH2sknDJYmUyazk38+nK2ny+OiD8BaqcS=_t7STEEWg@mail.gmail.com>
+In-Reply-To: <CABXOdTemH2sknDJYmUyazk38+nK2ny+OiD8BaqcS=_t7STEEWg@mail.gmail.com>
+From:   Yu-Hsuan Hsu <yuhsuan@chromium.org>
+Date:   Sat, 4 Jul 2020 19:34:37 +0800
+Message-ID: <CAGvk5PrV2u==ZH38mX1DAUpa8YRiDmCazkxNr1qhFmOaiw2duQ@mail.gmail.com>
+Subject: Re: [PATCH v2] ASoC: cros_ec_codec: Log results when EC commands fail
+To:     Guenter Roeck <groeck@google.com>
+Cc:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        ALSA development <alsa-devel@alsa-project.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Tzung-Bi Shih <tzungbi@google.com>,
+        Mark Brown <broonie@kernel.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        Benson Leung <bleung@chromium.org>,
+        Cheng-Yi Chiang <cychiang@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cc: Kevin Tian <kevin.tian@intel.com>
-CC: Jacob Pan <jacob.jun.pan@linux.intel.com>
-Cc: Alex Williamson <alex.williamson@redhat.com>
-Cc: Eric Auger <eric.auger@redhat.com>
-Cc: Jean-Philippe Brucker <jean-philippe@linaro.org>
-Cc: Joerg Roedel <joro@8bytes.org>
-Cc: Lu Baolu <baolu.lu@linux.intel.com>
-Signed-off-by: Liu Yi L <yi.l.liu@intel.com>
-Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
----
-v2 -> v3:
-*) remove cap/ecap_mask in iommu_nesting_info.
----
- drivers/iommu/intel/iommu.c | 81 +++++++++++++++++++++++++++++++++++++++++++--
- include/linux/intel-iommu.h | 16 +++++++++
- 2 files changed, 95 insertions(+), 2 deletions(-)
+Guenter Roeck <groeck@google.com> =E6=96=BC 2020=E5=B9=B47=E6=9C=884=E6=97=
+=A5 =E9=80=B1=E5=85=AD =E4=B8=8A=E5=8D=883:28=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> On Fri, Jul 3, 2020 at 12:11 PM Yu-Hsuan Hsu <yuhsuan@chromium.org> wrote=
+:
+> >
+> > Guenter Roeck <groeck@google.com> =E6=96=BC 2020=E5=B9=B47=E6=9C=883=E6=
+=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=8811:58=E5=AF=AB=E9=81=93=EF=BC=
+=9A
+> > >
+> > > On Fri, Jul 3, 2020 at 3:56 AM Enric Balletbo i Serra
+> > > <enric.balletbo@collabora.com> wrote:
+> > > >
+> > > > Hi Yu-Hsuan,
+> > > >
+> > > > On 3/7/20 11:40, Yu-Hsuan Hsu wrote:
+> > > > > Enric Balletbo i Serra <enric.balletbo@collabora.com> =E6=96=BC 2=
+020=E5=B9=B47=E6=9C=883=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=885:19=
+=E5=AF=AB=E9=81=93=EF=BC=9A
+> > > > >>
+> > > > >> Hi Yu-Hsuan,
+> > > > >>
+> > > > >> On 3/7/20 10:48, Yu-Hsuan Hsu wrote:
+> > > > >>> Enric Balletbo i Serra <enric.balletbo@collabora.com> =E6=96=BC=
+ 2020=E5=B9=B47=E6=9C=883=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=884:3=
+8=E5=AF=AB=E9=81=93=EF=BC=9A
+> > > > >>>>
+> > > > >>>> Hi Yu-Hsuan,
+> > > > >>>>
+> > > > >>>> Thank you for your patch
+> > > > >>>>
+> > > > >>>> On 3/7/20 9:19, Yu-Hsuan Hsu wrote:
+> > > > >>>>> Log results of failed EC commands to identify a problem more =
+easily.
+> > > > >>>>>
+> > > > >>>>> Replace cros_ec_cmd_xfer_status with cros_ec_cmd_xfer because=
+ the result
+> > > > >>>>> has already been checked in this function. The wrapper is not=
+ needed.
+> > > > >>>>>
+> > > > >>>>
+> > > > >>>> Nack, we did an effort to remove all public users of cros_ec_c=
+md_xfer() in
+> > > > >>>> favour of cros_ec_cmd_xfer_status() and you are reintroducing =
+again. You can do
+> > > > >>>> the same but using cros_ec_cmd_xfer_status(). In fact, your pa=
+tch will not build
+> > > > >>>> on top of the upcoming changes.
+> > > > >>> Thanks! But I have a question about implementing it. Does it lo=
+ok like
+> > > > >>> the one below?
+> > > > >>> ret =3D cros_ec_cmd_xfer_status(ec_dev, msg);
+> > > > >>> if (ret < 0) {
+> > > > >>
+> > > > >> In this case will already print an error.
+> > > > >>
+> > > > >> What are you trying to achieve?
+> > > > >>
+> > > > >> If the only reason is of this patch is print a message you shoul=
+d either, or
+> > > > >> enable dynamic printk and enable dev_dbg or event better use the=
+ kernel trace
+> > > > >> functionality. There is no need to be more verbose.
+> > > > >>
+> > > > >> Example:
+> > > > >>     $ echo 1 > /sys/kernel/debug/tracing/events/cros_ec/enable
+> > > > >>     $ cat /sys/kernel/debug/tracing/trace
+> > > > >>
+> > > > >>     369.416372: cros_ec_request_start: version: 0, command: EC_C=
+MD_USB_PD_POWER_INFO
+> > > > >>     369.420528: cros_ec_request_done: version: 0, command:
+> > > > >> EC_CMD_USB_PD_POWER_INFO, ec result: EC_RES_SUCCESS, retval: 16
+> > > > >>
+> > > > >> Cheers,
+> > > > >>  Enric
+> > > > >>
+> > > > > Thank Enric,
+> > > > >
+> > > > > The situation is that some users encountered errors on ChromeBook=
+.
+> > > >
+> > > > And, aren't you able to reproduce the issue?
+> > > >
+> > > >
+> > > > > From their feedback reports, we only get the message like
+> > > > > 'cros-ec-codec GOOG0013:00: ASoC: Failed to set DAI format: -71'.
+> > > > > We know that -71 is -EPROTO but it is not clear enough for us to =
+find
+> > > > > out the root cause. That's why we want the detail of the result.
+> > > >
+> > > >
+> > > > If I am not mistaken this ends calling i2s_rx_set_daifmt() into the=
+ EC firmware,
+> > > > if the result is -EPROTO that means is not returning EC_RES_SUCCESS=
+, so there
+> > > > are few options:
+> > > >
+> > > >         if (i2s_rx_enabled)
+> > > >                 return EC_RES_BUSY;
+> > > >
+> > > >         if (daifmt >=3D EC_CODEC_I2S_RX_DAIFMT_COUNT)
+> > > >                 return EC_RES_INVALID_PARAM;
+> > > >
+> > > >         if (audio_codec_i2s_rx_set_daifmt(daifmt) !=3D EC_SUCCESS)
+> > > >                 return EC_RES_ERROR;
+> > > >
+> > > > > Because the situation happens on users' side, it is not possible =
+for
+> > > > > them to enable kernel trace (ChromeOS does not allow users to tou=
+ch
+> > > > > kernel).
+> > > > >
+> > > >
+> > > > Are you sure that when you know the error code you'll find the root=
+ cause
+> > > > (without adding more prints)? There is only three possibilities? Yo=
+u can't start
+> > > > adding prints just to debug a user issue because you don't allow to=
+ be more
+> > > > verbose. I understand that might help you but is not the way to go.
+> >
+> > Hi Enric and Guenter,
+> >
+> > Thanks for your inspiring comments.
+> > I'm not sure whether we will find the root cause if I know the error
+> > code. But I think it's not a point.
+> > We wanted to add this error log because we found that the current one
+> > is not enough. Since it is a real error, it would be better if we can
+> > make it more detailed, right?
+> > In addition, we thought it would be helpful in the future as well.
+> > That's why we chose to upstream instead of merging into our source
+> > tree only.
+> >
+>
+> Kernel log messages are almost never useful for actual users. In most
+> cases, they just clog up the kernel log, making it useless for when it
+> actually counts (such as when the system crashes). On top of that,
+> there already is an error message, only the error code doesn't mean
+> much because it is "universalized". I don't see how adding another
+> error message would improve that, even more so if that error message
+> is only added in one place. On the other side, converting EC error
+> codes to Linux kernel error codes would help every caller of
+> cros_ec_cmd_xfer_status without adding more logging noise.
 
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index 7bebf82..4c10f4f 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -5659,12 +5659,16 @@ static inline bool iommu_pasid_support(void)
- static inline bool nested_mode_support(void)
- {
- 	struct dmar_drhd_unit *drhd;
--	struct intel_iommu *iommu;
-+	struct intel_iommu *iommu, *prev = NULL;
- 	bool ret = true;
- 
- 	rcu_read_lock();
- 	for_each_active_iommu(iommu, drhd) {
--		if (!sm_supported(iommu) || !ecap_nest(iommu->ecap)) {
-+		if (!prev)
-+			prev = iommu;
-+		if (!sm_supported(iommu) || !ecap_nest(iommu->ecap) ||
-+		    (VTD_CAP_MASK & (iommu->cap ^ prev->cap)) ||
-+		    (VTD_ECAP_MASK & (iommu->ecap ^ prev->ecap))) {
- 			ret = false;
- 			break;
- 		}
-@@ -6073,6 +6077,78 @@ intel_iommu_domain_set_attr(struct iommu_domain *domain,
- 	return ret;
- }
- 
-+static int intel_iommu_get_nesting_info(struct iommu_domain *domain,
-+					struct iommu_nesting_info *info)
-+{
-+	struct dmar_domain *dmar_domain = to_dmar_domain(domain);
-+	u64 cap = VTD_CAP_MASK, ecap = VTD_ECAP_MASK;
-+	struct device_domain_info *domain_info;
-+	struct iommu_nesting_info_vtd vtd;
-+	unsigned long flags;
-+	u32 size;
-+
-+	if ((domain->type != IOMMU_DOMAIN_UNMANAGED) ||
-+	    !(dmar_domain->flags & DOMAIN_FLAG_NESTING_MODE))
-+		return -ENODEV;
-+
-+	if (!info)
-+		return -EINVAL;
-+
-+	size = sizeof(struct iommu_nesting_info) +
-+		sizeof(struct iommu_nesting_info_vtd);
-+	/*
-+	 * if provided buffer size is not equal to the size, should
-+	 * return 0 and also the expected buffer size to caller.
-+	 */
-+	if (info->size != size) {
-+		info->size = size;
-+		return 0;
-+	}
-+
-+	spin_lock_irqsave(&device_domain_lock, flags);
-+	/*
-+	 * arbitrary select the first domain_info as all nesting
-+	 * related capabilities should be consistent across iommu
-+	 * units.
-+	 */
-+	domain_info = list_first_entry(&dmar_domain->devices,
-+				      struct device_domain_info, link);
-+	cap &= domain_info->iommu->cap;
-+	ecap &= domain_info->iommu->ecap;
-+	spin_unlock_irqrestore(&device_domain_lock, flags);
-+
-+	info->format = IOMMU_PASID_FORMAT_INTEL_VTD;
-+	info->features = IOMMU_NESTING_FEAT_SYSWIDE_PASID |
-+			 IOMMU_NESTING_FEAT_BIND_PGTBL |
-+			 IOMMU_NESTING_FEAT_CACHE_INVLD;
-+	info->addr_width = dmar_domain->gaw;
-+	info->pasid_bits = ilog2(intel_pasid_max_id);
-+	info->padding = 0;
-+	vtd.flags = 0;
-+	vtd.padding = 0;
-+	vtd.cap_reg = cap;
-+	vtd.ecap_reg = ecap;
-+
-+	memcpy(info->data, &vtd, sizeof(vtd));
-+	return 0;
-+}
-+
-+static int intel_iommu_domain_get_attr(struct iommu_domain *domain,
-+				       enum iommu_attr attr, void *data)
-+{
-+	switch (attr) {
-+	case DOMAIN_ATTR_NESTING:
-+	{
-+		struct iommu_nesting_info *info =
-+				(struct iommu_nesting_info *) data;
-+
-+		return intel_iommu_get_nesting_info(domain, info);
-+	}
-+	default:
-+		return -ENODEV;
-+	}
-+}
-+
- /*
-  * Check that the device does not live on an external facing PCI port that is
-  * marked as untrusted. Such devices should not be able to apply quirks and
-@@ -6095,6 +6171,7 @@ const struct iommu_ops intel_iommu_ops = {
- 	.domain_alloc		= intel_iommu_domain_alloc,
- 	.domain_free		= intel_iommu_domain_free,
- 	.domain_set_attr	= intel_iommu_domain_set_attr,
-+	.domain_get_attr	= intel_iommu_domain_get_attr,
- 	.attach_dev		= intel_iommu_attach_device,
- 	.detach_dev		= intel_iommu_detach_device,
- 	.aux_attach_dev		= intel_iommu_aux_attach_device,
-diff --git a/include/linux/intel-iommu.h b/include/linux/intel-iommu.h
-index 18f292e..a5728d7 100644
---- a/include/linux/intel-iommu.h
-+++ b/include/linux/intel-iommu.h
-@@ -197,6 +197,22 @@
- #define ecap_max_handle_mask(e) ((e >> 20) & 0xf)
- #define ecap_sc_support(e)	((e >> 7) & 0x1) /* Snooping Control */
- 
-+/* Nesting Support Capability Alignment */
-+#define VTD_CAP_FL1GP		(1ULL << 56)
-+#define VTD_CAP_FL5LP		(1ULL << 60)
-+#define VTD_ECAP_PRS		(1ULL << 29)
-+#define VTD_ECAP_ERS		(1ULL << 30)
-+#define VTD_ECAP_SRS		(1ULL << 31)
-+#define VTD_ECAP_EAFS		(1ULL << 34)
-+#define VTD_ECAP_PASID		(1ULL << 40)
-+
-+/* Only capabilities marked in below MASKs are reported */
-+#define VTD_CAP_MASK		(VTD_CAP_FL1GP | VTD_CAP_FL5LP)
-+
-+#define VTD_ECAP_MASK		(VTD_ECAP_PRS | VTD_ECAP_ERS | \
-+				 VTD_ECAP_SRS | VTD_ECAP_EAFS | \
-+				 VTD_ECAP_PASID)
-+
- /* Virtual command interface capability */
- #define vccap_pasid(v)		(((v) & DMA_VCS_PAS)) /* PASID allocation */
- 
--- 
-2.7.4
+Thanks for the explanation. If I understand correctly, the mean point
+is this log is noisy.
+In this case, the log will only appear one time during the card
+probing(if it fails). But I do agree that it may create some potential
+noises.
+Converting EC error codes to Linux kernel error codes also work for
+me. Is it possible for you to send the corresponding patch? If not, I
+can try to work on it.
+In addition, is it possible that one error code can come from linux or from=
+ EC?
 
+>
+> > > >
+> > > > You should really reproduce the issue yourself an use actual debug
+> > > > tools/prints./traces
+> > We are trying but still unable to reproduce this issue.
+> > However, as I maintained above, it is not a main concern of this change=
+.
+> > > >
+> > >
+> > > Another possibility would be to change cros_ec_cmd_xfer_status() to
+> > > return a more granular error code, such as -EINVAL for
+> > > EC_RES_INVALID_PARAM, -EBUSY for EC_RES_BUSY, -EINPROGRESS for
+> > > EC_RES_IN_PROGRESS,  -ETIMEDOUT for EC_RES_TIMEOUT, -EOVERFLOW for
+> > > EC_RES_OVERFLOW, -ENODATA for EC_RES_UNAVAILABLE, and so on.
+> > Since there are many kinds of results from EC, why not just make users
+> > able to check on their own?
+> > For example, users can wait and try again if the result is EC_RES_BUSY.
+> >
+>
+> That is exactly what -EBUSY is for: It lets the user space application
+> decide what to do about it. A kernel log message can not and will
+> never achieve that.
+>
+> > >
+> > > However, it appears that the various low level functions already
+> > > replace various EC error codes with a blank EC_RES_ERROR. No amount o=
+f
+> > > logging will tell us what exactly went wrong in those functions. Luck=
+y
+> > > for us, audio_codec_i2s_rx_set_daifmt() only ever returns EC_SUCCESS,
+> > > so we know that the problem is either that i2s_rx_enabled is true or
+> > > that daifmt is too large. None of those really warrants more verbose
+> > > logging.
+> > >
+> > > From the context, my personal bet is that i2s_rx_enabled is true: I
+> > > don't immediately see how disabling it is enforced before trying to
+> > > set the DAI format, and I don't see how "daifmt >=3D
+> > > EC_CODEC_I2S_RX_DAIFMT_COUNT" can ever be true.
+> > I totally agree. According to the source, it seems that both path are
+>
+> You are effectively saying that there is code to ensure that
+> i2s_rx_enabled is false. Granted, the code is too complex to easily
+> understand, and I may not have seen that flow. Per the same logic,
+> though, it might well be possible that _because_ the code is not easy
+> to understand there may well be a data path where i2s_rx_enabled is
+> set. One would need to ensure that the sequence of <disable rx> - <set
+> dai format> - <re-enable rx> is guaranteed, and that it is always
+> executed under a kernel lock. Maybe you can point me to that code, for
+> my education.
+>
+> On the other side, it is much easier to verify that "daifmt >=3D
+> EC_CODEC_I2S_RX_DAIFMT_COUNT" is never true.
+>
+> Thanks,
+> Guenter
+The complete errors are:
+ERR kernel: [    8.568171]  cros-ec-codec GOOG0013:00: ASoC: error at
+snd_soc_dai_set_fmt on GOOG0013:00: -71
+WARNING kernel: [    8.583312] cros-ec-codec GOOG0013:00: ASoC: Failed
+to set DAI format: -71
+ERR kernel: [    8.629388] acp3x-alc5682-max98357 AMDI5682:00:
+devm_snd_soc_register_card(acp3xalc5682m98357) failed: -71
+WARNING kernel: [    8.645306] acp3x-alc5682-max98357: probe of
+AMDI5682:00 failed with error -71
+
+This issue happened when probing the card while the i2s_rx is only
+enabled when the device is used. Therefore, the i2s_rx should not be
+enabled before the card is probed. However, I may miss something. I
+will check the entire path later.
+For "daifmt >=3D EC_CODEC_I2S_RX_DAIFMT_COUNT", it is obviously not to
+be true by looking into i2s_rx_set_fmt function.
+
+Thanks,
+Yu-Hsuan
+
+>
+> > impossible. I'm not really understand the whole path but is it
+> > possible for EC to return other results? I will do more tests and look
+> > carefully into the source. Really thanks for your suggestions.
+> >
+> > Cheers,
+> > Yu-Hsuan
+> > >
+> > > Guenter
+> > >
+> > >
+> > > Guenter
+> > >
+> > > > Cheers,
+> > > >  Enric
+> > > >
+> > > > > The other way we thought is changing dev_dbg to dev_err in
+> > > > > cros_ec_cmd_xfer_status. But we are not sure whether it is also a=
+n
+> > > > > error for other usages.
+> > > > >
+> > > > >>>   if (ret =3D=3D -EPROTO)
+> > > > >>>     dev_err(..., msg->result)
+> > > > >>>   goto error;
+> > > > >>> }
+> > > > >>> I'm not sure whether it makes sense to check ret =3D=3D -EPROTO=
+ here.
+> > > > >>>
+> > > > >>>>
+> > > > >>>>> Signed-off-by: Yu-Hsuan Hsu <yuhsuan@chromium.org>
+> > > > >>>>> ---
+> > > > >>>>>  sound/soc/codecs/cros_ec_codec.c | 9 ++++++++-
+> > > > >>>>>  1 file changed, 8 insertions(+), 1 deletion(-)
+> > > > >>>>>
+> > > > >>>>> diff --git a/sound/soc/codecs/cros_ec_codec.c b/sound/soc/cod=
+ecs/cros_ec_codec.c
+> > > > >>>>> index 8d45c628e988e..a4ab62f59efa6 100644
+> > > > >>>>> --- a/sound/soc/codecs/cros_ec_codec.c
+> > > > >>>>> +++ b/sound/soc/codecs/cros_ec_codec.c
+> > > > >>>>> @@ -90,10 +90,17 @@ static int send_ec_host_command(struct cr=
+os_ec_device *ec_dev, uint32_t cmd,
+> > > > >>>>>       if (outsize)
+> > > > >>>>>               memcpy(msg->data, out, outsize);
+> > > > >>>>>
+> > > > >>>>> -     ret =3D cros_ec_cmd_xfer_status(ec_dev, msg);
+> > > > >>>>> +     ret =3D cros_ec_cmd_xfer(ec_dev, msg);
+> > > > >>>>>       if (ret < 0)
+> > > > >>>>>               goto error;
+> > > > >>>>>
+> > > > >>>>> +     if (msg->result !=3D EC_RES_SUCCESS) {
+> > > > >>>>> +             dev_err(ec_dev->dev, "Command %d failed: %d\n",=
+ cmd,
+> > > > >>>>> +                     msg->result);
+> > > > >>>>> +             ret =3D -EPROTO;
+> > > > >>>>> +             goto error;
+> > > > >>>>> +     }
+> > > > >>>>> +
+> > > > >>>>>       if (insize)
+> > > > >>>>>               memcpy(in, msg->data, insize);
+> > > > >>>>>
+> > > > >>>>>
