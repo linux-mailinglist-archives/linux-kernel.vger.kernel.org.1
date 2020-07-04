@@ -2,77 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A8EC21461D
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 15:30:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02918214624
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 15:33:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728059AbgGDNak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Jul 2020 09:30:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57366 "EHLO
+        id S1728002AbgGDNdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Jul 2020 09:33:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727947AbgGDNaj (ORCPT
+        with ESMTP id S1726643AbgGDNdm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Jul 2020 09:30:39 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAD13C08C5DE
-        for <linux-kernel@vger.kernel.org>; Sat,  4 Jul 2020 06:30:38 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id n2so21260773edr.5
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Jul 2020 06:30:38 -0700 (PDT)
+        Sat, 4 Jul 2020 09:33:42 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC64FC061794;
+        Sat,  4 Jul 2020 06:33:41 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id k6so35662593wrn.3;
+        Sat, 04 Jul 2020 06:33:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lYXNB8sAYPR03z+7yXMvQjkDEkew3CoGHxaB14N9l3o=;
-        b=c7UsYj0Lh39A+4qQDoIM8UAT0oPZ089C4wY54z+FI+hjKJoHqfZ+OSKJ7pK/eKAzO+
-         T7h9fPkTqD0YYgXGbcszXQVBpQZzfECPoTaiJSGKgFPEOiS0bmZOKBCgcrfKjvEdRMi8
-         ky7eDfhq2RRrihjXm8dQdD6Hedc2JnwUqwscoh1W5k3VqOOPGf5jhlp6vbXB7HwDuuuA
-         l6lArMUWn4qcA6162GFXILJmBuS2liiSETUEkV2qAh7X0km7lbiqZ9omHzHGqNRHaFyc
-         TmsOjTYv2/H0FKRf0bMOTc1qIUhtzUtzAS0OOkKa0/6QnCfPSRLp3MPHy4Nwd0KH+RTE
-         ygpQ==
+        d=gmail.com; s=20161025;
+        h=message-id:date:from:user-agent:mime-version:to:cc:subject
+         :references:in-reply-to:content-transfer-encoding;
+        bh=0aUfXSg0arZGZKHdkJrpGOCQDAyLG7wmioIxcwMAyxM=;
+        b=SdgV3wv0ScOuelLJmjQxFQhn1lIRRiktglhLerZhhRYqL/tTxI6eYsLM8MXM4DuqDN
+         Ah/0AVQL7osE2lF74X93Rv2L/1FNt3aeUY+s06TEMsCXRbk8REC3mk+WP/veVdpq7/d0
+         Vn3k8X8h//RlKM0Jhyg6X8TfNN2ANC6lfqdLKOlcOxm7FEX5zkpvF0bOYgZY0DFHzbED
+         mcIxZortfF1Y44xXDvdZvmADv1vz1rstcmaP1aEx8bdOewL7E/qUuvS45xvfyTS2sR+V
+         6v+FvdTPz15nOVHqsHy2GyEWMmys1TTk45p394TsXgMu4cep1prh4KQ6HIHz5NS0DjTC
+         L9Xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lYXNB8sAYPR03z+7yXMvQjkDEkew3CoGHxaB14N9l3o=;
-        b=lUxO1Hkviidq05C80RiHzT3ixLCf1BBeYEGL5r6zQFxNz1C9tWT6Z+i3xgVNgzs4Nj
-         rPV3TfG7MVoRDEAoG3cm470q27oywHF+PuEyodwSiFKky5lE2umlLgNQADdHVo1JdAmC
-         xxYddBZvNeE7ZKbe9+C+mW5cL+NxNI/i/oCyrrwgVcbIPRqJADJFVeaAonqfkr9F5FPN
-         P4w6kcV0fNjwElW/zG1Uogn6F8Mma4gZ3HyAyUWki9w+20i7kem3seZZe+H7INOuZhHw
-         838i6Dovq/YkAG5dqZet6JCRhdnwomY5d77L357Hu/pCVMT2dOYfFjWmhYSDNm/6YU7P
-         q2KQ==
-X-Gm-Message-State: AOAM530Cujn3ogKHbkzWtAUC0OoVV+66IU/nqxpGTNMnJBhrG7e+NGx8
-        Zk+oKceko02lEMQstLWngSs9/zTRUMsrq8QvK1RW
-X-Google-Smtp-Source: ABdhPJxXnEAomjGOTfVoMxiJBSuMBpETmOS+i8zhHtjzsBKGVLhQISOvjpbb5e1kLK73pS32uCKmaU1565rkftQCo+o=
-X-Received: by 2002:aa7:d6cf:: with SMTP id x15mr44774064edr.164.1593869437418;
- Sat, 04 Jul 2020 06:30:37 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:from:user-agent:mime-version:to
+         :cc:subject:references:in-reply-to:content-transfer-encoding;
+        bh=0aUfXSg0arZGZKHdkJrpGOCQDAyLG7wmioIxcwMAyxM=;
+        b=iLSc0brBB13MM5eyWb7DoqsbFKdWw0GRr/t/8I10ytV6I2af7nIjfTwmoazkx3Jlqe
+         newxf2mMS371iyhKMoBjWFLoUUh2EfhLYOWJi8Ponc6+siLUS3g72PP73Rd4Lqvw5CuD
+         m5y34vg2qmnWOYVOwBVzM+ts8sh08GiCMUhphsxeuLQ5D79tPu8T3Q4gp2SCz/xocDZ7
+         xIKmtqDYoQfHRxgwuh+EWLZFacx5U/aZYrxHM/C/7ioOPEG3XQybX1jd+8blNWnnyF1l
+         8dEyFp2OK2u++F/szRyMRM7cDOe9/MuJOFa3fM0YJ4LXC8kj2g4auLb3DqBP9yo7qCVz
+         Gv7Q==
+X-Gm-Message-State: AOAM533Nkxf6CxbpfVENkyvPua5u4XKRoB+PjF0JB5/rwKExAOfwBNFe
+        jeZ8XnkmfEyyKEB5yBxOTErHwOPMrqw=
+X-Google-Smtp-Source: ABdhPJy754Y72mstvVjug3N3ZrLOsxRHrDZhOujfHBx/qdK++rzuLVOgEp0B7FaL1FkeGiu/ZSxBkQ==
+X-Received: by 2002:adf:e944:: with SMTP id m4mr41804071wrn.252.1593869620501;
+        Sat, 04 Jul 2020 06:33:40 -0700 (PDT)
+Received: from [46.117.43.200] (46-117-43-200.bb.netvision.net.il. [46.117.43.200])
+        by smtp.gmail.com with ESMTPSA id q7sm18235625wrs.27.2020.07.04.06.33.39
+        (version=TLS1 cipher=AES128-SHA bits=128/128);
+        Sat, 04 Jul 2020 06:33:39 -0700 (PDT)
+Message-ID: <5F00850C.6010803@gmail.com>
+Date:   Sat, 04 Jul 2020 16:33:00 +0300
+From:   Eli Billauer <eli.billauer@gmail.com>
+User-Agent: Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.1.12) Gecko/20100907 Fedora/3.0.7-1.fc12 Thunderbird/3.0.7
 MIME-Version: 1.0
-References: <cover.1593198710.git.rgb@redhat.com> <e5a1ab6955c565743372b392a93f7d1ac98478a2.1593198710.git.rgb@redhat.com>
- <CAHC9VhTcFrPDSmvBBXevo-atCnxy4WK2YQ0WOeg4M1Sfz0qPgA@mail.gmail.com>
-In-Reply-To: <CAHC9VhTcFrPDSmvBBXevo-atCnxy4WK2YQ0WOeg4M1Sfz0qPgA@mail.gmail.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Sat, 4 Jul 2020 09:30:26 -0400
-Message-ID: <CAHC9VhTW+pTES3g7gOoCWT3tXG3NsP0KjDLLyBHs_i3HSQMspQ@mail.gmail.com>
-Subject: Re: [PATCH ghak90 V9 02/13] audit: add container id
-To:     Richard Guy Briggs <rgb@redhat.com>
-Cc:     containers@lists.linux-foundation.org, linux-api@vger.kernel.org,
-        Linux-Audit Mailing List <linux-audit@redhat.com>,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        sgrubb@redhat.com, Ondrej Mosnacek <omosnace@redhat.com>,
-        dhowells@redhat.com, simo@redhat.com,
-        Eric Paris <eparis@parisplace.org>,
-        Serge Hallyn <serge@hallyn.com>, ebiederm@xmission.com,
-        nhorman@tuxdriver.com, Dan Walsh <dwalsh@redhat.com>,
-        mpatel@redhat.com
-Content-Type: text/plain; charset="UTF-8"
+To:     Randy Dunlap <rdunlap@infradead.org>
+CC:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH 17/17] Documentation/driver-api: xillybus: drop doubled
+ word
+References: <20200704034502.17199-1-rdunlap@infradead.org> <20200704034502.17199-18-rdunlap@infradead.org>
+In-Reply-To: <20200704034502.17199-18-rdunlap@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 4, 2020 at 9:29 AM Paul Moore <paul@paul-moore.com> wrote:
-> On Sat, Jun 27, 2020 at 9:22 AM Richard Guy Briggs <rgb@redhat.com> wrote:
-> >
-> > Implement the proc fs write to set the audit container identifier of a
-> > process, emitting an AUDIT_CONTAINER_OP record to document the event.
+Acked-by: Eli Billauer <eli.billauer@gmail.com>
 
-Sorry about the email misfire, you can safely ignore that last empty message.
+On 04/07/20 06:45, Randy Dunlap wrote:
+> Drop the doubled word "the".
+>
+> Signed-off-by: Randy Dunlap<rdunlap@infradead.org>
+> Cc: Jonathan Corbet<corbet@lwn.net>
+> Cc: linux-doc@vger.kernel.org
+> Cc: Eli Billauer<eli.billauer@gmail.com>
+> ---
+>   Documentation/driver-api/xillybus.rst |    2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> --- linux-next-20200701.orig/Documentation/driver-api/xillybus.rst
+> +++ linux-next-20200701/Documentation/driver-api/xillybus.rst
+> @@ -273,7 +273,7 @@ buffer is full, the FPGA informs the hos
+>   XILLYMSG_OPCODE_RELEASEBUF message channel 0 and sending an interrupt if
+>   necessary). The host responds by making the data available for reading through
+>   the character device. When all data has been read, the host writes on the
+> -the FPGA's buffer control register, allowing the buffer's overwriting. Flow
+> +FPGA's buffer control register, allowing the buffer's overwriting. Flow
+>   control mechanisms exist on both sides to prevent underflows and overflows.
+>
+>   This is not good enough for creating a TCP/IP-like stream: If the data flow
+>
+>    
+
