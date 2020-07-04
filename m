@@ -2,81 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DA622142A9
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 04:30:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 492042142B6
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 05:00:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726956AbgGDCaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Jul 2020 22:30:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41006 "EHLO
+        id S1727047AbgGDDAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Jul 2020 23:00:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726616AbgGDCaS (ORCPT
+        with ESMTP id S1726573AbgGDDAp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Jul 2020 22:30:18 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 937D3C061794
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Jul 2020 19:30:18 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jrXwP-004yEA-S0; Sat, 04 Jul 2020 02:30:10 +0000
-Date:   Sat, 4 Jul 2020 03:30:09 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: objtool clac/stac handling change..
-Message-ID: <20200704023009.GA2786714@ZenIV.linux.org.uk>
-References: <87lfk26nx4.fsf@mpe.ellerman.id.au>
- <CAHk-=wicOPQwuDUzFyDTBgr4UvQJHPdCX7_6BLaK6cve6CqBSg@mail.gmail.com>
- <20200702201755.GO2786714@ZenIV.linux.org.uk>
- <CAHk-=whW7qYEK-MJMS9gKf-K4cBNGTq0pv-5wo4bqE_QtUfkDw@mail.gmail.com>
- <20200702205902.GP2786714@ZenIV.linux.org.uk>
- <CAHk-=whm66UhcEQgXHr8hPkzyDTOdbGikLbSg0zJ4-b93aSg8w@mail.gmail.com>
- <20200703013328.GQ2786714@ZenIV.linux.org.uk>
- <20200703210237.GS2786714@ZenIV.linux.org.uk>
- <20200704004959.GY2786714@ZenIV.linux.org.uk>
- <CAHk-=whxLURD=qsF3ijmQYxGRPSyjS8_zoxZz-AsD-7tmRBM0w@mail.gmail.com>
+        Fri, 3 Jul 2020 23:00:45 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1949C061794;
+        Fri,  3 Jul 2020 20:00:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=ud82YyKdwRzOkxligMfHBrg7GpvgBKz6ipGqofQVEDU=; b=DkGv2CUQcqqlCqddo0SThRRgFH
+        2JBsugUhvWgBnAh8UNA9qIOHN9wyAMa72PXZV8PwYvU3CopRyQiv11IULfUVRYDxJJPVx0QXmzYC3
+        rQjF0hG5Y4rtHtDe4RQhxLlgNBbo8MQf6MTGuE2e9syiyhArMghmujIea5WWGNnYVSfGBFmHT1Pwj
+        BhBvGIot8tu5OKZRRGd/AbR1q4SH17+Cdp6QNTMjYoqkTpGrBrMrUs4OXpcYvfpEXe+tY3KpR9p7f
+        HDt+yHH4Zxgm8bsdzJ4/NvimJI+1qPWo2stQb7nQSPGyj6OQFu1NmfKxF0fZ0qsl7NItlEkp0C3Al
+        qzoXIvHw==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jrYPw-0005js-Br; Sat, 04 Jul 2020 03:00:40 +0000
+Subject: Re: mmotm 2020-07-03-15-03 uploaded (drivers/soc/qcom/qcom-geni-se.c)
+To:     akpm@linux-foundation.org, broonie@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-next@vger.kernel.org, mhocko@suse.cz,
+        mm-commits@vger.kernel.org, sfr@canb.auug.org.au,
+        Rob Herring <robh+dt@kernel.org>
+References: <20200703220423.GEbKTUJ0A%akpm@linux-foundation.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <d77d33e0-4d52-2d63-6224-095c9f21638d@infradead.org>
+Date:   Fri, 3 Jul 2020 20:00:33 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
+In-Reply-To: <20200703220423.GEbKTUJ0A%akpm@linux-foundation.org>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHk-=whxLURD=qsF3ijmQYxGRPSyjS8_zoxZz-AsD-7tmRBM0w@mail.gmail.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 03, 2020 at 06:54:15PM -0700, Linus Torvalds wrote:
+On 7/3/20 3:04 PM, akpm@linux-foundation.org wrote:
+> The mm-of-the-moment snapshot 2020-07-03-15-03 has been uploaded to
+> 
+>    http://www.ozlabs.org/~akpm/mmotm/
+> 
+> mmotm-readme.txt says
+> 
+> README for mm-of-the-moment:
+> 
+> http://www.ozlabs.org/~akpm/mmotm/
+> 
+> This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
+> more than once a week.
+> 
 
->  "Software Prefetches May Report A Page Fault
-> 
->   Description Software prefetch instructions are defined to ignore
-> page faults. Under highly specific and detailed internal
-> circumstances, a prefetch instruction may report a page fault if both
-> of the following conditions are true:
-> 
->    • The target address of the prefetch would cause a page fault if
-> the address was accessed by an actual memory load or store instruction
-> under the current privilege mode;
-> 
->    • The prefetch instruction is followed in execution-order by an
-> actual or speculative byte-sized memory access of the same
-> modify-intent to the same address. PREFETCH and PREFETCHNTA/0/1/2 have
-> the same modify-intent as a memory load access.
-> 
->   PREFETCHW has the same modify-intent as a memory store access. The
-> page fault exception error code bits for the faulting prefetch will be
-> identical to that for a bytesized memory access of the same-modify
-> intent to the same address. Note that some misaligned accesses can be
-> broken up by the processor into multiple accesses where at least one
-> of the accesses is a byte-sized access. If the target address of the
-> subsequent memory access of the same modify-intent is aligned and not
-> byte-sized, this errata does not occur and no workaround is needed.
-> 
->   Potential Effect on System An unexpected page fault may occur
-> infrequently on a prefetch instruction."
+This patch from 2020-June-29 is (still) needed to fix some
+build errors in drivers/soc/qcom/qcom-geni-se.c:
 
-Lovely...  So basically this is the rare place where we might use those
-insns on userland addresses?
+https://lore.kernel.org/lkml/ce0d7561-ff93-d267-b57a-6505014c728c@infradead.org/
+
+
+The patch provides a stub for of_get_next_parent().
+
+-- 
+~Randy
+
