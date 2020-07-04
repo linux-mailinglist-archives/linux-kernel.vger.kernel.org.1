@@ -2,114 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C082121456E
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 13:39:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 304DC21458F
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 13:42:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728194AbgGDLje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Jul 2020 07:39:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40414 "EHLO
+        id S1727931AbgGDLmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Jul 2020 07:42:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728170AbgGDLj0 (ORCPT
+        with ESMTP id S1727866AbgGDLmj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Jul 2020 07:39:26 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EE84C061794;
-        Sat,  4 Jul 2020 04:39:26 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id f139so36655806wmf.5;
-        Sat, 04 Jul 2020 04:39:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=s1wxiSXb6FjGblsvKrZYztMSCVGGVQHB+0DmuQ/lyxA=;
-        b=JrewqFucv5cYOk7OE3oVnmZEW3IbJjLlbiFhIN8TjMDZzUl7L+jK5AKEFgEXWzxTt2
-         2pQXxy3Pz1M75SMWDCj/v0RMb9zesYAdX6YFCYIbnYmGaG9U9A/BVMclHljHSKcbD+qe
-         YAwDMlcI+nxg14LvyfWNzqkomR1qajrWKg4u814ufNNLKFQAY6e3hDdo729Kvyx+Pcil
-         IDKRHP5AQmDyohNs9j0Xia144mKJyU+H5ggVM8MSPXcNsrLv/Pbsxr2TwbtFJf+3XCQy
-         89ld2FVKMq24fnhWHiB3dC+gxVF4kpm1vsG8xovGK4fAWvcuKmXsP643kNsh9VlDOEoe
-         Kgww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=s1wxiSXb6FjGblsvKrZYztMSCVGGVQHB+0DmuQ/lyxA=;
-        b=uJUUZS2UncPnf/n6cEKz42vZb0VlwUreQAjPD2jfs4GwDMLqp4usb7FTYZWtWWDA0u
-         Kvi+/bDxp6mJ4PnG9q++aa1twiu9QRkdNVr5Rayc64a95XZ0Wdzh0uarVccTdMsTO+To
-         uOMconvmF2/R1L5uCGL5bWz3kd/yGrk4kdHY5/0/HBl/aoj4RxJTdxyEiOiO67t+9h1R
-         XJ6fsbaXzZfTIo8kWzoCINdRaB2VDD0/0I3xSdTgBogXajLdfmrxUH3vuIwrVUw/Lleu
-         q/a68MNt4cDWqgthE8a8b9EFUvzS6wmhVEfGSEgJwFYV5ypSCBDkoa29T/2eiyFDwsei
-         1+7Q==
-X-Gm-Message-State: AOAM531Y9bR7ZiosUvSdDOnjv0SR7uybmpMVaykUePe+nsglbCxkylIY
-        OMKEoSgz1hdkF2YakJEJxekn6bSA8Dai3g==
-X-Google-Smtp-Source: ABdhPJwzV34Wu9Tm/bGGoIIBjIyhv/6HbZCqgcw/NraTBYcNKoYfUjnjYieuWUKNkx3O6QBQVusUfg==
-X-Received: by 2002:a1c:5459:: with SMTP id p25mr39307080wmi.148.1593862764834;
-        Sat, 04 Jul 2020 04:39:24 -0700 (PDT)
-Received: from clement-Latitude-7490.numericable.fr (213-245-241-245.rev.numericable.fr. [213.245.241.245])
-        by smtp.gmail.com with ESMTPSA id j24sm18657373wrd.43.2020.07.04.04.39.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 04 Jul 2020 04:39:24 -0700 (PDT)
-From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Marcus Cooper <codekipper@gmail.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@googlegroups.com,
-        =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-Subject: [PATCH 16/16] arm64: dts: allwinner: a64: Add HDMI audio to Pine64
-Date:   Sat,  4 Jul 2020 13:39:02 +0200
-Message-Id: <20200704113902.336911-17-peron.clem@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200704113902.336911-1-peron.clem@gmail.com>
-References: <20200704113902.336911-1-peron.clem@gmail.com>
+        Sat, 4 Jul 2020 07:42:39 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A6B4C061794;
+        Sat,  4 Jul 2020 04:42:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=MXpoH39hkfx8lgKVBovhjF5ANO4ljnFW8iWeu9q4FtE=; b=iP6/CNSCbNXBo+C/p41wEdgqOs
+        Jr4msbp5S/4stoYRzupozCzahdW4W5qLA9rFE/jAJGafZzoTOWq/BtD0LPnMvRdZAJXEUXzA010OC
+        wmYNupFLw0kEnngYZDcewEmwgTgPupAdv71XGlf8Mli9TxBAj3g1tIWPIqU6Ez+Mzr9aAiNExKS4u
+        0qsXJLoqJ4SlS2+zhU2Orlh37xa8EOmq3xh8FAAwnSgBjB8F6fpRecx3YR4bpQWAo03LZDvzg7EzF
+        uVwk2cwG0r3ZxLCtnYzOPq/50Uy2RS5XDCduvq5ZvNsXbvtvqqJLPEFMyhEKEOQ7cZk/omxY9Zx5R
+        vwdW2zOQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jrgWG-0007pl-O0; Sat, 04 Jul 2020 11:39:44 +0000
+Date:   Sat, 4 Jul 2020 12:39:44 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     Konstantin Khlebnikov <koct9i@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Tejun Heo <tj@kernel.org>, Hugh Dickins <hughd@google.com>,
+        =?utf-8?B?0JrQvtC90YHRgtCw0L3RgtC40L0g0KXQu9C10LHQvdC40LrQvtCy?= 
+        <khlebnikov@yandex-team.ru>, daniel.m.jordan@oracle.com,
+        yang.shi@linux.alibaba.com, Johannes Weiner <hannes@cmpxchg.org>,
+        lkp@intel.com, linux-mm@kvack.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>, shakeelb@google.com,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, richard.weiyang@gmail.com
+Subject: Re: [PATCH v14 15/20] mm/swap: serialize memcg changes during
+ pagevec_lru_move_fn
+Message-ID: <20200704113944.GN25523@casper.infradead.org>
+References: <1593752873-4493-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1593752873-4493-16-git-send-email-alex.shi@linux.alibaba.com>
+ <CALYGNiOkA_ZsycF_hqm3XLk55Ek1Mo9w1gO=6EeE35fUtA0i_w@mail.gmail.com>
+ <56e395c6-81e7-7163-0d4f-42b91573289f@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <56e395c6-81e7-7163-0d4f-42b91573289f@linux.alibaba.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marcus Cooper <codekipper@gmail.com>
+On Sat, Jul 04, 2020 at 07:34:59PM +0800, Alex Shi wrote:
+> That's a great idea! Guess what the new struct we need would be like this?
+> I like to try this. :)
+> 
+> 
+> diff --git a/include/linux/pagevec.h b/include/linux/pagevec.h
+> index 081d934eda64..d62778c8c184 100644
+> --- a/include/linux/pagevec.h
+> +++ b/include/linux/pagevec.h
+> @@ -20,7 +20,7 @@
+>  struct pagevec {
+>         unsigned char nr;
+>         bool percpu_pvec_drained;
+> -       struct page *pages[PAGEVEC_SIZE];
+> +       struct list_head veclist;
+>  };
 
-Enable HDMI audio on Pine64.
-
-Signed-off-by: Marcus Cooper <codekipper@gmail.com>
-Signed-off-by: Clément Péron <peron.clem@gmail.com>
----
- arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts
-index 2165f238af13..c5939ba52f19 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts
-@@ -99,6 +99,10 @@ hdmi_out_con: endpoint {
- 	};
- };
- 
-+&hdmi_sound {
-+	status = "okay";
-+};
-+
- &i2c1 {
- 	status = "okay";
- };
-@@ -107,6 +111,10 @@ &i2c1_pins {
- 	bias-pull-up;
- };
- 
-+&i2s2 {
-+	status = "okay";
-+};
-+
- &mdio {
- 	ext_rmii_phy1: ethernet-phy@1 {
- 		compatible = "ethernet-phy-ieee802.3-c22";
--- 
-2.25.1
+pagevecs are used not just for LRU.  If you want to use a list_head for
+LRU then define a new structure.
 
