@@ -2,143 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7E2721466D
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 16:27:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E228A214659
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 16:09:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726907AbgGDO1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Jul 2020 10:27:02 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:18069 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726643AbgGDO1B (ORCPT
+        id S1726819AbgGDOIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Jul 2020 10:08:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35224 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726258AbgGDOIy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Jul 2020 10:27:01 -0400
-Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200704142659epoutp013c5d81356dd2694b4ebbb7c7ab39fbae~ekuJ10wQH2393323933epoutp01U
-        for <linux-kernel@vger.kernel.org>; Sat,  4 Jul 2020 14:26:59 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200704142659epoutp013c5d81356dd2694b4ebbb7c7ab39fbae~ekuJ10wQH2393323933epoutp01U
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1593872819;
-        bh=bo3BR9KaIVU8rO1xsrNx2+sOCrK1lLR9D1y1xtgsDvg=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=lAPFUGo1LivKMQE0G54L72wbBJGjEDVCuaoDsILRQ9wekcAapfaya94VwNrCO0RxB
-         TsJBQ2twin0BKDq0qe2Aqv5wzVFU8XJgAJREFFdGbZsZjfmSL1VPGV7QmoCoVLHTY4
-         lEEmMWSiN/yy8je09Ag7Pb8+JtpHH+xxLivVh4qY=
-Received: from epsmges5p3new.samsung.com (unknown [182.195.42.75]) by
-        epcas5p3.samsung.com (KnoxPortal) with ESMTP id
-        20200704142658epcas5p3b0bfcb0c53feb47775864122a626dca9~ekuJFeJIL1569915699epcas5p3R;
-        Sat,  4 Jul 2020 14:26:58 +0000 (GMT)
-Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
-        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        02.0F.09475.2B1900F5; Sat,  4 Jul 2020 23:26:58 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
-        20200704142658epcas5p254ae909fedb07dda58cece5d6d5252b4~ekuIk9OPS1952219522epcas5p21;
-        Sat,  4 Jul 2020 14:26:58 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200704142658epsmtrp1256cc5e5c9e3212ea45bd4d747d1f6f3~ekuIjZhbG2608426084epsmtrp1c;
-        Sat,  4 Jul 2020 14:26:58 +0000 (GMT)
-X-AuditID: b6c32a4b-39fff70000002503-c3-5f0091b26061
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        CD.9C.08382.1B1900F5; Sat,  4 Jul 2020 23:26:57 +0900 (KST)
-Received: from Jaguar.sa.corp.samsungelectronics.net (unknown
-        [107.108.73.139]) by epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200704142656epsmtip1fba91bc0b977589a15ca47d9b2e9569b~ekuHGO34Y1778117781epsmtip1W;
-        Sat,  4 Jul 2020 14:26:56 +0000 (GMT)
-From:   Tamseel Shams <m.shams@samsung.com>
-To:     kgene@kernel.org, krzk@kernel.org, gregkh@linuxfoundation.org,
-        jslaby@suse.com
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, alim.akhtar@samsung.com,
-        Tamseel Shams <m.shams@samsung.com>
-Subject: [PATCH v3] serial: samsung: Re-factors UART IRQ resource for
- various Samsung SoC
-Date:   Sat,  4 Jul 2020 19:36:46 +0530
-Message-Id: <20200704140646.66528-1-m.shams@samsung.com>
-X-Mailer: git-send-email 2.17.1
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrDIsWRmVeSWpSXmKPExsWy7bCmlu6miQzxBgfXqlo8mLeNzaJ58Xo2
-        iykbPjBZ9D9+zWxx/vwGdotNj6+xWlzeNYfNYsb5fUwWZxb3slvcbV3M7sDlsWlVJ5vH/rlr
-        2D02L6n36NuyitFj/ZarLB6fN8kFsEVx2aSk5mSWpRbp2yVwZdy80cBcMJe7YtGktSwNjPM4
-        uxg5OCQETCSW3QzsYuTkEBLYzShx+GBGFyMXkP2JUaLpzTpmCOcbo8Tfne/YQapAGua+mgeV
-        2Mso8eviU3YIp4VJ4t6dpSwgY9kENCWOn+cGaRARCJF4d3YLI0gNs8BJRom9mxtYQBLCAtES
-        rV3HWEHqWQRUJa5PSQMJ8wpYSNw+8oUZYpm8xOoNB8CWSQicY5eYvbyXDSLhIvH802OoImGJ
-        V8e3QF0nJfGyvw3KzpeYP28VVE2FxMoLb6Bse4kDV+aA3ckMdOf6XfogYWYBPone30+YIKHC
-        K9HRJgRRrSjxf3c/1ERxiXcrprBC2B4S/1vWs0JCLlai6/wupgmMMrMQhi5gZFzFKJlaUJyb
-        nlpsWmCcl1quV5yYW1yal66XnJ+7iRGcALS8dzA+evBB7xAjEwfjIUYJDmYlEd4E1X9xQrwp
-        iZVVqUX58UWlOanFhxilOViUxHmVfpyJExJITyxJzU5NLUgtgskycXBKNTBl+hTGyMt93c3k
-        /nKHTRNb6talolsjOXfM+hp64kziw76NTexFdSsePaq/vzU2005ENFCw5eDGmuPrvZ3U/xdf
-        sLDjk/Q/uiTgjlXV5PpzL2tqi+88SjlV8nDVD0m7yc2cpUlPDsY/fqJ1xLvOenKUi5Ov1KO3
-        jrZTf+f4BaZJTHUuWcbMXbTGJSKjKy3a+olhQ1+4/bl/FYsU7Xyzu/08+7VcK/j0+k8scPtS
-        Ja50qLHd7aV/YrjOw+rJOi8V/h60EM/vOVrgdqt3+6T87iyPO8fUZ+4/oLzpRKfe4YjWZeoB
-        DO+2iJz6snoXa4iLiNAjlyjzSw+3VBbzB4U6PHRtuiYmsGqX/o3l8ya+V2Ipzkg01GIuKk4E
-        AEVvJK5vAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprALMWRmVeSWpSXmKPExsWy7bCSnO7GiQzxBmc22lg8mLeNzaJ58Xo2
-        iykbPjBZ9D9+zWxx/vwGdotNj6+xWlzeNYfNYsb5fUwWZxb3slvcbV3M7sDlsWlVJ5vH/rlr
-        2D02L6n36NuyitFj/ZarLB6fN8kFsEVx2aSk5mSWpRbp2yVwZdy80cBcMJe7YtGktSwNjPM4
-        uxg5OSQETCTmvprH3MXIxSEksJtR4u/9a2wQCXGJab/2M0LYwhIr/z1nhyhqYpI4N+8NUIKD
-        g01AU+L4eW4QU0QgQmLmxxqQEmaB84wSO4+vZgLpFRaIlDg/r5ENpIZFQFXi+pQ0kDCvgIXE
-        7SNfmCHGy0us3nCAeQIjzwJGhlWMkqkFxbnpucWGBYZ5qeV6xYm5xaV56XrJ+bmbGMGBpqW5
-        g3H7qg96hxiZOBgPMUpwMCuJ8Cao/osT4k1JrKxKLcqPLyrNSS0+xCjNwaIkznujcGGckEB6
-        YklqdmpqQWoRTJaJg1Oqgemqjs/7Y+FuXaEfGtMWTtotXlwwk9N4/b2rv+YVP7uzJn9CeNm5
-        9MUxigJqBe/FpnGqOf1JfqgVu6PIbOXhc7k7Xs/p4qw5z7QsRupXL3OVA1fPRHXZKfUpp2ay
-        n52wd9Ff/doGllsiGnPeif2NqNpTfkWi4volncLLZQ+8bf2ibsdt+dR68+yKpxc6fgQ6bRSf
-        /2HH+qxDXxI3ZDxifVrVcvznc6t95UEi9x+svpHyYaHF+0Mp5z7dqryyUOf44TIt15tCv+oc
-        j+6Zd6GHoePRP42Lrye/ZUk6X/pdsVmKS40zQ9MweubaKLGiln1/ZQMcLT3FFWOZSposr3Hz
-        KHxW1tv1TW7X/9fKwh9azrUpsRRnJBpqMRcVJwIAq2UZGqMCAAA=
-X-CMS-MailID: 20200704142658epcas5p254ae909fedb07dda58cece5d6d5252b4
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-CMS-TYPE: 105P
-X-CMS-RootMailID: 20200704142658epcas5p254ae909fedb07dda58cece5d6d5252b4
-References: <CGME20200704142658epcas5p254ae909fedb07dda58cece5d6d5252b4@epcas5p2.samsung.com>
+        Sat, 4 Jul 2020 10:08:54 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2858EC061794;
+        Sat,  4 Jul 2020 07:08:54 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id w17so27994411oie.6;
+        Sat, 04 Jul 2020 07:08:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sruIXwAXhVbyB5irGxpmieYBkvT+Yh76sngiyp81DSY=;
+        b=bGGfNXswYZe14/cuzAmIfTCOrYwfHvCH4h2te1yO88pI7RbPNA7Czv4reMww8I8SbP
+         s7KT5FPP1bFRY4eFbAuO4gaa8m7yQVpHAYj/lMxb4yc97Az2qudXG0cbkRsYUUD3wZoF
+         VcfO/PuPPWvtKdkXdSKu7vcI1ir7FriWYlg+YA0IYCfpVJH0UvzY1LXnLM1XgzBP40WZ
+         jfTvdG/d7nzvQcNmMNtQZZGcTvo0v8HkU6ccy9hOpu+mYF/Sq7YbmlKkHIMZJk+UZhaH
+         yQZa/f4ADWlFCb+UE+CsDdnFeAWIn9DAei37pKrH6P/kqqxK70mAp9uaEyAIA+AGLOPT
+         fSIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sruIXwAXhVbyB5irGxpmieYBkvT+Yh76sngiyp81DSY=;
+        b=opqxa+FgwjmJqkAq856nfqoAgVdogaV50658Qsj9tBg0TB+7jGuFu9v+OkyHv69dZk
+         Yl7fa90kDXtefzmPwLOGxCspKyhlDFIdxae9Sfc7EgHEBvSuVJBIOkdsMPERd9fxEu1e
+         xaSfILW86HUKQjoDuHFKj4zzKrwnRCZZd+liWB7au2U2kFj7uu7qeKOqd2yNDg8jC5Cp
+         BTpLD8iWlNnrDDIuCbIQ8NaU6MV6yYTy7H6qAf8dBLAmNoKzvaqjsHKr5G02DKwxL4yh
+         wau5HJYUJXEMUyfXi0Q+H7+w+VwuEyFfcU42p7oLRcjxvT8eMCn9ynD7FZTd1KcjuM13
+         pNgA==
+X-Gm-Message-State: AOAM533rNVbfuEN2xltMvguTaJ9NoDKRWn7E0NftZRkdlxboxKr2lIxD
+        65Y9ld4j0NjkJ/g5G1DVZ61oG9fQrBbM0JNNiEA=
+X-Google-Smtp-Source: ABdhPJztoFfvdTLj2yMn1sCGZxmmBOCYmRIuPcHWgshbnsn/EhxPtETALm2xO46URFZ5cicFgCzGhlj5YWM8/IMYuUI=
+X-Received: by 2002:aca:b205:: with SMTP id b5mr32722874oif.103.1593871733367;
+ Sat, 04 Jul 2020 07:08:53 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200702175352.19223-1-TheSven73@gmail.com> <20200702175352.19223-3-TheSven73@gmail.com>
+ <CAOMZO5DxUeXH8ZYxmKynA7xO3uF6SP_Kt-g=8MPgsF7tqkRvAA@mail.gmail.com>
+In-Reply-To: <CAOMZO5DxUeXH8ZYxmKynA7xO3uF6SP_Kt-g=8MPgsF7tqkRvAA@mail.gmail.com>
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+Date:   Sat, 4 Jul 2020 10:08:42 -0400
+Message-ID: <CAGngYiXGXDqCZeJme026uz5FjU56UojmQFFiJ5_CZ_AywdQiEw@mail.gmail.com>
+Subject: Re: [PATCH v5 3/3] ARM: imx6plus: optionally enable internal routing
+ of clk_enet_ref
+To:     Fabio Estevam <festevam@gmail.com>
+Cc:     Shawn Guo <shawnguo@kernel.org>, Fugang Duan <fugang.duan@nxp.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In few older Samsung SoCs like s3c2410, s3c2412
-and s3c2440, UART IP is having 2 interrupt lines.
-However, in other SoCs like s3c6400, s5pv210,
-exynos5433, and exynos4210 UART is having only 1
-interrupt line. Due to this, "platform_get_irq(platdev, 1)"
-call in the driver gives the following warning:
-"IRQ index 1 not found" on recent platforms.
+Hi Fabio, Andy,
 
-This patch re-factors the IRQ resources handling for
-each platform and hence fixing the above warnings seen
-on some platforms.
+On Thu, Jul 2, 2020 at 6:29 PM Fabio Estevam <festevam@gmail.com> wrote:
+>
+> With the device tree approach, I think that a better place to touch
+> GPR5 would be inside the fec driver.
+>
 
-Signed-off-by: Tamseel Shams <m.shams@samsung.com>
----
-Removed the logic of irq_cnt and directly using
-s3c24xx_serial_has_interrupt_mask() to check for
-number of interrupt lines.
+Are we 100% sure this is the best way forward, though?
 
- drivers/tty/serial/samsung_tty.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+All the FEC driver should care about is the FEC logic block
+inside the SoC. It should not concern itself with the way a SoC
+happens to bring a clock (PTP clock) to the input of the FEC
+logic block - that is purely a SoC implementation detail.
 
-diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsung_tty.c
-index 6ef614d8648c..8a955f3d8975 100644
---- a/drivers/tty/serial/samsung_tty.c
-+++ b/drivers/tty/serial/samsung_tty.c
-@@ -1908,10 +1908,13 @@ static int s3c24xx_serial_init_port(struct s3c24xx_uart_port *ourport,
- 	else {
- 		port->irq = ret;
- 		ourport->rx_irq = ret;
--		ourport->tx_irq = ret + 1;
-+		if (s3c24xx_serial_has_interrupt_mask(port))
-+			ourport->tx_irq = ret;
-+		else
-+			ourport->tx_irq = ret + 1;
- 	}
- 
--	ret = platform_get_irq(platdev, 1);
-+	ret = platform_get_irq_optional(platdev, 1);
- 	if (ret > 0)
- 		ourport->tx_irq = ret;
- 	/*
--- 
-2.17.1
+It makes sense to add fsl,stop-mode (= a GPR bit) to the FEC driver,
+as this bit is a logic input to the FEC block, which the driver needs
+to dynamically flip.
 
+But the PTP clock is different, because it's statically routed by
+the SoC.
+
+Maybe this problem needs a clock routing solution?
+Isn't there an imx6q plus clock mux we're not modelling?
+
+  enet_ref-o------>ext>---pad_clk--| \
+           |                       |M |----fec_ptp_clk
+           o-----------------------|_/
+
+Where M = mux controlled by GPR5[9]
+
+The issue here is that pad_clk is routed externally, so its parent
+could be any internal or external clock. I have no idea how to
+model this in the clock framework.
