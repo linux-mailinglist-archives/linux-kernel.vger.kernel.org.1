@@ -2,125 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80CED21467F
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 16:43:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20F23214698
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 16:55:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726923AbgGDOnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Jul 2020 10:43:24 -0400
-Received: from orion.archlinux.org ([88.198.91.70]:54230 "EHLO
-        orion.archlinux.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726643AbgGDOnY (ORCPT
+        id S1726836AbgGDOzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Jul 2020 10:55:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726488AbgGDOzY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Jul 2020 10:43:24 -0400
-Received: from orion.archlinux.org (localhost [127.0.0.1])
-        by orion.archlinux.org (Postfix) with ESMTP id 860851D3582663;
-        Sat,  4 Jul 2020 14:43:21 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on orion.archlinux.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.7 required=5.0 tests=ALL_TRUSTED=-1,BAYES_00=-1,
-        DMARC_FAIL_NONE=0.25,T_DMARC_POLICY_NONE=0.01,T_DMARC_TESTS_FAIL=0.01
-        autolearn=no autolearn_force=no version=3.4.4
-X-Spam-BL-Results: 
-Received: from centaurus (unknown [37.189.45.160])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: ffy00)
-        by orion.archlinux.org (Postfix) with ESMTPSA;
-        Sat,  4 Jul 2020 14:43:20 +0000 (UTC)
-Message-ID: <908bf287f370a947e60bc7817b395c91c5be63d9.camel@archlinux.org>
-Subject: Re: [PATCH v2] HID: logitech-hidpp: add support for Logitech G533
- headset
-From:   Filipe =?ISO-8859-1?Q?La=EDns?= <lains@archlinux.org>
-To:     Kamil =?UTF-8?Q?Doma=C5=84ski?= <kamil@domanski.co>,
-        linux-kernel@vger.kernel.org
-Cc:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Nestor Lopez Casado <nlopezcasad@logitech.com>
-In-Reply-To: <52609283-6d37-9e0e-be24-7df378e4fead@domanski.co>
-References: <023148f582cc20bef7079508ce417c8ebeb0febb.camel@domanski.co>
-         <137acb00c6ec098d7506901df05067e8d7207aa9.camel@archlinux.org>
-         <52609283-6d37-9e0e-be24-7df378e4fead@domanski.co>
-Organization: Archlinux
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-pGP/VXSr2cqvTSWNfpQw"
-Date:   Sat, 04 Jul 2020 15:48:30 +0100
+        Sat, 4 Jul 2020 10:55:24 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13614C061794
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Jul 2020 07:55:24 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id w17so20729272otl.4
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Jul 2020 07:55:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=EHkNTLQf1ycnNUWhAhX5NeOtM8bdBG1MNQliuApIHG4=;
+        b=Yj+X6FpNey3C9HpW97P2sKp2LDIuwgASOl6WQLwTFgsq5MIWgHO5w32g+2jjMDVkYe
+         mhev1C+7u0J1fhYuxZLOZmNKqFjzi7AmawPENqGzsEQUYq89mhvib5aSPKgx5wcjBW3P
+         kfX5oxXEpmlZG4VuBB4qzHBSCepF2TGLP0G5OhvXX1MPSKoTU1j6yDzTJSevp7F4SXhg
+         K+CcTWAsEVof6C882TmAysed+0CM/QX0ztV4IpxoeJ0eX4YnyfEmNBgTSPL0Yx0JxXr6
+         isOs6Mj3UTE1zn8ugbxxv6RGgd07ym7XUHEmqzVTuh5qCEBXVPzILmUWyPj4Ic186ufy
+         vFfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=EHkNTLQf1ycnNUWhAhX5NeOtM8bdBG1MNQliuApIHG4=;
+        b=IuP+vrmwmswCCTOgLkmtwjFYd2gg3fN7fbYW/6mq0+iqDVax1kqpJ8U4YIrpalOXsI
+         m6yXv49HIBWW7drM5LuIKKynLC/WfV7fhrmzNHoeWdfZrfgLimbPaCVI5cc/EvCwCtyl
+         4wD5XjmPo+1rb3sX6aARZGIHRnNeZoNA8iMvHTZs0zFyLuU8GsPA8qw5XqE45VuytTYk
+         Zynxf1TQimzuc1y8QW0CKmid1JVeucmUCRjoDr1fjVFejtXp5p9FtOjp8KG0wXBtmCW1
+         6sGBKdBKujcNjIVIuxRFbKpmCa4VGfeozQ+bkKNFzFAmxsS9PvXsiocCneaVSmUXHsFG
+         hsDQ==
+X-Gm-Message-State: AOAM533xKvd08J2U+dOgdRE3w6PK5jUQSfN6Zz0bi8jWMJJBpZwBgGyq
+        Tod9b0vOasLhqvtyFLaKBfUAqoGH9QypCU1t77w=
+X-Google-Smtp-Source: ABdhPJzZtfy5OHTRQnRs+N3+FGbTxeevhg3+/w+bynkoSHFwMxwku4ab+TmqCyR3srIPFXfbUkDg/SqR4D71HN0H5Mw=
+X-Received: by 2002:a05:6830:4c6:: with SMTP id s6mr35973024otd.345.1593874523315;
+ Sat, 04 Jul 2020 07:55:23 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Evolution 3.36.4 
+Received: by 2002:a8a:619:0:0:0:0:0 with HTTP; Sat, 4 Jul 2020 07:55:23 -0700 (PDT)
+Reply-To: nascointt@hotmail.com
+From:   Nayef Abu Sakran <george.ghuba101@gmail.com>
+Date:   Sat, 4 Jul 2020 14:55:23 +0000
+Message-ID: <CAEeBM7txpsRaOeen-S5zERBC_ZeTYreaUvz+ipzPvxV1gtwa6g@mail.gmail.com>
+Subject: NICE DAY
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---=-pGP/VXSr2cqvTSWNfpQw
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Sat, 2020-07-04 at 02:37 +0200, Kamil Doma=C5=84ski wrote:
-> Hi Filipe,
->=20
-> > My main point here is that long means different things in different
-> > architectures, and we only want one byte so I would go for u8.
->=20
-> I used long, because the test_bit macro accepts long and the similar
-> function for voltage reading already used long too.
-> That will be changed in v3 - see next paragraph.
-
-The compiler can handle these conversions. Explicit is generally better
-than implicit, and in cases where the implicit assumptions might break,
-explicit is definitely better. We know the data size, so let's use it
-:D
-
-> > > +
-> > > +	*voltage =3D get_unaligned_be16(data);
-> > > +	isConnected =3D test_bit(0, &flags);
-> > > +	isCharging =3D test_bit(1, &flags);
-> > > +	chargingComplete =3D test_bit(2, &flags);
-> > > +	chargingFault =3D test_bit(3, &flags);
-> > > I don't think this is needed, just do it in the ifs directly.
-> > >=20
-> > > Here I would add a #define for each bit:
-> > >=20
-> > > #define FLAG_ADC_MAP_STATUS_CONNECTED 0
-> > > ...
-> > > if (data[2] & FLAG_ADC_MAP_STATUS_CONNECTED)
->=20
-> Yeah, I it will do exactly that for v3, which allows to drop the flag
-> variables and avoid using a long.
->=20
-> =20
-> > Same thing here. We should see if the device supports the DJ protocol
-> > and add it in hid-logitech-dj instead.
->=20
-> It doesn't seem to be a DJ device. The DJ driver just detects the extra i=
-nterfaces
-> and skips directly to hid_hw_start.
-
-Thanks for looking into this!
-
-Cheers,
-Filipe La=C3=ADns
-
---=-pGP/VXSr2cqvTSWNfpQw
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEE0jW0leqs33gyftiw+JPGdIFqqV0FAl8AlrcACgkQ+JPGdIFq
-qV0C7g//ak1uA7fSG2ruS8LAvg6Fgy1qtvBPvL54Vs9qFZL+pgilwBidZawahYVs
-48MoS+U2nLLCyjWRtceEFJNDOa0if2aW1V+M1SRHKdf6XhVZ2xHDKxYUk7GAu7Vp
-J0Y9kObMSXNdd4EgUT/n+Dta+9W90UsITIBKpkPQmk0lMGlQI0eONT8oqGqDtSZv
-RJV6GwNjX8fIhTiHhLgl4UeN5boLumFNpM13RGO2+wpvDLUTvaIZRXYcRjPgm/yr
-lb+iqVfKLH50BV5G3yKkEyG8wythxq9+a1FWEBCKHYmalPQX3ZXFGnW17GOozTYj
-OJjWJk3s1esBdK6B30h/lGX+n9ItaxcBz0k4SenepLTPdffZaItRrkbqCBbkjX5l
-91yzwi8FwtVVYdRBPUuNMtMNvqflMg+lsNyfP2iWzxGHl7FQcyaTmR7J/BKYXu+7
-LpaA7o3Qv6LY7s7prle73EvoyXGS6GW17O1HxWm1k0cX+UD4w6TPnA0ljbdA9roe
-EaIG0SPr53yS+pyzNGKl3Sf96WZZVcrgtB+sPo5o7hi+y+T53KgQLWvQBLAT7cF4
-rh3+pC6tmWAaPurdq5lABbdGkAlyGloyUMB3mLDj6p2wJvUUcMJpwvURqtsXKRn3
-GkTA5yaLZcvwpfmMEYuZrcMvYhvmlzV4GlmeX+fRqpS7Pmjj50g=
-=1+tX
------END PGP SIGNATURE-----
-
---=-pGP/VXSr2cqvTSWNfpQw--
+Do you received the mail i send to you?
