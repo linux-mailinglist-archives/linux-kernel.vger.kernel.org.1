@@ -2,224 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 963AE214655
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 16:03:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7E2721466D
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 16:27:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727915AbgGDODU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Jul 2020 10:03:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51584 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726948AbgGDODN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Jul 2020 10:03:13 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BD589218AC;
-        Sat,  4 Jul 2020 14:03:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593871392;
-        bh=Yj+14217YtAOnGW+R47dIfZ8DJrAtcfTkhE3moybXhw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bo1VVkDd19yyAM+xVbtMirVeDtHC8y8RVtHm53sL556lDzTRt7fNbrNRVslVhYZQh
-         jB4FnUhzApA+tdrCHP5OK5i0o7VSGvrVwKwgJAUXYBs2Tlqpg3HLvxn5WJhZkYfTZw
-         DyEvXIMAXEm++4fTgZWv/HtWpliLrfrV11Oh3GoU=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     viro@zeniv.linux.org.uk, mtk.manpages@gmail.com, shuah@kernel.org,
-        linux-api@vger.kernel.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-man@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH] readfile.2: new page describing readfile(2)
-Date:   Sat,  4 Jul 2020 16:02:50 +0200
-Message-Id: <20200704140250.423345-5-gregkh@linuxfoundation.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200704140250.423345-1-gregkh@linuxfoundation.org>
-References: <20200704140250.423345-1-gregkh@linuxfoundation.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726907AbgGDO1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Jul 2020 10:27:02 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:18069 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726643AbgGDO1B (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 4 Jul 2020 10:27:01 -0400
+Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200704142659epoutp013c5d81356dd2694b4ebbb7c7ab39fbae~ekuJ10wQH2393323933epoutp01U
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Jul 2020 14:26:59 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200704142659epoutp013c5d81356dd2694b4ebbb7c7ab39fbae~ekuJ10wQH2393323933epoutp01U
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1593872819;
+        bh=bo3BR9KaIVU8rO1xsrNx2+sOCrK1lLR9D1y1xtgsDvg=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=lAPFUGo1LivKMQE0G54L72wbBJGjEDVCuaoDsILRQ9wekcAapfaya94VwNrCO0RxB
+         TsJBQ2twin0BKDq0qe2Aqv5wzVFU8XJgAJREFFdGbZsZjfmSL1VPGV7QmoCoVLHTY4
+         lEEmMWSiN/yy8je09Ag7Pb8+JtpHH+xxLivVh4qY=
+Received: from epsmges5p3new.samsung.com (unknown [182.195.42.75]) by
+        epcas5p3.samsung.com (KnoxPortal) with ESMTP id
+        20200704142658epcas5p3b0bfcb0c53feb47775864122a626dca9~ekuJFeJIL1569915699epcas5p3R;
+        Sat,  4 Jul 2020 14:26:58 +0000 (GMT)
+Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
+        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        02.0F.09475.2B1900F5; Sat,  4 Jul 2020 23:26:58 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200704142658epcas5p254ae909fedb07dda58cece5d6d5252b4~ekuIk9OPS1952219522epcas5p21;
+        Sat,  4 Jul 2020 14:26:58 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200704142658epsmtrp1256cc5e5c9e3212ea45bd4d747d1f6f3~ekuIjZhbG2608426084epsmtrp1c;
+        Sat,  4 Jul 2020 14:26:58 +0000 (GMT)
+X-AuditID: b6c32a4b-39fff70000002503-c3-5f0091b26061
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        CD.9C.08382.1B1900F5; Sat,  4 Jul 2020 23:26:57 +0900 (KST)
+Received: from Jaguar.sa.corp.samsungelectronics.net (unknown
+        [107.108.73.139]) by epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20200704142656epsmtip1fba91bc0b977589a15ca47d9b2e9569b~ekuHGO34Y1778117781epsmtip1W;
+        Sat,  4 Jul 2020 14:26:56 +0000 (GMT)
+From:   Tamseel Shams <m.shams@samsung.com>
+To:     kgene@kernel.org, krzk@kernel.org, gregkh@linuxfoundation.org,
+        jslaby@suse.com
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, alim.akhtar@samsung.com,
+        Tamseel Shams <m.shams@samsung.com>
+Subject: [PATCH v3] serial: samsung: Re-factors UART IRQ resource for
+ various Samsung SoC
+Date:   Sat,  4 Jul 2020 19:36:46 +0530
+Message-Id: <20200704140646.66528-1-m.shams@samsung.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrDIsWRmVeSWpSXmKPExsWy7bCmlu6miQzxBgfXqlo8mLeNzaJ58Xo2
+        iykbPjBZ9D9+zWxx/vwGdotNj6+xWlzeNYfNYsb5fUwWZxb3slvcbV3M7sDlsWlVJ5vH/rlr
+        2D02L6n36NuyitFj/ZarLB6fN8kFsEVx2aSk5mSWpRbp2yVwZdy80cBcMJe7YtGktSwNjPM4
+        uxg5OCQETCSW3QzsYuTkEBLYzShx+GBGFyMXkP2JUaLpzTpmCOcbo8Tfne/YQapAGua+mgeV
+        2Mso8eviU3YIp4VJ4t6dpSwgY9kENCWOn+cGaRARCJF4d3YLI0gNs8BJRom9mxtYQBLCAtES
+        rV3HWEHqWQRUJa5PSQMJ8wpYSNw+8oUZYpm8xOoNB8CWSQicY5eYvbyXDSLhIvH802OoImGJ
+        V8e3QF0nJfGyvw3KzpeYP28VVE2FxMoLb6Bse4kDV+aA3ckMdOf6XfogYWYBPone30+YIKHC
+        K9HRJgRRrSjxf3c/1ERxiXcrprBC2B4S/1vWs0JCLlai6/wupgmMMrMQhi5gZFzFKJlaUJyb
+        nlpsWmCcl1quV5yYW1yal66XnJ+7iRGcALS8dzA+evBB7xAjEwfjIUYJDmYlEd4E1X9xQrwp
+        iZVVqUX58UWlOanFhxilOViUxHmVfpyJExJITyxJzU5NLUgtgskycXBKNTBl+hTGyMt93c3k
+        /nKHTRNb6talolsjOXfM+hp64kziw76NTexFdSsePaq/vzU2005ENFCw5eDGmuPrvZ3U/xdf
+        sLDjk/Q/uiTgjlXV5PpzL2tqi+88SjlV8nDVD0m7yc2cpUlPDsY/fqJ1xLvOenKUi5Ov1KO3
+        jrZTf+f4BaZJTHUuWcbMXbTGJSKjKy3a+olhQ1+4/bl/FYsU7Xyzu/08+7VcK/j0+k8scPtS
+        Ja50qLHd7aV/YrjOw+rJOi8V/h60EM/vOVrgdqt3+6T87iyPO8fUZ+4/oLzpRKfe4YjWZeoB
+        DO+2iJz6snoXa4iLiNAjlyjzSw+3VBbzB4U6PHRtuiYmsGqX/o3l8ya+V2Ipzkg01GIuKk4E
+        AEVvJK5vAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprALMWRmVeSWpSXmKPExsWy7bCSnO7GiQzxBmc22lg8mLeNzaJ58Xo2
+        iykbPjBZ9D9+zWxx/vwGdotNj6+xWlzeNYfNYsb5fUwWZxb3slvcbV3M7sDlsWlVJ5vH/rlr
+        2D02L6n36NuyitFj/ZarLB6fN8kFsEVx2aSk5mSWpRbp2yVwZdy80cBcMJe7YtGktSwNjPM4
+        uxg5OSQETCTmvprH3MXIxSEksJtR4u/9a2wQCXGJab/2M0LYwhIr/z1nhyhqYpI4N+8NUIKD
+        g01AU+L4eW4QU0QgQmLmxxqQEmaB84wSO4+vZgLpFRaIlDg/r5ENpIZFQFXi+pQ0kDCvgIXE
+        7SNfmCHGy0us3nCAeQIjzwJGhlWMkqkFxbnpucWGBYZ5qeV6xYm5xaV56XrJ+bmbGMGBpqW5
+        g3H7qg96hxiZOBgPMUpwMCuJ8Cao/osT4k1JrKxKLcqPLyrNSS0+xCjNwaIkznujcGGckEB6
+        YklqdmpqQWoRTJaJg1Oqgemqjs/7Y+FuXaEfGtMWTtotXlwwk9N4/b2rv+YVP7uzJn9CeNm5
+        9MUxigJqBe/FpnGqOf1JfqgVu6PIbOXhc7k7Xs/p4qw5z7QsRupXL3OVA1fPRHXZKfUpp2ay
+        n52wd9Ff/doGllsiGnPeif2NqNpTfkWi4volncLLZQ+8bf2ibsdt+dR68+yKpxc6fgQ6bRSf
+        /2HH+qxDXxI3ZDxifVrVcvznc6t95UEi9x+svpHyYaHF+0Mp5z7dqryyUOf44TIt15tCv+oc
+        j+6Zd6GHoePRP42Lrye/ZUk6X/pdsVmKS40zQ9MweubaKLGiln1/ZQMcLT3FFWOZSposr3Hz
+        KHxW1tv1TW7X/9fKwh9azrUpsRRnJBpqMRcVJwIAq2UZGqMCAAA=
+X-CMS-MailID: 20200704142658epcas5p254ae909fedb07dda58cece5d6d5252b4
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+CMS-TYPE: 105P
+X-CMS-RootMailID: 20200704142658epcas5p254ae909fedb07dda58cece5d6d5252b4
+References: <CGME20200704142658epcas5p254ae909fedb07dda58cece5d6d5252b4@epcas5p2.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-readfile(2) is a new syscall to remove the need to do the
-open/read/close dance for small virtual files in places like procfs or
-sysfs.
+In few older Samsung SoCs like s3c2410, s3c2412
+and s3c2440, UART IP is having 2 interrupt lines.
+However, in other SoCs like s3c6400, s5pv210,
+exynos5433, and exynos4210 UART is having only 1
+interrupt line. Due to this, "platform_get_irq(platdev, 1)"
+call in the driver gives the following warning:
+"IRQ index 1 not found" on recent platforms.
 
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This patch re-factors the IRQ resources handling for
+each platform and hence fixing the above warnings seen
+on some platforms.
+
+Signed-off-by: Tamseel Shams <m.shams@samsung.com>
 ---
+Removed the logic of irq_cnt and directly using
+s3c24xx_serial_has_interrupt_mask() to check for
+number of interrupt lines.
 
-This patch is for the man-pages project, not the kernel source tree
+ drivers/tty/serial/samsung_tty.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
- man2/readfile.2 | 159 ++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 159 insertions(+)
- create mode 100644 man2/readfile.2
-
-diff --git a/man2/readfile.2 b/man2/readfile.2
-new file mode 100644
-index 000000000000..449e722c3442
---- /dev/null
-+++ b/man2/readfile.2
-@@ -0,0 +1,159 @@
-+.\" This manpage is Copyright (C) 2020 Greg Kroah-Hartman;
-+.\"  and Copyright (C) 2020 The Linux Foundation
-+.\"
-+.\" %%%LICENSE_START(VERBATIM)
-+.\" Permission is granted to make and distribute verbatim copies of this
-+.\" manual provided the copyright notice and this permission notice are
-+.\" preserved on all copies.
-+.\"
-+.\" Permission is granted to copy and distribute modified versions of this
-+.\" manual under the conditions for verbatim copying, provided that the
-+.\" entire resulting derived work is distributed under the terms of a
-+.\" permission notice identical to this one.
-+.\"
-+.\" Since the Linux kernel and libraries are constantly changing, this
-+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-+.\" responsibility for errors or omissions, or for damages resulting from
-+.\" the use of the information contained herein.  The author(s) may not
-+.\" have taken the same level of care in the production of this manual,
-+.\" which is licensed free of charge, as they might when working
-+.\" professionally.
-+.\"
-+.\" Formatted or processed versions of this manual, if unaccompanied by
-+.\" the source, must acknowledge the copyright and authors of this work.
-+.\" %%%LICENSE_END
-+.\"
-+.TH READFILE 2 2020-07-04 "Linux" "Linux Programmer's Manual"
-+.SH NAME
-+readfile \- read a file into a buffer
-+.SH SYNOPSIS
-+.nf
-+.B #include <unistd.h>
-+.PP
-+.BI "ssize_t readfile(int " dirfd ", const char *" pathname ", void *" buf \
-+", size_t " count ", int " flags );
-+.fi
-+.SH DESCRIPTION
-+.BR readfile ()
-+attempts to open the file specified by
-+.IR pathname
-+and to read up to
-+.I count
-+bytes from the file into the buffer starting at
-+.IR buf .
-+It is to be a shortcut of doing the sequence of
-+.BR open ()
-+and then
-+.BR read ()
-+and then
-+.BR close ()
-+for small files that are read frequently, such as those in
-+.B procfs
-+or
-+.BR sysfs .
-+.PP
-+If the size of file is smaller than the value provided in
-+.I count
-+then the whole file will be copied into
-+.IR buf .
-+.PP
-+If the file is larger than the value provided in
-+.I count
-+then only
-+.I count
-+number of bytes will be copied into
-+.IR buf .
-+.PP
-+The argument
-+.I flags
-+may contain one of the following
-+.IR "access modes" :
-+.BR O_NOFOLLOW ", or " O_NOATIME .
-+.PP
-+If the pathname given in
-+.I pathname
-+is relative, then it is interpreted relative to the directory
-+referred to by the file descriptor
-+.IR dirfd .
-+.PP
-+If
-+.I pathname
-+is relative and
-+.I dirfd
-+is the special value
-+.BR AT_FDCWD ,
-+then
-+.I pathname
-+is interpreted relative to the current working
-+directory of the calling process (like
-+.BR openat ()).
-+.PP
-+If
-+.I pathname
-+is absolute, then
-+.I dirfd
-+is ignored.
-+.SH RETURN VALUE
-+On success, the number of bytes read is returned.
-+It is not an error if this number is smaller than the number of bytes
-+requested; this can happen if the file is smaller than the number of
-+bytes requested.
-+.PP
-+On error, \-1 is returned, and
-+.I errno
-+is set appropriately.
-+.SH ERRORS
-+.TP
-+.B EFAULT
-+.I buf
-+is outside your accessible address space.
-+.TP
-+.B EINTR
-+The call was interrupted by a signal before any data was read; see
-+.BR signal (7).
-+.TP
-+.B EINVAL
-+.I flags
-+was set to a value that is not allowed.
-+.TP
-+.B EIO
-+I/O error.
-+This will happen for example when the process is in a
-+background process group, tries to read from its controlling terminal,
-+and either it is ignoring or blocking
-+.B SIGTTIN
-+or its process group
-+is orphaned.
-+It may also occur when there is a low-level I/O error
-+while reading from a disk or tape.
-+A further possible cause of
-+.B EIO
-+on networked filesystems is when an advisory lock had been taken
-+out on the file descriptor and this lock has been lost.
-+See the
-+.I "Lost locks"
-+section of
-+.BR fcntl (2)
-+for further details.
-+.SH CONFORMING TO
-+None, this is a Linux-specific system call at this point in time.
-+.SH NOTES
-+The type
-+.I size_t
-+is an unsigned integer data type specified by POSIX.1.
-+.PP
-+On Linux,
-+.BR read ()
-+(and similar system calls) will transfer at most
-+0x7ffff000 (2,147,479,552) bytes,
-+returning the number of bytes actually transferred.
-+.\" commit e28cc71572da38a5a12c1cfe4d7032017adccf69
-+(This is true on both 32-bit and 64-bit systems.)
-+.SH BUGS
-+None yet!
-+.SH SEE ALSO
-+.BR close (2),
-+.BR open (2),
-+.BR openat (2),
-+.BR read (2),
-+.BR fread (3)
+diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsung_tty.c
+index 6ef614d8648c..8a955f3d8975 100644
+--- a/drivers/tty/serial/samsung_tty.c
++++ b/drivers/tty/serial/samsung_tty.c
+@@ -1908,10 +1908,13 @@ static int s3c24xx_serial_init_port(struct s3c24xx_uart_port *ourport,
+ 	else {
+ 		port->irq = ret;
+ 		ourport->rx_irq = ret;
+-		ourport->tx_irq = ret + 1;
++		if (s3c24xx_serial_has_interrupt_mask(port))
++			ourport->tx_irq = ret;
++		else
++			ourport->tx_irq = ret + 1;
+ 	}
+ 
+-	ret = platform_get_irq(platdev, 1);
++	ret = platform_get_irq_optional(platdev, 1);
+ 	if (ret > 0)
+ 		ourport->tx_irq = ret;
+ 	/*
 -- 
-2.27.0
+2.17.1
 
