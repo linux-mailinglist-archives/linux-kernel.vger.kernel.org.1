@@ -2,140 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A01021466A
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 16:26:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 411F7214671
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 16:32:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726889AbgGDO0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Jul 2020 10:26:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726643AbgGDO0K (ORCPT
+        id S1726800AbgGDOc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Jul 2020 10:32:28 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:55042 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726488AbgGDOc2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Jul 2020 10:26:10 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABB70C061794
-        for <linux-kernel@vger.kernel.org>; Sat,  4 Jul 2020 07:26:10 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id t15so727452pjq.5
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Jul 2020 07:26:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id;
-        bh=sJThXt18vj76dxg1XcYlMwFo2sABsgrySSJXPsuoOYY=;
-        b=maMritpNagy30HECmq6aoOT2GspL3it8/9m5yAxAVDOG8QZocql/yeZ2/WNGd8lUVa
-         u+XXqRTIpdF1HoajLLLk1rm8R5FfBBKc3CEbM7KZVIlwXJeT2RshCn5nNRj+jZpc52vQ
-         Zt3FPqA7ZNPpXTXgVPyVgrBFG2YdMcAXW/i3XQlOWprHufsPXXk9WVCqBgxwYFiqfNhE
-         ro6chsTbVP1hAThtuXxCOLjGmt2KnV5NHsC1MGE9HWyTNrEH4ZJALLEtYlyL2ksrQyGV
-         UTvNpeOxkd0DZSsxohxpcbTuaW/PMuWiciJUl3QtiBRJUjOrEbQKJfiOuzG4a2pFCzhO
-         Ip4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id;
-        bh=sJThXt18vj76dxg1XcYlMwFo2sABsgrySSJXPsuoOYY=;
-        b=ItZXbhnNpJ9nuXjXDXZmpIZJ2l6PGqoIi86aInmuipEGN1fPiQ67h2JZCqx8NV0+Ji
-         tmvj3nOpPsZPi6Dp6+IjVl40DHrnqAkFN9HOLEfWHCdj9Ra4swcXHtgWAhlBdJmtcZsD
-         TQm7jhdHrulX3ag7D0bQunsGCX4nztlb+7Szax2ESCjgxdWAgEUajpXsQEPM/BNXq+L6
-         rkabFPv40S/WTjWVacZ7ukKPDbnDKw5xq5En1YObsMsizxRvCMe8cXQTn8dDZu97PM7v
-         zfaNX8Hco9wQzXvEPZieQnxcs7QacMe5W3zdmRvoRW8DRA/Ia9+kv4jr5lSn0fh7iv2H
-         joxQ==
-X-Gm-Message-State: AOAM533yhufdIVOIru6oQSc79p71JMoNkAcIZYwQryjOncPrQ5SYs5OC
-        5Rbuwf5hcx65xuqJZXDc1Kw=
-X-Google-Smtp-Source: ABdhPJya3qQ8oSRMdsfXQr3Ni068EwPYVbgNPhChuYbXVTZaro9XU9XytC2v5Qb04uhykrPqdBvvJQ==
-X-Received: by 2002:a17:902:d896:: with SMTP id b22mr35085917plz.87.1593872770214;
-        Sat, 04 Jul 2020 07:26:10 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id t1sm15022776pgq.66.2020.07.04.07.26.08
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 04 Jul 2020 07:26:09 -0700 (PDT)
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc:     Benson Leung <bleung@chromium.org>, linux-kernel@vger.kernel.org,
-        Guenter Roeck <linux@roeck-us.net>,
-        Yu-Hsuan Hsu <yuhsuan@chromium.org>,
-        Prashant Malani <pmalani@chromium.org>
-Subject: [PATCH] platform/chrome: cros_ec_proto: Convert EC error codes to Linux error codes
-Date:   Sat,  4 Jul 2020 07:26:07 -0700
-Message-Id: <20200704142607.171400-1-linux@roeck-us.net>
-X-Mailer: git-send-email 2.17.1
+        Sat, 4 Jul 2020 10:32:28 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 064EVpVH051319;
+        Sat, 4 Jul 2020 14:31:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to;
+ s=corp-2020-01-29; bh=uwno+wI0n0oHr52wq1fTHU6+l8fUNz/w+1c9GngOtdk=;
+ b=kY/j/x3yrywAnc7Z+wVTBjaRvHj+fzHAZML+GGtdtiHyicG83laFxwyqbh1e2p8cEICU
+ C/LPPeqWFDkpAREQHeMrbMyUnnIyVF8STz3A6rQ5oOoxFEu1wAc7WlvI0IBNQMUUN5mQ
+ Y7yQrrpOFccHSf/sO+RXxT7k6pFpE7ocWf4Ppeir62JO8IqA6kITlyoHnw6vmyvGyNEW
+ rzTuYGOySeRRO0FYxg+WErBLGB/tVOa3HZDLGuMGWk9epOTDP5BgjMq42h4LoWI5Ru4X
+ OJW9bhCxyN2HksRH1vTt5tBLkPVUba+Tk5MmRMjUnjX7aF5yBlVli349EXPBrkvhOxJ5 tA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 322h6r14ff-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sat, 04 Jul 2020 14:31:51 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 064ET1Cw101644;
+        Sat, 4 Jul 2020 14:31:50 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 322jj9r060-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 04 Jul 2020 14:31:50 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 064EVlo2022932;
+        Sat, 4 Jul 2020 14:31:48 GMT
+Received: from anon-dhcp-153.1015granger.net (/68.61.232.219)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sat, 04 Jul 2020 07:31:47 -0700
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.14\))
+Subject: Re: [PATCH] nfsd: Use seq_putc() in two functions
+From:   Chuck Lever <chuck.lever@oracle.com>
+In-Reply-To: <20200618015613.17806-1-vulab@iscas.ac.cn>
+Date:   Sat, 4 Jul 2020 10:31:46 -0400
+Cc:     Bruce Fields <bfields@fieldses.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <E1D55112-90D0-4B1E-AB57-74F2C782F973@oracle.com>
+References: <20200618015613.17806-1-vulab@iscas.ac.cn>
+To:     Xu Wang <vulab@iscas.ac.cn>
+X-Mailer: Apple Mail (2.3445.104.14)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9671 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=18 bulkscore=0
+ mlxlogscore=999 spamscore=0 phishscore=0 malwarescore=0 adultscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2007040104
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9671 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 lowpriorityscore=0
+ suspectscore=18 adultscore=0 mlxscore=0 spamscore=0 impostorscore=0
+ cotscore=-2147483648 malwarescore=0 mlxlogscore=999 clxscore=1011
+ bulkscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2007040105
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The EC reports a variety of error codes. Most of those, with the exception
-of EC_RES_INVALID_VERSION, are converted to -EPROTO. As result, the actual
-error code gets lost. Convert all EC errors to Linux error codes to report
-a more meaningful error to the caller to aid debugging.
+Hi-
 
-Cc: Yu-Hsuan Hsu <yuhsuan@chromium.org>
-Cc: Prashant Malani <pmalani@chromium.org>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
- drivers/platform/chrome/cros_ec_proto.c | 37 +++++++++++++++++++------
- 1 file changed, 29 insertions(+), 8 deletions(-)
+> On Jun 17, 2020, at 9:56 PM, Xu Wang <vulab@iscas.ac.cn> wrote:
+>=20
+> A single character (line break) should be put into a sequence.
+> Thus use the corresponding function "seq_putc()".
+>=20
+> Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
 
-diff --git a/drivers/platform/chrome/cros_ec_proto.c b/drivers/platform/chrome/cros_ec_proto.c
-index 3e745e0fe092..10aa9e483d35 100644
---- a/drivers/platform/chrome/cros_ec_proto.c
-+++ b/drivers/platform/chrome/cros_ec_proto.c
-@@ -543,6 +543,29 @@ int cros_ec_cmd_xfer(struct cros_ec_device *ec_dev,
- }
- EXPORT_SYMBOL(cros_ec_cmd_xfer);
- 
-+static const int cros_ec_error_map[] = {
-+	[EC_RES_INVALID_COMMAND] = -EOPNOTSUPP,
-+	[EC_RES_ERROR] = -EIO,
-+	[EC_RES_INVALID_PARAM] = -EINVAL,
-+	[EC_RES_ACCESS_DENIED] = -EACCES,
-+	[EC_RES_INVALID_RESPONSE] = -EPROTO,
-+	[EC_RES_INVALID_VERSION] = -ENOTSUPP,
-+	[EC_RES_INVALID_CHECKSUM] = -EBADMSG,
-+	[EC_RES_IN_PROGRESS] = -EINPROGRESS,
-+	[EC_RES_UNAVAILABLE] = -ENODATA,
-+	[EC_RES_TIMEOUT] = -ETIMEDOUT,
-+	[EC_RES_OVERFLOW] = -EOVERFLOW,
-+	[EC_RES_INVALID_HEADER] = -EBADR,
-+	[EC_RES_REQUEST_TRUNCATED] = -EBADR,
-+	[EC_RES_RESPONSE_TOO_BIG] = -EFBIG,
-+	[EC_RES_BUS_ERROR] = -EFAULT,
-+	[EC_RES_BUSY] = -EBUSY,
-+	[EC_RES_INVALID_HEADER_VERSION] = -EBADMSG,
-+	[EC_RES_INVALID_HEADER_CRC] = -EBADMSG,
-+	[EC_RES_INVALID_DATA_CRC] = -EBADMSG,
-+	[EC_RES_DUP_UNAVAILABLE] = -ENODATA,
-+};
-+
- /**
-  * cros_ec_cmd_xfer_status() - Send a command to the ChromeOS EC.
-  * @ec_dev: EC device.
-@@ -555,8 +578,7 @@ EXPORT_SYMBOL(cros_ec_cmd_xfer);
-  *
-  * Return:
-  * >=0 - The number of bytes transferred
-- * -ENOTSUPP - Operation not supported
-- * -EPROTO - Protocol error
-+ * <0 - Linux error code
-  */
- int cros_ec_cmd_xfer_status(struct cros_ec_device *ec_dev,
- 			    struct cros_ec_command *msg)
-@@ -566,13 +588,12 @@ int cros_ec_cmd_xfer_status(struct cros_ec_device *ec_dev,
- 	ret = cros_ec_cmd_xfer(ec_dev, msg);
- 	if (ret < 0) {
- 		dev_err(ec_dev->dev, "Command xfer error (err:%d)\n", ret);
--	} else if (msg->result == EC_RES_INVALID_VERSION) {
--		dev_dbg(ec_dev->dev, "Command invalid version (err:%d)\n",
--			msg->result);
--		return -ENOTSUPP;
- 	} else if (msg->result != EC_RES_SUCCESS) {
--		dev_dbg(ec_dev->dev, "Command result (err: %d)\n", msg->result);
--		return -EPROTO;
-+		if (msg->result < ARRAY_SIZE(cros_ec_error_map) && cros_ec_error_map[msg->result])
-+			ret = cros_ec_error_map[msg->result];
-+		else
-+			ret = -EPROTO;
-+		dev_dbg(ec_dev->dev, "Command result (err: %d [%d])\n", msg->result, ret);
- 	}
- 
- 	return ret;
--- 
-2.17.1
+Applied to nfsd-5.9. Thanks.
+
+
+> ---
+> fs/nfsd/nfs4idmap.c | 4 ++--
+> 1 file changed, 2 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/fs/nfsd/nfs4idmap.c b/fs/nfsd/nfs4idmap.c
+> index 9460be8a8321..f92161ce1f97 100644
+> --- a/fs/nfsd/nfs4idmap.c
+> +++ b/fs/nfsd/nfs4idmap.c
+> @@ -168,7 +168,7 @@ idtoname_show(struct seq_file *m, struct =
+cache_detail *cd, struct cache_head *h)
+> 			ent->id);
+> 	if (test_bit(CACHE_VALID, &h->flags))
+> 		seq_printf(m, " %s", ent->name);
+> -	seq_printf(m, "\n");
+> +	seq_putc(m, '\n');
+> 	return 0;
+> }
+>=20
+> @@ -346,7 +346,7 @@ nametoid_show(struct seq_file *m, struct =
+cache_detail *cd, struct cache_head *h)
+> 			ent->name);
+> 	if (test_bit(CACHE_VALID, &h->flags))
+> 		seq_printf(m, " %u", ent->id);
+> -	seq_printf(m, "\n");
+> +	seq_putc(m, '\n');
+> 	return 0;
+> }
+>=20
+> --=20
+> 2.17.1
+>=20
+
+--
+Chuck Lever
+
+
 
