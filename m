@@ -2,130 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F6EB214635
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 15:48:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D10D4214630
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 15:43:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728114AbgGDNsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Jul 2020 09:48:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45548 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726643AbgGDNsE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Jul 2020 09:48:04 -0400
-Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B606520885
-        for <linux-kernel@vger.kernel.org>; Sat,  4 Jul 2020 13:48:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593870483;
-        bh=lhucP/HCCR3lZo4NjvytE2zGTrqbmNig18IoNllNa9Y=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=jWNtdcZW/dId6+iTVGoBgb2LHpdcVvH3rQ73KDXu+3izHY6NQFGpxr0g9TVi8tAXA
-         NLSnLOZG7q9uB1Qv4WKE+HDDwbOjNvIDVGoH402h9CIK7OKJIh/A3PJ0kmZ9ZBUSe7
-         Snn5qjD61YP79JZ8+54sq6AakWLw/gm9Yi1XMKqU=
-Received: by mail-ot1-f42.google.com with SMTP id h1so6332793otq.12
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Jul 2020 06:48:03 -0700 (PDT)
-X-Gm-Message-State: AOAM532bpIeQASaDG/n7fW16DxeLRwIpEdSlTwQTCwiK02Cz3wUbBg9m
-        LaQHTWZRSXqSopA3kwRAq1UJI7U1E4iZAYSHWA8=
-X-Google-Smtp-Source: ABdhPJz3OgZ35puMi3EhjIgmnSCvBZOXbDyxiV4pj6KeTTvuVCfeuU00gMwCU9uDuW70WMkLEoBQ7B4UXP/803GpW/Q=
-X-Received: by 2002:a9d:4a8f:: with SMTP id i15mr37013644otf.77.1593870483069;
- Sat, 04 Jul 2020 06:48:03 -0700 (PDT)
+        id S1728003AbgGDNnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Jul 2020 09:43:09 -0400
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:60533 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726643AbgGDNnJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 4 Jul 2020 09:43:09 -0400
+X-Originating-IP: 82.66.179.123
+Received: from localhost (unknown [82.66.179.123])
+        (Authenticated sender: repk@triplefau.lt)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id C75CB1BF205;
+        Sat,  4 Jul 2020 13:43:04 +0000 (UTC)
+From:   Remi Pommarel <repk@triplefau.lt>
+To:     Johannes Berg <johannes@sipsolutions.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Javier Cardona <javier@cozybit.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Remi Pommarel <repk@triplefau.lt>
+Subject: [PATCH] mac80211: mesh: Free ie data when leaving mesh
+Date:   Sat,  4 Jul 2020 15:50:07 +0200
+Message-Id: <20200704135007.27292-1-repk@triplefau.lt>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20200623011803.91232-1-saravanak@google.com> <CAKv+Gu8rwTntUjd83+s07n+4ki+ON0Gkqao0ZgAF9haAw71dTA@mail.gmail.com>
- <CAGETcx9SBOQOL+xKq_-d2egG8+jMNjPMH37tVNBxgkWBGLWhvA@mail.gmail.com> <20200704120934.GA21097@willie-the-truck>
-In-Reply-To: <20200704120934.GA21097@willie-the-truck>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Sat, 4 Jul 2020 15:47:52 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXHLt9PojEXwXJE=DdKRkd=LL7uND4qgi6PABNUSBnkPog@mail.gmail.com>
-Message-ID: <CAMj1kXHLt9PojEXwXJE=DdKRkd=LL7uND4qgi6PABNUSBnkPog@mail.gmail.com>
-Subject: Re: [PATCH v2] arm64/module: Optimize module load time by optimizing
- PLT counting
-To:     Will Deacon <will@kernel.org>
-Cc:     Saravana Kannan <saravanak@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 4 Jul 2020 at 14:09, Will Deacon <will@kernel.org> wrote:
->
-> On Fri, Jul 03, 2020 at 05:47:24PM -0700, Saravana Kannan wrote:
-> > On Thu, Jul 2, 2020 at 8:30 AM Ard Biesheuvel <ardb@kernel.org> wrote:
-> > > On Tue, 23 Jun 2020 at 03:27, Saravana Kannan <saravanak@google.com> wrote:
-> > > > diff --git a/arch/arm64/kernel/module-plts.c b/arch/arm64/kernel/module-plts.c
-> > > > index 65b08a74aec6..0ce3a28e3347 100644
-> > > > --- a/arch/arm64/kernel/module-plts.c
-> > > > +++ b/arch/arm64/kernel/module-plts.c
-> > > > @@ -253,6 +253,40 @@ static unsigned int count_plts(Elf64_Sym *syms, Elf64_Rela *rela, int num,
-> > > >         return ret;
-> > > >  }
-> > > >
-> > > > +static bool branch_rela_needs_plt(Elf64_Sym *syms, Elf64_Rela *rela,
-> > > > +                                 Elf64_Word dstidx)
-> > > > +{
-> > > > +
-> > > > +       Elf64_Sym *s = syms + ELF64_R_SYM(rela->r_info);
-> > > > +
-> > > > +       if (s->st_shndx == dstidx)
-> > > > +               return false;
-> > > > +
-> > > > +       return ELF64_R_TYPE(rela->r_info) == R_AARCH64_JUMP26 ||
-> > > > +              ELF64_R_TYPE(rela->r_info) == R_AARCH64_CALL26;
-> > > > +}
-> > > > +
-> > > > +/* Group branch PLT relas at the front end of the array. */
-> > > > +static int partition_branch_plt_relas(Elf64_Sym *syms, Elf64_Rela *rela,
-> > > > +                                     int numrels, Elf64_Word dstidx)
-> > > > +{
-> > > > +       int i = 0, j = numrels - 1;
-> > > > +
-> > > > +       if (!IS_ENABLED(CONFIG_RANDOMIZE_BASE))
-> > > > +               return 0;
-> > > > +
-> > > > +       while (i < j) {
-> > > > +               if (branch_rela_needs_plt(syms, &rela[i], dstidx))
-> > > > +                       i++;
-> > > > +               else if (branch_rela_needs_plt(syms, &rela[j], dstidx))
-> > > > +                       swap(rela[i], rela[j]);
-> > >
-> > > Nit: would be slightly better to put
-> > >
-> > >   swap(rela[i++], rela[j]);
-> > >
-> > > here so the next iteration of the loop will not call
-> > > branch_rela_needs_plt() on rela[i] redundantly. But the current code
-> > > is also correct.
-> >
-> > Oh yeah, I noticed that unnecessary repeat of branch_rela_needs_plt()
-> > on rela[i] when j had to be decremented, but forgot to handle it after
-> > I was done with all the testing.
->
-> Yeah, I guess you can decrement j as well, but I just think it makes the
-> logic harder to read and more error-prone if we change it later.
->
+At ieee80211_join_mesh() some ie data could have been allocated (see
+copy_mesh_setup()) and need to be cleaned up when leaving the mesh.
 
-Indeed,
+This fixes the following kmemleak report:
 
-  swap(rela[i++], rela[j--]);
+unreferenced object 0xffff0000116bc600 (size 128):
+  comm "wpa_supplicant", pid 608, jiffies 4294898983 (age 293.484s)
+  hex dump (first 32 bytes):
+    30 14 01 00 00 0f ac 04 01 00 00 0f ac 04 01 00  0...............
+    00 0f ac 08 00 00 00 00 c4 65 40 00 00 00 00 00  .........e@.....
+  backtrace:
+    [<00000000bebe439d>] __kmalloc_track_caller+0x1c0/0x330
+    [<00000000a349dbe1>] kmemdup+0x28/0x50
+    [<0000000075d69baa>] ieee80211_join_mesh+0x6c/0x3b8 [mac80211]
+    [<00000000683bb98b>] __cfg80211_join_mesh+0x1e8/0x4f0 [cfg80211]
+    [<0000000072cb507f>] nl80211_join_mesh+0x520/0x6b8 [cfg80211]
+    [<0000000077e9bcf9>] genl_family_rcv_msg+0x374/0x680
+    [<00000000b1bd936d>] genl_rcv_msg+0x78/0x108
+    [<0000000022c53788>] netlink_rcv_skb+0xb0/0x1c0
+    [<0000000011af8ec9>] genl_rcv+0x34/0x48
+    [<0000000069e41f53>] netlink_unicast+0x268/0x2e8
+    [<00000000a7517316>] netlink_sendmsg+0x320/0x4c0
+    [<0000000069cba205>] ____sys_sendmsg+0x354/0x3a0
+    [<00000000e06bab0f>] ___sys_sendmsg+0xd8/0x120
+    [<0000000037340728>] __sys_sendmsg+0xa4/0xf8
+    [<000000004fed9776>] __arm64_sys_sendmsg+0x44/0x58
+    [<000000001c1e5647>] el0_svc_handler+0xd0/0x1a0
 
-looks even bettter!
+Fixes: c80d545da3f7 (mac80211: Let userspace enable and configure vendor specific path selection.)
+Signed-off-by: Remi Pommarel <repk@triplefau.lt>
+---
+ net/mac80211/cfg.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-But you're right, it's not a big deal.
+diff --git a/net/mac80211/cfg.c b/net/mac80211/cfg.c
+index 9b360544ad6f..1079a07e43e4 100644
+--- a/net/mac80211/cfg.c
++++ b/net/mac80211/cfg.c
+@@ -2166,6 +2166,7 @@ static int ieee80211_leave_mesh(struct wiphy *wiphy, struct net_device *dev)
+ 	ieee80211_stop_mesh(sdata);
+ 	mutex_lock(&sdata->local->mtx);
+ 	ieee80211_vif_release_channel(sdata);
++	kfree(sdata->u.mesh.ie);
+ 	mutex_unlock(&sdata->local->mtx);
+ 
+ 	return 0;
+-- 
+2.26.2
 
-
-> > But I did compare it to the code I had written in v1 that didn't have
-> > this extra check for rela[i]. I couldn't find any measurable
-> > difference in the module load time. Maybe 1ms for the worst case
-> > module, but that could have been just run to run variation.
-> >
-> > Anyway, maybe send this as another patch since Catalin has already
-> > picked this mine?
->
-> I think the queued code is fine, so we don't need to micro-optimise it.
->
-> Will
