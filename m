@@ -2,90 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 115B2214626
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 15:33:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFE31214622
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 15:33:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728098AbgGDNdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Jul 2020 09:33:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57876 "EHLO
+        id S1727919AbgGDNdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Jul 2020 09:33:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726643AbgGDNdx (ORCPT
+        with ESMTP id S1726807AbgGDNdT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Jul 2020 09:33:53 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B88F7C061794;
-        Sat,  4 Jul 2020 06:33:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=WX43RKw0+FGdp9bNmImS/2sAa8MNXnNJwwbZw51kMdQ=; b=P6cgPErml8i03xIAD2T2msZxIG
-        m8LjhA4KE1VmUJ/jww8W5OIDqMwXNvGXmLJGm4V84vgiHw1Q1sLRBY/KET+hmBWm6YagHqDZOxy1S
-        1Cl5YP8V6suzo6wGWC78gJS46MGJpjwrQBxUv7MUsIRJcX5aG7Y+vlV7q/wTWzQA54upC4dU6oywQ
-        vNfwjiOvGOpXyTBDyxyFo9KCpqLv4grXWw6HZGrK8fRYYgmfV9wk7OjDtMPRq144R4RlYp+6bxG0r
-        b8KTCgPZUJhUs9VACBdSKb2OCv3N6WdQNjMqc6ky2TBcBYCmQnMTCLhZTAfd9qaKHaEari7D+2tOb
-        do6pVwFg==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jriIM-0002wM-5j; Sat, 04 Jul 2020 13:33:30 +0000
-Date:   Sat, 4 Jul 2020 14:33:30 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     Konstantin Khlebnikov <koct9i@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Tejun Heo <tj@kernel.org>, Hugh Dickins <hughd@google.com>,
-        =?utf-8?B?0JrQvtC90YHRgtCw0L3RgtC40L0g0KXQu9C10LHQvdC40LrQvtCy?= 
-        <khlebnikov@yandex-team.ru>, daniel.m.jordan@oracle.com,
-        yang.shi@linux.alibaba.com, Johannes Weiner <hannes@cmpxchg.org>,
-        lkp@intel.com, linux-mm@kvack.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, shakeelb@google.com,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, richard.weiyang@gmail.com
-Subject: Re: [PATCH v14 15/20] mm/swap: serialize memcg changes during
- pagevec_lru_move_fn
-Message-ID: <20200704133330.GP25523@casper.infradead.org>
-References: <1593752873-4493-1-git-send-email-alex.shi@linux.alibaba.com>
- <1593752873-4493-16-git-send-email-alex.shi@linux.alibaba.com>
- <CALYGNiOkA_ZsycF_hqm3XLk55Ek1Mo9w1gO=6EeE35fUtA0i_w@mail.gmail.com>
- <56e395c6-81e7-7163-0d4f-42b91573289f@linux.alibaba.com>
- <20200704113944.GN25523@casper.infradead.org>
- <b6caf0d7-266e-55ea-0c88-656c800af1e3@linux.alibaba.com>
+        Sat, 4 Jul 2020 09:33:19 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90C25C061794
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Jul 2020 06:33:19 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id r22so31048481qke.13
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Jul 2020 06:33:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=qqa3e0bH9mYWgsFgBgRPrZcm1aqLiNbt8ATgIenPMgs=;
+        b=Z9PbwoXQxnnRcbB2IxgjzSX8hyAmzVJHbf7vjs2Fq6fi4lrcmPjLlMegsugP6dZxNC
+         5rmvFHFE0gFX6O52eMyIC50fBuymdhhovTnB8aArn34R2pNtZbW5Xx2KP2YiLgzHYTU9
+         6AoOO7sYhcI7UzwyX+mkghjrN4KyPAxUVNwkXyFEQZCM4HurhUCTTluaooXtaHo2dPTP
+         rrbrC/ZWIiy1jX3KXyxQmkg2iM6pMvgyva+DHG6GExtKFdAZBBZOCrNnRO5LZeVqtt0i
+         sI9S/MxPXP/vEZKnVOMoh1xeUW3jz4S90OlUalNFT6E0RtHpWvg/k7jKZPm4Uu6Ke+8T
+         z0RA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=qqa3e0bH9mYWgsFgBgRPrZcm1aqLiNbt8ATgIenPMgs=;
+        b=LwMePPHaeeAj1jCNCaWu2L7hTwt4hcP1XE8biuwa1AKAKIY1SU2HPpcF/W2ALZWcky
+         QQmpBhiwZG+rs0hfwgaidyCGiWsU+oTv6AFaRn8Z+ZU5lbFZ27YJo1P26opfz2DUj59c
+         1AcJX0XIb81zH9bg3XaTuEoIPZ19m4RrVlqdGlWyNmu3YVr+kxj/as213/m8gsr/3qIl
+         kX1r1cvZ7ebWZ38BlDISySErHrhdC3m3XGe+DcVJ5vGHCxEFzU4Xwof0lPGNfMwLgEW5
+         Q1KjlYzGj7JL4+sVxOvI6SuH1KKvq0S7LncHdhl3XWIxMrkWA/xf5muhRLYHBD2cq6WK
+         gJoQ==
+X-Gm-Message-State: AOAM533OphXqkYQnt0tcmLKb6MGYZuafWNHtyP3aUIGSivuOjl/2uxq8
+        wWxBP+pzG2a2otm5Mob69zEIFTERS/kb5xxVU+NU+pxDr/XsrA==
+X-Google-Smtp-Source: ABdhPJxsVNgyvpEzLtrpYL3cJRFl3j1H0kWbDB5FAaI7z4yY0OXzToum3fNGr7IUFUfwur1RGEhNAPIbT8OrKO/cxXA=
+X-Received: by 2002:a05:620a:2155:: with SMTP id m21mr29324016qkm.14.1593869598572;
+ Sat, 04 Jul 2020 06:33:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b6caf0d7-266e-55ea-0c88-656c800af1e3@linux.alibaba.com>
+References: <CAAvDm6bGBbN=EiJxO9Fq9HqLz6F=hSQqjKms_G6qPHzbZ6G3zg@mail.gmail.com>
+ <20200704122222.GB15530@amd>
+In-Reply-To: <20200704122222.GB15530@amd>
+From:   =?UTF-8?B?5a2Z5LiW6b6ZIHN1bnNoaWxvbmc=?= <sunshilong369@gmail.com>
+Date:   Sat, 4 Jul 2020 21:34:36 +0800
+Message-ID: <CAAvDm6bjTzcRXs0qMF2nTo_mfEDE1MYbh_ExMojOMNZ9H+iKVg@mail.gmail.com>
+Subject: Re: Are there some potentially serious problems that I should be
+ aware of if I totally disable the CONFIG_ACPI option on the X86_64 platform?
+To:     Pavel Machek <pavel@ucw.cz>, Greg KH <greg@kroah.com>
+Cc:     kernelnewbies <Kernelnewbies@kernelnewbies.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 04, 2020 at 09:12:46PM +0800, Alex Shi wrote:
-> 在 2020/7/4 下午7:39, Matthew Wilcox 写道:
-> > On Sat, Jul 04, 2020 at 07:34:59PM +0800, Alex Shi wrote:
-> >> That's a great idea! Guess what the new struct we need would be like this?
-> >> I like to try this. :)
-> >>
-> >>
-> >> diff --git a/include/linux/pagevec.h b/include/linux/pagevec.h
-> >> index 081d934eda64..d62778c8c184 100644
-> >> --- a/include/linux/pagevec.h
-> >> +++ b/include/linux/pagevec.h
-> >> @@ -20,7 +20,7 @@
-> >>  struct pagevec {
-> >>         unsigned char nr;
-> >>         bool percpu_pvec_drained;
-> >> -       struct page *pages[PAGEVEC_SIZE];
-> >> +       struct list_head veclist;
-> >>  };
-> > 
-> > pagevecs are used not just for LRU.  If you want to use a list_head for
-> > LRU then define a new structure.
-> 
-> yes, there are much page don't use page->lru, like slab etc. we need a new struct.
+Thank you for taking the time to respond to me.
 
-That's not what I mean.  Slab pages aren't on the LRU anyway.
+>These machines are still mostly IBM-PC compatible, so it is likely to
+>somehow work. You'll likely get worse power and thermal
+>management. Try it.
+It's an industrial personal computer with an Intel processor.
+What I am worried about is that it may damage the hardware.
 
-Consider the callers of page_cache_delete_batch().  These use a pagevec
-for a non-LRU purpose, and they will be much slower with a list_head than
-with an array.
+Thank you for your attention to this matter.
+Best Regards.
+
+Pavel Machek <pavel@ucw.cz> =E4=BA=8E2020=E5=B9=B47=E6=9C=884=E6=97=A5=E5=
+=91=A8=E5=85=AD =E4=B8=8B=E5=8D=888:22=E5=86=99=E9=81=93=EF=BC=9A
+>
+> Hi!
+>
+> > Are there some potentially serious problems that I should be aware of
+> > if I totally disable the CONFIG_ACPI option on the X86_64 platform?
+> >
+> > Would it do harm to the hardware?
+> >
+> > Thank you for your attention to this matter.
+>
+> These machines are still mostly IBM-PC compatible, so it is likely to
+> somehow work. You'll likely get worse power and thermal
+> management. Try it.
+>
+>                                                                         P=
+avel
+>
+> --
+> (english) http://www.livejournal.com/~pavelmachek
+> (cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/b=
+log.html
