@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D56822144CB
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 12:26:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A8E22144CD
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 12:26:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727877AbgGDKZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Jul 2020 06:25:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57294 "EHLO
+        id S1727903AbgGDK0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Jul 2020 06:26:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727848AbgGDKZx (ORCPT
+        with ESMTP id S1727856AbgGDKZy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Jul 2020 06:25:53 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A407C08C5DF
-        for <linux-kernel@vger.kernel.org>; Sat,  4 Jul 2020 03:25:53 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id j18so34247099wmi.3
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Jul 2020 03:25:53 -0700 (PDT)
+        Sat, 4 Jul 2020 06:25:54 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73E9CC08C5E0
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Jul 2020 03:25:54 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id j4so32885056wrp.10
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Jul 2020 03:25:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=dEvAV3WC8gjOi8/db5UgonIFrnz7oP9M+fD1t4PD98A=;
-        b=u895AsqnI++nW+ATsCD6BM53ooaKE7DfxiT5p2rrbYNdSijhTa2fQojXDTEIR7jYPF
-         eDuyVN7haX4f7btL7FsYhYPvf+qtegwUjvvWWxU2a+3rlGHRajWGZnXWwldaiRQqcO/B
-         6cwLMKgC4aChrc/tG8Z2LdbCLvM1pN4OOfieirBaNfQULsq97lAy3uSGUYI0zExf/EMg
-         /wEbPOoKEenrXogE201dj1V7BdCaolqxGGhSyJ1iuPRWAyWxco+8y7t9Zu17E/orMXei
-         NVGn3grc7xb4aECQK6M7VAlQ2ylCejDxl//pNzxVP/BRXfjaXSD9afGlg/5+0dsGcO4q
-         PdIA==
+        bh=+ekmXxgc2CJLhUtRJfX6RJbgFcgiu4O269w7FRXLrjM=;
+        b=XhrFjlEY5PPJ5atPvo98rUZh1ZQWnHm5Ls6NPL6ZTnGWOAxgiXwXfUtKj4vFQXEkZ1
+         sYO5UqWCjprLeI5XG5bD0nfsyMeBD8uZLIaFiE7N5XASwC6BW0zIXcnBBZ0v+wDNdt7P
+         SIGro8XEPu8P2ii8FVA2HtRZ48opMJz8RZjXPrvdz4ceT5zPYOFuN7jHfBguQ8sOgFaC
+         qDcKZJcoS+C/p/epqdy4cSkgQsD7dBnRa1JBYiYsmZQO1sfzS5Hyl45VzImUOvNxnX7l
+         s0ysH9XHR4q+oEBTNOacdVKS54TI587vSIHnjltfSLJv7wd6ILU0ZdX+iqSBe1ck5uM2
+         eg6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=dEvAV3WC8gjOi8/db5UgonIFrnz7oP9M+fD1t4PD98A=;
-        b=s9314iE/acGH1/hcprisnswBNFjnzJcwhTzg9oURCCWSwUjWDjcGPvD+L7bMjtLg/J
-         0McUXTfX+Bc1HkGZMwoUttVQ+gJVipe7uLZnELqmrkcsGe7zU0kXCAH2P4Y02vSNywmy
-         +D3+cdjbUqYzp+hHBN8y3gJgdjHwKfo+YXxHZ3nlNTvzGZtXL5L3ZyProxh3g4M/RIc5
-         b5JyT+Wd9/gWFEQ3CnslM0krtXPsgtjbwX+UJK+UVOCq+8qvHGubDFp9cHk9Um8sr95S
-         am2Wf5y76TwO7wngRfuOLluD1+9ugWbhbnuStsbsG8QiEdSzaKRfwiLFUyDdKF0gXPge
-         g1Uw==
-X-Gm-Message-State: AOAM532UHpU6xDBNNmYLtM2EL72yaS2wFGUtPoB/O8ADtNRV5oONA7nq
-        RDNhNpImeYR+W3OdUfx/DvA=
-X-Google-Smtp-Source: ABdhPJxPyjX8E1s13IMa5BpsRPWoAPS1pYxySTMxZT0pEmMWQ3CcE7UVh59cuHmumr5QkfbuhHRayw==
-X-Received: by 2002:a1c:18e:: with SMTP id 136mr10189686wmb.93.1593858352040;
-        Sat, 04 Jul 2020 03:25:52 -0700 (PDT)
+        bh=+ekmXxgc2CJLhUtRJfX6RJbgFcgiu4O269w7FRXLrjM=;
+        b=iGyWMauUaCBFplZ1xswbACrD080qlp4wBWganVz0c6BGN3StuGv0uQ2weKzFJmXh01
+         BOlUzmy1HYvc7S9qrjl1w9Oj31YVDUnG1F6bqb4qzR9hbSIcAPf1rX+ljhNycLb+dQP0
+         w98A6+dUYFRGn/vnkcRn0N8pLHrK1W3lb6tU54nwXHOV2VpJZfFlU1S3EO5+VYLgSN+f
+         N/JRuT2tjLRFodBN/q7Fkg8T5lHHp0giBXLOz43jgnt4upt1BWIypqfVx+9B8XZ7XVk4
+         gwZa9pJ8ZpurkyK+fHA0W1tzwihTF940Dy5ejkxQWxbH5zykvsQ3V7ktKYzs5jxn2PPT
+         zQHw==
+X-Gm-Message-State: AOAM531jnxVoGg4KRln8zbXki6JiNXQUBWwTGgPYTDZyP3gTx9KyYy3b
+        4P9jDvmHj9gtR2xMRkJH2fc=
+X-Google-Smtp-Source: ABdhPJy38Ca5rvU97m5F4CdQCK7nkRR1FB9ubCnok0fal6lPP07aDjaptGbQHLPIbee5P1rhdOSDWA==
+X-Received: by 2002:adf:ee4d:: with SMTP id w13mr11520166wro.245.1593858353105;
+        Sat, 04 Jul 2020 03:25:53 -0700 (PDT)
 Received: from clement-Latitude-7490.numericable.fr (213-245-241-245.rev.numericable.fr. [213.245.241.245])
-        by smtp.gmail.com with ESMTPSA id g14sm16421428wrm.93.2020.07.04.03.25.51
+        by smtp.gmail.com with ESMTPSA id g14sm16421428wrm.93.2020.07.04.03.25.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 04 Jul 2020 03:25:51 -0700 (PDT)
+        Sat, 04 Jul 2020 03:25:52 -0700 (PDT)
 From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
 To:     Rob Herring <robh@kernel.org>,
         Tomeu Vizoso <tomeu.vizoso@collabora.com>,
@@ -59,9 +59,9 @@ To:     Rob Herring <robh@kernel.org>,
         Chen-Yu Tsai <wens@csie.org>
 Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
         =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-Subject: [PATCH v2 09/14] drm/panfrost: dynamically alloc regulators
-Date:   Sat,  4 Jul 2020 12:25:30 +0200
-Message-Id: <20200704102535.189647-10-peron.clem@gmail.com>
+Subject: [PATCH v2 10/14] drm/panfrost: add regulators to devfreq
+Date:   Sat,  4 Jul 2020 12:25:31 +0200
+Message-Id: <20200704102535.189647-11-peron.clem@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200704102535.189647-1-peron.clem@gmail.com>
 References: <20200704102535.189647-1-peron.clem@gmail.com>
@@ -73,71 +73,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We will later introduce regulators managed by OPP.
+Some OPP tables specify voltage for each frequency. Devfreq can
+handle these regulators but they should be get only 1 time to avoid
+issue and know who is in charge.
 
-Only alloc regulators when it's needed. This also help use
-to release the regulators only when they are allocated.
+If OPP table is probe don't init regulator.
 
 Signed-off-by: Clément Péron <peron.clem@gmail.com>
 Reviewed-by: Steven Price <steven.price@arm.com>
 ---
- drivers/gpu/drm/panfrost/panfrost_device.c | 14 +++++++++-----
- drivers/gpu/drm/panfrost/panfrost_device.h |  3 +--
- 2 files changed, 10 insertions(+), 7 deletions(-)
+ drivers/gpu/drm/panfrost/panfrost_devfreq.c | 19 +++++++++++++++++++
+ drivers/gpu/drm/panfrost/panfrost_devfreq.h |  2 ++
+ drivers/gpu/drm/panfrost/panfrost_device.c  | 11 +++++++----
+ 3 files changed, 28 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/panfrost/panfrost_device.c b/drivers/gpu/drm/panfrost/panfrost_device.c
-index 464da1646398..0b0fb45aee82 100644
---- a/drivers/gpu/drm/panfrost/panfrost_device.c
-+++ b/drivers/gpu/drm/panfrost/panfrost_device.c
-@@ -90,9 +90,11 @@ static int panfrost_regulator_init(struct panfrost_device *pfdev)
- {
- 	int ret, i;
+diff --git a/drivers/gpu/drm/panfrost/panfrost_devfreq.c b/drivers/gpu/drm/panfrost/panfrost_devfreq.c
+index d9007f44b772..d1e3e9d00a48 100644
+--- a/drivers/gpu/drm/panfrost/panfrost_devfreq.c
++++ b/drivers/gpu/drm/panfrost/panfrost_devfreq.c
+@@ -93,6 +93,7 @@ int panfrost_devfreq_init(struct panfrost_device *pfdev)
+ 	unsigned long cur_freq;
+ 	struct device *dev = &pfdev->pdev->dev;
+ 	struct devfreq *devfreq;
++	struct opp_table *opp_table;
+ 	struct thermal_cooling_device *cooling;
+ 	struct panfrost_devfreq *pfdevfreq = &pfdev->pfdevfreq;
  
--	if (WARN(pfdev->comp->num_supplies > ARRAY_SIZE(pfdev->regulators),
--			"Too many supplies in compatible structure.\n"))
--		return -EINVAL;
-+	pfdev->regulators = devm_kcalloc(pfdev->dev, pfdev->comp->num_supplies,
-+					 sizeof(*pfdev->regulators),
-+					 GFP_KERNEL);
-+	if (!pfdev->regulators)
-+		return -ENOMEM;
+@@ -105,6 +106,19 @@ int panfrost_devfreq_init(struct panfrost_device *pfdev)
  
- 	for (i = 0; i < pfdev->comp->num_supplies; i++)
- 		pfdev->regulators[i].supply = pfdev->comp->supply_names[i];
-@@ -117,8 +119,10 @@ static int panfrost_regulator_init(struct panfrost_device *pfdev)
+ 	spin_lock_init(&pfdevfreq->lock);
  
- static void panfrost_regulator_fini(struct panfrost_device *pfdev)
- {
--	regulator_bulk_disable(pfdev->comp->num_supplies,
--			pfdev->regulators);
-+	if (!pfdev->regulators)
-+		return;
++	opp_table = dev_pm_opp_set_regulators(dev, pfdev->comp->supply_names,
++					      pfdev->comp->num_supplies);
++	if (IS_ERR(opp_table)) {
++		ret = PTR_ERR(opp_table);
++		/* Continue if the optional regulator is missing */
++		if (ret != -ENODEV) {
++			DRM_DEV_ERROR(dev, "Couldn't set OPP regulators\n");
++			goto err_fini;
++		}
++	} else {
++		pfdevfreq->regulators_opp_table = opp_table;
++	}
 +
-+	regulator_bulk_disable(pfdev->comp->num_supplies, pfdev->regulators);
+ 	panfrost_devfreq_reset(pfdevfreq);
+ 
+ 	cur_freq = clk_get_rate(pfdev->clock);
+@@ -153,6 +167,11 @@ void panfrost_devfreq_fini(struct panfrost_device *pfdev)
+ 		dev_pm_opp_of_remove_table(&pfdev->pdev->dev);
+ 		pfdevfreq->opp_of_table_added = false;
+ 	}
++
++	if (pfdevfreq->regulators_opp_table) {
++		dev_pm_opp_put_regulators(pfdevfreq->regulators_opp_table);
++		pfdevfreq->regulators_opp_table = NULL;
++	}
  }
  
- static void panfrost_pm_domain_fini(struct panfrost_device *pfdev)
-diff --git a/drivers/gpu/drm/panfrost/panfrost_device.h b/drivers/gpu/drm/panfrost/panfrost_device.h
-index 2efa59c9d1c5..953f7536a773 100644
---- a/drivers/gpu/drm/panfrost/panfrost_device.h
-+++ b/drivers/gpu/drm/panfrost/panfrost_device.h
-@@ -22,7 +22,6 @@ struct panfrost_job;
- struct panfrost_perfcnt;
+ void panfrost_devfreq_resume(struct panfrost_device *pfdev)
+diff --git a/drivers/gpu/drm/panfrost/panfrost_devfreq.h b/drivers/gpu/drm/panfrost/panfrost_devfreq.h
+index 210269944687..db6ea48e21f9 100644
+--- a/drivers/gpu/drm/panfrost/panfrost_devfreq.h
++++ b/drivers/gpu/drm/panfrost/panfrost_devfreq.h
+@@ -8,12 +8,14 @@
+ #include <linux/ktime.h>
  
- #define NUM_JOB_SLOTS 3
--#define MAX_REGULATORS 2
- #define MAX_PM_DOMAINS 3
+ struct devfreq;
++struct opp_table;
+ struct thermal_cooling_device;
  
- struct panfrost_features {
-@@ -81,7 +80,7 @@ struct panfrost_device {
- 	void __iomem *iomem;
- 	struct clk *clock;
- 	struct clk *bus_clock;
--	struct regulator_bulk_data regulators[MAX_REGULATORS];
-+	struct regulator_bulk_data *regulators;
- 	struct reset_control *rstc;
- 	/* pm_domains for devices with more than one. */
- 	struct device *pm_domain_devs[MAX_PM_DOMAINS];
+ struct panfrost_device;
+ 
+ struct panfrost_devfreq {
+ 	struct devfreq *devfreq;
++	struct opp_table *regulators_opp_table;
+ 	struct thermal_cooling_device *cooling;
+ 	bool opp_of_table_added;
+ 
+diff --git a/drivers/gpu/drm/panfrost/panfrost_device.c b/drivers/gpu/drm/panfrost/panfrost_device.c
+index 0b0fb45aee82..1b5fc9221828 100644
+--- a/drivers/gpu/drm/panfrost/panfrost_device.c
++++ b/drivers/gpu/drm/panfrost/panfrost_device.c
+@@ -223,10 +223,13 @@ int panfrost_device_init(struct panfrost_device *pfdev)
+ 		goto out_clk;
+ 	}
+ 
+-	err = panfrost_regulator_init(pfdev);
+-	if (err) {
+-		dev_err(pfdev->dev, "regulator init failed %d\n", err);
+-		goto out_devfreq;
++	/* OPP will handle regulators */
++	if (!pfdev->pfdevfreq.opp_of_table_added) {
++		err = panfrost_regulator_init(pfdev);
++		if (err) {
++			dev_err(pfdev->dev, "regulator init failed %d\n", err);
++			goto out_devfreq;
++		}
+ 	}
+ 
+ 	err = panfrost_reset_init(pfdev);
 -- 
 2.25.1
 
