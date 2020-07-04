@@ -2,736 +2,322 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED7732146F4
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 17:41:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A0222146FB
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Jul 2020 17:43:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726831AbgGDPlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Jul 2020 11:41:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726405AbgGDPls (ORCPT
+        id S1726965AbgGDPn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Jul 2020 11:43:28 -0400
+Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:64804 "EHLO
+        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726405AbgGDPn1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Jul 2020 11:41:48 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E485C061794
-        for <linux-kernel@vger.kernel.org>; Sat,  4 Jul 2020 08:41:48 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id z3so5863991pfn.12
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Jul 2020 08:41:48 -0700 (PDT)
+        Sat, 4 Jul 2020 11:43:27 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=BpNMQawguzbdu1kF3cDu9FBWci5kCvfum1Xzrz0bRP0=;
-        b=hXR2vV0+n5hMmb6FJgvIBpNtow2acycVKqldFuAZwQ/mO0wCVSvN6QDiQ8Q+nqDoaZ
-         +liNSWrTbK5cV2w9vWjX1i5pTpJhSUn2DqT//18PFz7MAs2WZIJKb2jvngF0cgC81Fs7
-         BHm+MD3vNrZ2L8PVG5A9jXB0Ie/BBQLMHZxQmR9NzULL3hQSjWUH4BVF3uEjU6z495EQ
-         nfb0/SmtRaUVxkZGlwkvPIdR6tymJupSTv9BExUeQQeCTVGGBmcsmL5zbYar/e78CJLm
-         u5VrWOZXdczu3VWBqas+Ee6Up5jODV5N5xTGfbkp27kn5ddxVJWxDB6DVIvyaOMQ/WmY
-         rfNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=BpNMQawguzbdu1kF3cDu9FBWci5kCvfum1Xzrz0bRP0=;
-        b=CaCVHsc9aMj/RAzcIJdQaTijqcoUX+2HoQ3o0t2YX7f1DmNnHDq3Qbwb0K4H5bClCR
-         QtDmTrpToAoUfrtdx39Zz0y41UV87bht3pWndDlm7DIGtoqpwlpd3eDgUGvh3qyJoJgS
-         3z4vUmp7oNVGOPimWlrIfFmuv8/wOXf17IJlByDa8aIGcyXopbVI8UGQyit02oN8KN8I
-         x/b7eaYFWvab0PfxJpeoO6Cx+EsSRTLXqU/PD8wU6qCX94+MzHLTso5wV32+TCxVez0S
-         LMNJ3VCK17lkB9HJE3OlXG3VBYVFNmKfXQXH6t7U8XvpLpodUhLkFJ4FtpjyyG1tTFnp
-         QwCQ==
-X-Gm-Message-State: AOAM532mVWlrw/K9NNNy27dCffh8SrUIIYxNnFc7RzkVB07dfb3GNh/q
-        xWoAMlCGKYUdBqAQY9a2G4py
-X-Google-Smtp-Source: ABdhPJzNT+Ra22Peyj+/qbbDJsXMmTdf+M1V73AIc/SnlDtIIKl6DdyXHoBjVcPZSWXNrUbGoz7e3g==
-X-Received: by 2002:a65:60d4:: with SMTP id r20mr29807827pgv.436.1593877307373;
-        Sat, 04 Jul 2020 08:41:47 -0700 (PDT)
-Received: from Mani-XPS-13-9360 ([2409:4072:680:29c6:d74:dc5c:e13f:c458])
-        by smtp.gmail.com with ESMTPSA id o1sm14197942pjf.17.2020.07.04.08.41.43
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 04 Jul 2020 08:41:46 -0700 (PDT)
-Date:   Sat, 4 Jul 2020 21:11:40 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 7/9] bus: mhi: core: Introduce debugfs entries and
- counters for MHI
-Message-ID: <20200704154140.GG3066@Mani-XPS-13-9360>
-References: <1593448782-8385-1-git-send-email-bbhatt@codeaurora.org>
- <1593448782-8385-8-git-send-email-bbhatt@codeaurora.org>
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1593877406; x=1625413406;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=n2dWr7gm9H7OUjK09qHgnMN5WT5OD5pPnkAXz3ZiBaU=;
+  b=F7Nif+jJpIu2w9MLX2MUED8FBjJIE8/GW+08OVuaZbdfonbe/FpoeUSD
+   Qw5JTxyTGHDHKDDnUxgkBLsHVveGiFInDnUabJ2B4goVz0uyoOCx8Ax9Z
+   YOJ8R4wTTISx8fPSULGAv14O6K7CncxlWYKwb8gvLKooSywUJSoN/QR7z
+   0=;
+IronPort-SDR: vvTuIuFDl5r/cTkYtiJkATQ043ltuAmqvaxQkIS5WF0gcyHyfoNEaC2byrcD5n/2sprJDIe8LV
+ 3qkcRDh0zYVw==
+X-IronPort-AV: E=Sophos;i="5.75,312,1589241600"; 
+   d="scan'208";a="57284908"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1d-9ec21598.us-east-1.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 04 Jul 2020 15:43:21 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
+        by email-inbound-relay-1d-9ec21598.us-east-1.amazon.com (Postfix) with ESMTPS id 956CBA205F;
+        Sat,  4 Jul 2020 15:43:18 +0000 (UTC)
+Received: from EX13D16EUB001.ant.amazon.com (10.43.166.28) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Sat, 4 Jul 2020 15:43:17 +0000
+Received: from 38f9d34ed3b1.ant.amazon.com (10.43.162.140) by
+ EX13D16EUB001.ant.amazon.com (10.43.166.28) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Sat, 4 Jul 2020 15:43:09 +0000
+Subject: Re: [PATCH v4 06/18] nitro_enclaves: Handle out-of-band PCI device
+ events
+To:     Alexander Graf <graf@amazon.de>, <linux-kernel@vger.kernel.org>
+CC:     Anthony Liguori <aliguori@amazon.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Colm MacCarthaigh <colmmacc@amazon.com>,
+        "Bjoern Doebel" <doebel@amazon.de>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        "Frank van der Linden" <fllinden@amazon.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Martin Pohlack <mpohlack@amazon.de>,
+        Matt Wilson <msw@amazon.com>,
+        "Paolo Bonzini" <pbonzini@redhat.com>,
+        Balbir Singh <sblbir@amazon.com>,
+        "Stefano Garzarella" <sgarzare@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stewart Smith <trawets@amazon.com>,
+        Uwe Dannowski <uwed@amazon.de>, <kvm@vger.kernel.org>,
+        <ne-devel-upstream@amazon.com>
+References: <20200622200329.52996-1-andraprs@amazon.com>
+ <20200622200329.52996-7-andraprs@amazon.com>
+ <82768612-0d23-55a9-dedf-58ade57b37af@amazon.de>
+From:   "Paraschiv, Andra-Irina" <andraprs@amazon.com>
+Message-ID: <96667e27-3379-4817-843f-988af9db4366@amazon.com>
+Date:   Sat, 4 Jul 2020 18:43:04 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1593448782-8385-8-git-send-email-bbhatt@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <82768612-0d23-55a9-dedf-58ade57b37af@amazon.de>
+Content-Language: en-US
+X-Originating-IP: [10.43.162.140]
+X-ClientProxiedBy: EX13D08UWB002.ant.amazon.com (10.43.161.168) To
+ EX13D16EUB001.ant.amazon.com (10.43.166.28)
+Content-Type: text/plain; charset="windows-1252"; format="flowed"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 09:39:40AM -0700, Bhaumik Bhatt wrote:
-> Introduce debugfs entries to show state, register, channel, and event
-> ring information. Add MHI state counters to keep track of the state
-> changes on the device. Also, allow the host to trigger a device reset,
-> issue votes, and change the MHI timeout to help in debug.
-> 
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-> ---
->  drivers/bus/mhi/Kconfig         |   8 +
->  drivers/bus/mhi/core/Makefile   |   5 +-
->  drivers/bus/mhi/core/debugfs.c  | 444 ++++++++++++++++++++++++++++++++++++++++
->  drivers/bus/mhi/core/init.c     |   7 +
->  drivers/bus/mhi/core/internal.h |  24 +++
->  drivers/bus/mhi/core/pm.c       |   4 +
->  include/linux/mhi.h             |   4 +
->  7 files changed, 493 insertions(+), 3 deletions(-)
->  create mode 100644 drivers/bus/mhi/core/debugfs.c
-> 
-> diff --git a/drivers/bus/mhi/Kconfig b/drivers/bus/mhi/Kconfig
-> index a8bd9bd..6a217ff 100644
-> --- a/drivers/bus/mhi/Kconfig
-> +++ b/drivers/bus/mhi/Kconfig
-> @@ -12,3 +12,11 @@ config MHI_BUS
->  	 communication protocol used by the host processors to control
->  	 and communicate with modem devices over a high speed peripheral
->  	 bus or shared memory.
-> +
-> +config MHI_BUS_DEBUG
-> +	bool "Debugfs support for the MHI bus"
-> +	depends on MHI_BUS && DEBUG_FS
-> +	help
-> +	 Enable debugfs support for use with the MHI transport. Allows
-> +	 reading and/or modifying some values within the MHI controller
-> +	 for debug and test purposes.
-> diff --git a/drivers/bus/mhi/core/Makefile b/drivers/bus/mhi/core/Makefile
-> index 66e2700..460a548 100644
-> --- a/drivers/bus/mhi/core/Makefile
-> +++ b/drivers/bus/mhi/core/Makefile
-> @@ -1,3 +1,2 @@
-> -obj-$(CONFIG_MHI_BUS) := mhi.o
-> -
-> -mhi-y := init.o main.o pm.o boot.o
-> +obj-$(CONFIG_MHI_BUS) := init.o main.o pm.o boot.o
-> +obj-$(CONFIG_MHI_BUS_DEBUG) += debugfs.o
-> diff --git a/drivers/bus/mhi/core/debugfs.c b/drivers/bus/mhi/core/debugfs.c
-> new file mode 100644
-> index 0000000..266cbf0
-> --- /dev/null
-> +++ b/drivers/bus/mhi/core/debugfs.c
-> @@ -0,0 +1,444 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2020, The Linux Foundation. All rights reserved.
-> + *
-> + */
-> +
-> +#include <linux/debugfs.h>
-> +#include <linux/device.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/list.h>
-> +#include <linux/mhi.h>
-> +#include "internal.h"
-> +
-> +static int mhi_debugfs_states_show(struct seq_file *m, void *d)
-> +{
-> +	struct mhi_controller *mhi_cntrl = m->private;
-> +
-> +	/* states */
-> +	seq_printf(m, "PM state:%s Device:%s MHI state:%s EE:%s wake:%s\n",
-> +		   to_mhi_pm_state_str(mhi_cntrl->pm_state),
-> +		   mhi_is_active(mhi_cntrl) ? "Active" : "Inactive",
-> +		   TO_MHI_STATE_STR(mhi_cntrl->dev_state),
-> +		   TO_MHI_EXEC_STR(mhi_cntrl->ee),
-> +		   mhi_cntrl->wake_set ? "true" : "false");
 
-Nit: Always use a space after ":".
 
-> +
-> +	/* counters */
-> +	seq_printf(m, "M0:%u M2:%u M3:%u M3_Fast:%u", mhi_cntrl->M0,
-> +		   mhi_cntrl->M2, mhi_cntrl->M3, mhi_cntrl->M3_fast);
-> +
-> +	seq_printf(m, " device wake:%u pending packets:%u\n",
-> +		   atomic_read(&mhi_cntrl->dev_wake),
-> +		   atomic_read(&mhi_cntrl->pending_pkts));
-> +
-> +	return 0;
-> +}
-> +
-> +static int mhi_debugfs_events_show(struct seq_file *m, void *d)
-> +{
-> +	struct mhi_controller *mhi_cntrl = m->private;
-> +	struct mhi_event *mhi_event;
-> +	struct mhi_event_ctxt *er_ctxt;
-> +	int i;
-> +
-> +	if (!mhi_is_active(mhi_cntrl)) {
-> +		seq_puts(m, "Device not ready\n");
-> +		return -ENODEV;
-> +	}
-> +
-> +	er_ctxt = mhi_cntrl->mhi_ctxt->er_ctxt;
-> +	mhi_event = mhi_cntrl->mhi_event;
-> +	for (i = 0; i < mhi_cntrl->total_ev_rings;
-> +						i++, er_ctxt++, mhi_event++) {
-> +		struct mhi_ring *ring = &mhi_event->ring;
-> +
-> +		if (mhi_event->offload_ev) {
-> +			seq_printf(m, "Index:%d is an offload event ring\n", i);
-> +			continue;
-> +		}
-> +
-> +		seq_printf(m, "Index:%d intmod count:%lu time:%lu",
-> +			   i, (er_ctxt->intmod & EV_CTX_INTMODC_MASK) >>
-> +			   EV_CTX_INTMODC_SHIFT,
-> +			   (er_ctxt->intmod & EV_CTX_INTMODT_MASK) >>
-> +			   EV_CTX_INTMODT_SHIFT);
-> +
-> +		seq_printf(m, " base:0x%0llx len:0x%llx", er_ctxt->rbase,
-> +			   er_ctxt->rlen);
-> +
-> +		seq_printf(m,
-> +			   " rp:0x%llx wp:0x%llx local rp:0x%llx db:0x%llx\n",
-> +			   er_ctxt->rp, er_ctxt->wp, (u64)ring->rp,
-> +			   mhi_event->db_cfg.db_val);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int mhi_debugfs_channels_show(struct seq_file *m, void *d)
-> +{
-> +	struct mhi_controller *mhi_cntrl = m->private;
-> +	struct mhi_chan *mhi_chan;
-> +	struct mhi_chan_ctxt *chan_ctxt;
-> +	int i;
-> +
-> +	if (!mhi_is_active(mhi_cntrl)) {
-> +		seq_puts(m, "Device not ready\n");
-> +		return -ENODEV;
-> +	}
-> +
-> +	mhi_chan = mhi_cntrl->mhi_chan;
-> +	chan_ctxt = mhi_cntrl->mhi_ctxt->chan_ctxt;
-> +	for (i = 0; i < mhi_cntrl->max_chan; i++, chan_ctxt++, mhi_chan++) {
-> +		struct mhi_ring *ring = &mhi_chan->tre_ring;
-> +
-> +		if (mhi_chan->offload_ch) {
-> +			seq_printf(m, "%s(%u) is an offload channel\n",
-> +				   mhi_chan->name, mhi_chan->chan);
-> +			continue;
-> +		}
-> +
-> +		if (!mhi_chan->mhi_dev)
-> +			continue;
-> +
-> +		seq_printf(m,
-> +			   "%s(%u) state:0x%lx brstmode:0x%lx pollcfg:0x%lx",
-> +			   mhi_chan->name, mhi_chan->chan, (chan_ctxt->chcfg &
-> +			   CHAN_CTX_CHSTATE_MASK) >> CHAN_CTX_CHSTATE_SHIFT,
-> +			   (chan_ctxt->chcfg & CHAN_CTX_BRSTMODE_MASK) >>
-> +			   CHAN_CTX_BRSTMODE_SHIFT, (chan_ctxt->chcfg &
-> +			   CHAN_CTX_POLLCFG_MASK) >> CHAN_CTX_POLLCFG_SHIFT);
-> +
-> +		seq_printf(m, " type:0x%x event ring:%u", chan_ctxt->chtype,
-> +			   chan_ctxt->erindex);
-> +
-> +		seq_printf(m, " base:0x%llx len:0x%llx wp:0x%llx",
-> +			   chan_ctxt->rbase, chan_ctxt->rlen, chan_ctxt->wp);
-> +
-> +		seq_printf(m, " local rp:0x%llx local wp:0x%llx db:0x%llx\n",
-> +			   (u64)ring->rp, (u64)ring->wp,
-> +			   mhi_chan->db_cfg.db_val);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int mhi_device_votes_show(struct device *dev, void *data)
-> +{
-> +	struct mhi_device *mhi_dev;
-> +
-> +	if (dev->bus != &mhi_bus_type)
-> +		return 0;
-> +
-> +	mhi_dev = to_mhi_device(dev);
-> +
-> +	seq_printf((struct seq_file *)data, "%s: %u\n",
-> +		   mhi_dev->name, mhi_dev->dev_wake);
-> +
-> +	return 0;
-> +}
-> +
-> +static int mhi_debugfs_votes_show(struct seq_file *m, void *d)
-> +{
-> +	struct mhi_controller *mhi_cntrl = m->private;
-> +
-> +	if (!mhi_is_active(mhi_cntrl)) {
-> +		seq_puts(m, "Device not ready\n");
-> +		return -ENODEV;
-> +	}
-> +
-> +	device_for_each_child(mhi_cntrl->cntrl_dev, m, mhi_device_votes_show);
-> +
-> +	return 0;
-> +}
-> +
-> +static int mhi_debugfs_regdump_show(struct seq_file *m, void *d)
-> +{
-> +	struct mhi_controller *mhi_cntrl = m->private;
-> +	enum mhi_state state;
-> +	enum mhi_ee_type ee;
-> +	int i, ret = -EIO;
-> +	u32 val;
-> +	void __iomem *mhi_base = mhi_cntrl->regs;
-> +	void __iomem *bhi_base = mhi_cntrl->bhi;
-> +	void __iomem *bhie_base = mhi_cntrl->bhie;
-> +	void __iomem *wake_db = mhi_cntrl->wake_db;
-> +	struct {
-> +		const char *name;
-> +		int offset;
-> +		void __iomem *base;
-> +	} debug_regs[] = {
-> +		{ "MHI_CTRL", MHICTRL, mhi_base},
-> +		{ "MHI_STATUS", MHISTATUS, mhi_base},
-> +		{ "MHI_WAKE_DB", 0, wake_db},
-> +		{ "BHI_EXECENV", BHI_EXECENV, bhi_base},
-> +		{ "BHI_STATUS", BHI_STATUS, bhi_base},
-> +		{ "BHI_ERRCODE", BHI_ERRCODE, bhi_base},
-> +		{ "BHI_ERRDBG1", BHI_ERRDBG1, bhi_base},
-> +		{ "BHI_ERRDBG2", BHI_ERRDBG2, bhi_base},
-> +		{ "BHI_ERRDBG3", BHI_ERRDBG3, bhi_base},
-> +		{ "BHIE_TXVEC_DB", BHIE_TXVECDB_OFFS, bhie_base},
-> +		{ "BHIE_TXVEC_STATUS", BHIE_TXVECSTATUS_OFFS, bhie_base},
-> +		{ "BHIE_RXVEC_DB", BHIE_RXVECDB_OFFS, bhie_base},
-> +		{ "BHIE_RXVEC_STATUS", BHIE_RXVECSTATUS_OFFS, bhie_base},
-> +		{ NULL },
-> +	};
-> +
-> +	if (!MHI_REG_ACCESS_VALID(mhi_cntrl->pm_state))
-> +		return ret;
-> +
-> +	seq_printf(m, "Host PM state:%s Device state:%s EE:%s\n",
-> +		   to_mhi_pm_state_str(mhi_cntrl->pm_state),
-> +		   TO_MHI_STATE_STR(mhi_cntrl->dev_state),
-> +		   TO_MHI_EXEC_STR(mhi_cntrl->ee));
-> +
-> +	state = mhi_get_mhi_state(mhi_cntrl);
-> +	ee = mhi_get_exec_env(mhi_cntrl);
-> +	seq_printf(m, "Device EE:%s state:%s\n", TO_MHI_EXEC_STR(ee),
-> +		   TO_MHI_STATE_STR(state));
-> +
-> +	for (i = 0; debug_regs[i].name; i++) {
-> +		if (!debug_regs[i].base)
-> +			continue;
-> +		ret = mhi_read_reg(mhi_cntrl, debug_regs[i].base,
-> +				   debug_regs[i].offset, &val);
-> +		if (ret)
-> +			continue;
-> +
-> +		seq_printf(m, "%s:0x%x\n", debug_regs[i].name, val);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int mhi_debugfs_device_vote_show(struct seq_file *m, void *d)
-> +{
+On 02/07/2020 18:24, Alexander Graf wrote:
+>
+>
+> On 22.06.20 22:03, Andra Paraschiv wrote:
+>> In addition to the replies sent by the Nitro Enclaves PCI device in
+>> response to command requests, out-of-band enclave events can happen e.g.
+>> an enclave crashes. In this case, the Nitro Enclaves driver needs to be
+>> aware of the event and notify the corresponding user space process that
+>> abstracts the enclave.
+>>
+>> Register an MSI-X interrupt vector to be used for this kind of
+>> out-of-band events. The interrupt notifies that the state of an enclave
+>> changed and the driver logic scans the state of each running enclave to
+>> identify for which this notification is intended.
+>>
+>> Create an workqueue to handle the out-of-band events. Notify user space
+>> enclave process that is using a polling mechanism on the enclave fd.
+>>
+>> Signed-off-by: Alexandru-Catalin Vasile <lexnv@amazon.com>
+>> Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
+>> ---
+>> Changelog
+>>
+>> v3 -> v4
+>>
+>> * Use dev_err instead of custom NE log pattern.
+>> * Return IRQ_NONE when interrupts are not handled.
+>>
+>> v2 -> v3
+>>
+>> * Remove the WARN_ON calls.
+>> * Update static calls sanity checks.
+>> * Remove "ratelimited" from the logs that are not in the ioctl call
+>> =A0=A0 paths.
+>>
+>> v1 -> v2
+>>
+>> * Add log pattern for NE.
+>> * Update goto labels to match their purpose.
+>> ---
+>> =A0 drivers/virt/nitro_enclaves/ne_pci_dev.c | 122 +++++++++++++++++++++=
+++
+>> =A0 1 file changed, 122 insertions(+)
+>>
+>> diff --git a/drivers/virt/nitro_enclaves/ne_pci_dev.c =
 
-The term 'vote' is confusing here. Can you come up with something which portrays
-device power mode here?
+>> b/drivers/virt/nitro_enclaves/ne_pci_dev.c
+>> index c24230cfe7c0..9a137862cade 100644
+>> --- a/drivers/virt/nitro_enclaves/ne_pci_dev.c
+>> +++ b/drivers/virt/nitro_enclaves/ne_pci_dev.c
+>> @@ -239,6 +239,93 @@ static irqreturn_t ne_reply_handler(int irq, =
 
-> +	struct mhi_controller *mhi_cntrl = m->private;
-> +	struct mhi_device *mhi_dev = mhi_cntrl->mhi_dev;
-> +
-> +	if (!mhi_is_active(mhi_cntrl)) {
-> +		seq_puts(m, "Device not ready\n");
-> +		return -ENODEV;
-> +	}
-> +
-> +	seq_printf(m,
-> +		   "Votes: %d\n%s\n", mhi_dev->dev_wake,
-> +		   "Usage: echo get/put > device_vote for vote/unvote");
-> +
-> +	return 0;
-> +}
-> +
-> +static ssize_t mhi_debugfs_device_vote_write(struct file *file,
-> +					     const char __user *ubuf,
-> +					     size_t count, loff_t *ppos)
-> +{
-> +	struct seq_file	*m = file->private_data;
-> +	struct mhi_controller *mhi_cntrl = m->private;
-> +	struct mhi_device *mhi_dev = mhi_cntrl->mhi_dev;
-> +	char buf[32];
-> +	int ret = -EINVAL;
-> +
-> +	if (copy_from_user(&buf, ubuf, min_t(size_t, sizeof(buf) - 1, count)))
-> +		return -EFAULT;
-> +
-> +	if (!strncmp(buf, "get", 3)) {
+>> void *args)
+>> =A0=A0=A0=A0=A0 return IRQ_HANDLED;
+>> =A0 }
+>> =A0 +/**
+>> + * ne_event_work_handler - Work queue handler for notifying enclaves on
+>> + * a state change received by the event interrupt handler.
+>> + *
+>> + * An out-of-band event is being issued by the Nitro Hypervisor when =
 
-Hmm, but the buffer size is 32?
+>> at least
+>> + * one enclave is changing state without client interaction.
+>> + *
+>> + * @work: item containing the Nitro Enclaves PCI device for which a
+>> + *=A0=A0=A0=A0=A0 out-of-band event was issued.
+>> + */
+>> +static void ne_event_work_handler(struct work_struct *work)
+>> +{
+>> +=A0=A0=A0 struct ne_pci_dev_cmd_reply cmd_reply =3D {};
+>> +=A0=A0=A0 struct ne_enclave *ne_enclave =3D NULL;
+>> +=A0=A0=A0 struct ne_pci_dev *ne_pci_dev =3D
+>> +=A0=A0=A0=A0=A0=A0=A0 container_of(work, struct ne_pci_dev, notify_work=
+);
+>> +=A0=A0=A0 int rc =3D -EINVAL;
+>> +=A0=A0=A0 struct slot_info_req slot_info_req =3D {};
+>> +
+>> +=A0=A0=A0 if (!ne_pci_dev)
+>> +=A0=A0=A0=A0=A0=A0=A0 return;
+>
+> How?
 
-> +		ret = mhi_device_get_sync(mhi_dev);
-> +	} else if (!strncmp(buf, "put", 3)) {
-> +		mhi_device_put(mhi_dev);
-> +		ret = 0;
-> +	}
-> +
-> +	return ret ? ret : count;
-> +}
-> +
-> +static int mhi_debugfs_timeout_ms_show(struct seq_file *m, void *d)
-> +{
-> +	struct mhi_controller *mhi_cntrl = m->private;
-> +
-> +	seq_printf(m, "%u ms\n", mhi_cntrl->timeout_ms);
-> +
-> +	return 0;
-> +}
-> +
-> +static ssize_t mhi_debugfs_timeout_ms_write(struct file *file,
-> +					    const char __user *ubuf,
-> +					    size_t count, loff_t *ppos)
-> +{
-> +	struct seq_file	*m = file->private_data;
-> +	struct mhi_controller *mhi_cntrl = m->private;
-> +	u32 timeout_ms;
-> +
-> +	if (kstrtou32_from_user(ubuf, count, 0, &timeout_ms))
-> +		return -EINVAL;
-> +
-> +	mhi_cntrl->timeout_ms = timeout_ms;
-> +
-> +	return count;
-> +}
-> +
-> +static int mhi_debugfs_trigger_reset(void *data, u64 val)
+Removed this check and the one below. Thank you.
 
-Triggering reset on host or device?
+Andra
 
-> +{
-> +	struct mhi_controller *mhi_cntrl = data;
-> +	struct mhi_device *mhi_dev = mhi_cntrl->mhi_dev;
-> +	struct device *dev = &mhi_dev->dev;
-> +	enum mhi_pm_state cur_state;
-> +	int ret = -EIO;
-> +
-> +	if (!mhi_is_active(mhi_cntrl))
-> +		return -ENODEV;
-> +
-> +	if (!val)
-> +		return -EINVAL;
-> +
-> +	ret = mhi_device_get_sync(mhi_dev);
-> +	if (ret) {
-> +		dev_err(dev, "Device did not enter M0 state, MHI:%s, PM:%s\n",
-> +			TO_MHI_STATE_STR(mhi_cntrl->dev_state),
-> +			to_mhi_pm_state_str(mhi_cntrl->pm_state));
-> +		return ret;
-> +	}
-> +
-> +	if (mhi_cntrl->rddm_image) {
-> +		ret = mhi_force_rddm_mode(mhi_cntrl);
-> +		goto exit_mhi_trigger_reset;
-> +	}
-> +
-> +	write_lock_irq(&mhi_cntrl->pm_lock);
-> +	cur_state = mhi_tryset_pm_state(mhi_cntrl, MHI_PM_SYS_ERR_DETECT);
+>
+>> +
+>> +=A0=A0=A0 mutex_lock(&ne_pci_dev->enclaves_list_mutex);
+>> +
+>> +=A0=A0=A0 /*
+>> +=A0=A0=A0=A0 * Iterate over all enclaves registered for the Nitro Encla=
+ves
+>> +=A0=A0=A0=A0 * PCI device and determine for which enclave(s) the out-of=
+-band =
 
-Looks like in host but how does this resets it?
+>> event
+>> +=A0=A0=A0=A0 * is corresponding to.
+>> +=A0=A0=A0=A0 */
+>> +=A0=A0=A0 list_for_each_entry(ne_enclave, &ne_pci_dev->enclaves_list,
+>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 enclave_list_entry) {
+>> +=A0=A0=A0=A0=A0=A0=A0 mutex_lock(&ne_enclave->enclave_info_mutex);
+>> +
+>> +=A0=A0=A0=A0=A0=A0=A0 /*
+>> +=A0=A0=A0=A0=A0=A0=A0=A0 * Enclaves that were never started cannot rece=
+ive out-of-band
+>> +=A0=A0=A0=A0=A0=A0=A0=A0 * events.
+>> +=A0=A0=A0=A0=A0=A0=A0=A0 */
+>> +=A0=A0=A0=A0=A0=A0=A0 if (ne_enclave->state !=3D NE_STATE_RUNNING)
+>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 goto unlock;
+>> +
+>> +=A0=A0=A0=A0=A0=A0=A0 slot_info_req.slot_uid =3D ne_enclave->slot_uid;
+>> +
+>> +=A0=A0=A0=A0=A0=A0=A0 rc =3D ne_do_request(ne_enclave->pdev, SLOT_INFO,=
+ &slot_info_req,
+>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 sizeof(slot_info=
+_req), &cmd_reply,
+>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 sizeof(cmd_reply=
+));
+>> +=A0=A0=A0=A0=A0=A0=A0 if (rc < 0)
+>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 dev_err(&ne_enclave->pdev->dev,
+>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 "Error in slot info [rc=
+=3D%d]\n", rc);
+>> +
+>> +=A0=A0=A0=A0=A0=A0=A0 /* Notify enclave process that the enclave state =
+changed. */
+>> +=A0=A0=A0=A0=A0=A0=A0 if (ne_enclave->state !=3D cmd_reply.state) {
+>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 ne_enclave->state =3D cmd_reply.state;
+>> +
+>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 ne_enclave->has_event =3D true;
+>> +
+>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 wake_up_interruptible(&ne_enclave->ev=
+entq);
+>> +=A0=A0=A0=A0=A0=A0=A0 }
+>> +
+>> +unlock:
+>> +=A0=A0=A0=A0=A0=A0=A0=A0 mutex_unlock(&ne_enclave->enclave_info_mutex);
+>> +=A0=A0=A0 }
+>> +
+>> +=A0=A0=A0 mutex_unlock(&ne_pci_dev->enclaves_list_mutex);
+>> +}
+>> +
+>> +/**
+>> + * ne_event_handler - Interrupt handler for PCI device out-of-band
+>> + * events. This interrupt does not supply any data in the MMIO region.
+>> + * It notifies a change in the state of any of the launched enclaves.
+>> + *
+>> + * @irq: received interrupt for an out-of-band event.
+>> + * @args: PCI device private data structure.
+>> + *
+>> + * @returns: IRQ_HANDLED on handled interrupt, IRQ_NONE otherwise.
+>> + */
+>> +static irqreturn_t ne_event_handler(int irq, void *args)
+>> +{
+>> +=A0=A0=A0 struct ne_pci_dev *ne_pci_dev =3D (struct ne_pci_dev *)args;
+>> +
+>> +=A0=A0=A0 if (!ne_pci_dev)
+>> +=A0=A0=A0=A0=A0=A0=A0 return IRQ_NONE;
+>
+> How can this happen?
+>
+>
+> Alex
+>
+>> +
+>> +=A0=A0=A0 queue_work(ne_pci_dev->event_wq, &ne_pci_dev->notify_work);
+>> +
+>> +=A0=A0=A0 return IRQ_HANDLED;
+>> +}
+>> +
+>> =A0 /**
+>> =A0=A0 * ne_setup_msix - Setup MSI-X vectors for the PCI device.
+>> =A0=A0 *
+>> @@ -284,8 +371,37 @@ static int ne_setup_msix(struct pci_dev *pdev)
+>> =A0=A0=A0=A0=A0=A0=A0=A0=A0 goto free_irq_vectors;
+>> =A0=A0=A0=A0=A0 }
+>> =A0 +=A0=A0=A0 ne_pci_dev->event_wq =3D =
 
-> +	write_unlock_irq(&mhi_cntrl->pm_lock);
-> +
-> +	if (cur_state != MHI_PM_SYS_ERR_DETECT)
-> +		goto exit_mhi_trigger_reset;
+>> create_singlethread_workqueue("ne_pci_dev_wq");
+>> +=A0=A0=A0 if (!ne_pci_dev->event_wq) {
+>> +=A0=A0=A0=A0=A0=A0=A0 rc =3D -ENOMEM;
+>> +
+>> +=A0=A0=A0=A0=A0=A0=A0 dev_err(&pdev->dev, "Cannot get wq for dev events=
+ [rc=3D%d]\n",
+>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 rc);
+>> +
+>> +=A0=A0=A0=A0=A0=A0=A0 goto free_reply_irq_vec;
+>> +=A0=A0=A0 }
+>> +
+>> +=A0=A0=A0 INIT_WORK(&ne_pci_dev->notify_work, ne_event_work_handler);
+>> +
+>> +=A0=A0=A0 /*
+>> +=A0=A0=A0=A0 * This IRQ gets triggered every time any enclave's state =
 
-So this condition is also a success? PS: you're not setting ret here.
+>> changes. Its
+>> +=A0=A0=A0=A0 * handler then scans for the changes and propagates them t=
+o the =
 
-> +
-> +	mhi_pm_sys_err_handler(mhi_cntrl);
-> +	ret = 0;
-> +
-> +exit_mhi_trigger_reset:
-> +	mhi_device_put(mhi_dev);
-> +
-> +	return ret;
-> +}
-> +
-> +static int mhi_debugfs_states_open(struct inode *inode, struct file *fp)
-> +{
-> +	return single_open(fp, mhi_debugfs_states_show, inode->i_private);
-> +}
-> +
-> +static int mhi_debugfs_events_open(struct inode *inode, struct file *fp)
-> +{
-> +	return single_open(fp, mhi_debugfs_events_show, inode->i_private);
-> +}
-> +
-> +static int mhi_debugfs_channels_open(struct inode *inode, struct file *fp)
-> +{
-> +	return single_open(fp, mhi_debugfs_channels_show, inode->i_private);
-> +}
-> +
-> +static int mhi_debugfs_votes_open(struct inode *inode, struct file *fp)
-> +{
-> +	return single_open(fp, mhi_debugfs_votes_show, inode->i_private);
-> +}
-> +
-> +static int mhi_debugfs_regdump_open(struct inode *inode, struct file *fp)
-> +{
-> +	return single_open(fp, mhi_debugfs_regdump_show, inode->i_private);
-> +}
-> +
-> +static int mhi_debugfs_device_vote_open(struct inode *inode, struct file *fp)
-> +{
-> +	return single_open(fp, mhi_debugfs_device_vote_show, inode->i_private);
-> +}
-> +
-> +static int mhi_debugfs_timeout_ms_open(struct inode *inode, struct file *fp)
-> +{
-> +	return single_open(fp, mhi_debugfs_timeout_ms_show, inode->i_private);
-> +}
-> +
-> +static const struct file_operations debugfs_states_fops = {
-> +	.open = mhi_debugfs_states_open,
-> +	.release = single_release,
-> +	.read = seq_read,
-> +};
-> +
-> +static const struct file_operations debugfs_events_fops = {
-> +	.open = mhi_debugfs_events_open,
-> +	.release = single_release,
-> +	.read = seq_read,
-> +};
-> +
-> +static const struct file_operations debugfs_channels_fops = {
-> +	.open = mhi_debugfs_channels_open,
-> +	.release = single_release,
-> +	.read = seq_read,
-> +};
-> +
-> +static const struct file_operations debugfs_votes_fops = {
-> +	.open = mhi_debugfs_votes_open,
-> +	.release = single_release,
-> +	.read = seq_read,
-> +};
-> +
-> +static const struct file_operations debugfs_regdump_fops = {
-> +	.open = mhi_debugfs_regdump_open,
-> +	.release = single_release,
-> +	.read = seq_read,
-> +};
-> +
-> +static const struct file_operations debugfs_device_vote_fops = {
-> +	.open = mhi_debugfs_device_vote_open,
-> +	.write = mhi_debugfs_device_vote_write,
-> +	.release = single_release,
-> +	.read = seq_read,
-> +};
-> +
-> +static const struct file_operations debugfs_timeout_ms_fops = {
-> +	.open = mhi_debugfs_timeout_ms_open,
-> +	.write = mhi_debugfs_timeout_ms_write,
-> +	.release = single_release,
-> +	.read = seq_read,
-> +};
-> +
-> +DEFINE_DEBUGFS_ATTRIBUTE(debugfs_reset_fops, NULL,
-> +			 mhi_debugfs_trigger_reset, "%llu\n");
-> +
-> +static struct dentry *mhi_debugfs_root;
-> +
-> +void mhi_create_debugfs(struct mhi_controller *mhi_cntrl)
-> +{
-> +	mhi_cntrl->debugfs_dentry =
-> +			debugfs_create_dir(dev_name(mhi_cntrl->cntrl_dev),
-> +					   mhi_debugfs_root);
-> +
-> +	debugfs_create_file("states", 0444, mhi_cntrl->debugfs_dentry,
-> +			    mhi_cntrl, &debugfs_states_fops);
-> +	debugfs_create_file("events", 0444, mhi_cntrl->debugfs_dentry,
-> +			    mhi_cntrl, &debugfs_events_fops);
-> +	debugfs_create_file("channels", 0444, mhi_cntrl->debugfs_dentry,
-> +			    mhi_cntrl, &debugfs_channels_fops);
-> +	debugfs_create_file("votes", 0444, mhi_cntrl->debugfs_dentry,
-> +			    mhi_cntrl, &debugfs_votes_fops);
-> +	debugfs_create_file("regdump", 0444, mhi_cntrl->debugfs_dentry,
-> +			    mhi_cntrl, &debugfs_regdump_fops);
-> +	debugfs_create_file("device_vote", 0644, mhi_cntrl->debugfs_dentry,
-> +			    mhi_cntrl, &debugfs_device_vote_fops);
-> +	debugfs_create_file("timeout_ms", 0644, mhi_cntrl->debugfs_dentry,
-> +			    mhi_cntrl, &debugfs_timeout_ms_fops);
-> +	debugfs_create_file("reset", 0444, mhi_cntrl->debugfs_dentry,
-> +			    mhi_cntrl, &debugfs_reset_fops);
-> +}
-> +
-> +void mhi_destroy_debugfs(struct mhi_controller *mhi_cntrl)
-> +{
-> +	debugfs_remove_recursive(mhi_cntrl->debugfs_dentry);
-> +	mhi_cntrl->debugfs_dentry = NULL;
-> +}
-> +
-> +void mhi_debugfs_init(void)
-> +{
-> +	mhi_debugfs_root = debugfs_create_dir(mhi_bus_type.name, NULL);
-> +}
-> +
-> +void mhi_debugfs_exit(void)
-> +{
-> +	debugfs_remove_recursive(mhi_debugfs_root);
-> +}
-> diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
-> index e2011ec..d2c0f6e 100644
-> --- a/drivers/bus/mhi/core/init.c
-> +++ b/drivers/bus/mhi/core/init.c
-> @@ -4,6 +4,7 @@
->   *
->   */
->  
-> +#include <linux/debugfs.h>
->  #include <linux/device.h>
->  #include <linux/dma-direction.h>
->  #include <linux/dma-mapping.h>
-> @@ -915,6 +916,8 @@ int mhi_register_controller(struct mhi_controller *mhi_cntrl,
->  
->  	mhi_cntrl->mhi_dev = mhi_dev;
->  
-> +	mhi_create_debugfs(mhi_cntrl);
-> +
->  	return 0;
->  
->  error_add_dev:
-> @@ -937,6 +940,8 @@ void mhi_unregister_controller(struct mhi_controller *mhi_cntrl)
->  	struct mhi_chan *mhi_chan = mhi_cntrl->mhi_chan;
->  	unsigned int i;
->  
-> +	mhi_destroy_debugfs(mhi_cntrl);
-> +
->  	kfree(mhi_cntrl->mhi_cmd);
->  	kfree(mhi_cntrl->mhi_event);
->  
-> @@ -1284,11 +1289,13 @@ struct bus_type mhi_bus_type = {
->  
->  static int __init mhi_init(void)
->  {
-> +	mhi_debugfs_init();
->  	return bus_register(&mhi_bus_type);
->  }
->  
->  static void __exit mhi_exit(void)
->  {
-> +	mhi_debugfs_exit();
->  	bus_unregister(&mhi_bus_type);
->  }
->  
-> diff --git a/drivers/bus/mhi/core/internal.h b/drivers/bus/mhi/core/internal.h
-> index 997c6e9..368c442 100644
-> --- a/drivers/bus/mhi/core/internal.h
-> +++ b/drivers/bus/mhi/core/internal.h
-> @@ -570,6 +570,30 @@ struct mhi_chan {
->  /* Default MHI timeout */
->  #define MHI_TIMEOUT_MS (1000)
->  
-> +/* debugfs related functions */
-> +#ifdef CONFIG_MHI_BUS_DEBUG
-> +void mhi_create_debugfs(struct mhi_controller *mhi_cntrl);
-> +void mhi_destroy_debugfs(struct mhi_controller *mhi_cntrl);
-> +void mhi_debugfs_init(void);
-> +void mhi_debugfs_exit(void);
-> +#else
-> +static inline void mhi_create_debugfs(struct mhi_controller *mhi_cntrl)
-> +{
-> +}
-> +
-> +static inline void mhi_destroy_debugfs(struct mhi_controller *mhi_cntrl)
-> +{
-> +}
-> +
-> +static inline void mhi_debugfs_init(void)
-> +{
-> +}
-> +
-> +static inline void mhi_debugfs_exit(void)
-> +{
-> +}
-> +#endif
-> +
->  struct mhi_device *mhi_alloc_device(struct mhi_controller *mhi_cntrl);
->  
->  int mhi_destroy_device(struct device *dev, void *data);
-> diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
-> index 74c5cb1..c80d3553 100644
-> --- a/drivers/bus/mhi/core/pm.c
-> +++ b/drivers/bus/mhi/core/pm.c
-> @@ -256,6 +256,7 @@ int mhi_pm_m0_transition(struct mhi_controller *mhi_cntrl)
->  		dev_err(dev, "Unable to transition to M0 state\n");
->  		return -EIO;
->  	}
-> +	mhi_cntrl->M0++;
+>> user
+>> +=A0=A0=A0=A0 * space.
+>> +=A0=A0=A0=A0 */
+>> +=A0=A0=A0 rc =3D request_irq(pci_irq_vector(pdev, NE_VEC_EVENT),
+>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 ne_event_handler, 0, "enclave_evt"=
+, ne_pci_dev);
+>> +=A0=A0=A0 if (rc < 0) {
+>> +=A0=A0=A0=A0=A0=A0=A0 dev_err(&pdev->dev, "Error in request irq event [=
+rc=3D%d]\n", =
 
-This change shouldn't be part of this patch.
+>> rc);
+>> +
+>> +=A0=A0=A0=A0=A0=A0=A0 goto destroy_wq;
+>> +=A0=A0=A0 }
+>> +
+>> =A0=A0=A0=A0=A0 return 0;
+>> =A0 +destroy_wq:
+>> +=A0=A0=A0 destroy_workqueue(ne_pci_dev->event_wq);
+>> +free_reply_irq_vec:
+>> +=A0=A0=A0 free_irq(pci_irq_vector(pdev, NE_VEC_REPLY), ne_pci_dev);
+>> =A0 free_irq_vectors:
+>> =A0=A0=A0=A0=A0 pci_free_irq_vectors(pdev);
+>> =A0 @@ -304,6 +420,12 @@ static void ne_teardown_msix(struct pci_dev =
 
-Thanks,
-Mani
+>> *pdev)
+>> =A0=A0=A0=A0=A0 if (!ne_pci_dev)
+>> =A0=A0=A0=A0=A0=A0=A0=A0=A0 return;
+>> =A0 +=A0=A0=A0 free_irq(pci_irq_vector(pdev, NE_VEC_EVENT), ne_pci_dev);
+>> +
+>> +=A0=A0=A0 flush_work(&ne_pci_dev->notify_work);
+>> +=A0=A0=A0 flush_workqueue(ne_pci_dev->event_wq);
+>> +=A0=A0=A0 destroy_workqueue(ne_pci_dev->event_wq);
+>> +
+>> =A0=A0=A0=A0=A0 free_irq(pci_irq_vector(pdev, NE_VEC_REPLY), ne_pci_dev);
+>> =A0 =A0=A0=A0=A0=A0 pci_free_irq_vectors(pdev);
+>>
 
->  
->  	/* Wake up the device */
->  	read_lock_bh(&mhi_cntrl->pm_lock);
-> @@ -326,6 +327,8 @@ void mhi_pm_m1_transition(struct mhi_controller *mhi_cntrl)
->  		mhi_cntrl->dev_state = MHI_STATE_M2;
->  
->  		write_unlock_irq(&mhi_cntrl->pm_lock);
-> +
-> +		mhi_cntrl->M2++;
->  		wake_up_all(&mhi_cntrl->state_event);
->  
->  		/* If there are any pending resources, exit M2 immediately */
-> @@ -362,6 +365,7 @@ int mhi_pm_m3_transition(struct mhi_controller *mhi_cntrl)
->  		return -EIO;
->  	}
->  
-> +	mhi_cntrl->M3++;
->  	wake_up_all(&mhi_cntrl->state_event);
->  
->  	return 0;
-> diff --git a/include/linux/mhi.h b/include/linux/mhi.h
-> index 7ed785e..b1e8b4f 100644
-> --- a/include/linux/mhi.h
-> +++ b/include/linux/mhi.h
-> @@ -288,6 +288,7 @@ struct mhi_controller_config {
->   * @cntrl_dev: Pointer to the struct device of physical bus acting as the MHI
->   *            controller (required)
->   * @mhi_dev: MHI device instance for the controller
-> + * @debugfs_dentry: MHI controller debugfs directory
->   * @regs: Base address of MHI MMIO register space (required)
->   * @bhi: Points to base of MHI BHI register space
->   * @bhie: Points to base of MHI BHIe register space
-> @@ -326,6 +327,7 @@ struct mhi_controller_config {
->   * @dev_state: MHI device state
->   * @dev_wake: Device wakeup count
->   * @pending_pkts: Pending packets for the controller
-> + * @M0, M2, M3, M3_fast: Counters to track number of device MHI state changes
->   * @transition_list: List of MHI state transitions
->   * @transition_lock: Lock for protecting MHI state transition list
->   * @wlock: Lock for protecting device wakeup
-> @@ -364,6 +366,7 @@ struct mhi_controller_config {
->  struct mhi_controller {
->  	struct device *cntrl_dev;
->  	struct mhi_device *mhi_dev;
-> +	struct dentry *debugfs_dentry;
->  	void __iomem *regs;
->  	void __iomem *bhi;
->  	void __iomem *bhie;
-> @@ -405,6 +408,7 @@ struct mhi_controller {
->  	enum mhi_state dev_state;
->  	atomic_t dev_wake;
->  	atomic_t pending_pkts;
-> +	u32 M0, M2, M3, M3_fast;
->  	struct list_head transition_list;
->  	spinlock_t transition_lock;
->  	spinlock_t wlock;
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+
+
+
+Amazon Development Center (Romania) S.R.L. registered office: 27A Sf. Lazar=
+ Street, UBC5, floor 2, Iasi, Iasi County, 700045, Romania. Registered in R=
+omania. Registration number J22/2621/2005.
+
