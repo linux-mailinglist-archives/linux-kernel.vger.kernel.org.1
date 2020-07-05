@@ -2,51 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9A43214EF7
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Jul 2020 21:44:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3AC5214F06
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Jul 2020 21:51:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728146AbgGEToS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Jul 2020 15:44:18 -0400
-Received: from gateway20.websitewelcome.com ([192.185.59.4]:43863 "EHLO
-        gateway20.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727942AbgGEToS (ORCPT
+        id S1728225AbgGETvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Jul 2020 15:51:40 -0400
+Received: from gateway21.websitewelcome.com ([192.185.45.155]:41616 "EHLO
+        gateway21.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728192AbgGETvj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Jul 2020 15:44:18 -0400
-Received: from cm16.websitewelcome.com (cm16.websitewelcome.com [100.42.49.19])
-        by gateway20.websitewelcome.com (Postfix) with ESMTP id 494E0400CECE4
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Jul 2020 12:58:50 -0500 (CDT)
+        Sun, 5 Jul 2020 15:51:39 -0400
+X-Greylist: delayed 1445 seconds by postgrey-1.27 at vger.kernel.org; Sun, 05 Jul 2020 15:51:38 EDT
+Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
+        by gateway21.websitewelcome.com (Postfix) with ESMTP id 9C38E40101C20
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Jul 2020 14:27:33 -0500 (CDT)
 Received: from br164.hostgator.com.br ([192.185.176.180])
         by cmsmtp with SMTP
-        id sAB5juxxGQyTQsAB5jwR1Z; Sun, 05 Jul 2020 14:19:52 -0500
+        id sAIXjWm4LhmVTsAIXjDFvi; Sun, 05 Jul 2020 14:27:33 -0500
 X-Authority-Reason: nr=8
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=castello.eng.br; s=default; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=GfLOfM3WHzU0BIyRJD4iTtlteWnSzQZLlEmD9Xo7d20=; b=Ku1PsicOgEi8DGG1AT5hHZFSw9
-        QC4omYSyirQB4EK2wh3yntLwCqWpXgnLtWqhWcp8CTyFbhy1rYWtUMbbAlVDkG/lmSSMhYP7MEMUQ
-        +HtJTSazIFQl9ZhBUMSwNhmZqu+ShGoP5JDjEexdingJiiYhc644el6LR2vcV9jxUS4NIrjX9GUdR
-        XXse7TN2lDIMN8ad5LaHyl7BYjaz2bmR35udA8JRXZdMptJTDanX3n6qYIVmAVN5qmUUFXpauYHGC
-        f1ZTaBNTY8GC97KaTNgzovFFoBfGlDCzFCFj05oCWKWuxi4WVyjB60kXPxFb4wn3WLpQxeAeMdHyJ
-        qk/hKFZg==;
-Received: from [189.59.31.158] (port=33088 helo=castello.castello)
+        d=castello.eng.br; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=vrjr1nj8KOe3zMr+d74rhqHv+pmipDyhk9OOQDkG6PI=; b=aCnNa8qtRFecnacf/0d8erolWb
+        PeicM4hfCmDNxbhwShy2xbLAHTN1/eA5zBxWWd5u5OILpDsTbGLgMvxDqwZVj49AayAZXabcyOhny
+        VmbDQjg55BZQ2QA2Uwg/6T58TP8XpA2VEmwXl1njtWb2FXO3nWo8C9RAV8BWBxHAlW97Xmwb7Vb+j
+        UiczfePJDJfe0xYZ1h2qV3Ih6hftSs4xGc8yBCSOHdzPuloVV6ijN/GFFwUPSqucVU2Ms+lODk8y9
+        frGaoGhjwdzhCAvoralcTYrU75zdZfhqqV5+BIE6HZhlOd6wjxWDpjA8/W0O6qc2fIY+XEUZswsEX
+        nEdNXpVA==;
+Received: from [189.59.31.158] (port=55228 helo=[192.168.15.5])
         by br164.hostgator.com.br with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
         (Exim 4.93)
         (envelope-from <matheus@castello.eng.br>)
-        id 1jsAB5-004Abs-6n; Sun, 05 Jul 2020 16:19:51 -0300
-From:   Matheus Castello <matheus@castello.eng.br>
-To:     afaerber@suse.de, manivannan.sadhasivam@linaro.org
-Cc:     robh+dt@kernel.org, linux-arm-kernel@lists.infradead.org,
+        id 1jsAIX-004CGN-7r; Sun, 05 Jul 2020 16:27:33 -0300
+Subject: Re: [PATCH v6 3/3] ARM: dts: Add Caninos Loucos Labrador
+To:     afaerber@suse.de
+Cc:     manivannan.sadhasivam@linaro.org, mark.rutland@arm.com,
+        robh+dt@kernel.org, edgar.righi@lsitec.org.br,
+        igor.lima@lsitec.org.br, linux-arm-kernel@lists.infradead.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-actions@lists.infradead.org,
-        Matheus Castello <matheus@castello.eng.br>
-Subject: [PATCH v1] arm64: dts: actions: Fix smp Bringing up secondary CPUs
-Date:   Sun,  5 Jul 2020 16:19:44 -0300
-Message-Id: <20200705191944.404933-1-matheus@castello.eng.br>
-X-Mailer: git-send-email 2.27.0
+        linux-actions@lists.infradead.org
+References: <20200525132218.190841-1-matheus@castello.eng.br>
+ <20200525132218.190841-4-matheus@castello.eng.br>
+From:   Matheus Castello <matheus@castello.eng.br>
+Message-ID: <755962b7-c66b-a27f-c0ec-2eec416f1528@castello.eng.br>
+Date:   Sun, 5 Jul 2020 16:27:29 -0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20200525132218.190841-4-matheus@castello.eng.br>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: pt-BR
 Content-Transfer-Encoding: 8bit
 X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
 X-AntiAbuse: Primary Hostname - br164.hostgator.com.br
@@ -56,13 +64,13 @@ X-AntiAbuse: Sender Address Domain - castello.eng.br
 X-BWhitelist: no
 X-Source-IP: 189.59.31.158
 X-Source-L: No
-X-Exim-ID: 1jsAB5-004Abs-6n
+X-Exim-ID: 1jsAIX-004CGN-7r
 X-Source: 
 X-Source-Args: 
 X-Source-Dir: 
-X-Source-Sender: (castello.castello) [189.59.31.158]:33088
+X-Source-Sender: ([192.168.15.5]) [189.59.31.158]:55228
 X-Source-Auth: matheus@castello.eng.br
-X-Email-Count: 2
+X-Email-Count: 18
 X-Source-Cap: Y2FzdGUyNDg7Y2FzdGUyNDg7YnIxNjQuaG9zdGdhdG9yLmNvbS5icg==
 X-Local-Domain: yes
 Sender: linux-kernel-owner@vger.kernel.org
@@ -70,90 +78,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change the enable-method to fix the failed to boot errors:
+Hi Andreas,
 
-[    0.040330] smp: Bringing up secondary CPUs ...
-[    0.040683] psci: failed to boot CPU1 (-22)
-[    0.040691] CPU1: failed to boot: -22
-[    0.041062] psci: failed to boot CPU2 (-22)
-[    0.041071] CPU2: failed to boot: -22
-[    0.041408] psci: failed to boot CPU3 (-22)
-[    0.041417] CPU3: failed to boot: -22
-[    0.041443] smp: Brought up 1 node, 1 CPU
-[    0.041451] SMP: Total of 1 processors activated.
+let me know if there are any more concerns about this series.
 
-Tested on Caninos Labrador v3 based on Actions Semi S700.
+BR,
+Matheus Castello
 
-Signed-off-by: Matheus Castello <matheus@castello.eng.br>
----
- arch/arm64/boot/dts/actions/s700.dtsi | 33 +++++++++++++++++++--------
- 1 file changed, 23 insertions(+), 10 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/actions/s700.dtsi b/arch/arm64/boot/dts/actions/s700.dtsi
-index 2006ad5424fa..b28dbbcad27b 100644
---- a/arch/arm64/boot/dts/actions/s700.dtsi
-+++ b/arch/arm64/boot/dts/actions/s700.dtsi
-@@ -14,37 +14,50 @@ / {
- 	#size-cells = <2>;
-
- 	cpus {
--		#address-cells = <2>;
-+		#address-cells = <1>;
- 		#size-cells = <0>;
--
-+
- 		cpu0: cpu@0 {
- 			device_type = "cpu";
- 			compatible = "arm,cortex-a53";
--			reg = <0x0 0x0>;
--			enable-method = "psci";
-+			reg = <0x0>;
-+			enable-method = "spin-table";
-+			cpu-release-addr = <0 0x1f000020>;
-+			next-level-cache = <&L2>;
- 		};
-
- 		cpu1: cpu@1 {
- 			device_type = "cpu";
- 			compatible = "arm,cortex-a53";
--			reg = <0x0 0x1>;
--			enable-method = "psci";
-+			reg = <0x1>;
-+			enable-method = "spin-table";
-+			cpu-release-addr = <0 0x1f000020>;
-+			next-level-cache = <&L2>;
- 		};
-
- 		cpu2: cpu@2 {
- 			device_type = "cpu";
- 			compatible = "arm,cortex-a53";
--			reg = <0x0 0x2>;
--			enable-method = "psci";
-+			reg = <0x2>;
-+			enable-method = "spin-table";
-+			cpu-release-addr = <0 0x1f000020>;
-+			next-level-cache = <&L2>;
- 		};
-
- 		cpu3: cpu@3 {
- 			device_type = "cpu";
- 			compatible = "arm,cortex-a53";
--			reg = <0x0 0x3>;
--			enable-method = "psci";
-+			reg = <0x3>;
-+			enable-method = "spin-table";
-+			cpu-release-addr = <0 0x1f000020>;
-+			next-level-cache = <&L2>;
- 		};
- 	};
-+
-+	L2: l2-cache {
-+		compatible = "cache";
-+		cache-level = <2>;
-+	};
-
- 	reserved-memory {
- 		#address-cells = <2>;
---
-2.27.0
-
+Em 5/25/20 10:22 AM, Matheus Castello escreveu:
+> Add Device Trees for Caninos Loucos Labrador CoM and base board.
+> Based on the work of Andreas Färber on Lemaker Guitar device tree.
+> 
+> Signed-off-by: Matheus Castello <matheus@castello.eng.br>
+> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> Reviewed-by: Andreas Färber <afaerber@suse.de>
+> ---
+>   arch/arm/boot/dts/Makefile                    |  1 +
+>   .../arm/boot/dts/owl-s500-labrador-base-m.dts | 34 +++++++++++++++++++
+>   arch/arm/boot/dts/owl-s500-labrador-v2.dtsi   | 22 ++++++++++++
+>   3 files changed, 57 insertions(+)
+>   create mode 100644 arch/arm/boot/dts/owl-s500-labrador-base-m.dts
+>   create mode 100644 arch/arm/boot/dts/owl-s500-labrador-v2.dtsi
+> 
+> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+> index e8dd99201397..0f8c1f255574 100644
+> --- a/arch/arm/boot/dts/Makefile
+> +++ b/arch/arm/boot/dts/Makefile
+> @@ -856,6 +856,7 @@ dtb-$(CONFIG_ARCH_ORION5X) += \
+>   dtb-$(CONFIG_ARCH_ACTIONS) += \
+>   	owl-s500-cubieboard6.dtb \
+>   	owl-s500-guitar-bb-rev-b.dtb \
+> +	owl-s500-labrador-base-m.dtb \
+>   	owl-s500-sparky.dtb
+>   dtb-$(CONFIG_ARCH_PRIMA2) += \
+>   	prima2-evb.dtb
+> diff --git a/arch/arm/boot/dts/owl-s500-labrador-base-m.dts b/arch/arm/boot/dts/owl-s500-labrador-base-m.dts
+> new file mode 100644
+> index 000000000000..044568fec25e
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/owl-s500-labrador-base-m.dts
+> @@ -0,0 +1,34 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> +/*
+> + * Caninos Labrador Base Board
+> + *
+> + * Copyright (c) 2019-2020 Matheus Castello
+> + */
+> +
+> +/dts-v1/;
+> +
+> +#include "owl-s500-labrador-v2.dtsi"
+> +
+> +/ {
+> +	model = "Caninos Labrador Base-M v1.0a";
+> +	compatible = "caninos,labrador-base-m", "actions,s500";
+> +
+> +	aliases {
+> +		serial3 = &uart3;
+> +	};
+> +
+> +	chosen {
+> +		stdout-path = "serial3:115200n8";
+> +	};
+> +
+> +	uart3_clk: uart3-clk {
+> +		compatible = "fixed-clock";
+> +		clock-frequency = <921600>;
+> +		#clock-cells = <0>;
+> +	};
+> +};
+> +
+> +&uart3 {
+> +	status = "okay";
+> +	clocks = <&uart3_clk>;
+> +};
+> diff --git a/arch/arm/boot/dts/owl-s500-labrador-v2.dtsi b/arch/arm/boot/dts/owl-s500-labrador-v2.dtsi
+> new file mode 100644
+> index 000000000000..883ff2f9886d
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/owl-s500-labrador-v2.dtsi
+> @@ -0,0 +1,22 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> +/*
+> + * Caninos Labrador SoM V2
+> + *
+> + * Copyright (c) 2019-2020 Matheus Castello
+> + */
+> +
+> +#include "owl-s500.dtsi"
+> +
+> +/ {
+> +	model = "Caninos Labrador Core V2.1";
+> +	compatible = "caninos,labrador-v2", "actions,s500";
+> +
+> +	memory@0 {
+> +		device_type = "memory";
+> +		reg = <0x0 0x80000000>;
+> +	};
+> +};
+> +
+> +&timer {
+> +	clocks = <&hosc>;
+> +};
+> --
+> 2.26.2
+> 
