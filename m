@@ -2,103 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACD76215143
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 04:59:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93226215155
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 05:20:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728694AbgGFC7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Jul 2020 22:59:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34500 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728632AbgGFC7j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Jul 2020 22:59:39 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B3FBC061794
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Jul 2020 19:59:39 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id p1so5493157pls.4
-        for <linux-kernel@vger.kernel.org>; Sun, 05 Jul 2020 19:59:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DGAUzjy/XhmI74RBjvCLCFYywNRTd6tVl+Zu7OWC5SI=;
-        b=TIfYnbWcNnjcprjJouqUCmxuohAPvGPCE9Tgmy5A/vCTOwSTLwL5gJFFHSQweCb/jL
-         2GkNyo5jChOwHUL5mSRyH08Gf21EIUWNx0LvRAQ/MeO4pniVUNdQHqDiMbREPGEiiiKb
-         /3ALD88wvPderiGgatDu3bd0Zm8cYIdOQ+35dGWsWjOuwYODLxl0biosSOfM5+NCVvRR
-         qx8Pg56oF0F38Qb3G4kePP69GsjFu7qTU5BQcFGi4N5lU+8afOGeVvyeNLs2/CyJHrLu
-         qEd/lBKy3+K7tA0A3RsBKjJb3SMFjbDEC+7SGay9yly7nj7mkEjqOPWOuZKjhcGj3yFY
-         K8yg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DGAUzjy/XhmI74RBjvCLCFYywNRTd6tVl+Zu7OWC5SI=;
-        b=FhOvqgiELUTn5PPzbWUgr2GKgXMuohlpwc8xtNGjMwFvmCzYFR6RILuIZOegukMRpL
-         888U/0p3FDW6v29d0E2UbDjCi0fMgcG9Oyt94KXT8d4CFW8IBC1tVZ0lDjQIhjhjQMvl
-         CLXnnthV8//niBh+YNaVadRAB7erPwa+5/pf7zg8dC6kLO7jJziluz19+fp60IVfn0SG
-         7Y6ctHL4ZkECsgemyboblEcKSItXBYD7k27LsoADHhfOnuYoSskqmiwJCoOWL1vRipCK
-         uSFklsfvod4Sq+W23fsfzp2FMeCFBDesuU5nLdopoCxA8lFZcpsFbHZf014k9oGEQQOl
-         7OGw==
-X-Gm-Message-State: AOAM531nlw0/rraW3xH2q3+7ltrQg3tzfjHkTIFfbqoJUhx30ANgTm1k
-        EYctyTDqmMcPeCveLhjCO9/imw==
-X-Google-Smtp-Source: ABdhPJwK+09JRKTiaglUg2rIl55+RRz//tPhPpYbiuiUeQmqdPVMLlGkF1Kr+4L5VjytGMFqBCHQrw==
-X-Received: by 2002:a17:90a:fd03:: with SMTP id cv3mr48786206pjb.111.1594004378800;
-        Sun, 05 Jul 2020 19:59:38 -0700 (PDT)
-Received: from Smcdef-MBP.local.net ([103.136.220.69])
-        by smtp.gmail.com with ESMTPSA id q1sm18491594pfk.132.2020.07.05.19.59.35
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 05 Jul 2020 19:59:38 -0700 (PDT)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     akpm@linux-foundation.org, david@redhat.com, penberg@gmail.com
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH v2] mm/page_alloc: skip setting nodemask when we are in interrupt
-Date:   Mon,  6 Jul 2020 10:59:21 +0800
-Message-Id: <20200706025921.53683-1-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+        id S1728693AbgGFDTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Jul 2020 23:19:53 -0400
+Received: from mail5.windriver.com ([192.103.53.11]:53030 "EHLO mail5.wrs.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728634AbgGFDTx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Jul 2020 23:19:53 -0400
+Received: from ALA-HCB.corp.ad.wrs.com (ala-hcb.corp.ad.wrs.com [147.11.189.41])
+        by mail5.wrs.com (8.15.2/8.15.2) with ESMTPS id 0663GhXp022250
+        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL);
+        Sun, 5 Jul 2020 20:16:54 -0700
+Received: from pek-lpg-core1-vm1.wrs.com (128.224.156.106) by
+ ALA-HCB.corp.ad.wrs.com (147.11.189.41) with Microsoft SMTP Server id
+ 14.3.487.0; Sun, 5 Jul 2020 20:16:32 -0700
+From:   <qiang.zhang@windriver.com>
+To:     <ben.dooks@codethink.co.uk>, <bfields@redhat.com>,
+        <cl@rock-chips.com>, <peterz@infradead.org>, <pmladek@suse.com>,
+        <tj@kernel.org>
+CC:     <akpm@linux-foundation.org>, <mm-commits@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3] kthread: Work could not be queued when worker being destroyed
+Date:   Sun, 5 Jul 2020 09:30:18 +0800
+Message-ID: <20200705013018.7375-1-qiang.zhang@windriver.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When we are in the interrupt context, it is irrelevant to the
-current task context. If we use current task's mems_allowed, we
-can fair to alloc pages in the fast path and fall back to slow
-path memory allocation when the current node(which is the current
-task mems_allowed) does not have enough memory to allocate. In
-this case, it slows down the memory allocation speed of interrupt
-context. So we can skip setting the nodemask to allow any node
-to allocate memory, so that fast path allocation can success.
+From: Zhang Qiang <qiang.zhang@windriver.com>
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Before the work is put into the queue of the worker thread,
+the state of the worker thread needs to be detected,because
+the worker thread may be in the destruction state at this time.
+
+Signed-off-by: Zhang Qiang <qiang.zhang@windriver.com>
+Suggested-by: Petr Mladek <pmladek@suse.com>
+Reviewed-by: Petr Mladek <pmladek@suse.com>
 ---
+ v1->v2:
+ Add warning information for condition "!worker->task".
+ v2->v3:
+ Modify submission information and add "Reviewed-by" tags. 
 
-changelog in v2:
- 1) rework the code suggested by Pekka Enberg
- 2) add a comment
+ kernel/kthread.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
- mm/page_alloc.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 9808339a6e93b..6678c4c1c3087 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -4799,7 +4799,11 @@ static inline bool prepare_alloc_pages(gfp_t gfp_mask, unsigned int order,
+diff --git a/kernel/kthread.c b/kernel/kthread.c
+index bfbfa481be3a..cac5184ffd86 100644
+--- a/kernel/kthread.c
++++ b/kernel/kthread.c
+@@ -791,6 +791,9 @@ static inline bool queuing_blocked(struct kthread_worker *worker,
+ {
+ 	lockdep_assert_held(&worker->lock);
  
- 	if (cpusets_enabled()) {
- 		*alloc_mask |= __GFP_HARDWALL;
--		if (!ac->nodemask)
-+		/*
-+		 * When we are in the interrupt context, it is irrelevant
-+		 * to the current task context. It means that any node ok.
-+		 */
-+		if (!in_interrupt() && !ac->nodemask)
- 			ac->nodemask = &cpuset_current_mems_allowed;
- 		else
- 			*alloc_flags |= ALLOC_CPUSET;
++	if (WARN_ON(!worker->task))
++		return true;
++
+ 	return !list_empty(&work->node) || work->canceling;
+ }
+ 
 -- 
-2.11.0
+2.24.1
 
