@@ -2,108 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75EF521494B
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Jul 2020 02:24:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D82C6214951
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Jul 2020 02:37:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728038AbgGEAWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Jul 2020 20:22:01 -0400
-Received: from foss.arm.com ([217.140.110.172]:42988 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727041AbgGEAWB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Jul 2020 20:22:01 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B336830E;
-        Sat,  4 Jul 2020 17:22:00 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7D2CD3F73C;
-        Sat,  4 Jul 2020 17:21:59 -0700 (PDT)
-References: <20200703133259.GE4781@hirez.programming.kicks-ass.net>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
-        vincent.guittot@linaro.org, mgorman@suse.de,
-        Oleg Nesterov <oleg@redhat.com>, david@fromorbit.com,
-        pauld@redhat.com, dietmar.eggemann@arm.com
-Subject: Re: [PATCH] sched: Better document ttwu()
-In-reply-to: <20200703133259.GE4781@hirez.programming.kicks-ass.net>
-Date:   Sun, 05 Jul 2020 01:21:57 +0100
-Message-ID: <jhjmu4eg6ai.mognet@arm.com>
+        id S1728090AbgGEAhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Jul 2020 20:37:20 -0400
+Received: from server-x.ipv4.hkg02.ds.network ([27.111.83.178]:51316 "EHLO
+        mail.gtsys.com.hk" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
+        with ESMTP id S1727041AbgGEAhU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 4 Jul 2020 20:37:20 -0400
+X-Greylist: delayed 411 seconds by postgrey-1.27 at vger.kernel.org; Sat, 04 Jul 2020 20:37:18 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by mail.gtsys.com.hk (Postfix) with ESMTP id 7F30B2016B13;
+        Sun,  5 Jul 2020 08:30:26 +0800 (HKT)
+X-Virus-Scanned: Debian amavisd-new at gtsys.com.hk
+Received: from mail.gtsys.com.hk ([127.0.0.1])
+        by localhost (mail.gtsys.com.hk [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 7NeF7PWBhov8; Sun,  5 Jul 2020 08:30:26 +0800 (HKT)
+Received: from s01.gtsys.com.hk (unknown [10.128.4.2])
+        by mail.gtsys.com.hk (Postfix) with ESMTP id 597D920160D4;
+        Sun,  5 Jul 2020 08:30:26 +0800 (HKT)
+Received: from [10.128.2.32] (unknown [124.217.189.122])
+        by s01.gtsys.com.hk (Postfix) with ESMTPSA id 0907CC01F9E;
+        Sun,  5 Jul 2020 08:30:25 +0800 (HKT)
+Subject: Re: [PATCH 2/2] devicetree: hwmon: shtc1: Add sensirion,shtc1.yaml
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Jack Lo <jack.lo@gtsys.com.hk>, devicetree@vger.kernel.org,
+        Jean Delvare <jdelvare@suse.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200703034856.12846-1-chris.ruehl@gtsys.com.hk>
+ <20200703034856.12846-3-chris.ruehl@gtsys.com.hk>
+ <00c1b143-46c4-2621-bd77-fa465fb77774@roeck-us.net>
+From:   Chris Ruehl <chris.ruehl@gtsys.com.hk>
+Message-ID: <9d473b54-94ca-0fc2-2ce7-2c88364c9e94@gtsys.com.hk>
+Date:   Sun, 5 Jul 2020 08:30:25 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <00c1b143-46c4-2621-bd77-fa465fb77774@roeck-us.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Guenter,
 
-On 03/07/20 14:32, Peter Zijlstra wrote:
-> Dave hit the problem fixed by commit:
+On 3/7/2020 1:49 pm, Guenter Roeck wrote:
+> On 7/2/20 8:48 PM, Chris Ruehl wrote:
+>> Add documentation for the newly added DTS support in the shtc1 driver.
+>>
+>> Signed-off-by: Chris Ruehl <chris.ruehl@gtsys.com.hk>
+>> ---
+>>   .../bindings/hwmon/sensirion,shtc1.yaml       | 53 +++++++++++++++++++
+>>   1 file changed, 53 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/hwmon/sensirion,shtc1.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/hwmon/sensirion,shtc1.yaml b/Documentation/devicetree/bindings/hwmon/sensirion,shtc1.yaml
+>> new file mode 100644
+>> index 000000000000..e3e292bc6d7d
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/hwmon/sensirion,shtc1.yaml
+>> @@ -0,0 +1,53 @@
+>> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/hwmon/sensirion,shtc1.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Sensirion SHTC1 Humidity and Temperature Sensor IC
+>> +
+>> +maintainers:
+>> +  - jdelvare@suse.com
+>> +
+>> +description: |
+>> +  The SHTC1, SHTW1 and SHTC3 are digital humidity and temperature sensor
+>> +  designed especially for battery-driven high-volume consumer electronics
+>> +  applications.
+>> +  For further information refere to Documentation/hwmon/shtc1.rst
+>> +
+>> +  This binding document describes the binding for the hardware monitor
+>> +  portion of the driver.
+>> +
+>> +properties:
+>> +  compatible:
+>> +    enum:
+>> +      - sensirion,shtc1
+>> +      - sensirion,shtw1
+>> +      - sensirion,shtc3
+>> +
+>> +  reg: I2C address 0x70
+>> +
+>> +Optional properties:
+>> +  sensirion,blocking_io: |
+>> +    u8, if > 0 the i2c bus hold until measure finished (default 0)
+>> +  sensirion,high_precision: |
+>> +    u8, if > 0 aquire data with high precision (default 1)
+>> +
+> Why u8 and not boolean ?
 >
->   b6e13e85829f ("sched/core: Fix ttwu() race")
+> Guenter
+The author of the driver make high_precision default (recommend) in the code,
+if I use boolean, then the device tree _must_ have have the 
+sensirion,high_precision set
+or I need to do the opposite and define sensirion,low_precision.
+(blocking_io = false default, high_precision = true default)
+
+that's the reason I was thinking use a u8 and test with of_property_read_bool to 
+check
+the presence of it and set it if value > 0.
+
+
+Chris.
+
 >
-> and failed to understand much of the code involved. Per his request a
-> few comments to (hopefully) clarify things.
->
-> Requested-by: Dave Chinner <david@fromorbit.com>
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+>> +required:
+>> +  - compatible
+>> +  - reg
+>> +
+>> +additionalProperties: false
+>> +
+>> +Example:
+>> +  &i2c1 {
+>> +    status = "okay";
+>> +    clock-frequency = <400000>;
+>> +
+>> +    shtc3@70 {
+>> +      compatible = "sensirion,shtc3";
+>> +      reg = <0x70>
+>> +      sensirion,blocking_io = <1>;
+>> +      status = "okay";
+>> +    };
+>> +  };
+>>
 
-Small extra comment below, otherwise FWIW:
+-- 
+GTSYS Limited RFID Technology
+9/F, Unit E, R07, Kwai Shing Industrial Building Phase 2,
+42-46 Tai Lin Pai Road, Kwai Chung, N.T., Hong Kong
+Tel (852) 9079 9521
 
-Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
+Disclaimer: https://www.gtsys.com.hk/email/classified.html
 
-> +++ b/kernel/sched/core.c
-> @@ -79,6 +79,100 @@ __read_mostly int scheduler_running;
->   */
->  int sysctl_sched_rt_runtime = 950000;
->
-> +
-> +/*
-> + * Serialization rules:
-> + *
-> + * Lock order:
-> + *
-> + *   p->pi_lock
-> + *     rq->lock
-> + *       hrtimer_cpu_base->lock (hrtimer_start() for bandwidth controls)
-> + *
-> + *  rq1->lock
-> + *    rq2->lock  where: rq1 < rq2
-> + *
-> + * Regular state:
-> + *
-> + * Normal scheduling state is serialized by rq->lock. __schedule() takes the
-> + * local CPU's rq->lock, it optionally removes the task from the runqueue and
-> + * always looks at the local rq data structures to find the most elegible task
-> + * to run next.
-> + *
-> + * Task enqueue is also under rq->lock, possibly taken from another CPU.
-> + * Wakeups from another LLC domain might use an IPI to transfer the enqueue to
-> + * the local CPU to avoid bouncing the runqueue state around [ see
-> + * ttwu_queue_wakelist() ]
-> + *
-> + * Task wakeup, specifically wakeups that involve migration, are horribly
-> + * complicated to avoid having to take two rq->locks.
-> + *
-> + * Special state:
-> + *
-> + * System-calls and anything external will use task_rq_lock() which acquires
-> + * both p->pi_lock and rq->lock. As a consequence the state they change is
-> + * stable while holding either lock:
-> + *
-> + *  - sched_setaffinity()/
-> + *    set_cpus_allowed_ptr():	p->cpus_ptr, p->nr_cpus_allowed
-> + *  - set_user_nice():		p->se.load, p->*prio
-> + *  - __sched_setscheduler():	p->sched_class, p->policy, p->*prio,
-> + *				p->se.load, p->rt_priority,
-> + *				p->dl.dl_{runtime, deadline, period, flags, bw, density}
-
-Uclamp stuff can also get updated in __sched_setscheduler(); see
-__setscheduler_uclamp(). It's only p->uclamp_req AFAICT, but I don't think
-there's harm in just saying p->uclamp*.
-
-> + *  - sched_setnuma():		p->numa_preferred_nid
-> + *  - sched_move_task()/
-> + *    cpu_cgroup_fork():	p->sched_task_group
-> + *  - uclamp_update_active()	p->uclamp*
-> + *
