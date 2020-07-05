@@ -2,211 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AEB3214EB5
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Jul 2020 20:52:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8DD9214E9F
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Jul 2020 20:48:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728182AbgGESwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Jul 2020 14:52:35 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:40529 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728122AbgGESwb (ORCPT
+        id S1728005AbgGESsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Jul 2020 14:48:13 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:59366 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727785AbgGESsM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Jul 2020 14:52:31 -0400
-Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20200705185228epoutp0353af20f5e15e3d1d7ffd922a66b4729b~e7-PcCzZ02570125701epoutp034
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Jul 2020 18:52:28 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20200705185228epoutp0353af20f5e15e3d1d7ffd922a66b4729b~e7-PcCzZ02570125701epoutp034
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1593975148;
-        bh=EDeoKzff2L3XGHadZi/OIFUby3HIdjDpDQcs/wY5K7A=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h0vCiK0vfynf7uS3gvJlWms2MQeu8M+FS+SHtQUQvyafvenqgHCZAmcoXOB9EryHX
-         g0o5FTw/BJ7ecm3vKmE8M4/PLFDnUakZZZlR21BhHKAegbJkXAPA2JAB+aQEXA90bi
-         /Uwb6T6y989qhkukq4YITiC1rW6ouyz7ApWmsyOk=
-Received: from epsmges5p2new.samsung.com (unknown [182.195.42.74]) by
-        epcas5p4.samsung.com (KnoxPortal) with ESMTP id
-        20200705185228epcas5p4d63536fb4ff71ca1a9d91322c2aec8b2~e7-O7A85D1418914189epcas5p4D;
-        Sun,  5 Jul 2020 18:52:28 +0000 (GMT)
-Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
-        epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        D5.C7.09703.C61220F5; Mon,  6 Jul 2020 03:52:28 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas5p1.samsung.com (KnoxPortal) with ESMTPA id
-        20200705185227epcas5p16fba3cb92561794b960184c89fdf2bb7~e7-OS5KwJ2311023110epcas5p1E;
-        Sun,  5 Jul 2020 18:52:27 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200705185227epsmtrp1958b2733946f97338ab9ed5a3835c095~e7-OSHD770303903039epsmtrp1_;
-        Sun,  5 Jul 2020 18:52:27 +0000 (GMT)
-X-AuditID: b6c32a4a-4b5ff700000025e7-54-5f02216c3ddb
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        4D.37.08303.B61220F5; Mon,  6 Jul 2020 03:52:27 +0900 (KST)
-Received: from localhost.localdomain (unknown [107.110.206.5]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20200705185224epsmtip27b31b5b2d629a5e08596d2873cb48d57~e7-Ln6_Kc3204432044epsmtip2i;
-        Sun,  5 Jul 2020 18:52:24 +0000 (GMT)
-From:   Kanchan Joshi <joshi.k@samsung.com>
-To:     axboe@kernel.dk, viro@zeniv.linux.org.uk, bcrl@kvack.org
-Cc:     hch@infradead.org, Damien.LeMoal@wdc.com, asml.silence@gmail.com,
-        linux-fsdevel@vger.kernel.org, mb@lightnvm.io,
-        linux-kernel@vger.kernel.org, linux-aio@kvack.org,
-        io-uring@vger.kernel.org, linux-block@vger.kernel.org,
-        Selvakumar S <selvakuma.s1@samsung.com>,
-        Kanchan Joshi <joshi.k@samsung.com>,
-        Nitesh Shetty <nj.shetty@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>
-Subject: [PATCH v3 4/4] io_uring: add support for zone-append
-Date:   Mon,  6 Jul 2020 00:17:50 +0530
-Message-Id: <1593974870-18919-5-git-send-email-joshi.k@samsung.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1593974870-18919-1-git-send-email-joshi.k@samsung.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprHKsWRmVeSWpSXmKPExsWy7bCmlm6OIlO8wY0OTovf06ewWsxZtY3R
-        YvXdfjaLrn9bWCxa278xWZyesIjJ4l3rORaLx3c+s1sc/f+WzWLKtCZGi723tC327D3JYnF5
-        1xw2ixXbj7BYbPs9n9niypRFzBavf5xkszj/9zirg5DHzll32T02r9DyuHy21GPTp0nsHt1X
-        fzB69G1ZxejxeZOcR/uBbiaPTU/eMgVwRnHZpKTmZJalFunbJXBlzJm1gb1grnRFzzexBsaF
-        Yl2MHBwSAiYSL9uluhi5OIQEdjNKTNmxhgXC+cQosat7IhOE85lR4uepl8xdjJxgHX1Pb7NB
-        JHYBJVYdQqg6/qeTEWQum4CmxIXJpSCmiICNxM4lKiAlzALtzBIndt5hAhkkLGArce7PKnYQ
-        m0VAVeLOmUlgNq+As8TGi+dZIZbJSdw81wm2mFPARaJt92lmkEESAls4JI6encYGUeQi8f7g
-        OyhbWOLV8S3sELaUxMv+Nii7WOLXnaNQzR2MEtcbZrJAJOwlLu75ywRyKTPQ0et36YOEmQX4
-        JHp/P2GChBGvREebEES1osS9SU+hbhOXeDhjCZTtIXGs+QLYX0IC0xkl5pwvmcAoOwth6AJG
-        xlWMkqkFxbnpqcWmBUZ5qeV6xYm5xaV56XrJ+bmbGMFJSMtrB+PDBx/0DjEycTAeYpTgYFYS
-        4e3VZowX4k1JrKxKLcqPLyrNSS0+xCjNwaIkzqv040yckEB6YklqdmpqQWoRTJaJg1OqgWlu
-        2ZKGfwmfWq7aX3hwNUq6PntZa+npY6cPXUqJM3N12pfLZLPF8tS5ud8e7PBK+7+5eGWTyZfu
-        9IU3M/Yf0NlctD027FDS44LI2MA09ik9Dx5mXvToMA6ocnZZsOHcrNscf5z2/y1blSFRW3rf
-        TyExlS8v5q51+9vuq5H6GhnfD4XWuCzc5xld/kHilcpm7Ve/RL9N7zLnPX1z8/rMXfcf3u2J
-        Kd48mS2qIm7RDq09XhuenHmouo7fecVl/lDLqRudDufL3zK4FPR6YZ5pdMqPy6+C/Dnion22
-        dwpUK/hZHYrVtJ7x3UqZPZF14s5YayHXe9IN7SX5sx9oP1cw9xf8+WX32Qkc/+Ifdf+qtlBi
-        Kc5INNRiLipOBAAT/P/DsQMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrLLMWRmVeSWpSXmKPExsWy7bCSvG62IlO8Qe97KYvf06ewWsxZtY3R
-        YvXdfjaLrn9bWCxa278xWZyesIjJ4l3rORaLx3c+s1sc/f+WzWLKtCZGi723tC327D3JYnF5
-        1xw2ixXbj7BYbPs9n9niypRFzBavf5xkszj/9zirg5DHzll32T02r9DyuHy21GPTp0nsHt1X
-        fzB69G1ZxejxeZOcR/uBbiaPTU/eMgVwRnHZpKTmZJalFunbJXBlzJm1gb1grnRFzzexBsaF
-        Yl2MnBwSAiYSfU9vs3UxcnEICexglDiyfDcTREJcovnaD3YIW1hi5b/n7BBFHxklLky6A9TB
-        wcEmoClxYXIpSI2IgINE1/HHTCA1zAJTmSV2vlvCBpIQFrCVOPdnFdggFgFViTtnJoHZvALO
-        EhsvnmeFWCAncfNcJzOIzSngItG2+zQzyHwhoJqplxQnMPItYGRYxSiZWlCcm55bbFhglJda
-        rlecmFtcmpeul5yfu4kRHANaWjsY96z6oHeIkYmD8RCjBAezkghvrzZjvBBvSmJlVWpRfnxR
-        aU5q8SFGaQ4WJXHer7MWxgkJpCeWpGanphakFsFkmTg4pRqYavVfztGIPcy9oVLt6qZ9Mrnf
-        bX27pzp3/rs8L9b/Su7V1VXMtVxqLx33Tn532udU1wNWYRXdk4nLzVrfvrly4tAq6zO+cYY+
-        ebu8zmYZfWx6Wjrj+LU/3YontPXqE2vk/N60zxd5/3pPZ4u6gNfMNx9uu36p2xDucLw7psj3
-        /IQ/1QYnWkrzfWz/t9jUuT5IMJY3OexyqtYi4fHW5J+WP/588a2Mfchyso9tX5rUpXS1X7Vf
-        JVvW//WfO+nsfvmSxtXcLfxnvlza/6Uj2/HLZct+R57HhetaWXz+H8mtFNof9EhKd3pX2T/m
-        NZ0xD39/v1LiE8WyzemW/r78yTdceOU/exy78ftaUepS611flFiKMxINtZiLihMBLkoc7vAC
-        AAA=
-X-CMS-MailID: 20200705185227epcas5p16fba3cb92561794b960184c89fdf2bb7
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-CMS-TYPE: 105P
-X-CMS-RootMailID: 20200705185227epcas5p16fba3cb92561794b960184c89fdf2bb7
-References: <1593974870-18919-1-git-send-email-joshi.k@samsung.com>
-        <CGME20200705185227epcas5p16fba3cb92561794b960184c89fdf2bb7@epcas5p1.samsung.com>
+        Sun, 5 Jul 2020 14:48:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593974890;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=X2NxAjQStBuOg2nWLcCqhTmnhAGLMIMF1gTvQJHR2fg=;
+        b=EwHhDsr93jiFkZORIK7DNrbe3Zn6PZ8coDGULoDNsEMnl8jlj10IJH1mOu1aOiAdUP/vOS
+        biqY6jm6Wux9nqQo4JzCad5VuEF8rEeHaF+PUcYUV4wnSJm1WOsMOTLPTUEHwlxrtPrV90
+        NaUQhq4nOqVLUJwQCI2TVAyUQjCFBiQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-29-GaleSg56NYifqcstNxG6TA-1; Sun, 05 Jul 2020 14:48:09 -0400
+X-MC-Unique: GaleSg56NYifqcstNxG6TA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 66EA01005510;
+        Sun,  5 Jul 2020 18:48:06 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-112-238.rdu2.redhat.com [10.10.112.238])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2B2E310013C2;
+        Sun,  5 Jul 2020 18:48:02 +0000 (UTC)
+Subject: Re: [PATCH v3] x86/speculation/l1tf: Add KConfig for setting the L1D
+ cache flush mode
+To:     Abhishek Bhardwaj <abhishekbh@google.com>
+Cc:     Mike Rapoport <rppt@linux.ibm.com>,
+        Doug Anderson <dianders@google.com>,
+        Anthony Steinhauser <asteinhauser@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tony Luck <tony.luck@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>, kvm@vger.kernel.org,
+        x86 <x86@kernel.org>
+References: <20200702221237.2517080-1-abhishekbh@google.com>
+ <e7bc00fc-fe53-800e-8439-f1fbdca5dd26@redhat.com>
+ <CAN_oZf2t+gUqXe19Yo1mTzAgk2xNhssE-9p58EvH-gw5jpuvzA@mail.gmail.com>
+ <CA+noqoj6u9n_KKohZw+QCpD-Qj0EgoCXaPEsryD7ABZ7QpqQfg@mail.gmail.com>
+ <20200703114037.GD2999146@linux.ibm.com>
+ <CAD=FV=XRbrFqSbR619h+9HXNyrYNbqfBF2e-+iUZco9qQ8Wokg@mail.gmail.com>
+ <20200705152304.GE2999146@linux.ibm.com>
+ <5d2ccf3d-b473-cf30-b863-e29bb33b7284@redhat.com>
+ <CA+noqojih03kKsWs33EUMV4H6RkWSRSQD=DHa9pAQ03yiz2GtQ@mail.gmail.com>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <48f82669-f1ff-0f5e-e531-ebbd151205f9@redhat.com>
+Date:   Sun, 5 Jul 2020 14:48:01 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
+MIME-Version: 1.0
+In-Reply-To: <CA+noqojih03kKsWs33EUMV4H6RkWSRSQD=DHa9pAQ03yiz2GtQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Selvakumar S <selvakuma.s1@samsung.com>
+On 7/5/20 2:22 PM, Abhishek Bhardwaj wrote:
+> On Sun, Jul 5, 2020 at 8:57 AM Waiman Long <longman@redhat.com> wrote:
+>> On 7/5/20 11:23 AM, Mike Rapoport wrote:
+>>>> Nothing prevents people from continuing to use the command line
+>>>> options if they want, right?  This just allows a different default.
+>>>> So if a distro is security focused and decided that it wanted a slower
+>>>> / more secure default then it could ship that way but individual users
+>>>> could still override, right?
+>>> Well, nothing prevents you from continuing to use the command line as
+>>> well;-)
+>>>
+>>> I can see why whould you want an ability to select compile time default
+>>> for an option, but I'm really not thrilled by the added ifdefery.
+>>>
+>> It turns out that CONFIG_KVM_VMENTRY_L1D_FLUSH values match the enum
+>> vmx_l1d_flush_state values. So one way to reduce the ifdefery is to do,
+>> for example,
+>>
+>> +#ifdef CONFIG_KVM_VMENTRY_L1D_FLUSH
+>> +#define VMENTER_L1D_FLUSH_DEFAULT CONFIG_KVM_VMENTRY_L1D_FLUSH
+>> +#else
+>> +#define VMENTER_L1D_FLUSH_DEFAULT      VMENTER_L1D_FLUSH_AUTO
+>> #endif
+>> -enum vmx_l1d_flush_state l1tf_vmx_mitigation = VMENTER_L1D_FLUSH_AUTO;
+>> +enum vmx_l1d_flush_state l1tf_vmx_mitigation = VMENTER_L1D_FLUSH_DEFAULT;
+>>
+>> Of course, we may need to add a comment on enum vmx_l1d_flush_state
+>> definition to highlight the dependency of CONFIG_KVM_VMENTRY_L1D_FLUSH
+>> on it to avoid future mismatch.
+> I explicitly wanted to avoid doing that for this very reason. In my
+> opinion this is brittle and bound to be missed
+> sooner or later.
+>
+That is why I said a comment will have to be added to highlight this 
+dependency. For instance,
 
-For zone-append, block-layer will return zone-relative offset via ret2
-of ki_complete interface. Make changes to collect it, and send to
-user-space using cqe->flags.
++/*
++ * Three of the enums are explicitly assigned as the KVM_VMENTRY_L1D_FLUSH
++ * config entry in arch/x86/kvm/Kconfig depends on these values.
++ */
+  enum vmx_l1d_flush_state {
+         VMENTER_L1D_FLUSH_AUTO,
+-       VMENTER_L1D_FLUSH_NEVER,
+-       VMENTER_L1D_FLUSH_COND,
+-       VMENTER_L1D_FLUSH_ALWAYS,
++       VMENTER_L1D_FLUSH_NEVER = 1,
++       VMENTER_L1D_FLUSH_COND = 2,
++       VMENTER_L1D_FLUSH_ALWAYS = 3,
+         VMENTER_L1D_FLUSH_EPT_DISABLED,
+         VMENTER_L1D_FLUSH_NOT_REQUIRED,
+  };
 
-Signed-off-by: Selvakumar S <selvakuma.s1@samsung.com>
-Signed-off-by: Kanchan Joshi <joshi.k@samsung.com>
-Signed-off-by: Nitesh Shetty <nj.shetty@samsung.com>
-Signed-off-by: Javier Gonzalez <javier.gonz@samsung.com>
----
- fs/io_uring.c | 21 +++++++++++++++++++--
- 1 file changed, 19 insertions(+), 2 deletions(-)
+Of course, this is just a suggestion.
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 155f3d8..cbde4df 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -402,6 +402,8 @@ struct io_rw {
- 	struct kiocb			kiocb;
- 	u64				addr;
- 	u64				len;
-+	/* zone-relative offset for append, in sectors */
-+	u32			append_offset;
- };
- 
- struct io_connect {
-@@ -541,6 +543,7 @@ enum {
- 	REQ_F_NO_FILE_TABLE_BIT,
- 	REQ_F_QUEUE_TIMEOUT_BIT,
- 	REQ_F_WORK_INITIALIZED_BIT,
-+	REQ_F_ZONE_APPEND_BIT,
- 
- 	/* not a real bit, just to check we're not overflowing the space */
- 	__REQ_F_LAST_BIT,
-@@ -598,6 +601,8 @@ enum {
- 	REQ_F_QUEUE_TIMEOUT	= BIT(REQ_F_QUEUE_TIMEOUT_BIT),
- 	/* io_wq_work is initialized */
- 	REQ_F_WORK_INITIALIZED	= BIT(REQ_F_WORK_INITIALIZED_BIT),
-+	/* to return zone relative offset for zone append*/
-+	REQ_F_ZONE_APPEND	= BIT(REQ_F_ZONE_APPEND_BIT),
- };
- 
- struct async_poll {
-@@ -1745,6 +1750,8 @@ static void io_iopoll_complete(struct io_ring_ctx *ctx, unsigned int *nr_events,
- 
- 		if (req->flags & REQ_F_BUFFER_SELECTED)
- 			cflags = io_put_kbuf(req);
-+		if (req->flags & REQ_F_ZONE_APPEND)
-+			cflags = req->rw.append_offset;
- 
- 		__io_cqring_fill_event(req, req->result, cflags);
- 		(*nr_events)++;
-@@ -1943,7 +1950,7 @@ static inline void req_set_fail_links(struct io_kiocb *req)
- 		req->flags |= REQ_F_FAIL_LINK;
- }
- 
--static void io_complete_rw_common(struct kiocb *kiocb, long res)
-+static void io_complete_rw_common(struct kiocb *kiocb, long res, long res2)
- {
- 	struct io_kiocb *req = container_of(kiocb, struct io_kiocb, rw.kiocb);
- 	int cflags = 0;
-@@ -1955,6 +1962,10 @@ static void io_complete_rw_common(struct kiocb *kiocb, long res)
- 		req_set_fail_links(req);
- 	if (req->flags & REQ_F_BUFFER_SELECTED)
- 		cflags = io_put_kbuf(req);
-+	/* use cflags to return zone append completion result */
-+	if (req->flags & REQ_F_ZONE_APPEND)
-+		cflags = res2;
-+
- 	__io_cqring_add_event(req, res, cflags);
- }
- 
-@@ -1962,7 +1973,7 @@ static void io_complete_rw(struct kiocb *kiocb, long res, long res2)
- {
- 	struct io_kiocb *req = container_of(kiocb, struct io_kiocb, rw.kiocb);
- 
--	io_complete_rw_common(kiocb, res);
-+	io_complete_rw_common(kiocb, res, res2);
- 	io_put_req(req);
- }
- 
-@@ -1975,6 +1986,9 @@ static void io_complete_rw_iopoll(struct kiocb *kiocb, long res, long res2)
- 
- 	if (res != req->result)
- 		req_set_fail_links(req);
-+	if (req->flags & REQ_F_ZONE_APPEND)
-+		req->rw.append_offset = res2;
-+
- 	req->result = res;
- 	if (res != -EAGAIN)
- 		WRITE_ONCE(req->iopoll_completed, 1);
-@@ -2739,6 +2753,9 @@ static int io_write(struct io_kiocb *req, bool force_nonblock)
- 						SB_FREEZE_WRITE);
- 		}
- 		kiocb->ki_flags |= IOCB_WRITE;
-+		/* zone-append requires few extra steps during completion */
-+		if (kiocb->ki_flags & IOCB_ZONE_APPEND)
-+			req->flags |= REQ_F_ZONE_APPEND;
- 
- 		if (!force_nonblock)
- 			current->signal->rlim[RLIMIT_FSIZE].rlim_cur = req->fsize;
--- 
-2.7.4
+Cheers,
+Longman
 
