@@ -2,133 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53B69214ACA
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Jul 2020 09:01:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85EEA214AEB
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Jul 2020 09:29:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726538AbgGEHBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Jul 2020 03:01:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726211AbgGEHBM (ORCPT
+        id S1726542AbgGEH3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Jul 2020 03:29:42 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:49385 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725894AbgGEH3l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Jul 2020 03:01:12 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 228ECC08C5DE
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Jul 2020 00:01:12 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id e8so16970971pgc.5
-        for <linux-kernel@vger.kernel.org>; Sun, 05 Jul 2020 00:01:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=nTHtSjVLQHeLSy0uqm8S4L9uEdI8s7cHTYuNr/RgjU4=;
-        b=ZYUgITlCyYLwvoccNm5Op0BVJOu48KNGbkGelaKJSplcATNZjAyMv4yUD22K4JLAvF
-         o2jccECA9kTPkAwq7NQRm0+nLKYroBEYw0LeqKIm8/nf8ZQv4OUdVSrg/qhCpyP71Qtt
-         xuHPXc519c8Svisi7KdcUBxlw0dchUydJkCgo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nTHtSjVLQHeLSy0uqm8S4L9uEdI8s7cHTYuNr/RgjU4=;
-        b=KCJUZTWPKGoWs5/EBWW8R5VJNchwEHYVqNcYaATVOfajgfB4vasnttNbgvqOxralQ6
-         BdH+/fKRiLq22YVZ4mI0CDAZtXG9lVpYuX7rZ+gcbu0aoFyWdlcqecgR77sVGdutyY3m
-         9CdPmgxjkzjhT+m5XWk6hOOzc1XmHxlKxiiBC5Ey7DQ8hF/ABli058S9OCc+gEQYO3s3
-         r7EEI8/Gdj/AAdxt9EAzl1CLGw/EJnmFOpoMZ2YHE0Uh5ohX4/OBuz4ZKSI5nA+Nqhd9
-         +RUcbjRGr2u8OUu2qmcKfJRcdOgBpTg7S9aS6yVUA1kEeb4aqr60+Kua0f7twdzDbAeD
-         vupQ==
-X-Gm-Message-State: AOAM530MJW3tXcoHeeejrzBPVubjmaoNiAqSflP8d3CefpvvR68YtDnV
-        9LIiCkXsm/clDnC1RwvO0yaXmg==
-X-Google-Smtp-Source: ABdhPJyEd3dqAnjdX5X0B1CLAKee5RybaEyD8kgsnX6V5YlPld+U/ysl/B0SAcaccskQ2/uMT+wjbg==
-X-Received: by 2002:a62:7650:: with SMTP id r77mr28964787pfc.235.1593932471622;
-        Sun, 05 Jul 2020 00:01:11 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id j16sm15909514pfr.100.2020.07.05.00.01.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 05 Jul 2020 00:01:10 -0700 (PDT)
-Date:   Sun, 5 Jul 2020 00:01:09 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        Keno Fischer <keno@juliacomputing.com>,
-        Oleg Nesterov <oleg@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] selftests/seccomp: Check ENOSYS under tracing
-Message-ID: <202007050000.40DCED12@keescook>
-References: <20200705061232.4151319-1-keescook@chromium.org>
- <20200705061232.4151319-4-keescook@chromium.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200705061232.4151319-4-keescook@chromium.org>
+        Sun, 5 Jul 2020 03:29:41 -0400
+Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20200705072938epoutp028a79d9b696ae5ac76dabe0190846481a~eyrC4Z-4P0063200632epoutp02h
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Jul 2020 07:29:38 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20200705072938epoutp028a79d9b696ae5ac76dabe0190846481a~eyrC4Z-4P0063200632epoutp02h
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1593934178;
+        bh=jDNczQCxNdBrVrr3iyPMSiYmZT3ww0WjNBXjxKIN4jI=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=IsAEcUWsuxhUkbys4RwEdzu2D3gq7Vo6iJu3dEbLm5tYD3Ofyv2ooZnbOW0P+gSk8
+         TAJHrLeTUsX2QMhfTiRCg8lSovT4se44A++w0ZwJmIiRyN6KDe9x6jsR7FIfTzvU9o
+         TCJ3CFeL/XqdNcMwRcmAMUWjaPgWEGUDauyXd5aA=
+Received: from epsmges5p1new.samsung.com (unknown [182.195.42.73]) by
+        epcas5p1.samsung.com (KnoxPortal) with ESMTP id
+        20200705072938epcas5p1a1c45b7d71443f56e4d844e2b2bfad94~eyrCpRaI12994029940epcas5p1k;
+        Sun,  5 Jul 2020 07:29:38 +0000 (GMT)
+Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
+        epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        7F.CA.09467.261810F5; Sun,  5 Jul 2020 16:29:38 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas5p1.samsung.com (KnoxPortal) with ESMTPA id
+        20200705072937epcas5p1b6c9a25770451bcb9d8bc5b14b8a8b53~eyrCF44f-2994029940epcas5p1j;
+        Sun,  5 Jul 2020 07:29:37 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200705072937epsmtrp2564429d6df2f25dee482697bdbc79a89~eyrCFPB8g1763917639epsmtrp2X;
+        Sun,  5 Jul 2020 07:29:37 +0000 (GMT)
+X-AuditID: b6c32a49-a3fff700000024fb-d3-5f018162c05a
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        89.BA.08382.161810F5; Sun,  5 Jul 2020 16:29:37 +0900 (KST)
+Received: from Jaguar.sa.corp.samsungelectronics.net (unknown
+        [107.108.73.139]) by epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20200705072936epsmtip13979d91306b4480df60df6537ccf9aa8~eyrA_4CyI0341703417epsmtip1E;
+        Sun,  5 Jul 2020 07:29:36 +0000 (GMT)
+From:   Alim Akhtar <alim.akhtar@samsung.com>
+To:     krzk@kernel.org
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        robh+dt@kernel.org, Alim Akhtar <alim.akhtar@samsung.com>
+Subject: [PATCH v1 1/2] arm64: dts: exynos: Fix silent hang after boot
+Date:   Sun,  5 Jul 2020 12:39:17 +0530
+Message-Id: <20200705070918.63531-1-alim.akhtar@samsung.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrGIsWRmVeSWpSXmKPExsWy7bCmum5SI2O8wYlX3BYP5m1js5h/5Byr
+        xfnzG9gtNj2+xmpxedccNosZ5/cxWbTuPcLuwO6xaVUnm8fmJfUefVtWMXp83iQXwBLFZZOS
+        mpNZllqkb5fAlbH38iK2gkaOigX725kaGO+xdTFyckgImEisftIIZHNxCAnsZpTYtHoeK4Tz
+        iVHiad8zFgjnG6PEubmfWWBa/i5pZodI7GWU+H+6HaqlhUli3/rvzCBVbALaEnenb2ECsUUE
+        hCXuLV0O1sEscIRRouH8C7CEsICbxOl508AuYRFQlXi9/RcriM0rYCPx6+gDVoh18hKrNxxg
+        BmmWEFjELvH42AwmiISLxNENaxkhbGGJV8e3sEPYUhKf3+0FGsoBZGdL9OwyhgjXSCyddwzq
+        BXuJA1fmsICUMAtoSqzfpQ8SZhbgk+j9/YQJopNXoqNNCKJaVaL53VWoTmmJid3dUJd5SHw/
+        eAjsACGBWInezSvYJjDKzEIYuoCRcRWjZGpBcW56arFpgWFearlecWJucWleul5yfu4mRnBU
+        a3nuYLz74IPeIUYmDsZDjBIczEoivL3ajPFCvCmJlVWpRfnxRaU5qcWHGKU5WJTEeZV+nIkT
+        EkhPLEnNTk0tSC2CyTJxcEo1MHELfpl6JkKxL0rl6t+1ezZkzv5rcOC39KuTrw5PyrS/tKbN
+        wkbRTa5Kd7LnezbxZ+eKnBxddI6+7a3c6C4vG+/17752jap7xj5p7tX367W0FNdvz4kWydpo
+        smfPrf+H/+4vPOjxtaXC4vLLA2f9L61ZY1FrnVYx5/Lq0zxn3/fXKIu/OdvEMU9j/8Kt+Wek
+        tD3qPnFc5byQNNHjz4qj555w3fUW9k4VL33+j71JJGGDRGD+JqbeXx9UL2e/OLjbsmma8gPf
+        3hw1IX7n9EORU+s1Vuev5BBjnjBHYPPmGxVWC6bsMX/160Dj8gvPl9/3uDHveceu1WlTK+zn
+        uHt1pQlf3CM4R1R03y+Tqvmv/65WYinOSDTUYi4qTgQA1cBYCFkDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrFJMWRmVeSWpSXmKPExsWy7bCSnG5iI2O8wZPpihYP5m1js5h/5Byr
+        xfnzG9gtNj2+xmpxedccNosZ5/cxWbTuPcLuwO6xaVUnm8fmJfUefVtWMXp83iQXwBLFZZOS
+        mpNZllqkb5fAlbH38iK2gkaOigX725kaGO+xdTFyckgImEj8XdLM3sXIxSEksJtRYtOKPhaI
+        hLTE9Y0T2CFsYYmV/55DFTUxSUy7dR4swSagLXF3+hYmEFsEqOje0uVgRcwCpxgl+rdvBisS
+        FnCTOD1vGtg6FgFVidfbf7GC2LwCNhK/jj5ghdggL7F6wwHmCYw8CxgZVjFKphYU56bnFhsW
+        GOallusVJ+YWl+al6yXn525iBAePluYOxu2rPugdYmTiYDzEKMHBrCTC26vNGC/Em5JYWZVa
+        lB9fVJqTWnyIUZqDRUmc90bhwjghgfTEktTs1NSC1CKYLBMHp1QDk3aqsVX9qQsRPXlrNs35
+        cGVe/mR3n+kp+Tn8c+P12JN9/3f2hWvocszN/s9jY5LAlrnbYtOqT6t8+335ui1f3+5/yzb5
+        5zIZx9l1GrW8GQf1t02be+9KuvKGRM9dXDvznh6x3Vbw/0OFVrfa2U2JR9jOCE2r8vt0j8tz
+        8hvftL8GM0x/vN3ra75GabvNYYnmNxypxy5zrLh6p22h2Y6iA8X6q668n+diZCrKIL9uZtWJ
+        69qtDoF1MXlbbD75Vli+sfLrqdSPfH+rzyb5dWrF8gsu/X3O1xbctXy+6nturfOXt7v2H7n4
+        aF1Durxk//OLRrt3T9pZmvemIiNdN1pLPmftgaUq3t6SAvkL/+z4qcRSnJFoqMVcVJwIANkS
+        tHiNAgAA
+X-CMS-MailID: 20200705072937epcas5p1b6c9a25770451bcb9d8bc5b14b8a8b53
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+CMS-TYPE: 105P
+X-CMS-RootMailID: 20200705072937epcas5p1b6c9a25770451bcb9d8bc5b14b8a8b53
+References: <CGME20200705072937epcas5p1b6c9a25770451bcb9d8bc5b14b8a8b53@epcas5p1.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 04, 2020 at 11:12:32PM -0700, Kees Cook wrote:
-> There should be no difference between -1 and other negative syscalls
-> while tracing.
-> 
-> Cc: Andy Lutomirski <luto@amacapital.net>
-> Cc: Will Drewry <wad@chromium.org>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Keno Fischer <keno@juliacomputing.com>
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->  tools/testing/selftests/seccomp/seccomp_bpf.c | 26 +++++++++++++++++++
->  1 file changed, 26 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
-> index 966dec340ea8..bf6aa06c435c 100644
-> --- a/tools/testing/selftests/seccomp/seccomp_bpf.c
-> +++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
-> @@ -1973,6 +1973,32 @@ FIXTURE_TEARDOWN(TRACE_syscall)
->  	teardown_trace_fixture(_metadata, self->tracer);
->  }
->  
-> +TEST(negative_ENOSYS)
-> +{
-> +	/* Untraced negative syscalls should return ENOSYS. */
-> +	errno = 0;
-> +	EXPECT_EQ(-1, syscall(-1));
-> +	EXPECT_EQ(errno, ENOSYS);
-> +	errno = 0;
-> +	EXPECT_EQ(-1, syscall(-101));
-> +	EXPECT_EQ(errno, ENOSYS);
-> +}
-> +
-> +TEST_F(TRACE_syscall, negative_ENOSYS)
-> +{
-> +	/*
-> +	 * There should be no difference between an "internal" skip
-> +	 * and userspace asking for syscall "-1".
-> +	 */
-> +	errno = 0;
-> +	EXPECT_EQ(-1, syscall(-1));
-> +	EXPECT_EQ(errno, ENOSYS);
-> +	/* And no difference for "still not valid but not -1". */
-> +	errno = 0;
-> +	EXPECT_EQ(-1, syscall(-101));
-> +	EXPECT_EQ(errno, ENOSYS);
-> +}
-> +
+Once regulators are disabled after kernel boot, on espresso
+board silent hang observed because of LDO7 being disabled.
+LDO7 actually provide power to CPU cores and non-cpu blocks
+circuitries.
+Keep this regulator always-on to fix this hang.
 
-I realized after sending this that the second function could just be:
+Fixes: 9589f7721e16 ("arm64: dts: Add S2MPS15 PMIC node on exynos7-espresso")
+Signed-off-by: Alim Akhtar <alim.akhtar@samsung.com>
+---
+ - 
+ arch/arm64/boot/dts/exynos/exynos7-espresso.dts | 1 +
+ 1 file changed, 1 insertion(+)
 
-+TEST_F(TRACE_syscall, negative_ENOSYS)
-+{
-+	negative_ENOSYS(_metadata);
-+}
+diff --git a/arch/arm64/boot/dts/exynos/exynos7-espresso.dts b/arch/arm64/boot/dts/exynos/exynos7-espresso.dts
+index 790f12ca8981..bb86950032d3 100644
+--- a/arch/arm64/boot/dts/exynos/exynos7-espresso.dts
++++ b/arch/arm64/boot/dts/exynos/exynos7-espresso.dts
+@@ -157,6 +157,7 @@
+ 				regulator-min-microvolt = <700000>;
+ 				regulator-max-microvolt = <1150000>;
+ 				regulator-enable-ramp-delay = <125>;
++				regulator-always-on;
+ 			};
+ 
+ 			ldo8_reg: LDO8 {
 
-:)
-
->  TEST_F(TRACE_syscall, syscall_allowed)
->  {
->  	/* getppid works as expected (no changes). */
-> -- 
-> 2.25.1
-> 
-
+base-commit: 9e50b94b3eb0d859a2586b5a40d7fd6e5afd9210
 -- 
-Kees Cook
+2.17.1
+
