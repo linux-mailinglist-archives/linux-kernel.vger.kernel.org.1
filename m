@@ -2,232 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFF0A214D9A
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Jul 2020 17:22:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81441214D9F
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Jul 2020 17:24:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727064AbgGEPWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Jul 2020 11:22:53 -0400
-Received: from bedivere.hansenpartnership.com ([66.63.167.143]:47330 "EHLO
-        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726833AbgGEPWx (ORCPT
+        id S1727783AbgGEPYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Jul 2020 11:24:25 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:37210 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726939AbgGEPYZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Jul 2020 11:22:53 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id C5C7E8EE1FC;
-        Sun,  5 Jul 2020 08:22:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
-        s=20151216; t=1593962572;
-        bh=OLhaHU/vz2Tng4cyS8WmDVBZm28HLgOU760RKdtZ1I8=;
-        h=Subject:From:To:Cc:Date:From;
-        b=TCJdhGojJOQBMHe45VrBwizRGOzSBroMT2eYHdrtrbAzes6PsWgkg4soKhKWaApj+
-         pWLXvKebJcAfMoQMa3bIdkHq2jhJUuZc3/tpN7G5sf5X2EHsrm2t+Eqd9trCBMNZJk
-         zZLELaDqxgdLOeXqmF3AyV2GHzTsgDohDZsPe2t0=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id znkL1FObznCV; Sun,  5 Jul 2020 08:22:52 -0700 (PDT)
-Received: from [153.66.254.194] (unknown [50.35.76.230])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 066E78EE116;
-        Sun,  5 Jul 2020 08:22:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
-        s=20151216; t=1593962572;
-        bh=OLhaHU/vz2Tng4cyS8WmDVBZm28HLgOU760RKdtZ1I8=;
-        h=Subject:From:To:Cc:Date:From;
-        b=TCJdhGojJOQBMHe45VrBwizRGOzSBroMT2eYHdrtrbAzes6PsWgkg4soKhKWaApj+
-         pWLXvKebJcAfMoQMa3bIdkHq2jhJUuZc3/tpN7G5sf5X2EHsrm2t+Eqd9trCBMNZJk
-         zZLELaDqxgdLOeXqmF3AyV2GHzTsgDohDZsPe2t0=
-Message-ID: <1593962570.4657.5.camel@HansenPartnership.com>
-Subject: [GIT PULL] SCSI fixes for 5.8-rc3
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Sun, 05 Jul 2020 08:22:50 -0700
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.26.6 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        Sun, 5 Jul 2020 11:24:25 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 065F7J3m146263;
+        Sun, 5 Jul 2020 11:23:13 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3237cf9dqe-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 05 Jul 2020 11:23:13 -0400
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 065F7hAY146985;
+        Sun, 5 Jul 2020 11:23:12 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3237cf9dpw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 05 Jul 2020 11:23:12 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 065FJwsU022824;
+        Sun, 5 Jul 2020 15:23:10 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma04ams.nl.ibm.com with ESMTP id 322hd7sc1f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 05 Jul 2020 15:23:10 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 065FN8eb39977132
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 5 Jul 2020 15:23:08 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 45971A405B;
+        Sun,  5 Jul 2020 15:23:08 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 166A0A4054;
+        Sun,  5 Jul 2020 15:23:06 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.148.205.69])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Sun,  5 Jul 2020 15:23:05 +0000 (GMT)
+Date:   Sun, 5 Jul 2020 18:23:04 +0300
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     Doug Anderson <dianders@google.com>
+Cc:     Abhishek Bhardwaj <abhishekbh@google.com>,
+        Anthony Steinhauser <asteinhauser@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tony Luck <tony.luck@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>, kvm@vger.kernel.org,
+        x86 <x86@kernel.org>
+Subject: Re: [PATCH v3] x86/speculation/l1tf: Add KConfig for setting the L1D
+ cache flush mode
+Message-ID: <20200705152304.GE2999146@linux.ibm.com>
+References: <20200702221237.2517080-1-abhishekbh@google.com>
+ <e7bc00fc-fe53-800e-8439-f1fbdca5dd26@redhat.com>
+ <CAN_oZf2t+gUqXe19Yo1mTzAgk2xNhssE-9p58EvH-gw5jpuvzA@mail.gmail.com>
+ <CA+noqoj6u9n_KKohZw+QCpD-Qj0EgoCXaPEsryD7ABZ7QpqQfg@mail.gmail.com>
+ <20200703114037.GD2999146@linux.ibm.com>
+ <CAD=FV=XRbrFqSbR619h+9HXNyrYNbqfBF2e-+iUZco9qQ8Wokg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAD=FV=XRbrFqSbR619h+9HXNyrYNbqfBF2e-+iUZco9qQ8Wokg@mail.gmail.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-05_05:2020-07-02,2020-07-05 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ suspectscore=1 bulkscore=0 priorityscore=1501 phishscore=0 impostorscore=0
+ spamscore=0 adultscore=0 mlxlogscore=999 clxscore=1015
+ cotscore=-2147483648 malwarescore=0 mlxscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2007050116
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Four small fixes in three drivers.  The mptfusion one has actually
-caused use visible issues in certain kernel configurations.
+On Fri, Jul 03, 2020 at 07:00:11AM -0700, Doug Anderson wrote:
+> Hi,
+> 
+> On Fri, Jul 3, 2020 at 4:40 AM Mike Rapoport <rppt@linux.ibm.com> wrote:
+> >
+> > On Thu, Jul 02, 2020 at 11:43:47PM -0700, Abhishek Bhardwaj wrote:
+> > > We have tried to steer away from kernel command line args for a few reasons.
+> > >
+> > > I am paraphrasing my colleague Doug's argument here (CC'ed him as well) -
+> > >
+> > > - The command line args are getting unwieldy. Kernel command line
+> > > parameters are not a scalable way to set kernel config. It's intended
+> > > as a super limited way for the bootloader to pass info to the kernel
+> > > and also as a way for end users who are not compiling the kernel
+> > > themselves to tweak kernel behavior.
+> >
+> > Why cannot you simply add this option to CONFIG_CMDLINE at your kernel build
+> > scripts?
+> 
+> At least in the past I've seen that 'CONFIG_CMDLINE' interacts badly
+> with the bootloader provided command line in some architectures.  In
+> days of yore I tried to post a patch to fix this, at least on ARM
+> targets, but it never seemed to go anywhere upstream.  I'm going to
+> assume this is still a problem because I still see an ANDROID tagged
+> patch in the Chrome OS 5.4 tree:
 
-The patch is available here:
+I presume a patch subject should have been here :)
+Anyway, bad iteraction of CONFIG_CMDLINE with bootloader command line
+seems like a bug to me and a bug need to be fixed.
 
-git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+> In any case, as per my previous arguments, stuffing lots of config
+> into the cmdline is a bit clunky and doesn't scale well.  You end up
+> with a really long run on command line and it's hard to tell where one
+> config option ends and the next one starts and if the same concept is
+> there more than one time it's hard to tell and something might cancel
+> out a previous config option or maybe it won't and by the time you end
+> up finishing this it's hard to tell where you started.  :-)
 
-The short changelog is:
+Configuration options may also have weird interactions between them and
+addition of #ifdef means that most of the non-default paths won't get as
+good test coverage as the default one.
 
-Christoph Hellwig (1):
-      scsi: mptfusion: Don't use GFP_ATOMIC for larger DMA allocations
+And the proposed #ifdef maze does not look pretty at all...
 
-Dan Carpenter (1):
-      scsi: qla2xxx: Fix a condition in qla2x00_find_all_fabric_devs()
+> > > - Also, we know we want this setting from the start. This is a
+> > > definite smell that it deserves to be a compile time thing rather than
+> > > adding extra code + whatever miniscule time at runtime to pass an
+> > > extra arg.
+> >
+> > This might be a compile time thing in your environment, but not
+> > necessarily it must be the same in others. For instance, what option
+> > should distro kernels select?
+> 
+> Nothing prevents people from continuing to use the command line
+> options if they want, right?  This just allows a different default.
+> So if a distro is security focused and decided that it wanted a slower
+> / more secure default then it could ship that way but individual users
+> could still override, right?
 
-Javed Hasan (2):
-      scsi: libfc: Skip additional kref updating work event
-      scsi: libfc: Handling of extra kref
+Well, nothing prevents you from continuing to use the command line as
+well ;-)
 
-And the diffstat:
+I can see why whould you want an ability to select compile time default
+for an option, but I'm really not thrilled by the added ifdefery.
+ 
+> > > I think this was what CONFIGS were intended for. I'm happy to add all
+> > > this to the commit message once it's approved in spirit by the
+> > > maintainers.
+> > >
 
- drivers/message/fusion/mptbase.c | 41 ++++++++++++++++++++--------------------
- drivers/scsi/libfc/fc_rport.c    | 13 ++++++++-----
- drivers/scsi/qla2xxx/qla_init.c  |  2 +-
- 3 files changed, 29 insertions(+), 27 deletions(-)
-
-With full diff below.
-
-James
-
----
-
-diff --git a/drivers/message/fusion/mptbase.c b/drivers/message/fusion/mptbase.c
-index 68aea22f2b89..5216487db4fb 100644
---- a/drivers/message/fusion/mptbase.c
-+++ b/drivers/message/fusion/mptbase.c
-@@ -1324,13 +1324,13 @@ mpt_host_page_alloc(MPT_ADAPTER *ioc, pIOCInit_t ioc_init)
- 			return 0; /* fw doesn't need any host buffers */
- 
- 		/* spin till we get enough memory */
--		while(host_page_buffer_sz > 0) {
--
--			if((ioc->HostPageBuffer = pci_alloc_consistent(
--			    ioc->pcidev,
--			    host_page_buffer_sz,
--			    &ioc->HostPageBuffer_dma)) != NULL) {
--
-+		while (host_page_buffer_sz > 0) {
-+			ioc->HostPageBuffer =
-+				dma_alloc_coherent(&ioc->pcidev->dev,
-+						host_page_buffer_sz,
-+						&ioc->HostPageBuffer_dma,
-+						GFP_KERNEL);
-+			if (ioc->HostPageBuffer) {
- 				dinitprintk(ioc, printk(MYIOC_s_DEBUG_FMT
- 				    "host_page_buffer @ %p, dma @ %x, sz=%d bytes\n",
- 				    ioc->name, ioc->HostPageBuffer,
-@@ -2741,8 +2741,8 @@ mpt_adapter_disable(MPT_ADAPTER *ioc)
- 		sz = ioc->alloc_sz;
- 		dexitprintk(ioc, printk(MYIOC_s_INFO_FMT "free  @ %p, sz=%d bytes\n",
- 		    ioc->name, ioc->alloc, ioc->alloc_sz));
--		pci_free_consistent(ioc->pcidev, sz,
--				ioc->alloc, ioc->alloc_dma);
-+		dma_free_coherent(&ioc->pcidev->dev, sz, ioc->alloc,
-+				ioc->alloc_dma);
- 		ioc->reply_frames = NULL;
- 		ioc->req_frames = NULL;
- 		ioc->alloc = NULL;
-@@ -2751,8 +2751,8 @@ mpt_adapter_disable(MPT_ADAPTER *ioc)
- 
- 	if (ioc->sense_buf_pool != NULL) {
- 		sz = (ioc->req_depth * MPT_SENSE_BUFFER_ALLOC);
--		pci_free_consistent(ioc->pcidev, sz,
--				ioc->sense_buf_pool, ioc->sense_buf_pool_dma);
-+		dma_free_coherent(&ioc->pcidev->dev, sz, ioc->sense_buf_pool,
-+				ioc->sense_buf_pool_dma);
- 		ioc->sense_buf_pool = NULL;
- 		ioc->alloc_total -= sz;
- 	}
-@@ -2802,7 +2802,7 @@ mpt_adapter_disable(MPT_ADAPTER *ioc)
- 			"HostPageBuffer free  @ %p, sz=%d bytes\n",
- 			ioc->name, ioc->HostPageBuffer,
- 			ioc->HostPageBuffer_sz));
--		pci_free_consistent(ioc->pcidev, ioc->HostPageBuffer_sz,
-+		dma_free_coherent(&ioc->pcidev->dev, ioc->HostPageBuffer_sz,
- 		    ioc->HostPageBuffer, ioc->HostPageBuffer_dma);
- 		ioc->HostPageBuffer = NULL;
- 		ioc->HostPageBuffer_sz = 0;
-@@ -4497,7 +4497,8 @@ PrimeIocFifos(MPT_ADAPTER *ioc)
- 			 	ioc->name, sz, sz, num_chain));
- 
- 		total_size += sz;
--		mem = pci_alloc_consistent(ioc->pcidev, total_size, &alloc_dma);
-+		mem = dma_alloc_coherent(&ioc->pcidev->dev, total_size,
-+				&alloc_dma, GFP_KERNEL);
- 		if (mem == NULL) {
- 			printk(MYIOC_s_ERR_FMT "Unable to allocate Reply, Request, Chain Buffers!\n",
- 				ioc->name);
-@@ -4574,8 +4575,8 @@ PrimeIocFifos(MPT_ADAPTER *ioc)
- 		spin_unlock_irqrestore(&ioc->FreeQlock, flags);
- 
- 		sz = (ioc->req_depth * MPT_SENSE_BUFFER_ALLOC);
--		ioc->sense_buf_pool =
--			pci_alloc_consistent(ioc->pcidev, sz, &ioc->sense_buf_pool_dma);
-+		ioc->sense_buf_pool = dma_alloc_coherent(&ioc->pcidev->dev, sz,
-+				&ioc->sense_buf_pool_dma, GFP_KERNEL);
- 		if (ioc->sense_buf_pool == NULL) {
- 			printk(MYIOC_s_ERR_FMT "Unable to allocate Sense Buffers!\n",
- 				ioc->name);
-@@ -4613,18 +4614,16 @@ PrimeIocFifos(MPT_ADAPTER *ioc)
- 
- 	if (ioc->alloc != NULL) {
- 		sz = ioc->alloc_sz;
--		pci_free_consistent(ioc->pcidev,
--				sz,
--				ioc->alloc, ioc->alloc_dma);
-+		dma_free_coherent(&ioc->pcidev->dev, sz, ioc->alloc,
-+				ioc->alloc_dma);
- 		ioc->reply_frames = NULL;
- 		ioc->req_frames = NULL;
- 		ioc->alloc_total -= sz;
- 	}
- 	if (ioc->sense_buf_pool != NULL) {
- 		sz = (ioc->req_depth * MPT_SENSE_BUFFER_ALLOC);
--		pci_free_consistent(ioc->pcidev,
--				sz,
--				ioc->sense_buf_pool, ioc->sense_buf_pool_dma);
-+		dma_free_coherent(&ioc->pcidev->dev, sz, ioc->sense_buf_pool,
-+				ioc->sense_buf_pool_dma);
- 		ioc->sense_buf_pool = NULL;
- 	}
- 
-diff --git a/drivers/scsi/libfc/fc_rport.c b/drivers/scsi/libfc/fc_rport.c
-index 773c45af9387..278d15ff1c5a 100644
---- a/drivers/scsi/libfc/fc_rport.c
-+++ b/drivers/scsi/libfc/fc_rport.c
-@@ -133,8 +133,10 @@ struct fc_rport_priv *fc_rport_create(struct fc_lport *lport, u32 port_id)
- 	lockdep_assert_held(&lport->disc.disc_mutex);
- 
- 	rdata = fc_rport_lookup(lport, port_id);
--	if (rdata)
-+	if (rdata) {
-+		kref_put(&rdata->kref, fc_rport_destroy);
- 		return rdata;
-+	}
- 
- 	if (lport->rport_priv_size > 0)
- 		rport_priv_size = lport->rport_priv_size;
-@@ -481,10 +483,11 @@ static void fc_rport_enter_delete(struct fc_rport_priv *rdata,
- 
- 	fc_rport_state_enter(rdata, RPORT_ST_DELETE);
- 
--	kref_get(&rdata->kref);
--	if (rdata->event == RPORT_EV_NONE &&
--	    !queue_work(rport_event_queue, &rdata->event_work))
--		kref_put(&rdata->kref, fc_rport_destroy);
-+	if (rdata->event == RPORT_EV_NONE) {
-+		kref_get(&rdata->kref);
-+		if (!queue_work(rport_event_queue, &rdata->event_work))
-+			kref_put(&rdata->kref, fc_rport_destroy);
-+	}
- 
- 	rdata->event = event;
- }
-diff --git a/drivers/scsi/qla2xxx/qla_init.c b/drivers/scsi/qla2xxx/qla_init.c
-index 4576d3ae9937..2436a17f5cd9 100644
---- a/drivers/scsi/qla2xxx/qla_init.c
-+++ b/drivers/scsi/qla2xxx/qla_init.c
-@@ -5944,7 +5944,7 @@ qla2x00_find_all_fabric_devs(scsi_qla_host_t *vha)
- 			break;
- 		}
- 
--		if (NVME_TARGET(vha->hw, fcport)) {
-+		if (found && NVME_TARGET(vha->hw, fcport)) {
- 			if (fcport->disc_state == DSC_DELETE_PEND) {
- 				qla2x00_set_fcport_disc_state(fcport, DSC_GNL);
- 				vha->fcport_count--;
+-- 
+Sincerely yours,
+Mike.
