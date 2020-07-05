@@ -2,73 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD9D321515A
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 05:28:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2568215162
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 05:46:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728722AbgGFD2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Jul 2020 23:28:41 -0400
-Received: from mail-m972.mail.163.com ([123.126.97.2]:50154 "EHLO
-        mail-m972.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728634AbgGFD2l (ORCPT
+        id S1728740AbgGFDqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Jul 2020 23:46:23 -0400
+Received: from mail1.windriver.com ([147.11.146.13]:60898 "EHLO
+        mail1.windriver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728634AbgGFDqX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Jul 2020 23:28:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=5yazT
-        dyA3YxMPgoBpYzzCyqT8fJEoy7VrCOXLHWeXI8=; b=XdrQDrDDQoHy04HdxYZxj
-        h3KjGArTII3jkEehfkOKhLmlREGMWNGvTeO5+jV64xvkcLfmvFxWAzwZeH4qkpeZ
-        PrxA6H4qj7dMX1PKcoeWBfjUrQzCwWiZLQAPWqCJk8D6+pB6B5zCWaSF55gNp7Zp
-        D+xs/Yq1p/8GgVurTtRZqU=
-Received: from ubuntu.localdomain (unknown [182.113.175.219])
-        by smtp2 (Coremail) with SMTP id GtxpCgC3GA8rmgJfecIjDg--.165S3;
-        Mon, 06 Jul 2020 11:27:44 +0800 (CST)
-From:   Xidong Wang <wangxidong_97@163.com>
-To:     Xidong Wang <wangxidong_97@163.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 1/1] ALSA: opl3: fix infoleak in opl3
-Date:   Sun,  5 Jul 2020 20:27:38 -0700
-Message-Id: <1594006058-30362-1-git-send-email-wangxidong_97@163.com>
-X-Mailer: git-send-email 2.7.4
+        Sun, 5 Jul 2020 23:46:23 -0400
+Received: from ALA-HCA.corp.ad.wrs.com (ala-hca.corp.ad.wrs.com [147.11.189.40])
+        by mail1.windriver.com (8.15.2/8.15.2) with ESMTPS id 0663kA2F020619
+        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL);
+        Sun, 5 Jul 2020 20:46:10 -0700 (PDT)
+Received: from pek-lpg-core1-vm1.wrs.com (128.224.156.106) by
+ ALA-HCA.corp.ad.wrs.com (147.11.189.40) with Microsoft SMTP Server id
+ 14.3.487.0; Sun, 5 Jul 2020 20:45:54 -0700
+From:   <qiang.zhang@windriver.com>
+To:     <balbi@kernel.org>
+CC:     <gregkh@linuxfoundation.org>, <colin.king@canonical.com>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] usb: gadget: function: fix missing spinlock in f_uac1_legacy
+Date:   Sun, 5 Jul 2020 09:59:41 +0800
+Message-ID: <20200705015941.40485-1-qiang.zhang@windriver.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: GtxpCgC3GA8rmgJfecIjDg--.165S3
-X-Coremail-Antispam: 1Uf129KBjvdXoW7XFy7ZFy8tF4UtF4kAr45Awb_yoW3Krg_C3
-        4Fqrn7Zryrurn2yr4ayFW3ZrZrKasrZw1vqF42vry3J3sa9ryavr1kZryxWF1UJFs7WF43
-        Z3savr48AF98JjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7xRic_-PUUUUU==
-X-Originating-IP: [182.113.175.219]
-X-CM-SenderInfo: pzdqw5xlgr0wrbzxqiywtou0bp/1tbiyBBZ81p7AiB0FQAAsQ
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: xidongwang <wangxidong_97@163.com>
+From: Zhang Qiang <qiang.zhang@windriver.com>
 
-The stack object “info” in snd_opl3_ioctl() has a leaking problem.
-It has 2 padding bytes which are not initialized and leaked via
-“copy_to_user”.
-
-Signed-off-by: xidongwang <wangxidong_97@163.com>
+Signed-off-by: Zhang Qiang <qiang.zhang@windriver.com>
 ---
- sound/drivers/opl3/opl3_synth.c | 2 ++
+ drivers/usb/gadget/function/f_uac1_legacy.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/sound/drivers/opl3/opl3_synth.c b/sound/drivers/opl3/opl3_synth.c
-index e69a4ef..08c10ac 100644
---- a/sound/drivers/opl3/opl3_synth.c
-+++ b/sound/drivers/opl3/opl3_synth.c
-@@ -91,6 +91,8 @@ int snd_opl3_ioctl(struct snd_hwdep * hw, struct file *file,
- 		{
- 			struct snd_dm_fm_info info;
+diff --git a/drivers/usb/gadget/function/f_uac1_legacy.c b/drivers/usb/gadget/function/f_uac1_legacy.c
+index 349deae7cabd..e2d7f69128a0 100644
+--- a/drivers/usb/gadget/function/f_uac1_legacy.c
++++ b/drivers/usb/gadget/function/f_uac1_legacy.c
+@@ -336,7 +336,9 @@ static int f_audio_out_ep_complete(struct usb_ep *ep, struct usb_request *req)
  
-+			memset(&info, 0, sizeof(info));
-+
- 			info.fm_mode = opl3->fm_mode;
- 			info.rhythm = opl3->rhythm;
- 			if (copy_to_user(argp, &info, sizeof(struct snd_dm_fm_info)))
+ 	/* Copy buffer is full, add it to the play_queue */
+ 	if (audio_buf_size - copy_buf->actual < req->actual) {
++		spin_lock_irq(&audio->lock);
+ 		list_add_tail(&copy_buf->list, &audio->play_queue);
++		spin_unlock_irq(&audio->lock);
+ 		schedule_work(&audio->playback_work);
+ 		copy_buf = f_audio_buffer_alloc(audio_buf_size);
+ 		if (IS_ERR(copy_buf))
 -- 
-2.7.4
+2.24.1
 
