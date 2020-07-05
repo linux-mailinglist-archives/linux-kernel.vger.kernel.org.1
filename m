@@ -2,64 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2429E214E30
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Jul 2020 19:35:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 379A4214E2E
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Jul 2020 19:35:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727893AbgGERfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Jul 2020 13:35:12 -0400
-Received: from vps-vb.mhejs.net ([37.28.154.113]:53130 "EHLO vps-vb.mhejs.net"
+        id S1727845AbgGERfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Jul 2020 13:35:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727874AbgGERfJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Jul 2020 13:35:09 -0400
-Received: from MUA
-        by vps-vb.mhejs.net with esmtps (TLS1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.93.0.4)
-        (envelope-from <mail@maciej.szmigiero.name>)
-        id 1js8Xf-0001OF-CT; Sun, 05 Jul 2020 19:35:03 +0200
-From:   "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-To:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     Harry Cutts <hcutts@chromium.org>,
-        Peter Hutterer <peter.hutterer@who-t.net>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] HID: logitech-hidpp: avoid repeated "multiplier = " log messages
-Date:   Sun,  5 Jul 2020 19:34:57 +0200
-Message-Id: <7d2c980f071487cecfd1534adb7561b33d922af3.1593970340.git.mail@maciej.szmigiero.name>
-X-Mailer: git-send-email 2.27.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726956AbgGERfF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Jul 2020 13:35:05 -0400
+Subject: Re: [GIT PULL] arm64 fixes for -rc4
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593970505;
+        bh=uGtJm25Ba/CfmyQpWD74TYj/A+N5Xc4QaXEHZPCiAyo=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=TLgbEBhmDlVdtViSgqaUHkGv2c2sKCbv4wGYmOxHoz9JQUEsMUTjra3//p/o/SdPN
+         teEcjrvX38CGMzLck0yiR3ZPinuSNYyx8v87noWkgojlBf1gBEwk1AmGYekjHda3UC
+         oaj387uTQ9XpVKzGfWMCQ4vNTItXS5Zr1V4bAJlc=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20200704130505.GA21333@willie-the-truck>
+References: <20200704130505.GA21333@willie-the-truck>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200704130505.GA21333@willie-the-truck>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
+ tags/arm64-fixes
+X-PR-Tracked-Commit-Id: 9b23d95c539ebc5d6d6b5d6f20d2d7922384e76e
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: ec84c3f6ef710661c8d14e3f63e540b795dc0a51
+Message-Id: <159397050498.12702.16374251588141270725.pr-tracker-bot@kernel.org>
+Date:   Sun, 05 Jul 2020 17:35:04 +0000
+To:     Will Deacon <will@kernel.org>
+Cc:     torvalds@linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        catalin.marinas@arm.com, kernel-team@android.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These messages appear each time the mouse wakes from sleep, in my case
-(Logitech M705), every minute or so.
-Let's downgrade them to the "debug" level so they don't fill the kernel log
-by default.
+The pull request you sent on Sat, 4 Jul 2020 14:05:05 +0100:
 
-While we are at it, let's make clear that this is a wheel multiplier (and
-not, for example, XY movement multiplier).
+> git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git tags/arm64-fixes
 
-Fixes: 4435ff2f09a2 ("HID: logitech: Enable high-resolution scrolling on Logitech mice")
-Cc: stable@vger.kernel.org
-Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
----
-Sending again since the previous message bounced for most recipients.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/ec84c3f6ef710661c8d14e3f63e540b795dc0a51
 
- drivers/hid/hid-logitech-hidpp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thank you!
 
-diff --git a/drivers/hid/hid-logitech-hidpp.c b/drivers/hid/hid-logitech-hidpp.c
-index 1e1cf8eae649..b8b53dc95e86 100644
---- a/drivers/hid/hid-logitech-hidpp.c
-+++ b/drivers/hid/hid-logitech-hidpp.c
-@@ -3146,7 +3146,7 @@ static int hi_res_scroll_enable(struct hidpp_device *hidpp)
- 		multiplier = 1;
- 
- 	hidpp->vertical_wheel_counter.wheel_multiplier = multiplier;
--	hid_info(hidpp->hid_dev, "multiplier = %d\n", multiplier);
-+	hid_dbg(hidpp->hid_dev, "wheel multiplier = %d\n", multiplier);
- 	return 0;
- }
- 
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
