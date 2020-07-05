@@ -2,90 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 620E2214DAE
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Jul 2020 17:35:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EA09214DB4
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Jul 2020 17:48:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727817AbgGEPfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Jul 2020 11:35:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726956AbgGEPf3 (ORCPT
+        id S1727125AbgGEPrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Jul 2020 11:47:51 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:45976 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726975AbgGEPru (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Jul 2020 11:35:29 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAB78C061794;
-        Sun,  5 Jul 2020 08:35:29 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id e13so32744380qkg.5;
-        Sun, 05 Jul 2020 08:35:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=SH28tdiDJsXYXRFHInVuUZ9QDGxO5tD7WG8jpUhte4E=;
-        b=FFVRSjoV3hlBBM259Ok+E3rMQceCGcET+Wj2uhalza1ZH93n/A553bBnFqzmGL0z+N
-         eecaKCm3jqqWp22tJ/ctaeg+hLUAAYJRi7wtzy7Q+2v+Ad0kVJBQM9/PJAucrgeHbj7x
-         DC9LZBW6u83mQj0J9uOi0BqsgNql4XHBz7tnqiOd5g9puQ+o/h27Kghc26Tk1kN7nlkh
-         xLKRTaG25Xs/LWeNXsl+5OiEEMB31YUId4z5uffhm9WFAOn2yVJSyajvE+pc2tbU6CmR
-         IFDtKvwBjPPMQ5ukwUnbCBFsTm3U4+MsudLLnB7eS/i8D2bAanpPTbnh7N6Z2nEXqKLi
-         uaPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=SH28tdiDJsXYXRFHInVuUZ9QDGxO5tD7WG8jpUhte4E=;
-        b=cHfQ6RxAyEjD1lJTIq/Ij0Uv6jXb59xqPNCjv0sjMZE3jv+kUcsdtYrguz1GNBIydZ
-         9moczFHWpynB8VFmR9G+wuPamILU9rT/2TpXytviiCUSZLadmcAEd66tQcR+7ko64Nvy
-         iEv+Y7geUILJXsLcAlFJ7qdZR8DyHLxoQGc9/Xc2jYvlpSjdl/Z31Z8axRb2EyfRz3+i
-         G+8fAGKScSq/4or2UI5sQBIb3zW25nt/59lHjSw6LYiGIQhMgnZB2Cc9rCuAavXfOhV4
-         1GsNv90eNiN7EwlivVF/ac4kRDUbGB3xIupxUEoBa6uYt7SjqRbvFIM75XAdh2o8bswJ
-         AOPw==
-X-Gm-Message-State: AOAM533C7g4FxA9OzCibdcDr/NVuKQjJEGRowCxnfRv5Mdk0nb65Adhc
-        XnE7zlak+M+cytnMO/KEWqRWp1FQ
-X-Google-Smtp-Source: ABdhPJybbAiZ3xkFTj9Py3ia20S8s+H1I2Iv59f/U7esrkNZc/5Vz5ksRkIFeL7XxzOVH5a0ekyBmA==
-X-Received: by 2002:a37:6609:: with SMTP id a9mr43224012qkc.337.1593963328908;
-        Sun, 05 Jul 2020 08:35:28 -0700 (PDT)
-Received: from ?IPv6:2601:282:803:7700:f517:b957:b896:7107? ([2601:282:803:7700:f517:b957:b896:7107])
-        by smtp.googlemail.com with ESMTPSA id y67sm13141609qka.101.2020.07.05.08.35.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 05 Jul 2020 08:35:28 -0700 (PDT)
-Subject: Re: [v2,iproute2-next 1/2] action police: change the print message
- quotes style
-To:     Po Liu <po.liu@nxp.com>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     stephen@networkplumber.org, davem@davemloft.net, jhs@mojatatu.com,
-        vlad@buslov.dev, claudiu.manoil@nxp.com, vladimir.oltean@nxp.com,
-        alexandru.marginean@nxp.com
-References: <20200628014602.13002-1-po.liu@nxp.com>
- <20200629020420.30412-1-po.liu@nxp.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <e2ca479b-7b94-eef8-f226-8d9153066134@gmail.com>
-Date:   Sun, 5 Jul 2020 09:35:26 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200629020420.30412-1-po.liu@nxp.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Sun, 5 Jul 2020 11:47:50 -0400
+Date:   Sun, 05 Jul 2020 15:46:54 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1593964069;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=DRB2pMLaXPlhgSpwFzYAKgzL8JjfxqYnPI2LiwmZh3o=;
+        b=2nzMMeeQwWUolck/VuCz3OrQ+vhUMTiP6uAhoTkzqf/X60Xgg0DnPObJc5CpaBzhT2lIdW
+        y393CYyTKWwVRbgF2/SlC7+quL+O0CCjDZikjd9BSVUnJS2InKuX2hNxyf/FmVJn35xsbu
+        VFc1Is06fXMp/Dcb/7jBwVvzed2kLlF1YqWDOtJOWb0fK5ijk0+Zu59FC7UPJJvn5psts3
+        K2p3zb0Fzf0vk/DQ5IY/jSdwbm6kwiaRYZYQab1gGHAVVRD8u2Cy+rPI47WensRUxKTZ6e
+        AErWdqjKO0G1X9QKzMkdcXAnefsRwBmHmxy45PkDXXXBIB4OYh6fqJKRzXZk+w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1593964069;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=DRB2pMLaXPlhgSpwFzYAKgzL8JjfxqYnPI2LiwmZh3o=;
+        b=8K3ycUSPIyOgXsGb1OZkFX3RA9zAtf/ahwJPrP3vIYfcsM3OLXLwjPoJqvusbNtvknmOGX
+        Pcli7c3c8wbrAEDw==
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org
+Subject: [GIT pull] core/urgent for v5.8-rc4
+Message-ID: <159396401414.28963.18435590961866091585.tglx@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/28/20 8:04 PM, Po Liu wrote:
-> Change the double quotes to single quotes in fprintf message to make it
-> more readable.
-> 
-> Signed-off-by: Po Liu <po.liu@nxp.com>
-> ---
-> v1->v2 changes:
-> - Patch new added
-> 
->  tc/m_police.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
+Linus,
 
-applied both to iproute2-next. Thanks
+please pull the latest core/urgent branch from:
 
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git core-urgent-2020-07-05
+
+up to:  5fdeefa053df: Merge branch 'urgent-for-mingo' of git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu into core/urgent
+
+A single fix for a printk format warning in RCU.
+
+Thanks,
+
+	tglx
+
+------------------>
+Kefeng Wang (1):
+      rcuperf: Fix printk format warning
+
+
+ kernel/rcu/rcuperf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/rcu/rcuperf.c b/kernel/rcu/rcuperf.c
+index 16dd1e6b7c09..9eb39c20082c 100644
+--- a/kernel/rcu/rcuperf.c
++++ b/kernel/rcu/rcuperf.c
+@@ -723,7 +723,7 @@ kfree_perf_init(void)
+ 		schedule_timeout_uninterruptible(1);
+ 	}
+ 
+-	pr_alert("kfree object size=%lu\n", kfree_mult * sizeof(struct kfree_obj));
++	pr_alert("kfree object size=%zu\n", kfree_mult * sizeof(struct kfree_obj));
+ 
+ 	kfree_reader_tasks = kcalloc(kfree_nrealthreads, sizeof(kfree_reader_tasks[0]),
+ 			       GFP_KERNEL);
 
