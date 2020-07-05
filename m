@@ -2,122 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF7C4214AED
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Jul 2020 09:29:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CE01214AD2
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Jul 2020 09:12:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726634AbgGEH3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Jul 2020 03:29:45 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:58245 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726025AbgGEH3n (ORCPT
+        id S1726270AbgGEHM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Jul 2020 03:12:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725901AbgGEHMZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Jul 2020 03:29:43 -0400
-Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20200705072940epoutp03cbb8c2b1d177427e0af0e357e71fcb7a~eyrE3YMXB2897928979epoutp03G
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Jul 2020 07:29:40 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20200705072940epoutp03cbb8c2b1d177427e0af0e357e71fcb7a~eyrE3YMXB2897928979epoutp03G
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1593934180;
-        bh=HCXrofelDS9SJIsUKOUl2fb+5VFxATXUSmCxo5+ME6E=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YkXHzbfFO3QhVEl9Vkm/Ro6DN/mrf3wpVfiGkRIR/no0Etg+ZSTkJ1E4byZVqgQNE
-         9bkNjdgm04YzT+RqCw93OWJtfzk+H/OOxg9bFQYyrm/95uBqX6TviqvmAbAi3SkmX8
-         jEp/PPz5OIJ4A0127ruSW7KQ+uq3DjovAzEbTHhI=
-Received: from epsmges5p1new.samsung.com (unknown [182.195.42.73]) by
-        epcas5p3.samsung.com (KnoxPortal) with ESMTP id
-        20200705072940epcas5p3bdf73fe71b1a3dc73d743486cb915007~eyrEar5BZ0709407094epcas5p3A;
-        Sun,  5 Jul 2020 07:29:40 +0000 (GMT)
-Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
-        epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        20.DA.09467.461810F5; Sun,  5 Jul 2020 16:29:40 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
-        20200705072938epcas5p479f0d040ca34fd44b2ba893a199efb79~eyrDUeq5_1034110341epcas5p4M;
-        Sun,  5 Jul 2020 07:29:38 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200705072938epsmtrp27740552f019671b8d43c346effbdcded~eyrDT1XiP1761217612epsmtrp2g;
-        Sun,  5 Jul 2020 07:29:38 +0000 (GMT)
-X-AuditID: b6c32a49-a29ff700000024fb-d8-5f018164af4f
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        C8.BD.08303.261810F5; Sun,  5 Jul 2020 16:29:38 +0900 (KST)
-Received: from Jaguar.sa.corp.samsungelectronics.net (unknown
-        [107.108.73.139]) by epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200705072937epsmtip14588e58cb12f7ebec4b2fde1bf2c716e~eyrCLcEy-0149301493epsmtip1N;
-        Sun,  5 Jul 2020 07:29:37 +0000 (GMT)
-From:   Alim Akhtar <alim.akhtar@samsung.com>
-To:     krzk@kernel.org
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        robh+dt@kernel.org, Alim Akhtar <alim.akhtar@samsung.com>
-Subject: [PATCH v1 2/2] arm64: dts: exynos: keep LDO12 always-on
-Date:   Sun,  5 Jul 2020 12:39:18 +0530
-Message-Id: <20200705070918.63531-2-alim.akhtar@samsung.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200705070918.63531-1-alim.akhtar@samsung.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrAIsWRmVeSWpSXmKPExsWy7bCmlm5KI2O8wfMPrBYP5m1js5h/5Byr
-        xfnzG9gtNj2+xmpxedccNosZ5/cxWbTuPcLuwO6xaVUnm8fmJfUefVtWMXp83iQXwBLFZZOS
-        mpNZllqkb5fAlXHtzlXWgutsFUsW32BrYDzD2sXIySEhYCJx9e08RhBbSGA3o8STNdZdjFxA
-        9idGiSXnZ7JBOJ8ZJVp3PmGG6Tg98QU7RGIXo8S9xU+hnBYmiYNL74BVsQloS9ydvoUJxBYR
-        EJa4t3Q5WBGzwBFGiYbzL8ASwgIOEvfvdoIdwiKgKnFqyjk2EJtXwEZi1ubFLBDr5CVWbzgA
-        NpRTwFZi6stnTBDxfewSbcd8IGwXialnuhghbGGJV8e3sEPYUhKf3+0FmskBZGdL9OwyhgjX
-        SCyddwxqvL3EgStzWEBKmAU0Jdbv0gcJMwvwSfT+fsIE0ckr0dEmBFGtKtH87ipUp7TExO5u
-        VogSD4kjbamQUJjAKLGy+zHbBEbZWQhDFzAyrmKUTC0ozk1PLTYtMMxLLdcrTswtLs1L10vO
-        z93ECI50Lc8djHcffNA7xMjEwXiIUYKDWUmEt1ebMV6INyWxsiq1KD++qDQntfgQozQHi5I4
-        r9KPM3FCAumJJanZqakFqUUwWSYOTqkGprIZqyUY29UEfle9nenhUx7zKvdvSdivSveIjtU8
-        PS2z1W/9jDXWf7nLxvH/WcN1V+rTZIM+XjNWvRVwbteUEKef+0S57zBb/0qcv/EijzZ/j5Jn
-        8E/VrQcr1jEfVtwxvfOwvOeezJuJq/XFKxU+fHD7cPLw8e+r485tt4tbKs7AdJbd/XYk+xb7
-        uIcnsr54sSqeOuyRajD56YZJj8KfNXBW3/nRcfy5sXrBs6TVW8z+pKs+khIMT3jr2Kfv87rc
-        e1F9EDvDnI3lT4qS2N4sOcLB1Hv7R9JcRsmfW7kmPTSRYdm//vQJk53XZjt9jdu7UnT236hT
-        XNfnzmoXfv/iu1/1nM8uF//KnL5oq/d4/mUlluKMREMt5qLiRAC0WxAYYwMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprELMWRmVeSWpSXmKPExsWy7bCSnG5SI2O8weYTRhYP5m1js5h/5Byr
-        xfnzG9gtNj2+xmpxedccNosZ5/cxWbTuPcLuwO6xaVUnm8fmJfUefVtWMXp83iQXwBLFZZOS
-        mpNZllqkb5fAlXHtzlXWgutsFUsW32BrYDzD2sXIySEhYCJxeuIL9i5GLg4hgR2MEi83T2KH
-        SEhLXN84AcoWllj57zlUUROTxKUtXxlBEmwC2hJ3p29hArFFgIruLV0OVsQscIpRon/7ZrBu
-        YQEHift3O8HWsQioSpyaco4NxOYVsJGYtXkxC8QGeYnVGw4wg9icArYSU18+AxsqBFTTP2s5
-        8wRGvgWMDKsYJVMLinPTc4sNC4zyUsv1ihNzi0vz0vWS83M3MYKDTUtrB+OeVR/0DjEycTAe
-        YpTgYFYS4e3VZowX4k1JrKxKLcqPLyrNSS0+xCjNwaIkzvt11sI4IYH0xJLU7NTUgtQimCwT
-        B6dUA9OlabdcN/VJNVhnXHl4ePI+ewaWs7bHCxrZrr3cF9y1ct3hh32qp3N4dwdYhPKsLKtX
-        WenveOflysVipbtSP9X82s6UJ7LiUeeMBxvYT2SmhD52k78c/dQxbL703tLm1Zuj5SKTD+6s
-        Cvq/XHV/1c0VDnwbbO1PC1ddlzXzSI69V/JgyZeZrFX6lfWb7FYs5oqU2DMznveVxoFNk1Ie
-        svPf6L1x5NsFI9k4Y50/Iak+sxQeGlwO0PFUfex/u6ujcPK1iXfkBPa2Mb1wuq4W0FWQJuFj
-        bz9l80WGqJk52mfPnXFMPn199Q39jczZLLN+Km9c9aPpamDP1ayOc1k9253UyzhqpoWJ5V0y
-        V4yckq/EUpyRaKjFXFScCABi/LPcpQIAAA==
-X-CMS-MailID: 20200705072938epcas5p479f0d040ca34fd44b2ba893a199efb79
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-CMS-TYPE: 105P
-X-CMS-RootMailID: 20200705072938epcas5p479f0d040ca34fd44b2ba893a199efb79
-References: <20200705070918.63531-1-alim.akhtar@samsung.com>
-        <CGME20200705072938epcas5p479f0d040ca34fd44b2ba893a199efb79@epcas5p4.samsung.com>
+        Sun, 5 Jul 2020 03:12:25 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09689C061794
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Jul 2020 00:12:25 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id j18so35896583wmi.3
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Jul 2020 00:12:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2AJxPpTNSGM2Up6JwZGAkjjtxqNr3VNd84Ws4ki+ycY=;
+        b=Y/B738tEGfbZSZNkjoWcgpYp+hm1Cc2+dGMTwdFy4XC/I6dblNNr9xxB1ya655Hdxh
+         pWKb88VqqzaRZz9Cp+cPdpH3GFCAkHzhFxAiLEYjR/YOZGUTvTrzxgBqQxFsxdjPPPd4
+         E/H668S1xWb1mtSNTEM2BFTDV7W+zrND/qwHhyKKimp8rAq9npuAcF6sForxpFwOHqDj
+         tUvlwQL/4JB84CNpwIjg9Cnrs8vOguP7qljcUbogEWSeLHE4LL04iy+JbTcH387LL7Ht
+         v9xGe46laYME9U21Oq7K1rh4ztZFkyDtMYx9AVNcPuzUl5ScUPr5pB9GK78o82W9QV4c
+         eKCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=2AJxPpTNSGM2Up6JwZGAkjjtxqNr3VNd84Ws4ki+ycY=;
+        b=d0rp1D37yd0m079dNtYyJfQPtHje+IiGNnBx62NbkyvJqLHmbm/haJmGpL+H+bSBog
+         jiKgMzfrR5A16vkDKkebZ1gwrhor+S7v6XIMtOhdJHrmT9nREvSxXOcJ9zBXOT99MKhY
+         eaIIJS9Ja7Y82nGxt4NGuNzTixreakqNqni5OvNAJ1m/7j8b+kUr8G1ws6fMZ4NG4yIT
+         8Up2fEWdkNFpDLoeSaInpjemfC10IrGNivZxbb/1A3LLPuxmDDKM3JGOaATAbTV69PLL
+         iosR5Okt4OO0zQVCieVC1Rd9RP35DXjZ4A+LopOMYNSc9x8YIGpf4aqI0ev2RR/UDJfU
+         DVxg==
+X-Gm-Message-State: AOAM531U7ICWDvMo/YziAjYJDy3NT59WtwMpMXe/liXaufO9Q1pp3ZI7
+        KT20yqXggm0ooSVsAaDa+XbAox7HUoY=
+X-Google-Smtp-Source: ABdhPJw8tmcGtA5y96e6zB4Wa3Kns4+iAalXv2HK5dCpASPbv0qCgIm2YNE2mYbhgChXRIB5z2IsTA==
+X-Received: by 2002:a1c:4c0a:: with SMTP id z10mr37053965wmf.38.1593933143425;
+        Sun, 05 Jul 2020 00:12:23 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:adf2:29a0:7689:d40c? ([2001:b07:6468:f312:adf2:29a0:7689:d40c])
+        by smtp.googlemail.com with ESMTPSA id 138sm13595331wmb.1.2020.07.05.00.12.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 05 Jul 2020 00:12:22 -0700 (PDT)
+Subject: Re: [GIT pull resend] x86/entry for v5.8
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+References: <159199950433.21782.7922990856385499228.tglx@nanos.tec.linutronix.de>
+ <159199950554.21782.7550706843970155617.tglx@nanos.tec.linutronix.de>
+From:   Paolo Bonzini <bonzini@gnu.org>
+Autocrypt: addr=bonzini@gnu.org; prefer-encrypt=mutual; keydata=
+ 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
+ 10oh++mb6s1dGf3ADAaOTRf8
+Message-ID: <8fe756fb-7461-2583-b358-1a31a44d23fd@gnu.org>
+Date:   Sun, 5 Jul 2020 09:12:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
+MIME-Version: 1.0
+In-Reply-To: <159199950554.21782.7550706843970155617.tglx@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LDO12 on exynos7 supply power to VDDQ_UFS20_RESET,
-in case this regulator is OFF, UFS host controller
-can not send command to UFS device. To keep this supply
-ON, set regulator-always-on property for this ldo.
+On 13/06/20 00:05, Thomas Gleixner wrote:
+>    - KVM
+> 
+>      KVM is inconsistent as well. Patches have been posted, but they have
+>      not yet been commented on or picked up by the KVM folks.
 
-Signed-off-by: Alim Akhtar <alim.akhtar@samsung.com>
----
- arch/arm64/boot/dts/exynos/exynos7-espresso.dts | 1 +
- 1 file changed, 1 insertion(+)
+Hi Thomas,
 
-diff --git a/arch/arm64/boot/dts/exynos/exynos7-espresso.dts b/arch/arm64/boot/dts/exynos/exynos7-espresso.dts
-index bb86950032d3..92fecc539c6c 100644
---- a/arch/arm64/boot/dts/exynos/exynos7-espresso.dts
-+++ b/arch/arm64/boot/dts/exynos/exynos7-espresso.dts
-@@ -194,6 +194,7 @@
- 				regulator-min-microvolt = <1000000>;
- 				regulator-max-microvolt = <1300000>;
- 				regulator-enable-ramp-delay = <125>;
-+				regulator-always-on;
- 			};
- 
- 			ldo13_reg: LDO13 {
--- 
-2.17.1
+which patches are these?  I must have missed them, and I would like to
+pick them up for either 5.8 or 5.9.
+
+Thanks,
+
+Paolo
 
