@@ -2,133 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6B76214E7B
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Jul 2020 20:23:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6D89214E77
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Jul 2020 20:23:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728031AbgGESXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Jul 2020 14:23:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727892AbgGESXT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Jul 2020 14:23:19 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8884C061794
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Jul 2020 11:23:18 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id q8so37118989iow.7
-        for <linux-kernel@vger.kernel.org>; Sun, 05 Jul 2020 11:23:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HMEHe+br8dXcHI+hB4O6nEY5v7Sg6St98G6CWcHOLAY=;
-        b=p5/pIAXf3CKYBu7XQ+eET85u6p43lVcZZCEJzOCn6xIig95QPwz/9I/2x+weOJLgxn
-         Cie31azzWN79bqQqUdusC9nA9+hbL9kvsl1MJwazGnkcJn1kiG3l6fQ1dV2Ib6ejFaTp
-         WjCjV1l5Ehh2ZrunNBhIrGkQMyglDkpgtqJ2U/MIXQ8luL+uaTBJn1aWJKcwAkBhMVAX
-         P2IY3nJQcZI7yfOYlFzUvVdgsBKEMcyevYLUwC1XYkeeD6Sw4vzLu0lMNHRQSsnMpPsK
-         1dNu8PjzqnGWr0G9s2y6gBF3/WNe3mf2YHQmY+3ZgezLAq1YbzpBMbbRVlAbJ+hGGI6R
-         U4qw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HMEHe+br8dXcHI+hB4O6nEY5v7Sg6St98G6CWcHOLAY=;
-        b=XkKXmVUj2FzfuI8taGXVpkK8Axm8v4vzhfr4Ae83CeVDKNgDvidkrvKGxJ47lUVYin
-         clhxGLjcMzqG4/bFZ6K6n5AARtjB3jcr+UtjyjWtHfv/N1wskzxwcPNosr5O3ghSzUt3
-         BnsZM8F2lczHjufYqh8QY0JZPDWE/eueoB9+RUIDrq/DU1OuMRFZfNfZhCizYgbTIn+g
-         mnh5ZvRTl2WgjsFttHT4Tm+Vkjlk0DSCQ2pJWrYnKxdWhE45qs1D/NGpKsq2FFrQCUGt
-         /qop9xrBwTu5r4DwkwwwYWwa/6RFPfkwOQ473KynxBKTRdjo9lXa8zxQyHl920FEMQF9
-         gEOw==
-X-Gm-Message-State: AOAM533nuqWVKUoIbQFoc9qXzvM0UzZ7ZUi+KsfUBC9ix7zqZwDOZ5V9
-        E2IrxQZZSsAB2LlahkW6hKmSMao8qxA+JFQSzv7Tlw==
-X-Google-Smtp-Source: ABdhPJyBOWuLUXOzG6o2lDDAnLH070zEuFx/Po3XVCpmBC/ky8dEjid7/3THBJAz32DNG7JWCQm++YJmtgD+wfcVmls=
-X-Received: by 2002:a5e:cb42:: with SMTP id h2mr21634185iok.43.1593973397858;
- Sun, 05 Jul 2020 11:23:17 -0700 (PDT)
+        id S1727984AbgGESW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Jul 2020 14:22:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55598 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727892AbgGESW4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Jul 2020 14:22:56 -0400
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 69C5A20936
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Jul 2020 18:22:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593973375;
+        bh=Tv+vnChtxZf8reTGqSpw/7WA9YmfLwCc4rTCJANU6pQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=howxMOBXFc79K1vp1YDY37NP5WQUQEgo/R3TbpOoN1nSaDjx1Y3u8wd8e6sJEb1QN
+         96YzXaBlM7AjqYFi+1bxAVxA2Bt3nNW20U5XAwRkRg/rW5DkoF6j09K+Yp3HCvakMd
+         utnQIFJ1ELlV+eUhfQDrMljUbLHhSgqgtZ8NtORk=
+Received: by mail-wm1-f46.google.com with SMTP id l17so36816698wmj.0
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Jul 2020 11:22:55 -0700 (PDT)
+X-Gm-Message-State: AOAM530b9Z2rgI72VZvEqSXrsC/axLx+bIX5qQvit1aUN8h6cxT3PrTo
+        O1YRLKAkxLp0eMpGoX9Z/HXdioNyJxVSKtLLwjGxdA==
+X-Google-Smtp-Source: ABdhPJzKPBwwErrCHUSfauqSSipzcMqZuSVgGLPebcQQRad4JzD9Q2Cbm4PyO1SfUsx4g+DVXop6rjaoOuJJDWk75eE=
+X-Received: by 2002:a1c:2402:: with SMTP id k2mr45904253wmk.138.1593973373941;
+ Sun, 05 Jul 2020 11:22:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200702221237.2517080-1-abhishekbh@google.com>
- <e7bc00fc-fe53-800e-8439-f1fbdca5dd26@redhat.com> <CAN_oZf2t+gUqXe19Yo1mTzAgk2xNhssE-9p58EvH-gw5jpuvzA@mail.gmail.com>
- <CA+noqoj6u9n_KKohZw+QCpD-Qj0EgoCXaPEsryD7ABZ7QpqQfg@mail.gmail.com>
- <20200703114037.GD2999146@linux.ibm.com> <CAD=FV=XRbrFqSbR619h+9HXNyrYNbqfBF2e-+iUZco9qQ8Wokg@mail.gmail.com>
- <20200705152304.GE2999146@linux.ibm.com> <5d2ccf3d-b473-cf30-b863-e29bb33b7284@redhat.com>
-In-Reply-To: <5d2ccf3d-b473-cf30-b863-e29bb33b7284@redhat.com>
-From:   Abhishek Bhardwaj <abhishekbh@google.com>
+References: <20200629214956.GA12962@linux.intel.com> <20200704203809.76391-1-dpreed@deepplum.com>
+ <20200704203809.76391-3-dpreed@deepplum.com>
+In-Reply-To: <20200704203809.76391-3-dpreed@deepplum.com>
+From:   Andy Lutomirski <luto@kernel.org>
 Date:   Sun, 5 Jul 2020 11:22:42 -0700
-Message-ID: <CA+noqojih03kKsWs33EUMV4H6RkWSRSQD=DHa9pAQ03yiz2GtQ@mail.gmail.com>
-Subject: Re: [PATCH v3] x86/speculation/l1tf: Add KConfig for setting the L1D
- cache flush mode
-To:     Waiman Long <longman@redhat.com>
-Cc:     Mike Rapoport <rppt@linux.ibm.com>,
-        Doug Anderson <dianders@google.com>,
-        Anthony Steinhauser <asteinhauser@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
+X-Gmail-Original-Message-ID: <CALCETrVZx4VA9rg-Hn7KdER866ZOtZtmTkR0MSacnj5jGO-Pag@mail.gmail.com>
+Message-ID: <CALCETrVZx4VA9rg-Hn7KdER866ZOtZtmTkR0MSacnj5jGO-Pag@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] Fix undefined operation fault that can hang a cpu
+ on crash or panic
+To:     "David P. Reed" <dpreed@deepplum.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Tony Luck <tony.luck@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>, kvm@vger.kernel.org,
-        x86 <x86@kernel.org>
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Allison Randal <allison@lohutok.net>,
+        Enrico Weigelt <info@metux.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Martin Molnar <martin.molnar.programming@gmail.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Jann Horn <jannh@google.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 5, 2020 at 8:57 AM Waiman Long <longman@redhat.com> wrote:
+On Sat, Jul 4, 2020 at 1:38 PM David P. Reed <dpreed@deepplum.com> wrote:
 >
-> On 7/5/20 11:23 AM, Mike Rapoport wrote:
-> >> Nothing prevents people from continuing to use the command line
-> >> options if they want, right?  This just allows a different default.
-> >> So if a distro is security focused and decided that it wanted a slower
-> >> / more secure default then it could ship that way but individual users
-> >> could still override, right?
-> > Well, nothing prevents you from continuing to use the command line as
-> > well;-)
-> >
-> > I can see why whould you want an ability to select compile time default
-> > for an option, but I'm really not thrilled by the added ifdefery.
-> >
->
-> It turns out that CONFIG_KVM_VMENTRY_L1D_FLUSH values match the enum
-> vmx_l1d_flush_state values. So one way to reduce the ifdefery is to do,
-> for example,
->
-> +#ifdef CONFIG_KVM_VMENTRY_L1D_FLUSH
-> +#define VMENTER_L1D_FLUSH_DEFAULT CONFIG_KVM_VMENTRY_L1D_FLUSH
-> +#else
-> +#define VMENTER_L1D_FLUSH_DEFAULT      VMENTER_L1D_FLUSH_AUTO
-> #endif
-> -enum vmx_l1d_flush_state l1tf_vmx_mitigation = VMENTER_L1D_FLUSH_AUTO;
-> +enum vmx_l1d_flush_state l1tf_vmx_mitigation = VMENTER_L1D_FLUSH_DEFAULT;
->
-> Of course, we may need to add a comment on enum vmx_l1d_flush_state
-> definition to highlight the dependency of CONFIG_KVM_VMENTRY_L1D_FLUSH
-> on it to avoid future mismatch.
+> Fix: Mask undefined operation fault during emergency VMXOFF that must be
+> attempted to force cpu exit from VMX root operation.
+> Explanation: When a cpu may be in VMX root operation (only possible when
+> CR4.VMXE is set), crash or panic reboot tries to exit VMX root operation
+> using VMXOFF. This is necessary, because any INIT will be masked while cpu
+> is in VMX root operation, but that state cannot be reliably
+> discerned by the state of the cpu.
+> VMXOFF faults if the cpu is not actually in VMX root operation, signalling
+> undefined operation.
+> Discovered while debugging an out-of-tree x-visor with a race. Can happen
+> due to certain kinds of bugs in KVM.
 
-I explicitly wanted to avoid doing that for this very reason. In my
-opinion this is brittle and bound to be missed
-sooner or later.
+Can you re-wrap lines to 68 characters?  Also, the Fix: and
+Explanation: is probably unnecessary.  You could say:
 
-I'd rather have the value assignment be explicit rather than some
-clever hack. Notice, this wouldn't work if the enum
-values were not contiguous. We just got lucky.
+Ignore a potential #UD failut during emergency VMXOFF ...
 
-Do people feel strongly against this ifdef ladder ?
+When a cpu may be in VMX ...
 
 >
-> Cheers,
-> Longman
+> Fixes: 208067 <https://bugzilla.kernel.org/show_bug.cgi?id=208067>
+> Reported-by: David P. Reed <dpreed@deepplum.com>
+
+It's not really necessary to say that you, the author, reported the
+problem, but I guess it's harmless.
+
+> Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+> Suggested-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Suggested-by: Andy Lutomirski <luto@kernel.org>
+> Signed-off-by: David P. Reed <dpreed@deepplum.com>
+> ---
+>  arch/x86/include/asm/virtext.h | 20 ++++++++++++++------
+>  1 file changed, 14 insertions(+), 6 deletions(-)
+>
+> diff --git a/arch/x86/include/asm/virtext.h b/arch/x86/include/asm/virtext.h
+> index 0ede8d04535a..0e0900eacb9c 100644
+> --- a/arch/x86/include/asm/virtext.h
+> +++ b/arch/x86/include/asm/virtext.h
+> @@ -30,11 +30,11 @@ static inline int cpu_has_vmx(void)
+>  }
+>
+>
+> -/* Disable VMX on the current CPU
+> +/* Exit VMX root mode and isable VMX on the current CPU.
+
+s/isable/disable/
+
+
+>  /* Disable VMX if it is supported and enabled on the current CPU
+> --
+> 2.26.2
 >
 
+Other than that:
 
+Reviewed-by: Andy Lutomirski <luto@kernel.org>
 
---
-Abhishek
+--Andy
