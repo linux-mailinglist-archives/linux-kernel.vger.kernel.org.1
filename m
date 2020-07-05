@@ -2,110 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D492214D90
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Jul 2020 17:12:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AA7D214D94
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Jul 2020 17:14:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728107AbgGEPMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Jul 2020 11:12:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727091AbgGEPMA (ORCPT
+        id S1727106AbgGEPOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Jul 2020 11:14:15 -0400
+Received: from conssluserg-04.nifty.com ([210.131.2.83]:36677 "EHLO
+        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726826AbgGEPOO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Jul 2020 11:12:00 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49580C061794
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Jul 2020 08:12:00 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id ga4so39706821ejb.11
-        for <linux-kernel@vger.kernel.org>; Sun, 05 Jul 2020 08:12:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BI1aAShmO7FXnwtN8B6Od+9nVsaMtVkeWnOGj2Zvm4Y=;
-        b=1/6AOOiCg9ot1+F9UhkykucC0qMYgzK2GA9zYzKmMovooAnH48coFkCRo57BXWCcAp
-         7CF9ClAVqv7j/oaBJkTGbl26Rszr/MUIfDjdNl7f5JnJxKj2yn0TKisOxrCwtEbFgNGQ
-         /PqTAREqKfODffSK5H0TJGvTykPpy5976yQ7kuXJRMMseZOA5Ew/izF5q5DOEnUEoRD4
-         ESr2tMdE8VI3TJe1XP8JUoKk5p9bUKtecSGxZUYV+q3k6YAqd72YHNOSHy2+GpdRqEFx
-         dcvTHlVfR+822lyGWe9L3viPVcELzcQa2U96GrkmRWDqUDYx+kBFP2kg/4CFOsa4vnMk
-         aSxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BI1aAShmO7FXnwtN8B6Od+9nVsaMtVkeWnOGj2Zvm4Y=;
-        b=SulPc8eKxkLg4OCTl9P/ZFY0Ds+ttvPXXHUur5Kv78jsog6RZ5COiO9XglZzNFb7H6
-         5ISCcV7srVoMXtR2rk0LMzN52OvXBZiDQfOEZBlhUAhmjFs+KUaaBgKefz64mPlx7yeL
-         OnclJdHf/juNiNOZbPXcN/DpUAir3j7eCRyK6qAlW6YkGpmujmSM6DQjLEHOf9nQFV/h
-         4395uMQUMg5lIM8Lgtmz+zoPpK83OpnMeKZMMWig2HFhJbrxAoIuBYPLXwpoPS24fTZ2
-         bddYP7V2iW7rmZtJMHzBaymvStc5xW0BXty5UnDFfECE8/po4aYjOrvIhJ2XgpDUhVlK
-         8Zjw==
-X-Gm-Message-State: AOAM530Hz9/h74oR0AcLiz1VBmVcz5wvoNmFQiyd8rvydAD1nNhWtk5n
-        DuMOWcAiuKxnGOzS7+dor04FXeHgjvPgRLlCXCKn
-X-Google-Smtp-Source: ABdhPJy+1+ndZZah7VkLTSj7twGu3m1RKvwdW+PIAE3WsheefQt0o8KCRqSrelgLi4drC0Gf6mOHLfy4/pYyZRxzQXY=
-X-Received: by 2002:a17:906:1a59:: with SMTP id j25mr37962178ejf.398.1593961918982;
- Sun, 05 Jul 2020 08:11:58 -0700 (PDT)
+        Sun, 5 Jul 2020 11:14:14 -0400
+Received: from mail-vs1-f42.google.com (mail-vs1-f42.google.com [209.85.217.42]) (authenticated)
+        by conssluserg-04.nifty.com with ESMTP id 065FDkTX024909;
+        Mon, 6 Jul 2020 00:13:46 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 065FDkTX024909
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1593962027;
+        bh=fQuQFv/SLNfuMXM4t3LK7AbKKjdn4MSwV7JTU0JwejQ=;
+        h=From:Date:Subject:To:Cc:From;
+        b=DhzU25nptdakYBf8ByeZ7suYEVZ/ElBsYlGkgGAVzK8XaFomlKwQioGa2DQiQFQkO
+         ghyuXf/W2iPlDwtpj2CtD0g1NlGeYcumLB61oH0iGD8PB58Pujw1zhZ6yUrjUHQmRE
+         EDajLE0D94tF/qjvh7Jg5X7cQir5y1Fn9+ntnBp9OuX4nESvIb2May0yiqC7OoRJvx
+         IenfPY4gmPBbMouR4ovr5PIvtM7kDJwOukdKvUHm3tIbH4EyfC2X7Is4raMIb04cl2
+         7pKPitdNcndERz5wvTMxGSHaDIlCRmWPBkk/7JaKSTG4u3zNEn2eBQ+Qtux2Ih3VBZ
+         K+5dIQInQaZBA==
+X-Nifty-SrcIP: [209.85.217.42]
+Received: by mail-vs1-f42.google.com with SMTP id 64so13095962vsl.3;
+        Sun, 05 Jul 2020 08:13:46 -0700 (PDT)
+X-Gm-Message-State: AOAM533CcXWymqm5jJDlbPMOpvw8R+uRTDkgzR/m4F8RkdPRrZbqC3Lt
+        7HJop4uS/YG2ndyUcR5p8ITTU+NS1tlybRYSqb8=
+X-Google-Smtp-Source: ABdhPJyn6UHdLo8/SXtPLDScAGDcUJn5XiDdR0H5IC/iw0NIPtCmHZpJQAvGwOup566GhpVLBOxaFs+gBBjsuKjjB3M=
+X-Received: by 2002:a67:694d:: with SMTP id e74mr34092030vsc.155.1593962025474;
+ Sun, 05 Jul 2020 08:13:45 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1593198710.git.rgb@redhat.com> <b6cb5500cfd7e8686ac2a7758103688c2da7f4ce.1593198710.git.rgb@redhat.com>
-In-Reply-To: <b6cb5500cfd7e8686ac2a7758103688c2da7f4ce.1593198710.git.rgb@redhat.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Sun, 5 Jul 2020 11:11:47 -0400
-Message-ID: <CAHC9VhRvuu-_+gh9ejr0sFDNR6erV2BAig6qrT9gOEB6GczXvw@mail.gmail.com>
-Subject: Re: [PATCH ghak90 V9 13/13] audit: add capcontid to set contid
- outside init_user_ns
-To:     Richard Guy Briggs <rgb@redhat.com>
-Cc:     containers@lists.linux-foundation.org, linux-api@vger.kernel.org,
-        Linux-Audit Mailing List <linux-audit@redhat.com>,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        sgrubb@redhat.com, Ondrej Mosnacek <omosnace@redhat.com>,
-        dhowells@redhat.com, simo@redhat.com,
-        Eric Paris <eparis@parisplace.org>,
-        Serge Hallyn <serge@hallyn.com>, ebiederm@xmission.com,
-        nhorman@tuxdriver.com, Dan Walsh <dwalsh@redhat.com>,
-        mpatel@redhat.com
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Mon, 6 Jul 2020 00:13:09 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQEMNSM2PRaTwPoX+2hn3FpU2=kQEyJdFjH2xkz+eq5gg@mail.gmail.com>
+Message-ID: <CAK7LNAQEMNSM2PRaTwPoX+2hn3FpU2=kQEyJdFjH2xkz+eq5gg@mail.gmail.com>
+Subject: [GIT PULL] Kbuild fixes for v5.8-rc4
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 27, 2020 at 9:24 AM Richard Guy Briggs <rgb@redhat.com> wrote:
->
-> Provide a mechanism similar to CAP_AUDIT_CONTROL to explicitly give a
-> process in a non-init user namespace the capability to set audit
-> container identifiers of individual children.
->
-> Provide the /proc/$PID/audit_capcontid interface to capcontid.
-> Valid values are: 1==enabled, 0==disabled
->
-> Writing a "1" to this special file for the target process $PID will
-> enable the target process to set audit container identifiers of its
-> descendants.
->
-> A process must already have CAP_AUDIT_CONTROL in the initial user
-> namespace or have had audit_capcontid enabled by a previous use of this
-> feature by its parent on this process in order to be able to enable it
-> for another process.  The target process must be a descendant of the
-> calling process.
->
-> Report this action in new message type AUDIT_SET_CAPCONTID 1022 with
-> fields opid= capcontid= old-capcontid=
->
-> Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
-> ---
->  fs/proc/base.c             | 57 +++++++++++++++++++++++++++++++++++++++++++++-
->  include/linux/audit.h      | 14 ++++++++++++
->  include/uapi/linux/audit.h |  1 +
->  kernel/audit.c             | 38 ++++++++++++++++++++++++++++++-
->  4 files changed, 108 insertions(+), 2 deletions(-)
+Hi Linus,
 
-This seems very similar to the capable/ns_capable combination I
-mentioned in patch 11/13; any reasons why you feel that this might be
-a better approach?  My current thinking is that the capable/ns_capable
-approach is preferable as it leverages existing kernel mechanisms and
-doesn't require us to reinvent the wheel in the audit subsystem.
+Please pull some more Kbuild fixes.
+Thanks.
 
 
---
-paul moore
-www.paul-moore.com
+
+The following changes since commit 48778464bb7d346b47157d21ffde2af6b2d39110:
+
+  Linux 5.8-rc2 (2020-06-21 15:45:29 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git
+tags/kbuild-fixes-v5.8-2
+
+for you to fetch changes up to ba77dca584f5abf30340672bc752fe7912731af5:
+
+  .gitignore: Do not track `defconfig` from `make savedefconfig`
+(2020-07-05 16:15:46 +0900)
+
+----------------------------------------------------------------
+Kbuild fixes for v5.8 (2nd)
+
+ - fix various bugs in xconfig
+
+ - fix some issues in cross-compilation using Clang
+
+ - fix documentation
+
+----------------------------------------------------------------
+Dov Murik (1):
+      docs: kbuild: fix ReST formatting
+
+Masahiro Yamada (3):
+      gcc-plugins: fix gcc-plugins directory path in documentation
+      kbuild: fix CONFIG_CC_CAN_LINK(_STATIC) for cross-compilation with Clang
+      kbuild: make Clang build userprogs for target architecture
+
+Mauro Carvalho Chehab (8):
+      kconfig: qconf: cleanup includes
+      kconfig: qconf: make search fully work again on split mode
+      kconfig: qconf: make debug links work again
+      kconfig: qconf: re-implement setSelected()
+      kconfig: qconf: simplify the goBack() logic
+      kconfig: qconf: don't show goback button on splitMode
+      kconfig: qconf: navigate menus on hyperlinks
+      kconfig: qconf: parse newer types at debug info
+
+Paul Menzel (1):
+      .gitignore: Do not track `defconfig` from `make savedefconfig`
+
+ .gitignore                                   |   3 +
+ Documentation/kbuild/modules.rst             |   7 +-
+ Documentation/kbuild/reproducible-builds.rst |   2 +-
+ Makefile                                     |   4 +-
+ init/Kconfig                                 |   8 +-
+ scripts/gcc-plugins/Kconfig                  |   2 +-
+ scripts/kconfig/qconf.cc                     | 173 ++++++++++++++++-----------
+ scripts/kconfig/qconf.h                      |  23 ++--
+ 8 files changed, 136 insertions(+), 86 deletions(-)
+
+
+-- 
+Best Regards
+Masahiro Yamada
