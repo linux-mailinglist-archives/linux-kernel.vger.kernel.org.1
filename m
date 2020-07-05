@@ -2,108 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F888214EF5
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Jul 2020 21:44:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11583214EF9
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Jul 2020 21:46:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728113AbgGEToI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Jul 2020 15:44:08 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:47004 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727936AbgGEToI (ORCPT
+        id S1728056AbgGETqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Jul 2020 15:46:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53150 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727892AbgGETqt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Jul 2020 15:44:08 -0400
-Date:   Sun, 05 Jul 2020 19:44:04 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1593978245;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=kJjqNi98jZ2gWU0Juh5kKC1w6QkusqiMwIY+neDalHo=;
-        b=yhKH9OTMlmK9YL5b4llaQDuWUmt4ctnOrCo/9MjQXIH1yjSciFJh8WfavirpU2BjD9ak4D
-        JBTpQFtY74vj9BADO+6/Kx7IEUtIIvSaUai+I2g0dZZihbBsNTJQsUXq510mBYKbVLU/nW
-        izjniF5UFz75ddqDHi/FSYTKTfWrvsu5FQ/6XfqnPycvSmJB/iQ5Vs2xKLmplN7IsjKBKd
-        7f39Rpank/n9GKmkbyxR/mNzou+6UPrFUlOT6lb84qDXuA/1sIgNK+t1zaYfXtfHHmlhXP
-        VEEN19eiGgHaV0q9GqbFTjJhblBOJeJG5n0aBoea0MMq4sLc3/wF7iE3uOkldw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1593978245;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=kJjqNi98jZ2gWU0Juh5kKC1w6QkusqiMwIY+neDalHo=;
-        b=d5ATdZkrosSwyZ5dvTeP7VMw0hRmSamY+6VmVU2iz5OkZwdAfE66wjOYLeAJcrPADzM5Mm
-        Z0YWa0EDjiUCLqAQ==
-From:   "tip-bot2 for Ingo Molnar" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/entry/32: Fix XEN_PV build dependency
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        x86 <x86@kernel.org>
+        Sun, 5 Jul 2020 15:46:49 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E24AC061794
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Jul 2020 12:46:49 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id g2so21416180lfb.0
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Jul 2020 12:46:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bBFG9d/htC9G36MGx45SRMUyXh7Ve2HK0iMZdRV3qpA=;
+        b=baoG88n59Iuj1CMHv/JHi7oo+HLqqNYydKxZE7jErHzvnDsB54RoZve7w28hqTs0vs
+         28x97jIUa/msRTRpQ+NU0eMXL3LL0lzOjvNYGKkslxc3seDBWNKZ9DCzevUhVPt83Ubc
+         x0ZXbzymytI/BZGxV7ZstVqjPuBbR0rbQLQ2M=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bBFG9d/htC9G36MGx45SRMUyXh7Ve2HK0iMZdRV3qpA=;
+        b=JV9wfw9xkM86r0C1rIXOGOytJPWVBppOqQHS3CgQkNtGNKjjQ8vTJZmzDhUz5L3uC9
+         6r1QSNqu+rYyBdMdLDt+DZJTVfcjJcazRIWfI0h7ANE7MbA4TgJFSbCNhViDj6KI/xZm
+         KZqODAWmhAlJj13S+g6mBVJz1VlGjwy6ER25wJzXMhRDwng1Rf4entHSkVC7E8DQ/ekh
+         slycuXvRX3K/9q+CzZdYFZZAR2F+USQxXZste1BHmXeyVkN4h/tgM7IxygaJVc7cVqyT
+         jsLaHbTkakDCwXbRmE27e1Yn9WwCbCfwVcjNbagaLWz2epRSCfwewUkMUvkx1CE5qbEP
+         bKyQ==
+X-Gm-Message-State: AOAM531QmI2FYZGIEO7n2wre4rp6KRkxGVhXTBvxRhVCEWjytkXAkMfa
+        +P34XQcrBheydyXiNFJFuwCD0OtJasI=
+X-Google-Smtp-Source: ABdhPJzOz9A6ZMQDxveOn/t2onnCI1nlP+I1PsB6whJkOPZj5eBuYuW+5Y0IWdJ4MLcBYZD0bCEHhg==
+X-Received: by 2002:a19:815:: with SMTP id 21mr27302723lfi.119.1593978407100;
+        Sun, 05 Jul 2020 12:46:47 -0700 (PDT)
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
+        by smtp.gmail.com with ESMTPSA id y13sm7378965ljd.20.2020.07.05.12.46.46
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 05 Jul 2020 12:46:46 -0700 (PDT)
+Received: by mail-lf1-f41.google.com with SMTP id k15so21385736lfc.4
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Jul 2020 12:46:46 -0700 (PDT)
+X-Received: by 2002:ac2:5a5e:: with SMTP id r30mr28181978lfn.30.1593978405760;
+ Sun, 05 Jul 2020 12:46:45 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <159397824429.4006.6604251447325788449.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <159396401414.28963.18435590961866091585.tglx@nanos.tec.linutronix.de>
+ <159396401656.28963.9621378879403780463.tglx@nanos.tec.linutronix.de>
+In-Reply-To: <159396401656.28963.9621378879403780463.tglx@nanos.tec.linutronix.de>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 5 Jul 2020 12:46:30 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgV9toS7GU3KmNpj8hCS9SeF+A0voHS8F275_mgLhL4Lw@mail.gmail.com>
+Message-ID: <CAHk-=wgV9toS7GU3KmNpj8hCS9SeF+A0voHS8F275_mgLhL4Lw@mail.gmail.com>
+Subject: Re: [GIT pull] x86/urgent for v5.8-rc4
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+On Sun, Jul 5, 2020 at 8:47 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+>  - Disable 16 bit segments on XEN PV. It's not supported because XEN PV
+>    does not implement ESPFIX64
 
-Commit-ID:     a4c0e91d1d65bc58f928b80ed824e10e165da22c
-Gitweb:        https://git.kernel.org/tip/a4c0e91d1d65bc58f928b80ed824e10e165da22c
-Author:        Ingo Molnar <mingo@kernel.org>
-AuthorDate:    Sun, 05 Jul 2020 21:33:11 +02:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Sun, 05 Jul 2020 21:39:23 +02:00
+I don't disagree with this conceptually, and I've pulled it, but
+christ, that warning is over-engineered.
 
-x86/entry/32: Fix XEN_PV build dependency
+Seriously, it uses a mutex to protect a "set once" variable. That's just crazy.
 
-xenpv_exc_nmi() and xenpv_exc_debug() are only defined on 64-bit kernels,
-but they snuck into the 32-bit build via <asm/identry.h>, causing the link
-to fail:
+We have "pr_info_once()", which does all of this for you. And no, it's
+not thread-safe, becasue ABSOLUTELY NOBODY CARES.
 
-  ld: arch/x86/entry/entry_32.o: in function `asm_xenpv_exc_nmi':
-  (.entry.text+0x817): undefined reference to `xenpv_exc_nmi'
+If you happen to get two or more warnings because they happen on
+separate CPU's at exactly the same time, nobody possibly cares.
 
-  ld: arch/x86/entry/entry_32.o: in function `asm_xenpv_exc_debug':
-  (.entry.text+0x827): undefined reference to `xenpv_exc_debug'
+And if you really are so anal that you care about that case, using a
+mutex is still the wrong thing to do for something as simple as this.
 
-Only use them on 64-bit kernels.
+You could literally have made it just a single atomic variable, and
+that would have been simpler, faster, and be context-safe at the same
+time.
 
-Fixes: f41f0824224e: ("x86/entry/xen: Route #DB correctly on Xen PV")
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
----
- arch/x86/include/asm/idtentry.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+So using a mutex is not only overkill, it is literally technically
+_inferior_ to just about all the possible ways you can do this.
 
-diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
-index eeac6dc..f3d7083 100644
---- a/arch/x86/include/asm/idtentry.h
-+++ b/arch/x86/include/asm/idtentry.h
-@@ -553,7 +553,7 @@ DECLARE_IDTENTRY_RAW(X86_TRAP_MC,	exc_machine_check);
- 
- /* NMI */
- DECLARE_IDTENTRY_NMI(X86_TRAP_NMI,	exc_nmi);
--#ifdef CONFIG_XEN_PV
-+#if defined(CONFIG_XEN_PV) && defined(CONFIG_X86_64)
- DECLARE_IDTENTRY_RAW(X86_TRAP_NMI,	xenpv_exc_nmi);
- #endif
- 
-@@ -563,7 +563,7 @@ DECLARE_IDTENTRY_DEBUG(X86_TRAP_DB,	exc_debug);
- #else
- DECLARE_IDTENTRY_RAW(X86_TRAP_DB,	exc_debug);
- #endif
--#ifdef CONFIG_XEN_PV
-+#if defined(CONFIG_XEN_PV) && defined(CONFIG_X86_64)
- DECLARE_IDTENTRY_RAW(X86_TRAP_DB,	xenpv_exc_debug);
- #endif
- 
+I've pulled this, but I found that code so bad as to be actually
+offensive, and added a commit to remove the garbage and just use
+"pr_info_once()".
+
+And if somebody wants to guarantee the "it really can only happen once
+even in theory", that person can add the code to "pr_info_once()" to
+improve it to first optimistically load the value, and then use a
+"cmpxchg" or whatever.
+
+But that sounds pointless, and I'm not going to waste my time on it.
+
+But I _did_ waste my time on removing this horrendous case of
+re-implementing "pr_info_once()" horribly badly.
+
+Because it physically hurt my eyes to look at that code.
+
+                   Linus
