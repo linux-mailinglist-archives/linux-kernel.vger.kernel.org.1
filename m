@@ -2,94 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D815214E80
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Jul 2020 20:28:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6B76214E7B
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Jul 2020 20:23:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728044AbgGES2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Jul 2020 14:28:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41176 "EHLO
+        id S1728031AbgGESXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Jul 2020 14:23:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727859AbgGES2B (ORCPT
+        with ESMTP id S1727892AbgGESXT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Jul 2020 14:28:01 -0400
-X-Greylist: delayed 311 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 05 Jul 2020 11:28:01 PDT
-Received: from mail.aperture-lab.de (mail.aperture-lab.de [IPv6:2a01:4f8:171:314c::100:a1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72252C061794
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Jul 2020 11:28:01 -0700 (PDT)
-From:   =?UTF-8?q?Linus=20L=C3=BCssing?= <linus.luessing@c0d3.blue>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=c0d3.blue; s=2018;
-        t=1593973363;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=BWLNZff+/2GVoco07cWEeMqx/qFYTKj66Lb7zdTUnbM=;
-        b=KHY10xfprOr13lO/b9r4ocoUTapsaRf42ZvcqVJnC/K7ZurJWGaaxQb+V6GS61hcLlpAUz
-        4CSdTNvRBZAwHl6fVA6ee3y89+1aLdeZInm7FdcO+OAN0GFet0+E1h9dRFObkd3KBdqRre
-        VCiMGfA0cpf1c9qlY+jMNE7vbOd+01/nIYnDPEQ+1eXJfSdSvPQzsI7livM9y8FDdu2Es6
-        TD+T3ZmXDm8Nugyaa5Sg6vMOucfRG17MqpLQPTIjOnZ1uKZ9hjE+PiPCDNBGETDL+AeIQs
-        CaAL3HJZrdJVyxSC1TtAzHDdE7YH/lLGIFAG00GNUNJy5rIvs7Eb63xzwDH7xw==
-To:     netdev@vger.kernel.org
-Cc:     Roopa Prabhu <roopa@cumulusnetworks.com>,
-        Nikolay Aleksandrov <nikolay@cumulusnetworks.com>,
-        Martin Weinelt <martin@linuxlounge.net>,
-        "David S . Miller" <davem@davemloft.net>,
-        bridge@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Linus=20L=C3=BCssing?= <linus.luessing@c0d3.blue>
-Subject: [PATCH net] bridge: mcast: Fix MLD2 Report IPv6 payload length check
-Date:   Sun,  5 Jul 2020 20:22:34 +0200
-Message-Id: <20200705182234.10257-1-linus.luessing@c0d3.blue>
+        Sun, 5 Jul 2020 14:23:19 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8884C061794
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Jul 2020 11:23:18 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id q8so37118989iow.7
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Jul 2020 11:23:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HMEHe+br8dXcHI+hB4O6nEY5v7Sg6St98G6CWcHOLAY=;
+        b=p5/pIAXf3CKYBu7XQ+eET85u6p43lVcZZCEJzOCn6xIig95QPwz/9I/2x+weOJLgxn
+         Cie31azzWN79bqQqUdusC9nA9+hbL9kvsl1MJwazGnkcJn1kiG3l6fQ1dV2Ib6ejFaTp
+         WjCjV1l5Ehh2ZrunNBhIrGkQMyglDkpgtqJ2U/MIXQ8luL+uaTBJn1aWJKcwAkBhMVAX
+         P2IY3nJQcZI7yfOYlFzUvVdgsBKEMcyevYLUwC1XYkeeD6Sw4vzLu0lMNHRQSsnMpPsK
+         1dNu8PjzqnGWr0G9s2y6gBF3/WNe3mf2YHQmY+3ZgezLAq1YbzpBMbbRVlAbJ+hGGI6R
+         U4qw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HMEHe+br8dXcHI+hB4O6nEY5v7Sg6St98G6CWcHOLAY=;
+        b=XkKXmVUj2FzfuI8taGXVpkK8Axm8v4vzhfr4Ae83CeVDKNgDvidkrvKGxJ47lUVYin
+         clhxGLjcMzqG4/bFZ6K6n5AARtjB3jcr+UtjyjWtHfv/N1wskzxwcPNosr5O3ghSzUt3
+         BnsZM8F2lczHjufYqh8QY0JZPDWE/eueoB9+RUIDrq/DU1OuMRFZfNfZhCizYgbTIn+g
+         mnh5ZvRTl2WgjsFttHT4Tm+Vkjlk0DSCQ2pJWrYnKxdWhE45qs1D/NGpKsq2FFrQCUGt
+         /qop9xrBwTu5r4DwkwwwYWwa/6RFPfkwOQ473KynxBKTRdjo9lXa8zxQyHl920FEMQF9
+         gEOw==
+X-Gm-Message-State: AOAM533nuqWVKUoIbQFoc9qXzvM0UzZ7ZUi+KsfUBC9ix7zqZwDOZ5V9
+        E2IrxQZZSsAB2LlahkW6hKmSMao8qxA+JFQSzv7Tlw==
+X-Google-Smtp-Source: ABdhPJyBOWuLUXOzG6o2lDDAnLH070zEuFx/Po3XVCpmBC/ky8dEjid7/3THBJAz32DNG7JWCQm++YJmtgD+wfcVmls=
+X-Received: by 2002:a5e:cb42:: with SMTP id h2mr21634185iok.43.1593973397858;
+ Sun, 05 Jul 2020 11:23:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Authentication-Results: ORIGINATING;
-        auth=pass smtp.auth=linus.luessing@c0d3.blue smtp.mailfrom=linus.luessing@c0d3.blue
+References: <20200702221237.2517080-1-abhishekbh@google.com>
+ <e7bc00fc-fe53-800e-8439-f1fbdca5dd26@redhat.com> <CAN_oZf2t+gUqXe19Yo1mTzAgk2xNhssE-9p58EvH-gw5jpuvzA@mail.gmail.com>
+ <CA+noqoj6u9n_KKohZw+QCpD-Qj0EgoCXaPEsryD7ABZ7QpqQfg@mail.gmail.com>
+ <20200703114037.GD2999146@linux.ibm.com> <CAD=FV=XRbrFqSbR619h+9HXNyrYNbqfBF2e-+iUZco9qQ8Wokg@mail.gmail.com>
+ <20200705152304.GE2999146@linux.ibm.com> <5d2ccf3d-b473-cf30-b863-e29bb33b7284@redhat.com>
+In-Reply-To: <5d2ccf3d-b473-cf30-b863-e29bb33b7284@redhat.com>
+From:   Abhishek Bhardwaj <abhishekbh@google.com>
+Date:   Sun, 5 Jul 2020 11:22:42 -0700
+Message-ID: <CA+noqojih03kKsWs33EUMV4H6RkWSRSQD=DHa9pAQ03yiz2GtQ@mail.gmail.com>
+Subject: Re: [PATCH v3] x86/speculation/l1tf: Add KConfig for setting the L1D
+ cache flush mode
+To:     Waiman Long <longman@redhat.com>
+Cc:     Mike Rapoport <rppt@linux.ibm.com>,
+        Doug Anderson <dianders@google.com>,
+        Anthony Steinhauser <asteinhauser@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tony Luck <tony.luck@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>, kvm@vger.kernel.org,
+        x86 <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit e57f61858b7c ("net: bridge: mcast: fix stale nsrcs pointer in
-igmp3/mld2 report handling") introduced a small bug which would potentially
-lead to accepting an MLD2 Report with a broken IPv6 header payload length
-field.
+On Sun, Jul 5, 2020 at 8:57 AM Waiman Long <longman@redhat.com> wrote:
+>
+> On 7/5/20 11:23 AM, Mike Rapoport wrote:
+> >> Nothing prevents people from continuing to use the command line
+> >> options if they want, right?  This just allows a different default.
+> >> So if a distro is security focused and decided that it wanted a slower
+> >> / more secure default then it could ship that way but individual users
+> >> could still override, right?
+> > Well, nothing prevents you from continuing to use the command line as
+> > well;-)
+> >
+> > I can see why whould you want an ability to select compile time default
+> > for an option, but I'm really not thrilled by the added ifdefery.
+> >
+>
+> It turns out that CONFIG_KVM_VMENTRY_L1D_FLUSH values match the enum
+> vmx_l1d_flush_state values. So one way to reduce the ifdefery is to do,
+> for example,
+>
+> +#ifdef CONFIG_KVM_VMENTRY_L1D_FLUSH
+> +#define VMENTER_L1D_FLUSH_DEFAULT CONFIG_KVM_VMENTRY_L1D_FLUSH
+> +#else
+> +#define VMENTER_L1D_FLUSH_DEFAULT      VMENTER_L1D_FLUSH_AUTO
+> #endif
+> -enum vmx_l1d_flush_state l1tf_vmx_mitigation = VMENTER_L1D_FLUSH_AUTO;
+> +enum vmx_l1d_flush_state l1tf_vmx_mitigation = VMENTER_L1D_FLUSH_DEFAULT;
+>
+> Of course, we may need to add a comment on enum vmx_l1d_flush_state
+> definition to highlight the dependency of CONFIG_KVM_VMENTRY_L1D_FLUSH
+> on it to avoid future mismatch.
 
-The check needs to take into account the 2 bytes for the "Number of
-Sources" field in the "Multicast Address Record" before reading it.
-And not the size of a pointer to this field.
+I explicitly wanted to avoid doing that for this very reason. In my
+opinion this is brittle and bound to be missed
+sooner or later.
 
-Fixes: e57f61858b7c ("net: bridge: mcast: fix stale nsrcs pointer in igmp3/mld2 report handling")
-Signed-off-by: Linus Lüssing <linus.luessing@c0d3.blue>
----
- net/bridge/br_multicast.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I'd rather have the value assignment be explicit rather than some
+clever hack. Notice, this wouldn't work if the enum
+values were not contiguous. We just got lucky.
 
-diff --git a/net/bridge/br_multicast.c b/net/bridge/br_multicast.c
-index 83490bf73a13..4c4a93abde68 100644
---- a/net/bridge/br_multicast.c
-+++ b/net/bridge/br_multicast.c
-@@ -1000,21 +1000,21 @@ static int br_ip6_multicast_mld2_report(struct net_bridge *br,
- 	num = ntohs(icmp6h->icmp6_dataun.un_data16[1]);
- 	len = skb_transport_offset(skb) + sizeof(*icmp6h);
- 
- 	for (i = 0; i < num; i++) {
- 		__be16 *_nsrcs, __nsrcs;
- 		u16 nsrcs;
- 
- 		nsrcs_offset = len + offsetof(struct mld2_grec, grec_nsrcs);
- 
- 		if (skb_transport_offset(skb) + ipv6_transport_len(skb) <
--		    nsrcs_offset + sizeof(_nsrcs))
-+		    nsrcs_offset + sizeof(__nsrcs))
- 			return -EINVAL;
- 
- 		_nsrcs = skb_header_pointer(skb, nsrcs_offset,
- 					    sizeof(__nsrcs), &__nsrcs);
- 		if (!_nsrcs)
- 			return -EINVAL;
- 
- 		nsrcs = ntohs(*_nsrcs);
- 		grec_len = struct_size(grec, grec_src, nsrcs);
- 
--- 
-2.27.0
+Do people feel strongly against this ifdef ladder ?
 
+>
+> Cheers,
+> Longman
+>
+
+
+
+--
+Abhishek
