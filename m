@@ -2,150 +2,309 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8FAC214D4E
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Jul 2020 17:08:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98B47214D52
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Jul 2020 17:09:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727122AbgGEPI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Jul 2020 11:08:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38692 "EHLO
+        id S1727823AbgGEPJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Jul 2020 11:09:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726826AbgGEPI1 (ORCPT
+        with ESMTP id S1727074AbgGEPJ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Jul 2020 11:08:27 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05555C061794;
-        Sun,  5 Jul 2020 08:08:27 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id b92so15923948pjc.4;
-        Sun, 05 Jul 2020 08:08:27 -0700 (PDT)
+        Sun, 5 Jul 2020 11:09:56 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57B24C08C5E1
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Jul 2020 08:09:56 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id dr13so39773988ejc.3
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Jul 2020 08:09:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=A5I6VGkhJ2xJ6GDa94vWXmkdx6+7jGgFgpoPYfiHtH4=;
-        b=YPEoW4F+ma/2eQSWDui9L+e9wmZFKYCEo28j7haweM1imaCl8+/evhw0m/HUuhem59
-         RXYWzt/16c4PQ3lgDYYMDsK95AAlTeWR9s2KqeBxclOFB1u3ciIdwoqbPvQQWIrLyW7T
-         iVMgTN//HZWnUGyHt5Y291eymAgH8tsSKCA4XL08vwOIyR1xe56FsBHeQeES5CdYMr+7
-         BAnxQkzKdCkD0GMBgbSPDsFHUDMIpbosKrE3wZGecKpZmpW0fgf3z41zjaM6rynYbms5
-         t9eNO4oPMgrzGRlY0cRWwh923AVbgTPzX27/zaSCuVGGyT3D+fcIUIU9xVYcg+cN97WZ
-         GyMg==
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+a+NkZk/z82sUmwa8lAR9nOo6EtZay2vAebfwkhsk6k=;
+        b=UmdjKJ50jJWLthi/DT6Fs4iFmWFWyVC7Y7eZrOOgck5bWy1qD1rM0CMXNWKAJDlHVL
+         MAa2rwS/APF5ZIIu7ChRJtgEZ53i8mPF0SjaJsiJKKGawhM60E/UxhFkn1iaFCLKkDvX
+         ABjq8jVd+aSn/1mm8gcR3scWaSwN1qN6a3STwAf24/t6ZOCeOFxo9U4AkYeDjAYvwVle
+         q6JqxJ/OONYa7eHq//8Oh7lZaQDQjIrW4vcI+eC9CiyArhAChgft2Fyel1fL2i4bo0FM
+         6wrDxMJNUxIz0louWOYU4KpBGZlmriR+9XhHFy+lzf7hU5ECANHSv5nn2SFzJDJ0i7zK
+         Dr2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=A5I6VGkhJ2xJ6GDa94vWXmkdx6+7jGgFgpoPYfiHtH4=;
-        b=Wct6j/Yl+F9d2CpLYWK4p06TNcWp3kRFmrztuDXDtSmmkHEQvQoF10GPsJNriIx6PO
-         zhuh2zHtHZKx7eVN/7yfE4DmD1jTYmq2mQ5NwYqBJKSoxxH0QXczIEfgtdXB1ieHyH+k
-         hwXSKAd37NexVaqZc6Ip63yh/cRvcI1eczTvVeQosjqfGOqDcLkMD0MI+9daJlsaA29T
-         G9OpTmMdz2xqvptbk+0tIQZN9Npj9mGx6N87gVF9lLWzREcCkD04ZS0cHp5c9fxUnoE1
-         jDIDMWj4Jh7+p5NssYLMQzfs4W5z70SKaD93ei1FA07zhtAReZjzudzbW1c08l4fbCjN
-         ySJg==
-X-Gm-Message-State: AOAM530hPlNUX/T5SWs8bIJt9woZ5NwnSXxuMUwkfUdApUTs8cHxYAjJ
-        Q5/eaqnRpFwNm6VhrWmOppvVth3UwA0=
-X-Google-Smtp-Source: ABdhPJwxPge74+8uNfr5ykDiE+IFl+ovnJMfkVLDwrruTtasf+tiCZRe9GqCpHEkCY5Jwp7MhhY4wQ==
-X-Received: by 2002:a17:90b:4d0f:: with SMTP id mw15mr47770999pjb.68.1593961706605;
-        Sun, 05 Jul 2020 08:08:26 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id h100sm16474304pjb.46.2020.07.05.08.08.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 05 Jul 2020 08:08:26 -0700 (PDT)
-Subject: Re: [PATCHv2 5/5] watchdog: rti-wdt: balance pm runtime enable calls
-To:     Tero Kristo <t-kristo@ti.com>, wim@linux-watchdog.org,
-        linux-watchdog@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, jan.kiszka@siemens.com
-References: <20200703120406.7092-1-t-kristo@ti.com>
- <20200703120406.7092-6-t-kristo@ti.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <bf1f8fd7-db24-22c8-0d1f-4083ad4e580c@roeck-us.net>
-Date:   Sun, 5 Jul 2020 08:08:25 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+a+NkZk/z82sUmwa8lAR9nOo6EtZay2vAebfwkhsk6k=;
+        b=FrRBa18/Hq7+rC2XdUaUre6/RgP19KWUYHr+B7uEQ30krM13N8tF33yVmwQnvwlsyR
+         4dtEmXJKvA6X85uvTtg0jAqGe1eaQDyRYsdaF+NPr3UGTvXq73xwoBKdguUqygyEH8B/
+         b5ryjP0/NoSalQcJQOhCzCozISDfh4Pas2pc2RRi0cFbLydwiAEoEviwOqtBJRO/dyKy
+         Bnu4Ivr/IiMuqCYasOqBVkMo5H52i70JkYF5xDENy5JIrG9430JKG4VH/y1EJljOyVSj
+         nFj8u9yW+EbGsGNgMYnayV+BKn/0Ww/OLScO7lO8bXiMZG5FC6yklgtg1/qy0z6NyQuB
+         hfhQ==
+X-Gm-Message-State: AOAM530yLgJSKDwXjSAJivF/8n1eTUvYMEJw/qRLOBDNhXaw6HIigw52
+        Xz8rKe+ZDsnNCRafcqAxj4TSRL7LVpkw7vXiOIfZ
+X-Google-Smtp-Source: ABdhPJzoaJJDK0x6hHKY5IxkG2I5cD4JeTPSKb1HFyRKKxTq3fNryDZXuEZTaO6XoOjUl+x6NLfxACNsUd1JYOUwikw=
+X-Received: by 2002:a17:906:7d86:: with SMTP id v6mr38973801ejo.542.1593961794741;
+ Sun, 05 Jul 2020 08:09:54 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200703120406.7092-6-t-kristo@ti.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <cover.1593198710.git.rgb@redhat.com> <6abeb26e64489fc29b00c86b60b501c8b7316424.1593198710.git.rgb@redhat.com>
+In-Reply-To: <6abeb26e64489fc29b00c86b60b501c8b7316424.1593198710.git.rgb@redhat.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Sun, 5 Jul 2020 11:09:43 -0400
+Message-ID: <CAHC9VhTx=4879F1MSXg4=Xd1i5rhEtyam6CakQhy=_ZjGtTaMA@mail.gmail.com>
+Subject: Re: [PATCH ghak90 V9 01/13] audit: collect audit task parameters
+To:     Richard Guy Briggs <rgb@redhat.com>
+Cc:     containers@lists.linux-foundation.org, linux-api@vger.kernel.org,
+        Linux-Audit Mailing List <linux-audit@redhat.com>,
+        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        sgrubb@redhat.com, Ondrej Mosnacek <omosnace@redhat.com>,
+        dhowells@redhat.com, simo@redhat.com,
+        Eric Paris <eparis@parisplace.org>,
+        Serge Hallyn <serge@hallyn.com>, ebiederm@xmission.com,
+        nhorman@tuxdriver.com, Dan Walsh <dwalsh@redhat.com>,
+        mpatel@redhat.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/3/20 5:04 AM, Tero Kristo wrote:
-> PM runtime should be disabled in the fail path of probe and when
-> the driver is removed.
-> 
-> Fixes: 2d63908bdbfb ("watchdog: Add K3 RTI watchdog support")
-> Signed-off-by: Tero Kristo <t-kristo@ti.com>
-
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-
+On Sat, Jun 27, 2020 at 9:21 AM Richard Guy Briggs <rgb@redhat.com> wrote:
+>
+> The audit-related parameters in struct task_struct should ideally be
+> collected together and accessed through a standard audit API.
+>
+> Collect the existing loginuid, sessionid and audit_context together in a
+> new struct audit_task_info called "audit" in struct task_struct.
+>
+> Use kmem_cache to manage this pool of memory.
+> Un-inline audit_free() to be able to always recover that memory.
+>
+> Please see the upstream github issue
+> https://github.com/linux-audit/audit-kernel/issues/81
+>
+> Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
+> Acked-by: Neil Horman <nhorman@tuxdriver.com>
+> Reviewed-by: Ondrej Mosnacek <omosnace@redhat.com>
 > ---
->  drivers/watchdog/rti_wdt.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/watchdog/rti_wdt.c b/drivers/watchdog/rti_wdt.c
-> index 987e5a798cb4..7007445da80b 100644
-> --- a/drivers/watchdog/rti_wdt.c
-> +++ b/drivers/watchdog/rti_wdt.c
-> @@ -304,6 +304,7 @@ static int rti_wdt_probe(struct platform_device *pdev)
->  
->  err_iomap:
->  	pm_runtime_put_sync(&pdev->dev);
-> +	pm_runtime_disable(&pdev->dev);
->  
->  	return ret;
->  }
-> @@ -314,6 +315,7 @@ static int rti_wdt_remove(struct platform_device *pdev)
->  
->  	watchdog_unregister_device(&wdt->wdd);
->  	pm_runtime_put(&pdev->dev);
-> +	pm_runtime_disable(&pdev->dev);
->  
->  	return 0;
->  }
-> 
+>  include/linux/audit.h | 49 +++++++++++++++++++++++------------
+>  include/linux/sched.h |  7 +----
+>  init/init_task.c      |  3 +--
+>  init/main.c           |  2 ++
+>  kernel/audit.c        | 71 +++++++++++++++++++++++++++++++++++++++++++++++++--
+>  kernel/audit.h        |  5 ++++
+>  kernel/auditsc.c      | 26 ++++++++++---------
+>  kernel/fork.c         |  1 -
+>  8 files changed, 124 insertions(+), 40 deletions(-)
+>
+> diff --git a/include/linux/audit.h b/include/linux/audit.h
+> index 3fcd9ee49734..c2150415f9df 100644
+> --- a/include/linux/audit.h
+> +++ b/include/linux/audit.h
+> @@ -100,6 +100,16 @@ enum audit_nfcfgop {
+>         AUDIT_XT_OP_UNREGISTER,
+>  };
+>
+> +struct audit_task_info {
+> +       kuid_t                  loginuid;
+> +       unsigned int            sessionid;
+> +#ifdef CONFIG_AUDITSYSCALL
+> +       struct audit_context    *ctx;
+> +#endif
+> +};
+> +
+> +extern struct audit_task_info init_struct_audit;
+> +
+>  extern int is_audit_feature_set(int which);
+>
+>  extern int __init audit_register_class(int class, unsigned *list);
 
+...
+
+> diff --git a/include/linux/sched.h b/include/linux/sched.h
+> index b62e6aaf28f0..2213ac670386 100644
+> --- a/include/linux/sched.h
+> +++ b/include/linux/sched.h
+> @@ -34,7 +34,6 @@
+>  #include <linux/kcsan.h>
+>
+>  /* task_struct member predeclarations (sorted alphabetically): */
+> -struct audit_context;
+>  struct backing_dev_info;
+>  struct bio_list;
+>  struct blk_plug;
+> @@ -946,11 +945,7 @@ struct task_struct {
+>         struct callback_head            *task_works;
+>
+>  #ifdef CONFIG_AUDIT
+> -#ifdef CONFIG_AUDITSYSCALL
+> -       struct audit_context            *audit_context;
+> -#endif
+> -       kuid_t                          loginuid;
+> -       unsigned int                    sessionid;
+> +       struct audit_task_info          *audit;
+>  #endif
+>         struct seccomp                  seccomp;
+
+In the early days of this patchset we talked a lot about how to handle
+the task_struct and the changes that would be necessary, ultimately
+deciding that encapsulating all of the audit fields into an
+audit_task_info struct.  However, what is puzzling me a bit at this
+moment is why we are only including audit_task_info in task_info by
+reference *and* making it a build time conditional (via CONFIG_AUDIT).
+
+If audit is enabled at build time it would seem that we are always
+going to allocate an audit_task_info struct, so I have to wonder why
+we don't simply embed it inside the task_info struct (similar to the
+seccomp struct in the snippet above?  Of course the audit_context
+struct needs to remain as is, I'm talking only about the
+task_info/audit_task_info struct.
+
+Richard, I'm sure you can answer this off the top of your head, but
+I'd have to go digging through the archives to pull out the relevant
+discussions so I figured I would just ask you for a reminder ... ?  I
+imagine it's also possible things have changed a bit since those early
+discussions and the solution we arrived at then no longer makes as
+much sense as it did before.
+
+> diff --git a/init/init_task.c b/init/init_task.c
+> index 15089d15010a..92d34c4b7702 100644
+> --- a/init/init_task.c
+> +++ b/init/init_task.c
+> @@ -130,8 +130,7 @@ struct task_struct init_task
+>         .thread_group   = LIST_HEAD_INIT(init_task.thread_group),
+>         .thread_node    = LIST_HEAD_INIT(init_signals.thread_head),
+>  #ifdef CONFIG_AUDIT
+> -       .loginuid       = INVALID_UID,
+> -       .sessionid      = AUDIT_SID_UNSET,
+> +       .audit          = &init_struct_audit,
+>  #endif
+>  #ifdef CONFIG_PERF_EVENTS
+>         .perf_event_mutex = __MUTEX_INITIALIZER(init_task.perf_event_mutex),
+> diff --git a/init/main.c b/init/main.c
+> index 0ead83e86b5a..349470ad7458 100644
+> --- a/init/main.c
+> +++ b/init/main.c
+> @@ -96,6 +96,7 @@
+>  #include <linux/jump_label.h>
+>  #include <linux/mem_encrypt.h>
+>  #include <linux/kcsan.h>
+> +#include <linux/audit.h>
+>
+>  #include <asm/io.h>
+>  #include <asm/bugs.h>
+> @@ -1028,6 +1029,7 @@ asmlinkage __visible void __init start_kernel(void)
+>         nsfs_init();
+>         cpuset_init();
+>         cgroup_init();
+> +       audit_task_init();
+>         taskstats_init_early();
+>         delayacct_init();
+>
+> diff --git a/kernel/audit.c b/kernel/audit.c
+> index 8c201f414226..5d8147a29291 100644
+> --- a/kernel/audit.c
+> +++ b/kernel/audit.c
+> @@ -203,6 +203,73 @@ struct audit_reply {
+>         struct sk_buff *skb;
+>  };
+>
+> +static struct kmem_cache *audit_task_cache;
+> +
+> +void __init audit_task_init(void)
+> +{
+> +       audit_task_cache = kmem_cache_create("audit_task",
+> +                                            sizeof(struct audit_task_info),
+> +                                            0, SLAB_PANIC, NULL);
+> +}
+> +
+> +/**
+> + * audit_alloc - allocate an audit info block for a task
+> + * @tsk: task
+> + *
+> + * Call audit_alloc_syscall to filter on the task information and
+> + * allocate a per-task audit context if necessary.  This is called from
+> + * copy_process, so no lock is needed.
+> + */
+> +int audit_alloc(struct task_struct *tsk)
+> +{
+> +       int ret = 0;
+> +       struct audit_task_info *info;
+> +
+> +       info = kmem_cache_alloc(audit_task_cache, GFP_KERNEL);
+> +       if (!info) {
+> +               ret = -ENOMEM;
+> +               goto out;
+> +       }
+> +       info->loginuid = audit_get_loginuid(current);
+> +       info->sessionid = audit_get_sessionid(current);
+> +       tsk->audit = info;
+> +
+> +       ret = audit_alloc_syscall(tsk);
+> +       if (ret) {
+> +               tsk->audit = NULL;
+> +               kmem_cache_free(audit_task_cache, info);
+> +       }
+> +out:
+> +       return ret;
+> +}
+
+This is a big nitpick, and I'm only mentioning this in the case you
+need to respin this patchset: the "out" label is unnecessary in the
+function above.  Simply return the error code, there is no need to
+jump to "out" only to immediately return the error code there and
+nothing more.
+
+> +struct audit_task_info init_struct_audit = {
+> +       .loginuid = INVALID_UID,
+> +       .sessionid = AUDIT_SID_UNSET,
+> +#ifdef CONFIG_AUDITSYSCALL
+> +       .ctx = NULL,
+> +#endif
+> +};
+> +
+> +/**
+> + * audit_free - free per-task audit info
+> + * @tsk: task whose audit info block to free
+> + *
+> + * Called from copy_process and do_exit
+> + */
+> +void audit_free(struct task_struct *tsk)
+> +{
+> +       struct audit_task_info *info = tsk->audit;
+> +
+> +       audit_free_syscall(tsk);
+> +       /* Freeing the audit_task_info struct must be performed after
+> +        * audit_log_exit() due to need for loginuid and sessionid.
+> +        */
+> +       info = tsk->audit;
+> +       tsk->audit = NULL;
+> +       kmem_cache_free(audit_task_cache, info);
+
+Another nitpick, and this one may even become a moot point given the
+question posed above.  However, is there any reason we couldn't get
+rid of "info" and simplify this a bit?
+
+  audit_free_syscall(tsk);
+  kmem_cache_free(audit_task_cache, tsk->audit);
+  tsk->audit = NULL;
+
+> diff --git a/kernel/auditsc.c b/kernel/auditsc.c
+> index 468a23390457..f00c1da587ea 100644
+> --- a/kernel/auditsc.c
+> +++ b/kernel/auditsc.c
+> @@ -1612,7 +1615,6 @@ void __audit_free(struct task_struct *tsk)
+>                 if (context->current_state == AUDIT_RECORD_CONTEXT)
+>                         audit_log_exit();
+>         }
+> -
+>         audit_set_context(tsk, NULL);
+>         audit_free_context(context);
+>  }
+
+This nitpick is barely worth the time it is taking me to write this,
+but the whitespace change above isn't strictly necessary.
+
+
+--
+paul moore
+www.paul-moore.com
