@@ -2,93 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 827D5214A62
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Jul 2020 06:48:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E2D2214A6A
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Jul 2020 06:55:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726326AbgGEEre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Jul 2020 00:47:34 -0400
-Received: from mag112.magazineer.net ([157.7.134.112]:60865 "EHLO
-        157.7.134.112" rhost-flags-OK-OK-FAIL-FAIL) by vger.kernel.org
-        with ESMTP id S1725773AbgGEEre (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Jul 2020 00:47:34 -0400
-X-Greylist: delayed 354 seconds by postgrey-1.27 at vger.kernel.org; Sun, 05 Jul 2020 00:47:33 EDT
-To:     <linux-kernel@vger.kernel.org>
-Subject: =?iso-2022-jp?B?GyRCOWJCNDpOTVElKiVzJWklJCVzOVY6QiEhIUE5Yjk7SyxMZCROPUVNV0AtIUEbKEI=?=
-From:   =?ISO-2022-JP?B?GyRCJTglZyVWJUklaSVVJUglOyVfJUohPDE/MUQ8PBsoQg==?= 
-        <info@hr-saiyo.work>
-Date:   Sun, 5 Jul 2020 13:47:34 +0900
-Reply-To: info@hr-saiyo.work
-Message-Id: <20200605134734.25149@hr-saiyo.work>
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: 7bit
+        id S1726025AbgGEEz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Jul 2020 00:55:28 -0400
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:38201 "EHLO 1wt.eu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725773AbgGEEz1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Jul 2020 00:55:27 -0400
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 0654t5TB003005;
+        Sun, 5 Jul 2020 06:55:05 +0200
+Date:   Sun, 5 Jul 2020 06:55:05 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     torvalds@linux-foundation.org, Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>, Chris Mason <clm@fb.clm>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        ksummit-discuss@lists.linuxfoundation.org,
+        tech-board-discuss@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] CodingStyle: Inclusive Terminology
+Message-ID: <20200705045505.GA2962@1wt.eu>
+References: <159389297140.2210796.13590142254668787525.stgit@dwillia2-desk3.amr.corp.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <159389297140.2210796.13590142254668787525.stgit@dwillia2-desk3.amr.corp.intel.com>
+User-Agent: Mutt/1.6.1 (2016-04-27)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-いつもお世話になります。
+On Sat, Jul 04, 2020 at 01:02:51PM -0700, Dan Williams wrote:
+> +Non-inclusive terminology has that same distracting effect which is why
+> +it is a style issue for Linux, it injures developer efficiency.
 
-この度は、高卒採用において効果の高い
-“高校訪問”についてのセミナーをご案内申し上げます。
+I'm personally thinking that for a non-native speaker it's already
+difficult to find the best term to describe something, but having to
+apply an extra level of filtering on the found words to figure whether
+they are allowed by the language police is even more difficult. *This*
+injures developers efficiency. What could improve developers efficiency
+is to take care of removing *all* idiomatic or cultural words then. For
+example I've been participating to projects using the term "blueprint",
+I didn't understand what that meant. It was once explained to me and
+given that it had no logical reason for being called this way, I now
+forgot. If we follow your reasoning, Such words should be banned for
+exactly the same reasons. Same for colors that probably don't mean
+anything to those born blind.
 
+For example if in my local culture we eat tomatoes at starters and
+apples for dessert, it could be convenient for me to use "tomato" and
+"apple" as list elements to name the pointers leading to the beginning
+and the end of the list, and it might sound obvious to many people, but
+not at all for many others.
 
-〜オンライン開催のためご自宅や職場で視聴可能です〜
+Maybe instead of providing an explicit list of a few words it should
+simply say that terms that take their roots in the non-technical world
+and whose meaning can only be understood based on history or local
+culture ought to be avoided, because *that* actually is the real
+root cause of the problem you're trying to address.
 
-
-21年高卒採用に向けて、求人票の作成が終わり
-これからの時期に大切なのが“高校訪問”です。
-
-
-進路指導の先生の手元には、膨大な求人票が届きます。
-
-
-自社の求人票は、その中から生徒に紹介してもらえているでしょうか。
-
-
-せっかく作った求人票も、見てもらえなければ意味もありません。
-
-
-そうならないためにも“高校訪問”が大きな効果を発揮します。
-
-
-しかしいざ訪問となると、タイミングや準備、
-何をどう伝えるか、等々ポイントが多くあります。
-
-
-そこで本講座では、2000社を超える企業へのアドバイス経験を元に
-「15%以上を職場見学に繋げる」高校訪問の仕方をご紹介します。
-
-
-　■　詳細・申込　https://hr-saiyo.work/200709/　■
-
-
-求人票が見られているか不安だ、高校訪問をしようにも
-どう動いたら良いかわからないといった悩みをお持ちの
-企業様は、是非ともご参加ください。
-
-
-オンライン開催
-――――――――――――――――――――――――――――
-
-   　“高校訪問”の重要性と実施のポイント
-　　　　〜15%を職場見学につなげる方法〜
-
-　 日程：7月9日
-　 時間：11:00〜11:45
-　 会場：オンライン開催(ご自宅や職場で視聴可能)
-　
-　■　詳細・申込　https://hr-saiyo.work/200709/　■
-
-――――――――――――――――――――――――――――
-　本メールのご不要な方には大変ご迷惑をおかけいたしました。
-　配信停止ご希望の方は、お手数ですが「配信不要」と
-　ご返信いただくか、下記アドレスよりお手続き願います。
-　 https://form9dm.site/kaijo/
-――――――――――――――――――――――――――――
-   ジョブドラフトセミナー運営室(株式会社ジンジブ)
-　 住所：東京都港区浜松町2丁目7-19　KDX浜松町ビル5階    
- 　TEL：03-5777-2679
-　 Mail：info@hr-service.work
-――――――――――――――――――――――――――――
+Willy
