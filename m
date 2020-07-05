@@ -2,140 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDCBB214A95
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Jul 2020 08:26:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B488214A96
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Jul 2020 08:29:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726270AbgGEGZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Jul 2020 02:25:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46978 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725873AbgGEGZX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Jul 2020 02:25:23 -0400
-Received: from localhost.localdomain (unknown [89.208.247.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 58031207CD;
-        Sun,  5 Jul 2020 06:25:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593930322;
-        bh=j/k1+B7wkCi8TSTAT6vwsg8IilF6kwnCgtC2Tyh8esI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=IBJqT+/t6RF8oJE4tYJNDhNag1zBFY9YGGFiI1+roc5OKJAHNR5pHc67IMt+86PSL
-         ffzMSMcJL7BhRaBnmK6iWQMIWGEZ6PFlG4cjwTyDRkSKnoE9B9eU5YwUiZ25uVceED
-         BNA61f5ly40MihKlN4cTxwu+idkiuLAZ5hqt36Mc=
-From:   guoren@kernel.org
-To:     palmerdabbelt@google.com, paul.walmsley@sifive.com,
-        anup@brainfault.org, greentime.hu@sifive.com, zong.li@sifive.com,
-        guoren@kernel.org
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-csky@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Atish Patra <atish.patra@wdc.com>
-Subject: [PATCH] riscv: Add STACKPROTECTOR supported
-Date:   Sun,  5 Jul 2020 06:24:15 +0000
-Message-Id: <1593930255-12378-1-git-send-email-guoren@kernel.org>
-X-Mailer: git-send-email 2.7.4
+        id S1726369AbgGEG0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Jul 2020 02:26:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43576 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725873AbgGEG0m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Jul 2020 02:26:42 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF5F0C061794
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Jul 2020 23:26:41 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id n26so25242152ejx.0
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Jul 2020 23:26:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=message-id:from:mime-version:content-transfer-encoding
+         :content-description:subject:to:date:reply-to;
+        bh=JVZu2kYmhMYJfA54P2B/yDBUxtqwl+eiyX2S0Azfd2M=;
+        b=TLDv3VXqw5o3aHzqyM517wPQBzFv+s0nTNaZ2LI8auS2YLmjmpMSI4jNyjpqCf/z3G
+         Y/980Rapkk9ZSb4KislbSEq9uQlmUMnrQ7O3wK5kGCkaF2nGzOJWdDWznUGwjU2vvEm1
+         wIacfdg48cL14t5Ksfxmx2QkrG6Px3nK0q7RVark1GzfJ35y9LMgbRxuwy0MBqCtRJFj
+         Y9PuxTLcjuAl+PQcgBDlp4bl7D1EM2iuzuKOhlXn77megnZHTo/Udg8jIktzBBPhJOx7
+         gzLvnRi5//8Zx1MzTM4dOtGln9QVx4Dyg9gMBqskwsLyJCP87h/oiqeQbRr89VQDv4pT
+         ar4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:from:mime-version
+         :content-transfer-encoding:content-description:subject:to:date
+         :reply-to;
+        bh=JVZu2kYmhMYJfA54P2B/yDBUxtqwl+eiyX2S0Azfd2M=;
+        b=E2jVBQr0b3QWsuxvZCrEvz9YMcg0K/wHuH6gevJTuXsfdYFK4F0GJ4tlVYEjZ9PTVA
+         AhLORe2KVXeesSjOBPqggPQ+AciIZPBvZ4X6Qva1MMC1/cFiAY+C7sQ4qTEErym+YZln
+         lFYjahwV6FG4GfeP9NLs+1ZG9EgzNXFA6tGK5Ed+M9kaXXaEfirvKxb8iTE32HvsZ9eu
+         rn/DwvbicsvyPR3Awsl1+gKPzQx1dPMe435O/B15YOcJCsWBDvQKmiFX6k8X2rE/sslq
+         SqWUrMqXnJQ6ZemdRW8c41oQzIx3f57E4m8ePUAuHkvdqF7GXgwVJRZWGVYOBxmIvys3
+         IYgA==
+X-Gm-Message-State: AOAM533SqrRDXg/J37RNxPBGeqaHEWENgEHRLN8s7G6lmAAFGUlcgIPC
+        XGZPGfI0VpYJVJ23mR7tKgDN74qA
+X-Google-Smtp-Source: ABdhPJxgXi/emF2RIcwaZQWzb2tM8osSFQsCM7C39hXAf08QbvefqMQV2FY6YDUCx+bmIhf43exZ6g==
+X-Received: by 2002:a17:906:2a5b:: with SMTP id k27mr37537968eje.82.1593930400318;
+        Sat, 04 Jul 2020 23:26:40 -0700 (PDT)
+Received: from [192.168.8.9] ([197.185.103.3])
+        by smtp.gmail.com with ESMTPSA id g8sm19795434edk.13.2020.07.04.23.26.34
+        (version=TLS1 cipher=AES128-SHA bits=128/128);
+        Sat, 04 Jul 2020 23:26:39 -0700 (PDT)
+Message-ID: <5f01729f.1c69fb81.1c942.56aa@mx.google.com>
+From:   Gldm Schs <sisulumax213@googlemail.com>
+X-Google-Original-From: Gldm Schs
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: Hello
+To:     Recipients <Gldm@vger.kernel.org>
+Date:   Sun, 05 Jul 2020 08:26:29 +0200
+Reply-To: schsgld@yandex.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guo Ren <guoren@linux.alibaba.com>
+ =
 
-The -fstack-protector & -fstack-protector-strong features are from
-gcc. The patch only add basic kernel support to stack-protector
-feature and some arch could have its own solution such as
-ARM64_PTR_AUTH.
-
-After enabling STACKPROTECTOR and STACKPROTECTOR_STRONG, the .text
-size is expanded from  0x7de066 to 0x81fb32 (only 5%) to add canary
-checking code.
-
-Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>
-Cc: Palmer Dabbelt <palmerdabbelt@google.com>
-Cc: Albert Ou <aou@eecs.berkeley.edu>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Björn Töpel <bjorn.topel@gmail.com>
-Cc: Greentime Hu <green.hu@gmail.com>
-Cc: Atish Patra <atish.patra@wdc.com>
----
- arch/riscv/Kconfig                      |  1 +
- arch/riscv/include/asm/stackprotector.h | 29 +++++++++++++++++++++++++++++
- arch/riscv/kernel/process.c             |  6 ++++++
- 3 files changed, 36 insertions(+)
- create mode 100644 arch/riscv/include/asm/stackprotector.h
-
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index f927a91..4b0e308 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -63,6 +63,7 @@ config RISCV
- 	select HAVE_PERF_EVENTS
- 	select HAVE_PERF_REGS
- 	select HAVE_PERF_USER_STACK_DUMP
-+	select HAVE_STACKPROTECTOR
- 	select HAVE_SYSCALL_TRACEPOINTS
- 	select IRQ_DOMAIN
- 	select MODULES_USE_ELF_RELA if MODULES
-diff --git a/arch/riscv/include/asm/stackprotector.h b/arch/riscv/include/asm/stackprotector.h
-new file mode 100644
-index 00000000..5962f88
---- /dev/null
-+++ b/arch/riscv/include/asm/stackprotector.h
-@@ -0,0 +1,29 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+#ifndef _ASM_RISCV_STACKPROTECTOR_H
-+#define _ASM_RISCV_STACKPROTECTOR_H
-+
-+#include <linux/random.h>
-+#include <linux/version.h>
-+
-+extern unsigned long __stack_chk_guard;
-+
-+/*
-+ * Initialize the stackprotector canary value.
-+ *
-+ * NOTE: this must only be called from functions that never return,
-+ * and it must always be inlined.
-+ */
-+static __always_inline void boot_init_stack_canary(void)
-+{
-+	unsigned long canary;
-+
-+	/* Try to get a semi random initial value. */
-+	get_random_bytes(&canary, sizeof(canary));
-+	canary ^= LINUX_VERSION_CODE;
-+	canary &= CANARY_MASK;
-+
-+	current->stack_canary = canary;
-+	__stack_chk_guard = current->stack_canary;
-+}
-+#endif /* _ASM_RISCV_STACKPROTECTOR_H */
-diff --git a/arch/riscv/kernel/process.c b/arch/riscv/kernel/process.c
-index 824d117..6548929 100644
---- a/arch/riscv/kernel/process.c
-+++ b/arch/riscv/kernel/process.c
-@@ -24,6 +24,12 @@
- 
- register unsigned long gp_in_global __asm__("gp");
- 
-+#ifdef CONFIG_STACKPROTECTOR
-+#include <linux/stackprotector.h>
-+unsigned long __stack_chk_guard __read_mostly;
-+EXPORT_SYMBOL(__stack_chk_guard);
-+#endif
-+
- extern asmlinkage void ret_from_fork(void);
- extern asmlinkage void ret_from_kernel_thread(void);
- 
--- 
-2.7.4
-
+Good day  I have a confidential business transaction I would like to discus=
+s with you. Contact me on schsgld@yandex.com for details.=20
