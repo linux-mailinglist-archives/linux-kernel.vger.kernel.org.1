@@ -2,181 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECDC3214E9B
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Jul 2020 20:42:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12771214EA2
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Jul 2020 20:52:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728103AbgGESmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Jul 2020 14:42:23 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:40853 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727936AbgGESmW (ORCPT
+        id S1728094AbgGESwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Jul 2020 14:52:10 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:39885 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727931AbgGESwJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Jul 2020 14:42:22 -0400
-Received: by mail-il1-f197.google.com with SMTP id m64so26286838ill.7
-        for <linux-kernel@vger.kernel.org>; Sun, 05 Jul 2020 11:42:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=36lIim6U0EVSea9yn5eRaizKMk+KEYlJqS23zYMSLOk=;
-        b=TvUyTopHbn/lvNa9hxPdREwPD51etYiGlv1s/cWvk1zaBOdYZbpY5G3o8s80IC/urn
-         WtFrauQQtgLZYrM6LYHQpqMfkJhZU2AmR/tF3XJVssastWUEnFEdPN+GkKNdnmKczqE2
-         qhrEwZkjpxSdTnllxbzfdGcy1FceRY6z/Mj/Vb1T/bRXU2qMBvi/UqHYfemv067gsLPO
-         /Vs8HeLeypCteVRAug8vh+9d0/vmb9BhF0SN/GjoSG//u5wb8WoBGnjT9G7GF7w/buRu
-         cXWUD75WIZpd5TyGWSsknkvIy52Ajpc99Id7bEIjrrKMYNd78YzFJE2jvGXhduV8h3CK
-         Nyxw==
-X-Gm-Message-State: AOAM5304Qmki4rqBuAROZMsWFpJAIDsQEkQivSPm3yOLhc1+Kx9+C7d8
-        Fn6oG6QH2u+Opv6qghDT1efyPg6RWnF1SFleD0H/1+bgpOfK
-X-Google-Smtp-Source: ABdhPJxI8RfCHebzqFgY01iWDvhaoIwOhyEqBLiFwmY6Vbf1wGjH+aiyZVM2XuALnt4TZHdm/fahuQ+9CJqkHl2qP9/pB+wiO65u
-MIME-Version: 1.0
-X-Received: by 2002:a05:6602:d8:: with SMTP id z24mr21869065ioe.136.1593974541507;
- Sun, 05 Jul 2020 11:42:21 -0700 (PDT)
-Date:   Sun, 05 Jul 2020 11:42:21 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000053e07805a9b61e09@google.com>
-Subject: KASAN: use-after-free Read in __cfg8NUM_wpan_dev_from_attrs (2)
-From:   syzbot <syzbot+14e0e4960091ffae7cf7@syzkaller.appspotmail.com>
-To:     alex.aring@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wpan@vger.kernel.org,
-        netdev@vger.kernel.org, stefan@datenfreihafen.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        Sun, 5 Jul 2020 14:52:09 -0400
+Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200705185206epoutp01927c615533e31a09ee3985559d3fe5e8~e7_6yewp61672016720epoutp01a
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Jul 2020 18:52:06 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200705185206epoutp01927c615533e31a09ee3985559d3fe5e8~e7_6yewp61672016720epoutp01a
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1593975126;
+        bh=hQPezt3s8OlsiuExPu77NlEiYYJbDQhcCBCIducGDuk=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=Vfn1H4BtPwXy4+Mu8sDvEt25ifHaqhB+ADZdkO4NXeKu28djW+Gq4Bo+XlS87QVa7
+         DFGjNKNI8ZViRr1hq5hUwh59cboTVe7Gl2aoImIuXKWvPAo5WvwHewZeaRQsCFaC85
+         Oq1QSctTxs+2IvU2M9RdYDf3XNvDlwyPHDSP62Cs=
+Received: from epsmges5p2new.samsung.com (unknown [182.195.42.74]) by
+        epcas5p1.samsung.com (KnoxPortal) with ESMTP id
+        20200705185205epcas5p180e3a8deef1fcacdb76d934a7fef28e7~e7_6C_L5Y0734507345epcas5p1U;
+        Sun,  5 Jul 2020 18:52:05 +0000 (GMT)
+Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
+        epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        8D.B7.09703.551220F5; Mon,  6 Jul 2020 03:52:05 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas5p3.samsung.com (KnoxPortal) with ESMTPA id
+        20200705185204epcas5p3adeb4fc3473c5fc0472a7396783c5267~e7_5JGHy90482204822epcas5p3n;
+        Sun,  5 Jul 2020 18:52:04 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200705185204epsmtrp2f0e02848992e9a6786497f596d97f99f~e7_5IS-JF1855618556epsmtrp2w;
+        Sun,  5 Jul 2020 18:52:04 +0000 (GMT)
+X-AuditID: b6c32a4a-4b5ff700000025e7-2a-5f022155462e
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        48.37.08303.451220F5; Mon,  6 Jul 2020 03:52:04 +0900 (KST)
+Received: from localhost.localdomain (unknown [107.110.206.5]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200705185202epsmtip2da00bd83855b850f39e7db1e956e44a9~e7_3DMwUB3251332513epsmtip2u;
+        Sun,  5 Jul 2020 18:52:02 +0000 (GMT)
+From:   Kanchan Joshi <joshi.k@samsung.com>
+To:     axboe@kernel.dk, viro@zeniv.linux.org.uk, bcrl@kvack.org
+Cc:     hch@infradead.org, Damien.LeMoal@wdc.com, asml.silence@gmail.com,
+        linux-fsdevel@vger.kernel.org, mb@lightnvm.io,
+        linux-kernel@vger.kernel.org, linux-aio@kvack.org,
+        io-uring@vger.kernel.org, linux-block@vger.kernel.org,
+        Kanchan Joshi <joshi.k@samsung.com>
+Subject: [PATCH v3 0/4] zone-append support in io-uring and aio
+Date:   Mon,  6 Jul 2020 00:17:46 +0530
+Message-Id: <1593974870-18919-1-git-send-email-joshi.k@samsung.com>
+X-Mailer: git-send-email 2.7.4
+X-Brightmail-Tracker: H4sIAAAAAAAAA0VSZ0wTYRjmux7ttUnlrEQ/qqJUTKQoKGI4FcWI0QtGozGg4oBGLoiy2hNQ
+        ooQIZZQUCZQpGEPE1PoDrCejFMSW4UCw4ohGVgTFAZpWkbDU0qL/nu9Z7/Pjw1iCdEchFhV7
+        jpLFSqJFbB5aa/QQrwt2Q8LW11k8ialilSNRrqkFxO3eK2xCMcughDxzHCGe5FUixJi8CyXa
+        fo+yCVXRZUA0vfUk9E2PUKJHV84m1HWtKPFCVckiumc6HHc4kQ1lvRzyrlpM9jxNILXmfA6Z
+        83ICkLmMBpAWrSuZ2ZKDkNqhUeQAN5TnH0FFRyVSMu/t4bzTg51VaHyn63lT/xd2KlBBBeBi
+        EPeFv6s/AgXgYQK8EcCX12ZQ28MM4HjLbbtiAfBm62POfKT5oZZjE3R/Bcss55+reliFKACG
+        sXEP+KwgwQqdcX/YcMPdamHhWQicvcUAK78ID4C6EqG1E8VXw+zRCcSK+XggrK2ZZNtuucI3
+        XdksaxbicgxeVlbbR+yC9a8y7aZF8HMHY+eF0DLWZOdpOPmuzR7OAvB1ailqEwKgST8zt5P1
+        d2e1zttKs/AFUDk1NEdDnA+zMgQ2txvsyx92tOElcLDkhh2T8EGPaa5RgJ+A6UoG5IFlZf9L
+        rwOgAS5UPB0TSdGb4n1iqSQvWhJDJ8RGep2Ki9GCuY8iDqoHgwPfvQwAwYABQIwlcuYrPUGY
+        gB8huZBMyeLCZAnRFG0ASzFUtIQvmug8KcAjJeeosxQVT8nmVQTjClMRkeJTtMJdNdJ4fGtI
+        wzI6Qu8V3OC+y2l2+fRARss184qK8JTncYVRNVJRJnHgeZG4fcSwB6vadnfzk4vCLa4rjT9G
+        u1OD8yfWJkv18uKR4o4Lx5uD1D0h+8LLy893/pQKjfr9Lcd+Lb9zSL5zfwWjWV23hZOd6MQp
+        ZdRnC/qTVOPfUmo2Xu0+Oj3+tH23j480L2a4CRH4nTjJVKYZ90nDx9bcCjxyqbWQCn39QMc9
+        86HYr+Jrn3pwYVdir9bZN7dtb8fw/fQNh0fe378nC1N+8i9AGMzoZ5IMFJhdKImDyFc21YwY
+        tNykXIM5oMth1czBRhN/MU+68IzmR5rbTU6VCKVPSzaIWTJa8geHwFSrlwMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrOLMWRmVeSWpSXmKPExsWy7bCSvG6IIlO8waH92ha/p09htZizahuj
+        xeq7/WwWXf+2sFi0tn9jsjg9YRGTxbvWcywWR/+/ZbOYMq2J0WLvLW2LPXtPslhc3jWHzWLF
+        9iMsFlemLGK2OP/3OKsDv8fOWXfZPTav0PK4fLbUY9OnSewe3Vd/MHr0bVnF6PF5k5xH+4Fu
+        Jo9NT94yBXBGcdmkpOZklqUW6dslcGU8PLOUpeCMXMXF+6/ZGhinSHQxcnJICJhI7Duxib2L
+        kYtDSGAHo8SRvidsEAlxieZrP9ghbGGJlf+eQxV9ZJS4NmcXSxcjBwebgKbEhcmlIDUiAg4S
+        XccfM4HUMAtMYZJ4emo+M0iNsIC9xK4ZUiA1LAKqEp1vfzCB2LwCzhLbNvyC2iUncfNcJ/ME
+        Rp4FjAyrGCVTC4pz03OLDQuM8lLL9YoTc4tL89L1kvNzNzGCw1ZLawfjnlUf9A4xMnEwHmKU
+        4GBWEuHt1WaMF+JNSaysSi3Kjy8qzUktPsQozcGiJM77ddbCOCGB9MSS1OzU1ILUIpgsEwen
+        VAPTubkV7x5OZbyulNne23vFza//vP9NV3lPjb8P1zxiSpvu1TInkXuXpvkH+8rbRyOjNgaW
+        yp7pV+qeu3Gb52f12VL9dku417FcENA13RRyPUru0z5j525Omc1c82L4o1ZO4uy32nunpvP+
+        f6VTVzguf5ybzyGmrrnh+KZJN+6pPHz3SOT8drOm1/sOG3Zz3f24oeRyZ/E5k3DT/7N1DXUU
+        niz8v2DdGqb1LwOD6uwPa+94z2gtf69ZmWOn9LniiVEvDHae3+UmNfVp/ostv01M182/wFGt
+        c3NHWpfbx7b/C/r4XFtuLbBMK6rnPvHQ7mZ8IIu5uFDGUxVz20edqcZz1jyauCDrokPKK0MN
+        jwO6SizFGYmGWsxFxYkAwPqMfMoCAAA=
+X-CMS-MailID: 20200705185204epcas5p3adeb4fc3473c5fc0472a7396783c5267
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+CMS-TYPE: 105P
+X-CMS-RootMailID: 20200705185204epcas5p3adeb4fc3473c5fc0472a7396783c5267
+References: <CGME20200705185204epcas5p3adeb4fc3473c5fc0472a7396783c5267@epcas5p3.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Changes since v2:
+- Use file append infra (O_APPEND/RWF_APPEND) to trigger zone-append
+(Christoph, Wilcox)
+- Added Block I/O path changes (Damien). Avoided append split into multi-bio.
+- Added patch to extend zone-append in block-layer to support bvec iov_iter.
+Append using io-uring fixed-buffer is enabled with this.
+- Made io-uring support code more concise, added changes mentioned by Pavel.
 
-syzbot found the following crash on:
+v2: https://lore.kernel.org/io-uring/1593105349-19270-1-git-send-email-joshi.k@samsung.com/
 
-HEAD commit:    e44f65fd xen-netfront: remove redundant assignment to vari..
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=120f87e5100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=829871134ca5e230
-dashboard link: https://syzkaller.appspot.com/bug?extid=14e0e4960091ffae7cf7
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11818aa7100000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10f997d3100000
+Changes since v1:
+- No new opcodes in uring or aio. Use RWF_ZONE_APPEND flag instead.
+- linux-aio changes vanish because of no new opcode
+- Fixed the overflow and other issues mentioned by Damien
+- Simplified uring support code, fixed the issues mentioned by Pavel
+- Added error checks for io-uring fixed-buffer and sync kiocb
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+14e0e4960091ffae7cf7@syzkaller.appspotmail.com
+v1: https://lore.kernel.org/io-uring/1592414619-5646-1-git-send-email-joshi.k@samsung.com/
 
-netlink: 26 bytes leftover after parsing attributes in process `syz-executor982'.
-==================================================================
-BUG: KASAN: use-after-free in nla_len include/net/netlink.h:1135 [inline]
-BUG: KASAN: use-after-free in nla_memcpy+0x9c/0xa0 lib/nlattr.c:724
-Read of size 2 at addr ffff8880a0ca8414 by task syz-executor982/6816
+Cover letter (updated):
 
-CPU: 0 PID: 6816 Comm: syz-executor982 Not tainted 5.8.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x18f/0x20d lib/dump_stack.c:118
- print_address_description.constprop.0.cold+0xae/0x436 mm/kasan/report.c:383
- __kasan_report mm/kasan/report.c:513 [inline]
- kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
- nla_len include/net/netlink.h:1135 [inline]
- nla_memcpy+0x9c/0xa0 lib/nlattr.c:724
- nla_get_u64 include/net/netlink.h:1606 [inline]
- __cfg802154_wpan_dev_from_attrs+0x3e0/0x510 net/ieee802154/nl802154.c:55
- nl802154_prepare_wpan_dev_dump.constprop.0+0xf9/0x490 net/ieee802154/nl802154.c:245
- nl802154_dump_llsec_dev+0xc0/0xb10 net/ieee802154/nl802154.c:1655
- genl_lock_dumpit+0x7f/0xb0 net/netlink/genetlink.c:575
- netlink_dump+0x4cd/0xf60 net/netlink/af_netlink.c:2245
- __netlink_dump_start+0x643/0x900 net/netlink/af_netlink.c:2353
- genl_family_rcv_msg_dumpit+0x2ac/0x310 net/netlink/genetlink.c:638
- genl_family_rcv_msg net/netlink/genetlink.c:733 [inline]
- genl_rcv_msg+0x797/0x9e0 net/netlink/genetlink.c:753
- netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2469
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:764
- netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1329
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1918
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:672
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2352
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2406
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2439
- do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:359
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x4413c9
-Code: Bad RIP value.
-RSP: 002b:00007fff5b30bca8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00000000004413c9
-RDX: 0000000000000000 RSI: 0000000020000000 RDI: 0000000000000003
-RBP: 00000000006cb018 R08: 00000000004002c8 R09: 00000000004002c8
-R10: 0000000000000004 R11: 0000000000000246 R12: 0000000000402140
-R13: 00000000004021d0 R14: 0000000000000000 R15: 0000000000000000
+This patchset enables zone-append using io-uring/linux-aio, on block IO path.
+Purpose is to provide zone-append consumption ability to applications which are
+using zoned-block-device directly.
+Application can send write with existing O/RWF_APPEND;On a zoned-block-device
+this will trigger zone-append. On regular block device existing behavior is
+retained. However, infra allows zone-append to be triggered on any file if
+FMODE_ZONE_APPEND (new kernel-only fmode) is set during open.
 
-Allocated by task 6815:
- save_stack+0x1b/0x40 mm/kasan/common.c:48
- set_track mm/kasan/common.c:56 [inline]
- __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:494
- __kmalloc_reserve net/core/skbuff.c:142 [inline]
- __alloc_skb+0xae/0x550 net/core/skbuff.c:210
- alloc_skb include/linux/skbuff.h:1083 [inline]
- netlink_alloc_large_skb net/netlink/af_netlink.c:1175 [inline]
- netlink_sendmsg+0x94f/0xd90 net/netlink/af_netlink.c:1893
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:672
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2352
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2406
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2439
- do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:359
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
+With zone-append, written-location within zone is known only after completion.
+So apart from usual return value of write, additional mean is needed to obtain
+the actual written location.
 
-Freed by task 6815:
- save_stack+0x1b/0x40 mm/kasan/common.c:48
- set_track mm/kasan/common.c:56 [inline]
- kasan_set_free_info mm/kasan/common.c:316 [inline]
- __kasan_slab_free+0xf5/0x140 mm/kasan/common.c:455
- __cache_free mm/slab.c:3426 [inline]
- kfree+0x103/0x2c0 mm/slab.c:3757
- skb_free_head net/core/skbuff.c:590 [inline]
- skb_release_data+0x6d9/0x910 net/core/skbuff.c:610
- skb_release_all net/core/skbuff.c:664 [inline]
- __kfree_skb net/core/skbuff.c:678 [inline]
- consume_skb net/core/skbuff.c:837 [inline]
- consume_skb+0xc2/0x160 net/core/skbuff.c:831
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x53b/0x7d0 net/netlink/af_netlink.c:1329
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1918
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:672
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2352
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2406
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2439
- do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:359
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
+In aio, this is returned to application using res2 field of io_event -
 
-The buggy address belongs to the object at ffff8880a0ca8400
- which belongs to the cache kmalloc-512 of size 512
-The buggy address is located 20 bytes inside of
- 512-byte region [ffff8880a0ca8400, ffff8880a0ca8600)
-The buggy address belongs to the page:
-page:ffffea0002832a00 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0
-flags: 0xfffe0000000200(slab)
-raw: 00fffe0000000200 ffffea00029e1288 ffffea00028ef888 ffff8880aa000a80
-raw: 0000000000000000 ffff8880a0ca8000 0000000100000004 0000000000000000
-page dumped because: kasan: bad access detected
+struct io_event {
+        __u64           data;           /* the data field from the iocb */
+        __u64           obj;            /* what iocb this event came from */
+        __s64           res;            /* result code for this event */
+        __s64           res2;           /* secondary result */
+};
 
-Memory state around the buggy address:
- ffff8880a0ca8300: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff8880a0ca8380: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->ffff8880a0ca8400: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                         ^
- ffff8880a0ca8480: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff8880a0ca8500: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
+In io-uring, cqe->flags is repurposed for zone-append result.
 
+struct io_uring_cqe {
+        __u64   user_data;      /* sqe->data submission passed back */
+        __s32   res;            /* result code for this event */
+        __u32   flags;
+};
 
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+32 bit flags is not sufficient, to cover zone-size represented by chunk_sectors.
+Discussions in the LKML led to following ways to go about it -
+Option 1: Return zone-relative offset in sector/512b unit
+Option 2: Return zone-relative offset in bytes
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+With option #1, io-uring changes remain minimal, relatively clean, and extra
+checks and conversions are avoided in I/O path. Also ki_complete interface change
+is avoided (last parameter ret2 is of long type, which cannot store return value
+in bytes). Bad part of the choice is - return value is in 512b units and not in
+bytes. To hide that, a wrapper needs to be written in user-space that converts
+cqe->flags value to bytes and combines with zone-start.
+
+Option #2 requires pulling some bits from cqe->res and combine those with
+cqe->flags to store result in bytes. This bitwise scattering needs to be done
+by kernel in I/O path, and application still needs to have a relatively
+heavyweight wrapper to assemble the pieces so that both cqe->res and append
+location are derived correctly.
+
+Patchset picks option #1.
+
+Kanchan Joshi (2):
+  fs: introduce FMODE_ZONE_APPEND and IOCB_ZONE_APPEND
+  block: enable zone-append for iov_iter of bvec type
+
+Selvakumar S (2):
+  block: add zone append handling for direct I/O path
+  io_uring: add support for zone-append
+
+ block/bio.c        | 31 ++++++++++++++++++++++++++++---
+ fs/block_dev.c     | 49 ++++++++++++++++++++++++++++++++++++++++---------
+ fs/io_uring.c      | 21 +++++++++++++++++++--
+ include/linux/fs.h | 14 ++++++++++++--
+ 4 files changed, 99 insertions(+), 16 deletions(-)
+
+-- 
+2.7.4
+
