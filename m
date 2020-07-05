@@ -2,119 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43FB7214A8E
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Jul 2020 08:12:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDCBB214A95
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Jul 2020 08:26:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726597AbgGEGMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Jul 2020 02:12:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726523AbgGEGMk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Jul 2020 02:12:40 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33503C08C5DE
-        for <linux-kernel@vger.kernel.org>; Sat,  4 Jul 2020 23:12:40 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id cm21so6129331pjb.3
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Jul 2020 23:12:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=fPweZ6DZU1ENxuozio/NA02HLt4qwCgCF26PVdwgmUw=;
-        b=eHez7mRezl3LRANbjE9V3fYHuiKTipMbrZxyLSQ8DYa+CsUnkd7R93uYjLh8qhclBF
-         astTE3wzBXb6w0ko4CNb3iCWSSyKMABzRVflBHuKZATMtETPiDqIYxCGlugWhQxJnQAe
-         tcWFVOjHZeqkFFnKprhnoBDKbp1h+KP0S01jU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=fPweZ6DZU1ENxuozio/NA02HLt4qwCgCF26PVdwgmUw=;
-        b=Cphm9w0uk/x5zKlfc6/6SG3BQG/0RY8SfU/uCyWF3yvBoJSym5dQNlOr8I/SWg/udJ
-         K27inkHf2vxYE3BBoufjd6nPlgvxy0zz0IIGsXNEB0qK348agUGQ9kj9x75SaZ4oGbG1
-         avDHnAkf/w4yL1RLT8orENkqsu284aMr6ONIHdCsfZXeFVk3VLlx7+Lj4fHbosOh4QCO
-         b9i5z1dhFH/ZBjq+i9BjjftkcjOrB1Iop2C67ToJZCRASet8CrAOAstSU91DaX/gND0A
-         C4+nzb4vON1DQzxt/a3AWdJ0A/xqIfyLKfgzdDLxtrqP8QAcSBQss2ZhN0QvXOpFtHuQ
-         1dxA==
-X-Gm-Message-State: AOAM5331VntEMLCgK6EMou8qDvhkHdAsDz5I62A4ipPnW3IEjYGSmfSs
-        NKZHe7AuzwBI1x0SxgLam5gHnw==
-X-Google-Smtp-Source: ABdhPJz3fz9uNnH3pm1N5xpLDXk919zAKiGqawBuegK156HeIrG5riLllTgK7fEcIVuXZxaN1UTCSw==
-X-Received: by 2002:a17:90a:c5:: with SMTP id v5mr46527588pjd.192.1593929559801;
-        Sat, 04 Jul 2020 23:12:39 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id n62sm5275663pjb.28.2020.07.04.23.12.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 04 Jul 2020 23:12:37 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        Keno Fischer <keno@juliacomputing.com>,
-        Oleg Nesterov <oleg@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] selftests/seccomp: Check ENOSYS under tracing
-Date:   Sat,  4 Jul 2020 23:12:32 -0700
-Message-Id: <20200705061232.4151319-4-keescook@chromium.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200705061232.4151319-1-keescook@chromium.org>
-References: <20200705061232.4151319-1-keescook@chromium.org>
+        id S1726270AbgGEGZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Jul 2020 02:25:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46978 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725873AbgGEGZX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Jul 2020 02:25:23 -0400
+Received: from localhost.localdomain (unknown [89.208.247.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 58031207CD;
+        Sun,  5 Jul 2020 06:25:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593930322;
+        bh=j/k1+B7wkCi8TSTAT6vwsg8IilF6kwnCgtC2Tyh8esI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=IBJqT+/t6RF8oJE4tYJNDhNag1zBFY9YGGFiI1+roc5OKJAHNR5pHc67IMt+86PSL
+         ffzMSMcJL7BhRaBnmK6iWQMIWGEZ6PFlG4cjwTyDRkSKnoE9B9eU5YwUiZ25uVceED
+         BNA61f5ly40MihKlN4cTxwu+idkiuLAZ5hqt36Mc=
+From:   guoren@kernel.org
+To:     palmerdabbelt@google.com, paul.walmsley@sifive.com,
+        anup@brainfault.org, greentime.hu@sifive.com, zong.li@sifive.com,
+        guoren@kernel.org
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-csky@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Atish Patra <atish.patra@wdc.com>
+Subject: [PATCH] riscv: Add STACKPROTECTOR supported
+Date:   Sun,  5 Jul 2020 06:24:15 +0000
+Message-Id: <1593930255-12378-1-git-send-email-guoren@kernel.org>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There should be no difference between -1 and other negative syscalls
-while tracing.
+From: Guo Ren <guoren@linux.alibaba.com>
 
-Cc: Andy Lutomirski <luto@amacapital.net>
-Cc: Will Drewry <wad@chromium.org>
-Cc: Will Deacon <will@kernel.org>
-Cc: Keno Fischer <keno@juliacomputing.com>
-Signed-off-by: Kees Cook <keescook@chromium.org>
+The -fstack-protector & -fstack-protector-strong features are from
+gcc. The patch only add basic kernel support to stack-protector
+feature and some arch could have its own solution such as
+ARM64_PTR_AUTH.
+
+After enabling STACKPROTECTOR and STACKPROTECTOR_STRONG, the .text
+size is expanded from  0x7de066 to 0x81fb32 (only 5%) to add canary
+checking code.
+
+Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>
+Cc: Palmer Dabbelt <palmerdabbelt@google.com>
+Cc: Albert Ou <aou@eecs.berkeley.edu>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Björn Töpel <bjorn.topel@gmail.com>
+Cc: Greentime Hu <green.hu@gmail.com>
+Cc: Atish Patra <atish.patra@wdc.com>
 ---
- tools/testing/selftests/seccomp/seccomp_bpf.c | 26 +++++++++++++++++++
- 1 file changed, 26 insertions(+)
+ arch/riscv/Kconfig                      |  1 +
+ arch/riscv/include/asm/stackprotector.h | 29 +++++++++++++++++++++++++++++
+ arch/riscv/kernel/process.c             |  6 ++++++
+ 3 files changed, 36 insertions(+)
+ create mode 100644 arch/riscv/include/asm/stackprotector.h
 
-diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
-index 966dec340ea8..bf6aa06c435c 100644
---- a/tools/testing/selftests/seccomp/seccomp_bpf.c
-+++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
-@@ -1973,6 +1973,32 @@ FIXTURE_TEARDOWN(TRACE_syscall)
- 	teardown_trace_fixture(_metadata, self->tracer);
- }
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index f927a91..4b0e308 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -63,6 +63,7 @@ config RISCV
+ 	select HAVE_PERF_EVENTS
+ 	select HAVE_PERF_REGS
+ 	select HAVE_PERF_USER_STACK_DUMP
++	select HAVE_STACKPROTECTOR
+ 	select HAVE_SYSCALL_TRACEPOINTS
+ 	select IRQ_DOMAIN
+ 	select MODULES_USE_ELF_RELA if MODULES
+diff --git a/arch/riscv/include/asm/stackprotector.h b/arch/riscv/include/asm/stackprotector.h
+new file mode 100644
+index 00000000..5962f88
+--- /dev/null
++++ b/arch/riscv/include/asm/stackprotector.h
+@@ -0,0 +1,29 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++#ifndef _ASM_RISCV_STACKPROTECTOR_H
++#define _ASM_RISCV_STACKPROTECTOR_H
++
++#include <linux/random.h>
++#include <linux/version.h>
++
++extern unsigned long __stack_chk_guard;
++
++/*
++ * Initialize the stackprotector canary value.
++ *
++ * NOTE: this must only be called from functions that never return,
++ * and it must always be inlined.
++ */
++static __always_inline void boot_init_stack_canary(void)
++{
++	unsigned long canary;
++
++	/* Try to get a semi random initial value. */
++	get_random_bytes(&canary, sizeof(canary));
++	canary ^= LINUX_VERSION_CODE;
++	canary &= CANARY_MASK;
++
++	current->stack_canary = canary;
++	__stack_chk_guard = current->stack_canary;
++}
++#endif /* _ASM_RISCV_STACKPROTECTOR_H */
+diff --git a/arch/riscv/kernel/process.c b/arch/riscv/kernel/process.c
+index 824d117..6548929 100644
+--- a/arch/riscv/kernel/process.c
++++ b/arch/riscv/kernel/process.c
+@@ -24,6 +24,12 @@
  
-+TEST(negative_ENOSYS)
-+{
-+	/* Untraced negative syscalls should return ENOSYS. */
-+	errno = 0;
-+	EXPECT_EQ(-1, syscall(-1));
-+	EXPECT_EQ(errno, ENOSYS);
-+	errno = 0;
-+	EXPECT_EQ(-1, syscall(-101));
-+	EXPECT_EQ(errno, ENOSYS);
-+}
+ register unsigned long gp_in_global __asm__("gp");
+ 
++#ifdef CONFIG_STACKPROTECTOR
++#include <linux/stackprotector.h>
++unsigned long __stack_chk_guard __read_mostly;
++EXPORT_SYMBOL(__stack_chk_guard);
++#endif
 +
-+TEST_F(TRACE_syscall, negative_ENOSYS)
-+{
-+	/*
-+	 * There should be no difference between an "internal" skip
-+	 * and userspace asking for syscall "-1".
-+	 */
-+	errno = 0;
-+	EXPECT_EQ(-1, syscall(-1));
-+	EXPECT_EQ(errno, ENOSYS);
-+	/* And no difference for "still not valid but not -1". */
-+	errno = 0;
-+	EXPECT_EQ(-1, syscall(-101));
-+	EXPECT_EQ(errno, ENOSYS);
-+}
-+
- TEST_F(TRACE_syscall, syscall_allowed)
- {
- 	/* getppid works as expected (no changes). */
+ extern asmlinkage void ret_from_fork(void);
+ extern asmlinkage void ret_from_kernel_thread(void);
+ 
 -- 
-2.25.1
+2.7.4
 
