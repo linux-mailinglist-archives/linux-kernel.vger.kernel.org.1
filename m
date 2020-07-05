@@ -2,103 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B13FC214AA2
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Jul 2020 08:37:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F698214AAB
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Jul 2020 08:41:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726538AbgGEGh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Jul 2020 02:37:29 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:35187 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726331AbgGEGh3 (ORCPT
+        id S1726519AbgGEGk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Jul 2020 02:40:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45754 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725873AbgGEGk6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Jul 2020 02:37:29 -0400
-X-UUID: ff88b3d6a95543858b0dd4c0a8e8f9ee-20200705
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=H8QcGrkRwb9r12g7RW7vRcc+HdqW1TEDVi2UVMczqEw=;
-        b=SyBFKzt8HafvmDNlNr/QJY+rNqs1gp4N8QAsXeHSHaQa44Zc7rsfbqekJkaPx3B2hHe8WDrCCgtw8MSoz+swPdnpAmHV4dFPQTZJJwslx1GiGrO63OmL4D9YjD08Qk0AxyegqcnQuOT+fYarnvu7c9G2XbwZMKTejiU5vnU92nw=;
-X-UUID: ff88b3d6a95543858b0dd4c0a8e8f9ee-20200705
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
-        (envelope-from <dennis-yc.hsieh@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 1973456499; Sun, 05 Jul 2020 14:37:21 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Sun, 5 Jul 2020 14:37:18 +0800
-Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sun, 5 Jul 2020 14:37:18 +0800
-From:   Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Jassi Brar <jaswinder.singh@linaro.org>,
+        Sun, 5 Jul 2020 02:40:58 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA226C061794
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Jul 2020 23:40:58 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id m22so6577253pgv.9
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Jul 2020 23:40:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=OMeXN5/b7K5fCIhCyqLI0LAfiQ3ZT4Xn9DFmhUax7hA=;
+        b=eNOc7OZ5WQuVvw9x8zJ9169rpmQEyowaV3xV9hS4Mn/7b4fEALpTa1ag82sk0ud3Qx
+         w6ZOU+s5CQkc1aoJ/uKiDl2OzS3oeqjMH41KezFL69/QsUc4RA4mlTbeqdYe/CA/oCXM
+         pVWKkzlNlfZK7Da5eO78z7ngEsxnAzXjsOXB0m+2fy7CgDsBuyZViv+uxy3EMfQqgxW6
+         63+f89JlOSQc57Xc0oyU10idVv0nJ0jknWHNJLz/1XL/KP+oNyR0+DyGAGnfDZ8Yii3F
+         RK9en0m6hBMrGgedi/U6nNfxGDRGS3m4tpfk3ak5AJOHDnA3R42WW6pWebSmKI7yukkS
+         6hRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=OMeXN5/b7K5fCIhCyqLI0LAfiQ3ZT4Xn9DFmhUax7hA=;
+        b=lDPMDtFRdMJEtBjFPhHpnaq7VrjvqYgmAPCewbufu2PqKmbIzIv6svWqQkhYP3yILh
+         /o9mkZK94egy84De+GGJGJMZ3/I1d+eQw81JUH2KTLkbr4n4eNmXe5pBjaSCB9260dIY
+         Ca3RapQJgH9LeofiFFCvqt46LhLiIzR57rgCb6tSdqmmKWg7Mc74blToM9Loe+gRVjPH
+         d2DshqIhC7KonyDN5uXsg7ycxtAu+RIktaVimfGaMmCYbzigO3LcbJ8s2BHmUrc5rNkK
+         xrPa5Z9+edzB6yTRqTWFDgIeiBC7ZPI5l4QophOR3e8Ma85Lnr6gMkCK/kkBOG/P/tGj
+         Uo2A==
+X-Gm-Message-State: AOAM530OaPeYAQhxzVEn+L8R/JiTH6mDHc8mV9QoOVCTxBSXPGnXJWEr
+        gAc9uL9wD7Y3ikMxK6NGDs4=
+X-Google-Smtp-Source: ABdhPJwFJVuPIlYS9uzm3lCCCEeYYAlNF6O3cqT7mA+2dthYpcVek8XypOHlgUU0nyaP/Tg6rl51OA==
+X-Received: by 2002:a63:1641:: with SMTP id 1mr35512763pgw.370.1593931257956;
+        Sat, 04 Jul 2020 23:40:57 -0700 (PDT)
+Received: from gmail.com ([2601:600:9b7f:872e:a655:30fb:7373:c762])
+        by smtp.gmail.com with ESMTPSA id w29sm16082400pfq.128.2020.07.04.23.40.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 04 Jul 2020 23:40:57 -0700 (PDT)
+Date:   Sat, 4 Jul 2020 23:40:55 -0700
+From:   Andrei Vagin <avagin@gmail.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
         Mark Rutland <mark.rutland@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Bibby Hsieh <bibby.hsieh@mediatek.com>,
-        CK Hu <ck.hu@mediatek.com>
-CC:     <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>,
-        Houlong Wei <houlong.wei@mediatek.com>,
-        HS Liao <hs.liao@mediatek.com>,
-        Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>
-Subject: [PATCH v8 4/4] mailbox: mediatek: cmdq: clear task in channel before shutdown
-Date:   Sun, 5 Jul 2020 14:37:16 +0800
-Message-ID: <1593931037-24405-5-git-send-email-dennis-yc.hsieh@mediatek.com>
-X-Mailer: git-send-email 1.7.9.5
-In-Reply-To: <1593931037-24405-1-git-send-email-dennis-yc.hsieh@mediatek.com>
-References: <1593931037-24405-1-git-send-email-dennis-yc.hsieh@mediatek.com>
+        Thomas Gleixner <tglx@linutronix.de>,
+        Dmitry Safonov <dima@arista.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>
+Subject: Re: [PATCH v5 0/6] arm64: add the time namespace support
+Message-ID: <20200705064055.GA28894@gmail.com>
+References: <20200624083321.144975-1-avagin@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=koi8-r
+Content-Disposition: inline
+In-Reply-To: <20200624083321.144975-1-avagin@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RG8gc3VjY2VzcyBjYWxsYmFjayBpbiBjaGFubmVsIHdoZW4gc2h1dGRvd24uIEZvciB0aG9zZSB0
-YXNrIG5vdCBmaW5pc2gsDQpjYWxsYmFjayB3aXRoIGVycm9yIGNvZGUgdGh1cyBjbGllbnQgaGFz
-IGNoYW5jZSB0byBjbGVhbnVwIG9yIHJlc2V0Lg0KDQpTaWduZWQtb2ZmLWJ5OiBEZW5uaXMgWUMg
-SHNpZWggPGRlbm5pcy15Yy5oc2llaEBtZWRpYXRlay5jb20+DQpSZXZpZXdlZC1ieTogQ0sgSHUg
-PGNrLmh1QG1lZGlhdGVrLmNvbT4NClJldmlld2VkLWJ5OiBCaWJieSBIc2llaCA8YmliYnkuaHNp
-ZWhAbWVkaWF0ZWsuY29tPg0KLS0tDQogZHJpdmVycy9tYWlsYm94L210ay1jbWRxLW1haWxib3gu
-YyB8ICAgMzggKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrDQogMSBmaWxlIGNo
-YW5nZWQsIDM4IGluc2VydGlvbnMoKykNCg0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvbWFpbGJveC9t
-dGstY21kcS1tYWlsYm94LmMgYi9kcml2ZXJzL21haWxib3gvbXRrLWNtZHEtbWFpbGJveC5jDQpp
-bmRleCAwOGJkNGYxZWI0NjkuLjQ4NGQ0NDM4Y2Q4MyAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvbWFp
-bGJveC9tdGstY21kcS1tYWlsYm94LmMNCisrKyBiL2RyaXZlcnMvbWFpbGJveC9tdGstY21kcS1t
-YWlsYm94LmMNCkBAIC0zNDksNiArMzQ5LDEyIEBAIHN0YXRpYyBpbnQgY21kcV9tYm94X3NlbmRf
-ZGF0YShzdHJ1Y3QgbWJveF9jaGFuICpjaGFuLCB2b2lkICpkYXRhKQ0KIA0KIAlpZiAobGlzdF9l
-bXB0eSgmdGhyZWFkLT50YXNrX2J1c3lfbGlzdCkpIHsNCiAJCVdBUk5fT04oY2xrX2VuYWJsZShj
-bWRxLT5jbG9jaykgPCAwKTsNCisJCS8qDQorCQkgKiBUaGUgdGhyZWFkIHJlc2V0IHdpbGwgY2xl
-YXIgdGhyZWFkIHJlbGF0ZWQgcmVnaXN0ZXIgdG8gMCwNCisJCSAqIGluY2x1ZGluZyBwYywgZW5k
-LCBwcmlvcml0eSwgaXJxLCBzdXNwZW5kIGFuZCBlbmFibGUuIFRodXMNCisJCSAqIHNldCBDTURR
-X1RIUl9FTkFCTEVEIHRvIENNRFFfVEhSX0VOQUJMRV9UQVNLIHdpbGwgZW5hYmxlDQorCQkgKiB0
-aHJlYWQgYW5kIG1ha2UgaXQgcnVubmluZy4NCisJCSAqLw0KIAkJV0FSTl9PTihjbWRxX3RocmVh
-ZF9yZXNldChjbWRxLCB0aHJlYWQpIDwgMCk7DQogDQogCQl3cml0ZWwodGFzay0+cGFfYmFzZSA+
-PiBjbWRxLT5zaGlmdF9wYSwNCkBAIC0zOTEsNiArMzk3LDM4IEBAIHN0YXRpYyBpbnQgY21kcV9t
-Ym94X3N0YXJ0dXAoc3RydWN0IG1ib3hfY2hhbiAqY2hhbikNCiANCiBzdGF0aWMgdm9pZCBjbWRx
-X21ib3hfc2h1dGRvd24oc3RydWN0IG1ib3hfY2hhbiAqY2hhbikNCiB7DQorCXN0cnVjdCBjbWRx
-X3RocmVhZCAqdGhyZWFkID0gKHN0cnVjdCBjbWRxX3RocmVhZCAqKWNoYW4tPmNvbl9wcml2Ow0K
-KwlzdHJ1Y3QgY21kcSAqY21kcSA9IGRldl9nZXRfZHJ2ZGF0YShjaGFuLT5tYm94LT5kZXYpOw0K
-KwlzdHJ1Y3QgY21kcV90YXNrICp0YXNrLCAqdG1wOw0KKwl1bnNpZ25lZCBsb25nIGZsYWdzOw0K
-Kw0KKwlzcGluX2xvY2tfaXJxc2F2ZSgmdGhyZWFkLT5jaGFuLT5sb2NrLCBmbGFncyk7DQorCWlm
-IChsaXN0X2VtcHR5KCZ0aHJlYWQtPnRhc2tfYnVzeV9saXN0KSkNCisJCWdvdG8gZG9uZTsNCisN
-CisJV0FSTl9PTihjbWRxX3RocmVhZF9zdXNwZW5kKGNtZHEsIHRocmVhZCkgPCAwKTsNCisNCisJ
-LyogbWFrZSBzdXJlIGV4ZWN1dGVkIHRhc2tzIGhhdmUgc3VjY2VzcyBjYWxsYmFjayAqLw0KKwlj
-bWRxX3RocmVhZF9pcnFfaGFuZGxlcihjbWRxLCB0aHJlYWQpOw0KKwlpZiAobGlzdF9lbXB0eSgm
-dGhyZWFkLT50YXNrX2J1c3lfbGlzdCkpDQorCQlnb3RvIGRvbmU7DQorDQorCWxpc3RfZm9yX2Vh
-Y2hfZW50cnlfc2FmZSh0YXNrLCB0bXAsICZ0aHJlYWQtPnRhc2tfYnVzeV9saXN0LA0KKwkJCQkg
-bGlzdF9lbnRyeSkgew0KKwkJY21kcV90YXNrX2V4ZWNfZG9uZSh0YXNrLCBDTURRX0NCX0VSUk9S
-KTsNCisJCWtmcmVlKHRhc2spOw0KKwl9DQorDQorCWNtZHFfdGhyZWFkX2Rpc2FibGUoY21kcSwg
-dGhyZWFkKTsNCisJY2xrX2Rpc2FibGUoY21kcS0+Y2xvY2spOw0KK2RvbmU6DQorCS8qDQorCSAq
-IFRoZSB0aHJlYWQtPnRhc2tfYnVzeV9saXN0IGVtcHR5IG1lYW5zIHRocmVhZCBhbHJlYWR5IGRp
-c2FibGUuIFRoZQ0KKwkgKiBjbWRxX21ib3hfc2VuZF9kYXRhKCkgYWx3YXlzIHJlc2V0IHRocmVh
-ZCB3aGljaCBjbGVhciBkaXNhYmxlIGFuZA0KKwkgKiBzdXNwZW5kIHN0YXR1ZSB3aGVuIGZpcnN0
-IHBrdCBzZW5kIHRvIGNoYW5uZWwsIHNvIHRoZXJlIGlzIG5vIG5lZWQNCisJICogdG8gZG8gYW55
-IG9wZXJhdGlvbiBoZXJlLCBvbmx5IHVubG9jayBhbmQgbGVhdmUuDQorCSAqLw0KKwlzcGluX3Vu
-bG9ja19pcnFyZXN0b3JlKCZ0aHJlYWQtPmNoYW4tPmxvY2ssIGZsYWdzKTsNCiB9DQogDQogc3Rh
-dGljIGludCBjbWRxX21ib3hfZmx1c2goc3RydWN0IG1ib3hfY2hhbiAqY2hhbiwgdW5zaWduZWQg
-bG9uZyB0aW1lb3V0KQ0KLS0gDQoxLjcuOS41DQo=
+On Wed, Jun 24, 2020 at 01:33:15AM -0700, Andrei Vagin wrote:
+> Allocate the time namespace page among VVAR pages and add the logic
+> to handle faults on VVAR properly.
+> 
+> If a task belongs to a time namespace then the VVAR page which contains
+> the system wide VDSO data is replaced with a namespace specific page
+> which has the same layout as the VVAR page. That page has vdso_data->seq
+> set to 1 to enforce the slow path and vdso_data->clock_mode set to
+> VCLOCK_TIMENS to enforce the time namespace handling path.
+> 
+> The extra check in the case that vdso_data->seq is odd, e.g. a concurrent
+> update of the VDSO data is in progress, is not really affecting regular
+> tasks which are not part of a time namespace as the task is spin waiting
+> for the update to finish and vdso_data->seq to become even again.
+> 
+> If a time namespace task hits that code path, it invokes the corresponding
+> time getter function which retrieves the real VVAR page, reads host time
+> and then adds the offset for the requested clock which is stored in the
+> special VVAR page.
+> 
+
+> v2: Code cleanups suggested by Vincenzo.
+> v3: add a comment in __arch_get_timens_vdso_data.
+> v4: - fix an issue reported by the lkp robot.
+>     - vvar has the same size with/without CONFIG_TIME_NAMESPACE, but the
+>       timens page isn't allocated on !CONFIG_TIME_NAMESPACE. This
+>       simplifies criu/vdso migration between different kernel configs.
+> v5: - Code cleanups suggested by Mark Rutland.
+>     - In vdso_join_timens, mmap_write_lock is downgraded to
+>       mmap_read_lock. The VMA list isn't changed there, zap_page_range
+>       doesn't require mmap_write_lock.
+> 
+> Reviewed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+> Reviewed-by: Dmitry Safonov <dima@arista.com>
+
+Hello Will and Catalin,
+
+Have you had a chance to look at this patch set? I think it is ready to be
+merged. Let me know if you have any questions.
+
+Thanks,
+Andrei
 
