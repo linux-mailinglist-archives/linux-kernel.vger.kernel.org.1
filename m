@@ -2,96 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34031214C5E
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Jul 2020 14:12:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39B96214C66
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Jul 2020 14:15:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727072AbgGEMMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Jul 2020 08:12:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40002 "EHLO
+        id S1726906AbgGEMPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Jul 2020 08:15:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726939AbgGEMML (ORCPT
+        with ESMTP id S1726692AbgGEMPH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Jul 2020 08:12:11 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCA14C061794
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Jul 2020 05:12:10 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id dr13so39552207ejc.3
-        for <linux-kernel@vger.kernel.org>; Sun, 05 Jul 2020 05:12:10 -0700 (PDT)
+        Sun, 5 Jul 2020 08:15:07 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC8ACC061794
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Jul 2020 05:15:06 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id j80so32516849qke.0
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Jul 2020 05:15:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=7mX8hu/WWjnwnEyPTlU3MGnHpJuzqdu2Apw48vMC6z4=;
-        b=FynBPSjDhveS96iN5Y0RalC1idg3UpwKXyEYfOeZzLo2ogVhqEy87dxLuAgtsox3SM
-         0whLGGo62pu83HJdLhY3CrWldzxYFN460mOqGomto6LXz36fymnmJfA5Mufh+qQx9M/W
-         ao69skQFA9ywZgRdnrpEF6yM9wnsf97mBvIohYf4H8h/2UmxfVy6d2dv+9Zl4T/ysM8E
-         S4LCilQdYEyxH4J8KMn/ILcOUrCmy9HSb+B6nLw+zXb8sywWxFkWREcJul+F5CNwIMmW
-         B7xIeo2WhAv5C0/kge5WGslynFQ1q32Ve9xBUaGvTvhJTtG61gKKXs1wvOeX+de/Shzy
-         w+pA==
+        d=lca.pw; s=google;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=NeeC3BoKw9HtpTq+ErElyvyWue7It9U6wNs4zBp3mYg=;
+        b=jmu3wSIHJp3Wh+uXtKDaQe03zcCuhSCj9u2xsXl+awOyc4qL7l27wQFCJDjBG0ud2M
+         z7/wYmik9tYcpR0FQ8vD+SQWCecLj3Ygz0jImAV/LqWJCab/Dan+3/70WEsourVpRnOF
+         G+RO13T2q4yxdETNMJtYbWUNrnMTFGWIL9KfjtHxI1aYkKoohjDcyu2KJpdOOzRM2ZBP
+         /i0A2hu84HhT9jtU+/ipOLxj6r/siHjCbJAIOzoPSriuq0oviw9NHz+X3zBTydCPwxCp
+         L+kUlZSkfU71NEidNsA2+I+mzH5Jc5bt8Hu9LZiasauqzoWg8pBcm7uGWdVi+ahI1/1p
+         QJnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=7mX8hu/WWjnwnEyPTlU3MGnHpJuzqdu2Apw48vMC6z4=;
-        b=DdcGNXmIPLe53blN0mG7Hm0ozg6EzYpFDUPakwMd2NvDes6ZdSjbbfirVQpzi3i13N
-         p1rYeqahrI8Rcmx8dHSSrvzKZMnVjY8M3m4yaLqHT8YocW57qvVERIsA+9g+W/QAfVn2
-         FqKU83/i2hb2AtnCWG3Gp06l6KZl+0XdOqyRDd53bv34xejBLM/HmgDqIicSiOsFnDvX
-         dQjimCfeZ2PIB7oDZjqxHqrCjRueJW7LdlT2EQlX6VttXDT1Ur7MqLpZVzNZ+E0PUbbt
-         UsFr+nzpsPspW2n7/fn8pUD9VJHnfqF+Sy958rX/uBBigfjLuiolxzrkQgQpWW8v2URL
-         oYzQ==
-X-Gm-Message-State: AOAM530DlmmXFH+APZh81iYZ8JhPSAcq/wF87yvrJhP+6Bz0QfYvORpk
-        XzNZ1o/L7tzULH9HjSfoxAke9w==
-X-Google-Smtp-Source: ABdhPJxbbizoo6eyMSZAaCuAXhtp8LdMYWIATAGhR85b9Jl9t3L4F4IQXUwdy/72ySrxdyoGZO3coQ==
-X-Received: by 2002:a17:906:5006:: with SMTP id s6mr38495933ejj.294.1593951129593;
-        Sun, 05 Jul 2020 05:12:09 -0700 (PDT)
-Received: from localhost.localdomain (212-5-158-133.ip.btc-net.bg. [212.5.158.133])
-        by smtp.gmail.com with ESMTPSA id j64sm1517458edd.61.2020.07.05.05.12.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 05 Jul 2020 05:12:09 -0700 (PDT)
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     Kyungmin Park <kyungmin.park@samsung.com>,
-        Kamil Debski <kamil@wypas.org>,
-        Jeongtae Park <jtp.park@samsung.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Maheshwar Ajja <majja@codeaurora.org>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Subject: [PATCH 4/4] media: docs: Depricate mfc frame skip control
-Date:   Sun,  5 Jul 2020 15:11:28 +0300
-Message-Id: <20200705121128.5250-5-stanimir.varbanov@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200705121128.5250-1-stanimir.varbanov@linaro.org>
-References: <20200705121128.5250-1-stanimir.varbanov@linaro.org>
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=NeeC3BoKw9HtpTq+ErElyvyWue7It9U6wNs4zBp3mYg=;
+        b=E7pGj2Gnrx2oV4Dnu6kHtk45ctic6ZH53Ym7s80oqA3EhTPEhgKW6t8o4pH3C8fmyS
+         ovdIPQiWJ4KhVw8WqK+LjAK+DFNAhs8YUGlPT1ZvKpdQ4RhKeAtzuH+utktlWTgleO/r
+         G0H+GqFrU04hkrF9Dz/ylNNSlSmc2bmjbqibEG5hBz10zFntX93nVkMDlEJEvpAvid4O
+         WSrfw89yuMmfZCQHmDZ/qBG2JilkBSr5K0h3IzP82ijtNtRW/HYL15w71Fccs6uq6gN2
+         KV/C3qoEjomj/LHWX6Znal0xnvpvmPK13h5qKmfV8HkyQ2Y8xbc7jMC9mBE8fXMTsX/E
+         jung==
+X-Gm-Message-State: AOAM531Maaat+Vz5+N5Jc8xmVcY4ieMOwsao5jUF0lvXdWgy8RJ1UsT1
+        wdQo9FGVduGkuHsAYk8Pjp2PUb2HeQuWag==
+X-Google-Smtp-Source: ABdhPJwnCItzWm07jx6a0u/P4LRFpyoPar9X+my51ckRR3JgOZCzNSkpYlL6jdAiJdAtVb4NH3p5/A==
+X-Received: by 2002:a37:b041:: with SMTP id z62mr26042069qke.448.1593951305098;
+        Sun, 05 Jul 2020 05:15:05 -0700 (PDT)
+Received: from [192.168.1.183] (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
+        by smtp.gmail.com with ESMTPSA id y67sm12708546qka.101.2020.07.05.05.15.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 05 Jul 2020 05:15:04 -0700 (PDT)
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: quoted-printable
+From:   Qian Cai <cai@lca.pw>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [mm] 4e2c82a409: ltp.overcommit_memory01.fail
+Date:   Sun, 5 Jul 2020 08:15:03 -0400
+Message-Id: <FAAE2B23-2565-4F36-B278-018A5AD219EE@lca.pw>
+References: <20200705044454.GA90533@shbuild999.sh.intel.com>
+Cc:     kernel test robot <rong.a.chen@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Kees Cook <keescook@chromium.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>, andi.kleen@intel.com,
+        tim.c.chen@intel.com, dave.hansen@intel.com, ying.huang@intel.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org, lkp@lists.01.org
+In-Reply-To: <20200705044454.GA90533@shbuild999.sh.intel.com>
+To:     Feng Tang <feng.tang@intel.com>
+X-Mailer: iPhone Mail (17F80)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Depricate mfc private frame skip mode control for new
-clients and use the standard one instead.
 
-Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
----
- Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst | 5 +++++
- 1 file changed, 5 insertions(+)
 
-diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-index a8b4c0b40747..c0760bfc54d4 100644
---- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-+++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-@@ -2805,6 +2805,11 @@ MFC 5.1 Control IDs
- ``V4L2_CID_MPEG_MFC51_VIDEO_FRAME_SKIP_MODE``
-     (enum)
- 
-+    .. note::
-+
-+       This control is depricated. Use the standard one
-+       ``V4L2_CID_MPEG_VIDEO_FRAME_SKIP_MODE`` instead.
-+
- enum v4l2_mpeg_mfc51_video_frame_skip_mode -
-     Indicates in what conditions the encoder should skip frames. If
-     encoding a frame would cause the encoded stream to be larger then a
--- 
-2.17.1
+> On Jul 5, 2020, at 12:45 AM, Feng Tang <feng.tang@intel.com> wrote:
+>=20
+> I did reproduce the problem, and from the debugging, this should
+> be the same root cause as lore.kernel.org/lkml/20200526181459.GD991@lca.pw=
+/
+> that loosing the batch cause some accuracy problem, and the solution of
+> adding some sync is still needed, which is dicussed in
 
+Well, before taking any of those patches now to fix the regression, we will n=
+eed some performance data first. If it turned out the original performance g=
+ain is no longer relevant anymore due to this regression fix on top, it is b=
+est to drop this patchset and restore that VM_WARN_ONCE, so you can retry la=
+ter once you found a better way to optimize.=
