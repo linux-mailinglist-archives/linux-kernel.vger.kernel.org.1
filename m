@@ -2,76 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9CF5214E70
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Jul 2020 20:18:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D815214E80
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Jul 2020 20:28:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727962AbgGESSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Jul 2020 14:18:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53906 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727859AbgGESSL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Jul 2020 14:18:11 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5521B20720;
-        Sun,  5 Jul 2020 18:18:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593973091;
-        bh=ZcyrfoWN8MHHgOfd7nwKxw3dttJq6mqbG1jYnjHLddQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fMwO1tF7X+Qe3aFk1yGRRfk0zU6kFp6AxXSN2NRPvaP6MYjEbP4+y2WQaKMRfXVFh
-         Hw7lWfl8t5bqOFxXCYUhdI4/glZ8TV0VMcoZ70b3tW+XqWGw1kikGQzDNVBXc/8WwE
-         c3Gn0NIzBL2kYtDE+MSTmycyMkPOKbFj2+9ssHiY=
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.lan)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1js9DN-009Dpy-Rr; Sun, 05 Jul 2020 19:18:09 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Alexander Graf <graf@amazon.com>, kvmarm@lists.cs.columbia.edu
-Cc:     kernel-team@android.com, James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: arm64: Change default caching mode for {PEND, PROP}BASER.outer
-Date:   Sun,  5 Jul 2020 19:18:03 +0100
-Message-Id: <159397301833.254690.3043556347352831821.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200701140206.8664-1-graf@amazon.com>
-References: <20200701140206.8664-1-graf@amazon.com>
+        id S1728044AbgGES2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Jul 2020 14:28:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727859AbgGES2B (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Jul 2020 14:28:01 -0400
+X-Greylist: delayed 311 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 05 Jul 2020 11:28:01 PDT
+Received: from mail.aperture-lab.de (mail.aperture-lab.de [IPv6:2a01:4f8:171:314c::100:a1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72252C061794
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Jul 2020 11:28:01 -0700 (PDT)
+From:   =?UTF-8?q?Linus=20L=C3=BCssing?= <linus.luessing@c0d3.blue>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=c0d3.blue; s=2018;
+        t=1593973363;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=BWLNZff+/2GVoco07cWEeMqx/qFYTKj66Lb7zdTUnbM=;
+        b=KHY10xfprOr13lO/b9r4ocoUTapsaRf42ZvcqVJnC/K7ZurJWGaaxQb+V6GS61hcLlpAUz
+        4CSdTNvRBZAwHl6fVA6ee3y89+1aLdeZInm7FdcO+OAN0GFet0+E1h9dRFObkd3KBdqRre
+        VCiMGfA0cpf1c9qlY+jMNE7vbOd+01/nIYnDPEQ+1eXJfSdSvPQzsI7livM9y8FDdu2Es6
+        TD+T3ZmXDm8Nugyaa5Sg6vMOucfRG17MqpLQPTIjOnZ1uKZ9hjE+PiPCDNBGETDL+AeIQs
+        CaAL3HJZrdJVyxSC1TtAzHDdE7YH/lLGIFAG00GNUNJy5rIvs7Eb63xzwDH7xw==
+To:     netdev@vger.kernel.org
+Cc:     Roopa Prabhu <roopa@cumulusnetworks.com>,
+        Nikolay Aleksandrov <nikolay@cumulusnetworks.com>,
+        Martin Weinelt <martin@linuxlounge.net>,
+        "David S . Miller" <davem@davemloft.net>,
+        bridge@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Linus=20L=C3=BCssing?= <linus.luessing@c0d3.blue>
+Subject: [PATCH net] bridge: mcast: Fix MLD2 Report IPv6 payload length check
+Date:   Sun,  5 Jul 2020 20:22:34 +0200
+Message-Id: <20200705182234.10257-1-linus.luessing@c0d3.blue>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: graf@amazon.com, kvmarm@lists.cs.columbia.edu, kernel-team@android.com, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Authentication-Results: ORIGINATING;
+        auth=pass smtp.auth=linus.luessing@c0d3.blue smtp.mailfrom=linus.luessing@c0d3.blue
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 1 Jul 2020 16:02:06 +0200, Alexander Graf wrote:
-> PENDBASER and PROPBASER define the outer caching mode for LPI tables.
-> The memory backing them may not be outer sharable, so we mark them as nC
-> by default. This however, breaks Windows on ARM which only accepts
-> SameAsInner or RaWaWb as values for outer cachability.
-> 
-> We do today already allow the outer mode to be set to SameAsInner
-> explicitly, so the easy fix is to default to that instead of nC for
-> situations when an OS asks for a not fulfillable cachability request.
-> 
-> [...]
+Commit e57f61858b7c ("net: bridge: mcast: fix stale nsrcs pointer in
+igmp3/mld2 report handling") introduced a small bug which would potentially
+lead to accepting an MLD2 Report with a broken IPv6 header payload length
+field.
 
-Applied to kvm-arm64/next-5.9, thanks!
+The check needs to take into account the 2 bytes for the "Number of
+Sources" field in the "Multicast Address Record" before reading it.
+And not the size of a pointer to this field.
 
-[1/1] KVM: arm64: vgic-its: Change default outer cacheability for {PEND, PROP}BASER
-      commit: 731532176716e2775a5d21115bb9c5c61e0cb704
+Fixes: e57f61858b7c ("net: bridge: mcast: fix stale nsrcs pointer in igmp3/mld2 report handling")
+Signed-off-by: Linus Lüssing <linus.luessing@c0d3.blue>
+---
+ net/bridge/br_multicast.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Cheers,
-
-	M.
+diff --git a/net/bridge/br_multicast.c b/net/bridge/br_multicast.c
+index 83490bf73a13..4c4a93abde68 100644
+--- a/net/bridge/br_multicast.c
++++ b/net/bridge/br_multicast.c
+@@ -1000,21 +1000,21 @@ static int br_ip6_multicast_mld2_report(struct net_bridge *br,
+ 	num = ntohs(icmp6h->icmp6_dataun.un_data16[1]);
+ 	len = skb_transport_offset(skb) + sizeof(*icmp6h);
+ 
+ 	for (i = 0; i < num; i++) {
+ 		__be16 *_nsrcs, __nsrcs;
+ 		u16 nsrcs;
+ 
+ 		nsrcs_offset = len + offsetof(struct mld2_grec, grec_nsrcs);
+ 
+ 		if (skb_transport_offset(skb) + ipv6_transport_len(skb) <
+-		    nsrcs_offset + sizeof(_nsrcs))
++		    nsrcs_offset + sizeof(__nsrcs))
+ 			return -EINVAL;
+ 
+ 		_nsrcs = skb_header_pointer(skb, nsrcs_offset,
+ 					    sizeof(__nsrcs), &__nsrcs);
+ 		if (!_nsrcs)
+ 			return -EINVAL;
+ 
+ 		nsrcs = ntohs(*_nsrcs);
+ 		grec_len = struct_size(grec, grec_src, nsrcs);
+ 
 -- 
-Without deviation from the norm, progress is not possible.
-
+2.27.0
 
