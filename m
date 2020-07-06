@@ -2,84 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EB742159D6
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 16:46:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2086C215A14
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 16:56:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729238AbgGFOqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 10:46:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729140AbgGFOqg (ORCPT
+        id S1729402AbgGFO4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 10:56:21 -0400
+Received: from cmccmta1.chinamobile.com ([221.176.66.79]:6839 "EHLO
+        cmccmta1.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729229AbgGFO4V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 10:46:36 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E58E1C061755
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Jul 2020 07:46:35 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1594046794;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LraJN8c9SSrjQA7IMqbSzEalKGMV2AcQF0lddX0uZjw=;
-        b=pNYHdXo3uo06jVPYTs7f38ecXnHKAST/Jw10LKSmqNvuCrML0UwO0y/15jWeQnhradofZd
-        +Nl/qgtAwILnB8NoKFCKisXkLWR7BtpP4mHV2ya3lIgKubzSrz7Nl8IuBnTTW43mC3De5h
-        +mfn0kiSWX9QdJmpBvuTv2IXRX5UwFq9Fo8/FiakmA0lMaaDJZs0GZv3qrxznNXwUDqvz+
-        wWpRu4VbbDA8w14w2X6A/nX73TXoIWs/OfLMGBjzWJKw5AK5veuHSrd/BObPv/AE9gDGes
-        ax0bNOOZeDA78EEFKD5D8YRNG2L2FCKcd8ojCoHH8PpKzaXP07MyjIc9z0HaEQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1594046794;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LraJN8c9SSrjQA7IMqbSzEalKGMV2AcQF0lddX0uZjw=;
-        b=rhK/PrOrssg2qs4+fJwuPBKS2Jj0jnIlqtOcPI9cYaIDbhhyDfoo79VcXe6LobJDT3JFjY
-        E3Gy6fH4LFPHTIAw==
-To:     Mihai Carabas <mihai.carabas@oracle.com>,
-        linux-kernel@vger.kernel.org
-Cc:     mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        Mihai Carabas <mihai.carabas@oracle.com>
-Subject: Re: [PATCH RFC 3/7] x86: kernel: cpu: bugs.c: modify static_cpu_has to boot_cpu_has
-In-Reply-To: <1593703107-8852-4-git-send-email-mihai.carabas@oracle.com>
-References: <1593703107-8852-1-git-send-email-mihai.carabas@oracle.com> <1593703107-8852-4-git-send-email-mihai.carabas@oracle.com>
-Date:   Mon, 06 Jul 2020 16:46:33 +0200
-Message-ID: <87tuykr99y.fsf@nanos.tec.linutronix.de>
+        Mon, 6 Jul 2020 10:56:21 -0400
+X-Greylist: delayed 547 seconds by postgrey-1.27 at vger.kernel.org; Mon, 06 Jul 2020 10:56:18 EDT
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.1]) by rmmx-syy-dmz-app02-12002 (RichMail) with SMTP id 2ee25f033961a8e-4271c; Mon, 06 Jul 2020 22:46:57 +0800 (CST)
+X-RM-TRANSID: 2ee25f033961a8e-4271c
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from localhost.localdomain (unknown[112.0.156.39])
+        by rmsmtp-syy-appsvr01-12001 (RichMail) with SMTP id 2ee15f03395dfa9-abca0;
+        Mon, 06 Jul 2020 22:46:57 +0800 (CST)
+X-RM-TRANSID: 2ee15f03395dfa9-abca0
+From:   Tang Bin <tangbin@cmss.chinamobile.com>
+To:     davem@davemloft.net
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tang Bin <tangbin@cmss.chinamobile.com>,
+        Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+Subject: [PATCH] net/amd: Remove needless assignment and the extra brank lines
+Date:   Mon,  6 Jul 2020 22:47:01 +0800
+Message-Id: <20200706144701.7500-1-tangbin@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.20.1.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mihai Carabas <mihai.carabas@oracle.com> writes:
+The variable 'err = -ENODEV;' in au1000_probe() is
+duplicate, so remove redundant one. And remove the
+extra blank lines in the file au1000_eth.c
 
-> The usage of static_cpu_has in bugs.c file is counter-productive
-> since the code is executed once but there is extra effort to patch
-> it and keep alternatives in a special section --- so there is both
-> space and time cost.
->
-> Quote from _static_cpu_has definition:
-> /*
->  * Static testing of CPU features. Used the same as boot_cpu_has(). It
->  * statically patches the target code for additional performance. Use
->  * static_cpu_has() only in fast paths, where every cycle counts. Which
->  * means that the boot_cpu_has() variant is already fast enough for the
->  * majority of cases and you should stick to using it as it is generally
->  * only two instructions: a RIP-relative MOV and a TEST.
->  */
->
-> There are two other places where static_cpu_has is used and might be
-> considered critical paths: __speculation_ctrl_update() and vmx_l1d_flush().
->
-> Given these facts, changing static_cpu_has to boot_cpu_has is done in
-> order to bypass alternative instructions which cannot be updated at runtime
-> for now.
+Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+---
+ drivers/net/ethernet/amd/au1000_eth.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-Not going to happen. We are not adding 4 conditionals to context switch
-just to support that late loading horrors. There are better ways to do
-that.
+diff --git a/drivers/net/ethernet/amd/au1000_eth.c b/drivers/net/ethernet/amd/au1000_eth.c
+index 089a4fbc6..7dd8f2104 100644
+--- a/drivers/net/ethernet/amd/au1000_eth.c
++++ b/drivers/net/ethernet/amd/au1000_eth.c
+@@ -243,7 +243,6 @@ MODULE_VERSION(DRV_VERSION);
+  * ps: make sure the used irqs are configured properly in the board
+  * specific irq-map
+  */
+-
+ static void au1000_enable_mac(struct net_device *dev, int force_reset)
+ {
+ 	unsigned long flags;
+@@ -558,7 +557,6 @@ static int au1000_mii_probe(struct net_device *dev)
+ 	return 0;
+ }
+ 
+-
+ /*
+  * Buffer allocation/deallocation routines. The buffer descriptor returned
+  * has the virtual and dma address of a buffer suitable for
+@@ -649,7 +647,6 @@ au1000_setup_hw_rings(struct au1000_private *aup, void __iomem *tx_base)
+ /*
+  * ethtool operations
+  */
+-
+ static void
+ au1000_get_drvinfo(struct net_device *dev, struct ethtool_drvinfo *info)
+ {
+@@ -682,7 +679,6 @@ static const struct ethtool_ops au1000_ethtool_ops = {
+ 	.set_link_ksettings = phy_ethtool_set_link_ksettings,
+ };
+ 
+-
+ /*
+  * Initialize the interface.
+  *
+@@ -1258,7 +1254,6 @@ static int au1000_probe(struct platform_device *pdev)
+ 		aup->rx_db_inuse[i] = pDB;
+ 	}
+ 
+-	err = -ENODEV;
+ 	for (i = 0; i < NUM_TX_DMA; i++) {
+ 		pDB = au1000_GetFreeDB(aup);
+ 		if (!pDB)
+-- 
+2.20.1.windows.1
 
-Thanks,
 
-        tglx
+
