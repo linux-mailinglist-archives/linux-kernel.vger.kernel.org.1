@@ -2,84 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B51F6215A77
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 17:15:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC48B215A7C
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 17:16:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729372AbgGFPPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 11:15:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34808 "EHLO
+        id S1729364AbgGFPQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 11:16:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729197AbgGFPPC (ORCPT
+        with ESMTP id S1729248AbgGFPQl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 11:15:02 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCC34C061755
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Jul 2020 08:15:02 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1594048501;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DsNO+/1JsvNJbroP7auXk8XsvL1r19S8fjPApteHYN8=;
-        b=EPvISo3L8lTW3nOG0l4QQjdLDPqehXQWSPg0uYBgQTwb/2KQxNxocE0nezNIW5Nq/KVq6B
-        TXH102N4t2a5WS8VwMNASYBNsgk67x/zpJ7XEnRKaugcvYhV8meFiXbPG78mBYFwaeQAxv
-        zg+zd4gXAqmNkBikmYsIrdMRJ2D3yFBElYFkh8HO5ujoWdFgoKJzSi53fj6vBd3nDbvLV4
-        rIENbVz7M85G4SO8HBc9GLb6Wr6KwfUOfzcPy+88EuRleXoCxdVmDqMoWg1KypPYvkXwUQ
-        t9MTuN+PUKLCPXmh6cKnGhfsI8DSUQpcI/eOvlW7ExDWJCmqoHnXeKP/+wTAzA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1594048501;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DsNO+/1JsvNJbroP7auXk8XsvL1r19S8fjPApteHYN8=;
-        b=QJ0oiGCoBT5kpWsl8vz/8h8yGNN+XQ7VSxBpK8tMLdSxgUOfZB3+GWDcizxQgEQ4YgVBlH
-        9ZrSQdbAF/oaEwDw==
-To:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Mihai Carabas <mihai.carabas@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, mingo@redhat.com, bp@alien8.de,
-        x86@kernel.org, boris.ostrovsky@oracle.com, konrad.wilk@oracle.com
-Subject: Re: [PATCH RFC 0/7] CPU feature evaluation after microcode late loading
-In-Reply-To: <20200702184216.GG3575@linux.intel.com>
-References: <1593703107-8852-1-git-send-email-mihai.carabas@oracle.com> <20200702184216.GG3575@linux.intel.com>
-Date:   Mon, 06 Jul 2020 17:15:00 +0200
-Message-ID: <87r1tor7yj.fsf@nanos.tec.linutronix.de>
+        Mon, 6 Jul 2020 11:16:41 -0400
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE383C061755;
+        Mon,  6 Jul 2020 08:16:41 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id h17so32281911oie.3;
+        Mon, 06 Jul 2020 08:16:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Mm0vlTFeGVgW52u5moYgXz2m36p/HxW/iJhsgevmAS4=;
+        b=EyM9DJYgqZsfV1SWVc6/M1TBfo943qBuFXf5P/E6J7iYHMrGfMddh8f16SGETs8O39
+         lIxfxF/rTSfECK/dKFraXWB0ycJ1DgmZXorcjsiBpZ+dNmB2styG078yQA7UYG9ie8vk
+         2UvYS5b3qc4b4u3T0/yQOVqq4RdiPe4/wpFrhDWhkY/chO/7FTDxLOpX/a4pv4R4P2Zr
+         y8QQYxS4QDuI1EtdTKNdBteZzke2Tbt7FYHfaZhVhx75ybd/ugpePj9rojS864P7xGc4
+         a9rEChxFvVl5FM7XpdwJgfrpEqkznVw2fvGYPn01vSO8ZbxKdayeyAeU5tEgMlV7n6SJ
+         SInA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Mm0vlTFeGVgW52u5moYgXz2m36p/HxW/iJhsgevmAS4=;
+        b=gSptpDuBUMAXYTkhDJvYo5iGHT2yv1ndq+hvs0c1f1PyYfF7qI/OMamkolWBvNOPj6
+         O84tj6l2Z2JGMD39S5RNsW/VEfi6JX1n1Nf4PrGfezQnUJxu+h0bufBts93EKESLUvhG
+         ph9g+SvUwM3InhfW2oh++uor84jr5nCPdvn1hicsXkPJQsw+ZXtlSQrpI41y8Cx+UnuM
+         xBzXrnnANnA5GCRa2ya8eK0v3HC8uQkUu3SqlubJEi+pq9Ioj3ukCe7rRdXi9BvwyXc8
+         bogTSXaLccCcUa4zmvGkgUdoTvePIKsl/wui+gC8Js6BD1MxKV2Y52TvAq1xhLkkTv0j
+         2W2g==
+X-Gm-Message-State: AOAM532+Dx9OlLA4qIA0BclwMcMiSCQubaB+r8cU6Yg3sw0a0lmHaJpx
+        TjlPHUz4iBMbMsd637dkK8xr7i5EYKKafk7MK/o=
+X-Google-Smtp-Source: ABdhPJz3jFtfs8keb/hU5mf/blBJGfZsbjbw6DrxhYWX14llhEIm6YVIu7lKlcEqAOrV5AJ4qYixrhMaJPm7aonPFCA=
+X-Received: by 2002:aca:4fd3:: with SMTP id d202mr34901622oib.142.1594048601058;
+ Mon, 06 Jul 2020 08:16:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <1589494238-2933-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <CAMuHMdW8aQyHm7uzOd3cL2kPXc0EZ=DN_MmVa4AVFLqo5PwMKA@mail.gmail.com>
+In-Reply-To: <CAMuHMdW8aQyHm7uzOd3cL2kPXc0EZ=DN_MmVa4AVFLqo5PwMKA@mail.gmail.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Mon, 6 Jul 2020 16:16:15 +0100
+Message-ID: <CA+V-a8um0M4S2EL0yRvY0TZRZ2vkgEy+Q_nJahHs1KiZX=YRvA@mail.gmail.com>
+Subject: Re: [PATCH] arm64: defconfig: enable CONFIG_PCIE_RCAR_HOST
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sean Christopherson <sean.j.christopherson@intel.com> writes:
-> On Thu, Jul 02, 2020 at 06:18:20PM +0300, Mihai Carabas wrote:
->> This RFC patch set aims to provide the ability to re-evaluate all CPU
->> features and take proper bug mitigation in place after a microcode
->> late loading.
->> 
->> This was debated last year and this patch set implements a subset of
->> point #2 from Thomas Gleixner's idea:
->> https://lore.kernel.org/lkml/alpine.DEB.2.21.1909062237580.1902@nanos.tec.linutronix.de/
+Hi Geert,
 
-An incomplete and dangerous subset.
-
-> KVM aside, it wouldn't surprise in the least if there is other code in the
-> kernel that captures bug state locally.  This series feels like it needs a
-> fair bit of infrastructure to either detect conflicting usage at build time
-> or actively prevent consuming stale state at runtime.
+On Fri, May 15, 2020 at 8:22 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 >
-> There's also the problem of the flags being exposed to userspace via
-> /proc/cpuinfo, though I suppose that's userspace's problem to not shoot
-> itself in the foot.
+> Hi Prabhakar,
+>
+> On Fri, May 15, 2020 at 12:10 AM Lad Prabhakar
+> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> > config option PCIE_RCAR internally selects PCIE_RCAR_HOST which builds the
+> > same driver. So this patch renames CONFIG_PCIE_RCAR to
+> > CONFIG_PCIE_RCAR_HOST so that PCIE_RCAR can be safely dropped from Kconfig
+> > file.
+> >
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > Reviewed-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+>
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+>
+> I wrote before:
+>
+>    "I can take patch 2/11 through renesas-devel.
+>     Probably it's best if I submit it to arm-soc as a fix for v5.8, after
+>     the driver part has been merged into v5.8-rc1."
+>
+> so this will have to wait for v5.8-rc1.
+>
+Now that v5.8-rc1 is available can you please queue this patch.
 
-User space is the least of my worries. Inconsistent kernel state as I
-described in my mail referenced above is the far more dangerous issue.
+Cheers,
+--Prabhakar
 
-And just reevaluating some bits is not covering the whole
-problem. Microcode can bring substantial changes and as long as we don't
-have any clear advise and documentation from the vendors it's all
-wishful thinking.
-
-Thanks,
-
-        tglx
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
