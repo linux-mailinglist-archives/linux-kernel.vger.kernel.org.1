@@ -2,116 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F6002150FA
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 03:44:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 928202150FE
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 03:44:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728590AbgGFBnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Jul 2020 21:43:19 -0400
-Received: from mga18.intel.com ([134.134.136.126]:11124 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728430AbgGFBnS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Jul 2020 21:43:18 -0400
-IronPort-SDR: ag5V6HbAViY+CkPJE665DDz4HzcJljPD8RH9PfPy42LA7Y3zNr8VzgSd3fVP1NPP2CQ39eAtP5
- 1iotGj1Of5Pw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9673"; a="134803047"
-X-IronPort-AV: E=Sophos;i="5.75,318,1589266800"; 
-   d="scan'208";a="134803047"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jul 2020 18:43:18 -0700
-IronPort-SDR: tI7NthIGo8GW+RU/lbxxRFrecLwMUGm2L4cRXYSupUl97TkEau6NhFp69DN4TjqiQNOs1/RH0Z
- uTeZY0DjHPrQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,318,1589266800"; 
-   d="scan'208";a="296850630"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.107])
-  by orsmga002.jf.intel.com with ESMTP; 05 Jul 2020 18:43:13 -0700
-Date:   Mon, 6 Jul 2020 09:43:13 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     Qian Cai <cai@lca.pw>
-Cc:     kernel test robot <rong.a.chen@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Kees Cook <keescook@chromium.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>, andi.kleen@intel.com,
-        tim.c.chen@intel.com, dave.hansen@intel.com, ying.huang@intel.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org, lkp@lists.01.org
-Subject: Re: [mm] 4e2c82a409: ltp.overcommit_memory01.fail
-Message-ID: <20200706014313.GB66252@shbuild999.sh.intel.com>
-References: <20200705044454.GA90533@shbuild999.sh.intel.com>
- <FAAE2B23-2565-4F36-B278-018A5AD219EE@lca.pw>
- <20200705125854.GA66252@shbuild999.sh.intel.com>
- <20200705155232.GA608@lca.pw>
+        id S1728672AbgGFBn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Jul 2020 21:43:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728430AbgGFBnZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Jul 2020 21:43:25 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEB7FC061794;
+        Sun,  5 Jul 2020 18:43:24 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4B0SyH0ln5z9sDX;
+        Mon,  6 Jul 2020 11:43:18 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1593999800;
+        bh=1G1w5foTPLzMSqkizEB3dQQHU9BJDlBNIyWwFvDqBAI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Rzpt9LG7+GqSloMm8kCKK+WEro1KxFTa4K848rXPwc+NR6l0vC2E+xv5nmTErtOf3
+         jCH/UEqf5SsgmbczNWS34KWzyCGqJIAlqae4MUb68fHBbZwm4edHRUe0SIb3piVUBz
+         Wyk3AaTWP7eoO1Fm0vuZQP9wpEnDUDD78bbHYRGSWkmhiNm433p7bylRX5U/4mWaTE
+         IVkBTejGm52v7VvYDlQwexAatfZPy/Pnszz8kIBsq1y0bwuxh3AqmSRJGdxDWuYzvt
+         GgDG6s3hFkRV/iurCq7H3WTy04JlYxr10OgvB1Ayq+hvF8TxxW2oXEhV8j2sUn2Mvw
+         wBbGayX+G+RZA==
+Date:   Mon, 6 Jul 2020 11:43:16 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        David Miller <davem@davemloft.net>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andriin@fb.com>
+Subject: Re: linux-next: manual merge of the bpf-next tree with the bpf tree
+Message-ID: <20200706114316.400be49e@canb.auug.org.au>
+In-Reply-To: <20200626100527.4dad8695@canb.auug.org.au>
+References: <20200626100527.4dad8695@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200705155232.GA608@lca.pw>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Type: multipart/signed; boundary="Sig_/23I18qynHUoHQ.hO=eYNg5E";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 05, 2020 at 11:52:32AM -0400, Qian Cai wrote:
-> On Sun, Jul 05, 2020 at 08:58:54PM +0800, Feng Tang wrote:
-> > On Sun, Jul 05, 2020 at 08:15:03AM -0400, Qian Cai wrote:
-> > > 
-> > > 
-> > > > On Jul 5, 2020, at 12:45 AM, Feng Tang <feng.tang@intel.com> wrote:
-> > > > 
-> > > > I did reproduce the problem, and from the debugging, this should
-> > > > be the same root cause as lore.kernel.org/lkml/20200526181459.GD991@lca.pw/
-> > > > that loosing the batch cause some accuracy problem, and the solution of
-> > > > adding some sync is still needed, which is dicussed in
-> > > 
-> > > Well, before taking any of those patches now to fix the regression,
-> > > we will need some performance data first. If it turned out the
-> > > original performance gain is no longer relevant anymore due to this
-> > > regression fix on top, it is best to drop this patchset and restore
-> > > that VM_WARN_ONCE, so you can retry later once you found a better
-> > > way to optimize.
-> > 
-> > The fix of adding sync only happens when the memory policy is being
-> > changed to OVERCOMMIT_NEVER, which is not a frequent operation in
-> > normal cases.
-> > 
-> > For the performance improvment data both in commit log and 0day report
-> > https://lore.kernel.org/lkml/20200622132548.GS5535@shao2-debian/
-> > it is for the will-it-scale's mmap testcase, which will not runtime
-> > change memory overcommit policy, so the data should be still valid
-> > with this fix.
-> 
-> Well, I would expect people are perfectly reasonable to use
-> OVERCOMMIT_NEVER for some workloads making it more frequent operations.
+--Sig_/23I18qynHUoHQ.hO=eYNg5E
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-In my last email, I was not saying OVERCOMMIT_NEVER is not a normal case,
-but I don't think user will too frequently runtime change the overcommit
-policy. And the fix patch of syncing 'vm_committed_as' is only called when
-user calls 'sysctl -w vm.overcommit_memory=2'.
+Hi all,
 
-> The question is now if any of those regression fixes would now regress
-> performance of OVERCOMMIT_NEVER workloads or just in-par with the data
-> before the patchset?
+On Fri, 26 Jun 2020 10:05:27 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> Today's linux-next merge of the bpf-next tree got a conflict in:
+>=20
+>   tools/testing/selftests/bpf/progs/bpf_iter_netlink.c
+>=20
+> between commits:
+>=20
+>   9c82a63cf370 ("libbpf: Fix CO-RE relocs against .text section")
+>   647b502e3d54 ("selftests/bpf: Refactor some net macros to bpf_tracing_n=
+et.h")
+>=20
+> from the bpf tree and commit:
+>=20
+>   84544f5637ff ("selftests/bpf: Move newer bpf_iter_* type redefining to =
+a new header file")
+>=20
+> from the bpf-next tree.
+>=20
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+>=20
+> diff --cc tools/testing/selftests/bpf/progs/bpf_iter_netlink.c
+> index 75ecf956a2df,cec82a419800..000000000000
+> --- a/tools/testing/selftests/bpf/progs/bpf_iter_netlink.c
+> +++ b/tools/testing/selftests/bpf/progs/bpf_iter_netlink.c
+> @@@ -11,21 -7,7 +7,7 @@@
+>  =20
+>   char _license[] SEC("license") =3D "GPL";
+>  =20
+> - #define sk_rmem_alloc	sk_backlog.rmem_alloc
+> - #define sk_refcnt	__sk_common.skc_refcnt
+> -=20
+> - struct bpf_iter_meta {
+> - 	struct seq_file *seq;
+> - 	__u64 session_id;
+> - 	__u64 seq_num;
+> - } __attribute__((preserve_access_index));
+> -=20
+> - struct bpf_iter__netlink {
+> - 	struct bpf_iter_meta *meta;
+> - 	struct netlink_sock *sk;
+> - } __attribute__((preserve_access_index));
+> -=20
+>  -static inline struct inode *SOCK_INODE(struct socket *socket)
+>  +static __attribute__((noinline)) struct inode *SOCK_INODE(struct socket=
+ *socket)
+>   {
+>   	return &container_of(socket, struct socket_alloc, socket)->vfs_inode;
+>   }
 
-For the original patchset, it keeps vm_committed_as unchanged for
-OVERCOMMIT_NEVER policy and enlarge it for the other 2 loose policies
-OVERCOMMIT_ALWAYS and OVERCOMMIT_GUESS, and I don't expect the "OVERCOMMIT_NEVER
-workloads" performance  will be impacted. If you have suggetions for this
-kind of benchmarks, I can test them to better verify the patchset, thanks!
+This is now a conflict between net-next tree and the net tree.
 
-- Feng
+--=20
+Cheers,
+Stephen Rothwell
 
-> 
-> Given now this patchset has had so much churn recently, I would think
-> "should be still valid" is not really the answer we are looking for.
-> 
-> > 
-> > Thanks,
-> > Feng
-> > 
-> > 
+--Sig_/23I18qynHUoHQ.hO=eYNg5E
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8CgbQACgkQAVBC80lX
+0GwXaAf/WSMHGgauwreog5bZWHBRaI8CKhxEYFjH80ugpyBm2n9o168kfOIjw3u/
+JNFCWFAaSl3eM1ry6r9bl8PShzyHMdEpuYXr1DUTn+6UQvuYXD7JpLR8NAm8Snha
+ik2AOAkPWe4soJ9XbuooNuLDEeozXLgNsIkgBO+1/lHHu5EgGskoPexGaMvLyAlu
+YDsIQ9iv8kcjXXxJiA+wXy4XhTbL3Yl/IYXiWenvWy3lkIDc+7VDV248o5V4vXKb
+sWSQzxz2EDEEq6cdgqHcnQ0HUAk4f4j8u0ppnZ11kjH1UE1qAE4+6MDhOWF+Qi9o
+ht9wzCNyje1AVKE46szGqt6t1A8RSQ==
+=JZE7
+-----END PGP SIGNATURE-----
+
+--Sig_/23I18qynHUoHQ.hO=eYNg5E--
