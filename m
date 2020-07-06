@@ -2,116 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B3C7215D94
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 19:58:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B08BF215DDF
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 20:01:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729759AbgGFR5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 13:57:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60020 "EHLO
+        id S1729698AbgGFSBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 14:01:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729732AbgGFR5h (ORCPT
+        with ESMTP id S1729589AbgGFSBI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 13:57:37 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1515C061794
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Jul 2020 10:57:36 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id z13so42121911wrw.5
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 10:57:36 -0700 (PDT)
+        Mon, 6 Jul 2020 14:01:08 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF552C061755;
+        Mon,  6 Jul 2020 11:01:08 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id o22so12289905pjw.2;
+        Mon, 06 Jul 2020 11:01:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=oTojjIFZzclanf7cLLuaYi/sgvjqGLuwhbXDv27Czb8=;
-        b=OK6kB8Q0qPe86xIOUaHuGwfdS2zOPVnI1nFVI5idSlyGCaQ0kwkLr5OQ3iqaCDrVgp
-         bSOqJkCjp0ec0QS590uLshH3kIWpHf1xbHU4eFZSHTSz2iazne518HLTBvJhqDK56dUJ
-         VfvvqQ499iFKyO7u5d9hnovYGKCEt81Di/gCvWZ/6DEke38vxLl9lqh8sFCeusLjL1Ml
-         2qR161f3NJOvDObqFI6szLGqFQi4ZzNG3O+MRRM8N5BRRw06NsO/2NWwp4otwehlAyaq
-         GjgvDbYRQdLgMd7gAaG1L8Juu1JYUeppORL67+udHl59TzHLYTVJB6lnzxfeszfPKiFn
-         3hag==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=djAl3AiMl95A7tE1GRS5XYxCZQGbUXsP2I8xEBywBB4=;
+        b=lczN2dwKgjJqgmZU9M4XpXNMalpvtMpGu/Oi+D1cgovOrzX6O7YWltbYZIju6O5AHg
+         47dxvpu8CtZ0ky7l60tSyFAWg2S5+iMWbyjAkjmPAIH8z+MgJVf0tO/3tdjytWc25YzI
+         EoyXmUvx6GpacOgSmVoVt/uL9YycNV2FAPSy62YW7/zeF67f8iJ0uuLRPvp2wt6H00n4
+         h8wxgdeS5OCktiFQunqnaLSfc9U7hHhmfvRcMArDwArp8dP07CNiwSo63cYHo8mRiI1n
+         Qd9why3o5/6wsMkPDHMXqPecBi7TTxtYa/AlfgjceVXvAilJ2ERBdoCDJfne/qgeNAjL
+         YQ6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=oTojjIFZzclanf7cLLuaYi/sgvjqGLuwhbXDv27Czb8=;
-        b=aJbAI+gJPsXjo4dM+rGojd4K0a4IRncSlrHIeu2B5azhZZCk2mKQSqL8VAI4rst3Sg
-         b+OVhPCFPjtd8GsNUOGtDAfImo0iRo8muKR43HSUQtOSxwOOpLO7hf+Sd6s7BUmsQBeI
-         /9hnptU47mNvWXYMEEJhpA6nMDJ2c49QYvi0Th47AyDcSKwp/3O84me8JSdMTiWdAC/W
-         kShkotdHS/0eBoUC2/cAwOpEJUgcZ/f8XBo2VyO29jrN/YSldV0eGYrs6LbxuqbBT1hT
-         ApPWvfPRjXGZXMehN7pGspRiBwUMKgPjQ8XOBVfZSaM4PHHfXrnIKn0R44+zaLtpv3YI
-         s/mw==
-X-Gm-Message-State: AOAM532xd1dXs/hZsyp0AY6HvLZySShh2ONYd2qyHSIfkkTj/ig3hj9H
-        ehbUFp14XC+sPGTbMJPQl8AjvQ==
-X-Google-Smtp-Source: ABdhPJxS0ATrWjLo9sj+XUyy8koys1QP+PJvoeoFNUvPJiTVFA4tFZil89Y+Fn6a3oT6x5JiwFKCRQ==
-X-Received: by 2002:adf:b198:: with SMTP id q24mr19941076wra.335.1594058255478;
-        Mon, 06 Jul 2020 10:57:35 -0700 (PDT)
-Received: from dell ([2.27.35.206])
-        by smtp.gmail.com with ESMTPSA id r8sm24689046wrp.40.2020.07.06.10.57.34
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=djAl3AiMl95A7tE1GRS5XYxCZQGbUXsP2I8xEBywBB4=;
+        b=HdHf8bI6q8QYyovNwn+WbmC5LMtTosVUS6G/owQlrFFuh9VGOgCmH+ONEczKKIwL16
+         IfE5nILZYwThTwF0MGlHc+o+AyN23160lXeb26LVfcgFvD9Tvz9cOvg5O76/IzkSSs+f
+         zBrCndGsYVw2c54UDy56qDZu07CDPi6mCC/A039Qqu6kcdfboU47PobaoURTJAvn7X8V
+         rl6Pc3r2TbNhb0Qv9p6Txhg9ieaRrPzvv+PxUBLDwX8kxkhL2ur273xPhqf7YM9S3Df1
+         TFuWJNKjnC/+VL48wKnhZRTTPuPnKqcDyL+M/TOM+vrTiqA8KQnpw0dFQRZK1GaW6/7J
+         wKzQ==
+X-Gm-Message-State: AOAM5317zZFWXqIdXeMa2jfQMdSeb8SmnaBk14AF+rHKYDzFf7UQSE6D
+        KRFkJ9AoDyEFi2KB4uF/pdot4MIt
+X-Google-Smtp-Source: ABdhPJwUceFmVA5F4c6ztnllLeBjbpj1RuvDse72uGenn1kyt+4hf6SjsfGLcs3Ft62WYWY2llzMwA==
+X-Received: by 2002:a17:902:ab8e:: with SMTP id f14mr43782566plr.80.1594058468118;
+        Mon, 06 Jul 2020 11:01:08 -0700 (PDT)
+Received: from localhost.localdomain ([210.56.100.149])
+        by smtp.googlemail.com with ESMTPSA id d18sm133046pjv.25.2020.07.06.11.01.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Jul 2020 10:57:34 -0700 (PDT)
-Date:   Mon, 6 Jul 2020 18:57:33 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     gregkh@linuxfoundation.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Yinghai Lu <yhlu.kernel@gmail.com>,
-        Jason Wessel <jason.wessel@windriver.com>
-Subject: Re: [PATCH 25/32] usb: early: ehci-dbgp: Remove set but never
- checked variable 'ret'
-Message-ID: <20200706175733.GB3500@dell>
-References: <20200706133341.476881-1-lee.jones@linaro.org>
- <20200706133341.476881-26-lee.jones@linaro.org>
- <87imf0mvk7.fsf@x220.int.ebiederm.org>
+        Mon, 06 Jul 2020 11:01:07 -0700 (PDT)
+From:   Puranjay Mohan <puranjay12@gmail.com>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Puranjay Mohan <puranjay12@gmail.com>, skhan@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] Security: Documentation: fix: `make htmldocs` warnings
+Date:   Mon,  6 Jul 2020 23:30:10 +0530
+Message-Id: <20200706180010.29032-1-puranjay12@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <87imf0mvk7.fsf@x220.int.ebiederm.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 06 Jul 2020, Eric W. Biederman wrote:
+Remove extra ')' after function name to fix warnings.
+It solves following warning :
+WARNING: Unparseable C cross-reference: 'groups_sort)'
+Invalid C declaration: Expected end of definition. [error at 11]
 
-> Lee Jones <lee.jones@linaro.org> writes:
-> 
-> > 'ret' hasn't  been checked since the driver's inception in 2009.
-> 
-> Minor quibble the inception was in 5c05917e7fe3 ("x86: usb debug port
-> early console, v4") in July of 2008.
+Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+---
+ Documentation/security/credentials.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I'm only going back as far as the inception of ehci-dbgp.c.
-
-> Acked-by: "Eric W. Biederman" <ebiederm@xmission.com>
-
-Great, thanks.
-
-> > Fixes the following W=1 kernel build warning(s):
-> >
-> >  drivers/usb/early/ehci-dbgp.c: In function ‘early_dbgp_write’:
-> >  drivers/usb/early/ehci-dbgp.c:915:13: warning: variable ‘ret’ set but not used [-Wunused-but-set-variable]
-> >  915 | int chunk, ret;
-> >  | ^~~
-> >
-> > Cc: Sumit Garg <sumit.garg@linaro.org>
-> > Cc: Daniel Thompson <daniel.thompson@linaro.org>
-> > Cc: Douglas Anderson <dianders@chromium.org>
-> > Cc: Petr Mladek <pmladek@suse.com>
-> > Cc: "Eric W. Biederman" <ebiederm@xmission.com>
-> > Cc: Yinghai Lu <yhlu.kernel@gmail.com>
-> > Cc: Jason Wessel <jason.wessel@windriver.com>
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > ---
-> >  drivers/usb/early/ehci-dbgp.c | 6 +++---
-> >  1 file changed, 3 insertions(+), 3 deletions(-)
-
+diff --git a/Documentation/security/credentials.rst b/Documentation/security/credentials.rst
+index 282e79feee6a..d51e42b92395 100644
+--- a/Documentation/security/credentials.rst
++++ b/Documentation/security/credentials.rst
+@@ -455,7 +455,7 @@ When replacing the group list, the new list must be sorted before it
+ is added to the credential, as a binary search is used to test for
+ membership.  In practice, this means :c:func:`groups_sort` should be
+ called before :c:func:`set_groups` or :c:func:`set_current_groups`.
+-:c:func:`groups_sort)` must not be called on a ``struct group_list`` which
++:c:func:`groups_sort` must not be called on a ``struct group_list`` which
+ is shared as it may permute elements as part of the sorting process
+ even if the array is already sorted.
+ 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.27.0
+
