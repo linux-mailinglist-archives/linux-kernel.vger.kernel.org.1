@@ -2,109 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4740A215E59
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 20:31:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B26C0215E5D
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 20:33:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729817AbgGFSbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 14:31:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37022 "EHLO
+        id S1729785AbgGFSdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 14:33:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729689AbgGFSbT (ORCPT
+        with ESMTP id S1729550AbgGFSdg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 14:31:19 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 213BAC061755
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Jul 2020 11:31:19 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id e4so46688597ljn.4
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 11:31:19 -0700 (PDT)
+        Mon, 6 Jul 2020 14:33:36 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEF26C061755;
+        Mon,  6 Jul 2020 11:33:33 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id t25so42071359lji.12;
+        Mon, 06 Jul 2020 11:33:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=p5Lmi+n2aCPuO3HRqROvjZ77CiNJumYrCfcDWyCoeRo=;
-        b=eeWUgxRo45PzzLMOYfNqM0fJG3eM7NhB0LGTmtY80A7HRBb96PXbpmm2eQ7cWidh/B
-         TuMBksb61mp7mBvwy6xMYVeWjgnZW0XCH3OQxXUoDvh5pjiVoak0SmUzC4Ppmwnt1EOX
-         djbiIXAdo7K0uMgMf7QT6ZkuKLl3EXY2WqHvR/g0lFwC5fwnIogO2p7f2mjjkzSodbAv
-         opbO1ipwB03vwqWkP+GjYO2dKy/mRRGzSLTUiOJ9IalzRfYDGdYf9UmMpOWUoP09XcT8
-         o9QAISDvnbmvuYYDSu5sgEJUCpkrVcpBwXTU3yfABGF2AAv4F67VsZBkA1w9RLpfAXqv
-         Sprg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:references:date:in-reply-to:message-id
+         :user-agent:mime-version;
+        bh=AkKmGs8r7EyqO3vztTv68b/fbqhGHTJyNbKAWnpq+go=;
+        b=Mn7mxd5+M3161CMH7lt91p9KogPaJxMsp3LvHJPE24oOTFwuWD2Mx2vFrJTVfRRbkP
+         /SDq0Lj40PTA4qM02H+xsU4Ph7gSisQUVk4stKBATXdm0lL4qztrcXNI2ndkU1+sqZv5
+         b4SnphFMEoC4XEz3t9/zA3SBLHtCCwLswx3Cc9RcS5LUO++vgAEbZs8RAdJonRKuH2gW
+         DCdKvucdzIQCZ9Gu/zSKYPFUapBcD/I5yAZ3MGD33GS+kIzh5xa6xHSQOxhU+HITgyj2
+         SB6lAHRFNAVLsFCzgXHHIgJqE0w/oYSrvIv9+xYVIdPY51maTT66uS23mrfJjC6drv+B
+         pM5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=p5Lmi+n2aCPuO3HRqROvjZ77CiNJumYrCfcDWyCoeRo=;
-        b=gXfcdbyeeUyt2lGIbir+OvQfWOYokqELLWiVw1jLpnVbceLqc7k0F76lFpZoAGMqBB
-         kO0OxzhE4AKJLzcegdWG+G1hpkSy3o0rZci6TvhA8TNKhNRCvvhJCtFhHn6zwRybwCJe
-         twjTvfratJrffAdb4lsPhtvqB15TNJsR/uySkImlQ6kNT0Rw2Ojf6eQZlmJ+2GsueB5M
-         gzpNLg6NzUVO/8amEYtXreqQZDPGy7MUFiWpTPuZup5bAk0ihFZ+fLZkPNyCm9qxTZNC
-         uip3rl3XlfHsWoCVQp095r11jd3hvaai0R7kyAVJhc8Jh9050QRtQ1fe4/hrXUVs8dBa
-         LRVA==
-X-Gm-Message-State: AOAM531lt0B81vhRiV78905Ff+n0u2J19XboObUg8NY75M11lduElhpx
-        SxGoFkh6PfvSFuK596Q9T3jIeNfFFjqS6sObUnioMg==
-X-Google-Smtp-Source: ABdhPJwS18nLQq/ktvdWl0S9gHYIEpELe1rh6z+qD6ClkdZU5mPQNRNLXiDBb3yDb/T6RZ6tXPh/BrUG0n7zFuAuJJ8=
-X-Received: by 2002:a2e:9b42:: with SMTP id o2mr27484571ljj.102.1594060277199;
- Mon, 06 Jul 2020 11:31:17 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:references:date:in-reply-to
+         :message-id:user-agent:mime-version;
+        bh=AkKmGs8r7EyqO3vztTv68b/fbqhGHTJyNbKAWnpq+go=;
+        b=YXNPZnRBpP5zlNFCxXsv5ELNlfeXewipA7nW3TWumd4IJGVGkRK3vIIqYPqfpw3SL6
+         Ob/K+IDxmxT6iufYE7U+V1ilXhcndA2DbpUMhdGZfXXuXT0A43VzilPV3qccrwEGV+7Y
+         /PtpzuNbataSOpvBsg145VHvNeSb9NKVqm3uXoLgI7K1XQaKCvsDT0+KNqNFCc0/TWCa
+         F13kmtJUCqHHcdUtt40LfQJ7lG0F/3dRJoTRadiZIBKM/iZ0fMpjqzJyEw4t7nnOvB8n
+         CVo46RR9Uje5bZKA/KVWbffx5/cuzkAv13gc4sP9Fi3yudpNtUsu2c4xrzakgwRLNLlJ
+         0Fkw==
+X-Gm-Message-State: AOAM531jqNURdtn0Bu3s1PUakCFIbvp5HmkaRzjgcFD9Vf2JY8D49PZK
+        iyycaDuD9ELVrYQ7LfHOHIj7c9+N
+X-Google-Smtp-Source: ABdhPJxcSWlAXSFgSej3Larbvntasy2BMLSc6MORDmJpstXsDqlAa9xRLOahOnA++NCqpPApfkX34A==
+X-Received: by 2002:a2e:3c03:: with SMTP id j3mr22344444lja.12.1594060412127;
+        Mon, 06 Jul 2020 11:33:32 -0700 (PDT)
+Received: from osv.localdomain ([89.175.180.246])
+        by smtp.gmail.com with ESMTPSA id u9sm4850401ljk.44.2020.07.06.11.33.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Jul 2020 11:33:31 -0700 (PDT)
+From:   Sergey Organov <sorganov@gmail.com>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     richardcochran@gmail.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Fugang Duan <fugang.duan@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, andrew@lunn.ch
+Subject: Re: [PATCH  1/5] net: fec: properly support external PTP PHY for
+ hardware time stamping
+References: <20200706142616.25192-1-sorganov@gmail.com>
+        <20200706142616.25192-2-sorganov@gmail.com>
+        <20200706150814.kba7dh2dsz4mpiuc@skbuf> <87zh8cu0rs.fsf@osv.gnss.ru>
+        <20200706154728.lfywhchrtaeeda4g@skbuf>
+Date:   Mon, 06 Jul 2020 21:33:30 +0300
+In-Reply-To: <20200706154728.lfywhchrtaeeda4g@skbuf> (Vladimir Oltean's
+        message of "Mon, 6 Jul 2020 18:47:28 +0300")
+Message-ID: <87zh8cqyrp.fsf@osv.gnss.ru>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 7 Jul 2020 00:01:05 +0530
-Message-ID: <CA+G9fYuiK95tkP1e2VogtbzGex4qJdpfCZ6bfM5S5sA_o+iRQw@mail.gmail.com>
-Subject: clone302.c:88: FAIL: invalid parenttid: clone3() should fail with
- EFAULT: EINVAL (22)
-To:     LTP List <ltp@lists.linux.it>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Cyril Hrubis <chrubis@suse.cz>,
-        Jan Stancek <jstancek@redhat.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LTP clone302 test case failed on linux next 20200706 tag.
-This is a regression on arm64, arm, x86_64, and i386.
+Vladimir Oltean <olteanv@gmail.com> writes:
 
-The expected error code is EFAULT but got EINVAL.
-This is already addressed here in this email thread by Christian Brauner
-https://lore.kernel.org/linux-m68k/20200627122332.ki2otaiw3v7wndbl@wittgenstein/T/#u
+> On Mon, Jul 06, 2020 at 06:21:59PM +0300, Sergey Organov wrote:
+>> Vladimir Oltean <olteanv@gmail.com> writes:
+ 
+>> > Hi Sergey,
+>> >
+>> > On Mon, Jul 06, 2020 at 05:26:12PM +0300, Sergey Organov wrote:
+>> >> When external PTP-aware PHY is in use, it's that PHY that is to time
+>> >> stamp network packets, and it's that PHY where configuration requests
+>> >> of time stamping features are to be routed.
+>> >> 
+>> >> To achieve these goals:
+>> >> 
+>> >> 1. Make sure we don't time stamp packets when external PTP PHY is in use
+>> >> 
+>> >> 2. Make sure we redirect ioctl() related to time stamping of Ethernet
+>> >>    packets to connected PTP PHY rather than handle them ourselves
+>> 
+>> [...]
+>> 
+>> >> diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
+>> >> index 2d0d313..995ea2e 100644
+>> >> --- a/drivers/net/ethernet/freescale/fec_main.c
+>> >> +++ b/drivers/net/ethernet/freescale/fec_main.c
+>> >> @@ -1298,7 +1298,11 @@ fec_enet_tx_queue(struct net_device *ndev, u16 queue_id)
+>> >>  			ndev->stats.tx_bytes += skb->len;
+>> >>  		}
+>> >>  
+>> >> +		/* It could be external PHY that had set SKBTX_IN_PROGRESS, so
+>> >> +		 * we still need to check it's we who are to time stamp
+>> >> +		 */
+>> >>  		if (unlikely(skb_shinfo(skb)->tx_flags & SKBTX_IN_PROGRESS) &&
+>> >> +		    unlikely(fep->hwts_tx_en) &&
+>> >
+>> > I think this could qualify as a pretty significant fix in its own right,
+>> > that should go to stable trees. Right now, this patch appears pretty
+>> > easy to overlook.
+>> >
+>> > Is this the same situation as what is being described here for the
+>> > gianfar driver?
+>> >
+>> > https://patchwork.ozlabs.org/project/netdev/patch/20191227004435.21692-2-olteanv@gmail.com/
+>> 
+>> Yes, it sounds exactly like that!
+>> 
+>
+> Cool. Join the club! You were lucky though, in your case it was pretty
+> evident where the problem might be, so you were already on your way even
+> though you didn't know exactly what was going on.
+>
+> Towards the point that you brought up in that thread:
+>
+>> Could somebody please help me implement (or point me to) proper fix to
+>> reliably use external PHY to timestamp network packets?
+>
+> We do it like this:
+> - DSA: If there is a timestamping switch stacked on top of a
+>   timestamping Ethernet MAC, the switch hijacks the .ndo_do_ioctl of the
+>   host port, and you are supposed to use the PTP clock of the switch,
+>   through the .ndo_do_ioctl of its own (virtual) net devices. This
+>   approach works without changing any code in each individual Ethernet
+>   MAC driver.
+> - PHY: The Ethernet MAC driver needs to be kind enough to check whether
+>   the PHY supports hw timestamping, and pass this ioctl to that PHY
+>   while making sure it doesn't do anything stupid in the meanwhile, like
+>   also acting upon that timestamping request itself.
+>
+> Both are finicky in their own ways. There is no real way for the user to
+> select which PHC they want to use. The assumption is that you'd always
+> want to use the outermost one, and that things in the kernel side always
+> collaborate towards that end.
 
+Makes sense, -- thanks for clarification! Indeed, if somebody connected
+that external thingy, chances are high it was made for a purpose.
 
-Test output log.
-clone302.c:92: PASS: invalid args: clone3() failed as expected: EFAULT (14)
-clone302.c:92: PASS: zero size: clone3() failed as expected: EINVAL (22)
-clone302.c:92: PASS: short size: clone3() failed as expected: EINVAL (22)
-clone302.c:92: PASS: extra size: clone3() failed as expected: EFAULT (14)
-clone302.c:92: PASS: sighand-no-VM: clone3() failed as expected: EINVAL (22)
-clone302.c:92: PASS: thread-no-sighand: clone3() failed as expected: EINVAL (22)
-clone302.c:92: PASS: fs-newns: clone3() failed as expected: EINVAL (22)
-clone302.c:92: PASS: invalid pidfd: clone3() failed as expected: EFAULT (14)
-clone302.c:92: PASS: invalid childtid: clone3() failed as expected: EFAULT (14)
-clone302.c:88: FAIL: invalid parenttid: clone3() should fail with
-EFAULT: EINVAL (22)
-clone302.c:92: PASS: invalid signal: clone3() failed as expected: EINVAL (22)
-clone302.c:92: PASS: zero-stack-size: clone3() failed as expected: EINVAL (22)
-clone302.c:92: PASS: invalid-stack: clone3() failed as expected: EINVAL (22)
+>
+>> However, I'd insist that the second part of the patch is as important.
+>> Please refer to my original post for the description of nasty confusion
+>> the second part of the patch fixes:
+>> 
+>> https://lore.kernel.org/netdev/87r1uqtybr.fsf@osv.gnss.ru/
+>> 
+>> Basically, you get PHY response when you ask for capabilities, but then
+>> MAC executes ioctl() request for corresponding configuration!
+>> 
+>> [...]
+>> 
+>
+> Yup, sure, _but_ my point is: PHY timestamping is not supposed to work
+> unless you do that phy_has_hwtstamp dance in .ndo_do_ioctl and pass it
+> to the PHY driver. Whereas, timestamping on a DSA switch is supposed to
+> just work. So, the double-TX-timestamp fix is common for both DSA and
+> PHY timestamping, and it should be a separate patch that goes to David's
+> "net" tree and has an according Fixes: tag for the stable people to pick
+> it up. Then, the PHY timestamping patch is technically a new feature,
+> because the driver wasn't looking at the PHY's ability to perform PTP
+> timestamping, and now it does. So that part is a patch for "net-next".
 
-strace output:
-[pid   519] getpid()                    = 519
-[pid   519] wait4(-1, 0x7fff504b02ec, 0, NULL) = -1 ECHILD (No child processes)
-[pid   519] syscall_435(0x7fcc0478bfc0, 0x40, 0x7fcc04278031, 0,
-0x7fff504afb26, 0x360) = -1 (errno 22)
-[pid   519] write(2, "clone302.c:88: FAIL: "..., 97clone302.c:88:
-FAIL: invalid parenttid: clone3() should fail with EFAULT: EINVAL (22)
+Ah, thanks, now it makes sense! I simply was not aware of the DSA
+(whatever it is) you've mentioned above.
 
-Test code:
-{"invalid parenttid", &valid_args, sizeof(*valid_args),
-CLONE_PARENT_SETTID | CLONE_CHILD_SETTID | CLONE_PIDFD, NULL, NULL,
-&invalid_address, SIGCHLD, 0, 0, 0, EFAULT},
+I'll then make these 2 changes separate in v2 indeed, though I'm not
+aware about Fixes: tag and if I should do something about it. Any clues?
 
-Test case link,
-https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/syscalls/clone3/clone302.c#L41
+Thanks,
+-- Sergey
 
-ref:
-https://lkft.validation.linaro.org/scheduler/job/1542127#L3243
-https://lkft.validation.linaro.org/scheduler/job/1542828#L1412
-
---
-Linaro LKFT
-https://lkft.linaro.org
