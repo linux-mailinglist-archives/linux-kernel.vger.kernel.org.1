@@ -2,92 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B2ED215152
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 05:14:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53DB7215157
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 05:23:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728743AbgGFDNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Jul 2020 23:13:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36632 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728731AbgGFDNf (ORCPT
+        id S1728712AbgGFDXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Jul 2020 23:23:15 -0400
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:36499 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728634AbgGFDXO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Jul 2020 23:13:35 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9016C061794
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Jul 2020 20:13:33 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id f18so40343044wml.3
-        for <linux-kernel@vger.kernel.org>; Sun, 05 Jul 2020 20:13:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nr50V7tn4Q86r235t3i6fTqGi0eaGxnf83LBZQTEWJ4=;
-        b=IVgCIdZ1fdyJ/ueZWXvNLujhD/ItQZmfywlnzlVUzj+QJMzwEGuIugD99RDKVCO8yD
-         BbF9C4isTrmHGMPCIPtVz7K6fslSXe0FsAuDoDkrcH1HIHWVzh2ytCipq/wdVlMLI6jT
-         QdGrlarHQN7K13Wb/uTZell3eXj7NOvl5N8yE=
+        Sun, 5 Jul 2020 23:23:14 -0400
+Received: by mail-lj1-f193.google.com with SMTP id d17so28876644ljl.3;
+        Sun, 05 Jul 2020 20:23:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=nr50V7tn4Q86r235t3i6fTqGi0eaGxnf83LBZQTEWJ4=;
-        b=cvgpCqZ2rup6vp4xKpAeAjmhEMo0MAbDw/nGK/sxQgINQ3f2MB9X/n3umbI1Y9AneE
-         yv8rIJC3alfCKBwvriMcM1MONrBD5wDEBxUeQ6co92TzIkYktE6MR/VlSULjuq6xHfEi
-         kbHL+GTgF8oeRuPXLvFjztqw01HpwhTMxL7pm4nxkRnUpOMjmzpQoksM6Fgdwe+ifTkD
-         hk/i2Lrd5dEXw6XHuAkwFCoEQ/XrPKV/ZUgda2Rk+kag955WR6qgfl8+hF/9pLJk759J
-         /60+KBQDer+F5lNRsAIoEoBoBecyrt8uYC4j5Y6mUQP3qPnhYg2mb3fA2TqtpS7mrYdk
-         x2fw==
-X-Gm-Message-State: AOAM533AzO1zELPopHRxeB3EZ8StP4Ia/gKBfzLjy/+H2Wafed7mxBoR
-        785nMjtjyfpjbd2eNKuKMea7NNVJogOYmPtTIKWPQQ==
-X-Google-Smtp-Source: ABdhPJyN99BeGm9A2Rz/YYoo8bjGijPt5/+BN2tFGB56CztqStsKXLo+n5eHwOgVVwENrY+PfxE1PRUw1XTAhP2rD14=
-X-Received: by 2002:a1c:1f09:: with SMTP id f9mr49533729wmf.137.1594005212447;
- Sun, 05 Jul 2020 20:13:32 -0700 (PDT)
+        bh=06dnrLwNeASbZqIhPWDJn9BWobfr2FTpZ2gA7IVxI1E=;
+        b=l7/gW2DxxYUMemRBB4pswPj+w+Xcnywp5hMY1PUthqF4e3rVIuquT+uFBe/Gl6qNhR
+         T6iPHZS56DNFNL6XxJ0kgQJX9RU3GvF3d7tfDvZk7VUhr9GVri5l8Gsd9ArrOUV8sry0
+         JadBtBN3Z7dE0p2X49USNrwuqI4ZWAYTCYB/Z48lmRLsthDrxKHW4sUQLoLT/ws4UqqW
+         /341NA/APJHdNzpW1DtEnpkTSHKIks/0S54o99C1p9OtpGYyfO7R0FHDPq5uSbZ/dHSy
+         yzLnCBEQ83xwU1s4pUs2U60xlhBia8l8UcJ17cgchZuthxrNPYxC/wI2oJKudY2hHUkC
+         Hopg==
+X-Gm-Message-State: AOAM530qCIWqqD8OCucl7bpO4V07Mz/n9s4WCZDI9igG6UZZbmjMnRDE
+        2HImkkl2nN9f9S5X/FCMK9FtWDiJK4w=
+X-Google-Smtp-Source: ABdhPJy72ichrmFDKGa3kQroE76QnN+NBbhUWBRGUClj1SCVBESnvfNIZwB+Y5ZgyKSE81eNNRfkDg==
+X-Received: by 2002:a2e:541b:: with SMTP id i27mr24289162ljb.118.1594005792103;
+        Sun, 05 Jul 2020 20:23:12 -0700 (PDT)
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
+        by smtp.gmail.com with ESMTPSA id f4sm8183049lfh.38.2020.07.05.20.23.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 05 Jul 2020 20:23:11 -0700 (PDT)
+Received: by mail-lf1-f52.google.com with SMTP id g139so21747201lfd.10;
+        Sun, 05 Jul 2020 20:23:11 -0700 (PDT)
+X-Received: by 2002:a05:6512:d0:: with SMTP id c16mr15566442lfp.85.1594005791715;
+ Sun, 05 Jul 2020 20:23:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <159389297140.2210796.13590142254668787525.stgit@dwillia2-desk3.amr.corp.intel.com>
- <20200705045505.GA2962@1wt.eu>
-In-Reply-To: <20200705045505.GA2962@1wt.eu>
-From:   Daniel Palmer <daniel@0x0f.com>
-Date:   Mon, 6 Jul 2020 12:13:21 +0900
-Message-ID: <CAFr9PXnr0R71_o_0-Xmw0tcN9UUTMu1ahgp3ig5kE0LG=6N5WA@mail.gmail.com>
-Subject: Re: [PATCH] CodingStyle: Inclusive Terminology
-To:     Willy Tarreau <w@1wt.eu>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        torvalds@linux-foundation.org, Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>, Chris Mason <clm@fb.clm>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        ksummit-discuss@lists.linuxfoundation.org,
-        tech-board-discuss@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org
+References: <20200624083629.9507-1-f.suligoi@asem.it>
+In-Reply-To: <20200624083629.9507-1-f.suligoi@asem.it>
+From:   Chen-Yu Tsai <wens@csie.org>
+Date:   Mon, 6 Jul 2020 11:23:01 +0800
+X-Gmail-Original-Message-ID: <CAGb2v65M9m3ttvcmcnkzdByNJVG0rs8dEPLtVoyr_VyO5XWC+g@mail.gmail.com>
+Message-ID: <CAGb2v65M9m3ttvcmcnkzdByNJVG0rs8dEPLtVoyr_VyO5XWC+g@mail.gmail.com>
+Subject: Re: [PATCH 1/1] power: supply: axp20x_usb_power: fix spelling mistake
+To:     Flavio Suligoi <f.suligoi@asem.it>
+Cc:     Sebastian Reichel <sre@kernel.org>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Willy,
+On Wed, Jun 24, 2020 at 4:41 PM Flavio Suligoi <f.suligoi@asem.it> wrote:
+>
+> Fix typo: "triger" --> "trigger"
+>
+> Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
 
-On Sun, 5 Jul 2020 at 13:55, Willy Tarreau <w@1wt.eu> wrote:
-
-> I'm personally thinking that for a non-native speaker it's already
-> difficult to find the best term to describe something,
-
-I'm a nobody in the kernel world but this point made me think.
-
-I'm a native English speaker but I don't live in an English speaking
-place and my experience is that a lot of technology terms have been
-directly imported from English into the local language almost as-is.
-
-In my case master/slave have been directly transliterated into
-Japanese as masuta and sureebu and exists like that in technical
-documentation for example:
-https://www.analog.com/jp/analog-dialogue/articles/introduction-to-spi-interface.html#
-
-I can imagine that by changing terminology that has been in use for so
-long that it's been imported into other languages directly or is
-common enough that non-native speakers know what it means might have
-exactly the opposite result by excluding people that aren't native
-English speakers and can't decode synonyms that are obvious to a
-native speaker.
-
-Cheers,
-
-Daniel
+Acked-by: Chen-Yu Tsai <wens@csie.org>
