@@ -2,92 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0035E215F4F
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 21:27:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8FE8215F45
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 21:23:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726805AbgGFT1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 15:27:12 -0400
-Received: from forward500p.mail.yandex.net ([77.88.28.110]:58470 "EHLO
-        forward500p.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726329AbgGFT1M (ORCPT
+        id S1726681AbgGFTXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 15:23:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45016 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725901AbgGFTXi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 15:27:12 -0400
-X-Greylist: delayed 381 seconds by postgrey-1.27 at vger.kernel.org; Mon, 06 Jul 2020 15:27:10 EDT
-Received: from mxback19j.mail.yandex.net (mxback19j.mail.yandex.net [IPv6:2a02:6b8:0:1619::95])
-        by forward500p.mail.yandex.net (Yandex) with ESMTP id 747DC9400DB;
-        Mon,  6 Jul 2020 22:20:48 +0300 (MSK)
-Received: from localhost (localhost [::1])
-        by mxback19j.mail.yandex.net (mxback/Yandex) with ESMTP id Icus1Vpk93-KluuMZ36;
-        Mon, 06 Jul 2020 22:20:47 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=0upti.me; s=mail; t=1594063248;
-        bh=ZHGsVMNkZpFDM7El5aZ1YiZR+LlM3nbtR3lE1SqzI3I=;
-        h=Message-Id:Cc:Subject:In-Reply-To:Date:References:To:From;
-        b=ABiIRI47iGjTPoQRdrfSPg6kjExVzno1ruGriDYOupJIuBSZ777M4Z2BNm4ZiCH59
-         BqronQEURmI7702ILgvJHo8VBgTSJ/4yaZ5VCaLRXe4pXZfgpjlx+AdpZ6GSWVgaQb
-         LcZIzMApkAa86yyqabbQx3jImJtaDHspfV/ywI0A=
-Authentication-Results: mxback19j.mail.yandex.net; dkim=pass header.i=@0upti.me
-Received: by iva2-15a880c55b23.qloud-c.yandex.net with HTTP;
-        Mon, 06 Jul 2020 22:20:47 +0300
-From:   Ilya K <me@0upti.me>
-To:     "lyude@redhat.com" <lyude@redhat.com>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Gaurav Agrawal <agrawalgaurav@gnome.org>,
-        Yussuf Khalil <dev@pp3345.net>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Dennis Kadioglu <denk@eclipso.email>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Joe Perches <joe@perches.com>,
-        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-In-Reply-To: <2f68590f3352c6384efdf9838f16837d5990d1fe.camel@redhat.com>
-References: <20200703143457.132373-1-me@0upti.me> <2f68590f3352c6384efdf9838f16837d5990d1fe.camel@redhat.com>
-Subject: Re: [PATCH] input/synaptics: enable InterTouch for ThinkPad X1E 1st gen
+        Mon, 6 Jul 2020 15:23:38 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAFCFC061755
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Jul 2020 12:23:38 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id k22so21581812oib.0
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 12:23:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7rVviAD5LzlDObQk5Wo1OIPXX0O0i14V8Y9kck3sGsA=;
+        b=kktLS6II7R90NPohUeMToqXFTW9/KTTxKsvR9z6CQOtuYiA+UR1ubootJAzBto7yuJ
+         AbRvCe66+Tt8q+e7CaqjBO/+BqOggtYUZd94QOOMy3P6tdZbgMFUX2kKcMpO2rBMAiQV
+         5P3zf0HiGPY4b0db3+VWxD2tkv5CY7XEZlXVtx3qjIKDMVpq9AFvxZ2W+5yyNFj3mHWq
+         KzP6T0h5FK7Z0GIwe04akbYFIG6ZBAT1RiOTM/kh1P3VhD+BMpi4H6OFelIwdriMLqyW
+         CZAxAVAwkoGHY7q2qlbqV+rOUxl6ESs/jNfXniEGzfMGnS5htYM2u2lyMprNvZeKvtN3
+         U91Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7rVviAD5LzlDObQk5Wo1OIPXX0O0i14V8Y9kck3sGsA=;
+        b=V2vdFn91+DSXM+NkPI5b2yBF1VYw6xfOoWcuqpM0RsCoOqgLcdSHhd5G8g98gGaTLK
+         AhIr5jHAfjNu8xTYF+F/yLVFOj3UML7SyC2a0GreBE39Wqirt2qy0OutmtjAu5J/Pl51
+         oCcLlfWLo02aDEIObR4y3e++qACvkjqSBj/WHgJ+ItIcAy4qv326mFnERjnji9VrmBjn
+         HHIBE1nS4ekj/RyPeBxe7D3gYEmfzIabzPDmXcJneSeaqzdJZpf2ji1GwDhMVBrFpdfl
+         wfvNXhjt2f6cXrS7NvdEC6zvaMdYWM6dxvxCmzdRROa0rM8ByqnT+7lTyfy+PBEunl6X
+         Swqg==
+X-Gm-Message-State: AOAM533DtOR6tqCv/tZtVRfkhpIeNg7ANf1uGfNMHZYkLtypY8TQ7+PJ
+        44mmm9f/XZAG/fHYyEhWun+w6db00QfBHNlQVIJ/cQ==
+X-Google-Smtp-Source: ABdhPJzDA9ukIWYEyzFrrnOq5gnL5jJJGkB5l/SHZwqTzTGYEqqNcILaV0tH8QfdlHzy2n6eGpcpSpiSxjL7cUQQYHg=
+X-Received: by 2002:aca:5007:: with SMTP id e7mr682320oib.70.1594063417791;
+ Mon, 06 Jul 2020 12:23:37 -0700 (PDT)
 MIME-Version: 1.0
-X-Mailer: Yamail [ http://yandex.ru ] 5.0
-Date:   Mon, 06 Jul 2020 22:20:47 +0300
-Message-Id: <1295871594063151@mail.yandex.ru>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset=utf-8
+References: <20200630173734.14057-1-will@kernel.org> <20200630173734.14057-19-will@kernel.org>
+ <20200701170722.4rte5ssnmrn2uqzg@bakewell.cambridge.arm.com>
+ <20200702072301.GA15963@willie-the-truck> <20200706160023.GB10992@arm.com> <20200706183542.GB23766@willie-the-truck>
+In-Reply-To: <20200706183542.GB23766@willie-the-truck>
+From:   Marco Elver <elver@google.com>
+Date:   Mon, 6 Jul 2020 21:23:26 +0200
+Message-ID: <CANpmjNP9pb4_2S8sf+Ty2ZqtMxWSrBEosDx2wuL2OQnA9YFt9A@mail.gmail.com>
+Subject: Re: [PATCH 18/18] arm64: lto: Strengthen READ_ONCE() to acquire when CLANG_LTO=y
+To:     Will Deacon <will@kernel.org>
+Cc:     Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Jason Wang <jasowang@redhat.com>,
+        virtualization@lists.linux-foundation.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Matt Turner <mattst88@gmail.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        Kees Cook <keescook@chromium.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        LKML <linux-kernel@vger.kernel.org>, linux-alpha@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(sorry for resending - the previous message got sent as HTML and bounced off the mailing list)
+On Mon, 6 Jul 2020 at 20:35, Will Deacon <will@kernel.org> wrote:
+> On Mon, Jul 06, 2020 at 05:00:23PM +0100, Dave Martin wrote:
+> > On Thu, Jul 02, 2020 at 08:23:02AM +0100, Will Deacon wrote:
+> > > On Wed, Jul 01, 2020 at 06:07:25PM +0100, Dave P Martin wrote:
+> > > > Also, can you illustrate code that can only be unsafe with Clang LTO?
+> > >
+> > > I don't have a concrete example, but it's an ongoing concern over on the LTO
+> > > thread [1], so I cooked this to show one way we could deal with it. The main
+> > > concern is that the whole-program optimisations enabled by LTO may allow the
+> > > compiler to enumerate possible values for a pointer at link time and replace
+> > > an address dependency between two loads with a control dependency instead,
+> > > defeating the dependency ordering within the CPU.
+> >
+> > Why can't that happen without LTO?
+>
+> It could, but I'd argue that it's considerably less likely because there
+> is less information available to the compiler to perform these sorts of
+> optimisations. It also doesn't appear to be happening in practice.
+>
+> The current state of affairs is that, if/when we catch the compiler
+> performing harmful optimistations, we look for a way to disable them.
+> However, there are good reasons to enable LTO, so this is one way to
+> do that without having to worry about the potential impact on dependency
+> ordering.
 
-This actually made me retest it just now - it most definitely works, both by tapping and by actually clicking the button.
+If it's of any help, I'll see if we can implement that warning in LLVM
+if data dependencies somehow disappear (although I don't have any
+cycles to pursue right now myself). Until then, short of manual
+inspection or encountering a bug in the wild, there is no proof any of
+this happens or doesn't happen.
 
-06.07.2020, 20:22, "Lyude Paul" <lyude@redhat.com>:
-> FWIW it's not placebo, it's why I always immediately notice when starting up a
-> new ThinkPad sample from lenovo if RMI4 is enabled or not :).
->
-> Anyway thank you for the patch, assuming you double-checked that clicking with
-> the clickpad still works (I made this mistake last time when trying to enable
-> this for the second generation X1 extreme):
->
-> Reviewed-by: Lyude Paul <lyude@redhat.com>
->
-> On Fri, 2020-07-03 at 17:34 +0300, K900 wrote:
->>  From: Ilya Katsnelson <me@0upti.me>
->>
->>  Tested on my own laptop, touchpad feels slightly more responsive with
->>  this on, though it might just be placebo.
->>
->>  Signed-off-by: Ilya Katsnelson <me@0upti.me>
->>  ---
->>   drivers/input/mouse/synaptics.c | 1 +
->>   1 file changed, 1 insertion(+)
->>
->>  diff --git a/drivers/input/mouse/synaptics.c b/drivers/input/mouse/synaptics.c
->>  index 758dae8d6500..4b81b2d0fe06 100644
->>  --- a/drivers/input/mouse/synaptics.c
->>  +++ b/drivers/input/mouse/synaptics.c
->>  @@ -179,6 +179,7 @@ static const char * const smbus_pnp_ids[] = {
->>           "LEN0093", /* T480 */
->>           "LEN0096", /* X280 */
->>           "LEN0097", /* X280 -> ALPS trackpoint */
->>  + "LEN0099", /* X1 Extreme 1st */
->>           "LEN009b", /* T580 */
->>           "LEN200f", /* T450s */
->>           "LEN2044", /* L470 */
+Also, as some anecdotal evidence it's extremely unlikely, even with
+LTO: looking at the passes that LLVM runs, there are a number of
+passes that seem to want to eliminate basic blocks, thereby getting
+rid of branches. Intuitively, it makes sense, because branches are
+expensive on most architectures (for GPU targets, I think it tries
+even harder to get rid of branches). If we extend our reasoning and
+assumptions of LTO's aggressiveness in that direction, we might
+actually end up with fewer branches. That might be beneficial for the
+data dependencies we worry about (but not so much for control
+dependencies we want to keep). Still, no point in speculating (no pun
+intended) until we have hard data what actually happens. :-)
+
+Thanks,
+-- Marco
