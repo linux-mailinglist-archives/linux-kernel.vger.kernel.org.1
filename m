@@ -2,119 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0FAA2161D5
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 01:05:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 614262161DC
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 01:09:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727869AbgGFXFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 19:05:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727058AbgGFXFC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 19:05:02 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29D0CC061755;
-        Mon,  6 Jul 2020 16:05:02 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id x9so34425428ila.3;
-        Mon, 06 Jul 2020 16:05:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zwvSRzBV5C3IE502UBXn+gfuwgJFq0fNK7XpsiBlD8s=;
-        b=WzaHXK1l7TYOc9cDqHVz5wusSgSV3aGBLLbf+jhU4PvIF/NGvXoe8U2GtAf91GHxQA
-         HlRUf24MOUWi23HaIhJUBXnoa9rFrjNECWA6tmeYXdK/YT7DYVV3O2sTedBfKvJm5aZ/
-         TPT8cLo0Wvy5BLxTAg1dG8cyagz61B1VENl53gHA2zan5D6vaFbGxJAFn+LaLanJ8tL3
-         I+1k4A6tvrjQR13B96md8ieI0n6oiz9ece0tj9E8sZEp+cWOlHd7DkEGKOf5yg7ubker
-         BgfVuoN+nHwyEJTw8j5EN0qHyRFNWjM24Vuhwqt0N/pC01mx2AhaQGbWVtbao8v7BjHC
-         5Dig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zwvSRzBV5C3IE502UBXn+gfuwgJFq0fNK7XpsiBlD8s=;
-        b=O54mxq+SyjKBH1h8EUaMPXAhxzvcxw+q1MB+GPQ0TtUpswZUkQvpFo7hhTS4+suErx
-         9ey1WL8E71+qTXLjmtOug5bvhJssppY84QzF0wDpozMbPp3BACJ1RJQf+hHabXFJDt8y
-         sF78TowUcAY1ZU3autuFZTtKflmOO7dBqWY1nq7YhGKkKVu7VDgLeh7rICFBqPX/Wvqp
-         041LGpYRlgWtJMaH2dlsn5DE11EudDSL4HDlmvgetigodCCbqqo4wxiaiLEPer7KmlXi
-         iInuXr+UVqmCBATWPSbsdftHIMaK/CksPnt4l0AuVHyq1zJd5PAV4pfzGtDwCERHNzF5
-         wPYw==
-X-Gm-Message-State: AOAM530CWhDAMdKZ5FYp6QCUTxX0RWxpUYBWDcZwxTmsX7z9Lcc+BMdj
-        4UpSxughWYJxmEg15yh/C6F4jF3LPziMqkopdJ9/V0YO0og=
-X-Google-Smtp-Source: ABdhPJxNN6YdqMBlPCZsMNOMJ3TUsgz7mlzkmaYjpD5UWbqxgobmTLkxZFZKefUFHTXPnGQKahglFIjQEpYGDlMlMZ0=
-X-Received: by 2002:a92:aa92:: with SMTP id p18mr32591747ill.199.1594076701537;
- Mon, 06 Jul 2020 16:05:01 -0700 (PDT)
+        id S1727820AbgGFXJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 19:09:19 -0400
+Received: from mga12.intel.com ([192.55.52.136]:46986 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726845AbgGFXJS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Jul 2020 19:09:18 -0400
+IronPort-SDR: +IhuSwzNJk1zfvF2st+AMGCt1NcQGDes6Zpee7yKSV3h34GY0BLwSaaKTBzluow1CDGtm+Bryz
+ J5bosXuSrSzw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9674"; a="127107447"
+X-IronPort-AV: E=Sophos;i="5.75,321,1589266800"; 
+   d="scan'208";a="127107447"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2020 16:09:18 -0700
+IronPort-SDR: Oja8NwTouCdDLO8zKrRSzzVd8altTd2s8tHLU05KbmFl7R63l2eXcBw9YDKpRvuisXQzfQzUp8
+ s/rmRDBFHWog==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,321,1589266800"; 
+   d="scan'208";a="297158063"
+Received: from hartmaxe-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.53.13])
+  by orsmga002.jf.intel.com with ESMTP; 06 Jul 2020 16:09:15 -0700
+Date:   Tue, 7 Jul 2020 02:09:14 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Stefan Berger <stefanb@linux.vnet.ibm.com>
+Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-security-module@vger.kernel.org,
+        Stefan Berger <stefanb@linux.ibm.com>
+Subject: Re: [PATCH v9 2/2] tpm: Add support for event log pointer found in
+ TPM2 ACPI table
+Message-ID: <20200706230914.GC20770@linux.intel.com>
+References: <20200706181953.3592084-1-stefanb@linux.vnet.ibm.com>
+ <20200706181953.3592084-3-stefanb@linux.vnet.ibm.com>
 MIME-Version: 1.0
-References: <CAFXsbZp5A7FHoXPA6Rg8XqZPD9NXmSeZZb-RsEGXnktbo04GOw@mail.gmail.com>
- <20200706204224.GW1551@shell.armlinux.org.uk>
-In-Reply-To: <20200706204224.GW1551@shell.armlinux.org.uk>
-From:   Chris Healy <cphealy@gmail.com>
-Date:   Mon, 6 Jul 2020 16:04:50 -0700
-Message-ID: <CAFXsbZptqExMHK0BcDqO-Fdu6qs6hD2toWgNprfAeq6YXWSmLA@mail.gmail.com>
-Subject: Re: [PATCH] net: sfp: Unique GPIO interrupt names
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>, kuba@kernel.org,
-        netdev <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200706181953.3592084-3-stefanb@linux.vnet.ibm.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 6, 2020 at 1:42 PM Russell King - ARM Linux admin
-<linux@armlinux.org.uk> wrote:
->
-> On Mon, Jul 06, 2020 at 12:38:37PM -0700, Chris Healy wrote:
-> > Dynamically generate a unique GPIO interrupt name, based on the
-> > device name and the GPIO name.  For example:
-> >
-> > 103:          0   sx1503q  12 Edge      sff2-los
-> > 104:          0   sx1503q  13 Edge      sff3-los
-> >
-> > The sffX indicates the SFP the loss of signal GPIO is associated with.
-> >
-> > Signed-off-by: Chris Healy <cphealy@gmail.com>
->
-> This doesn't work in all cases.
->
-> > ---
-> >  drivers/net/phy/sfp.c | 6 +++++-
-> >  1 file changed, 5 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/net/phy/sfp.c b/drivers/net/phy/sfp.c
-> > index 73c2969f11a4..9b03c7229320 100644
-> > --- a/drivers/net/phy/sfp.c
-> > +++ b/drivers/net/phy/sfp.c
-> > @@ -220,6 +220,7 @@ struct sfp {
-> >      struct phy_device *mod_phy;
-> >      const struct sff_data *type;
-> >      u32 max_power_mW;
-> > +    char sfp_irq_name[32];
-> >
-> >      unsigned int (*get_state)(struct sfp *);
-> >      void (*set_state)(struct sfp *, unsigned int);
-> > @@ -2349,12 +2350,15 @@ static int sfp_probe(struct platform_device *pdev)
-> >              continue;
-> >          }
-> >
-> > +        snprintf(sfp->sfp_irq_name, sizeof(sfp->sfp_irq_name),
-> > +             "%s-%s", dev_name(sfp->dev), gpio_of_names[i]);
->
-> sfp_irq_name will be overwritten for each GPIO IRQ claimed, which means
-> all IRQs for a particular cage will end up with the same name.
-> sfp_irq_name[] therefore needs to be an array of names, one per input.
+On Mon, Jul 06, 2020 at 02:19:53PM -0400, Stefan Berger wrote:
+> From: Stefan Berger <stefanb@linux.ibm.com>
+> 
+> In case a TPM2 is attached, search for a TPM2 ACPI table when trying
+> to get the event log from ACPI. If one is found, use it to get the
+> start and length of the log area. This allows non-UEFI systems, such
+> as SeaBIOS, to pass an event log when using a TPM2.
+> 
+> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
 
-Good point.  I'll add the necessary support to deal with this case and
-test on my side with a hacked up devicetree file providing some
-additional GPIOs and include this in the next version of the patch.
+Do you think that QEMU with TPM 1.2 emulator turned on would be a viable
+way to test this?
 
->
-> Thanks.
->
-> --
-> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-> FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+I'm anyway more worried about breaking existing TPM 1.2 functionality
+and that requires only QEMU without extras.
+
+/Jarkko
