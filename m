@@ -2,113 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2421D2152EB
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 09:13:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B19062152EF
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 09:13:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728871AbgGFHN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 03:13:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728466AbgGFHN1 (ORCPT
+        id S1728910AbgGFHNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 03:13:47 -0400
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:4793 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728876AbgGFHNq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 03:13:27 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E839BC061794
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Jul 2020 00:13:26 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id q5so39588160wru.6
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 00:13:26 -0700 (PDT)
+        Mon, 6 Jul 2020 03:13:46 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=RMGnvxquvbu4QyMyyHqPaCsBLX3LZtSdXGrqjMwfS7E=;
-        b=AAikv23ZIqKM8pfJvjReSBC3OGv4L4hsLmToMzvt7T4/lJmoiQ+k4CdAGRb0cV7S2W
-         5X8g98k0ELBNX7r3ltxzvzV7Us/w7LOjcAmp/SXbx8utOSJSEuFc7U0259FgO+PDubaM
-         k24kALm57sxDO8COLitP2s3SUPG757vsPnwL9+lCTMT28+RB1XbGNbSOw46k+xJDdaBB
-         VuFjAMTV3L6YEJCKAgb19Z1QDdVmigQUrNGym9PJiCpMP5CfkmNXCk2xvhJegjTQQ3vX
-         WUTgp7t8gDULlaBYcJc9JBvRnTkdKprktwjq6xQVSs0pSfm931CCLVe8qirXmhGyS+aQ
-         R6Zg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=RMGnvxquvbu4QyMyyHqPaCsBLX3LZtSdXGrqjMwfS7E=;
-        b=XU5UIQb3YdQklNBqy3hK1ebSfqbkVnA/sl1gCkUrXUvv2eyd/O2aZEbhRLTs0v2JrK
-         s3B0NnulXbnNZ31+EUIa7oxw0Fo+/oa64cg5UDzUGY1V5O6Xq3dwUDXYue47WwHL3Sum
-         YfRM6HkPQ9+rYfpC1Ykj+4hy+469l2HHVEU/dGJ5WHqa4gJXi5wtRtJqvb3M9JdcFBfe
-         WsonyHCplZ1H71KPbaCZOMKnTG//UlZlthynDzVPVNon/i2A3DMv8NBNDu4YRPL4vHXr
-         6hzSwiOvy7PgP9WXkP/+J++zpUXE+tjeDaHVeq5gavQwLQrmwZrBhcMz4zb3eKKTt1SA
-         wwBQ==
-X-Gm-Message-State: AOAM532jBS6apCQdgaatytGYAHTfVXMW80MxUPyZOhDUHVF6QvF87Dmm
-        Wxh6ukQQts8qdUXYLWEMlHkGHQ==
-X-Google-Smtp-Source: ABdhPJzbRa4dAsAzugKpjzOIhWptwA1zAERFnuxhOgrcEveqI1bRWNiT7yGNRTf9jNNznRD5lbePTw==
-X-Received: by 2002:adf:ed02:: with SMTP id a2mr46518594wro.110.1594019605697;
-        Mon, 06 Jul 2020 00:13:25 -0700 (PDT)
-Received: from dell ([2.27.35.206])
-        by smtp.gmail.com with ESMTPSA id d13sm22969218wrq.89.2020.07.06.00.13.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Jul 2020 00:13:24 -0700 (PDT)
-Date:   Mon, 6 Jul 2020 08:13:22 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Daniel Thompson <daniel.thompson@linaro.org>
-Cc:     jingoohan1@gmail.com, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Software Engineering <sbabic@denx.de>
-Subject: Re: [PATCH 5/8] backlight: ili922x: Add missing kerneldoc
- description for ili922x_reg_dump()'s arg
-Message-ID: <20200706071322.GB2821869@dell>
-References: <20200624145721.2590327-1-lee.jones@linaro.org>
- <20200624145721.2590327-6-lee.jones@linaro.org>
- <20200625094318.h6t22gkgi5d7wbv4@holly.lan>
+  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
+  t=1594019625; x=1625555625;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=VB95bLc+g+UmqWSFzbL0u4bPsb7J3t0bL/7bnKUwHs4=;
+  b=HAbD/y9DB6Eo/9r0ahSS+no4unCwo/+DQapfJX19WUZ3odWCw4bF7mQd
+   ntdAnRsVkQjULw9gmSTO9I3bnylatP/H9Wy+m3xAxZ40TdNIlLsZeKcEz
+   mf77upqiTBgbOjZVKPEccAn2JvvOPB923WAbxc405RK0mQ5t6g03miPvR
+   Q=;
+IronPort-SDR: kiJ824QJQ+IdadidvsuVJT+aOsVUniEOlOdVMKHebjWDlsaXcHzny5EzUwawmx4lNzmlAPPZzm
+ 7WG2uX4IxGmQ==
+X-IronPort-AV: E=Sophos;i="5.75,318,1589241600"; 
+   d="scan'208";a="56253262"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2b-55156cd4.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 06 Jul 2020 07:13:43 +0000
+Received: from EX13MTAUWC001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2b-55156cd4.us-west-2.amazon.com (Postfix) with ESMTPS id 46F6BA2038;
+        Mon,  6 Jul 2020 07:13:42 +0000 (UTC)
+Received: from EX13D20UWC001.ant.amazon.com (10.43.162.244) by
+ EX13MTAUWC001.ant.amazon.com (10.43.162.135) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 6 Jul 2020 07:13:41 +0000
+Received: from 38f9d3867b82.ant.amazon.com (10.43.160.65) by
+ EX13D20UWC001.ant.amazon.com (10.43.162.244) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 6 Jul 2020 07:13:34 +0000
+Subject: Re: [PATCH v4 07/18] nitro_enclaves: Init misc device providing the
+ ioctl interface
+To:     Andra Paraschiv <andraprs@amazon.com>,
+        <linux-kernel@vger.kernel.org>
+CC:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Colm MacCarthaigh <colmmacc@amazon.com>,
+        Bjoern Doebel <doebel@amazon.de>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Frank van der Linden <fllinden@amazon.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Martin Pohlack <mpohlack@amazon.de>,
+        "Matt Wilson" <msw@amazon.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Balbir Singh <sblbir@amazon.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "Stefan Hajnoczi" <stefanha@redhat.com>,
+        Stewart Smith <trawets@amazon.com>,
+        "Uwe Dannowski" <uwed@amazon.de>, <kvm@vger.kernel.org>,
+        <ne-devel-upstream@amazon.com>
+References: <20200622200329.52996-1-andraprs@amazon.com>
+ <20200622200329.52996-8-andraprs@amazon.com>
+From:   Alexander Graf <graf@amazon.de>
+Message-ID: <391ad4b0-2011-4d63-8274-9ccb77a5351f@amazon.de>
+Date:   Mon, 6 Jul 2020 09:13:29 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200625094318.h6t22gkgi5d7wbv4@holly.lan>
+In-Reply-To: <20200622200329.52996-8-andraprs@amazon.com>
+Content-Language: en-US
+X-Originating-IP: [10.43.160.65]
+X-ClientProxiedBy: EX13D11UWB002.ant.amazon.com (10.43.161.20) To
+ EX13D20UWC001.ant.amazon.com (10.43.162.244)
+Content-Type: text/plain; charset="windows-1252"; format="flowed"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Jun 2020, Daniel Thompson wrote:
 
-> On Wed, Jun 24, 2020 at 03:57:18PM +0100, Lee Jones wrote:
-> > Kerneldoc syntax is used, but not complete.  Descriptions required.
-> > 
-> > Prevents warnings like:
-> > 
-> >  drivers/video/backlight/ili922x.c:298: warning: Function parameter or member 'spi' not described in 'ili922x_reg_dump'
-> > 
-> > Cc: <stable@vger.kernel.org>
-> > Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-> > Cc: Software Engineering <sbabic@denx.de>
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > ---
-> >  drivers/video/backlight/ili922x.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> > 
-> > diff --git a/drivers/video/backlight/ili922x.c b/drivers/video/backlight/ili922x.c
-> > index cd41433b87aeb..26193f38234e7 100644
-> > --- a/drivers/video/backlight/ili922x.c
-> > +++ b/drivers/video/backlight/ili922x.c
-> > @@ -295,6 +295,8 @@ static int ili922x_write(struct spi_device *spi, u8 reg, u16 value)
-> >  #ifdef DEBUG
-> >  /**
-> >   * ili922x_reg_dump - dump all registers
-> > + *
-> > + * @spi: pointer to the controller side proxy for an SPI slave device
-> 
-> Similar to previous... and I also noticed that there are several other
-> existing @spi descriptions in this file and it would be good to make
-> them consistent.
 
-I've fixed this and applied the patch.
+On 22.06.20 22:03, Andra Paraschiv wrote:
+> The Nitro Enclaves driver provides an ioctl interface to the user space
+> for enclave lifetime management e.g. enclave creation / termination and
+> setting enclave resources such as memory and CPU.
+> =
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+> This ioctl interface is mapped to a Nitro Enclaves misc device.
+> =
+
+> Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
+> ---
+> Changelog
+> =
+
+> v3 -> v4
+> =
+
+> * Use dev_err instead of custom NE log pattern.
+> * Remove the NE CPU pool init during kernel module loading, as the CPU
+>    pool is now setup at runtime, via a sysfs file for the kernel
+>    parameter.
+> * Add minimum enclave memory size definition.
+> =
+
+> v2 -> v3
+> =
+
+> * Remove the GPL additional wording as SPDX-License-Identifier is
+>    already in place.
+> * Remove the WARN_ON calls.
+> * Remove linux/bug and linux/kvm_host includes that are not needed.
+> * Remove "ratelimited" from the logs that are not in the ioctl call
+>    paths.
+> * Remove file ops that do nothing for now - open and release.
+> =
+
+> v1 -> v2
+> =
+
+> * Add log pattern for NE.
+> * Update goto labels to match their purpose.
+> * Update ne_cpu_pool data structure to include the global mutex.
+> * Update NE misc device mode to 0660.
+> * Check if the CPU siblings are included in the NE CPU pool, as full CPU
+>    cores are given for the enclave(s).
+> ---
+>   drivers/virt/nitro_enclaves/ne_misc_dev.c | 133 ++++++++++++++++++++++
+>   drivers/virt/nitro_enclaves/ne_pci_dev.c  |  11 ++
+>   2 files changed, 144 insertions(+)
+>   create mode 100644 drivers/virt/nitro_enclaves/ne_misc_dev.c
+> =
+
+> diff --git a/drivers/virt/nitro_enclaves/ne_misc_dev.c b/drivers/virt/nit=
+ro_enclaves/ne_misc_dev.c
+> new file mode 100644
+> index 000000000000..628fb10c2b36
+> --- /dev/null
+> +++ b/drivers/virt/nitro_enclaves/ne_misc_dev.c
+> @@ -0,0 +1,133 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserve=
+d.
+> + */
+> +
+> +/**
+> + * Enclave lifetime management driver for Nitro Enclaves (NE).
+> + * Nitro is a hypervisor that has been developed by Amazon.
+> + */
+> +
+> +#include <linux/anon_inodes.h>
+> +#include <linux/capability.h>
+> +#include <linux/cpu.h>
+> +#include <linux/device.h>
+> +#include <linux/file.h>
+> +#include <linux/hugetlb.h>
+> +#include <linux/list.h>
+> +#include <linux/miscdevice.h>
+> +#include <linux/mm.h>
+> +#include <linux/mman.h>
+> +#include <linux/module.h>
+> +#include <linux/mutex.h>
+> +#include <linux/nitro_enclaves.h>
+> +#include <linux/pci.h>
+> +#include <linux/poll.h>
+> +#include <linux/slab.h>
+> +#include <linux/types.h>
+> +
+> +#include "ne_misc_dev.h"
+> +#include "ne_pci_dev.h"
+> +
+> +#define NE_EIF_LOAD_OFFSET (8 * 1024UL * 1024UL)
+> +
+> +#define NE_MIN_ENCLAVE_MEM_SIZE (64 * 1024UL * 1024UL)
+> +
+> +#define NE_MIN_MEM_REGION_SIZE (2 * 1024UL * 1024UL)
+> +
+> +/*
+> + * TODO: Update logic to create new sysfs entries instead of using
+> + * a kernel parameter e.g. if multiple sysfs files needed.
+> + */
+> +static const struct kernel_param_ops ne_cpu_pool_ops =3D {
+
+Adding an empty ops struct looks very odd. If you fill it in a later =
+
+patch, please indicate so in a comment here.
+
+> +};
+> +
+> +static char ne_cpus[PAGE_SIZE];
+
+PAGE_SIZE is a bit excessive, no? Even if you list every single CPU of a =
+
+256 CPU system you are <1024.
+
+
+Alex
+
+
+
+Amazon Development Center Germany GmbH
+Krausenstr. 38
+10117 Berlin
+Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
+Sitz: Berlin
+Ust-ID: DE 289 237 879
+
+
+
