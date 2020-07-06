@@ -2,118 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B444C216164
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 00:18:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CFFF21616A
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 00:19:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727122AbgGFWSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 18:18:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43756 "EHLO
+        id S1727819AbgGFWTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 18:19:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726583AbgGFWSJ (ORCPT
+        with ESMTP id S1726869AbgGFWTC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 18:18:09 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE16FC061755;
-        Mon,  6 Jul 2020 15:18:08 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id b4so36371843qkn.11;
-        Mon, 06 Jul 2020 15:18:08 -0700 (PDT)
+        Mon, 6 Jul 2020 18:19:02 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3CB4C08C5DF
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Jul 2020 15:19:01 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id h19so47523404ljg.13
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 15:19:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=BAKFmZIs1G8CtS7wHOv+MKY/i5HK754lis1gMlux8dg=;
-        b=eYsAlaKs4wLd8NNHQicr6SHL7gZHeNmIGGIq3mhLQYLEClWclb+hXlgcvyQ0jK0RPx
-         wUAo+rswEAUonsS04Y2PdQ54ofwloXf9k0mc+VTDPzHJmrE52Zmw9uidqfTU7yJ1kEYH
-         eKY4MMsJU05dHMyduQPBqC6QGLf4Les4QXDsrVB2l5nyigFo/q/EKVUMKNxJZCRhtN+J
-         M5VjNK++Lmx0yH8/zYW2aeOVMtJQAEV6ttdGdX5S8/J4ntFQq9Jrh9v9+zU1mom7IRJQ
-         ybXffiBKVU/QA+OiZK4vlNWbCkMr+PrFXF/udeMEE9oiqHl2fuUnU/YqDfcUUn4yhSs6
-         jXGw==
+        bh=+g8b8UDutwpjfN6lizjtfC7IoMCTSDjsjPJug8YnTgg=;
+        b=KUh+nyqnQkj9RcybDE5PeCJrAdjLCL6MfvAIePJyXHNRX0F8FKTnKIeG1/vPX6JbR0
+         ZkH2vounWJTv0AHW++nq9HTK5t0tj2w7jkJDno0f/aPPilRdMq6kUjJLsLllyc6nZzA9
+         gFUpa3s60zoHwqlYS1ibCaFMDpBcrs4toKYyR9eGRtgpjbgUrfwu2ZQtV4h54mS9Dk8Q
+         lg38TgKrJ4Lvli78idB1ExZ9K7zVg+JISjzyd/fRrzPpJ9bQnYZblkHcGZJkJsuDKxMs
+         /oeUvTOZc6v1rGutbgXAGNSFIyPxvgBklnWYlKvi0d+6iWbY9jFw/OyGoH076u85nh1D
+         9QPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=BAKFmZIs1G8CtS7wHOv+MKY/i5HK754lis1gMlux8dg=;
-        b=Lqls8uPRrVP/yb2SqsnqD6Wv0Y+T6MJF2ETNo6rcUmguFbLPcbEvv5g61Bcdb5youU
-         ADawUik8t6SmOjEbk4W7/Ty7S3nbh0GLifv5yiByEx2mMi60nZsjkzK+wcWDxmXQnZ1R
-         4liNR1YvsMEz/itSnyE1lJmY+hfDVBT2iVEqIL/HtCjwqObIKe5xEdt1bTqQR8DzbJAT
-         FyZEnpTXC+QO48mI6FZrYWKf+yxhdP2TzW9DeSppEtZm2AbCljEaBhec6yhw0kjRWkKy
-         LpSFz7HRTnYilyHgIeA30q4MfsN6zzXdHAvsn+r9eWP/BxN2ZiUM03kDqxQaXImJGunh
-         IbSQ==
-X-Gm-Message-State: AOAM5307Jxy+8aCEQf1UZo9a0/AMr6QxrTbWSWNBq2lLks7fZOPlwf4P
-        o0kbCw6XXiC/UWqGnMl9rOKZdV5tv63NTmIUNw0AYA4z
-X-Google-Smtp-Source: ABdhPJxKOC8A13HZEDlQ878ADrOy3eAA5+QZcmuP48JPxVLjR4wDcsMcgWbmSJvgOypelf2HbEzzDyAUpDhfi3gwPpQ=
-X-Received: by 2002:a37:270e:: with SMTP id n14mr47279362qkn.92.1594073888185;
- Mon, 06 Jul 2020 15:18:08 -0700 (PDT)
+        bh=+g8b8UDutwpjfN6lizjtfC7IoMCTSDjsjPJug8YnTgg=;
+        b=cyyo6NP2OugMBytrXpGrgLcmn1tlYmFgs4GNc1u2O5VIfDO8r4YjClAxlZ8rbzrcXL
+         LVW9eyEAjHPIypSa70IXfdTqeE0x5bEPZZjW9UW7D28w5o5IFdO42iAk7oSBfI5qL4vx
+         9JwO4wBNwbd6imJTw/y2xou6A0oyAFsnjFQ13+iR7ojk9+afknEGaTVjQoV2HHcWk4jF
+         V6HWCGSS+kZFBOgN+osw25q/lQIYGcG4zjSpuF5hHGTrgQpmnoGYidxpvEd0+/8JhfuY
+         SPzTmJ3PFgXvfIXTQab6E+VQuIBSoO71js/Wu4jgT/hTYbp1nbYq8WOyfwr5ZQCOx60x
+         LX+Q==
+X-Gm-Message-State: AOAM530IEbLJ8Ot5ZxrMu7uspP8m4re8sygjz08EXLoebN1JD307V01D
+        SIlpJ1G8EVpae56Bnwhpca/GquGxKu2sVNpj7TeaCw==
+X-Google-Smtp-Source: ABdhPJyJihOFDUusDuGurRmf+ynZe/E6+YCOUFBYwFoV/94U5zmmw6gWFYJpZfrD7hx040m64pq6G+pFjE5iBr5QmJw=
+X-Received: by 2002:a2e:b5a8:: with SMTP id f8mr27313685ljn.247.1594073940036;
+ Mon, 06 Jul 2020 15:19:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <159405478968.1091613.16934652228902650021.stgit@firesoul> <159405481655.1091613.6475075949369245359.stgit@firesoul>
-In-Reply-To: <159405481655.1091613.6475075949369245359.stgit@firesoul>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 6 Jul 2020 15:17:57 -0700
-Message-ID: <CAEf4BzZ=v1fMxfxP9XdtEOmQV97XdwJ+Ago++VyVN19-TmeF3A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next V2 2/2] selftests/bpf: test_progs avoid minus
- shell exit codes
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     bpf <bpf@vger.kernel.org>, Hangbin Liu <haliu@redhat.com>,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Veronika Kabatova <vkabatov@redhat.com>,
-        Jiri Benc <jbenc@redhat.com>, Yonghong Song <yhs@fb.com>,
-        Martin Lau <kafai@fb.com>, Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
+References: <20200630044943.3425049-1-rajatja@google.com> <20200704114452.GA15530@amd>
+In-Reply-To: <20200704114452.GA15530@amd>
+From:   Rajat Jain <rajatja@google.com>
+Date:   Mon, 6 Jul 2020 15:18:23 -0700
+Message-ID: <CACK8Z6HP00o=rextd0-X-u2aH72PNU3t6zEczC2GGO_QfGhUcA@mail.gmail.com>
+Subject: Re: [PATCH v2 0/7] Tighten PCI security, expose dev location in sysfs
+To:     Pavel Machek <pavel@denx.de>
+Cc:     David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        "open list:AMD IOMMU (AMD-VI)" <iommu@lists.linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>,
+        "Krishnakumar, Lalithambika" <lalithambika.krishnakumar@intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Prashant Malani <pmalani@google.com>,
+        Benson Leung <bleung@google.com>,
+        Todd Broch <tbroch@google.com>,
+        Alex Levin <levinale@google.com>,
+        Mattias Nissler <mnissler@google.com>,
+        Rajat Jain <rajatxjain@gmail.com>,
+        Bernie Keany <bernie.keany@intel.com>,
+        Aaron Durbin <adurbin@google.com>,
+        Diego Rivas <diegorivas@google.com>,
+        Duncan Laurie <dlaurie@google.com>,
+        Furquan Shaikh <furquan@google.com>,
+        Jesse Barnes <jsbarnes@google.com>,
+        Christian Kellner <christian@kellner.me>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Oliver O'Halloran" <oohall@gmail.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 6, 2020 at 10:00 AM Jesper Dangaard Brouer
-<brouer@redhat.com> wrote:
+On Sat, Jul 4, 2020 at 4:44 AM Pavel Machek <pavel@denx.de> wrote:
 >
-> There are a number of places in test_progs that use minus-1 as the argument
-> to exit(). This improper use as a process exit status is masked to be a
-> number between 0 and 255 as defined in man exit(3).
+> Hi!
+>
+> > * The first 3 patches tighten the PCI security using ACS, and take care
+> >   of a border case.
+> > * The 4th patch takes care of PCI bug.
+> > * 5th and 6th patches expose a device's location into the sysfs to allow
+> >   admin to make decision based on that.
+>
+> I see no patch for Documentation -- new sysfs interfaces should be
+> documented for 5/6.
 
-nit: I wouldn't call it improper use, as it's a well defined behavior
-(lower byte of returned integer).
+Yes, sorry. The patches 5/6 have run into discussion and it looks are
+not acceptable at the moment.
+
+Thanks,
+
+Rajat
 
 >
-> This patch use two different positive exit codes instead, to allow a shell
-
-typo: uses
-
-> script to tell the two error cases apart.
+>                                                                         Pavel
 >
-> Fixes: fd27b1835e70 ("selftests/bpf: Reset process and thread affinity after each test/sub-test")
-> Fixes: 811d7e375d08 ("bpf: selftests: Restore netns after each test")
-> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> ---
->  tools/testing/selftests/bpf/test_progs.c |   12 +++++++-----
->  1 file changed, 7 insertions(+), 5 deletions(-)
+> >  drivers/base/core.c         | 35 +++++++++++++++++++++++++++++++
+> >  drivers/iommu/intel/iommu.c | 31 ++++++++++++++++++---------
+> >  drivers/pci/ats.c           |  2 +-
+> >  drivers/pci/bus.c           | 13 ++++++------
+> >  drivers/pci/of.c            |  2 +-
+> >  drivers/pci/p2pdma.c        |  2 +-
+> >  drivers/pci/pci-acpi.c      | 13 ++++++------
+> >  drivers/pci/pci-driver.c    |  1 +
+> >  drivers/pci/pci.c           | 34 ++++++++++++++++++++++++++----
+> >  drivers/pci/pci.h           |  3 ++-
+> >  drivers/pci/probe.c         | 20 +++++++++++-------
+> >  drivers/pci/quirks.c        | 19 +++++++++++++----
+> >  include/linux/device.h      | 42 +++++++++++++++++++++++++++++++++++++
+> >  include/linux/device/bus.h  |  8 +++++++
+> >  include/linux/pci.h         | 13 ++++++------
+> >  15 files changed, 191 insertions(+), 47 deletions(-)
+> >
 >
-> diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
-> index e8f7cd5dbae4..50803b080593 100644
-> --- a/tools/testing/selftests/bpf/test_progs.c
-> +++ b/tools/testing/selftests/bpf/test_progs.c
-> @@ -12,7 +12,9 @@
->  #include <string.h>
->  #include <execinfo.h> /* backtrace */
->
-> -#define EXIT_NO_TEST 2
-> +#define EXIT_NO_TEST           2
-> +#define EXIT_ERR_NETNS         3
-> +#define EXIT_ERR_RESET_AFFINITY        4
-
-Let's not overdo this with too granular error codes? All of those seem
-to be just a failure, is there any practical need to differentiate
-between NETNS vs RESET_AFFINITY failure?
-
-I'd go with 3 values:
-
-1 - at least one test failed
-2 - no tests were selected
-3 - "infra" (not a test-specific failure) error (like netns or affinity failed).
-
-Thoughts?
-
-
-[...]
+> --
+> (english) http://www.livejournal.com/~pavelmachek
+> (cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
