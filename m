@@ -2,100 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EA472159ED
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 16:50:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D97A2159F3
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 16:50:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729438AbgGFOtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 10:49:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59086 "EHLO
+        id S1729464AbgGFOtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 10:49:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729424AbgGFOti (ORCPT
+        with ESMTP id S1729424AbgGFOtt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 10:49:38 -0400
-Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7E8CC061755
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Jul 2020 07:49:37 -0700 (PDT)
-Received: by mail-vs1-xe44.google.com with SMTP id x13so15989773vsx.13
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 07:49:37 -0700 (PDT)
+        Mon, 6 Jul 2020 10:49:49 -0400
+Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BA0AC061755
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Jul 2020 07:49:49 -0700 (PDT)
+Received: by mail-ua1-x944.google.com with SMTP id j21so284720ual.11
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 07:49:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ThoUX3D4D7XYDMfUPpe8rFPmFr4x1le4oAww+2aOLQU=;
-        b=oIZFcuyhuJq7rKyk7cftCjXUqUaBvDJaEJUs98RkIVgptfVcm/lspLDAISpPcK2olh
-         aDnh2aIPV8ltxg6nQ7tXVXzSycX9oyYp7cWpwTSxfkSMwtDEfAuK09HHF3iiscYRSX+l
-         AsPwcMjtUglgdCpgrR2J98ajL9A6gmsKMdAgCwqry8uIY7GDZy/f8/WjG+sk4YfdTwKc
-         FmPd2ND5N6QdpqI36kM7ddceAEgNI6aNj7vKrvsMA4XKcTE1tnh4IZwCZiD/KoD1N7Lo
-         6urgQ3ziTlhMBzG5FlPDJFLxG5UM9Bc7d0ZknkfMNnYnIx4fCHUv4V6a24NHxOK7n7uv
-         l7hw==
+        bh=UJansEGmPdeGOGXnqzYZzxjZ76Z/vpZoEqZEVdL7ZJw=;
+        b=jAf3TrUasdW4EPNpi+PhMii3nsGn4wqlWpuseKVDJQ+tR69z9Bja0hwcuPuE4GxKok
+         HZLd2OpbLRn2p+uWbmIIajaMBEXykLH3KdhV4uGMUgzy6wLDS421i/Cphfn9OhH3PC2+
+         64Ep9+YYeFK/g2JgQscYuu/FexYq9D+3nfnv2zn8KTQ33S6TM8guDdOy+AwEYP08wtrS
+         aNkq3DYht/YS1K9+dpvUpF/6g0/lSLNw/9BeiFBFiSJX7iM/W/LJi+Ag8OyZUBSJ8lNI
+         kkPN+M6tUNY+Gv55A9RKniDz+3bmZ3BWPJlXZoZFQD2kfOy4xgmDcXWkrBERoNv6r82T
+         EaOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ThoUX3D4D7XYDMfUPpe8rFPmFr4x1le4oAww+2aOLQU=;
-        b=MxdD0ngFyCz8s/ZkoXlXpuvff75h1eiPkcAhKK6+Z8fduQ+wUyZiC6OaUC8uB6t+HE
-         874+IdQoBco2AND0aD9MI1p6jLreSZ6O9FBQnv3lJhwgLKYvi6xN1qAmbM0f8NOdyqyJ
-         xjQSJgtpbTSgB8WV95c08FU0cBBfpeIRDkelbsluz2Kkr1NVcwIg+eqGZ908XP29iydE
-         tkLxDSnJCF4VBv0xiqydLmqbpBpmM22FxcEMk2IcVcAUio8jLEbL8Sk7sZY9XORbiL/s
-         kLOz7YvSqqDN3ik29wOMmA7uec1rR8vcsCqhtrt/YOgtJeW1QRIMuxmp/3zpVvb7xFbi
-         Id3Q==
-X-Gm-Message-State: AOAM531STBSXRKxhQK6Xo2WlKRC5H5fY8LowXrD2HNhyGbjJBllbxyhg
-        JpluirrjZvowp99Cz7K/+Dnyq7mleU1Z092yIjAhjg==
-X-Google-Smtp-Source: ABdhPJzIeo+wEv+tl+o7ithHrJO/3zOmz+2jDe9x99k5Ft/dAWm8KTIGDp1o3RWzP9h9tcgJ8W/bjkuSbtljJB16s6c=
-X-Received: by 2002:a67:f888:: with SMTP id h8mr15842779vso.165.1594046977165;
- Mon, 06 Jul 2020 07:49:37 -0700 (PDT)
+        bh=UJansEGmPdeGOGXnqzYZzxjZ76Z/vpZoEqZEVdL7ZJw=;
+        b=B9agq43UMxWFW+4QuuzowvMO7wQLghof8AsQPGpZcU0oZRpHL3dL23Dg5ecN4wgVVH
+         wQrC11sg+GtWVTS7tDUPhf9G7vvWzgJwkvqr12nWVJ2KFCvxjrzvepgepvVQNuE3Endg
+         9XQSWLhqCLsCQ6nZdDt4ujBxut4Yd+olt8Z9rVvFdaBdApzQupZNK6bNUXo/xw9rjHN9
+         SM5+Vpwv6JrqwyIHdewuXJbRDrK/hQckoaFRYP7hp/B+O3GFYfzV2/UpKf6w4wNDn8Yc
+         4Mc4Uw3P+De+ZxmQhm2WWFqngb4IgLFQFtSrdpRluwvEQJ5kFqsomKLDOqsSBvXc4ilX
+         nCsg==
+X-Gm-Message-State: AOAM531ai/E1olVQ0P8jnEv4nvQMnxmboSXIYysL98WGb+R/z++FvgwC
+        7CeY6stDQXefhXZCVRc4ivSpwEAfwyr8NZKSbotBIQ==
+X-Google-Smtp-Source: ABdhPJy72u3CpM6RLtUQ6iqGATk2GoTxo0fagGN1UKNvQ4nHU/ra/+dEuPRZdsJK6pqbi+duJvZ/U9n4kKqsB9qmIQA=
+X-Received: by 2002:ab0:4e98:: with SMTP id l24mr3487632uah.15.1594046988524;
+ Mon, 06 Jul 2020 07:49:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200621025330.10561-1-mani@kernel.org>
-In-Reply-To: <20200621025330.10561-1-mani@kernel.org>
+References: <20200623133347.4598-1-akshu.agrawal@amd.com>
+In-Reply-To: <20200623133347.4598-1-akshu.agrawal@amd.com>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 6 Jul 2020 16:49:00 +0200
-Message-ID: <CAPDyKFp3njgxgt0p2vFueC+6c4UDsaCfF9udXyRb-Juz4=G1=Q@mail.gmail.com>
-Subject: Re: [PATCH] mmc: owl-mmc: Get rid of of_match_ptr() macro
-To:     Manivannan Sadhasivam <mani@kernel.org>
-Cc:     =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
+Date:   Mon, 6 Jul 2020 16:49:11 +0200
+Message-ID: <CAPDyKFrV9vn1jFEzCWZ-5aDHSyTz9+m9MM_CWLp9iA86YCGTwg@mail.gmail.com>
+Subject: Re: [PATCH] mmc: sdhci-acpi: For amd device set driver type as MMC_SET_DRIVER_TYPE_A
+To:     Akshu Agrawal <akshu.agrawal@amd.com>
+Cc:     rrangel@google.com,
+        "Shah, Nehal-bakulchandra" <nehal-bakulchandra.shah@amd.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
         "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 21 Jun 2020 at 04:54, Manivannan Sadhasivam <mani@kernel.org> wrote:
+On Tue, 23 Jun 2020 at 15:34, Akshu Agrawal <akshu.agrawal@amd.com> wrote:
 >
-> Remove the 'of_match_ptr()' macro to fix the warning when CONFIG_OF is
-> not selected.
+> HS400/HS200/eMMC HS doesn't have Preset Value register.
+> Hence, sdhci_set_ios function overrides the value set by fmw to
+> SDHCI_CTRL_DRV_TYPE_B.
+> This patch sets drv_type to MMC_SET_DRIVER_TYPE_A
+> so that host_control2 register gets updated with the required
+> strength value.
 >
-> drivers/mmc/host/owl-mmc.c:677:34: warning: unused variable 'owl_mmc_of_match'
-> [-Wunused-const-variable]
->
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Manivannan Sadhasivam <mani@kernel.org>
+> Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
 
-Applied for fixes, thanks!
+Applied for next, thanks!
 
 Kind regards
 Uffe
 
 
 > ---
->  drivers/mmc/host/owl-mmc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/mmc/host/sdhci-acpi.c | 1 +
+>  1 file changed, 1 insertion(+)
 >
-> diff --git a/drivers/mmc/host/owl-mmc.c b/drivers/mmc/host/owl-mmc.c
-> index 5e20c099fe03..df43f42855e2 100644
-> --- a/drivers/mmc/host/owl-mmc.c
-> +++ b/drivers/mmc/host/owl-mmc.c
-> @@ -689,7 +689,7 @@ MODULE_DEVICE_TABLE(of, owl_mmc_of_match);
->  static struct platform_driver owl_mmc_driver = {
->         .driver = {
->                 .name   = "owl_mmc",
-> -               .of_match_table = of_match_ptr(owl_mmc_of_match),
-> +               .of_match_table = owl_mmc_of_match,
->         },
->         .probe          = owl_mmc_probe,
->         .remove         = owl_mmc_remove,
+> diff --git a/drivers/mmc/host/sdhci-acpi.c b/drivers/mmc/host/sdhci-acpi.c
+> index d8b76cb8698a..48ecbd0b180d 100644
+> --- a/drivers/mmc/host/sdhci-acpi.c
+> +++ b/drivers/mmc/host/sdhci-acpi.c
+> @@ -542,6 +542,7 @@ static int amd_select_drive_strength(struct mmc_card *card,
+>                                      unsigned int max_dtr, int host_drv,
+>                                      int card_drv, int *drv_type)
+>  {
+> +       *drv_type = MMC_SET_DRIVER_TYPE_A;
+>         return MMC_SET_DRIVER_TYPE_A;
+>  }
+>
 > --
-> 2.17.1
+> 2.20.1
 >
