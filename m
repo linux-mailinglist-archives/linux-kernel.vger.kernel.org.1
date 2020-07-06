@@ -2,111 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96F7F2157DA
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 14:57:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E797B21579B
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 14:51:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729160AbgGFM5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 08:57:06 -0400
-Received: from de-smtp-delivery-102.mimecast.com ([62.140.7.102]:55636 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729085AbgGFM5F (ORCPT
+        id S1729087AbgGFMvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 08:51:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40450 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728996AbgGFMvP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 08:57:05 -0400
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com
- (mail-vi1eur04lp2051.outbound.protection.outlook.com [104.47.14.51]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- de-mta-18-kyQW1u4ePpGd2mFQWuazlQ-1; Mon, 06 Jul 2020 14:50:46 +0200
-X-MC-Unique: kyQW1u4ePpGd2mFQWuazlQ-1
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Av40yiNvxzuZfnHj2Z3K6/vnqpls4rs9Cpef7mhM58i5alcbEDFx73mndTCRtJj2Uo7QwABIYXX4KaqJjsD8dHsUQsOy0e1ACKDXPzMOCU9mJ4wCPeHZniLcZkT8Nd2JMK8tFk9FeN4V6dQ7V0F6/nEFrRSTfMEjjYeGyEETehcZrxVc3SJsXhtk4WgwptoDoOXDRIwzmcwMv0h5X6ZietaMxJ51DicYI0vz+1bLt3Iz6FsdZyX8SYMXClffqhZjJJZ5FgRJHxNnRTMDjoUii5Eb6t1D/dfjsx0kvG/Ny2yF9kiKRTmwsDy5C8x3ONGse8fGWKh2HtJ4gPluA754zw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5wXx1fomwPRGhWNiBlZVNG4MTyfJX1vHSR2d0J6JKFo=;
- b=QU1UY3bwjHikX4YFS2tFGGO0aut33fW5MVOJ7M1IQx8bkw8BzVgAuDQYvSB4cycR9VY3FiBBkJm1niIfr3kwuhbPG2lktz0zUkJ1ys73EV6S6Z7vdrXZAXGwGjJxrC+x4oz1D+bu03cPiAUF0YfA6p09Vsg2383Hj+YagODPpQ5e7CZTztdXpSoMhVM9/bFwtkTUQMOT4jvnq/ns2v3882D/SsHWvmPKZBmTG1OIJHdD9YkbrIZ2qG2RlZReT3hm0zfHIubH1M6U4qBmhGimtEc0b+p7TpFOIATMMWFOfjsVE5WLoVA+y39Yg/WFZ+BeM6YtFKMjorF71w7RbI98sg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=suse.com;
-Received: from VI1PR04MB5325.eurprd04.prod.outlook.com (2603:10a6:803:60::14)
- by VI1PR04MB6173.eurprd04.prod.outlook.com (2603:10a6:803:ff::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.23; Mon, 6 Jul
- 2020 12:50:45 +0000
-Received: from VI1PR04MB5325.eurprd04.prod.outlook.com
- ([fe80::dcff:4fd4:7403:f1b4]) by VI1PR04MB5325.eurprd04.prod.outlook.com
- ([fe80::dcff:4fd4:7403:f1b4%5]) with mapi id 15.20.3153.029; Mon, 6 Jul 2020
- 12:50:44 +0000
-Date:   Mon, 6 Jul 2020 12:50:36 +0000
-From:   Luis Chamberlain <mcgrof@suse.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        linux-doc@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
-        dmaengine@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        linux-iio@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, Jon Mason <jdmason@kudzu.us>,
-        Allen Hubbe <allenbh@gmail.com>, linux-ntb@googlegroups.com,
-        linux-nvdimm@lists.01.org, linux-usb@vger.kernel.org,
-        Eli Billauer <eli.billauer@gmail.com>
-Subject: Re: [PATCH 02/17] Documentation/driver-api: firmware/built-in-fw:
- drop doubled word
-Message-ID: <20200706125036.llvg2mgmr7a4ydni@ergon.do-not-panic.com>
-References: <20200704034502.17199-1-rdunlap@infradead.org>
- <20200704034502.17199-3-rdunlap@infradead.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200704034502.17199-3-rdunlap@infradead.org>
-X-ClientProxiedBy: BY3PR05CA0028.namprd05.prod.outlook.com
- (2603:10b6:a03:254::33) To VI1PR04MB5325.eurprd04.prod.outlook.com
- (2603:10a6:803:60::14)
+        Mon, 6 Jul 2020 08:51:15 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADAE8C061794
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Jul 2020 05:51:15 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id r8so31873673oij.5
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 05:51:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6K/gQHllEjKG6V7YEHC6mXh/d0A0514HaiYTu/7w0KE=;
+        b=K/TCBF0arGBnub2yuM3Ys+hpRCXziFaidd7zsSp0WfPRRm5JlDOr69c3fBFCg5UIag
+         wTtJovMb5C34s9ydSrtWByPa7OEyJjEegho979Fh3aHsI1Mlo+GInoBSmQwLYp7wioKP
+         k4nd3QBJKNtxBZRp7fOUa7db9ylyf785/kjfROQUsra4S0o5e9gzyF47ChDRGtDYbxcz
+         xTPAZ4W2+lmxklAYq6/nGvfZttv807MlTfemY76Qr/K9e7Pd503oOVddnMSOZ0TI+AqO
+         9RA/nQ9uBGeeXxYxveVhEK40dDHAyicI3EZitQ4KEkPb9rrbx20Oz5MU3cxyAbM9xulV
+         ZBxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6K/gQHllEjKG6V7YEHC6mXh/d0A0514HaiYTu/7w0KE=;
+        b=W4wFLIbiiSk/+D/KW+TWCXDgr1vFLCPwXpwiNxMjcI++ys9L3o3ctQiKgd8uYBIHz+
+         OWkNMv4QKRSqX2ecuD5X+eNKUA9NWKV91lh1A9D1cvLwVWCuC5J9BujSH/MSFAi2DHuU
+         JN1mf3bYxmXJcQa7DxvcLwgvztdaGeD4jYwBDzRMONfADhrh2P9HldWPXueNzIGFE6MC
+         XrLJwjx7bW+VKvh+1Wvy4HBC+P6h1o/Bpt2Ho5SQ6fPMonbNB9+c6zBViZ2r12f/GqnC
+         3eyyqr1JCdLYJ7CUswxfOCKiN8N7LP1CzG2f1uaVwhIt37Qj+frwkbZUUbkKo5x8IhyO
+         zGRw==
+X-Gm-Message-State: AOAM532osRft2khvdZleKslJflRmpr2B6SuTtJpEUswFthUliiR1uxI2
+        66t1QmxUYyijBX00wRpIrJksSgD40B9ikQ/DDFEIH5tP
+X-Google-Smtp-Source: ABdhPJzypBqvNsr8B06CaWYR9FFAwMjmPnbqqe1yxbcFNniqNgggV9UZ+VA+lxsoXy6uTDCrXRDhksKauqBsaNFyPO0=
+X-Received: by 2002:aca:e0d6:: with SMTP id x205mr25402446oig.176.1594039874235;
+ Mon, 06 Jul 2020 05:51:14 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ergon.do-not-panic.com (178.128.74.135) by BY3PR05CA0028.namprd05.prod.outlook.com (2603:10b6:a03:254::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.8 via Frontend Transport; Mon, 6 Jul 2020 12:50:44 +0000
-Received: by ergon.do-not-panic.com (Postfix, from userid 1000) id EC0FEA2856; Mon,  6 Jul 2020 12:50:36 +0000 (UTC)
-X-Originating-IP: [178.128.74.135]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 743f4daf-1c58-4b23-fd3d-08d821ab327d
-X-MS-TrafficTypeDiagnostic: VI1PR04MB6173:
-X-Microsoft-Antispam-PRVS: <VI1PR04MB6173A4766C59D95B10831F90F0690@VI1PR04MB6173.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2958;
-X-Forefront-PRVS: 04569283F9
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8QKd0IN2aSMYsWoYj52PX5PysF/dW//lGCEbeH0Fi5uGqHDI6tYacudyeB5xMRDbCpnHVPYyAZevMDiwx0zb8lQ1EhKJjoyFBJ/17Ur4sZt3MsE0heFvlA9y2sT9UM5vD0uf+WU3xxOi5IcUtOXpt+1FjX5EC/7xE5jj4o1CSlkBxb3jHh4dgrofUhiT+bNZy4C6X2Y8+ikp9XHHe23U4aRzsuwjgaJn5LS4j1zhSbuPCrMEXFFEcUKtyZ94tlJbY1V8vTIAMqlYlVuqUCJ51/To+dWmHARUDryp43DTyn2vnmUS/gsW4yoUHs/gCJuEAKqdlI6bZPktcUO3TPq5xg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5325.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(396003)(39860400002)(376002)(136003)(366004)(346002)(6916009)(9686003)(52116002)(186003)(7416002)(42186006)(316002)(6266002)(4326008)(8936002)(26005)(54906003)(8676002)(478600001)(4744005)(66556008)(66476007)(66946007)(2906002)(1076003)(5660300002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: Mb8GQRRldTCnyvM8Adi7uHnOb037Eld+uNceQL9ruoX6sJ5NLsKMj3JTCl2aKNTIuUCRTMAH1KuH0/buN08WyQUWU+lBv28VgI6mf5uSMtWrNSGeWnXjl/fMoZ7wZM24AxEVJFFKFAF0FN9k3NOyJoITaJ0SQy7GnWIjEA/+GkSWZ8jrkwAHNv05ZQbI8lrKN0HFhg712cSVD1iCGah2UELlj6u6twBmOxuz0vBFhapWZZV7YIP7UOchbc6z671YKHT3cu4gQ7BmmbmyMNlOMcU4mudyCF+wQ5CNXFIToczMgOQF280BZ0xbFVoPfAJJVy8rRTKoOcA/Pi2CorVhtTZV4jhRB7b6d+neiDBDiZZ89ZALZibx+/spVUSfgaYoFG7sLxkzzzX5PYvVk9NkSFonqYb1Tu8Ce+zbzeHj+w3k04XUBGPAs/HyvRpdguixT9WUjGrQZFemEAk7nGLItviw9y0f2uvJBXacylqloNam879Wlq+HJHNJuU2TiZcN
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 743f4daf-1c58-4b23-fd3d-08d821ab327d
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5325.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jul 2020 12:50:44.8174
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ZL/MSPQ7vF6G817vDWiCPHaUz/7g1QBwypX6CWbRGwuxqbC0IzBzB/o11VDOQnRsD+XcmWon58h2h0S4bSPOYh9U6QTaSZC0p+rcOYFddDA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB6173
+References: <159389297140.2210796.13590142254668787525.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <CAFhKne_ZVWVhZX5hNEbeGBfU6BMRN9JKQeTsVYOcMmEH1cd3xg@mail.gmail.com>
+ <87h7ul15le.fsf@notabene.neil.brown.name> <20200706072221.GA1947246@kroah.com>
+ <CAMuHMdWj2d5GF1ZkuhzQxg9teA51zjF0oQQPWcphzK=kJ6-x9Q@mail.gmail.com>
+In-Reply-To: <CAMuHMdWj2d5GF1ZkuhzQxg9teA51zjF0oQQPWcphzK=kJ6-x9Q@mail.gmail.com>
+From:   Matthew Wilcox <willy6545@gmail.com>
+Date:   Mon, 6 Jul 2020 08:51:03 -0400
+Message-ID: <CAFhKne9vswg3Q4mTOz4WP6QWJ8tDH+SNx1Pu7LotLagoNURKgw@mail.gmail.com>
+Subject: Re: [Ksummit-discuss] [PATCH] CodingStyle: Inclusive Terminology
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Chris Mason <clm@fb.clm>,
+        tech-board-discuss@lists.linuxfoundation.org,
+        ksummit <ksummit-discuss@lists.linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 03, 2020 at 08:44:47PM -0700, Randy Dunlap wrote:
-> Drop the doubled word "for".
-> 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: linux-doc@vger.kernel.org
-> Cc: Luis Chamberlain <mcgrof@kernel.org>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+On Mon, Jul 6, 2020 at 3:54 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> On Mon, Jul 6, 2020 at 9:22 AM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> > On Mon, Jul 06, 2020 at 05:10:37PM +1000, NeilBrown wrote:
+> > > On Sat, Jul 04 2020, Matthew Wilcox wrote:
+> > > > Another suggestion for "slave" replacement should be "device". This is in
+> > > > the context of the w1 bus which is by far the largest user of the
+> > > > master/slave terminology in the kernel.
+>
+> W1 the largest? Really?
 
-For all the firmware patches you sent:
+I should have said "most obnoxious".  They managed to put that terminology in
+filenames, eg drivers/w1/slaves and Documentation/w1/slaves
 
-Acked-by: Luis Chamberlain <mcgrof@kernel.org>
+In terms of number of lines of code using the word, it's only seventh
+in drivers/:
 
-  Luis
-
+$ for i in drivers/*; do c=$(find $i -type f |xargs grep slave |wc
+-l); echo "$c $i"; done |sort -rn |head
+5218 drivers/net
+1341 drivers/dma
+988 drivers/i2c
+695 drivers/gpu
+666 drivers/soundwire
+665 drivers/spi
+559 drivers/w1
+461 drivers/infiniband
+389 drivers/media
+301 drivers/scsi
