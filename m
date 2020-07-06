@@ -2,101 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42C01216120
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 23:57:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB9DC216133
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 00:00:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727849AbgGFVyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 17:54:41 -0400
-Received: from o1.b.az.sendgrid.net ([208.117.55.133]:43226 "EHLO
-        o1.b.az.sendgrid.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727792AbgGFVyj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 17:54:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiboo.se;
-        h=from:subject:in-reply-to:references:to:cc:content-type:
-        content-transfer-encoding;
-        s=001; bh=xRvXleIsFrOUoVEFb2+EqS1sO8vNP09eztv2NUch3P4=;
-        b=S1nVBMGmkIVtJMfuJDtwUDlmFM36++kjO/Sbbw3SBF8V8MLUQ0Wa2NB0F8t1ZP48hTSJ
-        JisXget+1VHsk17FOWWgMnzDtNWN/XDp5tbZ99jItemPZevfJGfHzlI2LtJbd5FtUnKbPi
-        Gy8qguUJHcFQ6DKTvydNbrTVCU1K60Pos=
-Received: by filterdrecv-p3iad2-5b55dcd864-5dqzw with SMTP id filterdrecv-p3iad2-5b55dcd864-5dqzw-19-5F039D9E-D
-        2020-07-06 21:54:38.266225202 +0000 UTC m=+881111.140990039
-Received: from bionic.localdomain (unknown)
-        by ismtpd0008p1lon1.sendgrid.net (SG) with ESMTP
-        id RkkRZ2UwQbil5L0N__xREg
-        Mon, 06 Jul 2020 21:54:38.020 +0000 (UTC)
-From:   Jonas Karlman <jonas@kwiboo.se>
-Subject: [PATCH v2 12/12] media: rkvdec: h264: Support profile and level
- controls
-Date:   Mon, 06 Jul 2020 21:54:38 +0000 (UTC)
-Message-Id: <20200706215430.22859-13-jonas@kwiboo.se>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200706215430.22859-1-jonas@kwiboo.se>
-References: <20200701215616.30874-1-jonas@kwiboo.se>
- <20200706215430.22859-1-jonas@kwiboo.se>
-X-SG-EID: =?us-ascii?Q?TdbjyGynYnRZWhH+7lKUQJL+ZxmxpowvO2O9SQF5CwCVrYgcwUXgU5DKUU3QxA?=
- =?us-ascii?Q?fZekEeQsTe+RrMu3cja6a0h1vz2=2F=2Fhk378RB7Ov?=
- =?us-ascii?Q?uU+Unwr2NFFYBDDmKvAj6aOu7u4GSrColBrbVrh?=
- =?us-ascii?Q?TX5qJmcTnPslZyASlbiJvcXj2p9JfMzjX5zyH7B?=
- =?us-ascii?Q?0qES3lj+vbCZ=2FytItQv96DZpHDFc2HO8fogwtUg?=
- =?us-ascii?Q?2NvF6lBgEJZfMbfOUnDzH1bXxqE8=2FnGqDvpUgEv?=
- =?us-ascii?Q?HIgT=2FKPegL9dEePjyLfHA=3D=3D?=
-To:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Jonas Karlman <jonas@kwiboo.se>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Alexandre Courbot <acourbot@chromium.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+        id S1726329AbgGFWAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 18:00:04 -0400
+Received: from ozlabs.org ([203.11.71.1]:53981 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725860AbgGFWAE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Jul 2020 18:00:04 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4B0zyB11NHz9s1x;
+        Tue,  7 Jul 2020 08:00:01 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1594072802;
+        bh=UXYG+NlDuPRRy5dtPsarnIzjPJrnE86KFdNzmLeK3k8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=ccX4QfgAS48Mia2K3KxM9KbflbFvmHxuxGceEojNOMllclSfhSqHirENfQEXvenov
+         QmhafmdWnaNHhURfcCDkL8pQZMCvekVmd6tGfNIGh4J2Iaw3ettgGTTimvTt9mPAbo
+         oOEcRHLU1+r+QwuWkptA9DiD2BUKzx4LvL3xblX+noYUdMAV6/rijfilGup3OxxcMN
+         dfPU+xlF8Qem9x0YZBEtc/5hQDUHCl5d+DBlSHKN+miX5b7oLPavAfcVaV7RfsS1qU
+         JsOoNPJqURB7AmosEZ3CMq3nvP2eAOpD1I9FG5rR6WzzDuv56OpKieM0Cn7WD3U5rP
+         jp2er7WyPv3eA==
+Date:   Tue, 7 Jul 2020 08:00:00 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commits in the spi tree
+Message-ID: <20200707080000.507aed2c@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/rox1eQqkVFA0OpS/Z5ogLwp";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Rockchip Video Decoder used in RK3399 supports H.264 profiles from
-Baseline to High 4:2:2 up to Level 5.1, except for the Extended profile.
+--Sig_/rox1eQqkVFA0OpS/Z5ogLwp
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Expose the V4L2_CID_MPEG_VIDEO_H264_PROFILE and the
-V4L2_CID_MPEG_VIDEO_H264_LEVEL control, so that userspace can query the
-driver for the list of supported profiles and level.
+Hi all,
 
-Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
-Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
----
-Changes in v2:
-- Moved to end
-- Collect r-b tag
----
- drivers/staging/media/rkvdec/rkvdec.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+Commits
 
-diff --git a/drivers/staging/media/rkvdec/rkvdec.c b/drivers/staging/media/rkvdec/rkvdec.c
-index 4faee9262392..b21031535330 100644
---- a/drivers/staging/media/rkvdec/rkvdec.c
-+++ b/drivers/staging/media/rkvdec/rkvdec.c
-@@ -144,6 +144,19 @@ static const struct rkvdec_ctrl_desc rkvdec_h264_ctrl_descs[] = {
- 		.cfg.def = V4L2_MPEG_VIDEO_H264_START_CODE_ANNEX_B,
- 		.cfg.max = V4L2_MPEG_VIDEO_H264_START_CODE_ANNEX_B,
- 	},
-+	{
-+		.cfg.id = V4L2_CID_MPEG_VIDEO_H264_PROFILE,
-+		.cfg.min = V4L2_MPEG_VIDEO_H264_PROFILE_BASELINE,
-+		.cfg.max = V4L2_MPEG_VIDEO_H264_PROFILE_HIGH_422,
-+		.cfg.menu_skip_mask =
-+			BIT(V4L2_MPEG_VIDEO_H264_PROFILE_EXTENDED),
-+		.cfg.def = V4L2_MPEG_VIDEO_H264_PROFILE_MAIN,
-+	},
-+	{
-+		.cfg.id = V4L2_CID_MPEG_VIDEO_H264_LEVEL,
-+		.cfg.min = V4L2_MPEG_VIDEO_H264_LEVEL_1_0,
-+		.cfg.max = V4L2_MPEG_VIDEO_H264_LEVEL_5_1,
-+	},
- };
- 
- static const struct rkvdec_ctrls rkvdec_h264_ctrls = {
--- 
-2.17.1
+  878d4d57a6e5 ("spi: spi-sun6i: sun6i_spi_transfer_one(): enable RF_RDY in=
+terrupt only if needed")
+  1e9ca016b623 ("spi: spi-sun6i: sun6i_spi_transfer_one(): collate write to=
+ Interrupt Control Register")
+  15254b028dd6 ("spi: spi-sun6i: sun6i_spi_fill_fifo(): remove not needed l=
+ength argument")
+  60b1f09675f2 ("spi: spi-sun6i: sun6i_spi_drain_fifo(): remove not needed =
+length argument")
+  9bfc242a9379 ("spi: spi-sun6i: sun6i_spi_drain_fifo(): introduce sun6i_sp=
+i_get_rx_fifo_count() and make use of it")
+  e0430d904098 ("spi: spi-sun6i: sun6i_spi_get_tx_fifo_count: Convert manua=
+l shift+mask to FIELD_GET()")
+  05bf34283c8e ("spi: spi-sun6i: sun6i_spi_transfer_one(): remove not neede=
+d masking of transfer length")
+  642d75131c8c ("spi: spi-sun6i: sun6i_spi_transfer_one(): remove useless g=
+oto")
+  09a7139e9e17 ("spi: spi-sun6i: sun6i_spi_transfer_one(): report effectivl=
+y used speed_hz of transfer")
 
+are missing a Signed-off-by from their committer.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/rox1eQqkVFA0OpS/Z5ogLwp
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8DnuEACgkQAVBC80lX
+0GzBuAf9EDuT/Wy/8OoXWI4xKtYTUPCWW0w6wST0fSalfaQI3C52kEFlAI/RI33q
+miduGX5odX9QJ4vrpEAfpkMD7GKlBtxT8PdzaQjSmSUBpvCr8OHrQonmJRqTHfe8
+nvA4hYiucm7ttIoK1Z+aOI1pjhT7/NDRyTxO5MFFbcOkDPTvB9fpNd5/Gev6z1x0
+Xp4AYQwza630Di/JLgsJ1nZZkzfYzb+q7MjestGT3uZKA1/1h+dC3+56TT9o+hvm
+L9s0lEWc4eIa+p0Jv88iL2t63uDK9Q6JKmirf8dHc2F8PG7/va5qc42gdZj+IfpD
+/yBhGqvnKsvLjTwzc+Qto6x4q1SdeA==
+=5qMH
+-----END PGP SIGNATURE-----
+
+--Sig_/rox1eQqkVFA0OpS/Z5ogLwp--
