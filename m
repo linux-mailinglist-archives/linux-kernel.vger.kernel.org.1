@@ -2,62 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 296BE21588E
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 15:36:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61DB3215869
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 15:34:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729496AbgGFNfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 09:35:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47262 "EHLO
+        id S1729363AbgGFNeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 09:34:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729342AbgGFNeL (ORCPT
+        with ESMTP id S1729345AbgGFNeM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 09:34:11 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 041C2C061755
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Jul 2020 06:34:11 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id f18so42149534wml.3
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 06:34:10 -0700 (PDT)
+        Mon, 6 Jul 2020 09:34:12 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31919C08C5E0
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Jul 2020 06:34:12 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id b6so40928724wrs.11
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 06:34:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=oDXPXE1ejSNiTZPmJzCEijdYryKHjxn03JTJMf6IP7Q=;
-        b=nrBdfUXO6LY8W3UqebH3OTR13trp34J0vuEI51RUElQ285ST0V0W0G2+PO4jsv+hxc
-         iLQUwUgSA6VUbu9JTOnHYL/gAiz0ajtk6cAXF8AMBAsmzGLH6OCX7lVStmeEtWmNOokn
-         aqQKVBO/ffzZ9ykuNxvhdS86TyGMm4i/2UFi+wW2xNk4ccagDL0o1j90UxuPFljjkjfI
-         ZvywJxRPhH6jSNIidaJ1ghg7Mi8s1U56J14BPT8gLE+P9e0dXdBExlvcO33c1B9NM2Ht
-         tquR7H/k+Mz3WARXMH1/ra6tRevWfrzSNRlIwGgwDOvIVGWMlhLrf5xgRhr+0xutyrWT
-         fg2g==
+        bh=OciwYyOFlkXAJUScx7SVNAsT2ixoj+EcNyfWn6Xsafg=;
+        b=VcXzc+ei6oAKh0w9DGfsZ7yETc5sXN+3CKC6KObuvLUoH3M6ejWS+WNh038+jerj1h
+         KI4cAa0tpwKF8qImVnIfbBVmuIpuZXmutsi83s3amfRemr24wtyYXdFrVYFykResp+mG
+         qSAP9l84fi+Dt0Fnu3Cb2A14nb4o0z0JBuqtUyrjUfF6KCeBfoBEAO5gWLv/tqgaBMBI
+         YLCG0Yb6MCy94d4x5KSxVAJ+aVCnKF9vdxqfslNV7uGTtNVTyuugED/g2wBXF3lcN4ep
+         1swxoIWib4nm7mySMmzgcmGIskZ388OV4ojyM0vWXISGi3/m8ZetblrkAo0WynFU/xn3
+         tkUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=oDXPXE1ejSNiTZPmJzCEijdYryKHjxn03JTJMf6IP7Q=;
-        b=fD5KIpLdE9gfNYvBzhHpCdXq5bBvCjsT3KngIVf3Ce2ceXVb/VkZbcobONuL0bCqjM
-         mgR2PBZKJvuFLZBKexLXntFu3jBEOEICikacXasesdKFK44Vh1m9XTMK3shJrdGnIDnN
-         ucCEhmJP4tPcCPW85fSflkXOeEoQj62WB0MGNzOoAbFJvQy+9P69dVu8Jl6h9w8j9lPV
-         EGj9lUJfoKTLqL0xFkYY5ihkEy/wLNMARq3Fu1oHYh/B1PXWOuM+dNCfaPxV7OHOKYrq
-         ePTEKIk6fhs234W3ce5jzUujuHvPkX67PEkahB/1DvpnrdWEwPqNfjCTt+/+6mExHbs9
-         1e8Q==
-X-Gm-Message-State: AOAM532j2JIcDEJYw2wSLQDGkFriRpvZb5BajANfREDWqk0JVI7D28rS
-        0pQvteYsMNGeJNtDXBARvxIOpg==
-X-Google-Smtp-Source: ABdhPJwIxV2zfyTQ46CXR54rzVA+3y6gCIKQuS9jzSbWYCHADjbdXTgdAvhaPHfM7G6AYqJMnSZhEw==
-X-Received: by 2002:a7b:cb98:: with SMTP id m24mr49126433wmi.98.1594042449766;
-        Mon, 06 Jul 2020 06:34:09 -0700 (PDT)
+        bh=OciwYyOFlkXAJUScx7SVNAsT2ixoj+EcNyfWn6Xsafg=;
+        b=fSKs0pLhPOKipC94GF29M3Q4o1QJ5c9dURTtmorT+0f9gczeLwetxVqiWpBRUAxE3Y
+         xni+eVEPmfLKJcVlEF795l2gWlaffSYkGLMC+Q4OY19Y9lqdS3uclABekEk8ttWLn5zq
+         6Bmi9OyzddIgMyHyFJKgzHK4DtCkeh9CALU/8pFWFSdxNuEifWdckr2mosVI80aHwUp5
+         MKZ+kpmjBmB0ieUE/HyDONY36wzCJvOY1vC2weg70VR6ERM/FhI7ioFPOH4SUYcwNktN
+         /zwOex9jvhK1Z0f7+Q/yiVoPJ3GCOi7Pw6r0FH9jHn4gtysNf08FZ1EMq/dvftyiwhCd
+         7MVQ==
+X-Gm-Message-State: AOAM533NO7jljwT33V5BJJnlZZklBZ1bE47rIE8mR6cfS/6PbKDTVS75
+        sdGCTyVcCSUKqDmL8Dx67JzUlg==
+X-Google-Smtp-Source: ABdhPJwafQcWQ5lx2OMY4PDcOm8GgrMZIhHBn7VBMVREZs6ut8V4qlC9AB2XOFs67IvmSh8lOCpxuQ==
+X-Received: by 2002:adf:e44c:: with SMTP id t12mr21898286wrm.103.1594042450943;
+        Mon, 06 Jul 2020 06:34:10 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.206])
-        by smtp.gmail.com with ESMTPSA id v18sm25416082wrv.49.2020.07.06.06.34.08
+        by smtp.gmail.com with ESMTPSA id v18sm25416082wrv.49.2020.07.06.06.34.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Jul 2020 06:34:09 -0700 (PDT)
+        Mon, 06 Jul 2020 06:34:10 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-usb@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Yuan-Hsin Chen <yhchen@faraday-tech.com>,
-        Feng-Hsin Chiang <john453@faraday-tech.com>,
-        Po-Yu Chuang <ratbert.chuang@gmail.com>
-Subject: [PATCH 21/32] usb: host: fotg210-hcd: Demote obvious misuse of kerneldoc to standard comment blocks
-Date:   Mon,  6 Jul 2020 14:33:30 +0100
-Message-Id: <20200706133341.476881-22-lee.jones@linaro.org>
+        Felipe Balbi <balbi@kernel.org>,
+        Jason Yan <yanaijie@huawei.com>, Yu Xu <yuxu@marvell.com>
+Subject: [PATCH 22/32] usb: gadget: udc: mv_u3d_core: Remove unused static const 'driver_desc'
+Date:   Mon,  6 Jul 2020 14:33:31 +0100
+Message-Id: <20200706133341.476881-23-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200706133341.476881-1-lee.jones@linaro.org>
 References: <20200706133341.476881-1-lee.jones@linaro.org>
@@ -69,46 +68,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Only 2 functions attempted to use kerneldoc in this massive file.
+Looks like it's never been used.  Driver was mainlined in 2014.
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/usb/host/fotg210-hcd.c: In function ‘fotg210_run’:
- drivers/usb/host/fotg210-hcd.c:5013:6: warning: variable ‘hcc_params’ set but not used [-Wunused-but-set-variable]
- drivers/usb/host/fotg210-hcd.c:5569: warning: Function parameter or member 'pdev' not described in 'fotg210_hcd_probe'
- drivers/usb/host/fotg210-hcd.c:5666: warning: Function parameter or member 'pdev' not described in 'fotg210_hcd_remove'
- drivers/usb/host/fotg210-hcd.c:5666: warning: Excess function parameter 'dev' description in 'fotg210_hcd_remove'
+ drivers/usb/gadget/udc/mv_u3d_core.c:35:19: warning: ‘driver_desc’ defined but not used [-Wunused-const-variable=]
+ 35 | static const char driver_desc[] = DRIVER_DESC;
+ | ^~~~~~~~~~~
 
-Cc: Yuan-Hsin Chen <yhchen@faraday-tech.com>
-Cc: Feng-Hsin Chiang <john453@faraday-tech.com>
-Cc: Po-Yu Chuang <ratbert.chuang@gmail.com>
+Cc: Felipe Balbi <balbi@kernel.org>
+Cc: Jason Yan <yanaijie@huawei.com>
+Cc: Yu Xu <yuxu@marvell.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/usb/host/fotg210-hcd.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/usb/gadget/udc/mv_u3d_core.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/usb/host/fotg210-hcd.c b/drivers/usb/host/fotg210-hcd.c
-index 51dbbb0e768bc..633df2e927bb3 100644
---- a/drivers/usb/host/fotg210-hcd.c
-+++ b/drivers/usb/host/fotg210-hcd.c
-@@ -5557,7 +5557,7 @@ static void fotg210_init(struct fotg210_hcd *fotg210)
- 	iowrite32(value, &fotg210->regs->otgcsr);
- }
+diff --git a/drivers/usb/gadget/udc/mv_u3d_core.c b/drivers/usb/gadget/udc/mv_u3d_core.c
+index 5bb0568b934e1..5486f5a708681 100644
+--- a/drivers/usb/gadget/udc/mv_u3d_core.c
++++ b/drivers/usb/gadget/udc/mv_u3d_core.c
+@@ -32,7 +32,6 @@
+ #define DRIVER_DESC		"Marvell PXA USB3.0 Device Controller driver"
  
--/**
-+/*
-  * fotg210_hcd_probe - initialize faraday FOTG210 HCDs
-  *
-  * Allocates basic resources for this USB host controller, and
-@@ -5656,7 +5656,7 @@ static int fotg210_hcd_probe(struct platform_device *pdev)
- 	return retval;
- }
+ static const char driver_name[] = "mv_u3d";
+-static const char driver_desc[] = DRIVER_DESC;
  
--/**
-+/*
-  * fotg210_hcd_remove - shutdown processing for EHCI HCDs
-  * @dev: USB Host Controller being removed
-  *
+ static void mv_u3d_nuke(struct mv_u3d_ep *ep, int status);
+ static void mv_u3d_stop_activity(struct mv_u3d *u3d,
 -- 
 2.25.1
 
