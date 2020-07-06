@@ -2,73 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62EF42161EA
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 01:13:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB6D12161F3
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 01:15:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727116AbgGFXND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 19:13:03 -0400
-Received: from mga01.intel.com ([192.55.52.88]:10923 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726366AbgGFXNC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 19:13:02 -0400
-IronPort-SDR: uDyzR1C+slFXilinK50G9L6qXGA8SNAJub/C8yLOQaLro+UWXXwqMx8Du1fod6fZWi1Wm90BgP
- q6asZYtiUHUQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9674"; a="165586810"
-X-IronPort-AV: E=Sophos;i="5.75,321,1589266800"; 
-   d="scan'208";a="165586810"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2020 16:13:02 -0700
-IronPort-SDR: 6TYtgomBXFRuWGlr6JvObSFiQlFGAAPw/oIykjZRlCpvfsdy2v1EYHYM1P2FyNzP863EBiGoVg
- 3C3mDQQGa6mg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,321,1589266800"; 
-   d="scan'208";a="323354356"
-Received: from hartmaxe-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.53.13])
-  by orsmga007.jf.intel.com with ESMTP; 06 Jul 2020 16:12:58 -0700
-Date:   Tue, 7 Jul 2020 02:12:57 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Stefan Berger <stefanb@linux.vnet.ibm.com>
-Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-security-module@vger.kernel.org,
-        Stefan Berger <stefanb@linux.ibm.com>
-Subject: Re: [PATCH v9 2/2] tpm: Add support for event log pointer found in
- TPM2 ACPI table
-Message-ID: <20200706231257.GD20770@linux.intel.com>
-References: <20200706181953.3592084-1-stefanb@linux.vnet.ibm.com>
- <20200706181953.3592084-3-stefanb@linux.vnet.ibm.com>
- <20200706230914.GC20770@linux.intel.com>
+        id S1726883AbgGFXPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 19:15:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726366AbgGFXPP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Jul 2020 19:15:15 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2868C061755;
+        Mon,  6 Jul 2020 16:15:14 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id b25so44062921ljp.6;
+        Mon, 06 Jul 2020 16:15:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aKp7IUGhbEzy43SIfD7SweirhPl6i6zvn0OzLbI7glY=;
+        b=vgM0DpuAkfl0GBtAWnLCoJ8STE1Rly8YT2Rp0pg+tcYGOL9SSExfdVLJk7WgPfZr1B
+         +gOGcryMDg7Z5f9ha5U9UQEqRY/vJF2tbQ9EAr24jXZM6OpoFg8TlbQdM7+nGgs2qxRv
+         gRhpogiWGczuoVD0pltHaxx3M83IAZsETaIn+HSnGBFt1M74Awgpvy1mTXSrlhcA7B++
+         cAp/siUpb6EmBRIYdzGqEU0iGRtMNavdlTqZ9ZBRsKolO+vRVVos4ohW1LC8sDLHExCw
+         ElrprKmwlbk7wq2rAHIC3EYuf0jTMaSz2+9X9D9vxT30lejQmS0SrcYoVLs00Av4LfOJ
+         yCpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aKp7IUGhbEzy43SIfD7SweirhPl6i6zvn0OzLbI7glY=;
+        b=ZroFFSkQ/hO4BZyQBSE/ACPvZYg2V/lPaMDJaubz7c1cpG9y+V4y+b1aI4W6NZ5Xxg
+         CKJD3yngZPE4DoYy4zSo0luLYDrj9cph1pN+C0LPMCaRpwuh7V2xmN0y7XLVxeTI+oZm
+         ZqrgieMjjVk0upMZS4YeXkqgSR73s0y0ly9Oejvvmboyr7Ce8uPHSZVs8IPRIQ3a35ac
+         Kz4LyN/ZzXBsz4G4mK/WRkuk2JPvZLeuVF3ba1ZvO4/RToSbFjXdpbYdPoPi7+BBtosd
+         YVVlHNZTi1ob6gmRDMX4cVu7MRDfWiaGdxIAL39U6fd07FLY92LiPnq+57RgyK1PvTaq
+         gu9A==
+X-Gm-Message-State: AOAM533b9N0voXOGOrlc6UF2llWWgXUAJeB9SdqBbdFJQPgGirubO9Aa
+        mgCwf81RT83cuaopvvqm4iHWM1A97+fNS9rgXsQ=
+X-Google-Smtp-Source: ABdhPJx066ihdUOPCioWC6D3HKleTnGp64KJIpGzQ36rj0u9yljYKEATDgAfdVWSA84Y63zfBrMkIgBz6R7G/gYgIS4=
+X-Received: by 2002:a05:651c:200f:: with SMTP id s15mr16465014ljo.125.1594077313091;
+ Mon, 06 Jul 2020 16:15:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200706230914.GC20770@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <CAFXsbZoovWBavRFaEWEFcSkVjNx26BkKOkhcutNfzL8MrHwMTw@mail.gmail.com>
+In-Reply-To: <CAFXsbZoovWBavRFaEWEFcSkVjNx26BkKOkhcutNfzL8MrHwMTw@mail.gmail.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Mon, 6 Jul 2020 20:15:01 -0300
+Message-ID: <CAOMZO5AMZoagB5JDxq-4_FbLXrJc-i112SW6NwxG5BdsogXm+A@mail.gmail.com>
+Subject: Re: [PATCH] ARM: dts: vf610-zii-ssmb-dtu: Pass "no-sdio"/"no-sd" properties
+To:     Chris Healy <cphealy@gmail.com>
+Cc:     Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Stefan Agner <stefan@agner.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 07, 2020 at 02:09:18AM +0300, Jarkko Sakkinen wrote:
-> On Mon, Jul 06, 2020 at 02:19:53PM -0400, Stefan Berger wrote:
-> > From: Stefan Berger <stefanb@linux.ibm.com>
-> > 
-> > In case a TPM2 is attached, search for a TPM2 ACPI table when trying
-> > to get the event log from ACPI. If one is found, use it to get the
-> > start and length of the log area. This allows non-UEFI systems, such
-> > as SeaBIOS, to pass an event log when using a TPM2.
-> > 
-> > Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-> 
-> Do you think that QEMU with TPM 1.2 emulator turned on would be a viable
-> way to test this?
-> 
-> I'm anyway more worried about breaking existing TPM 1.2 functionality
-> and that requires only QEMU without extras.
+On Sun, Jul 5, 2020 at 12:16 AM Chris Healy <cphealy@gmail.com> wrote:
+>
+> esdhc0 is connected to an eMMC, so it is safe to pass the "no-sdio"/"no-sd"
+> properties.
+>
+> esdhc1 is wired to a standard SD socket, so pass the "no-sdio" property.
+>
+> Signed-off-by: Chris Healy <cphealy@gmail.com>
 
-BTW, you should cc your patches to all M- and R-entries in the
-MAINTAINERS file. Please, resend this patch set version. You can add
-acquired reviewed-by and tested-by tags (e.g. Jerry's) and use this tag
-for the patch set: "RESEND,PATCH v9".
-
-/Jarkko
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
