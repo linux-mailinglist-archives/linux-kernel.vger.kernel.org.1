@@ -2,81 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 153ED2154E0
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 11:44:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1222D2154E3
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 11:46:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728684AbgGFJoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 05:44:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728517AbgGFJoH (ORCPT
+        id S1728575AbgGFJpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 05:45:47 -0400
+Received: from o1.b.az.sendgrid.net ([208.117.55.133]:11862 "EHLO
+        o1.b.az.sendgrid.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726326AbgGFJpr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 05:44:07 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFC5EC061794
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Jul 2020 02:44:06 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id l2so39679849wmf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 02:44:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=GdG37Fau00oTVKmW6BzgExzV9qbFfqB9ZIZw4LCMePs=;
-        b=tKtNjIZtJdXvl38yZ23cMgiQ91fWJwdWfjiC1UOX9o6EukTflxUgsq35wG/7Pc9cV7
-         PieHHnDDSDb3YM9KL9W1VFSFVStpVZhHNmk8EW8CVtIYt0UpvEJVNrVIBVGVuAc1t9pM
-         eDd8rgNdT5N3dq37h3jngIFgcp2CG9XbDVZFD45SojDiH0Gjcy1jNGK5zHYPABwYuyUN
-         fnsSvEvJ2lhvYCrnVCP099N/pXFyRb01ik9SAdD9jXPanBjteuH89GedKwsdgiycAUXy
-         YOUzAjpIvxXZFz64nvMdzGKfQIvM7oMxM96lvlwzi1kHjWa5HRsZNJFXEqhuI7/SxZF5
-         1OzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=GdG37Fau00oTVKmW6BzgExzV9qbFfqB9ZIZw4LCMePs=;
-        b=HA90pqaqlul7M6juHJJAHc/jwfwnK8MxqtayK2myK2tqRjeq9J4Vflgm+f07FgG+/Y
-         jOlvZVyfz58af9GVMI3JlI9loK5ZRjfJNCvw0CS9Od1QUg2PszzOCfWmfM4OPIXoo1e9
-         m13nEfdNGSQx5Y01Nha6qtabqFfaiNYEjJaLvjWodoN6flxThWCdN0Up0mr9DFJIvVL1
-         zhiZVTVV1ni0hSldcnMIEiWcRV3M9TU5+/COCNmTbzaHG7uaycwcnVA2ye8a7XT0GITq
-         c0eeqPMKmrnZLFe8PJH84BPCbmTFtkalU5aChDCAAGSNn6lpDZFsmwp9b8u9HTQK0wDr
-         n6RA==
-X-Gm-Message-State: AOAM5334GH+dwvg0lnTQoF8vFTPBCaiA0HcIV7JuTS2WxMdSRDywJGhE
-        U1kY2UAJ7HjmPsP6IIs1ZAlnB21fKEJ2zGWgDA==
-X-Google-Smtp-Source: ABdhPJwzXdrB9/FrtWndc3kOJfmFkma+0iSNzAjvqwUCFQI3DLIbdIIfXMtWqTbRkEVBQZ15ppkaoS2uvKWUaun8sl4=
-X-Received: by 2002:a1c:80d3:: with SMTP id b202mr49910129wmd.111.1594028645415;
- Mon, 06 Jul 2020 02:44:05 -0700 (PDT)
+        Mon, 6 Jul 2020 05:45:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiboo.se;
+        h=subject:references:from:mime-version:in-reply-to:to:cc:content-type:
+        content-transfer-encoding;
+        s=001; bh=rvLDHxfrHlo3Otfv/kTs7QJwT/t3WC4PX7Ybs44eM+I=;
+        b=jbZOEYwz91P6/LEMqcDKxkPB8I3dcATl6ZugqIrh0HXQdYpdDkSLR9RIO/P7d5hI5OgK
+        3L8L2Nms/CDlJjQ4qfxPp3ETZWJpAWQFb9xnr65ppX3qs0oJh/nTLBKSk/iHbAS5xy3nQ0
+        vqmaCbFKoKvkiEdJkeK1yHqMYD/LOmvR0=
+Received: by filterdrecv-p3mdw1-75c584b9c6-4xwkm with SMTP id filterdrecv-p3mdw1-75c584b9c6-4xwkm-18-5F02F2CA-A
+        2020-07-06 09:45:46.161499776 +0000 UTC m=+837368.642959845
+Received: from [192.168.1.14] (unknown)
+        by ismtpd0005p1lon1.sendgrid.net (SG) with ESMTP
+        id ZYAMUW8kRXGzWA_jlRz-5g
+        Mon, 06 Jul 2020 09:45:45.891 +0000 (UTC)
+Subject: Re: [PATCH 1/2] rkvdec: h264: Refuse to decode unsupported bitstream
+References: <20200626171130.27346-1-ezequiel@collabora.com>
+ <20200626171130.27346-2-ezequiel@collabora.com>
+From:   Jonas Karlman <jonas@kwiboo.se>
+Message-ID: <551304f5-88bd-a673-a0ef-47af65700fe7@kwiboo.se>
+Date:   Mon, 06 Jul 2020 09:45:46 +0000 (UTC)
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Received: by 2002:adf:9d4c:0:0:0:0:0 with HTTP; Mon, 6 Jul 2020 02:44:04 -0700 (PDT)
-Reply-To: asita.hussain3@gmail.com
-From:   "Mr.Asita.Hussain" <spagnolo.rosalin@gmail.com>
-Date:   Mon, 6 Jul 2020 02:44:04 -0700
-Message-ID: <CAD9BL9bF_NfGNgtVVVB=BTEE-b9C1xDoA+fX1dproSFesUYYSQ@mail.gmail.com>
-Subject: Hello,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200626171130.27346-2-ezequiel@collabora.com>
+X-SG-EID: =?us-ascii?Q?TdbjyGynYnRZWhH+7lKUQJL+ZxmxpowvO2O9SQF5CwCVrYgcwUXgU5DKUU3QxA?=
+ =?us-ascii?Q?fZekEeQsTe+RrMu3cja6a0h2vJGzwXeGW+hCLrj?=
+ =?us-ascii?Q?dhOVvE6NWrUK6wFWeiUTqhwTnvLUFyzDIZaB8lm?=
+ =?us-ascii?Q?aJqcyCVh4Z8Bl772YUAcGAX576Qsb5pwEyYM87G?=
+ =?us-ascii?Q?gDKKE=2FkLe9E4lW8yaPFAn9+C+jicCcPkWjUbDGC?=
+ =?us-ascii?Q?VN=2Fhi=2FLElBR1gjlOaQ1batyBkoB66AVdjJeXvPz?=
+ =?us-ascii?Q?n2r17P2oNKFPmxF=2FPPZVg=3D=3D?=
+To:     Ezequiel Garcia <ezequiel@collabora.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rockchip@lists.infradead.org
+Cc:     Hans Verkuil <hverkuil@xs4all.nl>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        kernel@collabora.com
+Content-Type: text/plain; charset=us-ascii
+Content-Language: sv
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-From Mr. Asita Hussain
-This message might meet you in utmost surprise.
-I am a banker by profession in Burkina-Faso, West Africa and currently
-holding the post of manager in account and auditing department in our
-bank. I have the opportunity of transferring the left over funds ($
-25.5 Million Dollars 15 kilos of Gold bar) belonging to our deceased
-customer who died along with his entire family in a bomb attack.
-Please indicate your willingness by sending the below information for
-more clarification and easy communication.
-Please Contact me with the following information's for more details.
-(1) YOUR FULL NAME.......................
-(2) YOUR AGE AND SEX......................
-(3) YOUR CONTACT ADDRESS...............
-(4) YOUR PRIVATE PHONE N0..........
-(5) FAX NUMBER..............
-(6) YOUR COUNTRY OF ORIGIN.................
-(7) YOUR OCCUPATION.................... .....
- Please Contact me for more details in this E-mail address
-(asita.hussain0@gmail.com)
-Trusting to hear from you immediately.
-Thanks & Best Regards,
-From Mr. Asita Hussain
+On 2020-06-26 19:11, Ezequiel Garcia wrote:
+> The hardware only supports 4:2:2, 4:2:0 or 4:0:0 (monochrome),
+> 8-bit or 10-bit depth content.
+> 
+> Verify that the PPS refers to a supported bitstream, and refuse
+
+This should be SPS not PPS, same for hantro patch.
+
+> unsupported bitstreams by failing at TRY_EXT_CTRLS time.
+> 
+> The driver is currently broken on 10-bit and 4:2:2
+> so disallow those as well.
+> 
+> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+> ---
+>  drivers/staging/media/rkvdec/rkvdec.c | 27 +++++++++++++++++++++++++++
+>  1 file changed, 27 insertions(+)
+> 
+> diff --git a/drivers/staging/media/rkvdec/rkvdec.c b/drivers/staging/media/rkvdec/rkvdec.c
+> index 225eeca73356..0f81b47792f6 100644
+> --- a/drivers/staging/media/rkvdec/rkvdec.c
+> +++ b/drivers/staging/media/rkvdec/rkvdec.c
+> @@ -27,6 +27,32 @@
+>  #include "rkvdec.h"
+>  #include "rkvdec-regs.h"
+>  
+> +static int rkvdec_try_ctrl(struct v4l2_ctrl *ctrl)
+> +{
+> +	if (ctrl->id == V4L2_CID_MPEG_VIDEO_H264_SPS) {
+> +		const struct v4l2_ctrl_h264_sps *sps = ctrl->p_cur.p;
+
+This should be p_new and not p_cur to validate the new ctrl value, same for hantro patch.
+
+With both fixed this and the hantro patch is,
+
+Reviewed-by: Jonas Karlman <jonas@kwiboo.se>
+
+Regards,
+Jonas
+
+> +		/*
+> +		 * TODO: The hardware supports 10-bit and 4:2:2 profiles,
+> +		 * but it's currently broken in the driver.
+> +		 * Reject them for now, until it's fixed.
+> +		 */
+> +		if (sps->chroma_format_idc > 1)
+> +			/* Only 4:0:0 and 4:2:0 are supported */
+> +			return -EINVAL;
+> +		if (sps->bit_depth_luma_minus8 != sps->bit_depth_chroma_minus8)
+> +			/* Luma and chroma bit depth mismatch */
+> +			return -EINVAL;
+> +		if (sps->bit_depth_luma_minus8 != 0)
+> +			/* Only 8-bit is supported */
+> +			return -EINVAL;
+> +	}
+> +	return 0;
+> +}
+> +
+> +static const struct v4l2_ctrl_ops rkvdec_ctrl_ops = {
+> +	.try_ctrl = rkvdec_try_ctrl,
+> +};
+> +
+>  static const struct rkvdec_ctrl_desc rkvdec_h264_ctrl_descs[] = {
+>  	{
+>  		.per_request = true,
+> @@ -42,6 +68,7 @@ static const struct rkvdec_ctrl_desc rkvdec_h264_ctrl_descs[] = {
+>  		.per_request = true,
+>  		.mandatory = true,
+>  		.cfg.id = V4L2_CID_MPEG_VIDEO_H264_SPS,
+> +		.cfg.ops = &rkvdec_ctrl_ops,
+>  	},
+>  	{
+>  		.per_request = true,
+> 
