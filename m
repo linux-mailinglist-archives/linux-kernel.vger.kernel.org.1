@@ -2,108 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01F1C2156E8
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 13:59:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A7E82156D0
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 13:55:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729150AbgGFL7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 07:59:05 -0400
-Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:39336 "EHLO
-        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729062AbgGFL6y (ORCPT
+        id S1729091AbgGFLzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 07:55:17 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:41682 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728845AbgGFLzR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 07:58:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1594036733; x=1625572733;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=pVcOoTXfEhP95n40P2tq5dup7mBPSiPPU6Yt3e8a7DQ=;
-  b=J8AgmnbmHb1haAsWwWOvbDDwyt28veLcvuQaQPkJuX0DMvuoGAa4JQ0o
-   j7rpBPtTzLgAle9/TLXQuTvGM9vJ2ei7cZtLcOn8erhv/KvxIPsaX70hs
-   EJX+hBPHLzCczqIPY/x3hqHuw4MMlnOM/GvXvkBgQO52sRxQ1PSpRE8y2
-   8=;
-IronPort-SDR: qgI9ioM6R8agcTnj85nMh/1WQ8oh+E0VkU3pnTeVoxJRJRPrlHRJwcrmF8NT8XDDt+sXb1FlCT
- 5IqCT4grAfmA==
-X-IronPort-AV: E=Sophos;i="5.75,318,1589241600"; 
-   d="scan'208";a="40204357"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2a-90c42d1d.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 06 Jul 2020 11:58:49 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
-        by email-inbound-relay-2a-90c42d1d.us-west-2.amazon.com (Postfix) with ESMTPS id D841EA1755;
-        Mon,  6 Jul 2020 11:58:46 +0000 (UTC)
-Received: from EX13D31EUA004.ant.amazon.com (10.43.165.161) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 6 Jul 2020 11:58:46 +0000
-Received: from u886c93fd17d25d.ant.amazon.com (10.43.160.100) by
- EX13D31EUA004.ant.amazon.com (10.43.165.161) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 6 Jul 2020 11:58:30 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     <akpm@linux-foundation.org>
-CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
-        <aarcange@redhat.com>, <acme@kernel.org>,
-        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
-        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
-        <brendanhiggins@google.com>, <cai@lca.pw>,
-        <colin.king@canonical.com>, <corbet@lwn.net>, <dwmw@amazon.com>,
-        <foersleo@amazon.de>, <irogers@google.com>, <jolsa@redhat.com>,
-        <kirill@shutemov.name>, <mark.rutland@arm.com>, <mgorman@suse.de>,
-        <minchan@kernel.org>, <mingo@redhat.com>, <namhyung@kernel.org>,
-        <peterz@infradead.org>, <rdunlap@infradead.org>,
-        <riel@surriel.com>, <rientjes@google.com>, <rostedt@goodmis.org>,
-        <sblbir@amazon.com>, <shakeelb@google.com>, <shuah@kernel.org>,
-        <sj38.park@gmail.com>, <snu@amazon.de>, <vbabka@suse.cz>,
-        <vdavydov.dev@gmail.com>, <yang.shi@linux.alibaba.com>,
-        <ying.huang@intel.com>, <david@redhat.com>,
-        <linux-damon@amazon.com>, <linux-mm@kvack.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v17 15/15] MAINTAINERS: Update for DAMON
-Date:   Mon, 6 Jul 2020 13:53:22 +0200
-Message-ID: <20200706115322.29598-16-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200706115322.29598-1-sjpark@amazon.com>
-References: <20200706115322.29598-1-sjpark@amazon.com>
+        Mon, 6 Jul 2020 07:55:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594036515;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=eNCOjbm+kaBtEPxCgtMOBt6PbfRkCiU3/O11Ce9NgUA=;
+        b=KBs8sXqIovcX84zmqeKdcEEo6HqTmYvBVRG/JLZqG43mJ5nctrU3oaqtBjsY3eU33JEEfA
+        yet6gqGncEQMUSLJMZ+k8OKTQbruswJLImAqYMzrrHvRtCOau540J2AxEKXtl30pw275Ig
+        GTgOEAO3rBKWJYaVu3yLPLJDAyfaqSw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-239-8wmitDwgPgO7xCv6fomz_Q-1; Mon, 06 Jul 2020 07:55:11 -0400
+X-MC-Unique: 8wmitDwgPgO7xCv6fomz_Q-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E2809107ACF6;
+        Mon,  6 Jul 2020 11:55:09 +0000 (UTC)
+Received: from sandy.ghostprotocols.net (unknown [10.3.128.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id C7AA671662;
+        Mon,  6 Jul 2020 11:55:08 +0000 (UTC)
+Received: by sandy.ghostprotocols.net (Postfix, from userid 1000)
+        id AF4921E1; Mon,  6 Jul 2020 08:54:52 -0300 (BRT)
+Date:   Mon, 6 Jul 2020 08:54:52 -0300
+From:   Arnaldo Carvalho de Melo <acme@redhat.com>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/1] perf report TUI: Remove needless 'dummy' event from
+ menu
+Message-ID: <20200706115452.GA2772@redhat.com>
+References: <20200703123431.GG1320@kernel.org>
+ <CAM9d7cgGcpnX+cSY0UvYjRkG9PF8X3Yyf_AOy+nGxbPjtjDvxw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.160.100]
-X-ClientProxiedBy: EX13D21UWA003.ant.amazon.com (10.43.160.184) To
- EX13D31EUA004.ant.amazon.com (10.43.165.161)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAM9d7cgGcpnX+cSY0UvYjRkG9PF8X3Yyf_AOy+nGxbPjtjDvxw@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
+User-Agent: Mutt/1.5.20 (2009-12-10)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+Em Fri, Jul 03, 2020 at 10:44:28PM +0900, Namhyung Kim escreveu:
+> Hi Arnaldo,
+> 
+> On Fri, Jul 3, 2020 at 9:34 PM Arnaldo Carvalho de Melo <acme@redhat.com> wrote:
+> >
+> > Please Ack,
+> >
+> > - Arnaldo
+> >
+> > ----
+> >
+> > Fixing the common case of:
+> >
+> >   perf record
+> >   perf report
+> >
+> > And getting just the cycles events.
+> >
+> > We now have a 'dummy' event to get perf metadata events that take place
+> > while we synthesize metadata records for pre-existing processes by
+> > traversing procfs, so we always have this extra 'dummy' evsel, but we
+> > don't have to offer it as there will be no samples on it, remove this
+> > distraction.
+> >
+> > Cc: Adrian Hunter <adrian.hunter@intel.com>
+> > Cc: Ian Rogers <irogers@google.com>
+> > Cc: Jiri Olsa <jolsa@kernel.org>
+> > Cc: Namhyung Kim <namhyung@kernel.org>
+> > Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+> > ---
+> >  tools/perf/ui/browsers/hists.c | 19 ++++++++++++++++++-
+> >  1 file changed, 18 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/tools/perf/ui/browsers/hists.c b/tools/perf/ui/browsers/hists.c
+> > index 4cd556c1276f..be9c4c0549bc 100644
+> > --- a/tools/perf/ui/browsers/hists.c
+> > +++ b/tools/perf/ui/browsers/hists.c
+> > @@ -3603,6 +3603,23 @@ static int __perf_evlist__tui_browse_hists(struct evlist *evlist,
+> >                                     hbt, warn_lost_event);
+> >  }
+> >
+> > +static bool perf_evlist__single_entry(struct evlist *evlist)
+> > +{
+> > +       int nr_entries = evlist->core.nr_entries;
+> > +
+> > +       if (nr_entries == 1)
+> > +              return true;
+> > +
+> > +       if (nr_entries == 2) {
+> > +               struct evsel *last = evlist__last(evlist);
+> > +
+> > +               if (evsel__is_dummy_event(last))
+> > +                       return true;
+> > +       }
+> > +
+> > +       return false;
+> > +}
+> > +
+> >  int perf_evlist__tui_browse_hists(struct evlist *evlist, const char *help,
+> >                                   struct hist_browser_timer *hbt,
+> >                                   float min_pcnt,
+> > @@ -3613,7 +3630,7 @@ int perf_evlist__tui_browse_hists(struct evlist *evlist, const char *help,
+> >         int nr_entries = evlist->core.nr_entries;
+> >
+> >  single_entry:
+> > -       if (nr_entries == 1) {
+> > +       if (perf_evlist__single_entry(evlist)) {
+> 
+> But I think it cannot cover the event group case below..
 
-This commit updates MAINTAINERS file for DAMON related files.
+Right, we can fix that later, I think, my worry at this point was that
+the simplest case, which is:
 
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
----
- MAINTAINERS | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+   # perf record
+   ^C
+   # perf report
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 50659d76976b..2396a9098715 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -4686,6 +4686,18 @@ F:	net/ax25/ax25_out.c
- F:	net/ax25/ax25_timer.c
- F:	net/ax25/sysctl_net_ax25.c
+Would get that annoyance :-)
+
+- Arnaldo
  
-+DATA ACCESS MONITOR
-+M:	SeongJae Park <sjpark@amazon.de>
-+L:	linux-mm@kvack.org
-+S:	Maintained
-+F:	Documentation/admin-guide/mm/damon/*
-+F:	include/linux/damon.h
-+F:	include/trace/events/damon.h
-+F:	mm/damon-test.h
-+F:	mm/damon.c
-+F:	tools/damon/*
-+F:	tools/testing/selftests/damon/*
-+
- DAVICOM FAST ETHERNET (DMFE) NETWORK DRIVER
- L:	netdev@vger.kernel.org
- S:	Orphan
--- 
-2.17.1
+> Thanks
+> Namhyung
+> 
+> 
+> >                 struct evsel *first = evlist__first(evlist);
+> >
+> >                 return perf_evsel__hists_browse(first, nr_entries, help,
+> > --
+> > 2.21.3
+> >
 
