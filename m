@@ -2,96 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3916E2162BF
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 01:58:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C958221628F
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 01:51:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728012AbgGFX6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 19:58:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727046AbgGFX6Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 19:58:24 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84744C061755
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Jul 2020 16:58:24 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id f2so15215777wrp.7
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 16:58:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:subject:to:references:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=4nSbcQc6o8w9v6ZNEJFjfitPw+WKCLAR8ckhCop8iZ8=;
-        b=NM57cu5hPt5WpTyLiOYNBE+EktavfXY9/G2/Ex3+2yVkNy+hJ8Jdnwp/YX/f58v7Jd
-         s/aTm97pbiBSSSWm9d8BEYy4OiC1T+GZyAZig5GPGpO9DLnb08yCiv1JAlEz3jCHrLFy
-         GqNDDk429tmwQDaEAqugXo1tcZGnnFoMvADCJ9HXn7H+DU/3cNkSkcY/H7mlAZpQD1is
-         CkwxTsKZo4tJ5WBsSnfoZMATroXRXxPngNT/moD5pzoo62NzDQc73OuYV+uaRDLK1T03
-         izEtl6+2R183jRvTFAOQzhRPZ5bflHG/aPf08X6CgsLKCvo2kOZd7Nwr10OsbsfjEO+Z
-         QIOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4nSbcQc6o8w9v6ZNEJFjfitPw+WKCLAR8ckhCop8iZ8=;
-        b=NyGR277yQrEZ0GPnC1snluMZTbIeK1WamAAS98WDnceSR/HM/8fF2AI24j4ZmCPqP/
-         6SdOAOw0970YrqhSaIQENVcP1Ij/aaif1u0dwXW8RBSKTYUXIHy/OHQXM5iU7WZs3l8A
-         eMGEIAzIHOa3V8c1I6l1/uWyue42nVGdtocIKnUNzhC0nypWGRoL/3+MXeMe8A5+TIHl
-         LCzeYLT6iAKdxGundNe30EQfQ0xf39ctQCPaz6CmghxT6NoWvYXecpN+msJpzR0l8H66
-         bQXg8dhS1H3kXafx23R51gBpox7gA4UJSvJ1gws+0tnprohwxCQhApbtNbEpNOy8nJjk
-         FhMw==
-X-Gm-Message-State: AOAM532Nn3Q610iIp2jqyQOLIC53BCWqjk4KhWGgRMiis8Skuv7Z9P3/
-        5ktDfHBN5WEnpolpyqlVTDhH3l3E
-X-Google-Smtp-Source: ABdhPJz/bnvnR1MbXLHSB/I+s79KjMOEJuqMp6UPW3B20faugZU31FoxDxW6frq4uLxEEavfTp2tXw==
-X-Received: by 2002:a5d:4dc2:: with SMTP id f2mr52188056wru.399.1594079903117;
-        Mon, 06 Jul 2020 16:58:23 -0700 (PDT)
-Received: from [192.168.50.2] (178-164-237-246.pool.digikabel.hu. [178.164.237.246])
-        by smtp.gmail.com with ESMTPSA id l8sm25651546wrq.15.2020.07.06.16.58.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Jul 2020 16:58:22 -0700 (PDT)
-From:   Tibor Raschko <tibrasch@gmail.com>
-Subject: Re: [Tech-board-discuss] [PATCH] CodingStyle: Inclusive Terminology
-To:     Dan Williams <dan.j.williams@intel.com>,
-        torvalds@linux-foundation.org,
-        ksummit-discuss@lists.linuxfoundation.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org,
-        tech-board-discuss@lists.linuxfoundation.org,
-        Chris Mason <clm@fb.clm>, skhan@linuxfoundation.org
-References: <79214066-3886-e0ef-f26e-8cb3d53404be@linuxfoundation.org>
-Message-ID: <e41ded21-1432-afa8-2e42-e509539281c4@gmail.com>
-Date:   Tue, 7 Jul 2020 01:58:21 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727853AbgGFXv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 19:51:57 -0400
+Received: from mga17.intel.com ([192.55.52.151]:58080 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726805AbgGFXv4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Jul 2020 19:51:56 -0400
+IronPort-SDR: 886eLHd1OawCh0JLuySUlds0z9TF14ZHhXhMXlUavIiLm5pZwhI1YYo/O1jFBCj+ahN9adXjMH
+ vn1Yqh9tqmBA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9674"; a="127604178"
+X-IronPort-AV: E=Sophos;i="5.75,321,1589266800"; 
+   d="scan'208";a="127604178"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2020 16:51:55 -0700
+IronPort-SDR: V3IqljHJ6mWHBfO15VYsfZ8uN2Dj8XM2Fc2l3ZI7BT/hDkI4J492xqJV6vct60ZOI34Y+DPVK6
+ Pr9PfZTiE5Zg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,321,1589266800"; 
+   d="scan'208";a="482865299"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by fmsmga006.fm.intel.com with ESMTP; 06 Jul 2020 16:51:54 -0700
+Date:   Mon, 6 Jul 2020 16:58:31 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Auger Eric <eric.auger@redhat.com>
+Cc:     iommu@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Yi Liu <yi.l.liu@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>, jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH v3 2/7] iommu/vt-d: Remove global page support in devTLB
+ flush
+Message-ID: <20200706165831.0e62fa7f@jacob-builder>
+In-Reply-To: <e4b05249-bf1b-4d27-f76b-90a80f8586b2@redhat.com>
+References: <1593617636-79385-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        <1593617636-79385-3-git-send-email-jacob.jun.pan@linux.intel.com>
+        <e4b05249-bf1b-4d27-f76b-90a80f8586b2@redhat.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <79214066-3886-e0ef-f26e-8cb3d53404be@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> The suggestions you made will help us adapt inclusive terminology
-> for the current times, and also help us move toward terms that are
-> intuitive and easier to understand keeping our global developer
-> community in mind.
+On Thu, 2 Jul 2020 09:16:22 +0200
+Auger Eric <eric.auger@redhat.com> wrote:
 
-> Allowlist/denylist terms are intuitive and action based which have a
-> globally uniform meaning.
+> Hi Jacob,
+> 
+> On 7/1/20 5:33 PM, Jacob Pan wrote:
+> > Global pages support is removed from VT-d spec 3.0 for dev TLB
+> > invalidation. This patch is to remove the bits for vSVA. Similar
+> > change already made for the native SVA. See the link below.
+> > 
+> > Link: https://lkml.org/lkml/2019/8/26/651
+> > Acked-by: Lu Baolu <baolu.lu@linux.intel.com>
+> > Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> > ---
+> >  drivers/iommu/intel/dmar.c  | 4 +---
+> >  drivers/iommu/intel/iommu.c | 4 ++--
+> >  include/linux/intel-iommu.h | 3 +--
+> >  3 files changed, 4 insertions(+), 7 deletions(-)
+> > 
+> > diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
+> > index cc46dff98fa0..d9f973fa1190 100644
+> > --- a/drivers/iommu/intel/dmar.c
+> > +++ b/drivers/iommu/intel/dmar.c
+> > @@ -1437,8 +1437,7 @@ void qi_flush_piotlb(struct intel_iommu
+> > *iommu, u16 did, u32 pasid, u64 addr, 
+> >  /* PASID-based device IOTLB Invalidate */
+> >  void qi_flush_dev_iotlb_pasid(struct intel_iommu *iommu, u16 sid,
+> > u16 pfsid,
+> > -			      u32 pasid,  u16 qdep, u64 addr,
+> > -			      unsigned int size_order, u64 granu)
+> > +			      u32 pasid,  u16 qdep, u64 addr,
+> > unsigned int size_order) {
+> >  	unsigned long mask = 1UL << (VTD_PAGE_SHIFT + size_order -
+> > 1); struct qi_desc desc = {.qw1 = 0, .qw2 = 0, .qw3 = 0};
+> > @@ -1446,7 +1445,6 @@ void qi_flush_dev_iotlb_pasid(struct
+> > intel_iommu *iommu, u16 sid, u16 pfsid, desc.qw0 =
+> > QI_DEV_EIOTLB_PASID(pasid) | QI_DEV_EIOTLB_SID(sid) |
+> > QI_DEV_EIOTLB_QDEP(qdep) | QI_DEIOTLB_TYPE |
+> > QI_DEV_IOTLB_PFSID(pfsid);
+> > -	desc.qw1 = QI_DEV_EIOTLB_GLOB(granu);  
+> nit:
+> 
+> you may simplify the init of .qw1 to
+> .qw1 = addr & ~mask
+> 
+> as you have
+> desc.qw1 |= addr & ~mask;
+> 
+indeed, will change it in patch 4/7.
+Thanks!
 
-Nobody has a problem understanding "blacklist" and "whitelist". These
-are universally understood words even outside of computing. Claiming
-that we need clearer alternatives is smoke and mirrors.
+> Besides
+> Reviewed-by: Eric Auger <eric.auger@redhat.com>
+> 
+> Thanks
+> 
+> Eric
+> 
+> >  
+> >  	/*
+> >  	 * If S bit is 0, we only flush a single page. If S bit is
+> > set, diff --git a/drivers/iommu/intel/iommu.c
+> > b/drivers/iommu/intel/iommu.c index 9129663a7406..96340da57075
+> > 100644 --- a/drivers/iommu/intel/iommu.c
+> > +++ b/drivers/iommu/intel/iommu.c
+> > @@ -5466,7 +5466,7 @@ intel_iommu_sva_invalidate(struct
+> > iommu_domain *domain, struct device *dev, info->pfsid, pasid,
+> >  						info->ats_qdep,
+> >  						inv_info->addr_info.addr,
+> > -						size, granu);
+> > +						size);
+> >  			break;
+> >  		case IOMMU_CACHE_INV_TYPE_DEV_IOTLB:
+> >  			if (info->ats_enabled)
+> > @@ -5474,7 +5474,7 @@ intel_iommu_sva_invalidate(struct
+> > iommu_domain *domain, struct device *dev, info->pfsid, pasid,
+> >  						info->ats_qdep,
+> >  						inv_info->addr_info.addr,
+> > -						size, granu);
+> > +						size);
+> >  			else
+> >  				pr_warn_ratelimited("Passdown
+> > device IOTLB flush w/o ATS!\n"); break;
+> > diff --git a/include/linux/intel-iommu.h
+> > b/include/linux/intel-iommu.h index 729386ca8122..9a6614880773
+> > 100644 --- a/include/linux/intel-iommu.h
+> > +++ b/include/linux/intel-iommu.h
+> > @@ -380,7 +380,6 @@ enum {
+> >  
+> >  #define QI_DEV_EIOTLB_ADDR(a)	((u64)(a) & VTD_PAGE_MASK)
+> >  #define QI_DEV_EIOTLB_SIZE	(((u64)1) << 11)
+> > -#define QI_DEV_EIOTLB_GLOB(g)	((u64)(g) & 0x1)
+> >  #define QI_DEV_EIOTLB_PASID(p)	((u64)((p) & 0xfffff) << 32)
+> >  #define QI_DEV_EIOTLB_SID(sid)	((u64)((sid) & 0xffff) << 16)
+> >  #define QI_DEV_EIOTLB_QDEP(qd)	((u64)((qd) & 0x1f) << 4)
+> > @@ -704,7 +703,7 @@ void qi_flush_piotlb(struct intel_iommu *iommu,
+> > u16 did, u32 pasid, u64 addr, 
+> >  void qi_flush_dev_iotlb_pasid(struct intel_iommu *iommu, u16 sid,
+> > u16 pfsid, u32 pasid, u16 qdep, u64 addr,
+> > -			      unsigned int size_order, u64 granu);
+> > +			      unsigned int size_order);
+> >  void qi_flush_pasid_cache(struct intel_iommu *iommu, u16 did, u64
+> > granu, int pasid);
+> >  
+> >   
+> 
 
-> Terms such as "whitelist" etc are contextual, hence assume contextual
-> knowledge on the part of the reader.
-
-We are talking about the source code of and interacting with an
-operating system kernel. Naturally, most things here are contextual and
-require domain knowledge to be understood correctly. Not requiring
-contextual knowledge when reading the kernel sources doesn't sound like
-a realistic argument.
-
-Raschko T.
+[Jacob Pan]
