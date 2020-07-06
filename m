@@ -2,66 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 128E02153B9
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 10:11:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C83C521539D
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 10:00:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728517AbgGFILK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 04:11:10 -0400
-Received: from mail.windriver.com ([147.11.1.11]:63412 "EHLO
-        mail.windriver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728012AbgGFILI (ORCPT
+        id S1728283AbgGFIAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 04:00:39 -0400
+Received: from lucky1.263xmail.com ([211.157.147.131]:60586 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728012AbgGFIAj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 04:11:08 -0400
-Received: from ALA-HCB.corp.ad.wrs.com (ala-hcb.corp.ad.wrs.com [147.11.189.41])
-        by mail.windriver.com (8.15.2/8.15.2) with ESMTPS id 0668AxES022780
-        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL);
-        Mon, 6 Jul 2020 01:10:59 -0700 (PDT)
-Received: from pek-lpg-core1-vm1.wrs.com (128.224.156.106) by
- ALA-HCB.corp.ad.wrs.com (147.11.189.41) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 6 Jul 2020 01:10:46 -0700
-From:   <qiang.zhang@windriver.com>
-To:     <balbi@kernel.org>
-CC:     <gregkh@linuxfoundation.org>, <colin.king@canonical.com>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] usb: gadget: function: fix missing spinlock in f_uac1_legacy
-Date:   Sun, 5 Jul 2020 14:24:35 +0800
-Message-ID: <20200705062435.1554-1-qiang.zhang@windriver.com>
-X-Mailer: git-send-email 2.24.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
+        Mon, 6 Jul 2020 04:00:39 -0400
+Received: from localhost (unknown [192.168.167.32])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 3E97FB05EE;
+        Mon,  6 Jul 2020 16:00:32 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P14850T139810951177984S1594022430112946_;
+        Mon, 06 Jul 2020 16:00:31 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <b5073015f233c5bae0bb8de4d53a18fa>
+X-RL-SENDER: hjc@rock-chips.com
+X-SENDER: hjc@rock-chips.com
+X-LOGIN-NAME: hjc@rock-chips.com
+X-FST-TO: heiko@sntech.de
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-DNS-TYPE: 0
+X-System-Flag: 0
+From:   Sandy Huang <hjc@rock-chips.com>
+To:     heiko@sntech.de,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     huangtao@rock-chips.com, andy.yan@rock-chips.com,
+        kever.yang@rock-chips.com, Sandy Huang <hjc@rock-chips.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/of: Consider the state in which the ep is disabled
+Date:   Mon,  6 Jul 2020 15:59:44 +0800
+Message-Id: <20200706075944.11558-1-hjc@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qiang <qiang.zhang@windriver.com>
+don't mask possible_crtcs if remote-point is disabled.
 
-Add a missing spinlock protection to the add operation of the play_queue
-in "f_audio_out_ep_complete" function.
-
-Signed-off-by: Zhang Qiang <qiang.zhang@windriver.com>
+Signed-off-by: Sandy Huang <hjc@rock-chips.com>
 ---
- v1->v2:
- Add missing changelog.
+ drivers/gpu/drm/drm_of.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
- drivers/usb/gadget/function/f_uac1_legacy.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/usb/gadget/function/f_uac1_legacy.c b/drivers/usb/gadget/function/f_uac1_legacy.c
-index 349deae7cabd..e2d7f69128a0 100644
---- a/drivers/usb/gadget/function/f_uac1_legacy.c
-+++ b/drivers/usb/gadget/function/f_uac1_legacy.c
-@@ -336,7 +336,9 @@ static int f_audio_out_ep_complete(struct usb_ep *ep, struct usb_request *req)
+diff --git a/drivers/gpu/drm/drm_of.c b/drivers/gpu/drm/drm_of.c
+index fdb05fbf72a0..f5f250435add 100644
+--- a/drivers/gpu/drm/drm_of.c
++++ b/drivers/gpu/drm/drm_of.c
+@@ -66,6 +66,11 @@ uint32_t drm_of_find_possible_crtcs(struct drm_device *dev,
+ 	uint32_t possible_crtcs = 0;
  
- 	/* Copy buffer is full, add it to the play_queue */
- 	if (audio_buf_size - copy_buf->actual < req->actual) {
-+		spin_lock_irq(&audio->lock);
- 		list_add_tail(&copy_buf->list, &audio->play_queue);
-+		spin_unlock_irq(&audio->lock);
- 		schedule_work(&audio->playback_work);
- 		copy_buf = f_audio_buffer_alloc(audio_buf_size);
- 		if (IS_ERR(copy_buf))
+ 	for_each_endpoint_of_node(port, ep) {
++		if (!of_device_is_available(ep)) {
++			of_node_put(ep);
++			continue;
++		}
++
+ 		remote_port = of_graph_get_remote_port(ep);
+ 		if (!remote_port) {
+ 			of_node_put(ep);
 -- 
-2.24.1
+2.17.1
+
+
 
