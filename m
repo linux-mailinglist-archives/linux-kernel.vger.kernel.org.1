@@ -2,92 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8719B2161E5
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 01:10:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46D892161EF
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 01:13:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727915AbgGFXK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 19:10:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51744 "EHLO
+        id S1727839AbgGFXNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 19:13:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727077AbgGFXKR (ORCPT
+        with ESMTP id S1726366AbgGFXNK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 19:10:17 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42F4AC061794
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Jul 2020 16:10:17 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id q8so41191295iow.7
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 16:10:17 -0700 (PDT)
+        Mon, 6 Jul 2020 19:13:10 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CDB1C061755
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Jul 2020 16:13:10 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id z24so22748424ljn.8
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 16:13:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=PZvIX6vLMbdnQ9xi6X13Q9UES2Dc+IRz4gOtA11omag=;
-        b=Cjf8h2QDNDmu6NNDaeQqVXA0UYoFCg5Rnh/FqMDFA/mJbYX8C91CKnmrMizibrHZ+r
-         cVrXBaQJIdLTRfiaR9ojksO3cW8C1k5Fx6yK+92XEPYmJtqfPGi2IY/HLhqG4/2rWpN7
-         40Rken9P0iVRYtrZi0N5lDn3FJk2S7rLqjx2oWQY0hkFGmbIx7RuWKiOsxBeXQ+0QZgT
-         /0KpV5/2QBE5urHl98sv4+Bet4VJIqzgbiQ42BvSkkxdxrXUYJPQdKp/h8fmp8f1Aa9K
-         GNzGOr8lNiNfJYjI+XuiiBCxBtumK585s1LvxeozZXFPop1HXNhG/man06ppLnxvjZMn
-         s5ww==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SR19WDvOm+Jc/grBUK3DcAG61rsTa4WPLrkARxPZOAg=;
+        b=l+Kck4QLh/GjDatFbN1XEqM3Tz6lakJhs3E9J1XdsBwYLSppoM1PHrBrrsnb5/v4tJ
+         XrCDEAlLqxil2gTTmgd650zhncuLDENlO/0gQ/Y0lot0ofj1l6k0We1vcLPui5Eaq1nf
+         iZF6FzBFsxbC5H78jo0pWHQ53RAsKmA0Ieq6QuSmcaxBJaXPxDUXAymnSm1l5bXyziUN
+         E+k2/BSJGZ4dS3BsQdULyP/OQmSK4uXZTgrF/GtPuB6y8ObR8Hmqz1K86ft5+LQbtoy6
+         szM/3+oamdz2utop5yBaSYUpEFUNKElOpbs79VyOw5ciwTV0x4aUw9N4u7XXeXRT0hYa
+         w8MA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=PZvIX6vLMbdnQ9xi6X13Q9UES2Dc+IRz4gOtA11omag=;
-        b=gestOQkr08mOVkf5NgmCS7Zjs2ybFV6hWcNcdNOWWeNxQ5G60Yur029ZuNy8bsgtw/
-         4z0nCOpi8YwgsgKj5kemiJfEpvEm5Gl/pmyLKEN9JLzA0FB/GilfVyjlORuePle4giQj
-         7VfzS2xhCSpa0CCB53etlp6rIa2Rk9sBRwuKsd6j/3sSUUeVTK21FkW0jn0Ac5P/TzmC
-         TMBCpxWLZw8bDig85DAeUV7TPCgjJhcALBbHehuLAnK0ag5o6VEIGmnNXReBGgPIrag8
-         uTKWWFTLmz8BByE+BGjLkFLTEe1wpXLQQq5mcPE+jbxo2SO+evbgXANE5jsPUEIqKVo+
-         7HIw==
-X-Gm-Message-State: AOAM533upBENvTKfBmYznTBXFlzu811++mBe5b1nmYPqDCX65nXHiPA8
-        RNJbk9B/518TZQ7rREVw8I/d9Q==
-X-Google-Smtp-Source: ABdhPJz6LtqwPL5bx8536ytEkrXiPsbQqXR9ZnW0ignIJoIs6ZqbuUzjoFFSv5pHVH/Z2zl7gwO5pg==
-X-Received: by 2002:a5e:da06:: with SMTP id x6mr27921238ioj.196.1594077016696;
-        Mon, 06 Jul 2020 16:10:16 -0700 (PDT)
-Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id w16sm11523029iom.27.2020.07.06.16.10.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Jul 2020 16:10:16 -0700 (PDT)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     evgreen@chromium.org, subashab@codeaurora.org,
-        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net 3/3] net: ipa: include declarations in "ipa_gsi.c"
-Date:   Mon,  6 Jul 2020 18:10:10 -0500
-Message-Id: <20200706231010.1233505-4-elder@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200706231010.1233505-1-elder@linaro.org>
-References: <20200706231010.1233505-1-elder@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SR19WDvOm+Jc/grBUK3DcAG61rsTa4WPLrkARxPZOAg=;
+        b=slQGTX4HzNVVuZ1Ng16aRDbEUrJDhw2hlAIkrpn1MxTwZoSQKuJoF2Lrvtmdp8Im3u
+         8q5Sj9G7HVe9oP9CGQHuFk2tNGzOKrFtkLFLeuuhQu+NM1HNO0Efq5QJRybyS7eycCus
+         jl4PAsPBPcTUYZCBkbFKRtf/ZA6w0lcCi9iWvIAzT5CkbSItZ9DphDNUhkHCxW0he+zQ
+         f9wbWfL1ezRcKbo91Do7WAJv3eq8ePej7+F+SfsQZaJ5mx0vJOCZlBe/kE1hm848yz95
+         HacEZunkd8hbd9xY2H3h0GhiFtyumGkMGA8JBTCCx7ghaCMegqXY9pyYjgsjKECtRefQ
+         T5YA==
+X-Gm-Message-State: AOAM533fzEBejAPu8vs+3t9eWh5HQZmA2pwT0KZdtpeEHf1fhWcYQxcL
+        IRh66eclyRbw1njkSj+uwoDQ/W37gub/mu8z8oF5eg==
+X-Google-Smtp-Source: ABdhPJxfpZUF/SiL6XakzrJYzR9zf4mbwwjNucTuoY4CEERAxdf2B8UbWftU6B65j4Lr/o8zaYhyCw9AyRNU1/YVzAk=
+X-Received: by 2002:a05:651c:550:: with SMTP id q16mr28313693ljp.188.1594077188285;
+ Mon, 06 Jul 2020 16:13:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200630044943.3425049-4-rajatja@google.com> <20200706164514.GA124720@bjorn-Precision-5520>
+In-Reply-To: <20200706164514.GA124720@bjorn-Precision-5520>
+From:   Rajat Jain <rajatja@google.com>
+Date:   Mon, 6 Jul 2020 16:12:31 -0700
+Message-ID: <CACK8Z6EVgeTZLph4CWaztB1WavocMyN237FwDAZudtEa=_e3Cg@mail.gmail.com>
+Subject: Re: [PATCH v2 3/7] PCI/ACS: Enable PCI_ACS_TB for untrusted/external-facing
+ devices
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        "open list:AMD IOMMU (AMD-VI)" <iommu@lists.linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>,
+        "Krishnakumar, Lalithambika" <lalithambika.krishnakumar@intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Prashant Malani <pmalani@google.com>,
+        Benson Leung <bleung@google.com>,
+        Todd Broch <tbroch@google.com>,
+        Alex Levin <levinale@google.com>,
+        Mattias Nissler <mnissler@google.com>,
+        Rajat Jain <rajatxjain@gmail.com>,
+        Bernie Keany <bernie.keany@intel.com>,
+        Aaron Durbin <adurbin@google.com>,
+        Diego Rivas <diegorivas@google.com>,
+        Duncan Laurie <dlaurie@google.com>,
+        Furquan Shaikh <furquan@google.com>,
+        Jesse Barnes <jsbarnes@google.com>,
+        Christian Kellner <christian@kellner.me>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Oliver O'Halloran" <oohall@gmail.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Include "ipa_gsi.h" in "ipa_gsi.c", so the public functions are
-defined before they are used in "ipa_gsi.c".  This addresses some
-warnings that are reported with a "W=1" build.
+On Mon, Jul 6, 2020 at 9:45 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>
+> On Mon, Jun 29, 2020 at 09:49:39PM -0700, Rajat Jain wrote:
+> > When enabling ACS, enable translation blocking for external facing ports
+> > and untrusted devices.
+> >
+> > Signed-off-by: Rajat Jain <rajatja@google.com>
+> > ---
+> > v2: Commit log change
+> >
+> >  drivers/pci/pci.c    |  4 ++++
+> >  drivers/pci/quirks.c | 11 +++++++++++
+> >  2 files changed, 15 insertions(+)
+> >
+> > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> > index d2ff987585855..79853b52658a2 100644
+> > --- a/drivers/pci/pci.c
+> > +++ b/drivers/pci/pci.c
+> > @@ -3330,6 +3330,10 @@ static void pci_std_enable_acs(struct pci_dev *dev)
+> >       /* Upstream Forwarding */
+> >       ctrl |= (cap & PCI_ACS_UF);
+> >
+> > +     if (dev->external_facing || dev->untrusted)
+> > +             /* Translation Blocking */
+> > +             ctrl |= (cap & PCI_ACS_TB);
+> > +
+> >       pci_write_config_word(dev, pos + PCI_ACS_CTRL, ctrl);
+> >  }
+> >
+> > diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+> > index b341628e47527..6294adeac4049 100644
+> > --- a/drivers/pci/quirks.c
+> > +++ b/drivers/pci/quirks.c
+> > @@ -4934,6 +4934,13 @@ static void pci_quirk_enable_intel_rp_mpc_acs(struct pci_dev *dev)
+> >       }
+> >  }
+> >
+> > +/*
+> > + * Currently this quirk does the equivalent of
+> > + * PCI_ACS_RR | PCI_ACS_CR | PCI_ACS_UF | PCI_ACS_SV
+> > + *
+> > + * Currently missing, it also needs to do equivalent of PCI_ACS_TB,
+> > + * if dev->external_facing || dev->untrusted
+>
+> I don't understand this comment.  Is this a "TODO"?  Is there
+> something more that needs to be done here?
 
-Fixes: c3f398b141a8 ("soc: qcom: ipa: IPA interface to GSI")
-Signed-off-by: Alex Elder <elder@linaro.org>
----
- drivers/net/ipa/ipa_gsi.c | 1 +
- 1 file changed, 1 insertion(+)
+Yes. I'll mark it as a TODO to make it more clear.
 
-diff --git a/drivers/net/ipa/ipa_gsi.c b/drivers/net/ipa/ipa_gsi.c
-index dc4a5c2196ae..d323adb03383 100644
---- a/drivers/net/ipa/ipa_gsi.c
-+++ b/drivers/net/ipa/ipa_gsi.c
-@@ -6,6 +6,7 @@
- 
- #include <linux/types.h>
- 
-+#include "ipa_gsi.h"
- #include "gsi_trans.h"
- #include "ipa.h"
- #include "ipa_endpoint.h"
--- 
-2.25.1
-
+>
+> After a patch is applied, a comment should describe the code as it is.
+>
+> > + */
+> >  static int pci_quirk_enable_intel_pch_acs(struct pci_dev *dev)
+> >  {
+> >       if (!pci_quirk_intel_pch_acs_match(dev))
+> > @@ -4973,6 +4980,10 @@ static int pci_quirk_enable_intel_spt_pch_acs(struct pci_dev *dev)
+> >       ctrl |= (cap & PCI_ACS_CR);
+> >       ctrl |= (cap & PCI_ACS_UF);
+> >
+> > +     if (dev->external_facing || dev->untrusted)
+> > +             /* Translation Blocking */
+> > +             ctrl |= (cap & PCI_ACS_TB);
+> > +
+> >       pci_write_config_dword(dev, pos + INTEL_SPT_ACS_CTRL, ctrl);
+> >
+> >       pci_info(dev, "Intel SPT PCH root port ACS workaround enabled\n");
+> > --
+> > 2.27.0.212.ge8ba1cc988-goog
+> >
