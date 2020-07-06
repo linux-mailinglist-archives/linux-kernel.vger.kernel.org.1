@@ -2,123 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D95B216084
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 22:49:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42993216089
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 22:50:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727094AbgGFUtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 16:49:46 -0400
-Received: from mail.efficios.com ([167.114.26.124]:57052 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726939AbgGFUtp (ORCPT
+        id S1726839AbgGFUtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 16:49:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58374 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726763AbgGFUtn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 16:49:45 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id B6C5C2DCBC2;
-        Mon,  6 Jul 2020 16:49:44 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id ZWQUH0zUNbht; Mon,  6 Jul 2020 16:49:44 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 35EAC2DCCBF;
-        Mon,  6 Jul 2020 16:49:44 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 35EAC2DCCBF
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1594068584;
-        bh=mnMMKvJaOAN7AlfDW7S7IlXwHCI9soK/a0/c/Zir58M=;
-        h=From:To:Date:Message-Id;
-        b=efnws94pwSMtS/IAS5Ys121F4Iq0KkCiCQgYcjiDsebUjlu6LXkPm9zpyge1fMqPv
-         9nQd/m9xFhZdjfHt09PE4YdZFXpRUysulFSKGtxJiFGQt0WJvoAAyA5kpzyrcTXF49
-         7sBqxwZT49TCWK+pYyRF3XbxL9x1ATX+FoViBCvI0MRSyrTai+lJf7HOyB8+FCASkF
-         T+MPqNjCmWJNJ+hprRVDdzAWKUc3EVs1h65dEysJLOiFRsOXnK4xgxnGLg+xT52nJz
-         XEWqPNi6KMWbw7cM2ah1xYQJcMM0Pbqx1leWRmlLRMEQoI1tF5hCte7ygzCBjCdbFs
-         SdYo2KTPeLw4w==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id wTGn1GJVJk5q; Mon,  6 Jul 2020 16:49:44 -0400 (EDT)
-Received: from localhost.localdomain (192-222-181-218.qc.cable.ebox.net [192.222.181.218])
-        by mail.efficios.com (Postfix) with ESMTPSA id BD4512DCDA9;
-        Mon,  6 Jul 2020 16:49:42 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E . McKenney" <paulmck@linux.ibm.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, Paul Turner <pjt@google.com>,
-        linux-api@vger.kernel.org, Florian Weimer <fw@deneb.enyo.de>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Neel Natu <neelnatu@google.com>,
-        linux-kselftest@vger.kernel.org
-Subject: [RFC PATCH for 5.8 4/4] rseq: selftests: Expect reliable cpu_id field
-Date:   Mon,  6 Jul 2020 16:49:13 -0400
-Message-Id: <20200706204913.20347-5-mathieu.desnoyers@efficios.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200706204913.20347-1-mathieu.desnoyers@efficios.com>
-References: <20200706204913.20347-1-mathieu.desnoyers@efficios.com>
+        Mon, 6 Jul 2020 16:49:43 -0400
+Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED988C08C5DF
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Jul 2020 13:49:42 -0700 (PDT)
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id B2F76BC140;
+        Mon,  6 Jul 2020 20:49:39 +0000 (UTC)
+Subject: Re: [PATCH] Replace HTTP links with HTTPS ones: IPv*
+To:     David Miller <davem@davemloft.net>
+References: <20200706173850.19304-1-grandmaster@al2klimov.de>
+ <20200706.132319.1942886313658107601.davem@davemloft.net>
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Message-ID: <33dfc84d-89ef-c449-2534-a4ba96638ad3@al2klimov.de>
+Date:   Mon, 6 Jul 2020 22:49:39 +0200
+MIME-Version: 1.0
+In-Reply-To: <20200706.132319.1942886313658107601.davem@davemloft.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+X-Spamd-Bar: /
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The rseq selftests should discover whether the kernel implements the
-RSEQ_FLAG_RELIABLE_CPU_ID flag, which indicates that the
-__rseq_abi.cpu_id field is reliable.
 
-Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Shuah Khan <skhan@linuxfoundation.org>
-Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Florian Weimer <fw@deneb.enyo.de>
-Cc: "Paul E. McKenney" <paulmck@linux.ibm.com>
-Cc: Boqun Feng <boqun.feng@gmail.com>
-Cc: "H . Peter Anvin" <hpa@zytor.com>
-Cc: Paul Turner <pjt@google.com>
-Cc: Dmitry Vyukov <dvyukov@google.com>
-Cc: Neel Natu <neelnatu@google.com>
-Cc: linux-api@vger.kernel.org
-Cc: linux-kselftest@vger.kernel.org
----
- tools/testing/selftests/rseq/rseq.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/rseq/rseq.c b/tools/testing/selftests/rseq/rseq.c
-index 7159eb777fd3..55f1edb0649c 100644
---- a/tools/testing/selftests/rseq/rseq.c
-+++ b/tools/testing/selftests/rseq/rseq.c
-@@ -73,6 +73,11 @@ static int sys_rseq(volatile struct rseq *rseq_abi, uint32_t rseq_len,
- 	return syscall(__NR_rseq, rseq_abi, rseq_len, flags, sig);
- }
- 
-+static bool rseq_reliable_cpu_id(void)
-+{
-+	return sys_rseq(NULL, 0, RSEQ_FLAG_RELIABLE_CPU_ID, 0) == 0;
-+}
-+
- int rseq_register_current_thread(void)
- {
- 	int rc, ret = 0;
-@@ -87,7 +92,8 @@ int rseq_register_current_thread(void)
- 	}
- 	if (__rseq_refcount++)
- 		goto end;
--	rc = sys_rseq(&__rseq_abi, sizeof(struct rseq), 0, RSEQ_SIG);
-+	rc = sys_rseq(&__rseq_abi, sizeof(struct rseq),
-+		      RSEQ_FLAG_REGISTER | RSEQ_FLAG_RELIABLE_CPU_ID, RSEQ_SIG);
- 	if (!rc) {
- 		assert(rseq_current_cpu_raw() >= 0);
- 		goto end;
-@@ -96,6 +102,8 @@ int rseq_register_current_thread(void)
- 		__rseq_abi.cpu_id = RSEQ_CPU_ID_REGISTRATION_FAILED;
- 	ret = -1;
- 	__rseq_refcount--;
-+	if (errno == EINVAL && !rseq_reliable_cpu_id())
-+		fprintf(stderr, "Error: rseq does not provide a reliable cpu_id field.\n");
- end:
- 	signal_restore(oldset);
- 	return ret;
--- 
-2.17.1
+Am 06.07.20 um 22:23 schrieb David Miller:
+> From: "Alexander A. Klimov" <grandmaster@al2klimov.de>
+> Date: Mon,  6 Jul 2020 19:38:50 +0200
+> 
+>> Rationale:
+>> Reduces attack surface on kernel devs opening the links for MITM
+>> as HTTPS traffic is much harder to manipulate.
+>>
+>> Deterministic algorithm:
+>> For each file:
+>>    If not .svg:
+>>      For each line:
+>>        If doesn't contain `\bxmlns\b`:
+>>          For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+>>            If both the HTTP and HTTPS versions
+>>            return 200 OK and serve the same content:
+>>              Replace HTTP with HTTPS.
+>>
+>> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+> 
+> Applied to net-next, thank you very much for doing this. >
+Hi,
 
+apropos "doing this": I've stumbled over ...
+
+https://lkml.org/lkml/2005/7/11/336
+
+... and am wondering:
+
+*What exact timespan do you mean with "at once"?*
+
+Srsly, I mean... just look at the last few patches of mine at the (main) 
+mailing list. I'm going to submit (at least) about 120 (!) more[1] of 
+them. How long shall I wait after each one not to kill your 
+infrastructure and not to be locked out?
+
+Best,
+AK
+
+
+[1] Amount of maintainers of only one subsystem which is affected by a 
+such patch of mine. (Easier for me to split by subsystem.)
