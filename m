@@ -2,118 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B34B52157E1
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 14:58:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54BBA2157DE
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 14:58:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729204AbgGFM6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 08:58:11 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:54527 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729143AbgGFM6H (ORCPT
+        id S1729140AbgGFM6E convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 6 Jul 2020 08:58:04 -0400
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:59237 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728973AbgGFM6E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 08:58:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594040286;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=j+KY02i6bUabbwozSGcjhNsCPf+3RwTXSSg6eC05zLE=;
-        b=Zu9C20PwZ+vYXAUk+2rwaJY9xV7XjEahvdYk/FnlZGodufRgkVMZCFBI5zDSxNqT4Q17Eo
-        41tVKq6kPKN4LL2LgHHclfwxjzEU0bV6K9Pq70HQQ6s38WkIbE92ZL2U2NAzzkFU/9RgzG
-        mL5BJ9EWJ3Mbw2MthI9zkBg9Nek/vws=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-134-XPNHzZXzNrij33CwAIhhZA-1; Mon, 06 Jul 2020 08:58:04 -0400
-X-MC-Unique: XPNHzZXzNrij33CwAIhhZA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D48878015F3;
-        Mon,  6 Jul 2020 12:58:01 +0000 (UTC)
-Received: from krava (unknown [10.40.193.8])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 54BE57B405;
-        Mon,  6 Jul 2020 12:57:58 +0000 (UTC)
-Date:   Mon, 6 Jul 2020 14:57:57 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     kajoljain <kjain@linux.ibm.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Paul Clarke <pc@us.ibm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        maddy@linux.ibm.com, Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
-        Anju T Sudhakar <anju@linux.vnet.ibm.com>,
-        "Liang, Kan" <kan.liang@linux.intel.com>
-Subject: Re: [RFC 1/3] perf jevents: Add support for parsing perchip/percore
- events
-Message-ID: <20200706125757.GA3424581@krava>
-References: <20200625114718.229911-1-kjain@linux.ibm.com>
- <20200625114718.229911-2-kjain@linux.ibm.com>
- <CAP-5=fWG9rxObKJ38dQ=VUf3_mQbNDCTzgU1kkyw=9uVfBa+qw@mail.gmail.com>
- <512670c2-bb61-7c2f-68bc-7752499300c6@linux.ibm.com>
+        Mon, 6 Jul 2020 08:58:04 -0400
+Received: from sogo13.sd4.0x35.net (sogo13.sd4.0x35.net [10.200.201.63])
+        (Authenticated sender: kerneldev@karsmulder.nl)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPA id 2DD061BF208;
+        Mon,  6 Jul 2020 12:57:59 +0000 (UTC)
+From:   "Kars Mulder" <kerneldev@karsmulder.nl>
+In-Reply-To: <20200706103405.GA11622@kroah.com>
+Content-Type: text/plain; charset="utf-8"
+X-Forward: 127.0.0.1
+Date:   Mon, 06 Jul 2020 14:57:59 +0200
+Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        "David Laight" <David.Laight@aculab.com>,
+        "Kai-Heng Feng" <kai.heng.feng@canonical.com>,
+        "Pavel Machek" <pavel@denx.de>,
+        "Andy Shevchenko" <andy.shevchenko@gmail.com>,
+        "Oliver Neukum" <oneukum@suse.com>
+To:     "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <512670c2-bb61-7c2f-68bc-7752499300c6@linux.ibm.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Message-ID: <5e4e-5f032000-4f-47356f00@80491239>
+Subject: =?utf-8?q?Re=3A?==?utf-8?q?_=5BPATCH=5D?==?utf-8?q?_usb=3A?=
+ =?utf-8?q?_core=3A?= fix =?utf-8?q?quirks=5Fparam=5Fset=28=29?= writing to 
+ a const pointer
+User-Agent: SOGoMail 4.3.0
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 03, 2020 at 11:50:28AM +0530, kajoljain wrote:
+On Monday, July 06, 2020 12:34 CEST, Greg Kroah-Hartman wrote: 
+> That's a lot of stack space, is it really needed?  Can we just use a
+> static variable instead, or dynamically allocate this?
 
-SNIP
+It is very possible to statically or dynamically allocate this.
 
->  ]
-> diff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
-> index fa86c5f997cc..dd2b14cc147c 100644
-> --- a/tools/perf/pmu-events/jevents.c
-> +++ b/tools/perf/pmu-events/jevents.c
-> @@ -53,6 +53,23 @@
->  int verbose;
->  char *prog;
->  
-> +enum event_class {
-> +	PerChip = 0,
-> +	PerPkg = 1,
-> +	PerCore = 2
-> +};
+Statically reserving an additional 128 bytes regardless of whether
+this feature is actually used feels a bit wasteful, so I'd prefer
+stack or dynamic allocation.
 
-could you please split this into patch that changes perpkg
-into the class type string and another that adds new PerChip/PerCore?
+An earlier draft of my patch did dynamically allocate this memory;
+early discussion (https://lkml.org/lkml/2020/7/3/248) suggested that
+dynamic allocation has the disadvantage of introducing a new obscure
+error condition:
 
-> +
-> +enum event_class convert(const char* event_class_type) {
-> +
-> +	if (!strcmp(event_class_type, "PerCore"))
-> +		return PerCore;
-> +	else if (!strcmp(event_class_type, "PerChip"))
-> +		return PerChip;
-> +	else if (!strcmp(event_class_type, "PerPkg"))
-> +		return PerPkg;
-> +	return -1;
-> +}
-> +
->  int eprintf(int level, int var, const char *fmt, ...)
->  {
->  
-> @@ -320,7 +337,7 @@ static void print_events_table_prefix(FILE *fp, const char *tblname)
->  
->  static int print_events_table_entry(void *data, char *name, char *event,
->  				    char *desc, char *long_desc,
-> -				    char *pmu, char *unit, char *perpkg,
-> +				    char *pmu, char *unit, char *event_class_type,
+On Friday, July 03, 2020 10:13 CEST, David Laight wrote: 
+> The problem with strdup() is you get the extra (unlikely) failure path.
+> 128 bytes of stack won't be a problem if the function is (essentially)
+> a leaf.
 
-maybe 'aggregation' or 'aggr_mode' would be better name than event_class_type?
+So I rewrote my patch to use stack-based allocation instead. I've attached
+a patch using kstrdup at the end of this mail.
 
-thanks,
-jirka
+I think that the new obscure error condition caused by kstrdup() isn't
+too bad since original code already had a call to kcalloc() anyway; the
+possibility for the function to fail due to out-of-memory errors
+already existed. In this version of the patch, there may however be a
+possible issue that different code paths are taken depending on when
+the out-of-memory error occurs, resulting in different side effects:
+
+	val = kstrdup(value, GFP_KERNEL);
+	if (!val)
+		return -ENOMEM;
+
+	err = param_set_copystring(val, kp);
+	[...]
+	
+	if (quirk_list) {
+		kfree(quirk_list);
+		quirk_list = NULL;
+	}
+
+	quirk_list = kcalloc(quirk_count, sizeof(struct quirk_entry),
+			     GFP_KERNEL);
+
+
+If the OOM happens at the kstrdup() step (which I added), then the old
+value of the parameter will be retained. If the OOM happens at the
+kcalloc() step, then the kernel will remember the value of the new
+parameter (and return that value if asked what the parameter's current
+value is), but but neither the old nor the new parameter will be in
+effect: the quirk_list will be a NULL pointer and the quirks module
+will behave as if the usbcore.quirks parameter is empty.
+
+I could move my code to make an OOM at kstrdup() have the same side
+effects as an OOM at kcalloc(), but I'd personally think that the first
+kind of behaviour "setting the parameter failed, nothing happened" is
+more correct than the latter kind "setting the parameter failed, the
+parameter is now in limbo".
+
+---
+ drivers/usb/core/quirks.c | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/usb/core/quirks.c b/drivers/usb/core/quirks.c
+index e0b77674869c..c96c50faccf7 100644
+--- a/drivers/usb/core/quirks.c
++++ b/drivers/usb/core/quirks.c
+@@ -25,17 +25,23 @@ static unsigned int quirk_count;
+ 
+ static char quirks_param[128];
+ 
+-static int quirks_param_set(const char *val, const struct kernel_param *kp)
++static int quirks_param_set(const char *value, const struct kernel_param *kp)
+ {
+-	char *p, *field;
++	char *val, *p, *field;
+ 	u16 vid, pid;
+ 	u32 flags;
+ 	size_t i;
+ 	int err;
+ 
++	val = kstrdup(value, GFP_KERNEL);
++	if (!val)
++		return -ENOMEM;
++
+ 	err = param_set_copystring(val, kp);
+-	if (err)
++	if (err) {
++		kfree(val);
+ 		return err;
++	}
+ 
+ 	mutex_lock(&quirk_mutex);
+ 
+@@ -60,10 +66,11 @@ static int quirks_param_set(const char *val, const struct kernel_param *kp)
+ 	if (!quirk_list) {
+ 		quirk_count = 0;
+ 		mutex_unlock(&quirk_mutex);
++		kfree(val);
+ 		return -ENOMEM;
+ 	}
+ 
+-	for (i = 0, p = (char *)val; p && *p;) {
++	for (i = 0, p = val; p && *p;) {
+ 		/* Each entry consists of VID:PID:flags */
+ 		field = strsep(&p, ":");
+ 		if (!field)
+@@ -144,6 +151,7 @@ static int quirks_param_set(const char *val, const struct kernel_param *kp)
+ 
+ unlock:
+ 	mutex_unlock(&quirk_mutex);
++	kfree(val);
+ 
+ 	return 0;
+ }
+-- 
+2.27.0
 
