@@ -2,62 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83F6C215865
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 15:34:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75F4921587F
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 15:36:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729307AbgGFNeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 09:34:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47172 "EHLO
+        id S1729294AbgGFNeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 09:34:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729274AbgGFNdz (ORCPT
+        with ESMTP id S1729230AbgGFNd5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 09:33:55 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85986C08C5DF
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Jul 2020 06:33:55 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id f18so42148266wml.3
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 06:33:55 -0700 (PDT)
+        Mon, 6 Jul 2020 09:33:57 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B046EC061755
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Jul 2020 06:33:56 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id q15so39370374wmj.2
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 06:33:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=P8CBq5D9tY/rIxd8Q9bScU/Lf3c39zfJPjGb95MJ1ho=;
-        b=vTKBeOy8iUfSZmKMM4EVVOzgbmiCgEA6KMhIW9ctG3K+ahehKKx7a1sXbFvVZtjfS6
-         innuNalMpnrsqCB+v/QEOP7FDE8Ix5qjbmsU7xSdjpWQDRLoEvBKLlFRGs5HkWKupr5o
-         F/sjXi24nPO0VtY4D2xhTt/xEQPYTXmWfpNum1ncVbzONuISe7B5N2oXZLn+/JAMhw5Z
-         QO2Fo4cOg3XCdfDsBNaMPBVmVx+jBtFeW/lsaUdDr7JemyEnLj8QFk1YWkHg6Xu3O4lQ
-         eq2usXfgODMDCtLx9nv9djz2KGH7YngG/1Y5dAF0iGn6+u6x99vRJjfYVKZCkXX4Zsir
-         JK8g==
+        bh=ji1N62aOzIlUoLXMMPXkjOjy05RAsl1PzqHcrZ4EBKA=;
+        b=I8l3xiexa/B1JIJEy1ir1PTxhlP/Lj9nM5zUnk6opUF/S6bgIchyQgbqNywo7zJNiU
+         CoQXFx15q77CxSXe0ZRx0B6u3hwF7yxGPD7hJYpfn2bPzbIVajT32LzABpWqvW/U963W
+         rUfVYKYz0ltiAGwB2k/N9DNXTj1wqtMBeV3wSCHJspqZ6qVlC/PJj7n8N2Tb7Ciy5Hs1
+         YD5+rf7z0Dd+Kbwx1fUXzNmr9b19aJ2JgHb6AopyQqJZZVptVhkZMnlql+lUz0ue0xbF
+         8kR979vuUk/grhSLXPoSlAHDyv5f75q8fcqNYTPokp9FBt6qc7wkfcTDvRW9v3MCYpNU
+         OHKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=P8CBq5D9tY/rIxd8Q9bScU/Lf3c39zfJPjGb95MJ1ho=;
-        b=Al8xFDP2rdTdTmvCN3aIQJSC8mmz6xiisu580oN3vetjqrgjO07sfG7KfcnCgfFnpK
-         wRLK4b21HqqAdJAeVSIEaQEaZiGhbPwybZbrtHDT/lU7IEmuxcwT0HO9sDq6ETibRXef
-         23IebrqxZ79UNBldfUL3M57aY8rYnBw9rcB0ypjasI1F9c5bttatXEm5DO2TMQEV8DCs
-         FgSL4Ix9hdr2Tc2X9o4pNegyfh4tn/nY8iU9D6Ob48ULtICuUPxweFQSo7V8NQyGZtZx
-         BLC9JUWGWXGqnnEf9B181j5vZ5CYqBa03xbIVY7nxs4/D2lbM1Mm9ZYxJcw6ILRuto2y
-         N5SA==
-X-Gm-Message-State: AOAM531ZVJHqZ3zttpEZZJqP+B4rJwjl17IdLB+KXPbEUXk+3q1mzXH4
-        PuLNuTKGPs/41f3e3PWbWtyV0w==
-X-Google-Smtp-Source: ABdhPJwGkG53Re/6SkdDHQA3k1u5KCj1bTpxlVndoEvZves+WsU//tEO5Ud0kwzSsc+dh7IMKvG2EQ==
-X-Received: by 2002:a1c:2157:: with SMTP id h84mr48334366wmh.35.1594042434299;
-        Mon, 06 Jul 2020 06:33:54 -0700 (PDT)
+        bh=ji1N62aOzIlUoLXMMPXkjOjy05RAsl1PzqHcrZ4EBKA=;
+        b=rGVUWl7e8PY+ATXoSEEXqIjHnLUUpM5GxckiQJwkdehOQJY3a96dDbYh50hKseNX/v
+         b5QXRdL1dM0TFSSOM52XA5YrfzPRuKsRlzqGe3ciq7zc7y6Z9TwRMuhXA6iILeFOikWu
+         OLUu5LkZAaPIrEdR6L/ndPnmONbFfdO/iwViIn/eGJ3i0pc+Nnnp6of+h+sDxem7Jkui
+         iFZDLqKo13/DunPkcznspoUT8yxhN35+msdVuEr7suKT5Yz4CtSUMAwYV9aXuRwgUfkE
+         P/NQ8LjfwHBXFQWA8fcxYADgIwUZGsRI+IZGsSLM7tDBbFODnh97yxzaM8TrEXEyfTxq
+         +Sgw==
+X-Gm-Message-State: AOAM533PwNXMpbF1X7ojlghffO4V6A2JFAR7E59Z3gO0QNPlimGEs/vR
+        RieFlBbwC5n/zJbaMVvpu4M4aA==
+X-Google-Smtp-Source: ABdhPJzhwy+WhKHOCtml4H28kvQrBHwIYwg1EY7OKr3wVvJUBRZghnh3fq3dov0lUX5F0Rb16y1JmA==
+X-Received: by 2002:a1c:7306:: with SMTP id d6mr39593585wmb.113.1594042435462;
+        Mon, 06 Jul 2020 06:33:55 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.206])
-        by smtp.gmail.com with ESMTPSA id v18sm25416082wrv.49.2020.07.06.06.33.53
+        by smtp.gmail.com with ESMTPSA id v18sm25416082wrv.49.2020.07.06.06.33.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Jul 2020 06:33:53 -0700 (PDT)
+        Mon, 06 Jul 2020 06:33:54 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-usb@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH 08/32] usb: typec: tcpm: tcpm: Remove dangling unused 'struct tcpm_altmode_ops'
-Date:   Mon,  6 Jul 2020 14:33:17 +0100
-Message-Id: <20200706133341.476881-9-lee.jones@linaro.org>
+        Cristian Birsan <cristian.birsan@microchip.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>
+Subject: [PATCH 09/32] usb: gadget: udc: atmel_usba_udc: Remove set but unused variable 'pp'
+Date:   Mon,  6 Jul 2020 14:33:18 +0100
+Message-Id: <20200706133341.476881-10-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200706133341.476881-1-lee.jones@linaro.org>
 References: <20200706133341.476881-1-lee.jones@linaro.org>
@@ -69,86 +71,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks as though a079973f462a3 ("usb: typec: tcpm: Remove tcpc_config
-configuration mechanism") pulled out the only use of 'tcpm_altmode_ops'
-last year.  No need to keep it around.
+Commit e78355b577c4b ("usb: gadget: udc: atmel: Don't use DT to
+configure end point") pulled out all functionality dealing with 'pp'.
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/usb/typec/tcpm/tcpm.c:1551:39: warning: ‘tcpm_altmode_ops’ defined but not used [-Wunused-const-variable=]
- 1551 | static const struct typec_altmode_ops tcpm_altmode_ops = {
- | ^~~~~~~~~~~~~~~~
+ drivers/usb/gadget/udc/atmel_usba_udc.c: In function ‘atmel_udc_of_init’:
+ drivers/usb/gadget/udc/atmel_usba_udc.c:2106:22: warning: variable ‘pp’ set but not used [-Wunused-but-set-variable]
+ 2106 | struct device_node *pp;
+ | ^~
 
-Cc: Guenter Roeck <linux@roeck-us.net>
-Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc: Hans de Goede <hdegoede@redhat.com>
+Cc: Cristian Birsan <cristian.birsan@microchip.com>
+Cc: Felipe Balbi <balbi@kernel.org>
+Cc: Nicolas Ferre <nicolas.ferre@microchip.com>
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/usb/typec/tcpm/tcpm.c | 51 -----------------------------------
- 1 file changed, 51 deletions(-)
+ drivers/usb/gadget/udc/atmel_usba_udc.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-index 82b19ebd7838e..d6913eb0ea54d 100644
---- a/drivers/usb/typec/tcpm/tcpm.c
-+++ b/drivers/usb/typec/tcpm/tcpm.c
-@@ -1503,57 +1503,6 @@ static int tcpm_validate_caps(struct tcpm_port *port, const u32 *pdo,
- 	return 0;
- }
+diff --git a/drivers/usb/gadget/udc/atmel_usba_udc.c b/drivers/usb/gadget/udc/atmel_usba_udc.c
+index d69f61ff01819..a10b8d406e62b 100644
+--- a/drivers/usb/gadget/udc/atmel_usba_udc.c
++++ b/drivers/usb/gadget/udc/atmel_usba_udc.c
+@@ -2103,7 +2103,6 @@ static struct usba_ep * atmel_udc_of_init(struct platform_device *pdev,
+ {
+ 	struct device_node *np = pdev->dev.of_node;
+ 	const struct of_device_id *match;
+-	struct device_node *pp;
+ 	int i, ret;
+ 	struct usba_ep *eps, *ep;
+ 	const struct usba_udc_config *udc_config;
+@@ -2128,7 +2127,6 @@ static struct usba_ep * atmel_udc_of_init(struct platform_device *pdev,
+ 						GPIOD_IN);
  
--static int tcpm_altmode_enter(struct typec_altmode *altmode, u32 *vdo)
--{
--	struct tcpm_port *port = typec_altmode_get_drvdata(altmode);
--	u32 header;
--
--	mutex_lock(&port->lock);
--	header = VDO(altmode->svid, vdo ? 2 : 1, CMD_ENTER_MODE);
--	header |= VDO_OPOS(altmode->mode);
--
--	tcpm_queue_vdm(port, header, vdo, vdo ? 1 : 0);
--	mod_delayed_work(port->wq, &port->vdm_state_machine, 0);
--	mutex_unlock(&port->lock);
--
--	return 0;
--}
--
--static int tcpm_altmode_exit(struct typec_altmode *altmode)
--{
--	struct tcpm_port *port = typec_altmode_get_drvdata(altmode);
--	u32 header;
--
--	mutex_lock(&port->lock);
--	header = VDO(altmode->svid, 1, CMD_EXIT_MODE);
--	header |= VDO_OPOS(altmode->mode);
--
--	tcpm_queue_vdm(port, header, NULL, 0);
--	mod_delayed_work(port->wq, &port->vdm_state_machine, 0);
--	mutex_unlock(&port->lock);
--
--	return 0;
--}
--
--static int tcpm_altmode_vdm(struct typec_altmode *altmode,
--			    u32 header, const u32 *data, int count)
--{
--	struct tcpm_port *port = typec_altmode_get_drvdata(altmode);
--
--	mutex_lock(&port->lock);
--	tcpm_queue_vdm(port, header, data, count - 1);
--	mod_delayed_work(port->wq, &port->vdm_state_machine, 0);
--	mutex_unlock(&port->lock);
--
--	return 0;
--}
--
--static const struct typec_altmode_ops tcpm_altmode_ops = {
--	.enter = tcpm_altmode_enter,
--	.exit = tcpm_altmode_exit,
--	.vdm = tcpm_altmode_vdm,
--};
--
- /*
-  * PD (data, control) command handling functions
-  */
+ 	if (fifo_mode == 0) {
+-		pp = NULL;
+ 		udc->num_ep = udc_config->num_ep;
+ 		udc->configured_ep = 1;
+ 	} else {
+@@ -2144,7 +2142,6 @@ static struct usba_ep * atmel_udc_of_init(struct platform_device *pdev,
+ 
+ 	INIT_LIST_HEAD(&eps[0].ep.ep_list);
+ 
+-	pp = NULL;
+ 	i = 0;
+ 	while (i < udc->num_ep) {
+ 		const struct usba_ep_config *ep_cfg = &udc_config->config[i];
 -- 
 2.25.1
 
