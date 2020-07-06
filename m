@@ -2,109 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 969362157F4
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 15:04:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5676C2157F6
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 15:05:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729166AbgGFNEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 09:04:23 -0400
-Received: from mout.kundenserver.de ([217.72.192.74]:41493 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728973AbgGFNEX (ORCPT
+        id S1729236AbgGFNE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 09:04:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42638 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729173AbgGFNEz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 09:04:23 -0400
-Received: from mail-qk1-f172.google.com ([209.85.222.172]) by
- mrelayeu.kundenserver.de (mreue108 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1N4i7l-1ksToJ2lTr-011my3 for <linux-kernel@vger.kernel.org>; Mon, 06 Jul
- 2020 15:04:20 +0200
-Received: by mail-qk1-f172.google.com with SMTP id e11so34652571qkm.3
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 06:04:20 -0700 (PDT)
-X-Gm-Message-State: AOAM530ocd6LPdY0CHJulsbFWAF7G+7xiSDyvXcXqircJIwp1pIaBnxH
-        OjZpGcnIo0ImoEHh2ikopN9VgjHiXHva7SKBPsw=
-X-Google-Smtp-Source: ABdhPJwubD2mijyAfUzCDzHL2/dgA6kW43DYxuGhRpvvvgDSjGytYvy9hqqMQ+FmwXaOLzZU6yw4RYKo/ZwuBXK5Kdg=
-X-Received: by 2002:a37:a496:: with SMTP id n144mr46695262qke.286.1594040659501;
- Mon, 06 Jul 2020 06:04:19 -0700 (PDT)
+        Mon, 6 Jul 2020 09:04:55 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55C33C061794
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Jul 2020 06:04:55 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id a21so8285957otq.8
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 06:04:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hmLqrXXhVU4dEhpiExA430FqmWSncr+dRol/WcQpdPA=;
+        b=DQBaBonQAQTGt198EmZPaGn/UjYlH+cYKBN38YTb53yvhwvC7lKya7ILMRVUbNk+Pv
+         uQSNbW4ToO5M3ISD2ehUAPxzJcKs1s3CKF0E0E5DN5AMKNsOwuuokBwlDf/5BnmSOCcu
+         hLAMXL3vqozL387spk4aw5oN2aycAc2GISl0OD7IXk/Z91zNt9sQOYahganwqDd4T4UI
+         R1p9tsXY9HoUYrNVyHK1ZuMb154HAZBpOY4M4Yv/TcW7TFR1ySbR+MMYilU+xvDNDDiI
+         gH1fxOu2aewmQ09ziNON7PdQPUXV4CUbUvpUeOZJd2FlJPZ8YeJdaNZqTssxU4LCTYJy
+         9hQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hmLqrXXhVU4dEhpiExA430FqmWSncr+dRol/WcQpdPA=;
+        b=qfzTO46cn6FeRCdTGXbeUTb950Gwwi45J1LffaVDfgFv2Zgfrq/F7mgSWU1NW4m+QA
+         /VLdTHfjIVAGBkVyaGj8S66iQafZM1tDPrnFI7ct9XlnivKgB8kAMSabNjQbecTi6077
+         yFqPvVipVPNfA4N+egHfge2OOirrsDsfc+UGU74HYLAly4QVT6X+Kh08U+Akh18dMwx2
+         jtCF7yFhGomzjITz7Dz7DjRF00SM21D0fjo1Q/xqqXS3yLIrphFsSISFPGDyNgaXsj+n
+         c1/zb5HnM4CKA/kBD0g0z6K1ByPo6kVXmveDK1I4DW4g1kGmh9vRf9O43fLn+lAklcZq
+         qHRQ==
+X-Gm-Message-State: AOAM532VDxQEN37VafNcHqoVcuuFB0xNsDCqz44OACOdwmyfZsDEJk07
+        qjiTxCpdRQcMfrFyO9KnNKkJnerB+HcADhDsqHzNOBUl
+X-Google-Smtp-Source: ABdhPJxdi1Sr0McbvvV8tl9DN5sHqNT7r8eLLtsgY9qZMSgz7xaiT6KSI9r8aTgR1lq6vLkRR7bdJQpbqHXUxgsBHn8=
+X-Received: by 2002:a05:6830:18f6:: with SMTP id d22mr24596505otf.243.1594040694747;
+ Mon, 06 Jul 2020 06:04:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <202007061834.Xh4DF8QN%lkp@intel.com>
-In-Reply-To: <202007061834.Xh4DF8QN%lkp@intel.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Mon, 6 Jul 2020 15:04:03 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2dLDf-gOezrzmp0J1ZtnnZgq5KstUO4RZ0Wnfs9J2H_A@mail.gmail.com>
-Message-ID: <CAK8P3a2dLDf-gOezrzmp0J1ZtnnZgq5KstUO4RZ0Wnfs9J2H_A@mail.gmail.com>
-Subject: Re: file.c:undefined reference to `.dump_emit'
-To:     kernel test robot <lkp@intel.com>
-Cc:     Christoph Hellwig <hch@lst.de>, kbuild-all@lists.01.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>, Jeremy Kerr <jk@ozlabs.org>
+References: <159389297140.2210796.13590142254668787525.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <CAFhKne_ZVWVhZX5hNEbeGBfU6BMRN9JKQeTsVYOcMmEH1cd3xg@mail.gmail.com>
+ <87h7ul15le.fsf@notabene.neil.brown.name> <20200706072221.GA1947246@kroah.com>
+ <CAMuHMdWj2d5GF1ZkuhzQxg9teA51zjF0oQQPWcphzK=kJ6-x9Q@mail.gmail.com>
+ <CAFhKne9vswg3Q4mTOz4WP6QWJ8tDH+SNx1Pu7LotLagoNURKgw@mail.gmail.com> <d6f56f5f5e0790ee9c7579eb05c7d92e071ee15a.camel@perches.com>
+In-Reply-To: <d6f56f5f5e0790ee9c7579eb05c7d92e071ee15a.camel@perches.com>
+From:   Matthew Wilcox <willy6545@gmail.com>
+Date:   Mon, 6 Jul 2020 09:04:43 -0400
+Message-ID: <CAFhKne_p_rKN4adhsuyUyBfrS0YwCtoNFNn-x4aFajPmnkR6iQ@mail.gmail.com>
+Subject: Re: [Ksummit-discuss] [PATCH] CodingStyle: Inclusive Terminology
+To:     Joe Perches <joe@perches.com>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Chris Mason <clm@fb.clm>,
+        ksummit <ksummit-discuss@lists.linuxfoundation.org>,
+        tech-board-discuss@lists.linuxfoundation.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:XzJuH2A7pNUF6aQXkgJawp3fTRkym58/elUuH3QC9kQEv8oydhY
- JeR0oiuYCdtWEybkGqYLJ1UI1MuterlGaYeAn2KasnSQQtigF/QoP9vQNf1vmMiHhcbTNSl
- hQTz5hx6InvJnryFcqt+mA9XlnWtzIcTFFioJwqfKbArDp9BzqeM5YM1OBL2sbVlPIi12Bk
- X8J4nvgVhuQ4WFrFiZQqg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:U4OBHJOG4YM=:FDSeXJn7a7Juv5DU+y/SwO
- EKGR8c8lI9k7/lFzNPfJxGrs5eV0fiHYoCuOd0NYopOeB8a2gfgq5i+C3SkJxMs5GfTLS1/t2
- Moc4VgZmQMBckeFYD2ogjc8tYaw97dgbFqpSHhohCcZveNUY+erAeVLdgcOUN/zVDJf0OSTks
- 7iGfrVBWqAcGu39zBZ8PmmNW2YuKWL24FkMwPkN+qslNdgb/o1t+ZaWqtmaJvSwHDZSz0ey4H
- YIka9EnaA3N7oyPaMTkFZOSlrzsuY4VhGxCS8uQQtM0bRny33XFYRYsjcYdYDsSkCRLCAlQVi
- AcvOruZPWHj6frH+EGENHQKXPEJzyWPnVuh12EF7t/hxmB+JY8BGFm9aiqfJbl/6ss8prkmXA
- AxhVpEloAb2Cc7KI/gPAALRaqOb6nHVhGnt0VTcjgwyCpT62Gt5fxwmePMyIyB82laxeHO8nD
- ofLS4f7X5tbJteKHmPn4nHcdRoIo+uL4aUHzFjY/4EiyfX1PiG4lLw0DXSvlkWzH6+ZIo4h98
- WkPjXfetCQf5LtOBk40xjoM0zKD/ZmIm8GHmxLFh7OTcGSvJlvCAsOmVP0RsKSNb4qLmlnZ19
- GGcDeEhZuBM34X2oJJ9fQv20fS9kplFNdhnbqlK6kQUfh8cRjdVQ6o2ZJonUhj3E3Fdd1iV3K
- RNPk+vpbtLg3Sdbzf/npXkjsZT/bs54m0KBsEF2MZx8/IAK2yZxbBA2cKcaGu1N64aJVYAXX8
- mW82lc9R0Mzkw5hodvastu3UREF9PC1Wix/EUzCMye2nl5+oFZu8y9c6TH8GCQza0cBKiNz2v
- +BaSqiT0tYH/nVJzEG0epCWC40K+PmElT+zGrDwtVhXCtMcAlzl3Dp2u0Rrkui/t9ttwJvuPi
- OOqytHPS/5+vKNMG064xaUfTudz/vys2TCLhlwedAMBWKHfTFU1s2ARwR1tb3u0D6jpEhmbkS
- U+qO7zBMA63ykrS7CXIgfczPEnDoNRPep8LqHaYvXjF2/sTTUvUfz
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 6, 2020 at 12:17 PM kernel test robot <lkp@intel.com> wrote:
+On Mon, Jul 6, 2020 at 8:59 AM Joe Perches <joe@perches.com> wrote:
+> On Mon, 2020-07-06 at 08:51 -0400, Matthew Wilcox wrote:
+> > In terms of number of lines of code using the word, it's only seventh
+> > in drivers/:
+> >
+> > $ for i in drivers/*; do c=$(find $i -type f |xargs grep slave |wc
+> > -l); echo "$c $i"; done |sort -rn |head
+> > 5218 drivers/net
+> > 1341 drivers/dma
+> > 988 drivers/i2c
+> > 695 drivers/gpu
+> > 666 drivers/soundwire
+> > 665 drivers/spi
+> > 559 drivers/w1
+> > 461 drivers/infiniband
+> > 389 drivers/media
+> > 301 drivers/scsi
 >
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   dcb7fd82c75ee2d6e6f9d8cc71c52519ed52e258
-> commit: 5456ffdee666c66e27ccc1006f9afe83ad55559f powerpc/spufs: simplify spufs core dumping
-> date:   9 weeks ago
-> config: powerpc64-randconfig-c003-20200706 (attached as .config)
-> compiler: powerpc64-linux-gcc (GCC) 9.3.0
+> I get rather different and much lower numbers
 >
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All errors (new ones prefixed by >>):
->
->    powerpc64-linux-ld: arch/powerpc/platforms/pseries/lpar.o:(.toc+0x0): undefined reference to `mmu_pid_bits'
->    powerpc64-linux-ld: arch/powerpc/platforms/cell/spufs/file.o: in function `.spufs_proxydma_info_dump':
-> >> file.c:(.text+0x4c68): undefined reference to `.dump_emit'
->    powerpc64-linux-ld: arch/powerpc/platforms/cell/spufs/file.o: in function `.spufs_dma_info_dump':
->    file.c:(.text+0x4d70): undefined reference to `.dump_emit'
->    powerpc64-linux-ld: arch/powerpc/platforms/cell/spufs/file.o: in function `.spufs_wbox_info_dump':
->    file.c:(.text+0x4df4): undefined reference to `.dump_emit'
->    powerpc64-linux-ld: arch/powerpc/platforms/cell/spufs/file.o: in function `.spufs_ibox_info_dump':
->    file.c:(.text+0x4e50): undefined reference to `.dump_emit'
->    powerpc64-linux-ld: arch/powerpc/platforms/cell/spufs/file.o: in function `.spufs_mbox_info_dump':
->    file.c:(.text+0x4eb0): undefined reference to `.dump_emit'
->    powerpc64-linux-ld: arch/powerpc/platforms/cell/spufs/file.o:file.c:(.text+0x4f10): more undefined references to `.dump_emit' follow
+> $ git grep -i -w slave drivers | \
+>   cut -f1,2 -d/ | uniq -c | sort -rn | head -20 | cat -n
 
-I'm sure there is a way to fix this properly with added complexity, either
-making dump_emit() an empty inline function when CONFIG_COREDUMP
-is disabled, or adding a lot of #ifdef checks in spufs itself.
-
-In the interest of keeping things simple, I'd suggest doing this one instead:
-
---- a/arch/powerpc/platforms/cell/Kconfig
-+++ b/arch/powerpc/platforms/cell/Kconfig
-@@ -44,6 +44,7 @@ config SPU_FS
-        tristate "SPU file system"
-        default m
-        depends on PPC_CELL
-+       depends on COREDUMP
-        select SPU_BASE
-        help
-          The SPU file system is used to access Synergistic Processing
-
-I'll send a proper patch if there are no objections.
-
-      Arnd
+That's because you're using grep -w which excludes, for example,
+slave_configure in drivers/scsi.
