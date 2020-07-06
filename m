@@ -2,120 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FBCA215734
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 14:27:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A95B021573D
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 14:29:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729122AbgGFM10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 08:27:26 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:37286 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729051AbgGFM10 (ORCPT
+        id S1729157AbgGFM2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 08:28:44 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:49610 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729141AbgGFM2n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 08:27:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594038445;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WPXvApqxqLDntBlzk8IwXZWQao6uBNHUfWsS3vG9Elo=;
-        b=hrFauHm6jgAwA1c64O6HFCdbv+1wTUG8dqMg5uwqiwl1umDOqnnaqHMeW26i1Z4HGJdnY3
-        0CMCOFym+fV0KKlsb1Wt0wvNwHSxHIIlW1nHd4aaVC69/HDFxOmjXVCpaVj9NkdzC6icqU
-        p2RZaty/I8Zy+2u+OM2dhSuq++E5w7g=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-345-NGyHy7JrNNmXy0KXnq_DCg-1; Mon, 06 Jul 2020 08:27:21 -0400
-X-MC-Unique: NGyHy7JrNNmXy0KXnq_DCg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D157A18FE871;
-        Mon,  6 Jul 2020 12:27:19 +0000 (UTC)
-Received: from krava (unknown [10.40.193.8])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 156727B410;
-        Mon,  6 Jul 2020 12:27:17 +0000 (UTC)
-Date:   Mon, 6 Jul 2020 14:27:17 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Alexey Budankov <alexey.budankov@linux.intel.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v9 09/15] perf stat: factor out event handling loop into
- dispatch_events()
-Message-ID: <20200706122717.GC3401866@krava>
-References: <a4d5db4a-f25c-38dc-1c41-321a886cb122@linux.intel.com>
- <e4ccb3e9-5f5e-36bf-4a87-dd9d7098d83b@linux.intel.com>
+        Mon, 6 Jul 2020 08:28:43 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 066C1hhb040143;
+        Mon, 6 Jul 2020 08:27:45 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 322jptmtgj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 06 Jul 2020 08:27:44 -0400
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 066C1iLG040297;
+        Mon, 6 Jul 2020 08:27:44 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 322jptmtfj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 06 Jul 2020 08:27:44 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 066CQXFi013527;
+        Mon, 6 Jul 2020 12:27:41 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma02fra.de.ibm.com with ESMTP id 322hd82ad3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 06 Jul 2020 12:27:41 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 066CRcCP33292372
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 6 Jul 2020 12:27:38 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C26D04C044;
+        Mon,  6 Jul 2020 12:27:38 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 518814C040;
+        Mon,  6 Jul 2020 12:27:37 +0000 (GMT)
+Received: from pomme.local (unknown [9.145.43.127])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon,  6 Jul 2020 12:27:37 +0000 (GMT)
+Subject: Re: [PATCH v12 00/31] Speculative page faults
+To:     Chinwen Chang <chinwen.chang@mediatek.com>,
+        Haiyan Song <haiyanx.song@intel.com>
+Cc:     akpm@linux-foundation.org, mhocko@kernel.org, peterz@infradead.org,
+        kirill@shutemov.name, ak@linux.intel.com, dave@stgolabs.net,
+        jack@suse.cz, Matthew Wilcox <willy@infradead.org>,
+        aneesh.kumar@linux.ibm.com, benh@kernel.crashing.org,
+        mpe@ellerman.id.au, paulus@samba.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, hpa@zytor.com,
+        Will Deacon <will.deacon@arm.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        sergey.senozhatsky.work@gmail.com,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        kemi.wang@intel.com, Daniel Jordan <daniel.m.jordan@oracle.com>,
+        David Rientjes <rientjes@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Ganesh Mahendran <opensource.ganesh@gmail.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Punit Agrawal <punitagrawal@gmail.com>,
+        vinayak menon <vinayakm.list@gmail.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        zhong jiang <zhongjiang@huawei.com>,
+        Balbir Singh <bsingharora@gmail.com>, sj38.park@gmail.com,
+        Michel Lespinasse <walken@google.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        haren@linux.vnet.ibm.com, npiggin@gmail.com,
+        paulmck@linux.vnet.ibm.com, Tim Chen <tim.c.chen@linux.intel.com>,
+        linuxppc-dev@lists.ozlabs.org, x86@kernel.org,
+        miles.chen@mediatek.com
+References: <20190416134522.17540-1-ldufour@linux.ibm.com>
+ <20190606065129.d5s3534p23twksgp@haiyan.sh.intel.com>
+ <3d3cefa2-0ebb-e86d-b060-7ba67c48a59f@linux.ibm.com>
+ <1c412ebe-c213-ee67-d261-c70ddcd34b79@linux.ibm.com>
+ <20190620081945.hwj6ruqddefnxg6z@haiyan.sh.intel.com>
+ <1594027500.30360.32.camel@mtkswgap22>
+From:   Laurent Dufour <ldufour@linux.ibm.com>
+Message-ID: <490c0811-50cd-0802-2cbc-9c031ef309f6@linux.ibm.com>
+Date:   Mon, 6 Jul 2020 14:27:36 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e4ccb3e9-5f5e-36bf-4a87-dd9d7098d83b@linux.intel.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <1594027500.30360.32.camel@mtkswgap22>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-06_09:2020-07-06,2020-07-06 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 clxscore=1011
+ mlxlogscore=999 bulkscore=0 impostorscore=0 phishscore=0 mlxscore=0
+ spamscore=0 suspectscore=0 lowpriorityscore=0 priorityscore=1501
+ cotscore=-2147483648 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2007060090
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 03, 2020 at 10:46:15AM +0300, Alexey Budankov wrote:
+Le 06/07/2020 à 11:25, Chinwen Chang a écrit :
+> On Thu, 2019-06-20 at 16:19 +0800, Haiyan Song wrote:
+>> Hi Laurent,
+>>
+>> I downloaded your script and run it on Intel 2s skylake platform with spf-v12 patch
+>> serials.
+>>
+>> Here attached the output results of this script.
+>>
+>> The following comparison result is statistics from the script outputs.
+>>
+>> a). Enable THP
+>>                                              SPF_0          change       SPF_1
+>> will-it-scale.page_fault2.per_thread_ops    2664190.8      -11.7%       2353637.6
+>> will-it-scale.page_fault3.per_thread_ops    4480027.2      -14.7%       3819331.9
+>>
+>>
+>> b). Disable THP
+>>                                              SPF_0           change      SPF_1
+>> will-it-scale.page_fault2.per_thread_ops    2653260.7       -10%        2385165.8
+>> will-it-scale.page_fault3.per_thread_ops    4436330.1       -12.4%      3886734.2
+>>
+>>
+>> Thanks,
+>> Haiyan Song
+>>
+>>
+>> On Fri, Jun 14, 2019 at 10:44:47AM +0200, Laurent Dufour wrote:
+>>> Le 14/06/2019 à 10:37, Laurent Dufour a écrit :
+>>>> Please find attached the script I run to get these numbers.
+>>>> This would be nice if you could give it a try on your victim node and share the result.
+>>>
+>>> Sounds that the Intel mail fitering system doesn't like the attached shell script.
+>>> Please find it there: https://gist.github.com/ldu4/a5cc1a93f293108ea387d43d5d5e7f44
+>>>
+>>> Thanks,
+>>> Laurent.
+>>>
 > 
-> Consolidate event dispatching loops for fork, attach and system
-> wide monitoring use cases into common dispatch_events() function.
+> Hi Laurent,
 > 
-> Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
-> ---
->  tools/perf/builtin-stat.c | 42 +++++++++++++++++++++++++--------------
->  1 file changed, 27 insertions(+), 15 deletions(-)
+> We merged SPF v11 and some patches from v12 into our platforms. After
+> several experiments, we observed SPF has obvious improvements on the
+> launch time of applications, especially for those high-TLP ones,
 > 
-> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-> index 3e11f854ffc8..723f1fe27d63 100644
-> --- a/tools/perf/builtin-stat.c
-> +++ b/tools/perf/builtin-stat.c
-> @@ -550,6 +550,30 @@ static bool is_target_alive(struct target *_target,
->  	return false;
->  }
->  
-> +static int dispatch_events(bool forks, int timeout, int interval, int *times, struct timespec *ts)
-> +{
-> +	bool stop = false;
-> +	int child_exited = 0, status = 0;
-> +
-> +	while (1) {
-> +		if (forks)
-> +			child_exited = waitpid(child_pid, &status, WNOHANG);
-> +		else
-> +			child_exited = !is_target_alive(&target, evsel_list->core.threads) ? 1 : 0;
-> +
-> +		if (done || stop || child_exited)
-> +			break;
+> # launch time of applications(s):
+> 
+> package           version      w/ SPF      w/o SPF      improve(%)
+> ------------------------------------------------------------------
+> Baidu maps        10.13.3      0.887       0.98         9.49
+> Taobao            8.4.0.35     1.227       1.293        5.10
+> Meituan           9.12.401     1.107       1.543        28.26
+> WeChat            7.0.3        2.353       2.68         12.20
+> Honor of Kings    1.43.1.6     6.63        6.713        1.24
 
-can (done || stop) be in the while condition and
-we'd check just child_exited in here?
+That's great news, thanks for reporting this!
 
-> +
-> +		nanosleep(ts, NULL);
-> +		if (timeout)
-> +			stop = true;
+> 
+> By the way, we have verified our platforms with those patches and
+> achieved the goal of mass production.
 
-can we just break out in here? like the original code?
-I don't think we need the extra iteration
+Another good news!
+For my information, what is your targeted hardware?
 
-> +		else
-> +			stop = handle_interval(interval, times);
-
-same here..?
-
-
-thanks,
-jirka
-
-
-> +	}
-> +
-> +	return status;
-> +}
-> +
-
-SNIP
+Cheers,
+Laurent.
 
