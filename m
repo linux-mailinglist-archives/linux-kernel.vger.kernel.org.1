@@ -2,142 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFC042156B3
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 13:50:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F061D2156C6
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 13:53:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728961AbgGFLur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 07:50:47 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:26193 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728264AbgGFLur (ORCPT
+        id S1729049AbgGFLxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 07:53:25 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:54675 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728945AbgGFLxZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 07:50:47 -0400
-X-UUID: b63b5d4ad2d545fcba1674c27f637cfd-20200706
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=HgGv5GllBCIs4pALjjuZNyjAbCUoNT8X/DWFg7aCCeA=;
-        b=Eil/MUly95lLDMnUXY6cJGmJ9v+WJe2uvQQN7gcFfyqstVDuYD+PjeTB7HilE89J8pWTFWOlTXsj/+H3m0J71jPnn5DXNl+f+1MlUb3nPsVePUJPq9DJAurk2YQPH7fCg9tfH80WJtGOIolwnQUjWV8rSDiJiZJRyJa0Mgp8E94=;
-X-UUID: b63b5d4ad2d545fcba1674c27f637cfd-20200706
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
-        (envelope-from <walter-zh.wu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 776962270; Mon, 06 Jul 2020 19:50:43 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 6 Jul 2020 19:50:37 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 6 Jul 2020 19:50:38 +0800
-From:   Walter Wu <walter-zh.wu@mediatek.com>
-To:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     <kasan-dev@googlegroups.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        wsd_upstream <wsd_upstream@mediatek.com>,
-        <linux-mediatek@lists.infradead.org>,
-        Walter Wu <walter-zh.wu@mediatek.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH v3] kasan: fix KASAN unit tests for tag-based KASAN
-Date:   Mon, 6 Jul 2020 19:50:39 +0800
-Message-ID: <20200706115039.16750-1-walter-zh.wu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: 2696D56F8A745539E46ABFD94ABC60186801271EB9B4EF448FB11D58BE36061F2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+        Mon, 6 Jul 2020 07:53:25 -0400
+Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20200706115321epoutp031b11f6797596bb9140452bfaeea91262~fJ6l66Gef1566215662epoutp03e
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Jul 2020 11:53:21 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20200706115321epoutp031b11f6797596bb9140452bfaeea91262~fJ6l66Gef1566215662epoutp03e
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1594036402;
+        bh=YWg4luROLP4xBfYG4qczq7X6qEYCnDiWFsPOOppQygw=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=CoLuSu+Iat8YGHYQl9Z7e8HOUhi39FwXRvzXs+ldki0N8IgxaVmD2ck7SX2i3+CKa
+         XFFTM9c3JafdNcrSDkgU+RXP3T7OQTXpyeT/0bXaHWzT043U/dc7WfpEDfVLsk7sdy
+         Zw3G/33/0PmSJXiVKfnSWoeRHE6RagWJdYZDdWwQ=
+Received: from epsmges5p2new.samsung.com (unknown [182.195.42.74]) by
+        epcas5p4.samsung.com (KnoxPortal) with ESMTP id
+        20200706115321epcas5p491b6d727c6a794a976ed928f07e07263~fJ6lBgaDw2065120651epcas5p4F;
+        Mon,  6 Jul 2020 11:53:21 +0000 (GMT)
+X-AuditID: b6c32a4a-4cbff700000025e7-ba-5f0310b00d30
+Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
+        epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        D5.18.09703.0B0130F5; Mon,  6 Jul 2020 20:53:20 +0900 (KST)
+Mime-Version: 1.0
+Subject: RE: [PATCH] fs: fat: add check for dir size in fat_calc_dir_size
+Reply-To: anupam.al@samsung.com
+From:   Anupam Aggarwal <anupam.al@samsung.com>
+To:     OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+CC:     AMIT SAHRAWAT <a.sahrawat@samsung.com>,
+        VIVEK TRIVEDI <t.vivek@samsung.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <87zh8gct29.fsf@mail.parknet.co.jp>
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20200706115303epcms5p262a630cd1517632c48e4f72a68d98b0c@epcms5p2>
+Date:   Mon, 06 Jul 2020 17:23:03 +0530
+X-CMS-MailID: 20200706115303epcms5p262a630cd1517632c48e4f72a68d98b0c
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrOIsWRmVeSWpSXmKPExsWy7bCmhu4GAeZ4g3dTLC0u7k61mD53A4vF
+        5V1z2Cxe9m1kc2DxuP820aNvyypGj8+b5AKYo7hsUlJzMstSi/TtErgytv96zlSwUbziSfNi
+        pgbGFuEuRk4OCQETia1r5jJ3MXJxCAnsZpR492whkMPBwSsgKPF3B1iNsICnxL9T+1hAbCEB
+        eYnvCz4xQ8T1JRac7mEDsdkEdCXmvpjNCmKLCBhIPFx+hA1kJrPAJEaJndMfskEs45WY0f6U
+        BcKWlti+fCsjiM0J1HBhzweoGlGJm6vfssPY74/NZ4SwRSRa751lhrAFJR783A0Vl5E4sW4N
+        I8gyCYF+RolnH1uZIJwZjBJX1zyG2mYusXvDPDCbV8BXYtb9ZjCbRUBVYsPWJqhJLhL3Zk0D
+        izMDvbn97RxwSDALaEqs36UPUSIrMfXUOiaIEj6J3t9PmGAe2zEPxlaWmHrtNSuELSnxuLMV
+        6mgPicmbp7JDQvoks8Siux8YJzAqzEIE9iwkm2chbF7AyLyKUTK1oDg3PbXYtMAoL7Vcrzgx
+        t7g0L10vOT93EyM4bWh57WB8+OCD3iFGJg7GQ4wSHMxKIry92ozxQrwpiZVVqUX58UWlOanF
+        hxilOViUxHmVfpyJExJITyxJzU5NLUgtgskycXBKNTBNUmxd/SVEZP1BnZNfuhmmSLaK6Hon
+        8rPK3/MT33D4ArOIZPe1c7s3+Z9ZZavqzxTwbBGv/9sbal19OeeP5MZVzyu/fqbxfFuAmtGM
+        oy6xzzTfxHMbHBHJ8EzZfnHHPfelfME7fpbkqzx4eWmuAAPb0Z4rhuL7+L1+xq59dWvdJv6J
+        Ugb59Q+WqHu/Ka9KmdnjXjRh+/ry7h/rprD59/I5GMcf4tn8v2ifx7ZNZqxdkt9/rPBP+CsQ
+        e1ThtZS7qL/nPFf/t48ede4vm7flbO59l11Ppny1/rl0NwPDLRvPXbFTdsV/m7jBSIqJI/5q
+        MPe0GX0h9eve7Wyawrhuaa51Xvy8otdO04v/8b3x12BUYinOSDTUYi4qTgQAXp0twooDAAA=
+X-CMS-RootMailID: 20200629110320epcas5p34ccccc7c293f077b34b350935c328215
+References: <87zh8gct29.fsf@mail.parknet.co.jp>
+        <20200630170748epcms5p87fa9b4348c1448d2d5a5f6cdddbc021e@epcms5p8>
+        <875zb8o6zh.fsf@mail.parknet.co.jp> <87ftacolpf.fsf@mail.parknet.co.jp>
+        <1593428559-13920-1-git-send-email-anupam.al@samsung.com>
+        <20200630123355epcms5p602efe0e4ceedcfe11eae2153c8466678@epcms5p6>
+        <20200703142939epcms5p1440ec65f7e8a3e4741ade2496135d747@epcms5p1>
+        <CGME20200629110320epcas5p34ccccc7c293f077b34b350935c328215@epcms5p2>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-V2UgdXNlIHRhZy1iYXNlZCBLQVNBTiwgdGhlbiBLQVNBTiB1bml0IHRlc3RzIGRvbid0IGRldGVj
-dCBvdXQtb2YtYm91bmRzDQptZW1vcnkgYWNjZXNzLiBUaGV5IG5lZWQgdG8gYmUgZml4ZWQuDQoN
-CldpdGggdGFnLWJhc2VkIEtBU0FOLCB0aGUgc3RhdGUgb2YgZWFjaCAxNiBhbGlnbmVkIGJ5dGVz
-IG9mIG1lbW9yeSBpcw0KZW5jb2RlZCBpbiBvbmUgc2hhZG93IGJ5dGUgYW5kIHRoZSBzaGFkb3cg
-dmFsdWUgaXMgdGFnIG9mIHBvaW50ZXIsIHNvDQp3ZSBuZWVkIHRvIHJlYWQgbmV4dCBzaGFkb3cg
-Ynl0ZSwgdGhlIHNoYWRvdyB2YWx1ZSBpcyBub3QgZXF1YWwgdG8gdGFnDQp2YWx1ZSBvZiBwb2lu
-dGVyLCBzbyB0aGF0IHRhZy1iYXNlZCBLQVNBTiB3aWxsIGRldGVjdCBvdXQtb2YtYm91bmRzDQpt
-ZW1vcnkgYWNjZXNzLg0KDQpTaWduZWQtb2ZmLWJ5OiBXYWx0ZXIgV3UgPHdhbHRlci16aC53dUBt
-ZWRpYXRlay5jb20+DQpTdWdnZXN0ZWQtYnk6IERtaXRyeSBWeXVrb3YgPGR2eXVrb3ZAZ29vZ2xl
-LmNvbT4NCkNjOiBBbmRyZXkgUnlhYmluaW4gPGFyeWFiaW5pbkB2aXJ0dW96em8uY29tPg0KQ2M6
-IERtaXRyeSBWeXVrb3YgPGR2eXVrb3ZAZ29vZ2xlLmNvbT4NCkNjOiBBbGV4YW5kZXIgUG90YXBl
-bmtvIDxnbGlkZXJAZ29vZ2xlLmNvbT4NCkNjOiBNYXR0aGlhcyBCcnVnZ2VyIDxtYXR0aGlhcy5i
-Z2dAZ21haWwuY29tPg0KQ2M6IEFuZHJleSBLb25vdmFsb3YgPGFuZHJleWtudmxAZ29vZ2xlLmNv
-bT4NCkNjOiBBbmRyZXcgTW9ydG9uIDxha3BtQGxpbnV4LWZvdW5kYXRpb24ub3JnPg0KLS0tDQoN
-CmNoYW5nZXMgc2luY2UgdjE6DQotIFJlZHVjZSBhbW91bnQgb2Ygbm9uLWNvbXBpbGVkIGNvZGUu
-DQotIEtVbml0LUtBU0FOIEludGVncmF0aW9uIHBhdGNoc2V0IGlzIG5vdCBtZXJnZWQgeWV0LiBN
-eSBwYXRjaCBzaG91bGQNCiAgaGF2ZSBjb25mbGljdCB3aXRoIGl0LCBpZiBuZWVkZWQsIHdlIGNh
-biBjb250aW51ZSB0byB3YWl0IGl0Lg0KDQpjaGFuZ2VzIHNpbmNlIHYyOg0KLSBBZGQgb25lIG1h
-cmNvIHRvIG1ha2UgdW5pdCB0ZXN0cyBtb3JlIHJlYWRhYmlsaXR5Lg0KDQotLS0NCiBsaWIvdGVz
-dF9rYXNhbi5jIHwgNDcgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0t
-LS0tLS0NCiAxIGZpbGUgY2hhbmdlZCwgMzAgaW5zZXJ0aW9ucygrKSwgMTcgZGVsZXRpb25zKC0p
-DQoNCmRpZmYgLS1naXQgYS9saWIvdGVzdF9rYXNhbi5jIGIvbGliL3Rlc3Rfa2FzYW4uYw0KaW5k
-ZXggZTMwODdkOTBlMDBkLi5iNTA0OWE4MDdlMjUgMTAwNjQ0DQotLS0gYS9saWIvdGVzdF9rYXNh
-bi5jDQorKysgYi9saWIvdGVzdF9rYXNhbi5jDQpAQCAtMjMsNiArMjMsOCBAQA0KIA0KICNpbmNs
-dWRlIDxhc20vcGFnZS5oPg0KIA0KKyNkZWZpbmUgT09CX1RBR19PRkYgKElTX0VOQUJMRUQoQ09O
-RklHX0tBU0FOX0dFTkVSSUMpID8gMCA6IDEzKQ0KKw0KIC8qDQogICogTm90ZTogdGVzdCBmdW5j
-dGlvbnMgYXJlIG1hcmtlZCBub2lubGluZSBzbyB0aGF0IHRoZWlyIG5hbWVzIGFwcGVhciBpbg0K
-ICAqIHJlcG9ydHMuDQpAQCAtNDAsNyArNDIsOCBAQCBzdGF0aWMgbm9pbmxpbmUgdm9pZCBfX2lu
-aXQga21hbGxvY19vb2JfcmlnaHQodm9pZCkNCiAJCXJldHVybjsNCiAJfQ0KIA0KLQlwdHJbc2l6
-ZV0gPSAneCc7DQorCXB0cltzaXplICsgT09CX1RBR19PRkZdID0gJ3gnOw0KKw0KIAlrZnJlZShw
-dHIpOw0KIH0NCiANCkBAIC05Miw3ICs5NSw4IEBAIHN0YXRpYyBub2lubGluZSB2b2lkIF9faW5p
-dCBrbWFsbG9jX3BhZ2VhbGxvY19vb2JfcmlnaHQodm9pZCkNCiAJCXJldHVybjsNCiAJfQ0KIA0K
-LQlwdHJbc2l6ZV0gPSAwOw0KKwlwdHJbc2l6ZSArIE9PQl9UQUdfT0ZGXSA9IDA7DQorDQogCWtm
-cmVlKHB0cik7DQogfQ0KIA0KQEAgLTE2Miw3ICsxNjYsOCBAQCBzdGF0aWMgbm9pbmxpbmUgdm9p
-ZCBfX2luaXQga21hbGxvY19vb2Jfa3JlYWxsb2NfbW9yZSh2b2lkKQ0KIAkJcmV0dXJuOw0KIAl9
-DQogDQotCXB0cjJbc2l6ZTJdID0gJ3gnOw0KKwlwdHIyW3NpemUyICsgT09CX1RBR19PRkZdID0g
-J3gnOw0KKw0KIAlrZnJlZShwdHIyKTsNCiB9DQogDQpAQCAtMTgwLDcgKzE4NSw5IEBAIHN0YXRp
-YyBub2lubGluZSB2b2lkIF9faW5pdCBrbWFsbG9jX29vYl9rcmVhbGxvY19sZXNzKHZvaWQpDQog
-CQlrZnJlZShwdHIxKTsNCiAJCXJldHVybjsNCiAJfQ0KLQlwdHIyW3NpemUyXSA9ICd4JzsNCisN
-CisJcHRyMltzaXplMiArIE9PQl9UQUdfT0ZGXSA9ICd4JzsNCisNCiAJa2ZyZWUocHRyMik7DQog
-fQ0KIA0KQEAgLTIxNiw3ICsyMjMsOCBAQCBzdGF0aWMgbm9pbmxpbmUgdm9pZCBfX2luaXQga21h
-bGxvY19vb2JfbWVtc2V0XzIodm9pZCkNCiAJCXJldHVybjsNCiAJfQ0KIA0KLQltZW1zZXQocHRy
-KzcsIDAsIDIpOw0KKwltZW1zZXQocHRyICsgNyArIE9PQl9UQUdfT0ZGLCAwLCAyKTsNCisNCiAJ
-a2ZyZWUocHRyKTsNCiB9DQogDQpAQCAtMjMyLDcgKzI0MCw4IEBAIHN0YXRpYyBub2lubGluZSB2
-b2lkIF9faW5pdCBrbWFsbG9jX29vYl9tZW1zZXRfNCh2b2lkKQ0KIAkJcmV0dXJuOw0KIAl9DQog
-DQotCW1lbXNldChwdHIrNSwgMCwgNCk7DQorCW1lbXNldChwdHIgKyA1ICsgT09CX1RBR19PRkYs
-IDAsIDQpOw0KKw0KIAlrZnJlZShwdHIpOw0KIH0NCiANCkBAIC0yNDksNyArMjU4LDggQEAgc3Rh
-dGljIG5vaW5saW5lIHZvaWQgX19pbml0IGttYWxsb2Nfb29iX21lbXNldF84KHZvaWQpDQogCQly
-ZXR1cm47DQogCX0NCiANCi0JbWVtc2V0KHB0cisxLCAwLCA4KTsNCisJbWVtc2V0KHB0ciArIDEg
-KyBPT0JfVEFHX09GRiwgMCwgOCk7DQorDQogCWtmcmVlKHB0cik7DQogfQ0KIA0KQEAgLTI2NSw3
-ICsyNzUsOCBAQCBzdGF0aWMgbm9pbmxpbmUgdm9pZCBfX2luaXQga21hbGxvY19vb2JfbWVtc2V0
-XzE2KHZvaWQpDQogCQlyZXR1cm47DQogCX0NCiANCi0JbWVtc2V0KHB0cisxLCAwLCAxNik7DQor
-CW1lbXNldChwdHIgKyAxICsgT09CX1RBR19PRkYsIDAsIDE2KTsNCisNCiAJa2ZyZWUocHRyKTsN
-CiB9DQogDQpAQCAtMjgxLDcgKzI5Miw4IEBAIHN0YXRpYyBub2lubGluZSB2b2lkIF9faW5pdCBr
-bWFsbG9jX29vYl9pbl9tZW1zZXQodm9pZCkNCiAJCXJldHVybjsNCiAJfQ0KIA0KLQltZW1zZXQo
-cHRyLCAwLCBzaXplKzUpOw0KKwltZW1zZXQocHRyLCAwLCBzaXplICsgNSArIE9PQl9UQUdfT0ZG
-KTsNCisNCiAJa2ZyZWUocHRyKTsNCiB9DQogDQpAQCAtNDE1LDcgKzQyNyw4IEBAIHN0YXRpYyBu
-b2lubGluZSB2b2lkIF9faW5pdCBrbWVtX2NhY2hlX29vYih2b2lkKQ0KIAkJcmV0dXJuOw0KIAl9
-DQogDQotCSpwID0gcFtzaXplXTsNCisJKnAgPSBwW3NpemUgKyBPT0JfVEFHX09GRl07DQorDQog
-CWttZW1fY2FjaGVfZnJlZShjYWNoZSwgcCk7DQogCWttZW1fY2FjaGVfZGVzdHJveShjYWNoZSk7
-DQogfQ0KQEAgLTUxMiwyNSArNTI1LDI1IEBAIHN0YXRpYyBub2lubGluZSB2b2lkIF9faW5pdCBj
-b3B5X3VzZXJfdGVzdCh2b2lkKQ0KIAl9DQogDQogCXByX2luZm8oIm91dC1vZi1ib3VuZHMgaW4g
-Y29weV9mcm9tX3VzZXIoKVxuIik7DQotCXVudXNlZCA9IGNvcHlfZnJvbV91c2VyKGttZW0sIHVz
-ZXJtZW0sIHNpemUgKyAxKTsNCisJdW51c2VkID0gY29weV9mcm9tX3VzZXIoa21lbSwgdXNlcm1l
-bSwgc2l6ZSArIDEgKyBPT0JfVEFHX09GRik7DQogDQogCXByX2luZm8oIm91dC1vZi1ib3VuZHMg
-aW4gY29weV90b191c2VyKClcbiIpOw0KLQl1bnVzZWQgPSBjb3B5X3RvX3VzZXIodXNlcm1lbSwg
-a21lbSwgc2l6ZSArIDEpOw0KKwl1bnVzZWQgPSBjb3B5X3RvX3VzZXIodXNlcm1lbSwga21lbSwg
-c2l6ZSArIDEgKyBPT0JfVEFHX09GRik7DQogDQogCXByX2luZm8oIm91dC1vZi1ib3VuZHMgaW4g
-X19jb3B5X2Zyb21fdXNlcigpXG4iKTsNCi0JdW51c2VkID0gX19jb3B5X2Zyb21fdXNlcihrbWVt
-LCB1c2VybWVtLCBzaXplICsgMSk7DQorCXVudXNlZCA9IF9fY29weV9mcm9tX3VzZXIoa21lbSwg
-dXNlcm1lbSwgc2l6ZSArIDEgKyBPT0JfVEFHX09GRik7DQogDQogCXByX2luZm8oIm91dC1vZi1i
-b3VuZHMgaW4gX19jb3B5X3RvX3VzZXIoKVxuIik7DQotCXVudXNlZCA9IF9fY29weV90b191c2Vy
-KHVzZXJtZW0sIGttZW0sIHNpemUgKyAxKTsNCisJdW51c2VkID0gX19jb3B5X3RvX3VzZXIodXNl
-cm1lbSwga21lbSwgc2l6ZSArIDEgKyBPT0JfVEFHX09GRik7DQogDQogCXByX2luZm8oIm91dC1v
-Zi1ib3VuZHMgaW4gX19jb3B5X2Zyb21fdXNlcl9pbmF0b21pYygpXG4iKTsNCi0JdW51c2VkID0g
-X19jb3B5X2Zyb21fdXNlcl9pbmF0b21pYyhrbWVtLCB1c2VybWVtLCBzaXplICsgMSk7DQorCXVu
-dXNlZCA9IF9fY29weV9mcm9tX3VzZXJfaW5hdG9taWMoa21lbSwgdXNlcm1lbSwgc2l6ZSArIDEg
-KyBPT0JfVEFHX09GRik7DQogDQogCXByX2luZm8oIm91dC1vZi1ib3VuZHMgaW4gX19jb3B5X3Rv
-X3VzZXJfaW5hdG9taWMoKVxuIik7DQotCXVudXNlZCA9IF9fY29weV90b191c2VyX2luYXRvbWlj
-KHVzZXJtZW0sIGttZW0sIHNpemUgKyAxKTsNCisJdW51c2VkID0gX19jb3B5X3RvX3VzZXJfaW5h
-dG9taWModXNlcm1lbSwga21lbSwgc2l6ZSArIDEgKyBPT0JfVEFHX09GRik7DQogDQogCXByX2lu
-Zm8oIm91dC1vZi1ib3VuZHMgaW4gc3RybmNweV9mcm9tX3VzZXIoKVxuIik7DQotCXVudXNlZCA9
-IHN0cm5jcHlfZnJvbV91c2VyKGttZW0sIHVzZXJtZW0sIHNpemUgKyAxKTsNCisJdW51c2VkID0g
-c3RybmNweV9mcm9tX3VzZXIoa21lbSwgdXNlcm1lbSwgc2l6ZSArIDEgKyBPT0JfVEFHX09GRik7
-DQogDQogCXZtX211bm1hcCgodW5zaWduZWQgbG9uZyl1c2VybWVtLCBQQUdFX1NJWkUpOw0KIAlr
-ZnJlZShrbWVtKTsNCi0tIA0KMi4xOC4wDQo=
+Hi Ogawa,
 
+>Anyway, fsck would be main way. And on other hand, if we want to add
+>mitigation for corruption, we would have to see much more details of
+>this corruption.  Can you put somewhere to access the corrupted image
+>(need the only metadata) to reproduce?
+
+Sorry, uploading of any file not allowed from within.
+So, metadata image is not possible to be shared via. upload.
+Can try to arrange few more logs via. fsck.
+
+>What happens if you recursively traversed directories on Windows? This
+>issue happens on Windows too?
+
+After connecting USB to windows 10, when corrupted dir(\CorruptedDIR) is browsed,
+it shows 2623 number of files and directories, without delay.
+Name and timestamps of those file/directories are garbage values.
+
+Further if we browse these sub-directories and open files of corrupted dir(\CorruptedDIR)
+following popups are coming on Windows 10:
+1. The filename, directory name, or volume label syntax is incorrect
+2. Specified path does not exist. Check the path and try again
+
+So issue of un-ending browsing(ls -lR) of corrupted USB is not coming on windows 10,
+it lists limited number of files/directories, of corrupted dir(\CorruptedDIR) without delay.
+
+>BTW, if you run fsck, the corrupted directories and issue are gone at
+>least?
+
+Yes, issues are gone, after running "chkdsk /f" on USB, on Windows 10 PC,
+corrupted directory(\CorruptedDIR) is converted to file of 1.06 GB,
+so issues are not coming further.
+Following is the output of chkdsk write only mode.
+
+--------------------------------------------------------------------------------------
+
+chkdsk /f e:
+The type of the file system is FAT32.
+Volume AAA created 12/28/2018 3:15 PM
+Volume Serial Number is 1606-72DC
+Windows is verifying files and folders...
+The \$TXRAJNL.DAT entry contains a nonvalid link.
+The size of the \$TXRAJNL.DAT entry is not valid.
+Unrecoverable error in folder \CorruptedDIR.
+Convert folder to file (Y/N)? Y
+\DDD\file.txt is cross-linked on allocation unit 736512.
+Cross link resolved by copying.
+\BBB\file1.txt is cross-linked on allocation unit 433153.
+Cross link resolved by copying.
+\System Volume Information\LightningSand.CFD is cross-linked on allocation unit 1114114.
+Cross link resolved by copying.
+\CCC\file1.txt is cross-linked on allocation unit 179989.
+Cross link resolved by copying.
+File and folder verification is complete.
+Convert lost chains to files (Y/N)? Y
+3531520 KB in 31 recovered files.
+
+Windows has made corrections to the file system.
+No further action is required.
+   30,015,472 KB total disk space.
+          400 KB in 2 hidden files.
+        2,816 KB in 49 folders.
+   23,470,800 KB in 7,616 files.
+    6,539,408 KB are available.
+
+       16,384 bytes in each allocation unit.
+    1,875,967 total allocation units on disk.
+      408,713 allocation units available on disk.
+
+--------------------------------------------------------------------------------------
+
+Thanks,
+Anupam
