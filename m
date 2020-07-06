@@ -2,121 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5BC52156AD
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 13:47:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BBF72156BA
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 13:52:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729015AbgGFLrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 07:47:14 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:50705 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728845AbgGFLrO (ORCPT
+        id S1728996AbgGFLwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 07:52:31 -0400
+Received: from lb2-smtp-cloud7.xs4all.net ([194.109.24.28]:41455 "EHLO
+        lb2-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728414AbgGFLwa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 07:47:14 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 846375803CA;
-        Mon,  6 Jul 2020 07:47:12 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Mon, 06 Jul 2020 07:47:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:content-transfer-encoding:in-reply-to; s=fm3; bh=2
-        j5XHM8eiIAtdQDxQdQP6yCaAAsGGZ2pUNXQED85J7g=; b=Zzs66ifjtoAR5TI2a
-        tCf7OIEx92ai/QD7cSp0uedZvsK8UTWbCHjYxNr/z36PyKgM1pctOeTGulfGFUsM
-        91YgsL7gY0B+On1Rgpc3N+37WpUA6Qb8BZUOCgde0ik0vXiD7kWot0VeEyQ0vknZ
-        wQBIsBuOdBAif9XmzN+JNVaAqe00F+P7q4hBI5BUYwzUfKiKUmBSjKiOGxW3lUEz
-        ArJVteF2X1ifaUbcLS198iDYVvlED8Oln13Ku5h4Qtn8XOJQk/C4LO/YgVIKvqcu
-        bzaxpi7yaFW8NeekoC3vDhgfrd7MlHOuzVLNUE2RctGUgxNcSuDlXO8chLU3JQ0E
-        vgW7A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=2j5XHM8eiIAtdQDxQdQP6yCaAAsGGZ2pUNXQED85J
-        7g=; b=SZ4cYbHKTKhaqeOfZUDYAWuZ6oY6YVQapo04+2pcJsRnP/k+si0WCkSSC
-        HIj1iQeGPdwFH9+0YSSTJ866051WiSWrrCOYau/UQowMy9hk7Ivm+QrVOA59ewiS
-        /xVZDtxhEX1ZwROmgJdrxcKOpT0KfHzwk9O3TTzKyHLDy/jUfgobWRXj6V6VFRc5
-        q1Gh3gUpyi5uj2fdNDrHX2Xp0Xn4Xz+QsPwZXn73Mb4i0NqOvrG0oWHGyMveFOse
-        8sozd7xbl1AZOF5IzHshSB64dyGcMSWO335MduOHKlkKtYk3KzC+PqlnzQTwO5om
-        Mt1Qfwv5SA9rbrIceM76Zo+c7I1CQ==
-X-ME-Sender: <xms:Pg8DX8ACshx8OXih7Tsx8To0gB270QzKuS2_NCU1p5fEf9o2R97m9Q>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudefgdeghecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggugfgjsehtqhertddttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepgfejtedtjefggfffvdetuedthedtheegheeuteekfeeghfdtteejkeeludeg
-    vddunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:Pg8DX-jHOXcfJ2sJoTl9jBNLiEym-N_hLdoBzSvpOVY4gudaPo0mBw>
-    <xmx:Pg8DX_nldB4L1GipaM69hGsaqzA7AiKazJRLfHQR_rBGczPC-Ys6Zg>
-    <xmx:Pg8DXywN0zJgmX6ntjFlltpOrwOipOZDa6Em-HoTVms3kpbDSPYJIQ>
-    <xmx:QA8DX-_QtSLuvFTsL3EvWkyB-2jqWDHQRXEhzvRph5PhJiuKwZ_yKA>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 774E830653ED;
-        Mon,  6 Jul 2020 07:47:10 -0400 (EDT)
-Date:   Mon, 6 Jul 2020 13:47:09 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Vasily Khoruzhick <anarsoul@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
-        Ondrej Jirman <megous@megous.com>
-Subject: Re: [PATCH 3/3] arm64: allwinner: a64: enable Bluetooth On Pinebook
-Message-ID: <20200706114709.l6poszepqsmg5p5r@gilmour.lan>
-References: <20200705195110.405139-1-anarsoul@gmail.com>
- <20200705195110.405139-4-anarsoul@gmail.com>
+        Mon, 6 Jul 2020 07:52:30 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id sPd3j8eCUBncFsPd6jvGUZ; Mon, 06 Jul 2020 13:52:28 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
+        t=1594036348; bh=wPbqN09DUqoq1F6TV85LI76gqa+lhk27jZ43aOotfmw=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=pt6KGDZPMi8JHPbVsMr0qe2IlMQlR/cGG9kI0wp2jVT5AGFe3FW280LMEP5HVUxkr
+         sOv7a2KzWpKuZ3wgkY2mX8qBc9ZNPPyXU+ZnR0UNyDXL/MSxVGWhNcSORItQpxGIoV
+         tXtHxZq2XaSXILwyTSFuCwsi8EDyE5HgazW7H+MKfdmUYyS1I33zMcHrjns22+STCx
+         CrqKSfQxljDD58PIfKKNkM6Pp/FOORSjzKO4wIo7U91cWfd3nrcOjYTJ4CeD4DP5+9
+         qbUrEuUVphbrpP5YJ2U1eBSFbYkfQ2z07LyeOs/ZxXzo5eJDqoSZUWsHkwwrcEt7DA
+         5gfh8nQsrNYww==
+Subject: Re: [RFC PATCH v2 11/18] media: tegra-video: Add support for external
+ sensor capture
+To:     Sowjanya Komatineni <skomatineni@nvidia.com>,
+        thierry.reding@gmail.com, jonathanh@nvidia.com, frankc@nvidia.com,
+        sakari.ailus@iki.fi, robh+dt@kernel.org, helen.koike@collabora.com
+Cc:     digetx@gmail.com, sboyd@kernel.org, gregkh@linuxfoundation.org,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-i2c@vger.kernel.org
+References: <1592358094-23459-1-git-send-email-skomatineni@nvidia.com>
+ <1592358094-23459-12-git-send-email-skomatineni@nvidia.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <0e25a523-c911-0973-65ba-49883d2383fd@xs4all.nl>
+Date:   Mon, 6 Jul 2020 13:49:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200705195110.405139-4-anarsoul@gmail.com>
+In-Reply-To: <1592358094-23459-12-git-send-email-skomatineni@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfMhGvfNQdbbFSvkix5vSPRd+I8BouJ5k7sjraltxZCW/i73BR+XvWsWG+LK/vagCGbnhHotLMqr7F12wUckqW2dDCYLI1WjfHwU6T8z58+I7/c5DSW5r
+ GsZmRBk42bFNWH4byB0XAEw258h1xft3GbFKph8J+gb/EvKy3BgizZLARAEMNkSSO+1RL9vyT137dmsk+pdPontXZVNdRYfzWfhgFNAvRNz9vUJ0OLgjkBiL
+ G0nA+IBDdLhdfZjysqQRJHZ0/VXWEc4ph+3wVmVOw5Xsi169OoU03m77VXdcA1nL5rMee0ZglYEHGYXmHuJMSPraRPPWel1PqshRUNzFaKJcqumHFbIZNuez
+ IuXF1Crcj5rQyLzirwWZu41R4AlAD70ccmumPb3K+DQeYeuABYWJXk0cmb3G0QzEG5rMVHM600wWN7jYbxFIOgsCjSmdMCR2w9IjDf5CKS4n4kN8w1xUsH/g
+ otxL1TDD7cKOw2YG9SJ+3Li/lquKUK9TWYRceMo3Kx54gzk66kIhHkb2qRPbbkV20lfzOy1+AvWCvkR5Ikf7DMjjSmGUX+dPSxwnZYtSqHNR0SsTOq6N6I8O
+ /MpQJ31ZAAYlUsE0B2t2UMHZgqWPcS1uSk/qC/P6krIqArn+P2yPxq8zG2SdxS+r2mLGG37xf4+iJrFer+yVVUDG
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Sun, Jul 05, 2020 at 12:51:10PM -0700, Vasily Khoruzhick wrote:
-> Pinebook has an RTL8723CS WiFi + BT chip, BT is connected to UART1
-> and uses PL5 as device wake GPIO, PL6 as host wake GPIO the I2C
-> controlling signals are connected to R_I2C bus.
->=20
-> Enable it in the device tree.
->=20
-> Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
+On 17/06/2020 03:41, Sowjanya Komatineni wrote:
+> This patch adds support to capture from the external sensor
+> based on device graph in the device tree.
+> 
+> Driver walks through the device graph to create media links
+> between the entities and registers and unregisters video devices
+> when the corresponding sub-devices are bound and unbound.
+> 
+> Channel formats are enumerated based on available formats from
+> the sensor and the corresponding matched formats from the Tegra
+> supported video formats list.
+> 
+> Each Tegra CSI instance can be configured as 4-lane or 2-lane
+> based on supported lane configuration from the sensor through
+> the device tree.
+> 
+> Currently this driver supports V4L2 video node centric only.
+> 
+> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
 > ---
->  .../arm64/boot/dts/allwinner/sun50i-a64-pinebook.dts | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
->=20
-> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinebook.dts b/arch=
-/arm64/boot/dts/allwinner/sun50i-a64-pinebook.dts
-> index 64b1c54f87c0..e63ff271be4e 100644
-> --- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinebook.dts
-> +++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinebook.dts
-> @@ -408,6 +408,18 @@ &uart0 {
->  	status =3D "okay";
->  };
-> =20
-> +&uart1 {
-> +	pinctrl-names =3D "default";
-> +	pinctrl-0 =3D <&uart1_pins>, <&uart1_rts_cts_pins>;
-> +	status =3D "okay";
+>  drivers/staging/media/tegra-video/Kconfig    |   1 +
+>  drivers/staging/media/tegra-video/csi.c      | 128 +++++-
+>  drivers/staging/media/tegra-video/csi.h      |   1 +
+>  drivers/staging/media/tegra-video/tegra210.c |   2 +-
+>  drivers/staging/media/tegra-video/vi.c       | 623 +++++++++++++++++++++++++--
+>  drivers/staging/media/tegra-video/vi.h       |  23 +-
+>  6 files changed, 726 insertions(+), 52 deletions(-)
+> 
 
-You probably need uart-has-rtscts here
+<snip>
 
-> +
-> +	bluetooth {
-> +		compatible =3D "realtek,rtl8723cs-bt";
-> +		device-wake-gpios =3D <&r_pio 0 5 GPIO_ACTIVE_LOW>; /* PL5 */
-> +		host-wake-gpios =3D <&r_pio 0 6 GPIO_ACTIVE_HIGH>; /* PL6 */
-> +	};
+> +static int tegra_csi_channels_alloc(struct tegra_csi *csi)
+> +{
+> +	struct device_node *node = csi->dev->of_node;
+> +	struct v4l2_fwnode_endpoint v4l2_ep = { .bus_type = 0 };
 
-And max-speed I guess?
+A bus_type value of 0 is deprecated, this should be set to a valid
+bus_type (probably V4L2_MBUS_CSI2_DPHY).
 
-Maxime
->
+Regards,
+
+	Hans
