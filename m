@@ -2,262 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD56E2157EB
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 15:01:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F3F22157F5
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 15:04:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729226AbgGFNA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 09:00:58 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:24726 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729072AbgGFNA6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 09:00:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594040455;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MRvkjhIH9FwsRMYIWgTLOYV+dlULlwA+LmeNUpAMVFc=;
-        b=dhUBIRrbE5iKvIf9p/ElWHMC38BiZ4GjUJ4HR6fZMMZZZH3jd/A68dLmx5f1yygTLSQEZk
-        6/3wg0gpwKrBssujXszzw/lf2JFOKiSLMkx4vr1eey93CFpOkqozDzCD6/WvGd+6G7VHHC
-        JDPOCOf38kQhw/CPyZAvpoGIZ5/kaUI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-26-hsuwTLzgNc-rrRJSIiJfqQ-1; Mon, 06 Jul 2020 09:00:52 -0400
-X-MC-Unique: hsuwTLzgNc-rrRJSIiJfqQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EF16C8015F9;
-        Mon,  6 Jul 2020 13:00:49 +0000 (UTC)
-Received: from [10.36.113.241] (ovpn-113-241.ams2.redhat.com [10.36.113.241])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7B8005C1B2;
-        Mon,  6 Jul 2020 13:00:46 +0000 (UTC)
-Subject: Re: [PATCH v4 02/15] iommu: Report domain nesting info
-To:     "Liu, Yi L" <yi.l.liu@intel.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "joro@8bytes.org" <joro@8bytes.org>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Tian, Jun J" <jun.j.tian@intel.com>,
-        "Sun, Yi Y" <yi.y.sun@intel.com>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "Wu, Hao" <hao.wu@intel.com>,
-        "stefanha@gmail.com" <stefanha@gmail.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <1593861989-35920-1-git-send-email-yi.l.liu@intel.com>
- <1593861989-35920-3-git-send-email-yi.l.liu@intel.com>
- <b9479f61-7f9e-e0ae-5125-ab15f59b1ece@redhat.com>
- <DM5PR11MB14352CBCB1966C0B9E418C7CC3690@DM5PR11MB1435.namprd11.prod.outlook.com>
-From:   Auger Eric <eric.auger@redhat.com>
-Message-ID: <b1d361f3-b0ca-7fef-ba31-1bdcdadea96f@redhat.com>
-Date:   Mon, 6 Jul 2020 15:00:44 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S1729210AbgGFNE0 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 6 Jul 2020 09:04:26 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2430 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729173AbgGFNEY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Jul 2020 09:04:24 -0400
+Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.107])
+        by Forcepoint Email with ESMTP id D5D78A10EBC0DE971CF6;
+        Mon,  6 Jul 2020 14:04:21 +0100 (IST)
+Received: from localhost (10.52.123.111) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 6 Jul 2020
+ 14:04:21 +0100
+Date:   Mon, 6 Jul 2020 14:03:17 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Justin He <Justin.He@arm.com>
+CC:     Catalin Marinas <Catalin.Marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Baoquan He <bhe@redhat.com>,
+        Chuhong Yuan <hslester96@gmail.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Kaly Xin <Kaly.Xin@arm.com>,
+        David Hildenbrand <david@redhat.com>
+Subject: Re: [PATCH 1/3] arm64/numa: set numa_off to false when numa node is
+ fake
+Message-ID: <20200706140317.00002f53@Huawei.com>
+In-Reply-To: <AM6PR08MB4069BCD0E17BD37CC5591C63F7690@AM6PR08MB4069.eurprd08.prod.outlook.com>
+References: <20200706011947.184166-1-justin.he@arm.com>
+        <20200706011947.184166-2-justin.he@arm.com>
+        <20200706112921.00006f7f@Huawei.com>
+        <20200706114605.000050ac@Huawei.com>
+        <AM6PR08MB4069BCD0E17BD37CC5591C63F7690@AM6PR08MB4069.eurprd08.prod.outlook.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-In-Reply-To: <DM5PR11MB14352CBCB1966C0B9E418C7CC3690@DM5PR11MB1435.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [10.52.123.111]
+X-ClientProxiedBy: lhreml717-chm.china.huawei.com (10.201.108.68) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 6 Jul 2020 12:47:51 +0000
+Justin He <Justin.He@arm.com> wrote:
 
+> Hi Jonathan, thanks for the comments.
+> 
+> > -----Original Message-----
+> > From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+> > Sent: Monday, July 6, 2020 6:46 PM
+> > To: Justin He <Justin.He@arm.com>
+> > Cc: Catalin Marinas <Catalin.Marinas@arm.com>; Will Deacon
+> > <will@kernel.org>; Andrew Morton <akpm@linux-foundation.org>; Mike
+> > Rapoport <rppt@linux.ibm.com>; Baoquan He <bhe@redhat.com>; Chuhong Yuan
+> > <hslester96@gmail.com>; linux-arm-kernel@lists.infradead.org; linux-
+> > kernel@vger.kernel.org; linux-mm@kvack.org; Kaly Xin <Kaly.Xin@arm.com>
+> > Subject: Re: [PATCH 1/3] arm64/numa: set numa_off to false when numa node
+> > is fake
+> > 
+> > On Mon, 6 Jul 2020 11:29:21 +0100
+> > Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
+> >   
+> > > On Mon, 6 Jul 2020 09:19:45 +0800
+> > > Jia He <justin.he@arm.com> wrote:
+> > >
+> > > Hi,
+> > >  
+> > > > Previously, numa_off is set to true unconditionally in  
+> > dummy_numa_init(),  
+> > > > even if there is a fake numa node.
+> > > >
+> > > > But acpi will translate node id to NUMA_NO_NODE(-1) in  
+> > acpi_map_pxm_to_node()  
+> > > > because it regards numa_off as turning off the numa node.  
+> > >
+> > > That is correct.  It is operating exactly as it should, if SRAT hasn't  
+> > been parsed  
+> > > and you are on ACPI platform there are no nodes.  They cannot be created  
+> > at  
+> > > some later date.  The dummy code doesn't change this. It just does  
+> > enough to carry  
+> > > on operating with no specified nodes.
+> > >  
+> > > >
+> > > > Without this patch, pmem can't be probed as a RAM device on arm64 if  
+> > SRAT table  
+> > > > isn't present.
+> > > >
+> > > > $ndctl create-namespace -fe namespace0.0 --mode=devdax --map=dev -s 1g  
+> > -a 64K  
+> > > > kmem dax0.0: rejecting DAX region [mem 0x240400000-0x2bfffffff] with  
+> > invalid node: -1  
+> > > > kmem: probe of dax0.0 failed with error -22
+> > > >
+> > > > This fixes it by setting numa_off to false.  
+> > >
+> > > Without the SRAT protection patch [1] you may well run into problems  
+> 
+> Sorry, doesn't quite understand here. Do you mean your [1] can resolve this
+> issue? But acpi_map_pxm_to_node() has returned with NUMA_NO_NODE after
+> following check:
+> 	if (pxm < 0 || pxm >= MAX_PXM_DOMAINS || numa_off)
+> 		return NUMA_NO_NODE;
 
-On 7/6/20 2:20 PM, Liu, Yi L wrote:
-> Hi Eric,
+The point of that patch is it will make it safe to remove the numa_off because
+any later accidental reference to a non existent node (i.e. one not defined
+in SRAT) will not blow up.
+
+It doesn't fix your original problem. What it does do, is fix the new problem case
+you introduce by removing numa_off below.  It ensures you still return NUMA_NO_NODE
+in cases which should do so (i.e. all of them if you have no SRAT and are using ACPI).
+
+Of course, you could just not remove the numa_off = true bit then you won't hit
+that condition anyway. There are plenty of other reasons for the SRAT patch though,
+it just happens to close a problem you were introducing here as well.
+
+For reference we had an AMD platform that had no SRAT, but provided _PXM for
+a few nodes in its DSDT.   That result in non booting systems.  It only affected
+x86 because ARM64 had that numa_off = true being set.  If we change the arm64 case
+without the patch to ensure the underlying problem is fixed, you are very likely to hit
+the equivalent problem. There may well be platforms out there relying on that quirk
+of what the code currently does.
+
+> Seems even with your [1] patch, it is not helpful? Thanks for clarification
+> if my understanding is wrong.
+> [1] https://patchwork.kernel.org/patch/11632063/
 > 
->> From: Auger Eric <eric.auger@redhat.com>
->> Sent: Monday, July 6, 2020 5:34 PM
->>
->> On 7/4/20 1:26 PM, Liu Yi L wrote:
->>> IOMMUs that support nesting translation needs report the capability info
->> need to report
->>> to userspace, e.g. the format of first level/stage paging structures.
->>>
->>> This patch reports nesting info by DOMAIN_ATTR_NESTING. Caller can get
->>> nesting info after setting DOMAIN_ATTR_NESTING.
->>>
->>> Cc: Kevin Tian <kevin.tian@intel.com>
->>> CC: Jacob Pan <jacob.jun.pan@linux.intel.com>
->>> Cc: Alex Williamson <alex.williamson@redhat.com>
->>> Cc: Eric Auger <eric.auger@redhat.com>
->>> Cc: Jean-Philippe Brucker <jean-philippe@linaro.org>
->>> Cc: Joerg Roedel <joro@8bytes.org>
->>> Cc: Lu Baolu <baolu.lu@linux.intel.com>
->>> Signed-off-by: Liu Yi L <yi.l.liu@intel.com>
->>> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
->>> ---
->>> v3 -> v4:
->>> *) split the SMMU driver changes to be a separate patch
->>> *) move the @addr_width and @pasid_bits from vendor specific
->>>    part to generic part.
->>> *) tweak the description for the @features field of struct
->>>    iommu_nesting_info.
->>> *) add description on the @data[] field of struct iommu_nesting_info
->>>
->>> v2 -> v3:
->>> *) remvoe cap/ecap_mask in iommu_nesting_info.
->>> *) reuse DOMAIN_ATTR_NESTING to get nesting info.
->>> *) return an empty iommu_nesting_info for SMMU drivers per Jean'
->>>    suggestion.
->>> ---
->>>  include/uapi/linux/iommu.h | 78
->> ++++++++++++++++++++++++++++++++++++++++++++++
->>>  1 file changed, 78 insertions(+)
->>>
->>> diff --git a/include/uapi/linux/iommu.h b/include/uapi/linux/iommu.h
->>> index 1afc661..1bfc032 100644
->>> --- a/include/uapi/linux/iommu.h
->>> +++ b/include/uapi/linux/iommu.h
->>> @@ -332,4 +332,82 @@ struct iommu_gpasid_bind_data {
->>>  	} vendor;
->>>  };
->>>
->>> +/*
->>> + * struct iommu_nesting_info - Information for nesting-capable IOMMU.
->>> + *				user space should check it before using
->>> + *				nesting capability.
->> alignment?
+> > > because someone somewhere will have _PXM in a DSDT but will
+> > > have a non existent SRAT.   We had this happen on an AMD platform when  
+> > we  
+> > > tried to introduce working _PXM support for PCI. [2]
+> > >
+> > > So whilst this seems superficially safe, I'd definitely be crossing your  
+> > fingers.  
+> > > Note, at that time I proposed putting the numa_off = false into the x86  
+> > code  
+> > > path precisely to cut out that possibility (was rejected at the time, at  
+> > least  
+> > > partly because the clarifications to the ACPI spec were not pubilc.)
+> > >
+> > > The patch in [1] should sort things out however by ensuring we only  
+> > create  
+> > > new domains where we should actually be doing so. However, in your case
+> > > it will return NUMA_NO_NODE anyway so this isn't the right way to fix  
+> > things.  
 > 
-> oh, yes, will do it.
+> Okay, let me try to summarize, there might be 3 possible fixing ways:
+> 1. this patch, seems it is not satisfied by you and David 😉
+> 2. my previous proposal [2], similar as what David suggested
+
+That looks like the correct approach to me as well.
+
+> 3. remove numa_off check in acpi_map_pxm_to_node()
+
+No way to that one.  The only right return value from acpi_map_pxm_to_node
+when no node is provided (always the case if you have no SRAT) is
+NUMA_NO_NODE.  Do not paper over that - fix the caller to handle
+a perfectly valid return value.
+
+Jonathan
+
+> e.g.
+> ...
+> 	if (pxm < 0 || pxm >= MAX_PXM_DOMAINS /*|| numa_off*/)
+> 		return NUMA_NO_NODE;
 > 
->>> + *
->>> + * @size:	size of the whole structure
->>> + * @format:	PASID table entry format, the same definition with
->>> + *		@format of struct iommu_gpasid_bind_data.
->> the same definition as struct iommu_gpasid_bind_data @format?
+> [2] https://lkml.org/lkml/2019/8/16/367
 > 
-> right. yours is much better.
 > 
->>> + * @features:	supported nesting features.
->>> + * @flags:	currently reserved for future extension.
->>> + * @addr_width:	The output addr width of first level/stage translation
->>> + * @pasid_bits:	Maximum supported PASID bits, 0 represents no PASID
->>> + *		support.
->>> + * @data:	vendor specific cap info. data[] structure type can be deduced
->>> + *		from @format field.
->>> + *
->>> + *
->> +===============+===================================================
->> ===+
->>> + * | feature       |  Notes                                               |
->>> + *
->> +===============+===================================================
->> ===+
->>> + * | SYSWIDE_PASID |  PASIDs are managed in system-wide, instead of per   |
->>> + * |               |  device. When a device is assigned to userspace or   |
->>> + * |               |  VM, proper uAPI (userspace driver framework uAPI,   |
->>> + * |               |  e.g. VFIO) must be used to allocate/free PASIDs for |
->>> + * |               |  the assigned device.                                |
->>> + * +---------------+------------------------------------------------------+
->>> + * | BIND_PGTBL    |  The owner of the first level/stage page table must  |
->>> + * |               |  explicitly bind the page table to associated PASID  |
->>> + * |               |  (either the one specified in bind request or the    |
->>> + * |               |  default PASID of iommu domain), through userspace   |
->>> + * |               |  driver framework uAPI (e.g. VFIO_IOMMU_NESTING_OP). |
->>> + * +---------------+------------------------------------------------------+
->>> + * | CACHE_INVLD   |  The owner of the first level/stage page table must  |
->>> + * |               |  explicitly invalidate the IOMMU cache through uAPI  |
->>> + * |               |  provided by userspace driver framework (e.g. VFIO)  |
->>> + * |               |  according to vendor-specific requirement when       |
->>> + * |               |  changing the page table.                            |
->>> + * +---------------+------------------------------------------------------+
->> Do you foresee cases where BIND_PGTBL and CACHE_INVLD shouldn't be
->> exposed as features?
+> --
+> Cheers,
+> Justin (Jia He)
 > 
-> sorry, I didn't quite get it. could you explain a little bit more. :-)
-For SYSWIDE_PASID I understand SMMU won't advertise it. But do you
-foresee any nested implementation not requesting the owner of the tables
-to bind and invalidate caches. So I understand those 2 features would
-always be supported?
-> 
->>> + *
->>> + * @data[] types defined for @format:
->>> + *
->> +================================+==================================
->> ===+
->>> + * | @format                        | @data[]                             |
->>> + *
->> +================================+==================================
->> ===+
->>> + * | IOMMU_PASID_FORMAT_INTEL_VTD   | struct iommu_nesting_info_vtd       |
->>> + * +--------------------------------+-------------------------------------+
->>> + *
->>> + */
->>> +struct iommu_nesting_info {
->>> +	__u32	size;
->>> +	__u32	format;
->>> +	__u32	features;
->>> +#define IOMMU_NESTING_FEAT_SYSWIDE_PASID	(1 << 0)
->>> +#define IOMMU_NESTING_FEAT_BIND_PGTBL		(1 << 1)
->>> +#define IOMMU_NESTING_FEAT_CACHE_INVLD		(1 << 2)
->> In other structs the values seem to be defined before the field
-> 
-> not sure. :-) I mimics the below struct from uapi/vfio.h
-Yep I noticed that afterwards. In IOMMU uapi it looks the opposite
-though. So I would alignto the style in the same file but that's not a
-big deal.
-> 
-> struct vfio_iommu_type1_dma_map {
->         __u32   argsz;
->         __u32   flags;
-> #define VFIO_DMA_MAP_FLAG_READ (1 << 0)         /* readable from device */
-> #define VFIO_DMA_MAP_FLAG_WRITE (1 << 1)        /* writable from device */
->         __u64   vaddr;                          /* Process virtual address */
->         __u64   iova;                           /* IO virtual address */
->         __u64   size;                           /* Size of mapping (bytes) */
-> };
-> 
->>> +	__u32	flags;
->>> +	__u16	addr_width;
->>> +	__u16	pasid_bits;
->>> +	__u32	padding;
->>> +	__u8	data[];
->>> +};
->>> +
->>> +/*
->>> + * struct iommu_nesting_info_vtd - Intel VT-d specific nesting info
->>> + *
->> spurious line
-> 
-> yes, will remove this line.
-> 
-> Regards,
-> Yi Liu
-> 
->>> + *
->>> + * @flags:	VT-d specific flags. Currently reserved for future
->>> + *		extension.
->>> + * @cap_reg:	Describe basic capabilities as defined in VT-d capability
->>> + *		register.
->>> + * @ecap_reg:	Describe the extended capabilities as defined in VT-d
->>> + *		extended capability register.
->>> + */
->>> +struct iommu_nesting_info_vtd {
->>> +	__u32	flags;
->>> +	__u32	padding;
->>> +	__u64	cap_reg;
->>> +	__u64	ecap_reg;
->>> +};
->>> +
->>>  #endif /* _UAPI_IOMMU_H */
->>>
->> Thanks
->>
->> Eric
 > 
 
-Thanks
-
-Eric
 
