@@ -2,109 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A71F821508F
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 02:34:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 754A9215092
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 02:45:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728261AbgGFAeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Jul 2020 20:34:31 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:38253 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728141AbgGFAeb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Jul 2020 20:34:31 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4B0RQr2G3Kz9s1x;
-        Mon,  6 Jul 2020 10:34:27 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1593995669;
-        bh=r/SuHCqQ9ReBOmjLyP5++Sq17qcsjIrCCepj9P4e96Y=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ofkTYQYRvukecFK1LtNWm4PEB142ExEwn2aPGe/OvwDRWCr2W2bb7l06s0CwU+Lhk
-         +ZMfcQNwJ9YeCq1wkdwHyC6/BpAWNQI8rU159kvcVK/vOaRrzVcicf3SOy1vnpuCoS
-         uAfu8KFYege5mAv1B6KCw2AXMp1llRfbVRMBQvaEmNc67caSp7NIc1QlkWph7lpn5I
-         K6d/N8LOnv3slN29LTBg5EuCb+IUHsERWC51p9FMErUKPeUrNuihKV77hNkhx9mc3c
-         j+2whxSE1858GulqDOBzu8InYBlkGdJfm/LNvhpaJXvVdK5mHGLTv+zHDMNOIP4h+H
-         41uniY3o108Xw==
-Date:   Mon, 6 Jul 2020 10:34:27 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: linux-next: manual merge of the jc_docs tree with the arm64 tree
-Message-ID: <20200706103427.16470171@canb.auug.org.au>
+        id S1728297AbgGFAp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Jul 2020 20:45:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42304 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728053AbgGFAp2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Jul 2020 20:45:28 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26F35C061794;
+        Sun,  5 Jul 2020 17:45:28 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id t11so11408601pfq.11;
+        Sun, 05 Jul 2020 17:45:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4OaY8bZwpJuqmoIiivxLlaUVMaXxlk23RnTZnLFJFaY=;
+        b=kd2w6hJIZW9PFP0lMor0Df7aUbziEFd/nGD0zMJOBuuWd21lAfqEipSBJb29CnzV6O
+         0IrRM13BFz+vsC6/9Zykj4l47i8zCsw6O9fnI24mxY9GAQKldLqnA/sqOBX9zfVTTLoX
+         +1s//whclybYcTOEZL22qwzGJNLYXnxCXcO7MSRysvfNpZj8/sMQRnMVXynCW99vpeo4
+         rid4eAngZ438yS4XzZlqtwOg24OmCqeVkg4rbOuqt8LUpDUEEetfvGlzCocBqDBGzkVH
+         kqSW5OdhEIKTLzddRU25moBgkZwDhh0PSHDyKHRAI9ih5RnuJbWyc2bQ0IC9nQk197dW
+         zqIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4OaY8bZwpJuqmoIiivxLlaUVMaXxlk23RnTZnLFJFaY=;
+        b=O30eYB1WvWYEsAQWTfm3c22ZrThtvLNN0FYg22tDc/jWkrJDz+BYk2bdUn7vIPlUPU
+         Mzxed0xj/YsM00ZeEmP87z+H6y2HSAKllGbHaIZCqI6ioQea9GYH8vu6usMkVQoiL+0d
+         BzxX92HkNRLo41TOWdKNxq9vArGyDGbDqNcR33Lfx5ElojRNI5U3nu8khW1+b9vsLDrd
+         KGicnx4V70fX3J4bwdWqWKBhuEdaBvrLewq5SkKlqUQZuepODRIfwOxh4F1JIfsZ7KQZ
+         DJbmp4Lts7gLd4zfjmhIQhyCL4JRRUorj3NCjHk6/uZZkaSY97NTB1MhTjKfUz3tk39h
+         zUNg==
+X-Gm-Message-State: AOAM530te4NHKJtmDB7ezckAnTvIuutIJaoSiSk4lxWTZ7pHeWepUKhZ
+        rrd09PPE1rtFdS9IYgT8q80=
+X-Google-Smtp-Source: ABdhPJwC2Hju+ZSHzN/fJl4gpu4jFAAKkvYojCNR+ygw0BPcIN7IJo5ZQ3B3US/pm4hPJWClOzW6CQ==
+X-Received: by 2002:aa7:8513:: with SMTP id v19mr34056031pfn.74.1593996327546;
+        Sun, 05 Jul 2020 17:45:27 -0700 (PDT)
+Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8880:9ae0:70cf:a866:7e6:bda8])
+        by smtp.gmail.com with ESMTPSA id u26sm17547457pfn.54.2020.07.05.17.45.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 05 Jul 2020 17:45:27 -0700 (PDT)
+From:   Xie He <xie.he.0141@gmail.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>,
+        Xie He <xie.he.0141@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-x25@vger.kernel.org
+Subject: [PATCH v2] drivers/net/wan/lapbether: Fixed the value of hard_header_len
+Date:   Sun,  5 Jul 2020 17:45:21 -0700
+Message-Id: <20200706004521.78091-1-xie.he.0141@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/oWPor8azsUeWgecAz8Ah8Kb";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/oWPor8azsUeWgecAz8Ah8Kb
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+When this driver transmits data,
+  first this driver will remove a pseudo header of 1 byte,
+  then the lapb module will prepend the LAPB header of 2 or 3 bytes,
+  then this driver will prepend a length field of 2 bytes,
+  then the underlying Ethernet device will prepend its own header.
 
-Hi all,
+So, the header length required should be:
+  -1 + 3 + 2 + "the header length needed by the underlying device".
 
-Today's linux-next merge of the jc_docs tree got a conflict in:
+This patch fixes kernel panic when this driver is used with AF_PACKET
+SOCK_DGRAM sockets.
 
-  Documentation/arm64/index.rst
+Signed-off-by: Xie He <xie.he.0141@gmail.com>
+---
+Change in v2: added a comment in the code
 
-between commit:
+ drivers/net/wan/lapbether.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-  5c5a8ac9b27b ("arm64: mte: Add Memory Tagging Extension documentation")
+diff --git a/drivers/net/wan/lapbether.c b/drivers/net/wan/lapbether.c
+index e30d91a38cfb..284832314f31 100644
+--- a/drivers/net/wan/lapbether.c
++++ b/drivers/net/wan/lapbether.c
+@@ -303,7 +303,6 @@ static void lapbeth_setup(struct net_device *dev)
+ 	dev->netdev_ops	     = &lapbeth_netdev_ops;
+ 	dev->needs_free_netdev = true;
+ 	dev->type            = ARPHRD_X25;
+-	dev->hard_header_len = 3;
+ 	dev->mtu             = 1000;
+ 	dev->addr_len        = 0;
+ }
+@@ -324,6 +323,14 @@ static int lapbeth_new_device(struct net_device *dev)
+ 	if (!ndev)
+ 		goto out;
+ 
++	/* When transmitting data:
++	 * first this driver removes a pseudo header of 1 byte,
++	 * then the lapb module prepends an LAPB header of at most 3 bytes,
++	 * then this driver prepends a length field of 2 bytes,
++	 * then the underlying Ethernet device prepends its own header.
++	 */
++	ndev->hard_header_len = -1 + 3 + 2 + dev->hard_header_len;
++
+ 	lapbeth = netdev_priv(ndev);
+ 	lapbeth->axdev = ndev;
+ 
+-- 
+2.25.1
 
-from the arm64 tree and commit:
-
-  86de78d2c5f4 ("docs: arm64: convert perf.txt to ReST format")
-
-from the jc_docs tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc Documentation/arm64/index.rst
-index 4cd0e696f064,d9665d83c53a..000000000000
---- a/Documentation/arm64/index.rst
-+++ b/Documentation/arm64/index.rst
-@@@ -14,7 -14,7 +14,8 @@@ ARM64 Architectur
-      hugetlbpage
-      legacy_instructions
-      memory
- +    memory-tagging-extension
-+     perf
-      pointer-authentication
-      silicon-errata
-      sve
-
---Sig_/oWPor8azsUeWgecAz8Ah8Kb
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8CcZMACgkQAVBC80lX
-0Gw2WAf+KSUsvNqgo13T+d0ItcRCPuOR4HuCDxna3lzPAT6zlpCuSFvf+XGuCxgj
-6ExO5vAAQFUR66BbxqRHPJ57HjnkJnp8W4R+TE9wTeEFzfQYfaku5WlTJcWcUsBX
-9jOxVdPw/11Q25b4iCn85SytV1vPEn32uATrGOh2mYl1kaIZFdqP42hsmwp5D/Gy
-FQE7kzRZ4JIJ7qvAwa+KI77Pkpj3sD6qHBBVsBlSeauR2nXNETMtV5fSxE0rLXjR
-1z4G/0o7CtDqF4Gb+VvytceRt0eiN3+hkB3VS0VdEgT3RsJWkjbcSyLDoFU/imrL
-ku0ab6aySvGOKHfnziu117qSUOr5iw==
-=kqCm
------END PGP SIGNATURE-----
-
---Sig_/oWPor8azsUeWgecAz8Ah8Kb--
