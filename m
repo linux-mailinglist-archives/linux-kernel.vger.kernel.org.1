@@ -2,170 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51CDE215E27
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 20:20:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F3CF215E34
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 20:21:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729765AbgGFSUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 14:20:01 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:62126 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729703AbgGFST7 (ORCPT
+        id S1729793AbgGFSVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 14:21:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729647AbgGFSVR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 14:19:59 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 066I24f4003185;
-        Mon, 6 Jul 2020 14:19:56 -0400
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3248udrkqy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 06 Jul 2020 14:19:56 -0400
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 066IEBZC013337;
-        Mon, 6 Jul 2020 18:19:56 GMT
-Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
-        by ppma04dal.us.ibm.com with ESMTP id 322hd8nvfn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 06 Jul 2020 18:19:56 +0000
-Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 066IJtsg36503916
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 6 Jul 2020 18:19:55 GMT
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5FA36B2066;
-        Mon,  6 Jul 2020 18:19:55 +0000 (GMT)
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4744EB2067;
-        Mon,  6 Jul 2020 18:19:55 +0000 (GMT)
-Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
-        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Mon,  6 Jul 2020 18:19:55 +0000 (GMT)
-From:   Stefan Berger <stefanb@linux.vnet.ibm.com>
-To:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jarkko.sakkinen@linux.intel.com, linux-acpi@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Cc:     Stefan Berger <stefanb@linux.ibm.com>
-Subject: [PATCH v9 2/2] tpm: Add support for event log pointer found in TPM2 ACPI table
-Date:   Mon,  6 Jul 2020 14:19:53 -0400
-Message-Id: <20200706181953.3592084-3-stefanb@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200706181953.3592084-1-stefanb@linux.vnet.ibm.com>
-References: <20200706181953.3592084-1-stefanb@linux.vnet.ibm.com>
+        Mon, 6 Jul 2020 14:21:17 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3774DC061755;
+        Mon,  6 Jul 2020 11:21:17 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id x9so33782307ila.3;
+        Mon, 06 Jul 2020 11:21:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=V0UyprzGOpJCrvSRMTeiKdKQODoWH/Ul9V8rM2fcjek=;
+        b=NQxVWHcjXotZUs9osvV8QUiCAoR4tgGZHVto/QVWnE0/gvvZ/6BbHfRgDABY5x7aRH
+         wEjq6u56xD5ttDRD+QN8gI96K4JYZ+1bTu6k3KxUAJLKV332WUUOmFkawijGXlCgzffl
+         dWChdPB+z/ZSX+AAVk7SALZYVvlJkdKBlaYOWZPzhcbIFrZ0W3d/mhZGvngoEgbDi5bO
+         1QbHKlFdAsfOeicqSqbieDFyV5R4mUNsaylwX0RbxLVQJa97thInsGJuUxMV8kCck8gb
+         d4vPb6QR+LqA+viO/qYinJH/bc/4tx8y1OMMuWMfbgO3EvKr+Ct5SuStM2TGUulxYHr9
+         3hNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=V0UyprzGOpJCrvSRMTeiKdKQODoWH/Ul9V8rM2fcjek=;
+        b=RgYcoUPvXeIgXvaC7wEbtAtNVHeh6zzTiNzPRBxhFI59GGdhlqbHizis7parSl9evI
+         yI7znxlAke+tshstovj9rHBCXXYBqvWRYA3bbv2XnxlhQ38y0UEe3KvuDpjXIlrTrN+l
+         6rCc9nRUBpJHwrtlQ3wG1kxK38KZk/eYbf2iBe8XE2JlkagyyQPhvz3Wvg2WCIO0vfkN
+         Tri9aOpRNyTPowEL4ahGAGwRdCurIGHxparNoGYWwdjjf0vF3uHrqZ0YrQ3dywgtI6/R
+         pFDA4N6jLMD/p96GzgKwFHKGy5zAmTRaEWPandUbVrfh8x+bYQghIBnQE9fVWiIxUGdG
+         G/Eg==
+X-Gm-Message-State: AOAM532xq6cJVvKVa6xJ285Y1wOhBfTbq6AhNsjRJCFiCqP8RtWeU4Br
+        rZZM0x+7fO94T0g7DOoLqZ4B1ko2Do5WZeyeF64jDA==
+X-Google-Smtp-Source: ABdhPJyoUpqQP7ExvgQg6jlWGuD67jd+pPKzAlGa3XPHsroQPCFsp38zhEGfcVb52hJVx5RhRxmhKo1NuYqZ7YP9TJs=
+X-Received: by 2002:a05:6e02:1086:: with SMTP id r6mr29456065ilj.158.1594059676475;
+ Mon, 06 Jul 2020 11:21:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-06_15:2020-07-06,2020-07-06 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
- adultscore=0 spamscore=0 lowpriorityscore=0 priorityscore=1501
- malwarescore=0 clxscore=1015 cotscore=-2147483648 mlxscore=0
- impostorscore=0 mlxlogscore=999 bulkscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2007060123
+References: <20200706180010.29032-1-puranjay12@gmail.com> <20200706121407.6c24f537@lwn.net>
+In-Reply-To: <20200706121407.6c24f537@lwn.net>
+From:   Puranjay Mohan <puranjay12@gmail.com>
+Date:   Mon, 6 Jul 2020 23:51:05 +0530
+Message-ID: <CANk7y0h0p+OjYvtFbGf-C7FeOdgf3HBtd=jVdDTHYP5eKv2uvQ@mail.gmail.com>
+Subject: Re: [PATCH] Security: Documentation: fix: `make htmldocs` warnings
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Linux Documentation List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Berger <stefanb@linux.ibm.com>
-
-In case a TPM2 is attached, search for a TPM2 ACPI table when trying
-to get the event log from ACPI. If one is found, use it to get the
-start and length of the log area. This allows non-UEFI systems, such
-as SeaBIOS, to pass an event log when using a TPM2.
-
-Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
----
- drivers/char/tpm/eventlog/acpi.c | 63 +++++++++++++++++++++-----------
- 1 file changed, 42 insertions(+), 21 deletions(-)
-
-diff --git a/drivers/char/tpm/eventlog/acpi.c b/drivers/char/tpm/eventlog/acpi.c
-index 63ada5e53f13..3633ed70f48f 100644
---- a/drivers/char/tpm/eventlog/acpi.c
-+++ b/drivers/char/tpm/eventlog/acpi.c
-@@ -49,9 +49,9 @@ int tpm_read_log_acpi(struct tpm_chip *chip)
- 	void __iomem *virt;
- 	u64 len, start;
- 	struct tpm_bios_log *log;
--
--	if (chip->flags & TPM_CHIP_FLAG_TPM2)
--		return -ENODEV;
-+	struct acpi_table_tpm2 *tbl;
-+	struct acpi_tpm2_phy *tpm2_phy;
-+	int format;
- 
- 	log = &chip->log;
- 
-@@ -61,23 +61,44 @@ int tpm_read_log_acpi(struct tpm_chip *chip)
- 	if (!chip->acpi_dev_handle)
- 		return -ENODEV;
- 
--	/* Find TCPA entry in RSDT (ACPI_LOGICAL_ADDRESSING) */
--	status = acpi_get_table(ACPI_SIG_TCPA, 1,
--				(struct acpi_table_header **)&buff);
--
--	if (ACPI_FAILURE(status))
--		return -ENODEV;
--
--	switch(buff->platform_class) {
--	case BIOS_SERVER:
--		len = buff->server.log_max_len;
--		start = buff->server.log_start_addr;
--		break;
--	case BIOS_CLIENT:
--	default:
--		len = buff->client.log_max_len;
--		start = buff->client.log_start_addr;
--		break;
-+	if (chip->flags & TPM_CHIP_FLAG_TPM2) {
-+		status = acpi_get_table("TPM2", 1,
-+					(struct acpi_table_header **)&tbl);
-+		if (ACPI_FAILURE(status))
-+			return -ENODEV;
-+
-+		if (tbl->header.length <
-+				sizeof(*tbl) + sizeof(struct acpi_tpm2_phy))
-+			return -ENODEV;
-+
-+		tpm2_phy = (void *)tbl + sizeof(*tbl);
-+		len = tpm2_phy->log_area_minimum_length;
-+
-+		start = tpm2_phy->log_area_start_address;
-+		if (!start || !len)
-+			return -ENODEV;
-+
-+		format = EFI_TCG2_EVENT_LOG_FORMAT_TCG_2;
-+	} else {
-+		/* Find TCPA entry in RSDT (ACPI_LOGICAL_ADDRESSING) */
-+		status = acpi_get_table(ACPI_SIG_TCPA, 1,
-+					(struct acpi_table_header **)&buff);
-+		if (ACPI_FAILURE(status))
-+			return -ENODEV;
-+
-+		switch (buff->platform_class) {
-+		case BIOS_SERVER:
-+			len = buff->server.log_max_len;
-+			start = buff->server.log_start_addr;
-+			break;
-+		case BIOS_CLIENT:
-+		default:
-+			len = buff->client.log_max_len;
-+			start = buff->client.log_start_addr;
-+			break;
-+		}
-+
-+		format = EFI_TCG2_EVENT_LOG_FORMAT_TCG_1_2;
- 	}
- 	if (!len) {
- 		dev_warn(&chip->dev, "%s: TCPA log area empty\n", __func__);
-@@ -98,7 +119,7 @@ int tpm_read_log_acpi(struct tpm_chip *chip)
- 	memcpy_fromio(log->bios_event_log, virt, len);
- 
- 	acpi_os_unmap_iomem(virt, len);
--	return EFI_TCG2_EVENT_LOG_FORMAT_TCG_1_2;
-+	return format;
- 
- err:
- 	kfree(log->bios_event_log);
--- 
-2.26.2
-
+On Mon, Jul 6, 2020 at 11:44 PM Jonathan Corbet <corbet@lwn.net> wrote:
+>
+> On Mon,  6 Jul 2020 23:30:10 +0530
+> Puranjay Mohan <puranjay12@gmail.com> wrote:
+>
+> > Remove extra ')' after function name to fix warnings.
+> > It solves following warning :
+> > WARNING: Unparseable C cross-reference: 'groups_sort)'
+> > Invalid C declaration: Expected end of definition. [error at 11]
+> >
+> > Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+> > ---
+> >  Documentation/security/credentials.rst | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/Documentation/security/credentials.rst b/Documentation/security/credentials.rst
+> > index 282e79feee6a..d51e42b92395 100644
+> > --- a/Documentation/security/credentials.rst
+> > +++ b/Documentation/security/credentials.rst
+> > @@ -455,7 +455,7 @@ When replacing the group list, the new list must be sorted before it
+> >  is added to the credential, as a binary search is used to test for
+> >  membership.  In practice, this means :c:func:`groups_sort` should be
+> >  called before :c:func:`set_groups` or :c:func:`set_current_groups`.
+> > -:c:func:`groups_sort)` must not be called on a ``struct group_list`` which
+> > +:c:func:`groups_sort` must not be called on a ``struct group_list`` which
+> >  is shared as it may permute elements as part of the sorting process
+> >  even if the array is already sorted.
+>
+> So this is a great fix, thanks for sending it.  That said, there are a
+> couple of ways in which this fix can be made even better:
+>
+>  - The simpler of the two is to change the subject line of the patch.
+>    "Fix a warning" is almost never a good description of what you're
+>    doing; what you are actually doing is fixing a broken cross reference.
+>    So the subject line should say that.
+>
+>  - In this case, though, there is a much better thing to do.  We
+>    deprecated the use of :c:func: around a year ago; the docs build system
+>    can now do the right thing automatically.  So a fix that would both
+>    eliminate the warning and improve the document as a whole would be to
+>    replace every instance of:
+>
+>         :c:func:`function_name`
+>
+>    with:
+>
+>         function_name()
+>
+> Is there any chance I could get you to send a patch that does that?
+Yes! I have started working on it.
+>
+> Thanks,
+>
+> jon
+Thanks,
+Puranjay
