@@ -2,180 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4752215A5B
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 17:12:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7027215A5F
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 17:12:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729389AbgGFPM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 11:12:29 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:35730 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729235AbgGFPMX (ORCPT
+        id S1729437AbgGFPMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 11:12:36 -0400
+Received: from mail-wr1-f50.google.com ([209.85.221.50]:41638 "EHLO
+        mail-wr1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729368AbgGFPMe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 11:12:23 -0400
-Received: by mail-il1-f197.google.com with SMTP id v12so6929684ilg.2
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 08:12:22 -0700 (PDT)
+        Mon, 6 Jul 2020 11:12:34 -0400
+Received: by mail-wr1-f50.google.com with SMTP id z15so30090974wrl.8
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 08:12:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=8cjkntt87TGAwu49cqH5L6r37d1iz61filDgkTRY34c=;
-        b=czeKX9teTwdr6XtvQJOpn9ff6w7qzX7FeBLy7e/MyByWgaUkVq5xaOMgOPRwwvlXva
-         yXGHrqGaCqMYsRzZuAmfTJdcX+p0CKyuTVN8RfvBdgdaJVCeUD2yjdZtGQABPtw6bUo3
-         L+OZn7et16CnQQHfJ00oCvLXL3DrKwCYwWRyinz7GahxycmIkVsEkpqC6Ah7mjj2LMfr
-         aQSeMQypmoo3fdpWqz9mDmX57GORS7FWGv4O2zEfX0ALrMtfmSHbAwEW6fItmHF+zJhO
-         9t+4CB8Gow7zAyTg3itYqYdBYCYSNr7+EJrGabxU45Ar+krIxA/NQcSwqH7x5ZPSJ4rd
-         EsCA==
-X-Gm-Message-State: AOAM531mN8QbcLuSFYbGXO/xu4j/yqKmYFxyVQSTkcAohwxvNNY5txT7
-        HE21QweRXGcu2PrapxyqbvK4YKs0tj+DFd733b3H5R3rdvgg
-X-Google-Smtp-Source: ABdhPJyWL1S4sZ9WmGXZ87KaRbRG7mjMC3zW1dSP8H7oKpM6TQ5fTpbpvU0hPuBRWLiKooSg5KjIDPt/lEAQbkdmVd5BdF4ajFMl
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7/gB1q7zWrapgdKVmrGBTTlLmPD50J8i+SU3GVx9zNM=;
+        b=gCjZ2A/8g2FavxagrVaf75NOWZyOSGXt8ShVShwhVd+Zjj2DFUY4O1deXT0bvsyhdJ
+         4q8JvYO6mFH6jgO6fTYiBQdeyt+ck0MQtE4nJ24bPEd8GT8jFfR3dJmIuehLGwdIALuc
+         Hp2Tr8QJrbrLPfXaBOhtVx/smkTvmu1eKBCl94WgPrYpbEHJMu3444mdsFYh5EoPIqJa
+         NAeiGIP3t5imls3ayFWJa/Y7RQOMmqFbDHcmmZkZINZO7YAtH/6ozxgGyidY3oJTZR0k
+         94QM99l+Y4xIB3cg7n7vAFeF4Px1pTSQxKXhIU0NsegsDTTChXt/HNqW5D1QAYWUb3sW
+         M0vQ==
+X-Gm-Message-State: AOAM530EIUswk8yf9YCefd/OlbENfVbjbUVpWw71/tLjcyxvFy8GYPoq
+        v9S/G5lH6NDgUY82mprY7j2M1g0dPkgQNYzxHcY=
+X-Google-Smtp-Source: ABdhPJxQJi7FEgymzf4WIuhML3z70sSWrfWAJZ1VA8sS4Qtctze4xc9bU8Rhpq5GPDVHb8TQsupUkQlgK9Kx/J+gn/Q=
+X-Received: by 2002:adf:fcc5:: with SMTP id f5mr54671708wrs.60.1594048352477;
+ Mon, 06 Jul 2020 08:12:32 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:cc7:: with SMTP id e7mr52965354jak.87.1594048341704;
- Mon, 06 Jul 2020 08:12:21 -0700 (PDT)
-Date:   Mon, 06 Jul 2020 08:12:21 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002985c805a9c74d76@google.com>
-Subject: INFO: task hung in ath9k_hif_usb_firmware_cb
-From:   syzbot <syzbot+da8c2bed7fa646ad6fcf@syzkaller.appspotmail.com>
-To:     andreyknvl@google.com, ath9k-devel@qca.qualcomm.com,
-        davem@davemloft.net, kuba@kernel.org, kvalo@codeaurora.org,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+References: <20200703123431.GG1320@kernel.org> <CAM9d7cgGcpnX+cSY0UvYjRkG9PF8X3Yyf_AOy+nGxbPjtjDvxw@mail.gmail.com>
+ <20200706115452.GA2772@redhat.com>
+In-Reply-To: <20200706115452.GA2772@redhat.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Tue, 7 Jul 2020 00:12:21 +0900
+Message-ID: <CAM9d7chmV5itD-2K50qFcktJ2JPWdf=quDX_YL8HTYiHgzByXA@mail.gmail.com>
+Subject: Re: [PATCH 1/1] perf report TUI: Remove needless 'dummy' event from menu
+To:     Arnaldo Carvalho de Melo <acme@redhat.com>
+Cc:     Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, Jul 6, 2020 at 8:55 PM Arnaldo Carvalho de Melo <acme@redhat.com> wrote:
+>
+> Em Fri, Jul 03, 2020 at 10:44:28PM +0900, Namhyung Kim escreveu:
+> > > @@ -3613,7 +3630,7 @@ int perf_evlist__tui_browse_hists(struct evlist *evlist, const char *help,
+> > >         int nr_entries = evlist->core.nr_entries;
+> > >
+> > >  single_entry:
+> > > -       if (nr_entries == 1) {
+> > > +       if (perf_evlist__single_entry(evlist)) {
+> >
+> > But I think it cannot cover the event group case below..
+>
+> Right, we can fix that later, I think, my worry at this point was that
+> the simplest case, which is:
+>
+>    # perf record
+>    ^C
+>    # perf report
+>
+> Would get that annoyance :-)
 
-syzbot found the following crash on:
+Right, then I suggest moving the 'single_entry' label to inside of the
+if statement.
+With that applied,
 
-HEAD commit:    768a0741 usb: dwc2: gadget: Remove assigned but never used..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
-console output: https://syzkaller.appspot.com/x/log.txt?x=111f235b100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=999be4eb2478ffa5
-dashboard link: https://syzkaller.appspot.com/bug?extid=da8c2bed7fa646ad6fcf
-compiler:       gcc (GCC) 10.1.0-syz 20200507
+Acked-by: Namhyung Kim <namhyung@kernel.org>
 
-Unfortunately, I don't have any reproducer for this crash yet.
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+da8c2bed7fa646ad6fcf@syzkaller.appspotmail.com
-
-INFO: task kworker/0:0:5 blocked for more than 143 seconds.
-      Not tainted 5.8.0-rc3-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-kworker/0:0     D22168     5      2 0x80004000
-Workqueue: events request_firmware_work_func
-Call Trace:
- context_switch kernel/sched/core.c:3453 [inline]
- __schedule+0x88a/0x1cb0 kernel/sched/core.c:4178
- schedule+0xcd/0x2b0 kernel/sched/core.c:4253
- schedule_preempt_disabled+0xc/0x20 kernel/sched/core.c:4312
- __mutex_lock_common kernel/locking/mutex.c:1033 [inline]
- __mutex_lock+0x3e2/0x10a0 kernel/locking/mutex.c:1103
- device_lock include/linux/device.h:768 [inline]
- ath9k_hif_usb_firmware_fail drivers/net/wireless/ath/ath9k/hif_usb.c:1108 [inline]
- ath9k_hif_usb_firmware_cb+0x3ac/0x530 drivers/net/wireless/ath/ath9k/hif_usb.c:1241
- request_firmware_work_func+0x126/0x250 drivers/base/firmware_loader/main.c:1001
- process_one_work+0x94c/0x15f0 kernel/workqueue.c:2269
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
- kthread+0x392/0x470 kernel/kthread.c:291
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
-
-Showing all locks held in the system:
-3 locks held by kworker/0:0/5:
- #0: ffff8881da028d38 ((wq_completion)events){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff8881da028d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
- #0: ffff8881da028d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff8881da028d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
- #0: ffff8881da028d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
- #0: ffff8881da028d38 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x82b/0x15f0 kernel/workqueue.c:2240
- #1: ffff8881da1d7da8 ((work_completion)(&fw_work->work)){+.+.}-{0:0}, at: process_one_work+0x85f/0x15f0 kernel/workqueue.c:2244
- #2: ffff8881d44bb218 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:768 [inline]
- #2: ffff8881d44bb218 (&dev->mutex){....}-{3:3}, at: ath9k_hif_usb_firmware_fail drivers/net/wireless/ath/ath9k/hif_usb.c:1108 [inline]
- #2: ffff8881d44bb218 (&dev->mutex){....}-{3:3}, at: ath9k_hif_usb_firmware_cb+0x3ac/0x530 drivers/net/wireless/ath/ath9k/hif_usb.c:1241
-1 lock held by khungtaskd/23:
- #0: ffffffff873124a0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x264 kernel/locking/lockdep.c:5779
-3 locks held by kworker/1:2/68:
- #0: ffff8881da028d38 ((wq_completion)events){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff8881da028d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
- #0: ffff8881da028d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff8881da028d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
- #0: ffff8881da028d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
- #0: ffff8881da028d38 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x82b/0x15f0 kernel/workqueue.c:2240
- #1: ffff8881d5ae7da8 ((work_completion)(&fw_work->work)){+.+.}-{0:0}, at: process_one_work+0x85f/0x15f0 kernel/workqueue.c:2244
- #2: ffff8881d440b218 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:768 [inline]
- #2: ffff8881d440b218 (&dev->mutex){....}-{3:3}, at: ath9k_hif_usb_firmware_fail drivers/net/wireless/ath/ath9k/hif_usb.c:1108 [inline]
- #2: ffff8881d440b218 (&dev->mutex){....}-{3:3}, at: ath9k_hif_usb_firmware_cb+0x3ac/0x530 drivers/net/wireless/ath/ath9k/hif_usb.c:1241
-1 lock held by in:imklog/213:
- #0: ffff8881ca60a370 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:826
-3 locks held by kworker/0:4/3049:
-3 locks held by kworker/0:5/3055:
-5 locks held by kworker/0:6/3096:
-5 locks held by kworker/1:6/3310:
- #0: ffff8881d880ed38 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff8881d880ed38 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
- #0: ffff8881d880ed38 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff8881d880ed38 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
- #0: ffff8881d880ed38 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
- #0: ffff8881d880ed38 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: process_one_work+0x82b/0x15f0 kernel/workqueue.c:2240
- #1: ffff8881d97f7da8 ((work_completion)(&hub->events)){+.+.}-{0:0}, at: process_one_work+0x85f/0x15f0 kernel/workqueue.c:2244
- #2: ffff8881d44bb218 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:768 [inline]
- #2: ffff8881d44bb218 (&dev->mutex){....}-{3:3}, at: hub_event+0x1c5/0x4390 drivers/usb/core/hub.c:5522
- #3: ffff8881d9414218 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:768 [inline]
- #3: ffff8881d9414218 (&dev->mutex){....}-{3:3}, at: __device_attach+0x7a/0x430 drivers/base/dd.c:850
- #4: ffff8881c7a8f1a8 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:768 [inline]
- #4: ffff8881c7a8f1a8 (&dev->mutex){....}-{3:3}, at: __device_attach+0x7a/0x430 drivers/base/dd.c:850
-3 locks held by kworker/1:8/4172:
- #0: ffff8881d880ed38 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff8881d880ed38 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
- #0: ffff8881d880ed38 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff8881d880ed38 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
- #0: ffff8881d880ed38 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
- #0: ffff8881d880ed38 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: process_one_work+0x82b/0x15f0 kernel/workqueue.c:2240
- #1: ffff8881c746fda8 ((work_completion)(&hub->events)){+.+.}-{0:0}, at: process_one_work+0x85f/0x15f0 kernel/workqueue.c:2244
- #2: ffff8881d440b218 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:768 [inline]
- #2: ffff8881d440b218 (&dev->mutex){....}-{3:3}, at: hub_event+0x1c5/0x4390 drivers/usb/core/hub.c:5522
-2 locks held by agetty/16081:
- #0: ffff8881cba50098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x22/0x80 drivers/tty/tty_ldisc.c:267
- #1: ffffc900102882e8 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x223/0x1a30 drivers/tty/n_tty.c:2156
-
-=============================================
-
-NMI backtrace for cpu 0
-CPU: 0 PID: 23 Comm: khungtaskd Not tainted 5.8.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0xf6/0x16e lib/dump_stack.c:118
- nmi_cpu_backtrace.cold+0x74/0xb6 lib/nmi_backtrace.c:101
- nmi_trigger_cpumask_backtrace+0x1da/0x1f4 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:209 [inline]
- watchdog+0xd6a/0xfd0 kernel/hung_task.c:295
- kthread+0x392/0x470 kernel/kthread.c:291
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
-Sending NMI from CPU 0 to CPUs 1:
-NMI backtrace for cpu 1
-CPU: 1 PID: 340 Comm: syz-executor.2 Not tainted 5.8.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0033:0x45cae4
-Code: Bad RIP value.
-RSP: 002b:00007ffd79517e20 EFLAGS: 00000217
-RAX: 0000000000000000 RBX: 00000000000d7450 RCX: 000000000045b030
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00007ffd79517e20
-RBP: 00000000000002dd R08: 0000000000000001 R09: 0000000000e8b940
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007ffd79517e70 R14: 00000000000d7450 R15: 00007ffd79517e80
-FS:  0000000000e8b940 GS:  0000000000000000
-
-
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Thanks
+Namhyung
