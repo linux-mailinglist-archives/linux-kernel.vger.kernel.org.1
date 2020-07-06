@@ -2,58 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CB472158E9
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 15:57:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F7A92158EC
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 15:58:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729201AbgGFN5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 09:57:20 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:49034 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728940AbgGFN5U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 09:57:20 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1jsRcT-003rgn-D2; Mon, 06 Jul 2020 15:57:17 +0200
-Date:   Mon, 6 Jul 2020 15:57:17 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Diana Craciun <diana.craciun@nxp.com>
-Cc:     linux-kernel@vger.kernel.org, laurentiu.tudor@nxp.com,
-        gregkh@linuxfoundation.org, stuyoder@gmail.com, leoyang.li@nxp.com,
-        bharatb.linux@gmail.com, Diana Craciun <diana.craciun@oss.nxp.com>,
-        Bharat Bhushan <Bharat.Bhushan@nxp.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 03/13] bus/fsl-mc: add support for 'driver_override'
- in the mc-bus
-Message-ID: <20200706135717.GB919533@lunn.ch>
-References: <20200706124243.10697-1-diana.craciun@nxp.com>
- <20200706124243.10697-4-diana.craciun@nxp.com>
+        id S1729236AbgGFN6W convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 6 Jul 2020 09:58:22 -0400
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:56777 "EHLO
+        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728940AbgGFN6V (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Jul 2020 09:58:21 -0400
+Received: from sogo13.sd4.0x35.net (sogo13.sd4.0x35.net [10.200.201.63])
+        (Authenticated sender: kerneldev@karsmulder.nl)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPA id 441146000E;
+        Mon,  6 Jul 2020 13:58:18 +0000 (UTC)
+From:   "Kars Mulder" <kerneldev@karsmulder.nl>
+In-Reply-To: <20200706130717.GA2276608@kroah.com>
+Content-Type: text/plain; charset="utf-8"
+X-Forward: 127.0.0.1
+Date:   Mon, 06 Jul 2020 15:58:17 +0200
+Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        "David Laight" <David.Laight@aculab.com>,
+        "Kai-Heng Feng" <kai.heng.feng@canonical.com>,
+        "Pavel Machek" <pavel@denx.de>,
+        "Andy Shevchenko" <andy.shevchenko@gmail.com>,
+        "Oliver Neukum" <oneukum@suse.com>
+To:     "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200706124243.10697-4-diana.craciun@nxp.com>
+Message-ID: <74dc-5f032e00-69-5f1a6480@172803432>
+Subject: =?utf-8?q?Re=3A?==?utf-8?q?_=5BPATCH=5D?==?utf-8?q?_usb=3A?=
+ =?utf-8?q?_core=3A?= fix =?utf-8?q?quirks=5Fparam=5Fset=28=29?= writing to 
+ a const pointer
+User-Agent: SOGoMail 4.3.0
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Diana
-
-On Mon, Jul 06, 2020 at 03:42:33PM +0300, Diana Craciun wrote:
-> From: Bharat Bhushan <Bharat.Bhushan@nxp.com>
+On Monday, July 06, 2020 15:07 CEST, Greg Kroah-Hartman wrote: 
+> Just test for memory allocation failure and handle it properly, it isn't
+> hard to do.
 > 
-> This patch is required for vfio-fsl-mc meta driver to successfully bind
-> layerscape container devices for device passthrough. This patch adds
-> a mechanism to allow a layerscape device to specify a driver rather than
-> a layerscape driver provide a device match.
-> 
-> Example to allow a device (dprc.1) to specifically bind
-> with driver (vfio-fsl-mc):-
->  - echo vfio-fsl-mc > /sys/bus/fsl-mc/devices/dprc.1/driver_override
->  - echo dprc.1 > /sys/bus/fsl-mc/drivers/fsl_mc_dprc/unbind
->  - echo dprc.1 > /sys/bus/fsl-mc/drivers/vfio-fsl-mc/bind
+> 128 bytes on the stack can be a problem, don't get in the habit of doing
+> so please.
 
-Something i asked before, why is this buried in a driver, when it
-could be put in the driver core. This is not the only driver doing
-this, so it does make sense to share the code and bugs.
+Thank you for the clarification. The next version of my patch shall use
+kstrdup() instead of copying to the stack.
 
-      Andrew
