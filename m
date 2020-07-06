@@ -2,17 +2,17 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E78DE2150D0
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 03:19:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDAC22150D2
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 03:19:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728553AbgGFBTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Jul 2020 21:19:38 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:46926 "EHLO loongson.cn"
+        id S1728606AbgGFBTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Jul 2020 21:19:41 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:46954 "EHLO loongson.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728280AbgGFBTh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Jul 2020 21:19:37 -0400
+        id S1728391AbgGFBTi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Jul 2020 21:19:38 -0400
 Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxn2oefAJfl2VQAA--.1722S2;
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxn2oefAJfl2VQAA--.1722S3;
         Mon, 06 Jul 2020 09:19:27 +0800 (CST)
 From:   Tiezhu Yang <yangtiezhu@loongson.cn>
 To:     Thomas Gleixner <tglx@linutronix.de>,
@@ -20,84 +20,87 @@ To:     Thomas Gleixner <tglx@linutronix.de>,
         Marc Zyngier <maz@kernel.org>
 Cc:     linux-kernel@vger.kernel.org,
         Markus Elfring <Markus.Elfring@web.de>
-Subject: [PATCH v5 00/14] irqchip: Fix potential resource leaks
-Date:   Mon,  6 Jul 2020 09:19:11 +0800
-Message-Id: <1593998365-25910-1-git-send-email-yangtiezhu@loongson.cn>
+Subject: [PATCH v5 01/14] irqchip/ath79-misc: Fix potential resource leaks
+Date:   Mon,  6 Jul 2020 09:19:12 +0800
+Message-Id: <1593998365-25910-2-git-send-email-yangtiezhu@loongson.cn>
 X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9Dxn2oefAJfl2VQAA--.1722S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7AFy5GF48uFW8Wr4xCryxGrg_yoW8tw1rpF
-        4xta9Ivr48Cay3JrnxAw1jyFy3ZwnYyay7K3s3A343Xwn5uryDGF1UAw1rXryUWayfG3Wj
-        kr4FyFyUC3WDAFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkYb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4
-        A2jsIEc7CjxVAFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8Jw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xSY4AK67AK6w4l42xK82IY
-        c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
-        026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF
-        0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0x
-        vE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2
-        jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU56MNUUUUUU==
+In-Reply-To: <1593998365-25910-1-git-send-email-yangtiezhu@loongson.cn>
+References: <1593998365-25910-1-git-send-email-yangtiezhu@loongson.cn>
+X-CM-TRANSID: AQAAf9Dxn2oefAJfl2VQAA--.1722S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7Ww1UAF4UZryfJF4DXr48tFb_yoW8XF43pF
+        WUW39avr4fJr47XrZxCrWUXFyavFyFkay2k3y3C3WxZrn8Ga90kF1Fya4jqF12kr4fZ3WU
+        uF4xJa45uF4jkFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9Eb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI
+        8067AKxVWUGwA2048vs2IY020Ec7CjxVAFwI0_Jrv_JF4l8cAvFVAK0II2c7xJM28CjxkF
+        64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcV
+        CY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY
+        1x0267AKxVW8JVW8Jr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I
+        8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCF
+        s4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_KwCF04k20xvY0x0EwI
+        xGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480
+        Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7
+        IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k2
+        6cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxV
+        AFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU5V6wtUUUUU==
 X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When I test the irqchip code of Loongson, I read the related code of other
-chips in drivers/irqchip and I find some potential resource leaks in the
-error path, I think it is better to fix them.
+In the function ath79_misc_intc_of_init(), system resources "irq" and
+"base" were not released in a few error cases. Thus add jump targets
+for the completion of the desired exception handling.
 
-v2:
-  - Split the first patch into a new patch series which
-    includes small patches and add "Fixes" tag
-  - Use "goto" label to handle error path in some patches
+Fixes: 07ba4b061a79 ("irqchip/ath79-misc: Move the MISC driver from arch/mips/ath79/")
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ drivers/irqchip/irq-ath79-misc.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
-v3:
-  - Add missed variable "ret" in the patch #5 and #13
-
-v4:
-  - Modify the commit message of each patch suggested by Markus Elfring
-  - Make "irq_domain_remove(root_domain)" under CONFIG_SMP in patch #3
-  - Add a return statement before goto label in patch #4
-
-v5:
-  - Modify the commit messages and do some code cleanups
-
-Tiezhu Yang (14):
-  irqchip/ath79-misc: Fix potential resource leaks
-  irqchip/csky-apb-intc: Fix potential resource leaks
-  irqchip/csky-mpintc: Fix potential resource leaks
-  irqchip/davinci-aintc: Fix potential resource leaks
-  irqchip/davinci-cp-intc: Fix potential resource leaks
-  irqchip/digicolor: Fix potential resource leaks
-  irqchip/dw-apb-ictl: Fix potential resource leaks
-  irqchip/ls1x: Fix potential resource leaks
-  irqchip/mscc-ocelot: Fix potential resource leaks
-  irqchip/nvic: Fix potential resource leaks
-  irqchip/omap-intc: Fix potential resource leak
-  irqchip/riscv-intc: Fix potential resource leak
-  irqchip/s3c24xx: Fix potential resource leaks
-  irqchip/xilinx-intc: Fix potential resource leak
-
- drivers/irqchip/irq-ath79-misc.c      | 14 +++++++++++---
- drivers/irqchip/irq-csky-apb-intc.c   | 11 +++++++++--
- drivers/irqchip/irq-csky-mpintc.c     | 31 ++++++++++++++++++++++---------
- drivers/irqchip/irq-davinci-aintc.c   | 18 ++++++++++++++----
- drivers/irqchip/irq-davinci-cp-intc.c | 18 +++++++++++++++---
- drivers/irqchip/irq-digicolor.c       | 14 +++++++++++---
- drivers/irqchip/irq-dw-apb-ictl.c     | 11 ++++++++---
- drivers/irqchip/irq-ls1x.c            |  4 +++-
- drivers/irqchip/irq-mscc-ocelot.c     |  6 ++++--
- drivers/irqchip/irq-nvic.c            | 12 +++++++++---
- drivers/irqchip/irq-omap-intc.c       |  4 +++-
- drivers/irqchip/irq-riscv-intc.c      |  1 +
- drivers/irqchip/irq-s3c24xx.c         | 23 +++++++++++++++++------
- drivers/irqchip/irq-xilinx-intc.c     | 11 ++++++-----
- 14 files changed, 133 insertions(+), 45 deletions(-)
-
+diff --git a/drivers/irqchip/irq-ath79-misc.c b/drivers/irqchip/irq-ath79-misc.c
+index 3d641bb..53e0c50 100644
+--- a/drivers/irqchip/irq-ath79-misc.c
++++ b/drivers/irqchip/irq-ath79-misc.c
+@@ -133,7 +133,7 @@ static int __init ath79_misc_intc_of_init(
+ {
+ 	struct irq_domain *domain;
+ 	void __iomem *base;
+-	int irq;
++	int irq, ret;
+ 
+ 	irq = irq_of_parse_and_map(node, 0);
+ 	if (!irq) {
+@@ -144,18 +144,26 @@ static int __init ath79_misc_intc_of_init(
+ 	base = of_iomap(node, 0);
+ 	if (!base) {
+ 		pr_err("Failed to get MISC IRQ registers\n");
+-		return -ENOMEM;
++		ret = -ENOMEM;
++		goto err_irq_dispose;
+ 	}
+ 
+ 	domain = irq_domain_add_linear(node, ATH79_MISC_IRQ_COUNT,
+ 				&misc_irq_domain_ops, base);
+ 	if (!domain) {
+ 		pr_err("Failed to add MISC irqdomain\n");
+-		return -EINVAL;
++		ret = -EINVAL;
++		goto err_iounmap;
+ 	}
+ 
+ 	ath79_misc_intc_domain_init(domain, irq);
+ 	return 0;
++
++err_iounmap:
++	iounmap(base);
++err_irq_dispose:
++	irq_dispose_mapping(irq);
++	return ret;
+ }
+ 
+ static int __init ar7100_misc_intc_of_init(
 -- 
 2.1.0
 
