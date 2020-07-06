@@ -2,139 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E58D62157FA
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 15:06:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 036302157FF
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 15:07:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729163AbgGFNGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 09:06:01 -0400
-Received: from mga14.intel.com ([192.55.52.115]:54386 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729072AbgGFNGA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 09:06:00 -0400
-IronPort-SDR: z3jAbM14aDygqBXuqo9dx3mHcbdWco+5nnCV0Pp7LYkSoQn38+OCSUVsJbF0xyYs9nEC6MMo/m
- 7jK+EutUg3Gw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9673"; a="146488585"
-X-IronPort-AV: E=Sophos;i="5.75,320,1589266800"; 
-   d="scan'208";a="146488585"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2020 06:05:57 -0700
-IronPort-SDR: aYS46YDa8awy/eI/dw9Hx3SLOfW/Nqbkc4B3A7/eh8+yYhWw5sZ6z2f6XllRLaxaNHr9FJu4ye
- XK/Ri+ojY3RA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,320,1589266800"; 
-   d="scan'208";a="313956434"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga008.jf.intel.com with ESMTP; 06 Jul 2020 06:05:56 -0700
-Received: from [10.249.225.12] (abudanko-mobl.ccr.corp.intel.com [10.249.225.12])
-        by linux.intel.com (Postfix) with ESMTP id 44698580378;
-        Mon,  6 Jul 2020 06:05:49 -0700 (PDT)
-Subject: Re: [PATCH v9 02/15] tools/libperf: add properties to struct pollfd
- *entries objects
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <a4d5db4a-f25c-38dc-1c41-321a886cb122@linux.intel.com>
- <09bbbc85-7ef9-ff9f-9865-fce6a1a4e903@linux.intel.com>
- <20200706122413.GB3401866@krava>
-From:   Alexey Budankov <alexey.budankov@linux.intel.com>
-Organization: Intel Corp.
-Message-ID: <cd132d6b-89ec-1408-f4da-44020e13d4b2@linux.intel.com>
-Date:   Mon, 6 Jul 2020 16:05:48 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729260AbgGFNHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 09:07:22 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:55535 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728940AbgGFNHT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Jul 2020 09:07:19 -0400
+Received: from ip5f5af08c.dynamic.kabel-deutschland.de ([95.90.240.140] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1jsQq3-0006Z1-3m; Mon, 06 Jul 2020 13:07:15 +0000
+Date:   Mon, 6 Jul 2020 15:07:13 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, Sargun Dhillon <sargun@sargun.me>,
+        Christian Brauner <christian@brauner.io>,
+        Tycho Andersen <tycho@tycho.ws>,
+        David Laight <David.Laight@ACULAB.COM>,
+        Christoph Hellwig <hch@lst.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Matt Denton <mpdenton@google.com>,
+        Jann Horn <jannh@google.com>, Chris Palmer <palmer@google.com>,
+        Robert Sesek <rsesek@google.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>, Shuah Khan <shuah@kernel.org>,
+        netdev@vger.kernel.org, containers@lists.linux-foundation.org,
+        linux-api@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v5 4/7] pidfd: Replace open-coded partial
+ fd_install_received()
+Message-ID: <20200706130713.n6r3vhn4hn2lodex@wittgenstein>
+References: <20200617220327.3731559-1-keescook@chromium.org>
+ <20200617220327.3731559-5-keescook@chromium.org>
 MIME-Version: 1.0
-In-Reply-To: <20200706122413.GB3401866@krava>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20200617220327.3731559-5-keescook@chromium.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jun 17, 2020 at 03:03:24PM -0700, Kees Cook wrote:
+> The sock counting (sock_update_netprioidx() and sock_update_classid()) was
+> missing from pidfd's implementation of received fd installation. Replace
+> the open-coded version with a call to the new fd_install_received()
+> helper.
+> 
+> Fixes: 8649c322f75c ("pid: Implement pidfd_getfd syscall")
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>  kernel/pid.c | 11 +----------
+>  1 file changed, 1 insertion(+), 10 deletions(-)
+> 
+> diff --git a/kernel/pid.c b/kernel/pid.c
+> index f1496b757162..24924ec5df0e 100644
+> --- a/kernel/pid.c
+> +++ b/kernel/pid.c
+> @@ -635,18 +635,9 @@ static int pidfd_getfd(struct pid *pid, int fd)
+>  	if (IS_ERR(file))
+>  		return PTR_ERR(file);
+>  
+> -	ret = security_file_receive(file);
+> -	if (ret) {
+> -		fput(file);
+> -		return ret;
+> -	}
+> -
+> -	ret = get_unused_fd_flags(O_CLOEXEC);
+> +	ret = fd_install_received(file, O_CLOEXEC);
+>  	if (ret < 0)
+>  		fput(file);
+> -	else
+> -		fd_install(ret, file);
 
-On 06.07.2020 15:24, Jiri Olsa wrote:
-> On Fri, Jul 03, 2020 at 10:41:45AM +0300, Alexey Budankov wrote:
->>
->> Store boolean properties per struct pollfd *entries object in a
->> bitmap of int size. Implement fdarray_prop__nonfilterable property
->> to skip object from counting by fdarray_filter().
-> 
-> ok, I think can do it like this, few comments below
-> 
-> thanks,
-> jirka
-> 
->>
->> Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
->> ---
->>  tools/lib/api/fd/array.c                 | 17 +++++++++--------
->>  tools/lib/api/fd/array.h                 | 18 +++++++++++++-----
->>  tools/lib/perf/evlist.c                  | 10 +++++-----
->>  tools/lib/perf/include/internal/evlist.h |  2 +-
->>  tools/perf/tests/fdarray.c               |  2 +-
->>  tools/perf/util/evlist.c                 |  2 +-
->>  6 files changed, 30 insertions(+), 21 deletions(-)
+So someone just sent a fix for pidfd_getfd() that was based on the
+changes done here.
 
-<SNIP>
+I've been on vacation so didn't have a change to review this series and
+I see it's already in linux-next. This introduces a memory leak and
+actually proves a point I tried to stress when adding this helper:
+fd_install_received() in contrast to fd_install() does _not_ consume a
+reference because it takes one before it calls into fd_install(). That
+means, you need an unconditional fput() here both in the failure and
+error path.
+I strongly suggest though that we simply align the behavior between
+fd_install() and fd_install_received() and have the latter simply
+consume a reference when it succeeds! Imho, this bug proves that I was
+right to insist on this before. ;)
 
->>
->> diff --git a/tools/lib/api/fd/array.h b/tools/lib/api/fd/array.h
->> index b39557d1a88f..19b6a34aeea5 100644
->> --- a/tools/lib/api/fd/array.h
->> +++ b/tools/lib/api/fd/array.h
->> @@ -21,10 +21,18 @@ struct fdarray {
->>  	int	       nr_alloc;
->>  	int	       nr_autogrow;
->>  	struct pollfd *entries;
->> -	union {
->> -		int    idx;
->> -		void   *ptr;
->> -	} *priv;
->> +	struct {
->> +		union {
->> +			int    idx;
->> +			void   *ptr;
->> +		} priv;
->> +		int bits;
->> +	} *prop;
->> +};
-> 
-> why not keeping the 'priv' as a struct, like:
-> 
-> 	struct {
-> 		union {
-> 			int    idx;
-> 			void   *ptr;
-> 		};
-> 		unsigned int flags;
-> 	} *priv;
-> 
-> I think we would have much less changes, also please rename bits
-> to flags and use some unsigned type for that
-
-Well, I supposed that priv is short for private what means the layout
-of struct priv object is opaque to fdarray implementation and it just
-passes the object as a void pointer to external callbacks (e.g in __filter()).
-So I preserved this semantics and wrapped and extended priv object
-with with flags field. It can be implemented with struct priv if you like.
-
-> 
->> +
->> +enum fdarray_props {
->> +	fdarray_prop__default	    = 0x00000000,
->> +	fdarray_prop__nonfilterable = 0x00000001
->>  };
-> 
-> s/fdarray_props/fdarray_flag/
-
-Accepted.
-
-Alexey
+Thanks!
+Christian
