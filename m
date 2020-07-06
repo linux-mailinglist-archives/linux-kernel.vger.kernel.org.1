@@ -2,84 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BCC0215876
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 15:34:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F06C2158A3
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 15:37:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729447AbgGFNep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 09:34:45 -0400
-Received: from mga11.intel.com ([192.55.52.93]:22677 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729390AbgGFNef (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 09:34:35 -0400
-IronPort-SDR: CNjeike65LN1YpQGTOgmj7GR0lcJuF+1gkluJuSHD4K4WoUjgsBnIWj3TYKPh9fi+5G80Mkbat
- VUHtxHFVjNdg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9673"; a="145520052"
-X-IronPort-AV: E=Sophos;i="5.75,320,1589266800"; 
-   d="scan'208";a="145520052"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2020 06:34:35 -0700
-IronPort-SDR: uza9DKlu1Z8lPzS8c68lYnD2oxSCVKGcigfaAZ2U+t+swpOmjFFQIY5mca5nC3svAa256Qkl3u
- CSNECqWL3ImQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,320,1589266800"; 
-   d="scan'208";a="483134004"
-Received: from tassilo.jf.intel.com (HELO tassilo.localdomain) ([10.7.201.21])
-  by fmsmga005.fm.intel.com with ESMTP; 06 Jul 2020 06:34:34 -0700
-Received: by tassilo.localdomain (Postfix, from userid 1000)
-        id 76DF1301BE3; Mon,  6 Jul 2020 06:34:34 -0700 (PDT)
-Date:   Mon, 6 Jul 2020 06:34:34 -0700
-From:   Andi Kleen <andi.kleen@intel.com>
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     Qian Cai <cai@lca.pw>, Andrew Morton <akpm@linux-foundation.org>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        kernel test robot <rong.a.chen@intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Kees Cook <keescook@chromium.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>, tim.c.chen@intel.com,
-        dave.hansen@intel.com, ying.huang@intel.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, lkp@lists.01.org
-Subject: Re: [mm] 4e2c82a409: ltp.overcommit_memory01.fail
-Message-ID: <20200706133434.GA3483883@tassilo.jf.intel.com>
-References: <20200705044454.GA90533@shbuild999.sh.intel.com>
- <FAAE2B23-2565-4F36-B278-018A5AD219EE@lca.pw>
- <20200705125854.GA66252@shbuild999.sh.intel.com>
- <20200705155232.GA608@lca.pw>
- <20200706014313.GB66252@shbuild999.sh.intel.com>
- <20200706023614.GA1231@lca.pw>
- <20200706132443.GA34488@shbuild999.sh.intel.com>
+        id S1729592AbgGFNgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 09:36:22 -0400
+Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:47682 "EHLO
+        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729286AbgGFNgU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Jul 2020 09:36:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1594042580; x=1625578580;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=2i10p3zHZtcsjkGHAB08tLjw+aVWWu3Y8lozHTN4nT4=;
+  b=fgGjNz476DaX64NiLwtNO4Bg6y6hbcF/PUW8H76UhiDE0Au2RWLrNNGd
+   XtRT02LZ9aepgdlv7hTZlhYFtYPRjg5jkT1GKdySZ5/4tRh9az7MdM2UK
+   /t8jnwqQdeQo5aZ/+P6qTLhmsF7QH4MceubEpbaxN7cG1C5T7fV81PYTV
+   o=;
+IronPort-SDR: csDJiQyAkPskSeMUpPzF9fAUTAf4fh+mx6xOBL18dP1Zb4OYcfjJ1z+U4xy36E64H9kombM0A3
+ pZiFB/GlFtmg==
+X-IronPort-AV: E=Sophos;i="5.75,320,1589241600"; 
+   d="scan'208";a="41679877"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2c-87a10be6.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 06 Jul 2020 13:35:50 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2c-87a10be6.us-west-2.amazon.com (Postfix) with ESMTPS id 89A01A15CA;
+        Mon,  6 Jul 2020 13:35:47 +0000 (UTC)
+Received: from EX13D16EUB001.ant.amazon.com (10.43.166.28) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 6 Jul 2020 13:35:46 +0000
+Received: from 38f9d34ed3b1.ant.amazon.com (10.43.160.26) by
+ EX13D16EUB001.ant.amazon.com (10.43.166.28) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 6 Jul 2020 13:35:37 +0000
+Subject: Re: [PATCH v4 10/18] nitro_enclaves: Add logic for enclave image load
+ info
+To:     Alexander Graf <graf@amazon.de>, <linux-kernel@vger.kernel.org>
+CC:     Anthony Liguori <aliguori@amazon.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Colm MacCarthaigh <colmmacc@amazon.com>,
+        "Bjoern Doebel" <doebel@amazon.de>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        "Frank van der Linden" <fllinden@amazon.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Martin Pohlack <mpohlack@amazon.de>,
+        Matt Wilson <msw@amazon.com>,
+        "Paolo Bonzini" <pbonzini@redhat.com>,
+        Balbir Singh <sblbir@amazon.com>,
+        "Stefano Garzarella" <sgarzare@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stewart Smith <trawets@amazon.com>,
+        Uwe Dannowski <uwed@amazon.de>, <kvm@vger.kernel.org>,
+        <ne-devel-upstream@amazon.com>
+References: <20200622200329.52996-1-andraprs@amazon.com>
+ <20200622200329.52996-11-andraprs@amazon.com>
+ <817700cd-1db2-558b-ae62-fdb279bca6ed@amazon.de>
+From:   "Paraschiv, Andra-Irina" <andraprs@amazon.com>
+Message-ID: <e72d3477-50f0-2a92-ac1d-0ad66dd35170@amazon.com>
+Date:   Mon, 6 Jul 2020 16:35:27 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200706132443.GA34488@shbuild999.sh.intel.com>
+In-Reply-To: <817700cd-1db2-558b-ae62-fdb279bca6ed@amazon.de>
+Content-Language: en-US
+X-Originating-IP: [10.43.160.26]
+X-ClientProxiedBy: EX13D16UWB002.ant.amazon.com (10.43.161.234) To
+ EX13D16EUB001.ant.amazon.com (10.43.166.28)
+Content-Type: text/plain; charset="windows-1252"; format="flowed"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->  	ret = proc_dointvec_minmax(table, write, buffer, lenp, ppos);
-> -	if (ret == 0 && write)
-> +	if (ret == 0 && write) {
-> +		if (sysctl_overcommit_memory == OVERCOMMIT_NEVER)
-> +			schedule_on_each_cpu(sync_overcommit_as);
-
-The schedule_on_each_cpu is not atomic, so the problem could still happen
-in that window.
-
-I think it may be ok if it eventually resolves, but certainly needs
-a comment explaining it. Can you do some stress testing toggling the
-policy all the time on different CPUs and running the test on
-other CPUs and see if the test fails?
-
-The other alternative would be to define some intermediate state
-for the sysctl variable and only switch to never once the schedule_on_each_cpu
-returned. But that's more complexity.
 
 
--Andi
+On 06/07/2020 13:16, Alexander Graf wrote:
+>
+>
+> On 22.06.20 22:03, Andra Paraschiv wrote:
+>> Before setting the memory regions for the enclave, the enclave image
+>> needs to be placed in memory. After the memory regions are set, this
+>> memory cannot be used anymore by the VM, being carved out.
+>>
+>> Add ioctl command logic to get the offset in enclave memory where to
+>> place the enclave image. Then the user space tooling copies the enclave
+>> image in the memory using the given memory offset.
+>>
+>> Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
+>> ---
+>> Changelog
+>>
+>> v3 -> v4
+>>
+>> * Use dev_err instead of custom NE log pattern.
+>> * Set enclave image load offset based on flags.
+>> * Update the naming for the ioctl command from metadata to info.
+>>
+>> v2 -> v3
+>>
+>> * No changes.
+>>
+>> v1 -> v2
+>>
+>> * New in v2.
+>> ---
+>> =A0 drivers/virt/nitro_enclaves/ne_misc_dev.c | 25 +++++++++++++++++++++=
+++
+>> =A0 1 file changed, 25 insertions(+)
+>>
+>> diff --git a/drivers/virt/nitro_enclaves/ne_misc_dev.c =
+
+>> b/drivers/virt/nitro_enclaves/ne_misc_dev.c
+>> index d6777008f685..cfdefa52ed2a 100644
+>> --- a/drivers/virt/nitro_enclaves/ne_misc_dev.c
+>> +++ b/drivers/virt/nitro_enclaves/ne_misc_dev.c
+>> @@ -536,6 +536,31 @@ static long ne_enclave_ioctl(struct file *file, =
+
+>> unsigned int cmd,
+>> =A0=A0=A0=A0=A0=A0=A0=A0=A0 return rc;
+>> =A0=A0=A0=A0=A0 }
+>> =A0 +=A0=A0=A0 case NE_GET_IMAGE_LOAD_INFO: {
+>> +=A0=A0=A0=A0=A0=A0=A0 struct ne_image_load_info image_load_info =3D {};
+>> +
+>> +=A0=A0=A0=A0=A0=A0=A0 if (copy_from_user(&image_load_info, (void *)arg,
+>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 sizeof(image_loa=
+d_info))) {
+>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 dev_err_ratelimited(ne_misc_dev.this_=
+device,
+>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 "=
+Error in copy from user\n");
+>
+> The -EFAULT tells you all you need. Just remove this print.
+
+Removed the log from here and the other occurrences in the patch series.
+
+Thanks,
+Andra
+
+>
+>> +
+>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 return -EFAULT;
+>> +=A0=A0=A0=A0=A0=A0=A0 }
+>> +
+>> +=A0=A0=A0=A0=A0=A0=A0 if (image_load_info.flags =3D=3D NE_EIF_IMAGE)
+>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 image_load_info.memory_offset =3D NE_=
+EIF_LOAD_OFFSET;
+>> +
+>> +=A0=A0=A0=A0=A0=A0=A0 if (copy_to_user((void *)arg, &image_load_info,
+>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 sizeof(image_load_info=
+))) {
+>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 dev_err_ratelimited(ne_misc_dev.this_=
+device,
+>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 "=
+Error in copy to user\n");
+>
+> Same here.
+>
+>
+> Alex
+>
+>> +
+>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 return -EFAULT;
+>> +=A0=A0=A0=A0=A0=A0=A0 }
+>> +
+>> +=A0=A0=A0=A0=A0=A0=A0 return 0;
+>> +=A0=A0=A0 }
+>> +
+>> =A0=A0=A0=A0=A0 default:
+>> =A0=A0=A0=A0=A0=A0=A0=A0=A0 return -ENOTTY;
+>> =A0=A0=A0=A0=A0 }
+>>
+
+
+
+
+Amazon Development Center (Romania) S.R.L. registered office: 27A Sf. Lazar=
+ Street, UBC5, floor 2, Iasi, Iasi County, 700045, Romania. Registered in R=
+omania. Registration number J22/2621/2005.
+
