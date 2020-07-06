@@ -2,61 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 016D821521E
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 07:19:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1646E21521C
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 07:19:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728844AbgGFFTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 01:19:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51456 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726020AbgGFFTC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728831AbgGFFTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 6 Jul 2020 01:19:02 -0400
-Received: from localhost (unknown [122.182.251.219])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7523C20715;
-        Mon,  6 Jul 2020 05:19:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594012742;
-        bh=l/3SWBfqpGtE5dZNa/GolLP57ayRYFrPWuRtcUTlBts=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HBzl0ioFoQEzJ23c5FOteCUgsCEU97fUnI1LYzCp4aYDJ7xCDQjdD+biOfroILFt9
-         +RRVdqbWuRy0PqzJksFNyy0/6vAEF/ytvXFixSv8G0ndhRf3nEWvLK8lYTgNnUV63d
-         JEAxKpHDm02vcJKgmUXkV8bhRZ2Guh50QO7pEAwE=
-Date:   Mon, 6 Jul 2020 10:48:58 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     leonid.ravich@dell.com
-Cc:     dmaengine@vger.kernel.org, lravich@gmail.com,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        "Alexander.Barabash@dell.com" <Alexander.Barabash@dell.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] dmaengine: ioat setting ioat timeout as module
- parameter
-Message-ID: <20200706051858.GH633187@vkoul-mobl>
-References: <20200701140849.8828-1-leonid.ravich@dell.com>
- <20200701184816.29138-1-leonid.ravich@dell.com>
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:58393 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726020AbgGFFTB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Jul 2020 01:19:01 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 609DD5804FC;
+        Mon,  6 Jul 2020 01:19:00 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Mon, 06 Jul 2020 01:19:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=rGGHBY0t7206Px54Uw3pH/xzhBq
+        rSWNKVMJbEBZQGMs=; b=TSzOA0uyoppHVhoKTrJ2KfN7lbTGR0pPVFgjnc1R+yc
+        NkNC6oOcsbuZLY2REZro7soO5gWXiVCafJ6So8Rx/eUBXSzwM7C53fmezW7C0FqR
+        3kdII8O/RIZyslvNIhYVgP0wsSo5su5csXrmGIVk85/vYcBshfqkUB3LcPcFv7iL
+        DEPRXdRw86bPa1jdD9fdirhhwS79tAavOqfANnfUiyyZ8R3b1XeZX6wRYP/X0Ixp
+        aMIbdDqguqIH4LrBlz2EylppdouYxcRw2fJz4c4lpNez7fn2nWBiELbSEGnxn4IB
+        jjNDwpS9xE5/9HXeV+E12JyJ9EVU0+yjIVOC09vr8RA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=rGGHBY
+        0t7206Px54Uw3pH/xzhBqrSWNKVMJbEBZQGMs=; b=OVK4r1ZjnH0qOsM0n7hkRH
+        VSclHgikLx9m9BRfRr2fgS4dZQt5qq/jL0XJsFRpIx3nqPnCeG2OQ96dyBub3r7X
+        11LJP4xoLP1KK9j4F+9o6751CSjqmcX+4a3NzGalbkAzrRMqjzCZ38MTZKQwR2m8
+        xSfisq53AmuUjnc8hO+SUlR7mdpeS7cHBOKXKWOD0YTh6tj7jnQh2aiKvtLsPT1t
+        0F3jWwjDZs/EjSJGHJ6PcrjE2dS78vso/Rjytb1DS8GY55OfyiQuO6JMerozA9yz
+        +cyFE2jJgL6UURjyikC0pt6zzy0oSUm6quyTqeDTYFURz7f+T73nbsHtiZBhC25g
+        ==
+X-ME-Sender: <xms:RLQCX9_Bfnyirb9wvdZar7olax7tgrqI9Vg72qWBFH8oCmwWTjR0dg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedruddvgdeludcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtudenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeduvdduhfekkeehgffftefflefgffdtheffudffgeevteffheeuiedvvdejvdfg
+    veenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedvnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:RLQCXxsCsUfM-NgFtiu32ZVLIPIBx_d3YN1D05VtuMbE9J5BtRXdIA>
+    <xmx:RLQCX7B_huDjMyygRDdhDmqk42IjQJ5cjUOj-WyHdYQAl3bY_eoP6w>
+    <xmx:RLQCXxfqHwtX4KTQuuOAL2NVUbYe0aFR7QWvnfTW7XAXw461RltbrA>
+    <xmx:RLQCXzF7nMK3bF4kkjp0CQSAOA3ddtrWfY8z-VcHyTtwHKA9vFGXAg>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id F1CE93280059;
+        Mon,  6 Jul 2020 01:18:59 -0400 (EDT)
+Date:   Mon, 6 Jul 2020 07:18:58 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
+Cc:     Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Marcus Cooper <codekipper@gmail.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com
+Subject: Re: [PATCH 05/16] ASoc: sun4i-i2s: Add 20 and 24 bit support
+Message-ID: <20200706051858.an7aefursbhmyfua@gilmour.lan>
+References: <20200704113902.336911-1-peron.clem@gmail.com>
+ <20200704113902.336911-6-peron.clem@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="i4rg5zukerkvlxuj"
 Content-Disposition: inline
-In-Reply-To: <20200701184816.29138-1-leonid.ravich@dell.com>
+In-Reply-To: <20200704113902.336911-6-peron.clem@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01-07-20, 21:48, leonid.ravich@dell.com wrote:
-> From: Leonid Ravich <Leonid.Ravich@emc.com>
-> 
-> DMA transaction time to completion  is a function of
-> PCI bandwidth,transaction size and a queue depth.
 
-space after , pls
+--i4rg5zukerkvlxuj
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> So hard coded value for timeouts might be wrong
-> for some scenarios.
+On Sat, Jul 04, 2020 at 01:38:51PM +0200, Cl=E9ment P=E9ron wrote:
+> From: Marcus Cooper <codekipper@gmail.com>
+>=20
+> Extend the functionality of the driver to include support of 20 and
+> 24 bits per sample.
+>=20
+> Signed-off-by: Marcus Cooper <codekipper@gmail.com>
+> Signed-off-by: Cl=E9ment P=E9ron <peron.clem@gmail.com>
 
-I ahve fixed above and applied
+Acked-by: Maxime Ripard <mripard@kernel.org>
 
--- 
-~Vinod
+Thanks!
+Maxime
+
+--i4rg5zukerkvlxuj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXwK0QgAKCRDj7w1vZxhR
+xU2iAP0X8H8HDjI4TzDvrLbBY+AIrjYxkkX8cwNdewYnYRW5dwEA48sP2HBp2mI0
+mjrnRZHppq39Ga3G/5KihHPVji3SLgs=
+=Tc9o
+-----END PGP SIGNATURE-----
+
+--i4rg5zukerkvlxuj--
