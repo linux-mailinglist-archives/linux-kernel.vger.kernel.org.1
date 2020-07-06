@@ -2,137 +2,297 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C191215352
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 09:31:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7472921535C
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 09:38:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728915AbgGFHbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 03:31:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47702 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728079AbgGFHbP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 03:31:15 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46D1DC061794
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Jul 2020 00:31:15 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id j18so38130096wmi.3
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 00:31:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Ij0JRwK8ga/rncVIV9YKY5BwGhFS/NPZFYIdNVKTzqc=;
-        b=ql6Xa+1gVBCsxErRijzq8GkAk+NPNDVoSojqePD/z4CAU26jaa/7uB5xGq/72Cjxdf
-         3d24hdR93nqxIx0LJ7NrYnAFtEUlSM90YsNpILMJ11Qe1CkaQtzv/3rQvZmBLK+SEKqO
-         FA/4Vwg0DOIpRQipFZrVoTuAI4RpxpnELJ2+OWEmwEHDSf/jUIcbWAo77Kz/Dk93DZK2
-         +nhzkHcv2jonehE8ZN8EwinoOoRqZsBcrWXBnUryeCk4bqHWZOviXdU/2XAxXwdE060w
-         jOeqJSbimEDQmTpIpruMkKOSp3fSbAO0AaGrWfwlrSUWWeX8q2XZDnW5hFFu/xSAc4vs
-         fKmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Ij0JRwK8ga/rncVIV9YKY5BwGhFS/NPZFYIdNVKTzqc=;
-        b=qj2e50uO7MmuPsN4EBHvOcO+/gJkCQ2DnUesCo+l2lf4HrQGM5N27AyySoESdIvxhr
-         3zvYn3KD/xvY5MFDZjNLkYqWAZryRYNZRi8msCB3z8chAviQoFo/sXKlG0yFODhh+3mr
-         lgBQbK5KnuXrh0UUC62kWmkDuIgx2xKlW390VI75u2krsZjUHbCUaBjJ9TRyVUFtqiEm
-         1BYPUNFsQx+h/7AHt595E26ZjaAII+82Y+AUko9fZLK3blNBoYhR338qIcg1aS56Zn2P
-         GEdAb4KC5eLyXZbI9zTSErrUU+GPmoXmeP1CBU0VLLi8n3XSmNXuWQHM1yhAQydrXjpP
-         scOA==
-X-Gm-Message-State: AOAM532ZfYGUARU7bRNlYe/flNLTCOiGUSYXCKhHGK0Nibd4EQg50m4Q
-        FibSpJyTDBsXDglZZEjtdTr+0bgsQuE=
-X-Google-Smtp-Source: ABdhPJwFe74liwklMNgNlDDfUptR2TDgiF8T0WWjCvFSkv/sy8CiCpkIoPKmbqGh9O9/kku8SGb+Dw==
-X-Received: by 2002:a1c:bb44:: with SMTP id l65mr50526517wmf.51.1594020673878;
-        Mon, 06 Jul 2020 00:31:13 -0700 (PDT)
-Received: from dell ([2.27.35.206])
-        by smtp.gmail.com with ESMTPSA id c15sm12304424wme.23.2020.07.06.00.31.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Jul 2020 00:31:12 -0700 (PDT)
-Date:   Mon, 6 Jul 2020 08:31:11 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Chen-Yu Tsai <wens@csie.org>
-Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Carlo Caione <carlo@caione.org>
-Subject: Re: [PATCH 5/5] mfd: axp20x-i2c: Do not define 'struct
- acpi_device_id' when !CONFIG_ACPI
-Message-ID: <20200706073111.GD2821869@dell>
-References: <20200629123215.1014747-1-lee.jones@linaro.org>
- <20200629123215.1014747-6-lee.jones@linaro.org>
- <CAGb2v66Ws4WNPZbOYQvikKoozj_2WjzS-Jq-o2VxT77=k0vODw@mail.gmail.com>
+        id S1728862AbgGFHhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 03:37:55 -0400
+Received: from mga09.intel.com ([134.134.136.24]:30939 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728192AbgGFHhz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Jul 2020 03:37:55 -0400
+IronPort-SDR: LfjKtakYfVkgSrHa6iPWY04Ianjgpg1Ps1teX1OWvhBhQaI3Bl8eMrvrJLA0pJ3NHygUaexYAA
+ iUScuXZjGt/g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9673"; a="148870840"
+X-IronPort-AV: E=Sophos;i="5.75,318,1589266800"; 
+   d="scan'208";a="148870840"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2020 00:37:54 -0700
+IronPort-SDR: SlAGU413MyPcArQKxFAkeu8yJ69f/QyGqY9EQKtgHwJWmecCWSKutcU9H9iwcaUkjOScMmbTOo
+ A4x514GdG0BA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,318,1589266800"; 
+   d="scan'208";a="456610146"
+Received: from xiaoranf-mobl2.ccr.corp.intel.com (HELO [10.255.28.11]) ([10.255.28.11])
+  by orsmga005.jf.intel.com with ESMTP; 06 Jul 2020 00:37:51 -0700
+Cc:     baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 3/4] iommu/vt-d: Report page request faults for guest
+ SVA
+To:     "Tian, Kevin" <kevin.tian@intel.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>
+References: <20200706002535.9381-1-baolu.lu@linux.intel.com>
+ <20200706002535.9381-4-baolu.lu@linux.intel.com>
+ <MWHPR11MB1645466566F629CE524ED9C58C690@MWHPR11MB1645.namprd11.prod.outlook.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <9559521a-7d69-e937-bcbc-e96a7d8fef8b@linux.intel.com>
+Date:   Mon, 6 Jul 2020 15:37:50 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAGb2v66Ws4WNPZbOYQvikKoozj_2WjzS-Jq-o2VxT77=k0vODw@mail.gmail.com>
+In-Reply-To: <MWHPR11MB1645466566F629CE524ED9C58C690@MWHPR11MB1645.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 29 Jun 2020, Chen-Yu Tsai wrote:
+Hi Kevin,
 
-> Adding Hans to the list as he's the one that deals with all the x86
-> platforms that use this series of chips.
+On 2020/7/6 9:29, Tian, Kevin wrote:
+>> From: Lu Baolu <baolu.lu@linux.intel.com>
+>> Sent: Monday, July 6, 2020 8:26 AM
+>>
+>> A pasid might be bound to a page table from a VM guest via the iommu
+>> ops.sva_bind_gpasid. In this case, when a DMA page fault is detected
+>> on the physical IOMMU, we need to inject the page fault request into
+>> the guest. After the guest completes handling the page fault, a page
+>> response need to be sent back via the iommu ops.page_response().
+>>
+>> This adds support to report a page request fault. Any external module
+>> which is interested in handling this fault should regiester a notifier
+>> callback.
 > 
-> On Mon, Jun 29, 2020 at 8:32 PM Lee Jones <lee.jones@linaro.org> wrote:
-> >
-> > Since ACPI_PTR() is used to NULLify the value when !CONFIG_ACPI,
-> > struct axp20x_i2c_acpi_match becomes defined by unused.
-> >
-> > This squashes the current W=1 kernel builds warning:
-> >
-> >  drivers/mfd/axp20x-i2c.c:82:36: warning: ‘axp20x_i2c_acpi_match’ defined but not used [-Wunused-const-variable=]
-> >
-> > Cc: Chen-Yu Tsai <wens@csie.org>
-> > Cc: Carlo Caione <carlo@caione.org>
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > ---
-> >  drivers/mfd/axp20x-i2c.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/drivers/mfd/axp20x-i2c.c b/drivers/mfd/axp20x-i2c.c
-> > index 14f9df74f855c..3dd650125c239 100644
-> > --- a/drivers/mfd/axp20x-i2c.c
-> > +++ b/drivers/mfd/axp20x-i2c.c
-> > @@ -79,6 +79,7 @@ static const struct i2c_device_id axp20x_i2c_id[] = {
-> >  };
-> >  MODULE_DEVICE_TABLE(i2c, axp20x_i2c_id);
-> >
-> > +#if IS_ENABLED(CONFIG_ACPI)
-> >  static const struct acpi_device_id axp20x_i2c_acpi_match[] = {
+> be specific on which notifier to be registered...
+
+Sure.
+
 > 
-> I'd rather use "__maybe_unused" if possible to at least get a compile
-> check, and also because "ACPI_PTR NULLifies the value" might not be
-> well known to people not working on ACPI-based platforms.
-
-FYI, I've gone back to this patch, as it seems to be the common
-census across the rest of the kernel, due to the extra space saving.
-
-The code will get compile checks when compiled with different
-architectures, and I'm not sure I understand the last point you made.
-
-> Either way,
+>>
+>> Co-developed-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+>> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+>> Co-developed-by: Liu Yi L <yi.l.liu@intel.com>
+>> Signed-off-by: Liu Yi L <yi.l.liu@intel.com>
+>> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+>> ---
+>>   drivers/iommu/intel/svm.c | 99 ++++++++++++++++++++++++++++++++-------
+>>   1 file changed, 81 insertions(+), 18 deletions(-)
+>>
+>> diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
+>> index c23167877b2b..08c58c2b1a06 100644
+>> --- a/drivers/iommu/intel/svm.c
+>> +++ b/drivers/iommu/intel/svm.c
+>> @@ -815,6 +815,57 @@ static void intel_svm_drain_prq(struct device *dev,
+>> int pasid)
+>>   	}
+>>   }
+>>
+>> +static int prq_to_iommu_prot(struct page_req_dsc *req)
+>> +{
+>> +	int prot = 0;
+>> +
+>> +	if (req->rd_req)
+>> +		prot |= IOMMU_FAULT_PERM_READ;
+>> +	if (req->wr_req)
+>> +		prot |= IOMMU_FAULT_PERM_WRITE;
+>> +	if (req->exe_req)
+>> +		prot |= IOMMU_FAULT_PERM_EXEC;
+>> +	if (req->pm_req)
+>> +		prot |= IOMMU_FAULT_PERM_PRIV;
+>> +
+>> +	return prot;
+>> +}
+>> +
+>> +static int
+>> +intel_svm_prq_report(struct device *dev, struct page_req_dsc *desc)
+>> +{
+>> +	struct iommu_fault_event event;
+>> +	u8 bus, devfn;
+>> +
+>> +	memset(&event, 0, sizeof(struct iommu_fault_event));
+>> +	bus = PCI_BUS_NUM(desc->rid);
+>> +	devfn = desc->rid & 0xff;
 > 
-> Acked-by: Chen-Yu Tsai <wens@csie.org>
+> not required.
 
-I've applied this to the patch.  Thanks.
+Yes. Will remove them.
 
-> >         {
-> >                 .id = "INT33F4",
-> > @@ -87,6 +88,7 @@ static const struct acpi_device_id axp20x_i2c_acpi_match[] = {
-> >         { },
-> >  };
-> >  MODULE_DEVICE_TABLE(acpi, axp20x_i2c_acpi_match);
-> > +#endif
-> >
-> >  static struct i2c_driver axp20x_i2c_driver = {
-> >         .driver = {
-> >
+> 
+>> +
+>> +	/* Fill in event data for device specific processing */
+>> +	event.fault.type = IOMMU_FAULT_PAGE_REQ;
+>> +	event.fault.prm.addr = desc->addr;
+>> +	event.fault.prm.pasid = desc->pasid;
+>> +	event.fault.prm.grpid = desc->prg_index;
+>> +	event.fault.prm.perm = prq_to_iommu_prot(desc);
+>> +
+>> +	/*
+>> +	 * Set last page in group bit if private data is present,
+>> +	 * page response is required as it does for LPIG.
+>> +	 */
+> 
+> move to priv_data_present check?
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Yes.
+
+> 
+>> +	if (desc->lpig)
+>> +		event.fault.prm.flags |=
+>> IOMMU_FAULT_PAGE_REQUEST_LAST_PAGE;
+>> +	if (desc->pasid_present)
+>> +		event.fault.prm.flags |=
+>> IOMMU_FAULT_PAGE_REQUEST_PASID_VALID;
+>> +	if (desc->priv_data_present) {
+>> +		event.fault.prm.flags |=
+>> IOMMU_FAULT_PAGE_REQUEST_LAST_PAGE;
+>> +		event.fault.prm.flags |=
+>> IOMMU_FAULT_PAGE_REQUEST_PRIV_DATA;
+>> +		memcpy(event.fault.prm.private_data, desc->priv_data,
+>> +		       sizeof(desc->priv_data));
+>> +	}
+>> +
+>> +	return iommu_report_device_fault(dev, &event);
+>> +}
+>> +
+>>   static irqreturn_t prq_event_thread(int irq, void *d)
+>>   {
+>>   	struct intel_iommu *iommu = d;
+>> @@ -828,7 +879,7 @@ static irqreturn_t prq_event_thread(int irq, void *d)
+>>   	tail = dmar_readq(iommu->reg + DMAR_PQT_REG) &
+>> PRQ_RING_MASK;
+>>   	head = dmar_readq(iommu->reg + DMAR_PQH_REG) &
+>> PRQ_RING_MASK;
+>>   	while (head != tail) {
+>> -		struct intel_svm_dev *sdev;
+>> +		struct intel_svm_dev *sdev = NULL;
+> 
+> move to outside of the loop, otherwise later check always hit "if (!sdev)"
+
+Yes, good catch!
+
+> 
+>>   		struct vm_area_struct *vma;
+>>   		struct page_req_dsc *req;
+>>   		struct qi_desc resp;
+>> @@ -864,6 +915,20 @@ static irqreturn_t prq_event_thread(int irq, void *d)
+>>   			}
+>>   		}
+>>
+>> +		if (!sdev || sdev->sid != req->rid) {
+>> +			struct intel_svm_dev *t;
+>> +
+>> +			sdev = NULL;
+>> +			rcu_read_lock();
+>> +			list_for_each_entry_rcu(t, &svm->devs, list) {
+>> +				if (t->sid == req->rid) {
+>> +					sdev = t;
+>> +					break;
+>> +				}
+>> +			}
+>> +			rcu_read_unlock();
+>> +		}
+>> +
+>>   		result = QI_RESP_INVALID;
+>>   		/* Since we're using init_mm.pgd directly, we should never
+>> take
+>>   		 * any faults on kernel addresses. */
+>> @@ -874,6 +939,17 @@ static irqreturn_t prq_event_thread(int irq, void *d)
+>>   		if (!is_canonical_address(address))
+>>   			goto bad_req;
+>>
+>> +		/*
+>> +		 * If prq is to be handled outside iommu driver via receiver of
+>> +		 * the fault notifiers, we skip the page response here.
+>> +		 */
+>> +		if (svm->flags & SVM_FLAG_GUEST_MODE) {
+>> +			if (sdev && !intel_svm_prq_report(sdev->dev, req))
+>> +				goto prq_advance;
+>> +			else
+>> +				goto bad_req;
+>> +		}
+>> +
+>>   		/* If the mm is already defunct, don't handle faults. */
+>>   		if (!mmget_not_zero(svm->mm))
+>>   			goto bad_req;
+>> @@ -892,24 +968,10 @@ static irqreturn_t prq_event_thread(int irq, void *d)
+>>   			goto invalid;
+>>
+>>   		result = QI_RESP_SUCCESS;
+>> -	invalid:
+>> +invalid:
+>>   		mmap_read_unlock(svm->mm);
+>>   		mmput(svm->mm);
+>> -	bad_req:
+>> -		/* Accounting for major/minor faults? */
+>> -		rcu_read_lock();
+>> -		list_for_each_entry_rcu(sdev, &svm->devs, list) {
+>> -			if (sdev->sid == req->rid)
+>> -				break;
+>> -		}
+>> -		/* Other devices can go away, but the drivers are not
+>> permitted
+>> -		 * to unbind while any page faults might be in flight. So it's
+>> -		 * OK to drop the 'lock' here now we have it. */
+> 
+> should we keep and move this comment to earlier sdev lookup? and
+
+I thought this comment explained why rcu_read_unlock() before the next
+checking. In the new lookup code, we don't need to check, hence I
+removed the comments.
+
+> regarding to guest unbind, ae we preventing the fault owner (outside
+> of iommu driver) to unbind against in-flight fault request?
+
+Yes. We always wait until all prq with the same pasid completes in
+gpasid_unbind().
+
+> 
+>> -		rcu_read_unlock();
+>> -
+>> -		if (WARN_ON(&sdev->list == &svm->devs))
+>> -			sdev = NULL;
+> 
+> similarly should we keep the WARN_ON check here?
+
+Yes, agreed. We can keep a WARN_ON() here.
+
+> 
+>> -
+>> +bad_req:
+>>   		if (sdev && sdev->ops && sdev->ops->fault_cb) {
+>>   			int rwxp = (req->rd_req << 3) | (req->wr_req << 2) |
+>>   				(req->exe_req << 1) | (req->pm_req);
+>> @@ -920,7 +982,7 @@ static irqreturn_t prq_event_thread(int irq, void *d)
+>>   		   and these can be NULL. Do not use them below this point!
+>> */
+>>   		sdev = NULL;
+>>   		svm = NULL;
+>> -	no_pasid:
+>> +no_pasid:
+>>   		if (req->lpig || req->priv_data_present) {
+>>   			/*
+>>   			 * Per VT-d spec. v3.0 ch7.7, system software must
+>> @@ -945,6 +1007,7 @@ static irqreturn_t prq_event_thread(int irq, void *d)
+>>   			resp.qw3 = 0;
+>>   			qi_submit_sync(iommu, &resp, 1, 0);
+>>   		}
+>> +prq_advance:
+>>   		head = (head + sizeof(*req)) & PRQ_RING_MASK;
+>>   	}
+>>
+>> --
+>> 2.17.1
+> 
+> Thanks
+> Kevin
+> 
+
+Best regards,
+baolu
