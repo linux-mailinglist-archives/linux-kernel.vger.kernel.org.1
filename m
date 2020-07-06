@@ -2,184 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D30621542B
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 10:47:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B02F0215441
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 10:57:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728578AbgGFIru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 04:47:50 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:40682 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728321AbgGFIru (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 04:47:50 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 2E6931A1687;
-        Mon,  6 Jul 2020 10:47:48 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 79EFE1A05F7;
-        Mon,  6 Jul 2020 10:47:45 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 1D2D740296;
-        Mon,  6 Jul 2020 16:47:42 +0800 (SGT)
-From:   Richard Zhu <hongxing.zhu@nxp.com>
-To:     shawnguo@kernel.org
-Cc:     linux-imx@nxp.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Richard Zhu <hongxing.zhu@nxp.com>
-Subject: [PATCH] ARM: dts: imx6qdl: only enable pcie in the pcie dts file
-Date:   Mon,  6 Jul 2020 16:44:41 +0800
-Message-Id: <1594025081-2353-1-git-send-email-hongxing.zhu@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1728672AbgGFI4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 04:56:52 -0400
+Received: from vmicros1.altlinux.org ([194.107.17.57]:57602 "EHLO
+        vmicros1.altlinux.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728321AbgGFI4u (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Jul 2020 04:56:50 -0400
+X-Greylist: delayed 475 seconds by postgrey-1.27 at vger.kernel.org; Mon, 06 Jul 2020 04:56:47 EDT
+Received: from imap.altlinux.org (imap.altlinux.org [194.107.17.38])
+        by vmicros1.altlinux.org (Postfix) with ESMTP id E636372CC6C;
+        Mon,  6 Jul 2020 11:48:50 +0300 (MSK)
+Received: by imap.altlinux.org (Postfix, from userid 705)
+        id B3DAB4A4AEF; Mon,  6 Jul 2020 11:48:50 +0300 (MSK)
+Date:   Mon, 6 Jul 2020 11:48:50 +0300
+From:   Michael Shigorin <mike@altlinux.org>
+To:     Dan Williams <dan.j.williams@intel.com>,
+        linux-kernel@vger.kernel.org,
+        James Bottomley <James.Bottomley@hansenpartnership.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>, Chris Mason <clm@fb.clm>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] CodingStyle: Inclusive Terminology
+Message-ID: <20200706084850.GT25779@imap.altlinux.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=koi8-r
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since iMX6Q/DL PCIe has the PM limitation (ERR005723 "PCIe PCIe does
-not support L2 Power Down").
-System suspend/resume would be broken by PCIe, if PCIe is enabled.
-Only enable PCIe in the xxx-pcie.dts files to avoid the brokens when
-other xxx.dtb files are used on sabresd and sabreauto boards.
+	Hi guys,
+do you think playing with words will really get you anywhere
+or help anyone?
 
-Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
----
- arch/arm/boot/dts/Makefile                  |  4 ++++
- arch/arm/boot/dts/imx6dl-sabreauto-pcie.dts | 12 ++++++++++++
- arch/arm/boot/dts/imx6dl-sabresd-pcie.dts   | 12 ++++++++++++
- arch/arm/boot/dts/imx6q-sabreauto-pcie.dts  | 12 ++++++++++++
- arch/arm/boot/dts/imx6q-sabresd-pcie.dts    | 12 ++++++++++++
- arch/arm/boot/dts/imx6qdl-sabreauto.dtsi    |  4 ----
- arch/arm/boot/dts/imx6qdl-sabresd.dtsi      |  1 -
- 7 files changed, 52 insertions(+), 5 deletions(-)
- create mode 100644 arch/arm/boot/dts/imx6dl-sabreauto-pcie.dts
- create mode 100644 arch/arm/boot/dts/imx6dl-sabresd-pcie.dts
- create mode 100644 arch/arm/boot/dts/imx6q-sabreauto-pcie.dts
- create mode 100644 arch/arm/boot/dts/imx6q-sabresd-pcie.dts
+> +On the triviality of replacing words
 
-diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index e6a1cac0bfc7..25fcd091f986 100644
---- a/arch/arm/boot/dts/Makefile
-+++ b/arch/arm/boot/dts/Makefile
-@@ -458,8 +458,10 @@ dtb-$(CONFIG_SOC_IMX6Q) += \
- 	imx6dl-rex-basic.dtb \
- 	imx6dl-riotboard.dtb \
- 	imx6dl-sabreauto.dtb \
-+	imx6dl-sabreauto-pcie.dtb \
- 	imx6dl-sabrelite.dtb \
- 	imx6dl-sabresd.dtb \
-+	imx6dl-sabresd-pcie.dtb \
- 	imx6dl-savageboard.dtb \
- 	imx6dl-ts4900.dtb \
- 	imx6dl-ts7970.dtb \
-@@ -545,8 +547,10 @@ dtb-$(CONFIG_SOC_IMX6Q) += \
- 	imx6q-pistachio.dtb \
- 	imx6q-rex-pro.dtb \
- 	imx6q-sabreauto.dtb \
-+	imx6q-sabreauto-pcie.dtb \
- 	imx6q-sabrelite.dtb \
- 	imx6q-sabresd.dtb \
-+	imx6q-sabresd-pcie.dtb \
- 	imx6q-savageboard.dtb \
- 	imx6q-sbc6x.dtb \
- 	imx6q-tbs2910.dtb \
-diff --git a/arch/arm/boot/dts/imx6dl-sabreauto-pcie.dts b/arch/arm/boot/dts/imx6dl-sabreauto-pcie.dts
-new file mode 100644
-index 000000000000..88fc15b1a9de
---- /dev/null
-+++ b/arch/arm/boot/dts/imx6dl-sabreauto-pcie.dts
-@@ -0,0 +1,12 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * Copyright 2020 NXP
-+ */
-+
-+/dts-v1/;
-+
-+#include "imx6dl-sabreauto.dts"
-+
-+&pcie {
-+	status = "okay";
-+};
-diff --git a/arch/arm/boot/dts/imx6dl-sabresd-pcie.dts b/arch/arm/boot/dts/imx6dl-sabresd-pcie.dts
-new file mode 100644
-index 000000000000..c57558c815d9
---- /dev/null
-+++ b/arch/arm/boot/dts/imx6dl-sabresd-pcie.dts
-@@ -0,0 +1,12 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * Copyright 2020 NXP
-+ */
-+
-+/dts-v1/;
-+
-+#include "imx6dl-sabresd.dts"
-+
-+&pcie {
-+	status = "okay";
-+};
-diff --git a/arch/arm/boot/dts/imx6q-sabreauto-pcie.dts b/arch/arm/boot/dts/imx6q-sabreauto-pcie.dts
-new file mode 100644
-index 000000000000..769a2cf4a6ac
---- /dev/null
-+++ b/arch/arm/boot/dts/imx6q-sabreauto-pcie.dts
-@@ -0,0 +1,12 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * Copyright 2020 NXP
-+ */
-+
-+/dts-v1/;
-+
-+#include "imx6q-sabreauto.dts"
-+
-+&pcie {
-+	status = "okay";
-+};
-diff --git a/arch/arm/boot/dts/imx6q-sabresd-pcie.dts b/arch/arm/boot/dts/imx6q-sabresd-pcie.dts
-new file mode 100644
-index 000000000000..2ff88f6a1d52
---- /dev/null
-+++ b/arch/arm/boot/dts/imx6q-sabresd-pcie.dts
-@@ -0,0 +1,12 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * Copyright 2020 NXP
-+ */
-+
-+/dts-v1/;
-+
-+#include "imx6q-sabresd.dts"
-+
-+&pcie {
-+	status = "okay";
-+};
-diff --git a/arch/arm/boot/dts/imx6qdl-sabreauto.dtsi b/arch/arm/boot/dts/imx6qdl-sabreauto.dtsi
-index cf628465cd0a..30737e3b698a 100644
---- a/arch/arm/boot/dts/imx6qdl-sabreauto.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl-sabreauto.dtsi
-@@ -805,10 +805,6 @@
- 	status = "okay";
- };
- 
--&pcie {
--	status = "okay";
--};
--
- &spdif {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_spdif>;
-diff --git a/arch/arm/boot/dts/imx6qdl-sabresd.dtsi b/arch/arm/boot/dts/imx6qdl-sabresd.dtsi
-index 28b35ccb3757..78ead45c748d 100644
---- a/arch/arm/boot/dts/imx6qdl-sabresd.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl-sabresd.dtsi
-@@ -725,7 +725,6 @@
- 	pinctrl-0 = <&pinctrl_pcie>;
- 	reset-gpio = <&gpio7 12 GPIO_ACTIVE_LOW>;
- 	vpcie-supply = <&reg_pcie>;
--	status = "okay";
- };
- 
- &pwm1 {
+You're not going to make white black, make a native African
+white, or fix age-old crimes by this "triviality".
+
+You're only going to sort of please those who actually
+hate you -- and everyone creative -- because they envy.
+Or rather subdue to their twisted will (what's next on
+the list, cannibalism aproval extorted from you?).
+
+
+Have you seen this post by a teacher?
+https://www.reddit.com/r/TrueOffMyChest/comments/gulna2/i_used_to_teach_in_a_black_inner_city_school/
+
+Do you believe that a typical late-USSRish quota system
+for those who do not want to learn will help them learn?
+
+I'd rather start with helping those who DO want to learn
+by protecting them from their disruptive environment that
+pulls them back into morass.
+
+
+That whole "inclusivity" agenda is extremely toxic and
+hypocritical -- this king is so naked that it takes a late
+Soviet-style propaganda and party-bashing to make people
+shut up and not even confess that a black criminal's life
+might only be an excuse and not the reason to murder and
+pillage zounds of other people of any skin color -- with
+only some black people daring to point out that the said
+criminal was once threating a pregnant black woman with
+his gun aimed at her baby not yet even born, for example.
+
+That orwellish "inclusivity" that excludes on intent,
+ill-meaning "goodwill", silencing "free speech" is what
+seems to be going to bury the country where many of you
+work and live.
+
+I wouldn't say I wish USA good health and good luck --
+it is the country that ruined USSR on intent and that
+ruined former Ukraine on intent (I used to live in Kiev
+since early 1980s up till 2014 when USA-made nazi coup
+destroyed the country).  But I should at least warn you
+that you're playing with demon core, not even with fire;
+you're rushing to support moral rapists when you could
+at least stay where you are.
+
+
+I write that as a person made in USSR back in 1979,
+just in case.  It was still Russia, but I remember
+those kitchen talks that are no more needed.  And I
+remember a "why do you learn?" question back in 1993.
+
+You can argue and call me an intolerant liar, welcome.
+Time will tell and you have no power over it, comrades.
+
+
+PS: those who find this kind of abuse unacceptable
+are welcome to Russia if they fail to protect their
+homeland -- we've learned it all too well already,
+so we *do* value our freedom -- and stand by it.
+Look for Innopolis.
+
+PPS: James, kudos to you!  Prepare for your share
+of "democratic shelling" though.  Hope you stand.
+
 -- 
-2.17.1
-
+š---- WBR, Michael Shigorin / http://altlinux.org
+šš------ http://opennet.ru / http://anna-news.info
