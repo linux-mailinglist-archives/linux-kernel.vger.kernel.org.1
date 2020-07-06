@@ -2,60 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B4C3215885
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 15:36:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F1EC21588F
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 15:36:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729351AbgGFNeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 09:34:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47248 "EHLO
+        id S1729505AbgGFNf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 09:35:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729330AbgGFNeJ (ORCPT
+        with ESMTP id S1729337AbgGFNeK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 09:34:09 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB43EC08C5DF
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Jul 2020 06:34:08 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id g75so39363845wme.5
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 06:34:08 -0700 (PDT)
+        Mon, 6 Jul 2020 09:34:10 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0470C061755
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Jul 2020 06:34:09 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id j18so39372787wmi.3
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 06:34:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=d5p91PYLOlGL5eAhTI+TgOkI4utTlM6UStiViuCSA4I=;
-        b=zWvdvBnN7uGI3YJYG8xAKLYiRJh1mm0+0r6YAQ/ht+c+2n5/aaoZ24CrC6+hTOq75q
-         UZgksZ/ftaNvfFjflqPGT6LMkwCqQ9dhF/YRFHAvqu+DdxqoYp7Ex3s1nB1x0kw/i8Wy
-         2EWBhwE38eGBFN2TO5wcJ4Q22ru3uU3QZ8WgSOUDl0W5yggF2tD93sA22eOBatapWahz
-         hIdy7n8K4yNPhE7VlJWZ1XdjDn1HYu1O7Ot1DZPO9MIdEvoyXtF65q5zuvF5LY1rfRHI
-         zO4HmtSixQQmvk/yfC0Oeo3PAQMsM6lPTWYiYiuQvARvCD45XF9IVh8ATkXIOd6W0kfn
-         nG5Q==
+        bh=atQQd6B48grrwp+3FZv95LUICx56wwJRa1SpQXxMQxY=;
+        b=w6hRYUO7YyVcZnrxkVQcL9i+DIcegwSxOpJpusHM7ek+/DIU5QwFI/PAYc6YFHkaCT
+         k8FRF534bpubL0B0OmFF5oq6wY03Rw6yEomh35Tmx6FPDE/waGSczpU5Cgzrn5Uju7Cc
+         bCaXLGQifZRD/R4nbrn64owZsuCBcCb1EC0ImDhAGAXd/cc+WlULEQCijrABf+IpaKDT
+         3EKntJe03seySO6FPX3ZDocV61TFxZ1D1a4x8qhefwdg2zdjfgFY86PiagDVLamwPJy8
+         Cryz85XcxwCCMuv2nwLw+AXH9YXajlbSNY8nVxl/zMp1+gxb+292tL9mvtsS+CABRwnw
+         YPYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=d5p91PYLOlGL5eAhTI+TgOkI4utTlM6UStiViuCSA4I=;
-        b=gguwB3ky4YztPm9LfjICzGmyOPGWbnkYNRLuhItWjfSq/jF6WYopD5rbVNMoOwqj0x
-         Tx2zVHLLQk/Ak5imTyRv2pvlkeyjncdTI87sl0kvgwmKmrcTBQimkQ4R2BXSWra8Yvx1
-         3QP3ME0zPin9q/q2kqecvQuIALKYnpSTXr+c6BGCQjMhgM5NIbUbPwsO/zOZgeFVTgU4
-         kEbi02cLw2BAdpeB2P6/wGGAUxjoMpcgc+C/oXoihIk8pl2tWblLmlUcM9Gb5Jl7L5DM
-         Q9Nxl5WHsmuTHavhlo0y2Xh4rtA+Hyg+uk/r+XV22FphdROJx4tYmAW2WbNFyowVzbAA
-         dWrg==
-X-Gm-Message-State: AOAM531P7/mmIxvaANB2jRVMVX9ge51UbZqyfqZqmjfvXIiyqLHx/Kkx
-        woiz139DcBtEbfZIMH5v5KwfSw==
-X-Google-Smtp-Source: ABdhPJweO4LHH0YuesEFBL8qRBzNi8brrKp2TuduBLyEDI7/Vj9+MgTEjdpThiWYval39YIjbESx5Q==
-X-Received: by 2002:a1c:8117:: with SMTP id c23mr47262716wmd.157.1594042447424;
-        Mon, 06 Jul 2020 06:34:07 -0700 (PDT)
+        bh=atQQd6B48grrwp+3FZv95LUICx56wwJRa1SpQXxMQxY=;
+        b=ioGx3tVc9C7j1WFr4Yv0dQWIS9qHj/lFz0IUQYaSj7klyNRF2DUdeRP7yV86Kob69/
+         i8KOxYcI/5S+TDZqQ8/K2DJLKW165vE0geO5CI2tZnhhON3aAtPzld7YjsMZjbuupN/r
+         Pxoz00Nw63SQHlU9IQDt23dQkR4vGyWlUx0/x9yPjKqHvcCK+XQFtMZdCinp4aZnJVxh
+         eA25FJbRCbeIBe8mXR8+YZWOvOXzP/8cnNxD3JwWJwx40R57lnVlRltjY2K30x5RpiEL
+         EJJqBYKinfzR3POAzR4F+mhc/v1ug9dQrWSouT0mRwMdMDD+tSZO4/Ps42jvOgPk46L2
+         zABw==
+X-Gm-Message-State: AOAM531t7QuNA9KNpyU/4seM95W/JHBkrdntRTc64GQxzT5mInWeghhT
+        rCQ1ju3+X5+zmneYDElvhjU8Hg==
+X-Google-Smtp-Source: ABdhPJwn3KSyjv54N4scU2QXm9bSuHZxzD4jVab9Us5MgbW3y2o+Nt2CodWPVpAjqv1powTZgDaF9Q==
+X-Received: by 2002:a1c:ed0b:: with SMTP id l11mr2416931wmh.121.1594042448527;
+        Mon, 06 Jul 2020 06:34:08 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.206])
-        by smtp.gmail.com with ESMTPSA id v18sm25416082wrv.49.2020.07.06.06.34.06
+        by smtp.gmail.com with ESMTPSA id v18sm25416082wrv.49.2020.07.06.06.34.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Jul 2020 06:34:06 -0700 (PDT)
+        Mon, 06 Jul 2020 06:34:07 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-usb@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>, Bryan Wu <cooloney@kernel.org>
-Subject: [PATCH 19/32] usb: gadget: function: u_uac1_legacy: Demote obvious misuse of kerneldoc to standard comment blocks
-Date:   Mon,  6 Jul 2020 14:33:28 +0100
-Message-Id: <20200706133341.476881-20-lee.jones@linaro.org>
+        Chuhong Yuan <hslester96@gmail.com>,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        Felix Fietkau <nbd@openwrt.org>, Michael Buesch <m@bues.ch>
+Subject: [PATCH 20/32] usb: host: bcma-hcd: Demote obvious misuse of kerneldoc to standard comment blocks
+Date:   Mon,  6 Jul 2020 14:33:29 +0100
+Message-Id: <20200706133341.476881-21-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200706133341.476881-1-lee.jones@linaro.org>
 References: <20200706133341.476881-1-lee.jones@linaro.org>
@@ -66,95 +68,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No attempt has been made to document any of the demoted functions here.
+No attempt has been made to document either of the demoted functions here.
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/usb/gadget/function/u_uac1_legacy.c:30: warning: Function parameter or member 'i' not described in 'snd_interval_refine_set'
- drivers/usb/gadget/function/u_uac1_legacy.c:30: warning: Function parameter or member 'val' not described in 'snd_interval_refine_set'
- drivers/usb/gadget/function/u_uac1_legacy.c:93: warning: Function parameter or member 'snd' not described in 'playback_default_hw_params'
- drivers/usb/gadget/function/u_uac1_legacy.c:153: warning: Function parameter or member 'card' not described in 'u_audio_playback'
- drivers/usb/gadget/function/u_uac1_legacy.c:153: warning: Function parameter or member 'buf' not described in 'u_audio_playback'
- drivers/usb/gadget/function/u_uac1_legacy.c:153: warning: Function parameter or member 'count' not described in 'u_audio_playback'
- drivers/usb/gadget/function/u_uac1_legacy.c:197: warning: Function parameter or member 'card' not described in 'gaudio_open_snd_dev'
- drivers/usb/gadget/function/u_uac1_legacy.c:257: warning: Function parameter or member 'gau' not described in 'gaudio_close_snd_dev'
- drivers/usb/gadget/function/u_uac1_legacy.c:286: warning: Function parameter or member 'card' not described in 'gaudio_setup'
- drivers/usb/gadget/function/u_uac1_legacy.c:303: warning: Function parameter or member 'the_card' not described in 'gaudio_cleanup'
+ drivers/usb/host/bcma-hcd.c:180: warning: Function parameter or member 'usb_dev' not described in 'bcma_hcd_usb20_old_arm_init'
+ drivers/usb/host/bcma-hcd.c:268: warning: Function parameter or member 'bcma_hcd' not described in 'bcma_hcd_usb20_ns_init'
 
-Cc: Felipe Balbi <balbi@kernel.org>
-Cc: Bryan Wu <cooloney@kernel.org>
+Cc: Chuhong Yuan <hslester96@gmail.com>
+Cc: Hauke Mehrtens <hauke@hauke-m.de>
+Cc: Felix Fietkau <nbd@openwrt.org>
+Cc: Michael Buesch <m@bues.ch>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/usb/gadget/function/u_uac1_legacy.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/usb/host/bcma-hcd.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/usb/gadget/function/u_uac1_legacy.c b/drivers/usb/gadget/function/u_uac1_legacy.c
-index 5393e5c37a4ba..60ae8b2d3f6a2 100644
---- a/drivers/usb/gadget/function/u_uac1_legacy.c
-+++ b/drivers/usb/gadget/function/u_uac1_legacy.c
-@@ -23,7 +23,7 @@
- 
- /*-------------------------------------------------------------------------*/
- 
--/**
-+/*
-  * Some ALSA internal helper functions
-  */
- static int snd_interval_refine_set(struct snd_interval *i, unsigned int val)
-@@ -86,7 +86,7 @@ static int _snd_pcm_hw_param_set(struct snd_pcm_hw_params *params,
- }
- /*-------------------------------------------------------------------------*/
- 
--/**
-+/*
-  * Set default hardware params
-  */
- static int playback_default_hw_params(struct gaudio_snd_dev *snd)
-@@ -146,7 +146,7 @@ static int playback_default_hw_params(struct gaudio_snd_dev *snd)
- 	return 0;
+diff --git a/drivers/usb/host/bcma-hcd.c b/drivers/usb/host/bcma-hcd.c
+index 652fa29beb273..b1b777f33521e 100644
+--- a/drivers/usb/host/bcma-hcd.c
++++ b/drivers/usb/host/bcma-hcd.c
+@@ -168,7 +168,7 @@ static void bcma_hcd_init_chip_mips(struct bcma_device *dev)
+ 	}
  }
  
 -/**
 +/*
-  * Playback audio buffer data by ALSA PCM device
-  */
- size_t u_audio_playback(struct gaudio *card, void *buf, size_t count)
-@@ -189,7 +189,7 @@ int u_audio_get_playback_rate(struct gaudio *card)
- 	return card->playback.rate;
- }
- 
--/**
-+/*
-  * Open ALSA PCM and control device files
-  * Initial the PCM or control device
-  */
-@@ -250,7 +250,7 @@ static int gaudio_open_snd_dev(struct gaudio *card)
- 	return 0;
- }
- 
--/**
-+/*
-  * Close ALSA PCM and control device files
-  */
- static int gaudio_close_snd_dev(struct gaudio *gau)
-@@ -275,7 +275,7 @@ static int gaudio_close_snd_dev(struct gaudio *gau)
- 	return 0;
- }
- 
--/**
-+/*
-  * gaudio_setup - setup ALSA interface and preparing for USB transfer
+  * bcma_hcd_usb20_old_arm_init - Initialize old USB 2.0 controller on ARM
   *
-  * This sets up PCM, mixer or MIDI ALSA devices fore USB gadget using.
-@@ -294,7 +294,7 @@ int gaudio_setup(struct gaudio *card)
- 
+  * Old USB 2.0 core is identified as BCMA_CORE_USB20_HOST and was introduced
+@@ -261,7 +261,7 @@ static void bcma_hcd_usb20_ns_init_hc(struct bcma_device *dev)
+ 	usleep_range(1000, 2000);
  }
  
 -/**
 +/*
-  * gaudio_cleanup - remove ALSA device interface
-  *
-  * This is called to free all resources allocated by @gaudio_setup().
+  * bcma_hcd_usb20_ns_init - Initialize Northstar USB 2.0 controller
+  */
+ static int bcma_hcd_usb20_ns_init(struct bcma_hcd_device *bcma_hcd)
 -- 
 2.25.1
 
