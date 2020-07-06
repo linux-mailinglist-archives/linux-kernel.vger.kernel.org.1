@@ -2,130 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 780212159EF
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 16:50:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB22F215A07
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 16:52:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729453AbgGFOto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 10:49:44 -0400
-Received: from mail.efficios.com ([167.114.26.124]:57410 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729432AbgGFOtl (ORCPT
+        id S1729307AbgGFOwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 10:52:34 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:22997 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729224AbgGFOwd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 10:49:41 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 63F692D8429;
-        Mon,  6 Jul 2020 10:49:39 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id nGbNS3E2RCRr; Mon,  6 Jul 2020 10:49:39 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 198852D8339;
-        Mon,  6 Jul 2020 10:49:39 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 198852D8339
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1594046979;
-        bh=8gAqoabmX0YflNXKWP2tfZI2xQ9rxWmk8Vog6l1Uejc=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=rxQ/oIwF2PU+6lDE1w7+Geq7Z0Y1xfBDUbTcERHIo8TBUptlVm2rd7oeSbrLdHCZ+
-         ycEdmDsAdFEno27tUxe+lyUxu0o935KL5RsDp4TvSOQ05IlqyuoVBrMzs2NKC7l2Q/
-         SFlFR30T0hgUDcvu8OqLfgiql/gHSPtifh5np5FBsqZ6jJSsQGBEPj5D46SyW67wZR
-         DevmD+6sNIni81jClilhGrBOw1/eYObNrxmpP9rHFBPzlgmiHudybM7kgpVVJe6UiZ
-         ac1X8F0DLGYAx3kLn52tuS0WeG7/Fc1/kdVE8aeIwSNsTaDW28Y28ILjwgvTB8U8tE
-         Wqdpb23RS1fkg==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id FXEvtcbaTxen; Mon,  6 Jul 2020 10:49:39 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 094812D8338;
-        Mon,  6 Jul 2020 10:49:39 -0400 (EDT)
-Date:   Mon, 6 Jul 2020 10:49:38 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Florian Weimer <fweimer@redhat.com>
-Cc:     carlos <carlos@redhat.com>, Joseph Myers <joseph@codesourcery.com>,
-        Szabolcs Nagy <szabolcs.nagy@arm.com>,
-        libc-alpha <libc-alpha@sourceware.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ben Maurer <bmaurer@fb.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paul <paulmck@linux.vnet.ibm.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Paul Turner <pjt@google.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-api <linux-api@vger.kernel.org>
-Message-ID: <942999672.22574.1594046978937.JavaMail.zimbra@efficios.com>
-In-Reply-To: <877dvg4ud4.fsf@oldenburg2.str.redhat.com>
-References: <20200629190036.26982-1-mathieu.desnoyers@efficios.com> <20200629190036.26982-3-mathieu.desnoyers@efficios.com> <877dvg4ud4.fsf@oldenburg2.str.redhat.com>
-Subject: Re: [PATCH 2/3] Linux: Use rseq in sched_getcpu if available (v9)
+        Mon, 6 Jul 2020 10:52:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594047151;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZKdVspges85ZduPH9Q6FYljsttWOZWyavYYfs+vHaPE=;
+        b=cp5s15haQq6dCsC1mWqSalF+CcjMs0EkZdlXEiTMhmKpw7pPK/wFPEQN0m5ZFrDogbhUjK
+        fwXGHPZlWFi5NIOCrg3SqbBd/Yoc1QMEiUSQ6rWBylOgKxWgI2T3lxaXCYB8Xecpfj37Jf
+        0b91gAp/akSX+4WDPlx/s+B4bVk51NA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-390-6abRn3w7MLOiHY4XoIRN0w-1; Mon, 06 Jul 2020 10:52:27 -0400
+X-MC-Unique: 6abRn3w7MLOiHY4XoIRN0w-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 97E93107ACF9;
+        Mon,  6 Jul 2020 14:52:25 +0000 (UTC)
+Received: from [10.36.113.241] (ovpn-113-241.ams2.redhat.com [10.36.113.241])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 500D260BF3;
+        Mon,  6 Jul 2020 14:52:16 +0000 (UTC)
+Subject: Re: [PATCH v4 06/15] iommu/vt-d: Support setting ioasid set to domain
+To:     Liu Yi L <yi.l.liu@intel.com>, alex.williamson@redhat.com,
+        baolu.lu@linux.intel.com, joro@8bytes.org
+Cc:     kevin.tian@intel.com, jacob.jun.pan@linux.intel.com,
+        ashok.raj@intel.com, jun.j.tian@intel.com, yi.y.sun@intel.com,
+        jean-philippe@linaro.org, peterx@redhat.com, hao.wu@intel.com,
+        stefanha@gmail.com, iommu@lists.linux-foundation.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1593861989-35920-1-git-send-email-yi.l.liu@intel.com>
+ <1593861989-35920-7-git-send-email-yi.l.liu@intel.com>
+From:   Auger Eric <eric.auger@redhat.com>
+Message-ID: <d47367ab-f986-4c09-2578-3e364aa57835@redhat.com>
+Date:   Mon, 6 Jul 2020 16:52:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
+In-Reply-To: <1593861989-35920-7-git-send-email-yi.l.liu@intel.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3945 (ZimbraWebClient - FF78 (Linux)/8.8.15_GA_3928)
-Thread-Topic: Linux: Use rseq in sched_getcpu if available (v9)
-Thread-Index: s+lDRWKNxhAkUDtcGJ1GCFO2e2bJlg==
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Jul 6, 2020, at 9:59 AM, Florian Weimer fweimer@redhat.com wrote:
+Hi Yi,
 
-> * Mathieu Desnoyers:
->=20
->> When available, use the cpu_id field from __rseq_abi on Linux to
->> implement sched_getcpu().  Fall-back on the vgetcpu vDSO if
->> unavailable.
->=20
-> I've pushed this to glibc master, but unfortunately it looks like this
-> exposes a kernel bug related to affinity mask changes.
->=20
-> After building and testing glibc, this
->=20
->  for x in {1..2000} ; do posix/tst-affinity-static  & done
->=20
-> produces some =E2=80=9Cerror:=E2=80=9D lines for me:
->=20
-> error: Unexpected CPU 2, expected 0
-> error: Unexpected CPU 2, expected 0
-> error: Unexpected CPU 2, expected 0
-> error: Unexpected CPU 2, expected 0
-> error: Unexpected CPU 138, expected 0
-> error: Unexpected CPU 138, expected 0
-> error: Unexpected CPU 138, expected 0
-> error: Unexpected CPU 138, expected 0
->=20
-> =E2=80=9Cexpected 0=E2=80=9D is a result of how the test has been written=
-, it bails out
-> on the first failure, which happens with CPU ID 0.
->=20
-> Smaller systems can use a smaller count than 2000 to reproduce this.  It
-> also happens sporadically when running the glibc test suite itself
-> (which is why it took further testing to reveal this issue).
->=20
-> I can reproduce this with the Debian 4.19.118-2+deb10u1 kernel, the
-> Fedora 5.6.19-300.fc32 kernel, and the Red Hat Enterprise Linux kernel
-> 4.18.0-193.el8 (all x86_64).
->=20
-> As to the cause, I'd guess that the exit path in the sched_setaffinity
-> system call fails to update the rseq area, so that userspace can observe
-> the outdated CPU ID there.
+On 7/4/20 1:26 PM, Liu Yi L wrote:
+> From IOMMU p.o.v., PASIDs allocated and managed by external components
+> (e.g. VFIO) will be passed in for gpasid_bind/unbind operation. IOMMU
+> needs some knowledge to check the PASID ownership, hence add an interface
+> for those components to tell the PASID owner.
+> 
+> In latest kernel design, PASID ownership is managed by IOASID set where
+> the PASID is allocated from. This patch adds support for setting ioasid
+> set ID to the domains used for nesting/vSVA. Subsequent SVA operations
+> on the PASID will be checked against its IOASID set for proper ownership.
+> 
+> Cc: Kevin Tian <kevin.tian@intel.com>
+> CC: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> Cc: Alex Williamson <alex.williamson@redhat.com>
+> Cc: Eric Auger <eric.auger@redhat.com>
+> Cc: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: Lu Baolu <baolu.lu@linux.intel.com>
+> Signed-off-by: Liu Yi L <yi.l.liu@intel.com>
+> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> ---
+>  drivers/iommu/intel/iommu.c | 16 ++++++++++++++++
+>  include/linux/intel-iommu.h |  4 ++++
+>  include/linux/iommu.h       |  1 +
+>  3 files changed, 21 insertions(+)
+> 
+> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+> index 62ebe01..89d708d 100644
+> --- a/drivers/iommu/intel/iommu.c
+> +++ b/drivers/iommu/intel/iommu.c
+> @@ -1793,6 +1793,7 @@ static struct dmar_domain *alloc_domain(int flags)
+>  	if (first_level_by_default())
+>  		domain->flags |= DOMAIN_FLAG_USE_FIRST_LEVEL;
+>  	domain->has_iotlb_device = false;
+> +	domain->ioasid_sid = INVALID_IOASID_SET;
+>  	INIT_LIST_HEAD(&domain->devices);
+>  
+>  	return domain;
+> @@ -6039,6 +6040,21 @@ intel_iommu_domain_set_attr(struct iommu_domain *domain,
+>  		}
+>  		spin_unlock_irqrestore(&device_domain_lock, flags);
+>  		break;
+> +	case DOMAIN_ATTR_IOASID_SID:
+no need to take the device_domain_lock?
+> +		if (!(dmar_domain->flags & DOMAIN_FLAG_NESTING_MODE)) {
+> +			ret = -ENODEV;
+> +			break;
+> +		}
+> +		if ((dmar_domain->ioasid_sid != INVALID_IOASID_SET) &&
+> +		    (dmar_domain->ioasid_sid != (*(int *) data))) {
+storing *(int *) data) in a local variable would increase the
+readability of the code I think.
+> +			pr_warn_ratelimited("multi ioasid_set (%d:%d) setting",
+> +					    dmar_domain->ioasid_sid,
+> +					    (*(int *) data));
+> +			ret = -EBUSY;
+> +			break;
+> +		}
+> +		dmar_domain->ioasid_sid = *(int *) data;
+> +		break;
+>  	default:
+>  		ret = -EINVAL;
+>  		break;
+> diff --git a/include/linux/intel-iommu.h b/include/linux/intel-iommu.h
+> index 3f23c26..0d0ab32 100644
+> --- a/include/linux/intel-iommu.h
+> +++ b/include/linux/intel-iommu.h
+> @@ -549,6 +549,10 @@ struct dmar_domain {
+>  					   2 == 1GiB, 3 == 512GiB, 4 == 1TiB */
+>  	u64		max_addr;	/* maximum mapped address */
+>  
+> +	int		ioasid_sid;	/*
+> +					 * the ioasid set which tracks all
+> +					 * PASIDs used by the domain.
+> +					 */
+>  	int		default_pasid;	/*
+>  					 * The default pasid used for non-SVM
+>  					 * traffic on mediated devices.
+> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+> index 2567c33..21d32be 100644
+> --- a/include/linux/iommu.h
+> +++ b/include/linux/iommu.h
+> @@ -124,6 +124,7 @@ enum iommu_attr {
+>  	DOMAIN_ATTR_FSL_PAMUV1,
+>  	DOMAIN_ATTR_NESTING,	/* two stages of translation */
+>  	DOMAIN_ATTR_DMA_USE_FLUSH_QUEUE,
+> +	DOMAIN_ATTR_IOASID_SID,
+>  	DOMAIN_ATTR_MAX,
+>  };
+>  
+> 
+Thanks
 
-Hi Florian,
+Eric
 
-We have a similar test in Linux, see tools/testing/selftests/rseq/basic_tes=
-t.c.
-That test does not trigger this issue, even when executed repeatedly.
-
-I'll investigate further what is happening within the glibc test.
-
-Thanks,
-
-Mathieu
-
-
---=20
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
