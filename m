@@ -2,86 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDC912150A8
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 02:51:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A3292150AD
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 02:55:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728517AbgGFAvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Jul 2020 20:51:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726760AbgGFAvQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Jul 2020 20:51:16 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EAF7C061794;
-        Sun,  5 Jul 2020 17:51:16 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id k6so31489050ili.6;
-        Sun, 05 Jul 2020 17:51:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=OSBt4nSn7hJZVdI7BgkbTR9q+HgFMkaY3ea5mhDOzwA=;
-        b=d14XyL+o7eqh6a5MgrZL9BGvJ37uZXJJkEHIfxOMchmvIrpOzhvJ2g/VNRf98ETRRI
-         wTdu1d9GXYIBQgfLRN9HnDn998Yw5hmEbBrJiW8wNd/+LzeHT4rTPiyP409gI2tSvjcz
-         kHHaMBVjGRX6Wmh9ncWya0TB1zWDR6n2gmjdCW+RVhzUA7KjzAqpGIcEU3ShRHb9O1Ef
-         tGrtO7hJZ9qmcjp4jUuB8KzRDs/dVpSIIzFHTaM5o8tIuyUtyVQAqHCaYgYw2GPbqn6C
-         rxUjjMNJtDLzJnEndCA6Mz430W/93O9BrkKDb0esQVT3K69zD8+gUulS4JVuu/IulJ3q
-         eCEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=OSBt4nSn7hJZVdI7BgkbTR9q+HgFMkaY3ea5mhDOzwA=;
-        b=CVkh7RKh/RKXcX1PnO/Zdmew/1dOTq7JvVYSY/zujHMNrma32pSg1uJLO1JVrXDAs4
-         OEckLOZqFNmueiU23v6kcIEJKw8OWTTBYJrOZMIacQm7/NeANSZabZpqXWNM49LfuuVR
-         kDlXFDvbnaWA/s+VPmH5nfgtSoU2EwxGgOiioRnVfHbtMOzOvuXIu9XMkgyKfhOvMyeb
-         sueZ+V0+865CWKNqXvyDEFj5zI/2+Gf+qjvcXkXgQ1RlJu/TwouXDNNvJuv1BAvon3KM
-         RHyv7txgBbk0E2HsFV7z+zokcbzhhC0fSE/s6E8tiboYTQ8PHQRqQYvRl3ZqQbG7D78e
-         rZMQ==
-X-Gm-Message-State: AOAM530YkKPAG5qjtJ/Bsf2AdXzI8lDnKYKw/j3xSN1H9jsLV9lLgZcF
-        IUhJwvBLji3t+ERWtX1BKMICYpJM4bMkn8ZIqJk=
-X-Google-Smtp-Source: ABdhPJxZzvvwLzBoCvQn8YNXNkhlrQtmKErPtMC6oEx68/U4Eg9WjVqUHKYT0afdxFIJtkM+qMuXvn4B+q608q2595A=
-X-Received: by 2002:a92:c78d:: with SMTP id c13mr28371793ilk.85.1593996675546;
- Sun, 05 Jul 2020 17:51:15 -0700 (PDT)
+        id S1728370AbgGFAzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Jul 2020 20:55:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44964 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727996AbgGFAzt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Jul 2020 20:55:49 -0400
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3F4DF20786;
+        Mon,  6 Jul 2020 00:55:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593996948;
+        bh=RHq2frbr5C2baeMa24wuxuxZcDCDS1+l6jz9s81NhXo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=DbxuE8Ja5OroOh1pVX2wqFvRGK1khawlOaVNo+AECDr0akQUHQWP9vJGAXE2EQOPh
+         VJOTas95HHPDyo65YRvvDv8SQszatJW6Y9wUYSXK5QyNRpV6KlIhg43qh+9kMHY3Xf
+         p5N838jjl7Z+aNhZ5g3yWN54RIpBtqop8uHbrJqs=
+Received: by mail-lj1-f181.google.com with SMTP id n23so43420151ljh.7;
+        Sun, 05 Jul 2020 17:55:48 -0700 (PDT)
+X-Gm-Message-State: AOAM532QxEJhpA2iHCm2HlZF0jH7ZvFOySkJFCBtkj3uWesOaGupDZK4
+        7RZI+ChkycDdWt12PCuXco4qk74kRvy0bsC4Fqc=
+X-Google-Smtp-Source: ABdhPJyqg4cj0aC4F94U/7Fo1d/pfDDfpEAE94q72fMqGwsQBE7GhkSUNlvcT9PsuxV5GVDiB93U5qFrLHBSMAj0AvA=
+X-Received: by 2002:a05:651c:111:: with SMTP id a17mr3380595ljb.265.1593996946540;
+ Sun, 05 Jul 2020 17:55:46 -0700 (PDT)
 MIME-Version: 1.0
-From:   Chris Healy <cphealy@gmail.com>
-Date:   Sun, 5 Jul 2020 17:51:04 -0700
-Message-ID: <CAFXsbZrFRH2=+OgBARRkku2O0Okv=jg-uZaN+1Cv1tEwq-8k5Q@mail.gmail.com>
-Subject: [PATCH] ARM: dts: vf610-zii-dev-rev-c.dts: Configure fibre port to 1000BaseX
-To:     Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Stefan Agner <stefan@agner.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Fabio Estevam <festevam@gmail.com>, devicetree@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
+References: <1593930255-12378-1-git-send-email-guoren@kernel.org>
+ <202007042350.4C153C4F8@keescook> <CAJF2gTQFqH7GMvRgmtb=hBwvUy6NZyM8xLqOsUTvnYhO48tQbg@mail.gmail.com>
+ <202007051328.FE9EF99@keescook>
+In-Reply-To: <202007051328.FE9EF99@keescook>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Mon, 6 Jul 2020 08:55:35 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTTCEEoP3a9i_REXPwkJZ4Si_hYfjk_hwqHxkyfgw_xBLw@mail.gmail.com>
+Message-ID: <CAJF2gTTCEEoP3a9i_REXPwkJZ4Si_hYfjk_hwqHxkyfgw_xBLw@mail.gmail.com>
+Subject: Re: [PATCH] riscv: Add STACKPROTECTOR supported
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Anup Patel <anup@brainfault.org>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        Zong Li <zong.li@sifive.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Atish Patra <atish.patra@wdc.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The SFF soldered onto the board expects the port to use 1000BaseX.  It
-makes no sense to have the port set to SGMII, since it doesn't even
-support that mode.
+On Mon, Jul 6, 2020 at 4:31 AM Kees Cook <keescook@chromium.org> wrote:
+>
+> On Sun, Jul 05, 2020 at 10:16:14PM +0800, Guo Ren wrote:
+> > On Sun, Jul 5, 2020 at 2:53 PM Kees Cook <keescook@chromium.org> wrote:
+> > > On Sun, Jul 05, 2020 at 06:24:15AM +0000, guoren@kernel.org wrote:
+> > > > +static __always_inline void boot_init_stack_canary(void)
+> > > > +{
+> > > > +     unsigned long canary;
+> > > > +
+> > > > +     /* Try to get a semi random initial value. */
+> > > > +     get_random_bytes(&canary, sizeof(canary));
+> > > > +     canary ^= LINUX_VERSION_CODE;
+> > > > +     canary &= CANARY_MASK;
+> > >
+> > > Does riscv have any kind of instruction counters or other trivial timers
+> > > that could be mixed in here? (e.g. x86's TSC)
+> > Do you mean:
+> >   get_random_bytes(&canary, sizeof(canary));
+> > + canary += get_cycles64() + (get_cycles64() << 32UL);
+> >   canary ^= LINUX_VERSION_CODE;
+> >   canary &= CANARY_MASK;
+> >
+> > Ok ?
+>
+> Sure -- I assume get_cycles64() is architecturally "simple"? (i.e. it
+> doesn't require that the entire time-keeping subsystem has started?)
+Yes, it's just a csr read. But it's necessary? get_random_bytes should enough.
 
-Signed-off-by: Chris Healy <cphealy@gmail.com>
----
- arch/arm/boot/dts/vf610-zii-dev-rev-c.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> > >
+> > > > +
+> > > > +     current->stack_canary = canary;
+> > > > +     __stack_chk_guard = current->stack_canary;
+> > >
+> > > What's needed for riscv to support a per-task canary? (e.g. x86's TLS or
+> > > arm64's register-specific methods)
+> > Some archs change __stack_chk_guard in _switch_to of entry.S, but it
+> > depends on !CONFIG_SMP.
+>
+> Oh, funny. I hadn't actually noticed that logic for the !CONFIG_SMP
+> cases. I see to problem with that, but the more important case, I think
+> is the per-task canaries.
+Maybe some race condition problems. When canary changed the in the
+switch to, but other CPUs still get that value concurrently.
 
-diff --git a/arch/arm/boot/dts/vf610-zii-dev-rev-c.dts
-b/arch/arm/boot/dts/vf610-zii-dev-rev-c.dts
-index 778e02c000d1..de79dcfd32e6 100644
---- a/arch/arm/boot/dts/vf610-zii-dev-rev-c.dts
-+++ b/arch/arm/boot/dts/vf610-zii-dev-rev-c.dts
-@@ -164,7 +164,7 @@
-                     port@9 {
-                         reg = <9>;
-                         label = "sff2";
--                        phy-mode = "sgmii";
-+                        phy-mode = "1000base-x";
-                         managed = "in-band-status";
-                         sfp = <&sff2>;
-                     };
---
-2.21.3
+>
+> > #if defined(CONFIG_STACKPROTECTOR) && !defined(CONFIG_SMP)
+> >         get  value  from next_task->stack_canary
+> >         store  value to __stack_chk_guard
+> > #endif
+> >
+> > It's a so limitation solution for per-task canary, so I didn't copy it
+> > into riscv?
+>
+> Right -- it's a limited solution. On the other had, is !CONFIG_SMP
+> expected to be a common config for riscv? If so, it's worth adding. If
+> not, I'd say skip it. (Though it looks very simple to do...)
+CONFIG_SMP is mostly default for me and let's talk about arm64/x86
+per-task solution. That is the right way.
+
+
+-- 
+Best Regards
+ Guo Ren
+
+ML: https://lore.kernel.org/linux-csky/
