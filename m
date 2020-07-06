@@ -2,259 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E424215A68
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 17:13:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06824215A5D
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 17:12:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729482AbgGFPMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 11:12:53 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:44912 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729310AbgGFPMY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 11:12:24 -0400
-Received: by mail-io1-f71.google.com with SMTP id h15so23767413ioj.11
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 08:12:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=TzYgBgtLdr/DeVs0Hxvj64FqrkmyeFWyafb+XbBsR9Y=;
-        b=LO1Z4azWI0SZy+Dfm6aELnXP4LHtqV9g9duNpv3SunMGiIdWnepR1wrQpEzcNTte4M
-         eL7v4gtNgNcm3jrNtIWsvgyrqaE9O2OTMQrEbf51tsnf5yhQqpFi27xCBk7mKeA3Rjiu
-         05jPKZ4n3ofitPriL3If2yxXu7PL3Q2dTaM3L5rbZKYuIO8X6B3AZ8cEMDlL9oNaMWnL
-         7/kj1WF2UHlJ3BAcoHg92XettmTNCGbAM2JI0nn3c6lga4fI4dkNsbdd+aWTLBytudcX
-         RhhaP8tmIkv6On6atzFw3JkQJQ4a/vUXyYsOHXbt4GaqjbRS/Ls1MWWFrpGvhDbSbk2c
-         Oj0g==
-X-Gm-Message-State: AOAM533T8U3eRSQprjLmQIekRfeUydWgNwNjpqfwcRTdM3ZV0VXeByjB
-        Xqi3HTf4UpMTi/nAOJ39L8Q2xJ/EnCTEe2rGnD6cCBD8U4of
-X-Google-Smtp-Source: ABdhPJwWzB4Ug2eBl0sHsnahg2F4RVLNJ4tNxMRkMaVSpKpu6XH4rmWieOtcBhRtniedmyJAaQgohrKAsgrCq5NH9ekhaJCzUqjR
+        id S1729414AbgGFPMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 11:12:32 -0400
+Received: from mail-am6eur05on2084.outbound.protection.outlook.com ([40.107.22.84]:6160
+        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729368AbgGFPM2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Jul 2020 11:12:28 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=n4fVzWYMOij+PbjU/yzyf22ddrTXT605U8yUQSe9KG7tt+37/Es96PHCAlHkB+N5jMTdCrJqwtRx8OqHsWBGlzhAJ4Z0DjvgUidfTUQkm/sH8quw8AhBA7/REdnAb2VWkWYdUXQjQzmwak15tedpmLHXGPJr+/VP+9KR4zBN2CVo+VH4KDZA6QNQFhpcfPM7uv44wRA4gFosN1oL8TI5AJs8t5I0vhaulUfx0u1Y6SbBbpe478xNmEvrCQ458BdSVODni6TbK3wNOElD+Z9MvDmib6jgHzEDIRtuMIPJ3f0PYcieXAdiogUGz48HyVYJlgqu9vm8L3y2Eyjugnid/w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=P0j4C7KquqH7hVhVRtb9Qith75aRopwO/h76ym5yXtM=;
+ b=RRAZfl9UV5/HGMgbw0LCzdGgRJPvLaWmbvV60HHAs91hB0JNma0HJBtNxyXFloWZHutXD/jwcMNogrmaNDlGMVZ3OTd7RZ4noHJp6n+YIoDKjcuSvRxaK8PweaCmi6chZxuNtywPiyaj6jbBcp9SzzWW/Y/3P93oZH0vUo2dQFMyAesv2pvRvFRSl+n4fZf71XLYUTExMVlFzCs6QV90PYuAjy3kdfMRtyXXdcPJEtC+kf+gh8+TprbMpBwAPFrQ6d3UGEQy/sa9mH4bJhQtcI8zcJcxt2F10l6I6YY5gu/xtMNbl4DAUX0ZL/lhArPRRhM48ZPTj60SqDxE1A2LIQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=P0j4C7KquqH7hVhVRtb9Qith75aRopwO/h76ym5yXtM=;
+ b=NOOB/lDxUuJvVLpKYHGq91qBkDry76bZJvGJS8ieWOmzngyr8PIHxAFjLluukNgQtDevTNszERKsUkVq7Z7IQKDlz6iIqfxsJw398QQnWEkT7URWsafGFBumEHqYkbYuE06TGUSbWwYmfi9kN5Ju8BCBVc/e850ZAOzjWFybudQ=
+Authentication-Results: nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
+Received: from VI1PR0401MB2287.eurprd04.prod.outlook.com
+ (2603:10a6:800:2e::19) by VI1PR04MB6799.eurprd04.prod.outlook.com
+ (2603:10a6:803:130::8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.20; Mon, 6 Jul
+ 2020 15:12:25 +0000
+Received: from VI1PR0401MB2287.eurprd04.prod.outlook.com
+ ([fe80::9d5c:685e:4b51:fa60]) by VI1PR0401MB2287.eurprd04.prod.outlook.com
+ ([fe80::9d5c:685e:4b51:fa60%3]) with mapi id 15.20.3153.029; Mon, 6 Jul 2020
+ 15:12:25 +0000
+Subject: Re: [PATCH] drivers: soc: Fix mailbox suspend/resume no irq for IMX
+ SCU
+To:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     Jassi Brar <jassisinghbrar@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>
+References: <20200706150013.35326-1-vincenzo.frascino@arm.com>
+From:   Daniel Baluta <daniel.baluta@nxp.com>
+Message-ID: <519cf3c2-7b48-5318-3a58-f51202aac6d9@nxp.com>
+Date:   Mon, 6 Jul 2020 18:12:22 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
+In-Reply-To: <20200706150013.35326-1-vincenzo.frascino@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-ClientProxiedBy: AM0PR03CA0051.eurprd03.prod.outlook.com (2603:10a6:208::28)
+ To VI1PR0401MB2287.eurprd04.prod.outlook.com (2603:10a6:800:2e::19)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:16c9:: with SMTP id g9mr42029289jat.118.1594048342622;
- Mon, 06 Jul 2020 08:12:22 -0700 (PDT)
-Date:   Mon, 06 Jul 2020 08:12:22 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000037848f05a9c74d2a@google.com>
-Subject: INFO: task hung in kaweth_control
-From:   syzbot <syzbot+b85b5cbae26121d38b72@syzkaller.appspotmail.com>
-To:     andreyknvl@google.com, davem@davemloft.net, hkallweit1@gmail.com,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, mhabets@solarflare.com, mst@redhat.com,
-        netdev@vger.kernel.org, snelson@pensando.io,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2a02:2f08:5905:e800:50a7:a613:429b:9846] (2a02:2f08:5905:e800:50a7:a613:429b:9846) by AM0PR03CA0051.eurprd03.prod.outlook.com (2603:10a6:208::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.20 via Frontend Transport; Mon, 6 Jul 2020 15:12:23 +0000
+X-Originating-IP: [2a02:2f08:5905:e800:50a7:a613:429b:9846]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 2b3da8ee-9234-4731-5fb2-08d821befd10
+X-MS-TrafficTypeDiagnostic: VI1PR04MB6799:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB6799C85F814D1EAB9291FA1FF9690@VI1PR04MB6799.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:126;
+X-Forefront-PRVS: 04569283F9
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: h559i7y86vI0koXTGygkXZg84KbD9NzBb4uSGIiFRqT+UO0VCw3f2TnnNpiO3VusqHFrW0gMOOUpwNQcdDnO0nJzOA2j5xD7fm+EJqp96QTs4c6h/0FqHwYOm7EPhyIvVIGuTBACM2w+NR09nMX+rkyjltjr0Ne4Pse6g1q3bqqC7/NpqBxExbgXGOKgLLzs90dgVBLAOB6z7P0ykWciqxCPcogAJPdpKa7wXQd5JHNEzqublkBASW5KZvXWg1GqiMkGEmMEpQunofovy8g6zvM7BfMgAUs8UT0yXVjRPTj1OOTYx1EeGGVUQzZMEozC0sqe5aUlhjSU7e4VkMYNIq6Q0cotq9DYy3IAgvdS8g3y8jGerlMa8VeCoGRNyTYh
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0401MB2287.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(376002)(396003)(366004)(136003)(39860400002)(5660300002)(83380400001)(2906002)(66476007)(66946007)(8936002)(66556008)(8676002)(15650500001)(4326008)(31696002)(186003)(16526019)(44832011)(53546011)(316002)(478600001)(52116002)(36756003)(6486002)(31686004)(54906003)(86362001)(2616005)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: iQpIYC5z0l6sY0lFIGKNz7tBxwS9+p23TCBENCeUukT86tauE45/E2C8/8Hyyle7rd3sRMvwuOrgPJz03KQCBSPVX0yhd9wj64nOO0T2piALSXZgIbdLNTG3UiLvpzqwOZVlUw0HPlwAGuHcT5vRSuIRFGBKAXlOJtE7AOxEMuWUwJGo33qJaKfu60t0p0By7dGYwjTY2WishxBV2SrAsxEfPgGcNHKCdQsT3+/IZAcrh3Eq98wGVild+asxXlxIw4BHR9wg+iLdTUcovPMhB/VmCq0m9kc2nMnYLFnt1qG+BEYTDLpZfW29l2U1E6RVEeeuFGUGG2/Mos2lSAoZ7k82D0t+7r+lKTCFzVB28ZSbadgCG8NTw5d0WaqnKOk012BylQKgREo2EflYHCv6Odzt6PKtQJf6q8mJ6SCqbzYpFWRGwTOkVZyS4ZF78euQ0JAV2IVjGTgnfMfXF7asaRd043tlGigWc+3vmDLxEsF6oDpw6SPaji8n5y3JKSAB+fh9TT9sG0Y9CqhyuIXeqV9u0yGGDfjtEomANhK7dQ7BrgxL2PxMQh8mYTWl97Ur
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2b3da8ee-9234-4731-5fb2-08d821befd10
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0401MB2287.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jul 2020 15:12:24.9445
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: R5iR0qD4j010EriGilp+9tnWaeAAQpZS8Z+IQNhCA8Fro9YVqljqaMRAtwWG10AE/HLyhhRM4YosOlbHS34JLQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB6799
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-syzbot found the following crash on:
+On 06.07.2020 18:00, Vincenzo Frascino wrote:
+> imx_mu_suspend_noirq()/imx_mu_resume_noirq() are currently used only
+> when CONFIG_PM_SLEEP configuration options is enabled. Having it
+> disabled triggers the following warning at compile time:
+>
+> drivers/mailbox/imx-mailbox.c:611:12: warning: ‘imx_mu_resume_noirq’
+> defined but not used [-Wunused-function]
+>    static int imx_mu_resume_noirq(struct device *dev)
+>
+> drivers/mailbox/imx-mailbox.c:601:12: warning: ‘imx_mu_suspend_noirq’
+> defined but not used [-Wunused-function]
+>    static int imx_mu_suspend_noirq(struct device *dev)
+>
+> Make imx_mu_suspend_noirq()/imx_mu_resume_noirq() __maybe_unused to
+> address the issue.
+>
+> Cc: Jassi Brar <jassisinghbrar@gmail.com>
+> Cc: Shawn Guo <shawnguo@kernel.org>
+> Cc: Sascha Hauer <s.hauer@pengutronix.de>
+> Cc: Pengutronix Kernel Team <kernel@pengutronix.de>
+> Cc: Fabio Estevam <festevam@gmail.com>
+> Cc: NXP Linux Team <linux-imx@nxp.com>
+> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 
-HEAD commit:    f8f02d5c USB: OTG: rename product list of devices
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
-console output: https://syzkaller.appspot.com/x/log.txt?x=110df03d100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=63b40b2ae167bad6
-dashboard link: https://syzkaller.appspot.com/bug?extid=b85b5cbae26121d38b72
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-
-Unfortunately, I don't have any reproducer for this crash yet.
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+b85b5cbae26121d38b72@syzkaller.appspotmail.com
-
-INFO: task kworker/0:5:3300 blocked for more than 143 seconds.
-      Not tainted 5.8.0-rc1-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-kworker/0:5     D24656  3300      2 0x80004000
-Workqueue: usb_hub_wq hub_event
-Call Trace:
- context_switch kernel/sched/core.c:3430 [inline]
- __schedule+0x88a/0x1cb0 kernel/sched/core.c:4155
- schedule+0xcd/0x2b0 kernel/sched/core.c:4230
- schedule_timeout+0x148/0x250 kernel/time/timer.c:1897
- usb_start_wait_urb.constprop.0+0x2ad/0x2f0 drivers/net/usb/kaweth.c:1238
- kaweth_internal_control_msg drivers/net/usb/kaweth.c:1274 [inline]
- kaweth_control.constprop.0+0x361/0x4f0 drivers/net/usb/kaweth.c:269
- kaweth_read_configuration drivers/net/usb/kaweth.c:287 [inline]
- kaweth_probe.cold+0xaa/0x12ec drivers/net/usb/kaweth.c:1065
- usb_probe_interface+0x315/0x7f0 drivers/usb/core/driver.c:374
- really_probe+0x291/0xc90 drivers/base/dd.c:525
- driver_probe_device+0x26b/0x3d0 drivers/base/dd.c:701
- __device_attach_driver+0x1d1/0x290 drivers/base/dd.c:807
- bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:431
- __device_attach+0x28d/0x430 drivers/base/dd.c:873
- bus_probe_device+0x1e4/0x290 drivers/base/bus.c:491
- device_add+0xb09/0x1b40 drivers/base/core.c:2680
- usb_set_configuration+0xf05/0x18a0 drivers/usb/core/message.c:2032
- usb_generic_driver_probe+0xba/0xf2 drivers/usb/core/generic.c:241
- usb_probe_device+0xd9/0x250 drivers/usb/core/driver.c:272
- really_probe+0x291/0xc90 drivers/base/dd.c:525
- driver_probe_device+0x26b/0x3d0 drivers/base/dd.c:701
- __device_attach_driver+0x1d1/0x290 drivers/base/dd.c:807
- bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:431
- __device_attach+0x28d/0x430 drivers/base/dd.c:873
- bus_probe_device+0x1e4/0x290 drivers/base/bus.c:491
- device_add+0xb09/0x1b40 drivers/base/core.c:2680
- usb_new_device.cold+0x71d/0xfd4 drivers/usb/core/hub.c:2554
- hub_port_connect drivers/usb/core/hub.c:5208 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5348 [inline]
- port_event drivers/usb/core/hub.c:5494 [inline]
- hub_event+0x2361/0x4390 drivers/usb/core/hub.c:5576
- process_one_work+0x94c/0x15f0 kernel/workqueue.c:2269
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
- kthread+0x392/0x470 kernel/kthread.c:291
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
-INFO: task syz-executor.1:5510 blocked for more than 143 seconds.
-      Not tainted 5.8.0-rc1-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-syz-executor.1  D29088  5510    340 0x80004006
-Call Trace:
- context_switch kernel/sched/core.c:3430 [inline]
- __schedule+0x88a/0x1cb0 kernel/sched/core.c:4155
- schedule+0xcd/0x2b0 kernel/sched/core.c:4230
- wdm_flush+0x2e9/0x3c0 drivers/usb/class/cdc-wdm.c:590
- filp_close+0xb4/0x170 fs/open.c:1282
- close_files fs/file.c:388 [inline]
- put_files_struct fs/file.c:416 [inline]
- put_files_struct+0x1d0/0x350 fs/file.c:413
- exit_files+0x7e/0xa0 fs/file.c:445
- do_exit+0xb74/0x28f0 kernel/exit.c:800
- do_group_exit+0x125/0x310 kernel/exit.c:903
- get_signal+0x42d/0x1fd0 kernel/signal.c:2739
- do_signal+0x88/0x1a00 arch/x86/kernel/signal.c:810
- exit_to_usermode_loop arch/x86/entry/common.c:212 [inline]
- __prepare_exit_to_usermode+0x169/0x1a0 arch/x86/entry/common.c:246
- do_syscall_64+0x5c/0x90 arch/x86/entry/common.c:368
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45cb09
-Code: Bad RIP value.
-RSP: 002b:00007f72e3b1dcf8 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
-RAX: fffffffffffffe00 RBX: 000000000078c0e8 RCX: 000000000045cb09
-RDX: 0000000000000000 RSI: 0000000000000080 RDI: 000000000078c0e8
-RBP: 000000000078c0e0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000078c0ec
-R13: 00007fff2b7b94ff R14: 00007f72e3b1e9c0 R15: 000000000078c0ec
-INFO: task syz-executor.3:5543 blocked for more than 144 seconds.
-      Not tainted 5.8.0-rc1-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-syz-executor.3  D29088  5543    339 0x80004006
-Call Trace:
- context_switch kernel/sched/core.c:3430 [inline]
- __schedule+0x88a/0x1cb0 kernel/sched/core.c:4155
- schedule+0xcd/0x2b0 kernel/sched/core.c:4230
- wdm_flush+0x2e9/0x3c0 drivers/usb/class/cdc-wdm.c:590
- filp_close+0xb4/0x170 fs/open.c:1282
- close_files fs/file.c:388 [inline]
- put_files_struct fs/file.c:416 [inline]
- put_files_struct+0x1d0/0x350 fs/file.c:413
- exit_files+0x7e/0xa0 fs/file.c:445
- do_exit+0xb74/0x28f0 kernel/exit.c:800
- do_group_exit+0x125/0x310 kernel/exit.c:903
- get_signal+0x42d/0x1fd0 kernel/signal.c:2739
- do_signal+0x88/0x1a00 arch/x86/kernel/signal.c:810
- exit_to_usermode_loop arch/x86/entry/common.c:212 [inline]
- __prepare_exit_to_usermode+0x169/0x1a0 arch/x86/entry/common.c:246
- do_syscall_64+0x5c/0x90 arch/x86/entry/common.c:368
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45cb09
-Code: Bad RIP value.
-RSP: 002b:00007f0a66f3ecf8 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
-RAX: fffffffffffffe00 RBX: 000000000078bfa8 RCX: 000000000045cb09
-RDX: 0000000000000000 RSI: 0000000000000080 RDI: 000000000078bfa8
-RBP: 000000000078bfa0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000078bfac
-R13: 00007ffe67b5466f R14: 00007f0a66f3f9c0 R15: 000000000078bfac
-INFO: task syz-executor.4:5573 blocked for more than 144 seconds.
-      Not tainted 5.8.0-rc1-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-syz-executor.4  D29280  5573    341 0x80004006
-Call Trace:
- context_switch kernel/sched/core.c:3430 [inline]
- __schedule+0x88a/0x1cb0 kernel/sched/core.c:4155
- schedule+0xcd/0x2b0 kernel/sched/core.c:4230
- wdm_flush+0x2e9/0x3c0 drivers/usb/class/cdc-wdm.c:590
- filp_close+0xb4/0x170 fs/open.c:1282
- close_files fs/file.c:388 [inline]
- put_files_struct fs/file.c:416 [inline]
- put_files_struct+0x1d0/0x350 fs/file.c:413
- exit_files+0x7e/0xa0 fs/file.c:445
- do_exit+0xb74/0x28f0 kernel/exit.c:800
- do_group_exit+0x125/0x310 kernel/exit.c:903
- get_signal+0x42d/0x1fd0 kernel/signal.c:2739
- do_signal+0x88/0x1a00 arch/x86/kernel/signal.c:810
- exit_to_usermode_loop arch/x86/entry/common.c:212 [inline]
- __prepare_exit_to_usermode+0x169/0x1a0 arch/x86/entry/common.c:246
- do_syscall_64+0x5c/0x90 arch/x86/entry/common.c:368
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45cb09
-Code: Bad RIP value.
-RSP: 002b:00007f65c5dc3cf8 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
-RAX: fffffffffffffe00 RBX: 000000000078bfa8 RCX: 000000000045cb09
-RDX: 0000000000000000 RSI: 0000000000000080 RDI: 000000000078bfa8
-RBP: 000000000078bfa0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000078bfac
-R13: 00007fffacad4e1f R14: 00007f65c5dc49c0 R15: 000000000078bfac
-
-Showing all locks held in the system:
-1 lock held by khungtaskd/23:
- #0: ffffffff8730f960 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x264 kernel/locking/lockdep.c:5779
-1 lock held by in:imklog/229:
- #0: ffff8881c58ba870 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:826
-5 locks held by kworker/0:3/3031:
- #0: ffff8881d880ed38 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff8881d880ed38 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
- #0: ffff8881d880ed38 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff8881d880ed38 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
- #0: ffff8881d880ed38 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
- #0: ffff8881d880ed38 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: process_one_work+0x82b/0x15f0 kernel/workqueue.c:2240
- #1: ffff8881d0e27da8 ((work_completion)(&hub->events)){+.+.}-{0:0}, at: process_one_work+0x85f/0x15f0 kernel/workqueue.c:2244
- #2: ffff8881d453c218 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:768 [inline]
- #2: ffff8881d453c218 (&dev->mutex){....}-{3:3}, at: hub_event+0x1c5/0x4390 drivers/usb/core/hub.c:5522
- #3: ffff8881c5e92218 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:768 [inline]
- #3: ffff8881c5e92218 (&dev->mutex){....}-{3:3}, at: __device_attach+0x7a/0x430 drivers/base/dd.c:850
- #4: ffff8881c750c1a8 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:768 [inline]
- #4: ffff8881c750c1a8 (&dev->mutex){....}-{3:3}, at: __device_attach+0x7a/0x430 drivers/base/dd.c:850
-5 locks held by kworker/0:5/3300:
- #0: ffff8881d880ed38 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff8881d880ed38 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
- #0: ffff8881d880ed38 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff8881d880ed38 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
- #0: ffff8881d880ed38 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
- #0: ffff8881d880ed38 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: process_one_work+0x82b/0x15f0 kernel/workqueue.c:2240
- #1: ffff8881c9ac7da8 ((work_completion)(&hub->events)){+.+.}-{0:0}, at: process_one_work+0x85f/0x15f0 kernel/workqueue.c:2244
- #2: ffff8881d4514218 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:768 [inline]
- #2: ffff8881d4514218 (&dev->mutex){....}-{3:3}, at: hub_event+0x1c5/0x4390 drivers/usb/core/hub.c:5522
- #3: ffff8881cdeca218 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:768 [inline]
- #3: ffff8881cdeca218 (&dev->mutex){....}-{3:3}, at: __device_attach+0x7a/0x430 drivers/base/dd.c:850
- #4: ffff8881c31611a8 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:768 [inline]
- #4: ffff8881c31611a8 (&dev->mutex){....}-{3:3}, at: __device_attach+0x7a/0x430 drivers/base/dd.c:850
-
-=============================================
-
-NMI backtrace for cpu 1
-CPU: 1 PID: 23 Comm: khungtaskd Not tainted 5.8.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0xf6/0x16e lib/dump_stack.c:118
- nmi_cpu_backtrace.cold+0x74/0xb6 lib/nmi_backtrace.c:101
- nmi_trigger_cpumask_backtrace+0x1da/0x1f4 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:209 [inline]
- watchdog+0xd6a/0xfd0 kernel/hung_task.c:295
- kthread+0x392/0x470 kernel/kthread.c:291
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
-Sending NMI from CPU 1 to CPUs 0:
-NMI backtrace for cpu 0 skipped: idling at native_safe_halt arch/x86/include/asm/irqflags.h:60 [inline]
-NMI backtrace for cpu 0 skipped: idling at arch_safe_halt arch/x86/include/asm/irqflags.h:103 [inline]
-NMI backtrace for cpu 0 skipped: idling at acpi_safe_halt+0x72/0x90 drivers/acpi/processor_idle.c:111
+Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
 
 
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
