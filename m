@@ -2,96 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31BB3216266
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 01:40:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44A7521626C
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 01:41:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727058AbgGFXk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 19:40:56 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:35665 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726280AbgGFXk4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 19:40:56 -0400
-Received: by mail-wm1-f68.google.com with SMTP id l2so42337570wmf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 16:40:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8f1d2vneWPYG6cNHDIYxhbTZtuTn4U5ltxye0jZNYhY=;
-        b=l8tPDeT/4KU2AlxyobfTn24M1RG92kMFXHwejD0hpJjrMFzXekku6ozq6QM7e5XGp1
-         5/7xFejJBCiEf3g0NcojjHLO3DqrYECpx8eggZ3IyOJZfoay4w2euDU4sZVG1yH/CaDj
-         wN32+gNFKt7EXzvxRVfEEJpZP+3Ia+oBwTQ26VILDplxXRY/nuV1z8lKEA/giD8F+mhp
-         67TsBXukx1ZbzICUn3baM9IRw3tGb0G1y/m+kF2htb3BH3jT187Qdtmx1xwFLtIGhDbi
-         XMrunEdVlfug/nvje3Pw5HjBXMO3G2zQ7oexqmn/e0cy+5HG+ZxaBB5aQSe4hreNN4T8
-         E9lQ==
-X-Gm-Message-State: AOAM5334LJrK8dpEkYF96vHmmNI4NI5/SP3VS6jtLwtQ3vVUyVkcL46u
-        5DkGX/b9d9uKh5MwBsv1FJ0=
-X-Google-Smtp-Source: ABdhPJwNJf56q8o6pxHITt3B3DjKyWyHc7q/3uEAooDIQh77MI6A/hBSGihn61cqeLFIwtCUzZXEnw==
-X-Received: by 2002:a7b:c007:: with SMTP id c7mr1417009wmb.165.1594078854626;
-        Mon, 06 Jul 2020 16:40:54 -0700 (PDT)
-Received: from msft-t490s.lan ([2001:b07:5d26:7f46:d7c1:f090:1563:f81f])
-        by smtp.gmail.com with ESMTPSA id 138sm1827541wmb.1.2020.07.06.16.40.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Jul 2020 16:40:53 -0700 (PDT)
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-To:     Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] pstore/platform: build fix when crypto API are disabled
-Date:   Tue,  7 Jul 2020 01:40:45 +0200
-Message-Id: <20200706234045.9516-1-mcroce@linux.microsoft.com>
-X-Mailer: git-send-email 2.26.2
+        id S1727886AbgGFXli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 19:41:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37638 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726280AbgGFXlh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Jul 2020 19:41:37 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-111-31.bvtn.or.frontiernet.net [50.39.111.31])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1A9A620720;
+        Mon,  6 Jul 2020 23:41:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594078897;
+        bh=yuEVLSFWzFuIU16JSRCjoy4DCC3vZQD9mtnpRVx+k3Q=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=kH6JpuxO4VcDqDcyojdQfYGTHKg4PNOiHrbQiENKeoPSy0ZVSRSUp36IctVlrxCfg
+         Py5tnQ3aqNWzAsUWq7cSTJZ9xs4GrC7bOF7ScnS6uyF1RxsPRZrbPsF6yIEB4yWmBX
+         Q00WDW1a9kdhgxJoHkm8GLzgTCfs57TBHtdBC46w=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id F16FE3522637; Mon,  6 Jul 2020 16:41:36 -0700 (PDT)
+Date:   Mon, 6 Jul 2020 16:41:36 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Marco Elver <elver@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-pci@vger.kernel.org,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>
+Subject: Re: [PATCH 00/22] add support for Clang LTO
+Message-ID: <20200706234136.GS9247@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200701150512.GH4817@hirez.programming.kicks-ass.net>
+ <20200701160338.GN9247@paulmck-ThinkPad-P72>
+ <20200702082040.GB4781@hirez.programming.kicks-ass.net>
+ <20200702175948.GV9247@paulmck-ThinkPad-P72>
+ <20200703131330.GX4800@hirez.programming.kicks-ass.net>
+ <20200703144228.GF9247@paulmck-ThinkPad-P72>
+ <20200706162633.GA13288@paulmck-ThinkPad-P72>
+ <20200706182926.GH4800@hirez.programming.kicks-ass.net>
+ <20200706183933.GE9247@paulmck-ThinkPad-P72>
+ <20200706194012.GA5523@worktop.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200706194012.GA5523@worktop.programming.kicks-ass.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matteo Croce <mcroce@microsoft.com>
+On Mon, Jul 06, 2020 at 09:40:12PM +0200, Peter Zijlstra wrote:
+> On Mon, Jul 06, 2020 at 11:39:33AM -0700, Paul E. McKenney wrote:
+> > On Mon, Jul 06, 2020 at 08:29:26PM +0200, Peter Zijlstra wrote:
+> > > On Mon, Jul 06, 2020 at 09:26:33AM -0700, Paul E. McKenney wrote:
+> 
+> > > If they do not consider their Linux OS running correctly :-)
+> > 
+> > Many of them really do not care at all.  In fact, some would consider
+> > Linux failing to run as an added bonus.
+> 
+> This I think is why we have compiler people in the thread that care a
+> lot more.
 
-When building a kernel with CONFIG_PSTORE=y and CONFIG_CRYPTO not set,
-a build error happens:
+Here is hoping! ;-)
 
-    ld: fs/pstore/platform.o: in function `pstore_dump':
-    platform.c:(.text+0x3f9): undefined reference to `crypto_comp_compress'
-    ld: fs/pstore/platform.o: in function `pstore_get_backend_records':
-    platform.c:(.text+0x784): undefined reference to `crypto_comp_decompress'
+> > > > Nevertheless, yes, control dependencies also need attention.
+> > > 
+> > > Today I added one more \o/
+> > 
+> > Just make sure you continually check to make sure that compilers
+> > don't break it, along with the others you have added.  ;-)
+> 
+> There's:
+> 
+> kernel/locking/mcs_spinlock.h:  smp_cond_load_acquire(l, VAL);                          \
+> kernel/sched/core.c:                    smp_cond_load_acquire(&p->on_cpu, !VAL);
+> kernel/smp.c:   smp_cond_load_acquire(&csd->node.u_flags, !(VAL & CSD_FLAG_LOCK));
+> 
+> arch/x86/kernel/alternative.c:          atomic_cond_read_acquire(&desc.refs, !VAL);
+> kernel/locking/qrwlock.c:               atomic_cond_read_acquire(&lock->cnts, !(VAL & _QW_LOCKED));
+> kernel/locking/qrwlock.c:       atomic_cond_read_acquire(&lock->cnts, !(VAL & _QW_LOCKED));
+> kernel/locking/qrwlock.c:               atomic_cond_read_acquire(&lock->cnts, VAL == _QW_WAITING);
+> kernel/locking/qspinlock.c:             atomic_cond_read_acquire(&lock->val, !(VAL & _Q_LOCKED_MASK));
+> kernel/locking/qspinlock.c:     val = atomic_cond_read_acquire(&lock->val, !(VAL & _Q_LOCKED_PENDING_MASK));
+> 
+> include/linux/refcount.h:               smp_acquire__after_ctrl_dep();
+> ipc/mqueue.c:                   smp_acquire__after_ctrl_dep();
+> ipc/msg.c:                      smp_acquire__after_ctrl_dep();
+> ipc/sem.c:                      smp_acquire__after_ctrl_dep();
+> kernel/locking/rwsem.c:                 smp_acquire__after_ctrl_dep();
+> kernel/sched/core.c:    smp_acquire__after_ctrl_dep();
+> 
+> kernel/events/ring_buffer.c:__perf_output_begin()
+> 
+> And I'm fairly sure I'm forgetting some... One could argue there's too
+> many of them to check already.
+> 
+> Both GCC and CLANG had better think about it.
 
-This because some pstore code uses crypto_comp_(de)compress
-regardless of the CONFIG_CRYPTO status.
-Fix it by wrapping the (de)compress usage by IS_ENABLED(CONFIG_PSTORE_COMPRESS)
+That would be good!
 
-Signed-off-by: Matteo Croce <mcroce@microsoft.com>
----
- fs/pstore/platform.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+I won't list the number of address/data dependencies given that there
+are well over a thousand of them.
 
-diff --git a/fs/pstore/platform.c b/fs/pstore/platform.c
-index a9e297eefdff..6022d8359f96 100644
---- a/fs/pstore/platform.c
-+++ b/fs/pstore/platform.c
-@@ -436,7 +436,7 @@ static void pstore_dump(struct kmsg_dumper *dumper,
- 					  dst_size, &dump_size))
- 			break;
- 
--		if (big_oops_buf) {
-+		if (IS_ENABLED(CONFIG_PSTORE_COMPRESS) && big_oops_buf) {
- 			zipped_len = pstore_compress(dst, psinfo->buf,
- 						header_size + dump_size,
- 						psinfo->bufsize);
-@@ -668,7 +668,7 @@ static void decompress_record(struct pstore_record *record)
- 	int unzipped_len;
- 	char *unzipped, *workspace;
- 
--	if (!record->compressed)
-+	if (!IS_ENABLED(CONFIG_PSTORE_COMPRESS) || !record->compressed)
- 		return;
- 
- 	/* Only PSTORE_TYPE_DMESG support compression. */
--- 
-2.26.2
-
+							Thanx, Paul
