@@ -2,128 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58DED2153F4
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 10:26:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B57532153A8
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 10:03:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728357AbgGFIZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 04:25:58 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7373 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726277AbgGFIZ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 04:25:58 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 4FA6BC70C4CE2936EBA5;
-        Mon,  6 Jul 2020 16:25:53 +0800 (CST)
-Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
- (10.3.19.209) with Microsoft SMTP Server (TLS) id 14.3.487.0; Mon, 6 Jul 2020
- 16:25:49 +0800
-Subject: Re: [PATCH RFC 5/5] f2fs: support age threshold based garbage
- collection
-To:     <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>
-References: <20200630100428.19105-1-yuchao0@huawei.com>
- <20200630100428.19105-5-yuchao0@huawei.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <84332ea5-f7b2-f996-31de-b6189c09f27d@huawei.com>
-Date:   Mon, 6 Jul 2020 16:25:48 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1728638AbgGFIDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 04:03:10 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:64784 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728169AbgGFIDJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Jul 2020 04:03:09 -0400
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06681obf005680;
+        Mon, 6 Jul 2020 04:03:08 -0400
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com with ESMTP id 322pp5dmfq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 06 Jul 2020 04:03:07 -0400
+Received: from ASHBMBX8.ad.analog.com (ashbmbx8.ad.analog.com [10.64.17.5])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 066836ff016845
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Mon, 6 Jul 2020 04:03:06 -0400
+Received: from ASHBCASHYB4.ad.analog.com (10.64.17.132) by
+ ASHBMBX8.ad.analog.com (10.64.17.5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Mon, 6 Jul 2020 04:03:05 -0400
+Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by
+ ASHBCASHYB4.ad.analog.com (10.64.17.132) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Mon, 6 Jul 2020 04:03:05 -0400
+Received: from zeus.spd.analog.com (10.64.82.11) by ASHBMBX9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Mon, 6 Jul 2020 04:03:05 -0400
+Received: from saturn.ad.analog.com ([10.48.65.100])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 066832Sc010445;
+        Mon, 6 Jul 2020 04:03:03 -0400
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <jic23@kernel.org>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH 1/3] iio: dac: ad5592r: fix unbalanced mutex unlocks in ad5592r_read_raw()
+Date:   Mon, 6 Jul 2020 14:02:57 +0300
+Message-ID: <20200706110259.23947-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20200630100428.19105-5-yuchao0@huawei.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.134.22.195]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ADIRoutedOnPrem: True
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-06_04:2020-07-06,2020-07-06 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ impostorscore=0 adultscore=0 spamscore=0 lowpriorityscore=0 phishscore=0
+ cotscore=-2147483648 mlxscore=0 mlxlogscore=833 malwarescore=0 bulkscore=0
+ suspectscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2007060064
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jaegeuk,
+There are 2 exit paths where the lock isn't held, but try to unlock the
+mutex when exiting. In these places we should just return from the
+function.
 
-This is a commercialized feature in huawei products for years, I think
-it's time to try to upstream it, could you please take a look at this
-idea, to see whether it could be a formal feature of f2fs?
+A neater approach would be to cleanup the ad5592r_read_raw(), but that
+would make this patch more difficult to backport to stable versions.
 
-On 2020/6/30 18:04, Chao Yu wrote:
-> There are several issues in current background GC algorithm:
-> - valid blocks is one of key factors during cost overhead calculation,
-> so if segment has less valid block, however even its age is young or
-> it locates hot segment, CB algorithm will still choose the segment as
-> victim, it's not appropriate.
-> - GCed data/node will go to existing logs, no matter in-there datas'
-> update frequency is the same or not, it may mix hot and cold data
-> again.
-> - GC alloctor mainly use LFS type segment, it will cost free segment
-> more quickly.
-> 
-> This patch introduces a new algorithm named age threshold based
-> garbage collection to solve above issues, there are three steps
-> mainly:
-> 
-> 1. select a source victim:
-> - set an age threshold, and select candidates beased threshold:
-> e.g.
->  0 means youngest, 100 means oldest, if we set age threshold to 80
->  then select dirty segments which has age in range of [80, 100] as
->  candiddates;
-> - set candidate_ratio threshold, and select candidates based the
-> ratio, so that we can shrink candidates to those oldest segments;
-> - select target segment with fewest valid blocks in order to
-> migrate blocks with minimum cost;
-> 
-> 2. select a target victim:
-> - select candidates beased age threshold;
-> - set candidate_radius threshold, search candidates whose age is
-> around source victims, searching radius should less than the
-> radius threshold.
-> - select target segment with most valid blocks in order to avoid
-> migrating current target segment.
-> 
-> 3. merge valid blocks from source victim into target victim with
-> SSR alloctor.
-> 
-> Test steps:
-> - create 160 dirty segments:
->  * half of them have 128 valid blocks per segment
->  * left of them have 384 valid blocks per segment
-> - run background GC
-> 
-> Benefit: GC count and block movement count both decrease obviously:
-> 
-> - Before:
->   - Valid: 86
->   - Dirty: 1
->   - Prefree: 11
->   - Free: 6001 (6001)
-> 
-> GC calls: 162 (BG: 220)
->   - data segments : 160 (160)
->   - node segments : 2 (2)
-> Try to move 41454 blocks (BG: 41454)
->   - data blocks : 40960 (40960)
->   - node blocks : 494 (494)
-> 
-> IPU: 0 blocks
-> SSR: 0 blocks in 0 segments
-> LFS: 41364 blocks in 81 segments
-> 
-> - After:
-> 
->   - Valid: 87
->   - Dirty: 0
->   - Prefree: 4
->   - Free: 6008 (6008)
-> 
-> GC calls: 75 (BG: 76)
->   - data segments : 74 (74)
->   - node segments : 1 (1)
-> Try to move 12813 blocks (BG: 12813)
->   - data blocks : 12544 (12544)
->   - node blocks : 269 (269)
-> 
-> IPU: 0 blocks
-> SSR: 12032 blocks in 77 segments
-> LFS: 855 blocks in 2 segments
+Fixes 56ca9db862bf3: ("iio: dac: Add support for the AD5592R/AD5593R ADCs/DACs")
+Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+---
+ drivers/iio/dac/ad5592r-base.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/iio/dac/ad5592r-base.c b/drivers/iio/dac/ad5592r-base.c
+index 5c4e5ff70380..cc4875660a69 100644
+--- a/drivers/iio/dac/ad5592r-base.c
++++ b/drivers/iio/dac/ad5592r-base.c
+@@ -413,7 +413,7 @@ static int ad5592r_read_raw(struct iio_dev *iio_dev,
+ 			s64 tmp = *val * (3767897513LL / 25LL);
+ 			*val = div_s64_rem(tmp, 1000000000LL, val2);
+ 
+-			ret = IIO_VAL_INT_PLUS_MICRO;
++			return IIO_VAL_INT_PLUS_MICRO;
+ 		} else {
+ 			int mult;
+ 
+@@ -444,7 +444,7 @@ static int ad5592r_read_raw(struct iio_dev *iio_dev,
+ 		ret =  IIO_VAL_INT;
+ 		break;
+ 	default:
+-		ret = -EINVAL;
++		return -EINVAL;
+ 	}
+ 
+ unlock:
+-- 
+2.25.1
+
