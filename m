@@ -2,104 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6219B215E66
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 20:35:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EFE5215E6B
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 20:36:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729797AbgGFSfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 14:35:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37852 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729550AbgGFSfS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 14:35:18 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D2248206DF;
-        Mon,  6 Jul 2020 18:35:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594060518;
-        bh=L1CbjDcZbuTi+ztU4KBMPGZHPbJI+hhe3kCcYygI0o0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pihAVQPmOe+iFKvXzWEZmccOMAFXbtPUIoeXKLuLZyeXrYbyOJ6cXySu9bEogjbdh
-         cLDn9jzGmTenZvCFTagNnHqffzlsPGhOGmvjuOt5phD9ZUcu+P3pwzmspR82n/YyNp
-         ck5o8VKYVnNWweouqlXuNVXDuMhuL9ES7pvNRgzU=
-Date:   Mon, 6 Jul 2020 19:35:11 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Dave Martin <Dave.Martin@arm.com>
-Cc:     linux-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Jason Wang <jasowang@redhat.com>,
-        virtualization@lists.linux-foundation.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Matt Turner <mattst88@gmail.com>, kernel-team@android.com,
-        Marco Elver <elver@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        linux-arm-kernel@lists.infradead.org,
-        Richard Henderson <rth@twiddle.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-alpha@vger.kernel.org
-Subject: Re: [PATCH 18/18] arm64: lto: Strengthen READ_ONCE() to acquire when
- CLANG_LTO=y
-Message-ID: <20200706183510.GA23766@willie-the-truck>
-References: <20200630173734.14057-1-will@kernel.org>
- <20200630173734.14057-19-will@kernel.org>
- <20200706160820.GC10992@arm.com>
+        id S1729829AbgGFSf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 14:35:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729713AbgGFSf5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Jul 2020 14:35:57 -0400
+Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CC28C061755
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Jul 2020 11:35:57 -0700 (PDT)
+Received: by mail-vk1-xa41.google.com with SMTP id c11so3728503vkn.11
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 11:35:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ij6ynVLooZvFUU1WdE13blPhJSL1lkPuycUflF9mzkk=;
+        b=S5E47DOPwDbYX9qAauzXw9PRmHeP+yPvDc6wa5lKnIARuccDh4qsjGVklgl9MMkude
+         M7VvzR6wUEffCmaFNnfMs9T0CK2uI24oyJ9/a7dICYFwuhGoC/TfskyWpbxmXLwPpVCW
+         Rmg+uA6dnC+5jpsYDsj8xGGD1Ho0cKYrMAI2Y=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ij6ynVLooZvFUU1WdE13blPhJSL1lkPuycUflF9mzkk=;
+        b=NjNRw3aYZrRK9XKkUa5bGacAH2WGsfc6eiF96tl888TgojjslxyYs9t01mrK/qnIKg
+         gMAFwv53QUplnUXatD0pHYomkGRE9CX4vZQdasndvAf9z0G/6KVkxaS0tKTLaFshBHe9
+         E7poyWQ7qyyME7zLrn+na81stzttGPAR/1C5bX8EWJFbv7hupBTKF0NOqG6zxXHgf9Nl
+         Q73FKplz/xvNIqmAjuU7jwL6OdeHN4s9irILmq9BRgKqZKDOztBLultRlP3WcFRgNttE
+         CtuXMegHZqOWdN5jkjZQeesw5bK5i+zgipnUBBHXCDiA9G4w4PDoPVGXbJwXAWpNFgMc
+         NbFw==
+X-Gm-Message-State: AOAM533mZ7wtqfhYhxW6zyC+uJyGXpKZ/3VhodJjAzlYdXGh1K7k8wpA
+        8VeGwKw61jkL/5M0NjSWgI0eSMxZLSg=
+X-Google-Smtp-Source: ABdhPJypq35oh1H6RKzBSmH0H3q2UJAZWxZLQEFS87U+S4lhqDu0ufiSql3VtEsPdl4Qe884/2Cnuw==
+X-Received: by 2002:a1f:ab96:: with SMTP id u144mr34165625vke.76.1594060556156;
+        Mon, 06 Jul 2020 11:35:56 -0700 (PDT)
+Received: from mail-vs1-f54.google.com (mail-vs1-f54.google.com. [209.85.217.54])
+        by smtp.gmail.com with ESMTPSA id n17sm5193988uao.14.2020.07.06.11.35.55
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Jul 2020 11:35:55 -0700 (PDT)
+Received: by mail-vs1-f54.google.com with SMTP id a17so10249663vsq.6
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 11:35:55 -0700 (PDT)
+X-Received: by 2002:a67:1702:: with SMTP id 2mr5791561vsx.153.1594060554613;
+ Mon, 06 Jul 2020 11:35:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200706160820.GC10992@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <7d2c980f071487cecfd1534adb7561b33d922af3.1593968925.git.mail@maciej.szmigiero.name>
+In-Reply-To: <7d2c980f071487cecfd1534adb7561b33d922af3.1593968925.git.mail@maciej.szmigiero.name>
+From:   Harry Cutts <hcutts@chromium.org>
+Date:   Mon, 6 Jul 2020 11:35:43 -0700
+X-Gmail-Original-Message-ID: <CA+jURcvL4B7xDObma5PZgTq4eaBbj6AGgBwDCSyf_mb7oRf+Lw@mail.gmail.com>
+Message-ID: <CA+jURcvL4B7xDObma5PZgTq4eaBbj6AGgBwDCSyf_mb7oRf+Lw@mail.gmail.com>
+Subject: Re: [PATCH] HID: logitech-hidpp: avoid repeated "multiplier = " log messages
+To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Peter Hutterer <peter.hutterer@who-t.net>,
+        linux-input <linux-input@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 06, 2020 at 05:08:20PM +0100, Dave Martin wrote:
-> On Tue, Jun 30, 2020 at 06:37:34PM +0100, Will Deacon wrote:
-> > diff --git a/arch/arm64/include/asm/rwonce.h b/arch/arm64/include/asm/rwonce.h
-> > new file mode 100644
-> > index 000000000000..515e360b01a1
-> > --- /dev/null
-> > +++ b/arch/arm64/include/asm/rwonce.h
-> > @@ -0,0 +1,63 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +/*
-> > + * Copyright (C) 2020 Google LLC.
-> > + */
-> > +#ifndef __ASM_RWONCE_H
-> > +#define __ASM_RWONCE_H
-> > +
-> > +#ifdef CONFIG_CLANG_LTO
-> > +
-> > +#include <linux/compiler_types.h>
-> > +#include <asm/alternative-macros.h>
-> > +
-> > +#ifndef BUILD_VDSO
-> > +
-> > +#ifdef CONFIG_AS_HAS_LDAPR
-> > +#define __LOAD_RCPC(sfx, regs...)					\
-> > +	ALTERNATIVE(							\
-> > +		"ldar"	#sfx "\t" #regs,				\
-> 
-> ^ Should this be here?  It seems that READ_ONCE() will actually read
-> twice... even if that doesn't actually conflict with the required
-> semantics of READ_ONCE(), it looks odd.
+On Sun, 5 Jul 2020 at 10:09, Maciej S. Szmigiero
+<mail@maciej.szmigiero.name> wrote:
+>
+> These messages appear each time the mouse wakes from sleep, in my case
+> (Logitech M705), every minute or so.
+> Let's downgrade them to the "debug" level so they don't fill the kernel log
+> by default.
+>
+> While we are at it, let's make clear that this is a wheel multiplier (and
+> not, for example, XY movement multiplier).
 
-It's patched at runtime, so it's either LDAR or LDAPR.
+Looks good to me, thanks!
 
-> Making a direct link between LTO and the memory model also seems highly
-> spurious (as discussed in the other subthread) so can we have a comment
-> explaining the reasoning?
+Reviewed-by: Harry Cutts <hcutts@chromium.org>
 
-Sure, although like I say, this is more about helping to progress that
-conversation.
+Harry Cutts
+Chrome OS Touch/Input team
 
-Will
+>
+> Fixes: 4435ff2f09a2 ("HID: logitech: Enable high-resolution scrolling on Logitech mice")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
+> ---
+>  drivers/hid/hid-logitech-hidpp.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/hid/hid-logitech-hidpp.c b/drivers/hid/hid-logitech-hidpp.c
+> index 1e1cf8eae649..b8b53dc95e86 100644
+> --- a/drivers/hid/hid-logitech-hidpp.c
+> +++ b/drivers/hid/hid-logitech-hidpp.c
+> @@ -3146,7 +3146,7 @@ static int hi_res_scroll_enable(struct hidpp_device *hidpp)
+>                 multiplier = 1;
+>
+>         hidpp->vertical_wheel_counter.wheel_multiplier = multiplier;
+> -       hid_info(hidpp->hid_dev, "multiplier = %d\n", multiplier);
+> +       hid_dbg(hidpp->hid_dev, "wheel multiplier = %d\n", multiplier);
+>         return 0;
+>  }
+>
