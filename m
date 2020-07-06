@@ -2,109 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B61F215A97
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 17:22:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DA6A215A9D
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 17:23:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729383AbgGFPWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 11:22:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35914 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729197AbgGFPWN (ORCPT
+        id S1729454AbgGFPWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 11:22:30 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:56690 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729408AbgGFPW2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 11:22:13 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D561C061755
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Jul 2020 08:22:13 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id z2so29241196qts.5
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 08:22:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YjNPcHVR4dZuQjAwnCbOyRb8wX3jJIQelGpEqdSOhmU=;
-        b=NqfQJx9/UQmjQac/3kK3ryP3Ko5MWUYbBlwCF+RmRpbkWFVZ0OBhlP9iLwKySU2Kr7
-         4YwhOirQlU/zrt1k4wYgOru1DTP/o1cDcnX4o/ZVYu1l82SW3zbDdDImbGTuinS91+aV
-         6J8BTh9+ARLSbdr3/rzRwJCq6omJxniJGg/hwi8cAnK2FoJXf0pmlSKRPeaRemduopAQ
-         Z8AlOxO4tvCv4sJeQukxQbM66db7a+ukkzccWYWZLVv/dxETk6068p2rBguHU/jiki9z
-         w4fs6al0Rbh8HkEHDSek9eMhk215nfX/3Y+uYm6dxOshAj1i+hRnGN0uSlIHRMFkTSFr
-         gMLA==
+        Mon, 6 Jul 2020 11:22:28 -0400
+Received: by mail-io1-f72.google.com with SMTP id a10so1249803ioc.23
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 08:22:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=YjNPcHVR4dZuQjAwnCbOyRb8wX3jJIQelGpEqdSOhmU=;
-        b=co5l+mQD4Q4luOEwo7bnIjdcd2V/taB3snQYVf8pUG0DViP+nmYhxcc3EFuwmX8reY
-         5lXrOqjLyryREgB7zn00KNfB6xcUXQijtpTyBXyXtFVmEPZzLBj1YjtMh7j1wjjXdGPs
-         bn+h9jZMf6PDGBjGBXHie1J6rn9vCR7QFcbu7NodrwZ+e6Rt7gvuO5Aw2Jcbz+0aQs89
-         frt73JPDQi+V4BZLq426y+ygzXdZakhuZLsRTiiVImKXlUoA8X/ECt0NnSHS1MF5cuLp
-         Mwm3SZMgqGPiaXKqmZlf3lqxxeJ6CvKawfD7OCBKcYNHEn0PgoGbtuPFllQAqXTeS7zt
-         8lxA==
-X-Gm-Message-State: AOAM530RolEno0XGbbKa4WNvcjlkiAw5keM6xBPcljUPQGiwfBpIiJJX
-        Qpvb15brcdlOpiugcO7Cq7A=
-X-Google-Smtp-Source: ABdhPJxkw84cvwqy/ty3RHScHDPgFI+Ze/xwqDPdTLEQrrz9k21XHGj8t3xRVdxIZLky0+sRkhPHBA==
-X-Received: by 2002:aed:3bb8:: with SMTP id r53mr25496151qte.58.1594048932165;
-        Mon, 06 Jul 2020 08:22:12 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id m26sm21257149qtc.83.2020.07.06.08.22.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Jul 2020 08:22:11 -0700 (PDT)
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Mon, 6 Jul 2020 11:22:10 -0400
-To:     Willy Tarreau <w@1wt.eu>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        torvalds@linux-foundation.org, Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>, Chris Mason <clm@fb.clm>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        ksummit-discuss@lists.linuxfoundation.org,
-        tech-board-discuss@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] CodingStyle: Inclusive Terminology
-Message-ID: <20200706152210.GA53508@rani.riverdale.lan>
-References: <159389297140.2210796.13590142254668787525.stgit@dwillia2-desk3.amr.corp.intel.com>
- <20200705045505.GA2962@1wt.eu>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=4cHfqkRjzxg1VnQM1C8ubWq970NchbBwNDh1ciyyhLk=;
+        b=o3MU28AMvY7zzMgunFGRXbM2PRnPQ4z2kkd51jHNJNc//sgYF51Ty7rGm0H0lw1To+
+         SWO23pKQJLddJerBaADlDESTP/INVU50Ck0eraDczTOMfFJn3ruA3Z7aB0vzpEuWYd5+
+         ORCU/wMdr6A21XIzDTIzrnNIBL3rf75LizTmNQ5Iuu9RPQ1GWJiaeoCYLbx6v6ov7sxM
+         S8IpeKnToE5muthaku4LRWfyZ8U1grWW/ZB61lIRbwByCJsPXPIGzul21wLT2q0K5T5s
+         QUqeWIEaddMiTkSzP1vmKWM4py0mteJKfsB4Euv/wugRDgsdulBWUsf/gKXZk6JnsdB1
+         2xeg==
+X-Gm-Message-State: AOAM5300Epc1IeJaCbL7n7S31NpXZJOHNgzTdkmFPWkqBkXO+BxXvA6k
+        cPqZqR8v90IlV6EWfloPKV47skWu5ChBdNXhkk3Py8MQHwgx
+X-Google-Smtp-Source: ABdhPJziQOTBujqI89TNC4kQE+65+pL5lq1L1F/haTVkr4cEbSudFMQSC78lwhNvDISRk9dLm1nVXSvjYuXOxxWLaZ7GcNtuvnIA
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200705045505.GA2962@1wt.eu>
+X-Received: by 2002:a05:6e02:1082:: with SMTP id r2mr32011820ilj.263.1594048946727;
+ Mon, 06 Jul 2020 08:22:26 -0700 (PDT)
+Date:   Mon, 06 Jul 2020 08:22:26 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000003971f105a9c77168@google.com>
+Subject: INFO: task hung in usb_deregister_dev
+From:   syzbot <syzbot+4189d5cde8630463053f@syzkaller.appspotmail.com>
+To:     andreyknvl@google.com, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        stern@rowland.harvard.edu, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 05, 2020 at 06:55:05AM +0200, Willy Tarreau wrote:
-> On Sat, Jul 04, 2020 at 01:02:51PM -0700, Dan Williams wrote:
-> > +Non-inclusive terminology has that same distracting effect which is why
-> > +it is a style issue for Linux, it injures developer efficiency.
-> 
-> I'm personally thinking that for a non-native speaker it's already
-> difficult to find the best term to describe something, but having to
-> apply an extra level of filtering on the found words to figure whether
-> they are allowed by the language police is even more difficult. *This*
-> injures developers efficiency. What could improve developers efficiency
-> is to take care of removing *all* idiomatic or cultural words then. For
-> example I've been participating to projects using the term "blueprint",
-> I didn't understand what that meant. It was once explained to me and
-> given that it had no logical reason for being called this way, I now
-> forgot. If we follow your reasoning, Such words should be banned for
-> exactly the same reasons. Same for colors that probably don't mean
-> anything to those born blind.
+Hello,
 
-While I agree that using terms that can only be understood given a
-cultural context that not everyone may share, I would think that better
-examples would be references to movies/novels etc.
+syzbot found the following crash on:
 
-Though I'm not sure if blueprint translates literally into other
-languages, it did actually have a logical reason, viz engineering
-drawings used to be blue/white. But logical reasons don't have to exist.
-In the case of colors, for example, using red-black tree doesn't exclude
-blind people, precisely because there is no logical reason for using the
-colors red and black, or even colors at all, so it's not as if you gain
-any additional insight into the structure if you are able to see the
-colors. It just needs _some_ arbitrary labels for distinguishing two
-classes of nodes, it could just as well have been named A-B tree or 0-1
-tree or whatever. I don't think there is any concise way to label them
-that conveys anything useful about how they're used in the data
-structure -- you just have to learn about the structure and how it's
-used. This isn't the case with whitelist/blacklist, where those colors
-actually have connotations about what the two lists mean.
+HEAD commit:    768a0741 usb: dwc2: gadget: Remove assigned but never used..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
+console output: https://syzkaller.appspot.com/x/log.txt?x=17c88f87100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=999be4eb2478ffa5
+dashboard link: https://syzkaller.appspot.com/bug?extid=4189d5cde8630463053f
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+
+Unfortunately, I don't have any reproducer for this crash yet.
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+4189d5cde8630463053f@syzkaller.appspotmail.com
+
+INFO: task kworker/1:4:3051 blocked for more than 143 seconds.
+      Not tainted 5.8.0-rc3-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+kworker/1:4     D23384  3051      2 0x80004000
+Workqueue: usb_hub_wq hub_event
+Call Trace:
+ context_switch kernel/sched/core.c:3453 [inline]
+ __schedule+0x88a/0x1cb0 kernel/sched/core.c:4178
+ schedule+0xcd/0x2b0 kernel/sched/core.c:4253
+ rwsem_down_write_slowpath+0x603/0xc60 kernel/locking/rwsem.c:1235
+ __down_write kernel/locking/rwsem.c:1389 [inline]
+ down_write+0x13c/0x150 kernel/locking/rwsem.c:1532
+ usb_deregister_dev+0xaa/0x300 drivers/usb/core/file.c:239
+ sisusb_disconnect+0x5a/0x200 drivers/usb/misc/sisusbvga/sisusb.c:3166
+ usb_unbind_interface+0x1d8/0x8d0 drivers/usb/core/driver.c:436
+ __device_release_driver+0x3b7/0x6e0 drivers/base/dd.c:1113
+ device_release_driver_internal drivers/base/dd.c:1144 [inline]
+ device_release_driver+0x26/0x40 drivers/base/dd.c:1167
+ bus_remove_device+0x2eb/0x5a0 drivers/base/bus.c:533
+ device_del+0x47c/0xd20 drivers/base/core.c:2857
+ usb_disable_device+0x387/0x930 drivers/usb/core/message.c:1245
+ usb_disconnect.cold+0x27d/0x780 drivers/usb/core/hub.c:2217
+ hub_port_connect drivers/usb/core/hub.c:5059 [inline]
+ hub_port_connect_change drivers/usb/core/hub.c:5348 [inline]
+ port_event drivers/usb/core/hub.c:5494 [inline]
+ hub_event+0x1c93/0x4390 drivers/usb/core/hub.c:5576
+ process_one_work+0x94c/0x15f0 kernel/workqueue.c:2269
+ process_scheduled_works kernel/workqueue.c:2331 [inline]
+ worker_thread+0x82b/0x1120 kernel/workqueue.c:2417
+ kthread+0x392/0x470 kernel/kthread.c:291
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
+
+Showing all locks held in the system:
+1 lock held by khungtaskd/23:
+ #0: ffffffff873124a0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x264 kernel/locking/lockdep.c:5779
+2 locks held by in:imklog/252:
+ #0: ffff8881ca734d70 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:826
+ #1: ffffffff873a1be0 (fs_reclaim){+.+.}-{0:0}, at: __debug_check_no_obj_freed lib/debugobjects.c:955 [inline]
+ #1: ffffffff873a1be0 (fs_reclaim){+.+.}-{0:0}, at: debug_check_no_obj_freed+0xc7/0x41c lib/debugobjects.c:998
+2 locks held by agetty/248:
+ #0: ffff8881d3ea4098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x22/0x80 drivers/tty/tty_ldisc.c:267
+ #1: ffffc90000a022e8 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x223/0x1a30 drivers/tty/n_tty.c:2156
+2 locks held by agetty/250:
+ #0: ffff8881c74e4098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x22/0x80 drivers/tty/tty_ldisc.c:267
+ #1: ffffc900009f62e8 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x223/0x1a30 drivers/tty/n_tty.c:2156
+2 locks held by agetty/253:
+ #0: ffff8881d1e41098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x22/0x80 drivers/tty/tty_ldisc.c:267
+ #1: ffffc900009fe2e8 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x223/0x1a30 drivers/tty/n_tty.c:2156
+2 locks held by agetty/255:
+ #0: ffff8881ce014098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x22/0x80 drivers/tty/tty_ldisc.c:267
+ #1: ffffc900009de2e8 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x223/0x1a30 drivers/tty/n_tty.c:2156
+2 locks held by agetty/256:
+ #0: ffff8881ce952098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x22/0x80 drivers/tty/tty_ldisc.c:267
+ #1: ffffc900009ee2e8 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x223/0x1a30 drivers/tty/n_tty.c:2156
+6 locks held by kworker/1:4/3051:
+ #0: ffff8881d8862938 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff8881d8862938 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff8881d8862938 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff8881d8862938 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff8881d8862938 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff8881d8862938 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: process_one_work+0x82b/0x15f0 kernel/workqueue.c:2240
+ #1: ffff8881ad5ffda8 ((work_completion)(&hub->events)){+.+.}-{0:0}, at: process_one_work+0x85f/0x15f0 kernel/workqueue.c:2244
+ #2: ffff8881d44dc218 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:768 [inline]
+ #2: ffff8881d44dc218 (&dev->mutex){....}-{3:3}, at: hub_event+0x1c5/0x4390 drivers/usb/core/hub.c:5522
+ #3: ffff8881ca58e218 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:768 [inline]
+ #3: ffff8881ca58e218 (&dev->mutex){....}-{3:3}, at: usb_disconnect.cold+0x43/0x780 drivers/usb/core/hub.c:2208
+ #4: ffff8881c3b4e1a8 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:768 [inline]
+ #4: ffff8881c3b4e1a8 (&dev->mutex){....}-{3:3}, at: __device_driver_lock drivers/base/dd.c:936 [inline]
+ #4: ffff8881c3b4e1a8 (&dev->mutex){....}-{3:3}, at: device_release_driver_internal drivers/base/dd.c:1141 [inline]
+ #4: ffff8881c3b4e1a8 (&dev->mutex){....}-{3:3}, at: device_release_driver+0x1c/0x40 drivers/base/dd.c:1167
+ #5: ffffffff878ac990 (minor_rwsem){++++}-{3:3}, at: usb_deregister_dev+0xaa/0x300 drivers/usb/core/file.c:239
+2 locks held by syz-executor.1/10703:
+ #0: ffffffff878ac990 (minor_rwsem){++++}-{3:3}, at: usb_open+0x23/0x270 drivers/usb/core/file.c:39
+ #1: ffff8881cb9880d0 (&(sisusb->lock)){+.+.}-{3:3}, at: sisusb_open+0xb2/0x4d0 drivers/usb/misc/sisusbvga/sisusb.c:2396
+
+=============================================
+
+NMI backtrace for cpu 0
+CPU: 0 PID: 23 Comm: khungtaskd Not tainted 5.8.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0xf6/0x16e lib/dump_stack.c:118
+ nmi_cpu_backtrace.cold+0x74/0xb6 lib/nmi_backtrace.c:101
+ nmi_trigger_cpumask_backtrace+0x1da/0x1f4 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:209 [inline]
+ watchdog+0xd6a/0xfd0 kernel/hung_task.c:295
+ kthread+0x392/0x470 kernel/kthread.c:291
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
+Sending NMI from CPU 0 to CPUs 1:
+NMI backtrace for cpu 1 skipped: idling at native_safe_halt arch/x86/include/asm/irqflags.h:60 [inline]
+NMI backtrace for cpu 1 skipped: idling at arch_safe_halt arch/x86/include/asm/irqflags.h:103 [inline]
+NMI backtrace for cpu 1 skipped: idling at acpi_safe_halt+0x72/0x90 drivers/acpi/processor_idle.c:111
+
+
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
