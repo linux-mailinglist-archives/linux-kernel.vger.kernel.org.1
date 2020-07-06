@@ -2,94 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 443E6215440
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 10:57:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85736215442
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 10:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728637AbgGFI4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 04:56:50 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:47850 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728135AbgGFI4t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 04:56:49 -0400
-Received: from [10.130.0.52] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxj99B5wJf_pVQAA--.131S3;
-        Mon, 06 Jul 2020 16:56:34 +0800 (CST)
-Subject: Re: [PATCH] watchdog: bcm_kona_wdt: Use correct return value for
- bcm_kona_wdt_probe()
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>
-References: <1590391864-308-1-git-send-email-yangtiezhu@loongson.cn>
- <99e82049-2d99-9a8e-4023-96f585b47e30@roeck-us.net>
-Cc:     bcm-kernel-feedback-list@broadcom.com,
-        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <19929e73-253b-7d29-b8f8-365266d88a5f@loongson.cn>
-Date:   Mon, 6 Jul 2020 16:56:33 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S1728696AbgGFI5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 04:57:09 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50464 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728321AbgGFI5I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Jul 2020 04:57:08 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 23F56AEB6;
+        Mon,  6 Jul 2020 08:57:08 +0000 (UTC)
+Subject: Re: [PATCH entry v2 3/6] x86/entry/xen: Route #DB correctly on Xen PV
+To:     Michal Kubecek <mkubecek@suse.cz>,
+        Andy Lutomirski <luto@kernel.org>
+Cc:     x86@kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <cover.1593795633.git.luto@kernel.org>
+ <4163e733cce0b41658e252c6c6b3464f33fdff17.1593795633.git.luto@kernel.org>
+ <20200706084155.ndltt24ipognh67e@lion.mk-sys.cz>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Message-ID: <9432d30a-e1eb-2b5e-beff-e24768c09aad@suse.com>
+Date:   Mon, 6 Jul 2020 10:57:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <99e82049-2d99-9a8e-4023-96f585b47e30@roeck-us.net>
+In-Reply-To: <20200706084155.ndltt24ipognh67e@lion.mk-sys.cz>
 Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf9Dxj99B5wJf_pVQAA--.131S3
-X-Coremail-Antispam: 1UD129KBjvdXoW7JFy8ArWrWw4kGF4UXr1DJrb_yoWDtwb_Ga
-        12krZ3ury8Wr10vFn0yay5ZwsxtFn8uF1kXw1xKay3X347JryfArW09r1ftw43Ww4Yyrsx
-        AFyDWw4a9rnrGjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbV8FF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
-        6F4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7I2V7IY0VAS07AlzVAY
-        IcxG8wCY02Avz4vE14v_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
-        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
-        14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
-        IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvE
-        x4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
-        DU0xZFpf9x0JUsF4iUUUUU=
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/25/2020 09:47 PM, Guenter Roeck wrote:
-> On 5/25/20 12:31 AM, Tiezhu Yang wrote:
->> When call function devm_platform_ioremap_resource(), we should use IS_ERR()
->> to check the return value and return PTR_ERR() if failed.
+On 06.07.20 10:41, Michal Kubecek wrote:
+> On Fri, Jul 03, 2020 at 10:02:55AM -0700, Andy Lutomirski wrote:
+>> On Xen PV, #DB doesn't use IST.  We still need to correctly route it
+>> depending on whether it came from user or kernel mode.
 >>
->> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-
-Hi,
-
-Could you please apply this patch?
-
-Thanks,
-Tiezhu
-
->
+>> This patch gets rid of DECLARE/DEFINE_IDTENTRY_XEN -- it was too
+>> hard to follow the logic.  Instead, route #DB and NMI through
+>> DECLARE/DEFINE_IDTENTRY_RAW on Xen, and do the right thing for #DB.
+>> Also add more warnings to the exc_debug* handlers to make this type
+>> of failure more obvious.
+>>
+>> This fixes various forms of corruption that happen when usermode
+>> triggers #DB on Xen PV.
+>>
+>> Fixes: 4c0dcd8350a0 ("x86/entry: Implement user mode C entry points for #DB and #MCE")
+>> Signed-off-by: Andy Lutomirski <luto@kernel.org>
 >> ---
->>   drivers/watchdog/bcm_kona_wdt.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>   arch/x86/include/asm/idtentry.h | 24 ++++++------------------
+>>   arch/x86/kernel/traps.c         | 12 ++++++++++++
+>>   arch/x86/xen/enlighten_pv.c     | 28 ++++++++++++++++++++++++----
+>>   arch/x86/xen/xen-asm_64.S       |  5 ++---
+>>   4 files changed, 44 insertions(+), 25 deletions(-)
 >>
->> diff --git a/drivers/watchdog/bcm_kona_wdt.c b/drivers/watchdog/bcm_kona_wdt.c
->> index eb850a8..8237c4e 100644
->> --- a/drivers/watchdog/bcm_kona_wdt.c
->> +++ b/drivers/watchdog/bcm_kona_wdt.c
->> @@ -279,7 +279,7 @@ static int bcm_kona_wdt_probe(struct platform_device *pdev)
+>> diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
+>> index cf51c50eb356..94333ac3092b 100644
+>> --- a/arch/x86/include/asm/idtentry.h
+>> +++ b/arch/x86/include/asm/idtentry.h
+> [...]
+>> @@ -570,11 +554,15 @@ DECLARE_IDTENTRY_MCE(X86_TRAP_MC,	exc_machine_check);
 >>   
->>   	wdt->base = devm_platform_ioremap_resource(pdev, 0);
->>   	if (IS_ERR(wdt->base))
->> -		return -ENODEV;
->> +		return PTR_ERR(wdt->base);
+>>   /* NMI */
+>>   DECLARE_IDTENTRY_NMI(X86_TRAP_NMI,	exc_nmi);
+>> -DECLARE_IDTENTRY_XEN(X86_TRAP_NMI,	nmi);
+>> +#ifdef CONFIG_XEN_PV
+>> +DECLARE_IDTENTRY_RAW(X86_TRAP_NMI,	xenpv_exc_nmi);
+>> +#endif
 >>   
->>   	wdt->resolution = SECWDOG_DEFAULT_RESOLUTION;
->>   	ret = bcm_kona_wdt_set_resolution_reg(wdt);
->>
+>>   /* #DB */
+>>   DECLARE_IDTENTRY_DEBUG(X86_TRAP_DB,	exc_debug);
+>> -DECLARE_IDTENTRY_XEN(X86_TRAP_DB,	debug);
+>> +#ifdef CONFIG_XEN_PV
+>> +DECLARE_IDTENTRY_RAW(X86_TRAP_DB,	xenpv_exc_debug);
+>> +#endif
+>>   
+>>   /* #DF */
+>>   DECLARE_IDTENTRY_DF(X86_TRAP_DF,	exc_double_fault);
+> 
+> Hello,
+> 
+> this patch - now in mainline as commit 13cbc0cd4a30 ("x86/entry/32: Fix
+> #MC and #DB wiring on x86_32") - seems to break i586 builds with
+> CONFIG_XEN_PV=y as xenpv_exc_nmi and xenpv_exc_debug are only defined
+> with CONFIG_X86_64:
+> 
+> [ 1279s] ld: arch/x86/entry/entry_32.o: in function `asm_xenpv_exc_nmi':
+> [ 1279s] /home/abuild/rpmbuild/BUILD/kernel-pae-5.8.rc4/linux-5.8-rc4/linux-obj/../arch/x86/include/asm/idtentry.h:557: undefined reference to `xenpv_exc_nmi'
+> [ 1279s] ld: arch/x86/entry/entry_32.o: in function `asm_xenpv_exc_debug':
+> [ 1279s] /home/abuild/rpmbuild/BUILD/kernel-pae-5.8.rc4/linux-5.8-rc4/linux-obj/../arch/x86/include/asm/idtentry.h:567: undefined reference to `xenpv_exc_debug'
+
+Fix is already queued in tip/tip.git x86/urgent
+
+
+Juergen
 
