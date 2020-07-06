@@ -2,134 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E93D62156A9
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 13:46:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5EE42156AF
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 13:48:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728976AbgGFLqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 07:46:18 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:36088 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728892AbgGFLqS (ORCPT
+        id S1729021AbgGFLr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 07:47:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58928 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728859AbgGFLr4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 07:46:18 -0400
-Received: by mail-wm1-f65.google.com with SMTP id 17so41539773wmo.1;
-        Mon, 06 Jul 2020 04:46:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=/S2mDsygdukG9nVnHYZD+l4K+FkZWd+rRvB4pf5Rk0w=;
-        b=HOaOzycbvPzDYMc+07LRLs59WNxbuBXqdj46p1AQ5kkY/Jk8m54eE290pmVw5dmm8E
-         LDiSsEafdi6rvT6raesBSZyEO8qjHolyg1+bT4W63RBk29yPfBibOQzYK15x4kTYOrZR
-         /+NYSPjNWlmWqC325QunO8xvu058ewRo1pML6Jw6J9yBGlaKLTWHKuGrTUgW2md7yNE+
-         jSt+vVMG6yCanvvhOS0IxXI3b0/vHz78tXBXb3HuKV8nmZ1DpFhQ4S1GlZyH8ePbD6G8
-         i56T3H1HlIEHIpCIswjZkYhGRsIGNngul+rjMRYX/XE7WYFhEca4VcArlw/Qx2u/5UpY
-         Z72A==
-X-Gm-Message-State: AOAM5316NLcRgNBtfmM09iN/Zu7EVI18GZvhDDuV7izqnrfF66oIRC+m
-        duCdREWjB4UFOwulSqfE7eBGB9kN
-X-Google-Smtp-Source: ABdhPJzzwGDjgcW3RLG8unz7NFqmAksiTB0vyeynhnJDW+kaOn3Hk/jDwIRZmndVtHhFRVIp2SjX3g==
-X-Received: by 2002:a05:600c:218f:: with SMTP id e15mr47853606wme.187.1594035975569;
-        Mon, 06 Jul 2020 04:46:15 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id v12sm11378778wrt.31.2020.07.06.04.46.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Jul 2020 04:46:15 -0700 (PDT)
-Date:   Mon, 6 Jul 2020 11:46:13 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     Joseph Salisbury <joseph.salisbury@microsoft.com>,
-        kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>
-Subject: Re: [PATCH][v2] Drivers: hv: Change flag to write log level in panic
- msg to false
-Message-ID: <20200706114613.ikjv53b5zltwupq3@liuwe-devbox-debian-v2>
-References: <1593210497-114310-1-git-send-email-joseph.salisbury@microsoft.com>
- <20200701193326.12D69214DB@mail.kernel.org>
- <20200706105549.xum3y7hmviatil2w@liuwe-devbox-debian-v2>
+        Mon, 6 Jul 2020 07:47:56 -0400
+X-Greylist: delayed 64 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 06 Jul 2020 04:47:55 PDT
+Received: from smtp11.infineon.com (smtp11.infineon.com [IPv6:2a00:18f0:1e00:4::5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20277C061794;
+        Mon,  6 Jul 2020 04:47:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=infineon.com; i=@infineon.com; q=dns/txt; s=IFXMAIL;
+  t=1594036075; x=1625572075;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=EQDXlk7XMaqXKin66vyJ0DXTGrbiOpBMELrFtZOLmJE=;
+  b=j+GBsSFf+hTQnRrI6PCFaYKYWLBeKJjozxQo5TQ71HjfJqaKqLBL9H1m
+   MCXmglVpqs5T+QLfL5aW1pnFNzFBQu+xWD3RE4ougbF2QzWwc4Ne2G+P4
+   vW5DkvDziJ0ki49foQbY/PaLZMDpiUcOZhDqoyrr50Zk/99RS9AAdNzn5
+   U=;
+IronPort-SDR: wIJhBVfJYbOXelU5nPj89WSh/xhvR86Dvg1D5r1IiYHBH2ZmUWU+YQyHEb0r7PD8QPj3zy7ruZ
+ ZSBwymnCYficWCaCkLyc4tX543fHM1LasHZUC+GXxXFvOERbXTibFZVyOB95JixfPosA+YT+OR
+ hH8yYY/R9ukADSZjpyhkndoHExwhUa3yY20j+Yg9csCuLit1dx2Fk6lsXXZh2Me01b+G6ioewG
+ u2w9F6U6zVDquM6Fl30UCe7ByYp5mf3CzJUs3z7GoG+rjrwJQHvFJ7r/i+AklFHEdkusclp45e
+ xZo=
+X-SBRS: None
+X-IronPort-AV: E=McAfee;i="6000,8403,9673"; a="168624440"
+X-IronPort-AV: E=Sophos;i="5.75,318,1589234400"; 
+   d="scan'208";a="168624440"
+Received: from unknown (HELO mucxv002.muc.infineon.com) ([172.23.11.17])
+  by smtp11.infineon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2020 13:46:47 +0200
+Received: from MUCSE717.infineon.com (MUCSE717.infineon.com [172.23.7.74])
+        by mucxv002.muc.infineon.com (Postfix) with ESMTPS;
+        Mon,  6 Jul 2020 13:46:46 +0200 (CEST)
+Received: from MUCSE711.infineon.com (172.23.7.83) by MUCSE717.infineon.com
+ (172.23.7.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P256) id 15.1.1913.5; Mon, 6 Jul
+ 2020 13:46:46 +0200
+Received: from MUCSE711.infineon.com ([fe80::cc45:4d1a:3881:a6e5]) by
+ MUCSE711.infineon.com ([fe80::cc45:4d1a:3881:a6e5%20]) with mapi id
+ 15.01.1913.010; Mon, 6 Jul 2020 13:46:46 +0200
+From:   <Peter.Huewe@infineon.com>
+To:     <jarkko.sakkinen@linux.intel.com>,
+        <linux-integrity@vger.kernel.org>
+CC:     <kjhall@us.ibm.com>, <ferry.toth@elsinga.info>,
+        <peterhuewe@gmx.de>, <jgg@ziepe.ca>, <arnd@arndb.de>,
+        <gregkh@linuxfoundation.org>, <akpm@osdl.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v2] tpm_tis: Remove the HID IFX0102
+Thread-Topic: [PATCH v2] tpm_tis: Remove the HID IFX0102
+Thread-Index: AQHWSpi7zu+k2ZgGwES2mspmWAztdKj6fvXg
+Date:   Mon, 6 Jul 2020 11:46:46 +0000
+Message-ID: <e9caad58aba44bb3abeac8569a6bd8ed@infineon.com>
+References: <20200625023111.270458-1-jarkko.sakkinen@linux.intel.com>
+In-Reply-To: <20200625023111.270458-1-jarkko.sakkinen@linux.intel.com>
+Accept-Language: de-DE, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.23.8.247]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200706105549.xum3y7hmviatil2w@liuwe-devbox-debian-v2>
-User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Forgot to CC Michael.
+Hi,
+NACK
 
-On Mon, Jul 06, 2020 at 10:55:49AM +0000, Wei Liu wrote:
-> On Wed, Jul 01, 2020 at 07:33:25PM +0000, Sasha Levin wrote:
-> > Hi
-> > 
-> > [This is an automated email]
-> > 
-> > This commit has been processed because it contains a -stable tag.
-> > The stable tag indicates that it's relevant for the following trees: all
-> > 
-> > The bot has tested the following trees: v5.7.6, v5.4.49, v4.19.130, v4.14.186, v4.9.228, v4.4.228.
-> > 
-> > v5.7.6: Build OK!
-> > v5.4.49: Failed to apply! Possible dependencies:
-> >     53edce00ceb74 ("Drivers: hv: vmbus: Remove dependencies on guest page size")
-> 
-> Unrelated, shouldn't be backported.
-> 
-> > 
-> > v4.19.130: Failed to apply! Possible dependencies:
-> >     53edce00ceb74 ("Drivers: hv: vmbus: Remove dependencies on guest page size")
-> > 
-> 
-> Unrelated, shouldn't be backported.
-> 
-> > v4.14.186: Failed to apply! Possible dependencies:
-> >     4a5f3cde4d51c ("Drivers: hv: vmbus: Remove x86-isms from arch independent drivers")
-> >     53edce00ceb74 ("Drivers: hv: vmbus: Remove dependencies on guest page size")
-> >     7ed4325a44ea5 ("Drivers: hv: vmbus: Make panic reporting to be more useful")
-> >     81b18bce48af3 ("Drivers: HV: Send one page worth of kmsg dump over Hyper-V during panic")
-> >     8afc06dd75c06 ("Drivers: hv: vmbus: Fix the issue with freeing up hv_ctl_table_hdr")
-> >     ddcaf3ca4c3c8 ("Drivers: hv: vmus: Fix the check for return value from kmsg get dump buffer")
-> > 
-> > v4.9.228: Failed to apply! Possible dependencies:
-> >     4a5f3cde4d51c ("Drivers: hv: vmbus: Remove x86-isms from arch independent drivers")
-> >     6ab42a66d2cc1 ("Drivers: hv: vmbus: Move Hypercall invocation code out of common code")
-> >     73638cddaad86 ("Drivers: hv: vmbus: Move the check for hypercall page setup")
-> >     76d36ab798204 ("hv: switch to cpuhp state machine for synic init/cleanup")
-> >     81b18bce48af3 ("Drivers: HV: Send one page worth of kmsg dump over Hyper-V during panic")
-> >     8730046c1498e ("Drivers: hv vmbus: Move Hypercall page setup out of common code")
-> >     d058fa7e98ff0 ("Drivers: hv: vmbus: Move the crash notification function")
-> > 
-> > v4.4.228: Failed to apply! Possible dependencies:
-> >     4a5f3cde4d51c ("Drivers: hv: vmbus: Remove x86-isms from arch independent drivers")
-> >     619848bd07434 ("drivers:hv: Export a function that maps Linux CPU num onto Hyper-V proc num")
-> >     6ab42a66d2cc1 ("Drivers: hv: vmbus: Move Hypercall invocation code out of common code")
-> >     73638cddaad86 ("Drivers: hv: vmbus: Move the check for hypercall page setup")
-> >     75ff3a8a9168d ("Drivers: hv: vmbus: avoid wait_for_completion() on crash")
-> >     76d36ab798204 ("hv: switch to cpuhp state machine for synic init/cleanup")
-> >     81b18bce48af3 ("Drivers: HV: Send one page worth of kmsg dump over Hyper-V during panic")
-> >     8730046c1498e ("Drivers: hv vmbus: Move Hypercall page setup out of common code")
-> >     a108393dbf764 ("drivers:hv: Export the API to invoke a hypercall on Hyper-V")
-> >     d058fa7e98ff0 ("Drivers: hv: vmbus: Move the crash notification function")
-> 
-> Just from reading the subject lines it seems to me a lot of the possible
-> dependencies aren't really related to this patch functionally. It could
-> be that they are touching the same area of code which create some
-> contextual dependencies. Some of the listed dependencies should
-> definitively _not_ be backported.
-> 
-> Michael and Joseph, how far do you want this to be backported? It may be
-> easier for us to provide bespoke versions of this patch to the stable
-> trees we care about?
-> 
-> Wei.
-> 
-> > 
-> > NOTE: The patch will not be queued to stable trees until it is upstream.
-> > 
-> > How should we proceed with this patch?
-> > 
-> > -- 
-> > Thanks
-> > Sasha
+> % git --no-pager grep IFX0102 drivers/char/tpm
+> drivers/char/tpm/tpm_infineon.c:	{"IFX0102", 0},
+> drivers/char/tpm/tpm_tis.c:	{"IFX0102", 0},		/* Infineon */
+> Obviously IFX0102 was added to the HID table for the TCG TIS driver by mi=
+stake.
+
+The HID IFX0102 was NOT added by mistake.
+Let me explain the history a bit:
+
+Old SLB 9635 / 9630 TPMs had two ways to interface them
+- proprietary 'io' mapped protocol (tpm_infineon)
+- tis protocol  (tpm_tis)
+
+Both match the same HID.
+However with the emerging of the tis protocol, the io protocol eventually w=
+ent away for newer products.
+So all TPM1.2 by IFX match the HID0102 and the TCG generic ones PNP0C31
+
+So basically you break TPM1.2 support for all (newer) Infineon chips if the=
+ platform vendor used the IFX0102 HID as they would speak via tpm_infineon =
+driver.
+The bug must be something different, especially as it only seems to happen =
+after suspend resume.
+
+
+Thanks,
+Peter
