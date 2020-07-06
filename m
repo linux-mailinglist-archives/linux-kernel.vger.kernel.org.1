@@ -2,185 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 442232158FF
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 16:01:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E067721590A
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 16:02:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729304AbgGFOBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 10:01:04 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:27741 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729294AbgGFOBC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 10:01:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594044060;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=plR445Drk3eeFEnzym0LmKRY+r16mbP2yKRnTLNcumQ=;
-        b=eyOmmyVVSqZQ3btGRHGkKYEr7d1xTaGPYqoC9w13l5x7vE+1ZrzdtSph9QOETrbNOavBto
-        p4V6qghd+Bmi0qIjj+hFS53Bs2O+6Ukh8BHuwOSEy0OU7/EcC32Kk+nUbE1O7QE0sxVBbH
-        bU09ygUaK9E/BaV7dlSp1Mm/gUx/8q8=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-307-KhNLlIAHN9Sfaxkvg7ZL1A-1; Mon, 06 Jul 2020 10:00:58 -0400
-X-MC-Unique: KhNLlIAHN9Sfaxkvg7ZL1A-1
-Received: by mail-ej1-f70.google.com with SMTP id y10so29705914ejd.1
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 07:00:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=plR445Drk3eeFEnzym0LmKRY+r16mbP2yKRnTLNcumQ=;
-        b=YGl09wHFKNF5U85LToBb7Sm9aaHXx5dnB5043LKTRbjHg3hmLoRX10xCrOuNcqYAne
-         caGYjtYwOvJdny4dhpsOyazdqK9DD/Mt+s+oKKmgEe9UG1XL43FYkCIsxZPKnG/Gi4ZW
-         mwoS8sQZ1Krpy2WZXlGPsVE247OYnSjTzFf68Ix8xK9GGt+jtXr2U1H6p6dG+Cc79g8H
-         vI+LaaTk96suofUum5l3KGkgIhPLNHSez+MsfcERNw1i3lbg3Ww+fIlJK8x5WWlBYsMq
-         cdana7XYf2LqtawLC4/bQk4CEL4swc/hztC5nrWazM0M3Vy8J0Ru5vq1zDxcpBgoVEt3
-         lb8Q==
-X-Gm-Message-State: AOAM532PuFRuIVIK4yv8kLVDki7xfoH31udfvRGNlkWV8CRzr+T1hAnE
-        ekve7F0RUAckdbNU3euJwlUOiaUBAg4niwb2uMMHt0zL2tWO0B35qo+ixmgdH91bAERnwiMRPGL
-        OW/o3bqz5qOD0rKNd+4259Fg4
-X-Received: by 2002:a05:6402:202e:: with SMTP id ay14mr55866483edb.233.1594044057623;
-        Mon, 06 Jul 2020 07:00:57 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwokWAQDe0bD6JJ8Z9MjAp3h3YbM7dv+sokIOUz5rBXKpDFtUHf2aONLLEEwiCQIl5my75xOA==
-X-Received: by 2002:a05:6402:202e:: with SMTP id ay14mr55866456edb.233.1594044057460;
-        Mon, 06 Jul 2020 07:00:57 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id mf24sm16808096ejb.58.2020.07.06.07.00.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Jul 2020 07:00:56 -0700 (PDT)
-Subject: Re: [PATCH 08/32] usb: typec: tcpm: tcpm: Remove dangling unused
- 'struct tcpm_altmode_ops'
-To:     Lee Jones <lee.jones@linaro.org>, gregkh@linuxfoundation.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>
-References: <20200706133341.476881-1-lee.jones@linaro.org>
- <20200706133341.476881-9-lee.jones@linaro.org>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <ca14707c-7d40-07ac-da1d-ca27a2e93dcd@redhat.com>
-Date:   Mon, 6 Jul 2020 16:00:56 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1729313AbgGFOCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 10:02:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39274 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728940AbgGFOCB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Jul 2020 10:02:01 -0400
+Received: from localhost (p54b33253.dip0.t-ipconnect.de [84.179.50.83])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 096662070C;
+        Mon,  6 Jul 2020 14:01:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594044120;
+        bh=7uN3mPcmvjOBmfGsWWZczPL5+7Cn79fIi7lbBC5K+tw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=c/wYlsilLYD00xmJFQsjKbknrRTIM1zd2hpvDYJfiCdd4FETwEDS2b+wiv/NIx+G2
+         yO2MpZEJJvQEhHBbj3LoWE0lbePgW6iz8l8n2Naccb7DaA90RxI76QJGNyXd+jc/pB
+         2qxrABhkz+9BKod8b4FX/CV+GF63etuLBCLJcnHY=
+Date:   Mon, 6 Jul 2020 16:01:57 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Eddie James <eajames@linux.ibm.com>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        andy.shevchenko@gmail.com, joel@jms.id.au
+Subject: Re: [PATCH v2 2/2] i2c: fsi: Prevent adding adapters for ports
+ without dts nodes
+Message-ID: <20200706140157.GE1046@ninjato>
+References: <20200609201555.11401-1-eajames@linux.ibm.com>
+ <20200609201555.11401-3-eajames@linux.ibm.com>
+ <20200704063918.GH1041@kunai>
+ <4c1aee77-c544-9688-f679-5cd8b5405fb7@linux.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <20200706133341.476881-9-lee.jones@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="dFWYt1i2NyOo1oI9"
+Content-Disposition: inline
+In-Reply-To: <4c1aee77-c544-9688-f679-5cd8b5405fb7@linux.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On 7/6/20 3:33 PM, Lee Jones wrote:
-> Looks as though a079973f462a3 ("usb: typec: tcpm: Remove tcpc_config
-> configuration mechanism") pulled out the only use of 'tcpm_altmode_ops'
-> last year.  No need to keep it around.
-> 
-> Fixes the following W=1 kernel build warning(s):
-> 
->   drivers/usb/typec/tcpm/tcpm.c:1551:39: warning: ‘tcpm_altmode_ops’ defined but not used [-Wunused-const-variable=]
->   1551 | static const struct typec_altmode_ops tcpm_altmode_ops = {
->   | ^~~~~~~~~~~~~~~~
-> 
-> Cc: Guenter Roeck <linux@roeck-us.net>
-> Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> Cc: Hans de Goede <hdegoede@redhat.com>
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-
-This is necessary for adding Display port over Type-C support
-on devices using the tcpm code, rather then firmware, to do
-the Type-C alt-mode negotiation.
-
-I have a local patch in my tree which adds support for this.
-
-But Heikki did not like my approach, so that patch
-(which needs the bits you are removing) never landed
-upstream:
-
-https://patchwork.kernel.org/patch/11199517/
-
-Which is somewhat old now.
-
-Heikki said he would look into an approach to this more to
-his liking. Heikki an progress on this area?
-
-Regards,
-
-Hans
+--dFWYt1i2NyOo1oI9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
 
+> Hi, it does change the behavior actually. By checking for the device node
+> pointer, it would proceed and create the port for a NULL device node, which
+> is not the desired behavior.
 
-> ---
->   drivers/usb/typec/tcpm/tcpm.c | 51 -----------------------------------
->   1 file changed, 51 deletions(-)
-> 
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index 82b19ebd7838e..d6913eb0ea54d 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -1503,57 +1503,6 @@ static int tcpm_validate_caps(struct tcpm_port *port, const u32 *pdo,
->   	return 0;
->   }
->   
-> -static int tcpm_altmode_enter(struct typec_altmode *altmode, u32 *vdo)
-> -{
-> -	struct tcpm_port *port = typec_altmode_get_drvdata(altmode);
-> -	u32 header;
-> -
-> -	mutex_lock(&port->lock);
-> -	header = VDO(altmode->svid, vdo ? 2 : 1, CMD_ENTER_MODE);
-> -	header |= VDO_OPOS(altmode->mode);
-> -
-> -	tcpm_queue_vdm(port, header, vdo, vdo ? 1 : 0);
-> -	mod_delayed_work(port->wq, &port->vdm_state_machine, 0);
-> -	mutex_unlock(&port->lock);
-> -
-> -	return 0;
-> -}
-> -
-> -static int tcpm_altmode_exit(struct typec_altmode *altmode)
-> -{
-> -	struct tcpm_port *port = typec_altmode_get_drvdata(altmode);
-> -	u32 header;
-> -
-> -	mutex_lock(&port->lock);
-> -	header = VDO(altmode->svid, 1, CMD_EXIT_MODE);
-> -	header |= VDO_OPOS(altmode->mode);
-> -
-> -	tcpm_queue_vdm(port, header, NULL, 0);
-> -	mod_delayed_work(port->wq, &port->vdm_state_machine, 0);
-> -	mutex_unlock(&port->lock);
-> -
-> -	return 0;
-> -}
-> -
-> -static int tcpm_altmode_vdm(struct typec_altmode *altmode,
-> -			    u32 header, const u32 *data, int count)
-> -{
-> -	struct tcpm_port *port = typec_altmode_get_drvdata(altmode);
-> -
-> -	mutex_lock(&port->lock);
-> -	tcpm_queue_vdm(port, header, data, count - 1);
-> -	mod_delayed_work(port->wq, &port->vdm_state_machine, 0);
-> -	mutex_unlock(&port->lock);
-> -
-> -	return 0;
-> -}
-> -
-> -static const struct typec_altmode_ops tcpm_altmode_ops = {
-> -	.enter = tcpm_altmode_enter,
-> -	.exit = tcpm_altmode_exit,
-> -	.vdm = tcpm_altmode_vdm,
-> -};
-> -
->   /*
->    * PD (data, control) command handling functions
->    */
-> 
+Brown paper bag, please...
 
+
+--dFWYt1i2NyOo1oI9
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl8DLtUACgkQFA3kzBSg
+KbZ8JQ/9Euwnd5KJxETrhE06qQLcylzYP1hUEh7d4Xl0o9jwnr7GyJ6ypdSimJB2
+WMiG4dzRupIGyu4uUDZ2cYzDoAqcqM5VepQBXTbttYd3sScQ12KzhQIgcYCh8Sy8
++0Chd+cHAL6jHgXVPPwAyipcBA8FYX/kLYxdu4NJ8nlaoeM5+xJGee/5j65b4pk2
++6XjrhzANIi51+bj+R6FyGAn66Z2vS6hKr2ObFY2hWmN9H4O3ftRoZu5NSnvKoSq
+q0LG39Xiv7PuZYoFRFs0Bg6w2DhyctJa8uk/oTtFtAL0hIbnL4se/Re+Nm8VQN8k
+z8OX9hNJ8mDWjaCHVPaIyemJ3h1jaXsbQQu1P/t/6Q3eXlDW6aF2IhVVvbrwTKvf
+iyciDn5pWt5o/b7Scd2vCJP/1MNwqUIWeeFst7e0X5EiuFwl9zT/V2y2j4HN23Es
+Ct66oVEOOmvizqoEyN/JdqWsqPeGrRbMtBxzdzwoavpgIna2ffOVNL66RNM2CEXE
+v9FM7c5vDqPBEfR5HrEivY4XH0CvI1S/7/Pfh1/EgbZ3hGVOBT3JLQat72VEY1JZ
+KaztACohQw/h46WTY0NIjVt3LyPvLGulSiinWNaFUsAA3eDwcAJOVkoIzDPKFsSD
+uF7OQqd3rKdbpSyOdxBpe1i1Jc7JGrL8073ZFfd5gUlr+zPJWPo=
+=+yAc
+-----END PGP SIGNATURE-----
+
+--dFWYt1i2NyOo1oI9--
