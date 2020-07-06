@@ -2,108 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8F9E215CD0
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 19:16:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39984215CE4
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 19:20:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729668AbgGFRQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 13:16:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729568AbgGFRQM (ORCPT
+        id S1729663AbgGFRUS convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 6 Jul 2020 13:20:18 -0400
+Received: from mail.fireflyinternet.com ([109.228.58.192]:60364 "EHLO
+        fireflyinternet.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729551AbgGFRUS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 13:16:12 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7EFFC061794
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Jul 2020 10:16:11 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id x62so29545547qtd.3
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 10:16:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=45tIWdm+dVxESjLr3PMmxKwleOkKwq9BzEXHEaJCoao=;
-        b=JMDq9eXgXHSz9XSGQQAFTayjYJyh/tUQl1//Q4SkgSjvcQN/7UUCIntCwRNQVTaFQY
-         sCCXXuilBV9Tv6o/mG+3Gs1hC3f4BRXmR1pSXMhK5BQGI4VXuqDSKW8dRkt2GEav9JZw
-         QzhyGUa8yyPyHGv/5tqIFV1mJ+b2J8Dvb9Kgj3zNuF2GflY6G7LyEq9lRczsYAjg/3+/
-         0qdkOLT2W639EfXwFIJBqYn+2WcY1BlcWhngpTd1oHh9BPaX1UPFmc/2fyXvDqF1+E8N
-         MIJbH5tMcJA0avlrJV+MTID4JbeNr3+ksEItenYFf9G2jqy5RA7tkBx83MWTCnbpWxgt
-         Rsxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=45tIWdm+dVxESjLr3PMmxKwleOkKwq9BzEXHEaJCoao=;
-        b=mYFKzNE+PSlgCmKNObPkJMDEHDLvMW46RQH8+MWQ9Bn5MODZLmoR3C6hWyv++DjZ5c
-         IBNMvB3fFiUP53aPKAx7hJGueYe73mgLrggiyMcxKSn0ELBKocxLvbecnLq6QhPzMSy6
-         YP2cPRpbuBpn9c3M6JqUEGwIC+VkQThQx1v3mpdMPaVPaTyyKm9CPN8tIvieg+/u9t8c
-         8AKjTuDc0X6kzw0dk/iBch4+zr2tIKuhFPBfyo6Lbq2Nb0wtVLuKcT2TCR8BPq1/Gq9r
-         4sStm0+rVmmCSaUgGY7UM2KvNmX1BqilVpMBdCiRXElfvTLs0JGZPoVpQ6PKk//3niKL
-         hK3Q==
-X-Gm-Message-State: AOAM532X3qA+j7xPBejb6fojSgB23iqUDUtctzKofZJirok9/zQeGcaN
-        JA8zoYqp7zUPj2H3PxJ+gY0Nn8QdqVyExDa4xjsqXA==
-X-Google-Smtp-Source: ABdhPJyO73KvUDsn/Tc1RQWALC7DpTQJfJo+SXyquB51RqmZRw6Pyb4IInF6wxz/MkxuF3xyg0XayJvSgCNmnp6HDWQ=
-X-Received: by 2002:aed:2684:: with SMTP id q4mr49474415qtd.208.1594055771190;
- Mon, 06 Jul 2020 10:16:11 -0700 (PDT)
+        Mon, 6 Jul 2020 13:20:18 -0400
+X-Default-Received-SPF: pass (skip=forwardok (res=PASS)) x-ip-name=78.156.65.138;
+Received: from localhost (unverified [78.156.65.138]) 
+        by fireflyinternet.com (Firefly Internet (M1)) with ESMTP (TLS) id 21731955-1500050 
+        for multiple; Mon, 06 Jul 2020 18:19:51 +0100
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20200701083118.45744-1-lee.jones@linaro.org> <20200701083118.45744-27-lee.jones@linaro.org>
- <20200701093616.GX1179328@dell>
-In-Reply-To: <20200701093616.GX1179328@dell>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Mon, 6 Jul 2020 19:16:00 +0200
-Message-ID: <CAMpxmJW0q5nHtz=Td_8EiLnnO3H-+047bVE1aCByqj8J2Ldm8g@mail.gmail.com>
-Subject: Re: [PATCH v2 26/30] misc: eeprom: at24: Tell the compiler that ACPI
- functions may not be used
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Wolfram Sang <wsa@kernel.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20200703125046.8395-1-f.suligoi@asem.it>
+References: <20200703125046.8395-1-f.suligoi@asem.it>
+Subject: Re: [PATCH] drm/i915: Fix spelling mistake in i915_reg.h
+From:   Chris Wilson <chris@chris-wilson.co.uk>
+Cc:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Flavio Suligoi <f.suligoi@asem.it>
+To:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
+        Flavio Suligoi <f.suligoi@asem.it>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>
+Date:   Mon, 06 Jul 2020 18:19:49 +0100
+Message-ID: <159405598951.24180.13345481240552002697@build.alporthouse.com>
+User-Agent: alot/0.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 1, 2020 at 11:36 AM Lee Jones <lee.jones@linaro.org> wrote:
->
-> ... as is the case when !CONFIG_ACPI.
->
-> Fixes the following W=3D1 kernel build warning:
->
->  drivers/misc/eeprom/at24.c:228:36: warning: =E2=80=98at24_acpi_ids=E2=80=
-=99 defined but not used [-Wunused-const-variable=3D]
->
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Quoting Flavio Suligoi (2020-07-03 13:50:46)
+> Fix typo: "TRIGER" --> "TRIGGER"
+> 
+> The two misplelled macros:
+> 
+> 1) OAREPORTTRIG1_EDGE_LEVEL_TRIGER_SELECT_MASK
+> 2) OAREPORTTRIG5_EDGE_LEVEL_TRIGER_SELECT_MASK
+> 
+> are not used in any other sources of the kernel,
+> so this change can be consider only a local change
+> for the i915_reg.h file.
+> 
+> Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
 > ---
-> - Resending to add the I2C ML and Bartosz to the conversation
->   - Looks like I missed them when running get_maintainer.pl
-> - This patch, like all the others in the set, should go in via Misc
->   - Although the patches are orthogonal, this makes life easier for Greg
->
->  drivers/misc/eeprom/at24.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/misc/eeprom/at24.c b/drivers/misc/eeprom/at24.c
-> index 9ff18d4961ceb..2591c21b2b5d8 100644
-> --- a/drivers/misc/eeprom/at24.c
-> +++ b/drivers/misc/eeprom/at24.c
-> @@ -225,7 +225,7 @@ static const struct of_device_id at24_of_match[] =3D =
-{
->  };
->  MODULE_DEVICE_TABLE(of, at24_of_match);
->
-> -static const struct acpi_device_id at24_acpi_ids[] =3D {
-> +static const struct acpi_device_id __maybe_unused at24_acpi_ids[] =3D {
->         { "INT3499",    (kernel_ulong_t)&at24_data_INT3499 },
->         { "TPF0001",    (kernel_ulong_t)&at24_data_24c1024 },
->         { /* END OF LIST */ }
+>  drivers/gpu/drm/i915/i915_reg.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/i915/i915_reg.h b/drivers/gpu/drm/i915/i915_reg.h
+> index 9d6536afc94b..c2153364724a 100644
+> --- a/drivers/gpu/drm/i915/i915_reg.h
+> +++ b/drivers/gpu/drm/i915/i915_reg.h
+> @@ -868,7 +868,7 @@ static inline bool i915_mmio_reg_valid(i915_reg_t reg)
+>  
+>  #define OAREPORTTRIG1 _MMIO(0x2740)
+>  #define OAREPORTTRIG1_THRESHOLD_MASK 0xffff
+> -#define OAREPORTTRIG1_EDGE_LEVEL_TRIGER_SELECT_MASK 0xffff0000 /* 0=level */
+> +#define OAREPORTTRIG1_EDGE_LEVEL_TRIGGER_SELECT_MASK 0xffff0000 /* 0=level */
+>  
+>  #define OAREPORTTRIG2 _MMIO(0x2744)
+>  #define OAREPORTTRIG2_INVERT_A_0  (1 << 0)
+> @@ -921,7 +921,7 @@ static inline bool i915_mmio_reg_valid(i915_reg_t reg)
+>  
+>  #define OAREPORTTRIG5 _MMIO(0x2750)
+>  #define OAREPORTTRIG5_THRESHOLD_MASK 0xffff
+> -#define OAREPORTTRIG5_EDGE_LEVEL_TRIGER_SELECT_MASK 0xffff0000 /* 0=level */
+> +#define OAREPORTTRIG5_EDGE_LEVEL_TRIGGER_SELECT_MASK 0xffff0000 /* 0=level */
 
-Acked-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Ok, these names are not copied straight from the docs, so renaming them
+will not hinder us when finding the relevant fields.
 
-Please, drop the "Re:" prefix from the subject next time, I nearly
-missed this in my inbox.
-
-Thanks!
-Bartosz
+Reviewed-by: Chris Wilson <chris@chris-wilson.co.uk>
+-Chris
