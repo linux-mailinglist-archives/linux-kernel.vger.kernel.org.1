@@ -2,140 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CB97215739
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 14:28:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAE4021573F
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 14:29:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729133AbgGFM2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 08:28:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729015AbgGFM2A (ORCPT
+        id S1729162AbgGFM3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 08:29:10 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:54081 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728885AbgGFM3K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 08:28:00 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F05DFC061794;
-        Mon,  6 Jul 2020 05:27:59 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id b92so16960076pjc.4;
-        Mon, 06 Jul 2020 05:27:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uGcN/dQUvfFHJxD7/3RQyI8ooNZFu20+CAJIaRPmdZ0=;
-        b=VatyV3O7C+Ui7z6K5O70hpojcHAAyPU4Co4495eo6U8tcd6W2pvYu2tqDT10sHSq4t
-         jd8ULr4xAUbXCgw3VwNwNRmxQ+BwjfOE3pudDOeHvLDrENsjWdGv2jsVdbyzAmmG2STD
-         C8pkMyD7CFMl0LNP/TMbe1xg30oxROSxWUlgqux3K1VcZHSZSrC9niKfr+7hhKZwSh0e
-         ILtsIvJvTRwFyM25RK4ju2iyu+Ym0t9DzY5q+e4TQgilIpnJrYX2CuIQmrnE8UPumO5W
-         JxCTqPORWo5Wq0kxrKipYVUl6c19JjzuKKBA8SsCpZ4VEmv313X9/C3PsR4wq94RTBlN
-         iH1g==
+        Mon, 6 Jul 2020 08:29:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594038548;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=Mc/ldKPt/EXYFlwVXR6UGMdQ57wZ+ah4uNI5EbcP1/0=;
+        b=hb6guDzdFk9Eb9YYWoTqRmy7Y+VAVoKMwaxUwOxtuG6HONSL44hncN1RpRfjLIXJAOa/YI
+        xEEk+kbs8CllVOoQc0PLEQ7IKjWd1PEwX0e9+pIqW6HBDpQzkGYSB544i5VoswsLrq1h+c
+        wL8oosYpPe0AB2qVrHm50emcRL9bbRo=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-163-DSvALsx8N9Su7M6bsyTFAw-1; Mon, 06 Jul 2020 08:29:05 -0400
+X-MC-Unique: DSvALsx8N9Su7M6bsyTFAw-1
+Received: by mail-qv1-f70.google.com with SMTP id u10so1931038qvj.23
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 05:29:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uGcN/dQUvfFHJxD7/3RQyI8ooNZFu20+CAJIaRPmdZ0=;
-        b=ugWHQjJzJDEtocI35S75PJKQUsSCtNVNQJi5kq4KWh2MxuEyqhSvbJDbXHDyjckD/J
-         D33QwTEtq7V0wyUW6J9a34PkX2kSR7v7KHUAP4tDr44guMYosZq5himYqPd2Xpi2FRB8
-         ZjnEwU/usY6vWcN7919AM0+HJdQ2UPccKX2fI8avcHOjyDySgbEuRoZLqoS8uiZOAsKm
-         cF+1esWzQlA5e0KWK3F845n1bPf/f7HjwqJuV0KfHOeMCVkLcFm8akGddSPYE83jpRfd
-         XShZuI/emDMjHyNBhpQ1kKeaA5+JhibQxEug0tClEY574WhqtYPHJEzn8ap+1iV47r5r
-         zt/Q==
-X-Gm-Message-State: AOAM531JcMYHDDhilqQ8PntziErchHR0zkw5VL09MSjQAYiXpLF0bvBK
-        ytTYRmEzOh8Z/lu5jGO047Jk8xqIzftwNQ3mzLc=
-X-Google-Smtp-Source: ABdhPJxxwlXggdrm4VJkoXTr5IdbXdYn4AroBkGeJR82Z/mrkOfNtZ5dmAeXfN2gW7lUT6+1freCth262v4Tzf8FiZU=
-X-Received: by 2002:a17:90b:3547:: with SMTP id lt7mr25700821pjb.181.1594038479529;
- Mon, 06 Jul 2020 05:27:59 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200705133038.161547-1-mans0n@gorani.run>
-In-Reply-To: <20200705133038.161547-1-mans0n@gorani.run>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 6 Jul 2020 15:27:43 +0300
-Message-ID: <CAHp75VcsVWBJ6Lu+QsZmabHcCN6B0s884FGf0d3Ld_UsgChTLw@mail.gmail.com>
-Subject: Re: [PATCH v5 1/2] gpio: add GPO driver for PCA9570
-To:     Sungbo Eo <mans0n@gorani.run>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Michael Walle <michael@walle.cc>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Mc/ldKPt/EXYFlwVXR6UGMdQ57wZ+ah4uNI5EbcP1/0=;
+        b=Lv5ndPVkTv6TW07FXYfZ2dDSFTG/9CNRsCrvoo2x/u8vm7Gpao7Khp3sv1ODsJKCez
+         eOt/dfGrisMOomMOZ96vJvxKlvn4qTMR8BMQCQiBQ2KgmMQhbO70x47DZgzZuC53lAEr
+         oWec9oIcDlclWWqh9e63cTQWOIUs1g+5O2IMDhgPd1HhIbkUtLNxAq27xFe5v6lPqSBx
+         PLQKTsBEx6NBKsTTek8RXNFis4ObXmqKxdHFKpDGqytmNfio3WxAaF5UyH381DdM31JI
+         6PxAtMn+K8EyM1O86DN/GgZK6br7uVgIPRo7hoiYL5kcRJibdOCq8ei/F/XmuLJlH35w
+         5OQA==
+X-Gm-Message-State: AOAM533ekb0dFtg1WOZiSY1uIz12OpoK5QYKZe5340fLlVukUHTG8vjM
+        mWnjC/UXMnDroqQDL3O5KQLPSYiyd95eDrJET1oKWraywRMt+WoUl2WbZgCAf7VjCsRu+I/0gTT
+        VGk6YKsP2cw5Iyybdx79A4+2+
+X-Received: by 2002:a05:6214:d4d:: with SMTP id 13mr13540401qvr.22.1594038544912;
+        Mon, 06 Jul 2020 05:29:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxMy8mu7HXUm95aP+rznm4nycrjLabnqqCu0tSzaAU0UirnpXs5EwtEIjiB8f3YLEf4kXnE0A==
+X-Received: by 2002:a05:6214:d4d:: with SMTP id 13mr13540380qvr.22.1594038544638;
+        Mon, 06 Jul 2020 05:29:04 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id u6sm22032735qtc.34.2020.07.06.05.29.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Jul 2020 05:29:04 -0700 (PDT)
+From:   trix@redhat.com
+To:     alexander.deucher@amd.com, christian.koenig@amd.com,
+        airlied@linux.ie, daniel@ffwll.ch
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
+Subject: [PATCH] drm/radeon: fix double free
+Date:   Mon,  6 Jul 2020 05:28:57 -0700
+Message-Id: <20200706122857.27661-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 5, 2020 at 4:31 PM Sungbo Eo <mans0n@gorani.run> wrote:
->
-> NXP PCA9570 is a 4-bit I2C GPO expander without interrupt functionality.
-> Its ports are controlled only by a data byte without register address.
+From: Tom Rix <trix@redhat.com>
 
-Thank you for an update, my comments (besides what Bart has) below.
+clang static analysis flags this error
 
-> Datasheet: https://www.nxp.com/docs/en/data-sheet/PCA9570.pdf
->
-> Signed-off-by: Sungbo Eo <mans0n@gorani.run>
+drivers/gpu/drm/radeon/ci_dpm.c:5652:9: warning: Use of memory after it is freed [unix.Malloc]
+                kfree(rdev->pm.dpm.ps[i].ps_priv);
+                      ^~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/gpu/drm/radeon/ci_dpm.c:5654:2: warning: Attempt to free released memory [unix.Malloc]
+        kfree(rdev->pm.dpm.ps);
+        ^~~~~~~~~~~~~~~~~~~~~~
 
-No blank line in between.
+problem is reported in ci_dpm_fini, with these code blocks.
 
-...
+	for (i = 0; i < rdev->pm.dpm.num_ps; i++) {
+		kfree(rdev->pm.dpm.ps[i].ps_priv);
+	}
+	kfree(rdev->pm.dpm.ps);
 
-> +#include <linux/gpio/driver.h>
-> +#include <linux/i2c.h>
-> +#include <linux/module.h>
+The first free happens in ci_parse_power_table where it cleans up locally
+on a failure.  ci_dpm_fini also does a cleanup.
 
-It also needs property.h.
+	ret = ci_parse_power_table(rdev);
+	if (ret) {
+		ci_dpm_fini(rdev);
+		return ret;
+	}
 
-...
+So remove the cleanup in ci_parse_power_table and
+move the num_ps calculation to inside the loop so ci_dpm_fini
+will know how many array elements to free.
 
-> +struct pca9570 {
-> +       struct gpio_chip chip;
+Fixes: cc8dbbb4f62a ("drm/radeon: add dpm support for CI dGPUs (v2)")
 
-> +       struct i2c_client *client;
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ drivers/gpu/drm/radeon/ci_dpm.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-This basically a duplication of reference to a parent device of GPIO chip.
-See below.
-
-> +       u8 out;
-> +};
-> +
-> +static int pca9570_read(struct pca9570 *gpio, u8 *value)
-> +{
-
-struct i2c_client *client = to_i2c_client(gpio->chip.parent);
-
-> +       int ret;
-> +
-> +       ret = i2c_smbus_read_byte(gpio->client);
-> +       if (ret < 0)
-> +               return ret;
-> +
-> +       *value = ret;
-> +       return 0;
-> +}
-
-...
-
-> +static const struct i2c_device_id pca9570_id_table[] = {
-> +       { "pca9570", 4 },
-> +       { /* sentinel */ }
-> +};
-> +MODULE_DEVICE_TABLE(i2c, pca9570_id_table);
-> +
-> +static const struct of_device_id pca9570_of_match_table[] = {
-> +       { .compatible = "nxp,pca9570", .data = (void *)4 },
-> +       { /* sentinel */ }
-> +};
-> +MODULE_DEVICE_TABLE(of, pca9570_of_match_table);
-
-These structures now can be located closer to the end of the driver
-(exactly before first use).
-
-...
-
-> +       gpio->chip = template_chip;
-
-I'm not sure why we need an additional structure to just memcpy() to the chip.
-But here I have no strong opinion (perhaps the compiler even optimizes this).
-
+diff --git a/drivers/gpu/drm/radeon/ci_dpm.c b/drivers/gpu/drm/radeon/ci_dpm.c
+index 86ac032275bb..ba20c6f03719 100644
+--- a/drivers/gpu/drm/radeon/ci_dpm.c
++++ b/drivers/gpu/drm/radeon/ci_dpm.c
+@@ -5563,6 +5563,7 @@ static int ci_parse_power_table(struct radeon_device *rdev)
+ 	if (!rdev->pm.dpm.ps)
+ 		return -ENOMEM;
+ 	power_state_offset = (u8 *)state_array->states;
++	rdev->pm.dpm.num_ps = 0;
+ 	for (i = 0; i < state_array->ucNumEntries; i++) {
+ 		u8 *idx;
+ 		power_state = (union pplib_power_state *)power_state_offset;
+@@ -5572,10 +5573,8 @@ static int ci_parse_power_table(struct radeon_device *rdev)
+ 		if (!rdev->pm.power_state[i].clock_info)
+ 			return -EINVAL;
+ 		ps = kzalloc(sizeof(struct ci_ps), GFP_KERNEL);
+-		if (ps == NULL) {
+-			kfree(rdev->pm.dpm.ps);
++		if (ps == NULL)
+ 			return -ENOMEM;
+-		}
+ 		rdev->pm.dpm.ps[i].ps_priv = ps;
+ 		ci_parse_pplib_non_clock_info(rdev, &rdev->pm.dpm.ps[i],
+ 					      non_clock_info,
+@@ -5597,8 +5596,8 @@ static int ci_parse_power_table(struct radeon_device *rdev)
+ 			k++;
+ 		}
+ 		power_state_offset += 2 + power_state->v2.ucNumDPMLevels;
++		rdev->pm.dpm.num_ps = i + 1;
+ 	}
+-	rdev->pm.dpm.num_ps = state_array->ucNumEntries;
+ 
+ 	/* fill in the vce power states */
+ 	for (i = 0; i < RADEON_MAX_VCE_LEVELS; i++) {
 -- 
-With Best Regards,
-Andy Shevchenko
+2.18.1
+
