@@ -2,100 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BBF72156BA
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 13:52:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C0682156B1
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 13:50:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728996AbgGFLwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 07:52:31 -0400
-Received: from lb2-smtp-cloud7.xs4all.net ([194.109.24.28]:41455 "EHLO
-        lb2-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728414AbgGFLwa (ORCPT
+        id S1728940AbgGFLuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 07:50:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728264AbgGFLuM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 07:52:30 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud7.xs4all.net with ESMTPA
-        id sPd3j8eCUBncFsPd6jvGUZ; Mon, 06 Jul 2020 13:52:28 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
-        t=1594036348; bh=wPbqN09DUqoq1F6TV85LI76gqa+lhk27jZ43aOotfmw=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=pt6KGDZPMi8JHPbVsMr0qe2IlMQlR/cGG9kI0wp2jVT5AGFe3FW280LMEP5HVUxkr
-         sOv7a2KzWpKuZ3wgkY2mX8qBc9ZNPPyXU+ZnR0UNyDXL/MSxVGWhNcSORItQpxGIoV
-         tXtHxZq2XaSXILwyTSFuCwsi8EDyE5HgazW7H+MKfdmUYyS1I33zMcHrjns22+STCx
-         CrqKSfQxljDD58PIfKKNkM6Pp/FOORSjzKO4wIo7U91cWfd3nrcOjYTJ4CeD4DP5+9
-         qbUrEuUVphbrpP5YJ2U1eBSFbYkfQ2z07LyeOs/ZxXzo5eJDqoSZUWsHkwwrcEt7DA
-         5gfh8nQsrNYww==
-Subject: Re: [RFC PATCH v2 11/18] media: tegra-video: Add support for external
- sensor capture
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>,
-        thierry.reding@gmail.com, jonathanh@nvidia.com, frankc@nvidia.com,
-        sakari.ailus@iki.fi, robh+dt@kernel.org, helen.koike@collabora.com
-Cc:     digetx@gmail.com, sboyd@kernel.org, gregkh@linuxfoundation.org,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-i2c@vger.kernel.org
-References: <1592358094-23459-1-git-send-email-skomatineni@nvidia.com>
- <1592358094-23459-12-git-send-email-skomatineni@nvidia.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <0e25a523-c911-0973-65ba-49883d2383fd@xs4all.nl>
-Date:   Mon, 6 Jul 2020 13:49:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Mon, 6 Jul 2020 07:50:12 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F11AC061794
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Jul 2020 04:50:12 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id p7so17009069qvl.4
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 04:50:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HJPS9i68AMwe08ob266SMGfaNOxK2LzyyRESTVDvAq8=;
+        b=gwrb8q1fpMTbIIY+b98bPBgNhHC9YXFytB4yndrISbMQrXTdynTfT3rTtMJrliss9x
+         erJD+p3yZxRqXXvy6ytWhvzyRPXafkIQ1DgcxO7PNK7Jdpc69H7TWhU/j11tArTdwfGo
+         aXF6HcW5XBkKo0Zf0o9W8iSnrTGiSyrphmjbPmec/KIfQgEhg5i+KtkhCSHxs6XOawqI
+         PRp4Gr9thqc+rEYeLoWK4Bu/pGXceBTFR/y0eLu/dsRBjPuOqkE0lEE+4/IhK10q6g5P
+         JGVi/SSTbRtWI9eAeRX+yBvyCldrbTU2z8giLdxKHyYKTa+zplEHvc1kkX9CbJn1f3mN
+         ZxUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HJPS9i68AMwe08ob266SMGfaNOxK2LzyyRESTVDvAq8=;
+        b=cgaivGvs5aBQHiNKoUin4cnl2rH2VKamibyqKEsgKJZInaDmfDkpPB4EKRUTHiRht8
+         KynBdFQnEsOCwKw3wJftfpRH+r6jZlZ8LgSRYDm7fDuPXJ+KtBYUx786OByrhXhUeOy4
+         +dj+UKWJ9jumcY5iSOv18h5hkzggYv4WosJxHHSKRmrQb9ls1wH1xux/kOCwI6wDDFIR
+         iOBrn2F25t5g33GIQtg8iN/q3twJEjqbUILBmIgV0qExCDMOzFCpOAroWY8FiFWaQ1La
+         u0xmSX/NKESpvEPY6ZROYdycKq6Gr5UIDyU8kyr2AhCGUgwWg0O3iltDVENpmYAcjya2
+         IlCQ==
+X-Gm-Message-State: AOAM533ds4kRhzm0ZywxzJAWIGkHLO/fXFpL3RodcMY8+HWM2v0wILjy
+        U2U9SnDt3/9/xpc2wVswvK0zF18YTbR/B5Yk+VU=
+X-Google-Smtp-Source: ABdhPJwzhKnIeBJyg6Hdvrq0O2HRc6A2LQH4oD4siELH9amza/RljlZvEd4qxDGulKPGQ9WRBSHHijY40XERUUjP8r8=
+X-Received: by 2002:a0c:e78b:: with SMTP id x11mr41855150qvn.103.1594036211296;
+ Mon, 06 Jul 2020 04:50:11 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1592358094-23459-12-git-send-email-skomatineni@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4wfMhGvfNQdbbFSvkix5vSPRd+I8BouJ5k7sjraltxZCW/i73BR+XvWsWG+LK/vagCGbnhHotLMqr7F12wUckqW2dDCYLI1WjfHwU6T8z58+I7/c5DSW5r
- GsZmRBk42bFNWH4byB0XAEw258h1xft3GbFKph8J+gb/EvKy3BgizZLARAEMNkSSO+1RL9vyT137dmsk+pdPontXZVNdRYfzWfhgFNAvRNz9vUJ0OLgjkBiL
- G0nA+IBDdLhdfZjysqQRJHZ0/VXWEc4ph+3wVmVOw5Xsi169OoU03m77VXdcA1nL5rMee0ZglYEHGYXmHuJMSPraRPPWel1PqshRUNzFaKJcqumHFbIZNuez
- IuXF1Crcj5rQyLzirwWZu41R4AlAD70ccmumPb3K+DQeYeuABYWJXk0cmb3G0QzEG5rMVHM600wWN7jYbxFIOgsCjSmdMCR2w9IjDf5CKS4n4kN8w1xUsH/g
- otxL1TDD7cKOw2YG9SJ+3Li/lquKUK9TWYRceMo3Kx54gzk66kIhHkb2qRPbbkV20lfzOy1+AvWCvkR5Ikf7DMjjSmGUX+dPSxwnZYtSqHNR0SsTOq6N6I8O
- /MpQJ31ZAAYlUsE0B2t2UMHZgqWPcS1uSk/qC/P6krIqArn+P2yPxq8zG2SdxS+r2mLGG37xf4+iJrFer+yVVUDG
+References: <20200706025921.53683-1-songmuchun@bytedance.com>
+In-Reply-To: <20200706025921.53683-1-songmuchun@bytedance.com>
+From:   Pekka Enberg <penberg@gmail.com>
+Date:   Mon, 6 Jul 2020 14:49:55 +0300
+Message-ID: <CAOJsxLEgRvkganmNNmeBsHdgHTgJ5tbK=b8Pnrc4LB3tvTzbMA@mail.gmail.com>
+Subject: Re: [PATCH v2] mm/page_alloc: skip setting nodemask when we are in interrupt
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/06/2020 03:41, Sowjanya Komatineni wrote:
-> This patch adds support to capture from the external sensor
-> based on device graph in the device tree.
-> 
-> Driver walks through the device graph to create media links
-> between the entities and registers and unregisters video devices
-> when the corresponding sub-devices are bound and unbound.
-> 
-> Channel formats are enumerated based on available formats from
-> the sensor and the corresponding matched formats from the Tegra
-> supported video formats list.
-> 
-> Each Tegra CSI instance can be configured as 4-lane or 2-lane
-> based on supported lane configuration from the sensor through
-> the device tree.
-> 
-> Currently this driver supports V4L2 video node centric only.
-> 
-> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
-> ---
->  drivers/staging/media/tegra-video/Kconfig    |   1 +
->  drivers/staging/media/tegra-video/csi.c      | 128 +++++-
->  drivers/staging/media/tegra-video/csi.h      |   1 +
->  drivers/staging/media/tegra-video/tegra210.c |   2 +-
->  drivers/staging/media/tegra-video/vi.c       | 623 +++++++++++++++++++++++++--
->  drivers/staging/media/tegra-video/vi.h       |  23 +-
->  6 files changed, 726 insertions(+), 52 deletions(-)
-> 
+On Mon, Jul 6, 2020 at 5:59 AM Muchun Song <songmuchun@bytedance.com> wrote:
+> When we are in the interrupt context, it is irrelevant to the
+> current task context. If we use current task's mems_allowed, we
+> can fair to alloc pages in the fast path and fall back to slow
+> path memory allocation when the current node(which is the current
+> task mems_allowed) does not have enough memory to allocate. In
+> this case, it slows down the memory allocation speed of interrupt
+> context. So we can skip setting the nodemask to allow any node
+> to allocate memory, so that fast path allocation can success.
+>
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 
-<snip>
-
-> +static int tegra_csi_channels_alloc(struct tegra_csi *csi)
-> +{
-> +	struct device_node *node = csi->dev->of_node;
-> +	struct v4l2_fwnode_endpoint v4l2_ep = { .bus_type = 0 };
-
-A bus_type value of 0 is deprecated, this should be set to a valid
-bus_type (probably V4L2_MBUS_CSI2_DPHY).
-
-Regards,
-
-	Hans
+Reviewed-by: Pekka Enberg <penberg@kernel.org>
