@@ -2,113 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6D8E215DFC
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 20:08:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA261215E26
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 20:20:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729804AbgGFSIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 14:08:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33458 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729658AbgGFSIQ (ORCPT
+        id S1729746AbgGFST6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 14:19:58 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:2600 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729550AbgGFST6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 14:08:16 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F6B0C061755
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Jul 2020 11:08:16 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id s26so3652741pfm.4
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 11:08:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=ljWc7ncVT9pbFQys6lUrJ2oby+afUmM7eFZjxIhMARg=;
-        b=jEACz1RudmH76IjHbdFlmoPGUPJKFxQCq2v9MrfJJA8KB3hgvmPKoJ6dh7OSUm81N/
-         tl3W9rYACLLYLqhNvYdQec8GTl2ejOttzQ58EI02HItGcnKiiC5/2aB5g66OCIZC/E1u
-         /mQOQRtDqM/vypg2TSJ4IrsIMarYUK8d/G66KFBDESnUPDZbWua4S7CX2i+MFnWN6+gm
-         TAl9dt7TTOtSu6v1DhRGv8HYoLhUJhndqmVklEGZWSNyfwLROdQQHvcrbP7ORlKCEii6
-         54YlItX98evWB9sVh7JTXi0t4Ki9jcwLstQgwmyBLwwyw2nX7hSrmTmI1pu9DpWmC1n2
-         Kljg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=ljWc7ncVT9pbFQys6lUrJ2oby+afUmM7eFZjxIhMARg=;
-        b=SVmi6Dt9VxC7V9s2hgFrpoaYXLHsNobiJw8m0vQ0/leilWyya5rh4SEVJuSUu7WB5n
-         YPSaSQ8D/X7kF0IUL2npmteIMwtSLdb3sejU8+faoDS7arTTVlbnK+IUbkHggHLJydmR
-         VW49nRYFniRFi+NTQ4HkOkSTn2dW5HjNrEiDsu9H5LaVD5c64R3OVr0U5RN6eaFlFDfg
-         yfuUnyTlskfe3fOXyXI5kZPv/TDP398V5U4A0ycnVgBlf10XKfowSZQOlMf+tI+NKSOm
-         w8Ez2nGiQJEYqcGP3klePsHA0krd7PewKaLDYuI5aNED1tihZEwfJS2++H6LyV21hLn1
-         BJtw==
-X-Gm-Message-State: AOAM532FS98inmoWWdJF/85kxMN2VIfQ0GWVZdqiw9pN6TBDCQau5+QV
-        IrKdRdlreYs36bA5I+sF2i0pxVJ54sM=
-X-Google-Smtp-Source: ABdhPJxIo6PQngVuGXtLZOqfdIq2vAywCi8VVu0pPrqJTL0U3sjfe2jLu94RvE7iZvdk15XpRbmE0w==
-X-Received: by 2002:a65:5682:: with SMTP id v2mr41106431pgs.231.1594058895951;
-        Mon, 06 Jul 2020 11:08:15 -0700 (PDT)
-Received: from jordon-HP-15-Notebook-PC.domain.name ([122.171.43.125])
-        by smtp.gmail.com with ESMTPSA id 199sm20425544pgc.79.2020.07.06.11.08.13
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 06 Jul 2020 11:08:15 -0700 (PDT)
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-To:     boris.ostrovsky@oracle.com, jgross@suse.com, sstabellini@kernel.org
-Cc:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
-        Souptick Joarder <jrdr.linux@gmail.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Paul Durrant <xadimgnik@gmail.com>
-Subject: [PATCH v2 3/3] xen/privcmd: Convert get_user_pages*() to  pin_user_pages*()
-Date:   Mon,  6 Jul 2020 23:46:12 +0530
-Message-Id: <1594059372-15563-4-git-send-email-jrdr.linux@gmail.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1594059372-15563-1-git-send-email-jrdr.linux@gmail.com>
-References: <1594059372-15563-1-git-send-email-jrdr.linux@gmail.com>
+        Mon, 6 Jul 2020 14:19:58 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 066I3Y5t113845;
+        Mon, 6 Jul 2020 14:19:57 -0400
+Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3248r70mvg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 06 Jul 2020 14:19:57 -0400
+Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
+        by ppma01wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 066IGLdi032484;
+        Mon, 6 Jul 2020 18:19:55 GMT
+Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
+        by ppma01wdc.us.ibm.com with ESMTP id 322hd89gcf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 06 Jul 2020 18:19:55 +0000
+Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
+        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 066IJt0p36503914
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 6 Jul 2020 18:19:55 GMT
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 31FB6B2064;
+        Mon,  6 Jul 2020 18:19:55 +0000 (GMT)
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 05F09B205F;
+        Mon,  6 Jul 2020 18:19:54 +0000 (GMT)
+Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
+        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
+        Mon,  6 Jul 2020 18:19:54 +0000 (GMT)
+From:   Stefan Berger <stefanb@linux.vnet.ibm.com>
+To:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jarkko.sakkinen@linux.intel.com, linux-acpi@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Cc:     Stefan Berger <stefanb@linux.ibm.com>
+Subject: [PATCH v9 0/2] tpm2: Make TPM2 logs accessible for non-UEFI firmware
+Date:   Mon,  6 Jul 2020 14:19:51 -0400
+Message-Id: <20200706181953.3592084-1-stefanb@linux.vnet.ibm.com>
+X-Mailer: git-send-email 2.24.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-06_16:2020-07-06,2020-07-06 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=683
+ impostorscore=0 cotscore=-2147483648 spamscore=0 priorityscore=1501
+ phishscore=0 lowpriorityscore=0 suspectscore=0 clxscore=1015 bulkscore=0
+ mlxscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2007060125
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In 2019, we introduced pin_user_pages*() and now we are converting
-get_user_pages*() to the new API as appropriate. [1] & [2] could
-be referred for more information. This is case 5 as per document [1].
+From: Stefan Berger <stefanb@linux.ibm.com>
 
-[1] Documentation/core-api/pin_user_pages.rst
+This series of patches adds an optional extensions for the TPM2 ACPI table
+with additional fields found in the TPM2 TCG ACPI specification (reference
+is in the patch) that allow access to the log's address and its size. We
+then modify the code that so far only enables access to a TPM 1.2's log for
+a TPM2 as well. This then enables access to the TPM2's log on non-UEFI
+system that for example run SeaBIOS.
 
-[2] "Explicit pinning of user-space pages":
-        https://lwn.net/Articles/807108/
+   Stefan
 
-Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
-Cc: John Hubbard <jhubbard@nvidia.com>
-Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Cc: Paul Durrant <xadimgnik@gmail.com>
----
- drivers/xen/privcmd.c | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
+v8->v9:
+ - Renamed variable
 
-diff --git a/drivers/xen/privcmd.c b/drivers/xen/privcmd.c
-index f6c1543..5c5cd24 100644
---- a/drivers/xen/privcmd.c
-+++ b/drivers/xen/privcmd.c
-@@ -594,7 +594,7 @@ static int lock_pages(
- 		if (requested > nr_pages)
- 			return -ENOSPC;
- 
--		page_count = get_user_pages_fast(
-+		page_count = pin_user_pages_fast(
- 			(unsigned long) kbufs[i].uptr,
- 			requested, FOLL_WRITE, pages);
- 		if (page_count < 0)
-@@ -610,13 +610,7 @@ static int lock_pages(
- 
- static void unlock_pages(struct page *pages[], unsigned int nr_pages)
- {
--	unsigned int i;
--
--	for (i = 0; i < nr_pages; i++) {
--		if (!PageDirty(pages[i]))
--			set_page_dirty_lock(pages[i]);
--		put_page(pages[i]);
--	}
-+	unpin_user_pages_dirty_lock(pages, nr_pages, true);
- }
- 
- static long privcmd_ioctl_dm_op(struct file *file, void __user *udata)
+v7->v8:
+ - Added empty line.
+
+v6->v7:
+ - Added empty lines and R-b.
+
+v5->v6:
+ - Moved extensions of TPM2 table into acpi_tpm2_phy.
+
+v4->v5:
+ - Added R-bs and A-bs.
+
+v3->v4:
+  - Repost as one series
+
+v2->v3:
+  - Split the series into two separate patches
+  - Added comments to ACPI table fields
+  - Added check for null pointer to log area and zero log size
+
+v1->v2:
+  - Repost of the series
+
+
+
+Stefan Berger (2):
+  acpi: Extend TPM2 ACPI table with missing log fields
+  tpm: Add support for event log pointer found in TPM2 ACPI table
+
+ drivers/char/tpm/eventlog/acpi.c | 63 +++++++++++++++++++++-----------
+ include/acpi/actbl3.h            |  7 ++++
+ 2 files changed, 49 insertions(+), 21 deletions(-)
+
 -- 
-1.9.1
+2.26.2
 
