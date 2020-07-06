@@ -2,112 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80CCC216198
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 00:31:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 118C921619B
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 00:31:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727858AbgGFWaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 18:30:17 -0400
-Received: from o1.b.az.sendgrid.net ([208.117.55.133]:38145 "EHLO
-        o1.b.az.sendgrid.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726763AbgGFWaO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 18:30:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiboo.se;
-        h=from:subject:in-reply-to:references:to:cc:content-type:
-        content-transfer-encoding;
-        s=001; bh=8zoq0DYVx9vqhvpeKK6/7NCFlcaglQusuoVRVNQbDtk=;
-        b=IuBWYz4gGgR0oCRvm3PEh4ap1AD7t2Mj8hLSUyJq+tyKRoRftUi2gBGo/PmmfaShOxPk
-        d9JGBgQ7aDjtrJ9pcBW/x2pmsqJwbUaHgpgJ8lmpuPzPz/P7eeMsDM04AmTyKK/8By6kSv
-        LdXE+YWj6Ca0tnH+OHrxMVwTKZhb9JziY=
-Received: by filterdrecv-p3las1-7754f7d4cc-tg96p with SMTP id filterdrecv-p3las1-7754f7d4cc-tg96p-18-5F03A5F4-DF
-        2020-07-06 22:30:13.151346145 +0000 UTC m=+965803.859338331
-Received: from bionic.localdomain (unknown)
-        by ismtpd0004p1lon1.sendgrid.net (SG) with ESMTP
-        id o4H48WiuR4KsFhfoFquR6Q
-        Mon, 06 Jul 2020 22:30:12.839 +0000 (UTC)
-From:   Jonas Karlman <jonas@kwiboo.se>
-Subject: [PATCH v2 1/2] drm: drm_fourcc: add NV20 and NV30 YUV formats
-Date:   Mon, 06 Jul 2020 22:30:13 +0000 (UTC)
-Message-Id: <20200706223009.1200-2-jonas@kwiboo.se>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200706223009.1200-1-jonas@kwiboo.se>
-References: <20200607202521.18438-1-jonas@kwiboo.se>
- <20200706223009.1200-1-jonas@kwiboo.se>
-X-SG-EID: =?us-ascii?Q?TdbjyGynYnRZWhH+7lKUQJL+ZxmxpowvO2O9SQF5CwCVrYgcwUXgU5DKUU3QxA?=
- =?us-ascii?Q?fZekEeQsTe+RrMu3cja6a0h9QJlmiMp+biMH=2FPO?=
- =?us-ascii?Q?hJbDV6e+kgjT4EIiOhnpNYLn8zpDs7S1zc9a83g?=
- =?us-ascii?Q?1WXA5M0mu+OKXRpSPB712PWCmMhXxxo8ypTPfN+?=
- =?us-ascii?Q?Pu+IlruvWYUzfnGUf0eN=2FnzgU6qHBHWsBj54yzM?=
- =?us-ascii?Q?ZhE9gkE0Mc2vqpZR3Bjm9c5Y49MzaA6thOy4Fwf?=
- =?us-ascii?Q?8oA9LLhHVOeraDMe6sv7g=3D=3D?=
-To:     Sandy Huang <hjc@rock-chips.com>,
-        Heiko =?iso-8859-1?q?St=FCbner?= <heiko@sntech.de>
-Cc:     Jonas Karlman <jonas@kwiboo.se>, Ben Davis <ben.davis@arm.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+        id S1727928AbgGFWax convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 6 Jul 2020 18:30:53 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:2627 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726933AbgGFWaw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Jul 2020 18:30:52 -0400
+Received: from dggemi406-hub.china.huawei.com (unknown [172.30.72.56])
+        by Forcepoint Email with ESMTP id 259266D2363FBDF97714;
+        Tue,  7 Jul 2020 06:30:50 +0800 (CST)
+Received: from DGGEMI525-MBS.china.huawei.com ([169.254.6.177]) by
+ dggemi406-hub.china.huawei.com ([10.3.17.144]) with mapi id 14.03.0487.000;
+ Tue, 7 Jul 2020 06:30:41 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Roman Gushchin <guro@fb.com>
+CC:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>
+Subject: RE: [PATCH] mm/hugetlb: avoid hardcoding while checking if cma is
+ reserved
+Thread-Topic: [PATCH] mm/hugetlb: avoid hardcoding while checking if cma is
+ reserved
+Thread-Index: AQHWU3HjjsPjy1jnSk6RkQtfiUWhe6j6kUUAgACKkECAAATWcA==
+Date:   Mon, 6 Jul 2020 22:30:40 +0000
+Message-ID: <B926444035E5E2439431908E3842AFD2559717@DGGEMI525-MBS.china.huawei.com>
+References: <20200706084405.14236-1-song.bao.hua@hisilicon.com>
+ <20200706214808.GB152560@carbon.lan> 
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.201.98]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DRM_FORMAT_NV20 and DRM_FORMAT_NV30 formats is the 2x1 and non-subsampled
-variant of NV15, a 10-bit 2-plane YUV format that has no padding between
-components. Instead, luminance and chrominance samples are grouped into 4s
-so that each group is packed into an integer number of bytes:
 
-YYYY = UVUV = 4 * 10 bits = 40 bits = 5 bytes
 
-The '20' and '30' suffix refers to the optimum effective bits per pixel
-which is achieved when the total number of luminance samples is a multiple
-of 4.
+> -----Original Message-----
+> From: Song Bao Hua (Barry Song)
+> Sent: Tuesday, July 7, 2020 10:12 AM
+> To: 'Roman Gushchin' <guro@fb.com>
+> Cc: akpm@linux-foundation.org; linux-mm@kvack.org;
+> linux-kernel@vger.kernel.org; Linuxarm <linuxarm@huawei.com>; Mike
+> Kravetz <mike.kravetz@oracle.com>; Jonathan Cameron
+> <jonathan.cameron@huawei.com>
+> Subject: RE: [PATCH] mm/hugetlb: avoid hardcoding while checking if cma is
+> reserved
+> 
+> 
+> 
+> > -----Original Message-----
+> > From: Roman Gushchin [mailto:guro@fb.com]
+> > Sent: Tuesday, July 7, 2020 9:48 AM
+> > To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
+> > Cc: akpm@linux-foundation.org; linux-mm@kvack.org;
+> > linux-kernel@vger.kernel.org; Linuxarm <linuxarm@huawei.com>; Mike
+> > Kravetz <mike.kravetz@oracle.com>; Jonathan Cameron
+> > <jonathan.cameron@huawei.com>
+> > Subject: Re: [PATCH] mm/hugetlb: avoid hardcoding while checking if
+> > cma is reserved
+> >
+> > On Mon, Jul 06, 2020 at 08:44:05PM +1200, Barry Song wrote:
+> >
+> > Hello, Barry!
+> >
+> > > hugetlb_cma[0] can be NULL due to various reasons, for example,
+> > > node0 has no memory. Thus, NULL hugetlb_cma[0] doesn't necessarily
+> > > mean cma is not enabled. gigantic pages might have been reserved on
+> other nodes.
+> >
+> > Just curious, is it a real-life problem you've seen? If so, I wonder
+> > how you're using the hugetlb_cma option, and what's the outcome?
+> 
+> Yes. It is kind of stupid but I once got a board on which node0 has no DDR
+> though node1 and node3 have memory.
+> 
+> I actually prefer we get cma size of per node by:
+> cma size of one node = hugetlb_cma/ (nodes with memory) rather than:
+> cma size of one node = hugetlb_cma/ (all online nodes)
+> 
+> but unfortunately, or the N_MEMORY infrastructures are not ready yet. I
+> mean:
+> 
+> for_each_node_state(nid, N_MEMORY) {
+> 		int res;
+> 
+> 		size = min(per_node, hugetlb_cma_size - reserved);
+> 		size = round_up(size, PAGE_SIZE << order);
+> 
+> 		res = cma_declare_contiguous_nid(0, size, 0, PAGE_SIZE << order,
+> 						 0, false, "hugetlb",
+> 						 &hugetlb_cma[nid], nid);
+> 		...
+> 	}
+> 
 
-V2: Added NV30 format
+And for a server, there are many memory slots. The best config would be
+making every node have at least one DDR. But it isn't necessarily true, it
+is totally up to the users.
 
-Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
----
- drivers/gpu/drm/drm_fourcc.c  | 8 ++++++++
- include/uapi/drm/drm_fourcc.h | 2 ++
- 2 files changed, 10 insertions(+)
+If we move hugetlb_cma_reserve() a bit later, we probably make hugetlb_cma size
+completely consistent by splitting it to nodes with memory rather than nodes 
+which are online:
 
-diff --git a/drivers/gpu/drm/drm_fourcc.c b/drivers/gpu/drm/drm_fourcc.c
-index 722c7ebe4e88..2daf8a304b53 100644
---- a/drivers/gpu/drm/drm_fourcc.c
-+++ b/drivers/gpu/drm/drm_fourcc.c
-@@ -278,6 +278,14 @@ const struct drm_format_info *__drm_format_info(u32 format)
- 		  .num_planes = 2, .char_per_block = { 5, 5, 0 },
- 		  .block_w = { 4, 2, 0 }, .block_h = { 1, 1, 0 }, .hsub = 2,
- 		  .vsub = 2, .is_yuv = true },
-+		{ .format = DRM_FORMAT_NV20,		.depth = 0,
-+		  .num_planes = 2, .char_per_block = { 5, 5, 0 },
-+		  .block_w = { 4, 2, 0 }, .block_h = { 1, 1, 0 }, .hsub = 2,
-+		  .vsub = 1, .is_yuv = true },
-+		{ .format = DRM_FORMAT_NV30,		.depth = 0,
-+		  .num_planes = 2, .char_per_block = { 5, 5, 0 },
-+		  .block_w = { 4, 2, 0 }, .block_h = { 1, 1, 0 }, .hsub = 1,
-+		  .vsub = 1, .is_yuv = true },
- 		{ .format = DRM_FORMAT_Q410,		.depth = 0,
- 		  .num_planes = 3, .char_per_block = { 2, 2, 2 },
- 		  .block_w = { 1, 1, 1 }, .block_h = { 1, 1, 1 }, .hsub = 0,
-diff --git a/include/uapi/drm/drm_fourcc.h b/include/uapi/drm/drm_fourcc.h
-index cbf92fdf2712..c8695673295c 100644
---- a/include/uapi/drm/drm_fourcc.h
-+++ b/include/uapi/drm/drm_fourcc.h
-@@ -242,6 +242,8 @@ extern "C" {
-  * index 1 = Cr:Cb plane, [39:0] Cr1:Cb1:Cr0:Cb0 little endian
-  */
- #define DRM_FORMAT_NV15		fourcc_code('N', 'V', '1', '5') /* 2x2 subsampled Cr:Cb plane */
-+#define DRM_FORMAT_NV20		fourcc_code('N', 'V', '2', '0') /* 2x1 subsampled Cr:Cb plane */
-+#define DRM_FORMAT_NV30		fourcc_code('N', 'V', '3', '0') /* non-subsampled Cr:Cb plane */
- 
- /*
-  * 2 plane YCbCr MSB aligned
--- 
-2.17.1
+void __init bootmem_init(void)
+{
+	...
+
+	arm64_numa_init();
+
+	/*
+	 * must be done after arm64_numa_init() which calls numa_init() to
+	 * initialize node_online_map that gets used in hugetlb_cma_reserve()
+	 * while allocating required CMA size across online nodes.
+	 */
+- #ifdef CONFIG_ARM64_4K_PAGES
+-	hugetlb_cma_reserve(PUD_SHIFT - PAGE_SHIFT);
+- #endif
+
+	...
+
+	sparse_init();
+	zone_sizes_init(min, max);
+
++ #ifdef CONFIG_ARM64_4K_PAGES
++	hugetlb_cma_reserve(PUD_SHIFT - PAGE_SHIFT);
++ #endif
+	memblock_dump_all();
+}
+
+For x86, it could be done in similar way. Do you think it is worth to try?
+
+> >
+> > >
+> > > Fixes: cf11e85fc08c ("mm: hugetlb: optionally allocate gigantic
+> > > hugepages
+> > using cma")
+> > > Cc: Roman Gushchin <guro@fb.com>
+> > > Cc: Mike Kravetz <mike.kravetz@oracle.com>
+> > > Cc: Jonathan Cameron <jonathan.cameron@huawei.com>
+> > > Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+> > > ---
+> > >  mm/hugetlb.c | 18 +++++++++++++++---
+> > >  1 file changed, 15 insertions(+), 3 deletions(-)
+> > >
+> > > diff --git a/mm/hugetlb.c b/mm/hugetlb.c index
+> > > 57ece74e3aae..603aa854aa89 100644
+> > > --- a/mm/hugetlb.c
+> > > +++ b/mm/hugetlb.c
+> > > @@ -2571,9 +2571,21 @@ static void __init
+> > hugetlb_hstate_alloc_pages(struct hstate *h)
+> > >
+> > >  	for (i = 0; i < h->max_huge_pages; ++i) {
+> > >  		if (hstate_is_gigantic(h)) {
+> > > -			if (IS_ENABLED(CONFIG_CMA) && hugetlb_cma[0]) {
+> > > -				pr_warn_once("HugeTLB: hugetlb_cma is enabled, skip
+> > boot time allocation\n");
+> > > -				break;
+> > > +			if (IS_ENABLED(CONFIG_CMA)) {
+> > > +				int nid;
+> > > +				bool cma_reserved = false;
+> > > +
+> > > +				for_each_node_state(nid, N_ONLINE) {
+> > > +					if (hugetlb_cma[nid]) {
+> > > +						pr_warn_once("HugeTLB: hugetlb_cma is
+> > reserved,"
+> > > +								"skip boot time allocation\n");
+> > > +						cma_reserved = true;
+> > > +						break;
+> > > +					}
+> > > +				}
+> > > +
+> > > +				if (cma_reserved)
+> > > +					break;
+> >
+> > It's a valid problem, and I like to see it fixed. But I wonder if it
+> > would be better to introduce a new helper bool hugetlb_cma_enabled()?
+> > And move both
+> > IS_ENABLED(CONFIG_CMA)
+> > and hugetlb_cma[nid] checks there?
+> 
+> Yep. that would be more readable.
+> 
+> >
+> > Thank you!
+> 
+> Thanks
+> Barry
+
+Thanks
+Barry
 
