@@ -2,191 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F3F22157F5
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 15:04:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2A5D2157F1
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 15:03:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729210AbgGFNE0 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 6 Jul 2020 09:04:26 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2430 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729173AbgGFNEY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 09:04:24 -0400
-Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.107])
-        by Forcepoint Email with ESMTP id D5D78A10EBC0DE971CF6;
-        Mon,  6 Jul 2020 14:04:21 +0100 (IST)
-Received: from localhost (10.52.123.111) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 6 Jul 2020
- 14:04:21 +0100
-Date:   Mon, 6 Jul 2020 14:03:17 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Justin He <Justin.He@arm.com>
-CC:     Catalin Marinas <Catalin.Marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Baoquan He <bhe@redhat.com>,
-        Chuhong Yuan <hslester96@gmail.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Kaly Xin <Kaly.Xin@arm.com>,
-        David Hildenbrand <david@redhat.com>
-Subject: Re: [PATCH 1/3] arm64/numa: set numa_off to false when numa node is
- fake
-Message-ID: <20200706140317.00002f53@Huawei.com>
-In-Reply-To: <AM6PR08MB4069BCD0E17BD37CC5591C63F7690@AM6PR08MB4069.eurprd08.prod.outlook.com>
-References: <20200706011947.184166-1-justin.he@arm.com>
-        <20200706011947.184166-2-justin.he@arm.com>
-        <20200706112921.00006f7f@Huawei.com>
-        <20200706114605.000050ac@Huawei.com>
-        <AM6PR08MB4069BCD0E17BD37CC5591C63F7690@AM6PR08MB4069.eurprd08.prod.outlook.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S1729133AbgGFNDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 09:03:46 -0400
+Received: from orion.archlinux.org ([88.198.91.70]:48224 "EHLO
+        orion.archlinux.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728973AbgGFNDq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Jul 2020 09:03:46 -0400
+Received: from orion.archlinux.org (localhost [127.0.0.1])
+        by orion.archlinux.org (Postfix) with ESMTP id DB3691D358CC76;
+        Mon,  6 Jul 2020 13:03:42 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on orion.archlinux.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.7 required=5.0 tests=ALL_TRUSTED=-1,BAYES_00=-1,
+        DMARC_FAIL_NONE=0.25,T_DMARC_POLICY_NONE=0.01,T_DMARC_TESTS_FAIL=0.01
+        autolearn=no autolearn_force=no version=3.4.4
+X-Spam-BL-Results: 
+Received: from genesis (unknown [IPv6:2001:8a0:f254:2300:dad6:8c60:8394:88da])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: ffy00)
+        by orion.archlinux.org (Postfix) with ESMTPSA;
+        Mon,  6 Jul 2020 13:03:42 +0000 (UTC)
+Message-ID: <d462f3dc038548b09ced1a42973d767390e29635.camel@archlinux.org>
+Subject: Re: [PATCH] HID: logitech-hidpp: avoid repeated "multiplier = "
+ log messages
+From:   Filipe =?ISO-8859-1?Q?La=EDns?= <lains@archlinux.org>
+To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>,
+        Peter Hutterer <peter.hutterer@who-t.net>
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Harry Cutts <hcutts@chromium.org>, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <6202799b-f887-a867-94b3-915607956ceb@maciej.szmigiero.name>
+References: <7d2c980f071487cecfd1534adb7561b33d922af3.1593970340.git.mail@maciej.szmigiero.name>
+         <2f76f069f2078b3d51533f772f1094dcc03685a3.camel@gmail.com>
+         <6202799b-f887-a867-94b3-915607956ceb@maciej.szmigiero.name>
+Organization: Archlinux
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-UvB+gZ0CCUHXKiykjcZ8"
+Date:   Mon, 06 Jul 2020 14:03:31 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [10.52.123.111]
-X-ClientProxiedBy: lhreml717-chm.china.huawei.com (10.201.108.68) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+User-Agent: Evolution 3.36.3 
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 6 Jul 2020 12:47:51 +0000
-Justin He <Justin.He@arm.com> wrote:
 
-> Hi Jonathan, thanks for the comments.
-> 
-> > -----Original Message-----
-> > From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-> > Sent: Monday, July 6, 2020 6:46 PM
-> > To: Justin He <Justin.He@arm.com>
-> > Cc: Catalin Marinas <Catalin.Marinas@arm.com>; Will Deacon
-> > <will@kernel.org>; Andrew Morton <akpm@linux-foundation.org>; Mike
-> > Rapoport <rppt@linux.ibm.com>; Baoquan He <bhe@redhat.com>; Chuhong Yuan
-> > <hslester96@gmail.com>; linux-arm-kernel@lists.infradead.org; linux-
-> > kernel@vger.kernel.org; linux-mm@kvack.org; Kaly Xin <Kaly.Xin@arm.com>
-> > Subject: Re: [PATCH 1/3] arm64/numa: set numa_off to false when numa node
-> > is fake
-> > 
-> > On Mon, 6 Jul 2020 11:29:21 +0100
-> > Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
-> >   
-> > > On Mon, 6 Jul 2020 09:19:45 +0800
-> > > Jia He <justin.he@arm.com> wrote:
-> > >
-> > > Hi,
-> > >  
-> > > > Previously, numa_off is set to true unconditionally in  
-> > dummy_numa_init(),  
-> > > > even if there is a fake numa node.
-> > > >
-> > > > But acpi will translate node id to NUMA_NO_NODE(-1) in  
-> > acpi_map_pxm_to_node()  
-> > > > because it regards numa_off as turning off the numa node.  
-> > >
-> > > That is correct.  It is operating exactly as it should, if SRAT hasn't  
-> > been parsed  
-> > > and you are on ACPI platform there are no nodes.  They cannot be created  
-> > at  
-> > > some later date.  The dummy code doesn't change this. It just does  
-> > enough to carry  
-> > > on operating with no specified nodes.
-> > >  
-> > > >
-> > > > Without this patch, pmem can't be probed as a RAM device on arm64 if  
-> > SRAT table  
-> > > > isn't present.
-> > > >
-> > > > $ndctl create-namespace -fe namespace0.0 --mode=devdax --map=dev -s 1g  
-> > -a 64K  
-> > > > kmem dax0.0: rejecting DAX region [mem 0x240400000-0x2bfffffff] with  
-> > invalid node: -1  
-> > > > kmem: probe of dax0.0 failed with error -22
-> > > >
-> > > > This fixes it by setting numa_off to false.  
-> > >
-> > > Without the SRAT protection patch [1] you may well run into problems  
-> 
-> Sorry, doesn't quite understand here. Do you mean your [1] can resolve this
-> issue? But acpi_map_pxm_to_node() has returned with NUMA_NO_NODE after
-> following check:
-> 	if (pxm < 0 || pxm >= MAX_PXM_DOMAINS || numa_off)
-> 		return NUMA_NO_NODE;
+--=-UvB+gZ0CCUHXKiykjcZ8
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The point of that patch is it will make it safe to remove the numa_off because
-any later accidental reference to a non existent node (i.e. one not defined
-in SRAT) will not blow up.
+On Mon, 2020-07-06 at 14:41 +0200, Maciej S. Szmigiero wrote:
+> On 06.07.2020 14:38, Filipe La=C3=ADns wrote:
+> > On Sun, 2020-07-05 at 19:34 +0200, Maciej S. Szmigiero wrote:
+> > > These messages appear each time the mouse wakes from sleep, in my
+> > > case
+> > > (Logitech M705), every minute or so.
+> > > Let's downgrade them to the "debug" level so they don't fill the
+> > > kernel log
+> > > by default.
+> > >=20
+> > > While we are at it, let's make clear that this is a wheel multiplier
+> > > (and
+> > > not, for example, XY movement multiplier).
+> > >=20
+> > > Fixes: 4435ff2f09a2 ("HID: logitech: Enable high-resolution scrolling
+> > > on Logitech mice")
+> > > Cc: stable@vger.kernel.org
+> > > Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
+> > > ---
+> > > Sending again since the previous message bounced for most recipients.
+> > >=20
+> > >  drivers/hid/hid-logitech-hidpp.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >=20
+> > > diff --git a/drivers/hid/hid-logitech-hidpp.c b/drivers/hid/hid-
+> > > logitech-hidpp.c
+> > > index 1e1cf8eae649..b8b53dc95e86 100644
+> > > --- a/drivers/hid/hid-logitech-hidpp.c
+> > > +++ b/drivers/hid/hid-logitech-hidpp.c
+> > > @@ -3146,7 +3146,7 @@ static int hi_res_scroll_enable(struct
+> > > hidpp_device *hidpp)
+> > >  		multiplier =3D 1;
+> > > =20
+> > >  	hidpp->vertical_wheel_counter.wheel_multiplier =3D multiplier;
+> > > -	hid_info(hidpp->hid_dev, "multiplier =3D %d\n", multiplier);
+> > > +	hid_dbg(hidpp->hid_dev, "wheel multiplier =3D %d\n", multiplier);
+> > >  	return 0;
+> > >  }
+> > > =20
+> >=20
+> > I have seen this being useful in some cases, however I do not have a
+> > strong opinion on it. Peter would know better.
+>=20
+> Well, the message is not being removed, only hidden by default, so
+> it doesn't fill the kernel log.
+>=20
+> One can still enable it at runtime if wanted.
 
-It doesn't fix your original problem. What it does do, is fix the new problem case
-you introduce by removing numa_off below.  It ensures you still return NUMA_NO_NODE
-in cases which should do so (i.e. all of them if you have no SRAT and are using ACPI).
+Of course, but instructing users to do that can be annoying, especially
+when you're handling a considerable volume of reports.
 
-Of course, you could just not remove the numa_off = true bit then you won't hit
-that condition anyway. There are plenty of other reasons for the SRAT patch though,
-it just happens to close a problem you were introducing here as well.
+Anyway, I am fine with this patch, I just thought it was pertinent to
+raise this point and maybe get Peter's input on this, as he will likely
+be one most affected by it :)
 
-For reference we had an AMD platform that had no SRAT, but provided _PXM for
-a few nodes in its DSDT.   That result in non booting systems.  It only affected
-x86 because ARM64 had that numa_off = true being set.  If we change the arm64 case
-without the patch to ensure the underlying problem is fixed, you are very likely to hit
-the equivalent problem. There may well be platforms out there relying on that quirk
-of what the code currently does.
+Filipe La=C3=ADns
 
-> Seems even with your [1] patch, it is not helpful? Thanks for clarification
-> if my understanding is wrong.
-> [1] https://patchwork.kernel.org/patch/11632063/
-> 
-> > > because someone somewhere will have _PXM in a DSDT but will
-> > > have a non existent SRAT.   We had this happen on an AMD platform when  
-> > we  
-> > > tried to introduce working _PXM support for PCI. [2]
-> > >
-> > > So whilst this seems superficially safe, I'd definitely be crossing your  
-> > fingers.  
-> > > Note, at that time I proposed putting the numa_off = false into the x86  
-> > code  
-> > > path precisely to cut out that possibility (was rejected at the time, at  
-> > least  
-> > > partly because the clarifications to the ACPI spec were not pubilc.)
-> > >
-> > > The patch in [1] should sort things out however by ensuring we only  
-> > create  
-> > > new domains where we should actually be doing so. However, in your case
-> > > it will return NUMA_NO_NODE anyway so this isn't the right way to fix  
-> > things.  
-> 
-> Okay, let me try to summarize, there might be 3 possible fixing ways:
-> 1. this patch, seems it is not satisfied by you and David 😉
-> 2. my previous proposal [2], similar as what David suggested
+--=-UvB+gZ0CCUHXKiykjcZ8
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
 
-That looks like the correct approach to me as well.
+-----BEGIN PGP SIGNATURE-----
 
-> 3. remove numa_off check in acpi_map_pxm_to_node()
+iQIzBAABCAAdFiEE0jW0leqs33gyftiw+JPGdIFqqV0FAl8DIR0ACgkQ+JPGdIFq
+qV2UKxAAg8jwkNipXO2c7sfGp894+4Rzavgx98SVkf9l+zDXVaom+geZeh8ZX7Wg
+L5s1aWP1EnVJui7f/FxPQ3S5ETJwdgbxS6ZuR11ke/eMgcjY1nHJ1vgURAfDaEGR
+wdBp5rSwiGSWlNlkYvLaEjEV1ZD4s0LD9MxKKoLMIBp07/N/MxlQnPBJiOpy2nQE
+LtgXpApmChvFWfORNEvOLB+7PZxH84KWn+fAzdJhMpyRb9PBDeYEpI9rYDVlFQxh
+tz1T/mrVZKvWPhuicw250LNCsVP5lWPvGz4m8mEgsDNA0gDJ+L/VTpjDhdXd8b+/
+zfdtQHjP/7GXQL+JbfbpHf7oCTtmnykHQMP5NW7FNTviJMBKXGZrn36+YOTTKu9B
++uuM1oEZJut4geeotq3DIoqQ8xDOCL0LDtwS6EzysHWKoY9FPjYG1VfeWxnRhKuB
+I43n7L/O/UeF9F4NJHiuiUFXsdUiTriyToE3v5Z6mXtnf9dVoDY2DBH31JndBD0g
+drzOVtadIhnWSOxgMwniKLbU4MxS92a/O7OgOc+A/sj4o1tHII5EhhL9B6KylUSu
+Bu4MEoDpzY/OCId+yOwRJyKbWyaL6WKRpP53MypldPx4oW8wNjLmlk5Vf4FpL29l
+b8ZTmpGdTGlqWpZPVF+2U2uQkaw/SZ+iwj8zI3/R62D9LR7qQsY=
+=r1xm
+-----END PGP SIGNATURE-----
 
-No way to that one.  The only right return value from acpi_map_pxm_to_node
-when no node is provided (always the case if you have no SRAT) is
-NUMA_NO_NODE.  Do not paper over that - fix the caller to handle
-a perfectly valid return value.
-
-Jonathan
-
-> e.g.
-> ...
-> 	if (pxm < 0 || pxm >= MAX_PXM_DOMAINS /*|| numa_off*/)
-> 		return NUMA_NO_NODE;
-> 
-> [2] https://lkml.org/lkml/2019/8/16/367
-> 
-> 
-> --
-> Cheers,
-> Justin (Jia He)
-> 
-> 
-
-
+--=-UvB+gZ0CCUHXKiykjcZ8--
