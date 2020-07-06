@@ -2,74 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 946D321550F
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 11:58:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57525215523
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 12:09:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728657AbgGFJ60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 05:58:26 -0400
-Received: from foss.arm.com ([217.140.110.172]:53228 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727973AbgGFJ6Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 05:58:25 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E796030E;
-        Mon,  6 Jul 2020 02:58:24 -0700 (PDT)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 98DE73F68F;
-        Mon,  6 Jul 2020 02:58:23 -0700 (PDT)
-Date:   Mon, 6 Jul 2020 10:58:21 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
-Cc:     kjlu@umn.edu, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Stanimir Varbanov <svarbanov@mm-sol.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PCI: qcom: fix runtime pm imbalance on error
-Message-ID: <20200706095821.GB26377@e121166-lin.cambridge.arm.com>
-References: <20200520085837.1399-1-dinghao.liu@zju.edu.cn>
+        id S1728750AbgGFKIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 06:08:36 -0400
+Received: from spam01.hygon.cn ([110.188.70.11]:21741 "EHLO spam2.hygon.cn"
+        rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728264AbgGFKIf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Jul 2020 06:08:35 -0400
+X-Greylist: delayed 1032 seconds by postgrey-1.27 at vger.kernel.org; Mon, 06 Jul 2020 06:08:34 EDT
+Received: from spam2.hygon.cn (localhost [127.0.0.2] (may be forged))
+        by spam2.hygon.cn with ESMTP id 0669pKU2045670
+        for <linux-kernel@vger.kernel.org>; Mon, 6 Jul 2020 17:51:20 +0800 (GMT-8)
+        (envelope-from puwen@hygon.cn)
+Received: from MK-DB.hygon.cn ([172.23.18.60])
+        by spam2.hygon.cn with ESMTP id 0669j6Yg045208;
+        Mon, 6 Jul 2020 17:45:06 +0800 (GMT-8)
+        (envelope-from puwen@hygon.cn)
+Received: from cncheex01.Hygon.cn ([172.23.18.10])
+        by MK-DB.hygon.cn with ESMTP id 0669ixvp083741;
+        Mon, 6 Jul 2020 17:44:59 +0800 (GMT-8)
+        (envelope-from puwen@hygon.cn)
+Received: from ubuntu1604-2.higon.com (172.23.18.44) by cncheex01.Hygon.cn
+ (172.23.18.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1466.3; Mon, 6 Jul 2020
+ 17:44:42 +0800
+From:   Pu Wen <puwen@hygon.cn>
+To:     <peterz@infradead.org>, <mingo@kernel.org>, <jolsa@redhat.com>,
+        <bp@alien8.de>, <eranian@google.com>
+CC:     <linux-kernel@vger.kernel.org>, Pu Wen <puwen@hygon.cn>
+Subject: [RFC PATCH] perf/x86/rapl: Add Hygon Fam18h RAPL support
+Date:   Mon, 6 Jul 2020 17:43:35 +0800
+Message-ID: <20200706094335.12843-1-puwen@hygon.cn>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200520085837.1399-1-dinghao.liu@zju.edu.cn>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [172.23.18.44]
+X-ClientProxiedBy: cncheex01.Hygon.cn (172.23.18.10) To cncheex01.Hygon.cn
+ (172.23.18.10)
+X-MAIL: spam2.hygon.cn 0669j6Yg045208
+X-DNSRBL: 
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 20, 2020 at 04:58:37PM +0800, Dinghao Liu wrote:
-> pm_runtime_get_sync() increments the runtime PM usage counter even
-> it returns an error code. Thus a pairing decrement is needed on
-> the error handling path to keep the counter balanced.
-> 
-> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-> ---
->  drivers/pci/controller/dwc/pcie-qcom.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-> index 138e1a2d21cc..35686930df1d 100644
-> --- a/drivers/pci/controller/dwc/pcie-qcom.c
-> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
-> @@ -1340,8 +1340,7 @@ static int qcom_pcie_probe(struct platform_device *pdev)
->  	pm_runtime_enable(dev);
->  	ret = pm_runtime_get_sync(dev);
->  	if (ret < 0) {
-> -		pm_runtime_disable(dev);
-> -		return ret;
-> +		goto err_pm_runtime_put;
+Hygon Family 18h(Dhyana) support RAPL in bit 14 of CPUID 0x80000007 EDX,
+and has MSRs RAPL_PWR_UNIT/CORE_ENERGY_STAT/PKG_ENERGY_STAT. So add Hygon
+Dhyana Family 18h support for RAPL.
 
-I think you need to remove the brackets - this become a single line
-if statement.
+The output is available via the energy-pkg pseudo event:
+  $ perf stat -a -I 1000 --per-socket -e power/energy-pkg/
 
-Lorenzo
+Signed-off-by: Pu Wen <puwen@hygon.cn>
+---
+ arch/x86/events/rapl.c | 1 +
+ 1 file changed, 1 insertion(+)
 
->  	}
->  
->  	pci->dev = dev;
-> -- 
-> 2.17.1
-> 
+diff --git a/arch/x86/events/rapl.c b/arch/x86/events/rapl.c
+index 0f2bf59f4354..18c69d84b031 100644
+--- a/arch/x86/events/rapl.c
++++ b/arch/x86/events/rapl.c
+@@ -788,6 +788,7 @@ static const struct x86_cpu_id rapl_model_match[] __initconst = {
+ 	X86_MATCH_INTEL_FAM6_MODEL(COMETLAKE_L,		&model_skl),
+ 	X86_MATCH_INTEL_FAM6_MODEL(COMETLAKE,		&model_skl),
+ 	X86_MATCH_VENDOR_FAM(AMD, 0x17, &model_amd_fam17h),
++	X86_MATCH_VENDOR_FAM(HYGON, 0x18, &model_amd_fam17h),
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(x86cpu, rapl_model_match);
+-- 
+2.23.0
+
