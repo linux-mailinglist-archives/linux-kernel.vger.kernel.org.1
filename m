@@ -2,171 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC6DB215AA1
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 17:23:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E23D215AA6
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 17:23:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729471AbgGFPWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 11:22:36 -0400
-Received: from mail-il1-f200.google.com ([209.85.166.200]:33963 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729417AbgGFPW2 (ORCPT
+        id S1729496AbgGFPXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 11:23:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36040 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729267AbgGFPXD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 11:22:28 -0400
-Received: by mail-il1-f200.google.com with SMTP id y3so16133399ily.1
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 08:22:27 -0700 (PDT)
+        Mon, 6 Jul 2020 11:23:03 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B846BC061755;
+        Mon,  6 Jul 2020 08:23:02 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id a6so41431091wrm.4;
+        Mon, 06 Jul 2020 08:23:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=dAJu+62mabBIMXiEr5XrQ+JflLjgU2YNzNlqYsdRIdw=;
+        b=K8CReBT+hyRzi4AsJJm6IxI7oN9PlZrJh6k8iEhCwql04KOGd4J2tgcpLyh5BTFsGW
+         bho7i32ynNEfPaL0crkUZCX4DQmFTyKJP+kYISPzqF4b1I+n+EZrDAt1edbXy0EY3yF9
+         fFyg1iQ//e1zIWTLI4wxPo1wHhyzri29DvFgrM5aNgCu916TbMXNHSZhsoYzuDhVFQJX
+         HOsKc2Owgldz7gqIAJ2/o+LILhwcOcowXLaJCs7D0KK+gmzt/qcK824IGbMXLuZn4ou3
+         F0eN8omc7ftHuHT8Y8K1cbVeZ1bzksNbj3NUHBuIwAbHJQALPS93Mv6iDhwJja2h+qI9
+         eONw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=hXaLsIT3Tx3nT+zfmLLoY9e6JwD3KiiSDXuXDtLB5AQ=;
-        b=VIn1daqOtoYw1u/gLIaDKM98MNnRIhRhTdhw2JR7wZpBR4w2ttfGiNOtwyJZ4Ny0MH
-         anUSfEVfjqfVSX40J50UdPJPf5FXXROpE4Ng6T8XabaSFWAeUa4NYpSGyc+k22JEZYBy
-         kPsVy0PcIo2Z5U563hMiQRHyeplubiFJ8ROBsQSCBRW9zwvoVexzD0+YlS14eq0rmoko
-         uBFUvaDnR0pIbzlShvBzDqIXTx8y4BBxx9GwpZU6oYfv5VWwyHvrnHbAYLOVwQnaxFL6
-         eXSy5rfz3wQqMdczcVW8Lnf9NGqcoDqOTWZwDsyrQB6re0f/ruY5kpC1tNZSALZDs04D
-         Fifw==
-X-Gm-Message-State: AOAM531JhVBXtSIZG1b0Ef3Dg6T354IangupbNGyJIMR25tqRQ0ZUvut
-        4wAeuFGQcduQ8DHp5CoqbQEvwhcWTGGVE8aABAJTUjzOsJB0
-X-Google-Smtp-Source: ABdhPJzYLAvt/2K6zOopO0TuBu83mFpeZcmafRuTqB1RqWdGV8knHtuQRg+1FaERE2T3cRDyD7+xIqnyqRIn31RMAvOKnBGNtLd2
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=dAJu+62mabBIMXiEr5XrQ+JflLjgU2YNzNlqYsdRIdw=;
+        b=Di/kdE8GhGWbEdt3IQhNX05KtFMXrcceMYwDcaQ32ynrCetscq5ZixNVj+Eued8RzK
+         eOSTqKylrcdgPTPfUy5k7rLC4IH+uRjS5GShJxC1csP5NLYEGkmgo6fEeD5iD5PadT7H
+         et/Q6Y/DFOAxctTXHREhYhy8G+y14Jmzx4sj7ctb8slJRr9lXA39IycaCrzic+wcy0GC
+         xxAS/0jQQJ2WdZ9+l77UIUhmbLGEk+am/xJWnnzN7t/E7goj+bekocuDr83dP+wX6kHB
+         1HI4spLy5wuXkQb6Gm0cQqEyCAPEt9VO82BpFIE7fPxPEuelgd49kmGB9Zkf76owCJof
+         p+yw==
+X-Gm-Message-State: AOAM533dP4KVUAWggMuA0MbIxkxWoMYo5F/yb4eUAq+QvOZNB5sTRLsw
+        ulOtBCVRdO7o1Svw8fJ8tfPW9EnxXcQ=
+X-Google-Smtp-Source: ABdhPJyzc/vfsGEPu9lm4bfH2I099ZfJD0Tr/1/wWc2+CcLPAElvGmIqHi6ER7htDlkPCnAwkOPtjA==
+X-Received: by 2002:adf:f452:: with SMTP id f18mr48964355wrp.78.1594048981485;
+        Mon, 06 Jul 2020 08:23:01 -0700 (PDT)
+Received: from ziggy.stardust (81.172.57.81.dyn.user.ono.com. [81.172.57.81])
+        by smtp.gmail.com with ESMTPSA id g82sm22104920wma.37.2020.07.06.08.23.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Jul 2020 08:23:00 -0700 (PDT)
+Subject: Re: [PATCH v6 09/10] iommu/mediatek: Modify MMU_CTRL register setting
+To:     Chao Hao <chao.hao@mediatek.com>, Joerg Roedel <joro@8bytes.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     iommu@lists.linux-foundation.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, wsd_upstream@mediatek.com,
+        FY Yang <fy.yang@mediatek.com>, Yong Wu <yong.wu@mediatek.com>,
+        TH Yang <th.yang@mediatek.com>
+References: <20200703044127.27438-1-chao.hao@mediatek.com>
+ <20200703044127.27438-10-chao.hao@mediatek.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Autocrypt: addr=matthias.bgg@gmail.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <17fe4a7b-8732-7bad-6aaa-1a20a4921c7b@gmail.com>
+Date:   Mon, 6 Jul 2020 17:22:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-X-Received: by 2002:a02:3501:: with SMTP id k1mr52940514jaa.133.1594048947151;
- Mon, 06 Jul 2020 08:22:27 -0700 (PDT)
-Date:   Mon, 06 Jul 2020 08:22:27 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003feb9805a9c77128@google.com>
-Subject: INFO: task hung in nbd_ioctl (2)
-From:   syzbot <syzbot+e36f41d207137b5d12f7@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, josef@toxicpanda.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, nbd@other.debian.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200703044127.27438-10-chao.hao@mediatek.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot found the following crash on:
-
-HEAD commit:    7ae77150 Merge tag 'powerpc-5.8-1' of git://git.kernel.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1124dead100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d195fe572fb15312
-dashboard link: https://syzkaller.appspot.com/bug?extid=e36f41d207137b5d12f7
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-
-Unfortunately, I don't have any reproducer for this crash yet.
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+e36f41d207137b5d12f7@syzkaller.appspotmail.com
-
-INFO: task syz-executor.1:13143 blocked for more than 143 seconds.
-      Not tainted 5.7.0-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-syz-executor.1  D27616 13143   6943 0x00004004
-Call Trace:
- context_switch kernel/sched/core.c:3430 [inline]
- __schedule+0x8f3/0x1fc0 kernel/sched/core.c:4156
- schedule+0xd0/0x2a0 kernel/sched/core.c:4231
- schedule_timeout+0x55b/0x850 kernel/time/timer.c:1873
- do_wait_for_common kernel/sched/completion.c:85 [inline]
- __wait_for_common kernel/sched/completion.c:106 [inline]
- wait_for_common kernel/sched/completion.c:117 [inline]
- wait_for_completion+0x16a/0x270 kernel/sched/completion.c:138
- flush_workqueue+0x403/0x14f0 kernel/workqueue.c:2831
- nbd_start_device_ioctl drivers/block/nbd.c:1322 [inline]
- __nbd_ioctl drivers/block/nbd.c:1397 [inline]
- nbd_ioctl+0x7ae/0xb7f drivers/block/nbd.c:1437
- __blkdev_driver_ioctl block/ioctl.c:224 [inline]
- blkdev_ioctl+0x25e/0x6c0 block/ioctl.c:620
- block_ioctl+0xf9/0x140 fs/block_dev.c:1987
- vfs_ioctl fs/ioctl.c:47 [inline]
- ksys_ioctl+0x11a/0x180 fs/ioctl.c:771
- __do_sys_ioctl fs/ioctl.c:780 [inline]
- __se_sys_ioctl fs/ioctl.c:778 [inline]
- __x64_sys_ioctl+0x6f/0xb0 fs/ioctl.c:778
- do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
- entry_SYSCALL_64_after_hwframe+0x49/0xb3
-RIP: 0033:0x45ca59
-Code: Bad RIP value.
-RSP: 002b:00007fc5b74b2c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00000000004e98c0 RCX: 000000000045ca59
-RDX: 0000000000000000 RSI: 000000000000ab03 RDI: 0000000000000003
-RBP: 000000000078bf00 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000ffffffff
-R13: 0000000000000415 R14: 00000000004c6d6f R15: 00007fc5b74b36d4
-
-Showing all locks held in the system:
-1 lock held by khungtaskd/1147:
- #0: ffffffff899bdd80 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:5779
-2 locks held by kworker/u5:0/1521:
- #0: ffff888097167138 ((wq_completion)knbd1-recv){+.+.}-{0:0}, at: __write_once_size include/linux/compiler.h:279 [inline]
- #0: ffff888097167138 ((wq_completion)knbd1-recv){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff888097167138 ((wq_completion)knbd1-recv){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:855 [inline]
- #0: ffff888097167138 ((wq_completion)knbd1-recv){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:40 [inline]
- #0: ffff888097167138 ((wq_completion)knbd1-recv){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:615 [inline]
- #0: ffff888097167138 ((wq_completion)knbd1-recv){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:642 [inline]
- #0: ffff888097167138 ((wq_completion)knbd1-recv){+.+.}-{0:0}, at: process_one_work+0x844/0x16a0 kernel/workqueue.c:2239
- #1: ffffc90005357dc0 ((work_completion)(&args->work)){+.+.}-{0:0}, at: process_one_work+0x878/0x16a0 kernel/workqueue.c:2243
-1 lock held by in:imklog/6476:
-2 locks held by agetty/6489:
- #0: ffff88809ebb3098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x22/0x80 drivers/tty/tty_ldisc.c:267
- #1: ffffc90000eb42e8 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x220/0x1b30 drivers/tty/n_tty.c:2156
-
-=============================================
-
-NMI backtrace for cpu 0
-CPU: 0 PID: 1147 Comm: khungtaskd Not tainted 5.7.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x188/0x20d lib/dump_stack.c:118
- nmi_cpu_backtrace.cold+0x70/0xb1 lib/nmi_backtrace.c:101
- nmi_trigger_cpumask_backtrace+0x1e6/0x221 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:205 [inline]
- watchdog+0xa8c/0x1010 kernel/hung_task.c:289
- kthread+0x388/0x470 kernel/kthread.c:268
- ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:351
-Sending NMI from CPU 0 to CPUs 1:
-NMI backtrace for cpu 1
-CPU: 1 PID: 3858 Comm: systemd-journal Not tainted 5.7.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:getname_flags fs/namei.c:150 [inline]
-RIP: 0010:getname_flags+0x122/0x5b0 fs/namei.c:128
-Code: 03 80 3c 02 00 0f 85 be 01 00 00 4c 89 f7 4d 89 34 24 ba e0 0f 00 00 48 89 de e8 e9 f1 ec 01 31 ff 49 89 c6 89 c6 89 44 24 04 <e8> a9 67 b2 ff 45 85 f6 0f 88 9e 01 00 00 e8 fb 65 b2 ff 44 89 f6
-RSP: 0018:ffffc90001627df8 EFLAGS: 00000246
-RAX: 000000000000001c RBX: 000055e1d31c89a3 RCX: ffffffff83ae5c52
-RDX: 0000000000000000 RSI: 000000000000001c RDI: 0000000000000000
-RBP: 0000000000000001 R08: ffff888094f5a480 R09: ffff8880aa1ec000
-R10: 000000000000001c R11: fffff9400053f070 R12: ffff8880a7e0e940
-R13: 0000000000000000 R14: 000000000000001c R15: ffffffff8a8b9b48
-FS:  00007fb1526cd8c0(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fb14fb8c000 CR3: 0000000094814000 CR4: 00000000001406e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- user_path_at_empty+0x2a/0x50 fs/namei.c:2632
- user_path_at include/linux/namei.h:59 [inline]
- do_faccessat+0x12c/0x830 fs/open.c:423
- do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
- entry_SYSCALL_64_after_hwframe+0x49/0xb3
-RIP: 0033:0x7fb1519899c7
-Code: 83 c4 08 48 3d 01 f0 ff ff 73 01 c3 48 8b 0d c8 d4 2b 00 f7 d8 64 89 01 48 83 c8 ff c3 66 0f 1f 44 00 00 b8 15 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d a1 d4 2b 00 f7 d8 64 89 01 48
-RSP: 002b:00007ffe422e0be8 EFLAGS: 00000246 ORIG_RAX: 0000000000000015
-RAX: ffffffffffffffda RBX: 00007ffe422e3b00 RCX: 00007fb1519899c7
-RDX: 00007fb1523faa00 RSI: 0000000000000000 RDI: 000055e1d31c89a3
-RBP: 00007ffe422e0c20 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000069 R11: 0000000000000246 R12: 0000000000000000
-R13: 0000000000000000 R14: 00007ffe422e3b00 R15: 00007ffe422e1110
 
 
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+On 03/07/2020 06:41, Chao Hao wrote:
+> The MMU_CTRL register of MT8173 is different from other SoCs.
+> The in_order_wr_en is bit[9] which is zero by default.
+> Other SoCs have the vitcim_tlb_en feature mapped to bit[12].
+> This bit is set to one by default. We need to preserve the bit
+> when setting F_MMU_TF_PROT_TO_PROGRAM_ADDR as otherwise the
+> bit will be cleared and IOMMU performance will drop.
+> 
+> Cc: Matthias Brugger <matthias.bgg@gmail.com>
+> Cc: Yong Wu <yong.wu@mediatek.com>
+> Signed-off-by: Chao Hao <chao.hao@mediatek.com>
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
+
+> ---
+>  drivers/iommu/mtk_iommu.c | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
+> index e71003037ffa..a816030d00f1 100644
+> --- a/drivers/iommu/mtk_iommu.c
+> +++ b/drivers/iommu/mtk_iommu.c
+> @@ -555,11 +555,13 @@ static int mtk_iommu_hw_init(const struct mtk_iommu_data *data)
+>  		return ret;
+>  	}
+>  
+> -	if (data->plat_data->m4u_plat == M4U_MT8173)
+> +	if (data->plat_data->m4u_plat == M4U_MT8173) {
+>  		regval = F_MMU_PREFETCH_RT_REPLACE_MOD |
+>  			 F_MMU_TF_PROT_TO_PROGRAM_ADDR_MT8173;
+> -	else
+> -		regval = F_MMU_TF_PROT_TO_PROGRAM_ADDR;
+> +	} else {
+> +		regval = readl_relaxed(data->base + REG_MMU_CTRL_REG);
+> +		regval |= F_MMU_TF_PROT_TO_PROGRAM_ADDR;
+> +	}
+>  	writel_relaxed(regval, data->base + REG_MMU_CTRL_REG);
+>  
+>  	regval = F_L2_MULIT_HIT_EN |
+> 
