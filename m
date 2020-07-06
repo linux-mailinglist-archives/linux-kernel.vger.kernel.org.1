@@ -2,108 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8247215BF3
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 18:38:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEA90215BFE
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 18:38:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729588AbgGFQiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 12:38:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47738 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729525AbgGFQiV (ORCPT
+        id S1729661AbgGFQih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 12:38:37 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:34443 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729591AbgGFQig (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 12:38:21 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AC52C08C5DF
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Jul 2020 09:38:21 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id q3so22746683ilt.8
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 09:38:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8+99WD3U/6R4HDUu0jjDRUO5gvAoEvSDisK/fWGBtg0=;
-        b=VVxNk1Ofuiz7emISK2L35m+IukHuIW416oK1Ajhtd5QO4ywQLmoMfJ8fBPXhh+oFgm
-         1F6/0dpmWhZaRlSl++KJQzyOwydlsOXEbgKx42Qc4ocLxtTbj4/jUGbOil7dSEi28JI+
-         162nK9g9Gdmxa49RnyueixSZ58ylMRJuvdurxaA7Q050W82YpSUzggS+rWeNj7r0Zt63
-         sZH2yh0k33xHOqnPZl6bhtYEFEdJ5jfjM7Qy4Vknlq6xkzbilESrkv5SLsv+R9YmOj7z
-         HXs7ly1C6fa/jym29MhNWyOyJlqHPMVU7WKQ0L0lw+vWsdbe1+0YRjog7GOmpFDJSirN
-         oqng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8+99WD3U/6R4HDUu0jjDRUO5gvAoEvSDisK/fWGBtg0=;
-        b=fqy5/XXnQGlalCbaFGY6uMp6YemfJI7gYVcUb+t9ZFMwwkpbaBjFZ9KoEpVCZv5Ta/
-         GXwIhX6PdntKzWWLzMeezVW6NOIxw4aZBQ3vyB1COPXUtpjtg887yVRYv8E4vWW8QwhQ
-         sG9Wcoi59t4mnxzTZK8WmVPvoBMrVzlEnKf6JEkrE072C/gnw3tvEJUFhXYamWc9qP0W
-         0ukqxbPaTPx2leJYhqwRx78InwtoU4lg3tR1IsMvcaQSMiDly06DZfi4jAEnUydFmnOH
-         Z2Rob/eL/KvSPW018StHiX9sUhh/fXh85K4KJgw5xB3cq/eux3e+9W/lngZx8Jt4u2Ot
-         BrhA==
-X-Gm-Message-State: AOAM5313DqIlqv+fqfp0zIho2rFbPbLySRg7LCjcat80df80Snx3dcOJ
-        sR3dQ8I8FOiLfOcAOWWh47CBZGZIJkBTBGGlycXbdA==
-X-Google-Smtp-Source: ABdhPJx0SIxBz4fLuwZoUg4YqvsM3FJUy44gCdIvpRgsjRFo0Ps/VJV5gdXzkVuqIEezz8FdtGrAHOF+U2R4FhdTN3s=
-X-Received: by 2002:a92:c213:: with SMTP id j19mr31504216ilo.40.1594053500918;
- Mon, 06 Jul 2020 09:38:20 -0700 (PDT)
+        Mon, 6 Jul 2020 12:38:36 -0400
+Received: from ip5f5af08c.dynamic.kabel-deutschland.de ([95.90.240.140] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1jsU8V-0001E8-OP; Mon, 06 Jul 2020 16:38:31 +0000
+Date:   Mon, 6 Jul 2020 18:38:30 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, Sargun Dhillon <sargun@sargun.me>,
+        Christian Brauner <christian@brauner.io>,
+        Tycho Andersen <tycho@tycho.ws>,
+        David Laight <David.Laight@ACULAB.COM>,
+        Christoph Hellwig <hch@lst.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Matt Denton <mpdenton@google.com>,
+        Jann Horn <jannh@google.com>, Chris Palmer <palmer@google.com>,
+        Robert Sesek <rsesek@google.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>, Shuah Khan <shuah@kernel.org>,
+        netdev@vger.kernel.org, containers@lists.linux-foundation.org,
+        linux-api@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v5 4/7] pidfd: Replace open-coded partial
+ fd_install_received()
+Message-ID: <20200706163830.fyf64otz5bpubm3v@wittgenstein>
+References: <20200617220327.3731559-1-keescook@chromium.org>
+ <20200617220327.3731559-5-keescook@chromium.org>
+ <20200706130713.n6r3vhn4hn2lodex@wittgenstein>
+ <202007060830.0FE753B@keescook>
+ <20200706161245.hjat2rsikt3linbm@wittgenstein>
 MIME-Version: 1.0
-References: <20200629065008.27620-1-brgl@bgdev.pl> <20200629065008.27620-6-brgl@bgdev.pl>
- <20200702124258.GA1882489@kroah.com> <CAMRc=Mc6dWCtnFT_SMGLUsggf68i3y7Njr61NyDQ7KeQ-rSErg@mail.gmail.com>
-In-Reply-To: <CAMRc=Mc6dWCtnFT_SMGLUsggf68i3y7Njr61NyDQ7KeQ-rSErg@mail.gmail.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Mon, 6 Jul 2020 18:38:10 +0200
-Message-ID: <CAMRc=McxekKgEFe2y3R1SiA0ZhLZXsUrzMXWgwXVtHtymG75ow@mail.gmail.com>
-Subject: Re: [PATCH v2 5/6] devres: provide devm_krealloc()
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>,
-        linux-doc <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-hwmon@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200706161245.hjat2rsikt3linbm@wittgenstein>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 2, 2020 at 3:11 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
->
-> On Thu, Jul 2, 2020 at 2:42 PM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Mon, Jun 29, 2020 at 08:50:07AM +0200, Bartosz Golaszewski wrote:
-> > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> > >
-> > > Implement the managed variant of krealloc(). This function works with
-> > > all memory allocated by devm_kmalloc() (or devres functions using it
-> > > implicitly like devm_kmemdup(), devm_kstrdup() etc.).
-> > >
-> > > Managed realloc'ed chunks can be manually released with devm_kfree().
-> > >
-> > > Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
->
-> [snip!]
->
-> >
-> > That's a lot of logic that does not seem to match up with the krealloc()
-> > logic in mm/slab_common.c, are you sure we need to do all of that?
-> >
->
-> What are you referring to exactly? The check for rodata? It's because
-> devm_kfree() handles this case, while regular kfree() (or krealloc())
-> doesn't - there's kfree_const() but no devm_kfree_const().
->
-> > Who wants this?
->
-> The hwmon commit I mentioned in my response to patch 6/6 explicitly
-> mentions the lack of this helper.
->
-> Bartosz
+On Mon, Jul 06, 2020 at 06:12:47PM +0200, Christian Brauner wrote:
+> On Mon, Jul 06, 2020 at 08:34:06AM -0700, Kees Cook wrote:
+> > On Mon, Jul 06, 2020 at 03:07:13PM +0200, Christian Brauner wrote:
+> > > On Wed, Jun 17, 2020 at 03:03:24PM -0700, Kees Cook wrote:
+> > > > The sock counting (sock_update_netprioidx() and sock_update_classid()) was
+> > > > missing from pidfd's implementation of received fd installation. Replace
+> > > > the open-coded version with a call to the new fd_install_received()
+> > > > helper.
+> > > > 
+> > > > Fixes: 8649c322f75c ("pid: Implement pidfd_getfd syscall")
+> > > > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > > > ---
+> > > >  kernel/pid.c | 11 +----------
+> > > >  1 file changed, 1 insertion(+), 10 deletions(-)
+> > > > 
+> > > > diff --git a/kernel/pid.c b/kernel/pid.c
+> > > > index f1496b757162..24924ec5df0e 100644
+> > > > --- a/kernel/pid.c
+> > > > +++ b/kernel/pid.c
+> > > > @@ -635,18 +635,9 @@ static int pidfd_getfd(struct pid *pid, int fd)
+> > > >  	if (IS_ERR(file))
+> > > >  		return PTR_ERR(file);
+> > > >  
+> > > > -	ret = security_file_receive(file);
+> > > > -	if (ret) {
+> > > > -		fput(file);
+> > > > -		return ret;
+> > > > -	}
+> > > > -
+> > > > -	ret = get_unused_fd_flags(O_CLOEXEC);
+> > > > +	ret = fd_install_received(file, O_CLOEXEC);
+> > > >  	if (ret < 0)
+> > > >  		fput(file);
+> > > > -	else
+> > > > -		fd_install(ret, file);
+> > > 
+> > > So someone just sent a fix for pidfd_getfd() that was based on the
+> > > changes done here.
+> > 
+> > Hi! Ah yes, that didn't get CCed to me. I'll go reply.
+> > 
+> > > I've been on vacation so didn't have a change to review this series and
+> > > I see it's already in linux-next. This introduces a memory leak and
+> > > actually proves a point I tried to stress when adding this helper:
+> > > fd_install_received() in contrast to fd_install() does _not_ consume a
+> > > reference because it takes one before it calls into fd_install(). That
+> > > means, you need an unconditional fput() here both in the failure and
+> > > error path.
+> > 
+> > Yup, this was a mistake in my refactoring of the pidfs changes.
+> 
+> I already did.
+> 
+> > 
+> > > I strongly suggest though that we simply align the behavior between
+> > > fd_install() and fd_install_received() and have the latter simply
+> > > consume a reference when it succeeds! Imho, this bug proves that I was
+> > > right to insist on this before. ;)
+> > 
+> > I still don't agree: it radically complicates the SCM_RIGHTS and seccomp
+> 
+> I'm sorry, I don't buy it yet, though I might've missed something in the
+> discussions: :)
+> After applying the patches in your series this literally is just (which
+> is hardly radical ;):
+> 
+> diff --git a/fs/file.c b/fs/file.c
+> index 9568bcfd1f44..26930b2ea39d 100644
+> --- a/fs/file.c
+> +++ b/fs/file.c
+> @@ -974,7 +974,7 @@ int __fd_install_received(int fd, struct file *file, int __user *ufd,
+>         }
+> 
+>         if (fd < 0)
+> -               fd_install(new_fd, get_file(file));
+> +               fd_install(new_fd, file);
+>         else {
+>                 new_fd = fd;
+>                 error = replace_fd(new_fd, file, o_flags);
+> diff --git a/net/compat.c b/net/compat.c
+> index 71494337cca7..605a5a67200c 100644
+> --- a/net/compat.c
+> +++ b/net/compat.c
+> @@ -298,9 +298,11 @@ void scm_detach_fds_compat(struct msghdr *msg, struct scm_cookie *scm)
+>         int err = 0, i;
+> 
+>         for (i = 0; i < fdmax; i++) {
+> -               err = fd_install_received_user(scm->fp->fp[i], cmsg_data + i, o_flags);
+> -               if (err < 0)
+> +               err = fd_install_received_user(get_file(scm->fp->fp[i]), cmsg_data + i, o_flags);
+> +               if (err < 0) {
+> +                       fput(scm->fp->fp[i]);
+>                         break;
+> +               }
+>         }
+> 
+>         if (i > 0) {
+> diff --git a/net/core/scm.c b/net/core/scm.c
+> index b9a0442ebd26..0d06446ae598 100644
+> --- a/net/core/scm.c
+> +++ b/net/core/scm.c
+> @@ -306,9 +306,11 @@ void scm_detach_fds(struct msghdr *msg, struct scm_cookie *scm)
+>         }
+> 
+>         for (i = 0; i < fdmax; i++) {
+> -               err = fd_install_received_user(scm->fp->fp[i], cmsg_data + i, o_flags);
+> -               if (err < 0)
+> +               err = fd_install_received_user(get_file(scm->fp->fp[i]), cmsg_data + i, o_flags);
+> +               if (err < 0) {
+> +                       fput(scm->fp->fp[i]);
+>                         break;
+> +               }
+>         }
+> 
+>         if (i > 0) {
+> 
+> > cases. The primary difference is that fd_install() cannot fail, and it
+> > was optimized for this situation. The other file-related helpers that
+> > can fail do not consume the reference, so this is in keeping with those
+> > as well.
+> 
+> That's not a real problem. Any function that can fail and which consumes
+> a reference on success is assumed to not mutate the reference if it
+> fails anywhere. So I don't see that as an issue.
+> 
+> The problem here is that the current patch invites bugs and has already
+> produced one because fd_install() and fd_install_*() have the same
+> naming scheme but different behavior when dealing with references.
+> That's just not a good idea.
 
-Hi Greg,
+That being said, if you and others feel that this worry is nonsense then
+sure let's fix the bug that this introduces in this series and move on.
+If you do are you going to resend?
 
-As we've established in the discussion under the iio patch that there
-will in fact be more users of this - can this now be merged too?
-
-Bart
+Christian
