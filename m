@@ -2,130 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C843B215779
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 14:43:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCD26215788
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 14:44:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729234AbgGFMn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 08:43:28 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:42910 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729187AbgGFMnM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 08:43:12 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 6BAC01A06BB;
-        Mon,  6 Jul 2020 14:43:10 +0200 (CEST)
-Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 55DB11A0650;
-        Mon,  6 Jul 2020 14:43:10 +0200 (CEST)
-Received: from fsr-ub1864-111.ea.freescale.net (fsr-ub1864-111.ea.freescale.net [10.171.82.141])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 0006F203C3;
-        Mon,  6 Jul 2020 14:43:09 +0200 (CEST)
-From:   Diana Craciun <diana.craciun@nxp.com>
-To:     linux-kernel@vger.kernel.org, laurentiu.tudor@nxp.com,
-        gregkh@linuxfoundation.org
-Cc:     stuyoder@gmail.com, leoyang.li@nxp.com,
-        linux-arm-kernel@lists.infradead.org, bharatb.linux@gmail.com,
-        Diana Craciun <diana.craciun@oss.nxp.com>
-Subject: [PATCH v3 13/13] bus/fsl-mc: Add a new version for dprc_get_obj_region command
-Date:   Mon,  6 Jul 2020 15:42:43 +0300
-Message-Id: <20200706124243.10697-14-diana.craciun@nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200706124243.10697-1-diana.craciun@nxp.com>
-References: <20200706124243.10697-1-diana.craciun@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1729297AbgGFMoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 08:44:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729123AbgGFMoc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Jul 2020 08:44:32 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26E5BC08C5DF
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Jul 2020 05:44:32 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id ga4so42199285ejb.11
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 05:44:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tessares-net.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4NNoOxff0nhiCp6Y07KXiET4P9UsRV6yVCqRMrClQ08=;
+        b=LWykRokaTmYGCqNEmY1w2CbyYxpuoZ4IFwUyN2UXP98ea8Z0BRaVWGpaWgNFEvh13H
+         JRxrnjn1lc0s0e4nmGqgRrN2qGll3nIiPYCtvLO6kSS32ghi2ONDDC027n/De5hiibRX
+         ZMEaZJKbuaJpkDRH3CXSbR1n5tfQgsRf74sEneUBzB+DcXRj/ER/CfAIAKVm3BaMBzIa
+         QhB2tjR/pjRKHHx62mY+/Op1CRNEgrVfWsKjL4JoE8JMiMUl37CWYfdc9FJy8LIEfVMF
+         5miZwnJ7wb3MAbLG7WFMRaGSGzCaQ5s0whwDppGx8QqNyNuW1bWE/2JIc7svNnVYhsL/
+         YAng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4NNoOxff0nhiCp6Y07KXiET4P9UsRV6yVCqRMrClQ08=;
+        b=Nwg+S1cb64v9Q0Nb/hf5xq6WjNIvJ+5DDvWfrVpk3HsJRoOUzPQQFOsx38qSFdu5+R
+         s0Rn31f9vEL7K6IVxlaA7s3w5/qf6wSHLpja6tADIrXlwHjjtDhUEqIkQA+8nPAZrOLs
+         /Plxx2UCADhBpc/20Bh/TrNTCrL5amemcOLSvTCc2foWK4n42ZpE9gGylcTEA5h9AtLZ
+         N2r8EK2AskJ1VL9jVl+y+UZijLZqvgFyr+mgysmetBmUHMzZEVWk+YcUIMz+AxTM+FUe
+         CUUjjrchGLg2CXrbOu3gCYvoRkjb2tokBgO5N8BwxR3OMyQxlCXKDxEwkEf7T8hZpG6G
+         36ig==
+X-Gm-Message-State: AOAM530JPDknZwzJBb/Upr3sH3qNg07ZlLaeljqk3qau/YCDmXELndEN
+        nbhTReW+sYyETKibdtP18DEVQA==
+X-Google-Smtp-Source: ABdhPJyzJ09NPfBJvmOzre17fK9bY9OTFzZGQ+6qD49u1WlGJgzfsoCqeWeLkqKQP0AgVKpIANFFdg==
+X-Received: by 2002:a17:906:4356:: with SMTP id z22mr26801923ejm.414.1594039470723;
+        Mon, 06 Jul 2020 05:44:30 -0700 (PDT)
+Received: from tsr-vdi-mbaerts.nix.tessares.net (static.23.216.130.94.clients.your-server.de. [94.130.216.23])
+        by smtp.gmail.com with ESMTPSA id o6sm20737298edr.94.2020.07.06.05.44.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Jul 2020 05:44:29 -0700 (PDT)
+From:   Matthieu Baerts <matthieu.baerts@tessares.net>
+To:     netdev@vger.kernel.org
+Cc:     Matthieu Baerts <matthieu.baerts@tessares.net>,
+        Christoph Paasch <cpaasch@apple.com>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Shuah Khan <shuah@kernel.org>, mptcp@lists.01.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next] selftests: mptcp: capture pcap on both sides
+Date:   Mon,  6 Jul 2020 14:44:08 +0200
+Message-Id: <20200706124408.3118005-1-matthieu.baerts@tessares.net>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Diana Craciun <diana.craciun@oss.nxp.com>
+When investigating performance issues that involve latency / loss /
+reordering it is useful to have the pcap from the sender-side as it
+allows to easier infer the state of the sender's congestion-control,
+loss-recovery, etc.
 
-The region size reported by the firmware for mc and software
-portals was less than allocated by the hardware. This may be
-problematic when mmapping the region in user space because the
-region size is less than page size. However the size as reserved
-by the hardware is 64K.
+Allow the selftests to capture a pcap on both sender and receiver so
+that this information is not lost when reproducing.
 
-Signed-off-by: Diana Craciun <diana.craciun@oss.nxp.com>
+This patch also improves the file names. Instead of:
+
+  ns4-5ee79a56-X4O6gS-ns3-5ee79a56-X4O6gS-MPTCP-MPTCP-10.0.3.1.pcap
+
+We now have something like for the same test:
+
+  5ee79a56-X4O6gS-ns3-ns4-MPTCP-MPTCP-10.0.3.1-10030-connector.pcap
+  5ee79a56-X4O6gS-ns3-ns4-MPTCP-MPTCP-10.0.3.1-10030-listener.pcap
+
+It was a connection from ns3 to ns4, better to start with ns3 then. The
+port is also added, easier to find the trace we want.
+
+Co-developed-by: Christoph Paasch <cpaasch@apple.com>
+Signed-off-by: Christoph Paasch <cpaasch@apple.com>
+Signed-off-by: Matthieu Baerts <matthieu.baerts@tessares.net>
 ---
- drivers/bus/fsl-mc/dprc.c           | 38 ++++++++++++++++++-----------
- drivers/bus/fsl-mc/fsl-mc-private.h |  3 +++
- 2 files changed, 27 insertions(+), 14 deletions(-)
+ tools/testing/selftests/net/mptcp/mptcp_connect.sh | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/bus/fsl-mc/dprc.c b/drivers/bus/fsl-mc/dprc.c
-index 3f08752c2c19..ba292c56fe19 100644
---- a/drivers/bus/fsl-mc/dprc.c
-+++ b/drivers/bus/fsl-mc/dprc.c
-@@ -536,20 +536,30 @@ int dprc_get_obj_region(struct fsl_mc_io *mc_io,
- 			return err;
- 	}
+diff --git a/tools/testing/selftests/net/mptcp/mptcp_connect.sh b/tools/testing/selftests/net/mptcp/mptcp_connect.sh
+index 8f7145c413b9..c0589e071f20 100755
+--- a/tools/testing/selftests/net/mptcp/mptcp_connect.sh
++++ b/tools/testing/selftests/net/mptcp/mptcp_connect.sh
+@@ -395,10 +395,14 @@ do_transfer()
+ 			capuser="-Z $SUDO_USER"
+ 		fi
  
--	/**
--	 * MC API version 6.3 introduced a new field to the region
--	 * descriptor: base_address. If the older API is in use then the base
--	 * address is set to zero to indicate it needs to be obtained elsewhere
--	 * (typically the device tree).
--	 */
--	if (dprc_major_ver > 6 || (dprc_major_ver == 6 && dprc_minor_ver >= 3))
--		cmd.header =
--			mc_encode_cmd_header(DPRC_CMDID_GET_OBJ_REG_V2,
--					     cmd_flags, token);
--	else
--		cmd.header =
--			mc_encode_cmd_header(DPRC_CMDID_GET_OBJ_REG,
--					     cmd_flags, token);
-+	if (dprc_major_ver > 6 || (dprc_major_ver == 6 && dprc_minor_ver >= 6)) {
-+		/**
-+		 * MC API version 6.6 changed the size of the MC portals and software
-+		 * portals to 64K (as implemented by hardware). If older API is in use the
-+		 * size reported is less (64 bytes for mc portals and 4K for software
-+		 * portals).
-+		 */
+-		local capfile="${listener_ns}-${connector_ns}-${cl_proto}-${srv_proto}-${connect_addr}.pcap"
++		local capfile="${rndh}-${connector_ns:0:3}-${listener_ns:0:3}-${cl_proto}-${srv_proto}-${connect_addr}-${port}"
++		local capopt="-i any -s 65535 -B 32768 ${capuser}"
+ 
+-		ip netns exec ${listener_ns} tcpdump -i any -s 65535 -B 32768 $capuser -w $capfile > "$capout" 2>&1 &
+-		local cappid=$!
++		ip netns exec ${listener_ns}  tcpdump ${capopt} -w "${capfile}-listener.pcap"  >> "${capout}" 2>&1 &
++		local cappid_listener=$!
 +
-+		cmd.header = mc_encode_cmd_header(DPRC_CMDID_GET_OBJ_REG_V3,
-+						  cmd_flags, token);
-+
-+	} else if (dprc_major_ver == 6 && dprc_minor_ver >= 3) {
-+		/**
-+		 * MC API version 6.3 introduced a new field to the region
-+		 * descriptor: base_address. If the older API is in use then the base
-+		 * address is set to zero to indicate it needs to be obtained elsewhere
-+		 * (typically the device tree).
-+		 */
-+		cmd.header = mc_encode_cmd_header(DPRC_CMDID_GET_OBJ_REG_V2,
-+						  cmd_flags, token);
-+	} else {
-+		cmd.header = mc_encode_cmd_header(DPRC_CMDID_GET_OBJ_REG,
-+						  cmd_flags, token);
-+	}
++		ip netns exec ${connector_ns} tcpdump ${capopt} -w "${capfile}-connector.pcap" >> "${capout}" 2>&1 &
++		local cappid_connector=$!
  
- 	cmd_params = (struct dprc_cmd_get_obj_region *)cmd.params;
- 	cmd_params->obj_id = cpu_to_le32(obj_id);
-diff --git a/drivers/bus/fsl-mc/fsl-mc-private.h b/drivers/bus/fsl-mc/fsl-mc-private.h
-index e6fcff12c68d..8d65273a78d7 100644
---- a/drivers/bus/fsl-mc/fsl-mc-private.h
-+++ b/drivers/bus/fsl-mc/fsl-mc-private.h
-@@ -80,10 +80,12 @@ int dpmcp_reset(struct fsl_mc_io *mc_io,
- /* DPRC command versioning */
- #define DPRC_CMD_BASE_VERSION			1
- #define DPRC_CMD_2ND_VERSION			2
-+#define DPRC_CMD_3RD_VERSION			3
- #define DPRC_CMD_ID_OFFSET			4
+ 		sleep 1
+ 	fi
+@@ -423,7 +427,8 @@ do_transfer()
  
- #define DPRC_CMD(id)	(((id) << DPRC_CMD_ID_OFFSET) | DPRC_CMD_BASE_VERSION)
- #define DPRC_CMD_V2(id)	(((id) << DPRC_CMD_ID_OFFSET) | DPRC_CMD_2ND_VERSION)
-+#define DPRC_CMD_V3(id)	(((id) << DPRC_CMD_ID_OFFSET) | DPRC_CMD_3RD_VERSION)
+ 	if $capture; then
+ 		sleep 1
+-		kill $cappid
++		kill ${cappid_listener}
++		kill ${cappid_connector}
+ 	fi
  
- /* DPRC command IDs */
- #define DPRC_CMDID_CLOSE                        DPRC_CMD(0x800)
-@@ -105,6 +107,7 @@ int dpmcp_reset(struct fsl_mc_io *mc_io,
- #define DPRC_CMDID_GET_OBJ                      DPRC_CMD(0x15A)
- #define DPRC_CMDID_GET_OBJ_REG                  DPRC_CMD(0x15E)
- #define DPRC_CMDID_GET_OBJ_REG_V2               DPRC_CMD_V2(0x15E)
-+#define DPRC_CMDID_GET_OBJ_REG_V3               DPRC_CMD_V3(0x15E)
- #define DPRC_CMDID_SET_OBJ_IRQ                  DPRC_CMD(0x15F)
- 
- #define DPRC_CMDID_GET_CONNECTION               DPRC_CMD(0x16C)
+ 	local duration
 -- 
-2.17.1
+2.27.0
 
