@@ -2,83 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9C90215C5F
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 18:57:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01BEC215C64
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 18:58:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729659AbgGFQ5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 12:57:19 -0400
-Received: from foss.arm.com ([217.140.110.172]:56196 "EHLO foss.arm.com"
+        id S1729622AbgGFQ6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 12:58:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42928 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729651AbgGFQ5S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 12:57:18 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0D43B1FB;
-        Mon,  6 Jul 2020 09:57:18 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.13.106])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D41DA3F68F;
-        Mon,  6 Jul 2020 09:57:15 -0700 (PDT)
-Date:   Mon, 6 Jul 2020 17:57:12 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, stable@vger.kernel.org
-Subject: Re: [PATCH v2 3/4] arm64: arch_timer: Disable the compat vdso for
- cores affected by ARM64_WORKAROUND_1418040
-Message-ID: <20200706165712.GB61340@C02TD0UTHF1T.local>
-References: <20200706163802.1836732-1-maz@kernel.org>
- <20200706163802.1836732-4-maz@kernel.org>
+        id S1729386AbgGFQ6A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Jul 2020 12:58:00 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1BD0220702;
+        Mon,  6 Jul 2020 16:58:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594054680;
+        bh=GEufiPLHL4Nbly1lFuGDh/rrlW5QF5QlEhBoJCGKZFQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=BeiZPfbQ50ORdx2w+4fNMZwRFQlWzivGquRkh1WpaxX14+4JQikNxziZ0wPFoyhoe
+         UBoN3Mu8WqrowhpyX7jSiI2hFM52I+iza44p5eeAlEPc8WGQMwqjx7EIjBYNEC3KvX
+         2j5rhZwDy7rdkylpjlqiWIPr2uRNWq3WsUX7+VUo=
+Date:   Mon, 6 Jul 2020 09:57:58 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Luo bin <luobin9@huawei.com>
+Cc:     <davem@davemloft.net>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <luoxianjun@huawei.com>,
+        <yin.yinshi@huawei.com>, <cloud.wangxiaoyun@huawei.com>,
+        <chiqijun@huawei.com>
+Subject: Re: [PATCH net-next] hinic: add firmware update support
+Message-ID: <20200706095758.713a069a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20200706145406.7742-1-luobin9@huawei.com>
+References: <20200706145406.7742-1-luobin9@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200706163802.1836732-4-maz@kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 06, 2020 at 05:38:01PM +0100, Marc Zyngier wrote:
-> ARM64_WORKAROUND_1418040 requires that AArch32 EL0 accesses to
-> the virtual counter register are trapped and emulated by the kernel.
-> This makes the vdso pretty pointless, and in some cases livelock
-> prone.
+On Mon, 6 Jul 2020 22:54:06 +0800 Luo bin wrote:
+> add support to update firmware with with "ethtool -f" cmd
 > 
-> Provide a workaround entry that limits the vdso to 64bit tasks.
-> 
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> Signed-off-by: Luo bin <luobin9@huawei.com>
 
-Acked-by: Mark Rutland <mark.rutland@arm.com>
+drivers/net/ethernet/huawei/hinic/hinic_ethtool.c:1996:44: warning: missing braces around initializer
+drivers/net/ethernet/huawei/hinic/hinic_ethtool.c:1996:44: warning: missing braces around initializer
 
-Mark.
-
-> ---
->  drivers/clocksource/arm_arch_timer.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/drivers/clocksource/arm_arch_timer.c b/drivers/clocksource/arm_arch_timer.c
-> index a8e4fb429f52..6c3e84180146 100644
-> --- a/drivers/clocksource/arm_arch_timer.c
-> +++ b/drivers/clocksource/arm_arch_timer.c
-> @@ -480,6 +480,14 @@ static const struct arch_timer_erratum_workaround ool_workarounds[] = {
->  		.set_next_event_virt = erratum_set_next_event_tval_virt,
->  	},
->  #endif
-> +#ifdef CONFIG_ARM64_ERRATUM_1418040
-> +	{
-> +		.match_type = ate_match_local_cap_id,
-> +		.id = (void *)ARM64_WORKAROUND_1418040,
-> +		.desc = "ARM erratum 1418040",
-> +		.disable_compat_vdso = true,
-> +	},
-> +#endif
->  };
->  
->  typedef bool (*ate_match_fn_t)(const struct arch_timer_erratum_workaround *,
-> -- 
-> 2.27.0
-> 
+But really - please try to implement the devlink flashing API, using
+ethtool for this is deprecated.
