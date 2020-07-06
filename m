@@ -2,136 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15EF6215E0D
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 20:13:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE38C215E12
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 20:14:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729728AbgGFSNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 14:13:38 -0400
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:53335 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729622AbgGFSNi (ORCPT
+        id S1729767AbgGFSOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 14:14:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34376 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729569AbgGFSON (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 14:13:38 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id ED5E958023D;
-        Mon,  6 Jul 2020 14:13:36 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Mon, 06 Jul 2020 14:13:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:mime-version:content-type; s=
-        fm3; bh=+v/Te64vKu4e35ENQ/jK6ubbrXotygKRxSoJgsFaBMY=; b=qSy7OzOH
-        skFlHeU9mi26Sma2rX0D/lgIfCCmui9NIvzQgMWug9tdsg6RIO1cZLqpjdwlhmzB
-        5KivDkYhKbmi+Wo0kEIvgJ7/u4ISd/JPSAz14cB63lEUXYhlQFEPJ1xuNSKnF/Y2
-        qpByMVOwDmJgXVa7CRM5SEf+GkyGBnslNoUoCqpSCMc9Qw8+1YLGN98sEL4jJ/VG
-        uN7qMhfDu5+cDGOFlzqbTmXua69/vwUHB5cyE9ue9LlFDnYEWmL2G+ocDPAvFR8A
-        gwbi8wMuLm5W/vQHq4alBcdWVKZuOBsNxCPrhPFIhTaA68X2q/0l6Uwcf5+GDJqy
-        tbZw/+6MOKeI1w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:message-id
-        :mime-version:subject:to:x-me-proxy:x-me-proxy:x-me-sender
-        :x-me-sender:x-sasl-enc; s=fm3; bh=+v/Te64vKu4e35ENQ/jK6ubbrXoty
-        gKRxSoJgsFaBMY=; b=qshJlZ0E5dHQkkrkVBROwDSY5Sgo3A2aErHKsBk4Qzhcr
-        YwuFLcpq3tbOAjJDSQBmHDR6xZI/1CNCEffKHJUxCkzmx53vJLWlG1WdmkEXmPOD
-        JfwLoYmaXaTcuR45TtB1ww+APCPkk8b6YtmvmF+w/VdCDOm1675nQNe0gWlxAK2m
-        /Gd9KvUT4QKgNYiizc7yFmAfC52rbIbQVOKdX/S6Vor8Znp6GHXGU5Sq4jwTre1P
-        FxtBFwbHScWLP1IFcoDIctKVuofwpIsDZ9BAn3TnMGziXoFlqCJ3z+uhNz3jMYsi
-        DJ6Acx5FPad+2ZtZrUmjIPEXfcNXCVc/IRbnxdkEg==
-X-ME-Sender: <xms:zWkDX3clahDmVS2Za88QRKWTl2jFfKPA9aUrGPYViYhe8ADoYyiMwg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudefgdduvdegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfggtggusehgtderredttddvnecuhfhrohhmpeforgigihhmvgcu
-    tfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrthhtvg
-    hrnhepkeeffefgffeijeffveehkeffleejgeefvefhkedtteegvdefjeduveehhfetveej
-    necuffhomhgrihhnpehkvghrnhgvlhdrohhrghdpsghoohhtlhhinhdrtghomhenucfkph
-    epledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhep
-    mhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:zWkDX9P5hF41A50xUPlgDeEOjXopXgSe8d_p3QdXha1TPnoEHGoE4Q>
-    <xmx:zWkDXwhJ9vZX-1uH9isgRIGWZiQ4ejO47HRiIVneW_F2a0GCskxJqA>
-    <xmx:zWkDX4-0vfTjH14CXWJMFhZ9q1I0n4BBtnRsNZ836qajUeJpYmg2IQ>
-    <xmx:0GkDX5CDafBdVS4Q821QRHeAgSjerkAW00qSoNCP7YeICPRsL-z5Gg>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 7C6193280064;
-        Mon,  6 Jul 2020 14:13:33 -0400 (EDT)
-Date:   Mon, 6 Jul 2020 20:13:31 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Antoine =?utf-8?Q?T=C3=A9nart?= <antoine.tenart@bootlin.com>
-Subject: PHY reset handling during DT parsing
-Message-ID: <20200706181331.x2tn5cl5jn5kqmhx@gilmour.lan>
+        Mon, 6 Jul 2020 14:14:13 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEC7EC061755
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Jul 2020 11:14:13 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id a6so16991374ilq.13
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 11:14:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=UHICUm1ASAOU14aQtTlqoeqvqVo45hMYZnvaiF40E5Y=;
+        b=CjV8+Zvl4pETFI7EuOND0luxa2djfvNOy8tGGK4EhkoGTpsjBJcR9nOgEluBPz0bM9
+         uooQwvUahizMcjsxKIOeydfm2fHsk0um137nCtHiu+uzGgcS3wRevl/uJ1/ahPT8dwAa
+         AscWbdXmnQZ49dWOpaczWaJaQxs4kJUbUbl7qBpnc8fn0TgjAuEweauQMlelIH7uIy1R
+         utB8iXV6jIycJB0yk14F5DFtaE/CIK0lFtdxNUD/hQtZf/7dg4bSQ2mV1PkSEqpMdJJo
+         yJFD8SqamXEvcJpxg18IhJJ9eZj77R+nO1GxqHj7mID8JRuoVy3Zvm/p+u4l/Oy5nTk4
+         9Bqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=UHICUm1ASAOU14aQtTlqoeqvqVo45hMYZnvaiF40E5Y=;
+        b=hyg12MZIUVxMjMPvYWAvaApwmVEgJYDvNRRfgxHLced66/T4JXjoXIeNzA0LOEMJoo
+         /JXju07OYtaM6BqSJ6+NFKD2dQsMJOU7+UcAM+KL+2Du2mHDC286bR0jEtApPfQsq6WD
+         GE/ZC3NHAFEM2aR4Zi7Zb27xKTYQTgiM9aoT+wFfeBkZm+kSkfrRBGJxqeInyAcO2NEl
+         Za2pU7rCdoNmOeVW6I1BA0UIQCQHDnzcApRlZJIXqllqEblfhN6QLSVRwMmOxIVUHQEf
+         3oZNjjKYp7dqo+maAwS/9Efu+cwv6Vc7/80MP8xMO/OenEDuN8N/QXs8szw6VP8+hI24
+         CAzA==
+X-Gm-Message-State: AOAM531eAn0HBar3MunD6W3eqjMNXW2QMoG2HvNS+NA8sytqa7Vi/aqC
+        ep0n4FuWOC1VvNylB8Q0PZAIwssvc9F8FH1Urts=
+X-Google-Smtp-Source: ABdhPJxcB7vidTBBGzLtWdiIB4C23C/5CtuZhMhvw+iXD2/Ibm6NZ7Dya9EPsou0hM51oBxNBeiVIVodmNN3xX9pv4o=
+X-Received: by 2002:a92:1589:: with SMTP id 9mr12930352ilv.212.1594059253025;
+ Mon, 06 Jul 2020 11:14:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="2ftaacwvvl7mumne"
-Content-Disposition: inline
+References: <CA+icZUVgJFXJ3C_iYK8HrsuhAy3R9U1RDB6mPkOS52JcnU4mDQ@mail.gmail.com>
+ <20200706083900.GC4800@hirez.programming.kicks-ass.net>
+In-Reply-To: <20200706083900.GC4800@hirez.programming.kicks-ass.net>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Mon, 6 Jul 2020 20:14:01 +0200
+Message-ID: <CA+icZUV1yB97zME5zFxD9w3-_55Ov8y=HtKk60+X0LsvtLMdow@mail.gmail.com>
+Subject: Re: [Linux v5.8-rc4] objtool warnings with gcc-10
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, mbenes@suse.cz
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jul 6, 2020 at 10:39 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Mon, Jul 06, 2020 at 09:09:55AM +0200, Sedat Dilek wrote:
+> > [ Please CC me I am not subscribed to this mailing-list ]
+> >
+> > Hi Josh and Peter,
+> >
+> > today I switched over from Linux v5.7.y to Linux v5.8-rc4 and built
+> > the first time with GCC version 10 on Debian/testing AMD64.
+> >
+> > $ cat /proc/version
+> > Linux version 5.8.0-rc4-1-amd64-gcc10 (sedat.dilek@gmail.com@iniza)
+> > (gcc-10 (Debian 10.1.0-4) 10.1.0, GNU ld (GNU Binutils for Debian)
+> > 2.34) #1~bullseye+dileks1 SMP 2020-07-06
+> >
+> > I see these objtool warnings (which are new to me):
+> >
+> > $ grep warning: build-log_5.8.0-rc4-1-amd64-gcc10.txt | sort
+> > arch/x86/kernel/cpu/mce/core.o: warning: objtool: mce_panic()+0x118: unreachable instruction
+> > drivers/atm/horizon.o: warning: objtool: interrupt_handler()+0x19f: unreachable instruction
+> > drivers/message/fusion/mptbase.o: warning: objtool: mpt_Soft_Hard_ResetHandler()+0x33a: unreachable instruction
+> > drivers/scsi/aic7xxx/aic79xx_core.o: warning: objtool: ahd_intr.part.0()+0x10f: unreachable instruction
+> > drivers/scsi/pcmcia/aha152x_core.o: warning: objtool: run()+0x4c0: unreachable instruction
+> > fs/btrfs/backref.o: warning: objtool: btrfs_backref_finish_upper_links()+0x309: unreachable instruction
+> > fs/btrfs/extent_io.o: warning: objtool: __set_extent_bit.cold()+0xc: unreachable instruction
+> > fs/btrfs/relocation.o: warning: objtool: update_backref_cache.part.0()+0x1de: unreachable instruction
+> > kernel/exit.o: warning: objtool: __x64_sys_exit_group()+0x14: unreachable instruction
+> > net/core/skbuff.o: warning: objtool: skb_push.cold()+0x15: unreachable instruction
+>
+> That's more CONFIG_LIVEPATCH=y wreckage I expect. The problem is that
+> GCC -flive-patching= thing wreck the propagation of the noreturn.
+>
+> This really is a compiler issue and we've not managed a sensible
+> work-around in objtool.
 
---2ftaacwvvl7mumne
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+With llvm-toolchain-11 version
+11.0.0-++20200701093119+ffee8040534-1~exp1 from Debian/experimental I
+do not see these warnings.
 
-Hi,
+This is due to "-flive-patching=inline-clone" is *NOT* used when
+CONFIG_LIVEPATCH=y with clang-11.
 
-I came across an issue today on an Allwinner board, but I believe it's a
-core issue.
-
-That board is using the stmac driver together with a phy that happens to
-have a reset GPIO, except that that GPIO will never be claimed, and the
-PHY will thus never work.
-
-You can find an example of such a board here:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm/boot/dts/sun6i-a31-hummingbird.dts#n195
-
-It looks like when of_mdiobus_register() will parse the DT, it will then
-call of_mdiobus_register_phy() for each PHY it encounters [1].
-of_mdiobus_register_phy() will then if the phy doesn't have an
-ethernet-phy-id* compatible call get_phy_device() [2], and will later on
-call phy_register_device [3].
-
-get_phy_device() will then call get_phy_id() [4], that will try to
-access the PHY through the MDIO bus [5].
-
-The code that deals with the PHY reset line / GPIO is however only done
-in mdiobus_device_register, called through phy_device_register. Since
-this is happening way after the call to get_phy_device, our PHY might
-still very well be in reset if the bootloader hasn't put it out of reset
-and left it there.
-
-I'm not entirely sure how to fix that though. I tried to fix it by
-splitting away the gpio / reset code away from mdiobus_device_register
-into a new function, and calling it before the first call to get_phy_id
-so that we can put our phy out of reset, but it looks like the device
-registration makes it more complicated than that. Any ideas?
-
-Thanks!
-Maxime
-
-1: https://elixir.bootlin.com/linux/latest/source/drivers/of/of_mdio.c#L274
-2: https://elixir.bootlin.com/linux/latest/source/drivers/of/of_mdio.c#L82
-3: https://elixir.bootlin.com/linux/latest/source/drivers/of/of_mdio.c#L119
-4: https://elixir.bootlin.com/linux/latest/source/drivers/net/phy/phy_device.c#L830
-5: https://elixir.bootlin.com/linux/latest/source/drivers/net/phy/phy_device.c#L791
-
---2ftaacwvvl7mumne
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXwNpywAKCRDj7w1vZxhR
-xU1lAQCR+4X7EF6qEnFyxVCuaNV/g3Bjlk5krQv8tSUb3DmQ+AEA2WAuzE9iBzzg
-Awm1dmo/sBptpDkj+d3oPz4YqsFQvQw=
-=Gsc3
------END PGP SIGNATURE-----
-
---2ftaacwvvl7mumne--
+- Sedat -
