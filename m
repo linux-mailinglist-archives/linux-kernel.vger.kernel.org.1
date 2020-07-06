@@ -2,159 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 630A3215090
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 02:35:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5898C215083
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 02:30:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728321AbgGFAfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Jul 2020 20:35:38 -0400
-Received: from gateway20.websitewelcome.com ([192.185.59.4]:18270 "EHLO
-        gateway20.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728280AbgGFAfh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Jul 2020 20:35:37 -0400
-Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
-        by gateway20.websitewelcome.com (Postfix) with ESMTP id 8E5FF400C644F
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Jul 2020 17:49:05 -0500 (CDT)
-Received: from br164.hostgator.com.br ([192.185.176.180])
-        by cmsmtp with SMTP
-        id sEhzj7hFlBb5dsEhzjD00g; Sun, 05 Jul 2020 19:10:07 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=castello.eng.br; s=default; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=tFT+lYrClbv1RBpt99UCi3E8tbXznUEvjiYn8KUfP58=; b=wxw3C083q8ACLRXCqboryrRsGc
-        AEGoxOm5j7bBK1LOgz3g56ksyQp7sUzNBgA+moz51VRVKNOW1Tr6TzSxV9ZfFt9OE1GMnlmgpoEoE
-        vP0zbdh8UzJeImr3SNlAO5ETGYq7gAHDF+v+gvA4aKVcfy+DFSOqoVe9nbLJH1i0T7Ws21hqPg6Je
-        PLnIcEfwSjys2eu70fl9WD+LQ1JkrzF1IxueldUAYfhkGb/n06RAqJQSzJIRx/i+gNlIOudD5ma9g
-        EU8tsbhyf5gGsZ6F+rvzNPwt43jdlLSdauDZqMqkLRaNazW/WY1MLCpfFVI6YlVs1wTAXjjJ0zMbM
-        76c+luPg==;
-Received: from [189.59.31.158] (port=43104 helo=castello.castello)
-        by br164.hostgator.com.br with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <matheus@castello.eng.br>)
-        id 1jsEhz-000qqT-Dd; Sun, 05 Jul 2020 21:10:07 -0300
-From:   Matheus Castello <matheus@castello.eng.br>
-To:     sre@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        Matheus Castello <matheus@castello.eng.br>
-Subject: [PATCH v1] power: supply: max17040: Add POWER_SUPPLY_PROP_CAPACITY_ALERT_MIN
-Date:   Sun,  5 Jul 2020 21:10:03 -0300
-Message-Id: <20200706001003.663763-1-matheus@castello.eng.br>
-X-Mailer: git-send-email 2.27.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - br164.hostgator.com.br
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - castello.eng.br
-X-BWhitelist: no
-X-Source-IP: 189.59.31.158
-X-Source-L: No
-X-Exim-ID: 1jsEhz-000qqT-Dd
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: (castello.castello) [189.59.31.158]:43104
-X-Source-Auth: matheus@castello.eng.br
-X-Email-Count: 2
-X-Source-Cap: Y2FzdGUyNDg7Y2FzdGUyNDg7YnIxNjQuaG9zdGdhdG9yLmNvbS5icg==
-X-Local-Domain: yes
+        id S1728259AbgGFAaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Jul 2020 20:30:11 -0400
+Received: from mga07.intel.com ([134.134.136.100]:32284 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728214AbgGFAaL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Jul 2020 20:30:11 -0400
+IronPort-SDR: QWFlGMfW8VRyK3F9pTdv6QN3W5kUJSkrN0yYMpBydH4DECJk19ZDY8OWYzu4j7c4JPBad7DGqT
+ 0InHt1rWQ+Lg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9673"; a="212331317"
+X-IronPort-AV: E=Sophos;i="5.75,318,1589266800"; 
+   d="scan'208";a="212331317"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jul 2020 17:30:10 -0700
+IronPort-SDR: Iics2lKfEiEEFtnVFe3qwfMztH0gnI+NifAvr9us7R8JwdBerX7Lw7q/YmSGTB542tYs22Xg/A
+ MOMBvnMoYjiA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,318,1589266800"; 
+   d="scan'208";a="266404912"
+Received: from allen-box.sh.intel.com ([10.239.159.139])
+  by fmsmga007.fm.intel.com with ESMTP; 05 Jul 2020 17:30:07 -0700
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+To:     iommu@lists.linux-foundation.org
+Cc:     Joerg Roedel <joro@8bytes.org>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>, Liu Yi L <yi.l.liu@intel.com>,
+        linux-kernel@vger.kernel.org, Lu Baolu <baolu.lu@linux.intel.com>
+Subject: [PATCH v2 0/4] iommu/vt-d: Add prq report and response support
+Date:   Mon,  6 Jul 2020 08:25:31 +0800
+Message-Id: <20200706002535.9381-1-baolu.lu@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds the property POWER_SUPPLY_PROP_CAPACITY_ALERT_MIN to export the
-chip->low_soc_alert and add the property as writeable, implementing
-max17040_prop_writeable and max17040_set_property, so with that the
-user space can readjust the alerts.
+Hi,
 
-Signed-off-by: Matheus Castello <matheus@castello.eng.br>
----
- drivers/power/supply/max17040_battery.c | 51 ++++++++++++++++++++++---
- 1 file changed, 46 insertions(+), 5 deletions(-)
+This series adds page request event reporting and response support to
+the Intel IOMMU driver. This is necessary when the page requests must
+be processed by any component other than the vendor IOMMU driver. For
+example, when a guest page table was bound to a PASID through the
+iommu_ops->sva_bind_gpasid() api, the page requests should be routed to
+the guest, and after the page is served, the device should be responded
+with the result.
 
-diff --git a/drivers/power/supply/max17040_battery.c b/drivers/power/supply/max17040_battery.c
-index 48aa44665e2f..6cb31b9a958d 100644
---- a/drivers/power/supply/max17040_battery.c
-+++ b/drivers/power/supply/max17040_battery.c
-@@ -69,6 +69,9 @@ static int max17040_get_property(struct power_supply *psy,
- 	case POWER_SUPPLY_PROP_CAPACITY:
- 		val->intval = chip->soc;
- 		break;
-+	case POWER_SUPPLY_PROP_CAPACITY_ALERT_MIN:
-+		val->intval = chip->low_soc_alert;
-+		break;
- 	default:
- 		return -EINVAL;
- 	}
-@@ -256,19 +259,57 @@ static int max17040_enable_alert_irq(struct max17040_chip *chip)
- 	return ret;
- }
+Your review comments are very appreciated.
 
-+static int max17040_prop_writeable(struct power_supply *psy,
-+				   enum power_supply_property psp)
-+{
-+	switch (psp) {
-+	case POWER_SUPPLY_PROP_CAPACITY_ALERT_MIN:
-+		return 1;
-+	default:
-+		return 0;
-+	}
-+}
-+
-+static int max17040_set_property(struct power_supply *psy,
-+			    enum power_supply_property psp,
-+			    const union power_supply_propval *val)
-+{
-+	struct max17040_chip *chip = power_supply_get_drvdata(psy);
-+	int ret;
-+
-+	switch (psp) {
-+	case POWER_SUPPLY_PROP_CAPACITY_ALERT_MIN:
-+		/* alert threshold can be programmed from 1% up to 32% */
-+		if ((val->intval < 1) || (val->intval > 32)) {
-+			ret = -EINVAL;
-+			break;
-+		}
-+		ret = max17040_set_low_soc_alert(chip->client, val->intval);
-+		chip->low_soc_alert = val->intval;
-+		break;
-+	default:
-+		ret = -EINVAL;
-+	}
-+
-+	return ret;
-+}
-+
- static enum power_supply_property max17040_battery_props[] = {
- 	POWER_SUPPLY_PROP_STATUS,
- 	POWER_SUPPLY_PROP_ONLINE,
- 	POWER_SUPPLY_PROP_VOLTAGE_NOW,
- 	POWER_SUPPLY_PROP_CAPACITY,
-+	POWER_SUPPLY_PROP_CAPACITY_ALERT_MIN,
- };
+Best regards,
+baolu
 
- static const struct power_supply_desc max17040_battery_desc = {
--	.name		= "battery",
--	.type		= POWER_SUPPLY_TYPE_BATTERY,
--	.get_property	= max17040_get_property,
--	.properties	= max17040_battery_props,
--	.num_properties	= ARRAY_SIZE(max17040_battery_props),
-+	.name			= "battery",
-+	.type			= POWER_SUPPLY_TYPE_BATTERY,
-+	.get_property		= max17040_get_property,
-+	.set_property		= max17040_set_property,
-+	.property_is_writeable  = max17040_prop_writeable,
-+	.properties		= max17040_battery_props,
-+	.num_properties		= ARRAY_SIZE(max17040_battery_props),
- };
+Change log:
+v1->v2:
+  - v1 posted at https://lkml.org/lkml/2020/6/27/387
+  - Remove unnecessary pci_get_domain_bus_and_slot()
+  - Return error when sdev == NULL in intel_svm_page_response()
 
- static int max17040_probe(struct i2c_client *client,
---
-2.27.0
+Lu Baolu (4):
+  iommu/vt-d: Refactor device_to_iommu() helper
+  iommu/vt-d: Add a helper to get svm and sdev for pasid
+  iommu/vt-d: Report page request faults for guest SVA
+  iommu/vt-d: Add page response ops support
+
+ drivers/iommu/intel/iommu.c |  56 ++-----
+ drivers/iommu/intel/svm.c   | 302 +++++++++++++++++++++++++++---------
+ include/linux/intel-iommu.h |   6 +-
+ 3 files changed, 248 insertions(+), 116 deletions(-)
+
+-- 
+2.17.1
 
