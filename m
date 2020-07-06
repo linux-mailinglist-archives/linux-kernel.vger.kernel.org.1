@@ -2,205 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E7DA215AF6
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 17:42:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20272215AF3
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 17:41:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729511AbgGFPmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 11:42:17 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:36160 "EHLO inva021.nxp.com"
+        id S1729332AbgGFPlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 11:41:49 -0400
+Received: from mga03.intel.com ([134.134.136.65]:51569 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729354AbgGFPmP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 11:42:15 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 0CECD2006D6;
-        Mon,  6 Jul 2020 17:42:13 +0200 (CEST)
-Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 006BC2006D2;
-        Mon,  6 Jul 2020 17:42:13 +0200 (CEST)
-Received: from fsr-ub1864-111.ea.freescale.net (fsr-ub1864-111.ea.freescale.net [10.171.82.141])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id A79C7203C3;
-        Mon,  6 Jul 2020 17:42:12 +0200 (CEST)
-From:   Diana Craciun <diana.craciun@oss.nxp.com>
-To:     alex.williamson@redhat.com, kvm@vger.kernel.org
-Cc:     bharatb.linux@gmail.com, linux-kernel@vger.kernel.org,
-        laurentiu.tudor@nxp.com, Diana Craciun <diana.craciun@oss.nxp.com>,
-        Bharat Bhushan <Bharat.Bhushan@nxp.com>
-Subject: [PATCH v3 2/9] vfio/fsl-mc: Scan DPRC objects on vfio-fsl-mc driver bind
-Date:   Mon,  6 Jul 2020 18:41:46 +0300
-Message-Id: <20200706154153.11477-3-diana.craciun@oss.nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200706154153.11477-1-diana.craciun@oss.nxp.com>
-References: <20200706154153.11477-1-diana.craciun@oss.nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1729197AbgGFPlt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Jul 2020 11:41:49 -0400
+IronPort-SDR: vv1X7PVlbeKfqyLy7laK+6GyqVqLvMvtXVaOPA4QFd0nadVwLHC4WfZkCwiu/f5F9aZfaBPz54
+ QCEitdglni2w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9673"; a="147442225"
+X-IronPort-AV: E=Sophos;i="5.75,320,1589266800"; 
+   d="scan'208";a="147442225"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2020 08:41:49 -0700
+IronPort-SDR: AS0HeRsqQZt0NvwtBpVT084SnSxbfpTRzLF4kAisPpb/x+Zo9438wtNF1Cuj6SmOBZvJiBxi/V
+ RbpnIUrH4/lg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,320,1589266800"; 
+   d="scan'208";a="313997880"
+Received: from aislam-mobl1.amr.corp.intel.com ([10.212.167.133])
+  by orsmga008.jf.intel.com with ESMTP; 06 Jul 2020 08:41:47 -0700
+Subject: Re: [PATCH v4] ASoC: Intel: kbl_rt5663_rt5514_max98927: Fix
+ kabylake_ssp_fixup function
+To:     Lukasz Majczak <lma@semihalf.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Harsha Priya <harshapriya.n@intel.com>
+Cc:     alsa-devel@alsa-project.org, Radoslaw Biernacki <rad@semihalf.com>,
+        Ross Zwisler <zwisler@google.com>,
+        linux-kernel@vger.kernel.org,
+        Sathya Prakash <sathya.prakash.m.r@intel.com>,
+        Bob Brandt <brndt@google.com>, Marcin Wojtas <mw@semihalf.com>,
+        Alex Levin <levinale@chromium.org>,
+        Gopal Vamshi Krishna <vamshi.krishna.gopal@intel.com>
+References: <20200521162518.1809995-1-lma@semihalf.com>
+ <20200703121650.547944-1-lma@semihalf.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <5dfc3678-0f12-7823-2571-ab0dff250d15@linux.intel.com>
+Date:   Mon, 6 Jul 2020 10:41:47 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.8.1
+MIME-Version: 1.0
+In-Reply-To: <20200703121650.547944-1-lma@semihalf.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The DPRC (Data Path Resource Container) device is a bus device and has
-child devices attached to it. When the vfio-fsl-mc driver is probed
-the DPRC is scanned and the child devices discovered and initialized.
+On 7/3/20 7:16 AM, Lukasz Majczak wrote:
+> Fix kabylake_ssp_fixup function to distinguish codecs DAIs by names,
+> as current approach, leads to crash while trying to get snd_soc_dpcm with
+> container_of() macro in kabylake_ssp_fixup().
+> The crash call path looks as below:
+> soc_pcm_hw_params()
+> snd_soc_dai_hw_params(codec_dai, substream, &codec_params);
+> rtd->dai_link->be_hw_params_fixup(rtd, params)
+> kabylake_ssp_fixup()
+> In this case, codec_params is just a copy of an internal structure and is
+> not embedded into struct snd_soc_dpcm thus we cannot use
+> container_of() on it.
+> 
+> v1 -> v2:
+> - Extract dmic from SSP0 as every BE should have own fixup function.
+> v2 -> v3:
+> - Restore naming in the dapm route table to not confuse with other
+> drivers
+> - Fixed indentations
+> v3 -> v4:
+> - Updated code and commit description according to
+> solution proposed by Harsha
 
-Signed-off-by: Bharat Bhushan <Bharat.Bhushan@nxp.com>
-Signed-off-by: Diana Craciun <diana.craciun@oss.nxp.com>
----
- drivers/vfio/fsl-mc/vfio_fsl_mc.c         | 106 ++++++++++++++++++++++
- drivers/vfio/fsl-mc/vfio_fsl_mc_private.h |   1 +
- 2 files changed, 107 insertions(+)
+Looks good Lukasz but you need to move the information on changes below 
+the --- marker (~4 lines below).
 
-diff --git a/drivers/vfio/fsl-mc/vfio_fsl_mc.c b/drivers/vfio/fsl-mc/vfio_fsl_mc.c
-index 8b53c2a25b32..ad8d06cceb71 100644
---- a/drivers/vfio/fsl-mc/vfio_fsl_mc.c
-+++ b/drivers/vfio/fsl-mc/vfio_fsl_mc.c
-@@ -15,6 +15,8 @@
- 
- #include "vfio_fsl_mc_private.h"
- 
-+static struct fsl_mc_driver vfio_fsl_mc_driver;
-+
- static int vfio_fsl_mc_open(void *device_data)
- {
- 	if (!try_module_get(THIS_MODULE))
-@@ -84,6 +86,69 @@ static const struct vfio_device_ops vfio_fsl_mc_ops = {
- 	.mmap		= vfio_fsl_mc_mmap,
- };
- 
-+static int vfio_fsl_mc_bus_notifier(struct notifier_block *nb,
-+				    unsigned long action, void *data)
-+{
-+	struct vfio_fsl_mc_device *vdev = container_of(nb,
-+					struct vfio_fsl_mc_device, nb);
-+	struct device *dev = data;
-+	struct fsl_mc_device *mc_dev = to_fsl_mc_device(dev);
-+	struct fsl_mc_device *mc_cont = to_fsl_mc_device(mc_dev->dev.parent);
-+
-+	if (action == BUS_NOTIFY_ADD_DEVICE &&
-+	    vdev->mc_dev == mc_cont) {
-+		mc_dev->driver_override = kasprintf(GFP_KERNEL, "%s",
-+						    vfio_fsl_mc_ops.name);
-+		dev_info(dev, "Setting driver override for device in dprc %s\n",
-+			 dev_name(&mc_cont->dev));
-+	} else if (action == BUS_NOTIFY_BOUND_DRIVER &&
-+		vdev->mc_dev == mc_cont) {
-+		struct fsl_mc_driver *mc_drv = to_fsl_mc_driver(dev->driver);
-+
-+		if (mc_drv && mc_drv != &vfio_fsl_mc_driver)
-+			dev_warn(dev, "Object %s bound to driver %s while DPRC bound to vfio-fsl-mc\n",
-+				 dev_name(dev), mc_drv->driver.name);
-+		}
-+
-+	return 0;
-+}
-+
-+static int vfio_fsl_mc_init_device(struct vfio_fsl_mc_device *vdev)
-+{
-+	struct fsl_mc_device *mc_dev = vdev->mc_dev;
-+	int ret;
-+
-+	/* Non-dprc devices share mc_io from parent */
-+	if (!is_fsl_mc_bus_dprc(mc_dev)) {
-+		struct fsl_mc_device *mc_cont = to_fsl_mc_device(mc_dev->dev.parent);
-+
-+		mc_dev->mc_io = mc_cont->mc_io;
-+		return 0;
-+	}
-+
-+	vdev->nb.notifier_call = vfio_fsl_mc_bus_notifier;
-+	ret = bus_register_notifier(&fsl_mc_bus_type, &vdev->nb);
-+	if (ret)
-+		return ret;
-+
-+	/* open DPRC, allocate a MC portal */
-+	ret = dprc_setup(mc_dev);
-+	if (ret < 0) {
-+		dev_err(&mc_dev->dev, "Failed to setup DPRC (error = %d)\n", ret);
-+		bus_unregister_notifier(&fsl_mc_bus_type, &vdev->nb);
-+		return ret;
-+	}
-+
-+	ret = dprc_scan_container(mc_dev, false);
-+	if (ret < 0) {
-+		dev_err(&mc_dev->dev, "Container scanning failed: %d\n", ret);
-+		bus_unregister_notifier(&fsl_mc_bus_type, &vdev->nb);
-+		dprc_cleanup(mc_dev);
-+	}
-+
-+	return ret;
-+}
-+
- static int vfio_fsl_mc_probe(struct fsl_mc_device *mc_dev)
- {
- 	struct iommu_group *group;
-@@ -112,9 +177,42 @@ static int vfio_fsl_mc_probe(struct fsl_mc_device *mc_dev)
- 		return ret;
- 	}
- 
-+	ret = vfio_fsl_mc_init_device(vdev);
-+	if (ret < 0) {
-+		vfio_iommu_group_put(group, dev);
-+		return ret;
-+	}
-+
- 	return ret;
- }
- 
-+static int vfio_fsl_mc_device_remove(struct device *dev, void *data)
-+{
-+	struct fsl_mc_device *mc_dev;
-+
-+	WARN_ON(!dev);
-+	mc_dev = to_fsl_mc_device(dev);
-+	if (WARN_ON(!mc_dev))
-+		return -ENODEV;
-+
-+	kfree(mc_dev->driver_override);
-+	mc_dev->driver_override = NULL;
-+
-+	/*
-+	 * The device-specific remove callback will get invoked by device_del()
-+	 */
-+	device_del(&mc_dev->dev);
-+	put_device(&mc_dev->dev);
-+
-+	return 0;
-+}
-+
-+static void vfio_fsl_mc_cleanup_dprc(struct fsl_mc_device *mc_dev)
-+{
-+	device_for_each_child(&mc_dev->dev, NULL, vfio_fsl_mc_device_remove);
-+	dprc_cleanup(mc_dev);
-+}
-+
- static int vfio_fsl_mc_remove(struct fsl_mc_device *mc_dev)
- {
- 	struct vfio_fsl_mc_device *vdev;
-@@ -124,6 +222,14 @@ static int vfio_fsl_mc_remove(struct fsl_mc_device *mc_dev)
- 	if (!vdev)
- 		return -EINVAL;
- 
-+	if (vdev->nb.notifier_call)
-+		bus_unregister_notifier(&fsl_mc_bus_type, &vdev->nb);
-+
-+	if (is_fsl_mc_bus_dprc(mc_dev))
-+		vfio_fsl_mc_cleanup_dprc(vdev->mc_dev);
-+
-+	mc_dev->mc_io = NULL;
-+
- 	vfio_iommu_group_put(mc_dev->dev.iommu_group, dev);
- 
- 	return 0;
-diff --git a/drivers/vfio/fsl-mc/vfio_fsl_mc_private.h b/drivers/vfio/fsl-mc/vfio_fsl_mc_private.h
-index e79cc116f6b8..37d61eaa58c8 100644
---- a/drivers/vfio/fsl-mc/vfio_fsl_mc_private.h
-+++ b/drivers/vfio/fsl-mc/vfio_fsl_mc_private.h
-@@ -9,6 +9,7 @@
- 
- struct vfio_fsl_mc_device {
- 	struct fsl_mc_device		*mc_dev;
-+	struct notifier_block        nb;
- };
- 
- #endif /* VFIO_FSL_MC_PRIVATE_H */
--- 
-2.17.1
+> 
+> Signed-off-by: Lukasz Majczak <lma@semihalf.com>
+> Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
+> ---
+>   .../intel/boards/kbl_rt5663_rt5514_max98927.c | 28 ++++++++-----------
+>   1 file changed, 12 insertions(+), 16 deletions(-)
+> 
+> diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+> index b34cf6cf11395..df454de40739a 100644
+> --- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+> +++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+> @@ -333,36 +333,32 @@ static int kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
+>   {
+>   	struct snd_interval *rate = hw_param_interval(params,
+>   			SNDRV_PCM_HW_PARAM_RATE);
+> -	struct snd_interval *chan = hw_param_interval(params,
+> +	struct snd_interval *channels = hw_param_interval(params,
+>   			SNDRV_PCM_HW_PARAM_CHANNELS);
+>   	struct snd_mask *fmt = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
+> -	struct snd_soc_dpcm *dpcm = container_of(
+> -			params, struct snd_soc_dpcm, hw_params);
+> -	struct snd_soc_dai_link *fe_dai_link = dpcm->fe->dai_link;
+> -	struct snd_soc_dai_link *be_dai_link = dpcm->be->dai_link;
+> +	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
+>   
+>   	/*
+>   	 * The ADSP will convert the FE rate to 48k, stereo, 24 bit
+>   	 */
+> -	if (!strcmp(fe_dai_link->name, "Kbl Audio Port") ||
+> -	    !strcmp(fe_dai_link->name, "Kbl Audio Headset Playback") ||
+> -	    !strcmp(fe_dai_link->name, "Kbl Audio Capture Port")) {
+> +
+> +	if (!strcmp(codec_dai->name, KBL_REALTEK_DMIC_CODEC_DAI)) {
+> +		if (params_channels(params) == 2 ||
+> +			DMIC_CH(dmic_constraints) == 2)
+> +			channels->min = channels->max = 2;
+> +		else
+> +			channels->min = channels->max = 4;
+> +	} else {
+>   		rate->min = rate->max = 48000;
+> -		chan->min = chan->max = 2;
+> +		channels->min = channels->max = 2;
+>   		snd_mask_none(fmt);
+>   		snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S24_LE);
+> -	} else if (!strcmp(fe_dai_link->name, "Kbl Audio DMIC cap")) {
+> -		if (params_channels(params) == 2 ||
+> -				DMIC_CH(dmic_constraints) == 2)
+> -			chan->min = chan->max = 2;
+> -		else
+> -			chan->min = chan->max = 4;
+>   	}
+>   	/*
+>   	 * The speaker on the SSP0 supports S16_LE and not S24_LE.
+>   	 * thus changing the mask here
+>   	 */
+> -	if (!strcmp(be_dai_link->name, "SSP0-Codec"))
+> +	if (!strcmp(codec_dai->name, KBL_MAXIM_CODEC_DAI))
+>   		snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S16_LE);
+>   
+>   	return 0;
+> 
 
