@@ -2,92 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9ED7215955
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 16:27:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB9F3215960
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 16:27:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729347AbgGFO0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 10:26:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55422 "EHLO
+        id S1729387AbgGFO1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 10:27:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729316AbgGFO0p (ORCPT
+        with ESMTP id S1729263AbgGFO1U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 10:26:45 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E16CC061755;
-        Mon,  6 Jul 2020 07:26:45 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id e4so45644945ljn.4;
-        Mon, 06 Jul 2020 07:26:45 -0700 (PDT)
+        Mon, 6 Jul 2020 10:27:20 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13630C061755
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Jul 2020 07:27:20 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id k6so33031472ili.6
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 07:27:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=I9zWyh5IRnPtslhUp0gx5s8P6pChDI6lXjljvVorqz0=;
-        b=GLyPYVQLzWgfduWMlQwvKC2vOrQsfzPP/5SXEwthVMiu5k3fPmEsJrCiqTb8eM+BPp
-         DoYp5u2favnc83oPc+/qTFhvTr+bw9WiRkhXYzjU7wU9TQImWzt/etIBwBzJws44pBcE
-         z/TVLO9eBVqJ265t2FUQoEUeMf/HiXYKVD9/jcvEEMNVjczeI1gy8u5soi2wRGl4XE5p
-         GD0Y9qJG0Nh6dtsNozVtsYLsFwDwIVHFhaKkagyndIi5y9Emfrecy1ISdcKxVBnlQPkl
-         m1HoxL55rkMH3eKues5DYexJZpFPvkTIxkz2OvvUaCqMX266nB2rXysZ4fBKTOMPpBK6
-         7TEQ==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=5pd6A1qQMmxK9eO0hxzM1d+CDCdrMgAG1MKgD8BGrbY=;
+        b=Rc42P7/IdLVkITZMFrzCbZkYZ4ZIgvn2LtkG42gtQLhGoZsjoJcXj0BSWaI25x8o8R
+         7itie3dpxY6qcuJnSy8nE8tS8E9MyEUREajrdVW4SYsLSI/7aE5+4pHPiOfgsN7XMsdA
+         G9dk4PCCutn9VfgT+wlNLDcZs1eoiBi29U6hIq/oTNbaMXCdyIODVqHtVQVCsZbVRirr
+         Bd7Mmu+AgPx2jL0ok/xTe+wfcifeYyyHPyFtGq7CtCL4KDq0TwDaSXuXu8CNt6ve4aFY
+         bFm05TkOE/UqeqqENDY8gGCu6Hk5MMGNNZ1fnpT1oxDn+iKT9OWA8Ml1WieaD0HAt2kd
+         fqrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=I9zWyh5IRnPtslhUp0gx5s8P6pChDI6lXjljvVorqz0=;
-        b=Nmh70qxO39MBSYO2btURnLx8YNBVNLWES5WwdF6ISGcSsrariBoYZ4EaNF7tbHUT6j
-         6v4KTSBDZZlOnI5p4t0p3OOj3XCMgltoUJxoTGFQIvZ798gZrKMiIw10f67EdSVq53+7
-         LnixgYi6eRKcrIRU6i9ZAvZ/N34mEXIzCoO8lsdDmwKdEMgckVXaaFFztkt2d3eghkwZ
-         0NdncVhbeCQg4uV1T+j5CH6fW9eC4cAiM8u+LnnkMtx3Yi6OBk9DfV7GvkpL11BprIea
-         +J6MhHe7xt9bef4R/eS9PX771jcbPrBWC/Ol3vnw4Na6BQ5lHQQVdss7X30J1Z/fQ5Bz
-         fL6Q==
-X-Gm-Message-State: AOAM533ryezyeYsJDQDDbsPiqu7+kYdiG422RspRUt/TQSSBaHen46fZ
-        EcE2PlUlyFPSOXcv4FOo/YP5Jp2g
-X-Google-Smtp-Source: ABdhPJwjld0HsWrGlQS8J4OCk+h8FlvHfwPR9qYPBxe55ZfMFg2DOBZnF5QB+LUekRj1jCJL2d2MEQ==
-X-Received: by 2002:a05:651c:c5:: with SMTP id 5mr3194693ljr.9.1594045603550;
-        Mon, 06 Jul 2020 07:26:43 -0700 (PDT)
-Received: from osv.localdomain ([89.175.180.246])
-        by smtp.gmail.com with ESMTPSA id m14sm11744638lfp.18.2020.07.06.07.26.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Jul 2020 07:26:43 -0700 (PDT)
-From:   Sergey Organov <sorganov@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Fugang Duan <fugang.duan@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sergey Organov <sorganov@gmail.com>
-Subject: [PATCH  5/5] net: fec: replace snprintf() with strlcpy() in fec_ptp_init()
-Date:   Mon,  6 Jul 2020 17:26:16 +0300
-Message-Id: <20200706142616.25192-6-sorganov@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200706142616.25192-1-sorganov@gmail.com>
-References: <20200706142616.25192-1-sorganov@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5pd6A1qQMmxK9eO0hxzM1d+CDCdrMgAG1MKgD8BGrbY=;
+        b=ZnR6zfbTI+qfQG75JFCdFgSJGdLte/WDrJKpV9+ipJpwPo9BZCZcDg+TguEHm0wcYu
+         AT345+jGm72pNaL98W1CjUeRtCrGqSWcx6bQFj3PDXTZF6zkZS9ctgPE0dTJEZ+e/aXB
+         ZZXaEd0Bk+g+cJMWjLWc1Dtd7da9HWF6vG6B317vfqColuAGvQQcbyLiuraQt9CyE63Z
+         p8D0WRr3EZJ07fMcTrJO/s+QdueaKT58OZ+8w4dDvf1Fgpek14jQ6Pyd7kzb9ZXEyQX9
+         pL/k58azU/qs1HC1U1f6l8wGT1+NS62KnvokWyjLbyf45lXpNR/rI2F1LN/8rKAWV3h7
+         Tl9w==
+X-Gm-Message-State: AOAM5335ZxM3liqJQ2J/k3ByTc4bYYXtLqJaidR7WqNc8hE20Fkh69Yk
+        yn37LRYh34IxVyJNuhb+JvEJ7g==
+X-Google-Smtp-Source: ABdhPJytwi3Jr/FCbXzOMe56zwLXCUJGMaAswEThWlUWh8Rtp741kwbuv/W0FRFpufAvVJHK0JmMjw==
+X-Received: by 2002:a05:6e02:13a9:: with SMTP id h9mr31133265ilo.232.1594045639434;
+        Mon, 06 Jul 2020 07:27:19 -0700 (PDT)
+Received: from [192.168.1.58] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id f76sm11518888ilg.62.2020.07.06.07.27.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Jul 2020 07:27:18 -0700 (PDT)
+Subject: Re: [PATCH v3 4/4] io_uring: add support for zone-append
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Kanchan Joshi <joshi.k@samsung.com>, viro@zeniv.linux.org.uk,
+        bcrl@kvack.org, hch@infradead.org, Damien.LeMoal@wdc.com,
+        asml.silence@gmail.com, linux-fsdevel@vger.kernel.org,
+        mb@lightnvm.io, linux-kernel@vger.kernel.org, linux-aio@kvack.org,
+        io-uring@vger.kernel.org, linux-block@vger.kernel.org,
+        Selvakumar S <selvakuma.s1@samsung.com>,
+        Nitesh Shetty <nj.shetty@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>
+References: <1593974870-18919-1-git-send-email-joshi.k@samsung.com>
+ <CGME20200705185227epcas5p16fba3cb92561794b960184c89fdf2bb7@epcas5p1.samsung.com>
+ <1593974870-18919-5-git-send-email-joshi.k@samsung.com>
+ <fe0066b7-5380-43ee-20b2-c9b17ba18e4f@kernel.dk>
+ <20200705210947.GW25523@casper.infradead.org>
+ <239ee322-9c38-c838-a5b2-216787ad2197@kernel.dk>
+ <20200706141002.GZ25523@casper.infradead.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <4a9bf73e-f3ee-4f06-7fad-b8f8861b0bc1@kernel.dk>
+Date:   Mon, 6 Jul 2020 08:27:17 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200706141002.GZ25523@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No need to use snprintf() on a constant string, nor using magic
-constant in the fixed code was a good idea.
+On 7/6/20 8:10 AM, Matthew Wilcox wrote:
+> On Sun, Jul 05, 2020 at 03:12:50PM -0600, Jens Axboe wrote:
+>> On 7/5/20 3:09 PM, Matthew Wilcox wrote:
+>>> On Sun, Jul 05, 2020 at 03:00:47PM -0600, Jens Axboe wrote:
+>>>> On 7/5/20 12:47 PM, Kanchan Joshi wrote:
+>>>>> From: Selvakumar S <selvakuma.s1@samsung.com>
+>>>>>
+>>>>> For zone-append, block-layer will return zone-relative offset via ret2
+>>>>> of ki_complete interface. Make changes to collect it, and send to
+>>>>> user-space using cqe->flags.
+> 
+>>> I'm surprised you aren't more upset by the abuse of cqe->flags for the
+>>> address.
+>>
+>> Yeah, it's not great either, but we have less leeway there in terms of
+>> how much space is available to pass back extra data.
+>>
+>>> What do you think to my idea of interpreting the user_data as being a
+>>> pointer to somewhere to store the address?  Obviously other things
+>>> can be stored after the address in the user_data.
+>>
+>> I don't like that at all, as all other commands just pass user_data
+>> through. This means the application would have to treat this very
+>> differently, and potentially not have a way to store any data for
+>> locating the original command on the user side.
+> 
+> I think you misunderstood me.  You seem to have thought I meant
+> "use the user_data field to return the address" when I actually meant
+> "interpret the user_data field as a pointer to where userspace
+> wants the address stored".
 
-Signed-off-by: Sergey Organov <sorganov@gmail.com>
----
- drivers/net/ethernet/freescale/fec_ptp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+It's still somewhat weird to have user_data have special meaning, you're
+now having the kernel interpret it while every other command it's just
+an opaque that is passed through.
 
-diff --git a/drivers/net/ethernet/freescale/fec_ptp.c b/drivers/net/ethernet/freescale/fec_ptp.c
-index 4152cae..a0c1f44 100644
---- a/drivers/net/ethernet/freescale/fec_ptp.c
-+++ b/drivers/net/ethernet/freescale/fec_ptp.c
-@@ -582,7 +582,7 @@ void fec_ptp_init(struct platform_device *pdev, int irq_idx)
- 	int ret;
- 
- 	fep->ptp_caps.owner = THIS_MODULE;
--	snprintf(fep->ptp_caps.name, 16, "fec ptp");
-+	strlcpy(fep->ptp_caps.name, "fec ptp", sizeof(fep->ptp_caps.name));
- 
- 	fep->ptp_caps.max_adj = 250000000;
- 	fep->ptp_caps.n_alarm = 0;
+But it could of course work, and the app could embed the necessary
+u32/u64 in some other structure that's persistent across IO. If it
+doesn't have that, then it'd need to now have one allocated and freed
+across the lifetime of the IO.
+
+If we're going that route, it'd be better to define the write such that
+you're passing in the necessary information upfront. In syscall terms,
+then that'd be something ala:
+
+ssize_t my_append_write(int fd, const struct iovec *iov, int iovcnt,
+			off_t *offset, int flags);
+
+where *offset is copied out when the write completes. That removes the
+need to abuse user_data, with just providing the storage pointer for the
+offset upfront.
+
 -- 
-2.10.0.1.g57b01a3
+Jens Axboe
 
