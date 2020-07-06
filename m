@@ -2,110 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 223D1215B2F
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 17:49:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A62A215B37
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 17:53:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729569AbgGFPtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 11:49:31 -0400
-Received: from foss.arm.com ([217.140.110.172]:51122 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729476AbgGFPta (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 11:49:30 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F09DCC0A;
-        Mon,  6 Jul 2020 08:49:29 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 872893F68F;
-        Mon,  6 Jul 2020 08:49:27 -0700 (PDT)
-References: <20200706142839.26629-1-qais.yousef@arm.com> <20200706142839.26629-2-qais.yousef@arm.com>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Qais Yousef <qais.yousef@arm.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Quentin Perret <qperret@google.com>,
-        Patrick Bellasi <patrick.bellasi@matbug.net>,
-        Pavan Kondeti <pkondeti@codeaurora.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v6 1/2] sched/uclamp: Add a new sysctl to control RT default boost value
-In-reply-to: <20200706142839.26629-2-qais.yousef@arm.com>
-Date:   Mon, 06 Jul 2020 16:49:19 +0100
-Message-ID: <jhj8sfw8wzk.mognet@arm.com>
+        id S1729383AbgGFPx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 11:53:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729321AbgGFPx2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Jul 2020 11:53:28 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CF4DC061755
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Jul 2020 08:53:28 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id o13so15607170pgf.0
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 08:53:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=IaQi7Xp42ftquKfgwNd6G15TPvj7K9LsvnIqneB2JPM=;
+        b=E2900dOp6ACJ2Rm6CME9oay/0h85cf3q6yzSh/VapfNYjWBQz9pWrlJ6JipPzD+tPH
+         7b4oYeCKTTv8mcNfjO2fSIyDDD78dsLcpTt2MOEYEjkLTes4QZVrOVXjXB9rW14fBNmw
+         UlL1NFzXiL0Q3iFUMOrU5nnao1wywsR8TZ4/k=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IaQi7Xp42ftquKfgwNd6G15TPvj7K9LsvnIqneB2JPM=;
+        b=UjSjzP4maeVSbT56FZp6B/cgxBn9mwDyVdZHNw2n0y4j1/yFjTyKaFFwWgiCOpHo7Q
+         IhWWYZNY+Xv9sizHabX9lbCI80v8IB2FFzbaEI9mj521eDXXrHBzZNLvyuJlEu1CJwR1
+         R+/R1qiY+62gAyCzCZkpwZ3kVvq88hw8xdiiodjj+XlSZkOqAQWMbCFsiqPylzHEMplh
+         /6sW+Qn3gSdyEspqajggJKCjydOBloJL4CfPI95YhJUmUEO8iPkbxdPUnGh63v9/cy5b
+         vpA3qXIDgJckSxOMjf4N5uJONWGVGpnB9aLEtfqphIzh2ihfuP86hX2n7irzjNcudoSL
+         pFpA==
+X-Gm-Message-State: AOAM530+NEsH6fyc4KgAwZBdXCEnFMOm9lC4T3Qdog4BGKyWcs46jW8m
+        1YIW4bFTXinLJ2WJM7oEVW48vQ==
+X-Google-Smtp-Source: ABdhPJyJlovwNXf7zCxj78F7E5i5D4JnbKX+EyYsl0M3/qGMeuAx1r4WbCmBjeR9tYH0R5iv7TEDzQ==
+X-Received: by 2002:a62:8489:: with SMTP id k131mr45654008pfd.4.1594050807911;
+        Mon, 06 Jul 2020 08:53:27 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id e191sm19488211pfh.42.2020.07.06.08.53.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Jul 2020 08:53:26 -0700 (PDT)
+Date:   Mon, 6 Jul 2020 08:53:25 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Cc:     Matthew Wilcox <willy6545@gmail.com>,
+        ksummit <ksummit-discuss@lists.linuxfoundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        tech-board-discuss@lists.linuxfoundation.org,
+        Chris Mason <clm@fb.clm>, expensivestephen@hotmail.com
+Subject: Re: [Ksummit-discuss] [Tech-board-discuss] [PATCH] CodingStyle:
+ Inclusive Terminology
+Message-ID: <202007060853.07B4D4F9@keescook>
+References: <159389297140.2210796.13590142254668787525.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <920e6dc0-628b-9bad-926a-d1238a373cda@infradead.org>
+ <CAPM=9ty0tiL_qM_UFv0S0VtARKz_f-Anngc+amDM5LjGAHazhA@mail.gmail.com>
+ <CAFhKne9MA_G-UsvBFfX-gZRcu9Gb7Xt7UxQ14MTppdU3X1VYdQ@mail.gmail.com>
+ <202007041804.B5E229E2B6@keescook>
+ <8c0c1050-3beb-86f6-f184-4687acffd61d@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8c0c1050-3beb-86f6-f184-4687acffd61d@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jul 06, 2020 at 01:15:38PM +0200, Michael Kerrisk (man-pages) wrote:
+> On 7/5/20 3:10 AM, Kees Cook wrote:
+> > On Sat, Jul 04, 2020 at 08:10:33PM -0400, Matthew Wilcox wrote:
+> >> Left-right tree makes no sense. It doesn't distinguish the rbtree from its
+> >> predecessor the avl tree.  I don't think it's helpful to rename a standard
+> >> piece of computing terminology unless it's actually hurting us to have it.
+> >> Obviously if it were called a "master-slave" tree, I would be in favour of
+> >> renaming it.
+> > 
+> > (No one has suggested renaming red/black trees, so I think the
+> > slippery-slope argument can be set aside here.)
+> > 
+> > As for the actual proposal on white/black-list, I've always been annoyed
+> > by the poor description it provides (and I get to see it A LOT being
+> > the seccomp maintainer). I welcome allow/deny-list (though the change is
+> > not new for seccomp -- the man pages were updated last year (thanks
+> > mkerrisk). :)
+> 
+> Actually, the manual pages are ahead of the game only thanks to
+> a nice presentation last year @OSS from Stephen Kenigbolo :-).
 
-On 06/07/20 15:28, Qais Yousef wrote:
-> CC: linux-fsdevel@vger.kernel.org
-> ---
->
-> Peter
->
-> I didn't do the
->
->       read_lock(&taslist_lock);
->       smp_mb__after_spinlock();
->       read_unlock(&tasklist_lock);
->
-> dance you suggested on IRC as it didn't seem necessary. But maybe I missed
-> something.
->
+Ah-ha, cool. I think I found it here:
+https://www.youtube.com/watch?v=XtS_t3FHWe0
 
-So the annoying bit with just uclamp_fork() is that it happens *before* the
-task is appended to the tasklist. This means without too much care we
-would have (if we'd do a sync at uclamp_fork()):
-
-  CPU0 (sysctl write)                                CPU1 (concurrent forker)
-
-                                                       copy_process()
-                                                         uclamp_fork()
-                                                           p.uclamp_min = state
-    state = foo
-
-    for_each_process_thread(p, t)
-      update_state(t);
-                                                         list_add(p)
-
-i.e. that newly forked process would entirely sidestep the update. Now,
-with Peter's suggested approach we can be in a much better situation. If we
-have this in the sysctl update:
-
-  state = foo;
-
-  read_lock(&taslist_lock);
-  smp_mb__after_spinlock();
-  read_unlock(&tasklist_lock);
-
-  for_each_process_thread(p, t)
-    update_state(t);
-
-While having this in the fork:
-
-  write_lock(&tasklist_lock);
-  list_add(p);
-  write_unlock(&tasklist_lock);
-
-  sched_post_fork(p); // state re-read here; probably wants an mb first
-
-Then we can no longer miss an update. If the forked p doesn't see the new
-value, it *must* have been added to the tasklist before the updater loops
-over it, so the loop will catch it. If it sees the new value, we're done.
-
-AIUI, the above strategy doesn't require any use of RCU. The update_state()
-and sched_post_fork() can race, but as per the above they should both be
-writing the same value.
+-- 
+Kees Cook
