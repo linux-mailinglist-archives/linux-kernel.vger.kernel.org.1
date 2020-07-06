@@ -2,127 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D659E215C79
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 19:00:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60B9F215C8D
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 19:03:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729664AbgGFRA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 13:00:29 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:46520 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729631AbgGFRAW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 13:00:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594054821;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sxp8KWaWgJw4WshhI3nQX8hZlCBBJb92GnlvBY7ow9Q=;
-        b=b4aHYOoJB7CuVLzd931pxa2WOdP8dj9kXolTWigg5y5ufhpUg29OE6z026Blf/lJrwB+rw
-        AWaBaSTbGYHeAbXRI0ENtzLG5r5ZImdWrI9tur5dvqJJeqm0lWjZCnYtZUGcryzuAqIaed
-        L9AkqRSlL4TZxygLDKu8p0/3DeryTHA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-261-5wWf46BnOtmQAa7b9mq7OQ-1; Mon, 06 Jul 2020 13:00:19 -0400
-X-MC-Unique: 5wWf46BnOtmQAa7b9mq7OQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E717787950B;
-        Mon,  6 Jul 2020 17:00:17 +0000 (UTC)
-Received: from firesoul.localdomain (unknown [10.40.208.45])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 953235C290;
-        Mon,  6 Jul 2020 17:00:17 +0000 (UTC)
-Received: from [192.168.42.3] (localhost [IPv6:::1])
-        by firesoul.localdomain (Postfix) with ESMTP id 95636300019CC;
-        Mon,  6 Jul 2020 19:00:16 +0200 (CEST)
-Subject: [PATCH bpf-next V2 2/2] selftests/bpf: test_progs avoid minus shell
- exit codes
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     bpf@vger.kernel.org, Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        Hangbin Liu <haliu@redhat.com>,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        vkabatov@redhat.com, jbenc@redhat.com, yhs@fb.com, kafai@fb.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Mon, 06 Jul 2020 19:00:16 +0200
-Message-ID: <159405481655.1091613.6475075949369245359.stgit@firesoul>
-In-Reply-To: <159405478968.1091613.16934652228902650021.stgit@firesoul>
-References: <159405478968.1091613.16934652228902650021.stgit@firesoul>
-User-Agent: StGit/0.19
+        id S1729603AbgGFRDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 13:03:49 -0400
+Received: from mx2.suse.de ([195.135.220.15]:57134 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729537AbgGFRDt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Jul 2020 13:03:49 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 53FC5ADBB;
+        Mon,  6 Jul 2020 17:03:47 +0000 (UTC)
+Subject: Re: [PATCH] drm/hisilicon/hibmc: Move drm_fbdev_generic_setup() down
+ to avoid the splat
+To:     Zenghui Yu <yuzenghui@huawei.com>, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Cc:     xinliang.liu@linaro.org, zourongrong@gmail.com,
+        john.stultz@linaro.org, kong.kongxinwei@hisilicon.com,
+        puck.chen@hisilicon.com, airlied@linux.ie, daniel@ffwll.ch,
+        sam@ravnborg.org, wanghaibin.wang@huawei.com
+References: <20200706144713.1123-1-yuzenghui@huawei.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <aa244201-9b43-2d35-c236-21391e7af7d0@suse.de>
+Date:   Mon, 6 Jul 2020 19:03:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <20200706144713.1123-1-yuzenghui@huawei.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="psdtDZbLPzNtKiLFO86PfXRfZN7ZR5WeQ"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are a number of places in test_progs that use minus-1 as the argument
-to exit(). This improper use as a process exit status is masked to be a
-number between 0 and 255 as defined in man exit(3).
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--psdtDZbLPzNtKiLFO86PfXRfZN7ZR5WeQ
+Content-Type: multipart/mixed; boundary="GppCVzr4jNWe7h8V8yOrotUUhX0kAb6Bw";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Zenghui Yu <yuzenghui@huawei.com>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org
+Cc: xinliang.liu@linaro.org, zourongrong@gmail.com, john.stultz@linaro.org,
+ kong.kongxinwei@hisilicon.com, puck.chen@hisilicon.com, airlied@linux.ie,
+ daniel@ffwll.ch, sam@ravnborg.org, wanghaibin.wang@huawei.com
+Message-ID: <aa244201-9b43-2d35-c236-21391e7af7d0@suse.de>
+Subject: Re: [PATCH] drm/hisilicon/hibmc: Move drm_fbdev_generic_setup() down
+ to avoid the splat
+References: <20200706144713.1123-1-yuzenghui@huawei.com>
+In-Reply-To: <20200706144713.1123-1-yuzenghui@huawei.com>
 
-This patch use two different positive exit codes instead, to allow a shell
-script to tell the two error cases apart.
+--GppCVzr4jNWe7h8V8yOrotUUhX0kAb6Bw
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-Fixes: fd27b1835e70 ("selftests/bpf: Reset process and thread affinity after each test/sub-test")
-Fixes: 811d7e375d08 ("bpf: selftests: Restore netns after each test")
-Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
----
- tools/testing/selftests/bpf/test_progs.c |   12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+Hi
 
-diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
-index e8f7cd5dbae4..50803b080593 100644
---- a/tools/testing/selftests/bpf/test_progs.c
-+++ b/tools/testing/selftests/bpf/test_progs.c
-@@ -12,7 +12,9 @@
- #include <string.h>
- #include <execinfo.h> /* backtrace */
- 
--#define EXIT_NO_TEST 2
-+#define EXIT_NO_TEST		2
-+#define EXIT_ERR_NETNS		3
-+#define EXIT_ERR_RESET_AFFINITY	4
- 
- /* defined in test_progs.h */
- struct test_env env = {};
-@@ -113,13 +115,13 @@ static void reset_affinity() {
- 	if (err < 0) {
- 		stdio_restore();
- 		fprintf(stderr, "Failed to reset process affinity: %d!\n", err);
--		exit(-1);
-+		exit(EXIT_ERR_RESET_AFFINITY);
- 	}
- 	err = pthread_setaffinity_np(pthread_self(), sizeof(cpuset), &cpuset);
- 	if (err < 0) {
- 		stdio_restore();
- 		fprintf(stderr, "Failed to reset thread affinity: %d!\n", err);
--		exit(-1);
-+		exit(EXIT_ERR_RESET_AFFINITY);
- 	}
- }
- 
-@@ -128,7 +130,7 @@ static void save_netns(void)
- 	env.saved_netns_fd = open("/proc/self/ns/net", O_RDONLY);
- 	if (env.saved_netns_fd == -1) {
- 		perror("open(/proc/self/ns/net)");
--		exit(-1);
-+		exit(EXIT_ERR_NETNS);
- 	}
- }
- 
-@@ -137,7 +139,7 @@ static void restore_netns(void)
- 	if (setns(env.saved_netns_fd, CLONE_NEWNET) == -1) {
- 		stdio_restore();
- 		perror("setns(CLONE_NEWNS)");
--		exit(-1);
-+		exit(EXIT_ERR_NETNS);
- 	}
- }
- 
+Am 06.07.20 um 16:47 schrieb Zenghui Yu:
+> The HiSilicon hibmc driver triggers a splat at boot time as below
+>=20
+> [   14.137806] ------------[ cut here ]------------
+> [   14.142405] hibmc-drm 0000:0a:00.0: Device has not been registered.
+> [   14.148661] WARNING: CPU: 0 PID: 496 at drivers/gpu/drm/drm_fb_helpe=
+r.c:2233 drm_fbdev_generic_setup+0x15c/0x1b8
+> [   14.158787] [...]
+> [   14.278307] Call trace:
+> [   14.280742]  drm_fbdev_generic_setup+0x15c/0x1b8
+> [   14.285337]  hibmc_pci_probe+0x354/0x418
+> [   14.289242]  local_pci_probe+0x44/0x98
+> [   14.292974]  work_for_cpu_fn+0x20/0x30
+> [   14.296708]  process_one_work+0x1c4/0x4e0
+> [   14.300698]  worker_thread+0x2c8/0x528
+> [   14.304431]  kthread+0x138/0x140
+> [   14.307646]  ret_from_fork+0x10/0x18
+> [   14.311205] ---[ end trace a2000ec2d838af4d ]---
+>=20
+> This turned out to be due to the fbdev device hasn't been registered wh=
+en
+> drm_fbdev_generic_setup() is invoked. Let's fix the splat by moving it =
+down
+> after drm_dev_register() which will follow the "Display driver example"=
+
+> documented by commit de99f0600a79 ("drm/drv: DOC: Add driver example
+> code").
+>=20
+> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
+
+Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
+
+> ---
+>  drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c b/drivers/=
+gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+> index a6fd0c29e5b8..544b9993c99e 100644
+> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+> @@ -307,8 +307,6 @@ static int hibmc_load(struct drm_device *dev)
+>  	/* reset all the states of crtc/plane/encoder/connector */
+>  	drm_mode_config_reset(dev);
+> =20
+> -	drm_fbdev_generic_setup(dev, dev->mode_config.preferred_depth);
+> -
+>  	return 0;
+> =20
+>  err:
+> @@ -355,6 +353,9 @@ static int hibmc_pci_probe(struct pci_dev *pdev,
+>  			  ret);
+>  		goto err_unload;
+>  	}
+> +
+> +	drm_fbdev_generic_setup(dev, dev->mode_config.preferred_depth);
+> +
+>  	return 0;
+> =20
+>  err_unload:
+>=20
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
 
 
+--GppCVzr4jNWe7h8V8yOrotUUhX0kAb6Bw--
+
+--psdtDZbLPzNtKiLFO86PfXRfZN7ZR5WeQ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQFIBAEBCAAyFiEEchf7rIzpz2NEoWjlaA3BHVMLeiMFAl8DWWwUHHR6aW1tZXJt
+YW5uQHN1c2UuZGUACgkQaA3BHVMLeiNuXQgAu2j4csMKFEV7y/0lj0/L9VLa/Sgm
+w45pdN0fodDKl7UiBUrohv0LBWrHfEO6ID5ym2ClmUZ/3ATsTdpT9qdQ6X487s4M
+E/te3KziwlC+lN8+nmvTiypJIqW2buzw61QaZHmGpWufriKPRifON5GN2RyFWq9K
+tJZnsHTR5c027ZwX8Ye76pU/plYrHtyMLbIzNXsWriRnhcAqk2ytdwE65Qd+LGSq
+Q9jX4cc8QzIxCX0r9ZCbEngXKF1Q9a13IiQ5HHc0CCb3UnkUdAHRsAWVo3njW4xj
+7GU1rlMX6hCQeqoEYPcy4jaMF689RO8O++5Tse8KFKt55TvxZWRGp45jjA==
+=Jjj6
+-----END PGP SIGNATURE-----
+
+--psdtDZbLPzNtKiLFO86PfXRfZN7ZR5WeQ--
