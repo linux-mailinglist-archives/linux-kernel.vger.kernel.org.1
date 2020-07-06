@@ -2,147 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DC6F2155C8
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 12:47:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 484EB2155C5
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 12:46:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728836AbgGFKrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 06:47:12 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2429 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728514AbgGFKrL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 06:47:11 -0400
-Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.106])
-        by Forcepoint Email with ESMTP id 6BF1FF7319A1771C71D1;
-        Mon,  6 Jul 2020 11:47:09 +0100 (IST)
-Received: from localhost (10.52.123.111) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 6 Jul 2020
- 11:47:08 +0100
-Date:   Mon, 6 Jul 2020 11:46:05 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Jia He <justin.he@arm.com>
-CC:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Baoquan He <bhe@redhat.com>,
-        Chuhong Yuan <hslester96@gmail.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        Kaly Xin <Kaly.Xin@arm.com>
-Subject: Re: [PATCH 1/3] arm64/numa: set numa_off to false when numa node is
- fake
-Message-ID: <20200706114605.000050ac@Huawei.com>
-In-Reply-To: <20200706112921.00006f7f@Huawei.com>
-References: <20200706011947.184166-1-justin.he@arm.com>
-        <20200706011947.184166-2-justin.he@arm.com>
-        <20200706112921.00006f7f@Huawei.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S1728620AbgGFKqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 06:46:46 -0400
+Received: from foss.arm.com ([217.140.110.172]:56656 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728521AbgGFKqp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Jul 2020 06:46:45 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CB54530E;
+        Mon,  6 Jul 2020 03:46:44 -0700 (PDT)
+Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 511D43F68F;
+        Mon,  6 Jul 2020 03:46:42 -0700 (PDT)
+Date:   Mon, 6 Jul 2020 11:46:39 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Xiaowei Bao <xiaowei.bao@nxp.com>
+Cc:     Zhiqiang.Hou@nxp.com, Minghuan.Lian@nxp.com, mingkai.hu@nxp.com,
+        bhelgaas@google.com, robh+dt@kernel.org, shawnguo@kernel.org,
+        leoyang.li@nxp.com, kishon@ti.com, roy.zang@nxp.com,
+        amurray@thegoodpenguin.co.uk, jingoohan1@gmail.com,
+        gustavo.pimentel@synopsys.com, andrew.murray@arm.com,
+        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v6 00/11] Add the multiple PF support for DWC and
+ Layerscape
+Message-ID: <20200706104639.GC26377@e121166-lin.cambridge.arm.com>
+References: <20200314033038.24844-1-xiaowei.bao@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.123.111]
-X-ClientProxiedBy: lhreml717-chm.china.huawei.com (10.201.108.68) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200314033038.24844-1-xiaowei.bao@nxp.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 6 Jul 2020 11:29:21 +0100
-Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
+On Sat, Mar 14, 2020 at 11:30:27AM +0800, Xiaowei Bao wrote:
+> Add the PCIe EP multiple PF support for DWC and Layerscape, add
+> the doorbell MSIX function for DWC, use list to manage the PF of
+> one PCIe controller, and refactor the Layerscape EP driver due to
+> some platforms difference.
+> 
+> Xiaowei Bao (11):
+>   PCI: designware-ep: Add multiple PFs support for DWC
+>   PCI: designware-ep: Add the doorbell mode of MSI-X in EP mode
+>   PCI: designware-ep: Move the function of getting MSI capability
+>     forward
+>   PCI: designware-ep: Modify MSI and MSIX CAP way of finding
+>   dt-bindings: pci: layerscape-pci: Add compatible strings for ls1088a
+>     and ls2088a
+>   PCI: layerscape: Fix some format issue of the code
+>   PCI: layerscape: Modify the way of getting capability with different
+>     PEX
+>   PCI: layerscape: Modify the MSIX to the doorbell mode
+>   PCI: layerscape: Add EP mode support for ls1088a and ls2088a
+>   arm64: dts: layerscape: Add PCIe EP node for ls1088a
+>   misc: pci_endpoint_test: Add LS1088a in pci_device_id table
+> 
+>  .../devicetree/bindings/pci/layerscape-pci.txt     |   2 +
+>  arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi     |  31 +++
+>  drivers/misc/pci_endpoint_test.c                   |   2 +
+>  drivers/pci/controller/dwc/pci-layerscape-ep.c     | 100 ++++++--
+>  drivers/pci/controller/dwc/pcie-designware-ep.c    | 255 +++++++++++++++++----
+>  drivers/pci/controller/dwc/pcie-designware.c       |  59 +++--
+>  drivers/pci/controller/dwc/pcie-designware.h       |  48 +++-
+>  7 files changed, 404 insertions(+), 93 deletions(-)
 
-> On Mon, 6 Jul 2020 09:19:45 +0800
-> Jia He <justin.he@arm.com> wrote:
-> 
-> Hi,
-> 
-> > Previously, numa_off is set to true unconditionally in dummy_numa_init(),
-> > even if there is a fake numa node.
-> > 
-> > But acpi will translate node id to NUMA_NO_NODE(-1) in acpi_map_pxm_to_node()
-> > because it regards numa_off as turning off the numa node.  
-> 
-> That is correct.  It is operating exactly as it should, if SRAT hasn't been parsed
-> and you are on ACPI platform there are no nodes.  They cannot be created at
-> some later date.  The dummy code doesn't change this. It just does enough to carry
-> on operating with no specified nodes.
-> 
-> > 
-> > Without this patch, pmem can't be probed as a RAM device on arm64 if SRAT table
-> > isn't present.
-> > 
-> > $ndctl create-namespace -fe namespace0.0 --mode=devdax --map=dev -s 1g -a 64K
-> > kmem dax0.0: rejecting DAX region [mem 0x240400000-0x2bfffffff] with invalid node: -1
-> > kmem: probe of dax0.0 failed with error -22
-> > 
-> > This fixes it by setting numa_off to false.  
-> 
-> Without the SRAT protection patch [1] you may well run into problems
-> because someone somewhere will have _PXM in a DSDT but will
-> have a non existent SRAT.   We had this happen on an AMD platform when we
-> tried to introduce working _PXM support for PCI. [2]
-> 
-> So whilst this seems superficially safe, I'd definitely be crossing your fingers.
-> Note, at that time I proposed putting the numa_off = false into the x86 code
-> path precisely to cut out that possibility (was rejected at the time, at least
-> partly because the clarifications to the ACPI spec were not pubilc.)
-> 
-> The patch in [1] should sort things out however by ensuring we only create
-> new domains where we should actually be doing so. However, in your case
-> it will return NUMA_NO_NODE anyway so this isn't the right way to fix things.
-> 
-> [1] https://patchwork.kernel.org/patch/11632063/
-> [2] https://patchwork.kernel.org/patch/10597777/
-
-Thinking a bit more on this...
-
-I'd like to understand more on what your use case is.
-
-Do you have an NFIT that is setting the proximity domain for the
-non-volatile memory in SPA structures?  If so the ACPI spec (6.3 makes this
-clear) requires those match with domains described in SRAT.
-If SRAT isn't there, then we can't expect sensible results from using these
-values from NFIT.
-If SRAT is there and numa=off is set then we should probably also rule out
-parsing NFIT, or make all nfit handling fine with NO_NUMA_NODE, preferably
-with explicit checks to ensure we don't try to use the Proximity Node values
-as they have no meaning with numa=off. I note that the core NFIT parsing
-is fine with the value not being supplied in the first place.
-
-https://elixir.bootlin.com/linux/latest/source/drivers/acpi/nfit/core.c#L2947
+Can you rebase it against v5.8-rc1 please ?
 
 Thanks,
-
-Jonathan
-
-> 
-> Thanks,
-> 
-> Jonathan
-> 
-> > 
-> > Signed-off-by: Jia He <justin.he@arm.com>
-> > ---
-> >  arch/arm64/mm/numa.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/arm64/mm/numa.c b/arch/arm64/mm/numa.c
-> > index aafcee3e3f7e..7689986020d9 100644
-> > --- a/arch/arm64/mm/numa.c
-> > +++ b/arch/arm64/mm/numa.c
-> > @@ -440,7 +440,8 @@ static int __init dummy_numa_init(void)
-> >  		return ret;
-> >  	}
-> >  
-> > -	numa_off = true;
-> > +	/* force numa_off to be false since we have a fake numa node here */
-> > +	numa_off = false;
-> >  	return 0;
-> >  }
-> >    
-> 
-
-
+Lorenzo
