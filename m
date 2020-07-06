@@ -2,70 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 525EC215AEF
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 17:40:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76AAB215AF4
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 17:42:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729462AbgGFPkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 11:40:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55152 "EHLO mail.kernel.org"
+        id S1729425AbgGFPmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 11:42:15 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:46440 "EHLO inva020.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729286AbgGFPkV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 11:40:21 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F00722070C;
-        Mon,  6 Jul 2020 15:40:19 +0000 (UTC)
-Date:   Mon, 6 Jul 2020 11:40:18 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     Willy Tarreau <w@1wt.eu>,
-        ksummit-discuss@lists.linuxfoundation.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org,
-        tech-board-discuss@lists.linuxfoundation.org,
-        Chris Mason <clm@fb.clm>, torvalds@linux-foundation.org
-Subject: Re: [Tech-board-discuss] [PATCH] CodingStyle: Inclusive Terminology
-Message-ID: <20200706114018.216570ae@oasis.local.home>
-In-Reply-To: <20200706152210.GA53508@rani.riverdale.lan>
-References: <159389297140.2210796.13590142254668787525.stgit@dwillia2-desk3.amr.corp.intel.com>
-        <20200705045505.GA2962@1wt.eu>
-        <20200706152210.GA53508@rani.riverdale.lan>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1729197AbgGFPmO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Jul 2020 11:42:14 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 4BC651A072D;
+        Mon,  6 Jul 2020 17:42:12 +0200 (CEST)
+Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 3C1921A072C;
+        Mon,  6 Jul 2020 17:42:12 +0200 (CEST)
+Received: from fsr-ub1864-111.ea.freescale.net (fsr-ub1864-111.ea.freescale.net [10.171.82.141])
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id E8F8C203C3;
+        Mon,  6 Jul 2020 17:42:11 +0200 (CEST)
+From:   Diana Craciun <diana.craciun@oss.nxp.com>
+To:     alex.williamson@redhat.com, kvm@vger.kernel.org
+Cc:     bharatb.linux@gmail.com, linux-kernel@vger.kernel.org,
+        laurentiu.tudor@nxp.com, Diana Craciun <diana.craciun@oss.nxp.com>
+Subject: [PATCH v3 0/9] vfio/fsl-mc: VFIO support for FSL-MC devices
+Date:   Mon,  6 Jul 2020 18:41:44 +0300
+Message-Id: <20200706154153.11477-1-diana.craciun@oss.nxp.com>
+X-Mailer: git-send-email 2.17.1
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 6 Jul 2020 11:22:10 -0400
-Arvind Sankar <nivedita@alum.mit.edu> wrote:
+DPAA2 (Data Path Acceleration Architecture) consists in
+mechanisms for processing Ethernet packets, queue management,
+accelerators, etc.
 
-> Though I'm not sure if blueprint translates literally into other
-> languages, it did actually have a logical reason, viz engineering
-> drawings used to be blue/white. But logical reasons don't have to exist.
-> In the case of colors, for example, using red-black tree doesn't exclude
-> blind people, precisely because there is no logical reason for using the
-> colors red and black, or even colors at all, so it's not as if you gain
-> any additional insight into the structure if you are able to see the
-> colors. It just needs _some_ arbitrary labels for distinguishing two
-> classes of nodes, it could just as well have been named A-B tree or 0-1
-> tree or whatever. I don't think there is any concise way to label them
-> that conveys anything useful about how they're used in the data
-> structure -- you just have to learn about the structure and how it's
-> used. This isn't the case with whitelist/blacklist, where those colors
-> actually have connotations about what the two lists mean.
+The Management Complex (mc) is a hardware entity that manages the DPAA2
+hardware resources. It provides an object-based abstraction for software
+drivers to use the DPAA2 hardware. The MC mediates operations such as
+create, discover, destroy of DPAA2 objects.
+The MC provides memory-mapped I/O command interfaces (MC portals) which
+DPAA2 software drivers use to operate on DPAA2 objects.
 
-When I learned about R-B trees in my algorithms class decades ago, I
-distinctly remember the text book saying something about how the red
-and black names were meaningless. Just know that the nodes are
-different in how you go about sorting or injecting a new node into the
-tree. So yes, it could have been blue and yellow, or 1 and 0, or Bob
-and Alice. The colors were just a way of labeling in order to
-differentiate the two types of nodes, and I am not worried that people
-are going to take offense to them.
+A DPRC is a container object that holds other types of DPAA2 objects.
+Each object in the DPRC is a Linux device and bound to a driver.
+The MC-bus driver is a platform driver (different from PCI or platform
+bus). The DPRC driver does runtime management of a bus instance. It
+performs the initial scan of the DPRC and handles changes in the DPRC
+configuration (adding/removing objects).
 
--- Steve
+All objects inside a container share the same hardware isolation
+context, meaning that only an entire DPRC can be assigned to
+a virtual machine.
+When a container is assigned to a virtual machine, all the objects
+within that container are assigned to that virtual machine.
+The DPRC container assigned to the virtual machine is not allowed
+to change contents (add/remove objects) by the guest. The restriction
+is set by the host and enforced by the mc hardware.
+
+The DPAA2 objects can be directly assigned to the guest. However
+the MC portals (the memory mapped command interface to the MC) need
+to be emulated because there are commands that configure the
+interrupts and the isolation IDs which are virtual in the guest.
+
+Example:
+echo vfio-fsl-mc > /sys/bus/fsl-mc/devices/dprc.2/driver_override
+echo dprc.2 > /sys/bus/fsl-mc/drivers/vfio-fsl-mc/bind
+
+The dprc.2 is bound to the VFIO driver and all the objects within
+dprc.2 are going to be bound to the VFIO driver.
+
+More details about the DPAA2 objects can be found here:
+Documentation/networking/device_drivers/freescale/dpaa2/overview.rst
+
+The patches are dependent on some changes in the mc-bus (bus/fsl-mc)
+driver. The changes were needed in order to re-use code and to export
+some more functions that are needed by the VFIO driver.
+Currenlty the mc-bus patches are under review:
+https://www.spinics.net/lists/kernel/msg3578910.html
+
+v2 --> v3
+- There is no need to align region size to page size
+- read/write implemented for all DPAA2 objects
+- review fixes
+
+v1 --> v2
+- Fixed the container reset, a new flag added to the firmware command
+- Implement a bus notifier for setting driver_override
+
+Bharat Bhushan (1):
+  vfio/fsl-mc: Add VFIO framework skeleton for fsl-mc devices
+
+Diana Craciun (8):
+  vfio/fsl-mc: Scan DPRC objects on vfio-fsl-mc driver bind
+  vfio/fsl-mc: Implement VFIO_DEVICE_GET_INFO ioctl
+  vfio/fsl-mc: Implement VFIO_DEVICE_GET_REGION_INFO ioctl call
+  vfio/fsl-mc: Allow userspace to MMAP fsl-mc device MMIO regions
+  vfio/fsl-mc: Added lock support in preparation for interrupt handling
+  vfio/fsl-mc: Add irq infrastructure for fsl-mc devices
+  vfio/fsl-mc: trigger an interrupt via eventfd
+  vfio/fsl-mc: Add read/write support for fsl-mc devices
+
+ MAINTAINERS                               |   6 +
+ drivers/vfio/Kconfig                      |   1 +
+ drivers/vfio/Makefile                     |   1 +
+ drivers/vfio/fsl-mc/Kconfig               |   9 +
+ drivers/vfio/fsl-mc/Makefile              |   4 +
+ drivers/vfio/fsl-mc/vfio_fsl_mc.c         | 687 ++++++++++++++++++++++
+ drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c    | 221 +++++++
+ drivers/vfio/fsl-mc/vfio_fsl_mc_private.h |  55 ++
+ include/uapi/linux/vfio.h                 |   1 +
+ 9 files changed, 985 insertions(+)
+ create mode 100644 drivers/vfio/fsl-mc/Kconfig
+ create mode 100644 drivers/vfio/fsl-mc/Makefile
+ create mode 100644 drivers/vfio/fsl-mc/vfio_fsl_mc.c
+ create mode 100644 drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c
+ create mode 100644 drivers/vfio/fsl-mc/vfio_fsl_mc_private.h
+
+-- 
+2.17.1
 
