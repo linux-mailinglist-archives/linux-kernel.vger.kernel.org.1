@@ -2,51 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2035F2158CB
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 15:47:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A95972158AE
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 15:39:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729297AbgGFNqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 09:46:50 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:49012 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729123AbgGFNqu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 09:46:50 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1jsRSB-003rc7-La; Mon, 06 Jul 2020 15:46:39 +0200
-Date:   Mon, 6 Jul 2020 15:46:39 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     netdev@vger.kernel.org, Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next v2 0/3]  net: ethtool: Untangle PHYLIB dependency
-Message-ID: <20200706134639.GA919533@lunn.ch>
-References: <20200706042758.168819-1-f.fainelli@gmail.com>
+        id S1729197AbgGFNjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 09:39:20 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:52476 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729160AbgGFNjU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Jul 2020 09:39:20 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 94431C96B0A586C9ED94;
+        Mon,  6 Jul 2020 21:39:16 +0800 (CST)
+Received: from kernelci-master.huawei.com (10.175.101.6) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 6 Jul 2020 21:39:09 +0800
+From:   Wei Yongjun <weiyongjun1@huawei.com>
+To:     Hulk Robot <hulkci@huawei.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Peter Xu <peterx@redhat.com>
+CC:     Wei Yongjun <weiyongjun1@huawei.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] smp: Fix unused-but-set-variable warning
+Date:   Mon, 6 Jul 2020 21:49:19 +0800
+Message-ID: <20200706134919.80407-1-weiyongjun1@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200706042758.168819-1-f.fainelli@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.175.101.6]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 05, 2020 at 09:27:55PM -0700, Florian Fainelli wrote:
-> Hi all,
-> 
-> This patch series untangles the ethtool netlink dependency with PHYLIB
-> which exists because the cable test feature calls directly into PHY
-> library functions. The approach taken here is to introduce
-> ethtool_phy_ops function pointers which can be dynamically registered
-> when PHYLIB loads.
+Gcc report build warning as follows:
+
+kernel/smp.c:126:15: warning:
+ variable 'csd_type' set but not used [-Wunused-but-set-variable]
+  126 |  unsigned int csd_type;
+      |               ^~~~~~~~
+
+'csd_type' is only used when CONFIG_64BIT defined, so move them
+under '#ifdef'.
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+---
+ kernel/smp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/smp.c b/kernel/smp.c
+index 6ec6c9578225..0130bdcf6d26 100644
+--- a/kernel/smp.c
++++ b/kernel/smp.c
+@@ -123,10 +123,10 @@ static void csd_lock_record(call_single_data_t *csd)
  
-Hi Florian
+ static __always_inline int csd_lock_wait_getcpu(call_single_data_t *csd)
+ {
++#ifdef CONFIG_64BIT
+ 	unsigned int csd_type;
+ 
+ 	csd_type = CSD_TYPE(csd);
+-#ifdef CONFIG_64BIT
+ 	if (csd_type == CSD_TYPE_ASYNC || csd_type == CSD_TYPE_SYNC)
+ 		return csd->dst; // Other CSD_TYPE_ values might not have ->dst.
+ #endif
 
-This looks good. I would suggest leaving it a day or two for 0-day to
-randconfig it for a while.
-
-	   Andrew
