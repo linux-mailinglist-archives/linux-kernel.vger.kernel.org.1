@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA45B215B2E
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 17:49:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 876F5215B32
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 17:49:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729297AbgGFPt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 11:49:28 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:60985 "EHLO
+        id S1729585AbgGFPtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 11:49:33 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:60991 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729476AbgGFPtY (ORCPT
+        with ESMTP id S1729503AbgGFPtY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 6 Jul 2020 11:49:24 -0400
 Received: from ip5f5af08c.dynamic.kabel-deutschland.de ([95.90.240.140] helo=wittgenstein.fritz.box)
         by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.86_2)
         (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jsTMv-0005O9-JL; Mon, 06 Jul 2020 15:49:21 +0000
+        id 1jsTMw-0005O9-9S; Mon, 06 Jul 2020 15:49:22 +0000
 From:   Christian Brauner <christian.brauner@ubuntu.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Andrei Vagin <avagin@gmail.com>,
@@ -31,9 +31,9 @@ Cc:     Andrei Vagin <avagin@gmail.com>,
         Mark Rutland <mark.rutland@arm.com>,
         Dmitry Safonov <dima@arista.com>,
         Christian Brauner <christian.brauner@ubuntu.com>
-Subject: [PATCH v2 3/4] nsproxy: support CLONE_NEWTIME with setns()
-Date:   Mon,  6 Jul 2020 17:49:11 +0200
-Message-Id: <20200706154912.3248030-4-christian.brauner@ubuntu.com>
+Subject: [PATCH v2 4/4] tests: add CLONE_NEWTIME setns tests
+Date:   Mon,  6 Jul 2020 17:49:12 +0200
+Message-Id: <20200706154912.3248030-5-christian.brauner@ubuntu.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200706154912.3248030-1-christian.brauner@ubuntu.com>
 References: <https://lore.kernel.org/lkml/20200625090618.GC151695@gmail.com>
@@ -45,124 +45,167 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-So far setns() was missing time namespace support. This was partially due
-to it simply not being implemented but also because vdso_join_timens()
-could still fail which made switching to multiple namespaces atomically
-problematic. This is now fixed so support CLONE_NEWTIME with setns()
+Now that pidfds support CLONE_NEWTIME as well enable testing them in the
+setns() testuite.
 
-Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
-Reviewed-by: Andrei Vagin <avagin@gmail.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Michael Kerrisk <mtk.manpages@gmail.com>
 Cc: Serge Hallyn <serge@hallyn.com>
+Cc: Michael Kerrisk <mtk.manpages@gmail.com>
 Cc: Dmitry Safonov <dima@arista.com>
-Link: https://lore.kernel.org/r/20200619153559.724863-4-christian.brauner@ubuntu.com
+Cc: Andrei Vagin <avagin@gmail.com>
+Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
 ---
- include/linux/time_namespace.h |  6 ++++++
- kernel/nsproxy.c               | 21 +++++++++++++++++++--
- kernel/time/namespace.c        |  5 +----
- 3 files changed, 26 insertions(+), 6 deletions(-)
+ tools/testing/selftests/pidfd/pidfd.h         |  4 +
+ .../selftests/pidfd/pidfd_setns_test.c        | 76 +++++++++++++++++++
+ 2 files changed, 80 insertions(+)
 
-diff --git a/include/linux/time_namespace.h b/include/linux/time_namespace.h
-index 824d54e057eb..5b6031385db0 100644
---- a/include/linux/time_namespace.h
-+++ b/include/linux/time_namespace.h
-@@ -33,6 +33,7 @@ extern struct time_namespace init_time_ns;
- #ifdef CONFIG_TIME_NS
- extern int vdso_join_timens(struct task_struct *task,
- 			    struct time_namespace *ns);
-+extern void timens_commit(struct task_struct *tsk, struct time_namespace *ns);
+diff --git a/tools/testing/selftests/pidfd/pidfd.h b/tools/testing/selftests/pidfd/pidfd.h
+index 8d728eda783d..a2c80914e3dc 100644
+--- a/tools/testing/selftests/pidfd/pidfd.h
++++ b/tools/testing/selftests/pidfd/pidfd.h
+@@ -22,6 +22,10 @@
+ #define P_PIDFD 3
+ #endif
  
- static inline struct time_namespace *get_time_ns(struct time_namespace *ns)
- {
-@@ -96,6 +97,11 @@ static inline int vdso_join_timens(struct task_struct *task,
- 	return 0;
++#ifndef CLONE_NEWTIME
++#define CLONE_NEWTIME 0x00000080
++#endif
++
+ #ifndef CLONE_PIDFD
+ #define CLONE_PIDFD 0x00001000
+ #endif
+diff --git a/tools/testing/selftests/pidfd/pidfd_setns_test.c b/tools/testing/selftests/pidfd/pidfd_setns_test.c
+index 9418108eae13..7a27dbe07e23 100644
+--- a/tools/testing/selftests/pidfd/pidfd_setns_test.c
++++ b/tools/testing/selftests/pidfd/pidfd_setns_test.c
+@@ -32,6 +32,7 @@ enum {
+ 	PIDFD_NS_NET,
+ 	PIDFD_NS_CGROUP,
+ 	PIDFD_NS_PIDCLD,
++	PIDFD_NS_TIME,
+ 	PIDFD_NS_MAX
+ };
+ 
+@@ -47,6 +48,7 @@ const struct ns_info {
+ 	[PIDFD_NS_NET]    = { "net",              CLONE_NEWNET,    },
+ 	[PIDFD_NS_CGROUP] = { "cgroup",           CLONE_NEWCGROUP, },
+ 	[PIDFD_NS_PIDCLD] = { "pid_for_children", 0,               },
++	[PIDFD_NS_TIME]	  = { "time",             CLONE_NEWTIME,   },
+ };
+ 
+ FIXTURE(current_nsset)
+@@ -83,9 +85,49 @@ pid_t create_child(int *pidfd, unsigned flags)
+ 	return sys_clone3(&args, sizeof(struct clone_args));
  }
  
-+static inline void timens_commit(struct task_struct *tsk,
-+				 struct time_namespace *ns)
++static bool switch_timens(void)
 +{
++	int fd, ret;
++
++	if (unshare(CLONE_NEWTIME))
++		return false;
++
++	fd = open("/proc/self/ns/time_for_children", O_RDONLY | O_CLOEXEC);
++	if (fd < 0)
++		return false;
++
++	ret = setns(fd, CLONE_NEWTIME);
++	close(fd);
++	return ret == 0;
 +}
 +
- static inline struct time_namespace *get_time_ns(struct time_namespace *ns)
++static ssize_t read_nointr(int fd, void *buf, size_t count)
++{
++	ssize_t ret;
++
++	do {
++		ret = read(fd, buf, count);
++	} while (ret < 0 && errno == EINTR);
++
++	return ret;
++}
++
++static ssize_t write_nointr(int fd, const void *buf, size_t count)
++{
++	ssize_t ret;
++
++	do {
++		ret = write(fd, buf, count);
++	} while (ret < 0 && errno == EINTR);
++
++	return ret;
++}
++
+ FIXTURE_SETUP(current_nsset)
  {
- 	return NULL;
-diff --git a/kernel/nsproxy.c b/kernel/nsproxy.c
-index cd356630a311..12dd41b39a7f 100644
---- a/kernel/nsproxy.c
-+++ b/kernel/nsproxy.c
-@@ -262,8 +262,8 @@ void exit_task_namespaces(struct task_struct *p)
- static int check_setns_flags(unsigned long flags)
- {
- 	if (!flags || (flags & ~(CLONE_NEWNS | CLONE_NEWUTS | CLONE_NEWIPC |
--				 CLONE_NEWNET | CLONE_NEWUSER | CLONE_NEWPID |
--				 CLONE_NEWCGROUP)))
-+				 CLONE_NEWNET | CLONE_NEWTIME | CLONE_NEWUSER |
-+				 CLONE_NEWPID | CLONE_NEWCGROUP)))
- 		return -EINVAL;
+ 	int i, proc_fd, ret;
++	int ipc_sockets[2];
++	char c;
  
- #ifndef CONFIG_USER_NS
-@@ -290,6 +290,10 @@ static int check_setns_flags(unsigned long flags)
- 	if (flags & CLONE_NEWNET)
- 		return -EINVAL;
- #endif
-+#ifndef CONFIG_TIME_NS
-+	if (flags & CLONE_NEWTIME)
-+		return -EINVAL;
-+#endif
- 
- 	return 0;
- }
-@@ -464,6 +468,14 @@ static int validate_nsset(struct nsset *nsset, struct pid *pid)
+ 	for (i = 0; i < PIDFD_NS_MAX; i++) {
+ 		self->nsfds[i]		= -EBADF;
+@@ -130,6 +172,9 @@ FIXTURE_SETUP(current_nsset)
+ 		TH_LOG("%m - Failed to open pidfd for process %d", self->pid);
  	}
- #endif
  
-+#ifdef CONFIG_TIME_NS
-+	if (flags & CLONE_NEWTIME) {
-+		ret = validate_ns(nsset, &nsp->time_ns->ns);
-+		if (ret)
-+			goto out;
-+	}
-+#endif
++	ret = socketpair(AF_LOCAL, SOCK_STREAM | SOCK_CLOEXEC, 0, ipc_sockets);
++	EXPECT_EQ(ret, 0);
 +
- out:
- 	if (pid_ns)
- 		put_pid_ns(pid_ns);
-@@ -507,6 +519,11 @@ static void commit_nsset(struct nsset *nsset)
- 		exit_sem(me);
- #endif
+ 	/* Create tasks that will be stopped. */
+ 	self->child_pid1 = create_child(&self->child_pidfd1,
+ 					CLONE_NEWUSER | CLONE_NEWNS |
+@@ -139,10 +184,27 @@ FIXTURE_SETUP(current_nsset)
+ 	EXPECT_GE(self->child_pid1, 0);
  
-+#ifdef CONFIG_TIME_NS
-+	if (flags & CLONE_NEWTIME)
-+		timens_commit(me, nsset->nsproxy->time_ns);
-+#endif
+ 	if (self->child_pid1 == 0) {
++		close(ipc_sockets[0]);
 +
- 	/* transfer ownership */
- 	switch_task_namespaces(me, nsset->nsproxy);
- 	nsset->nsproxy = NULL;
-diff --git a/kernel/time/namespace.c b/kernel/time/namespace.c
-index aa7b90aac2a7..afc65e6be33e 100644
---- a/kernel/time/namespace.c
-+++ b/kernel/time/namespace.c
-@@ -280,7 +280,7 @@ static void timens_put(struct ns_common *ns)
- 	put_time_ns(to_time_ns(ns));
- }
++		if (!switch_timens())
++			_exit(EXIT_FAILURE);
++
++		if (write_nointr(ipc_sockets[1], "1", 1) < 0)
++			_exit(EXIT_FAILURE);
++
++		close(ipc_sockets[1]);
++
+ 		pause();
+ 		_exit(EXIT_SUCCESS);
+ 	}
  
--static void timens_commit(struct task_struct *tsk, struct time_namespace *ns)
-+void timens_commit(struct task_struct *tsk, struct time_namespace *ns)
- {
- 	timens_set_vvar_page(tsk, ns);
- 	vdso_join_timens(tsk, ns);
-@@ -298,9 +298,6 @@ static int timens_install(struct nsset *nsset, struct ns_common *new)
- 	    !ns_capable(nsset->cred->user_ns, CAP_SYS_ADMIN))
- 		return -EPERM;
++	close(ipc_sockets[1]);
++	ASSERT_EQ(read_nointr(ipc_sockets[0], &c, 1), 1);
++	close(ipc_sockets[0]);
++
++	ret = socketpair(AF_LOCAL, SOCK_STREAM | SOCK_CLOEXEC, 0, ipc_sockets);
++	EXPECT_EQ(ret, 0);
++
+ 	self->child_pid2 = create_child(&self->child_pidfd2,
+ 					CLONE_NEWUSER | CLONE_NEWNS |
+ 					CLONE_NEWCGROUP | CLONE_NEWIPC |
+@@ -151,10 +213,24 @@ FIXTURE_SETUP(current_nsset)
+ 	EXPECT_GE(self->child_pid2, 0);
  
--
--	timens_commit(current, ns);
--
- 	get_time_ns(ns);
- 	put_time_ns(nsproxy->time_ns);
- 	nsproxy->time_ns = ns;
+ 	if (self->child_pid2 == 0) {
++		close(ipc_sockets[0]);
++
++		if (!switch_timens())
++			_exit(EXIT_FAILURE);
++
++		if (write_nointr(ipc_sockets[1], "1", 1) < 0)
++			_exit(EXIT_FAILURE);
++
++		close(ipc_sockets[1]);
++
+ 		pause();
+ 		_exit(EXIT_SUCCESS);
+ 	}
+ 
++	close(ipc_sockets[1]);
++	ASSERT_EQ(read_nointr(ipc_sockets[0], &c, 1), 1);
++	close(ipc_sockets[0]);
++
+ 	for (i = 0; i < PIDFD_NS_MAX; i++) {
+ 		char p[100];
+ 
 -- 
 2.27.0
 
