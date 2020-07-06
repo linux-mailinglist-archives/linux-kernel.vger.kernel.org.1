@@ -2,147 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 348DA21596D
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 16:30:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CB7B21596F
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 16:30:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729368AbgGFO3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 10:29:08 -0400
-Received: from foss.arm.com ([217.140.110.172]:45158 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729209AbgGFO3G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 10:29:06 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 71477101E;
-        Mon,  6 Jul 2020 07:29:05 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E5AD83F71E;
-        Mon,  6 Jul 2020 07:29:02 -0700 (PDT)
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Doug Anderson <dianders@chromium.org>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Quentin Perret <qperret@google.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Patrick Bellasi <patrick.bellasi@matbug.net>,
-        Pavan Kondeti <pkondeti@codeaurora.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: [PATCH v6 2/2] Documentation/sysctl: Document uclamp sysctl knobs
-Date:   Mon,  6 Jul 2020 15:28:39 +0100
-Message-Id: <20200706142839.26629-3-qais.yousef@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200706142839.26629-1-qais.yousef@arm.com>
-References: <20200706142839.26629-1-qais.yousef@arm.com>
+        id S1729377AbgGFO3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 10:29:39 -0400
+Received: from mail-dm6nam12on2048.outbound.protection.outlook.com ([40.107.243.48]:47712
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729201AbgGFO3j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Jul 2020 10:29:39 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RQbZVlWFVprl7ZKMUf9pcoqrszCqweAqVS1nJYmd9WG0FZqbJHgTo5CYinwmvwoMxkbMDUpN1T9yfA5r+5SlZKyL/+8dRnG2aHmPMSZIs48iDZF+bXgCP+f1Fe61owQ7ILyHLhHPB0j/hCwdLSlK5ZDF3UMO+YFUUzMY7FH/Fkp097W0H3FejpiDcAWi1uEfHPZxL7NcxMFNjqm+h0Yw+jnKTUlYxoPPFCqnBy99wvje09qfrazCJsHsfBa+BEb9g/6I7eDH3YXl7vz++ILYpoAB/jClL4CuqqY6FkgT9e6qW6rig9A0RbRwqMK+vaSTaIhxLucvPMIATwft8wkFng==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=B7Dx544Hh/IDUA2Pr5WTHrouJvb7zZ3ycTfNo5DsdUM=;
+ b=Y14eT7vlXLKxPH+Y+OtoFm9e5PRuXfJjkq+Dc4GDU2dTHKuFDnWlL4ooJgScDZUnIGdV+fcELvcFiQ04d+DEdna3z22DmmpFYPKoS4FNenNm8aVi5gDjZP0eF5Lff9OMcxrOCmfXexQYb0U4NUC9Rozw/xoSZ+88xUplcdymkVNWklqa+a3Q5X1OsMvMqPeW9xbnXKxbtrSsAHmJZ/y650jP0B4wchANxm3YaNuPWG0GhF5eyCCHqmu9tvPy6P0pIPOSTLE3cKqr6DdCHht/z0qZRAk7AZ5dMLzkvbG78gwVbmf5yMoupBhee/jLJoenNWNTeFqazowe2qh43++6cg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=B7Dx544Hh/IDUA2Pr5WTHrouJvb7zZ3ycTfNo5DsdUM=;
+ b=qJAL9bSVR+rqKW/NDxuObr9nnSkVJ6AgQtlRZCCydZOoac4j3grK9tGYm4yUPsqy5ncawUOtHgU0486Z4vKRkIutgLNbYQcO8kFylgCc6MRCrtBjW9Srmaz/yjlly6H5e9AIbvIy+W9cRlkr0f9NmkDLUsp/D6vJgXhLTfcKcXQ=
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com (2603:10b6:a02:c4::17)
+ by BY5PR11MB4104.namprd11.prod.outlook.com (2603:10b6:a03:18f::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.23; Mon, 6 Jul
+ 2020 14:29:36 +0000
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::3d7d:dfc1:b35d:63d1]) by BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::3d7d:dfc1:b35d:63d1%7]) with mapi id 15.20.3153.029; Mon, 6 Jul 2020
+ 14:29:36 +0000
+From:   "Zhang, Qiang" <Qiang.Zhang@windriver.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     "balbi@kernel.org" <balbi@kernel.org>,
+        "colin.king@canonical.com" <colin.king@canonical.com>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: =?gb2312?B?u9i4tDogW1BBVENIIHYyXSB1c2I6IGdhZGdldDogZnVuY3Rpb246IGZpeCBt?=
+ =?gb2312?B?aXNzaW5nIHNwaW5sb2NrIGluIGZfdWFjMV9sZWdhY3k=?=
+Thread-Topic: [PATCH v2] usb: gadget: function: fix missing spinlock in
+ f_uac1_legacy
+Thread-Index: AQHWU2vcjKFwJdWIC0ms8vCJ2RZbE6j6WmEAgABBxzc=
+Date:   Mon, 6 Jul 2020 14:29:35 +0000
+Message-ID: <BYAPR11MB2632AD4B8022D3CD82E420EAFF690@BYAPR11MB2632.namprd11.prod.outlook.com>
+References: <20200705061616.833-1-qiang.zhang@windriver.com>,<20200706103130.GB10624@kroah.com>
+In-Reply-To: <20200706103130.GB10624@kroah.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: linuxfoundation.org; dkim=none (message not signed)
+ header.d=none;linuxfoundation.org; dmarc=none action=none
+ header.from=windriver.com;
+x-originating-ip: [106.39.149.61]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 9ffcc1b0-8d54-4447-9805-08d821b90216
+x-ms-traffictypediagnostic: BY5PR11MB4104:
+x-microsoft-antispam-prvs: <BY5PR11MB410460F6379E44E0746ABC9DFF690@BY5PR11MB4104.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2043;
+x-forefront-prvs: 04569283F9
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Eag2PFQDxYpdk3r0PKhMv3JGxGDe92oc4pynDTA9XHwsqC0pbE9BmooLFuxufAkjTNi5RRV7cJMr3HKLHMwjsC4gy2lIc53C6qvtqNjJUxXQIKD23I06Opvm/rPuqvOuDXwn61K8Q62bkdJ69R6ZbUU9acHIiaUzelv/MooQBtb8pTjivYO/jVc2s0OEyEI3jcDjNOIvQwEfmlV78MV/SgPFLH3IY9qr5+MwkK59jhbCH0kmnRHaKy20uPgBvKPbmhPyPX4U0QjHw2epj8JM0YBQSWyzm6Uy+PdV7NQYTHBnyL+mRcjSUmwLAmYYeRstRP1ptx3ySoUiU6KEZhl1Hg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2632.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(39850400004)(376002)(396003)(136003)(346002)(366004)(83380400001)(71200400001)(478600001)(316002)(54906003)(4744005)(33656002)(7696005)(52536014)(64756008)(66556008)(66476007)(4326008)(66946007)(8936002)(6506007)(66446008)(186003)(86362001)(76116006)(91956017)(2906002)(6916009)(9686003)(26005)(5660300002)(55016002)(224303003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: juKj1NXw+98Pq85+6A8JtV9MV1jaxSAu5i3Q3YMT7fRzak7r2kthiJNNS94fkWIjE0TDuU46/dqxXe3Dpl2EVDpajTPrCoUexB2K2dkLSfVmw4XVKpqd7XYu9IjvkCvYQ9JJRCFfBsQSCE1B3OLw/7Bc10H6TUQ0rfuNAtNKtQNJyaTnG/jnbkDAZIRGhS8tmbVSAuXAETiA8gJVKmyE+eBbRodfa9K50HSPuGwwghHSVsYICnxla7yAHOwRBV/aL1qsisW39xG4AU2vEEbAe0wKB+RQNHcuyBJpy4hEz86jYhdWG9CKwfZ295Oi6JbqVD5Xf7lrkBZG7rViCHkDY5wLcUlB02A9JNJtVxi94mpp1w7oPChwppzs3RhzxQEVtyFNyKv2WZhiiPzeigXq+D08d8tseuhOhfhENe9zCRY79wOWS3mK7s6N3XZ8GvRNTPKtlJY5pTXR3MUofXMQtt5d90YiyUzxAGPj9x0JAb4=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2632.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9ffcc1b0-8d54-4447-9805-08d821b90216
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Jul 2020 14:29:35.8887
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: jSHKoV9bYJNmQSGdLAesfaQpJ3JRJ/RAhURzCtnQM2ngXCeDRrvjzaF1LJmZCu17LfQXIZ8Z9xcLv7NErSHEodGKmndPa7UKgXq30IK0S0Q=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4104
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Uclamp exposes 3 sysctl knobs:
-
-	* sched_util_clamp_min
-	* sched_util_clamp_max
-	* sched_util_clamp_min_rt_default
-
-Document them in sysctl/kernel.rst.
-
-Signed-off-by: Qais Yousef <qais.yousef@arm.com>
-CC: Jonathan Corbet <corbet@lwn.net>
-CC: Juri Lelli <juri.lelli@redhat.com>
-CC: Vincent Guittot <vincent.guittot@linaro.org>
-CC: Dietmar Eggemann <dietmar.eggemann@arm.com>
-CC: Steven Rostedt <rostedt@goodmis.org>
-CC: Ben Segall <bsegall@google.com>
-CC: Mel Gorman <mgorman@suse.de>
-CC: Luis Chamberlain <mcgrof@kernel.org>
-CC: Kees Cook <keescook@chromium.org>
-CC: Iurii Zaikin <yzaikin@google.com>
-CC: Quentin Perret <qperret@google.com>
-CC: Valentin Schneider <valentin.schneider@arm.com>
-CC: Patrick Bellasi <patrick.bellasi@matbug.net>
-CC: Pavan Kondeti <pkondeti@codeaurora.org>
-CC: linux-doc@vger.kernel.org
-CC: linux-kernel@vger.kernel.org
-CC: linux-fsdevel@vger.kernel.org
----
- Documentation/admin-guide/sysctl/kernel.rst | 54 +++++++++++++++++++++
- 1 file changed, 54 insertions(+)
-
-diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
-index 83acf5025488..55bf6b4de4ec 100644
---- a/Documentation/admin-guide/sysctl/kernel.rst
-+++ b/Documentation/admin-guide/sysctl/kernel.rst
-@@ -1062,6 +1062,60 @@ Enables/disables scheduler statistics. Enabling this feature
- incurs a small amount of overhead in the scheduler but is
- useful for debugging and performance tuning.
- 
-+sched_util_clamp_min:
-+=====================
-+
-+Max allowed *minimum* utilization.
-+
-+Default value is 1024, which is the maximum possible value.
-+
-+It means that any requested uclamp.min value cannot be greater than
-+sched_util_clamp_min, i.e., it is restricted to the range
-+[0:sched_util_clamp_min].
-+
-+sched_util_clamp_max:
-+=====================
-+
-+Max allowed *maximum* utilization.
-+
-+Default value is 1024, which is the maximum possible value.
-+
-+It means that any requested uclamp.max value cannot be greater than
-+sched_util_clamp_max, i.e., it is restricted to the range
-+[0:sched_util_clamp_max].
-+
-+sched_util_clamp_min_rt_default:
-+================================
-+
-+By default Linux is tuned for performance. Which means that RT tasks always run
-+at the highest frequency and most capable (highest capacity) CPU (in
-+heterogeneous systems).
-+
-+Uclamp achieves this by setting the requested uclamp.min of all RT tasks to
-+1024 by default, which effectively boosts the tasks to run at the highest
-+frequency and biases them to run on the biggest CPU.
-+
-+This knob allows admins to change the default behavior when uclamp is being
-+used. In battery powered devices particularly, running at the maximum
-+capacity and frequency will increase energy consumption and shorten the battery
-+life.
-+
-+This knob is only effective for RT tasks which the user hasn't modified their
-+requested uclamp.min value via sched_setattr() syscall.
-+
-+This knob will not escape the range constraint imposed by sched_util_clamp_min
-+defined above.
-+
-+For example if
-+
-+	sched_util_clamp_min_rt_default = 800
-+	sched_util_clamp_min = 600
-+
-+Then the boost will be clamped to 600 because 800 is outside of the permissible
-+range of [0:600]. This could happen for instance if a powersave mode will
-+restrict all boosts temporarily by modifying sched_util_clamp_min. As soon as
-+this restriction is lifted, the requested sched_util_clamp_min_rt_default
-+will take effect.
- 
- seccomp
- =======
--- 
-2.17.1
-
+VGhhbmtzIGZvciB5b3VyIHN1Z2dlc3RpbiBHcmVnIEtIDQpJIHRoaW5rIHRoZXJlIGlzIG5vdCBu
+ZWVkIGZpeCB0YWdzLiBJIHdpbGwgcmVzZW5kLg0KDQp0aGFua3MsDQpaaGFuZyBRaWFuZw0KDQpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fDQq3orz+yMs6IEdyZWcgS0gg
+PGdyZWdraEBsaW51eGZvdW5kYXRpb24ub3JnPg0Kt6LLzcqxvOQ6IDIwMjDE6jfUwjbI1SAxODoz
+MQ0KytW8/sjLOiBaaGFuZywgUWlhbmcNCrOty806IGJhbGJpQGtlcm5lbC5vcmc7IGNvbGluLmtp
+bmdAY2Fub25pY2FsLmNvbTsgbGludXgtdXNiQHZnZXIua2VybmVsLm9yZzsgbGludXgta2VybmVs
+QHZnZXIua2VybmVsLm9yZw0K1vfM4jogUmU6IFtQQVRDSCB2Ml0gdXNiOiBnYWRnZXQ6IGZ1bmN0
+aW9uOiBmaXggbWlzc2luZyBzcGlubG9jayBpbiBmX3VhYzFfbGVnYWN5DQoNCk9uIFN1biwgSnVs
+IDA1LCAyMDIwIGF0IDAyOjE2OjE2UE0gKzA4MDAsIHFpYW5nLnpoYW5nQHdpbmRyaXZlci5jb20g
+d3JvdGU6DQo+IEZyb206IFpoYW5nIFFpYW5nIDxxaWFuZy56aGFuZ0B3aW5kcml2ZXIuY29tPg0K
+Pg0KPiBBZGQgYSBtaXNzaW5nIHNwaW5sb2NrIHByb3RlY3Rpb24gdG8gdGhlIGFkZCBvcGVyYXRp
+b24gb2YgdGhlICJhdWRpby0+cGxheV9xdWV1ZSINCj4gaW4gImZfYXVkaW9fb3V0X2VwX2NvbXBs
+ZXRlIiBmdW5jdGlvbi4NCg0KVGhhdCBzYXlzIF93aGF0XyB5b3UgZGlkLCBidXQgbm90IF93aHlf
+IHlvdSBkaWQgdGhhdC4gIFdoeSBpcyBhIGxvY2sNCm5lZWRlZCBoZXJlPyAgV2hhdCBkb2VzIHRo
+aXMgcHJvdGVjdD8NCg0KV2hhdCBrZXJuZWwgY29tbWl0IGRvZXMgdGhpcyAiZml4Ij8gIFB1dCB0
+aGF0IGluIHRoZSAiRml4ZXM6IiBsaW5lLCBhbmQNCnByb2JhYmx5IHlvdSBuZWVkIGEgImNjOiBz
+dGFibGUiIGluIHRoYXQgYXJlYSB0b28sIHJpZ2h0Pw0KDQp0aGFua3MsDQoNCmdyZWcgay1oDQo=
