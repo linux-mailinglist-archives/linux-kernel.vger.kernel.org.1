@@ -2,43 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2138F216194
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 00:30:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF914216199
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 00:31:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727791AbgGFWaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 18:30:14 -0400
-Received: from o1.b.az.sendgrid.net ([208.117.55.133]:63950 "EHLO
+        id S1727886AbgGFWaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 18:30:19 -0400
+Received: from o1.b.az.sendgrid.net ([208.117.55.133]:20547 "EHLO
         o1.b.az.sendgrid.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726366AbgGFWaO (ORCPT
+        with ESMTP id S1727046AbgGFWaP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 18:30:14 -0400
+        Mon, 6 Jul 2020 18:30:15 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiboo.se;
         h=from:subject:in-reply-to:references:to:cc:content-type:
         content-transfer-encoding;
-        s=001; bh=63/HKH6wNc/07OqiA1yctULaLMPjNtHCXH6IBFgPuW0=;
-        b=QxTdQHzDUhU1mmOdoXN3SZ6tjhuIK0j3xUl4JQQyHx3wTuwO6jUmEM3bYmWpB2o7qXTk
-        p6VOMLRKVq9QfdM5i2XCy+xVHPRqgph7VVQi4R6psUIvOOvhPoMmAV3HjmXZfiAJNFMENP
-        oBHEssnNPJe0/36h115eYkAdXYGKjcqV8=
-Received: by filterdrecv-p3las1-7754f7d4cc-fqrzr with SMTP id filterdrecv-p3las1-7754f7d4cc-fqrzr-19-5F03A5F4-36
-        2020-07-06 22:30:12.61868238 +0000 UTC m=+965799.783674456
+        s=001; bh=4am3EfVrD6FpcoCsbfubSoM5ypb9uDMgv1H7B4bmvY4=;
+        b=pTA+1eSOV5YoPu7Ul7BEGe0RkKUEESsySPy8KjTiVqZxsB9kChK4ZrAZp1DPhCqjEYpI
+        DA5LxsswHnSbLnC3nrxgfFxV51bzHE2YgQ4CR/eNjPiRJfPu35DExCcnMXJYRqRVyjBwUL
+        8rise/LSysZm7ir6fZTkrg65LSsbRspFQ=
+Received: by filterdrecv-p3las1-7754f7d4cc-2z6mv with SMTP id filterdrecv-p3las1-7754f7d4cc-2z6mv-19-5F03A5F5-53
+        2020-07-06 22:30:13.654061889 +0000 UTC m=+965801.072572556
 Received: from bionic.localdomain (unknown)
         by ismtpd0004p1lon1.sendgrid.net (SG) with ESMTP
-        id LcDdvt6lT9C7M20Z4UoZJQ
-        Mon, 06 Jul 2020 22:30:12.191 +0000 (UTC)
+        id 6j_WDR0kQJm7E0Mgj56W9Q
+        Mon, 06 Jul 2020 22:30:13.351 +0000 (UTC)
 From:   Jonas Karlman <jonas@kwiboo.se>
-Subject: [PATCH v2 0/2] drm: rockchip: add NV15, NV20 and NV30 support
-Date:   Mon, 06 Jul 2020 22:30:12 +0000 (UTC)
-Message-Id: <20200706223009.1200-1-jonas@kwiboo.se>
+Subject: [PATCH v2 2/2] drm: rockchip: add NV15, NV20 and NV30 support
+Date:   Mon, 06 Jul 2020 22:30:13 +0000 (UTC)
+Message-Id: <20200706223009.1200-3-jonas@kwiboo.se>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200607202521.18438-1-jonas@kwiboo.se>
+In-Reply-To: <20200706223009.1200-1-jonas@kwiboo.se>
 References: <20200607202521.18438-1-jonas@kwiboo.se>
+ <20200706223009.1200-1-jonas@kwiboo.se>
 X-SG-EID: =?us-ascii?Q?TdbjyGynYnRZWhH+7lKUQJL+ZxmxpowvO2O9SQF5CwCVrYgcwUXgU5DKUU3QxA?=
- =?us-ascii?Q?fZekEeQsTe+RrMu3cja6a0h2jx6rNUbibDfvcQb?=
- =?us-ascii?Q?HBJWIsxybDLeUWaOeuvzlwhpdnYWD4ydpio0RQT?=
- =?us-ascii?Q?RXe3+j4AsBZnn6ATSe4+TwWf+C0hx0JW=2F2XIwq2?=
- =?us-ascii?Q?IhMK2BTB2hwhXYnk=2FHfZrMkVgvGQpTp2LgNFHWv?=
- =?us-ascii?Q?W6N+mYXYZo5gln9Al5bmnYSQ3WzOe=2F0LwJXCNot?=
- =?us-ascii?Q?X9Mrxq3OmvZuhO9AWfg7w=3D=3D?=
+ =?us-ascii?Q?fZekEeQsTe+RrMu3cja6a0hzOrJUCZt1bQJE3Oz?=
+ =?us-ascii?Q?ldo1tlb4kVEirFO=2F2YayW5F+E9viW8fZbVovKW5?=
+ =?us-ascii?Q?c=2Fl0X7sC4mXrfstWIWH3r7i2dQ4dm5AF7Du8rGf?=
+ =?us-ascii?Q?wjkq6iCQP3MzTVDfpTSt=2FhKtfzJFrPa5tXH0X8t?=
+ =?us-ascii?Q?d4f225=2FxZQaDxjgvh=2FIaQqyRCJcMeyc5uhX=2F73V?=
+ =?us-ascii?Q?FhYl4eTAmXBBnTO1lpXUQ=3D=3D?=
 To:     Sandy Huang <hjc@rock-chips.com>,
         Heiko =?iso-8859-1?q?St=FCbner?= <heiko@sntech.de>
 Cc:     Jonas Karlman <jonas@kwiboo.se>, Ben Davis <ben.davis@arm.com>,
@@ -56,41 +57,176 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Add support for displaying 10-bit 4:2:0 and 4:2:2 formats produced by the
+Rockchip Video Decoder on RK322X, RK3288, RK3328, RK3368 and RK3399.
+Also add support for 10-bit 4:4:4 format while at it.
 
-This series adds support for displaying 10-bit 4:2:0 and 4:2:2 formats produced
-by the Rockchip Video Decoder on RK322X, RK3288, RK3328, RK3368 and RK3399.
-Also include 10-bit 4:4:4 support since VOP can support that also.
+V2: Added NV30 support
 
-First patch adds new fourcc 10-bit YUV formats with 4:2:2/4:4:4 sub-sampling.
-Second patch adds support for displaying the the new fourcc formats.
-
-Changes in v2:
-- Add NV30 format
-- R-B tags was not collected due to NV30 changes
-
-This series has been tested on RK3399 using a Rockchip Video Decoder series
-at [1] together with ffmpeg at [2] and kodi-gbm or mpv. [3] contains all
-patches needed on top of linux-media master for easy testing.
-
-[1] https://patchwork.linuxtv.org/project/linux-media/list/?series=2859
-[2] https://github.com/Kwiboo/FFmpeg/commits/v4l2-request-hwaccel-4.3-rkvdec-high-10
-[3] https://github.com/Kwiboo/linux-rockchip/commits/linuxtv-rkvdec-high-10-v2
-
-Regards,
-Jonas
-
-Jonas Karlman (2):
-  drm: drm_fourcc: add NV20 and NV30 YUV formats
-  drm: rockchip: add NV15, NV20 and NV30 support
-
- drivers/gpu/drm/drm_fourcc.c                |  8 ++++++
+Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
+---
  drivers/gpu/drm/rockchip/rockchip_drm_vop.c | 29 +++++++++++++++++--
  drivers/gpu/drm/rockchip/rockchip_drm_vop.h |  1 +
  drivers/gpu/drm/rockchip/rockchip_vop_reg.c | 32 +++++++++++++++++----
- include/uapi/drm/drm_fourcc.h               |  2 ++
- 5 files changed, 64 insertions(+), 8 deletions(-)
+ 3 files changed, 54 insertions(+), 8 deletions(-)
 
+diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_vop.c b/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
+index c80f7d9fd13f..eb663e25ad9e 100644
+--- a/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
++++ b/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
+@@ -261,6 +261,18 @@ static bool has_rb_swapped(uint32_t format)
+ 	}
+ }
+ 
++static bool is_fmt_10(uint32_t format)
++{
++	switch (format) {
++	case DRM_FORMAT_NV15:
++	case DRM_FORMAT_NV20:
++	case DRM_FORMAT_NV30:
++		return true;
++	default:
++		return false;
++	}
++}
++
+ static enum vop_data_format vop_convert_format(uint32_t format)
+ {
+ 	switch (format) {
+@@ -276,10 +288,13 @@ static enum vop_data_format vop_convert_format(uint32_t format)
+ 	case DRM_FORMAT_BGR565:
+ 		return VOP_FMT_RGB565;
+ 	case DRM_FORMAT_NV12:
++	case DRM_FORMAT_NV15:
+ 		return VOP_FMT_YUV420SP;
+ 	case DRM_FORMAT_NV16:
++	case DRM_FORMAT_NV20:
+ 		return VOP_FMT_YUV422SP;
+ 	case DRM_FORMAT_NV24:
++	case DRM_FORMAT_NV30:
+ 		return VOP_FMT_YUV444SP;
+ 	default:
+ 		DRM_ERROR("unsupported format[%08x]\n", format);
+@@ -922,7 +937,12 @@ static void vop_plane_atomic_update(struct drm_plane *plane,
+ 	dsp_sty = dest->y1 + crtc->mode.vtotal - crtc->mode.vsync_start;
+ 	dsp_st = dsp_sty << 16 | (dsp_stx & 0xffff);
+ 
+-	offset = (src->x1 >> 16) * fb->format->cpp[0];
++	if (fb->format->block_w[0])
++		offset = (src->x1 >> 16) * fb->format->char_per_block[0] /
++			 fb->format->block_w[0];
++	else
++		offset = (src->x1 >> 16) * fb->format->cpp[0];
++
+ 	offset += (src->y1 >> 16) * fb->pitches[0];
+ 	dma_addr = rk_obj->dma_addr + offset + fb->offsets[0];
+ 
+@@ -948,6 +968,7 @@ static void vop_plane_atomic_update(struct drm_plane *plane,
+ 	}
+ 
+ 	VOP_WIN_SET(vop, win, format, format);
++	VOP_WIN_SET(vop, win, fmt_10, is_fmt_10(fb->format->format));
+ 	VOP_WIN_SET(vop, win, yrgb_vir, DIV_ROUND_UP(fb->pitches[0], 4));
+ 	VOP_WIN_SET(vop, win, yrgb_mst, dma_addr);
+ 	VOP_WIN_YUV2YUV_SET(vop, win_yuv2yuv, y2r_en, is_yuv);
+@@ -964,7 +985,11 @@ static void vop_plane_atomic_update(struct drm_plane *plane,
+ 		uv_obj = fb->obj[1];
+ 		rk_uv_obj = to_rockchip_obj(uv_obj);
+ 
+-		offset = (src->x1 >> 16) * bpp / hsub;
++		if (fb->format->block_w[1])
++			offset = (src->x1 >> 16) * bpp /
++				 fb->format->block_w[1] / hsub;
++		else
++			offset = (src->x1 >> 16) * bpp / hsub;
+ 		offset += (src->y1 >> 16) * fb->pitches[1] / vsub;
+ 
+ 		dma_addr = rk_uv_obj->dma_addr + offset + fb->offsets[1];
+diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_vop.h b/drivers/gpu/drm/rockchip/rockchip_drm_vop.h
+index 4a2099cb582e..eab055d9b56d 100644
+--- a/drivers/gpu/drm/rockchip/rockchip_drm_vop.h
++++ b/drivers/gpu/drm/rockchip/rockchip_drm_vop.h
+@@ -154,6 +154,7 @@ struct vop_win_phy {
+ 	struct vop_reg enable;
+ 	struct vop_reg gate;
+ 	struct vop_reg format;
++	struct vop_reg fmt_10;
+ 	struct vop_reg rb_swap;
+ 	struct vop_reg act_info;
+ 	struct vop_reg dsp_info;
+diff --git a/drivers/gpu/drm/rockchip/rockchip_vop_reg.c b/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
+index 80053d91a301..2c55e1852c3d 100644
+--- a/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
++++ b/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
+@@ -50,6 +50,23 @@ static const uint32_t formats_win_full[] = {
+ 	DRM_FORMAT_NV24,
+ };
+ 
++static const uint32_t formats_win_full_10[] = {
++	DRM_FORMAT_XRGB8888,
++	DRM_FORMAT_ARGB8888,
++	DRM_FORMAT_XBGR8888,
++	DRM_FORMAT_ABGR8888,
++	DRM_FORMAT_RGB888,
++	DRM_FORMAT_BGR888,
++	DRM_FORMAT_RGB565,
++	DRM_FORMAT_BGR565,
++	DRM_FORMAT_NV12,
++	DRM_FORMAT_NV16,
++	DRM_FORMAT_NV24,
++	DRM_FORMAT_NV15,
++	DRM_FORMAT_NV20,
++	DRM_FORMAT_NV30,
++};
++
+ static const uint64_t format_modifiers_win_full[] = {
+ 	DRM_FORMAT_MOD_LINEAR,
+ 	DRM_FORMAT_MOD_INVALID,
+@@ -579,11 +596,12 @@ static const struct vop_scl_regs rk3288_win_full_scl = {
+ 
+ static const struct vop_win_phy rk3288_win01_data = {
+ 	.scl = &rk3288_win_full_scl,
+-	.data_formats = formats_win_full,
+-	.nformats = ARRAY_SIZE(formats_win_full),
++	.data_formats = formats_win_full_10,
++	.nformats = ARRAY_SIZE(formats_win_full_10),
+ 	.format_modifiers = format_modifiers_win_full,
+ 	.enable = VOP_REG(RK3288_WIN0_CTRL0, 0x1, 0),
+ 	.format = VOP_REG(RK3288_WIN0_CTRL0, 0x7, 1),
++	.fmt_10 = VOP_REG(RK3288_WIN0_CTRL0, 0x1, 4),
+ 	.rb_swap = VOP_REG(RK3288_WIN0_CTRL0, 0x1, 12),
+ 	.act_info = VOP_REG(RK3288_WIN0_ACT_INFO, 0x1fff1fff, 0),
+ 	.dsp_info = VOP_REG(RK3288_WIN0_DSP_INFO, 0x0fff0fff, 0),
+@@ -713,11 +731,12 @@ static const struct vop_intr rk3368_vop_intr = {
+ 
+ static const struct vop_win_phy rk3368_win01_data = {
+ 	.scl = &rk3288_win_full_scl,
+-	.data_formats = formats_win_full,
+-	.nformats = ARRAY_SIZE(formats_win_full),
++	.data_formats = formats_win_full_10,
++	.nformats = ARRAY_SIZE(formats_win_full_10),
+ 	.format_modifiers = format_modifiers_win_full,
+ 	.enable = VOP_REG(RK3368_WIN0_CTRL0, 0x1, 0),
+ 	.format = VOP_REG(RK3368_WIN0_CTRL0, 0x7, 1),
++	.fmt_10 = VOP_REG(RK3368_WIN0_CTRL0, 0x1, 4),
+ 	.rb_swap = VOP_REG(RK3368_WIN0_CTRL0, 0x1, 12),
+ 	.x_mir_en = VOP_REG(RK3368_WIN0_CTRL0, 0x1, 21),
+ 	.y_mir_en = VOP_REG(RK3368_WIN0_CTRL0, 0x1, 22),
+@@ -862,11 +881,12 @@ static const struct vop_win_yuv2yuv_data rk3399_vop_big_win_yuv2yuv_data[] = {
+ 
+ static const struct vop_win_phy rk3399_win01_data = {
+ 	.scl = &rk3288_win_full_scl,
+-	.data_formats = formats_win_full,
+-	.nformats = ARRAY_SIZE(formats_win_full),
++	.data_formats = formats_win_full_10,
++	.nformats = ARRAY_SIZE(formats_win_full_10),
+ 	.format_modifiers = format_modifiers_win_full_afbc,
+ 	.enable = VOP_REG(RK3288_WIN0_CTRL0, 0x1, 0),
+ 	.format = VOP_REG(RK3288_WIN0_CTRL0, 0x7, 1),
++	.fmt_10 = VOP_REG(RK3288_WIN0_CTRL0, 0x1, 4),
+ 	.rb_swap = VOP_REG(RK3288_WIN0_CTRL0, 0x1, 12),
+ 	.y_mir_en = VOP_REG(RK3288_WIN0_CTRL0, 0x1, 22),
+ 	.act_info = VOP_REG(RK3288_WIN0_ACT_INFO, 0x1fff1fff, 0),
 -- 
 2.17.1
 
