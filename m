@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 181BA216119
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 23:57:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AB0121612B
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 23:57:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727123AbgGFVyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 17:54:37 -0400
-Received: from o1.b.az.sendgrid.net ([208.117.55.133]:26499 "EHLO
+        id S1728014AbgGFVzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 17:55:09 -0400
+Received: from o1.b.az.sendgrid.net ([208.117.55.133]:17189 "EHLO
         o1.b.az.sendgrid.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726918AbgGFVyf (ORCPT
+        with ESMTP id S1727077AbgGFVyg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 17:54:35 -0400
+        Mon, 6 Jul 2020 17:54:36 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiboo.se;
         h=from:subject:in-reply-to:references:to:cc:content-type:
         content-transfer-encoding;
-        s=001; bh=cwF57Yd3nZtjPAkGbWz1sj11wL8vtzFB8jLVo6QFcIM=;
-        b=ZnsptEwt5pk9pQUUQHZnrPCxrlJvV+eFjTyh1ZD2Km2EfnA6etRAM9ci095i2iX274kw
-        JqmldnNPnoJ7rpPoqky+64n47oh5tPjVWsaAyp9ldu7XMImg0Nslxaz/zTHbmGZQ+OrOel
-        Yiwo0ePnEgtTrKU3udyk36z/3+Y5yRq6M=
-Received: by filterdrecv-p3iad2-5b55dcd864-n86tl with SMTP id filterdrecv-p3iad2-5b55dcd864-n86tl-21-5F039D9A-2C
-        2020-07-06 21:54:34.700927518 +0000 UTC m=+881118.466369360
+        s=001; bh=f4gyh5BbpSNrHqLWYRO43egmkaJ0ArYD/IydQmU1/fw=;
+        b=eHn0cmBPH0r8LYqSgN26UoBdh2iFUGj66BfDvhV62GrcFwE782/WYQD6g4VtA3H79JkA
+        wtH3tuRapEcsLXxz4l6unM/ufOSH/cKb66sqyYhMTWPmkbFYkQBYDR0flAKG9hquSiGeqT
+        3rpePa3ymbqPD8WcmMmkxK6Rhr7bQGloo=
+Received: by filterdrecv-p3iad2-5b55dcd864-l2x6n with SMTP id filterdrecv-p3iad2-5b55dcd864-l2x6n-19-5F039D9B-18
+        2020-07-06 21:54:35.393097943 +0000 UTC m=+881114.024848071
 Received: from bionic.localdomain (unknown)
         by ismtpd0008p1lon1.sendgrid.net (SG) with ESMTP
-        id b1_Boy5iS3SQY-lAi3uGrA
-        Mon, 06 Jul 2020 21:54:34.331 +0000 (UTC)
+        id 3AFt_t2JSWu7UKeWJ0wpVA
+        Mon, 06 Jul 2020 21:54:35.147 +0000 (UTC)
 From:   Jonas Karlman <jonas@kwiboo.se>
-Subject: [PATCH v2 03/12] media: rkvdec: h264: Validate and use pic width and
- height in mbs
-Date:   Mon, 06 Jul 2020 21:54:34 +0000 (UTC)
-Message-Id: <20200706215430.22859-4-jonas@kwiboo.se>
+Subject: [PATCH v2 05/12] media: rkvdec: h264: Do not override output buffer
+ sizeimage
+Date:   Mon, 06 Jul 2020 21:54:35 +0000 (UTC)
+Message-Id: <20200706215430.22859-6-jonas@kwiboo.se>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200706215430.22859-1-jonas@kwiboo.se>
 References: <20200701215616.30874-1-jonas@kwiboo.se>
  <20200706215430.22859-1-jonas@kwiboo.se>
 X-SG-EID: =?us-ascii?Q?TdbjyGynYnRZWhH+7lKUQJL+ZxmxpowvO2O9SQF5CwCVrYgcwUXgU5DKUU3QxA?=
- =?us-ascii?Q?fZekEeQsTe+RrMu3cja6a0h9qXHT5HF1Lnoqt7i?=
- =?us-ascii?Q?s33+HITW1dRwIOmFbYeLljfuRRo1rVg5ZzV=2Ft65?=
- =?us-ascii?Q?2lKedAkyvqU9lOpy+i46k2Wq6oCefRrXMDergI5?=
- =?us-ascii?Q?5JKr4PoNa+aSZf6iUdIOF1WFU9Gh3Vje=2FpCSYcg?=
- =?us-ascii?Q?t1WlmSMswsPgpZO1AcaXUetZD7l8pr3nhfFtiaf?=
- =?us-ascii?Q?4fBkRWqdEglt6oppgr7BQ=3D=3D?=
+ =?us-ascii?Q?fZekEeQsTe+RrMu3cja6a0h=2FZQMlPTDcLuCQ0tV?=
+ =?us-ascii?Q?zeXPkGBV4qNq3S0YEgC=2FN9LaI6=2FaUWSS1BRUTm0?=
+ =?us-ascii?Q?RQgkvcSeULS8rxgiQ9lbE=2Fdrjo+gB1JTTsuMhPY?=
+ =?us-ascii?Q?XoLheuWdMRTKg8zy5XVCOL8iO4Uqy6aws92gvCA?=
+ =?us-ascii?Q?y94eCOxaGIFjVEr7hxGC8VXa2XLQWAAtZXSo1UV?=
+ =?us-ascii?Q?f4sB+HZPeTNlIyRZoJTDA=3D=3D?=
 To:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
         linux-kernel@vger.kernel.org
 Cc:     Jonas Karlman <jonas@kwiboo.se>,
@@ -56,71 +56,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The width and height in mbs is currently configured based on OUTPUT buffer
-resolution, this works for frame pictures but can cause issues for field
-pictures.
+The output buffer sizeimage is currently forced to 2 bytes per pixel, this
+can lead to high memory usage for 4K content when multiple output buffers
+is created by userspace.
 
-When frame_mbs_only_flag is 0 the height in mbs should be height of
-the field instead of height of frame.
-
-Validate pic_width_in_mbs_minus1 and pic_height_in_map_units_minus1
-against OUTPUT buffer resolution and use these values to configure HW.
+Do not override output buffer sizeimage and let userspace have control of
+output buffer sizeimage by only setting sizeimage if none is provided.
 
 Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
 ---
 Changes in v2:
-- Validate against coded_fmt instead of decoded_fmt
-- Validation moved to rkvdec_try_ctrl
+- New patch
 ---
- drivers/staging/media/rkvdec/rkvdec-h264.c |  4 ++--
- drivers/staging/media/rkvdec/rkvdec.c      | 10 ++++++++++
- 2 files changed, 12 insertions(+), 2 deletions(-)
+ drivers/staging/media/rkvdec/rkvdec-h264.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/staging/media/rkvdec/rkvdec-h264.c b/drivers/staging/media/rkvdec/rkvdec-h264.c
-index f0cfed84d60d..3498e9eec3d8 100644
+index 6576b4a101ae..3a85545bcb38 100644
 --- a/drivers/staging/media/rkvdec/rkvdec-h264.c
 +++ b/drivers/staging/media/rkvdec/rkvdec-h264.c
-@@ -672,8 +672,8 @@ static void assemble_hw_pps(struct rkvdec_ctx *ctx,
- 		  LOG2_MAX_PIC_ORDER_CNT_LSB_MINUS4);
- 	WRITE_PPS(!!(sps->flags & V4L2_H264_SPS_FLAG_DELTA_PIC_ORDER_ALWAYS_ZERO),
- 		  DELTA_PIC_ORDER_ALWAYS_ZERO_FLAG);
--	WRITE_PPS(DIV_ROUND_UP(ctx->coded_fmt.fmt.pix_mp.width, 16), PIC_WIDTH_IN_MBS);
--	WRITE_PPS(DIV_ROUND_UP(ctx->coded_fmt.fmt.pix_mp.height, 16), PIC_HEIGHT_IN_MBS);
-+	WRITE_PPS(sps->pic_width_in_mbs_minus1 + 1, PIC_WIDTH_IN_MBS);
-+	WRITE_PPS(sps->pic_height_in_map_units_minus1 + 1, PIC_HEIGHT_IN_MBS);
- 	WRITE_PPS(!!(sps->flags & V4L2_H264_SPS_FLAG_FRAME_MBS_ONLY),
- 		  FRAME_MBS_ONLY_FLAG);
- 	WRITE_PPS(!!(sps->flags & V4L2_H264_SPS_FLAG_MB_ADAPTIVE_FRAME_FIELD),
-diff --git a/drivers/staging/media/rkvdec/rkvdec.c b/drivers/staging/media/rkvdec/rkvdec.c
-index 4ab8f7e0566b..7a9f78bc0a55 100644
---- a/drivers/staging/media/rkvdec/rkvdec.c
-+++ b/drivers/staging/media/rkvdec/rkvdec.c
-@@ -29,8 +29,11 @@
+@@ -1012,8 +1012,9 @@ static int rkvdec_h264_adjust_fmt(struct rkvdec_ctx *ctx,
+ 	struct v4l2_pix_format_mplane *fmt = &f->fmt.pix_mp;
  
- static int rkvdec_try_ctrl(struct v4l2_ctrl *ctrl)
- {
-+	struct rkvdec_ctx *ctx = container_of(ctrl->handler, struct rkvdec_ctx, ctrl_hdl);
-+
- 	if (ctrl->id == V4L2_CID_MPEG_VIDEO_H264_SPS) {
- 		const struct v4l2_ctrl_h264_sps *sps = ctrl->p_new.p;
-+		unsigned int width, height;
- 		/*
- 		 * TODO: The hardware supports 10-bit and 4:2:2 profiles,
- 		 * but it's currently broken in the driver.
-@@ -45,6 +48,13 @@ static int rkvdec_try_ctrl(struct v4l2_ctrl *ctrl)
- 		if (sps->bit_depth_luma_minus8 != 0)
- 			/* Only 8-bit is supported */
- 			return -EINVAL;
-+
-+		width = (sps->pic_width_in_mbs_minus1 + 1) * 16;
-+		height = (sps->pic_height_in_map_units_minus1 + 1) * 16;
-+
-+		if (width > ctx->coded_fmt.fmt.pix_mp.width ||
-+		    height > ctx->coded_fmt.fmt.pix_mp.height)
-+			return -EINVAL;
- 	}
+ 	fmt->num_planes = 1;
+-	fmt->plane_fmt[0].sizeimage = fmt->width * fmt->height *
+-				      RKVDEC_H264_MAX_DEPTH_IN_BYTES;
++	if (!fmt->plane_fmt[0].sizeimage)
++		fmt->plane_fmt[0].sizeimage = fmt->width * fmt->height *
++					      RKVDEC_H264_MAX_DEPTH_IN_BYTES;
  	return 0;
  }
+ 
 -- 
 2.17.1
 
