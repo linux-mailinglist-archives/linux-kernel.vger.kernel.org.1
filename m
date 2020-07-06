@@ -2,17 +2,17 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EFD12150D6
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 03:20:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31C312150E5
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 03:26:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728648AbgGFBTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Jul 2020 21:19:47 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:46950 "EHLO loongson.cn"
+        id S1728578AbgGFB0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Jul 2020 21:26:52 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:48958 "EHLO loongson.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728364AbgGFBTi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Jul 2020 21:19:38 -0400
+        id S1728470AbgGFB0v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Jul 2020 21:26:51 -0400
 Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxn2oefAJfl2VQAA--.1722S7;
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxn2oefAJfl2VQAA--.1722S8;
         Mon, 06 Jul 2020 09:19:29 +0800 (CST)
 From:   Tiezhu Yang <yangtiezhu@loongson.cn>
 To:     Thomas Gleixner <tglx@linutronix.de>,
@@ -20,16 +20,16 @@ To:     Thomas Gleixner <tglx@linutronix.de>,
         Marc Zyngier <maz@kernel.org>
 Cc:     linux-kernel@vger.kernel.org,
         Markus Elfring <Markus.Elfring@web.de>
-Subject: [PATCH v5 05/14] irqchip/davinci-cp-intc: Fix potential resource leaks
-Date:   Mon,  6 Jul 2020 09:19:16 +0800
-Message-Id: <1593998365-25910-6-git-send-email-yangtiezhu@loongson.cn>
+Subject: [PATCH v5 06/14] irqchip/digicolor: Fix potential resource leaks
+Date:   Mon,  6 Jul 2020 09:19:17 +0800
+Message-Id: <1593998365-25910-7-git-send-email-yangtiezhu@loongson.cn>
 X-Mailer: git-send-email 2.1.0
 In-Reply-To: <1593998365-25910-1-git-send-email-yangtiezhu@loongson.cn>
 References: <1593998365-25910-1-git-send-email-yangtiezhu@loongson.cn>
-X-CM-TRANSID: AQAAf9Dxn2oefAJfl2VQAA--.1722S7
-X-Coremail-Antispam: 1UD129KBjvJXoWxXw17Xw13Xw4kGry3Ww4fAFb_yoW5Gr45pr
-        4rA3y3Gr48Jr1rXrs3AFyrWF9Ikw1qkrW2krW7Cas7CrsYyryjkr15KFnrZFyUua1UZr1U
-        Aa1fG3W09Fy5Zw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID: AQAAf9Dxn2oefAJfl2VQAA--.1722S8
+X-Coremail-Antispam: 1UD129KBjvJXoW7AFW8AFW5Cr43trWruw1kAFb_yoW8uryUpF
+        WUGa9IgrWIvw4xWF1vkFyUZF98Kr4xKa9ru3yxC3Z2vrn5C34qkFyUAF1j9FyrArWxZa1j
+        vFs7tFy8C3WUKaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
         9KBjDU0xBIdaVrnRJUUUBIb7Iv0xC_tr1lb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I2
         0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI
         8067AKxVWUAVCq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28C
@@ -49,74 +49,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the function davinci_cp_intc_do_init(), system resources
-"config->reg.start", "davinci_cp_intc_base" and "irq_base"
-were not released in a few error cases. Thus add jump targets
-for the completion of the desired exception handling.
+In the function digicolor_of_init(), system resources "reg_base" and
+"digicolor_irq_domain" were not released in a few error cases. Thus
+add jump targets for the completion of the desired exception handling.
 
-Fixes: 0fc3d74cf946 ("irqchip: davinci-cp-intc: move the driver to drivers/irqchip")
+Fixes: 8041dfbd31cf ("irqchip: Conexant CX92755 interrupts controller driver")
 Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 ---
- drivers/irqchip/irq-davinci-cp-intc.c | 18 +++++++++++++++---
- 1 file changed, 15 insertions(+), 3 deletions(-)
+ drivers/irqchip/irq-digicolor.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/irqchip/irq-davinci-cp-intc.c b/drivers/irqchip/irq-davinci-cp-intc.c
-index 276da277..2c2e115 100644
---- a/drivers/irqchip/irq-davinci-cp-intc.c
-+++ b/drivers/irqchip/irq-davinci-cp-intc.c
-@@ -162,6 +162,7 @@ davinci_cp_intc_do_init(const struct davinci_cp_intc_config *config,
- 	unsigned int num_regs = BITS_TO_LONGS(config->num_irqs);
- 	int offset, irq_base;
- 	void __iomem *req;
-+	int ret;
- 
- 	req = request_mem_region(config->reg.start,
- 				 resource_size(&config->reg),
-@@ -175,7 +176,8 @@ davinci_cp_intc_do_init(const struct davinci_cp_intc_config *config,
- 				       resource_size(&config->reg));
- 	if (!davinci_cp_intc_base) {
- 		pr_err("%s: unable to ioremap register range\n", __func__);
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto err_release;
+diff --git a/drivers/irqchip/irq-digicolor.c b/drivers/irqchip/irq-digicolor.c
+index fc38d2d..18c6e77 100644
+--- a/drivers/irqchip/irq-digicolor.c
++++ b/drivers/irqchip/irq-digicolor.c
+@@ -89,7 +89,8 @@ static int __init digicolor_of_init(struct device_node *node,
+ 	ucregs = syscon_regmap_lookup_by_phandle(node, "syscon");
+ 	if (IS_ERR(ucregs)) {
+ 		pr_err("%pOF: unable to map UC registers\n", node);
+-		return PTR_ERR(ucregs);
++		ret = PTR_ERR(ucregs);
++		goto err_iounmap;
  	}
- 
- 	davinci_cp_intc_write(0, DAVINCI_CP_INTC_GLOBAL_ENABLE);
-@@ -210,7 +212,8 @@ davinci_cp_intc_do_init(const struct davinci_cp_intc_config *config,
- 	if (irq_base < 0) {
- 		pr_err("%s: unable to allocate interrupt descriptors: %d\n",
- 		       __func__, irq_base);
--		return irq_base;
-+		ret = irq_base;
+ 	/* channel 1, regular IRQs */
+ 	regmap_write(ucregs, UC_IRQ_CONTROL, 1);
+@@ -98,7 +99,8 @@ static int __init digicolor_of_init(struct device_node *node,
+ 		irq_domain_add_linear(node, 64, &irq_generic_chip_ops, NULL);
+ 	if (!digicolor_irq_domain) {
+ 		pr_err("%pOF: unable to create IRQ domain\n", node);
+-		return -ENOMEM;
++		ret = -ENOMEM;
 +		goto err_iounmap;
  	}
  
- 	davinci_cp_intc_irq_domain = irq_domain_add_legacy(
-@@ -219,7 +222,8 @@ davinci_cp_intc_do_init(const struct davinci_cp_intc_config *config,
- 
- 	if (!davinci_cp_intc_irq_domain) {
- 		pr_err("%s: unable to create an interrupt domain\n", __func__);
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto err_free_descs;
+ 	ret = irq_alloc_domain_generic_chips(digicolor_irq_domain, 32, 1,
+@@ -106,7 +108,7 @@ static int __init digicolor_of_init(struct device_node *node,
+ 					     clr, 0, 0);
+ 	if (ret) {
+ 		pr_err("%pOF: unable to allocate IRQ gc\n", node);
+-		return ret;
++		goto err_domain_remove;
  	}
  
- 	set_handle_irq(davinci_cp_intc_handle_irq);
-@@ -228,6 +232,14 @@ davinci_cp_intc_do_init(const struct davinci_cp_intc_config *config,
- 	davinci_cp_intc_write(1, DAVINCI_CP_INTC_GLOBAL_ENABLE);
+ 	digicolor_set_gc(reg_base, 0, IC_INT0ENABLE_LO, IC_FLAG_CLEAR_LO);
+@@ -115,5 +117,11 @@ static int __init digicolor_of_init(struct device_node *node,
+ 	set_handle_irq(digicolor_handle_irq);
  
  	return 0;
 +
-+err_free_descs:
-+	irq_free_descs(irq_base, config->num_irqs);
++err_domain_remove:
++	irq_domain_remove(digicolor_irq_domain);
 +err_iounmap:
-+	iounmap(davinci_cp_intc_base);
-+err_release:
-+	release_mem_region(config->reg.start, resource_size(&config->reg));
++	iounmap(reg_base);
 +	return ret;
  }
- 
- int __init davinci_cp_intc_init(const struct davinci_cp_intc_config *config)
+ IRQCHIP_DECLARE(conexant_digicolor_ic, "cnxt,cx92755-ic", digicolor_of_init);
 -- 
 2.1.0
 
