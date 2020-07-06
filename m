@@ -2,44 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A77F215B0A
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 17:44:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C961E215B02
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 17:44:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729662AbgGFPmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 11:42:50 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:39825 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729560AbgGFPmZ (ORCPT
+        id S1729622AbgGFPm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 11:42:28 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:54351 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729576AbgGFPm0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 11:42:25 -0400
-Received: by mail-io1-f71.google.com with SMTP id r19so23777246iod.6
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 08:42:24 -0700 (PDT)
+        Mon, 6 Jul 2020 11:42:26 -0400
+Received: by mail-il1-f200.google.com with SMTP id d18so28087878ill.21
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 08:42:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=DY+QZek1Wbu3XeWKS2p3CLC4ByQyovd34PXDobirkfE=;
-        b=hqEMvmFl2iKAycXDIVyUtwSMJimipPQ6mL8QqXSxsBi3gdSaR8/5vqrPr0OWk5VNwq
-         mkIGbc7y779CxLmij7PurjvEXOSWgBLUIUayy+af8RJGTG/0rnHRpTvdHAUgp2bezHN7
-         p5+bI2Z6IHonaull818aLrBp53sM8OiOMx/yeMZbDGHhu7PYao2EBRQr+xeOrKSbmwa+
-         dd6AcF68fahKvOIWI34TWIBXPoHaB3Nt2oOO67mTRoBMt2Al5A1Ae7mk5sdcx/KISaHR
-         alAhtlUZAoBVOvgj8H5C/CiIBCr3iRxGRso7tUXnnHhg7ueemKbtBkLrMrr7W/APZvjc
-         blPA==
-X-Gm-Message-State: AOAM530yTSkw3yy//zlIWEu/T0PhZt/8OhpugrIWMrZYwUo4JELSAvKL
-        WMCvHaWKEonk1qaagurb3TiBgMsDWPnwzNJERn5aAl7ieMjb
-X-Google-Smtp-Source: ABdhPJzT6Hr6mNFVK0y20scXTICwcpAfAZZPTcTrLhBECpSZm3zsw3/7VTMozGtha2p+aJZOO5cG76IVoE0+FgKI0pbkwJ2ubMeb
+        bh=qpfT2eKHqfkgY/gGy4mPSIZc7fHG4AXlyfPyVgf7jxs=;
+        b=KZG1p3oCLaFo4ZY++ps/crFJGC/ojvrk9qS9vUBhA2DNERMc821UQ3DzAWTOtSzKm6
+         NVX0UoLRefmrS/fsD4upr/qqzViSjQnkbWd2RNa58+dA+S8WLXf2r9GpYvkeL7LbfVvW
+         7aSIr7s1X7PN8YdAcP3XFSzuHi7EF4zvd+/pSmGPXvjUGb/g204j3TPI2T0TOWbKOt76
+         Jdr11OoQ+kf88bcLZ+ccy01i6m4WhO10zr3p+rhijNoLqNKjiLaMnaC0RvNMfYZgnraD
+         6RVWLguOpe4FdQjwrrezC944dxDiaWYFaP2Rds7s2q8Z2KIsW2yFmaNm/tmbu+vDGElX
+         u+ng==
+X-Gm-Message-State: AOAM533POOxUNeYDDoy/1KRzp97wWk0/8RSbC1FexuEakLdM5lG6jCgF
+        dZvDux7KcxEiO4NtjUZONCU1JIFmT1fl/rvGNPzAZ3vwDn5P
+X-Google-Smtp-Source: ABdhPJwIredVcjpLxPPdrzhwd7FASpCIMf+45ey8uG65hp7lnr3QGhIzJ/YI7n1j22ok3bkA7t04Wnc99fUgiYck6gGoYJMe6GaV
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:58a:: with SMTP id v10mr25963484iox.203.1594050144123;
+X-Received: by 2002:a92:cd48:: with SMTP id v8mr32332884ilq.114.1594050144924;
  Mon, 06 Jul 2020 08:42:24 -0700 (PDT)
 Date:   Mon, 06 Jul 2020 08:42:24 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000983e0405a9c7b870@google.com>
-Subject: INFO: rcu detected stall in __sys_sendmsg
-From:   syzbot <syzbot+f517075b510306f61903@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, jhs@mojatatu.com, jiri@resnulli.us,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        xiyou.wangcong@gmail.com
+Message-ID: <000000000000a47ace05a9c7b825@google.com>
+Subject: memory leak in inotify_update_watch
+From:   syzbot <syzbot+dec34b033b3479b9ef13@syzkaller.appspotmail.com>
+To:     amir73il@gmail.com, jack@suse.cz, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
@@ -52,88 +50,108 @@ syzbot found the following crash on:
 
 HEAD commit:    7cc2a8ea Merge tag 'block-5.8-2020-07-01' of git://git.ker..
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12c4e36d100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=183dd243398ba7ec
-dashboard link: https://syzkaller.appspot.com/bug?extid=f517075b510306f61903
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11f01c1f100000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16c40ba7100000
+console output: https://syzkaller.appspot.com/x/log.txt?x=17644c05100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5ee23b9caef4e07a
+dashboard link: https://syzkaller.appspot.com/bug?extid=dec34b033b3479b9ef13
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1478a67b100000
 
 IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+f517075b510306f61903@syzkaller.appspotmail.com
+Reported-by: syzbot+dec34b033b3479b9ef13@syzkaller.appspotmail.com
 
-rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
-rcu: 	0-...0: (1 GPs behind) idle=59a/1/0x4000000000000000 softirq=8266/8267 fqs=5250 
-	(detected by 1, t=10502 jiffies, g=6117, q=61)
-Sending NMI from CPU 1 to CPUs 0:
-NMI backtrace for cpu 0
-CPU: 0 PID: 6826 Comm: syz-executor019 Not tainted 5.8.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:preempt_count_add+0xe/0x150 kernel/sched/core.c:3873
-Code: 07 80 c1 03 38 c1 0f 8c 40 ff ff ff 48 89 ef e8 48 f2 62 00 e9 33 ff ff ff 0f 1f 00 41 57 41 56 53 89 fb 65 01 3d 4e 75 b1 7e <48> c7 c0 30 7d 5a 8b 48 c1 e8 03 49 bf 00 00 00 00 00 fc ff df 42
-RSP: 0018:ffffc90000007cf0 EFLAGS: 00000006
-RAX: 1ffff11012ddc459 RBX: 0000000000000001 RCX: ffff8880a8c44300
-RDX: 0000000000010202 RSI: 0000000000000000 RDI: 0000000000000001
-RBP: ffff888096ee2000 R08: ffffffff8164ef7e R09: fffffbfff12da576
-R10: fffffbfff12da576 R11: 0000000000000000 R12: ffff888096ee2340
-R13: dffffc0000000000 R14: ffff888096ee22e8 R15: ffff888096ee2340
-FS:  0000000000753880(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000610 CR3: 00000000a9a34000 CR4: 00000000001406f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <IRQ>
- __raw_spin_lock include/linux/spinlock_api_smp.h:141 [inline]
- _raw_spin_lock+0xe/0x40 kernel/locking/spinlock.c:151
- spin_lock include/linux/spinlock.h:353 [inline]
- advance_sched+0x47/0x8c0 net/sched/sch_taprio.c:699
- __run_hrtimer kernel/time/hrtimer.c:1520 [inline]
- __hrtimer_run_queues+0x47f/0x930 kernel/time/hrtimer.c:1584
- hrtimer_interrupt+0x373/0xd60 kernel/time/hrtimer.c:1646
- local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1080 [inline]
- __sysvec_apic_timer_interrupt+0xf0/0x260 arch/x86/kernel/apic/apic.c:1097
- asm_call_on_stack+0xf/0x20 arch/x86/entry/entry_64.S:711
- </IRQ>
- __run_on_irqstack arch/x86/include/asm/irq_stack.h:22 [inline]
- run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:48 [inline]
- sysvec_apic_timer_interrupt+0xb9/0x130 arch/x86/kernel/apic/apic.c:1091
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:596
-RIP: 0010:arch_local_irq_restore arch/x86/include/asm/paravirt.h:765 [inline]
-RIP: 0010:__raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
-RIP: 0010:_raw_spin_unlock_irqrestore+0xa5/0xd0 kernel/locking/spinlock.c:191
-Code: b9 00 00 00 00 00 fc ff df 80 3c 08 00 74 0c 48 c7 c7 f0 c7 2b 89 e8 ea 7c 94 f9 48 83 3d d2 c9 0c 01 00 74 2c 4c 89 f7 57 9d <0f> 1f 44 00 00 bf 01 00 00 00 e8 cc 8b 31 f9 65 8b 05 d1 ff e2 77
-RSP: 0018:ffffc90001277408 EFLAGS: 00000282
-RAX: 1ffffffff12578fe RBX: ffff888096ee22e8 RCX: dffffc0000000000
-RDX: 0000000000000000 RSI: 0000000000000008 RDI: 0000000000000282
-RBP: ffffc90001277600 R08: dffffc0000000000 R09: fffffbfff16334b8
-R10: fffffbfff16334b8 R11: 0000000000000000 R12: ffff888096ee2340
-R13: 0000000000000000 R14: 0000000000000282 R15: 161f1f2ad520785b
- spin_unlock_irqrestore include/linux/spinlock.h:408 [inline]
- taprio_change+0x4245/0x51f0 net/sched/sch_taprio.c:1557
- qdisc_create+0x7d1/0x1410 net/sched/sch_api.c:1246
- tc_modify_qdisc+0x962/0x1d90 net/sched/sch_api.c:1662
- rtnetlink_rcv_msg+0x889/0xd40 net/core/rtnetlink.c:5460
- netlink_rcv_skb+0x190/0x3a0 net/netlink/af_netlink.c:2469
- netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
- netlink_unicast+0x786/0x940 net/netlink/af_netlink.c:1329
- netlink_sendmsg+0xa57/0xd70 net/netlink/af_netlink.c:1918
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg net/socket.c:672 [inline]
- ____sys_sendmsg+0x519/0x800 net/socket.c:2352
- ___sys_sendmsg net/socket.c:2406 [inline]
- __sys_sendmsg+0x2b1/0x360 net/socket.c:2439
- do_syscall_64+0x73/0xe0 arch/x86/entry/common.c:359
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x443799
-Code: Bad RIP value.
-RSP: 002b:00007ffe68f74b78 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000443799
-RDX: 0000000000000000 RSI: 00000000200007c0 RDI: 0000000000000004
-RBP: 00007ffe68f74b80 R08: 0000000001bbbbbb R09: 0000000001bbbbbb
-R10: 0000000001bbbbbb R11: 0000000000000246 R12: 00007ffe68f74b90
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-INFO: NMI handler (nmi_cpu_backtrace_handler) took too long to run: 0.000 msecs
+BUG: memory leak
+unreferenced object 0xffff888115db8480 (size 576):
+  comm "systemd-udevd", pid 11037, jiffies 4295104591 (age 56.960s)
+  hex dump (first 32 bytes):
+    00 04 00 00 00 00 00 00 80 fd e8 15 81 88 ff ff  ................
+    a0 02 dd 20 81 88 ff ff b0 81 d0 09 81 88 ff ff  ... ............
+  backtrace:
+    [<00000000288c0066>] radix_tree_node_alloc.constprop.0+0xc1/0x140 lib/radix-tree.c:252
+    [<00000000f80ba6a7>] idr_get_free+0x231/0x3b0 lib/radix-tree.c:1505
+    [<00000000ec9ab938>] idr_alloc_u32+0x91/0x120 lib/idr.c:46
+    [<00000000aea98d29>] idr_alloc_cyclic+0x84/0x110 lib/idr.c:125
+    [<00000000dbad44a4>] inotify_add_to_idr fs/notify/inotify/inotify_user.c:365 [inline]
+    [<00000000dbad44a4>] inotify_new_watch fs/notify/inotify/inotify_user.c:578 [inline]
+    [<00000000dbad44a4>] inotify_update_watch+0x1af/0x2d0 fs/notify/inotify/inotify_user.c:617
+    [<00000000e141890d>] __do_sys_inotify_add_watch fs/notify/inotify/inotify_user.c:755 [inline]
+    [<00000000e141890d>] __se_sys_inotify_add_watch fs/notify/inotify/inotify_user.c:698 [inline]
+    [<00000000e141890d>] __x64_sys_inotify_add_watch+0x12f/0x180 fs/notify/inotify/inotify_user.c:698
+    [<00000000d872d7cc>] do_syscall_64+0x4c/0xe0 arch/x86/entry/common.c:359
+    [<000000005c62d8da>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+BUG: memory leak
+unreferenced object 0xffff88811fb8c180 (size 192):
+  comm "systemd-udevd", pid 11486, jiffies 4295108810 (age 14.770s)
+  hex dump (first 32 bytes):
+    08 80 00 00 06 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 89 13 1a 81 88 ff ff  ................
+  backtrace:
+    [<000000009fe0803b>] __d_alloc+0x2a/0x260 fs/dcache.c:1709
+    [<000000005a828803>] d_alloc+0x21/0xb0 fs/dcache.c:1788
+    [<00000000e0349988>] __lookup_hash+0x67/0xc0 fs/namei.c:1441
+    [<00000000907d6c36>] filename_create+0xa5/0x1c0 fs/namei.c:3459
+    [<0000000025ebf47f>] user_path_create fs/namei.c:3516 [inline]
+    [<0000000025ebf47f>] do_symlinkat+0x70/0x180 fs/namei.c:3973
+    [<00000000d872d7cc>] do_syscall_64+0x4c/0xe0 arch/x86/entry/common.c:359
+    [<000000005c62d8da>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+BUG: memory leak
+unreferenced object 0xffff888107962b00 (size 704):
+  comm "systemd-udevd", pid 11486, jiffies 4295108810 (age 14.770s)
+  hex dump (first 32 bytes):
+    00 00 00 00 01 00 00 00 00 00 20 00 00 00 00 00  .......... .....
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<000000001bbffdf0>] shmem_alloc_inode+0x18/0x40 mm/shmem.c:3701
+    [<000000008bdb5db7>] alloc_inode+0x27/0xf0 fs/inode.c:232
+    [<00000000b322bd08>] new_inode_pseudo fs/inode.c:928 [inline]
+    [<00000000b322bd08>] new_inode+0x21/0xf0 fs/inode.c:957
+    [<0000000090aa6bc7>] shmem_get_inode+0x47/0x2b0 mm/shmem.c:2229
+    [<00000000d46b8299>] shmem_symlink+0x6b/0x290 mm/shmem.c:3080
+    [<00000000edfa50df>] vfs_symlink fs/namei.c:3953 [inline]
+    [<00000000edfa50df>] vfs_symlink+0x15a/0x230 fs/namei.c:3939
+    [<00000000a8f2bfa3>] do_symlinkat+0x14f/0x180 fs/namei.c:3980
+    [<00000000d872d7cc>] do_syscall_64+0x4c/0xe0 arch/x86/entry/common.c:359
+    [<000000005c62d8da>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+BUG: memory leak
+unreferenced object 0xffff88811952fa80 (size 56):
+  comm "systemd-udevd", pid 11486, jiffies 4295108810 (age 14.770s)
+  hex dump (first 32 bytes):
+    a8 2c 96 07 81 88 ff ff e0 18 b9 81 ff ff ff ff  .,..............
+    70 2b 96 07 81 88 ff ff 98 fa 52 19 81 88 ff ff  p+........R.....
+  backtrace:
+    [<00000000369fbe38>] kmem_cache_zalloc include/linux/slab.h:659 [inline]
+    [<00000000369fbe38>] lsm_inode_alloc security/security.c:588 [inline]
+    [<00000000369fbe38>] security_inode_alloc+0x2e/0xb0 security/security.c:971
+    [<000000005b4a8c5f>] inode_init_always+0x10c/0x200 fs/inode.c:171
+    [<0000000022ebc8f1>] alloc_inode+0x44/0xf0 fs/inode.c:239
+    [<00000000b322bd08>] new_inode_pseudo fs/inode.c:928 [inline]
+    [<00000000b322bd08>] new_inode+0x21/0xf0 fs/inode.c:957
+    [<0000000090aa6bc7>] shmem_get_inode+0x47/0x2b0 mm/shmem.c:2229
+    [<00000000d46b8299>] shmem_symlink+0x6b/0x290 mm/shmem.c:3080
+    [<00000000edfa50df>] vfs_symlink fs/namei.c:3953 [inline]
+    [<00000000edfa50df>] vfs_symlink+0x15a/0x230 fs/namei.c:3939
+    [<00000000a8f2bfa3>] do_symlinkat+0x14f/0x180 fs/namei.c:3980
+    [<00000000d872d7cc>] do_syscall_64+0x4c/0xe0 arch/x86/entry/common.c:359
+    [<000000005c62d8da>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+BUG: memory leak
+unreferenced object 0xffff88811f95dcc0 (size 192):
+  comm "systemd-udevd", pid 11488, jiffies 4295108822 (age 14.650s)
+  hex dump (first 32 bytes):
+    08 80 00 00 06 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 89 13 1a 81 88 ff ff  ................
+  backtrace:
+    [<000000009fe0803b>] __d_alloc+0x2a/0x260 fs/dcache.c:1709
+    [<000000005a828803>] d_alloc+0x21/0xb0 fs/dcache.c:1788
+    [<00000000e0349988>] __lookup_hash+0x67/0xc0 fs/namei.c:1441
+    [<00000000907d6c36>] filename_create+0xa5/0x1c0 fs/namei.c:3459
+    [<0000000025ebf47f>] user_path_create fs/namei.c:3516 [inline]
+    [<0000000025ebf47f>] do_symlinkat+0x70/0x180 fs/namei.c:3973
+    [<00000000d872d7cc>] do_syscall_64+0x4c/0xe0 arch/x86/entry/common.c:359
+    [<000000005c62d8da>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
 
 
 ---
