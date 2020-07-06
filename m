@@ -2,72 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB0E321602F
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 22:19:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C914221603E
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 22:25:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727792AbgGFUT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 16:19:58 -0400
-Received: from mga09.intel.com ([134.134.136.24]:35159 "EHLO mga09.intel.com"
+        id S1727104AbgGFUZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 16:25:17 -0400
+Received: from mail.alarsen.net ([144.76.18.233]:53556 "EHLO mail.alarsen.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726540AbgGFUT5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 16:19:57 -0400
-IronPort-SDR: nbhH2bSgIDfFYKOctCl/mh7cUL/rIIO54qMOjta0YUpdtmbM1OoCAMr0gQySQWZJYxyK4cS1Gm
- 0/dD8N+jlYHQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9674"; a="149011865"
-X-IronPort-AV: E=Sophos;i="5.75,321,1589266800"; 
-   d="scan'208";a="149011865"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2020 13:19:57 -0700
-IronPort-SDR: 3BSlNuO2KXikjBngo+wNaqVNmV3zQUTDkjml4aOc/RpldiXpP1T8cEi6HYwkxOytSN/E8JRvFA
- R0GfNdOpaQkw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,321,1589266800"; 
-   d="scan'208";a="483254110"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
-  by fmsmga005.fm.intel.com with ESMTP; 06 Jul 2020 13:19:56 -0700
-Date:   Mon, 6 Jul 2020 13:19:56 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-Cc:     Giovanni Gherdovich <ggherdovich@suse.cz>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Borislav Petkov <bp@suse.de>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>, x86@kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] x86, sched: Bail out of frequency invariance if
- turbo frequency is unknown
-Message-ID: <20200706201956.GA1390666@iweiny-DESK2.sc.intel.com>
-References: <20200531182453.15254-1-ggherdovich@suse.cz>
- <20200531182453.15254-3-ggherdovich@suse.cz>
- <20200601233418.GA15416@ranerica-svr.sc.intel.com>
+        id S1725860AbgGFUZQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Jul 2020 16:25:16 -0400
+X-Greylist: delayed 314 seconds by postgrey-1.27 at vger.kernel.org; Mon, 06 Jul 2020 16:25:16 EDT
+Received: from oscar.alarsen.net (unknown [IPv6:2001:470:1f0b:246:a933:6a30:e75c:eb92])
+        by joe.alarsen.net (Postfix) with ESMTPS id A9D772B80BD9;
+        Mon,  6 Jul 2020 22:19:57 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alarsen.net; s=joe;
+        t=1594066797; bh=QgSSLcWUiu1FHgdCpD2D067MWOpF1pFkgTcuWYDmxWM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=XzQ9cwHxoazggXLG5Dpx+hpwMFGwg7rg+QUCSImvaZbSUAqZA3GLszm1QCHNqMI02
+         7RAm1NSm1RDqkbrkURDWIrqZL+877+Cl28PBByuxft0teFdMHEibLedxPbxozjxK2f
+         4ow40GhFFYQDgAYe3Dr+VXjDIcbYCLoNYq56IuMc=
+Received: from oscar.localnet (localhost [IPv6:::1])
+        by oscar.alarsen.net (Postfix) with ESMTP id 8743F27C0DDA;
+        Mon,  6 Jul 2020 22:19:57 +0200 (CEST)
+From:   Anders Larsen <al@alarsen.net>
+To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Replace HTTP links with HTTPS ones: QNX4
+Date:   Mon, 06 Jul 2020 22:19:57 +0200
+Message-ID: <11471313.geHk1C00m9@alarsen.net>
+In-Reply-To: <20200706173905.19376-1-grandmaster@al2klimov.de>
+References: <20200706173905.19376-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200601233418.GA15416@ranerica-svr.sc.intel.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 01, 2020 at 04:34:18PM -0700, Ricardo Neri wrote:
-> On Sun, May 31, 2020 at 08:24:52PM +0200, Giovanni Gherdovich wrote:
-> > There may be CPUs that support turbo boost but don't declare any turbo
-> > ratio, i.e. their MSR_TURBO_RATIO_LIMIT is all zeroes. In that condition
-> > scale-invariant calculations can't be performed.
-> > 
-> > Signed-off-by: Giovanni Gherdovich <ggherdovich@suse.cz>
-> > Suggested-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+On Monday, 2020-07-06 19:39 Alexander A. Klimov wrote:
+> Rationale:
+> Reduces attack surface on kernel devs opening the links for MITM
+> as HTTPS traffic is much harder to manipulate.
 > 
-> FWIW,
+> Deterministic algorithm:
+> For each file:
+>   If not .svg:
+>     For each line:
+>       If doesn't contain `\bxmlns\b`:
+>         For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+>           If both the HTTP and HTTPS versions
+>           return 200 OK and serve the same content:
+>             Replace HTTP with HTTPS.
 > 
-> Tested-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+> ---
+>  Continuing my work started at 93431e0607e5.
+> 
+>  If there are any URLs to be removed completely or at least not HTTPSified:
+>  Just clearly say so and I'll *undo my change*.
+>  See also https://lkml.org/lkml/2020/6/27/64
+> 
+>  If there are any valid, but yet not changed URLs:
+>  See https://lkml.org/lkml/2020/6/26/837
+> 
+>  fs/qnx4/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/qnx4/Kconfig b/fs/qnx4/Kconfig
+> index 45b5b98376c4..6ba0e5a1303f 100644
+> --- a/fs/qnx4/Kconfig
+> +++ b/fs/qnx4/Kconfig
+> @@ -5,7 +5,7 @@ config QNX4FS_FS
+>  	help
+>  	  This is the file system used by the real-time operating systems
+>  	  QNX 4 and QNX 6 (the latter is also called QNX RTP).
+> -	  Further information is available at <http://www.qnx.com/>.
+> +	  Further information is available at <https://www.qnx.com/>.
+>  	  Say Y if you intend to mount QNX hard disks or floppies.
+>  
+>  	  To compile this file system support as a module, choose M here: the
 
-Is this going to make it as a fix to 5.8?
+Acked-by: Anders Larsen <al@alarsen.net>
 
-Tested-by: Ira Weiny <ira.weiny@intel.com>
+
+
 
