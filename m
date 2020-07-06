@@ -2,103 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61DE62154E2
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 11:44:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E03502154DD
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 11:43:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728737AbgGFJoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 05:44:24 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:52166 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726326AbgGFJoX (ORCPT
+        id S1728672AbgGFJnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 05:43:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39696 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728517AbgGFJnX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 05:44:23 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0669VvlI071107;
-        Mon, 6 Jul 2020 05:44:23 -0400
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 322p984t1k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 06 Jul 2020 05:44:23 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0669aCHE009890;
-        Mon, 6 Jul 2020 09:44:20 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma02fra.de.ibm.com with ESMTP id 322hd825g2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 06 Jul 2020 09:44:20 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0669h37Y63897726
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 6 Jul 2020 09:43:03 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2766452051;
-        Mon,  6 Jul 2020 09:43:03 +0000 (GMT)
-Received: from oc3871087118.ibm.com (unknown [9.145.151.4])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id D0A1E5204F;
-        Mon,  6 Jul 2020 09:43:02 +0000 (GMT)
-From:   Alexander Gordeev <agordeev@linux.ibm.com>
-To:     linux-perf-users@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Alexander Gordeev <agordeev@linux.ibm.com>
-Subject: [PATCH 3/3] perf bench numa: fix wrong benchmark configuration
-Date:   Mon,  6 Jul 2020 11:42:54 +0200
-Message-Id: <ec0af179404329c21923f6da3f490ae4418efc1f.1594028311.git.agordeev@linux.ibm.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <cover.1594028310.git.agordeev@linux.ibm.com>
-References: <cover.1594028310.git.agordeev@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-06_07:2020-07-06,2020-07-06 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
- lowpriorityscore=0 phishscore=0 impostorscore=0 priorityscore=1501
- clxscore=1015 suspectscore=1 mlxlogscore=999 spamscore=0 mlxscore=0
- adultscore=0 cotscore=-2147483648 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2007060072
+        Mon, 6 Jul 2020 05:43:23 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DE07C061794;
+        Mon,  6 Jul 2020 02:43:23 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id a6so15585515ilq.13;
+        Mon, 06 Jul 2020 02:43:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=LNYWgR7Suf7EUjxaqSLpnVGU//+Xb6oQLjw8lAmdkjY=;
+        b=g34jrCIyQ/KBb7B0F7MtQiKZS/DMZM5vQ4aDZ7Rbx99uAPPD77YGuf8/pVtZq7xugT
+         D5ddwCGsEMQWLwCqmRMyHIVBU5pbIC7CPILael5jhjkc5eLPzTuS/QhIsss7VGnAUKf2
+         miudzI208yMtInG6YDRN1LwEaXr3RKS85Db0aTgl0urSoLWuykjgt+wfiYB0+dBdHmDH
+         DF20Bo+m8tZCPuBXmwRgHbUAfpoDFuEd9+pW3JQHJWTBgVSVWgEkbDvgMploGeg3Wc0W
+         cixDrgZDZnYUYYC/WQi8cYu7uv5SUk309u9RhaQZoyuvcSqgKJzJ5X/kmHoX6wKtKlsv
+         TEsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=LNYWgR7Suf7EUjxaqSLpnVGU//+Xb6oQLjw8lAmdkjY=;
+        b=FFWDlkCRJjsnXfeCI+Y1bD/Lk6+ZrV722sYOqVT7+/MmiDCBVNwwXfZv7JMt0IQj51
+         jNNkW1dyPwbeNOzb5mvTf2bp29tGwBfCXF8oWKFnktF4zSjqQaNPzzpU1xljEfrYWSKr
+         EsV8SWNZ3yTSMNTjDp8rqjxNZKEKKFol5l2ovWPpBOwLAexdYPnO/6x/RHNBTqnLDuoE
+         JoNh/o+t0PQDnZpdu3yRv0elGIUHpqviBerCHsBao8lorNDYunOlJtFdCAG/h64WKigy
+         cU7XJjhL2eDOAS5BZCxMwEdRpUkHSOSwaB2oqGCAQy0i4bubRIhtUvh6UWD8awgjC73R
+         EPng==
+X-Gm-Message-State: AOAM530dE929dweTtYT/P0RBu4P1xIUg5ZPpTsFxgUK42ZFh3kcdOYQn
+        QoFjLOcGPzH7USYNHgozlsIT3yjTuYA2liHrd4/M68smzELK3g==
+X-Google-Smtp-Source: ABdhPJzZyc2+uqg6q27N5tXiIMInGgcDo4bHlnmwYNtD5+OHbSWCErAfMg/ybpZlOZs4zZjYNLEKikjWhFjwBUebFaA=
+X-Received: by 2002:a92:bb57:: with SMTP id w84mr29774094ili.104.1594028602542;
+ Mon, 06 Jul 2020 02:43:22 -0700 (PDT)
+MIME-Version: 1.0
+References: <1593698893-6371-1-git-send-email-chey84736@gmail.com>
+ <20200702174346.GB25523@casper.infradead.org> <CAN_w4MWMfoDGfpON-bYHrU=KuJG2vpFj01ZbN4r-iwM4AyyuGw@mail.gmail.com>
+ <20200705171810.GV25523@casper.infradead.org>
+In-Reply-To: <20200705171810.GV25523@casper.infradead.org>
+From:   yang che <chey84736@gmail.com>
+Date:   Mon, 6 Jul 2020 17:43:06 +0800
+Message-ID: <CAN_w4MVzObz8C3cmK_Ckwsdr1z6m5Q=MGnSsj+vqK_jHXCMr7g@mail.gmail.com>
+Subject: Re: [RFC] hung_task:add detecting task in D state milliseconds timeout
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     mcgrof@kernel.org, Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This update fixes a wrong number of processes for one
-benchmark and consolidates two others in a unified way.
+I will learn how to use KernelShark. Try to solve my problem,thanks
+for your suggestion.
+Talk about I solved a problem with  hung task milliseconds=EF=BC=9A
+   the process get anon_vma read lock when it directly reclaims
+memory, but other process down anon_vma write lock,
+long time waiting for write lock up. Since anonymous pages can be
+inherited from the parent process,
+need to analyze whether the anonymous page inherits the parent
+process, find is inherits parent process,
+use anon_vma's red black tree and  anon_vma_chain find all child
+processes have inherited this anonymous page
+of the parent process,and analyze the corresponding mapping file of
+the current anonymous page in vma.
+find what file caused by this problem.
+  I used crash+ramdump to analyze this problem before, I will try to
+use KernelShark analyze this problem.
 
-Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
----
- tools/perf/bench/numa.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+I want to ask whether the hung task can be added to support the
+detection of millisecond settings=EF=BC=9F
+In theory, there is no harm, and the detection time can be more accurate.
 
-diff --git a/tools/perf/bench/numa.c b/tools/perf/bench/numa.c
-index 6574004..c4b24d8 100644
---- a/tools/perf/bench/numa.c
-+++ b/tools/perf/bench/numa.c
-@@ -1753,7 +1753,7 @@ static int run_bench_numa(const char *name, const char **argv)
-    { " 1x3-convergence,", "mem",  "-p",  "1", "-t",  "3", "-P",  "512", OPT_CONV },
-    { " 1x4-convergence,", "mem",  "-p",  "1", "-t",  "4", "-P",  "512", OPT_CONV },
-    { " 1x6-convergence,", "mem",  "-p",  "1", "-t",  "6", "-P", "1020", OPT_CONV },
--   { " 2x3-convergence,", "mem",  "-p",  "3", "-t",  "3", "-P", "1020", OPT_CONV },
-+   { " 2x3-convergence,", "mem",  "-p",  "2", "-t",  "3", "-P", "1020", OPT_CONV },
-    { " 3x3-convergence,", "mem",  "-p",  "3", "-t",  "3", "-P", "1020", OPT_CONV },
-    { " 4x4-convergence,", "mem",  "-p",  "4", "-t",  "4", "-P",  "512", OPT_CONV },
-    { " 4x4-convergence-NOTHP,",
-@@ -1782,6 +1782,8 @@ static int run_bench_numa(const char *name, const char **argv)
-    { " 1x8-bw-thread,",   "mem",  "-p",  "1", "-t",  "8", "-T",  "256", OPT_BW },
-    { "1x16-bw-thread,",   "mem",  "-p",  "1", "-t", "16", "-T",  "128", OPT_BW },
-    { "1x32-bw-thread,",   "mem",  "-p",  "1", "-t", "32", "-T",   "64", OPT_BW },
-+   { "1x32-bw-thread-NOTHP,",
-+			  "mem",  "-p",  "1", "-t", "32", "-T",   "64", OPT_BW_NOTHP },
- 
-    { " 2x3-bw-process,",  "mem",  "-p",  "2", "-t",  "3", "-P",  "512", OPT_BW },
-    { " 4x4-bw-process,",  "mem",  "-p",  "4", "-t",  "4", "-P",  "512", OPT_BW },
-@@ -1795,9 +1797,6 @@ static int run_bench_numa(const char *name, const char **argv)
-    { "2x16-bw-process,",  "mem",  "-p",  "2", "-t", "16", "-P",  "512", OPT_BW },
-    { "1x32-bw-process,",  "mem",  "-p",  "1", "-t", "32", "-P", "2048", OPT_BW },
- 
--   { "1x32-bw-thread,",   "mem",  "-p",  "1", "-t", "32", "-T",   "32", OPT_BW },
--   { "1x32-bw-thread-NOTHP,",
--			  "mem",  "-p",  "1", "-t", "32", "-T",   "32", OPT_BW_NOTHP },
-    { "2x16-bw-thread,",   "mem",  "-p",  "2", "-t", "16", "-T",  "192", OPT_BW },
-    { "2x16-bw-thread-NOTHP,",
- 			  "mem",  "-p",  "2", "-t", "16", "-T",  "192", OPT_BW_NOTHP },
--- 
-1.8.3.1
-
+Matthew Wilcox <willy@infradead.org> =E4=BA=8E2020=E5=B9=B47=E6=9C=886=E6=
+=97=A5=E5=91=A8=E4=B8=80 =E4=B8=8A=E5=8D=881:18=E5=86=99=E9=81=93=EF=BC=9A
+>
+> On Fri, Jul 03, 2020 at 11:18:28AM +0800, yang che wrote:
+> >   my understanding, KernelShark can't trigger panic, hung_task can
+> > trigger. According to my use,
+> > sometimes need to trigger panic to grab ramdump to analyze lock and
+> > memory problems.
+>
+> You shouldn't need to trigger a panic to analyse locking or memory
+> problems.  KernelShark is supposed to be able to help you do that without
+> bringing down the system.  Give it a try, and if it doesn't work, Steven
+> Rostedt is very interested in making it work for your case.
