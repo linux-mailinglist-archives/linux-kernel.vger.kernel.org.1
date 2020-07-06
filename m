@@ -2,169 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D866821546B
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 11:15:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3017721547B
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 11:20:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728350AbgGFJPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 05:15:43 -0400
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:53869 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728024AbgGFJPn (ORCPT
+        id S1728643AbgGFJUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 05:20:42 -0400
+Received: from esa6.microchip.iphmx.com ([216.71.154.253]:16636 "EHLO
+        esa6.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728024AbgGFJUl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 05:15:43 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R331e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0U1sNi0q_1594026936;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U1sNi0q_1594026936)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 06 Jul 2020 17:15:36 +0800
-Subject: Re: [PATCH v14 07/20] mm/thp: narrow lru locking
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-To:     akpm@linux-foundation.org, mgorman@techsingularity.net,
-        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
-        daniel.m.jordan@oracle.com, yang.shi@linux.alibaba.com,
-        willy@infradead.org, hannes@cmpxchg.org, lkp@intel.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, shakeelb@google.com,
-        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com
-References: <1593752873-4493-1-git-send-email-alex.shi@linux.alibaba.com>
- <1593752873-4493-8-git-send-email-alex.shi@linux.alibaba.com>
-Message-ID: <124eeef1-ff2b-609e-3bf6-a118100c3f2a@linux.alibaba.com>
-Date:   Mon, 6 Jul 2020 17:15:09 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
+        Mon, 6 Jul 2020 05:20:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1594027240; x=1625563240;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=geAAVdtwO9Bz84BCA+quZKFfwpYizDUN5bzgDqOE4NM=;
+  b=1AKPGoBlxBDES05s/4m52Msn700vKW+JNLzm3nIPpGIeNp+bBa/wpqlS
+   msdeI5rUgSRK37X9w7LpZ9NuQd70Ub/oKUhq7FZFbTotZXeofyRgp1G27
+   T6L8xZwdjXbKgdSAMDo2Z5boU5ohyEHRk2kUFppA7iz6R0FBjDtUGqY16
+   oxu4CRskNUgc43eGgvL7vB9gOY7EZgwgvr8yerzfncNIKH1YPe04ouU2P
+   26OL8j5HxZvskqh2M3iyonZJEsbxsnUHWDMgT+682ij78uoEPE/SJxIVz
+   i7HBhbdgHVubwo+GZ/G0MdQ9ARE1Ha5Qo7Kenk2F7opGqAG3MjqnrkVxO
+   g==;
+IronPort-SDR: a4wiyh8ZLodXlPZofkiDLjAxKkw4XNbH6tGjpYtQgZWkvtn6952TmkjZRVIBBqFoIuVIcZuVHg
+ CkOtL99zqsZ/0BnvjPHamwLaK8mzoGDNz6EDOdcDCvvS5+9v45JiGnDkVJQewMm2bNU2OhWwCS
+ xatBqm1DNK71T9MQ2DFNWkPYrPyVNSIvVH4TYiD8fF00Cfk3+hIRP1riDgLPGkBzV3LEIDYz3L
+ F/ASHhMyT4fWJha0VSo4+TLguYPrSdDnGdVUM3HYPs9Phw6xdctj1psdaLhU0FvbcI8kVFFlGU
+ bw0=
+X-IronPort-AV: E=Sophos;i="5.75,318,1589266800"; 
+   d="scan'208";a="18108960"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 06 Jul 2020 02:20:39 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 6 Jul 2020 02:20:39 -0700
+Received: from soft-dev3.localdomain (10.10.115.15) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Mon, 6 Jul 2020 02:20:12 -0700
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     <nikolay@cumulusnetworks.com>, <roopa@cumulusnetworks.com>,
+        <davem@davemloft.net>, <kuba@kernel.org>, <jiri@resnulli.us>,
+        <ivecera@redhat.com>, <andrew@lunn.ch>,
+        <UNGLinuxDriver@microchip.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <bridge@lists.linux-foundation.org>
+CC:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Subject: [PATCH net-next 00/12] bridge: mrp: Add support for interconnect ring
+Date:   Mon, 6 Jul 2020 11:18:30 +0200
+Message-ID: <20200706091842.3324565-1-horatiu.vultur@microchip.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <1593752873-4493-8-git-send-email-alex.shi@linux.alibaba.com>
-Content-Type: text/plain; charset=gbk
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kirill & Johannes & Matthew,
+This patch series extends existing MRP to add support for interconnect ring.  An
+interconnect ring is a ring that connects 2 rings. In this way is possible to
+connect multiple rings. Each interconnect ring is form of 4 nodes, in which 3
+have the role MIC(Media Redundancy Interconnect Client) and one has the role
+MIM(Media Redundancy Interconnect Manager). All these nodes need to have the
+same ID and the ID needs to be unique between multiple interconnect rings. And 2
+nodes needs to be part of one ring and the other 2 nodes needs to be part of the
+other ring that is connected.
 
-Would you like to give some comments or share your concern of this patchset,
-specialy for THP part? 
+                 +---------+
+                 |         |
+      +----------|   MRM   |---------------+
+      |          |         |               |
+      |          +---------+               |
+      |                                    |
+      |                                    |
+      |                                    |
++--------------+                  +-----------------+
+|              |                  |                 |
+|  MRC/MIC     |------------------|    MRC/MIM      |
+|              |                  |                 |
++--------------+                  +-----------------+
+      |                                     |
+      |Interconnect port                    |Interconnect port
+      |                                     |
+      |                                     |
++--------------+                  +-----------------+
+|              |                  |                 |
+|  MRC/MIC     |----------------- |   MRC/MIC       |
+|              |                  |                 |
++--------------+                  +-----------------+
+      |                                     |
+      |                                     |
+      |          +---------+                |
+      |          |         |                |
+      +----------|  MRM    |----------------+
+                 |         |
+                 +---------+
 
-Many Thanks
-Alex
+Each node in a ring needs to have one of the following ring roles, MRM or MRC.
+And it can also have an interconnect role like MIM or MIC if it is part of an
+interconnect ring. In the figure above the MRM doesn't have any interconnect
+role but the MRC from the top ring have the interconnect roles MIC respectively
+MIM. Therefore it is not possible for a node to have only an interconnect role.
 
-ÔÚ 2020/7/3 ÏÂÎç1:07, Alex Shi Ð´µÀ:
-> lru_lock and page cache xa_lock have no reason with current sequence,
-> put them together isn't necessary. let's narrow the lru locking, but
-> left the local_irq_disable to block interrupt re-entry and statistic update.
-> 
-> Hugh Dickins point: split_huge_page_to_list() was already silly,to be
-> using the _irqsave variant: it's just been taking sleeping locks, so
-> would already be broken if entered with interrupts enabled.
-> so we can save passing flags argument down to __split_huge_page().
-> 
-> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-> Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
-> Cc: Hugh Dickins <hughd@google.com>
-> Cc: Kirill A. Shutemov <kirill@shutemov.name>
-> Cc: Andrea Arcangeli <aarcange@redhat.com>
-> Cc: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: linux-mm@kvack.org
-> Cc: linux-kernel@vger.kernel.org
-> ---
->  mm/huge_memory.c | 24 ++++++++++++------------
->  1 file changed, 12 insertions(+), 12 deletions(-)
-> 
-> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> index b18f21da4dac..607869330329 100644
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -2433,7 +2433,7 @@ static void __split_huge_page_tail(struct page *head, int tail,
->  }
->  
->  static void __split_huge_page(struct page *page, struct list_head *list,
-> -		pgoff_t end, unsigned long flags)
-> +			      pgoff_t end)
->  {
->  	struct page *head = compound_head(page);
->  	pg_data_t *pgdat = page_pgdat(head);
-> @@ -2442,8 +2442,6 @@ static void __split_huge_page(struct page *page, struct list_head *list,
->  	unsigned long offset = 0;
->  	int i;
->  
-> -	lruvec = mem_cgroup_page_lruvec(head, pgdat);
-> -
->  	/* complete memcg works before add pages to LRU */
->  	mem_cgroup_split_huge_fixup(head);
->  
-> @@ -2455,6 +2453,11 @@ static void __split_huge_page(struct page *page, struct list_head *list,
->  		xa_lock(&swap_cache->i_pages);
->  	}
->  
-> +	/* lock lru list/PageCompound, ref freezed by page_ref_freeze */
-> +	spin_lock(&pgdat->lru_lock);
-> +
-> +	lruvec = mem_cgroup_page_lruvec(head, pgdat);
-> +
->  	for (i = HPAGE_PMD_NR - 1; i >= 1; i--) {
->  		__split_huge_page_tail(head, i, lruvec, list);
->  		/* Some pages can be beyond i_size: drop them from page cache */
-> @@ -2474,6 +2477,8 @@ static void __split_huge_page(struct page *page, struct list_head *list,
->  	}
->  
->  	ClearPageCompound(head);
-> +	spin_unlock(&pgdat->lru_lock);
-> +	/* Caller disabled irqs, so they are still disabled here */
->  
->  	split_page_owner(head, HPAGE_PMD_ORDER);
->  
-> @@ -2491,8 +2496,7 @@ static void __split_huge_page(struct page *page, struct list_head *list,
->  		page_ref_add(head, 2);
->  		xa_unlock(&head->mapping->i_pages);
->  	}
-> -
-> -	spin_unlock_irqrestore(&pgdat->lru_lock, flags);
-> +	local_irq_enable();
->  
->  	remap_page(head);
->  
-> @@ -2631,12 +2635,10 @@ bool can_split_huge_page(struct page *page, int *pextra_pins)
->  int split_huge_page_to_list(struct page *page, struct list_head *list)
->  {
->  	struct page *head = compound_head(page);
-> -	struct pglist_data *pgdata = NODE_DATA(page_to_nid(head));
->  	struct deferred_split *ds_queue = get_deferred_split_queue(head);
->  	struct anon_vma *anon_vma = NULL;
->  	struct address_space *mapping = NULL;
->  	int count, mapcount, extra_pins, ret;
-> -	unsigned long flags;
->  	pgoff_t end;
->  
->  	VM_BUG_ON_PAGE(is_huge_zero_page(head), head);
-> @@ -2697,9 +2699,7 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
->  	unmap_page(head);
->  	VM_BUG_ON_PAGE(compound_mapcount(head), head);
->  
-> -	/* prevent PageLRU to go away from under us, and freeze lru stats */
-> -	spin_lock_irqsave(&pgdata->lru_lock, flags);
-> -
-> +	local_irq_disable();
->  	if (mapping) {
->  		XA_STATE(xas, &mapping->i_pages, page_index(head));
->  
-> @@ -2729,7 +2729,7 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
->  				__dec_node_page_state(head, NR_FILE_THPS);
->  		}
->  
-> -		__split_huge_page(page, list, end, flags);
-> +		__split_huge_page(page, list, end);
->  		if (PageSwapCache(head)) {
->  			swp_entry_t entry = { .val = page_private(head) };
->  
-> @@ -2748,7 +2748,7 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
->  		spin_unlock(&ds_queue->split_queue_lock);
->  fail:		if (mapping)
->  			xa_unlock(&mapping->i_pages);
-> -		spin_unlock_irqrestore(&pgdata->lru_lock, flags);
-> +		local_irq_enable();
->  		remap_page(head);
->  		ret = -EBUSY;
->  	}
-> 
+There are 2 ways for interconnect ring to detect when is open or closed:
+1. To use CCM frames on the interconnect port to detect when the interconnect
+   link goes down/up. This mode is called LC-mode.
+2. To send InTest frames on all 3 ports(2 ring ports and 1 interconnect port)
+   and detect when these frames are received back. This mode is called RC-mode.
+
+This patch series adds support only for RC-mode. Where MIM sends InTest frames
+on all 3 ports and detects when it receives back the InTest. When it receives
+the InTest it means that the ring is closed so it would set the interconnect
+port in blocking state. If it stops receiving the InTest frames then it would
+set the port in forwarding state and it would send InTopo frames. These InTopo
+frames will be received by MRM nodes and process them. And then the MRM will
+send Topo frames in the rings so each client will clear its FDB.
+
+Horatiu Vultur (12):
+  switchdev: mrp: Extend switchdev API for MRP Interconnect
+  bridge: uapi: mrp: Extend MRP attributes for MRP interconnect
+  bridge: mrp: Extend bridge interface
+  bridge: mrp: Extend br_mrp for MRP interconnect
+  bridge: mrp: Rename br_mrp_port_open to br_mrp_ring_port_open
+  bridge: mrp: Add br_mrp_in_port_open function
+  bridge: switchdev: mrp: Extend MRP API for switchdev for MRP
+    Interconnect
+  bridge: mrp: Implement the MRP Interconnect API
+  bridge: mrp: Extend MRP netlink interface for configuring MRP
+    interconnect
+  bridge: uapi: mrp: Extend MRP_INFO attributes for interconnect status
+  bridge: mrp: Extend br_mrp_fill_info
+  net: bridge: Add port attribute IFLA_BRPORT_MRP_IN_OPEN
+
+ include/linux/if_bridge.h          |   1 +
+ include/net/switchdev.h            |  38 +++
+ include/uapi/linux/if_bridge.h     |  58 ++++
+ include/uapi/linux/if_link.h       |   1 +
+ include/uapi/linux/mrp_bridge.h    |  38 +++
+ net/bridge/br_mrp.c                | 531 +++++++++++++++++++++++++++--
+ net/bridge/br_mrp_netlink.c        | 182 +++++++++-
+ net/bridge/br_mrp_switchdev.c      |  62 ++++
+ net/bridge/br_netlink.c            |   3 +
+ net/bridge/br_private_mrp.h        |  27 +-
+ tools/include/uapi/linux/if_link.h |   1 +
+ 11 files changed, 906 insertions(+), 36 deletions(-)
+
+-- 
+2.27.0
+
