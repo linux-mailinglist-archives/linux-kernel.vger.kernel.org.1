@@ -2,40 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29044215B7E
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 18:09:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92424215B5F
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 18:02:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729571AbgGFQJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 12:09:15 -0400
-Received: from colon.ran.es ([212.34.128.5]:57380 "EHLO colon.ran.es"
+        id S1729420AbgGFQCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 12:02:30 -0400
+Received: from mga05.intel.com ([192.55.52.43]:51642 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729408AbgGFQJO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 12:09:14 -0400
-Received: from User ([185.36.81.174])
-        by colon.ran.es (8.13.8/8.13.8/Debian-3+etch1) with SMTP id 061Mc9Ot026909;
-        Thu, 2 Jul 2020 00:38:10 +0200
-Message-Id: <202007012238.061Mc9Ot026909@colon.ran.es>
-Reply-To: <makatiemeka101@yahoo.com>
-From:   "Mr Peter Owen" <compras@sambau.com>
-Subject: <<<<Message from Mr Peter Owen>>>
-Date:   Thu, 2 Jul 2020 00:38:25 +0200
+        id S1729293AbgGFQC3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Jul 2020 12:02:29 -0400
+IronPort-SDR: yP/sMIWlhMHneBzJudBDK3GWYiOcbQdcDd4Bi5TnRRKCyqkGpe46A7QiXvglvhEyD/uL/oBVev
+ 03hXVPml9q1Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9673"; a="232293668"
+X-IronPort-AV: E=Sophos;i="5.75,320,1589266800"; 
+   d="scan'208";a="232293668"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2020 09:02:29 -0700
+IronPort-SDR: wQhXjhFShJ+pJppDzF9xsnuYuAXcXUNaYt2NI4llKRvNsapbDBGQA/AKuj6Hn+QgwPCIe0MVtT
+ vhMC/+D1+I1g==
+X-IronPort-AV: E=Sophos;i="5.75,320,1589266800"; 
+   d="scan'208";a="388232162"
+Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.68])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2020 09:02:29 -0700
+Date:   Mon, 6 Jul 2020 09:02:28 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
+Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, pawan.kumar.gupta@linux.intel.com,
+        jpoimboe@redhat.com, peterz@infradead.org, thellstrom@vmware.com,
+        mgross@linux.intel.com, kim.phillips@amd.com,
+        linux-kernel@vger.kernel.org, DavidWang@zhaoxin.com,
+        CooperYan@zhaoxin.com, QiyuanWang@zhaoxin.com,
+        HerryYang@zhaoxin.com, CobeChen@zhaoxin.com
+Subject: Re: [PATCH] x86/cpufeatures: Add new Zhaoxin CPU features
+Message-ID: <20200706160228.GA4663@agluck-desk2.amr.corp.intel.com>
+References: <1593429689-25131-1-git-send-email-TonyWWang-oc@zhaoxin.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="Windows-1251"
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-To:     undisclosed-recipients:;
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1593429689-25131-1-git-send-email-TonyWWang-oc@zhaoxin.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Good Day,
-I hope this meets you well.I have a proposed BUSINESS DEAL that will be Beneficial to both parties.Please consider it legitimate,legal as your REPUTATION will not be compromised.Please Reply to me ONLY if you are interested and consider your self WORTHY to handle for details.
+On Mon, Jun 29, 2020 at 07:21:29PM +0800, Tony W Wang-oc wrote:
+> Add new Zhaoxin CPU features for enumeration in /proc/cpuinfo:
+> SM2, SM2_EN, SM3, SM4, SM3_EN, SM4_EN, PARALLAX, PARALLAX_EN,
+> TM3, TM3_EN, RNG2, RNG2_EN, PHE2, PHE2_EN, RSA, RSA_EN.
+> 
+> CPUID.(EAX=0xc0000001,ECX=0):EDX[bit 0]  SM2
+> CPUID.(EAX=0xc0000001,ECX=0):EDX[bit 1]  SM2_EN
+> CPUID.(EAX=0xc0000001,ECX=0):EDX[bit 4]  SM3 SM4
+> CPUID.(EAX=0xc0000001,ECX=0):EDX[bit 5]  SM3_EN SM4_EN
+> CPUID.(EAX=0xc0000001,ECX=0):EDX[bit 16] PARALLAX
+> CPUID.(EAX=0xc0000001,ECX=0):EDX[bit 17] PARALLAX_EN
+> CPUID.(EAX=0xc0000001,ECX=0):EDX[bit 20] TM3
+> CPUID.(EAX=0xc0000001,ECX=0):EDX[bit 21] TM3_EN
+> CPUID.(EAX=0xc0000001,ECX=0):EDX[bit 22] RNG2
+> CPUID.(EAX=0xc0000001,ECX=0):EDX[bit 23] RNG2_EN
+> CPUID.(EAX=0xc0000001,ECX=0):EDX[bit 25] PHE2
+> CPUID.(EAX=0xc0000001,ECX=0):EDX[bit 26] PHE2_EN
+> CPUID.(EAX=0xc0000001,ECX=0):EDX[bit 27] RSA
+> CPUID.(EAX=0xc0000001,ECX=0):EDX[bit 28] RSA_EN
+> 
+> SM2, SM3, SM4 are Chinese Cipher Security algorithm.
+> PARALLAX is a feature that automatically adjusts processors's voltage
+> as a function of temperature.
+> TM3 is Zhaoxin CPU Thermal Monitor v3.
+> RNG2 is Zhaoxin Random Number Generation v2.
+> PHE2 is Zhaoxin Padlock Hash Engine v2.
+> RSA is Zhaoxin hardware support for RSA algorithm.
 
-Sincerely,
+Boris is on vacation, so I'll ask the question that he would ask
+if he were here ... "Are there some follow-up patches that use all
+of these feature bits?"
 
-Peter OWEN
+Just adding bits to /proc/cpuinfo is of limited use.
+
+-Tony
