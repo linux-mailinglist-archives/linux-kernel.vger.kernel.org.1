@@ -2,56 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E47D2150E4
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 03:23:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 964692150EB
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 03:27:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728618AbgGFBWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Jul 2020 21:22:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47976 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728477AbgGFBWq (ORCPT
+        id S1728661AbgGFB07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Jul 2020 21:26:59 -0400
+Received: from server-x.ipv4.hkg02.ds.network ([27.111.83.178]:56658 "EHLO
+        mail.gtsys.com.hk" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
+        with ESMTP id S1728616AbgGFB04 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Jul 2020 21:22:46 -0400
-Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A55BDC061794
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Jul 2020 18:22:46 -0700 (PDT)
-Received: by mail-ua1-x92a.google.com with SMTP id q15so11390358uap.4
-        for <linux-kernel@vger.kernel.org>; Sun, 05 Jul 2020 18:22:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=ot7mI3rE8jAjD74kNoJegYGYJbELkx5qd0dgbBas8es=;
-        b=GcUxtiMxGvl8wS2GE6C+lmsWSXUQw8AQf/NSKL1p3VtJVrmeKfoc82XMp+axBh0bzf
-         mkVipZFloJ5KoT8io5YB24zu2Acf6oXooi7JVM1fiQWxq/6rkV1yYevFVtGl/teo5puy
-         Jj5qn5c3xamlXmMkCHfMgA5Hh0MQLsV5Q9wJwWde/yK6iqxv5nlnIiC7g6SDYhY+e0Iu
-         +ri1UzOgcB06OJCJ++WkAy7BREAVbleJ8uwDPEaJbD5vSiC1QG+p6nuwxdUlWCW1sTT3
-         /16MvFq5jve2RXWltqqsNw+1bSI2Ld0JpFjwdcntE+K0BwTclYYDmNTQcE+h0xffVj7v
-         78sg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=ot7mI3rE8jAjD74kNoJegYGYJbELkx5qd0dgbBas8es=;
-        b=EewAl6SwXL6kI0I014EkSUcx4rxa70VaHzxr9xMlzS138Hboe0+CAocm2a1gkQMp8M
-         bICcAHTs25rbn62jGLrSKb5933y4Om90NjyQIItj8pPgADRmYP/m4dmIVBLjO2ozrA3c
-         TIt63yWXDTnukpE3i5OjqFbaD/Hfb5QQ0Dyh3BLPF2j37Y67UiAjCQVc+L1o9B80SWFh
-         ++AJ2tzpz1lWM8mfyQZ7zfu8BMruaMZMu37YQIp1B6GMOpzBZuvFXIrV7hIZ+c70Lvy9
-         wDbQKsdtaopSPJ6lwboCaK+Q2xKLQdKWDmXSSjcPYHe2G4Czgcyrfgl4RCLvxuBMhfqC
-         VP4A==
-X-Gm-Message-State: AOAM530bNY7474jSYq4YAbj4GT8lbYNm7/a+K/p6jy9TUYSVHpYSI8hW
-        PcX9oCPypPsyiznNuwwvpwQ+0le+6sQZqkil3aKwnw==
-X-Google-Smtp-Source: ABdhPJze1fgFm/SUjxkhr9qN7t1RDqxRuIY/bx3OGimTF+OCWh07YUQ6wTajvgqnhg7X2J43zT9f+NW/w37YuOypucI=
-X-Received: by 2002:ab0:4a46:: with SMTP id r6mr28643097uae.107.1593998565652;
- Sun, 05 Jul 2020 18:22:45 -0700 (PDT)
+        Sun, 5 Jul 2020 21:26:56 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.gtsys.com.hk (Postfix) with ESMTP id 412992016B13;
+        Mon,  6 Jul 2020 09:26:51 +0800 (HKT)
+X-Virus-Scanned: Debian amavisd-new at gtsys.com.hk
+Received: from mail.gtsys.com.hk ([127.0.0.1])
+        by localhost (mail.gtsys.com.hk [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id MbPrCEWsKdKw; Mon,  6 Jul 2020 09:26:51 +0800 (HKT)
+Received: from s01.gtsys.com.hk (unknown [10.128.4.2])
+        by mail.gtsys.com.hk (Postfix) with ESMTP id 1CF5220160D4;
+        Mon,  6 Jul 2020 09:26:51 +0800 (HKT)
+Received: from [10.128.2.32] (unknown [124.217.189.122])
+        by s01.gtsys.com.hk (Postfix) with ESMTPSA id D5450C01B74;
+        Mon,  6 Jul 2020 09:26:50 +0800 (HKT)
+Subject: Re: [PATCH v2 1/2] hwmon: shtc1: add support for device tree bindings
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Jack Lo <jack.lo@gtsys.com.hk>, devicetree@vger.kernel.org,
+        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200705142515.GA1975@roeck-us.net>
+From:   Chris Ruehl <chris.ruehl@gtsys.com.hk>
+Message-ID: <0e3cc05b-2ae4-186b-d3b4-fa3ac201b128@gtsys.com.hk>
+Date:   Mon, 6 Jul 2020 09:26:50 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-References: <CAOqywzyuiquXRRKiJh8Zc-yUg86S-Lc8UBp5-FoExxSmV1Rkng@mail.gmail.com>
-In-Reply-To: <CAOqywzyuiquXRRKiJh8Zc-yUg86S-Lc8UBp5-FoExxSmV1Rkng@mail.gmail.com>
-From:   Nick <niklaus.herzog@gmail.com>
-Date:   Mon, 6 Jul 2020 03:22:35 +0200
-Message-ID: <CAOqywzw3F8vDCuv_T5KqsxMmWL_2hLehHxBEEc3gmWo6CyDdLQ@mail.gmail.com>
-Subject: Fwd: [PATCH] CodingStyle: Inclusive Terminology
-To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200705142515.GA1975@roeck-us.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -59,38 +48,64 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi
 
-The proposal is not just! It's bloat! Not directed at the problem!
-Like ISO 9001 processes which were defined, but which were
-circumvented/ignored by every single employee, for god reasons.
+On 5/7/2020 10:25 pm, Guenter Roeck wrote:
+> On Sun, Jul 05, 2020 at 11:47:25AM +0800, Chris Ruehl wrote:
+>> Add support for DTS bindings for the sensirion shtc1,shtw1 and shtc3.
+>>
+>> Signed-off-by: Chris Ruehl <chris.ruehl@gtsys.com.hk>
+>> ---
+>>   drivers/hwmon/shtc1.c | 22 ++++++++++++++++++++--
+>>   1 file changed, 20 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/hwmon/shtc1.c b/drivers/hwmon/shtc1.c
+>> index a0078ccede03..61e9275eb666 100644
+>> --- a/drivers/hwmon/shtc1.c
+>> +++ b/drivers/hwmon/shtc1.c
+>> @@ -14,6 +14,7 @@
+>>   #include <linux/err.h>
+>>   #include <linux/delay.h>
+>>   #include <linux/platform_data/shtc1.h>
+>> +#include <linux/of.h>
+>>   
+>>   /* commands (high precision mode) */
+>>   static const unsigned char shtc1_cmd_measure_blocking_hpm[]    = { 0x7C, 0xA2 };
+>> @@ -196,6 +197,7 @@ static int shtc1_probe(struct i2c_client *client,
+>>   	enum shtcx_chips chip = id->driver_data;
+>>   	struct i2c_adapter *adap = client->adapter;
+>>   	struct device *dev = &client->dev;
+>> +	struct device_node *np = dev->of_node;
+>>   
+>>   	if (!i2c_check_functionality(adap, I2C_FUNC_I2C)) {
+>>   		dev_err(dev, "plain i2c transactions not supported\n");
+>> @@ -233,8 +235,13 @@ static int shtc1_probe(struct i2c_client *client,
+>>   	data->client = client;
+>>   	data->chip = chip;
+>>   
+>> -	if (client->dev.platform_data)
+>> +	if (np) {
+>> +		data->setup.blocking_io = of_property_read_bool(np, "sensirion,blocking_io");
+>> +		data->setup.high_precision = of_property_read_bool(np, "sensicon,low_precision");
+>> +	}
+>> +	else if (client->dev.platform_data)
+>>   		data->setup = *(struct shtc1_platform_data *)dev->platform_data;
+> 
+> CHECK: braces {} should be used on all arms of this statement
+> #46: FILE: drivers/hwmon/shtc1.c:238:
+> +	if (np) {
+> [...]
+> +	else if (client->dev.platform_data)
+> [...]
+> 
+> ERROR: else should follow close brace '}'
+> #50: FILE: drivers/hwmon/shtc1.c:242:
+> +	}
+> +	else if (client->dev.platform_data)
+> 
 
-If the coding style document would explicite state function, names and
-identifiers should be descriptive (it states this for helper
-functions) the terms blacklist, master, slave would not be viable
-names for anything in the kernel. Most Likely every racist wording
-would be similarly excludend.
-ie. black has descriptive proportion in coding/technical context, at
-this point it's neither functional nor descriptive to the function a
-list is used in. Same goes for master, slave and most likely every
-racist connoted term.
+it bites back not using the check-patch script! I _should_ know better! :-(
 
-Reference to african slavery denotes any other racist
-behavior/background, which is racist itself.
+v3 then.
 
-So I would suggest,
+But i will wait a moment to see if someone else lift a finger.
 
-1. to make a clear definition of how function, names and identifiers
-should be formed.
-so explicite promote the current "short descriptive functional terminology".
-As far as I understand that is what linux implicitly expects today anyway.
-This would make it easier for greenhorns like me to start contributing.
-
-2.It could help to try to understand the coding style document, trying
-to ignore any previous knowledge of linux programming. To my
-understanding some paragraphs swallow half of the content.
-
-3. make the maintainers reject every patch not conforming these rules,
-except where it is needed for legacy/standard purpose.
-
-4. explain just this is introduced to move away from inconsiderate
-conoted racism terms. (1-2 sentence, IMHO) The rest belongs to COC.
-The current draft focused to african american slavery is ill fated.
+Chris
