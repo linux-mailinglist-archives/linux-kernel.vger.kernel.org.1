@@ -2,101 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45A222152EE
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 09:13:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C4F9215310
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 09:19:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728892AbgGFHNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 03:13:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45006 "EHLO
+        id S1728863AbgGFHTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 03:19:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728486AbgGFHNo (ORCPT
+        with ESMTP id S1728832AbgGFHTw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 03:13:44 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DF35C08C5DF
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Jul 2020 00:13:44 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id g10so15016785wmc.1
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 00:13:44 -0700 (PDT)
+        Mon, 6 Jul 2020 03:19:52 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20AD6C061794
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Jul 2020 00:19:52 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id x3so11065826pfo.9
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 00:19:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=y6aItrK3ggYlleH0/viUOY6qolHTQy/1u/+BpOihMeo=;
-        b=Hg0xmjE2A2QgB70rmuXJ5Pw8tCPqmCSk8JyeYpHNJadeb74FDA/UNMbzhfZk64RUnP
-         Zr1rpnoAHP8vavTwaW59I5ARloISn3axV1g6YgmRwGj5OWiSj+WmXPOmPtEbzqknfQWU
-         ZEub0cl9lD2LDwyIaNdZxbMfO0V7M5aBmDE7L9N2p3GkyLma3aAtEVmjt1kQl/1CfoLJ
-         8G9W1b0Lti/IYKiuN1mAlMLdlrJFH51PHTACl4zbOUDV3kuYMT4KnNzeIJlnnTDm4kA2
-         PyqBePTZPGxmSCPnXDR9CrS1Vy9NuS/x9NqZ8lMU11tTceRZNBArWLIisVl+XdKf+pmi
-         BywA==
+        d=endlessm-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=O74Nuai4i0SLX5VBGfHYZHCvuzscSOHQ2q6kAb3CK+Q=;
+        b=sgSnX4BvnCsHbxM0A5WWFsmuE95MfmeQXIjkXZbR2BNWgcCW1NKpULF4OKiZwMPf2F
+         SkM7pF7DPNg+vYebyjW8hcfK/wLQvoRq8NDdij03laNTuA/b0770dCQrB9Sal4EyYLgV
+         YdRhA0c/egElceVCWwUTJI5re6E2kthSlvIAaEIOWCRjD5G3YPHELvH7WFlivgQbJswP
+         ErLpEU4nnu0sZg68ioKM3Tf4RdO6DAaaO/ybGyTahRQZI8lmCpEZMAPlDoGRoAhNz4cU
+         XxOWXJg9ydKvmgsX0zaiUnu2Rv45vfUmfHcFhxxqgAfYImQ2TqZ6sLU0FvU5ESorX9D/
+         +XAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=y6aItrK3ggYlleH0/viUOY6qolHTQy/1u/+BpOihMeo=;
-        b=rVpps7kShoFZOUeUwQXSgseh/4GIUNUpF5QUWXSRH1JUC1Ynx4QXod65nFko7ewBCP
-         mHM6k3dSoGOxs4Wnk1IL+X1PXS/DUn4XzihrZG8c07CyDyvCKBs/jmOin0WLRELKFt0O
-         DsYyrgk1alelmW3bwwS11PcYJweCrkIde5xLKKVybjLTomdF9jAhrz4gcMxSl38IIBGn
-         Zw4hFQ4N/nALpNQU74QPgXm9nVp9tXvFokXFlPduxzAQCv6gy8d70T3pgeG3FEjFzd0F
-         19bwODrw8TEtxynL5yq+fIXAd14Gwraj1ItK6UUxsFh+EmUxKxM9LuSOjs8LBu4h1skA
-         OsWw==
-X-Gm-Message-State: AOAM532TiJUoEeuPt3hIrqnCqH9HfgYscI3I3iXrefMyb8MSUqaPEYQL
-        TPqe5p9dCkPlxWqQbddqGXpbIA==
-X-Google-Smtp-Source: ABdhPJxWsjw1xgjYJUFiPLMMd5RNjJNu0hJkWTnvqG5HIkpSNJgHQAoTPWkdT0q52MWphuM5cnUMdA==
-X-Received: by 2002:a1c:4406:: with SMTP id r6mr47190853wma.161.1594019623028;
-        Mon, 06 Jul 2020 00:13:43 -0700 (PDT)
-Received: from dell ([2.27.35.206])
-        by smtp.gmail.com with ESMTPSA id l3sm6561303wrx.22.2020.07.06.00.13.42
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=O74Nuai4i0SLX5VBGfHYZHCvuzscSOHQ2q6kAb3CK+Q=;
+        b=I3jcnC3JwFw6LIxbdpfumX6dSkzC+zJSDBypp3+dvNYgjOIRWQrulxe6mh/+/uy16J
+         thl/4fjjVdqLxfutF0fLQ1oxdYoOLeh7BzwxufVx+CXG7LYL9kl7lq+KqIW930HMkgC0
+         ILLFVvSsYJXaLJpJFuovg0fbOxJDdrVzgdhK4PYMaTJcYC+wlN+P4SDPThf+mtTVOuGv
+         /QyeXdzUaBwHVB7mbdwyRekMJriQhpyEIzpap4U8tBDy/qkLEDrDDbrdePLJI5WKUHoA
+         7p/E0kI6opjQwbOywCB9wqwpSHK34Yd5NvpDNiE4eGKs90Vwvh8Ln46eX899SM7Hz1bM
+         6wiw==
+X-Gm-Message-State: AOAM532vPvlZz+H5HGTM9uMXlF+Ii5Afs0iKA4yhs3KKYDGKrHRz+yo8
+        Ifuw6Ufzx9q0qRejKyheUogV3nC+dJxSkA==
+X-Google-Smtp-Source: ABdhPJy97C5d00A/1zRlOr0gcTDJG1/xcPA2z9ugXTaAcrfTaHjW/vgXKJw1+14TyG8kSOVZet0P2Q==
+X-Received: by 2002:aa7:848b:: with SMTP id u11mr28920909pfn.72.1594019991291;
+        Mon, 06 Jul 2020 00:19:51 -0700 (PDT)
+Received: from starnight.localdomain (123-204-46-122.static.seed.net.tw. [123.204.46.122])
+        by smtp.googlemail.com with ESMTPSA id f18sm17825210pgv.84.2020.07.06.00.19.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Jul 2020 00:13:42 -0700 (PDT)
-Date:   Mon, 6 Jul 2020 08:13:40 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     daniel.thompson@linaro.org, jingoohan1@gmail.com,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/8] Fix a bunch of W=1 warnings in Backlight
-Message-ID: <20200706071340.GC2821869@dell>
-References: <20200624145721.2590327-1-lee.jones@linaro.org>
+        Mon, 06 Jul 2020 00:19:50 -0700 (PDT)
+From:   Jian-Hong Pan <jian-hong@endlessm.com>
+To:     Takashi Iwai <tiwai@suse.com>
+Cc:     Kailang Yang <kailang@realtek.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, linux@endlessm.com,
+        Jian-Hong Pan <jian-hong@endlessm.com>,
+        Chris Chiu <chiu@endlessm.com>
+Subject: [PATCH v3 1/3] ALSA: hda/realtek - Enable audio jacks of Acer vCopperbox with ALC269VC
+Date:   Mon,  6 Jul 2020 15:18:25 +0800
+Message-Id: <20200706071826.39726-1-jian-hong@endlessm.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <aa62a43d4f1f458fb11794c26d373528@realtek.com>
+References: <aa62a43d4f1f458fb11794c26d373528@realtek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200624145721.2590327-1-lee.jones@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Jun 2020, Lee Jones wrote:
+The Acer desktop vCopperbox with ALC269VC cannot detect the MIC of
+headset, the line out and internal speaker until
+ALC269VC_FIXUP_ACER_VCOPPERBOX_PINS quirk applied.
 
-> Attempting to clean-up W=1 kernel builds, which are currently
-> overwhelmingly riddled with niggly little warnings.
-> 
-> Lee Jones (8):
->   backlight: lms501kf03: Remove unused const variables
->   backlight: lcd: Add missing kerneldoc entry for 'struct device parent'
->   backlight: ili922x: Add missing kerneldoc descriptions for
->     CHECK_FREQ_REG() args
->   backlight: ili922x: Remove invalid use of kerneldoc syntax
->   backlight: ili922x: Add missing kerneldoc description for
->     ili922x_reg_dump()'s arg
->   backlight: backlight: Supply description for function args in existing
->     Kerneldocs
->   backlight: lm3630a_bl: Remove invalid checks for unsigned int < 0
->   backlight: qcom-wled: Remove unused configs for LED3 and LED4
-> 
->  drivers/video/backlight/backlight.c  | 2 ++
->  drivers/video/backlight/ili922x.c    | 8 ++++++--
->  drivers/video/backlight/lcd.c        | 1 +
->  drivers/video/backlight/lm3630a_bl.c | 4 ++--
->  drivers/video/backlight/lms501kf03.c | 8 --------
->  drivers/video/backlight/qcom-wled.c  | 8 --------
->  6 files changed, 11 insertions(+), 20 deletions(-)
+Signed-off-by: Jian-Hong Pan <jian-hong@endlessm.com>
+Signed-off-by: Chris Chiu <chiu@endlessm.com>
+---
+v3: Change the chained ID to ALC269_FIXUP_HEADSET_MIC according to
+    Realtek's suggestion
 
-All applied to Backlight.
+ sound/pci/hda/patch_realtek.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 737ef82a75fd..13c32655df44 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6149,6 +6149,7 @@ enum {
+ 	ALC236_FIXUP_HP_MUTE_LED,
+ 	ALC298_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET,
+ 	ALC295_FIXUP_ASUS_MIC_NO_PRESENCE,
++	ALC269VC_FIXUP_ACER_VCOPPERBOX_PINS,
+ };
+ 
+ static const struct hda_fixup alc269_fixups[] = {
+@@ -7327,6 +7328,17 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.chained = true,
+ 		.chain_id = ALC269_FIXUP_HEADSET_MODE
+ 	},
++	[ALC269VC_FIXUP_ACER_VCOPPERBOX_PINS] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = (const struct hda_pintbl[]) {
++			{ 0x14, 0x90100120 }, /* use as internal speaker */
++			{ 0x18, 0x02a111f0 }, /* use as headset mic, without its own jack detect */
++			{ 0x1a, 0x01011020 }, /* use as line out */
++			{ },
++		},
++		.chained = true,
++		.chain_id = ALC269_FIXUP_HEADSET_MIC
++	},
+ };
+ 
+ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+@@ -7346,6 +7358,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1025, 0x1099, "Acer Aspire E5-523G", ALC255_FIXUP_ACER_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1025, 0x110e, "Acer Aspire ES1-432", ALC255_FIXUP_ACER_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1025, 0x1246, "Acer Predator Helios 500", ALC299_FIXUP_PREDATOR_SPK),
++	SND_PCI_QUIRK(0x1025, 0x1247, "Acer vCopperbox", ALC269VC_FIXUP_ACER_VCOPPERBOX_PINS),
+ 	SND_PCI_QUIRK(0x1025, 0x128f, "Acer Veriton Z6860G", ALC286_FIXUP_ACER_AIO_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1025, 0x1290, "Acer Veriton Z4860G", ALC286_FIXUP_ACER_AIO_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1025, 0x1291, "Acer Veriton Z4660G", ALC286_FIXUP_ACER_AIO_HEADSET_MIC),
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.27.0
+
