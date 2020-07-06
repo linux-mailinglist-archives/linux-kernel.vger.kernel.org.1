@@ -2,97 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1479C2159FE
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 16:50:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 780212159EF
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Jul 2020 16:50:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729500AbgGFOuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 10:50:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729454AbgGFOuF (ORCPT
+        id S1729453AbgGFOto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 10:49:44 -0400
+Received: from mail.efficios.com ([167.114.26.124]:57410 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729432AbgGFOtl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 10:50:05 -0400
-Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1C6BC061794
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Jul 2020 07:50:04 -0700 (PDT)
-Received: by mail-vs1-xe44.google.com with SMTP id q15so9983979vso.9
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 07:50:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RWA25aZsg+amDOJvt4Y158PEbRGk+vCsxnKr+qd7EXU=;
-        b=taqKJ3OBsVxei3aYyQpx5E7jAO+c1xVScXydVxtz+3dHOGbroJQYL2n3DOlwxJKzKs
-         Ouh0ocprkUbxvvDhnFX3mOW7itQeN18QlyQPR9ViQuihWANWXVwzs0XcFq3Il0omKTd0
-         rnFJEXbqLgNILJf/LvtWVnER9c8BBEzTqmGHfUouCPej5YWpqxus3RAxsF+YRw4r7yeg
-         hstbRwZJNQ35po06x1VPte01xdU7/Krn8zqZR20t6O65tB0PaY4zxV2Mq/CQ+s9CrUdk
-         2uvqdo1jp7/DbNX8p+WrRWjuQvoWBcOLffugp10y9AwsF65NstPUP37Br1k/mHijY374
-         rnTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RWA25aZsg+amDOJvt4Y158PEbRGk+vCsxnKr+qd7EXU=;
-        b=mcUqvCoqxrAboQ2WtQ3rj6eoKDSGtniRwvYCvrtWvEsgWF/yjCrjRUR2ZYwjhEm5ax
-         f3+NOj09A7Q+d8QNA1LMdXgeRmaSSncUsYiYKgEeVUTYKRya8AHZzbf4jfr5FhOQ7KP/
-         O52A1XXHsino/De4iXssVmRbCv8GFc5SFFxWt6NIjG1i2p6OteJxlscKfTjDz7y66wWo
-         YpImzuII/EWE9nAecHiqvmrTMpr/oe1ZlYttgZyjICvtHdQofX51a9UyQEWqGsa5C1Ff
-         G4kX5BW/PkHXC0RXHkyOkXmLdIadoROwXrhFMUookKrC+IdclIzvaC9r5kvmZh/CGbjD
-         64Ug==
-X-Gm-Message-State: AOAM532yvGHdWHRX2unYbmT+Q9b9lRQNVwSdeABR7QeLJk/0FQz0t7Dc
-        5+ATlHPs7GTrl4EStu1jtgR7Zvqd8G4GUx9Od1VjUg==
-X-Google-Smtp-Source: ABdhPJxp7EQdsYXKyXmIwNKtH/jXmN/JFTTqCw29aNQ82/P1aOfsCs80wZaC7wnclqEWyJePDEkpHKIZfvV8xexmmqk=
-X-Received: by 2002:a05:6102:126a:: with SMTP id q10mr18466459vsg.35.1594047004092;
- Mon, 06 Jul 2020 07:50:04 -0700 (PDT)
+        Mon, 6 Jul 2020 10:49:41 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 63F692D8429;
+        Mon,  6 Jul 2020 10:49:39 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id nGbNS3E2RCRr; Mon,  6 Jul 2020 10:49:39 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 198852D8339;
+        Mon,  6 Jul 2020 10:49:39 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 198852D8339
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1594046979;
+        bh=8gAqoabmX0YflNXKWP2tfZI2xQ9rxWmk8Vog6l1Uejc=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=rxQ/oIwF2PU+6lDE1w7+Geq7Z0Y1xfBDUbTcERHIo8TBUptlVm2rd7oeSbrLdHCZ+
+         ycEdmDsAdFEno27tUxe+lyUxu0o935KL5RsDp4TvSOQ05IlqyuoVBrMzs2NKC7l2Q/
+         SFlFR30T0hgUDcvu8OqLfgiql/gHSPtifh5np5FBsqZ6jJSsQGBEPj5D46SyW67wZR
+         DevmD+6sNIni81jClilhGrBOw1/eYObNrxmpP9rHFBPzlgmiHudybM7kgpVVJe6UiZ
+         ac1X8F0DLGYAx3kLn52tuS0WeG7/Fc1/kdVE8aeIwSNsTaDW28Y28ILjwgvTB8U8tE
+         Wqdpb23RS1fkg==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id FXEvtcbaTxen; Mon,  6 Jul 2020 10:49:39 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 094812D8338;
+        Mon,  6 Jul 2020 10:49:39 -0400 (EDT)
+Date:   Mon, 6 Jul 2020 10:49:38 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Florian Weimer <fweimer@redhat.com>
+Cc:     carlos <carlos@redhat.com>, Joseph Myers <joseph@codesourcery.com>,
+        Szabolcs Nagy <szabolcs.nagy@arm.com>,
+        libc-alpha <libc-alpha@sourceware.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ben Maurer <bmaurer@fb.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paul <paulmck@linux.vnet.ibm.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Paul Turner <pjt@google.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-api <linux-api@vger.kernel.org>
+Message-ID: <942999672.22574.1594046978937.JavaMail.zimbra@efficios.com>
+In-Reply-To: <877dvg4ud4.fsf@oldenburg2.str.redhat.com>
+References: <20200629190036.26982-1-mathieu.desnoyers@efficios.com> <20200629190036.26982-3-mathieu.desnoyers@efficios.com> <877dvg4ud4.fsf@oldenburg2.str.redhat.com>
+Subject: Re: [PATCH 2/3] Linux: Use rseq in sched_getcpu if available (v9)
 MIME-Version: 1.0
-References: <20200630223655.2627-1-l4stpr0gr4m@gmail.com>
-In-Reply-To: <20200630223655.2627-1-l4stpr0gr4m@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 6 Jul 2020 16:49:26 +0200
-Message-ID: <CAPDyKFqS6Ew2Op1qx_YHMCd0qFmRm_XtUQrgdWLY_+v0kxr8pA@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: mmc: sdhci-sirf
-To:     Kangmin Park <l4stpr0gr4m@gmail.com>
-Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3945 (ZimbraWebClient - FF78 (Linux)/8.8.15_GA_3928)
+Thread-Topic: Linux: Use rseq in sched_getcpu if available (v9)
+Thread-Index: s+lDRWKNxhAkUDtcGJ1GCFO2e2bJlg==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 1 Jul 2020 at 00:37, Kangmin Park <l4stpr0gr4m@gmail.com> wrote:
->
-> Fix unit address to match the first address specified in the reg
-> property of the node.
+----- On Jul 6, 2020, at 9:59 AM, Florian Weimer fweimer@redhat.com wrote:
 
-Rather than fixing legacy DT doc, can you please consider to convert
-the doc into the yaml format instead?
+> * Mathieu Desnoyers:
+>=20
+>> When available, use the cpu_id field from __rseq_abi on Linux to
+>> implement sched_getcpu().  Fall-back on the vgetcpu vDSO if
+>> unavailable.
+>=20
+> I've pushed this to glibc master, but unfortunately it looks like this
+> exposes a kernel bug related to affinity mask changes.
+>=20
+> After building and testing glibc, this
+>=20
+>  for x in {1..2000} ; do posix/tst-affinity-static  & done
+>=20
+> produces some =E2=80=9Cerror:=E2=80=9D lines for me:
+>=20
+> error: Unexpected CPU 2, expected 0
+> error: Unexpected CPU 2, expected 0
+> error: Unexpected CPU 2, expected 0
+> error: Unexpected CPU 2, expected 0
+> error: Unexpected CPU 138, expected 0
+> error: Unexpected CPU 138, expected 0
+> error: Unexpected CPU 138, expected 0
+> error: Unexpected CPU 138, expected 0
+>=20
+> =E2=80=9Cexpected 0=E2=80=9D is a result of how the test has been written=
+, it bails out
+> on the first failure, which happens with CPU ID 0.
+>=20
+> Smaller systems can use a smaller count than 2000 to reproduce this.  It
+> also happens sporadically when running the glibc test suite itself
+> (which is why it took further testing to reveal this issue).
+>=20
+> I can reproduce this with the Debian 4.19.118-2+deb10u1 kernel, the
+> Fedora 5.6.19-300.fc32 kernel, and the Red Hat Enterprise Linux kernel
+> 4.18.0-193.el8 (all x86_64).
+>=20
+> As to the cause, I'd guess that the exit path in the sched_setaffinity
+> system call fails to update the rseq area, so that userspace can observe
+> the outdated CPU ID there.
 
-Kind regards
-Uffe
+Hi Florian,
+
+We have a similar test in Linux, see tools/testing/selftests/rseq/basic_tes=
+t.c.
+That test does not trigger this issue, even when executed repeatedly.
+
+I'll investigate further what is happening within the glibc test.
+
+Thanks,
+
+Mathieu
 
 
->
-> Signed-off-by: Kangmin Park <l4stpr0gr4m@gmail.com>
-> ---
->  Documentation/devicetree/bindings/mmc/sdhci-sirf.txt | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/Documentation/devicetree/bindings/mmc/sdhci-sirf.txt b/Documentation/devicetree/bindings/mmc/sdhci-sirf.txt
-> index dd6ed464bcb8..61185bbfdf9e 100644
-> --- a/Documentation/devicetree/bindings/mmc/sdhci-sirf.txt
-> +++ b/Documentation/devicetree/bindings/mmc/sdhci-sirf.txt
-> @@ -11,7 +11,7 @@ Optional properties:
->
->  Example:
->
-> -       sd0: sdhci@56000000 {
-> +       sd0: sdhci@cd000000 {
->                 compatible = "sirf,prima2-sdhc";
->                 reg = <0xcd000000 0x100000>;
->                 cd-gpios = <&gpio 6 0>;
-> --
-> 2.26.2
->
+--=20
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
