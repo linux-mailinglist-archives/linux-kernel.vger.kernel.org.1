@@ -2,184 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FC9E216202
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 01:20:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 244ED216209
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 01:23:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727094AbgGFXUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 19:20:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53260 "EHLO
+        id S1727120AbgGFXX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 19:23:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726280AbgGFXUJ (ORCPT
+        with ESMTP id S1726729AbgGFXX2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 19:20:09 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD080C061755
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Jul 2020 16:20:08 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id s16so18199102lfp.12
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 16:20:08 -0700 (PDT)
+        Mon, 6 Jul 2020 19:23:28 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58AE7C061755
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Jul 2020 16:23:28 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id l12so44579771ejn.10
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 16:23:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=S3X9p3/Tcr/ntGdk7/sKAQe/cqkFM9AS9Ft6l97WEKQ=;
-        b=uQJyuwzhr1LE9Kuu0uj364VAAz32Bh7MBlXiEDIQ/nUXcVpCy46dFU+hOB7IQ1k/ZN
-         bJgvUcwxMNHu4LDAb+vAaKgiG7GYiIy67zI1i2MUI3EvXO84kY8FEEPUVp/hvHeiNL6c
-         ZygjdlEC+YziNf4Q/RlhItGSwpgUrrWRKO5Co76LjKMxg7su1J6iFs06TCzAmeHEY/Jk
-         ceUn6JagX5snL/WJLnKUWPPc4WHeRKiN6R6mT6oQ1sbMsRTT6O2cGqrkOashlprvdlRo
-         eyPIPw8Vy/Ewj162V27wNRLki/xnrojkju/PLxmHEJ6Ji+8AscOEXddWLC6XeyOL1qct
-         3PQQ==
+        d=broadcom.com; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=sGrYZWycqP9TAozi+mTo3rMZiZ+iFPNxAZmAwH/+2ic=;
+        b=NNTkWglw6v8kimxFbbxcgXJ9At1/ku05iGPvE8aPC5Jsx2p0hxTjTgFCfNzoD2yDSq
+         NeU0flxzuhPXu/cjIb4PYggIl9H8gAz4LElUJBaOF7Z+BxrNCD22m5U83Er7SJaklDOe
+         /nmJU10L+D7EbL4AsQRX9J355g4LfXHsBpk0M=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=S3X9p3/Tcr/ntGdk7/sKAQe/cqkFM9AS9Ft6l97WEKQ=;
-        b=HrSbfnb39i3sRhciJ3k3t7zyn+sbeTFbvaQ8vKaUIFq8+h1H+H51n20cqTpgiDGcTA
-         JsBJ7+qvUO8OG7f7BwBZ/c9rssEPLiyV0SIEpV4Y48NhqL3FzmgITrFQFj4B/iZNpYTB
-         1HhC26jUZ2Zsb6+0Ix82WRmJEhLuLpmDl8CIDa7NFAYooRivoFVinLDvN6FMzHt4RMVV
-         xMdLov/hE2Ii633ks9POecSuPm4IqQLbhxGmYHUN8XWrhE+/FC6/Z9C/CHdXvkIopsK6
-         LKqvRdKevfU79ZRhKSkvi0kfVn9YzdrJ03WcLQBHaTsjb487QYOym5OwIKgO60fK32rl
-         n/Jg==
-X-Gm-Message-State: AOAM532rLezxe3EN/Ceexq8KF1GnzWOYFcR/vjK1YrrJ0qaJm1LWvm4j
-        2JtA0QY0QOHlfU3HbY6fadWz5yINfdIiTxNcCdAzPA==
-X-Google-Smtp-Source: ABdhPJxhlrks5dTrFpXpr6UWodktRTBMegtu4j0YZwtWWhGamKlzpsn99s1KAheWtq3vN90rWaEkmGqPB/S4gzc6C0Y=
-X-Received: by 2002:a19:ca11:: with SMTP id a17mr31096448lfg.120.1594077606885;
- Mon, 06 Jul 2020 16:20:06 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200630044943.3425049-4-rajatja@google.com> <20200706170736.GA125844@bjorn-Precision-5520>
-In-Reply-To: <20200706170736.GA125844@bjorn-Precision-5520>
-From:   Rajat Jain <rajatja@google.com>
-Date:   Mon, 6 Jul 2020 16:19:30 -0700
-Message-ID: <CACK8Z6H-8SAmGPFAwQjiJFQyH0S6h5EGyzSNpnrdhsu2UhpFjg@mail.gmail.com>
-Subject: Re: [PATCH v2 3/7] PCI/ACS: Enable PCI_ACS_TB for untrusted/external-facing
- devices
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        "open list:AMD IOMMU (AMD-VI)" <iommu@lists.linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>,
-        "Krishnakumar, Lalithambika" <lalithambika.krishnakumar@intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Prashant Malani <pmalani@google.com>,
-        Benson Leung <bleung@google.com>,
-        Todd Broch <tbroch@google.com>,
-        Alex Levin <levinale@google.com>,
-        Mattias Nissler <mnissler@google.com>,
-        Rajat Jain <rajatxjain@gmail.com>,
-        Bernie Keany <bernie.keany@intel.com>,
-        Aaron Durbin <adurbin@google.com>,
-        Diego Rivas <diegorivas@google.com>,
-        Duncan Laurie <dlaurie@google.com>,
-        Furquan Shaikh <furquan@google.com>,
-        Jesse Barnes <jsbarnes@google.com>,
-        Christian Kellner <christian@kellner.me>,
-        Alex Williamson <alex.williamson@redhat.com>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=sGrYZWycqP9TAozi+mTo3rMZiZ+iFPNxAZmAwH/+2ic=;
+        b=Hyz82czUsF5vVTo0IoiWpr1akVLi9IbbwhqJ8tL2VC0yt/mLsmEVPj/N/Ph+ZDov88
+         /LirOpoN1xXDqYqvYHX4qV1fMV1TghedoLt9jbZB/VNXi+g3zRRNXgECEvzIOfXzhvpN
+         5pRwwYyZoILyy3bTuddnuysMyjoYa5bynGxJqUpNYaMOjL3lt+9vNeoZtZ2L7YIoOsmY
+         8A9gpUSIGbZflXks8xKd+vorOrTiY2TB1mbx5z9H3okDCq6lBugpzsl0LgBlUESVDZXE
+         wUhgEpqiRIpOQX9ds8cD2SUw0RiMpdVuc0M/utN5Ch8UTu12l7duHkHEpVRh1BdyYapm
+         YIoA==
+X-Gm-Message-State: AOAM533Py48VBcVPbX5GeIHRtEcTJiU58Ljf74j0jx/x8KOLLJSlNTzj
+        A9wEYHx7IyvMzcgAjlyGLp4M5A==
+X-Google-Smtp-Source: ABdhPJxhgqqb6a9BehYW0oPK9MabgPgpNbZJDqPabgwIBemL8sOsGvlShdvo3/nkEhwm/Wj/lYWWpg==
+X-Received: by 2002:a17:906:57c6:: with SMTP id u6mr44182312ejr.194.1594077807004;
+        Mon, 06 Jul 2020 16:23:27 -0700 (PDT)
+Received: from lbrmn-lnxub113.broadcom.net ([192.19.228.250])
+        by smtp.gmail.com with ESMTPSA id i2sm4002567ejp.114.2020.07.06.16.23.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Jul 2020 16:23:26 -0700 (PDT)
+From:   Scott Branden <scott.branden@broadcom.com>
+To:     Luis Chamberlain <mcgrof@kernel.org>,
+        Wolfram Sang <wsa@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Oliver O'Halloran" <oohall@gmail.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        David Brown <david.brown@linaro.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Shuah Khan <shuah@kernel.org>, bjorn.andersson@linaro.org,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     Mimi Zohar <zohar@linux.ibm.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        Olof Johansson <olof@lixom.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Kees Cook <keescook@chromium.org>,
+        Takashi Iwai <tiwai@suse.de>, linux-kselftest@vger.kernel.org,
+        Andy Gross <agross@kernel.org>,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Scott Branden <scott.branden@broadcom.com>
+Subject: [PATCH v10 0/9] firmware: add request_partial_firmware_into_buf
+Date:   Mon,  6 Jul 2020 16:23:00 -0700
+Message-Id: <20200706232309.12010-1-scott.branden@broadcom.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 6, 2020 at 10:07 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
->
-> On Mon, Jun 29, 2020 at 09:49:39PM -0700, Rajat Jain wrote:
-> > When enabling ACS, enable translation blocking for external facing ports
-> > and untrusted devices.
-> >
-> > Signed-off-by: Rajat Jain <rajatja@google.com>
-> > ---
-> > v2: Commit log change
-> >
-> >  drivers/pci/pci.c    |  4 ++++
-> >  drivers/pci/quirks.c | 11 +++++++++++
-> >  2 files changed, 15 insertions(+)
-> >
-> > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> > index d2ff987585855..79853b52658a2 100644
-> > --- a/drivers/pci/pci.c
-> > +++ b/drivers/pci/pci.c
-> > @@ -3330,6 +3330,10 @@ static void pci_std_enable_acs(struct pci_dev *dev)
-> >       /* Upstream Forwarding */
-> >       ctrl |= (cap & PCI_ACS_UF);
-> >
-> > +     if (dev->external_facing || dev->untrusted)
-> > +             /* Translation Blocking */
-> > +             ctrl |= (cap & PCI_ACS_TB);
-> > +
-> >       pci_write_config_word(dev, pos + PCI_ACS_CTRL, ctrl);
-> >  }
-> >
-> > diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-> > index b341628e47527..6294adeac4049 100644
-> > --- a/drivers/pci/quirks.c
-> > +++ b/drivers/pci/quirks.c
-> > @@ -4934,6 +4934,13 @@ static void pci_quirk_enable_intel_rp_mpc_acs(struct pci_dev *dev)
-> >       }
-> >  }
-> >
-> > +/*
-> > + * Currently this quirk does the equivalent of
-> > + * PCI_ACS_RR | PCI_ACS_CR | PCI_ACS_UF | PCI_ACS_SV
->
-> Nit: Reorder these as in c8de8ed2dcaa ("PCI: Make ACS quirk
-> implementations more uniform") so they match other similar lists in
-> the code.
+This patch series adds partial read support via a new call
+request_partial_firmware_into_buf.
+Such support is needed when the whole file is not needed and/or
+only a smaller portion of the file will fit into allocated memory
+at any one time.
+In order to accept the enhanced API it has been requested that kernel
+selftests and upstreamed driver utilize the API enhancement and so
+are included in this patch series.
 
-Will do.
+Also in this patch series is the addition of a new Broadcom VK driver
+utilizing the new request_firmware_into_buf enhanced API.
 
->
-> But more to the point: we have a bunch of other quirks for devices
-> that do not have an ACS capability but *do* provide some ACS-like
-> features.  Most of them support
->
->   PCI_ACS_SV | PCI_ACS_RR | PCI_ACS_CR | PCI_ACS_UF
->
-> because that's what we usually want.  But I bet some of them also
-> actually provide the equivalent of PCI_ACS_TB.
->
-> REQ_ACS_FLAGS doesn't include PCI_ACS_TB.  Is there anything we need
-> to do on the pci_acs_enabled() side to check for PCI_ACS_TB, and
-> consequently, to update any of the quirks for devices that provide it?
+Further comment followed to add IMA support of the partial reads
+originating from request_firmware_into_buf calls.  And another request
+to move existing kernel_read_file* functions to its own include file.
 
-I'm actually not sure.
-+Alex Williamson , do you have any comments here?
+Changes from v9:
+ - add patch to move existing kernel_read_file* to its own include file
+ - driver fixes
+Changes from v8:
+ - correct compilation error when CONFIG_FW_LOADER not defined
+Changes from v7:
+ - removed swiss army knife kernel_pread_* style approach
+   and simply add offset parameter in addition to those needed
+   in kernel_read_* functions thus removing need for kernel_pread enum
+Changes from v6:
+ - update ima_post_read_file check on IMA_FIRMWARE_PARTIAL_READ
+ - adjust new driver i2c-slave-eeprom.c use of request_firmware_into_buf
+ - remove an extern
+Changes from v5:
+ - add IMA FIRMWARE_PARTIAL_READ support
+ - change kernel pread flags to enum
+ - removed legacy support from driver
+ - driver fixes
+Changes from v4:
+ - handle reset issues if card crashes
+ - allow driver to have min required msix
+ - add card utilization information
+Changes from v3:
+ - fix sparse warnings
+ - fix printf format specifiers for size_t
+ - fix 32-bit cross-compiling reports 32-bit shifts
+ - use readl/writel,_relaxed to access pci ioremap memory,
+  removed memory barriers and volatile keyword with such change
+ - driver optimizations for interrupt/poll functionalities
+Changes from v2:
+ - remove unnecessary code and mutex locks in lib/test_firmware.c
+ - remove VK_IOCTL_ACCESS_BAR support from driver and use pci sysfs instead
+ - remove bitfields
+ - remove Kconfig default m
+ - adjust formatting and some naming based on feedback
+ - fix error handling conditions
+ - use appropriate return codes
+ - use memcpy_toio instead of direct access to PCIE bar
 
-Thanks,
 
-Rajat
+Scott Branden (9):
+  fs: move kernel_read_file* to its own include file
+  fs: introduce kernel_pread_file* support
+  firmware: add request_partial_firmware_into_buf
+  test_firmware: add partial read support for request_firmware_into_buf
+  firmware: test partial file reads of request_partial_firmware_into_buf
+  bcm-vk: add bcm_vk UAPI
+  misc: bcm-vk: add Broadcom VK driver
+  MAINTAINERS: bcm-vk: add maintainer for Broadcom VK Driver
+  ima: add FIRMWARE_PARTIAL_READ support
 
->
-> > + *
-> > + * Currently missing, it also needs to do equivalent of PCI_ACS_TB,
-> > + * if dev->external_facing || dev->untrusted
-> > + */
-> >  static int pci_quirk_enable_intel_pch_acs(struct pci_dev *dev)
-> >  {
-> >       if (!pci_quirk_intel_pch_acs_match(dev))
-> > @@ -4973,6 +4980,10 @@ static int pci_quirk_enable_intel_spt_pch_acs(struct pci_dev *dev)
-> >       ctrl |= (cap & PCI_ACS_CR);
-> >       ctrl |= (cap & PCI_ACS_UF);
-> >
-> > +     if (dev->external_facing || dev->untrusted)
-> > +             /* Translation Blocking */
-> > +             ctrl |= (cap & PCI_ACS_TB);
-> > +
-> >       pci_write_config_dword(dev, pos + INTEL_SPT_ACS_CTRL, ctrl);
-> >
-> >       pci_info(dev, "Intel SPT PCH root port ACS workaround enabled\n");
-> > --
-> > 2.27.0.212.ge8ba1cc988-goog
-> >
+ MAINTAINERS                                   |    7 +
+ drivers/base/firmware_loader/firmware.h       |    5 +
+ drivers/base/firmware_loader/main.c           |   80 +-
+ drivers/misc/Kconfig                          |    1 +
+ drivers/misc/Makefile                         |    1 +
+ drivers/misc/bcm-vk/Kconfig                   |   29 +
+ drivers/misc/bcm-vk/Makefile                  |   11 +
+ drivers/misc/bcm-vk/bcm_vk.h                  |  419 +++++
+ drivers/misc/bcm-vk/bcm_vk_dev.c              | 1357 +++++++++++++++
+ drivers/misc/bcm-vk/bcm_vk_msg.c              | 1504 +++++++++++++++++
+ drivers/misc/bcm-vk/bcm_vk_msg.h              |  211 +++
+ drivers/misc/bcm-vk/bcm_vk_sg.c               |  275 +++
+ drivers/misc/bcm-vk/bcm_vk_sg.h               |   61 +
+ drivers/misc/bcm-vk/bcm_vk_tty.c              |  352 ++++
+ fs/exec.c                                     |   92 +-
+ include/linux/firmware.h                      |   12 +
+ include/linux/fs.h                            |   39 -
+ include/linux/ima.h                           |    1 +
+ include/linux/kernel_read_file.h              |   69 +
+ include/linux/security.h                      |    1 +
+ include/uapi/linux/misc/bcm_vk.h              |   99 ++
+ kernel/kexec_file.c                           |    1 +
+ kernel/module.c                               |    1 +
+ lib/test_firmware.c                           |  154 +-
+ security/integrity/digsig.c                   |    1 +
+ security/integrity/ima/ima_fs.c               |    1 +
+ security/integrity/ima/ima_main.c             |   25 +-
+ security/integrity/ima/ima_policy.c           |    1 +
+ security/loadpin/loadpin.c                    |    1 +
+ security/security.c                           |    1 +
+ security/selinux/hooks.c                      |    1 +
+ .../selftests/firmware/fw_filesystem.sh       |   80 +
+ 32 files changed, 4802 insertions(+), 91 deletions(-)
+ create mode 100644 drivers/misc/bcm-vk/Kconfig
+ create mode 100644 drivers/misc/bcm-vk/Makefile
+ create mode 100644 drivers/misc/bcm-vk/bcm_vk.h
+ create mode 100644 drivers/misc/bcm-vk/bcm_vk_dev.c
+ create mode 100644 drivers/misc/bcm-vk/bcm_vk_msg.c
+ create mode 100644 drivers/misc/bcm-vk/bcm_vk_msg.h
+ create mode 100644 drivers/misc/bcm-vk/bcm_vk_sg.c
+ create mode 100644 drivers/misc/bcm-vk/bcm_vk_sg.h
+ create mode 100644 drivers/misc/bcm-vk/bcm_vk_tty.c
+ create mode 100644 include/linux/kernel_read_file.h
+ create mode 100644 include/uapi/linux/misc/bcm_vk.h
+
+-- 
+2.17.1
+
