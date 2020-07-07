@@ -2,154 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 708832167B5
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 09:46:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DF422167BA
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 09:49:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728507AbgGGHps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 03:45:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46266 "EHLO
+        id S1728260AbgGGHtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 03:49:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728440AbgGGHpq (ORCPT
+        with ESMTP id S1725944AbgGGHtL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 03:45:46 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 911A8C061755
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 00:45:46 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id u18so2770032pfk.10
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 00:45:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=KgSYgJifAABNAdCl31WAEwkkXwU/m9EAOT3Cz401Kt8=;
-        b=hLhvTve8x5zI3uXWp0qoUJQ29QsztVfkJaD3Ks6ZD1fprMNLVmGC6HZZP4lfhXGhog
-         AHJj7XueKuRo+AKpUnqm8ewpNXzKFaHEes5S7LF/3eQOUFGO6rxTLUhS7qbSNvJV4f+P
-         phOZGS49CF3yCcbvwkFmdBdSm1T9OUClKDCCZ6Z/qBBKbAX2x2sTGFDnD5AC5eTLI9yR
-         k1vdl+vTHP086FJgF0xZ/mFgZTlP27So2vTNLVaIuSb3ftZDzmDmnT0nHIaFnkwL8Skb
-         oHuVk/M7PGu4KdAovMw3oIcOl3VpnESvfZnuyj2OpD2wcIYySGWZvc1fLMO0hec0N9Lp
-         t10A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=KgSYgJifAABNAdCl31WAEwkkXwU/m9EAOT3Cz401Kt8=;
-        b=Sww20ojh4+JPlJ1zyfUk4Y+RIn759FK9O8dLsMsB9zpB0sNTw0HkLs5G0K5vlh4XkM
-         Dp8J3/H6j2RrBYCjJHUXdeAFU/xIH3G6/+1OSU4x7jnFpzXxcd8+Ypkm8IjhgBrTG8sd
-         5R+Zq+o1mRCwnfmSU+d7zhGJnQDZeJJP74XtdL8FNmG/dP0QklXIGvMCZde9xxSbCLME
-         yG5nqF9iznvC4BF7M5uUR1I0LPMup4I0TGvf9Txw0QZT0cy88pQrjrq9oJEfKzEyGx++
-         tBVj6sWQek0diZBBeIrtHjiexfktzPVZWRTLOdEBRxwCxhqAZ34DvW6ykN5IvEnRr9in
-         k7kQ==
-X-Gm-Message-State: AOAM533jKRk2yJGgv2mMGoe6HuknsCN62Nfg8j7yl8NJG5lY+UOWPNyP
-        pb07EKBCJeW7MfnEZuhvcvc=
-X-Google-Smtp-Source: ABdhPJxlDO3WoaDglb+wcPrmU/2YdnCSFYtWgnyHAXUK3MmN5luVVbSC7GR0VJ76/+5DCFgxQUNvgg==
-X-Received: by 2002:a65:5502:: with SMTP id f2mr8232183pgr.375.1594107946170;
-        Tue, 07 Jul 2020 00:45:46 -0700 (PDT)
-Received: from localhost.localdomain ([114.206.198.176])
-        by smtp.gmail.com with ESMTPSA id 191sm21330151pfw.150.2020.07.07.00.45.43
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 07 Jul 2020 00:45:45 -0700 (PDT)
-From:   js1304@gmail.com
-X-Google-Original-From: iamjoonsoo.kim@lge.com
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        kernel-team@lge.com, Vlastimil Babka <vbabka@suse.cz>,
-        Christoph Hellwig <hch@infradead.org>,
-        Roman Gushchin <guro@fb.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Subject: [PATCH v4 11/11] mm/memory_hotplug: remove a wrapper for alloc_migration_target()
-Date:   Tue,  7 Jul 2020 16:44:49 +0900
-Message-Id: <1594107889-32228-12-git-send-email-iamjoonsoo.kim@lge.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1594107889-32228-1-git-send-email-iamjoonsoo.kim@lge.com>
-References: <1594107889-32228-1-git-send-email-iamjoonsoo.kim@lge.com>
+        Tue, 7 Jul 2020 03:49:11 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64C01C061755
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 00:49:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:To:From:Date:Sender:Reply-To:Cc:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=qpCyLxWI8+vr0RRTomM8CK40nhOuK0K2F+B2/Nf6Os8=; b=YbqqsTv/GfrsMC95U9tokQPr5n
+        +etquVO7AkoJT+OeTAPPUl+hN9Caw6UCaPupuzoGRC1liysB6zpQj8EhGX3pcL9r7A26li+subYry
+        FW/4FqoLVT+QwzMUV6cELMtyvoRnS8NWcAMqoJ22csTiSpPAxuR+CuImX7tHe0FxIK+1zhsKyBqG+
+        LvjvrJ4SIYNdi38lNE1WgF0fvlIz/DBhp5eBoY7cQAqptFtHiMIz96cOi0JI0mRfVQCFez/L86dxD
+        QrN8rPUAqndcJka26PzVfe4/R+Oe66a0ECSnXGpw6q9fScNRwtUFxLYurP9KGzA5eEp31QidcKbqE
+        PokuypKw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jsiLa-0001Kv-LH; Tue, 07 Jul 2020 07:48:59 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8B3823006D0;
+        Tue,  7 Jul 2020 09:48:57 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 71026213C65B5; Tue,  7 Jul 2020 09:48:57 +0200 (CEST)
+Date:   Tue, 7 Jul 2020 09:48:57 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Dave Jones <davej@codemonkey.org.uk>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Linux Kernel <linux-kernel@vger.kernel.org>, mingo@kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        paul.gortmaker@windriver.com, valentin.schneider@arm.com
+Subject: Re: weird loadavg on idle machine post 5.7
+Message-ID: <20200707074857.GJ4800@hirez.programming.kicks-ass.net>
+References: <20200702171548.GA11813@codemonkey.org.uk>
+ <20200702213627.GF3183@techsingularity.net>
+ <20200703090226.GV4800@hirez.programming.kicks-ass.net>
+ <20200703104033.GK117543@hirez.programming.kicks-ass.net>
+ <20200703205153.GA19901@codemonkey.org.uk>
+ <20200706145952.GB597537@hirez.programming.kicks-ass.net>
+ <20200706212057.GA18637@codemonkey.org.uk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200706212057.GA18637@codemonkey.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+On Mon, Jul 06, 2020 at 05:20:57PM -0400, Dave Jones wrote:
+> On Mon, Jul 06, 2020 at 04:59:52PM +0200, Peter Zijlstra wrote:
+>  > On Fri, Jul 03, 2020 at 04:51:53PM -0400, Dave Jones wrote:
+>  > > On Fri, Jul 03, 2020 at 12:40:33PM +0200, Peter Zijlstra wrote:
+>  > >  
+>  > > looked promising the first few hours, but as soon as it hit four hours
+>  > > of uptime, loadavg spiked and is now pinned to at least 1.00
+>  > 
+>  > OK, lots of cursing later, I now have the below...
+>  > 
+>  > The TL;DR is that while schedule() doesn't change p->state once it
+>  > starts, it does read it quite a bit, and ttwu() will actually change it
+>  > to TASK_WAKING. So if ttwu() changes it to WAKING before schedule()
+>  > reads it to do loadavg accounting, things go sideways.
+>  > 
+>  > The below is extra complicated by the fact that I've had to scrounge up
+>  > a bunch of load-store ordering without actually adding barriers. It adds
+>  > yet another control dependency to ttwu(), so take that C standard :-)
+> 
+> Man this stuff is subtle. I could've read this a hundred times and not
+> even come close to approaching this.
+> 
+> Basically me reading scheduler code:
+> http://www.quickmeme.com/img/96/9642ed212bbced00885592b39880ec55218e922245e0637cf94db2e41857d558.jpg
 
-To calculate the correct node to migrate the page for hotplug, we need
-to check node id of the page. Wrapper for alloc_migration_target() exists
-for this purpose.
+Heh, that one made me nearly spill my tea, much funnies :-)
 
-However, Vlastimil informs that all migration source pages come from
-a single node. In this case, we don't need to check the node id for each
-page and we don't need to re-set the target nodemask for each page by
-using the wrapper. Set up the migration_target_control once and use it for
-all pages.
+But yes, Dave Chinner also complained about this for the previous fix.
+I've written this:
 
-Signed-off-by: Joonsoo Kim <iamjoonsoo.kim@lge.com>
----
- mm/memory_hotplug.c | 46 ++++++++++++++++++++++------------------------
- 1 file changed, 22 insertions(+), 24 deletions(-)
+  https://lore.kernel.org/lkml/20200703133259.GE4781@hirez.programming.kicks-ass.net/
 
-diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-index 86bc2ad..269e8ca 100644
---- a/mm/memory_hotplug.c
-+++ b/mm/memory_hotplug.c
-@@ -1265,27 +1265,6 @@ static int scan_movable_pages(unsigned long start, unsigned long end,
- 	return 0;
- }
- 
--static struct page *new_node_page(struct page *page, unsigned long private)
--{
--	nodemask_t nmask = node_states[N_MEMORY];
--	struct migration_target_control mtc = {
--		.nid = page_to_nid(page),
--		.nmask = &nmask,
--		.gfp_mask = GFP_USER | __GFP_MOVABLE | __GFP_RETRY_MAYFAIL,
--	};
--
--	/*
--	 * try to allocate from a different node but reuse this node if there
--	 * are no other online nodes to be used (e.g. we are offlining a part
--	 * of the only existing node)
--	 */
--	node_clear(mtc.nid, *mtc.nmask);
--	if (nodes_empty(*mtc.nmask))
--		node_set(mtc.nid, *mtc.nmask);
--
--	return alloc_migration_target(page, (unsigned long)&mtc);
--}
--
- static int
- do_migrate_range(unsigned long start_pfn, unsigned long end_pfn)
- {
-@@ -1345,9 +1324,28 @@ do_migrate_range(unsigned long start_pfn, unsigned long end_pfn)
- 		put_page(page);
- 	}
- 	if (!list_empty(&source)) {
--		/* Allocate a new page from the nearest neighbor node */
--		ret = migrate_pages(&source, new_node_page, NULL, 0,
--					MIGRATE_SYNC, MR_MEMORY_HOTPLUG);
-+		nodemask_t nmask = node_states[N_MEMORY];
-+		struct migration_target_control mtc = {
-+			.nmask = &nmask,
-+			.gfp_mask = GFP_USER | __GFP_MOVABLE | __GFP_RETRY_MAYFAIL,
-+		};
-+
-+		/*
-+		 * We have checked that migration range is on a single zone so
-+		 * we can use the nid of the first page to all the others.
-+		 */
-+		mtc.nid = page_to_nid(list_first_entry(&source, struct page, lru));
-+
-+		/*
-+		 * try to allocate from a different node but reuse this node
-+		 * if there are no other online nodes to be used (e.g. we are
-+		 * offlining a part of the only existing node)
-+		 */
-+		node_clear(mtc.nid, *mtc.nmask);
-+		if (nodes_empty(*mtc.nmask))
-+			node_set(mtc.nid, *mtc.nmask);
-+		ret = migrate_pages(&source, alloc_migration_target, NULL,
-+			(unsigned long)&mtc, MIGRATE_SYNC, MR_MEMORY_HOTPLUG);
- 		if (ret) {
- 			list_for_each_entry(page, &source, lru) {
- 				pr_warn("migrating pfn %lx failed ret:%d ",
--- 
-2.7.4
+to help with that. But clearly I'll need to update that patch again
+after this little adventure.
 
+>  > I've booted it, and build a few kernels with it and checked loadavg
+>  > drops to 0 after each build, so from that pov all is well, but since
+>  > I'm not confident I can reproduce the issue, I can't tell this actually
+>  > fixes anything, except maybe phantoms of my imagination.
+> 
+> Five hours in, looking good so far.  I think you nailed it.
+
+\o/ hooray! Thanks for testing Dave!
