@@ -2,107 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC89E217828
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 21:44:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70BE121782E
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 21:45:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728369AbgGGToT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 15:44:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45092 "EHLO
+        id S1728459AbgGGTpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 15:45:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726763AbgGGToS (ORCPT
+        with ESMTP id S1726763AbgGGTpf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 15:44:18 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 898ADC061755
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 12:44:18 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id o11so46542967wrv.9
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 12:44:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:content-transfer-encoding:mime-version:subject:date:references
-         :to:in-reply-to:message-id;
-        bh=zScjXTrxSTJ3dohGAFUR+84/DZ3AN/4LGI9OKdBT7IA=;
-        b=UiuvA1wo7VBl7Y2EYR02JzHJ1S0OHtKPhzInhJfUWd8475paiqkI3mtp2mkXqVdk8b
-         wAQxctRQ38kgKy+8+BY8Ckm0eJxJLSqX54LoynAIP/sS0rKII7bKTgqirfw7IoXb4e65
-         wKZb+vw2txRAFxYhTWGV+6qnJPnPsKOPXmXWeLXRaxTEkWKiS0rriqPu3tX39PhGA1/u
-         BDvsSAzoCBzQ+kBwq7Qg1taWoz84A2qaHr8LlHU8k3PJDB7y5R4Gwkdl3Zfeudts9Ia4
-         XsJRJfmcukfu94iopQ7tJ3BpMS0/f3A96Ca96XRRwsfWgTkuvNJ81+FsahZPTuKhbfVj
-         vmkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:content-transfer-encoding:mime-version
-         :subject:date:references:to:in-reply-to:message-id;
-        bh=zScjXTrxSTJ3dohGAFUR+84/DZ3AN/4LGI9OKdBT7IA=;
-        b=IrUE4RfV9Cff2zx/675Lqd1hGOscD8p3pPXXTzzUAHSMpcYQfyWb/6WgcxUMIiSiHi
-         OOl0Lxz0SW3erKAAKVM11LaMT/5mJkeWl3A1n/XBs+6MuyABsF/AKt7AkZek9xScY0Gx
-         20F+WJOuFAsdUdOCj2/pFCIE+8xZ2BpX70kDUR/goV5TJuKrbFeUZ1qmbPIE+WVx8zaJ
-         gX1Yt3rtDCzF5flkQhX4NUg6/tmZR8xVPDYUrTMrYAEcf5jgtjwtbyFE4iwMWA0LkZ7T
-         hB1OwxI7cxO2OpxTk+7YaAHWR52D4KPaZyz/AbPyjsabNUPd33byW56tdyl5NaTlFQkj
-         LxeQ==
-X-Gm-Message-State: AOAM532c2TokzD8yadB0a04OWdvvllkSxwZ1X2TRrxC8MPhzz8oRzOPf
-        vG4vFMI968FGeYMKATGjfbb4UKDU
-X-Google-Smtp-Source: ABdhPJx5PhcJlBWNpd4YrwbBRj55X+CecjNHYsBlcS/9uVTdTqM/OX++peUcncmMT1Qz2cjVu0TX7g==
-X-Received: by 2002:a05:6000:ca:: with SMTP id q10mr56920888wrx.135.1594151057023;
-        Tue, 07 Jul 2020 12:44:17 -0700 (PDT)
-Received: from [10.11.11.4] ([178.254.237.20])
-        by smtp.gmail.com with ESMTPSA id m16sm2486845wro.0.2020.07.07.12.44.16
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 07 Jul 2020 12:44:16 -0700 (PDT)
-From:   Martin Zaharinov <micron10@gmail.com>
-Content-Type: text/plain;
-        charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: Re: Bug Report High CPU Usage events_power_efficient
-Date:   Tue, 7 Jul 2020 22:44:15 +0300
-References: <E2C5FE67-C85E-469C-9B81-10F7555F836B@gmail.com>
-To:     "linux-kernel@vger kernel. org" <linux-kernel@vger.kernel.org>
-In-Reply-To: <E2C5FE67-C85E-469C-9B81-10F7555F836B@gmail.com>
-Message-Id: <91805D0F-2D74-4EA3-A2D7-13E4FBBEAB51@gmail.com>
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
+        Tue, 7 Jul 2020 15:45:35 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F75DC061755;
+        Tue,  7 Jul 2020 12:45:35 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id A8F9E120F19EC;
+        Tue,  7 Jul 2020 12:45:34 -0700 (PDT)
+Date:   Tue, 07 Jul 2020 12:45:33 -0700 (PDT)
+Message-Id: <20200707.124533.441490036034384806.davem@davemloft.net>
+To:     cphealy@gmail.com
+Cc:     linux@armlinux.org.uk, andrew@lunn.ch, f.fainelli@gmail.com,
+        hkallweit1@gmail.com, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v3] net: sfp: Unique GPIO interrupt names
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200707012707.13267-1-cphealy@localhost.localdomain>
+References: <20200707012707.13267-1-cphealy@localhost.localdomain>
+X-Mailer: Mew version 6.8 on Emacs 26.3
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Tue, 07 Jul 2020 12:45:35 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-the problem is hear with kernel 5.7.7=20
+From: Chris Healy <cphealy@gmail.com>
+Date: Mon,  6 Jul 2020 18:27:07 -0700
 
-last work kernel without this problem is 5.6.7
+> From: Chris Healy <cphealy@gmail.com>
+> 
+> Dynamically generate a unique GPIO interrupt name, based on the
+> device name and the GPIO name.  For example:
+> 
+> 103:          0   sx1503q  12 Edge      sff2-los
+> 104:          0   sx1503q  13 Edge      sff2-tx-fault
+> 
+> The sffX indicates the SFP the los and tx-fault are associated with.
+> 
+> Signed-off-by: Chris Healy <cphealy@gmail.com>
+> 
+> v3:
+> - reverse Christmas tree new variable
+> - fix spaces vs tabs
+> v2:
+> - added net-next to PATCH part of subject line
+> - switched to devm_kasprintf()
 
-hear is more info:
-
-cat /proc/57259/stack
-root@megacableamarilis:~# cat /proc/57259/stack
-[<0>] gc_worker+0x1be/0x380 [nf_conntrack]
-[<0>] process_one_work+0x1bc/0x3b0
-[<0>] worker_thread+0x4d/0x460
-[<0>] kthread+0x10d/0x130
-[<0>] ret_from_fork+0x1f/0x30
-
-PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ =
-COMMAND                            57259 root      28   0       0      0 =
-     0 R  69.8   0.0  82:42.14 kworker/5:2+events_power_efficient        =
-                                                 =20
-32 root      21   0       0      0      0 R  31.0   0.0  87:06.33 =
-ksoftirqd/4
-
-
-Please help to fix this problem
-
-> On 22 Apr 2020, at 15:55, Martin Zaharinov <micron10@gmail.com> wrote:
->=20
-> Hello Qian and Greg=20
-> With latest 5.6.x kernel have problem with events_power_efficient =
-28488 root      28   0       0      0      0 R  95.5   0.0 101:38.19 =
-kworker/2:1+events_power_efficient Process start to load machine after =
-3-4 hour and load not stop only reboot machine remove process . Server =
-runing on AMD EPIC CPU 2x 7301 32Gb Ram Have 2 x 10G card Intel when =
-machine load over 1G traffic machine locked and only restart fix problem =
-to next load . After move traffic and server stop load process still =
-hear and load server ?
-> And after reboot process move to other core .
->=20
-> Best Regards,
-> Martin
-
+Applied.
