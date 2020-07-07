@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D7AF2171FE
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:43:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A187217213
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:43:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730366AbgGGP1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:27:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41834 "EHLO mail.kernel.org"
+        id S1728414AbgGGP22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:28:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40578 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730350AbgGGP1V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:27:21 -0400
+        id S1729641AbgGGP0T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 11:26:19 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C3527206F6;
-        Tue,  7 Jul 2020 15:27:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 598EA20663;
+        Tue,  7 Jul 2020 15:26:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594135640;
-        bh=FHtrfojDjWvO9f6DayfxB+2Dkz7ankW9QigDjj4aI4Y=;
+        s=default; t=1594135578;
+        bh=GsZGNspYOnKPQgkAi9CTOtj/wbGz8U6me5M5Tzi2uhI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E4pvfV16rQqtL+ZhRqwNY2N6gZruDMcIL+UpBC0Vvb5K71+FGFj1SP3wMo0jJn3Vg
-         p2fM/VbgN0bJK/v7LBG/y0GCO6wx5+UOyBoITPTgj1loBk/RuWvZC+/WKDYINOE5TQ
-         vEJAPiLDCkxZ555appCuOgXQZ4TtvFHhQLlJ658o=
+        b=DquMKJiWtWV5UDpVQtUssO7oZwayqrl4ZaxMVmPgPKLPQl7DTUrK0wV4In5NS/pWe
+         +cON9d8AYl2/W+dNswISbYzTDcCl6tjM9G/zbC/As/9GoCS0P8ecjpcx4Phf7XUkZm
+         Lr1+XHTdmStzuFUFvnTFB7j6t6jIyB8S4QasF1zU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [PATCH 5.7 088/112] padata: upgrade smp_mb__after_atomic to smp_mb in padata_do_serial
-Date:   Tue,  7 Jul 2020 17:17:33 +0200
-Message-Id: <20200707145805.166669818@linuxfoundation.org>
+        stable@vger.kernel.org, Paul Aurich <paul@darkrain42.org>,
+        Steve French <stfrench@microsoft.com>,
+        Aurelien Aptel <aaptel@suse.com>
+Subject: [PATCH 5.7 089/112] SMB3: Honor seal flag for multiuser mounts
+Date:   Tue,  7 Jul 2020 17:17:34 +0200
+Message-Id: <20200707145805.214096514@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200707145800.925304888@linuxfoundation.org>
 References: <20200707145800.925304888@linuxfoundation.org>
@@ -44,52 +44,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Jordan <daniel.m.jordan@oracle.com>
+From: Paul Aurich <paul@darkrain42.org>
 
-commit e04ec0de61c1eb9693179093e83ab8ca68a30d08 upstream.
+commit cc15461c73d7d044d56c47e869a215e49bd429c8 upstream.
 
-A 5.7 kernel hangs during a tcrypt test of padata that waits for an AEAD
-request to finish.  This is only seen on large machines running many
-concurrent requests.
+Ensure multiuser SMB3 mounts use encryption for all users' tcons if the
+mount options are configured to require encryption. Without this, only
+the primary tcon and IPC tcons are guaranteed to be encrypted. Per-user
+tcons would only be encrypted if the server was configured to require
+encryption.
 
-The issue is that padata never serializes the request.  The removal of
-the reorder_objects atomic missed that the memory barrier in
-padata_do_serial() depends on it.
-
-Upgrade the barrier from smp_mb__after_atomic to smp_mb to get correct
-ordering again.
-
-Fixes: 3facced7aeed1 ("padata: remove reorder_objects")
-Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
-Cc: Steffen Klassert <steffen.klassert@secunet.com>
-Cc: linux-kernel@vger.kernel.org
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Paul Aurich <paul@darkrain42.org>
+CC: Stable <stable@vger.kernel.org>
+Signed-off-by: Steve French <stfrench@microsoft.com>
+Reviewed-by: Aurelien Aptel <aaptel@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- kernel/padata.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/cifs/connect.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/kernel/padata.c
-+++ b/kernel/padata.c
-@@ -260,7 +260,7 @@ static void padata_reorder(struct parall
- 	 *
- 	 * Ensure reorder queue is read after pd->lock is dropped so we see
- 	 * new objects from another task in padata_do_serial.  Pairs with
--	 * smp_mb__after_atomic in padata_do_serial.
-+	 * smp_mb in padata_do_serial.
- 	 */
- 	smp_mb();
+--- a/fs/cifs/connect.c
++++ b/fs/cifs/connect.c
+@@ -5310,6 +5310,7 @@ cifs_construct_tcon(struct cifs_sb_info
+ 	vol_info->linux_ext = master_tcon->posix_extensions;
+ 	vol_info->sectype = master_tcon->ses->sectype;
+ 	vol_info->sign = master_tcon->ses->sign;
++	vol_info->seal = master_tcon->seal;
  
-@@ -342,7 +342,7 @@ void padata_do_serial(struct padata_priv
- 	 * with the trylock of pd->lock in padata_reorder.  Pairs with smp_mb
- 	 * in padata_reorder.
- 	 */
--	smp_mb__after_atomic();
-+	smp_mb();
- 
- 	padata_reorder(pd);
- }
+ 	rc = cifs_set_vol_auth(vol_info, master_tcon->ses);
+ 	if (rc) {
 
 
