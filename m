@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1A12216839
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 10:22:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 471F621683C
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 10:22:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728061AbgGGIVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 04:21:52 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35902 "EHLO mx2.suse.de"
+        id S1728295AbgGGIWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 04:22:05 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35954 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726817AbgGGIVv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 04:21:51 -0400
+        id S1726817AbgGGIWF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 04:22:05 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0EE03B11F;
-        Tue,  7 Jul 2020 08:21:51 +0000 (UTC)
-Date:   Tue, 07 Jul 2020 10:21:50 +0200
-Message-ID: <s5hy2nvenvl.wl-tiwai@suse.de>
+        by mx2.suse.de (Postfix) with ESMTP id 46580AF5C;
+        Tue,  7 Jul 2020 08:22:04 +0000 (UTC)
+Date:   Tue, 07 Jul 2020 10:22:03 +0200
+Message-ID: <s5hwo3fenv8.wl-tiwai@suse.de>
 From:   Takashi Iwai <tiwai@suse.de>
 To:     Jian-Hong Pan <jian-hong@endlessm.com>
 Cc:     Takashi Iwai <tiwai@suse.com>, Kailang Yang <kailang@realtek.com>,
         alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        linux@endlessm.com, Daniel Drake <drake@endlessm.com>
-Subject: Re: [PATCH v3 2/3] ALSA: hda/realtek: Enable headset mic of Acer C20-820 with ALC269VC
-In-Reply-To: <20200706071826.39726-2-jian-hong@endlessm.com>
+        linux@endlessm.com
+Subject: Re: [PATCH v3 3/3] ALSA: hda/realtek: Enable headset mic of Acer Veriton N4660G with ALC269VC
+In-Reply-To: <20200706071826.39726-3-jian-hong@endlessm.com>
 References: <aa62a43d4f1f458fb11794c26d373528@realtek.com>
-        <20200706071826.39726-2-jian-hong@endlessm.com>
+        <20200706071826.39726-3-jian-hong@endlessm.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -36,15 +36,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 06 Jul 2020 09:18:27 +0200,
+On Mon, 06 Jul 2020 09:18:29 +0200,
 Jian-Hong Pan wrote:
 > 
-> The Acer Aspire C20-820 AIO's audio (1025:1065) with ALC269VC can't
-> detect the headset microphone until ALC269VC_FIXUP_ACER_HEADSET_MIC
+> The Acer Veriton N4660G desktop's audio (1025:1248) with ALC269VC cannot
+> detect the headset microphone until ALC269VC_FIXUP_ACER_MIC_NO_PRESENCE
 > quirk maps the NID 0x18 as the headset mic pin.
 > 
 > Signed-off-by: Jian-Hong Pan <jian-hong@endlessm.com>
-> Signed-off-by: Daniel Drake <drake@endlessm.com>
 
 Applied now.  Thanks.
 
