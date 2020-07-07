@@ -2,123 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D570021637A
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 03:45:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CFA921636F
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 03:42:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728020AbgGGBom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 21:44:42 -0400
-Received: from mga03.intel.com ([134.134.136.65]:40649 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727869AbgGGBok (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 21:44:40 -0400
-IronPort-SDR: xgUEFSrAjaUt1BegHfgMMTpe5IKP7yM2DGew1pXlkKh2ElSoDWvHwrp9E/If7aVBxafM47U+I5
- xY9DDQgIFHow==
-X-IronPort-AV: E=McAfee;i="6000,8403,9674"; a="147536135"
-X-IronPort-AV: E=Sophos;i="5.75,321,1589266800"; 
-   d="scan'208";a="147536135"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2020 18:44:40 -0700
-IronPort-SDR: wwrLt2T9DDD/0MUuMNOzDmBrc56X+9bu9H8+XJmtI5OICVSouPK5Sp2RJ+tpk7dmuZ2sTinZRA
- vUF+WTYzI2aA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,321,1589266800"; 
-   d="scan'208";a="266688936"
-Received: from allen-box.sh.intel.com ([10.239.159.139])
-  by fmsmga007.fm.intel.com with ESMTP; 06 Jul 2020 18:44:38 -0700
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-To:     Joerg Roedel <joro@8bytes.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Robin Murphy <robin.murphy@arm.com>
-Cc:     Cornelia Huck <cohuck@redhat.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Liu Yi L <yi.l.liu@intel.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, Lu Baolu <baolu.lu@linux.intel.com>
-Subject: [PATCH v2 2/2] iommu: Add aux_domain_attached flag to iommu_group
-Date:   Tue,  7 Jul 2020 09:39:57 +0800
-Message-Id: <20200707013957.23672-3-baolu.lu@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200707013957.23672-1-baolu.lu@linux.intel.com>
-References: <20200707013957.23672-1-baolu.lu@linux.intel.com>
+        id S1727072AbgGGBmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 21:42:21 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:33607 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726625AbgGGBmV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Jul 2020 21:42:21 -0400
+Received: by mail-io1-f72.google.com with SMTP id x2so24798203iof.0
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 18:42:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=SwTLkP/QL2z8xaD+quO7/wCVV+e6aH6Kgt+obfGjOvA=;
+        b=BJWUOS4EDE/NqQiOEJNRTo+SC33uB+1a0XfNplXfkyGo+72x6yNxk4k6BnLyKgpN+6
+         lPtIT11smx3ABKjR8RCgnAqBBFfXylR+st//HipkX2w3iqOGxf9Dkrzlu8UgC0QUPbuh
+         bZNOSoK4VLp5Ti8pqyLDB/cQ5f4DqsrLMdTD0vji1MWfd/M0Q91Zf0jcHInwbI/zI1dC
+         /3tbY+HnyuxCYGhuTPXc4KMWJvF2FVghMmRp5GO83EzNLxahsId6aMni3ZfLEdsLa4XV
+         ZA63EUfVR/D/PuDVy2Hnzxl61CJ+s9kHJ10BnCDpditjhh5/lv2ukZFGrhIbMjQllEpV
+         5Nbw==
+X-Gm-Message-State: AOAM531t06Mg/whe/FOlrYfTh5FvviNFWTpnz4Gmq0IGnwEhOdoh6BwU
+        cgbI45x2VqZyCmSD/JNoNo+KckiF4bI1p9GLiOpytjawe2nJ
+X-Google-Smtp-Source: ABdhPJyQUeSiT3g8fMmj66ZYz5KW4VysfwBKL3q+otgEmBRDqAwOSPhPM4/qim7hyktLf9z9uWZrmh6XwTBqu+t8jdgTZASZf4zm
+MIME-Version: 1.0
+X-Received: by 2002:a92:190:: with SMTP id 138mr31615530ilb.5.1594086140022;
+ Mon, 06 Jul 2020 18:42:20 -0700 (PDT)
+Date:   Mon, 06 Jul 2020 18:42:20 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001e16e605a9d01ab3@google.com>
+Subject: BUG: soft lockup in __do_sys_clock_adjtime
+From:   syzbot <syzbot+b63f85efcdedbba8b3be@syzkaller.appspotmail.com>
+To:     bp@alien8.de, hpa@zytor.com, linux-kernel@vger.kernel.org,
+        luto@kernel.org, mingo@redhat.com, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The normal domain at(de)tach is parallel with aux-domain at(de)tach. In
-another word, once an iommu_group is attached through the normal domain
-attach api's, it should not go through the aux-domain at(de)tach api's
-until the domain is detached. And, vice versa.
+Hello,
 
-Currently, we prohibit an iommu_group to go through aux-domain api's if
-group->domain != NULL; but we don't check aux-domain attachment in the
-normal attach api's. This marks an iommu_group after an aux-domain is
-attached, so that normal domain at(de)tach api's should never be used
-after that.
+syzbot found the following crash on:
 
-Cc: Robin Murphy <robin.murphy@arm.com>
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+HEAD commit:    7cc2a8ea Merge tag 'block-5.8-2020-07-01' of git://git.ker..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1361e6b7100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7be693511b29b338
+dashboard link: https://syzkaller.appspot.com/bug?extid=b63f85efcdedbba8b3be
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11f6948f100000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=138eb7a7100000
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+b63f85efcdedbba8b3be@syzkaller.appspotmail.com
+
+watchdog: BUG: soft lockup - CPU#1 stuck for 123s! [systemd-timesyn:4344]
+Modules linked in:
+irq event stamp: 102956
+hardirqs last  enabled at (102955): [<ffffffff88000c42>] asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:596
+hardirqs last disabled at (102956): [<ffffffff87e462cd>] idtentry_enter_cond_rcu+0x1d/0x50 arch/x86/entry/common.c:607
+softirqs last  enabled at (76528): [<ffffffff862c5138>] sock_orphan include/net/sock.h:1872 [inline]
+softirqs last  enabled at (76528): [<ffffffff862c5138>] sk_common_release+0x138/0x390 net/core/sock.c:3307
+softirqs last disabled at (76526): [<ffffffff862c50c2>] sock_orphan include/net/sock.h:1868 [inline]
+softirqs last disabled at (76526): [<ffffffff862c50c2>] sk_common_release+0xc2/0x390 net/core/sock.c:3307
+CPU: 1 PID: 4344 Comm: systemd-timesyn Not tainted 5.8.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:csd_lock_wait kernel/smp.c:108 [inline]
+RIP: 0010:smp_call_function_single+0x192/0x4f0 kernel/smp.c:382
+Code: 10 8b 7c 24 1c 48 8d 74 24 40 48 89 44 24 50 48 8b 44 24 08 48 89 44 24 58 e8 fa f9 ff ff 41 89 c5 eb 07 e8 f0 ff 0a 00 f3 90 <44> 8b 64 24 48 31 ff 41 83 e4 01 44 89 e6 e8 5b fc 0a 00 45 85 e4
+RSP: 0018:ffffc900018679e0 EFLAGS: 00000293
+RAX: 0000000000000000 RBX: 1ffff9200030cf40 RCX: ffffffff8168b785
+RDX: ffff8880a6700340 RSI: ffffffff8168b770 RDI: 0000000000000005
+RBP: ffffc90001867ac0 R08: 0000000000000001 R09: ffff8880ae636dc7
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000001
+R13: 0000000000000000 R14: 0000000000000001 R15: 0000000000000040
+FS:  00007efe995408c0(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055eae694ed48 CR3: 00000000a6bc5000 CR4: 00000000001406e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ smp_call_function_many_cond+0x1a4/0x990 kernel/smp.c:518
+ smp_call_function_many kernel/smp.c:577 [inline]
+ smp_call_function kernel/smp.c:599 [inline]
+ on_each_cpu+0x4a/0x240 kernel/smp.c:699
+ clock_was_set+0x18/0x20 kernel/time/hrtimer.c:872
+ timekeeping_inject_offset+0x3e9/0x4d0 kernel/time/timekeeping.c:1305
+ do_adjtimex+0x28f/0x990 kernel/time/timekeeping.c:2332
+ do_clock_adjtime kernel/time/posix-timers.c:1109 [inline]
+ __do_sys_clock_adjtime+0x155/0x250 kernel/time/posix-timers.c:1121
+ do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:359
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7efe989361b7
+Code: Bad RIP value.
+RSP: 002b:00007ffc4cfe68e8 EFLAGS: 00000246 ORIG_RAX: 0000000000000131
+RAX: ffffffffffffffda RBX: 0000562d621a2630 RCX: 00007efe989361b7
+RDX: ffffffffe7ce3d82 RSI: 00007ffc4cfe69b0 RDI: 0000000000000000
+RBP: 00007ffc4cfe69b0 R08: 0000000000000020 R09: 000000000000000d
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000ffffffff
+R13: 00007ffc4cfe6aa0 R14: 0000000000000005 R15: 0000000000000001
+Sending NMI from CPU 1 to CPUs 0:
+NMI backtrace for cpu 0
+CPU: 0 PID: 6820 Comm: syz-executor620 Not tainted 5.8.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:lock_acquire+0xa2/0xad0 kernel/locking/lockdep.c:4934
+Code: 08 00 00 00 f3 c7 40 0c f3 f3 f3 f3 65 48 8b 04 25 28 00 00 00 48 89 84 24 b8 00 00 00 31 c0 48 89 f8 48 c1 e8 03 0f b6 0c 08 <48> 89 f8 83 e0 07 83 c0 03 38 c8 7c 08 84 c9 0f 85 61 07 00 00 45
+RSP: 0018:ffffc90000007be8 EFLAGS: 00000807
+RAX: 1ffff11014596d81 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff8880a2cb6c0c
+RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: ffffffff8cb15150 R14: 0000000000000000 R15: ffff8880a2cb6340
+FS:  0000000002039880(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000610 CR3: 000000009fdd4000 CR4: 00000000001406f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <IRQ>
+ __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+ _raw_spin_lock_irqsave+0x8c/0xc0 kernel/locking/spinlock.c:159
+ debug_object_deactivate lib/debugobjects.c:710 [inline]
+ debug_object_deactivate+0x101/0x300 lib/debugobjects.c:698
+ debug_hrtimer_deactivate kernel/time/hrtimer.c:421 [inline]
+ debug_deactivate kernel/time/hrtimer.c:482 [inline]
+ __run_hrtimer kernel/time/hrtimer.c:1488 [inline]
+ __hrtimer_run_queues+0x3cb/0xfc0 kernel/time/hrtimer.c:1584
+ hrtimer_interrupt+0x32a/0x930 kernel/time/hrtimer.c:1646
+ local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1080 [inline]
+ __sysvec_apic_timer_interrupt+0x142/0x5e0 arch/x86/kernel/apic/apic.c:1097
+ asm_call_on_stack+0xf/0x20 arch/x86/entry/entry_64.S:711
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:22 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:48 [inline]
+ sysvec_apic_timer_interrupt+0xe0/0x120 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:596
+RIP: 0010:arch_local_irq_restore arch/x86/include/asm/paravirt.h:765 [inline]
+RIP: 0010:on_each_cpu+0x149/0x240 kernel/smp.c:702
+Code: 00 fc ff df 48 c1 e8 03 80 3c 10 00 0f 85 e6 00 00 00 48 83 3d 57 12 4c 08 00 0f 84 af 00 00 00 e8 6c e9 0a 00 48 89 df 57 9d <0f> 1f 44 00 00 e8 5d e9 0a 00 bf 01 00 00 00 e8 83 a4 e6 ff 31 ff
+RSP: 0018:ffffc90001747d70 EFLAGS: 00000293
+RAX: 0000000000000000 RBX: 0000000000000293 RCX: 0000000000000000
+RDX: ffff8880a2cb6340 RSI: ffffffff8168cdf4 RDI: 0000000000000293
+RBP: 0000000000000200 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: ffffc90001747ed0 R15: ffffffffa0fc31fd
+ clock_was_set+0x18/0x20 kernel/time/hrtimer.c:872
+ do_settimeofday64 kernel/time/timekeeping.c:1257 [inline]
+ do_settimeofday64+0x350/0x4e0 kernel/time/timekeeping.c:1223
+ do_sys_settimeofday64 kernel/time/time.c:195 [inline]
+ do_sys_settimeofday64+0x1de/0x260 kernel/time/time.c:169
+ __do_sys_clock_settime kernel/time/posix-timers.c:1079 [inline]
+ __se_sys_clock_settime kernel/time/posix-timers.c:1067 [inline]
+ __x64_sys_clock_settime+0x197/0x260 kernel/time/posix-timers.c:1067
+ do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:359
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x4437c9
+Code: Bad RIP value.
+RSP: 002b:00007ffca52e53d8 EFLAGS: 00000246 ORIG_RAX: 00000000000000e3
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00000000004437c9
+RDX: 00000000004437c9 RSI: 0000000020000400 RDI: 0000000000000000
+RBP: 00007ffca52e53e0 R08: 0000000001bbbbbb R09: 0000000001bbbbbb
+R10: 0000000001bbbbbb R11: 0000000000000246 R12: 00007ffca52e53f0
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+
+
 ---
- drivers/iommu/iommu.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-index 435835058209..3e7489ea2010 100644
---- a/drivers/iommu/iommu.c
-+++ b/drivers/iommu/iommu.c
-@@ -45,6 +45,7 @@ struct iommu_group {
- 	struct iommu_domain *default_domain;
- 	struct iommu_domain *domain;
- 	struct list_head entry;
-+	unsigned int aux_domain_attached:1;
- };
- 
- struct group_device {
-@@ -2074,6 +2075,9 @@ static int __iommu_attach_group(struct iommu_domain *domain,
- {
- 	int ret;
- 
-+	if (group->aux_domain_attached)
-+		return -EINVAL;
-+
- 	if (group->default_domain && group->domain != group->default_domain)
- 		return -EBUSY;
- 
-@@ -2111,6 +2115,9 @@ static void __iommu_detach_group(struct iommu_domain *domain,
- {
- 	int ret;
- 
-+	if (WARN_ON(group->aux_domain_attached))
-+		return;
-+
- 	if (!group->default_domain) {
- 		__iommu_group_for_each_dev(group, domain,
- 					   iommu_group_do_detach_device);
-@@ -2769,6 +2776,7 @@ int iommu_aux_attach_device(struct iommu_domain *domain,
- 	if (!ret) {
- 		trace_attach_device_to_domain(phys_dev);
- 		group->domain = domain;
-+		group->aux_domain_attached = true;
- 	}
- 
- out_unlock:
-@@ -2802,8 +2810,12 @@ void iommu_aux_detach_device(struct iommu_domain *domain,
- 	if (WARN_ON(iommu_group_device_count(group) != 1))
- 		goto out_unlock;
- 
-+	if (WARN_ON(!group->aux_domain_attached))
-+		goto out_unlock;
-+
- 	domain->ops->aux_detach_dev(domain, phys_dev);
- 	group->domain = NULL;
-+	group->aux_domain_attached = false;
- 	trace_detach_device_from_domain(phys_dev);
- 
- out_unlock:
--- 
-2.17.1
-
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this bug, for details see:
+https://goo.gl/tpsmEJ#testing-patches
