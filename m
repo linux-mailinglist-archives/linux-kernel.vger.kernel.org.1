@@ -2,205 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A45AF217036
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:16:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05312217039
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:16:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728874AbgGGPQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:16:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59628 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728100AbgGGPQA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:16:00 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76D89C061755
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 08:16:00 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id j19so13282636pgm.11
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 08:16:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=v+GP/QfgjGR3mjxU9s42DqxMpQEDri5uHWLzxTvF4II=;
-        b=a8V/2Megc0AlbIJy0BpS4/HUT4ZrPEDL7dS41uTS9obgKmvWjnxedjcHCNbxg8m04U
-         vgxo1QlMfZcIziru05ft0EwjYTF4Wt8mNH7Cnu4LVs8QvoBjL3Tosg5gOEOeBXOAddB4
-         54uP0IrrVNB0KND2cUhamY5Iunf4Qb5pdxIJFxlbxliXPgHD6s1ZQGNL3zsqs/rszhyg
-         yxlQT0ewFZPHQy95JIRj5kF+HzW9lCTLeBupvqyO9X6sAH3YMvwXkw2CHNTEuvsXjVdT
-         BX1ev+dTLA7wikmQmGtKzmjFWp5QmwWC4VbABNjIKypILdarHgjbAiN8CjhqOgY+icbr
-         xUXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=v+GP/QfgjGR3mjxU9s42DqxMpQEDri5uHWLzxTvF4II=;
-        b=qRR2JaPfYH4cPA26PaotxVUfwtHIj0atEBEyjo6ASSonQv172r+3RqyoNDd9ivWFIC
-         c6nGomFxLtqVDmi5cYbK81ShRyb5ytgNBAcppOZIDd6heUsFcOM1Qwc/C7/CIeqow54R
-         vzOuhwdQpIiKKkQLx5sqxi8rvIMtAYsTFvhk6NdkYLiHR4nJktsrWI5WyHP35lKdxn4t
-         NFZTZSAshVEmjhKfZibhofYY1WtOqg827SuJ54x9mv7j3CobZxX/f08w8Ug2aVxAfvoW
-         T70DnYfhdIIteeVMKiU51oWhUwiY0XsW9+ckgTT4mKuTYJsVeWxiC5lQayCpSvJKtls7
-         WcmA==
-X-Gm-Message-State: AOAM532i2+SwYZi0kKe+sGbCT+z2FbwK6Yky3iZfyvc0FRdPH3LI2YEW
-        rD8ZRm8acAHCbn4Ni59gavI=
-X-Google-Smtp-Source: ABdhPJzIQU08zY/vwhj5vkqtlNcOPrKuwA8GEKqF+ctz9lRxShzJxVZwubE4tzMQYQcC9OEg/iVx1w==
-X-Received: by 2002:a62:cfc1:: with SMTP id b184mr12171884pfg.153.1594134959979;
-        Tue, 07 Jul 2020 08:15:59 -0700 (PDT)
-Received: from mail.google.com ([149.248.10.52])
-        by smtp.gmail.com with ESMTPSA id m92sm2978112pje.13.2020.07.07.08.15.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jul 2020 08:15:59 -0700 (PDT)
-Date:   Tue, 7 Jul 2020 23:15:38 +0800
-From:   Changbin Du <changbin.du@gmail.com>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Changbin Du <changbin.du@gmail.com>, Jiri Olsa <jolsa@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 02/15] perf ftrace: add option '-F/--funcs' to list
- available functions
-Message-ID: <20200707151538.ga65xtkwhqegckud@mail.google.com>
-References: <20200627133654.64863-1-changbin.du@gmail.com>
- <20200627133654.64863-3-changbin.du@gmail.com>
- <CAM9d7cikz4U2E2Kgj8WXx4MNvj9odJQKWf9KLRFD2mos35DJ2A@mail.gmail.com>
+        id S1728901AbgGGPQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:16:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55378 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728479AbgGGPQI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 11:16:08 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C9EE120663;
+        Tue,  7 Jul 2020 15:16:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594134967;
+        bh=7CoYqLRxlb4++shDSl5x7N+eQ0hq6nLOew+zGbIA3G8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=0tyocVbpCz7tOST8AKqHRJZuq0jUR3pvZs40UTD4HWl/4n3XnEsGiJ6KThwAS2aEa
+         91+N7O28kxYhdp8R5jhrYgoN8l76Hol7wFQ6NE3hFQwazRW+StEWW0q66L4K9yYFk7
+         D7WoJG7a04JHCUgVPb3E2i9AeqsyjNNLoV/c94A8=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Brian Moyles <bmoyles@netflix.com>,
+        Mauricio Faria de Oliveira <mfo@canonical.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Subject: [PATCH 4.14 11/27] crypto: af_alg - fix use-after-free in af_alg_accept() due to bh_lock_sock()
+Date:   Tue,  7 Jul 2020 17:15:38 +0200
+Message-Id: <20200707145749.513557551@linuxfoundation.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200707145748.944863698@linuxfoundation.org>
+References: <20200707145748.944863698@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAM9d7cikz4U2E2Kgj8WXx4MNvj9odJQKWf9KLRFD2mos35DJ2A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 03, 2020 at 02:58:19PM +0900, Namhyung Kim wrote:
-> On Sat, Jun 27, 2020 at 10:37 PM Changbin Du <changbin.du@gmail.com> wrote:
-> >
-> > This adds an option '-F/--funcs' to list all available functions to trace,
-> > which is read from tracing file 'available_filter_functions'.
-> >
-> > $ sudo ./perf ftrace -F | head
-> > trace_initcall_finish_cb
-> > initcall_blacklisted
-> > do_one_initcall
-> > do_one_initcall
-> > trace_initcall_start_cb
-> > run_init_process
-> > try_to_run_init_process
-> > match_dev_by_label
-> > match_dev_by_uuid
-> > rootfs_init_fs_context
-> >
-> > Signed-off-by: Changbin Du <changbin.du@gmail.com>
-> >
-> > ---
-> > v2: option name '-l/--list-functions' -> '-F/--funcs'
-> > ---
-> >  tools/perf/Documentation/perf-ftrace.txt |  4 +++
-> >  tools/perf/builtin-ftrace.c              | 43 ++++++++++++++++++++++++
-> >  2 files changed, 47 insertions(+)
-> >
-> > diff --git a/tools/perf/Documentation/perf-ftrace.txt b/tools/perf/Documentation/perf-ftrace.txt
-> > index 952e46669168..d79560dea19f 100644
-> > --- a/tools/perf/Documentation/perf-ftrace.txt
-> > +++ b/tools/perf/Documentation/perf-ftrace.txt
-> > @@ -30,6 +30,10 @@ OPTIONS
-> >  --verbose=::
-> >          Verbosity level.
-> >
-> > +-F::
-> > +--funcs::
-> > +        List all available functions to trace.
-> > +
-> >  -p::
-> >  --pid=::
-> >         Trace on existing process id (comma separated list).
-> > diff --git a/tools/perf/builtin-ftrace.c b/tools/perf/builtin-ftrace.c
-> > index c5718503eded..e793118e83a9 100644
-> > --- a/tools/perf/builtin-ftrace.c
-> > +++ b/tools/perf/builtin-ftrace.c
-> > @@ -32,6 +32,7 @@ struct perf_ftrace {
-> >         struct evlist           *evlist;
-> >         struct target           target;
-> >         const char              *tracer;
-> > +       bool                    list_avail_functions;
-> >         struct list_head        filters;
-> >         struct list_head        notrace;
-> >         struct list_head        graph_funcs;
-> > @@ -127,6 +128,43 @@ static int append_tracing_file(const char *name, const char *val)
-> >         return __write_tracing_file(name, val, true);
-> >  }
-> >
-> > +static int read_tracing_file_to_stdout(const char *name)
-> > +{
-> > +       char buf[4096];
-> > +       char *file;
-> > +       int fd;
-> > +       int ret = -1;
-> > +
-> > +       file = get_tracing_file(name);
-> > +       if (!file) {
-> > +               pr_debug("cannot get tracing file: %s\n", name);
-> > +               return -1;
-> > +       }
-> > +
-> > +       fd = open(file, O_RDONLY);
-> > +       if (fd < 0) {
-> > +               pr_debug("cannot open tracing file: %s: %s\n",
-> > +                        name, str_error_r(errno, buf, sizeof(buf)));
-> > +               goto out;
-> > +       }
-> > +
-> > +       /* read contents to stdout */
-> > +       while (true) {
-> > +               int n = read(fd, buf, sizeof(buf));
-> > +               if (n <= 0)
-> > +                       goto out_close;
-> > +               if (fwrite(buf, n, 1, stdout) != 1)
-> > +                       goto out_close;
-> > +       }
-> > +       ret = 0;
-> 
-> It seems the return value cannot be 0?
->
-If all above success, the return value is 0.
+From: Herbert Xu <herbert@gondor.apana.org.au>
 
-> Thanks
-> Namhyung
-> 
-> > +
-> > +out_close:
-> > +       close(fd);
-> > +out:
-> > +       put_tracing_file(file);
-> > +       return ret;
-> > +}
-> > +
-> >  static int reset_tracing_cpu(void);
-> >  static void reset_tracing_filters(void);
-> >
-> > @@ -301,6 +339,9 @@ static int __cmd_ftrace(struct perf_ftrace *ftrace, int argc, const char **argv)
-> >         signal(SIGCHLD, sig_handler);
-> >         signal(SIGPIPE, sig_handler);
-> >
-> > +       if (ftrace->list_avail_functions)
-> > +               return read_tracing_file_to_stdout("available_filter_functions");
-> > +
-> >         if (reset_tracing_files(ftrace) < 0) {
-> >                 pr_err("failed to reset ftrace\n");
-> >                 goto out;
-> > @@ -470,6 +511,8 @@ int cmd_ftrace(int argc, const char **argv)
-> >         const struct option ftrace_options[] = {
-> >         OPT_STRING('t', "tracer", &ftrace.tracer, "tracer",
-> >                    "tracer to use: function or function_graph (This option is deprecated)"),
-> > +       OPT_BOOLEAN('F', "funcs", &ftrace.list_avail_functions,
-> > +                   "Show available functions to filter"),
-> >         OPT_STRING('p', "pid", &ftrace.target.pid, "pid",
-> >                    "trace on existing process id"),
-> >         OPT_INCR('v', "verbose", &verbose,
-> > --
-> > 2.25.1
-> >
+commit 34c86f4c4a7be3b3e35aa48bd18299d4c756064d upstream.
 
--- 
-Cheers,
-Changbin Du
+The locking in af_alg_release_parent is broken as the BH socket
+lock can only be taken if there is a code-path to handle the case
+where the lock is owned by process-context.  Instead of adding
+such handling, we can fix this by changing the ref counts to
+atomic_t.
+
+This patch also modifies the main refcnt to include both normal
+and nokey sockets.  This way we don't have to fudge the nokey
+ref count when a socket changes from nokey to normal.
+
+Credits go to Mauricio Faria de Oliveira who diagnosed this bug
+and sent a patch for it:
+
+https://lore.kernel.org/linux-crypto/20200605161657.535043-1-mfo@canonical.com/
+
+Reported-by: Brian Moyles <bmoyles@netflix.com>
+Reported-by: Mauricio Faria de Oliveira <mfo@canonical.com>
+Fixes: 37f96694cf73 ("crypto: af_alg - Use bh_lock_sock in...")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+---
+ crypto/af_alg.c         |   26 +++++++++++---------------
+ crypto/algif_aead.c     |    9 +++------
+ crypto/algif_hash.c     |    9 +++------
+ crypto/algif_skcipher.c |    9 +++------
+ include/crypto/if_alg.h |    4 ++--
+ 5 files changed, 22 insertions(+), 35 deletions(-)
+
+--- a/crypto/af_alg.c
++++ b/crypto/af_alg.c
+@@ -133,21 +133,15 @@ EXPORT_SYMBOL_GPL(af_alg_release);
+ void af_alg_release_parent(struct sock *sk)
+ {
+ 	struct alg_sock *ask = alg_sk(sk);
+-	unsigned int nokey = ask->nokey_refcnt;
+-	bool last = nokey && !ask->refcnt;
++	unsigned int nokey = atomic_read(&ask->nokey_refcnt);
+ 
+ 	sk = ask->parent;
+ 	ask = alg_sk(sk);
+ 
+-	local_bh_disable();
+-	bh_lock_sock(sk);
+-	ask->nokey_refcnt -= nokey;
+-	if (!last)
+-		last = !--ask->refcnt;
+-	bh_unlock_sock(sk);
+-	local_bh_enable();
++	if (nokey)
++		atomic_dec(&ask->nokey_refcnt);
+ 
+-	if (last)
++	if (atomic_dec_and_test(&ask->refcnt))
+ 		sock_put(sk);
+ }
+ EXPORT_SYMBOL_GPL(af_alg_release_parent);
+@@ -192,7 +186,7 @@ static int alg_bind(struct socket *sock,
+ 
+ 	err = -EBUSY;
+ 	lock_sock(sk);
+-	if (ask->refcnt | ask->nokey_refcnt)
++	if (atomic_read(&ask->refcnt))
+ 		goto unlock;
+ 
+ 	swap(ask->type, type);
+@@ -241,7 +235,7 @@ static int alg_setsockopt(struct socket
+ 	int err = -EBUSY;
+ 
+ 	lock_sock(sk);
+-	if (ask->refcnt)
++	if (atomic_read(&ask->refcnt) != atomic_read(&ask->nokey_refcnt))
+ 		goto unlock;
+ 
+ 	type = ask->type;
+@@ -308,12 +302,14 @@ int af_alg_accept(struct sock *sk, struc
+ 
+ 	sk2->sk_family = PF_ALG;
+ 
+-	if (nokey || !ask->refcnt++)
++	if (atomic_inc_return_relaxed(&ask->refcnt) == 1)
+ 		sock_hold(sk);
+-	ask->nokey_refcnt += nokey;
++	if (nokey) {
++		atomic_inc(&ask->nokey_refcnt);
++		atomic_set(&alg_sk(sk2)->nokey_refcnt, 1);
++	}
+ 	alg_sk(sk2)->parent = sk;
+ 	alg_sk(sk2)->type = type;
+-	alg_sk(sk2)->nokey_refcnt = nokey;
+ 
+ 	newsock->ops = type->ops;
+ 	newsock->state = SS_CONNECTED;
+--- a/crypto/algif_aead.c
++++ b/crypto/algif_aead.c
+@@ -389,7 +389,7 @@ static int aead_check_key(struct socket
+ 	struct alg_sock *ask = alg_sk(sk);
+ 
+ 	lock_sock(sk);
+-	if (ask->refcnt)
++	if (!atomic_read(&ask->nokey_refcnt))
+ 		goto unlock_child;
+ 
+ 	psk = ask->parent;
+@@ -401,11 +401,8 @@ static int aead_check_key(struct socket
+ 	if (!tfm->has_key)
+ 		goto unlock;
+ 
+-	if (!pask->refcnt++)
+-		sock_hold(psk);
+-
+-	ask->refcnt = 1;
+-	sock_put(psk);
++	atomic_dec(&pask->nokey_refcnt);
++	atomic_set(&ask->nokey_refcnt, 0);
+ 
+ 	err = 0;
+ 
+--- a/crypto/algif_hash.c
++++ b/crypto/algif_hash.c
+@@ -309,7 +309,7 @@ static int hash_check_key(struct socket
+ 	struct alg_sock *ask = alg_sk(sk);
+ 
+ 	lock_sock(sk);
+-	if (ask->refcnt)
++	if (!atomic_read(&ask->nokey_refcnt))
+ 		goto unlock_child;
+ 
+ 	psk = ask->parent;
+@@ -321,11 +321,8 @@ static int hash_check_key(struct socket
+ 	if (crypto_ahash_get_flags(tfm) & CRYPTO_TFM_NEED_KEY)
+ 		goto unlock;
+ 
+-	if (!pask->refcnt++)
+-		sock_hold(psk);
+-
+-	ask->refcnt = 1;
+-	sock_put(psk);
++	atomic_dec(&pask->nokey_refcnt);
++	atomic_set(&ask->nokey_refcnt, 0);
+ 
+ 	err = 0;
+ 
+--- a/crypto/algif_skcipher.c
++++ b/crypto/algif_skcipher.c
+@@ -223,7 +223,7 @@ static int skcipher_check_key(struct soc
+ 	struct alg_sock *ask = alg_sk(sk);
+ 
+ 	lock_sock(sk);
+-	if (ask->refcnt)
++	if (!atomic_read(&ask->nokey_refcnt))
+ 		goto unlock_child;
+ 
+ 	psk = ask->parent;
+@@ -235,11 +235,8 @@ static int skcipher_check_key(struct soc
+ 	if (!tfm->has_key)
+ 		goto unlock;
+ 
+-	if (!pask->refcnt++)
+-		sock_hold(psk);
+-
+-	ask->refcnt = 1;
+-	sock_put(psk);
++	atomic_dec(&pask->nokey_refcnt);
++	atomic_set(&ask->nokey_refcnt, 0);
+ 
+ 	err = 0;
+ 
+--- a/include/crypto/if_alg.h
++++ b/include/crypto/if_alg.h
+@@ -34,8 +34,8 @@ struct alg_sock {
+ 
+ 	struct sock *parent;
+ 
+-	unsigned int refcnt;
+-	unsigned int nokey_refcnt;
++	atomic_t refcnt;
++	atomic_t nokey_refcnt;
+ 
+ 	const struct af_alg_type *type;
+ 	void *private;
+
+
