@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FF962170EF
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:25:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 177D8217138
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:25:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729852AbgGGPW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:22:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34752 "EHLO mail.kernel.org"
+        id S1729775AbgGGPZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:25:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39080 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729832AbgGGPWR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:22:17 -0400
+        id S1729756AbgGGPZN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 11:25:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 90F64206E2;
-        Tue,  7 Jul 2020 15:22:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CE9532065D;
+        Tue,  7 Jul 2020 15:25:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594135337;
-        bh=enWQb/tSchN3mf06HJzd5tVwWPwtqvnTPre9qMVaTuU=;
+        s=default; t=1594135512;
+        bh=7a2qDkJQi+K2FE9L4U3Hjg2yiZJsBwvPef1onkFCnTI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YefmlcT6eX6Oi3pUknoclTpqlM8SIEqFEDl7y3FVXW54mftJV9DRKXSZuNvSjM6Xc
-         yg7jh/X/XPHruCRjjtGBLWgIUjalLsEW9hgKckrJYXlS3cWLFL51TND9b1iCIsFsFr
-         ckr8cthpixN+i29gUgyx2nqDT+aNTq0XLCbCOw7c=
+        b=w3S31ZniRqCnUEhy65r+7ed6EW6RfoZY3TNvaeco368jkY0c8QhUARFX8Ltgg5i7A
+         Urnzm0Xc1934l9BlhMswV9unjjYEpKFCpPdCkcOJo4GgQKudTkiH8lmcvnRIl1xmD2
+         bnqsA8f4osHYaYZWiZFjdPyxoaOdxOPj+oBl2c5U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, "J. Bruce Fields" <bfields@redhat.com>,
-        Sasha Levin <sashal@kernel.org>, Luo Xiaogang <lxgrxd@163.com>
-Subject: [PATCH 5.4 36/65] nfsd4: fix nfsdfs reference count loop
-Date:   Tue,  7 Jul 2020 17:17:15 +0200
-Message-Id: <20200707145754.219024905@linuxfoundation.org>
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 071/112] nfsd: clients dont need to break their own delegations
+Date:   Tue,  7 Jul 2020 17:17:16 +0200
+Message-Id: <20200707145804.379713164@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200707145752.417212219@linuxfoundation.org>
-References: <20200707145752.417212219@linuxfoundation.org>
+In-Reply-To: <20200707145800.925304888@linuxfoundation.org>
+References: <20200707145800.925304888@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,128 +45,183 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: J. Bruce Fields <bfields@redhat.com>
 
-[ Upstream commit 681370f4b00af0fcc65bbfb9f82de526ab7ceb0a ]
+[ Upstream commit 28df3d1539de5090f7916f6fff03891b67f366f4 ]
 
-We don't drop the reference on the nfsdfs filesystem with
-mntput(nn->nfsd_mnt) until nfsd_exit_net(), but that won't be called
-until the nfsd module's unloaded, and we can't unload the module as long
-as there's a reference on nfsdfs.  So this prevents module unloading.
+We currently revoke read delegations on any write open or any operation
+that modifies file data or metadata (including rename, link, and
+unlink).  But if the delegation in question is the only read delegation
+and is held by the client performing the operation, that's not really
+necessary.
 
-Fixes: 2c830dd7209b ("nfsd: persist nfsd filesystem across mounts")
-Reported-and-Tested-by:  Luo Xiaogang <lxgrxd@163.com>
+It's not always possible to prevent this in the NFSv4.0 case, because
+there's not always a way to determine which client an NFSv4.0 delegation
+came from.  (In theory we could try to guess this from the transport
+layer, e.g., by assuming all traffic on a given TCP connection comes
+from the same client.  But that's not really correct.)
+
+In the NFSv4.1 case the session layer always tells us the client.
+
+This patch should remove such self-conflicts in all cases where we can
+reliably determine the client from the compound.
+
+To do that we need to track "who" is performing a given (possibly
+lease-breaking) file operation.  We're doing that by storing the
+information in the svc_rqst and using kthread_data() to map the current
+task back to a svc_rqst.
+
 Signed-off-by: J. Bruce Fields <bfields@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfsd/nfs4state.c |  8 +++++++-
- fs/nfsd/nfsctl.c    | 22 ++++++++++++----------
- fs/nfsd/nfsd.h      |  3 +++
- 3 files changed, 22 insertions(+), 11 deletions(-)
+ Documentation/filesystems/locking.rst |  2 ++
+ fs/locks.c                            |  3 +++
+ fs/nfsd/nfs4proc.c                    |  2 ++
+ fs/nfsd/nfs4state.c                   | 14 ++++++++++++++
+ fs/nfsd/nfsd.h                        |  2 ++
+ fs/nfsd/nfssvc.c                      |  6 ++++++
+ include/linux/fs.h                    |  1 +
+ include/linux/sunrpc/svc.h            |  1 +
+ 8 files changed, 31 insertions(+)
 
+diff --git a/Documentation/filesystems/locking.rst b/Documentation/filesystems/locking.rst
+index 5057e4d9dcd1d..9fdcec4166142 100644
+--- a/Documentation/filesystems/locking.rst
++++ b/Documentation/filesystems/locking.rst
+@@ -425,6 +425,7 @@ prototypes::
+ 	int (*lm_grant)(struct file_lock *, struct file_lock *, int);
+ 	void (*lm_break)(struct file_lock *); /* break_lease callback */
+ 	int (*lm_change)(struct file_lock **, int);
++	bool (*lm_breaker_owns_lease)(struct file_lock *);
+ 
+ locking rules:
+ 
+@@ -435,6 +436,7 @@ lm_notify:		yes		yes			no
+ lm_grant:		no		no			no
+ lm_break:		yes		no			no
+ lm_change		yes		no			no
++lm_breaker_owns_lease:	no		no			no
+ ==========		=============	=================	=========
+ 
+ buffer_head
+diff --git a/fs/locks.c b/fs/locks.c
+index b8a31c1c4fff3..a3f186846e93e 100644
+--- a/fs/locks.c
++++ b/fs/locks.c
+@@ -1557,6 +1557,9 @@ static bool leases_conflict(struct file_lock *lease, struct file_lock *breaker)
+ {
+ 	bool rc;
+ 
++	if (lease->fl_lmops->lm_breaker_owns_lease
++			&& lease->fl_lmops->lm_breaker_owns_lease(lease))
++		return false;
+ 	if ((breaker->fl_flags & FL_LAYOUT) != (lease->fl_flags & FL_LAYOUT)) {
+ 		rc = false;
+ 		goto trace;
+diff --git a/fs/nfsd/nfs4proc.c b/fs/nfsd/nfs4proc.c
+index 0e75f7fb5fec0..a6d73aa51ce4e 100644
+--- a/fs/nfsd/nfs4proc.c
++++ b/fs/nfsd/nfs4proc.c
+@@ -2302,6 +2302,8 @@ nfsd4_proc_compound(struct svc_rqst *rqstp)
+ 	}
+ 	check_if_stalefh_allowed(args);
+ 
++	rqstp->rq_lease_breaker = (void **)&cstate->clp;
++
+ 	trace_nfsd_compound(rqstp, args->opcnt);
+ 	while (!status && resp->opcnt < args->opcnt) {
+ 		op = &args->ops[resp->opcnt++];
 diff --git a/fs/nfsd/nfs4state.c b/fs/nfsd/nfs4state.c
-index 1e8f5e281bb53..fa3dcaa82572e 100644
+index c107caa565254..f71e5590967bb 100644
 --- a/fs/nfsd/nfs4state.c
 +++ b/fs/nfsd/nfs4state.c
-@@ -7719,9 +7719,14 @@ nfs4_state_start_net(struct net *net)
- 	struct nfsd_net *nn = net_generic(net, nfsd_net_id);
- 	int ret;
- 
--	ret = nfs4_state_create_net(net);
-+	ret = get_nfsdfs(net);
- 	if (ret)
- 		return ret;
-+	ret = nfs4_state_create_net(net);
-+	if (ret) {
-+		mntput(nn->nfsd_mnt);
-+		return ret;
-+	}
- 	locks_start_grace(net, &nn->nfsd4_manager);
- 	nfsd4_client_tracking_init(net);
- 	if (nn->track_reclaim_completes && nn->reclaim_str_hashtbl_size == 0)
-@@ -7790,6 +7795,7 @@ nfs4_state_shutdown_net(struct net *net)
- 
- 	nfsd4_client_tracking_exit(net);
- 	nfs4_state_destroy_net(net);
-+	mntput(nn->nfsd_mnt);
+@@ -4522,6 +4522,19 @@ nfsd_break_deleg_cb(struct file_lock *fl)
+ 	return ret;
  }
  
- void
-diff --git a/fs/nfsd/nfsctl.c b/fs/nfsd/nfsctl.c
-index 159feae6af8ba..596ed6a42022d 100644
---- a/fs/nfsd/nfsctl.c
-+++ b/fs/nfsd/nfsctl.c
-@@ -1424,6 +1424,18 @@ static struct file_system_type nfsd_fs_type = {
- };
- MODULE_ALIAS_FS("nfsd");
- 
-+int get_nfsdfs(struct net *net)
++static bool nfsd_breaker_owns_lease(struct file_lock *fl)
 +{
-+	struct nfsd_net *nn = net_generic(net, nfsd_net_id);
-+	struct vfsmount *mnt;
++	struct nfs4_delegation *dl = fl->fl_owner;
++	struct svc_rqst *rqst;
++	struct nfs4_client *clp;
 +
-+	mnt =  vfs_kern_mount(&nfsd_fs_type, SB_KERNMOUNT, "nfsd", NULL);
-+	if (IS_ERR(mnt))
-+		return PTR_ERR(mnt);
-+	nn->nfsd_mnt = mnt;
-+	return 0;
++	if (!i_am_nfsd())
++		return NULL;
++	rqst = kthread_data(current);
++	clp = *(rqst->rq_lease_breaker);
++	return dl->dl_stid.sc_client == clp;
 +}
 +
- #ifdef CONFIG_PROC_FS
- static int create_proc_exports_entry(void)
- {
-@@ -1452,7 +1464,6 @@ unsigned int nfsd_net_id;
- static __net_init int nfsd_init_net(struct net *net)
- {
- 	int retval;
--	struct vfsmount *mnt;
- 	struct nfsd_net *nn = net_generic(net, nfsd_net_id);
+ static int
+ nfsd_change_deleg_cb(struct file_lock *onlist, int arg,
+ 		     struct list_head *dispose)
+@@ -4533,6 +4546,7 @@ nfsd_change_deleg_cb(struct file_lock *onlist, int arg,
+ }
  
- 	retval = nfsd_export_init(net);
-@@ -1479,16 +1490,8 @@ static __net_init int nfsd_init_net(struct net *net)
- 	init_waitqueue_head(&nn->ntf_wq);
- 	seqlock_init(&nn->boot_lock);
- 
--	mnt =  vfs_kern_mount(&nfsd_fs_type, SB_KERNMOUNT, "nfsd", NULL);
--	if (IS_ERR(mnt)) {
--		retval = PTR_ERR(mnt);
--		goto out_mount_err;
--	}
--	nn->nfsd_mnt = mnt;
- 	return 0;
- 
--out_mount_err:
--	nfsd_reply_cache_shutdown(nn);
- out_drc_error:
- 	nfsd_idmap_shutdown(net);
- out_idmap_error:
-@@ -1501,7 +1504,6 @@ static __net_exit void nfsd_exit_net(struct net *net)
- {
- 	struct nfsd_net *nn = net_generic(net, nfsd_net_id);
- 
--	mntput(nn->nfsd_mnt);
- 	nfsd_reply_cache_shutdown(nn);
- 	nfsd_idmap_shutdown(net);
- 	nfsd_export_shutdown(net);
+ static const struct lock_manager_operations nfsd_lease_mng_ops = {
++	.lm_breaker_owns_lease = nfsd_breaker_owns_lease,
+ 	.lm_break = nfsd_break_deleg_cb,
+ 	.lm_change = nfsd_change_deleg_cb,
+ };
 diff --git a/fs/nfsd/nfsd.h b/fs/nfsd/nfsd.h
-index 7a835fb7d79f7..65097324b42a0 100644
+index 2ab5569126b8a..36cdd81b6688a 100644
 --- a/fs/nfsd/nfsd.h
 +++ b/fs/nfsd/nfsd.h
-@@ -89,6 +89,8 @@ void		nfsd_destroy(struct net *net);
+@@ -88,6 +88,8 @@ int		nfsd_pool_stats_release(struct inode *, struct file *);
  
- bool		i_am_nfsd(void);
+ void		nfsd_destroy(struct net *net);
  
-+int get_nfsdfs(struct net *);
++bool		i_am_nfsd(void);
 +
  struct nfsdfs_client {
  	struct kref cl_ref;
  	void (*cl_release)(struct kref *kref);
-@@ -99,6 +101,7 @@ struct dentry *nfsd_client_mkdir(struct nfsd_net *nn,
- 		struct nfsdfs_client *ncl, u32 id, const struct tree_descr *);
- void nfsd_client_rmdir(struct dentry *dentry);
+diff --git a/fs/nfsd/nfssvc.c b/fs/nfsd/nfssvc.c
+index ca9fd348548b8..4f588c0eaaf44 100644
+--- a/fs/nfsd/nfssvc.c
++++ b/fs/nfsd/nfssvc.c
+@@ -601,6 +601,11 @@ static const struct svc_serv_ops nfsd_thread_sv_ops = {
+ 	.svo_module		= THIS_MODULE,
+ };
  
++bool i_am_nfsd()
++{
++	return kthread_func(current) == nfsd;
++}
 +
- #if defined(CONFIG_NFSD_V2_ACL) || defined(CONFIG_NFSD_V3_ACL)
- #ifdef CONFIG_NFSD_V2_ACL
- extern const struct svc_version nfsd_acl_version2;
+ int nfsd_create_serv(struct net *net)
+ {
+ 	int error;
+@@ -1011,6 +1016,7 @@ nfsd_dispatch(struct svc_rqst *rqstp, __be32 *statp)
+ 		*statp = rpc_garbage_args;
+ 		return 1;
+ 	}
++	rqstp->rq_lease_breaker = NULL;
+ 	/*
+ 	 * Give the xdr decoder a chance to change this if it wants
+ 	 * (necessary in the NFSv4.0 compound case)
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 45cc10cdf6ddd..70a0ac7b8f66a 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -1045,6 +1045,7 @@ struct lock_manager_operations {
+ 	bool (*lm_break)(struct file_lock *);
+ 	int (*lm_change)(struct file_lock *, int, struct list_head *);
+ 	void (*lm_setup)(struct file_lock *, void **);
++	bool (*lm_breaker_owns_lease)(struct file_lock *);
+ };
+ 
+ struct lock_manager {
+diff --git a/include/linux/sunrpc/svc.h b/include/linux/sunrpc/svc.h
+index fd390894a5849..abf4a57ce4a7d 100644
+--- a/include/linux/sunrpc/svc.h
++++ b/include/linux/sunrpc/svc.h
+@@ -299,6 +299,7 @@ struct svc_rqst {
+ 	struct net		*rq_bc_net;	/* pointer to backchannel's
+ 						 * net namespace
+ 						 */
++	void **			rq_lease_breaker; /* The v4 client breaking a lease */
+ };
+ 
+ #define SVC_NET(rqst) (rqst->rq_xprt ? rqst->rq_xprt->xpt_net : rqst->rq_bc_net)
 -- 
 2.25.1
 
