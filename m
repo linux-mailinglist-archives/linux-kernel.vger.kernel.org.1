@@ -2,119 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0E34217323
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:59:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8316C217327
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:59:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728246AbgGGP6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:58:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38128 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727079AbgGGP6v (ORCPT
+        id S1728528AbgGGP7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:59:21 -0400
+Received: from mail-oo1-f66.google.com ([209.85.161.66]:35238 "EHLO
+        mail-oo1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727079AbgGGP7U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:58:51 -0400
-Received: from mail-ed1-x561.google.com (mail-ed1-x561.google.com [IPv6:2a00:1450:4864:20::561])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6B63C061755
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 08:58:50 -0700 (PDT)
-Received: by mail-ed1-x561.google.com with SMTP id e22so38867463edq.8
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 08:58:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=flowbird.group; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=hGGzB42iFy6ghF2u4QUqQFvdM4Y3ZVYyPzuZ+b6j5U8=;
-        b=SQauLQ9kLevGI1sjapbckHVSOl/rItba2jDiiEVbyk6vgD+ekaU79GMgdlUfeg7csN
-         k3FdKEQUQbUTZHGuSDJ6Hc1TCopRcYom+7PnjG012s215/7xWz96ysJjtfamTV2vBUIk
-         GTH3Tt9sXgLdclGWvy/420eUO0eSeRH3Lj7hEo1jcNtzrhX3DFCuZgX20Lw6tJLifJ/y
-         5lFyyEB9m8vy15HwlJmM9Fmxyw8y1jMDeQMUWteqGLSYd3fPNmPoVdfmM28eLKdieewY
-         Un2WtQzZYAELNz1E0JK3TaPSXrIkbgrzYXuv2CcIW/dhpW5JgfdO4BL74R7Q2uxoCwXE
-         XZdg==
+        Tue, 7 Jul 2020 11:59:20 -0400
+Received: by mail-oo1-f66.google.com with SMTP id k47so4707041ool.2
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 08:59:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=hGGzB42iFy6ghF2u4QUqQFvdM4Y3ZVYyPzuZ+b6j5U8=;
-        b=o3zWK3fA4C9K/rF0tsX94pdWPl9GkejDuklcwqHQWmueXxgN2wHJB/om2OPjxOKiLg
-         H2GVIKI6QcXO1kSVr8cX4mwItmWHwSxfaC7EwYoy7AEuf8l7v4IC056hZ7Q/L/xBMk7K
-         F0bpGz1pwlwevU9xBnnL+uJMvG1V596t6QLOzrDSti76oj6955wuJhmGbiQ/aVVoZfra
-         RJe1qHr+zmr9DCNb0AOq7vovMiw40cea1AnzMpv0rg/S74b+wi6/KFS7f8lIGKujgiqO
-         ZTTHTdEdNcr42SjusrsHXaPlhSScz0vtASPmJkF0PDnKc9GUr2Jt8nd0oJXzTJIx4Bv+
-         /rBg==
-X-Gm-Message-State: AOAM532QTkTWcitoi+ZTOnwgNuiSLYt4K2Gxc0XIYYxqQ/hsGHYd75Oq
-        rD7bzV45CeiXEYS62VDIi+esZY1cyooMcpybdmrrku/AfROB
-X-Google-Smtp-Source: ABdhPJw3Tm43QgiqUvFQKRBYj1WOXo2yPNyh9gnBzpc4EcPlPdfH4671tIhDdJpTzLcWR0pDV42EoW7gLio1
-X-Received: by 2002:a50:acc5:: with SMTP id x63mr39384755edc.99.1594137528113;
-        Tue, 07 Jul 2020 08:58:48 -0700 (PDT)
-Received: from mta1.parkeon.com ([185.149.63.251])
-        by smtp-relay.gmail.com with ESMTPS id dn20sm5596ejc.142.2020.07.07.08.58.48
-        (version=TLS1 cipher=AES128-SHA bits=128/128);
-        Tue, 07 Jul 2020 08:58:48 -0700 (PDT)
-X-Relaying-Domain: flowbird.group
-Received: from [172.16.14.70] (port=54136 helo=PC12445-BES.dynamic.besancon.parkeon.com)
-        by mta1.parkeon.com with esmtp (Exim 4.71)
-        (envelope-from <martin.fuzzey@flowbird.group>)
-        id 1jspzb-00069x-Mi; Tue, 07 Jul 2020 17:58:47 +0200
-From:   Martin Fuzzey <martin.fuzzey@flowbird.group>
-To:     Philipp Zabel <p.zabel@pengutronix.de>
-Cc:     Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm: imx: Fix occasional screen corruption on modeset.
-Date:   Tue,  7 Jul 2020 17:56:59 +0200
-Message-Id: <1594137527-15201-1-git-send-email-martin.fuzzey@flowbird.group>
-X-Mailer: git-send-email 1.9.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ybKYjyxhBNv1kTn9dag4mFuNouSoGCR2/Y20joSpfWA=;
+        b=aOin9jLMmI+aTwtKSECSRBbu9zlMTTARa11CekVdx4rOqDkF8y8MTDlgt/prS8gEsC
+         ZzGhFYcmJLnKY5y4qXGcc6iobndOJnhq8Kz91mFOR5MDdSEowBDISgf8gVyobhWcq12e
+         JXrxyfdQHCJDGaxCj7pcRz3BUvTAAGyR5yM9fejeAImONzLbSr3XgGesPSWW5hifBJd5
+         eCDMObkFA/REhQYopCu/c9t8dkiaLwgLdmnvhezHzzJZopz8Ea6f1uH+zDmk83McKpDZ
+         BGs2hflYC4UdK+MxJtVgGN75R32ymx2N/sb2imIP4VO6kRV6mEGLC4oxBJS9Z/afiW3F
+         X6eA==
+X-Gm-Message-State: AOAM5314unHPBfnTtgt0mwT8crLwYEN/6sMzBcZ+uyHalBgoY7zAHdu2
+        OaPrkZXEMj19w98Ftyi9ucDY52t0dZ5TNDLOub8=
+X-Google-Smtp-Source: ABdhPJxgIcG1DZyavED8sdSqF07AzJotJeUnC8/Ncw9mnaxVZb6e+P2ytm8y9iWc+fyHIcwiLTvMhXzxRPXtsphT+HE=
+X-Received: by 2002:a4a:2459:: with SMTP id v25mr47061329oov.75.1594137559641;
+ Tue, 07 Jul 2020 08:59:19 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200701194259.3337652-1-saravanak@google.com> <20200701194259.3337652-2-saravanak@google.com>
+In-Reply-To: <20200701194259.3337652-2-saravanak@google.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 7 Jul 2020 17:59:08 +0200
+Message-ID: <CAJZ5v0jS39EPgsiNrGzCGeSpMpccu2tUQZ_zn9PABMMmtD-PBA@mail.gmail.com>
+Subject: Re: [PATCH v1 1/3] driver core: Don't do deferred probe in parallel
+ with kernel_init thread
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "Cc: Android Kernel" <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When performing a modeset the atomic core calls
-ipu_crtc_atomic_disable() which switches off the DC and DI.
+On Wed, Jul 1, 2020 at 9:43 PM Saravana Kannan <saravanak@google.com> wrote:
+>
+> The current deferred probe implementation can mess up suspend/resume
+> ordering if deferred probe thread is kicked off in parallel with the
+> main initcall thread (kernel_init thread) [1].
+>
+> For example:
+>
+> Say device-B is a consumer of device-A.
+>
+> Initcall thread                                 Deferred probe thread
+> ===============                                 =====================
+> 1. device-A is added.
+> 2. device-B is added.
+> 3. dpm_list is now [device-A, device-B].
+> 4. driver-A defers probe of device-A.
+>                                                 5. device-A is moved to
+>                                                    end of dpm_list
+>                                                 6. dpm_list is now
+>                                                    [device-B, device-A]
+> 7. driver-B is registereed and probes device-B.
+> 8. dpm_list stays as [device-B, device-A].
+>
+> The reverse order of dpm_list is used for suspend. So in this case
+> device-A would incorrectly get suspended before device-B.
+>
+> Commit 716a7a259690 ("driver core: fw_devlink: Add support for batching
+> fwnode parsing") kicked off the deferred probe thread early during boot
+> to run in parallel with the initcall thread and caused suspend/resume
+> regressions.  This patch removes the parallel run of the deferred probe
+> thread to avoid the suspend/resume regressions.
+>
+> [1] - https://lore.kernel.org/lkml/CAGETcx8W96KAw-d_siTX4qHB_-7ddk0miYRDQeHE6E0_8qx-6Q@mail.gmail.com/
+>
+> Fixes: 716a7a259690 ("driver core: fw_devlink: Add support for batching fwnode parsing")
+> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> ---
+>  drivers/base/base.h | 1 -
+>  drivers/base/core.c | 1 -
+>  drivers/base/dd.c   | 5 -----
+>  3 files changed, 7 deletions(-)
+>
+> diff --git a/drivers/base/base.h b/drivers/base/base.h
+> index 95c22c0f9036..40fb069a8a7e 100644
+> --- a/drivers/base/base.h
+> +++ b/drivers/base/base.h
+> @@ -153,7 +153,6 @@ extern char *make_class_name(const char *name, struct kobject *kobj);
+>  extern int devres_release_all(struct device *dev);
+>  extern void device_block_probing(void);
+>  extern void device_unblock_probing(void);
+> -extern void driver_deferred_probe_force_trigger(void);
+>
+>  /* /sys/devices directory */
+>  extern struct kset *devices_kset;
+> diff --git a/drivers/base/core.c b/drivers/base/core.c
+> index 67d39a90b45c..35cc9896eb9e 100644
+> --- a/drivers/base/core.c
+> +++ b/drivers/base/core.c
+> @@ -1323,7 +1323,6 @@ void fw_devlink_resume(void)
+>                 goto out;
+>
+>         device_link_add_missing_supplier_links();
+> -       driver_deferred_probe_force_trigger();
 
-When we immediately restart as in the modeset case this sometimes
-leads to corruption at the bottom of the screen looking like a mirror
-image of the top.
+So it looks like this was not needed after all.
 
-The exact reason isn't understood but it seems timing related.
+What was the role of it then?
 
-This was observed on i.MX6DL on a system that does 2 mode
-transitions on boot (fbcon->android boot animation->android homescreen)
-then no more during normal operation resulting in corruption
-about once every 10 boots that lasted for variable durations
-from a few seconds to several hours.
-
-Dumping the buffers confirmed that they were correct in memory,
-just the display was wrong.
-
-For tests the problem was reproduced systematically by forcing
-a full modeset every 10 frames even if when not required.
-
-Leaving the DC and DI on if the CRTC is staying on fixes this.
-
-Signed-off-by: Martin Fuzzey <martin.fuzzey@flowbird.group>
----
- drivers/gpu/drm/imx/ipuv3-crtc.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/gpu/drm/imx/ipuv3-crtc.c b/drivers/gpu/drm/imx/ipuv3-crtc.c
-index 63c0284..9137b64 100644
---- a/drivers/gpu/drm/imx/ipuv3-crtc.c
-+++ b/drivers/gpu/drm/imx/ipuv3-crtc.c
-@@ -84,8 +84,15 @@ static void ipu_crtc_atomic_disable(struct drm_crtc *crtc,
- 	struct ipu_crtc *ipu_crtc = to_ipu_crtc(crtc);
- 	struct ipu_soc *ipu = dev_get_drvdata(ipu_crtc->dev->parent);
- 
--	ipu_dc_disable_channel(ipu_crtc->dc);
--	ipu_di_disable(ipu_crtc->di);
-+	/*
-+	 * If we are just doing a modeset don't disable dc/di as that
-+	 * sometimes leads to corruption at the bottom of the screen
-+	 */
-+	if (!crtc->state->active) {
-+		ipu_dc_disable_channel(ipu_crtc->dc);
-+		ipu_di_disable(ipu_crtc->di);
-+	}
-+
- 	/*
- 	 * Planes must be disabled before DC clock is removed, as otherwise the
- 	 * attached IDMACs will be left in undefined state, possibly hanging
--- 
-1.9.1
-
+>  out:
+>         mutex_unlock(&defer_fw_devlink_lock);
+>  }
+> diff --git a/drivers/base/dd.c b/drivers/base/dd.c
+> index 9a1d940342ac..48ca81cb8ebc 100644
+> --- a/drivers/base/dd.c
+> +++ b/drivers/base/dd.c
+> @@ -164,11 +164,6 @@ static void driver_deferred_probe_trigger(void)
+>         if (!driver_deferred_probe_enable)
+>                 return;
+>
+> -       driver_deferred_probe_force_trigger();
+> -}
+> -
+> -void driver_deferred_probe_force_trigger(void)
+> -{
+>         /*
+>          * A successful probe means that all the devices in the pending list
+>          * should be triggered to be reprobed.  Move all the deferred devices
+> --
+> 2.27.0.212.ge8ba1cc988-goog
+>
