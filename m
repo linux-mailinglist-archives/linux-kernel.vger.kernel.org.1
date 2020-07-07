@@ -2,196 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95ADF21753D
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 19:33:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC05B217544
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 19:34:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728379AbgGGRdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 13:33:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52982 "EHLO
+        id S1728516AbgGGRe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 13:34:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727834AbgGGRdx (ORCPT
+        with ESMTP id S1728504AbgGGRe2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 13:33:53 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01217C061755;
-        Tue,  7 Jul 2020 10:33:53 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id x11so17014793plo.7;
-        Tue, 07 Jul 2020 10:33:52 -0700 (PDT)
+        Tue, 7 Jul 2020 13:34:28 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6443C061755
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 10:34:25 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id f7so43080270wrw.1
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 10:34:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=OG2UGSwTtZ3JhpHjOf9/K5Mq8nGQGxILirbLiIW7/lE=;
-        b=oGqcWcGzRQP3aQKmSSrH/bX1Vqjd9YWJebkVyo71vwBL5Eb/wsWmEczRasIBhPbV1E
-         M5q3e8MIbFsgK6VLQG2nRHs2BPFDj7QYWvlVigEVb8v2fsSQZWZmP+UJNqIR74jYR3iB
-         CIrh0ioE7wi9DHbES0JMF4R0ET1XGg2l+lfY+Q2ppedMJPSk901K1ULEOEoYkpoVWmpw
-         5yC9Jg61OiJtbFGJopPVjZitLETsWRTmvEN3beNquwv7h/y7nq+UReiC6JEEWfOEvMq9
-         sRIUgrsJGpZ5eVeWg1gdwOkUGiHfa+QBS5M/VUmSDKSPOZWXbOf1fU0t9B8uJUtz+0B/
-         CsmQ==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ITreFSF3QwB0kHeLsgLwmjRqxc7iMrP7mMrAbIuhNUU=;
+        b=FgAys2nNA7C9G59JR2094Dn1BI10+vaU1RGrdY3HbiFXgeubNKu7Qi5fHE7DqvFI58
+         V4VtDi210MNlIp2kmbfEU4Cr1JqcdQS/JhjfjNhghH8yQnqQgHZ65gMO8VZM/z/Szz+1
+         eSKtRG5Dl18VIInxkT6IbeXAy26ssTJUNLU9U=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=OG2UGSwTtZ3JhpHjOf9/K5Mq8nGQGxILirbLiIW7/lE=;
-        b=bXBWn9ST2rXTkHcsqfwjzOhd3mTVTKF4of6NQWXJs4oQhxtEbvvSh0e6VIWje4+66J
-         TI8YgfgRRWBER/WJMmj1nl7eS/0oicqUXsvIzuMhy1ns/R93LahR3DA2jW5iqvOS1qpt
-         HDjubhYaQMGLEZCcOsXt717JuasCJudUjk6uzU9AMpzcG20eOZwvxni6iWmxX4OZb6y5
-         j3gfAEQXIKdJ4CfgA2AaHxlF9Y+WDtJcYXmmq10qee2AWqIMOF0IALtNbszBLi1tFhbQ
-         SovQOifWt8ZH2xx6Dqn1rzsmq9g16ETJZNJQxvBvSDpid2w1ETX9JTWtzZkT+ciTVY10
-         xntQ==
-X-Gm-Message-State: AOAM531xL8oFfg6vvNIDWXMAQnnTygYHFomkEyMlXQv/uYk1mI1XVyjG
-        FBjabbK3lgtdlQ3xfyjzPzU=
-X-Google-Smtp-Source: ABdhPJw6mDbNYNk2zkHO904T8LdoKcgLU8JjL9z3qxqChr8Ge4i6nLV465YRGMqYh2nB2zT4RpFsUw==
-X-Received: by 2002:a17:90a:ce96:: with SMTP id g22mr5540446pju.9.1594143232494;
-        Tue, 07 Jul 2020 10:33:52 -0700 (PDT)
-Received: from [192.168.86.235] (c-73-241-150-58.hsd1.ca.comcast.net. [73.241.150.58])
-        by smtp.gmail.com with ESMTPSA id i21sm7383950pfa.18.2020.07.07.10.33.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Jul 2020 10:33:51 -0700 (PDT)
-Subject: Re: [PATCH net-next] dropwatch: Support monitoring of dropped frames
-To:     izabela.bakollari@gmail.com, nhorman@tuxdriver.com,
-        davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-References: <20200707171515.110818-1-izabela.bakollari@gmail.com>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <8aa6bcfe-8117-0fc9-1bc5-9b6a600e0972@gmail.com>
-Date:   Tue, 7 Jul 2020 10:33:50 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ITreFSF3QwB0kHeLsgLwmjRqxc7iMrP7mMrAbIuhNUU=;
+        b=tp0P6VSKzSrvRVNpNIgFqNj8Dr3/6n8DHvYJA8aVdo0Ejw3GvY/06+22jnDAg8dXsE
+         ELgUDa3v8vsHOAL8X0p0s3QjX9RlBCMhlojsqqKNTJvVU7DWhV/XcBqQ3gXveGDCAyjR
+         S3nPWoZKXu1zg+y8h72nXCLSWjkLIkHjffGx57hM/RYI5KUs1vOH+LmuoMtxk5mkZnm7
+         uJIR1s17CtSn1u5zBqs48pSuUOj+VrbwPgYx8aD3nYXHZ70VsgzAXQ3RTaKjJCocVfYM
+         Xu1rwsCpxAVljwAtP0wGAdFXAqHQbzwtELJFsmZ6h7LzXbEwfiQ8Dzgbp41QtJQoMd4n
+         0f4A==
+X-Gm-Message-State: AOAM530Tl9z5lTr108IY1I0i7tMFkHfdO13LFkK/QktPSufZU/bwDcmw
+        0G0qBYYcBja8fo8ayecQsRDXyw==
+X-Google-Smtp-Source: ABdhPJwHYhg0CvN95fbCzB2YKA5y0Ej4SSs/h2hUyk34tRNvM1SJJ+fd0GK7wdywTV7GzQxoVx6gCA==
+X-Received: by 2002:adf:fe0e:: with SMTP id n14mr53889112wrr.325.1594143264656;
+        Tue, 07 Jul 2020 10:34:24 -0700 (PDT)
+Received: from chromium.org (205.215.190.35.bc.googleusercontent.com. [35.190.215.205])
+        by smtp.gmail.com with ESMTPSA id n16sm1860378wrq.39.2020.07.07.10.34.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Jul 2020 10:34:24 -0700 (PDT)
+Date:   Tue, 7 Jul 2020 17:34:22 +0000
+From:   Tomasz Figa <tfiga@chromium.org>
+To:     Jonathan Bakker <xc-racer2@live.ca>
+Cc:     kyungmin.park@samsung.com, s.nawrocki@samsung.com,
+        mchehab@kernel.org, kgene@kernel.org, krzk@kernel.org,
+        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tomasz Figa <tomasz.figa@gmail.com>
+Subject: Re: [PATCH 02/11] media: exynos4-is: Request syscon only if ISP
+ writeback is present
+Message-ID: <20200707173422.GB2621465@chromium.org>
+References: <20200426022650.10355-1-xc-racer2@live.ca>
+ <BN6PR04MB066006C199A43996C0502B62A3AE0@BN6PR04MB0660.namprd04.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <20200707171515.110818-1-izabela.bakollari@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BN6PR04MB066006C199A43996C0502B62A3AE0@BN6PR04MB0660.namprd04.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 7/7/20 10:15 AM, izabela.bakollari@gmail.com wrote:
-> From: Izabela Bakollari <izabela.bakollari@gmail.com>
+On Sat, Apr 25, 2020 at 07:26:41PM -0700, Jonathan Bakker wrote:
+> From: Tomasz Figa <tomasz.figa@gmail.com>
 > 
-> Dropwatch is a utility that monitors dropped frames by having userspace
-> record them over the dropwatch protocol over a file. This augument
-> allows live monitoring of dropped frames using tools like tcpdump.
+> On FIMC variants which don't have writeback channel, there is no need to
+> access system registers. This patch makes the driver request sysreg
+> regmap conditionally depending on whether writeback is supported.
 > 
-> With this feature, dropwatch allows two additional commands (start and
-> stop interface) which allows the assignment of a net_device to the
-> dropwatch protocol. When assinged, dropwatch will clone dropped frames,
-> and receive them on the assigned interface, allowing tools like tcpdump
-> to monitor for them.
-> 
-> With this feature, create a dummy ethernet interface (ip link add dev
-> dummy0 type dummy), assign it to the dropwatch kernel subsystem, by using
-> these new commands, and then monitor dropped frames in real time by
-> running tcpdump -i dummy0.
-> 
-> Signed-off-by: Izabela Bakollari <izabela.bakollari@gmail.com>
+> Signed-off-by: Tomasz Figa <tomasz.figa@gmail.com>
+> Signed-off-by: Jonathan Bakker <xc-racer2@live.ca>
 > ---
->  include/uapi/linux/net_dropmon.h |  3 ++
->  net/core/drop_monitor.c          | 79 +++++++++++++++++++++++++++++++-
->  2 files changed, 80 insertions(+), 2 deletions(-)
+>  drivers/media/platform/exynos4-is/fimc-core.c | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
 > 
-> diff --git a/include/uapi/linux/net_dropmon.h b/include/uapi/linux/net_dropmon.h
-> index 67e31f329190..e8e861e03a8a 100644
-> --- a/include/uapi/linux/net_dropmon.h
-> +++ b/include/uapi/linux/net_dropmon.h
-> @@ -58,6 +58,8 @@ enum {
->  	NET_DM_CMD_CONFIG_NEW,
->  	NET_DM_CMD_STATS_GET,
->  	NET_DM_CMD_STATS_NEW,
-> +	NET_DM_CMD_START_IFC,
-> +	NET_DM_CMD_STOP_IFC,
->  	_NET_DM_CMD_MAX,
->  };
->  
-> @@ -93,6 +95,7 @@ enum net_dm_attr {
->  	NET_DM_ATTR_SW_DROPS,			/* flag */
->  	NET_DM_ATTR_HW_DROPS,			/* flag */
->  	NET_DM_ATTR_FLOW_ACTION_COOKIE,		/* binary */
-> +	NET_DM_ATTR_IFNAME,			/* string */
->  
->  	__NET_DM_ATTR_MAX,
->  	NET_DM_ATTR_MAX = __NET_DM_ATTR_MAX - 1
-> diff --git a/net/core/drop_monitor.c b/net/core/drop_monitor.c
-> index 8e33cec9fc4e..8049bff05abd 100644
-> --- a/net/core/drop_monitor.c
-> +++ b/net/core/drop_monitor.c
-> @@ -30,6 +30,7 @@
->  #include <net/genetlink.h>
->  #include <net/netevent.h>
->  #include <net/flow_offload.h>
-> +#include <net/sock.h>
->  
->  #include <trace/events/skb.h>
->  #include <trace/events/napi.h>
-> @@ -46,6 +47,7 @@
->   */
->  static int trace_state = TRACE_OFF;
->  static bool monitor_hw;
-> +struct net_device *interface;
->  
->  /* net_dm_mutex
->   *
-> @@ -220,9 +222,8 @@ static void trace_drop_common(struct sk_buff *skb, void *location)
->  	struct per_cpu_dm_data *data;
->  	unsigned long flags;
->  
-> -	local_irq_save(flags);
-> +	spin_lock_irqsave(&data->lock, flags);
->  	data = this_cpu_ptr(&dm_cpu_data);
-> -	spin_lock(&data->lock);
 
-This change seems unrelated ?
+Reviewed-by: Tomasz Figa <tfiga@chromium.org>
 
-And also buggy, since data is essentially garbage when you call spin_lock_irqsave(&data->lock, flags);
-
->  	dskb = data->skb;
->  
->  	if (!dskb)
-> @@ -255,6 +256,12 @@ static void trace_drop_common(struct sk_buff *skb, void *location)
->  
->  out:
->  	spin_unlock_irqrestore(&data->lock, flags);
-> +
-> +	if (interface && interface != skb->dev) {
-> +		skb = skb_clone(skb, GFP_ATOMIC);
-
-skb_clone() can return NULL
-
-> +		skb->dev = interface;
-> +		netif_receive_skb(skb);
-> +	}
->  }
->  
->  static void trace_kfree_skb_hit(void *ignore, struct sk_buff *skb, void *location)
-> @@ -1315,6 +1322,63 @@ static int net_dm_cmd_trace(struct sk_buff *skb,
->  	return -EOPNOTSUPP;
->  }
->  
-> +static int net_dm_interface_start(struct net *net, const char *ifname)
-> +{
-> +	struct net_device *nd;
-> +
-> +	nd = dev_get_by_name(net, ifname);
-> +
-> +	if (nd) {
-> +		interface = nd;
-> +		dev_hold(interface);
-> +	} else {
-> +		return -ENODEV;
-> +	}
-> +	return 0;
-> +}
-> +
-
-
-What happens after this monitoring is started, then the admin does :
-
-rmmod ifb
-
-
+Best regards,
+Tomasz
