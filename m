@@ -2,102 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 515622174A1
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 19:00:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEC292174AB
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 19:03:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728447AbgGGRAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 13:00:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47754 "EHLO
+        id S1728214AbgGGRDE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 13:03:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728414AbgGGRAV (ORCPT
+        with ESMTP id S1726911AbgGGRDD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 13:00:21 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D2DBC08C5E1
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 10:00:21 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id z13so45977526wrw.5
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 10:00:21 -0700 (PDT)
+        Tue, 7 Jul 2020 13:03:03 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FAD8C061755
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 10:03:03 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id s9so50731714ljm.11
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 10:03:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=RUaEwyKvFjoxearYOG6fMQLvpfWQmIWguMJ3lRmxBVw=;
-        b=BHX0Pfz5ri1Yh4Zy3V9YuC2N1RtNm45e9Ar7i578AOR1KRiV5jYkft9+A766/PAQ2c
-         BXsRdtubnvJ4IEC5r++wfb7GHwWVhOEbTT17AFkiRPQhCD+yCI38G7MKFPZZWxzqkW1X
-         LLwTYDap24JWG+LLnP6MJSaTo0jt968sPzeiw=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wWtqhQ1RMjRjpz8jm0pj/37FDxLQZ8+O9P8GTDhdm3U=;
+        b=OOGSMxRhcoi7zXdpuHNOLamUQAGE/1dJvH57Oa2F7Dps70haKJ/iXRSThoOAl+4HDt
+         fxUVYRoUA639HuyMtcTbnCZxTWFpur1enHcLY1+ZB/a92EhFjm5MZYW7Oq0HKUalGr6i
+         dD8QbODR2513m2AsU5nK7RzbWo62rfxGu9YG6A3Wl8BAp1/uN7OtGoeinAkh7R6J850w
+         oN8H0zGgpLNnOwE+o/kncGTkpwg8SwGs71l4ROffLmqLjjwkmXF5IDwDV+b7x9zm5WLk
+         lkwKAiOezp0G9ojA7UL4URciZn3b0RSBk8z4v+JBUZUqnUvEMklVvRgfZAm8zqvahHrw
+         1nwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=RUaEwyKvFjoxearYOG6fMQLvpfWQmIWguMJ3lRmxBVw=;
-        b=NQxikXOjZ0aHjyZBcVFTIfc2uHCaW4kCae38Kkz1/AJJq2MEvFcrN+/t1idi0xWCc+
-         /NhBz0n3TzdWWSVn2TlIcWpHjmu8AcnxGVrfd3Plq2if2BND6lKXU4Oz1W+hBaKdb3fL
-         LNqUWydY6WGpZEqQrWy36mQWl70yuRgCXAQtzMNXw4avOrXYhdDEz9xXn4o29HgB1aAx
-         H33G/PifTvKzFxBuDPpG2P3HWqCg3bP9OLxx3iOpM9pq+1VFFUQRJVLpiLTzVC+1BtdU
-         LnZM74cfXeAo+qA/qXm4uNbJ6uqOBB7vq+8etXxlhOlAbxtAEqjlfdNCibV/ncSm2Hx7
-         JJkg==
-X-Gm-Message-State: AOAM532pNCIz3WR9MN71+pjVpml8GcJC/NqmPSrn8zahLBb6Sul2aefv
-        eg8hKWkQr3oDiqd9BNkeAxlBdQV/jM9nimZCu25gkt3T3ARQO6i3L/j5v/oBie/cBe46VGRb9Po
-        zhcld8V38CjsYXss2QeKqIYZm6I0eYrefg60tBnheuwRnC7pIS74l1wHsHuLzrNj4NV5mj4Hpd2
-        sFwHc=
-X-Google-Smtp-Source: ABdhPJwLbfD6yQlRb8xFVABJpE3v8ufetL+QEFMMaNpg6b6pRNGIoB3Ta6t6OvScYlvpaZ5fGrzoWw==
-X-Received: by 2002:adf:f54b:: with SMTP id j11mr55222080wrp.206.1594141219553;
-        Tue, 07 Jul 2020 10:00:19 -0700 (PDT)
-Received: from [192.168.1.237] (ip68-5-85-189.oc.oc.cox.net. [68.5.85.189])
-        by smtp.gmail.com with ESMTPSA id w2sm1669608wrs.77.2020.07.07.10.00.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Jul 2020 10:00:18 -0700 (PDT)
-Subject: Re: [PATCH][next] scsi: lpfc: fix inconsistent indenting
-To:     Colin King <colin.king@canonical.com>,
-        Dick Kennedy <dick.kennedy@broadcom.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200707150018.823350-1-colin.king@canonical.com>
-From:   James Smart <james.smart@broadcom.com>
-Message-ID: <e4686e05-e06e-93d1-e332-f6403b7eab9b@broadcom.com>
-Date:   Tue, 7 Jul 2020 10:00:14 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wWtqhQ1RMjRjpz8jm0pj/37FDxLQZ8+O9P8GTDhdm3U=;
+        b=gO2i2zMZp/vNaoawPNYo0sxpygFdJPG0BPUN8/slAKDIEPmFzWfEjEdmOlVaq7IbcS
+         Rubce0RBS3RQuCERlfAf1oUVNMOo9s5b0Q0M357i6e4P6bb+1M77I48UGdK6B4gXN244
+         QCE1rVeWrAoiWUtiTeSRMk2ijDIC0FM5T9GtIOGNjFRc8krH6C/0up0BZ/kV7CDudbQT
+         BauJ2/RNnAF81XlYvl0DqIQaGJ6U2JyMhZNvcoHTSFg6ZwT/vK5NOPnBcW1tWfA1HRtk
+         n3nTOqowkx7B9w1m/HJtTukLd4OcIaaVBnurJWufeFTJedUvSYh6DNlSF7pJoLVmp8Cx
+         fLcw==
+X-Gm-Message-State: AOAM533F7Ep9MXfT+ogGp5Tb2HLc69hSSxb8dHZzPnTjGWfA+3IvTIGm
+        9btnKeximWiao/4P8lUnutdeDjXtlAYWvX/HTHTsQA==
+X-Google-Smtp-Source: ABdhPJw4yPDo5/19AZW3fu7bt8YjrigxHvmkSzn5gvdi7ni0uhX8fx1MsMUD4Yqp646UBmzEk0B7lJQWf/IXp7CS3IE=
+X-Received: by 2002:a05:651c:10f:: with SMTP id a15mr29464307ljb.192.1594141381178;
+ Tue, 07 Jul 2020 10:03:01 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200707150018.823350-1-colin.king@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20200702152222.2630760-1-shakeelb@google.com> <20200703063548.GM18446@dhcp22.suse.cz>
+ <CALvZod5gthVX5m6o50OiYsXa=0_NpXK-tVvjTF42Oj4udr4Nuw@mail.gmail.com> <20200707121422.GP5913@dhcp22.suse.cz>
+In-Reply-To: <20200707121422.GP5913@dhcp22.suse.cz>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Tue, 7 Jul 2020 10:02:50 -0700
+Message-ID: <CALvZod5ty=piw6czyVyMhxQMBWGghC3ujxbrkVPr0fzwqogwrw@mail.gmail.com>
+Subject: Re: [RFC PROPOSAL] memcg: per-memcg user space reclaim interface
+To:     Michal Hocko <mhocko@kernel.org>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        David Rientjes <rientjes@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/7/2020 8:00 AM, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On Tue, Jul 7, 2020 at 5:14 AM Michal Hocko <mhocko@kernel.org> wrote:
 >
-> Fix smatch warning:
-> drivers/scsi/lpfc/lpfc_sli.c:15156 lpfc_cq_poll_hdler() warn: inconsistent
-> indenting
+> On Fri 03-07-20 07:23:14, Shakeel Butt wrote:
+> > On Thu, Jul 2, 2020 at 11:35 PM Michal Hocko <mhocko@kernel.org> wrote:
+> > >
+> > > On Thu 02-07-20 08:22:22, Shakeel Butt wrote:
+> > > [...]
+> > > > Interface options:
+> > > > ------------------
+> > > >
+> > > > 1) memcg interface e.g. 'echo 10M > memory.reclaim'
+> > > >
+> > > > + simple
+> > > > + can be extended to target specific type of memory (anon, file, kmem).
+> > > > - most probably restricted to cgroup v2.
+> > > >
+> > > > 2) fadvise(PAGEOUT) on cgroup_dir_fd
+> > > >
+> > > > + more general and applicable to other FSes (actually we are using
+> > > > something similar for tmpfs).
+> > > > + can be extended in future to just age the LRUs instead of reclaim or
+> > > > some new use cases.
+> > >
+> > > Could you explain why memory.high as an interface to trigger pro-active
+> > > memory reclaim is not sufficient. Also memory.low limit to protect
+> > > latency sensitve workloads?
+> >
+> > Yes, we can use memory.high to trigger [proactive] reclaim in a memcg
+> > but note that it can also introduce stalls in the application running
+> > in that memcg. Let's suppose the memory.current of a memcg is 100MiB
+> > and we want to reclaim 20MiB from it, we can set the memory.high to
+> > 80MiB but any allocation attempt from the application running in that
+> > memcg can get stalled/throttled. I want the functionality of the
+> > reclaim without potential stalls.
 >
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->   drivers/scsi/lpfc/lpfc_sli.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+> It would be great if the proposal mention this limitation.
 >
-> diff --git a/drivers/scsi/lpfc/lpfc_sli.c b/drivers/scsi/lpfc/lpfc_sli.c
-> index e17675381cb8..92fc6527e7ee 100644
-> --- a/drivers/scsi/lpfc/lpfc_sli.c
-> +++ b/drivers/scsi/lpfc/lpfc_sli.c
-> @@ -15153,7 +15153,7 @@ static int lpfc_cq_poll_hdler(struct irq_poll *iop, int budget)
->   {
->   	struct lpfc_queue *cq = container_of(iop, struct lpfc_queue, iop);
->   
-> -	 __lpfc_sli4_hba_process_cq(cq, LPFC_IRQ_POLL);
-> +	__lpfc_sli4_hba_process_cq(cq, LPFC_IRQ_POLL);
->   
->   	return 1;
->   }
 
-Reviewed-by: James Smart <james.smart@broadcom.com>
+Will do in the next version.
 
--- james
 
+> > The memory.min is for protection against the global reclaim and is
+> > unrelated to this discussion.
+>
+> Well, I was talkingg about memory.low. It is not meant only to protect
+> from the global reclaim. It can be used for balancing memory reclaim
+> from _any_ external memory pressure source. So it is somehow related to
+> the usecase you have mentioned.
+>
+
+For the uswapd use-case, I am not concerned about the external memory
+pressure source but the application hitting its own memory.high limit
+and getting throttled.
+
+> What you consider a latency sensitive workload could be protected from
+> directly induced reclaim latencies. You could use low events to learn
+> about the external memory pressure and update your protection to allow
+> for some reclaim. I do understand that this wouldn't solve your problem
+> who gets reclaimed and maybe that is the crux on why it is not
+> applicable but that should really be mentioned explicitly.
+>
+
+The main aim for the proactive reclaim is to not cause an external
+memory pressure. The low events can be another source of information
+to tell the system level situation to the 'Memory Overcommit
+Controller'. So, I see the low events as complementary, not the
+replacement for the reclaim interface.
+
+BTW by "low events from external memory pressure" am I correct in
+understanding that you meant an unrelated job reclaiming and
+triggering low events on a job of interest. Or do you mean to
+partition a job into sub-jobs and then use the low events between
+these sub-jobs somehow?
