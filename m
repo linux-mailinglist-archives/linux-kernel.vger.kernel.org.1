@@ -2,39 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6634217124
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:25:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B1DC217097
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:24:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728742AbgGGPYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:24:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38068 "EHLO mail.kernel.org"
+        id S1727777AbgGGPTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:19:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58550 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730094AbgGGPY2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:24:28 -0400
+        id S1728232AbgGGPS6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 11:18:58 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0C8102078D;
-        Tue,  7 Jul 2020 15:24:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 03F3620663;
+        Tue,  7 Jul 2020 15:18:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594135467;
-        bh=UwEqrjqoTq75tKEp9ZpwiITGAJv3OcuzNOfpj83czJ8=;
+        s=default; t=1594135137;
+        bh=dCuLJOqRd3sNS23NFUSbVc6Vx6twg8IVoAgQxgC0bX8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1VnJU+D9rud0zzNiQggBpguim3oqZoNCY5YGcxLV2izNN6+UqIaXGgxP338+fTt/r
-         1ir9D3sSykx+BIZUOyJQJfuUi+z7CLpJjvts/Sk5stHiwk6iAeUwvYL5yxtUWpCrIe
-         jm5bzf8J4YshHQJzPVX08EWc20vK3jIeQBFmWoMc=
+        b=1F2I2JNJ+PBWB2KU55ywGskClz6KQ2O5Y1LGdyRrolAsIW8k0lV8jkX86dmFl37wL
+         4hddHR2OuTkccMbFdD5cmZETyHoRTqfxqye6uQRmDV+X8fZI4+FZf/90OwuvgbwFqR
+         I1EFOIscadn2BuBKJMimTxy400kwuHKKSz4t8PK4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Claudiu Manoil <claudiu.manoil@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Qian Cai <cai@lca.pw>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Glauber Costa <glauber@scylladb.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 052/112] enetc: Fix HW_VLAN_CTAG_TX|RX toggling
-Date:   Tue,  7 Jul 2020 17:16:57 +0200
-Message-Id: <20200707145803.476183728@linuxfoundation.org>
+Subject: [PATCH 4.19 06/36] mm/slub: fix stack overruns with SLUB_STATS
+Date:   Tue,  7 Jul 2020 17:16:58 +0200
+Message-Id: <20200707145749.450549779@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200707145800.925304888@linuxfoundation.org>
-References: <20200707145800.925304888@linuxfoundation.org>
+In-Reply-To: <20200707145749.130272978@linuxfoundation.org>
+References: <20200707145749.130272978@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,131 +50,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Claudiu Manoil <claudiu.manoil@nxp.com>
+From: Qian Cai <cai@lca.pw>
 
-[ Upstream commit 9deba33f1b7266a3870c9da31f787b605748fc0c ]
+[ Upstream commit a68ee0573991e90af2f1785db309206408bad3e5 ]
 
-VLAN tag insertion/extraction offload is correctly
-activated at probe time but deactivation of this feature
-(i.e. via ethtool) is broken.  Toggling works only for
-Tx/Rx ring 0 of a PF, and is ignored for the other rings,
-including the VF rings.
-To fix this, the existing VLAN offload toggling code
-was extended to all the rings assigned to a netdevice,
-instead of the default ring 0 (likely a leftover from the
-early validation days of this feature).  And the code was
-moved to the common set_features() function to fix toggling
-for the VF driver too.
+There is no need to copy SLUB_STATS items from root memcg cache to new
+memcg cache copies.  Doing so could result in stack overruns because the
+store function only accepts 0 to clear the stat and returns an error for
+everything else while the show method would print out the whole stat.
 
-Fixes: d4fd0404c1c9 ("enetc: Introduce basic PF and VF ENETC ethernet drivers")
-Signed-off-by: Claudiu Manoil <claudiu.manoil@nxp.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Then, the mismatch of the lengths returns from show and store methods
+happens in memcg_propagate_slab_attrs():
+
+	else if (root_cache->max_attr_size < ARRAY_SIZE(mbuf))
+		buf = mbuf;
+
+max_attr_size is only 2 from slab_attr_store(), then, it uses mbuf[64]
+in show_stat() later where a bounch of sprintf() would overrun the stack
+variable.  Fix it by always allocating a page of buffer to be used in
+show_stat() if SLUB_STATS=y which should only be used for debug purpose.
+
+  # echo 1 > /sys/kernel/slab/fs_cache/shrink
+  BUG: KASAN: stack-out-of-bounds in number+0x421/0x6e0
+  Write of size 1 at addr ffffc900256cfde0 by task kworker/76:0/53251
+
+  Hardware name: HPE ProLiant DL385 Gen10/ProLiant DL385 Gen10, BIOS A40 07/10/2019
+  Workqueue: memcg_kmem_cache memcg_kmem_cache_create_func
+  Call Trace:
+    number+0x421/0x6e0
+    vsnprintf+0x451/0x8e0
+    sprintf+0x9e/0xd0
+    show_stat+0x124/0x1d0
+    alloc_slowpath_show+0x13/0x20
+    __kmem_cache_create+0x47a/0x6b0
+
+  addr ffffc900256cfde0 is located in stack of task kworker/76:0/53251 at offset 0 in frame:
+   process_one_work+0x0/0xb90
+
+  this frame has 1 object:
+   [32, 72) 'lockdep_map'
+
+  Memory state around the buggy address:
+   ffffc900256cfc80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+   ffffc900256cfd00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  >ffffc900256cfd80: 00 00 00 00 00 00 00 00 00 00 00 00 f1 f1 f1 f1
+                                                         ^
+   ffffc900256cfe00: 00 00 00 00 00 f2 f2 f2 00 00 00 00 00 00 00 00
+   ffffc900256cfe80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  ==================================================================
+  Kernel panic - not syncing: stack-protector: Kernel stack is corrupted in: __kmem_cache_create+0x6ac/0x6b0
+  Workqueue: memcg_kmem_cache memcg_kmem_cache_create_func
+  Call Trace:
+    __kmem_cache_create+0x6ac/0x6b0
+
+Fixes: 107dab5c92d5 ("slub: slub-specific propagation changes")
+Signed-off-by: Qian Cai <cai@lca.pw>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Glauber Costa <glauber@scylladb.com>
+Cc: Christoph Lameter <cl@linux.com>
+Cc: Pekka Enberg <penberg@kernel.org>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Link: http://lkml.kernel.org/r/20200429222356.4322-1-cai@lca.pw
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/freescale/enetc/enetc.c  | 26 +++++++++++++++++++
- .../net/ethernet/freescale/enetc/enetc_hw.h   | 16 ++++++------
- .../net/ethernet/freescale/enetc/enetc_pf.c   |  9 -------
- 3 files changed, 34 insertions(+), 17 deletions(-)
+ mm/slub.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/freescale/enetc/enetc.c b/drivers/net/ethernet/freescale/enetc/enetc.c
-index 9ac5cccfe0204..a7e4274d3f402 100644
---- a/drivers/net/ethernet/freescale/enetc/enetc.c
-+++ b/drivers/net/ethernet/freescale/enetc/enetc.c
-@@ -1587,6 +1587,24 @@ static int enetc_set_psfp(struct net_device *ndev, int en)
- 	return 0;
- }
- 
-+static void enetc_enable_rxvlan(struct net_device *ndev, bool en)
-+{
-+	struct enetc_ndev_priv *priv = netdev_priv(ndev);
-+	int i;
-+
-+	for (i = 0; i < priv->num_rx_rings; i++)
-+		enetc_bdr_enable_rxvlan(&priv->si->hw, i, en);
-+}
-+
-+static void enetc_enable_txvlan(struct net_device *ndev, bool en)
-+{
-+	struct enetc_ndev_priv *priv = netdev_priv(ndev);
-+	int i;
-+
-+	for (i = 0; i < priv->num_tx_rings; i++)
-+		enetc_bdr_enable_txvlan(&priv->si->hw, i, en);
-+}
-+
- int enetc_set_features(struct net_device *ndev,
- 		       netdev_features_t features)
- {
-@@ -1595,6 +1613,14 @@ int enetc_set_features(struct net_device *ndev,
- 	if (changed & NETIF_F_RXHASH)
- 		enetc_set_rss(ndev, !!(features & NETIF_F_RXHASH));
- 
-+	if (changed & NETIF_F_HW_VLAN_CTAG_RX)
-+		enetc_enable_rxvlan(ndev,
-+				    !!(features & NETIF_F_HW_VLAN_CTAG_RX));
-+
-+	if (changed & NETIF_F_HW_VLAN_CTAG_TX)
-+		enetc_enable_txvlan(ndev,
-+				    !!(features & NETIF_F_HW_VLAN_CTAG_TX));
-+
- 	if (changed & NETIF_F_HW_TC)
- 		enetc_set_psfp(ndev, !!(features & NETIF_F_HW_TC));
- 
-diff --git a/drivers/net/ethernet/freescale/enetc/enetc_hw.h b/drivers/net/ethernet/freescale/enetc/enetc_hw.h
-index 587974862f488..02efda266c468 100644
---- a/drivers/net/ethernet/freescale/enetc/enetc_hw.h
-+++ b/drivers/net/ethernet/freescale/enetc/enetc_hw.h
-@@ -531,22 +531,22 @@ struct enetc_msg_cmd_header {
- 
- /* Common H/W utility functions */
- 
--static inline void enetc_enable_rxvlan(struct enetc_hw *hw, int si_idx,
--				       bool en)
-+static inline void enetc_bdr_enable_rxvlan(struct enetc_hw *hw, int idx,
-+					   bool en)
- {
--	u32 val = enetc_rxbdr_rd(hw, si_idx, ENETC_RBMR);
-+	u32 val = enetc_rxbdr_rd(hw, idx, ENETC_RBMR);
- 
- 	val = (val & ~ENETC_RBMR_VTE) | (en ? ENETC_RBMR_VTE : 0);
--	enetc_rxbdr_wr(hw, si_idx, ENETC_RBMR, val);
-+	enetc_rxbdr_wr(hw, idx, ENETC_RBMR, val);
- }
- 
--static inline void enetc_enable_txvlan(struct enetc_hw *hw, int si_idx,
--				       bool en)
-+static inline void enetc_bdr_enable_txvlan(struct enetc_hw *hw, int idx,
-+					   bool en)
- {
--	u32 val = enetc_txbdr_rd(hw, si_idx, ENETC_TBMR);
-+	u32 val = enetc_txbdr_rd(hw, idx, ENETC_TBMR);
- 
- 	val = (val & ~ENETC_TBMR_VIH) | (en ? ENETC_TBMR_VIH : 0);
--	enetc_txbdr_wr(hw, si_idx, ENETC_TBMR, val);
-+	enetc_txbdr_wr(hw, idx, ENETC_TBMR, val);
- }
- 
- static inline void enetc_set_bdr_prio(struct enetc_hw *hw, int bdr_idx,
-diff --git a/drivers/net/ethernet/freescale/enetc/enetc_pf.c b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
-index eacd597b55f22..438648a06f2ae 100644
---- a/drivers/net/ethernet/freescale/enetc/enetc_pf.c
-+++ b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
-@@ -667,15 +667,6 @@ static int enetc_pf_set_features(struct net_device *ndev,
- 				 netdev_features_t features)
- {
- 	netdev_features_t changed = ndev->features ^ features;
--	struct enetc_ndev_priv *priv = netdev_priv(ndev);
--
--	if (changed & NETIF_F_HW_VLAN_CTAG_RX)
--		enetc_enable_rxvlan(&priv->si->hw, 0,
--				    !!(features & NETIF_F_HW_VLAN_CTAG_RX));
--
--	if (changed & NETIF_F_HW_VLAN_CTAG_TX)
--		enetc_enable_txvlan(&priv->si->hw, 0,
--				    !!(features & NETIF_F_HW_VLAN_CTAG_TX));
- 
- 	if (changed & NETIF_F_LOOPBACK)
- 		enetc_set_loopback(ndev, !!(features & NETIF_F_LOOPBACK));
+diff --git a/mm/slub.c b/mm/slub.c
+index 473e0a8afb802..882a1e0ae89c8 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -5610,7 +5610,8 @@ static void memcg_propagate_slab_attrs(struct kmem_cache *s)
+ 		 */
+ 		if (buffer)
+ 			buf = buffer;
+-		else if (root_cache->max_attr_size < ARRAY_SIZE(mbuf))
++		else if (root_cache->max_attr_size < ARRAY_SIZE(mbuf) &&
++			 !IS_ENABLED(CONFIG_SLUB_STATS))
+ 			buf = mbuf;
+ 		else {
+ 			buffer = (char *) get_zeroed_page(GFP_KERNEL);
 -- 
 2.25.1
 
