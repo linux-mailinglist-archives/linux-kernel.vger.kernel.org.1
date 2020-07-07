@@ -2,577 +2,421 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAF082164A0
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 05:37:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 999E22164B8
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 05:41:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728169AbgGGDhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 23:37:46 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7814 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726869AbgGGDhq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 23:37:46 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 1011A10EC4CAFD0DDC43;
-        Tue,  7 Jul 2020 11:37:41 +0800 (CST)
-Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
- (10.3.19.213) with Microsoft SMTP Server (TLS) id 14.3.487.0; Tue, 7 Jul 2020
- 11:37:36 +0800
-Subject: Re: [PATCH RFC 1/5] f2fs: introduce inmem curseg
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>
-References: <20200630100428.19105-1-yuchao0@huawei.com>
- <20200707032106.GA3139161@google.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <f0aee719-1ead-f816-52ec-9f1f913495fa@huawei.com>
-Date:   Tue, 7 Jul 2020 11:37:35 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1728369AbgGGDke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 23:40:34 -0400
+Received: from mga14.intel.com ([192.55.52.115]:29105 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726478AbgGGDkd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Jul 2020 23:40:33 -0400
+IronPort-SDR: TJEc2f1wviRrnm3gp6ierceLM60QtijAFH0woTYDggo7kYhGdC+hF7yqvK6LylYfhGM0/8a2qc
+ lZO0tNd3gHTw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9674"; a="146609158"
+X-IronPort-AV: E=Sophos;i="5.75,321,1589266800"; 
+   d="scan'208";a="146609158"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2020 20:40:32 -0700
+IronPort-SDR: 4tEInhZqOMww1FoueqG3EDHwgBxWXSSVFz5BH4Gc/aASKPaGcTGD+qQmSsX+JFgY0XwCzMZqGK
+ HYNiD50FJfIg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,321,1589266800"; 
+   d="scan'208";a="427314631"
+Received: from apiccion-mobl1.ger.corp.intel.com (HELO localhost) ([10.249.45.178])
+  by orsmga004.jf.intel.com with ESMTP; 06 Jul 2020 20:40:19 -0700
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     x86@kernel.org, linux-sgx@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Haitao Huang <haitao.huang@linux.intel.com>,
+        Chunyang Hui <sanqian.hcy@antfin.com>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Seth Moore <sethmo@google.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Suresh Siddha <suresh.b.siddha@intel.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
+        chenalexchen@google.com, conradparker@google.com,
+        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        tglx@linutronix.de, yaozhangx@google.com
+Subject: [PATCH v35 12/24] x86/sgx: Add SGX_IOC_ENCLAVE_CREATE
+Date:   Tue,  7 Jul 2020 06:37:35 +0300
+Message-Id: <20200707033747.142828-13-jarkko.sakkinen@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200707033747.142828-1-jarkko.sakkinen@linux.intel.com>
+References: <20200707033747.142828-1-jarkko.sakkinen@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200707032106.GA3139161@google.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.134.22.195]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/7/7 11:21, Jaegeuk Kim wrote:
-> Hi Chao,
-> 
-> Do you have any brief design doc to present the idea?
+Add an ioctl that performs ENCLS[ECREATE], which creates SGX Enclave
+Control Structure for the enclave. SECS contains attributes about the
+enclave that are used by the hardware and cannot be directly accessed by
+software, as SECS resides in the EPC.
 
-Hi Jaegeuk,
+One essential field in SECS is a field that stores the SHA256 of the
+measured enclave pages. This field, MRENCLAVE, is initialized by the
+ECREATE instruction and updated by every EADD and EEXTEND operation.
+Finally, EINIT locks down the value.
 
-You mean this whole patchset, right?
+Acked-by: Jethro Beekman <jethro@fortanix.com>
+Tested-by: Jethro Beekman <jethro@fortanix.com>
+Tested-by: Haitao Huang <haitao.huang@linux.intel.com>
+Tested-by: Chunyang Hui <sanqian.hcy@antfin.com>
+Tested-by: Jordan Hand <jorhand@linux.microsoft.com>
+Tested-by: Nathaniel McCallum <npmccallum@redhat.com>
+Tested-by: Seth Moore <sethmo@google.com>
+Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Co-developed-by: Suresh Siddha <suresh.b.siddha@intel.com>
+Signed-off-by: Suresh Siddha <suresh.b.siddha@intel.com>
+Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+---
+ .../userspace-api/ioctl/ioctl-number.rst      |   1 +
+ arch/x86/include/uapi/asm/sgx.h               |  25 ++
+ arch/x86/kernel/cpu/sgx/Makefile              |   1 +
+ arch/x86/kernel/cpu/sgx/driver.c              |  12 +
+ arch/x86/kernel/cpu/sgx/driver.h              |   1 +
+ arch/x86/kernel/cpu/sgx/ioctl.c               | 226 ++++++++++++++++++
+ 6 files changed, 266 insertions(+)
+ create mode 100644 arch/x86/include/uapi/asm/sgx.h
+ create mode 100644 arch/x86/kernel/cpu/sgx/ioctl.c
 
-I can add a brief design description in patch 0/5.
+diff --git a/Documentation/userspace-api/ioctl/ioctl-number.rst b/Documentation/userspace-api/ioctl/ioctl-number.rst
+index 59472cd6a11d..35f713e3a267 100644
+--- a/Documentation/userspace-api/ioctl/ioctl-number.rst
++++ b/Documentation/userspace-api/ioctl/ioctl-number.rst
+@@ -323,6 +323,7 @@ Code  Seq#    Include File                                           Comments
+                                                                      <mailto:tlewis@mindspring.com>
+ 0xA3  90-9F  linux/dtlk.h
+ 0xA4  00-1F  uapi/linux/tee.h                                        Generic TEE subsystem
++0xA4  00-1F  uapi/asm/sgx.h                                          Intel SGX subsystem (a legit conflict as TEE and SGX do not co-exist)
+ 0xAA  00-3F  linux/uapi/linux/userfaultfd.h
+ 0xAB  00-1F  linux/nbd.h
+ 0xAC  00-1F  linux/raw.h
+diff --git a/arch/x86/include/uapi/asm/sgx.h b/arch/x86/include/uapi/asm/sgx.h
+new file mode 100644
+index 000000000000..3787d278e84b
+--- /dev/null
++++ b/arch/x86/include/uapi/asm/sgx.h
+@@ -0,0 +1,25 @@
++/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) WITH Linux-syscall-note */
++/*
++ * Copyright(c) 2016-19 Intel Corporation.
++ */
++#ifndef _UAPI_ASM_X86_SGX_H
++#define _UAPI_ASM_X86_SGX_H
++
++#include <linux/types.h>
++#include <linux/ioctl.h>
++
++#define SGX_MAGIC 0xA4
++
++#define SGX_IOC_ENCLAVE_CREATE \
++	_IOW(SGX_MAGIC, 0x00, struct sgx_enclave_create)
++
++/**
++ * struct sgx_enclave_create - parameter structure for the
++ *                             %SGX_IOC_ENCLAVE_CREATE ioctl
++ * @src:	address for the SECS page data
++ */
++struct sgx_enclave_create  {
++	__u64	src;
++};
++
++#endif /* _UAPI_ASM_X86_SGX_H */
+diff --git a/arch/x86/kernel/cpu/sgx/Makefile b/arch/x86/kernel/cpu/sgx/Makefile
+index 3fc451120735..91d3dc784a29 100644
+--- a/arch/x86/kernel/cpu/sgx/Makefile
++++ b/arch/x86/kernel/cpu/sgx/Makefile
+@@ -1,4 +1,5 @@
+ obj-y += \
+ 	driver.o \
+ 	encl.o \
++	ioctl.o \
+ 	main.o
+diff --git a/arch/x86/kernel/cpu/sgx/driver.c b/arch/x86/kernel/cpu/sgx/driver.c
+index 682ec78230ac..20c3254675e9 100644
+--- a/arch/x86/kernel/cpu/sgx/driver.c
++++ b/arch/x86/kernel/cpu/sgx/driver.c
+@@ -119,10 +119,22 @@ static unsigned long sgx_get_unmapped_area(struct file *file,
+ 	return current->mm->get_unmapped_area(file, addr, len, pgoff, flags);
+ }
+ 
++#ifdef CONFIG_COMPAT
++static long sgx_compat_ioctl(struct file *filep, unsigned int cmd,
++			      unsigned long arg)
++{
++	return sgx_ioctl(filep, cmd, arg);
++}
++#endif
++
+ static const struct file_operations sgx_encl_fops = {
+ 	.owner			= THIS_MODULE,
+ 	.open			= sgx_open,
+ 	.release		= sgx_release,
++	.unlocked_ioctl		= sgx_ioctl,
++#ifdef CONFIG_COMPAT
++	.compat_ioctl		= sgx_compat_ioctl,
++#endif
+ 	.mmap			= sgx_mmap,
+ 	.get_unmapped_area	= sgx_get_unmapped_area,
+ };
+diff --git a/arch/x86/kernel/cpu/sgx/driver.h b/arch/x86/kernel/cpu/sgx/driver.h
+index f7ce40dedc91..e4063923115b 100644
+--- a/arch/x86/kernel/cpu/sgx/driver.h
++++ b/arch/x86/kernel/cpu/sgx/driver.h
+@@ -9,6 +9,7 @@
+ #include <linux/rwsem.h>
+ #include <linux/sched.h>
+ #include <linux/workqueue.h>
++#include <uapi/asm/sgx.h>
+ #include "sgx.h"
+ 
+ #define SGX_EINIT_SPIN_COUNT	20
+diff --git a/arch/x86/kernel/cpu/sgx/ioctl.c b/arch/x86/kernel/cpu/sgx/ioctl.c
+new file mode 100644
+index 000000000000..7981c411b05a
+--- /dev/null
++++ b/arch/x86/kernel/cpu/sgx/ioctl.c
+@@ -0,0 +1,226 @@
++// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
++// Copyright(c) 2016-19 Intel Corporation.
++
++#include <asm/mman.h>
++#include <linux/mman.h>
++#include <linux/delay.h>
++#include <linux/file.h>
++#include <linux/hashtable.h>
++#include <linux/highmem.h>
++#include <linux/ratelimit.h>
++#include <linux/sched/signal.h>
++#include <linux/shmem_fs.h>
++#include <linux/slab.h>
++#include <linux/suspend.h>
++#include "driver.h"
++#include "encl.h"
++#include "encls.h"
++
++static u32 sgx_calc_ssa_frame_size(u32 miscselect, u64 xfrm)
++{
++	u32 size_max = PAGE_SIZE;
++	u32 size;
++	int i;
++
++	for (i = 2; i < 64; i++) {
++		if (!((1 << i) & xfrm))
++			continue;
++
++		size = SGX_SSA_GPRS_SIZE + sgx_xsave_size_tbl[i];
++
++		if (miscselect & SGX_MISC_EXINFO)
++			size += SGX_SSA_MISC_EXINFO_SIZE;
++
++		if (size > size_max)
++			size_max = size;
++	}
++
++	return PFN_UP(size_max);
++}
++
++static int sgx_validate_secs(const struct sgx_secs *secs)
++{
++	u64 max_size = (secs->attributes & SGX_ATTR_MODE64BIT) ?
++		       sgx_encl_size_max_64 : sgx_encl_size_max_32;
++
++	if (secs->size < (2 * PAGE_SIZE) || !is_power_of_2(secs->size))
++		return -EINVAL;
++
++	if (secs->base & (secs->size - 1))
++		return -EINVAL;
++
++	if (secs->miscselect & sgx_misc_reserved_mask ||
++	    secs->attributes & sgx_attributes_reserved_mask ||
++	    secs->xfrm & sgx_xfrm_reserved_mask)
++		return -EINVAL;
++
++	if (secs->size >= max_size)
++		return -EINVAL;
++
++	if (!(secs->xfrm & XFEATURE_MASK_FP) ||
++	    !(secs->xfrm & XFEATURE_MASK_SSE) ||
++	    (((secs->xfrm >> XFEATURE_BNDREGS) & 1) !=
++	     ((secs->xfrm >> XFEATURE_BNDCSR) & 1)))
++		return -EINVAL;
++
++	if (!secs->ssa_frame_size)
++		return -EINVAL;
++
++	if (sgx_calc_ssa_frame_size(secs->miscselect, secs->xfrm) >
++	    secs->ssa_frame_size)
++		return -EINVAL;
++
++	if (memchr_inv(secs->reserved1, 0, sizeof(secs->reserved1)) ||
++	    memchr_inv(secs->reserved2, 0, sizeof(secs->reserved2)) ||
++	    memchr_inv(secs->reserved3, 0, sizeof(secs->reserved3)) ||
++	    memchr_inv(secs->reserved4, 0, sizeof(secs->reserved4)))
++		return -EINVAL;
++
++	return 0;
++}
++
++static int sgx_encl_create(struct sgx_encl *encl, struct sgx_secs *secs)
++{
++	unsigned long encl_size = secs->size + PAGE_SIZE;
++	struct sgx_epc_page *secs_epc;
++	struct sgx_pageinfo pginfo;
++	struct sgx_secinfo secinfo;
++	struct file *backing;
++	long ret;
++
++	if (sgx_validate_secs(secs)) {
++		pr_debug("invalid SECS\n");
++		return -EINVAL;
++	}
++
++	backing = shmem_file_setup("SGX backing", encl_size + (encl_size >> 5),
++				   VM_NORESERVE);
++	if (IS_ERR(backing))
++		return PTR_ERR(backing);
++
++	encl->backing = backing;
++
++	secs_epc = __sgx_alloc_epc_page();
++	if (IS_ERR(secs_epc)) {
++		ret = PTR_ERR(secs_epc);
++		goto err_out_backing;
++	}
++
++	encl->secs.epc_page = secs_epc;
++
++	pginfo.addr = 0;
++	pginfo.contents = (unsigned long)secs;
++	pginfo.metadata = (unsigned long)&secinfo;
++	pginfo.secs = 0;
++	memset(&secinfo, 0, sizeof(secinfo));
++
++	ret = __ecreate((void *)&pginfo, sgx_get_epc_addr(secs_epc));
++	if (ret) {
++		pr_debug("ECREATE returned %ld\n", ret);
++		goto err_out;
++	}
++
++	if (secs->attributes & SGX_ATTR_DEBUG)
++		atomic_or(SGX_ENCL_DEBUG, &encl->flags);
++
++	encl->secs.encl = encl;
++	encl->secs_attributes = secs->attributes;
++	encl->allowed_attributes |= SGX_ATTR_ALLOWED_MASK;
++	encl->base = secs->base;
++	encl->size = secs->size;
++	encl->ssaframesize = secs->ssa_frame_size;
++
++	/*
++	 * Set SGX_ENCL_CREATED only after the enclave is fully prepped.  This
++	 * allows setting and checking enclave creation without having to take
++	 * encl->lock.
++	 */
++	atomic_or(SGX_ENCL_CREATED, &encl->flags);
++
++	return 0;
++
++err_out:
++	sgx_free_epc_page(encl->secs.epc_page);
++	encl->secs.epc_page = NULL;
++
++err_out_backing:
++	fput(encl->backing);
++	encl->backing = NULL;
++
++	return ret;
++}
++
++/**
++ * sgx_ioc_enclave_create - handler for %SGX_IOC_ENCLAVE_CREATE
++ * @filep:	open file to /dev/sgx
++ * @arg:	userspace pointer to a struct sgx_enclave_create instance
++ *
++ * Allocate kernel data structures for a new enclave and execute ECREATE after
++ * verifying the correctness of the provided SECS.
++ *
++ * Note, enforcement of restricted and disallowed attributes is deferred until
++ * sgx_ioc_enclave_init(), only the architectural correctness of the SECS is
++ * checked by sgx_ioc_enclave_create().
++ *
++ * Return:
++ *   0 on success,
++ *   -errno otherwise
++ */
++static long sgx_ioc_enclave_create(struct sgx_encl *encl, void __user *arg)
++{
++	struct sgx_enclave_create ecreate;
++	struct page *secs_page;
++	struct sgx_secs *secs;
++	int ret;
++
++	if (atomic_read(&encl->flags) & SGX_ENCL_CREATED)
++		return -EINVAL;
++
++	if (copy_from_user(&ecreate, arg, sizeof(ecreate)))
++		return -EFAULT;
++
++	secs_page = alloc_page(GFP_KERNEL);
++	if (!secs_page)
++		return -ENOMEM;
++
++	secs = kmap(secs_page);
++	if (copy_from_user(secs, (void __user *)ecreate.src, sizeof(*secs))) {
++		ret = -EFAULT;
++		goto out;
++	}
++
++	ret = sgx_encl_create(encl, secs);
++
++out:
++	kunmap(secs_page);
++	__free_page(secs_page);
++	return ret;
++}
++
++long sgx_ioctl(struct file *filep, unsigned int cmd, unsigned long arg)
++{
++	struct sgx_encl *encl = filep->private_data;
++	int ret, encl_flags;
++
++	encl_flags = atomic_fetch_or(SGX_ENCL_IOCTL, &encl->flags);
++	if (encl_flags & SGX_ENCL_IOCTL)
++		return -EBUSY;
++
++	if (encl_flags & SGX_ENCL_DEAD) {
++		ret = -EFAULT;
++		goto out;
++	}
++
++	switch (cmd) {
++	case SGX_IOC_ENCLAVE_CREATE:
++		ret = sgx_ioc_enclave_create(encl, (void __user *)arg);
++		break;
++	default:
++		ret = -ENOIOCTLCMD;
++		break;
++	}
++
++out:
++	atomic_andnot(SGX_ENCL_IOCTL, &encl->flags);
++	return ret;
++}
+-- 
+2.25.1
 
-> 
-> Thanks,
-> 
-> On 06/30, Chao Yu wrote:
->> Previous implementation of aligned pinfile allocation will:
->> - allocate new segment on cold data log no matter whether last used
->> segment is partially used or not, it makes IOs more random;
->> - force concurrent cold data/GCed IO going into warm data area, it
->> can make a bad effect on hot/cold data separation;
->>
->> In this patch, we introduce a new type of log named 'inmem curseg',
->> the differents from normal curseg is:
->> - it reuses existed segment type (CURSEG_XXX_NODE/DATA);
->> - it only exists in memory, its segno, blkofs, summary will not b
->>  persisted into checkpoint area;
->>
->> With this new feature, we can enhance scalability of log, special
->> allocators can be created for purposes:
->> - pure lfs allocator for aligned pinfile allocation or file
->> defragmentation
->> - pure ssr allocator for later feature
->>
->> So that, let's update aligned pinfile allocation to use this new
->> inmem curseg fwk.
->>
->> Signed-off-by: Chao Yu <yuchao0@huawei.com>
->> ---
->>  fs/f2fs/checkpoint.c |   7 ++-
->>  fs/f2fs/debug.c      |   6 ++-
->>  fs/f2fs/f2fs.h       |  12 +++--
->>  fs/f2fs/file.c       |   3 +-
->>  fs/f2fs/gc.c         |   2 +-
->>  fs/f2fs/segment.c    | 107 ++++++++++++++++++++++++++++++-------------
->>  fs/f2fs/segment.h    |  17 ++++---
->>  fs/f2fs/super.c      |   9 ++--
->>  8 files changed, 112 insertions(+), 51 deletions(-)
->>
->> diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
->> index 1bb8278a1c4a..644a914af25a 100644
->> --- a/fs/f2fs/checkpoint.c
->> +++ b/fs/f2fs/checkpoint.c
->> @@ -1623,11 +1623,16 @@ int f2fs_write_checkpoint(struct f2fs_sb_info *sbi, struct cp_control *cpc)
->>  
->>  	f2fs_flush_sit_entries(sbi, cpc);
->>  
->> +	/* save inmem log status */
->> +	f2fs_save_inmem_curseg(sbi, CURSEG_COLD_DATA_PINNED);
->> +
->>  	err = do_checkpoint(sbi, cpc);
->>  	if (err)
->>  		f2fs_release_discard_addrs(sbi);
->>  	else
->>  		f2fs_clear_prefree_segments(sbi, cpc);
->> +
->> +	f2fs_restore_inmem_curseg(sbi, CURSEG_COLD_DATA_PINNED);
->>  stop:
->>  	unblock_operations(sbi);
->>  	stat_inc_cp_count(sbi->stat_info);
->> @@ -1658,7 +1663,7 @@ void f2fs_init_ino_entry_info(struct f2fs_sb_info *sbi)
->>  	}
->>  
->>  	sbi->max_orphans = (sbi->blocks_per_seg - F2FS_CP_PACKS -
->> -			NR_CURSEG_TYPE - __cp_payload(sbi)) *
->> +			NR_CURSEG_PERSIST_TYPE - __cp_payload(sbi)) *
->>  				F2FS_ORPHANS_PER_BLOCK;
->>  }
->>  
->> diff --git a/fs/f2fs/debug.c b/fs/f2fs/debug.c
->> index 4276c0f79beb..41a91aa8c262 100644
->> --- a/fs/f2fs/debug.c
->> +++ b/fs/f2fs/debug.c
->> @@ -164,7 +164,7 @@ static void update_general_status(struct f2fs_sb_info *sbi)
->>  		* 100 / (int)(sbi->user_block_count >> sbi->log_blocks_per_seg)
->>  		/ 2;
->>  	si->util_invalid = 50 - si->util_free - si->util_valid;
->> -	for (i = CURSEG_HOT_DATA; i <= CURSEG_COLD_NODE; i++) {
->> +	for (i = CURSEG_HOT_DATA; i < NO_CHECK_TYPE; i++) {
->>  		struct curseg_info *curseg = CURSEG_I(sbi, i);
->>  		si->curseg[i] = curseg->segno;
->>  		si->cursec[i] = GET_SEC_FROM_SEG(sbi, curseg->segno);
->> @@ -393,6 +393,10 @@ static int stat_show(struct seq_file *s, void *v)
->>  			   si->dirty_seg[CURSEG_COLD_NODE],
->>  			   si->full_seg[CURSEG_COLD_NODE],
->>  			   si->valid_blks[CURSEG_COLD_NODE]);
->> +		seq_printf(s, "  - Pinned file: %8d %8d %8d\n",
->> +			   si->curseg[CURSEG_COLD_DATA_PINNED],
->> +			   si->cursec[CURSEG_COLD_DATA_PINNED],
->> +			   si->curzone[CURSEG_COLD_DATA_PINNED]);
->>  		seq_printf(s, "\n  - Valid: %d\n  - Dirty: %d\n",
->>  			   si->main_area_segs - si->dirty_count -
->>  			   si->prefree_count - si->free_segs,
->> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
->> index 7d6c5f8ce16b..f06c77066284 100644
->> --- a/fs/f2fs/f2fs.h
->> +++ b/fs/f2fs/f2fs.h
->> @@ -996,7 +996,9 @@ static inline void set_new_dnode(struct dnode_of_data *dn, struct inode *inode,
->>   */
->>  #define	NR_CURSEG_DATA_TYPE	(3)
->>  #define NR_CURSEG_NODE_TYPE	(3)
->> -#define NR_CURSEG_TYPE	(NR_CURSEG_DATA_TYPE + NR_CURSEG_NODE_TYPE)
->> +#define NR_CURSEG_INMEM_TYPE	(1)
->> +#define NR_CURSEG_PERSIST_TYPE	(NR_CURSEG_DATA_TYPE + NR_CURSEG_NODE_TYPE)
->> +#define NR_CURSEG_TYPE		(NR_CURSEG_INMEM_TYPE + NR_CURSEG_PERSIST_TYPE)
->>  
->>  enum {
->>  	CURSEG_HOT_DATA	= 0,	/* directory entry blocks */
->> @@ -1005,8 +1007,10 @@ enum {
->>  	CURSEG_HOT_NODE,	/* direct node blocks of directory files */
->>  	CURSEG_WARM_NODE,	/* direct node blocks of normal files */
->>  	CURSEG_COLD_NODE,	/* indirect node blocks */
->> -	NO_CHECK_TYPE,
->> -	CURSEG_COLD_DATA_PINNED,/* cold data for pinned file */
->> +	NR_PERSISTENT_LOG,	/* number of persistent log */
->> +	CURSEG_COLD_DATA_PINNED = NR_PERSISTENT_LOG,
->> +				/* pinned file that needs consecutive block address */
->> +	NO_CHECK_TYPE,		/* number of persistent & inmem log */
->>  };
->>  
->>  struct flush_cmd {
->> @@ -3359,6 +3363,8 @@ block_t f2fs_get_unusable_blocks(struct f2fs_sb_info *sbi);
->>  int f2fs_disable_cp_again(struct f2fs_sb_info *sbi, block_t unusable);
->>  void f2fs_release_discard_addrs(struct f2fs_sb_info *sbi);
->>  int f2fs_npages_for_summary_flush(struct f2fs_sb_info *sbi, bool for_ra);
->> +void f2fs_save_inmem_curseg(struct f2fs_sb_info *sbi, int type);
->> +void f2fs_restore_inmem_curseg(struct f2fs_sb_info *sbi, int type);
->>  void f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int type,
->>  					unsigned int start, unsigned int end);
->>  void f2fs_allocate_new_segment(struct f2fs_sb_info *sbi, int type);
->> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
->> index c10e82806c2a..8611ade06018 100644
->> --- a/fs/f2fs/file.c
->> +++ b/fs/f2fs/file.c
->> @@ -1656,13 +1656,14 @@ static int expand_inode_data(struct inode *inode, loff_t offset,
->>  		}
->>  
->>  		down_write(&sbi->pin_sem);
->> -		map.m_seg_type = CURSEG_COLD_DATA_PINNED;
->>  
->>  		f2fs_lock_op(sbi);
->>  		f2fs_allocate_new_segment(sbi, CURSEG_COLD_DATA);
->>  		f2fs_unlock_op(sbi);
->>  
->> +		map.m_seg_type = CURSEG_COLD_DATA_PINNED;
->>  		err = f2fs_map_blocks(inode, &map, 1, F2FS_GET_BLOCK_PRE_DIO);
->> +
->>  		up_write(&sbi->pin_sem);
->>  
->>  		done += map.m_len;
->> diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
->> index 3b718da69910..84807abe4e00 100644
->> --- a/fs/f2fs/gc.c
->> +++ b/fs/f2fs/gc.c
->> @@ -1448,7 +1448,7 @@ static int free_segment_range(struct f2fs_sb_info *sbi,
->>  	mutex_unlock(&DIRTY_I(sbi)->seglist_lock);
->>  
->>  	/* Move out cursegs from the target range */
->> -	for (type = CURSEG_HOT_DATA; type < NR_CURSEG_TYPE; type++)
->> +	for (type = CURSEG_HOT_DATA; type < NR_CURSEG_PERSIST_TYPE; type++)
->>  		f2fs_allocate_segment_for_resize(sbi, type, start, end);
->>  
->>  	/* do GC to move out valid blocks in the range */
->> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
->> index 5924b3965ae4..863ec6f1fb87 100644
->> --- a/fs/f2fs/segment.c
->> +++ b/fs/f2fs/segment.c
->> @@ -1958,7 +1958,7 @@ static void set_prefree_as_free_segments(struct f2fs_sb_info *sbi)
->>  
->>  	mutex_lock(&dirty_i->seglist_lock);
->>  	for_each_set_bit(segno, dirty_i->dirty_segmap[PRE], MAIN_SEGS(sbi))
->> -		__set_test_and_free(sbi, segno);
->> +		__set_test_and_free(sbi, segno, false);
->>  	mutex_unlock(&dirty_i->seglist_lock);
->>  }
->>  
->> @@ -2496,6 +2496,7 @@ static void reset_curseg(struct f2fs_sb_info *sbi, int type, int modified)
->>  	struct curseg_info *curseg = CURSEG_I(sbi, type);
->>  	struct summary_footer *sum_footer;
->>  
->> +	curseg->inited = true;
->>  	curseg->segno = curseg->next_segno;
->>  	curseg->zone = GET_ZONE_FROM_SEG(sbi, curseg->segno);
->>  	curseg->next_blkoff = 0;
->> @@ -2503,24 +2504,31 @@ static void reset_curseg(struct f2fs_sb_info *sbi, int type, int modified)
->>  
->>  	sum_footer = &(curseg->sum_blk->footer);
->>  	memset(sum_footer, 0, sizeof(struct summary_footer));
->> -	if (IS_DATASEG(type))
->> +	if (IS_DATASEG(curseg->seg_type))
->>  		SET_SUM_TYPE(sum_footer, SUM_TYPE_DATA);
->> -	if (IS_NODESEG(type))
->> +	if (IS_NODESEG(curseg->seg_type))
->>  		SET_SUM_TYPE(sum_footer, SUM_TYPE_NODE);
->> -	__set_sit_entry_type(sbi, type, curseg->segno, modified);
->> +	__set_sit_entry_type(sbi, curseg->seg_type, curseg->segno, modified);
->>  }
->>  
->>  static unsigned int __get_next_segno(struct f2fs_sb_info *sbi, int type)
->>  {
->> +	struct curseg_info *curseg = CURSEG_I(sbi, type);
->> +
->>  	/* if segs_per_sec is large than 1, we need to keep original policy. */
->>  	if (__is_large_section(sbi))
->> -		return CURSEG_I(sbi, type)->segno;
->> +		return curseg->segno;
->> +
->> +	/* inmem log may not locate on any segment after mount */
->> +	if (!curseg->inited)
->> +		return 0;
->>  
->>  	if (unlikely(is_sbi_flag_set(sbi, SBI_CP_DISABLED)))
->>  		return 0;
->>  
->>  	if (test_opt(sbi, NOHEAP) &&
->> -		(type == CURSEG_HOT_DATA || IS_NODESEG(type)))
->> +		(curseg->seg_type == CURSEG_HOT_DATA ||
->> +		IS_NODESEG(curseg->seg_type)))
->>  		return 0;
->>  
->>  	if (SIT_I(sbi)->last_victim[ALLOC_NEXT])
->> @@ -2530,7 +2538,7 @@ static unsigned int __get_next_segno(struct f2fs_sb_info *sbi, int type)
->>  	if (F2FS_OPTION(sbi).alloc_mode == ALLOC_MODE_REUSE)
->>  		return 0;
->>  
->> -	return CURSEG_I(sbi, type)->segno;
->> +	return curseg->segno;
->>  }
->>  
->>  /*
->> @@ -2540,12 +2548,14 @@ static unsigned int __get_next_segno(struct f2fs_sb_info *sbi, int type)
->>  static void new_curseg(struct f2fs_sb_info *sbi, int type, bool new_sec)
->>  {
->>  	struct curseg_info *curseg = CURSEG_I(sbi, type);
->> +	unsigned short seg_type = curseg->seg_type;
->>  	unsigned int segno = curseg->segno;
->>  	int dir = ALLOC_LEFT;
->>  
->> -	write_sum_page(sbi, curseg->sum_blk,
->> +	if (curseg->inited)
->> +		write_sum_page(sbi, curseg->sum_blk,
->>  				GET_SUM_BLOCK(sbi, segno));
->> -	if (type == CURSEG_WARM_DATA || type == CURSEG_COLD_DATA)
->> +	if (seg_type == CURSEG_WARM_DATA || seg_type == CURSEG_COLD_DATA)
->>  		dir = ALLOC_RIGHT;
->>  
->>  	if (test_opt(sbi, NOHEAP))
->> @@ -2622,6 +2632,43 @@ static void change_curseg(struct f2fs_sb_info *sbi, int type)
->>  	f2fs_put_page(sum_page, 1);
->>  }
->>  
->> +void f2fs_save_inmem_curseg(struct f2fs_sb_info *sbi, int type)
->> +{
->> +	struct curseg_info *curseg = CURSEG_I(sbi, type);
->> +
->> +	mutex_lock(&curseg->curseg_mutex);
->> +	if (!curseg->inited)
->> +		goto out;
->> +
->> +	if (get_valid_blocks(sbi, curseg->segno, false)) {
->> +		write_sum_page(sbi, curseg->sum_blk,
->> +				GET_SUM_BLOCK(sbi, curseg->segno));
->> +	} else {
->> +		mutex_lock(&DIRTY_I(sbi)->seglist_lock);
->> +		__set_test_and_free(sbi, curseg->segno, true);
->> +		mutex_unlock(&DIRTY_I(sbi)->seglist_lock);
->> +	}
->> +out:
->> +	mutex_unlock(&curseg->curseg_mutex);
->> +}
->> +
->> +void f2fs_restore_inmem_curseg(struct f2fs_sb_info *sbi, int type)
->> +{
->> +	struct curseg_info *curseg = CURSEG_I(sbi, type);
->> +
->> +	mutex_lock(&curseg->curseg_mutex);
->> +	if (!curseg->inited)
->> +		goto out;
->> +	if (get_valid_blocks(sbi, curseg->segno, false))
->> +		goto out;
->> +
->> +	mutex_lock(&DIRTY_I(sbi)->seglist_lock);
->> +	__set_test_and_inuse(sbi, curseg->segno);
->> +	mutex_unlock(&DIRTY_I(sbi)->seglist_lock);
->> +out:
->> +	mutex_unlock(&curseg->curseg_mutex);
->> +}
->> +
->>  static int get_ssr_segment(struct f2fs_sb_info *sbi, int type)
->>  {
->>  	struct curseg_info *curseg = CURSEG_I(sbi, type);
->> @@ -2738,11 +2785,15 @@ void __allocate_new_segment(struct f2fs_sb_info *sbi, int type)
->>  	struct curseg_info *curseg = CURSEG_I(sbi, type);
->>  	unsigned int old_segno;
->>  
->> +	if (!curseg->inited)
->> +		goto alloc;
->> +
->>  	if (!curseg->next_blkoff &&
->>  		!get_valid_blocks(sbi, curseg->segno, false) &&
->>  		!get_ckpt_valid_blocks(sbi, curseg->segno))
->>  		return;
->>  
->> +alloc:
->>  	old_segno = curseg->segno;
->>  	SIT_I(sbi)->s_ops->allocate_segment(sbi, type, true);
->>  	locate_dirty_segment(sbi, old_segno);
->> @@ -3126,19 +3177,6 @@ void f2fs_allocate_data_block(struct f2fs_sb_info *sbi, struct page *page,
->>  {
->>  	struct sit_info *sit_i = SIT_I(sbi);
->>  	struct curseg_info *curseg = CURSEG_I(sbi, type);
->> -	bool put_pin_sem = false;
->> -
->> -	if (type == CURSEG_COLD_DATA) {
->> -		/* GC during CURSEG_COLD_DATA_PINNED allocation */
->> -		if (down_read_trylock(&sbi->pin_sem)) {
->> -			put_pin_sem = true;
->> -		} else {
->> -			type = CURSEG_WARM_DATA;
->> -			curseg = CURSEG_I(sbi, type);
->> -		}
->> -	} else if (type == CURSEG_COLD_DATA_PINNED) {
->> -		type = CURSEG_COLD_DATA;
->> -	}
->>  
->>  	down_read(&SM_I(sbi)->curseg_lock);
->>  
->> @@ -3204,9 +3242,6 @@ void f2fs_allocate_data_block(struct f2fs_sb_info *sbi, struct page *page,
->>  	mutex_unlock(&curseg->curseg_mutex);
->>  
->>  	up_read(&SM_I(sbi)->curseg_lock);
->> -
->> -	if (put_pin_sem)
->> -		up_read(&sbi->pin_sem);
->>  }
->>  
->>  static void update_device_state(struct f2fs_io_info *fio)
->> @@ -3574,7 +3609,7 @@ static int read_normal_summaries(struct f2fs_sb_info *sbi, int type)
->>  		blk_off = le16_to_cpu(ckpt->cur_data_blkoff[type -
->>  							CURSEG_HOT_DATA]);
->>  		if (__exist_node_summaries(sbi))
->> -			blk_addr = sum_blk_addr(sbi, NR_CURSEG_TYPE, type);
->> +			blk_addr = sum_blk_addr(sbi, NR_CURSEG_PERSIST_TYPE, type);
->>  		else
->>  			blk_addr = sum_blk_addr(sbi, NR_CURSEG_DATA_TYPE, type);
->>  	} else {
->> @@ -3652,8 +3687,9 @@ static int restore_curseg_summaries(struct f2fs_sb_info *sbi)
->>  	}
->>  
->>  	if (__exist_node_summaries(sbi))
->> -		f2fs_ra_meta_pages(sbi, sum_blk_addr(sbi, NR_CURSEG_TYPE, type),
->> -					NR_CURSEG_TYPE - type, META_CP, true);
->> +		f2fs_ra_meta_pages(sbi,
->> +				sum_blk_addr(sbi, NR_CURSEG_PERSIST_TYPE, type),
->> +				NR_CURSEG_PERSIST_TYPE - type, META_CP, true);
->>  
->>  	for (; type <= CURSEG_COLD_NODE; type++) {
->>  		err = read_normal_summaries(sbi, type);
->> @@ -4155,14 +4191,14 @@ static int build_curseg(struct f2fs_sb_info *sbi)
->>  	struct curseg_info *array;
->>  	int i;
->>  
->> -	array = f2fs_kzalloc(sbi, array_size(NR_CURSEG_TYPE, sizeof(*array)),
->> -			     GFP_KERNEL);
->> +	array = f2fs_kzalloc(sbi, array_size(NR_CURSEG_TYPE,
->> +					sizeof(*array)), GFP_KERNEL);
->>  	if (!array)
->>  		return -ENOMEM;
->>  
->>  	SM_I(sbi)->curseg_array = array;
->>  
->> -	for (i = 0; i < NR_CURSEG_TYPE; i++) {
->> +	for (i = 0; i < NO_CHECK_TYPE; i++) {
->>  		mutex_init(&array[i].curseg_mutex);
->>  		array[i].sum_blk = f2fs_kzalloc(sbi, PAGE_SIZE, GFP_KERNEL);
->>  		if (!array[i].sum_blk)
->> @@ -4172,8 +4208,13 @@ static int build_curseg(struct f2fs_sb_info *sbi)
->>  				sizeof(struct f2fs_journal), GFP_KERNEL);
->>  		if (!array[i].journal)
->>  			return -ENOMEM;
->> +		if (i < NR_PERSISTENT_LOG)
->> +			array[i].seg_type = CURSEG_HOT_DATA + i;
->> +		else if (i == CURSEG_COLD_DATA_PINNED)
->> +			array[i].seg_type = CURSEG_COLD_DATA;
->>  		array[i].segno = NULL_SEGNO;
->>  		array[i].next_blkoff = 0;
->> +		array[i].inited = false;
->>  	}
->>  	return restore_curseg_summaries(sbi);
->>  }
->> @@ -4408,7 +4449,7 @@ static int sanity_check_curseg(struct f2fs_sb_info *sbi)
->>  	 * In LFS/SSR curseg, .next_blkoff should point to an unused blkaddr;
->>  	 * In LFS curseg, all blkaddr after .next_blkoff should be unused.
->>  	 */
->> -	for (i = 0; i < NO_CHECK_TYPE; i++) {
->> +	for (i = 0; i < NR_PERSISTENT_LOG; i++) {
->>  		struct curseg_info *curseg = CURSEG_I(sbi, i);
->>  		struct seg_entry *se = get_seg_entry(sbi, curseg->segno);
->>  		unsigned int blkofs = curseg->next_blkoff;
->> @@ -4637,7 +4678,7 @@ int f2fs_fix_curseg_write_pointer(struct f2fs_sb_info *sbi)
->>  {
->>  	int i, ret;
->>  
->> -	for (i = 0; i < NO_CHECK_TYPE; i++) {
->> +	for (i = 0; i < NR_PERSISTENT_LOG; i++) {
->>  		ret = fix_curseg_write_pointer(sbi, i);
->>  		if (ret)
->>  			return ret;
->> diff --git a/fs/f2fs/segment.h b/fs/f2fs/segment.h
->> index f261e3e6a69b..8ff261550cbb 100644
->> --- a/fs/f2fs/segment.h
->> +++ b/fs/f2fs/segment.h
->> @@ -22,7 +22,7 @@
->>  #define GET_R2L_SEGNO(free_i, segno)	((segno) + (free_i)->start_segno)
->>  
->>  #define IS_DATASEG(t)	((t) <= CURSEG_COLD_DATA)
->> -#define IS_NODESEG(t)	((t) >= CURSEG_HOT_NODE)
->> +#define IS_NODESEG(t)	((t) >= CURSEG_HOT_NODE && (t) <= CURSEG_COLD_NODE)
->>  
->>  #define IS_HOT(t)	((t) == CURSEG_HOT_NODE || (t) == CURSEG_HOT_DATA)
->>  #define IS_WARM(t)	((t) == CURSEG_WARM_NODE || (t) == CURSEG_WARM_DATA)
->> @@ -34,7 +34,8 @@
->>  	 ((seg) == CURSEG_I(sbi, CURSEG_COLD_DATA)->segno) ||	\
->>  	 ((seg) == CURSEG_I(sbi, CURSEG_HOT_NODE)->segno) ||	\
->>  	 ((seg) == CURSEG_I(sbi, CURSEG_WARM_NODE)->segno) ||	\
->> -	 ((seg) == CURSEG_I(sbi, CURSEG_COLD_NODE)->segno))
->> +	 ((seg) == CURSEG_I(sbi, CURSEG_COLD_NODE)->segno) ||	\
->> +	 ((seg) == CURSEG_I(sbi, CURSEG_COLD_DATA_PINNED)->segno))
->>  
->>  #define IS_CURSEC(sbi, secno)						\
->>  	(((secno) == CURSEG_I(sbi, CURSEG_HOT_DATA)->segno /		\
->> @@ -48,7 +49,9 @@
->>  	 ((secno) == CURSEG_I(sbi, CURSEG_WARM_NODE)->segno /		\
->>  	  (sbi)->segs_per_sec) ||	\
->>  	 ((secno) == CURSEG_I(sbi, CURSEG_COLD_NODE)->segno /		\
->> -	  (sbi)->segs_per_sec))	\
->> +	  (sbi)->segs_per_sec) ||	\
->> +	 ((secno) == CURSEG_I(sbi, CURSEG_COLD_DATA_PINNED)->segno /	\
->> +	  (sbi)->segs_per_sec))
->>  
->>  #define MAIN_BLKADDR(sbi)						\
->>  	(SM_I(sbi) ? SM_I(sbi)->main_blkaddr : 				\
->> @@ -288,10 +291,12 @@ struct curseg_info {
->>  	struct rw_semaphore journal_rwsem;	/* protect journal area */
->>  	struct f2fs_journal *journal;		/* cached journal info */
->>  	unsigned char alloc_type;		/* current allocation type */
->> +	unsigned short seg_type;		/* segment type like CURSEG_XXX_TYPE */
->>  	unsigned int segno;			/* current segment number */
->>  	unsigned short next_blkoff;		/* next block offset to write */
->>  	unsigned int zone;			/* current zone number */
->>  	unsigned int next_segno;		/* preallocated segment */
->> +	bool inited;				/* indicate inmem log is inited */
->>  };
->>  
->>  struct sit_entry_set {
->> @@ -305,8 +310,6 @@ struct sit_entry_set {
->>   */
->>  static inline struct curseg_info *CURSEG_I(struct f2fs_sb_info *sbi, int type)
->>  {
->> -	if (type == CURSEG_COLD_DATA_PINNED)
->> -		type = CURSEG_COLD_DATA;
->>  	return (struct curseg_info *)(SM_I(sbi)->curseg_array + type);
->>  }
->>  
->> @@ -438,7 +441,7 @@ static inline void __set_inuse(struct f2fs_sb_info *sbi,
->>  }
->>  
->>  static inline void __set_test_and_free(struct f2fs_sb_info *sbi,
->> -		unsigned int segno)
->> +		unsigned int segno, bool inmem)
->>  {
->>  	struct free_segmap_info *free_i = FREE_I(sbi);
->>  	unsigned int secno = GET_SEC_FROM_SEG(sbi, segno);
->> @@ -449,7 +452,7 @@ static inline void __set_test_and_free(struct f2fs_sb_info *sbi,
->>  	if (test_and_clear_bit(segno, free_i->free_segmap)) {
->>  		free_i->free_segments++;
->>  
->> -		if (IS_CURSEC(sbi, secno))
->> +		if (!inmem && IS_CURSEC(sbi, secno))
->>  			goto skip_free;
->>  		next = find_next_bit(free_i->free_segmap,
->>  				start_segno + sbi->segs_per_sec, start_segno);
->> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
->> index 80cb7cd358f8..0fefa130585f 100644
->> --- a/fs/f2fs/super.c
->> +++ b/fs/f2fs/super.c
->> @@ -575,7 +575,8 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
->>  		case Opt_active_logs:
->>  			if (args->from && match_int(args, &arg))
->>  				return -EINVAL;
->> -			if (arg != 2 && arg != 4 && arg != NR_CURSEG_TYPE)
->> +			if (arg != 2 && arg != 4 &&
->> +				arg != NR_CURSEG_PERSIST_TYPE)
->>  				return -EINVAL;
->>  			F2FS_OPTION(sbi).active_logs = arg;
->>  			break;
->> @@ -981,7 +982,7 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
->>  	}
->>  
->>  	/* Not pass down write hints if the number of active logs is lesser
->> -	 * than NR_CURSEG_TYPE.
->> +	 * than NR_CURSEG_PERSIST_TYPE.
->>  	 */
->>  	if (F2FS_OPTION(sbi).active_logs != NR_CURSEG_TYPE)
->>  		F2FS_OPTION(sbi).whint_mode = WHINT_MODE_OFF;
->> @@ -1614,7 +1615,7 @@ static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
->>  static void default_options(struct f2fs_sb_info *sbi)
->>  {
->>  	/* init some FS parameters */
->> -	F2FS_OPTION(sbi).active_logs = NR_CURSEG_TYPE;
->> +	F2FS_OPTION(sbi).active_logs = NR_CURSEG_PERSIST_TYPE;
->>  	F2FS_OPTION(sbi).inline_xattr_size = DEFAULT_INLINE_XATTR_ADDRS;
->>  	F2FS_OPTION(sbi).whint_mode = WHINT_MODE_OFF;
->>  	F2FS_OPTION(sbi).alloc_mode = ALLOC_MODE_DEFAULT;
->> @@ -2946,7 +2947,7 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
->>  	cp_payload = __cp_payload(sbi);
->>  	if (cp_pack_start_sum < cp_payload + 1 ||
->>  		cp_pack_start_sum > blocks_per_seg - 1 -
->> -			NR_CURSEG_TYPE) {
->> +			NR_CURSEG_PERSIST_TYPE) {
->>  		f2fs_err(sbi, "Wrong cp_pack_start_sum: %u",
->>  			 cp_pack_start_sum);
->>  		return 1;
->> -- 
->> 2.26.2
-> .
-> 
