@@ -2,64 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3DBD216EF5
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 16:40:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDC5C216EF3
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 16:40:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728669AbgGGOjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 10:39:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53724 "EHLO
+        id S1728645AbgGGOiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 10:38:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728451AbgGGOiP (ORCPT
+        with ESMTP id S1728456AbgGGOiQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 10:38:15 -0400
+        Tue, 7 Jul 2020 10:38:16 -0400
 Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8678EC061755
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 07:38:15 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id z13so45410213wrw.5
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 07:38:15 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A278CC08C5E1
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 07:38:16 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id q5so45372121wru.6
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 07:38:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=d7oRUP6HHmbAXMILeJrpZWaXkV9JssFtTdyZGy/6dhk=;
-        b=LkB5f2KQxj9RiMnUMCrnbNpyPWXlnW3De4WBuJl/2/6IHSiYFHZG9igGOCZ3Y6J6WK
-         Gzbp0CjO+Hdh4zx8lZUoPUE8mjaqtR0sBqE1LDCGGIabjQW5F+fL8xcu83/lEJ5co343
-         1/0T8okpQOpgFedcJf3DKAC0tvKA/FHXQuFyslmQPQhp8ilQDgShlhNi6h7Xvc3BeZFW
-         FhGx4DjU3wuLtkjnmBDz31yplmbsKYm6QQ63skIPj0JOBDWZ6+2n4fkjip7zWgg0uq0V
-         WTsR8iE1up41/dfHe6m3cLl5RdBzy45oImEPSvr+ABdZS47BW61TAjhXhJZjDOuR6RD/
-         vyBg==
+        bh=GMUYidfrIwBoQwr04cGElMGH9ZhgIrwlDOw4is85pEg=;
+        b=feeerbFqAir1V0Q6gG7sN9/sctNzOhjRzVnjuEbvAbmdsIlIDD56silJ+KDXeR/Jq9
+         8jR1hCIT+WFN9UFvLDuUyUJVDogu1pHStNdyZIOThNEwp5zhx10W+YtTfYWblWhPARnL
+         vxcY8UD8Q+wOuvAsctslvZW2g4yufz+FsjXe5lz5AoHEfe0v6Vl31z17ULBKIdl5VnHf
+         NFgf6ZG9C6kQHLGTFIYhptX5/o/IQS3yshXcvSC0a+FjA1CKqyVJw4TBbqHn6BKNK8mC
+         Nc9Jyj9vUMD7j4Z7Ve633OrgtQAlOJsmxJywmtvnOXIOpMCZR77AZYcVWKaZHTlUOxm+
+         Iqbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=d7oRUP6HHmbAXMILeJrpZWaXkV9JssFtTdyZGy/6dhk=;
-        b=R3/xYSShjbZqKHtcKpMJQaa2VmZ4SkUhCRmhtHMX/0M30FbnH2MOLMG2KqtAwdhPRG
-         kNDibqzOmKDD3AB8q/zw0gH6SUYNDNbfAcdJAoDCPN46kAaKHs28gtXloTpBAbXy4kEJ
-         5bFFe3d9MspofQ0xo78jWOH9OSJxcoBYvaffFYq5TlR/nqbV2Sx7VLqArSyTUi/Vl9FX
-         +0k1J6+ibSUrx05p34QZQRbnCrr5mJ62JKeim2BFo1DhfuBWna45Z5i8zWyHqNrA3Gs4
-         2tTsj3HNRSM1YfCcjCaCddQoK0AEbANTRhntPgtictGRSuNxZsL4Mi9/HSc/vrkFdOZm
-         gehg==
-X-Gm-Message-State: AOAM5307JCuqWTG9cLBBfCxgON9YQT73Y77aHZzAQ/xDTpIzBIkIdRwX
-        PMpsMMeqg8q9vva2Ua7QyO2zvg==
-X-Google-Smtp-Source: ABdhPJynXJwfY+EJdx1C+77hx2NiUZ2uZ+tqh66Q8vQrBf76qaoHLF9FMyXrc1gAY/AjtDJ4ELHvrA==
-X-Received: by 2002:adf:c185:: with SMTP id x5mr59206892wre.403.1594132694312;
-        Tue, 07 Jul 2020 07:38:14 -0700 (PDT)
+        bh=GMUYidfrIwBoQwr04cGElMGH9ZhgIrwlDOw4is85pEg=;
+        b=W6CxDEDY9K9xG/2luPCSDajEzhwk5jQenP2eMHMUQkSDmCloltV5DZKkgm0Q/6pZZH
+         wEM6gBVviJp5xmwaUWOIjCUv0ZRbWP9mgKKaRdoqXUE0MalviJNUYP2+r5ElZdslTZeC
+         +F4DzGIFKhcchzQDpzGXDdqIlwKLiGk8FDsgyx50pcVstTe7W1b4xtIHVI2lc1FzCIxU
+         Pr8+biGz2PO0XrNSrXih0CGUphpXiiavxoZH0uwcq0goqIh1Z/L1BVwGgx28yBoMF81C
+         +U7D62F756LchD3/fiNwmSuLDZ8CrWo7NVR8SOML7BTNhQM9Hfu9nrh9vvNTEJophqVv
+         iz0A==
+X-Gm-Message-State: AOAM532+csaAURxWDGI1Ea/pbDytzpU4xoV2eOMKfiq9MDDDqIg54t1I
+        sytIEy+SBcU8Ij9j5bpsvJ6U/Q==
+X-Google-Smtp-Source: ABdhPJwecod/4foCMnzh1J6sMuZQ6V/g4S44h0ZZWS70jZc4P0QOoxlkw+3CGKD1KX4PYHqecVMChg==
+X-Received: by 2002:adf:8444:: with SMTP id 62mr51773190wrf.278.1594132695426;
+        Tue, 07 Jul 2020 07:38:15 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.206])
-        by smtp.gmail.com with ESMTPSA id y16sm1276131wro.71.2020.07.07.07.38.12
+        by smtp.gmail.com with ESMTPSA id y16sm1276131wro.71.2020.07.07.07.38.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jul 2020 07:38:13 -0700 (PDT)
+        Tue, 07 Jul 2020 07:38:14 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz,
         tiwai@suse.com
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         alsa-devel@alsa-project.org, Lee Jones <lee.jones@linaro.org>,
-        zhong jiang <zhongjiang@huawei.com>,
-        Ola Lilja <ola.o.lilja@stericsson.com>,
-        Roger Nilsson <roger.xr.nilsson@stericsson.com>,
-        Sandeep Kaushik <sandeep.kaushik@st.com>
-Subject: [PATCH v2 19/28] ASoC: ux500: ux500_msp_i2s: Remove unused variables 'reg_val_DR' and 'reg_val_TSTDR'
-Date:   Tue,  7 Jul 2020 15:37:33 +0100
-Message-Id: <20200707143742.2959960-20-lee.jones@linaro.org>
+        Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: [PATCH v2 20/28] ASoC: sti: uniperif: Mark 'uni_tdm_hw' as __maybe_unused
+Date:   Tue,  7 Jul 2020 15:37:34 +0100
+Message-Id: <20200707143742.2959960-21-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200707143742.2959960-1-lee.jones@linaro.org>
 References: <20200707143742.2959960-1-lee.jones@linaro.org>
@@ -71,64 +68,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks like these have been unchecked since the driver's inception in 2012.
+Only 2 of the 3 source files which include this headerfile actually
+reference 'uni_tdm_hw'.  The other source file 'sti_uniperif.c' sees
+as it as being unused.  Mark it as __maybe_unused to show that this
+behaviour is not only known, it's intentional.
 
 Fixes the following W=1 kernel build warning(s):
 
- sound/soc/ux500/ux500_msp_i2s.c: In function ‘flush_fifo_rx’:
- sound/soc/ux500/ux500_msp_i2s.c:398:6: warning: variable ‘reg_val_DR’ set but not used [-Wunused-but-set-variable]
- sound/soc/ux500/ux500_msp_i2s.c: In function ‘flush_fifo_tx’:
- sound/soc/ux500/ux500_msp_i2s.c:415:6: warning: variable ‘reg_val_TSTDR’ set but not used [-Wunused-but-set-variable]
+ sound/soc/sti/uniperif.h:1351:38: warning: ‘uni_tdm_hw’ defined but not used [-Wunused-const-variable=]
+ 1351 | static const struct snd_pcm_hardware uni_tdm_hw = {
+ | ^~~~~~~~~~
 
-Cc: zhong jiang <zhongjiang@huawei.com>
-Cc: Ola Lilja <ola.o.lilja@stericsson.com>
-Cc: Roger Nilsson <roger.xr.nilsson@stericsson.com>
-Cc: Sandeep Kaushik <sandeep.kaushik@st.com>
+Cc: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- sound/soc/ux500/ux500_msp_i2s.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/sti/uniperif.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/ux500/ux500_msp_i2s.c b/sound/soc/ux500/ux500_msp_i2s.c
-index 394d8b2a4a161..fd0b88bb79212 100644
---- a/sound/soc/ux500/ux500_msp_i2s.c
-+++ b/sound/soc/ux500/ux500_msp_i2s.c
-@@ -395,7 +395,7 @@ static int enable_msp(struct ux500_msp *msp, struct ux500_msp_config *config)
+diff --git a/sound/soc/sti/uniperif.h b/sound/soc/sti/uniperif.h
+index 2dc2da5d458bd..e22d045d5cd99 100644
+--- a/sound/soc/sti/uniperif.h
++++ b/sound/soc/sti/uniperif.h
+@@ -1348,7 +1348,7 @@ struct sti_uniperiph_data {
+ 	struct sti_uniperiph_dai dai_data;
+ };
  
- static void flush_fifo_rx(struct ux500_msp *msp)
- {
--	u32 reg_val_DR, reg_val_GCR, reg_val_FLR;
-+	u32 reg_val_GCR, reg_val_FLR;
- 	u32 limit = 32;
- 
- 	reg_val_GCR = readl(msp->registers + MSP_GCR);
-@@ -403,7 +403,7 @@ static void flush_fifo_rx(struct ux500_msp *msp)
- 
- 	reg_val_FLR = readl(msp->registers + MSP_FLR);
- 	while (!(reg_val_FLR & RX_FIFO_EMPTY) && limit--) {
--		reg_val_DR = readl(msp->registers + MSP_DR);
-+		readl(msp->registers + MSP_DR);
- 		reg_val_FLR = readl(msp->registers + MSP_FLR);
- 	}
- 
-@@ -412,7 +412,7 @@ static void flush_fifo_rx(struct ux500_msp *msp)
- 
- static void flush_fifo_tx(struct ux500_msp *msp)
- {
--	u32 reg_val_TSTDR, reg_val_GCR, reg_val_FLR;
-+	u32 reg_val_GCR, reg_val_FLR;
- 	u32 limit = 32;
- 
- 	reg_val_GCR = readl(msp->registers + MSP_GCR);
-@@ -421,7 +421,7 @@ static void flush_fifo_tx(struct ux500_msp *msp)
- 
- 	reg_val_FLR = readl(msp->registers + MSP_FLR);
- 	while (!(reg_val_FLR & TX_FIFO_EMPTY) && limit--) {
--		reg_val_TSTDR = readl(msp->registers + MSP_TSTDR);
-+		readl(msp->registers + MSP_TSTDR);
- 		reg_val_FLR = readl(msp->registers + MSP_FLR);
- 	}
- 	writel(0x0, msp->registers + MSP_ITCR);
+-static const struct snd_pcm_hardware uni_tdm_hw = {
++static const struct snd_pcm_hardware __maybe_unused uni_tdm_hw = {
+ 	.info = SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
+ 		SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_MMAP |
+ 		SNDRV_PCM_INFO_MMAP_VALID,
 -- 
 2.25.1
 
