@@ -2,44 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3D3C217228
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:44:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C952E2171AA
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:43:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730064AbgGGP3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:29:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38370 "EHLO mail.kernel.org"
+        id S1729328AbgGGPXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:23:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36810 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730127AbgGGPYp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:24:45 -0400
+        id S1728879AbgGGPXh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 11:23:37 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8958F2065D;
-        Tue,  7 Jul 2020 15:24:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 40ABD2065D;
+        Tue,  7 Jul 2020 15:23:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594135485;
-        bh=rRXiU78KDvuBb/JrO05R2ZW8iH0rjwIBTr1mfcTJFfg=;
+        s=default; t=1594135416;
+        bh=icEx2rs1FcIm/j9Jcdb7xo63CLckXhpCa6bWSvF59U8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ALwou+oNpruTVCDkziMukj/5VQjipMeBhSh3GfGEdD51njlwmM1jJcgw/1D6KRf5d
-         l/q6bHr2prBw1uVcOLOfx9dD7zvIXKL8nFNAUPW4jGCcsmGopns45qHByKSiUg+pGN
-         jzlZKOcj7PGZMSo4dY2ruOUUfPUkt/dpyI+vVgy4=
+        b=1+ow4+93qKnwU3rnNF+5EUk2SseCgzyPLxZyM2gUmbMMmCdoV9K+VUcudtnGmBJdx
+         b44LkiX+FoIq3a16d38tZRI8ieWPRyj4n3y2lkaYwt1oza1zImzVbBm+DtzhBc2SBt
+         QYgZ9upexy9kafqtJa9i+6nakJvO8ziJ/cYeJtcw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jaewon Lim <jaewon31.kim@samsung.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Kees Kook <keescook@chromium.org>, linux-mm@kvack.org,
-        linux-trace-devel@vger.kernel.org,
-        Namhyung Kim <namhyung@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        stable@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 030/112] tools lib traceevent: Add append() function helper for appending strings
-Date:   Tue,  7 Jul 2020 17:16:35 +0200
-Message-Id: <20200707145802.418650708@linuxfoundation.org>
+Subject: [PATCH 5.7 033/112] io_uring: fix io_sq_thread no schedule when busy
+Date:   Tue,  7 Jul 2020 17:16:38 +0200
+Message-Id: <20200707145802.563255670@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200707145800.925304888@linuxfoundation.org>
 References: <20200707145800.925304888@linuxfoundation.org>
@@ -52,240 +44,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steven Rostedt (VMware) <rostedt@goodmis.org>
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 
-[ Upstream commit 27d4d336f2872193e90ee5450559e1699fae0f6d ]
+[ Upstream commit b772f07add1c0b22e02c0f1e96f647560679d3a9 ]
 
-There's several locations that open code realloc and strcat() to append
-text to strings. Add an append() function that takes a delimiter and a
-string to append to another string.
+When the user consumes and generates sqe at a fast rate,
+io_sqring_entries can always get sqe, and ret will not be equal to -EBUSY,
+so that io_sq_thread will never call cond_resched or schedule, and then
+we will get the following system error prompt:
 
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Jaewon Lim <jaewon31.kim@samsung.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Kees Kook <keescook@chromium.org>
-Cc: linux-mm@kvack.org
-Cc: linux-trace-devel@vger.kernel.org
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Vlastimil Babka <vbabka@suse.cz>
-Link: http://lore.kernel.org/lkml/20200324200956.515118403@goodmis.org
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+rcu: INFO: rcu_sched self-detected stall on CPU
+or
+watchdog: BUG: soft lockup-CPU#23 stuck for 112s! [io_uring-sq:1863]
+
+This patch checks whether need to call cond_resched() by checking
+the need_resched() function every cycle.
+
+Suggested-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/lib/traceevent/event-parse.c | 98 ++++++++++++------------------
- 1 file changed, 40 insertions(+), 58 deletions(-)
+ fs/io_uring.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/event-parse.c
-index e1bd2a93c6db8..eec96c31ea9e5 100644
---- a/tools/lib/traceevent/event-parse.c
-+++ b/tools/lib/traceevent/event-parse.c
-@@ -1425,6 +1425,19 @@ static unsigned int type_size(const char *name)
- 	return 0;
- }
- 
-+static int append(char **buf, const char *delim, const char *str)
-+{
-+	char *new_buf;
-+
-+	new_buf = realloc(*buf, strlen(*buf) + strlen(delim) + strlen(str) + 1);
-+	if (!new_buf)
-+		return -1;
-+	strcat(new_buf, delim);
-+	strcat(new_buf, str);
-+	*buf = new_buf;
-+	return 0;
-+}
-+
- static int event_read_fields(struct tep_event *event, struct tep_format_field **fields)
- {
- 	struct tep_format_field *field = NULL;
-@@ -1432,6 +1445,7 @@ static int event_read_fields(struct tep_event *event, struct tep_format_field **
- 	char *token;
- 	char *last_token;
- 	int count = 0;
-+	int ret;
- 
- 	do {
- 		unsigned int size_dynamic = 0;
-@@ -1490,24 +1504,15 @@ static int event_read_fields(struct tep_event *event, struct tep_format_field **
- 					field->flags |= TEP_FIELD_IS_POINTER;
- 
- 				if (field->type) {
--					char *new_type;
--					new_type = realloc(field->type,
--							   strlen(field->type) +
--							   strlen(last_token) + 2);
--					if (!new_type) {
--						free(last_token);
--						goto fail;
--					}
--					field->type = new_type;
--					strcat(field->type, " ");
--					strcat(field->type, last_token);
-+					ret = append(&field->type, " ", last_token);
- 					free(last_token);
-+					if (ret < 0)
-+						goto fail;
- 				} else
- 					field->type = last_token;
- 				last_token = token;
- 				continue;
- 			}
--
- 			break;
- 		}
- 
-@@ -1523,8 +1528,6 @@ static int event_read_fields(struct tep_event *event, struct tep_format_field **
- 		if (strcmp(token, "[") == 0) {
- 			enum tep_event_type last_type = type;
- 			char *brackets = token;
--			char *new_brackets;
--			int len;
- 
- 			field->flags |= TEP_FIELD_IS_ARRAY;
- 
-@@ -1536,29 +1539,27 @@ static int event_read_fields(struct tep_event *event, struct tep_format_field **
- 				field->arraylen = 0;
- 
- 		        while (strcmp(token, "]") != 0) {
-+				const char *delim;
-+
- 				if (last_type == TEP_EVENT_ITEM &&
- 				    type == TEP_EVENT_ITEM)
--					len = 2;
-+					delim = " ";
- 				else
--					len = 1;
-+					delim = "";
-+
- 				last_type = type;
- 
--				new_brackets = realloc(brackets,
--						       strlen(brackets) +
--						       strlen(token) + len);
--				if (!new_brackets) {
-+				ret = append(&brackets, delim, token);
-+				if (ret < 0) {
- 					free(brackets);
- 					goto fail;
- 				}
--				brackets = new_brackets;
--				if (len == 2)
--					strcat(brackets, " ");
--				strcat(brackets, token);
- 				/* We only care about the last token */
- 				field->arraylen = strtoul(token, NULL, 0);
- 				free_token(token);
- 				type = read_token(&token);
- 				if (type == TEP_EVENT_NONE) {
-+					free(brackets);
- 					do_warning_event(event, "failed to find token");
- 					goto fail;
- 				}
-@@ -1566,13 +1567,11 @@ static int event_read_fields(struct tep_event *event, struct tep_format_field **
- 
- 			free_token(token);
- 
--			new_brackets = realloc(brackets, strlen(brackets) + 2);
--			if (!new_brackets) {
-+			ret = append(&brackets, "", "]");
-+			if (ret < 0) {
- 				free(brackets);
- 				goto fail;
- 			}
--			brackets = new_brackets;
--			strcat(brackets, "]");
- 
- 			/* add brackets to type */
- 
-@@ -1582,34 +1581,23 @@ static int event_read_fields(struct tep_event *event, struct tep_format_field **
- 			 * the format: type [] item;
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index bb74e45941af2..63a456921903e 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -6084,7 +6084,7 @@ static int io_sq_thread(void *data)
+ 		 * If submit got -EBUSY, flag us as needing the application
+ 		 * to enter the kernel to reap and flush events.
+ 		 */
+-		if (!to_submit || ret == -EBUSY) {
++		if (!to_submit || ret == -EBUSY || need_resched()) {
+ 			/*
+ 			 * Drop cur_mm before scheduling, we can't hold it for
+ 			 * long periods (or over schedule()). Do this before
+@@ -6100,7 +6100,7 @@ static int io_sq_thread(void *data)
+ 			 * more IO, we should wait for the application to
+ 			 * reap events and wake us up.
  			 */
- 			if (type == TEP_EVENT_ITEM) {
--				char *new_type;
--				new_type = realloc(field->type,
--						   strlen(field->type) +
--						   strlen(field->name) +
--						   strlen(brackets) + 2);
--				if (!new_type) {
-+				ret = append(&field->type, " ", field->name);
-+				if (ret < 0) {
- 					free(brackets);
- 					goto fail;
- 				}
--				field->type = new_type;
--				strcat(field->type, " ");
--				strcat(field->type, field->name);
-+				ret = append(&field->type, "", brackets);
-+
- 				size_dynamic = type_size(field->name);
- 				free_token(field->name);
--				strcat(field->type, brackets);
- 				field->name = field->alias = token;
- 				type = read_token(&token);
- 			} else {
--				char *new_type;
--				new_type = realloc(field->type,
--						   strlen(field->type) +
--						   strlen(brackets) + 1);
--				if (!new_type) {
-+				ret = append(&field->type, "", brackets);
-+				if (ret < 0) {
- 					free(brackets);
- 					goto fail;
- 				}
--				field->type = new_type;
--				strcat(field->type, brackets);
- 			}
- 			free(brackets);
- 		}
-@@ -2046,19 +2034,16 @@ process_op(struct tep_event *event, struct tep_print_arg *arg, char **tok)
- 		/* could just be a type pointer */
- 		if ((strcmp(arg->op.op, "*") == 0) &&
- 		    type == TEP_EVENT_DELIM && (strcmp(token, ")") == 0)) {
--			char *new_atom;
-+			int ret;
- 
- 			if (left->type != TEP_PRINT_ATOM) {
- 				do_warning_event(event, "bad pointer type");
- 				goto out_free;
- 			}
--			new_atom = realloc(left->atom.atom,
--					    strlen(left->atom.atom) + 3);
--			if (!new_atom)
-+			ret = append(&left->atom.atom, " ", "*");
-+			if (ret < 0)
- 				goto out_warn_free;
- 
--			left->atom.atom = new_atom;
--			strcat(left->atom.atom, " *");
- 			free(arg->op.op);
- 			*arg = *left;
- 			free(left);
-@@ -3151,18 +3136,15 @@ process_arg_token(struct tep_event *event, struct tep_print_arg *arg,
- 		}
- 		/* atoms can be more than one token long */
- 		while (type == TEP_EVENT_ITEM) {
--			char *new_atom;
--			new_atom = realloc(atom,
--					   strlen(atom) + strlen(token) + 2);
--			if (!new_atom) {
-+			int ret;
-+
-+			ret = append(&atom, " ", token);
-+			if (ret < 0) {
- 				free(atom);
- 				*tok = NULL;
- 				free_token(token);
- 				return TEP_EVENT_ERROR;
- 			}
--			atom = new_atom;
--			strcat(atom, " ");
--			strcat(atom, token);
- 			free_token(token);
- 			type = read_token_item(&token);
- 		}
+-			if (!list_empty(&ctx->poll_list) ||
++			if (!list_empty(&ctx->poll_list) || need_resched() ||
+ 			    (!time_after(jiffies, timeout) && ret != -EBUSY &&
+ 			    !percpu_ref_is_dying(&ctx->refs))) {
+ 				if (current->task_works)
 -- 
 2.25.1
 
