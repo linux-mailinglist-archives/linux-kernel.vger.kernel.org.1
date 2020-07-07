@@ -2,68 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54B502177F1
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 21:27:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1508A21776E
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 21:01:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728721AbgGGT0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 15:26:53 -0400
-Received: from mga02.intel.com ([134.134.136.20]:56354 "EHLO mga02.intel.com"
+        id S1728840AbgGGTB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 15:01:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37124 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728100AbgGGT0v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 15:26:51 -0400
-IronPort-SDR: EbAuC6xMfm5ou+G0h0It9J0nzzdkbKklHaQPKe4E4HkmFwW7ppEHKvk7PYV6nTYBreTW+CmHsc
- qEnD9sEgKo8A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9675"; a="135925963"
-X-IronPort-AV: E=Sophos;i="5.75,324,1589266800"; 
-   d="scan'208";a="135925963"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2020 12:26:51 -0700
-IronPort-SDR: i8p44p0pWWlOKfP9MwzqRPEQ4Qe8pRdooKE0Tcf3tP5wSyQX1KXMG/fXggJfa7AlYTHeR/pC0m
- ppUTWWAThu1g==
-X-IronPort-AV: E=Sophos;i="5.75,324,1589266800"; 
-   d="scan'208";a="297493452"
-Received: from mrtorger-mobl1.amr.corp.intel.com (HELO [10.254.77.62]) ([10.254.77.62])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2020 12:26:50 -0700
-Subject: Re: [PATCH 10/11] ASoC: qdsp6-dai: add gapless support
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        broonie@kernel.org
-Cc:     alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com,
-        tiwai@suse.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
-        vkoul@kernel.org
-References: <20200707163641.17113-1-srinivas.kandagatla@linaro.org>
- <20200707163641.17113-11-srinivas.kandagatla@linaro.org>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <62af11d3-db26-a31b-00c8-9d78b11862cc@linux.intel.com>
-Date:   Tue, 7 Jul 2020 12:07:17 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1728831AbgGGTB0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 15:01:26 -0400
+Received: from dhcp-10-100-145-180.wdl.wdc.com (unknown [199.255.45.60])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3D677206CD;
+        Tue,  7 Jul 2020 19:01:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594148485;
+        bh=yTAxqihv430USW9Qh1Hfg9Wp4VIfe9iWsjLd10DcD4Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Cx0gQyHstH9QznqMz6bmbgO+S4FeDt1zsNIW/PBoaBvg4/EfZmfApfEHxNPOj4r8u
+         heL7RXkJMZXbxqNcDH55IQUMgGuFkgak+A5qVJWtsc7LaG3nYz8n7IE+5IyfI4yUHs
+         KnuLhYV4Lg1mZ7wt0k4uoLJFgahZVwDzjMVagdm8=
+Date:   Tue, 7 Jul 2020 12:01:23 -0700
+From:   Keith Busch <kbusch@kernel.org>
+To:     Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc:     axboe@fb.com, hch@lst.de, sagi@grimberg.me, baolin.wang7@gmail.com,
+        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/5] nvme-pci: Use standard block status macro
+Message-ID: <20200707190123.GB1997220@dhcp-10-100-145-180.wdl.wdc.com>
+References: <cover.1593743937.git.baolin.wang@linux.alibaba.com>
+ <a14bca482584d912d72209c6edab6b77b1a924f2.1593743937.git.baolin.wang@linux.alibaba.com>
 MIME-Version: 1.0
-In-Reply-To: <20200707163641.17113-11-srinivas.kandagatla@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a14bca482584d912d72209c6edab6b77b1a924f2.1593743937.git.baolin.wang@linux.alibaba.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jul 03, 2020 at 10:49:24AM +0800, Baolin Wang wrote:
+>  static blk_status_t nvme_map_data(struct nvme_dev *dev, struct request *req,
+> @@ -844,7 +844,7 @@ static blk_status_t nvme_map_metadata(struct nvme_dev *dev, struct request *req,
+>  	if (dma_mapping_error(dev->dev, iod->meta_dma))
+>  		return BLK_STS_IOERR;
+>  	cmnd->rw.metadata = cpu_to_le64(iod->meta_dma);
+> -	return 0;
+> +	return BLK_STS_OK;
+>  }
 
-
-On 7/7/20 11:36 AM, Srinivas Kandagatla wrote:
-> Add support to gapless playback by implementing metadata,
-> next_track, drain and partial drain support.
-> 
-> Gapless on Q6ASM is implemented by opening 2 streams in a single asm stream
-
-What does 'in a single asm stream' means?
-
-> and toggling them on next track.
-
-It really seems to me that you have two streams at the lowest level, 
-along with the knowledge of how many samples to remove/insert and hence 
-could do a much better job - including gapless support between unrelated 
-profiles and cross-fading - without the partial drain and next_track 
-mechanism that was defined assuming a single stream/profile.
-
+This is fine, though it takes knowing that this value is 0 for the
+subsequent 'if (!ret)' check to make sense. Maybe those should change to
+'if (ret != BLK_STS_OK)' so the check uses the same symbol as the
+return, and will always work in the unlikely event that the defines
+are reordered.
