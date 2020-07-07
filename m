@@ -2,89 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5686E216558
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 06:28:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 717E5216556
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 06:28:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727046AbgGGE2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 00:28:01 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:11548 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726918AbgGGE2B (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 00:28:01 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1594096080; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=60Navhldv42+vmTmut42AtChOCPYqVL1BHt+i2yrzso=; b=CsKMLBUPRa1juZ98eufq2c4fo8Ul4Oi5v4mUF2Gre7YJBKCsqJkNi9gDQRQSnAAs6ZkFt4g+
- K7EWTsQXffvrPn72NeO0rpN+8BhkQVTNLCyIK9WcufKugUBFu2NVsXBDIMdRVveOujotX+iS
- qXzffjMAtnh3tA8dkg2h15uX5fM=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n14.prod.us-west-2.postgun.com with SMTP id
- 5f03f9b7c9789fa906e6151d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 07 Jul 2020 04:27:35
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 96CE1C433CB; Tue,  7 Jul 2020 04:27:35 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.1.11] (unknown [61.3.20.137])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726906AbgGGE14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 00:27:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54556 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725825AbgGGE1z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 00:27:55 -0400
+Received: from localhost (unknown [122.182.251.219])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6E024C433C8;
-        Tue,  7 Jul 2020 04:27:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6E024C433C8
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rnayak@codeaurora.org
-Subject: Re: [PATCH 1/3] spi: spi-qcom-qspi: Use OPP API to set clk/perf state
-To:     Mark Brown <broonie@kernel.org>
-Cc:     bjorn.andersson@linaro.org, agross@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        mka@chromium.org, Alok Chauhan <alokc@codeaurora.org>,
-        Akash Asthana <akashast@codeaurora.org>
-References: <1593769293-6354-1-git-send-email-rnayak@codeaurora.org>
- <1593769293-6354-2-git-send-email-rnayak@codeaurora.org>
- <20200703170157.GA54804@sirena.org.uk>
-From:   Rajendra Nayak <rnayak@codeaurora.org>
-Message-ID: <c49404d6-d9e1-2d19-92f4-0b2e1e2187a8@codeaurora.org>
-Date:   Tue, 7 Jul 2020 09:57:29 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        by mail.kernel.org (Postfix) with ESMTPSA id 200EB20702;
+        Tue,  7 Jul 2020 04:27:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594096075;
+        bh=ZrG8zfHtY/JZ5uDmtDxnyc8SoBUayZoOLVZU2bdnJM8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=tK9MhcQwaFqLTvRmvT2fud7OKaMZscPT25ZFmernfHuHARY6D13vLtnwNWd7EzCts
+         8fRop+pAycr1yfZM73q4Og9SdsXsJYKrpGH42jup3AlSHZOTHIJh7pwRsApllEw9w/
+         0crYKJUBvDvB8NeDmlbevGaxQfbH/V36g8w803mo=
+Date:   Tue, 7 Jul 2020 09:57:50 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] soundwire: fixes for 5.8
+Message-ID: <20200707042750.GB676979@vkoul-mobl>
 MIME-Version: 1.0
-In-Reply-To: <20200703170157.GA54804@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="+g7M9IMkV8truYOl"
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 7/3/2020 10:31 PM, Mark Brown wrote:
-> On Fri, Jul 03, 2020 at 03:11:31PM +0530, Rajendra Nayak wrote:
->> QSPI needs to vote on a performance state of a power domain depending on
->> the clock rate. Add support for it by specifying the perf state/clock rate
->> as an OPP table in device tree.
-> 
-> This doesn't apply against current code, please check and resend.
+--+g7M9IMkV8truYOl
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Hey Mark, as mentioned in the cover letter I wanted this to land via the
-qcom tree, since Bjorn already has a patch in his tree which would otherwise
-conflict with this change, if you were to pull this.
-Hence I had this rebased on qcom for-next and requested Bjorn to pull it in,
-with your ACK. Hope thats fine with you.
+Hi Greg,
 
-thanks,
-Rajendra
+Please pull to receive a single fix for Intel driver
 
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+The following changes since commit b3a9e3b9622ae10064826dccb4f7a52bd88c7407:
+
+  Linux 5.8-rc1 (2020-06-14 12:45:04 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/soundwire.git tags/so=
+undwire-5.8-fixes
+
+for you to fetch changes up to bf6d6e68d2028a2d82f4c106f50ec75cc1e6ef89:
+
+  soundwire: intel: fix memory leak with devm_kasprintf (2020-06-22 17:15:2=
+0 +0530)
+
+----------------------------------------------------------------
+soundwire fixes for v5.8
+
+-  Intel driver memory leak fix
+
+----------------------------------------------------------------
+Pierre-Louis Bossart (1):
+      soundwire: intel: fix memory leak with devm_kasprintf
+
+ drivers/soundwire/intel.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+--=20
+~Vinod
+
+--+g7M9IMkV8truYOl
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEE+vs47OPLdNbVcHzyfBQHDyUjg0cFAl8D+cYACgkQfBQHDyUj
+g0ezRhAAs0bVOhTTYkpgEGm3Jsm2jB/cFjF++LQ/X1uPKUifurcxoLNg5DJVXCF4
+yjyysfzkmgGqiCRkohadr3V1tqaAhmi4K733QC7pm/+VqXKw5QawX9rOoZuqoqH0
+HCMHsgAjgUe7Bg8E+dO8M3bEn+hxfpOs/+6gFycGSWwRKpmvUZUzl1RD5FUddW/M
+/IzKTvxGd7F+sD8Mo50uEaxpc4+nz5LsaU1w94hZ0urD4GIuDzNcsGXSHEyWDSMa
+KAyugvSlnZmRSbbZMwzMAyUvPizGOlaIXgZHbiJRUsvilpTXL6tz5UjnLrlzmlun
+u3vytAEPiMD4s1qHMYHlkY7NmMsEYxZKO5Q4XD8Zk2cGnCTF7hnApjEAK/iqfscQ
+i8YYK3t/eZYt9lrm8ix20Cpa1XYZePIE7q9cN1lfc7t8W4ZWuT3aBM9wG3B/nDyY
+WD2oL3veOgRGMB/4nZF2S4Pg4P9t6IruEOA4Rv2jM/oImtRoulcGC0CHm04HnBz9
+Hi1gdSzNx4t8d2/AOtbmQKFm0L1nxQoKMWEfKQ9QPUB+HvpVSe6DE9Z61OfJQf3v
+onj4zMnhEWkxVuxoeeUC70ZnughBTUtGfLVCfiVNPAGw9JIcL26J3CrhD2eFvPCP
+zgGmIuAReM4GiMaicveRjLcqo1tpUDjpdAJX+7TyxN9YaWKSmCY=
+=pyH1
+-----END PGP SIGNATURE-----
+
+--+g7M9IMkV8truYOl--
