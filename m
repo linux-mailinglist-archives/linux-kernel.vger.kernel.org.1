@@ -2,88 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D76C4216FEA
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:13:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C95A216FF0
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:13:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728706AbgGGPL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:11:27 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:39732 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728122AbgGGPLY (ORCPT
+        id S1728382AbgGGPMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:12:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59042 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726911AbgGGPMR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:11:24 -0400
-Received: by mail-wm1-f68.google.com with SMTP id w3so34447238wmi.4;
-        Tue, 07 Jul 2020 08:11:22 -0700 (PDT)
+        Tue, 7 Jul 2020 11:12:17 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5EB3C061755
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 08:12:16 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id b6so45532953wrs.11
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 08:12:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9gOopT7I1OsIRVZ7gP8eL3IBFb1IUCjqvEssUF76BG4=;
+        b=pMBw7q2CFOQfGmvkpqC/zFRqxOWQ1b7p2+cEAWcF3mCdub5F2Ib4bRWeyCUg8D9e/p
+         OGctjFDilSnopnt9CwMBPoMjshPumFWLq+24vUZa/F+8z0eQcB5V125GtWHS7J8FCBAi
+         olXgEecpuFIpgRHSivW/kY39xGYXlGu1D5YAZkaMvByYxB0WBPXJX21Iay/n/zfvv5B1
+         XGan0uHFhRQj6e7e1PtHNfloLwBgxjg7XKveppNjrMStBeWdP3RUa9AbGRv90xmUTNf+
+         daK4lBDjMHXd+pKrdwj5T7auAYljz+YtqyjZCcarbyAW5kreekC8mDfKzY3A4oDORsMc
+         MWQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=P5HQjNhCixCjoEKGC+mEwSigDVUlJKQtv6gsV/u680E=;
-        b=orQoXrHBJ67jA8inU9zrJKp1jPrgB33p9/bbz8rE/Rp0iP/1QxTcFuj0a8zxMmZtTr
-         StZYxb/6XTLaZvaV1J4cYf6Xi4AZaiG+uBLm4gusjF/aaRT/RUK2r24LJ7jeZFX6jBrz
-         Kh0ySpjJgfLQevHtIGMs8drMNdOYeLtNgGPBCq4Kp/PJdoLxPUvZ0yx8FLCz4CJl22IB
-         CpXsdgkyOmmh9/TyCnICdeFg7E1OwlKPM0GVs5equ01QQ32c6u7VbS1VvX5LWjGyWYdC
-         EnUXRVmIoiiYUW/pSHl3m4iT5kVpcKOVJQ6Nbsstk5AqGyl7aT8b8pF/ERoDpMrLroa4
-         JQ/w==
-X-Gm-Message-State: AOAM532oOxYQgIDYEQS4GXFpAnHisR78jkzgsoazK8+BhOVwTfU0naIk
-        ITYMuvF7VdVrfdDKPnBkZXiKTcjkwgU+NL5qY08=
-X-Google-Smtp-Source: ABdhPJyQCGg9VpFaZNj2dsCnv1aNhRU0Me+z25bKOzZYWQuHvqUD1GvpUMhPeoP8ERgj++srxuOXiyeQkmBYw1KVhAI=
-X-Received: by 2002:a05:600c:410f:: with SMTP id j15mr4610640wmi.128.1594134681738;
- Tue, 07 Jul 2020 08:11:21 -0700 (PDT)
+        bh=9gOopT7I1OsIRVZ7gP8eL3IBFb1IUCjqvEssUF76BG4=;
+        b=GtaKHqm94qai8bJXDEn/BxtdoBd6CLIqmKyflWoqBiCWSahR7zlOKiyNkevYK6EQUA
+         GHRZrI562ts3I5Djt6w6h8vu9ot7QYRsABy1Kr3Dir9Z/xu/eAFlJGzKJRqGn5ndXqkA
+         etCC+7mmeZ3yCUYRAdCEGBXrnnI5O7wpQuqFN3wYargGvFJ+hbDSvawPQUvJUS3Xtf5O
+         53vYirYmXdfrNvtV6MGNBMUe9PGVeRctgxKOF91TCtMSMalMRSdJs887GFqJfBlIA97f
+         oruHC+pAfnGMGp6oK2YsjvVUjXDOhQ6J+hP53ODw0N8HRSmsvPfs9f2gwuu9MSbPtyCv
+         zfIg==
+X-Gm-Message-State: AOAM531ldma/pqIBEFxrEQjTwGMk01iwZwcDV04ALeSrkfTOdIfjn3r8
+        AuyXhbuScufi+dzw3MpNJU/iJDG7gRNIxZkrXid3Ng==
+X-Google-Smtp-Source: ABdhPJzyL7Ci3JIid8hEd7ueUZ+ZnZ09+gKP6KqRip8QlXnvviomlhUgfqgfQEoWKehK4g+kzJ1CJo+batzFSMZXVBI=
+X-Received: by 2002:adf:dd8d:: with SMTP id x13mr53383056wrl.362.1594134735494;
+ Tue, 07 Jul 2020 08:12:15 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200702185344.913492689@goodmis.org> <20200702185704.559785000@goodmis.org>
-In-Reply-To: <20200702185704.559785000@goodmis.org>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Wed, 8 Jul 2020 00:11:10 +0900
-Message-ID: <CAM9d7cj1LJ=QO8QxhBo_oDM9APpAswX4BbTwge0JhZ3Y4-Bv9w@mail.gmail.com>
-Subject: Re: [PATCH v2 07/15] tools lib traceevent: Optimize pretty_print() function
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+References: <20200706122857.27661-1-trix@redhat.com>
+In-Reply-To: <20200706122857.27661-1-trix@redhat.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 7 Jul 2020 11:12:04 -0400
+Message-ID: <CADnq5_PZEg=tW1Nku_=g4FDbL2qXBf=xz9JuFik0fAR3_SSffQ@mail.gmail.com>
+Subject: Re: [PATCH] drm/radeon: fix double free
+To:     trix@redhat.com
+Cc:     "Deucher, Alexander" <alexander.deucher@amd.com>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Dave Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 3, 2020 at 3:57 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+Applied.  Thanks!
+
+Alex
+
+On Mon, Jul 6, 2020 at 8:29 AM <trix@redhat.com> wrote:
 >
-> From: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+> From: Tom Rix <trix@redhat.com>
 >
-> Each time the pretty_print() function is called to print an event,
-> the event's format string is parsed. As this format string does not
-> change, this parsing can be done only once - when the event struct
-> is initialized.
+> clang static analysis flags this error
 >
-> Link: https://lore.kernel.org/linux-trace-devel/20200529134929.537110-1-tz.stoyanov@gmail.com
-> Link: http://lore.kernel.org/linux-trace-devel/20200625100516.365338-8-tz.stoyanov@gmail.com
+> drivers/gpu/drm/radeon/ci_dpm.c:5652:9: warning: Use of memory after it is freed [unix.Malloc]
+>                 kfree(rdev->pm.dpm.ps[i].ps_priv);
+>                       ^~~~~~~~~~~~~~~~~~~~~~~~~~
+> drivers/gpu/drm/radeon/ci_dpm.c:5654:2: warning: Attempt to free released memory [unix.Malloc]
+>         kfree(rdev->pm.dpm.ps);
+>         ^~~~~~~~~~~~~~~~~~~~~~
 >
-> Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> problem is reported in ci_dpm_fini, with these code blocks.
+>
+>         for (i = 0; i < rdev->pm.dpm.num_ps; i++) {
+>                 kfree(rdev->pm.dpm.ps[i].ps_priv);
+>         }
+>         kfree(rdev->pm.dpm.ps);
+>
+> The first free happens in ci_parse_power_table where it cleans up locally
+> on a failure.  ci_dpm_fini also does a cleanup.
+>
+>         ret = ci_parse_power_table(rdev);
+>         if (ret) {
+>                 ci_dpm_fini(rdev);
+>                 return ret;
+>         }
+>
+> So remove the cleanup in ci_parse_power_table and
+> move the num_ps calculation to inside the loop so ci_dpm_fini
+> will know how many array elements to free.
+>
+> Fixes: cc8dbbb4f62a ("drm/radeon: add dpm support for CI dGPUs (v2)")
+>
+> Signed-off-by: Tom Rix <trix@redhat.com>
 > ---
->  tools/lib/traceevent/event-parse-local.h |  17 +
->  tools/lib/traceevent/event-parse.c       | 672 ++++++++++++++++-------
->  tools/lib/traceevent/event-parse.h       |   3 +
->  3 files changed, 495 insertions(+), 197 deletions(-)
+>  drivers/gpu/drm/radeon/ci_dpm.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
 >
-> diff --git a/tools/lib/traceevent/event-parse-local.h b/tools/lib/traceevent/event-parse-local.h
-> index 96a0b0ca0675..e71296a62236 100644
-> --- a/tools/lib/traceevent/event-parse-local.h
-> +++ b/tools/lib/traceevent/event-parse-local.h
-> @@ -85,6 +85,23 @@ struct tep_handle {
->         struct tep_plugins_dir *plugins_dir;
->  };
+> diff --git a/drivers/gpu/drm/radeon/ci_dpm.c b/drivers/gpu/drm/radeon/ci_dpm.c
+> index 86ac032275bb..ba20c6f03719 100644
+> --- a/drivers/gpu/drm/radeon/ci_dpm.c
+> +++ b/drivers/gpu/drm/radeon/ci_dpm.c
+> @@ -5563,6 +5563,7 @@ static int ci_parse_power_table(struct radeon_device *rdev)
+>         if (!rdev->pm.dpm.ps)
+>                 return -ENOMEM;
+>         power_state_offset = (u8 *)state_array->states;
+> +       rdev->pm.dpm.num_ps = 0;
+>         for (i = 0; i < state_array->ucNumEntries; i++) {
+>                 u8 *idx;
+>                 power_state = (union pplib_power_state *)power_state_offset;
+> @@ -5572,10 +5573,8 @@ static int ci_parse_power_table(struct radeon_device *rdev)
+>                 if (!rdev->pm.power_state[i].clock_info)
+>                         return -EINVAL;
+>                 ps = kzalloc(sizeof(struct ci_ps), GFP_KERNEL);
+> -               if (ps == NULL) {
+> -                       kfree(rdev->pm.dpm.ps);
+> +               if (ps == NULL)
+>                         return -ENOMEM;
+> -               }
+>                 rdev->pm.dpm.ps[i].ps_priv = ps;
+>                 ci_parse_pplib_non_clock_info(rdev, &rdev->pm.dpm.ps[i],
+>                                               non_clock_info,
+> @@ -5597,8 +5596,8 @@ static int ci_parse_power_table(struct radeon_device *rdev)
+>                         k++;
+>                 }
+>                 power_state_offset += 2 + power_state->v2.ucNumDPMLevels;
+> +               rdev->pm.dpm.num_ps = i + 1;
+>         }
+> -       rdev->pm.dpm.num_ps = state_array->ucNumEntries;
 >
-> +enum tep_print_parse_type {
-> +       PRINT_FMT_STING,
-
-STRING ?
-
-> +       PRINT_FMT_ARG_DIGIT,
-> +       PRINT_FMT_ARG_POINTER,
-> +       PRINT_FMT_ARG_STRING,
-> +};
+>         /* fill in the vce power states */
+>         for (i = 0; i < RADEON_MAX_VCE_LEVELS; i++) {
+> --
+> 2.18.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
