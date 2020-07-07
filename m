@@ -2,82 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B92B2163AA
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 04:14:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17EAC2163AD
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 04:14:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728073AbgGGCNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 22:13:17 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:33906 "EHLO loongson.cn"
+        id S1728110AbgGGCOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 22:14:07 -0400
+Received: from spam.zju.edu.cn ([61.164.42.155]:42968 "EHLO zju.edu.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726434AbgGGCNG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 22:13:06 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxfesl2gNfyABRAA--.2533S10;
-        Tue, 07 Jul 2020 10:12:58 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Subject: [PATCH v3 8/8] dt-bindings: interrupt-controller: Fix typos in loongson,liointc.yaml
-Date:   Tue,  7 Jul 2020 10:12:52 +0800
-Message-Id: <1594087972-21715-9-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1594087972-21715-1-git-send-email-yangtiezhu@loongson.cn>
-References: <1594087972-21715-1-git-send-email-yangtiezhu@loongson.cn>
-X-CM-TRANSID: AQAAf9Dxfesl2gNfyABRAA--.2533S10
-X-Coremail-Antispam: 1UD129KBjvJXoW7WF4UAw1kWr1rKr18Jw17GFg_yoW8Xr15pa
-        yDC3ZFgF4jqF13C3yqqa4vk3W3Zr98AwnxGFs3Z3yxGFsruw1UXr4a9F95A3W5GrWxtFyU
-        XryFga10gayUAr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBvb7Iv0xC_tr1lb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI
-        8067AKxVWUAVCq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28C
-        jxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI
-        8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vE
-        x4A2jsIEc7CjxVAFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFc
-        xC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_
-        Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW8JwCF04
-        k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18
-        MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr4
-        1lIxAIcVC0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1l
-        IxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4
-        A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jjfOwUUUUU=
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S1726434AbgGGCOG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Jul 2020 22:14:06 -0400
+Received: by ajax-webmail-mail-app4 (Coremail) ; Tue, 7 Jul 2020 10:13:52
+ +0800 (GMT+08:00)
+X-Originating-IP: [210.32.144.65]
+Date:   Tue, 7 Jul 2020 10:13:52 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   dinghao.liu@zju.edu.cn
+To:     "Lorenzo Pieralisi" <lorenzo.pieralisi@arm.com>
+Cc:     kjlu@umn.edu, "Andy Gross" <agross@kernel.org>,
+        "Bjorn Andersson" <bjorn.andersson@linaro.org>,
+        "Stanimir Varbanov" <svarbanov@mm-sol.com>,
+        "Rob Herring" <robh@kernel.org>,
+        "Bjorn Helgaas" <bhelgaas@google.com>,
+        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Re: [PATCH] PCI: qcom: fix runtime pm imbalance on error
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.10 build 20190906(84e8bf8f)
+ Copyright (c) 2002-2020 www.mailtech.cn zju.edu.cn
+In-Reply-To: <20200706095821.GB26377@e121166-lin.cambridge.arm.com>
+References: <20200520085837.1399-1-dinghao.liu@zju.edu.cn>
+ <20200706095821.GB26377@e121166-lin.cambridge.arm.com>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
+MIME-Version: 1.0
+Message-ID: <6269091e.4c120.173270d082d.Coremail.dinghao.liu@zju.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: cS_KCgCHIARg2gNfDI4nAw--.64370W
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgwNBlZdtO+R4gABsn
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJTRUUUbuCS07vEb7Iv0x
+        C_Cr1lV2xY67kC6x804xWlV2xY67CY07I20VC2zVCF04k26cxKx2IYs7xG6rWj6s0DMIAI
+        bVAFxVCF77xC64kEw24lV2xY67C26IkvcIIF6IxKo4kEV4ylV2xY628lY4IE4IxF12IF4w
+        CS07vE84x0c7CEj48ve4kI8wCS07vE84ACjcxK6xIIjxv20xvE14v26w1j6s0DMIAIbVA2
+        z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW0oVCq3wCS07vE84ACjcxK6I8E87Iv67AKxVW0oV
+        Cq3wCS07vE84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DMIAIbVAS0I0E0xvYzxvE52x0
+        82IY62kv0487MIAIbVAqx4xG64xvF2IEw4CE5I8CrVC2j2WlV2xY6cIj6xIIjxv20xvE14
+        v26r1j6r18MIAIbVAv7VC2z280aVAFwI0_Jr0_Gr1lV2xY6cvjeVCFs4IE7xkEbVWUJVW8
+        JwCS07vEFIxGxcIEc7CjxVA2Y2ka0xkIwI1lV2xY6x02cVAKzwCS07vEc2xSY4AK67AK6r
+        4UMIAIbVCY0x0Ix7I2Y4AK64vIr41lV2xY6xAIw28IcVCjz48v1sIEY20_GFWkJr1UJwCS
+        07vE4x8a6x804xWlV2xY6xC20s026xCaFVCjc4AY6r1j6r4UMIAIbVC20s026c02F40E14
+        v26r1j6r18MIAIbVC20s026x8GjcxK67AKxVWUGVWUWwCS07vEx4CE17CEb7AF67AKxVWU
+        tVW8ZwCS07vEIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCS07vEIxAIcVC0I7IYx2IY6xkF7I
+        0E14v26r1j6r4UMIAIbVCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCS07vEIxAIcVC2
+        z280aVAFwI0_Jr0_Gr1lV2xY6IIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2Kf
+        nxnUU==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following two typos in loongson,liointc.yaml:
-fron -> from
-connected -> connect
-it's -> its
-
-Fixes: b6280c8bb6f5 ("dt-bindings: interrupt-controller: Add Loongson LIOINTC")
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: devicetree@vger.kernel.org
----
- .../devicetree/bindings/interrupt-controller/loongson,liointc.yaml    | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml b/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml
-index b1db21e..732ad9a 100644
---- a/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml
-+++ b/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml
-@@ -51,8 +51,8 @@ properties:
-     description: |
-       This property points how the children interrupts will be mapped into CPU
-       interrupt lines. Each cell refers to a parent interrupt line from 0 to 3
--      and each bit in the cell refers to a children interrupt fron 0 to 31.
--      If a CPU interrupt line didn't connected with liointc, then keep it's
-+      and each bit in the cell refers to a children interrupt from 0 to 31.
-+      If a CPU interrupt line didn't connect with liointc, then keep its
-       cell with zero.
-     $ref: /schemas/types.yaml#/definitions/uint32-array
-     minItems: 4
--- 
-2.1.0
-
+PiA+IHBtX3J1bnRpbWVfZ2V0X3N5bmMoKSBpbmNyZW1lbnRzIHRoZSBydW50aW1lIFBNIHVzYWdl
+IGNvdW50ZXIgZXZlbgo+ID4gaXQgcmV0dXJucyBhbiBlcnJvciBjb2RlLiBUaHVzIGEgcGFpcmlu
+ZyBkZWNyZW1lbnQgaXMgbmVlZGVkIG9uCj4gPiB0aGUgZXJyb3IgaGFuZGxpbmcgcGF0aCB0byBr
+ZWVwIHRoZSBjb3VudGVyIGJhbGFuY2VkLgo+ID4gCj4gPiBTaWduZWQtb2ZmLWJ5OiBEaW5naGFv
+IExpdSA8ZGluZ2hhby5saXVAemp1LmVkdS5jbj4KPiA+IC0tLQo+ID4gIGRyaXZlcnMvcGNpL2Nv
+bnRyb2xsZXIvZHdjL3BjaWUtcWNvbS5jIHwgMyArLS0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgMSBp
+bnNlcnRpb24oKyksIDIgZGVsZXRpb25zKC0pCj4gPiAKPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJz
+L3BjaS9jb250cm9sbGVyL2R3Yy9wY2llLXFjb20uYyBiL2RyaXZlcnMvcGNpL2NvbnRyb2xsZXIv
+ZHdjL3BjaWUtcWNvbS5jCj4gPiBpbmRleCAxMzhlMWEyZDIxY2MuLjM1Njg2OTMwZGYxZCAxMDA2
+NDQKPiA+IC0tLSBhL2RyaXZlcnMvcGNpL2NvbnRyb2xsZXIvZHdjL3BjaWUtcWNvbS5jCj4gPiAr
+KysgYi9kcml2ZXJzL3BjaS9jb250cm9sbGVyL2R3Yy9wY2llLXFjb20uYwo+ID4gQEAgLTEzNDAs
+OCArMTM0MCw3IEBAIHN0YXRpYyBpbnQgcWNvbV9wY2llX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9k
+ZXZpY2UgKnBkZXYpCj4gPiAgCXBtX3J1bnRpbWVfZW5hYmxlKGRldik7Cj4gPiAgCXJldCA9IHBt
+X3J1bnRpbWVfZ2V0X3N5bmMoZGV2KTsKPiA+ICAJaWYgKHJldCA8IDApIHsKPiA+IC0JCXBtX3J1
+bnRpbWVfZGlzYWJsZShkZXYpOwo+ID4gLQkJcmV0dXJuIHJldDsKPiA+ICsJCWdvdG8gZXJyX3Bt
+X3J1bnRpbWVfcHV0Owo+IAo+IEkgdGhpbmsgeW91IG5lZWQgdG8gcmVtb3ZlIHRoZSBicmFja2V0
+cyAtIHRoaXMgYmVjb21lIGEgc2luZ2xlIGxpbmUKPiBpZiBzdGF0ZW1lbnQuCj4gCgpUaGFuayB5
+b3UgZm9yIHlvdXIgYWR2aWNlISBJIHdpbGwgZml4IHRoaXMgaW4gdGhlIG5leHQgdmVyc2lvbiBv
+ZiBwYXRjaC4KClJlZ2FyZHMsCkRpbmdoYW8K
