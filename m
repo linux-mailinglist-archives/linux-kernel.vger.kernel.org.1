@@ -2,102 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39FAB217486
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 18:56:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96A7B21749B
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 19:00:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728299AbgGGQ4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 12:56:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48430 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728110AbgGGQ4y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 12:56:54 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5ECEC2065D;
-        Tue,  7 Jul 2020 16:56:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594141014;
-        bh=Pxamgvc2FYcqKzB/kO/K+pvItVmdREDTa9V2Uq/pm90=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=WfluW2mALu5v2u4IsB9+2+vbjc5luGQpkCpWji2UWyn5eJGKh2+w3PCRaCORF0/YN
-         +46mUvg1IPuLlsjfbJFei4Opj8gC35QmxI1XVnc0h/gl29judPMY7nyXTpvF+QwI80
-         oPi+MhkEYdPflHpFGc+lNEnz/Mg7+kCFEw68dC9I=
-Date:   Tue, 7 Jul 2020 09:56:51 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>,
+        id S1728265AbgGGRAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 13:00:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47696 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728094AbgGGRAJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 13:00:09 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D8D0C08C5DC
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 10:00:09 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1jsqwt-0004FO-U6; Tue, 07 Jul 2020 19:00:03 +0200
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1jsqws-00038k-Gs; Tue, 07 Jul 2020 19:00:02 +0200
+From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+To:     Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pci@vger.kernel.org, X86 ML <x86@kernel.org>
-Subject: Re: [PATCH 00/22] add support for Clang LTO
-Message-ID: <20200707095651.422f0b22@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20200707160528.GA1300535@google.com>
-References: <20200624203200.78870-1-samitolvanen@google.com>
-        <CAK7LNASvb0UDJ0U5wkYYRzTAdnEs64HjXpEUL7d=V0CXiAXcNw@mail.gmail.com>
-        <20200629232059.GA3787278@google.com>
-        <20200707155107.GA3357035@google.com>
-        <20200707160528.GA1300535@google.com>
+        Jiri Slaby <jslaby@suse.com>
+Cc:     kernel@pengutronix.de, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH v7 0/3] leds: trigger: implement a tty trigger
+Date:   Tue,  7 Jul 2020 18:59:55 +0200
+Message-Id: <20200707165958.16522-1-u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 7 Jul 2020 09:05:28 -0700 Sami Tolvanen wrote:
-> On Tue, Jul 07, 2020 at 08:51:07AM -0700, Sami Tolvanen wrote:
-> > After spending some time debugging this with Nick, it looks like the
-> > error is caused by a recent optimization change in LLVM, which together
-> > with the inlining of ur_load_imm_any into jeq_imm, changes a runtime
-> > check in FIELD_FIT that would always fail, to a compile-time check that
-> > breaks the build. In jeq_imm, we have:
-> > 
-> >     /* struct bpf_insn: _s32 imm */
-> >     u64 imm = insn->imm; /* sign extend */
-> >     ...
-> >     if (imm >> 32) { /* non-zero only if insn->imm is negative */
-> >     	/* inlined from ur_load_imm_any */
-> > 	u32 __imm = imm >> 32; /* therefore, always 0xffffffff */
-> > 
-> >         /*
-> > 	 * __imm has a value known at compile-time, which means
-> > 	 * __builtin_constant_p(__imm) is true and we end up with
-> > 	 * essentially this in __BF_FIELD_CHECK:
-> > 	 */
-> > 	if (__builtin_constant_p(__imm) && __imm <= 255)  
-> 
-> Should be __imm > 255, of course, which means the compiler will generate
-> a call to __compiletime_assert.
+Hello,
 
-I think FIELD_FIT() should not pass the value into __BF_FIELD_CHECK().
+this is v7 of a series adding support for tty triggers. See patch 3 for
+how to use it. The first two patches provide the necessary
+infrastructure in the tty subsystem to make the trigger possible.
 
-So:
+Changes compared to v6 sent with Message-Id:
+20200213091600.554-1-uwe@kleine-koenig.org on 13 Feb 2020:
 
-diff --git a/include/linux/bitfield.h b/include/linux/bitfield.h
-index 48ea093ff04c..4e035aca6f7e 100644
---- a/include/linux/bitfield.h
-+++ b/include/linux/bitfield.h
-@@ -77,7 +77,7 @@
-  */
- #define FIELD_FIT(_mask, _val)                                         \
-        ({                                                              \
--               __BF_FIELD_CHECK(_mask, 0ULL, _val, "FIELD_FIT: ");     \
-+               __BF_FIELD_CHECK(_mask, 0ULL, 0ULL, "FIELD_FIT: ");     \
-                !((((typeof(_mask))_val) << __bf_shf(_mask)) & ~(_mask)); \
-        })
- 
-It's perfectly legal to pass a constant which does not fit, in which
-case FIELD_FIT() should just return false not break the build.
+ - use the tty's name instead of its major:minor
+ - drop kstrtodev_t helper
+ - retry opening the tty in case it only appears after it was configured
+   in the trigger
 
-Right?
+Uwe Kleine-König (3):
+  tty: rename tty_kopen() and add new function tty_kopen_shared()
+  tty: new helper function tty_get_icount()
+  leds: trigger: implement a tty trigger
+
+ .../ABI/testing/sysfs-class-led-trigger-tty   |   6 +
+ drivers/leds/trigger/Kconfig                  |   7 +
+ drivers/leds/trigger/Makefile                 |   1 +
+ drivers/leds/trigger/ledtrig-tty.c            | 192 ++++++++++++++++++
+ drivers/staging/speakup/spk_ttyio.c           |   2 +-
+ drivers/tty/tty_io.c                          |  87 ++++++--
+ include/linux/tty.h                           |   7 +-
+ 7 files changed, 277 insertions(+), 25 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-class-led-trigger-tty
+ create mode 100644 drivers/leds/trigger/ledtrig-tty.c
+
+base-commit: dcb7fd82c75ee2d6e6f9d8cc71c52519ed52e258
+-- 
+2.27.0
+
