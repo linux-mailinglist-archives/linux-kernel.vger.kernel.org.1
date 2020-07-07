@@ -2,39 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80897217282
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:44:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ED9E217182
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:42:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729529AbgGGPej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:34:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58092 "EHLO mail.kernel.org"
+        id S1728172AbgGGPVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:21:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33320 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728422AbgGGPSk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:18:40 -0400
+        id S1729658AbgGGPVK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 11:21:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6A2C320663;
-        Tue,  7 Jul 2020 15:18:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 58C8A206E2;
+        Tue,  7 Jul 2020 15:21:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594135120;
-        bh=xkymQXiS3eOpuljz4jMxRKZ+J/A6bYNQ4D/KVgyO4Z8=;
+        s=default; t=1594135269;
+        bh=Yb/kN+Ykzu3y1QxV3gSKWsc82uPftmNrmA3t8MPJMyU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ar7FmcmYcrkQ8UQPPhVGDLohC/EA/lYvw1Ah2kCperHp879ZpjV8gD7JHidG/5xOj
-         VIDy/D6TqnYSdG/dfGJnpJ0zW9m0+4U7pmUcGaO2/BW1QoImRmwTCgFeJukKiObC93
-         6b1drxb5keWsyO55A+Byvy8w8UFK0HijCFzyT12A=
+        b=TTjyLkOSdkpwkwYk5BDzu4L1QzK0DeDjczK9ClNCjRuG8T8PCIEhtUxxD3FhFUHzq
+         gkqEGmo65kXgXgKjIAsxO1cEPfFawVDI7PBX6LKmVuceOP4kRRnDIiBQXMlqC8ZGGa
+         5RJGaOLbrxaz7/0mwvzc1lN91dsdSJyzPmSiTPfk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chu Lin <linchuyuan@google.com>,
-        Guenter Roeck <linux@roeck-us.net>,
+        stable@vger.kernel.org, Van Do <van.do.xw@renesas.com>,
+        Dien Pham <dien.pham.ry@renesas.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Niklas Soderlund <niklas.soderlund+renesas@ragnatech.se>,
+        Amit Kucheria <amit.kucheria@linaro.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 19/36] hwmon: (max6697) Make sure the OVERT mask is set correctly
-Date:   Tue,  7 Jul 2020 17:17:11 +0200
-Message-Id: <20200707145750.053560653@linuxfoundation.org>
+Subject: [PATCH 5.4 33/65] thermal/drivers/rcar_gen3: Fix undefined temperature if negative
+Date:   Tue,  7 Jul 2020 17:17:12 +0200
+Message-Id: <20200707145754.075806633@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200707145749.130272978@linuxfoundation.org>
-References: <20200707145749.130272978@linuxfoundation.org>
+In-Reply-To: <20200707145752.417212219@linuxfoundation.org>
+References: <20200707145752.417212219@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,65 +48,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chu Lin <linchuyuan@google.com>
+From: Dien Pham <dien.pham.ry@renesas.com>
 
-[ Upstream commit 016983d138cbe99a5c0aaae0103ee88f5300beb3 ]
+[ Upstream commit 5f8f06425a0dcdad7bedbb77e67f5c65ab4dacfc ]
 
-Per the datasheet for max6697, OVERT mask and ALERT mask are different.
-For example, the 7th bit of OVERT is the local channel but for alert
-mask, the 6th bit is the local channel. Therefore, we can't apply the
-same mask for both registers. In addition to that, the max6697 driver
-is supposed to be compatibale with different models. I manually went over
-all the listed chips and made sure all chip types have the same layout.
+As description for DIV_ROUND_CLOSEST in file include/linux/kernel.h.
+  "Result is undefined for negative divisors if the dividend variable
+   type is unsigned and for negative dividends if the divisor variable
+   type is unsigned."
 
-Testing;
-    mask value of 0x9 should map to 0x44 for ALERT and 0x84 for OVERT.
-    I used iotool to read the reg value back to verify. I only tested this
-    change on max6581.
+In current code, the FIXPT_DIV uses DIV_ROUND_CLOSEST but has not
+checked sign of divisor before using. It makes undefined temperature
+value in case the value is negative.
 
-Reference:
-https://datasheets.maximintegrated.com/en/ds/MAX6581.pdf
-https://datasheets.maximintegrated.com/en/ds/MAX6697.pdf
-https://datasheets.maximintegrated.com/en/ds/MAX6699.pdf
+This patch fixes to satisfy DIV_ROUND_CLOSEST description
+and fix bug too. Note that the variable name "reg" is not good
+because it should be the same type as rcar_gen3_thermal_read().
+However, it's better to rename the "reg" in a further patch as
+cleanup.
 
-Signed-off-by: Chu Lin <linchuyuan@google.com>
-Fixes: 5372d2d71c46e ("hwmon: Driver for Maxim MAX6697 and compatibles")
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Van Do <van.do.xw@renesas.com>
+Signed-off-by: Dien Pham <dien.pham.ry@renesas.com>
+[shimoda: minor fixes, add Fixes tag]
+Fixes: 564e73d283af ("thermal: rcar_gen3_thermal: Add R-Car Gen3 thermal driver")
+Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Reviewed-by: Niklas Soderlund <niklas.soderlund+renesas@ragnatech.se>
+Tested-by: Niklas Soderlund <niklas.soderlund+renesas@ragnatech.se>
+Reviewed-by: Amit Kucheria <amit.kucheria@linaro.org>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Link: https://lore.kernel.org/r/1593085099-2057-1-git-send-email-yoshihiro.shimoda.uh@renesas.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hwmon/max6697.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/thermal/rcar_gen3_thermal.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/hwmon/max6697.c b/drivers/hwmon/max6697.c
-index 221fd14920576..6df28fe0577da 100644
---- a/drivers/hwmon/max6697.c
-+++ b/drivers/hwmon/max6697.c
-@@ -47,8 +47,9 @@ static const u8 MAX6697_REG_CRIT[] = {
-  * Map device tree / platform data register bit map to chip bit map.
-  * Applies to alert register and over-temperature register.
-  */
--#define MAX6697_MAP_BITS(reg)	((((reg) & 0x7e) >> 1) | \
-+#define MAX6697_ALERT_MAP_BITS(reg)	((((reg) & 0x7e) >> 1) | \
- 				 (((reg) & 0x01) << 6) | ((reg) & 0x80))
-+#define MAX6697_OVERT_MAP_BITS(reg) (((reg) >> 1) | (((reg) & 0x01) << 7))
+diff --git a/drivers/thermal/rcar_gen3_thermal.c b/drivers/thermal/rcar_gen3_thermal.c
+index 755d2b5bd2c2b..1ab2ffff4e7c7 100644
+--- a/drivers/thermal/rcar_gen3_thermal.c
++++ b/drivers/thermal/rcar_gen3_thermal.c
+@@ -169,7 +169,7 @@ static int rcar_gen3_thermal_get_temp(void *devdata, int *temp)
+ {
+ 	struct rcar_gen3_thermal_tsc *tsc = devdata;
+ 	int mcelsius, val;
+-	u32 reg;
++	int reg;
  
- #define MAX6697_REG_STAT(n)		(0x44 + (n))
- 
-@@ -587,12 +588,12 @@ static int max6697_init_chip(struct max6697_data *data,
- 		return ret;
- 
- 	ret = i2c_smbus_write_byte_data(client, MAX6697_REG_ALERT_MASK,
--					MAX6697_MAP_BITS(pdata->alert_mask));
-+				MAX6697_ALERT_MAP_BITS(pdata->alert_mask));
- 	if (ret < 0)
- 		return ret;
- 
- 	ret = i2c_smbus_write_byte_data(client, MAX6697_REG_OVERT_MASK,
--				MAX6697_MAP_BITS(pdata->over_temperature_mask));
-+			MAX6697_OVERT_MAP_BITS(pdata->over_temperature_mask));
- 	if (ret < 0)
- 		return ret;
- 
+ 	/* Read register and convert to mili Celsius */
+ 	reg = rcar_gen3_thermal_read(tsc, REG_GEN3_TEMP) & CTEMP_MASK;
 -- 
 2.25.1
 
