@@ -2,61 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69FA82169E3
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 12:18:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5CCE2169E2
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 12:18:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728422AbgGGKSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 06:18:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41434 "EHLO
+        id S1728400AbgGGKSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 06:18:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728208AbgGGKRO (ORCPT
+        with ESMTP id S1728225AbgGGKRP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 06:17:14 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37BA9C061755
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 03:17:14 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id q15so42683408wmj.2
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 03:17:14 -0700 (PDT)
+        Tue, 7 Jul 2020 06:17:15 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60B56C061755
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 03:17:15 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id l2so44399312wmf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 03:17:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=GMUYidfrIwBoQwr04cGElMGH9ZhgIrwlDOw4is85pEg=;
-        b=LCQfc/e5ty78KnRBAWkN5lY+b68RFMYCz8nZm/KdhRS9l+QtjMn+DGKkzXQpAfRwuD
-         n8dndQB0ha994npwPP+9EdI4y10eYHeLl7rqUAivaYJyPvaYJ5ovzn9eJrfwLoqCqK4D
-         X1AiU35rKsZhW8y7U7JVvYJ3Hdc6bOWnrjH3pdc0D7QzdCRmlTGMuowrhG6zEB0mjcko
-         uRbhznr83cxoJYNTTqCOsMg7hp/Eqo6YLYBOePqhVcVBAlo/BOJld4J9auQWVMDG2fff
-         aH0a3GrNPvm2pIMPUemmoUKXAZVmeTlnqbZWMT93sJR7zuapWpadYGEV9ssJwOGmt31Q
-         jRmQ==
+        bh=Eb/RPEg+kMf5EbfmZ+xzaRqlinKf/Ie6foYLp+7RL7o=;
+        b=hYVZlimbR1Y4vTKWrzDgy1aOXAjhRbuXLpjometenz6KMcYiaNc5FhS2U/BgwBCWXy
+         LzGWQeSIPg9sR21qe7fjeRqIc3SEMoZrxAkopagoIob1IVlOGbwvFoVywKOqplqP8Umt
+         XvO5Yn4OK6ezPzEVhTp5NEyj+HxHd9PFoQ1Fsavx+M+BoqizA5C06Jn5KeLfpr+OIWrh
+         +5N+5by4tWgAD/1iQ/PsHy93hhlGY9XnJaOnJKnMMbeQ2LmKUuDnMHIW9lPfudD4XTye
+         qSnp/RyyG0guNjiIyiyWHMN+FOLPl53mrX7b5uT0jtu3YXZc4Fa80g30Up4hUTbEk/B9
+         MpYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=GMUYidfrIwBoQwr04cGElMGH9ZhgIrwlDOw4is85pEg=;
-        b=SdAGncx9mgJqOAIa3bnr1vLfbdSTZ+o4ohYyFNSqHjiX0mHW+Z+7Nh4HTHGbnNn7k+
-         yPaJ4nTksDefNUG/PiPUexN7g9PXd4/RT+OPSX01kFOE9PbObJtBEkYRyDOlSqwTpTzB
-         zDwgZ5AcmmxNjXLs+OxkCBiu9CBgEqIb5sdGE/DPCfYr7kC9yQioWaUPyJm3FfJKuBoX
-         4MFqXOLZ0w2Jia9lQn9Kd3GcA6mRQ8HvXgEC8WRNbnahH+iScnBw4Tdt0bm/PY19ixys
-         oNVM5WHsMfibwGiEaTaU+v3phUUrNfDvLKI00clxnhMEmBcCOWShW0K9FaR/AyzHdUdg
-         T8Wg==
-X-Gm-Message-State: AOAM532gbvOn8mXiG07lPN0DPzLCOQwmNXLXLDG6we4qGPmmbCMCrIOc
-        9HwwQTX4PUBb4dJpdxmmeDe0uA==
-X-Google-Smtp-Source: ABdhPJy3UpRnh1pbIW5TM69XcTo8ALmp1/bv7rxoyf8ZQ1E28518TJ8Xw2HwfBX5mnOEi/HYkpRqNA==
-X-Received: by 2002:a7b:cbcb:: with SMTP id n11mr3217967wmi.99.1594117032905;
-        Tue, 07 Jul 2020 03:17:12 -0700 (PDT)
+        bh=Eb/RPEg+kMf5EbfmZ+xzaRqlinKf/Ie6foYLp+7RL7o=;
+        b=HXTCAnvUBSiNTtBeT4uZBUtkYspCvgWTsDMfTQf3swYjoIsltAKO290OAEERBulG0Z
+         LtZooh4y2uGyTqxrkZinTJ9j3QZ5jR28Rc3b5kjH0T0eGG/V6f1I8Fz8GEmXlz76qmh8
+         tIRXUcZBUhUPU0rjRjKIXTLZg0PKlSmj/T4sCShU8+6SGWYFAuzPzse0LD9QBSYWHyGe
+         pheeU103fGkvNxW//PMGzisWLGhIvo+oze99X9ZCE/0iq9aOOFycm9gBzQpWsZUE2C4f
+         GZZyW5IekBiYDzYVQXwUbLh3y1j/KlF8qFBp9eac5IJ26D4ks4pxeWnPqV2wq4WY5UjU
+         uhvA==
+X-Gm-Message-State: AOAM533kVvsthXVff8lTcsjlfsrCv6HUi/ehj8RI2WoRUv9I1yOiIxJx
+        C6Q9+hUjv07yvpxQmrluVz93ht7SJ3o=
+X-Google-Smtp-Source: ABdhPJwiukos6NDimwam5UH9qNhkPMjAs8ALC3WtOoAlktRpKr9H6nmMroUuFl9TDomf2uyT3u8ExA==
+X-Received: by 2002:a7b:c259:: with SMTP id b25mr3421129wmj.107.1594117034103;
+        Tue, 07 Jul 2020 03:17:14 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.206])
-        by smtp.gmail.com with ESMTPSA id z8sm469409wmg.39.2020.07.07.03.17.11
+        by smtp.gmail.com with ESMTPSA id z8sm469409wmg.39.2020.07.07.03.17.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jul 2020 03:17:12 -0700 (PDT)
+        Tue, 07 Jul 2020 03:17:13 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz,
         tiwai@suse.com
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         alsa-devel@alsa-project.org, Lee Jones <lee.jones@linaro.org>,
-        Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: [PATCH 20/28] ASoC: sti: uniperif: Mark 'uni_tdm_hw' as __maybe_unused
-Date:   Tue,  7 Jul 2020 11:16:34 +0100
-Message-Id: <20200707101642.1747944-21-lee.jones@linaro.org>
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Jarkko Nikula <jarkko.nikula@bitmer.com>,
+        Samuel Ortiz <samuel.ortiz@nokia.com>,
+        linux-omap@vger.kernel.org
+Subject: [PATCH 21/28] ASoC: ti: omap-mcbsp-st: Remove set, but unused variable 'w'
+Date:   Tue,  7 Jul 2020 11:16:35 +0100
+Message-Id: <20200707101642.1747944-22-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200707101642.1747944-1-lee.jones@linaro.org>
 References: <20200707101642.1747944-1-lee.jones@linaro.org>
@@ -68,36 +71,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Only 2 of the 3 source files which include this headerfile actually
-reference 'uni_tdm_hw'.  The other source file 'sti_uniperif.c' sees
-as it as being unused.  Mark it as __maybe_unused to show that this
-behaviour is not only known, it's intentional.
+Looks like 'w' has remained unchecked since the driver's inception.
 
 Fixes the following W=1 kernel build warning(s):
 
- sound/soc/sti/uniperif.h:1351:38: warning: ‘uni_tdm_hw’ defined but not used [-Wunused-const-variable=]
- 1351 | static const struct snd_pcm_hardware uni_tdm_hw = {
- | ^~~~~~~~~~
+ sound/soc/ti/omap-mcbsp-st.c: In function ‘omap_mcbsp_st_chgain’:
+ sound/soc/ti/omap-mcbsp-st.c:145:6: warning: variable ‘w’ set but not used [-Wunused-but-set-variable]
 
-Cc: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Cc: Samuel Ortiz <samuel.ortiz@nokia.com>
+Cc: linux-omap@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- sound/soc/sti/uniperif.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/ti/omap-mcbsp-st.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/sti/uniperif.h b/sound/soc/sti/uniperif.h
-index 2dc2da5d458bd..e22d045d5cd99 100644
---- a/sound/soc/sti/uniperif.h
-+++ b/sound/soc/sti/uniperif.h
-@@ -1348,7 +1348,7 @@ struct sti_uniperiph_data {
- 	struct sti_uniperiph_dai dai_data;
- };
+diff --git a/sound/soc/ti/omap-mcbsp-st.c b/sound/soc/ti/omap-mcbsp-st.c
+index 5a32b54bbf3bb..643ef7eb68fc8 100644
+--- a/sound/soc/ti/omap-mcbsp-st.c
++++ b/sound/soc/ti/omap-mcbsp-st.c
+@@ -142,10 +142,9 @@ static void omap_mcbsp_st_fir_write(struct omap_mcbsp *mcbsp, s16 *fir)
  
--static const struct snd_pcm_hardware uni_tdm_hw = {
-+static const struct snd_pcm_hardware __maybe_unused uni_tdm_hw = {
- 	.info = SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
- 		SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_MMAP |
- 		SNDRV_PCM_INFO_MMAP_VALID,
+ static void omap_mcbsp_st_chgain(struct omap_mcbsp *mcbsp)
+ {
+-	u16 w;
+ 	struct omap_mcbsp_st_data *st_data = mcbsp->st_data;
+ 
+-	w = MCBSP_ST_READ(mcbsp, SSELCR);
++	MCBSP_ST_READ(mcbsp, SSELCR);
+ 
+ 	MCBSP_ST_WRITE(mcbsp, SGAINCR, ST_CH0GAIN(st_data->ch0gain) |
+ 		       ST_CH1GAIN(st_data->ch1gain));
 -- 
 2.25.1
 
