@@ -2,127 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1D68217325
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:59:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7585221734E
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 18:06:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728386AbgGGP7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:59:07 -0400
-Received: from mga18.intel.com ([134.134.136.126]:27064 "EHLO mga18.intel.com"
+        id S1728194AbgGGQGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 12:06:31 -0400
+Received: from mga12.intel.com ([192.55.52.136]:19446 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728110AbgGGP7H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:59:07 -0400
-IronPort-SDR: zIx8mHwfzqnmQ8rGu5OH4gtH/3rAEqEwh8w7IAxA0US8qmc/ndCsYX2ifffv6/6/N+VL2d8gyc
- bwDE5xwx+YAg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9675"; a="135098093"
+        id S1726911AbgGGQGb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 12:06:31 -0400
+IronPort-SDR: YqB4kZJO2P0zJs7uIGd3jiRTih8PbhFPvUpxfLq5pVJuC8kdzl9d2nsgDK0YE26ztSwU/m6i5J
+ ZYM06F+IG3iw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9675"; a="127223810"
 X-IronPort-AV: E=Sophos;i="5.75,324,1589266800"; 
-   d="scan'208";a="135098093"
+   d="scan'208";a="127223810"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2020 08:59:05 -0700
-IronPort-SDR: ecctsqBL/nqF2OifVsSD3NjgWHb+/wN5P/fusefWSqr4U/+mBUlM7rxByfUJhOdF32llWvorQm
- SfiCuUYNT1Sw==
-X-ExtLoop1: 1
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2020 09:06:30 -0700
+IronPort-SDR: nWzZSRwTYFqoBfaDlAkFLsCJyfwsTGyETLYfq5n1HLZ0dF0GicOQgpoHJU44M6tg9L8HxECkUI
+ Lekna+wYWHUg==
 X-IronPort-AV: E=Sophos;i="5.75,324,1589266800"; 
-   d="scan'208";a="305709944"
-Received: from marshy.an.intel.com ([10.122.105.159])
-  by fmsmga004.fm.intel.com with ESMTP; 07 Jul 2020 08:59:04 -0700
-From:   richard.gong@linux.intel.com
-To:     mdf@kernel.org
-Cc:     linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dinguyen@kernel.org, richard.gong@linux.intel.com,
-        richard.gong@intel.com
-Subject: [PATCH] fpga: stratix10-soc: make FPGA task un-interruptible
-Date:   Tue,  7 Jul 2020 11:14:07 -0500
-Message-Id: <1594138447-21488-1-git-send-email-richard.gong@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
+   d="scan'208";a="305713010"
+Received: from stortizs-mobl1.amr.corp.intel.com (HELO [10.254.109.228]) ([10.254.109.228])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2020 09:06:29 -0700
+Subject: Re: [PATCH v5] ASoC: Intel: kbl_rt5663_rt5514_max98927: Fix
+ kabylake_ssp_fixup function
+To:     Lukasz Majczak <lma@semihalf.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Harsha Priya <harshapriya.n@intel.com>
+Cc:     alsa-devel@alsa-project.org, Radoslaw Biernacki <rad@semihalf.com>,
+        Ross Zwisler <zwisler@google.com>,
+        linux-kernel@vger.kernel.org,
+        Sathya Prakash <sathya.prakash.m.r@intel.com>,
+        Bob Brandt <brndt@google.com>, Marcin Wojtas <mw@semihalf.com>,
+        Alex Levin <levinale@chromium.org>,
+        Gopal Vamshi Krishna <vamshi.krishna.gopal@intel.com>
+References: <20200703121650.547944-1-lma@semihalf.com>
+ <20200707083404.3846-1-lma@semihalf.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <4cb5ea5a-60b3-7f74-0f68-e66d2f2872bf@linux.intel.com>
+Date:   Tue, 7 Jul 2020 10:47:19 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
+MIME-Version: 1.0
+In-Reply-To: <20200707083404.3846-1-lma@semihalf.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Richard Gong <richard.gong@intel.com>
 
-When CTRL+C occurs during the process of FPGA reconfiguration, the FPGA
-reconfiguration process stops and the user can't perform a new FPGA
-reconfiguration properly.
 
-Set FPGA complete task to be not interruptible so that the user can
-properly perform FPGA reconfiguration after CTRL+C event.
+On 7/7/20 3:34 AM, Lukasz Majczak wrote:
+> Fix kabylake_ssp_fixup function to distinguish codecs DAIs by names,
+> as current approach, leads to crash while trying to get snd_soc_dpcm with
+> container_of() macro in kabylake_ssp_fixup().
+> The crash call path looks as below:
+> soc_pcm_hw_params()
+> snd_soc_dai_hw_params(codec_dai, substream, &codec_params);
+> rtd->dai_link->be_hw_params_fixup(rtd, params)
+> kabylake_ssp_fixup()
+> In this case, codec_params is just a copy of an internal structure and is
+> not embedded into struct snd_soc_dpcm thus we cannot use
+> container_of() on it.
+> 
+> Signed-off-by: Lukasz Majczak <lma@semihalf.com>
+> Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
 
-Signed-off-by: Richard Gong <richard.gong@intel.com>
----
- drivers/fpga/stratix10-soc.c | 23 +++--------------------
- 1 file changed, 3 insertions(+), 20 deletions(-)
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-diff --git a/drivers/fpga/stratix10-soc.c b/drivers/fpga/stratix10-soc.c
-index 44b7c56..657a70c 100644
---- a/drivers/fpga/stratix10-soc.c
-+++ b/drivers/fpga/stratix10-soc.c
-@@ -196,17 +196,13 @@ static int s10_ops_write_init(struct fpga_manager *mgr,
- 	if (ret < 0)
- 		goto init_done;
- 
--	ret = wait_for_completion_interruptible_timeout(
-+	ret = wait_for_completion_timeout(
- 		&priv->status_return_completion, S10_RECONFIG_TIMEOUT);
- 	if (!ret) {
- 		dev_err(dev, "timeout waiting for RECONFIG_REQUEST\n");
- 		ret = -ETIMEDOUT;
- 		goto init_done;
- 	}
--	if (ret < 0) {
--		dev_err(dev, "error (%d) waiting for RECONFIG_REQUEST\n", ret);
--		goto init_done;
--	}
- 
- 	ret = 0;
- 	if (!test_and_clear_bit(SVC_STATUS_OK, &priv->status)) {
-@@ -318,7 +314,7 @@ static int s10_ops_write(struct fpga_manager *mgr, const char *buf,
- 		 */
- 		wait_status = 1; /* not timed out */
- 		if (!priv->status)
--			wait_status = wait_for_completion_interruptible_timeout(
-+			wait_status = wait_for_completion_timeout(
- 				&priv->status_return_completion,
- 				S10_BUFFER_TIMEOUT);
- 
-@@ -340,13 +336,6 @@ static int s10_ops_write(struct fpga_manager *mgr, const char *buf,
- 			ret = -ETIMEDOUT;
- 			break;
- 		}
--		if (wait_status < 0) {
--			ret = wait_status;
--			dev_err(dev,
--				"error (%d) waiting for svc layer buffers\n",
--				ret);
--			break;
--		}
- 	}
- 
- 	if (!s10_free_buffers(mgr))
-@@ -372,7 +361,7 @@ static int s10_ops_write_complete(struct fpga_manager *mgr,
- 		if (ret < 0)
- 			break;
- 
--		ret = wait_for_completion_interruptible_timeout(
-+		ret = wait_for_completion_timeout(
- 			&priv->status_return_completion, timeout);
- 		if (!ret) {
- 			dev_err(dev,
-@@ -380,12 +369,6 @@ static int s10_ops_write_complete(struct fpga_manager *mgr,
- 			ret = -ETIMEDOUT;
- 			break;
- 		}
--		if (ret < 0) {
--			dev_err(dev,
--				"error (%d) waiting for RECONFIG_COMPLETED\n",
--				ret);
--			break;
--		}
- 		/* Not error or timeout, so ret is # of jiffies until timeout */
- 		timeout = ret;
- 		ret = 0;
--- 
-2.7.4
-
+> ---
+> v1 -> v2:
+> - Extract dmic from SSP0 as every BE should have own fixup function.
+> v2 -> v3:
+> - Restore naming in the dapm route table to not confuse with other
+> drivers
+> - Fixed indentations
+> v3 -> v4:
+> - Updated code and commit description according to
+> solution proposed by Harsha
+> ---
+>   .../intel/boards/kbl_rt5663_rt5514_max98927.c | 28 ++++++++-----------
+>   1 file changed, 12 insertions(+), 16 deletions(-)
+> 
+> diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+> index b34cf6cf11395..df454de40739a 100644
+> --- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+> +++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+> @@ -333,36 +333,32 @@ static int kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
+>   {
+>   	struct snd_interval *rate = hw_param_interval(params,
+>   			SNDRV_PCM_HW_PARAM_RATE);
+> -	struct snd_interval *chan = hw_param_interval(params,
+> +	struct snd_interval *channels = hw_param_interval(params,
+>   			SNDRV_PCM_HW_PARAM_CHANNELS);
+>   	struct snd_mask *fmt = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
+> -	struct snd_soc_dpcm *dpcm = container_of(
+> -			params, struct snd_soc_dpcm, hw_params);
+> -	struct snd_soc_dai_link *fe_dai_link = dpcm->fe->dai_link;
+> -	struct snd_soc_dai_link *be_dai_link = dpcm->be->dai_link;
+> +	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
+>   
+>   	/*
+>   	 * The ADSP will convert the FE rate to 48k, stereo, 24 bit
+>   	 */
+> -	if (!strcmp(fe_dai_link->name, "Kbl Audio Port") ||
+> -	    !strcmp(fe_dai_link->name, "Kbl Audio Headset Playback") ||
+> -	    !strcmp(fe_dai_link->name, "Kbl Audio Capture Port")) {
+> +
+> +	if (!strcmp(codec_dai->name, KBL_REALTEK_DMIC_CODEC_DAI)) {
+> +		if (params_channels(params) == 2 ||
+> +			DMIC_CH(dmic_constraints) == 2)
+> +			channels->min = channels->max = 2;
+> +		else
+> +			channels->min = channels->max = 4;
+> +	} else {
+>   		rate->min = rate->max = 48000;
+> -		chan->min = chan->max = 2;
+> +		channels->min = channels->max = 2;
+>   		snd_mask_none(fmt);
+>   		snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S24_LE);
+> -	} else if (!strcmp(fe_dai_link->name, "Kbl Audio DMIC cap")) {
+> -		if (params_channels(params) == 2 ||
+> -				DMIC_CH(dmic_constraints) == 2)
+> -			chan->min = chan->max = 2;
+> -		else
+> -			chan->min = chan->max = 4;
+>   	}
+>   	/*
+>   	 * The speaker on the SSP0 supports S16_LE and not S24_LE.
+>   	 * thus changing the mask here
+>   	 */
+> -	if (!strcmp(be_dai_link->name, "SSP0-Codec"))
+> +	if (!strcmp(codec_dai->name, KBL_MAXIM_CODEC_DAI))
+>   		snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S16_LE);
+>   
+>   	return 0;
+> 
