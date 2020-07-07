@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BF822170C0
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:24:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6634217124
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:25:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728669AbgGGPUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:20:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60172 "EHLO mail.kernel.org"
+        id S1728742AbgGGPYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:24:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38068 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728665AbgGGPUN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:20:13 -0400
+        id S1730094AbgGGPY2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 11:24:28 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B8FF1207BB;
-        Tue,  7 Jul 2020 15:20:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0C8102078D;
+        Tue,  7 Jul 2020 15:24:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594135212;
-        bh=miJHj+Pb0feMSTpT/2VYBOZJEP5ZBQoJplkSCDqOLfE=;
+        s=default; t=1594135467;
+        bh=UwEqrjqoTq75tKEp9ZpwiITGAJv3OcuzNOfpj83czJ8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=We4Fxx8Kt62OI4Yl860dyDFfdQzYfF4DvBygBIZBoXnJWVOeMl70HIUro9kM6Fw1S
-         CZSGKoCwc81NTydtiVrbc/DKQ2QuUK023ocwTwVIlubtaqBA4s+ldqcqvP8vtVJhVz
-         9wGYTuL7si6dNd+zEarQ0jgUjXvUyuYAt+gAYd6Y=
+        b=1VnJU+D9rud0zzNiQggBpguim3oqZoNCY5YGcxLV2izNN6+UqIaXGgxP338+fTt/r
+         1ir9D3sSykx+BIZUOyJQJfuUi+z7CLpJjvts/Sk5stHiwk6iAeUwvYL5yxtUWpCrIe
+         jm5bzf8J4YshHQJzPVX08EWc20vK3jIeQBFmWoMc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Douglas Anderson <dianders@chromium.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
+        stable@vger.kernel.org, Claudiu Manoil <claudiu.manoil@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 18/65] kgdb: Avoid suspicious RCU usage warning
+Subject: [PATCH 5.7 052/112] enetc: Fix HW_VLAN_CTAG_TX|RX toggling
 Date:   Tue,  7 Jul 2020 17:16:57 +0200
-Message-Id: <20200707145753.341011958@linuxfoundation.org>
+Message-Id: <20200707145803.476183728@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200707145752.417212219@linuxfoundation.org>
-References: <20200707145752.417212219@linuxfoundation.org>
+In-Reply-To: <20200707145800.925304888@linuxfoundation.org>
+References: <20200707145800.925304888@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,107 +44,131 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Douglas Anderson <dianders@chromium.org>
+From: Claudiu Manoil <claudiu.manoil@nxp.com>
 
-[ Upstream commit 440ab9e10e2e6e5fd677473ee6f9e3af0f6904d6 ]
+[ Upstream commit 9deba33f1b7266a3870c9da31f787b605748fc0c ]
 
-At times when I'm using kgdb I see a splat on my console about
-suspicious RCU usage.  I managed to come up with a case that could
-reproduce this that looked like this:
+VLAN tag insertion/extraction offload is correctly
+activated at probe time but deactivation of this feature
+(i.e. via ethtool) is broken.  Toggling works only for
+Tx/Rx ring 0 of a PF, and is ignored for the other rings,
+including the VF rings.
+To fix this, the existing VLAN offload toggling code
+was extended to all the rings assigned to a netdevice,
+instead of the default ring 0 (likely a leftover from the
+early validation days of this feature).  And the code was
+moved to the common set_features() function to fix toggling
+for the VF driver too.
 
-  WARNING: suspicious RCU usage
-  5.7.0-rc4+ #609 Not tainted
-  -----------------------------
-  kernel/pid.c:395 find_task_by_pid_ns() needs rcu_read_lock() protection!
-
-  other info that might help us debug this:
-
-    rcu_scheduler_active = 2, debug_locks = 1
-  3 locks held by swapper/0/1:
-   #0: ffffff81b6b8e988 (&dev->mutex){....}-{3:3}, at: __device_attach+0x40/0x13c
-   #1: ffffffd01109e9e8 (dbg_master_lock){....}-{2:2}, at: kgdb_cpu_enter+0x20c/0x7ac
-   #2: ffffffd01109ea90 (dbg_slave_lock){....}-{2:2}, at: kgdb_cpu_enter+0x3ec/0x7ac
-
-  stack backtrace:
-  CPU: 7 PID: 1 Comm: swapper/0 Not tainted 5.7.0-rc4+ #609
-  Hardware name: Google Cheza (rev3+) (DT)
-  Call trace:
-   dump_backtrace+0x0/0x1b8
-   show_stack+0x1c/0x24
-   dump_stack+0xd4/0x134
-   lockdep_rcu_suspicious+0xf0/0x100
-   find_task_by_pid_ns+0x5c/0x80
-   getthread+0x8c/0xb0
-   gdb_serial_stub+0x9d4/0xd04
-   kgdb_cpu_enter+0x284/0x7ac
-   kgdb_handle_exception+0x174/0x20c
-   kgdb_brk_fn+0x24/0x30
-   call_break_hook+0x6c/0x7c
-   brk_handler+0x20/0x5c
-   do_debug_exception+0x1c8/0x22c
-   el1_sync_handler+0x3c/0xe4
-   el1_sync+0x7c/0x100
-   rpmh_rsc_probe+0x38/0x420
-   platform_drv_probe+0x94/0xb4
-   really_probe+0x134/0x300
-   driver_probe_device+0x68/0x100
-   __device_attach_driver+0x90/0xa8
-   bus_for_each_drv+0x84/0xcc
-   __device_attach+0xb4/0x13c
-   device_initial_probe+0x18/0x20
-   bus_probe_device+0x38/0x98
-   device_add+0x38c/0x420
-
-If I understand properly we should just be able to blanket kgdb under
-one big RCU read lock and the problem should go away.  We'll add it to
-the beast-of-a-function known as kgdb_cpu_enter().
-
-With this I no longer get any splats and things seem to work fine.
-
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
-Link: https://lore.kernel.org/r/20200602154729.v2.1.I70e0d4fd46d5ed2aaf0c98a355e8e1b7a5bb7e4e@changeid
-Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
+Fixes: d4fd0404c1c9 ("enetc: Introduce basic PF and VF ENETC ethernet drivers")
+Signed-off-by: Claudiu Manoil <claudiu.manoil@nxp.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/debug/debug_core.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/net/ethernet/freescale/enetc/enetc.c  | 26 +++++++++++++++++++
+ .../net/ethernet/freescale/enetc/enetc_hw.h   | 16 ++++++------
+ .../net/ethernet/freescale/enetc/enetc_pf.c   |  9 -------
+ 3 files changed, 34 insertions(+), 17 deletions(-)
 
-diff --git a/kernel/debug/debug_core.c b/kernel/debug/debug_core.c
-index 7d54c7c280544..2222f3225e53d 100644
---- a/kernel/debug/debug_core.c
-+++ b/kernel/debug/debug_core.c
-@@ -546,6 +546,7 @@ static int kgdb_cpu_enter(struct kgdb_state *ks, struct pt_regs *regs,
- 		arch_kgdb_ops.disable_hw_break(regs);
- 
- acquirelock:
-+	rcu_read_lock();
- 	/*
- 	 * Interrupts will be restored by the 'trap return' code, except when
- 	 * single stepping.
-@@ -602,6 +603,7 @@ return_normal:
- 			atomic_dec(&slaves_in_kgdb);
- 			dbg_touch_watchdogs();
- 			local_irq_restore(flags);
-+			rcu_read_unlock();
- 			return 0;
- 		}
- 		cpu_relax();
-@@ -620,6 +622,7 @@ return_normal:
- 		raw_spin_unlock(&dbg_master_lock);
- 		dbg_touch_watchdogs();
- 		local_irq_restore(flags);
-+		rcu_read_unlock();
- 
- 		goto acquirelock;
- 	}
-@@ -743,6 +746,7 @@ kgdb_restore:
- 	raw_spin_unlock(&dbg_master_lock);
- 	dbg_touch_watchdogs();
- 	local_irq_restore(flags);
-+	rcu_read_unlock();
- 
- 	return kgdb_info[cpu].ret_state;
+diff --git a/drivers/net/ethernet/freescale/enetc/enetc.c b/drivers/net/ethernet/freescale/enetc/enetc.c
+index 9ac5cccfe0204..a7e4274d3f402 100644
+--- a/drivers/net/ethernet/freescale/enetc/enetc.c
++++ b/drivers/net/ethernet/freescale/enetc/enetc.c
+@@ -1587,6 +1587,24 @@ static int enetc_set_psfp(struct net_device *ndev, int en)
+ 	return 0;
  }
+ 
++static void enetc_enable_rxvlan(struct net_device *ndev, bool en)
++{
++	struct enetc_ndev_priv *priv = netdev_priv(ndev);
++	int i;
++
++	for (i = 0; i < priv->num_rx_rings; i++)
++		enetc_bdr_enable_rxvlan(&priv->si->hw, i, en);
++}
++
++static void enetc_enable_txvlan(struct net_device *ndev, bool en)
++{
++	struct enetc_ndev_priv *priv = netdev_priv(ndev);
++	int i;
++
++	for (i = 0; i < priv->num_tx_rings; i++)
++		enetc_bdr_enable_txvlan(&priv->si->hw, i, en);
++}
++
+ int enetc_set_features(struct net_device *ndev,
+ 		       netdev_features_t features)
+ {
+@@ -1595,6 +1613,14 @@ int enetc_set_features(struct net_device *ndev,
+ 	if (changed & NETIF_F_RXHASH)
+ 		enetc_set_rss(ndev, !!(features & NETIF_F_RXHASH));
+ 
++	if (changed & NETIF_F_HW_VLAN_CTAG_RX)
++		enetc_enable_rxvlan(ndev,
++				    !!(features & NETIF_F_HW_VLAN_CTAG_RX));
++
++	if (changed & NETIF_F_HW_VLAN_CTAG_TX)
++		enetc_enable_txvlan(ndev,
++				    !!(features & NETIF_F_HW_VLAN_CTAG_TX));
++
+ 	if (changed & NETIF_F_HW_TC)
+ 		enetc_set_psfp(ndev, !!(features & NETIF_F_HW_TC));
+ 
+diff --git a/drivers/net/ethernet/freescale/enetc/enetc_hw.h b/drivers/net/ethernet/freescale/enetc/enetc_hw.h
+index 587974862f488..02efda266c468 100644
+--- a/drivers/net/ethernet/freescale/enetc/enetc_hw.h
++++ b/drivers/net/ethernet/freescale/enetc/enetc_hw.h
+@@ -531,22 +531,22 @@ struct enetc_msg_cmd_header {
+ 
+ /* Common H/W utility functions */
+ 
+-static inline void enetc_enable_rxvlan(struct enetc_hw *hw, int si_idx,
+-				       bool en)
++static inline void enetc_bdr_enable_rxvlan(struct enetc_hw *hw, int idx,
++					   bool en)
+ {
+-	u32 val = enetc_rxbdr_rd(hw, si_idx, ENETC_RBMR);
++	u32 val = enetc_rxbdr_rd(hw, idx, ENETC_RBMR);
+ 
+ 	val = (val & ~ENETC_RBMR_VTE) | (en ? ENETC_RBMR_VTE : 0);
+-	enetc_rxbdr_wr(hw, si_idx, ENETC_RBMR, val);
++	enetc_rxbdr_wr(hw, idx, ENETC_RBMR, val);
+ }
+ 
+-static inline void enetc_enable_txvlan(struct enetc_hw *hw, int si_idx,
+-				       bool en)
++static inline void enetc_bdr_enable_txvlan(struct enetc_hw *hw, int idx,
++					   bool en)
+ {
+-	u32 val = enetc_txbdr_rd(hw, si_idx, ENETC_TBMR);
++	u32 val = enetc_txbdr_rd(hw, idx, ENETC_TBMR);
+ 
+ 	val = (val & ~ENETC_TBMR_VIH) | (en ? ENETC_TBMR_VIH : 0);
+-	enetc_txbdr_wr(hw, si_idx, ENETC_TBMR, val);
++	enetc_txbdr_wr(hw, idx, ENETC_TBMR, val);
+ }
+ 
+ static inline void enetc_set_bdr_prio(struct enetc_hw *hw, int bdr_idx,
+diff --git a/drivers/net/ethernet/freescale/enetc/enetc_pf.c b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
+index eacd597b55f22..438648a06f2ae 100644
+--- a/drivers/net/ethernet/freescale/enetc/enetc_pf.c
++++ b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
+@@ -667,15 +667,6 @@ static int enetc_pf_set_features(struct net_device *ndev,
+ 				 netdev_features_t features)
+ {
+ 	netdev_features_t changed = ndev->features ^ features;
+-	struct enetc_ndev_priv *priv = netdev_priv(ndev);
+-
+-	if (changed & NETIF_F_HW_VLAN_CTAG_RX)
+-		enetc_enable_rxvlan(&priv->si->hw, 0,
+-				    !!(features & NETIF_F_HW_VLAN_CTAG_RX));
+-
+-	if (changed & NETIF_F_HW_VLAN_CTAG_TX)
+-		enetc_enable_txvlan(&priv->si->hw, 0,
+-				    !!(features & NETIF_F_HW_VLAN_CTAG_TX));
+ 
+ 	if (changed & NETIF_F_LOOPBACK)
+ 		enetc_set_loopback(ndev, !!(features & NETIF_F_LOOPBACK));
 -- 
 2.25.1
 
