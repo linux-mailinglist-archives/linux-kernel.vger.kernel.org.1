@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8152217859
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 21:55:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B145217866
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 21:57:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728521AbgGGTzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 15:55:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35644 "EHLO mail.kernel.org"
+        id S1728801AbgGGT5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 15:57:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36874 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728254AbgGGTzP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 15:55:15 -0400
+        id S1727908AbgGGT5j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 15:57:39 -0400
 Received: from embeddedor (unknown [200.39.26.250])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5258A2067D;
-        Tue,  7 Jul 2020 19:55:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 593472067D;
+        Tue,  7 Jul 2020 19:57:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594151714;
-        bh=EKHQa0fn19dP7DdfSsBAyCGObw/4dqvoeOQ2/MAc5zM=;
+        s=default; t=1594151857;
+        bh=ZRPqHjrjXQNzTnP+bbUN9VtxVwenujj/0ds3cIqTmts=;
         h=Date:From:To:Cc:Subject:From;
-        b=FXBCzWY09+DYmPoVYbiaKTUAOjJ2ovjQFPURMU2W4LPZGUL596iwJJV2TIeAesPLA
-         OQ2b6A9ZfvORaDVut94zw1dvVT2NU3xUF22BweWUM1x/u1/gQkhQeI009o++B21hhO
-         wUzk9OWGE1aCepcl2X+wbc6C8UORlOyXiEKuXxAg=
-Date:   Tue, 7 Jul 2020 15:00:40 -0500
+        b=1119twLO0cx59urQr+pBmRWcDvfwpDvXTEf2PtQuAYUJxRqwR5DrFagQ9Pfg4JgeC
+         w4tKj3uwoS34zw3GkC1SeBlVGWw6ZB/ANjEuSLhBX24VO0L+yJYzrS6RIu3MV8PKl3
+         LQWekwVvaxLvkVMK/Ma0giuXAg/r3za6XvTSTKFs=
+Date:   Tue, 7 Jul 2020 15:03:03 -0500
 From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH] usb: phy: Use fallthrough pseudo-keyword
-Message-ID: <20200707200040.GA4525@embeddedor>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org
+Cc:     "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        Oleg Nesterov <oleg@redhat.com>,
+        "Gustavo A. R. Silva" <kernel.org@embeddedor>
+Subject: [PATCH] x86: Use fallthrough pseudo-keyword
+Message-ID: <20200707200303.GA4680@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -49,153 +50,329 @@ fall-through markings when it is the case.
 
 Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- drivers/usb/phy/phy-ab8500-usb.c   |   12 ++++++------
- drivers/usb/phy/phy-fsl-usb.c      |    4 ++--
- drivers/usb/phy/phy-isp1301-omap.c |   14 +++++++-------
- drivers/usb/phy/phy-mv-usb.c       |    2 +-
- 4 files changed, 16 insertions(+), 16 deletions(-)
+ arch/x86/boot/cmdline.c          |    4 ++--
+ arch/x86/boot/compressed/kaslr.c |    2 +-
+ arch/x86/kernel/alternative.c    |    3 +--
+ arch/x86/kernel/apic/io_apic.c   |    4 ++--
+ arch/x86/kernel/apic/probe_32.c  |    2 +-
+ arch/x86/kernel/cpu/cacheinfo.c  |    2 +-
+ arch/x86/kernel/cpu/mtrr/cyrix.c |    2 +-
+ arch/x86/kernel/hw_breakpoint.c  |    2 +-
+ arch/x86/kernel/kgdb.c           |    4 ++--
+ arch/x86/kernel/mpparse.c        |    4 ++--
+ arch/x86/kernel/ptrace.c         |    2 +-
+ arch/x86/kernel/reboot.c         |    2 +-
+ arch/x86/kernel/signal.c         |    2 +-
+ arch/x86/kernel/uprobes.c        |    4 ++--
+ arch/x86/lib/cmdline.c           |    8 ++++----
+ arch/x86/lib/insn-eval.c         |    7 ++-----
+ 16 files changed, 25 insertions(+), 29 deletions(-)
 
-diff --git a/drivers/usb/phy/phy-ab8500-usb.c b/drivers/usb/phy/phy-ab8500-usb.c
-index 20c0f082bf9c..aa4a3140394b 100644
---- a/drivers/usb/phy/phy-ab8500-usb.c
-+++ b/drivers/usb/phy/phy-ab8500-usb.c
-@@ -331,7 +331,7 @@ static int ab8505_usb_link_status_update(struct ab8500_usb *ab,
- 	switch (lsts) {
- 	case USB_LINK_ACA_RID_B_8505:
- 		event = UX500_MUSB_RIDB;
--		/* Fall through */
-+		fallthrough;
- 	case USB_LINK_NOT_CONFIGURED_8505:
- 	case USB_LINK_RESERVED0_8505:
- 	case USB_LINK_RESERVED1_8505:
-@@ -352,7 +352,7 @@ static int ab8505_usb_link_status_update(struct ab8500_usb *ab,
+diff --git a/arch/x86/boot/cmdline.c b/arch/x86/boot/cmdline.c
+index 4ff01176c1cc..21d56ae83cdf 100644
+--- a/arch/x86/boot/cmdline.c
++++ b/arch/x86/boot/cmdline.c
+@@ -54,7 +54,7 @@ int __cmdline_find_option(unsigned long cmdline_ptr, const char *option, char *b
+ 			/* else */
+ 			state = st_wordcmp;
+ 			opptr = option;
+-			/* fall through */
++			fallthrough;
  
- 	case USB_LINK_ACA_RID_C_NM_8505:
- 		event = UX500_MUSB_RIDC;
--		/* Fall through */
-+		fallthrough;
- 	case USB_LINK_STD_HOST_NC_8505:
- 	case USB_LINK_STD_HOST_C_NS_8505:
- 	case USB_LINK_STD_HOST_C_S_8505:
-@@ -371,7 +371,7 @@ static int ab8505_usb_link_status_update(struct ab8500_usb *ab,
- 	case USB_LINK_ACA_RID_A_8505:
- 	case USB_LINK_ACA_DOCK_CHGR_8505:
- 		event = UX500_MUSB_RIDA;
--		/* Fall through */
-+		fallthrough;
- 	case USB_LINK_HM_IDGND_8505:
- 		if (ab->mode == USB_IDLE) {
- 			ab->mode = USB_HOST;
-@@ -444,7 +444,7 @@ static int ab8500_usb_link_status_update(struct ab8500_usb *ab,
- 	switch (lsts) {
- 	case USB_LINK_ACA_RID_B_8500:
- 		event = UX500_MUSB_RIDB;
--		/* Fall through */
-+		fallthrough;
- 	case USB_LINK_NOT_CONFIGURED_8500:
- 	case USB_LINK_NOT_VALID_LINK_8500:
- 		ab->mode = USB_IDLE;
-@@ -461,7 +461,7 @@ static int ab8500_usb_link_status_update(struct ab8500_usb *ab,
- 	case USB_LINK_ACA_RID_C_HS_8500:
- 	case USB_LINK_ACA_RID_C_HS_CHIRP_8500:
- 		event = UX500_MUSB_RIDC;
--		/* Fall through */
-+		fallthrough;
- 	case USB_LINK_STD_HOST_NC_8500:
- 	case USB_LINK_STD_HOST_C_NS_8500:
- 	case USB_LINK_STD_HOST_C_S_8500:
-@@ -481,7 +481,7 @@ static int ab8500_usb_link_status_update(struct ab8500_usb *ab,
+ 		case st_wordcmp:
+ 			if (c == '=' && !*opptr) {
+@@ -129,7 +129,7 @@ int __cmdline_find_option_bool(unsigned long cmdline_ptr, const char *option)
+ 			state = st_wordcmp;
+ 			opptr = option;
+ 			wstart = pos;
+-			/* fall through */
++			fallthrough;
  
- 	case USB_LINK_ACA_RID_A_8500:
- 		event = UX500_MUSB_RIDA;
--		/* Fall through */
-+		fallthrough;
- 	case USB_LINK_HM_IDGND_8500:
- 		if (ab->mode == USB_IDLE) {
- 			ab->mode = USB_HOST;
-diff --git a/drivers/usb/phy/phy-fsl-usb.c b/drivers/usb/phy/phy-fsl-usb.c
-index b451f4695f3f..01985e1b513a 100644
---- a/drivers/usb/phy/phy-fsl-usb.c
-+++ b/drivers/usb/phy/phy-fsl-usb.c
-@@ -911,10 +911,10 @@ int usb_otg_start(struct platform_device *pdev)
- 		break;
- 	case FSL_USB2_PHY_UTMI_WIDE:
- 		temp |= PORTSC_PTW_16BIT;
--		/* fall through */
-+		fallthrough;
- 	case FSL_USB2_PHY_UTMI:
- 		temp |= PORTSC_PTS_UTMI;
--		/* fall through */
-+		fallthrough;
- 	default:
- 		break;
- 	}
-diff --git a/drivers/usb/phy/phy-isp1301-omap.c b/drivers/usb/phy/phy-isp1301-omap.c
-index 7041ba030052..4a6462c92ef2 100644
---- a/drivers/usb/phy/phy-isp1301-omap.c
-+++ b/drivers/usb/phy/phy-isp1301-omap.c
-@@ -581,11 +581,11 @@ static void otg_update_isp(struct isp1301 *isp)
- 		/* HNP failed for some reason (A_AIDL_BDIS timeout) */
- 		notresponding(isp);
- 
--		/* FALLTHROUGH */
-+		fallthrough;
- 	case OTG_STATE_A_VBUS_ERR:
- 		isp->phy.otg->state = OTG_STATE_A_WAIT_VFALL;
- 		pr_debug("  --> a_wait_vfall\n");
--		/* FALLTHROUGH */
-+		fallthrough;
- 	case OTG_STATE_A_WAIT_VFALL:
- 		/* FIXME usbcore thinks port power is still on ... */
- 		clr |= OTG1_VBUS_DRV;
-@@ -595,7 +595,7 @@ static void otg_update_isp(struct isp1301 *isp)
- 			isp->phy.otg->state = OTG_STATE_A_WAIT_VRISE;
- 			pr_debug("  --> a_wait_vrise\n");
+ 		case st_wordcmp:
+ 			if (!*opptr)
+diff --git a/arch/x86/boot/compressed/kaslr.c b/arch/x86/boot/compressed/kaslr.c
+index d7408af55738..de7115ff10ca 100644
+--- a/arch/x86/boot/compressed/kaslr.c
++++ b/arch/x86/boot/compressed/kaslr.c
+@@ -185,7 +185,7 @@ parse_memmap(char *p, unsigned long long *start, unsigned long long *size,
+ 			}
+ 			*size = 0;
  		}
--		/* FALLTHROUGH */
+-		/* Fall through */
 +		fallthrough;
  	default:
- 		toggle(OTG_DRV_VBUS, OTG1_VBUS_DRV);
- 	}
-@@ -945,10 +945,10 @@ static void isp_update_otg(struct isp1301 *isp, u8 stat)
- 			switch (state) {
- 			case OTG_STATE_B_IDLE:
- 				a_idle(isp, "idle");
--				/* FALLTHROUGH */
-+				fallthrough;
- 			case OTG_STATE_A_IDLE:
- 				enable_vbus_source(isp);
--				/* FALLTHROUGH */
-+				fallthrough;
- 			case OTG_STATE_A_WAIT_VRISE:
- 				/* we skip over OTG_STATE_A_WAIT_BCON, since
- 				 * the HC will transition to A_HOST (or
-@@ -1032,12 +1032,12 @@ static void isp_update_otg(struct isp1301 *isp, u8 stat)
- 						OTG1_DP_PULLUP);
- 			dump_regs(isp, __func__);
- #endif
--			/* FALLTHROUGH */
-+			fallthrough;
- 		case OTG_STATE_B_SRP_INIT:
- 			b_idle(isp, __func__);
- 			l = omap_readl(OTG_CTRL) & OTG_XCEIV_OUTPUTS;
- 			omap_writel(l, OTG_CTRL);
--			/* FALLTHROUGH */
-+			fallthrough;
- 		case OTG_STATE_B_IDLE:
- 			if (otg->gadget && (isp_bstat & OTG_B_SESS_VLD)) {
- #ifdef	CONFIG_USB_OTG
-diff --git a/drivers/usb/phy/phy-mv-usb.c b/drivers/usb/phy/phy-mv-usb.c
-index 06b47f1028b3..ce767ecc0636 100644
---- a/drivers/usb/phy/phy-mv-usb.c
-+++ b/drivers/usb/phy/phy-mv-usb.c
-@@ -334,7 +334,7 @@ static void mv_otg_update_state(struct mv_otg *mvotg)
- 	switch (old_state) {
- 	case OTG_STATE_UNDEFINED:
- 		mvotg->phy.otg->state = OTG_STATE_B_IDLE;
--		/* FALL THROUGH */
+ 		/*
+ 		 * If w/o offset, only size specified, memmap=nn[KMG] has the
+diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
+index 8fd39ff74a49..22155ac435fa 100644
+--- a/arch/x86/kernel/alternative.c
++++ b/arch/x86/kernel/alternative.c
+@@ -235,8 +235,7 @@ void __init arch_init_ideal_nops(void)
+ 			ideal_nops = p6_nops;
+ 			return;
+ 		}
+-
+-		/* fall through */
 +		fallthrough;
- 	case OTG_STATE_B_IDLE:
- 		if (otg_ctrl->id == 0)
- 			mvotg->phy.otg->state = OTG_STATE_A_IDLE;
+ 
+ 	default:
+ #ifdef CONFIG_X86_64
+diff --git a/arch/x86/kernel/apic/io_apic.c b/arch/x86/kernel/apic/io_apic.c
+index ce61e3e7d399..edfe05529fac 100644
+--- a/arch/x86/kernel/apic/io_apic.c
++++ b/arch/x86/kernel/apic/io_apic.c
+@@ -800,7 +800,7 @@ static int irq_polarity(int idx)
+ 		return IOAPIC_POL_HIGH;
+ 	case MP_IRQPOL_RESERVED:
+ 		pr_warn("IOAPIC: Invalid polarity: 2, defaulting to low\n");
+-		/* fall through */
++		fallthrough;
+ 	case MP_IRQPOL_ACTIVE_LOW:
+ 	default: /* Pointless default required due to do gcc stupidity */
+ 		return IOAPIC_POL_LOW;
+@@ -848,7 +848,7 @@ static int irq_trigger(int idx)
+ 		return IOAPIC_EDGE;
+ 	case MP_IRQTRIG_RESERVED:
+ 		pr_warn("IOAPIC: Invalid trigger mode 2 defaulting to level\n");
+-		/* fall through */
++		fallthrough;
+ 	case MP_IRQTRIG_LEVEL:
+ 	default: /* Pointless default required due to do gcc stupidity */
+ 		return IOAPIC_LEVEL;
+diff --git a/arch/x86/kernel/apic/probe_32.c b/arch/x86/kernel/apic/probe_32.c
+index 67b33d67002f..4aea229ef8f4 100644
+--- a/arch/x86/kernel/apic/probe_32.c
++++ b/arch/x86/kernel/apic/probe_32.c
+@@ -148,7 +148,7 @@ void __init default_setup_apic_routing(void)
+ 				break;
+ 			}
+ 			/* P4 and above */
+-			/* fall through */
++			fallthrough;
+ 		case X86_VENDOR_HYGON:
+ 		case X86_VENDOR_AMD:
+ 			def_to_bigsmp = 1;
+diff --git a/arch/x86/kernel/cpu/cacheinfo.c b/arch/x86/kernel/cpu/cacheinfo.c
+index c7503be92f35..57074cf3ad7c 100644
+--- a/arch/x86/kernel/cpu/cacheinfo.c
++++ b/arch/x86/kernel/cpu/cacheinfo.c
+@@ -248,7 +248,7 @@ amd_cpuid4(int leaf, union _cpuid4_leaf_eax *eax,
+ 	switch (leaf) {
+ 	case 1:
+ 		l1 = &l1i;
+-		/* fall through */
++		fallthrough;
+ 	case 0:
+ 		if (!l1->val)
+ 			return;
+diff --git a/arch/x86/kernel/cpu/mtrr/cyrix.c b/arch/x86/kernel/cpu/mtrr/cyrix.c
+index 72182809b333..ca670919b561 100644
+--- a/arch/x86/kernel/cpu/mtrr/cyrix.c
++++ b/arch/x86/kernel/cpu/mtrr/cyrix.c
+@@ -98,7 +98,7 @@ cyrix_get_free_region(unsigned long base, unsigned long size, int replace_reg)
+ 	case 7:
+ 		if (size < 0x40)
+ 			break;
+-		/* Else, fall through */
++		fallthrough;
+ 	case 6:
+ 	case 5:
+ 	case 4:
+diff --git a/arch/x86/kernel/hw_breakpoint.c b/arch/x86/kernel/hw_breakpoint.c
+index 8cdf29ffd95f..b98ff620ba77 100644
+--- a/arch/x86/kernel/hw_breakpoint.c
++++ b/arch/x86/kernel/hw_breakpoint.c
+@@ -349,7 +349,7 @@ static int arch_build_bp_info(struct perf_event *bp,
+ 			hw->len = X86_BREAKPOINT_LEN_X;
+ 			return 0;
+ 		}
+-		/* fall through */
++		fallthrough;
+ 	default:
+ 		return -EINVAL;
+ 	}
+diff --git a/arch/x86/kernel/kgdb.c b/arch/x86/kernel/kgdb.c
+index 68acd30c6b87..c2f02f308ecf 100644
+--- a/arch/x86/kernel/kgdb.c
++++ b/arch/x86/kernel/kgdb.c
+@@ -450,7 +450,7 @@ int kgdb_arch_handle_exception(int e_vector, int signo, int err_code,
+ 		ptr = &remcomInBuffer[1];
+ 		if (kgdb_hex2long(&ptr, &addr))
+ 			linux_regs->ip = addr;
+-		/* fall through */
++		fallthrough;
+ 	case 'D':
+ 	case 'k':
+ 		/* clear the trace bit */
+@@ -539,7 +539,7 @@ static int __kgdb_notify(struct die_args *args, unsigned long cmd)
+ 			 * a system call which should be ignored
+ 			 */
+ 			return NOTIFY_DONE;
+-		/* fall through */
++		fallthrough;
+ 	default:
+ 		if (user_mode(regs))
+ 			return NOTIFY_DONE;
+diff --git a/arch/x86/kernel/mpparse.c b/arch/x86/kernel/mpparse.c
+index afac7ccce72f..55554be6c5e3 100644
+--- a/arch/x86/kernel/mpparse.c
++++ b/arch/x86/kernel/mpparse.c
+@@ -311,7 +311,7 @@ static void __init construct_default_ioirq_mptable(int mpc_default_type)
+ 		case 2:
+ 			if (i == 0 || i == 13)
+ 				continue;	/* IRQ0 & IRQ13 not connected */
+-			/* fall through */
++			fallthrough;
+ 		default:
+ 			if (i == 2)
+ 				continue;	/* IRQ2 is never connected */
+@@ -355,7 +355,7 @@ static void __init construct_ioapic_table(int mpc_default_type)
+ 	default:
+ 		pr_err("???\nUnknown standard configuration %d\n",
+ 		       mpc_default_type);
+-		/* fall through */
++		fallthrough;
+ 	case 1:
+ 	case 5:
+ 		memcpy(bus.bustype, "ISA   ", 6);
+diff --git a/arch/x86/kernel/ptrace.c b/arch/x86/kernel/ptrace.c
+index 44130588987f..00b06f5a28a5 100644
+--- a/arch/x86/kernel/ptrace.c
++++ b/arch/x86/kernel/ptrace.c
+@@ -204,7 +204,7 @@ static int set_segment_reg(struct task_struct *task,
+ 	case offsetof(struct user_regs_struct, ss):
+ 		if (unlikely(value == 0))
+ 			return -EIO;
+-		/* Else, fall through */
++		fallthrough;
+ 
+ 	default:
+ 		*pt_regs_access(task_pt_regs(task), offset) = value;
+diff --git a/arch/x86/kernel/reboot.c b/arch/x86/kernel/reboot.c
+index 0ec7ced727fe..a515e2d230b7 100644
+--- a/arch/x86/kernel/reboot.c
++++ b/arch/x86/kernel/reboot.c
+@@ -654,7 +654,7 @@ static void native_machine_emergency_restart(void)
+ 
+ 		case BOOT_CF9_FORCE:
+ 			port_cf9_safe = true;
+-			/* Fall through */
++			fallthrough;
+ 
+ 		case BOOT_CF9_SAFE:
+ 			if (port_cf9_safe) {
+diff --git a/arch/x86/kernel/signal.c b/arch/x86/kernel/signal.c
+index 399f97abee02..9497f96e62ba 100644
+--- a/arch/x86/kernel/signal.c
++++ b/arch/x86/kernel/signal.c
+@@ -725,7 +725,7 @@ handle_signal(struct ksignal *ksig, struct pt_regs *regs)
+ 				regs->ax = -EINTR;
+ 				break;
+ 			}
+-		/* fallthrough */
++			fallthrough;
+ 		case -ERESTARTNOINTR:
+ 			regs->ax = regs->orig_ax;
+ 			regs->ip -= 2;
+diff --git a/arch/x86/kernel/uprobes.c b/arch/x86/kernel/uprobes.c
+index 15e5aad8ac2c..3fdaa042823d 100644
+--- a/arch/x86/kernel/uprobes.c
++++ b/arch/x86/kernel/uprobes.c
+@@ -735,7 +735,7 @@ static int branch_setup_xol_ops(struct arch_uprobe *auprobe, struct insn *insn)
+ 		 * OPCODE1() of the "short" jmp which checks the same condition.
+ 		 */
+ 		opc1 = OPCODE2(insn) - 0x10;
+-		/* fall through */
++		fallthrough;
+ 	default:
+ 		if (!is_cond_jmp_opcode(opc1))
+ 			return -ENOSYS;
+@@ -892,7 +892,7 @@ int arch_uprobe_analyze_insn(struct arch_uprobe *auprobe, struct mm_struct *mm,
+ 			fix_ip_or_call = 0;
+ 			break;
+ 		}
+-		/* fall through */
++		fallthrough;
+ 	default:
+ 		riprel_analyze(auprobe, &insn);
+ 	}
+diff --git a/arch/x86/lib/cmdline.c b/arch/x86/lib/cmdline.c
+index 4f1719e22d3c..b6da09339308 100644
+--- a/arch/x86/lib/cmdline.c
++++ b/arch/x86/lib/cmdline.c
+@@ -58,7 +58,7 @@ __cmdline_find_option_bool(const char *cmdline, int max_cmdline_size,
+ 			state = st_wordcmp;
+ 			opptr = option;
+ 			wstart = pos;
+-			/* fall through */
++			fallthrough;
+ 
+ 		case st_wordcmp:
+ 			if (!*opptr) {
+@@ -89,7 +89,7 @@ __cmdline_find_option_bool(const char *cmdline, int max_cmdline_size,
+ 				break;
+ 			}
+ 			state = st_wordskip;
+-			/* fall through */
++			fallthrough;
+ 
+ 		case st_wordskip:
+ 			if (!c)
+@@ -151,7 +151,7 @@ __cmdline_find_option(const char *cmdline, int max_cmdline_size,
+ 
+ 			state = st_wordcmp;
+ 			opptr = option;
+-			/* fall through */
++			fallthrough;
+ 
+ 		case st_wordcmp:
+ 			if ((c == '=') && !*opptr) {
+@@ -172,7 +172,7 @@ __cmdline_find_option(const char *cmdline, int max_cmdline_size,
+ 				break;
+ 			}
+ 			state = st_wordskip;
+-			/* fall through */
++			fallthrough;
+ 
+ 		case st_wordskip:
+ 			if (myisspace(c))
+diff --git a/arch/x86/lib/insn-eval.c b/arch/x86/lib/insn-eval.c
+index 31600d851fd8..9c9a58d81ebe 100644
+--- a/arch/x86/lib/insn-eval.c
++++ b/arch/x86/lib/insn-eval.c
+@@ -178,8 +178,7 @@ static int resolve_default_seg(struct insn *insn, struct pt_regs *regs, int off)
+ 		/* Need insn to verify address size. */
+ 		if (insn->addr_bytes == 2)
+ 			return -EINVAL;
+-
+-		/* fall through */
++		fallthrough;
+ 
+ 	case -EDOM:
+ 	case offsetof(struct pt_regs, bx):
+@@ -362,7 +361,6 @@ static short get_segment_selector(struct pt_regs *regs, int seg_reg_idx)
+ 		case INAT_SEG_REG_GS:
+ 			return vm86regs->gs;
+ 		case INAT_SEG_REG_IGNORE:
+-			/* fall through */
+ 		default:
+ 			return -EINVAL;
+ 		}
+@@ -386,7 +384,6 @@ static short get_segment_selector(struct pt_regs *regs, int seg_reg_idx)
+ 		 */
+ 		return get_user_gs(regs);
+ 	case INAT_SEG_REG_IGNORE:
+-		/* fall through */
+ 	default:
+ 		return -EINVAL;
+ 	}
+@@ -786,7 +783,7 @@ int insn_get_code_seg_params(struct pt_regs *regs)
+ 		 */
+ 		return INSN_CODE_SEG_PARAMS(4, 8);
+ 	case 3: /* Invalid setting. CS.L=1, CS.D=1 */
+-		/* fall through */
++		fallthrough;
+ 	default:
+ 		return -EINVAL;
+ 	}
 
