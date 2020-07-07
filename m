@@ -2,85 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78040217785
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 21:07:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EF1B21778D
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 21:07:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728864AbgGGTGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 15:06:46 -0400
-Received: from mga04.intel.com ([192.55.52.120]:60202 "EHLO mga04.intel.com"
+        id S1728941AbgGGTHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 15:07:05 -0400
+Received: from mga17.intel.com ([192.55.52.151]:46557 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728848AbgGGTGp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728849AbgGGTGp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 7 Jul 2020 15:06:45 -0400
-IronPort-SDR: erDf37fvV4QHYQsTwDS+eLLbzX+JzJJHy0YHkXBJ1OnDrUPMBZTAybCYR0S9PVf4na5eogLgic
- 6WmS8XVcC68w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9675"; a="145185246"
+IronPort-SDR: cBnD9EjEJth5b7E4sbuHtmAe4zwHEI3g+vprlJ9qqGq3n8Xza6OgOtnxBBnwzX9JwClKrVU8ww
+ qdp+XOOo0EXw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9675"; a="127764317"
 X-IronPort-AV: E=Sophos;i="5.75,324,1589266800"; 
-   d="scan'208";a="145185246"
+   d="scan'208";a="127764317"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2020 12:06:43 -0700
-IronPort-SDR: DN4ldqLb/EoLMqXMt676LQSlB9MPbZE//nqOxXz/eIzQnXyoS4U+1DGvITBfXeHI62k/dHUhXJ
- LzIMIpsHATUg==
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2020 12:06:45 -0700
+IronPort-SDR: 2y+pYrxM/e/H+2o4edmVGd/hhRXYdc5rf0sVQQ/GsKmTOKHMydmjidsdUFarjne3MQGFaFQrU7
+ 1ZrP5pX5Va3w==
 X-IronPort-AV: E=Sophos;i="5.75,324,1589266800"; 
-   d="scan'208";a="268278596"
+   d="scan'208";a="268278611"
 Received: from mrtorger-mobl1.amr.corp.intel.com (HELO pbossart-mobl3.amr.corp.intel.com) ([10.254.77.62])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2020 12:06:42 -0700
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2020 12:06:43 -0700
 From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To:     alsa-devel@alsa-project.org
 Cc:     tiwai@suse.de, broonie@kernel.org,
         Lee Jones <lee.jones@linaro.org>,
+        ter Huurne <maarten@treewalker.org>,
+        Paul Cercueil <paul@crapouillou.net>,
         Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Adam Thomson <Adam.Thomson.Opensource@diasemi.com>,
-        Support Opensource <support.opensource@diasemi.com>,
         Liam Girdwood <lgirdwood@gmail.com>,
         Jaroslav Kysela <perex@perex.cz>,
         Takashi Iwai <tiwai@suse.com>,
         linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v3 07/13] ASoC: codecs: da7219: fix 'defined but not used' warning
-Date:   Tue,  7 Jul 2020 14:06:06 -0500
-Message-Id: <20200707190612.97799-8-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v3 08/13] ASoC: codecs: jz4770: Remove defined but never used variable 'mic_boost_tlv'
+Date:   Tue,  7 Jul 2020 14:06:07 -0500
+Message-Id: <20200707190612.97799-9-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200707190612.97799-1-pierre-louis.bossart@linux.intel.com>
 References: <20200707190612.97799-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fix W=1 warning
+From: Lee Jones <lee.jones@linaro.org>
 
-sound/soc/codecs/da7219.c:1711:36: warning: 'da7219_acpi_match'
-defined but not used [-Wunused-const-variable=]
- 1711 | static const struct acpi_device_id da7219_acpi_match[] = {
-      |                                    ^~~~~~~~~~~~~~~~~
+Fixes the following W=1 kernel build warning(s):
 
-Reviewed-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+ In file included from include/sound/tlv.h:10,
+ from sound/soc/codecs/jz4770.c:19:
+ sound/soc/codecs/jz4770.c:306:35: warning: ‘mic_boost_tlv’ defined but not used [-Wunused-const-variable=]
+ 306 | static const DECLARE_TLV_DB_SCALE(mic_boost_tlv, 0, 400, 0);
+ | ^~~~~~~~~~~~~
+ include/uapi/sound/tlv.h:64:15: note: in definition of macro ‘SNDRV_CTL_TLVD_DECLARE_DB_SCALE’
+ 64 | unsigned int name[] = { | ^~~~
+ sound/soc/codecs/jz4770.c:306:14: note: in expansion of macro ‘DECLARE_TLV_DB_SCALE’
+ 306 | static const DECLARE_TLV_DB_SCALE(mic_boost_tlv, 0, 400, 0);
+ | ^~~~~~~~~~~~~~~~~~~~
+
+Cc: ter Huurne <maarten@treewalker.org>
+Reviewed-by: Paul Cercueil <paul@crapouillou.net>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/codecs/da7219.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/codecs/jz4770.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
-index f2520a6c7875..153ea30b5a8f 100644
---- a/sound/soc/codecs/da7219.c
-+++ b/sound/soc/codecs/da7219.c
-@@ -1708,11 +1708,13 @@ static const struct of_device_id da7219_of_match[] = {
- };
- MODULE_DEVICE_TABLE(of, da7219_of_match);
+diff --git a/sound/soc/codecs/jz4770.c b/sound/soc/codecs/jz4770.c
+index 34775aa62402..4dee585761c2 100644
+--- a/sound/soc/codecs/jz4770.c
++++ b/sound/soc/codecs/jz4770.c
+@@ -303,7 +303,6 @@ static int jz4770_codec_digital_mute(struct snd_soc_dai *dai, int mute)
+ static const DECLARE_TLV_DB_MINMAX_MUTE(dac_tlv, -3100, 0);
+ static const DECLARE_TLV_DB_SCALE(adc_tlv, 0, 100, 0);
+ static const DECLARE_TLV_DB_MINMAX(out_tlv, -2500, 600);
+-static const DECLARE_TLV_DB_SCALE(mic_boost_tlv, 0, 400, 0);
+ static const DECLARE_TLV_DB_SCALE(linein_tlv, -2500, 100, 0);
  
-+#ifdef CONFIG_ACPI
- static const struct acpi_device_id da7219_acpi_match[] = {
- 	{ .id = "DLGS7219", },
- 	{ }
- };
- MODULE_DEVICE_TABLE(acpi, da7219_acpi_match);
-+#endif
- 
- static enum da7219_micbias_voltage
- 	da7219_fw_micbias_lvl(struct device *dev, u32 val)
+ /* Unconditional controls. */
 -- 
 2.25.1
 
