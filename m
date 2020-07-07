@@ -2,68 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C4CF2169FF
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 12:21:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A0E4216A13
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 12:22:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728246AbgGGKVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 06:21:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44952 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728014AbgGGKTq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728326AbgGGKWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 06:22:43 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:23609 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728073AbgGGKTq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 7 Jul 2020 06:19:46 -0400
-Received: from pobox.suse.cz (nat1.prg.suse.com [195.250.132.148])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594117180;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=L5i9FWpD9Zgl0JvxdcvOzY3HPLnPsYeLh9ngabyc97k=;
+        b=JcXwvdl72bZo5HYkbmI5HlRem2zRBLFsYQova3JZQ6T14LpnEhqvWN5pZHndI36I5AaRAG
+        sYcn/abVJEs+H3SCU/BXioEtuRHYl5lEmlVsXSrCvnT16b1g13PTlblGh5+xdw9t9ZdYXC
+        QY11+1bqD77jqR+sRj6I66xAHa/1srU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-135-uCrdFrQCOdaozMbOFzfh9A-1; Tue, 07 Jul 2020 06:19:39 -0400
+X-MC-Unique: uCrdFrQCOdaozMbOFzfh9A-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 402F9206DF;
-        Tue,  7 Jul 2020 10:19:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594117168;
-        bh=R3l7w7sSMwxmhD6/XB+NrMzrnx3QnVGQA0T4xmwnAb4=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=MeCQsaO5aZfTEGpDaMWARAHdZUqxdjXcW+aMPls5l8OmXIFJ3jdv57W7VshLELA1E
-         pCPXl6L1nAvgDBAY6u0qlrqvgipXsrARNcyloD7AAd/2+PHR7noB6U9NdhmUfsk0Vl
-         scaF1lxtQEu9irmyIIAjOQRa+dEZHWSQtN4t+M9A=
-Date:   Tue, 7 Jul 2020 12:19:25 +0200 (CEST)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-cc:     srinivas.pandruvada@linux.intel.com,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Zhang Lixu <lixu.zhang@intel.com>, Even Xu <even.xu@intel.com>,
-        "open list:INTEL INTEGRATED SENSOR HUB DRIVER" 
-        <linux-input@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3] HID: intel-ish-hid: Replace PCI_DEV_FLAGS_NO_D3 with
- pci_save_state
-In-Reply-To: <20200629041648.19113-1-kai.heng.feng@canonical.com>
-Message-ID: <nycvar.YFH.7.76.2007071219140.15962@cbobk.fhfr.pm>
-References: <20200629041648.19113-1-kai.heng.feng@canonical.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B7AD6107ACCD;
+        Tue,  7 Jul 2020 10:19:37 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 28A82275E47;
+        Tue,  7 Jul 2020 10:19:37 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Cc:     christian@brauner.io, shuah@kernel.org
+Subject: [PATCH v3 0/2] selftests: pidfd: prefer ksft_test_result_skip to ksft_exit_*
+Date:   Tue,  7 Jul 2020 06:19:34 -0400
+Message-Id: <20200707101936.12052-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 29 Jun 2020, Kai-Heng Feng wrote:
+Calling ksft_exit_* results in executing fewer tests than planned, which
+is wrong for ksft_exit_skip or suboptimal (because it results in a bail
+out) for ksft_exit_fail_msg.
 
-> PCI_DEV_FLAGS_NO_D3 should not be used outside of PCI core.
-> 
-> Instead, we can use pci_save_state() to hint PCI core that the device
-> should stay at D0 during suspend. By doing so, PCI core will let the
-> upstream bridges also stays at D0 so the entire hierarchy is in the
-> correct power state as PCI spec mandates.
-> 
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> ---
-> v3:
->  - Use multi-line comments.
-> v2:
->  - Wording change.
+Using ksft_test_result_skip instead skips only one test and lets the
+test plan proceed as promised by ksft_set_plan.
 
-Applied, thanks.
+Paolo
+
+Paolo Bonzini (2):
+  selftests: pidfd: do not use ksft_exit_skip after ksft_set_plan
+  selftests: pidfd: skip test if unshare fails with EPERM
+
+ tools/testing/selftests/pidfd/pidfd_test.c | 55 ++++++++++++++++++----
+ 1 file changed, 46 insertions(+), 9 deletions(-)
 
 -- 
-Jiri Kosina
-SUSE Labs
+2.26.2
 
