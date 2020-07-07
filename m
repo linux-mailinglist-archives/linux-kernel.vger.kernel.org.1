@@ -2,113 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADBA221698D
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 11:53:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80A742169A1
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 11:59:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727116AbgGGJxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 05:53:46 -0400
-Received: from foss.arm.com ([217.140.110.172]:35600 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726467AbgGGJxq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 05:53:46 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 56DFDC0A;
-        Tue,  7 Jul 2020 02:53:45 -0700 (PDT)
-Received: from [10.37.12.102] (unknown [10.37.12.102])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CE1963F718;
-        Tue,  7 Jul 2020 02:53:43 -0700 (PDT)
-Subject: Re: [PATCH V2] arm64/cpufeature: Validate feature bits spacing in
- arm64_ftr_regs[]
-To:     anshuman.khandual@arm.com, linux-arm-kernel@lists.infradead.org
-Cc:     catalin.marinas@arm.com, will@kernel.org, broonie@kernel.org,
-        mark.rutland@arm.com, linux-kernel@vger.kernel.org
-References: <1593581140-4339-1-git-send-email-anshuman.khandual@arm.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <7cfdef28-9710-d08f-58b0-1f414cd741ba@arm.com>
-Date:   Tue, 7 Jul 2020 10:58:34 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.7.0
+        id S1727853AbgGGJ7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 05:59:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726879AbgGGJ7R (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 05:59:17 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EDBCC061755;
+        Tue,  7 Jul 2020 02:59:17 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id 1so520691pfn.9;
+        Tue, 07 Jul 2020 02:59:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=C4eDJfDQ2O8UUzPVYO4ixzIP7yiUb1/eu6C6M7C54kk=;
+        b=bBGHU/IxEdGnMMvzMvAddWFz0lF7tIyqAGNHt5+Zsy+CDq3FtUCvjY2GB/wuiKe+Tk
+         dOctHzgrbqDRLtdMZXmCN2ve9pPa59dN2M845uxfAZeWXz2UiiM8IZxHdOikNIMp+Y+I
+         wQUEpwED4tJ19sGhTDgN9ctCLtQ7K813PakEztg7udz6UI7JR2YhYPvtqm6LWdi54r/R
+         iQppiTyuuwC5LxjhVpNhznGxQEWqJ0hHaM1n5UuALxCF3PBnbC6CTnLF+zex05kvyNg8
+         lXoaO0mHps+0QnnH3uKsZNJwsNQmHKJ+Tmvr8aeVYjrJdCQUdU09SeqKbRAPrlzQUarL
+         4fLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=C4eDJfDQ2O8UUzPVYO4ixzIP7yiUb1/eu6C6M7C54kk=;
+        b=I611HvUpaQw/ySacglDqHZlSJBFNcUxUYfBdCbDEIJ89YLA+1+6kKcziYTI52Wk1y2
+         1deGv4br9PI8p7H275s3yEE6VepGG6bbLgUhpnOE6S4dCjFCp7gTXWD+vLMwWYS7Ow+A
+         nihpV39kdfMyEonf1/Ia7Rx8rAqvWhWWFXSEZFrUtQjxhY8dLbg/JCjp0NQ1rI3N57w7
+         9q2RXVSyu5iaRkoaQYPN1vu92UCn8v0UwVofc6WIuhqu46yeLuWGi7QlDTZP5/vPF78Y
+         +1/UpgzWlvdPo3CbKr5lSrvuTdG0UGpZxLMNOc4jYA4JgciwQSkj1Bb8AZ5Yl8Q6/hkJ
+         OAHw==
+X-Gm-Message-State: AOAM530/IIDua6QqzP50quCla5nOKwpZEzM6s7c7tSa5JdIFI+7E9qrM
+        0a5+u8cXKtzNiJVzoJhsrfQ=
+X-Google-Smtp-Source: ABdhPJxYHFhB1av6cnPY3CLBmV5fQw/sgWmWMW730ilHUltzEAj0BrDaJBjpPKunfFd8fSj/k/vC/g==
+X-Received: by 2002:a65:67d9:: with SMTP id b25mr44913068pgs.311.1594115956404;
+        Tue, 07 Jul 2020 02:59:16 -0700 (PDT)
+Received: from localhost.localdomain ([103.51.74.198])
+        by smtp.gmail.com with ESMTPSA id r7sm435805pgu.51.2020.07.07.02.59.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Jul 2020 02:59:15 -0700 (PDT)
+From:   Anand Moon <linux.amoon@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>, Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: [PATCH v3] phy: samsung: Use readl_poll_timeout function
+Date:   Tue,  7 Jul 2020 09:59:08 +0000
+Message-Id: <20200707095908.372-1-linux.amoon@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <1593581140-4339-1-git-send-email-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Anshuman,
+Instead of a busy waiting loop while loop using udelay
+use readl_poll_timeout function to check the condition
+is met or timeout occurs in crport_handshake function.
 
-On 07/01/2020 06:25 AM, Anshuman Khandual wrote:
-> arm64_feature_bits for a register in arm64_ftr_regs[] are in a descending
-> order as per their shift values. Validate that these features bits are
-> defined correctly and do not overlap with each other. This check protects
-> against any inadvertent erroneous changes to the register definitions.
+Fixes: d8c80bb3b55b ("phy: exynos5-usbdrd: Calibrate LOS levels for exynos5420/5800")
+Signed-off-by: Anand Moon <linux.amoon@gmail.com>
+---
+Changes v3:
+--Fix the commit message.
+--Drop the variable, used the value directly.
+Changes v2:
+--used the default timeout values.
+--Added missing Fixed tags.
+---
+ drivers/phy/samsung/phy-exynos5-usbdrd.c | 35 +++++++-----------------
+ 1 file changed, 10 insertions(+), 25 deletions(-)
 
-The patch looks fine to me. I have a few minor nits on the coding
-style, feel free to ignore.
+diff --git a/drivers/phy/samsung/phy-exynos5-usbdrd.c b/drivers/phy/samsung/phy-exynos5-usbdrd.c
+index e510732afb8b..fa75fa88da33 100644
+--- a/drivers/phy/samsung/phy-exynos5-usbdrd.c
++++ b/drivers/phy/samsung/phy-exynos5-usbdrd.c
+@@ -16,6 +16,7 @@
+ #include <linux/of.h>
+ #include <linux/of_address.h>
+ #include <linux/of_device.h>
++#include <linux/iopoll.h>
+ #include <linux/phy/phy.h>
+ #include <linux/platform_device.h>
+ #include <linux/mutex.h>
+@@ -556,40 +557,24 @@ static int exynos5_usbdrd_phy_power_off(struct phy *phy)
+ static int crport_handshake(struct exynos5_usbdrd_phy *phy_drd,
+ 			    u32 val, u32 cmd)
+ {
+-	u32 usec = 100;
+ 	unsigned int result;
++	int err;
+ 
+ 	writel(val | cmd, phy_drd->reg_phy + EXYNOS5_DRD_PHYREG0);
+ 
+-	do {
+-		result = readl(phy_drd->reg_phy + EXYNOS5_DRD_PHYREG1);
+-		if (result & PHYREG1_CR_ACK)
+-			break;
+-
+-		udelay(1);
+-	} while (usec-- > 0);
+-
+-	if (!usec) {
+-		dev_err(phy_drd->dev,
+-			"CRPORT handshake timeout1 (0x%08x)\n", val);
++	err = readl_poll_timeout(phy_drd->reg_phy + EXYNOS5_DRD_PHYREG1,
++			result,	(result & PHYREG1_CR_ACK), 1, 100);
++	if (err) {
++		dev_err(phy_drd->dev, "CRPORT handshake timeout1 (0x%08x)\n", val);
+ 		return -ETIME;
+ 	}
+ 
+-	usec = 100;
+-
+ 	writel(val, phy_drd->reg_phy + EXYNOS5_DRD_PHYREG0);
+ 
+-	do {
+-		result = readl(phy_drd->reg_phy + EXYNOS5_DRD_PHYREG1);
+-		if (!(result & PHYREG1_CR_ACK))
+-			break;
+-
+-		udelay(1);
+-	} while (usec-- > 0);
+-
+-	if (!usec) {
+-		dev_err(phy_drd->dev,
+-			"CRPORT handshake timeout2 (0x%08x)\n", val);
++	err = readl_poll_timeout(phy_drd->reg_phy + EXYNOS5_DRD_PHYREG1,
++			result,	!(result & PHYREG1_CR_ACK), 1, 100);
++	if (err) {
++		dev_err(phy_drd->dev, "CRPORT handshake timeout2 (0x%08x)\n", val);
+ 		return -ETIME;
+ 	}
+ 
+-- 
+2.27.0
 
-
-> 
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
-> Applies on 5.8-rc3.
-> 
-> Changes in V2:
-> 
-> - Replaced WARN_ON() with WARN() dropping the conditional block per Suzuki
-> 
-> Changes in V1: (https://patchwork.kernel.org/patch/11606285/)
-> 
->   arch/arm64/kernel/cpufeature.c | 45 +++++++++++++++++++++++++++++++---
->   1 file changed, 42 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-> index 9f63053a63a9..7bd7e6f936a5 100644
-> --- a/arch/arm64/kernel/cpufeature.c
-> +++ b/arch/arm64/kernel/cpufeature.c
-> @@ -697,11 +697,50 @@ static s64 arm64_ftr_safe_value(const struct arm64_ftr_bits *ftrp, s64 new,
->   
->   static void __init sort_ftr_regs(void)
->   {
-> -	int i;
-> +	
-
-> +	unsigned int i;
-
-
-> +
-> +	for (i = 0; i < ARRAY_SIZE(arm64_ftr_regs); i++) {
-	 const struct arm64_ftr_reg *ftr_reg = arm64_ftr_regs[i].reg;
-  	 const struct arm64_ftr_bits *ftr_bits = ftr_reg->ftr_bits;
-	 unsigned int j = 0;
-
-> +		/*
-> +		 * Features here must be sorted in descending order with respect
-> +		 * to their shift values and should not overlap with each other.
-> +		 */
-> +		ftr_reg = arm64_ftr_regs[i].reg;
-> +		for (ftr_bits = ftr_reg->ftr_bits,
-> +				ftr_bits->width != 0; ftr_bits++, j++) {
-			unsigned int shift = ftr_bits->shift;
-			unsigned int width = ftr_bits->width;
-			unsigned int prev_shift;
-
-> +			WARN((ftr_bits->shift  + ftr_bits->width) > 64,
-> +				"%s has invalid feature at shift %d\n",
-> +				ftr_reg->name, ftr_bits->shift);
-
-			WARN(shit + width > 64, ....);
-
-
-Either way,
-
-Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
