@@ -2,171 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78B52217424
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 18:39:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EA5A217426
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 18:39:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728706AbgGGQhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 12:37:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44130 "EHLO
+        id S1728742AbgGGQhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 12:37:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728678AbgGGQhF (ORCPT
+        with ESMTP id S1728595AbgGGQhC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 12:37:05 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2362AC061755
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 09:37:05 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id o8so43978610wmh.4
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 09:37:05 -0700 (PDT)
+        Tue, 7 Jul 2020 12:37:02 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72C7DC061755
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 09:37:02 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id x8so16064433plm.10
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 09:37:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=0LCQd23Yogjcuva7hnoMUmTS7Zo4+fh0cqMsuVwvVHs=;
-        b=z2/7iVEPi6c4YzePA7lVJFqlxQru4flzloqCa6AmzydzcLXSHjRmP6u6E97J+Gfaad
-         knpysLVgJ5DAsxr30ZgCeAkqV7BiXkx8lS474vk8i2UI407yuTbOCu43WBO+8wG/bzAb
-         Hgv4q55N/tU7w2nnr7GmLX6BJcZtuxiCYzaYoCTYDwXXnaXVKGXBdELSlyaX4pVqLFXt
-         O3x9g4lt+CO2/KXQorj2EamsHhF96qNWaJJFpX9eR/bDj07WU3EplKQTR6WuhhWLDnuV
-         iMm1BT+Z/oZyGE0p08X4oPgJsq5yHeh3ZXmttChWtSBnUpEqTe7UqSClja8841qZ1nqS
-         aXrw==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=bmIb4cH2dMGtvHMr8FQlvNy97HPJZVEYJ99uMcxhXoU=;
+        b=Wp0hPuYPNTBfQkHFnUoNn4p67iZB5+2ozxyZ3kliqMA5nY9Q04iNE3hoEJs/GpAtHv
+         GyAjbzVHFfi8KBDEb7tkLyIPqoO5HmS03vFdNsbWGlFA94O9tgzoTMHTJ2VCGEi/n8Hi
+         njHnFsOYwCbTZgGjwpnRsYijy+X1Z4eebvlHugPyFJ9nBRVquoyjEe5ayq0Pma8ntx1T
+         j4woHGEArYUarHKF/WRSiq2l+XOKMOpeXPANnKVc0X+tMc/D6743UGgDqN69KJs0qtQM
+         Mb5KFeCTs0JctQoyYqei2ledsOy0Q6KwQEeEUQD8lUGxl4Csxw+7EmDjpuj9QuiqLRvc
+         zv1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=0LCQd23Yogjcuva7hnoMUmTS7Zo4+fh0cqMsuVwvVHs=;
-        b=BpYAIqV6RHSovWzsQHGMQKTFvyBHQx3M05U9WYwikOOZgUv0Nwf2iNKMhULp3bdyUn
-         6nWOT0d9Mo9/5xjVfVZAG8RmlgGy5mrzQ2yVCaaU48b+gQzge+j+tR0sEPlQ0wt/OXXN
-         6RJeSVpDkAa8cd0qd0xouXB8ZaO2sMl7+gLrtJsSENS98CpIhlsBXqnojcZTCl/V7yFC
-         /W+pbCMkuj0dC4lRfysyGOeRerG8lYdLTwpAjESShiyD/P8XsbgOiePBOB4FHwFxgwN8
-         mXg1fn5WKfO6WhQiP+9frWvQFWtag+EIzt6Z8JdYF81D2RR5Wr46n5QB+8qiUVHMG2ZM
-         irdA==
-X-Gm-Message-State: AOAM531x5shrQZyMFEfiGI6JmenQpFxFRnzhAO2wlDnXnYpNnIJLhuMW
-        caAcqvE8vlrdv03NjLtawhETag==
-X-Google-Smtp-Source: ABdhPJxEGLcIU0q2DNdl3HjVtQCCXNoNR/WiMWN+ecXbpoBqpJ0jbw+EHwixtcDEmaz0Y5yoWECKfw==
-X-Received: by 2002:a1c:7d85:: with SMTP id y127mr5259971wmc.181.1594139823817;
-        Tue, 07 Jul 2020 09:37:03 -0700 (PDT)
-Received: from srini-hackbox.lan (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
-        by smtp.gmail.com with ESMTPSA id p14sm1925874wrj.14.2020.07.07.09.37.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jul 2020 09:37:03 -0700 (PDT)
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To:     broonie@kernel.org
-Cc:     vkoul@kernel.org, perex@perex.cz, tiwai@suse.com,
-        lgirdwood@gmail.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, ckeepax@opensource.cirrus.com,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 11/11] ASoC: q6asm-dai: add support to copy callback
-Date:   Tue,  7 Jul 2020 17:36:41 +0100
-Message-Id: <20200707163641.17113-12-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20200707163641.17113-1-srinivas.kandagatla@linaro.org>
-References: <20200707163641.17113-1-srinivas.kandagatla@linaro.org>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=bmIb4cH2dMGtvHMr8FQlvNy97HPJZVEYJ99uMcxhXoU=;
+        b=tesc0dlF5JuPymgVhrQR3OC6mmHJVps6yG1xTWC8b6e2/gQDkKEhGfRsUHd7TjtF5E
+         VnRJfsMjRRlrYtDH5579YfCXuBfHTFhS0RpUKg5rhMf1jM8GxuHVX2MyJJi3O2duatOm
+         EwXY29knpBQpnC/U+VzQ0zTH0mqcyeUyI2Hur+oU8LqS9ko3NcpZ7ZaSoL/FRsCNAbrR
+         NQ/+nsSMwFwQJmCpkruVO+bqe+IpctGe6C9UsvwgVffD7aiW85676lkDRO3dFscA4k9P
+         /Q/RNMGdQ/VqgJQUf2tZb7zruuIiSgvXbH7fHCJwIPs/MSXd9aI8koaVhxM1xeNV37Ki
+         6Tug==
+X-Gm-Message-State: AOAM530k8/Wo4HEMLpoLEvtUWvbcyhlpOuw0CqqmGLXX8AMypj9PUl1t
+        DXn6VAEn4/KEi4jLuzj7FD4=
+X-Google-Smtp-Source: ABdhPJyFmHLpBCDY983fqPseLSiKhKoVuE3WzXBRRWWP52glRCodprglB0nT1ljdxGPfkgY8t3nx4Q==
+X-Received: by 2002:a17:90a:2048:: with SMTP id n66mr5435327pjc.71.1594139822038;
+        Tue, 07 Jul 2020 09:37:02 -0700 (PDT)
+Received: from blackclown ([103.88.82.137])
+        by smtp.gmail.com with ESMTPSA id y12sm22966423pfm.158.2020.07.07.09.36.59
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 07 Jul 2020 09:37:01 -0700 (PDT)
+Date:   Tue, 7 Jul 2020 22:06:47 +0530
+From:   Suraj Upadhyay <usuraj35@gmail.com>
+To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch
+Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: [PATCH 3/4] drm: edid: Convert logging to drm_* functions.
+Message-ID: <f40659c5656da4e1e3fad9cb731ed7f72feda3e3.1594136880.git.usuraj35@gmail.com>
+References: <cover.1594136880.git.usuraj35@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="yrj/dFKFPuw6o+aM"
+Content-Disposition: inline
+In-Reply-To: <cover.1594136880.git.usuraj35@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During gapless playback, its possible for previous track to
-end at unaligned boundary, starting next track on the same
-boundary can lead to unaligned address exception in dsp.
 
-So implement copy callback for finer control on the buffer offsets.
+--yrj/dFKFPuw6o+aM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Change logging of warnings to drm_warn() form dev_warn().
+
+Signed-off-by: Suraj Upadhyay <usuraj35@gmail.com>
 ---
- sound/soc/qcom/qdsp6/q6asm-dai.c | 65 +++++++++++++++++++++++++++++---
- 1 file changed, 60 insertions(+), 5 deletions(-)
+ drivers/gpu/drm/drm_edid.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/qcom/qdsp6/q6asm-dai.c b/sound/soc/qcom/qdsp6/q6asm-dai.c
-index f48eca227fb5..0b285b759409 100644
---- a/sound/soc/qcom/qdsp6/q6asm-dai.c
-+++ b/sound/soc/qcom/qdsp6/q6asm-dai.c
-@@ -1045,16 +1045,71 @@ static int q6asm_dai_compr_pointer(struct snd_soc_component *component,
- 	return 0;
- }
- 
--static int q6asm_dai_compr_ack(struct snd_soc_component *component,
--			       struct snd_compr_stream *stream,
--			       size_t count)
-+static int q6asm_compr_copy(struct snd_soc_component *component,
-+			    struct snd_compr_stream *stream, char __user *buf,
-+			    size_t count)
- {
- 	struct snd_compr_runtime *runtime = stream->runtime;
- 	struct q6asm_dai_rtd *prtd = runtime->private_data;
- 	unsigned long flags;
-+	u32 wflags = 0;
-+	int avail, bytes_in_flight = 0;
-+	void *dstn;
-+	size_t copy;
-+	u32 app_pointer;
-+	u32 bytes_received;
+diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
+index 31496b6cfc56..ad7a1f9817ed 100644
+--- a/drivers/gpu/drm/drm_edid.c
++++ b/drivers/gpu/drm/drm_edid.c
+@@ -1844,9 +1844,8 @@ static void connector_bad_edid(struct drm_connector *=
+connector,
+ 	if (connector->bad_edid_counter++ && !drm_debug_enabled(DRM_UT_KMS))
+ 		return;
+=20
+-	dev_warn(connector->dev->dev,
+-		 "%s: EDID is invalid:\n",
+-		 connector->name);
++	drm_warn(connector->dev, "%s: EDID is invalid:\n", connector->name);
 +
-+	bytes_received = prtd->bytes_received;
-+
-+	/**
-+	 * Make sure that next track data pointer is aligned at 32 bit boundary
-+	 * This is a Mandatory requirement from DSP data buffers alignment
-+	 */
-+	if (prtd->next_track)
-+		bytes_received = ALIGN(prtd->bytes_received, prtd->pcm_count);
-+
-+	app_pointer = bytes_received/prtd->pcm_size;
-+	app_pointer = bytes_received -  (app_pointer * prtd->pcm_size);
-+	dstn = prtd->dma_buffer.area + app_pointer;
-+
-+	if (count < prtd->pcm_size - app_pointer) {
-+		if (copy_from_user(dstn, buf, count))
-+			return -EFAULT;
-+	} else {
-+		copy = prtd->pcm_size - app_pointer;
-+		if (copy_from_user(dstn, buf, copy))
-+			return -EFAULT;
-+		if (copy_from_user(prtd->dma_buffer.area, buf + copy,
-+				   count - copy))
-+			return -EFAULT;
-+	}
- 
- 	spin_lock_irqsave(&prtd->lock, flags);
--	prtd->bytes_received += count;
-+
-+	bytes_in_flight = prtd->bytes_received - prtd->copied_total;
-+
-+	if (prtd->next_track) {
-+		prtd->next_track = false;
-+		prtd->copied_total = ALIGN(prtd->copied_total, prtd->pcm_count);
-+		prtd->bytes_sent = ALIGN(prtd->bytes_sent, prtd->pcm_count);
-+	}
-+
-+	prtd->bytes_received = bytes_received + count;
-+
-+	/* Kick off the data to dsp if its starving!! */
-+	if (prtd->state == Q6ASM_STREAM_RUNNING && (bytes_in_flight == 0)) {
-+		uint32_t bytes_to_write = prtd->pcm_count;
-+
-+		avail = prtd->bytes_received - prtd->bytes_sent;
-+
-+		if (avail < prtd->pcm_count)
-+			bytes_to_write = avail;
-+
-+		q6asm_write_async(prtd->audio_client, prtd->stream_id,
-+				  bytes_to_write, 0, 0, wflags);
-+		prtd->bytes_sent += bytes_to_write;
-+	}
-+
- 	spin_unlock_irqrestore(&prtd->lock, flags);
- 
- 	return count;
-@@ -1117,7 +1172,7 @@ static struct snd_compress_ops q6asm_dai_compress_ops = {
- 	.get_caps	= q6asm_dai_compr_get_caps,
- 	.get_codec_caps	= q6asm_dai_compr_get_codec_caps,
- 	.mmap		= q6asm_dai_compr_mmap,
--	.ack		= q6asm_dai_compr_ack,
-+	.copy		= q6asm_compr_copy,
- };
- 
- static int q6asm_dai_pcm_new(struct snd_soc_component *component,
--- 
-2.21.0
+ 	for (i =3D 0; i < num_blocks; i++) {
+ 		u8 *block =3D edid + i * EDID_LENGTH;
+ 		char prefix[20];
+@@ -5284,7 +5283,7 @@ int drm_add_edid_modes(struct drm_connector *connecto=
+r, struct edid *edid)
+ 	}
+ 	if (!drm_edid_is_valid(edid)) {
+ 		clear_eld(connector);
+-		dev_warn(connector->dev->dev, "%s: EDID invalid.\n",
++		drm_warn(connector->dev, "%s: EDID invalid.\n",
+ 			 connector->name);
+ 		return 0;
+ 	}
+--=20
+2.17.1
 
+
+--yrj/dFKFPuw6o+aM
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE7AbCa0kOsMJ4cx0j+gRsbIfe744FAl8EpJ8ACgkQ+gRsbIfe
+746TcxAAkZNg/BfOOLgsJCdKiHfjZ+G8VmgQse7Oe491c79h5M7ehjraS2gAuXCu
+7Ih7idgIH6BhEGhgTGumv+VDPHNZ1qxIGyhkxts5qDHcBnnOWwhIoT13v3YvgADp
+ZccQRXRKMzs/6F1qqoUzmDWXRivdP17pao5Ybu+7+ZRlB3lE/q48zxoha6mBl53m
+Y8+QZVYA6tidiCG+cc3KixVwYQEJBohuESbp9IShN8paS6OorxLOxf4ud2AvZolO
+zDNwgkuHrkOY4/OMSikmcM3ydyGN+Z5OhySDDf72wmKByzRfeBATEZntzV9NugIr
++rfJddHV9COwm81g8SKEPIBagJaP2+gs3nwYpVe+Ey0mtapmKhQNe8pormdvmmMl
+/ggI12SbHCNQ4dZ91biGhPTIDs7boEpPyNvfkAclY0YuWo6BlY3QGWYKvaZDnh5n
+kyYpoSdA4SHy/auncAk0LPwgtaEONVTRF6oylKGAsfy4ht2l+8yZhxsaFBmPlsNO
+YLURe/P24F3rfXm8vzSzw90B5vkRsttPAE6AJEoxOYXiHut8+74OkJllCCuH1ArG
+xVxFV6O8zLK02PAWcdzQwBoqI+K7DrPHp/yKX0CH36PRzgQ1DeNaLp/zjKo8H8pB
+o+JjSYvIVcYQkQ6nEsq9PqPLtyjndY4heDgYLUZ6vAalJUJpoJs=
+=4ifc
+-----END PGP SIGNATURE-----
+
+--yrj/dFKFPuw6o+aM--
