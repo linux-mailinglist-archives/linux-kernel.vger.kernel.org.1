@@ -2,216 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ECE92162F6
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 02:23:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E9A22162DC
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 02:09:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727810AbgGGAXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 20:23:48 -0400
-Received: from mga17.intel.com ([192.55.52.151]:60906 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725987AbgGGAXq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 20:23:46 -0400
-IronPort-SDR: jAME3sbT+EsNp8Fm3A7xlAQ+GFxui8vNYucUhyZTiZkNDpLu3xMcX9QtSk1l1bzijme+amN4+d
- to5PQ0UdzWNQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9674"; a="127606767"
-X-IronPort-AV: E=Sophos;i="5.75,321,1589266800"; 
-   d="scan'208";a="127606767"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2020 17:23:45 -0700
-IronPort-SDR: BDW8/34TOP6tt2FLP+jS0OG2l7KjsVblPEXnCw3279SZVukCArSSajQZm/gWHzrsXtMg1arG5c
- bNWRbyIeCwYw==
-X-IronPort-AV: E=Sophos;i="5.75,321,1589266800"; 
-   d="scan'208";a="322512263"
-Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.16])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2020 17:23:44 -0700
-Subject: [PATCH v7 2/2] x86/copy_mc: Introduce copy_mc_generic()
-From:   Dan Williams <dan.j.williams@intel.com>
-To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de
-Cc:     x86@kernel.org, stable@vger.kernel.org,
-        Vivek Goyal <vgoyal@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Erwin Tsaur <erwin.tsaur@intel.com>,
-        Erwin Tsaur <erwin.tsaur@intel.com>, linux-nvdimm@lists.01.org,
-        linux-kernel@vger.kernel.org
-Date:   Mon, 06 Jul 2020 17:07:29 -0700
-Message-ID: <159408044893.2272533.10383893661682423843.stgit@dwillia2-desk3.amr.corp.intel.com>
-In-Reply-To: <159408043801.2272533.17485467640602344900.stgit@dwillia2-desk3.amr.corp.intel.com>
-References: <159408043801.2272533.17485467640602344900.stgit@dwillia2-desk3.amr.corp.intel.com>
-User-Agent: StGit/0.18-3-g996c
+        id S1726591AbgGGAJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 20:09:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725892AbgGGAJ3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Jul 2020 20:09:29 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF833C061755
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Jul 2020 17:09:28 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4B12qT2dbbz9s1x;
+        Tue,  7 Jul 2020 10:09:25 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ozlabs.org; s=201707;
+        t=1594080566; bh=vfriFgCEX80IKc2W7gQxZwAofw9bTCTuRySBYJfviU4=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=qO/OMYnKuE38IEhe1s+zk43bHqptD1dX1GHLx14XQi8vWYubVanp4ogu0lDyWfzGB
+         YFLVBGSH/Wn+jZIBFV98PBV3i1RZV16l/EtGbC3VDdO+yr6c95ohALXx60UOxzg2K2
+         nBOK13r4VYrJv09TGiOlueddmGXMGRRZDLxR79v1k3o1UNGXdg02r4Z7lho1EHNBue
+         zpYM0XfVqYbbU5GMhsbA0nOz0KlpyJQm8hlZzlUi+iBpdUyoFLLP/yHMaOFCPVF2tV
+         Rvl6lVnBzFKDod37nKXW9d/HG0nhsgvyXc54FVgVNqIGM9Louh/LUwZBSiILcTVvFw
+         b6iSsKNFvwkhQ==
+Message-ID: <824bc474550e8ddd2534d56d57e2a929d4116b9e.camel@ozlabs.org>
+Subject: Re: [PATCH] powerpc/spufs: add CONFIG_COREDUMP dependency
+From:   Jeremy Kerr <jk@ozlabs.org>
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Date:   Tue, 07 Jul 2020 08:09:21 +0800
+In-Reply-To: <20200706132302.3885935-1-arnd@arndb.de>
+References: <20200706132302.3885935-1-arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The original copy_mc_fragile() implementation had negative performance
-implications since it did not use the fast-string instruction sequence
-to perform copies. For this reason copy_mc_to_kernel() fell back to
-plain memcpy() to preserve performance on platform that did not indicate
-the capability to recover from machine check exceptions. However, that
-capability detection was not architectural and now that some platforms
-can recover from fast-string consumption of memory errors the memcpy()
-fallback now causes these more capable platforms to fail.
+Hi Arnd,
 
-Introduce copy_mc_generic() as the fast default implementation of
-copy_mc_to_kernel() and finalize the transition of copy_mc_fragile() to
-be a platform quirk to indicate 'fragility'. With this in place
-copy_mc_to_kernel() is fast and recovery-ready by default regardless of
-hardware capability.
+> The kernel test robot pointed out a slightly different error message
+> after recent commit 5456ffdee666 ("powerpc/spufs: simplify spufs core
+> dumping") to spufs for a configuration that never worked:
+> 
+>    powerpc64-linux-ld: arch/powerpc/platforms/cell/spufs/file.o: in
+> function `.spufs_proxydma_info_dump':
+> > > file.c:(.text+0x4c68): undefined reference to `.dump_emit'
+>    powerpc64-linux-ld: arch/powerpc/platforms/cell/spufs/file.o: in
+> function `.spufs_dma_info_dump':
+>    file.c:(.text+0x4d70): undefined reference to `.dump_emit'
+>    powerpc64-linux-ld: arch/powerpc/platforms/cell/spufs/file.o: in
+> function `.spufs_wbox_info_dump':
+>    file.c:(.text+0x4df4): undefined reference to `.dump_emit'
+> 
+> Add a Kconfig dependency to prevent this from happening again.
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Thanks to Vivek for identifying that copy_user_generic() is not suitable
-as the copy_mc_to_user() backend since the #MC handler explicitly checks
-ex_has_fault_handler().
+Looks good to me, thanks.
 
-Cc: x86@kernel.org
-Cc: <stable@vger.kernel.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Vivek Goyal <vgoyal@redhat.com>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
-Reported-by: Erwin Tsaur <erwin.tsaur@intel.com>
-Tested-by: Erwin Tsaur <erwin.tsaur@intel.com>
-Fixes: 92b0729c34ca ("x86/mm, x86/mce: Add memcpy_mcsafe()")
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
----
- arch/x86/include/asm/uaccess.h |    3 +++
- arch/x86/lib/copy_mc.c         |   12 +++++-------
- arch/x86/lib/copy_mc_64.S      |   40 ++++++++++++++++++++++++++++++++++++++++
- tools/objtool/check.c          |    1 +
- 4 files changed, 49 insertions(+), 7 deletions(-)
+Acked-by: Jeremy Kerr <jk@ozlabs.org>
 
-diff --git a/arch/x86/include/asm/uaccess.h b/arch/x86/include/asm/uaccess.h
-index 4b2082b61e3e..b038eda58958 100644
---- a/arch/x86/include/asm/uaccess.h
-+++ b/arch/x86/include/asm/uaccess.h
-@@ -464,6 +464,9 @@ copy_mc_to_user(void *to, const void *from, unsigned len);
- 
- unsigned long __must_check
- copy_mc_fragile(void *dst, const void *src, unsigned cnt);
-+
-+unsigned long __must_check
-+copy_mc_generic(void *dst, const void *src, unsigned cnt);
- #else
- static inline void enable_copy_mc_fragile(void)
- {
-diff --git a/arch/x86/lib/copy_mc.c b/arch/x86/lib/copy_mc.c
-index cdb8f5dc403d..9e6fac1ab72e 100644
---- a/arch/x86/lib/copy_mc.c
-+++ b/arch/x86/lib/copy_mc.c
-@@ -23,7 +23,7 @@ void enable_copy_mc_fragile(void)
-  *
-  * Call into the 'fragile' version on systems that have trouble
-  * actually do machine check recovery. Everyone else can just
-- * use memcpy().
-+ * use copy_mc_generic().
-  *
-  * Return 0 for success, or number of bytes not copied if there was an
-  * exception.
-@@ -33,8 +33,7 @@ copy_mc_to_kernel(void *dst, const void *src, unsigned cnt)
- {
- 	if (static_branch_unlikely(&copy_mc_fragile_key))
- 		return copy_mc_fragile(dst, src, cnt);
--	memcpy(dst, src, cnt);
--	return 0;
-+	return copy_mc_generic(dst, src, cnt);
- }
- EXPORT_SYMBOL_GPL(copy_mc_to_kernel);
- 
-@@ -56,11 +55,10 @@ copy_mc_to_user(void *to, const void *from, unsigned len)
- {
- 	unsigned long ret;
- 
--	if (!static_branch_unlikely(&copy_mc_fragile_key))
--		return copy_user_generic(to, from, len);
--
- 	__uaccess_begin();
--	ret = copy_mc_fragile(to, from, len);
-+	if (static_branch_unlikely(&copy_mc_fragile_key))
-+		ret = copy_mc_fragile(to, from, len);
-+	ret = copy_mc_generic(to, from, len);
- 	__uaccess_end();
- 	return ret;
- }
-diff --git a/arch/x86/lib/copy_mc_64.S b/arch/x86/lib/copy_mc_64.S
-index 35a67c50890b..a08e7a4d9e28 100644
---- a/arch/x86/lib/copy_mc_64.S
-+++ b/arch/x86/lib/copy_mc_64.S
-@@ -2,7 +2,9 @@
- /* Copyright(c) 2016-2020 Intel Corporation. All rights reserved. */
- 
- #include <linux/linkage.h>
-+#include <asm/alternative-asm.h>
- #include <asm/copy_mc_test.h>
-+#include <asm/cpufeatures.h>
- #include <asm/export.h>
- #include <asm/asm.h>
- 
-@@ -122,4 +124,42 @@ EXPORT_SYMBOL_GPL(copy_mc_fragile)
- 	_ASM_EXTABLE(.L_write_leading_bytes, .E_leading_bytes)
- 	_ASM_EXTABLE(.L_write_words, .E_write_words)
- 	_ASM_EXTABLE(.L_write_trailing_bytes, .E_trailing_bytes)
-+
-+/*
-+ * copy_mc_generic - memory copy with exception handling
-+ *
-+ * Fast string copy + fault / exception handling. If the CPU does
-+ * support machine check exception recovery, but does not support
-+ * recovering from fast-string exceptions then this CPU needs to be
-+ * added to the copy_mc_fragile_key set of quirks. Otherwise, absent any
-+ * machine check recovery support this version should be no slower than
-+ * standard memcpy.
-+ */
-+SYM_FUNC_START(copy_mc_generic)
-+	ALTERNATIVE "jmp copy_mc_fragile", "", X86_FEATURE_ERMS
-+	movq %rdi, %rax
-+	movq %rdx, %rcx
-+.L_copy:
-+	rep movsb
-+	/* Copy successful. Return zero */
-+	xorl %eax, %eax
-+	ret
-+SYM_FUNC_END(copy_mc_generic)
-+EXPORT_SYMBOL_GPL(copy_mc_generic)
-+
-+	.section .fixup, "ax"
-+.E_copy:
-+	/*
-+	 * On fault %rcx is updated such that the copy instruction could
-+	 * optionally be restarted at the fault position, i.e. it
-+	 * contains 'bytes remaining'. A non-zero return indicates error
-+	 * to copy_mc_generic() users, or indicate short transfers to
-+	 * user-copy routines.
-+	 */
-+	movq %rcx, %rax
-+	ret
-+
-+	.previous
-+
-+	_ASM_EXTABLE_FAULT(.L_copy, .E_copy)
- #endif
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index 17cb0933bf42..d2e1f01df10b 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -548,6 +548,7 @@ static const char *uaccess_safe_builtin[] = {
- 	"__ubsan_handle_shift_out_of_bounds",
- 	/* misc */
- 	"csum_partial_copy_generic",
-+	"copy_mc_generic",
- 	"copy_mc_fragile",
- 	"copy_mc_fragile_handle_tail",
- 	"ftrace_likely_update", /* CONFIG_TRACE_BRANCH_PROFILING */
+Cheers,
+
+
+Jeremy
 
