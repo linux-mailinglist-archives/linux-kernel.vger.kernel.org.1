@@ -2,110 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3645A216D25
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 14:51:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40168216D28
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 14:51:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728036AbgGGMvH convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 7 Jul 2020 08:51:07 -0400
-Received: from relay11.mail.gandi.net ([217.70.178.231]:48793 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726839AbgGGMvH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 08:51:07 -0400
-Received: from sogo7.sd4.0x35.net (sogo7.sd4.0x35.net [10.200.201.57])
-        (Authenticated sender: kerneldev@karsmulder.nl)
-        by relay11.mail.gandi.net (Postfix) with ESMTPA id 48642100005;
-        Tue,  7 Jul 2020 12:51:02 +0000 (UTC)
-From:   "Kars Mulder" <kerneldev@karsmulder.nl>
-Content-Type: text/plain; charset="utf-8"
-X-Forward: 127.0.0.1
-Date:   Tue, 07 Jul 2020 14:51:02 +0200
-Cc:     "Pavel Machek" <pavel@denx.de>,
-        "David Laight" <David.Laight@ACULAB.COM>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        "Kai-Heng Feng" <kai.heng.feng@canonical.com>,
-        "Andy Shevchenko" <andy.shevchenko@gmail.com>,
-        "Oliver Neukum" <oneukum@suse.com>
-To:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+        id S1728121AbgGGMvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 08:51:10 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:51842 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726757AbgGGMvJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 08:51:09 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id ECE0491359C37657ECA9;
+        Tue,  7 Jul 2020 20:51:00 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Tue, 7 Jul 2020
+ 20:50:53 +0800
+From:   Zhihao Cheng <chengzhihao1@huawei.com>
+To:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+CC:     <richard@nod.at>, <yi.zhang@huawei.com>
+Subject: [PATCH v2] ubifs: Fix wrong orphan node deletion in ubifs_jnl_update|rename
+Date:   Tue, 7 Jul 2020 20:51:40 +0800
+Message-ID: <20200707125140.267982-1-chengzhihao1@huawei.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Message-ID: <2eb7-5f046f80-f7-5cdcc200@136674391>
-Subject: =?utf-8?q?=5BPATCH?==?utf-8?q?_v2=5D?==?utf-8?q?_usb=3A?=
- =?utf-8?q?_core=3A?= fix =?utf-8?q?quirks=5Fparam=5Fset=28=29?= writing to 
- a const pointer
-User-Agent: SOGoMail 4.3.2
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function quirks_param_set() takes as argument a const char* pointer
-to the new value of the usbcore.quirks parameter. It then casts this
-pointer to a non-const char* pointer and passes it to the strsep()
-function, which overwrites the value.
+There a wrong orphan node deleting in error handling path in
+ubifs_jnl_update() and ubifs_jnl_rename(), which may cause
+following error msg:
 
-Fix this by creating a copy of the value using kstrdup() and letting
-that copy be written to by strsep().
+  UBIFS error (ubi0:0 pid 1522): ubifs_delete_orphan [ubifs]:
+  missing orphan ino 65
 
-Fixes: 027bd6cafd9a ("usb: core: Add "quirks" parameter for usbcore")
-Signed-off-by: Kars Mulder <kerneldev@karsmulder.nl>
+Fix this by checking whether the node has been operated for
+adding to orphan list before being deleted,
 
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Fixes: 823838a486888cf484e ("ubifs: Add hashes to the tree node cache")
 ---
- drivers/usb/core/quirks.c | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+ fs/ubifs/journal.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/usb/core/quirks.c b/drivers/usb/core/quirks.c
-index e0b77674869c..c96c50faccf7 100644
---- a/drivers/usb/core/quirks.c
-+++ b/drivers/usb/core/quirks.c
-@@ -25,17 +25,23 @@ static unsigned int quirk_count;
- 
- static char quirks_param[128];
- 
--static int quirks_param_set(const char *val, const struct kernel_param *kp)
-+static int quirks_param_set(const char *value, const struct kernel_param *kp)
+diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
+index e5ec1afe1c66..2cf05f87565c 100644
+--- a/fs/ubifs/journal.c
++++ b/fs/ubifs/journal.c
+@@ -539,7 +539,7 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
+ 		     const struct fscrypt_name *nm, const struct inode *inode,
+ 		     int deletion, int xent)
  {
--	char *p, *field;
-+	char *val, *p, *field;
- 	u16 vid, pid;
- 	u32 flags;
- 	size_t i;
- 	int err;
- 
-+	val = kstrdup(value, GFP_KERNEL);
-+	if (!val)
-+		return -ENOMEM;
-+
- 	err = param_set_copystring(val, kp);
--	if (err)
-+	if (err) {
-+		kfree(val);
- 		return err;
-+	}
- 
- 	mutex_lock(&quirk_mutex);
- 
-@@ -60,10 +66,11 @@ static int quirks_param_set(const char *val, const struct kernel_param *kp)
- 	if (!quirk_list) {
- 		quirk_count = 0;
- 		mutex_unlock(&quirk_mutex);
-+		kfree(val);
- 		return -ENOMEM;
+-	int err, dlen, ilen, len, lnum, ino_offs, dent_offs;
++	int err, dlen, ilen, len, lnum, ino_offs, dent_offs, orphan_added = 0;
+ 	int aligned_dlen, aligned_ilen, sync = IS_DIRSYNC(dir);
+ 	int last_reference = !!(deletion && inode->i_nlink == 0);
+ 	struct ubifs_inode *ui = ubifs_inode(inode);
+@@ -630,6 +630,7 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
+ 			goto out_finish;
+ 		}
+ 		ui->del_cmtno = c->cmt_no;
++		orphan_added = 1;
  	}
  
--	for (i = 0, p = (char *)val; p && *p;) {
-+	for (i = 0, p = val; p && *p;) {
- 		/* Each entry consists of VID:PID:flags */
- 		field = strsep(&p, ":");
- 		if (!field)
-@@ -144,6 +151,7 @@ static int quirks_param_set(const char *val, const struct kernel_param *kp)
+ 	err = write_head(c, BASEHD, dent, len, &lnum, &dent_offs, sync);
+@@ -702,7 +703,7 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
+ 	kfree(dent);
+ out_ro:
+ 	ubifs_ro_mode(c, err);
+-	if (last_reference)
++	if (orphan_added)
+ 		ubifs_delete_orphan(c, inode->i_ino);
+ 	finish_reservation(c);
+ 	return err;
+@@ -1218,7 +1219,7 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
+ 	void *p;
+ 	union ubifs_key key;
+ 	struct ubifs_dent_node *dent, *dent2;
+-	int err, dlen1, dlen2, ilen, lnum, offs, len;
++	int err, dlen1, dlen2, ilen, lnum, offs, len, orphan_added = 0;
+ 	int aligned_dlen1, aligned_dlen2, plen = UBIFS_INO_NODE_SZ;
+ 	int last_reference = !!(new_inode && new_inode->i_nlink == 0);
+ 	int move = (old_dir != new_dir);
+@@ -1334,6 +1335,7 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
+ 			goto out_finish;
+ 		}
+ 		new_ui->del_cmtno = c->cmt_no;
++		orphan_added = 1;
+ 	}
  
- unlock:
- 	mutex_unlock(&quirk_mutex);
-+	kfree(val);
- 
- 	return 0;
- }
+ 	err = write_head(c, BASEHD, dent, len, &lnum, &offs, sync);
+@@ -1415,7 +1417,7 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
+ 	release_head(c, BASEHD);
+ out_ro:
+ 	ubifs_ro_mode(c, err);
+-	if (last_reference)
++	if (orphan_added)
+ 		ubifs_delete_orphan(c, new_inode->i_ino);
+ out_finish:
+ 	finish_reservation(c);
 -- 
-2.27.0
+2.25.4
 
