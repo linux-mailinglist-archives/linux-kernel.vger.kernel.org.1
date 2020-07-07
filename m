@@ -2,198 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88E88217060
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:23:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF04C217032
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:16:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729093AbgGGPQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:16:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56194 "EHLO mail.kernel.org"
+        id S1728865AbgGGPPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:15:39 -0400
+Received: from foss.arm.com ([217.140.110.172]:56318 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729081AbgGGPQn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:16:43 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A1A7A2065D;
-        Tue,  7 Jul 2020 15:16:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594135002;
-        bh=YKZ97IGbHOb4vj0ONqehGCGdrnnN72YK/J361llD+eo=;
-        h=From:To:Cc:Subject:Date:From;
-        b=jK4U1E4fmuzoY/Wa0mCtL3rUetDmDS3B+UekAowfKe7MkuNGCOkyBW28RSPvYbDje
-         jBN9KJTJIFx62uxGhVYbHTbCu9OK+ntatE2yBXZjc9tMrXqT1om816qHNPXQyKlkqa
-         m67Lu55hc3s0vYstat+aEANtSvpKJOpe2J1Ysom8=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        stable@vger.kernel.org
-Subject: [PATCH 4.14 00/27] 4.14.188-rc1 review
-Date:   Tue,  7 Jul 2020 17:15:27 +0200
-Message-Id: <20200707145748.944863698@linuxfoundation.org>
-X-Mailer: git-send-email 2.27.0
+        id S1728519AbgGGPPh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 11:15:37 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2E3F8C0A;
+        Tue,  7 Jul 2020 08:15:36 -0700 (PDT)
+Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 638773F68F;
+        Tue,  7 Jul 2020 08:15:34 -0700 (PDT)
+Date:   Tue, 7 Jul 2020 16:15:28 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Stanimir Varbanov <svarbanov@mm-sol.com>,
+        Andrew Murray <amurray@thegoodpenguin.co.uk>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 00/12] Multiple fixes in PCIe qcom driver
+Message-ID: <20200707151528.GA18240@e121166-lin.cambridge.arm.com>
+References: <20200615210608.21469-1-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.188-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-4.14.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 4.14.188-rc1
-X-KernelTest-Deadline: 2020-07-09T14:57+00:00
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200615210608.21469-1-ansuelsmth@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the start of the stable review cycle for the 4.14.188 release.
-There are 27 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
+On Mon, Jun 15, 2020 at 11:05:56PM +0200, Ansuel Smith wrote:
+> This contains multiple fix for PCIe qcom driver.
+> Some optional reset and clocks were missing.
+> Fix a problem with no PARF programming that cause kernel lock on load.
+> Add support to force gen 1 speed if needed. (due to hardware limitation)
+> Add ipq8064 rev 2 support that use a different tx termination offset.
+> 
+> v7:
+> * Rework GEN1 patch
+> 
+> v6:
+> * Replace custom define
+> * Move define not used in 07 to 08
+> 
+> v5:
+> * Split PCI: qcom: Add ipq8064 rev2 variant and set tx term offset
+> 
+> v4:
+> * Fix grammar error across all patch subject
+> * Use bulk api for clks
+> * Program PARF only in ipq8064 SoC
+> * Program tx term only in ipq8064 SoC
+> * Drop configurable tx-dempth rx-eq
+> * Make added clk optional
+> 
+> v3:
+> * Fix check reported by checkpatch --strict
+> * Rename force_gen1 to gen
+> 
+> v2:
+> * Drop iATU programming (already done in pcie init)
+> * Use max-link-speed instead of force-gen1 custom definition
+> * Drop MRRS to 256B (Can't find a realy reason why this was suggested)
+> * Introduce a new variant for different revision of ipq8064
+> 
+> Abhishek Sahu (1):
+>   PCI: qcom: Change duplicate PCI reset to phy reset
+> 
+> Ansuel Smith (10):
+>   PCI: qcom: Add missing ipq806x clocks in PCIe driver
+>   dt-bindings: PCI: qcom: Add missing clks
+>   PCI: qcom: Add missing reset for ipq806x
+>   dt-bindings: PCI: qcom: Add ext reset
+>   PCI: qcom: Use bulk clk api and assert on error
+>   PCI: qcom: Define some PARF params needed for ipq8064 SoC
+>   PCI: qcom: Add support for tx term offset for rev 2.1.0
+>   PCI: qcom: Add ipq8064 rev2 variant
+>   dt-bindings: PCI: qcom: Add ipq8064 rev 2 variant
+>   PCI: qcom: Replace define with standard value
+> 
+> Sham Muthayyan (1):
+>   PCI: qcom: Support pci speed set for ipq806x
+> 
+>  .../devicetree/bindings/pci/qcom,pcie.txt     |  15 +-
+>  drivers/pci/controller/dwc/pcie-qcom.c        | 186 +++++++++++-------
+>  2 files changed, 128 insertions(+), 73 deletions(-)
 
-Responses should be made by Thu, 09 Jul 2020 14:57:34 +0000.
-Anything received after that time might be too late.
+Applied to pci/dwc for v5.9, thanks.
 
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.188-rc1.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
-and the diffstat can be found below.
-
-thanks,
-
-greg k-h
-
--------------
-Pseudo-Shortlog of commits:
-
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 4.14.188-rc1
-
-Peter Jones <pjones@redhat.com>
-    efi: Make it possible to disable efivar_ssdt entirely
-
-Hou Tao <houtao1@huawei.com>
-    dm zoned: assign max_io_len correctly
-
-Marc Zyngier <maz@kernel.org>
-    irqchip/gic: Atomically update affinity
-
-Hauke Mehrtens <hauke@hauke-m.de>
-    MIPS: Add missing EHB in mtc0 -> mfc0 sequence for DSPen
-
-Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
-    cifs: Fix the target file was deleted when rename failed.
-
-Paul Aurich <paul@darkrain42.org>
-    SMB3: Honor persistent/resilient handle flags for multiuser mounts
-
-Paul Aurich <paul@darkrain42.org>
-    SMB3: Honor 'seal' flag for multiuser mounts
-
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Revert "ALSA: usb-audio: Improve frames size computation"
-
-J. Bruce Fields <bfields@redhat.com>
-    nfsd: apply umask on fs without ACL support
-
-Chris Packham <chris.packham@alliedtelesis.co.nz>
-    i2c: algo-pca: Add 0x78 as SCL stuck low status for PCA9665
-
-Hou Tao <houtao1@huawei.com>
-    virtio-blk: free vblk-vqs in error path of virtblk_probe()
-
-Chen-Yu Tsai <wens@csie.org>
-    drm: sun4i: hdmi: Remove extra HPD polling
-
-Misono Tomohiro <misono.tomohiro@jp.fujitsu.com>
-    hwmon: (acpi_power_meter) Fix potential memory leak in acpi_power_meter_add()
-
-Chu Lin <linchuyuan@google.com>
-    hwmon: (max6697) Make sure the OVERT mask is set correctly
-
-Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>
-    cxgb4: parse TC-U32 key values and masks natively
-
-Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>
-    cxgb4: use unaligned conversion for fetching timestamp
-
-Herbert Xu <herbert@gondor.apana.org.au>
-    crypto: af_alg - fix use-after-free in af_alg_accept() due to bh_lock_sock()
-
-Douglas Anderson <dianders@chromium.org>
-    kgdb: Avoid suspicious RCU usage warning
-
-Zqiang <qiang.zhang@windriver.com>
-    usb: usbtest: fix missing kfree(dev->buf) in usbtest_disconnect
-
-Qian Cai <cai@lca.pw>
-    mm/slub: fix stack overruns with SLUB_STATS
-
-Dongli Zhang <dongli.zhang@oracle.com>
-    mm/slub.c: fix corrupted freechain in deactivate_slab()
-
-Tuomas Tynkkynen <tuomas.tynkkynen@iki.fi>
-    usbnet: smsc95xx: Fix use-after-free after removal
-
-Borislav Petkov <bp@suse.de>
-    EDAC/amd64: Read back the scrub rate PCI register on F15h
-
-Hugh Dickins <hughd@google.com>
-    mm: fix swap cache node allocation mask
-
-Filipe Manana <fdmanana@suse.com>
-    btrfs: fix data block group relocation failure due to concurrent scrub
-
-Anand Jain <Anand.Jain@oracle.com>
-    btrfs: cow_file_range() num_bytes and disk_num_bytes are same
-
-Filipe Manana <fdmanana@suse.com>
-    btrfs: fix a block group ref counter leak after failure to remove block group
-
-
--------------
-
-Diffstat:
-
- Makefile                                           |   4 +-
- arch/mips/kernel/traps.c                           |   1 +
- crypto/af_alg.c                                    |  26 ++---
- crypto/algif_aead.c                                |   9 +-
- crypto/algif_hash.c                                |   9 +-
- crypto/algif_skcipher.c                            |   9 +-
- drivers/block/virtio_blk.c                         |   1 +
- drivers/edac/amd64_edac.c                          |   2 +
- drivers/firmware/efi/Kconfig                       |  11 ++
- drivers/firmware/efi/efi.c                         |   2 +-
- drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c             |   5 +-
- drivers/hwmon/acpi_power_meter.c                   |   4 +-
- drivers/hwmon/max6697.c                            |   7 +-
- drivers/i2c/algos/i2c-algo-pca.c                   |   3 +-
- drivers/irqchip/irq-gic.c                          |  14 +--
- drivers/md/dm-zoned-target.c                       |   2 +-
- drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_u32.c  |  18 +--
- .../ethernet/chelsio/cxgb4/cxgb4_tc_u32_parse.h    | 122 ++++++++++++++-------
- drivers/net/ethernet/chelsio/cxgb4/sge.c           |   2 +-
- drivers/net/usb/smsc95xx.c                         |   2 +-
- drivers/usb/misc/usbtest.c                         |   1 +
- fs/btrfs/extent-tree.c                             |  19 ++--
- fs/btrfs/inode.c                                   |  35 ++++--
- fs/cifs/connect.c                                  |   3 +
- fs/cifs/inode.c                                    |  10 +-
- fs/nfsd/vfs.c                                      |   6 +
- include/crypto/if_alg.h                            |   4 +-
- kernel/debug/debug_core.c                          |   4 +
- mm/slub.c                                          |  30 ++++-
- mm/swap_state.c                                    |   3 +-
- sound/usb/card.h                                   |   4 -
- sound/usb/endpoint.c                               |  43 +-------
- sound/usb/endpoint.h                               |   1 -
- sound/usb/pcm.c                                    |   2 -
- 34 files changed, 239 insertions(+), 179 deletions(-)
-
-
+Lorenzo
