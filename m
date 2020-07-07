@@ -2,116 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 759132174CF
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 19:12:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78F9F2174DD
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 19:14:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728305AbgGGRMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 13:12:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49662 "EHLO
+        id S1728404AbgGGROF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 13:14:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727886AbgGGRMh (ORCPT
+        with ESMTP id S1727777AbgGGRN7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 13:12:37 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73834C061755;
-        Tue,  7 Jul 2020 10:12:37 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id o18so42950370eje.7;
-        Tue, 07 Jul 2020 10:12:37 -0700 (PDT)
+        Tue, 7 Jul 2020 13:13:59 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73FEEC061755
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 10:13:59 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id q17so18686661pfu.8
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 10:13:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=aNHtEnZTBch7Gx2snrNsW2nZihsOuYVKYHNmbrByQHE=;
-        b=H0B2tj6KRU1H65d/EX/QZh7QoFIjZB9LjerPIu2vCxPdtZVz06v/c2o38yX/wbsUG8
-         jPTFDn/nwbTaHq6XAFmEvCqQxWvI0JTbJ8SRmOEECGE2P3KGBGsSe8kFHYFaiC0uTQQH
-         wNrf61pY/74HHKvJ0QHGzFHYrig8h+uwSuhBZ6+QJSLlFRVIcohE2Ew/6Z/FtiWZ0HK5
-         MT+KsFSd1AT3nzBYXBgI39d3/9XoOm2YhQJhZKZzIBAXSqSxsQw/r8Nhz5ft62to+bqU
-         nsur5b8AiPmlUNBy7ujLi7w/GtS107i3YYqVMei8XcTTAHlwps57W+NwBs17tCy4Fics
-         rnEQ==
+        d=broadcom.com; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=HtwXtpph2OoeeE3uD1Wi+DXJnoAVgPcW38Mw9B+yPaE=;
+        b=dzipK/c+2ZtFsuqwsrTcL/d1Yv8zQfVpnmVDF5jdaKLo4l/L0jd2RP/hL4s3Yr7L39
+         jwBA+QtRbToqLcum6mDVLTCl2kTLhyzMXa5bQLsbtwSfa8Ypv7iELew2HUxgzxRYGmGZ
+         naco+TSnJERTyBinS1dUilsIYM1AfRFHFx/sk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=aNHtEnZTBch7Gx2snrNsW2nZihsOuYVKYHNmbrByQHE=;
-        b=WL8aHPDl25TCz/x8CdJuqqjSRONr7rqhT57oKqfUYIWgmdhLwvpUkcRx/IhpUCJtsS
-         Bhtwl3vWPsczpz6i5y2gKZJqTJKrI8pFzvFvSQqXx1YtGTd03hqtTtC1BsrQgIeSh+PA
-         5zmgxLLCxeuQRXiZ0F1qUsOv4Tck4sU2PkZCPEBZ4/Llxm1XhkfQCw1W2uIvryNfX3ZN
-         zReXmkMPCXzvnl7MLeIBNdChPkafEHTOaNr8ABrSB/+y54l+vwtbHl6WoPcVjT1eKsCE
-         AMTHFQMh1jrqdLEjmQXm38BtkEmlXosFsrsPt+6npPe4+8NOIKCKHzkn0xDK3JH44RYY
-         f7ng==
-X-Gm-Message-State: AOAM5309CRnU4indIRSDMllpWNcMr7Lmv1YP0UVQ5wgzGCsRyBJzPZ+u
-        UJxOzO0Ax6Zr0z+OkyaaGP4bmSdr
-X-Google-Smtp-Source: ABdhPJzFYjKB7uTbxIgb2hs7jwA+BQEiC1aYeNXr1irhFLajz+IRYfKoNgLm5mi413xRZ1o1lp7VEw==
-X-Received: by 2002:a17:906:6558:: with SMTP id u24mr34391898ejn.364.1594141956134;
-        Tue, 07 Jul 2020 10:12:36 -0700 (PDT)
-Received: from skbuf ([188.25.219.134])
-        by smtp.gmail.com with ESMTPSA id s23sm638297ejz.53.2020.07.07.10.12.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jul 2020 10:12:35 -0700 (PDT)
-Date:   Tue, 7 Jul 2020 20:12:33 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Sergey Organov <sorganov@gmail.com>
-Cc:     richardcochran@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Fugang Duan <fugang.duan@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH  3/5] net: fec: initialize clock with 0 rather than
- current kernel time
-Message-ID: <20200707171233.et6zrwfqq7fddz2r@skbuf>
-References: <20200706142616.25192-1-sorganov@gmail.com>
- <20200706142616.25192-4-sorganov@gmail.com>
- <20200706152721.3j54m73bm673zlnj@skbuf>
- <874kqksdrb.fsf@osv.gnss.ru>
- <20200707063651.zpt6bblizo5r3kir@skbuf>
- <87sge371hv.fsf@osv.gnss.ru>
- <20200707164329.pm4p73nzbsda3sfv@skbuf>
- <87sge345ho.fsf@osv.gnss.ru>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=HtwXtpph2OoeeE3uD1Wi+DXJnoAVgPcW38Mw9B+yPaE=;
+        b=U+HSReJ/LuEOcmHakbhfmQ92WHm7hlSCaY4XyQT1Z1SoFPKJvWF2t6l7muz0JR75We
+         8NcFcseY/g+9EhBUPmxGbRngztpsU5l3BPyj24+sbJsLmL9Er+mvzOiDy6giRIY9y6n8
+         PP7BNB1Wzv/69VheqDZLsDDQnYkGFRPmnBZraT2eFJ4WMcXI79C7Htd8Vf92wp/cIs3g
+         K0HO0gZgsBBt64a0UOt8nvkxFBj8XbYu2mr1aV2WE6QhZhWx0cqUapvbfC5QDwuZKAcO
+         fSBS/LlROFF3p6x3NSq55FUSEb0AeqoRo8E0kWWqj+FtvP4rFCa3N3T+0/QoAZ/jCdto
+         jfyg==
+X-Gm-Message-State: AOAM53241770Zp4o/SNbHC7ZCigtQlhWo/TvBMhlea/fr6k/8LRt4L68
+        Ga/2nNpm5Z0PXPbv6Gx/edCyBg==
+X-Google-Smtp-Source: ABdhPJyeSq0J8hJSh8EyLFyNDGaXMs3fPXkpyq9VbmAPXqtEFkmdoQuH8aOIqAG0WttuGA3gnpzq7w==
+X-Received: by 2002:a62:8782:: with SMTP id i124mr49547162pfe.267.1594142038788;
+        Tue, 07 Jul 2020 10:13:58 -0700 (PDT)
+Received: from [10.136.13.65] ([192.19.228.250])
+        by smtp.gmail.com with ESMTPSA id j70sm23482082pfd.208.2020.07.07.10.13.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Jul 2020 10:13:58 -0700 (PDT)
+Subject: Re: [PATCH v10 9/9] ima: add FIRMWARE_PARTIAL_READ support
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Luis Chamberlain <mcgrof@kernel.org>,
+        Wolfram Sang <wsa@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        David Brown <david.brown@linaro.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Shuah Khan <shuah@kernel.org>, bjorn.andersson@linaro.org,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        Olof Johansson <olof@lixom.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Takashi Iwai <tiwai@suse.de>, linux-kselftest@vger.kernel.org,
+        Andy Gross <agross@kernel.org>,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+References: <20200706232309.12010-1-scott.branden@broadcom.com>
+ <20200706232309.12010-10-scott.branden@broadcom.com>
+ <202007061950.F6B3D9E6A@keescook>
+From:   Scott Branden <scott.branden@broadcom.com>
+Message-ID: <df45cc5b-62d7-21c7-a852-1433a45b68ef@broadcom.com>
+Date:   Tue, 7 Jul 2020 10:13:42 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87sge345ho.fsf@osv.gnss.ru>
+In-Reply-To: <202007061950.F6B3D9E6A@keescook>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 07, 2020 at 08:09:07PM +0300, Sergey Organov wrote:
-> Vladimir Oltean <olteanv@gmail.com> writes:
-> 
-> > On Tue, Jul 07, 2020 at 07:07:08PM +0300, Sergey Organov wrote:
-> >> Vladimir Oltean <olteanv@gmail.com> writes:
-> >> >
-> >> > What do you mean 'no ticking', and what do you mean by 'non-initialized
-> >> > clock' exactly? I don't know if the fec driver is special in any way, do
-> >> > you mean that multiple runs of $(phc_ctl /dev/ptp0 get) from user space
-> >> > all return 0? That is not at all what is to be expected, I think. The
-> >> > PHC is always ticking. Its time is increasing.
-> >> 
-> >> That's how it is right now. My point is that it likely shouldn't. Why is
-> >> it ticking when nobody needs it? Does it draw more power due to that?
-> >> 
-> >> > What would be that initialization procedure that makes it tick, and
-> >> > who is doing it (and when)?
-> >> 
-> >> The user space code that cares, obviously. Most probably some PTP stack
-> >> daemon. I'd say that any set clock time ioctl() should start the clock,
-> >> or yet another ioctl() that enables/disables the clock, whatever.
-> >> 
-> >
-> > That ioctl doesn't exist, at least not in PTP land. This also addresses
-> > your previous point.
-> 
-> struct timespec ts;
-> ...
-> clock_settime(clkid, &ts)
-> 
-> That's the starting point of my own code, and I bet it's there in PTP
-> for Linux, as well as in PTPD, as I fail to see how it could possibly
-> work without it.
-> 
+Hi Kees,
 
-This won't stop it from ticking, which is what we were talking about,
-will it?
+You and others are certainly more experts in the filesystem and security
+infrastructure of the kernel.
+What I am trying to accomplish is a simple operation:
+request part of a file into a buffer rather than the whole file.
+If someone could add such support I would be more than happy to use it.
 
-Thanks,
--Vladimir
+This has now bubbled into many other designs issues in the existing 
+codebase.
+I will need more details on your comments - see below.
+
+
+On 2020-07-06 8:08 p.m., Kees Cook wrote:
+> On Mon, Jul 06, 2020 at 04:23:09PM -0700, Scott Branden wrote:
+>> Add FIRMWARE_PARTIAL_READ support for integrity
+>> measurement on partial reads of firmware files.
+> Hi,
+>
+> Several versions ago I'd suggested that the LSM infrastructure handle
+> the "full read" semantics so that individual LSMs don't need to each
+> duplicate the same efforts. As it happens, only IMA is impacted (SELinux
+> ignores everything except modules, and LoadPin only cares about origin
+> not contents).
+Does your patch series "Fix misused kernel_read_file() enums" handle this
+because this suggestion is outside the scope of my change?
+>
+> Next is the problem that enum kernel_read_file_id is an object
+> TYPE enum, not a HOW enum. (And it seems I missed the addition of
+> READING_FIRMWARE_PREALLOC_BUFFER, which may share a similar problem.)
+> That it's a partial read doesn't change _what_ you're reading: that's an
+> internal API detail. What happens when I attempt to do a partial read of
+> a kexec image?
+It does not appear there is any user of partial reads of kexec images?
+I have been informed by Greg K-H to not add apis that are not used so 
+such support
+doesn't make sense to add at this time.
+>   I'll use kernel_pread_file() and pass READING_KEXEC_IMAGE,
+> but the LSMs will have no idea it's a partial read.
+The addition I am adding is for request_partial_firmware_into_buf.
+In order to do so it adds internal support for partial reads of firmware 
+files,
+not kexec image.
+
+The above seems outside the scope of my patch?
+>
+> Finally, what keeps the contents of the file from changing between the
+> first call (which IMA will read the entire file for) and the next reads
+> which will bypass IMA?
+The request is for a partial read.  IMA ensures the whole file integrity 
+even though I only do a partial read.
+The next partial read will re-read and check integrity of file.
+>   I'd suggested that the open file must have writes
+> disabled on it (as execve() does).
+The file will be reopened and integrity checked on the next partial read 
+(if there is one).
+So I don't think there is any change to be made here.
+If writes aren't already disabled for a whole file read then that is 
+something that needs to be fixed in the existing code.
+>
+> So, please redesign this:
+> - do not add an enum
+I used existing infrastructure provided by Mimi but now looks like it 
+will have to fit with your patches from yesterday.
+> - make the file unwritable for the life of having the handle open
+It's no different than a full file read so no change to be made here.
+> - make the "full read" happen as part of the first partial read so the
+>    LSMs don't have to reimplement everything
+Each partial read is an individual operation so I think a "full read" is 
+performed every time
+if your security IMA is enabled.  If someone wants to add a file lock 
+and then partial reads in the kernel
+then that would be different than what is needed by the kernel driver.
+>
+> -Kees
+>
+Regards,
+Scott
