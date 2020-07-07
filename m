@@ -2,91 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BF1F217A24
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 23:18:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDA43217A30
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 23:23:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729217AbgGGVSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 17:18:06 -0400
-Received: from mga18.intel.com ([134.134.136.126]:58260 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726273AbgGGVSG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 17:18:06 -0400
-IronPort-SDR: s08QEwv3Tis1s8fIIQmxFOmcNfS/oOHKSwOobsijONUi75HG3JuO37qapZ/eA9hLKG9XNUjZlr
- fIajMym15BCQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9675"; a="135156634"
-X-IronPort-AV: E=Sophos;i="5.75,325,1589266800"; 
-   d="scan'208";a="135156634"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2020 14:18:05 -0700
-IronPort-SDR: TIfrxbVcaGC/Pu9TN9IpJNJmxgIP0bJlPax8eK6fgIyhwWU8XtEYaojbmBgmUfe0DnbAXgdFqg
- Zsv/bEV3x8FA==
-X-IronPort-AV: E=Sophos;i="5.75,325,1589266800"; 
-   d="scan'208";a="427613055"
-Received: from andreead-mobl1.ti.intel.com ([10.252.18.211])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2020 14:18:01 -0700
-Message-ID: <08b2713a6f87f78746c22e7168f4813eb753bb0e.camel@linux.intel.com>
-Subject: Re: [PATCH 0/7] Add initial Keem Bay SoC / Board support
-From:   Daniele Alessandrelli <daniele.alessandrelli@linux.intel.com>
-To:     Jassi Brar <jassisinghbrar@gmail.com>
-Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        Paul Murphy <paul.j.murphy@intel.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        Daniele Alessandrelli <daniele.alessandrelli@intel.com>
-Date:   Tue, 07 Jul 2020 22:17:59 +0100
-In-Reply-To: <CABb+yY0eUG=bxrQHP9-5gHk7SYF=c+EE+0LGKhnpxgfr078n6w@mail.gmail.com>
-References: <20200616155613.121242-1-daniele.alessandrelli@linux.intel.com>
-         <CABb+yY0eUG=bxrQHP9-5gHk7SYF=c+EE+0LGKhnpxgfr078n6w@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
+        id S1729240AbgGGVX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 17:23:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60480 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728870AbgGGVXJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 17:23:09 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CD48C08C5DC;
+        Tue,  7 Jul 2020 14:23:09 -0700 (PDT)
+Received: from apollo.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:6257:18ff:fec4:ca34])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 1493F23068;
+        Tue,  7 Jul 2020 23:23:03 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1594156984;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=QhtXVmH/fo+Q5sMGmi8dVUsFsprAgpEwGswUvDVSrUg=;
+        b=ds4SB4VmcX5xFpwBAskuJtokQg/TsrZDipVYOcMu941Y0timaSGIeE4uB++Ncv+xQ8AmGU
+        OphBRZ9ej0FkenfWCzrX3UNfDsPQ4njZ+YFuu7gbu+45ZjbGaiMeXUJSbXjVOmKT/JldrW
+        LTTx+dH3PH2SPBwvEhk/BZSrXc9PLW4=
+From:   Michael Walle <michael@walle.cc>
+To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Michael Walle <michael@walle.cc>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Alex Marginean <alexandru.marginean@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Heiko Thiery <heiko.thiery@gmail.com>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>
+Subject: [PATCH net-next v5 0/4] net: enetc: remove bootloader dependency
+Date:   Tue,  7 Jul 2020 23:21:27 +0200
+Message-Id: <20200707212131.15690-1-michael@walle.cc>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Spam: Yes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2020-07-05 at 23:36 -0500, Jassi Brar wrote:
-> On Tue, Jun 16, 2020 at 10:56 AM Daniele Alessandrelli
-> <daniele.alessandrelli@linux.intel.com> wrote:
-> > Hi,
-> > 
-> > This patch-set adds initial support for a new Intel Movidius SoC
-> > code-named
-> > Keem Bay. The SoC couples an ARM Cortex A53 CPU with an Intel
-> > Movidius VPU.
-> > 
-> > This initial patch-set enables only the minimal set of components
-> > required to
-> > make the Keem Bay EVM board boot into initramfs.
-> > 
-> > Brief summary of the patch-set:
-> > * Patches 1-2 add the Keem Bay SCMI Mailbox driver (needed to
-> > enable SCMI in
-> >   Keem Bay)
-> > * Patch 3 adds the ARCH_KEEMBAY config option
-> > * Patches 4-7 add minimal device tree for Keem Bay SoC and Keem Bay
-> > EVM
-> >   (together with information about the SoC maintainers)
-> > 
-> Please break this into two patchsets - first enabling platform
-> support
-> and second adding mailbox support.
+This is a resend [now a new v4] of the series because the conversion to the
+phylink interface will likely take longer:
+https://lore.kernel.org/netdev/CA+h21hpBodyY8CtNH2ktRdc2FqPi=Fjp94=VVZvzSVbnvnfKVg@mail.gmail.com/
+Also the discussion in the v3 resend doesn't look like it will be resolved
+soon :/
+https://lore.kernel.org/netdev/20200701213433.9217-1-michael@walle.cc/
 
-Thanks for your feedback Jassi. I will split the patcheset into two
-different patchsets.
+Unfortunately, we have boards in the wild with a bootloader which doesn't
+set the PCS up correctly. Thus I'd really see this patches picked up as an
+intermediate step until the phylink conversion is ready. Vladimir Oltean
+already offered to convert enetc to phylink when he converts the felix to
+phylink. After this series the PCS setup of the enetc looks almost the same
+as the current felix setup. Thus conversion should be easy.
 
-Just one question: should I remove the mailbox and scmi nodes from the
-soc DT or can I keep them there even if the mailbox driver is not
-available yet?
+These patches were picked from the following series:
+https://lore.kernel.org/netdev/1567779344-30965-1-git-send-email-claudiu.manoil@nxp.com/
+They have never been resent. I've picked them up, addressed Andrews
+comments, fixed some more bugs and asked Claudiu if I can keep their SOB
+tags; he agreed. I've tested this on our board which happens to have a
+bootloader which doesn't do the enetc setup in all cases. Though, only
+SGMII mode was tested.
 
-> 
-> thanks.
+changes since v4:
+ - moved (and renamed) the USXGMII constants to include/uapi/linux/mdio.h.
+   Suggested by Russell King.
+
+changes since v3:
+ - rebased to latest net-next where devm_mdiobus_free() was removed.
+   replace it by mdiobus_free(). The internal MDIO bus is optional, if
+   there is any error, we try to run with the bootloader default PCS
+   settings, thus in the error case, we need to free the mdiobus.
+
+changes since v2:
+ - removed SOBs from "net: enetc: Initialize SerDes for SGMII and USXGMII
+   protocols" because almost everything has changed.
+ - get a phy_device for the internal PCS PHY so we can use the phy_
+   functions instead of raw mdiobus writes
+ - reuse macros already defined in fsl_mdio.h, move missing bits from
+   felix to fsl_mdio.h, because they share the same PCS PHY building
+   block
+ - added 2500BaseX mode (based on felix init routine)
+ - changed xgmii mode to usxgmii mode, because it is actually USXGMII and
+   felix does the same.
+ - fixed devad, which is 0x1f (MMD_VEND2)
+
+changes since v1:
+ - mdiobus id is '"imdio-%s", dev_name(dev)' because the plain dev_name()
+   is used by the emdio.
+ - use mdiobus_write() instead of imdio->write(imdio, ..), since this is
+   already a full featured mdiobus
+ - set phy_mask to ~0 to avoid scanning the bus
+ - use phy_interface_mode_is_rgmii(phy_mode) to also include the RGMII
+   modes with pad delays.
+ - move enetc_imdio_init() to enetc_pf.c, there shouldn't be any other
+   users, should it?
+ - renamed serdes to SerDes
+ - printing the error code of mdiobus_register() in the error path
+ - call mdiobus_unregister() on _remove()
+ - call devm_mdiobus_free() if mdiobus_register() fails, since an
+   error is not fatal
+
+Alex Marginean (1):
+  net: enetc: Use DT protocol information to set up the ports
+
+Michael Walle (3):
+  net: phy: add USXGMII link partner ability constants
+  net: dsa: felix: (re)use already existing constants
+  net: enetc: Initialize SerDes for SGMII and USXGMII protocols
+
+ drivers/net/dsa/ocelot/felix_vsc9959.c        |  45 ++---
+ .../net/ethernet/freescale/enetc/enetc_hw.h   |   3 +
+ .../net/ethernet/freescale/enetc/enetc_pf.c   | 188 +++++++++++++++---
+ .../net/ethernet/freescale/enetc/enetc_pf.h   |   5 +
+ include/uapi/linux/mdio.h                     |  26 +++
+ 5 files changed, 210 insertions(+), 57 deletions(-)
+
+-- 
+2.20.1
 
