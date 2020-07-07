@@ -2,156 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A52D421778E
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 21:07:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B594217793
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 21:08:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728959AbgGGTHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 15:07:06 -0400
-Received: from mga12.intel.com ([192.55.52.136]:39726 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728923AbgGGTHD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 15:07:03 -0400
-IronPort-SDR: dfqlCcmGuuk9ar6ocEOgANBsFUYr1yoRTULB9pBPABWMGuEEwmq89m/eYrcjHnw2m5SmSUmne7
- E0xDOZauE2sQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9675"; a="127274251"
-X-IronPort-AV: E=Sophos;i="5.75,324,1589266800"; 
-   d="scan'208";a="127274251"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2020 12:07:02 -0700
-IronPort-SDR: uL5tR80dB418WWFzJlg7O9sCb8t4JGvTNofYdBOUzbIVSRNlDA/Vvqoy5Zu/FVUXo6ieLRIQsy
- /N4ISy0ahv5g==
-X-IronPort-AV: E=Sophos;i="5.75,324,1589266800"; 
-   d="scan'208";a="268278702"
-Received: from mrtorger-mobl1.amr.corp.intel.com (HELO pbossart-mobl3.amr.corp.intel.com) ([10.254.77.62])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2020 12:07:01 -0700
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To:     alsa-devel@alsa-project.org
-Cc:     tiwai@suse.de, broonie@kernel.org,
-        Lee Jones <lee.jones@linaro.org>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Oder Chiou <oder_chiou@realtek.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v3 13/13] ASoC: codecs: rt*: fix 'defined but not used' warning
-Date:   Tue,  7 Jul 2020 14:06:12 -0500
-Message-Id: <20200707190612.97799-14-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200707190612.97799-1-pierre-louis.bossart@linux.intel.com>
-References: <20200707190612.97799-1-pierre-louis.bossart@linux.intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1728717AbgGGTIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 15:08:20 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:45555 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728183AbgGGTIT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 15:08:19 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1594148898; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=9IrwGFZJCY5EJx1yIfyu048oORHtxrhYqRHCpxZifu4=; b=SXyzudWMXfdyWfvjDIkFb4d8n1Pr1gcRSSSXjvhOPhmpO19EjGNgU0AggOPauhKvOtdRR9qs
+ 6FLFH7UORX4hKkygPvADUm1pXzTIaAChlOgwTtQZNIAnuDU8gHwf6m6ZYgW5Z2uRQDaMnTuB
+ gkgnsl8n6PxMKOnnTNUFw0DrnOg=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n10.prod.us-west-2.postgun.com with SMTP id
+ 5f04c8156e56afc68dc78fd1 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 07 Jul 2020 19:08:05
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E06A8C433CB; Tue,  7 Jul 2020 19:08:04 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from sidgup-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sidgup)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C1B6BC433C8;
+        Tue,  7 Jul 2020 19:08:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C1B6BC433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=sidgup@codeaurora.org
+From:   Siddharth Gupta <sidgup@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, ohad@wizery.com,
+        corbet@lwn.net
+Cc:     Siddharth Gupta <sidgup@codeaurora.org>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, tsoni@codeaurora.org,
+        psodagud@codeaurora.org, rishabhb@codeaurora.org,
+        linux-doc@vger.kernel.org
+Subject: [PATCH v4 0/2] Add character device interface to remoteproc
+Date:   Tue,  7 Jul 2020 12:07:48 -0700
+Message-Id: <1594148870-27276-1-git-send-email-sidgup@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix W=1 warning when ACPI is not defined
+This patch series adds a character device interface to remoteproc
+framework. Currently there is only a sysfs interface which the userspace
+clients can use. If a usersapce application crashes after booting
+the remote processor through the sysfs interface the remote processor
+does not get any indication about the crash. It might still assume
+that the  application is running.
+For example modem uses remotefs service to data from disk/flash memory.
+If the remotefs service crashes, modem still keeps on requesting data
+which might lead to crash on modem. Even if the service is restarted the
+file handles modem requested previously would become stale.
+Adding a character device interface makes the remote processor tightly
+coupled with the user space application. A crash of the application
+leads to a close on the file descriptors therefore shutting down the
+remoteproc.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/codecs/rt274.c      | 2 ++
- sound/soc/codecs/rt286.c      | 2 ++
- sound/soc/codecs/rt298.c      | 2 ++
- sound/soc/codecs/rt5660.c     | 2 ++
- sound/soc/codecs/rt5677-spi.c | 2 ++
- 5 files changed, 10 insertions(+)
+Changelog:
+v3 -> v4:
+- Addressed comments from Mathieu and Arnaud.
+- Added locks while writing/reading from the automatic-shutdown-on-release bool.
+- Changed return value when failing to copy to/from userspace.
+- Changed logic for calling shutdown on release.
+- Moved around code after the increase of max line length from 80 to 100.
+- Moved the call adding character device before device_add in rproc_add to add
+  both sysfs and character device interface together.
 
-diff --git a/sound/soc/codecs/rt274.c b/sound/soc/codecs/rt274.c
-index cbb5e176d11a..40a28fb4fd09 100644
---- a/sound/soc/codecs/rt274.c
-+++ b/sound/soc/codecs/rt274.c
-@@ -1105,12 +1105,14 @@ static const struct i2c_device_id rt274_i2c_id[] = {
- };
- MODULE_DEVICE_TABLE(i2c, rt274_i2c_id);
- 
-+#ifdef CONFIG_ACPI
- static const struct acpi_device_id rt274_acpi_match[] = {
- 	{ "10EC0274", 0 },
- 	{ "INT34C2", 0 },
- 	{},
- };
- MODULE_DEVICE_TABLE(acpi, rt274_acpi_match);
-+#endif
- 
- static int rt274_i2c_probe(struct i2c_client *i2c,
- 			   const struct i2c_device_id *id)
-diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
-index 9593a9a27bf8..89b1c8b68004 100644
---- a/sound/soc/codecs/rt286.c
-+++ b/sound/soc/codecs/rt286.c
-@@ -1079,11 +1079,13 @@ static const struct i2c_device_id rt286_i2c_id[] = {
- };
- MODULE_DEVICE_TABLE(i2c, rt286_i2c_id);
- 
-+#ifdef CONFIG_ACPI
- static const struct acpi_device_id rt286_acpi_match[] = {
- 	{ "INT343A", 0 },
- 	{},
- };
- MODULE_DEVICE_TABLE(acpi, rt286_acpi_match);
-+#endif
- 
- static const struct dmi_system_id force_combo_jack_table[] = {
- 	{
-diff --git a/sound/soc/codecs/rt298.c b/sound/soc/codecs/rt298.c
-index 7fc7d6181630..dc0273a5a11f 100644
---- a/sound/soc/codecs/rt298.c
-+++ b/sound/soc/codecs/rt298.c
-@@ -1145,11 +1145,13 @@ static const struct i2c_device_id rt298_i2c_id[] = {
- };
- MODULE_DEVICE_TABLE(i2c, rt298_i2c_id);
- 
-+#ifdef CONFIG_ACPI
- static const struct acpi_device_id rt298_acpi_match[] = {
- 	{ "INT343A", 0 },
- 	{},
- };
- MODULE_DEVICE_TABLE(acpi, rt298_acpi_match);
-+#endif
- 
- static const struct dmi_system_id force_combo_jack_table[] = {
- 	{
-diff --git a/sound/soc/codecs/rt5660.c b/sound/soc/codecs/rt5660.c
-index 78371e51bc34..9e3813f7583d 100644
---- a/sound/soc/codecs/rt5660.c
-+++ b/sound/soc/codecs/rt5660.c
-@@ -1241,12 +1241,14 @@ static const struct of_device_id rt5660_of_match[] = {
- };
- MODULE_DEVICE_TABLE(of, rt5660_of_match);
- 
-+#ifdef CONFIG_ACPI
- static const struct acpi_device_id rt5660_acpi_match[] = {
- 	{ "10EC5660", 0 },
- 	{ "10EC3277", 0 },
- 	{ },
- };
- MODULE_DEVICE_TABLE(acpi, rt5660_acpi_match);
-+#endif
- 
- static int rt5660_parse_dt(struct rt5660_priv *rt5660, struct device *dev)
- {
-diff --git a/sound/soc/codecs/rt5677-spi.c b/sound/soc/codecs/rt5677-spi.c
-index 7bfade8b3d6e..95ac12a5cc6b 100644
---- a/sound/soc/codecs/rt5677-spi.c
-+++ b/sound/soc/codecs/rt5677-spi.c
-@@ -614,11 +614,13 @@ static int rt5677_spi_probe(struct spi_device *spi)
- 	return ret;
- }
- 
-+#ifdef CONFIG_ACPI
- static const struct acpi_device_id rt5677_spi_acpi_id[] = {
- 	{ "RT5677AA", 0 },
- 	{ }
- };
- MODULE_DEVICE_TABLE(acpi, rt5677_spi_acpi_id);
-+#endif
- 
- static struct spi_driver rt5677_spi_driver = {
- 	.driver = {
+v2 -> v3:
+- Move booting of remoteproc from open to a write call.
+- Add ioctl interface for future functionality extension.
+- Add an ioctl call to default to rproc shutdown on release.
+
+v1 -> v2:
+- Fixed comments from Bjorn and Matthew.
+
+Siddharth Gupta (2):
+  remoteproc: Add remoteproc character device interface
+  remoteproc: core: Register the character device interface
+
+ Documentation/userspace-api/ioctl/ioctl-number.rst |   1 +
+ drivers/remoteproc/Kconfig                         |   9 ++
+ drivers/remoteproc/Makefile                        |   1 +
+ drivers/remoteproc/remoteproc_cdev.c               | 146 +++++++++++++++++++++
+ drivers/remoteproc/remoteproc_core.c               |  10 ++
+ drivers/remoteproc/remoteproc_internal.h           |  28 ++++
+ include/linux/remoteproc.h                         |   5 +
+ include/uapi/linux/remoteproc_cdev.h               |  37 ++++++
+ 8 files changed, 237 insertions(+)
+ create mode 100644 drivers/remoteproc/remoteproc_cdev.c
+ create mode 100644 include/uapi/linux/remoteproc_cdev.h
+
 -- 
-2.25.1
+Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
