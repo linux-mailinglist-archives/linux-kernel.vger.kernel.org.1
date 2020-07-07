@@ -2,143 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C7BB2175C3
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 20:01:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37CC72175E9
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 20:07:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728295AbgGGSBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 14:01:04 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:41704 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727777AbgGGSBD (ORCPT
+        id S1728262AbgGGSHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 14:07:41 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:33564 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728036AbgGGSHl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 14:01:03 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 067HWPj9190732;
-        Tue, 7 Jul 2020 14:00:53 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 324ptpxudc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Jul 2020 14:00:53 -0400
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 067HvTEq104818;
-        Tue, 7 Jul 2020 14:00:53 -0400
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 324ptpxubh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Jul 2020 14:00:52 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 067HpdAD011540;
-        Tue, 7 Jul 2020 18:00:49 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma06fra.de.ibm.com with ESMTP id 322h1g9tcd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Jul 2020 18:00:49 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 067I0l8434406650
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 7 Jul 2020 18:00:47 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3714F4C050;
-        Tue,  7 Jul 2020 18:00:47 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AC2284C070;
-        Tue,  7 Jul 2020 18:00:45 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.148.202.169])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Tue,  7 Jul 2020 18:00:45 +0000 (GMT)
-Date:   Tue, 7 Jul 2020 21:00:43 +0300
-From:   Mike Rapoport <rppt@linux.ibm.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Michal Hocko <mhocko@kernel.org>, Jia He <justin.he@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Baoquan He <bhe@redhat.com>,
-        Chuhong Yuan <hslester96@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-nvdimm@lists.01.org,
-        Kaly Xin <Kaly.Xin@arm.com>
-Subject: Re: [PATCH v2 1/3] arm64/numa: export memory_add_physaddr_to_nid as
- EXPORT_SYMBOL_GPL
-Message-ID: <20200707180043.GA386073@linux.ibm.com>
-References: <20200707055917.143653-1-justin.he@arm.com>
- <20200707055917.143653-2-justin.he@arm.com>
- <20200707115454.GN5913@dhcp22.suse.cz>
- <20200707121302.GB9411@linux.ibm.com>
- <474f93e7-c709-1a13-5418-29f1777f614c@redhat.com>
+        Tue, 7 Jul 2020 14:07:41 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 067I7dsp122688;
+        Tue, 7 Jul 2020 13:07:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1594145259;
+        bh=tcG+3QfvQYtuz+moQPRntRSYLDtYJOO1r/4BMO3+5bI=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=Zv4ipbsfseRXYHLCKiWPZV5bHcwAJV63dS7QRwA8FLcswu9yTLyci8r5q+NNGzxvp
+         SbD2SzbGUjAwDtbxGfHP6ui2CppuNgxlG4BHspx5HmTAC1CeCwKx+gWqRBGpI/XM30
+         98AWdn7xdQfH8chUr/J7m/Xg0VhUb/FUwWGAgqrg=
+Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 067I7d6J032245
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 7 Jul 2020 13:07:39 -0500
+Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 7 Jul
+ 2020 13:07:39 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 7 Jul 2020 13:07:39 -0500
+Received: from [10.250.43.45] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 067I7cGA011289;
+        Tue, 7 Jul 2020 13:07:38 -0500
+Subject: Re: [EXTERNAL] Re: [PATCH v15 2/4] dt-bindings: power: Convert
+ battery.txt to battery.yaml
+To:     Rob Herring <robh@kernel.org>
+CC:     =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        Sandeep Patil <sspatil@android.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Andrew F. Davis" <afd@ti.com>, Dan Murphy <dmurphy@ti.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        <devicetree@vger.kernel.org>
+References: <20200701211044.18590-1-r-rivera-matos@ti.com>
+ <20200701211044.18590-3-r-rivera-matos@ti.com>
+ <20200702205320.GA1672139@bogus>
+ <54914eed-4a65-745b-b61b-9515737023e3@ti.com>
+ <CAL_JsqKXC1TFFCq6HBqdbHNeWbA=SnCqHkTx+FQXiPYDLb6sNw@mail.gmail.com>
+From:   Ricardo Rivera-Matos <r-rivera-matos@ti.com>
+Message-ID: <50e85766-08d2-f91e-a6a9-c4b4f8858dc4@ti.com>
+Date:   Tue, 7 Jul 2020 13:07:38 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <474f93e7-c709-1a13-5418-29f1777f614c@redhat.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-07_09:2020-07-07,2020-07-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 cotscore=-2147483648
- mlxscore=0 phishscore=0 clxscore=1015 suspectscore=1 malwarescore=0
- priorityscore=1501 lowpriorityscore=0 mlxlogscore=999 spamscore=0
- bulkscore=0 adultscore=0 impostorscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2007070119
+In-Reply-To: <CAL_JsqKXC1TFFCq6HBqdbHNeWbA=SnCqHkTx+FQXiPYDLb6sNw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 07, 2020 at 02:26:08PM +0200, David Hildenbrand wrote:
-> On 07.07.20 14:13, Mike Rapoport wrote:
-> > On Tue, Jul 07, 2020 at 01:54:54PM +0200, Michal Hocko wrote:
-> >> On Tue 07-07-20 13:59:15, Jia He wrote:
-> >>> This exports memory_add_physaddr_to_nid() for module driver to use.
-> >>>
-> >>> memory_add_physaddr_to_nid() is a fallback option to get the nid in case
-> >>> NUMA_NO_NID is detected.
-> >>>
-> >>> Suggested-by: David Hildenbrand <david@redhat.com>
-> >>> Signed-off-by: Jia He <justin.he@arm.com>
-> >>> ---
-> >>>  arch/arm64/mm/numa.c | 5 +++--
-> >>>  1 file changed, 3 insertions(+), 2 deletions(-)
-> >>>
-> >>> diff --git a/arch/arm64/mm/numa.c b/arch/arm64/mm/numa.c
-> >>> index aafcee3e3f7e..7eeb31740248 100644
-> >>> --- a/arch/arm64/mm/numa.c
-> >>> +++ b/arch/arm64/mm/numa.c
-> >>> @@ -464,10 +464,11 @@ void __init arm64_numa_init(void)
-> >>>  
-> >>>  /*
-> >>>   * We hope that we will be hotplugging memory on nodes we already know about,
-> >>> - * such that acpi_get_node() succeeds and we never fall back to this...
-> >>> + * such that acpi_get_node() succeeds. But when SRAT is not present, the node
-> >>> + * id may be probed as NUMA_NO_NODE by acpi, Here provide a fallback option.
-> >>>   */
-> >>>  int memory_add_physaddr_to_nid(u64 addr)
-> >>>  {
-> >>> -	pr_warn("Unknown node for memory at 0x%llx, assuming node 0\n", addr);
-> >>>  	return 0;
-> >>>  }
-> >>> +EXPORT_SYMBOL_GPL(memory_add_physaddr_to_nid);
-> >>
-> >> Does it make sense to export a noop function? Wouldn't make more sense
-> >> to simply make it static inline somewhere in a header? I haven't checked
-> >> whether there is an easy way to do that sanely bu this just hit my eyes.
-> > 
-> > We'll need to either add a CONFIG_ option or arch specific callback to
-> > make both non-empty (x86, powerpc, ia64) and empty (arm64, sh)
-> > implementations coexist ...
-> 
-> Note: I have a similar dummy (return 0) patch for s390x lying around here.
 
-Then we'll call it a tie - 3:3 ;-)
- 
-> -- 
-> Thanks,
-> 
-> David / dhildenb
-> 
-
--- 
-Sincerely yours,
-Mike.
+On 7/7/20 9:40 AM, Rob Herring wrote:
+> On Mon, Jul 6, 2020 at 12:45 PM Ricardo Rivera-Matos
+> <r-rivera-matos@ti.com> wrote:
+>> Rob
+>>
+>> On 7/2/20 3:53 PM, Rob Herring wrote:
+>>> On Wed, 01 Jul 2020 16:10:42 -0500, Ricardo Rivera-Matos wrote:
+>>>> From: Dan Murphy <dmurphy@ti.com>
+>>>>
+>>>> Convert the battery.txt file to yaml and fix up the examples.
+>>>>
+>>>> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+>>>> ---
+>>>>    .../bindings/power/supply/battery.txt         |  86 +---------
+>>>>    .../bindings/power/supply/battery.yaml        | 157 ++++++++++++++++++
+>>>>    2 files changed, 158 insertions(+), 85 deletions(-)
+>>>>    create mode 100644 Documentation/devicetree/bindings/power/supply/battery.yaml
+>>>>
+>>> My bot found errors running 'make dt_binding_check' on your patch:
+>>>
+>>> Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.6/dist-packages/dtschema/schema/types.yaml'
+>>> Documentation/devicetree/bindings/Makefile:20: recipe for target 'Documentation/devicetree/bindings/power/supply/battery.example.dts' failed
+>>> make[1]: *** [Documentation/devicetree/bindings/power/supply/battery.example.dts] Error 255
+>>> make[1]: *** Waiting for unfinished jobs....
+>>> Makefile:1347: recipe for target 'dt_binding_check' failed
+>>> make: *** [dt_binding_check] Error 2
+>> I think your bot is looking for the types.yaml in the wrong place.
+> Really? Yet it works fine on thousands of other patches?
+>
+>> '/usr/local/lib/python3.6/dist-packages/dtschema/schema/types.yaml'
+>> should be
+>> '/usr/local/lib/python3.6/dist-packages/dtschema/schemas/types.yaml'. I
+>> renamed might 'schemas' directory to 'schema' and my battery.yaml passed
+>> the dt_binding_check.
+> Maybe fix the 'schema/' path in your schema file which is wrong.
+Oh I see. My apologies, Rob.
+>
+> Rob
