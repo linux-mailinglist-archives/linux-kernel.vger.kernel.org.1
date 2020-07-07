@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 716572162D6
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 02:06:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B98692162CF
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 02:06:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727044AbgGGAGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 20:06:39 -0400
-Received: from mga07.intel.com ([134.134.136.100]:18975 "EHLO mga07.intel.com"
+        id S1727061AbgGGAGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 20:06:24 -0400
+Received: from mga07.intel.com ([134.134.136.100]:18972 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726951AbgGGAGU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 20:06:20 -0400
-IronPort-SDR: dAXuSvwy+Dncb/Hc0kORXwzox6vMmFvm6Cb6Gnc5DJ3hiMnmXf6AccZMGMRsqcBcF+zkB2XMBP
- /IW5yRWufWzQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9674"; a="212492293"
+        id S1727827AbgGGAGV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Jul 2020 20:06:21 -0400
+IronPort-SDR: EHK1Ctxpg1qQfZGvYURlSCNT2TIKlLha4gi8Pz9g4b+bUrFH8x65yQKLJToc2jxntR+3LKMlm4
+ kSN+QL5V0j0Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9674"; a="212492295"
 X-IronPort-AV: E=Sophos;i="5.75,321,1589266800"; 
-   d="scan'208";a="212492293"
+   d="scan'208";a="212492295"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
   by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2020 17:06:17 -0700
-IronPort-SDR: NORpXiscpzAgT3JuqHHMG4Q6991N7MfI+GqnDOm44Cw/YvAOWrfjFXnmaxwolubNBhRjAJ+RLm
- JoEVKbyNJ5Fg==
+IronPort-SDR: zIKUYel984wcBdO+TLjmSOReSJwSakFRRGa9gt4eyUT3zw+W/tvb3jMJlmnjGzGml0C6FqTgnX
+ xPgt4TuSi+Fw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,321,1589266800"; 
-   d="scan'208";a="456913827"
+   d="scan'208";a="456913831"
 Received: from jacob-builder.jf.intel.com ([10.7.199.155])
   by orsmga005.jf.intel.com with ESMTP; 06 Jul 2020 17:06:17 -0700
 From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
@@ -37,9 +37,9 @@ Cc:     Yi Liu <yi.l.liu@intel.com>, "Tian, Kevin" <kevin.tian@intel.com>,
         Raj Ashok <ashok.raj@intel.com>,
         Eric Auger <eric.auger@redhat.com>,
         Jacob Pan <jacob.jun.pan@linux.intel.com>
-Subject: [PATCH v4 6/7] iommu/vt-d: Warn on out-of-range invalidation address
-Date:   Mon,  6 Jul 2020 17:12:53 -0700
-Message-Id: <1594080774-33413-7-git-send-email-jacob.jun.pan@linux.intel.com>
+Subject: [PATCH v4 7/7] iommu/vt-d: Disable multiple GPASID-dev bind
+Date:   Mon,  6 Jul 2020 17:12:54 -0700
+Message-Id: <1594080774-33413-8-git-send-email-jacob.jun.pan@linux.intel.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1594080774-33413-1-git-send-email-jacob.jun.pan@linux.intel.com>
 References: <1594080774-33413-1-git-send-email-jacob.jun.pan@linux.intel.com>
@@ -48,41 +48,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For guest requested IOTLB invalidation, address and mask are provided as
-part of the invalidation data. VT-d HW silently ignores any address bits
-below the mask. SW shall also allow such case but give warning if
-address does not align with the mask. This patch relax the fault
-handling from error to warning and proceed with invalidation request
-with the given mask.
+For the unlikely use case where multiple aux domains from the same pdev
+are attached to a single guest and then bound to a single process
+(thus same PASID) within that guest, we cannot easily support this case
+by refcounting the number of users. As there is only one SL page table
+per PASID while we have multiple aux domains thus multiple SL page tables
+for the same PASID.
 
-Fixes: 6ee1b77ba3ac0 ("iommu/vt-d: Add svm/sva invalidate function")
+Extra unbinding guest PASID can happen due to race between normal and
+exception cases. Termination of one aux domain may affect others unless
+we actively track and switch aux domains to ensure the validity of SL
+page tables and TLB states in the shared PASID entry.
+
+Support for sharing second level PGDs across domains can reduce the
+complexity but this is not available due to the limitations on VFIO
+container architecture. We can revisit this decision once sharing PGDs
+are available.
+
+Overall, the complexity and potential glitch do not warrant this unlikely
+use case thereby removed by this patch.
+
+Fixes: 56722a4398a30 ("iommu/vt-d: Add bind guest PASID support")
 Acked-by: Lu Baolu <baolu.lu@linux.intel.com>
+Cc: Kevin Tian <kevin.tian@intel.com>
+Cc: Lu Baolu <baolu.lu@linux.intel.com>
+Reviewed-by: Eric Auger <eric.auger@redhat.com>
+Signed-off-by: Liu Yi L <yi.l.liu@intel.com>
 Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
 ---
- drivers/iommu/intel/iommu.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ drivers/iommu/intel/svm.c | 22 +++++++++-------------
+ 1 file changed, 9 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index 3bf03c6cd15f..c3a9a85a3c3f 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -5439,13 +5439,12 @@ intel_iommu_sva_invalidate(struct iommu_domain *domain, struct device *dev,
+diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
+index 6c87c807a0ab..d386853121a2 100644
+--- a/drivers/iommu/intel/svm.c
++++ b/drivers/iommu/intel/svm.c
+@@ -277,20 +277,16 @@ int intel_svm_bind_gpasid(struct iommu_domain *domain, struct device *dev,
+ 			goto out;
+ 		}
  
- 		switch (BIT(cache_type)) {
- 		case IOMMU_CACHE_INV_TYPE_IOTLB:
-+			/* HW will ignore LSB bits based on address mask */
- 			if (inv_info->granularity == IOMMU_INV_GRANU_ADDR &&
- 			    size &&
- 			    (inv_info->addr_info.addr & ((BIT(VTD_PAGE_SHIFT + size)) - 1))) {
--				pr_err_ratelimited("Address out of range, 0x%llx, size order %llu\n",
--						   inv_info->addr_info.addr, size);
--				ret = -ERANGE;
--				goto out_unlock;
-+				pr_err_ratelimited("User address not aligned, 0x%llx, size order %llu\n",
-+					  inv_info->addr_info.addr, size);
- 			}
- 
- 			/*
++		/*
++		 * Do not allow multiple bindings of the same device-PASID since
++		 * there is only one SL page tables per PASID. We may revisit
++		 * once sharing PGD across domains are supported.
++		 */
+ 		for_each_svm_dev(sdev, svm, dev) {
+-			/*
+-			 * For devices with aux domains, we should allow
+-			 * multiple bind calls with the same PASID and pdev.
+-			 */
+-			if (iommu_dev_feature_enabled(dev,
+-						      IOMMU_DEV_FEAT_AUX)) {
+-				sdev->users++;
+-			} else {
+-				dev_warn_ratelimited(dev,
+-						     "Already bound with PASID %u\n",
+-						     svm->pasid);
+-				ret = -EBUSY;
+-			}
++			dev_warn_ratelimited(dev,
++					     "Already bound with PASID %u\n",
++					     svm->pasid);
++			ret = -EBUSY;
+ 			goto out;
+ 		}
+ 	} else {
 -- 
 2.7.4
 
