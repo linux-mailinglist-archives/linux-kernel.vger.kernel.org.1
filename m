@@ -2,122 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6732D2169D0
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 12:18:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0885F2169D7
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 12:18:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728189AbgGGKRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 06:17:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725944AbgGGKRA (ORCPT
+        id S1728298AbgGGKR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 06:17:29 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:62255 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726946AbgGGKRM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 06:17:00 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEA32C061755
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 03:16:59 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id f7so41530991wrw.1
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 03:16:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=HXwAK5e9O3NfsiXPR7kk8AeqU5Nw2ls4PmOWf/vu7lg=;
-        b=qrsas+PZEhVKEED/gwuG+M3fvZFc9iTyVZ9kC/kfAQJtySYFhAXFVpKKKmyVPzJsef
-         fCJFw/7CBzrR/D0H4Ibl8ook5vPEI7nkN6UMPeetQWBt4M+Kx0Tquh3FeHQKe+00wO+m
-         GqDseXgUs910Lbr6v6S1qDkgnl8n1Y7UIIuytj30iKNt1AOZABZ9LymxXsaWj6zDFYGe
-         XI8qHYoQ/wOSdxtGcESFe8ZYMktICg66e53gTSweXye36XFgFl6kw5awQcpN8EpYSN23
-         8sMm+Tp30g9gUcdoX30JFTNJlS2oJp3wB6d8NA/Z4UGG+OpYufSxlq2WEns0mrZb6qvR
-         vMcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=HXwAK5e9O3NfsiXPR7kk8AeqU5Nw2ls4PmOWf/vu7lg=;
-        b=fEFHC1QuTUzlshDqWv5B68txxxlwWXUKeVDzyhE6SxOzIwvdsI+ti6eakoqEfVuj8v
-         bIrBafhNVHysjCYbqFv9/DYxEERrEWXa7HfweFDMW1HFnVsIVVt4z5XzupjdVlRuYOn4
-         N3Vs6F6w99Wk3J2YouNd9w1B/iPlHRE30/m/sWU923LcLoDCPqn0vh/U8DNh4vlnd48j
-         kztALsxuiSh+n658JOlVz2KGhlDQACIJNiZLyHwUB/+ibB0u11GwgJrN2o0uvXh7cTN5
-         xtkmMIJErx4DTog61ZQfAb1dEsai8ZY0ct7c3ZP0UA50oMtkv/54wl2f5SO+p3LyMafa
-         KvGA==
-X-Gm-Message-State: AOAM533ODvUtL5uzm7ErXzOiqkrRVTNObQEfAal13368fF/be4odxn1v
-        s9oxhUNX4osGbSGXgsxs2XYu4A==
-X-Google-Smtp-Source: ABdhPJw+rbiTfjvaZjvfOEvXP2PwVD2bXCDT7mTpQWEQuNXSkRYtQLVPb8Dx6k7fktqcFGcvxY+9RA==
-X-Received: by 2002:a5d:6802:: with SMTP id w2mr51092373wru.88.1594117018607;
-        Tue, 07 Jul 2020 03:16:58 -0700 (PDT)
-Received: from localhost.localdomain ([2.27.35.206])
-        by smtp.gmail.com with ESMTPSA id z8sm469409wmg.39.2020.07.07.03.16.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jul 2020 03:16:58 -0700 (PDT)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz,
-        tiwai@suse.com
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org, Lee Jones <lee.jones@linaro.org>,
-        Timur Tabi <timur@kernel.org>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Vladimir Barinov <vbarinov@embeddedalley.com>,
-        linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH 08/28] ASoC: fsl: fsl_spdif: Update 'struct fsl_spdif_priv's descriptions
-Date:   Tue,  7 Jul 2020 11:16:22 +0100
-Message-Id: <20200707101642.1747944-9-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200707101642.1747944-1-lee.jones@linaro.org>
-References: <20200707101642.1747944-1-lee.jones@linaro.org>
+        Tue, 7 Jul 2020 06:17:12 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1594117031; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=BXI021rh3NXH5BcDC2Muu+0d+4q5W0LWbpYi2AY+2A4=; b=SDfdxurnYwJm8mP9s52bhnsKVxz9zZVXYnADFasVHWRiQtZIfjQsfrLjT1c35c6HeXV9oQom
+ wqS4C9ITvrVTccAbMBFazAejDWeTB9lDkrczE4wCaRxppsIX74A/54vOVtv3tNzEFZu6/7mJ
+ Rv0N3AUyUAp3IfamK7q+BqItxNE=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n17.prod.us-west-2.postgun.com with SMTP id
+ 5f044b93d8ca07a573e8c852 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 07 Jul 2020 10:16:51
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 70EB7C433CA; Tue,  7 Jul 2020 10:16:51 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.0.15] (unknown [183.83.138.47])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: akashast)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id ACB36C433C6;
+        Tue,  7 Jul 2020 10:16:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org ACB36C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=akashast@codeaurora.org
+Subject: Re: [PATCH 1/3] spi: spi-geni-qcom: Avoid clock setting if not needed
+To:     Douglas Anderson <dianders@chromium.org>,
+        Mark Brown <broonie@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, mkshah@codeaurora.org,
+        swboyd@chromium.org, georgi.djakov@linaro.org,
+        ctheegal@codeaurora.org, mka@chromium.org,
+        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
+References: <20200702004509.2333554-1-dianders@chromium.org>
+ <20200701174506.1.Icfdcee14649fc0a6c38e87477b28523d4e60bab3@changeid>
+From:   Akash Asthana <akashast@codeaurora.org>
+Message-ID: <1b9f0313-0e8f-0a75-b0a5-b6a768af0a7a@codeaurora.org>
+Date:   Tue, 7 Jul 2020 15:46:22 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200701174506.1.Icfdcee14649fc0a6c38e87477b28523d4e60bab3@changeid>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Two descriptions for 'soc' and 'regcache_srpc' were missing.  Add them.
 
-Fixes the following W=1 kernel build warning(s):
+On 7/2/2020 6:15 AM, Douglas Anderson wrote:
+> Every SPI transfer could have a different clock rate.  The
+> spi-geni-qcom controller code to deal with this was never very well
+> optimized and has always had a lot of code plus some calls into the
+> clk framework which, at the very least, would grab a mutex.  However,
+> until recently, the overhead wasn't _too_ much.  That changed with
+> commit 0e3b8a81f5df ("spi: spi-geni-qcom: Add interconnect support")
+> we're now calling geni_icc_set_bw(), which leads to a bunch of math
+> plus:
+>    geni_icc_set_bw()
+>      icc_set_bw()
+>        apply_constraints()
+>          qcom_icc_set()
+>            qcom_icc_bcm_voter_commit()
+>              rpmh_invalidate()
+>              rpmh_write_batch()
+> ...and those rpmh commands can be a bit beefy if you call them too
+> often.
 
- sound/soc/fsl/fsl_spdif.c:125: warning: Function parameter or member 'soc' not described in 'fsl_spdif_priv'
- sound/soc/fsl/fsl_spdif.c:125: warning: Function parameter or member 'regcache_srpc' not described in 'fsl_spdif_priv'
+Reviewed-by: Akash Asthana<akashast@codeaurora.org>
 
-Cc: Timur Tabi <timur@kernel.org>
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Xiubo Li <Xiubo.Lee@gmail.com>
-Cc: Fabio Estevam <festevam@gmail.com>
-Cc: Vladimir Barinov <vbarinov@embeddedalley.com>
-Cc: linuxppc-dev@lists.ozlabs.org
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- sound/soc/fsl/fsl_spdif.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-index 7aa3bdec5b6b5..f0b2375a9246f 100644
---- a/sound/soc/fsl/fsl_spdif.c
-+++ b/sound/soc/fsl/fsl_spdif.c
-@@ -83,6 +83,7 @@ struct spdif_mixer_control {
- /**
-  * struct fsl_spdif_priv - Freescale SPDIF private data
-  *
-+ * @soc: SoC specific data
-  * @fsl_spdif_control: SPDIF control data
-  * @cpu_dai_drv: cpu dai driver
-  * @pdev: platform device pointer
-@@ -100,6 +101,7 @@ struct spdif_mixer_control {
-  * @spbaclk: SPBA clock (optional, depending on SoC design)
-  * @dma_params_tx: DMA parameters for transmit channel
-  * @dma_params_rx: DMA parameters for receive channel
-+ * @regcache_srpc: regcache for SRPC
-  */
- struct fsl_spdif_priv {
- 	const struct fsl_spdif_soc_data *soc;
-@@ -120,7 +122,6 @@ struct fsl_spdif_priv {
- 	struct clk *spbaclk;
- 	struct snd_dmaengine_dai_dma_data dma_params_tx;
- 	struct snd_dmaengine_dai_dma_data dma_params_rx;
--	/* regcache for SRPC */
- 	u32 regcache_srpc;
- };
- 
 -- 
-2.25.1
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,\na Linux Foundation Collaborative Project
 
