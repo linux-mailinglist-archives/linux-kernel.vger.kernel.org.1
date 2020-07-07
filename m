@@ -2,98 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1C842169D9
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 12:18:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 097AD2169E0
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 12:18:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728325AbgGGKRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 06:17:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41452 "EHLO
+        id S1728391AbgGGKSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 06:18:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728246AbgGGKRS (ORCPT
+        with ESMTP id S1728248AbgGGKRT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 06:17:18 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8604DC061755
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 03:17:17 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id z13so44551976wrw.5
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 03:17:17 -0700 (PDT)
+        Tue, 7 Jul 2020 06:17:19 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA26BC08C5DB
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 03:17:18 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id k6so44564617wrn.3
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 03:17:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=EXLqTyUKMLj4M51ntYR1QA4V9xA1YrzmuNUETaX0PBA=;
-        b=QGMjHJlQ9LWikvX6Na5JwK9UPUmF/DNUlzfwClDFWUzxLNI3vHyW3hm6xlfswr2AV8
-         wkFMnZoIWoQ8W/vbLtLairtyr3oUjXlaXBn79y60eIPJCInMUGmqhIwj5oH14AoPyTuW
-         PpuseWJtIwwqJ+wYUvHy5dH0KlMSlu3UwlLaMIwhi5Ru3QdAjHI0pt0KyOvCYdK+XJuB
-         g5A8bJoPOmMZSw0D/+fiy6siWxtEreitU2khKnrX6y7K+Wbf/i7VhqyVGk1Vfn7qfBdZ
-         zdC4l9jK22GpHnEbOHuseblQoFf5gMl+OxkiwHcQ/RKvu1QoDmvGzarx+CMpe8vRPBXe
-         tr2g==
+        bh=c4/atXJGhj1n0uTQI5cYV/gQNs+sjaOZMgJsAAMgfWA=;
+        b=QoVnhhknZYVxWfl9mcL1Hgta3/3Af8FucpK51zcYOzuI1LPngqjVM8rBVmQqjLgh7E
+         1Uw5NQ/B6U3SUgvxl1hiVmj1hwCKO9EaY5U/DRBIuNUsVN/pN8KwuthGGhnUKBnKlSQB
+         a4d7SMY6AFyJbq8ZR4ADQrnNHzUMD5ziAGLPIcECCntkWmbzjXnZofBCZFbWuKIPcqcC
+         wAZxm9Rtksb3/dunSciAduuH/UVb0HHOL8I3Rsr26SmQn3plTAqH/gh7J1xC4qLizdp6
+         nnU60q8xCFLFZxL4M3qkB9cNqUBR/rnNppyXEvYp/IwKxkobwyQx6HJWu9+ptWGyT82Y
+         JKlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=EXLqTyUKMLj4M51ntYR1QA4V9xA1YrzmuNUETaX0PBA=;
-        b=dwAYJNAmcDrA/z6dZEcGjqE/uI7z5zU9cP8JaJ9QKfoo+N3q8gRYSOR0IOQhEX8BgH
-         oNY+c/ZpOGCLakvZtVZPgq6vdaDOfqcPnu2go9UO25Try+7N2Ur7Go3kJrffESJbP7uW
-         IwgP8RGUhNpN/84YzEltH2cj72nYeDxOmWg7y6GiucEEU/52SXR+CFBSCOUOI6dozagX
-         gezPjdsvFLKDgc7VkQMfWwsBVOjo0Ya2mUF667lBWIGVCmzNwPPnlXd5se0Jy9ayv5P1
-         J3ka/jdX0XzhFGIcGAaY244aQKYNQsCwuv0zLhsp4t/dNHevbkYgJEgCAyeG3Glqp11+
-         OPrg==
-X-Gm-Message-State: AOAM532ZvXddl1Bl7yao4o6Lfub4RAZHamr9k3oMznR5nb5qd/zcpWt/
-        uccHRejcZVZE/uyJHt9A6DtEcQ==
-X-Google-Smtp-Source: ABdhPJxqAC3BtmcDgPQdVNfB2mynSSt1Kjfhgyv7zPY1kPqaosnB4BBwP2w2zFQNZfEfX5SODLsnZw==
-X-Received: by 2002:adf:dfd1:: with SMTP id q17mr50235597wrn.94.1594117036243;
-        Tue, 07 Jul 2020 03:17:16 -0700 (PDT)
+        bh=c4/atXJGhj1n0uTQI5cYV/gQNs+sjaOZMgJsAAMgfWA=;
+        b=NllQTsJFU3aOpNpa0WsPgm4V7kwXlsWLApNpLo2S9R0w0+fNgCUU+o8lYVohjilNHW
+         Y4afYS6rh6w3IFyZ0AQ5wxYtif/uIzFD5cHOCWZ1JUozxovIKeN1UXeOBZbnKamjc9Kb
+         hRXbffOdokFHLJWnQehCG/AIwh6VYgfyUnWZLaFkvqCRTjtmfcBYjscbgZrq1AX1aFoO
+         DAyj9Qht6rX43YoF6pwBpYpIKcGIKzODN7j3RUyXrrFoGddIzBxCx6fc5Ua/a42ndR5v
+         L8dqn6Gx0oceHIGUavK5INY1btjaOMJ2WylXgudfHUM9LNb5ah8TrjsABF10aGESRJjQ
+         bRfw==
+X-Gm-Message-State: AOAM533VepPvbttDtj3w4QVBxMpHgZChyH6dpPtYIgsm8hfdYjXwFn7h
+        woxjVObtA0m+0iJ1axI5BJPJBQ==
+X-Google-Smtp-Source: ABdhPJw9oo8pfsuehCGY22+GnK13HnMCljfQRckQGf4lIiSb36XKwJQOyruMnCDQuGqbsropcrAgFw==
+X-Received: by 2002:adf:e60e:: with SMTP id p14mr51698572wrm.31.1594117037406;
+        Tue, 07 Jul 2020 03:17:17 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.206])
-        by smtp.gmail.com with ESMTPSA id z8sm469409wmg.39.2020.07.07.03.17.15
+        by smtp.gmail.com with ESMTPSA id z8sm469409wmg.39.2020.07.07.03.17.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jul 2020 03:17:15 -0700 (PDT)
+        Tue, 07 Jul 2020 03:17:16 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz,
         tiwai@suse.com
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         alsa-devel@alsa-project.org, Lee Jones <lee.jones@linaro.org>,
-        Richard Purdie <richard@openedhand.com>
-Subject: [PATCH 23/28] ASoC: soc-ac97: Demote seemingly unintentional kerneldoc header
-Date:   Tue,  7 Jul 2020 11:16:37 +0100
-Message-Id: <20200707101642.1747944-24-lee.jones@linaro.org>
+        Paul Cercueil <paul@crapouillou.net>,
+        ter Huurne <maarten@treewalker.org>
+Subject: [PATCH 24/28] ASoC: codecs: jz4770: Remove defined but never used variable 'mic_boost_tlv'
+Date:   Tue,  7 Jul 2020 11:16:38 +0100
+Message-Id: <20200707101642.1747944-25-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200707101642.1747944-1-lee.jones@linaro.org>
 References: <20200707101642.1747944-1-lee.jones@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the only use of kerneldoc in the sourcefile and no
-descriptions are provided.
-
 Fixes the following W=1 kernel build warning(s):
 
- sound/soc/soc-ac97.c:402: warning: Function parameter or member 'ops' not described in 'snd_soc_set_ac97_ops_of_reset'
- sound/soc/soc-ac97.c:402: warning: Function parameter or member 'pdev' not described in 'snd_soc_set_ac97_ops_of_reset'
+ In file included from include/sound/tlv.h:10,
+ from sound/soc/codecs/jz4770.c:19:
+ sound/soc/codecs/jz4770.c:306:35: warning: ‘mic_boost_tlv’ defined but not used [-Wunused-const-variable=]
+ 306 | static const DECLARE_TLV_DB_SCALE(mic_boost_tlv, 0, 400, 0);
+ | ^~~~~~~~~~~~~
+ include/uapi/sound/tlv.h:64:15: note: in definition of macro ‘SNDRV_CTL_TLVD_DECLARE_DB_SCALE’
+ 64 | unsigned int name[] = { | ^~~~
+ sound/soc/codecs/jz4770.c:306:14: note: in expansion of macro ‘DECLARE_TLV_DB_SCALE’
+ 306 | static const DECLARE_TLV_DB_SCALE(mic_boost_tlv, 0, 400, 0);
+ | ^~~~~~~~~~~~~~~~~~~~
 
-Cc: Richard Purdie <richard@openedhand.com>
+Cc: Paul Cercueil <paul@crapouillou.net>
+Cc: ter Huurne <maarten@treewalker.org>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- sound/soc/soc-ac97.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/jz4770.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/soc-ac97.c b/sound/soc/soc-ac97.c
-index 906106ed8ca14..af789552a9d4c 100644
---- a/sound/soc/soc-ac97.c
-+++ b/sound/soc/soc-ac97.c
-@@ -391,7 +391,7 @@ int snd_soc_set_ac97_ops(struct snd_ac97_bus_ops *ops)
- }
- EXPORT_SYMBOL_GPL(snd_soc_set_ac97_ops);
+diff --git a/sound/soc/codecs/jz4770.c b/sound/soc/codecs/jz4770.c
+index 34775aa624024..4dee585761c24 100644
+--- a/sound/soc/codecs/jz4770.c
++++ b/sound/soc/codecs/jz4770.c
+@@ -303,7 +303,6 @@ static int jz4770_codec_digital_mute(struct snd_soc_dai *dai, int mute)
+ static const DECLARE_TLV_DB_MINMAX_MUTE(dac_tlv, -3100, 0);
+ static const DECLARE_TLV_DB_SCALE(adc_tlv, 0, 100, 0);
+ static const DECLARE_TLV_DB_MINMAX(out_tlv, -2500, 600);
+-static const DECLARE_TLV_DB_SCALE(mic_boost_tlv, 0, 400, 0);
+ static const DECLARE_TLV_DB_SCALE(linein_tlv, -2500, 100, 0);
  
--/**
-+/*
-  * snd_soc_set_ac97_ops_of_reset - Set ac97 ops with generic ac97 reset functions
-  *
-  * This function sets the reset and warm_reset properties of ops and parses
+ /* Unconditional controls. */
 -- 
 2.25.1
 
