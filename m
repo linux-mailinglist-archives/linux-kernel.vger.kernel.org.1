@@ -2,149 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67D6C217986
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 22:36:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7121217988
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 22:37:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728924AbgGGUgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 16:36:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727995AbgGGUgw (ORCPT
+        id S1728931AbgGGUhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 16:37:17 -0400
+Received: from ivanoab7.miniserver.com ([37.128.132.42]:58292 "EHLO
+        www.kot-begemot.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727995AbgGGUhR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 16:36:52 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F521C061755;
-        Tue,  7 Jul 2020 13:36:52 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id x8so16315231plm.10;
-        Tue, 07 Jul 2020 13:36:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=hZeUOpJQcEzlGIlg9oeO7yAlZJGbtEx7VcHRTHdaPHU=;
-        b=gWh2/ziM4dgkXVl4R62ETmGK47WH9z9pI1OxYS/fPuNTPSw729Q8CqUHHwRh2Q1Jc7
-         kAKXrPrjsrtGGQveWol+5BdvwVMO/08Ryzh1jzWuVpE8XuvkmbHblPXJkYRowrUSr4Nr
-         T5q6y8KbmCQXldRgh9W5k4FwxiRQZvimCzAUIRDKdfkJF8ihgrci9e/gThaxPdS+gd1S
-         P7ANwWYgsBOpZ7yCeJrEPV5j54iw15NEe5AA+t6H98xXV6fuH7kpHUiVRbXkZSvZVVwH
-         qsOfNzq9q9pIsuwz96/Y6BZuk/yVoEa2jxjzcpMwd8hf+Fx5a7mF2/Cum24To9d5I6Ve
-         q5zA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=hZeUOpJQcEzlGIlg9oeO7yAlZJGbtEx7VcHRTHdaPHU=;
-        b=cXTgUYBVyscCRA0FVLXTOgAh6S6RtnyN/k9w2W+r3NO3TisiSQaS4i2bILm3CHLQqQ
-         CyBb0X/7InmMmkX4mac2AIpxViv06VNSFFqzuEWrtQd+aSMm1XYRyjyMx8ztj/CULk5j
-         kAIdcxD53kQtHVT6lM8o1eE5Op8ZnNl0o64iNqjdex2eQ5Zm+99BEy7KTt4z6eF5G5En
-         VdSfZrlMBYjzs4Ue/xxd4HLrDJneeLC+ZVQqFRZohKaVmKDzMU33Gx8C73vPfZcU/8MV
-         Z5KCE3gaGUtsYl2hEJzX6QGC5s4/znHZlPf3bUM4/Gv94E1OGJIvE6R4qItcMmfBp54l
-         jJdg==
-X-Gm-Message-State: AOAM532VFj0FfyI/9S+j9dys6Jecf77JhDHornXTvXZm4uDDvlOKDcbY
-        EQ+eBpW1+3vDBYqNAXAVRuU=
-X-Google-Smtp-Source: ABdhPJzLLECROxtVUUBHzDccmAZZ9FM/J/JHF97igPeg9tNrbfzr45IRJdns8aTkdIz+FrDboJGQ+w==
-X-Received: by 2002:a17:90a:148:: with SMTP id z8mr6497903pje.197.1594154211785;
-        Tue, 07 Jul 2020 13:36:51 -0700 (PDT)
-Received: from localhost ([2601:1c0:5200:a6:307:a401:7b76:c6e5])
-        by smtp.gmail.com with ESMTPSA id u13sm3069925pjy.40.2020.07.07.13.36.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jul 2020 13:36:50 -0700 (PDT)
-From:   Rob Clark <robdclark@gmail.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     Jordan Crouse <jcrouse@codeaurora.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Eric Anholt <eric@anholt.net>,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Ben Dooks <ben.dooks@codethink.co.uk>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
-        freedreno@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
-        GPU), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 2/2] drm/msm/adreno: un-open-code some packets
-Date:   Tue,  7 Jul 2020 13:35:00 -0700
-Message-Id: <20200707203529.2098979-3-robdclark@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200707203529.2098979-1-robdclark@gmail.com>
-References: <20200707203529.2098979-1-robdclark@gmail.com>
+        Tue, 7 Jul 2020 16:37:17 -0400
+Received: from tun252.jain.kot-begemot.co.uk ([192.168.18.6] helo=jain.kot-begemot.co.uk)
+        by www.kot-begemot.co.uk with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <anton.ivanov@cambridgegreys.com>)
+        id 1jsuKy-0005md-NI; Tue, 07 Jul 2020 20:37:09 +0000
+Received: from madding.kot-begemot.co.uk ([192.168.3.98])
+        by jain.kot-begemot.co.uk with esmtps (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <anton.ivanov@cambridgegreys.com>)
+        id 1jsuKw-0007dV-Pc; Tue, 07 Jul 2020 21:37:08 +0100
+Subject: Re: [PATCH] Replace HTTP links with HTTPS ones: user-mode Linux
+To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        jdike@addtoit.com, richard@nod.at, corbet@lwn.net,
+        johannes.berg@intel.com, brendanhiggins@google.com,
+        erelx.geron@intel.com, linux@roeck-us.net, arnd@arndb.de,
+        linux-um@lists.infradead.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200707203246.53158-1-grandmaster@al2klimov.de>
+From:   Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Organization: Cambridge Greys
+Message-ID: <1d1838b0-91f6-e821-32f6-abb8d497cd74@cambridgegreys.com>
+Date:   Tue, 7 Jul 2020 21:37:06 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200707203246.53158-1-grandmaster@al2klimov.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Spam-Score: -1.0
+X-Spam-Score: -1.0
+X-Clacks-Overhead: GNU Terry Pratchett
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Clark <robdclark@chromium.org>
+On 07/07/2020 21:32, Alexander A. Klimov wrote:
+> Rationale:
+> Reduces attack surface on kernel devs opening the links for MITM
+> as HTTPS traffic is much harder to manipulate.
+> 
+> Deterministic algorithm:
+> For each file:
+>    If not .svg:
+>      For each line:
+>        If doesn't contain `\bxmlns\b`:
+>          For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+>            If both the HTTP and HTTPS versions
+>            return 200 OK and serve the same content:
+>              Replace HTTP with HTTPS.
+> 
+> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+> ---
+>   Continuing my work started at 93431e0607e5.
+>   See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+> 
+>   If there are any URLs to be removed completely or at least not HTTPSified:
+>   Just clearly say so and I'll *undo my change*.
+>   See also: https://lkml.org/lkml/2020/6/27/64
+> 
+>   If there are any valid, but yet not changed URLs:
+>   See: https://lkml.org/lkml/2020/6/26/837
+> 
+>   If you apply the patch, please let me know.
+>   Rationale:
+>   I'd like not to submit patches much faster than you maintainers apply them.
+> 
+>   Documentation/virt/uml/user_mode_linux.rst | 2 +-
+>   arch/um/drivers/Kconfig                    | 2 +-
+>   arch/um/drivers/harddog_kern.c             | 2 +-
+>   3 files changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/Documentation/virt/uml/user_mode_linux.rst b/Documentation/virt/uml/user_mode_linux.rst
+> index de0f0b2c9d5b..775d3de84331 100644
+> --- a/Documentation/virt/uml/user_mode_linux.rst
+> +++ b/Documentation/virt/uml/user_mode_linux.rst
+> @@ -3753,7 +3753,7 @@ Note:
+>   
+>   
+>     Documentation on IP Masquerading, and SNAT, can be found at
+> -  http://www.netfilter.org.
+> +  https://www.netfilter.org.
+>   
+>   
+>     If you can reach the local net, but not the outside Internet, then
+> diff --git a/arch/um/drivers/Kconfig b/arch/um/drivers/Kconfig
+> index 9160ead56e33..85e170149e99 100644
+> --- a/arch/um/drivers/Kconfig
+> +++ b/arch/um/drivers/Kconfig
+> @@ -259,7 +259,7 @@ config UML_NET_VDE
+>   	To use this form of networking, you will need to run vde_switch
+>   	on the host.
+>   
+> -	For more information, see <http://wiki.virtualsquare.org/>
+> +	For more information, see <https://wiki.virtualsquare.org/>
+>   	That site has a good overview of what VDE is and also examples
+>   	of the UML command line to use to enable VDE networking.
+>   
+> diff --git a/arch/um/drivers/harddog_kern.c b/arch/um/drivers/harddog_kern.c
+> index e6d4f43deba8..7a39b8b7ae55 100644
+> --- a/arch/um/drivers/harddog_kern.c
+> +++ b/arch/um/drivers/harddog_kern.c
+> @@ -3,7 +3,7 @@
+>    *	SoftDog	0.05:	A Software Watchdog Device
+>    *
+>    *	(c) Copyright 1996 Alan Cox <alan@redhat.com>, All Rights Reserved.
+> - *				http://www.redhat.com
+> + *				https://www.redhat.com
+>    *
+>    *	This program is free software; you can redistribute it and/or
+>    *	modify it under the terms of the GNU General Public License
+> 
 
-Signed-off-by: Rob Clark <robdclark@chromium.org>
----
- drivers/gpu/drm/msm/adreno/a5xx_gpu.c |  5 +++--
- drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 11 +++++++----
- 2 files changed, 10 insertions(+), 6 deletions(-)
+We should really try to finish the new documentation. The one in the 
+kernel tree is very out of date.
 
-diff --git a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-index d95970a73fb4..7f4526b3283d 100644
---- a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-@@ -186,7 +186,8 @@ static void a5xx_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit,
- 	 * timestamp is written to the memory and then triggers the interrupt
- 	 */
- 	OUT_PKT7(ring, CP_EVENT_WRITE, 4);
--	OUT_RING(ring, CACHE_FLUSH_TS | (1 << 31));
-+	OUT_RING(ring, CP_EVENT_WRITE_0_EVENT(CACHE_FLUSH_TS) |
-+		CP_EVENT_WRITE_0_IRQ);
- 	OUT_RING(ring, lower_32_bits(rbmemptr(ring, fence)));
- 	OUT_RING(ring, upper_32_bits(rbmemptr(ring, fence)));
- 	OUT_RING(ring, submit->seqno);
-@@ -730,7 +731,7 @@ static int a5xx_hw_init(struct msm_gpu *gpu)
- 	 */
- 	if (adreno_is_a530(adreno_gpu)) {
- 		OUT_PKT7(gpu->rb[0], CP_EVENT_WRITE, 1);
--		OUT_RING(gpu->rb[0], 0x0F);
-+		OUT_RING(gpu->rb[0], CP_EVENT_WRITE_0_EVENT(STAT_EVENT));
- 
- 		gpu->funcs->flush(gpu, gpu->rb[0]);
- 		if (!a5xx_idle(gpu, gpu->rb[0]))
-diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-index 7768557cdfb2..1ed325bea430 100644
---- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-@@ -74,7 +74,9 @@ static void get_stats_counter(struct msm_ringbuffer *ring, u32 counter,
- 		u64 iova)
- {
- 	OUT_PKT7(ring, CP_REG_TO_MEM, 3);
--	OUT_RING(ring, counter | (1 << 30) | (2 << 18));
-+	OUT_RING(ring, CP_REG_TO_MEM_0_REG(counter) |
-+		CP_REG_TO_MEM_0_CNT(2) |
-+		CP_REG_TO_MEM_0_64B);
- 	OUT_RING(ring, lower_32_bits(iova));
- 	OUT_RING(ring, upper_32_bits(iova));
- }
-@@ -102,10 +104,10 @@ static void a6xx_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit,
- 
- 	/* Invalidate CCU depth and color */
- 	OUT_PKT7(ring, CP_EVENT_WRITE, 1);
--	OUT_RING(ring, PC_CCU_INVALIDATE_DEPTH);
-+	OUT_RING(ring, CP_EVENT_WRITE_0_EVENT(PC_CCU_INVALIDATE_DEPTH));
- 
- 	OUT_PKT7(ring, CP_EVENT_WRITE, 1);
--	OUT_RING(ring, PC_CCU_INVALIDATE_COLOR);
-+	OUT_RING(ring, CP_EVENT_WRITE_0_EVENT(PC_CCU_INVALIDATE_COLOR));
- 
- 	/* Submit the commands */
- 	for (i = 0; i < submit->nr_cmds; i++) {
-@@ -139,7 +141,8 @@ static void a6xx_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit,
- 	 * timestamp is written to the memory and then triggers the interrupt
- 	 */
- 	OUT_PKT7(ring, CP_EVENT_WRITE, 4);
--	OUT_RING(ring, CACHE_FLUSH_TS | (1 << 31));
-+	OUT_RING(ring, CP_EVENT_WRITE_0_EVENT(CACHE_FLUSH_TS) |
-+		CP_EVENT_WRITE_0_IRQ);
- 	OUT_RING(ring, lower_32_bits(rbmemptr(ring, fence)));
- 	OUT_RING(ring, upper_32_bits(rbmemptr(ring, fence)));
- 	OUT_RING(ring, submit->seqno);
+The draft is here: https://github.com/kot-begemot-uk/uml-howto-v2
+
+
 -- 
-2.26.2
-
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
