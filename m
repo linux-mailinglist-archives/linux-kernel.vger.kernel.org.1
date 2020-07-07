@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70C6A2170E0
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:24:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1D63217093
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:24:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728728AbgGGPVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:21:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33876 "EHLO mail.kernel.org"
+        id S1728735AbgGGPSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:18:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58334 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728100AbgGGPVj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:21:39 -0400
+        id S1729263AbgGGPSu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 11:18:50 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 631B92065D;
-        Tue,  7 Jul 2020 15:21:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6AB1320738;
+        Tue,  7 Jul 2020 15:18:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594135298;
-        bh=XTimTEqhE29dFUv3QdkSkPZe+dBL0kqNKWi0Km7x8j8=;
+        s=default; t=1594135130;
+        bh=6Tc+4crn+p9A5zdLf83nRerooyDn77JqdPDXeS+DMfk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sDEiCxN8PQPcgEcidX1TDCvaFDy70+KcKc3kvCpV593AP4MpJmF/DCfkqGUgttbJv
-         1ugy7GloSC0IlOlFjdZNl6d1DiSDBZM847+HMmGcGNCUPS7H7EMwNL9Cqmq1kFfOzj
-         CUk65A5u46g35fOTEq3AaveSfY0mBisiB6OCCe4A=
+        b=p8qTvjt/VxIVoP9MFoiJk7fz/xkisCBD1+L9PW1QsGtNPo7awnA74zRLncuwiLmrg
+         sHrLliS8by4lWgi+z6/j5A4o1jocIj2u1a1opST1/gTCZ5un9zxBjkStmeflaCBi14
+         Ng0B7Z4+tf7x1BD1mvOfk8kzuY1plWrdq1/pRyoI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "J. Bruce Fields" <bfields@redhat.com>,
-        Sasha Levin <sashal@kernel.org>, Tejun Heo <tj@kernel.org>
-Subject: [PATCH 5.4 34/65] kthread: save thread function
-Date:   Tue,  7 Jul 2020 17:17:13 +0200
-Message-Id: <20200707145754.124544082@linuxfoundation.org>
+        stable@vger.kernel.org, Hou Tao <houtao1@huawei.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Ming Lei <ming.lei@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 22/36] virtio-blk: free vblk-vqs in error path of virtblk_probe()
+Date:   Tue,  7 Jul 2020 17:17:14 +0200
+Message-Id: <20200707145750.188557862@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200707145752.417212219@linuxfoundation.org>
-References: <20200707145752.417212219@linuxfoundation.org>
+In-Reply-To: <20200707145749.130272978@linuxfoundation.org>
+References: <20200707145749.130272978@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,87 +45,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: J. Bruce Fields <bfields@redhat.com>
+From: Hou Tao <houtao1@huawei.com>
 
-[ Upstream commit 52782c92ac85c4e393eb4a903a62e6c24afa633f ]
+[ Upstream commit e7eea44eefbdd5f0345a0a8b80a3ca1c21030d06 ]
 
-It's handy to keep the kthread_fn just as a unique cookie to identify
-classes of kthreads.  E.g. if you can verify that a given task is
-running your thread_fn, then you may know what sort of type kthread_data
-points to.
+Else there will be memory leak if alloc_disk() fails.
 
-We'll use this in nfsd to pass some information into the vfs.  Note it
-will need kthread_data() exported too.
-
-Original-patch-by: Tejun Heo <tj@kernel.org>
-Signed-off-by: J. Bruce Fields <bfields@redhat.com>
+Fixes: 6a27b656fc02 ("block: virtio-blk: support multi virt queues per virtio-blk device")
+Signed-off-by: Hou Tao <houtao1@huawei.com>
+Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+Reviewed-by: Ming Lei <ming.lei@redhat.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/kthread.h |  1 +
- kernel/kthread.c        | 17 +++++++++++++++++
- 2 files changed, 18 insertions(+)
+ drivers/block/virtio_blk.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/linux/kthread.h b/include/linux/kthread.h
-index 0f9da966934e2..59bbc63ff8637 100644
---- a/include/linux/kthread.h
-+++ b/include/linux/kthread.h
-@@ -57,6 +57,7 @@ bool kthread_should_stop(void);
- bool kthread_should_park(void);
- bool __kthread_should_park(struct task_struct *k);
- bool kthread_freezable_should_stop(bool *was_frozen);
-+void *kthread_func(struct task_struct *k);
- void *kthread_data(struct task_struct *k);
- void *kthread_probe_data(struct task_struct *k);
- int kthread_park(struct task_struct *k);
-diff --git a/kernel/kthread.c b/kernel/kthread.c
-index b262f47046ca4..543dff6b576c7 100644
---- a/kernel/kthread.c
-+++ b/kernel/kthread.c
-@@ -46,6 +46,7 @@ struct kthread_create_info
- struct kthread {
- 	unsigned long flags;
- 	unsigned int cpu;
-+	int (*threadfn)(void *);
- 	void *data;
- 	struct completion parked;
- 	struct completion exited;
-@@ -152,6 +153,20 @@ bool kthread_freezable_should_stop(bool *was_frozen)
- }
- EXPORT_SYMBOL_GPL(kthread_freezable_should_stop);
- 
-+/**
-+ * kthread_func - return the function specified on kthread creation
-+ * @task: kthread task in question
-+ *
-+ * Returns NULL if the task is not a kthread.
-+ */
-+void *kthread_func(struct task_struct *task)
-+{
-+	if (task->flags & PF_KTHREAD)
-+		return to_kthread(task)->threadfn;
-+	return NULL;
-+}
-+EXPORT_SYMBOL_GPL(kthread_func);
-+
- /**
-  * kthread_data - return data value specified on kthread creation
-  * @task: kthread task in question
-@@ -164,6 +179,7 @@ void *kthread_data(struct task_struct *task)
- {
- 	return to_kthread(task)->data;
- }
-+EXPORT_SYMBOL_GPL(kthread_data);
- 
- /**
-  * kthread_probe_data - speculative version of kthread_data()
-@@ -237,6 +253,7 @@ static int kthread(void *_create)
- 		do_exit(-ENOMEM);
- 	}
- 
-+	self->threadfn = threadfn;
- 	self->data = data;
- 	init_completion(&self->exited);
- 	init_completion(&self->parked);
+diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
+index 9be54e5ef96ae..075523777a4a9 100644
+--- a/drivers/block/virtio_blk.c
++++ b/drivers/block/virtio_blk.c
+@@ -882,6 +882,7 @@ static int virtblk_probe(struct virtio_device *vdev)
+ 	put_disk(vblk->disk);
+ out_free_vq:
+ 	vdev->config->del_vqs(vdev);
++	kfree(vblk->vqs);
+ out_free_vblk:
+ 	kfree(vblk);
+ out_free_index:
 -- 
 2.25.1
 
