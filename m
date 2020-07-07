@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 084D721725F
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:44:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 260A621726D
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:44:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728724AbgGGPcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:32:14 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:32747 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728135AbgGGPcK (ORCPT
+        id S1727834AbgGGPdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:33:03 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:28019 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730120AbgGGPc5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:32:10 -0400
+        Tue, 7 Jul 2020 11:32:57 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594135928;
+        s=mimecast20190719; t=1594135976;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=MuCscFMzbWSIQnwK8DEFhjyLSkPD2wzH+z7HqKxxVuQ=;
-        b=C7wu/SDxVaWCVlp5eFkOc/2o+HKWh6Li4S4dPc7FCX4U+nSwnxkPUBJwszLEDFQV23nZzA
-        l5djULPS1JRdP/mHN2DZ0vDhynOoSI5XnC9/SVbuR9gnNxoglMWhZvggoG1oVzViEfxk80
-        ZrrxDrxDGgnzhz5d1yYqtgMhbBy42Tw=
+        bh=fI6zyW/Q6dQ0mgMSvs1HAB1XmZOZ4PZvn8vJbh28b3s=;
+        b=MqIm4JMiikXrfVdHaAcc+wsRCjvTyKlxoX/4Ixm2+u2cyLkT1wTLj/fP0F954sedKqzWPh
+        JzxVDsE/YaZJ3u1EzRICOA+GLT56tSLcDeIcZQ2qXeMRmYmwf1LqsBKOOrZ4EZxpXmtIb5
+        P1xUs/UQYr85BOv5b2XhSm+Fj9FWOh8=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-262-bjJEXDCCN2-inYhzImFVYg-1; Tue, 07 Jul 2020 11:32:07 -0400
-X-MC-Unique: bjJEXDCCN2-inYhzImFVYg-1
+ us-mta-48-F94UkfFIPM6ewwm_MEYMXg-1; Tue, 07 Jul 2020 11:32:52 -0400
+X-MC-Unique: F94UkfFIPM6ewwm_MEYMXg-1
 Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0D017804003;
-        Tue,  7 Jul 2020 15:31:59 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1A5BC1005510;
+        Tue,  7 Jul 2020 15:32:51 +0000 (UTC)
 Received: from pick.fieldses.org (ovpn-114-172.phx2.redhat.com [10.3.114.172])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B775E10013D7;
-        Tue,  7 Jul 2020 15:31:58 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id F2E2A10013D7;
+        Tue,  7 Jul 2020 15:32:50 +0000 (UTC)
 Received: by pick.fieldses.org (Postfix, from userid 2815)
-        id BAC3C1202DC; Tue,  7 Jul 2020 11:31:57 -0400 (EDT)
-Date:   Tue, 7 Jul 2020 11:31:57 -0400
+        id F26701202DC; Tue,  7 Jul 2020 11:32:49 -0400 (EDT)
+Date:   Tue, 7 Jul 2020 11:32:49 -0400
 From:   "J. Bruce Fields" <bfields@redhat.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
         Sasha Levin <sashal@kernel.org>, Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH 5.4 34/65] kthread: save thread function
-Message-ID: <20200707153157.GB171624@pick.fieldses.org>
-References: <20200707145752.417212219@linuxfoundation.org>
- <20200707145754.124544082@linuxfoundation.org>
+Subject: Re: [PATCH 5.7 070/112] kthread: save thread function
+Message-ID: <20200707153249.GC171624@pick.fieldses.org>
+References: <20200707145800.925304888@linuxfoundation.org>
+ <20200707145804.332402326@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200707145754.124544082@linuxfoundation.org>
+In-Reply-To: <20200707145804.332402326@linuxfoundation.org>
 X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-NACK.--b.
+NACK to this and following patch.--b.
 
-On Tue, Jul 07, 2020 at 05:17:13PM +0200, Greg Kroah-Hartman wrote:
+On Tue, Jul 07, 2020 at 05:17:15PM +0200, Greg Kroah-Hartman wrote:
 > From: J. Bruce Fields <bfields@redhat.com>
 > 
 > [ Upstream commit 52782c92ac85c4e393eb4a903a62e6c24afa633f ]
@@ -78,7 +78,7 @@ On Tue, Jul 07, 2020 at 05:17:13PM +0200, Greg Kroah-Hartman wrote:
 >  2 files changed, 18 insertions(+)
 > 
 > diff --git a/include/linux/kthread.h b/include/linux/kthread.h
-> index 0f9da966934e2..59bbc63ff8637 100644
+> index 8bbcaad7ef0f4..c2a274b79c429 100644
 > --- a/include/linux/kthread.h
 > +++ b/include/linux/kthread.h
 > @@ -57,6 +57,7 @@ bool kthread_should_stop(void);
@@ -90,7 +90,7 @@ On Tue, Jul 07, 2020 at 05:17:13PM +0200, Greg Kroah-Hartman wrote:
 >  void *kthread_probe_data(struct task_struct *k);
 >  int kthread_park(struct task_struct *k);
 > diff --git a/kernel/kthread.c b/kernel/kthread.c
-> index b262f47046ca4..543dff6b576c7 100644
+> index bfbfa481be3a5..b84fc7eec0358 100644
 > --- a/kernel/kthread.c
 > +++ b/kernel/kthread.c
 > @@ -46,6 +46,7 @@ struct kthread_create_info
@@ -130,7 +130,7 @@ On Tue, Jul 07, 2020 at 05:17:13PM +0200, Greg Kroah-Hartman wrote:
 >  
 >  /**
 >   * kthread_probe_data - speculative version of kthread_data()
-> @@ -237,6 +253,7 @@ static int kthread(void *_create)
+> @@ -244,6 +260,7 @@ static int kthread(void *_create)
 >  		do_exit(-ENOMEM);
 >  	}
 >  
