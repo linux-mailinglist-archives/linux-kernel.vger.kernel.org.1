@@ -2,100 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB374217917
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 22:15:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA80F21791E
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 22:15:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728357AbgGGUPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 16:15:15 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:49507 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728067AbgGGUPO (ORCPT
+        id S1728828AbgGGUPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 16:15:36 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:42828 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728325AbgGGUPf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 16:15:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594152913;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DYtZMNoSH5tT3xKArGRPbFktJPFGX2LErV9OGvxddAA=;
-        b=apf3Li20M8Lr959frlWMsrts4PNcgfb2qhLxUnhJ0fi2UQOeb+XlKj0dDfrQWnvVTvLO4S
-        f9DZ4Hb59Y/pyooPqAsjF4heipHXCctzB43GAz3zxmkpqboL8XQsIPMMDg1P3LeSH69jPc
-        HCF1zAYQU3DCE4ZLqJpGGAn3nrFjwls=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-220-cUH1IXlXMUSU-zpRbubvOg-1; Tue, 07 Jul 2020 16:15:11 -0400
-X-MC-Unique: cUH1IXlXMUSU-zpRbubvOg-1
-Received: by mail-qt1-f200.google.com with SMTP id r25so31513433qtj.11
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 13:15:11 -0700 (PDT)
+        Tue, 7 Jul 2020 16:15:35 -0400
+Received: by mail-io1-f68.google.com with SMTP id c16so44581037ioi.9;
+        Tue, 07 Jul 2020 13:15:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=DYtZMNoSH5tT3xKArGRPbFktJPFGX2LErV9OGvxddAA=;
-        b=jD5G5y2VrW25WrG6224yc79mVGDPLueG2pP7PlzYXfb3l1iXJfBcIF/epXzj0MTIwx
-         UyPoFM8hZ0syz3QXHW0pKd422WwEuhovAiiPbqLDgVaRbRiDRqa/aGqEs53RLRBsqhDY
-         AVCvNvadPL82JJjOmbkkOOhDZAVHCyPHt4iOuB04gfTlrNCJMP860/2C8gq0J9fLrfRn
-         5s+fWmQZltNLy1TnWJHy2cz/LXwZCng3xlsnXkLarXKwqmV2e0AoJVMt+zEPlJuErR5S
-         QD/4EDqkKtmCXTaZvr2lacJfUno8KbHx04zMxk/RTPktUrY96quzJdGOFMbIBlr7YjUm
-         WX6A==
-X-Gm-Message-State: AOAM533nsuE8IioeQbQXIjCso8FBtLx9MI8YeGSQQItVLO/f4WxE3vWo
-        PVRiKPDGRUc2oTIDxW7yArjdcPwdyT9vYlAUQ+xY5yQcliHe64cb4hCeZLpqRbjhmGmo57RkBFr
-        ZSziTNWgW38iDA7t8yrvL32Nl
-X-Received: by 2002:a37:7ec1:: with SMTP id z184mr52466868qkc.185.1594152911004;
-        Tue, 07 Jul 2020 13:15:11 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJymaqFNwY67jxYXAjVi4pHOd20KFZ9k9uKRFyhRphB+5xxP+YZ4ehh2D+MYuYBMhFJYol+BhA==
-X-Received: by 2002:a37:7ec1:: with SMTP id z184mr52466842qkc.185.1594152910791;
-        Tue, 07 Jul 2020 13:15:10 -0700 (PDT)
-Received: from xz-x1 ([2607:9880:19c0:32::2])
-        by smtp.gmail.com with ESMTPSA id v12sm27518581qtj.32.2020.07.07.13.15.09
+        bh=K966dzq3887Uzlyy0dRpEQhzNCgkZkq/ZzXqsSsdFE4=;
+        b=l+/w6iL4OQeCt/Gc7j4Pj8KcY7A9KbXxAPGD3UCOmyuObC/KrZuOj1exitXs0P7IFF
+         dN9eAysWQAodsbUo/D961Ou16JjNlOWc3urGI/g/77PBzFvkqkIGx4Kph4Njt3rL8ZZd
+         MzuZX4Zi3FnWBbL3j4xDMGLii0oA7rESj2gV7TqQ56tIIl5oElwO+e8ziwaKRM27NQBh
+         emf5ZiB/7BwrNJ0JT2b0oqMQOJyO8bblJ92eN8tXbO1Q76KG8/e5ApeX4alf2HFPsP3x
+         7MGwV3MaiFrIrMJbD3Rqz2drJgxB6++hS/SjUGFlu80xztZeCpdazv1H4i05iLOVrsnI
+         PS+g==
+X-Gm-Message-State: AOAM5311TnxfBG413LvxKp1TRg4pSRjJKWpfMSPBqsWxClHpTwQgBMH1
+        cp9BNCicya690VPhQdboRQ==
+X-Google-Smtp-Source: ABdhPJyyR0n/NJPHCUOxaun8dycLNdyQs4Era0rW43mycahPjoJooqZYSp6SyU9Cvr6sdhxGu1p8yQ==
+X-Received: by 2002:a05:6638:dd3:: with SMTP id m19mr63316901jaj.106.1594152934274;
+        Tue, 07 Jul 2020 13:15:34 -0700 (PDT)
+Received: from xps15 ([64.188.179.254])
+        by smtp.gmail.com with ESMTPSA id d77sm13999482ill.67.2020.07.07.13.15.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jul 2020 13:15:10 -0700 (PDT)
-Date:   Tue, 7 Jul 2020 16:15:08 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Kevin Tian <kevin.tian@intel.com>
-Subject: Re: [PATCH v10 02/14] KVM: Cache as_id in kvm_memory_slot
-Message-ID: <20200707201508.GH88106@xz-x1>
-References: <20200601115957.1581250-1-peterx@redhat.com>
- <20200601115957.1581250-3-peterx@redhat.com>
- <20200702230849.GL3575@linux.intel.com>
- <20200703184122.GF6677@xz-x1>
- <20200707061732.GI5208@linux.intel.com>
- <20200707195009.GE88106@xz-x1>
- <20200707195658.GK20096@linux.intel.com>
+        Tue, 07 Jul 2020 13:15:33 -0700 (PDT)
+Received: (nullmailer pid 558788 invoked by uid 1000);
+        Tue, 07 Jul 2020 20:15:32 -0000
+Date:   Tue, 7 Jul 2020 14:15:32 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Chris Ruehl <chris.ruehl@gtsys.com.hk>
+Cc:     Rob Herring <robh+dt@kernel.org>, Jack Lo <jack.lo@gtsys.com.hk>,
+        Jean Delvare <jdelvare@suse.com>, linux-kernel@vger.kernel.org,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] devicetree: hwmon: shtc1: Add sensirion,shtc1.yaml
+Message-ID: <20200707201532.GA558059@bogus>
+References: <20200705034727.1429-1-chris.ruehl@gtsys.com.hk>
+ <20200705034727.1429-3-chris.ruehl@gtsys.com.hk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200707195658.GK20096@linux.intel.com>
+In-Reply-To: <20200705034727.1429-3-chris.ruehl@gtsys.com.hk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 07, 2020 at 12:56:58PM -0700, Sean Christopherson wrote:
-> > > It's a single line of code, and there's more than one
-> > > "shouldn't" in the above.
-> > 
-> > If you want, I can both set it and add the comment.  Thanks,
+On Sun, 05 Jul 2020 11:47:26 +0800, Chris Ruehl wrote:
+> Add documentation for the newly added DTS support in the shtc1 driver.
+> To align with the drivers logic to have high precision by default
+> a boolean sensirion,low_precision is used to switch to low precision.
 > 
-> Why bother with the comment?  It'd be wrong in the sense that the as_id is
-> always valid/accurate, even if npages == 0.
+> Signed-off-by: Chris Ruehl <chris.ruehl@gtsys.com.hk>
+> ---
+>  .../bindings/hwmon/sensirion,shtc1.yaml       | 53 +++++++++++++++++++
+>  1 file changed, 53 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/hwmon/sensirion,shtc1.yaml
+> 
 
-Sorry I'm confused.. when npages==0, why as_id field is meaningful?  Even if
-the id field is meaningless after the slot is successfully removed, or am I
-wrong?
 
-My understanding is that after your dynamic slot work, we'll only have at most
-one extra memslot that was just removed, and that slot should be meaningless as
-a whole.  Feel free to correct me.
+My bot found errors running 'make dt_binding_check' on your patch:
 
--- 
-Peter Xu
+Documentation/devicetree/bindings/hwmon/sensirion,shtc1.yaml:  while parsing a flow mapping
+  in "<unicode string>", line 43, column 9
+did not find expected ',' or '}'
+  in "<unicode string>", line 47, column 14
+Documentation/devicetree/bindings/Makefile:20: recipe for target 'Documentation/devicetree/bindings/hwmon/sensirion,shtc1.example.dts' failed
+make[1]: *** [Documentation/devicetree/bindings/hwmon/sensirion,shtc1.example.dts] Error 1
+make[1]: *** Waiting for unfinished jobs....
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/hwmon/sensirion,shtc1.yaml: ignoring, error parsing file
+warning: no schema found in file: ./Documentation/devicetree/bindings/hwmon/sensirion,shtc1.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/hwmon/sensirion,shtc1.yaml: ignoring, error parsing file
+warning: no schema found in file: ./Documentation/devicetree/bindings/hwmon/sensirion,shtc1.yaml
+Makefile:1347: recipe for target 'dt_binding_check' failed
+make: *** [dt_binding_check] Error 2
+
+
+See https://patchwork.ozlabs.org/patch/1322963
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure dt-schema is up to date:
+
+pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
+
+Please check and re-submit.
 
