@@ -2,53 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B29121649A
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 05:35:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0973621649D
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 05:36:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728109AbgGGDfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 23:35:54 -0400
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:55623 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727044AbgGGDfw (ORCPT
+        id S1728152AbgGGDgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 23:36:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726869AbgGGDgX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 23:35:52 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01358;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0U2-NZ4I_1594092949;
-Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0U2-NZ4I_1594092949)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 07 Jul 2020 11:35:50 +0800
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-To:     zohar@linux.ibm.com, vt@altlinux.org, linux-kernel@vger.kernel.org
-Cc:     tianjia.zhang@linux.alibaba.com
-Subject: [PATCH ima-evm-utils 3/3] ima-evm-utils: ima_sign supports sm3 algorithm
-Date:   Tue,  7 Jul 2020 11:35:48 +0800
-Message-Id: <20200707033548.21640-3-tianjia.zhang@linux.alibaba.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200707033548.21640-1-tianjia.zhang@linux.alibaba.com>
-References: <20200707033548.21640-1-tianjia.zhang@linux.alibaba.com>
+        Mon, 6 Jul 2020 23:36:23 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AD4FC061755;
+        Mon,  6 Jul 2020 20:36:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Hp0xGFRg77TXwsB3gqqzb9MGA43cz2VdahzAAJzi0C8=; b=UfU43NEeuLUEoytxjSntGO6Gzk
+        sbsi6DFnUdK6kq9AJR9S6DyW32HokIEIiN5sBJoZWDyC9V2Ai7hBtERKDxE8NKOm7AZB/EYHjEfwy
+        h5Kyzez1BnSeBHbU9x/NaAcg+O9lQxh6g0NlmF0T/1bIR9mKnpRu1anZkc6VYFlzXdlSbYSxXYEi9
+        vIs14/VkgGfHev3oXyqUrMEzEQk5bQkDmYKRedOkVWhyAaotklO41woLgoC5ea+ZLzWesOa6sLY3E
+        tYHCICPTdXK+mxfEd2nht15OvfmGseeOLgBQnfXCfBl9b12Hp7roXNarZXRi9OMvi6Vm8WhNrkKZA
+        c7P2G+UA==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jseP3-0003v8-VO; Tue, 07 Jul 2020 03:36:18 +0000
+Date:   Tue, 7 Jul 2020 04:36:17 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Haitao Huang <haitao.huang@linux.intel.com>,
+        Chunyang Hui <sanqian.hcy@antfin.com>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Seth Moore <sethmo@google.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Suresh Siddha <suresh.b.siddha@intel.com>,
+        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
+        cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v34 11/24] x86/sgx: Add SGX enclave driver
+Message-ID: <20200707033617.GF25523@casper.infradead.org>
+References: <20200707030204.126021-1-jarkko.sakkinen@linux.intel.com>
+ <20200707030204.126021-12-jarkko.sakkinen@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200707030204.126021-12-jarkko.sakkinen@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-imaevm sign and verify support sm3 hash algorithm.
+On Tue, Jul 07, 2020 at 06:01:51AM +0300, Jarkko Sakkinen wrote:
+> Intel Software Guard eXtensions (SGX) is a set of CPU instructions that
+> can be used by applications to set aside private regions of code and
+> data. The code outside the SGX hosted software entity is disallowed to
 
-Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
----
- src/libimaevm.c | 1 +
- 1 file changed, 1 insertion(+)
+s/disallowed to/prevented from/
 
-diff --git a/src/libimaevm.c b/src/libimaevm.c
-index 8f2ebcf..9c61e64 100644
---- a/src/libimaevm.c
-+++ b/src/libimaevm.c
-@@ -71,6 +71,7 @@ static const char *const pkey_hash_algo[PKEY_HASH__LAST] = {
- 	[PKEY_HASH_SHA384]	= "sha384",
- 	[PKEY_HASH_SHA512]	= "sha512",
- 	[PKEY_HASH_SHA224]	= "sha224",
-+	[PKEY_HASH_SM3_256]	= "sm3",
- 	[PKEY_HASH_STREEBOG_256] = "md_gost12_256",
- 	[PKEY_HASH_STREEBOG_512] = "md_gost12_512",
- };
--- 
-2.17.1
+> access the memory inside the enclave enforced by the CPU. We call these
+
+s/enforced//
+
+> entities enclaves.
+> 
+> Add a driver that provides an ioctl API to construct and run enclaves.
+> Enclaves are constructed from pages residing in reserved physical memory
+> areas. The contents of these pages can only be accessed when they are
+> mapped as part of an enclave, by a hardware thread running inside the
+> enclave.
+> 
+> The starting state of an enclave consists of a fixed measured set of
+> pages that are copied to the EPC during the construction process by
+> using ENCLS leaf functions and Software Enclave Control Structure (SECS)
+> that defines the enclave properties.
+> 
+> Enclaves are constructed by using ENCLS leaf functions ECREATE, EADD and
+> EINIT. ECREATE initializes SECS, EADD copies pages from system memory to
+> the EPC and EINIT checks a given signed measurement and moves the enclave
+> into a state ready for execution.
+
+What's a leaf function?  Is it like a CPU instruction?
+
+> The mmap() permissions are capped by the contained enclave page
+> permissions. The mapped areas must also be opaque, i.e. each page address
+> must contain a page. This logic is implemented in sgx_encl_may_map().
+
+do you mean "populated" instead of "opaque"?
+
+> +	atomic_set(&encl->flags, 0);
+> +	kref_init(&encl->refcount);
+> +	INIT_RADIX_TREE(&encl->page_tree, GFP_KERNEL);
+
+Why are you using a radix tree instead of an xarray?
+
+> +int sgx_encl_may_map(struct sgx_encl *encl, unsigned long start,
+> +		     unsigned long end, unsigned long vm_prot_bits)
+> +{
+> +	unsigned long idx, idx_start, idx_end;
+> +	struct sgx_encl_page *page;
+> +
+> +	/*
+> +	 * Disallow RIE tasks as their VMA permissions might conflict with the
+> +	 * enclave page permissions.
+> +	 */
+> +	if (!!(current->personality & READ_IMPLIES_EXEC))
+> +		return -EACCES;
+> +
+> +	idx_start = PFN_DOWN(start);
+> +	idx_end = PFN_DOWN(end - 1);
+> +
+> +	for (idx = idx_start; idx <= idx_end; ++idx) {
+> +		mutex_lock(&encl->lock);
+> +		page = radix_tree_lookup(&encl->page_tree, idx);
+> +		mutex_unlock(&encl->lock);
+> +
+> +		if (!page || (~page->vm_max_prot_bits & vm_prot_bits))
+> +			return -EACCES;
+
+You should really use an iterator here instead of repeated lookups.
+xas_for_each() will probably be what you want.
 
