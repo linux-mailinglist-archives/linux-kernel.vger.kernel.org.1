@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A187217213
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:43:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E391D2171EF
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:43:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728414AbgGGP22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:28:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40578 "EHLO mail.kernel.org"
+        id S1730322AbgGGP04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:26:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41106 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729641AbgGGP0T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:26:19 -0400
+        id S1729721AbgGGP0s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 11:26:48 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 598EA20663;
-        Tue,  7 Jul 2020 15:26:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 601C120663;
+        Tue,  7 Jul 2020 15:26:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594135578;
-        bh=GsZGNspYOnKPQgkAi9CTOtj/wbGz8U6me5M5Tzi2uhI=;
+        s=default; t=1594135607;
+        bh=uvUxeg5vGzn6yKdbuMh3DQpaC5PknltZCRUPvJQsp+4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DquMKJiWtWV5UDpVQtUssO7oZwayqrl4ZaxMVmPgPKLPQl7DTUrK0wV4In5NS/pWe
-         +cON9d8AYl2/W+dNswISbYzTDcCl6tjM9G/zbC/As/9GoCS0P8ecjpcx4Phf7XUkZm
-         Lr1+XHTdmStzuFUFvnTFB7j6t6jIyB8S4QasF1zU=
+        b=1+r3+yjlXFulr3SbyRyzKCTQny4QPkKAe2gKqv9y7FF0oIHuT4zMtN2Gp4iSfqKHM
+         zrsDe318RUdPS96srCerjLE2oAtC/CAtecEPc62L4PPfPd/5haJsADD1+Bbp/ktPDK
+         fcM6jJAuRQN+ukgis9iTj7AlcVh0gco+PyUlW5pA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Paul Aurich <paul@darkrain42.org>,
         Steve French <stfrench@microsoft.com>,
         Aurelien Aptel <aaptel@suse.com>
-Subject: [PATCH 5.7 089/112] SMB3: Honor seal flag for multiuser mounts
-Date:   Tue,  7 Jul 2020 17:17:34 +0200
-Message-Id: <20200707145805.214096514@linuxfoundation.org>
+Subject: [PATCH 5.7 090/112] SMB3: Honor persistent/resilient handle flags for multiuser mounts
+Date:   Tue,  7 Jul 2020 17:17:35 +0200
+Message-Id: <20200707145805.260448796@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200707145800.925304888@linuxfoundation.org>
 References: <20200707145800.925304888@linuxfoundation.org>
@@ -46,13 +46,13 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Paul Aurich <paul@darkrain42.org>
 
-commit cc15461c73d7d044d56c47e869a215e49bd429c8 upstream.
+commit 00dfbc2f9c61185a2e662f27c45a0bb29b2a134f upstream.
 
-Ensure multiuser SMB3 mounts use encryption for all users' tcons if the
-mount options are configured to require encryption. Without this, only
-the primary tcon and IPC tcons are guaranteed to be encrypted. Per-user
-tcons would only be encrypted if the server was configured to require
-encryption.
+Without this:
+
+- persistent handles will only be enabled for per-user tcons if the
+  server advertises the 'Continuous Availabity' capability
+- resilient handles would never be enabled for per-user tcons
 
 Signed-off-by: Paul Aurich <paul@darkrain42.org>
 CC: Stable <stable@vger.kernel.org>
@@ -61,18 +61,19 @@ Reviewed-by: Aurelien Aptel <aaptel@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/cifs/connect.c |    1 +
- 1 file changed, 1 insertion(+)
+ fs/cifs/connect.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
 --- a/fs/cifs/connect.c
 +++ b/fs/cifs/connect.c
-@@ -5310,6 +5310,7 @@ cifs_construct_tcon(struct cifs_sb_info
+@@ -5306,6 +5306,8 @@ cifs_construct_tcon(struct cifs_sb_info
+ 	vol_info->nocase = master_tcon->nocase;
+ 	vol_info->nohandlecache = master_tcon->nohandlecache;
+ 	vol_info->local_lease = master_tcon->local_lease;
++	vol_info->resilient = master_tcon->use_resilient;
++	vol_info->persistent = master_tcon->use_persistent;
+ 	vol_info->no_linux_ext = !master_tcon->unix_ext;
  	vol_info->linux_ext = master_tcon->posix_extensions;
  	vol_info->sectype = master_tcon->ses->sectype;
- 	vol_info->sign = master_tcon->ses->sign;
-+	vol_info->seal = master_tcon->seal;
- 
- 	rc = cifs_set_vol_auth(vol_info, master_tcon->ses);
- 	if (rc) {
 
 
