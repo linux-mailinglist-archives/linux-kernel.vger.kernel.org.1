@@ -2,302 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C818217745
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 20:57:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 677B4217726
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 20:53:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728609AbgGGS5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 14:57:23 -0400
-Received: from mga09.intel.com ([134.134.136.24]:57502 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728067AbgGGS5W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 14:57:22 -0400
-IronPort-SDR: 4NjP2dxFHpzrleiQudLAPL6cpT9hgrLU9WE46kfxvnwXT421HxkfpyDZhoRFU+0ZoeQcTowLHW
- 4ezi6vmteYzg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9675"; a="149201696"
-X-IronPort-AV: E=Sophos;i="5.75,324,1589266800"; 
-   d="scan'208";a="149201696"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2020 11:57:21 -0700
-IronPort-SDR: yzKSuZTIuNOS0XG/vdZEpyyl0I+pd9Rip0Jt7utLwe1k62M/6kPVwnvDGIXPDMT3WHLRk/ASkP
- aKISysmdlRHA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,324,1589266800"; 
-   d="scan'208";a="483614880"
-Received: from otc-lr-04.jf.intel.com ([10.54.39.143])
-  by fmsmga005.fm.intel.com with ESMTP; 07 Jul 2020 11:57:20 -0700
-From:   kan.liang@linux.intel.com
-To:     peterz@infradead.org, mingo@redhat.com, ak@linux.intel.com,
-        linux-kernel@vger.kernel.org
-Cc:     alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        alexey.budankov@linux.intel.com, eranian@google.com,
-        like.xu@linux.intel.com, yao.jin@linux.intel.com,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH] perf/x86/intel/lbr: Enable NO_{CYCLES,FLAGS} for all LBR formats
-Date:   Tue,  7 Jul 2020 11:53:37 -0700
-Message-Id: <1594148017-122512-1-git-send-email-kan.liang@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
+        id S1728318AbgGGSxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 14:53:51 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:37556 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728183AbgGGSxu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 14:53:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594148028;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Qd7GvFWxfTyKmbpo/F2p4KRc33HgtT765IWzuAxWIYI=;
+        b=amIbU5Hen67T1YXf0ewg06Ypcg1FocY2IxneqeZrN6AVDNSsTnoxuVGbc8K6CT2AYFirdf
+        CquM+jdzlLaUkVlzMfO8lP6Vdt7ThwciNudSWGQQTdstIknELnsVtJ14JCX00gYOY63Iq5
+        ziGoXa55u6MFEX0v8eAmhDr/0+fAMG0=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-303-VElsKiqMNwSuGUBqB-2SpA-1; Tue, 07 Jul 2020 14:53:44 -0400
+X-MC-Unique: VElsKiqMNwSuGUBqB-2SpA-1
+Received: by mail-qk1-f197.google.com with SMTP id o26so29216395qko.7
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 11:53:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=Qd7GvFWxfTyKmbpo/F2p4KRc33HgtT765IWzuAxWIYI=;
+        b=Rc/zFXsVjj1BkswYGkQy/Rzrw4OAzZmAAr13PLk4pvawSoFQY7vHyUgVrFss1ywj6v
+         IdDqDTDBOPyq6Ehlnmd2Rgp3+5TlVXWmHy+h4e2iB+cHOiuVPQek+eF0beSRh6JbLE3I
+         gyvVgEcDW7mrOkqcEinvfVXDcjiXnkM6++eoGcFPtJP1iF8xX2wUbD1R5Gm1vvnxjpHn
+         kOPc+zNuTPB3rI2oKXILuet2EBC/G2woyP3/eT73kJneqCqOUlchOnkiWqEnLHdhbA+H
+         SWCgIy0SueCST4Yme7wy5eNn/2FCyfOEtaD9VLrKOleTpN8RV08qDRsOFdqbWRim2Uzd
+         jYsw==
+X-Gm-Message-State: AOAM531IykQvKszpMfNgZPEPCAd4TXGxmqufI4GwMxYK3HJOQthSdJrK
+        l3trE66aL3sXPOl169B31E+YJqaDjnBmuNl/+m0hM0RjPp9DWzPVgAiCW8bKerw+3udqUSEefuO
+        Mnwl4O5ruKglNQbfb/RHskcVO
+X-Received: by 2002:a37:64cd:: with SMTP id y196mr44880289qkb.303.1594148024014;
+        Tue, 07 Jul 2020 11:53:44 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyR00NCuC+wWsuRVMna6tP+BHj3IB5WxyNjpTX+b7L1EfMmtMFmi7fdb8X2pT7uHkbWKKSCLA==
+X-Received: by 2002:a37:64cd:: with SMTP id y196mr44880268qkb.303.1594148023641;
+        Tue, 07 Jul 2020 11:53:43 -0700 (PDT)
+Received: from [192.168.1.4] (198-84-170-103.cpe.teksavvy.com. [198.84.170.103])
+        by smtp.gmail.com with ESMTPSA id x29sm20420381qtx.74.2020.07.07.11.53.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Jul 2020 11:53:42 -0700 (PDT)
+Subject: Re: [RFC PATCH for 5.8 3/4] rseq: Introduce RSEQ_FLAG_RELIABLE_CPU_ID
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Florian Weimer <fw@deneb.enyo.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        paulmck <paulmck@linux.ibm.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Paul Turner <pjt@google.com>,
+        linux-api <linux-api@vger.kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Neel Natu <neelnatu@google.com>
+References: <20200706204913.20347-1-mathieu.desnoyers@efficios.com>
+ <20200706204913.20347-4-mathieu.desnoyers@efficios.com>
+ <87fta3zstr.fsf@mid.deneb.enyo.de>
+ <2088331919.943.1594118895344.JavaMail.zimbra@efficios.com>
+ <874kqjzhkb.fsf@mid.deneb.enyo.de>
+ <378862525.1039.1594123580789.JavaMail.zimbra@efficios.com>
+From:   Carlos O'Donell <carlos@redhat.com>
+Organization: Red Hat
+Message-ID: <d6b28b3e-9866-ce6f-659e-2c0dba4cd527@redhat.com>
+Date:   Tue, 7 Jul 2020 14:53:41 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <378862525.1039.1594123580789.JavaMail.zimbra@efficios.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kan Liang <kan.liang@linux.intel.com>
+On 7/7/20 8:06 AM, Mathieu Desnoyers wrote:
+> ----- On Jul 7, 2020, at 7:32 AM, Florian Weimer fw@deneb.enyo.de wrote:
+> 
+>> * Mathieu Desnoyers:
+>>
+>>> Those are very good points. One possibility we have would be to let
+>>> glibc do the rseq registration without the RSEQ_FLAG_RELIABLE_CPU_ID
+>>> flag. On kernels with the bug present, the cpu_id field is still good
+>>> enough for typical uses of sched_getcpu() which does not appear to
+>>> have a very strict correctness requirement on returning the right
+>>> cpu number.
+>>>
+>>> Then libraries and applications which require a reliable cpu_id
+>>> field could check this on their own by calling rseq with the
+>>> RSEQ_FLAG_RELIABLE_CPU_ID flag. This would not make the state more
+>>> complex in __rseq_abi, and let each rseq user decide about its own
+>>> fate: whether it uses rseq or keeps using an rseq-free fallback.
+>>>
+>>> I am still tempted to allow combining RSEQ_FLAG_REGISTER |
+>>> RSEQ_FLAG_RELIABLE_CPU_ID for applications which would not be using
+>>> glibc, and want to check this flag on thread registration.
+>>
+>> Well, you could add a bug fix level field to the __rseq_abi variable.
+> 
+> Even though I initially planned to make the struct rseq_abi extensible,
+> the __rseq_abi variable ends up being fix-sized, so we need to be very
+> careful in choosing what we place in the remaining 12 bytes of padding.
+> I suspect we'd want to keep 8 bytes to express a pointer to an
+> "extended" structure.
+> 
+> I wonder if a bug fix level "version" is the right approach. We could
+> instead have a bitmask of fixes, which the application could independently
+> check. For instance, some applications may care about cpu_id field
+> reliability, and others not.
 
-An option to disable reading branch flags/cycles was introduced in
-commit b16a5b52eb90 ("perf/x86: Add option to disable reading branch
-flags/cycles"). Currently, the option is only supported by the
-LBR_FORMAT_INFO format. For the other LBR formats, including the legacy
-LBR, Architectural LBR, and LBR PEBS record, there is no effect with the
-NO_{CYCLES,FLAGS} flag set. The flags/cycles information is still
-output, which breaks the ABI.
+I agree with Florian.
 
-For all LBR formats, avoid output flags and cycles if the user
-explicitly sets PERF_SAMPLE_BRANCH_NO_{CYCLES,FLAGS} branch type.
+Developers are not interested in a bitmask of fixes.
 
-For Architectural LBR, the branch type information is retrieved from
-the LBR_INFO field/MSR. With the NO_{CYCLES,FLAGS} flag set, the
-LBR_INFO will not be read. The branch type information will relay on the
-software decoding just like the legacy LBR.
+They want a version they can check and that at a given version everything
+works as expected.
 
-Fixes: b16a5b52eb90 ("perf/x86: Add option to disable reading branch flags/cycles")
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
----
- arch/x86/events/intel/lbr.c | 130 ++++++++++++++++++++++++++------------------
- 1 file changed, 78 insertions(+), 52 deletions(-)
+In reality today this is the kernel version.
 
-diff --git a/arch/x86/events/intel/lbr.c b/arch/x86/events/intel/lbr.c
-index 63f58bd..944291a 100644
---- a/arch/x86/events/intel/lbr.c
-+++ b/arch/x86/events/intel/lbr.c
-@@ -799,6 +799,14 @@ void intel_pmu_lbr_read_32(struct cpu_hw_events *cpuc)
- 	cpuc->lbr_stack.hw_idx = tos;
- }
+So rseq is broken from a developer perspective until they can get a new
+kernel or an agreement from their downstream vendor that revision Z of
+the kernel they are using has the fix you've just committed.
+
+Essentially this problem solves itself at level higher than the interfaces
+we're talking about today.
+
+Encoding this as a bitmask of fixes is an overengineered solution for a
+problem that the downstream communities already know how to solve.
+
+I would strongly suggest a "version" or nothing.
+
+>> Then applications could check if the kernel has the appropriate level
+>> of non-buggyness.  But the same thing could be useful for many other
+>> kernel interfaces, and I haven't seen such a fix level value for them.
+>> What makes rseq so special?
+> 
+> I guess my only answer is because I care as a user of the system call, and
+> what is a system call without users ? I have real applications which work
+> today with end users deploying them on various kernels, old and new, and I
+> want to take advantage of this system call to speed them up. However, if I
+> have to choose between speed and correctness (in other words, not crashing
+> a critical application), I will choose correctness. So if I cannot detect
+> that I can safely use the system call, it becomes pretty much useless even
+> for my own use-cases.
+
+Yes.
+
+In the case of RHEL we have *tons*  of users in the same predicament.
+
+They just wait until the RHEL kernel team releases a fixed kernel version
+and check for that version and deploy with that version.
+
+Likewise every other user of a kernel. They solve it by asking their
+kernel provider, internal or external, to verify the fix is applied to
+the deployment kernel.
+
+If they are an ISV they have to test and deploy similar strategies for
+multiple kernel version.
+
+By trying to automate this you are encoding into the API some level of
+package management concepts e.g. patch level, revision level, etc.
+
+This is difficult to do without a more generalized API. Why do it just
+for rseq? Why do it with the few bits you have?
+
+It's not a great fit IMO. Just let the kernel version be the arbiter of
+correctness.
  
-+static inline bool lbr_need_info(struct cpu_hw_events *cpuc)
-+{
-+	if (cpuc->lbr_sel)
-+		return !(cpuc->lbr_sel->config & LBR_NO_INFO);
-+
-+	return false;
-+}
-+
- /*
-  * Due to lack of segmentation in Linux the effective address (offset)
-  * is the same as the linear address, allowing us to merge the LIP and EIP
-@@ -806,7 +814,8 @@ void intel_pmu_lbr_read_32(struct cpu_hw_events *cpuc)
-  */
- void intel_pmu_lbr_read_64(struct cpu_hw_events *cpuc)
- {
--	bool need_info = false, call_stack = false;
-+	bool need_info = lbr_need_info(cpuc);
-+	bool call_stack = false;
- 	unsigned long mask = x86_pmu.lbr_nr - 1;
- 	int lbr_format = x86_pmu.intel_cap.lbr_format;
- 	u64 tos = intel_pmu_lbr_tos();
-@@ -814,11 +823,8 @@ void intel_pmu_lbr_read_64(struct cpu_hw_events *cpuc)
- 	int out = 0;
- 	int num = x86_pmu.lbr_nr;
+>> It won't help with the present bug, but maybe we should add an rseq
+>> API sub-call that blocks future rseq registration for the thread.
+>> Then we can add a glibc tunable that flips off rseq reliably if people
+>> do not want to use it for some reason (and switch to the non-rseq
+>> fallback code instead).  But that's going to help with future bugs
+>> only.
+> 
+> I don't think it's needed. All I really need is to have _some_ way to
+> let lttng-ust or liburcu query whether the cpu_id field is reliable. This
+> state does not have to be made quickly accessible to other libraries,
+> nor does it have to be shared between libraries. It would allow each
+> user library or application to make its own mind on whether it can use
+> rseq or not.
  
--	if (cpuc->lbr_sel) {
--		need_info = !(cpuc->lbr_sel->config & LBR_NO_INFO);
--		if (cpuc->lbr_sel->config & LBR_CALL_STACK)
--			call_stack = true;
--	}
-+	if (cpuc->lbr_sel && (cpuc->lbr_sel->config & LBR_CALL_STACK))
-+		call_stack = true;
- 
- 	for (i = 0; i < num; i++) {
- 		unsigned long lbr_idx = (tos - i) & mask;
-@@ -849,23 +855,28 @@ void intel_pmu_lbr_read_64(struct cpu_hw_events *cpuc)
- 		}
- 
- 		if (lbr_format == LBR_FORMAT_TIME) {
--			mis = !!(from & LBR_FROM_FLAG_MISPRED);
--			pred = !mis;
- 			skip = 1;
--			cycles = ((to >> 48) & LBR_INFO_CYCLES);
--
- 			to = (u64)((((s64)to) << 16) >> 16);
-+			if (need_info) {
-+				mis = !!(from & LBR_FROM_FLAG_MISPRED);
-+				pred = !mis;
-+				cycles = ((to >> 48) & LBR_INFO_CYCLES);
-+			}
- 		}
- 
- 		if (lbr_flags & LBR_EIP_FLAGS) {
--			mis = !!(from & LBR_FROM_FLAG_MISPRED);
--			pred = !mis;
- 			skip = 1;
-+			if (need_info) {
-+				mis = !!(from & LBR_FROM_FLAG_MISPRED);
-+				pred = !mis;
-+			}
- 		}
- 		if (lbr_flags & LBR_TSX) {
--			in_tx = !!(from & LBR_FROM_FLAG_IN_TX);
--			abort = !!(from & LBR_FROM_FLAG_ABORT);
- 			skip = 3;
-+			if (need_info) {
-+				in_tx = !!(from & LBR_FROM_FLAG_IN_TX);
-+				abort = !!(from & LBR_FROM_FLAG_ABORT);
-+			}
- 		}
- 		from = (u64)((((s64)from) << skip) >> skip);
- 
-@@ -928,8 +939,21 @@ static __always_inline bool get_lbr_cycles(u64 info)
- 	return info & LBR_INFO_CYCLES;
- }
- 
-+enum {
-+	ARCH_LBR_BR_TYPE_JCC			= 0,
-+	ARCH_LBR_BR_TYPE_NEAR_IND_JMP		= 1,
-+	ARCH_LBR_BR_TYPE_NEAR_REL_JMP		= 2,
-+	ARCH_LBR_BR_TYPE_NEAR_IND_CALL		= 3,
-+	ARCH_LBR_BR_TYPE_NEAR_REL_CALL		= 4,
-+	ARCH_LBR_BR_TYPE_NEAR_RET		= 5,
-+	ARCH_LBR_BR_TYPE_KNOWN_MAX		= ARCH_LBR_BR_TYPE_NEAR_RET,
-+
-+	ARCH_LBR_BR_TYPE_MAP_MAX		= 16,
-+};
-+
- static void intel_pmu_store_lbr(struct cpu_hw_events *cpuc,
--				struct lbr_entry *entries)
-+				struct lbr_entry *entries,
-+				bool need_info)
- {
- 	struct perf_branch_entry *e;
- 	struct lbr_entry *lbr;
-@@ -948,16 +972,33 @@ static void intel_pmu_store_lbr(struct cpu_hw_events *cpuc,
- 			break;
- 
- 		to = rdlbr_to(i, lbr);
--		info = rdlbr_info(i, lbr);
- 
- 		e->from		= from;
- 		e->to		= to;
--		e->mispred	= get_lbr_mispred(info);
--		e->predicted	= get_lbr_predicted(info);
--		e->in_tx	= !!(info & LBR_INFO_IN_TX);
--		e->abort	= !!(info & LBR_INFO_ABORT);
--		e->cycles	= get_lbr_cycles(info);
--		e->type		= get_lbr_br_type(info);
-+		if (need_info) {
-+			info = rdlbr_info(i, lbr);
-+			e->mispred	= get_lbr_mispred(info);
-+			e->predicted	= get_lbr_predicted(info);
-+			e->in_tx	= !!(info & LBR_INFO_IN_TX);
-+			e->abort	= !!(info & LBR_INFO_ABORT);
-+			e->cycles	= get_lbr_cycles(info);
-+			e->type		= get_lbr_br_type(info);
-+		} else {
-+			e->mispred	= 0;
-+			e->predicted	= 0;
-+			e->in_tx	= 0;
-+			e->abort	= 0;
-+			e->cycles	= 0;
-+			/*
-+			 * For Architectural LBR, 0 means X86_BR_JCC. Assign an
-+			 * invalid branch type, which will be ignored in the
-+			 * intel_pmu_lbr_filter().
-+			 *
-+			 * For the legacy LBR, there is no branch type
-+			 * information available. The field is always ignored.
-+			 */
-+			e->type		= ARCH_LBR_BR_TYPE_KNOWN_MAX + 1;
-+		}
- 		e->reserved	= 0;
- 	}
- 
-@@ -966,7 +1007,7 @@ static void intel_pmu_store_lbr(struct cpu_hw_events *cpuc,
- 
- static void intel_pmu_arch_lbr_read(struct cpu_hw_events *cpuc)
- {
--	intel_pmu_store_lbr(cpuc, NULL);
-+	intel_pmu_store_lbr(cpuc, NULL, lbr_need_info(cpuc));
- }
- 
- static void intel_pmu_arch_lbr_read_xsave(struct cpu_hw_events *cpuc)
-@@ -974,12 +1015,12 @@ static void intel_pmu_arch_lbr_read_xsave(struct cpu_hw_events *cpuc)
- 	struct x86_perf_task_context_arch_lbr_xsave *xsave = cpuc->lbr_xsave;
- 
- 	if (!xsave) {
--		intel_pmu_store_lbr(cpuc, NULL);
-+		intel_pmu_store_lbr(cpuc, NULL, lbr_need_info(cpuc));
- 		return;
- 	}
- 	copy_dynamic_supervisor_to_kernel(&xsave->xsave, XFEATURE_MASK_LBR);
- 
--	intel_pmu_store_lbr(cpuc, xsave->lbr.entries);
-+	intel_pmu_store_lbr(cpuc, xsave->lbr.entries, lbr_need_info(cpuc));
- }
- 
- void intel_pmu_lbr_read(void)
-@@ -1096,23 +1137,20 @@ static int intel_pmu_setup_hw_lbr_filter(struct perf_event *event)
- 	reg = &event->hw.branch_reg;
- 	reg->idx = EXTRA_REG_LBR;
- 
--	if (static_cpu_has(X86_FEATURE_ARCH_LBR)) {
-+	if (static_cpu_has(X86_FEATURE_ARCH_LBR))
- 		reg->config = mask;
--		return 0;
-+	else {
-+		/*
-+		 * The first 9 bits (LBR_SEL_MASK) in LBR_SELECT operate
-+		 * in suppress mode. So LBR_SELECT should be set to
-+		 * (~mask & LBR_SEL_MASK) | (mask & ~LBR_SEL_MASK)
-+		 * But the 10th bit LBR_CALL_STACK does not operate
-+		 * in suppress mode.
-+		 */
-+		reg->config = mask ^ (x86_pmu.lbr_sel_mask & ~LBR_CALL_STACK);
- 	}
--
--	/*
--	 * The first 9 bits (LBR_SEL_MASK) in LBR_SELECT operate
--	 * in suppress mode. So LBR_SELECT should be set to
--	 * (~mask & LBR_SEL_MASK) | (mask & ~LBR_SEL_MASK)
--	 * But the 10th bit LBR_CALL_STACK does not operate
--	 * in suppress mode.
--	 */
--	reg->config = mask ^ (x86_pmu.lbr_sel_mask & ~LBR_CALL_STACK);
--
- 	if ((br_type & PERF_SAMPLE_BRANCH_NO_CYCLES) &&
--	    (br_type & PERF_SAMPLE_BRANCH_NO_FLAGS) &&
--	    (x86_pmu.intel_cap.lbr_format == LBR_FORMAT_INFO))
-+	    (br_type & PERF_SAMPLE_BRANCH_NO_FLAGS))
- 		reg->config |= LBR_NO_INFO;
- 
- 	return 0;
-@@ -1357,18 +1395,6 @@ common_branch_type(int type)
- 	return PERF_BR_UNKNOWN;
- }
- 
--enum {
--	ARCH_LBR_BR_TYPE_JCC			= 0,
--	ARCH_LBR_BR_TYPE_NEAR_IND_JMP		= 1,
--	ARCH_LBR_BR_TYPE_NEAR_REL_JMP		= 2,
--	ARCH_LBR_BR_TYPE_NEAR_IND_CALL		= 3,
--	ARCH_LBR_BR_TYPE_NEAR_REL_CALL		= 4,
--	ARCH_LBR_BR_TYPE_NEAR_RET		= 5,
--	ARCH_LBR_BR_TYPE_KNOWN_MAX		= ARCH_LBR_BR_TYPE_NEAR_RET,
--
--	ARCH_LBR_BR_TYPE_MAP_MAX		= 16,
--};
--
- static const int arch_lbr_br_type_map[ARCH_LBR_BR_TYPE_MAP_MAX] = {
- 	[ARCH_LBR_BR_TYPE_JCC]			= X86_BR_JCC,
- 	[ARCH_LBR_BR_TYPE_NEAR_IND_JMP]		= X86_BR_IND_JMP,
-@@ -1460,7 +1486,7 @@ void intel_pmu_store_pebs_lbrs(struct lbr_entry *lbr)
- 	else
- 		cpuc->lbr_stack.hw_idx = intel_pmu_lbr_tos();
- 
--	intel_pmu_store_lbr(cpuc, lbr);
-+	intel_pmu_store_lbr(cpuc, lbr, lbr_need_info(cpuc));
- 	intel_pmu_lbr_filter(cpuc);
- }
- 
+That check is "kernel version > x.y.z" :-)
+
+or
+
+"My kernel vendor told me it's fixed."
+
 -- 
-2.7.4
+Cheers,
+Carlos.
 
