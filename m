@@ -2,202 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B2D4216E42
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 16:02:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA042216E4F
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 16:02:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728294AbgGGOBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 10:01:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728263AbgGGOBN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 10:01:13 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CD07C061755
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 07:01:13 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id z13so45262704wrw.5
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 07:01:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Otr0IW/lc2aubOhQuGn1p9ls5bh+wk/N6Wv8oEf4Osw=;
-        b=HBvBoIuzw1P53PX21z9xl0S2Ei5cCmdfti89y/X22YhzPD8leJdxCyYAe5MqjAAObx
-         t1E1P2P9Mt2oi9isgC0/LHnqeHNKZYWtJaO+qhuy07fzjZUTGXrc+CimfVho9ZGf/ZWU
-         FDKy8A+01W+GzzbMSh0NL/QIw5GrC1SzMU8Ku91XKRykA1P90kFf0lvjwOf9VATuJ2AA
-         9517Y+eDIrAIT5wZd8ZZtjlif5PsJkDCzQ/IYlFfSzlxY79jehb6IrMwyQxTx7/P8qGZ
-         eTJ9g4UC2LIojpNdHyExhVDGr4hCe53uRJOxLjIosZU7CLcCCZeB1c2aAfcu+QhcE4go
-         aC+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Otr0IW/lc2aubOhQuGn1p9ls5bh+wk/N6Wv8oEf4Osw=;
-        b=Y0RidMfxyRmnlPH7nEBqZu2XPvo+GXor+Mk181pHrIs5mSl9fLWHD7s9T64gzjCDeE
-         5M0/BpUyzMIH7awcXu3MTvZ3r9HHCsEG0GnM2ijP4BQ7XUTTmbrsIKmKsFMSJN5R92p/
-         yoroGygUwtNh5UPZSdZ1EtGrjhyWTYPtMlxupiAnbUAJ5JRqunppC7RR7O/yxIHRzmC0
-         p7V9eRVrdM+qkL267CWlJzBD3EbzF9A4XWnVpjE0rS7WGZcyudIM/s6whQdyKw2j2bqE
-         Kkp5t6L/GBYuFTUo1reVhCIidZ0QlANzJsNii8FA8p6uLOEI5Jqa0UbwluQpjRGzkEn1
-         IgQA==
-X-Gm-Message-State: AOAM533JeO7wB27pJCm8DYvRNU8wBBKJ0kS3Q6VzeCBCenhM5FyhmAcA
-        75vgVLHG/sFMLUUc/UFfKfB6vw==
-X-Google-Smtp-Source: ABdhPJyMIkqrJx6U0TAgCC1Ldg2yjfRozO5omk7C8zyrNAPXTCsDDxyptx/G91iGoIUhvFmHoTGxBQ==
-X-Received: by 2002:adf:e647:: with SMTP id b7mr57813003wrn.170.1594130471901;
-        Tue, 07 Jul 2020 07:01:11 -0700 (PDT)
-Received: from localhost.localdomain ([2.27.35.206])
-        by smtp.gmail.com with ESMTPSA id z25sm1102823wmk.28.2020.07.07.07.01.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jul 2020 07:01:11 -0700 (PDT)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     jejb@linux.ibm.com, martin.petersen@oracle.com
-Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        Lee Jones <lee.jones@linaro.org>,
-        Kashyap Desai <kashyap.desai@broadcom.com>,
-        Sumit Saxena <sumit.saxena@broadcom.com>,
-        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
-        megaraidlinux.pdl@broadcom.com
-Subject: [PATCH 10/10] scsi: megaraid: megaraid_sas: Convert forward-declarations to prototypes
-Date:   Tue,  7 Jul 2020 15:00:55 +0100
-Message-Id: <20200707140055.2956235-11-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200707140055.2956235-1-lee.jones@linaro.org>
-References: <20200707140055.2956235-1-lee.jones@linaro.org>
+        id S1728190AbgGGOCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 10:02:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41682 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727777AbgGGOCr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 10:02:47 -0400
+Received: from pali.im (pali.im [31.31.79.79])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CB9ED20738;
+        Tue,  7 Jul 2020 14:02:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594130566;
+        bh=edIgc1HsmNAf0Fn0SMHWtli5jUaKGL0947RRvOW2G+U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=yXHwPMNojeUXhMOEmzHyHl8EmzY47rKX1qvX5FKtkoDiZpK5tGx06I9dluEM8fJhG
+         XCCUlR4qSly/5HxmgHBQ7kXUsBS2Y87+39MBCMt+KqI2CxuDJ7zeGq7wExXuQgnbNK
+         cB6vrrfdgounGRCkKNx89GXdGFkMpmrVYJhtGaGk=
+Received: by pali.im (Postfix)
+        id A62ABBF7; Tue,  7 Jul 2020 16:02:44 +0200 (CEST)
+Date:   Tue, 7 Jul 2020 16:02:44 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Rob Herring <robh@kernel.org>,
+        Andrew Murray <amurray@thegoodpenguin.co.uk>,
+        Marek =?utf-8?B?QmVow7pu?= <marek.behun@nic.cz>,
+        Remi Pommarel <repk@triplefau.lt>,
+        Tomasz Maciej Nowak <tmn505@gmail.com>,
+        Xogium <contact@xogium.me>, linux-pci@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: aardvark: Indicate error in 'val' when config read
+ fails
+Message-ID: <20200707140244.uhmyoqd5mblz5ids@pali>
+References: <20200601130315.18895-1-pali@kernel.org>
+ <20200619105618.aksoivu4gb5ex3s3@pali>
+ <20200707135311.GB17163@e121166-lin.cambridge.arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200707135311.GB17163@e121166-lin.cambridge.arm.com>
+User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+On Tuesday 07 July 2020 14:53:11 Lorenzo Pieralisi wrote:
+> On Fri, Jun 19, 2020 at 12:56:18PM +0200, Pali Rohár wrote:
+> > Hello Lorenzo! Could you please review this patch?
+> > 
+> > On Monday 01 June 2020 15:03:15 Pali Rohár wrote:
+> > > Most callers of config read do not check for return value. But most of the
+> > > ones that do, checks for error indication in 'val' variable.
+> > > 
+> > > This patch updates error handling in advk_pcie_rd_conf() function. If PIO
+> > > transfer fails then 'val' variable is set to 0xffffffff which indicates
+> > > failture.
+> > > 
+> > > Signed-off-by: Pali Rohár <pali@kernel.org>
+> > 
+> > I should add credit for Bjorn as he found this issue
+> 
+> Could you provide a lore archive link to the relevant
+> discussion please ? I will apply it then.
 
- drivers/scsi/megaraid/megaraid_sas_base.c:240:5: warning: no previous prototype for ‘megasas_readl’ [-Wmissing-prototypes]
- 240 | u32 megasas_readl(struct megasas_instance *instance,
- | ^~~~~~~~~~~~~
- drivers/scsi/megaraid/megaraid_sas_base.c:301:21: warning: no previous prototype for ‘megasas_get_cmd’ [-Wmissing-prototypes]
- 301 | struct megasas_cmd *megasas_get_cmd(struct megasas_instance
- | ^~~~~~~~~~~~~~~
- drivers/scsi/megaraid/megaraid_sas_base.c:327:1: warning: no previous prototype for ‘megasas_return_cmd’ [-Wmissing-prototypes]
- 327 | megasas_return_cmd(struct megasas_instance *instance, struct megasas_cmd *cmd)
- | ^~~~~~~~~~~~~~~~~~
- drivers/scsi/megaraid/megaraid_sas_base.c:1088:1: warning: no previous prototype for ‘megasas_issue_polled’ [-Wmissing-prototypes]
- 1088 | megasas_issue_polled(struct megasas_instance *instance, struct megasas_cmd *cmd)
- | ^~~~~~~~~~~~~~~~~~~~
- drivers/scsi/megaraid/megaraid_sas_base.c:2149:6: warning: no previous prototype for ‘megaraid_sas_kill_hba’ [-Wmissing-prototypes]
- 2149 | void megaraid_sas_kill_hba(struct megasas_instance *instance)
- | ^~~~~~~~~~~~~~~~~~~~~
- drivers/scsi/megaraid/megaraid_sas_base.c:2186:1: warning: no previous prototype for ‘megasas_check_and_restore_queue_depth’ [-Wmissing-prototypes]
- 2186 | megasas_check_and_restore_queue_depth(struct megasas_instance *instance)
- | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- drivers/scsi/megaraid/megaraid_sas_base.c:2263:6: warning: no previous prototype for ‘megasas_start_timer’ [-Wmissing-prototypes]
- 2263 | void megasas_start_timer(struct megasas_instance *instance)
- | ^~~~~~~~~~~~~~~~~~~
- drivers/scsi/megaraid/megaraid_sas_base.c:2579:5: warning: no previous prototype for ‘megasas_sriov_start_heartbeat’ [-Wmissing-prototypes]
- 2579 | int megasas_sriov_start_heartbeat(struct megasas_instance *instance,
- | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- drivers/scsi/megaraid/megaraid_sas_base.c:4292:6: warning: no previous prototype for ‘megasas_free_cmds’ [-Wmissing-prototypes]
- 4292 | void megasas_free_cmds(struct megasas_instance *instance)
- | ^~~~~~~~~~~~~~~~~
- drivers/scsi/megaraid/megaraid_sas_base.c:4329:5: warning: no previous prototype for ‘megasas_alloc_cmds’ [-Wmissing-prototypes]
- 4329 | int megasas_alloc_cmds(struct megasas_instance *instance)
- | ^~~~~~~~~~~~~~~~~~
+Hello Lorenzo! Here is link to the Bjorn's email:
+https://lore.kernel.org/linux-pci/20200528162604.GA323482@bjorn-Precision-5520/
 
-Cc: Kashyap Desai <kashyap.desai@broadcom.com>
-Cc: Sumit Saxena <sumit.saxena@broadcom.com>
-Cc: Shivasharan S <shivasharan.srikanteshwara@broadcom.com>
-Cc: megaraidlinux.pdl@broadcom.com
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/scsi/megaraid/megaraid_sas.h        | 25 +++++++++++++++++-
- drivers/scsi/megaraid/megaraid_sas_fusion.c | 29 ---------------------
- 2 files changed, 24 insertions(+), 30 deletions(-)
-
-diff --git a/drivers/scsi/megaraid/megaraid_sas.h b/drivers/scsi/megaraid/megaraid_sas.h
-index af2c7a2a95657..5c8037fca5fc6 100644
---- a/drivers/scsi/megaraid/megaraid_sas.h
-+++ b/drivers/scsi/megaraid/megaraid_sas.h
-@@ -2683,8 +2683,31 @@ void megasas_return_cmd_fusion(struct megasas_instance *instance,
- 	struct megasas_cmd_fusion *cmd);
- int megasas_issue_blocked_cmd(struct megasas_instance *instance,
- 	struct megasas_cmd *cmd, int timeout);
--void __megasas_return_cmd(struct megasas_instance *instance,
-+void megasas_return_cmd(struct megasas_instance *instance,
- 	struct megasas_cmd *cmd);
-+u32 megasas_readl(struct megasas_instance *instance,
-+		  const volatile void __iomem *addr);
-+void megasas_free_cmds(struct megasas_instance *instance);
-+struct megasas_cmd *megasas_get_cmd(struct megasas_instance *instance);
-+void megaraid_sas_kill_hba(struct megasas_instance *instance);
-+void megasas_complete_cmd(struct megasas_instance *instance,
-+		     struct megasas_cmd *cmd, u8 alt_status);
-+int wait_and_poll(struct megasas_instance *instance, struct megasas_cmd *cmd,
-+		  int seconds);
-+
-+int megasas_alloc_cmds(struct megasas_instance *instance);
-+int megasas_clear_intr_fusion(struct megasas_instance *instance);
-+int megasas_issue_polled(struct megasas_instance *instance,
-+			 struct megasas_cmd *cmd);
-+void megasas_check_and_restore_queue_depth(struct megasas_instance *instance);
-+
-+int megasas_transition_to_ready(struct megasas_instance *instance, int ocr);
-+void megaraid_sas_kill_hba(struct megasas_instance *instance);
-+
-+extern u32 megasas_dbg_lvl;
-+int megasas_sriov_start_heartbeat(struct megasas_instance *instance,
-+				  int initial);
-+void megasas_start_timer(struct megasas_instance *instance);
- 
- void megasas_return_mfi_mpt_pthr(struct megasas_instance *instance,
- 	struct megasas_cmd *cmd_mfi, struct megasas_cmd_fusion *cmd_fusion);
-diff --git a/drivers/scsi/megaraid/megaraid_sas_fusion.c b/drivers/scsi/megaraid/megaraid_sas_fusion.c
-index a0cf55776361c..fd0f40bc1795d 100644
---- a/drivers/scsi/megaraid/megaraid_sas_fusion.c
-+++ b/drivers/scsi/megaraid/megaraid_sas_fusion.c
-@@ -48,34 +48,7 @@
- #include "megaraid_sas.h"
- 
- 
--extern void megasas_free_cmds(struct megasas_instance *instance);
--extern struct megasas_cmd *megasas_get_cmd(struct megasas_instance
--					   *instance);
--extern void
--megasas_complete_cmd(struct megasas_instance *instance,
--		     struct megasas_cmd *cmd, u8 alt_status);
--int
--wait_and_poll(struct megasas_instance *instance, struct megasas_cmd *cmd,
--	      int seconds);
--
--void
--megasas_return_cmd(struct megasas_instance *instance, struct megasas_cmd *cmd);
--int megasas_alloc_cmds(struct megasas_instance *instance);
--int
--megasas_clear_intr_fusion(struct megasas_instance *instance);
--int
--megasas_issue_polled(struct megasas_instance *instance,
--		     struct megasas_cmd *cmd);
--void
--megasas_check_and_restore_queue_depth(struct megasas_instance *instance);
--
--int megasas_transition_to_ready(struct megasas_instance *instance, int ocr);
--void megaraid_sas_kill_hba(struct megasas_instance *instance);
- 
--extern u32 megasas_dbg_lvl;
--int megasas_sriov_start_heartbeat(struct megasas_instance *instance,
--				  int initial);
--void megasas_start_timer(struct megasas_instance *instance);
- extern struct megasas_mgmt_info megasas_mgmt_info;
- extern unsigned int resetwaittime;
- extern unsigned int dual_qdepth_disable;
-@@ -84,8 +57,6 @@ static void megasas_free_reply_fusion(struct megasas_instance *instance);
- static inline
- void megasas_configure_queue_sizes(struct megasas_instance *instance);
- static void megasas_fusion_crash_dump(struct megasas_instance *instance);
--extern u32 megasas_readl(struct megasas_instance *instance,
--			 const volatile void __iomem *addr);
- 
- /**
-  * megasas_adp_reset_wait_for_ready -	initiate chip reset and wait for
--- 
-2.25.1
-
+> Lorenzo
+> 
+> > Reported-by: Bjorn Helgaas <helgaas@kernel.org>
+> > 
+> > > ---
+> > >  drivers/pci/controller/pci-aardvark.c | 4 +++-
+> > >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/drivers/pci/controller/pci-aardvark.c b/drivers/pci/controller/pci-aardvark.c
+> > > index 53a4cfd7d377..783a7f1f2c44 100644
+> > > --- a/drivers/pci/controller/pci-aardvark.c
+> > > +++ b/drivers/pci/controller/pci-aardvark.c
+> > > @@ -691,8 +691,10 @@ static int advk_pcie_rd_conf(struct pci_bus *bus, u32 devfn,
+> > >  	advk_writel(pcie, 1, PIO_START);
+> > >  
+> > >  	ret = advk_pcie_wait_pio(pcie);
+> > > -	if (ret < 0)
+> > > +	if (ret < 0) {
+> > > +		*val = 0xffffffff;
+> > >  		return PCIBIOS_SET_FAILED;
+> > > +	}
+> > >  
+> > >  	advk_pcie_check_pio_status(pcie);
+> > >  
+> > > -- 
+> > > 2.20.1
+> > > 
