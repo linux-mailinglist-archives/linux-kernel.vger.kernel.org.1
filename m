@@ -2,114 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51C46217239
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:44:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEC5B217253
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:44:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730201AbgGGPaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:30:24 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:34031 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729146AbgGGPaP (ORCPT
+        id S1729823AbgGGPbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:31:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730246AbgGGPba (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:30:15 -0400
-Received: by mail-il1-f197.google.com with SMTP id y3so18723185ily.1
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 08:30:14 -0700 (PDT)
+        Tue, 7 Jul 2020 11:31:30 -0400
+Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com [IPv6:2607:f8b0:4864:20::a43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13B41C08C5E1
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 08:31:30 -0700 (PDT)
+Received: by mail-vk1-xa43.google.com with SMTP id v26so6506230vkn.2
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 08:31:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=k9pD5UhiE599Tk9wmQP354KMod/Tb87VcByMMuwvg3k=;
+        b=G+VWkqkqtjaLmPcbE4Vr+ciMMRNHr+VCxIoF6KeYJNsyLUH8ifsFw42bsVUuCQcL2v
+         4h8B6RVOb0A7JHYxkMMPFot6aNEHIX4sO1KFmTN9HVLhhirhuN/5M7I9phPJxLAU7aez
+         9P7ONjtIUTLRxZSOQviFEN8aNFPBqxVoZEhGU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=l5UfEPh6FpvcqMK9z9YCj6DGXnLOftd9sD9CfnuWGio=;
-        b=ZjFvhjITieldz3Eyu5+AmYELpEfSDulUbg06yvsCyppgg95vBuFBvYQeYXjXe8r4bL
-         8qnf+6i3bLnZdT5ndseMAR5m6s1aoJ9kT6pKNbQlmXHhqyJ0/Gjuv8EHm33TS1zO9Fll
-         26SawQcB+6znWEJfcyxEQ7cLsUtl8qz/hEJgsdP+wwRnoVDCQrgs0aLvO7Usd1mIcAUS
-         Qyl7tynJ1gEjxxqev5vKoIU9jRdspM+4TGS/5DHtmewlem3BrQzd9lXb/+uzkYMKa4Lz
-         OJOWnIjBKc0pokcaBK/xsdzZ5jBd6JZJQFpXSzNCVXqj8fn6DSJgJSRdkf1PLOKZwMET
-         D77w==
-X-Gm-Message-State: AOAM531iWd/UnvFcXcH52F1tbQnme2bvLOpw+PfeN64TUaY2ihQComAr
-        RZr3BP5ohPAwZVCZ0j/dEuccbeUM0kZ1+IWrDZgs13eDs0Zu
-X-Google-Smtp-Source: ABdhPJz38T51Ko5sHjG40+v5KRv3EC++gkZunO00fGv8OmSqfw3SsUSP6S8MGjq1G+jBQ8orWn+UoH3rpNWToypbts+u/bx/KU74
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=k9pD5UhiE599Tk9wmQP354KMod/Tb87VcByMMuwvg3k=;
+        b=bZxu1szZQ+TIlXC+WHm8MnZsUdpuMxUlfVHgwuJcHUZAIh19fgHlgbr9dwsMxkO9om
+         bxjcmVz6FLlQAykQQLyfWdtigFte99vRtp09gk2b8pnMy4tkmlNuwAQqEDhoa+Nj6WZH
+         4LT4+UQypAIqckJfFdwf49mq1qTJBagZEhMs++LzlKm7T2zNnGw7VPZ8Ntd2FfsbZqxy
+         dLoaR+JJCeQT0DoF4t1/mcBtBx/w7rgORIAEvHI2QJDWgAkfJ88JxrzejPiOE+4ibK5O
+         VRD8ZCumLoCB21tyVoR1VNkSpFvVGyKrMYvBuhi+U84S/TXgTVM/ZjL/0LJ1rP9T7FjD
+         zelg==
+X-Gm-Message-State: AOAM530WnI0ggKoeYhlJ/16vJv+FalySpyxXpdjkicHixz0J+MeBPvBQ
+        izzK0LCYI37BKj0xNaQreqMuwT22xzc2cM53XAzLmA==
+X-Google-Smtp-Source: ABdhPJzywIHzvHEbshbYh1BPf/R2VSON3B3el7elCV5+s8tTIaZ0pNfM6hRiiIO9NHAG6kQxEZ1i9zEbDrKxhAAT9zg=
+X-Received: by 2002:a1f:418f:: with SMTP id o137mr37478018vka.25.1594135888939;
+ Tue, 07 Jul 2020 08:31:28 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:2c8b:: with SMTP id i11mr31473413iow.139.1594135814367;
- Tue, 07 Jul 2020 08:30:14 -0700 (PDT)
-Date:   Tue, 07 Jul 2020 08:30:14 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f06edf05a9dbaa44@google.com>
-Subject: general protection fault in batadv_iv_ogm_schedule_buff (2)
-From:   syzbot <syzbot+2eeeb5ad0766b57394d8@syzkaller.appspotmail.com>
-To:     a@unstable.cc, b.a.t.m.a.n@lists.open-mesh.org,
-        davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        mareklindner@neomailbox.ch, netdev@vger.kernel.org,
-        sven@narfation.org, sw@simonwunderlich.de,
-        syzkaller-bugs@googlegroups.com
+References: <20200706210717.1210639-1-abhishekpandit@chromium.org>
+ <20200706140715.v2.1.I51f5a0be89595b73c4dc17e6cf4cc6f26dc7f2fc@changeid> <20200707142859.GB55434@kroah.com>
+In-Reply-To: <20200707142859.GB55434@kroah.com>
+From:   Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+Date:   Tue, 7 Jul 2020 08:31:18 -0700
+Message-ID: <CANFp7mUgJScOn1xJFqqK82UkRsQ7GpsEJ7Ai9gptZjCRtf+JJw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] power: Emit changed uevent on wakeup_sysfs_add/remove
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        Bluez mailing list <linux-bluetooth@vger.kernel.org>,
+        ChromeOS Bluetooth Upstreaming 
+        <chromeos-bluetooth-upstreaming@chromium.org>,
+        rafael.j.wysocki@intel.com, Stephen Boyd <swboyd@chromium.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot found the following crash on:
-
-HEAD commit:    7cc2a8ea Merge tag 'block-5.8-2020-07-01' of git://git.ker..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=130b828f100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7be693511b29b338
-dashboard link: https://syzkaller.appspot.com/bug?extid=2eeeb5ad0766b57394d8
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-
-Unfortunately, I don't have any reproducer for this crash yet.
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+2eeeb5ad0766b57394d8@syzkaller.appspotmail.com
-
-general protection fault, probably for non-canonical address 0xdffffc000000000e: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000070-0x0000000000000077]
-CPU: 1 PID: 9126 Comm: kworker/u4:9 Not tainted 5.8.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: bat_events batadv_iv_send_outstanding_bat_ogm_packet
-RIP: 0010:batadv_iv_ogm_schedule_buff+0xd1e/0x1410 net/batman-adv/bat_iv_ogm.c:843
-Code: 80 3c 28 00 0f 85 ee 05 00 00 4d 8b 3f 49 81 ff e0 e9 4e 8d 0f 84 dd 02 00 00 e8 bd 80 ae f9 49 8d 7f 70 48 89 f8 48 c1 e8 03 <42> 80 3c 28 00 0f 85 af 06 00 00 48 8b 44 24 08 49 8b 6f 70 80 38
-RSP: 0018:ffffc90004e97b98 EFLAGS: 00010202
-RAX: 000000000000000e RBX: ffff8880a7471800 RCX: ffffffff87c5394d
-RDX: ffff88804cf02380 RSI: ffffffff87c536a3 RDI: 0000000000000070
-RBP: 0000000000077000 R08: 0000000000000001 R09: ffff8880a875a02b
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000007
-R13: dffffc0000000000 R14: ffff888051ad4c40 R15: 0000000000000000
-FS:  0000000000000000(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000400200 CR3: 0000000061cac000 CR4: 00000000001426e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- batadv_iv_ogm_schedule net/batman-adv/bat_iv_ogm.c:869 [inline]
- batadv_iv_ogm_schedule net/batman-adv/bat_iv_ogm.c:862 [inline]
- batadv_iv_send_outstanding_bat_ogm_packet+0x5c8/0x800 net/batman-adv/bat_iv_ogm.c:1722
- process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
- kthread+0x3b5/0x4a0 kernel/kthread.c:291
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
-Modules linked in:
----[ end trace f5c5eda032070cd1 ]---
-RIP: 0010:batadv_iv_ogm_schedule_buff+0xd1e/0x1410 net/batman-adv/bat_iv_ogm.c:843
-Code: 80 3c 28 00 0f 85 ee 05 00 00 4d 8b 3f 49 81 ff e0 e9 4e 8d 0f 84 dd 02 00 00 e8 bd 80 ae f9 49 8d 7f 70 48 89 f8 48 c1 e8 03 <42> 80 3c 28 00 0f 85 af 06 00 00 48 8b 44 24 08 49 8b 6f 70 80 38
-RSP: 0018:ffffc90004e97b98 EFLAGS: 00010202
-RAX: 000000000000000e RBX: ffff8880a7471800 RCX: ffffffff87c5394d
-RDX: ffff88804cf02380 RSI: ffffffff87c536a3 RDI: 0000000000000070
-RBP: 0000000000077000 R08: 0000000000000001 R09: ffff8880a875a02b
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000007
-R13: dffffc0000000000 R14: ffff888051ad4c40 R15: 0000000000000000
-FS:  0000000000000000(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000400200 CR3: 000000009480d000 CR4: 00000000001426e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Hi Greg,
 
 
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+On Tue, Jul 7, 2020 at 7:29 AM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Mon, Jul 06, 2020 at 02:07:17PM -0700, Abhishek Pandit-Subedi wrote:
+> > Udev rules that depend on the power/wakeup attribute don't get triggered
+> > correctly if device_set_wakeup_capable is called after the device is
+> > created. This can happen for several reasons (driver sets wakeup after
+> > device is created, wakeup is changed on parent device, etc) and it seems
+> > reasonable to emit a changed event when adding or removing attributes on
+> > the device.
+> >
+> > Signed-off-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+> > ---
+> >
+> > Changes in v2:
+> > - Add newline at end of bt_dev_err
+> >
+> >  drivers/base/power/sysfs.c | 21 ++++++++++++++++++++-
+> >  1 file changed, 20 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/base/power/sysfs.c b/drivers/base/power/sysfs.c
+> > index 24d25cf8ab1487..d57e8e7f175ebf 100644
+> > --- a/drivers/base/power/sysfs.c
+> > +++ b/drivers/base/power/sysfs.c
+> > @@ -1,6 +1,7 @@
+> >  // SPDX-License-Identifier: GPL-2.0
+> >  /* sysfs entries for device PM */
+> >  #include <linux/device.h>
+> > +#include <linux/kobject.h>
+> >  #include <linux/string.h>
+> >  #include <linux/export.h>
+> >  #include <linux/pm_qos.h>
+> > @@ -739,12 +740,30 @@ int dpm_sysfs_change_owner(struct device *dev, kuid_t kuid, kgid_t kgid)
+> >
+> >  int wakeup_sysfs_add(struct device *dev)
+> >  {
+> > -     return sysfs_merge_group(&dev->kobj, &pm_wakeup_attr_group);
+> > +     int ret = sysfs_merge_group(&dev->kobj, &pm_wakeup_attr_group);
+> > +
+> > +     if (!ret) {
+> > +             int tmp = kobject_uevent(&dev->kobj, KOBJ_CHANGE);
+> > +
+> > +             if (tmp)
+> > +                     dev_err(dev,
+> > +                             "Error in uevent for wakeup_sysfs_add: %d\n",
+> > +                             tmp);
+> > +     }
+> > +
+> > +     return ret;
+> >  }
+>
+> Shouldn't the above function look like this instead to be simpler:
+>
+> int wakeup_sysfs_add(struct device *dev)
+> {
+>         int ret = sysfs_merge_group(&dev->kobj, &pm_wakeup_attr_group);
+>
+>         if (ret)
+>                 return ret;
+>
+>         return kobject_uevent(&dev->kobj, KOBJ_CHANGE);
+> }
+>
+>
+> >
+> >  void wakeup_sysfs_remove(struct device *dev)
+> >  {
+> > +     int tmp;
+>
+> Use 'ret' like the above function had, to be consistent.
+>
+> > +
+> >       sysfs_unmerge_group(&dev->kobj, &pm_wakeup_attr_group);
+> > +
+> > +     tmp = kobject_uevent(&dev->kobj, KOBJ_CHANGE);
+> > +     if (tmp)
+> > +             dev_err(dev, "Error in uevent for wakeup_sysfs_remove: %d\n",
+>
+> nit, use __func__ to describe a function name, if you really want it.
+> Why do you need to send a message for this error, will that really ever
+> happen?
+>
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Looking through kobject_uevent, it does look like the errors are
+unlikely to be seen (-ENOMEM, -ENOENT) and probably don't need to be
+logged.
+Will apply the suggestions above and send a v3.
+
+Thanks,
+Abhishek
+
+> thanks,
+>
+> greg k-h
