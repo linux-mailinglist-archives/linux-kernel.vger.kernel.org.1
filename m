@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98F45217216
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:43:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D960621717A
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:42:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729971AbgGGP2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:28:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40206 "EHLO mail.kernel.org"
+        id S1729545AbgGGPUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:20:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60746 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729586AbgGGP0B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:26:01 -0400
+        id S1729127AbgGGPUg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 11:20:36 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E292A2082F;
-        Tue,  7 Jul 2020 15:25:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1C47B206CD;
+        Tue,  7 Jul 2020 15:20:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594135560;
-        bh=pIrYhNhOIbV7GXkWdXf2eALo3Mmav0+oG7s4Y503agA=;
+        s=default; t=1594135235;
+        bh=bTu3VkaoueKPz3FtvkXJwHNxe4FnclP3wIxbsKTQdJE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p9QwioGC/XgO2JfG1z1H6JJA9PGhdZxSK/4c/Q2RwmuNr6DMTKwUP5g95NraSTMA/
-         qYddhyjz/LCZWE5MLcAbPyLFfMLuER0dpxSHrJ61M3f9VoD/ySbtNdvZVr4rz52MuN
-         tr3MwWxXaLETmqb2iik7IfZwLtuQhjaz4+Ag2bJE=
+        b=RupziH/mfDLjNYZj6HaBZ6J8gtJq1znol+KdfjClbazHWm55KUKbi7QVhVQaKGyaP
+         PiUqPqMfKydJnotF1IpBVAZdEtqactIATlqa1jUkGJ1HBBmJQcoOeL+wMeOXNzTLwK
+         sQWzQqS7rFNI9uh6vWqtjJqry9K8HB/KJpAplYeQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -30,12 +30,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 059/112] cxgb4: parse TC-U32 key values and masks natively
-Date:   Tue,  7 Jul 2020 17:17:04 +0200
-Message-Id: <20200707145803.808313576@linuxfoundation.org>
+Subject: [PATCH 5.4 26/65] cxgb4: parse TC-U32 key values and masks natively
+Date:   Tue,  7 Jul 2020 17:17:05 +0200
+Message-Id: <20200707145753.749117165@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200707145800.925304888@linuxfoundation.org>
-References: <20200707145800.925304888@linuxfoundation.org>
+In-Reply-To: <20200707145752.417212219@linuxfoundation.org>
+References: <20200707145752.417212219@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -70,10 +70,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  2 files changed, 91 insertions(+), 49 deletions(-)
 
 diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_u32.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_u32.c
-index 3f3c11e54d970..dede02505ceb5 100644
+index 02fc63fa7f256..b3a342561a968 100644
 --- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_u32.c
 +++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_u32.c
-@@ -48,7 +48,7 @@ static int fill_match_fields(struct adapter *adap,
+@@ -47,7 +47,7 @@ static int fill_match_fields(struct adapter *adap,
  			     bool next_header)
  {
  	unsigned int i, j;
@@ -82,7 +82,7 @@ index 3f3c11e54d970..dede02505ceb5 100644
  	int off, err;
  	bool found;
  
-@@ -228,7 +228,7 @@ int cxgb4_config_knode(struct net_device *dev, struct tc_cls_u32_offload *cls)
+@@ -216,7 +216,7 @@ int cxgb4_config_knode(struct net_device *dev, struct tc_cls_u32_offload *cls)
  		const struct cxgb4_next_header *next;
  		bool found = false;
  		unsigned int i, j;
@@ -91,7 +91,7 @@ index 3f3c11e54d970..dede02505ceb5 100644
  		int off;
  
  		if (t->table[link_uhtid - 1].link_handle) {
-@@ -242,10 +242,10 @@ int cxgb4_config_knode(struct net_device *dev, struct tc_cls_u32_offload *cls)
+@@ -230,10 +230,10 @@ int cxgb4_config_knode(struct net_device *dev, struct tc_cls_u32_offload *cls)
  
  		/* Try to find matches that allow jumps to next header. */
  		for (i = 0; next[i].jump; i++) {
@@ -106,7 +106,7 @@ index 3f3c11e54d970..dede02505ceb5 100644
  				continue;
  
  			/* Found a possible candidate.  Find a key that
-@@ -257,9 +257,9 @@ int cxgb4_config_knode(struct net_device *dev, struct tc_cls_u32_offload *cls)
+@@ -245,9 +245,9 @@ int cxgb4_config_knode(struct net_device *dev, struct tc_cls_u32_offload *cls)
  				val = cls->knode.sel->keys[j].val;
  				mask = cls->knode.sel->keys[j].mask;
  
@@ -120,7 +120,7 @@ index 3f3c11e54d970..dede02505ceb5 100644
  					break;
  				}
 diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_u32_parse.h b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_u32_parse.h
-index 125868c6770a2..f59dd4b2ae6f9 100644
+index a4b99edcc3399..141085e159e57 100644
 --- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_u32_parse.h
 +++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_u32_parse.h
 @@ -38,12 +38,12 @@
