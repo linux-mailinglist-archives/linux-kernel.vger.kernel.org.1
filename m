@@ -2,126 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63241216886
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 10:45:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FCBB216892
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 10:48:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727871AbgGGIpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 04:45:00 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:36976 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726467AbgGGIo7 (ORCPT
+        id S1727942AbgGGIrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 04:47:41 -0400
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:43276 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725941AbgGGIrl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 04:44:59 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0678YD1h105513;
-        Tue, 7 Jul 2020 04:44:54 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32482kn0pn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Jul 2020 04:44:54 -0400
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0678YMRP106482;
-        Tue, 7 Jul 2020 04:44:51 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32482kn0k9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Jul 2020 04:44:50 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0678eADI020543;
-        Tue, 7 Jul 2020 08:44:44 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma04ams.nl.ibm.com with ESMTP id 322hd7u6xj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Jul 2020 08:44:44 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0678ifnv56033414
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 7 Jul 2020 08:44:41 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4D84CA4055;
-        Tue,  7 Jul 2020 08:44:41 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6E693A4040;
-        Tue,  7 Jul 2020 08:44:40 +0000 (GMT)
-Received: from oc3016276355.ibm.com (unknown [9.145.29.12])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  7 Jul 2020 08:44:40 +0000 (GMT)
-From:   Pierre Morel <pmorel@linux.ibm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     pasic@linux.ibm.com, borntraeger@de.ibm.com, frankja@linux.ibm.com,
-        mst@redhat.com, jasowang@redhat.com, cohuck@redhat.com,
-        kvm@vger.kernel.org, linux-s390@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, thomas.lendacky@amd.com,
-        david@gibson.dropbear.id.au, linuxram@us.ibm.com,
-        heiko.carstens@de.ibm.com, gor@linux.ibm.com
-Subject: [PATCH v4 2/2] s390: virtio: PV needs VIRTIO I/O device protection
-Date:   Tue,  7 Jul 2020 10:44:37 +0200
-Message-Id: <1594111477-15401-3-git-send-email-pmorel@linux.ibm.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1594111477-15401-1-git-send-email-pmorel@linux.ibm.com>
-References: <1594111477-15401-1-git-send-email-pmorel@linux.ibm.com>
-X-TM-AS-GCONF: 00
+        Tue, 7 Jul 2020 04:47:41 -0400
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0678e1pQ017342;
+        Tue, 7 Jul 2020 01:47:36 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=pfpt0818;
+ bh=8c5mPkGG7H30YLL+hWMIaNUtKr3dVimKBm6pzrqc0Es=;
+ b=yvoJFDIoFDNvAY7UK5NmLn9ZAqLCWAYEQ/IHSt9Epx7RFwwb/laTEA9+Q0AA149qdNpN
+ VobDgnt0HnT8y3MRaJGYRnhOTUg2gGGEA+Ui1/uHRARtcENx2tAXQ72H2vNhVt4GQJpF
+ +dV50CwxIFvdJE7g4sApNeoji+PpDLdY6ChyWxGnAT8njXpzpTx4nEPSNoIgG5jfZVs8
+ Z07xGg0mxDrRrKPweNeJ/EV8nu93tIlF7qsJxmAVwL194h49YX/8aAPW73/OOVKS9u3M
+ oIQf3OnfmejLoY1/zGa8RSXDd7rTxub0eBDttzvOj/UnY+54oHCxn4ZtZnOLcJbt0gS4 zw== 
+Received: from sc-exch04.marvell.com ([199.233.58.184])
+        by mx0a-0016f401.pphosted.com with ESMTP id 322q4ptt6y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Tue, 07 Jul 2020 01:47:36 -0700
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH04.marvell.com
+ (10.93.176.84) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 7 Jul
+ 2020 01:47:35 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 7 Jul 2020 01:47:35 -0700
+Received: from NN-LT0049.marvell.com (NN-LT0049.marvell.com [10.193.54.6])
+        by maili.marvell.com (Postfix) with ESMTP id 286E53F703F;
+        Tue,  7 Jul 2020 01:47:31 -0700 (PDT)
+From:   Alexander Lobakin <alobakin@marvell.com>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+CC:     Alexander Lobakin <alobakin@marvell.com>,
+        <anthony.wong@canonical.com>,
+        Igor Russkikh <irusskikh@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Nikita Danilov <ndanilov@marvell.com>,
+        Mark Starovoytov <mstarovoitov@marvell.com>,
+        "Dmitry Bezrukov" <dmitry.bezrukov@marvell.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] net: atlantic: Add support for firmware v4
+Date:   Tue, 7 Jul 2020 11:46:57 +0300
+Message-ID: <20200707084657.205-1-alobakin@marvell.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200707063830.15645-1-kai.heng.feng@canonical.com>
+References: <20200707063830.15645-1-kai.heng.feng@canonical.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-07-07_05:2020-07-07,2020-07-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- spamscore=0 clxscore=1015 phishscore=0 suspectscore=1 cotscore=-2147483648
- mlxlogscore=999 adultscore=0 malwarescore=0 bulkscore=0 priorityscore=1501
- mlxscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2007070066
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-S390, protecting the guest memory against unauthorized host access
-needs to enforce VIRTIO I/O device protection through the use of
-VIRTIO_F_VERSION_1 and VIRTIO_F_IOMMU_PLATFORM.
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Tue,  7 Jul 2020 14:38:28 +0800
 
-Signed-off-by: Pierre Morel <pmorel@linux.ibm.com>
----
- arch/s390/kernel/uv.c | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+> We have a new ethernet card that is supported by the atlantic driver:
+> 01:00.0 Ethernet controller [0200]: Aquantia Corp. AQC107 NBase-T/IEEE 802.3bz Ethernet Controller [AQtion] [1d6a:07b1] (rev 02)
+> 
+> But the driver failed to probe the device:
+> kernel: atlantic: Bad FW version detected: 400001e
+> kernel: atlantic: probe of 0000:01:00.0 failed with error -95
+> 
+> As a pure guesswork, simply adding the firmware version to the driver
 
-diff --git a/arch/s390/kernel/uv.c b/arch/s390/kernel/uv.c
-index c296e5c8dbf9..106330f6eda1 100644
---- a/arch/s390/kernel/uv.c
-+++ b/arch/s390/kernel/uv.c
-@@ -14,6 +14,7 @@
- #include <linux/memblock.h>
- #include <linux/pagemap.h>
- #include <linux/swap.h>
-+#include <linux/virtio_config.h>
- #include <asm/facility.h>
- #include <asm/sections.h>
- #include <asm/uv.h>
-@@ -413,3 +414,27 @@ static int __init uv_info_init(void)
- }
- device_initcall(uv_info_init);
- #endif
-+
-+/*
-+ * arch_validate_virtio_iommu_platform
-+ * @dev: the VIRTIO device being added
-+ *
-+ * Return value: returns -ENODEV if any features of the
-+ *               device breaks the protected virtualization
-+ *               0 otherwise.
-+ */
-+int arch_validate_virtio_features(struct virtio_device *dev)
-+{
-+	if (!virtio_has_feature(dev, VIRTIO_F_VERSION_1)) {
-+		dev_warn(&dev->dev, "device must provide VIRTIO_F_VERSION_1\n");
-+		return is_prot_virt_guest() ? -ENODEV : 0;
-+	}
-+
-+	if (!virtio_has_feature(dev, VIRTIO_F_IOMMU_PLATFORM)) {
-+		dev_warn(&dev->dev,
-+			 "device must provide VIRTIO_F_IOMMU_PLATFORM\n");
-+		return is_prot_virt_guest() ? -ENODEV : 0;
-+	}
-+
-+	return 0;
-+}
--- 
-2.25.1
+Please don't send "pure guessworks" to net-fixes tree. You should have
+reported this as a bug to LKML and/or atlantic team, so we could issue
+it.
 
+> can make it function. Doing iperf3 as a smoketest doesn't show any
+> abnormality either.
+> 
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> ---
+>  drivers/net/ethernet/aquantia/atlantic/hw_atl/hw_atl_utils.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/drivers/net/ethernet/aquantia/atlantic/hw_atl/hw_atl_utils.c b/drivers/net/ethernet/aquantia/atlantic/hw_atl/hw_atl_utils.c
+> index 73c0f41df8d8..0b4cd1c0e022 100644
+> --- a/drivers/net/ethernet/aquantia/atlantic/hw_atl/hw_atl_utils.c
+> +++ b/drivers/net/ethernet/aquantia/atlantic/hw_atl/hw_atl_utils.c
+> @@ -46,6 +46,7 @@
+>  #define HW_ATL_FW_VER_1X 0x01050006U
+>  #define HW_ATL_FW_VER_2X 0x02000000U
+>  #define HW_ATL_FW_VER_3X 0x03000000U
+> +#define HW_ATL_FW_VER_4X 0x0400001EU
+>  
+>  #define FORCE_FLASHLESS 0
+>  
+> @@ -81,6 +82,9 @@ int hw_atl_utils_initfw(struct aq_hw_s *self, const struct aq_fw_ops **fw_ops)
+>  	} else if (hw_atl_utils_ver_match(HW_ATL_FW_VER_3X,
+>  					  self->fw_ver_actual) == 0) {
+>  		*fw_ops = &aq_fw_2x_ops;
+> +	} else if (hw_atl_utils_ver_match(HW_ATL_FW_VER_4X,
+> +					  self->fw_ver_actual) == 0) {
+> +		*fw_ops = &aq_fw_2x_ops;
+>  	} else {
+>  		aq_pr_err("Bad FW version detected: %x\n",
+>  			  self->fw_ver_actual);
+> -- 
+> 2.17.1
