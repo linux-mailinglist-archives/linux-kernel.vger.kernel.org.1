@@ -2,43 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE0752170B2
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:24:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BFB7217111
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:25:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728559AbgGGPT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:19:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59698 "EHLO mail.kernel.org"
+        id S1730016AbgGGPXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:23:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37100 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729424AbgGGPTw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:19:52 -0400
+        id S1729231AbgGGPXu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 11:23:50 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7FFAE206F6;
-        Tue,  7 Jul 2020 15:19:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B8A59206F6;
+        Tue,  7 Jul 2020 15:23:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594135192;
-        bh=0ihtoY0lf8Gu8Y6kDwo47g0YVSfPA2q6Eiq3pKZeAKg=;
+        s=default; t=1594135429;
+        bh=B81D+fhpARexeCwfFnG4FKM5x7QIS06WWsHqzJSHRTo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=m3pNjcE/jquuyozmN6GcuoxTARZLeo4tSGULnQ5tb1AkBjiRamH0oFFFFwymGnCbM
-         UUJNWMkPlhLzs0+wQfAceiukpkoNl5Uide0XTaZZanjJU/mlhfteowTU4Ev3D/xSah
-         Cqsaq8qqK57Mfcvzlth0aEIqd1vThAaP61HkGnGg=
+        b=qNrN0JwKUsqeUgs4cOZxrJgxz2HRgDal0GsEYF+G2sg/6yaxfAMpweulXlMucQcCe
+         LU2sKPsj96eJ3ClTXP/coxNOX1c5sWlJydsK4eO1zxF3wQH1zOl3m/BX7CdtSTM+Wa
+         MPf1FDOw95EH72uT4keDc86hkPjohwvVW4837MHM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hugh Dickins <hughd@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Chris Murphy <lists@colorremedies.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 02/65] mm: fix swap cache node allocation mask
-Date:   Tue,  7 Jul 2020 17:16:41 +0200
-Message-Id: <20200707145752.546103241@linuxfoundation.org>
+        stable@vger.kernel.org, Anton Eidelman <anton@lightbitslabs.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 038/112] nvme-multipath: fix bogus request queue reference put
+Date:   Tue,  7 Jul 2020 17:16:43 +0200
+Message-Id: <20200707145802.805079891@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200707145752.417212219@linuxfoundation.org>
-References: <20200707145752.417212219@linuxfoundation.org>
+In-Reply-To: <20200707145800.925304888@linuxfoundation.org>
+References: <20200707145800.925304888@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,96 +44,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hugh Dickins <hughd@google.com>
+From: Sagi Grimberg <sagi@grimberg.me>
 
-[ Upstream commit 243bce09c91b0145aeaedd5afba799d81841c030 ]
+[ Upstream commit c31244669f57963b6ce133a5555b118fc50aec95 ]
 
-Chris Murphy reports that a slightly overcommitted load, testing swap
-and zram along with i915, splats and keeps on splatting, when it had
-better fail less noisily:
+The mpath disk node takes a reference on the request mpath
+request queue when adding live path to the mpath gendisk.
+However if we connected to an inaccessible path device_add_disk
+is not called, so if we disconnect and remove the mpath gendisk
+we endup putting an reference on the request queue that was
+never taken [1].
 
-  gnome-shell: page allocation failure: order:0,
-  mode:0x400d0(__GFP_IO|__GFP_FS|__GFP_COMP|__GFP_RECLAIMABLE),
-  nodemask=(null),cpuset=/,mems_allowed=0
-  CPU: 2 PID: 1155 Comm: gnome-shell Not tainted 5.7.0-1.fc33.x86_64 #1
-  Call Trace:
-    dump_stack+0x64/0x88
-    warn_alloc.cold+0x75/0xd9
-    __alloc_pages_slowpath.constprop.0+0xcfa/0xd30
-    __alloc_pages_nodemask+0x2df/0x320
-    alloc_slab_page+0x195/0x310
-    allocate_slab+0x3c5/0x440
-    ___slab_alloc+0x40c/0x5f0
-    __slab_alloc+0x1c/0x30
-    kmem_cache_alloc+0x20e/0x220
-    xas_nomem+0x28/0x70
-    add_to_swap_cache+0x321/0x400
-    __read_swap_cache_async+0x105/0x240
-    swap_cluster_readahead+0x22c/0x2e0
-    shmem_swapin+0x8e/0xc0
-    shmem_swapin_page+0x196/0x740
-    shmem_getpage_gfp+0x3a2/0xa60
-    shmem_read_mapping_page_gfp+0x32/0x60
-    shmem_get_pages+0x155/0x5e0 [i915]
-    __i915_gem_object_get_pages+0x68/0xa0 [i915]
-    i915_vma_pin+0x3fe/0x6c0 [i915]
-    eb_add_vma+0x10b/0x2c0 [i915]
-    i915_gem_do_execbuffer+0x704/0x3430 [i915]
-    i915_gem_execbuffer2_ioctl+0x1ea/0x3e0 [i915]
-    drm_ioctl_kernel+0x86/0xd0 [drm]
-    drm_ioctl+0x206/0x390 [drm]
-    ksys_ioctl+0x82/0xc0
-    __x64_sys_ioctl+0x16/0x20
-    do_syscall_64+0x5b/0xf0
-    entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Fix that to check if we ever added a live path (using
+NVME_NS_HEAD_HAS_DISK flag) and if not, clear the disk->queue
+reference.
 
-Reported on 5.7, but it goes back really to 3.1: when
-shmem_read_mapping_page_gfp() was implemented for use by i915, and
-allowed for __GFP_NORETRY and __GFP_NOWARN flags in most places, but
-missed swapin's "& GFP_KERNEL" mask for page tree node allocation in
-__read_swap_cache_async() - that was to mask off HIGHUSER_MOVABLE bits
-from what page cache uses, but GFP_RECLAIM_MASK is now what's needed.
+[1]:
+------------[ cut here ]------------
+refcount_t: underflow; use-after-free.
+WARNING: CPU: 1 PID: 1372 at lib/refcount.c:28 refcount_warn_saturate+0xa6/0xf0
+CPU: 1 PID: 1372 Comm: nvme Tainted: G           O      5.7.0-rc2+ #3
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-1ubuntu1 04/01/2014
+RIP: 0010:refcount_warn_saturate+0xa6/0xf0
+RSP: 0018:ffffb29e8053bdc0 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: ffff8b7a2f4fc060 RCX: 0000000000000007
+RDX: 0000000000000007 RSI: 0000000000000092 RDI: ffff8b7a3ec99980
+RBP: ffff8b7a2f4fc000 R08: 00000000000002e1 R09: 0000000000000004
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000000
+R13: fffffffffffffff2 R14: ffffb29e8053bf08 R15: ffff8b7a320e2da0
+FS:  00007f135d4ca800(0000) GS:ffff8b7a3ec80000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00005651178c0c30 CR3: 000000003b650005 CR4: 0000000000360ee0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ disk_release+0xa2/0xc0
+ device_release+0x28/0x80
+ kobject_put+0xa5/0x1b0
+ nvme_put_ns_head+0x26/0x70 [nvme_core]
+ nvme_put_ns+0x30/0x60 [nvme_core]
+ nvme_remove_namespaces+0x9b/0xe0 [nvme_core]
+ nvme_do_delete_ctrl+0x43/0x5c [nvme_core]
+ nvme_sysfs_delete.cold+0x8/0xd [nvme_core]
+ kernfs_fop_write+0xc1/0x1a0
+ vfs_write+0xb6/0x1a0
+ ksys_write+0x5f/0xe0
+ do_syscall_64+0x52/0x1a0
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=208085
-Link: http://lkml.kernel.org/r/alpine.LSU.2.11.2006151330070.11064@eggly.anvils
-Fixes: 68da9f055755 ("tmpfs: pass gfp to shmem_getpage_gfp")
-Signed-off-by: Hugh Dickins <hughd@google.com>
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
-Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Reported-by: Chris Murphy <lists@colorremedies.com>
-Analyzed-by: Vlastimil Babka <vbabka@suse.cz>
-Analyzed-by: Matthew Wilcox <willy@infradead.org>
-Tested-by: Chris Murphy <lists@colorremedies.com>
-Cc: <stable@vger.kernel.org>	[3.1+]
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Reported-by: Anton Eidelman <anton@lightbitslabs.com>
+Tested-by: Anton Eidelman <anton@lightbitslabs.com>
+Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/swap_state.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/nvme/host/multipath.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/mm/swap_state.c b/mm/swap_state.c
-index 8e7ce9a9bc5eb..4ce014dc4571a 100644
---- a/mm/swap_state.c
-+++ b/mm/swap_state.c
-@@ -23,6 +23,7 @@
- #include <linux/huge_mm.h>
+diff --git a/drivers/nvme/host/multipath.c b/drivers/nvme/host/multipath.c
+index d1cb65698288b..03bc3aba09871 100644
+--- a/drivers/nvme/host/multipath.c
++++ b/drivers/nvme/host/multipath.c
+@@ -691,6 +691,14 @@ void nvme_mpath_remove_disk(struct nvme_ns_head *head)
+ 	kblockd_schedule_work(&head->requeue_work);
+ 	flush_work(&head->requeue_work);
+ 	blk_cleanup_queue(head->disk->queue);
++	if (!test_bit(NVME_NSHEAD_DISK_LIVE, &head->flags)) {
++		/*
++		 * if device_add_disk wasn't called, prevent
++		 * disk release to put a bogus reference on the
++		 * request queue
++		 */
++		head->disk->queue = NULL;
++	}
+ 	put_disk(head->disk);
+ }
  
- #include <asm/pgtable.h>
-+#include "internal.h"
- 
- /*
-  * swapper_space is a fiction, retained to simplify the path through
-@@ -418,7 +419,8 @@ struct page *__read_swap_cache_async(swp_entry_t entry, gfp_t gfp_mask,
- 		/* May fail (-ENOMEM) if XArray node allocation failed. */
- 		__SetPageLocked(new_page);
- 		__SetPageSwapBacked(new_page);
--		err = add_to_swap_cache(new_page, entry, gfp_mask & GFP_KERNEL);
-+		err = add_to_swap_cache(new_page, entry,
-+					gfp_mask & GFP_RECLAIM_MASK);
- 		if (likely(!err)) {
- 			/* Initiate read into locked page */
- 			SetPageWorkingset(new_page);
 -- 
 2.25.1
 
