@@ -2,99 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6A58216A0F
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 12:22:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33100216A01
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 12:21:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728155AbgGGKWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 06:22:32 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:24353 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728149AbgGGKTq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 06:19:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594117182;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xfEXOl5JDAHiuWzCx5YNFPGjR852TJKcIIA0Lm3L8Rg=;
-        b=NosxYRu38u2qcweele0Xvyk10Yunyjkl+yxgj8uAz6sD4qRRHFSOCqnn7YSX7AyZi6x8f0
-        EtjjRwOfqRE4ARaA0aN9LLXOcSKHhPyIp92D3zDbVllRzKIpMk45Lg/60toahPZ01jXxjz
-        T7GibYSwOk83KHMwUx/8TDjT9f+O/LA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-349-u2R3ELclMs6Q9hL0ffEEnA-1; Tue, 07 Jul 2020 06:19:40 -0400
-X-MC-Unique: u2R3ELclMs6Q9hL0ffEEnA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1728309AbgGGKVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 06:21:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45896 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728215AbgGGKUq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 06:20:46 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 00C96800C64;
-        Tue,  7 Jul 2020 10:19:39 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7DDD1275E47;
-        Tue,  7 Jul 2020 10:19:38 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Cc:     christian@brauner.io, shuah@kernel.org
-Subject: [PATCH v3 2/2] selftests: pidfd: skip test if unshare fails with EPERM
-Date:   Tue,  7 Jul 2020 06:19:36 -0400
-Message-Id: <20200707101936.12052-3-pbonzini@redhat.com>
-In-Reply-To: <20200707101936.12052-1-pbonzini@redhat.com>
-References: <20200707101936.12052-1-pbonzini@redhat.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 171B32065F;
+        Tue,  7 Jul 2020 10:20:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594117246;
+        bh=PkcT89RF+rNKPiYJ2NVnhgVw6bD2ZCcxYHYZ6FlrF48=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DaMl84SGNGIJ8ham15BOct3E7GRZKaH2J5K3tfz4AfsKXSLuqQJE69KWyFCNaYaBq
+         kWdws/cxLGxJlKMfQWkrgdk3dNFNEi9ccDo+SV1/NyT957WXVl41Z9yFQI0B7ycHy1
+         DJ6lY7VTJzLndY+wSNn7KPHCH7sQowBCNcRznW/w=
+Date:   Tue, 7 Jul 2020 11:20:42 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Christoph Fritz <chf.fritz@googlemail.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>, kbuild-all@lists.01.org,
+        clang-built-linux@googlegroups.com,
+        kernel test robot <lkp@intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] regulator: fan53880: fix Kconfig dependency
+Message-ID: <20200707102042.GD4870@sirena.org.uk>
+References: <202007071433.Z3bmcgjU%lkp@intel.com>
+ <da3aece9abd23b12837e9abf908ee67f0c2c988c.camel@googlemail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="jL2BoiuKMElzg3CS"
+Content-Disposition: inline
+In-Reply-To: <da3aece9abd23b12837e9abf908ee67f0c2c988c.camel@googlemail.com>
+X-Cookie: I hate dying.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Similar to how ENOSYS causes a skip if pidfd_send_signal is not present,
-we can do the same for unshare if it fails with EPERM.  This way, running
-the test without privileges causes four tests to skip but no early bail out.
 
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- tools/testing/selftests/pidfd/pidfd_test.c | 21 ++++++++++++++++-----
- 1 file changed, 16 insertions(+), 5 deletions(-)
+--jL2BoiuKMElzg3CS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/tools/testing/selftests/pidfd/pidfd_test.c b/tools/testing/selftests/pidfd/pidfd_test.c
-index f65ad4e32353..dcc86e8f7a9f 100644
---- a/tools/testing/selftests/pidfd/pidfd_test.c
-+++ b/tools/testing/selftests/pidfd/pidfd_test.c
-@@ -162,15 +162,26 @@ static int test_pidfd_send_signal_recycled_pid_fail(void)
- 	}
- 
- 	ret = unshare(CLONE_NEWPID);
--	if (ret < 0)
-+	if (ret < 0) {
-+		if (errno == EPERM) {
-+			ksft_test_result_skip("%s test: Unsharing pid namespace not permitted\n",
-+					      test_name);
-+			return 0;
-+		}
- 		ksft_exit_fail_msg("%s test: Failed to unshare pid namespace\n",
- 				   test_name);
-+	}
- 
- 	ret = unshare(CLONE_NEWNS);
--	if (ret < 0)
--		ksft_exit_fail_msg(
--			"%s test: Failed to unshare mount namespace\n",
--			test_name);
-+	if (ret < 0) {
-+		if (errno == EPERM) {
-+			ksft_test_result_skip("%s test: Unsharing mount namespace not permitted\n",
-+					      test_name);
-+			return 0;
-+		}
-+		ksft_exit_fail_msg("%s test: Failed to unshare mount namespace\n",
-+				   test_name);
-+	}
- 
- 	ret = mount(NULL, "/", NULL, MS_REC | MS_PRIVATE, 0);
- 	if (ret < 0)
--- 
-2.26.2
+On Tue, Jul 07, 2020 at 11:03:23AM +0200, Christoph Fritz wrote:
+> Currently the fan53880 regulator driver needs a device tree to get
+> probed, this patch provides the necessary dependency.
 
+It doesn't need it to run so it's better to leave an || COMPILE_TEST in
+there at least and fix the warning with ifdefs and/or annotations.
+
+--jL2BoiuKMElzg3CS
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8ETHkACgkQJNaLcl1U
+h9DxZwf/R/uqIbe5MYZNckOGk1OOJBAvUf7WxND+oaQEes3BNouCRoOApMyQHAti
+uWJZEzz5H+35rzTZgb9SK7LSfZ6G6hTK8DVDSH1ckjnELqSj95DCC2D5JbDczJtr
+OZEVp0soIuSn3HQRDbrD71Nrxp3bcz/d3taRdms5PfAf1cC4Iow2OnGxRWcPyWWc
+NIszbOdRDrZc/IO4VDaCjJhf95KOWxGeiRTqzR/ng+0sTjCwMv+eLz1h2ygiN55v
+6Q0RVMyohM2sOO++n08HcQyI9m5Zb6HbpHYkv4e6oJ8KD756SMUbMYItlzYuXHkr
+sU7OO7Yi5lYWgbcgKrNWB5tXn6cQNg==
+=zBYZ
+-----END PGP SIGNATURE-----
+
+--jL2BoiuKMElzg3CS--
