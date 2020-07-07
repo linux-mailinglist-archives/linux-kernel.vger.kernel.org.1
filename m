@@ -2,157 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1A99217226
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:44:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 022CA21722E
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:44:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730082AbgGGP32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:29:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730052AbgGGP3U (ORCPT
+        id S1730029AbgGGP3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:29:55 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:7858 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728955AbgGGP3w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:29:20 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 928D0C061755;
-        Tue,  7 Jul 2020 08:29:19 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id t25so45801430lji.12;
-        Tue, 07 Jul 2020 08:29:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:references:date:in-reply-to:message-id
-         :user-agent:mime-version;
-        bh=aOe0/CpihO2VIfvM8hUlVWaFQmkSk5Jbw/jxFFeo+2o=;
-        b=kReXtNmNceWx33PM1PSiLuGzG2FrbrwPIO/v5cj1LeAKGBuzqmz96bUOGQYV9XbC7X
-         U6gYu+y86H9ysG7L55OKcem11J5zWyaJLVptbSUBaIq1A1qr5q3VVY3+oPxCYeNu1i5e
-         ydNCqlPOzR0OEuobS5kRqKrkkZMOSHHEW0usvIIXJ71INAIQVAxBy7BbppSo2Ic1RLVu
-         pVKFPtEhhdpeYhbaMnyNxqwOsr3Okm503mSBffbx8xRoCwk3bfgdGKI/ntwPruDftN2q
-         rIDKn8kQQOWHhlwPA9dy/HTwVvPYG0+7a5dlkMV8CV1yN5Jt7hNf0I7MarACYbF+dpHH
-         pySw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:references:date:in-reply-to
-         :message-id:user-agent:mime-version;
-        bh=aOe0/CpihO2VIfvM8hUlVWaFQmkSk5Jbw/jxFFeo+2o=;
-        b=okBuhvRdOANV5QO7lDg8inTa5CJVaOB/rzI3fKoOHovE56Jp+OsQ8Otg9uDxB1IpDK
-         2cX4I7KESBY+uEjFfySpwt+6My+RubWb7RFUjGEQBAYdiWuth4Zqs+y9DDbu6IzxEILw
-         Gs/9gqLt/b9DswcyVZTYn9WBEIDumUonnpequq3WdcEA0BRm6KyCXB1r5ZeQAvwY4pTg
-         ZJn9TjkPL8MHniQQn54jNpBpZuNYSvzK10f33KDoCeenXx1IafUC3sVRpwwabnsBQsep
-         +ZJVJEuMazo0Nw3phOeBbBymdmgB1+YIUraS1zZe5Oql8hm5Bx/tqQ3k9/mj0UvcQToH
-         SSNw==
-X-Gm-Message-State: AOAM532lON4XqyV2vE8BQWhYAGwUPKrRTxby//RAV6mZwvkUmLvyV1dn
-        LDryEmrEoQXUiG7Y4PZ7/5Y=
-X-Google-Smtp-Source: ABdhPJwv1tAgI6rbclWsOjFbxi3JDULa6B+l7yukn8Wrt3EHS1QlktEbGpLyDRjab+9ZtbCOWa+TxA==
-X-Received: by 2002:a2e:97d7:: with SMTP id m23mr19667067ljj.103.1594135758018;
-        Tue, 07 Jul 2020 08:29:18 -0700 (PDT)
-Received: from osv.localdomain ([89.175.180.246])
-        by smtp.gmail.com with ESMTPSA id 24sm9612947lfy.59.2020.07.07.08.29.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jul 2020 08:29:16 -0700 (PDT)
-From:   Sergey Organov <sorganov@gmail.com>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     richardcochran@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Fugang Duan <fugang.duan@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, andrew@lunn.ch
-Subject: Re: [PATCH  1/5] net: fec: properly support external PTP PHY for
- hardware time stamping
-References: <20200706142616.25192-1-sorganov@gmail.com>
-        <20200706142616.25192-2-sorganov@gmail.com>
-        <20200706150814.kba7dh2dsz4mpiuc@skbuf> <87zh8cu0rs.fsf@osv.gnss.ru>
-        <20200706154728.lfywhchrtaeeda4g@skbuf> <87zh8cqyrp.fsf@osv.gnss.ru>
-        <20200707070437.gyfoulyezi6ubmdv@skbuf>
-Date:   Tue, 07 Jul 2020 18:29:14 +0300
-In-Reply-To: <20200707070437.gyfoulyezi6ubmdv@skbuf> (Vladimir Oltean's
-        message of "Tue, 7 Jul 2020 10:04:37 +0300")
-Message-ID: <87pn978hth.fsf@osv.gnss.ru>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
+        Tue, 7 Jul 2020 11:29:52 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 067F3Ghu051693;
+        Tue, 7 Jul 2020 11:29:25 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 324pxshwr5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 07 Jul 2020 11:29:24 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 067F6qAD013963;
+        Tue, 7 Jul 2020 15:29:22 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 322h1h3gw4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 07 Jul 2020 15:29:22 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 067FTKUU53673996
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 7 Jul 2020 15:29:20 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5F113AE057;
+        Tue,  7 Jul 2020 15:29:20 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3EB1EAE045;
+        Tue,  7 Jul 2020 15:29:18 +0000 (GMT)
+Received: from pratiks-thinkpad.ibmuc.com (unknown [9.85.70.197])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue,  7 Jul 2020 15:29:18 +0000 (GMT)
+From:   Pratik Rajesh Sampat <psampat@linux.ibm.com>
+To:     rjw@rjwysocki.net, daniel.lezcano@linaro.org, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org, srivatsa@csail.mit.edu,
+        shuah@kernel.org, ego@linux.vnet.ibm.com, svaidy@linux.ibm.com,
+        linux-pm@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: [PATCH 0/2] Selftest for cpuidle latency measurement
+Date:   Tue,  7 Jul 2020 20:59:15 +0530
+Message-Id: <20200707152917.10652-1-psampat@linux.ibm.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-07_08:2020-07-07,2020-07-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
+ phishscore=0 malwarescore=0 lowpriorityscore=0 clxscore=1011
+ impostorscore=0 cotscore=-2147483648 suspectscore=0 adultscore=0
+ mlxlogscore=623 spamscore=0 priorityscore=1501 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2007070109
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Vladimir Oltean <olteanv@gmail.com> writes:
+The patch series introduces a mechanism to measure wakeup latency for
+IPI and timer based interrupts
+The motivation behind this series is to find significant deviations
+behind advertised latency and resisdency values
 
-> On Mon, Jul 06, 2020 at 09:33:30PM +0300, Sergey Organov wrote:
+To achieve this, we introduce a kernel module and expose its control
+knobs through the debugfs interface that the selftests can engage with.
 
-[...]
+The kernel module provides the following interfaces within
+/sys/kernel/debug/latency_test/ for,
+1. IPI test:
+  ipi_cpu_dest   # Destination CPU for the IPI
+  ipi_cpu_src    # Origin of the IPI
+  ipi_latency_ns # Measured latency time in ns
+2. Timeout test:
+  timeout_cpu_src     # CPU on which the timer to be queued
+  timeout_expected_ns # Timer duration
+  timeout_diff_ns     # Difference of actual duration vs expected timer
+To include the module, check option and include as module
+kernel hacking -> Cpuidle latency selftests
 
->
->> I'll then make these 2 changes separate in v2 indeed, though I'm not
->> aware about Fixes: tag and if I should do something about it. Any clues?
->> 
->
-> Add these 2 lines to your .gitconfig file:
->
-> [pretty]
-> 	fixes = Fixes: %h (\"%s\")
->
-> Then use $(git blame) to find the commit which introduced the bad
-> behavior. I was able to go down back to this commit, which I then tagged
-> as follows:
->
-> git show 6605b730c061f67c44113391e5af5125d0672e99 --pretty=fixes
->
-> Then you copy the first line of the generated output to the patch, right
-> above your Signed-off-by: tag. Like this:
->
-> Fixes: 6605b730c061 ("FEC: Add time stamping code and a PTP hardware clock")
->
-> Note that the offending commit has been obscured, in the meantime, by
-> refactoring commit ff43da86c69d ("NET: FEC: dynamtic check DMA desc buff
-> type"). That doesn't mean that the Fixes: tag should point to the newest
-> commit touching the code though. In case where the refactoring is recent
-> though (not this case), Greg will send an email that backporting failed,
-> and you can send him a follow-up with a patch adjusted for each
-> individual stable tree where adjustments need to be made. You can also
-> ignore Greg's email, if you don't care about old stable trees.
->
-> In this particular case, the original offending commit and the one
-> obscuring it were included first in the following kernel tags:
->
-> $(git tag --contains 6605b730c061): v3.8
-> $(git tag --contains ff43da86c69d): v3.9
->
-> But, if you look at https://www.kernel.org/, the oldest stable tree
-> being actively maintained should be 3.16, so v3.8 vs v3.9 shouldn't make
-> any difference because nobody will try to apply your fix patch to a tree
-> older than 3.9 anyway.
->
-> When sending a bugfix patch, there are 2 options:
->
-> - You send the patch to the linux-stable mailing list directly. For
->   networking fixes, however, David doesn't prefer this. See below.
->
-> - You send the patch to the netdev list (the same list where you sent
->   this one), but with --subject-prefix "PATCH net" so that it gets
->   applied to a different tree (this one:
->   https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git as
->   opposed to this one:
->   https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git).
->   The "net" tree is periodically merged into "net-next". Because your
->   patch series will have to be split, there are 2 options: either you
->   send your bugfix patches first, wait for them to be merged, and then
->   for "net" to be merged into "net-next", or try somehow to make sure
->   that the patches for "net" and for "net-next" can be applied in
->   parallel without interfering and creating merge conflicts. I think you
->   can do the latter.
->
-> Whatever you do, however, please be sure to copy Richard Cochran to
-> PTP-related patches, he tends to have a broader picture of the 1588 work
-> that is being done throughout the kernel, and can provide more
-> feedback.
+The selftest inserts the module, disables all the idle states and
+enables them one by one testing:
+1. Keeping source CPU constant, iterates through all the CPUS measuring
+   IPI latency for baseline (CPU is busy with "yes" workload) and the
+   when the CPU is at rest
+2. Iterating through all the CPUs, sending expected timer durations to
+   be equivalent to the residency of the the deepest idle state
+   enabled and extracting the difference in time between the time of
+   wakeup and the expected timer duration
 
-Thanks a lot for thorough explanations and for finding the offensive
-commit for me!
+Usage
+-----
+Can be used in conjuction to the rest of the selftests.
+Default Output location in: tools/testing/cpuidle/cpuidle.log
 
-I'll then start with sending that separate patch as bug-fix with "PATCH net"
-subject prefix, and then will re-send v2 of the series to net-next (with
-just "PATCH v2") later, as soon as I collect all the feedback. I expect
-no merge conflicts indeed.
+To run this test specifically:
+$ make -C tools/testing/selftests TARGETS="cpuidle" run_tests
 
-Sounds like a plan!
+There are a few optinal arguments too that the script can take
+	[-h <help>]
+	[-m <location of the module>]
+	[-o <location of the output>]
 
-Thanks again,
--- Sergey
+Sample output snippet
+---------------------
+--IPI Latency Test---
+---Enabling state: 0---
+SRC_CPU   DEST_CPU Base_IPI_Latency(ns) IPI_Latency(ns)
+0            0          328                291
+0            1         1500               1071
+0            2         1070               1062
+0            3         1557               1668
+. . . .
+Expected IPI latency(ns): 1000
+Baseline Average IPI latency(ns): 1113
+Observed Average IPI latency(ns): 1023
+--Timeout Latency Test--
+---Enabling state: 0---
+Wakeup_src Baseline_delay(ns)  Delay(ns)
+0            3134               2128
+1            2275               2107
+2            2222               2198
+3            2421               2325
+. . . .
+Expected timeout(ns): 200
+Baseline Average timeout diff(ns): 2513
+Observed Average timeout diff(ns): 2189
+
+Pratik Rajesh Sampat (2):
+  cpuidle: Trace IPI based and timer based wakeup latency from idle
+    states
+  selftest/cpuidle: Add support for cpuidle latency measurement
+
+ drivers/cpuidle/Makefile                   |   1 +
+ drivers/cpuidle/test-cpuidle_latency.c     | 150 +++++++++++++
+ lib/Kconfig.debug                          |  10 +
+ tools/testing/selftests/Makefile           |   1 +
+ tools/testing/selftests/cpuidle/Makefile   |   6 +
+ tools/testing/selftests/cpuidle/cpuidle.sh | 240 +++++++++++++++++++++
+ tools/testing/selftests/cpuidle/settings   |   1 +
+ 7 files changed, 409 insertions(+)
+ create mode 100644 drivers/cpuidle/test-cpuidle_latency.c
+ create mode 100644 tools/testing/selftests/cpuidle/Makefile
+ create mode 100755 tools/testing/selftests/cpuidle/cpuidle.sh
+ create mode 100644 tools/testing/selftests/cpuidle/settings
+
+-- 
+2.25.4
+
