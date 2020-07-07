@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24AEF217278
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:44:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD13C217271
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:44:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729403AbgGGPdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:33:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60376 "EHLO mail.kernel.org"
+        id S1730120AbgGGPdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:33:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32888 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728877AbgGGPUU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:20:20 -0400
+        id S1729609AbgGGPUx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 11:20:53 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B83B5206CD;
-        Tue,  7 Jul 2020 15:20:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8A8A3206E2;
+        Tue,  7 Jul 2020 15:20:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594135220;
-        bh=MyqIBmbktvH5KAoEP+GVoOvvqEC07GsCMyrNj3Ff8AA=;
+        s=default; t=1594135253;
+        bh=2b7zMVe6mmI61iDQvqn+sLJjzEjTT4Vn1x0St9mH+Pk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=t9fY4ti2XO8C1kMVZd5+0ztEHRI+qIpKBDbYR4CAJ1N363dMvXduBLOQCNAGO/7Wa
-         PORutxWSSq3UuE4Ea6BKQgeepN51sdenvsq5l0NTL5IkgArxHuk++6kM4OJBkxd0pz
-         hRTSW2ZSPLszXdr9Sg53jnAvRalxHtxMuWs7L2qo=
+        b=EcWrcutZWRK1y0Cfc4JnMqDD6915iioeD6ZtnirJ4y71NvLQ8knBRj2PjZVwnESBB
+         Px0dzbieH6RtW+FwdmJA1ni2za78zXD0bd7Q4AjF06FZE14QGstp5C2cmFanGVwvoi
+         GHZyhbD6arYUe7Xplbw2nVR2oHoZOPmzvPD37rgo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Anders Andersson <pipatron@gmail.com>,
-        Borislav Petkov <bp@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 03/65] EDAC/amd64: Read back the scrub rate PCI register on F15h
-Date:   Tue,  7 Jul 2020 17:16:42 +0200
-Message-Id: <20200707145752.594697885@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 05/65] sched/debug: Make sd->flags sysctl read-only
+Date:   Tue,  7 Jul 2020 17:16:44 +0200
+Message-Id: <20200707145752.698910547@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200707145752.417212219@linuxfoundation.org>
 References: <20200707145752.417212219@linuxfoundation.org>
@@ -43,45 +45,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Borislav Petkov <bp@suse.de>
+From: Valentin Schneider <valentin.schneider@arm.com>
 
-[ Upstream commit ee470bb25d0dcdf126f586ec0ae6dca66cb340a4 ]
+[ Upstream commit 9818427c6270a9ce8c52c8621026fe9cebae0f92 ]
 
-Commit:
+Writing to the sysctl of a sched_domain->flags directly updates the value of
+the field, and goes nowhere near update_top_cache_domain(). This means that
+the cached domain pointers can end up containing stale data (e.g. the
+domain pointed to doesn't have the relevant flag set anymore).
 
-  da92110dfdfa ("EDAC, amd64_edac: Extend scrub rate support to F15hM60h")
+Explicit domain walks that check for flags will be affected by
+the write, but this won't be in sync with the cached pointers which will
+still point to the domains that were cached at the last sched_domain
+build.
 
-added support for F15h, model 0x60 CPUs but in doing so, missed to read
-back SCRCTRL PCI config register on F15h CPUs which are *not* model
-0x60. Add that read so that doing
+In other words, writing to this interface is playing a dangerous game. It
+could be made to trigger an update of the cached sched_domain pointers when
+written to, but this does not seem to be worth the trouble. Make it
+read-only.
 
-  $ cat /sys/devices/system/edac/mc/mc0/sdram_scrub_rate
-
-can show the previously set DRAM scrub rate.
-
-Fixes: da92110dfdfa ("EDAC, amd64_edac: Extend scrub rate support to F15hM60h")
-Reported-by: Anders Andersson <pipatron@gmail.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Cc: <stable@vger.kernel.org> #v4.4..
-Link: https://lkml.kernel.org/r/CAKkunMbNWppx_i6xSdDHLseA2QQmGJqj_crY=NF-GZML5np4Vw@mail.gmail.com
+Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20200415210512.805-3-valentin.schneider@arm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/edac/amd64_edac.c | 2 ++
- 1 file changed, 2 insertions(+)
+ kernel/sched/debug.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/edac/amd64_edac.c b/drivers/edac/amd64_edac.c
-index ad7d2bce91cd8..125a44d5a69e3 100644
---- a/drivers/edac/amd64_edac.c
-+++ b/drivers/edac/amd64_edac.c
-@@ -265,6 +265,8 @@ static int get_scrub_rate(struct mem_ctl_info *mci)
- 
- 		if (pvt->model == 0x60)
- 			amd64_read_pci_cfg(pvt->F2, F15H_M60H_SCRCTRL, &scrubval);
-+		else
-+			amd64_read_pci_cfg(pvt->F3, SCRCTRL, &scrubval);
- 		break;
- 
- 	case 0x17:
+diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
+index f7e4579e746c5..c4b702fe1d738 100644
+--- a/kernel/sched/debug.c
++++ b/kernel/sched/debug.c
+@@ -258,7 +258,7 @@ sd_alloc_ctl_domain_table(struct sched_domain *sd)
+ 	set_table_entry(&table[2], "busy_factor",	  &sd->busy_factor,	    sizeof(int),  0644, proc_dointvec_minmax);
+ 	set_table_entry(&table[3], "imbalance_pct",	  &sd->imbalance_pct,	    sizeof(int),  0644, proc_dointvec_minmax);
+ 	set_table_entry(&table[4], "cache_nice_tries",	  &sd->cache_nice_tries,    sizeof(int),  0644, proc_dointvec_minmax);
+-	set_table_entry(&table[5], "flags",		  &sd->flags,		    sizeof(int),  0644, proc_dointvec_minmax);
++	set_table_entry(&table[5], "flags",		  &sd->flags,		    sizeof(int),  0444, proc_dointvec_minmax);
+ 	set_table_entry(&table[6], "max_newidle_lb_cost", &sd->max_newidle_lb_cost, sizeof(long), 0644, proc_doulongvec_minmax);
+ 	set_table_entry(&table[7], "name",		  sd->name,	       CORENAME_MAX_SIZE, 0444, proc_dostring);
+ 	/* &table[8] is terminator */
 -- 
 2.25.1
 
