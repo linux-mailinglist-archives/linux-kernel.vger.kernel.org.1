@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7148421727B
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:44:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A6FA2171B8
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:43:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730133AbgGGPdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:33:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60064 "EHLO mail.kernel.org"
+        id S1730103AbgGGPYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:24:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38010 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729476AbgGGPUI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:20:08 -0400
+        id S1729085AbgGGPYZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 11:24:25 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9DFBB207F9;
-        Tue,  7 Jul 2020 15:20:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 38DB1207D0;
+        Tue,  7 Jul 2020 15:24:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594135207;
-        bh=Brifg5H2GM2UzNR684NMp71BfyWKASxXhfyy9IO3azY=;
+        s=default; t=1594135464;
+        bh=G+rAMT6LhkOWlncqszbebKQ70fqYSaj8mZENtE+BSoE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bA3ZmQLZ93/ZTVSaInOy4+VJsVZ20kosYV024Clro00X6TprPNf6itZXP0VahGQbQ
-         XNkXGtw31lam5uYL2c5FEEONqMFN7zGgMSfhzK9YSU7zg6QSjEiHlfWphVqrXYtj2P
-         KuLxLzBUCuik1C1/KXxUox7d0qxsl0r8ID0Gq1K4=
+        b=XRB6qZ0Wf+uK1Zs/uppBtoHqvG21VYQD0qRtW7wE7/vvIg8WjMDkP8mk40Hnazneg
+         Lc6fJ36iky+UL08ouDKHkCje6swb9EZcf1lkuVixTsUzWRRIkbWzWmGebtbm1JIHd7
+         mx1StRSw0p/WMGRWTLc95JGM4C9qazDVZfbTJcZc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Anton Eidelman <anton@lightbitslabs.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 16/65] nvme-multipath: fix deadlock due to head->lock
-Date:   Tue,  7 Jul 2020 17:16:55 +0200
-Message-Id: <20200707145753.240242645@linuxfoundation.org>
+        stable@vger.kernel.org, Po Liu <Po.Liu@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 051/112] net: enetc: add hw tc hw offload features for PSPF capability
+Date:   Tue,  7 Jul 2020 17:16:56 +0200
+Message-Id: <20200707145803.429515727@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200707145752.417212219@linuxfoundation.org>
-References: <20200707145752.417212219@linuxfoundation.org>
+In-Reply-To: <20200707145800.925304888@linuxfoundation.org>
+References: <20200707145800.925304888@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,122 +44,222 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anton Eidelman <anton@lightbitslabs.com>
+From: Po Liu <Po.Liu@nxp.com>
 
-[ Upstream commit d8a22f85609fadb46ba699e0136cc3ebdeebff79 ]
+[ Upstream commit 79e499829f3ff5b8f70c87baf1b03ebb3401a3e4 ]
 
-In the following scenario scan_work and ana_work will deadlock:
+This patch is to let ethtool enable/disable the tc flower offload
+features. Hardware ENETC has the feature of PSFP which is for per-stream
+policing. When enable the tc hw offloading feature, driver would enable
+the IEEE 802.1Qci feature. It is only set the register enable bit for
+this feature not enable for any entry of per stream filtering and stream
+gate or stream identify but get how much capabilities for each feature.
 
-When scan_work calls nvme_mpath_add_disk() this holds ana_lock
-and invokes nvme_parse_ana_log(), which may issue IO
-in device_add_disk() and hang waiting for an accessible path.
-
-While nvme_mpath_set_live() only called when nvme_state_is_live(),
-a transition may cause NVME_SC_ANA_TRANSITION and requeue the IO.
-
-Since nvme_mpath_set_live() holds ns->head->lock, an ana_work on
-ANY ctrl will not be able to complete nvme_mpath_set_live()
-on the same ns->head, which is required in order to update
-the new accessible path and remove NVME_NS_ANA_PENDING..
-Therefore IO never completes: deadlock [1].
-
-Fix:
-Move device_add_disk out of the head->lock and protect it with an
-atomic test_and_set for a new NVME_NS_HEAD_HAS_DISK bit.
-
-[1]:
-kernel: INFO: task kworker/u8:2:160 blocked for more than 120 seconds.
-kernel:       Tainted: G           OE     5.3.5-050305-generic #201910071830
-kernel: "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-kernel: kworker/u8:2    D    0   160      2 0x80004000
-kernel: Workqueue: nvme-wq nvme_ana_work [nvme_core]
-kernel: Call Trace:
-kernel:  __schedule+0x2b9/0x6c0
-kernel:  schedule+0x42/0xb0
-kernel:  schedule_preempt_disabled+0xe/0x10
-kernel:  __mutex_lock.isra.0+0x182/0x4f0
-kernel:  __mutex_lock_slowpath+0x13/0x20
-kernel:  mutex_lock+0x2e/0x40
-kernel:  nvme_update_ns_ana_state+0x22/0x60 [nvme_core]
-kernel:  nvme_update_ana_state+0xca/0xe0 [nvme_core]
-kernel:  nvme_parse_ana_log+0xa1/0x180 [nvme_core]
-kernel:  nvme_read_ana_log+0x76/0x100 [nvme_core]
-kernel:  nvme_ana_work+0x15/0x20 [nvme_core]
-kernel:  process_one_work+0x1db/0x380
-kernel:  worker_thread+0x4d/0x400
-kernel:  kthread+0x104/0x140
-kernel:  ret_from_fork+0x35/0x40
-kernel: INFO: task kworker/u8:4:439 blocked for more than 120 seconds.
-kernel:       Tainted: G           OE     5.3.5-050305-generic #201910071830
-kernel: "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-kernel: kworker/u8:4    D    0   439      2 0x80004000
-kernel: Workqueue: nvme-wq nvme_scan_work [nvme_core]
-kernel: Call Trace:
-kernel:  __schedule+0x2b9/0x6c0
-kernel:  schedule+0x42/0xb0
-kernel:  io_schedule+0x16/0x40
-kernel:  do_read_cache_page+0x438/0x830
-kernel:  read_cache_page+0x12/0x20
-kernel:  read_dev_sector+0x27/0xc0
-kernel:  read_lba+0xc1/0x220
-kernel:  efi_partition+0x1e6/0x708
-kernel:  check_partition+0x154/0x244
-kernel:  rescan_partitions+0xae/0x280
-kernel:  __blkdev_get+0x40f/0x560
-kernel:  blkdev_get+0x3d/0x140
-kernel:  __device_add_disk+0x388/0x480
-kernel:  device_add_disk+0x13/0x20
-kernel:  nvme_mpath_set_live+0x119/0x140 [nvme_core]
-kernel:  nvme_update_ns_ana_state+0x5c/0x60 [nvme_core]
-kernel:  nvme_mpath_add_disk+0xbe/0x100 [nvme_core]
-kernel:  nvme_validate_ns+0x396/0x940 [nvme_core]
-kernel:  nvme_scan_work+0x256/0x390 [nvme_core]
-kernel:  process_one_work+0x1db/0x380
-kernel:  worker_thread+0x4d/0x400
-kernel:  kthread+0x104/0x140
-kernel:  ret_from_fork+0x35/0x40
-
-Fixes: 0d0b660f214d ("nvme: add ANA support")
-Signed-off-by: Anton Eidelman <anton@lightbitslabs.com>
-Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Po Liu <Po.Liu@nxp.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/multipath.c | 4 ++--
- drivers/nvme/host/nvme.h      | 2 ++
- 2 files changed, 4 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/freescale/enetc/enetc.c  | 23 +++++++++
+ drivers/net/ethernet/freescale/enetc/enetc.h  | 48 +++++++++++++++++++
+ .../net/ethernet/freescale/enetc/enetc_hw.h   | 17 +++++++
+ .../net/ethernet/freescale/enetc/enetc_pf.c   |  8 ++++
+ 4 files changed, 96 insertions(+)
 
-diff --git a/drivers/nvme/host/multipath.c b/drivers/nvme/host/multipath.c
-index 18f0a05c74b56..574b52e911f08 100644
---- a/drivers/nvme/host/multipath.c
-+++ b/drivers/nvme/host/multipath.c
-@@ -417,11 +417,11 @@ static void nvme_mpath_set_live(struct nvme_ns *ns)
- 	if (!head->disk)
- 		return;
+diff --git a/drivers/net/ethernet/freescale/enetc/enetc.c b/drivers/net/ethernet/freescale/enetc/enetc.c
+index 4486a0db8ef0c..9ac5cccfe0204 100644
+--- a/drivers/net/ethernet/freescale/enetc/enetc.c
++++ b/drivers/net/ethernet/freescale/enetc/enetc.c
+@@ -756,6 +756,9 @@ void enetc_get_si_caps(struct enetc_si *si)
  
--	mutex_lock(&head->lock);
--	if (!(head->disk->flags & GENHD_FL_UP))
-+	if (!test_and_set_bit(NVME_NSHEAD_DISK_LIVE, &head->flags))
- 		device_add_disk(&head->subsys->dev, head->disk,
- 				nvme_ns_id_attr_groups);
+ 	if (val & ENETC_SIPCAPR0_QBV)
+ 		si->hw_features |= ENETC_SI_F_QBV;
++
++	if (val & ENETC_SIPCAPR0_PSFP)
++		si->hw_features |= ENETC_SI_F_PSFP;
+ }
  
-+	mutex_lock(&head->lock);
- 	if (nvme_path_is_optimized(ns)) {
- 		int node, srcu_idx;
+ static int enetc_dma_alloc_bdr(struct enetc_bdr *r, size_t bd_size)
+@@ -1567,6 +1570,23 @@ static int enetc_set_rss(struct net_device *ndev, int en)
+ 	return 0;
+ }
  
-diff --git a/drivers/nvme/host/nvme.h b/drivers/nvme/host/nvme.h
-index 22e8401352c22..ed02260862cb5 100644
---- a/drivers/nvme/host/nvme.h
-+++ b/drivers/nvme/host/nvme.h
-@@ -345,6 +345,8 @@ struct nvme_ns_head {
- 	spinlock_t		requeue_lock;
- 	struct work_struct	requeue_work;
- 	struct mutex		lock;
-+	unsigned long		flags;
-+#define NVME_NSHEAD_DISK_LIVE	0
- 	struct nvme_ns __rcu	*current_path[];
- #endif
++static int enetc_set_psfp(struct net_device *ndev, int en)
++{
++	struct enetc_ndev_priv *priv = netdev_priv(ndev);
++
++	if (en) {
++		priv->active_offloads |= ENETC_F_QCI;
++		enetc_get_max_cap(priv);
++		enetc_psfp_enable(&priv->si->hw);
++	} else {
++		priv->active_offloads &= ~ENETC_F_QCI;
++		memset(&priv->psfp_cap, 0, sizeof(struct psfp_cap));
++		enetc_psfp_disable(&priv->si->hw);
++	}
++
++	return 0;
++}
++
+ int enetc_set_features(struct net_device *ndev,
+ 		       netdev_features_t features)
+ {
+@@ -1575,6 +1595,9 @@ int enetc_set_features(struct net_device *ndev,
+ 	if (changed & NETIF_F_RXHASH)
+ 		enetc_set_rss(ndev, !!(features & NETIF_F_RXHASH));
+ 
++	if (changed & NETIF_F_HW_TC)
++		enetc_set_psfp(ndev, !!(features & NETIF_F_HW_TC));
++
+ 	return 0;
+ }
+ 
+diff --git a/drivers/net/ethernet/freescale/enetc/enetc.h b/drivers/net/ethernet/freescale/enetc/enetc.h
+index 56c43f35b633b..2cfe877c37786 100644
+--- a/drivers/net/ethernet/freescale/enetc/enetc.h
++++ b/drivers/net/ethernet/freescale/enetc/enetc.h
+@@ -151,6 +151,7 @@ enum enetc_errata {
  };
+ 
+ #define ENETC_SI_F_QBV BIT(0)
++#define ENETC_SI_F_PSFP BIT(1)
+ 
+ /* PCI IEP device data */
+ struct enetc_si {
+@@ -203,12 +204,20 @@ struct enetc_cls_rule {
+ };
+ 
+ #define ENETC_MAX_BDR_INT	2 /* fixed to max # of available cpus */
++struct psfp_cap {
++	u32 max_streamid;
++	u32 max_psfp_filter;
++	u32 max_psfp_gate;
++	u32 max_psfp_gatelist;
++	u32 max_psfp_meter;
++};
+ 
+ /* TODO: more hardware offloads */
+ enum enetc_active_offloads {
+ 	ENETC_F_RX_TSTAMP	= BIT(0),
+ 	ENETC_F_TX_TSTAMP	= BIT(1),
+ 	ENETC_F_QBV             = BIT(2),
++	ENETC_F_QCI		= BIT(3),
+ };
+ 
+ struct enetc_ndev_priv {
+@@ -231,6 +240,8 @@ struct enetc_ndev_priv {
+ 
+ 	struct enetc_cls_rule *cls_rules;
+ 
++	struct psfp_cap psfp_cap;
++
+ 	struct device_node *phy_node;
+ 	phy_interface_t if_mode;
+ };
+@@ -289,9 +300,46 @@ int enetc_setup_tc_taprio(struct net_device *ndev, void *type_data);
+ void enetc_sched_speed_set(struct net_device *ndev);
+ int enetc_setup_tc_cbs(struct net_device *ndev, void *type_data);
+ int enetc_setup_tc_txtime(struct net_device *ndev, void *type_data);
++
++static inline void enetc_get_max_cap(struct enetc_ndev_priv *priv)
++{
++	u32 reg;
++
++	reg = enetc_port_rd(&priv->si->hw, ENETC_PSIDCAPR);
++	priv->psfp_cap.max_streamid = reg & ENETC_PSIDCAPR_MSK;
++	/* Port stream filter capability */
++	reg = enetc_port_rd(&priv->si->hw, ENETC_PSFCAPR);
++	priv->psfp_cap.max_psfp_filter = reg & ENETC_PSFCAPR_MSK;
++	/* Port stream gate capability */
++	reg = enetc_port_rd(&priv->si->hw, ENETC_PSGCAPR);
++	priv->psfp_cap.max_psfp_gate = (reg & ENETC_PSGCAPR_SGIT_MSK);
++	priv->psfp_cap.max_psfp_gatelist = (reg & ENETC_PSGCAPR_GCL_MSK) >> 16;
++	/* Port flow meter capability */
++	reg = enetc_port_rd(&priv->si->hw, ENETC_PFMCAPR);
++	priv->psfp_cap.max_psfp_meter = reg & ENETC_PFMCAPR_MSK;
++}
++
++static inline void enetc_psfp_enable(struct enetc_hw *hw)
++{
++	enetc_wr(hw, ENETC_PPSFPMR, enetc_rd(hw, ENETC_PPSFPMR) |
++		 ENETC_PPSFPMR_PSFPEN | ENETC_PPSFPMR_VS |
++		 ENETC_PPSFPMR_PVC | ENETC_PPSFPMR_PVZC);
++}
++
++static inline void enetc_psfp_disable(struct enetc_hw *hw)
++{
++	enetc_wr(hw, ENETC_PPSFPMR, enetc_rd(hw, ENETC_PPSFPMR) &
++		 ~ENETC_PPSFPMR_PSFPEN & ~ENETC_PPSFPMR_VS &
++		 ~ENETC_PPSFPMR_PVC & ~ENETC_PPSFPMR_PVZC);
++}
+ #else
+ #define enetc_setup_tc_taprio(ndev, type_data) -EOPNOTSUPP
+ #define enetc_sched_speed_set(ndev) (void)0
+ #define enetc_setup_tc_cbs(ndev, type_data) -EOPNOTSUPP
+ #define enetc_setup_tc_txtime(ndev, type_data) -EOPNOTSUPP
++#define enetc_get_max_cap(p)		\
++	memset(&((p)->psfp_cap), 0, sizeof(struct psfp_cap))
++
++#define enetc_psfp_enable(hw) (void)0
++#define enetc_psfp_disable(hw) (void)0
+ #endif
+diff --git a/drivers/net/ethernet/freescale/enetc/enetc_hw.h b/drivers/net/ethernet/freescale/enetc/enetc_hw.h
+index 2a6523136947d..587974862f488 100644
+--- a/drivers/net/ethernet/freescale/enetc/enetc_hw.h
++++ b/drivers/net/ethernet/freescale/enetc/enetc_hw.h
+@@ -19,6 +19,7 @@
+ #define ENETC_SICTR1	0x1c
+ #define ENETC_SIPCAPR0	0x20
+ #define ENETC_SIPCAPR0_QBV	BIT(4)
++#define ENETC_SIPCAPR0_PSFP	BIT(9)
+ #define ENETC_SIPCAPR0_RSS	BIT(8)
+ #define ENETC_SIPCAPR1	0x24
+ #define ENETC_SITGTGR	0x30
+@@ -228,6 +229,15 @@ enum enetc_bdr_type {TX, RX};
+ #define ENETC_PM0_IFM_RLP	(BIT(5) | BIT(11))
+ #define ENETC_PM0_IFM_RGAUTO	(BIT(15) | ENETC_PMO_IFM_RG | BIT(1))
+ #define ENETC_PM0_IFM_XGMII	BIT(12)
++#define ENETC_PSIDCAPR		0x1b08
++#define ENETC_PSIDCAPR_MSK	GENMASK(15, 0)
++#define ENETC_PSFCAPR		0x1b18
++#define ENETC_PSFCAPR_MSK	GENMASK(15, 0)
++#define ENETC_PSGCAPR		0x1b28
++#define ENETC_PSGCAPR_GCL_MSK	GENMASK(18, 16)
++#define ENETC_PSGCAPR_SGIT_MSK	GENMASK(15, 0)
++#define ENETC_PFMCAPR		0x1b38
++#define ENETC_PFMCAPR_MSK	GENMASK(15, 0)
+ 
+ /* MAC counters */
+ #define ENETC_PM0_REOCT		0x8100
+@@ -621,3 +631,10 @@ struct enetc_cbd {
+ /* Port time specific departure */
+ #define ENETC_PTCTSDR(n)	(0x1210 + 4 * (n))
+ #define ENETC_TSDE		BIT(31)
++
++/* PSFP setting */
++#define ENETC_PPSFPMR 0x11b00
++#define ENETC_PPSFPMR_PSFPEN BIT(0)
++#define ENETC_PPSFPMR_VS BIT(1)
++#define ENETC_PPSFPMR_PVC BIT(2)
++#define ENETC_PPSFPMR_PVZC BIT(3)
+diff --git a/drivers/net/ethernet/freescale/enetc/enetc_pf.c b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
+index 85e2b741df414..eacd597b55f22 100644
+--- a/drivers/net/ethernet/freescale/enetc/enetc_pf.c
++++ b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
+@@ -739,6 +739,14 @@ static void enetc_pf_netdev_setup(struct enetc_si *si, struct net_device *ndev,
+ 	if (si->hw_features & ENETC_SI_F_QBV)
+ 		priv->active_offloads |= ENETC_F_QBV;
+ 
++	if (si->hw_features & ENETC_SI_F_PSFP) {
++		priv->active_offloads |= ENETC_F_QCI;
++		ndev->features |= NETIF_F_HW_TC;
++		ndev->hw_features |= NETIF_F_HW_TC;
++		enetc_get_max_cap(priv);
++		enetc_psfp_enable(&si->hw);
++	}
++
+ 	/* pick up primary MAC address from SI */
+ 	enetc_get_primary_mac_addr(&si->hw, ndev->dev_addr);
+ }
 -- 
 2.25.1
 
