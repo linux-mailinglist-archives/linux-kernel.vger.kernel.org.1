@@ -2,107 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87651216E43
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 16:02:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A31A6216E41
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 16:02:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728297AbgGGOBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 10:01:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47912 "EHLO
+        id S1728283AbgGGOBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 10:01:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728238AbgGGOBK (ORCPT
+        with ESMTP id S1728253AbgGGOBL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 10:01:10 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65A9BC08C5E2
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 07:01:10 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id g75so43379174wme.5
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 07:01:10 -0700 (PDT)
+        Tue, 7 Jul 2020 10:01:11 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81140C061755
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 07:01:11 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id o11so45292430wrv.9
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 07:01:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=5akYiP5XbUbIIHU3yZTiMoBU1iltsAOw/hCtwfTaVJc=;
-        b=XmmS1R2D9LdImdLyKuJbGDYLB/QYqj96CLTES0Hlurxb83iEVSOZjhC74NA3FNUelQ
-         x3wmfifyk/fKrMiPve8zbbTsvCV7UcsUd0OxmveVMbfZwHXFFXHwDPeEzSChk1mVG4Wn
-         v/FiUOq1EMMxM1DAtPF1xArvV707BeOj3E83i07QtyqPbhBYlv/MO2ydJxGqSbYoENE2
-         /Y3K5hBOFPGk1oPCkuhHZ8pqhicPWsd+S3xOKp9cFFrb3L1tBG7goNQFL/EXHs7MhYTO
-         /UzKa3qSDPe5HHpccqJfVZYdAKYVlTdKk0TfXV4htQ2UPmq+q71tTFVWoqyA1m/5QveK
-         K14w==
+        bh=vhaBeVx21COzmeKvnb9gJbc8Z89FUyhuQpmdHktQvNU=;
+        b=KtfiWAoCLK/CcBzFXZH0DW+6gnwMZ2c+Afoe7FlgDiLH/DcOmeTzvT3CLZ28OGCcLk
+         BUMwFTWdx9lJz0VKuH/Y0B3Y1mi4EzQtjsGBgL1VwD4zIDyaSJKOp9N3OGwr0p1XvkwK
+         wY8TeV3ixEerfVcYgVoT74cyeUVJ4DQ/n5prdBAU6gTD8jcov5a8/KoS47ByMuhEYize
+         jEiVEC4KeZVxshjRGg8fBBFvEia+tj0ZDrICFHZMvaLfpJQ0U04UDOZhgcz6SpHuFn+r
+         Y8fTa1GJHRTF3KbL6oTL43DcMXqaq3QH2Yu+hI2peNaMNNI2etqkDKkLOGVnDoA1ma8H
+         4Tzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=5akYiP5XbUbIIHU3yZTiMoBU1iltsAOw/hCtwfTaVJc=;
-        b=s2rHwgbGr1nPgYKmIMglaC/QGdWcjC9iDBS+Ua0LQw8wsDlbekJyrOYTd82MWZzVpi
-         cWA0Asxqd3MV7zRCGzjfyd755DbAcySPVBuovlWr4PKMHMq8Qcl4/39ljFo249ZgwQLf
-         AcwQWsI6sZloC2zHarreYBxvt7fTJqDHF4cc7I4FylKCA13fwBAXFPUP0v6M09ev/qPA
-         IybkYmDGGOLIRvwLvexfIS+YszO+tMGUsp7udskgAzQWiMTPbkemgUULRAIA0M+dbpAe
-         E1nNiRI/VIdBPqv/6mdD9en01fipAsCRq5i2foQMol6+Ut38Pq5nCYlaGLQALmIo36QW
-         eaqg==
-X-Gm-Message-State: AOAM532s8zTRKPc3SWZWK6se2dcQ3Z5u/ywlS9+aPuQ8YMOFWePj0KQG
-        NCDc8VUsPZ4NAcaVXo63mVXinw==
-X-Google-Smtp-Source: ABdhPJwF1qF3Syu4cPqExQf8v8cF2iIj2GQcEkvKs7cauiEiajVIwpD26hksjr8q2pDY/chIhqABXg==
-X-Received: by 2002:a1c:7916:: with SMTP id l22mr4167207wme.115.1594130469133;
-        Tue, 07 Jul 2020 07:01:09 -0700 (PDT)
+        bh=vhaBeVx21COzmeKvnb9gJbc8Z89FUyhuQpmdHktQvNU=;
+        b=R6vIia9ZN2TMKlwuIuP/yH/wzVc2ibqq+he9ExRYQMBqX/sHcVb4U40F93ym4bwVn4
+         XTVC7b2Qnkg6oUnhuQ8rgHxcYKXEfg1JsS7JY2921YQdwPZIesS0YLPTzzmyptVfFlHZ
+         Nt2oNp9K1b0aSladBf4FIfRfc2k3b4OUNxUmDsPesoVq51buFTCLKYA+il1phc38Z8nG
+         EhcRrnhebXnMGmCVU3HE9lSudYXSI3bNuSPthk63w1hx7Y4ZWo8TD8w4KDZF/YlTIdYL
+         KKCZnRgVM8mxzAo6fY+EBcpqcaS3K2MqcdY6c74652wvY7mkGCPK+lfDdgzZobXilgTL
+         Fbmg==
+X-Gm-Message-State: AOAM530flpDsC/9h0mBuM3eC/GNcP3B7xc6qgkzESExMHQQgexd5L6vq
+        zV5We6zchAm36Jwo40tIbb3m9o+VV5w=
+X-Google-Smtp-Source: ABdhPJwu+ESA+SEzUKUARUNrHJI/19OQ9CJ+6yAjcqNN7zpyPDfFUIUE0XxR14tt9XDWcrNGAZqbeg==
+X-Received: by 2002:adf:cf0c:: with SMTP id o12mr53592490wrj.265.1594130470272;
+        Tue, 07 Jul 2020 07:01:10 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.206])
-        by smtp.gmail.com with ESMTPSA id z25sm1102823wmk.28.2020.07.07.07.01.07
+        by smtp.gmail.com with ESMTPSA id z25sm1102823wmk.28.2020.07.07.07.01.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jul 2020 07:01:08 -0700 (PDT)
+        Tue, 07 Jul 2020 07:01:09 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     jejb@linux.ibm.com, martin.petersen@oracle.com
 Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
         Lee Jones <lee.jones@linaro.org>,
-        YOKOTA Hiroshi <yokota@netlab.is.tsukuba.ac.jp>
-Subject: [PATCH 08/10] scsi: pcmcia: nsp_cs: Remove unused variable 'dummy'
-Date:   Tue,  7 Jul 2020 15:00:53 +0100
-Message-Id: <20200707140055.2956235-9-lee.jones@linaro.org>
+        Hannes Reinecke <hare@suse.de>
+Subject: [PATCH 09/10] scsi: libfc: fc_disc: Fix-up some incorrectly referenced function parameters
+Date:   Tue,  7 Jul 2020 15:00:54 +0100
+Message-Id: <20200707140055.2956235-10-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200707140055.2956235-1-lee.jones@linaro.org>
 References: <20200707140055.2956235-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no need to populate an unused variable, even if the read is required.
-
 Fixes the following W=1 kernel build warning(s):
 
- drivers/scsi/pcmcia/nsp_cs.c: In function ‘nsp_cs_message’:
- drivers/scsi/pcmcia/nsp_cs.c:143:2: warning: function ‘nsp_cs_message’ might be a candidate for ‘gnu_printf’ format attribute [-Wsuggest-attribute=format]
- drivers/scsi/pcmcia/nsp_cs.c: In function ‘nsp_fifo_count’:
- drivers/scsi/pcmcia/nsp_cs.c:692:24: warning: variable ‘dummy’ set but not used [-Wunused-but-set-variable]
+ drivers/scsi/libfc/fc_disc.c:343: warning: Function parameter or member 'disc' not described in 'fc_disc_gpn_ft_req'
+ drivers/scsi/libfc/fc_disc.c:343: warning: Excess function parameter 'lport' description in 'fc_disc_gpn_ft_req'
+ drivers/scsi/libfc/fc_disc.c:380: warning: Function parameter or member 'disc' not described in 'fc_disc_gpn_ft_parse'
+ drivers/scsi/libfc/fc_disc.c:380: warning: Excess function parameter 'lport' description in 'fc_disc_gpn_ft_parse'
+ drivers/scsi/libfc/fc_disc.c:498: warning: Function parameter or member 'disc_arg' not described in 'fc_disc_gpn_ft_resp'
+ drivers/scsi/libfc/fc_disc.c:498: warning: Excess function parameter 'lp_arg' description in 'fc_disc_gpn_ft_resp'
 
-Cc: YOKOTA Hiroshi <yokota@netlab.is.tsukuba.ac.jp>
+Cc: Hannes Reinecke <hare@suse.de>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/scsi/pcmcia/nsp_cs.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/scsi/libfc/fc_disc.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/scsi/pcmcia/nsp_cs.c b/drivers/scsi/pcmcia/nsp_cs.c
-index 57a78f84f97ab..8655ff1249bbc 100644
---- a/drivers/scsi/pcmcia/nsp_cs.c
-+++ b/drivers/scsi/pcmcia/nsp_cs.c
-@@ -690,14 +690,14 @@ static int nsp_fifo_count(struct scsi_cmnd *SCpnt)
+diff --git a/drivers/scsi/libfc/fc_disc.c b/drivers/scsi/libfc/fc_disc.c
+index 2b865c6423e29..428f40cfd1c36 100644
+--- a/drivers/scsi/libfc/fc_disc.c
++++ b/drivers/scsi/libfc/fc_disc.c
+@@ -337,7 +337,7 @@ static void fc_disc_error(struct fc_disc *disc, struct fc_frame *fp)
+ 
+ /**
+  * fc_disc_gpn_ft_req() - Send Get Port Names by FC-4 type (GPN_FT) request
+- * @lport: The discovery context
++ * @disc: The discovery context
+  */
+ static void fc_disc_gpn_ft_req(struct fc_disc *disc)
  {
- 	unsigned int base = SCpnt->device->host->io_port;
- 	unsigned int count;
--	unsigned int l, m, h, dummy;
-+	unsigned int l, m, h;
+@@ -370,7 +370,7 @@ static void fc_disc_gpn_ft_req(struct fc_disc *disc)
  
- 	nsp_index_write(base, POINTERCLR, POINTER_CLEAR | ACK_COUNTER);
- 
- 	l     = nsp_index_read(base, TRANSFERCOUNT);
- 	m     = nsp_index_read(base, TRANSFERCOUNT);
- 	h     = nsp_index_read(base, TRANSFERCOUNT);
--	dummy = nsp_index_read(base, TRANSFERCOUNT); /* required this! */
-+	nsp_index_read(base, TRANSFERCOUNT); /* required this! */
- 
- 	count = (h << 16) | (m << 8) | (l << 0);
- 
+ /**
+  * fc_disc_gpn_ft_parse() - Parse the body of the dNS GPN_FT response.
+- * @lport: The local port the GPN_FT was received on
++ * @disc:  The descovery context
+  * @buf:   The GPN_FT response buffer
+  * @len:   The size of response buffer
+  *
+@@ -488,7 +488,7 @@ static void fc_disc_timeout(struct work_struct *work)
+  * fc_disc_gpn_ft_resp() - Handle a response frame from Get Port Names (GPN_FT)
+  * @sp:	    The sequence that the GPN_FT response was received on
+  * @fp:	    The GPN_FT response frame
+- * @lp_arg: The discovery context
++ * @disc_arg: The discovery context
+  *
+  * Locking Note: This function is called without disc mutex held, and
+  *		 should do all its processing with the mutex held
 -- 
 2.25.1
 
