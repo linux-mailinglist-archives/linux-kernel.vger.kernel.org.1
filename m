@@ -2,423 +2,411 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C79621644C
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 05:03:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C547216446
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 05:01:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728047AbgGGDDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 23:03:09 -0400
-Received: from mga18.intel.com ([134.134.136.126]:16924 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727828AbgGGDDI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 23:03:08 -0400
-IronPort-SDR: Vxt9a0PiZnI/FSdD3GrvluPl8m5dgvrX8LXDmnpqjrcMnTh+57ufnoMTjVgnOP7Rveq9QONdOE
- dRtFnAI6wNXA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9674"; a="134997044"
-X-IronPort-AV: E=Sophos;i="5.75,321,1589266800"; 
-   d="scan'208";a="134997044"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2020 20:03:07 -0700
-IronPort-SDR: 2D35otIIA2tV5ZX7k4VKGiekjLBxee/5Ykom9VYx0OkSi4H6v/nvb7SUeNGulSJoOofVjCIlpE
- Dv4/Fs/nGYMQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,321,1589266800"; 
-   d="scan'208";a="388368320"
-Received: from apiccion-mobl1.ger.corp.intel.com (HELO localhost) ([10.249.45.178])
-  by fmsmga001.fm.intel.com with ESMTP; 06 Jul 2020 20:02:55 -0700
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     x86@kernel.org, linux-sgx@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Jethro Beekman <jethro@fortanix.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
-        chenalexchen@google.com, conradparker@google.com,
-        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, sean.j.christopherson@intel.com,
-        tglx@linutronix.de, yaozhangx@google.com
-Subject: [PATCH v34 04/24] x86/sgx: Add SGX microarchitectural data structures
-Date:   Tue,  7 Jul 2020 06:01:44 +0300
-Message-Id: <20200707030204.126021-5-jarkko.sakkinen@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200707030204.126021-1-jarkko.sakkinen@linux.intel.com>
-References: <20200707030204.126021-1-jarkko.sakkinen@linux.intel.com>
+        id S1727044AbgGGDBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 23:01:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59196 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726434AbgGGDBs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Jul 2020 23:01:48 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B32D8C061755;
+        Mon,  6 Jul 2020 20:01:48 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id 1so101653pfn.9;
+        Mon, 06 Jul 2020 20:01:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=OQCgUwM2ShP0/N0SvzdE3xadrflgQZrSD21eF9YrU/w=;
+        b=daqEG873WEhgL7DYnv/QAZ0dpmVgfZYL4xpK7tZWZuugeu3veuHQ08hXLQXWfrupoL
+         gb/UA4qCEIgL/1SmTJS5FUnNw+9dEAEvtVjjrbLZpci1XScv96d9buXdXySolztmJlCJ
+         hCeF9Xps9K9ZUGrIx3olDIbA2wc5W4j24U6oBHu+tUCEmfyU3JykZlq82a16Zmn+zGF4
+         DV8oJ9foFNVJ9LtvCXQ948Wj9tT19qn6iN48wyawxL3LrkUIX0iMS469Txejatkihect
+         txNroVzN1XGM/BBi3Uu5O8XHazh3mZSgmP4+CVccqsWkjT6fS9Sh2CgyQDFMwll0+ceT
+         JfSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=OQCgUwM2ShP0/N0SvzdE3xadrflgQZrSD21eF9YrU/w=;
+        b=WPVXzPrD4y8qTlje8RaeWJ5FTOwh+G+m2mjGFBkgDgWxLjdhAGyM/cAjyphZaclTbj
+         ka97nosyMX7UD+44p+QZZt4udqCo+sEE8O7QrFNRWBZ/YAknosQEq2rCJBLIieyQJgsk
+         zOZX/SaHlwNxPxiOPyQEb1A991aPxMHrnIwcFfzsr9rPW9ZmkLlLSQ6AFvXAtnb/593k
+         0gChylSHu5GPf2EI4s/AYuaAOtMjVvLFeJ+2VUMIdMSGeLEP/YTnnCTI49+TksAtoJBN
+         ZpmXgugEKjskZpszfVqQOB5I6kJ/RiXiqxMST4WHHix/sPyrTV+4YcX9d5KA8iiLuzQ4
+         olRA==
+X-Gm-Message-State: AOAM532B/HBMblSSQoOzb99jiC69R2bmcX508+kQ7wohX/kCNnsWMLSM
+        yIO3YF87w7p9tBeEky3dlblezeGwri8=
+X-Google-Smtp-Source: ABdhPJyrPvjbAUbN7OSlkamQyjoyKeYpcxILuUspQfP2oTdlhers4m3hooh5MLifh/N7PUePIv0dPw==
+X-Received: by 2002:a63:b90a:: with SMTP id z10mr41143374pge.277.1594090907669;
+        Mon, 06 Jul 2020 20:01:47 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id b4sm732646pjn.38.2020.07.06.20.01.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Jul 2020 20:01:46 -0700 (PDT)
+Subject: Re: [PATCH v3 1/1] hwmon:max6697: Allows max6581 to create
+ tempX_offset attributes
+To:     Chu Lin <linchuyuan@google.com>
+Cc:     belgaied@google.com, jasonling@google.com, jdelvare@suse.com,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zhongqil@google.com
+References: <20200707011810.2508233-1-linchuyuan@google.com>
+ <20200707011810.2508233-2-linchuyuan@google.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ xsFNBE6H1WcBEACu6jIcw5kZ5dGeJ7E7B2uweQR/4FGxH10/H1O1+ApmcQ9i87XdZQiB9cpN
+ RYHA7RCEK2dh6dDccykQk3bC90xXMPg+O3R+C/SkwcnUak1UZaeK/SwQbq/t0tkMzYDRxfJ7
+ nyFiKxUehbNF3r9qlJgPqONwX5vJy4/GvDHdddSCxV41P/ejsZ8PykxyJs98UWhF54tGRWFl
+ 7i1xvaDB9lN5WTLRKSO7wICuLiSz5WZHXMkyF4d+/O5ll7yz/o/JxK5vO/sduYDIlFTvBZDh
+ gzaEtNf5tQjsjG4io8E0Yq0ViobLkS2RTNZT8ICq/Jmvl0SpbHRvYwa2DhNsK0YjHFQBB0FX
+ IdhdUEzNefcNcYvqigJpdICoP2e4yJSyflHFO4dr0OrdnGLe1Zi/8Xo/2+M1dSSEt196rXaC
+ kwu2KgIgmkRBb3cp2vIBBIIowU8W3qC1+w+RdMUrZxKGWJ3juwcgveJlzMpMZNyM1jobSXZ0
+ VHGMNJ3MwXlrEFPXaYJgibcg6brM6wGfX/LBvc/haWw4yO24lT5eitm4UBdIy9pKkKmHHh7s
+ jfZJkB5fWKVdoCv/omy6UyH6ykLOPFugl+hVL2Prf8xrXuZe1CMS7ID9Lc8FaL1ROIN/W8Vk
+ BIsJMaWOhks//7d92Uf3EArDlDShwR2+D+AMon8NULuLBHiEUQARAQABzTJHdWVudGVyIFJv
+ ZWNrIChMaW51eCBhY2NvdW50KSA8bGludXhAcm9lY2stdXMubmV0PsLBgQQTAQIAKwIbAwYL
+ CQgHAwIGFQgCCQoLBBYCAwECHgECF4ACGQEFAlVcphcFCRmg06EACgkQyx8mb86fmYFg0RAA
+ nzXJzuPkLJaOmSIzPAqqnutACchT/meCOgMEpS5oLf6xn5ySZkl23OxuhpMZTVX+49c9pvBx
+ hpvl5bCWFu5qC1jC2eWRYU+aZZE4sxMaAGeWenQJsiG9lP8wkfCJP3ockNu0ZXXAXwIbY1O1
+ c+l11zQkZw89zNgWgKobKzrDMBFOYtAh0pAInZ9TSn7oA4Ctejouo5wUugmk8MrDtUVXmEA9
+ 7f9fgKYSwl/H7dfKKsS1bDOpyJlqhEAH94BHJdK/b1tzwJCFAXFhMlmlbYEk8kWjcxQgDWMu
+ GAthQzSuAyhqyZwFcOlMCNbAcTSQawSo3B9yM9mHJne5RrAbVz4TWLnEaX8gA5xK3uCNCeyI
+ sqYuzA4OzcMwnnTASvzsGZoYHTFP3DQwf2nzxD6yBGCfwNGIYfS0i8YN8XcBgEcDFMWpOQhT
+ Pu3HeztMnF3HXrc0t7e5rDW9zCh3k2PA6D2NV4fews9KDFhLlTfCVzf0PS1dRVVWM+4jVl6l
+ HRIAgWp+2/f8dx5vPc4Ycp4IsZN0l1h9uT7qm1KTwz+sSl1zOqKD/BpfGNZfLRRxrXthvvY8
+ BltcuZ4+PGFTcRkMytUbMDFMF9Cjd2W9dXD35PEtvj8wnEyzIos8bbgtLrGTv/SYhmPpahJA
+ l8hPhYvmAvpOmusUUyB30StsHIU2LLccUPPOwU0ETofVZwEQALlLbQeBDTDbwQYrj0gbx3bq
+ 7kpKABxN2MqeuqGr02DpS9883d/t7ontxasXoEz2GTioevvRmllJlPQERVxM8gQoNg22twF7
+ pB/zsrIjxkE9heE4wYfN1AyzT+AxgYN6f8hVQ7Nrc9XgZZe+8IkuW/Nf64KzNJXnSH4u6nJM
+ J2+Dt274YoFcXR1nG76Q259mKwzbCukKbd6piL+VsT/qBrLhZe9Ivbjq5WMdkQKnP7gYKCAi
+ pNVJC4enWfivZsYupMd9qn7Uv/oCZDYoBTdMSBUblaLMwlcjnPpOYK5rfHvC4opxl+P/Vzyz
+ 6WC2TLkPtKvYvXmdsI6rnEI4Uucg0Au/Ulg7aqqKhzGPIbVaL+U0Wk82nz6hz+WP2ggTrY1w
+ ZlPlRt8WM9w6WfLf2j+PuGklj37m+KvaOEfLsF1v464dSpy1tQVHhhp8LFTxh/6RWkRIR2uF
+ I4v3Xu/k5D0LhaZHpQ4C+xKsQxpTGuYh2tnRaRL14YMW1dlI3HfeB2gj7Yc8XdHh9vkpPyuT
+ nY/ZsFbnvBtiw7GchKKri2gDhRb2QNNDyBnQn5mRFw7CyuFclAksOdV/sdpQnYlYcRQWOUGY
+ HhQ5eqTRZjm9z+qQe/T0HQpmiPTqQcIaG/edgKVTUjITfA7AJMKLQHgp04Vylb+G6jocnQQX
+ JqvvP09whbqrABEBAAHCwWUEGAECAA8CGwwFAlVcpi8FCRmg08MACgkQyx8mb86fmYHNRQ/+
+ J0OZsBYP4leJvQF8lx9zif+v4ZY/6C9tTcUv/KNAE5leyrD4IKbnV4PnbrVhjq861it/zRQW
+ cFpWQszZyWRwNPWUUz7ejmm9lAwPbr8xWT4qMSA43VKQ7ZCeTQJ4TC8kjqtcbw41SjkjrcTG
+ wF52zFO4bOWyovVAPncvV9eGA/vtnd3xEZXQiSt91kBSqK28yjxAqK/c3G6i7IX2rg6pzgqh
+ hiH3/1qM2M/LSuqAv0Rwrt/k+pZXE+B4Ud42hwmMr0TfhNxG+X7YKvjKC+SjPjqp0CaztQ0H
+ nsDLSLElVROxCd9m8CAUuHplgmR3seYCOrT4jriMFBtKNPtj2EE4DNV4s7k0Zy+6iRQ8G8ng
+ QjsSqYJx8iAR8JRB7Gm2rQOMv8lSRdjva++GT0VLXtHULdlzg8VjDnFZ3lfz5PWEOeIMk7Rj
+ trjv82EZtrhLuLjHRCaG50OOm0hwPSk1J64R8O3HjSLdertmw7eyAYOo4RuWJguYMg5DRnBk
+ WkRwrSuCn7UG+qVWZeKEsFKFOkynOs3pVbcbq1pxbhk3TRWCGRU5JolI4ohy/7JV1TVbjiDI
+ HP/aVnm6NC8of26P40Pg8EdAhajZnHHjA7FrJXsy3cyIGqvg9os4rNkUWmrCfLLsZDHD8FnU
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <a36fc250-5387-7534-a8ff-2b5d5196d687@roeck-us.net>
+Date:   Mon, 6 Jul 2020 20:01:45 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20200707011810.2508233-2-linchuyuan@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Define the SGX microarchitectural data structures used by various SGX
-opcodes. This is not an exhaustive representation of all SGX data
-structures but only those needed by the kernel.
+On 7/6/20 6:18 PM, Chu Lin wrote:
+> Testing:
+> echo 16250 > temp2_offset
+> cat temp2_offset
+> 16250
+> 
+> echo 17500 > temp3_offset
+> cat temp3_offset
+> 17500
+> cat temp4_offset
+> 0
+> cat temp2_offset
+> 17500
+> 
+> echo 0 > temp2_offset
+> cat temp2_offset
+> 0
+> cat temp3_offset
+> 17500
+> 
+> echo -0 > temp2_offset
+> cat temp2_offset
+> 0
+> 
+> echo -100000 > temp2_offset
+> cat temp2_input
+> 4875
+> 
+> echo 10000 > temp2_offset
+> cat temp2_input
+> 47125
+> 
+> echo -2000 > temp2_offset
+> cat temp2_input
+> 34875
+> 
+> echo -0 > temp2_offset
+> cat temp2_input
+> 37000
+> 
+> Signed-off-by: Chu Lin <linchuyuan@google.com>
 
-The data structures are described in:
+Technically this is patch v4, but never mind.
 
-  Intel SDM: 37.6 INTEL® SGX DATA STRUCTURES OVERVIEW
+> ---
+>  drivers/hwmon/max6697.c | 92 +++++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 88 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/hwmon/max6697.c b/drivers/hwmon/max6697.c
+> index 64122eb38060..6b213e146fbe 100644
+> --- a/drivers/hwmon/max6697.c
+> +++ b/drivers/hwmon/max6697.c
+> @@ -57,6 +57,9 @@ static const u8 MAX6697_REG_CRIT[] = {
+>  #define MAX6581_REG_IDEALITY_SELECT	0x4c
+>  #define MAX6581_REG_OFFSET		0x4d
+>  #define MAX6581_REG_OFFSET_SELECT	0x4e
+> +#define MAX6581_OFFSET_MIN		-31750
+> +#define MAX6581_OFFSET_MAX		31750
+> +
+>  
+Pease no double empty lines.
 
-Acked-by: Jethro Beekman <jethro@fortanix.com>
-Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
----
- arch/x86/kernel/cpu/sgx/arch.h | 343 +++++++++++++++++++++++++++++++++
- 1 file changed, 343 insertions(+)
- create mode 100644 arch/x86/kernel/cpu/sgx/arch.h
+>  #define MAX6697_CONV_TIME		156	/* ms per channel, worst case */
+>  
+> @@ -172,6 +175,11 @@ static const struct max6697_chip_data max6697_chip_data[] = {
+>  	},
+>  };
+>  
+> +static inline int max6581_offset_to_millic(int val)
+> +{
+> +	return val & (1 << 7) ? (val | 0xffffff00) * 250 : val * 250;
 
-diff --git a/arch/x86/kernel/cpu/sgx/arch.h b/arch/x86/kernel/cpu/sgx/arch.h
-new file mode 100644
-index 000000000000..ddae55e9d4d8
---- /dev/null
-+++ b/arch/x86/kernel/cpu/sgx/arch.h
-@@ -0,0 +1,343 @@
-+/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
-+/**
-+ * Copyright(c) 2016-18 Intel Corporation.
-+ *
-+ * Contains data structures defined by the SGX architecture.  Data structures
-+ * defined by the Linux software stack should not be placed here.
-+ */
-+#ifndef _ASM_X86_SGX_ARCH_H
-+#define _ASM_X86_SGX_ARCH_H
-+
-+#include <linux/bits.h>
-+#include <linux/types.h>
-+
-+#define SGX_CPUID				0x12
-+#define SGX_CPUID_FIRST_VARIABLE_SUB_LEAF	2
-+
-+/**
-+ * enum sgx_return_code - The return code type for ENCLS, ENCLU and ENCLV
-+ * %SGX_NOT_TRACKED:		Previous ETRACK's shootdown sequence has not
-+ *				been completed yet.
-+ * %SGX_INVALID_EINITTOKEN:	EINITTOKEN is invalid and enclave signer's
-+ *				public key does not match IA32_SGXLEPUBKEYHASH.
-+ * %SGX_UNMASKED_EVENT:		An unmasked event, e.g. INTR, was received
-+ */
-+enum sgx_return_code {
-+	SGX_NOT_TRACKED			= 11,
-+	SGX_INVALID_EINITTOKEN		= 16,
-+	SGX_UNMASKED_EVENT		= 128,
-+};
-+
-+/**
-+ * enum sgx_sub_leaf_types - SGX CPUID variable sub-leaf types
-+ * %SGX_CPUID_SUB_LEAF_INVALID:		Indicates this sub-leaf is invalid.
-+ * %SGX_CPUID_SUB_LEAF_EPC_SECTION:	Sub-leaf enumerates an EPC section.
-+ */
-+enum sgx_sub_leaf_types {
-+	SGX_CPUID_SUB_LEAF_INVALID	= 0x0,
-+	SGX_CPUID_SUB_LEAF_EPC_SECTION	= 0x1,
-+};
-+
-+#define SGX_CPUID_SUB_LEAF_TYPE_MASK	GENMASK(3, 0)
-+
-+#define SGX_MODULUS_SIZE 384
-+
-+/**
-+ * enum sgx_miscselect - additional information to an SSA frame
-+ * %SGX_MISC_EXINFO:	Report #PF or #GP to the SSA frame.
-+ *
-+ * Save State Area (SSA) is a stack inside the enclave used to store processor
-+ * state when an exception or interrupt occurs. This enum defines additional
-+ * information stored to an SSA frame.
-+ */
-+enum sgx_miscselect {
-+	SGX_MISC_EXINFO		= BIT(0),
-+};
-+
-+#define SGX_MISC_RESERVED_MASK	GENMASK_ULL(63, 1)
-+
-+#define SGX_SSA_GPRS_SIZE		184
-+#define SGX_SSA_MISC_EXINFO_SIZE	16
-+
-+/**
-+ * enum sgx_attributes - the attributes field in &struct sgx_secs
-+ * %SGX_ATTR_INIT:		Enclave can be entered (is initialized).
-+ * %SGX_ATTR_DEBUG:		Allow ENCLS(EDBGRD) and ENCLS(EDBGWR).
-+ * %SGX_ATTR_MODE64BIT:		Tell that this a 64-bit enclave.
-+ * %SGX_ATTR_PROVISIONKEY:      Allow to use provisioning keys for remote
-+ *				attestation.
-+ * %SGX_ATTR_KSS:		Allow to use key separation and sharing (KSS).
-+ * %SGX_ATTR_EINITTOKENKEY:	Allow to use token signing key that is used to
-+ *				sign cryptographic tokens that can be passed to
-+ *				EINIT as an authorization to run an enclave.
-+ */
-+enum sgx_attribute {
-+	SGX_ATTR_INIT		= BIT(0),
-+	SGX_ATTR_DEBUG		= BIT(1),
-+	SGX_ATTR_MODE64BIT	= BIT(2),
-+	SGX_ATTR_PROVISIONKEY	= BIT(4),
-+	SGX_ATTR_EINITTOKENKEY	= BIT(5),
-+	SGX_ATTR_KSS		= BIT(7),
-+};
-+
-+#define SGX_ATTR_RESERVED_MASK	(BIT_ULL(3) | BIT_ULL(6) | GENMASK_ULL(63, 8))
-+#define SGX_ATTR_ALLOWED_MASK	(SGX_ATTR_DEBUG | SGX_ATTR_MODE64BIT | \
-+				 SGX_ATTR_KSS)
-+
-+/**
-+ * struct sgx_secs - SGX Enclave Control Structure (SECS)
-+ * @size:		size of the address space
-+ * @base:		base address of the  address space
-+ * @ssa_frame_size:	size of an SSA frame
-+ * @miscselect:		additional information stored to an SSA frame
-+ * @attributes:		attributes for enclave
-+ * @xfrm:		XSave-Feature Request Mask (subset of XCR0)
-+ * @mrenclave:		SHA256-hash of the enclave contents
-+ * @mrsigner:		SHA256-hash of the public key used to sign the SIGSTRUCT
-+ * @config_id:		a user-defined value that is used in key derivation
-+ * @isv_prod_id:	a user-defined value that is used in key derivation
-+ * @isv_svn:		a user-defined value that is used in key derivation
-+ * @config_svn:		a user-defined value that is used in key derivation
-+ *
-+ * SGX Enclave Control Structure (SECS) is a special enclave page that is not
-+ * visible in the address space. In fact, this structure defines the address
-+ * range and other global attributes for the enclave and it is the first EPC
-+ * page created for any enclave. It is moved from a temporary buffer to an EPC
-+ * by the means of ENCLS(ECREATE) leaf.
-+ */
-+struct sgx_secs {
-+	u64 size;
-+	u64 base;
-+	u32 ssa_frame_size;
-+	u32 miscselect;
-+	u8  reserved1[24];
-+	u64 attributes;
-+	u64 xfrm;
-+	u32 mrenclave[8];
-+	u8  reserved2[32];
-+	u32 mrsigner[8];
-+	u8  reserved3[32];
-+	u32 config_id[16];
-+	u16 isv_prod_id;
-+	u16 isv_svn;
-+	u16 config_svn;
-+	u8  reserved4[3834];
-+} __packed;
-+
-+/**
-+ * enum sgx_tcs_flags - execution flags for TCS
-+ * %SGX_TCS_DBGOPTIN:	If enabled allows single-stepping and breakpoints
-+ *			inside an enclave. It is cleared by EADD but can
-+ *			be set later with EDBGWR.
-+ */
-+enum sgx_tcs_flags {
-+	SGX_TCS_DBGOPTIN	= 0x01,
-+};
-+
-+#define SGX_TCS_RESERVED_MASK	GENMASK_ULL(63, 1)
-+#define SGX_TCS_RESERVED_SIZE	4024
-+
-+/**
-+ * struct sgx_tcs - Thread Control Structure (TCS)
-+ * @state:		used to mark an entered TCS
-+ * @flags:		execution flags (cleared by EADD)
-+ * @ssa_offset:		SSA stack offset relative to the enclave base
-+ * @ssa_index:		the current SSA frame index (cleard by EADD)
-+ * @nr_ssa_frames:	the number of frame in the SSA stack
-+ * @entry_offset:	entry point offset relative to the enclave base
-+ * @exit_addr:		address outside the enclave to exit on an exception or
-+ *			interrupt
-+ * @fs_offset:		offset relative to the enclave base to become FS
-+ *			segment inside the enclave
-+ * @gs_offset:		offset relative to the enclave base to become GS
-+ *			segment inside the enclave
-+ * @fs_limit:		size to become a new FS-limit (only 32-bit enclaves)
-+ * @gs_limit:		size to become a new GS-limit (only 32-bit enclaves)
-+ *
-+ * Thread Control Structure (TCS) is an enclave page visible in its address
-+ * space that defines an entry point inside the enclave. A thread enters inside
-+ * an enclave by supplying address of TCS to ENCLU(EENTER). A TCS can be entered
-+ * by only one thread at a time.
-+ */
-+struct sgx_tcs {
-+	u64 state;
-+	u64 flags;
-+	u64 ssa_offset;
-+	u32 ssa_index;
-+	u32 nr_ssa_frames;
-+	u64 entry_offset;
-+	u64 exit_addr;
-+	u64 fs_offset;
-+	u64 gs_offset;
-+	u32 fs_limit;
-+	u32 gs_limit;
-+	u8  reserved[SGX_TCS_RESERVED_SIZE];
-+} __packed;
-+
-+/**
-+ * struct sgx_pageinfo - an enclave page descriptor
-+ * @addr:	address of the enclave page
-+ * @contents:	pointer to the page contents
-+ * @metadata:	pointer either to a SECINFO or PCMD instance
-+ * @secs:	address of the SECS page
-+ */
-+struct sgx_pageinfo {
-+	u64 addr;
-+	u64 contents;
-+	u64 metadata;
-+	u64 secs;
-+} __packed __aligned(32);
-+
-+
-+/**
-+ * enum sgx_page_type - bits in the SECINFO flags defining the page type
-+ * %SGX_PAGE_TYPE_SECS:	a SECS page
-+ * %SGX_PAGE_TYPE_TCS:	a TCS page
-+ * %SGX_PAGE_TYPE_REG:	a regular page
-+ * %SGX_PAGE_TYPE_VA:	a VA page
-+ * %SGX_PAGE_TYPE_TRIM:	a page in trimmed state
-+ */
-+enum sgx_page_type {
-+	SGX_PAGE_TYPE_SECS,
-+	SGX_PAGE_TYPE_TCS,
-+	SGX_PAGE_TYPE_REG,
-+	SGX_PAGE_TYPE_VA,
-+	SGX_PAGE_TYPE_TRIM,
-+};
-+
-+#define SGX_NR_PAGE_TYPES	5
-+#define SGX_PAGE_TYPE_MASK	GENMASK(7, 0)
-+
-+/**
-+ * enum sgx_secinfo_flags - the flags field in &struct sgx_secinfo
-+ * %SGX_SECINFO_R:	allow read
-+ * %SGX_SECINFO_W:	allow write
-+ * %SGX_SECINFO_X:	allow execution
-+ * %SGX_SECINFO_SECS:	a SECS page
-+ * %SGX_SECINFO_TCS:	a TCS page
-+ * %SGX_SECINFO_REG:	a regular page
-+ * %SGX_SECINFO_VA:	a VA page
-+ * %SGX_SECINFO_TRIM:	a page in trimmed state
-+ */
-+enum sgx_secinfo_flags {
-+	SGX_SECINFO_R			= BIT(0),
-+	SGX_SECINFO_W			= BIT(1),
-+	SGX_SECINFO_X			= BIT(2),
-+	SGX_SECINFO_SECS		= (SGX_PAGE_TYPE_SECS << 8),
-+	SGX_SECINFO_TCS			= (SGX_PAGE_TYPE_TCS << 8),
-+	SGX_SECINFO_REG			= (SGX_PAGE_TYPE_REG << 8),
-+	SGX_SECINFO_VA			= (SGX_PAGE_TYPE_VA << 8),
-+	SGX_SECINFO_TRIM		= (SGX_PAGE_TYPE_TRIM << 8),
-+};
-+
-+#define SGX_SECINFO_PERMISSION_MASK	GENMASK_ULL(2, 0)
-+#define SGX_SECINFO_PAGE_TYPE_MASK	(SGX_PAGE_TYPE_MASK << 8)
-+#define SGX_SECINFO_RESERVED_MASK	~(SGX_SECINFO_PERMISSION_MASK | \
-+					  SGX_SECINFO_PAGE_TYPE_MASK)
-+
-+/**
-+ * struct sgx_secinfo - describes attributes of an EPC page
-+ * @flags:	permissions and type
-+ *
-+ * Used together with ENCLS leaves that add or modify an EPC page to an
-+ * enclave to define page permissions and type.
-+ */
-+struct sgx_secinfo {
-+	u64 flags;
-+	u8  reserved[56];
-+} __packed __aligned(64);
-+
-+#define SGX_PCMD_RESERVED_SIZE 40
-+
-+/**
-+ * struct sgx_pcmd - Paging Crypto Metadata (PCMD)
-+ * @enclave_id:	enclave identifier
-+ * @mac:	MAC over PCMD, page contents and isvsvn
-+ *
-+ * PCMD is stored for every swapped page to the regular memory. When ELDU loads
-+ * the page back it recalculates the MAC by using a isvsvn number stored in a
-+ * VA page. Together these two structures bring integrity and rollback
-+ * protection.
-+ */
-+struct sgx_pcmd {
-+	struct sgx_secinfo secinfo;
-+	u64 enclave_id;
-+	u8  reserved[SGX_PCMD_RESERVED_SIZE];
-+	u8  mac[16];
-+} __packed __aligned(128);
-+
-+#define SGX_SIGSTRUCT_RESERVED1_SIZE 84
-+#define SGX_SIGSTRUCT_RESERVED2_SIZE 20
-+#define SGX_SIGSTRUCT_RESERVED3_SIZE 32
-+#define SGX_SIGSTRUCT_RESERVED4_SIZE 12
-+
-+/**
-+ * struct sgx_sigstruct_header -  defines author of the enclave
-+ * @header1:		constant byte string
-+ * @vendor:		must be either 0x0000 or 0x8086
-+ * @date:		YYYYMMDD in BCD
-+ * @header2:		costant byte string
-+ * @swdefined:		software defined value
-+ */
-+struct sgx_sigstruct_header {
-+	u64 header1[2];
-+	u32 vendor;
-+	u32 date;
-+	u64 header2[2];
-+	u32 swdefined;
-+	u8  reserved1[84];
-+} __packed;
-+
-+/**
-+ * struct sgx_sigstruct_body - defines contents of the enclave
-+ * @miscselect:		additional information stored to an SSA frame
-+ * @misc_mask:		required miscselect in SECS
-+ * @attributes:		attributes for enclave
-+ * @xfrm:		XSave-Feature Request Mask (subset of XCR0)
-+ * @attributes_mask:	required attributes in SECS
-+ * @xfrm_mask:		required XFRM in SECS
-+ * @mrenclave:		SHA256-hash of the enclave contents
-+ * @isvprodid:		a user-defined value that is used in key derivation
-+ * @isvsvn:		a user-defined value that is used in key derivation
-+ */
-+struct sgx_sigstruct_body {
-+	u32 miscselect;
-+	u32 misc_mask;
-+	u8  reserved2[20];
-+	u64 attributes;
-+	u64 xfrm;
-+	u64 attributes_mask;
-+	u64 xfrm_mask;
-+	u8  mrenclave[32];
-+	u8  reserved3[32];
-+	u16 isvprodid;
-+	u16 isvsvn;
-+} __packed;
-+
-+/**
-+ * struct sgx_sigstruct - an enclave signature
-+ * @header:		defines author of the enclave
-+ * @modulus:		the modulus of the public key
-+ * @exponent:		the exponent of the public key
-+ * @signature:		the signature calculated over the fields except modulus,
-+ * @body:		defines contents of the enclave
-+ * @q1:			a value used in RSA signature verification
-+ * @q2:			a value used in RSA signature verification
-+ *
-+ * Header and body are the parts that are actual signed. The remaining fields
-+ * define the signature of the enclave.
-+ */
-+struct sgx_sigstruct {
-+	struct sgx_sigstruct_header header;
-+	u8  modulus[SGX_MODULUS_SIZE];
-+	u32 exponent;
-+	u8  signature[SGX_MODULUS_SIZE];
-+	struct sgx_sigstruct_body body;
-+	u8  reserved4[12];
-+	u8  q1[SGX_MODULUS_SIZE];
-+	u8  q2[SGX_MODULUS_SIZE];
-+} __packed;
-+
-+#define SGX_LAUNCH_TOKEN_SIZE 304
-+
-+#endif /* _ASM_X86_SGX_ARCH_H */
--- 
-2.25.1
+	return sign_extend32(val, 7) * 250;
+
+> +}
+> +
+>  static struct max6697_data *max6697_update_device(struct device *dev)
+>  {
+>  	struct max6697_data *data = dev_get_drvdata(dev);
+> @@ -317,6 +325,61 @@ static ssize_t temp_store(struct device *dev,
+>  	return ret < 0 ? ret : count;
+>  }
+>  
+> +static ssize_t offset_store(struct device *dev,
+> +			    struct device_attribute *devattr, const char *buf,
+> +			    size_t count)
+
+I don't think this needs three lines with the new line length limit.
+
+> +{
+> +	int val, ret, index, select;
+> +	struct max6697_data *data;
+> +	long temp;
+> +
+> +	index = to_sensor_dev_attr(devattr)->index;
+> +	data = dev_get_drvdata(dev);
+> +	select = i2c_smbus_read_byte_data(data->client, MAX6581_REG_OFFSET_SELECT);
+> +	if (select < 0)
+> +		return select;
+
+Unfortunately, this is racy: The select register can be changed by another write
+after it was read here. The kstrtol() can be outside the lock, but the entire
+sequence of i2c reads and writes has to be mutex protected.
+
+> +	ret = kstrtol(buf, 10, &temp);
+> +	if (ret < 0)
+> +		return ret;
+> +	/* disable the offset for channel */
+
+                                          ... if the new offset is 0.
+
+> +	if (temp == 0) {
+
+This now has to be after the assignment of val below, and must be "if (val == 0)".
+
+> +		ret = i2c_smbus_write_byte_data(data->client, MAX6581_REG_OFFSET_SELECT,
+> +						select & ~(1 << (index - 1)));
+> +		return ret < 0 ? ret : count;
+> +	}
+> +	temp = clamp_val(temp, MAX6581_OFFSET_MIN, MAX6581_OFFSET_MAX);
+> +	val = DIV_ROUND_CLOSEST(temp, 250);
+> +	mutex_lock(&data->update_lock);
+> +	ret = i2c_smbus_write_byte_data(data->client, MAX6581_REG_OFFSET_SELECT,> +					select | (1 << (index - 1)));
+
+It might make sense to update the select register only if it actually changes
+its value. The cost for checking this is much less than the cost of the additional
+i2c write.
+
+> +	if (ret < 0)
+> +		return ret;
+
+Forgot to release the lock - needs goto
+
+> +	ret = i2c_smbus_write_byte_data(data->client, MAX6581_REG_OFFSET, val);
+> +	mutex_unlock(&data->update_lock);
+> +	return ret < 0 ? ret : count;
+> +}
+> +
+> +static ssize_t offset_show(struct device *dev, struct device_attribute *devattr,
+> +			   char *buf)
+
+Single line should be sufficient.
+
+> +{
+> +	struct max6697_data *data;
+> +	int select, ret, index;
+> +
+> +	index = to_sensor_dev_attr(devattr)->index;
+> +	data = dev_get_drvdata(dev);
+> +	select = i2c_smbus_read_byte_data(data->client, MAX6581_REG_OFFSET_SELECT);
+> +	if (select < 0)
+> +		return select;
+> +	if (select & (1 << (index - 1))) {
+> +		ret = i2c_smbus_read_byte_data(data->client, MAX6581_REG_OFFSET);
+> +		if (ret < 0)
+> +			return ret;
+> +	} else {
+> +		return sprintf(buf, "%d\n", 0);
+
+Better make this "ret = 0;".
+
+Also, this is racy: select can be changed after the first read.
+Not sure if that matters much, though.
+
+> +	}
+> +	return sprintf(buf, "%d\n", max6581_offset_to_millic(ret));
+> +}
+> +
+>  static SENSOR_DEVICE_ATTR_RO(temp1_input, temp_input, 0);
+>  static SENSOR_DEVICE_ATTR_2_RW(temp1_max, temp, 0, MAX6697_TEMP_MAX);
+>  static SENSOR_DEVICE_ATTR_2_RW(temp1_crit, temp, 0, MAX6697_TEMP_CRIT);
+> @@ -375,6 +438,15 @@ static SENSOR_DEVICE_ATTR_RO(temp6_fault, alarm, 5);
+>  static SENSOR_DEVICE_ATTR_RO(temp7_fault, alarm, 6);
+>  static SENSOR_DEVICE_ATTR_RO(temp8_fault, alarm, 7);
+>  
+> +/* There is no offset for local temperature so starting from temp2 */
+> +static SENSOR_DEVICE_ATTR_RW(temp2_offset, offset, 1);
+> +static SENSOR_DEVICE_ATTR_RW(temp3_offset, offset, 2);
+> +static SENSOR_DEVICE_ATTR_RW(temp4_offset, offset, 3);
+> +static SENSOR_DEVICE_ATTR_RW(temp5_offset, offset, 4);
+> +static SENSOR_DEVICE_ATTR_RW(temp6_offset, offset, 5);
+> +static SENSOR_DEVICE_ATTR_RW(temp7_offset, offset, 6);
+> +static SENSOR_DEVICE_ATTR_RW(temp8_offset, offset, 7);
+> +
+>  static DEVICE_ATTR(dummy, 0, NULL, NULL);
+>  
+>  static umode_t max6697_is_visible(struct kobject *kobj, struct attribute *attr,
+> @@ -383,8 +455,8 @@ static umode_t max6697_is_visible(struct kobject *kobj, struct attribute *attr,
+>  	struct device *dev = container_of(kobj, struct device, kobj);
+>  	struct max6697_data *data = dev_get_drvdata(dev);
+>  	const struct max6697_chip_data *chip = data->chip;
+> -	int channel = index / 6;	/* channel number */
+> -	int nr = index % 6;		/* attribute index within channel */
+> +	int channel = index / 8;	/* channel number */
+> +	int nr = index % 7;		/* attribute index within channel */
+
+Something is wrong here: "/ 6" and "% 6" changed to "/ 8" and "% 7".
+Why "/ 8" ?
+
+>  
+>  	if (channel >= chip->channels)
+>  		return 0;
+> @@ -393,6 +465,10 @@ static umode_t max6697_is_visible(struct kobject *kobj, struct attribute *attr,
+>  		return 0;
+>  	if (nr == 5 && !(chip->have_fault & (1 << channel)))
+>  		return 0;
+> +	/* offset reg is only supported on max6581 remote channels */
+> +	if (nr == 6)
+> +		if (data->type != max6581 || channel == 0)
+> +			return 0;
+>  
+>  	return attr->mode;
+>  }
+> @@ -409,6 +485,7 @@ static struct attribute *max6697_attributes[] = {
+>  	&sensor_dev_attr_temp1_crit.dev_attr.attr,
+>  	&sensor_dev_attr_temp1_crit_alarm.dev_attr.attr,
+>  	&dev_attr_dummy.attr,
+> +	&dev_attr_dummy.attr,
+>  
+>  	&sensor_dev_attr_temp2_input.dev_attr.attr,
+>  	&sensor_dev_attr_temp2_max.dev_attr.attr,
+> @@ -416,6 +493,7 @@ static struct attribute *max6697_attributes[] = {
+>  	&sensor_dev_attr_temp2_crit.dev_attr.attr,
+>  	&sensor_dev_attr_temp2_crit_alarm.dev_attr.attr,
+>  	&sensor_dev_attr_temp2_fault.dev_attr.attr,
+> +	&sensor_dev_attr_temp2_offset.dev_attr.attr,
+>  
+>  	&sensor_dev_attr_temp3_input.dev_attr.attr,
+>  	&sensor_dev_attr_temp3_max.dev_attr.attr,
+> @@ -423,6 +501,7 @@ static struct attribute *max6697_attributes[] = {
+>  	&sensor_dev_attr_temp3_crit.dev_attr.attr,
+>  	&sensor_dev_attr_temp3_crit_alarm.dev_attr.attr,
+>  	&sensor_dev_attr_temp3_fault.dev_attr.attr,
+> +	&sensor_dev_attr_temp3_offset.dev_attr.attr,
+>  
+>  	&sensor_dev_attr_temp4_input.dev_attr.attr,
+>  	&sensor_dev_attr_temp4_max.dev_attr.attr,
+> @@ -430,6 +509,7 @@ static struct attribute *max6697_attributes[] = {
+>  	&sensor_dev_attr_temp4_crit.dev_attr.attr,
+>  	&sensor_dev_attr_temp4_crit_alarm.dev_attr.attr,
+>  	&sensor_dev_attr_temp4_fault.dev_attr.attr,
+> +	&sensor_dev_attr_temp4_offset.dev_attr.attr,
+>  
+>  	&sensor_dev_attr_temp5_input.dev_attr.attr,
+>  	&sensor_dev_attr_temp5_max.dev_attr.attr,
+> @@ -437,6 +517,7 @@ static struct attribute *max6697_attributes[] = {
+>  	&sensor_dev_attr_temp5_crit.dev_attr.attr,
+>  	&sensor_dev_attr_temp5_crit_alarm.dev_attr.attr,
+>  	&sensor_dev_attr_temp5_fault.dev_attr.attr,
+> +	&sensor_dev_attr_temp5_offset.dev_attr.attr,
+>  
+>  	&sensor_dev_attr_temp6_input.dev_attr.attr,
+>  	&sensor_dev_attr_temp6_max.dev_attr.attr,
+> @@ -444,6 +525,7 @@ static struct attribute *max6697_attributes[] = {
+>  	&sensor_dev_attr_temp6_crit.dev_attr.attr,
+>  	&sensor_dev_attr_temp6_crit_alarm.dev_attr.attr,
+>  	&sensor_dev_attr_temp6_fault.dev_attr.attr,
+> +	&sensor_dev_attr_temp6_offset.dev_attr.attr,
+>  
+>  	&sensor_dev_attr_temp7_input.dev_attr.attr,
+>  	&sensor_dev_attr_temp7_max.dev_attr.attr,
+> @@ -451,6 +533,7 @@ static struct attribute *max6697_attributes[] = {
+>  	&sensor_dev_attr_temp7_crit.dev_attr.attr,
+>  	&sensor_dev_attr_temp7_crit_alarm.dev_attr.attr,
+>  	&sensor_dev_attr_temp7_fault.dev_attr.attr,
+> +	&sensor_dev_attr_temp7_offset.dev_attr.attr,
+>  
+>  	&sensor_dev_attr_temp8_input.dev_attr.attr,
+>  	&sensor_dev_attr_temp8_max.dev_attr.attr,
+> @@ -458,6 +541,7 @@ static struct attribute *max6697_attributes[] = {
+>  	&sensor_dev_attr_temp8_crit.dev_attr.attr,
+>  	&sensor_dev_attr_temp8_crit_alarm.dev_attr.attr,
+>  	&sensor_dev_attr_temp8_fault.dev_attr.attr,
+> +	&sensor_dev_attr_temp8_offset.dev_attr.attr,
+>  	NULL
+>  };
+>  
+> @@ -494,8 +578,8 @@ static void max6697_get_config_of(struct device_node *node,
+>  	}
+>  	prop = of_get_property(node, "transistor-ideality", &len);
+>  	if (prop && len == 2 * sizeof(u32)) {
+> -			pdata->ideality_mask = be32_to_cpu(prop[0]);
+> -			pdata->ideality_value = be32_to_cpu(prop[1]);
+> +		pdata->ideality_mask = be32_to_cpu(prop[0]);
+> +		pdata->ideality_value = be32_to_cpu(prop[1]);
+
+Unrelated change. I don't mind if you want to make that change,
+but it would have to be in a separate patch.
+
+>  	}
+>  }
+>  
+> 
 
