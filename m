@@ -2,137 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D3F9217ABB
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 23:52:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0E28217AC3
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 23:55:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729122AbgGGVwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 17:52:05 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:36258 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728640AbgGGVwE (ORCPT
+        id S1729120AbgGGVy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 17:54:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37196 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728001AbgGGVy6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 17:52:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594158722;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2er0aNLBQV2gIBNyC9uXErvIZxgp1FWSJ0RFq0zI9K0=;
-        b=A4LDYvuLtuSDEKZuK68Sd7ijKVzD8COfHO6UZ4fM8Auq6qbGHS8pBrJWgVmDAu+46+3Old
-        PZTMgndMsTHnqIKxoFWqYw8t8RrdQfikYD3A/ZpqxUU5lZjFUYNX6g7qK3NDfcGiVB/U2Y
-        uZpY7qkjyM5CxIwgy8nHeb5Rayt7uRA=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-22-aEBmCYlmPAyasC5GFCAYXA-1; Tue, 07 Jul 2020 17:52:01 -0400
-X-MC-Unique: aEBmCYlmPAyasC5GFCAYXA-1
-Received: by mail-wm1-f70.google.com with SMTP id c124so782725wme.0
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 14:52:01 -0700 (PDT)
+        Tue, 7 Jul 2020 17:54:58 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B157AC061755
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 14:54:58 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id a21so12191263otq.8
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 14:54:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bw1dsLPtsusoVZu5E92gBzxhDS3/mcoDt6/t2gCfNAw=;
+        b=R6IL3IE0whMxdwVJgmRKb7J49Wo826feGf4RpzU1UHp84nRW1/S5Lj0OdlRyg1MbCS
+         2mLbnvCvod5/RFb3VQW8dsPx3E1KvzX4mG3AuGgKyGgpNMlSiCHZ98aaHHT3bCePa6EF
+         1kuRSDyzS53RkWDuEqpBJnpbLzD/TAofByHpeHaUNQOxi51ms4oDmmrWU/rP0NQNRgJA
+         QBTmBp8301EM4b5mxJoOOtLvwf1Ra53UU4lUMHXUgeGnezgejRHstAuz0shGVbiAsqUQ
+         6FVHzVQMwCzwtdCBkCR5GoAmvyW7s+4J0W8QZMMEXTjte+DvsT7YAFSRt7g71FX+afsu
+         pufA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2er0aNLBQV2gIBNyC9uXErvIZxgp1FWSJ0RFq0zI9K0=;
-        b=ucx9Byw4aWfIB7+opPHIcPoRuYG7WOXJhMwEOus+J9G+Pzmci+rTHv8yBIg2MWRic3
-         POf6p03yj9Je3DpxpMKJ92AaO5WkfG9fReqcTp9U3H6aUHIr9xzoy7LEjyD40BrCriBy
-         hbzmUnMFFVEZxvvknxUG4+8nEh55UrNXGwzQVPqR75WqUMHkTPTFaoHo/PS9fnCqxfoB
-         7Qb5h0rSD+kIoZgcFHYAPvxsTJoRQzRoxuwjNpNFaO9BQ+eeHyChZeZIDdTdqSqvEHSz
-         W8YP93kuJ8s/tiSnMSt7zuP98AaFIsUvtirxrVge6YIOZqviMlOXRyBzN0UnQqAFkvap
-         AypA==
-X-Gm-Message-State: AOAM530dYEM6ifCu4ZhIc88LkeWpPJ0Jv4VUqoESmGu9VwI72gLqujJD
-        Zn9PzMY3sRvOhf/8QlahvlnFUMEUqIzLx65m+lapk/sRRN0GBQLIUU1SSWo9+9Xgqmp+5fMqAjy
-        DZywDAriVaAqi1DHqM7MF308q
-X-Received: by 2002:a05:600c:241:: with SMTP id 1mr6023769wmj.119.1594158719936;
-        Tue, 07 Jul 2020 14:51:59 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxIpmpXuw2PJCwb7uqNw0kg7Wrr1nz+wOneSDUnHkzV5klsewRb97ktM0f//9gTqHyZmBrCjg==
-X-Received: by 2002:a05:600c:241:: with SMTP id 1mr6023711wmj.119.1594158719656;
-        Tue, 07 Jul 2020 14:51:59 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:7c9b:2885:1733:3575? ([2001:b07:6468:f312:7c9b:2885:1733:3575])
-        by smtp.gmail.com with ESMTPSA id k11sm2922650wrd.23.2020.07.07.14.51.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Jul 2020 14:51:59 -0700 (PDT)
-Subject: Re: [PATCH 2/4] KVM: x86: Introduce paravirt feature CR0/CR4 pinning
-To:     Dave Hansen <dave.hansen@intel.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     "Andersen, John" <john.s.andersen@intel.com>, corbet@lwn.net,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, shuah@kernel.org, liran.alon@oracle.com,
-        drjones@redhat.com, rick.p.edgecombe@intel.com,
-        kristen@linux.intel.com, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
-        mchehab+huawei@kernel.org, gregkh@linuxfoundation.org,
-        paulmck@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        jgross@suse.com, mike.kravetz@oracle.com, oneukum@suse.com,
-        luto@kernel.org, peterz@infradead.org, fenghua.yu@intel.com,
-        reinette.chatre@intel.com, vineela.tummalapalli@intel.com,
-        dave.hansen@linux.intel.com, arjan@linux.intel.com,
-        caoj.fnst@cn.fujitsu.com, bhe@redhat.com, nivedita@alum.mit.edu,
-        keescook@chromium.org, dan.j.williams@intel.com,
-        eric.auger@redhat.com, aaronlewis@google.com, peterx@redhat.com,
-        makarandsonare@google.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        kernel-hardening@lists.openwall.com
-References: <20200617190757.27081-1-john.s.andersen@intel.com>
- <20200617190757.27081-3-john.s.andersen@intel.com>
- <0fa9682e-59d4-75f7-366f-103d6b8e71b8@intel.com>
- <20200618144314.GB23@258ff54ff3c0>
- <124a59a3-a603-701b-e3bb-61e83d70b20d@intel.com>
- <20200707211244.GN20096@linux.intel.com>
- <19b97891-bbb0-1061-5971-549a386f7cfb@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <31eb5b00-9e2a-aa10-0f20-4abc3cd35112@redhat.com>
-Date:   Tue, 7 Jul 2020 23:51:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bw1dsLPtsusoVZu5E92gBzxhDS3/mcoDt6/t2gCfNAw=;
+        b=ndwb12nKyGGI68ftLSgxKcD2FIuEQvE1uwYQ/goewngmgASLBO5xX5GSFKoh/IccD6
+         Rw1vXzaUz+jzDI3kNUOVOs+0XxDEXs9lp3tGSc+L4iTSSduh5/3+cP6XBZxiBGuhQ9CE
+         tmQVU+dPZy1JEaZuMJMPbPbG7AMZzrZEB8noymtMetvH7b+4hCT9dOjuepKJjZNL69E1
+         asBCmAKBIRLHqjLPJmKtat/eU1n03eEGEkxVf0K26FE+PYlC9qLKFyUvBjBGthFImgzA
+         z++1ONffEUh2HfnO3TBn8X3FMYR7lczBEwAHOiw4lD96yK6SZL/CgA4gQu6hoNH2gO4f
+         imMA==
+X-Gm-Message-State: AOAM531IQ4RZxFL2034YeqG2jjZUf9U4jw0rO5grvYl79IcmS3heAiA+
+        ZseSVXcjoUtzyw4ek/YXY9/Vq07nMzE5ixgoZWZjNQ==
+X-Google-Smtp-Source: ABdhPJyNjogkJvtUW5ZTV4oBpDMTql1EepeodMfihZi8Qf5Y9zgz8p05zgBxRYsuMJyffoBMVnrJmhsjZGMQiXFfzsA=
+X-Received: by 2002:a05:6830:1d43:: with SMTP id p3mr27738361oth.369.1594158897817;
+ Tue, 07 Jul 2020 14:54:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <19b97891-bbb0-1061-5971-549a386f7cfb@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200701194259.3337652-1-saravanak@google.com>
+ <20200701194259.3337652-2-saravanak@google.com> <CAJZ5v0jS39EPgsiNrGzCGeSpMpccu2tUQZ_zn9PABMMmtD-PBA@mail.gmail.com>
+In-Reply-To: <CAJZ5v0jS39EPgsiNrGzCGeSpMpccu2tUQZ_zn9PABMMmtD-PBA@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Tue, 7 Jul 2020 14:54:21 -0700
+Message-ID: <CAGETcx_mPeO_KRoA6s_kRDPSrr+jkssVP8uoWg5_YVyMmYXe8Q@mail.gmail.com>
+Subject: Re: [PATCH v1 1/3] driver core: Don't do deferred probe in parallel
+ with kernel_init thread
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "Cc: Android Kernel" <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/07/20 23:48, Dave Hansen wrote:
-> On 7/7/20 2:12 PM, Sean Christopherson wrote:
->>>>> Let's say Intel loses its marbles and adds a CR4 bit that lets userspace
->>>>> write to kernel memory.  Linux won't set it, but an attacker would go
->>>>> after it, first thing.
->> That's an orthogonal to pinning.  KVM never lets the guest set CR4 bits that
->> are unknown to KVM.  Supporting CR4.NO_MARBLES would require an explicit KVM
->> change to allow it to be set by the guest, and would also require a userspace
->> VMM to expose NO_MARBLES to the guest.
->>
->> That being said, this series should supporting pinning as much as possible,
->> i.e. if the bit can be exposed to the guest and doesn't require special
->> handling in KVM, allow it to be pinned.  E.g. TS is a special case because
->> pinning would require additional emulator support and IMO isn't interesting
->> enough to justify the extra complexity.  At a glance, I don't see anything
->> that would prevent pinning FSGSBASE.
-> 
-> Thanks for filling in the KVM picture.
-> 
-> If we're supporting as much pinning as possible, can we also add
-> something to make it inconvenient for someone to both make a CR4 bit
-> known to KVM *and* ignore the pinning aspects?
-> 
-> We should really make folks think about it.  Something like:
-> 
-> #define KVM_CR4_KNOWN 0xff
-> #define KVM_CR4_PIN_ALLOWED 0xf0
-> #define KVM_CR4_PIN_NOT_ALLOWED 0x0f
-> 
-> BUILD_BUG_ON(KVM_CR4_KNOWN !=
->              (KVM_CR4_PIN_ALLOWED|KVM_CR4_PIN_NOT_ALLOWED));
-> 
-> So someone *MUST* make an active declaration about new bits being pinned
-> or not?
+On Tue, Jul 7, 2020 at 8:59 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
+>
+> On Wed, Jul 1, 2020 at 9:43 PM Saravana Kannan <saravanak@google.com> wrote:
+> >
+> > The current deferred probe implementation can mess up suspend/resume
+> > ordering if deferred probe thread is kicked off in parallel with the
+> > main initcall thread (kernel_init thread) [1].
+> >
+> > For example:
+> >
+> > Say device-B is a consumer of device-A.
+> >
+> > Initcall thread                                 Deferred probe thread
+> > ===============                                 =====================
+> > 1. device-A is added.
+> > 2. device-B is added.
+> > 3. dpm_list is now [device-A, device-B].
+> > 4. driver-A defers probe of device-A.
+> >                                                 5. device-A is moved to
+> >                                                    end of dpm_list
+> >                                                 6. dpm_list is now
+> >                                                    [device-B, device-A]
+> > 7. driver-B is registereed and probes device-B.
+> > 8. dpm_list stays as [device-B, device-A].
+> >
+> > The reverse order of dpm_list is used for suspend. So in this case
+> > device-A would incorrectly get suspended before device-B.
+> >
+> > Commit 716a7a259690 ("driver core: fw_devlink: Add support for batching
+> > fwnode parsing") kicked off the deferred probe thread early during boot
+> > to run in parallel with the initcall thread and caused suspend/resume
+> > regressions.  This patch removes the parallel run of the deferred probe
+> > thread to avoid the suspend/resume regressions.
+> >
+> > [1] - https://lore.kernel.org/lkml/CAGETcx8W96KAw-d_siTX4qHB_-7ddk0miYRDQeHE6E0_8qx-6Q@mail.gmail.com/
+> >
+> > Fixes: 716a7a259690 ("driver core: fw_devlink: Add support for batching fwnode parsing")
+> > Signed-off-by: Saravana Kannan <saravanak@google.com>
+> > ---
+> >  drivers/base/base.h | 1 -
+> >  drivers/base/core.c | 1 -
+> >  drivers/base/dd.c   | 5 -----
+> >  3 files changed, 7 deletions(-)
+> >
+> > diff --git a/drivers/base/base.h b/drivers/base/base.h
+> > index 95c22c0f9036..40fb069a8a7e 100644
+> > --- a/drivers/base/base.h
+> > +++ b/drivers/base/base.h
+> > @@ -153,7 +153,6 @@ extern char *make_class_name(const char *name, struct kobject *kobj);
+> >  extern int devres_release_all(struct device *dev);
+> >  extern void device_block_probing(void);
+> >  extern void device_unblock_probing(void);
+> > -extern void driver_deferred_probe_force_trigger(void);
+> >
+> >  /* /sys/devices directory */
+> >  extern struct kset *devices_kset;
+> > diff --git a/drivers/base/core.c b/drivers/base/core.c
+> > index 67d39a90b45c..35cc9896eb9e 100644
+> > --- a/drivers/base/core.c
+> > +++ b/drivers/base/core.c
+> > @@ -1323,7 +1323,6 @@ void fw_devlink_resume(void)
+> >                 goto out;
+> >
+> >         device_link_add_missing_supplier_links();
+> > -       driver_deferred_probe_force_trigger();
+>
+> So it looks like this was not needed after all.
+>
+> What was the role of it then?
 
-I would just make all unknown bits pinnable (or perhaps all CR4 bits in
-general).
+It's needed to avoid delaying all probe till late_initcall. Patch 3/3
+has more details.
 
-Paolo
-
+-Saravana
