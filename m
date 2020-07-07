@@ -2,41 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A64D6217128
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:25:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E952D2170C2
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:24:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730126AbgGGPYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:24:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38218 "EHLO mail.kernel.org"
+        id S1729512AbgGGPU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:20:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60304 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729085AbgGGPYf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:24:35 -0400
+        id S1729503AbgGGPUS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 11:20:18 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 80E072065D;
-        Tue,  7 Jul 2020 15:24:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F15E3206CD;
+        Tue,  7 Jul 2020 15:20:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594135475;
-        bh=JE9Pc3l9KUo/kiQ0jt7wUFYfAizCkUiPcI2ByP56Mdw=;
+        s=default; t=1594135217;
+        bh=TQp5hTbDD5CfDkkOPSDPVU3Tk7aX4S5pNwxMCWt8qv0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rMK2td3mY1ktWVO2HwPj/siOJgRV87UhDYCuYdCxSR5ar3bv6tpjphGjKUyGd6PUp
-         Jp9enLjQyFvtfNu+2hxd6XGlmvAyqZrt9iNb+Beyf0bxK80dWqX6lpvMGlbCv34YOT
-         5nmVBGbZqbUHY4RpPchYN2dUMyqbFCetU1qAkXrw=
+        b=JfHWovoPtAHXR1NFOhwmhr+9OQQJLeGkw/ADKM30g4ZORG/I2UspMsQrcVx76Ezz1
+         TWfLt/ywtSFmeKxq6xAJ+qaI2aSEoPkv6X7lxkeBs+nKLcxK+mm8uNKtgvE6oBgE1k
+         rba4lMnJcoQktkal3AtDWEFAOdQCzb5K6+vszuDA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mark Zhang <markz@mellanox.com>,
-        Maor Gottlieb <maorg@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 054/112] RDMA/counter: Query a counter before release
+        stable@vger.kernel.org,
+        Mario Limonciello <Mario.Limonciello@dell.com>,
+        Alex Guzman <alex@guzman.io>,
+        Jerry Snitselaar <jsnitsel@redhat.com>,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Subject: [PATCH 5.4 20/65] tpm: Fix TIS locality timeout problems
 Date:   Tue,  7 Jul 2020 17:16:59 +0200
-Message-Id: <20200707145803.570726049@linuxfoundation.org>
+Message-Id: <20200707145753.460530756@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200707145800.925304888@linuxfoundation.org>
-References: <20200707145800.925304888@linuxfoundation.org>
+In-Reply-To: <20200707145752.417212219@linuxfoundation.org>
+References: <20200707145752.417212219@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,49 +47,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Zhang <markz@mellanox.com>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
 
-[ Upstream commit c1d869d64a1955817c4d6fff08ecbbe8e59d36f8 ]
+commit 7862840219058436b80029a0263fd1ef065fb1b3 upstream.
 
-Query a dynamically-allocated counter before release it, to update it's
-hwcounters and log all of them into history data. Otherwise all values of
-these hwcounters will be lost.
+It has been reported that some TIS based TPMs are giving unexpected
+errors when using the O_NONBLOCK path of the TPM device. The problem
+is that some TPMs don't like it when you get and then relinquish a
+locality (as the tpm_try_get_ops()/tpm_put_ops() pair does) without
+sending a command.  This currently happens all the time in the
+O_NONBLOCK write path. Fix this by moving the tpm_try_get_ops()
+further down the code to after the O_NONBLOCK determination is made.
+This is safe because the priv->buffer_mutex still protects the priv
+state being modified.
 
-Fixes: f34a55e497e8 ("RDMA/core: Get sum value of all counters when perform a sysfs stat read")
-Link: https://lore.kernel.org/r/20200621110000.56059-1-leon@kernel.org
-Signed-off-by: Mark Zhang <markz@mellanox.com>
-Reviewed-by: Maor Gottlieb <maorg@mellanox.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=206275
+Fixes: d23d12484307 ("tpm: fix invalid locking in NONBLOCKING mode")
+Reported-by: Mario Limonciello <Mario.Limonciello@dell.com>
+Tested-by: Alex Guzman <alex@guzman.io>
+Cc: stable@vger.kernel.org
+Reviewed-by: Jerry Snitselaar <jsnitsel@redhat.com>
+Signed-off-by: James Bottomley <James.Bottomley@HansenPartnership.com>
+Reviewed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/infiniband/core/counters.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/char/tpm/tpm-dev-common.c |   19 +++++++++----------
+ 1 file changed, 9 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/infiniband/core/counters.c b/drivers/infiniband/core/counters.c
-index 2257d7f7810fd..738d1faf4bba5 100644
---- a/drivers/infiniband/core/counters.c
-+++ b/drivers/infiniband/core/counters.c
-@@ -202,7 +202,7 @@ static int __rdma_counter_unbind_qp(struct ib_qp *qp)
- 	return ret;
- }
+--- a/drivers/char/tpm/tpm-dev-common.c
++++ b/drivers/char/tpm/tpm-dev-common.c
+@@ -189,15 +189,6 @@ ssize_t tpm_common_write(struct file *fi
+ 		goto out;
+ 	}
  
--static void counter_history_stat_update(const struct rdma_counter *counter)
-+static void counter_history_stat_update(struct rdma_counter *counter)
- {
- 	struct ib_device *dev = counter->device;
- 	struct rdma_port_counter *port_counter;
-@@ -212,6 +212,8 @@ static void counter_history_stat_update(const struct rdma_counter *counter)
- 	if (!port_counter->hstats)
- 		return;
+-	/* atomic tpm command send and result receive. We only hold the ops
+-	 * lock during this period so that the tpm can be unregistered even if
+-	 * the char dev is held open.
+-	 */
+-	if (tpm_try_get_ops(priv->chip)) {
+-		ret = -EPIPE;
+-		goto out;
+-	}
+-
+ 	priv->response_length = 0;
+ 	priv->response_read = false;
+ 	*off = 0;
+@@ -211,11 +202,19 @@ ssize_t tpm_common_write(struct file *fi
+ 	if (file->f_flags & O_NONBLOCK) {
+ 		priv->command_enqueued = true;
+ 		queue_work(tpm_dev_wq, &priv->async_work);
+-		tpm_put_ops(priv->chip);
+ 		mutex_unlock(&priv->buffer_mutex);
+ 		return size;
+ 	}
  
-+	rdma_counter_query_stats(counter);
++	/* atomic tpm command send and result receive. We only hold the ops
++	 * lock during this period so that the tpm can be unregistered even if
++	 * the char dev is held open.
++	 */
++	if (tpm_try_get_ops(priv->chip)) {
++		ret = -EPIPE;
++		goto out;
++	}
 +
- 	for (i = 0; i < counter->stats->num_counters; i++)
- 		port_counter->hstats->value[i] += counter->stats->value[i];
- }
--- 
-2.25.1
-
+ 	ret = tpm_dev_transmit(priv->chip, priv->space, priv->data_buffer,
+ 			       sizeof(priv->data_buffer));
+ 	tpm_put_ops(priv->chip);
 
 
