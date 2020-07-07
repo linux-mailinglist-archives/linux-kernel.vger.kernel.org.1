@@ -2,88 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E51621788F
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 22:06:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4026B21787E
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 22:01:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728677AbgGGUGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 16:06:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728208AbgGGUG2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 16:06:28 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9281CC08C5E1
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 13:06:28 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id h1so13093277otq.12
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 13:06:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=r5PL45TtpUanLMjUFz1CcEwQghycNM5MHybEf6+OAdY=;
-        b=Ia/xRu4E5EmGy6Euz2yN+Lu4bpiUJmEdWdzTD8OqM8AxBU6FQFBhSUpyKT01Vr8Gfb
-         B1Z5wCAkGvzqfHGLEzzzBaknQJXeNrxuVnCP9kf8bRooXqJKq6zqnMXR+v5lLmKVtu5A
-         QTSvpd1Xn3a+ElGJKiVI+MGiIxrLD5plOOwc0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=r5PL45TtpUanLMjUFz1CcEwQghycNM5MHybEf6+OAdY=;
-        b=ikEi5yLFEhJYdTBwppK19DCtFLOaUAKn+LacFom1mkv5acJuz2lpRE+mwEnJ+x8OOG
-         1i660JCY8aoPP9hy1T0N89jnUq2eWArYGuocF3OgcaR3DTuAbfDB7cUywOo/qgrTTE4g
-         DxSEbIk9aAfNkDW38ixnzupSz5ow9jXMUMFJv2Nq5tq3XDuHRrl4yjkmI1GMSCeOmCt6
-         TkyfVwY07J7u8WyFaFv0d48BVXuXaZSgTky7LriQncEIOIrpfBAPBopOq9O+d0lPyKSL
-         Brl2urzc1pkS3GdHVCYIrwx3HqUPe7qPhrRE4MopLvwBZF9xgx2jVm91MRDBua07LxPh
-         OdKA==
-X-Gm-Message-State: AOAM533T08aqGECNAnRlk70wYY2gBLUF7mfUHH0rMn3qsr1viIZ9CDYh
-        KOwt5Vbvquv7ZY+BVSi78OvbIA==
-X-Google-Smtp-Source: ABdhPJwwnZXLOhRRrCJBbJ2DZTfTavUWiRd8aI97qtpmNCNSuXiRBk3Odg92UJhZ/9Q7+WOFz9Le2Q==
-X-Received: by 2002:a9d:2261:: with SMTP id o88mr8252897ota.334.1594152388040;
-        Tue, 07 Jul 2020 13:06:28 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id d193sm302792oib.53.2020.07.07.13.06.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Jul 2020 13:06:27 -0700 (PDT)
-Subject: Re: [PATCH] usbip: Use fallthrough pseudo-keyword
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Valentina Manea <valentina.manea.m@gmail.com>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20200707195214.GA3932@embeddedor>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <977e88c2-58cb-9507-c889-854e574a8f31@linuxfoundation.org>
-Date:   Tue, 7 Jul 2020 14:06:26 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1728292AbgGGUBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 16:01:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39020 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727791AbgGGUBv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 16:01:51 -0400
+Received: from embeddedor (unknown [200.39.26.250])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 62D27206F6;
+        Tue,  7 Jul 2020 20:01:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594152110;
+        bh=J7lAbC5PPgARB8Nt2T5L13uK1ffYdLf3HflvHSt5qBg=;
+        h=Date:From:To:Cc:Subject:From;
+        b=q3mb52FUqVTx5yovDjDrabxslQ3GeLovuFs4eRaBZ9RQjGAPdGZT0kHQ/Xvc8zfrA
+         HOmoHB96w5qN6H+V2aUeimNepXam53uMF2tyK4iQHS+edl6vs5sEk+zaSAvoHc6MTB
+         2+zYMdEUr9YsQIurO4E6l1WgUTGXnfCf6Enfir/0=
+Date:   Tue, 7 Jul 2020 15:07:16 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>
+Cc:     linux-acpi@vger.kernel.org, devel@acpica.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: [PATCH][next] ACPICA: Use fallthrough pseudo-keyword
+Message-ID: <20200707200716.GA4920@embeddedor>
 MIME-Version: 1.0
-In-Reply-To: <20200707195214.GA3932@embeddedor>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/7/20 1:52 PM, Gustavo A. R. Silva wrote:
-> Replace the existing /* fall through */ comments and its variants with
-> the new pseudo-keyword macro fallthrough[1]. Also, remove unnecessary
-> fall-through markings when it is the case.
-> 
-> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
-> 
+Replace the existing /* fall through */ comments and its variants with
+the new pseudo-keyword macro fallthrough[1]. Also, remove unnecessary
+fall-through markings when it is the case.
 
-Is fallthrough syntax supported on our min gcc version?
+[1] https://www.kernel.org/doc/html/latest/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
 
-Does checkpatch or coccicheck catch these cases?
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/acpi/acpica/dscontrol.c |    2 +-
+ drivers/acpi/acpica/dswexec.c   |    3 +--
+ drivers/acpi/acpica/dswload.c   |    2 +-
+ drivers/acpi/acpica/dswload2.c  |    4 +---
+ drivers/acpi/acpica/exfldio.c   |    2 +-
+ drivers/acpi/acpica/exresop.c   |    4 ++--
+ drivers/acpi/acpica/exstore.c   |    4 ++--
+ drivers/acpi/acpica/hwgpe.c     |    3 +--
+ drivers/acpi/acpica/utdelete.c  |    3 +--
+ drivers/acpi/acpica/utprint.c   |    2 +-
+ 10 files changed, 12 insertions(+), 17 deletions(-)
 
-The patch looks good.
+diff --git a/drivers/acpi/acpica/dscontrol.c b/drivers/acpi/acpica/dscontrol.c
+index 4b5b6e859f62..134d53380663 100644
+--- a/drivers/acpi/acpica/dscontrol.c
++++ b/drivers/acpi/acpica/dscontrol.c
+@@ -62,7 +62,7 @@ acpi_ds_exec_begin_control_op(struct acpi_walk_state *walk_state,
+ 			}
+ 		}
+ 
+-		/*lint -fallthrough */
++		fallthrough;
+ 
+ 	case AML_IF_OP:
+ 		/*
+diff --git a/drivers/acpi/acpica/dswexec.c b/drivers/acpi/acpica/dswexec.c
+index 1d4f8c81028c..41f6cb61778a 100644
+--- a/drivers/acpi/acpica/dswexec.c
++++ b/drivers/acpi/acpica/dswexec.c
+@@ -598,8 +598,7 @@ acpi_status acpi_ds_exec_end_op(struct acpi_walk_state *walk_state)
+ 					break;
+ 				}
+ 
+-				/* Fall through */
+-				/*lint -fallthrough */
++				fallthrough;
+ 
+ 			case AML_INT_EVAL_SUBTREE_OP:
+ 
+diff --git a/drivers/acpi/acpica/dswload.c b/drivers/acpi/acpica/dswload.c
+index 27069325b6de..1d8789869dda 100644
+--- a/drivers/acpi/acpica/dswload.c
++++ b/drivers/acpi/acpica/dswload.c
+@@ -224,7 +224,7 @@ acpi_ds_load1_begin_op(struct acpi_walk_state *walk_state,
+ 				break;
+ 			}
+ 
+-			/*lint -fallthrough */
++			fallthrough;
+ 
+ 		default:
+ 
+diff --git a/drivers/acpi/acpica/dswload2.c b/drivers/acpi/acpica/dswload2.c
+index edadbe146506..de367e8e4cf4 100644
+--- a/drivers/acpi/acpica/dswload2.c
++++ b/drivers/acpi/acpica/dswload2.c
+@@ -213,9 +213,7 @@ acpi_ds_load2_begin_op(struct acpi_walk_state *walk_state,
+ 			     parse_flags & ACPI_PARSE_MODULE_LEVEL)) {
+ 				break;
+ 			}
+-
+-			/*lint -fallthrough */
+-
++			fallthrough;
+ 		default:
+ 
+ 			/* All other types are an error */
+diff --git a/drivers/acpi/acpica/exfldio.c b/drivers/acpi/acpica/exfldio.c
+index ade35ff1c7ba..677ba3ab1482 100644
+--- a/drivers/acpi/acpica/exfldio.c
++++ b/drivers/acpi/acpica/exfldio.c
+@@ -434,7 +434,7 @@ acpi_ex_field_datum_io(union acpi_operand_object *obj_desc,
+ 		 * region_field case and write the datum to the Operation Region
+ 		 */
+ 
+-		/*lint -fallthrough */
++		fallthrough;
+ 
+ 	case ACPI_TYPE_LOCAL_REGION_FIELD:
+ 		/*
+diff --git a/drivers/acpi/acpica/exresop.c b/drivers/acpi/acpica/exresop.c
+index 4d1b22971d58..7c8676adcf43 100644
+--- a/drivers/acpi/acpica/exresop.c
++++ b/drivers/acpi/acpica/exresop.c
+@@ -198,7 +198,7 @@ acpi_ex_resolve_operands(u16 opcode,
+ 
+ 					target_op = AML_DEBUG_OP;
+ 
+-					/*lint -fallthrough */
++					fallthrough;
+ 
+ 				case ACPI_REFCLASS_ARG:
+ 				case ACPI_REFCLASS_LOCAL:
+@@ -264,7 +264,7 @@ acpi_ex_resolve_operands(u16 opcode,
+ 			 * Else not a string - fall through to the normal Reference
+ 			 * case below
+ 			 */
+-			/*lint -fallthrough */
++			fallthrough;
+ 
+ 		case ARGI_REFERENCE:	/* References: */
+ 		case ARGI_INTEGER_REF:
+diff --git a/drivers/acpi/acpica/exstore.c b/drivers/acpi/acpica/exstore.c
+index 3adc0a29d890..fcf8dff56c5b 100644
+--- a/drivers/acpi/acpica/exstore.c
++++ b/drivers/acpi/acpica/exstore.c
+@@ -96,7 +96,7 @@ acpi_ex_store(union acpi_operand_object *source_desc,
+ 			return_ACPI_STATUS(AE_OK);
+ 		}
+ 
+-		/*lint -fallthrough */
++		fallthrough;
+ 
+ 	default:
+ 
+@@ -422,7 +422,7 @@ acpi_ex_store_object_to_node(union acpi_operand_object *source_desc,
+ 				break;
+ 			}
+ 
+-			/* Fallthrough */
++			fallthrough;
+ 
+ 		case ACPI_TYPE_DEVICE:
+ 		case ACPI_TYPE_EVENT:
+diff --git a/drivers/acpi/acpica/hwgpe.c b/drivers/acpi/acpica/hwgpe.c
+index 49c46d4dd070..19d574f64c78 100644
+--- a/drivers/acpi/acpica/hwgpe.c
++++ b/drivers/acpi/acpica/hwgpe.c
+@@ -95,8 +95,7 @@ acpi_hw_low_set_gpe(struct acpi_gpe_event_info *gpe_event_info, u32 action)
+ 		if (!(register_bit & gpe_register_info->enable_mask)) {
+ 			return (AE_BAD_PARAMETER);
+ 		}
+-
+-		/*lint -fallthrough */
++		fallthrough;
+ 
+ 	case ACPI_GPE_ENABLE:
+ 
+diff --git a/drivers/acpi/acpica/utdelete.c b/drivers/acpi/acpica/utdelete.c
+index c365faf4e6cd..6db09eb9d257 100644
+--- a/drivers/acpi/acpica/utdelete.c
++++ b/drivers/acpi/acpica/utdelete.c
+@@ -111,8 +111,7 @@ static void acpi_ut_delete_internal_obj(union acpi_operand_object *object)
+ 			(void)acpi_ev_delete_gpe_block(object->device.
+ 						       gpe_block);
+ 		}
+-
+-		/*lint -fallthrough */
++		fallthrough;
+ 
+ 	case ACPI_TYPE_PROCESSOR:
+ 	case ACPI_TYPE_THERMAL:
+diff --git a/drivers/acpi/acpica/utprint.c b/drivers/acpi/acpica/utprint.c
+index 681c11f4af4e..f7e43baf5ff2 100644
+--- a/drivers/acpi/acpica/utprint.c
++++ b/drivers/acpi/acpica/utprint.c
+@@ -475,7 +475,7 @@ int vsnprintf(char *string, acpi_size size, const char *format, va_list args)
+ 		case 'X':
+ 
+ 			type |= ACPI_FORMAT_UPPER;
+-			/* FALLTHROUGH */
++			fallthrough;
+ 
+ 		case 'x':
+ 
 
-Acked-by: Shuah Khan <skhan@linuxfoundation.org>
-
-thanks,
--- Shuah
