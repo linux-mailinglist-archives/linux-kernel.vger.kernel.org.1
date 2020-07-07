@@ -2,122 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 240D62166CD
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 08:51:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E0252166D4
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 08:52:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728211AbgGGGvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 02:51:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727850AbgGGGvL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 02:51:11 -0400
-Received: from mail-vk1-xa42.google.com (mail-vk1-xa42.google.com [IPv6:2607:f8b0:4864:20::a42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5121C061755
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Jul 2020 23:51:10 -0700 (PDT)
-Received: by mail-vk1-xa42.google.com with SMTP id b205so8884881vkb.8
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 23:51:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xXgupdXA13SemXIJULZNi3Uv4xboNIJK7PMX6qC0QAM=;
-        b=XLBEODPsuANKzyq+teqF8KFcLcyQLfahz0Cbk0bOxnw10eabiG8SZIM5UPlMDkKNG+
-         ZffTE4R8GqikDZ1cnYgeAf3ew08g0HMWDApK7ZTqjd/9L06kxQM6H8VzGzs05iVuFb8U
-         4eDDAYqA9BUTLedjHjS0fV5vWj8PSQAciEMesmJjyXW68IwLybBhKKKIc/P0Wt6HJ0AL
-         H2jeal7tde5hQUoAO2ve0H31JnOi4UnyqPCZRls76NrJtFAc0sfsOhZJwlcpOFsCaEVt
-         q3sd2lEn7c657YXvBsNysS3YT7QKL44EyXFdVx6IQ7EkaNGzmTqCv15rKel5lQwu/kwR
-         iNMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xXgupdXA13SemXIJULZNi3Uv4xboNIJK7PMX6qC0QAM=;
-        b=atnH5XlcG5d752rtZ2rL35ChDt7IF2BEguABYbyzB+/KT+eF0dYlO/7cUncpeDlAfb
-         WiVw3Vb/Mhyew5/zDA+ldWGJuYZLoz1X+3P011aVmJO2AxsEEBR+XjU5HDvwglvt6vVp
-         Q3NMB83tJ02ntD8XHimHoXgB1M+SJhm1b0JS3V+om+f9nCtcGEDSRoiaR0aeKVRSD+sT
-         xKtvH3B+TjF4aTszC6KTxycUulzEa2sV74F77WTu/QMxnmn3oDh87dUZAgcNH8lSTg6T
-         cWyupKsLQy6dOK7Mma0aX6floDZVGBDYXGgzpOKsOG62GYRzULrLA5wZzj68QpZuRtVg
-         Vz4A==
-X-Gm-Message-State: AOAM532kCWXg7ksCTcSPef5HlDHfI2z2wi8+HtJ2EqzZc77O8d6QrVv7
-        TdOSh/xZ5Cv9I9gy7bMW4LZ+XZdhMFXRfSYoUFgEtC1sUww=
-X-Google-Smtp-Source: ABdhPJx/ngRs8wf6AZDaf4csTy/f0/0edFzdOiOJtkv+XKUN71UxOD/yrZ+ZRDRk8Q7fcs2omZUbguAwqAfF52DWsAk=
-X-Received: by 2002:a05:6122:32f:: with SMTP id d15mr6663531vko.101.1594104670001;
- Mon, 06 Jul 2020 23:51:10 -0700 (PDT)
+        id S1728333AbgGGGvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 02:51:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41568 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727850AbgGGGvm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 02:51:42 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DAC78206F6;
+        Tue,  7 Jul 2020 06:51:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594104702;
+        bh=gE9m6IM8qBh8PWfvrR+CeLupA3RereV+AmgFwG46lIA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dPCYbO3B95dh7APnaAzWwVYxX65SkFvKxNHrM/HhbdhA+v2s7QmKQgD1cSowRMdl/
+         ZxaxjrsWGMJDJj84qxzhb3QLaBGMrob9Ugo/19YfH4D2nahXscn8x4zUJRQFyq6xVq
+         2+muqNyd1E+aKGU/LhTnReAtPh/Ju/MPFCUBmNQw=
+Date:   Tue, 7 Jul 2020 08:51:39 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>
+Cc:     "balbi@kernel.org" <balbi@kernel.org>,
+        "colin.king@canonical.com" <colin.king@canonical.com>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: =?utf-8?B?5Zue5aSNOiBbUEFUQ0ggdjNdIHVz?= =?utf-8?Q?b=3A?=
+ gadget: function: fix missing spinlock in f_uac1_legacy
+Message-ID: <20200707065139.GA5233@kroah.com>
+References: <20200705124027.30011-1-qiang.zhang@windriver.com>
+ <20200706195520.GA93712@kroah.com>
+ <BYAPR11MB26323A0A7687EC2CE3C9E17FFF660@BYAPR11MB2632.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-References: <20200701124702.908713-1-lee.jones@linaro.org>
-In-Reply-To: <20200701124702.908713-1-lee.jones@linaro.org>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 7 Jul 2020 08:50:33 +0200
-Message-ID: <CAPDyKFqV6MamFv7-X4hXF39_OZ7UhVF6BQ12eH=+7GfwULTzQA@mail.gmail.com>
-Subject: Re: [PATCH 00/15] Clean-up MMC's W=1 build warnings
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <BYAPR11MB26323A0A7687EC2CE3C9E17FFF660@BYAPR11MB2632.namprd11.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 1 Jul 2020 at 14:47, Lee Jones <lee.jones@linaro.org> wrote:
->
-> This set is part of a larger effort attempting to clean-up W=1
-> kernel builds, which are currently overwhelmingly riddled with
-> niggly little warnings.
->
-> After these patches are applied, the build system no longer
-> complains about any W=0 nor W=1 level warnings in drivers/mmc.
->
-> Hurrah!
->
-> Lee Jones (15):
->   mmc: core: quirks: Mark fixups as __maybe_unused
->   mmc: core: sdio_io: Provide description for sdio_set_host_pm_flags()'s
->     'flag' arg
->   mmc: core: regulator: Add missing documetation for 'mmc' and 'ios'
->   mmc: host: sdhci-s3c: Provide documentation for missing struct
->     properties
->   mmc: host: mtk-sd: Demote msdc_recheck_sdio_irq() function header
->   mmc: host: atmel-mci: Provide 2 new and correct 1 existing property
->     description
->   mmc: core: queue: Correct misspelling of 'mq' in mmc_init_request()'s
->     docs
->   mmc: host: dw_mmc-exynos: Add kerneldoc descriptions of for 'dev' args
->   mmc: host: rtsx_pci_sdmmc: Remove set but unused variable 'err'
->   mmc: host: rtsx_usb_sdmmc: Remove set but unused variable 'err'
->   mmc: host: sdhci-of-arasan: Correct formatting and provide missing
->     function arg(s)
->   mmc: host: sdhci-msm: Staticify local function
->     sdhci_msm_dump_vendor_regs()
->   mmc: host: sdhci-msm: Demote faux kerneldoc header down to basic
->     comment block
->   mmc: host: cqhci: Demote faux kerneldoc header down to basic comment
->     block
->   mmc: host: sdhci-iproc: Tell the compiler that ACPI functions may not
->     be used
->
->  drivers/mmc/core/queue.c           | 2 +-
->  drivers/mmc/core/quirks.h          | 6 +++---
->  drivers/mmc/core/regulator.c       | 2 ++
->  drivers/mmc/core/sdio_io.c         | 1 +
->  drivers/mmc/host/atmel-mci.c       | 4 +++-
->  drivers/mmc/host/cqhci.c           | 2 +-
->  drivers/mmc/host/dw_mmc-exynos.c   | 2 ++
->  drivers/mmc/host/mtk-sd.c          | 3 +--
->  drivers/mmc/host/rtsx_pci_sdmmc.c  | 4 ++--
->  drivers/mmc/host/rtsx_usb_sdmmc.c  | 5 ++---
->  drivers/mmc/host/sdhci-iproc.c     | 2 +-
->  drivers/mmc/host/sdhci-msm.c       | 4 ++--
->  drivers/mmc/host/sdhci-of-arasan.c | 3 ++-
->  drivers/mmc/host/sdhci-s3c.c       | 4 ++++
->  14 files changed, 27 insertions(+), 17 deletions(-)
->
-> --
-> 2.25.1
->
+A: http://en.wikipedia.org/wiki/Top_post
+Q: Were do I find info about this thing called top-posting?
+A: Because it messes up the order in which people normally read text.
+Q: Why is top-posting such a bad thing?
+A: Top-posting.
+Q: What is the most annoying thing in e-mail?
 
-Applied for next (except patch12, which I already had a patch for), thanks!
+A: No.
+Q: Should I include quotations after my reply?
 
-Kind regards
-Uffe
+http://daringfireball.net/2007/07/on_top
+
+
+On Tue, Jul 07, 2020 at 02:28:36AM +0000, Zhang, Qiang wrote:
+> Hi Greg KH
+> In the early submission:
+> "commit id c6994e6f067cf0fc4c6cca3d164018b1150916f8" which add USB Audio Gadget driver "   
+> the "audio->play_queue" was protected from "audio->lock"
+> spinlock in "playback_work" func, But in "f_audio_out_ep_complete" func 
+> there is no protection for the operation of this "audio->play_queue". there
+> are missing spinlock,  Fix tags should add up here commit？
+
+I really do not understand what you are asking here, sorry.
+
+greg k-h
