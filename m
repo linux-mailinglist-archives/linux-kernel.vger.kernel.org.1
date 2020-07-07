@@ -2,127 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B41C216576
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 06:40:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8395D216578
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 06:41:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728036AbgGGEkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 00:40:21 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:46724 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725766AbgGGEkU (ORCPT
+        id S1728070AbgGGElQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 00:41:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46172 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726825AbgGGElP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 00:40:20 -0400
-Received: by mail-pl1-f196.google.com with SMTP id k5so370296plk.13;
-        Mon, 06 Jul 2020 21:40:20 -0700 (PDT)
+        Tue, 7 Jul 2020 00:41:15 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC8FBC061794
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Jul 2020 21:41:14 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id t74so24008174lff.2
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 21:41:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
+        b=tlFkNeWVqCKqCpaFN2ZhxZYlevKnjqhsVTNgrhhaZ2RDT18b6lcAhNP8hwMjglEgOJ
+         JRrhd5sCrcPXcRjb/F8i+qXRuFrdow62Kk0LCTaGNdn/R12lB4+3ZH1iNTvGb57NxEGH
+         TOK3UqUTx2iqAiVwI1pjngJhOVCUCf/4QYUA4hRIiK9JixA7VcqC90X5tPyk407RxDio
+         vu0fUwwKGYS8xL3xDrcDrycounHCvHDFFk99Fy4byqghO9j75mds1BzrnlGyeWYE3xHz
+         X4d5uwR/Qwxfv2AE3y13GpatyO6uIoMsRBr4DNeu7b9ur6lH5gHgcZA+qo1LXlYGF8kU
+         DYDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tTyDwQZyfS5JdKrzuL5HMoSjcvei51XSPWAcVQngrio=;
-        b=S+gsPFaLmgvn5zfIf8ta9heHR7r4JBDO48RdfwbpzWVatgwSYeIJcrBlKZtOZGueYz
-         fOZmTQ1i0fU2GiV2CvOLP3cN8Qm9CLADiQJw7VKNJstRW9ki7HijmIIxE5tOSZS77HG8
-         ddFWlhxNqAjKWU6sbnVaK5cMKWPA0PJ6r9kIoFyRS5mYsnLx3+x2LE0O0oonBCqiaPj4
-         kXkHltIXOGdUVcB9s1R+HWbNiI4sVl53bfFKo2h+pE88+u7gc1SkTfR8AitXjuNxgB+n
-         PrtoAj9QqiqhD5IbYzbX8F84fQI9TPA7eKNLEtCg2W9mwwtnSnJTXmkdYC1EKfSLO/87
-         cIKA==
-X-Gm-Message-State: AOAM530S7fYcmmJr6SE9P27UwnzUYV65ekL8yEEhFrGOK91iugPusevv
-        RzawSfMJYWXd/w0dfDCLHVlqdtwp99E=
-X-Google-Smtp-Source: ABdhPJy0Co7XTeBeQ9IOJ5MIlhOHFJG9zTbKYrKXl+IQLWuvrTxbhTCRXH8pp75tuXWxNm7tF2zX9w==
-X-Received: by 2002:a17:90a:e618:: with SMTP id j24mr2359572pjy.41.1594096819717;
-        Mon, 06 Jul 2020 21:40:19 -0700 (PDT)
-Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
-        by smtp.gmail.com with ESMTPSA id c12sm21232908pfn.162.2020.07.06.21.40.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Jul 2020 21:40:19 -0700 (PDT)
-Date:   Mon, 6 Jul 2020 21:40:18 -0700
-From:   Moritz Fischer <mdf@kernel.org>
-To:     Xu Yilun <yilun.xu@intel.com>
-Cc:     mdf@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, trix@redhat.com, bhu@redhat.com,
-        mtosatti@redhat.com, gregkh@linuxfoundation.org,
-        Luwei Kang <luwei.kang@intel.com>, Wu Hao <hao.wu@intel.com>
-Subject: Re: [PATCH v7 7/7] Documentation: fpga: dfl: add descriptions for
- interrupt related interfaces.
-Message-ID: <20200707044018.GD10464@epycbox.lan>
-References: <1592280528-6350-1-git-send-email-yilun.xu@intel.com>
- <1592280528-6350-8-git-send-email-yilun.xu@intel.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
+        b=DNuKYvPJEkaBN9EYmOr5+q9xujVZeY43I0xFP5Mn5u75XYjZSCjcto0TRyiDb1942f
+         s8z+Q/yTdzzq61tMTIGQZrDOkZMzJ5BmV4fms/WndMw2M9NMa6cpOESIVa0rzV6JXdqd
+         NLt++yBhoYqt8dBA6wZPwlV5vQ4EdYbdr/9oPGXyGYZnexyEM17u4fckI7BGyHBC9hOT
+         9dWzP9ms1tc/S2MbQRx5QWYLVwkXDgtAdwes0fbugRPrFFQ3Z0bcjEpq4ChumC4992ny
+         uoR+vExe0g/MzyKBMZAeCXmoBcZd1NCsitlH1MQakdv10qmnRr0IAEpR27T3HDPboc+d
+         lHVA==
+X-Gm-Message-State: AOAM530JUSXN7cp4WheS1HhHX0nGIAV++heB7TTaNC80kG5ymwFc30LU
+        yLQyD/sE+mPbR7J4mpLs3ZvsiqAMXb2/Uvc5hBY=
+X-Google-Smtp-Source: ABdhPJzQCgXqbSQm6mkzO4D8AFK03srCLifInf41dOx33oxCgP98rIfVrXt89WENH0TQVOyrg0YKCw16FR2dUNeaI4o=
+X-Received: by 2002:a19:ccc5:: with SMTP id c188mr31863582lfg.163.1594096872897;
+ Mon, 06 Jul 2020 21:41:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1592280528-6350-8-git-send-email-yilun.xu@intel.com>
+Received: by 2002:a05:6504:518c:0:0:0:0 with HTTP; Mon, 6 Jul 2020 21:41:11
+ -0700 (PDT)
+Reply-To: ayishagddafio@mail.ru
+From:   AISHA GADDAFI <mahasaliou4444@gmail.com>
+Date:   Mon, 6 Jul 2020 21:41:11 -0700
+Message-ID: <CAKHB8qdmUeJMAHc2fxMhfmZtkUUj7NqUNe3yEfprcCg3nxTzUw@mail.gmail.com>
+Subject: Lieber Freund (Assalamu Alaikum),?
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 16, 2020 at 12:08:48PM +0800, Xu Yilun wrote:
-> This patch adds introductions of interrupt related interfaces for FME
-> error reporting, port error reporting and AFU user interrupts features.
-> 
-> Signed-off-by: Luwei Kang <luwei.kang@intel.com>
-> Signed-off-by: Wu Hao <hao.wu@intel.com>
-> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-> Reviewed-by: Marcelo Tosatti <mtosatti@redhat.com>
-> Acked-by: Wu Hao <hao.wu@intel.com>
-> ---
-> v2: Update Documents cause change of irq ioctl interfaces.
-> v3: No change
-> v4: Update interrupt support part.
-> v5: No change
-> v6: No change
-> v7: No change
-> ---
->  Documentation/fpga/dfl.rst | 19 +++++++++++++++++++
->  1 file changed, 19 insertions(+)
-> 
-> diff --git a/Documentation/fpga/dfl.rst b/Documentation/fpga/dfl.rst
-> index 978c4af..2df9a0a 100644
-> --- a/Documentation/fpga/dfl.rst
-> +++ b/Documentation/fpga/dfl.rst
-> @@ -89,6 +89,8 @@ The following functions are exposed through ioctls:
->  - Program bitstream (DFL_FPGA_FME_PORT_PR)
->  - Assign port to PF (DFL_FPGA_FME_PORT_ASSIGN)
->  - Release port from PF (DFL_FPGA_FME_PORT_RELEASE)
-> +- Get number of irqs of FME global error (DFL_FPGA_FME_ERR_GET_IRQ_NUM)
-> +- Set interrupt trigger for FME error (DFL_FPGA_FME_ERR_SET_IRQ)
->  
->  More functions are exposed through sysfs
->  (/sys/class/fpga_region/regionX/dfl-fme.n/):
-> @@ -149,6 +151,10 @@ The following functions are exposed through ioctls:
->  - Map DMA buffer (DFL_FPGA_PORT_DMA_MAP)
->  - Unmap DMA buffer (DFL_FPGA_PORT_DMA_UNMAP)
->  - Reset AFU (DFL_FPGA_PORT_RESET)
-> +- Get number of irqs of port error (DFL_FPGA_PORT_ERR_GET_IRQ_NUM)
-> +- Set interrupt trigger for port error (DFL_FPGA_PORT_ERR_SET_IRQ)
-> +- Get number of irqs of UINT (DFL_FPGA_PORT_UINT_GET_IRQ_NUM)
-> +- Set interrupt trigger for UINT (DFL_FPGA_PORT_UINT_SET_IRQ)
->  
->  DFL_FPGA_PORT_RESET:
->    reset the FPGA Port and its AFU. Userspace can do Port
-> @@ -462,6 +468,19 @@ since they are system-wide counters on FPGA device.
->  The current driver does not support sampling. So "perf record" is unsupported.
->  
->  
-> +Interrupt support
-> +=================
-> +Some FME and AFU private features are able to generate interrupts. As mentioned
-> +above, users could call ioctl (DFL_FPGA_*_GET_IRQ_NUM) to know whether or how
-> +many interrupts are supported for this private feature. Drivers also implement
-> +an eventfd based interrupt handling mechanism for users to get notified when
-> +interrupt happens. Users could set eventfds to driver via
-> +ioctl (DFL_FPGA_*_SET_IRQ), and then poll/select on these eventfds waiting for
-> +notification.
-> +In Current DFL, 3 sub features (Port error, FME global error and AFU interrupt)
-> +support interrupts.
-> +
-> +
->  Add new FIUs support
->  ====================
->  It's possible that developers made some new function blocks (FIUs) under this
-> -- 
-> 2.7.4
-> 
+--=20
+Lieber Freund (Assalamu Alaikum),
 
-Applied to for-next,
+Ich bin vor einer privaten Suche auf Ihren E-Mail-Kontakt gesto=C3=9Fen
+Ihre Hilfe. Mein Name ist Aisha Al-Qaddafi, eine alleinerziehende
+Mutter und eine Witwe
+mit drei Kindern. Ich bin die einzige leibliche Tochter des Sp=C3=A4tlibysc=
+hen
+Pr=C3=A4sident (verstorbener Oberst Muammar Gaddafi).
 
-Thanks!
+Ich habe Investmentfonds im Wert von siebenundzwanzig Millionen
+f=C3=BCnfhunderttausend
+United State Dollar ($ 27.500.000.00) und ich brauche eine
+vertrauensw=C3=BCrdige Investition
+Manager / Partner aufgrund meines aktuellen Fl=C3=BCchtlingsstatus bin ich =
+jedoch
+M=C3=B6glicherweise interessieren Sie sich f=C3=BCr die Unterst=C3=BCtzung =
+von
+Investitionsprojekten in Ihrem Land
+Von dort aus k=C3=B6nnen wir in naher Zukunft Gesch=C3=A4ftsbeziehungen auf=
+bauen.
+
+Ich bin bereit, mit Ihnen =C3=BCber das Verh=C3=A4ltnis zwischen Investitio=
+n und
+Unternehmensgewinn zu verhandeln
+Basis f=C3=BCr die zuk=C3=BCnftige Investition Gewinne zu erzielen.
+
+Wenn Sie bereit sind, dieses Projekt in meinem Namen zu bearbeiten,
+antworten Sie bitte dringend
+Damit ich Ihnen mehr Informationen =C3=BCber die Investmentfonds geben kann=
+.
+
+Ihre dringende Antwort wird gesch=C3=A4tzt. schreibe mir an diese email adr=
+esse (
+ayishagddafio@mail.ru ) zur weiteren Diskussion.
+
+Freundliche Gr=C3=BC=C3=9Fe
+Frau Aisha Al-Qaddafi
