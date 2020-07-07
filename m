@@ -2,66 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81D012169CE
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 12:18:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 607692169C9
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 12:17:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728127AbgGGKRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 06:17:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41344 "EHLO
+        id S1727951AbgGGKQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 06:16:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727107AbgGGKQw (ORCPT
+        with ESMTP id S1727800AbgGGKQx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 06:16:52 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF65EC061755
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 03:16:51 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id k6so44563192wrn.3
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 03:16:51 -0700 (PDT)
+        Tue, 7 Jul 2020 06:16:53 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED1D4C08C5DB
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 03:16:52 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id f18so36484888wrs.0
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 03:16:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=0Ojcexqfn/ZS3noXIMdqlD9+JbA+cGF+iBmDVVcfGM0=;
-        b=eKf7OQbj/SAKIuqAfQubX24p12bDVbV98ZLiLwXpicE8+hlGHR2Lwqg2oTYcLwu/qD
-         Bn5Gn1gBc/1gGzBGsmqTb+Q+gUH+21qv7MFJY6nOjy++f7nMMe8Uoj5EWJRz+g+D/XLb
-         lTtDXG7caO9jtnbnh02SmWHCT20SHTj18dUEk2p19o/ko5C6t0jv1EgkhiXWypF+9X83
-         Yg2bkKaO/kwFRZb6VQD/FOiRIyeNO8bncKjdrWxHfp/Q3nQSOfaHxzzXXVE8YKEnUc15
-         o/LFftlJi1GnXMqcbZ9j6KBshO9S1Arc8MHEO5MopHLhfQ3irAsVv5y6Ee972eCGsmtq
-         8Nyw==
+        bh=KDb2cHewYsZWIM9X5BweTMn+o+Wme2rV/mNBj7f6Kc0=;
+        b=KWAySNzyfzgA6L35OqDEdMfxyRW6P5mNQ/VoKFi3SPOGxlROBgL/6G+0MYrllTvY+U
+         CwdWcR0JaSnDwr0jP1J9a/WGbXKdNpkAw4F9cqrIhLwhxLXc/QuvLC/+rCJ95WSCocwi
+         5u8Ofosz9530ws8xxT5Le5pgKaBsFBSqXZ4KnG9+ar+gJv8obmLu8DxsTKzFLZhfNu6X
+         xSbgp8e/buyq7tf5WVYb6aqlEwHk3L1kA1BS0Ar0tAd3bhnm1DgmIL/fQUYbIL0Kz56v
+         HRbSh3uo5DzQiBe0Cs6+GdH1OK9V/sDl1+PEBHLNW8xOmIZjYUq36JRRw1Zo5Z5+Q1ld
+         P1Ng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=0Ojcexqfn/ZS3noXIMdqlD9+JbA+cGF+iBmDVVcfGM0=;
-        b=li75j5Ju9jxkEh1JKUTiNxFUYuXrKrLoteOB84OwvHbEIUYv69on914hyoGRFt0x/u
-         qp+TA2OWiDys99d+0fAgX+Kfh68q1rdHLachc7FCQ/puclu86clYFcyHewtkfb3i3DNr
-         POAytzoBnY0DpUMkyw8xec5zspkNz6CKstStzAJ3czX+/nqlxMPFpGFSCO0diyeG6/L7
-         YmQhJRO1DVxUVOPVNiCvJGl9iUmrPMfiO8mCuNhz9NF30AF5aEFs+zZy8ghOljWUs/oq
-         xlpPd7qewiOlqNU3NfNetREI5QrWnV5CMKdnHH52wRaP4NzZnxiPXKANtRvyXEKTWXO+
-         T+4w==
-X-Gm-Message-State: AOAM530y07WSvQ6tEzwH43MwAtUKhResxFuegNNXHJW3l5d1Jv22JsDp
-        pQePNN/fJDOzpUMxsbwr6ZReXg==
-X-Google-Smtp-Source: ABdhPJxXHqSXuvC/N6FMDoHvlD9BJG1LNiYAOWrAD6I4lg3PAZdm04pKuSFnfS9ZIM3N4PgczWCONg==
-X-Received: by 2002:a5d:474f:: with SMTP id o15mr50415169wrs.306.1594117009607;
-        Tue, 07 Jul 2020 03:16:49 -0700 (PDT)
+        bh=KDb2cHewYsZWIM9X5BweTMn+o+Wme2rV/mNBj7f6Kc0=;
+        b=bPaw5gitkPI1bn4SrpnB9Tv6CL+ShoRAf1PZfjqHlqNOMuaZNztH8qpmOSX3gHjgRY
+         uYZzBYmeydgwFtvOpc+ECzHBzIGy+ybaVv7nnV/YozYZqy+m4bCWs69L1hBa0cuTLGNj
+         SP3FN0mrBUGstHFNMXMD9n5slpsrEA8MsR3jLUFmcaxELRSnCTeiIlAwRfhJWKCGo56X
+         Fp3jIQ0LbfrwVJYr3AqvNtVl1Fo+FQYM1isOvyTvb5HzKR59xNHRkakYUaBFDiQiWe2x
+         DZ8/F12u0Pn9LscLLGfNEMErYP/i1qxR6kFWOFvSdDYMqwbBFMilPjvzW3flu2nrNGYA
+         qxBA==
+X-Gm-Message-State: AOAM530QC7zUbPI5dbWwEugVl7+u7dwCNoZPVI5nda5DBMJBb75IxGkf
+        XlLqhdO9iddnLE4SPlw40cxZ1Q==
+X-Google-Smtp-Source: ABdhPJyuLSFDg+DgyQWYS0Sp/uZ2Uz32rktUaElyVytRNJtrr6b4EIZCqaiZhAvG7a8BZrItq4OaWA==
+X-Received: by 2002:a5d:69c5:: with SMTP id s5mr53007426wrw.197.1594117011646;
+        Tue, 07 Jul 2020 03:16:51 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.206])
-        by smtp.gmail.com with ESMTPSA id z8sm469409wmg.39.2020.07.07.03.16.48
+        by smtp.gmail.com with ESMTPSA id z8sm469409wmg.39.2020.07.07.03.16.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jul 2020 03:16:48 -0700 (PDT)
+        Tue, 07 Jul 2020 03:16:51 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz,
         tiwai@suse.com
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         alsa-devel@alsa-project.org, Lee Jones <lee.jones@linaro.org>,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Sedji Gaouaou <sedji.gaouaou@atmel.com>,
-        Frank Mandarino <fmandarino@endrelia.com>
-Subject: [PATCH 02/28] ASoC: atmel: atmel_ssc_dai: Demote function header which is clearly not kerneldoc
-Date:   Tue,  7 Jul 2020 11:16:16 +0100
-Message-Id: <20200707101642.1747944-3-lee.jones@linaro.org>
+        Timur Tabi <timur@kernel.org>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH 03/28] ASoC: fsl: fsl-asoc-card: Use correct format when providing struct documentation
+Date:   Tue,  7 Jul 2020 11:16:17 +0100
+Message-Id: <20200707101642.1747944-4-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200707101642.1747944-1-lee.jones@linaro.org>
 References: <20200707101642.1747944-1-lee.jones@linaro.org>
@@ -72,36 +71,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No attempt has been made to document the demoted function here.
+Struct kerneldoc headers need to be prefixed with 'struct $NAME', else
+the checker gets confused.
 
 Fixes the following W=1 kernel build warning(s):
 
- sound/soc/atmel/atmel_ssc_dai.c:892: warning: Function parameter or member 'ssc_id' not described in 'atmel_ssc_set_audio'
+ sound/soc/fsl/fsl-asoc-card.c:43: warning: cannot understand function prototype: 'struct codec_priv '
+ sound/soc/fsl/fsl-asoc-card.c:60: warning: cannot understand function prototype: 'struct cpu_priv '
+ sound/soc/fsl/fsl-asoc-card.c:83: warning: cannot understand function prototype: 'struct fsl_asoc_card_priv '
+ sound/soc/fsl/fsl-asoc-card.c:104: warning: cannot understand function prototype: 'const struct snd_soc_dapm_route audio_map[] = '
 
-Cc: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Cc: Nicolas Ferre <nicolas.ferre@microchip.com>
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
-Cc: Sedji Gaouaou <sedji.gaouaou@atmel.com>
-Cc: Frank Mandarino <fmandarino@endrelia.com>
+Also the size of the struct does not belong in the description:
+
+ sound/soc/fsl/fsl-asoc-card.c:65: warning: Function parameter or member 'sysclk_freq' not described in 'cpu_priv'
+ sound/soc/fsl/fsl-asoc-card.c:65: warning: Function parameter or member 'sysclk_dir' not described in 'cpu_priv'
+ sound/soc/fsl/fsl-asoc-card.c:65: warning: Function parameter or member 'sysclk_id' not described in 'cpu_priv'
+ sound/soc/fsl/fsl-asoc-card.c:95: warning: Function parameter or member 'dai_link' not described in 'fsl_asoc_card_priv'
+
+Cc: Timur Tabi <timur@kernel.org>
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: Xiubo Li <Xiubo.Lee@gmail.com>
+Cc: Fabio Estevam <festevam@gmail.com>
+Cc: linuxppc-dev@lists.ozlabs.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- sound/soc/atmel/atmel_ssc_dai.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/fsl/fsl-asoc-card.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
-index 0f18dfb85bfed..3a0335864034a 100644
---- a/sound/soc/atmel/atmel_ssc_dai.c
-+++ b/sound/soc/atmel/atmel_ssc_dai.c
-@@ -885,7 +885,7 @@ static int asoc_ssc_init(struct device *dev)
- 	return 0;
- }
+diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
+index 57ea1b072326b..3b1fd8c9316d8 100644
+--- a/sound/soc/fsl/fsl-asoc-card.c
++++ b/sound/soc/fsl/fsl-asoc-card.c
+@@ -33,7 +33,7 @@
+ #define DAI_FMT_BASE (SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF)
+ 
+ /**
+- * CODEC private data
++ * struct codec_priv - CODEC private data
+  *
+  * @mclk_freq: Clock rate of MCLK
+  * @mclk_id: MCLK (or main clock) id for set_sysclk()
+@@ -48,11 +48,11 @@ struct codec_priv {
+ };
+ 
+ /**
+- * CPU private data
++ * struct cpu_priv - CPU private data
+  *
+- * @sysclk_freq[2]: SYSCLK rates for set_sysclk()
+- * @sysclk_dir[2]: SYSCLK directions for set_sysclk()
+- * @sysclk_id[2]: SYSCLK ids for set_sysclk()
++ * @sysclk_freq: SYSCLK rates for set_sysclk()
++ * @sysclk_dir: SYSCLK directions for set_sysclk()
++ * @sysclk_id: SYSCLK ids for set_sysclk()
+  * @slot_width: Slot width of each frame
+  *
+  * Note: [1] for tx and [0] for rx
+@@ -65,9 +65,9 @@ struct cpu_priv {
+ };
+ 
+ /**
+- * Freescale Generic ASOC card private data
++ * struct fsl_asoc_card_priv - Freescale Generic ASOC card private data
+  *
+- * @dai_link[3]: DAI link structure including normal one and DPCM link
++ * @dai_link: DAI link structure including normal one and DPCM link
+  * @pdev: platform device pointer
+  * @codec_priv: CODEC private data
+  * @cpu_priv: CPU private data
+@@ -94,7 +94,7 @@ struct fsl_asoc_card_priv {
+ 	char name[32];
+ };
  
 -/**
 +/*
-  * atmel_ssc_set_audio - Allocate the specified SSC for audio use.
-  */
- int atmel_ssc_set_audio(int ssc_id)
+  * This dapm route map exsits for DPCM link only.
+  * The other routes shall go through Device Tree.
+  *
 -- 
 2.25.1
 
