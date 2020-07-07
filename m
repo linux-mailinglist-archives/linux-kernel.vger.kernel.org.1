@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8BE821716A
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:42:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDF90217261
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:44:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728693AbgGGPTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:19:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59142 "EHLO mail.kernel.org"
+        id S1729617AbgGGPcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:32:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34900 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728943AbgGGPT0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:19:26 -0400
+        id S1729167AbgGGPWW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 11:22:22 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1C91520738;
-        Tue,  7 Jul 2020 15:19:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B9DA8207C4;
+        Tue,  7 Jul 2020 15:22:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594135165;
-        bh=FxwqRYVfOOZL5m4Pqs6yCwEzl2G5/HxpUIG6j5YGamc=;
+        s=default; t=1594135342;
+        bh=qgGbNJG4nd3LubWPiEUpdZ0qQCUI8bbZP2/rBN+YpkY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tfpz2i1RR2jemUfOXVj39FHaTRL/4AnsAN493Rcj0vKjiP39obe3xTLdjAGaBYvRE
-         kOvUsZrmS33/awN9IKokv8cRYvAKJ3JVYFPwTKm8uvYJ2BZRbuAPRyZTT0XhDODkDR
-         aDTQXecfRWXzMxtZ6EBtMV2ikmm4xA+/lhKGqaJE=
+        b=ngi27wKPY1FaWC18Ko58gelO/svEdu6sw3SJXVhNAV5IbnHxEZe8HgEKBHUktUoaa
+         IQSlfrwRkLcc3lZwXhU+u67BbTpNUTCZqfFibE2YcIuPNcPXGrQqEVskeC6LNhrMpP
+         r+XWFMRLjTTkk9/g9kq1+TdPIcNlxnlEosUFu3IM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 25/36] i2c: algo-pca: Add 0x78 as SCL stuck low status for PCA9665
+        stable@vger.kernel.org, Chen-Yu Tsai <wens@csie.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 38/65] drm: sun4i: hdmi: Remove extra HPD polling
 Date:   Tue,  7 Jul 2020 17:17:17 +0200
-Message-Id: <20200707145750.331871731@linuxfoundation.org>
+Message-Id: <20200707145754.304409925@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200707145749.130272978@linuxfoundation.org>
-References: <20200707145749.130272978@linuxfoundation.org>
+In-Reply-To: <20200707145752.417212219@linuxfoundation.org>
+References: <20200707145752.417212219@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,41 +44,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Packham <chris.packham@alliedtelesis.co.nz>
+From: Chen-Yu Tsai <wens@csie.org>
 
-[ Upstream commit cd217f2300793a106b49c7dfcbfb26e348bc7593 ]
+[ Upstream commit bda8eaa6dee7525f4dac950810a85a88bf6c2ba0 ]
 
-The PCA9665 datasheet says that I2CSTA = 78h indicates that SCL is stuck
-low, this differs to the PCA9564 which uses 90h for this indication.
-Treat either 0x78 or 0x90 as an indication that the SCL line is stuck.
+The HPD sense mechanism in Allwinner's old HDMI encoder hardware is more
+or less an input-only GPIO. Other GPIO-based HPD implementations
+directly return the current state, instead of polling for a specific
+state and returning the other if that times out.
 
-Based on looking through the PCA9564 and PCA9665 datasheets this should
-be safe for both chips. The PCA9564 should not return 0x78 for any valid
-state and the PCA9665 should not return 0x90.
+Remove the I/O polling from sun4i_hdmi_connector_detect() and directly
+return a known state based on the current reading. This also gets rid
+of excessive CPU usage by kworker as reported on Stack Exchange [1] and
+Armbian forums [2].
 
-Fixes: eff9ec95efaa ("i2c-algo-pca: Add PCA9665 support")
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+ [1] https://superuser.com/questions/1515001/debian-10-buster-on-cubietruck-with-bug-in-sun4i-drm-hdmi
+ [2] https://forum.armbian.com/topic/14282-headless-systems-and-sun4i_drm_hdmi-a10a20/
+
+Fixes: 9c5681011a0c ("drm/sun4i: Add HDMI support")
+Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200629060032.24134-1-wens@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i2c/algos/i2c-algo-pca.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/i2c/algos/i2c-algo-pca.c b/drivers/i2c/algos/i2c-algo-pca.c
-index 883a290f6a4d0..0e745f82d6a53 100644
---- a/drivers/i2c/algos/i2c-algo-pca.c
-+++ b/drivers/i2c/algos/i2c-algo-pca.c
-@@ -323,7 +323,8 @@ static int pca_xfer(struct i2c_adapter *i2c_adap,
- 			DEB2("BUS ERROR - SDA Stuck low\n");
- 			pca_reset(adap);
- 			goto out;
--		case 0x90: /* Bus error - SCL stuck low */
-+		case 0x78: /* Bus error - SCL stuck low (PCA9665) */
-+		case 0x90: /* Bus error - SCL stuck low (PCA9564) */
- 			DEB2("BUS ERROR - SCL Stuck low\n");
- 			pca_reset(adap);
- 			goto out;
+diff --git a/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c b/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c
+index 9c3bdfd203373..63b4de81686ac 100644
+--- a/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c
++++ b/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c
+@@ -262,9 +262,8 @@ sun4i_hdmi_connector_detect(struct drm_connector *connector, bool force)
+ 	struct sun4i_hdmi *hdmi = drm_connector_to_sun4i_hdmi(connector);
+ 	unsigned long reg;
+ 
+-	if (readl_poll_timeout(hdmi->base + SUN4I_HDMI_HPD_REG, reg,
+-			       reg & SUN4I_HDMI_HPD_HIGH,
+-			       0, 500000)) {
++	reg = readl(hdmi->base + SUN4I_HDMI_HPD_REG);
++	if (reg & SUN4I_HDMI_HPD_HIGH) {
+ 		cec_phys_addr_invalidate(hdmi->cec_adap);
+ 		return connector_status_disconnected;
+ 	}
 -- 
 2.25.1
 
