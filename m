@@ -2,87 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6F242172EC
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:56:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EB4B2172F0
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:56:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728578AbgGGPr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:47:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36340 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728133AbgGGPr2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:47:28 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9530C061755;
-        Tue,  7 Jul 2020 08:47:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=o2byprTDpjPpNlEAvO3Wi+/c2HuZLv/8KYv2CR6Segg=; b=v94vgSBAFgga49x7aUmkXfM0aU
-        SZu/6fru6iQWZCvkoaCRTr7ir66efgZqYSjw5v0ETk9kYFf8KKGMDS71m0fgOadaEMhnC8P13Du6G
-        X0+pZKufZ8VT+hn4K6EnUIyFmhxysjG8MGS1WQahRa2Wql+ukNWhjtjFRsR9Q0Ph4BgXKWv+CfxJY
-        HyidKJOs2DsbibBilMCuJkx87ExUJZ4xxQgrWXtRAZYXj3OiLFPP0Gh1llQmA/gHQl83GehlDzdtp
-        38sy++iwYZ/PBlN0Wfh0rJOtRvzI8p3oKRznHbmWgs1yACuCjQw3NXkoZrp5GoxestTLj2Ol5nRYd
-        +mKQyhGQ==;
-Received: from [2601:1c0:6280:3f0:897c:6038:c71d:ecac]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jspob-00063f-GP; Tue, 07 Jul 2020 15:47:26 +0000
-Subject: Re: [PATCH] thermal: netlink: Fix compilation error when CONFIG_NET=n
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>, rui.zhang@intel.com
-Cc:     amit.kucheria@verdurent.com, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org
-References: <20200707090159.1018-1-daniel.lezcano@linaro.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <66b4c589-48e0-8975-b3b1-79168e3ea5e4@infradead.org>
-Date:   Tue, 7 Jul 2020 08:47:22 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1729084AbgGGPsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:48:17 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52846 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728133AbgGGPsQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 11:48:16 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 13823AD19;
+        Tue,  7 Jul 2020 15:48:15 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 10452DA818; Tue,  7 Jul 2020 17:47:56 +0200 (CEST)
+Date:   Tue, 7 Jul 2020 17:47:55 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     trix@redhat.com, clm@fb.com, josef@toxicpanda.com,
+        dsterba@suse.com, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] btfrs: initialize return of btrfs_extent_same
+Message-ID: <20200707154755.GB16141@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+        trix@redhat.com, clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200705142058.28305-1-trix@redhat.com>
+ <885129e4-d6d6-57d3-21d3-a83bd98c3994@suse.com>
 MIME-Version: 1.0
-In-Reply-To: <20200707090159.1018-1-daniel.lezcano@linaro.org>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <885129e4-d6d6-57d3-21d3-a83bd98c3994@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/7/20 2:01 AM, Daniel Lezcano wrote:
-> When the network is not configured, the netlink are disabled on all
-> the system. The thermal framework assumed the netlink are always
-> opt-in.
+On Sun, Jul 05, 2020 at 05:48:17PM +0300, Nikolay Borisov wrote:
+> On 5.07.20 г. 17:20 ч., trix@redhat.com wrote:
+> > From: Tom Rix <trix@redhat.com>
+> > 
+> > clang static analysis flags a garbage return
+> > 
+> > fs/btrfs/reflink.c:611:2: warning: Undefined or garbage value returned to caller [core.uninitialized.UndefReturn]
+> >         return ret;
+> >         ^~~~~~~~~~
+> > ret will not be set when olen is 0
+> > When olen is 0, this function does no work.
+> > 
+> > So initialize ret to 0
+> > 
+> > Signed-off-by: Tom Rix <trix@redhat.com>
 > 
-> Fix this by adding a Kconfig option for the netlink notification,
-> defaulting to yes and depending on CONFIG_NET.
+> Patch itself is good however, the bug cannot currently be triggered, due
+> to the following code in the sole caller (btrfs_remap_file_range):
 > 
-> As the change implies multiple stubs and in order to not pollute the
-> internal thermal header, the thermal_nelink.h has been added and
-> included in the thermal_core.h, so this one regain some kind of
-> clarity.
 > 
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> ---
->  drivers/thermal/Kconfig           | 10 ++++
->  drivers/thermal/Makefile          |  5 +-
->  drivers/thermal/thermal_core.h    | 20 +------
->  drivers/thermal/thermal_netlink.h | 98 +++++++++++++++++++++++++++++++
->  4 files changed, 114 insertions(+), 19 deletions(-)
->  create mode 100644 drivers/thermal/thermal_netlink.h
 > 
+>    15         if (ret < 0 || len == 0)
+>    14                 goto out_unlock;
+>    13
+>    12         if (remap_flags & REMAP_FILE_DEDUP)
+>    11                 ret = btrfs_extent_same(src_inode, off, len, dst_inode, destoff);
+>    10         else
+>     9                 ret = btrfs_clone_files(dst_file, src_file, off,
+> len, destoff);
+> 
+> i.e len is guaranteed to be non-zero
 
+Yeah, for that reason I don't think we need to set the value inside
+btrfs_extent_same because the caller(s) do the sanity checks.
 
-Hm, now I get this:
+There are VFS-level checks of the length wrt zero, eg. it won't even
+call to copy_file_range from vfs_copy_file_range. The user supplied
+length = 0 is interpreted as 'until the end of file' and is properly
+reclaculated in generic_remap_file_range_prep.
 
-../drivers/thermal/thermal_helpers.c: In function ‘thermal_cdev_set_cur_state’:
-../drivers/thermal/thermal_helpers.c:182:2: error: implicit declaration of function ‘thermal_notify_cdev_update’; did you mean ‘thermal_notify_cdev_delete’? [-Werror=implicit-function-declaration]
-  thermal_notify_cdev_update(cdev->id, target);
-
-
-or should that call be to thermal_notify_cdev_state_update()?
-
-
--- 
-~Randy
-
+This looks like clang checker is not able to follow the values accross
+function calls, even if the functions are static.
