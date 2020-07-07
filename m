@@ -2,63 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74A892169D8
+	by mail.lfdr.de (Postfix) with ESMTP id E1C842169D9
 	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 12:18:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728314AbgGGKRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 06:17:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41446 "EHLO
+        id S1728325AbgGGKRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 06:17:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728067AbgGGKRQ (ORCPT
+        with ESMTP id S1728246AbgGGKRS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 06:17:16 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 795FEC08C5DF
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 03:17:16 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id q5so44518447wru.6
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 03:17:16 -0700 (PDT)
+        Tue, 7 Jul 2020 06:17:18 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8604DC061755
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 03:17:17 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id z13so44551976wrw.5
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 03:17:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=U3fyU5lC2kiQoR/Tx6i2htjANdo4PmUgTNG8kh6JAhc=;
-        b=kJo1+ouwbe5ipI7BlC5Ic4kTj8wrYnx05NhCanfvRd3nkj5ATUjqLzGEfPRFCp2ulE
-         KlBv/4imh5BYzeZCn2F/hHtgC47bvGB4fduIIt+wknpl41OgBzDF+cPpVYzYmTyVMfmn
-         fyL0juesSL2d0Mvlsdth1UFm/UcrSurKgPRTyvbJvnMdRe1jh7ljFlsf6qXnrhkrWm4S
-         w/kvER9sdviBe2wO7C5yDsga3UBqektYMCTs5TnCXRD398XXHiALQmZCob/PqQRJQo2W
-         S9xILBqXWTrhiJbJvgqPcatbuL4E5Gzn5H/TkKAlV4+/nMN2pxueG5HoYl4kOqGmLPMe
-         mlww==
+        bh=EXLqTyUKMLj4M51ntYR1QA4V9xA1YrzmuNUETaX0PBA=;
+        b=QGMjHJlQ9LWikvX6Na5JwK9UPUmF/DNUlzfwClDFWUzxLNI3vHyW3hm6xlfswr2AV8
+         wkFMnZoIWoQ8W/vbLtLairtyr3oUjXlaXBn79y60eIPJCInMUGmqhIwj5oH14AoPyTuW
+         PpuseWJtIwwqJ+wYUvHy5dH0KlMSlu3UwlLaMIwhi5Ru3QdAjHI0pt0KyOvCYdK+XJuB
+         g5A8bJoPOmMZSw0D/+fiy6siWxtEreitU2khKnrX6y7K+Wbf/i7VhqyVGk1Vfn7qfBdZ
+         zdC4l9jK22GpHnEbOHuseblQoFf5gMl+OxkiwHcQ/RKvu1QoDmvGzarx+CMpe8vRPBXe
+         tr2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=U3fyU5lC2kiQoR/Tx6i2htjANdo4PmUgTNG8kh6JAhc=;
-        b=EKaGp5d+WWuFn2pUC9oGfRGl0yDdoCZjEoPwyRZg2a8XkK93YZRjR8xegX4FjH3f/H
-         fATHqM9Vs54VA1A2eywqvtli5PvZamve0Vb7HbzR/nuVE9wYuSMgba0I/xVszi607N61
-         /E1N58oCqiwxNwX2TIBlK3Dr6gK3eWEg46uw2Y/OpslZLQbEycsd2sg/8d6fu4kOSsxH
-         Ww16gqvLtLjH+nsABYjifRTUSEVYqPxSDr09Y/gW4+PnL28TbjrB445YqV+3K+QsN+qE
-         J1dJwqv4RRhIg4HBnuLlJN9hRp8j5ho0lPJ27OJl6a+hRKNhBXj0WyVZGbMfKcEREeK6
-         +9oA==
-X-Gm-Message-State: AOAM530OS5Zp95sKwedogNhTwqMrjBVo7Xzx4Qpu8WJEPbNSs6BqlDjd
-        j9Shg3mWNRNW1DgBHGBltTVsTA==
-X-Google-Smtp-Source: ABdhPJw3IxiVYR6WmuTK9z+sTSUJZ6MQnqXOW88rUyFa86F5H3CyEoVayXplHB7xTuQyEIOgTW+qOg==
-X-Received: by 2002:adf:e48f:: with SMTP id i15mr17550261wrm.327.1594117035204;
-        Tue, 07 Jul 2020 03:17:15 -0700 (PDT)
+        bh=EXLqTyUKMLj4M51ntYR1QA4V9xA1YrzmuNUETaX0PBA=;
+        b=dwAYJNAmcDrA/z6dZEcGjqE/uI7z5zU9cP8JaJ9QKfoo+N3q8gRYSOR0IOQhEX8BgH
+         oNY+c/ZpOGCLakvZtVZPgq6vdaDOfqcPnu2go9UO25Try+7N2Ur7Go3kJrffESJbP7uW
+         IwgP8RGUhNpN/84YzEltH2cj72nYeDxOmWg7y6GiucEEU/52SXR+CFBSCOUOI6dozagX
+         gezPjdsvFLKDgc7VkQMfWwsBVOjo0Ya2mUF667lBWIGVCmzNwPPnlXd5se0Jy9ayv5P1
+         J3ka/jdX0XzhFGIcGAaY244aQKYNQsCwuv0zLhsp4t/dNHevbkYgJEgCAyeG3Glqp11+
+         OPrg==
+X-Gm-Message-State: AOAM532ZvXddl1Bl7yao4o6Lfub4RAZHamr9k3oMznR5nb5qd/zcpWt/
+        uccHRejcZVZE/uyJHt9A6DtEcQ==
+X-Google-Smtp-Source: ABdhPJxqAC3BtmcDgPQdVNfB2mynSSt1Kjfhgyv7zPY1kPqaosnB4BBwP2w2zFQNZfEfX5SODLsnZw==
+X-Received: by 2002:adf:dfd1:: with SMTP id q17mr50235597wrn.94.1594117036243;
+        Tue, 07 Jul 2020 03:17:16 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.206])
-        by smtp.gmail.com with ESMTPSA id z8sm469409wmg.39.2020.07.07.03.17.14
+        by smtp.gmail.com with ESMTPSA id z8sm469409wmg.39.2020.07.07.03.17.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jul 2020 03:17:14 -0700 (PDT)
+        Tue, 07 Jul 2020 03:17:15 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz,
         tiwai@suse.com
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         alsa-devel@alsa-project.org, Lee Jones <lee.jones@linaro.org>,
-        Support Opensource <support.opensource@diasemi.com>,
-        David Chen <Dajun.chen@diasemi.com>,
-        Kuninori Morimoto <morimoto.kuninori@renesas.com>
-Subject: [PATCH 22/28] ASoC: codecs: da7210: Fix formatting issues in da7210_set_dai_pll() header
-Date:   Tue,  7 Jul 2020 11:16:36 +0100
-Message-Id: <20200707101642.1747944-23-lee.jones@linaro.org>
+        Richard Purdie <richard@openedhand.com>
+Subject: [PATCH 23/28] ASoC: soc-ac97: Demote seemingly unintentional kerneldoc header
+Date:   Tue,  7 Jul 2020 11:16:37 +0100
+Message-Id: <20200707101642.1747944-24-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200707101642.1747944-1-lee.jones@linaro.org>
 References: <20200707101642.1747944-1-lee.jones@linaro.org>
@@ -69,48 +67,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kerneldoc expects parameter documentation to be in the format '@.*: '.
-If that convention is not followed, the kerneldoc checker gets confused.
+This is the only use of kerneldoc in the sourcefile and no
+descriptions are provided.
 
 Fixes the following W=1 kernel build warning(s):
 
- sound/soc/codecs/da7210.c:985: warning: Function parameter or member 'codec_dai' not described in 'da7210_set_dai_pll'
- sound/soc/codecs/da7210.c:985: warning: Function parameter or member 'pll_id' not described in 'da7210_set_dai_pll'
- sound/soc/codecs/da7210.c:985: warning: Function parameter or member 'source' not described in 'da7210_set_dai_pll'
- sound/soc/codecs/da7210.c:985: warning: Function parameter or member 'fref' not described in 'da7210_set_dai_pll'
- sound/soc/codecs/da7210.c:985: warning: Function parameter or member 'fout' not described in 'da7210_set_dai_pll'
+ sound/soc/soc-ac97.c:402: warning: Function parameter or member 'ops' not described in 'snd_soc_set_ac97_ops_of_reset'
+ sound/soc/soc-ac97.c:402: warning: Function parameter or member 'pdev' not described in 'snd_soc_set_ac97_ops_of_reset'
 
-Cc: Support Opensource <support.opensource@diasemi.com>
-Cc: David Chen <Dajun.chen@diasemi.com>
-Cc: Kuninori Morimoto <morimoto.kuninori@renesas.com>
+Cc: Richard Purdie <richard@openedhand.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- sound/soc/codecs/da7210.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ sound/soc/soc-ac97.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/da7210.c b/sound/soc/codecs/da7210.c
-index 0c99dcf242e42..159b5f0eb7100 100644
---- a/sound/soc/codecs/da7210.c
-+++ b/sound/soc/codecs/da7210.c
-@@ -971,11 +971,13 @@ static int da7210_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+diff --git a/sound/soc/soc-ac97.c b/sound/soc/soc-ac97.c
+index 906106ed8ca14..af789552a9d4c 100644
+--- a/sound/soc/soc-ac97.c
++++ b/sound/soc/soc-ac97.c
+@@ -391,7 +391,7 @@ int snd_soc_set_ac97_ops(struct snd_ac97_bus_ops *ops)
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_set_ac97_ops);
  
- /**
-  * da7210_set_dai_pll	:Configure the codec PLL
-- * @param codec_dai	: pointer to codec DAI
-- * @param pll_id	: da7210 has only one pll, so pll_id is always zero
-- * @param fref		: MCLK frequency, should be < 20MHz
-- * @param fout		: FsDM value, Refer page 44 & 45 of datasheet
-- * @return int		: Zero for success, negative error code for error
-+ * @codec_dai:	pointer to codec DAI
-+ * @pll_id:	da7210 has only one pll, so pll_id is always zero
-+ * @source:	unused
-+ * @fref:	MCLK frequency, should be < 20MHz
-+ * @fout:	FsDM value, Refer page 44 & 45 of datasheet
-+ *
-+ * Returns: Zero for success, negative error code for error
+-/**
++/*
+  * snd_soc_set_ac97_ops_of_reset - Set ac97 ops with generic ac97 reset functions
   *
-  * Note: Supported PLL input frequencies are 12MHz, 13MHz, 13.5MHz, 14.4MHz,
-  *       19.2MHz, 19.6MHz and 19.8MHz
+  * This function sets the reset and warm_reset properties of ops and parses
 -- 
 2.25.1
 
