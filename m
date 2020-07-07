@@ -2,135 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4475D216B6E
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 13:24:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1E1C216B74
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 13:26:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728197AbgGGLX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 07:23:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727079AbgGGLX6 (ORCPT
+        id S1728288AbgGGLZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 07:25:41 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:41962 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727044AbgGGLZl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 07:23:58 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0F97C061755
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 04:23:57 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id h28so38072435edz.0
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 04:23:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Z+HTaDJORry76de6xJh2nNWpDzvXRte/7hWFD6xg3L0=;
-        b=zFs2OsBCi8DqKxj1YR0JHMK7UjSD/oZ/Z7BDnr1ZUxpIoAaPD4S4IKK4hGDeddFjTt
-         3BGApI+F1fzdkFWT7exYU5xyhldcg7eLpeBuLLhJ+aXC5j8cN3+H/i5LrHVnap88M9dH
-         W34FYzJkfIjh/aDMP9w8uU0X6SEe9f3nCfiKHej0GGxTEieXobrFZ5elrhd7Q4athgmt
-         K8jd2P2nrdufj2lG76LEKtKxltV8v5QSXfHnH3VFLr4WQvymX2Y2EdwHEr6pgZ10Ue4E
-         4hMYcgs1r5y1LAAd6lkwxqLFOJMEXIuCVdwCqAKlyfTHjvcB6L4J0Vy2Z6FtePyO6I9E
-         EHdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Z+HTaDJORry76de6xJh2nNWpDzvXRte/7hWFD6xg3L0=;
-        b=tt4y4HFpDLX7lqYgRhrvYw8RICLgjrDK/IcnKZMICQyCVloaRWlMJs/w/vG8mRBWJ/
-         2mhn8hrm6p6wbBbR251klQqnO/dC6YP0KH6CgZV0UR3Jy7UptLQeoUoFY2/OnooeOnK8
-         ZrFIGeMR08Ukr5zFahivhk/qzzbGdValT3FlaVGf+be0Oo3ERDuEioEc8HE8f23/yKko
-         jF3si49Hu9pz+bdoh8NlpOXTA+KF1LZXrn5xyHYI9dVyDr2MvuIhue1vFHQolUVLX6pM
-         O2y2gcgwGzZALSaEL/ehjs+ZpM1rPBjv5UMHrw5nO5mogz2Q66cHa91VJB1zkxD+ywAM
-         K32w==
-X-Gm-Message-State: AOAM5307yvYcTd4+kuPzYU+J/2zHqOpno/vfsSPngaHrSeJE0sn5WDT4
-        PE+q3TLHB12sP1+P4C3o+jxKsA==
-X-Google-Smtp-Source: ABdhPJyYekwZMG+8JnnvjOeze0PtU9kmUGUw77NAnpt4KdPekwPaq5NofPFrBGFOfhl9DiucSf9AFA==
-X-Received: by 2002:aa7:da46:: with SMTP id w6mr50895220eds.261.1594121036582;
-        Tue, 07 Jul 2020 04:23:56 -0700 (PDT)
-Received: from myrica ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
-        by smtp.gmail.com with ESMTPSA id s1sm25488302edy.1.2020.07.07.04.23.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jul 2020 04:23:56 -0700 (PDT)
-Date:   Tue, 7 Jul 2020 13:23:44 +0200
-From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     iommu@lists.linux-foundation.org,
-        Kevin Tian <kevin.tian@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/4] iommu/vt-d: Report page request faults for guest
- SVA
-Message-ID: <20200707112344.GB159413@myrica>
-References: <20200706002535.9381-1-baolu.lu@linux.intel.com>
- <20200706002535.9381-4-baolu.lu@linux.intel.com>
+        Tue, 7 Jul 2020 07:25:41 -0400
+Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com [209.85.219.48])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 2A3D720B7188
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 04:25:39 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 2A3D720B7188
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1594121140;
+        bh=BKCVWRXZ9Ouj0n7PqqzxeeGd+C5Mkj0pv5/dEZdQLBo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=KHPHmp6MOjLDjSWpfdMLhmd3kPhW54SLhux4xCryDsPpaLs7/m+NhDkAzbJaf4LLa
+         5BJHl7M05taXyw1zCtwFQlR8zE4/4UZW+ITNHyFsVR3YePoMkzRMqMFIa5mbw14bu9
+         R0xhMHCCjpzzywRQ+BdunPV9kZilKKN+g0G+1h1s=
+Received: by mail-qv1-f48.google.com with SMTP id el4so14532807qvb.13
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 04:25:39 -0700 (PDT)
+X-Gm-Message-State: AOAM533fsjS5t1MKidElirPOUKxbzHJY62+zpbqOFLTL5UYXL31Wfq/0
+        7wkigznzalmX3wmDPlzMWCaM+J9j/osp/f6UJMs=
+X-Google-Smtp-Source: ABdhPJxvEFlnazCDXb2cYPOR5tRT5OGOgIi9kX280zN5a24Hw9bRN9xhHeezGiQMrH5qE4yklpe8eJPzAklsBpKgd+0=
+X-Received: by 2002:a0c:e3d0:: with SMTP id e16mr52296966qvl.250.1594121138978;
+ Tue, 07 Jul 2020 04:25:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200706002535.9381-4-baolu.lu@linux.intel.com>
+References: <20200706234045.9516-1-mcroce@linux.microsoft.com> <202007061852.5B9A0F9ED@keescook>
+In-Reply-To: <202007061852.5B9A0F9ED@keescook>
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+Date:   Tue, 7 Jul 2020 13:25:02 +0200
+X-Gmail-Original-Message-ID: <CAFnufp1WJxhE_Rj=+BdPwDhoKQe9kZCRVfpmgRiTxS2m7xKRjA@mail.gmail.com>
+Message-ID: <CAFnufp1WJxhE_Rj=+BdPwDhoKQe9kZCRVfpmgRiTxS2m7xKRjA@mail.gmail.com>
+Subject: Re: [PATCH] pstore/platform: build fix when crypto API are disabled
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 06, 2020 at 08:25:34AM +0800, Lu Baolu wrote:
-> A pasid might be bound to a page table from a VM guest via the iommu
-> ops.sva_bind_gpasid. In this case, when a DMA page fault is detected
-> on the physical IOMMU, we need to inject the page fault request into
-> the guest. After the guest completes handling the page fault, a page
-> response need to be sent back via the iommu ops.page_response().
-> 
-> This adds support to report a page request fault. Any external module
-> which is interested in handling this fault should regiester a notifier
-> callback.
-> 
-> Co-developed-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> Co-developed-by: Liu Yi L <yi.l.liu@intel.com>
-> Signed-off-by: Liu Yi L <yi.l.liu@intel.com>
-> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-> ---
-[...]
-> +static int
-> +intel_svm_prq_report(struct device *dev, struct page_req_dsc *desc)
-> +{
-> +	struct iommu_fault_event event;
-> +	u8 bus, devfn;
+On Tue, Jul 7, 2020 at 4:37 AM Kees Cook <keescook@chromium.org> wrote:
+>
+> On Tue, Jul 07, 2020 at 01:40:45AM +0200, Matteo Croce wrote:
+> > From: Matteo Croce <mcroce@microsoft.com>
+> >
+> > When building a kernel with CONFIG_PSTORE=y and CONFIG_CRYPTO not set,
+> > a build error happens:
+> >
+> >     ld: fs/pstore/platform.o: in function `pstore_dump':
+> >     platform.c:(.text+0x3f9): undefined reference to `crypto_comp_compress'
+> >     ld: fs/pstore/platform.o: in function `pstore_get_backend_records':
+> >     platform.c:(.text+0x784): undefined reference to `crypto_comp_decompress'
+> >
+> > This because some pstore code uses crypto_comp_(de)compress
+> > regardless of the CONFIG_CRYPTO status.
+> > Fix it by wrapping the (de)compress usage by IS_ENABLED(CONFIG_PSTORE_COMPRESS)
+>
+> I'm surprised this hasn't come up before in a randconfig! But I guess
+> it'd require a very lucky config: picking CONFIG_PSTORE but not
+> CONFIG_CRYPTO _and_ 0 of the many compression options in pstore. :P
+>
+> But yes, I can reproduce this with:
+>
+> # CONFIG_CRYPTO is not set
+> CONFIG_PSTORE=y
+> # CONFIG_PSTORE_DEFLATE_COMPRESS is not set
+> # CONFIG_PSTORE_LZO_COMPRESS is not set
+> # CONFIG_PSTORE_LZ4_COMPRESS is not set
+> # CONFIG_PSTORE_LZ4HC_COMPRESS is not set
+> # CONFIG_PSTORE_842_COMPRESS is not set
+> # CONFIG_PSTORE_ZSTD_COMPRESS is not set
+>
+> >
+> > Signed-off-by: Matteo Croce <mcroce@microsoft.com>
+> > ---
+> >  fs/pstore/platform.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/fs/pstore/platform.c b/fs/pstore/platform.c
+> > index a9e297eefdff..6022d8359f96 100644
+> > --- a/fs/pstore/platform.c
+> > +++ b/fs/pstore/platform.c
+> > @@ -436,7 +436,7 @@ static void pstore_dump(struct kmsg_dumper *dumper,
+> >                                         dst_size, &dump_size))
+> >                       break;
+> >
+> > -             if (big_oops_buf) {
+> > +             if (IS_ENABLED(CONFIG_PSTORE_COMPRESS) && big_oops_buf) {
+> >                       zipped_len = pstore_compress(dst, psinfo->buf,
+> >                                               header_size + dump_size,
+> >                                               psinfo->bufsize);
+> > @@ -668,7 +668,7 @@ static void decompress_record(struct pstore_record *record)
+> >       int unzipped_len;
+> >       char *unzipped, *workspace;
+> >
+> > -     if (!record->compressed)
+> > +     if (!IS_ENABLED(CONFIG_PSTORE_COMPRESS) || !record->compressed)
+> >               return;
+> >
+> >       /* Only PSTORE_TYPE_DMESG support compression. */
+> > --
+> > 2.26.2
+>
+> This report also reminds me that I want to stop hard-coding the possible
+> compressors[1].
+>
+> Regardless, for now, I'd like a slightly different patch, which pokes
+> pstore_compress() instead of doing it inline in pstore_dump():
+>
+>
+> diff --git a/fs/pstore/platform.c b/fs/pstore/platform.c
+> index a9e297eefdff..36714df37d5d 100644
+> --- a/fs/pstore/platform.c
+> +++ b/fs/pstore/platform.c
+> @@ -269,6 +269,9 @@ static int pstore_compress(const void *in, void *out,
+>  {
+>         int ret;
+>
+> +       if (!IS_ENABLED(CONFIG_PSTORE_COMPRESSION))
+> +               return -EINVAL;
 > +
-> +	memset(&event, 0, sizeof(struct iommu_fault_event));
-> +	bus = PCI_BUS_NUM(desc->rid);
-> +	devfn = desc->rid & 0xff;
-> +
-> +	/* Fill in event data for device specific processing */
-> +	event.fault.type = IOMMU_FAULT_PAGE_REQ;
-> +	event.fault.prm.addr = desc->addr;
-> +	event.fault.prm.pasid = desc->pasid;
-> +	event.fault.prm.grpid = desc->prg_index;
-> +	event.fault.prm.perm = prq_to_iommu_prot(desc);
-> +
-> +	/*
-> +	 * Set last page in group bit if private data is present,
-> +	 * page response is required as it does for LPIG.
-> +	 */
-> +	if (desc->lpig)
-> +		event.fault.prm.flags |= IOMMU_FAULT_PAGE_REQUEST_LAST_PAGE;
-> +	if (desc->pasid_present)
-> +		event.fault.prm.flags |= IOMMU_FAULT_PAGE_REQUEST_PASID_VALID;
+>         ret = crypto_comp_compress(tfm, in, inlen, out, &outlen);
+>         if (ret) {
+>                 pr_err("crypto_comp_compress failed, ret = %d!\n", ret);
+> @@ -668,7 +671,7 @@ static void decompress_record(struct pstore_record *record)
+>         int unzipped_len;
+>         char *unzipped, *workspace;
+>
+> -       if (!record->compressed)
+> +       if (!IS_ENABLED(CONFIG_PSTORE_COMPRESSION) || !record->compressed)
+>                 return;
+>
+>         /* Only PSTORE_TYPE_DMESG support compression. */
+>
+>
+>
+> Let me know if that works for you (it fixes it on my end).
+>
 
-Do you also need to set IOMMU_FAULT_PAGE_RESPONSE_NEEDS_PASID?  I added
-the flag to deal with devices that do not want a PASID value in their PRI
-response (bit 15 in the PCIe Page Request Status Register):
-https://lore.kernel.org/linux-iommu/20200616144712.748818-1-jean-philippe@linaro.org/
-(applied by Joerg for v5.9)
+Yes, it works for me!
 
-Grepping for pci_prg_resp_pasid_required() in intel/iommu.c it seems to
-currently reject devices that do not want a PASID in a PRI response, so I
-think you can set this flag unconditionally for now.
-
-Thanks,
-Jean
-
-> +	if (desc->priv_data_present) {
-> +		event.fault.prm.flags |= IOMMU_FAULT_PAGE_REQUEST_LAST_PAGE;
-> +		event.fault.prm.flags |= IOMMU_FAULT_PAGE_REQUEST_PRIV_DATA;
-> +		memcpy(event.fault.prm.private_data, desc->priv_data,
-> +		       sizeof(desc->priv_data));
-> +	}
-> +
-> +	return iommu_report_device_fault(dev, &event);
-> +}
+-- 
+per aspera ad upstream
