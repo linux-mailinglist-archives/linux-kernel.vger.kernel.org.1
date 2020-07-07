@@ -2,102 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45919216F37
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 16:48:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82971216F2F
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 16:47:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728329AbgGGOrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 10:47:37 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:1442 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726805AbgGGOrg (ORCPT
+        id S1728238AbgGGOrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 10:47:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726805AbgGGOrC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 10:47:36 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 067EkZcO062253;
-        Tue, 7 Jul 2020 10:47:05 -0400
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 324mcamrve-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Jul 2020 10:47:05 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 067EaWja027432;
-        Tue, 7 Jul 2020 14:47:02 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma02fra.de.ibm.com with ESMTP id 322hd83kwj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Jul 2020 14:47:02 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 067Ejj0g61472952
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 7 Jul 2020 14:45:45 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 07247A4055;
-        Tue,  7 Jul 2020 14:45:45 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3CDB2A4057;
-        Tue,  7 Jul 2020 14:45:44 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.148.202.169])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Tue,  7 Jul 2020 14:45:44 +0000 (GMT)
-Date:   Tue, 7 Jul 2020 17:45:42 +0300
-From:   Mike Rapoport <rppt@linux.ibm.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        ksummit <ksummit-discuss@lists.linuxfoundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "tech-board-discuss@lists.linuxfoundation.org" 
-        <tech-board-discuss@lists.linuxfoundation.org>,
-        Chris Mason <clm@fb.clm>
-Subject: Re: [Ksummit-discuss] [Tech-board-discuss] [PATCH] CodingStyle:
- Inclusive Terminology
-Message-ID: <20200707144542.GD9411@linux.ibm.com>
-References: <159389297140.2210796.13590142254668787525.stgit@dwillia2-desk3.amr.corp.intel.com>
- <CALCETrXewAK4_fpaJNDHJVDK9mUcjghA5HwYvZFQNYVfC9M+OQ@mail.gmail.com>
- <202007062234.A90F922DF@keescook>
- <DM6PR06MB3836FBAD65096AF63ACD3DB3EE660@DM6PR06MB3836.namprd06.prod.outlook.com>
- <202007070137.3ADBEDC@keescook>
- <20200707094147.213e0a82@oasis.local.home>
+        Tue, 7 Jul 2020 10:47:02 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05691C061755
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 07:47:03 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id 207so18339532pfu.3
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 07:47:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6tlOiGIRkrS9uWXKb/4KInO3FwOOML3Zfv95QQLQgxA=;
+        b=mcycau1CA3PGVmuNd65V5tCGl3ApSPtJrbE/ErOVtSLMBEKaIR4lsuHbGx92fdWHQA
+         z/4EKird63ykcm1xyAEG6izBjS654Gz1rwPI0q1EblqgXBOPDKdplyt6u7jjNq0DD7iR
+         FYvB/1GCHPLIXwcet91Mzm+3H+hLd+mlVF7UdoO87wpwKwaotWPfQJ/lOvYZjKvc6T6u
+         raiSWLiEFNvKQUN+xrtvb2OP+dQEzSQugcs5E7kLxlyy/p4eCE5MDh+HejzEh7kyFHwn
+         I3V/qz1nvQ438WiWGP0pO/d2ANtJQKpFfy1GCpEXFzOakzsi16kjsHeAPVQyVN/IAMlb
+         wBsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6tlOiGIRkrS9uWXKb/4KInO3FwOOML3Zfv95QQLQgxA=;
+        b=BqsBPdRBFnZ2Pa8NDIFyNrL0sroyv/VqnkW+VVS1Xr67j4MiD6crMxgfRW/6SVaEAM
+         Np6v1KmZzEdyZWL1tC4XtbLLjbvf5fAd8z3TDl9KrKCahtHxVDx0yq2CJdoT3LpdR47U
+         RgUXm+mJC6f2XKNFyGVFElQ4lEz/vpMOWFy5RGDJLhzNdHFJBNDCrPf/wlXn6mYoNPXY
+         Jmji+oDiNTjLUUt2CYCBrQFjD4AgH5wY6kRGyq0bR4EYwuAsP99o825TYEyg13bpiJ2P
+         EN0IQFqZFU0eehe1L4XkiF2mM6d+BBPlD+fn4APP/vUhFevNTrDV+oXP1wW8SGV7SZw7
+         6+zA==
+X-Gm-Message-State: AOAM531Pw6PFOmc4H6+LX6WL+A3COwu0Rjton62u/4IzXQAut2xiNJUz
+        6M3F1ZZKtAbZ4o6xz/a6yCoQi7vRlRvYWU3TyE2JDxWoKcw=
+X-Google-Smtp-Source: ABdhPJzXNAP4zmLUgmxKEMa/hRZ66mp6ZCyan4bLWtEasorvKTD6iVoIohV68lGda+SNRbxu/67OxzRwYvQrHcuzcQM=
+X-Received: by 2002:a63:924b:: with SMTP id s11mr43722681pgn.74.1594133222582;
+ Tue, 07 Jul 2020 07:47:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200707094147.213e0a82@oasis.local.home>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-07_08:2020-07-07,2020-07-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- phishscore=0 adultscore=0 clxscore=1015 mlxscore=0 bulkscore=0
- malwarescore=0 suspectscore=1 mlxlogscore=999 spamscore=0 impostorscore=0
- cotscore=-2147483648 lowpriorityscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2007070105
+References: <20200706093822.GC3874@shao2-debian> <BYAPR11MB263209A68F3804CC4436AB50FF690@BYAPR11MB2632.namprd11.prod.outlook.com>
+ <20200707094724.GD4087@alley> <BYAPR11MB26321D30CD63D3A03C7CDDF9FF660@BYAPR11MB2632.namprd11.prod.outlook.com>
+In-Reply-To: <BYAPR11MB26321D30CD63D3A03C7CDDF9FF660@BYAPR11MB2632.namprd11.prod.outlook.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 7 Jul 2020 17:46:46 +0300
+Message-ID: <CAHp75Vd-HwRVYnp9-C3uQVY-7m7t2sDBsX_3pK0tk4Njs=NmWg@mail.gmail.com>
+Subject: =?UTF-8?B?UmU6IOWbnuWkjTogW2t0aHJlYWRdIGE5MDQ3N2YwYzk6IFdBUk5JTkc6YXRfa2VybmVsLw==?=
+        =?UTF-8?B?a3RocmVhZC5jOiNrdGhyZWFkX3F1ZXVlX3dvcms=?=
+To:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 07, 2020 at 09:41:47AM -0400, Steven Rostedt wrote:
-> On Tue, 7 Jul 2020 01:54:23 -0700
-> Kees Cook <keescook@chromium.org> wrote:
-> 
-> > "I will whitelist the syscall" -- sounds correct to me (same for
-> > "it is whitelisted" or "it is in whitelisting mode").
-> > 
-> > "I will allow-list the syscall" -- sounds wrong to me (same for
-> > "it is allow-listed" or "it is in allow-listing mode").
-> 
-> That's because we can't just make "allow-list" a drop in replacement
-> for "whitelist" as I too (native English speaker) find it awkward. But
-> then we don't need to make it a drop in replacement.
-> 
-> "I will whitelist the syscall" will become "I will add the syscall to
-> the allow-list", which sounds perfectly fine, and even better than
-> saying "I will add the syscall to the whitelist".
+On Tue, Jul 7, 2020 at 1:05 PM Zhang, Qiang <Qiang.Zhang@windriver.com> wrote:
+> Thanks for you  reply Pter, if the patch was add , like you said there are more work to do. so need remove the patch from -mm tree.
 
-I will allow the syscall?
+Please do, I spent some time to understand why I got it (I admit, that
+most of it was direct investigation rather than googling, for which I
+spent less than quarter an hour).
 
-> -- Steve
+P.S. And please avoid top posting.
+
+
 
 -- 
-Sincerely yours,
-Mike.
+With Best Regards,
+Andy Shevchenko
