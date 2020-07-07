@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5627A21721C
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:43:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 308CA2171C8
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:43:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729312AbgGGP25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:28:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39848 "EHLO mail.kernel.org"
+        id S1730251AbgGGPZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:25:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39878 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730222AbgGGPZk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:25:40 -0400
+        id S1730239AbgGGPZm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 11:25:42 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AB45E2065D;
-        Tue,  7 Jul 2020 15:25:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F0C462088E;
+        Tue,  7 Jul 2020 15:25:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594135540;
-        bh=o3Xz5HN5ocfRuhm1bEGF/U2SLpEBOVfYaSCgd7MKTi4=;
+        s=default; t=1594135542;
+        bh=u5hZZbFiRo5yvKUXbV5TVcAyrT/PdqV0ctTx9a77ELA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j6RTLJKEv6yMucCVt5u0qguFz1ZR0a/lOaOLbYgUooBIA/rJa6wNNu4SGq4EasH8w
-         eVSYkda7kbqgsxQYY4J9mGL0Z2b0/v3pqQWzzsh5BRpRhbj08WBqpM17+Nc6ba8uvY
-         rFHyqVgTCSEx2+Gz09i3IlkTKmdiu8WGxuSTyV6Y=
+        b=BO3JBi2A2KnkJ0xUlg13Z+2aZXhOAiJKPOlWVrscxyK8eZPdZjsW39owCpklYp4V+
+         dN4EDX4gag446GBOkf3SOyq/ME0tCaIHd3AsjQ4iONYz4+vUNVZIsXEeSuVzGHY+Jt
+         CGO8Zhb6VJmEefbEKV0TYQtck+hMWVdW1xow0Umc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        stable@vger.kernel.org, Ricardo Ribalda <ribalda@kernel.org>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
         Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 081/112] i2c: algo-pca: Add 0x78 as SCL stuck low status for PCA9665
-Date:   Tue,  7 Jul 2020 17:17:26 +0200
-Message-Id: <20200707145804.847694481@linuxfoundation.org>
+Subject: [PATCH 5.7 082/112] i2c: designware: platdrv: Set class based on DMI
+Date:   Tue,  7 Jul 2020 17:17:27 +0200
+Message-Id: <20200707145804.885886148@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200707145800.925304888@linuxfoundation.org>
 References: <20200707145800.925304888@linuxfoundation.org>
@@ -45,41 +45,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Packham <chris.packham@alliedtelesis.co.nz>
+From: Ricardo Ribalda <ribalda@kernel.org>
 
-[ Upstream commit cd217f2300793a106b49c7dfcbfb26e348bc7593 ]
+[ Upstream commit db2a8b6f1df93d5311970cca03052c01178de674 ]
 
-The PCA9665 datasheet says that I2CSTA = 78h indicates that SCL is stuck
-low, this differs to the PCA9564 which uses 90h for this indication.
-Treat either 0x78 or 0x90 as an indication that the SCL line is stuck.
+Current AMD's zen-based APUs use this core for some of its i2c-buses.
 
-Based on looking through the PCA9564 and PCA9665 datasheets this should
-be safe for both chips. The PCA9564 should not return 0x78 for any valid
-state and the PCA9665 should not return 0x90.
+With this patch we re-enable autodetection of hwmon-alike devices, so
+lm-sensors will be able to work automatically.
 
-Fixes: eff9ec95efaa ("i2c-algo-pca: Add PCA9665 support")
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+It does not affect the boot-time of embedded devices, as the class is
+set based on the DMI information.
+
+DMI is probed only on Qtechnology QT5222 Industrial Camera Platform.
+
+DocLink: https://qtec.com/camera-technology-camera-platforms/
+Fixes: 3eddad96c439 ("i2c: designware: reverts "i2c: designware: Add support for AMD I2C controller"")
+Signed-off-by: Ricardo Ribalda <ribalda@kernel.org>
 Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Acked-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
 Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i2c/algos/i2c-algo-pca.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/i2c/busses/i2c-designware-platdrv.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/i2c/algos/i2c-algo-pca.c b/drivers/i2c/algos/i2c-algo-pca.c
-index 7f10312d1b88f..388978775be04 100644
---- a/drivers/i2c/algos/i2c-algo-pca.c
-+++ b/drivers/i2c/algos/i2c-algo-pca.c
-@@ -314,7 +314,8 @@ static int pca_xfer(struct i2c_adapter *i2c_adap,
- 			DEB2("BUS ERROR - SDA Stuck low\n");
- 			pca_reset(adap);
- 			goto out;
--		case 0x90: /* Bus error - SCL stuck low */
-+		case 0x78: /* Bus error - SCL stuck low (PCA9665) */
-+		case 0x90: /* Bus error - SCL stuck low (PCA9564) */
- 			DEB2("BUS ERROR - SCL Stuck low\n");
- 			pca_reset(adap);
- 			goto out;
+diff --git a/drivers/i2c/busses/i2c-designware-platdrv.c b/drivers/i2c/busses/i2c-designware-platdrv.c
+index 5536673060cc6..3a9c2cfbef974 100644
+--- a/drivers/i2c/busses/i2c-designware-platdrv.c
++++ b/drivers/i2c/busses/i2c-designware-platdrv.c
+@@ -234,6 +234,17 @@ static const u32 supported_speeds[] = {
+ 	I2C_MAX_STANDARD_MODE_FREQ,
+ };
+ 
++static const struct dmi_system_id dw_i2c_hwmon_class_dmi[] = {
++	{
++		.ident = "Qtechnology QT5222",
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Qtechnology"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "QT5222"),
++		},
++	},
++	{ } /* terminate list */
++};
++
+ static int dw_i2c_plat_probe(struct platform_device *pdev)
+ {
+ 	struct dw_i2c_platform_data *pdata = dev_get_platdata(&pdev->dev);
+@@ -349,7 +360,8 @@ static int dw_i2c_plat_probe(struct platform_device *pdev)
+ 
+ 	adap = &dev->adapter;
+ 	adap->owner = THIS_MODULE;
+-	adap->class = I2C_CLASS_DEPRECATED;
++	adap->class = dmi_check_system(dw_i2c_hwmon_class_dmi) ?
++					I2C_CLASS_HWMON : I2C_CLASS_DEPRECATED;
+ 	ACPI_COMPANION_SET(&adap->dev, ACPI_COMPANION(&pdev->dev));
+ 	adap->dev.of_node = pdev->dev.of_node;
+ 	adap->nr = -1;
 -- 
 2.25.1
 
