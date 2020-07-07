@@ -2,66 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CADC6216C0A
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 13:48:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83D2D216C05
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 13:48:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728544AbgGGLqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 07:46:11 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:37906 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727800AbgGGLqK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 07:46:10 -0400
-Received: from ip5f5af08c.dynamic.kabel-deutschland.de ([95.90.240.140] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jsm2Y-0004Dg-AK; Tue, 07 Jul 2020 11:46:05 +0000
-Date:   Tue, 7 Jul 2020 13:45:33 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, Sargun Dhillon <sargun@sargun.me>,
-        Christian Brauner <christian@brauner.io>,
-        Tycho Andersen <tycho@tycho.ws>,
-        David Laight <David.Laight@ACULAB.COM>,
-        Christoph Hellwig <hch@lst.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Matt Denton <mpdenton@google.com>,
-        Jann Horn <jannh@google.com>, Chris Palmer <palmer@google.com>,
-        Robert Sesek <rsesek@google.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>, Shuah Khan <shuah@kernel.org>,
-        netdev@vger.kernel.org, containers@lists.linux-foundation.org,
-        linux-api@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v6 2/7] fs: Move __scm_install_fd() to __receive_fd()
-Message-ID: <20200707114533.2gs37bcsbomjj4in@wittgenstein>
-References: <20200706201720.3482959-1-keescook@chromium.org>
- <20200706201720.3482959-3-keescook@chromium.org>
+        id S1728530AbgGGLpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 07:45:45 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49424 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728318AbgGGLpo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 07:45:44 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 85156AE35;
+        Tue,  7 Jul 2020 11:45:43 +0000 (UTC)
+Subject: Re: [PATCH v2 1/3] xen/privcmd: Corrected error handling path
+To:     Souptick Joarder <jrdr.linux@gmail.com>
+Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        sstabellini@kernel.org, xen-devel@lists.xenproject.org,
+        linux-kernel@vger.kernel.org, John Hubbard <jhubbard@nvidia.com>,
+        Paul Durrant <xadimgnik@gmail.com>
+References: <1594059372-15563-1-git-send-email-jrdr.linux@gmail.com>
+ <1594059372-15563-2-git-send-email-jrdr.linux@gmail.com>
+ <4bafb184-6f07-2582-3d0f-86fb53dd30dc@suse.com>
+ <CAFqt6zaWbEiozfkEuMvusxig15buuS1vjJaj4Q5okxNsRz_1vw@mail.gmail.com>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Message-ID: <7208d7fe-8822-8e9b-e531-05238ece0b02@suse.com>
+Date:   Tue, 7 Jul 2020 13:45:42 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200706201720.3482959-3-keescook@chromium.org>
+In-Reply-To: <CAFqt6zaWbEiozfkEuMvusxig15buuS1vjJaj4Q5okxNsRz_1vw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 06, 2020 at 01:17:15PM -0700, Kees Cook wrote:
-> In preparation for users of the "install a received file" logic outside
-> of net/ (pidfd and seccomp), relocate and rename __scm_install_fd() from
-> net/core/scm.c to __receive_fd() in fs/file.c, and provide a wrapper
-> named receive_fd_user(), as future patches will change the interface
-> to __receive_fd().
+On 07.07.20 13:40, Souptick Joarder wrote:
+> On Tue, Jul 7, 2020 at 3:05 PM Jürgen Groß <jgross@suse.com> wrote:
+>>
+>> On 06.07.20 20:16, Souptick Joarder wrote:
+>>> Previously, if lock_pages() end up partially mapping pages, it used
+>>> to return -ERRNO due to which unlock_pages() have to go through
+>>> each pages[i] till *nr_pages* to validate them. This can be avoided
+>>> by passing correct number of partially mapped pages & -ERRNO separately,
+>>> while returning from lock_pages() due to error.
+>>>
+>>> With this fix unlock_pages() doesn't need to validate pages[i] till
+>>> *nr_pages* for error scenario and few condition checks can be ignored.
+>>>
+>>> Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+>>> Cc: John Hubbard <jhubbard@nvidia.com>
+>>> Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+>>> Cc: Paul Durrant <xadimgnik@gmail.com>
+>>> ---
+>>>    drivers/xen/privcmd.c | 31 +++++++++++++++----------------
+>>>    1 file changed, 15 insertions(+), 16 deletions(-)
+>>>
+>>> diff --git a/drivers/xen/privcmd.c b/drivers/xen/privcmd.c
+>>> index a250d11..33677ea 100644
+>>> --- a/drivers/xen/privcmd.c
+>>> +++ b/drivers/xen/privcmd.c
+>>> @@ -580,13 +580,13 @@ static long privcmd_ioctl_mmap_batch(
+>>>
+>>>    static int lock_pages(
+>>>        struct privcmd_dm_op_buf kbufs[], unsigned int num,
+>>> -     struct page *pages[], unsigned int nr_pages)
+>>> +     struct page *pages[], unsigned int nr_pages, unsigned int *pinned)
+>>>    {
+>>>        unsigned int i;
+>>> +     int page_count = 0;
+>>
+>> Initial value shouldn't be needed, and ...
+>>
+>>>
+>>>        for (i = 0; i < num; i++) {
+>>>                unsigned int requested;
+>>> -             int pinned;
+>>
+>> ... you could move the declaration here.
+>>
+>> With that done you can add my
+>>
+>> Reviewed-by: Juergen Gross <jgross@suse.com>
 > 
-> Reviewed-by: Sargun Dhillon <sargun@sargun.me>
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
+> Ok. But does it going make any difference other than limiting scope ?
 
-Thanks!
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+Dropping the initializer surely does, and in the end page_count just
+replaces the former pinned variable, so why would we want to widen the
+scope with this patch?
+
+
+Juergen
