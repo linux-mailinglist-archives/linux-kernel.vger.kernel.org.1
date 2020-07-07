@@ -2,68 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 075EE216C4C
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 13:50:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84BE8216C52
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 13:51:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728901AbgGGLt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 07:49:28 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:37981 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727116AbgGGLt1 (ORCPT
+        id S1728053AbgGGLvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 07:51:07 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:16322 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726540AbgGGLvG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 07:49:27 -0400
-Received: from ip5f5af08c.dynamic.kabel-deutschland.de ([95.90.240.140] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jsm6G-0004ZI-Uh; Tue, 07 Jul 2020 11:49:25 +0000
-Date:   Tue, 7 Jul 2020 13:49:23 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, Sargun Dhillon <sargun@sargun.me>,
-        Christian Brauner <christian@brauner.io>,
-        Tycho Andersen <tycho@tycho.ws>,
-        David Laight <David.Laight@ACULAB.COM>,
-        Christoph Hellwig <hch@lst.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Matt Denton <mpdenton@google.com>,
-        Jann Horn <jannh@google.com>, Chris Palmer <palmer@google.com>,
-        Robert Sesek <rsesek@google.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>, Shuah Khan <shuah@kernel.org>,
-        netdev@vger.kernel.org, containers@lists.linux-foundation.org,
-        linux-api@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v6 3/7] fs: Add receive_fd() wrapper for __receive_fd()
-Message-ID: <20200707114923.6huxnb4e5vkl657a@wittgenstein>
-References: <20200706201720.3482959-1-keescook@chromium.org>
- <20200706201720.3482959-4-keescook@chromium.org>
+        Tue, 7 Jul 2020 07:51:06 -0400
+X-UUID: 6ab93ad5c0504bb0a3ec9e4173deeb98-20200707
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=3DMwV/Z8QcDuKhf5FKYuKYw/6Ttsn7FiYmhH2inyuNw=;
+        b=m598dhivIyoCn7FiBFuIc58LWXG6u95+ulaNEoVwAOdRRF2akGZ6x42B7UGAFNAt9Jt8y2yXjjZGi1BkHdFZtQ7jGTkUXIwNSOCdAm7/niV24oBxpH2m7UHzky0m9M8K35e5iN3+fIdYViyb6eaNpBK1tVDDCiH0NJkDh+j/kwY=;
+X-UUID: 6ab93ad5c0504bb0a3ec9e4173deeb98-20200707
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
+        (envelope-from <hanks.chen@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 1135623474; Tue, 07 Jul 2020 19:51:02 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 7 Jul 2020 19:50:58 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 7 Jul 2020 19:50:59 +0800
+Message-ID: <1594122662.24451.2.camel@mtkswgap22>
+Subject: Re: [PATCH v7] Add basic SoC Support for Mediatek MT6779 SoC
+From:   Hanks Chen <hanks.chen@mediatek.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sean Wang <sean.wang@kernel.org>,
+        mtk01761 <wendell.lin@mediatek.com>,
+        Andy Teng <andy.teng@mediatek.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        <wsd_upstream@mediatek.com>, CC Hwang <cc.hwang@mediatek.com>,
+        Loda Chou <loda.chou@mediatek.com>
+Date:   Tue, 7 Jul 2020 19:51:02 +0800
+In-Reply-To: <CACRpkdY+N17VNdzidBdo-Z8rgvRGMh=576-WPULgCmmuSJyN7g@mail.gmail.com>
+References: <1593694630-26604-1-git-send-email-hanks.chen@mediatek.com>
+         <CACRpkdY+N17VNdzidBdo-Z8rgvRGMh=576-WPULgCmmuSJyN7g@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200706201720.3482959-4-keescook@chromium.org>
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 06, 2020 at 01:17:16PM -0700, Kees Cook wrote:
-> For both pidfd and seccomp, the __user pointer is not used. Update
-> __receive_fd() to make writing to ufd optional via a NULL check. However,
-> for the receive_fd_user() wrapper, ufd is NULL checked so an -EFAULT
-> can be returned to avoid changing the SCM_RIGHTS interface behavior. Add
-> new wrapper receive_fd() for pidfd and seccomp that does not use the ufd
-> argument. For the new helper, the allocated fd needs to be returned on
-> success. Update the existing callers to handle it.
-> 
-> Reviewed-by: Sargun Dhillon <sargun@sargun.me>
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
+T24gVHVlLCAyMDIwLTA3LTA3IGF0IDEzOjQxICswMjAwLCBMaW51cyBXYWxsZWlqIHdyb3RlOg0K
+PiBPbiBUaHUsIEp1bCAyLCAyMDIwIGF0IDI6NTcgUE0gSGFua3MgQ2hlbiA8aGFua3MuY2hlbkBt
+ZWRpYXRlay5jb20+IHdyb3RlOg0KPiANCj4gPiBDaGFuZ2Ugc2luY2Ugdjc6DQo+ID4gQ29tbWl0
+ICJkdC1iaW5kaW5nczogcGluY3RybDogYWRkIGJpbmRpbmdzIGZvciBNZWRpYVRlayINCj4gPiAt
+LSBmaXggdHlwbyBhbmQgY2hhbmdlIG9yZGVyIG9mIHBhdGNoDQo+ID4gQ29tbWl0ICJjbGs6IG1l
+ZGlhdGVrOiBhZGQgVUFSVDAgY2xvY2sgc3VwcG9ydCINCj4gPiAtLSBhZGQgZml4ZXMgdGFnIGFu
+ZCByZWFsIG5hbWUNCj4gPiBDb21taXQgImFybTY0OiBkdHM6IGFkZCBkdHMgbm9kZXMgZm9yIE1U
+Njc3OSINCj4gPiAtLSBleHBvc2UgYWxsIHRocmVlIFVBUlRzIGluIHRoZSBkdHNpDQo+IA0KPiBP
+aCBJIHNlZSB0aGVyZSBhcmUgc3RpbGwgZGV2ZWxvcG1lbnQgb24gdGhpcyBwYXRjaCBzZXQgc28g
+SSB0b29rIG91dA0KPiB0aGUgcGF0Y2hlcyBJIGFwcGxpZWQgYWdhaW4uDQo+IA0KPiBXYWl0aW5n
+IGZvciB0aGUgZmluYWwgcmV2aWV3ZWQgdmVyc2lvbi4NCj4gDQpUaGFuayB5b3UgZm9yIHRha2lu
+ZyBhIGxvb2sgb3ZlciB0aGVzZSBzbyBxdWlja2x5IQ0KDQpHb3QgaXQsIEknbGwgc2VuZCBhIG5l
+d2VyIHZlcnNpb24uDQoNClRoYW5rcyENCg0KPiBZb3VycywNCj4gTGludXMgV2FsbGVpag0KDQo=
 
-Hm, I'm not sure why 2/7 and 3/7 aren't just one patch but ok. :)
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
