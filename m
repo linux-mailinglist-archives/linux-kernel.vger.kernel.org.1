@@ -2,73 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F00592163E8
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 04:22:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D84542163DE
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 04:21:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728121AbgGGCWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 22:22:07 -0400
-Received: from mga02.intel.com ([134.134.136.20]:6676 "EHLO mga02.intel.com"
+        id S1727097AbgGGCVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 22:21:21 -0400
+Received: from mga07.intel.com ([134.134.136.100]:30154 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727895AbgGGCWF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 22:22:05 -0400
-IronPort-SDR: KWQNpV+YPyOvkd5GJ/ywNlCVCMPpKPyNabod2wSfs/2jm+BdXMhItwC7wwMRBi6/rjcqiDV4yZ
- yUgeciUjVcLQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9674"; a="135774264"
+        id S1726681AbgGGCVV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Jul 2020 22:21:21 -0400
+IronPort-SDR: q+yYQk3py6SreB3YnA4yB2GAJPF0gfBEyUmEMMlERsF8XIo6TnvOzdEduVikvQizjHQfw0Pxnw
+ T9SvP3o0hfGA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9674"; a="212501153"
 X-IronPort-AV: E=Sophos;i="5.75,321,1589266800"; 
-   d="scan'208";a="135774264"
+   d="scan'208";a="212501153"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2020 19:22:04 -0700
-IronPort-SDR: tG5JIoIHQkYaGo7vJJHneMnx2pa7q2pA0mgQUuDXtK3T/KKUo9sY+qEe2OhLbrHZbUoidEQRv5
- nTvhIqzgjawg==
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2020 19:21:20 -0700
+IronPort-SDR: 1Tb4ZIn9NzcwMF4xQ2bPjw67O91GeE9Y169FBPjDXnsqgupoHxzuNpW7UHgtoTloBTsROnrXsH
+ jSYcU1ake7WA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,321,1589266800"; 
-   d="scan'208";a="357633804"
-Received: from unknown (HELO localhost.localdomain.bj.intel.com) ([10.238.156.127])
-  by orsmga001.jf.intel.com with ESMTP; 06 Jul 2020 19:21:59 -0700
-From:   Cathy Zhang <cathy.zhang@intel.com>
-To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org
-Cc:     pbonzini@redhat.com, sean.j.christopherson@intel.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, hpa@zytor.com, ricardo.neri-calderon@linux.intel.com,
-        kyung.min.park@intel.com, jpoimboe@redhat.com,
-        gregkh@linuxfoundation.org, ak@linux.intel.com,
-        dave.hansen@intel.com, tony.luck@intel.com,
-        ravi.v.shankar@intel.com, Cathy Zhang <cathy.zhang@intel.com>
-Subject: [PATCH v2 4/4] x86: Expose TSX Suspend Load Address Tracking
-Date:   Tue,  7 Jul 2020 10:16:23 +0800
-Message-Id: <1594088183-7187-5-git-send-email-cathy.zhang@intel.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1594088183-7187-1-git-send-email-cathy.zhang@intel.com>
-References: <1594088183-7187-1-git-send-email-cathy.zhang@intel.com>
+   d="scan'208";a="297198340"
+Received: from pakumpul-mobl.ger.corp.intel.com (HELO localhost) ([10.252.52.16])
+  by orsmga002.jf.intel.com with ESMTP; 06 Jul 2020 19:21:16 -0700
+Date:   Tue, 7 Jul 2020 05:21:14 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     torvalds@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        jmorris@namei.org, dhowells@redhat.com, peterhuewe@gmx.de
+Subject: [GIT PULL] tpmdd updates for Linux v5.8-rc5
+Message-ID: <20200707022114.GA112019@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-TSX Suspend Load Address Tracking is supported by intel processors,
-like Sapphire Rapids. Expose it in KVM supported cpuid.
+Hi,
 
-Signed-off-by: Cathy Zhang <cathy.zhang@intel.com>
----
- arch/x86/kvm/cpuid.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I quote directly the commit message to explain this PR:
 
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index e603aeb..dcf48cc 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -342,7 +342,7 @@ void kvm_set_cpu_caps(void)
- 		F(AVX512_4VNNIW) | F(AVX512_4FMAPS) | F(SPEC_CTRL) |
- 		F(SPEC_CTRL_SSBD) | F(ARCH_CAPABILITIES) | F(INTEL_STIBP) |
- 		F(MD_CLEAR) | F(AVX512_VP2INTERSECT) | F(FSRM) |
--		F(SERIALIZE)
-+		F(SERIALIZE) | F(TSX_LDTRK)
- 	);
- 
- 	/* TSC_ADJUST and ARCH_CAPABILITIES are emulated in software. */
--- 
-1.8.3.1
+    Revert commit e918e570415c ("tpm_tis: Remove the HID IFX0102")
 
+    Removing IFX0102 from tpm_tis was not a right move because both tpm_tis
+    and tpm_infineon use the same device ID. Revert the commit and add a
+    remark about a bug caused by commit 93e1b7d42e1e ("[PATCH] tpm: add HID
+    module parameter").
+
+A real fix requires quirks added to both drivers. It can probably wait
+until v5.9 as the bug has existed since 2006.
+
+/Jarkko
+
+The following changes since commit 786a2aa281f4c4ba424ea8b8ea1e85ab62c4a57c:
+
+  Revert commit e918e570415c ("tpm_tis: Remove the HID IFX0102") (2020-07-07 04:25:17 +0300)
+
+are available in the Git repository at:
+
+  git://git.infradead.org/users/jjs/linux-tpmdd.git tags/tpmdd-next-v5.8-rc5
+
+for you to fetch changes up to 786a2aa281f4c4ba424ea8b8ea1e85ab62c4a57c:
+
+  Revert commit e918e570415c ("tpm_tis: Remove the HID IFX0102") (2020-07-07 04:25:17 +0300)
+
+----------------------------------------------------------------
+tpmdd updates for Linux v5.8-rc5
+
+----------------------------------------------------------------
