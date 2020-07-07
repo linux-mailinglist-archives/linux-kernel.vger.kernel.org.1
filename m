@@ -2,156 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACAFB216B9B
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 13:33:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D32C4216B97
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 13:33:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728337AbgGGLdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 07:33:04 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:4818 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726757AbgGGLdD (ORCPT
+        id S1728190AbgGGLcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 07:32:47 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:17250 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726805AbgGGLcr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 07:33:03 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 067BWdYn173958;
-        Tue, 7 Jul 2020 07:32:54 -0400
+        Tue, 7 Jul 2020 07:32:47 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 067BVWH9037045;
+        Tue, 7 Jul 2020 07:32:42 -0400
 Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32486cs6gv-1
+        by mx0b-001b2d01.pphosted.com with ESMTP id 324fdh60ey-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Jul 2020 07:32:53 -0400
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 067BWkjb174617;
-        Tue, 7 Jul 2020 07:32:46 -0400
-Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32486cs65g-1
+        Tue, 07 Jul 2020 07:32:42 -0400
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 067BVxNo039374;
+        Tue, 7 Jul 2020 07:32:41 -0400
+Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 324fdh60em-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Jul 2020 07:32:46 -0400
-Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
-        by ppma05wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 067BUggu030281;
-        Tue, 7 Jul 2020 11:32:01 GMT
-Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
-        by ppma05wdc.us.ibm.com with ESMTP id 322hd8yc0v-1
+        Tue, 07 Jul 2020 07:32:41 -0400
+Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
+        by ppma02wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 067BTo5f000682;
+        Tue, 7 Jul 2020 11:32:40 GMT
+Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
+        by ppma02wdc.us.ibm.com with ESMTP id 324b3jcw4n-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Jul 2020 11:32:01 +0000
-Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 067BW0ZQ35717398
+        Tue, 07 Jul 2020 11:32:40 +0000
+Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
+        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 067BWev411338616
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 7 Jul 2020 11:32:00 GMT
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AA5D6B206A;
-        Tue,  7 Jul 2020 11:32:00 +0000 (GMT)
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B4F90B2066;
-        Tue,  7 Jul 2020 11:31:55 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.85.118.59])
-        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Tue,  7 Jul 2020 11:31:55 +0000 (GMT)
-Subject: Re: [RFC 1/3] perf jevents: Add support for parsing perchip/percore
- events
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Paul Clarke <pc@us.ibm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        maddy@linux.ibm.com, Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
-        Anju T Sudhakar <anju@linux.vnet.ibm.com>,
-        "Liang, Kan" <kan.liang@linux.intel.com>
-References: <20200625114718.229911-1-kjain@linux.ibm.com>
- <20200625114718.229911-2-kjain@linux.ibm.com>
- <CAP-5=fWG9rxObKJ38dQ=VUf3_mQbNDCTzgU1kkyw=9uVfBa+qw@mail.gmail.com>
- <512670c2-bb61-7c2f-68bc-7752499300c6@linux.ibm.com>
- <20200706125757.GA3424581@krava>
-From:   kajoljain <kjain@linux.ibm.com>
-Message-ID: <d9252cb6-7cb3-9783-a0f2-d879dcc894a7@linux.ibm.com>
-Date:   Tue, 7 Jul 2020 17:01:54 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Tue, 7 Jul 2020 11:32:40 GMT
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 59364AC059;
+        Tue,  7 Jul 2020 11:32:40 +0000 (GMT)
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 05E36AC05B;
+        Tue,  7 Jul 2020 11:32:40 +0000 (GMT)
+Received: from sofia.ibm.com (unknown [9.85.70.202])
+        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
+        Tue,  7 Jul 2020 11:32:39 +0000 (GMT)
+Received: by sofia.ibm.com (Postfix, from userid 1000)
+        id F3B282E48C1; Tue,  7 Jul 2020 17:02:35 +0530 (IST)
+Date:   Tue, 7 Jul 2020 17:02:35 +0530
+From:   Gautham R Shenoy <ego@linux.vnet.ibm.com>
+To:     "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>
+Cc:     Nicholas Piggin <npiggin@gmail.com>,
+        Anton Blanchard <anton@ozlabs.org>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michael Neuling <mikey@neuling.org>,
+        Vaidyanathan Srinivasan <svaidy@linux.vnet.ibm.com>,
+        linuxppc-dev@ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH 0/5] cpuidle-pseries: Parse extended CEDE information for
+ idle.
+Message-ID: <20200707113235.GM14120@in.ibm.com>
+Reply-To: ego@linux.vnet.ibm.com
+References: <1594120299-31389-1-git-send-email-ego@linux.vnet.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <20200706125757.GA3424581@krava>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1594120299-31389-1-git-send-email-ego@linux.vnet.ibm.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 X-TM-AS-GCONF: 00
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-07-07_07:2020-07-07,2020-07-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- impostorscore=0 mlxscore=0 clxscore=1015 adultscore=0 priorityscore=1501
- mlxlogscore=999 lowpriorityscore=0 suspectscore=0 bulkscore=0 phishscore=0
- cotscore=-2147483648 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2007070086
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 impostorscore=0
+ clxscore=1015 lowpriorityscore=0 priorityscore=1501 phishscore=0
+ cotscore=-2147483648 suspectscore=0 bulkscore=0 spamscore=0 mlxscore=0
+ mlxlogscore=988 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2007070086
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-
-On 7/6/20 6:27 PM, Jiri Olsa wrote:
-> On Fri, Jul 03, 2020 at 11:50:28AM +0530, kajoljain wrote:
+On Tue, Jul 07, 2020 at 04:41:34PM +0530, Gautham R. Shenoy wrote:
+> From: "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>
 > 
-> SNIP
+> Hi,
 > 
->>  ]
->> diff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
->> index fa86c5f997cc..dd2b14cc147c 100644
->> --- a/tools/perf/pmu-events/jevents.c
->> +++ b/tools/perf/pmu-events/jevents.c
->> @@ -53,6 +53,23 @@
->>  int verbose;
->>  char *prog;
->>  
->> +enum event_class {
->> +	PerChip = 0,
->> +	PerPkg = 1,
->> +	PerCore = 2
->> +};
 > 
-> could you please split this into patch that changes perpkg
-> into the class type string and another that adds new PerChip/PerCore?
 > 
-
-Hi Jiri,
-   Thanks for reviewing the prototype changes. Sure I will split it and
-and send next version out.
-
->> +
->> +enum event_class convert(const char* event_class_type) {
->> +
->> +	if (!strcmp(event_class_type, "PerCore"))
->> +		return PerCore;
->> +	else if (!strcmp(event_class_type, "PerChip"))
->> +		return PerChip;
->> +	else if (!strcmp(event_class_type, "PerPkg"))
->> +		return PerPkg;
->> +	return -1;
->> +}
->> +
->>  int eprintf(int level, int var, const char *fmt, ...)
->>  {
->>  
->> @@ -320,7 +337,7 @@ static void print_events_table_prefix(FILE *fp, const char *tblname)
->>  
->>  static int print_events_table_entry(void *data, char *name, char *event,
->>  				    char *desc, char *long_desc,
->> -				    char *pmu, char *unit, char *perpkg,
->> +				    char *pmu, char *unit, char *event_class_type,
 > 
-> maybe 'aggregation' or 'aggr_mode' would be better name than event_class_type?
->
+> Gautham R. Shenoy (5):
+>   cpuidle-pseries: Set the latency-hint before entering CEDE
+>   cpuidle-pseries: Add function to parse extended CEDE records
+>   cpuidle-pseries : Fixup exit latency for CEDE(0)
+>   cpuidle-pseries : Include extended CEDE states in cpuidle framework
+>   cpuidle-pseries: Block Extended CEDE(1) which adds no additional
+>     value.
 
-Sure, will update.
+Forgot to mention that these patches are on top of Nathan's series to
+remove extended CEDE offline and bogus topology update code :
+https://lore.kernel.org/linuxppc-dev/20200612051238.1007764-1-nathanl@linux.ibm.com/
 
-Thanks,
-Kajol Jain
- 
-> thanks,
-> jirka
+> 
+>  drivers/cpuidle/cpuidle-pseries.c | 268 +++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 266 insertions(+), 2 deletions(-)
+> 
+> -- 
+> 1.9.4
 > 
