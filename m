@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97D212177DA
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 21:23:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 107E72177DB
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 21:23:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728297AbgGGTXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 15:23:31 -0400
+        id S1728357AbgGGTXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 15:23:33 -0400
 Received: from mga12.intel.com ([192.55.52.136]:41456 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728036AbgGGTX2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 15:23:28 -0400
-IronPort-SDR: hQ/IiaxezlUf8mpQTHXhPz6KHh6VMVNOdq7NveNVwDGkmybYQPnLGkXaXP+DTVQQcSKt3Ubmcb
- Rxg/lTAjQ2YA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9675"; a="127277729"
+        id S1728253AbgGGTXa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 15:23:30 -0400
+IronPort-SDR: /lXcuxuwsYke13dT42eLx5/s9PYWTwVnWBbPmrTmPAHV9SAnJEhbeAmeqrDjGjcxLsQHkUbXQC
+ UpBh/ChdlQxQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9675"; a="127277734"
 X-IronPort-AV: E=Sophos;i="5.75,324,1589266800"; 
-   d="scan'208";a="127277729"
+   d="scan'208";a="127277734"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2020 12:23:28 -0700
-IronPort-SDR: SXk1Q10/dEw/B/Ix8SBzmmQ/EaXgCGiyRZzY/KFVwafU5RV1QwarZfIx8N5njtxEpEbarCmYED
- AVEqznV6nxUQ==
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2020 12:23:30 -0700
+IronPort-SDR: K33tZHbvjJJz+antiIUzSPM8PCsbQXC/0det2ssOH3Ql+QVJxbrxSEX7yRQ07VjmGga7TrT+CC
+ VjVS0Z0i/9qg==
 X-IronPort-AV: E=Sophos;i="5.75,324,1589266800"; 
-   d="scan'208";a="266915974"
+   d="scan'208";a="266915978"
 Received: from mrtorger-mobl1.amr.corp.intel.com (HELO pbossart-mobl3.amr.corp.intel.com) ([10.254.77.62])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2020 12:23:26 -0700
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2020 12:23:28 -0700
 From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To:     alsa-devel@alsa-project.org
 Cc:     tiwai@suse.de, broonie@kernel.org,
@@ -40,9 +40,9 @@ Cc:     tiwai@suse.de, broonie@kernel.org,
         SoC support),
         linux-amlogic@lists.infradead.org (open list:ARM/Amlogic Meson SoC
         support), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 2/3] ASoC: meson: axg-pdm: remove comparison always false warning
-Date:   Tue,  7 Jul 2020 14:23:09 -0500
-Message-Id: <20200707192310.98663-3-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 3/3] ASoC: meson: axg-spdifin: remove comparison always false warning
+Date:   Tue,  7 Jul 2020 14:23:10 -0500
+Message-Id: <20200707192310.98663-4-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200707192310.98663-1-pierre-louis.bossart@linux.intel.com>
 References: <20200707192310.98663-1-pierre-louis.bossart@linux.intel.com>
@@ -54,33 +54,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix W=1 warning.
+Fix W=1 warning:
 
-sound/soc/meson/axg-pdm.c: In function ‘axg_pdm_set_channel_mask’:
+sound/soc/meson/axg-spdifin.c: In function ‘axg_spdifin_write_mode_param’:
 include/linux/bits.h:26:28: warning: comparison of unsigned expression
 < 0 is always false [-Wtype-limits]
 
-cast the channel number to an int to avoid checking if an unsigned
-value is lower than zero.
+Cast width to an int to avoid checking if an unsigned value is lower
+than zero.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/meson/axg-pdm.c | 2 +-
+ sound/soc/meson/axg-spdifin.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/meson/axg-pdm.c b/sound/soc/meson/axg-pdm.c
-index bfd37d49a73e..8fe5b2563619 100644
---- a/sound/soc/meson/axg-pdm.c
-+++ b/sound/soc/meson/axg-pdm.c
-@@ -206,7 +206,7 @@ static int axg_pdm_set_sample_pointer(struct axg_pdm *priv)
- static void axg_pdm_set_channel_mask(struct axg_pdm *priv,
- 				     unsigned int channels)
- {
--	unsigned int mask = GENMASK(channels - 1, 0);
-+	unsigned int mask = GENMASK((int)channels - 1, 0);
+diff --git a/sound/soc/meson/axg-spdifin.c b/sound/soc/meson/axg-spdifin.c
+index d0d09f945b48..5fa411d4e985 100644
+--- a/sound/soc/meson/axg-spdifin.c
++++ b/sound/soc/meson/axg-spdifin.c
+@@ -154,7 +154,7 @@ static void axg_spdifin_write_mode_param(struct regmap *map, int mode,
+ 	reg = offset * regmap_get_reg_stride(map) + base_reg;
+ 	shift = width * (num_per_reg - 1 - rem);
  
- 	/* Put all channel in reset */
- 	regmap_update_bits(priv->map, PDM_CTRL,
+-	regmap_update_bits(map, reg, GENMASK(width - 1, 0) << shift,
++	regmap_update_bits(map, reg, GENMASK((int)width - 1, 0) << shift,
+ 			   val << shift);
+ }
+ 
 -- 
 2.25.1
 
