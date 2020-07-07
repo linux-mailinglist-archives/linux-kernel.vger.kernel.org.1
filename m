@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1C58216EFA
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 16:40:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B155D216EE1
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 16:39:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728709AbgGGOjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 10:39:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53642 "EHLO
+        id S1728316AbgGGOiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 10:38:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728247AbgGGOhy (ORCPT
+        with ESMTP id S1728208AbgGGOh4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 10:37:54 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79381C08C5E1
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 07:37:54 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id 17so46725423wmo.1
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 07:37:54 -0700 (PDT)
+        Tue, 7 Jul 2020 10:37:56 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C36EC061755
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 07:37:56 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id f7so42387481wrw.1
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 07:37:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=3bZAeFSvmpf6EGc1Rrn0+wIXui3QoI3bJ6wz54zb8+8=;
-        b=fHAcXDu+0UDjAnGsZCpwvS2l6qqAL8KmU4/hZ2TsI5PgHIV4qOmanuD2x2pHG+neQR
-         rVDB6l2WKwx9LfjnXOERwPjwChvNC3rPwvPr+IZCPGw1hiH87JNKO9AYKyl98eB2EGUz
-         EaMvmCzXOLeW7e/lm3xuIV1iuSBcuhwlYAnYJWnAcibJ0GskYWUh8FAWSVx+dzSMe7Jz
-         jBt66d+DjwY3WlVfNoEWnRqDkhkUdC7RN3K82BNOCWsgmoSOCy83skF07gRV0M6X9XRK
-         0HKwjDOHWQxu2qf4f+WgVopEsOm+Oursvksd+98NeUY3Xw6x/oVQqoKftaB0RuJU/SGk
-         HRJw==
+        bh=pNlZaQWHbaIHYTs0iyc+dtmoOXHEctaupDIvIqecIP4=;
+        b=lhNJKuTp0CYdX9JvN+4GWjIHCd6ykjyYPgZscDP4ZJr3VhIQgn6l+v31ttYzo82MNJ
+         9/FrRsudQ4kC1XEUyGzfI6aXU1wYt86SIEYwImLLbLkivHL+ZDpYENA6suz7PtNuVlLC
+         Pi1aRNWquTNYhR+LvPy7//58CtbJRZefqWVbRDfubzrRxeTcDhnMoQlUrtt/uMD3ibnE
+         /CH+Ukq5GCbNhM/5K3UFviwFYqEBkxwMJe4OG0YkJU5PmrdxXTKLKJdJGh7vwUriWyRl
+         gAe7+yi6dotNXn5Fkf0yGEnFrBKnhin1xRZ/tfzjZGdhoAG1t95ogiyxYbvIwOPyD3qX
+         YHrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=3bZAeFSvmpf6EGc1Rrn0+wIXui3QoI3bJ6wz54zb8+8=;
-        b=Hlnsg9+JrhPN6uLBF00gCd4sHvrUmWkn1ESPDgF7prL14LX3yeck4wvqBLZYea0YNf
-         XaSFGJBXgF2KunKvGnpp+CSe6bsAxYF9RcMV9jCQwmxPtNvdYPLlANU5rchQ8PBxTK5d
-         ydOvvATTf/E5boUMFs/xUUrcrDDmojp7We6uP2B3/t7ksJ70aUHofeQphUzOeeGd6eub
-         YFiJ6BMjjhUtXALPAaynD9vV8QEl3dOKRq4+FwOgqMb07MWfE3Jeay9gANYXwpUgJRHU
-         l15oQCrh8FPeqUOMNbm72XcfS66hBjvtou4w2ijheTqzefycM8ddQ19zeUjCU060WGu9
-         4W0w==
-X-Gm-Message-State: AOAM533Ur9uFBDkm8fD4rkSXAV57uPt3FlKWFaXBruHku+eFEB6z7xrw
-        RyhrLiTfxvyD8LlOzz5hApV2uHsjOAQ=
-X-Google-Smtp-Source: ABdhPJxrmoWb0AoG8dtrTzwDrsrwfZ+hGey8KGQBrgisAT3KZ2gvAURvfT4TDuU3PO43BZl1AP9usg==
-X-Received: by 2002:a05:600c:2154:: with SMTP id v20mr4914902wml.185.1594132673269;
-        Tue, 07 Jul 2020 07:37:53 -0700 (PDT)
+        bh=pNlZaQWHbaIHYTs0iyc+dtmoOXHEctaupDIvIqecIP4=;
+        b=RktiWUnX8VMYEn0ttpP/HyBqHC5p9zElWoyXZGhJu9AwkngXAMGqXQ/uZRZGSYyuvz
+         iOdOQGXRtYzuzJq8cdN+y3veludkBXHvINby0I5B59Dli29N95M/5N+AYkZmdl8rWuam
+         7PiATOUzcmCD+K5w2v8OL0L+PhjaxYXwTS1Owcqn3EFugTvV3zck77WGZNWfEtcVlwkd
+         t2ah6Mlrun56m5x6ZKl9V2WQ4smhpOYkd2delAzf/ofwTQ4yZ6OXUQ+RezRAId60vN3H
+         A6FPAYY32X+kE1xbkBHYDGu6bM/kUIvbvZGref60M1KnXrkwIp2u+Rl4YgXllnMjHhxI
+         saYg==
+X-Gm-Message-State: AOAM533R+ugTVbphO+tKI3zGWj22o6Dkh7M/RU0fdgFEOq1keDCFRSiR
+        Puu9m9syIDm7o8fZP0Vjyy1XQg==
+X-Google-Smtp-Source: ABdhPJzLNQlLqusIHk2mLl1/WjSQ/SnrLnewJMjZfIAz00+9GI0iQljPIoAb6xWPa8CAe0qK4FdXSQ==
+X-Received: by 2002:adf:e48f:: with SMTP id i15mr18532930wrm.327.1594132675143;
+        Tue, 07 Jul 2020 07:37:55 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.206])
-        by smtp.gmail.com with ESMTPSA id y16sm1276131wro.71.2020.07.07.07.37.52
+        by smtp.gmail.com with ESMTPSA id y16sm1276131wro.71.2020.07.07.07.37.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jul 2020 07:37:52 -0700 (PDT)
+        Tue, 07 Jul 2020 07:37:54 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz,
         tiwai@suse.com
@@ -57,11 +57,11 @@ Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Nicolin Chen <nicoleotsuka@gmail.com>,
         Xiubo Li <Xiubo.Lee@gmail.com>,
         Fabio Estevam <festevam@gmail.com>,
-        Markus Pargmann <mpa@pengutronix.de>,
+        Vladimir Barinov <vbarinov@embeddedalley.com>,
         linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH v2 06/28] ASoC: fsl: fsl_ssi_dbg: Demote obvious misuse of kerneldoc to standard comment blocks
-Date:   Tue,  7 Jul 2020 15:37:20 +0100
-Message-Id: <20200707143742.2959960-7-lee.jones@linaro.org>
+Subject: [PATCH v2 07/28] ASoC: fsl: fsl_spdif: Use correct formatting when denoting struct documentation
+Date:   Tue,  7 Jul 2020 15:37:21 +0100
+Message-Id: <20200707143742.2959960-8-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200707143742.2959960-1-lee.jones@linaro.org>
 References: <20200707143742.2959960-1-lee.jones@linaro.org>
@@ -72,48 +72,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No attempt has been made to document either of the demoted functions here.
+Kerneldoc expects struct documentation to start with "struct $NAME".
 
 Fixes the following W=1 kernel build warning(s):
 
- sound/soc/fsl/fsl_ssi_dbg.c:90: warning: Function parameter or member 'flag' not described in 'SIER_SHOW'
- sound/soc/fsl/fsl_ssi_dbg.c:90: warning: Function parameter or member 'name' not described in 'SIER_SHOW'
- sound/soc/fsl/fsl_ssi_dbg.c:99: warning: Function parameter or member 's' not described in 'fsl_ssi_stats_show'
- sound/soc/fsl/fsl_ssi_dbg.c:99: warning: Function parameter or member 'unused' not described in 'fsl_ssi_stats_show'
+ sound/soc/fsl/fsl_spdif.c:104: warning: cannot understand function prototype: 'struct fsl_spdif_priv '
 
 Cc: Timur Tabi <timur@kernel.org>
 Cc: Nicolin Chen <nicoleotsuka@gmail.com>
 Cc: Xiubo Li <Xiubo.Lee@gmail.com>
 Cc: Fabio Estevam <festevam@gmail.com>
-Cc: Markus Pargmann <mpa@pengutronix.de>
+Cc: Vladimir Barinov <vbarinov@embeddedalley.com>
 Cc: linuxppc-dev@lists.ozlabs.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- sound/soc/fsl/fsl_ssi_dbg.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/fsl/fsl_spdif.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/fsl_ssi_dbg.c b/sound/soc/fsl/fsl_ssi_dbg.c
-index 2a20ee23dc52d..2c46c55f0a882 100644
---- a/sound/soc/fsl/fsl_ssi_dbg.c
-+++ b/sound/soc/fsl/fsl_ssi_dbg.c
-@@ -78,7 +78,7 @@ void fsl_ssi_dbg_isr(struct fsl_ssi_dbg *dbg, u32 sisr)
- 		dbg->stats.tfe0++;
- }
+diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
+index 5b2689ae63d4d..7aa3bdec5b6b5 100644
+--- a/sound/soc/fsl/fsl_spdif.c
++++ b/sound/soc/fsl/fsl_spdif.c
+@@ -81,7 +81,7 @@ struct spdif_mixer_control {
+ };
  
--/**
-+/*
-  * Show the statistics of a flag only if its interrupt is enabled
+ /**
+- * fsl_spdif_priv: Freescale SPDIF private data
++ * struct fsl_spdif_priv - Freescale SPDIF private data
   *
-  * Compilers will optimize it to a no-op if the interrupt is disabled
-@@ -90,7 +90,7 @@ void fsl_ssi_dbg_isr(struct fsl_ssi_dbg *dbg, u32 sisr)
- 	} while (0)
- 
- 
--/**
-+/*
-  * Display the statistics for the current SSI device
-  *
-  * To avoid confusion, only show those counts that are enabled
+  * @fsl_spdif_control: SPDIF control data
+  * @cpu_dai_drv: cpu dai driver
 -- 
 2.25.1
 
