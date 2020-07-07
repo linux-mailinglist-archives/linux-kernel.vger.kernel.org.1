@@ -2,92 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 293F6216F39
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 16:48:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BB22216F50
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 16:50:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728348AbgGGOrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 10:47:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55228 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726805AbgGGOrp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 10:47:45 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44542C08C5E1
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 07:47:45 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id n24so32278420otr.13
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 07:47:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=sMQ6Ydbi+JLRxo2wUoaqNkEbroT35jIeSMVLdMnQJWE=;
-        b=KKEOd/zcLE2AXf5EazxiwBI3wxnMQokNu1T7spQD5pucgLYbBftQ5GJMo7eNlBy5Bg
-         1daQghNKmn3JNMiv+raekaRF5RbFEROANXZ3LlGN72LhRBAxRj9IBWmoxYrAhEMc5YNy
-         uIaNwdXjfS56SVk/E6viWXQUSXgt4+0f4F0J8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=sMQ6Ydbi+JLRxo2wUoaqNkEbroT35jIeSMVLdMnQJWE=;
-        b=aPeFcaFwwQLpGANg0AtXOx53u+zrEkXILX0tzDvrMar7951eIaRB7iVrrO6dGkLmcE
-         WxnaWbXeivtcafxW2cCkU6hQNKmqm8YwyOW1YS1N9kPHnc0Vs59RDUrmXYcGZgjIkwwv
-         phqj4CrAsGpFFyiDo0/kIy3y0jlE+hKqRnbjUtq5dC+UBnPvZYg3mQ1948WmpScrTc+H
-         6BmGNNqssotgNaoWhoBT0ZdmLTKjAHKLJwJipmGUuLWa+XyTUC52EXYaInrAJ2lTZADV
-         JumoImDVo1NLd1Uh8vX1tE4aDs76sNNDPC8bWNEYnMCdWEQ2Siuz3FgoR8s2GvHpubxx
-         86OA==
-X-Gm-Message-State: AOAM530l8q4o+KdX5n1H416HyyCRQefTWmJWn9Dgugp8NpMZrVoItxXz
-        C+qcKEhzLTR+rLD8G7ARIkBPYA==
-X-Google-Smtp-Source: ABdhPJyfUM4uWVUnXhjAo/DPvH6bOqAhnd77oFnO76HAeZaTPhavgaDuQOEPEUkEdS9dr48siBZaWA==
-X-Received: by 2002:a05:6830:1313:: with SMTP id p19mr42194391otq.132.1594133264580;
-        Tue, 07 Jul 2020 07:47:44 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id c206sm172930oob.22.2020.07.07.07.47.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Jul 2020 07:47:43 -0700 (PDT)
-Subject: Re: [PATCH v3 0/2] selftests: pidfd: prefer ksft_test_result_skip to
- ksft_exit_*
-To:     Christian Brauner <christian.brauner@ubuntu.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        christian@brauner.io, shuah@kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20200707101936.12052-1-pbonzini@redhat.com>
- <20200707135257.u65ggyr2hcgjfgyh@wittgenstein>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <0c56c23f-284c-6904-8403-b2183eae2574@linuxfoundation.org>
-Date:   Tue, 7 Jul 2020 08:47:42 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1728303AbgGGOuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 10:50:04 -0400
+Received: from foss.arm.com ([217.140.110.172]:54694 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726911AbgGGOuE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 10:50:04 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 74C90C0A;
+        Tue,  7 Jul 2020 07:50:03 -0700 (PDT)
+Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E36123F68F;
+        Tue,  7 Jul 2020 07:50:01 -0700 (PDT)
+Date:   Tue, 7 Jul 2020 15:49:55 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Rob Herring <robh@kernel.org>,
+        Andrew Murray <amurray@thegoodpenguin.co.uk>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>,
+        Remi Pommarel <repk@triplefau.lt>,
+        Tomasz Maciej Nowak <tmn505@gmail.com>,
+        Xogium <contact@xogium.me>, linux-pci@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: aardvark: Indicate error in 'val' when config read
+ fails
+Message-ID: <20200707144955.GA17980@e121166-lin.cambridge.arm.com>
+References: <20200601130315.18895-1-pali@kernel.org>
+ <20200619105618.aksoivu4gb5ex3s3@pali>
+ <20200707135311.GB17163@e121166-lin.cambridge.arm.com>
+ <20200707140244.uhmyoqd5mblz5ids@pali>
 MIME-Version: 1.0
-In-Reply-To: <20200707135257.u65ggyr2hcgjfgyh@wittgenstein>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200707140244.uhmyoqd5mblz5ids@pali>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/7/20 7:52 AM, Christian Brauner wrote:
-> On Tue, Jul 07, 2020 at 06:19:34AM -0400, Paolo Bonzini wrote:
->> Calling ksft_exit_* results in executing fewer tests than planned, which
->> is wrong for ksft_exit_skip or suboptimal (because it results in a bail
->> out) for ksft_exit_fail_msg.
->>
->> Using ksft_test_result_skip instead skips only one test and lets the
->> test plan proceed as promised by ksft_set_plan.
->>
->> Paolo
+On Tue, Jul 07, 2020 at 04:02:44PM +0200, Pali Rohár wrote:
+> On Tuesday 07 July 2020 14:53:11 Lorenzo Pieralisi wrote:
+> > On Fri, Jun 19, 2020 at 12:56:18PM +0200, Pali Rohár wrote:
+> > > Hello Lorenzo! Could you please review this patch?
+> > > 
+> > > On Monday 01 June 2020 15:03:15 Pali Rohár wrote:
+> > > > Most callers of config read do not check for return value. But most of the
+> > > > ones that do, checks for error indication in 'val' variable.
+> > > > 
+> > > > This patch updates error handling in advk_pcie_rd_conf() function. If PIO
+> > > > transfer fails then 'val' variable is set to 0xffffffff which indicates
+> > > > failture.
+> > > > 
+> > > > Signed-off-by: Pali Rohár <pali@kernel.org>
+> > > 
+> > > I should add credit for Bjorn as he found this issue
+> > 
+> > Could you provide a lore archive link to the relevant
+> > discussion please ? I will apply it then.
 > 
-> Thanks for fixing this, Paolo!
-> Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
-> 
-> Shuah, want me to take it or do you want to take it?
-> 
+> Hello Lorenzo! Here is link to the Bjorn's email:
+> https://lore.kernel.org/linux-pci/20200528162604.GA323482@bjorn-Precision-5520/
 
-I will apply it to my tree with Paolo's other patches in this series.
+Thanks applied to pci/aardvark.
 
-thanks,
--- Shuah
+Lorenzo
+
+> > Lorenzo
+> > 
+> > > Reported-by: Bjorn Helgaas <helgaas@kernel.org>
+> > > 
+> > > > ---
+> > > >  drivers/pci/controller/pci-aardvark.c | 4 +++-
+> > > >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > > > 
+> > > > diff --git a/drivers/pci/controller/pci-aardvark.c b/drivers/pci/controller/pci-aardvark.c
+> > > > index 53a4cfd7d377..783a7f1f2c44 100644
+> > > > --- a/drivers/pci/controller/pci-aardvark.c
+> > > > +++ b/drivers/pci/controller/pci-aardvark.c
+> > > > @@ -691,8 +691,10 @@ static int advk_pcie_rd_conf(struct pci_bus *bus, u32 devfn,
+> > > >  	advk_writel(pcie, 1, PIO_START);
+> > > >  
+> > > >  	ret = advk_pcie_wait_pio(pcie);
+> > > > -	if (ret < 0)
+> > > > +	if (ret < 0) {
+> > > > +		*val = 0xffffffff;
+> > > >  		return PCIBIOS_SET_FAILED;
+> > > > +	}
+> > > >  
+> > > >  	advk_pcie_check_pio_status(pcie);
+> > > >  
+> > > > -- 
+> > > > 2.20.1
+> > > > 
