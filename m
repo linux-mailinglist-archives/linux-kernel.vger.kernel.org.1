@@ -2,133 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63EEF216BE8
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 13:45:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CADC6216C0A
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 13:48:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728185AbgGGLo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 07:44:57 -0400
-Received: from lucky1.263xmail.com ([211.157.147.134]:51130 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725944AbgGGLo5 (ORCPT
+        id S1728544AbgGGLqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 07:46:11 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:37906 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727800AbgGGLqK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 07:44:57 -0400
-Received: from localhost (unknown [192.168.167.16])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 86B88C0994;
-        Tue,  7 Jul 2020 19:44:53 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-SKE-CHECKED: 0
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from [172.16.12.76] (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P22500T140639612159744S1594122293842809_;
-        Tue, 07 Jul 2020 19:44:54 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <7ed9b2a78b31790478278814a2e85862>
-X-RL-SENDER: hjc@rock-chips.com
-X-SENDER: hjc@rock-chips.com
-X-LOGIN-NAME: hjc@rock-chips.com
-X-FST-TO: hjc@rock-chips.com
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-DNS-TYPE: 0
-X-System-Flag: 0
-Subject: =?UTF-8?Q?Re=3a_=5bPATCH_v2_1/2=5d_drm=3a_drm=5ffourcc=3a_add_NV20_?=
- =?UTF-8?B?YW5kIE5WMzAgWVVWIGZvcm1hdHPjgJDor7fms6jmhI/vvIzpgq7ku7bnlLFsaW51?=
- =?UTF-8?Q?x-rockchip-bounces+sandy=2ehuang=3drock-chips=2ecom=40lists=2einf?=
- =?UTF-8?B?cmFkZWFkLm9yZ+S7o+WPkeOAkQ==?=
-To:     Jonas Karlman <jonas@kwiboo.se>,
-        =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
-        linux-rockchip@lists.infradead.org,
-        dri-devel@lists.freedesktop.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Ben Davis <ben.davis@arm.com>
-References: <20200607202521.18438-1-jonas@kwiboo.se>
- <20200706223009.1200-1-jonas@kwiboo.se>
- <20200706223009.1200-2-jonas@kwiboo.se>
-From:   Huang Jiachai <hjc@rock-chips.com>
-Message-ID: <8e4966d3-c57c-735a-d0e0-ca769c2d4f0e@rock-chips.com>
-Date:   Tue, 7 Jul 2020 19:44:53 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Tue, 7 Jul 2020 07:46:10 -0400
+Received: from ip5f5af08c.dynamic.kabel-deutschland.de ([95.90.240.140] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1jsm2Y-0004Dg-AK; Tue, 07 Jul 2020 11:46:05 +0000
+Date:   Tue, 7 Jul 2020 13:45:33 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, Sargun Dhillon <sargun@sargun.me>,
+        Christian Brauner <christian@brauner.io>,
+        Tycho Andersen <tycho@tycho.ws>,
+        David Laight <David.Laight@ACULAB.COM>,
+        Christoph Hellwig <hch@lst.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Matt Denton <mpdenton@google.com>,
+        Jann Horn <jannh@google.com>, Chris Palmer <palmer@google.com>,
+        Robert Sesek <rsesek@google.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>, Shuah Khan <shuah@kernel.org>,
+        netdev@vger.kernel.org, containers@lists.linux-foundation.org,
+        linux-api@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v6 2/7] fs: Move __scm_install_fd() to __receive_fd()
+Message-ID: <20200707114533.2gs37bcsbomjj4in@wittgenstein>
+References: <20200706201720.3482959-1-keescook@chromium.org>
+ <20200706201720.3482959-3-keescook@chromium.org>
 MIME-Version: 1.0
-In-Reply-To: <20200706223009.1200-2-jonas@kwiboo.se>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200706201720.3482959-3-keescook@chromium.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-在 2020/7/7 6:30, Jonas Karlman 写道:
-
-> DRM_FORMAT_NV20 and DRM_FORMAT_NV30 formats is the 2x1 and non-subsampled
-> variant of NV15, a 10-bit 2-plane YUV format that has no padding between
-> components. Instead, luminance and chrominance samples are grouped into 4s
-> so that each group is packed into an integer number of bytes:
->
-> YYYY = UVUV = 4 * 10 bits = 40 bits = 5 bytes
->
-> The '20' and '30' suffix refers to the optimum effective bits per pixel
-> which is achieved when the total number of luminance samples is a multiple
-> of 4.
->
-> V2: Added NV30 format
->
-> Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
+On Mon, Jul 06, 2020 at 01:17:15PM -0700, Kees Cook wrote:
+> In preparation for users of the "install a received file" logic outside
+> of net/ (pidfd and seccomp), relocate and rename __scm_install_fd() from
+> net/core/scm.c to __receive_fd() in fs/file.c, and provide a wrapper
+> named receive_fd_user(), as future patches will change the interface
+> to __receive_fd().
+> 
+> Reviewed-by: Sargun Dhillon <sargun@sargun.me>
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 > ---
->   drivers/gpu/drm/drm_fourcc.c  | 8 ++++++++
->   include/uapi/drm/drm_fourcc.h | 2 ++
->   2 files changed, 10 insertions(+)
->
-> diff --git a/drivers/gpu/drm/drm_fourcc.c b/drivers/gpu/drm/drm_fourcc.c
-> index 722c7ebe4e88..2daf8a304b53 100644
-> --- a/drivers/gpu/drm/drm_fourcc.c
-> +++ b/drivers/gpu/drm/drm_fourcc.c
-> @@ -278,6 +278,14 @@ const struct drm_format_info *__drm_format_info(u32 format)
->   		  .num_planes = 2, .char_per_block = { 5, 5, 0 },
->   		  .block_w = { 4, 2, 0 }, .block_h = { 1, 1, 0 }, .hsub = 2,
->   		  .vsub = 2, .is_yuv = true },
-> +		{ .format = DRM_FORMAT_NV20,		.depth = 0,
-> +		  .num_planes = 2, .char_per_block = { 5, 5, 0 },
-> +		  .block_w = { 4, 2, 0 }, .block_h = { 1, 1, 0 }, .hsub = 2,
-> +		  .vsub = 1, .is_yuv = true },
-> +		{ .format = DRM_FORMAT_NV30,		.depth = 0,
-> +		  .num_planes = 2, .char_per_block = { 5, 5, 0 },
-> +		  .block_w = { 4, 2, 0 }, .block_h = { 1, 1, 0 }, .hsub = 1,
-> +		  .vsub = 1, .is_yuv = true },
->   		{ .format = DRM_FORMAT_Q410,		.depth = 0,
->   		  .num_planes = 3, .char_per_block = { 2, 2, 2 },
->   		  .block_w = { 1, 1, 1 }, .block_h = { 1, 1, 1 }, .hsub = 0,
-> diff --git a/include/uapi/drm/drm_fourcc.h b/include/uapi/drm/drm_fourcc.h
-> index cbf92fdf2712..c8695673295c 100644
-> --- a/include/uapi/drm/drm_fourcc.h
-> +++ b/include/uapi/drm/drm_fourcc.h
-> @@ -242,6 +242,8 @@ extern "C" {
->    * index 1 = Cr:Cb plane, [39:0] Cr1:Cb1:Cr0:Cb0 little endian
->    */
->   #define DRM_FORMAT_NV15		fourcc_code('N', 'V', '1', '5') /* 2x2 subsampled Cr:Cb plane */
-> +#define DRM_FORMAT_NV20		fourcc_code('N', 'V', '2', '0') /* 2x1 subsampled Cr:Cb plane */
-> +#define DRM_FORMAT_NV30		fourcc_code('N', 'V', '3', '0') /* non-subsampled Cr:Cb plane */
->   
->   /*
->    * 2 plane YCbCr MSB aligned
 
-Reviewed-by: Sandy Huang <hjc@rock-chips.com>
-
--- 
-Best Regard
-
-黄家钗
-Sandy Huang
-Addr: 福州市鼓楼区铜盘路软件大道89号福州软件园A区21号楼(350003)
-       No. 21 Building, A District, No.89,software Boulevard Fuzhou,Fujian,PRC
-Tel：+86 0591-87884919  8690
-E-mail：hjc@rock-chips.com
-
-
-
+Thanks!
+Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
