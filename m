@@ -2,197 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73CD0217991
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 22:40:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB6A1217999
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 22:41:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728880AbgGGUkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 16:40:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728493AbgGGUkK (ORCPT
+        id S1728966AbgGGUl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 16:41:29 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:9051 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726273AbgGGUl2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 16:40:10 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5007C08C5DC
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 13:40:09 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id e64so39736055iof.12
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 13:40:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=6BcRRLzOR9a+EmqTy6ErKRyeDhziM18eSEgk9TnV5Yg=;
-        b=IQ2Ri285jvhwaFWJllN7Q9RHvfmiak2Yupr2qv/DT/f+pxd3w1HVP5xWzsWCSPuFda
-         VF5MBmEQHhhRva0nUZay4UpGEXn8CWI5lmUIndEXJaz6DbqnfRJwb1xLlHyxdRr52PST
-         lWdHUF9tLXdy55y6toJX8gYZck7SuqMGVMOBTL3QCSKRdQp6CrhEZPu9ZRpLPUHeIYZ9
-         AETpjxE475grhRKQ9wYVbKrSYCXCgo8L4fgLpm0c4JuZlO6Abi3lPQ/+AoABCPetJTGp
-         66spIEzwQWKJc2mPi8baE227fPgWFD+yhmTASzJxKHt6oxQglMxuyJq246/2+vM/lk7a
-         3Zhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6BcRRLzOR9a+EmqTy6ErKRyeDhziM18eSEgk9TnV5Yg=;
-        b=mQ9VuWykIkWlZ+z5hJ2KbOrEgyPMsO1PpbUBMtExDazifl2HKZrHpWvB8NeXIEjuNg
-         yTIDVFIOXifs2rMHP63VE4GPnYPm/YzrfvYvIBIzfmFyUrHZ5JR/Kxjroq63H61OQiBM
-         lq+YcF73gWi6vPArlsEYsTRjvvqOvHfcIFkYASAxDE52Upq/tpZi/TFV5IGvnYWxJMIO
-         AxoWeRtJ3GUqweuIAZYrqL2wNudnSUGjKVkJEbt+ANLP8cx3nlxDDPGOGCPPpLIDfRdT
-         jN1wCega3DTSKPguqhXbGwkTS0k3SAh7BktSjNP3p/I/OaqJehfVBxQMv+m1VGFd7RIN
-         A0Mw==
-X-Gm-Message-State: AOAM531wezTsTkrT7KR040tWZklPQKcOeKH3bKoHzXA2CC21cW7RctXv
-        TNF0My9HJ+fU/PBaIaEUyGwmJQ==
-X-Google-Smtp-Source: ABdhPJxebRGc83pzGSG/E6dbpIhDmfmgCpDogiz6BeHTBx5v4jcdBAvuJq2/4tx4nD3aGNga5j5iWw==
-X-Received: by 2002:a5e:c311:: with SMTP id a17mr3667434iok.12.1594154408972;
-        Tue, 07 Jul 2020 13:40:08 -0700 (PDT)
-Received: from [192.168.1.58] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id v4sm13400907ilo.44.2020.07.07.13.40.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Jul 2020 13:40:08 -0700 (PDT)
-Subject: Re: [PATCH v3 4/4] io_uring: add support for zone-append
-To:     Kanchan Joshi <joshi.k@samsung.com>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     viro@zeniv.linux.org.uk, bcrl@kvack.org, hch@infradead.org,
-        Damien.LeMoal@wdc.com, asml.silence@gmail.com,
-        linux-fsdevel@vger.kernel.org, mb@lightnvm.io,
-        linux-kernel@vger.kernel.org, linux-aio@kvack.org,
-        io-uring@vger.kernel.org, linux-block@vger.kernel.org,
-        Selvakumar S <selvakuma.s1@samsung.com>,
-        Nitesh Shetty <nj.shetty@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>
-References: <CGME20200705185227epcas5p16fba3cb92561794b960184c89fdf2bb7@epcas5p1.samsung.com>
- <1593974870-18919-5-git-send-email-joshi.k@samsung.com>
- <fe0066b7-5380-43ee-20b2-c9b17ba18e4f@kernel.dk>
- <20200705210947.GW25523@casper.infradead.org>
- <239ee322-9c38-c838-a5b2-216787ad2197@kernel.dk>
- <20200706141002.GZ25523@casper.infradead.org>
- <4a9bf73e-f3ee-4f06-7fad-b8f8861b0bc1@kernel.dk>
- <20200706143208.GA25523@casper.infradead.org>
- <20200707151105.GA23395@test-zns>
- <20200707155237.GM25523@casper.infradead.org>
- <20200707202342.GA28364@test-zns>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <7a44d9c6-bf7d-0666-fc29-32c3cba9d1d8@kernel.dk>
-Date:   Tue, 7 Jul 2020 14:40:06 -0600
+        Tue, 7 Jul 2020 16:41:28 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f04ddeb0003>; Tue, 07 Jul 2020 13:41:15 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Tue, 07 Jul 2020 13:41:28 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Tue, 07 Jul 2020 13:41:28 -0700
+Received: from [10.2.173.217] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 7 Jul
+ 2020 20:41:27 +0000
+Subject: Re: [RFC PATCH v2 11/18] media: tegra-video: Add support for external
+ sensor capture
+From:   Sowjanya Komatineni <skomatineni@nvidia.com>
+To:     Hans Verkuil <hverkuil@xs4all.nl>, <thierry.reding@gmail.com>,
+        <jonathanh@nvidia.com>, <frankc@nvidia.com>, <sakari.ailus@iki.fi>,
+        <robh+dt@kernel.org>, <helen.koike@collabora.com>
+CC:     <digetx@gmail.com>, <sboyd@kernel.org>,
+        <gregkh@linuxfoundation.org>, <linux-media@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-i2c@vger.kernel.org>
+References: <1592358094-23459-1-git-send-email-skomatineni@nvidia.com>
+ <1592358094-23459-12-git-send-email-skomatineni@nvidia.com>
+ <50deca28-c198-703c-96e2-82c53f48cd65@xs4all.nl>
+ <6ee18b4d-b63b-8053-1b7e-c3ec7c1d4956@nvidia.com>
+ <6846e5bb-db1d-c2ff-c52c-70a2094c5b50@nvidia.com>
+ <af11cb24-57b2-7326-ca29-e168dcbb8006@xs4all.nl>
+ <c08ea38f-7629-1800-fb74-a2f75daf2eb0@nvidia.com>
+Message-ID: <47134481-1aec-9c1b-0ed2-8e39158d69b5@nvidia.com>
+Date:   Tue, 7 Jul 2020 13:41:30 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <20200707202342.GA28364@test-zns>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <c08ea38f-7629-1800-fb74-a2f75daf2eb0@nvidia.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1594154475; bh=3JD+cbf92nOCDl9yh0tEY6/KCZDMVIf/ZS8FzKX/Zqo=;
+        h=X-PGP-Universal:Subject:From:To:CC:References:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
+         Content-Language;
+        b=XL1RmgBmV/8i+yhnhYs19d6ZfivjzLT16B06yXpptLXDj7tRGNjKcUcbkXw70R/HV
+         XY9R22fIu5r4na/LLCALERtnK9pLE289TEq1PfhlAbBCO6KOCndOhF0JztIXB4zI3b
+         r8L1+PxjSwiOV6aXmZuwWG02+XH9wHSgcTC033wrMJ3AtHG8vHCxs+8MpZ8ibVs0cN
+         pE+f3HBV4q1AjSyIo8o00p9EDes+Ilr5t03q6qN8XXUQ0MgIz52P5kX3jqMXLfqcRz
+         v2rCf4eZw+dmXgLj65ZrjJ7uFjAtK32ZG3hfaAsRlXMP+nCyRBGQCtB72932TzVKgA
+         x4dqV3eZ17MpQ==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/7/20 2:23 PM, Kanchan Joshi wrote:
-> On Tue, Jul 07, 2020 at 04:52:37PM +0100, Matthew Wilcox wrote:
->> On Tue, Jul 07, 2020 at 08:41:05PM +0530, Kanchan Joshi wrote:
->>> On Mon, Jul 06, 2020 at 03:32:08PM +0100, Matthew Wilcox wrote:
->>>> On Mon, Jul 06, 2020 at 08:27:17AM -0600, Jens Axboe wrote:
->>>>> On 7/6/20 8:10 AM, Matthew Wilcox wrote:
->>>>>> On Sun, Jul 05, 2020 at 03:12:50PM -0600, Jens Axboe wrote:
->>>>>>> On 7/5/20 3:09 PM, Matthew Wilcox wrote:
->>>>>>>> On Sun, Jul 05, 2020 at 03:00:47PM -0600, Jens Axboe wrote:
->>>>>>>>> On 7/5/20 12:47 PM, Kanchan Joshi wrote:
->>>>>>>>>> From: Selvakumar S <selvakuma.s1@samsung.com>
->>>>>>>>>>
->>>>>>>>>> For zone-append, block-layer will return zone-relative offset via ret2
->>>>>>>>>> of ki_complete interface. Make changes to collect it, and send to
->>>>>>>>>> user-space using cqe->flags.
->>>>>>
->>>>>>>> I'm surprised you aren't more upset by the abuse of cqe->flags for the
->>>>>>>> address.
->>>
->>> Documentation (https://protect2.fireeye.com/url?k=297dbcbf-74aee030-297c37f0-0cc47a31ce52-632d3561909b91fc&q=1&u=https%3A%2F%2Fkernel.dk%2Fio_uring.pdf) mentioned cqe->flags can carry
->>> the metadata for the operation. I wonder if this should be called abuse.
->>>
->>>>>>> Yeah, it's not great either, but we have less leeway there in terms of
->>>>>>> how much space is available to pass back extra data.
->>>>>>>
->>>>>>>> What do you think to my idea of interpreting the user_data as being a
->>>>>>>> pointer to somewhere to store the address?  Obviously other things
->>>>>>>> can be stored after the address in the user_data.
->>>>>>>
->>>>>>> I don't like that at all, as all other commands just pass user_data
->>>>>>> through. This means the application would have to treat this very
->>>>>>> differently, and potentially not have a way to store any data for
->>>>>>> locating the original command on the user side.
->>>>>>
->>>>>> I think you misunderstood me.  You seem to have thought I meant
->>>>>> "use the user_data field to return the address" when I actually meant
->>>>>> "interpret the user_data field as a pointer to where userspace
->>>>>> wants the address stored".
->>>>>
->>>>> It's still somewhat weird to have user_data have special meaning, you're
->>>>> now having the kernel interpret it while every other command it's just
->>>>> an opaque that is passed through.
->>>>>
->>>>> But it could of course work, and the app could embed the necessary
->>>>> u32/u64 in some other structure that's persistent across IO. If it
->>>>> doesn't have that, then it'd need to now have one allocated and freed
->>>>> across the lifetime of the IO.
->>>>>
->>>>> If we're going that route, it'd be better to define the write such that
->>>>> you're passing in the necessary information upfront. In syscall terms,
->>>>> then that'd be something ala:
->>>>>
->>>>> ssize_t my_append_write(int fd, const struct iovec *iov, int iovcnt,
->>>>> 			off_t *offset, int flags);
->>>>>
->>>>> where *offset is copied out when the write completes. That removes the
->>>>> need to abuse user_data, with just providing the storage pointer for the
->>>>> offset upfront.
+
+On 7/7/20 1:29 PM, Sowjanya Komatineni wrote:
+>
+> On 7/7/20 12:35 PM, Hans Verkuil wrote:
+>> On 07/07/2020 21:25, Sowjanya Komatineni wrote:
+>>> On 7/7/20 12:01 PM, Sowjanya Komatineni wrote:
 >>>>
->>>> That works for me!  In io_uring terms, would you like to see that done
->>>> as adding:
+>>>> On 7/6/20 2:10 AM, Hans Verkuil wrote:
+>>>>>> +static void tegra_vi_graph_cleanup(struct tegra_vi *vi)
+>>>>>> +{
+>>>>>> +=C2=A0=C2=A0=C2=A0 struct tegra_vi_channel *chan;
+>>>>>> +
+>>>>>> +=C2=A0=C2=A0=C2=A0 list_for_each_entry(chan, &vi->vi_chans, list) {
+>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 video_unregister_device(=
+&chan->video);
+>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mutex_lock(&chan->video_=
+lock);
+>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 vb2_queue_release(&chan-=
+>queue);
+>>>>> No need for this since this is done in vb2_fop_release().
+>>>>>
+>>>>> In fact, vb2_queue_release should never be called by drivers. Just=20
+>>>>> using
+>>>>> vb2_fop_release or __vb2_fop_release is sufficient.
+>>>>>
+>>>>> The confusion is due to the fact that the name suggests that=20
+>>>>> vb2_queue_release
+>>>>> has to be balanced with vb2_queue_init, but that's not the case.=20
+>>>>> Perhaps
+>>>>> vb2_queue_stop or something like that might be a better name. I'll=20
+>>>>> have to
+>>>>> think about this since I see that a lot of drivers do this wrong.
+>>>>>
+>>>>>> + mutex_unlock(&chan->video_lock);
+>>>>>> + v4l2_async_notifier_unregister(&chan->notifier);
+>>>>>> + v4l2_async_notifier_cleanup(&chan->notifier);
+>>>>>> +=C2=A0=C2=A0=C2=A0 }
+>>>>>> +}
+>>>>>> +
+>>>> vb2_queue_release() here is called to stop streaming a head before=20
+>>>> media links are removed in case of when driver unbind happens while
+>>>> userspace application holds video device with active streaming in=20
+>>>> progress.
 >>>>
->>>>        union {
->>>>                __u64   off;    /* offset into file */
->>>> +		__u64   *offp;	/* appending writes */
->>>>                __u64   addr2;
->>>>        };
->>> But there are peformance implications of this approach?
->>> If I got it right, the workflow is: - Application allocates 64bit of space,
->>> writes "off" into it and pass it
->>>  in the sqe->addr2
->>> - Kernel first reads sqe->addr2, reads the value to know the intended
->>>  write-location, and stores the address somewhere (?) to be used during
->>>  completion. Storing this address seems tricky as this may add one more
->>>  cacheline (in io_kiocb->rw)?
+>>>> Without vb2_queue_release() here streaming will be active during=20
+>>>> the driver unbind and by the time vb2_queue_release() happens from
+>>>> vb2_fop_release(), async notifiers gets unregistered and media=20
+>>>> links will be removed which causes channel stop stream to crash as=20
+>>>> we can't
+>>>> retrieve sensor subdev=C2=A0 thru media entity pads to execute s_strea=
+m=20
+>>>> on subdev.
+>>>>
+>>> I think we don't need async notifier unbind. Currently media links=20
+>>> are removed during unbind so during notifier unregister all subdevs=20
+>>> gets
+>>> unbind and links removed.
+>>>
+>>> media_device_unregister during video device release callback takes=20
+>>> care of media entity unregister and removing links.
+>>>
+>>> So, will try by removing notifier unbind along with removing=20
+>>> vb2_queue_release during cleanup.
+>>>
+>> I actually wonder if vb2_queue_release shouldn't be called from=20
+>> video_unregister_device.
 >>
->> io_kiocb is:
->>        /* size: 232, cachelines: 4, members: 19 */
->>        /* forced alignments: 1 */
->>        /* last cacheline: 40 bytes */
->> so we have another 24 bytes before io_kiocb takes up another cacheline.
->> If that's a serious problem, I have an idea about how to shrink struct
->> kiocb by 8 bytes so struct io_rw would have space to store another
->> pointer.
-> Yes, io_kiocb has room. Cache-locality wise whether that is fine or
-> it must be placed within io_rw - I'll come to know once I get to
-> implement this. Please share the idea you have, it can come handy.
+>> I'll look into this tomorrow.
+>>
+>> Regards,
+>>
+>> =C2=A0=C2=A0=C2=A0=C2=A0Hans
+>
+> Thanks Hans.
+>
+> Tried without notifier unbind to remove media links and I still see=20
+> crash due to below diff reason now.
+>
+> With userspace app holding video device node with active streaming in=20
+> progress when I do driver unbind, v4l2_device release callback=20
+> tegra_v4l2_dev_release() happens prior to vb2_fops_release() ->=20
+> vb2_queue_release().
+>
+> All channels resources and channel memory is freed during v4l2_device=20
+> release callback.
+>
+> Letting vb2_queue_release() to happen thru vb2_fops_release() causes=20
+> crash as stop streaming tries to retrieve subdev thru channel media=20
+> pads and channel memory is freed by that time.
+>
+> So, doing vb2_queue_release() during driver unbind -> tegra_vi_exit()=20
+> -> tegra_vi_graph_cleanup(), stops subdev stream properly and then on=20
+> v4l2_device release channel memory gets freed and this works which is=20
+> the existing implementation in the patch.
+>
+> I remember adding vb2_queue_release() during graph cleanup for TPG as=20
+> well for the same reason to allow driver unbind while holding video=20
+> device from user space so media pad can be accessible to stop stream=20
+> before channel cleanup.
 
-Except it doesn't, I'm not interested in adding per-request type fields
-to the generic part of it. Before we know it, we'll blow past the next
-cacheline.
+v4l2_dev release() should definitely happen in the last after=20
+vb2_fops_release(). Will add more debugs and confirm on what I observed=20
+as something happened with timestamps on log on my side so I doubt my=20
+above observation after removing notifier unbind to remove media links.
 
-If we can find space in the kiocb, that'd be much better. Note that once
-the async buffered bits go in for 5.9, then there's no longer a 4-byte
-hole in struct kiocb.
+Will check and get back..
 
->> ... we've just done an I/O.  Concern about an extra pointer access
->> seems misplaced?
-> 
-> I was thinking about both read-from (submission) and write-to
-> (completion) from user-space pointer, and all those checks APIs
-> (get_user, copy_from_user) perform.....but when seen against I/O (that
-> too direct), it does look small. Down the line it may matter for cached-IO
-> but I get your point. 
-
-Really don't think that matters at all.
-
--- 
-Jens Axboe
-
+>
+> Regards,
+>
+> Sowjanya
+>
