@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41902217194
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:42:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41F3F2171FB
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:43:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729803AbgGGPWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:22:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34438 "EHLO mail.kernel.org"
+        id S1728504AbgGGP1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:27:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41662 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729791AbgGGPWF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:22:05 -0400
+        id S1730350AbgGGP1N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 11:27:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 31B39206E2;
-        Tue,  7 Jul 2020 15:22:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8CB9C2083B;
+        Tue,  7 Jul 2020 15:27:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594135324;
-        bh=pOz1h0Kui2vd4TQTtCN/LUp1rK8LonyhxFM4eNU/vBQ=;
+        s=default; t=1594135633;
+        bh=OPqoMn+/06zTJ/IhQ4HFgXBDX7x8RWNi3teDAPSeLTI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QIfuaEVJrJJ0FU73iXlHgr1gZ8D9Kl57Psqfy7QOt/cIL42LLZXKn63mbKvVBEAaC
-         XCvEZ/wS2JdxgPecYxcWG0tPPOac+dD6pubRUuBFy2hBRuKv+3KWE3QaPyJb5oYQHk
-         SWCdoZVFANRNOy6m26o8so6qARrohC23/XzaX+GI=
+        b=trQR4ks0uSSRNm3b9n3zGFpmcgGUjM1CQHosT2wbCsRgAnzTyJ3K4dGOlYKuXzoYp
+         WZZw6M9gM9CtfLdEEwEaOMpAn+8kZZJWe/0LQy8SlkJFUoLuH+uH51b+LLNlFp0IOa
+         y7cq3oOEXVeLM9bQw0TkE0X8ejUH7iqHShNvexHE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.4 61/65] mm, compaction: fully assume capture is not NULL in compact_zone_order()
+        stable@vger.kernel.org,
+        =?UTF-8?q?Jan=20Kundr=C3=A1t?= <jan.kundrat@cesnet.cz>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 5.7 095/112] hwmon: (pmbus) Fix page vs. register when accessing fans
 Date:   Tue,  7 Jul 2020 17:17:40 +0200
-Message-Id: <20200707145755.418273739@linuxfoundation.org>
+Message-Id: <20200707145805.496172289@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200707145752.417212219@linuxfoundation.org>
-References: <20200707145752.417212219@linuxfoundation.org>
+In-Reply-To: <20200707145800.925304888@linuxfoundation.org>
+References: <20200707145800.925304888@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,87 +44,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vlastimil Babka <vbabka@suse.cz>
+From: Jan Kundrát <jan.kundrat@cesnet.cz>
 
-commit 6467552ca64c4ddd2b83ed73192107d7145f533b upstream.
+commit b4c8af4c2a226fc9c25e1decbd26fdab1b0993ee upstream.
 
-Dan reports:
+Commit 16358542f32f ("hwmon: (pmbus) Implement multi-phase support")
+added support for multi-phase pmbus devices. However, when calling
+pmbus_add_sensor() for fans, the patch swapped the `page` and `reg`
+attributes. As a result, the fan speeds were reported as 0 RPM on my device.
 
-The patch 5e1f0f098b46: "mm, compaction: capture a page under direct
-compaction" from Mar 5, 2019, leads to the following Smatch complaint:
-
-    mm/compaction.c:2321 compact_zone_order()
-     error: we previously assumed 'capture' could be null (see line 2313)
-
-mm/compaction.c
-  2288  static enum compact_result compact_zone_order(struct zone *zone, int order,
-  2289                  gfp_t gfp_mask, enum compact_priority prio,
-  2290                  unsigned int alloc_flags, int classzone_idx,
-  2291                  struct page **capture)
-                                      ^^^^^^^
-
-  2313		if (capture)
-                    ^^^^^^^
-Check for NULL
-
-  2314			current->capture_control = &capc;
-  2315
-  2316		ret = compact_zone(&cc, &capc);
-  2317
-  2318		VM_BUG_ON(!list_empty(&cc.freepages));
-  2319		VM_BUG_ON(!list_empty(&cc.migratepages));
-  2320
-  2321		*capture = capc.page;
-                ^^^^^^^^
-Unchecked dereference.
-
-  2322		current->capture_control = NULL;
-  2323
-
-In practice this is not an issue, as the only caller path passes non-NULL
-capture:
-
-__alloc_pages_direct_compact()
-  struct page *page = NULL;
-  try_to_compact_pages(capture = &page);
-    compact_zone_order(capture = capture);
-
-So let's remove the unnecessary check, which should also make Smatch happy.
-
-Fixes: 5e1f0f098b46 ("mm, compaction: capture a page under direct compaction")
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Suggested-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
-Acked-by: Mel Gorman <mgorman@techsingularity.net>
-Link: http://lkml.kernel.org/r/18b0df3c-0589-d96c-23fa-040798fee187@suse.cz
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Jan Kundrát <jan.kundrat@cesnet.cz>
+Fixes: 16358542f32f ("hwmon: (pmbus) Implement multi-phase support")
+Cc: stable@vger.kernel.org # v5.7+
+Link: https://lore.kernel.org/r/449bc9e6c0e4305581e45905ce9d043b356a9932.1592904387.git.jan.kundrat@cesnet.cz
+[groeck: Fixed references to offending commit]
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- mm/compaction.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/hwmon/pmbus/pmbus_core.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---- a/mm/compaction.c
-+++ b/mm/compaction.c
-@@ -2310,8 +2310,7 @@ static enum compact_result compact_zone_
- 		.page = NULL,
- 	};
+--- a/drivers/hwmon/pmbus/pmbus_core.c
++++ b/drivers/hwmon/pmbus/pmbus_core.c
+@@ -1869,7 +1869,7 @@ static int pmbus_add_fan_ctrl(struct i2c
+ 	struct pmbus_sensor *sensor;
  
--	if (capture)
--		current->capture_control = &capc;
-+	current->capture_control = &capc;
+ 	sensor = pmbus_add_sensor(data, "fan", "target", index, page,
+-				  PMBUS_VIRT_FAN_TARGET_1 + id, 0xff, PSC_FAN,
++				  0xff, PMBUS_VIRT_FAN_TARGET_1 + id, PSC_FAN,
+ 				  false, false, true);
  
- 	ret = compact_zone(&cc, &capc);
+ 	if (!sensor)
+@@ -1880,14 +1880,14 @@ static int pmbus_add_fan_ctrl(struct i2c
+ 		return 0;
  
-@@ -2333,6 +2332,7 @@ int sysctl_extfrag_threshold = 500;
-  * @alloc_flags: The allocation flags of the current allocation
-  * @ac: The context of current allocation
-  * @prio: Determines how hard direct compaction should try to succeed
-+ * @capture: Pointer to free page created by compaction will be stored here
-  *
-  * This is the main entry point for direct page compaction.
-  */
+ 	sensor = pmbus_add_sensor(data, "pwm", NULL, index, page,
+-				  PMBUS_VIRT_PWM_1 + id, 0xff, PSC_PWM,
++				  0xff, PMBUS_VIRT_PWM_1 + id, PSC_PWM,
+ 				  false, false, true);
+ 
+ 	if (!sensor)
+ 		return -ENOMEM;
+ 
+ 	sensor = pmbus_add_sensor(data, "pwm", "enable", index, page,
+-				  PMBUS_VIRT_PWM_ENABLE_1 + id, 0xff, PSC_PWM,
++				  0xff, PMBUS_VIRT_PWM_ENABLE_1 + id, PSC_PWM,
+ 				  true, false, false);
+ 
+ 	if (!sensor)
+@@ -1929,7 +1929,7 @@ static int pmbus_add_fan_attributes(stru
+ 				continue;
+ 
+ 			if (pmbus_add_sensor(data, "fan", "input", index,
+-					     page, pmbus_fan_registers[f], 0xff,
++					     page, 0xff, pmbus_fan_registers[f],
+ 					     PSC_FAN, true, true, true) == NULL)
+ 				return -ENOMEM;
+ 
 
 
