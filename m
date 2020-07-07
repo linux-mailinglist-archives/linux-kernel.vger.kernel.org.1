@@ -2,107 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB04C21681F
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 10:18:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8546B216823
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 10:19:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727908AbgGGIST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 04:18:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50836 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726434AbgGGIST (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 04:18:19 -0400
-Received: from kernel.org (unknown [87.71.40.38])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D7FAA206C3;
-        Tue,  7 Jul 2020 08:18:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594109898;
-        bh=+PF6hJTZmNi14SpZ7fetiogdxipMfdQWwB9JQZMG5fs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JBW7R8NI69CCof8isf8K7twVpVD+N7D5tEzJVDKsOa3fvtZegYQbCN7j8nuCiQgm0
-         PJQ9FUMdnkWcpgfpqu6Ufw+rVahoD0au1RDqJEf844gVWN9ImvL45hxvpeASckkxZC
-         dKU+xpzNLtPUNCfL09P9X4A2gF9JfbEyHmbbKHEQ=
-Date:   Tue, 7 Jul 2020 11:18:11 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Barry Song <song.bao.hua@hisilicon.com>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linuxarm@huawei.com,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Roman Gushchin <guro@fb.com>
-Subject: Re: [PATCH v3] mm/hugetlb: avoid hardcoding while checking if cma is
- enable
-Message-ID: <20200707081811.GD9449@kernel.org>
-References: <20200707040204.30132-1-song.bao.hua@hisilicon.com>
+        id S1728140AbgGGITd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 04:19:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51484 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727951AbgGGITc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 04:19:32 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D141C08C5E3
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 01:19:32 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id p3so19659308pgh.3
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 01:19:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0pw/almlOM0nvvqI+5nYmAdy2Yj1U7UMDcdD61C+qaQ=;
+        b=LGKeNNtTd/zC9lyBS5S1OkdT3sNaE+OZVMRG3YUkLIM//s1udvtMwGfcRKkICTDfwX
+         ciRh8xDXHRSFwSI2d++7iFZs2KTVOZj83GEv3CXcpx2PnvTMoeW3qj/VyUi3VUXCJMRk
+         BZDk4YDxdLaSu4NokEYhbyiGlmhzlQzseg27I=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0pw/almlOM0nvvqI+5nYmAdy2Yj1U7UMDcdD61C+qaQ=;
+        b=iQL0Zg7DQQ6Q7MPczDxqx+PnCaiBbYTbsNB0pkdk8czRtrL23sqeauODb7deaMaQUg
+         NytHWe4qGN6XmfpYpy7E1mdjK6DxiApEKEmHB1HIkoyzBFJtROOZx2SdYXUvXOT9Namj
+         8MXpJgAz5IIyBY2adqm8X6d5Z8Fhx2Ugfba9xPGHNl3Acfl3whxMxKkSD2BuZh6gMGmS
+         8kPLrkatJmLA4IjdpYiPn/3F2tcgTa1J+z7aIexZ4HZP3nRgqyXl5Lyx3EuOYf4utJe8
+         585DJQXlxAUTLc1+rIpIvB34pvbIBjScjkyK2NsfV0v1yeNCl8u99gTrfZEnzb8+Iff2
+         9fJA==
+X-Gm-Message-State: AOAM533QzGYdxEUV2q84iOfZV9d3e50Cyl0envX3ho9L4vwxr4KTlEmJ
+        I42qXpxuGrnG6Zw6tkfVt0WYSA==
+X-Google-Smtp-Source: ABdhPJxa9aMEUJ/Mjzn5aqtaRqYpVKuj1envkrNds6yTMeT1CX3sElLVK5gBWNoqrM4QS8Ru/kca3w==
+X-Received: by 2002:a63:2d44:: with SMTP id t65mr33902187pgt.257.1594109971610;
+        Tue, 07 Jul 2020 01:19:31 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id 186sm15400415pfe.1.2020.07.07.01.19.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Jul 2020 01:19:30 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     James Morris <jmorris@namei.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Scott Branden <scott.branden@broadcom.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jessica Yu <jeyu@kernel.org>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Matthew Garrett <matthewgarrett@google.com>,
+        David Howells <dhowells@redhat.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        KP Singh <kpsingh@google.com>, Dave Olsthoorn <dave@bewaar.me>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Peter Jones <pjones@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Boyd <stephen.boyd@linaro.org>,
+        Paul Moore <paul@paul-moore.com>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: [PATCH 0/4] Fix misused kernel_read_file() enums
+Date:   Tue,  7 Jul 2020 01:19:22 -0700
+Message-Id: <20200707081926.3688096-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200707040204.30132-1-song.bao.hua@hisilicon.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 07, 2020 at 04:02:04PM +1200, Barry Song wrote:
-> hugetlb_cma[0] can be NULL due to various reasons, for example, node0 has
-> no memory. so NULL hugetlb_cma[0] doesn't necessarily mean cma is not
-> enabled. gigantic pages might have been reserved on other nodes.
-> 
-> Fixes: cf11e85fc08c ("mm: hugetlb: optionally allocate gigantic hugepages using cma")
-> Cc: Mike Kravetz <mike.kravetz@oracle.com>
-> Cc: Jonathan Cameron <jonathan.cameron@huawei.com>
-> Acked-by: Roman Gushchin <guro@fb.com>
-> Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+Hi,
 
-Acked-by: Mike Rapoport <rppt@linux.ibm.com>
+In looking for closely at the additions that got made to the
+kernel_read_file() enums, I noticed that FIRMWARE_PREALLOC_BUFFER
+and FIRMWARE_EFI_EMBEDDED were added, but they are not appropriate
+*kinds* of files for the LSM to reason about. They are a "how" and
+"where", respectively. Remove these improper aliases and refactor the
+code to adapt to the changes.
 
-> ---
->  -v3: add acked-by; make code more canonical 
-> 
->  mm/hugetlb.c | 16 +++++++++++++++-
->  1 file changed, 15 insertions(+), 1 deletion(-)
-> 
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 57ece74e3aae..d293c823121e 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -2546,6 +2546,20 @@ static void __init gather_bootmem_prealloc(void)
->  	}
->  }
->  
-> +bool __init hugetlb_cma_enabled(void)
-> +{
-> +#ifdef CONFIG_CMA
-> +	int node;
-> +
-> +	for_each_online_node(node) {
-> +		if (hugetlb_cma[node])
-> +			return true;
-> +	}
-> +#endif
-> +
-> +	return false;
-> +}
-> +
->  static void __init hugetlb_hstate_alloc_pages(struct hstate *h)
->  {
->  	unsigned long i;
-> @@ -2571,7 +2585,7 @@ static void __init hugetlb_hstate_alloc_pages(struct hstate *h)
->  
->  	for (i = 0; i < h->max_huge_pages; ++i) {
->  		if (hstate_is_gigantic(h)) {
-> -			if (IS_ENABLED(CONFIG_CMA) && hugetlb_cma[0]) {
-> +			if (hugetlb_cma_enabled()) {
->  				pr_warn_once("HugeTLB: hugetlb_cma is enabled, skip boot time allocation\n");
->  				break;
->  			}
-> -- 
-> 2.27.0
-> 
-> 
-> 
+Additionally adds in missing calls to security_kernel_post_read_file()
+in the platform firmware fallback path (to match the sysfs firmware
+fallback path) and in module loading. I considered entirely removing
+security_kernel_post_read_file() hook since it is technically unused,
+but IMA probably wants to be able to measure EFI-stored firmware images,
+so I wired it up and matched it for modules, in case anyone wants to
+move the module signature checks out of the module core and into an LSM
+to avoid the current layering violations.
+
+This touches several trees, and I suspect it would be best to go through
+James's LSM tree.
+
+Thanks!
+
+-Kees
+
+Kees Cook (4):
+  firmware_loader: EFI firmware loader must handle pre-allocated buffer
+  fs: Remove FIRMWARE_PREALLOC_BUFFER from kernel_read_file() enums
+  fs: Remove FIRMWARE_EFI_EMBEDDED from kernel_read_file() enums
+  module: Add hook for security_kernel_post_read_file()
+
+ drivers/base/firmware_loader/fallback_platform.c | 12 ++++++++++--
+ drivers/base/firmware_loader/main.c              |  5 ++---
+ fs/exec.c                                        |  7 ++++---
+ include/linux/fs.h                               |  3 +--
+ include/linux/lsm_hooks.h                        |  6 +++++-
+ kernel/module.c                                  |  7 ++++++-
+ security/integrity/ima/ima_main.c                |  6 ++----
+ 7 files changed, 30 insertions(+), 16 deletions(-)
 
 -- 
-Sincerely yours,
-Mike.
+2.25.1
+
