@@ -2,99 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2D4F2170F3
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:25:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A5982170AE
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:24:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729902AbgGGPWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:22:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35210 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729879AbgGGPWf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:22:35 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A274C20663;
-        Tue,  7 Jul 2020 15:22:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594135355;
-        bh=6WYzOr5brSnp6lfzxUmBTYt5J6ZgXM+oJW8YrfO0Y9U=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XAZXtn9sFkAhj3FAT+gyu4mlZEbUhR45kJZvNNtOWkFgsaoR5J/FnMn1+RFttWjos
-         n8PJ4oLLwAdWkox1o/JmS0F7K/tgV3XN4c7HeGs+LOJ6Af0oAxITlp7pqyAneP0zh0
-         rhE4NvQefBQSyPhSfdGVI2R7EJprUWmYa5ovoO0s=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Jones <pjones@redhat.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: [PATCH 5.4 65/65] efi: Make it possible to disable efivar_ssdt entirely
-Date:   Tue,  7 Jul 2020 17:17:44 +0200
-Message-Id: <20200707145755.613464447@linuxfoundation.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200707145752.417212219@linuxfoundation.org>
-References: <20200707145752.417212219@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1729415AbgGGPTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:19:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60206 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728442AbgGGPTo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 11:19:44 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C72ABC061755
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 08:19:44 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id d10so4840510pll.3
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 08:19:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=er6hsFquLTNA8VKEn24uMWaKfe7q89cZ0TTNSo/x5mA=;
+        b=l6BqCzfkcZOUtekgBlMOFzEoQdcPcAs3uILNTs2Rc6zKFxOoXGcFngHlzIUen+l2w4
+         edX+VgvnoybDAbGyjcunBSFrklD07tDq6aGeqP36T1S52x9ayjBAvcRyx1a7/R638gd0
+         ORLlomrwFY14zy1yc/CdmTaAfT/e6qYBgxkh6k+LBJXzmmW2cJ0p3UoNPj92WsaEECrb
+         io+RbC0J9ko7yYmpjSmgkJ2BVCQZQFX2fzn5GwfzsZ2sBrl4Mjjvs7QJHaY2m9OKZuEJ
+         XZmBuGe90ONz69yyNEZMsSp5BTPtaXPo+hgi9b4QFn+2sDc20U3KcBoPpTXWeiombnq7
+         Lkrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=er6hsFquLTNA8VKEn24uMWaKfe7q89cZ0TTNSo/x5mA=;
+        b=pF0+x7oy7sCwvGZs3hC/Y+PKB3IyezAn+c+dCP9B0mkK1+MZSnTXdZF0UWt3n146/+
+         Yo49oVxHyh3APQqJBXbF7vl/hKALMqp5ewu2UyPQzC4CeooWaeaXALcpAMtPVLEmmRrK
+         b69cjNVV+cZmQgTqgOmYWHUyKDzbcy4W6PAZjpwJ+dXQ+4ey/sNu25FPB9xhO7iWBXKP
+         JQc1882NFnhLnSH8UmfX2uvNhVGRs8mxpj32D/VeJAeAYlAqPgIjR44cHPVJruNJRGqB
+         9BjL50mkqGVI0Gc7YSI4zeWaYXzkH1zoKBe6I/9Jzb4Gz/asPx+gYMmnjGRirabbUe5J
+         bIhw==
+X-Gm-Message-State: AOAM531c1ccRN3SZfCDwwSChQzWwg9R0z292ptTcRIJcP+EIWIwCK9dr
+        zHLu+rZY2ajrxVYKBpWm5qE=
+X-Google-Smtp-Source: ABdhPJyo++a00C0KC/2zJLhYAA5YUxExURUW/Hz4ihgCnIQ0sgWSzcjPi7pGghI+EUrRuc6m1A3O6A==
+X-Received: by 2002:a17:90a:222d:: with SMTP id c42mr5140691pje.126.1594135184400;
+        Tue, 07 Jul 2020 08:19:44 -0700 (PDT)
+Received: from mail.google.com ([149.248.10.52])
+        by smtp.gmail.com with ESMTPSA id q24sm1295225pgg.3.2020.07.07.08.19.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Jul 2020 08:19:43 -0700 (PDT)
+Date:   Tue, 7 Jul 2020 23:19:31 +0800
+From:   Changbin Du <changbin.du@gmail.com>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Changbin Du <changbin.du@gmail.com>, Jiri Olsa <jolsa@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 09/15] perf ftrace: add support for tracing option
+ 'func_stack_trace'
+Message-ID: <20200707151931.ehgnhgl67cd73fjd@mail.google.com>
+References: <20200627133654.64863-1-changbin.du@gmail.com>
+ <20200627133654.64863-10-changbin.du@gmail.com>
+ <CAM9d7ch7gPmen8TJ9PbiK-QnQ_ojGVGqbR3bGYT4AMNW3Odp+A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAM9d7ch7gPmen8TJ9PbiK-QnQ_ojGVGqbR3bGYT4AMNW3Odp+A@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Jones <pjones@redhat.com>
+On Fri, Jul 03, 2020 at 03:30:32PM +0900, Namhyung Kim wrote:
+> On Sat, Jun 27, 2020 at 10:38 PM Changbin Du <changbin.du@gmail.com> wrote:
+> >
+> > This adds support to display call trace for function tracer. To do this,
+> > just specify a '--func-call-graph' option.
+> 
+> What if it's used with -G option?  Also it might be used only with
+> the -T option..  How about showing a warning if it's missing.. ?
+>
+All '--func-xxx' options are function tracer only. The warning message is a
+good idea.
 
-commit 435d1a471598752446a72ad1201b3c980526d869 upstream.
+> Thanks
+> Namhyung
+> 
+> >
+> > $ sudo perf ftrace -T vfs_read --func-call-graph
+> >  iio-sensor-prox-855   [003]   6168.369657: vfs_read <-ksys_read
+> >  iio-sensor-prox-855   [003]   6168.369677: <stack trace>
+> >  => vfs_read
+> >  => ksys_read
+> >  => __x64_sys_read
+> >  => do_syscall_64
+> >  => entry_SYSCALL_64_after_hwframe
+> >  ...
+> >
+> > Signed-off-by: Changbin Du <changbin.du@gmail.com>
 
-In most cases, such as CONFIG_ACPI_CUSTOM_DSDT and
-CONFIG_ACPI_TABLE_UPGRADE, boot-time modifications to firmware tables
-are tied to specific Kconfig options.  Currently this is not the case
-for modifying the ACPI SSDT via the efivar_ssdt kernel command line
-option and associated EFI variable.
-
-This patch adds CONFIG_EFI_CUSTOM_SSDT_OVERLAYS, which defaults
-disabled, in order to allow enabling or disabling that feature during
-the build.
-
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Peter Jones <pjones@redhat.com>
-Link: https://lore.kernel.org/r/20200615202408.2242614-1-pjones@redhat.com
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
----
- drivers/firmware/efi/Kconfig |   11 +++++++++++
- drivers/firmware/efi/efi.c   |    2 +-
- 2 files changed, 12 insertions(+), 1 deletion(-)
-
---- a/drivers/firmware/efi/Kconfig
-+++ b/drivers/firmware/efi/Kconfig
-@@ -219,3 +219,14 @@ config EFI_EARLYCON
- 	depends on SERIAL_EARLYCON && !ARM && !IA64
- 	select FONT_SUPPORT
- 	select ARCH_USE_MEMREMAP_PROT
-+
-+config EFI_CUSTOM_SSDT_OVERLAYS
-+	bool "Load custom ACPI SSDT overlay from an EFI variable"
-+	depends on EFI_VARS && ACPI
-+	default ACPI_TABLE_UPGRADE
-+	help
-+	  Allow loading of an ACPI SSDT overlay from an EFI variable specified
-+	  by a kernel command line option.
-+
-+	  See Documentation/admin-guide/acpi/ssdt-overlays.rst for more
-+	  information.
---- a/drivers/firmware/efi/efi.c
-+++ b/drivers/firmware/efi/efi.c
-@@ -217,7 +217,7 @@ static void generic_ops_unregister(void)
- 	efivars_unregister(&generic_efivars);
- }
- 
--#if IS_ENABLED(CONFIG_ACPI)
-+#ifdef CONFIG_EFI_CUSTOM_SSDT_OVERLAYS
- #define EFIVAR_SSDT_NAME_MAX	16
- static char efivar_ssdt[EFIVAR_SSDT_NAME_MAX] __initdata;
- static int __init efivar_ssdt_setup(char *str)
-
-
+-- 
+Cheers,
+Changbin Du
