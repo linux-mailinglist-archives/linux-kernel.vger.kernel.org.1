@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68A43216EE7
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 16:39:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 876A3216EF7
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 16:40:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728467AbgGGOiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 10:38:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53694 "EHLO
+        id S1728688AbgGGOjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 10:39:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728388AbgGGOiJ (ORCPT
+        with ESMTP id S1728397AbgGGOiK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 10:38:09 -0400
+        Tue, 7 Jul 2020 10:38:10 -0400
 Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9B6BC061755
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 07:38:08 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id f18so46802320wml.3
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 07:38:08 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E347DC061755
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 07:38:09 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id f139so46803824wmf.5
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 07:38:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=joYuVrqjbvze3xQNhXb1qygj1A0MIp/q6w6MCrvUZ8U=;
-        b=IhOXTjVMYFUujmZaEgHv/pfMwLaNnDUdlNNgKSMoflKYkAmtWB/h0Diq5Zqy29FQBQ
-         F3vXbY5HCuGwkbT/EYmHPySO7bxH35ASeHizHBLQH1nh8gflpFpOx1g8eOLQjM0P2c63
-         HKWW8jBApZKsX8R+p811F2DJSoQCoLxnt5EVBODnXS10b/HK6sqDvByi72gsifAqvQmM
-         1lqFcvELQOIU/9ba1F5yBI8x1CQkcuoD5wDVDCq54bRRMWhm8ua0sDhhIcwQ1/kMPwY+
-         ylGno9KJF/Uh2qp9/gCgKcIiMpheTfbCQ8x8GKQ4dBfFGnRL4n/N0y0Blxr2OymdB37K
-         ahUg==
+        bh=MeJNmc8Tyj+Q0twt9zY+vng7Jbsk0DhIYimyC4Uuyj0=;
+        b=jXqgCo/xrVf3wccOvx8zSZXI+4BMW/Sxa9JnuReURq5CKjzu/p7Scdr4XGrE9TNNN+
+         9fI1VvqahoInrASq2Evq+lKAJIcPXs74067opxQ++jtWGSJ4eq2iEbseCWXJ7qJsGsLR
+         +Bgnk6U/P3g6XKgTnQ1jij1TCJF6yb1z9pUnQeWB3YC7D8IL06B4AOtvJVyKvTnMdj2j
+         Z/pHNqfU3VeiF248cB4q/lHEOuY5rez80ebVMeMijOpZs/JJWSsFuS2/ee8OlasaVc7H
+         S1Da87TMz5/HQwfNcl1QQl88zaV5Jd0SgMSaSIfTpmcOLam279PZtmLm2QrmwbOLz9hi
+         H89w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=joYuVrqjbvze3xQNhXb1qygj1A0MIp/q6w6MCrvUZ8U=;
-        b=FF70qFZq+1q8wrCvpSjQ/9K0TeGU89v4OBJ3kw+wUVN09y0CTGRJk7lH/FDWh1RhHr
-         hp+CVJXF8xgNiafDYJ1qWl6nOp8YhKDZHzJIspxTMrWs2H7ZvFRfDdbAPq7LqK1Aau31
-         wzEUC5DoMDqFzXXm5IlC5i6E1rBIFoISpp1SepeYZVyC0AuymJUudZap0i33huC7kv8W
-         OtzQ1KljDp8+pqrKPsUA9yXMbSE53/UoeuhjqgCQH4g8mKs+WIhCO7pnFdy4qJgpLzr3
-         PdFNr4iCraQizSH4LRQ97yOBQoZywrPkqoAACsVQUenfJHExittqE9sMh1p2CgN+Y+er
-         mFlA==
-X-Gm-Message-State: AOAM533U9U/l+vN4SMmWa3V8kUxELQmGWI2ASYqpt2t7Y/ViaMPSFbvn
-        v4jVoc2WKLd/u2iR+Ksq/9Xgdw==
-X-Google-Smtp-Source: ABdhPJxASJgMCHSlaAT+jnWR7OEUQ6kVVPxeeJQfiNe4Wt79qgXR6a0wnra5Mhr9+Tx8zJpe57W47g==
-X-Received: by 2002:a1c:2503:: with SMTP id l3mr4472344wml.188.1594132687466;
-        Tue, 07 Jul 2020 07:38:07 -0700 (PDT)
+        bh=MeJNmc8Tyj+Q0twt9zY+vng7Jbsk0DhIYimyC4Uuyj0=;
+        b=o+wgc68nTinGbY3YvnmkCtqa6XmcMgyb8b1XsUTvnwRftnqi+v2nBcUTpvgB+FFKjX
+         AFH+c8Kuf+KW9XQXewwldL++1hG/w3eT4sW66TQHaVYNdRSXdjvZEpC5bw7woIDlsnsv
+         z60UDhTyNEiwP0R/YVCy5dMxa1Cc/ii/Fcd5Sr3e2zhU5GPRbEZ5s+B4mWwKc16Iw8bw
+         QO7gpGv29vSD/nOOhu3HyRlXEZlRo9wmwUUMpIzKa0Fgd+OUK4KuT1RrulZtkx2T8XEg
+         QuBn1kdJZB/rHI0TCGz3+G6Uo+sUt+BKOBAr8wQ8xaOF+/WqXXRSm+/EeVIGElhWjSb2
+         U1OA==
+X-Gm-Message-State: AOAM532XFc7FyUbg4DmBPUxisUaz7kg7gwog9dB1q9v421g3FsNkD40Z
+        exMEc5PqMG04fr3zMbjjbzI9aQ==
+X-Google-Smtp-Source: ABdhPJx4EGK+a98YUUNvZXG/6XzKwko1V/11TSzbBj53QSByas+d2hxb2ueuJBY/bfG6WSQIaQcvlA==
+X-Received: by 2002:a1c:2ec7:: with SMTP id u190mr4463500wmu.48.1594132688648;
+        Tue, 07 Jul 2020 07:38:08 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.206])
-        by smtp.gmail.com with ESMTPSA id y16sm1276131wro.71.2020.07.07.07.38.06
+        by smtp.gmail.com with ESMTPSA id y16sm1276131wro.71.2020.07.07.07.38.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jul 2020 07:38:06 -0700 (PDT)
+        Tue, 07 Jul 2020 07:38:08 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz,
         tiwai@suse.com
@@ -56,10 +56,10 @@ Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Krzysztof Kozlowski <krzk@kernel.org>,
         Sangbeom Kim <sbkim73@samsung.com>,
         Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Jaswinder Singh <jassisinghbrar@gmail.com>
-Subject: [PATCH v2 14/28] ASoC: samsung: pcm: Demote half-documented kerneldoc header
-Date:   Tue,  7 Jul 2020 15:37:28 +0100
-Message-Id: <20200707143742.2959960-15-lee.jones@linaro.org>
+        Seungwhan Youn <sw.youn@samsung.com>
+Subject: [PATCH v2 15/28] ASoC: samsung: spdif: Fix 3 misspelled struct properties
+Date:   Tue,  7 Jul 2020 15:37:29 +0100
+Message-Id: <20200707143742.2959960-16-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200707143742.2959960-1-lee.jones@linaro.org>
 References: <20200707143742.2959960-1-lee.jones@linaro.org>
@@ -70,41 +70,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ideally the author or someone 'in the know' should come back and
-provide the remainder of the documentation.  Until the kerneldoc
-checkers have been satisfied, let's just demote the header to a
-standard comment block.
+When documenting structure properties, they must match the names exactly.
 
 Fixes the following W=1 kernel build warning(s):
 
- sound/soc/samsung/pcm.c:127: warning: Function parameter or member 'lock' not described in 's3c_pcm_info'
- sound/soc/samsung/pcm.c:127: warning: Function parameter or member 'sclk_per_fs' not described in 's3c_pcm_info'
- sound/soc/samsung/pcm.c:127: warning: Function parameter or member 'idleclk' not described in 's3c_pcm_info'
- sound/soc/samsung/pcm.c:127: warning: Function parameter or member 'pclk' not described in 's3c_pcm_info'
- sound/soc/samsung/pcm.c:127: warning: Function parameter or member 'cclk' not described in 's3c_pcm_info'
+ sound/soc/samsung/spdif.c:89: warning: Function parameter or member 'saved_clkcon' not described in 'samsung_spdif_info'
+ sound/soc/samsung/spdif.c:89: warning: Function parameter or member 'saved_con' not described in 'samsung_spdif_info'
+ sound/soc/samsung/spdif.c:89: warning: Function parameter or member 'saved_cstas' not described in 'samsung_spdif_info'
 
 Cc: Krzysztof Kozlowski <krzk@kernel.org>
 Cc: Sangbeom Kim <sbkim73@samsung.com>
 Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: Jaswinder Singh <jassisinghbrar@gmail.com>
+Cc: Seungwhan Youn <sw.youn@samsung.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- sound/soc/samsung/pcm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/samsung/spdif.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/samsung/pcm.c b/sound/soc/samsung/pcm.c
-index a5b1a12b34966..3116be4239f59 100644
---- a/sound/soc/samsung/pcm.c
-+++ b/sound/soc/samsung/pcm.c
-@@ -102,7 +102,7 @@
- #define S3C_PCM_FIFOSTAT_RXFIFOFULL		(0x1 << 1)
- #define S3C_PCM_FIFOSTAT_RXFIFOALMSTFULL	(0x1 << 0)
- 
--/**
-+/*
-  * struct s3c_pcm_info - S3C PCM Controller information
-  * @dev: The parent device passed to use from the probe.
-  * @regs: The pointer to the device register block.
+diff --git a/sound/soc/samsung/spdif.c b/sound/soc/samsung/spdif.c
+index 759fc66443298..4ae7ff623b826 100644
+--- a/sound/soc/samsung/spdif.c
++++ b/sound/soc/samsung/spdif.c
+@@ -70,9 +70,9 @@
+  * @clk_rate: Current clock rate for calcurate ratio.
+  * @pclk: The peri-clock pointer for spdif master operation.
+  * @sclk: The source clock pointer for making sync signals.
+- * @save_clkcon: Backup clkcon reg. in suspend.
+- * @save_con: Backup con reg. in suspend.
+- * @save_cstas: Backup cstas reg. in suspend.
++ * @saved_clkcon: Backup clkcon reg. in suspend.
++ * @saved_con: Backup con reg. in suspend.
++ * @saved_cstas: Backup cstas reg. in suspend.
+  * @dma_playback: DMA information for playback channel.
+  */
+ struct samsung_spdif_info {
 -- 
 2.25.1
 
