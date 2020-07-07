@@ -2,91 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A196421688F
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 10:47:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1367216864
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 10:30:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727995AbgGGIq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 04:46:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55728 "EHLO
+        id S1727777AbgGGIai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 04:30:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725941AbgGGIq5 (ORCPT
+        with ESMTP id S1725941AbgGGIai (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 04:46:57 -0400
-X-Greylist: delayed 1842 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 07 Jul 2020 01:46:56 PDT
-Received: from hall.aurel32.net (hall.aurel32.net [IPv6:2001:bc8:30d7:100::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D322FC061755
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 01:46:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=aurel32.net
-        ; s=202004.hall; h=In-Reply-To:Content-Type:MIME-Version:References:
-        Message-ID:Subject:Cc:To:From:Date:Content-Transfer-Encoding:From:Reply-To:
-        Subject:Content-ID:Content-Description:X-Debbugs-Cc;
-        bh=EA/3cNstrWMDO33kM+6w6yj9HV+JpNqfCcL3vex3MqA=; b=NY41KgrkrgsH2VNw4Wic5NBxK9
-        c433IFDrijCmG1B8UIlMAmnn6z5XT/rSqRN/mWZetxCKQPZpPI+GQPmNaRVCa+aRIIJHMa+jiETQX
-        mr1BcuChG5I87In8K454cVqCgL5qxPMDnrBZ3c39F9zoBAVEPLXk+MNzFS94+07pP8anA941E6ou0
-        QN7Hp8M0IFTRmOegfKWxLNg4oipRcjKN4iNMfw1OWj7lM8sH5Yzi5BQGJDef+4CF95vsX3PM+u0D1
-        PJ+d1A8Famx0l00G7jd+937pJ+Yvnn7SUhs86TVTWNrpJAl8WlLkxV+ix9QdoGFrWcIvwcqHpm0VX
-        0AbvaWrA==;
-Received: from [2a01:e35:2fdd:a4e1:fe91:fc89:bc43:b814] (helo=ohm.rr44.fr)
-        by hall.aurel32.net with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <aurelien@aurel32.net>)
-        id 1jsilv-00036X-9u; Tue, 07 Jul 2020 10:16:11 +0200
-Received: from aurel32 by ohm.rr44.fr with local (Exim 4.94)
-        (envelope-from <aurelien@aurel32.net>)
-        id 1jsils-007vhX-RV; Tue, 07 Jul 2020 10:16:08 +0200
-Date:   Tue, 7 Jul 2020 10:16:08 +0200
-From:   Aurelien Jarno <aurelien@aurel32.net>
-To:     Andreas Schwab <schwab@suse.de>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] riscv: use 16KB kernel stack on 64-bit
-Message-ID: <20200707081608.GA1889963@aurel32.net>
-Mail-Followup-To: Andreas Schwab <schwab@suse.de>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <mvmeepoddt1.fsf@suse.de>
+        Tue, 7 Jul 2020 04:30:38 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09B9FC061755;
+        Tue,  7 Jul 2020 01:30:38 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4B1Fxm0NQNz9sRK;
+        Tue,  7 Jul 2020 18:30:36 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1594110636;
+        bh=fCjZaQjF2DxSFXlTiSYwEUj677TAaVg9hEm0Lk481fI=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Zh2oJhSHOASkW1j2gB8hrojuQJm9mNJlbr4Ax1Gqs6iEQMxJNt190BG7zV0vXjysZ
+         vTNG1ISpwervJOlD9GjTevRrXEcTMRYefXGcICa8sssDXHo/FfAJFsnQRiALtRooxT
+         pDS8zZLG65BNuuGQJ34+0hQKCmpOmoqK/AQu00XxB/MYaqK5JveM8BzFVYcbN0lhUL
+         C5gkBK/JLO5atvzMEy6XB+Ug/MmjrWmQAPJkIwnUacVmlLSI+eTh3ngRmLul/dzoSE
+         EhgOKlmhM18bMyPVxGLzD36S1dwKeoQ/y4Jhz0U0PA8YujT/6SX1yQKg1N6mdibxGl
+         HbcN+AA91/pjQ==
+Date:   Tue, 7 Jul 2020 18:30:35 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the generic-ioremap
+ tree
+Message-ID: <20200707183035.56420aaa@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <mvmeepoddt1.fsf@suse.de>
-User-Agent: Mutt/1.14.0 (2020-05-02)
+Content-Type: multipart/signed; boundary="Sig_/BC7tsvFrhUsQLOb6SrFHxf3";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-07-06 14:32, Andreas Schwab wrote:
-> With the current 8KB stack size there are frequent overflows in a 64-bit
-> configuration.
-> 
-> Signed-off-by: Andreas Schwab <schwab@suse.de>
-> ---
->  arch/riscv/include/asm/thread_info.h | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/arch/riscv/include/asm/thread_info.h b/arch/riscv/include/asm/thread_info.h
-> index 1dd12a0cbb2b..464a2bbc97ea 100644
-> --- a/arch/riscv/include/asm/thread_info.h
-> +++ b/arch/riscv/include/asm/thread_info.h
-> @@ -12,7 +12,11 @@
->  #include <linux/const.h>
->  
->  /* thread information allocation */
-> +#ifdef CONFIG_64BIT
-> +#define THREAD_SIZE_ORDER	(2)
-> +#else
->  #define THREAD_SIZE_ORDER	(1)
-> +#endif
->  #define THREAD_SIZE		(PAGE_SIZE << THREAD_SIZE_ORDER)
->  
->  #ifndef __ASSEMBLY__
-> -- 
-> 2.26.2
+--Sig_/BC7tsvFrhUsQLOb6SrFHxf3
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
 
-Following the discussion on the mailing list, I have been trying this
-patch on my system for a few days, and it indeed seems more stable. I
-just wonder if you should Cc stable@ so that it is backported in older
-kernel versions.
+Commit
 
--- 
-Aurelien Jarno                          GPG: 4096R/1DDD8C9B
-aurelien@aurel32.net                 http://www.aurel32.net
+  2ee080ecf668 ("wip")
+
+is missing a Signed-off-by from its author and comitter.
+
+Not much of a commit message either :-)
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/BC7tsvFrhUsQLOb6SrFHxf3
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8EMqsACgkQAVBC80lX
+0Gw0HAf+KC307/TZ1SyMwIQJzrQexw65PzfsBbkKz551WOMD3yVK1Re4riSrValj
+WxmEcKlyPRdJFZCZKfBVKtgwU2nCBAMkUftSEA6QmeAKL8GwZ2CPgm3mQm2el28B
+gLQBCOz7OTEoKmalcHcsCD/iXj3D7RfgH9Sj2o/TQD0sSlLYiXNHm0YR7h28zUkR
+33cvUQz3S8TO2aAAPXm9B8c2sjcKIh95q1AnVLYo+ohidWA4UyP4SK5GbXzEo4vq
+Ri1qCdPa3yW1SoFjsW1453UsEgx+1aRDU8GPbpZk49raQrcyzxpTEUnuuOD53X/Y
+5jfp47/axYVkBgWiTa2NSyc9qPs0WQ==
+=gD6z
+-----END PGP SIGNATURE-----
+
+--Sig_/BC7tsvFrhUsQLOb6SrFHxf3--
