@@ -2,94 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13F212164FD
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 06:02:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0A76216506
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 06:04:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727046AbgGGECG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 00:02:06 -0400
-Received: from mga18.intel.com ([134.134.136.126]:21855 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725766AbgGGECG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 00:02:06 -0400
-IronPort-SDR: 8qW4rk+WEHWJzXcCJdC7kaHg+Zb5CH0e1lFwTyo4HHyoj/Afxxb6bEw7g7P0CLU7Z84uQU5dsc
- pmP/V3oceC0g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9674"; a="135000884"
-X-IronPort-AV: E=Sophos;i="5.75,321,1589266800"; 
-   d="scan'208";a="135000884"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2020 21:02:05 -0700
-IronPort-SDR: lnrqym7HRjdzFxj0amzMyaJ/xjzHqd8+7SCyrMcOvpmFi4Rr/tRdxKxSS2CPxX64LXT8FvbQwP
- aOv2gWsmV1Ew==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,321,1589266800"; 
-   d="scan'208";a="483361427"
-Received: from apiccion-mobl1.ger.corp.intel.com (HELO localhost) ([10.249.45.178])
-  by fmsmga005.fm.intel.com with ESMTP; 06 Jul 2020 21:01:52 -0700
-Date:   Tue, 7 Jul 2020 07:01:51 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
-        cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
-Subject: Re: [PATCH v34 10/24] mm: Add vm_ops->mprotect()
-Message-ID: <20200707040151.GA143804@linux.intel.com>
-References: <20200707030204.126021-1-jarkko.sakkinen@linux.intel.com>
- <20200707030204.126021-11-jarkko.sakkinen@linux.intel.com>
- <20200707031424.GD25523@casper.infradead.org>
- <20200707032254.GB5208@linux.intel.com>
- <20200707032408.GE25523@casper.infradead.org>
+        id S1726918AbgGGEEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 00:04:06 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:51652 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725766AbgGGEEF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 00:04:05 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id CA0DBDA3F0266F168FF6;
+        Tue,  7 Jul 2020 12:04:03 +0800 (CST)
+Received: from SWX921481.china.huawei.com (10.126.203.253) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 7 Jul 2020 12:03:55 +0800
+From:   Barry Song <song.bao.hua@hisilicon.com>
+To:     <akpm@linux-foundation.org>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@huawei.com>, Barry Song <song.bao.hua@hisilicon.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        Roman Gushchin <guro@fb.com>
+Subject: [PATCH v3] mm/hugetlb: avoid hardcoding while checking if cma is enable
+Date:   Tue, 7 Jul 2020 16:02:04 +1200
+Message-ID: <20200707040204.30132-1-song.bao.hua@hisilicon.com>
+X-Mailer: git-send-email 2.21.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200707032408.GE25523@casper.infradead.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.126.203.253]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 07, 2020 at 04:24:08AM +0100, Matthew Wilcox wrote:
-> On Mon, Jul 06, 2020 at 08:22:54PM -0700, Sean Christopherson wrote:
-> > On Tue, Jul 07, 2020 at 04:14:24AM +0100, Matthew Wilcox wrote:
-> > > > +		if (vma->vm_ops && vma->vm_ops->mprotect) {
-> > > > +			error = vma->vm_ops->mprotect(vma, nstart, tmp, prot);
-> > > > +			if (error)
-> > > > +				goto out;
-> > > > +		}
-> > 
-> > Based on "... and then the vma owner can do whatever it needs to before
-> > calling mprotect_fixup(), which is already not static", my interpretation
-> > is that Matthew's intent was to do:
-> > 
-> > 		if (vma->vm_ops && vma->vm_ops->mprotect)
-> > 			error =  = vma->vm_ops->mprotect(vma, nstart, tmp, prot);
-> > 		else
-> > 			error = mprotect_fixup(vma, &prev, nstart, tmp, newflags);
-> > 		if (error)
-> > 			goto out;
-> > 
-> > i.e. make .mprotect() a full replacement as opposed to a prereq hook.
-> 
-> Yes, it was.  I was just looking at the next patch to be sure this was
-> how I'd been misunderstood.
+hugetlb_cma[0] can be NULL due to various reasons, for example, node0 has
+no memory. so NULL hugetlb_cma[0] doesn't necessarily mean cma is not
+enabled. gigantic pages might have been reserved on other nodes.
 
-I'm don't get this part. If mprotect_fixup is called in the tail of the
-callback, why it has to be called inside the callback and not be called
-after the callback?
+Fixes: cf11e85fc08c ("mm: hugetlb: optionally allocate gigantic hugepages using cma")
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Jonathan Cameron <jonathan.cameron@huawei.com>
+Acked-by: Roman Gushchin <guro@fb.com>
+Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+---
+ -v3: add acked-by; make code more canonical 
 
-The reason I only part did what you requested was to do only the part of
-the change that I get. Not to oppose it.
+ mm/hugetlb.c | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
 
-/Jarkko
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 57ece74e3aae..d293c823121e 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -2546,6 +2546,20 @@ static void __init gather_bootmem_prealloc(void)
+ 	}
+ }
+ 
++bool __init hugetlb_cma_enabled(void)
++{
++#ifdef CONFIG_CMA
++	int node;
++
++	for_each_online_node(node) {
++		if (hugetlb_cma[node])
++			return true;
++	}
++#endif
++
++	return false;
++}
++
+ static void __init hugetlb_hstate_alloc_pages(struct hstate *h)
+ {
+ 	unsigned long i;
+@@ -2571,7 +2585,7 @@ static void __init hugetlb_hstate_alloc_pages(struct hstate *h)
+ 
+ 	for (i = 0; i < h->max_huge_pages; ++i) {
+ 		if (hstate_is_gigantic(h)) {
+-			if (IS_ENABLED(CONFIG_CMA) && hugetlb_cma[0]) {
++			if (hugetlb_cma_enabled()) {
+ 				pr_warn_once("HugeTLB: hugetlb_cma is enabled, skip boot time allocation\n");
+ 				break;
+ 			}
+-- 
+2.27.0
+
+
