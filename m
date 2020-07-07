@@ -2,104 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A5982170AE
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:24:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 669B82170D7
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:24:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729415AbgGGPTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:19:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60206 "EHLO
+        id S1729689AbgGGPVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:21:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728442AbgGGPTo (ORCPT
+        with ESMTP id S1728870AbgGGPVN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:19:44 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C72ABC061755
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 08:19:44 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id d10so4840510pll.3
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 08:19:44 -0700 (PDT)
+        Tue, 7 Jul 2020 11:21:13 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFD99C061755;
+        Tue,  7 Jul 2020 08:21:12 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id t4so17342843oij.9;
+        Tue, 07 Jul 2020 08:21:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=er6hsFquLTNA8VKEn24uMWaKfe7q89cZ0TTNSo/x5mA=;
-        b=l6BqCzfkcZOUtekgBlMOFzEoQdcPcAs3uILNTs2Rc6zKFxOoXGcFngHlzIUen+l2w4
-         edX+VgvnoybDAbGyjcunBSFrklD07tDq6aGeqP36T1S52x9ayjBAvcRyx1a7/R638gd0
-         ORLlomrwFY14zy1yc/CdmTaAfT/e6qYBgxkh6k+LBJXzmmW2cJ0p3UoNPj92WsaEECrb
-         io+RbC0J9ko7yYmpjSmgkJ2BVCQZQFX2fzn5GwfzsZ2sBrl4Mjjvs7QJHaY2m9OKZuEJ
-         XZmBuGe90ONz69yyNEZMsSp5BTPtaXPo+hgi9b4QFn+2sDc20U3KcBoPpTXWeiombnq7
-         Lkrg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=loC7QORNa6sw/c6QZZ/kzwrFvD1Ot4fbNHIkDfLK6/s=;
+        b=XbkRyco23qSUV9A1SJ5iYX7Wk13/g9wL+GzsRKTnPj/6jZbXeNoSLlau57LBJhDxG8
+         VoJVNCichUPadtznqbdLRP4jMD21MgajG9gZh0KUc7UKT9bXyra7+HameduAnwiIrnYi
+         eoUBd4AXqK3biOxpbTrzH/fm9dK5XtAKwbfUQPOxX40d7mW6FRm2sqYtsOKetwPqr65s
+         XSOlGkmBDrKMGVqNG03Ut/PPdanrUCOSwmIyqZ5UNTStdhlpjlqJBhU+6KKKu5pnEkNg
+         9xLmE4E6nGBD1tbZAuZnYY6ul4+KepqVNQsargpYklUxTSD/quJLWrL4E3yWRK4cJlvm
+         elhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=er6hsFquLTNA8VKEn24uMWaKfe7q89cZ0TTNSo/x5mA=;
-        b=pF0+x7oy7sCwvGZs3hC/Y+PKB3IyezAn+c+dCP9B0mkK1+MZSnTXdZF0UWt3n146/+
-         Yo49oVxHyh3APQqJBXbF7vl/hKALMqp5ewu2UyPQzC4CeooWaeaXALcpAMtPVLEmmRrK
-         b69cjNVV+cZmQgTqgOmYWHUyKDzbcy4W6PAZjpwJ+dXQ+4ey/sNu25FPB9xhO7iWBXKP
-         JQc1882NFnhLnSH8UmfX2uvNhVGRs8mxpj32D/VeJAeAYlAqPgIjR44cHPVJruNJRGqB
-         9BjL50mkqGVI0Gc7YSI4zeWaYXzkH1zoKBe6I/9Jzb4Gz/asPx+gYMmnjGRirabbUe5J
-         bIhw==
-X-Gm-Message-State: AOAM531c1ccRN3SZfCDwwSChQzWwg9R0z292ptTcRIJcP+EIWIwCK9dr
-        zHLu+rZY2ajrxVYKBpWm5qE=
-X-Google-Smtp-Source: ABdhPJyo++a00C0KC/2zJLhYAA5YUxExURUW/Hz4ihgCnIQ0sgWSzcjPi7pGghI+EUrRuc6m1A3O6A==
-X-Received: by 2002:a17:90a:222d:: with SMTP id c42mr5140691pje.126.1594135184400;
-        Tue, 07 Jul 2020 08:19:44 -0700 (PDT)
-Received: from mail.google.com ([149.248.10.52])
-        by smtp.gmail.com with ESMTPSA id q24sm1295225pgg.3.2020.07.07.08.19.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jul 2020 08:19:43 -0700 (PDT)
-Date:   Tue, 7 Jul 2020 23:19:31 +0800
-From:   Changbin Du <changbin.du@gmail.com>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Changbin Du <changbin.du@gmail.com>, Jiri Olsa <jolsa@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 09/15] perf ftrace: add support for tracing option
- 'func_stack_trace'
-Message-ID: <20200707151931.ehgnhgl67cd73fjd@mail.google.com>
-References: <20200627133654.64863-1-changbin.du@gmail.com>
- <20200627133654.64863-10-changbin.du@gmail.com>
- <CAM9d7ch7gPmen8TJ9PbiK-QnQ_ojGVGqbR3bGYT4AMNW3Odp+A@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=loC7QORNa6sw/c6QZZ/kzwrFvD1Ot4fbNHIkDfLK6/s=;
+        b=la2WqVogiy2b7IckwxtDflShCicnKhkygJfvzmvS0kutAnuuwTXPX1TNfmNQH8l5Bh
+         2gq1bpWtpZjQWbrgEQF1qGJQ7q4q95k7AMa9oH3Y86z4ZJT/TG9j1COwjAS9Oi9rtjih
+         Vsu2EsvYEUntWCemoBwMtZd2zR6kUzb0XpS3OllIm3C/EkC07Vt7vugrOHQVEG+MKD31
+         wegTQkM9/P6kIzVLZkuckK3VbiVHIC+WCT21WFeLk2mOybQVY2dGI3tSBLH3cAKk8uVY
+         NoFiU9qe7g8ePE4pR2l21PJNu48bivP1Xn+qs8DyPWPwKrRC8KjzWbF902dJ8PXd0ZKx
+         EjEg==
+X-Gm-Message-State: AOAM531CaK7ufYDf+fkTjckJysLBB3UvFQUV8uZrEnQL++GqqnyPPq2+
+        fF2H0J0d2AfREJTdVE/iENjXp952HM8QwmkdBUg=
+X-Google-Smtp-Source: ABdhPJxIu94TjN3D/r7CA49DLJo7QyTzVKOQlUajvIFmOd73qvLS16meJ3yJbVXAEPBP7NsSU3nrmrtU2oFWimt9VXI=
+X-Received: by 2002:aca:ecc7:: with SMTP id k190mr3534117oih.92.1594135272003;
+ Tue, 07 Jul 2020 08:21:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAM9d7ch7gPmen8TJ9PbiK-QnQ_ojGVGqbR3bGYT4AMNW3Odp+A@mail.gmail.com>
+References: <20200702175352.19223-1-TheSven73@gmail.com> <20200702175352.19223-3-TheSven73@gmail.com>
+ <CAOMZO5DxUeXH8ZYxmKynA7xO3uF6SP_Kt-g=8MPgsF7tqkRvAA@mail.gmail.com>
+ <CAGngYiXGXDqCZeJme026uz5FjU56UojmQFFiJ5_CZ_AywdQiEw@mail.gmail.com>
+ <AM6PR0402MB360781DA3F738C2DF445E821FF680@AM6PR0402MB3607.eurprd04.prod.outlook.com>
+ <CAGngYiWc8rNVEPC-8GK1yH4zXx7tgR9gseYaopu9GWDnSG1oyg@mail.gmail.com>
+ <AM6PR0402MB36073F63D2DE2646B4F71081FF690@AM6PR0402MB3607.eurprd04.prod.outlook.com>
+ <CAOMZO5ATv9o197pH4O-7DV-ftsP7gGVuF1+r-sGd2j44x+n-Ug@mail.gmail.com>
+ <CAGngYiVeNQits4CXiXmN2ZBWyoN32zqUYtaxKCqwtKztm-Ky8A@mail.gmail.com>
+ <CAGngYiX9Hx413BX-rgaaUjD9umS9hGg=gMLbM+QmdyEt2Nut5A@mail.gmail.com> <AM6PR0402MB36078DBF3B7737B1C3F032AAFF660@AM6PR0402MB3607.eurprd04.prod.outlook.com>
+In-Reply-To: <AM6PR0402MB36078DBF3B7737B1C3F032AAFF660@AM6PR0402MB3607.eurprd04.prod.outlook.com>
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+Date:   Tue, 7 Jul 2020 11:21:01 -0400
+Message-ID: <CAGngYiU7HEyZXYN4GxM=w83g1O-NVsmSwvPrbeY6=UxSUW8vCg@mail.gmail.com>
+Subject: Re: [EXT] Re: [PATCH v5 3/3] ARM: imx6plus: optionally enable
+ internal routing of clk_enet_ref
+To:     Andy Duan <fugang.duan@nxp.com>
+Cc:     Fabio Estevam <festevam@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-clk@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 03, 2020 at 03:30:32PM +0900, Namhyung Kim wrote:
-> On Sat, Jun 27, 2020 at 10:38 PM Changbin Du <changbin.du@gmail.com> wrote:
-> >
-> > This adds support to display call trace for function tracer. To do this,
-> > just specify a '--func-call-graph' option.
-> 
-> What if it's used with -G option?  Also it might be used only with
-> the -T option..  How about showing a warning if it's missing.. ?
->
-All '--func-xxx' options are function tracer only. The warning message is a
-good idea.
+Andy, Fabio,
 
-> Thanks
-> Namhyung
-> 
-> >
-> > $ sudo perf ftrace -T vfs_read --func-call-graph
-> >  iio-sensor-prox-855   [003]   6168.369657: vfs_read <-ksys_read
-> >  iio-sensor-prox-855   [003]   6168.369677: <stack trace>
-> >  => vfs_read
-> >  => ksys_read
-> >  => __x64_sys_read
-> >  => do_syscall_64
-> >  => entry_SYSCALL_64_after_hwframe
-> >  ...
-> >
-> > Signed-off-by: Changbin Du <changbin.du@gmail.com>
+Sounds like we now have a solution which makes logical sense, although it
+requires changes and additions to drivers/clk/imx/. Before I create a patch,
+can you read the plan below and check that it makes sense, please?
 
--- 
-Cheers,
-Changbin Du
+Problem
+=======
+On the imx6q plus, the NXP hw designers introduced an alternative way to clock
+the built-in ethernet (FEC). One single customer (archronix) seems to be
+currently using this functionality, and would like to add mainline support.
+
+Changing the ethernet (FEC) driver appears illogical, as this change is
+unrelated to the FEC itself: fundamentally, it's a clock tree change.
+
+We also need to prevent breaking existing boards with mis-configured FEC
+clocking:
+
+Some board designers indicate in the devicetree that ENET_REF_CLK is connected
+to the FEC ptp clock, but in reality, they are providing an unrelated external
+clock through the pad. This will work in many cases, because the FEC driver
+does not really care where its PTP clock comes from, and the enet ref clock is
+set up to mirror the external clk frequency by the NXP U-Boot fork.
+
+Proposed changes must not break these cases.
+
+Proposed Solution
+=================
+On non-plus imx6q there are no changes. On imx6q plus however:
+
+Create two new clocks (mac_gtx and pad) and a new clock mux:
+
+  enet_ref-o--------->pad----->| \
+           |                   |  |
+           |                   |M1|----mac_gtx --- to FEC
+           |                   |  |
+           o-------------------|_/
+
+The defaults (indicated with ">") are carefully chosen, so these changes will
+not break any existing plus designs.
+
+We then tie the gtx clock to the FEC driver ptp clock, like so:
+
+in imx6qp.dtsi:
+&fec {
+    clocks = <&clks IMX6QDL_CLK_ENET>,
+        <&clks IMX6QDL_CLK_ENET>,
+        <&clks IMX6QDL_CLK_MAC_GTX>;
+};
+
+Mux M1 is controlled by GPR5[9]. This mux can just write to the GPR5 memory
+address. However, the GPR registers are already exposed as a mux controller
+compatible = "mmio-mux". This mux does currently not use GPR5.
+
+So we have to make a choice here: write straight to the memory address (easy),
+or create a new clock mux type, which uses an underlying mux controller.
+
+When that is done, board designers can choose between:
+
+1. internal clocking (GTX clock routed internally)
+
+&fec {
+    assigned-clocks = <&clks IMX6QDL_CLK_MAC_GTX>;
+    assigned-clock-parents = <&clks IMX6QDL_CLK_ENET_REF>;
+};
+
+2. external clocking (GTX clock from pad, pad connected to enet_ref,
+   typically via GPIO_16). This is the default and does not need to be present.
+
+&fec {
+    assigned-clocks = <&clks IMX6QDL_CLK_MAC_GTX>;
+    assigned-clock-parents = <&clks IMX6QDL_CLK_PAD>;
+};
+
+
+3. external clocking (GTX clock from pad, pad connected to external PHY
+   clock or external oscillator).
+
+phy_osc: oscillator {
+#clock-cells = <0>;
+compatible = "fixed-clock";
+clock-frequency = <50000000>;
+};
+
+&fec {
+    clocks = <&clks IMX6QDL_CLK_ENET>,
+        <&clks IMX6QDL_CLK_ENET>,
+        <&phy_osc>;
+};
