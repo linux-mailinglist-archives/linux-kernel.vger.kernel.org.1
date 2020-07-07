@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73B2D21721A
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:43:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CD7B2171CB
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:43:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729994AbgGGP2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:28:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39916 "EHLO mail.kernel.org"
+        id S1730254AbgGGPZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:25:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39968 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729856AbgGGPZp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:25:45 -0400
+        id S1729881AbgGGPZs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 11:25:48 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5A5662078D;
-        Tue,  7 Jul 2020 15:25:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D3BE92065D;
+        Tue,  7 Jul 2020 15:25:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594135544;
-        bh=QHZHaMRGai+vdVgWa6RY1S8eqxxr2yVw5NNDIaD0tBo=;
+        s=default; t=1594135547;
+        bh=0FKU8CzWdHgKgcmcyG4su7ho8QOKuw0YpyhgYdqI3TM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TtCJh2DWra6aCOmHTcJRlHxEQjWvWrzv2+inlaQDmYrrTeuA1CEdTprroxsAdqCA4
-         SVoNqqphn6qBv33xYc8KeW5NY7oF6rLLE62FmOpXfTXDvMgbkoSSTtDkdZLiujrmJ4
-         f+3rJabw3QPO+MsfzV2Y4aBJfz0K4RkHZmbWD794=
+        b=wmXodH2BvQnicCDshTOZN/fhFwHOTQ+Xu4CG+/6AxfrCMa213pCkLjZxzzLiPTuUa
+         207DCxl+kEYJcPe5icfdUz7fcVK53MVtqW779pBHu4iXcPMQ/va21ZJWRHLj6HXTTr
+         ZaJFq0YEYyFSd09CnxBGijcZsm7963UIvMuD3F8U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Michael Shych <michaelsh@mellanox.com>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 083/112] i2c: mlxcpld: check correct size of maximum RECV_LEN packet
-Date:   Tue,  7 Jul 2020 17:17:28 +0200
-Message-Id: <20200707145804.931875973@linuxfoundation.org>
+        stable@vger.kernel.org, Andres Freund <andres@anarazel.de>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 084/112] io_uring: fix regression with always ignoring signals in io_cqring_wait()
+Date:   Tue,  7 Jul 2020 17:17:29 +0200
+Message-Id: <20200707145804.978657030@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200707145800.925304888@linuxfoundation.org>
 References: <20200707145800.925304888@linuxfoundation.org>
@@ -45,40 +43,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+From: Jens Axboe <axboe@kernel.dk>
 
-[ Upstream commit 597911287fcd13c3a4b4aa3e0a52b33d431e0a8e ]
+[ Upstream commit b7db41c9e03b5189bc94993bd50e4506ac9e34c1 ]
 
-I2C_SMBUS_BLOCK_MAX defines already the maximum number as defined in the
-SMBus 2.0 specs. I don't see a reason to add 1 here. Also, fix the errno
-to what is suggested for this error.
+When switching to TWA_SIGNAL for task_work notifications, we also made
+any signal based condition in io_cqring_wait() return -ERESTARTSYS.
+This breaks applications that rely on using signals to abort someone
+waiting for events.
 
-Fixes: c9bfdc7c16cb ("i2c: mlxcpld: Add support for smbus block read transaction")
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Reviewed-by: Michael Shych <michaelsh@mellanox.com>
-Tested-by: Michael Shych <michaelsh@mellanox.com>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Check if we have a signal pending because of queued task_work, and
+repeat the signal check once we've run the task_work. This provides a
+reliable way of telling the two apart.
+
+Additionally, only use TWA_SIGNAL if we are using an eventfd. If not,
+we don't have the dependency situation described in the original commit,
+and we can get by with just using TWA_RESUME like we previously did.
+
+Fixes: ce593a6c480a ("io_uring: use signal based task_work running")
+Cc: stable@vger.kernel.org # v5.7
+Reported-by: Andres Freund <andres@anarazel.de>
+Tested-by: Andres Freund <andres@anarazel.de>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i2c/busses/i2c-mlxcpld.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/io_uring.c | 29 ++++++++++++++++++++++-------
+ 1 file changed, 22 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/i2c/busses/i2c-mlxcpld.c b/drivers/i2c/busses/i2c-mlxcpld.c
-index 2fd717d8dd30e..71d7bae2cbcad 100644
---- a/drivers/i2c/busses/i2c-mlxcpld.c
-+++ b/drivers/i2c/busses/i2c-mlxcpld.c
-@@ -337,9 +337,9 @@ static int mlxcpld_i2c_wait_for_tc(struct mlxcpld_i2c_priv *priv)
- 		if (priv->smbus_block && (val & MLXCPLD_I2C_SMBUS_BLK_BIT)) {
- 			mlxcpld_i2c_read_comm(priv, MLXCPLD_LPCI2C_NUM_DAT_REG,
- 					      &datalen, 1);
--			if (unlikely(datalen > (I2C_SMBUS_BLOCK_MAX + 1))) {
-+			if (unlikely(datalen > I2C_SMBUS_BLOCK_MAX)) {
- 				dev_err(priv->dev, "Incorrect smbus block read message len\n");
--				return -E2BIG;
-+				return -EPROTO;
- 			}
- 		} else {
- 			datalen = priv->xfer.data_len;
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index 51362a619fd50..2be6ea0103405 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -4136,14 +4136,22 @@ struct io_poll_table {
+ 	int error;
+ };
+ 
+-static int io_req_task_work_add(struct io_kiocb *req, struct callback_head *cb,
+-				int notify)
++static int io_req_task_work_add(struct io_kiocb *req, struct callback_head *cb)
+ {
+ 	struct task_struct *tsk = req->task;
+-	int ret;
++	struct io_ring_ctx *ctx = req->ctx;
++	int ret, notify = TWA_RESUME;
+ 
+-	if (req->ctx->flags & IORING_SETUP_SQPOLL)
++	/*
++	 * SQPOLL kernel thread doesn't need notification, just a wakeup.
++	 * If we're not using an eventfd, then TWA_RESUME is always fine,
++	 * as we won't have dependencies between request completions for
++	 * other kernel wait conditions.
++	 */
++	if (ctx->flags & IORING_SETUP_SQPOLL)
+ 		notify = 0;
++	else if (ctx->cq_ev_fd)
++		notify = TWA_SIGNAL;
+ 
+ 	ret = task_work_add(tsk, cb, notify);
+ 	if (!ret)
+@@ -4174,7 +4182,7 @@ static int __io_async_wake(struct io_kiocb *req, struct io_poll_iocb *poll,
+ 	 * of executing it. We can't safely execute it anyway, as we may not
+ 	 * have the needed state needed for it anyway.
+ 	 */
+-	ret = io_req_task_work_add(req, &req->task_work, TWA_SIGNAL);
++	ret = io_req_task_work_add(req, &req->task_work);
+ 	if (unlikely(ret)) {
+ 		WRITE_ONCE(poll->canceled, true);
+ 		tsk = io_wq_get_task(req->ctx->io_wq);
+@@ -6279,7 +6287,14 @@ static int io_cqring_wait(struct io_ring_ctx *ctx, int min_events,
+ 		if (current->task_works)
+ 			task_work_run();
+ 		if (signal_pending(current)) {
+-			ret = -ERESTARTSYS;
++			if (current->jobctl & JOBCTL_TASK_WORK) {
++				spin_lock_irq(&current->sighand->siglock);
++				current->jobctl &= ~JOBCTL_TASK_WORK;
++				recalc_sigpending();
++				spin_unlock_irq(&current->sighand->siglock);
++				continue;
++			}
++			ret = -EINTR;
+ 			break;
+ 		}
+ 		if (io_should_wake(&iowq, false))
+@@ -6288,7 +6303,7 @@ static int io_cqring_wait(struct io_ring_ctx *ctx, int min_events,
+ 	} while (1);
+ 	finish_wait(&ctx->wait, &iowq.wq);
+ 
+-	restore_saved_sigmask_unless(ret == -ERESTARTSYS);
++	restore_saved_sigmask_unless(ret == -EINTR);
+ 
+ 	return READ_ONCE(rings->cq.head) == READ_ONCE(rings->cq.tail) ? ret : 0;
+ }
 -- 
 2.25.1
 
