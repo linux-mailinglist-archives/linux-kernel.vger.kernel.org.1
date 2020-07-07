@@ -2,101 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E162216600
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 07:50:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82A0B21660A
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 07:56:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728020AbgGGFuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 01:50:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56792 "EHLO
+        id S1728096AbgGGF4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 01:56:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727789AbgGGFuR (ORCPT
+        with ESMTP id S1727827AbgGGF4U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 01:50:17 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E448C061755
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Jul 2020 22:50:17 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id z15so32498781wrl.8
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 22:50:17 -0700 (PDT)
+        Tue, 7 Jul 2020 01:56:20 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09A01C061755
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Jul 2020 22:56:20 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id d194so16120874pga.13
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 22:56:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tWwPNUXAhZkGALSmCM6I62dir2ac7KtA6PfPQYUz4tM=;
-        b=JjYvUZBaLJxTV/BcuvHN0yhsBodhFnLNMtn6S42f4eG11n/5e/oCblJoIIBUpfysyf
-         Vgw3xlD1GHvhj9g1ql1pmPUfwN4tqKoAj4Pvpq1pZ2urqQ5fkXpiqvs54MSWagyQKwiA
-         n6No1KSVjXYrja6mPtGqEkYkUS2sD4sKfSn3E=
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ZbV4l21xdzW71xXZzlMAZD+NRBjos3envDGwppLzulM=;
+        b=NfXW8gw1ujyflsQLwzIJUJl6yv/6tCYaWdIMXKgCTt4z3Ww0mFNBeIgOPWXnJj2bT6
+         lv1hrqRXfKZADzlSMJTcecsBSJnaZ8lAlqmmL9nFCKuUyP2jIIRFMK2t3hUUbLKt6Xa3
+         4z6GvTlG1zXHnw88+cl0MNX0328JZYODTKYZk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=tWwPNUXAhZkGALSmCM6I62dir2ac7KtA6PfPQYUz4tM=;
-        b=rtYoeuy1sdFjYNMeVqv0ufJOsGhDkjKKx20ouvgqgAicSivh5kDHhLHk/SPhjsGjqa
-         iY6IEyCKLHbV8Rkhfnjaq6RscJTmCkVu6EHjPgmoSARyAHXuLcEBBECCc3mlTjysUL9E
-         +YTq23J3Vze9iGR73tfrFhlJR9aHRJpJ/6hDbixT6XeWeH0rP398ZjE2rIe0kI4Flk7y
-         /Q7x5lHaLVaGrR7irOvQZt6NbU9N7QeKYJA6yaN7HpBNQ4xqmi6Og3x4FqwGTEbfn7yJ
-         xDiGS7kvd2CaFX877j/8hzwxRSzjjl37TozYQtfutpWju+qXNP1oJuckqwXCPWyRnJ+j
-         03wA==
-X-Gm-Message-State: AOAM530LuOuKcCHzOXjnvR6oPLcPHZQS4R3S67YWDzLoUsBSsXoEHWS5
-        L4NJHQTYx9ZNNvB3TdaXhO0New==
-X-Google-Smtp-Source: ABdhPJxzb1aGKqJ4jxtL9PIFyXbRUO2dBkb0GWe1iZ9+xLYdWRBle+zVIIjxFlCnANQHnCq+1iMaNw==
-X-Received: by 2002:a5d:40cf:: with SMTP id b15mr51255032wrq.319.1594101016305;
-        Mon, 06 Jul 2020 22:50:16 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id k185sm1883352wmk.47.2020.07.06.22.50.14
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZbV4l21xdzW71xXZzlMAZD+NRBjos3envDGwppLzulM=;
+        b=ksfRTghjpB7MsHg6OExCSHM2sfu4CJ9jY8MGKawFiE1RxgpvhSCLShxadaPzLEohAm
+         ZpYyGOuX+fxAuY7WcOmzaf8Tt4RHS+8kKiUttk4zo+o56PGbfRGxv6H49f1lFjMLtyDb
+         khJLiJBn44Eo+n8Qd/erNThPrVDRekWiFsl1HnI9sWglf9kl8rVjbyO82qqGgslFQF9J
+         QayKwSfy4meIUpjNO8YPm54XIda9HJL+ogyPIiTCfDIMOAgtjxv6xi7dmFHRtWGiWzKJ
+         pljg4yXpSwRUKCesCRkoEBVTY+hycFpUF8vxWhualquvA1c9o8R9GDSH7oBN/Rd3bVQW
+         9TJg==
+X-Gm-Message-State: AOAM533u6cnOFUjJtHM/n+F4DryAO9B3hTkHm3ePeob+4ddL4nC41Yum
+        DIN2/z2L2BDubTvxV2rzn8MRlJnD3kM=
+X-Google-Smtp-Source: ABdhPJzsiNlWqzzBSxLtFN4h9Kxieuvtd0hdAy5D91AwU2e7ZloJSYe7rbLvC6DMYZd+jw9XnsRtkQ==
+X-Received: by 2002:aa7:860f:: with SMTP id p15mr11390619pfn.59.1594101379542;
+        Mon, 06 Jul 2020 22:56:19 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id y27sm21531713pgc.56.2020.07.06.22.56.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Jul 2020 22:50:15 -0700 (PDT)
-Date:   Tue, 7 Jul 2020 07:50:13 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Suraj Upadhyay <usuraj35@gmail.com>
-Cc:     alexander.deucher@amd.com, christian.koenig@amd.com,
-        airlied@linux.ie, daniel@ffwll.ch, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org
-Subject: Re: [Proposal] drm: amd: Convert logging to drm_* functions with
- drm_device parameter
-Message-ID: <20200707055013.GG3278063@phenom.ffwll.local>
-Mail-Followup-To: Suraj Upadhyay <usuraj35@gmail.com>,
-        alexander.deucher@amd.com, christian.koenig@amd.com,
-        airlied@linux.ie, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org
-References: <20200706105138.GA10722@blackclown>
+        Mon, 06 Jul 2020 22:56:18 -0700 (PDT)
+Date:   Mon, 6 Jul 2020 22:56:17 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Andy Lutomirski <luto@amacapital.net>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        ksummit <ksummit-discuss@lists.linuxfoundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        tech-board-discuss@lists.linuxfoundation.org,
+        Chris Mason <clm@fb.clm>
+Subject: Re: [Ksummit-discuss] [PATCH] CodingStyle: Inclusive Terminology
+Message-ID: <202007062234.A90F922DF@keescook>
+References: <159389297140.2210796.13590142254668787525.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <CALCETrXewAK4_fpaJNDHJVDK9mUcjghA5HwYvZFQNYVfC9M+OQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200706105138.GA10722@blackclown>
-X-Operating-System: Linux phenom 5.6.0-1-amd64 
+In-Reply-To: <CALCETrXewAK4_fpaJNDHJVDK9mUcjghA5HwYvZFQNYVfC9M+OQ@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 06, 2020 at 04:21:38PM +0530, Suraj Upadhyay wrote:
-> Hii Maintainers,
-> 	I recently came across this list of janatorial tasks
-> for starters on DRM subsystem [1]. One of the tasks is replacing
-> conventional dmesg macros (like dev_info(), dev_warn() and dev_err())
-> with DRM dmesg macros [2]. And I need your input whether the
-> conversions to DRM dmesg macros are worth it or not.
-> I would like to start working on this task if this needs the change.
+On Mon, Jul 06, 2020 at 09:29:46AM -0700, Andy Lutomirski wrote:
+> Is most contexts where 'whitelist' or 'blacklist' might be used, a
+> descriptive phrase could be used instead.  For example, a seccomp
+> filter could have a 'list of allowed syscalls' or a 'list of
+> disallowed syscalls', and just lists could be the 'allowed' or
+> 'accepted' lists and the 'disallowed', 'rejected', or 'blocked' lists.
+> If a single word replacement for 'whitelist' or 'blacklist' is needed,
+> 'allowlist', 'blocklist', or 'denylist' could be used.
 
-For any core code I'm happy to merge such patches. If you're changing a
-specific driver (all the subdirectories under drivers/gpu/drm/*) then
-please ping the specific driver maintainer first. They should be all
-listed in the MAINTAINERS file.
+Yup. See:
+https://lore.kernel.org/lkml/202007041703.51F4059CA@keescook/
+specifically the terminology for seccomp is already "allow-list" and
+"deny-list":
+https://github.com/mkerrisk/man-pages/commit/462ce23d491904a0b46252dc97c8cb42391c093e (last year)
+https://github.com/seccomp/libseccomp/commit/0e762521d604612bb4dca8867d4a428a5e6cae54 (last month)
 
-Cheers, Daniel
+> Second, I realize that I grew up thinking that 'whitelist' and
+> 'blacklist' are the common terms for lists of things to be accepted
+> and rejected and that this biases my perception of what sounds good,
+> but writing a seccomp "denylist" or "blocklist" doesn't seem to roll
+> off the tongue.  Perhaps this language would be better:
 
-> 
-> Thank you,
-> Suraj Upadhyay.
-> 
-> [1] https://dri.freedesktop.org/docs/drm/gpu/todo.html.
-> [2] https://dri.freedesktop.org/docs/drm/gpu/todo.html#convert-logging-to-drm-functions-with-drm-device-paramater
-> 
+I have struggled with this as well. The parts of speech change, and my
+grammar senses go weird. whitelist = adjective noun. allow-list = verb
+noun. verbing the adj/noun combo feels okay, but verbing a verb/noun is
+weird.
 
+And just using "allowed" and "denied" doesn't impart whether it refers
+to a _single_ instance or a _list_ of instances.
 
+But that's all fine. The change is easy to do and is more descriptive
+even if I can't find terms that don't collide with my internal grammar
+checker. ;)
 
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Kees Cook
