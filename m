@@ -2,61 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C216E2168E5
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 11:19:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAD9A2168E6
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 11:20:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727097AbgGGJTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 05:19:37 -0400
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:33745 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725874AbgGGJTh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 05:19:37 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R751e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04427;MF=dust.li@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0U2.VupE_1594113573;
-Received: from DustLi-Macbook.local(mailfrom:dust.li@linux.alibaba.com fp:SMTPD_---0U2.VupE_1594113573)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 07 Jul 2020 17:19:34 +0800
-Subject: Re: [PATCH] docs: fix incorrent references to DMA APIs
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200628143017.17399-1-dust.li@linux.alibaba.com>
- <20200705143212.446c50f3@lwn.net>
-From:   "dust.li" <dust.li@linux.alibaba.com>
-Message-ID: <e6a5b7ce-a974-78ec-874e-d5dca167cf2a@linux.alibaba.com>
-Date:   Tue, 7 Jul 2020 17:19:33 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.9.0
+        id S1727777AbgGGJUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 05:20:10 -0400
+Received: from foss.arm.com ([217.140.110.172]:33460 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725874AbgGGJUK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 05:20:10 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 60775C0A;
+        Tue,  7 Jul 2020 02:20:09 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 45C8E3F68F;
+        Tue,  7 Jul 2020 02:20:08 -0700 (PDT)
+Date:   Tue, 7 Jul 2020 10:20:05 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Dave Jones <davej@codemonkey.org.uk>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Linux Kernel <linux-kernel@vger.kernel.org>, mingo@kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        paul.gortmaker@windriver.com, valentin.schneider@arm.com
+Subject: Re: weird loadavg on idle machine post 5.7
+Message-ID: <20200707092004.jviycpvzb4l5ytiz@e107158-lin.cambridge.arm.com>
+References: <20200702171548.GA11813@codemonkey.org.uk>
+ <20200702213627.GF3183@techsingularity.net>
+ <20200703090226.GV4800@hirez.programming.kicks-ass.net>
+ <20200703104033.GK117543@hirez.programming.kicks-ass.net>
+ <20200703205153.GA19901@codemonkey.org.uk>
+ <20200706145952.GB597537@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <20200705143212.446c50f3@lwn.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200706145952.GB597537@hirez.programming.kicks-ass.net>
+User-Agent: NeoMutt/20171215
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 07/06/20 16:59, Peter Zijlstra wrote:
 
-On 7/6/20 4:32 AM, Jonathan Corbet wrote:
-> On Sun, 28 Jun 2020 22:30:17 +0800
-> Dust Li <dust.li@linux.alibaba.com> wrote:
->
->> dma-api
->> dma-api-howto
->> dma-attributes
->> dma-isa-lpc
->>
->> The above 4 documents have been renamed and moved to
->> Documentation/core-api/, but there are still some old references
->> refer to the old files, this patch tries to correct them.
->>
->> Fixes: 728c1471b544 ("docs: move DMA kAPI to Documentation/core-api")
->> Signed-off-by: Dust Li <dust.li@linux.alibaba.com>
-> Thanks, but these have already been addressed in the docs tree.
->
-> jon
+[...]
 
+> @@ -4104,12 +4108,19 @@ static void __sched notrace __schedule(bool preempt)
+>  	local_irq_disable();
+>  	rcu_note_context_switch(preempt);
+>  
+> +	prev_state = prev->state;
+> +
+>  	/*
+> -	 * Make sure that signal_pending_state()->signal_pending() below
+> -	 * can't be reordered with __set_current_state(TASK_INTERRUPTIBLE)
+> -	 * done by the caller to avoid the race with signal_wake_up().
+> +	 * __set_current_state(@state)
+> +	 * schedule()				signal_wake_up()
+> +	 *   prev_state = p->state		  set_tsk_thread_flag(p, TIF_SIGPENDING)
+> +	 *					  wake_up_state()
+> +	 *   LOCK rq->lock			    LOCK p->pi_state
+> +	 *   smp_mb__after_spinlock()		    smp_mb__after_spinlock()
+> +	 *     if (signal_pending_state()	    if (p->state & @state)
+> +	 *
+>  	 *
+> -	 * The membarrier system call requires a full memory barrier
+> +	 * Also, the membarrier system call requires a full memory barrier
+>  	 * after coming from user-space, before storing to rq->curr.
+>  	 */
+>  	rq_lock(rq, &rf);
+> @@ -4120,10 +4131,30 @@ static void __sched notrace __schedule(bool preempt)
+>  	update_rq_clock(rq);
+>  
+>  	switch_count = &prev->nivcsw;
+> -	if (!preempt && prev->state) {
+> -		if (signal_pending_state(prev->state, prev)) {
+> +	/*
+> +	 * We must re-load p->state in case ttwu_runnable() changed it
+> +	 * before we acquired rq->lock.
+> +	 */
+> +	if (!preempt && prev_state && prev_state == prev->state) {
 
-Got it. Thanks for reply, sorry I didn't notice that.
+I think the compiler won't optimize `prev_state == prev->state` out because of
+the smp_mb__after_spinlock() which implies a compiler barrier. Still not sure
+if it's worth making prev->state accesses a READ_ONCE()?
 
+Thanks
+
+--
+Qais Yousef
