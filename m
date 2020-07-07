@@ -2,114 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AC6121693D
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 11:39:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD2AD216946
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 11:40:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728214AbgGGJjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 05:39:44 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:54998 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727120AbgGGJjn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 05:39:43 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxr964QgRfBzJRAA--.950S2;
-        Tue, 07 Jul 2020 17:39:05 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        Juxin Gao <gaojuxin@loongson.cn>
-Subject: [PATCH] MIPS: Prevent READ_IMPLIES_EXEC propagation
-Date:   Tue,  7 Jul 2020 17:39:01 +0800
-Message-Id: <1594114741-26852-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9Dxr964QgRfBzJRAA--.950S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxJry3Ar4ruF4DGw4xtryfXrb_yoW8tr48pF
-        ykCa4Dt3yUGryFkas5Z3ykury5JFZxGr429ayxuFWDAanIv3WFvwnayFn0yF15CFsYqa42
-        v3sakrnrJF4jkFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkl14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4f
-        MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
-        0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0E
-        wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJV
-        W8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Gr0_Cr1l
-        IxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUUPl13UUUU
-        U==
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S1728260AbgGGJkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 05:40:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60380 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726839AbgGGJkW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 05:40:22 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 748922065F;
+        Tue,  7 Jul 2020 09:40:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594114821;
+        bh=ncpZrogq3J8lmjYVURRcrUwe28LiM7BV6dS0EhuvMYs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qpoN0vyZtStKSEGEbjrGotpdOhig7Flj630Ebfzd7XzgvP3pkzPdr9qyKetD14bjC
+         4onI/J8co2fF4Z2iBwsMeP2PU5/c4EFBqjz7si14mxt7+zcBYu+BQbG+0UWT+0Vev/
+         F/yBgirTg64y7+pXStMAUrnp05wefaOurTN5TDUg=
+Date:   Tue, 7 Jul 2020 11:40:19 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Cathy Zhang <cathy.zhang@intel.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
+        pbonzini@redhat.com, sean.j.christopherson@intel.com,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, hpa@zytor.com, ricardo.neri-calderon@linux.intel.com,
+        kyung.min.park@intel.com, jpoimboe@redhat.com, ak@linux.intel.com,
+        dave.hansen@intel.com, tony.luck@intel.com,
+        ravi.v.shankar@intel.com
+Subject: Re: [PATCH v2 2/4] x86/cpufeatures: Enumerate TSX suspend load
+ address tracking instructions
+Message-ID: <20200707094019.GA2639362@kroah.com>
+References: <1594088183-7187-1-git-send-email-cathy.zhang@intel.com>
+ <1594088183-7187-3-git-send-email-cathy.zhang@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1594088183-7187-3-git-send-email-cathy.zhang@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the MIPS architecture, we should clear the security-relevant
-flag READ_IMPLIES_EXEC in the function SET_PERSONALITY2() of the
-file arch/mips/include/asm/elf.h.
+On Tue, Jul 07, 2020 at 10:16:21AM +0800, Cathy Zhang wrote:
+> Intel TSX suspend load tracking instructions aim to give a way to
+> choose which memory accesses do not need to be tracked in the TSX
+> read set. Add TSX suspend load tracking CPUID feature flag TSXLDTRK
+> for enumeration.
+> 
+> A processor supports Intel TSX suspend load address tracking if
+> CPUID.0x07.0x0:EDX[16] is present. Two instructions XSUSLDTRK, XRESLDTRK
+> are available when this feature is present.
+> 
+> The CPU feature flag is shown as "tsxldtrk" in /proc/cpuinfo.
+> 
+> Detailed information on the instructions and CPUID feature flag TSXLDTRK
+> can be found in the latest Intel Architecture Instruction Set Extensions
+> and Future Features Programming Reference and Intel 64 and IA-32
+> Architectures Software Developer's Manual.
+> 
+> Signed-off-by: Kyung Min Park <kyung.min.park@intel.com>
+> Signed-off-by: Cathy Zhang <cathy.zhang@intel.com>
+> ---
+>  arch/x86/include/asm/cpufeatures.h | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+> index adf45cf..34b66d7 100644
+> --- a/arch/x86/include/asm/cpufeatures.h
+> +++ b/arch/x86/include/asm/cpufeatures.h
+> @@ -366,6 +366,7 @@
+>  #define X86_FEATURE_MD_CLEAR		(18*32+10) /* VERW clears CPU buffers */
+>  #define X86_FEATURE_TSX_FORCE_ABORT	(18*32+13) /* "" TSX_FORCE_ABORT */
+>  #define X86_FEATURE_SERIALIZE		(18*32+14) /* SERIALIZE instruction */
+> +#define X86_FEATURE_TSX_LDTRK           (18*32+16) /* TSX Suspend Load Address Tracking */
 
-Otherwise, with this flag set, PROT_READ implies PROT_EXEC for
-mmap to make memory executable that is not safe, because this
-condition allows an attacker to simply jump to and execute bytes
-that are considered to be just data [1].
+No tabs?
 
-In mm/mmap.c:
-unsigned long do_mmap(struct file *file, unsigned long addr,
-			unsigned long len, unsigned long prot,
-			unsigned long flags, vm_flags_t vm_flags,
-			unsigned long pgoff, unsigned long *populate,
-			struct list_head *uf)
-{
-	[...]
-	if ((prot & PROT_READ) && (current->personality & READ_IMPLIES_EXEC))
-		if (!(file && path_noexec(&file->f_path)))
-			prot |= PROT_EXEC;
-	[...]
-}
-
-By the way, x86 and ARM64 have done the similar thing.
-
-After commit 250c22777fe1 ("x86_64: move kernel"), in the file
-arch/x86/kernel/process_64.c:
-void set_personality_64bit(void)
-{
-	[...]
-	current->personality &= ~READ_IMPLIES_EXEC;
-}
-
-After commit 48f99c8ec0b2 ("arm64: Preventing READ_IMPLIES_EXEC
-propagation"), in the file arch/arm64/include/asm/elf.h:
-#define SET_PERSONALITY(ex)						\
-({									\
-	clear_thread_flag(TIF_32BIT);					\
-	current->personality &= ~READ_IMPLIES_EXEC;			\
-})
-
-[1] https://insights.sei.cmu.edu/cert/2014/02/feeling-insecure-blame-your-parent.html
-
-Reported-by: Juxin Gao <gaojuxin@loongson.cn>
-Co-developed-by: Juxin Gao <gaojuxin@loongson.cn>
-Signed-off-by: Juxin Gao <gaojuxin@loongson.cn>
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- arch/mips/include/asm/elf.h | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/mips/include/asm/elf.h b/arch/mips/include/asm/elf.h
-index 5aa29ce..71c7622 100644
---- a/arch/mips/include/asm/elf.h
-+++ b/arch/mips/include/asm/elf.h
-@@ -410,6 +410,7 @@ do {									\
- 	clear_thread_flag(TIF_32BIT_FPREGS);				\
- 	clear_thread_flag(TIF_HYBRID_FPREGS);				\
- 	clear_thread_flag(TIF_32BIT_ADDR);				\
-+	current->personality &= ~READ_IMPLIES_EXEC;			\
- 									\
- 	if ((ex).e_ident[EI_CLASS] == ELFCLASS32)			\
- 		__SET_PERSONALITY32(ex, state);				\
--- 
-2.1.0
+:(
 
