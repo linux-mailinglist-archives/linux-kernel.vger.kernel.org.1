@@ -2,97 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5712216EC6
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 16:31:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D50E3216EBD
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 16:30:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728264AbgGGObL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 10:31:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727895AbgGGObK (ORCPT
+        id S1728207AbgGGOaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 10:30:35 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:37724 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725944AbgGGOaf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 10:31:10 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10D2BC061755;
-        Tue,  7 Jul 2020 07:31:10 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id s14so16815243plq.6;
-        Tue, 07 Jul 2020 07:31:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=i0nz+1FAozvxz4aD0FyzlhABh4V7jlm3CdKShkpSDRA=;
-        b=eW7PtF7NFYk1NicfihJofSgAhLqj7PraQUnp9z6VGmFxAEdJNqCmBEXVdK7aeNuGMm
-         94O0+goyRiecvMNQvEwom8ULyaCkZZzbVAHWMPysc0lsNkHP7SJzAJXSQreJcqTG5W/h
-         OqmpJGyHkkzdVbv0qTMcYVs2jvkKsQo2CxNVhCf1Bvdch83rU+XIyMTeESkf36+w/CGC
-         YPGjNC9454H4j9uP1IjJPIs4zI6orpDSp7bGMXQR5KUHvQ/uqxXi4Yr/BwZa5d2+GT1+
-         m4TlG964HnNZTssEb4u0lYpwh5T5O+wT6NDmvqrCATKqv/65gBXhmuq2IeMMH2r+c5vR
-         sThw==
+        Tue, 7 Jul 2020 10:30:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594132234;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jdHAIpfWqWHafM+znmNZIJaMTPI5wENHSEaIJXcuW90=;
+        b=UBPngXuIiEZzuwJIG2dZRDDRKGA9AiIVA8AeoZhBuCfqZ35Rdy08U94NniJTr3LYDplDYT
+        4mdZAJZ30koB5CO8gUOJmFNLMC4lJqP+me/5eqVKHqZoRplt/PRDRLs7hm404+DCU/VlJs
+        uCQcRNd+RZxbnuZJ8WDL9Y3y2Olr90M=
+Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com
+ [209.85.161.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-107-VCk3zA_XN2OtFN2ghVchuQ-1; Tue, 07 Jul 2020 10:30:32 -0400
+X-MC-Unique: VCk3zA_XN2OtFN2ghVchuQ-1
+Received: by mail-oo1-f72.google.com with SMTP id a24so13020565oos.10
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 07:30:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=i0nz+1FAozvxz4aD0FyzlhABh4V7jlm3CdKShkpSDRA=;
-        b=lX/fN4q+UdL2wmbY2bpO2bpssN2YZ9Lka6lHWR8A7Ahzkpe+e4Fc0/Qfs8JROEr/Tz
-         chDkLPVZ64gt7Zg9uRi1xXVBEFmQ156KUsICGPdiamU63x+LcH0o7051LNEiscrt9wMN
-         9gNFaWKMfRzITSqUeGngkuumfrFqICKxjdUSfbXgTJOSkX3+VtS6Lj5M7c6QSVzjqXeu
-         CS3f9UZpClJhBiRGyq18Q5KmIcyqxKlrGzGm9JUC4H/dLJ4MOiuWEp9EQmoJqNdPRDUY
-         +XX3w8ApxriY9PqM/YQL8SQKFLL6xwvLX2vTPkbz4INFi57Vn9DrZOw1yS//VhmSVIM6
-         le6g==
-X-Gm-Message-State: AOAM532Pi0hzIstc2BUovmDFfWyJ/wBGfrDSLgf2VQhqBSECmfDZv7il
-        1EKbB7VfdOvGtm/LNbDOWJFy+r50swYeuQ==
-X-Google-Smtp-Source: ABdhPJxloa0N7jgpB2WDZ/s0AhGF57yia3mju1qYn5+CWNJsmWvkhtRY7sKGqd7PU/zvv0lfTIewEA==
-X-Received: by 2002:a17:90a:e50c:: with SMTP id t12mr4622378pjy.209.1594132269209;
-        Tue, 07 Jul 2020 07:31:09 -0700 (PDT)
-Received: from localhost.localdomain ([103.228.223.183])
-        by smtp.googlemail.com with ESMTPSA id u26sm1219478pgo.71.2020.07.07.07.31.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jul 2020 07:31:08 -0700 (PDT)
-From:   Vishwas M <vishwas.reddy.vr@gmail.com>
-Cc:     Steve Glendinning <steve.glendinning@shawell.net>,
-        Vishwas M <vishwas.reddy.vr@gmail.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] hwmon: (emc2103) fix unable to change fan pwm1_enable attribute
-Date:   Tue,  7 Jul 2020 19:57:47 +0530
-Message-Id: <20200707142747.118414-1-vishwas.reddy.vr@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jdHAIpfWqWHafM+znmNZIJaMTPI5wENHSEaIJXcuW90=;
+        b=QWPOFRqpTYQUkyII3gf39rY6gwjc8tqaFN0MD30LjhFzez8k68XbfCRu+nNgGVMFSq
+         cnCvCENiE4rGI4uoJ3SeWeaQOaKI0C3DVP9q3YU68hEZYOp5OHLJQWngsvPnc9h3R2fD
+         N30DlXz0QH1v11FgtVOHcnwU+O2q1VIxbunzvgHx2aPi7HG7989B9fC9RIcplk3zqpSL
+         EAqN0udlqqlFTvSTwL25vevMcx2wzww9TAKWKao6l/RlBmrabRJEksaocz6rgm8YyR2x
+         0YZulvSLPBFpBLbrETo6C1VPTTCNqJIr3L9ZpCjC/aIrrqntcmkVlVWysUFeW1jM7UUY
+         NEMQ==
+X-Gm-Message-State: AOAM531fRwEWbdqL/XsmjXkvoQFtE5qgV/Mf1ne7S9bTyQjZyuIW55WE
+        oY6wLEUGOmcPUQiizcGj7tVQl5hiHi/xuqdVSVNf5J+fAfDSFF2ckh/KMpLeKbO0AfEdkZR0b0b
+        jA5gXohUCw6386cUa6odvYcMJczZEgYmTXCcLMSRT
+X-Received: by 2002:a4a:868a:: with SMTP id x10mr47045441ooh.31.1594132231277;
+        Tue, 07 Jul 2020 07:30:31 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxkyrmC9YyVoZKCHhEbKVmEbE0QU21dPZEuBspnOoCY6PvjRo2XRprybq1+LMm+sMOQeYKXQRvYJk4hHGy4wPw=
+X-Received: by 2002:a4a:868a:: with SMTP id x10mr47045402ooh.31.1594132230968;
+ Tue, 07 Jul 2020 07:30:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+References: <20200702165120.1469875-1-agruenba@redhat.com> <20200702165120.1469875-3-agruenba@redhat.com>
+ <CAHk-=wgpsuC6ejzr3pn5ej5Yn5z4xthNUUOvmA7KXHHGynL15Q@mail.gmail.com>
+In-Reply-To: <CAHk-=wgpsuC6ejzr3pn5ej5Yn5z4xthNUUOvmA7KXHHGynL15Q@mail.gmail.com>
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+Date:   Tue, 7 Jul 2020 16:30:19 +0200
+Message-ID: <CAHc6FU6LmR7m_8UHmB_77jUpYNo-kgCZ-1YTLqya-PPqvvBy7Q@mail.gmail.com>
+Subject: Re: [RFC 2/4] fs: Add IOCB_NOIO flag for generic_file_read_iter
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Dave Chinner <david@fromorbit.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes a bug which does not let FAN mode to be changed from
-sysfs(pwm1_enable). i.e pwm1_enable can not be set to 3, it will always
-remain at 0.
+On Thu, Jul 2, 2020 at 8:06 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+> On Thu, Jul 2, 2020 at 9:51 AM Andreas Gruenbacher <agruenba@redhat.com> wrote:
+> > Add an IOCB_NOIO flag that indicates to generic_file_read_iter that it
+> > shouldn't trigger any filesystem I/O for the actual request or for
+> > readahead.  This allows to do tentative reads out of the page cache as
+> > some filesystems allow, and to take the appropriate locks and retry the
+> > reads only if the requested pages are not cached.
+>
+> This looks sane to me, except for this part:
+> >                 if (!PageUptodate(page)) {
+> > -                       if (iocb->ki_flags & IOCB_NOWAIT) {
+> > +                       if (iocb->ki_flags & (IOCB_NOWAIT | IOCB_NOIO)) {
+> >                                 put_page(page);
+> >                                 goto would_block;
+> >                         }
+>
+> This path doesn't actually initiate reads at all - it waits for
+> existing reads to finish.
+>
+> So I think it should only check for IOCB_NOWAIT.
 
-This is caused because the device driver handles the result of
-"read_u8_from_i2c(client, REG_FAN_CONF1, &conf_reg)" incorrectly. The
-driver thinks an error has occurred if the (result != 0). This has been
-fixed by changing the condition to (result < 0).
+It turns out that label readpage is reachable from here via goto
+page_not_up_to_date / goto page_not_up_to_date_locked. So IOCB_NOIO
+needs to be checked somewhere. I'll send an update.
 
-Signed-off-by: Vishwas M <vishwas.reddy.vr@gmail.com>
----
- drivers/hwmon/emc2103.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/hwmon/emc2103.c b/drivers/hwmon/emc2103.c
-index 491a570e8e50..924c02c1631d 100644
---- a/drivers/hwmon/emc2103.c
-+++ b/drivers/hwmon/emc2103.c
-@@ -443,7 +443,7 @@ static ssize_t pwm1_enable_store(struct device *dev,
- 	}
- 
- 	result = read_u8_from_i2c(client, REG_FAN_CONF1, &conf_reg);
--	if (result) {
-+	if (result < 0) {
- 		count = result;
- 		goto err;
- 	}
--- 
-2.25.1
+Andreas
 
