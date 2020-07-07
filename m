@@ -2,140 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4492D216900
+	by mail.lfdr.de (Postfix) with ESMTP id B12E3216901
 	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 11:27:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727875AbgGGJ1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 05:27:09 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:58667 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726540AbgGGJ1J (ORCPT
+        id S1726839AbgGGJ1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 05:27:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727886AbgGGJ1K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 05:27:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594114028;
+        Tue, 7 Jul 2020 05:27:10 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EF8FC061755;
+        Tue,  7 Jul 2020 02:27:10 -0700 (PDT)
+Date:   Tue, 7 Jul 2020 11:27:07 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1594114028;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=TOdN6oueiJxGC26XWRVlU9vS6Ei4rnzo4eoopPeqQeU=;
-        b=KEHqthmpV0ju5e1zeIDCinEK6+DWuaFcdgzXLGduysfuYaVo95gEEBWVKI/9jSd/WbSH48
-        7TH0+S6kYQn/sHuLlvPBEwzLsxMtwk5nqBhSLLGPjzrpZFy+AAYsBQJxHE64few1vGgfPI
-        Jnlm7/a+dJi12VfdjPhZDFsD7UJbHa0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-309-_ge2CFzUMZOYaw2qde8EQA-1; Tue, 07 Jul 2020 05:27:03 -0400
-X-MC-Unique: _ge2CFzUMZOYaw2qde8EQA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D14F5800406;
-        Tue,  7 Jul 2020 09:27:00 +0000 (UTC)
-Received: from gondolin (ovpn-113-54.ams2.redhat.com [10.36.113.54])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CE25A60E3E;
-        Tue,  7 Jul 2020 09:26:54 +0000 (UTC)
-Date:   Tue, 7 Jul 2020 11:26:52 +0200
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Pierre Morel <pmorel@linux.ibm.com>
-Cc:     linux-kernel@vger.kernel.org, pasic@linux.ibm.com,
-        borntraeger@de.ibm.com, frankja@linux.ibm.com, mst@redhat.com,
-        jasowang@redhat.com, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, thomas.lendacky@amd.com,
-        david@gibson.dropbear.id.au, linuxram@us.ibm.com,
-        heiko.carstens@de.ibm.com, gor@linux.ibm.com
-Subject: Re: [PATCH v4 1/2] virtio: let arch validate VIRTIO features
-Message-ID: <20200707112652.42fcab80.cohuck@redhat.com>
-In-Reply-To: <1594111477-15401-2-git-send-email-pmorel@linux.ibm.com>
-References: <1594111477-15401-1-git-send-email-pmorel@linux.ibm.com>
-        <1594111477-15401-2-git-send-email-pmorel@linux.ibm.com>
-Organization: Red Hat GmbH
+        bh=QLBTzIwDXRw8Ngy3frJIgWMDMydSG5GmWktyqhaqBeo=;
+        b=MO7Ppzm9g4auQbN/35wAZgxdqPFOCGkJIsA1FU6fXW8rDsAD8z98NHJL4EpFs1MWQnqT0Z
+        UX6AaIaphrgEw7cpzAqVHdV0VsaUoT3XlakzRjgZrWgyiuhTEi26xzLuvYLakLjK+w/LZS
+        y6x6ShETS2+aKEkISOeG49AJBOS3SfNknmo3MqnZ2WBEt+9t7LQuw3pNcSQrP+oehQMTwh
+        GXkDJTuKLDh1rQrDqQUH/lmmkyg3VUU5IHG4OmkDnQCxk6LSsFZEv18p4qryygjCNZnEWS
+        VU0O4OxM761HgnjDn8/3wKBniuB2CRFu6m53V+6Tn2EcPUyAZum7sERzjKS2bg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1594114028;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QLBTzIwDXRw8Ngy3frJIgWMDMydSG5GmWktyqhaqBeo=;
+        b=qaqbbubx9fvSPosR3yx7SvkqXwsNksqEypCk+pQW1mWQ0c7qkSnxMlduSpzkWLB7IvJMLB
+        9ZBQWb3vznwTUxCg==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, dipankar@in.ibm.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com
+Subject: Re: [PATCH tip/core/rcu 03/17] rcu/tree: Skip entry into the page
+ allocator for PREEMPT_RT
+Message-ID: <20200707092707.eos6yiq5t6h7d7ko@linutronix.de>
+References: <20200624201200.GA28901@paulmck-ThinkPad-P72>
+ <20200624201226.21197-3-paulmck@kernel.org>
+ <20200630164543.4mdcf6zb4zfclhln@linutronix.de>
+ <20200630183534.GG9247@paulmck-ThinkPad-P72>
+ <20200702141216.r4rbt5w3hjzafpgg@linutronix.de>
+ <20200702194506.GA31478@pc636>
+ <20200706194232.GA233429@google.com>
+ <20200706195557.GA24082@pc636>
+ <20200706202949.GB233429@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200706202949.GB233429@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue,  7 Jul 2020 10:44:36 +0200
-Pierre Morel <pmorel@linux.ibm.com> wrote:
+On 2020-07-06 16:29:49 [-0400], Joel Fernandes wrote:
+> Anyway, I think as we discussed on IRC, your proposal will work for both
+> kernels while allowing us to keep the internal lock as raw.
 
-> An architecture may need to validate the VIRTIO devices features
-> based on architecture specificities.
+Why can't we use the migrate_disable() and spinlock_t?
 
-s/specifities/specifics/
-
+> thanks,
 > 
-> Signed-off-by: Pierre Morel <pmorel@linux.ibm.com>
-> ---
->  drivers/virtio/virtio.c       | 19 +++++++++++++++++++
->  include/linux/virtio_config.h |  1 +
->  2 files changed, 20 insertions(+)
-> 
-> diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
-> index a977e32a88f2..3179a8aa76f5 100644
-> --- a/drivers/virtio/virtio.c
-> +++ b/drivers/virtio/virtio.c
-> @@ -167,6 +167,21 @@ void virtio_add_status(struct virtio_device *dev, unsigned int status)
->  }
->  EXPORT_SYMBOL_GPL(virtio_add_status);
->  
-> +/*
-> + * arch_needs_virtio_iommu_platform - provide arch specific hook when finalizing
+>  - Joel
 
-s/arch_needs_virtio_iommu_platform/arch_validate_virtio_features/
-
-:)
-
-> + *				      features for VIRTIO device dev
-> + * @dev: the VIRTIO device being added
-> + *
-> + * Permits the platform to provide architecture specific functionality when
-
-s/provide architecture specific functionality/handle architecture-specific requirements/
-
-?
-
-> + * devices features are finalized. This is the default implementation.
-
-s/devices/device/
-
-> + * Architecture implementations can override this.
-> + */
-> +
-> +int __weak arch_validate_virtio_features(struct virtio_device *dev)
-> +{
-> +	return 0;
-> +}
-> +
->  int virtio_finalize_features(struct virtio_device *dev)
->  {
->  	int ret = dev->config->finalize_features(dev);
-> @@ -176,6 +191,10 @@ int virtio_finalize_features(struct virtio_device *dev)
->  	if (ret)
->  		return ret;
->  
-> +	ret = arch_validate_virtio_features(dev);
-> +	if (ret)
-> +		return ret;
-> +
->  	if (!virtio_has_feature(dev, VIRTIO_F_VERSION_1))
->  		return 0;
->  
-> diff --git a/include/linux/virtio_config.h b/include/linux/virtio_config.h
-> index bb4cc4910750..3f4117adf311 100644
-> --- a/include/linux/virtio_config.h
-> +++ b/include/linux/virtio_config.h
-> @@ -459,4 +459,5 @@ static inline void virtio_cwrite64(struct virtio_device *vdev,
->  		_r;							\
->  	})
->  
-> +int arch_validate_virtio_features(struct virtio_device *dev);
->  #endif /* _LINUX_VIRTIO_CONFIG_H */
-
-With the wording fixed,
-
-Reviewed-by: Cornelia Huck <cohuck@redhat.com>
-
+Sebastian
