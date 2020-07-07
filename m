@@ -2,116 +2,372 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54669217BEB
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 01:54:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6154217BF0
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 01:56:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729084AbgGGXyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 19:54:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55556 "EHLO
+        id S1729363AbgGGX44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 19:56:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727945AbgGGXyL (ORCPT
+        with ESMTP id S1729353AbgGGX4z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 19:54:11 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC260C061755
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 16:54:10 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id w16so48525229ejj.5
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 16:54:10 -0700 (PDT)
+        Tue, 7 Jul 2020 19:56:55 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55865C08C5DC
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 16:56:55 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id m22so10394342pgv.9
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 16:56:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:subject:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=4ld5yvYpZk3zrDDeHii0Vpu7Nclpj2nEfal4+E6ydBE=;
-        b=cimSHl5Lyez14li/0K2of8HcC6aVDRfdr9xZWOModnFxJTJgDRf2ZiJqxCsmDRAGNY
-         BaBL+Em7jQFwAq8pJDeqxFtL/ltLdrdBiGoPar4NS97JPfcZe7ahhJBRNHWxCgXR0Dmw
-         /ikwBXIUuSt2w52ZYWKt3HGoC8Z/M0eoQoqBqFDaqHTrW3AEpV1RAi7/5mdulV1E7Y/P
-         JsLxPW9x0XVi1ZeOVf1YjHh2Ks5S6CT2c97mTKQ69x3JyEy1g5qAMNhYDPt9+OLXuk3q
-         ONr7sibqVU+YpiZRxEZ0pzcNYzLWaVd/Hf8GQmr14Gyf5Wm/UNXnOciOQLFeSDSmN7ZK
-         GnAQ==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=PrB6tSwZut3YhXvmRxKyIxp+o4bcGYiCaIgYmdScaAY=;
+        b=Iw4yW9ylrL0U/XpBOdhXkOV6x4pABnCzwwT15pR89LgGter+AnxnFZse85PXllDV1W
+         xEAfSH5Wqr5jk1VxD1gOy5RfI+ZkQ1RbHfr4I7dSr5sm0rbQLRTJo7LWU33sCpNZpS7V
+         YpMI4rJsxFOC4w3BTNfAGYT8xQf4L3bZkm2ZM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4ld5yvYpZk3zrDDeHii0Vpu7Nclpj2nEfal4+E6ydBE=;
-        b=X9591Co6rMMeJ3DiAQuMX6OCKkMvqAL7Iw1gOc9DkTwpx59EJcNsAcClmm06lHx4cp
-         x2RUkZisvWsMmGD33KtFJ6176yPtNpSONGbvswjxkBM/enhczAqgBPjtSBuvkvu2xRd4
-         1G9SrGpKL+X/taFLTHplYXco528Q6rGkjmEvmqzeXBylZXwudToKcvaBTFJSj60v2UT9
-         WfK5SnXBuf24HY9/pnfRAkcT2lwntjRBk83l00/kfTEgW5grJR0vCLqkKPANWRhjYvcL
-         FEC0rznof2opNQBeSI0KTdSiygJtcpob77km4YZoMUeHUU7XdiRvXx9QqmODbZghHjIk
-         FzmA==
-X-Gm-Message-State: AOAM531vfsZCiJ0QLTAC/J/dmiTPthbgrOXaCG5cQnmQWN9PZ3WGB9FX
-        mlbNHw6Kt4KdMFVDx/fu7jgcZKE9
-X-Google-Smtp-Source: ABdhPJxyZ3NKJqQ4cGl9aGGZXkS+m/XXZWLYmC8ClxCAZoxLQg8sSzUvIXhl8E/KxRDs85vX9sK7Pw==
-X-Received: by 2002:a17:906:469a:: with SMTP id a26mr46852677ejr.198.1594166049386;
-        Tue, 07 Jul 2020 16:54:09 -0700 (PDT)
-Received: from [192.168.50.2] (178-164-237-246.pool.digikabel.hu. [178.164.237.246])
-        by smtp.gmail.com with ESMTPSA id m2sm1066081ejg.7.2020.07.07.16.54.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Jul 2020 16:54:08 -0700 (PDT)
-From:   Tibor Raschko <tibrasch@gmail.com>
-Subject: Re: [Tech-board-discuss] [PATCH] CodingStyle: Inclusive Terminology
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        ksummit-discuss@lists.linuxfoundation.org,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PrB6tSwZut3YhXvmRxKyIxp+o4bcGYiCaIgYmdScaAY=;
+        b=Uv2YKwXrBEztokPBBksf/KVYyx8QK+W7wB7NLZjh0/mi4zxj4RLaQNNhuif+fYWTQN
+         J9eYoKkPtQnxMqpGZB1lvEgLqXGDlo/r8uwV91Di+leIDMXD/l7X4n2tY9ZBYwrgwUJc
+         40ClqSasntOqsNnW1zwRXHx0+LbE5qiZhgkTpjjsITYgqetS+0AJH9MPdbbVpYnKkN3Y
+         NJEloLENzmITbsGHOFuVQACr+qUDyPK5/2990IaguvDe5kByxzHt7c4SYU7Yoc8jVSnM
+         t20cDZFZKf/QGdQ1S08Gnr4XwTai3XtKY7WV1fuQAQ+q0++T4M6k9Y80UW1ZXwkxQoOz
+         TU4A==
+X-Gm-Message-State: AOAM530M9lDKFzR3JFskCnNjDeKTLjajGWzDEh7y/alipTrPw+ab3Rzx
+        4ISfpJMbwPylcw5TF31EGAXvIQ==
+X-Google-Smtp-Source: ABdhPJxkDoJk/3SICeILCjbmCiKZisDW+o0RKxesz+r2nVdsA3hgAWUzZPUDXoKXVXdQIYQV1oSOnQ==
+X-Received: by 2002:a63:3d07:: with SMTP id k7mr47093213pga.93.1594166214542;
+        Tue, 07 Jul 2020 16:56:54 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id r204sm16865354pfc.134.2020.07.07.16.56.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Jul 2020 16:56:53 -0700 (PDT)
+Date:   Tue, 7 Jul 2020 16:56:52 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Scott Branden <scott.branden@broadcom.com>
+Cc:     Luis Chamberlain <mcgrof@kernel.org>,
+        Wolfram Sang <wsa@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Brown <broonie@kernel.org>,
-        tech-board-discuss@lists.linuxfoundation.org
-References: <20200706191555.GD6176@sirena.org.uk>
- <44713cf0-db41-bdd0-a41e-d710c346be12@gmail.com>
- <20200707212641.GA1575320@rani.riverdale.lan>
-Message-ID: <cafbd1f4-b03b-077d-8a4e-d7b9bcaa070d@gmail.com>
-Date:   Wed, 8 Jul 2020 01:54:07 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        David Brown <david.brown@linaro.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Shuah Khan <shuah@kernel.org>, bjorn.andersson@linaro.org,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        Olof Johansson <olof@lixom.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Takashi Iwai <tiwai@suse.de>, linux-kselftest@vger.kernel.org,
+        Andy Gross <agross@kernel.org>,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: Re: [PATCH v10 2/9] fs: introduce kernel_pread_file* support
+Message-ID: <202007071642.AA705B2A@keescook>
+References: <20200706232309.12010-1-scott.branden@broadcom.com>
+ <20200706232309.12010-3-scott.branden@broadcom.com>
 MIME-Version: 1.0
-In-Reply-To: <20200707212641.GA1575320@rani.riverdale.lan>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200706232309.12010-3-scott.branden@broadcom.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Blacklist most definitely has a negative connotation in technical use.
-> You blacklist devices that don't work properly, you blacklist drivers
-> that don't work for your hardware, you blacklist domains that are
-> sending spam or trying to mount network attacks on your servers. Things
-> on the blacklist are "bad" in one way or the other, that's the reason
-> they're on it.
+On Mon, Jul 06, 2020 at 04:23:02PM -0700, Scott Branden wrote:
+> Add kernel_pread_file* support to kernel to allow for partial read
+> of files with an offset into the file.
 > 
+> Signed-off-by: Scott Branden <scott.branden@broadcom.com>
+> ---
+>  fs/exec.c                        | 93 ++++++++++++++++++++++++--------
+>  include/linux/kernel_read_file.h | 17 ++++++
+>  2 files changed, 87 insertions(+), 23 deletions(-)
+> 
+> diff --git a/fs/exec.c b/fs/exec.c
+> index 4ea87db5e4d5..e6a8a65f7478 100644
+> --- a/fs/exec.c
+> +++ b/fs/exec.c
+> @@ -928,10 +928,14 @@ struct file *open_exec(const char *name)
+>  }
+>  EXPORT_SYMBOL(open_exec);
+>  
+> -int kernel_read_file(struct file *file, void **buf, loff_t *size,
+> -		     loff_t max_size, enum kernel_read_file_id id)
+> -{
+> -	loff_t i_size, pos;
+> +int kernel_pread_file(struct file *file, void **buf, loff_t *size,
+> +		      loff_t max_size, loff_t pos,
+> +		      enum kernel_read_file_id id)
+> +{
+> +	loff_t alloc_size;
+> +	loff_t buf_pos;
+> +	loff_t read_end;
+> +	loff_t i_size;
+>  	ssize_t bytes = 0;
+>  	int ret;
+>  
+> @@ -951,21 +955,32 @@ int kernel_read_file(struct file *file, void **buf, loff_t *size,
+>  		ret = -EINVAL;
+>  		goto out;
+>  	}
+> -	if (i_size > SIZE_MAX || (max_size > 0 && i_size > max_size)) {
+> +
+> +	/* Default read to end of file */
+> +	read_end = i_size;
+> +
+> +	/* Allow reading partial portion of file */
+> +	if ((id == READING_FIRMWARE_PARTIAL_READ) &&
+> +	    (i_size > (pos + max_size)))
+> +		read_end = pos + max_size;
 
-Of course, we put "bad" things on a blacklist. But in computing, only technical
-things, not black people. What I meant with "blacklist has no negative
-connotation" was that when we use the word "blacklist", nobody actually thinks
-about people or skin color. Blocking bad IP addresses or faulty devices is
-surely non-offensive.
+There's no need to involve "id" here. There are other signals about
+what's happening (i.e. pos != 0, max_size != i_size, etc).
 
-If you argue that instead of this, what we really care about is "black" things
-generally meaning something "bad", then forbidding "blacklist" will not get us
-any closer to our goal. This is because we have a hundred other "black" phrases
-in our language: black economy, black sheep, black market, to blacken, a
-blackleg, a blackguard, a black mark ... only a couple of examples from the top
-of my head.
+> +
+> +	alloc_size = read_end - pos;
+> +	if (i_size > SIZE_MAX || (max_size > 0 && alloc_size > max_size)) {
+>  		ret = -EFBIG;
+>  		goto out;
+>  	}
+>  
+> -	if (id != READING_FIRMWARE_PREALLOC_BUFFER)
+> -		*buf = vmalloc(i_size);
+> +	if ((id != READING_FIRMWARE_PARTIAL_READ) &&
+> +	    (id != READING_FIRMWARE_PREALLOC_BUFFER))
+> +		*buf = vmalloc(alloc_size);
+>  	if (!*buf) {
+>  		ret = -ENOMEM;
+>  		goto out;
+>  	}
 
-My point is we will never get rid of the bad connotations in "black". "Black" is
-always going to assume and remain something "unwanted", even after 2020. This is
-why I think this whole campaign of removing "blacklist" is utterly ridiculous
-and ineffective.
+The id usage here was a mistake in upstream, and the series I sent is
+trying to clean that up.
 
-The real problem is that a group of people have been marked and
-labeled with such a negative word. If we want to remove the negative association
-from black people, we should stop calling them black. That'd be productive in
-the long run, since afro-americans then wouldn't be associated with something
-"bad" anymore.
+Greg, it seems this series is going to end up in your tree due to it
+being drivers/misc? I guess I need to direct my series to Greg then, but
+get LSM folks Acks.
 
-But all the supporters of the campaign keep calling them something ba" by
-calling them black, and hope to make a difference by banning 2 or 3 totally
-unrelated phrases out of probably 50. The whole campaign is pointless and rides
-on emotion and media attention instead of rational thinking.
+>  
+> -	pos = 0;
+> -	while (pos < i_size) {
+> -		bytes = kernel_read(file, *buf + pos, i_size - pos, &pos);
+> +	buf_pos = 0;
+> +	while (pos < read_end) {
+> +		bytes = kernel_read(file, *buf + buf_pos, read_end - pos, &pos);
+>  		if (bytes < 0) {
+>  			ret = bytes;
+>  			goto out_free;
+> @@ -973,20 +988,23 @@ int kernel_read_file(struct file *file, void **buf, loff_t *size,
+>  
+>  		if (bytes == 0)
+>  			break;
+> +
+> +		buf_pos += bytes;
+>  	}
+>  
+> -	if (pos != i_size) {
+> +	if (pos != read_end) {
+>  		ret = -EIO;
+>  		goto out_free;
+>  	}
+>  
+> -	ret = security_kernel_post_read_file(file, *buf, i_size, id);
+> +	ret = security_kernel_post_read_file(file, *buf, alloc_size, id);
+>  	if (!ret)
+>  		*size = pos;
 
-I support avoiding references to master, slave, and to slavery in general.
-I oppose avoiding blacklist.
+This call cannot be inside kernel_pread_file(): any future LSMs will see
+a moving window of contents, etc. It'll need to be in kernel_read_file()
+proper.
 
-Raschko T.
+>  
+>  out_free:
+>  	if (ret < 0) {
+> -		if (id != READING_FIRMWARE_PREALLOC_BUFFER) {
+> +		if ((id != READING_FIRMWARE_PARTIAL_READ) &&
+> +		    (id != READING_FIRMWARE_PREALLOC_BUFFER)) {
+>  			vfree(*buf);
+>  			*buf = NULL;
+>  		}
+> @@ -996,10 +1014,18 @@ int kernel_read_file(struct file *file, void **buf, loff_t *size,
+>  	allow_write_access(file);
+>  	return ret;
+>  }
+> +
+> +int kernel_read_file(struct file *file, void **buf, loff_t *size,
+> +		     loff_t max_size, enum kernel_read_file_id id)
+> +{
+> +	return kernel_pread_file(file, buf, size, max_size, 0, id);
+> +}
+>  EXPORT_SYMBOL_GPL(kernel_read_file);
+>  
+> -int kernel_read_file_from_path(const char *path, void **buf, loff_t *size,
+> -			       loff_t max_size, enum kernel_read_file_id id)
+> +int kernel_pread_file_from_path(const char *path, void **buf,
+> +				loff_t *size,
+> +				loff_t max_size, loff_t pos,
+> +				enum kernel_read_file_id id)
+>  {
+>  	struct file *file;
+>  	int ret;
+> @@ -1011,15 +1037,22 @@ int kernel_read_file_from_path(const char *path, void **buf, loff_t *size,
+>  	if (IS_ERR(file))
+>  		return PTR_ERR(file);
+>  
+> -	ret = kernel_read_file(file, buf, size, max_size, id);
+> +	ret = kernel_pread_file(file, buf, size, max_size, pos, id);
+>  	fput(file);
+>  	return ret;
+>  }
+> +
+> +int kernel_read_file_from_path(const char *path, void **buf, loff_t *size,
+> +			       loff_t max_size, enum kernel_read_file_id id)
+> +{
+> +	return kernel_pread_file_from_path(path, buf, size, max_size, 0, id);
+> +}
+>  EXPORT_SYMBOL_GPL(kernel_read_file_from_path);
+>  
+> -int kernel_read_file_from_path_initns(const char *path, void **buf,
+> -				      loff_t *size, loff_t max_size,
+> -				      enum kernel_read_file_id id)
+> +int kernel_pread_file_from_path_initns(const char *path, void **buf,
+> +				       loff_t *size,
+> +				       loff_t max_size, loff_t pos,
+> +				       enum kernel_read_file_id id)
+>  {
+>  	struct file *file;
+>  	struct path root;
+> @@ -1037,14 +1070,22 @@ int kernel_read_file_from_path_initns(const char *path, void **buf,
+>  	if (IS_ERR(file))
+>  		return PTR_ERR(file);
+>  
+> -	ret = kernel_read_file(file, buf, size, max_size, id);
+> +	ret = kernel_pread_file(file, buf, size, max_size, pos, id);
+>  	fput(file);
+>  	return ret;
+>  }
+> +
+> +int kernel_read_file_from_path_initns(const char *path, void **buf,
+> +				      loff_t *size, loff_t max_size,
+> +				      enum kernel_read_file_id id)
+> +{
+> +	return kernel_pread_file_from_path_initns(path, buf, size, max_size, 0, id);
+> +}
+>  EXPORT_SYMBOL_GPL(kernel_read_file_from_path_initns);
+>  
+> -int kernel_read_file_from_fd(int fd, void **buf, loff_t *size, loff_t max_size,
+> -			     enum kernel_read_file_id id)
+> +int kernel_pread_file_from_fd(int fd, void **buf, loff_t *size,
+> +			      loff_t max_size, loff_t pos,
+> +			      enum kernel_read_file_id id)
+>  {
+>  	struct fd f = fdget(fd);
+>  	int ret = -EBADF;
+> @@ -1052,11 +1093,17 @@ int kernel_read_file_from_fd(int fd, void **buf, loff_t *size, loff_t max_size,
+>  	if (!f.file)
+>  		goto out;
+>  
+> -	ret = kernel_read_file(f.file, buf, size, max_size, id);
+> +	ret = kernel_pread_file(f.file, buf, size, max_size, pos, id);
+>  out:
+>  	fdput(f);
+>  	return ret;
+>  }
+> +
+> +int kernel_read_file_from_fd(int fd, void **buf, loff_t *size, loff_t max_size,
+> +			     enum kernel_read_file_id id)
+> +{
+> +	return kernel_pread_file_from_fd(fd, buf, size, max_size, 0, id);
+> +}
+>  EXPORT_SYMBOL_GPL(kernel_read_file_from_fd);
+
+For each of these execution path, the mapping to LSM hooks is:
+
+- all path must call security_kernel_read_file(file, id) before reading
+  (this appears to be fine as-is in your series).
+
+- anything doing a "full" read needs to call
+  security_kernel_post_read_file() with the file and full buffer, size,
+  etc (so all the kernel_read_file*() paths). I imagine instead of
+  adding 3 copy/pasted versions of this, it may be possible to refactor
+  the helpers into a single core "full" caller that takes struct file,
+  or doing some logic in kernel_pread_file() that notices it has the
+  entire file in the buffer and doing the call then.
+  As an example of what I mean about doing the call, here's how I might
+  imagine it for one of the paths if it took struct file:
+
+int kernel_read_file_from_file(struct file *file, void **buf, loff_t *size,
+			       loff_t max_size, enum kernel_read_file_id id)
+{
+	int ret;
+
+	ret = kernel_pread_file_from_file(file, buf, size, max_size, 0, id);
+	if (ret)
+		return ret;
+	return security_kernel_post_read_file(file, buf, *size, id);
+}
+
+>  
+>  #if defined(CONFIG_HAVE_AOUT) || defined(CONFIG_BINFMT_FLAT) || \
+> diff --git a/include/linux/kernel_read_file.h b/include/linux/kernel_read_file.h
+> index 53f5ca41519a..f061ccb8d0b4 100644
+> --- a/include/linux/kernel_read_file.h
+> +++ b/include/linux/kernel_read_file.h
+> @@ -8,6 +8,7 @@
+>  #define __kernel_read_file_id(id) \
+>  	id(UNKNOWN, unknown)		\
+>  	id(FIRMWARE, firmware)		\
+> +	id(FIRMWARE_PARTIAL_READ, firmware)	\
+>  	id(FIRMWARE_PREALLOC_BUFFER, firmware)	\
+>  	id(FIRMWARE_EFI_EMBEDDED, firmware)	\
+
+And again, sorry that this was in here as a misleading example.
+
+>  	id(MODULE, kernel-module)		\
+> @@ -36,15 +37,31 @@ static inline const char *kernel_read_file_id_str(enum kernel_read_file_id id)
+>  	return kernel_read_file_str[id];
+>  }
+>  
+> +int kernel_pread_file(struct file *file,
+> +		      void **buf, loff_t *size, loff_t pos,
+> +		      loff_t max_size,
+> +		      enum kernel_read_file_id id);
+>  int kernel_read_file(struct file *file,
+>  		     void **buf, loff_t *size, loff_t max_size,
+>  		     enum kernel_read_file_id id);
+> +int kernel_pread_file_from_path(const char *path,
+> +				void **buf, loff_t *size, loff_t pos,
+> +				loff_t max_size,
+> +				enum kernel_read_file_id id);
+>  int kernel_read_file_from_path(const char *path,
+>  			       void **buf, loff_t *size, loff_t max_size,
+>  			       enum kernel_read_file_id id);
+> +int kernel_pread_file_from_path_initns(const char *path,
+> +				       void **buf, loff_t *size, loff_t pos,
+> +				       loff_t max_size,
+> +				       enum kernel_read_file_id id);
+>  int kernel_read_file_from_path_initns(const char *path,
+>  				      void **buf, loff_t *size, loff_t max_size,
+>  				      enum kernel_read_file_id id);
+> +int kernel_pread_file_from_fd(int fd,
+> +			      void **buf, loff_t *size, loff_t pos,
+> +			      loff_t max_size,
+> +			      enum kernel_read_file_id id);
+>  int kernel_read_file_from_fd(int fd,
+>  			     void **buf, loff_t *size, loff_t max_size,
+>  			     enum kernel_read_file_id id);
+
+I remain concerned that adding these helpers will lead a poor
+interaction with LSMs, but I guess I get to hold my tongue. :)
+
+-- 
+Kees Cook
