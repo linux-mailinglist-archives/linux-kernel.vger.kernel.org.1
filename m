@@ -2,82 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EE34217887
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 22:04:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E51621788F
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 22:06:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728520AbgGGUEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 16:04:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40046 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727895AbgGGUEH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 16:04:07 -0400
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7E2C5206F6;
-        Tue,  7 Jul 2020 20:04:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594152246;
-        bh=lOqxPHD1G7v4ptCDcrU8Zzd0/sIT1tjdxKx6H0SH6CE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ZMH8B4e4BRy7pNzi9c8aXzN6seq1gBHeil+eQ9hiIVQ8URQja30LSG6juVf3BboAK
-         eqmvjEeVsslRYG1GyeqNTPPdk6ri3P0pNFuC3bsDHKCp14dL8DekEVflRRCZM/xDRJ
-         VrscB+AV4GSw6wX0kntnBxGxQ/qOh31JOGMkQXzc=
-Date:   Tue, 7 Jul 2020 13:04:06 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-mm@kvack.org, Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Hugh Dickins <hughd@google.com>,
-        Matthew Wilcox <willy@infradead.org>, Zi Yan <ziy@nvidia.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V3] mm/vmstat: Add events for THP migration without
- split
-Message-Id: <20200707130406.21ce3d61a4cce25831abb2d1@linux-foundation.org>
-In-Reply-To: <1594080415-27924-1-git-send-email-anshuman.khandual@arm.com>
-References: <1594080415-27924-1-git-send-email-anshuman.khandual@arm.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S1728677AbgGGUGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 16:06:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728208AbgGGUG2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 16:06:28 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9281CC08C5E1
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 13:06:28 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id h1so13093277otq.12
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 13:06:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=r5PL45TtpUanLMjUFz1CcEwQghycNM5MHybEf6+OAdY=;
+        b=Ia/xRu4E5EmGy6Euz2yN+Lu4bpiUJmEdWdzTD8OqM8AxBU6FQFBhSUpyKT01Vr8Gfb
+         B1Z5wCAkGvzqfHGLEzzzBaknQJXeNrxuVnCP9kf8bRooXqJKq6zqnMXR+v5lLmKVtu5A
+         QTSvpd1Xn3a+ElGJKiVI+MGiIxrLD5plOOwc0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=r5PL45TtpUanLMjUFz1CcEwQghycNM5MHybEf6+OAdY=;
+        b=ikEi5yLFEhJYdTBwppK19DCtFLOaUAKn+LacFom1mkv5acJuz2lpRE+mwEnJ+x8OOG
+         1i660JCY8aoPP9hy1T0N89jnUq2eWArYGuocF3OgcaR3DTuAbfDB7cUywOo/qgrTTE4g
+         DxSEbIk9aAfNkDW38ixnzupSz5ow9jXMUMFJv2Nq5tq3XDuHRrl4yjkmI1GMSCeOmCt6
+         TkyfVwY07J7u8WyFaFv0d48BVXuXaZSgTky7LriQncEIOIrpfBAPBopOq9O+d0lPyKSL
+         Brl2urzc1pkS3GdHVCYIrwx3HqUPe7qPhrRE4MopLvwBZF9xgx2jVm91MRDBua07LxPh
+         OdKA==
+X-Gm-Message-State: AOAM533T08aqGECNAnRlk70wYY2gBLUF7mfUHH0rMn3qsr1viIZ9CDYh
+        KOwt5Vbvquv7ZY+BVSi78OvbIA==
+X-Google-Smtp-Source: ABdhPJwwnZXLOhRRrCJBbJ2DZTfTavUWiRd8aI97qtpmNCNSuXiRBk3Odg92UJhZ/9Q7+WOFz9Le2Q==
+X-Received: by 2002:a9d:2261:: with SMTP id o88mr8252897ota.334.1594152388040;
+        Tue, 07 Jul 2020 13:06:28 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id d193sm302792oib.53.2020.07.07.13.06.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Jul 2020 13:06:27 -0700 (PDT)
+Subject: Re: [PATCH] usbip: Use fallthrough pseudo-keyword
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Valentina Manea <valentina.manea.m@gmail.com>,
+        Shuah Khan <shuah@kernel.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20200707195214.GA3932@embeddedor>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <977e88c2-58cb-9507-c889-854e574a8f31@linuxfoundation.org>
+Date:   Tue, 7 Jul 2020 14:06:26 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
+MIME-Version: 1.0
+In-Reply-To: <20200707195214.GA3932@embeddedor>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue,  7 Jul 2020 05:36:55 +0530 Anshuman Khandual <anshuman.khandual@arm.com> wrote:
-
-> Add following new vmstat events which will help in validating THP migration
-> without split. Statistics reported through these new VM events will help in
-> performance debugging.
+On 7/7/20 1:52 PM, Gustavo A. R. Silva wrote:
+> Replace the existing /* fall through */ comments and its variants with
+> the new pseudo-keyword macro fallthrough[1]. Also, remove unnecessary
+> fall-through markings when it is the case.
 > 
-> 1. THP_MIGRATION_SUCCESS
-> 2. THP_MIGRATION_FAILURE
-> 3. THP_MIGRATION_SPLIT
+> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
 > 
-> In addition, these new events also update normal page migration statistics
-> appropriately via PGMIGRATE_SUCCESS and PGMIGRATE_FAILURE. While here, this
-> updates current trace event 'mm_migrate_pages' to accommodate now available
-> THP statistics.
 
-Patch looks straightforward enough.  It would be nice to see some
-confirmation from others that these metrics are a desirable thing to
-export.
+Is fallthrough syntax supported on our min gcc version?
 
-> ...
->
-> -	trace_mm_migrate_pages(nr_succeeded, nr_failed, mode, reason);
-> +	if (nr_thp_succeeded)
-> +		count_vm_events(THP_MIGRATION_SUCCESS, nr_thp_succeeded);
-> +	if (nr_thp_failed)
-> +		count_vm_events(THP_MIGRATION_FAILURE, nr_thp_failed);
-> +	if (nr_thp_split)
-> +		count_vm_events(THP_MIGRATION_SPLIT, nr_thp_split);
+Does checkpatch or coccicheck catch these cases?
 
-Are these "if"s worthwhile to have?
+The patch looks good.
 
-> +	trace_mm_migrate_pages(nr_succeeded, nr_failed, nr_thp_succeeded,
-> +			       nr_thp_failed, nr_thp_split, mode, reason);
+Acked-by: Shuah Khan <skhan@linuxfoundation.org>
 
-
+thanks,
+-- Shuah
