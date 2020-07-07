@@ -2,39 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A6FA2171B8
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:43:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4077217163
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:42:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730103AbgGGPYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:24:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38010 "EHLO mail.kernel.org"
+        id S1729282AbgGGPS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:18:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58472 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729085AbgGGPYZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:24:25 -0400
+        id S1728191AbgGGPSz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 11:18:55 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 38DB1207D0;
-        Tue,  7 Jul 2020 15:24:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6FE4220674;
+        Tue,  7 Jul 2020 15:18:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594135464;
-        bh=G+rAMT6LhkOWlncqszbebKQ70fqYSaj8mZENtE+BSoE=;
+        s=default; t=1594135135;
+        bh=0Er6uxMfKgSExs7P3eRG8nd9FTqEqobIt6HXk9xwKEw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XRB6qZ0Wf+uK1Zs/uppBtoHqvG21VYQD0qRtW7wE7/vvIg8WjMDkP8mk40Hnazneg
-         Lc6fJ36iky+UL08ouDKHkCje6swb9EZcf1lkuVixTsUzWRRIkbWzWmGebtbm1JIHd7
-         mx1StRSw0p/WMGRWTLc95JGM4C9qazDVZfbTJcZc=
+        b=JdnziE5ubtelOj6913r1rkdxdKndrIkXaxzNRWZVreCWBt+S+RYCFPO4y6K4EEBol
+         /+PJ1fdU1vhRGQ0i0y/V8NIcFU3VvwrfHiU0frCN+R3ITTs7bKAT/027ovamrTNYNa
+         6cgBdSm1nvnJUxTBGsQjJFudMEmJlHOHXS+irbjQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Po Liu <Po.Liu@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Dongli Zhang <dongli.zhang@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joe Jin <joe.jin@oracle.com>, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 051/112] net: enetc: add hw tc hw offload features for PSPF capability
-Date:   Tue,  7 Jul 2020 17:16:56 +0200
-Message-Id: <20200707145803.429515727@linuxfoundation.org>
+Subject: [PATCH 4.19 05/36] mm/slub.c: fix corrupted freechain in deactivate_slab()
+Date:   Tue,  7 Jul 2020 17:16:57 +0200
+Message-Id: <20200707145749.388708047@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200707145800.925304888@linuxfoundation.org>
-References: <20200707145800.925304888@linuxfoundation.org>
+In-Reply-To: <20200707145749.130272978@linuxfoundation.org>
+References: <20200707145749.130272978@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,222 +49,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Po Liu <Po.Liu@nxp.com>
+From: Dongli Zhang <dongli.zhang@oracle.com>
 
-[ Upstream commit 79e499829f3ff5b8f70c87baf1b03ebb3401a3e4 ]
+[ Upstream commit 52f23478081ae0dcdb95d1650ea1e7d52d586829 ]
 
-This patch is to let ethtool enable/disable the tc flower offload
-features. Hardware ENETC has the feature of PSFP which is for per-stream
-policing. When enable the tc hw offloading feature, driver would enable
-the IEEE 802.1Qci feature. It is only set the register enable bit for
-this feature not enable for any entry of per stream filtering and stream
-gate or stream identify but get how much capabilities for each feature.
+The slub_debug is able to fix the corrupted slab freelist/page.
+However, alloc_debug_processing() only checks the validity of current
+and next freepointer during allocation path.  As a result, once some
+objects have their freepointers corrupted, deactivate_slab() may lead to
+page fault.
 
-Signed-off-by: Po Liu <Po.Liu@nxp.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Below is from a test kernel module when 'slub_debug=PUF,kmalloc-128
+slub_nomerge'.  The test kernel corrupts the freepointer of one free
+object on purpose.  Unfortunately, deactivate_slab() does not detect it
+when iterating the freechain.
+
+  BUG: unable to handle page fault for address: 00000000123456f8
+  #PF: supervisor read access in kernel mode
+  #PF: error_code(0x0000) - not-present page
+  PGD 0 P4D 0
+  Oops: 0000 [#1] SMP PTI
+  ... ...
+  RIP: 0010:deactivate_slab.isra.92+0xed/0x490
+  ... ...
+  Call Trace:
+   ___slab_alloc+0x536/0x570
+   __slab_alloc+0x17/0x30
+   __kmalloc+0x1d9/0x200
+   ext4_htree_store_dirent+0x30/0xf0
+   htree_dirblock_to_tree+0xcb/0x1c0
+   ext4_htree_fill_tree+0x1bc/0x2d0
+   ext4_readdir+0x54f/0x920
+   iterate_dir+0x88/0x190
+   __x64_sys_getdents+0xa6/0x140
+   do_syscall_64+0x49/0x170
+   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Therefore, this patch adds extra consistency check in deactivate_slab().
+Once an object's freepointer is corrupted, all following objects
+starting at this object are isolated.
+
+[akpm@linux-foundation.org: fix build with CONFIG_SLAB_DEBUG=n]
+Signed-off-by: Dongli Zhang <dongli.zhang@oracle.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Joe Jin <joe.jin@oracle.com>
+Cc: Christoph Lameter <cl@linux.com>
+Cc: Pekka Enberg <penberg@kernel.org>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Link: http://lkml.kernel.org/r/20200331031450.12182-1-dongli.zhang@oracle.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/freescale/enetc/enetc.c  | 23 +++++++++
- drivers/net/ethernet/freescale/enetc/enetc.h  | 48 +++++++++++++++++++
- .../net/ethernet/freescale/enetc/enetc_hw.h   | 17 +++++++
- .../net/ethernet/freescale/enetc/enetc_pf.c   |  8 ++++
- 4 files changed, 96 insertions(+)
+ mm/slub.c | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
-diff --git a/drivers/net/ethernet/freescale/enetc/enetc.c b/drivers/net/ethernet/freescale/enetc/enetc.c
-index 4486a0db8ef0c..9ac5cccfe0204 100644
---- a/drivers/net/ethernet/freescale/enetc/enetc.c
-+++ b/drivers/net/ethernet/freescale/enetc/enetc.c
-@@ -756,6 +756,9 @@ void enetc_get_si_caps(struct enetc_si *si)
- 
- 	if (val & ENETC_SIPCAPR0_QBV)
- 		si->hw_features |= ENETC_SI_F_QBV;
-+
-+	if (val & ENETC_SIPCAPR0_PSFP)
-+		si->hw_features |= ENETC_SI_F_PSFP;
+diff --git a/mm/slub.c b/mm/slub.c
+index b94ba8d35a025..473e0a8afb802 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -645,6 +645,20 @@ static void slab_fix(struct kmem_cache *s, char *fmt, ...)
+ 	va_end(args);
  }
  
- static int enetc_dma_alloc_bdr(struct enetc_bdr *r, size_t bd_size)
-@@ -1567,6 +1570,23 @@ static int enetc_set_rss(struct net_device *ndev, int en)
- 	return 0;
- }
- 
-+static int enetc_set_psfp(struct net_device *ndev, int en)
++static bool freelist_corrupted(struct kmem_cache *s, struct page *page,
++			       void *freelist, void *nextfree)
 +{
-+	struct enetc_ndev_priv *priv = netdev_priv(ndev);
-+
-+	if (en) {
-+		priv->active_offloads |= ENETC_F_QCI;
-+		enetc_get_max_cap(priv);
-+		enetc_psfp_enable(&priv->si->hw);
-+	} else {
-+		priv->active_offloads &= ~ENETC_F_QCI;
-+		memset(&priv->psfp_cap, 0, sizeof(struct psfp_cap));
-+		enetc_psfp_disable(&priv->si->hw);
++	if ((s->flags & SLAB_CONSISTENCY_CHECKS) &&
++	    !check_valid_pointer(s, page, nextfree)) {
++		object_err(s, page, freelist, "Freechain corrupt");
++		freelist = NULL;
++		slab_fix(s, "Isolate corrupted freechain");
++		return true;
 +	}
 +
-+	return 0;
++	return false;
 +}
 +
- int enetc_set_features(struct net_device *ndev,
- 		       netdev_features_t features)
+ static void print_trailer(struct kmem_cache *s, struct page *page, u8 *p)
  {
-@@ -1575,6 +1595,9 @@ int enetc_set_features(struct net_device *ndev,
- 	if (changed & NETIF_F_RXHASH)
- 		enetc_set_rss(ndev, !!(features & NETIF_F_RXHASH));
+ 	unsigned int off;	/* Offset of last byte */
+@@ -1328,6 +1342,11 @@ static inline void inc_slabs_node(struct kmem_cache *s, int node,
+ static inline void dec_slabs_node(struct kmem_cache *s, int node,
+ 							int objects) {}
  
-+	if (changed & NETIF_F_HW_TC)
-+		enetc_set_psfp(ndev, !!(features & NETIF_F_HW_TC));
-+
- 	return 0;
- }
- 
-diff --git a/drivers/net/ethernet/freescale/enetc/enetc.h b/drivers/net/ethernet/freescale/enetc/enetc.h
-index 56c43f35b633b..2cfe877c37786 100644
---- a/drivers/net/ethernet/freescale/enetc/enetc.h
-+++ b/drivers/net/ethernet/freescale/enetc/enetc.h
-@@ -151,6 +151,7 @@ enum enetc_errata {
- };
- 
- #define ENETC_SI_F_QBV BIT(0)
-+#define ENETC_SI_F_PSFP BIT(1)
- 
- /* PCI IEP device data */
- struct enetc_si {
-@@ -203,12 +204,20 @@ struct enetc_cls_rule {
- };
- 
- #define ENETC_MAX_BDR_INT	2 /* fixed to max # of available cpus */
-+struct psfp_cap {
-+	u32 max_streamid;
-+	u32 max_psfp_filter;
-+	u32 max_psfp_gate;
-+	u32 max_psfp_gatelist;
-+	u32 max_psfp_meter;
-+};
- 
- /* TODO: more hardware offloads */
- enum enetc_active_offloads {
- 	ENETC_F_RX_TSTAMP	= BIT(0),
- 	ENETC_F_TX_TSTAMP	= BIT(1),
- 	ENETC_F_QBV             = BIT(2),
-+	ENETC_F_QCI		= BIT(3),
- };
- 
- struct enetc_ndev_priv {
-@@ -231,6 +240,8 @@ struct enetc_ndev_priv {
- 
- 	struct enetc_cls_rule *cls_rules;
- 
-+	struct psfp_cap psfp_cap;
-+
- 	struct device_node *phy_node;
- 	phy_interface_t if_mode;
- };
-@@ -289,9 +300,46 @@ int enetc_setup_tc_taprio(struct net_device *ndev, void *type_data);
- void enetc_sched_speed_set(struct net_device *ndev);
- int enetc_setup_tc_cbs(struct net_device *ndev, void *type_data);
- int enetc_setup_tc_txtime(struct net_device *ndev, void *type_data);
-+
-+static inline void enetc_get_max_cap(struct enetc_ndev_priv *priv)
++static bool freelist_corrupted(struct kmem_cache *s, struct page *page,
++			       void *freelist, void *nextfree)
 +{
-+	u32 reg;
-+
-+	reg = enetc_port_rd(&priv->si->hw, ENETC_PSIDCAPR);
-+	priv->psfp_cap.max_streamid = reg & ENETC_PSIDCAPR_MSK;
-+	/* Port stream filter capability */
-+	reg = enetc_port_rd(&priv->si->hw, ENETC_PSFCAPR);
-+	priv->psfp_cap.max_psfp_filter = reg & ENETC_PSFCAPR_MSK;
-+	/* Port stream gate capability */
-+	reg = enetc_port_rd(&priv->si->hw, ENETC_PSGCAPR);
-+	priv->psfp_cap.max_psfp_gate = (reg & ENETC_PSGCAPR_SGIT_MSK);
-+	priv->psfp_cap.max_psfp_gatelist = (reg & ENETC_PSGCAPR_GCL_MSK) >> 16;
-+	/* Port flow meter capability */
-+	reg = enetc_port_rd(&priv->si->hw, ENETC_PFMCAPR);
-+	priv->psfp_cap.max_psfp_meter = reg & ENETC_PFMCAPR_MSK;
++	return false;
 +}
-+
-+static inline void enetc_psfp_enable(struct enetc_hw *hw)
-+{
-+	enetc_wr(hw, ENETC_PPSFPMR, enetc_rd(hw, ENETC_PPSFPMR) |
-+		 ENETC_PPSFPMR_PSFPEN | ENETC_PPSFPMR_VS |
-+		 ENETC_PPSFPMR_PVC | ENETC_PPSFPMR_PVZC);
-+}
-+
-+static inline void enetc_psfp_disable(struct enetc_hw *hw)
-+{
-+	enetc_wr(hw, ENETC_PPSFPMR, enetc_rd(hw, ENETC_PPSFPMR) &
-+		 ~ENETC_PPSFPMR_PSFPEN & ~ENETC_PPSFPMR_VS &
-+		 ~ENETC_PPSFPMR_PVC & ~ENETC_PPSFPMR_PVZC);
-+}
- #else
- #define enetc_setup_tc_taprio(ndev, type_data) -EOPNOTSUPP
- #define enetc_sched_speed_set(ndev) (void)0
- #define enetc_setup_tc_cbs(ndev, type_data) -EOPNOTSUPP
- #define enetc_setup_tc_txtime(ndev, type_data) -EOPNOTSUPP
-+#define enetc_get_max_cap(p)		\
-+	memset(&((p)->psfp_cap), 0, sizeof(struct psfp_cap))
-+
-+#define enetc_psfp_enable(hw) (void)0
-+#define enetc_psfp_disable(hw) (void)0
- #endif
-diff --git a/drivers/net/ethernet/freescale/enetc/enetc_hw.h b/drivers/net/ethernet/freescale/enetc/enetc_hw.h
-index 2a6523136947d..587974862f488 100644
---- a/drivers/net/ethernet/freescale/enetc/enetc_hw.h
-+++ b/drivers/net/ethernet/freescale/enetc/enetc_hw.h
-@@ -19,6 +19,7 @@
- #define ENETC_SICTR1	0x1c
- #define ENETC_SIPCAPR0	0x20
- #define ENETC_SIPCAPR0_QBV	BIT(4)
-+#define ENETC_SIPCAPR0_PSFP	BIT(9)
- #define ENETC_SIPCAPR0_RSS	BIT(8)
- #define ENETC_SIPCAPR1	0x24
- #define ENETC_SITGTGR	0x30
-@@ -228,6 +229,15 @@ enum enetc_bdr_type {TX, RX};
- #define ENETC_PM0_IFM_RLP	(BIT(5) | BIT(11))
- #define ENETC_PM0_IFM_RGAUTO	(BIT(15) | ENETC_PMO_IFM_RG | BIT(1))
- #define ENETC_PM0_IFM_XGMII	BIT(12)
-+#define ENETC_PSIDCAPR		0x1b08
-+#define ENETC_PSIDCAPR_MSK	GENMASK(15, 0)
-+#define ENETC_PSFCAPR		0x1b18
-+#define ENETC_PSFCAPR_MSK	GENMASK(15, 0)
-+#define ENETC_PSGCAPR		0x1b28
-+#define ENETC_PSGCAPR_GCL_MSK	GENMASK(18, 16)
-+#define ENETC_PSGCAPR_SGIT_MSK	GENMASK(15, 0)
-+#define ENETC_PFMCAPR		0x1b38
-+#define ENETC_PFMCAPR_MSK	GENMASK(15, 0)
+ #endif /* CONFIG_SLUB_DEBUG */
  
- /* MAC counters */
- #define ENETC_PM0_REOCT		0x8100
-@@ -621,3 +631,10 @@ struct enetc_cbd {
- /* Port time specific departure */
- #define ENETC_PTCTSDR(n)	(0x1210 + 4 * (n))
- #define ENETC_TSDE		BIT(31)
-+
-+/* PSFP setting */
-+#define ENETC_PPSFPMR 0x11b00
-+#define ENETC_PPSFPMR_PSFPEN BIT(0)
-+#define ENETC_PPSFPMR_VS BIT(1)
-+#define ENETC_PPSFPMR_PVC BIT(2)
-+#define ENETC_PPSFPMR_PVZC BIT(3)
-diff --git a/drivers/net/ethernet/freescale/enetc/enetc_pf.c b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
-index 85e2b741df414..eacd597b55f22 100644
---- a/drivers/net/ethernet/freescale/enetc/enetc_pf.c
-+++ b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
-@@ -739,6 +739,14 @@ static void enetc_pf_netdev_setup(struct enetc_si *si, struct net_device *ndev,
- 	if (si->hw_features & ENETC_SI_F_QBV)
- 		priv->active_offloads |= ENETC_F_QBV;
+ /*
+@@ -2013,6 +2032,14 @@ static void deactivate_slab(struct kmem_cache *s, struct page *page,
+ 		void *prior;
+ 		unsigned long counters;
  
-+	if (si->hw_features & ENETC_SI_F_PSFP) {
-+		priv->active_offloads |= ENETC_F_QCI;
-+		ndev->features |= NETIF_F_HW_TC;
-+		ndev->hw_features |= NETIF_F_HW_TC;
-+		enetc_get_max_cap(priv);
-+		enetc_psfp_enable(&si->hw);
-+	}
++		/*
++		 * If 'nextfree' is invalid, it is possible that the object at
++		 * 'freelist' is already corrupted.  So isolate all objects
++		 * starting at 'freelist'.
++		 */
++		if (freelist_corrupted(s, page, freelist, nextfree))
++			break;
 +
- 	/* pick up primary MAC address from SI */
- 	enetc_get_primary_mac_addr(&si->hw, ndev->dev_addr);
- }
+ 		do {
+ 			prior = page->freelist;
+ 			counters = page->counters;
 -- 
 2.25.1
 
