@@ -2,145 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 260A621726D
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:44:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F5CD217279
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:44:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727834AbgGGPdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:33:03 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:28019 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1730120AbgGGPc5 (ORCPT
+        id S1730084AbgGGPdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:33:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728651AbgGGPdp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:32:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594135976;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fI6zyW/Q6dQ0mgMSvs1HAB1XmZOZ4PZvn8vJbh28b3s=;
-        b=MqIm4JMiikXrfVdHaAcc+wsRCjvTyKlxoX/4Ixm2+u2cyLkT1wTLj/fP0F954sedKqzWPh
-        JzxVDsE/YaZJ3u1EzRICOA+GLT56tSLcDeIcZQ2qXeMRmYmwf1LqsBKOOrZ4EZxpXmtIb5
-        P1xUs/UQYr85BOv5b2XhSm+Fj9FWOh8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-48-F94UkfFIPM6ewwm_MEYMXg-1; Tue, 07 Jul 2020 11:32:52 -0400
-X-MC-Unique: F94UkfFIPM6ewwm_MEYMXg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1A5BC1005510;
-        Tue,  7 Jul 2020 15:32:51 +0000 (UTC)
-Received: from pick.fieldses.org (ovpn-114-172.phx2.redhat.com [10.3.114.172])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id F2E2A10013D7;
-        Tue,  7 Jul 2020 15:32:50 +0000 (UTC)
-Received: by pick.fieldses.org (Postfix, from userid 2815)
-        id F26701202DC; Tue,  7 Jul 2020 11:32:49 -0400 (EDT)
-Date:   Tue, 7 Jul 2020 11:32:49 -0400
-From:   "J. Bruce Fields" <bfields@redhat.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Sasha Levin <sashal@kernel.org>, Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH 5.7 070/112] kthread: save thread function
-Message-ID: <20200707153249.GC171624@pick.fieldses.org>
-References: <20200707145800.925304888@linuxfoundation.org>
- <20200707145804.332402326@linuxfoundation.org>
+        Tue, 7 Jul 2020 11:33:45 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FC4EC061755
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 08:33:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=u+eV/Vt9JPFkjgSC7N8EDNEv2OCJ2IDe/eB3wX/AnBs=; b=a30Zm0xlb5E85J1xhQac/tdmK8
+        ZayXBB0v3stbD0fr8xoc1BLj3H3+1MHN+NYM2D9uVn6b2aKpWG8/dnu/YUJqif1+D3Oa085AyhfWa
+        e133Q3MgF+Jas8moPItUFjdDZ9UUFA2gKIvhTmqgbVyPzHZu4B4+UqWUIOJJLpkgl4pJJgPFhIE8U
+        h/6HI/jgPiiaJC2KQxV18tB9DgkC5OfaP3zh0Zt+lyvPzsMS1tA31zYXKjvWlbtIZpuJqG948a6LU
+        natX/r8SiI/6kpCuc6Pfxs2hex6s/+zufLDJuE6eEHRdCG7VA0d/MEcX6l42quUbaVdrqN4JfIqDy
+        KXpwncZA==;
+Received: from [2601:1c0:6280:3f0:897c:6038:c71d:ecac]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jspbF-0005Iy-Pw; Tue, 07 Jul 2020 15:33:41 +0000
+Subject: Re: [Ksummit-discuss] [Tech-board-discuss] [PATCH] CodingStyle:
+ Inclusive Terminology
+To:     "Bird, Tim" <Tim.Bird@sony.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mike Rapoport <rppt@linux.ibm.com>
+Cc:     Chris Mason <clm@fb.clm>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "tech-board-discuss@lists.linuxfoundation.org" 
+        <tech-board-discuss@lists.linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        ksummit <ksummit-discuss@lists.linuxfoundation.org>
+References: <159389297140.2210796.13590142254668787525.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <CALCETrXewAK4_fpaJNDHJVDK9mUcjghA5HwYvZFQNYVfC9M+OQ@mail.gmail.com>
+ <202007062234.A90F922DF@keescook> <20200707064921.GA9411@linux.ibm.com>
+ <20200707093727.22aa39e2@oasis.local.home>
+ <CY4PR13MB117519F548B125CB2F10F50FFD660@CY4PR13MB1175.namprd13.prod.outlook.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <c4aec17f-3ac9-ce17-a131-b186a9b595dd@infradead.org>
+Date:   Tue, 7 Jul 2020 08:33:33 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200707145804.332402326@linuxfoundation.org>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <CY4PR13MB117519F548B125CB2F10F50FFD660@CY4PR13MB1175.namprd13.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-NACK to this and following patch.--b.
+On 7/7/20 8:24 AM, Bird, Tim wrote:
+> 
+> 
+>> -----Original Message-----
+>> From: Steven Rostedt
+>>
+>> On Tue, 7 Jul 2020 09:49:21 +0300
+>> Mike Rapoport <rppt@linux.ibm.com> wrote:
+>>
+>>>> But that's all fine. The change is easy to do and is more descriptive
+>>>> even if I can't find terms that don't collide with my internal grammar
+>>>> checker. ;)
+>>>
+>>> How about yeslist and nolist? ;-)
+>>
+>> I was thinking good-list / bad-list.
+>>
+>> /me that has been doing a lot of git bisect lately...
+> 
+> I think it depends on the context.  I'd prefer a grammatically awkward verb that described
+> the action more specifically, than a grammatically nicer generic term.  In other words,
+> yes/no, good/bad don't mean that much to me, unless it's obvious from context
+> what the effect will be.  With something like allow/deny, I have a pretty clear mental
+> model of what the code is going to do.
 
-On Tue, Jul 07, 2020 at 05:17:15PM +0200, Greg Kroah-Hartman wrote:
-> From: J. Bruce Fields <bfields@redhat.com>
-> 
-> [ Upstream commit 52782c92ac85c4e393eb4a903a62e6c24afa633f ]
-> 
-> It's handy to keep the kthread_fn just as a unique cookie to identify
-> classes of kthreads.  E.g. if you can verify that a given task is
-> running your thread_fn, then you may know what sort of type kthread_data
-> points to.
-> 
-> We'll use this in nfsd to pass some information into the vfs.  Note it
-> will need kthread_data() exported too.
-> 
-> Original-patch-by: Tejun Heo <tj@kernel.org>
-> Signed-off-by: J. Bruce Fields <bfields@redhat.com>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  include/linux/kthread.h |  1 +
->  kernel/kthread.c        | 17 +++++++++++++++++
->  2 files changed, 18 insertions(+)
-> 
-> diff --git a/include/linux/kthread.h b/include/linux/kthread.h
-> index 8bbcaad7ef0f4..c2a274b79c429 100644
-> --- a/include/linux/kthread.h
-> +++ b/include/linux/kthread.h
-> @@ -57,6 +57,7 @@ bool kthread_should_stop(void);
->  bool kthread_should_park(void);
->  bool __kthread_should_park(struct task_struct *k);
->  bool kthread_freezable_should_stop(bool *was_frozen);
-> +void *kthread_func(struct task_struct *k);
->  void *kthread_data(struct task_struct *k);
->  void *kthread_probe_data(struct task_struct *k);
->  int kthread_park(struct task_struct *k);
-> diff --git a/kernel/kthread.c b/kernel/kthread.c
-> index bfbfa481be3a5..b84fc7eec0358 100644
-> --- a/kernel/kthread.c
-> +++ b/kernel/kthread.c
-> @@ -46,6 +46,7 @@ struct kthread_create_info
->  struct kthread {
->  	unsigned long flags;
->  	unsigned int cpu;
-> +	int (*threadfn)(void *);
->  	void *data;
->  	struct completion parked;
->  	struct completion exited;
-> @@ -152,6 +153,20 @@ bool kthread_freezable_should_stop(bool *was_frozen)
->  }
->  EXPORT_SYMBOL_GPL(kthread_freezable_should_stop);
->  
-> +/**
-> + * kthread_func - return the function specified on kthread creation
-> + * @task: kthread task in question
-> + *
-> + * Returns NULL if the task is not a kthread.
-> + */
-> +void *kthread_func(struct task_struct *task)
-> +{
-> +	if (task->flags & PF_KTHREAD)
-> +		return to_kthread(task)->threadfn;
-> +	return NULL;
-> +}
-> +EXPORT_SYMBOL_GPL(kthread_func);
-> +
->  /**
->   * kthread_data - return data value specified on kthread creation
->   * @task: kthread task in question
-> @@ -164,6 +179,7 @@ void *kthread_data(struct task_struct *task)
->  {
->  	return to_kthread(task)->data;
->  }
-> +EXPORT_SYMBOL_GPL(kthread_data);
->  
->  /**
->   * kthread_probe_data - speculative version of kthread_data()
-> @@ -244,6 +260,7 @@ static int kthread(void *_create)
->  		do_exit(-ENOMEM);
->  	}
->  
-> +	self->threadfn = threadfn;
->  	self->data = data;
->  	init_completion(&self->exited);
->  	init_completion(&self->parked);
-> -- 
-> 2.25.1
-> 
-> 
-> 
+That matches what I was about to say:
+Just using yes/no does not tell someone what they are saying yes or no about.
+It should be more descriptive, like allow/block.
+
+-- 
+~Randy
 
