@@ -2,174 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35A2B217B93
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 01:05:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C9D2217B99
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 01:11:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729370AbgGGXES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 19:04:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38612 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729196AbgGGXEQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 19:04:16 -0400
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 708442065D
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 23:04:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594163055;
-        bh=EhWbqaZmzsXrJaeaaTa9oa/wuFRN2GqSFupG2BL65vs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=2j+WigMMCy0EWqbFXaQS29d/sonlcCSlyGxpLyno0CWRcGuMipY0rCR1Kixv7oH2t
-         bSDyDvtpPtPVj5EN4VFaMODBJWpLVaGePDfo2A77wxILRxwsNOGZGkWvAxLdl1avBg
-         KtywLJOY3k3TBpwNgjqCcYtYWoo/VLYSRIHTAFCo=
-Received: by mail-ej1-f47.google.com with SMTP id dr13so48464113ejc.3
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 16:04:15 -0700 (PDT)
-X-Gm-Message-State: AOAM533taLOfLxc38yOXhn4Tk/6E87BkI6zBN+oJrkDFJdGSpL+5XtF8
-        j0ahajmTvduPY21Zu83pi+cP6eXNu9tJxgSLOA==
-X-Google-Smtp-Source: ABdhPJxprTd+dID67KymjoMlkTb45ievUJV+INwGOVc0ao2/LY+zUwpER680dwt517Xc1x3bJeVEYifxQKbqdDNuaaU=
-X-Received: by 2002:a17:906:b888:: with SMTP id hb8mr48868098ejb.124.1594163054098;
- Tue, 07 Jul 2020 16:04:14 -0700 (PDT)
+        id S1728676AbgGGXLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 19:11:55 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:32565 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727777AbgGGXLy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 19:11:54 -0400
+X-UUID: 6363544267ef4f80b9d9ec5b870c4a26-20200708
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=ACgdKKQvvl0IN9nE7D17jMhl6fwZEjwiF6CEjA4GWAU=;
+        b=o3NV80BNsX4PmP6KgyiMYWE09jSPqxpKHDYAiV42GAs1eUcfH/QuMlmSdcI58gY/3bjvPeQpd3o+HsoQRCzQ50Laqf9jZxjpLnX/H11qW7ZUBw/QQ4Swx4RvRFG33XnQWG6w06AONjqYK87jvQRxqvE0aXQyBhU0di4beslthvg=;
+X-UUID: 6363544267ef4f80b9d9ec5b870c4a26-20200708
+Received: from mtkcas08.mediatek.inc [(172.21.101.126)] by mailgw01.mediatek.com
+        (envelope-from <sean.wang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 729408332; Wed, 08 Jul 2020 07:11:49 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 8 Jul 2020 07:11:29 +0800
+Received: from mtkswgap22.mediatek.inc (172.21.77.33) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 8 Jul 2020 07:11:19 +0800
+From:   <sean.wang@mediatek.com>
+To:     <gregkh@linuxfoundation.org>, <jslaby@suse.com>,
+        <andriy.shevchenko@linux.intel.com>,
+        <mika.westerberg@linux.intel.com>, <sr@denx.de>, <arnd@arndb.de>,
+        <matthias.bgg@gmail.com>, <tthayer@opensource.altera.com>
+CC:     <linux-mediatek@lists.infradead.org>,
+        <linux-serial@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Sean Wang <sean.wang@mediatek.com>,
+        Steven Liu <steven.liu@mediatek.com>,
+        Ryder Lee <ryder.lee@mediatek.com>
+Subject: [PATCH v5] tty: serial: don't do termios for BTIF
+Date:   Wed, 8 Jul 2020 07:11:22 +0800
+Message-ID: <7c67171728cdcc4ccc10adfaea1a14bfbcf8375a.1594163304.git.sean.wang@mediatek.com>
+X-Mailer: git-send-email 1.7.9.5
 MIME-Version: 1.0
-References: <1594136714-11650-1-git-send-email-dennis-yc.hsieh@mediatek.com> <1594136714-11650-9-git-send-email-dennis-yc.hsieh@mediatek.com>
-In-Reply-To: <1594136714-11650-9-git-send-email-dennis-yc.hsieh@mediatek.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Wed, 8 Jul 2020 07:04:03 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_9Dj3WjYsLYhP8FfdTfCv0ddv73HmUcT=8x6bT1qP=ADA@mail.gmail.com>
-Message-ID: <CAAOTY_9Dj3WjYsLYhP8FfdTfCv0ddv73HmUcT=8x6bT1qP=ADA@mail.gmail.com>
-Subject: Re: [PATCH v3 8/9] soc: mediatek: cmdq: add clear option in
- cmdq_pkt_wfe api
-To:     Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, CK Hu <ck.hu@mediatek.com>,
-        Bibby Hsieh <bibby.hsieh@mediatek.com>,
-        Houlong Wei <houlong.wei@mediatek.com>,
-        wsd_upstream <wsd_upstream@mediatek.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        HS Liao <hs.liao@mediatek.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 4F28F1CAC5E7592B35293C87473BAF934B244B4F5546B2CBC7BAF98B527E8F2A2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Dennis:
+RnJvbTogU2VhbiBXYW5nIDxzZWFuLndhbmdAbWVkaWF0ZWsuY29tPg0KDQpCbHVldG9vdGggSW50
+ZXJmYWNlIChCVElGKSBpcyBkZXNpZ25lZCBkZWRpY2F0ZWRseSBmb3IgTWVkaWFUZWsgU09DIHdp
+dGgNCkJUIGluIG9yZGVyIHRvIGJlIGluc3RlYWQgb2YgdGhlIFVBUlQgaW50ZXJmYWNlIGJldHdl
+ZW4gQlQgbW9kdWxlIGFuZCBIb3N0DQpDUFUsIGFuZCBub3QgZXhwb3J0ZWQgdG8gdXNlciBzcGFj
+ZSB0byBhY2Nlc3MuDQoNCkFzIHRoZSBVQVJUIGRlc2lnbiwgQlRJRiB3aWxsIGJlIGFuIEFQQiBz
+bGF2ZSBhbmQgY2FuIHRyYW5zbWl0IG9yIHJlY2VpdmUNCmRhdGEgYnkgTUNVIGFjY2VzcywgYnV0
+IGRvZXNuJ3QgcHJvdmlkZSB0ZXJtaW9zIGZ1bmN0aW9uIGxpa2UgYmF1ZHJhdGUgYW5kDQpmbG93
+IGNvbnRyb2wgc2V0dXAuDQoNCkV2ZW4gTENSIG9uIG9mZnNldCAweEMgdGhhdCBpcyBqdXN0IGEg
+RkFLRUxDUg0KYS4gSWYgRkFLRUxDUls3XSBpcyBlcXVhbGVkIHRvIDEsIFJCUigweDAwKSwgVEhS
+KDB4MDApLCBJRVIoMHgwNCkNCiAgIHdpbGwgbm90IGJlIHJlYWRhYmxlL3dyaXRhYmxlLg0KDQpi
+LiBJZiBGQUtFTENSIGlzIGVxdWFsZWQgdG8gMHhCRiwgUkJSKDB4MDApLCBUSFIoMHgwMCksIElF
+UigweDA0KSwNCiAgIElJUigweDA4KSwgYW5kIExTUigweDE0KSB3aWxsIG5vdCBiZSByZWFkYWJs
+ZS93cml0YWJsZS4NCg0KU28gYWRkaW5nIGEgbmV3IGNhcGFiaWxpdHkgJ1VBUlRfQ0FQX05USU8n
+IGZvciB0aGUgdW51c3VhbCB1bnN1cHBvcnRlZA0KY2FzZS4NCg0KVGhlIGJsdWV0b290aCBkcml2
+ZXIgd291bGQgdXNlIEJUSUYgZGV2aWNlIGFzIGEgc2VyZGV2LiBTbyB0aGUgdGVybWlvcw0Kc3Rp
+bGwgZnVuY3Rpb24gd291bGQgYmUgY2FsbGVkIGluIGtlcm5lbHNwYWNlIGZyb20gdHR5cG9ydF9v
+cGVuIGluDQpkcml2ZXJzL3R0eS9zZXJkZXYvc2VyZGV2LXR0eXBydC5jLg0KDQpGaXhlczogMWMx
+NmFlNjVlMjUwICgic2VyaWFsOiA4MjUwOiBvZjogQWRkIG5ldyBwb3J0IHR5cGUgZm9yIE1lZGlh
+VGVrIEJUSUYgY29udHJvbGxlciBvbiBNVDc2MjIvMjMgU29DIikNCkNjOiBTdGV2ZW4gTGl1IDxz
+dGV2ZW4ubGl1QG1lZGlhdGVrLmNvbT4NClNpZ25lZC1vZmYtYnk6IFNlYW4gV2FuZyA8c2Vhbi53
+YW5nQG1lZGlhdGVrLmNvbT4NClNpZ25lZC1vZmYtYnk6IFJ5ZGVyIExlZSA8cnlkZXIubGVlQG1l
+ZGlhdGVrLmNvbT4NCg0KLS0NCnYxLT52MjoNCm5vIGNoYW5nZSBvbiB0ZXJtaW9zLT5jX2NmbGFn
+IGFuZCByZWZpbmUgY29tbWl0IG1lc3NhZ2UNCg0KdjItPnYzOg0KY2hhbmdlIHRoZSBuYW1pbmcg
+ZnJvbSBOTU9EIHRvIE5USU8gYXMgVElPIGlzIGEgd2VsbCBlc3RhYmxpc2hlZCBwcmVmaXgNCmZv
+ciB0ZXJtaW9zIElPQ1RMcy4NCg0KdjMtPnY0Og0KMS4gcmVtb3ZlIGFwcHJvcHJpYXRlIHRhZw0K
+Mi4gYWRkIHRoZSBleHBsYW5hdGlvbiB3aHkgdGhlIHRlcm1pb3MgaXMgcmVxdWlyZWQgZXZlbiB3
+aGVuIHRoZSBjb25uZWN0aW9uDQogICBpc24ndCBleHBvcnRlZCB0byB1c2Vyc3BhY2UuDQoNCnY0
+LT52NToNClVzZSB1cC0+cG9ydC5xdWlya3MgVVBRX0lHTk9SRV9URVJNSU9TIGluc3RlYWQuDQot
+LS0NCiBkcml2ZXJzL3R0eS9zZXJpYWwvODI1MC84MjUwX2NvcmUuYyB8IDMgKysrDQogZHJpdmVy
+cy90dHkvc2VyaWFsLzgyNTAvODI1MF9wb3J0LmMgfCAzICsrKw0KIGluY2x1ZGUvbGludXgvc2Vy
+aWFsX2NvcmUuaCAgICAgICAgIHwgMSArDQogMyBmaWxlcyBjaGFuZ2VkLCA3IGluc2VydGlvbnMo
+KykNCg0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvdHR5L3NlcmlhbC84MjUwLzgyNTBfY29yZS5jIGIv
+ZHJpdmVycy90dHkvc2VyaWFsLzgyNTAvODI1MF9jb3JlLmMNCmluZGV4IGZjMTE4ZjY0OTg4Ny4u
+YjAwMDYwYzYxNWMyIDEwMDY0NA0KLS0tIGEvZHJpdmVycy90dHkvc2VyaWFsLzgyNTAvODI1MF9j
+b3JlLmMNCisrKyBiL2RyaXZlcnMvdHR5L3NlcmlhbC84MjUwLzgyNTBfY29yZS5jDQpAQCAtNDkw
+LDYgKzQ5MCw5IEBAIHN0YXRpYyB2b2lkIHVuaXY4MjUwX3JzYV9zdXBwb3J0KHN0cnVjdCB1YXJ0
+X29wcyAqb3BzKQ0KIHN0YXRpYyBpbmxpbmUgdm9pZCBzZXJpYWw4MjUwX2FwcGx5X3F1aXJrcyhz
+dHJ1Y3QgdWFydF84MjUwX3BvcnQgKnVwKQ0KIHsNCiAJdXAtPnBvcnQucXVpcmtzIHw9IHNraXBf
+dHhlbl90ZXN0ID8gVVBRX05PX1RYRU5fVEVTVCA6IDA7DQorDQorCWlmICh1cC0+cG9ydC50eXBl
+ID09IFBPUlRfTVRLX0JUSUYpDQorCQl1cC0+cG9ydC5xdWlya3MgfD0gVVBRX0lHTk9SRV9URVJN
+SU9TOw0KIH0NCiANCiBzdGF0aWMgdm9pZCBfX2luaXQgc2VyaWFsODI1MF9pc2FfaW5pdF9wb3J0
+cyh2b2lkKQ0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvdHR5L3NlcmlhbC84MjUwLzgyNTBfcG9ydC5j
+IGIvZHJpdmVycy90dHkvc2VyaWFsLzgyNTAvODI1MF9wb3J0LmMNCmluZGV4IDE2MzJmN2QyNWFj
+Yy4uYmUzODA2NDlmZWZiIDEwMDY0NA0KLS0tIGEvZHJpdmVycy90dHkvc2VyaWFsLzgyNTAvODI1
+MF9wb3J0LmMNCisrKyBiL2RyaXZlcnMvdHR5L3NlcmlhbC84MjUwLzgyNTBfcG9ydC5jDQpAQCAt
+MjY0MCw2ICsyNjQwLDkgQEAgc2VyaWFsODI1MF9kb19zZXRfdGVybWlvcyhzdHJ1Y3QgdWFydF9w
+b3J0ICpwb3J0LCBzdHJ1Y3Qga3Rlcm1pb3MgKnRlcm1pb3MsDQogCXVuc2lnbmVkIGxvbmcgZmxh
+Z3M7DQogCXVuc2lnbmVkIGludCBiYXVkLCBxdW90LCBmcmFjID0gMDsNCiANCisJaWYgKHBvcnQt
+PnF1aXJrcyAmIFVQUV9JR05PUkVfVEVSTUlPUykNCisJCXJldHVybjsNCisNCiAJaWYgKHVwLT5j
+YXBhYmlsaXRpZXMgJiBVQVJUX0NBUF9NSU5JKSB7DQogCQl0ZXJtaW9zLT5jX2NmbGFnICY9IH4o
+Q1NUT1BCIHwgUEFSRU5CIHwgUEFST0REIHwgQ01TUEFSKTsNCiAJCWlmICgodGVybWlvcy0+Y19j
+ZmxhZyAmIENTSVpFKSA9PSBDUzUgfHwNCmRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L3Nlcmlh
+bF9jb3JlLmggYi9pbmNsdWRlL2xpbnV4L3NlcmlhbF9jb3JlLmgNCmluZGV4IDlmZDU1MGU3OTQ2
+YS4uYzQ2YWFlMzc0ZTBlIDEwMDY0NA0KLS0tIGEvaW5jbHVkZS9saW51eC9zZXJpYWxfY29yZS5o
+DQorKysgYi9pbmNsdWRlL2xpbnV4L3NlcmlhbF9jb3JlLmgNCkBAIC0xNTUsNiArMTU1LDcgQEAg
+c3RydWN0IHVhcnRfcG9ydCB7DQogDQogCS8qIHF1aXJrcyBtdXN0IGJlIHVwZGF0ZWQgd2hpbGUg
+aG9sZGluZyBwb3J0IG11dGV4ICovDQogI2RlZmluZSBVUFFfTk9fVFhFTl9URVNUCUJJVCgwKQ0K
+KyNkZWZpbmUgVVBRX0lHTk9SRV9URVJNSU9TCUJJVCgxKQ0KIA0KIAl1bnNpZ25lZCBpbnQJCXJl
+YWRfc3RhdHVzX21hc2s7CS8qIGRyaXZlciBzcGVjaWZpYyAqLw0KIAl1bnNpZ25lZCBpbnQJCWln
+bm9yZV9zdGF0dXNfbWFzazsJLyogZHJpdmVyIHNwZWNpZmljICovDQotLSANCjIuMjUuMQ0K
 
-Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com> =E6=96=BC 2020=E5=B9=B47=E6=
-=9C=887=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=8811:47=E5=AF=AB=E9=81=
-=93=EF=BC=9A
->
-> Add clear parameter to let client decide if
-> event should be clear to 0 after GCE receive it.
-
-For DRM part,
-
-Acked-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-
->
-> Change since v2:
-> - Keep behavior in drm crtc driver and
->   separate bug fix code into another patch.
->
-> Signed-off-by: Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>
-> ---
->  drivers/gpu/drm/mediatek/mtk_drm_crtc.c  |    2 +-
->  drivers/soc/mediatek/mtk-cmdq-helper.c   |    5 +++--
->  include/linux/mailbox/mtk-cmdq-mailbox.h |    3 +--
->  include/linux/soc/mediatek/mtk-cmdq.h    |    5 +++--
->  4 files changed, 8 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/me=
-diatek/mtk_drm_crtc.c
-> index ec6c9ffbf35e..c84e7a14d4a8 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-> @@ -490,7 +490,7 @@ static void mtk_drm_crtc_hw_config(struct mtk_drm_crt=
-c *mtk_crtc)
->                 mbox_flush(mtk_crtc->cmdq_client->chan, 2000);
->                 cmdq_handle =3D cmdq_pkt_create(mtk_crtc->cmdq_client, PA=
-GE_SIZE);
->                 cmdq_pkt_clear_event(cmdq_handle, mtk_crtc->cmdq_event);
-> -               cmdq_pkt_wfe(cmdq_handle, mtk_crtc->cmdq_event);
-> +               cmdq_pkt_wfe(cmdq_handle, mtk_crtc->cmdq_event, true);
->                 mtk_crtc_ddp_config(crtc, cmdq_handle);
->                 cmdq_pkt_finalize(cmdq_handle);
->                 cmdq_pkt_flush_async(cmdq_handle, ddp_cmdq_cb, cmdq_handl=
-e);
-> diff --git a/drivers/soc/mediatek/mtk-cmdq-helper.c b/drivers/soc/mediate=
-k/mtk-cmdq-helper.c
-> index d55dc3296105..505651b0d715 100644
-> --- a/drivers/soc/mediatek/mtk-cmdq-helper.c
-> +++ b/drivers/soc/mediatek/mtk-cmdq-helper.c
-> @@ -316,15 +316,16 @@ int cmdq_pkt_write_s_mask_value(struct cmdq_pkt *pk=
-t, u8 high_addr_reg_idx,
->  }
->  EXPORT_SYMBOL(cmdq_pkt_write_s_mask_value);
->
-> -int cmdq_pkt_wfe(struct cmdq_pkt *pkt, u16 event)
-> +int cmdq_pkt_wfe(struct cmdq_pkt *pkt, u16 event, bool clear)
->  {
->         struct cmdq_instruction inst =3D { {0} };
-> +       u32 clear_option =3D clear ? CMDQ_WFE_UPDATE : 0;
->
->         if (event >=3D CMDQ_MAX_EVENT)
->                 return -EINVAL;
->
->         inst.op =3D CMDQ_CODE_WFE;
-> -       inst.value =3D CMDQ_WFE_OPTION;
-> +       inst.value =3D CMDQ_WFE_OPTION | clear_option;
->         inst.event =3D event;
->
->         return cmdq_pkt_append_command(pkt, inst);
-> diff --git a/include/linux/mailbox/mtk-cmdq-mailbox.h b/include/linux/mai=
-lbox/mtk-cmdq-mailbox.h
-> index efbd8a9eb2d1..d5a983d65f05 100644
-> --- a/include/linux/mailbox/mtk-cmdq-mailbox.h
-> +++ b/include/linux/mailbox/mtk-cmdq-mailbox.h
-> @@ -28,8 +28,7 @@
->   * bit 16-27: update value
->   * bit 31: 1 - update, 0 - no update
->   */
-> -#define CMDQ_WFE_OPTION                        (CMDQ_WFE_UPDATE | CMDQ_W=
-FE_WAIT | \
-> -                                       CMDQ_WFE_WAIT_VALUE)
-> +#define CMDQ_WFE_OPTION                        (CMDQ_WFE_WAIT | CMDQ_WFE=
-_WAIT_VALUE)
->
->  /** cmdq event maximum */
->  #define CMDQ_MAX_EVENT                 0x3ff
-> diff --git a/include/linux/soc/mediatek/mtk-cmdq.h b/include/linux/soc/me=
-diatek/mtk-cmdq.h
-> index 34354e952f60..960704d75994 100644
-> --- a/include/linux/soc/mediatek/mtk-cmdq.h
-> +++ b/include/linux/soc/mediatek/mtk-cmdq.h
-> @@ -182,11 +182,12 @@ int cmdq_pkt_write_s_mask_value(struct cmdq_pkt *pk=
-t, u8 high_addr_reg_idx,
->  /**
->   * cmdq_pkt_wfe() - append wait for event command to the CMDQ packet
->   * @pkt:       the CMDQ packet
-> - * @event:     the desired event type to "wait and CLEAR"
-> + * @event:     the desired event type to wait
-> + * @clear:     clear event or not after event arrive
->   *
->   * Return: 0 for success; else the error code is returned
->   */
-> -int cmdq_pkt_wfe(struct cmdq_pkt *pkt, u16 event);
-> +int cmdq_pkt_wfe(struct cmdq_pkt *pkt, u16 event, bool clear);
->
->  /**
->   * cmdq_pkt_clear_event() - append clear event command to the CMDQ packe=
-t
-> --
-> 1.7.9.5
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
