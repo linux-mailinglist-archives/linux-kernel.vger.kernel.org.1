@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FA02217217
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:43:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD2542171D1
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:43:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730228AbgGGP2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:28:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40124 "EHLO mail.kernel.org"
+        id S1730263AbgGGP0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:26:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40152 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729891AbgGGPZz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:25:55 -0400
+        id S1730255AbgGGPZ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 11:25:58 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7A655207D0;
-        Tue,  7 Jul 2020 15:25:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1AD192065D;
+        Tue,  7 Jul 2020 15:25:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594135555;
-        bh=1Z+7no7gf04ZuYcu1e6IVYtdl7iOtPRL5GHl8583tg8=;
+        s=default; t=1594135557;
+        bh=eJ6URdP5x8PemYoHcolXfF7Vl/a/bH8husjspmEuO9g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2kcvzb+eCjtjCg6Fefg701r351dOvz8R9FTV7vZ5NRBCu6QfShKg1fboLHapT9tL5
-         G1Rz7n4iIbPJ4iApBYfR+qRrtnFqels9FWoOEzevHBFj9kIXWivpvNWx2Or2DjZccp
-         kbVkNn6Z10h/W0hwhDqYSecGjSaBwA/SqKKbDY/A=
+        b=w24pbPa2+1aeyDP8RLu3dezzmpp0XIHY193zF2WMxf1CeSVIFoFUiOrUxBlaEsrSF
+         VNd9OW4T7oSlSsvhfk8Ya1jNocYQWmKdOHBSGDKlyLqi2R26vD/d5myXGpTYmvwfms
+         G8+KFOfjdx4qTYV//ljCdD7HR08xKDjJUKqbf48w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Elliott Mitchell <ehem+debian@m5p.com>,
-        Salvatore Bonaccorso <carnil@debian.org>,
-        "J. Bruce Fields" <bfields@redhat.com>
-Subject: [PATCH 5.7 086/112] nfsd: apply umask on fs without ACL support
-Date:   Tue,  7 Jul 2020 17:17:31 +0200
-Message-Id: <20200707145805.073625596@linuxfoundation.org>
+        stable@vger.kernel.org, Alexander Tsoy <alexander@tsoy.me>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
+        Hans de Goede <jwrdegoede@fedoraproject.org>
+Subject: [PATCH 5.7 087/112] Revert "ALSA: usb-audio: Improve frames size computation"
+Date:   Tue,  7 Jul 2020 17:17:32 +0200
+Message-Id: <20200707145805.120321836@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200707145800.925304888@linuxfoundation.org>
 References: <20200707145800.925304888@linuxfoundation.org>
@@ -44,56 +44,144 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: J. Bruce Fields <bfields@redhat.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-commit 22cf8419f1319ff87ec759d0ebdff4cbafaee832 upstream.
+This reverts commit d288dc74f8cf95cb7ae0aaf245b7128627a49bf3 which is
+commit f0bd62b64016508938df9babe47f65c2c727d25c upstream.
 
-The server is failing to apply the umask when creating new objects on
-filesystems without ACL support.
+It causes a number of reported issues and a fix for it has not hit
+Linus's tree yet.  Revert this to resolve those problems.
 
-To reproduce this, you need to use NFSv4.2 and a client and server
-recent enough to support umask, and you need to export a filesystem that
-lacks ACL support (for example, ext4 with the "noacl" mount option).
-
-Filesystems with ACL support are expected to take care of the umask
-themselves (usually by calling posix_acl_create).
-
-For filesystems without ACL support, this is up to the caller of
-vfs_create(), vfs_mknod(), or vfs_mkdir().
-
-Reported-by: Elliott Mitchell <ehem+debian@m5p.com>
-Reported-by: Salvatore Bonaccorso <carnil@debian.org>
-Tested-by: Salvatore Bonaccorso <carnil@debian.org>
-Fixes: 47057abde515 ("nfsd: add support for the umask attribute")
-Cc: stable@vger.kernel.org
-Signed-off-by: J. Bruce Fields <bfields@redhat.com>
+Cc: Alexander Tsoy <alexander@tsoy.me>
+Cc: Takashi Iwai <tiwai@suse.de>
+Cc: Sasha Levin <sashal@kernel.org>
+Cc: Hans de Goede <jwrdegoede@fedoraproject.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- fs/nfsd/vfs.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ sound/usb/card.h     |    4 ----
+ sound/usb/endpoint.c |   43 +++++--------------------------------------
+ sound/usb/endpoint.h |    1 -
+ sound/usb/pcm.c      |    2 --
+ 4 files changed, 5 insertions(+), 45 deletions(-)
 
---- a/fs/nfsd/vfs.c
-+++ b/fs/nfsd/vfs.c
-@@ -1225,6 +1225,9 @@ nfsd_create_locked(struct svc_rqst *rqst
- 		iap->ia_mode = 0;
- 	iap->ia_mode = (iap->ia_mode & S_IALLUGO) | type;
+--- a/sound/usb/card.h
++++ b/sound/usb/card.h
+@@ -84,10 +84,6 @@ struct snd_usb_endpoint {
+ 	dma_addr_t sync_dma;		/* DMA address of syncbuf */
  
-+	if (!IS_POSIXACL(dirp))
-+		iap->ia_mode &= ~current_umask();
-+
- 	err = 0;
- 	host_err = 0;
- 	switch (type) {
-@@ -1457,6 +1460,9 @@ do_nfsd_create(struct svc_rqst *rqstp, s
- 		goto out;
- 	}
+ 	unsigned int pipe;		/* the data i/o pipe */
+-	unsigned int framesize[2];	/* small/large frame sizes in samples */
+-	unsigned int sample_rem;	/* remainder from division fs/fps */
+-	unsigned int sample_accum;	/* sample accumulator */
+-	unsigned int fps;		/* frames per second */
+ 	unsigned int freqn;		/* nominal sampling rate in fs/fps in Q16.16 format */
+ 	unsigned int freqm;		/* momentary sampling rate in fs/fps in Q16.16 format */
+ 	int	   freqshift;		/* how much to shift the feedback value to get Q16.16 */
+--- a/sound/usb/endpoint.c
++++ b/sound/usb/endpoint.c
+@@ -124,12 +124,12 @@ int snd_usb_endpoint_implicit_feedback_s
  
-+	if (!IS_POSIXACL(dirp))
-+		iap->ia_mode &= ~current_umask();
-+
- 	host_err = vfs_create(dirp, dchild, iap->ia_mode, true);
- 	if (host_err < 0) {
- 		fh_drop_write(fhp);
+ /*
+  * For streaming based on information derived from sync endpoints,
+- * prepare_outbound_urb_sizes() will call slave_next_packet_size() to
++ * prepare_outbound_urb_sizes() will call next_packet_size() to
+  * determine the number of samples to be sent in the next packet.
+  *
+- * For implicit feedback, slave_next_packet_size() is unused.
++ * For implicit feedback, next_packet_size() is unused.
+  */
+-int snd_usb_endpoint_slave_next_packet_size(struct snd_usb_endpoint *ep)
++int snd_usb_endpoint_next_packet_size(struct snd_usb_endpoint *ep)
+ {
+ 	unsigned long flags;
+ 	int ret;
+@@ -146,29 +146,6 @@ int snd_usb_endpoint_slave_next_packet_s
+ 	return ret;
+ }
+ 
+-/*
+- * For adaptive and synchronous endpoints, prepare_outbound_urb_sizes()
+- * will call next_packet_size() to determine the number of samples to be
+- * sent in the next packet.
+- */
+-int snd_usb_endpoint_next_packet_size(struct snd_usb_endpoint *ep)
+-{
+-	int ret;
+-
+-	if (ep->fill_max)
+-		return ep->maxframesize;
+-
+-	ep->sample_accum += ep->sample_rem;
+-	if (ep->sample_accum >= ep->fps) {
+-		ep->sample_accum -= ep->fps;
+-		ret = ep->framesize[1];
+-	} else {
+-		ret = ep->framesize[0];
+-	}
+-
+-	return ret;
+-}
+-
+ static void retire_outbound_urb(struct snd_usb_endpoint *ep,
+ 				struct snd_urb_ctx *urb_ctx)
+ {
+@@ -213,8 +190,6 @@ static void prepare_silent_urb(struct sn
+ 
+ 		if (ctx->packet_size[i])
+ 			counts = ctx->packet_size[i];
+-		else if (ep->sync_master)
+-			counts = snd_usb_endpoint_slave_next_packet_size(ep);
+ 		else
+ 			counts = snd_usb_endpoint_next_packet_size(ep);
+ 
+@@ -1086,17 +1061,10 @@ int snd_usb_endpoint_set_params(struct s
+ 	ep->maxpacksize = fmt->maxpacksize;
+ 	ep->fill_max = !!(fmt->attributes & UAC_EP_CS_ATTR_FILL_MAX);
+ 
+-	if (snd_usb_get_speed(ep->chip->dev) == USB_SPEED_FULL) {
++	if (snd_usb_get_speed(ep->chip->dev) == USB_SPEED_FULL)
+ 		ep->freqn = get_usb_full_speed_rate(rate);
+-		ep->fps = 1000;
+-	} else {
++	else
+ 		ep->freqn = get_usb_high_speed_rate(rate);
+-		ep->fps = 8000;
+-	}
+-
+-	ep->sample_rem = rate % ep->fps;
+-	ep->framesize[0] = rate / ep->fps;
+-	ep->framesize[1] = (rate + (ep->fps - 1)) / ep->fps;
+ 
+ 	/* calculate the frequency in 16.16 format */
+ 	ep->freqm = ep->freqn;
+@@ -1155,7 +1123,6 @@ int snd_usb_endpoint_start(struct snd_us
+ 	ep->active_mask = 0;
+ 	ep->unlink_mask = 0;
+ 	ep->phase = 0;
+-	ep->sample_accum = 0;
+ 
+ 	snd_usb_endpoint_start_quirk(ep);
+ 
+--- a/sound/usb/endpoint.h
++++ b/sound/usb/endpoint.h
+@@ -28,7 +28,6 @@ void snd_usb_endpoint_release(struct snd
+ void snd_usb_endpoint_free(struct snd_usb_endpoint *ep);
+ 
+ int snd_usb_endpoint_implicit_feedback_sink(struct snd_usb_endpoint *ep);
+-int snd_usb_endpoint_slave_next_packet_size(struct snd_usb_endpoint *ep);
+ int snd_usb_endpoint_next_packet_size(struct snd_usb_endpoint *ep);
+ 
+ void snd_usb_handle_sync_urb(struct snd_usb_endpoint *ep,
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -1585,8 +1585,6 @@ static void prepare_playback_urb(struct
+ 	for (i = 0; i < ctx->packets; i++) {
+ 		if (ctx->packet_size[i])
+ 			counts = ctx->packet_size[i];
+-		else if (ep->sync_master)
+-			counts = snd_usb_endpoint_slave_next_packet_size(ep);
+ 		else
+ 			counts = snd_usb_endpoint_next_packet_size(ep);
+ 
 
 
