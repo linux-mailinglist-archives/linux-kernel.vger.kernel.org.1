@@ -2,73 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E0252166D4
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 08:52:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D46E2166CF
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 08:51:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728333AbgGGGvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 02:51:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41568 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727850AbgGGGvm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 02:51:42 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728296AbgGGGvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 02:51:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727850AbgGGGvN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 02:51:13 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75CD7C061755;
+        Mon,  6 Jul 2020 23:51:13 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DAC78206F6;
-        Tue,  7 Jul 2020 06:51:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594104702;
-        bh=gE9m6IM8qBh8PWfvrR+CeLupA3RereV+AmgFwG46lIA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dPCYbO3B95dh7APnaAzWwVYxX65SkFvKxNHrM/HhbdhA+v2s7QmKQgD1cSowRMdl/
-         ZxaxjrsWGMJDJj84qxzhb3QLaBGMrob9Ugo/19YfH4D2nahXscn8x4zUJRQFyq6xVq
-         2+muqNyd1E+aKGU/LhTnReAtPh/Ju/MPFCUBmNQw=
-Date:   Tue, 7 Jul 2020 08:51:39 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>
-Cc:     "balbi@kernel.org" <balbi@kernel.org>,
-        "colin.king@canonical.com" <colin.king@canonical.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: Re: =?utf-8?B?5Zue5aSNOiBbUEFUQ0ggdjNdIHVz?= =?utf-8?Q?b=3A?=
- gadget: function: fix missing spinlock in f_uac1_legacy
-Message-ID: <20200707065139.GA5233@kroah.com>
-References: <20200705124027.30011-1-qiang.zhang@windriver.com>
- <20200706195520.GA93712@kroah.com>
- <BYAPR11MB26323A0A7687EC2CE3C9E17FFF660@BYAPR11MB2632.namprd11.prod.outlook.com>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4B1Cl33l59z9sDX;
+        Tue,  7 Jul 2020 16:51:10 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1594104671;
+        bh=oOXgPAgmimC+5OE9S4VzNRBLBVUe1Z5iRWSG3SmsNnU=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=orQ7RC9s4UsZ5RZwELngkGP6M3YB0Jzi4XZFS5CBwtWWfBtjZ9dcUYXpNqEirOwdp
+         dAMeUjR7JdOTAiGz9fr1Vs6i06qhy53bvEEZ7mIJc9QlnFSlR9q0R6z90spkoAGcMb
+         qhH3IjcYuJEwPexfZnCSt7DXJFeSQ/jjdsFuIuDjnKwJZwAWERgpPbq1GaJ1ClZ+3u
+         ioq9wspTfzA5OnDHoB1+oo0Y/zdpqx/O5SsJ88Rel32NI0kw74XYyGNeTHPE9mgYHZ
+         IzttUCk1UeHIhsfwql9id9OC71X+BQA5A86fPuKFkRl16yT7cBlrGO3z8b3Vi+VnNw
+         sZsIqfkFBwpXg==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linuxppc-dev@ozlabs.org
+Cc:     linux-arch@vger.kernel.org, hughd@google.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/5] selftests/powerpc: Update the stack expansion test
+In-Reply-To: <8f6c5175-32ce-34a2-873d-b5fb3a5d7c4c@csgroup.eu>
+References: <20200703141327.1732550-1-mpe@ellerman.id.au> <20200703141327.1732550-3-mpe@ellerman.id.au> <8f6c5175-32ce-34a2-873d-b5fb3a5d7c4c@csgroup.eu>
+Date:   Tue, 07 Jul 2020 16:53:23 +1000
+Message-ID: <87eepn4xzw.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <BYAPR11MB26323A0A7687EC2CE3C9E17FFF660@BYAPR11MB2632.namprd11.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A: http://en.wikipedia.org/wiki/Top_post
-Q: Were do I find info about this thing called top-posting?
-A: Because it messes up the order in which people normally read text.
-Q: Why is top-posting such a bad thing?
-A: Top-posting.
-Q: What is the most annoying thing in e-mail?
+Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+> Le 03/07/2020 =C3=A0 16:13, Michael Ellerman a =C3=A9crit=C2=A0:
+>> Update the stack expansion load/store test to take into account the
+>> new allowance of 4096 bytes below the stack pointer.
+>
+> [I didn't receive patch 2, don't know why, hence commenting patch 2 here.]
+>
+> Shouldn't patch 2 carry a fixes tag and be Cced to stable for=20
+> application to previous kernel releases ?
 
-A: No.
-Q: Should I include quotations after my reply?
+Yes it should.
 
-http://daringfireball.net/2007/07/on_top
-
-
-On Tue, Jul 07, 2020 at 02:28:36AM +0000, Zhang, Qiang wrote:
-> Hi Greg KH
-> In the early submission:
-> "commit id c6994e6f067cf0fc4c6cca3d164018b1150916f8" which add USB Audio Gadget driver "   
-> the "audio->play_queue" was protected from "audio->lock"
-> spinlock in "playback_work" func, But in "f_audio_out_ep_complete" func 
-> there is no protection for the operation of this "audio->play_queue". there
-> are missing spinlock,  Fix tags should add up here commit？
-
-I really do not understand what you are asking here, sorry.
-
-greg k-h
+cheers
