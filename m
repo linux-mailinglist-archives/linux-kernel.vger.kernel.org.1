@@ -2,149 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F660216FF1
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:13:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19E9B216FF8
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:14:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728194AbgGGPNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:13:19 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:49962 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727777AbgGGPNS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:13:18 -0400
-Received: by mail-io1-f72.google.com with SMTP id d20so26062360iom.16
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 08:13:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=I8n5rZKIAPnIo1jKPBjEGsh0wkqyxk3DPzjupYQhwvo=;
-        b=Tf6O9hCXx/9YnJl5kpLmKsOlhnBeIk/RuTaXz4CS0ojT5Tqo1q8rz04Ydsbc/Azx5n
-         T7O4d3+MgotuY5KWNcbZel78QwFBWfGwJ15C+9mq7a470rn3fdO4I5K64jYz5oFy4Jqm
-         54OouGIbC2rUNK6bIU1cuE3zd0BME94vmznqJXiDhLswU5O1/7N8XGwhtvbH1zF/rIdt
-         1An8Szix05WmEpiyJkcxtNlZ/eIcuFwS7qoAj0Lyc9zATMvKmFdtPXQm/8/BMOxlzp7c
-         GNqNIJNf3wygaa+rg3Y+6dM0zrU7fueycf/QL3RoJZ62ZawPvaKjCxLv/3tsNQvdaeaE
-         Ma9Q==
-X-Gm-Message-State: AOAM532vosT+xy8m83x8UYxXL1zD9n+F/jE6Kr7C9iFvg3h46IeSHXBu
-        8NyT2cIoIJ7fvRbaVajElZrRMSq/txwFnSZ6SmwJGJkR0v+B
-X-Google-Smtp-Source: ABdhPJxbPhMx5LdIKwvmZReWSt8AwQSMHVUpJhrDQkaawGVaiCwhdTP8NO8Om5IV8RsM0J4xPbU7TdtavJ9QERFWYNFO+HQRXwlL
+        id S1728328AbgGGPOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:14:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53234 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726911AbgGGPOF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 11:14:05 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B527B2065D;
+        Tue,  7 Jul 2020 15:14:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594134844;
+        bh=xJYuqbJhFQb7gAW7m99nnSEgrTj2Tb/a1uYGT1IyZcc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=BsfZJJ6li7Ji0LotBsZwAQJWNPBXXf98y19wQvMh3xx9GxJhbr9SNGEePAJeF3tT7
+         YlBAlLKYsM0dDPTMZ9HfFHmpdYPZEdqUhfOnsycDh/NKmXtpXRi+BssUjpw51bRHXr
+         yin12+IL0ddL0H3YdVRsG02+4zNC3C5NP3TEOHg8=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        stable@vger.kernel.org
+Subject: [PATCH 4.9 00/24] 4.9.230-rc1 review
+Date:   Tue,  7 Jul 2020 17:13:32 +0200
+Message-Id: <20200707145748.952502272@linuxfoundation.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:138f:: with SMTP id d15mr33680582ilo.63.1594134796825;
- Tue, 07 Jul 2020 08:13:16 -0700 (PDT)
-Date:   Tue, 07 Jul 2020 08:13:16 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000049fa3b05a9db6edb@google.com>
-Subject: INFO: rcu detected stall in sys_clock_adjtime
-From:   syzbot <syzbot+25b7addb06e92c482190@syzkaller.appspotmail.com>
-To:     fweisbec@gmail.com, linux-kernel@vger.kernel.org, mingo@kernel.org,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.230-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.9.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.9.230-rc1
+X-KernelTest-Deadline: 2020-07-09T14:57+00:00
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+This is the start of the stable review cycle for the 4.9.230 release.
+There are 24 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-syzbot found the following crash on:
+Responses should be made by Thu, 09 Jul 2020 14:57:34 +0000.
+Anything received after that time might be too late.
 
-HEAD commit:    7cc2a8ea Merge tag 'block-5.8-2020-07-01' of git://git.ker..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1204932f100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=183dd243398ba7ec
-dashboard link: https://syzkaller.appspot.com/bug?extid=25b7addb06e92c482190
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1531b0bd100000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15514c33100000
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.230-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
+and the diffstat can be found below.
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+25b7addb06e92c482190@syzkaller.appspotmail.com
+thanks,
 
-rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
-rcu: 	Tasks blocked on level-0 rcu_node (CPUs 0-1):
-------------[ cut here ]------------
-IRQs not enabled as expected
-WARNING: CPU: 1 PID: 4737 at kernel/sched/core.c:2698 try_invoke_on_locked_down_task+0x18b/0x320 kernel/sched/core.c:2698
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 1 PID: 4737 Comm: systemd-timesyn Not tainted 5.8.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <IRQ>
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x1f0/0x31e lib/dump_stack.c:118
- panic+0x264/0x7a0 kernel/panic.c:231
- __warn+0x227/0x250 kernel/panic.c:600
- report_bug+0x1b1/0x2e0 lib/bug.c:198
- handle_bug+0x42/0x80 arch/x86/kernel/traps.c:235
- exc_invalid_op+0x16/0x40 arch/x86/kernel/traps.c:255
- asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:563
-RIP: 0010:try_invoke_on_locked_down_task+0x18b/0x320 kernel/sched/core.c:2698
-Code: 48 89 df e8 a7 35 09 00 4c 89 f7 e8 3f 63 ce 06 e9 b5 00 00 00 c6 05 92 7d 18 08 01 48 c7 c7 fc a9 e7 88 31 c0 e8 65 a8 f5 ff <0f> 0b e9 15 ff ff ff 48 c7 c1 70 5d 6d 89 80 e1 07 80 c1 03 38 c1
-RSP: 0018:ffffc90000da8c50 EFLAGS: 00010046
-RAX: 82cfb6c0e4d32500 RBX: ffff888096c1ee08 RCX: ffff888096c1e580
-RDX: 0000000000010004 RSI: 0000000000010004 RDI: 0000000000000000
-RBP: ffff888096c1ee4c R08: ffffffff815dc419 R09: ffffed1015d241c3
-R10: ffffed1015d241c3 R11: 0000000000000000 R12: 0000000000000000
-R13: ffff8880a9990040 R14: ffff8880a99903c0 R15: dffffc0000000000
- rcu_print_task_stall kernel/rcu/tree_stall.h:269 [inline]
- print_other_cpu_stall kernel/rcu/tree_stall.h:477 [inline]
- check_cpu_stall kernel/rcu/tree_stall.h:636 [inline]
- rcu_pending kernel/rcu/tree.c:3489 [inline]
- rcu_sched_clock_irq+0x12ec/0x1eb0 kernel/rcu/tree.c:2504
- update_process_times+0x12c/0x180 kernel/time/timer.c:1726
- tick_sched_handle kernel/time/tick-sched.c:176 [inline]
- tick_sched_timer+0x254/0x410 kernel/time/tick-sched.c:1320
- __run_hrtimer kernel/time/hrtimer.c:1520 [inline]
- __hrtimer_run_queues+0x42d/0x930 kernel/time/hrtimer.c:1584
- hrtimer_interrupt+0x373/0xd60 kernel/time/hrtimer.c:1646
- local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1080 [inline]
- __sysvec_apic_timer_interrupt+0xf0/0x260 arch/x86/kernel/apic/apic.c:1097
- asm_call_on_stack+0xf/0x20 arch/x86/entry/entry_64.S:711
- </IRQ>
- __run_on_irqstack arch/x86/include/asm/irq_stack.h:22 [inline]
- run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:48 [inline]
- sysvec_apic_timer_interrupt+0xb9/0x130 arch/x86/kernel/apic/apic.c:1091
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:596
-RIP: 0010:csd_lock_wait kernel/smp.c:108 [inline]
-RIP: 0010:smp_call_function_single+0x311/0x450 kernel/smp.c:382
-Code: 83 e5 01 75 14 e8 4f 00 0b 00 eb 45 0f 1f 00 66 2e 0f 1f 84 00 00 00 00 00 f3 90 42 0f b6 04 23 84 c0 75 0d 41 f6 07 01 74 22 <e8> 2a 00 0b 00 eb e8 44 89 f9 80 e1 07 80 c1 03 38 c1 7c e6 4c 89
-RSP: 0018:ffffc90001c27be0 EFLAGS: 00000202
-RAX: 0000000000000000 RBX: 1ffff92000384f81 RCX: ffff888096c1e580
-RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
-RBP: ffffc90001c27c80 R08: ffffffff81697bb6 R09: ffffed1015d06d11
-R10: ffffed1015d06d11 R11: 0000000000000000 R12: dffffc0000000000
-R13: 0000000000000001 R14: 0000000000000000 R15: ffffc90001c27c08
- smp_call_function_many kernel/smp.c:577 [inline]
- smp_call_function kernel/smp.c:599 [inline]
- on_each_cpu+0x4d/0x1f0 kernel/smp.c:699
- clock_was_set+0x18/0x20 kernel/time/hrtimer.c:872
- timekeeping_inject_offset+0x5e6/0x610 kernel/time/timekeeping.c:1305
- do_adjtimex+0x3ac/0x8f0 kernel/time/timekeeping.c:2332
- do_clock_adjtime kernel/time/posix-timers.c:1109 [inline]
- __do_sys_clock_adjtime kernel/time/posix-timers.c:1121 [inline]
- __se_sys_clock_adjtime kernel/time/posix-timers.c:1112 [inline]
- __x64_sys_clock_adjtime+0x17e/0x210 kernel/time/posix-timers.c:1112
- do_syscall_64+0x73/0xe0 arch/x86/entry/common.c:359
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x7f4117ebd1b7
-Code: Bad RIP value.
-RSP: 002b:00007ffeedde6cd8 EFLAGS: 00000246 ORIG_RAX: 0000000000000131
-RAX: ffffffffffffffda RBX: 000055f707897630 RCX: 00007f4117ebd1b7
-RDX: ffffffffe7ce77f1 RSI: 00007ffeedde6da0 RDI: 0000000000000000
-RBP: 00007ffeedde6da0 R08: 0000000000000020 R09: 000000000000000d
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000ffffffff
-R13: 00007ffeedde6e90 R14: 0000000000000005 R15: 0000000000000001
-Shutting down cpus with NMI
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
+greg k-h
+
+-------------
+Pseudo-Shortlog of commits:
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 4.9.230-rc1
+
+Peter Jones <pjones@redhat.com>
+    efi: Make it possible to disable efivar_ssdt entirely
+
+Vasily Averin <vvs@virtuozzo.com>
+    netfilter: nf_conntrack_h323: lost .data_len definition for Q.931/ipv6
+
+Hauke Mehrtens <hauke@hauke-m.de>
+    MIPS: Add missing EHB in mtc0 -> mfc0 sequence for DSPen
+
+Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
+    cifs: Fix the target file was deleted when rename failed.
+
+Paul Aurich <paul@darkrain42.org>
+    SMB3: Honor persistent/resilient handle flags for multiuser mounts
+
+Paul Aurich <paul@darkrain42.org>
+    SMB3: Honor 'seal' flag for multiuser mounts
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Revert "ALSA: usb-audio: Improve frames size computation"
+
+Chris Packham <chris.packham@alliedtelesis.co.nz>
+    i2c: algo-pca: Add 0x78 as SCL stuck low status for PCA9665
+
+Hou Tao <houtao1@huawei.com>
+    virtio-blk: free vblk-vqs in error path of virtblk_probe()
+
+Misono Tomohiro <misono.tomohiro@jp.fujitsu.com>
+    hwmon: (acpi_power_meter) Fix potential memory leak in acpi_power_meter_add()
+
+Chu Lin <linchuyuan@google.com>
+    hwmon: (max6697) Make sure the OVERT mask is set correctly
+
+Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>
+    cxgb4: parse TC-U32 key values and masks natively
+
+Shile Zhang <shile.zhang@nokia.com>
+    sched/rt: Show the 'sched_rr_timeslice' SCHED_RR timeslice tuning knob in milliseconds
+
+Herbert Xu <herbert@gondor.apana.org.au>
+    crypto: af_alg - fix use-after-free in af_alg_accept() due to bh_lock_sock()
+
+Douglas Anderson <dianders@chromium.org>
+    kgdb: Avoid suspicious RCU usage warning
+
+Zqiang <qiang.zhang@windriver.com>
+    usb: usbtest: fix missing kfree(dev->buf) in usbtest_disconnect
+
+Qian Cai <cai@lca.pw>
+    mm/slub: fix stack overruns with SLUB_STATS
+
+Dongli Zhang <dongli.zhang@oracle.com>
+    mm/slub.c: fix corrupted freechain in deactivate_slab()
+
+Tuomas Tynkkynen <tuomas.tynkkynen@iki.fi>
+    usbnet: smsc95xx: Fix use-after-free after removal
+
+Borislav Petkov <bp@suse.de>
+    EDAC/amd64: Read back the scrub rate PCI register on F15h
+
+Hugh Dickins <hughd@google.com>
+    mm: fix swap cache node allocation mask
+
+Filipe Manana <fdmanana@suse.com>
+    btrfs: fix data block group relocation failure due to concurrent scrub
+
+Anand Jain <Anand.Jain@oracle.com>
+    btrfs: cow_file_range() num_bytes and disk_num_bytes are same
+
+Filipe Manana <fdmanana@suse.com>
+    btrfs: fix a block group ref counter leak after failure to remove block group
 
 
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+-------------
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Diffstat:
+
+ Makefile                                           |   4 +-
+ arch/mips/kernel/traps.c                           |   1 +
+ crypto/af_alg.c                                    |  26 ++---
+ crypto/algif_aead.c                                |   9 +-
+ crypto/algif_hash.c                                |   9 +-
+ crypto/algif_skcipher.c                            |   9 +-
+ drivers/block/virtio_blk.c                         |   1 +
+ drivers/edac/amd64_edac.c                          |   2 +
+ drivers/firmware/efi/Kconfig                       |  11 ++
+ drivers/firmware/efi/efi.c                         |   2 +-
+ drivers/hwmon/acpi_power_meter.c                   |   4 +-
+ drivers/hwmon/max6697.c                            |   7 +-
+ drivers/i2c/algos/i2c-algo-pca.c                   |   3 +-
+ drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_u32.c  |  18 +--
+ .../ethernet/chelsio/cxgb4/cxgb4_tc_u32_parse.h    | 122 ++++++++++++++-------
+ drivers/net/usb/smsc95xx.c                         |   2 +-
+ drivers/usb/misc/usbtest.c                         |   1 +
+ fs/btrfs/extent-tree.c                             |  19 ++--
+ fs/btrfs/inode.c                                   |  36 ++++--
+ fs/cifs/connect.c                                  |   3 +
+ fs/cifs/inode.c                                    |  10 +-
+ include/crypto/if_alg.h                            |   4 +-
+ include/linux/sched/sysctl.h                       |   1 +
+ kernel/debug/debug_core.c                          |   4 +
+ kernel/sched/core.c                                |   5 +-
+ kernel/sched/rt.c                                  |   1 +
+ kernel/sysctl.c                                    |   2 +-
+ mm/slub.c                                          |  30 ++++-
+ mm/swap_state.c                                    |   3 +-
+ net/netfilter/nf_conntrack_h323_main.c             |   1 +
+ sound/usb/card.h                                   |   4 -
+ sound/usb/endpoint.c                               |  43 +-------
+ sound/usb/endpoint.h                               |   1 -
+ sound/usb/pcm.c                                    |   2 -
+ 34 files changed, 235 insertions(+), 165 deletions(-)
+
+
