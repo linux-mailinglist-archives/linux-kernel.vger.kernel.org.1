@@ -2,92 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F5CD217279
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:44:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61D2F217284
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:44:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730084AbgGGPdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:33:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34192 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728651AbgGGPdp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:33:45 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FC4EC061755
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 08:33:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=u+eV/Vt9JPFkjgSC7N8EDNEv2OCJ2IDe/eB3wX/AnBs=; b=a30Zm0xlb5E85J1xhQac/tdmK8
-        ZayXBB0v3stbD0fr8xoc1BLj3H3+1MHN+NYM2D9uVn6b2aKpWG8/dnu/YUJqif1+D3Oa085AyhfWa
-        e133Q3MgF+Jas8moPItUFjdDZ9UUFA2gKIvhTmqgbVyPzHZu4B4+UqWUIOJJLpkgl4pJJgPFhIE8U
-        h/6HI/jgPiiaJC2KQxV18tB9DgkC5OfaP3zh0Zt+lyvPzsMS1tA31zYXKjvWlbtIZpuJqG948a6LU
-        natX/r8SiI/6kpCuc6Pfxs2hex6s/+zufLDJuE6eEHRdCG7VA0d/MEcX6l42quUbaVdrqN4JfIqDy
-        KXpwncZA==;
-Received: from [2601:1c0:6280:3f0:897c:6038:c71d:ecac]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jspbF-0005Iy-Pw; Tue, 07 Jul 2020 15:33:41 +0000
-Subject: Re: [Ksummit-discuss] [Tech-board-discuss] [PATCH] CodingStyle:
- Inclusive Terminology
-To:     "Bird, Tim" <Tim.Bird@sony.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mike Rapoport <rppt@linux.ibm.com>
-Cc:     Chris Mason <clm@fb.clm>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "tech-board-discuss@lists.linuxfoundation.org" 
-        <tech-board-discuss@lists.linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        ksummit <ksummit-discuss@lists.linuxfoundation.org>
-References: <159389297140.2210796.13590142254668787525.stgit@dwillia2-desk3.amr.corp.intel.com>
- <CALCETrXewAK4_fpaJNDHJVDK9mUcjghA5HwYvZFQNYVfC9M+OQ@mail.gmail.com>
- <202007062234.A90F922DF@keescook> <20200707064921.GA9411@linux.ibm.com>
- <20200707093727.22aa39e2@oasis.local.home>
- <CY4PR13MB117519F548B125CB2F10F50FFD660@CY4PR13MB1175.namprd13.prod.outlook.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <c4aec17f-3ac9-ce17-a131-b186a9b595dd@infradead.org>
-Date:   Tue, 7 Jul 2020 08:33:33 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1728979AbgGGPfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:35:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48332 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727079AbgGGPfL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 11:35:11 -0400
+Received: from localhost (unknown [122.182.251.219])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1D26B20663;
+        Tue,  7 Jul 2020 15:35:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594136111;
+        bh=a0T6ft6shyocwqSr39cTZCmpgAAfdPrbzkMPJK3i0R8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sYm6HN6vQNCSP8UaYveiQFdSOWg03VElJwFBZ/y4+Ppeu0Ytl2U6XDlE0EvmYrjRW
+         91cf5/ldZcLbuLKxK/v8kKOfFVB+NPOlkmTGh3lyZMKpoSkKlH6ujFs9VNee/3OIEK
+         K51bI2K/WdkIBxpv2+2ZefGbYV0c41OmxPKCKqjQ=
+Date:   Tue, 7 Jul 2020 21:05:05 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz,
+        tiwai@suse.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        Patrick Lai <plai@codeaurora.org>,
+        Banajit Goswami <bgoswami@codeaurora.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH 13/28] ASoC: qcom: qdsp6: q6asm: Provide documentation
+ for WMA 'codec_profile'
+Message-ID: <20200707153505.GA5155@vkoul-mobl>
+References: <20200707101642.1747944-1-lee.jones@linaro.org>
+ <20200707101642.1747944-14-lee.jones@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <CY4PR13MB117519F548B125CB2F10F50FFD660@CY4PR13MB1175.namprd13.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200707101642.1747944-14-lee.jones@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/7/20 8:24 AM, Bird, Tim wrote:
+On 07-07-20, 11:16, Lee Jones wrote:
+> Fixes the following W=1 kernel build warning(s):
 > 
+>  sound/soc/qcom/qdsp6/q6asm.c:924: warning: Function parameter or member 'codec_profile' not described in 'q6asm_open_write'
 > 
->> -----Original Message-----
->> From: Steven Rostedt
->>
->> On Tue, 7 Jul 2020 09:49:21 +0300
->> Mike Rapoport <rppt@linux.ibm.com> wrote:
->>
->>>> But that's all fine. The change is easy to do and is more descriptive
->>>> even if I can't find terms that don't collide with my internal grammar
->>>> checker. ;)
->>>
->>> How about yeslist and nolist? ;-)
->>
->> I was thinking good-list / bad-list.
->>
->> /me that has been doing a lot of git bisect lately...
+> Cc: Patrick Lai <plai@codeaurora.org>
+> Cc: Banajit Goswami <bgoswami@codeaurora.org>
+> Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> Cc: Vinod Koul <vkoul@kernel.org>
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  sound/soc/qcom/qdsp6/q6asm.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> I think it depends on the context.  I'd prefer a grammatically awkward verb that described
-> the action more specifically, than a grammatically nicer generic term.  In other words,
-> yes/no, good/bad don't mean that much to me, unless it's obvious from context
-> what the effect will be.  With something like allow/deny, I have a pretty clear mental
-> model of what the code is going to do.
+> diff --git a/sound/soc/qcom/qdsp6/q6asm.c b/sound/soc/qcom/qdsp6/q6asm.c
+> index ae4b2cabdf2d6..58720b18fc8c8 100644
+> --- a/sound/soc/qcom/qdsp6/q6asm.c
+> +++ b/sound/soc/qcom/qdsp6/q6asm.c
+> @@ -915,6 +915,7 @@ static int q6asm_ac_send_cmd_sync(struct audio_client *ac, struct apr_pkt *pkt)
+>   *
+>   * @ac: audio client pointer
+>   * @format: audio sample format
+> + * @codec_profile: profile to use when WMA
 
-That matches what I was about to say:
-Just using yes/no does not tell someone what they are saying yes or no about.
-It should be more descriptive, like allow/block.
+Yes it is used with WMA only for now, but we should describe in
+generically as "Audio codec profile"
+
+>   * @bits_per_sample: bits per sample
+>   *
+>   * Return: Will be an negative value on error or zero on success
+> -- 
+> 2.25.1
 
 -- 
-~Randy
-
+~Vinod
