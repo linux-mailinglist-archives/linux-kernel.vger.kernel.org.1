@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C217217242
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:44:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07A1A21726F
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:44:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730138AbgGGPaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:30:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37314 "EHLO mail.kernel.org"
+        id S1730000AbgGGPdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:33:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33148 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728799AbgGGPX6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:23:58 -0400
+        id S1729634AbgGGPVD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 11:21:03 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 251F52082F;
-        Tue,  7 Jul 2020 15:23:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ABB8F206E2;
+        Tue,  7 Jul 2020 15:21:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594135437;
-        bh=69SI/+M+EsrYPGUsjvNrScM3WRasXNkolneBXj8DZOk=;
+        s=default; t=1594135263;
+        bh=lWL7UQC9ozt0/QZx+J+2+syn9yzi1khDLGN/pX0tpOQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ocPc7N5dSK6V6EHsGschyl3xU0LGyVbSaYwdf9+7mH0QyxQCiVIkHlZ7Fwz3hNOiw
-         2ZxmQ9ugNKL7AeI/D5DwscGrNIDd9RYlF2EwVy613tm76YOlIXFVF+Xj1/xj6/5cE2
-         07Mc0DDx6pJBP8VrREmIF736wRslSIjLYZ0XwrLE=
+        b=YJDxKmyH6FaLS5Sjf3l0FnE+TBxXnsui5+CI9anZMkNKzcjr4c2InsefudBdoqCaq
+         hrKk7R1d6hGJZg/TELyC9yzGyxcdU1l/9vMk952UIvu9/7ztm1LThkLcMjthSTkbBX
+         RB6ozIc/ysIbXzkMwdzhDoqT8S0KHS20zyRt0x/c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tadeusz Struk <tadeusz.struk@intel.com>,
-        linux-integrity@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: [PATCH 5.7 041/112] Revert "tpm: selftest: cleanup after unseal with wrong auth/policy test"
-Date:   Tue,  7 Jul 2020 17:16:46 +0200
-Message-Id: <20200707145802.953085875@linuxfoundation.org>
+        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
+        Kyungtae Kim <kt0755@gmail.com>,
+        Zqiang <qiang.zhang@windriver.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 09/65] usb: usbtest: fix missing kfree(dev->buf) in usbtest_disconnect
+Date:   Tue,  7 Jul 2020 17:16:48 +0200
+Message-Id: <20200707145752.890554879@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200707145800.925304888@linuxfoundation.org>
-References: <20200707145800.925304888@linuxfoundation.org>
+In-Reply-To: <20200707145752.417212219@linuxfoundation.org>
+References: <20200707145752.417212219@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,38 +45,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+From: Zqiang <qiang.zhang@windriver.com>
 
-commit 5be206eaac9a68992fc3b06fb5dd5634e323de86 upstream.
+[ Upstream commit 28ebeb8db77035e058a510ce9bd17c2b9a009dba ]
 
-The reverted commit illegitly uses tpm2-tools. External dependencies are
-absolutely forbidden from these tests. There is also the problem that
-clearing is not necessarily wanted behavior if the test/target computer is
-not used only solely for testing.
+BUG: memory leak
+unreferenced object 0xffff888055046e00 (size 256):
+  comm "kworker/2:9", pid 2570, jiffies 4294942129 (age 1095.500s)
+  hex dump (first 32 bytes):
+    00 70 04 55 80 88 ff ff 18 bb 5a 81 ff ff ff ff  .p.U......Z.....
+    f5 96 78 81 ff ff ff ff 37 de 8e 81 ff ff ff ff  ..x.....7.......
+  backtrace:
+    [<00000000d121dccf>] kmemleak_alloc_recursive
+include/linux/kmemleak.h:43 [inline]
+    [<00000000d121dccf>] slab_post_alloc_hook mm/slab.h:586 [inline]
+    [<00000000d121dccf>] slab_alloc_node mm/slub.c:2786 [inline]
+    [<00000000d121dccf>] slab_alloc mm/slub.c:2794 [inline]
+    [<00000000d121dccf>] kmem_cache_alloc_trace+0x15e/0x2d0 mm/slub.c:2811
+    [<000000005c3c3381>] kmalloc include/linux/slab.h:555 [inline]
+    [<000000005c3c3381>] usbtest_probe+0x286/0x19d0
+drivers/usb/misc/usbtest.c:2790
+    [<000000001cec6910>] usb_probe_interface+0x2bd/0x870
+drivers/usb/core/driver.c:361
+    [<000000007806c118>] really_probe+0x48d/0x8f0 drivers/base/dd.c:551
+    [<00000000a3308c3e>] driver_probe_device+0xfc/0x2a0 drivers/base/dd.c:724
+    [<000000003ef66004>] __device_attach_driver+0x1b6/0x240
+drivers/base/dd.c:831
+    [<00000000eee53e97>] bus_for_each_drv+0x14e/0x1e0 drivers/base/bus.c:431
+    [<00000000bb0648d0>] __device_attach+0x1f9/0x350 drivers/base/dd.c:897
+    [<00000000838b324a>] device_initial_probe+0x1a/0x20 drivers/base/dd.c:944
+    [<0000000030d501c1>] bus_probe_device+0x1e1/0x280 drivers/base/bus.c:491
+    [<000000005bd7adef>] device_add+0x131d/0x1c40 drivers/base/core.c:2504
+    [<00000000a0937814>] usb_set_configuration+0xe84/0x1ab0
+drivers/usb/core/message.c:2030
+    [<00000000e3934741>] generic_probe+0x6a/0xe0 drivers/usb/core/generic.c:210
+    [<0000000098ade0f1>] usb_probe_device+0x90/0xd0
+drivers/usb/core/driver.c:266
+    [<000000007806c118>] really_probe+0x48d/0x8f0 drivers/base/dd.c:551
+    [<00000000a3308c3e>] driver_probe_device+0xfc/0x2a0 drivers/base/dd.c:724
 
-Fixes: a9920d3bad40 ("tpm: selftest: cleanup after unseal with wrong auth/policy test")
-Cc: Tadeusz Struk <tadeusz.struk@intel.com>
-Cc: stable@vger.kernel.org
-Cc: linux-integrity@vger.kernel.org
-Cc: linux-kselftest@vger.kernel.org
-Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
+Reported-by: Kyungtae Kim <kt0755@gmail.com>
+Signed-off-by: Zqiang <qiang.zhang@windriver.com>
+Link: https://lore.kernel.org/r/20200612035210.20494-1-qiang.zhang@windriver.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/tpm2/test_smoke.sh |    5 -----
- 1 file changed, 5 deletions(-)
+ drivers/usb/misc/usbtest.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/tools/testing/selftests/tpm2/test_smoke.sh
-+++ b/tools/testing/selftests/tpm2/test_smoke.sh
-@@ -3,8 +3,3 @@
+diff --git a/drivers/usb/misc/usbtest.c b/drivers/usb/misc/usbtest.c
+index 98ada1a3425c6..bae88893ee8e3 100644
+--- a/drivers/usb/misc/usbtest.c
++++ b/drivers/usb/misc/usbtest.c
+@@ -2873,6 +2873,7 @@ static void usbtest_disconnect(struct usb_interface *intf)
  
- python -m unittest -v tpm2_tests.SmokeTest
- python -m unittest -v tpm2_tests.AsyncTest
--
--CLEAR_CMD=$(which tpm2_clear)
--if [ -n $CLEAR_CMD ]; then
--	tpm2_clear -T device
--fi
+ 	usb_set_intfdata(intf, NULL);
+ 	dev_dbg(&intf->dev, "disconnect\n");
++	kfree(dev->buf);
+ 	kfree(dev);
+ }
+ 
+-- 
+2.25.1
+
 
 
