@@ -2,207 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF7E72174D4
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 19:13:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9570A2174BF
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 19:09:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728333AbgGGRN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 13:13:56 -0400
-Received: from out02.mta.xmission.com ([166.70.13.232]:33938 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727777AbgGGRNz (ORCPT
+        id S1728254AbgGGRJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 13:09:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49108 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727975AbgGGRJK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 13:13:55 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out02.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jsrAC-0004jJ-2G; Tue, 07 Jul 2020 11:13:48 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jsrAA-0000lm-TW; Tue, 07 Jul 2020 11:13:47 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        linux-kernel@vger.kernel.org, David Miller <davem@davemloft.net>,
-        Greg Kroah-Hartman <greg@kroah.com>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-References: <87y2o1swee.fsf_-_@x220.int.ebiederm.org>
-        <20200702164140.4468-13-ebiederm@xmission.com>
-        <20200703203021.paebx25miovmaxqt@ast-mbp.dhcp.thefacebook.com>
-        <873668s2j8.fsf@x220.int.ebiederm.org>
-        <20200704155052.kmrest5useyxcfnu@wittgenstein>
-Date:   Tue, 07 Jul 2020 12:09:05 -0500
-In-Reply-To: <20200704155052.kmrest5useyxcfnu@wittgenstein> (Christian
-        Brauner's message of "Sat, 4 Jul 2020 17:50:52 +0200")
-Message-ID: <87mu4bjlqm.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Tue, 7 Jul 2020 13:09:10 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63F0EC061755;
+        Tue,  7 Jul 2020 10:09:10 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id e8so16529857ljb.0;
+        Tue, 07 Jul 2020 10:09:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:references:date:in-reply-to:message-id
+         :user-agent:mime-version;
+        bh=fW8qIZMYPQcc3OyuYOdgmdNlsp/pl4qWLU5HddWAHF4=;
+        b=Rz7acAXbi5DEiGxlBsUH1qFLpLJ/crtgC/gCB9a8cLmVSHvAF9getxURh8MDpQd101
+         mO6jzWMVQqXPxEtiOdLUX1qRPAJ+/I4jdF+X82a3heeDiyF5WXkYkd/wqL/bUcwDSJGI
+         ggr+zeoWmWhRo2FkisOjiTd1hwsfwBBJ+mF/BzO4Ca+i+XDqQ56lTWHW7pQK8N0lkZqt
+         YlI3ymoAS8SSYFOPipibX0RVuYGlPVlRrEtcV8h1L9h8kRhh9XA1lCu0+8aJ4IQHYtAg
+         VfejyhBaBSam7XYUK0o8qUedxFcGaDAWoMd/gwbsNkW+J2CjwQ0GIE9LtC0gczQDpP0e
+         SZNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:references:date:in-reply-to
+         :message-id:user-agent:mime-version;
+        bh=fW8qIZMYPQcc3OyuYOdgmdNlsp/pl4qWLU5HddWAHF4=;
+        b=ba7up5Ct9O4zvqwb1JzNodZG2tC2q4qpX+HKi813+wU7hU5Natp70FOjjWeMtW1ohq
+         GO2AWfwunsXJv1iTX4I1brUYDkS/IlxK0QyZ/cdnF3oVumL3Ul+ogU57w0xZAPqAihGm
+         8ohzBeut10BZrsT43PLcU0E1TdIBX/mLaZPs0d4W5BLvpJCW3AOfHPNkEznVpUsNjG07
+         5FU8ey1FTrkJuGpYlZnYCz51rRzdWwfPpWXR1jJgVGswJDFF2FWRT4tS4Bb0YhrZH0tb
+         1HNEvGrVvm8qozZza7jQHChGgJ1w3XlK17M2tcS1TCKjDZuhVCdnZcTABln0KyeIgUS+
+         NHCw==
+X-Gm-Message-State: AOAM533CNdm8i+US5/PLbZVB5fbkiKiU1Zo5Emmq4IAJuXp1maa+95Cw
+        OX2tl7G4JSav7Q9LyoPVkRk=
+X-Google-Smtp-Source: ABdhPJxiQQCsFbuYSx5DTEsdZGV4SNWi6C9n6tKEUDeJDvohtgdJPwcKfbQLkBYwoaVqEEwVTHHWzw==
+X-Received: by 2002:a2e:880e:: with SMTP id x14mr20497394ljh.218.1594141748764;
+        Tue, 07 Jul 2020 10:09:08 -0700 (PDT)
+Received: from osv.localdomain ([89.175.180.246])
+        by smtp.gmail.com with ESMTPSA id j2sm277201lji.115.2020.07.07.10.09.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Jul 2020 10:09:08 -0700 (PDT)
+From:   Sergey Organov <sorganov@gmail.com>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     richardcochran@gmail.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Fugang Duan <fugang.duan@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [PATCH  3/5] net: fec: initialize clock with 0 rather than
+ current kernel time
+References: <20200706142616.25192-1-sorganov@gmail.com>
+        <20200706142616.25192-4-sorganov@gmail.com>
+        <20200706152721.3j54m73bm673zlnj@skbuf> <874kqksdrb.fsf@osv.gnss.ru>
+        <20200707063651.zpt6bblizo5r3kir@skbuf> <87sge371hv.fsf@osv.gnss.ru>
+        <20200707164329.pm4p73nzbsda3sfv@skbuf>
+Date:   Tue, 07 Jul 2020 20:09:07 +0300
+In-Reply-To: <20200707164329.pm4p73nzbsda3sfv@skbuf> (Vladimir Oltean's
+        message of "Tue, 7 Jul 2020 19:43:29 +0300")
+Message-ID: <87sge345ho.fsf@osv.gnss.ru>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
 MIME-Version: 1.0
 Content-Type: text/plain
-X-XM-SPF: eid=1jsrAA-0000lm-TW;;;mid=<87mu4bjlqm.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18xg/9AOxJCx9+kag+rX8lbj8yMBnwD6cc=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: **
-X-Spam-Status: No, score=2.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,TR_XM_PhishingBody,T_TM2_M_HEADER_IN_MSG,
-        T_TooManySym_01,XMSubLong,XM_B_Phish66 autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4355]
-        *  0.7 XMSubLong Long Subject
-        *  2.0 XM_B_Phish66 BODY: Obfuscated XMission
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 0; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-        *  0.0 TR_XM_PhishingBody Phishing flag in body of message
-X-Spam-DCC: ; sa06 0; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;Christian Brauner <christian.brauner@ubuntu.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 670 ms - load_scoreonly_sql: 0.09 (0.0%),
-        signal_user_changed: 11 (1.7%), b_tie_ro: 9 (1.4%), parse: 1.95 (0.3%),
-         extract_message_metadata: 23 (3.5%), get_uri_detail_list: 4.8 (0.7%),
-        tests_pri_-1000: 15 (2.3%), tests_pri_-950: 1.35 (0.2%),
-        tests_pri_-900: 1.10 (0.2%), tests_pri_-90: 106 (15.8%), check_bayes:
-        104 (15.5%), b_tokenize: 13 (2.0%), b_tok_get_all: 11 (1.7%),
-        b_comp_prob: 4.0 (0.6%), b_tok_touch_all: 71 (10.5%), b_finish: 1.10
-        (0.2%), tests_pri_0: 493 (73.6%), check_dkim_signature: 0.63 (0.1%),
-        check_dkim_adsp: 8 (1.1%), poll_dns_idle: 0.29 (0.0%), tests_pri_10:
-        2.1 (0.3%), tests_pri_500: 11 (1.6%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH v3 13/16] exit: Factor thread_group_exited out of pidfd_poll
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christian Brauner <christian.brauner@ubuntu.com> writes:
+Vladimir Oltean <olteanv@gmail.com> writes:
 
-> On Fri, Jul 03, 2020 at 04:37:47PM -0500, Eric W. Biederman wrote:
->> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
->> 
->> > On Thu, Jul 02, 2020 at 11:41:37AM -0500, Eric W. Biederman wrote:
->> >> Create an independent helper thread_group_exited report return true
->> >> when all threads have passed exit_notify in do_exit.  AKA all of the
->> >> threads are at least zombies and might be dead or completely gone.
->> >> 
->> >> Create this helper by taking the logic out of pidfd_poll where
->> >> it is already tested, and adding a missing READ_ONCE on
->> >> the read of task->exit_state.
->> >> 
->> >> I will be changing the user mode driver code to use this same logic
->> >> to know when a user mode driver needs to be restarted.
->> >> 
->> >> Place the new helper thread_group_exited in kernel/exit.c and
->> >> EXPORT it so it can be used by modules.
->> >> 
->> >> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
->> >> ---
->> >>  include/linux/sched/signal.h |  2 ++
->> >>  kernel/exit.c                | 24 ++++++++++++++++++++++++
->> >>  kernel/fork.c                |  6 +-----
->> >>  3 files changed, 27 insertions(+), 5 deletions(-)
->> >> 
->> >> diff --git a/include/linux/sched/signal.h b/include/linux/sched/signal.h
->> >> index 0ee5e696c5d8..1bad18a1d8ba 100644
->> >> --- a/include/linux/sched/signal.h
->> >> +++ b/include/linux/sched/signal.h
->> >> @@ -674,6 +674,8 @@ static inline int thread_group_empty(struct task_struct *p)
->> >>  #define delay_group_leader(p) \
->> >>  		(thread_group_leader(p) && !thread_group_empty(p))
->> >>  
->> >> +extern bool thread_group_exited(struct pid *pid);
->> >> +
->> >>  extern struct sighand_struct *__lock_task_sighand(struct task_struct *task,
->> >>  							unsigned long *flags);
->> >>  
->> >> diff --git a/kernel/exit.c b/kernel/exit.c
->> >> index d3294b611df1..a7f112feb0f6 100644
->> >> --- a/kernel/exit.c
->> >> +++ b/kernel/exit.c
->> >> @@ -1713,6 +1713,30 @@ COMPAT_SYSCALL_DEFINE5(waitid,
->> >>  }
->> >>  #endif
->> >>  
->> >> +/**
->> >> + * thread_group_exited - check that a thread group has exited
->> >> + * @pid: tgid of thread group to be checked.
->> >> + *
->> >> + * Test if thread group is has exited (all threads are zombies, dead
->> >> + * or completely gone).
->> >> + *
->> >> + * Return: true if the thread group has exited. false otherwise.
->> >> + */
->> >> +bool thread_group_exited(struct pid *pid)
->> >> +{
->> >> +	struct task_struct *task;
->> >> +	bool exited;
->> >> +
->> >> +	rcu_read_lock();
->> >> +	task = pid_task(pid, PIDTYPE_PID);
->> >> +	exited = !task ||
->> >> +		(READ_ONCE(task->exit_state) && thread_group_empty(task));
->> >> +	rcu_read_unlock();
->> >> +
->> >> +	return exited;
->> >> +}
+> On Tue, Jul 07, 2020 at 07:07:08PM +0300, Sergey Organov wrote:
+>> Vladimir Oltean <olteanv@gmail.com> writes:
 >> >
->> > I'm not sure why you think READ_ONCE was missing.
->> > It's different in wait_consider_task() where READ_ONCE is needed because
->> > of multiple checks. Here it's done once.
+>> > What do you mean 'no ticking', and what do you mean by 'non-initialized
+>> > clock' exactly? I don't know if the fec driver is special in any way, do
+>> > you mean that multiple runs of $(phc_ctl /dev/ptp0 get) from user space
+>> > all return 0? That is not at all what is to be expected, I think. The
+>> > PHC is always ticking. Its time is increasing.
 >> 
->> In practice it probably has no effect on the generated code.  But
->> READ_ONCE is about telling the compiler not to be clever.  Don't use
->> tearing loads or stores etc.  When all of the other readers are using
->> READ_ONCE I just get nervous if we have a case that doesn't.
+>> That's how it is right now. My point is that it likely shouldn't. Why is
+>> it ticking when nobody needs it? Does it draw more power due to that?
+>> 
+>> > What would be that initialization procedure that makes it tick, and
+>> > who is doing it (and when)?
+>> 
+>> The user space code that cares, obviously. Most probably some PTP stack
+>> daemon. I'd say that any set clock time ioctl() should start the clock,
+>> or yet another ioctl() that enables/disables the clock, whatever.
+>> 
 >
-> That's not true. The only place where READ_ONCE(->exit_state) is used is
-> in wait_consider_task() and nowhere else. We had that discussion a while
-> ago where I or someone proposed to simply place a READ_ONCE() around all
-> accesses to exit_state for the sake of kcsan and we agreed that it's
-> unnecessary and not to do this.
-> But it obviously doesn't hurt to have it.
+> That ioctl doesn't exist, at least not in PTP land. This also addresses
+> your previous point.
 
-There is a larger discussion to be had around the proper handling of
-exit_state.
+struct timespec ts;
+...
+clock_settime(clkid, &ts)
 
-In this particular case because we are accessing exit_state with
-only rcu_read_lock protection, because the outcome of the read
-is about correctness, and because the compiler has nothing else
-telling it not to re-read exit_state, I believe we actually need
-the READ_ONCE.
+That's the starting point of my own code, and I bet it's there in PTP
+for Linux, as well as in PTPD, as I fail to see how it could possibly
+work without it.
 
-At the same time it would take a pretty special compiler to want to
-reaccess that field in thread_group_exited.
+>
+>> >
+>> >> > Whatever the default value of the clock may be, it's bound to be
+>> >> > confusing for some reason, _if_ the reason why you're investigating it
+>> >> > in the first place is a driver bug. Also, I don't really see how your
+>> >> > change to use Jan 1st 1970 makes it any less confusing.
+>> >> 
+>> >> When I print the clocks in application, I see seconds and milliseconds
+>> >> part since epoch. With this patch seconds count from 0, that simply
+>> >> match uptime. Easy to tell from any other (malfunctioning) clock.
+>> >> 
+>> >
+>> > It doesn't really match uptime (CLOCK_MONOTONIC). Instead, it is just
+>> > initialized with zero. If you have fec built as module and you insmod it
+>> > after a few days of uptime, it will not track CLOCK_MONOTONIC at all.
+>> >
+>> > Not to say that there's anything wrong with initializing it with 0. It's
+>> > just that I don't see why it would be objectively better.
+>> 
+>> Well, it would have been better for me in my particular quest to find
+>> the problem, so it rather needs to be shown where initializing with
+>> kernel time is objectively better.
+>> 
+>> Moreover, everything else being equal, 0 is always better, just because
+>> of simplicity.
+>> 
+>> >
+>> >> Here is the description of confusion and improvement. I spent half a day
+>> >> not realizing that I sometimes get timestamps from the wrong PTP clock.
+>> >
+>> > There is a suite of tests in tools/testing/selftests/ptp/ which is
+>> > useful in debugging problems like this.
+>> >
+>> > Alternatively, you can write to each individual clock using $(phc_ctl
+>> > /dev/ptpN set 0) and check your timestamps again. If the timestamps
+>> > don't nudge, it's clear that the timestamps you're getting are not from
+>> > the PHC you've written to. Much simpler.
+>> 
+>> Maybe. Once you do figure there is another clock in the system and/or
+>> that that clock is offending. In my case /that/ was the hard part, not
+>> changing that offending clock, once found, to whatever.
+>> 
+>
+> And my point was that you could have been in a different situation, when
+> all of your clocks could have been ticking in 1970, so this wouldn't
+> have been a distiguishing point. So this argument is poor. Using
+> phc_ctl, or scripts around that, is much more dynamic.
+>
+>> >
+>> >> Part of the problem is that kernel time at startup, when it is used for
+>> >> initialization of the PTP clock, is in fact somewhat random, and it
+>> >> could be off by a few seconds.
+>> >
+>> > Yes, the kernel time at startup is exactly random (not traceable to any
+>> > clock reference). And so is the PHC.
+>> >
+>> >> Now, when in application I get time stamp
+>> >> that is almost right, and then another one that is, say, 9 seconds off,
+>> >> what should I think? Right, that I drive PTP clock wrongly.
+>> >> 
+>> >> Now, when one of those timestamps is almost 0, I see immediately I got
+>> >> time from wrong PTP clock, rather than wrong time from correct PTP
+>> >> clock.
+>> >> 
+>> >
+>> > There are 2 points to be made here:
+>> >
+>> > 1. There are simpler ways to debug your issue than to leave a patch in
+>> >    the kernel, like the "phc_ctl set 0" I mentioned above. This can be
+>> >    considered a debugging patch which is also going to have consequences
+>> >    for the other users of the driver, if applied. We need to consider
+>> >    whether the change in behavior is useful in general.
+>> 
+>> This does not apply to my particular case as I explained above, and then
+>> ease with debug is just a nice side-effect of code simplification.
+>> 
+>> >
+>> > 2. There are boards out there which don't have any battery-backed RTC,
+>> >    so CLOCK_REALTIME could be ticking in Jan 1970 already, and therefore
+>> >    the PHC would be initialized with a time in 1970. Or your GM might be
+>> >    configured to be ticking in Jan 1970 (there are some applications
+>> >    that only require the network to be synchronized, but not for the
+>> >    time to be traceable to TAI). How does your change make a difference
+>> >    to eliminate confusion there, when all of your clocks are going to be
+>> >    in 1970? It doesn't make a net difference. Bottom line, a clock
+>> >    initialized with 0 doesn't mean it's special in any way. You _could_
+>> >    make that change in your debugging environment, and it _could_ be
+>> >    useful to your debugging, but if it's not universally useful, I
+>> >    wouldn't try to patch the kernel with this change.
+>> 
+>> If there is nothing special about any value, 0 is the value to choose,
+>> because of simplicity. Once again, I only explained debugging advantages
+>> because you've asked about it. It's just a nice side-effect, as it
+>> often happens to be when one keeps things as simple as possible.
+>> 
+>> > Please note that, although my comments appear to be in disagreement with
+>> > your idea, they are in fact not at all. It's just that, if there's a a
+>> > particular answer to "what time to initialize a PHC with" that is more
+>> > favourable than the rest (even though the question itself is a bit
+>> > irrelevant overall), then that answer ought to be enforced kernel-wide,
+>> > I think.
+>> 
+>> As everybody, I believe in a set of generic programming principles that
+>> are not to be violated lightly. KISS is one of the principles I believe,
+>> and trying to be clever with no apparent reason is one way of violating
+>> it.
+>> 
+>> Overall, here is my argument: 0 is simpler than kernel time, so how is
+>> it useful to initialize PTP with kernel time that is as wrong as a value
+>> for PTP time as 0?
+>> 
+>
+> And overall, my argument is: you are making a user-visible change, for
+> basically no strong reason, other than the fact that you like zero
+> better. You're trying to reduce confusion, not increase it, right?
 
-I have looked through and I don't find any of the other access of
-exit_state where the result is about correctness (so that we care)
-and we don't hold tasklist_lock.
+No, not to increase, and I believe there is no way to increase it by
+using the value that at least some of the drivers already use.
 
-But I have removed the necessary wording from the commit comment.
+> I agree with the basic fact that zero is a simpler and more consistent
+> value to initialize a PHC with, than the system time. As I've already
+> shown to you, I even attempted to make a similar change to the ptp_qoriq
+> driver which was rejected. So I hoped that you could bring some better
+> arguments than "I believe 0 is simpler". Since no value is right, no
+> value is wrong either, so why make a change in the first place? The only
+> value in _changing_ to zero would be if all drivers were changed to use
+> it consistently, IMO.
+>
+> But I will stop here and let the PTP maintainer make a choice. I only
+> intervened because I knew what the default answer was going to be.
 
-There is a much larger discussion to be had about what to do with
-exit_state, because I think I found about half the accesses were
-slightly buggy in one form or another.
+Thanks, so will I, as I won't care much either way, just wanted to make
+life of somebody who might travel my path less painful. That person is
+not who is already fluent in all the different opportunities to debug
+PTP clocks, for sure.
 
-Eric
-
-
+Thanks,
+-- Sergey
