@@ -2,103 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F82D2167B2
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 09:46:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B62D42167A6
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 09:45:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728454AbgGGHpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 03:45:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46236 "EHLO
+        id S1728194AbgGGHpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 03:45:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728430AbgGGHpj (ORCPT
+        with ESMTP id S1726467AbgGGHpL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 03:45:39 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 303F4C08C5DB
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 00:45:39 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id k5so557437plk.13
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 00:45:39 -0700 (PDT)
+        Tue, 7 Jul 2020 03:45:11 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36E52C061755
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 00:45:11 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id z5so19619049pgb.6
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 00:45:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=OdfdZpdNlsV+8LTmBqKkqZF5iyRO7Rci5zel+rmMCoM=;
-        b=kNCRVKcZ9mjznF/w/m4aPSj+Mym7tEPuOKuif0DcypOHs4zb7snyDKk/NwvKsX5dUg
-         +MsG+ychwHDm0EH9vXYVN+hzv01mZCTXkejxiME7LyK9xH4GQCyhqbhvD/B8xkqY0V4s
-         ha/42bzDA3cT7CPuWoQxQSE01x/7kUcPgzvf/n5AI3J69epWaatvXaKBU2F9gpSXJiLO
-         TjnOvQUVe5zxfeAmTW1FTA1BQXPp6oBI6EvqAXPAlmKxiv/AdLUVvZVHDqBxJDmTnsUr
-         w8+gaXmhPaq5Uf8ooJX+jv2ZJ4zRBbOCuDd+NthaSnd5pnnEZ7vSakB/TTa8AdObqx7+
-         XeCQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=dUYmHO3l6du1f9FFjttJ6TgJ0e7C+7Hg2PXGcNYn718=;
+        b=tpvOOssExX/L5tReYEOnayLhzrOqLhiBf21JB+Il0QLrCjYENTxDY71ob23denpAg9
+         DeGuaDEAUjf2J2YjArk30Smyu1juNDm8RL2tDJgXp5yBUMPMZ1zk+UegFKhJKnBEu35m
+         uMiREppcHMabiRYS1itPwzO0TTE5zmNEC0moeH4XNO3qn/y+c3rU+3AFfwcgXZky+0GT
+         wAP4ahXIlor1atKM7LzYuP2a8CxL7zvEJJ9h9Fpi31ncHUAUq02f/pkKsdi1NEM4ht/+
+         Yc4Dkh9Y08H3EnkHxFaZ70A4gzEw6zMWCc5IVCnS0Ncw/KF2j4CSajhOzcduaaUnMRTW
+         hYqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=OdfdZpdNlsV+8LTmBqKkqZF5iyRO7Rci5zel+rmMCoM=;
-        b=TKzcgJj3n9mVvhs9JWvlfUvRhbR6D4q5Qe330wsZbSyrN8pBz+KzGFPtOHIEkUFJft
-         4Knn8oWhH/DaOlGg0LEZew0pPKW+u+9gZorNTkF2wFMV9u2xIHQDQahul5wKlsNgBDqC
-         O9RuEOG3FGyQ/VvIE2acRFbu3u2xwXAkpNfbnUG0aMwdf43V1oRqJsA0M45G3vGmqUD1
-         cVjmei6kIG5UWaY+58WFt5wIwCrVaxf1q8DQwsrzTi8rVVi1u5VGuZWVuGrHX7eKYuPE
-         Nk3kfM9OX2/lFDw7sANBPoJtTxuGxRIw/0yCu50lmfyUsSGrEkpElqi9XMxJbnUaLSCF
-         WWPA==
-X-Gm-Message-State: AOAM531yergG3wTSkHH8B8stql1GCWziG2eu0j2OJ8y/Pn8IfY40azZp
-        8JeDjwys5NhNNQLP6An+Rcwh9g==
-X-Google-Smtp-Source: ABdhPJzA4pJfLWFX2jkVsjIUyDya1VaRc3xsb5pgU9v38c2IJFu6TU1M06feHzFjmbTZ9lKnVNppLw==
-X-Received: by 2002:a17:902:326:: with SMTP id 35mr19721531pld.151.1594107938544;
-        Tue, 07 Jul 2020 00:45:38 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id z8sm15986pgz.7.2020.07.07.00.45.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jul 2020 00:45:37 -0700 (PDT)
-Date:   Tue, 7 Jul 2020 00:43:18 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Kathiravan T <kathirav@codeaurora.org>
-Cc:     agross@kernel.org, linus.walleij@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sivaprak@codeaurora.org,
-        srichara@codeaurora.org,
-        Rajkumar Ayyasamy <arajkuma@codeaurora.org>
-Subject: Re: [PATCH V2] pinctrl: qcom: ipq8074: route gpio interrupts to APPS
-Message-ID: <20200707074318.GT388985@builder.lan>
-References: <1594107588-17055-1-git-send-email-kathirav@codeaurora.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1594107588-17055-1-git-send-email-kathirav@codeaurora.org>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=dUYmHO3l6du1f9FFjttJ6TgJ0e7C+7Hg2PXGcNYn718=;
+        b=n+zMRnga6WT868vUeVkR9TQS8fWaNKrV76ojHQrOiE68DmEzQBM8V/9S3u2AqDOfVR
+         fqJ/xpx+PLLH6tnwtcN0xWWgMv01IzHoDog0XF3oELptKiWi3QsVeWCKagI1cJufF2cv
+         a08MPsQ96nC3v6jbH/BrjEwR1Lmpx0eq1VHDzy1HBK4hSGzbBfBCp1ZpPXh54R2FjNyP
+         xS29vpZnlGzqJwLC9VIwieXIEal+f2ipqsYNyi4m0qIpWi4ddS0SSdAqYSOTV8SJKFFS
+         cpAENerm1LCMbY2kGLn6TymBQO/NpesVamr1uGDuO7kFkZkhNkK4cKizIjqXvbN/NBgh
+         ZTxg==
+X-Gm-Message-State: AOAM530MyjxLBPjMBORAOV0O79blI9x2FVsNX/5fjepIxHVFeKxcELWe
+        Um2HWbMLzZOYB5Z2nBha/UE=
+X-Google-Smtp-Source: ABdhPJwAthfZ/KeZY78XuTTHq8T6fqfjkQEvI+eHy9al2QidR5WrNuvxcxE+o7Ce47jmjQupbHC6vg==
+X-Received: by 2002:a62:8688:: with SMTP id x130mr48229390pfd.280.1594107910659;
+        Tue, 07 Jul 2020 00:45:10 -0700 (PDT)
+Received: from localhost.localdomain ([114.206.198.176])
+        by smtp.gmail.com with ESMTPSA id 191sm21330151pfw.150.2020.07.07.00.45.07
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 07 Jul 2020 00:45:10 -0700 (PDT)
+From:   js1304@gmail.com
+X-Google-Original-From: iamjoonsoo.kim@lge.com
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        kernel-team@lge.com, Vlastimil Babka <vbabka@suse.cz>,
+        Christoph Hellwig <hch@infradead.org>,
+        Roman Gushchin <guro@fb.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Subject: [PATCH v4 00/11] clean-up the migration target allocation functions
+Date:   Tue,  7 Jul 2020 16:44:38 +0900
+Message-Id: <1594107889-32228-1-git-send-email-iamjoonsoo.kim@lge.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 07 Jul 00:39 PDT 2020, Kathiravan T wrote:
+From: Joonsoo Kim <iamjoonsoo.kim@lge.com>
 
-> set target proc as APPS to route the gpio interrupts to APPS
-> 
-> Co-developed-by: Rajkumar Ayyasamy <arajkuma@codeaurora.org>
-> Signed-off-by: Rajkumar Ayyasamy <arajkuma@codeaurora.org>
-> Signed-off-by: Kathiravan T <kathirav@codeaurora.org>
+This patchset clean-up the migration target allocation functions.
 
-Thanks for the quick respin.
+* Changes on v4
+- use full gfp_mask
+- use memalloc_nocma_{save,restore} to exclude CMA memory
+- separate __GFP_RECLAIM handling for THP allocation
+- remove more wrapper functions
 
-Acked-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+* Changes on v3
+- As Vlastimil suggested, do not introduce alloc_control for hugetlb functions
+- do not change the signature of migrate_pages()
+- rename alloc_control to migration_target_control
 
-Regards,
-Bjorn
+* Changes on v2
+- add acked-by tags
+- fix missing compound_head() call for patch #3
+- remove thisnode field on alloc_control and use __GFP_THISNODE directly
+- fix missing __gfp_mask setup for patch
+"mm/hugetlb: do not modify user provided gfp_mask"
 
-> ---
->  drivers/pinctrl/qcom/pinctrl-ipq8074.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/pinctrl/qcom/pinctrl-ipq8074.c b/drivers/pinctrl/qcom/pinctrl-ipq8074.c
-> index 0edd41c..aec68b1 100644
-> --- a/drivers/pinctrl/qcom/pinctrl-ipq8074.c
-> +++ b/drivers/pinctrl/qcom/pinctrl-ipq8074.c
-> @@ -50,6 +50,7 @@
->  		.intr_enable_bit = 0,		\
->  		.intr_status_bit = 0,		\
->  		.intr_target_bit = 5,		\
-> +		.intr_target_kpss_val = 3,	\
->  		.intr_raw_status_bit = 4,	\
->  		.intr_polarity_bit = 1,		\
->  		.intr_detection_bit = 2,	\
-> -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
-> 
+* Cover-letter
+
+Contributions of this patchset are:
+1. unify two hugetlb alloc functions. As a result, one is remained.
+2. make one external hugetlb alloc function to internal one.
+3. unify three functions for migration target allocation.
+
+The patchset is based on next-20200703 + revert v3 of this patchset.
+
+git revert ddc017c727e429488cccd401a7794c8152e50a5b~1..583c2617fd3244fff79ba3b445964884c5cd7780
+
+The patchset is available on:
+
+https://github.com/JoonsooKim/linux/tree/cleanup-migration-target-allocation-v4.00-next-20200703
+
+Thanks.
+
+Joonsoo Kim (11):
+  mm/page_isolation: prefer the node of the source page
+  mm/migrate: move migration helper from .h to .c
+  mm/hugetlb: unify migration callbacks
+  mm/hugetlb: make hugetlb migration callback CMA aware
+  mm/migrate: clear __GFP_RECLAIM for THP allocation for migration
+  mm/migrate: make a standard migration target allocation function
+  mm/gup: use a standard migration target allocation callback
+  mm/mempolicy: use a standard migration target allocation callback
+  mm/page_alloc: remove a wrapper for alloc_migration_target()
+  mm/memory-failure: remove a wrapper for alloc_migration_target()
+  mm/memory_hotplug: remove a wrapper for alloc_migration_target()
+
+ include/linux/hugetlb.h | 28 ++++++++++++-------
+ include/linux/migrate.h | 34 +++++------------------
+ mm/gup.c                | 60 +++++------------------------------------
+ mm/hugetlb.c            | 71 +++++++++++++++++++------------------------------
+ mm/internal.h           |  9 ++++++-
+ mm/memory-failure.c     | 15 +++++------
+ mm/memory_hotplug.c     | 42 +++++++++++++++--------------
+ mm/mempolicy.c          | 29 +++++---------------
+ mm/migrate.c            | 59 ++++++++++++++++++++++++++++++++++++++--
+ mm/page_alloc.c         |  8 ++++--
+ mm/page_isolation.c     |  5 ----
+ 11 files changed, 163 insertions(+), 197 deletions(-)
+
+-- 
+2.7.4
+
