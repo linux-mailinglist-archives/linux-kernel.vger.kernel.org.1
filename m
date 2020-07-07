@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D2912171D9
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:43:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3135121717D
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:42:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729912AbgGGP0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:26:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40362 "EHLO mail.kernel.org"
+        id S1728459AbgGGPUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:20:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60892 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729341AbgGGP0I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:26:08 -0400
+        id S1728369AbgGGPUn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 11:20:43 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AD9392065D;
-        Tue,  7 Jul 2020 15:26:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9122C2065D;
+        Tue,  7 Jul 2020 15:20:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594135568;
-        bh=wE7bB2lmvQMFgu/tT58UyrysEzkFmon5stWypeMeOPw=;
+        s=default; t=1594135243;
+        bh=ygIBNeWu8GVUpOQTfqxaNYxa0o9TkRmFkWyiDMbqcDM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=z/VaWzXkMq1XGeh43200NeuUi53E6GWG6h9y00tIup8FE/6pDA7qhhL2nupoYpdzH
-         XKK0B5VRFpCwur4A5X1+pmYLLmQp+RuuCx8+Gd1136iyoo/PfR7IdRPZahv6Wro1fL
-         1HQ9yWqPMBLJiKwmBh6zUGMsiq0pMSmgWhV2JxF8=
+        b=vrx39c8oAHZruLKkLC1JiakFYZcZ5ZflzvkAZ0ej86nee7zLKw5eRuJeXYGF6f2y6
+         vaxNQkNoWXvgyU3G0o05bdJidcY6ebQpxaRFiZZb+him8jY6MAytcvJNx52amj5nSi
+         7Jayd7eapTdqktbWKanaszeAspVTpyL1MpsQGWRk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -30,12 +30,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 062/112] cxgb4: fix SGE queue dump destination buffer context
-Date:   Tue,  7 Jul 2020 17:17:07 +0200
-Message-Id: <20200707145803.950002842@linuxfoundation.org>
+Subject: [PATCH 5.4 29/65] cxgb4: fix SGE queue dump destination buffer context
+Date:   Tue,  7 Jul 2020 17:17:08 +0200
+Message-Id: <20200707145753.884263138@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200707145800.925304888@linuxfoundation.org>
-References: <20200707145800.925304888@linuxfoundation.org>
+In-Reply-To: <20200707145752.417212219@linuxfoundation.org>
+References: <20200707145752.417212219@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -67,10 +67,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/net/ethernet/chelsio/cxgb4/cudbg_lib.c b/drivers/net/ethernet/chelsio/cxgb4/cudbg_lib.c
-index 7b9cd69f98440..d8ab8e366818c 100644
+index 7bcdce182ee5c..e26ae298a080a 100644
 --- a/drivers/net/ethernet/chelsio/cxgb4/cudbg_lib.c
 +++ b/drivers/net/ethernet/chelsio/cxgb4/cudbg_lib.c
-@@ -1975,7 +1975,6 @@ int cudbg_collect_dump_context(struct cudbg_init *pdbg_init,
+@@ -1980,7 +1980,6 @@ int cudbg_collect_dump_context(struct cudbg_init *pdbg_init,
  	u8 mem_type[CTXT_INGRESS + 1] = { 0 };
  	struct cudbg_buffer temp_buff = { 0 };
  	struct cudbg_ch_cntxt *buff;
@@ -78,7 +78,7 @@ index 7b9cd69f98440..d8ab8e366818c 100644
  	u8 *ctx_buf;
  	u8 i, k;
  	int rc;
-@@ -2044,8 +2043,11 @@ int cudbg_collect_dump_context(struct cudbg_init *pdbg_init,
+@@ -2049,8 +2048,11 @@ int cudbg_collect_dump_context(struct cudbg_init *pdbg_init,
  		}
  
  		for (j = 0; j < max_ctx_qid; j++) {
