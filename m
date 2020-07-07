@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D955A217201
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:43:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B95A2171E0
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:43:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730058AbgGGP1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:27:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41762 "EHLO mail.kernel.org"
+        id S1730284AbgGGP0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:26:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40636 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730352AbgGGP1S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:27:18 -0400
+        id S1730270AbgGGP0W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 11:26:22 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5EA34206F6;
-        Tue,  7 Jul 2020 15:27:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 500C02078D;
+        Tue,  7 Jul 2020 15:26:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594135637;
-        bh=HX7ny7ufwMRSPxNDOmu1Yy1YvE1i9WOgK7Q+5Mtpev0=;
+        s=default; t=1594135581;
+        bh=ISNzpa7ny7l40jBlFAU0uG+mNebx2zp/Zz4x0X73iKQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LvcHwkg9qUI0t0/NWetIlYcUPe1jU6fk8UWCt7+xetQ88GMMw0hBZ6EO9gnlVzEV6
-         lBEQPnnhY7wGTf4PoyUIZ7qlkmxjBqhLcW00XBgIHyPJmpew5m22jazUwL0LbDHLNt
-         33Rr8mbaASxOVni06K0sKG49k5f/Kd9F3DZRCnXs=
+        b=s6swsNK9Y8CVrBSl90XS0UkOjyRK435JKytFrFML0u4LirvlMZjCO1WmEjW9jTkkQ
+         Zy1c2wZdZEktLsJQzuYQ+n8YoCXTIeqrv2t/XkNFLadFPuwKxCyxMZwihCmYl46qj4
+         0sQIP6YulB0YhXxcO6wuv22nRM9Txy9sJjm5tt0Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sumeet Pawnikar <sumeet.r.pawnikar@intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 5.7 097/112] ACPI: fan: Fix Tiger Lake ACPI device ID
-Date:   Tue,  7 Jul 2020 17:17:42 +0200
-Message-Id: <20200707145805.590910622@linuxfoundation.org>
+        stable@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>
+Subject: [PATCH 5.7 098/112] gfs2: fix trans slab error when withdraw occurs inside log_flush
+Date:   Tue,  7 Jul 2020 17:17:43 +0200
+Message-Id: <20200707145805.638478632@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200707145800.925304888@linuxfoundation.org>
 References: <20200707145800.925304888@linuxfoundation.org>
@@ -44,35 +43,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sumeet Pawnikar <sumeet.r.pawnikar@intel.com>
+From: Bob Peterson <rpeterso@redhat.com>
 
-commit 0318e8374e87b32def1d5c279013ca7730a74982 upstream.
+commit 58e08e8d83ab03a1ca25d53420bd0b87f2dfe458 upstream.
 
-Tiger Lake's new unique ACPI device ID for Fan is not valid
-because of missing 'C' in the ID.  Use correct fan device ID.
+Log flush operations (gfs2_log_flush()) can target a specific transaction.
+But if the function encounters errors (e.g. io errors) and withdraws,
+the transaction was only freed it if was queued to one of the ail lists.
+If the withdraw occurred before the transaction was queued to the ail1
+list, function ail_drain never freed it. The result was:
 
-Fixes: c248dfe7e0ca ("ACPI: fan: Add Tiger Lake ACPI device ID")
-Signed-off-by: Sumeet Pawnikar <sumeet.r.pawnikar@intel.com>
-Cc: 5.6+ <stable@vger.kernel.org> # 5.6+
-[ rjw: Subject and changelog edits ]
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+BUG gfs2_trans: Objects remaining in gfs2_trans on __kmem_cache_shutdown()
+
+This patch makes log_flush() add the targeted transaction to the ail1
+list so that function ail_drain() will find and free it properly.
+
+Cc: stable@vger.kernel.org # v5.7+
+Signed-off-by: Bob Peterson <rpeterso@redhat.com>
+Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/acpi/fan.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/gfs2/log.c |   10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
---- a/drivers/acpi/fan.c
-+++ b/drivers/acpi/fan.c
-@@ -25,8 +25,8 @@ static int acpi_fan_remove(struct platfo
+--- a/fs/gfs2/log.c
++++ b/fs/gfs2/log.c
+@@ -987,6 +987,16 @@ void gfs2_log_flush(struct gfs2_sbd *sdp
  
- static const struct acpi_device_id fan_device_ids[] = {
- 	{"PNP0C0B", 0},
--	{"INT1044", 0},
- 	{"INT3404", 0},
-+	{"INTC1044", 0},
- 	{"", 0},
- };
- MODULE_DEVICE_TABLE(acpi, fan_device_ids);
+ out:
+ 	if (gfs2_withdrawn(sdp)) {
++		/**
++		 * If the tr_list is empty, we're withdrawing during a log
++		 * flush that targets a transaction, but the transaction was
++		 * never queued onto any of the ail lists. Here we add it to
++		 * ail1 just so that ail_drain() will find and free it.
++		 */
++		spin_lock(&sdp->sd_ail_lock);
++		if (tr && list_empty(&tr->tr_list))
++			list_add(&tr->tr_list, &sdp->sd_ail1_list);
++		spin_unlock(&sdp->sd_ail_lock);
+ 		ail_drain(sdp); /* frees all transactions */
+ 		tr = NULL;
+ 	}
 
 
