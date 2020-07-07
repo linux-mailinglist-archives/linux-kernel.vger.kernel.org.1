@@ -2,268 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C2672178FB
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 22:14:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEB6721791B
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 22:15:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728790AbgGGUOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 16:14:01 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:46963 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728735AbgGGUOB (ORCPT
+        id S1728809AbgGGUPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 16:15:23 -0400
+Received: from mail.efficios.com ([167.114.26.124]:42648 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728493AbgGGUPW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 16:14:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594152839;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=AF7OGVkrCC5pOrLUbiawA+5CmcjoicxjCc2P7pf7Qco=;
-        b=B/JK38nuhb874KRxZvES80NZVvafhMa0RM6O9kxqCnl5H8QQ2YowzdgxYZyKbkcl9L7IHP
-        sJ1KzwkZR4XJtQT3z+eST/MT12aV7HP5VqaHiP079JXvp55IHcQNH9FArsvLU5kd20obXb
-        K80EKy5D/T46ol3w9H8EmuDNqaqI0q4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-436-peJDFMy5N5qEb0jmDWMmEg-1; Tue, 07 Jul 2020 16:13:57 -0400
-X-MC-Unique: peJDFMy5N5qEb0jmDWMmEg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3728480183C;
-        Tue,  7 Jul 2020 20:13:56 +0000 (UTC)
-Received: from horse.redhat.com (ovpn-116-115.rdu2.redhat.com [10.10.116.115])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4120B73FC0;
-        Tue,  7 Jul 2020 20:13:53 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id 9913A22055E; Tue,  7 Jul 2020 16:13:52 -0400 (EDT)
-Date:   Tue, 7 Jul 2020 16:13:52 -0400
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     virtio-fs-list <virtio-fs@redhat.com>, vkuznets@redhat.com,
-        pbonzini@redhat.com, sean.j.christopherson@intel.com
-Subject: [RFC PATCH v2] kvm,x86: Exit to user space in case of page fault
- error
-Message-ID: <20200707201352.GA88802@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+        Tue, 7 Jul 2020 16:15:22 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id A04446B43;
+        Tue,  7 Jul 2020 16:15:21 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id yOIvdI2ckLgJ; Tue,  7 Jul 2020 16:15:21 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 3C0716948;
+        Tue,  7 Jul 2020 16:15:21 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 3C0716948
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1594152921;
+        bh=1PCRlMxH36DCjUQDGqFs23OHDpCLLV7B6FKEQGwHg9I=;
+        h=From:To:Date:Message-Id;
+        b=U3RQQpYODAIWV6N38klr6NfyC1fV3+l3Av308zbg70xc3QDe0nTj23gdbeNuHtgtY
+         Amdqp9NXbqk9WmsroOWGddLT8p21CMAeFZiTsMbVqlaDNgkiJDyjC/0cnyzdx2VebP
+         i2DPEb/9685UgVnp8oFVpec0vkH7ewAOZi1aJTQMFuBTWRIvDN48IPf1LxR4x9aA2r
+         4d+rL8TtvNKdOfbecGLAOr1oCCLt7akQWKG2U+8low/fxiQe1jdaHRxcMiFz8Z4qX7
+         UpFIt7KioAeRNFzLchYIo8p9l2LRb+emo6gFkfbRs8oIMwliWOwMF68tNRCC6dj7kK
+         0OueWy1Vc2sMw==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id KSuWrz_Dvd2W; Tue,  7 Jul 2020 16:15:21 -0400 (EDT)
+Received: from localhost.localdomain (192-222-181-218.qc.cable.ebox.net [192.222.181.218])
+        by mail.efficios.com (Postfix) with ESMTPSA id 25E2968E5;
+        Tue,  7 Jul 2020 16:15:19 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Paul E . McKenney" <paulmck@linux.ibm.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        "H . Peter Anvin" <hpa@zytor.com>, Paul Turner <pjt@google.com>,
+        linux-api@vger.kernel.org, Florian Weimer <fw@deneb.enyo.de>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Neel Natu <neelnatu@google.com>, stable@vger.kernel.org
+Subject: [PATCH for 5.8] sched: Fix unreliable rseq cpu_id for new tasks
+Date:   Tue,  7 Jul 2020 16:15:05 -0400
+Message-Id: <20200707201505.2632-1-mathieu.desnoyers@efficios.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Page fault error handling behavior in kvm seems little inconsistent when
-page fault reports error. If we are doing fault synchronously
-then we capture error (-EFAULT) returned by __gfn_to_pfn_memslot() and
-exit to user space and qemu reports error, "error: kvm run failed Bad address".
+While integrating rseq into glibc and replacing glibc's sched_getcpu
+implementation with rseq, glibc's tests discovered an issue with
+incorrect __rseq_abi.cpu_id field value right after the first time
+a newly created process issues sched_setaffinity.
 
-But if we are doing async page fault, then async_pf_execute() will simply
-ignore the error reported by get_user_pages_remote() or
-by kvm_mmu_do_page_fault(). It is assumed that page fault was successful
-and either a page ready event is injected in guest or guest is brought
-out of artificial halt state and run again. In both the cases when guest
-retries the instruction, it takes exit again as page fault was not
-successful in previous attempt. And then this infinite loop continues
-forever.
+For the records, it triggers after building glibc and running tests, and
+then issuing:
 
-Trying fault in a loop will make sense if error is temporary and will
-be resolved on retry. But I don't see any intention in the code to
-determine if error is temporary or not.  Whether to do fault synchronously
-or asynchronously, depends on so many variables but none of the varibales
-is whether error is temporary or not. (kvm_can_do_async_pf()).
+  for x in {1..2000} ; do posix/tst-affinity-static  & done
 
-And that makes it very inconsistent or unpredictable to figure out whether
-kvm will exit to qemu with error or it will just retry and go into an
-infinite loop.
+and shows up as:
 
-This patch tries to make this behavior consistent. That is instead of
-getting into infinite loop of retrying page fault, exit to user space
-and stop VM if page fault error happens.
+error: Unexpected CPU 2, expected 0
+error: Unexpected CPU 2, expected 0
+error: Unexpected CPU 2, expected 0
+error: Unexpected CPU 2, expected 0
+error: Unexpected CPU 138, expected 0
+error: Unexpected CPU 138, expected 0
+error: Unexpected CPU 138, expected 0
+error: Unexpected CPU 138, expected 0
 
-In future this can be improved by injecting errors into guest. As of
-now we don't have any race free method to inject errors in guest.
+This is caused by the scheduler invoking __set_task_cpu() directly from
+sched_fork() and wake_up_new_task(), thus bypassing rseq_migrate() which
+is done by set_task_cpu().
 
-When page fault error happens in async path save that pfn and when next
-time guest retries, do a sync fault instead of async fault. So that if error
-is encountered, we exit to qemu and avoid infinite loop.
+Add the missing rseq_migrate() to both functions. The only other direct
+use of __set_task_cpu() is done by init_idle(), which does not involve a
+user-space task.
 
-We maintain a cache of error gfns and force sync fault if a gfn is
-found in cache of error gfn. There is a small possibility that we
-miss an error gfn (as it got overwritten by a new error gfn). But
-its just a hint and sooner or later some error pfn will match
-and we will force sync fault and exit to user space.
+Based on my testing with the glibc test-case, just adding rseq_migrate()
+to wake_up_new_task() is sufficient to fix the observed issue. Also add
+it to sched_fork() to keep things consistent.
 
-Change from v1:
+The reason why this never triggered so far with the rseq/basic_test
+selftest is unclear.
 
-- Maintain a cache of error gfns, instead of single gfn. (Vitaly)
+The current use of sched_getcpu(3) does not typically require it to be
+always accurate. However, use of the __rseq_abi.cpu_id field within rseq
+critical sections requires it to be accurate. If it is not accurate, it
+can cause corruption in the per-cpu data targeted by rseq critical
+sections in user-space.
 
-Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
+Link: https://sourceware.org/pipermail/libc-alpha/2020-July/115816.html
+Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Tested-By: Florian Weimer <fweimer@redhat.com>
+Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Florian Weimer <fw@deneb.enyo.de>
+Cc: "Paul E. McKenney" <paulmck@linux.ibm.com>
+Cc: Boqun Feng <boqun.feng@gmail.com>
+Cc: "H . Peter Anvin" <hpa@zytor.com>
+Cc: Paul Turner <pjt@google.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Neel Natu <neelnatu@google.com>
+Cc: linux-api@vger.kernel.org
+Cc: stable@vger.kernel.org # v4.18+
 ---
- arch/x86/include/asm/kvm_host.h |  2 ++
- arch/x86/kvm/mmu.h              |  2 +-
- arch/x86/kvm/mmu/mmu.c          |  2 +-
- arch/x86/kvm/x86.c              | 61 +++++++++++++++++++++++++++++++--
- 4 files changed, 62 insertions(+), 5 deletions(-)
+ kernel/sched/core.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index be5363b21540..e6f8d3f1a377 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -137,6 +137,7 @@ static inline gfn_t gfn_to_index(gfn_t gfn, gfn_t base_gfn, int level)
- #define KVM_NR_VAR_MTRR 8
- 
- #define ASYNC_PF_PER_VCPU 64
-+#define ERROR_GFN_PER_VCPU 64
- 
- enum kvm_reg {
- 	VCPU_REGS_RAX = __VCPU_REGS_RAX,
-@@ -778,6 +779,7 @@ struct kvm_vcpu_arch {
- 		unsigned long nested_apf_token;
- 		bool delivery_as_pf_vmexit;
- 		bool pageready_pending;
-+		gfn_t error_gfns[ERROR_GFN_PER_VCPU];
- 	} apf;
- 
- 	/* OSVW MSRs (AMD only) */
-diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
-index 444bb9c54548..d0a2a12c7bb6 100644
---- a/arch/x86/kvm/mmu.h
-+++ b/arch/x86/kvm/mmu.h
-@@ -60,7 +60,7 @@ void kvm_init_mmu(struct kvm_vcpu *vcpu, bool reset_roots);
- void kvm_init_shadow_mmu(struct kvm_vcpu *vcpu, u32 cr0, u32 cr4, u32 efer);
- void kvm_init_shadow_ept_mmu(struct kvm_vcpu *vcpu, bool execonly,
- 			     bool accessed_dirty, gpa_t new_eptp);
--bool kvm_can_do_async_pf(struct kvm_vcpu *vcpu);
-+bool kvm_can_do_async_pf(struct kvm_vcpu *vcpu, gfn_t gfn);
- int kvm_handle_page_fault(struct kvm_vcpu *vcpu, u64 error_code,
- 				u64 fault_address, char *insn, int insn_len);
- 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 6d6a0ae7800c..a0e6283e872d 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -4078,7 +4078,7 @@ static bool try_async_pf(struct kvm_vcpu *vcpu, bool prefault, gfn_t gfn,
- 	if (!async)
- 		return false; /* *pfn has correct page already */
- 
--	if (!prefault && kvm_can_do_async_pf(vcpu)) {
-+	if (!prefault && kvm_can_do_async_pf(vcpu, cr2_or_gpa >> PAGE_SHIFT)) {
- 		trace_kvm_try_async_get_page(cr2_or_gpa, gfn);
- 		if (kvm_find_async_pf_gfn(vcpu, gfn)) {
- 			trace_kvm_async_pf_doublefault(cr2_or_gpa, gfn);
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 88c593f83b28..9c18b919affd 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -263,6 +263,13 @@ static inline void kvm_async_pf_hash_reset(struct kvm_vcpu *vcpu)
- 		vcpu->arch.apf.gfns[i] = ~0;
- }
- 
-+static inline void kvm_error_gfn_hash_reset(struct kvm_vcpu *vcpu)
-+{
-+	int i;
-+	for (i = 0; i < ERROR_GFN_PER_VCPU; i++)
-+		vcpu->arch.apf.error_gfns[i] = ~0;
-+}
-+
- static void kvm_on_user_return(struct user_return_notifier *urn)
- {
- 	unsigned slot;
-@@ -9484,6 +9491,7 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
- 	vcpu->arch.pat = MSR_IA32_CR_PAT_DEFAULT;
- 
- 	kvm_async_pf_hash_reset(vcpu);
-+	kvm_error_gfn_hash_reset(vcpu);
- 	kvm_pmu_init(vcpu);
- 
- 	vcpu->arch.pending_external_vector = -1;
-@@ -9608,6 +9616,7 @@ void kvm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
- 
- 	kvm_clear_async_pf_completion_queue(vcpu);
- 	kvm_async_pf_hash_reset(vcpu);
-+	kvm_error_gfn_hash_reset(vcpu);
- 	vcpu->arch.apf.halted = false;
- 
- 	if (kvm_mpx_supported()) {
-@@ -10369,6 +10378,41 @@ void kvm_set_rflags(struct kvm_vcpu *vcpu, unsigned long rflags)
- }
- EXPORT_SYMBOL_GPL(kvm_set_rflags);
- 
-+static inline u32 kvm_error_gfn_hash_fn(gfn_t gfn)
-+{
-+	BUILD_BUG_ON(!is_power_of_2(ERROR_GFN_PER_VCPU));
-+
-+	return hash_32(gfn & 0xffffffff, order_base_2(ERROR_GFN_PER_VCPU));
-+}
-+
-+static void kvm_add_error_gfn(struct kvm_vcpu *vcpu, gfn_t gfn)
-+{
-+	u32 key = kvm_error_gfn_hash_fn(gfn);
-+
-+	/*
-+	 * Overwrite the previous gfn. This is just a hint to do
-+	 * sync page fault.
-+	 */
-+	vcpu->arch.apf.error_gfns[key] = gfn;
-+}
-+
-+static void kvm_del_error_gfn(struct kvm_vcpu *vcpu, gfn_t gfn)
-+{
-+	u32 key = kvm_error_gfn_hash_fn(gfn);
-+
-+	if (WARN_ON_ONCE(vcpu->arch.apf.error_gfns[key] != gfn))
-+		return;
-+
-+	vcpu->arch.apf.error_gfns[key] = ~0;
-+}
-+
-+bool kvm_find_error_gfn(struct kvm_vcpu *vcpu, gfn_t gfn)
-+{
-+	u32 key = kvm_error_gfn_hash_fn(gfn);
-+
-+	return vcpu->arch.apf.error_gfns[key] == gfn;
-+}
-+
- void kvm_arch_async_page_ready(struct kvm_vcpu *vcpu, struct kvm_async_pf *work)
- {
- 	int r;
-@@ -10385,7 +10429,9 @@ void kvm_arch_async_page_ready(struct kvm_vcpu *vcpu, struct kvm_async_pf *work)
- 	      work->arch.cr3 != vcpu->arch.mmu->get_guest_pgd(vcpu))
- 		return;
- 
--	kvm_mmu_do_page_fault(vcpu, work->cr2_or_gpa, 0, true);
-+	r = kvm_mmu_do_page_fault(vcpu, work->cr2_or_gpa, 0, true);
-+	if (r < 0)
-+		kvm_add_error_gfn(vcpu, gpa_to_gfn(work->cr2_or_gpa));
- }
- 
- static inline u32 kvm_async_pf_hash_fn(gfn_t gfn)
-@@ -10495,7 +10541,7 @@ static bool kvm_can_deliver_async_pf(struct kvm_vcpu *vcpu)
- 	return true;
- }
- 
--bool kvm_can_do_async_pf(struct kvm_vcpu *vcpu)
-+bool kvm_can_do_async_pf(struct kvm_vcpu *vcpu, gfn_t gfn)
- {
- 	if (unlikely(!lapic_in_kernel(vcpu) ||
- 		     kvm_event_needs_reinjection(vcpu) ||
-@@ -10509,7 +10555,16 @@ bool kvm_can_do_async_pf(struct kvm_vcpu *vcpu)
- 	 * If interrupts are off we cannot even use an artificial
- 	 * halt state.
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index ca5db40392d4..86a855bd4d90 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -2962,6 +2962,7 @@ int sched_fork(unsigned long clone_flags, struct task_struct *p)
+ 	 * Silence PROVE_RCU.
  	 */
--	return kvm_arch_interrupt_allowed(vcpu);
-+	if (!kvm_arch_interrupt_allowed(vcpu))
-+		return false;
-+
-+	/* Found gfn in error gfn cache. Force sync fault */
-+	if (kvm_find_error_gfn(vcpu, gfn)) {
-+		kvm_del_error_gfn(vcpu, gfn);
-+		return false;
-+	}
-+
-+	return true;
- }
- 
- bool kvm_arch_async_page_not_present(struct kvm_vcpu *vcpu,
+ 	raw_spin_lock_irqsave(&p->pi_lock, flags);
++	rseq_migrate(p);
+ 	/*
+ 	 * We're setting the CPU for the first time, we don't migrate,
+ 	 * so use __set_task_cpu().
+@@ -3026,6 +3027,7 @@ void wake_up_new_task(struct task_struct *p)
+ 	 * as we're not fully set-up yet.
+ 	 */
+ 	p->recent_used_cpu = task_cpu(p);
++	rseq_migrate(p);
+ 	__set_task_cpu(p, select_task_rq(p, task_cpu(p), SD_BALANCE_FORK, 0));
+ #endif
+ 	rq = __task_rq_lock(p, &rf);
 -- 
-2.25.4
+2.17.1
 
