@@ -2,132 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C75C4216A5B
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 12:33:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9B02216AA9
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 12:47:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728250AbgGGKcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 06:32:54 -0400
-Received: from mail-bn8nam11on2042.outbound.protection.outlook.com ([40.107.236.42]:11264
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726745AbgGGKcx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 06:32:53 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=l54omh208ayP/id6Q0YVvq8fsQcCQ1c94XaGxm+v4n+mhOSzV6W209bL+dpw6CUVzUJpYKc7HsAGpqoUjV6S4G5co50/dOfYFG9N76Z0yz5u9cTlo6THn1mfHxvTSLFuLbjaBNFTzT3Kua+k+0bJmfdMrpcRxzQR/0X8W0pONBgHmih5fhgnNMbY3ot1duKOZ29/pwSwLUG6ZatPJZ645QDMFdYUE76FkOVY6u+r0lOQmiWtCEGEIxc0OZQyaJM6Zwsvji0mnbGE/oMvJLIRIvhvgGCuJ/fAJ0gB/I1ZBPhvaHdio3s443WZYDyCXjBwqwTWYilU8pxrx8a6TU7qKA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Uo0jBFwdYzI2HgdAr+Ljv02NvSGjdaRxTWqn/fpRYLc=;
- b=e8RgiFfYP2CRC7N0knr1TkeDL3AycGSIW0991HV5sAUJ6FMVk6u6DLhka04+2yFMZqbs5wd1pLblshPHsNGCOaQICdtST+Pzj5gzbBODbClie20o2XqygyV5YYxrpb24rA+vaM9kyCFbvunjjjhcHjy/AUBarfzVIknss032H6JhgGlqPK6S++gULfL9cCchGibx4B3tpYSF81qG1zzYc9dhBWxif6wfUptC1odNqtfykQoCvFyyWGsoun2BleUxo3wYFsWrw6ufsgW+tmJ/d7qqT7QmLGn6pAb2eRPXaBPpFQ0haZPocGaOw6w6s73sxVWe/kNQCJ2glB4RWGd/Rw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none (sender ip is
- 165.204.84.17) smtp.rcpttodomain=alsa-project.org smtp.mailfrom=amd.com;
- dmarc=permerror action=none header.from=amd.com; dkim=none (message not
- signed); arc=none
+        id S1727116AbgGGKrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 06:47:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726540AbgGGKrZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 06:47:25 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CBC7C061755
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 03:47:24 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id s9so49288590ljm.11
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 03:47:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Uo0jBFwdYzI2HgdAr+Ljv02NvSGjdaRxTWqn/fpRYLc=;
- b=1fG0G8sskQ6PoNyV8Ee1lFIoJ4ouXliu9b/+emAwgLTjjfDhjy1IS3Dsa0dHRBUk+VXqwlGcWtSFnUssMhrIRUXkJMvIBOcireEXxmdrpqGfoq6WHDcV8C/wVBfdzzBoaRdp8NNWns3U19oO54Kxo7q4M1ob/3L6HsRMC3RZLik=
-Received: from MW2PR16CA0061.namprd16.prod.outlook.com (2603:10b6:907:1::38)
- by BN6PR12MB1297.namprd12.prod.outlook.com (2603:10b6:404:14::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.20; Tue, 7 Jul
- 2020 10:32:49 +0000
-Received: from CO1NAM11FT008.eop-nam11.prod.protection.outlook.com
- (2603:10b6:907:1:cafe::a8) by MW2PR16CA0061.outlook.office365.com
- (2603:10b6:907:1::38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.21 via Frontend
- Transport; Tue, 7 Jul 2020 10:32:49 +0000
-X-MS-Exchange-Authentication-Results: spf=none (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; alsa-project.org; dkim=none (message not signed)
- header.d=none;alsa-project.org; dmarc=permerror action=none
- header.from=amd.com;
-Received-SPF: None (protection.outlook.com: amd.com does not designate
- permitted sender hosts)
-Received: from SATLEXMB01.amd.com (165.204.84.17) by
- CO1NAM11FT008.mail.protection.outlook.com (10.13.175.191) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.3153.24 via Frontend Transport; Tue, 7 Jul 2020 10:32:49 +0000
-Received: from SATLEXMB06.amd.com (10.181.40.147) by SATLEXMB01.amd.com
- (10.181.40.142) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5; Tue, 7 Jul 2020
- 05:32:47 -0500
-Received: from SATLEXMB01.amd.com (10.181.40.142) by SATLEXMB06.amd.com
- (10.181.40.147) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5; Tue, 7 Jul 2020
- 05:32:47 -0500
-Received: from LinuxHost.amd.com (10.180.168.240) by SATLEXMB01.amd.com
- (10.181.40.142) with Microsoft SMTP Server id 15.1.1713.5 via Frontend
- Transport; Tue, 7 Jul 2020 05:32:44 -0500
-From:   Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-To:     <alsa-devel@alsa-project.org>
-CC:     <perex@perex.cz>, <hui.wang@canonical.com>,
-        <Alexander.Deucher@amd.com>,
-        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: [PATCH] ASoC: amd: add ACPI dependency check
-Date:   Tue, 7 Jul 2020 16:16:41 +0530
-Message-ID: <1594118813-18689-1-git-send-email-Vijendar.Mukunda@amd.com>
-X-Mailer: git-send-email 2.7.4
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=c4zOWiMBuWKCpqZ8aPumcYsriKbLm4Jn2DFC1mwxSck=;
+        b=UmD7fc2iwqZvLp+mmy6hm1H1iy5fOh6zRn3plNJA0N+5enc5vvVBHa0goK3om+m4LN
+         Ly+gbAsZMoDog/wUCKONcXjrfajynNEHyQ5he3BjP2frL3wdvei6oNKCjkQ7hpjyPJXR
+         6RgxkI2uGqCVL9XTIlPUFf8I5eltNBTGM8fypDSzPJnckPAs4E9y7s7oujAsedQXUN9F
+         oxoI3DACRsjiUy0tfUS9lP5EP9vpU77vQ01k61I9VZB0O5NTPcIvI10UEGVv1FUXrcm2
+         WD9gywLW4BhvXQti2ujNKV15NTjBkwWVT5Mg6bQk8Ce1zUJRE0jGPwy1Wwg6OZ0I5AyY
+         umyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=c4zOWiMBuWKCpqZ8aPumcYsriKbLm4Jn2DFC1mwxSck=;
+        b=EI/dBKoGXt6lXk7aRYxDGvDn/i8i+F3qZBYCAoTkjm+wFfCRruX+Bc3rHocgtn2jUl
+         5gbsazOsZ5FHHetX7eHQhkEmnhEMwsGbeRPS5dk7Maq+UVUowVpd9tvmYMdV6JZkWof2
+         8jjIDJsIIZQCrmp+hxvi9eelk+/2cQk9wrd8zDQBNIjB/3njxUpMPECl1s2lTm5EZW9c
+         OeDQFgxNqh4MpXvB6jFpqPJ7ok/lr1kC6UVKiZiSj/aq4r4uY6FYSePYb91wPDkgIlzx
+         U/I4Iix74JdYcJVbgPMhU/pxVURCNeajNrlSsTi03ZbTXWeoLN/V1fS/jHQaK/tBJ8Sk
+         QZ6w==
+X-Gm-Message-State: AOAM532IdEwFwfxBfOvg4jA0CoTC8y0uIX+4eudFrP/IxR6tOkTWKElm
+        07g+X+b7Xhh+V454MchkK6GrXQ==
+X-Google-Smtp-Source: ABdhPJwc4iENCWbSc2RIqe5Z1KqMPSDm7uBllx/G5+oNqQXVXy0ErJmRPMCZKcejjGcxtpkAQaW+iQ==
+X-Received: by 2002:a05:651c:c5:: with SMTP id 5mr5817285ljr.9.1594118842865;
+        Tue, 07 Jul 2020 03:47:22 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id i197sm9490917lfi.58.2020.07.07.03.47.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Jul 2020 03:47:22 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id A857D10117C; Tue,  7 Jul 2020 13:47:22 +0300 (+03)
+Date:   Tue, 7 Jul 2020 13:47:22 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Wei Yang <richard.weiyang@linux.alibaba.com>
+Cc:     akpm@linux-foundation.org, kirill.shutemov@linux.intel.com,
+        yang.shi@linux.alibaba.com, vbabka@suse.cz, willy@infradead.org,
+        thomas_os@shipmail.org, thellstrom@vmware.com,
+        anshuman.khandual@arm.com, sean.j.christopherson@intel.com,
+        aneesh.kumar@linux.ibm.com, peterx@redhat.com, walken@google.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, digetx@gmail.com
+Subject: Re: [RESEND Patch v2 3/4] mm/mremap: calculate extent in one place
+Message-ID: <20200707104722.j3awgkz4ncgm2bss@box>
+References: <20200626135216.24314-1-richard.weiyang@linux.alibaba.com>
+ <20200626135216.24314-4-richard.weiyang@linux.alibaba.com>
+ <20200706100729.y2wbkpc4tyvjojzg@box>
+ <20200707013856.GA27805@L-31X9LVDL-1304.local>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SATLEXMB01.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFTY:;SFS:(4636009)(396003)(39860400002)(346002)(136003)(376002)(46966005)(478600001)(26005)(70586007)(82310400002)(6666004)(70206006)(4326008)(186003)(47076004)(83380400001)(336012)(2906002)(54906003)(316002)(36756003)(2616005)(4744005)(356005)(86362001)(426003)(5660300002)(8936002)(81166007)(8676002)(82740400003)(6916009)(7696005);DIR:OUT;SFP:1101;
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 50d3ebdd-6a28-4b20-129b-08d82261189f
-X-MS-TrafficTypeDiagnostic: BN6PR12MB1297:
-X-Microsoft-Antispam-PRVS: <BN6PR12MB129793D50BB5D4A6F6260B6697660@BN6PR12MB1297.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1303;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: NlR5EPCd6bFcOWMQCeve1pztoeCubiE/8MDO2yd+IbIbImslI5EhYJqBAOzYDjgdHq7oBfrgbggBtlVOOaeG/2aCBg6f1I5xyqyuY3YijSXjRG2u2O+Pv+SSp/S5arKZfH+AqJ+PimCfPRb2q5NoGzRp9mISFtYvG4MfElw+Vv6EhqoVqbIOAYf9yn7M5w+8H3/GKJ9w57jW8NKmj2O5VoapcZcW2F0LUcvjkEIddwzCDloHphHHxHH5g5sSSfnH/NlsCoBVIBlJ8m+yTulFxcvOY1d+00TgVsEGl0zoJIB13ax9ZxbktlcPXgRRzl7PmLo2UXAM1FW594q40MZSOTFadtrg4UiQtHjUsqKxDvA+fY6vGxrPZqrodF2T+IUQCYzWw4hJrFG1pIVnY7z4mw==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jul 2020 10:32:49.1556
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 50d3ebdd-6a28-4b20-129b-08d82261189f
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB01.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT008.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR12MB1297
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200707013856.GA27805@L-31X9LVDL-1304.local>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add ACPI dependency for evaluating DMIC hardware
-runtime.
+On Tue, Jul 07, 2020 at 09:38:56AM +0800, Wei Yang wrote:
+> On Mon, Jul 06, 2020 at 01:07:29PM +0300, Kirill A. Shutemov wrote:
+> >On Fri, Jun 26, 2020 at 09:52:15PM +0800, Wei Yang wrote:
+> >> Page tables is moved on the base of PMD. This requires both source
+> >> and destination range should meet the requirement.
+> >> 
+> >> Current code works well since move_huge_pmd() and move_normal_pmd()
+> >> would check old_addr and new_addr again. And then return to move_ptes()
+> >> if the either of them is not aligned.
+> >> 
+> >> In stead of calculating the extent separately, it is better to calculate
+> >> in one place, so we know it is not necessary to try move pmd. By doing
+> >> so, the logic seems a little clear.
+> >> 
+> >> Signed-off-by: Wei Yang <richard.weiyang@linux.alibaba.com>
+> >> Tested-by: Dmitry Osipenko <digetx@gmail.com>
+> >> ---
+> >>  mm/mremap.c | 6 +++---
+> >>  1 file changed, 3 insertions(+), 3 deletions(-)
+> >> 
+> >> diff --git a/mm/mremap.c b/mm/mremap.c
+> >> index de27b12c8a5a..a30b3e86cc99 100644
+> >> --- a/mm/mremap.c
+> >> +++ b/mm/mremap.c
+> >> @@ -258,6 +258,9 @@ unsigned long move_page_tables(struct vm_area_struct *vma,
+> >>  		extent = next - old_addr;
+> >>  		if (extent > old_end - old_addr)
+> >>  			extent = old_end - old_addr;
+> >> +		next = (new_addr + PMD_SIZE) & PMD_MASK;
+> >
+> >Please use round_up() for both 'next' calculations.
+> >
+> 
+> I took another close look into this, seems this is not a good suggestion.
+> 
+>    round_up(new_addr, PMD_SIZE)
+> 
+> would be new_addr when new_addr is PMD_SIZE aligned, which is not what we
+> expect.
 
-Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
----
- sound/soc/amd/renoir/rn-pci-acp3x.c | 2 ++
- 1 file changed, 2 insertions(+)
+Maybe round_down(new_addr + PMD_SIZE, PMD_SIZE)?
 
-diff --git a/sound/soc/amd/renoir/rn-pci-acp3x.c b/sound/soc/amd/renoir/rn-pci-acp3x.c
-index d1faea5..165c93f 100644
---- a/sound/soc/amd/renoir/rn-pci-acp3x.c
-+++ b/sound/soc/amd/renoir/rn-pci-acp3x.c
-@@ -218,6 +218,7 @@ static int snd_rn_acp_probe(struct pci_dev *pci,
- 		ret = -ENODEV;
- 		goto de_init;
- 	} else if (dmic_acpi_check == ACP_DMIC_AUTO) {
-+#if defined(CONFIG_ACPI)
- 		handle = ACPI_HANDLE(&pci->dev);
- 		ret = acpi_evaluate_integer(handle, "_WOV", NULL, &dmic_status);
- 		if (ACPI_FAILURE(ret)) {
-@@ -228,6 +229,7 @@ static int snd_rn_acp_probe(struct pci_dev *pci,
- 			ret = -ENODEV;
- 			goto de_init;
- 		}
-+#endif
- 	}
- 
- 	adata->res = devm_kzalloc(&pci->dev,
 -- 
-2.7.4
-
+ Kirill A. Shutemov
