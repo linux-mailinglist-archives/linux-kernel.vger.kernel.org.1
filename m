@@ -2,94 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7B48217BC7
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 01:37:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE84A217BD8
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 01:44:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729255AbgGGXhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 19:37:17 -0400
-Received: from mga07.intel.com ([134.134.136.100]:29601 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729170AbgGGXhP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 19:37:15 -0400
-IronPort-SDR: IMpPoQzNWkl55BtjCXC7h5ecpw7D1b/A0vAje9m/OKFd3v1DtO3AHqYTpVf1yt/Beq4BEcyosH
- 1PDL4JGznaKQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9675"; a="212655413"
-X-IronPort-AV: E=Sophos;i="5.75,325,1589266800"; 
-   d="scan'208";a="212655413"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2020 16:37:13 -0700
-IronPort-SDR: saGIe4FkPyjzymdlPV6AkjjXBgV8h0A2+xaUpttwEPdeQsjfLHIhHhAWnWfnofOI1SGTJbh1WB
- BiAelycxdyGg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,325,1589266800"; 
-   d="scan'208";a="323693922"
-Received: from jacob-builder.jf.intel.com ([10.7.199.155])
-  by orsmga007.jf.intel.com with ESMTP; 07 Jul 2020 16:37:13 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     iommu@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Alex Williamson <alex.williamson@redhat.com>
-Cc:     "Lu Baolu" <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Yi Liu <yi.l.liu@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        "Christoph Hellwig" <hch@infradead.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>
-Subject: [PATCH v4 5/5] iommu/vt-d: Remove UAPI version check
-Date:   Tue,  7 Jul 2020 16:43:49 -0700
-Message-Id: <1594165429-20075-6-git-send-email-jacob.jun.pan@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1594165429-20075-1-git-send-email-jacob.jun.pan@linux.intel.com>
-References: <1594165429-20075-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        id S1729097AbgGGXot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 19:44:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54132 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727945AbgGGXot (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 19:44:49 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 011DDC061755;
+        Tue,  7 Jul 2020 16:44:49 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id a11so29315635ilk.0;
+        Tue, 07 Jul 2020 16:44:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=any76awIeW3xlZvb4nwSImkAjsux+Sq2tCYpwBJX9BI=;
+        b=UStH1tT7hvP7+piQ+yHe/AKxPI/qHV3oEDpUVwWNf3ToDXgdDhHCtf5bt7DNb444zn
+         G6PVJLM6e7k35DJpy7agidx6CelZVtbwSh67CcQTPVXmJ4q3m2ry1cDlU8lpX5rWVHAh
+         8gT8635sHVAAROIuNmQ9IhZgrt/sYZBY6JGs423PBOqDjaXMCbHvfF89EwodZ+olWdHK
+         vgmG8VN0oDCJH+s9aM281iwAsILE13ZtEDBEBcdJ7vqzIyyBmFFDJmHoGe4qVXPNgR7g
+         D42dfV5cQsqQevyEUZ1ji+0h+PbpqvB8Z+T1Bql4Gh98hWO7L6kL76lDdWyJI4yy4Egm
+         7QsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=any76awIeW3xlZvb4nwSImkAjsux+Sq2tCYpwBJX9BI=;
+        b=Q7jxjX+xfKR4mKBz3z8tZLRIs62lbTOwkWbLB+IezX4zqxYzQAdIMYkb4DdeKaoAb4
+         XvN7DpEf9X/rkgqKXa6Rzw3SYqXmB1hF3C+6QDmt9UeI5KgvwslqSFfIaLkake9APXM6
+         LAbK3w4glfMzl8vUyr0iZEqmyOUF4btEGXY38HtFox98FA5qU1nrEFbIhgAxSt0eVris
+         DgXdwyhXNskt4bBIRiLDuXXapmFrMvB4RMY6+rEkkefIbjVm9ODgf+VqMGK28bqrZMIN
+         vgQzAQdGLEMSZHiKF0CfKa69edD59VpBgJbhgMAcKkLA1sW4TGA112C2Lenbtchf0E/5
+         c1AQ==
+X-Gm-Message-State: AOAM5321fmTLdAmKasu7BQM/CzJcZTQxwkZFYV4D+EjZZy/RMC6ZaBp5
+        OwIVbU29ONdiI2b9h2xzoq+dDC/T7ta4fjSWZBo=
+X-Google-Smtp-Source: ABdhPJwEjktwNVlPsmXvdpqovQ3yOZTuUIAXof4OW/HwZCafqEi9TLsvQi09qf6HOEaEH3w9CryVlA2QHCQbYrktRns=
+X-Received: by 2002:a05:6e02:cc4:: with SMTP id c4mr38956956ilj.69.1594165488124;
+ Tue, 07 Jul 2020 16:44:48 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200616155613.121242-1-daniele.alessandrelli@linux.intel.com>
+ <CABb+yY0eUG=bxrQHP9-5gHk7SYF=c+EE+0LGKhnpxgfr078n6w@mail.gmail.com> <08b2713a6f87f78746c22e7168f4813eb753bb0e.camel@linux.intel.com>
+In-Reply-To: <08b2713a6f87f78746c22e7168f4813eb753bb0e.camel@linux.intel.com>
+From:   Jassi Brar <jassisinghbrar@gmail.com>
+Date:   Tue, 7 Jul 2020 18:44:37 -0500
+Message-ID: <CABb+yY1_BjyL=oeYq_P++SjNnECq=nfP-CX5dENLB5oLkNjVxQ@mail.gmail.com>
+Subject: Re: [PATCH 0/7] Add initial Keem Bay SoC / Board support
+To:     Daniele Alessandrelli <daniele.alessandrelli@linux.intel.com>
+Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        Paul Murphy <paul.j.murphy@intel.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IOMMU generic layer already does sanity checks on UAPI data which
-include version check. Remove the version check from vendor driver.
+On Tue, Jul 7, 2020 at 4:18 PM Daniele Alessandrelli
+<daniele.alessandrelli@linux.intel.com> wrote:
 
-Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
----
- drivers/iommu/intel/iommu.c | 3 +--
- drivers/iommu/intel/svm.c   | 3 +--
- 2 files changed, 2 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index abd70b618a3f..63fcca4645c9 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -5383,8 +5383,7 @@ intel_iommu_sva_invalidate(struct iommu_domain *domain, struct device *dev,
- 	int ret = 0;
- 	u64 size = 0;
- 
--	if (!inv_info || !dmar_domain ||
--	    inv_info->version != IOMMU_CACHE_INVALIDATE_INFO_VERSION_1)
-+	if (!inv_info || !dmar_domain)
- 		return -EINVAL;
- 
- 	if (!dev || !dev_is_pci(dev))
-diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
-index 713b3a218483..15b36fa0147a 100644
---- a/drivers/iommu/intel/svm.c
-+++ b/drivers/iommu/intel/svm.c
-@@ -240,8 +240,7 @@ int intel_svm_bind_gpasid(struct iommu_domain *domain, struct device *dev,
- 	if (WARN_ON(!iommu) || !data)
- 		return -EINVAL;
- 
--	if (data->version != IOMMU_GPASID_BIND_VERSION_1 ||
--	    data->format != IOMMU_PASID_FORMAT_INTEL_VTD)
-+	if (data->format != IOMMU_PASID_FORMAT_INTEL_VTD)
- 		return -EINVAL;
- 
- 	if (!dev_is_pci(dev))
--- 
-2.7.4
-
+> Just one question: should I remove the mailbox and scmi nodes from the
+> soc DT or can I keep them there even if the mailbox driver is not
+> available yet?
+>
+A device node can not be merged before its dt-bindings are.
