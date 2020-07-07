@@ -2,99 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A60C8217205
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:43:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7351721719A
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:42:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729565AbgGGP1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:27:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41368 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730331AbgGGP1A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:27:00 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8BD7D2078D;
-        Tue,  7 Jul 2020 15:26:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594135620;
-        bh=qBg1OYO70NoWHYQ+EuSTu2RZv+PrX4Fl+JXFgjuN96Y=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1JK5nV2ilnyX8UKXkF0zFEFzxdBNJwe2IlCWewOewCpPgx0+lRSIDggv2yLo+mTpb
-         JT5lT0fvR5U00Bhhb1yKHgn2Ti52k9smxtC/42RSOcv4SrghF5A/y502D59ArhdP9Z
-         yFMu0EoEUn6Hf2MKzQsedfM3ngSOCWoH4aiYU+zY=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Jones <pjones@redhat.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: [PATCH 5.7 112/112] efi: Make it possible to disable efivar_ssdt entirely
-Date:   Tue,  7 Jul 2020 17:17:57 +0200
-Message-Id: <20200707145806.296852863@linuxfoundation.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200707145800.925304888@linuxfoundation.org>
-References: <20200707145800.925304888@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1728915AbgGGPWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:22:25 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:39264 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728494AbgGGPWO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 11:22:14 -0400
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1594135332;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=LxVBy1DoV2t42uekM6oHIWgLJZVcrbHKxbpdNbzHSDs=;
+        b=IunFX7pjGAEVmxnZIas6oJ/9YwdsdmaOA9OE0FtMlOPvlgWFtOaDDqJlHXovnGOiHKnwhQ
+        CwmW+ri3FxF7YregfVsAJREGXSzvsY4ZqHEvUR9G6B9I9JtAaqU5PgJJ+CY671yQs1SrTD
+        CzIbm2ksIhMHNjW5uKURBWLEU48a/ZHAuKJYerMv/bXMxk9Ld5luig3w92mIP8SJh1i0Ix
+        SiEvieSpDZNk90FEqL+pFe3asOgmXnQZQNRkDjN0xsKxmw8UbH87jBHjRX+3gPy/ED+D+S
+        Q1ZCBwYmS2heNzlLDfIlSXcE4nCDwDLEBZvaL6e2zFOI4mpLSyK15kqdRmoxBA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1594135332;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=LxVBy1DoV2t42uekM6oHIWgLJZVcrbHKxbpdNbzHSDs=;
+        b=MchddIYbD4bgGWqwWIU33Se5uTwF1xc1iG+Q9Eqx0+0tI6PBGs9CAVHRdjslaOLlbkkHe1
+        dX8EQH35Pne8orBQ==
+To:     "David S . Miller" <davem@davemloft.net>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] af_packet: TPACKET_V3: replace busy-wait loop
+Date:   Tue,  7 Jul 2020 17:28:04 +0206
+Message-Id: <20200707152204.10314-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Jones <pjones@redhat.com>
+A busy-wait loop is used to implement waiting for bits to be copied
+from the skb to the kernel buffer before retiring a block. This is
+a problem on PREEMPT_RT because the copying task could be preempted
+by the busy-waiting task and thus live lock in the busy-wait loop.
 
-commit 435d1a471598752446a72ad1201b3c980526d869 upstream.
+Replace the busy-wait logic with an rwlock_t. This provides lockdep
+coverage and makes the code RT ready.
 
-In most cases, such as CONFIG_ACPI_CUSTOM_DSDT and
-CONFIG_ACPI_TABLE_UPGRADE, boot-time modifications to firmware tables
-are tied to specific Kconfig options.  Currently this is not the case
-for modifying the ACPI SSDT via the efivar_ssdt kernel command line
-option and associated EFI variable.
-
-This patch adds CONFIG_EFI_CUSTOM_SSDT_OVERLAYS, which defaults
-disabled, in order to allow enabling or disabling that feature during
-the build.
-
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Peter Jones <pjones@redhat.com>
-Link: https://lore.kernel.org/r/20200615202408.2242614-1-pjones@redhat.com
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: John Ogness <john.ogness@linutronix.de>
 ---
- drivers/firmware/efi/Kconfig |   11 +++++++++++
- drivers/firmware/efi/efi.c   |    2 +-
- 2 files changed, 12 insertions(+), 1 deletion(-)
+ patch against v5.8-rc4
 
---- a/drivers/firmware/efi/Kconfig
-+++ b/drivers/firmware/efi/Kconfig
-@@ -267,3 +267,14 @@ config EFI_EARLYCON
- 	depends on SERIAL_EARLYCON && !ARM && !IA64
- 	select FONT_SUPPORT
- 	select ARCH_USE_MEMREMAP_PROT
+ net/packet/af_packet.c | 20 ++++++++++----------
+ net/packet/internal.h  |  2 +-
+ 2 files changed, 11 insertions(+), 11 deletions(-)
+
+diff --git a/net/packet/af_packet.c b/net/packet/af_packet.c
+index 29bd405adbbd..dd1eec2dd6ef 100644
+--- a/net/packet/af_packet.c
++++ b/net/packet/af_packet.c
+@@ -593,6 +593,7 @@ static void init_prb_bdqc(struct packet_sock *po,
+ 						req_u->req3.tp_block_size);
+ 	p1->tov_in_jiffies = msecs_to_jiffies(p1->retire_blk_tov);
+ 	p1->blk_sizeof_priv = req_u->req3.tp_sizeof_priv;
++	rwlock_init(&p1->blk_fill_in_prog_lock);
+ 
+ 	p1->max_frame_len = p1->kblk_size - BLK_PLUS_PRIV(p1->blk_sizeof_priv);
+ 	prb_init_ft_ops(p1, req_u);
+@@ -659,10 +660,9 @@ static void prb_retire_rx_blk_timer_expired(struct timer_list *t)
+ 	 *
+ 	 */
+ 	if (BLOCK_NUM_PKTS(pbd)) {
+-		while (atomic_read(&pkc->blk_fill_in_prog)) {
+-			/* Waiting for skb_copy_bits to finish... */
+-			cpu_relax();
+-		}
++		/* Waiting for skb_copy_bits to finish... */
++		write_lock(&pkc->blk_fill_in_prog_lock);
++		write_unlock(&pkc->blk_fill_in_prog_lock);
+ 	}
+ 
+ 	if (pkc->last_kactive_blk_num == pkc->kactive_blk_num) {
+@@ -921,10 +921,9 @@ static void prb_retire_current_block(struct tpacket_kbdq_core *pkc,
+ 		 * the timer-handler already handled this case.
+ 		 */
+ 		if (!(status & TP_STATUS_BLK_TMO)) {
+-			while (atomic_read(&pkc->blk_fill_in_prog)) {
+-				/* Waiting for skb_copy_bits to finish... */
+-				cpu_relax();
+-			}
++			/* Waiting for skb_copy_bits to finish... */
++			write_lock(&pkc->blk_fill_in_prog_lock);
++			write_unlock(&pkc->blk_fill_in_prog_lock);
+ 		}
+ 		prb_close_block(pkc, pbd, po, status);
+ 		return;
+@@ -944,7 +943,8 @@ static int prb_queue_frozen(struct tpacket_kbdq_core *pkc)
+ static void prb_clear_blk_fill_status(struct packet_ring_buffer *rb)
+ {
+ 	struct tpacket_kbdq_core *pkc  = GET_PBDQC_FROM_RB(rb);
+-	atomic_dec(&pkc->blk_fill_in_prog);
 +
-+config EFI_CUSTOM_SSDT_OVERLAYS
-+	bool "Load custom ACPI SSDT overlay from an EFI variable"
-+	depends on EFI_VARS && ACPI
-+	default ACPI_TABLE_UPGRADE
-+	help
-+	  Allow loading of an ACPI SSDT overlay from an EFI variable specified
-+	  by a kernel command line option.
-+
-+	  See Documentation/admin-guide/acpi/ssdt-overlays.rst for more
-+	  information.
---- a/drivers/firmware/efi/efi.c
-+++ b/drivers/firmware/efi/efi.c
-@@ -189,7 +189,7 @@ static void generic_ops_unregister(void)
- 	efivars_unregister(&generic_efivars);
++	read_unlock(&pkc->blk_fill_in_prog_lock);
  }
  
--#if IS_ENABLED(CONFIG_ACPI)
-+#ifdef CONFIG_EFI_CUSTOM_SSDT_OVERLAYS
- #define EFIVAR_SSDT_NAME_MAX	16
- static char efivar_ssdt[EFIVAR_SSDT_NAME_MAX] __initdata;
- static int __init efivar_ssdt_setup(char *str)
-
+ static void prb_fill_rxhash(struct tpacket_kbdq_core *pkc,
+@@ -998,7 +998,7 @@ static void prb_fill_curr_block(char *curr,
+ 	pkc->nxt_offset += TOTAL_PKT_LEN_INCL_ALIGN(len);
+ 	BLOCK_LEN(pbd) += TOTAL_PKT_LEN_INCL_ALIGN(len);
+ 	BLOCK_NUM_PKTS(pbd) += 1;
+-	atomic_inc(&pkc->blk_fill_in_prog);
++	read_lock(&pkc->blk_fill_in_prog_lock);
+ 	prb_run_all_ft_ops(pkc, ppd);
+ }
+ 
+diff --git a/net/packet/internal.h b/net/packet/internal.h
+index 907f4cd2a718..fd41ecb7f605 100644
+--- a/net/packet/internal.h
++++ b/net/packet/internal.h
+@@ -39,7 +39,7 @@ struct tpacket_kbdq_core {
+ 	char		*nxt_offset;
+ 	struct sk_buff	*skb;
+ 
+-	atomic_t	blk_fill_in_prog;
++	rwlock_t	blk_fill_in_prog_lock;
+ 
+ 	/* Default is set to 8ms */
+ #define DEFAULT_PRB_RETIRE_TOV	(8)
+-- 
+2.20.1
 
