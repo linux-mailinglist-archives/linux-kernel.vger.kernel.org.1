@@ -2,99 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88665216C24
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 13:48:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1BEA216BE9
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 13:45:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728732AbgGGLrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 07:47:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727072AbgGGLrq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 07:47:46 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6838FC08C5E1
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 04:47:46 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id y13so24527909lfe.9
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 04:47:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=H31qO9mIhZa8mYSQsZNVqE+31tdLenCwSf5kmSoOfwM=;
-        b=sQs8aM6fKHIQiqDAeBYhbK8/IcCikVwpSJBAz8Vm7OIXiet8/MSv6Wig5gdT7jXE7Z
-         A3cQubcZ8i8CnqiA6c+JlRxHdO9bIc7UTSwvW9YAGOPdW8xSDteGUMk1iE55ryLq1zhw
-         /Q5xc06TFPTkJIdNNz5jC5AvdkUcnM2+SzoS1YH7efa/5XMMAwLNC5In+xwUuDKQ1Ui6
-         iG8vYYzHC5y/duMI7TEKx67+xsDQiCIMNeYdjEdtFE8sGxgvQjXkjk8B0or94UzwPHhT
-         oFSUjIBLiQVtCZzci0PpKrd6w7c4huuUd06SJZf9b8rH8azxPsbCjGIhH74lbC8MLlAj
-         s53A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=H31qO9mIhZa8mYSQsZNVqE+31tdLenCwSf5kmSoOfwM=;
-        b=hSdKHb3+Nrb05le1H/65uFx6DJnWmoIFzpmEGqDTYlp5R/CjTFgyOkET/uSBRxXMtB
-         U9Gl9i34Og8CFUwjy8ym4Jd1USEdQ1b1ceN5utUGhUDi4tEEEI5J1wjgJrQPhjRLYXUV
-         7Hoy9BkRansTE6t7nXCnrA3w8nqYV7Eqa5I8VGxlQkEuacpOtlEKS4LLu8zmhyDcXSVE
-         e7NJj9iEis9+UeyjQ+GSuImXi5mS+9tHVgTSP3SmPQjgPXpFXSBM8/L+NoW2gcHu5hXC
-         QLbLvrsf4l84szmtxeHmz/DfXbdsb6lblxpAOSJ8o3EeNZS7XzvvzupVVLmlWaEjEukt
-         jb4A==
-X-Gm-Message-State: AOAM533kojNb35KdkbRvs5Qu8swm9pQ3NfZHq1k4P2nTbrWKWGA3xmol
-        /siKglKydm9cFg1XIrZQd5BN2uomn3J3pTKRIS4+VqRh9hM=
-X-Google-Smtp-Source: ABdhPJxvak0DTuQbCCiRuOe2HWkQ0l0ImblSKrDKYrp0nX4jzJvM6lIpOEX1oqU3vLADw7kPGiebDvdnOG4Pw/ijD6g=
-X-Received: by 2002:a19:745:: with SMTP id 66mr32853284lfh.77.1594122464864;
- Tue, 07 Jul 2020 04:47:44 -0700 (PDT)
-MIME-Version: 1.0
-References: <TZHZBQ.SOVDZ4DJB30O1@ixit.cz> <87tuz8b4gv.fsf@nanos.tec.linutronix.de>
-In-Reply-To: <87tuz8b4gv.fsf@nanos.tec.linutronix.de>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 7 Jul 2020 13:47:34 +0200
-Message-ID: <CACRpkdYVQzdBJkAwB=uB6AFm2dC_tzpMRhefYWbVfGcAVxJ2pw@mail.gmail.com>
-Subject: Re: [PATCH] irq: Request and release resources for chained IRQs
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Brian Masney <masneyb@onstation.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     20181129133119.29387-1-linus.walleij@linaro.org,
-        Marc Zyngier <marc.zyngier@arm.com>,
-        Jason Cooper <jason@lakedaemon.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>
-Content-Type: text/plain; charset="UTF-8"
+        id S1728349AbgGGLpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 07:45:04 -0400
+Received: from mxhk.zte.com.cn ([63.217.80.70]:28696 "EHLO mxhk.zte.com.cn"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727834AbgGGLpD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 07:45:03 -0400
+Received: from mse-fl1.zte.com.cn (unknown [10.30.14.238])
+        by Forcepoint Email with ESMTPS id 15C503D8B48ABFE1F3AD;
+        Tue,  7 Jul 2020 19:44:59 +0800 (CST)
+Received: from notes_smtp.zte.com.cn (notes_smtp.zte.com.cn [10.30.1.239])
+        by mse-fl1.zte.com.cn with ESMTP id 067Bimif058681;
+        Tue, 7 Jul 2020 19:44:48 +0800 (GMT-8)
+        (envelope-from wang.yi59@zte.com.cn)
+Received: from fox-host8.localdomain ([10.74.120.8])
+          by szsmtp06.zte.com.cn (Lotus Domino Release 8.5.3FP6)
+          with ESMTP id 2020070719450240-4209657 ;
+          Tue, 7 Jul 2020 19:45:02 +0800 
+From:   Yi Wang <wang.yi59@zte.com.cn>
+To:     timur@kernel.org
+Cc:     nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
+        lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, alsa-devel@alsa-project.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        xue.zhihong@zte.com.cn, wang.yi59@zte.com.cn,
+        wang.liang82@zte.com.cn, Liao Pingfang <liao.pingfang@zte.com.cn>
+Subject: [PATCH] ASoC: fsl: mpc8610_hpcd: Add missing of_node_put()
+Date:   Tue, 7 Jul 2020 19:47:47 +0800
+Message-Id: <1594122467-11615-1-git-send-email-wang.yi59@zte.com.cn>
+X-Mailer: git-send-email 1.8.3.1
+X-MIMETrack: Itemize by SMTP Server on SZSMTP06/server/zte_ltd(Release 8.5.3FP6|November
+ 21, 2013) at 2020-07-07 19:45:02,
+        Serialize by Router on notes_smtp/zte_ltd(Release 9.0.1FP7|August  17, 2016) at
+ 2020-07-07 19:44:51,
+        Serialize complete at 2020-07-07 19:44:51
+X-MAIL: mse-fl1.zte.com.cn 067Bimif058681
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 18, 2020 at 8:42 PM Thomas Gleixner <tglx@linutronix.de> wrote:
-> David Heidelberg <david@ixit.cz> writes:
-> > is there chance to get this patch included or could be this issue
-> > solved with different approach?
->
-> Included into what? This patch is incorrect as I pointed out in review
-> here:
->
->   https://lore.kernel.org/lkml/alpine.DEB.2.21.1812071143480.14498@nanos.tec.linutronix.de/
->
-> So why are you even asking?
->
-> I recommended to switch this away from chained handler and then the
-> whole story ended with this mail:
->
->   https://lore.kernel.org/lkml/alpine.DEB.2.21.1812071404140.14498@nanos.tec.linutronix.de/
->
-> I have no idea how the GPIO people solved that problem, but certainly
-> not by applying this.
+From: Liao Pingfang <liao.pingfang@zte.com.cn>
 
-We didn't solve that problem.
+After finishing using device node got from of_find_compatible_node(),
+of_node_put() needs to be called.
 
-The reason is that changing the platform from chained to regular handler
-involves of course changing all the other drivers in the irqchip hierarchy
-since chained is an all-or-nothing approach, and that needs to happen
-over the whole set of Qualcomm drivers.
+Signed-off-by: Liao Pingfang <liao.pingfang@zte.com.cn>
+---
+ sound/soc/fsl/mpc8610_hpcd.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Sooner or later I guess I will get to it unless Bjorn or Brian or someone
-else beats me to it.
+diff --git a/sound/soc/fsl/mpc8610_hpcd.c b/sound/soc/fsl/mpc8610_hpcd.c
+index f7bd900..b3090fe 100644
+--- a/sound/soc/fsl/mpc8610_hpcd.c
++++ b/sound/soc/fsl/mpc8610_hpcd.c
+@@ -426,9 +426,11 @@ static int __init mpc8610_hpcd_init(void)
+ 	guts_np = of_find_compatible_node(NULL, NULL, "fsl,mpc8610-guts");
+ 	if (of_address_to_resource(guts_np, 0, &res)) {
+ 		pr_err("mpc8610-hpcd: missing/invalid global utilities node\n");
++		of_node_put(guts_np);
+ 		return -EINVAL;
+ 	}
+ 	guts_phys = res.start;
++	of_node_put(guts_np);
+ 
+ 	return platform_driver_register(&mpc8610_hpcd_driver);
+ }
+-- 
+2.9.5
 
-Yours,
-Linus Walleij
