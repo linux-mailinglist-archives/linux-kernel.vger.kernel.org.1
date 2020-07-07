@@ -2,54 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 729BC217B3D
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 00:50:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A80C217B3F
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 00:50:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729527AbgGGWub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 18:50:31 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:47914 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728509AbgGGWua (ORCPT
+        id S1729560AbgGGWuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 18:50:35 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:53141 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728713AbgGGWud (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 18:50:30 -0400
+        Tue, 7 Jul 2020 18:50:33 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594162227;
+        s=mimecast20190719; t=1594162229;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=XG8JZ/RcRcZU8pPzQBjdYxuL7JMX3O7leErJJK2lhj0=;
-        b=CEnkzz8ykGbDFUiCvedSNOb7OF1RUpyHo/f3a5ck2XLO+jLSY9QPSqaMhp+ZhTNwzZorNz
-        n0pZNhqUVnNM4vN/X/RRGQ8q7HLz2DGiu5n/fF+3d7uebUkdi28HJDxUbgvZHRb29OgjGb
-        /1AguLSrKkWXXSCVsf7aRwd8X1ZVPXI=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-222-3damSYMkMjOcZPMSxVzdXQ-1; Tue, 07 Jul 2020 18:50:25 -0400
-X-MC-Unique: 3damSYMkMjOcZPMSxVzdXQ-1
-Received: by mail-qt1-f197.google.com with SMTP id h24so16155199qtk.18
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 15:50:25 -0700 (PDT)
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WOgxlJaBDHRdhPiysM4bErvDesX8OsHWNwshhmEutLk=;
+        b=Qj0aO5+h+L0ySFvTLIDk2wkGDAhj078d9lWJ+KHV+4hIHeX4fq8uJPPePrnahOdMgYLN6z
+        zoSdZqHniWuK8kfzWlELu1flE5SaC/YW2D6um3MJ1rfFFAlooQoUWq/ER8u/H5wrGY7ZoG
+        Gp9Au6Prmw0GuMyfpVwXXO6kXUzcpag=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-57-Z6g8HL7SNKa_1mHd3hBD7A-1; Tue, 07 Jul 2020 18:50:27 -0400
+X-MC-Unique: Z6g8HL7SNKa_1mHd3hBD7A-1
+Received: by mail-qt1-f199.google.com with SMTP id 71so23812535qte.5
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 15:50:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XG8JZ/RcRcZU8pPzQBjdYxuL7JMX3O7leErJJK2lhj0=;
-        b=kT154F2k/bRIxLSXDcqbQulvUJnRZgf75BSfOsdZmE1PZXJyZEiJcyspqo6tsw8iTF
-         PkilU3JLFNGjFJXVB7WRO4JzIvbAypyZR4fLyKzBPx+b3yWBIlqG5x3LhSzUcHh/EY2p
-         ruof2kd5xWIx+SwjRbm1237DqYOy6N4GBVMTAJYP/sRLdWiASlOPYeqgFAKiu7mxrOD+
-         uv6p63fnRPFuUyrBxOrwMe9lT9M4dLqfLj56rQK3boSmz82MJrwFCCoxG6GSMhmGR8Nj
-         CC5xoOwnv2BrmLUgRVsZNP+/YE53CpAWnq4pYsSnSGQf27YmXDeV2gJDOMz+6OiLVbcM
-         J7ow==
-X-Gm-Message-State: AOAM533zWLGOWTaKeM94VaBZpcyt12bYdjZJWhUhf0DWs/WmCf3Amrut
-        N6Ky0mT3rkeOOFIRWXZULra36DDG74CE9rnsTqyCPRv+QCcsfxZk6u7ua2bBhXmreqD0frElKNy
-        pHTlNU9+W1524iJlBkd/omSmU
-X-Received: by 2002:a05:620a:b1a:: with SMTP id t26mr55131580qkg.473.1594162224769;
-        Tue, 07 Jul 2020 15:50:24 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzgOu7xvthwEx0G099Jt4vnoO0GKQxi2Pl8cOAO4vYSFWN34rylzrPPHMzPoI3RRpnIY1w+pQ==
-X-Received: by 2002:a05:620a:b1a:: with SMTP id t26mr55131552qkg.473.1594162224414;
-        Tue, 07 Jul 2020 15:50:24 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=WOgxlJaBDHRdhPiysM4bErvDesX8OsHWNwshhmEutLk=;
+        b=IsiNxWNUAjj4RfOUX9hzC8Ytx0SgtX9YohMxgZa+l/HnZDuzKPDzuMXvsJ1xsFm1w5
+         F+w5H8S+jK+6pXpxsgyXAkPaYyJoJRQNrsrxy3uyijhHDbgPV6G6G+7Paa6Aca569Iow
+         Knmat3VRPo9UU4rMtT4bstD36DkDaPZiZoTKiLmjTqsPsiAgWB2e8vJwbqTk8FAjmY1D
+         4pPJwvjce8iyhjclMtnRtrPpapfeywWY2/wpLpJuEhlbJiBcVu7CdIBNsnZ6wMnfGixi
+         9f78Ty+l+XoAsY8Ghhif+9QOw3qmCI0HnoD6p3IclknwvCYAR2jdDgXZZjClZt0x4ORX
+         8tCA==
+X-Gm-Message-State: AOAM5303QJYKSRIH0iywJPYd70AfmzroCJcWuJlGjCrQt39SAiimUM1f
+        33tuqB8/wXA9HnKtIuBemtfcNG6YqzV510FrT3336K2ayhKy7EwAHCjFHty8YKtMT7WY5ZntX+6
+        xxL7h19EyCf9v3tm9BlSIVVOV
+X-Received: by 2002:a05:620a:50:: with SMTP id t16mr55730967qkt.82.1594162226509;
+        Tue, 07 Jul 2020 15:50:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxDbJh3mdlcqMj2gcuFQwgf+qlV3HsV2boCushIcPSem9RJEwvEnQ4whoA4khGepjw4ume4mg==
+X-Received: by 2002:a05:620a:50:: with SMTP id t16mr55730932qkt.82.1594162225989;
+        Tue, 07 Jul 2020 15:50:25 -0700 (PDT)
 Received: from xz-x1.redhat.com ([2607:9880:19c0:32::2])
-        by smtp.gmail.com with ESMTPSA id j16sm26267642qtp.92.2020.07.07.15.50.22
+        by smtp.gmail.com with ESMTPSA id j16sm26267642qtp.92.2020.07.07.15.50.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jul 2020 15:50:23 -0700 (PDT)
+        Tue, 07 Jul 2020 15:50:25 -0700 (PDT)
 From:   Peter Xu <peterx@redhat.com>
 To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
 Cc:     Gerald Schaefer <gerald.schaefer@de.ibm.com>,
@@ -60,170 +61,592 @@ Cc:     Gerald Schaefer <gerald.schaefer@de.ibm.com>,
         David Rientjes <rientjes@google.com>,
         John Hubbard <jhubbard@nvidia.com>,
         Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH v5 00/25] mm: Page fault accounting cleanups
-Date:   Tue,  7 Jul 2020 18:49:56 -0400
-Message-Id: <20200707225021.200906-1-peterx@redhat.com>
+Subject: [PATCH v5 01/25] mm: Do page fault accounting in handle_mm_fault
+Date:   Tue,  7 Jul 2020 18:49:57 -0400
+Message-Id: <20200707225021.200906-2-peterx@redhat.com>
 X-Mailer: git-send-email 2.26.2
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20200707225021.200906-1-peterx@redhat.com>
+References: <20200707225021.200906-1-peterx@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-v5:=0D
-- rebase to linux-next/akpm, add r-bs=0D
-- patch 1: pass vm_fault_t into mm_account_fault() [DavidR]=0D
-- patch 25: fix comment in get_user_pages() to remove the ref to task [John=
-]=0D
-- dropped the unicore32 patch because the arch was thrown away=0D
-=0D
-This is v5 of the pf accounting cleanup series.  It originates from Gerald=
-=0D
-Schaefer's report on an issue a week ago regarding to incorrect page fault=
-=0D
-accountings for retried page fault after commit 4064b9827063 ("mm: allow=0D
-VM_FAULT_RETRY for multiple times"):=0D
-=0D
-  https://lore.kernel.org/lkml/20200610174811.44b94525@thinkpad/=0D
-=0D
-What this series did:=0D
-=0D
-  - Correct page fault accounting: we do accounting for a page fault (no ma=
-tter=0D
-    whether it's from #PF handling, or gup, or anything else) only with the=
- one=0D
-    that completed the fault.  For example, page fault retries should not b=
-e=0D
-    counted in page fault counters.  Same to the perf events.=0D
-=0D
-  - Unify definition of PERF_COUNT_SW_PAGE_FAULTS: currently this perf even=
-t is=0D
-    used in an adhoc way across different archs.=0D
-=0D
-    Case (1): for many archs it's done at the entry of a page fault handler=
-, so=0D
-    that it will also cover e.g. errornous faults.=0D
-=0D
-    Case (2): for some other archs, it is only accounted when the page faul=
-t is=0D
-    resolved successfully.=0D
-=0D
-    Case (3): there're still quite some archs that have not enabled this pe=
-rf event.=0D
-=0D
-    Since this series will touch merely all the archs, we unify this perf e=
-vent=0D
-    to always follow case (1), which is the one that makes most sense.  And=
-=0D
-    since we moved the accounting into handle_mm_fault, the other two MAJ/M=
-IN=0D
-    perf events are well taken care of naturally.=0D
-=0D
-  - Unify definition of "major faults": the definition of "major fault" is=
-=0D
-    slightly changed when used in accounting (not VM_FAULT_MAJOR).  More=0D
-    information in patch 1.=0D
-=0D
-  - Always account the page fault onto the one that triggered the page faul=
-t.=0D
-    This does not matter much for #PF handlings, but mostly for gup.  More=
-=0D
-    information on this in patch 25.=0D
-=0D
-Patchset layout:=0D
-=0D
-Patch 1:     Introduced the accounting in handle_mm_fault(), not enabled.=0D
-Patch 2-23:  Enable the new accounting for arch #PF handlers one by one.=0D
-Patch 24:    Enable the new accounting for the rest outliers (gup, iommu, e=
-tc.)=0D
-Patch 25:    Cleanup GUP task_struct pointer since it's not needed any more=
-=0D
-=0D
-For each of the patch that fixes a specific arch, I'm CCing the maintainers=
- and=0D
-the arch list if there is.  Besides, I only lightly tested this series on x=
-86.=0D
-=0D
-Please have a look, thanks.=0D
-=0D
-Peter Xu (25):=0D
-  mm: Do page fault accounting in handle_mm_fault=0D
-  mm/alpha: Use general page fault accounting=0D
-  mm/arc: Use general page fault accounting=0D
-  mm/arm: Use general page fault accounting=0D
-  mm/arm64: Use general page fault accounting=0D
-  mm/csky: Use general page fault accounting=0D
-  mm/hexagon: Use general page fault accounting=0D
-  mm/ia64: Use general page fault accounting=0D
-  mm/m68k: Use general page fault accounting=0D
-  mm/microblaze: Use general page fault accounting=0D
-  mm/mips: Use general page fault accounting=0D
-  mm/nds32: Use general page fault accounting=0D
-  mm/nios2: Use general page fault accounting=0D
-  mm/openrisc: Use general page fault accounting=0D
-  mm/parisc: Use general page fault accounting=0D
-  mm/powerpc: Use general page fault accounting=0D
-  mm/riscv: Use general page fault accounting=0D
-  mm/s390: Use general page fault accounting=0D
-  mm/sh: Use general page fault accounting=0D
-  mm/sparc32: Use general page fault accounting=0D
-  mm/sparc64: Use general page fault accounting=0D
-  mm/x86: Use general page fault accounting=0D
-  mm/xtensa: Use general page fault accounting=0D
-  mm: Clean up the last pieces of page fault accountings=0D
-  mm/gup: Remove task_struct pointer for all gup code=0D
-=0D
- arch/alpha/mm/fault.c                       |   8 +-=0D
- arch/arc/kernel/process.c                   |   2 +-=0D
- arch/arc/mm/fault.c                         |  18 +--=0D
- arch/arm/mm/fault.c                         |  25 +----=0D
- arch/arm64/mm/fault.c                       |  29 +----=0D
- arch/csky/mm/fault.c                        |  13 +--=0D
- arch/hexagon/mm/vm_fault.c                  |   9 +-=0D
- arch/ia64/mm/fault.c                        |   9 +-=0D
- arch/m68k/mm/fault.c                        |  14 +--=0D
- arch/microblaze/mm/fault.c                  |   9 +-=0D
- arch/mips/mm/fault.c                        |  14 +--=0D
- arch/nds32/mm/fault.c                       |  19 +---=0D
- arch/nios2/mm/fault.c                       |  14 +--=0D
- arch/openrisc/mm/fault.c                    |   9 +-=0D
- arch/parisc/mm/fault.c                      |   8 +-=0D
- arch/powerpc/mm/copro_fault.c               |   7 +-=0D
- arch/powerpc/mm/fault.c                     |  11 +-=0D
- arch/riscv/mm/fault.c                       |  16 +--=0D
- arch/s390/kvm/interrupt.c                   |   2 +-=0D
- arch/s390/kvm/kvm-s390.c                    |   2 +-=0D
- arch/s390/kvm/priv.c                        |   8 +-=0D
- arch/s390/mm/fault.c                        |  16 +--=0D
- arch/s390/mm/gmap.c                         |   4 +-=0D
- arch/sh/mm/fault.c                          |  11 +-=0D
- arch/sparc/mm/fault_32.c                    |  13 +--=0D
- arch/sparc/mm/fault_64.c                    |  11 +-=0D
- arch/um/kernel/trap.c                       |   6 +-=0D
- arch/x86/mm/fault.c                         |  17 +--=0D
- arch/xtensa/mm/fault.c                      |  15 +--=0D
- drivers/gpu/drm/i915/gem/i915_gem_userptr.c |   2 +-=0D
- drivers/infiniband/core/umem_odp.c          |   2 +-=0D
- drivers/iommu/amd/iommu_v2.c                |   2 +-=0D
- drivers/iommu/intel/svm.c                   |   3 +-=0D
- drivers/vfio/vfio_iommu_type1.c             |   4 +-=0D
- fs/exec.c                                   |   2 +-=0D
- include/linux/mm.h                          |  16 +--=0D
- kernel/events/uprobes.c                     |   6 +-=0D
- kernel/futex.c                              |   2 +-=0D
- mm/gup.c                                    | 118 ++++++++------------=0D
- mm/hmm.c                                    |   3 +-=0D
- mm/ksm.c                                    |   3 +-=0D
- mm/memory.c                                 |  69 +++++++++++-=0D
- mm/process_vm_access.c                      |   2 +-=0D
- security/tomoyo/domain.c                    |   2 +-=0D
- virt/kvm/async_pf.c                         |   2 +-=0D
- virt/kvm/kvm_main.c                         |   2 +-=0D
- 46 files changed, 219 insertions(+), 360 deletions(-)=0D
-=0D
--- =0D
-2.26.2=0D
-=0D
+This is a preparation patch to move page fault accountings into the general
+code in handle_mm_fault().  This includes both the per task flt_maj/flt_min
+counters, and the major/minor page fault perf events.  To do this, the pt_regs
+pointer is passed into handle_mm_fault().
+
+PERF_COUNT_SW_PAGE_FAULTS should still be kept in per-arch page fault handlers.
+
+So far, all the pt_regs pointer that passed into handle_mm_fault() is NULL,
+which means this patch should have no intented functional change.
+
+Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Peter Xu <peterx@redhat.com>
+---
+ arch/alpha/mm/fault.c         |  2 +-
+ arch/arc/mm/fault.c           |  2 +-
+ arch/arm/mm/fault.c           |  2 +-
+ arch/arm64/mm/fault.c         |  2 +-
+ arch/csky/mm/fault.c          |  3 +-
+ arch/hexagon/mm/vm_fault.c    |  2 +-
+ arch/ia64/mm/fault.c          |  2 +-
+ arch/m68k/mm/fault.c          |  2 +-
+ arch/microblaze/mm/fault.c    |  2 +-
+ arch/mips/mm/fault.c          |  2 +-
+ arch/nds32/mm/fault.c         |  2 +-
+ arch/nios2/mm/fault.c         |  2 +-
+ arch/openrisc/mm/fault.c      |  2 +-
+ arch/parisc/mm/fault.c        |  2 +-
+ arch/powerpc/mm/copro_fault.c |  2 +-
+ arch/powerpc/mm/fault.c       |  2 +-
+ arch/riscv/mm/fault.c         |  2 +-
+ arch/s390/mm/fault.c          |  2 +-
+ arch/sh/mm/fault.c            |  2 +-
+ arch/sparc/mm/fault_32.c      |  4 +--
+ arch/sparc/mm/fault_64.c      |  2 +-
+ arch/um/kernel/trap.c         |  2 +-
+ arch/x86/mm/fault.c           |  2 +-
+ arch/xtensa/mm/fault.c        |  2 +-
+ drivers/iommu/amd/iommu_v2.c  |  2 +-
+ drivers/iommu/intel/svm.c     |  3 +-
+ include/linux/mm.h            |  7 ++--
+ mm/gup.c                      |  4 +--
+ mm/hmm.c                      |  3 +-
+ mm/ksm.c                      |  3 +-
+ mm/memory.c                   | 64 ++++++++++++++++++++++++++++++++++-
+ 31 files changed, 103 insertions(+), 34 deletions(-)
+
+diff --git a/arch/alpha/mm/fault.c b/arch/alpha/mm/fault.c
+index c2303a8c2b9f..1983e43a5e2f 100644
+--- a/arch/alpha/mm/fault.c
++++ b/arch/alpha/mm/fault.c
+@@ -148,7 +148,7 @@ do_page_fault(unsigned long address, unsigned long mmcsr,
+ 	/* If for any reason at all we couldn't handle the fault,
+ 	   make sure we exit gracefully rather than endlessly redo
+ 	   the fault.  */
+-	fault = handle_mm_fault(vma, address, flags);
++	fault = handle_mm_fault(vma, address, flags, NULL);
+ 
+ 	if (fault_signal_pending(fault, regs))
+ 		return;
+diff --git a/arch/arc/mm/fault.c b/arch/arc/mm/fault.c
+index 7287c793d1c9..587dea524e6b 100644
+--- a/arch/arc/mm/fault.c
++++ b/arch/arc/mm/fault.c
+@@ -130,7 +130,7 @@ void do_page_fault(unsigned long address, struct pt_regs *regs)
+ 		goto bad_area;
+ 	}
+ 
+-	fault = handle_mm_fault(vma, address, flags);
++	fault = handle_mm_fault(vma, address, flags, NULL);
+ 
+ 	/* Quick path to respond to signals */
+ 	if (fault_signal_pending(fault, regs)) {
+diff --git a/arch/arm/mm/fault.c b/arch/arm/mm/fault.c
+index c6550eddfce1..01a8e0f8fef7 100644
+--- a/arch/arm/mm/fault.c
++++ b/arch/arm/mm/fault.c
+@@ -224,7 +224,7 @@ __do_page_fault(struct mm_struct *mm, unsigned long addr, unsigned int fsr,
+ 		goto out;
+ 	}
+ 
+-	return handle_mm_fault(vma, addr & PAGE_MASK, flags);
++	return handle_mm_fault(vma, addr & PAGE_MASK, flags, NULL);
+ 
+ check_stack:
+ 	/* Don't allow expansion below FIRST_USER_ADDRESS */
+diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
+index 5e832b3387f1..f885940035ce 100644
+--- a/arch/arm64/mm/fault.c
++++ b/arch/arm64/mm/fault.c
+@@ -428,7 +428,7 @@ static vm_fault_t __do_page_fault(struct mm_struct *mm, unsigned long addr,
+ 	 */
+ 	if (!(vma->vm_flags & vm_flags))
+ 		return VM_FAULT_BADACCESS;
+-	return handle_mm_fault(vma, addr & PAGE_MASK, mm_flags);
++	return handle_mm_fault(vma, addr & PAGE_MASK, mm_flags, NULL);
+ }
+ 
+ static bool is_el0_instruction_abort(unsigned int esr)
+diff --git a/arch/csky/mm/fault.c b/arch/csky/mm/fault.c
+index 0b9cbf2cf6a9..7137e2e8dc57 100644
+--- a/arch/csky/mm/fault.c
++++ b/arch/csky/mm/fault.c
+@@ -150,7 +150,8 @@ asmlinkage void do_page_fault(struct pt_regs *regs, unsigned long write,
+ 	 * make sure we exit gracefully rather than endlessly redo
+ 	 * the fault.
+ 	 */
+-	fault = handle_mm_fault(vma, address, write ? FAULT_FLAG_WRITE : 0);
++	fault = handle_mm_fault(vma, address, write ? FAULT_FLAG_WRITE : 0,
++				NULL);
+ 	if (unlikely(fault & VM_FAULT_ERROR)) {
+ 		if (fault & VM_FAULT_OOM)
+ 			goto out_of_memory;
+diff --git a/arch/hexagon/mm/vm_fault.c b/arch/hexagon/mm/vm_fault.c
+index cd3808f96b93..f12f330e7946 100644
+--- a/arch/hexagon/mm/vm_fault.c
++++ b/arch/hexagon/mm/vm_fault.c
+@@ -88,7 +88,7 @@ void do_page_fault(unsigned long address, long cause, struct pt_regs *regs)
+ 		break;
+ 	}
+ 
+-	fault = handle_mm_fault(vma, address, flags);
++	fault = handle_mm_fault(vma, address, flags, NULL);
+ 
+ 	if (fault_signal_pending(fault, regs))
+ 		return;
+diff --git a/arch/ia64/mm/fault.c b/arch/ia64/mm/fault.c
+index 3a4dec334cc5..abf2808f9b4b 100644
+--- a/arch/ia64/mm/fault.c
++++ b/arch/ia64/mm/fault.c
+@@ -143,7 +143,7 @@ ia64_do_page_fault (unsigned long address, unsigned long isr, struct pt_regs *re
+ 	 * sure we exit gracefully rather than endlessly redo the
+ 	 * fault.
+ 	 */
+-	fault = handle_mm_fault(vma, address, flags);
++	fault = handle_mm_fault(vma, address, flags, NULL);
+ 
+ 	if (fault_signal_pending(fault, regs))
+ 		return;
+diff --git a/arch/m68k/mm/fault.c b/arch/m68k/mm/fault.c
+index 508abb63da67..08b35a318ebe 100644
+--- a/arch/m68k/mm/fault.c
++++ b/arch/m68k/mm/fault.c
+@@ -134,7 +134,7 @@ int do_page_fault(struct pt_regs *regs, unsigned long address,
+ 	 * the fault.
+ 	 */
+ 
+-	fault = handle_mm_fault(vma, address, flags);
++	fault = handle_mm_fault(vma, address, flags, NULL);
+ 	pr_debug("handle_mm_fault returns %x\n", fault);
+ 
+ 	if (fault_signal_pending(fault, regs))
+diff --git a/arch/microblaze/mm/fault.c b/arch/microblaze/mm/fault.c
+index a2bfe587b491..1a3d4c4ca28b 100644
+--- a/arch/microblaze/mm/fault.c
++++ b/arch/microblaze/mm/fault.c
+@@ -214,7 +214,7 @@ void do_page_fault(struct pt_regs *regs, unsigned long address,
+ 	 * make sure we exit gracefully rather than endlessly redo
+ 	 * the fault.
+ 	 */
+-	fault = handle_mm_fault(vma, address, flags);
++	fault = handle_mm_fault(vma, address, flags, NULL);
+ 
+ 	if (fault_signal_pending(fault, regs))
+ 		return;
+diff --git a/arch/mips/mm/fault.c b/arch/mips/mm/fault.c
+index 01b168a90434..b1db39784db9 100644
+--- a/arch/mips/mm/fault.c
++++ b/arch/mips/mm/fault.c
+@@ -152,7 +152,7 @@ static void __kprobes __do_page_fault(struct pt_regs *regs, unsigned long write,
+ 	 * make sure we exit gracefully rather than endlessly redo
+ 	 * the fault.
+ 	 */
+-	fault = handle_mm_fault(vma, address, flags);
++	fault = handle_mm_fault(vma, address, flags, NULL);
+ 
+ 	if (fault_signal_pending(fault, regs))
+ 		return;
+diff --git a/arch/nds32/mm/fault.c b/arch/nds32/mm/fault.c
+index 8fb73f6401a0..d0ecc8fb5b23 100644
+--- a/arch/nds32/mm/fault.c
++++ b/arch/nds32/mm/fault.c
+@@ -206,7 +206,7 @@ void do_page_fault(unsigned long entry, unsigned long addr,
+ 	 * the fault.
+ 	 */
+ 
+-	fault = handle_mm_fault(vma, addr, flags);
++	fault = handle_mm_fault(vma, addr, flags, NULL);
+ 
+ 	/*
+ 	 * If we need to retry but a fatal signal is pending, handle the
+diff --git a/arch/nios2/mm/fault.c b/arch/nios2/mm/fault.c
+index 4112ef0e247e..86beb9a2698e 100644
+--- a/arch/nios2/mm/fault.c
++++ b/arch/nios2/mm/fault.c
+@@ -131,7 +131,7 @@ asmlinkage void do_page_fault(struct pt_regs *regs, unsigned long cause,
+ 	 * make sure we exit gracefully rather than endlessly redo
+ 	 * the fault.
+ 	 */
+-	fault = handle_mm_fault(vma, address, flags);
++	fault = handle_mm_fault(vma, address, flags, NULL);
+ 
+ 	if (fault_signal_pending(fault, regs))
+ 		return;
+diff --git a/arch/openrisc/mm/fault.c b/arch/openrisc/mm/fault.c
+index d2224ccca294..3daa491d1edb 100644
+--- a/arch/openrisc/mm/fault.c
++++ b/arch/openrisc/mm/fault.c
+@@ -159,7 +159,7 @@ asmlinkage void do_page_fault(struct pt_regs *regs, unsigned long address,
+ 	 * the fault.
+ 	 */
+ 
+-	fault = handle_mm_fault(vma, address, flags);
++	fault = handle_mm_fault(vma, address, flags, NULL);
+ 
+ 	if (fault_signal_pending(fault, regs))
+ 		return;
+diff --git a/arch/parisc/mm/fault.c b/arch/parisc/mm/fault.c
+index 66ac0719bd49..e32d06928c24 100644
+--- a/arch/parisc/mm/fault.c
++++ b/arch/parisc/mm/fault.c
+@@ -302,7 +302,7 @@ void do_page_fault(struct pt_regs *regs, unsigned long code,
+ 	 * fault.
+ 	 */
+ 
+-	fault = handle_mm_fault(vma, address, flags);
++	fault = handle_mm_fault(vma, address, flags, NULL);
+ 
+ 	if (fault_signal_pending(fault, regs))
+ 		return;
+diff --git a/arch/powerpc/mm/copro_fault.c b/arch/powerpc/mm/copro_fault.c
+index b83abbead4a2..2d0276abe0a6 100644
+--- a/arch/powerpc/mm/copro_fault.c
++++ b/arch/powerpc/mm/copro_fault.c
+@@ -64,7 +64,7 @@ int copro_handle_mm_fault(struct mm_struct *mm, unsigned long ea,
+ 	}
+ 
+ 	ret = 0;
+-	*flt = handle_mm_fault(vma, ea, is_write ? FAULT_FLAG_WRITE : 0);
++	*flt = handle_mm_fault(vma, ea, is_write ? FAULT_FLAG_WRITE : 0, NULL);
+ 	if (unlikely(*flt & VM_FAULT_ERROR)) {
+ 		if (*flt & VM_FAULT_OOM) {
+ 			ret = -ENOMEM;
+diff --git a/arch/powerpc/mm/fault.c b/arch/powerpc/mm/fault.c
+index 641fc5f3d7dd..25dee001d8e1 100644
+--- a/arch/powerpc/mm/fault.c
++++ b/arch/powerpc/mm/fault.c
+@@ -607,7 +607,7 @@ static int __do_page_fault(struct pt_regs *regs, unsigned long address,
+ 	 * make sure we exit gracefully rather than endlessly redo
+ 	 * the fault.
+ 	 */
+-	fault = handle_mm_fault(vma, address, flags);
++	fault = handle_mm_fault(vma, address, flags, NULL);
+ 
+ 	major |= fault & VM_FAULT_MAJOR;
+ 
+diff --git a/arch/riscv/mm/fault.c b/arch/riscv/mm/fault.c
+index 5873835a3e6b..30c1124d0fb6 100644
+--- a/arch/riscv/mm/fault.c
++++ b/arch/riscv/mm/fault.c
+@@ -109,7 +109,7 @@ asmlinkage void do_page_fault(struct pt_regs *regs)
+ 	 * make sure we exit gracefully rather than endlessly redo
+ 	 * the fault.
+ 	 */
+-	fault = handle_mm_fault(vma, addr, flags);
++	fault = handle_mm_fault(vma, addr, flags, NULL);
+ 
+ 	/*
+ 	 * If we need to retry but a fatal signal is pending, handle the
+diff --git a/arch/s390/mm/fault.c b/arch/s390/mm/fault.c
+index d53c2e2ea1fd..fc14df0b4d6e 100644
+--- a/arch/s390/mm/fault.c
++++ b/arch/s390/mm/fault.c
+@@ -478,7 +478,7 @@ static inline vm_fault_t do_exception(struct pt_regs *regs, int access)
+ 	 * make sure we exit gracefully rather than endlessly redo
+ 	 * the fault.
+ 	 */
+-	fault = handle_mm_fault(vma, address, flags);
++	fault = handle_mm_fault(vma, address, flags, NULL);
+ 	if (fault_signal_pending(fault, regs)) {
+ 		fault = VM_FAULT_SIGNAL;
+ 		if (flags & FAULT_FLAG_RETRY_NOWAIT)
+diff --git a/arch/sh/mm/fault.c b/arch/sh/mm/fault.c
+index fbe1f2fe9a8c..3c0a11827f7e 100644
+--- a/arch/sh/mm/fault.c
++++ b/arch/sh/mm/fault.c
+@@ -482,7 +482,7 @@ asmlinkage void __kprobes do_page_fault(struct pt_regs *regs,
+ 	 * make sure we exit gracefully rather than endlessly redo
+ 	 * the fault.
+ 	 */
+-	fault = handle_mm_fault(vma, address, flags);
++	fault = handle_mm_fault(vma, address, flags, NULL);
+ 
+ 	if (unlikely(fault & (VM_FAULT_RETRY | VM_FAULT_ERROR)))
+ 		if (mm_fault_error(regs, error_code, address, fault))
+diff --git a/arch/sparc/mm/fault_32.c b/arch/sparc/mm/fault_32.c
+index cfef656eda0f..06af03db4417 100644
+--- a/arch/sparc/mm/fault_32.c
++++ b/arch/sparc/mm/fault_32.c
+@@ -234,7 +234,7 @@ asmlinkage void do_sparc_fault(struct pt_regs *regs, int text_fault, int write,
+ 	 * make sure we exit gracefully rather than endlessly redo
+ 	 * the fault.
+ 	 */
+-	fault = handle_mm_fault(vma, address, flags);
++	fault = handle_mm_fault(vma, address, flags, NULL);
+ 
+ 	if (fault_signal_pending(fault, regs))
+ 		return;
+@@ -410,7 +410,7 @@ static void force_user_fault(unsigned long address, int write)
+ 		if (!(vma->vm_flags & (VM_READ | VM_EXEC)))
+ 			goto bad_area;
+ 	}
+-	switch (handle_mm_fault(vma, address, flags)) {
++	switch (handle_mm_fault(vma, address, flags, NULL)) {
+ 	case VM_FAULT_SIGBUS:
+ 	case VM_FAULT_OOM:
+ 		goto do_sigbus;
+diff --git a/arch/sparc/mm/fault_64.c b/arch/sparc/mm/fault_64.c
+index a3806614e4dc..9ebee14ee893 100644
+--- a/arch/sparc/mm/fault_64.c
++++ b/arch/sparc/mm/fault_64.c
+@@ -422,7 +422,7 @@ asmlinkage void __kprobes do_sparc64_fault(struct pt_regs *regs)
+ 			goto bad_area;
+ 	}
+ 
+-	fault = handle_mm_fault(vma, address, flags);
++	fault = handle_mm_fault(vma, address, flags, NULL);
+ 
+ 	if (fault_signal_pending(fault, regs))
+ 		goto exit_exception;
+diff --git a/arch/um/kernel/trap.c b/arch/um/kernel/trap.c
+index 2b3afa354a90..8d9870d76da1 100644
+--- a/arch/um/kernel/trap.c
++++ b/arch/um/kernel/trap.c
+@@ -71,7 +71,7 @@ int handle_page_fault(unsigned long address, unsigned long ip,
+ 	do {
+ 		vm_fault_t fault;
+ 
+-		fault = handle_mm_fault(vma, address, flags);
++		fault = handle_mm_fault(vma, address, flags, NULL);
+ 
+ 		if ((fault & VM_FAULT_RETRY) && fatal_signal_pending(current))
+ 			goto out_nosemaphore;
+diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
+index 02536b04d9f3..0adbff41adec 100644
+--- a/arch/x86/mm/fault.c
++++ b/arch/x86/mm/fault.c
+@@ -1291,7 +1291,7 @@ void do_user_addr_fault(struct pt_regs *regs,
+ 	 * userland). The return to userland is identified whenever
+ 	 * FAULT_FLAG_USER|FAULT_FLAG_KILLABLE are both set in flags.
+ 	 */
+-	fault = handle_mm_fault(vma, address, flags);
++	fault = handle_mm_fault(vma, address, flags, NULL);
+ 	major |= fault & VM_FAULT_MAJOR;
+ 
+ 	/* Quick path to respond to signals */
+diff --git a/arch/xtensa/mm/fault.c b/arch/xtensa/mm/fault.c
+index c128dcc7c85b..e72c8c1359a6 100644
+--- a/arch/xtensa/mm/fault.c
++++ b/arch/xtensa/mm/fault.c
+@@ -107,7 +107,7 @@ void do_page_fault(struct pt_regs *regs)
+ 	 * make sure we exit gracefully rather than endlessly redo
+ 	 * the fault.
+ 	 */
+-	fault = handle_mm_fault(vma, address, flags);
++	fault = handle_mm_fault(vma, address, flags, NULL);
+ 
+ 	if (fault_signal_pending(fault, regs))
+ 		return;
+diff --git a/drivers/iommu/amd/iommu_v2.c b/drivers/iommu/amd/iommu_v2.c
+index e4b025c5637c..c259108ab6dd 100644
+--- a/drivers/iommu/amd/iommu_v2.c
++++ b/drivers/iommu/amd/iommu_v2.c
+@@ -495,7 +495,7 @@ static void do_fault(struct work_struct *work)
+ 	if (access_error(vma, fault))
+ 		goto out;
+ 
+-	ret = handle_mm_fault(vma, address, flags);
++	ret = handle_mm_fault(vma, address, flags, NULL);
+ out:
+ 	mmap_read_unlock(mm);
+ 
+diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
+index 6c87c807a0ab..5ae59a6ad681 100644
+--- a/drivers/iommu/intel/svm.c
++++ b/drivers/iommu/intel/svm.c
+@@ -872,7 +872,8 @@ static irqreturn_t prq_event_thread(int irq, void *d)
+ 			goto invalid;
+ 
+ 		ret = handle_mm_fault(vma, address,
+-				      req->wr_req ? FAULT_FLAG_WRITE : 0);
++				      req->wr_req ? FAULT_FLAG_WRITE : 0,
++				      NULL);
+ 		if (ret & VM_FAULT_ERROR)
+ 			goto invalid;
+ 
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 809cbbf98fbc..33f8236a68a2 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -39,6 +39,7 @@ struct file_ra_state;
+ struct user_struct;
+ struct writeback_control;
+ struct bdi_writeback;
++struct pt_regs;
+ 
+ void init_mm_internals(void);
+ 
+@@ -1659,7 +1660,8 @@ int invalidate_inode_page(struct page *page);
+ 
+ #ifdef CONFIG_MMU
+ extern vm_fault_t handle_mm_fault(struct vm_area_struct *vma,
+-			unsigned long address, unsigned int flags);
++				  unsigned long address, unsigned int flags,
++				  struct pt_regs *regs);
+ extern int fixup_user_fault(struct task_struct *tsk, struct mm_struct *mm,
+ 			    unsigned long address, unsigned int fault_flags,
+ 			    bool *unlocked);
+@@ -1669,7 +1671,8 @@ void unmap_mapping_range(struct address_space *mapping,
+ 		loff_t const holebegin, loff_t const holelen, int even_cows);
+ #else
+ static inline vm_fault_t handle_mm_fault(struct vm_area_struct *vma,
+-		unsigned long address, unsigned int flags)
++					 unsigned long address, unsigned int flags,
++					 struct pt_regs *regs)
+ {
+ 	/* should never happen if there's no MMU */
+ 	BUG();
+diff --git a/mm/gup.c b/mm/gup.c
+index 6ec1807cd2a7..80fd1610d43e 100644
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -884,7 +884,7 @@ static int faultin_page(struct task_struct *tsk, struct vm_area_struct *vma,
+ 		fault_flags |= FAULT_FLAG_TRIED;
+ 	}
+ 
+-	ret = handle_mm_fault(vma, address, fault_flags);
++	ret = handle_mm_fault(vma, address, fault_flags, NULL);
+ 	if (ret & VM_FAULT_ERROR) {
+ 		int err = vm_fault_to_errno(ret, *flags);
+ 
+@@ -1238,7 +1238,7 @@ int fixup_user_fault(struct task_struct *tsk, struct mm_struct *mm,
+ 	    fatal_signal_pending(current))
+ 		return -EINTR;
+ 
+-	ret = handle_mm_fault(vma, address, fault_flags);
++	ret = handle_mm_fault(vma, address, fault_flags, NULL);
+ 	major |= ret & VM_FAULT_MAJOR;
+ 	if (ret & VM_FAULT_ERROR) {
+ 		int err = vm_fault_to_errno(ret, 0);
+diff --git a/mm/hmm.c b/mm/hmm.c
+index e9a545751108..0be32b8a47be 100644
+--- a/mm/hmm.c
++++ b/mm/hmm.c
+@@ -75,7 +75,8 @@ static int hmm_vma_fault(unsigned long addr, unsigned long end,
+ 	}
+ 
+ 	for (; addr < end; addr += PAGE_SIZE)
+-		if (handle_mm_fault(vma, addr, fault_flags) & VM_FAULT_ERROR)
++		if (handle_mm_fault(vma, addr, fault_flags, NULL) &
++		    VM_FAULT_ERROR)
+ 			return -EFAULT;
+ 	return -EBUSY;
+ }
+diff --git a/mm/ksm.c b/mm/ksm.c
+index 5fb176d497ea..90a625b02a1d 100644
+--- a/mm/ksm.c
++++ b/mm/ksm.c
+@@ -480,7 +480,8 @@ static int break_ksm(struct vm_area_struct *vma, unsigned long addr)
+ 			break;
+ 		if (PageKsm(page))
+ 			ret = handle_mm_fault(vma, addr,
+-					FAULT_FLAG_WRITE | FAULT_FLAG_REMOTE);
++					      FAULT_FLAG_WRITE | FAULT_FLAG_REMOTE,
++					      NULL);
+ 		else
+ 			ret = VM_FAULT_WRITE;
+ 		put_page(page);
+diff --git a/mm/memory.c b/mm/memory.c
+index 072c72d88471..bb7ba127661a 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -71,6 +71,8 @@
+ #include <linux/dax.h>
+ #include <linux/oom.h>
+ #include <linux/numa.h>
++#include <linux/perf_event.h>
++#include <linux/ptrace.h>
+ 
+ #include <trace/events/kmem.h>
+ 
+@@ -4360,6 +4362,64 @@ static vm_fault_t __handle_mm_fault(struct vm_area_struct *vma,
+ 	return handle_pte_fault(&vmf);
+ }
+ 
++/**
++ * mm_account_fault - Do page fault accountings
++ *
++ * @regs: the pt_regs struct pointer.  When set to NULL, will skip accounting
++ *        of perf event counters, but we'll still do the per-task accounting to
++ *        the task who triggered this page fault.
++ * @address: the faulted address.
++ * @flags: the fault flags.
++ * @ret: the fault retcode.
++ *
++ * This will take care of most of the page fault accountings.  Meanwhile, it
++ * will also include the PERF_COUNT_SW_PAGE_FAULTS_[MAJ|MIN] perf counter
++ * updates.  However note that the handling of PERF_COUNT_SW_PAGE_FAULTS should
++ * still be in per-arch page fault handlers at the entry of page fault.
++ */
++static inline void mm_account_fault(struct pt_regs *regs,
++				    unsigned long address, unsigned int flags,
++				    vm_fault_t ret)
++{
++	bool major;
++
++	/*
++	 * We don't do accounting for some specific faults:
++	 *
++	 * - Unsuccessful faults (e.g. when the address wasn't valid).  That
++	 *   includes arch_vma_access_permitted() failing before reaching here.
++	 *   So this is not a "this many hardware page faults" counter.  We
++	 *   should use the hw profiling for that.
++	 *
++	 * - Incomplete faults (VM_FAULT_RETRY).  They will only be counted
++	 *   once they're completed.
++	 */
++	if (ret & (VM_FAULT_ERROR | VM_FAULT_RETRY))
++		return;
++
++	/*
++	 * We define the fault as a major fault when the final successful fault
++	 * is VM_FAULT_MAJOR, or if it retried (which implies that we couldn't
++	 * handle it immediately previously).
++	 */
++	major = (ret & VM_FAULT_MAJOR) || (flags & FAULT_FLAG_TRIED);
++
++	/*
++	 * If the fault is done for GUP, regs will be NULL, and we will skip
++	 * the fault accounting.
++	 */
++	if (!regs)
++		return;
++
++	if (major) {
++		current->maj_flt++;
++		perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MAJ, 1, regs, address);
++	} else {
++		current->min_flt++;
++		perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MIN, 1, regs, address);
++	}
++}
++
+ /*
+  * By the time we get here, we already hold the mm semaphore
+  *
+@@ -4367,7 +4427,7 @@ static vm_fault_t __handle_mm_fault(struct vm_area_struct *vma,
+  * return value.  See filemap_fault() and __lock_page_or_retry().
+  */
+ vm_fault_t handle_mm_fault(struct vm_area_struct *vma, unsigned long address,
+-		unsigned int flags)
++			   unsigned int flags, struct pt_regs *regs)
+ {
+ 	vm_fault_t ret;
+ 
+@@ -4408,6 +4468,8 @@ vm_fault_t handle_mm_fault(struct vm_area_struct *vma, unsigned long address,
+ 			mem_cgroup_oom_synchronize(false);
+ 	}
+ 
++	mm_account_fault(regs, address, flags, ret);
++
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(handle_mm_fault);
+-- 
+2.26.2
 
