@@ -2,123 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0073216529
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 06:21:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5686E216558
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 06:28:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726933AbgGGEVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 00:21:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53800 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726757AbgGGEVl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 00:21:41 -0400
-Received: from localhost (unknown [122.182.251.219])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1727046AbgGGE2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 00:28:01 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:11548 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726918AbgGGE2B (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 00:28:01 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1594096080; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=60Navhldv42+vmTmut42AtChOCPYqVL1BHt+i2yrzso=; b=CsKMLBUPRa1juZ98eufq2c4fo8Ul4Oi5v4mUF2Gre7YJBKCsqJkNi9gDQRQSnAAs6ZkFt4g+
+ K7EWTsQXffvrPn72NeO0rpN+8BhkQVTNLCyIK9WcufKugUBFu2NVsXBDIMdRVveOujotX+iS
+ qXzffjMAtnh3tA8dkg2h15uX5fM=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n14.prod.us-west-2.postgun.com with SMTP id
+ 5f03f9b7c9789fa906e6151d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 07 Jul 2020 04:27:35
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 96CE1C433CB; Tue,  7 Jul 2020 04:27:35 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.1.11] (unknown [61.3.20.137])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0DE7C20702;
-        Tue,  7 Jul 2020 04:21:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594095700;
-        bh=qVg1MjWrVI9DfjNv4Ao4HPc9Jf2pqIFaJmN60tjjBzM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=qAEngF0K0pwGlCNy7c8sNwQqZJFe/NWcl8pcyFIGvtCb369CijvXoQxXs0Ji8GE/d
-         246J4na/cmtlUaYWY1VCNjPjbuVwkX002alCubelUjP4axvJTwb7Uw8cr2nj5lBSqV
-         xGpuTXg52hVQcdbpEd+tQDyiIe54Ej4vG6VtTQ90=
-Date:   Tue, 7 Jul 2020 09:51:34 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] PHY: fixes for 5.8
-Message-ID: <20200707042134.GA676979@vkoul-mobl>
+        (Authenticated sender: rnayak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6E024C433C8;
+        Tue,  7 Jul 2020 04:27:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6E024C433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rnayak@codeaurora.org
+Subject: Re: [PATCH 1/3] spi: spi-qcom-qspi: Use OPP API to set clk/perf state
+To:     Mark Brown <broonie@kernel.org>
+Cc:     bjorn.andersson@linaro.org, agross@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        mka@chromium.org, Alok Chauhan <alokc@codeaurora.org>,
+        Akash Asthana <akashast@codeaurora.org>
+References: <1593769293-6354-1-git-send-email-rnayak@codeaurora.org>
+ <1593769293-6354-2-git-send-email-rnayak@codeaurora.org>
+ <20200703170157.GA54804@sirena.org.uk>
+From:   Rajendra Nayak <rnayak@codeaurora.org>
+Message-ID: <c49404d6-d9e1-2d19-92f4-0b2e1e2187a8@codeaurora.org>
+Date:   Tue, 7 Jul 2020 09:57:29 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="pf9I7BMVVzbSWLtt"
-Content-Disposition: inline
+In-Reply-To: <20200703170157.GA54804@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---pf9I7BMVVzbSWLtt
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 7/3/2020 10:31 PM, Mark Brown wrote:
+> On Fri, Jul 03, 2020 at 03:11:31PM +0530, Rajendra Nayak wrote:
+>> QSPI needs to vote on a performance state of a power domain depending on
+>> the clock rate. Add support for it by specifying the perf state/clock rate
+>> as an OPP table in device tree.
+> 
+> This doesn't apply against current code, please check and resend.
 
-Hi Greg,
+Hey Mark, as mentioned in the cover letter I wanted this to land via the
+qcom tree, since Bjorn already has a patch in his tree which would otherwise
+conflict with this change, if you were to pull this.
+Hence I had this rebased on qcom for-next and requested Bjorn to pull it in,
+with your ACK. Hope thats fine with you.
 
-Please pull to receive fixes for phy for 5.8. Kishon is bit busy and has
-asked me to send the PR for phy this time around.
+thanks,
+Rajendra
 
-The following changes since commit b3a9e3b9622ae10064826dccb4f7a52bd88c7407:
-
-  Linux 5.8-rc1 (2020-06-14 12:45:04 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/phy/linux-phy.git tags/phy-=
-fixes-5.8
-
-for you to fetch changes up to 38b1927e5bf9bcad4a2e33189ef1c5569f9599ba:
-
-  phy: sun4i-usb: fix dereference of pointer phy0 before it is null checked=
- (2020-06-25 18:25:37 +0530)
-
-----------------------------------------------------------------
-phy: fixes for 5.8
-
-*) Fix for intel combo driver for warns or errors
-*) Constify symbols for am654-serdes & j721e-wiz
-*) Return value fix for rockchip driver
-*) Null pointer dereference fix for sun4i-usb
-
-----------------------------------------------------------------
-Arnd Bergmann (1):
-      phy: intel: fix enum type mismatch warning
-
-Colin Ian King (1):
-      phy: sun4i-usb: fix dereference of pointer phy0 before it is null che=
-cked
-
-Dilip Kota (1):
-      phy: intel: Fix compilation error on FIELD_PREP usage
-
-Rikard Falkeborn (2):
-      phy: ti: am654-serdes: Constify regmap_config
-      phy: ti: j721e-wiz: Constify structs
-
-Tiezhu Yang (1):
-      phy: rockchip: Fix return value of inno_dsidphy_probe()
-
- drivers/phy/allwinner/phy-sun4i-usb.c            |  5 +++--
- drivers/phy/intel/phy-intel-combo.c              | 14 ++++++++------
- drivers/phy/rockchip/phy-rockchip-inno-dsidphy.c |  4 ++--
- drivers/phy/ti/phy-am654-serdes.c                |  2 +-
- drivers/phy/ti/phy-j721e-wiz.c                   | 10 +++++-----
- 5 files changed, 19 insertions(+), 16 deletions(-)
-
-Thanks
---=20
-~Vinod
-
---pf9I7BMVVzbSWLtt
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEE+vs47OPLdNbVcHzyfBQHDyUjg0cFAl8D+E4ACgkQfBQHDyUj
-g0fb7RAAvkIQgZXcwIV2uB/AA7hFffbXopmmR3GjHYt9B7Ci3euMNo+uLNEf7464
-GwoD3NLFLRLDYefOKKOrsUCIenpcD0PSnaUl2rhEmFl/6mEXtRqprU0FXPIudwpc
-0cXvGFgcdo2prgKcpyvOI3OVEHknLYjxD3fH3bxHsFcltzrDoxm40JbfGUw7VIZv
-boChjVSGbhUxKcr7YLqrK1Q7Kg3NznoeYOBosFoXeB/MsipoDcej3zJntLSHMWKt
-C9pKqXC7xoiBal2SvVxHVeS9fauZwPZX78e6njZC9WWnSqJoskzUKEI2d1qsP5Pm
-8z6Lce9E8z3LMw6w6c/3aDFftvus5xQj41EhSnZ8L6a2IeIDTeDbEZAjLg4Zl5FT
-3DVM1XDM0X91oAS6/ufXQWpCJqBrB+++jFU+w2ZMCpEnDeBFcjvU4lmTg1+AgEtn
-WYGRSWsBomcHkIR3FuyCqunpUlfI0u6LzjhpZDCOkLazJjiecMmHN7AJNrlfOXOy
-mg5wCtOjfRngSWHu9Vs10WZUn3QVtAbbERli7bALpVhTpLfT7Kuax7HOBaKZR9ti
-yhgTc5RhE6aqyKkmRC74U7TCxooG+Gk2uUfJxF9TIO6DZQjdQoSz7brGx9Ekfll/
-MjLlz/sxD0cErxm1eIFrdEbsroVbHAxFZ+Cl2uY2MhiuzMH1T84=
-=i5mq
------END PGP SIGNATURE-----
-
---pf9I7BMVVzbSWLtt--
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
