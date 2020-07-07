@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB7772171FA
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:43:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4E61217203
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:43:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730356AbgGGP1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:27:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41540 "EHLO mail.kernel.org"
+        id S1730083AbgGGP1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:27:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41594 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730344AbgGGP1I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:27:08 -0400
+        id S1729064AbgGGP1L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 11:27:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4B581206F6;
-        Tue,  7 Jul 2020 15:27:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BABD920663;
+        Tue,  7 Jul 2020 15:27:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594135627;
-        bh=7J7s3JxUCA9ycuh/TID/A9mEMpPr8x26xb6gQZz8V0I=;
+        s=default; t=1594135630;
+        bh=CRpvTakR43SmP2tzl9DQZi6CTXB8+lf/9I6bpYv0GZ4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q1A3kA3zv0HXIKrbrmVEOIhTgd9fivdHqcjFjkWRVSE8oJOtvkMHxfTLknPUfkJdU
-         5sHv+l0cLc005yN5iA2ByamcFPHOcRx5syjmjMUbWnazUOBALn+H4Do6XmMkwCx3Ul
-         0J37cyciH1H7WRX16nsmj0M3jX/C20u7ioD+1RvI=
+        b=uWC8hDqPbapi4l6zYnrxHfrl2kYMaM+heFhgqZpvaWfPsTw7CU+66gJlOwPnblQgq
+         zbOqTuO+ka+7vW9NxhdS6A2af1hYjvXVWoiFqepdsAosZ30fHg6rHjuqYy1qgz86py
+         b2weqyUYM/NWZ0dlohs1mL5B95dS3VRKDSIdDFIE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhang Xiaoxu <zhangxiaoxu5@huawei.com>,
-        Steve French <stfrench@microsoft.com>,
-        Aurelien Aptel <aaptel@suse.com>
-Subject: [PATCH 5.7 093/112] cifs: Fix the target file was deleted when rename failed.
-Date:   Tue,  7 Jul 2020 17:17:38 +0200
-Message-Id: <20200707145805.402316653@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Joseph Salisbury <joseph.salisbury@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>
+Subject: [PATCH 5.7 094/112] Drivers: hv: Change flag to write log level in panic msg to false
+Date:   Tue,  7 Jul 2020 17:17:39 +0200
+Message-Id: <20200707145805.449065113@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200707145800.925304888@linuxfoundation.org>
 References: <20200707145800.925304888@linuxfoundation.org>
@@ -45,56 +45,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
+From: Joseph Salisbury <joseph.salisbury@microsoft.com>
 
-commit 9ffad9263b467efd8f8dc7ae1941a0a655a2bab2 upstream.
+commit 77b48bea2fee47c15a835f6725dd8df0bc38375a upstream.
 
-When xfstest generic/035, we found the target file was deleted
-if the rename return -EACESS.
+When the kernel panics, one page of kmsg data may be collected and sent to
+Hyper-V to aid in diagnosing the failure.  The collected kmsg data typically
+ contains 50 to 100 lines, each of which has a log level prefix that isn't
+very useful from a diagnostic standpoint.  So tell kmsg_dump_get_buffer()
+to not include the log level, enabling more information that *is* useful to
+fit in the page.
 
-In cifs_rename2, we unlink the positive target dentry if rename
-failed with EACESS or EEXIST, even if the target dentry is positived
-before rename. Then the existing file was deleted.
+Requesting in stable kernels, since many kernels running in production are
+stable releases.
 
-We should just delete the target file which created during the
-rename.
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
 Cc: stable@vger.kernel.org
-Signed-off-by: Steve French <stfrench@microsoft.com>
-Reviewed-by: Aurelien Aptel <aaptel@suse.com>
+Signed-off-by: Joseph Salisbury <joseph.salisbury@microsoft.com>
+Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+Link: https://lore.kernel.org/r/1593210497-114310-1-git-send-email-joseph.salisbury@microsoft.com
+Signed-off-by: Wei Liu <wei.liu@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/cifs/inode.c |   10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ drivers/hv/vmbus_drv.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/cifs/inode.c
-+++ b/fs/cifs/inode.c
-@@ -1855,6 +1855,7 @@ cifs_rename2(struct inode *source_dir, s
- 	FILE_UNIX_BASIC_INFO *info_buf_target;
- 	unsigned int xid;
- 	int rc, tmprc;
-+	bool new_target = d_really_is_negative(target_dentry);
- 
- 	if (flags & ~RENAME_NOREPLACE)
- 		return -EINVAL;
-@@ -1931,8 +1932,13 @@ cifs_rename2(struct inode *source_dir, s
+--- a/drivers/hv/vmbus_drv.c
++++ b/drivers/hv/vmbus_drv.c
+@@ -1328,7 +1328,7 @@ static void hv_kmsg_dump(struct kmsg_dum
+ 	 * Write dump contents to the page. No need to synchronize; panic should
+ 	 * be single-threaded.
  	 */
- 
- unlink_target:
--	/* Try unlinking the target dentry if it's not negative */
--	if (d_really_is_positive(target_dentry) && (rc == -EACCES || rc == -EEXIST)) {
-+	/*
-+	 * If the target dentry was created during the rename, try
-+	 * unlinking it if it's not negative
-+	 */
-+	if (new_target &&
-+	    d_really_is_positive(target_dentry) &&
-+	    (rc == -EACCES || rc == -EEXIST)) {
- 		if (d_is_dir(target_dentry))
- 			tmprc = cifs_rmdir(target_dir, target_dentry);
- 		else
+-	kmsg_dump_get_buffer(dumper, true, hv_panic_page, HV_HYP_PAGE_SIZE,
++	kmsg_dump_get_buffer(dumper, false, hv_panic_page, HV_HYP_PAGE_SIZE,
+ 			     &bytes_written);
+ 	if (bytes_written)
+ 		hyperv_report_panic_msg(panic_pa, bytes_written);
 
 
