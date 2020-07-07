@@ -2,711 +2,479 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EDC92174E3
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 19:15:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D6552174C2
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 19:09:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728370AbgGGRPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 13:15:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728073AbgGGRPH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 13:15:07 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B43F2C08C5DC
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 10:15:06 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id j4so43617536wrp.10
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 10:15:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=fsknguNoZ07OoFgJVvUKLRv6z8mZoUKYL4RqNUVZ7W8=;
-        b=oDnQRNKejXpefTAv1Mu/maBHrGFh6PZw9UoRBMsqsUlsVAhriYzTQbqctAgtrG0CpU
-         DhR5gQIKEA10m+1Hkg4hqXi8H+JcL/npW8WXib44VHmv6wssSlv+XlkMIdvfyVrSjFEi
-         BChZaDrTUJAc2furwO6/K+/h3wKfwNlScjeZcxUAchK6vax7JBmjWJi3o+rlNu+YEFbD
-         TBHGNk7/8kusnBJ5k+3uAVCIjCM5laCjF+R22ZgMJiq0ZPxw28zabrQctF6+3xl1a0fE
-         OGQOA+jzk0Xc2ySnWrh30Ap55+MIjpziVYbM0VnPjGIHZcpqKHg3hvnJG5Yti3+w+feh
-         34yQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=fsknguNoZ07OoFgJVvUKLRv6z8mZoUKYL4RqNUVZ7W8=;
-        b=jiDDuoWl3fstzk71Az16q6LIGwridaSuA3J652w+nHFghe0WssZmNTyk3z7VVVsmwi
-         2Ia/8HHozEVritLEOtcjDgeKCicmbsQfjPPDN4MAvs0L0Odow0fUqkG9lX/UWCto/17v
-         uIf3zpuTj12r4qPHB1p/wRnZbFR8NW74c255XXXfkHAYCozM+BDmmcK9E7fOd/KSsEBP
-         MKeI/hszTRNO1gijT6WXZatjzCD8ovSArXYQ68LLPdcGW2A2+WqGC+gt9cSzETNsqOE2
-         6vTKgGfa2qC4EAWeOAKMZSLKxchuKT9maYTBuT771ZVA9iGJ5VE0PQh8gz6pAvro5OTK
-         TMeg==
-X-Gm-Message-State: AOAM532euqTnpYG9WKyCKXl7ILfTbNGwHG5rZtn8SIps7VqlHH8w/tVk
-        NT9EhBOm3IeIKlI8ZsRsenmj/rdMsRk=
-X-Google-Smtp-Source: ABdhPJwPHuJj6lewHF14r9syR3uPj4ORQXiDmSFnOg8KJD8E/ETdp57lspatmrGj+NHaJTgXSGC0sw==
-X-Received: by 2002:a5d:5706:: with SMTP id a6mr19194826wrv.328.1594142105103;
-        Tue, 07 Jul 2020 10:15:05 -0700 (PDT)
-Received: from localhost.localdomain (lns-bzn-59-82-252-131-168.adsl.proxad.net. [82.252.131.168])
-        by smtp.gmail.com with ESMTPSA id w128sm2237575wmb.19.2020.07.07.10.15.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jul 2020 10:15:04 -0700 (PDT)
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-To:     daniel.lezcano@linaro.org, rafael@kernel.org, lukasz.luba@arm.com
-Cc:     amit.kucheria@linaro.org, srinivas.pandruvada@linux.intel.com,
-        rkumbako@codeaurora.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: [PATCH RFC] powercap/drivers/energy_model: protocode: Add powercap energy model based
-Date:   Tue,  7 Jul 2020 19:14:57 +0200
-Message-Id: <20200707171457.31540-1-daniel.lezcano@linaro.org>
-X-Mailer: git-send-email 2.17.1
+        id S1728297AbgGGRJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 13:09:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50976 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727975AbgGGRJf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 13:09:35 -0400
+Received: from embeddedor (unknown [200.39.26.250])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3B591206F6;
+        Tue,  7 Jul 2020 17:09:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594141774;
+        bh=Odjt+Ksu5iEmnU1+DzWsMVxiitqULRWzWch4x6q4jvk=;
+        h=Date:From:To:Cc:Subject:From;
+        b=SdWvWY8DeYxm0jmlGaXcG1+a/3cX91+QEHeLpdEB0M7liHYeV/7hVEY+2pqtTg0QR
+         tU4P1/oeUa7sJDvaVzOPopa2QSO5ZjVKSIHMvAr/eq2Hbo2gSz6N7loaVM03uLwFeB
+         v52QeOk1FAJX9xWPHD1uUkpqgJspqwWDVak1uSEE=
+Date:   Tue, 7 Jul 2020 12:15:00 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: [PATCH] usb: gadget: Use fallthrough pseudo-keyword
+Message-ID: <20200707171500.GA13620@embeddedor>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On the embedded world, the complexity of the SoC leads to an
-increasing number of hotspots which need to be monitored and mitigated
-as a whole in order to prevent the temperature to go above the
-normative and legally stated 'skin temperature'.
+Replace the existing /* fall through */ comments and its variants with
+the new pseudo-keyword macro fallthrough[1]. Also, remove unnecessary
+fall-through markings when it is the case.
 
-Another aspect is to sustain the performance for a given power budget,
-for example virtual reality where the user can feel dizziness if the
-GPU performance is capped while a big CPU is processing something
-else. Or reduce the battery charging because the dissipated power is
-too high compared with the power consumed by other devices.
+[1] https://www.kernel.org/doc/html/latest/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
 
-Nowadays, the current thermal daemons are abusing the thermal
-framework cooling device state to force a specific and arbitraty state
-without taking care of the governor decisions. Given the closed loop
-of some governors that can confuse the logic or directly enter in
-a decision conflict.
-
-As the number of cooling device support is limited today to the CPU
-and the GPU, the thermal daemons have little control on the power
-dissipation of the system. The out of tree solutions are hacking
-around here and there in the drivers, in the frameworks to have
-control on the devices.
-
-The recent introduction of the energy model allows to get power
-information related to a gpu or a cpu device with a limited support.
-
-Thanks of the current work of Lukasz Luba:
-
-       https://lkml.org/lkml/2020/5/27/406
-
-The energy model is now being improved to be generic and extended to
-all devices, so giving the opportunity to SoC vendor to define the
-device energy model.
-
-On the other side, the powercap infrastructure is a perfect fit to define
-power constraints in a hierarchical way.
-
-The proposal is to use the powercap framework with the energy model in
-order to create a hierarchy of constraints the SoC vendor is able to
-define and assign a power budget on some nodes to cap the power.
-
-Example of constraints hierarchy:
-
-Soc
-  |
-  |-- gpu
-  |
-  `-- package
-        |
-	|-- perfdomain0
-	|         |
-	|         |-- cpu0
-	|         |
-	|         |-- cpu1
-	|         |
-	|         |-- cpu2
-	|         |
-	|         `-- cpu3
-	|
-	`-- perfdomain1
-	          |
-		  |-- cpu4
-		  |
-		  `-- cpu5
-
-The leaves of the tree are the real devices, the intermediate nodes
-are virtual, aggregating the children constraints and power
-characteristics.
-
-For example: cpu[0-3] have 179mW max, 'perfdomain0' has 716mW max,
-cpu[4-5] have 1130mw max each, 'perfordomain1' has 2260mW. It results
-'package' has 2260 + 716 = 2976mW max.
-
-Each node have a weight on a 2^10 basis, in order to reflect the
-percentage of power distribution of the children's node. This
-percentage is used to dispatch the power limit to the children.
-
-For example: package has 2976mW max, the weigths for the children are:
-
-  perfdomain0: (716 * 1024) / 2976 = 246
-  perfdomain1: (2260 * 1024) / 2976 = 778
-
-If we want to apply a power limit constraint of 1500mW at the package
-level, the power limit will be distributed along the children as:
-
-  perfdomain0: (1500 * 246) / 1024 = 360mW
-  perfdomain1: (1500 * 778) / 1024 = 1140mW
-
-This simple approach allows to do a fair distribution of the power
-limit but it will be replaced by a more complex mechanism where the
-power limit will be dynamically adjusted depending on the power
-consumption of the different devices. This is an algorithm with auto
-power balancing with unused power. When an allocated power budget is
-not used by a device, the siblings can share this free power until the
-device needs more power.
-
-The algorithm was presented during the ELC:
-
-https://ossna2020.sched.com/event/c3Wf/ideas-for-finer-grained-control-over-your-heat-budget-amit-kucheria-daniel-lezcano-linaro
-
-Given the complexity of the code, it sounds reasonable to provide a
-first stone of the edifice allowing at least the thermal daemons to
-stop abusing the thermal framework where the primary goal is to
-protect the silicone, not cap the power.
-
-However, one question remains: how do we describe the hierarchy?
-
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- drivers/powercap/Kconfig       |   8 +
- drivers/powercap/Makefile      |   1 +
- drivers/powercap/powercap_em.c | 485 +++++++++++++++++++++++++++++++++
- include/linux/cpuhotplug.h     |   1 +
- 4 files changed, 495 insertions(+)
- create mode 100644 drivers/powercap/powercap_em.c
+ drivers/usb/gadget/composite.c               |   16 ++++++++--------
+ drivers/usb/gadget/function/f_fs.c           |    2 +-
+ drivers/usb/gadget/function/f_hid.c          |    2 +-
+ drivers/usb/gadget/function/f_mass_storage.c |    2 +-
+ drivers/usb/gadget/function/f_phonet.c       |    4 ++--
+ drivers/usb/gadget/function/f_printer.c      |    6 +++---
+ drivers/usb/gadget/function/f_rndis.c        |    2 +-
+ drivers/usb/gadget/function/f_tcm.c          |    2 +-
+ drivers/usb/gadget/function/u_ether.c        |    4 ++--
+ drivers/usb/gadget/function/u_serial.c       |    6 +++---
+ drivers/usb/gadget/legacy/inode.c            |    7 +++----
+ drivers/usb/gadget/udc/dummy_hcd.c           |   12 ++++++------
+ drivers/usb/gadget/udc/goku_udc.c            |    9 ++++++---
+ drivers/usb/gadget/udc/omap_udc.c            |    4 ++--
+ drivers/usb/gadget/udc/s3c2410_udc.c         |    4 ++--
+ drivers/usb/gadget/udc/tegra-xudc.c          |    2 +-
+ 16 files changed, 43 insertions(+), 41 deletions(-)
 
-diff --git a/drivers/powercap/Kconfig b/drivers/powercap/Kconfig
-index ebc4d4578339..57f2e9f31560 100644
---- a/drivers/powercap/Kconfig
-+++ b/drivers/powercap/Kconfig
-@@ -43,4 +43,12 @@ config IDLE_INJECT
- 	  CPUs for power capping. Idle period can be injected
- 	  synchronously on a set of specified CPUs or alternatively
- 	  on a per CPU basis.
-+
-+config POWERCAP_EM
-+        bool "Energy model based power capping"
-+	depends on ENERGY_MODEL
-+	default y
-+	help
-+	  This enables support for the power capping using the energy
-+	  model and the associated per device performance state.
- endif
-diff --git a/drivers/powercap/Makefile b/drivers/powercap/Makefile
-index 7255c94ec61c..d9fa1255a499 100644
---- a/drivers/powercap/Makefile
-+++ b/drivers/powercap/Makefile
-@@ -1,5 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0-only
- obj-$(CONFIG_POWERCAP)	+= powercap_sys.o
-+obj-$(CONFIG_POWERCAP_EM) += powercap_em.o
- obj-$(CONFIG_INTEL_RAPL_CORE) += intel_rapl_common.o
- obj-$(CONFIG_INTEL_RAPL) += intel_rapl_msr.o
- obj-$(CONFIG_IDLE_INJECT) += idle_inject.o
-diff --git a/drivers/powercap/powercap_em.c b/drivers/powercap/powercap_em.c
-new file mode 100644
-index 000000000000..a5252d32c4e9
---- /dev/null
-+++ b/drivers/powercap/powercap_em.c
-@@ -0,0 +1,485 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright 2020 Linaro Limited
-+ *
-+ * Author: Daniel Lezcano <daniel.lezcano@linaro.org>
-+ *
-+ */
-+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-+
-+#include <linux/cpumask.h>
-+#include <linux/cpufreq.h>
-+#include <linux/cpuhotplug.h>
-+#include <linux/device.h>
-+#include <linux/energy_model.h>
-+#include <linux/hrtimer.h>
-+#include <linux/init.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/pm_qos.h>
-+#include <linux/powercap.h>
-+#include <linux/slab.h>
-+#include <linux/spinlock.h>
-+#include <linux/sysfs.h>
-+#include <linux/units.h>
-+
-+struct powercap_em {
-+	struct powercap_zone zone;
-+	struct powercap_em *parent;
-+	struct list_head sibling;
-+	struct list_head children;
-+	struct freq_qos_request qos_req;
-+	spinlock_t lock;
-+	bool mode;
-+	u64 power_limit;
-+	u64 power_max;
-+	u64 power_min;
-+	int weight;
-+	int cpu;
-+};
-+
-+static const char *constraint_name[] = {
-+	"Performance capping",
-+};
-+
-+static struct powercap_control_type *pct;
-+static struct powercap_em *pc_soc;
-+static struct powercap_em *pc_package;
-+
-+struct powercap_em *to_powercap_em(struct powercap_zone *zone)
-+{
-+	return container_of(zone, struct powercap_em, zone);
-+}
-+
-+/*
-+ * Browse the powercap nodes of the tree and rebalance their
-+ * weigths. This function is called when a node is inserted or
-+ * deleted.
-+ */
-+static void powercap_em_rebalance_weight(struct powercap_em *pcem)
-+{
-+	struct powercap_em *child;
-+
-+	spin_lock(&pcem->lock);
-+	list_for_each_entry(child, &pcem->children, sibling) {
-+
-+		child->weight = (child->power_max * 1024) / pcem->power_max;
-+
-+		powercap_em_rebalance_weight(child);
-+	}
-+	spin_unlock(&pcem->lock);
-+}
-+
-+/*
-+ * Initialize the energy model powercap zone by calling the underlying
-+ * powercap register function followed by the specific allocations.
-+ */
-+static struct powercap_em *
-+powercap_em_register(struct powercap_control_type *control_type,
-+		     const char *name,
-+		     struct powercap_em *parent,
-+		     const struct powercap_zone_ops *ops,
-+		     int nr_constraints,
-+		     const struct powercap_zone_constraint_ops *const_ops)
-+{
-+	struct powercap_em *pcem;
-+	struct powercap_zone *pcz;
-+
-+	pcem = kzalloc(sizeof(*pcem), GFP_KERNEL);
-+	if (!pcem)
-+		return NULL;
-+
-+	INIT_LIST_HEAD(&pcem->children);
-+	INIT_LIST_HEAD(&pcem->sibling);
-+	spin_lock_init(&pcem->lock);
-+
-+	pcz = powercap_register_zone(&pcem->zone, control_type, name,
-+				     parent ? &parent->zone : NULL,
-+				     ops, nr_constraints, const_ops);
-+	if (IS_ERR(pcz)) {
-+		kfree(pcem);
-+		return NULL;
-+	}
-+
-+	/*
-+	 * The root node does not have a parent
-+	 */
-+	if (parent) {
-+		spin_lock(&parent->lock);
-+		list_add_tail(&pcem->sibling, &parent->children);
-+		spin_unlock(&parent->lock);
-+		pcem->parent = parent;
-+	}
-+
-+	return pcem;
-+}
-+
-+/*
-+ * When a new powercap zone is inserted, propagate its power numbers
-+ * to the parents.
-+ */
-+static int powercap_em_set_power_range(struct powercap_em *pcem,
-+				       struct em_perf_domain *em)
-+{
-+	struct powercap_em *parent = pcem->parent;
-+	int nr_cpus = cpumask_weight(to_cpumask(em->cpus));
-+
-+	if (pcem->power_min || pcem->power_max)
-+		return -EINVAL;
-+
-+	pcem->power_min = em->table[0].power;
-+	pcem->power_min *= MICROWATT_PER_MILLIWATT;
-+	pcem->power_min *= nr_cpus;
-+
-+	pcem->power_max = em->table[em->nr_cap_states - 1].power;
-+	pcem->power_max *= MICROWATT_PER_MILLIWATT;
-+	pcem->power_max *= nr_cpus;
-+
-+	while (parent) {
-+		spin_lock(&parent->lock);
-+		parent->power_min += pcem->power_min;
-+		parent->power_max += pcem->power_max;
-+		spin_unlock(&parent->lock);
-+		parent = parent->parent;
-+	}
-+
-+	return 0;
-+}
-+
-+static int get_max_power_range_uw(struct powercap_zone *pcz, u64 *max_power_uw)
-+{
-+	struct powercap_em *pcem = to_powercap_em(pcz);
-+
-+	spin_lock(&pcem->lock);
-+	*max_power_uw = pcem->power_max;
-+	spin_unlock(&pcem->lock);
-+
-+	return 0;
-+}
-+
-+static int get_pd_power_uw(struct powercap_zone *pcz, u64 *power_uw)
-+{
-+	struct powercap_em *pcem = to_powercap_em(pcz);
-+	struct em_perf_domain *pd;
-+	unsigned long freq;
-+	int i, nr_cpus;
-+
-+	freq = cpufreq_quick_get(pcem->cpu);
-+	pd = em_cpu_get(pcem->cpu);
-+	nr_cpus = cpumask_weight(to_cpumask(pd->cpus));
-+
-+	for (i = 0; i < pd->nr_cap_states; i++) {
-+
-+		if (pd->table[i].frequency < freq)
-+			continue;
-+
-+		*power_uw = pd->table[i].power *
-+			MICROWATT_PER_MILLIWATT * nr_cpus;
-+
-+		return 0;
-+	}
-+
-+	return -EINVAL;
-+}
-+
-+static int get_children_power_uw(struct powercap_zone *pcz, u64 *power_uw)
-+{
-+	struct powercap_em *pcem = to_powercap_em(pcz);
-+	struct powercap_em *child;
-+	u64 power;
-+	int ret = 0;
-+
-+	*power_uw = 0;
-+
-+	spin_lock(&pcem->lock);
-+	list_for_each_entry(child, &pcem->children, sibling) {
-+		ret = child->zone.ops->get_power_uw(&child->zone, &power);
-+		if (ret)
-+			break;
-+		*power_uw += power;
-+	}
-+	spin_unlock(&pcem->lock);
-+
-+	return ret;
-+}
-+
-+static int set_domain_enable(struct powercap_zone *pcz, bool mode)
-+{
-+	struct powercap_em *pcem = to_powercap_em(pcz);
-+	struct cpufreq_policy *policy;
-+	struct em_perf_domain *pd;
-+	int ret;
-+
-+	if (mode) {
-+		policy = cpufreq_cpu_get(pcem->cpu);
-+		if (!policy)
-+			return -EINVAL;
-+
-+		pd = em_cpu_get(pcem->cpu);
-+		if (!pd)
-+			return -EINVAL;
-+
-+		ret = freq_qos_add_request(&policy->constraints,
-+					   &pcem->qos_req, FREQ_QOS_MAX,
-+					   pd->table[pd->nr_cap_states - 1].frequency);
-+		if (ret)
-+			return ret;
-+
-+	} else {
-+		freq_qos_remove_request(&pcem->qos_req);
-+	}
-+
-+	pcem->mode = mode;
-+
-+	powercap_em_rebalance_weight(pc_soc);
-+
-+	return 0;
-+}
-+
-+static int get_domain_enable(struct powercap_zone *pcz, bool *mode)
-+{
-+	struct powercap_em *pcem = to_powercap_em(pcz);
-+
-+	*mode = pcem->mode;
-+
-+	return 0;
-+}
-+
-+static int release_zone(struct powercap_zone *pcz)
-+{
-+	struct powercap_em *pcem = to_powercap_em(pcz);
-+
-+	if (!list_empty(&pcem->children))
-+		return -EBUSY;
-+
-+	freq_qos_remove_request(&pcem->qos_req);
-+	list_del(&pcem->sibling);
-+	kfree(pcem);
-+	powercap_em_rebalance_weight(pc_soc);
-+
-+	return 0;
-+}
-+
-+/*
-+ * Set the power limit on the nodes, the power limit is distributed
-+ * given the weight of the children.
-+ */
-+static int set_children_power_limit(struct powercap_zone *pcz, int cid,
-+				    u64 power_limit)
-+{
-+	struct powercap_em *pcem = to_powercap_em(pcz);
-+	struct powercap_em *child;
-+	u64 power;
-+	int ret = 0;
-+
-+	/*
-+	 * Don't allow values outside of the power range previously
-+	 * set when initiliazing the powercap energy model zone
-+	 */
-+	pcem->power_limit = clamp_val(power_limit,
-+				      pcem->power_min,
-+				      pcem->power_max);
-+
-+	spin_lock(&pcem->lock);
-+	list_for_each_entry(child, &pcem->children, sibling) {
-+
-+		power = (pcem->power_limit * child->weight) / 1024;
-+
-+		ret = child->zone.constraints->ops->set_power_limit_uw(
-+			&child->zone, cid, power);
-+		if (ret)
-+			break;
-+	}
-+	spin_unlock(&pcem->lock);
-+
-+
-+	return ret;
-+}
-+
-+static int get_children_power_limit(struct powercap_zone *pcz, int cid, u64 *data)
-+{
-+	struct powercap_em *pcem = to_powercap_em(pcz);
-+	struct powercap_em *child;
-+	u64 power;
-+	int ret = 0;
-+
-+	*data = 0;
-+
-+	spin_lock(&pcem->lock);
-+	list_for_each_entry(child, &pcem->children, sibling) {
-+		ret = child->zone.constraints->ops->get_power_limit_uw(
-+			&child->zone, cid, &power);
-+		if (ret)
-+			break;
-+		*data += power;
-+	}
-+	spin_unlock(&pcem->lock);
-+
-+	return ret;
-+}
-+
-+static const char *get_constraint_name(struct powercap_zone *pcz, int cid)
-+{
-+	return constraint_name[cid];
-+}
-+
-+static int set_pd_power_limit(struct powercap_zone *pcz, int cid,
-+			       u64 power_limit)
-+{
-+	struct powercap_em *pcem = to_powercap_em(pcz);
-+	struct em_perf_domain *pd;
-+	unsigned long frequency;
-+	int i, nr_cpus;
-+
-+	spin_lock(&pcem->lock);
-+
-+	power_limit = clamp_val(power_limit, pcem->power_min, pcem->power_max);
-+
-+	pd = em_cpu_get(pcem->cpu);
-+
-+	nr_cpus = cpumask_weight(to_cpumask(pd->cpus));
-+
-+	for (i = 0, frequency = pd->table[0].frequency; i < pd->nr_cap_states; i++) {
-+
-+		u64 power = pd->table[i].power * MICROWATT_PER_MILLIWATT;
-+
-+		if ((power * nr_cpus) > power_limit)
-+			break;
-+
-+		frequency = pd->table[i].frequency;
-+	}
-+
-+	freq_qos_update_request(&pcem->qos_req, frequency);
-+
-+	pcem->power_limit = power_limit;
-+
-+	spin_unlock(&pcem->lock);
-+
-+	return 0;
-+}
-+
-+static int get_pd_power_limit(struct powercap_zone *pcz, int cid, u64 *data)
-+{
-+	struct powercap_em *pcem = to_powercap_em(pcz);
-+
-+	spin_lock(&pcem->lock);
-+	*data = pcem->power_limit ? pcem->power_limit : pcem->power_max;
-+	spin_unlock(&pcem->lock);
-+
-+	return 0;
-+}
-+
-+static int set_time_window(struct powercap_zone *pcz, int cid, u64 window)
-+{
-+	return -ENOSYS;
-+}
-+
-+
-+static int get_time_window(struct powercap_zone *pcz, int cid, u64 *data)
-+{
-+	*data = 0;
-+
-+	return 0;
-+}
-+
-+static int get_max_power_uw(struct powercap_zone *pcz, int id, u64 *data)
-+{
-+	return get_max_power_range_uw(pcz, data);
-+}
-+
-+static const struct powercap_zone_constraint_ops constraint_ops = {
-+	.set_power_limit_uw = set_children_power_limit,
-+	.get_power_limit_uw = get_children_power_limit,
-+	.set_time_window_us = set_time_window,
-+	.get_time_window_us = get_time_window,
-+	.get_max_power_uw = get_max_power_uw,
-+	.get_name = get_constraint_name,
-+};
-+
-+static const struct powercap_zone_constraint_ops pd_constraint_ops = {
-+	.set_power_limit_uw = set_pd_power_limit,
-+	.get_power_limit_uw = get_pd_power_limit,
-+	.set_time_window_us = set_time_window,
-+	.get_time_window_us = get_time_window,
-+	.get_max_power_uw = get_max_power_uw,
-+	.get_name = get_constraint_name,
-+};
-+
-+static const struct powercap_zone_ops zone_ops = {
-+	.get_max_power_range_uw = get_max_power_range_uw,
-+	.get_power_uw = get_children_power_uw,
-+	.set_enable = set_domain_enable,
-+	.get_enable = get_domain_enable,
-+	.release = release_zone,
-+};
-+
-+static const struct powercap_zone_ops pd_zone_ops = {
-+	.get_max_power_range_uw = get_max_power_range_uw,
-+	.get_power_uw = get_pd_power_uw,
-+	.set_enable = set_domain_enable,
-+	.get_enable = get_domain_enable,
-+	.release = release_zone,
-+};
-+
-+static int cpuhp_powercap_em_online(unsigned int cpu)
-+{
-+        struct powercap_em *pcem;
-+	struct cpufreq_policy *policy;
-+	struct em_perf_domain *pd;
-+	char name[CPUFREQ_NAME_LEN];
-+	int ret;
-+
-+	policy = cpufreq_cpu_get(cpu);
-+
-+	if (!policy || cpumask_first(policy->related_cpus) != cpu)
-+		return 0;
-+
-+	pd = em_cpu_get(cpu);
-+	if (!pd)
-+		return -EINVAL;
-+
-+	sprintf(name, "policy%d", cpu);
-+
-+	pcem = powercap_em_register(pct, name, pc_package,
-+				    &pd_zone_ops, 1, &pd_constraint_ops);
-+	if (!pcem)
-+		return -EINVAL;
-+
-+	ret = powercap_em_set_power_range(pcem, pd);
-+	if (ret)
-+		return ret;
-+
-+	pcem->cpu = cpu;
-+
-+	ret = freq_qos_add_request(&policy->constraints,
-+				   &pcem->qos_req, FREQ_QOS_MAX,
-+				   pd->table[pd->nr_cap_states - 1].frequency);
-+
-+	powercap_em_rebalance_weight(pc_soc);
-+
-+	return ret;
-+}
-+
-+static int __init powercap_em_init(void)
-+{
-+	pct = powercap_register_control_type(NULL, "energy_model", NULL);
-+	if (!pct) {
-+		pr_err("Failed to register control type\n");
-+		return -EINVAL;
-+	}
-+
-+	pc_soc = powercap_em_register(pct, "soc", NULL,
-+				      &zone_ops, 1, &constraint_ops);
-+	if (!pc_soc)
-+		return -EINVAL;
-+
-+	pc_package = powercap_em_register(pct, "package", pc_soc,
-+					  &zone_ops, 1, &constraint_ops);
-+	if (!pc_package)
-+		return -EINVAL;
-+
-+	return cpuhp_setup_state(CPUHP_AP_POWERCAP_EM_ONLINE,
-+				 "powercap_em:online",
-+				 cpuhp_powercap_em_online, NULL);
-+}
-+late_initcall(powercap_em_init);
-diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
-index 191772d4a4d7..09fe4e1b430e 100644
---- a/include/linux/cpuhotplug.h
-+++ b/include/linux/cpuhotplug.h
-@@ -189,6 +189,7 @@ enum cpuhp_state {
- 	CPUHP_AP_ONLINE_DYN_END		= CPUHP_AP_ONLINE_DYN + 30,
- 	CPUHP_AP_X86_HPET_ONLINE,
- 	CPUHP_AP_X86_KVM_CLK_ONLINE,
-+	CPUHP_AP_POWERCAP_EM_ONLINE,
- 	CPUHP_AP_ACTIVE,
- 	CPUHP_ONLINE,
- };
--- 
-2.17.1
+diff --git a/drivers/usb/gadget/composite.c b/drivers/usb/gadget/composite.c
+index 5c1eb96a5c57..7ad648e53c05 100644
+--- a/drivers/usb/gadget/composite.c
++++ b/drivers/usb/gadget/composite.c
+@@ -72,17 +72,17 @@ function_descriptors(struct usb_function *f,
+ 		descriptors = f->ssp_descriptors;
+ 		if (descriptors)
+ 			break;
+-		/* FALLTHROUGH */
++		fallthrough;
+ 	case USB_SPEED_SUPER:
+ 		descriptors = f->ss_descriptors;
+ 		if (descriptors)
+ 			break;
+-		/* FALLTHROUGH */
++		fallthrough;
+ 	case USB_SPEED_HIGH:
+ 		descriptors = f->hs_descriptors;
+ 		if (descriptors)
+ 			break;
+-		/* FALLTHROUGH */
++		fallthrough;
+ 	default:
+ 		descriptors = f->fs_descriptors;
+ 	}
+@@ -170,20 +170,20 @@ int config_ep_by_speed_and_alt(struct usb_gadget *g,
+ 			want_comp_desc = 1;
+ 			break;
+ 		}
+-		/* fall through */
++		fallthrough;
+ 	case USB_SPEED_SUPER:
+ 		if (gadget_is_superspeed(g)) {
+ 			speed_desc = f->ss_descriptors;
+ 			want_comp_desc = 1;
+ 			break;
+ 		}
+-		/* fall through */
++		fallthrough;
+ 	case USB_SPEED_HIGH:
+ 		if (gadget_is_dualspeed(g)) {
+ 			speed_desc = f->hs_descriptors;
+ 			break;
+ 		}
+-		/* fall through */
++		fallthrough;
+ 	default:
+ 		speed_desc = f->fs_descriptors;
+ 	}
+@@ -237,7 +237,7 @@ int config_ep_by_speed_and_alt(struct usb_gadget *g,
+ 		case USB_ENDPOINT_XFER_ISOC:
+ 			/* mult: bits 1:0 of bmAttributes */
+ 			_ep->mult = (comp_desc->bmAttributes & 0x3) + 1;
+-			/* fall through */
++			fallthrough;
+ 		case USB_ENDPOINT_XFER_BULK:
+ 		case USB_ENDPOINT_XFER_INT:
+ 			_ep->maxburst = comp_desc->bMaxBurst + 1;
+@@ -1697,7 +1697,7 @@ composite_setup(struct usb_gadget *gadget, const struct usb_ctrlrequest *ctrl)
+ 			if (!gadget_is_dualspeed(gadget) ||
+ 			    gadget->speed >= USB_SPEED_SUPER)
+ 				break;
+-			/* FALLTHROUGH */
++			fallthrough;
+ 		case USB_DT_CONFIG:
+ 			value = config_desc(cdev, w_value);
+ 			if (value >= 0)
+diff --git a/drivers/usb/gadget/function/f_fs.c b/drivers/usb/gadget/function/f_fs.c
+index 490d353d5fde..5ff900e540c8 100644
+--- a/drivers/usb/gadget/function/f_fs.c
++++ b/drivers/usb/gadget/function/f_fs.c
+@@ -2726,7 +2726,7 @@ static void __ffs_event_add(struct ffs_data *ffs,
+ 	switch (type) {
+ 	case FUNCTIONFS_RESUME:
+ 		rem_type2 = FUNCTIONFS_SUSPEND;
+-		/* FALL THROUGH */
++		fallthrough;
+ 	case FUNCTIONFS_SUSPEND:
+ 	case FUNCTIONFS_SETUP:
+ 		rem_type1 = type;
+diff --git a/drivers/usb/gadget/function/f_hid.c b/drivers/usb/gadget/function/f_hid.c
+index df671acdd464..1125f4715830 100644
+--- a/drivers/usb/gadget/function/f_hid.c
++++ b/drivers/usb/gadget/function/f_hid.c
+@@ -477,7 +477,7 @@ static void hidg_set_report_complete(struct usb_ep *ep, struct usb_request *req)
+ 		break;
+ 	default:
+ 		ERROR(cdev, "Set report failed %d\n", req->status);
+-		/* FALLTHROUGH */
++		fallthrough;
+ 	case -ECONNABORTED:		/* hardware forced ep reset */
+ 	case -ECONNRESET:		/* request dequeued */
+ 	case -ESHUTDOWN:		/* disconnect from host */
+diff --git a/drivers/usb/gadget/function/f_mass_storage.c b/drivers/usb/gadget/function/f_mass_storage.c
+index 950d2a85f098..331c951d72dc 100644
+--- a/drivers/usb/gadget/function/f_mass_storage.c
++++ b/drivers/usb/gadget/function/f_mass_storage.c
+@@ -2039,7 +2039,7 @@ static int do_scsi_command(struct fsg_common *common)
+ 	case RELEASE:
+ 	case RESERVE:
+ 	case SEND_DIAGNOSTIC:
+-		/* Fall through */
++		fallthrough;
+ 
+ 	default:
+ unknown_cmnd:
+diff --git a/drivers/usb/gadget/function/f_phonet.c b/drivers/usb/gadget/function/f_phonet.c
+index d7f6cc51b7ec..0b468f5d55bc 100644
+--- a/drivers/usb/gadget/function/f_phonet.c
++++ b/drivers/usb/gadget/function/f_phonet.c
+@@ -212,7 +212,7 @@ static void pn_tx_complete(struct usb_ep *ep, struct usb_request *req)
+ 	case -ESHUTDOWN: /* disconnected */
+ 	case -ECONNRESET: /* disabled */
+ 		dev->stats.tx_aborted_errors++;
+-		/* fall through */
++		fallthrough;
+ 	default:
+ 		dev->stats.tx_errors++;
+ 	}
+@@ -360,7 +360,7 @@ static void pn_rx_complete(struct usb_ep *ep, struct usb_request *req)
+ 	/* Do resubmit in these cases: */
+ 	case -EOVERFLOW: /* request buffer overflow */
+ 		dev->stats.rx_over_errors++;
+-		/* fall through */
++		fallthrough;
+ 	default:
+ 		dev->stats.rx_errors++;
+ 		break;
+diff --git a/drivers/usb/gadget/function/f_printer.c b/drivers/usb/gadget/function/f_printer.c
+index 9c7ed2539ff7..ec15f7637e40 100644
+--- a/drivers/usb/gadget/function/f_printer.c
++++ b/drivers/usb/gadget/function/f_printer.c
+@@ -285,7 +285,7 @@ static void rx_complete(struct usb_ep *ep, struct usb_request *req)
+ 
+ 	/* data overrun */
+ 	case -EOVERFLOW:
+-		/* FALLTHROUGH */
++		fallthrough;
+ 
+ 	default:
+ 		DBG(dev, "rx status %d\n", status);
+@@ -304,7 +304,7 @@ static void tx_complete(struct usb_ep *ep, struct usb_request *req)
+ 	switch (req->status) {
+ 	default:
+ 		VDBG(dev, "tx err %d\n", req->status);
+-		/* FALLTHROUGH */
++		fallthrough;
+ 	case -ECONNRESET:		/* unlink */
+ 	case -ESHUTDOWN:		/* disconnect etc */
+ 		break;
+@@ -919,7 +919,7 @@ static bool gprinter_req_match(struct usb_function *f,
+ 		if (!w_value && !w_length &&
+ 		   !(USB_DIR_IN & ctrl->bRequestType))
+ 			break;
+-		/* fall through */
++		fallthrough;
+ 	default:
+ 		return false;
+ 	}
+diff --git a/drivers/usb/gadget/function/f_rndis.c b/drivers/usb/gadget/function/f_rndis.c
+index 0d8e4a364ca6..9534c8ab62a8 100644
+--- a/drivers/usb/gadget/function/f_rndis.c
++++ b/drivers/usb/gadget/function/f_rndis.c
+@@ -426,7 +426,7 @@ static void rndis_response_complete(struct usb_ep *ep, struct usb_request *req)
+ 		DBG(cdev, "RNDIS %s response error %d, %d/%d\n",
+ 			ep->name, status,
+ 			req->actual, req->length);
+-		/* FALLTHROUGH */
++		fallthrough;
+ 	case 0:
+ 		if (ep != rndis->notify)
+ 			break;
+diff --git a/drivers/usb/gadget/function/f_tcm.c b/drivers/usb/gadget/function/f_tcm.c
+index eaf556ceac32..d94b814328c8 100644
+--- a/drivers/usb/gadget/function/f_tcm.c
++++ b/drivers/usb/gadget/function/f_tcm.c
+@@ -1150,7 +1150,7 @@ static int usbg_submit_command(struct f_uas *fu,
+ 	default:
+ 		pr_debug_once("Unsupported prio_attr: %02x.\n",
+ 				cmd_iu->prio_attr);
+-		/* fall through */
++		fallthrough;
+ 	case UAS_SIMPLE_TAG:
+ 		cmd->prio_attr = TCM_SIMPLE_TAG;
+ 		break;
+diff --git a/drivers/usb/gadget/function/u_ether.c b/drivers/usb/gadget/function/u_ether.c
+index fbe96ef1ac7a..0230458b4de2 100644
+--- a/drivers/usb/gadget/function/u_ether.c
++++ b/drivers/usb/gadget/function/u_ether.c
+@@ -321,7 +321,7 @@ static void rx_complete(struct usb_ep *ep, struct usb_request *req)
+ 	/* data overrun */
+ 	case -EOVERFLOW:
+ 		dev->net->stats.rx_over_errors++;
+-		/* FALLTHROUGH */
++		fallthrough;
+ 
+ 	default:
+ 		dev->net->stats.rx_errors++;
+@@ -444,7 +444,7 @@ static void tx_complete(struct usb_ep *ep, struct usb_request *req)
+ 	default:
+ 		dev->net->stats.tx_errors++;
+ 		VDBG(dev, "tx err %d\n", req->status);
+-		/* FALLTHROUGH */
++		fallthrough;
+ 	case -ECONNRESET:		/* unlink */
+ 	case -ESHUTDOWN:		/* disconnect etc */
+ 		dev_kfree_skb_any(skb);
+diff --git a/drivers/usb/gadget/function/u_serial.c b/drivers/usb/gadget/function/u_serial.c
+index 3cfc6e2eba71..c1e5e72748d4 100644
+--- a/drivers/usb/gadget/function/u_serial.c
++++ b/drivers/usb/gadget/function/u_serial.c
+@@ -386,7 +386,7 @@ static void gs_rx_push(struct work_struct *work)
+ 			/* presumably a transient fault */
+ 			pr_warn("ttyGS%d: unexpected RX status %d\n",
+ 				port->port_num, req->status);
+-			/* FALLTHROUGH */
++			fallthrough;
+ 		case 0:
+ 			/* normal completion */
+ 			break;
+@@ -472,7 +472,7 @@ static void gs_write_complete(struct usb_ep *ep, struct usb_request *req)
+ 		/* presumably a transient fault */
+ 		pr_warn("%s: unexpected %s status %d\n",
+ 			__func__, ep->name, req->status);
+-		/* FALL THROUGH */
++		fallthrough;
+ 	case 0:
+ 		/* normal completion */
+ 		gs_start_tx(port);
+@@ -871,7 +871,7 @@ static void gs_console_complete_out(struct usb_ep *ep, struct usb_request *req)
+ 	default:
+ 		pr_warn("%s: unexpected %s status %d\n",
+ 			__func__, ep->name, req->status);
+-		/* fall through */
++		fallthrough;
+ 	case 0:
+ 		/* normal completion */
+ 		spin_lock(&cons->lock);
+diff --git a/drivers/usb/gadget/legacy/inode.c b/drivers/usb/gadget/legacy/inode.c
+index 9ee0bfe7bcda..1b430b36d0a6 100644
+--- a/drivers/usb/gadget/legacy/inode.c
++++ b/drivers/usb/gadget/legacy/inode.c
+@@ -312,7 +312,7 @@ get_ready_ep (unsigned f_flags, struct ep_data *epdata, bool is_write)
+ 	case STATE_EP_READY:			/* not configured yet */
+ 		if (is_write)
+ 			return 0;
+-		// FALLTHRU
++		fallthrough;
+ 	case STATE_EP_UNBOUND:			/* clean disconnect */
+ 		break;
+ 	// case STATE_EP_DISABLED:		/* "can't happen" */
+@@ -1084,7 +1084,7 @@ next_event (struct dev_data *dev, enum usb_gadgetfs_event_type type)
+ 	case GADGETFS_DISCONNECT:
+ 		if (dev->state == STATE_DEV_SETUP)
+ 			dev->setup_abort = 1;
+-		// FALL THROUGH
++		fallthrough;
+ 	case GADGETFS_CONNECT:
+ 		dev->ev_next = 0;
+ 		break;
+@@ -1381,7 +1381,6 @@ gadgetfs_setup (struct usb_gadget *gadget, const struct usb_ctrlrequest *ctrl)
+ 			make_qualifier (dev);
+ 			break;
+ 		case USB_DT_OTHER_SPEED_CONFIG:
+-			// FALLTHROUGH
+ 		case USB_DT_CONFIG:
+ 			value = config_buf (dev,
+ 					w_value >> 8,
+@@ -1718,7 +1717,7 @@ gadgetfs_suspend (struct usb_gadget *gadget)
+ 	case STATE_DEV_UNCONNECTED:
+ 		next_event (dev, GADGETFS_SUSPEND);
+ 		ep0_readable (dev);
+-		/* FALLTHROUGH */
++		fallthrough;
+ 	default:
+ 		break;
+ 	}
+diff --git a/drivers/usb/gadget/udc/dummy_hcd.c b/drivers/usb/gadget/udc/dummy_hcd.c
+index 0eeaead5acea..f4ffd52010ce 100644
+--- a/drivers/usb/gadget/udc/dummy_hcd.c
++++ b/drivers/usb/gadget/udc/dummy_hcd.c
+@@ -567,12 +567,12 @@ static int dummy_enable(struct usb_ep *_ep,
+ 			if (max <= 1024)
+ 				break;
+ 			/* save a return statement */
+-			/* fall through */
++			fallthrough;
+ 		case USB_SPEED_FULL:
+ 			if (max <= 64)
+ 				break;
+ 			/* save a return statement */
+-			/* fall through */
++			fallthrough;
+ 		default:
+ 			if (max <= 8)
+ 				break;
+@@ -590,7 +590,7 @@ static int dummy_enable(struct usb_ep *_ep,
+ 			if (max <= 1024)
+ 				break;
+ 			/* save a return statement */
+-			/* fall through */
++			fallthrough;
+ 		case USB_SPEED_FULL:
+ 			if (max <= 1023)
+ 				break;
+@@ -1943,7 +1943,7 @@ static void dummy_timer(struct timer_list *t)
+ 			 * this almost certainly polls too fast.
+ 			 */
+ 			limit = max(limit, periodic_bytes(dum, ep));
+-			/* FALLTHROUGH */
++			fallthrough;
+ 
+ 		default:
+ treat_control_like_bulk:
+@@ -2252,7 +2252,7 @@ static int dummy_hub_control(
+ 					 "supported for USB 2.0 roothub\n");
+ 				goto error;
+ 			}
+-			/* FALLS THROUGH */
++			fallthrough;
+ 		case USB_PORT_FEAT_RESET:
+ 			/* if it's already enabled, disable */
+ 			if (hcd->speed == HCD_USB3) {
+@@ -2276,7 +2276,7 @@ static int dummy_hub_control(
+ 			 * interval? Is it still 50msec as for HS?
+ 			 */
+ 			dum_hcd->re_timeout = jiffies + msecs_to_jiffies(50);
+-			/* FALLS THROUGH */
++			fallthrough;
+ 		default:
+ 			if (hcd->speed == HCD_USB3) {
+ 				if ((dum_hcd->port_status &
+diff --git a/drivers/usb/gadget/udc/goku_udc.c b/drivers/usb/gadget/udc/goku_udc.c
+index 91dcb1995c27..25c1d6ab5adb 100644
+--- a/drivers/usb/gadget/udc/goku_udc.c
++++ b/drivers/usb/gadget/udc/goku_udc.c
+@@ -125,11 +125,14 @@ goku_ep_enable(struct usb_ep *_ep, const struct usb_endpoint_descriptor *desc)
+ 	max = get_unaligned_le16(&desc->wMaxPacketSize);
+ 	switch (max) {
+ 	case 64:
+-		mode++; /* fall through */
++		mode++;
++		fallthrough;
+ 	case 32:
+-		mode++; /* fall through */
++		mode++;
++		fallthrough;
+ 	case 16:
+-		mode++; /* fall through */
++		mode++;
++		fallthrough;
+ 	case 8:
+ 		mode <<= 3;
+ 		break;
+diff --git a/drivers/usb/gadget/udc/omap_udc.c b/drivers/usb/gadget/udc/omap_udc.c
+index 4139da885651..494da00398d7 100644
+--- a/drivers/usb/gadget/udc/omap_udc.c
++++ b/drivers/usb/gadget/udc/omap_udc.c
+@@ -2831,7 +2831,7 @@ static int omap_udc_probe(struct platform_device *pdev)
+ 				type = "integrated";
+ 				break;
+ 			}
+-			/* FALL THROUGH */
++			fallthrough;
+ 		case 3:
+ 		case 11:
+ 		case 16:
+@@ -2848,7 +2848,7 @@ static int omap_udc_probe(struct platform_device *pdev)
+ 		case 14:			/* transceiverless */
+ 			if (cpu_is_omap1710())
+ 				goto bad_on_1710;
+-			/* FALL THROUGH */
++			fallthrough;
+ 		case 13:
+ 		case 15:
+ 			type = "no";
+diff --git a/drivers/usb/gadget/udc/s3c2410_udc.c b/drivers/usb/gadget/udc/s3c2410_udc.c
+index 80002d97b59d..bc2e8eb737c3 100644
+--- a/drivers/usb/gadget/udc/s3c2410_udc.c
++++ b/drivers/usb/gadget/udc/s3c2410_udc.c
+@@ -308,7 +308,7 @@ static int s3c2410_udc_write_fifo(struct s3c2410_ep *ep,
+ 	switch (idx) {
+ 	default:
+ 		idx = 0;
+-		/* fall through */
++		fallthrough;
+ 	case 0:
+ 		fifo_reg = S3C2410_UDC_EP0_FIFO_REG;
+ 		break;
+@@ -413,7 +413,7 @@ static int s3c2410_udc_read_fifo(struct s3c2410_ep *ep,
+ 	switch (idx) {
+ 	default:
+ 		idx = 0;
+-		/* fall through */
++		fallthrough;
+ 	case 0:
+ 		fifo_reg = S3C2410_UDC_EP0_FIFO_REG;
+ 		break;
+diff --git a/drivers/usb/gadget/udc/tegra-xudc.c b/drivers/usb/gadget/udc/tegra-xudc.c
+index bbe1a04686da..404f77806c6a 100644
+--- a/drivers/usb/gadget/udc/tegra-xudc.c
++++ b/drivers/usb/gadget/udc/tegra-xudc.c
+@@ -2742,7 +2742,7 @@ static void tegra_xudc_handle_transfer_event(struct tegra_xudc *xudc,
+ 		ep_wait_for_stopped(xudc, ep_index);
+ 		ep->enq_ptr = ep->deq_ptr;
+ 		tegra_xudc_ep_nuke(ep, -EIO);
+-		/* FALLTHROUGH */
++		fallthrough;
+ 	case TRB_CMPL_CODE_STREAM_NUMP_ERROR:
+ 	case TRB_CMPL_CODE_CTRL_DIR_ERR:
+ 	case TRB_CMPL_CODE_INVALID_STREAM_TYPE_ERR:
 
