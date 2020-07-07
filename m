@@ -2,44 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4077217163
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:42:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69BEB217176
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:42:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729282AbgGGPS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:18:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58472 "EHLO mail.kernel.org"
+        id S1728855AbgGGPUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:20:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60238 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728191AbgGGPSz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:18:55 -0400
+        id S1728822AbgGGPUP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 11:20:15 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6FE4220674;
-        Tue,  7 Jul 2020 15:18:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 68A522078A;
+        Tue,  7 Jul 2020 15:20:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594135135;
-        bh=0Er6uxMfKgSExs7P3eRG8nd9FTqEqobIt6HXk9xwKEw=;
+        s=default; t=1594135214;
+        bh=20y4Mugg4uM0Zxy27gW+xkoeKE5+EVAkevoG4qqLK3M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JdnziE5ubtelOj6913r1rkdxdKndrIkXaxzNRWZVreCWBt+S+RYCFPO4y6K4EEBol
-         /+PJ1fdU1vhRGQ0i0y/V8NIcFU3VvwrfHiU0frCN+R3ITTs7bKAT/027ovamrTNYNa
-         6cgBdSm1nvnJUxTBGsQjJFudMEmJlHOHXS+irbjQ=
+        b=n//OSaL1kf9vdF+Rmr6eJS4gDdCPwqQjTuspAqRrjlh1A9Juny89LKMD0Kc9BFc3A
+         iBaHAQoZayafpeaSOYcL23oxHTo9iXwmpQawxD1YpdDipfoJ3Fja8xvW6UQG3tcTe0
+         SMmQGkV6sVtQtWjqVpwcJIOBKtgWDd+dW0tB03LA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dongli Zhang <dongli.zhang@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joe Jin <joe.jin@oracle.com>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 05/36] mm/slub.c: fix corrupted freechain in deactivate_slab()
-Date:   Tue,  7 Jul 2020 17:16:57 +0200
-Message-Id: <20200707145749.388708047@linuxfoundation.org>
+        stable@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: [PATCH 5.4 19/65] selftests: tpm: Use /bin/sh instead of /bin/bash
+Date:   Tue,  7 Jul 2020 17:16:58 +0200
+Message-Id: <20200707145753.408759134@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200707145749.130272978@linuxfoundation.org>
-References: <20200707145749.130272978@linuxfoundation.org>
+In-Reply-To: <20200707145752.417212219@linuxfoundation.org>
+References: <20200707145752.417212219@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,115 +45,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dongli Zhang <dongli.zhang@oracle.com>
+From: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
 
-[ Upstream commit 52f23478081ae0dcdb95d1650ea1e7d52d586829 ]
+commit 377ff83083c953dd58c5a030b3c9b5b85d8cc727 upstream.
 
-The slub_debug is able to fix the corrupted slab freelist/page.
-However, alloc_debug_processing() only checks the validity of current
-and next freepointer during allocation path.  As a result, once some
-objects have their freepointers corrupted, deactivate_slab() may lead to
-page fault.
+It's better to use /bin/sh instead of /bin/bash in order to run the tests
+in the BusyBox shell.
 
-Below is from a test kernel module when 'slub_debug=PUF,kmalloc-128
-slub_nomerge'.  The test kernel corrupts the freepointer of one free
-object on purpose.  Unfortunately, deactivate_slab() does not detect it
-when iterating the freechain.
+Fixes: 6ea3dfe1e073 ("selftests: add TPM 2.0 tests")
+Cc: stable@vger.kernel.org
+Cc: linux-integrity@vger.kernel.org
+Cc: linux-kselftest@vger.kernel.org
+Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-  BUG: unable to handle page fault for address: 00000000123456f8
-  #PF: supervisor read access in kernel mode
-  #PF: error_code(0x0000) - not-present page
-  PGD 0 P4D 0
-  Oops: 0000 [#1] SMP PTI
-  ... ...
-  RIP: 0010:deactivate_slab.isra.92+0xed/0x490
-  ... ...
-  Call Trace:
-   ___slab_alloc+0x536/0x570
-   __slab_alloc+0x17/0x30
-   __kmalloc+0x1d9/0x200
-   ext4_htree_store_dirent+0x30/0xf0
-   htree_dirblock_to_tree+0xcb/0x1c0
-   ext4_htree_fill_tree+0x1bc/0x2d0
-   ext4_readdir+0x54f/0x920
-   iterate_dir+0x88/0x190
-   __x64_sys_getdents+0xa6/0x140
-   do_syscall_64+0x49/0x170
-   entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Therefore, this patch adds extra consistency check in deactivate_slab().
-Once an object's freepointer is corrupted, all following objects
-starting at this object are isolated.
-
-[akpm@linux-foundation.org: fix build with CONFIG_SLAB_DEBUG=n]
-Signed-off-by: Dongli Zhang <dongli.zhang@oracle.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Cc: Joe Jin <joe.jin@oracle.com>
-Cc: Christoph Lameter <cl@linux.com>
-Cc: Pekka Enberg <penberg@kernel.org>
-Cc: David Rientjes <rientjes@google.com>
-Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Link: http://lkml.kernel.org/r/20200331031450.12182-1-dongli.zhang@oracle.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/slub.c | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+ tools/testing/selftests/tpm2/test_smoke.sh |    2 +-
+ tools/testing/selftests/tpm2/test_space.sh |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/mm/slub.c b/mm/slub.c
-index b94ba8d35a025..473e0a8afb802 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -645,6 +645,20 @@ static void slab_fix(struct kmem_cache *s, char *fmt, ...)
- 	va_end(args);
- }
+--- a/tools/testing/selftests/tpm2/test_smoke.sh
++++ b/tools/testing/selftests/tpm2/test_smoke.sh
+@@ -1,4 +1,4 @@
+-#!/bin/bash
++#!/bin/sh
+ # SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
  
-+static bool freelist_corrupted(struct kmem_cache *s, struct page *page,
-+			       void *freelist, void *nextfree)
-+{
-+	if ((s->flags & SLAB_CONSISTENCY_CHECKS) &&
-+	    !check_valid_pointer(s, page, nextfree)) {
-+		object_err(s, page, freelist, "Freechain corrupt");
-+		freelist = NULL;
-+		slab_fix(s, "Isolate corrupted freechain");
-+		return true;
-+	}
-+
-+	return false;
-+}
-+
- static void print_trailer(struct kmem_cache *s, struct page *page, u8 *p)
- {
- 	unsigned int off;	/* Offset of last byte */
-@@ -1328,6 +1342,11 @@ static inline void inc_slabs_node(struct kmem_cache *s, int node,
- static inline void dec_slabs_node(struct kmem_cache *s, int node,
- 							int objects) {}
+ python -m unittest -v tpm2_tests.SmokeTest
+--- a/tools/testing/selftests/tpm2/test_space.sh
++++ b/tools/testing/selftests/tpm2/test_space.sh
+@@ -1,4 +1,4 @@
+-#!/bin/bash
++#!/bin/sh
+ # SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
  
-+static bool freelist_corrupted(struct kmem_cache *s, struct page *page,
-+			       void *freelist, void *nextfree)
-+{
-+	return false;
-+}
- #endif /* CONFIG_SLUB_DEBUG */
- 
- /*
-@@ -2013,6 +2032,14 @@ static void deactivate_slab(struct kmem_cache *s, struct page *page,
- 		void *prior;
- 		unsigned long counters;
- 
-+		/*
-+		 * If 'nextfree' is invalid, it is possible that the object at
-+		 * 'freelist' is already corrupted.  So isolate all objects
-+		 * starting at 'freelist'.
-+		 */
-+		if (freelist_corrupted(s, page, freelist, nextfree))
-+			break;
-+
- 		do {
- 			prior = page->freelist;
- 			counters = page->counters;
--- 
-2.25.1
-
+ python -m unittest -v tpm2_tests.SpaceTest
 
 
