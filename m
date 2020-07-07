@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63923217089
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:24:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5BB021708C
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:24:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728456AbgGGPSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:18:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57948 "EHLO mail.kernel.org"
+        id S1729233AbgGGPSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:18:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58012 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729214AbgGGPSf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:18:35 -0400
+        id S1729216AbgGGPSi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 11:18:38 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8235520738;
-        Tue,  7 Jul 2020 15:18:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0B5892065D;
+        Tue,  7 Jul 2020 15:18:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594135115;
-        bh=5U1H1AKYY4hW52vQBYwss1xVcLPoJ/65EiK7ZaTYNH8=;
+        s=default; t=1594135117;
+        bh=zixSc3b/IaBLaB9+Nhpr8wMit1YkgopGuFIq1Rk5x0k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=puUAVVKEZKz+cTn4K4VIhUu/jNg8WTL1/bjWJe4GOq14+rL8T9EiY3LmO8Bvq6bCm
-         /AG/T3BDBITiJ2ELD2wd6As2vPBGJeHBN47Dbn1i/xOO/TUYDbjMODaqSo1pSDYFPW
-         /JfWvEuWs6E5yrU4JNBUK1Whk8SlbRKtGNn+VslQ=
+        b=DB4Bn85/u0+VViMT6sR77ovGaBANSqVziacvhKWjiCgPslh1dy4JhaoP2ehBUb6Dm
+         ptfP5BRs3nnTzrHRMvdYgLHZGZXJACK6kzS3dRiiFEPD3HHmrbdjklqzU0+IsQ8y0o
+         cRZvLpenXsPArrZ+mjkEVlaQ+PgIvVT86g+W9rNI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -30,9 +30,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 17/36] cxgb4: use correct type for all-mask IP address comparison
-Date:   Tue,  7 Jul 2020 17:17:09 +0200
-Message-Id: <20200707145749.959174058@linuxfoundation.org>
+Subject: [PATCH 4.19 18/36] cxgb4: fix SGE queue dump destination buffer context
+Date:   Tue,  7 Jul 2020 17:17:10 +0200
+Message-Id: <20200707145750.005172102@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200707145749.130272978@linuxfoundation.org>
 References: <20200707145749.130272978@linuxfoundation.org>
@@ -47,52 +47,50 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>
 
-[ Upstream commit f286dd8eaad5a2758750f407ab079298e0bcc8a5 ]
+[ Upstream commit 1992ded5d111997877a9a25205976d8d03c46814 ]
 
-Use correct type to check for all-mask exact match IP addresses.
+The data in destination buffer is expected to be be parsed in big
+endian. So, use the right context.
 
-Fixes following sparse warnings due to big endian value checks
-against 0xffffffff in is_addr_all_mask():
-cxgb4_filter.c:977:25: warning: restricted __be32 degrades to integer
-cxgb4_filter.c:983:37: warning: restricted __be32 degrades to integer
-cxgb4_filter.c:984:37: warning: restricted __be32 degrades to integer
-cxgb4_filter.c:985:37: warning: restricted __be32 degrades to integer
-cxgb4_filter.c:986:37: warning: restricted __be32 degrades to integer
+Fixes following sparse warning:
+cudbg_lib.c:2041:44: warning: incorrect type in assignment (different
+base types)
+cudbg_lib.c:2041:44:    expected unsigned long long [usertype]
+cudbg_lib.c:2041:44:    got restricted __be64 [usertype]
 
-Fixes: 3eb8b62d5a26 ("cxgb4: add support to create hash-filters via tc-flower offload")
+Fixes: 736c3b94474e ("cxgb4: collect egress and ingress SGE queue contexts")
 Signed-off-by: Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/net/ethernet/chelsio/cxgb4/cudbg_lib.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c
-index 7dddb9e748b81..86745f33a252d 100644
---- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c
-+++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c
-@@ -810,16 +810,16 @@ static bool is_addr_all_mask(u8 *ipmask, int family)
- 		struct in_addr *addr;
+diff --git a/drivers/net/ethernet/chelsio/cxgb4/cudbg_lib.c b/drivers/net/ethernet/chelsio/cxgb4/cudbg_lib.c
+index 5bc58429bb1c4..c91e155c147ca 100644
+--- a/drivers/net/ethernet/chelsio/cxgb4/cudbg_lib.c
++++ b/drivers/net/ethernet/chelsio/cxgb4/cudbg_lib.c
+@@ -1987,7 +1987,6 @@ int cudbg_collect_dump_context(struct cudbg_init *pdbg_init,
+ 	u8 mem_type[CTXT_INGRESS + 1] = { 0 };
+ 	struct cudbg_buffer temp_buff = { 0 };
+ 	struct cudbg_ch_cntxt *buff;
+-	u64 *dst_off, *src_off;
+ 	u8 *ctx_buf;
+ 	u8 i, k;
+ 	int rc;
+@@ -2056,8 +2055,11 @@ int cudbg_collect_dump_context(struct cudbg_init *pdbg_init,
+ 		}
  
- 		addr = (struct in_addr *)ipmask;
--		if (addr->s_addr == 0xffffffff)
-+		if (ntohl(addr->s_addr) == 0xffffffff)
- 			return true;
- 	} else if (family == AF_INET6) {
- 		struct in6_addr *addr6;
+ 		for (j = 0; j < max_ctx_qid; j++) {
++			__be64 *dst_off;
++			u64 *src_off;
++
+ 			src_off = (u64 *)(ctx_buf + j * SGE_CTXT_SIZE);
+-			dst_off = (u64 *)buff->data;
++			dst_off = (__be64 *)buff->data;
  
- 		addr6 = (struct in6_addr *)ipmask;
--		if (addr6->s6_addr32[0] == 0xffffffff &&
--		    addr6->s6_addr32[1] == 0xffffffff &&
--		    addr6->s6_addr32[2] == 0xffffffff &&
--		    addr6->s6_addr32[3] == 0xffffffff)
-+		if (ntohl(addr6->s6_addr32[0]) == 0xffffffff &&
-+		    ntohl(addr6->s6_addr32[1]) == 0xffffffff &&
-+		    ntohl(addr6->s6_addr32[2]) == 0xffffffff &&
-+		    ntohl(addr6->s6_addr32[3]) == 0xffffffff)
- 			return true;
- 	}
- 	return false;
+ 			/* The data is stored in 64-bit cpu order.  Convert it
+ 			 * to big endian before parsing.
 -- 
 2.25.1
 
