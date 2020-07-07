@@ -2,139 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B431217848
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 21:50:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C31321782B
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 21:45:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728578AbgGGTuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 15:50:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46022 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726951AbgGGTuW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 15:50:22 -0400
-Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0CF4C061755;
-        Tue,  7 Jul 2020 12:50:21 -0700 (PDT)
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id 52F51BC0C1;
-        Tue,  7 Jul 2020 19:50:18 +0000 (UTC)
-From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-To:     trond.myklebust@hammerspace.com, anna.schumaker@netapp.com,
-        bfields@fieldses.org, chuck.lever@oracle.com, davem@davemloft.net,
-        kuba@kernel.org, linux-nfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Subject: [PATCH] Replace HTTP links with HTTPS ones: NFS, SUNRPC, and LOCKD clients
-Date:   Tue,  7 Jul 2020 21:50:12 +0200
-Message-Id: <20200707195012.52559-1-grandmaster@al2klimov.de>
+        id S1728382AbgGGTo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 15:44:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58070 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726763AbgGGTo5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 15:44:57 -0400
+Received: from embeddedor (unknown [200.39.26.250])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A5494206BE;
+        Tue,  7 Jul 2020 19:44:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594151097;
+        bh=dJp+PL8g3KNnzNGMS1VZ8Vt2dsb5EvBdpIBRC+C9sWY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=BoRFD0r9+TcHRnVv+FIm6BwXiROBx8ed8M7u7mDC4gIYFVPEKAmatVdp9Sm5VdD4B
+         GJHbRulK1zxhW90BdSn6+UZFJ3f6JB/dgPngZseEGCZAutEFojqTCNolQhQH0hVJHI
+         J05mOUGHz8xvps0JZ3DFovWmLqxaGkHidq4L/55U=
+Date:   Tue, 7 Jul 2020 14:50:23 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: [PATCH] usb: host: Use fallthrough pseudo-keyword
+Message-ID: <20200707195023.GA3792@embeddedor>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +++++
-X-Spam-Level: *****
-Authentication-Results: smtp.al2klimov.de;
-        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rationale:
-Reduces attack surface on kernel devs opening the links for MITM
-as HTTPS traffic is much harder to manipulate.
+Replace the existing /* fall through */ comments and its variants with
+the new pseudo-keyword macro fallthrough[1]. Also, remove unnecessary
+fall-through markings when it is the case.
 
-Deterministic algorithm:
-For each file:
-  If not .svg:
-    For each line:
-      If doesn't contain `\bxmlns\b`:
-        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-          If both the HTTP and HTTPS versions
-          return 200 OK and serve the same content:
-            Replace HTTP with HTTPS.
+[1] https://www.kernel.org/doc/html/latest/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
 
-Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- Continuing my work started at 93431e0607e5.
+ drivers/usb/host/ehci-dbg.c   |    2 +-
+ drivers/usb/host/ehci-fsl.c   |    4 ++--
+ drivers/usb/host/ehci-hcd.c   |    4 ++--
+ drivers/usb/host/ehci-q.c     |    2 +-
+ drivers/usb/host/ehci-sched.c |    2 +-
+ 5 files changed, 7 insertions(+), 7 deletions(-)
 
- If there are any URLs to be removed completely or at least not HTTPSified:
- Just clearly say so and I'll *undo my change*.
- See also https://lkml.org/lkml/2020/6/27/64
-
- If there are any valid, but yet not changed URLs:
- See https://lkml.org/lkml/2020/6/26/837
-
- fs/lockd/mon.c                  | 2 +-
- include/linux/sunrpc/bc_xprt.h  | 2 +-
- include/linux/sunrpc/msg_prot.h | 2 +-
- net/sunrpc/backchannel_rqst.c   | 2 +-
- net/sunrpc/sunrpc.h             | 2 +-
- 5 files changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/fs/lockd/mon.c b/fs/lockd/mon.c
-index 1eabd91870e6..1d9488cf0534 100644
---- a/fs/lockd/mon.c
-+++ b/fs/lockd/mon.c
-@@ -417,7 +417,7 @@ void nsm_release(struct nsm_handle *nsm)
- /*
-  * XDR functions for NSM.
-  *
-- * See http://www.opengroup.org/ for details on the Network
-+ * See https://www.opengroup.org/ for details on the Network
-  * Status Monitor wire protocol.
-  */
+diff --git a/drivers/usb/host/ehci-dbg.c b/drivers/usb/host/ehci-dbg.c
+index 7619cfb06883..0b7f1edd9eec 100644
+--- a/drivers/usb/host/ehci-dbg.c
++++ b/drivers/usb/host/ehci-dbg.c
+@@ -823,7 +823,7 @@ static ssize_t fill_registers_buffer(struct debug_buffer *buf)
+ 				break;
+ 			case 0:		/* illegal reserved capability */
+ 				cap = 0;
+-				/* FALLTHROUGH */
++				fallthrough;
+ 			default:		/* unknown */
+ 				break;
+ 			}
+diff --git a/drivers/usb/host/ehci-fsl.c b/drivers/usb/host/ehci-fsl.c
+index 9e9c232e896f..6c2b53baa515 100644
+--- a/drivers/usb/host/ehci-fsl.c
++++ b/drivers/usb/host/ehci-fsl.c
+@@ -234,7 +234,7 @@ static int ehci_fsl_setup_phy(struct usb_hcd *hcd,
+ 		break;
+ 	case FSL_USB2_PHY_UTMI_WIDE:
+ 		portsc |= PORT_PTS_PTW;
+-		/* fall through */
++		fallthrough;
+ 	case FSL_USB2_PHY_UTMI:
+ 		/* Presence of this node "has_fsl_erratum_a006918"
+ 		 * in device-tree is used to stop USB controller
+@@ -244,7 +244,7 @@ static int ehci_fsl_setup_phy(struct usb_hcd *hcd,
+ 			dev_warn(dev, "USB PHY clock invalid\n");
+ 			return -EINVAL;
+ 		}
+-		/* fall through */
++		fallthrough;
+ 	case FSL_USB2_PHY_UTMI_DUAL:
+ 		/* PHY_CLK_VALID bit is de-featured from all controller
+ 		 * versions below 2.4 and is to be checked only for
+diff --git a/drivers/usb/host/ehci-hcd.c b/drivers/usb/host/ehci-hcd.c
+index cf2b7ae93b7e..6257be4110ca 100644
+--- a/drivers/usb/host/ehci-hcd.c
++++ b/drivers/usb/host/ehci-hcd.c
+@@ -982,7 +982,7 @@ ehci_endpoint_disable (struct usb_hcd *hcd, struct usb_host_endpoint *ep)
+ 			start_unlink_async(ehci, qh);
+ 		else
+ 			start_unlink_intr(ehci, qh);
+-		/* FALL THROUGH */
++		fallthrough;
+ 	case QH_STATE_COMPLETING:	/* already in unlinking */
+ 	case QH_STATE_UNLINK:		/* wait for hw to finish? */
+ 	case QH_STATE_UNLINK_WAIT:
+@@ -999,7 +999,7 @@ ehci_endpoint_disable (struct usb_hcd *hcd, struct usb_host_endpoint *ep)
+ 			qh_destroy(ehci, qh);
+ 			break;
+ 		}
+-		/* fall through */
++		fallthrough;
+ 	default:
+ 		/* caller was supposed to have unlinked any requests;
+ 		 * that's not our job.  just leak this memory.
+diff --git a/drivers/usb/host/ehci-q.c b/drivers/usb/host/ehci-q.c
+index 8a5c9b3ebe1e..a826715ae9bd 100644
+--- a/drivers/usb/host/ehci-q.c
++++ b/drivers/usb/host/ehci-q.c
+@@ -874,7 +874,7 @@ qh_make (
+ 	switch (urb->dev->speed) {
+ 	case USB_SPEED_LOW:
+ 		info1 |= QH_LOW_SPEED;
+-		/* FALL THROUGH */
++		fallthrough;
  
-diff --git a/include/linux/sunrpc/bc_xprt.h b/include/linux/sunrpc/bc_xprt.h
-index d796058cdff2..f07c334c599f 100644
---- a/include/linux/sunrpc/bc_xprt.h
-+++ b/include/linux/sunrpc/bc_xprt.h
-@@ -4,7 +4,7 @@
- 
- NetApp provides this source code under the GPL v2 License.
- The GPL v2 license is available at
--http://opensource.org/licenses/gpl-license.php.
-+https://opensource.org/licenses/gpl-license.php.
- 
- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-diff --git a/include/linux/sunrpc/msg_prot.h b/include/linux/sunrpc/msg_prot.h
-index bea40d9f03a1..43f854487539 100644
---- a/include/linux/sunrpc/msg_prot.h
-+++ b/include/linux/sunrpc/msg_prot.h
-@@ -143,7 +143,7 @@ typedef __be32	rpc_fraghdr;
- /*
-  * Well-known netids. See:
-  *
-- *   http://www.iana.org/assignments/rpc-netids/rpc-netids.xhtml
-+ *   https://www.iana.org/assignments/rpc-netids/rpc-netids.xhtml
-  */
- #define RPCBIND_NETID_UDP	"udp"
- #define RPCBIND_NETID_TCP	"tcp"
-diff --git a/net/sunrpc/backchannel_rqst.c b/net/sunrpc/backchannel_rqst.c
-index 195b40c5dae4..3fecad369592 100644
---- a/net/sunrpc/backchannel_rqst.c
-+++ b/net/sunrpc/backchannel_rqst.c
-@@ -5,7 +5,7 @@
- 
- NetApp provides this source code under the GPL v2 License.
- The GPL v2 license is available at
--http://opensource.org/licenses/gpl-license.php.
-+https://opensource.org/licenses/gpl-license.php.
- 
- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-diff --git a/net/sunrpc/sunrpc.h b/net/sunrpc/sunrpc.h
-index f6fe2e6cd65a..2f59464e6524 100644
---- a/net/sunrpc/sunrpc.h
-+++ b/net/sunrpc/sunrpc.h
-@@ -4,7 +4,7 @@
- 
- NetApp provides this source code under the GPL v2 License.
- The GPL v2 license is available at
--http://opensource.org/licenses/gpl-license.php.
-+https://opensource.org/licenses/gpl-license.php.
- 
- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
--- 
-2.27.0
+ 	case USB_SPEED_FULL:
+ 		/* EPS 0 means "full" */
+diff --git a/drivers/usb/host/ehci-sched.c b/drivers/usb/host/ehci-sched.c
+index da7b00a6110b..847979f265b1 100644
+--- a/drivers/usb/host/ehci-sched.c
++++ b/drivers/usb/host/ehci-sched.c
+@@ -2475,7 +2475,7 @@ static void scan_isoc(struct ehci_hcd *ehci)
+ 			ehci_dbg(ehci, "corrupt type %d frame %d shadow %p\n",
+ 					type, frame, q.ptr);
+ 			/* BUG(); */
+-			/* FALL THROUGH */
++			fallthrough;
+ 		case Q_TYPE_QH:
+ 		case Q_TYPE_FSTN:
+ 			/* End of the iTDs and siTDs */
 
