@@ -2,80 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B472216B75
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 13:26:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9A68216B73
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 13:25:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728356AbgGGLZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 07:25:45 -0400
-Received: from lucky1.263xmail.com ([211.157.147.131]:32780 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727044AbgGGLZo (ORCPT
+        id S1728194AbgGGLZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 07:25:35 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:3217 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727044AbgGGLZf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 07:25:44 -0400
-Received: from localhost (unknown [192.168.167.235])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 02215B010F;
-        Tue,  7 Jul 2020 19:25:39 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from localhost.localdomain (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P6412T140039679895296S1594121137649538_;
-        Tue, 07 Jul 2020 19:25:39 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <b4b0c0dd39953df8c3366007ec5a834d>
-X-RL-SENDER: hjc@rock-chips.com
-X-SENDER: hjc@rock-chips.com
-X-LOGIN-NAME: hjc@rock-chips.com
-X-FST-TO: heiko@sntech.de
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-DNS-TYPE: 0
-X-System-Flag: 0
-From:   Sandy Huang <hjc@rock-chips.com>
-To:     heiko@sntech.de,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     huangtao@rock-chips.com, andy.yan@rock-chips.com,
-        linux-rockchip@lists.infradead.org,
-        dri-devel@lists.freedesktop.org, kever.yang@rock-chips.com,
-        Sandy Huang <hjc@rock-chips.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] drm/of: Consider the state in which the ep is disabled
-Date:   Tue,  7 Jul 2020 19:25:26 +0800
-Message-Id: <20200707112526.18438-1-hjc@rock-chips.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 7 Jul 2020 07:25:35 -0400
+X-UUID: 1a1278ba04a84476844e6203b60a745f-20200707
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=vfvjtfH3Qs6aHOw/QXhcQ51ZF1iRs+TYc8vvEskKgac=;
+        b=a4lwH1jhsqzlod4taTS95VZTNCoYXO3ItijaP8jF5e/2Mimn5KW7Kt4ejWZ5YJVTYxSrKcTDqyHwHVkQR1IjhC36+k6nwULgHw0Y+2+TKSA8Z/plz7na4EqiL20klEDy8HzRe8J+6NO3e/W7TMCUkPabj6i9QQGHrIdSHDTRUPk=;
+X-UUID: 1a1278ba04a84476844e6203b60a745f-20200707
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <hanks.chen@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 522712986; Tue, 07 Jul 2020 19:25:30 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 7 Jul 2020 19:25:25 +0800
+Received: from [172.21.77.33] (172.21.77.33) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 7 Jul 2020 19:25:26 +0800
+Message-ID: <1594121128.20610.9.camel@mtkswgap22>
+Subject: Re: [PATCH v7 0/7] Add basic SoC Support for Mediatek MT6779 SoC
+From:   Hanks Chen <hanks.chen@mediatek.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "Michael Turquette" <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sean Wang <sean.wang@kernel.org>,
+        mtk01761 <wendell.lin@mediatek.com>,
+        Andy Teng <andy.teng@mediatek.com>,
+        <linux-gpio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>,
+        CC Hwang <cc.hwang@mediatek.com>,
+        Loda Chou <loda.chou@mediatek.com>
+Date:   Tue, 7 Jul 2020 19:25:28 +0800
+In-Reply-To: <1593694630-26604-2-git-send-email-hanks.chen@mediatek.com>
+References: <1593694630-26604-1-git-send-email-hanks.chen@mediatek.com>
+         <1593694630-26604-2-git-send-email-hanks.chen@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
+MIME-Version: 1.0
+X-TM-SNTS-SMTP: 054C2A82F4257DC0A2C98A1257360749210D114C218370F82C156C88CC470A042000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-don't mask possible_crtcs if remote-point is disabled.
-
-Signed-off-by: Sandy Huang <hjc@rock-chips.com>
----
- drivers/gpu/drm/drm_of.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/gpu/drm/drm_of.c b/drivers/gpu/drm/drm_of.c
-index fdb05fbf72a0..565f05f5f11b 100644
---- a/drivers/gpu/drm/drm_of.c
-+++ b/drivers/gpu/drm/drm_of.c
-@@ -66,6 +66,9 @@ uint32_t drm_of_find_possible_crtcs(struct drm_device *dev,
- 	uint32_t possible_crtcs = 0;
- 
- 	for_each_endpoint_of_node(port, ep) {
-+		if (!of_device_is_available(ep))
-+			continue;
-+
- 		remote_port = of_graph_get_remote_port(ep);
- 		if (!remote_port) {
- 			of_node_put(ep);
--- 
-2.17.1
-
-
+SGkgTWljaGFlbCwgU3RlcGhlbiwgTWF0dGhpYXMgYW5kIGFsbCwNCg0KZ2VudGxlIHBpbmcgZm9y
+IHRoaXMgcGF0Y2ggc2V0DQoNCklmIG5vIG5ldyBjb21tZW50cywgSSB3b3VsZCBsaWtlIHRvIHNl
+bmQgYSBuZXdlciB2ZXJzaW9uIGZvciB0aGUgc2VyaWVzLg0KDQpwYXRjaCBzZXQ6DQpodHRwczov
+L2xrbWwub3JnL2xrbWwvMjAyMC83LzIvNDk3DQoNCg0KVGhhbmtzDQpIYW5rcyBDaGVuDQoNCg0K
+T24gVGh1LCAyMDIwLTA3LTAyIGF0IDIwOjU3ICswODAwLCBIYW5rcyBDaGVuIHdyb3RlOg0KPiAq
+KiogQkxVUkIgSEVSRSAqKioNCj4gDQo+IEFuZHkgVGVuZyAoMSk6DQo+ICAgZHQtYmluZGluZ3M6
+IHBpbmN0cmw6IGFkZCBiaW5kaW5ncyBmb3IgTWVkaWFUZWsgTVQ2Nzc5IFNvQw0KPiANCj4gSGFu
+a3MgQ2hlbiAoNik6DQo+ICAgcGluY3RybDogbWVkaWF0ZWs6IHVwZGF0ZSBwaW5tdXggZGVmaW5p
+dGlvbnMgZm9yIG10Njc3OQ0KPiAgIHBpbmN0cmw6IG1lZGlhdGVrOiBhdm9pZCB2aXJ0dWFsIGdw
+aW8gdHJ5aW5nIHRvIHNldCByZWcNCj4gICBwaW5jdHJsOiBtZWRpYXRlazogYWRkIHBpbmN0cmwg
+c3VwcG9ydCBmb3IgTVQ2Nzc5IFNvQw0KPiAgIHBpbmN0cmw6IG1lZGlhdGVrOiBhZGQgbXQ2Nzc5
+IGVpbnQgc3VwcG9ydA0KPiAgIGNsazogbWVkaWF0ZWs6IGFkZCBVQVJUMCBjbG9jayBzdXBwb3J0
+DQo+ICAgYXJtNjQ6IGR0czogYWRkIGR0cyBub2RlcyBmb3IgTVQ2Nzc5DQo+IA0KPiAgLi4uL2Jp
+bmRpbmdzL3BpbmN0cmwvbWVkaWF0ZWssbXQ2Nzc5LXBpbmN0cmwueWFtbCAgfCAgMjEwICsrDQo+
+ICBhcmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL01ha2VmaWxlICAgICAgICAgICAgICB8ICAg
+IDEgKw0KPiAgYXJjaC9hcm02NC9ib290L2R0cy9tZWRpYXRlay9tdDY3NzktZXZiLmR0cyAgICAg
+ICAgfCAgIDMxICsNCj4gIGFyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ2Nzc5LmR0c2kg
+ICAgICAgICAgIHwgIDI3MSArKysNCj4gIGRyaXZlcnMvY2xrL21lZGlhdGVrL2Nsay1tdDY3Nzku
+YyAgICAgICAgICAgICAgICAgIHwgICAgMiArDQo+ICBkcml2ZXJzL3BpbmN0cmwvbWVkaWF0ZWsv
+S2NvbmZpZyAgICAgICAgICAgICAgICAgICB8ICAgMTIgKw0KPiAgZHJpdmVycy9waW5jdHJsL21l
+ZGlhdGVrL01ha2VmaWxlICAgICAgICAgICAgICAgICAgfCAgICAxICsNCj4gIGRyaXZlcnMvcGlu
+Y3RybC9tZWRpYXRlay9waW5jdHJsLW10Njc3OS5jICAgICAgICAgIHwgIDc4MyArKysrKysrKw0K
+PiAgZHJpdmVycy9waW5jdHJsL21lZGlhdGVrL3BpbmN0cmwtbXRrLWNvbW1vbi12Mi5jICAgfCAg
+IDI1ICsNCj4gIGRyaXZlcnMvcGluY3RybC9tZWRpYXRlay9waW5jdHJsLW10ay1jb21tb24tdjIu
+aCAgIHwgICAgMSArDQo+ICBkcml2ZXJzL3BpbmN0cmwvbWVkaWF0ZWsvcGluY3RybC1tdGstbXQ2
+Nzc5LmggICAgICB8IDIwODUgKysrKysrKysrKysrKysrKysrKysNCj4gIGRyaXZlcnMvcGluY3Ry
+bC9tZWRpYXRlay9waW5jdHJsLXBhcmlzLmMgICAgICAgICAgIHwgICAgNyArDQo+ICBpbmNsdWRl
+L2R0LWJpbmRpbmdzL3BpbmN0cmwvbXQ2Nzc5LXBpbmZ1bmMuaCAgICAgICB8IDEyNDIgKysrKysr
+KysrKysrDQo+ICAxMyBmaWxlcyBjaGFuZ2VkLCA0NjcxIGluc2VydGlvbnMoKykNCj4gIGNyZWF0
+ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcGluY3RybC9t
+ZWRpYXRlayxtdDY3NzktcGluY3RybC55YW1sDQo+ICBjcmVhdGUgbW9kZSAxMDA2NDQgYXJjaC9h
+cm02NC9ib290L2R0cy9tZWRpYXRlay9tdDY3NzktZXZiLmR0cw0KPiAgY3JlYXRlIG1vZGUgMTAw
+NjQ0IGFyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ2Nzc5LmR0c2kNCj4gIGNyZWF0ZSBt
+b2RlIDEwMDY0NCBkcml2ZXJzL3BpbmN0cmwvbWVkaWF0ZWsvcGluY3RybC1tdDY3NzkuYw0KPiAg
+Y3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvcGluY3RybC9tZWRpYXRlay9waW5jdHJsLW10ay1t
+dDY3NzkuaA0KPiAgY3JlYXRlIG1vZGUgMTAwNjQ0IGluY2x1ZGUvZHQtYmluZGluZ3MvcGluY3Ry
+bC9tdDY3NzktcGluZnVuYy5oDQo+IA0KDQo=
 
