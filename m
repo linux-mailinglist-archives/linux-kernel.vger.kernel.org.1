@@ -2,245 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABE5D2169DD
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 12:18:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D73932169E4
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 12:18:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728349AbgGGKRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 06:17:48 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:43024 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728291AbgGGKR1 (ORCPT
+        id S1728441AbgGGKSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 06:18:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725944AbgGGKRN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 06:17:27 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 067AGnYh151572;
-        Tue, 7 Jul 2020 10:16:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=QkojGzHg40T2ilD1fUyYLuv+tLqZ5zRbN8tsposQC00=;
- b=ECIY2Fn6FNjqM/2N6nwvSlVjLeu5n3qLTZ4APuUqn55rMXWDOdeM28yQVtPSjBxUeGq5
- msuTIVPs/A06Os/8jxotO+mHVmS7jJDVODBUC3vH2jUJTRpkwS3Egc3Cwlh9f02vJ3TY
- noH6uXyZI6s6Gv/zz4g2hUhVayAmCBRvnlariiQeIrAglBfdTGagjsWmuGD2dV0VC32p
- HpN8Hj8CUnAa8XWJTQbYugnVVWYc3XPKG1/TdYDhhHzbf6HtzoBy29jRdO6up3OZbGQ9
- BcVL7mT28tsMC642dhnvhTqjtVBp5zLpJKWBQKnBYQnSfKcPjT6ELIWKOUu54U5GrxVp PQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 322kv6bcj6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 07 Jul 2020 10:16:48 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 067AD1aL079281;
-        Tue, 7 Jul 2020 10:16:48 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 324n4qwxxv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 07 Jul 2020 10:16:48 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 067AGhWM023739;
-        Tue, 7 Jul 2020 10:16:44 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 07 Jul 2020 03:16:43 -0700
-Date:   Tue, 7 Jul 2020 13:16:33 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Peter Chen <peter.chen@nxp.com>
-Cc:     Pawel Laszczak <pawell@cadence.com>,
-        "balbi@kernel.org" <balbi@kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "rogerq@ti.com" <rogerq@ti.com>,
-        "heikki.krogerus@linux.intel.com" <heikki.krogerus@linux.intel.com>,
-        "colin.king@canonical.com" <colin.king@canonical.com>,
-        "jpawar@cadence.com" <jpawar@cadence.com>,
-        "ben.dooks@codethink.co.uk" <ben.dooks@codethink.co.uk>,
-        "kurahul@cadence.com" <kurahul@cadence.com>,
-        "sparmar@cadence.com" <sparmar@cadence.com>
-Subject: Re: [PATCH 2/9] usb: cdns3: Improvement: removed not needed
- variables initialization
-Message-ID: <20200707101633.GV2571@kadam>
-References: <20200701062004.29908-1-pawell@cadence.com>
- <20200701062004.29908-3-pawell@cadence.com>
- <20200707062341.GC16073@b29397-desktop>
+        Tue, 7 Jul 2020 06:17:13 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10A2FC061755
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 03:17:13 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id w3so33432477wmi.4
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 03:17:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=d7oRUP6HHmbAXMILeJrpZWaXkV9JssFtTdyZGy/6dhk=;
+        b=tCYSjXuURlwgjreX0Ebq0a2Q23GCLXJ9ADPRqI9ys1VeUMctC69cJNaP8QTx38oG4/
+         G/CvUacR2s5NWT9H85WTs8wjAHTeI5sYNvDO2tOx2a9ohVWrbgNr/YRR7NbYflcn8iJB
+         1nDzhvSjUAeyDQ8WX00jokbXUyChwf4iVxhdJ+fX5iKVekqBwr1tUYhe99XCtpLHkWNt
+         j/7sOrH2fBcl0o//lBbkhztFByYhe1pPAp1fvuolQFS3bbFLWD6OQWrOFV3qoOn8EmIJ
+         eOenFNQIFMj2OchrK0q//ZaAftRPDArUIUH/zS8ZIdH5x5KzGeqSV0ezQmk0uAnHMHv9
+         4Uiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=d7oRUP6HHmbAXMILeJrpZWaXkV9JssFtTdyZGy/6dhk=;
+        b=JtBP6rVMtVmhm0GFfS3wAroLArmTKSw/o//1CjM3jUtwAHQrIaNDh/25mNbLufLXhP
+         sIyICFnH0vEFjimJqisMGE7dirCjvjkMX9np1wP5ZG1RcRcH+Uv5vLHZGtXPT4dc0EzN
+         0AvBvedFTWPNxWr6BMLS53B5klbhasmrZPABkzj2oO2TGrwU/jznxKjzAJ89kp188u+L
+         czKsVFGMG2AgIAdR16vyurwIjRTqryuuGJDOM/jrNw2HPokKU0X5TqG0Qg17ccQxWvdf
+         ohfV1QaVFXaG5pSlHt/FqnGWQpt50+9BWdZHfjAjif7RaugRs//xdUoPo3FRVmjbZaOE
+         6G2Q==
+X-Gm-Message-State: AOAM533O/1XrhSiN9RCapr/K6AyXGTn13qDWcjrpqukbjZFSL6vjXJ31
+        v0GOxei3Pcu4LSLTh93igTYblQ==
+X-Google-Smtp-Source: ABdhPJx2P1TjQfKulF9kQvC3Rl1oKv0T6tweHznyPHPtYx+jkOMqb0z4kGRg8v3Or+e4ue4AewQEsA==
+X-Received: by 2002:a7b:c38c:: with SMTP id s12mr3391563wmj.136.1594117031692;
+        Tue, 07 Jul 2020 03:17:11 -0700 (PDT)
+Received: from localhost.localdomain ([2.27.35.206])
+        by smtp.gmail.com with ESMTPSA id z8sm469409wmg.39.2020.07.07.03.17.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Jul 2020 03:17:10 -0700 (PDT)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz,
+        tiwai@suse.com
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org, Lee Jones <lee.jones@linaro.org>,
+        zhong jiang <zhongjiang@huawei.com>,
+        Ola Lilja <ola.o.lilja@stericsson.com>,
+        Roger Nilsson <roger.xr.nilsson@stericsson.com>,
+        Sandeep Kaushik <sandeep.kaushik@st.com>
+Subject: [PATCH 19/28] ASoC: ux500: ux500_msp_i2s: Remove unused variables 'reg_val_DR' and 'reg_val_TSTDR'
+Date:   Tue,  7 Jul 2020 11:16:33 +0100
+Message-Id: <20200707101642.1747944-20-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200707101642.1747944-1-lee.jones@linaro.org>
+References: <20200707101642.1747944-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200707062341.GC16073@b29397-desktop>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9674 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0
- mlxlogscore=999 spamscore=0 adultscore=0 malwarescore=0 suspectscore=2
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2007070078
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9674 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 bulkscore=0
- malwarescore=0 suspectscore=2 mlxlogscore=999 phishscore=0 spamscore=0
- priorityscore=1501 clxscore=1011 impostorscore=0 mlxscore=0 adultscore=0
- cotscore=-2147483648 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2007070079
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 07, 2020 at 06:23:32AM +0000, Peter Chen wrote:
-> On 20-07-01 08:19:57, Pawel Laszczak wrote:
-> > Patch remove some variables initialization from core.c and drd.c
-> > file.
-> > 
-> > Signed-off-by: Pawel Laszczak <pawell@cadence.com>
-> > ---
-> >  drivers/usb/cdns3/core.c |  4 ++--
-> >  drivers/usb/cdns3/drd.c  | 19 +++++++++----------
-> >  2 files changed, 11 insertions(+), 12 deletions(-)
-> > 
-> > diff --git a/drivers/usb/cdns3/core.c b/drivers/usb/cdns3/core.c
-> > index eaafa6bd2a50..c3dac945f63d 100644
-> > --- a/drivers/usb/cdns3/core.c
-> > +++ b/drivers/usb/cdns3/core.c
-> > @@ -86,7 +86,7 @@ static int cdns3_core_init_role(struct cdns3 *cdns)
-> >  	struct device *dev = cdns->dev;
-> >  	enum usb_dr_mode best_dr_mode;
-> >  	enum usb_dr_mode dr_mode;
-> > -	int ret = 0;
-> > +	int ret;
-> >  
-> >  	dr_mode = usb_get_dr_mode(dev);
-> >  	cdns->role = USB_ROLE_NONE;
-> > @@ -177,7 +177,7 @@ static int cdns3_core_init_role(struct cdns3 *cdns)
-> >  		goto err;
-> >  	}
-> >  
-> > -	return ret;
-> > +	return 0;
-> >  err:
-> >  	cdns3_exit_roles(cdns);
-> >  	return ret;
-> > diff --git a/drivers/usb/cdns3/drd.c b/drivers/usb/cdns3/drd.c
-> > index 58089841ed52..4939a568d8a2 100644
-> > --- a/drivers/usb/cdns3/drd.c
-> > +++ b/drivers/usb/cdns3/drd.c
-> > @@ -29,7 +29,6 @@
-> >   */
-> >  int cdns3_set_mode(struct cdns3 *cdns, enum usb_dr_mode mode)
-> >  {
-> > -	int ret = 0;
-> >  	u32 reg;
-> >  
-> >  	switch (mode) {
-> > @@ -61,7 +60,7 @@ int cdns3_set_mode(struct cdns3 *cdns, enum usb_dr_mode mode)
-> >  		return -EINVAL;
-> >  	}
-> >  
-> > -	return ret;
-> > +	return 0;
-> >  }
-> >  
-> >  int cdns3_get_id(struct cdns3 *cdns)
-> > @@ -134,11 +133,11 @@ static void cdns3_otg_enable_irq(struct cdns3 *cdns)
-> >  int cdns3_drd_switch_host(struct cdns3 *cdns, int on)
-> >  {
-> >  	int ret, val;
-> > -	u32 reg = OTGCMD_OTG_DIS;
-> >  
-> >  	/* switch OTG core */
-> >  	if (on) {
-> > -		writel(OTGCMD_HOST_BUS_REQ | reg, &cdns->otg_regs->cmd);
-> > +		writel(OTGCMD_HOST_BUS_REQ | OTGCMD_OTG_DIS,
-> > +		       &cdns->otg_regs->cmd);
-> >  
-> >  		dev_dbg(cdns->dev, "Waiting till Host mode is turned on\n");
-> >  		ret = readl_poll_timeout_atomic(&cdns->otg_regs->sts, val,
-> > @@ -212,7 +211,7 @@ int cdns3_drd_switch_gadget(struct cdns3 *cdns, int on)
-> >   */
-> >  static int cdns3_init_otg_mode(struct cdns3 *cdns)
-> >  {
-> > -	int ret = 0;
-> > +	int ret;
-> >  
-> >  	cdns3_otg_disable_irq(cdns);
-> >  	/* clear all interrupts */
-> > @@ -223,7 +222,8 @@ static int cdns3_init_otg_mode(struct cdns3 *cdns)
-> >  		return ret;
-> >  
-> >  	cdns3_otg_enable_irq(cdns);
-> > -	return ret;
-> > +
-> > +	return 0;
-> >  }
-> >  
-> >  /**
-> > @@ -234,7 +234,7 @@ static int cdns3_init_otg_mode(struct cdns3 *cdns)
-> >   */
-> >  int cdns3_drd_update_mode(struct cdns3 *cdns)
-> >  {
-> > -	int ret = 0;
-> > +	int ret;
-> >  
-> >  	switch (cdns->dr_mode) {
-> >  	case USB_DR_MODE_PERIPHERAL:
-> > @@ -307,8 +307,8 @@ static irqreturn_t cdns3_drd_irq(int irq, void *data)
-> >  int cdns3_drd_init(struct cdns3 *cdns)
-> >  {
-> >  	void __iomem *regs;
-> > -	int ret = 0;
-> >  	u32 state;
-> > +	int ret;
-> >  
-> >  	regs = devm_ioremap_resource(cdns->dev, &cdns->otg_res);
-> >  	if (IS_ERR(regs))
-> > @@ -359,7 +359,6 @@ int cdns3_drd_init(struct cdns3 *cdns)
-> >  					cdns3_drd_thread_irq,
-> >  					IRQF_SHARED,
-> >  					dev_name(cdns->dev), cdns);
-> > -
-> >  	if (ret) {
-> >  		dev_err(cdns->dev, "couldn't get otg_irq\n");
-> >  		return ret;
-> > @@ -371,7 +370,7 @@ int cdns3_drd_init(struct cdns3 *cdns)
-> >  		return -ENODEV;
-> >  	}
-> >  
-> > -	return ret;
-> > +	return 0;
-> 
-> Is this necessary?
-> 
+Looks like these have been unchecked since the driver's inception in 2012.
 
-"return ret;" is not immediately clear like a "return 0;".  I review a
-lot of return values so it's really important that the code is clear.
-I'm looking for places which return both postives and negatives.  These
-should always be documented but the majority are not.
+Fixes the following W=1 kernel build warning(s):
 
-Also another thing is that when people do:
+ sound/soc/ux500/ux500_msp_i2s.c: In function ‘flush_fifo_rx’:
+ sound/soc/ux500/ux500_msp_i2s.c:398:6: warning: variable ‘reg_val_DR’ set but not used [-Wunused-but-set-variable]
+ sound/soc/ux500/ux500_msp_i2s.c: In function ‘flush_fifo_tx’:
+ sound/soc/ux500/ux500_msp_i2s.c:415:6: warning: variable ‘reg_val_TSTDR’ set but not used [-Wunused-but-set-variable]
 
-	ret = some_function();
-	if (!ret)
-		return ret;
+Cc: zhong jiang <zhongjiang@huawei.com>
+Cc: Ola Lilja <ola.o.lilja@stericsson.com>
+Cc: Roger Nilsson <roger.xr.nilsson@stericsson.com>
+Cc: Sandeep Kaushik <sandeep.kaushik@st.com>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ sound/soc/ux500/ux500_msp_i2s.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-I review all of those because a bug that we sometimes see is that the
-if statement is reversed and the ! should be removed.  A third thing is
-that people sometimes do silly things with the last if statement in the
-function.
+diff --git a/sound/soc/ux500/ux500_msp_i2s.c b/sound/soc/ux500/ux500_msp_i2s.c
+index 394d8b2a4a161..fd0b88bb79212 100644
+--- a/sound/soc/ux500/ux500_msp_i2s.c
++++ b/sound/soc/ux500/ux500_msp_i2s.c
+@@ -395,7 +395,7 @@ static int enable_msp(struct ux500_msp *msp, struct ux500_msp_config *config)
+ 
+ static void flush_fifo_rx(struct ux500_msp *msp)
+ {
+-	u32 reg_val_DR, reg_val_GCR, reg_val_FLR;
++	u32 reg_val_GCR, reg_val_FLR;
+ 	u32 limit = 32;
+ 
+ 	reg_val_GCR = readl(msp->registers + MSP_GCR);
+@@ -403,7 +403,7 @@ static void flush_fifo_rx(struct ux500_msp *msp)
+ 
+ 	reg_val_FLR = readl(msp->registers + MSP_FLR);
+ 	while (!(reg_val_FLR & RX_FIFO_EMPTY) && limit--) {
+-		reg_val_DR = readl(msp->registers + MSP_DR);
++		readl(msp->registers + MSP_DR);
+ 		reg_val_FLR = readl(msp->registers + MSP_FLR);
+ 	}
+ 
+@@ -412,7 +412,7 @@ static void flush_fifo_rx(struct ux500_msp *msp)
+ 
+ static void flush_fifo_tx(struct ux500_msp *msp)
+ {
+-	u32 reg_val_TSTDR, reg_val_GCR, reg_val_FLR;
++	u32 reg_val_GCR, reg_val_FLR;
+ 	u32 limit = 32;
+ 
+ 	reg_val_GCR = readl(msp->registers + MSP_GCR);
+@@ -421,7 +421,7 @@ static void flush_fifo_tx(struct ux500_msp *msp)
+ 
+ 	reg_val_FLR = readl(msp->registers + MSP_FLR);
+ 	while (!(reg_val_FLR & TX_FIFO_EMPTY) && limit--) {
+-		reg_val_TSTDR = readl(msp->registers + MSP_TSTDR);
++		readl(msp->registers + MSP_TSTDR);
+ 		reg_val_FLR = readl(msp->registers + MSP_FLR);
+ 	}
+ 	writel(0x0, msp->registers + MSP_ITCR);
+-- 
+2.25.1
 
-	ret = one();
-	if (ret)
-		return ret;
-
-	ret = two();
-	if (ret)
-		goto free_one;
-
-	ret = three();
-	if (!ret)
-		return ret;   // <-- UGH!!!!
-
-	free(two);
-free_one:
-	free(one);
-
-Please look for this and tell people to not write code like that.  It's
-always better to do failure handling instead of success handling.
-
-regards,
-dan carpenter
