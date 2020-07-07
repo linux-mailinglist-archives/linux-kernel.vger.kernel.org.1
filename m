@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6779D2170B8
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:24:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 138E121711E
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:25:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729468AbgGGPUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:20:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59926 "EHLO mail.kernel.org"
+        id S1730086AbgGGPYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:24:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37826 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729456AbgGGPUC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:20:02 -0400
+        id S1730074AbgGGPYS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 11:24:18 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8194820771;
-        Tue,  7 Jul 2020 15:20:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C969E207D0;
+        Tue,  7 Jul 2020 15:24:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594135202;
-        bh=dwI23tYRJr8NZdszrh7dwuA5rCvVT6FR0p9deqTAc1c=;
+        s=default; t=1594135457;
+        bh=r04Y4mUiDsaVVGGSKtOVGu/kIzxHagWSP2D/OpDco4w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lUuOdGNPCp1Cs8lGezQqeeWoq+VXclQDhF1kuaoLxN8Gok2UEm0CBRf5daRFydN5N
-         DNtmnNF+77yEfduoLnVPaSZuYla89ObfVALEXALx323M5EdrF1Z/UUlTmi89bN2qTm
-         LfQj+i1xE1Ba4RKm6y0zHHpHwzCNyKohEiZ272/Y=
+        b=x1PutwLocey9VBF7Cs+nj2tAUIQfVrA0aOeD8VszGFtXHEqlV6ZC6I7tSsOz48Mzl
+         w/StyYMQlusUPYSefW5hPWzQpfKC97HLAHrzATsVT0B+qzWuSXak5qYVGkbRPs2bsi
+         oqF6Tmj2a1MqglqVhAJJvSJS420nSyCgt/Ajat/8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Anton Eidelman <anton@lightbitslabs.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 14/65] nvme: fix possible deadlock when I/O is blocked
+        stable@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
+        David Sterba <dsterba@suse.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 048/112] btrfs: fix RWF_NOWAIT writes blocking on extent locks and waiting for IO
 Date:   Tue,  7 Jul 2020 17:16:53 +0200
-Message-Id: <20200707145753.145545420@linuxfoundation.org>
+Message-Id: <20200707145803.290182070@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200707145752.417212219@linuxfoundation.org>
-References: <20200707145752.417212219@linuxfoundation.org>
+In-Reply-To: <20200707145800.925304888@linuxfoundation.org>
+References: <20200707145800.925304888@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,122 +44,128 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sagi Grimberg <sagi@grimberg.me>
+From: Filipe Manana <fdmanana@suse.com>
 
-[ Upstream commit 3b4b19721ec652ad2c4fe51dfbe5124212b5f581 ]
+[ Upstream commit 5dbb75ed6900048e146247b6325742d92c892548 ]
 
-Revert fab7772bfbcf ("nvme-multipath: revalidate nvme_ns_head gendisk
-in nvme_validate_ns")
+A RWF_NOWAIT write is not supposed to wait on filesystem locks that can be
+held for a long time or for ongoing IO to complete.
 
-When adding a new namespace to the head disk (via nvme_mpath_set_live)
-we will see partition scan which triggers I/O on the mpath device node.
-This process will usually be triggered from the scan_work which holds
-the scan_lock. If I/O blocks (if we got ana change currently have only
-available paths but none are accessible) this can deadlock on the head
-disk bd_mutex as both partition scan I/O takes it, and head disk revalidation
-takes it to check for resize (also triggered from scan_work on a different
-path). See trace [1].
+However when calling check_can_nocow(), if the inode has prealloc extents
+or has the NOCOW flag set, we can block on extent (file range) locks
+through the call to btrfs_lock_and_flush_ordered_range(). Such lock can
+take a significant amount of time to be available. For example, a fiemap
+task may be running, and iterating through the entire file range checking
+all extents and doing backref walking to determine if they are shared,
+or a readpage operation may be in progress.
 
-The mpath disk revalidation was originally added to detect online disk
-size change, but this is no longer needed since commit cb224c3af4df
-("nvme: Convert to use set_capacity_revalidate_and_notify") which already
-updates resize info without unnecessarily revalidating the disk (the
-mpath disk doesn't even implement .revalidate_disk fop).
+Also at btrfs_lock_and_flush_ordered_range(), called by check_can_nocow(),
+after locking the file range we wait for any existing ordered extent that
+is in progress to complete. Another operation that can take a significant
+amount of time and defeat the purpose of RWF_NOWAIT.
 
-[1]:
---
-kernel: INFO: task kworker/u65:9:494 blocked for more than 241 seconds.
-kernel:       Tainted: G           OE     5.3.5-050305-generic #201910071830
-kernel: "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-kernel: kworker/u65:9   D    0   494      2 0x80004000
-kernel: Workqueue: nvme-wq nvme_scan_work [nvme_core]
-kernel: Call Trace:
-kernel:  __schedule+0x2b9/0x6c0
-kernel:  schedule+0x42/0xb0
-kernel:  schedule_preempt_disabled+0xe/0x10
-kernel:  __mutex_lock.isra.0+0x182/0x4f0
-kernel:  __mutex_lock_slowpath+0x13/0x20
-kernel:  mutex_lock+0x2e/0x40
-kernel:  revalidate_disk+0x63/0xa0
-kernel:  __nvme_revalidate_disk+0xfe/0x110 [nvme_core]
-kernel:  nvme_revalidate_disk+0xa4/0x160 [nvme_core]
-kernel:  ? evict+0x14c/0x1b0
-kernel:  revalidate_disk+0x2b/0xa0
-kernel:  nvme_validate_ns+0x49/0x940 [nvme_core]
-kernel:  ? blk_mq_free_request+0xd2/0x100
-kernel:  ? __nvme_submit_sync_cmd+0xbe/0x1e0 [nvme_core]
-kernel:  nvme_scan_work+0x24f/0x380 [nvme_core]
-kernel:  process_one_work+0x1db/0x380
-kernel:  worker_thread+0x249/0x400
-kernel:  kthread+0x104/0x140
-kernel:  ? process_one_work+0x380/0x380
-kernel:  ? kthread_park+0x80/0x80
-kernel:  ret_from_fork+0x1f/0x40
-...
-kernel: INFO: task kworker/u65:1:2630 blocked for more than 241 seconds.
-kernel:       Tainted: G           OE     5.3.5-050305-generic #201910071830
-kernel: "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-kernel: kworker/u65:1   D    0  2630      2 0x80004000
-kernel: Workqueue: nvme-wq nvme_scan_work [nvme_core]
-kernel: Call Trace:
-kernel:  __schedule+0x2b9/0x6c0
-kernel:  schedule+0x42/0xb0
-kernel:  io_schedule+0x16/0x40
-kernel:  do_read_cache_page+0x438/0x830
-kernel:  ? __switch_to_asm+0x34/0x70
-kernel:  ? file_fdatawait_range+0x30/0x30
-kernel:  read_cache_page+0x12/0x20
-kernel:  read_dev_sector+0x27/0xc0
-kernel:  read_lba+0xc1/0x220
-kernel:  ? kmem_cache_alloc_trace+0x19c/0x230
-kernel:  efi_partition+0x1e6/0x708
-kernel:  ? vsnprintf+0x39e/0x4e0
-kernel:  ? snprintf+0x49/0x60
-kernel:  check_partition+0x154/0x244
-kernel:  rescan_partitions+0xae/0x280
-kernel:  __blkdev_get+0x40f/0x560
-kernel:  blkdev_get+0x3d/0x140
-kernel:  __device_add_disk+0x388/0x480
-kernel:  device_add_disk+0x13/0x20
-kernel:  nvme_mpath_set_live+0x119/0x140 [nvme_core]
-kernel:  nvme_update_ns_ana_state+0x5c/0x60 [nvme_core]
-kernel:  nvme_set_ns_ana_state+0x1e/0x30 [nvme_core]
-kernel:  nvme_parse_ana_log+0xa1/0x180 [nvme_core]
-kernel:  ? nvme_update_ns_ana_state+0x60/0x60 [nvme_core]
-kernel:  nvme_mpath_add_disk+0x47/0x90 [nvme_core]
-kernel:  nvme_validate_ns+0x396/0x940 [nvme_core]
-kernel:  ? blk_mq_free_request+0xd2/0x100
-kernel:  nvme_scan_work+0x24f/0x380 [nvme_core]
-kernel:  process_one_work+0x1db/0x380
-kernel:  worker_thread+0x249/0x400
-kernel:  kthread+0x104/0x140
-kernel:  ? process_one_work+0x380/0x380
-kernel:  ? kthread_park+0x80/0x80
-kernel:  ret_from_fork+0x1f/0x40
---
+So fix this by trying to lock the file range and if it's currently locked
+return -EAGAIN to user space. If we are able to lock the file range without
+waiting and there is an ordered extent in the range, return -EAGAIN as
+well, instead of waiting for it to complete. Finally, don't bother trying
+to lock the snapshot lock of the root when attempting a RWF_NOWAIT write,
+as that is only important for buffered writes.
 
-Fixes: fab7772bfbcf ("nvme-multipath: revalidate nvme_ns_head gendisk
-in nvme_validate_ns")
-Signed-off-by: Anton Eidelman <anton@lightbitslabs.com>
-Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Fixes: edf064e7c6fec3 ("btrfs: nowait aio support")
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/core.c | 1 -
- 1 file changed, 1 deletion(-)
+ fs/btrfs/file.c | 37 ++++++++++++++++++++++++++-----------
+ 1 file changed, 26 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-index d4b388793f40d..c44c00b9e1d85 100644
---- a/drivers/nvme/host/core.c
-+++ b/drivers/nvme/host/core.c
-@@ -1870,7 +1870,6 @@ static void __nvme_revalidate_disk(struct gendisk *disk, struct nvme_id_ns *id)
- 	if (ns->head->disk) {
- 		nvme_update_disk_info(ns->head->disk, ns, id);
- 		blk_queue_stack_limits(ns->head->disk->queue, ns->queue);
--		revalidate_disk(ns->head->disk);
- 	}
- #endif
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index 52d565ff66e2d..93244934d4f92 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -1541,7 +1541,7 @@ lock_and_cleanup_extent_if_need(struct btrfs_inode *inode, struct page **pages,
  }
+ 
+ static noinline int check_can_nocow(struct btrfs_inode *inode, loff_t pos,
+-				    size_t *write_bytes)
++				    size_t *write_bytes, bool nowait)
+ {
+ 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+ 	struct btrfs_root *root = inode->root;
+@@ -1549,27 +1549,43 @@ static noinline int check_can_nocow(struct btrfs_inode *inode, loff_t pos,
+ 	u64 num_bytes;
+ 	int ret;
+ 
+-	if (!btrfs_drew_try_write_lock(&root->snapshot_lock))
++	if (!nowait && !btrfs_drew_try_write_lock(&root->snapshot_lock))
+ 		return -EAGAIN;
+ 
+ 	lockstart = round_down(pos, fs_info->sectorsize);
+ 	lockend = round_up(pos + *write_bytes,
+ 			   fs_info->sectorsize) - 1;
++	num_bytes = lockend - lockstart + 1;
+ 
+-	btrfs_lock_and_flush_ordered_range(inode, lockstart,
+-					   lockend, NULL);
++	if (nowait) {
++		struct btrfs_ordered_extent *ordered;
++
++		if (!try_lock_extent(&inode->io_tree, lockstart, lockend))
++			return -EAGAIN;
++
++		ordered = btrfs_lookup_ordered_range(inode, lockstart,
++						     num_bytes);
++		if (ordered) {
++			btrfs_put_ordered_extent(ordered);
++			ret = -EAGAIN;
++			goto out_unlock;
++		}
++	} else {
++		btrfs_lock_and_flush_ordered_range(inode, lockstart,
++						   lockend, NULL);
++	}
+ 
+-	num_bytes = lockend - lockstart + 1;
+ 	ret = can_nocow_extent(&inode->vfs_inode, lockstart, &num_bytes,
+ 			NULL, NULL, NULL);
+ 	if (ret <= 0) {
+ 		ret = 0;
+-		btrfs_drew_write_unlock(&root->snapshot_lock);
++		if (!nowait)
++			btrfs_drew_write_unlock(&root->snapshot_lock);
+ 	} else {
+ 		*write_bytes = min_t(size_t, *write_bytes ,
+ 				     num_bytes - pos + lockstart);
+ 	}
+-
++out_unlock:
+ 	unlock_extent(&inode->io_tree, lockstart, lockend);
+ 
+ 	return ret;
+@@ -1641,7 +1657,7 @@ static noinline ssize_t btrfs_buffered_write(struct kiocb *iocb,
+ 			if ((BTRFS_I(inode)->flags & (BTRFS_INODE_NODATACOW |
+ 						      BTRFS_INODE_PREALLOC)) &&
+ 			    check_can_nocow(BTRFS_I(inode), pos,
+-					&write_bytes) > 0) {
++					    &write_bytes, false) > 0) {
+ 				/*
+ 				 * For nodata cow case, no need to reserve
+ 				 * data space.
+@@ -1920,12 +1936,11 @@ static ssize_t btrfs_file_write_iter(struct kiocb *iocb,
+ 		 */
+ 		if (!(BTRFS_I(inode)->flags & (BTRFS_INODE_NODATACOW |
+ 					      BTRFS_INODE_PREALLOC)) ||
+-		    check_can_nocow(BTRFS_I(inode), pos, &nocow_bytes) <= 0) {
++		    check_can_nocow(BTRFS_I(inode), pos, &nocow_bytes,
++				    true) <= 0) {
+ 			inode_unlock(inode);
+ 			return -EAGAIN;
+ 		}
+-		/* check_can_nocow() locks the snapshot lock on success */
+-		btrfs_drew_write_unlock(&root->snapshot_lock);
+ 		/*
+ 		 * There are holes in the range or parts of the range that must
+ 		 * be COWed (shared extents, RO block groups, etc), so just bail
 -- 
 2.25.1
 
