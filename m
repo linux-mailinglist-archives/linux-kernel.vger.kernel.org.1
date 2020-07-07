@@ -2,178 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F2FD216B90
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 13:31:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACAFB216B9B
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 13:33:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728292AbgGGLbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 07:31:39 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:27239 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727995AbgGGLbh (ORCPT
+        id S1728337AbgGGLdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 07:33:04 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:4818 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726757AbgGGLdD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 07:31:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594121495;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=ENXtGSJXlKU0ZZBQzXy5sPVvc6WsE7GxxjZtUhkNDAw=;
-        b=Ouw1PAjPGKBWZ2VJfsKVBnLLgbXHoi5MpskuZlozrs47HV7CXrKqx22XrbauyjEWUqwWeE
-        /1VjW6+udLcMnYf2qHDarKSVCKs5EBxW92Tx4TI1uDfh2F3Ny8puWvA79+E9y4zX6jt03T
-        ixqxuu+TOj6Mku32EL/WnWkvWoXsyBU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-22-XvV8eXSMN_ie1VXdpW7ORQ-1; Tue, 07 Jul 2020 07:31:31 -0400
-X-MC-Unique: XvV8eXSMN_ie1VXdpW7ORQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 255E380183C;
-        Tue,  7 Jul 2020 11:31:29 +0000 (UTC)
-Received: from [10.36.114.87] (ovpn-114-87.ams2.redhat.com [10.36.114.87])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3E38B5D9C9;
-        Tue,  7 Jul 2020 11:31:25 +0000 (UTC)
-Subject: Re: [PATCH v2 3/3] mm/memory_hotplug: fix unpaired
- mem_hotplug_begin/done
-To:     Jia He <justin.he@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Baoquan He <bhe@redhat.com>,
-        Chuhong Yuan <hslester96@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-nvdimm@lists.01.org,
-        Kaly Xin <Kaly.Xin@arm.com>, stable@vger.kernel.org
-References: <20200707055917.143653-1-justin.he@arm.com>
- <20200707055917.143653-4-justin.he@arm.com>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
- 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
-Organization: Red Hat GmbH
-Message-ID: <bdfc7788-52a5-df6b-ea4b-5672c60b6458@redhat.com>
-Date:   Tue, 7 Jul 2020 13:31:24 +0200
+        Tue, 7 Jul 2020 07:33:03 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 067BWdYn173958;
+        Tue, 7 Jul 2020 07:32:54 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32486cs6gv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 07 Jul 2020 07:32:53 -0400
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 067BWkjb174617;
+        Tue, 7 Jul 2020 07:32:46 -0400
+Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32486cs65g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 07 Jul 2020 07:32:46 -0400
+Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
+        by ppma05wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 067BUggu030281;
+        Tue, 7 Jul 2020 11:32:01 GMT
+Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
+        by ppma05wdc.us.ibm.com with ESMTP id 322hd8yc0v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 07 Jul 2020 11:32:01 +0000
+Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
+        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 067BW0ZQ35717398
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 7 Jul 2020 11:32:00 GMT
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AA5D6B206A;
+        Tue,  7 Jul 2020 11:32:00 +0000 (GMT)
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B4F90B2066;
+        Tue,  7 Jul 2020 11:31:55 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.85.118.59])
+        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
+        Tue,  7 Jul 2020 11:31:55 +0000 (GMT)
+Subject: Re: [RFC 1/3] perf jevents: Add support for parsing perchip/percore
+ events
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Ian Rogers <irogers@google.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Paul Clarke <pc@us.ibm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        maddy@linux.ibm.com, Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
+        Anju T Sudhakar <anju@linux.vnet.ibm.com>,
+        "Liang, Kan" <kan.liang@linux.intel.com>
+References: <20200625114718.229911-1-kjain@linux.ibm.com>
+ <20200625114718.229911-2-kjain@linux.ibm.com>
+ <CAP-5=fWG9rxObKJ38dQ=VUf3_mQbNDCTzgU1kkyw=9uVfBa+qw@mail.gmail.com>
+ <512670c2-bb61-7c2f-68bc-7752499300c6@linux.ibm.com>
+ <20200706125757.GA3424581@krava>
+From:   kajoljain <kjain@linux.ibm.com>
+Message-ID: <d9252cb6-7cb3-9783-a0f2-d879dcc894a7@linux.ibm.com>
+Date:   Tue, 7 Jul 2020 17:01:54 +0530
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <20200707055917.143653-4-justin.he@arm.com>
+In-Reply-To: <20200706125757.GA3424581@krava>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-07_07:2020-07-07,2020-07-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
+ impostorscore=0 mlxscore=0 clxscore=1015 adultscore=0 priorityscore=1501
+ mlxlogscore=999 lowpriorityscore=0 suspectscore=0 bulkscore=0 phishscore=0
+ cotscore=-2147483648 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2007070086
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07.07.20 07:59, Jia He wrote:
-> When check_memblock_offlined_cb() returns failed rc(e.g. the memblock is
-> online at that time), mem_hotplug_begin/done is unpaired in such case.
+
+
+On 7/6/20 6:27 PM, Jiri Olsa wrote:
+> On Fri, Jul 03, 2020 at 11:50:28AM +0530, kajoljain wrote:
 > 
-> Therefore a warning:
->  Call Trace:
->   percpu_up_write+0x33/0x40
->   try_remove_memory+0x66/0x120
->   ? _cond_resched+0x19/0x30
->   remove_memory+0x2b/0x40
->   dev_dax_kmem_remove+0x36/0x72 [kmem]
->   device_release_driver_internal+0xf0/0x1c0
->   device_release_driver+0x12/0x20
->   bus_remove_device+0xe1/0x150
->   device_del+0x17b/0x3e0
->   unregister_dev_dax+0x29/0x60
->   devm_action_release+0x15/0x20
->   release_nodes+0x19a/0x1e0
->   devres_release_all+0x3f/0x50
->   device_release_driver_internal+0x100/0x1c0
->   driver_detach+0x4c/0x8f
->   bus_remove_driver+0x5c/0xd0
->   driver_unregister+0x31/0x50
->   dax_pmem_exit+0x10/0xfe0 [dax_pmem]
+> SNIP
 > 
-> Fixes: f1037ec0cc8a ("mm/memory_hotplug: fix remove_memory() lockdep splat")
-> Cc: stable@vger.kernel.org # v5.6+
-> Signed-off-by: Jia He <justin.he@arm.com>
-> ---
->  mm/memory_hotplug.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
+>>  ]
+>> diff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
+>> index fa86c5f997cc..dd2b14cc147c 100644
+>> --- a/tools/perf/pmu-events/jevents.c
+>> +++ b/tools/perf/pmu-events/jevents.c
+>> @@ -53,6 +53,23 @@
+>>  int verbose;
+>>  char *prog;
+>>  
+>> +enum event_class {
+>> +	PerChip = 0,
+>> +	PerPkg = 1,
+>> +	PerCore = 2
+>> +};
 > 
-> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-> index da374cd3d45b..76c75a599da3 100644
-> --- a/mm/memory_hotplug.c
-> +++ b/mm/memory_hotplug.c
-> @@ -1742,7 +1742,7 @@ static int __ref try_remove_memory(int nid, u64 start, u64 size)
->  	 */
->  	rc = walk_memory_blocks(start, size, NULL, check_memblock_offlined_cb);
->  	if (rc)
-> -		goto done;
-> +		return rc;
->  
->  	/* remove memmap entry */
->  	firmware_map_remove(start, start + size, "System RAM");
-> @@ -1766,9 +1766,8 @@ static int __ref try_remove_memory(int nid, u64 start, u64 size)
->  
->  	try_offline_node(nid);
->  
-> -done:
->  	mem_hotplug_done();
-> -	return rc;
-> +	return 0;
->  }
->  
->  /**
+> could you please split this into patch that changes perpkg
+> into the class type string and another that adds new PerChip/PerCore?
 > 
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+Hi Jiri,
+   Thanks for reviewing the prototype changes. Sure I will split it and
+and send next version out.
 
--- 
+>> +
+>> +enum event_class convert(const char* event_class_type) {
+>> +
+>> +	if (!strcmp(event_class_type, "PerCore"))
+>> +		return PerCore;
+>> +	else if (!strcmp(event_class_type, "PerChip"))
+>> +		return PerChip;
+>> +	else if (!strcmp(event_class_type, "PerPkg"))
+>> +		return PerPkg;
+>> +	return -1;
+>> +}
+>> +
+>>  int eprintf(int level, int var, const char *fmt, ...)
+>>  {
+>>  
+>> @@ -320,7 +337,7 @@ static void print_events_table_prefix(FILE *fp, const char *tblname)
+>>  
+>>  static int print_events_table_entry(void *data, char *name, char *event,
+>>  				    char *desc, char *long_desc,
+>> -				    char *pmu, char *unit, char *perpkg,
+>> +				    char *pmu, char *unit, char *event_class_type,
+> 
+> maybe 'aggregation' or 'aggr_mode' would be better name than event_class_type?
+>
+
+Sure, will update.
+
 Thanks,
-
-David / dhildenb
-
+Kajol Jain
+ 
+> thanks,
+> jirka
+> 
