@@ -2,62 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFD792174DE
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 19:14:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7EE82174E6
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 19:15:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728430AbgGGROQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 13:14:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52792 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727777AbgGGROP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 13:14:15 -0400
-Received: from gmail.com (unknown [104.132.1.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0C173206F6;
-        Tue,  7 Jul 2020 17:14:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594142055;
-        bh=iK55vtVxUr8fQsUNFL2mhLYhthVXTFjjC+DeRhc38jM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=zcQ8BDd9wJbSqIVVsZmGD3K6CXApHOCoLw0inkEEsIR8iQXaYYFTIBUS9AvQJWoGn
-         BJZO73UVZTI7YFkGNYbrCChP8ah/wmj4P91Z4sr9NLHASNur1GBo9B/UlBDoSJnFq6
-         qTSsJq/EMpyOL/3yvhhEgzHUtlYt2MNJHXeWtoLA=
-Date:   Tue, 7 Jul 2020 10:14:00 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-fsdevel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-kernel@vger.kernel.org, Qiujun Huang <hqjagain@gmail.com>
-Subject: Re: [PATCH 0/6] fs/minix: fix syzbot bugs and set s_maxbytes
-Message-ID: <20200707171400.GA3372845@gmail.com>
-References: <20200628060846.682158-1-ebiggers@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200628060846.682158-1-ebiggers@kernel.org>
+        id S1728491AbgGGRPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 13:15:25 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:64978 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728428AbgGGRPX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 13:15:23 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 067H1o7P061602;
+        Tue, 7 Jul 2020 13:15:08 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 324ffe8vmm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 07 Jul 2020 13:15:08 -0400
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 067H4GHY071319;
+        Tue, 7 Jul 2020 13:15:08 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 324ffe8vkt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 07 Jul 2020 13:15:07 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 067H0M6H018460;
+        Tue, 7 Jul 2020 17:15:06 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma04ams.nl.ibm.com with ESMTP id 322hd7une1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 07 Jul 2020 17:15:06 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 067HF3IL53870778
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 7 Jul 2020 17:15:03 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AF9CAA405B;
+        Tue,  7 Jul 2020 17:15:03 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 98362A4065;
+        Tue,  7 Jul 2020 17:15:03 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Tue,  7 Jul 2020 17:15:03 +0000 (GMT)
+Received: by tuxmaker.boeblingen.de.ibm.com (Postfix, from userid 55390)
+        id 29A80E1477; Tue,  7 Jul 2020 19:15:03 +0200 (CEST)
+From:   Sven Schnelle <svens@linux.ibm.com>
+To:     Arnaldo Carvalho de Melo <acme@redhat.com>
+Cc:     Sven Schnelle <svens@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Igor Lubashev <ilubashe@akamai.com>,
+        Jin Yao <yao.jin@linux.intel.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH] perf: add psw_idle and psw_idle_exit to list of idle symbols
+Date:   Tue,  7 Jul 2020 19:14:55 +0200
+Message-Id: <20200707171457.85707-1-svens@linux.ibm.com>
+X-Mailer: git-send-email 2.17.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-07_09:2020-07-07,2020-07-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1011
+ impostorscore=0 cotscore=-2147483648 malwarescore=0 mlxscore=0
+ adultscore=0 mlxlogscore=999 spamscore=0 priorityscore=1501 bulkscore=0
+ phishscore=0 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2007070118
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 27, 2020 at 11:08:39PM -0700, Eric Biggers wrote:
-> This series fixes all syzbot bugs in the minix filesystem:
-> 
-> 	KASAN: null-ptr-deref Write in get_block
-> 	KASAN: use-after-free Write in get_block
-> 	KASAN: use-after-free Read in get_block
-> 	WARNING in inc_nlink
-> 	KMSAN: uninit-value in get_block
-> 	WARNING in drop_nlink
-> 
-> It also fixes the minix filesystem to set s_maxbytes correctly, so that
-> userspace sees the correct behavior when exceeding the max file size.
-> 
-> Al or Andrew: one of you will need to take these patches, since no one
-> is maintaining this filesystem.
-> 
+Add the s390 idle functions so they don't show up in top when
+using software sampling.
 
-Andrew, any interest in taking these patches?
+Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
+---
+ tools/perf/util/symbol.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-- Eric
+diff --git a/tools/perf/util/symbol.c b/tools/perf/util/symbol.c
+index 5ddf84dcbae7..d33d24c61d24 100644
+--- a/tools/perf/util/symbol.c
++++ b/tools/perf/util/symbol.c
+@@ -666,6 +666,8 @@ static bool symbol__is_idle(const char *name)
+ 		"poll_idle",
+ 		"ppc64_runlatch_off",
+ 		"pseries_dedicated_idle_sleep",
++		"psw_idle",
++		"psw_idle_exit",
+ 		NULL
+ 	};
+ 	int i;
+-- 
+2.17.1
+
