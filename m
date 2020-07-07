@@ -2,77 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A4F3216A90
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 12:40:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BDCA216A95
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 12:41:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728179AbgGGKkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 06:40:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55242 "EHLO mail.kernel.org"
+        id S1728409AbgGGKlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 06:41:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55432 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726681AbgGGKkW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 06:40:22 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        id S1726467AbgGGKlC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 06:41:02 -0400
+Received: from pobox.suse.cz (nat1.prg.suse.com [195.250.132.148])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 03A242064C;
-        Tue,  7 Jul 2020 10:40:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 289102064C;
+        Tue,  7 Jul 2020 10:41:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594118422;
-        bh=61A6erdDeB8jrWfvMNGi7dKemTfgdHKOCeXNQhFVShE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0hw55PYBzLRgZk41iON4wdaNO/2h9uFNjSs1oNSBjnlLu3EjOOV3JRyNBQNsXJ1ix
-         VM7lFdmln9imZELUPRCMYbL+0ydckQrsBNyTZ6xcsN6DK3iZfgu7nldWfIRCgEKlFS
-         1qi+Xsy1ESKUwtHUyihG+5yLQKE9QhIhti0mtvNk=
-Date:   Tue, 7 Jul 2020 11:40:17 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 00/28] Clean-up ASoC's W=1 build warnings
-Message-ID: <20200707104017.GG4870@sirena.org.uk>
-References: <20200707101642.1747944-1-lee.jones@linaro.org>
- <20200707101915.GC4870@sirena.org.uk>
- <20200707103735.GG3500@dell>
+        s=default; t=1594118462;
+        bh=b0lxYJ9lP6g69W79rfSf6hh9ZzB1DotCO31lEeMmK4A=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=uZHILEBdfEtmn83GvooIUDxkeaVWBALM8fPvlKJcmKeanUBqJ87RXrfyfc6lM04Wl
+         pQMn3D3oPZ7vrfwmWKuuiSSUsfwD0p7Io3iL6N5htJitN0dlggSM8DH1IiMnM2YNVP
+         +qizjbDc8TN2BmtwzTmxzPkyXnE2ag6wiN3x5qwg=
+Date:   Tue, 7 Jul 2020 12:40:59 +0200 (CEST)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Harry Cutts <hcutts@chromium.org>,
+        Peter Hutterer <peter.hutterer@who-t.net>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] HID: logitech-hidpp: avoid repeated "multiplier = " log
+ messages
+In-Reply-To: <7d2c980f071487cecfd1534adb7561b33d922af3.1593970340.git.mail@maciej.szmigiero.name>
+Message-ID: <nycvar.YFH.7.76.2007071240480.15962@cbobk.fhfr.pm>
+References: <7d2c980f071487cecfd1534adb7561b33d922af3.1593970340.git.mail@maciej.szmigiero.name>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="V32M1hWVjliPHW+c"
-Content-Disposition: inline
-In-Reply-To: <20200707103735.GG3500@dell>
-X-Cookie: I hate dying.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, 5 Jul 2020, Maciej S. Szmigiero wrote:
 
---V32M1hWVjliPHW+c
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> These messages appear each time the mouse wakes from sleep, in my case
+> (Logitech M705), every minute or so.
+> Let's downgrade them to the "debug" level so they don't fill the kernel log
+> by default.
+> 
+> While we are at it, let's make clear that this is a wheel multiplier (and
+> not, for example, XY movement multiplier).
+> 
+> Fixes: 4435ff2f09a2 ("HID: logitech: Enable high-resolution scrolling on Logitech mice")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
 
-On Tue, Jul 07, 2020 at 11:37:35AM +0100, Lee Jones wrote:
+Applied, thank you Maciej.
 
-> Some of these issues have been present for years.  It's quite the
-> coincidence that we both submitted these this week!
+-- 
+Jiri Kosina
+SUSE Labs
 
-I'm guessing you've both been inspired by the 0day bot turning W=1
-warnings on without having first done a cleanup run :/
-
---V32M1hWVjliPHW+c
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8EUREACgkQJNaLcl1U
-h9ADyggAgTKMerlBwe/6a+3hugV8TxE6uP5Yh+jiu2rmA9pJiv9mLr+Bj5gfiYiA
-fkchufKwPxxTbQ5hgqMzm7EZo+b1Qu2yrQpUl6erraD3sj26eNR6UGQ4oNNSMXO9
-STju5lVt4w7rW4MeLx9Vk7qyTUPmnDuc1RICSW6UKFshC6LfJfUE9ogNTDEjj3Hm
-5yxmdzPp87WcVIF1bzeNtE8kAwamOSPMlr5Br0O/DhgMYzvR74obtDoq5fcgketA
-fsSRZGUnKljFlwAn/WA0d46QgGMkgVxBkt4vwhxVoUwusQImsaJogzFnTHQlpjHC
-q1sygTqdTJOtB2VjyfoxYIAEfmRksQ==
-=nkLM
------END PGP SIGNATURE-----
-
---V32M1hWVjliPHW+c--
