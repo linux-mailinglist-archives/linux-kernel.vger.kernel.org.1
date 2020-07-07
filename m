@@ -2,210 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9309217A12
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 23:15:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFF5B217A18
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 23:15:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729098AbgGGVPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 17:15:16 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:9965 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728201AbgGGVPQ (ORCPT
+        id S1729161AbgGGVPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 17:15:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728184AbgGGVPp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 17:15:16 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f04e5790000>; Tue, 07 Jul 2020 14:13:29 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Tue, 07 Jul 2020 14:15:15 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Tue, 07 Jul 2020 14:15:15 -0700
-Received: from [10.2.173.217] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 7 Jul
- 2020 21:15:14 +0000
-Subject: Re: [RFC PATCH v2 11/18] media: tegra-video: Add support for external
- sensor capture
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-To:     Hans Verkuil <hverkuil@xs4all.nl>, <thierry.reding@gmail.com>,
-        <jonathanh@nvidia.com>, <frankc@nvidia.com>, <sakari.ailus@iki.fi>,
-        <robh+dt@kernel.org>, <helen.koike@collabora.com>
-CC:     <digetx@gmail.com>, <sboyd@kernel.org>,
-        <gregkh@linuxfoundation.org>, <linux-media@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-i2c@vger.kernel.org>
-References: <1592358094-23459-1-git-send-email-skomatineni@nvidia.com>
- <1592358094-23459-12-git-send-email-skomatineni@nvidia.com>
- <50deca28-c198-703c-96e2-82c53f48cd65@xs4all.nl>
- <6ee18b4d-b63b-8053-1b7e-c3ec7c1d4956@nvidia.com>
- <6846e5bb-db1d-c2ff-c52c-70a2094c5b50@nvidia.com>
- <af11cb24-57b2-7326-ca29-e168dcbb8006@xs4all.nl>
- <c08ea38f-7629-1800-fb74-a2f75daf2eb0@nvidia.com>
- <47134481-1aec-9c1b-0ed2-8e39158d69b5@nvidia.com>
-Message-ID: <3e4a467a-7ef8-7b96-58dd-31c7a834acb7@nvidia.com>
-Date:   Tue, 7 Jul 2020 14:15:17 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Tue, 7 Jul 2020 17:15:45 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ADD6C061755;
+        Tue,  7 Jul 2020 14:15:45 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id g75so645401wme.5;
+        Tue, 07 Jul 2020 14:15:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=NktA5gnzul4WDSIk3Z8xLbXIsmGYp4CLauuUlyvE3jg=;
+        b=vTeZDRygjKWIa7rdxNjKDu2EukjjD8gTP18O0VHshYa5njQb2oUQpdGItfHP6Ax4lb
+         H46GjaFgqzeM6cYvm6i/eOzVtfvCA1IrRmKtj4ilG+fMd6Va0wHPkGB8ncYTSNXBWFg5
+         FvZnQ1rObFZ5qbU9uYwda0JbAiRWazz+0eit0J2LhfXcrddfztkX4d2SlPIKge0STxqz
+         PFFsxr87CUsURQUjT5aoz71dNWcjTrjQnQi6oUZ9w/F1GwrrIG7WmgljSAkxMBxGcL6Z
+         FpSTs3jQ4qta1FBaY47At1WfeHILWpjsNIML6rngc2u0udTN2mltrvNrCVJSBw1z5U4R
+         XsTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=NktA5gnzul4WDSIk3Z8xLbXIsmGYp4CLauuUlyvE3jg=;
+        b=baqb9iL5gRDLHXxZDjlMoi3aiIEiYwlaFQq5Ge+ef84d9cc2ZkWqGyQbZJ4JoJ+oFz
+         wG7LGfzlGa+MobeZNoXnNEMKjeSRXQWy6T4qzAsz8HxgnpaYK2XtaXI3uuz6BWCeAl6v
+         /tQUbiAs5wRmN/SCxKCQa9ilrGBeFRoV+EHJ+PLsDBGeLUTpW3qMBovqZ7qvdzzQqkXg
+         flBY9R2tNM4nLWOed44nBTG//waIjO80VeUNXWGt4KJ/63JImhJjRfUua6hEIQxLJjMs
+         xOzyfcuqRamJ/+mN07gq2b0Hr4KOWovkpUiSccyuPsUhYwJpoTuRRuIj/oPioQIimSpw
+         RbQA==
+X-Gm-Message-State: AOAM533qFJ//46mihYyZ8Rwo4+ZcwaiW8DxYXxZ6iMIWhMyX3s7qfE8x
+        eyiLFcLMj6AqjCAELqIH55k=
+X-Google-Smtp-Source: ABdhPJxft2qfu5HTED7RYZE23pZgaoI7p948dsBLtGzuDBlgnEE2+e42JDRJZk++JAtU79L9ryzzDQ==
+X-Received: by 2002:a1c:7c16:: with SMTP id x22mr5770691wmc.76.1594156543778;
+        Tue, 07 Jul 2020 14:15:43 -0700 (PDT)
+Received: from [10.230.30.107] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id u2sm2450343wml.16.2020.07.07.14.15.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Jul 2020 14:15:42 -0700 (PDT)
+Subject: Re: PHY reset handling during DT parsing
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Maxime Ripard <maxime@cerno.tech>, Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Frank Rowand <frowand.list@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        =?UTF-8?Q?Antoine_T=c3=a9nart?= <antoine.tenart@bootlin.com>
+References: <20200706181331.x2tn5cl5jn5kqmhx@gilmour.lan>
+ <20200707141918.GA928075@lunn.ch>
+ <20200707145440.teimwt6kmsnyi5dz@gilmour.lan>
+ <82482500-d329-71d4-619a-7cb2eddaf9ad@gmail.com>
+ <CAL_JsqLxUbf28MqYXsTd-bUPTq9XXaRqVOOy6qnDd9t3LQoP9A@mail.gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <1834ced3-d785-0180-599d-6e7fb640e9fd@gmail.com>
+Date:   Tue, 7 Jul 2020 14:15:37 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Firefox/68.0 Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <47134481-1aec-9c1b-0ed2-8e39158d69b5@nvidia.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAL_JsqLxUbf28MqYXsTd-bUPTq9XXaRqVOOy6qnDd9t3LQoP9A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1594156409; bh=UYxjfYM6bnTQ9rahaE5n5SqLSCOzWX15/wpBnNkI5kY=;
-        h=X-PGP-Universal:Subject:From:To:CC:References:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
-         Content-Language;
-        b=MLUWVlBbGnTiKJq4HIq8USESFWh66T39uZXbTMEHnVEzyQkMXqZA3aP5zwezug2UH
-         HUfZsXpRNEMK4ZIiaHc6v6fiLkgpqZDIFRCXfo7RZ6L76R0qDkGkDpBxQyIHPC/Sw8
-         wfcAWaFRkIqIiG4PMOmDCjlzWtUEJroRzfB7CphiQOdSNbisvop4osnS0ogii3xGc9
-         oMQpgsEgdwBz1InT07cg6yjL//vet+WUdP9rblH/iB37iaEGbyn5h9bUHXU+9UctID
-         YWp72l/tu+Eiq3qQ2OeZH8qqBFcr1VRl4+hWMOEyot2VCmacYF3G1Tf3iTYght9usq
-         VJ00nG4Zgt5Mw==
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 7/7/20 1:41 PM, Sowjanya Komatineni wrote:
->
-> On 7/7/20 1:29 PM, Sowjanya Komatineni wrote:
+
+On 7/7/2020 10:18 AM, Rob Herring wrote:
+> On Tue, Jul 7, 2020 at 10:39 AM Florian Fainelli <f.fainelli@gmail.com> wrote:
 >>
->> On 7/7/20 12:35 PM, Hans Verkuil wrote:
->>> On 07/07/2020 21:25, Sowjanya Komatineni wrote:
->>>> On 7/7/20 12:01 PM, Sowjanya Komatineni wrote:
->>>>>
->>>>> On 7/6/20 2:10 AM, Hans Verkuil wrote:
->>>>>>> +static void tegra_vi_graph_cleanup(struct tegra_vi *vi)
->>>>>>> +{
->>>>>>> +=C2=A0=C2=A0=C2=A0 struct tegra_vi_channel *chan;
->>>>>>> +
->>>>>>> +=C2=A0=C2=A0=C2=A0 list_for_each_entry(chan, &vi->vi_chans, list) =
-{
->>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 video_unregister_device=
-(&chan->video);
->>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mutex_lock(&chan->video=
-_lock);
->>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 vb2_queue_release(&chan=
-->queue);
->>>>>> No need for this since this is done in vb2_fop_release().
->>>>>>
->>>>>> In fact, vb2_queue_release should never be called by drivers.=20
->>>>>> Just using
->>>>>> vb2_fop_release or __vb2_fop_release is sufficient.
->>>>>>
->>>>>> The confusion is due to the fact that the name suggests that=20
->>>>>> vb2_queue_release
->>>>>> has to be balanced with vb2_queue_init, but that's not the case.=20
->>>>>> Perhaps
->>>>>> vb2_queue_stop or something like that might be a better name.=20
->>>>>> I'll have to
->>>>>> think about this since I see that a lot of drivers do this wrong.
->>>>>>
->>>>>>> + mutex_unlock(&chan->video_lock);
->>>>>>> + v4l2_async_notifier_unregister(&chan->notifier);
->>>>>>> + v4l2_async_notifier_cleanup(&chan->notifier);
->>>>>>> +=C2=A0=C2=A0=C2=A0 }
->>>>>>> +}
->>>>>>> +
->>>>> vb2_queue_release() here is called to stop streaming a head before=20
->>>>> media links are removed in case of when driver unbind happens while
->>>>> userspace application holds video device with active streaming in=20
->>>>> progress.
->>>>>
->>>>> Without vb2_queue_release() here streaming will be active during=20
->>>>> the driver unbind and by the time vb2_queue_release() happens from
->>>>> vb2_fop_release(), async notifiers gets unregistered and media=20
->>>>> links will be removed which causes channel stop stream to crash as=20
->>>>> we can't
->>>>> retrieve sensor subdev=C2=A0 thru media entity pads to execute s_stre=
-am=20
->>>>> on subdev.
->>>>>
->>>> I think we don't need async notifier unbind. Currently media links=20
->>>> are removed during unbind so during notifier unregister all subdevs=20
->>>> gets
->>>> unbind and links removed.
->>>>
->>>> media_device_unregister during video device release callback takes=20
->>>> care of media entity unregister and removing links.
->>>>
->>>> So, will try by removing notifier unbind along with removing=20
->>>> vb2_queue_release during cleanup.
->>>>
->>> I actually wonder if vb2_queue_release shouldn't be called from=20
->>> video_unregister_device.
+>>
+>>
+>> On 7/7/2020 7:54 AM, Maxime Ripard wrote:
+>>> Hi Andrew,
 >>>
->>> I'll look into this tomorrow.
+>>> On Tue, Jul 07, 2020 at 04:19:18PM +0200, Andrew Lunn wrote:
+>>>> On Mon, Jul 06, 2020 at 08:13:31PM +0200, Maxime Ripard wrote:
+>>>>> I came across an issue today on an Allwinner board, but I believe it's a
+>>>>> core issue.
+>>>>>
+>>>>> That board is using the stmac driver together with a phy that happens to
+>>>>> have a reset GPIO, except that that GPIO will never be claimed, and the
+>>>>> PHY will thus never work.
+>>>>>
+>>>>> You can find an example of such a board here:
+>>>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm/boot/dts/sun6i-a31-hummingbird.dts#n195
+>>>>>
+>>>>> It looks like when of_mdiobus_register() will parse the DT, it will then
+>>>>> call of_mdiobus_register_phy() for each PHY it encounters [1].
+>>>>> of_mdiobus_register_phy() will then if the phy doesn't have an
+>>>>> ethernet-phy-id* compatible call get_phy_device() [2], and will later on
+>>>>> call phy_register_device [3].
+>>>>>
+>>>>> get_phy_device() will then call get_phy_id() [4], that will try to
+>>>>> access the PHY through the MDIO bus [5].
+>>>>>
+>>>>> The code that deals with the PHY reset line / GPIO is however only done
+>>>>> in mdiobus_device_register, called through phy_device_register. Since
+>>>>> this is happening way after the call to get_phy_device, our PHY might
+>>>>> still very well be in reset if the bootloader hasn't put it out of reset
+>>>>> and left it there.
+>>>>
+>>>> Hi Maxime
+>>>>
+>>>> If you look at the history of this code,
+>>>>
+>>>> commit bafbdd527d569c8200521f2f7579f65a044271be
+>>>> Author: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+>>>> Date:   Mon Dec 4 13:35:05 2017 +0100
+>>>>
+>>>>     phylib: Add device reset GPIO support
+>>>>
+>>>> you will see there is an assumption the PHY can be detected while in
+>>>> reset. The reset was originally handled inside the at803x PHY driver
+>>>> probe function, before it got moved into the core.
+>>>>
+>>>> What you are asking for it reasonable, but you have some history to
+>>>> deal with, changing some assumptions as to what the reset is all
+>>>> about.
 >>>
->>> Regards,
+>>> Thanks for the pointer.
 >>>
->>> =C2=A0=C2=A0=C2=A0=C2=A0Hans
+>>> It looks to me from the commit log that the assumption was that a
+>>> bootloader could leave the PHY into reset though?
+>>>
+>>> It starts with:
+>>>
+>>>> The PHY devices sometimes do have their reset signal (maybe even power
+>>>> supply?) tied to some GPIO and sometimes it also does happen that a
+>>>> boot loader does not leave it deasserted.
+>>>
+>>> This is exactly the case I was discussing. The bootloader hasn't used
+>>> the PHY, and thus the PHY reset signal is still asserted?
 >>
->> Thanks Hans.
->>
->> Tried without notifier unbind to remove media links and I still see=20
->> crash due to below diff reason now.
->>
->> With userspace app holding video device node with active streaming in=20
->> progress when I do driver unbind, v4l2_device release callback=20
->> tegra_v4l2_dev_release() happens prior to vb2_fops_release() ->=20
->> vb2_queue_release().
->>
->> All channels resources and channel memory is freed during v4l2_device=20
->> release callback.
->>
->> Letting vb2_queue_release() to happen thru vb2_fops_release() causes=20
->> crash as stop streaming tries to retrieve subdev thru channel media=20
->> pads and channel memory is freed by that time.
->>
->> So, doing vb2_queue_release() during driver unbind -> tegra_vi_exit()=20
->> -> tegra_vi_graph_cleanup(), stops subdev stream properly and then on=20
->> v4l2_device release channel memory gets freed and this works which is=20
->> the existing implementation in the patch.
->>
->> I remember adding vb2_queue_release() during graph cleanup for TPG as=20
->> well for the same reason to allow driver unbind while holding video=20
->> device from user space so media pad can be accessible to stop stream=20
->> before channel cleanup.
->
-> v4l2_dev release() should definitely happen in the last after=20
-> vb2_fops_release(). Will add more debugs and confirm on what I=20
-> observed as something happened with timestamps on log on my side so I=20
-> doubt my above observation after removing notifier unbind to remove=20
-> media links.
->
-> Will check and get back..
->
-Hi Hans,
+>> The current solution to this problem would be to have a reset property
+>> specified for the MDIO bus controller node such that the reset would be
+>> de-asserted during mdiobus_register() and prior to scanning the MDIO bus.
+> 
+> Unless the reset controls all the devices on the mdio bus, the
+> controller node is not the right place. The core could look into the
+> child nodes, but this is just one possible property.
 
-Please ignore=C2=A0 above observation on channel cleanup during v4l2_dev=20
-release and vb2_fops_release. I misunderstood from timestamps.
+Both are defined and supported (with the caveat mentioned below).
 
-Looking into vdev->dev release callback v4l2_device_release(), it=20
-unregisters media entity and links gets removed.
-
-So, by the time vb2_queue_release() happen thru vb2_fops_release(),=20
-links are removed so subdev can't be retrieve thru media entity pads=20
-unless video driver maintains subdev pointers to use them instead of=20
-retrieving from media entity pads.
-
-To fix this, instead of maintaining subdev pointers in Tegra video=20
-driver channel structure, probably we can leave vb2_queue_release() call=20
-to happen during driver unbind graph cleanup which does stream stop=20
-where Tegra channel stop stream retrieves subdev thru media pad entities=20
-when media links are still present.
-
-
-Thanks
-
-Sowjanya
-
+> 
+>> This has the nice property that for a 1:1 mapping between MDIO bus
+>> controller and device, it works (albeit maybe not being accurately
+>> describing hardware), but if you have multiple MDIO/PHY devices sitting
+>> on the bus, they might each have their own reset control and while we
+>> would attempt to manage that reset line from that call path:
 >>
->> Regards,
+>> mdiobus_scan()
+>>  -> phy_device_register()
+>>     -> mdiobus_register_device()
 >>
->> Sowjanya
+>> it would be too late because there is a preceding get_phy_device() which
+>> attempts to read the PHY device's OUI and it would fail if the PHY is
+>> still held in reset.
 >>
+>> We have had a similar discussion before with regulators:
+>>
+>> http://archive.lwn.net:8080/devicetree/20200622093744.13685-1-brgl@bgdev.pl/
+>>
+>> and so far we do not really have a good solution to this problem either.
+>>
+>> For your specific use case with resets you could do a couple of things:
+>>
+>> - if there is only one PHY on the MDIO bus you can describe the reset
+>> line to be within the MDIO bus controller node (explained above), this
+>> is not great but it is not necessarily too far from reality either
+>>
+>> - if you know the PHY OUI, you can put it as a compatible string in the
+>> form: ethernet-phy-id%4x.%4x and that will avoid the MDIO bus layer to
+>> try to read from the PHY but instead match it with a driver and create a
+>> phy_device instance right away
+> 
+> The h/w is simply not discoverable, so it needs a compatible string.
+
+It is discoverable if you have the various resources (regulator(s),
+clock(s) and reset(s) managed ahead of issuing the discovery which is
+really the crux of the problem here.
+
+> 
+>> I think we are open to a "pre probe" model where it is possible to have
+>> a phy_device instance created that would allow reset controller or
+>> regulator (or clocks, too) to be usable with a struct device reference,
+>> yet make no HW access until all of these resources have been enabled.
+> 
+> I think this is needed for the kernel's driver model in general. It's
+> not an MDIO specific problem.
+
+Oh absolutely not, PCI and USB have the same issue, it is not clear to
+me how to tackle this yet though.
+-- 
+Florian
