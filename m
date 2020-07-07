@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12FA3216991
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 11:54:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AE52216994
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 11:55:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728143AbgGGJyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 05:54:18 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55388 "EHLO mx2.suse.de"
+        id S1728163AbgGGJzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 05:55:19 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55964 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725941AbgGGJyS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 05:54:18 -0400
+        id S1725941AbgGGJzT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 05:55:19 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CE452AE2B;
-        Tue,  7 Jul 2020 09:54:16 +0000 (UTC)
-Date:   Tue, 07 Jul 2020 11:54:16 +0200
-Message-ID: <s5hh7ujejlj.wl-tiwai@suse.de>
+        by mx2.suse.de (Postfix) with ESMTP id 5FB4FAC2D;
+        Tue,  7 Jul 2020 09:55:18 +0000 (UTC)
+Date:   Tue, 07 Jul 2020 11:55:17 +0200
+Message-ID: <s5hfta3ejju.wl-tiwai@suse.de>
 From:   Takashi Iwai <tiwai@suse.de>
 To:     Vinod Koul <vkoul@kernel.org>
 Cc:     Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
@@ -26,10 +26,10 @@ Cc:     Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
         Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
         Charles Keepax <ckeepax@opensource.cirrus.com>,
         alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 2/3] ALSA: compress: document the compress gapless audio state machine
-In-Reply-To: <20200629134737.105993-3-vkoul@kernel.org>
+Subject: Re: [PATCH v5 3/3] ALSA: compress: fix partial_drain completion state
+In-Reply-To: <20200629134737.105993-4-vkoul@kernel.org>
 References: <20200629134737.105993-1-vkoul@kernel.org>
-        <20200629134737.105993-3-vkoul@kernel.org>
+        <20200629134737.105993-4-vkoul@kernel.org>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -40,15 +40,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 29 Jun 2020 15:47:36 +0200,
+On Mon, 29 Jun 2020 15:47:37 +0200,
 Vinod Koul wrote:
 > 
-> Also documented the galpess transitions. Please note that these are not
-> really stream states, but show how the stream steps in gapless mode
+> On partial_drain completion we should be in SNDRV_PCM_STATE_RUNNING
+> state, so set that for partially draining streams in
+> snd_compr_drain_notify() and use a flag for partially draining streams
 > 
+> While at it, add locks for stream state change in
+> snd_compr_drain_notify() as well.
+> 
+> Fixes: f44f2a5417b2 ("ALSA: compress: fix drain calls blocking other compress functions (v6)")
+> Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> Tested-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 > Signed-off-by: Vinod Koul <vkoul@kernel.org>
 
-Applied to for-next branch.  Thanks.
+Applied this one to for-linus branch (while other two are for 5.9), as
+this is a fix.
 
+
+thanks,
 
 Takashi
