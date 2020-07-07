@@ -2,44 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EF1B21778D
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 21:07:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5D16217788
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 21:07:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728941AbgGGTHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 15:07:05 -0400
+        id S1728889AbgGGTGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 15:06:49 -0400
 Received: from mga17.intel.com ([192.55.52.151]:46557 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728849AbgGGTGp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 15:06:45 -0400
-IronPort-SDR: cBnD9EjEJth5b7E4sbuHtmAe4zwHEI3g+vprlJ9qqGq3n8Xza6OgOtnxBBnwzX9JwClKrVU8ww
- qdp+XOOo0EXw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9675"; a="127764317"
+        id S1728872AbgGGTGr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 15:06:47 -0400
+IronPort-SDR: oC/Wi2mamMMEbCuYlglLfD9Mcuzf7qKuMciYrToTos7ylhlpZ+brEgGBYlZz03aMXyQyhjOKL9
+ f7VqjFqryh5w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9675"; a="127764324"
 X-IronPort-AV: E=Sophos;i="5.75,324,1589266800"; 
-   d="scan'208";a="127764317"
+   d="scan'208";a="127764324"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2020 12:06:45 -0700
-IronPort-SDR: 2y+pYrxM/e/H+2o4edmVGd/hhRXYdc5rf0sVQQ/GsKmTOKHMydmjidsdUFarjne3MQGFaFQrU7
- 1ZrP5pX5Va3w==
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2020 12:06:47 -0700
+IronPort-SDR: np5h6z3uYM5ayhkdF+jDw9VOs2oMJMXG8Ow97LTi0iDGjwbWyuFe1MCE7Ift8BwN9owYOHxmc5
+ F7aYlZdLp3Kw==
 X-IronPort-AV: E=Sophos;i="5.75,324,1589266800"; 
-   d="scan'208";a="268278611"
+   d="scan'208";a="268278616"
 Received: from mrtorger-mobl1.amr.corp.intel.com (HELO pbossart-mobl3.amr.corp.intel.com) ([10.254.77.62])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2020 12:06:43 -0700
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2020 12:06:45 -0700
 From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To:     alsa-devel@alsa-project.org
 Cc:     tiwai@suse.de, broonie@kernel.org,
         Lee Jones <lee.jones@linaro.org>,
-        ter Huurne <maarten@treewalker.org>,
-        Paul Cercueil <paul@crapouillou.net>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Jarkko Nikula <jarkko.nikula@bitmer.com>,
+        Samuel Ortiz <samuel.ortiz@nokia.com>,
+        linux-omap@vger.kernel.org,
         Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
         Liam Girdwood <lgirdwood@gmail.com>,
         Jaroslav Kysela <perex@perex.cz>,
         Takashi Iwai <tiwai@suse.com>,
         linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v3 08/13] ASoC: codecs: jz4770: Remove defined but never used variable 'mic_boost_tlv'
-Date:   Tue,  7 Jul 2020 14:06:07 -0500
-Message-Id: <20200707190612.97799-9-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v3 09/13] ASoC: ti: omap-mcbsp-st: Remove set, but unused variable 'w'
+Date:   Tue,  7 Jul 2020 14:06:08 -0500
+Message-Id: <20200707190612.97799-10-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200707190612.97799-1-pierre-louis.bossart@linux.intel.com>
 References: <20200707190612.97799-1-pierre-louis.bossart@linux.intel.com>
@@ -53,39 +55,42 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lee Jones <lee.jones@linaro.org>
 
+Looks like 'w' has remained unchecked since the driver's inception.
+
 Fixes the following W=1 kernel build warning(s):
 
- In file included from include/sound/tlv.h:10,
- from sound/soc/codecs/jz4770.c:19:
- sound/soc/codecs/jz4770.c:306:35: warning: ‘mic_boost_tlv’ defined but not used [-Wunused-const-variable=]
- 306 | static const DECLARE_TLV_DB_SCALE(mic_boost_tlv, 0, 400, 0);
- | ^~~~~~~~~~~~~
- include/uapi/sound/tlv.h:64:15: note: in definition of macro ‘SNDRV_CTL_TLVD_DECLARE_DB_SCALE’
- 64 | unsigned int name[] = { | ^~~~
- sound/soc/codecs/jz4770.c:306:14: note: in expansion of macro ‘DECLARE_TLV_DB_SCALE’
- 306 | static const DECLARE_TLV_DB_SCALE(mic_boost_tlv, 0, 400, 0);
- | ^~~~~~~~~~~~~~~~~~~~
+ sound/soc/ti/omap-mcbsp-st.c: In function ‘omap_mcbsp_st_chgain’:
+ sound/soc/ti/omap-mcbsp-st.c:145:6: warning: variable ‘w’ set but not used [-Wunused-but-set-variable]
 
-Cc: ter Huurne <maarten@treewalker.org>
-Reviewed-by: Paul Cercueil <paul@crapouillou.net>
+Peter suggested that the whole read can be removed, so that's
+been done too.
+
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Cc: Samuel Ortiz <samuel.ortiz@nokia.com>
+Cc: linux-omap@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/codecs/jz4770.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/ti/omap-mcbsp-st.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/sound/soc/codecs/jz4770.c b/sound/soc/codecs/jz4770.c
-index 34775aa62402..4dee585761c2 100644
---- a/sound/soc/codecs/jz4770.c
-+++ b/sound/soc/codecs/jz4770.c
-@@ -303,7 +303,6 @@ static int jz4770_codec_digital_mute(struct snd_soc_dai *dai, int mute)
- static const DECLARE_TLV_DB_MINMAX_MUTE(dac_tlv, -3100, 0);
- static const DECLARE_TLV_DB_SCALE(adc_tlv, 0, 100, 0);
- static const DECLARE_TLV_DB_MINMAX(out_tlv, -2500, 600);
--static const DECLARE_TLV_DB_SCALE(mic_boost_tlv, 0, 400, 0);
- static const DECLARE_TLV_DB_SCALE(linein_tlv, -2500, 100, 0);
+diff --git a/sound/soc/ti/omap-mcbsp-st.c b/sound/soc/ti/omap-mcbsp-st.c
+index 5a32b54bbf3b..0bc7d26c660a 100644
+--- a/sound/soc/ti/omap-mcbsp-st.c
++++ b/sound/soc/ti/omap-mcbsp-st.c
+@@ -142,11 +142,8 @@ static void omap_mcbsp_st_fir_write(struct omap_mcbsp *mcbsp, s16 *fir)
  
- /* Unconditional controls. */
+ static void omap_mcbsp_st_chgain(struct omap_mcbsp *mcbsp)
+ {
+-	u16 w;
+ 	struct omap_mcbsp_st_data *st_data = mcbsp->st_data;
+ 
+-	w = MCBSP_ST_READ(mcbsp, SSELCR);
+-
+ 	MCBSP_ST_WRITE(mcbsp, SGAINCR, ST_CH0GAIN(st_data->ch0gain) |
+ 		       ST_CH1GAIN(st_data->ch1gain));
+ }
 -- 
 2.25.1
 
