@@ -2,122 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E28021723C
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:44:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D783217235
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:44:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730230AbgGGPag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:30:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37644 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729592AbgGGPYK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:24:10 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B76F3207CD;
-        Tue,  7 Jul 2020 15:24:08 +0000 (UTC)
-Date:   Tue, 7 Jul 2020 11:24:07 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-Subject: Re: [PATCH v2 05/15] tools lib traceevent: Introduced new
- traceevent API, for adding new plugins directories.
-Message-ID: <20200707112407.746cca77@oasis.local.home>
-In-Reply-To: <CAM9d7chfvJwodpVrHGc5E2J80peRojmYV_fD8x3cpn9HFRUw2g@mail.gmail.com>
-References: <20200702185344.913492689@goodmis.org>
-        <20200702185704.248123446@goodmis.org>
-        <CAM9d7chfvJwodpVrHGc5E2J80peRojmYV_fD8x3cpn9HFRUw2g@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1730302AbgGGPaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:30:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60918 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730072AbgGGPYQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 11:24:16 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96BC2C08C5DC
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 08:24:16 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id r8so35163643oij.5
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 08:24:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=oQlH+5Rxv1TZTmNUKokYf1gRnidmklj65FW3ajui8n8=;
+        b=gtkvz8FGNaNJgUQOYZxrh8RQ//6B5EnuDkuA0CI343tqSUwxmVFPrUj22a9A5eJ0d8
+         PeRYJ7/r2g4Kb8/uLNJPEoQbqvXD4iPm2Z9HvDz4VKCy0kRM+h+dhgWKuhgTucsBKEob
+         mQC+mhd+P5O+UaZRgc8Myl3wXAx5Vygcp/Uq8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=oQlH+5Rxv1TZTmNUKokYf1gRnidmklj65FW3ajui8n8=;
+        b=Bq3EwaK7BH7J8v2HfDfG0MjCBU7NhymTiuhvdXMUoeTFAMRUCUUr+uUa718FZLMpHJ
+         O7QCeuc02ivg1PqmIWcG3GxfmE4RfWtC/2S0ASIY/9b3XAGEHfzdJ/ISNFFU21pB3PyN
+         TAoZMX4Aq3GxMZo0RiAKzo2Fgk6krqS2PXCukq7IqEctLQvUST6AGRt4DvslD9nZcrW+
+         NSu3hxtI2vUrj3kk1fR8HERAVEItgf8knzvj4cHxTQxPetNd3z6XBq2YMrOTHcRKgEvF
+         Hw0avXsrobHJiakpOMmEcaaYdEJ4G4cbP5z2hrzCHCL+KpB2T+vlJ1JrW/FOcdDyhL9H
+         /tMg==
+X-Gm-Message-State: AOAM531gC3+2rTXQIniEdL85UAB8VodNMz1gIhqSsMwKxMLUxOs568MD
+        5ftY2g3aiGDfrn9y3F4DratC3w==
+X-Google-Smtp-Source: ABdhPJwTBVZClUaOBGBLJNT1lD+iIbNdX7fMrPQfh1eSqtSETAt6r/3QI8NT+64KTOzF8Wxb/CGV8w==
+X-Received: by 2002:aca:5158:: with SMTP id f85mr3774047oib.6.1594135455807;
+        Tue, 07 Jul 2020 08:24:15 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id t16sm188781oou.28.2020.07.07.08.24.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Jul 2020 08:24:15 -0700 (PDT)
+Subject: Re: [PATCH v3 1/2] selftests: pidfd: do not use ksft_exit_skip after
+ ksft_set_plan
+To:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Cc:     christian@brauner.io, shuah@kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20200707101936.12052-1-pbonzini@redhat.com>
+ <20200707101936.12052-2-pbonzini@redhat.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <f10aaf26-39f6-79ae-c3cc-56c31835f57e@linuxfoundation.org>
+Date:   Tue, 7 Jul 2020 09:24:14 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20200707101936.12052-2-pbonzini@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 8 Jul 2020 00:06:38 +0900
-Namhyung Kim <namhyung@kernel.org> wrote:
-> >
-> > +/**
-> > + * tep_add_plugin_path - Add a new plugin directory.
-> > + * @tep: Trace event handler.
-> > + * @path: Path to a directory. All files with extension .so in that  
+On 7/7/20 4:19 AM, Paolo Bonzini wrote:
+> Calling ksft_exit_skip after ksft_set_plan results in executing fewer tests
+> than planned.  Use ksft_test_result_skip instead.
 > 
-> Is the extension (".so") fixed?  I think a new API has the suffix argument
-> which may change it... ?
-
-So this should add a "suffix" argument? NULL for ".so"?
-
+> The plan passed to ksft_set_plan was wrong, too, so fix it while at it.
 > 
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> Message-Id: <20200623001547.22255-5-pbonzini@redhat.com>
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> ---
+>   tools/testing/selftests/pidfd/pidfd_test.c | 34 +++++++++++++++++++---
+>   1 file changed, 30 insertions(+), 4 deletions(-)
 > 
-> > + *       directory will be loaded as plugins.
-> > + *@prio: Load priority of the plugins in that directory.
-> > + *
-> > + * Returns -1 in case of an error, 0 otherwise.
-> > + */
-> > +int tep_add_plugin_path(struct tep_handle *tep, char *path,
-> > +                       enum tep_plugin_load_priority prio)
-> > +{
-> > +       struct tep_plugins_dir *dir;
-> > +
-> > +       if (!tep || !path)
-> > +               return -1;
-> > +
-> > +       dir = calloc(1, sizeof(*dir));
-> > +       if (!dir)
-> > +               return -1;
-> > +
-> > +       dir->path = strdup(path);  
+> diff --git a/tools/testing/selftests/pidfd/pidfd_test.c b/tools/testing/selftests/pidfd/pidfd_test.c
+> index 7aff2d3b42c0..f65ad4e32353 100644
+> --- a/tools/testing/selftests/pidfd/pidfd_test.c
+> +++ b/tools/testing/selftests/pidfd/pidfd_test.c
+> @@ -8,6 +8,7 @@
+>   #include <sched.h>
+>   #include <signal.h>
+>   #include <stdio.h>
+> +#include <stdbool.h>
+>   #include <stdlib.h>
+>   #include <string.h>
+>   #include <syscall.h>
+> @@ -27,6 +28,8 @@
+>   
+>   #define MAX_EVENTS 5
+>   
+> +static bool have_pidfd_send_signal = false;
+
+You don't need to initialize this to false. Rest looks good.
+
+> +
+>   static pid_t pidfd_clone(int flags, int *pidfd, int (*fn)(void *))
+>   {
+>   	size_t stack_size = 1024;
+> @@ -56,6 +59,13 @@ static int test_pidfd_send_signal_simple_success(void)
+>   	int pidfd, ret;
+>   	const char *test_name = "pidfd_send_signal send SIGUSR1";
+>   
+> +	if (!have_pidfd_send_signal) {
+> +		ksft_test_result_skip(
+> +			"%s test: pidfd_send_signal() syscall not supported\n",
+> +			test_name);
+> +		return 0;
+> +	}
+> +
+>   	pidfd = open("/proc/self", O_DIRECTORY | O_CLOEXEC);
+>   	if (pidfd < 0)
+>   		ksft_exit_fail_msg(
+> @@ -86,6 +96,13 @@ static int test_pidfd_send_signal_exited_fail(void)
+>   	pid_t pid;
+>   	const char *test_name = "pidfd_send_signal signal exited process";
+>   
+> +	if (!have_pidfd_send_signal) {
+> +		ksft_test_result_skip(
+> +			"%s test: pidfd_send_signal() syscall not supported\n",
+> +			test_name);
+> +		return 0;
+> +	}
+> +
+>   	pid = fork();
+>   	if (pid < 0)
+>   		ksft_exit_fail_msg("%s test: Failed to create new process\n",
+> @@ -137,6 +154,13 @@ static int test_pidfd_send_signal_recycled_pid_fail(void)
+>   	pid_t pid1;
+>   	const char *test_name = "pidfd_send_signal signal recycled pid";
+>   
+> +	if (!have_pidfd_send_signal) {
+> +		ksft_test_result_skip(
+> +			"%s test: pidfd_send_signal() syscall not supported\n",
+> +			test_name);
+> +		return 0;
+> +	}
+> +
+>   	ret = unshare(CLONE_NEWPID);
+>   	if (ret < 0)
+>   		ksft_exit_fail_msg("%s test: Failed to unshare pid namespace\n",
+> @@ -325,15 +349,17 @@ static int test_pidfd_send_signal_syscall_support(void)
+>   
+>   	ret = sys_pidfd_send_signal(pidfd, 0, NULL, 0);
+>   	if (ret < 0) {
+> -		if (errno == ENOSYS)
+> -			ksft_exit_skip(
+> +		if (errno == ENOSYS) {
+> +			ksft_test_result_skip(
+>   				"%s test: pidfd_send_signal() syscall not supported\n",
+>   				test_name);
+> -
+> +			return 0;
+> +		}
+>   		ksft_exit_fail_msg("%s test: Failed to send signal\n",
+>   				   test_name);
+>   	}
+>   
+> +	have_pidfd_send_signal = true;
+>   	close(pidfd);
+>   	ksft_test_result_pass(
+>   		"%s test: pidfd_send_signal() syscall is supported. Tests can be executed\n",
+> @@ -521,7 +547,7 @@ static void test_pidfd_poll_leader_exit(int use_waitpid)
+>   int main(int argc, char **argv)
+>   {
+>   	ksft_print_header();
+> -	ksft_set_plan(4);
+> +	ksft_set_plan(8);
+>   
+>   	test_pidfd_poll_exec(0);
+>   	test_pidfd_poll_exec(1);
 > 
-> It needs to check the return value..
 
-Yes it does indeed.
-
-BTW, since these patches are already in trace-cmd.git, would be OK if
-we just write patches on top of this series to address your concerns.
-This way, we would be also adding them to trace-cmd.git as well.
-
-I eventually want a separate libraries repo on kernel.org that this
-lives in and remove it from the tools/lib directory of the kernel.
-
--- Steve
-
-
-> 
-> > +       dir->prio = prio;
-> > +       dir->next = tep->plugins_dir;
-> > +       tep->plugins_dir = dir;
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +void tep_free_plugin_paths(struct tep_handle *tep)
-> > +{
-> > +       struct tep_plugins_dir *dir;
-> > +
-> > +       if (!tep)
-> > +               return;
-> > +
-> > +       dir = tep->plugins_dir;
-> > +       while (dir) {
-> > +               tep->plugins_dir = tep->plugins_dir->next;
-> > +               free(dir->path);
-> > +               free(dir);
-> > +               dir = tep->plugins_dir;
-> > +       }
-> > +}
-> > +
-> >  void
-> >  tep_unload_plugins(struct tep_plugin_list *plugin_list, struct tep_handle *tep)
-> >  {
-> > --
-> > 2.26.2
-> >
-> >  
-
+thanks,
+-- Shuah
