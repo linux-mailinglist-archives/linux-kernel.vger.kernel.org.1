@@ -2,241 +2,328 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB8392174E4
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 19:15:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FD6C2174E8
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 19:15:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728467AbgGGRPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 13:15:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50100 "EHLO
+        id S1728513AbgGGRPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 13:15:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727834AbgGGRPT (ORCPT
+        with ESMTP id S1728495AbgGGRPi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 13:15:19 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA663C061755;
-        Tue,  7 Jul 2020 10:15:18 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id f18so37969193wrs.0;
-        Tue, 07 Jul 2020 10:15:18 -0700 (PDT)
+        Tue, 7 Jul 2020 13:15:38 -0400
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92CB4C08C5DC
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 10:15:38 -0700 (PDT)
+Received: by mail-pg1-x54a.google.com with SMTP id e22so32909190pgl.6
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 10:15:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=zPaFNN0CwRIrxgMT/Hx12rk1w2uEgsV43cWtsFNawmA=;
-        b=OoD5s6EqQZLxfIp3I7A669VifnUn9Ibnc7LYMSzZ0tIPUiA9Tp+buHQWel8bB9NGk2
-         EGangoBXq+izJzkRL1SnU8OAXuEDSdrGvKiTIwg3pdycFDevybGoENDig+Lin5AzfxWn
-         rV61Zirbp/gFLfE4XdvxvCOlOODfeXWxT96BQOHVqZkX/J+llXtaJhvzMN3duDyx1vmF
-         UtnFxZDDLSvOdsxVgUzYyobE4n4F/ZgGwV+CqNdRYZAjF1GmtCkfutynvWYnuKPjn1wm
-         ymW3Rw/ZTEaVMH6waJzp/4nd8HMM7k76LkNaYVpT4umj4p1Z6H3JkI3G8/Hg1SfAn7v2
-         IxdA==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=nzRc2VaVL0hxd/zNm1uexOd79dLJb/uwJsogL+2pbY0=;
+        b=mCJ0L0nQmtTrTKpzMqB29mX2iitUlF2hU+4Tyv5JXRwUx6OHU3BtUiXS2omqrIoHUn
+         rgYIpXgRE/ncv1WWV4LZp3+KONS+S9xE+BmjoQmjMkrYL4LXReEIkgOxTq/ZF8qkt65n
+         jS4nReDooGS/5sltyz0ov5bLDxk6fd76Td/SDbZ2+63TTX9AlAt5CO92hSOiioQ4ThHl
+         5Cb6ZIZFsT3uhvdF2DO43GjB4sHl5oGJomDDdmMlo0ATo2zCFjL1oxV9xD6kBHzX8UPX
+         2Y2ZjNWd1R3g2EpJy3oI/t8imozG1UO57DFKjGwMpbyEJC9wNfuPI7W0XjWjmv7YkkyZ
+         Oxig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=zPaFNN0CwRIrxgMT/Hx12rk1w2uEgsV43cWtsFNawmA=;
-        b=bBrUUUf2JVcBAHcp8P7U/l62YvlsVWBC4yA6G1YXFjf6RDy85RgK/ngcdPpsVUDluo
-         h3RcpreFKki1YTjUd2DiEMGhkr45E41Q1FJdzNTN8c1OBVAt+wkkNHkIIXshXQZbohPW
-         V1kpaa0w5zCh9RyX7ISKFZp3tU+5ms1r4laEs541Ny10MWIrUQsHHqLmpgBa0YCITRdi
-         ArK810IAF/RtcOP3T5WXsHvXbqF6nfHDBIcC35Q2rK1PbJDyTRGMvlemxXBJPKApR05Y
-         3P2EgZy7TcvtKIxCYyOgtU+K4u8ZnIcbByHTPGLN1h0Nlpfbee3ZrXjLO8Rcr0f4FvmX
-         rXLA==
-X-Gm-Message-State: AOAM531138zjzglc/zRSHI2yYLJ/zYv+Bfw/4D4XwOXW3Ohy7B8Jvm+9
-        qxhZaSponVLGhLKb6up4oag=
-X-Google-Smtp-Source: ABdhPJwhTIoqPYMMiP4fvG9oZ1gOVUngiaKMsqX034M6n5Y/X7x48Jlyu5WLxXmWUrCOj1WsUBIg7A==
-X-Received: by 2002:a5d:6683:: with SMTP id l3mr7880261wru.288.1594142117582;
-        Tue, 07 Jul 2020 10:15:17 -0700 (PDT)
-Received: from localhost.localdomain ([185.200.214.168])
-        by smtp.gmail.com with ESMTPSA id d132sm1872742wmd.35.2020.07.07.10.15.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jul 2020 10:15:16 -0700 (PDT)
-From:   izabela.bakollari@gmail.com
-To:     nhorman@tuxdriver.com, davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        izabela.bakollari@gmail.com
-Subject: [PATCH net-next] dropwatch: Support monitoring of dropped frames
-Date:   Tue,  7 Jul 2020 19:15:15 +0200
-Message-Id: <20200707171515.110818-1-izabela.bakollari@gmail.com>
-X-Mailer: git-send-email 2.18.4
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=nzRc2VaVL0hxd/zNm1uexOd79dLJb/uwJsogL+2pbY0=;
+        b=nq2frVldVMP2gQhAvVI7W8OplE8U5zGtIK1TPlA76lsLG5wbhjLn6waWCgaSV7rwIQ
+         A6I3RtPVTgizSQDlqLKylToGOJ9j8gmRdnAibIQ6NkIpO8B9GRAMowwC//4AKAwJwVml
+         Z2nJC36toScWdsX75nxHjBDUeJwxYDYHxq+of9NUytxYLe8+3eBDB0jra3lH4ejk3KpO
+         EfjwGFMKfXRC1hvEyjBLA6Jg0kTRZpdU344UIwlXG4eC97rq4aTPWqIlN8LrtrU+cDs7
+         ZHftUf6ZTbRnTpp0lzAX2fMJZifDPWFyUkMJjLJJ/hV1UMTmFwraTFV5Uu5igLS2rw43
+         QXxQ==
+X-Gm-Message-State: AOAM531gk8SOo1oMFnqJIvW/b/euKh+Nphj/zNxZctGNO37DtmJ//XlM
+        CckwqJd923GCb/2riKIu6MAKumsHoQ6YT/F6
+X-Google-Smtp-Source: ABdhPJxt2/XRG1sz6gdbcbNoHJKa03ozqnsSvVVa6xh4hlq4R04vujO1c2OU6zh3XdXttsTfA/tGmp36xfJWaG0g
+X-Received: by 2002:a17:90b:4c12:: with SMTP id na18mr822903pjb.0.1594142137617;
+ Tue, 07 Jul 2020 10:15:37 -0700 (PDT)
+Date:   Tue,  7 Jul 2020 17:15:28 +0000
+Message-Id: <20200707171528.2929275-1-linchuyuan@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.27.0.383.g050319c2ae-goog
+Subject: [PATCH v4] hwmon:max6697: Allow max6581 to create tempX_offset
+From:   Chu Lin <linchuyuan@google.com>
+To:     linux@roeck-us.net
+Cc:     belgaied@google.com, jasonling@google.com, jdelvare@suse.com,
+        linchuyuan@google.com, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org, zhongqil@google.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Izabela Bakollari <izabela.bakollari@gmail.com>
+Testing:
+echo 16250 > temp2_offset
+cat temp2_offset
+16250
 
-Dropwatch is a utility that monitors dropped frames by having userspace
-record them over the dropwatch protocol over a file. This augument
-allows live monitoring of dropped frames using tools like tcpdump.
+echo 17500 > temp3_offset
+cat temp3_offset
+17500
+cat temp4_offset
+0
+cat temp2_offset
+17500
 
-With this feature, dropwatch allows two additional commands (start and
-stop interface) which allows the assignment of a net_device to the
-dropwatch protocol. When assinged, dropwatch will clone dropped frames,
-and receive them on the assigned interface, allowing tools like tcpdump
-to monitor for them.
+echo 0 > temp2_offset
+cat temp2_offset
+0
+cat temp3_offset
+17500
 
-With this feature, create a dummy ethernet interface (ip link add dev
-dummy0 type dummy), assign it to the dropwatch kernel subsystem, by using
-these new commands, and then monitor dropped frames in real time by
-running tcpdump -i dummy0.
+echo -0 > temp2_offset
+cat temp2_offset
+0
 
-Signed-off-by: Izabela Bakollari <izabela.bakollari@gmail.com>
+echo -100000 > temp2_offset
+cat temp2_input
+4875
+
+echo 10000 > temp2_offset
+cat temp2_input
+47125
+
+echo -2000 > temp2_offset
+cat temp2_input
+34875
+
+echo -0 > temp2_offset
+cat temp2_input
+37000
+
+Signed-off-by: Chu Lin <linchuyuan@google.com>
 ---
- include/uapi/linux/net_dropmon.h |  3 ++
- net/core/drop_monitor.c          | 79 +++++++++++++++++++++++++++++++-
- 2 files changed, 80 insertions(+), 2 deletions(-)
+ChangeLog v3 -> v4:
+  - Check if a particular channel is disabled/enabled before flipping
+    state
+  - Make sure the RW operation is mux protected to avoid the situation
+    where the user is able to modify the offset select value after it is
+    read
+  - indentation cleanup
+  - Use label to make sure the lock is released
+  - Fix a typo where the channel index should be /7 instead of /8
 
-diff --git a/include/uapi/linux/net_dropmon.h b/include/uapi/linux/net_dropmon.h
-index 67e31f329190..e8e861e03a8a 100644
---- a/include/uapi/linux/net_dropmon.h
-+++ b/include/uapi/linux/net_dropmon.h
-@@ -58,6 +58,8 @@ enum {
- 	NET_DM_CMD_CONFIG_NEW,
- 	NET_DM_CMD_STATS_GET,
- 	NET_DM_CMD_STATS_NEW,
-+	NET_DM_CMD_START_IFC,
-+	NET_DM_CMD_STOP_IFC,
- 	_NET_DM_CMD_MAX,
- };
+ChangeLog v2 -> v3:
+  - Use reverse christmas tree order convension
+  - Fix the type issue where comparision is always true
+  - Change the line limit to 100 char instead of 80 char
+
+ChangeLog v1 -> v2:
+  - Simplify the offset reg raw value to milli ceisus conversion
+  - Substitute the temp1_offset with dummy attr
+  - Avoid using double negative in the macro definition
+  - Return the actual error when i2c read/write is failed
+  - clamp the value to MAX or MIN respectively if an out of range input is given
+  - Provide mux protection when multiple i2c accesses is required
+
+ drivers/hwmon/max6697.c | 97 ++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 95 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/hwmon/max6697.c b/drivers/hwmon/max6697.c
+index 64122eb38060..5b4e72d8df00 100644
+--- a/drivers/hwmon/max6697.c
++++ b/drivers/hwmon/max6697.c
+@@ -57,6 +57,8 @@ static const u8 MAX6697_REG_CRIT[] = {
+ #define MAX6581_REG_IDEALITY_SELECT	0x4c
+ #define MAX6581_REG_OFFSET		0x4d
+ #define MAX6581_REG_OFFSET_SELECT	0x4e
++#define MAX6581_OFFSET_MIN		-31750
++#define MAX6581_OFFSET_MAX		31750
  
-@@ -93,6 +95,7 @@ enum net_dm_attr {
- 	NET_DM_ATTR_SW_DROPS,			/* flag */
- 	NET_DM_ATTR_HW_DROPS,			/* flag */
- 	NET_DM_ATTR_FLOW_ACTION_COOKIE,		/* binary */
-+	NET_DM_ATTR_IFNAME,			/* string */
+ #define MAX6697_CONV_TIME		156	/* ms per channel, worst case */
  
- 	__NET_DM_ATTR_MAX,
- 	NET_DM_ATTR_MAX = __NET_DM_ATTR_MAX - 1
-diff --git a/net/core/drop_monitor.c b/net/core/drop_monitor.c
-index 8e33cec9fc4e..8049bff05abd 100644
---- a/net/core/drop_monitor.c
-+++ b/net/core/drop_monitor.c
-@@ -30,6 +30,7 @@
- #include <net/genetlink.h>
- #include <net/netevent.h>
- #include <net/flow_offload.h>
-+#include <net/sock.h>
- 
- #include <trace/events/skb.h>
- #include <trace/events/napi.h>
-@@ -46,6 +47,7 @@
-  */
- static int trace_state = TRACE_OFF;
- static bool monitor_hw;
-+struct net_device *interface;
- 
- /* net_dm_mutex
-  *
-@@ -220,9 +222,8 @@ static void trace_drop_common(struct sk_buff *skb, void *location)
- 	struct per_cpu_dm_data *data;
- 	unsigned long flags;
- 
--	local_irq_save(flags);
-+	spin_lock_irqsave(&data->lock, flags);
- 	data = this_cpu_ptr(&dm_cpu_data);
--	spin_lock(&data->lock);
- 	dskb = data->skb;
- 
- 	if (!dskb)
-@@ -255,6 +256,12 @@ static void trace_drop_common(struct sk_buff *skb, void *location)
- 
- out:
- 	spin_unlock_irqrestore(&data->lock, flags);
-+
-+	if (interface && interface != skb->dev) {
-+		skb = skb_clone(skb, GFP_ATOMIC);
-+		skb->dev = interface;
-+		netif_receive_skb(skb);
-+	}
- }
- 
- static void trace_kfree_skb_hit(void *ignore, struct sk_buff *skb, void *location)
-@@ -1315,6 +1322,63 @@ static int net_dm_cmd_trace(struct sk_buff *skb,
- 	return -EOPNOTSUPP;
- }
- 
-+static int net_dm_interface_start(struct net *net, const char *ifname)
-+{
-+	struct net_device *nd;
-+
-+	nd = dev_get_by_name(net, ifname);
-+
-+	if (nd) {
-+		interface = nd;
-+		dev_hold(interface);
-+	} else {
-+		return -ENODEV;
-+	}
-+	return 0;
-+}
-+
-+static int net_dm_interface_stop(struct net *net, const char *ifname)
-+{
-+	struct net_device *nd;
-+
-+	nd = dev_get_by_name(net, ifname);
-+
-+	if (nd) {
-+		interface = nd;
-+		dev_put(interface);
-+	} else {
-+		return -ENODEV;
-+	}
-+	return 0;
-+}
-+
-+static int net_dm_cmd_ifc_trace(struct sk_buff *skb, struct genl_info *info)
-+{
-+	struct net *net = sock_net(skb->sk);
-+	char ifname[IFNAMSIZ];
-+	int rc;
-+
-+	memset(ifname, 0, IFNAMSIZ);
-+	nla_strlcpy(ifname, info->attrs[NET_DM_ATTR_IFNAME], IFNAMSIZ - 1);
-+
-+	switch (info->genlhdr->cmd) {
-+	case NET_DM_CMD_START_IFC:
-+		rc = net_dm_interface_start(net, ifname);
-+		if (rc)
-+			return rc;
-+		break;
-+	case NET_DM_CMD_STOP_IFC:
-+		if (interface) {
-+			rc = net_dm_interface_stop(net, interface->ifname);
-+			return rc;
-+		} else {
-+			return -ENODEV;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- static int net_dm_config_fill(struct sk_buff *msg, struct genl_info *info)
- {
- 	void *hdr;
-@@ -1543,6 +1607,7 @@ static const struct nla_policy net_dm_nl_policy[NET_DM_ATTR_MAX + 1] = {
- 	[NET_DM_ATTR_QUEUE_LEN] = { .type = NLA_U32 },
- 	[NET_DM_ATTR_SW_DROPS]	= {. type = NLA_FLAG },
- 	[NET_DM_ATTR_HW_DROPS]	= {. type = NLA_FLAG },
-+	[NET_DM_ATTR_IFNAME] = {. type = NLA_STRING, .len = IFNAMSIZ },
- };
- 
- static const struct genl_ops dropmon_ops[] = {
-@@ -1570,6 +1635,16 @@ static const struct genl_ops dropmon_ops[] = {
- 		.cmd = NET_DM_CMD_STATS_GET,
- 		.doit = net_dm_cmd_stats_get,
+@@ -172,6 +174,11 @@ static const struct max6697_chip_data max6697_chip_data[] = {
  	},
-+	{
-+		.cmd = NET_DM_CMD_START_IFC,
-+		.validate = GENL_DONT_VALIDATE_STRICT | GENL_DONT_VALIDATE_DUMP,
-+		.doit = net_dm_cmd_ifc_trace,
-+	},
-+	{
-+		.cmd = NET_DM_CMD_STOP_IFC,
-+		.validate = GENL_DONT_VALIDATE_STRICT | GENL_DONT_VALIDATE_DUMP,
-+		.doit = net_dm_cmd_ifc_trace,
-+	},
  };
  
- static int net_dm_nl_pre_doit(const struct genl_ops *ops,
++static inline int max6581_offset_to_millic(int val)
++{
++	return sign_extend32(val, 7) * 250;
++}
++
+ static struct max6697_data *max6697_update_device(struct device *dev)
+ {
+ 	struct max6697_data *data = dev_get_drvdata(dev);
+@@ -317,6 +324,71 @@ static ssize_t temp_store(struct device *dev,
+ 	return ret < 0 ? ret : count;
+ }
+ 
++static ssize_t offset_store(struct device *dev, struct device_attribute *devattr, const char *buf,
++			    size_t count)
++{
++	int val, ret, index, select;
++	struct max6697_data *data;
++	bool channel_enabled;
++	long temp;
++
++	index = to_sensor_dev_attr(devattr)->index;
++	data = dev_get_drvdata(dev);
++	ret = kstrtol(buf, 10, &temp);
++	if (ret < 0)
++		return ret;
++
++	mutex_lock(&data->update_lock);
++	select = i2c_smbus_read_byte_data(data->client, MAX6581_REG_OFFSET_SELECT);
++	if (select < 0) {
++		ret = select;
++		goto abort;
++	}
++	channel_enabled = (select & (1 << (index - 1)));
++	temp = clamp_val(temp, MAX6581_OFFSET_MIN, MAX6581_OFFSET_MAX);
++	val = DIV_ROUND_CLOSEST(temp, 250);
++	/* disable the offset for channel if the new offset is 0 */
++	if (val == 0) {
++		if (channel_enabled)
++			ret = i2c_smbus_write_byte_data(data->client, MAX6581_REG_OFFSET_SELECT,
++							select & ~(1 << (index - 1)));
++		ret = ret < 0 ? ret : count;
++		goto abort;
++	}
++	if (!channel_enabled) {
++		ret = i2c_smbus_write_byte_data(data->client, MAX6581_REG_OFFSET_SELECT,
++						select | (1 << (index - 1)));
++		if (ret < 0)
++			goto abort;
++	}
++	ret = i2c_smbus_write_byte_data(data->client, MAX6581_REG_OFFSET, val);
++	ret = ret < 0 ? ret : count;
++
++abort:
++	mutex_unlock(&data->update_lock);
++	return ret;
++}
++
++static ssize_t offset_show(struct device *dev, struct device_attribute *devattr, char *buf)
++{
++	struct max6697_data *data;
++	int select, ret, index;
++
++	index = to_sensor_dev_attr(devattr)->index;
++	data = dev_get_drvdata(dev);
++	mutex_lock(&data->update_lock);
++	select = i2c_smbus_read_byte_data(data->client, MAX6581_REG_OFFSET_SELECT);
++	if (select < 0) {
++		ret = select;
++	} else if (select & (1 << (index - 1))) {
++		ret = i2c_smbus_read_byte_data(data->client, MAX6581_REG_OFFSET);
++	} else {
++		ret = 0;
++	}
++	mutex_unlock(&data->update_lock);
++	return ret < 0 ? ret : sprintf(buf, "%d\n", max6581_offset_to_millic(ret));
++}
++
+ static SENSOR_DEVICE_ATTR_RO(temp1_input, temp_input, 0);
+ static SENSOR_DEVICE_ATTR_2_RW(temp1_max, temp, 0, MAX6697_TEMP_MAX);
+ static SENSOR_DEVICE_ATTR_2_RW(temp1_crit, temp, 0, MAX6697_TEMP_CRIT);
+@@ -375,6 +447,15 @@ static SENSOR_DEVICE_ATTR_RO(temp6_fault, alarm, 5);
+ static SENSOR_DEVICE_ATTR_RO(temp7_fault, alarm, 6);
+ static SENSOR_DEVICE_ATTR_RO(temp8_fault, alarm, 7);
+ 
++/* There is no offset for local temperature so starting from temp2 */
++static SENSOR_DEVICE_ATTR_RW(temp2_offset, offset, 1);
++static SENSOR_DEVICE_ATTR_RW(temp3_offset, offset, 2);
++static SENSOR_DEVICE_ATTR_RW(temp4_offset, offset, 3);
++static SENSOR_DEVICE_ATTR_RW(temp5_offset, offset, 4);
++static SENSOR_DEVICE_ATTR_RW(temp6_offset, offset, 5);
++static SENSOR_DEVICE_ATTR_RW(temp7_offset, offset, 6);
++static SENSOR_DEVICE_ATTR_RW(temp8_offset, offset, 7);
++
+ static DEVICE_ATTR(dummy, 0, NULL, NULL);
+ 
+ static umode_t max6697_is_visible(struct kobject *kobj, struct attribute *attr,
+@@ -383,8 +464,8 @@ static umode_t max6697_is_visible(struct kobject *kobj, struct attribute *attr,
+ 	struct device *dev = container_of(kobj, struct device, kobj);
+ 	struct max6697_data *data = dev_get_drvdata(dev);
+ 	const struct max6697_chip_data *chip = data->chip;
+-	int channel = index / 6;	/* channel number */
+-	int nr = index % 6;		/* attribute index within channel */
++	int channel = index / 7;	/* channel number */
++	int nr = index % 7;		/* attribute index within channel */
+ 
+ 	if (channel >= chip->channels)
+ 		return 0;
+@@ -393,6 +474,10 @@ static umode_t max6697_is_visible(struct kobject *kobj, struct attribute *attr,
+ 		return 0;
+ 	if (nr == 5 && !(chip->have_fault & (1 << channel)))
+ 		return 0;
++	/* offset reg is only supported on max6581 remote channels */
++	if (nr == 6)
++		if (data->type != max6581 || channel == 0)
++			return 0;
+ 
+ 	return attr->mode;
+ }
+@@ -409,6 +494,7 @@ static struct attribute *max6697_attributes[] = {
+ 	&sensor_dev_attr_temp1_crit.dev_attr.attr,
+ 	&sensor_dev_attr_temp1_crit_alarm.dev_attr.attr,
+ 	&dev_attr_dummy.attr,
++	&dev_attr_dummy.attr,
+ 
+ 	&sensor_dev_attr_temp2_input.dev_attr.attr,
+ 	&sensor_dev_attr_temp2_max.dev_attr.attr,
+@@ -416,6 +502,7 @@ static struct attribute *max6697_attributes[] = {
+ 	&sensor_dev_attr_temp2_crit.dev_attr.attr,
+ 	&sensor_dev_attr_temp2_crit_alarm.dev_attr.attr,
+ 	&sensor_dev_attr_temp2_fault.dev_attr.attr,
++	&sensor_dev_attr_temp2_offset.dev_attr.attr,
+ 
+ 	&sensor_dev_attr_temp3_input.dev_attr.attr,
+ 	&sensor_dev_attr_temp3_max.dev_attr.attr,
+@@ -423,6 +510,7 @@ static struct attribute *max6697_attributes[] = {
+ 	&sensor_dev_attr_temp3_crit.dev_attr.attr,
+ 	&sensor_dev_attr_temp3_crit_alarm.dev_attr.attr,
+ 	&sensor_dev_attr_temp3_fault.dev_attr.attr,
++	&sensor_dev_attr_temp3_offset.dev_attr.attr,
+ 
+ 	&sensor_dev_attr_temp4_input.dev_attr.attr,
+ 	&sensor_dev_attr_temp4_max.dev_attr.attr,
+@@ -430,6 +518,7 @@ static struct attribute *max6697_attributes[] = {
+ 	&sensor_dev_attr_temp4_crit.dev_attr.attr,
+ 	&sensor_dev_attr_temp4_crit_alarm.dev_attr.attr,
+ 	&sensor_dev_attr_temp4_fault.dev_attr.attr,
++	&sensor_dev_attr_temp4_offset.dev_attr.attr,
+ 
+ 	&sensor_dev_attr_temp5_input.dev_attr.attr,
+ 	&sensor_dev_attr_temp5_max.dev_attr.attr,
+@@ -437,6 +526,7 @@ static struct attribute *max6697_attributes[] = {
+ 	&sensor_dev_attr_temp5_crit.dev_attr.attr,
+ 	&sensor_dev_attr_temp5_crit_alarm.dev_attr.attr,
+ 	&sensor_dev_attr_temp5_fault.dev_attr.attr,
++	&sensor_dev_attr_temp5_offset.dev_attr.attr,
+ 
+ 	&sensor_dev_attr_temp6_input.dev_attr.attr,
+ 	&sensor_dev_attr_temp6_max.dev_attr.attr,
+@@ -444,6 +534,7 @@ static struct attribute *max6697_attributes[] = {
+ 	&sensor_dev_attr_temp6_crit.dev_attr.attr,
+ 	&sensor_dev_attr_temp6_crit_alarm.dev_attr.attr,
+ 	&sensor_dev_attr_temp6_fault.dev_attr.attr,
++	&sensor_dev_attr_temp6_offset.dev_attr.attr,
+ 
+ 	&sensor_dev_attr_temp7_input.dev_attr.attr,
+ 	&sensor_dev_attr_temp7_max.dev_attr.attr,
+@@ -451,6 +542,7 @@ static struct attribute *max6697_attributes[] = {
+ 	&sensor_dev_attr_temp7_crit.dev_attr.attr,
+ 	&sensor_dev_attr_temp7_crit_alarm.dev_attr.attr,
+ 	&sensor_dev_attr_temp7_fault.dev_attr.attr,
++	&sensor_dev_attr_temp7_offset.dev_attr.attr,
+ 
+ 	&sensor_dev_attr_temp8_input.dev_attr.attr,
+ 	&sensor_dev_attr_temp8_max.dev_attr.attr,
+@@ -458,6 +550,7 @@ static struct attribute *max6697_attributes[] = {
+ 	&sensor_dev_attr_temp8_crit.dev_attr.attr,
+ 	&sensor_dev_attr_temp8_crit_alarm.dev_attr.attr,
+ 	&sensor_dev_attr_temp8_fault.dev_attr.attr,
++	&sensor_dev_attr_temp8_offset.dev_attr.attr,
+ 	NULL
+ };
+ 
 -- 
-2.18.4
+2.27.0.383.g050319c2ae-goog
 
