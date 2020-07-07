@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1266217A8B
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 23:32:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1141B217A72
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 23:31:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729415AbgGGVbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 17:31:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33512 "EHLO
+        id S1729315AbgGGVbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 17:31:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729268AbgGGVbT (ORCPT
+        with ESMTP id S1729281AbgGGVbU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 17:31:19 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC11DC061755
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 14:31:18 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id 207so18792619pfu.3
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 14:31:18 -0700 (PDT)
+        Tue, 7 Jul 2020 17:31:20 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A2A9C061755
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 14:31:20 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id p3so20602629pgh.3
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 14:31:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=+L0m/PbK8aAeOqWVeHEDiQMGUfIG8Y+7XMpTLF4upOo=;
-        b=hO5KQZfdIYV9UKLk8tm/GVrR9qniYpxEpiWAOkGK6bNh7bMsV12fLzXgF1oZwkyEmf
-         EeRitVug9C20gBfxS902ydj/2iwb3Lb7aIyGVIixOP+HfS6PVVK3XSjc0Cr5F30t9tJq
-         ujornd12j3tHjWuqHiltfQpRmg/B5UAAzcymoqmqjswEf/qFRcZynG2Bmx/TgOBR5NzM
-         su8L6AZs11QiYOWYiYoKnKHTZ4DnMHlEgHwz8uARF9rZTv6K080jyE8K/epp1Rq6Qrk/
-         JKEA1Bxl+LJtTFmIVY1f88BEuOOug/0vd3bel1r+/qTjlP4pRLSFcSXNpyK+IxcuxT+G
-         jtbA==
+        bh=lt6hUGBu1W7gsJ62+tKE3hemun/1WgbhEsuA1Og1vF8=;
+        b=EYA+6vGb/dMe9sd7/qMvUrBIuiCU2hyLidvuwJvMVTaVq7cJfuCekg36Ms2kRMi08U
+         6yXLvuXAolskKfdtO1Kut8RhdLL5mPrSSkRzXdDo8V6v03M/b2a8sTYMy+zeHW4x+XNx
+         A1RJ+1yVSpdbDPAFSUYJuDofNh3IrjQF0YAhPGrxQeJzyj6KYzz9J01cNkW1FIfEOq2B
+         ZfT/JtOeRUnX94GOiiFdR2XOHVHfcCG5ApyDEh4q77/HJiNqgNK3Ik+9Cl3N2HiwPKXR
+         aHl1WOcih1ambPW3OyrNmvKYprl1TgbNrDbwJXCIthofRqHwGqHD2W/Ofyb9O3kKsd+T
+         WN2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=+L0m/PbK8aAeOqWVeHEDiQMGUfIG8Y+7XMpTLF4upOo=;
-        b=FpJtOx1EQztH2RiDe5G2nJEbpwnrw/h8/WdUCYBQfLeQNNmPgxR4+d34beo+8nskez
-         XLddFamGkJeJhsHwpNHdyiGCWwKXdVaRcKqdP5FCzYC9Prh0YBN+geqaiNcjbT9xnrnt
-         PxVdMTzwcWeZDJ1OqVtkHpepyuFrKslLatTOv0+g34RieIZeKpf1jrt3k5MLvaRkloMK
-         eInaMxXkmd2XnHd/xmTYNxiTlpW8IbGKVLKkmxChXWns39leGof6wBdipALvmEG98HFt
-         D0a3LM5vX6t5vvKPb6dK7ZtWd2kXYHankceHzYtEHELRj35drsAGmTjI7bki/n9pF+3r
-         OPGQ==
-X-Gm-Message-State: AOAM533ELO8hMs60OYNulgoXs6xCS1r2UqDEt248SE0ZgN6S9AOmoP06
-        ZVF9iRpp5iwyF1lkdyRDANUUKw==
-X-Google-Smtp-Source: ABdhPJy5YoOmopDSmZVb4RmdnfIlkVTXGx+dSWHb1XXneUf7zCK2cwndwbSwl/5CE2KYpSGEZ6D6uA==
-X-Received: by 2002:a62:fb06:: with SMTP id x6mr51125770pfm.28.1594157478432;
-        Tue, 07 Jul 2020 14:31:18 -0700 (PDT)
+        bh=lt6hUGBu1W7gsJ62+tKE3hemun/1WgbhEsuA1Og1vF8=;
+        b=mjWQIMUplw0guK56BDXSraJ4aikdhBZtTtzIAQpDspxkaqWXdPvnN6tIZFGmtzpkyh
+         DdsJhry2ZhyxuPBwppWR9uZVP9l6qZ/CCxnHCkT3VA7o7T6a/VehpdmDncty62A6M+PB
+         zlhsM4TGg6VfiQHe2a1kv6A8qCoZUXXQxN3ci3uAr0XkCpe9K+PA7Lw1yW6T0V1i5B8n
+         aHVlJlpdNa8Yy94NWZEAX+l2ny+FgQ7bAZpQKOU48JSYLGGqfPiHBl28h9oepehEFZ40
+         k1Pu9tbg5V5EgduBZ8/Yy5k/JyF06mBKS9Jp18sAlI1NAjRR1WzbPtkR26IiZP5oMCpi
+         3SXQ==
+X-Gm-Message-State: AOAM531Zh0/JxzcUXn5QARRi4Lt/nYd2oiXU54wyrtKMVBlRh30W4izq
+        mj7Y+Q338q1JsotQdZsqsTGj0Q==
+X-Google-Smtp-Source: ABdhPJwZ/wF7h8d7pCKt8rGnuyo24lrnRwS6wYuDGgfzl0bj2KI5KVsQvHU3bXAD6dcZ+syoMsQ7ng==
+X-Received: by 2002:a63:8c10:: with SMTP id m16mr47225696pgd.149.1594157479588;
+        Tue, 07 Jul 2020 14:31:19 -0700 (PDT)
 Received: from xps15.cg.shawcable.net (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id o128sm23560832pfg.127.2020.07.07.14.31.17
+        by smtp.gmail.com with ESMTPSA id o128sm23560832pfg.127.2020.07.07.14.31.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jul 2020 14:31:17 -0700 (PDT)
+        Tue, 07 Jul 2020 14:31:19 -0700 (PDT)
 From:   Mathieu Poirier <mathieu.poirier@linaro.org>
 To:     ohad@wizery.com, bjorn.andersson@linaro.org, loic.pallardy@st.com,
         arnaud.pouliquen@st.com, mcoquelin.stm32@gmail.com,
         alexandre.torgue@st.com
 Cc:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-stm32@st-md-mailman.stormreply.com
-Subject: [PATCH v5 03/11] remoteproc: stm32: Decouple rproc from DT parsing
-Date:   Tue,  7 Jul 2020 15:31:04 -0600
-Message-Id: <20200707213112.928383-4-mathieu.poirier@linaro.org>
+Subject: [PATCH v5 04/11] remoteproc: stm32: Remove memory translation from DT parsing
+Date:   Tue,  7 Jul 2020 15:31:05 -0600
+Message-Id: <20200707213112.928383-5-mathieu.poirier@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200707213112.928383-1-mathieu.poirier@linaro.org>
 References: <20200707213112.928383-1-mathieu.poirier@linaro.org>
@@ -67,86 +67,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove the remote processor from the process of parsing the device tree
-since (1) there is no correlation between them and (2) to use the
-information that was gathered to make a decision on whether to
-synchronise with the M4 or not.
+Other than one has to be done after the other, there is no correlation
+between memory translation and DT parsing.  As such move function
+stm32_rproc_of_memory_translations() to stm32_rproc_probe() so that
+stm32_rproc_parse_dt() can be extended to look for attach bindings
+in a clean way.
 
 Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+Reviewed-by: Loic Pallardy <loic.pallardy@st.com>
 Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 ---
- drivers/remoteproc/stm32_rproc.c | 23 ++++++++++++-----------
- 1 file changed, 12 insertions(+), 11 deletions(-)
+ drivers/remoteproc/stm32_rproc.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
-index c00f60d42ab6..cbba995a80a2 100644
+index cbba995a80a2..986f34a336a7 100644
 --- a/drivers/remoteproc/stm32_rproc.c
 +++ b/drivers/remoteproc/stm32_rproc.c
-@@ -539,12 +539,11 @@ static int stm32_rproc_get_syscon(struct device_node *np, const char *prop,
- 	return err;
+@@ -607,7 +607,7 @@ static int stm32_rproc_parse_dt(struct platform_device *pdev,
+ 
+ 	*auto_boot = of_property_read_bool(np, "st,auto-boot");
+ 
+-	return stm32_rproc_of_memory_translations(pdev, ddata);
++	return 0;
  }
  
--static int stm32_rproc_parse_dt(struct platform_device *pdev)
-+static int stm32_rproc_parse_dt(struct platform_device *pdev,
-+				struct stm32_rproc *ddata, bool *auto_boot)
- {
- 	struct device *dev = &pdev->dev;
- 	struct device_node *np = dev->of_node;
--	struct rproc *rproc = platform_get_drvdata(pdev);
--	struct stm32_rproc *ddata = rproc->priv;
- 	struct stm32_syscon tz;
- 	unsigned int tzen;
- 	int err, irq;
-@@ -590,7 +589,7 @@ static int stm32_rproc_parse_dt(struct platform_device *pdev)
+ static int stm32_rproc_probe(struct platform_device *pdev)
+@@ -634,6 +634,10 @@ static int stm32_rproc_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		goto free_rproc;
  
- 	err = regmap_read(tz.map, tz.reg, &tzen);
- 	if (err) {
--		dev_err(&rproc->dev, "failed to read tzen\n");
-+		dev_err(dev, "failed to read tzen\n");
- 		return err;
- 	}
- 	ddata->secured_soc = tzen & tz.mask;
-@@ -606,7 +605,7 @@ static int stm32_rproc_parse_dt(struct platform_device *pdev)
- 	if (err)
- 		dev_info(dev, "failed to get pdds\n");
- 
--	rproc->auto_boot = of_property_read_bool(np, "st,auto-boot");
-+	*auto_boot = of_property_read_bool(np, "st,auto-boot");
- 
- 	return stm32_rproc_of_memory_translations(pdev, ddata);
- }
-@@ -627,9 +626,15 @@ static int stm32_rproc_probe(struct platform_device *pdev)
- 	if (!rproc)
- 		return -ENOMEM;
- 
-+	ddata = rproc->priv;
-+
- 	rproc_coredump_set_elf_info(rproc, ELFCLASS32, EM_NONE);
-+
-+	ret = stm32_rproc_parse_dt(pdev, ddata, &rproc->auto_boot);
++	ret = stm32_rproc_of_memory_translations(pdev, ddata);
 +	if (ret)
 +		goto free_rproc;
 +
  	rproc->has_iommu = false;
--	ddata = rproc->priv;
  	ddata->workqueue = create_workqueue(dev_name(dev));
  	if (!ddata->workqueue) {
- 		dev_err(dev, "cannot create workqueue\n");
-@@ -639,13 +644,9 @@ static int stm32_rproc_probe(struct platform_device *pdev)
- 
- 	platform_set_drvdata(pdev, rproc);
- 
--	ret = stm32_rproc_parse_dt(pdev);
--	if (ret)
--		goto free_wkq;
--
- 	ret = stm32_rproc_request_mbox(rproc);
- 	if (ret)
--		goto free_rproc;
-+		goto free_wkq;
- 
- 	ret = rproc_add(rproc);
- 	if (ret)
 -- 
 2.25.1
 
