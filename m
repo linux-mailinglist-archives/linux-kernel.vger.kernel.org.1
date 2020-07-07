@@ -2,93 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF1E821656B
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 06:35:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A37C21656E
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 06:39:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727077AbgGGEfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 00:35:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45354 "EHLO
+        id S1727097AbgGGEjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 00:39:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726869AbgGGEfv (ORCPT
+        with ESMTP id S1726805AbgGGEjU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 00:35:51 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9693CC061794
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Jul 2020 21:35:51 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id h13so12802670otr.0
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 21:35:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=OvRsMtNyIKIk7Sc8KCclbreP4Z4+OxlMjgwmceSdLLI=;
-        b=GYPNjU8zIh8rOf99NgGXqLMHyLBrTX+72XUaU+caYAuQIuUo5bzaHU/vWdVxTb6MD+
-         PnqfTAfAuULmRp+SKvq4raIxFR+7mh+zamaWaz5wWSC2CTG6Mx/U+VRJyVpSy6zqsz2j
-         Wuj2U1utICNTME2HryA5+i4y+hHiisDW6e8pFz2kW6832Cx9vALwR/e17RkjcKEuyxUM
-         bTvcU4vJT19W+tbKAJIGIC669oNCnsNVXoHIiAo0L4iGfTCAg4FTdeAC1v0a9RtMRX0p
-         X26VC3Iv+ezfn+O38oIGHQ8Z4PVw2Z6e7rDoTe193r8VjdTojOvdjLWPOK2NnjWiHbQs
-         9svA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=OvRsMtNyIKIk7Sc8KCclbreP4Z4+OxlMjgwmceSdLLI=;
-        b=JRh9hmvpayNYpX1iLbwmJCs6DFKtzaKzqVnPO1EBgHlWJhr/dFDy8UQw2ErIz+0wgK
-         H2b8AnIspNvmCpmFGUbsOkjcGwyVwNq4OAmooKCCuVFMLQ83kya0d2D2sMSRCuUGb1hl
-         U60acnioIaJDB64ljrbMi1lxS/uNQqEXyGL0896A+5VGDhR59ghPqHdYwMii/zzbSloP
-         ++YsigzstXP6DG3o83K/B1HzjGNxDaNjcdrs08sGXwMTvIEukr5oB1Eyz/kFZ/r580ZJ
-         +BG79KsL8LVw/RF2BuEWph1KgoP4+wqFwQLKuwFXOPt0kfwPcwGgYx99BIniobX5/2oX
-         75RQ==
-X-Gm-Message-State: AOAM531KSrze8xc7rPsWh1WXTR9A5YDLNc+zlJ46EmbPBW+XEuwBuMDd
-        M6o+tqs52AtVT0KZtAnHJ/bfENEx90qtHd2SrPw=
-X-Google-Smtp-Source: ABdhPJx7vihvy2LpWzrBWjyCGiRkICAH94Zk+oK34yXH5FdMHxHld2WqGS8b/BanWInFW5rnzbRf3GEpUTiyk1O4iRQ=
-X-Received: by 2002:a9d:600b:: with SMTP id h11mr18165116otj.263.1594096550930;
- Mon, 06 Jul 2020 21:35:50 -0700 (PDT)
+        Tue, 7 Jul 2020 00:39:20 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18BDCC061755;
+        Mon,  6 Jul 2020 21:39:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=9Fn0Sg12AGqPvCet6/i3cv1zgohdxMq/STaY/sGGKBM=; b=L5Hcz9Nfo/DNgz2qozusOJmZHe
+        6yxUrH93tLHZbhy98UmvJDnpk9Y24OKFN4qqQ/Td8wKicNYtqRomjKM9dOGxzQod0nHXGvuRzvlCz
+        MIwmIylU70LmPziuuj+aRsoMlk5qRDcAjDOVW9UscpZidiktVdQFFIQgRFTnV0p7EjipJ0RONLfoW
+        yb3LvUHaViGZLc+ewmuBdz8E/NU30C+049ft+YFzTtGvpfxduQN0iz94zTXnfMgjiWkT/KvNit0Nz
+        ZD1Z9Yea+wyvH6LJDU7aAM6cFYfi/ZAZoxuUUTfTzjaPCSDEY+edAUIdBbCEa95nA0OAczWB4vVgD
+        3E4+MfRw==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jsfNo-0006OJ-8J; Tue, 07 Jul 2020 04:39:04 +0000
+Date:   Tue, 7 Jul 2020 05:39:04 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Haitao Huang <haitao.huang@linux.intel.com>,
+        Chunyang Hui <sanqian.hcy@antfin.com>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Seth Moore <sethmo@google.com>,
+        Suresh Siddha <suresh.b.siddha@intel.com>,
+        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
+        cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v34 11/24] x86/sgx: Add SGX enclave driver
+Message-ID: <20200707043904.GJ25523@casper.infradead.org>
+References: <20200707030204.126021-1-jarkko.sakkinen@linux.intel.com>
+ <20200707030204.126021-12-jarkko.sakkinen@linux.intel.com>
+ <20200707033617.GF25523@casper.infradead.org>
+ <20200707041151.GE143804@linux.intel.com>
+ <20200707042904.GD5208@linux.intel.com>
 MIME-Version: 1.0
-Received: by 2002:a4a:4511:0:0:0:0:0 with HTTP; Mon, 6 Jul 2020 21:35:50 -0700 (PDT)
-Reply-To: mrsfatimakargbo@outlook.com
-From:   Mr Suleman Bello <frankoleka77@gmail.com>
-Date:   Mon, 6 Jul 2020 21:35:50 -0700
-Message-ID: <CAHQPQhALon5+6tUeMvz2=T-5hfvS7wzukCGPLD+Qiy46ydx42Q@mail.gmail.com>
-Subject: BE MY PARTNER IN THIS BUSINESS
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200707042904.GD5208@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
+On Mon, Jul 06, 2020 at 09:29:04PM -0700, Sean Christopherson wrote:
+> > > > +	idx_start = PFN_DOWN(start);
+> > > > +	idx_end = PFN_DOWN(end - 1);
+> > > > +
+> > > > +	for (idx = idx_start; idx <= idx_end; ++idx) {
+> > > > +		mutex_lock(&encl->lock);
+> > > > +		page = radix_tree_lookup(&encl->page_tree, idx);
+> > > > +		mutex_unlock(&encl->lock);
+> > > > +
+> > > > +		if (!page || (~page->vm_max_prot_bits & vm_prot_bits))
+> > > > +			return -EACCES;
+> > > 
+> > > You should really use an iterator here instead of repeated lookups.
+> > > xas_for_each() will probably be what you want.
+> > 
+> > Thank you for your remarks. I'll look into using xarray for this.
+> 
+> Question for Matthew:
+> 
+> To enforce the "page must be populated" rule, is there a clean way to retrieve
+> the index of the current entry?  Our entries/pages don't have information
+> about their index.  Or should we just count the number of entries and check
+> 'em at the end? E.g.
+> 
+>         xas_for_each(...) {
+>                 if (~page->vm_max_prot_bits & vm_prot_bits)
+>                         return -EACCES;
+>                 nr_entries++;
+>         }
+> 
+>         if (nr_entries != (end_index - start_index))
+>                 return -EACCES;
 
-Please i want you to read this letter very carefully and i must
-apologize for berging this message into your mail box without any
-formal introduction due to the urgency and confidential of this issue
-and i know that this message will come to you as a surprise, Please
-this is not a joke and i will not like you to joke with it.I am
-Mr.Suleman Bello, a staff in African Development Bank (A.D.B)
-Ouagadougou, Burkina faso West Africa.I discovered existing dormant
-account for years. When I discovered that there had been neither
-continuation nor withdrawals from this account for this long period
-and according to the laws and constitution guiding this banking
-institution, any unserviceable account for more than (7) seven years,
-that fund will be transferred to national treasury as unclaimed fund.
+Probably best just to steal the implementation from here:
 
-I Hoped that you will not expose or betray this trust and confident
-that i am about to extablish with you for the mutual benefit of you
-and i,I need your urgent assistance in transferring the sum of $10.5
-)million usd into your account within 7 banking days. This money has
-been dormant for years in our Bank, and The request of foreigner in
-this transaction is necessary because our late customer was a
-foreigner and a burkinabe cannot stand as next of kin to a
-foreigner.Because of the static of this transaction I want you to
-stand as the next of kin so that our bank will accord you the
-recognition and have the fund transferred to your account.
+pgoff_t page_cache_next_miss(struct address_space *mapping,
+                             pgoff_t index, unsigned long max_scan)
+{
+        XA_STATE(xas, &mapping->i_pages, index);
 
-Upon your response, I shall then provide you with further information
-and more deities that will help you understand the transaction. I am
-expecting your urgent response to enable me inform you on how the
-business will be executed. Please I would like you to keep this
-transaction confidential and as a top secret or delete if you are not
-interested.
+        while (max_scan--) {
+                void *entry = xas_next(&xas);
+                if (!entry || xa_is_value(entry))
+                        break;
+                if (xas.xa_index == 0)
+                        break;
+        }
 
-Thanks
-Mr.Suleman Bello.
+        return xas.xa_index;
+}
+
+although I think you have a simpler task.
+
+	XA_STATE(xas, ..., start_index);
+
+	for (;;) {
+		struct page *page = xas_next(&xas);
+
+		if (!page || (~page->vm_max_prot_bits & vm_prot_bits))
+			return -EACCES;
+	}
+
+	return 0;
+
+should do the trick, I think.
