@@ -2,222 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E619216B88
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 13:31:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DE0C216BEB
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 13:45:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728204AbgGGLb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 07:31:26 -0400
-Received: from foss.arm.com ([217.140.110.172]:42142 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728001AbgGGLbZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 07:31:25 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 622B21FB;
-        Tue,  7 Jul 2020 04:31:24 -0700 (PDT)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 139213F71E;
-        Tue,  7 Jul 2020 04:31:22 -0700 (PDT)
-Date:   Tue, 7 Jul 2020 12:31:17 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Dejin Zheng <zhengdejin5@gmail.com>
-Cc:     tjoseph@cadence.com, robh@kernel.org, bhelgaas@google.com,
-        thierry.reding@gmail.com, toan@os.amperecomputing.com,
-        ley.foon.tan@intel.com, shawn.lin@rock-chips.com,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] PCI: controller: convert to
- devm_platform_ioremap_resource_byname()
-Message-ID: <20200707113117.GA15536@e121166-lin.cambridge.arm.com>
-References: <20200602171601.17630-1-zhengdejin5@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200602171601.17630-1-zhengdejin5@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1728414AbgGGLpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 07:45:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55052 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728388AbgGGLpM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 07:45:12 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E42AC08C5E1
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 04:45:12 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id m125so7832008yba.23
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 04:45:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=LLQSBg64iwWxTtcpWWM6iR9wTgF8QbEH02Vy+2bg9Hg=;
+        b=vaUinhNZkQN3RAVXNuIvu2m9UALKLZu6+nRg7EiTfijttvY5uvU/HlfVTs6MFI3BjD
+         Er2jhbF7pByOmGUAkA0Rwjx6r1yRJYYD9O+cl25wvja83NKdtmmp1zngnkV02lhR5H60
+         b5PjacpY1TP2NcUr9fiYcugKPCAjjR9rmlEhUHB0wiSX4QdOcSpvSGrvsQV0rT/nifCK
+         2ZKi0Cmb2t3TuutVgBjI50QCH9omrBcU2W/h5TS/pS3DnoIpdnsJzSM7wmedPsCcY2wS
+         ytB1vf691KXilc3nIafaO0kmcuwa8X3LA+tSoYg6SrxvtuS6RBnGMpkCLIhuojqhRuKM
+         4b2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=LLQSBg64iwWxTtcpWWM6iR9wTgF8QbEH02Vy+2bg9Hg=;
+        b=rL0r/RX6T5o0UqBnA5A4tVLpmvY4vOTJa+zDLsfXFqUz9U/IUk7fvMrLP+6hRjjusq
+         g0vbHRRZqI13xh0rxFSmFjG/T68lQNT/1pOeSHjA4nu5JPuPqi/LnsoZvRwsI9iFBtzZ
+         sNpc/HJCko9vdZB184OkfjjmFYx1Fg4AvLc81Zn91Eobz4Klh0FVi4N9hIPxDhk6XG/d
+         BLnyczBk6MYyNJvAKgq5pFSMtbbxr4L9Nkes0O7QOidUO0cxRKif3WSSQNezpUk/gXCl
+         yrqax1ntTUUrNad6keHlIQwZHAJnRCExhULwjBufs7CFNnp/Lq/J58eyoIYWn/bhJXFb
+         W5Qw==
+X-Gm-Message-State: AOAM5332jLBkK+qW1MyHGTNHAqSEHTd/re0n9hDcmB4g8UiZ3VDIF+Jk
+        Iy7agiho5bnF22V9tpBLA3LWtO8u/sg=
+X-Google-Smtp-Source: ABdhPJwLxIHBchd80Gve4mlw6g7Mb8civMvZG5ZcJoCOlzyO/mCAmx2JmX2IzIWBOuqsBIRGM+219TLjngU=
+X-Received: by 2002:a25:b903:: with SMTP id x3mr32504935ybj.445.1594122311275;
+ Tue, 07 Jul 2020 04:45:11 -0700 (PDT)
+Date:   Tue,  7 Jul 2020 04:31:19 -0700
+Message-Id: <20200707113123.3429337-1-drosen@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.27.0.212.ge8ba1cc988-goog
+Subject: [PATCH v10 0/4] Prepare for upcoming Casefolding/Encryption patches
+From:   Daniel Rosenberg <drosen@google.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Eric Biggers <ebiggers@kernel.org>,
+        linux-fscrypt@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel-team@android.com, Daniel Rosenberg <drosen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 03, 2020 at 01:16:01AM +0800, Dejin Zheng wrote:
-> Use devm_platform_ioremap_resource_byname() to simplify codes.
-> it contains platform_get_resource_byname() and devm_ioremap_resource().
-> 
-> Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
-> ---
-> v1 -> v2:
-> 	- Discard changes to the file drivers/pci/controller/pcie-xilinx-nwl.c
-> 	  Due to my mistakes, my patch will modify pcie-xilinx-nwl.c,
-> 	  but it still need to use the res variable, but
-> 	  devm_platform_ioremap_resource_byname() funtion can't assign a
-> 	  value to the variable res. kbuild test robot report it. Thanks
-> 	  very much for kbuild test robot <lkp@intel.com>.
-> 
->  drivers/pci/controller/cadence/pcie-cadence-ep.c   | 3 +--
->  drivers/pci/controller/cadence/pcie-cadence-host.c | 3 +--
->  drivers/pci/controller/pci-tegra.c                 | 8 +++-----
->  drivers/pci/controller/pci-xgene.c                 | 3 +--
->  drivers/pci/controller/pcie-altera-msi.c           | 3 +--
->  drivers/pci/controller/pcie-altera.c               | 9 +++------
->  drivers/pci/controller/pcie-mediatek.c             | 4 +---
->  drivers/pci/controller/pcie-rockchip.c             | 5 ++---
->  8 files changed, 13 insertions(+), 25 deletions(-)
+This lays the ground work for enabling casefolding and encryption at the
+same time for ext4 and f2fs. A future set of patches will enable that
+functionality.
 
-Applied to pci/dwc with Rob and Gustavo's tags (next time please
-carry them over and send v2 in-reply-to v1 so that I can follow
-it), thanks.
+These unify the highly similar dentry_operations that ext4 and f2fs both
+use for casefolding. In addition, they improve d_hash by not requiring a
+new string allocation, and ensure we don't attempt to casefold the no-key
+token of an encrypted filename.
 
-Lorenzo
+Daniel Rosenberg (4):
+  unicode: Add utf8_casefold_hash
+  fs: Add standard casefolding support
+  f2fs: Use generic casefolding support
+  ext4: Use generic casefolding support
 
-> diff --git a/drivers/pci/controller/cadence/pcie-cadence-ep.c b/drivers/pci/controller/cadence/pcie-cadence-ep.c
-> index 1c15c8352125..74ffa03fde5f 100644
-> --- a/drivers/pci/controller/cadence/pcie-cadence-ep.c
-> +++ b/drivers/pci/controller/cadence/pcie-cadence-ep.c
-> @@ -408,8 +408,7 @@ int cdns_pcie_ep_setup(struct cdns_pcie_ep *ep)
->  
->  	pcie->is_rc = false;
->  
-> -	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "reg");
-> -	pcie->reg_base = devm_ioremap_resource(dev, res);
-> +	pcie->reg_base = devm_platform_ioremap_resource_byname(pdev, "reg");
->  	if (IS_ERR(pcie->reg_base)) {
->  		dev_err(dev, "missing \"reg\"\n");
->  		return PTR_ERR(pcie->reg_base);
-> diff --git a/drivers/pci/controller/cadence/pcie-cadence-host.c b/drivers/pci/controller/cadence/pcie-cadence-host.c
-> index 8c2543f28ba0..dcc460a54875 100644
-> --- a/drivers/pci/controller/cadence/pcie-cadence-host.c
-> +++ b/drivers/pci/controller/cadence/pcie-cadence-host.c
-> @@ -225,8 +225,7 @@ int cdns_pcie_host_setup(struct cdns_pcie_rc *rc)
->  	rc->device_id = 0xffff;
->  	of_property_read_u32(np, "device-id", &rc->device_id);
->  
-> -	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "reg");
-> -	pcie->reg_base = devm_ioremap_resource(dev, res);
-> +	pcie->reg_base = devm_platform_ioremap_resource_byname(pdev, "reg");
->  	if (IS_ERR(pcie->reg_base)) {
->  		dev_err(dev, "missing \"reg\"\n");
->  		return PTR_ERR(pcie->reg_base);
-> diff --git a/drivers/pci/controller/pci-tegra.c b/drivers/pci/controller/pci-tegra.c
-> index e3e917243e10..3e608383df66 100644
-> --- a/drivers/pci/controller/pci-tegra.c
-> +++ b/drivers/pci/controller/pci-tegra.c
-> @@ -1462,7 +1462,7 @@ static int tegra_pcie_get_resources(struct tegra_pcie *pcie)
->  {
->  	struct device *dev = pcie->dev;
->  	struct platform_device *pdev = to_platform_device(dev);
-> -	struct resource *pads, *afi, *res;
-> +	struct resource *res;
->  	const struct tegra_pcie_soc *soc = pcie->soc;
->  	int err;
->  
-> @@ -1486,15 +1486,13 @@ static int tegra_pcie_get_resources(struct tegra_pcie *pcie)
->  		}
->  	}
->  
-> -	pads = platform_get_resource_byname(pdev, IORESOURCE_MEM, "pads");
-> -	pcie->pads = devm_ioremap_resource(dev, pads);
-> +	pcie->pads = devm_platform_ioremap_resource_byname(pdev, "pads");
->  	if (IS_ERR(pcie->pads)) {
->  		err = PTR_ERR(pcie->pads);
->  		goto phys_put;
->  	}
->  
-> -	afi = platform_get_resource_byname(pdev, IORESOURCE_MEM, "afi");
-> -	pcie->afi = devm_ioremap_resource(dev, afi);
-> +	pcie->afi = devm_platform_ioremap_resource_byname(pdev, "afi");
->  	if (IS_ERR(pcie->afi)) {
->  		err = PTR_ERR(pcie->afi);
->  		goto phys_put;
-> diff --git a/drivers/pci/controller/pci-xgene.c b/drivers/pci/controller/pci-xgene.c
-> index d1efa8ffbae1..1431a18eb02c 100644
-> --- a/drivers/pci/controller/pci-xgene.c
-> +++ b/drivers/pci/controller/pci-xgene.c
-> @@ -355,8 +355,7 @@ static int xgene_pcie_map_reg(struct xgene_pcie_port *port,
->  	if (IS_ERR(port->csr_base))
->  		return PTR_ERR(port->csr_base);
->  
-> -	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "cfg");
-> -	port->cfg_base = devm_ioremap_resource(dev, res);
-> +	port->cfg_base = devm_platform_ioremap_resource_byname(pdev, "cfg");
->  	if (IS_ERR(port->cfg_base))
->  		return PTR_ERR(port->cfg_base);
->  	port->cfg_addr = res->start;
-> diff --git a/drivers/pci/controller/pcie-altera-msi.c b/drivers/pci/controller/pcie-altera-msi.c
-> index 16d938920ca5..613e19af71bd 100644
-> --- a/drivers/pci/controller/pcie-altera-msi.c
-> +++ b/drivers/pci/controller/pcie-altera-msi.c
-> @@ -228,8 +228,7 @@ static int altera_msi_probe(struct platform_device *pdev)
->  	mutex_init(&msi->lock);
->  	msi->pdev = pdev;
->  
-> -	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "csr");
-> -	msi->csr_base = devm_ioremap_resource(&pdev->dev, res);
-> +	msi->csr_base = devm_platform_ioremap_resource_byname(pdev, "csr");
->  	if (IS_ERR(msi->csr_base)) {
->  		dev_err(&pdev->dev, "failed to map csr memory\n");
->  		return PTR_ERR(msi->csr_base);
-> diff --git a/drivers/pci/controller/pcie-altera.c b/drivers/pci/controller/pcie-altera.c
-> index 24cb1c331058..7200e40ffa26 100644
-> --- a/drivers/pci/controller/pcie-altera.c
-> +++ b/drivers/pci/controller/pcie-altera.c
-> @@ -696,17 +696,14 @@ static int altera_pcie_parse_dt(struct altera_pcie *pcie)
->  {
->  	struct device *dev = &pcie->pdev->dev;
->  	struct platform_device *pdev = pcie->pdev;
-> -	struct resource *cra;
-> -	struct resource *hip;
->  
-> -	cra = platform_get_resource_byname(pdev, IORESOURCE_MEM, "Cra");
-> -	pcie->cra_base = devm_ioremap_resource(dev, cra);
-> +	pcie->cra_base = devm_platform_ioremap_resource_byname(pdev, "Cra");
->  	if (IS_ERR(pcie->cra_base))
->  		return PTR_ERR(pcie->cra_base);
->  
->  	if (pcie->pcie_data->version == ALTERA_PCIE_V2) {
-> -		hip = platform_get_resource_byname(pdev, IORESOURCE_MEM, "Hip");
-> -		pcie->hip_base = devm_ioremap_resource(&pdev->dev, hip);
-> +		pcie->hip_base =
-> +			devm_platform_ioremap_resource_byname(pdev, "Hip");
->  		if (IS_ERR(pcie->hip_base))
->  			return PTR_ERR(pcie->hip_base);
->  	}
-> diff --git a/drivers/pci/controller/pcie-mediatek.c b/drivers/pci/controller/pcie-mediatek.c
-> index ebfa7d5a4e2d..d8e38276dbe3 100644
-> --- a/drivers/pci/controller/pcie-mediatek.c
-> +++ b/drivers/pci/controller/pcie-mediatek.c
-> @@ -905,7 +905,6 @@ static int mtk_pcie_parse_port(struct mtk_pcie *pcie,
->  			       int slot)
->  {
->  	struct mtk_pcie_port *port;
-> -	struct resource *regs;
->  	struct device *dev = pcie->dev;
->  	struct platform_device *pdev = to_platform_device(dev);
->  	char name[10];
-> @@ -916,8 +915,7 @@ static int mtk_pcie_parse_port(struct mtk_pcie *pcie,
->  		return -ENOMEM;
->  
->  	snprintf(name, sizeof(name), "port%d", slot);
-> -	regs = platform_get_resource_byname(pdev, IORESOURCE_MEM, name);
-> -	port->base = devm_ioremap_resource(dev, regs);
-> +	port->base = devm_platform_ioremap_resource_byname(pdev, name);
->  	if (IS_ERR(port->base)) {
->  		dev_err(dev, "failed to map port%d base\n", slot);
->  		return PTR_ERR(port->base);
-> diff --git a/drivers/pci/controller/pcie-rockchip.c b/drivers/pci/controller/pcie-rockchip.c
-> index c53d1322a3d6..904dec0d3a88 100644
-> --- a/drivers/pci/controller/pcie-rockchip.c
-> +++ b/drivers/pci/controller/pcie-rockchip.c
-> @@ -45,9 +45,8 @@ int rockchip_pcie_parse_dt(struct rockchip_pcie *rockchip)
->  			return -EINVAL;
->  	}
->  
-> -	regs = platform_get_resource_byname(pdev, IORESOURCE_MEM,
-> -					    "apb-base");
-> -	rockchip->apb_base = devm_ioremap_resource(dev, regs);
-> +	rockchip->apb_base =
-> +		devm_platform_ioremap_resource_byname(pdev, "apb-base");
->  	if (IS_ERR(rockchip->apb_base))
->  		return PTR_ERR(rockchip->apb_base);
->  
-> -- 
-> 2.25.0
-> 
+ fs/ext4/dir.c           | 64 +--------------------------
+ fs/ext4/ext4.h          | 12 ------
+ fs/ext4/hash.c          |  2 +-
+ fs/ext4/namei.c         | 20 ++++-----
+ fs/ext4/super.c         | 12 +++---
+ fs/f2fs/dir.c           | 83 ++++-------------------------------
+ fs/f2fs/f2fs.h          |  4 --
+ fs/f2fs/super.c         | 10 ++---
+ fs/f2fs/sysfs.c         | 10 +++--
+ fs/libfs.c              | 96 +++++++++++++++++++++++++++++++++++++++++
+ fs/unicode/utf8-core.c  | 23 +++++++++-
+ include/linux/f2fs_fs.h |  3 --
+ include/linux/fs.h      | 16 +++++++
+ include/linux/unicode.h |  3 ++
+ 14 files changed, 174 insertions(+), 184 deletions(-)
+
+-- 
+2.27.0.212.ge8ba1cc988-goog
+
