@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26EFF2179E2
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 23:00:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0982C2179D9
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 23:00:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729171AbgGGVAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 17:00:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56958 "EHLO
+        id S1729129AbgGGVAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 17:00:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729083AbgGGVAW (ORCPT
+        with ESMTP id S1729119AbgGGVAX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 17:00:22 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72B7DC08C5E1
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 14:00:22 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id o22so202529pjw.2
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 14:00:22 -0700 (PDT)
+        Tue, 7 Jul 2020 17:00:23 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D35CC08C5DC
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 14:00:23 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id g67so19672511pgc.8
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 14:00:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=yhwZoAnzEhcEEldBirUE6UrK8n9jKUX6Rf1BSaeDteo=;
-        b=KcE3vFoT4T4iNFbrk0y+HXUo4W+ZWNwjP0L6IR1g1OHWcbBfSKtExSvzRZYS3b9yCd
-         +U/XfEYHmwY3Gdx5dHrml5vLKHDhFOd8g+10Yn4geAlXH4Oikl/w00w2TOE9Vl/Yu+DE
-         APPqq+khoADK1goM0ttFnFWGJnqmZ0j6DKxln0GPBmw3mxrhsWNfXVc8I+6GLLfY6WhP
-         Wta0ZwM+6N0l1Bf0md/pB4/rkueBueq35yX1779AisASor7K2FfXUqO4OsT0P3+eLo9L
-         I1TabNL9iN8DOoxqaAngggKZmUuwEpG9XJ5mpeFcdN9LyqoY7qPx03bWMexvRHw/LGso
-         2Gng==
+        bh=XijBbeKyE9SPoHBAdYK5pDnTOJyJsJjOSAGz5audssw=;
+        b=rWfnaSFW15Xw5FIltXzrZKUeN0skrtFSZBNZlW/9z3uCkDSE+53LBP131GuN8DCtPX
+         GbCUPrtRoD6+4w7HOp9aYs47bAZ6uSNITfmLhFQAYYgHDu6oj3+4eqTmAk7+ncSEqgzt
+         EqfS5+Df5YWsXZdKXQbolUlbAzPBNQCkL8MMww1Kp031zVDjaWucDg88HsTDzkVqJCAJ
+         ga5RxaaKnZ0p+CXalBPW3H5kw70E6e5EVkt00KwyiMNeuW0Qe0d/if7nFioS08kfhaI3
+         WhrX+d5uV39vUFTxlfuGeYGVI0eHEs5P1qsp3vF4NuWjlPN1lg2U6vYdB/rX82AM4qQX
+         mnjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=yhwZoAnzEhcEEldBirUE6UrK8n9jKUX6Rf1BSaeDteo=;
-        b=KBczn4sOxsNy4bCr1yb+/5SZdDi2fD86G2EW9S6cxARStbDoAf50PWHxRIK1ACYgZ7
-         HFS8iyLXWEab9yyW9ruui5D/Eanl2ksqIvNl+9GtdZsM3VsJ6z91XyVZ4rrHwXObJIDi
-         akdrUNbEwGOamV1FrDt5jdd6YQ+GSt/aIa7SJCkuEFK51OagzlaxItDo2nnSeW9vvBAm
-         x5aYA3QHq0B06YCbZVlDjj3Vk6Vw6UC9FEAxBWmiOLy8XRZXCggz2GVfzsoptq0SXQuq
-         N5FZ1jVtLAUHeIpvKXLEG2NYmI0VQUzY7bBC0+t8cEEDZXU/0hSCz+Z6WXYo9gQSNuNE
-         5zsQ==
-X-Gm-Message-State: AOAM53221gl6C708wqu7TvP6VeQHhdpv76S1zvm3kPxQobPj2xay0yX9
-        L1Ig/pqXWXLc7gYL5Po4ZokTKt1IJWs=
-X-Google-Smtp-Source: ABdhPJy4QJpzH/XmBzCGNu1gC/yOn8c4Bhc6mE4Lxk0rOxnc2ADK41OsJWqAIBxQ5eb9a/DHJBs9YQ==
-X-Received: by 2002:a17:902:8f96:: with SMTP id z22mr10578737plo.189.1594155621998;
-        Tue, 07 Jul 2020 14:00:21 -0700 (PDT)
+        bh=XijBbeKyE9SPoHBAdYK5pDnTOJyJsJjOSAGz5audssw=;
+        b=tZ+eB3pgQ3+nGfSR4tdPDBOwH2wwyR/+5dYNemVYz1xLvImg9un/RnkE2CcG8IarPT
+         QBwunI1KhqDdH1AgYBRJki2RZgkZ2sYyjXyS6DhUc2Gn7VQgnEfEAeEoTc3fmqllPaEe
+         AWybcKqEr7n1LnHhE0yNnJrgJ9+TkvuTo9dO5ZAA5m9jARPacnCd+vCJfmsrXHnZYlYJ
+         rR4Z9QhIgrjFkTPKpzsKowzaQg7N3XqQyMtuhjNhGRTX3RkH5ZIbL9NGsPi00jrTBjIY
+         L88UXkyBIUDVU5M6CM96g/rrLs5Pu5qrCVwZZgMAWCER7xTmRyHBoni70twKSHS20xUQ
+         yjFQ==
+X-Gm-Message-State: AOAM530ca80BMtM5qEud+YZ+Ir7BktcBTVub2ix4lGpuRnOUoomF+JPS
+        Un8gXC7EtM2u1tzOkfIIyiaOPrhmh8M=
+X-Google-Smtp-Source: ABdhPJxJfD0Jkh9Hb2JlSArI9twloH94qq4vcsjeQsCvULj9K2kwwtdLJpL4yLB3oPqMKhQvxU5N9g==
+X-Received: by 2002:aa7:9542:: with SMTP id w2mr6424266pfq.273.1594155623009;
+        Tue, 07 Jul 2020 14:00:23 -0700 (PDT)
 Received: from xps15.cg.shawcable.net (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id b21sm13738061pfb.45.2020.07.07.14.00.21
+        by smtp.gmail.com with ESMTPSA id b21sm13738061pfb.45.2020.07.07.14.00.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jul 2020 14:00:21 -0700 (PDT)
+        Tue, 07 Jul 2020 14:00:22 -0700 (PDT)
 From:   Mathieu Poirier <mathieu.poirier@linaro.org>
 To:     ohad@wizery.com, bjorn.andersson@linaro.org
 Cc:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v5 5/9] remoteproc: Introducing function rproc_validate()
-Date:   Tue,  7 Jul 2020 15:00:10 -0600
-Message-Id: <20200707210014.927691-6-mathieu.poirier@linaro.org>
+Subject: [PATCH v5 6/9] remoteproc: Refactor function rproc_boot()
+Date:   Tue,  7 Jul 2020 15:00:11 -0600
+Message-Id: <20200707210014.927691-7-mathieu.poirier@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200707210014.927691-1-mathieu.poirier@linaro.org>
 References: <20200707210014.927691-1-mathieu.poirier@linaro.org>
@@ -64,73 +64,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new function to assert the general health of the remote
-processor before handing it to the remoteproc core.
+Refactor function rproc_boot() to properly deal with scenarios
+where the remoteproc core needs to attach with a remote
+processor that has already been booted by an external entity.
 
 Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 ---
- drivers/remoteproc/remoteproc_core.c | 41 ++++++++++++++++++++++++++++
- 1 file changed, 41 insertions(+)
+ drivers/remoteproc/remoteproc_core.c | 28 +++++++++++++++++-----------
+ 1 file changed, 17 insertions(+), 11 deletions(-)
 
 diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-index fd424662801f..ad500c291d5f 100644
+index ad500c291d5f..caea920ce4b8 100644
 --- a/drivers/remoteproc/remoteproc_core.c
 +++ b/drivers/remoteproc/remoteproc_core.c
-@@ -2040,6 +2040,43 @@ struct rproc *rproc_get_by_phandle(phandle phandle)
- #endif
- EXPORT_SYMBOL(rproc_get_by_phandle);
+@@ -1494,7 +1494,7 @@ static int rproc_fw_boot(struct rproc *rproc, const struct firmware *fw)
+  * Attach to remote processor - similar to rproc_fw_boot() but without
+  * the steps that deal with the firmware image.
+  */
+-static int __maybe_unused rproc_actuate(struct rproc *rproc)
++static int rproc_actuate(struct rproc *rproc)
+ {
+ 	struct device *dev = &rproc->dev;
+ 	int ret;
+@@ -1905,24 +1905,30 @@ int rproc_boot(struct rproc *rproc)
+ 		goto unlock_mutex;
+ 	}
  
-+static int rproc_validate(struct rproc *rproc)
-+{
-+	switch (rproc->state) {
-+	case RPROC_OFFLINE:
-+		/*
-+		 * An offline processor without a start()
-+		 * function makes no sense.
-+		 */
-+		if (!rproc->ops->start)
-+			return -EINVAL;
-+		break;
-+	case RPROC_DETACHED:
-+		/*
-+		 * A remote processor in a detached state without an
-+		 * attach() function makes not sense.
-+		 */
-+		if (!rproc->ops->attach)
-+			return -EINVAL;
-+		/*
-+		 * When attaching to a remote processor the device memory
-+		 * is already available and as such there is no need to have a
-+		 * cached table.
-+		 */
-+		if (rproc->cached_table)
-+			return -EINVAL;
-+		break;
-+	default:
-+		/*
-+		 * When adding a remote processor, the state of the device
-+		 * can be offline or detached, nothing else.
-+		 */
-+		return -EINVAL;
+-	/* skip the boot process if rproc is already powered up */
++	/* skip the boot or attach process if rproc is already powered up */
+ 	if (atomic_inc_return(&rproc->power) > 1) {
+ 		ret = 0;
+ 		goto unlock_mutex;
+ 	}
+ 
+-	dev_info(dev, "powering up %s\n", rproc->name);
++	if (rproc->state == RPROC_DETACHED) {
++		dev_info(dev, "attaching to %s\n", rproc->name);
+ 
+-	/* load firmware */
+-	ret = request_firmware(&firmware_p, rproc->firmware, dev);
+-	if (ret < 0) {
+-		dev_err(dev, "request_firmware failed: %d\n", ret);
+-		goto downref_rproc;
+-	}
++		ret = rproc_actuate(rproc);
++	} else {
++		dev_info(dev, "powering up %s\n", rproc->name);
+ 
+-	ret = rproc_fw_boot(rproc, firmware_p);
++		/* load firmware */
++		ret = request_firmware(&firmware_p, rproc->firmware, dev);
++		if (ret < 0) {
++			dev_err(dev, "request_firmware failed: %d\n", ret);
++			goto downref_rproc;
++		}
+ 
+-	release_firmware(firmware_p);
++		ret = rproc_fw_boot(rproc, firmware_p);
++
++		release_firmware(firmware_p);
 +	}
-+
-+	return 0;
-+}
-+
- /**
-  * rproc_add() - register a remote processor
-  * @rproc: the remote processor handle to register
-@@ -2069,6 +2106,10 @@ int rproc_add(struct rproc *rproc)
- 	if (ret < 0)
- 		return ret;
  
-+	ret = rproc_validate(rproc);
-+	if (ret < 0)
-+		return ret;
-+
- 	dev_info(dev, "%s is available\n", rproc->name);
- 
- 	/* create debugfs entries */
+ downref_rproc:
+ 	if (ret)
 -- 
 2.25.1
 
