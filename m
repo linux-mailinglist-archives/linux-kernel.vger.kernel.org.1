@@ -2,118 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DF302166BE
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 08:49:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCE872166C7
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 08:50:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728263AbgGGGtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 02:49:32 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:22022 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726540AbgGGGtc (ORCPT
+        id S1728306AbgGGGtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 02:49:40 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:34918 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728265AbgGGGtf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 02:49:32 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0676VDxF113440;
-        Tue, 7 Jul 2020 02:49:28 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 324fdgxa0j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Jul 2020 02:49:28 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0676lC5m016610;
-        Tue, 7 Jul 2020 06:49:26 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma06ams.nl.ibm.com with ESMTP id 322h1h32gp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Jul 2020 06:49:26 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0676nOGT58130548
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 7 Jul 2020 06:49:24 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4A2A34204C;
-        Tue,  7 Jul 2020 06:49:24 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 805C842041;
-        Tue,  7 Jul 2020 06:49:23 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.148.202.169])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Tue,  7 Jul 2020 06:49:23 +0000 (GMT)
-Date:   Tue, 7 Jul 2020 09:49:21 +0300
-From:   Mike Rapoport <rppt@linux.ibm.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Andy Lutomirski <luto@amacapital.net>,
-        ksummit <ksummit-discuss@lists.linuxfoundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        tech-board-discuss@lists.linuxfoundation.org,
-        Chris Mason <clm@fb.clm>
-Subject: Re: [Ksummit-discuss] [PATCH] CodingStyle: Inclusive Terminology
-Message-ID: <20200707064921.GA9411@linux.ibm.com>
-References: <159389297140.2210796.13590142254668787525.stgit@dwillia2-desk3.amr.corp.intel.com>
- <CALCETrXewAK4_fpaJNDHJVDK9mUcjghA5HwYvZFQNYVfC9M+OQ@mail.gmail.com>
- <202007062234.A90F922DF@keescook>
+        Tue, 7 Jul 2020 02:49:35 -0400
+Received: by mail-wm1-f68.google.com with SMTP id l2so43774186wmf.0;
+        Mon, 06 Jul 2020 23:49:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ReuA5VQaVY/VFMmqRSAHaxxKix3yxHr6btejvUHKbHQ=;
+        b=ShFURUeL5o6XdWQICkc1ej+wLhVjF40Ns/AXF1d/esF+DfvxKMjj8r/fCW3KW/kchh
+         iicSx27cMeAropIEsKGUVhTB+OKOLjjj9UNoPgZuoAANhc9z3nYA8a0WsH/5HApfoIcK
+         Gq/53p01AIqsXciYq+pTkSsy6i51FSVASDWRXdE2WTyVGpwi1uQTJNw5Zpl6LhOdRQEp
+         uhJsmG2YATbNwmJjKKSxRrDqZYaz3tQtlbTFwd0r0+LzjI2Rth8R7eoFl4veOA/o0Qii
+         D8VKFCun5NR1vnqtjpWdHJa7UQCdx7rvIRc/1Es2IjCe9iiBpHqVSxNbXtG4QWrB45jx
+         JpsQ==
+X-Gm-Message-State: AOAM531g+KKqhqYAKicfVYN3JtIIoAGKmZWqUpGl9e7Rk6sVsh/jcRD/
+        28KbTElhvsQeQ489DNnH0y4=
+X-Google-Smtp-Source: ABdhPJwzjJCeYUKeawowVxH0kbFnJSkCEeak2MJl+4jXiRnTqMCEYtdPytyfVmzNDKLtluvU1c0Q/w==
+X-Received: by 2002:a1c:a5d6:: with SMTP id o205mr2503783wme.125.1594104573464;
+        Mon, 06 Jul 2020 23:49:33 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.195])
+        by smtp.googlemail.com with ESMTPSA id n14sm27897942wro.81.2020.07.06.23.49.32
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 06 Jul 2020 23:49:32 -0700 (PDT)
+Date:   Tue, 7 Jul 2020 08:49:30 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Sylwester Nawrocki <snawrocki@kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Pankaj Dubey <pankaj.dubey@samsung.com>
+Subject: Re: [PATCH v3] ARM: dts: exynos: Remove DMA controller bus node name
+ to fix dtschema warnings
+Message-ID: <20200707064930.GE15031@kozik-lap>
+References: <20200705181754.13284-1-krzk@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <202007062234.A90F922DF@keescook>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-07_02:2020-07-07,2020-07-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 impostorscore=0
- clxscore=1011 lowpriorityscore=0 priorityscore=1501 phishscore=0
- cotscore=-2147483648 suspectscore=0 bulkscore=0 spamscore=0 mlxscore=0
- mlxlogscore=999 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2007070047
+In-Reply-To: <20200705181754.13284-1-krzk@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 06, 2020 at 10:56:17PM -0700, Kees Cook wrote:
-> On Mon, Jul 06, 2020 at 09:29:46AM -0700, Andy Lutomirski wrote:
-> > Is most contexts where 'whitelist' or 'blacklist' might be used, a
-> > descriptive phrase could be used instead.  For example, a seccomp
-> > filter could have a 'list of allowed syscalls' or a 'list of
-> > disallowed syscalls', and just lists could be the 'allowed' or
-> > 'accepted' lists and the 'disallowed', 'rejected', or 'blocked' lists.
-> > If a single word replacement for 'whitelist' or 'blacklist' is needed,
-> > 'allowlist', 'blocklist', or 'denylist' could be used.
+On Sun, Jul 05, 2020 at 08:17:54PM +0200, Krzysztof Kozlowski wrote:
+> There is no need to keep DMA controller nodes under AMBA bus node.
+> Remove the "amba" node to fix dtschema warnings like:
 > 
-> Yup. See:
-> https://lore.kernel.org/lkml/202007041703.51F4059CA@keescook/
-> specifically the terminology for seccomp is already "allow-list" and
-> "deny-list":
-> https://github.com/mkerrisk/man-pages/commit/462ce23d491904a0b46252dc97c8cb42391c093e (last year)
-> https://github.com/seccomp/libseccomp/commit/0e762521d604612bb4dca8867d4a428a5e6cae54 (last month)
+>     amba: $nodename:0: 'amba' does not match '^(bus|soc|axi|ahb|apb)(@[0-9a-f]+)?$'
 > 
-> > Second, I realize that I grew up thinking that 'whitelist' and
-> > 'blacklist' are the common terms for lists of things to be accepted
-> > and rejected and that this biases my perception of what sounds good,
-> > but writing a seccomp "denylist" or "blocklist" doesn't seem to roll
-> > off the tongue.  Perhaps this language would be better:
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 > 
-> I have struggled with this as well. The parts of speech change, and my
-> grammar senses go weird. whitelist = adjective noun. allow-list = verb
-> noun. verbing the adj/noun combo feels okay, but verbing a verb/noun is
-> weird.
+> ---
 > 
-> And just using "allowed" and "denied" doesn't impart whether it refers
-> to a _single_ instance or a _list_ of instances.
+> Changes since v2:
+> 1. Keep the alphabetical order in exynos4210-universal_c210.dts, as suggested by Marek
 > 
-> But that's all fine. The change is easy to do and is more descriptive
-> even if I can't find terms that don't collide with my internal grammar
-> checker. ;)
+> Changes since v1:
+> 1. Remove the bus, as suggested by Marek
+> ---
+>  arch/arm/boot/dts/exynos3250.dtsi             |  47 +++----
+>  arch/arm/boot/dts/exynos4.dtsi                |  70 +++++-----
+>  .../boot/dts/exynos4210-universal_c210.dts    |  28 ++--
+>  arch/arm/boot/dts/exynos5250.dtsi             |  92 ++++++-------
+>  arch/arm/boot/dts/exynos5410.dtsi             |  46 +++----
+>  arch/arm/boot/dts/exynos5420.dtsi             | 130 ++++++++----------
 
-How about yeslist and nolist? ;-)
+Thanks for testing and reviews. Applied.
 
-> -- 
-> Kees Cook
-> _______________________________________________
-> Ksummit-discuss mailing list
-> Ksummit-discuss@lists.linuxfoundation.org
-> https://lists.linuxfoundation.org/mailman/listinfo/ksummit-discuss
+Best regards,
+Krzysztof
 
--- 
-Sincerely yours,
-Mike.
