@@ -2,108 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2961A2167B8
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 09:49:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD4192167BC
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 09:49:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727871AbgGGHtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 03:49:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725944AbgGGHtH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 03:49:07 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEC55C061755
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 00:49:06 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id j18so42223379wmi.3
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 00:49:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=W6+Y6r86ImCcZkb8aCBe4d7KrulRrBvaqwJn2RJAx2I=;
-        b=tcaw/YUxKfebdDxQAgl2sSg95mNElUbe0CpVC/1QaHP6xpMsX7cyHGHPdZx3l8sTkB
-         oTfpYuQfn/DPl9VW3f0ntYe0Nx2eefJqSklbScz6DfSIUDv9WLjm9gBosIbBgvEx9lmd
-         4b+d6fQ6ft2nXKX4rDYtmPp940l71i6aaz4Oa6HdRy0QrwBd/AouJdvI7zEMCLgEMqEX
-         6xkbNHlL3MM2OouSgN/+IIWdrU8R2qyqDGOB1Ao/QJJ1QK8NKGTfQPf7fell7AWWXpbz
-         ++grSOp6Smmt/NommWyiTeDtG06M7kyq1nO9LKrITHABgmPedfLWDwLly+y1XlVIe1a0
-         padg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=W6+Y6r86ImCcZkb8aCBe4d7KrulRrBvaqwJn2RJAx2I=;
-        b=ixY3BaOXSKzMdnDwssFvUetM49C/gRBQ8vNsFTr5Kdd1TZBNr86BMStbmD4RFT+Q/1
-         1dATezYGc/tUf6ofh8SsxrvSK/egGUYveTHCf22YaB34Df8XLvVI+cXbq5Wg37tbl33e
-         jzjY1ZvNSdr5OFzJK/myxOW92nVMyJSZh71Vc/ZRn+np03gwdtlI/laQ8TPR2gWE/qT4
-         zDOvs/4yIFUiUCWz6++487fPElCvpH2wgGyS/jBiafvNqM3PWTZm5T9gi/CbRZZiWvSQ
-         ZINUbExuvi36MtIKWcMFSF3AFV61HKXTp6V5L9nAecAVs2XjB8QboudFqJakolgbeoEW
-         de8A==
-X-Gm-Message-State: AOAM530OIrFWH4dxOYEGo6hVCSp2g2kmZQVrABUoBKpapisQojTO8u9R
-        E+KREaKkENlwa2JTepJpeYb3ag==
-X-Google-Smtp-Source: ABdhPJxlTAnK74t7RP9hVg3Y0wreglxIGiI5qQ2LKCzjT+MV3zeWcXMYNEwuQNr0MbBQZgl0t+b1GQ==
-X-Received: by 2002:a05:600c:2050:: with SMTP id p16mr2684476wmg.44.1594108145512;
-        Tue, 07 Jul 2020 00:49:05 -0700 (PDT)
-Received: from dell ([2.27.35.206])
-        by smtp.gmail.com with ESMTPSA id j16sm27308528wrt.7.2020.07.07.00.49.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jul 2020 00:49:04 -0700 (PDT)
-Date:   Tue, 7 Jul 2020 08:49:02 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Thomas Winischhofer <thomas@winischhofer.net>
-Subject: Re: [PATCH 04/30] usb: misc: sisusbvga: sisusb_init: Mark all
- 'static const' arrays as __maybe_unused
-Message-ID: <20200707074902.GD3500@dell>
-References: <20200703174148.2749969-1-lee.jones@linaro.org>
- <20200703174148.2749969-5-lee.jones@linaro.org>
+        id S1728315AbgGGHtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 03:49:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38110 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725944AbgGGHtY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 03:49:24 -0400
+Received: from kernel.org (unknown [87.71.40.38])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1F67B206E2;
+        Tue,  7 Jul 2020 07:49:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594108163;
+        bh=CVePBN888INea7ywvCAsmXbwNJlV06gx1hSh3Oz/o04=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fx2kSVTeTD5lk0ULyPMK9IQ05r83DTv81nFso5+auGDFO6tdAnC4xYVGjvvsHk07S
+         6t11omFqlTxQ6wBqW8sdfew4xe0gtnwE+XaWNtVoNcir/qlmR4Fb9Gp6yT5xEemQ33
+         dAGJs8euhiFbPNDapnfTyV5qBO2nQCZZsSgRe0ac=
+Date:   Tue, 7 Jul 2020 10:49:06 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     SeongJae Park <sjpark@amazon.com>
+Cc:     akpm@linux-foundation.org, SeongJae Park <sjpark@amazon.de>,
+        Jonathan.Cameron@huawei.com, aarcange@redhat.com, acme@kernel.org,
+        alexander.shishkin@linux.intel.com, amit@kernel.org,
+        benh@kernel.crashing.org, brendan.d.gregg@gmail.com,
+        brendanhiggins@google.com, cai@lca.pw, colin.king@canonical.com,
+        corbet@lwn.net, dwmw@amazon.com, foersleo@amazon.de,
+        irogers@google.com, jolsa@redhat.com, kirill@shutemov.name,
+        mark.rutland@arm.com, mgorman@suse.de, minchan@kernel.org,
+        mingo@redhat.com, namhyung@kernel.org, peterz@infradead.org,
+        rdunlap@infradead.org, riel@surriel.com, rientjes@google.com,
+        rostedt@goodmis.org, sblbir@amazon.com, shakeelb@google.com,
+        shuah@kernel.org, sj38.park@gmail.com, snu@amazon.de,
+        vbabka@suse.cz, vdavydov.dev@gmail.com, yang.shi@linux.alibaba.com,
+        ying.huang@intel.com, david@redhat.com, linux-damon@amazon.com,
+        linux-mm@kvack.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v17 12/15] Documentation/admin-guide/mm: Add a document
+ for DAMON
+Message-ID: <20200707074906.GC9449@kernel.org>
+References: <20200706115322.29598-1-sjpark@amazon.com>
+ <20200706115322.29598-13-sjpark@amazon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200703174148.2749969-5-lee.jones@linaro.org>
+In-Reply-To: <20200706115322.29598-13-sjpark@amazon.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 03 Jul 2020, Lee Jones wrote:
+Hello SeongJae,
 
-> drivers/usb/misc/sisusbvga/sisusb_init.h is included by a few
-> source files.  Most of which do not use the majority of the
-> shared static const arrays which have been declared.  This
-> causes the build system to spew 100's of warnings.
+On Mon, Jul 06, 2020 at 01:53:19PM +0200, SeongJae Park wrote:
+> From: SeongJae Park <sjpark@amazon.de>
 > 
-> Fixes the following W=1 kernel build warning(s) - and a whole lot more:
+> This commit adds a document for DAMON under
+> `Documentation/admin-guide/mm/damon/`.
 > 
->  In file included from drivers/usb/misc/sisusbvga/sisusb.c:54:
->  drivers/usb/misc/sisusbvga/sisusb_init.h:695:34: warning: ‘SiSUSB_VCLKData’ defined but not used [-Wunused-const-variable=]
->  695 | static const struct SiS_VCLKData SiSUSB_VCLKData[] = {
->  | ^~~~~~~~~~~~~~~
-> [10's of lines snipped]
->  drivers/usb/misc/sisusbvga/sisusb_init.h:206:28: warning: ‘SiS_VGA_DAC’ defined but not used [-Wunused-const-variable=]
->  206 | static const unsigned char SiS_VGA_DAC[] = {
->  | ^~~~~~~~~~~
-> [10's of lines snipped]
->  drivers/usb/misc/sisusbvga/sisusb_init.h:171:29: warning: ‘ModeIndex_1280x1024’ defined but not used [-Wunused-const-variable=]
->  171 | static const unsigned short ModeIndex_1280x1024[] = { 0x3a, 0x4d, 0x00, 0x65 };
->  | ^~~~~~~~~~~~~~~~~~~
-> [10's of lines snipped]
-> 
-> Cc: Thomas Winischhofer <thomas@winischhofer.net>
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> Signed-off-by: SeongJae Park <sjpark@amazon.de>
 > ---
->  drivers/usb/misc/sisusbvga/sisusb_init.h | 66 ++++++++++++------------
->  1 file changed, 33 insertions(+), 33 deletions(-)
+>  Documentation/admin-guide/mm/damon/api.rst    |  20 ++
+>  .../admin-guide/mm/damon/damon_heatmap.png    | Bin 0 -> 8366 bytes
+>  .../admin-guide/mm/damon/damon_wss_change.png | Bin 0 -> 7211 bytes
+>  .../admin-guide/mm/damon/damon_wss_dist.png   | Bin 0 -> 6173 bytes
+>  Documentation/admin-guide/mm/damon/eval.rst   | 222 +++++++++++++
+>  Documentation/admin-guide/mm/damon/faq.rst    |  59 ++++
+>  .../admin-guide/mm/damon/freqmine_heatmap.png | Bin 0 -> 9999 bytes
+>  .../admin-guide/mm/damon/freqmine_wss_sz.png  | Bin 0 -> 5589 bytes
+>  .../mm/damon/freqmine_wss_time.png            | Bin 0 -> 6550 bytes
+>  Documentation/admin-guide/mm/damon/guide.rst  | 194 ++++++++++++
+>  Documentation/admin-guide/mm/damon/index.rst  |  35 +++
+>  .../admin-guide/mm/damon/mechanisms.rst       | 159 ++++++++++
+>  Documentation/admin-guide/mm/damon/plans.rst  |  29 ++
+>  Documentation/admin-guide/mm/damon/start.rst  | 117 +++++++
+>  .../mm/damon/streamcluster_heatmap.png        | Bin 0 -> 42210 bytes
+>  .../mm/damon/streamcluster_wss_sz.png         | Bin 0 -> 6327 bytes
+>  .../mm/damon/streamcluster_wss_time.png       | Bin 0 -> 8830 bytes
+>  Documentation/admin-guide/mm/damon/usage.rst  | 296 ++++++++++++++++++
+>  Documentation/admin-guide/mm/index.rst        |   1 +
 
-Greg,
+It's really cool to see documentation along with the code!
 
-Please drop this patch.  I have a new solution.
+I'd suggest to reorganize the DAMON docs to better match the current
+structure of Documentation/ directory.
+
+The description of DAMON usage from the userspace and reference for the
+userland tools does belong to Documentation/admin-guide/mm. However, the
+kernel APIs are better to be placed in Documentation/core-api or even
+Documentation/dev-tools. As for the detailed description of the internal
+DAMON operation, this would naturally belong to Documentation/vm.
+
+Another thing is that this patch is really hard to review because of the
+encoded png blobs. In general, we try to keep Documentation/ readable in
+plain text, but if you think that the images are essential and must be a
+part of DAMON in-tree docs rather than links to an external resource,
+please split them to a separate patch.
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Sincerely yours,
+Mike.
