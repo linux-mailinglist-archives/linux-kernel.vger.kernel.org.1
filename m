@@ -2,245 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DE9C216F1E
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 16:45:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87E00216F2C
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 16:46:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728309AbgGGOpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 10:45:16 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:31138 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728275AbgGGOpN (ORCPT
+        id S1728184AbgGGOqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 10:46:39 -0400
+Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:14063 "EHLO
+        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726805AbgGGOqj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 10:45:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594133111;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mT7+S/JZ0X5UTjCHTtZu+xMVOeg7qKFbo24bRgqj2g8=;
-        b=SzoMb7BRcF4Z6qWkhPallba4BhTvirb2gjkR7fcSc09AuxEBYXqNy6pfHm9Fyy/gSc02sQ
-        0qzZG49sIMa/UKsz9B41Mc1Zm/SLRkB00TdHDU2oJpMqxPtdiRC9UbmHpmBJOrPzYLs6mg
-        bzU4BJJxBKxYciunFhZoWEDZb0y31Vs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-171-sRVWfiggMZaE7nFUWgYLQw-1; Tue, 07 Jul 2020 10:45:08 -0400
-X-MC-Unique: sRVWfiggMZaE7nFUWgYLQw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 825F08005B0;
-        Tue,  7 Jul 2020 14:45:06 +0000 (UTC)
-Received: from max.home.com (unknown [10.40.192.179])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 874DA797E8;
-        Tue,  7 Jul 2020 14:45:04 +0000 (UTC)
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Jens Axboe <axboe@kernel.dk>, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andreas Gruenbacher <agruenba@redhat.com>
-Subject: [RFC v3 2/2] gfs2: Rework read and page fault locking
-Date:   Tue,  7 Jul 2020 16:44:57 +0200
-Message-Id: <20200707144457.1603400-3-agruenba@redhat.com>
-In-Reply-To: <20200707144457.1603400-1-agruenba@redhat.com>
-References: <20200707144457.1603400-1-agruenba@redhat.com>
+        Tue, 7 Jul 2020 10:46:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1594133200; x=1625669200;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=lXfPh1cIq2OX1oePMsmgXGjuzMq12soLCAiX+ykF0N8=;
+  b=bBfIegz+I3wbqhc6egBYWnq3wVF0lJXsrV2ivXUDsl+ZsLcy/apv/gN9
+   Re5X8AavG/Q7mvEOiEkVegRbZgrLi+XElbOKXFqlBVkxbCQ0LsVMnxgXN
+   kg4VCkFjW0Pyi5EunstFFbnPW779+cxFzDIWBwdlemHsvF5FqAju6v9HU
+   E=;
+IronPort-SDR: aOSU1x9erEaGD6R9Jbjwon6LvaU8Q11pczIrtEFRU7M22h/wSdrAKPmX2dliSByZGfodw+vuOk
+ uk6Oz041Y5OQ==
+X-IronPort-AV: E=Sophos;i="5.75,324,1589241600"; 
+   d="scan'208";a="40469771"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2c-579b7f5b.us-west-2.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 07 Jul 2020 14:46:35 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
+        by email-inbound-relay-2c-579b7f5b.us-west-2.amazon.com (Postfix) with ESMTPS id 04473A1FF6;
+        Tue,  7 Jul 2020 14:46:31 +0000 (UTC)
+Received: from EX13D31EUA004.ant.amazon.com (10.43.165.161) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 7 Jul 2020 14:46:31 +0000
+Received: from u886c93fd17d25d.ant.amazon.com (10.43.161.214) by
+ EX13D31EUA004.ant.amazon.com (10.43.165.161) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 7 Jul 2020 14:46:13 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     <akpm@linux-foundation.org>
+CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
+        <aarcange@redhat.com>, <acme@kernel.org>,
+        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
+        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
+        <brendanhiggins@google.com>, <cai@lca.pw>,
+        <colin.king@canonical.com>, <corbet@lwn.net>, <david@redhat.com>,
+        <dwmw@amazon.com>, <foersleo@amazon.de>, <irogers@google.com>,
+        <jolsa@redhat.com>, <kirill@shutemov.name>, <mark.rutland@arm.com>,
+        <mgorman@suse.de>, <minchan@kernel.org>, <mingo@redhat.com>,
+        <namhyung@kernel.org>, <peterz@infradead.org>,
+        <rdunlap@infradead.org>, <riel@surriel.com>, <rientjes@google.com>,
+        <rostedt@goodmis.org>, <rppt@kernel.org>, <sblbir@amazon.com>,
+        <shakeelb@google.com>, <shuah@kernel.org>, <sj38.park@gmail.com>,
+        <snu@amazon.de>, <vbabka@suse.cz>, <vdavydov.dev@gmail.com>,
+        <yang.shi@linux.alibaba.com>, <ying.huang@intel.com>,
+        <linux-damon@amazon.com>, <linux-mm@kvack.org>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [RFC v5 00/11] DAMON: Support Physical Memory Address Space Monitoring
+Date:   Tue, 7 Jul 2020 16:45:29 +0200
+Message-ID: <20200707144540.21216-1-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain
+X-Originating-IP: [10.43.161.214]
+X-ClientProxiedBy: EX13D35UWC001.ant.amazon.com (10.43.162.197) To
+ EX13D31EUA004.ant.amazon.com (10.43.165.161)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-So far, gfs2 has taken the inode glocks inside the ->readpage and
-->readahead address space operations.  Since commit d4388340ae0b ("fs:
-convert mpage_readpages to mpage_readahead"), gfs2_readahead is passed
-the pages to read ahead locked.  With that, the current holder of the
-inode glock may be trying to lock one of those pages while
-gfs2_readahead is trying to take the inode glock, resulting in a
-deadlock.
+From: SeongJae Park <sjpark@amazon.de>
 
-Fix that by moving the lock taking to the higher-level ->read_iter file
-and ->fault vm operations.  This also gets rid of an ugly lock inversion
-workaround in gfs2_readpage.
+DAMON[1] programming interface users can extend DAMON for any address space by
+configuring the address-space specific low level primitives with appropriate
+ones including their own implementations.  However, because the implementation
+for the virtual address space is only available now, the users should implement
+their own for other address spaces.  Worse yet, the user space users who rely
+on the debugfs interface and user space tool, cannot implement their own.
 
-The cache consistency model of filesystems like gfs2 is such that if
-data is found in the page cache, the data is up to date and can be used
-without taking any filesystem locks.  If a page is not cached,
-filesystem locks must be taken before populating the page cache.
+This patchset implements another reference implementation of the low level
+primitives for the physical memory address space.  With this change, hence, the
+kernel space users can monitor both the virtual and the physical address spaces
+by simply changing the configuration in the runtime.  Further, this patchset
+links the implementation to the debugfs interface and the user space tool for
+the user space users.
 
-To avoid taking the inode glock when the data is already cached,
-gfs2_file_read_iter first tries to read the data with the IOCB_NOIO flag
-set.  If that fails, the inode glock is taken and the operation is
-retried with the IOCB_NOIO flag cleared.
+Note that the implementation supports only the user memory, as same to the idle
+page access tracking feature.
 
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
----
- fs/gfs2/aops.c | 45 +------------------------------------------
- fs/gfs2/file.c | 52 ++++++++++++++++++++++++++++++++++++++++++++++++--
- 2 files changed, 51 insertions(+), 46 deletions(-)
+[1] https://lore.kernel.org/linux-mm/20200706115322.29598-1-sjpark@amazon.com/
 
-diff --git a/fs/gfs2/aops.c b/fs/gfs2/aops.c
-index 72c9560f4467..68cd700a2719 100644
---- a/fs/gfs2/aops.c
-+++ b/fs/gfs2/aops.c
-@@ -468,21 +468,10 @@ static int stuffed_readpage(struct gfs2_inode *ip, struct page *page)
- }
- 
- 
--/**
-- * __gfs2_readpage - readpage
-- * @file: The file to read a page for
-- * @page: The page to read
-- *
-- * This is the core of gfs2's readpage. It's used by the internal file
-- * reading code as in that case we already hold the glock. Also it's
-- * called by gfs2_readpage() once the required lock has been granted.
-- */
--
- static int __gfs2_readpage(void *file, struct page *page)
- {
- 	struct gfs2_inode *ip = GFS2_I(page->mapping->host);
- 	struct gfs2_sbd *sdp = GFS2_SB(page->mapping->host);
--
- 	int error;
- 
- 	if (i_blocksize(page->mapping->host) == PAGE_SIZE &&
-@@ -505,36 +494,11 @@ static int __gfs2_readpage(void *file, struct page *page)
-  * gfs2_readpage - read a page of a file
-  * @file: The file to read
-  * @page: The page of the file
-- *
-- * This deals with the locking required. We have to unlock and
-- * relock the page in order to get the locking in the right
-- * order.
-  */
- 
- static int gfs2_readpage(struct file *file, struct page *page)
- {
--	struct address_space *mapping = page->mapping;
--	struct gfs2_inode *ip = GFS2_I(mapping->host);
--	struct gfs2_holder gh;
--	int error;
--
--	unlock_page(page);
--	gfs2_holder_init(ip->i_gl, LM_ST_SHARED, 0, &gh);
--	error = gfs2_glock_nq(&gh);
--	if (unlikely(error))
--		goto out;
--	error = AOP_TRUNCATED_PAGE;
--	lock_page(page);
--	if (page->mapping == mapping && !PageUptodate(page))
--		error = __gfs2_readpage(file, page);
--	else
--		unlock_page(page);
--	gfs2_glock_dq(&gh);
--out:
--	gfs2_holder_uninit(&gh);
--	if (error && error != AOP_TRUNCATED_PAGE)
--		lock_page(page);
--	return error;
-+	return __gfs2_readpage(file, page);
- }
- 
- /**
-@@ -598,16 +562,9 @@ static void gfs2_readahead(struct readahead_control *rac)
- {
- 	struct inode *inode = rac->mapping->host;
- 	struct gfs2_inode *ip = GFS2_I(inode);
--	struct gfs2_holder gh;
- 
--	gfs2_holder_init(ip->i_gl, LM_ST_SHARED, 0, &gh);
--	if (gfs2_glock_nq(&gh))
--		goto out_uninit;
- 	if (!gfs2_is_stuffed(ip))
- 		mpage_readahead(rac, gfs2_block_map);
--	gfs2_glock_dq(&gh);
--out_uninit:
--	gfs2_holder_uninit(&gh);
- }
- 
- /**
-diff --git a/fs/gfs2/file.c b/fs/gfs2/file.c
-index fe305e4bfd37..bebde537ac8c 100644
---- a/fs/gfs2/file.c
-+++ b/fs/gfs2/file.c
-@@ -558,8 +558,29 @@ static vm_fault_t gfs2_page_mkwrite(struct vm_fault *vmf)
- 	return block_page_mkwrite_return(ret);
- }
- 
-+static vm_fault_t gfs2_fault(struct vm_fault *vmf)
-+{
-+	struct inode *inode = file_inode(vmf->vma->vm_file);
-+	struct gfs2_inode *ip = GFS2_I(inode);
-+	struct gfs2_holder gh;
-+	vm_fault_t ret;
-+	int err;
-+
-+	gfs2_holder_init(ip->i_gl, LM_ST_SHARED, 0, &gh);
-+	err = gfs2_glock_nq(&gh);
-+	if (err) {
-+		ret = block_page_mkwrite_return(err);
-+		goto out_uninit;
-+	}
-+	ret = filemap_fault(vmf);
-+	gfs2_glock_dq(&gh);
-+out_uninit:
-+	gfs2_holder_uninit(&gh);
-+	return ret;
-+}
-+
- static const struct vm_operations_struct gfs2_vm_ops = {
--	.fault = filemap_fault,
-+	.fault = gfs2_fault,
- 	.map_pages = filemap_map_pages,
- 	.page_mkwrite = gfs2_page_mkwrite,
- };
-@@ -824,6 +845,9 @@ static ssize_t gfs2_file_direct_write(struct kiocb *iocb, struct iov_iter *from)
- 
- static ssize_t gfs2_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
- {
-+	struct gfs2_inode *ip;
-+	struct gfs2_holder gh;
-+	size_t written = 0;
- 	ssize_t ret;
- 
- 	if (iocb->ki_flags & IOCB_DIRECT) {
-@@ -832,7 +856,31 @@ static ssize_t gfs2_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
- 			return ret;
- 		iocb->ki_flags &= ~IOCB_DIRECT;
- 	}
--	return generic_file_read_iter(iocb, to);
-+	iocb->ki_flags |= IOCB_NOIO;
-+	ret = generic_file_read_iter(iocb, to);
-+	iocb->ki_flags &= ~IOCB_NOIO;
-+	if (ret >= 0) {
-+		if (!iov_iter_count(to))
-+			return ret;
-+		written = ret;
-+	} else {
-+		if (ret != -EAGAIN)
-+			return ret;
-+		if (iocb->ki_flags & IOCB_NOWAIT)
-+			return ret;
-+	}
-+	ip = GFS2_I(iocb->ki_filp->f_mapping->host);
-+	gfs2_holder_init(ip->i_gl, LM_ST_SHARED, 0, &gh);
-+	ret = gfs2_glock_nq(&gh);
-+	if (ret)
-+		goto out_uninit;
-+	ret = generic_file_read_iter(iocb, to);
-+	if (ret > 0)
-+		written += ret;
-+	gfs2_glock_dq(&gh);
-+out_uninit:
-+	gfs2_holder_uninit(&gh);
-+	return written ? written : ret;
- }
- 
- /**
+Baseline and Complete Git Trees
+===============================
+
+The patches are based on the v5.7 plus DAMON v17 patchset[1] and DAMOS RFC v13
+patchset[2].  You can also clone the complete git tree:
+
+    $ git clone git://github.com/sjp38/linux -b cdamon/rfc/v5
+
+The web is also available:
+https://github.com/sjp38/linux/releases/tag/cdamon/rfc/v5
+
+[1] https://lore.kernel.org/linux-mm/20200706115322.29598-1-sjpark@amazon.com/
+[2] https://lore.kernel.org/linux-mm/20200707093805.4775-1-sjpark@amazon.com/
+
+Sequence of Patches
+===================
+
+The sequence of patches is as follow.
+
+The first 5 patches allow the user space users manually set the monitoring
+regions.  The 1st and 2nd patches implements the features in the debugfs
+interface and the user space tool .  Following two patches each implement
+unittests (the 3rd patch) and selftests (the 4th patch) for the new feature.
+Finally, the 5th patch documents this new feature.
+
+Following 6 patches implement the physical memory monitoring.  The 6th patch
+exports rmap essential functions to GPL modules as those will be used by the
+DAMON's implementation of the low level primitives for the physical memory
+address space.  The 7th patch implements the low level primitives.  The 8th and
+the 9th patches links the feature to the debugfs and the user space tool,
+respectively.  The 10th patch further implement a handy NUMA specific memory
+monitoring feature on the user space tool.  Finally, the 11th patch documents
+this new features.
+
+Patch History
+=============
+
+Changes from RFC v4
+(https://lore.kernel.org/linux-mm/20200616140813.17863-1-sjpark@amazon.com/)
+ - Support NUMA specific physical memory monitoring
+
+Changes from RFC v3
+(https://lore.kernel.org/linux-mm/20200609141941.19184-1-sjpark@amazon.com/)
+ - Export rmap functions
+ - Reorganize for physical memory monitoring support only
+ - Clean up debugfs code
+
+Changes from RFC v2
+(https://lore.kernel.org/linux-mm/20200603141135.10575-1-sjpark@amazon.com/)
+ - Support the physical memory monitoring with the user space tool
+ - Use 'pfn_to_online_page()' (David Hildenbrand)
+ - Document more detail on random 'pfn' and its safeness (David Hildenbrand)
+
+Changes from RFC v1
+(https://lore.kernel.org/linux-mm/20200409094232.29680-1-sjpark@amazon.com/)
+ - Provide the reference primitive implementations for the physical memory
+ - Connect the extensions with the debugfs interface
+
+SeongJae Park (11):
+  mm/damon/debugfs: Allow users to set initial monitoring target regions
+  tools/damon: Support init target regions specification
+  mm/damon-test: Add more unit tests for 'init_regions'
+  selftests/damon/_chk_record: Do not check number of gaps
+  Docs/damon: Document 'initial_regions' feature
+  mm/rmap: Export essential functions for rmap_run
+  mm/damon: Implement callbacks for physical memory monitoring
+  mm/damon/debugfs: Support physical memory monitoring
+  tools/damon/record: Support physical memory monitoring
+  tools/damon/record: Support NUMA specific recording
+  Docs/damon: Document physical memory monitoring support
+
+ Documentation/admin-guide/mm/damon/faq.rst    |   7 +-
+ Documentation/admin-guide/mm/damon/index.rst  |   1 -
+ .../admin-guide/mm/damon/mechanisms.rst       |  29 +-
+ Documentation/admin-guide/mm/damon/plans.rst  |   7 -
+ Documentation/admin-guide/mm/damon/usage.rst  |  80 +++-
+ include/linux/damon.h                         |   5 +
+ mm/damon-test.h                               |  53 +++
+ mm/damon.c                                    | 374 +++++++++++++++++-
+ mm/rmap.c                                     |   2 +
+ mm/util.c                                     |   1 +
+ tools/damon/_damon.py                         |  41 ++
+ tools/damon/_paddr_layout.py                  | 158 ++++++++
+ tools/damon/heats.py                          |   2 +-
+ tools/damon/record.py                         |  60 ++-
+ tools/damon/schemes.py                        |  12 +-
+ tools/testing/selftests/damon/_chk_record.py  |   6 -
+ 16 files changed, 783 insertions(+), 55 deletions(-)
+ delete mode 100644 Documentation/admin-guide/mm/damon/plans.rst
+ create mode 100644 tools/damon/_paddr_layout.py
+
 -- 
-2.26.2
+2.17.1
 
