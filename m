@@ -2,81 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB964216C76
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 14:03:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD805216CA3
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 14:16:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728094AbgGGMDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 08:03:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57890 "EHLO
+        id S1727987AbgGGMQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 08:16:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726900AbgGGMDG (ORCPT
+        with ESMTP id S1726911AbgGGMQI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 08:03:06 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3569DC08C5E1
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 05:03:06 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id z24so24676668ljn.8
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 05:03:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YH/VxHJ3AGs6CZr/wDufvaXGnXEL37As4napaZvmJwI=;
-        b=Bgh1b8lny6xvbW6+ct6t0vaU1Jiuk1+UbOS0d8piluPPBGIXBoT6fW7BVBSL7RHC63
-         fEwHuYtJRRgTOHhbS2rN6Tjv4NtcokJr8Fuoa7BvDxlhthTf17pY3yOCrhuNLV3gkrYG
-         Q4R3d+gPzj9akoo0jD0im55k7lI7uXK4QpdEzdJsmEJxDe4Nb2ojQJhKD+UQ+YtvdV8H
-         ZTjUu6RzuTMzq6LAahoT55UVyxUCAbEEUhKJ/VvC7TrN4hv/IrpXz4dTMVhhSmFMYZNM
-         xcw1PbLOYtWC79erbC2q965s5SZDvI1mznoOTC7Wo6tcIWKecnXnph1xJwDHHTVaozHM
-         aPBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YH/VxHJ3AGs6CZr/wDufvaXGnXEL37As4napaZvmJwI=;
-        b=HVavFB75SeoDkB9yFQmJ+if6A6b+JYVN3yMf6CMR0PyeZGVCMrHoyicjSLA3B4qnGC
-         tSzHuOKwlRc/31ozhRwo+dz4GZ7eBYATWmFfq0JmYC+5IdvF1KslFGYqQnVwbGGQ/x0Z
-         9+T/3EkLWWOjEObgfQj4m9Nr3EweEhvq6e8U5JPXdL+h0APaHY4xZTCovPE8WElgFu4T
-         uEVfcP9ecPlOutBd+BK5jWfJfXqVZifCiy/S3COF6iIUtAWK9i7CyrJFRHALwipan+Aq
-         VK3ya3cushC/w1klOjCA3zw+yiD9GXIED4LCqksxrrdKmBv1GUsUcSCc5TaLOVWCUEoi
-         PAag==
-X-Gm-Message-State: AOAM530i6hSu+trNnA52nSxALnkNlBZqAIu7kQYgg9uFO9EwxZPLShZS
-        k3Zl8W+6000PXeGv1hIah8acxn/pI5wBHes1jIenOA==
-X-Google-Smtp-Source: ABdhPJyR5v0EwI80g1kmy1SXVGsVqQpkid61MlRrKwlnDjYgLnU+qYwazQ3V+EyiCn9ABxFKleq7Kr5Bjuu2lykaDYY=
-X-Received: by 2002:a2e:8597:: with SMTP id b23mr14035216lji.338.1594123384691;
- Tue, 07 Jul 2020 05:03:04 -0700 (PDT)
+        Tue, 7 Jul 2020 08:16:08 -0400
+X-Greylist: delayed 654 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 07 Jul 2020 05:16:08 PDT
+Received: from canardo.mork.no (canardo.mork.no [IPv6:2001:4641::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24A3DC061755;
+        Tue,  7 Jul 2020 05:16:07 -0700 (PDT)
+Received: from miraculix.mork.no (miraculix.mork.no [IPv6:2001:4641:0:2:7627:374e:db74:e353])
+        (authenticated bits=0)
+        by canardo.mork.no (8.15.2/8.15.2) with ESMTPSA id 067C4xPH027462
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
+        Tue, 7 Jul 2020 14:05:00 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mork.no; s=b;
+        t=1594123500; bh=LpYHzL1Fv+6r+q+/DerBNxWDzKGX9YKvtsmvkogOo+I=;
+        h=From:To:Cc:Subject:References:Date:Message-ID:From;
+        b=cMhTetJjnHHTM68v7z/MTjWLOy0iXztNxRx3x3KxRBHdOZRjbDqRmhXwtOyt1gUHq
+         yK4NbRM0DpgXhLGO6+4Jr2LpFABkr90sXKNq7GSKbMxocqGNdt5TM+Jv3dRpgpt5Pu
+         umdNqQCbLEb8vMeh3qls1TyQF0GMv9p+8qrIjf2g=
+Received: from bjorn by miraculix.mork.no with local (Exim 4.94)
+        (envelope-from <bjorn@mork.no>)
+        id 1jsmLK-000PCr-JH; Tue, 07 Jul 2020 14:04:58 +0200
+From:   =?utf-8?Q?Bj=C3=B8rn_Mork?= <bjorn@mork.no>
+To:     AceLan Kao <acelan.kao@canonical.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: usb: qmi_wwan: add support for Quectel EG95 LTE modem
+Organization: m
+References: <20200707081445.1064346-1-acelan.kao@canonical.com>
+Date:   Tue, 07 Jul 2020 14:04:58 +0200
+In-Reply-To: <20200707081445.1064346-1-acelan.kao@canonical.com> (AceLan Kao's
+        message of "Tue, 7 Jul 2020 16:14:45 +0800")
+Message-ID: <873663cyz9.fsf@miraculix.mork.no>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-References: <20200622192558.152828-1-konradybcio@gmail.com> <20200622192558.152828-3-konradybcio@gmail.com>
-In-Reply-To: <20200622192558.152828-3-konradybcio@gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 7 Jul 2020 14:02:54 +0200
-Message-ID: <CACRpkda7b5a95ZpLmZ07awzSHenfxyzxFR46s0cUa_5JzYQ3tw@mail.gmail.com>
-Subject: Re: [PATCH v3 2/7] Documentation: Document pm660(l) SPMI GPIOs compatible
-To:     Konrad Dybcio <konradybcio@gmail.com>
-Cc:     skrzynka@konradybcio.pl, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Sivaprakash Murugesan <sivaprak@codeaurora.org>,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Virus-Scanned: clamav-milter 0.102.2 at canardo
+X-Virus-Status: Clean
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 22, 2020 at 9:26 PM Konrad Dybcio <konradybcio@gmail.com> wrote:
+AceLan Kao <acelan.kao@canonical.com> writes:
 
-> Signed-off-by: Konrad Dybcio <konradybcio@gmail.com>
+> Add support for Quectel Wireless Solutions Co., Ltd. EG95 LTE modem
+>
+> T:  Bus=3D01 Lev=3D01 Prnt=3D01 Port=3D02 Cnt=3D02 Dev#=3D  5 Spd=3D480 M=
+xCh=3D 0
+> D:  Ver=3D 2.00 Cls=3Def(misc ) Sub=3D02 Prot=3D01 MxPS=3D64 #Cfgs=3D  1
+> P:  Vendor=3D2c7c ProdID=3D0195 Rev=3D03.18
+> S:  Manufacturer=3DAndroid
+> S:  Product=3DAndroid
+> C:  #Ifs=3D 5 Cfg#=3D 1 Atr=3Da0 MxPwr=3D500mA
+> I:  If#=3D0x0 Alt=3D 0 #EPs=3D 2 Cls=3Dff(vend.) Sub=3Dff Prot=3Dff Drive=
+r=3D(none)
+> I:  If#=3D0x1 Alt=3D 0 #EPs=3D 3 Cls=3Dff(vend.) Sub=3D00 Prot=3D00 Drive=
+r=3D(none)
+> I:  If#=3D0x2 Alt=3D 0 #EPs=3D 3 Cls=3Dff(vend.) Sub=3D00 Prot=3D00 Drive=
+r=3D(none)
+> I:  If#=3D0x3 Alt=3D 0 #EPs=3D 3 Cls=3Dff(vend.) Sub=3D00 Prot=3D00 Drive=
+r=3D(none)
+> I:  If#=3D0x4 Alt=3D 0 #EPs=3D 3 Cls=3Dff(vend.) Sub=3Dff Prot=3Dff Drive=
+r=3D(none)
+>
+> Signed-off-by: AceLan Kao <acelan.kao@canonical.com>
+> ---
+>  drivers/net/usb/qmi_wwan.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/net/usb/qmi_wwan.c b/drivers/net/usb/qmi_wwan.c
+> index 31b1d4b959f6..07c42c0719f5 100644
+> --- a/drivers/net/usb/qmi_wwan.c
+> +++ b/drivers/net/usb/qmi_wwan.c
+> @@ -1370,6 +1370,7 @@ static const struct usb_device_id products[] =3D {
+>  	{QMI_QUIRK_SET_DTR(0x1e0e, 0x9001, 5)},	/* SIMCom 7100E, 7230E, 7600E +=
++ */
+>  	{QMI_QUIRK_SET_DTR(0x2c7c, 0x0121, 4)},	/* Quectel EC21 Mini PCIe */
+>  	{QMI_QUIRK_SET_DTR(0x2c7c, 0x0191, 4)},	/* Quectel EG91 */
+> +	{QMI_QUIRK_SET_DTR(0x2c7c, 0x0195, 4)},	/* Quectel EG95 */
+>  	{QMI_FIXED_INTF(0x2c7c, 0x0296, 4)},	/* Quectel BG96 */
+>  	{QMI_QUIRK_SET_DTR(0x2cb7, 0x0104, 4)},	/* Fibocom NL678 series */
+>  	{QMI_FIXED_INTF(0x0489, 0xe0b4, 0)},	/* Foxconn T77W968 LTE */
 
-Patch applied.
-
-Yours,
-Linus Walleij
+Acked-by: Bj=C3=B8rn Mork <bjorn@mork.no>
