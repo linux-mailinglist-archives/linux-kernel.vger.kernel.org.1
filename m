@@ -2,254 +2,1038 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C86AF2166B3
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 08:48:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95CF82166A4
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 08:46:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728248AbgGGGr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 02:47:58 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:1636 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728014AbgGGGr5 (ORCPT
+        id S1728117AbgGGGpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 02:45:30 -0400
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:44937 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726889AbgGGGp2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 02:47:57 -0400
-X-UUID: 92a6f3d5e37440c9b84c08ebc5d4a763-20200707
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=SwVdQetwEhqb0jYOIh2hMXjXY9PYdr+q2F3iUq6pY0Y=;
-        b=gZRCHLKsGR7BbbuihTjkM/CXzCsnO13i+cxGwf983bhMQ3LP78fZFooju0jiZylqQqJoQ8diqinY83IqvlmoU4V80AeT6HR02m3YdydDIE9XDRXkWbg4Vgq1MCvL4SBo7b0/eDZatmLzILSYdIcn5VF/7aFUnLoJFTcKGXXpxew=;
-X-UUID: 92a6f3d5e37440c9b84c08ebc5d4a763-20200707
-Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <xia.jiang@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLS)
-        with ESMTP id 1063273523; Tue, 07 Jul 2020 14:47:30 +0800
-Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31DR.mediatek.inc
- (172.27.6.102) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 7 Jul
- 2020 14:45:48 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 7 Jul 2020 14:45:46 +0800
-Message-ID: <1594104314.4473.24.camel@mhfsdcap03>
-Subject: Re: [PATCH RESEND v9 18/18] media: platform: Add jpeg enc feature
-From:   Xia Jiang <xia.jiang@mediatek.com>
-To:     Tomasz Figa <tfiga@chromium.org>
-CC:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Matthias Brugger" <matthias.bgg@gmail.com>,
-        Rick Chang <rick.chang@mediatek.com>,
-        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        <srv_heupstream@mediatek.com>, <senozhatsky@chromium.org>,
-        <mojahsu@chromium.org>, <drinkcat@chromium.org>,
-        <maoguang.meng@mediatek.com>, <sj.huang@mediatek.com>
-Date:   Tue, 7 Jul 2020 14:45:14 +0800
-In-Reply-To: <20200630165301.GA1212092@chromium.org>
-References: <20200604090553.10861-1-xia.jiang@mediatek.com>
-         <20200604090553.10861-20-xia.jiang@mediatek.com>
-         <20200611184640.GC8694@chromium.org> <1593485781.20112.43.camel@mhfsdcap03>
-         <20200630165301.GA1212092@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Tue, 7 Jul 2020 02:45:28 -0400
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20200707064525euoutp0210208bcd90f743ef78b3e53926fc7383~fZXAnWwze2535125351euoutp02J
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 06:45:25 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20200707064525euoutp0210208bcd90f743ef78b3e53926fc7383~fZXAnWwze2535125351euoutp02J
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1594104325;
+        bh=pcKyMux6F4Ph7j+44gwmZodQ/+THju5WhHGleh87k3U=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=m80sBcJr0bToAlgCO+sUqPUbAZ06AwIY7+aGSg+u0ZfKnVLVIs5MSVPmQvPEPWFeO
+         Hn0w/v82D7giY+tSVvoIqjeeG9iAnGymu4GwnrYgG6F/Z5cAZeEG7Kbp7i1l6kc1Rl
+         dXwZbQcHGwDO3dQfn+v+1psLFPDs/9my8RwkITpI=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20200707064525eucas1p2d972e12b0f09ee7909a2db40504a542d~fZXARs-sb3172331723eucas1p2D;
+        Tue,  7 Jul 2020 06:45:25 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id A4.B8.05997.50A140F5; Tue,  7
+        Jul 2020 07:45:25 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20200707064524eucas1p143a1f13d08c6ff0dd83947f6dcfda2ad~fZW-_qSI11901219012eucas1p1O;
+        Tue,  7 Jul 2020 06:45:24 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200707064524eusmtrp2b74e5f74f37698bb5f2afb5d9aa57065~fZW-7hqrP2983729837eusmtrp2H;
+        Tue,  7 Jul 2020 06:45:24 +0000 (GMT)
+X-AuditID: cbfec7f4-65dff7000000176d-b3-5f041a055908
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id D3.EA.06017.40A140F5; Tue,  7
+        Jul 2020 07:45:24 +0100 (BST)
+Received: from [106.210.85.205] (unknown [106.210.85.205]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200707064522eusmtip2d9533775e528b4b8412959183ca9228d~fZW_IWseW1971819718eusmtip25;
+        Tue,  7 Jul 2020 06:45:22 +0000 (GMT)
+Subject: Re: [PATCH v7 2/2] display/drm/bridge: TC358775 DSI/LVDS driver
+To:     Vinay Simha BN <simhavcs@gmail.com>
+Cc:     Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        David Airlie <airlied@linux.ie>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
+From:   Andrzej Hajda <a.hajda@samsung.com>
+Message-ID: <c488bf6c-d8bf-58be-43c8-c88aa94a9965@samsung.com>
+Date:   Tue, 7 Jul 2020 08:45:22 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+        Thunderbird/68.10.0
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 2B1FBE70E9DA5E005A338DB4FF66BB7BFC3DA49459575A0E1C46614499A82EAE2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <20200704092511.20856-2-simhavcs@gmail.com>
+Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTYRzGe3fOzjlak+M0/LPCcERhkqZGHDCkQuF8KDLpS0bTqadpuWnb
+        NI1KyQxdGN5InFKWipdCzbxMRbRlLq9dzNJQZmCCMrFQS9M0tzPJb8/7PL//DV4KE3cJJVSs
+        SsupVfI4KeGIN/esvDsslODhRyZf40z2UK+A+bQ0TzAjv2cwptcygjNZueUkM9xWQjDGBxeZ
+        heEZ4gTFzo9mkGyrfoJkizOLhOzbnI8CtuXXpJA13zcJ2K7sfJxdaHAPocIcj0dzcbFJnNon
+        MMIxxlDZjhKWF1ByRUE5mYaKO5EOOVBAH4WCgjKhDjlSYroKgdkyivOPRQTLdTWElRLTCwi6
+        nxNbFeNl3SQPVSL40TFiL59HsLI6ILBSLjQLdVOlpFW70geh8HMlYYUwul0AA7lvbAFBe8Lf
+        l2O2tiI6EF68SsetGqf3Q8bSmo3ZTcugbqZFwDPO0Fs0ZWMcaAbWK3WYVWP0PmiZK7FrN7iz
+        WG3bCOghEvTDOvveQbBYkyXgtQvMmhpJXu+FjdbHdj8VzFV3Mb44E0FTfSvGBwEwPvRnsxG1
+        OcET6tp8ePskGH5+waw20E4wOufM7+AEec2FdlsEmffEPO0B5sEme0M3qHi/ROQgqX7bZfpt
+        1+i3XaP/P7cU4TXIjUvUKBWcxk/FXffWyJWaRJXCOype2YA2/1X/umnRgNrWIo2IppB0lyiT
+        wMLFQnmSJkVpREBhUlfRqcF+mVgULU+5wanjw9WJcZzGiPZQuNRN5P905pKYVsi13FWOS+DU
+        W6mAcpCkoVCF6VaIzPDQY7C2ZHjaw7lLWzha4HV7h9ezm85KoSUgY7WzPzkmp11fVP9EGxn1
+        4VFflnuwLPlcsK/rxOnvXWdSdhqbk4/1NAllG2PLFhI/e2VFMtvXERYaXZt9WfJNlzqb3ljd
+        XEEaKowHznv4ReTJgq5FfvUvmjZkXXDJZ2VSXBMj9z2EqTXyfxxTWMxTAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrCIsWRmVeSWpSXmKPExsVy+t/xe7osUizxBtN+q1v0njvJZHHl63s2
+        i6vfXzJbnHxzlcWic+ISdovLu+awWRzqi7b4fPklmwOHx/sbreweO2fdZfeY3TGT1ePEhEtM
+        Htu/PWD1uN99nMnjQO9kFo/Pm+QCOKL0bIryS0tSFTLyi0tslaINLYz0DC0t9IxMLPUMjc1j
+        rYxMlfTtbFJSczLLUov07RL0MnYs381Y8OMzY8XSKUvYGxhn72fsYuTkkBAwkbiz+Ah7FyMX
+        h5DAUkaJ1r/noBLiErvnv2WGsIUl/lzrYoMoessosfjpZ7AiYQEPifVPFrCD2CIC6hLTry0H
+        K2IW2MskMWHzWaixOxkl3l+9C9bBJqAp8XfzTTYQm1fATmLjwWYWEJtFQEWi9esfsEmiAnES
+        y7fMZ4eoEZQ4OfMJWA2ngIXEv+VdYCcxC5hJzNv8EMqWl9j+dg6ULS7R9GUl6wRGoVlI2mch
+        aZmFpGUWkpYFjCyrGEVSS4tz03OLjfSKE3OLS/PS9ZLzczcxAmN027GfW3Ywdr0LPsQowMGo
+        xMObcIQ5Xog1say4MvcQowQHs5IIr9PZ03FCvCmJlVWpRfnxRaU5qcWHGE2BnpvILCWanA9M
+        H3kl8YamhuYWlobmxubGZhZK4rwdAgdjhATSE0tSs1NTC1KLYPqYODilGhi3eT7+r1osrbNF
+        61nnOuN7HIf2/f1mc7HxwhLRjS+jZ5TH/TLSD+X/sOdASrBW94mGazYydud/+3sd6tC2Nezf
+        7ehZdL7v7C0GpRVm/d7ey7dd2uX8c8KaPDnBK1LK5r9OPddLsMs/7Vasucbgwe+M1NZ0++r7
+        51Z+reV6U7Im89znF50HrdiVWIozEg21mIuKEwEao9jA5wIAAA==
+X-CMS-MailID: 20200707064524eucas1p143a1f13d08c6ff0dd83947f6dcfda2ad
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200706072016eucas1p1db7edc4b5aef0809d624c41bc9311f1f
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200706072016eucas1p1db7edc4b5aef0809d624c41bc9311f1f
+References: <20200704092511.20856-1-simhavcs@gmail.com>
+        <CGME20200706072016eucas1p1db7edc4b5aef0809d624c41bc9311f1f@eucas1p1.samsung.com>
+        <20200704092511.20856-2-simhavcs@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIwLTA2LTMwIGF0IDE2OjUzICswMDAwLCBUb21hc3ogRmlnYSB3cm90ZToNCj4g
-SGkgWGlhLA0KPiANCj4gT24gVHVlLCBKdW4gMzAsIDIwMjAgYXQgMTA6NTY6MjFBTSArMDgwMCwg
-WGlhIEppYW5nIHdyb3RlOg0KPiA+IE9uIFRodSwgMjAyMC0wNi0xMSBhdCAxODo0NiArMDAwMCwg
-VG9tYXN6IEZpZ2Egd3JvdGU6DQo+ID4gPiBIaSBYaWEsDQo+ID4gPiANCj4gPiA+IE9uIFRodSwg
-SnVuIDA0LCAyMDIwIGF0IDA1OjA1OjUzUE0gKzA4MDAsIFhpYSBKaWFuZyB3cm90ZToNCj4gW3Nu
-aXBdDQo+ID4gPiA+ICtzdGF0aWMgdm9pZCBtdGtfanBlZ19lbmNfZGV2aWNlX3J1bih2b2lkICpw
-cml2KQ0KPiA+ID4gPiArew0KPiA+ID4gPiArCXN0cnVjdCBtdGtfanBlZ19jdHggKmN0eCA9IHBy
-aXY7DQo+ID4gPiA+ICsJc3RydWN0IG10a19qcGVnX2RldiAqanBlZyA9IGN0eC0+anBlZzsNCj4g
-PiA+ID4gKwlzdHJ1Y3QgdmIyX3Y0bDJfYnVmZmVyICpzcmNfYnVmLCAqZHN0X2J1ZjsNCj4gPiA+
-ID4gKwllbnVtIHZiMl9idWZmZXJfc3RhdGUgYnVmX3N0YXRlID0gVkIyX0JVRl9TVEFURV9FUlJP
-UjsNCj4gPiA+ID4gKwl1bnNpZ25lZCBsb25nIGZsYWdzOw0KPiA+ID4gPiArCXN0cnVjdCBtdGtf
-anBlZ19zcmNfYnVmICpqcGVnX3NyY19idWY7DQo+ID4gPiA+ICsJc3RydWN0IG10a19qcGVnX2Vu
-Y19icyBlbmNfYnM7DQo+ID4gPiA+ICsJaW50IHJldDsNCj4gPiA+ID4gKw0KPiA+ID4gPiArCXNy
-Y19idWYgPSB2NGwyX20ybV9uZXh0X3NyY19idWYoY3R4LT5maC5tMm1fY3R4KTsNCj4gPiA+ID4g
-Kwlkc3RfYnVmID0gdjRsMl9tMm1fbmV4dF9kc3RfYnVmKGN0eC0+ZmgubTJtX2N0eCk7DQo+ID4g
-PiA+ICsJanBlZ19zcmNfYnVmID0gbXRrX2pwZWdfdmIyX3RvX3NyY2J1Zigmc3JjX2J1Zi0+dmIy
-X2J1Zik7DQo+ID4gPiA+ICsNCj4gPiA+ID4gKwlyZXQgPSBwbV9ydW50aW1lX2dldF9zeW5jKGpw
-ZWctPmRldik7DQo+ID4gPiA+ICsJaWYgKHJldCA8IDApDQo+ID4gPiA+ICsJCWdvdG8gZW5jX2Vu
-ZDsNCj4gPiA+ID4gKw0KPiA+ID4gPiArCXNwaW5fbG9ja19pcnFzYXZlKCZqcGVnLT5od19sb2Nr
-LCBmbGFncyk7DQo+ID4gPiA+ICsNCj4gPiA+ID4gKwkvKg0KPiA+ID4gPiArCSAqIFJlc2V0dGlu
-ZyB0aGUgaGFyZHdhcmUgZXZlcnkgZnJhbWUgaXMgdG8gZW5zdXJlIHRoYXQgYWxsIHRoZQ0KPiA+
-ID4gPiArCSAqIHJlZ2lzdGVycyBhcmUgY2xlYXJlZC4gVGhpcyBpcyBhIGhhcmR3YXJlIHJlcXVp
-cmVtZW50Lg0KPiA+ID4gPiArCSAqLw0KPiA+ID4gPiArCW10a19qcGVnX2VuY19yZXNldChqcGVn
-LT5yZWdfYmFzZSk7DQo+ID4gPiA+ICsNCj4gPiA+ID4gKwltdGtfanBlZ19zZXRfZW5jX2RzdChj
-dHgsIGpwZWctPnJlZ19iYXNlLCAmZHN0X2J1Zi0+dmIyX2J1ZiwgJmVuY19icyk7DQo+ID4gPiA+
-ICsJbXRrX2pwZWdfc2V0X2VuY19zcmMoY3R4LCBqcGVnLT5yZWdfYmFzZSwgJnNyY19idWYtPnZi
-Ml9idWYpOw0KPiA+ID4gPiArCW10a19qcGVnX2VuY19zZXRfY29uZmlnKGpwZWctPnJlZ19iYXNl
-LCBjdHgtPm91dF9xLmZtdC0+aHdfZm9ybWF0LA0KPiA+ID4gPiArCQkJCWN0eC0+ZW5hYmxlX2V4
-aWYsIGN0eC0+ZW5jX3F1YWxpdHksDQo+ID4gPiA+ICsJCQkJY3R4LT5yZXN0YXJ0X2ludGVydmFs
-KTsNCj4gPiA+ID4gKwltdGtfanBlZ19lbmNfc3RhcnQoanBlZy0+cmVnX2Jhc2UpOw0KPiA+ID4g
-DQo+ID4gPiBDb3VsZCB3ZSBqdXN0IG1vdmUgdGhlIGFib3ZlIDUgZnVuY3Rpb25zIGludG8gb25l
-IGZ1bmN0aW9uIGluc2lkZQ0KPiA+ID4gbXRrX2pwZWdfZW5jX2h3LmMgdGhhdCB0YWtlcyBtdGtf
-anBlZ19kZXYgcG9pbnRlciBhcyBpdHMgYXJndW1lbnQsIGxldCdzDQo+ID4gPiBzYXkgbXRrX2pw
-ZWdfZW5jX2h3X3J1bigpIGFuZCBzaW1wbHkgcHJvZ3JhbSBhbGwgdGhlIGRhdGEgdG8gdGhlIHJl
-Z2lzdGVycw0KPiA+ID4gZGlyZWN0bHksIHdpdGhvdXQgdGhlIGV4dHJhIGxldmVsIG9mIGFic3Ry
-YWN0aW9ucz8NCj4gPiBJIGNhbiBtb3ZlIHRoZSA1IGZ1bmN0aW9ucyBpbnRvIG9uZSBmdW5jdGlv
-bihtdGtfanBlZ19lbmNfaHdfcnVuKCkpLCBidXQNCj4gPiB0aGlzIGZ1bmN0aW9uIHdpbGwgYmUg
-dmVyeSBsb25nLCBiZWNhdXNlIGl0IGNvbnRhaW5zIGNvbXB1dGF0aW9uIGNvZGUNCj4gPiBzdWNo
-IGFzIHNldHRpbmcgZHN0IGFkZHIsIGJsa19udW0sIHF1YWxpdHkuDQo+ID4gSW4gdjQsIHlvdSBo
-YXZlIGFkdmljZWQgdGhlIGZvbGxvd2luZyBhcmNoaXRlY3R1cmU6DQo+ID4gSG93IGFib3V0IHRo
-ZSBmb2xsb3dpbmcgbW9kZWwsIGFzIHVzZWQgYnkgbWFueSBvdGhlciBkcml2ZXJzOg0KPiA+IA0K
-PiA+IG10a19qcGVnX2VuY19zZXRfc3JjKCkNCj4gPiB7DQo+ID4gICAgICAgICAvLyBTZXQgYW55
-IHJlZ2lzdGVycyByZWxhdGVkIHRvIHNvdXJjZSBmb3JtYXQgYW5kIGJ1ZmZlcg0KPiA+IH0NCj4g
-PiANCj4gPiBtdGtfanBlZ19lbmNfc2V0X2RzdCgpDQo+ID4gew0KPiA+ICAgICAgICAgLy8gU2V0
-IGFueSByZWdpc3RlcnMgcmVsYXRlZCB0byBkZXN0aW5hdGlvbiBmb3JtYXQgYW5kIGJ1ZmZlcg0K
-PiA+IH0NCj4gPiANCj4gPiBtdGtfanBlZ19lbmNfc2V0X3BhcmFtcygpDQo+ID4gew0KPiA+ICAg
-ICAgICAgLy8gU2V0IGFueSByZWdpc3RlcnMgcmVsYXRlZCB0byBhZGRpdGlvbmFsIGVuY29kaW5n
-IHBhcmFtZXRlcnMNCj4gPiB9DQo+ID4gDQo+ID4gbXRrX2pwZWdfZW5jX2RldmljZV9ydW4oZW5j
-LCBjdHgpDQo+ID4gew0KPiA+ICAgICAgICAgbXRrX2pwZWdfZW5jX3NldF9zcmMoZW5jLCBzcmNf
-YnVmLCBzcmNfZm10KTsNCj4gPiAgICAgICAgIG10a19qcGVnX2VuY19zZXRfZHN0KGVuYywgZHN0
-X2J1ZiwgZHN0X2ZtdCk7DQo+ID4gICAgICAgICBtdGtfanBlZ19lbmNfc2V0X3BhcmFtcyhlbmMs
-IGN0eCk7DQo+ID4gICAgICAgICAvLyBUcmlnZ2VyIHRoZSBoYXJkd2FyZSBydW4NCj4gPiB9DQo+
-ID4gSSB0aGluayB0aGF0IHRoaXMgYXJjaGl0ZWN0dXJlIGlzIG1vcmUgY2xlYXIobXRrX2pwZWdf
-ZW5jX3NldF9jb25maWcgaXMNCj4gPiBlcXVpdmFsZW50IHRvIG10a19qcGVnX2VuY19zZXRfcGFy
-YW1zKS4NCj4gPiBTaG91bGQgSSBrZWVwIHRoZSBvcmlnaW5hbCBhcmNoaXRlY3R1cmUgb3IgbW92
-ZSA1IGZ1bmN0aW9ucyBpbnRvDQo+ID4gbXRrX2pwZWdfZW5jX2h3X3J1bj8NCj4gDQo+IFNvdW5k
-cyBnb29kIHRvIG1lLg0KPiANCj4gTXkgYmlnZ2VzdCBpc3N1ZSB3aXRoIHRoZSBjb2RlIHRoYXQg
-aXQgZW5kcyB1cCBpbnRyb2R1Y2luZyBvbmUgbW9yZQ0KPiBsZXZlbCBvZiBhYnN0cmFjdGlvbiwg
-YnV0IHdpdGggdGhlIGFwcHJvYWNoIHlvdSBzdWdnZXN0ZWQsIHRoZSBhcmd1bWVudHMNCj4ganVz
-dCBhY2NlcHQgc3RhbmRhcmQgc3RydWN0cywgd2hpY2ggYXZvaWRzIHRoYXQgcHJvYmxlbS4NCj4g
-DQo+IFtzbmlwXQ0KPiA+ID4gPiArDQo+ID4gPiA+ICsJY3R4LT5maC5jdHJsX2hhbmRsZXIgPSAm
-Y3R4LT5jdHJsX2hkbDsNCj4gPiA+ID4gKwljdHgtPmNvbG9yc3BhY2UgPSBWNEwyX0NPTE9SU1BB
-Q0VfSlBFRywNCj4gPiA+ID4gKwljdHgtPnljYmNyX2VuYyA9IFY0TDJfWUNCQ1JfRU5DX0RFRkFV
-TFQ7DQo+ID4gPiA+ICsJY3R4LT5xdWFudGl6YXRpb24gPSBWNEwyX1FVQU5USVpBVElPTl9ERUZB
-VUxUOw0KPiA+ID4gPiArCWN0eC0+eGZlcl9mdW5jID0gVjRMMl9YRkVSX0ZVTkNfREVGQVVMVDsN
-Cj4gPiA+IA0KPiA+ID4gU2luY2Ugd2UgYWxyZWFkeSBoYXZlIGEgdjRsMl9waXhfZm9ybWF0X21w
-bGFuZSBzdHJ1Y3Qgd2hpY2ggaGFzIGZpZWxkcyBmb3INCj4gPiA+IHRoZSBhYm92ZSA0IHZhbHVl
-cywgY291bGQgd2UganVzdCBzdG9yZSB0aGVtIHRoZXJlPw0KPiA+ID4gDQo+ID4gPiBBbHNvLCBJ
-IGRvbid0IHNlZSB0aGlzIGRyaXZlciBoYW5kbGluZyB0aGUgY29sb3JzcGFjZXMgaW4gYW55IHdh
-eSwgYnV0IGl0DQo+ID4gPiBzZWVtcyB0byBhbGxvdyBjaGFuZ2luZyB0aGVtIGZyb20gdGhlIHVz
-ZXJzcGFjZS4gVGhpcyBpcyBpbmNvcnJlY3QsIGJlY2F1c2UNCj4gPiA+IHRoZSB1c2Vyc3BhY2Ug
-aGFzIG5vIHdheSB0byBrbm93IHRoYXQgdGhlIGNvbG9yc3BhY2UgaXMgbm90IGhhbmRsZWQuDQo+
-ID4gPiBJbnN0ZWFkLCB0aGUgdHJ5X2ZtdCBpbXBsZW1lbnRhdGlvbiBzaG91bGQgYWx3YXlzIG92
-ZXJyaWRlIHRoZQ0KPiA+ID4gdXNlcnNwYWNlLXByb3ZpZGVkIGNvbG9yc3BhY2UgY29uZmlndXJh
-dGlvbiB3aXRoIHRoZSBvbmVzIHRoYXQgdGhlIGRyaXZlcg0KPiA+ID4gYXNzdW1lcy4NCj4gPiA+
-IA0KPiA+ID4gPiArCXBpeF9tcC0+d2lkdGggPSBNVEtfSlBFR19NSU5fV0lEVEg7DQo+ID4gPiA+
-ICsJcGl4X21wLT5oZWlnaHQgPSBNVEtfSlBFR19NSU5fSEVJR0hUOw0KPiA+ID4gPiArDQo+ID4g
-PiA+ICsJcS0+Zm10ID0gbXRrX2pwZWdfZmluZF9mb3JtYXQoVjRMMl9QSVhfRk1UX1lVWVYsDQo+
-ID4gPiA+ICsJCQkJICAgICAgTVRLX0pQRUdfRk1UX0ZMQUdfRU5DX09VVFBVVCk7DQo+ID4gPiA+
-ICsJdmlkaW9jX3RyeV9mbXQoY29udGFpbmVyX29mKHBpeF9tcCwgc3RydWN0IHY0bDJfZm9ybWF0
-LA0KPiA+ID4gPiArCQkJCSAgICBmbXQucGl4X21wKSwgcS0+Zm10KTsNCj4gPiA+ID4gKwlxLT53
-ID0gcGl4X21wLT53aWR0aDsNCj4gPiA+ID4gKwlxLT5oID0gcGl4X21wLT5oZWlnaHQ7DQo+ID4g
-PiA+ICsJcS0+Y3JvcF9yZWN0LndpZHRoID0gcGl4X21wLT53aWR0aDsNCj4gPiA+ID4gKwlxLT5j
-cm9wX3JlY3QuaGVpZ2h0ID0gcGl4X21wLT5oZWlnaHQ7DQo+ID4gPiA+ICsJcS0+c2l6ZWltYWdl
-WzBdID0gcGl4X21wLT5wbGFuZV9mbXRbMF0uc2l6ZWltYWdlOw0KPiA+ID4gPiArCXEtPmJ5dGVz
-cGVybGluZVswXSA9IHBpeF9tcC0+cGxhbmVfZm10WzBdLmJ5dGVzcGVybGluZTsNCj4gPiA+IA0K
-PiA+ID4gQWN0dWFsbHksIGRvIHdlIG5lZWQgdGhpcyBjdXN0b20gbXRrX2pwZWdfcV9kYXRhIHN0
-cnVjdD8gV2h5IGNvdWxkbid0IHdlDQo+ID4gPiBqdXN0IGtlZXAgdGhlIHNhbWUgdmFsdWVzIGlu
-c2lkZSB0aGUgc3RhbmRhcmQgdjRsMl9waXhfZm9ybWF0X21wbGFuZQ0KPiA+ID4gc3RydWN0Pw0K
-PiA+IEkgdGhpbmsgdGhhdCB3ZSBuZWVkIG10a19qcGVnX3FfZGF0YSBzdHJ1Y3QuSWYgd2UgZGVs
-ZXRlIGl0LCBob3cgY2FuIHdlDQo+ID4ga25vdyB0aGVzZSB2YWx1ZXModywgaCwgc2l6ZWltYWdl
-LCBieXRlc3BlcmxpbmUsIG10a19qcGVnX2ZtdCkgYmVsb25nIHRvDQo+ID4gb3V0cHV0IG9yIGNh
-cHR1cmUob3V0cHV0IGFuZCBjYXB0dXJlJ3Mgc2l6ZWltYWdlcyBhcmUgZGlmZmVyZW50LCB3aWR0
-aA0KPiA+IGFuZCBoZWlnaHQgYXJlIGRpZmZlcm50IHRvbyBmb3IganBlZyBkZWMgKT9XZSBoYXZl
-DQo+ID4gc19mbXRfdmlkX291dF9tcGxhbmUvY2FwX21wbGFuZSBmdW5jdGlvbiB0byBzZXQgdGhl
-c2UgdmFsdWVzLg0KPiA+IA0KPiA+IEJ1dCB3ZSBjYW4gdXNlIHN0YW5kYXJkIHY0bDJfcGl4X2Zv
-cm1hdF9tcGxhbmUgc3RydWN0IHJlcGxhY2luZyB0aGUgdywgaA0KPiA+IGJ5dGVzcGVybGluZSwg
-c2l6ZWltYWdlIGluIG10a19qcGVnX3FfZGF0YSBzdHJ1Y3QgbGlrZSB0aGlzOg0KPiA+IHN0cnVj
-dCBtdGtfanBlZ19xX2RhdGF7DQo+ID4gCXN0cnVjdCBtdGtfanBlZ19mbXQgKmZtdDsNCj4gPiAJ
-c3RydWN0IHY0bDJfcGl4X2Zvcm1hdF9tcGxhbmUgcGl4X21wOw0KPiA+IAlzdHJ1Y3QgdjRsMl9y
-ZWN0IGVuY19jcm9wX3JlY3QNCj4gPiB9DQo+ID4gVGhlbiBkZWxldGUgY3R4LT5jb2xvcnNwYWNl
-IGN0eC0+eWNiY3JfZW5jIGN0eC0+cXVhbnRpemF0aW9uDQo+ID4gY3R4LT54ZmVyX2Z1bmMsIGJl
-Y3Vhc2UgdjRsMl9waXhfZm9ybWF0X21wbGFuZSBpbiBxX2RhdGEgaGFzIGNvbnRhaW5lZA0KPiA+
-IHRoZW0gYW5kIGFzc2lnbiB0aGVtIGZvciBvdXRfcSBhbmQgY2FwX3Egc2VwYXJhdGVseS4NCj4g
-PiANCj4gPiBXRFlUPw0KPiANCj4gU291bmRzIGdvb2QgdG8gbWUuIEkgd2FzIGNvbnNpZGVyaW5n
-IGp1c3QgbWFraW5nIGl0IGxpa2UNCj4gDQo+IHN0cnVjdCBtdGtfanBlZ19jdHggew0KPiAJc3Ry
-dWN0IG10a19qcGVnX2ZtdCAqc3JjX2ZtdDsNCj4gCXN0cnVjdCB2NGwyX3BpeF9mb3JtYXRfbXBs
-YW5lIHNyY19waXhfbXA7DQo+IAlzdHJ1Y3QgdjRsMl9yZWN0IHNyY19jcm9wOw0KPiANCj4gCXN0
-cnVjdCBtdGtfanBlZ19mbXQgKmRzdF9mbXQ7DQo+IAlzdHJ1Y3QgdjRsMl9waXhfZm9ybWF0X21w
-bGFuZSBkc3RfcGl4X21wOw0KPiAJc3RydWN0IHY0bDJfcmVjdCBkc3RfY3JvcDsNCj4gfTsNCj4g
-DQo+IGJ1dCBJIGxpa2UgeW91ciBzdWdnZXN0aW9uIGFzIHdlbGwsIGFzIGxvbmcgYXMgY3VzdG9t
-IGRhdGEgc3RydWN0dXJlcw0KPiBhcmUgbm90IHVzZWQgdG8gc3RvcmUgc3RhbmRhcmQgaW5mb3Jt
-YXRpb24uDQoNCkRlYXIgVG9tYXN6LA0KDQpJIHVzZWQgdGhlIHN0cnVjdHVyZSBsaWtlIGJlbG93
-Og0KIHN0cnVjdCBtdGtfanBlZ19xX2RhdGF7DQoJc3RydWN0IG10a19qcGVnX2ZtdCAqZm10Ow0K
-CXN0cnVjdCB2NGwyX3BpeF9mb3JtYXRfbXBsYW5lIHBpeF9tcDsNCglzdHJ1Y3QgdjRsMl9yZWN0
-IGVuY19jcm9wX3JlY3QNCn0NClRoZW4gZGVsZXRlIGN0eC0+Y29sb3JzcGFjZSBjdHgtPnljYmNy
-X2VuYyBjdHgtPnF1YW50aXphdGlvbg0KY3R4LT54ZmVyX2Z1bmMsIGJlY3Vhc2UgdjRsMl9waXhf
-Zm9ybWF0X21wbGFuZSBpbiBxX2RhdGEgaGFzIGNvbnRhaW5lZA0KdGhlbSBhbmQgYXNzaWduIHRo
-ZW0gZm9yIG91dF9xIGFuZCBjYXBfcSBzZXBhcmF0ZWx5Lg0KDQpUaGVuIHRoZSB2NGwyX2NvbXBs
-aWFuY2UgdGVzdCB3aWxsIGZhaWwsIHRoZSBmYWlsIGxvZyBhcyBiZWxvdzoNCkZvcm1hdCBpb2N0
-bHM6DQogICAgICAgIHRlc3QgVklESU9DX0VOVU1fRk1UL0ZSQU1FU0laRVMvRlJBTUVJTlRFUlZB
-TFM6IE9LDQogICAgICAgIHRlc3QgVklESU9DX0cvU19QQVJNOiBPSyAoTm90IFN1cHBvcnRlZCkN
-CiAgICAgICAgdGVzdCBWSURJT0NfR19GQlVGOiBPSyAoTm90IFN1cHBvcnRlZCkNCiAgICAgICAg
-dGVzdCBWSURJT0NfR19GTVQ6IE9LDQogICAgICAgIHRlc3QgVklESU9DX1RSWV9GTVQ6IE9LDQog
-ICAgICAgICAgICAgICAgZmFpbDogdjRsMi10ZXN0LWZvcm1hdHMuY3BwKDgzNik6DQpmbXRfY2Fw
-LmdfY29sb3JzcGFjZSgpICE9IGNvbA0KICAgICAgICB0ZXN0IFZJRElPQ19TX0ZNVDogRkFJTA0K
-ICAgICAgICB0ZXN0IFZJRElPQ19HX1NMSUNFRF9WQklfQ0FQOiBPSyAoTm90IFN1cHBvcnRlZCkN
-CiAgICAgICAgdGVzdCBDcm9wcGluZzogT0sNCiAgICAgICAgdGVzdCBDb21wb3Npbmc6IE9LIChO
-b3QgU3VwcG9ydGVkKQ0KICAgICAgICB0ZXN0IFNjYWxpbmc6IE9LIChOb3QgU3VwcG9ydGVkKQ0K
-DQpUaGUgc291cmNlIGNvZGUgb2YgIHY0bDItdGVzdC1mb3JtYXRzLmNwcCBhcyBiZWxvdzoNCg0K
-c3RhdGljIGludCB0ZXN0TTJNRm9ybWF0cyhzdHJ1Y3Qgbm9kZSAqbm9kZSkNCnsNCgljdjRsX2Zt
-dCBmbXRfb3V0Ow0KCWN2NGxfZm10IGZtdDsNCgljdjRsX2ZtdCBmbXRfY2FwOw0KCV9fdTMyIGNh
-cF90eXBlID0gbm9kZS0+Z190eXBlKCk7DQoJX191MzIgb3V0X3R5cGUgPSB2NGxfdHlwZV9pbnZl
-cnQoY2FwX3R5cGUpOw0KCV9fdTMyIGNvbCwgeWNiY3JfZW5jLCBxdWFudCwgeGZlcl9mdW5jOw0K
-DQoJZmFpbF9vbl90ZXN0KG5vZGUtPmdfZm10KGZtdF9vdXQsIG91dF90eXBlKSk7DQoJbm9kZS0+
-Z19mbXQoZm10X2NhcCwgY2FwX3R5cGUpOw0KCWZhaWxfb25fdGVzdChmbXRfY2FwLmdfY29sb3Jz
-cGFjZSgpICE9IGZtdF9vdXQuZ19jb2xvcnNwYWNlKCkpOw0KCWZhaWxfb25fdGVzdChmbXRfY2Fw
-LmdfeWNiY3JfZW5jKCkgIT0gZm10X291dC5nX3ljYmNyX2VuYygpKTsNCglmYWlsX29uX3Rlc3Qo
-Zm10X2NhcC5nX3F1YW50aXphdGlvbigpICE9IGZtdF9vdXQuZ19xdWFudGl6YXRpb24oKSk7DQoJ
-ZmFpbF9vbl90ZXN0KGZtdF9jYXAuZ194ZmVyX2Z1bmMoKSAhPSBmbXRfb3V0LmdfeGZlcl9mdW5j
-KCkpOw0KCWNvbCA9IGZtdF9vdXQuZ19jb2xvcnNwYWNlKCkgPT0gVjRMMl9DT0xPUlNQQUNFX1NN
-UFRFMTcwTSA/DQoJCVY0TDJfQ09MT1JTUEFDRV9SRUM3MDkgOiBWNEwyX0NPTE9SU1BBQ0VfU01Q
-VEUxNzBNOw0KCXljYmNyX2VuYyA9IGZtdF9vdXQuZ195Y2Jjcl9lbmMoKSA9PSBWNEwyX1lDQkNS
-X0VOQ182MDEgPw0KCQlWNEwyX1lDQkNSX0VOQ183MDkgOiBWNEwyX1lDQkNSX0VOQ182MDE7DQoJ
-cXVhbnQgPSBmbXRfb3V0LmdfcXVhbnRpemF0aW9uKCkgPT0gVjRMMl9RVUFOVElaQVRJT05fTElN
-X1JBTkdFID8NCgkJVjRMMl9RVUFOVElaQVRJT05fRlVMTF9SQU5HRSA6IFY0TDJfUVVBTlRJWkFU
-SU9OX0xJTV9SQU5HRTsNCgl4ZmVyX2Z1bmMgPSBmbXRfb3V0LmdfeGZlcl9mdW5jKCkgPT0gVjRM
-Ml9YRkVSX0ZVTkNfU1JHQiA/DQoJCVY0TDJfWEZFUl9GVU5DXzcwOSA6IFY0TDJfWEZFUl9GVU5D
-X1NSR0I7DQoJZm10X291dC5zX2NvbG9yc3BhY2UoY29sKTsNCglmbXRfb3V0LnNfeGZlcl9mdW5j
-KHhmZXJfZnVuYyk7DQoJZm10X291dC5zX3ljYmNyX2VuYyh5Y2Jjcl9lbmMpOw0KCWZtdF9vdXQu
-c19xdWFudGl6YXRpb24ocXVhbnQpOw0KCW5vZGUtPnNfZm10KGZtdF9vdXQpOw0KCWZhaWxfb25f
-dGVzdChmbXRfb3V0LmdfY29sb3JzcGFjZSgpICE9IGNvbCk7DQoJZmFpbF9vbl90ZXN0KGZtdF9v
-dXQuZ194ZmVyX2Z1bmMoKSAhPSB4ZmVyX2Z1bmMpOw0KCWZhaWxfb25fdGVzdChmbXRfb3V0Lmdf
-eWNiY3JfZW5jKCkgIT0geWNiY3JfZW5jKTsNCglmYWlsX29uX3Rlc3QoZm10X291dC5nX3F1YW50
-aXphdGlvbigpICE9IHF1YW50KTsNCglub2RlLT5nX2ZtdChmbXRfY2FwKTsNCglmYWlsX29uX3Rl
-c3QoZm10X2NhcC5nX2NvbG9yc3BhY2UoKSAhPSBjb2wpOyAgLy8gbGluZSA4MzYNCglmYWlsX29u
-X3Rlc3QoZm10X2NhcC5nX3hmZXJfZnVuYygpICE9IHhmZXJfZnVuYyk7DQoJZmFpbF9vbl90ZXN0
-KGZtdF9jYXAuZ195Y2Jjcl9lbmMoKSAhPSB5Y2Jjcl9lbmMpOw0KCWZhaWxfb25fdGVzdChmbXRf
-Y2FwLmdfcXVhbnRpemF0aW9uKCkgIT0gcXVhbnQpOw0KfQ0KDQpJdCBuZWVkcyB0aGF0IGNhcCdz
-IGNvbG9yc3BhY2UgZXF1YWxzIG91dCdzIGNvbG9yc3BhY2Ugd2hlbiB1c2Vyc3BhY2UNCmp1c3Qg
-c2V0IG91dCdzIGNvbG9yc3BhY2UgYW5kIHRoZW4gZ2V0IGNhcCdzIGNvbG9yc3BhY2UuIEhvd2V2
-ZXIsIGNhcCdzDQpjb2xvcnNwYWNlIHdoaWNoIGdldHRlZCBmcm9tIGRyaXZlciBlcXVhbHMgVjRM
-Ml9DT0xPUlNQQUNFX0pQRUcsIGJlY2F1c2UNCnRoZSBjb2RlIGluIGdfZm10KCkgbGlrZSB0aGlz
-Og0KcGl4X21wLT5jb2xvcnNwYWNlID0gcV9kYXRhLT5waXhfbXAuY29sb3JzcGFjZTsNCnBpeF9t
-cC0+eWNiY3JfZW5jID0gcV9kYXRhLT5waXhfbXAueWNiY3JfZW5jOw0KcGl4X21wLT54ZmVyX2Z1
-bmMgPSBxX2RhdGEtPnBpeF9tcC54ZmVyX2Z1bmM7DQpwaXhfbXAtPnF1YW50aXphdGlvbiA9IHFf
-ZGF0YS0+cGl4X21wLnF1YW50aXphdGlvbjsNCg0KSG93IHNob3VsZCBJIGhhbmRsZSB0aGlzIGNh
-c2U/IFNob3VsZCBJIHN0b3JlIHRoZW0oY29sb3JzcGFjZSwNCnNmZXJfZnVuYywgeWNiY3JfZW5j
-LCBxdWF0aXphdGlvbikgaW4gY3R4IGFzIHRoZSBvcmluYWwgZGVzaW4/IFRoZW4gSQ0KY2FuIGdl
-dCB0aGVtIGZyb20gZ19mbXQoKSBsaWtlIHRoaXM6DQpwaXhfbXAtPmNvbG9yc3BhY2UgPSBjdHgt
-PmNvbG9yc3BhY2U7DQpwaXhfbXAtPnljYmNyX2VuYyA9IGN0eC0+eWNiY3JfZW5jOw0KcGl4X21w
-LT54ZmVyX2Z1bmMgPSBjdHgtPnhmZXJfZnVuYzsNCnBpeF9tcC0+cXVhbnRpemF0aW9uID0gY3R4
-LT5xdWFudGl6YXRpb247DQoNCkJlc3QgUmVnYXJkcywNClhpYSBKaWFuZw0KPiBbc25pcF0NCj4g
-PiA+ID4gQEAgLTEwNDIsOCArMTYxOSwxMiBAQCBzdGF0aWMgaW50IG10a19qcGVnX3Byb2JlKHN0
-cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpDQo+ID4gPiA+ICAJCXJldHVybiBqcGVnX2lycTsN
-Cj4gPiA+ID4gIAl9DQo+ID4gPiA+ICANCj4gPiA+ID4gLQlyZXQgPSBkZXZtX3JlcXVlc3RfaXJx
-KCZwZGV2LT5kZXYsIGpwZWdfaXJxLCBtdGtfanBlZ19kZWNfaXJxLCAwLA0KPiA+ID4gPiAtCQkJ
-ICAgICAgIHBkZXYtPm5hbWUsIGpwZWcpOw0KPiA+ID4gPiArCWlmIChqcGVnLT52YXJpYW50LT5p
-c19lbmNvZGVyKQ0KPiA+ID4gPiArCQlyZXQgPSBkZXZtX3JlcXVlc3RfaXJxKCZwZGV2LT5kZXYs
-IGpwZWdfaXJxLCBtdGtfanBlZ19lbmNfaXJxLA0KPiA+ID4gPiArCQkJCSAgICAgICAwLCBwZGV2
-LT5uYW1lLCBqcGVnKTsNCj4gPiA+ID4gKwllbHNlDQo+ID4gPiA+ICsJCXJldCA9IGRldm1fcmVx
-dWVzdF9pcnEoJnBkZXYtPmRldiwganBlZ19pcnEsIG10a19qcGVnX2RlY19pcnEsDQo+ID4gPiA+
-ICsJCQkJICAgICAgIDAsIHBkZXYtPm5hbWUsIGpwZWcpOw0KPiA+ID4gDQo+ID4gPiBSYXRoZXIg
-dGhhbiBoYXZpbmcgImlzX2VuY29kZXIiIGluIHRoZSB2YXJpYW50IHN0cnVjdCwgd291bGQgaXQg
-bWFrZSBtb3JlDQo+ID4gPiBzZW5zZSB0byBoYXZlICJpcnFfaGFuZGxlciIgaW5zdGVhZD8gVGhh
-dCB3b3VsZCBhdm9pZCB0aGUgZXhwbGljaXQgaWYuDQo+ID4gRG8geW91IG1lYW4gdG8gZGVsZXRl
-ICJpc19lbmNvZGVyIj8gSXQgaXMgdXNlZCA4IHRpbWVzIGluIHRoZQ0KPiA+IGRyaXZlci5TaG91
-bGQgSSBtb3ZlIHRoZW0gYWxsIHRvIHRoZSBtYXRjaCBkYXRhPw0KPiANCj4gWWVzLiBJdCB3b3Vs
-ZCBtYWtlIHRoZSBjb2RlIGxpbmVhciBhbmQgdGhlIHZhcmFiaWxpdHkgYmV0d2VlbiB0aGUNCj4g
-ZGVjb2RlciBhbmQgZW5jb2RlciB3b3VsZCBiZSBzZWxmLWNvbnRhaW5lZCBpbiB0aGUgdmFyaWFu
-dCBzdHJ1Y3QuDQo+IA0KPiBCZXN0IHJlZ2FyZHMsDQo+IFRvbWFzeg0KDQo=
 
+On 04.07.2020 11:24, Vinay Simha BN wrote:
+> This driver is tested with two panels individually with Apq8016-IFC6309 board
+> https://protect2.fireeye.com/url?k=fe87a8ec-a3e0ecca-fe8623a3-0cc47a31384a-ffbc547df1141490&q=1&u=https%3A%2F%2Fwww.inforcecomputing.com%2Fproducts%2Fsingle-board-computers-sbc%2Fqualcomm-snapdragon-410-inforce-6309-micro-sbc
+>
+> 1. 1366x768@60 auo,b101xtn01 data-mapping = "jeida-24"
+> 2. 800x480@60 innolux,at070tn92 data-mapping = "vesa-24"
+>
+> - added SPDX identifier license
+> - updated alphabetic order of headers
+> - replaced u32 instead of uint32_t
+> - magic number to macros for CLRSI and mux registers
+> - mdelay to usleep_range
+> - added bus_formats
+> - removed drm_connector_status
+> - regulator enable and disable with proper orders and delays
+>    as per the spec
+> - devm_drm_panel_bridge_add method used instead of panel
+>    description modified
+> - dual port implemented
+> - panel->connector_type removed
+> - ~vsdelay dynamic value set based on the
+>    calculation of dsi speed, output speed, blanking
+> - help modified
+> - display_timings naming local variables
+> - check for bus_formats unsupported
+> - error handling enpoint data-lanes
+> - Kconfig proper indentation
+> - GENMASK and FIELD_PREP used
+> - bus_formats handeld in mode_valid
+> - MODE_CLOCK_HIGH handled properly
+> - len initialized
+> - static function for mode_valid
+>
+> Signed-off-by: Vinay Simha BN <simhavcs@gmail.com>
+> ---
+> v1:
+>   Initial version
+>
+> v2:
+> * Andrzej Hajda review comments incorporated
+>    SPDX identifier
+>    development debug removed
+>    alphabetic order headers
+>    u32 instead of unit32_t
+>    magic numbers to macros for CLRSI and mux registers
+>    ignored return value
+>
+> * Laurent Pinchart review comments incorporated
+>    mdelay to usleep_range
+>    bus_formats added
+>
+> v3:
+> * Andrzej Hajda review comments incorporated
+>    drm_connector_status removed
+>    u32 rev removed and local variabl is used
+>    regulator enable disable with proper orders and delays
+>    as per the spec
+>    devm_drm_panel_bridge_add method used instead of panel
+>    description modified
+>    dual port implemented
+>
+> v4:
+> * Sam Ravnborg review comments incorporated
+>    panel->connector_type removed
+>
+> * Reported-by: kernel test robot <lkp@intel.com>
+>    parse_dt to static function
+>    removed the if (endpoint), since data-lanes has to be
+>    present for dsi dts ports
+>
+> v5:
+>    ~vsdelay dynamic value set based on the
+>    calculation of dsi speed, output speed, blanking
+>
+> v6:
+> * Sam Ravnborg review comments incorporated
+>    help modified
+>    display_timings naming local variables
+>    check for bus_formats unsupported
+>    error handling enpoint data-lanes
+>
+> v7:
+> * Sam Ravnborg review comments incorporated
+>    Kconfig proper indentation
+>    GENMASK and FIELD_PREP used
+>    bus_formats handeld in mode_valid
+>    MODE_CLOCK_HIGH handled properly
+>
+> * Reported-by: kernel test robot <lkp@intel.com>
+>    len initialized
+>    static function for mode_valid
+> ---
+>   drivers/gpu/drm/bridge/Kconfig    |  10 +
+>   drivers/gpu/drm/bridge/Makefile   |   1 +
+>   drivers/gpu/drm/bridge/tc358775.c | 757 ++++++++++++++++++++++++++++++
+>   3 files changed, 768 insertions(+)
+>   create mode 100644 drivers/gpu/drm/bridge/tc358775.c
+>
+> diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
+> index 43271c21d3fc..25c3097c4003 100644
+> --- a/drivers/gpu/drm/bridge/Kconfig
+> +++ b/drivers/gpu/drm/bridge/Kconfig
+> @@ -181,6 +181,16 @@ config DRM_TOSHIBA_TC358768
+>   	help
+>   	  Toshiba TC358768AXBG/TC358778XBG DSI bridge chip driver.
+>   
+> +config DRM_TOSHIBA_TC358775
+> +	tristate "Toshiba TC358775 DSI/LVDS bridge"
+> +	depends on OF
+> +	select DRM_KMS_HELPER
+> +	select REGMAP_I2C
+> +	select DRM_PANEL
+> +	select DRM_MIPI_DSI
+> +	help
+> +	  Toshiba TC358775 DSI/LVDS bridge chip driver.
+> +
+>   config DRM_TI_TFP410
+>   	tristate "TI TFP410 DVI/HDMI bridge"
+>   	depends on OF
+> diff --git a/drivers/gpu/drm/bridge/Makefile b/drivers/gpu/drm/bridge/Makefile
+> index d63d4b7e4347..23c770b3bfe4 100644
+> --- a/drivers/gpu/drm/bridge/Makefile
+> +++ b/drivers/gpu/drm/bridge/Makefile
+> @@ -15,6 +15,7 @@ obj-$(CONFIG_DRM_THINE_THC63LVD1024) += thc63lvd1024.o
+>   obj-$(CONFIG_DRM_TOSHIBA_TC358764) += tc358764.o
+>   obj-$(CONFIG_DRM_TOSHIBA_TC358767) += tc358767.o
+>   obj-$(CONFIG_DRM_TOSHIBA_TC358768) += tc358768.o
+> +obj-$(CONFIG_DRM_TOSHIBA_TC358775) += tc358775.o
+>   obj-$(CONFIG_DRM_I2C_ADV7511) += adv7511/
+>   obj-$(CONFIG_DRM_TI_SN65DSI86) += ti-sn65dsi86.o
+>   obj-$(CONFIG_DRM_TI_TFP410) += ti-tfp410.o
+> diff --git a/drivers/gpu/drm/bridge/tc358775.c b/drivers/gpu/drm/bridge/tc358775.c
+> new file mode 100644
+> index 000000000000..6494179369a6
+> --- /dev/null
+> +++ b/drivers/gpu/drm/bridge/tc358775.c
+> @@ -0,0 +1,757 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * tc358775 DSI to LVDS bridge driver
+> + *
+> + * Copyright (C) 2020 SMART Wireless Computing
+> + * Author: Vinay Simha BN <simhavcs@gmail.com>
+> + *
+> + */
+> +/* #define DEBUG */
+> +#include <linux/bitfield.h>
+> +#include <linux/clk.h>
+> +#include <linux/device.h>
+> +#include <linux/gpio/consumer.h>
+> +#include <linux/i2c.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/regulator/consumer.h>
+> +#include <linux/slab.h>
+> +
+> +#include <drm/drm_atomic_helper.h>
+> +#include <drm/drm_bridge.h>
+> +#include <drm/drm_crtc_helper.h>
+> +#include <drm/drm_dp_helper.h>
+> +#include <drm/drm_mipi_dsi.h>
+> +#include <drm/drm_of.h>
+> +#include <drm/drm_panel.h>
+> +#include <drm/drm_probe_helper.h>
+> +
+> +#define FLD_VAL(val, start, end) FIELD_PREP(GENMASK(start, end), val)
+> +
+> +/* Registers */
+> +
+> +/* DSI D-PHY Layer Registers */
+> +#define D0W_DPHYCONTTX  0x0004  /* Data Lane 0 DPHY Tx Control */
+> +#define CLW_DPHYCONTRX  0x0020  /* Clock Lane DPHY Rx Control */
+> +#define D0W_DPHYCONTRX  0x0024  /* Data Lane 0 DPHY Rx Control */
+> +#define D1W_DPHYCONTRX  0x0028  /* Data Lane 1 DPHY Rx Control */
+> +#define D2W_DPHYCONTRX  0x002C  /* Data Lane 2 DPHY Rx Control */
+> +#define D3W_DPHYCONTRX  0x0030  /* Data Lane 3 DPHY Rx Control */
+> +#define COM_DPHYCONTRX  0x0038  /* DPHY Rx Common Control */
+> +#define CLW_CNTRL       0x0040  /* Clock Lane Control */
+> +#define D0W_CNTRL       0x0044  /* Data Lane 0 Control */
+> +#define D1W_CNTRL       0x0048  /* Data Lane 1 Control */
+> +#define D2W_CNTRL       0x004C  /* Data Lane 2 Control */
+> +#define D3W_CNTRL       0x0050  /* Data Lane 3 Control */
+> +#define DFTMODE_CNTRL   0x0054  /* DFT Mode Control */
+> +
+> +/* DSI PPI Layer Registers */
+> +#define PPI_STARTPPI    0x0104  /* START control bit of PPI-TX function. */
+> +#define PPI_START_FUNCTION      1
+> +
+> +#define PPI_BUSYPPI     0x0108
+> +#define PPI_LINEINITCNT 0x0110  /* Line Initialization Wait Counter  */
+> +#define PPI_LPTXTIMECNT 0x0114
+> +#define PPI_LANEENABLE  0x0134  /* Enables each lane at the PPI layer. */
+> +#define PPI_TX_RX_TA    0x013C  /* DSI Bus Turn Around timing parameters */
+> +
+> +/* Analog timer function enable */
+> +#define PPI_CLS_ATMR    0x0140  /* Delay for Clock Lane in LPRX  */
+> +#define PPI_D0S_ATMR    0x0144  /* Delay for Data Lane 0 in LPRX */
+> +#define PPI_D1S_ATMR    0x0148  /* Delay for Data Lane 1 in LPRX */
+> +#define PPI_D2S_ATMR    0x014C  /* Delay for Data Lane 2 in LPRX */
+> +#define PPI_D3S_ATMR    0x0150  /* Delay for Data Lane 3 in LPRX */
+> +
+> +#define PPI_D0S_CLRSIPOCOUNT    0x0164  /* For lane 0 */
+> +#define PPI_D1S_CLRSIPOCOUNT    0x0168  /* For lane 1 */
+> +#define PPI_D2S_CLRSIPOCOUNT    0x016C  /* For lane 2 */
+> +#define PPI_D3S_CLRSIPOCOUNT    0x0170  /* For lane 3 */
+> +
+> +#define CLS_PRE         0x0180  /* Digital Counter inside of PHY IO */
+> +#define D0S_PRE         0x0184  /* Digital Counter inside of PHY IO */
+> +#define D1S_PRE         0x0188  /* Digital Counter inside of PHY IO */
+> +#define D2S_PRE         0x018C  /* Digital Counter inside of PHY IO */
+> +#define D3S_PRE         0x0190  /* Digital Counter inside of PHY IO */
+> +#define CLS_PREP        0x01A0  /* Digital Counter inside of PHY IO */
+> +#define D0S_PREP        0x01A4  /* Digital Counter inside of PHY IO */
+> +#define D1S_PREP        0x01A8  /* Digital Counter inside of PHY IO */
+> +#define D2S_PREP        0x01AC  /* Digital Counter inside of PHY IO */
+> +#define D3S_PREP        0x01B0  /* Digital Counter inside of PHY IO */
+> +#define CLS_ZERO        0x01C0  /* Digital Counter inside of PHY IO */
+> +#define D0S_ZERO        0x01C4  /* Digital Counter inside of PHY IO */
+> +#define D1S_ZERO        0x01C8  /* Digital Counter inside of PHY IO */
+> +#define D2S_ZERO        0x01CC  /* Digital Counter inside of PHY IO */
+> +#define D3S_ZERO        0x01D0  /* Digital Counter inside of PHY IO */
+> +
+> +#define PPI_CLRFLG      0x01E0  /* PRE Counters has reached set values */
+> +#define PPI_CLRSIPO     0x01E4  /* Clear SIPO values, Slave mode use only. */
+> +#define HSTIMEOUT       0x01F0  /* HS Rx Time Out Counter */
+> +#define HSTIMEOUTENABLE 0x01F4  /* Enable HS Rx Time Out Counter */
+> +#define DSI_STARTDSI    0x0204  /* START control bit of DSI-TX function */
+> +#define DSI_RX_START	1
+> +
+> +#define DSI_BUSYDSI     0x0208
+> +#define DSI_LANEENABLE  0x0210  /* Enables each lane at the Protocol layer. */
+> +#define DSI_LANESTATUS0 0x0214  /* Displays lane is in HS RX mode. */
+> +#define DSI_LANESTATUS1 0x0218  /* Displays lane is in ULPS or STOP state */
+> +
+> +#define DSI_INTSTATUS   0x0220  /* Interrupt Status */
+> +#define DSI_INTMASK     0x0224  /* Interrupt Mask */
+> +#define DSI_INTCLR      0x0228  /* Interrupt Clear */
+> +#define DSI_LPTXTO      0x0230  /* Low Power Tx Time Out Counter */
+> +
+> +#define DSIERRCNT       0x0300  /* DSI Error Count */
+> +#define APLCTRL         0x0400  /* Application Layer Control */
+> +#define RDPKTLN         0x0404  /* Command Read Packet Length */
+> +
+> +#define VPCTRL          0x0450  /* Video Path Control */
+> +#define HTIM1           0x0454  /* Horizontal Timing Control 1 */
+> +#define HTIM2           0x0458  /* Horizontal Timing Control 2 */
+> +#define VTIM1           0x045C  /* Vertical Timing Control 1 */
+> +#define VTIM2           0x0460  /* Vertical Timing Control 2 */
+> +#define VFUEN           0x0464  /* Video Frame Timing Update Enable */
+> +#define VFUEN_EN	BIT(0)  /* Upload Enable */
+> +
+> +/* Mux Input Select for LVDS LINK Input */
+> +#define LV_MX0003        0x0480  /* Bit 0 to 3 */
+> +#define LV_MX0407        0x0484  /* Bit 4 to 7 */
+> +#define LV_MX0811        0x0488  /* Bit 8 to 11 */
+> +#define LV_MX1215        0x048C  /* Bit 12 to 15 */
+> +#define LV_MX1619        0x0490  /* Bit 16 to 19 */
+> +#define LV_MX2023        0x0494  /* Bit 20 to 23 */
+> +#define LV_MX2427        0x0498  /* Bit 24 to 27 */
+> +#define LV_MX(b0, b1, b2, b3)	(FLD_VAL(b0, 4, 0) | FLD_VAL(b1, 12, 8) | \
+> +				FLD_VAL(b2, 20, 16) | FLD_VAL(b3, 28, 24))
+> +
+> +/* Input bit numbers used in mux registers */
+> +enum {
+> +	LVI_R0,
+> +	LVI_R1,
+> +	LVI_R2,
+> +	LVI_R3,
+> +	LVI_R4,
+> +	LVI_R5,
+> +	LVI_R6,
+> +	LVI_R7,
+> +	LVI_G0,
+> +	LVI_G1,
+> +	LVI_G2,
+> +	LVI_G3,
+> +	LVI_G4,
+> +	LVI_G5,
+> +	LVI_G6,
+> +	LVI_G7,
+> +	LVI_B0,
+> +	LVI_B1,
+> +	LVI_B2,
+> +	LVI_B3,
+> +	LVI_B4,
+> +	LVI_B5,
+> +	LVI_B6,
+> +	LVI_B7,
+> +	LVI_HS,
+> +	LVI_VS,
+> +	LVI_DE,
+> +	LVI_L0
+> +};
+> +
+> +#define LVCFG           0x049C  /* LVDS Configuration  */
+> +#define LVPHY0          0x04A0  /* LVDS PHY 0 */
+> +#define LV_PHY0_RST(v)          FLD_VAL(v, 22, 22) /* PHY reset */
+> +#define LV_PHY0_IS(v)           FLD_VAL(v, 15, 14)
+> +#define LV_PHY0_ND(v)           FLD_VAL(v, 4, 0) /* Frequency range select */
+> +#define LV_PHY0_PRBS_ON(v)      FLD_VAL(v, 20, 16) /* Clock/Data Flag pins */
+> +
+> +#define LVPHY1          0x04A4  /* LVDS PHY 1 */
+> +#define SYSSTAT         0x0500  /* System Status  */
+> +#define SYSRST          0x0504  /* System Reset  */
+> +
+> +#define SYS_RST_I2CS	BIT(0) /* Reset I2C-Slave controller */
+> +#define SYS_RST_I2CM	BIT(1) /* Reset I2C-Master controller */
+> +#define SYS_RST_LCD	BIT(2) /* Reset LCD controller */
+> +#define SYS_RST_BM	BIT(3) /* Reset Bus Management controller */
+> +#define SYS_RST_DSIRX	BIT(4) /* Reset DSI-RX and App controller */
+> +#define SYS_RST_REG	BIT(5) /* Reset Register module */
+> +
+> +/* GPIO Registers */
+> +#define GPIOC           0x0520  /* GPIO Control  */
+> +#define GPIOO           0x0524  /* GPIO Output  */
+> +#define GPIOI           0x0528  /* GPIO Input  */
+> +
+> +/* I2C Registers */
+> +#define I2CTIMCTRL      0x0540  /* I2C IF Timing and Enable Control */
+> +#define I2CMADDR        0x0544  /* I2C Master Addressing */
+> +#define WDATAQ          0x0548  /* Write Data Queue */
+> +#define RDATAQ          0x054C  /* Read Data Queue */
+> +
+> +/* Chip ID and Revision ID Register */
+> +#define IDREG           0x0580
+> +
+> +#define LPX_PERIOD		4
+> +#define TTA_GET			0x40000
+> +#define TTA_SURE		6
+> +#define SINGLE_LINK		1
+> +#define DUAL_LINK		2
+> +
+> +#define TC358775XBG_ID  0x00007500
+> +
+> +/* Debug Registers */
+> +#define DEBUG00         0x05A0  /* Debug */
+> +#define DEBUG01         0x05A4  /* LVDS Data */
+> +
+> +#define DSI_CLEN_BIT		BIT(0)
+> +#define DIVIDE_BY_3		3 /* PCLK=DCLK/3 */
+> +#define DIVIDE_BY_6		6 /* PCLK=DCLK/6 */
+> +#define LVCFG_LVEN_BIT		BIT(0)
+> +
+> +#define L0EN BIT(1)
+> +
+> +#define TC358775_VPCTRL_VSDELAY__MASK	0x3FF00000
+> +#define TC358775_VPCTRL_VSDELAY__SHIFT	20
+> +static inline u32 TC358775_VPCTRL_VSDELAY(uint32_t val)
+> +{
+> +	return ((val) << TC358775_VPCTRL_VSDELAY__SHIFT) &
+> +			TC358775_VPCTRL_VSDELAY__MASK;
+> +}
+> +
+> +#define TC358775_VPCTRL_OPXLFMT__MASK	0x00000100
+> +#define TC358775_VPCTRL_OPXLFMT__SHIFT	8
+> +static inline u32 TC358775_VPCTRL_OPXLFMT(uint32_t val)
+> +{
+> +	return ((val) << TC358775_VPCTRL_OPXLFMT__SHIFT) &
+> +			TC358775_VPCTRL_OPXLFMT__MASK;
+> +}
+> +
+> +#define TC358775_VPCTRL_MSF__MASK	0x00000001
+> +#define TC358775_VPCTRL_MSF__SHIFT	0
+> +static inline u32 TC358775_VPCTRL_MSF(uint32_t val)
+> +{
+> +	return ((val) << TC358775_VPCTRL_MSF__SHIFT) &
+> +			TC358775_VPCTRL_MSF__MASK;
+> +}
+> +
+> +#define TC358775_LVCFG_PCLKDIV__MASK	0x000000f0
+> +#define TC358775_LVCFG_PCLKDIV__SHIFT	4
+> +static inline u32 TC358775_LVCFG_PCLKDIV(uint32_t val)
+> +{
+> +	return ((val) << TC358775_LVCFG_PCLKDIV__SHIFT) &
+> +			TC358775_LVCFG_PCLKDIV__MASK;
+> +}
+> +
+> +#define TC358775_LVCFG_LVDLINK__MASK                         0x00000002
+> +#define TC358775_LVCFG_LVDLINK__SHIFT                        0
+> +static inline u32 TC358775_LVCFG_LVDLINK(uint32_t val)
+> +{
+> +	return ((val) << TC358775_LVCFG_LVDLINK__SHIFT) &
+> +			TC358775_LVCFG_LVDLINK__MASK;
+> +}
+> +
+> +enum tc358775_ports {
+> +	TC358775_DSI_IN,
+> +	TC358775_LVDS_OUT0,
+> +	TC358775_LVDS_OUT1,
+> +};
+> +
+> +struct tc_data {
+> +	struct i2c_client	*i2c;
+> +	struct device		*dev;
+> +
+> +	struct drm_bridge	bridge;
+> +	struct drm_bridge	*panel_bridge;
+> +
+> +	struct device_node *host_node;
+> +	struct mipi_dsi_device *dsi;
+> +	u8 num_dsi_lanes;
+> +
+> +	struct regulator	*vdd;
+> +	struct regulator	*vddio;
+> +	struct gpio_desc	*reset_gpio;
+> +	struct gpio_desc	*stby_gpio;
+> +	u8			lvds_link; /* single-link or dual-link */
+> +	u8			bpc;
+> +};
+> +
+> +static inline struct tc_data *bridge_to_tc(struct drm_bridge *b)
+> +{
+> +	return container_of(b, struct tc_data, bridge);
+> +}
+> +
+> +static void tc_bridge_pre_enable(struct drm_bridge *bridge)
+> +{
+> +	struct tc_data *tc = bridge_to_tc(bridge);
+> +	struct device *dev = &tc->dsi->dev;
+> +	int ret;
+> +
+> +	ret = regulator_enable(tc->vddio);
+> +	if (ret < 0)
+> +		dev_err(dev, "regulator vddio enable failed, %d\n", ret);
+> +	usleep_range(10000, 11000);
+> +
+> +	ret = regulator_enable(tc->vdd);
+> +	if (ret < 0)
+> +		dev_err(dev, "regulator vdd enable failed, %d\n", ret);
+> +	usleep_range(10000, 11000);
+> +
+> +	gpiod_set_value(tc->stby_gpio, 0);
+> +	usleep_range(10000, 11000);
+> +
+> +	gpiod_set_value(tc->reset_gpio, 0);
+> +	usleep_range(10, 20);
+> +}
+> +
+> +static void tc_bridge_post_disable(struct drm_bridge *bridge)
+> +{
+> +	struct tc_data *tc = bridge_to_tc(bridge);
+> +	struct device *dev = &tc->dsi->dev;
+> +	int ret;
+> +
+> +	ret = regulator_disable(tc->vddio);
+> +	if (ret < 0)
+> +		dev_err(dev, "regulator vddio disable failed, %d\n", ret);
+> +	usleep_range(10000, 11000);
+> +
+> +	ret = regulator_disable(tc->vdd);
+> +	if (ret < 0)
+> +		dev_err(dev, "regulator vdd disable failed, %d\n", ret);
+> +	usleep_range(10000, 11000);
+> +
+> +	gpiod_set_value(tc->stby_gpio, 1);
+> +	usleep_range(10000, 11000);
+> +
+> +	gpiod_set_value(tc->reset_gpio, 1);
+> +	usleep_range(10, 20);
+
+
+Power off order is incorrect (I have already commented it at least once).
+
+
+> +}
+> +
+> +static u32 d2l_read(struct i2c_client *i2c, u16 reg)
+> +{
+> +	int ret;
+> +	u8 val[4];
+> +	u8 addr[] = {(reg >> 8) & 0xff, reg & 0xff};
+> +	u32 value;
+> +
+> +	ret = i2c_master_send(i2c, addr, sizeof(reg));
+> +	if (ret < 0)
+> +		goto fail;
+> +
+> +	ret = i2c_master_recv(i2c, val, sizeof(value));
+> +	if (ret < 0)
+> +		goto fail;
+> +
+> +	value = val[3] << 24 | val[2] << 16 | val[1] << 8 | val[0];
+
+
+Please use le32_to_cpu or similar macro.
+
+
+> +
+> +	pr_debug("d2l: I2C : reg:%04x value:%08x\n", reg, value);
+> +
+> +	return value;
+> +
+> +fail:
+> +	dev_err(&i2c->dev, "Error %d reading from subaddress 0x%x\n",
+> +		ret, reg);
+> +	return 0;
+> +}
+> +
+> +static void d2l_write(struct i2c_client *i2c, u16 reg, u32 val)
+> +{
+> +	u8 buf[6];
+> +	int ret;
+> +
+> +	buf[0] = reg >> 8;
+> +	buf[1] = reg & 0xFF;
+> +	buf[2] = (val >> 0) & 0xFF;
+> +	buf[3] = (val >> 8) & 0xFF;
+> +	buf[4] = (val >> 16) & 0xFF;
+> +	buf[5] = (val >> 24) & 0xFF;
+
+
+put_unaligned_le16(reg, buf);
+
+put_unaligned_le32(reg, buf+2);
+
+
+> +
+> +	ret = i2c_master_send(i2c, buf, ARRAY_SIZE(buf));
+> +	if (ret < 0)
+> +		dev_err(&i2c->dev, "Error %d writing to subaddress 0x%x\n",
+> +			ret, reg);
+> +}
+> +
+> +/* helper function to access bus_formats */
+> +static struct drm_connector *get_connector(struct drm_encoder *encoder)
+> +{
+> +	struct drm_device *dev = encoder->dev;
+> +	struct drm_connector *connector;
+> +
+> +	list_for_each_entry(connector, &dev->mode_config.connector_list, head)
+> +		if (connector->encoder == encoder)
+> +			return connector;
+> +
+> +	return NULL;
+> +}
+> +
+> +static void tc_bridge_enable(struct drm_bridge *bridge)
+> +{
+> +	struct tc_data *tc = bridge_to_tc(bridge);
+> +	u32 hback_porch, hsync_len, hfront_porch, hactive, htime1, htime2;
+> +	u32 vback_porch, vsync_len, vfront_porch, vactive, vtime1, vtime2;
+> +	u32 val = 0;
+> +	u16 dsiclk, clkdiv, byteclk, t1, t2, t3, vsdelay;
+> +	struct drm_display_mode *mode;
+> +	struct drm_connector *connector = get_connector(bridge->encoder);
+> +
+> +	mode = &bridge->encoder->crtc->state->adjusted_mode;
+> +
+> +	hback_porch = mode->htotal - mode->hsync_end;
+> +	hsync_len  = mode->hsync_end - mode->hsync_start;
+> +	vback_porch = mode->vtotal - mode->vsync_end;
+> +	vsync_len  = mode->vsync_end - mode->vsync_start;
+> +
+> +	htime1 = (hback_porch << 16) + hsync_len;
+> +	vtime1 = (vback_porch << 16) + vsync_len;
+> +
+> +	hfront_porch = mode->hsync_start - mode->hdisplay;
+> +	hactive = mode->hdisplay;
+> +	vfront_porch = mode->vsync_start - mode->vdisplay;
+> +	vactive = mode->vdisplay;
+> +
+> +	htime2 = (hfront_porch << 16) + hactive;
+> +	vtime2 = (vfront_porch << 16) + vactive;
+> +
+> +	val = d2l_read(tc->i2c, IDREG);
+> +
+> +	dev_info(tc->dev, "DSI2LVDS Chip ID.%02x Revision ID. %02x **\n",
+> +		 (val >> 8) & 0xFF, val & 0xFF);
+> +
+> +	d2l_write(tc->i2c, SYSRST, SYS_RST_REG | SYS_RST_DSIRX | SYS_RST_BM |
+> +		  SYS_RST_LCD | SYS_RST_I2CM | SYS_RST_I2CS);
+> +	usleep_range(30000, 40000);
+> +
+> +	d2l_write(tc->i2c, PPI_TX_RX_TA, TTA_GET | TTA_SURE);
+> +	d2l_write(tc->i2c, PPI_LPTXTIMECNT, LPX_PERIOD);
+> +	d2l_write(tc->i2c, PPI_D0S_CLRSIPOCOUNT, 3);
+> +	d2l_write(tc->i2c, PPI_D1S_CLRSIPOCOUNT, 3);
+> +	d2l_write(tc->i2c, PPI_D2S_CLRSIPOCOUNT, 3);
+> +	d2l_write(tc->i2c, PPI_D3S_CLRSIPOCOUNT, 3);
+> +
+> +	val = ((L0EN << tc->num_dsi_lanes) - L0EN) | DSI_CLEN_BIT;
+> +	d2l_write(tc->i2c, PPI_LANEENABLE, val);
+> +	d2l_write(tc->i2c, DSI_LANEENABLE, val);
+> +
+> +	d2l_write(tc->i2c, PPI_STARTPPI, PPI_START_FUNCTION);
+> +	d2l_write(tc->i2c, DSI_STARTDSI, DSI_RX_START);
+> +
+> +	if (tc->bpc == 8)
+> +		val = TC358775_VPCTRL_OPXLFMT(1);
+> +	else /* bpc = 6; */
+> +		val = TC358775_VPCTRL_MSF(1);
+> +
+> +	dsiclk = mode->crtc_clock * 3 * tc->bpc / tc->num_dsi_lanes / 1000;
+> +	clkdiv = dsiclk / DIVIDE_BY_3 * tc->lvds_link;
+> +	byteclk = dsiclk / 4;
+> +	t1 = hactive * (tc->bpc * 3 / 8) / tc->num_dsi_lanes;
+> +	t2 = ((100000 / clkdiv)) * (hactive + hback_porch + hsync_len + hfront_porch) / 1000;
+> +	t3 = ((t2 * byteclk) / 100) - (hactive * (tc->bpc * 3 / 8) /
+> +		tc->num_dsi_lanes);
+> +
+> +	vsdelay = (clkdiv * (t1 + t3) / byteclk) - hback_porch - hsync_len - hactive;
+> +
+> +	val |= TC358775_VPCTRL_VSDELAY(vsdelay);
+> +	d2l_write(tc->i2c, VPCTRL, val);
+> +
+> +	d2l_write(tc->i2c, HTIM1, htime1);
+> +	d2l_write(tc->i2c, VTIM1, vtime1);
+> +	d2l_write(tc->i2c, HTIM2, htime2);
+> +	d2l_write(tc->i2c, VTIM2, vtime2);
+> +
+> +	d2l_write(tc->i2c, VFUEN, VFUEN_EN);
+> +	d2l_write(tc->i2c, SYSRST, SYS_RST_LCD);
+> +	d2l_write(tc->i2c, LVPHY0, LV_PHY0_PRBS_ON(4) | LV_PHY0_ND(6));
+> +
+> +	dev_dbg(tc->dev, "bus_formats %04x bpc %d\n",
+> +		connector->display_info.bus_formats[0],
+> +		tc->bpc);
+> +	/*
+> +	 * Default hardware register settings of tc358775 configured
+> +	 * with MEDIA_BUS_FMT_RGB888_1X7X4_JEIDA jeida-24 format
+> +	 */
+> +	if (connector->display_info.bus_formats[0] ==
+> +		MEDIA_BUS_FMT_RGB888_1X7X4_SPWG) {
+> +		/* VESA-24 */
+> +		d2l_write(tc->i2c, LV_MX0003, LV_MX(LVI_R0, LVI_R1, LVI_R2, LVI_R3));
+> +		d2l_write(tc->i2c, LV_MX0407, LV_MX(LVI_R4, LVI_R7, LVI_R5, LVI_G0));
+> +		d2l_write(tc->i2c, LV_MX0811, LV_MX(LVI_G1, LVI_G2, LVI_G6, LVI_G7));
+> +		d2l_write(tc->i2c, LV_MX1215, LV_MX(LVI_G3, LVI_G4, LVI_G5, LVI_B0));
+> +		d2l_write(tc->i2c, LV_MX1619, LV_MX(LVI_B6, LVI_B7, LVI_B1, LVI_B2));
+> +		d2l_write(tc->i2c, LV_MX2023, LV_MX(LVI_B3, LVI_B4, LVI_B5, LVI_L0));
+> +		d2l_write(tc->i2c, LV_MX2427, LV_MX(LVI_HS, LVI_VS, LVI_DE, LVI_R6));
+> +	} else { /*  MEDIA_BUS_FMT_RGB666_1X7X3_SPWG - JEIDA-18 */
+> +		d2l_write(tc->i2c, LV_MX0003, LV_MX(LVI_R0, LVI_R1, LVI_R2, LVI_R3));
+> +		d2l_write(tc->i2c, LV_MX0407, LV_MX(LVI_R4, LVI_L0, LVI_R5, LVI_G0));
+> +		d2l_write(tc->i2c, LV_MX0811, LV_MX(LVI_G1, LVI_G2, LVI_L0, LVI_L0));
+> +		d2l_write(tc->i2c, LV_MX1215, LV_MX(LVI_G3, LVI_G4, LVI_G5, LVI_B0));
+> +		d2l_write(tc->i2c, LV_MX1619, LV_MX(LVI_L0, LVI_L0, LVI_B1, LVI_B2));
+> +		d2l_write(tc->i2c, LV_MX2023, LV_MX(LVI_B3, LVI_B4, LVI_B5, LVI_L0));
+> +		d2l_write(tc->i2c, LV_MX2427, LV_MX(LVI_HS, LVI_VS, LVI_DE, LVI_L0));
+> +	}
+> +
+> +	d2l_write(tc->i2c, VFUEN, VFUEN_EN);
+> +
+> +	val = LVCFG_LVEN_BIT;
+> +	if (tc->lvds_link == DUAL_LINK) {
+> +		val |= TC358775_LVCFG_LVDLINK(1);
+> +		val |= TC358775_LVCFG_PCLKDIV(DIVIDE_BY_6);
+> +	} else {
+> +		val |= TC358775_LVCFG_PCLKDIV(DIVIDE_BY_3);
+> +	};
+> +	d2l_write(tc->i2c, LVCFG, val);
+> +}
+> +
+> +static enum drm_mode_status
+> +tc_mode_valid(struct drm_bridge *bridge,
+> +	      const struct drm_display_info *info,
+> +	      const struct drm_display_mode *mode)
+> +{
+> +	struct tc_data *tc = bridge_to_tc(bridge);
+> +
+> +	/*
+> +	 * Maximum pixel clock speed 135MHz for single-link
+> +	 * 270MHz for dual-link
+> +	 */
+> +	if ((mode->clock > 135000 && tc->lvds_link == SINGLE_LINK) ||
+> +	    (mode->clock > 270000 && tc->lvds_link == DUAL_LINK))
+> +		return MODE_CLOCK_HIGH;
+> +
+> +	switch (info->bus_formats[0]) {
+> +	case MEDIA_BUS_FMT_RGB888_1X7X4_SPWG:
+> +	case MEDIA_BUS_FMT_RGB888_1X7X4_JEIDA:
+> +		/* RGB888 */
+> +		tc->bpc = 8;
+> +		break;
+> +	case MEDIA_BUS_FMT_RGB666_1X7X3_SPWG:
+> +		/* RGB666 */
+> +		tc->bpc = 6;
+> +		break;
+> +	default:
+> +		dev_warn(tc->dev,
+> +			 "unsupported LVDS bus format 0x%04x\n",
+> +			 info->bus_formats[0]);
+> +		return MODE_NOMODE;
+> +	}
+> +
+> +	return MODE_OK;
+> +}
+> +
+> +static int tc358775_parse_dt(struct device_node *np, struct tc_data *tc)
+> +{
+> +	struct device_node *endpoint;
+> +	struct device_node *parent;
+> +	struct device_node *remote;
+> +	struct property *prop;
+> +	int len = 0;
+> +
+> +	/*
+> +	 * To get the data-lanes of dsi, we need to access the dsi0_out of port1
+> +	 *  of dsi0 endpoint from bridge port0 of d2l_in
+> +	 */
+> +	endpoint = of_graph_get_endpoint_by_regs(tc->dev->of_node,
+> +						 TC358775_DSI_IN, -1);
+> +	if (endpoint) {
+> +		/* dsi0_out node */
+> +		parent = of_graph_get_remote_port_parent(endpoint);
+> +		of_node_put(endpoint);
+> +		if (parent) {
+> +			/* dsi0 port 1 */
+> +			endpoint = of_graph_get_endpoint_by_regs(parent, 1, -1);
+> +			of_node_put(parent);
+> +			if (endpoint) {
+> +				prop = of_find_property(endpoint, "data-lanes",
+> +							&len);
+> +				of_node_put(endpoint);
+> +				if (!prop) {
+> +					dev_err(tc->dev,
+> +						"failed to find data lane\n");
+> +					return -EPROBE_DEFER;
+
+
+probe defer here looks crazy :) do you expect "data-lanes" property will 
+appear later? Theoretically it is possible.
+
+Other thing that bothers me is "data-lanes" property - lots of tree 
+walking code, error prone, lurking into other's device nodes - all that 
+to get one number.
+
+Either there should be helpers for it (maybe there are some already), 
+either it should be done differently. Laurent, Neil, Jonas, Jernej any 
+thoughts?
+
+
+Regards
+
+Andrzej
+
+
+> +				}
+> +			}
+> +		}
+> +	}
+> +
+> +	tc->num_dsi_lanes = len / sizeof(u32);
+> +
+> +	if (tc->num_dsi_lanes < 1 || tc->num_dsi_lanes > 4)
+> +		return -EINVAL;
+> +
+> +	tc->host_node = of_graph_get_remote_node(np, 0, 0);
+> +	if (!tc->host_node)
+> +		return -ENODEV;
+> +
+> +	of_node_put(tc->host_node);
+> +
+> +	tc->lvds_link = SINGLE_LINK;
+> +	endpoint = of_graph_get_endpoint_by_regs(tc->dev->of_node,
+> +						 TC358775_LVDS_OUT1, -1);
+> +	if (endpoint) {
+> +		remote = of_graph_get_remote_port_parent(endpoint);
+> +		of_node_put(endpoint);
+> +
+> +		if (remote) {
+> +			if (of_device_is_available(remote))
+> +				tc->lvds_link = DUAL_LINK;
+> +			of_node_put(remote);
+> +		}
+> +	}
+> +
+> +	dev_dbg(tc->dev, "no.of dsi lanes: %d\n", tc->num_dsi_lanes);
+> +	dev_dbg(tc->dev, "operating in %d-link mode\n",	tc->lvds_link);
+> +
+> +	return 0;
+> +}
+> +
+> +static int tc_bridge_attach(struct drm_bridge *bridge,
+> +			    enum drm_bridge_attach_flags flags)
+> +{
+> +	struct tc_data *tc = bridge_to_tc(bridge);
+> +	struct device *dev = &tc->i2c->dev;
+> +	struct mipi_dsi_host *host;
+> +	struct mipi_dsi_device *dsi;
+> +	int ret;
+> +
+> +	const struct mipi_dsi_device_info info = { .type = "tc358775",
+> +							.channel = 0,
+> +							.node = NULL,
+> +						};
+> +
+> +	host = of_find_mipi_dsi_host_by_node(tc->host_node);
+> +	if (!host) {
+> +		dev_err(dev, "failed to find dsi host\n");
+> +		return -EPROBE_DEFER;
+> +	}
+> +
+> +	dsi = mipi_dsi_device_register_full(host, &info);
+> +	if (IS_ERR(dsi)) {
+> +		dev_err(dev, "failed to create dsi device\n");
+> +		ret = PTR_ERR(dsi);
+> +		goto err_dsi_device;
+> +	}
+> +
+> +	tc->dsi = dsi;
+> +
+> +	dsi->lanes = tc->num_dsi_lanes;
+> +	dsi->format = MIPI_DSI_FMT_RGB888;
+> +	dsi->mode_flags = MIPI_DSI_MODE_VIDEO;
+> +
+> +	ret = mipi_dsi_attach(dsi);
+> +	if (ret < 0) {
+> +		dev_err(dev, "failed to attach dsi to host\n");
+> +		goto err_dsi_attach;
+> +	}
+> +
+> +	/* Attach the panel-bridge to the dsi bridge */
+> +	return drm_bridge_attach(bridge->encoder, tc->panel_bridge,
+> +				 &tc->bridge, flags);
+> +err_dsi_attach:
+> +	mipi_dsi_device_unregister(dsi);
+> +err_dsi_device:
+> +	return ret;
+> +}
+> +
+> +static const struct drm_bridge_funcs tc_bridge_funcs = {
+> +	.attach = tc_bridge_attach,
+> +	.pre_enable = tc_bridge_pre_enable,
+> +	.enable = tc_bridge_enable,
+> +	.mode_valid = tc_mode_valid,
+> +	.post_disable = tc_bridge_post_disable,
+> +};
+> +
+> +static int tc_probe(struct i2c_client *client, const struct i2c_device_id *id)
+> +{
+> +	struct device *dev = &client->dev;
+> +	struct drm_panel *panel;
+> +	struct tc_data *tc;
+> +	int ret;
+> +
+> +	tc = devm_kzalloc(dev, sizeof(*tc), GFP_KERNEL);
+> +	if (!tc)
+> +		return -ENOMEM;
+> +
+> +	tc->dev = dev;
+> +	tc->i2c = client;
+> +
+> +	ret = drm_of_find_panel_or_bridge(dev->of_node, TC358775_LVDS_OUT0,
+> +					  0, &panel, NULL);
+> +	if (ret < 0)
+> +		return ret;
+> +	if (!panel)
+> +		return -ENODEV;
+> +
+> +	tc->panel_bridge = devm_drm_panel_bridge_add(dev, panel);
+> +	if (IS_ERR(tc->panel_bridge))
+> +		return PTR_ERR(tc->panel_bridge);
+> +
+> +	ret = tc358775_parse_dt(dev->of_node, tc);
+> +	if (ret)
+> +		return ret;
+> +
+> +	tc->vddio = devm_regulator_get(dev, "vddio-supply");
+> +	if (IS_ERR(tc->vddio)) {
+> +		ret = PTR_ERR(tc->vddio);
+> +		dev_err(dev, "vddio-supply not found\n");
+> +		return ret;
+> +	}
+> +
+> +	tc->vdd = devm_regulator_get(dev, "vdd-supply");
+> +	if (IS_ERR(tc->vdd)) {
+> +		ret = PTR_ERR(tc->vddio);
+> +		dev_err(dev, "vdd-supply not found\n");
+> +		return ret;
+> +	}
+> +
+> +	tc->stby_gpio = devm_gpiod_get(dev, "stby", GPIOD_OUT_HIGH);
+> +	if (IS_ERR(tc->stby_gpio)) {
+> +		ret = PTR_ERR(tc->stby_gpio);
+> +		dev_err(dev, "cannot get stby-gpio %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	tc->reset_gpio = devm_gpiod_get(dev, "reset", GPIOD_OUT_HIGH);
+> +	if (IS_ERR(tc->reset_gpio)) {
+> +		ret = PTR_ERR(tc->reset_gpio);
+> +		dev_err(dev, "cannot get reset-gpios %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	tc->bridge.funcs = &tc_bridge_funcs;
+> +	tc->bridge.of_node = dev->of_node;
+> +	drm_bridge_add(&tc->bridge);
+> +
+> +	i2c_set_clientdata(client, tc);
+> +
+> +	return 0;
+> +}
+> +
+> +static int tc_remove(struct i2c_client *client)
+> +{
+> +	struct tc_data *tc = i2c_get_clientdata(client);
+> +
+> +	drm_bridge_remove(&tc->bridge);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct i2c_device_id tc358775_i2c_ids[] = {
+> +	{ "tc358775", 0 },
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(i2c, tc358775_i2c_ids);
+> +
+> +static const struct of_device_id tc358775_of_ids[] = {
+> +	{ .compatible = "toshiba,tc358775", },
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(of, tc358775_of_ids);
+> +
+> +static struct i2c_driver tc358775_driver = {
+> +	.driver = {
+> +		.name = "tc358775",
+> +		.of_match_table = tc358775_of_ids,
+> +	},
+> +	.id_table = tc358775_i2c_ids,
+> +	.probe = tc_probe,
+> +	.remove	= tc_remove,
+> +};
+> +module_i2c_driver(tc358775_driver);
+> +
+> +MODULE_AUTHOR("Vinay Simha BN <simhavcs@gmail.com>");
+> +MODULE_DESCRIPTION("TC358775 DSI/LVDS bridge driver");
+> +MODULE_LICENSE("GPL v2");
