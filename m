@@ -2,183 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D783217235
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:44:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18719217326
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:59:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730302AbgGGPaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:30:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60918 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730072AbgGGPYQ (ORCPT
+        id S1728485AbgGGP7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:59:09 -0400
+Received: from mx08-001d1705.pphosted.com ([185.183.30.70]:42765 "EHLO
+        mx08-001d1705.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727079AbgGGP7I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:24:16 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96BC2C08C5DC
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 08:24:16 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id r8so35163643oij.5
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 08:24:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=oQlH+5Rxv1TZTmNUKokYf1gRnidmklj65FW3ajui8n8=;
-        b=gtkvz8FGNaNJgUQOYZxrh8RQ//6B5EnuDkuA0CI343tqSUwxmVFPrUj22a9A5eJ0d8
-         PeRYJ7/r2g4Kb8/uLNJPEoQbqvXD4iPm2Z9HvDz4VKCy0kRM+h+dhgWKuhgTucsBKEob
-         mQC+mhd+P5O+UaZRgc8Myl3wXAx5Vygcp/Uq8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=oQlH+5Rxv1TZTmNUKokYf1gRnidmklj65FW3ajui8n8=;
-        b=Bq3EwaK7BH7J8v2HfDfG0MjCBU7NhymTiuhvdXMUoeTFAMRUCUUr+uUa718FZLMpHJ
-         O7QCeuc02ivg1PqmIWcG3GxfmE4RfWtC/2S0ASIY/9b3XAGEHfzdJ/ISNFFU21pB3PyN
-         TAoZMX4Aq3GxMZo0RiAKzo2Fgk6krqS2PXCukq7IqEctLQvUST6AGRt4DvslD9nZcrW+
-         NSu3hxtI2vUrj3kk1fR8HERAVEItgf8knzvj4cHxTQxPetNd3z6XBq2YMrOTHcRKgEvF
-         Hw0avXsrobHJiakpOMmEcaaYdEJ4G4cbP5z2hrzCHCL+KpB2T+vlJ1JrW/FOcdDyhL9H
-         /tMg==
-X-Gm-Message-State: AOAM531gC3+2rTXQIniEdL85UAB8VodNMz1gIhqSsMwKxMLUxOs568MD
-        5ftY2g3aiGDfrn9y3F4DratC3w==
-X-Google-Smtp-Source: ABdhPJwTBVZClUaOBGBLJNT1lD+iIbNdX7fMrPQfh1eSqtSETAt6r/3QI8NT+64KTOzF8Wxb/CGV8w==
-X-Received: by 2002:aca:5158:: with SMTP id f85mr3774047oib.6.1594135455807;
-        Tue, 07 Jul 2020 08:24:15 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id t16sm188781oou.28.2020.07.07.08.24.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Jul 2020 08:24:15 -0700 (PDT)
-Subject: Re: [PATCH v3 1/2] selftests: pidfd: do not use ksft_exit_skip after
- ksft_set_plan
-To:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Cc:     christian@brauner.io, shuah@kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20200707101936.12052-1-pbonzini@redhat.com>
- <20200707101936.12052-2-pbonzini@redhat.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <f10aaf26-39f6-79ae-c3cc-56c31835f57e@linuxfoundation.org>
-Date:   Tue, 7 Jul 2020 09:24:14 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <20200707101936.12052-2-pbonzini@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        Tue, 7 Jul 2020 11:59:08 -0400
+Received: from pps.filterd (m0209320.ppops.net [127.0.0.1])
+        by mx08-001d1705.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 067FDbvr002456;
+        Tue, 7 Jul 2020 15:24:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sony.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=S1;
+ bh=GNhRPN0jScFM/a8K61cax34Mt8nOzMPtm56ADx2O51E=;
+ b=TcBR6wPZVvIFYoBt5w0QmMCEpeDuIJZu3HvBmGgj3bDL8r21PpQslhJ0kzIY+Z0Z/aui
+ 7lfgObwe4JvGAJW5UsnKGKde7yFqN5N4W5exkJNrGHus6mQ3W23BGAlbon6EWzgIJke8
+ MS8QKfgp8xMDn+KqpvBJ89W2VNVCZ06IKSfsugbVdkYQJaektQGd6mDqnQnqfCJlDAIK
+ 0iHXXprAThQWSzpbenzE4k8cP0YRglCtedFePD3XrGCteflQha1HMpTKePZxa3yknjlj
+ P4hTZPS0Ld6+7D9D+FNFGBGqXcHQ/Nqyw6dIi8A1gmCLWw+n3p9N6W7CGmcMW11clPdq Ag== 
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2104.outbound.protection.outlook.com [104.47.58.104])
+        by mx08-001d1705.pphosted.com with ESMTP id 322fnkhcw5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 07 Jul 2020 15:24:34 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TBzmnWMMEMHIHgA6ULTPF0/kk2iVnolzsEcmv0TukFXckE8p4do2OBVPWoEpcGewqQWp6tK5uLfbVjKeRqVZ5GgM93QExisifn1dpAd/pPHrHVWYNXJ4aooDuW9tPKCZOaqKwhqRkmtZsOy+7CAXwXmA6rToKohZm1HYGinmtl9OoKnUZ3czuRhRiSt8BlTx5/B/FjUn4xzXiaCfFys4OCMQ5b8eWgspytsoK/7vQmPushyd3ZDb8OAXkBV5SHgkwipZyp93ejCEzmjsYlDuW7s5O2T5JzjRXc1Zj+MSVw1S1vc6FRrG8YOssOKCk1qOVeg71cduZbnZVqhWZZPGyA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GNhRPN0jScFM/a8K61cax34Mt8nOzMPtm56ADx2O51E=;
+ b=DGxXq7BzeKi6QN+soyknJxo0ZXaeqGzAfTTHW8wX0dLJWXNITkgcvHSViHDU6B6+jEOtnjj0RMBDfFqOxo1ePreC2JXD9xFEog4orf95e2wLam8mbvm/auQrzH0qZcekgCKYuY0O6crzKu4ghBSmOOcTw06bbRD4GLagizi14mTWWDhtPB0IsRcl9i+9SnjeZcEji4qprCiJy3r9C66yOb732BIIKJ14DCrh54lXxadik2kbmeaFKSesUZlAsXmo0cl+sVyqa+yi14bsNXV8A4h79xjVkIvPD3cB10RiS/yUQ2qBN1TdH9ut2mEfvde1nD2I2ZY1Vy4ukR1/u9tS2Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=sony.com; dmarc=pass action=none header.from=sony.com;
+ dkim=pass header.d=sony.com; arc=none
+Received: from CY4PR13MB1175.namprd13.prod.outlook.com (2603:10b6:903:40::23)
+ by CY4PR1301MB2104.namprd13.prod.outlook.com (2603:10b6:910:45::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.15; Tue, 7 Jul
+ 2020 15:24:28 +0000
+Received: from CY4PR13MB1175.namprd13.prod.outlook.com
+ ([fe80::e486:a4f:7430:536e]) by CY4PR13MB1175.namprd13.prod.outlook.com
+ ([fe80::e486:a4f:7430:536e%9]) with mapi id 15.20.3174.020; Tue, 7 Jul 2020
+ 15:24:28 +0000
+From:   "Bird, Tim" <Tim.Bird@sony.com>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Mike Rapoport <rppt@linux.ibm.com>
+CC:     ksummit <ksummit-discuss@lists.linuxfoundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "tech-board-discuss@lists.linuxfoundation.org" 
+        <tech-board-discuss@lists.linuxfoundation.org>,
+        Chris Mason <clm@fb.clm>
+Subject: RE: [Ksummit-discuss] [Tech-board-discuss] [PATCH] CodingStyle:
+ Inclusive Terminology
+Thread-Topic: [Ksummit-discuss] [Tech-board-discuss] [PATCH] CodingStyle:
+ Inclusive Terminology
+Thread-Index: AQHWVGPIwQycxLw5iEauvXmlP6ObnKj8O1Fw
+Date:   Tue, 7 Jul 2020 15:24:28 +0000
+Message-ID: <CY4PR13MB117519F548B125CB2F10F50FFD660@CY4PR13MB1175.namprd13.prod.outlook.com>
+References: <159389297140.2210796.13590142254668787525.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <CALCETrXewAK4_fpaJNDHJVDK9mUcjghA5HwYvZFQNYVfC9M+OQ@mail.gmail.com>
+ <202007062234.A90F922DF@keescook> <20200707064921.GA9411@linux.ibm.com>
+ <20200707093727.22aa39e2@oasis.local.home>
+In-Reply-To: <20200707093727.22aa39e2@oasis.local.home>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: goodmis.org; dkim=none (message not signed)
+ header.d=none;goodmis.org; dmarc=none action=none header.from=sony.com;
+x-originating-ip: [160.33.195.21]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 5ce181e0-2d3b-41f4-4b80-08d82289d723
+x-ms-traffictypediagnostic: CY4PR1301MB2104:
+x-microsoft-antispam-prvs: <CY4PR1301MB21044967A0B000F827CC8B4BFD660@CY4PR1301MB2104.namprd13.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: yiPHviudlVkioMR/bgSogmLvX23WguBHizszXVO+0JsVL9K5HIFq/xxf8g2cqJhryxvgu38/zyn2GEXkxx8hYLIy1smw1C8Lfd77Vp7h1vEcg1VUTP4dyCjEmpY8IzZIwVGcwauSJWotIFB510Pw1A0gPDlS+3bYf2kLMX3/FVuj3MwR2BmS7MuFXEf12RpC/nxpNEQmr9TFzWXnAuMBgDMzti9yjwvijLqs9c9prE8e0S2pvIseDNZOdl/qM3Mf0N0epDXNww3bVyK/vYp+yat4RDUPOLYzqBl6nt8qrU/HYEwS84VeryWAwy++Ac8q953mLzF1aF/3p/yzzBo/9Q==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR13MB1175.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(136003)(346002)(376002)(396003)(39860400002)(9686003)(33656002)(55016002)(7696005)(86362001)(6506007)(478600001)(8676002)(8936002)(186003)(26005)(2906002)(54906003)(110136005)(66476007)(4326008)(52536014)(66946007)(66556008)(4744005)(76116006)(64756008)(83380400001)(316002)(66446008)(71200400001)(5660300002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: t89wEvtNbrMzzDsPEAAZSzo4b6XTF1nR1jheqmu3NCOTwYoYWQgn6VG9FJbEMPNZzbyfKcXYk8BATYEwqneAVlrJCzs+vazn5LSUGeWdQMC7TbJQmBovjogqwJ7ascpA54UpAxD3Ur49peiVKDtB3qx7rC0Tv2crSJdeeihoCQKCNeNRFPDXm1MtEOSmRKJuU+6e7R9YVJEiFSZss25xzYzkayW45KyeGElRPUMLg2akuKbSox4m9lbDbQIBeEeDPP8Q2Atr/nepQEXmMxVxIImz2bxsS9zAnIxuNCu5skQf1kf5HiBRvcCenUCEFLmVAwEJoxKSnJmtjhVQy5elgOf1RT+Vs5lqxfqWJ1TvAIX73AfC428C+r79LjxmKPNbujDidGH9honTQH7xswMqGRQzteQbzq+1MpDXvHBlB2eAUeRj4b4DO+evWLGBQFHrY7boHhfuQ01V7cNHbSrWqSyDsLNY91x8cXcmaYiNcgMrjgMvnZmiJMAi0rSqpZOZ
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: sony.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR13MB1175.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5ce181e0-2d3b-41f4-4b80-08d82289d723
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Jul 2020 15:24:28.6604
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 66c65d8a-9158-4521-a2d8-664963db48e4
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Et63W4+weARoAQv13XH0oqTO+nzrsM6CLWN9uDw1SJiORm/ihVpV1jTvC3+giZnK1fS8KiI7lGs1+TSoAvBXDQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR1301MB2104
+X-Sony-Outbound-GUID: aNzJF2sxxi3l0y-sxPLvNqdO2Gpz9q1-
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-07_08:2020-07-07,2020-07-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
+ cotscore=-2147483648 adultscore=0 mlxlogscore=999 suspectscore=0
+ priorityscore=1501 mlxscore=0 spamscore=0 clxscore=1011 lowpriorityscore=0
+ impostorscore=0 bulkscore=0 malwarescore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2007070113
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/7/20 4:19 AM, Paolo Bonzini wrote:
-> Calling ksft_exit_skip after ksft_set_plan results in executing fewer tests
-> than planned.  Use ksft_test_result_skip instead.
-> 
-> The plan passed to ksft_set_plan was wrong, too, so fix it while at it.
-> 
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> Message-Id: <20200623001547.22255-5-pbonzini@redhat.com>
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> ---
->   tools/testing/selftests/pidfd/pidfd_test.c | 34 +++++++++++++++++++---
->   1 file changed, 30 insertions(+), 4 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/pidfd/pidfd_test.c b/tools/testing/selftests/pidfd/pidfd_test.c
-> index 7aff2d3b42c0..f65ad4e32353 100644
-> --- a/tools/testing/selftests/pidfd/pidfd_test.c
-> +++ b/tools/testing/selftests/pidfd/pidfd_test.c
-> @@ -8,6 +8,7 @@
->   #include <sched.h>
->   #include <signal.h>
->   #include <stdio.h>
-> +#include <stdbool.h>
->   #include <stdlib.h>
->   #include <string.h>
->   #include <syscall.h>
-> @@ -27,6 +28,8 @@
->   
->   #define MAX_EVENTS 5
->   
-> +static bool have_pidfd_send_signal = false;
 
-You don't need to initialize this to false. Rest looks good.
 
-> +
->   static pid_t pidfd_clone(int flags, int *pidfd, int (*fn)(void *))
->   {
->   	size_t stack_size = 1024;
-> @@ -56,6 +59,13 @@ static int test_pidfd_send_signal_simple_success(void)
->   	int pidfd, ret;
->   	const char *test_name = "pidfd_send_signal send SIGUSR1";
->   
-> +	if (!have_pidfd_send_signal) {
-> +		ksft_test_result_skip(
-> +			"%s test: pidfd_send_signal() syscall not supported\n",
-> +			test_name);
-> +		return 0;
-> +	}
-> +
->   	pidfd = open("/proc/self", O_DIRECTORY | O_CLOEXEC);
->   	if (pidfd < 0)
->   		ksft_exit_fail_msg(
-> @@ -86,6 +96,13 @@ static int test_pidfd_send_signal_exited_fail(void)
->   	pid_t pid;
->   	const char *test_name = "pidfd_send_signal signal exited process";
->   
-> +	if (!have_pidfd_send_signal) {
-> +		ksft_test_result_skip(
-> +			"%s test: pidfd_send_signal() syscall not supported\n",
-> +			test_name);
-> +		return 0;
-> +	}
-> +
->   	pid = fork();
->   	if (pid < 0)
->   		ksft_exit_fail_msg("%s test: Failed to create new process\n",
-> @@ -137,6 +154,13 @@ static int test_pidfd_send_signal_recycled_pid_fail(void)
->   	pid_t pid1;
->   	const char *test_name = "pidfd_send_signal signal recycled pid";
->   
-> +	if (!have_pidfd_send_signal) {
-> +		ksft_test_result_skip(
-> +			"%s test: pidfd_send_signal() syscall not supported\n",
-> +			test_name);
-> +		return 0;
-> +	}
-> +
->   	ret = unshare(CLONE_NEWPID);
->   	if (ret < 0)
->   		ksft_exit_fail_msg("%s test: Failed to unshare pid namespace\n",
-> @@ -325,15 +349,17 @@ static int test_pidfd_send_signal_syscall_support(void)
->   
->   	ret = sys_pidfd_send_signal(pidfd, 0, NULL, 0);
->   	if (ret < 0) {
-> -		if (errno == ENOSYS)
-> -			ksft_exit_skip(
-> +		if (errno == ENOSYS) {
-> +			ksft_test_result_skip(
->   				"%s test: pidfd_send_signal() syscall not supported\n",
->   				test_name);
-> -
-> +			return 0;
-> +		}
->   		ksft_exit_fail_msg("%s test: Failed to send signal\n",
->   				   test_name);
->   	}
->   
-> +	have_pidfd_send_signal = true;
->   	close(pidfd);
->   	ksft_test_result_pass(
->   		"%s test: pidfd_send_signal() syscall is supported. Tests can be executed\n",
-> @@ -521,7 +547,7 @@ static void test_pidfd_poll_leader_exit(int use_waitpid)
->   int main(int argc, char **argv)
->   {
->   	ksft_print_header();
-> -	ksft_set_plan(4);
-> +	ksft_set_plan(8);
->   
->   	test_pidfd_poll_exec(0);
->   	test_pidfd_poll_exec(1);
-> 
+> -----Original Message-----
+> From: Steven Rostedt
+>=20
+> On Tue, 7 Jul 2020 09:49:21 +0300
+> Mike Rapoport <rppt@linux.ibm.com> wrote:
+>=20
+> > > But that's all fine. The change is easy to do and is more descriptive
+> > > even if I can't find terms that don't collide with my internal gramma=
+r
+> > > checker. ;)
+> >
+> > How about yeslist and nolist? ;-)
+>=20
+> I was thinking good-list / bad-list.
+>=20
+> /me that has been doing a lot of git bisect lately...
 
-thanks,
--- Shuah
+I think it depends on the context.  I'd prefer a grammatically awkward verb=
+ that described
+the action more specifically, than a grammatically nicer generic term.  In =
+other words,
+yes/no, good/bad don't mean that much to me, unless it's obvious from conte=
+xt
+what the effect will be.  With something like allow/deny, I have a pretty c=
+lear mental
+model of what the code is going to do.
+
+ -- Tim
+
