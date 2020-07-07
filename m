@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5D4A2169C7
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 12:17:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81D012169CE
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 12:18:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727791AbgGGKQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 06:16:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41336 "EHLO
+        id S1728127AbgGGKRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 06:17:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725944AbgGGKQu (ORCPT
+        with ESMTP id S1727107AbgGGKQw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 06:16:50 -0400
+        Tue, 7 Jul 2020 06:16:52 -0400
 Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B27EEC061755
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 03:16:49 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id f2so16561466wrp.7
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 03:16:49 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF65EC061755
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 03:16:51 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id k6so44563192wrn.3
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 03:16:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=X8lNwwZEdxo/c3swk/aA3YOExp2MKHA0sqq87q0a3wI=;
-        b=JPaF/CicEUbbEvjATlnxD7O2L+C/bGJ44q6+XFBdFLiooQUTKPkM6b0DF3WaHnu4JS
-         ljQ5WTYJ0xaTu2U4mv3oOx94WuvUQoFuRkIBSLp8S2hyPW4ZQLvUaGeRMmQZt7cpJj4x
-         m01vqsFt+pXzQBT5G2aTJ3/BjNOhPTnV8UlrL+8wty5YciPoKJ4ARWpjMjBBFNiU1Uhx
-         9RLT5cN5m8UAT70LX2t+cMicwmn7u5LoXarjAg0/SCZWkFYApjO4j0N51QUXv+ZkdZxI
-         q7sxYY1T4eOP1cuu4pEh2T0MQzepg3MsQdNjmC/63Xv8pzwyBzI699063chxHcX2/rES
-         m0kQ==
+        bh=0Ojcexqfn/ZS3noXIMdqlD9+JbA+cGF+iBmDVVcfGM0=;
+        b=eKf7OQbj/SAKIuqAfQubX24p12bDVbV98ZLiLwXpicE8+hlGHR2Lwqg2oTYcLwu/qD
+         Bn5Gn1gBc/1gGzBGsmqTb+Q+gUH+21qv7MFJY6nOjy++f7nMMe8Uoj5EWJRz+g+D/XLb
+         lTtDXG7caO9jtnbnh02SmWHCT20SHTj18dUEk2p19o/ko5C6t0jv1EgkhiXWypF+9X83
+         Yg2bkKaO/kwFRZb6VQD/FOiRIyeNO8bncKjdrWxHfp/Q3nQSOfaHxzzXXVE8YKEnUc15
+         o/LFftlJi1GnXMqcbZ9j6KBshO9S1Arc8MHEO5MopHLhfQ3irAsVv5y6Ee972eCGsmtq
+         8Nyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=X8lNwwZEdxo/c3swk/aA3YOExp2MKHA0sqq87q0a3wI=;
-        b=bSfl86HwCqDAS2gyDBBHssby2L0qe0iVbnJvXeUrkeggJmhA+CYecR1oUk1E+DlkJG
-         NPMzIekSn/0OhGI9X7CJalqmzKRj/TFEN31mAKumBjJQr+PKD2NS3o/Pn1R5UDWUvGoQ
-         rl4v/L66AYhpXX1QEykLzZasvy5nAt3QXpySZW0XZ8Wl6spkkXUUubItuTRADtlTXGU5
-         w0+Z+rKex0xqYgNRgLyIvPU+isSG3V/JWnLwMVBOYu8p2aETN9921cMROz4yvdSTp+y8
-         6RpSh/nNuCbHmQ2GHbyWvLzv/gLZ3vXQKvXFWeFe/UGdJd0d5fEVlbH5RkKhGmnsoF5Y
-         OoDw==
-X-Gm-Message-State: AOAM53174hDoUcselfTyVTYZxv5nEdlefdsKO5OAwMA2t5JaYF+qT552
-        9IE3H1LTqUO9QYBeG0JjXe0JRA==
-X-Google-Smtp-Source: ABdhPJzoaszx/FMxs1EP+dndZHd/3eQX6gVh8XKr9z6/arTSDiQU05AAnvgjIGjxpvs4zR3pPcZ5+Q==
-X-Received: by 2002:adf:f888:: with SMTP id u8mr11364000wrp.18.1594117008361;
-        Tue, 07 Jul 2020 03:16:48 -0700 (PDT)
+        bh=0Ojcexqfn/ZS3noXIMdqlD9+JbA+cGF+iBmDVVcfGM0=;
+        b=li75j5Ju9jxkEh1JKUTiNxFUYuXrKrLoteOB84OwvHbEIUYv69on914hyoGRFt0x/u
+         qp+TA2OWiDys99d+0fAgX+Kfh68q1rdHLachc7FCQ/puclu86clYFcyHewtkfb3i3DNr
+         POAytzoBnY0DpUMkyw8xec5zspkNz6CKstStzAJ3czX+/nqlxMPFpGFSCO0diyeG6/L7
+         YmQhJRO1DVxUVOPVNiCvJGl9iUmrPMfiO8mCuNhz9NF30AF5aEFs+zZy8ghOljWUs/oq
+         xlpPd7qewiOlqNU3NfNetREI5QrWnV5CMKdnHH52wRaP4NzZnxiPXKANtRvyXEKTWXO+
+         T+4w==
+X-Gm-Message-State: AOAM530y07WSvQ6tEzwH43MwAtUKhResxFuegNNXHJW3l5d1Jv22JsDp
+        pQePNN/fJDOzpUMxsbwr6ZReXg==
+X-Google-Smtp-Source: ABdhPJxXHqSXuvC/N6FMDoHvlD9BJG1LNiYAOWrAD6I4lg3PAZdm04pKuSFnfS9ZIM3N4PgczWCONg==
+X-Received: by 2002:a5d:474f:: with SMTP id o15mr50415169wrs.306.1594117009607;
+        Tue, 07 Jul 2020 03:16:49 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.206])
-        by smtp.gmail.com with ESMTPSA id z8sm469409wmg.39.2020.07.07.03.16.47
+        by smtp.gmail.com with ESMTPSA id z8sm469409wmg.39.2020.07.07.03.16.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jul 2020 03:16:47 -0700 (PDT)
+        Tue, 07 Jul 2020 03:16:48 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz,
         tiwai@suse.com
@@ -57,11 +57,11 @@ Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Nicolas Ferre <nicolas.ferre@microchip.com>,
         Alexandre Belloni <alexandre.belloni@bootlin.com>,
         Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Bo Shen <voice.shen@atmel.com>,
-        Sedji Gaouaou <sedji.gaouaou@atmel.com>
-Subject: [PATCH 01/28] ASoC: atmel: atmel-pcm-dma: Demote function header which is clearly not kerneldoc
-Date:   Tue,  7 Jul 2020 11:16:15 +0100
-Message-Id: <20200707101642.1747944-2-lee.jones@linaro.org>
+        Sedji Gaouaou <sedji.gaouaou@atmel.com>,
+        Frank Mandarino <fmandarino@endrelia.com>
+Subject: [PATCH 02/28] ASoC: atmel: atmel_ssc_dai: Demote function header which is clearly not kerneldoc
+Date:   Tue,  7 Jul 2020 11:16:16 +0100
+Message-Id: <20200707101642.1747944-3-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200707101642.1747944-1-lee.jones@linaro.org>
 References: <20200707101642.1747944-1-lee.jones@linaro.org>
@@ -76,33 +76,32 @@ No attempt has been made to document the demoted function here.
 
 Fixes the following W=1 kernel build warning(s):
 
- sound/soc/atmel/atmel-pcm-dma.c:55: warning: Function parameter or member 'ssc_sr' not described in 'atmel_pcm_dma_irq'
- sound/soc/atmel/atmel-pcm-dma.c:55: warning: Function parameter or member 'substream' not described in 'atmel_pcm_dma_irq'
+ sound/soc/atmel/atmel_ssc_dai.c:892: warning: Function parameter or member 'ssc_id' not described in 'atmel_ssc_set_audio'
 
 Cc: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 Cc: Nicolas Ferre <nicolas.ferre@microchip.com>
 Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
 Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
-Cc: Bo Shen <voice.shen@atmel.com>
 Cc: Sedji Gaouaou <sedji.gaouaou@atmel.com>
+Cc: Frank Mandarino <fmandarino@endrelia.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- sound/soc/atmel/atmel-pcm-dma.c | 2 +-
+ sound/soc/atmel/atmel_ssc_dai.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/atmel/atmel-pcm-dma.c b/sound/soc/atmel/atmel-pcm-dma.c
-index cb03c4f7324c9..0a2e956232afe 100644
---- a/sound/soc/atmel/atmel-pcm-dma.c
-+++ b/sound/soc/atmel/atmel-pcm-dma.c
-@@ -44,7 +44,7 @@ static const struct snd_pcm_hardware atmel_pcm_dma_hardware = {
- 	.buffer_bytes_max	= 512 * 1024,
- };
+diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
+index 0f18dfb85bfed..3a0335864034a 100644
+--- a/sound/soc/atmel/atmel_ssc_dai.c
++++ b/sound/soc/atmel/atmel_ssc_dai.c
+@@ -885,7 +885,7 @@ static int asoc_ssc_init(struct device *dev)
+ 	return 0;
+ }
  
 -/**
 +/*
-  * atmel_pcm_dma_irq: SSC interrupt handler for DMAENGINE enabled SSC
-  *
-  * We use DMAENGINE to send/receive data to/from SSC so this ISR is only to
+  * atmel_ssc_set_audio - Allocate the specified SSC for audio use.
+  */
+ int atmel_ssc_set_audio(int ssc_id)
 -- 
 2.25.1
 
