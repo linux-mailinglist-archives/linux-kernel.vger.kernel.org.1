@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E99621698E
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 11:54:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12FA3216991
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 11:54:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728096AbgGGJyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 05:54:06 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55328 "EHLO mx2.suse.de"
+        id S1728143AbgGGJyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 05:54:18 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55388 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725941AbgGGJyF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 05:54:05 -0400
+        id S1725941AbgGGJyS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 05:54:18 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 91536AC2D;
-        Tue,  7 Jul 2020 09:54:04 +0000 (UTC)
-Date:   Tue, 07 Jul 2020 11:54:04 +0200
-Message-ID: <s5himezejlv.wl-tiwai@suse.de>
+        by mx2.suse.de (Postfix) with ESMTP id CE452AE2B;
+        Tue,  7 Jul 2020 09:54:16 +0000 (UTC)
+Date:   Tue, 07 Jul 2020 11:54:16 +0200
+Message-ID: <s5hh7ujejlj.wl-tiwai@suse.de>
 From:   Takashi Iwai <tiwai@suse.de>
 To:     Vinod Koul <vkoul@kernel.org>
 Cc:     Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
@@ -26,10 +26,10 @@ Cc:     Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
         Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
         Charles Keepax <ckeepax@opensource.cirrus.com>,
         alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 1/3] ALSA: compress: document the compress audio state machine
-In-Reply-To: <20200629134737.105993-2-vkoul@kernel.org>
+Subject: Re: [PATCH v5 2/3] ALSA: compress: document the compress gapless audio state machine
+In-Reply-To: <20200629134737.105993-3-vkoul@kernel.org>
 References: <20200629134737.105993-1-vkoul@kernel.org>
-        <20200629134737.105993-2-vkoul@kernel.org>
+        <20200629134737.105993-3-vkoul@kernel.org>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -40,16 +40,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 29 Jun 2020 15:47:35 +0200,
+On Mon, 29 Jun 2020 15:47:36 +0200,
 Vinod Koul wrote:
 > 
-> So we had some discussions of the stream states, so I thought it is a
-> good idea to document the state transitions, so add it documentation
+> Also documented the galpess transitions. Please note that these are not
+> really stream states, but show how the stream steps in gapless mode
 > 
-> Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 > Signed-off-by: Vinod Koul <vkoul@kernel.org>
 
-Applied to for-next branch now.  Thanks.
+Applied to for-next branch.  Thanks.
 
 
 Takashi
