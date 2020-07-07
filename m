@@ -2,117 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1E7B216A88
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 12:39:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1463C216A8D
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 12:40:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728073AbgGGKjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 06:39:43 -0400
-Received: from esa3.microchip.iphmx.com ([68.232.153.233]:11163 "EHLO
-        esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726540AbgGGKjm (ORCPT
+        id S1728350AbgGGKjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 06:39:55 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:15960 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728303AbgGGKjy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 06:39:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1594118381; x=1625654381;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=vyP5ul9oKsyKcotv3JQDPSfPwCoHDgatMb5V6gzJi3U=;
-  b=dUdjgT+iGzT11kISBRvfocj0Zu+KnjBAUTRc8w+nMgMJOQ54IhbVYeF/
-   /eZid8dGFbD2oXQ1CB0RxrSKGV9cpvawznPHAIJtkm+l+qyz7YtaomnHl
-   dROQ/6Zn9ea4icXISwVOWHEewyC6fgbQVVFWkvcl7VF2LqgL9/T2GTrU1
-   XMSwUCVjFQZZvdfuBwCmHWUZY3q1FsTU3yFDTzbTBb3+m0R5UhJeib17O
-   CJ51Z5nA6783JLjrWX9vIyxfDFEYcJd0SzDoh7n8abXCmNanThuHEJKSX
-   e786NjeT8KEmFAooDt4/Ib2oVp14o4i4fb6MROOF6gNTj2M9yzDBnyQvD
-   w==;
-IronPort-SDR: VTytonoJQ8YRJQemsmG1nj232WAsBk9wtIkiUFGByiEsBK+pfvz+q6Uzt9oJYBDBi7G/NAShoX
- FGnS1Wwi1/9QNiGf2Vras6dNjuOXFZc9zmyKaU5Sb1zvGrKdyb+uSq31G/NSICAKY2LaZnWlv4
- q6kDxz+9AYRlkNgoiJSKAvPzk2J0WaHCkV1RkC694dkws1JAQMUTZZsIPnS0iT81lANOOSI7HK
- Qpp32DvNQQu7+6f8XMr+UTDolR6e7tUErCZpAI8OnPnq04EMpU1MQA7Lp+M4QchqyhL8Hdbaks
- W6I=
-X-IronPort-AV: E=Sophos;i="5.75,323,1589266800"; 
-   d="scan'208";a="82813878"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 07 Jul 2020 03:39:41 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 7 Jul 2020 03:39:41 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex03.mchp-main.com
- (10.10.85.151) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Tue, 7 Jul 2020 03:39:40 -0700
-Date:   Tue, 7 Jul 2020 12:39:39 +0200
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     David Miller <davem@davemloft.net>
-CC:     <nikolay@cumulusnetworks.com>, <roopa@cumulusnetworks.com>,
-        <kuba@kernel.org>, <jiri@resnulli.us>, <ivecera@redhat.com>,
-        <andrew@lunn.ch>, <UNGLinuxDriver@microchip.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bridge@lists.linux-foundation.org>
-Subject: Re: [PATCH net-next 02/12] bridge: uapi: mrp: Extend MRP attributes
- for MRP interconnect
-Message-ID: <20200707103939.basybe2a3haweki2@soft-dev3.localdomain>
-References: <20200706091842.3324565-1-horatiu.vultur@microchip.com>
- <20200706091842.3324565-3-horatiu.vultur@microchip.com>
- <20200706.122748.828248704525141203.davem@davemloft.net>
+        Tue, 7 Jul 2020 06:39:54 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 067AXC68125215;
+        Tue, 7 Jul 2020 06:39:50 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 324hfqt9ph-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 07 Jul 2020 06:39:49 -0400
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 067Aa30U136538;
+        Tue, 7 Jul 2020 06:39:49 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 324hfqt9ns-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 07 Jul 2020 06:39:49 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 067AZnnd028259;
+        Tue, 7 Jul 2020 10:39:47 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma03ams.nl.ibm.com with ESMTP id 322hd7uata-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 07 Jul 2020 10:39:47 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 067Adihw64553450
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 7 Jul 2020 10:39:44 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 50586A405B;
+        Tue,  7 Jul 2020 10:39:44 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 71D0FA4060;
+        Tue,  7 Jul 2020 10:39:43 +0000 (GMT)
+Received: from oc3016276355.ibm.com (unknown [9.145.29.12])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue,  7 Jul 2020 10:39:43 +0000 (GMT)
+Subject: Re: [PATCH v4 1/2] virtio: let arch validate VIRTIO features
+To:     Cornelia Huck <cohuck@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, pasic@linux.ibm.com,
+        borntraeger@de.ibm.com, frankja@linux.ibm.com, mst@redhat.com,
+        jasowang@redhat.com, kvm@vger.kernel.org,
+        linux-s390@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, thomas.lendacky@amd.com,
+        david@gibson.dropbear.id.au, linuxram@us.ibm.com,
+        heiko.carstens@de.ibm.com, gor@linux.ibm.com
+References: <1594111477-15401-1-git-send-email-pmorel@linux.ibm.com>
+ <1594111477-15401-2-git-send-email-pmorel@linux.ibm.com>
+ <20200707112652.42fcab80.cohuck@redhat.com>
+From:   Pierre Morel <pmorel@linux.ibm.com>
+Message-ID: <7bdd36e4-a626-18e0-bc7a-fe1fe1b877d8@linux.ibm.com>
+Date:   Tue, 7 Jul 2020 12:39:43 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <20200706.122748.828248704525141203.davem@davemloft.net>
+In-Reply-To: <20200707112652.42fcab80.cohuck@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-07_06:2020-07-07,2020-07-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 impostorscore=0
+ clxscore=1015 cotscore=-2147483648 lowpriorityscore=0 adultscore=0
+ mlxlogscore=999 priorityscore=1501 phishscore=0 mlxscore=0 spamscore=0
+ suspectscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2007070081
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 07/06/2020 12:27, David Miller wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> 
-> From: Horatiu Vultur <horatiu.vultur@microchip.com>
-> Date: Mon, 6 Jul 2020 11:18:32 +0200
-> 
-> > +struct br_mrp_in_state {
-> > +     __u16 in_id;
-> > +     __u32 in_state;
-> > +};
-> 
-> Put the __u32 first then the __u16.
-> 
-> > +struct br_mrp_in_role {
-> > +     __u16 in_id;
-> > +     __u32 ring_id;
-> > +     __u32 in_role;
-> > +     __u32 i_ifindex;
-> > +};
-> 
-> Likewise.
-> 
-> > +struct br_mrp_start_in_test {
-> > +     __u16 in_id;
-> > +     __u32 interval;
-> > +     __u32 max_miss;
-> > +     __u32 period;
-> > +};
-> 
-> Likewise.
-> 
-> > +struct br_mrp_in_test_hdr {
-> > +     __be16 id;
-> > +     __u8 sa[ETH_ALEN];
-> > +     __be16 port_role;
-> > +     __be16 state;
-> > +     __be16 transitions;
-> > +     __be32 timestamp;
-> > +};
-> 
-> Likewise.  Put the larger members first.  There is lots of unnecessary
-> padding in this structure.
 
-I will do the same here, except for the 'struct br_mrp_in_test_hdr'
-because this represents the frame header for InTest frames. And this is
-defined in the standard how it has to be. But I will do it for the other
-structures.
+
+On 2020-07-07 11:26, Cornelia Huck wrote:
+> On Tue,  7 Jul 2020 10:44:36 +0200
+> Pierre Morel <pmorel@linux.ibm.com> wrote:
+> 
+>> An architecture may need to validate the VIRTIO devices features
+>> based on architecture specificities.
+> 
+> s/specifities/specifics/
+
+OK
 
 > 
+>>
+>> Signed-off-by: Pierre Morel <pmorel@linux.ibm.com>
+>> ---
+>>   drivers/virtio/virtio.c       | 19 +++++++++++++++++++
+>>   include/linux/virtio_config.h |  1 +
+>>   2 files changed, 20 insertions(+)
+>>
+>> diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
+>> index a977e32a88f2..3179a8aa76f5 100644
+>> --- a/drivers/virtio/virtio.c
+>> +++ b/drivers/virtio/virtio.c
+>> @@ -167,6 +167,21 @@ void virtio_add_status(struct virtio_device *dev, unsigned int status)
+>>   }
+>>   EXPORT_SYMBOL_GPL(virtio_add_status);
+>>   
+>> +/*
+>> + * arch_needs_virtio_iommu_platform - provide arch specific hook when finalizing
+> 
+> s/arch_needs_virtio_iommu_platform/arch_validate_virtio_features/
+> 
+> :)
+
+grrr... yes.
+
+> 
+>> + *				      features for VIRTIO device dev
+>> + * @dev: the VIRTIO device being added
+>> + *
+>> + * Permits the platform to provide architecture specific functionality when
+> 
+> s/provide architecture specific functionality/handle architecture-specific requirements/
+> 
+> ?
+
+better, thanks.
+
+> 
+>> + * devices features are finalized. This is the default implementation.
+> 
+> s/devices/device/
+
+yes.
+
+> 
+>> + * Architecture implementations can override this.
+>> + */
+>> +
+>> +int __weak arch_validate_virtio_features(struct virtio_device *dev)
+>> +{
+>> +	return 0;
+>> +}
+>> +
+>>   int virtio_finalize_features(struct virtio_device *dev)
+>>   {
+>>   	int ret = dev->config->finalize_features(dev);
+>> @@ -176,6 +191,10 @@ int virtio_finalize_features(struct virtio_device *dev)
+>>   	if (ret)
+>>   		return ret;
+>>   
+>> +	ret = arch_validate_virtio_features(dev);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>>   	if (!virtio_has_feature(dev, VIRTIO_F_VERSION_1))
+>>   		return 0;
+>>   
+>> diff --git a/include/linux/virtio_config.h b/include/linux/virtio_config.h
+>> index bb4cc4910750..3f4117adf311 100644
+>> --- a/include/linux/virtio_config.h
+>> +++ b/include/linux/virtio_config.h
+>> @@ -459,4 +459,5 @@ static inline void virtio_cwrite64(struct virtio_device *vdev,
+>>   		_r;							\
+>>   	})
+>>   
+>> +int arch_validate_virtio_features(struct virtio_device *dev);
+>>   #endif /* _LINUX_VIRTIO_CONFIG_H */
+> 
+> With the wording fixed,
+> 
+> Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+> 
+
+Thanks for the review.
+
+regards,
+Pierre
+
 
 -- 
-/Horatiu
+Pierre Morel
+IBM Lab Boeblingen
