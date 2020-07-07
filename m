@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3805217095
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:24:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BF822170C0
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:24:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728211AbgGGPS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:18:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58408 "EHLO mail.kernel.org"
+        id S1728669AbgGGPUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:20:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60172 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729274AbgGGPSx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:18:53 -0400
+        id S1728665AbgGGPUN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 11:20:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 00C4220773;
-        Tue,  7 Jul 2020 15:18:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B8FF1207BB;
+        Tue,  7 Jul 2020 15:20:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594135132;
-        bh=jcT4x3sOkEfC37eVwUQ/OPxOH2St/0use41/zQWHQvI=;
+        s=default; t=1594135212;
+        bh=miJHj+Pb0feMSTpT/2VYBOZJEP5ZBQoJplkSCDqOLfE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jamigCiKHc/xapXC8m9S4+wZvj+Vmy0sFSHC3feOETRHAePeuRuH1k3TnP3zFyjAN
-         kqn01/c+BcFCpim0EWMQiVsRqDccfNP3RoKTqy1lYZbj4/1i5YBsrlxZ3V/d8ZBsG1
-         9AN3nnWIUHmqILZGJr3XrN1JsiGC/kA/Kj7SgN6A=
+        b=We4Fxx8Kt62OI4Yl860dyDFfdQzYfF4DvBygBIZBoXnJWVOeMl70HIUro9kM6Fw1S
+         CZSGKoCwc81NTydtiVrbc/DKQ2QuUK023ocwTwVIlubtaqBA4s+ldqcqvP8vtVJhVz
+         9wGYTuL7si6dNd+zEarQ0jgUjXvUyuYAt+gAYd6Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+29dc7d4ae19b703ff947@syzkaller.appspotmail.com,
-        Tuomas Tynkkynen <tuomas.tynkkynen@iki.fi>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Douglas Anderson <dianders@chromium.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 04/36] usbnet: smsc95xx: Fix use-after-free after removal
-Date:   Tue,  7 Jul 2020 17:16:56 +0200
-Message-Id: <20200707145749.348169173@linuxfoundation.org>
+Subject: [PATCH 5.4 18/65] kgdb: Avoid suspicious RCU usage warning
+Date:   Tue,  7 Jul 2020 17:16:57 +0200
+Message-Id: <20200707145753.341011958@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200707145749.130272978@linuxfoundation.org>
-References: <20200707145749.130272978@linuxfoundation.org>
+In-Reply-To: <20200707145752.417212219@linuxfoundation.org>
+References: <20200707145752.417212219@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,47 +44,107 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tuomas Tynkkynen <tuomas.tynkkynen@iki.fi>
+From: Douglas Anderson <dianders@chromium.org>
 
-[ Upstream commit b835a71ef64a61383c414d6bf2896d2c0161deca ]
+[ Upstream commit 440ab9e10e2e6e5fd677473ee6f9e3af0f6904d6 ]
 
-Syzbot reports an use-after-free in workqueue context:
+At times when I'm using kgdb I see a splat on my console about
+suspicious RCU usage.  I managed to come up with a case that could
+reproduce this that looked like this:
 
-BUG: KASAN: use-after-free in mutex_unlock+0x19/0x40 kernel/locking/mutex.c:737
- mutex_unlock+0x19/0x40 kernel/locking/mutex.c:737
- __smsc95xx_mdio_read drivers/net/usb/smsc95xx.c:217 [inline]
- smsc95xx_mdio_read+0x583/0x870 drivers/net/usb/smsc95xx.c:278
- check_carrier+0xd1/0x2e0 drivers/net/usb/smsc95xx.c:644
- process_one_work+0x777/0xf90 kernel/workqueue.c:2274
- worker_thread+0xa8f/0x1430 kernel/workqueue.c:2420
- kthread+0x2df/0x300 kernel/kthread.c:255
+  WARNING: suspicious RCU usage
+  5.7.0-rc4+ #609 Not tainted
+  -----------------------------
+  kernel/pid.c:395 find_task_by_pid_ns() needs rcu_read_lock() protection!
 
-It looks like that smsc95xx_unbind() is freeing the structures that are
-still in use by the concurrently running workqueue callback. Thus switch
-to using cancel_delayed_work_sync() to ensure the work callback really
-is no longer active.
+  other info that might help us debug this:
 
-Reported-by: syzbot+29dc7d4ae19b703ff947@syzkaller.appspotmail.com
-Signed-off-by: Tuomas Tynkkynen <tuomas.tynkkynen@iki.fi>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+    rcu_scheduler_active = 2, debug_locks = 1
+  3 locks held by swapper/0/1:
+   #0: ffffff81b6b8e988 (&dev->mutex){....}-{3:3}, at: __device_attach+0x40/0x13c
+   #1: ffffffd01109e9e8 (dbg_master_lock){....}-{2:2}, at: kgdb_cpu_enter+0x20c/0x7ac
+   #2: ffffffd01109ea90 (dbg_slave_lock){....}-{2:2}, at: kgdb_cpu_enter+0x3ec/0x7ac
+
+  stack backtrace:
+  CPU: 7 PID: 1 Comm: swapper/0 Not tainted 5.7.0-rc4+ #609
+  Hardware name: Google Cheza (rev3+) (DT)
+  Call trace:
+   dump_backtrace+0x0/0x1b8
+   show_stack+0x1c/0x24
+   dump_stack+0xd4/0x134
+   lockdep_rcu_suspicious+0xf0/0x100
+   find_task_by_pid_ns+0x5c/0x80
+   getthread+0x8c/0xb0
+   gdb_serial_stub+0x9d4/0xd04
+   kgdb_cpu_enter+0x284/0x7ac
+   kgdb_handle_exception+0x174/0x20c
+   kgdb_brk_fn+0x24/0x30
+   call_break_hook+0x6c/0x7c
+   brk_handler+0x20/0x5c
+   do_debug_exception+0x1c8/0x22c
+   el1_sync_handler+0x3c/0xe4
+   el1_sync+0x7c/0x100
+   rpmh_rsc_probe+0x38/0x420
+   platform_drv_probe+0x94/0xb4
+   really_probe+0x134/0x300
+   driver_probe_device+0x68/0x100
+   __device_attach_driver+0x90/0xa8
+   bus_for_each_drv+0x84/0xcc
+   __device_attach+0xb4/0x13c
+   device_initial_probe+0x18/0x20
+   bus_probe_device+0x38/0x98
+   device_add+0x38c/0x420
+
+If I understand properly we should just be able to blanket kgdb under
+one big RCU read lock and the problem should go away.  We'll add it to
+the beast-of-a-function known as kgdb_cpu_enter().
+
+With this I no longer get any splats and things seem to work fine.
+
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Link: https://lore.kernel.org/r/20200602154729.v2.1.I70e0d4fd46d5ed2aaf0c98a355e8e1b7a5bb7e4e@changeid
+Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/usb/smsc95xx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/debug/debug_core.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/net/usb/smsc95xx.c b/drivers/net/usb/smsc95xx.c
-index 6e971628bb50a..c3389bd87c654 100644
---- a/drivers/net/usb/smsc95xx.c
-+++ b/drivers/net/usb/smsc95xx.c
-@@ -1338,7 +1338,7 @@ static void smsc95xx_unbind(struct usbnet *dev, struct usb_interface *intf)
- 	struct smsc95xx_priv *pdata = (struct smsc95xx_priv *)(dev->data[0]);
+diff --git a/kernel/debug/debug_core.c b/kernel/debug/debug_core.c
+index 7d54c7c280544..2222f3225e53d 100644
+--- a/kernel/debug/debug_core.c
++++ b/kernel/debug/debug_core.c
+@@ -546,6 +546,7 @@ static int kgdb_cpu_enter(struct kgdb_state *ks, struct pt_regs *regs,
+ 		arch_kgdb_ops.disable_hw_break(regs);
  
- 	if (pdata) {
--		cancel_delayed_work(&pdata->carrier_check);
-+		cancel_delayed_work_sync(&pdata->carrier_check);
- 		netif_dbg(dev, ifdown, dev->net, "free pdata\n");
- 		kfree(pdata);
- 		pdata = NULL;
+ acquirelock:
++	rcu_read_lock();
+ 	/*
+ 	 * Interrupts will be restored by the 'trap return' code, except when
+ 	 * single stepping.
+@@ -602,6 +603,7 @@ return_normal:
+ 			atomic_dec(&slaves_in_kgdb);
+ 			dbg_touch_watchdogs();
+ 			local_irq_restore(flags);
++			rcu_read_unlock();
+ 			return 0;
+ 		}
+ 		cpu_relax();
+@@ -620,6 +622,7 @@ return_normal:
+ 		raw_spin_unlock(&dbg_master_lock);
+ 		dbg_touch_watchdogs();
+ 		local_irq_restore(flags);
++		rcu_read_unlock();
+ 
+ 		goto acquirelock;
+ 	}
+@@ -743,6 +746,7 @@ kgdb_restore:
+ 	raw_spin_unlock(&dbg_master_lock);
+ 	dbg_touch_watchdogs();
+ 	local_irq_restore(flags);
++	rcu_read_unlock();
+ 
+ 	return kgdb_info[cpu].ret_state;
+ }
 -- 
 2.25.1
 
