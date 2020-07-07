@@ -2,75 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 358EC216474
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 05:09:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7615521647A
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 05:14:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728133AbgGGDJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 23:09:16 -0400
-Received: from smtp25.cstnet.cn ([159.226.251.25]:56310 "EHLO cstnet.cn"
+        id S1727791AbgGGDN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 23:13:59 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:44428 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726961AbgGGDJQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 23:09:16 -0400
-Received: from ubuntu.localdomain (unknown [124.16.136.99])
-        by APP-05 (Coremail) with SMTP id zQCowAA3hSRR5wNfQg+nAw--.53614S2;
-        Tue, 07 Jul 2020 11:09:06 +0800 (CST)
-From:   Xu Wang <vulab@iscas.ac.cn>
-To:     dmitry.torokhov@gmail.com, linux-input@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] input: misc: remove needless check before usb_free_coherent()
-Date:   Tue,  7 Jul 2020 11:09:05 +0800
-Message-Id: <20200707030905.3123-1-vulab@iscas.ac.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: zQCowAA3hSRR5wNfQg+nAw--.53614S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrKFWrZw4UGr47GFWDGr4kZwb_yoWkXrXEv3
-        yUuF9xuryq9F4Ykr4UKwnxZr95tr4I9ws7urn8tFW5XFWIg3s0vr1UXFZ0yw4DXa9rWFW5
-        t3s2grWFkw4rWjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb28YjsxI4VW3JwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4
-        A2jsIEc7CjxVAFwI0_Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xSY4AK67AK6r48MxAIw28I
-        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
-        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUXVWUAwCIc40Y0x0EwIxGrwCI
-        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42
-        IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
-        87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07jxXocUUUUU=
-X-Originating-IP: [124.16.136.99]
-X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiBwIKA102YlrYZQAAsi
+        id S1726933AbgGGDN7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Jul 2020 23:13:59 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 05D4362912129E933CDC;
+        Tue,  7 Jul 2020 11:13:57 +0800 (CST)
+Received: from SWX921481.china.huawei.com (10.126.201.228) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 7 Jul 2020 11:13:48 +0800
+From:   Barry Song <song.bao.hua@hisilicon.com>
+To:     <akpm@linux-foundation.org>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@huawei.com>, Barry Song <song.bao.hua@hisilicon.com>,
+        "Roman Gushchin" <guro@fb.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        "Jonathan Cameron" <jonathan.cameron@huawei.com>
+Subject: [PATCH v2] mm/hugetlb: avoid hardcoding while checking if cma is enable
+Date:   Tue, 7 Jul 2020 15:11:56 +1200
+Message-ID: <20200707031156.29932-1-song.bao.hua@hisilicon.com>
+X-Mailer: git-send-email 2.21.0.windows.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.126.201.228]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-usb_free_coherent() is safe with NULL addr and this check is
-not required.
+hugetlb_cma[0] can be NULL due to various reasons, for example, node0 has
+no memory. so NULL hugetlb_cma[0] doesn't necessarily mean cma is not
+enabled. gigantic pages might have been reserved on other nodes.
 
-Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+Fixes: cf11e85fc08c ("mm: hugetlb: optionally allocate gigantic hugepages using cma")
+Cc: Roman Gushchin <guro@fb.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Jonathan Cameron <jonathan.cameron@huawei.com>
+Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
 ---
- drivers/input/misc/cm109.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ -v2: add hugetlb_cma_enabled() helper to improve readability according to Roman
 
-diff --git a/drivers/input/misc/cm109.c b/drivers/input/misc/cm109.c
-index c09b9628ad34..e413801f0491 100644
---- a/drivers/input/misc/cm109.c
-+++ b/drivers/input/misc/cm109.c
-@@ -663,12 +663,8 @@ static const struct usb_device_id cm109_usb_table[] = {
- static void cm109_usb_cleanup(struct cm109_dev *dev)
- {
- 	kfree(dev->ctl_req);
--	if (dev->ctl_data)
--		usb_free_coherent(dev->udev, USB_PKT_LEN,
--				  dev->ctl_data, dev->ctl_dma);
--	if (dev->irq_data)
--		usb_free_coherent(dev->udev, USB_PKT_LEN,
--				  dev->irq_data, dev->irq_dma);
-+	usb_free_coherent(dev->udev, USB_PKT_LEN, dev->ctl_data, dev->ctl_dma);
-+	usb_free_coherent(dev->udev, USB_PKT_LEN, dev->irq_data, dev->irq_dma);
+ mm/hugetlb.c | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
+
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 57ece74e3aae..d5e98ed86bb9 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -2546,6 +2546,20 @@ static void __init gather_bootmem_prealloc(void)
+ 	}
+ }
  
- 	usb_free_urb(dev->urb_irq);	/* parameter validation in core/urb */
- 	usb_free_urb(dev->urb_ctl);	/* parameter validation in core/urb */
++bool __init hugetlb_cma_enabled(void)
++{
++	if (IS_ENABLED(CONFIG_CMA)) {
++		int node;
++
++		for_each_online_node(node) {
++			if (hugetlb_cma[node])
++				return true;
++		}
++	}
++
++	return false;
++}
++
+ static void __init hugetlb_hstate_alloc_pages(struct hstate *h)
+ {
+ 	unsigned long i;
+@@ -2571,7 +2585,7 @@ static void __init hugetlb_hstate_alloc_pages(struct hstate *h)
+ 
+ 	for (i = 0; i < h->max_huge_pages; ++i) {
+ 		if (hstate_is_gigantic(h)) {
+-			if (IS_ENABLED(CONFIG_CMA) && hugetlb_cma[0]) {
++			if (hugetlb_cma_enabled()) {
+ 				pr_warn_once("HugeTLB: hugetlb_cma is enabled, skip boot time allocation\n");
+ 				break;
+ 			}
 -- 
-2.17.1
+2.27.0
+
 
