@@ -2,137 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 692E9217858
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 21:54:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E17921785E
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 21:55:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728369AbgGGTyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 15:54:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46670 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726951AbgGGTyf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 15:54:35 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53668C061755
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 12:54:35 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id w3so391576wmi.4
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 12:54:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:content-transfer-encoding:mime-version:subject:date:references
-         :to:in-reply-to:message-id;
-        bh=cyTfJLNquzRQmiKrpHKDnhwW/N+p/GExldJfwiteKnE=;
-        b=lX6RRZO9VbhYRvz3OLKgDI91FR04aXdCWuz/PEoEdgjW59uilGbiclyrTE5tiwUfdw
-         Ryr1CD6djJ3V6XzmZmT++qn0jd+gwJDzN8ZBAvv1YB2wya7a+lY118f3F8FTMth9B2ob
-         gJANRjVRerxX1x0wARIUS65Ai9d9Kb+ZMWBSmWz06riDid425TYGdHZBD2hXn/e4c4+u
-         tpByIr6augMy8y59sU0A+VFsLag1aW7VnaRWOiXpaHaTIOd0KmMtdGzoYSWpOFatFyBq
-         CPEV/o+ehMh3upyU6DLezvHyafuIqsS9V3/LM0MW9s2A4MOiEgQyJUUQldJqd9nFw8Xd
-         9Ssg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:content-transfer-encoding:mime-version
-         :subject:date:references:to:in-reply-to:message-id;
-        bh=cyTfJLNquzRQmiKrpHKDnhwW/N+p/GExldJfwiteKnE=;
-        b=RjqpK4Qc8JAVig7/nChhfD/PNz1mLZeiiPEs+eviImU9fN7btcZo6nFfAnS/ufGIY8
-         rZKss8uFBSgQ52slVomr3ehnS3cr7uoFgyzQg7gL4SEpfjNePLc2e3Q4NZUjtu/d6rZv
-         BZHoo2ujxnvqQj5OCJDivUpp1K4e0fO/wslhEcpZkFN1MVTmnP2cfRTRQteJAGkrfSFb
-         740Zfwsoa0gAfIi50WaLVKB3fxSR7XhiC+nYZFCE+zAMQK+7v0HLFSedW6oclpLND+6I
-         1YXgeeT+aDf/1R+saGmW7GAwddOrOiQxMfSYQYIBf3jk7l0LapgYYFHM+UkehhaamIED
-         Jljw==
-X-Gm-Message-State: AOAM5307MnMOSmAflabQLMLfDmMxa0p01oSfONqVBUT3z/Swv7P9M0ys
-        fKgMu7WqusXPcSoyQG7eF6hoOJL8
-X-Google-Smtp-Source: ABdhPJygGd10PaKDvRc0uzl+CkB0pIAc5gblJDnFvt2TNnq9FUjMvYap4/38CJ4xrss3WiWkcaesNA==
-X-Received: by 2002:a1c:9a02:: with SMTP id c2mr6302605wme.16.1594151673806;
-        Tue, 07 Jul 2020 12:54:33 -0700 (PDT)
-Received: from [10.11.11.4] ([178.254.237.20])
-        by smtp.gmail.com with ESMTPSA id c206sm2471459wmf.36.2020.07.07.12.54.32
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 07 Jul 2020 12:54:32 -0700 (PDT)
-From:   Martin Zaharinov <micron10@gmail.com>
-Content-Type: text/plain;
-        charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: Re: Bug Report High CPU Usage events_power_efficient
-Date:   Tue, 7 Jul 2020 22:54:31 +0300
-References: <E2C5FE67-C85E-469C-9B81-10F7555F836B@gmail.com>
- <91805D0F-2D74-4EA3-A2D7-13E4FBBEAB51@gmail.com>
-To:     "linux-kernel@vger kernel. org" <linux-kernel@vger.kernel.org>
-In-Reply-To: <91805D0F-2D74-4EA3-A2D7-13E4FBBEAB51@gmail.com>
-Message-Id: <6AD52867-83C1-4C6C-A0AE-4DE0D6C16310@gmail.com>
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
+        id S1728649AbgGGTzi convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 7 Jul 2020 15:55:38 -0400
+Received: from albireo.enyo.de ([37.24.231.21]:39930 "EHLO albireo.enyo.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728254AbgGGTzh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 15:55:37 -0400
+Received: from [172.17.203.2] (helo=deneb.enyo.de)
+        by albireo.enyo.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        id 1jstgh-0003Qy-8z; Tue, 07 Jul 2020 19:55:31 +0000
+Received: from fw by deneb.enyo.de with local (Exim 4.92)
+        (envelope-from <fw@deneb.enyo.de>)
+        id 1jstgh-00047U-6A; Tue, 07 Jul 2020 21:55:31 +0200
+From:   Florian Weimer <fw@deneb.enyo.de>
+To:     Carlos O'Donell <carlos@redhat.com>
+Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        paulmck <paulmck@linux.ibm.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Paul Turner <pjt@google.com>,
+        linux-api <linux-api@vger.kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Neel Natu <neelnatu@google.com>
+Subject: Re: [RFC PATCH for 5.8 3/4] rseq: Introduce RSEQ_FLAG_RELIABLE_CPU_ID
+References: <20200706204913.20347-1-mathieu.desnoyers@efficios.com>
+        <20200706204913.20347-4-mathieu.desnoyers@efficios.com>
+        <87fta3zstr.fsf@mid.deneb.enyo.de>
+        <2088331919.943.1594118895344.JavaMail.zimbra@efficios.com>
+        <874kqjzhkb.fsf@mid.deneb.enyo.de>
+        <378862525.1039.1594123580789.JavaMail.zimbra@efficios.com>
+        <d6b28b3e-9866-ce6f-659e-2c0dba4cd527@redhat.com>
+Date:   Tue, 07 Jul 2020 21:55:31 +0200
+In-Reply-To: <d6b28b3e-9866-ce6f-659e-2c0dba4cd527@redhat.com> (Carlos
+        O'Donell's message of "Tue, 7 Jul 2020 14:53:41 -0400")
+Message-ID: <87zh8bw158.fsf@mid.deneb.enyo.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-And this is log from /sys/kernel/debug/tracing/trace
+* Carlos O'Donell:
 
+> It's not a great fit IMO. Just let the kernel version be the arbiter of
+> correctness.
 
-# entries-in-buffer/entries-written: 32410/32410   #P:64
-#
-#                              _-----=3D> irqs-off
-#                             / _----=3D> need-resched
-#                            | / _---=3D> hardirq/softirq
-#                            || / _--=3D> preempt-depth
-#                            ||| /     delay
-#           TASK-PID   CPU#  ||||    TIMESTAMP  FUNCTION
-#              | |       |   ||||       |         |
-           <...>-57259 [005] .... 29619.680698: workqueue_execute_start: =
-work struct 00000000ef22e4b8: function gc_worker [nf_conntrack]
-           <...>-57259 [005] .... 29623.811407: workqueue_execute_end: =
-work struct 00000000ef22e4b8: function gc_worker [nf_conntrack]
-           <...>-57259 [005] .... 29623.811410: workqueue_execute_start: =
-work struct 0000000000aeec55: function fb_flashcursor
-           <...>-57259 [005] .... 29623.811421: workqueue_execute_end: =
-work struct 0000000000aeec55: function fb_flashcursor
-           <...>-57259 [005] .... 29623.811422: workqueue_execute_start: =
-work struct 00000000a6d382bb: function vmstat_update
-           <...>-57259 [005] .... 29623.811435: workqueue_execute_end: =
-work struct 00000000a6d382bb: function vmstat_update
-
-> On 7 Jul 2020, at 22:44, Martin Zaharinov <micron10@gmail.com> wrote:
->=20
-> the problem is hear with kernel 5.7.7=20
->=20
-> last work kernel without this problem is 5.6.7
->=20
-> hear is more info:
->=20
-> cat /proc/57259/stack
-> root@megacableamarilis:~# cat /proc/57259/stack
-> [<0>] gc_worker+0x1be/0x380 [nf_conntrack]
-> [<0>] process_one_work+0x1bc/0x3b0
-> [<0>] worker_thread+0x4d/0x460
-> [<0>] kthread+0x10d/0x130
-> [<0>] ret_from_fork+0x1f/0x30
->=20
-> PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ =
-COMMAND                            57259 root      28   0       0      0 =
-     0 R  69.8   0.0  82:42.14 kworker/5:2+events_power_efficient        =
-                                                 =20
-> 32 root      21   0       0      0      0 R  31.0   0.0  87:06.33 =
-ksoftirqd/4
->=20
->=20
-> Please help to fix this problem
->=20
->> On 22 Apr 2020, at 15:55, Martin Zaharinov <micron10@gmail.com> =
-wrote:
->>=20
->> Hello Qian and Greg=20
->> With latest 5.6.x kernel have problem with events_power_efficient =
-28488 root      28   0       0      0      0 R  95.5   0.0 101:38.19 =
-kworker/2:1+events_power_efficient Process start to load machine after =
-3-4 hour and load not stop only reboot machine remove process . Server =
-runing on AMD EPIC CPU 2x 7301 32Gb Ram Have 2 x 10G card Intel when =
-machine load over 1G traffic machine locked and only restart fix problem =
-to next load . After move traffic and server stop load process still =
-hear and load server ?
->> And after reboot process move to other core .
->>=20
->> Best Regards,
->> Martin
->=20
-
+For manual review, sure.  But checking it programmatically does not
+yield good results due to backports.  Even those who use the stable
+kernel series sometimes pick up critical fixes beforehand, so it's not
+reliable possible for a program to say, “I do not want to run on this
+kernel because it has a bad version”.  We had a recent episode of this
+with the Go runtime, which tried to do exactly this.
