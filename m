@@ -2,86 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35B152162FE
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 02:28:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3745B216316
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 02:42:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726852AbgGGA2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 20:28:00 -0400
-Received: from ozlabs.org ([203.11.71.1]:42165 "EHLO ozlabs.org"
+        id S1726889AbgGGAmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 20:42:35 -0400
+Received: from mga03.intel.com ([134.134.136.65]:35105 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725942AbgGGA2A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 20:28:00 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4B13Dr6P5cz9s1x;
-        Tue,  7 Jul 2020 10:27:56 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1594081678;
-        bh=cQkuvuDXVTNikfR9rypMMuYWn/Qt9xkPY1Y3fHHP+sk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=TWVNHL3O2g8vW9CwWCti08wVl7BC3+BE2ImClNyC23D/GKnnbN9XEDKgP7Yap4HGq
-         0ZsD4GyvbChSHcc/iUhJFAmDUOpQ4/Q6I60kPuS/jCWiKy/PK02UKHqCST66sy/xu8
-         qgIXBg7S80ikYSAgDr7JEOL4VXwJ17CKkYmOupoxyxyPyJtyqoCxS1XfpnuyM9UXbf
-         6lxSLvEEdADp3C+kDmXZYzBOeVLiz0x1LlrD0cASArqnuQB3+XikoPz6bHMRwc311Z
-         0usEBtrsJjzPPQW8rXdiL2Jxp61qSpNQ1bdGLnV3uaK5uXKK82jnkLXSv6s33xAn+b
-         zR6MitfZSZ38w==
-Date:   Tue, 7 Jul 2020 10:27:54 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>,
-        David Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Brian Foster <bfoster@redhat.com>
-Subject: linux-next: build failure after merge of the xfs tree
-Message-ID: <20200707102754.65254f1e@canb.auug.org.au>
+        id S1726491AbgGGAmf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Jul 2020 20:42:35 -0400
+IronPort-SDR: rGhtpAEjZM/AkiShXaEeIRGqqA/K0fo5UP1biigW4NENkbehCwH6dR6HVIwjiVEiyPzKVaiLlc
+ hbipL7diJWew==
+X-IronPort-AV: E=McAfee;i="6000,8403,9674"; a="147532222"
+X-IronPort-AV: E=Sophos;i="5.75,321,1589266800"; 
+   d="scan'208";a="147532222"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2020 17:42:33 -0700
+IronPort-SDR: u4JunD8GPdQ6hA34qVhYuO63vCPCxTcen2WvjRSBrrm5DJ4/junCz4v1flKrG9dikpy48GBL+R
+ 8CqVuteqoZnQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,321,1589266800"; 
+   d="scan'208";a="279439564"
+Received: from joy-optiplex-7040.sh.intel.com (HELO joy-OptiPlex-7040) ([10.239.13.16])
+  by orsmga003.jf.intel.com with ESMTP; 06 Jul 2020 17:42:31 -0700
+Date:   Tue, 7 Jul 2020 08:31:41 +0800
+From:   Yan Zhao <yan.y.zhao@intel.com>
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        iommu@lists.linux-foundation.org,
+        Kevin Tian <kevin.tian@intel.com>,
+        Joerg Roedel <joro@8bytes.org>, linux-kernel@vger.kernel.org,
+        Markus Elfring <Markus.Elfring@web.de>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [RFC PATCH] vfio: type1: fix kthread use case
+Message-ID: <20200707003140.GA20022@joy-OptiPlex-7040>
+Reply-To: Yan Zhao <yan.y.zhao@intel.com>
+References: <20200706104915.11460-1-hdanton@sina.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/78vVcTgeuWwIZD/fb3c.Pgv";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200706104915.11460-1-hdanton@sina.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/78vVcTgeuWwIZD/fb3c.Pgv
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Jul 06, 2020 at 06:49:15PM +0800, Hillf Danton wrote:
+> 
+> It's incorrect to tell out if a task is kthread without checking
+> PF_KTHREAD at all.
+> 
+> What's also fixed, if no need to be in a seperate patch, is to
+> invoke kthread_use_mm() without checking the current mm first as
+> the kthread may hold a mm struct atm and it's not the right place
+> to switch mm.
+> 
+> Fixes: 8d46c0cca5f4 ("vfio: introduce vfio_dma_rw to read/write a range of IOVAs")
+> Cc: Yan Zhao <yan.y.zhao@intel.com>
+> Cc: Markus Elfring <Markus.Elfring@web.de>
+> Cc: Christoph Hellwig <hch@lst.de>
+> Signed-off-by: Hillf Danton <hdanton@sina.com>
+> ---
+> 
+> --- a/drivers/vfio/vfio_iommu_type1.c
+> +++ b/drivers/vfio/vfio_iommu_type1.c
+> @@ -2798,7 +2798,8 @@ static int vfio_iommu_type1_dma_rw_chunk
+>  	struct mm_struct *mm;
+>  	unsigned long vaddr;
+>  	struct vfio_dma *dma;
+> -	bool kthread = current->mm == NULL;
+> +	bool kthread = current->flags & PF_KTHREAD;
+> +	bool use_mm = current->mm == NULL;
+is it acceptable to just rename "kthread" to "kthread_no_use_mm"?
 
-Hi all,
+I think "current->mm == NULL" in itself implies kthread and not use_mm,
+as a user thread is not able to have "current->mm == NULL", right?
 
-After merging the xfs tree, today's linux-next build (powerpc
-ppc64_defconfig) failed like this:
 
-ld: fs/xfs/xfs_buf_item.o: in function `.xfs_buf_dquot_iodone':
-xfs_buf_item.c:(.text+0x21a0): undefined reference to `.xfs_dquot_done'
+Thanks
+Yan
 
-Caused by commit
-
-  018dc1667913 ("xfs: use direct calls for dquot IO completion")
-
-# CONFIG_XFS_QUOTA is not set
-
-I have used the xfs tree from next-20200706 for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/78vVcTgeuWwIZD/fb3c.Pgv
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8DwYoACgkQAVBC80lX
-0GyqUwgAkHSU+O1kJckMqxnfPa+2Y888f5hB/g8zdGEN1ejvnpd/9B0aYagn66cA
-f0p6g5Btnjd7NnngBAq6RHuKigV6wWcoXlmhw0O0j0X9j0+8Z987W9WxrwdPrixl
-eZfklF694lQn9jHPxxTNm0nbG+PVyadVSy1poFZddRXxwVR7G3o/l57J/m2Y7R6s
-7XVFyNB5en3kXzHknviZmsGl+usg+vih9TaZE3mWGuwj1yL9bujmjJS1F/zdLe8t
-gz5gmc10jMMvul8D4qyxQvXLHgXAxZTa2Xu6DAKEtxIEO5A8tigLDcwSuDxUJXe+
-znBY29Y1pqNty1E4GSr1NIkQRX4ySA==
-=XvtZ
------END PGP SIGNATURE-----
-
---Sig_/78vVcTgeuWwIZD/fb3c.Pgv--
+>  	size_t offset;
+>  
+>  	*copied = 0;
+> @@ -2812,11 +2813,10 @@ static int vfio_iommu_type1_dma_rw_chunk
+>  		return -EPERM;
+>  
+>  	mm = get_task_mm(dma->task);
+> -
+>  	if (!mm)
+>  		return -EPERM;
+>  
+> -	if (kthread)
+> +	if (kthread && use_mm)
+>  		kthread_use_mm(mm);
+>  	else if (current->mm != mm)
+>  		goto out;
+> @@ -2843,7 +2843,7 @@ static int vfio_iommu_type1_dma_rw_chunk
+>  	} else
+>  		*copied = copy_from_user(data, (void __user *)vaddr,
+>  					   count) ? 0 : count;
+> -	if (kthread)
+> +	if (kthread && use_mm)
+>  		kthread_unuse_mm(mm);
+>  out:
+>  	mmput(mm);
+> --
+> 
