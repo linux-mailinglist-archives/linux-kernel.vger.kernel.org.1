@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63BC2217269
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:44:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1120621718F
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:42:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730037AbgGGPcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:32:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33996 "EHLO mail.kernel.org"
+        id S1729765AbgGGPVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:21:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34050 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728655AbgGGPVo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:21:44 -0400
+        id S1729197AbgGGPVr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 11:21:47 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7D6CB20663;
-        Tue,  7 Jul 2020 15:21:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2CD792065D;
+        Tue,  7 Jul 2020 15:21:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594135304;
-        bh=0qalr7sIiMTBZq9KLn36jOZE90c4K1KFip6Z3LVqhJ0=;
+        s=default; t=1594135306;
+        bh=wZ6hWFVHebHKlu0oRvqogBMKz/TtomOnDbtYE2fN/oU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wbzf1eMNwIMdzKJtgh6Zq5U0hUifGAWsWT9OWtgYGWW6j/Gk69N8rbfof3T+7cX1O
-         E1KE29hyHAEeljdOXXnye3KuwIeMawbJqnncsZjYQ5CezlbOsYkYt7a+DnRE2EUxHT
-         92wy0MO1uGNuTZADgc1ynLz1oRYo5LbiXwPFs10Y=
+        b=Ox5KZa2mgE4u56fou4tuP7GSiUe2E7MBpImaXyhkzTZhSZCKl9E+yavPsfnvlPZj8
+         ChPtSx5J04/speN/QXGa5gReIF4l90uGUCVKp5yzcBy20BJT/evW+7VLVOLxzd8wNT
+         bqAdoqk3pKI7sZelQ7jpV2OD1v45cJTAxNUomXhE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhang Xiaoxu <zhangxiaoxu5@huawei.com>,
-        Steve French <stfrench@microsoft.com>,
-        Aurelien Aptel <aaptel@suse.com>
-Subject: [PATCH 5.4 53/65] cifs: Fix the target file was deleted when rename failed.
-Date:   Tue,  7 Jul 2020 17:17:32 +0200
-Message-Id: <20200707145755.031759759@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Subject: [PATCH 5.4 54/65] MIPS: lantiq: xway: sysctrl: fix the GPHY clock alias names
+Date:   Tue,  7 Jul 2020 17:17:33 +0200
+Message-Id: <20200707145755.074049343@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200707145752.417212219@linuxfoundation.org>
 References: <20200707145752.417212219@linuxfoundation.org>
@@ -45,56 +45,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
+From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 
-commit 9ffad9263b467efd8f8dc7ae1941a0a655a2bab2 upstream.
+commit 03e62fd67d3ab33f39573fc8787d89dc9b4d7255 upstream.
 
-When xfstest generic/035, we found the target file was deleted
-if the rename return -EACESS.
+The dt-bindings for the GSWIP describe that the node should be named
+"switch". Use the same name in sysctrl.c so the GSWIP driver can
+actually find the "gphy0" and "gphy1" clocks.
 
-In cifs_rename2, we unlink the positive target dentry if rename
-failed with EACESS or EEXIST, even if the target dentry is positived
-before rename. Then the existing file was deleted.
-
-We should just delete the target file which created during the
-rename.
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
+Fixes: 14fceff4771e51 ("net: dsa: Add Lantiq / Intel DSA driver for vrx200")
 Cc: stable@vger.kernel.org
-Signed-off-by: Steve French <stfrench@microsoft.com>
-Reviewed-by: Aurelien Aptel <aaptel@suse.com>
+Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Acked-by: Hauke Mehrtens <hauke@hauke-m.de>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/cifs/inode.c |   10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ arch/mips/lantiq/xway/sysctrl.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---- a/fs/cifs/inode.c
-+++ b/fs/cifs/inode.c
-@@ -1791,6 +1791,7 @@ cifs_rename2(struct inode *source_dir, s
- 	FILE_UNIX_BASIC_INFO *info_buf_target;
- 	unsigned int xid;
- 	int rc, tmprc;
-+	bool new_target = d_really_is_negative(target_dentry);
- 
- 	if (flags & ~RENAME_NOREPLACE)
- 		return -EINVAL;
-@@ -1867,8 +1868,13 @@ cifs_rename2(struct inode *source_dir, s
- 	 */
- 
- unlink_target:
--	/* Try unlinking the target dentry if it's not negative */
--	if (d_really_is_positive(target_dentry) && (rc == -EACCES || rc == -EEXIST)) {
-+	/*
-+	 * If the target dentry was created during the rename, try
-+	 * unlinking it if it's not negative
-+	 */
-+	if (new_target &&
-+	    d_really_is_positive(target_dentry) &&
-+	    (rc == -EACCES || rc == -EEXIST)) {
- 		if (d_is_dir(target_dentry))
- 			tmprc = cifs_rmdir(target_dir, target_dentry);
- 		else
+--- a/arch/mips/lantiq/xway/sysctrl.c
++++ b/arch/mips/lantiq/xway/sysctrl.c
+@@ -514,8 +514,8 @@ void __init ltq_soc_init(void)
+ 		clkdev_add_pmu("1e10b308.eth", NULL, 0, 0, PMU_SWITCH |
+ 			       PMU_PPE_DP | PMU_PPE_TC);
+ 		clkdev_add_pmu("1da00000.usif", "NULL", 1, 0, PMU_USIF);
+-		clkdev_add_pmu("1e108000.gswip", "gphy0", 0, 0, PMU_GPHY);
+-		clkdev_add_pmu("1e108000.gswip", "gphy1", 0, 0, PMU_GPHY);
++		clkdev_add_pmu("1e108000.switch", "gphy0", 0, 0, PMU_GPHY);
++		clkdev_add_pmu("1e108000.switch", "gphy1", 0, 0, PMU_GPHY);
+ 		clkdev_add_pmu("1e103100.deu", NULL, 1, 0, PMU_DEU);
+ 		clkdev_add_pmu("1e116000.mei", "afe", 1, 2, PMU_ANALOG_DSL_AFE);
+ 		clkdev_add_pmu("1e116000.mei", "dfe", 1, 0, PMU_DFE);
+@@ -538,8 +538,8 @@ void __init ltq_soc_init(void)
+ 				PMU_SWITCH | PMU_PPE_DPLUS | PMU_PPE_DPLUM |
+ 				PMU_PPE_EMA | PMU_PPE_TC | PMU_PPE_SLL01 |
+ 				PMU_PPE_QSB | PMU_PPE_TOP);
+-		clkdev_add_pmu("1e108000.gswip", "gphy0", 0, 0, PMU_GPHY);
+-		clkdev_add_pmu("1e108000.gswip", "gphy1", 0, 0, PMU_GPHY);
++		clkdev_add_pmu("1e108000.switch", "gphy0", 0, 0, PMU_GPHY);
++		clkdev_add_pmu("1e108000.switch", "gphy1", 0, 0, PMU_GPHY);
+ 		clkdev_add_pmu("1e103000.sdio", NULL, 1, 0, PMU_SDIO);
+ 		clkdev_add_pmu("1e103100.deu", NULL, 1, 0, PMU_DEU);
+ 		clkdev_add_pmu("1e116000.mei", "dfe", 1, 0, PMU_DFE);
 
 
