@@ -2,67 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 184CD216DEE
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 15:40:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20830216DF3
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 15:41:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728263AbgGGNk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 09:40:26 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:49298 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726911AbgGGNkZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 09:40:25 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 9B353F1C52BB5475B6AB;
-        Tue,  7 Jul 2020 21:40:22 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by DGGEMS402-HUB.china.huawei.com
- (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Tue, 7 Jul 2020
- 21:40:15 +0800
-From:   Zhihao Cheng <chengzhihao1@huawei.com>
-To:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-CC:     <richard@nod.at>, <yi.zhang@huawei.com>, <s.hauer@pengutronix.de>
-Subject: [PATCH v3 2/2] ubi: fastmap: Free fastmap next anchor peb during detach
-Date:   Tue, 7 Jul 2020 21:41:01 +0800
-Message-ID: <20200707134101.562776-3-chengzhihao1@huawei.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20200707134101.562776-1-chengzhihao1@huawei.com>
-References: <20200707134101.562776-1-chengzhihao1@huawei.com>
+        id S1728288AbgGGNlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 09:41:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57756 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726805AbgGGNlu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 09:41:50 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5AF6820658;
+        Tue,  7 Jul 2020 13:41:49 +0000 (UTC)
+Date:   Tue, 7 Jul 2020 09:41:47 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     "Harrosh, Boaz" <Boaz.Harrosh@netapp.com>,
+        ksummit <ksummit-discuss@lists.linuxfoundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "tech-board-discuss@lists.linuxfoundation.org" 
+        <tech-board-discuss@lists.linuxfoundation.org>,
+        Andy Lutomirski <luto@amacapital.net>, Chris Mason <clm@fb.clm>
+Subject: Re: [Tech-board-discuss] [Ksummit-discuss] [PATCH] CodingStyle:
+ Inclusive Terminology
+Message-ID: <20200707094147.213e0a82@oasis.local.home>
+In-Reply-To: <202007070137.3ADBEDC@keescook>
+References: <159389297140.2210796.13590142254668787525.stgit@dwillia2-desk3.amr.corp.intel.com>
+        <CALCETrXewAK4_fpaJNDHJVDK9mUcjghA5HwYvZFQNYVfC9M+OQ@mail.gmail.com>
+        <202007062234.A90F922DF@keescook>
+        <DM6PR06MB3836FBAD65096AF63ACD3DB3EE660@DM6PR06MB3836.namprd06.prod.outlook.com>
+        <202007070137.3ADBEDC@keescook>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ubi_wl_entry related with the fm_next_anchor PEB is not freed during
-detach, which causes a memory leak.
-Don't forget to release fm_next_anchor PEB while detaching ubi from
-mtd when CONFIG_MTD_UBI_FASTMAP is enabled.
+On Tue, 7 Jul 2020 01:54:23 -0700
+Kees Cook <keescook@chromium.org> wrote:
 
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-Fixes: 4b68bf9a69d22d ("ubi: Select fastmap anchor PEBs considering...")
----
- drivers/mtd/ubi/fastmap-wl.c | 5 +++++
- 1 file changed, 5 insertions(+)
+> "I will whitelist the syscall" -- sounds correct to me (same for
+> "it is whitelisted" or "it is in whitelisting mode").
+> 
+> "I will allow-list the syscall" -- sounds wrong to me (same for
+> "it is allow-listed" or "it is in allow-listing mode").
 
-diff --git a/drivers/mtd/ubi/fastmap-wl.c b/drivers/mtd/ubi/fastmap-wl.c
-index 83afc00e365a..28f55f9cf715 100644
---- a/drivers/mtd/ubi/fastmap-wl.c
-+++ b/drivers/mtd/ubi/fastmap-wl.c
-@@ -381,6 +381,11 @@ static void ubi_fastmap_close(struct ubi_device *ubi)
- 		ubi->fm_anchor = NULL;
- 	}
- 
-+	if (ubi->fm_next_anchor) {
-+		return_unused_peb(ubi, ubi->fm_next_anchor);
-+		ubi->fm_next_anchor = NULL;
-+	}
-+
- 	if (ubi->fm) {
- 		for (i = 0; i < ubi->fm->used_blocks; i++)
- 			kfree(ubi->fm->e[i]);
--- 
-2.25.4
+That's because we can't just make "allow-list" a drop in replacement
+for "whitelist" as I too (native English speaker) find it awkward. But
+then we don't need to make it a drop in replacement.
 
+"I will whitelist the syscall" will become "I will add the syscall to
+the allow-list", which sounds perfectly fine, and even better than
+saying "I will add the syscall to the whitelist".
+
+-- Steve
