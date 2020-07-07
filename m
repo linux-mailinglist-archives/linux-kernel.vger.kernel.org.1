@@ -2,100 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CF26216410
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 04:33:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ABBC216428
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 04:52:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728053AbgGGCdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 22:33:04 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:47809 "EHLO ozlabs.org"
+        id S1727942AbgGGCwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 22:52:19 -0400
+Received: from mga07.intel.com ([134.134.136.100]:32557 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726900AbgGGCdE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 22:33:04 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4B16196QnSz9sRK;
-        Tue,  7 Jul 2020 12:33:01 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1594089182;
-        bh=kBgI8HNkyEaoGhzJtSBMsGN3tKiNPD8PuFGOCpABeWc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=iR57JTc9U4FwVTG2eqIigA1Cgv9WOVYZtBZwBzPhNtF77cPvGmYgiQqrxAVT4mvhq
-         2lFD8FFCfUvTiG6CvARvepgPX9PtjW7cE+00z1wnzDBaFCWYp5XKkoy5/ELMlfCj0u
-         WAmNOEfaQEb8wKWU83Lfi4mDdXv3yXvVAR11wf/Mmz+sPP0fV+ZBUhDxRRIBiMCiBx
-         AEyh7ZXbhOrQd25pD321QcS5bNWFGmc7baJmgoavEPFaeORfiOHKZMxFAYf26xp+za
-         jjFzUzIENGw5pvvr7Vdod+laK8D+ehqmQa9QErOvNr1OyjIUTBvFBi+ggxsWPi8rUt
-         wznx/098njUlA==
-Date:   Tue, 7 Jul 2020 12:33:01 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the tip tree
-Message-ID: <20200707123301.79ca8a94@canb.auug.org.au>
-In-Reply-To: <20200630125459.0ca67c38@canb.auug.org.au>
-References: <20200622113700.3dd74527@canb.auug.org.au>
-        <20200630125459.0ca67c38@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/S9BC0YV_=F5t9ofv3kONcI4";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S1726915AbgGGCwT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Jul 2020 22:52:19 -0400
+IronPort-SDR: Td8kwsKDNqcvyySer+GcRKZ+z1318EsHTs8eM7iXQdFHqVUelUU61faC/28b9vMPxCjl+vgBeE
+ luB9PgSOOANg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9674"; a="212503036"
+X-IronPort-AV: E=Sophos;i="5.75,321,1589266800"; 
+   d="scan'208";a="212503036"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2020 19:52:18 -0700
+IronPort-SDR: a8RBZppPu1jANqtiX8SwjiqdFbHckyN1+a1iLVXD7cZEqKi3ZWXTHWItstkNMmYrBk4kDC+pL9
+ DXnVJ0WyO8Zg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,321,1589266800"; 
+   d="scan'208";a="305502199"
+Received: from km-skylake-client-platform.sc.intel.com ([10.3.52.141])
+  by fmsmga004.fm.intel.com with ESMTP; 06 Jul 2020 19:52:18 -0700
+Message-ID: <89e07361c8f575bc029071a0f7789e19d0431c0b.camel@intel.com>
+Subject: Re: [PATCH v2 2/4] x86/cpufeatures: Enumerate TSX suspend load
+ address tracking instructions
+From:   Kyung Min Park <kyung.min.park@intel.com>
+To:     Cathy Zhang <cathy.zhang@intel.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org
+Cc:     pbonzini@redhat.com, sean.j.christopherson@intel.com,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, hpa@zytor.com, ricardo.neri-calderon@linux.intel.com,
+        jpoimboe@redhat.com, gregkh@linuxfoundation.org,
+        ak@linux.intel.com, dave.hansen@intel.com, tony.luck@intel.com,
+        ravi.v.shankar@intel.com
+Date:   Mon, 06 Jul 2020 19:36:27 -0700
+In-Reply-To: <1594088183-7187-3-git-send-email-cathy.zhang@intel.com>
+References: <1594088183-7187-1-git-send-email-cathy.zhang@intel.com>
+         <1594088183-7187-3-git-send-email-cathy.zhang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/S9BC0YV_=F5t9ofv3kONcI4
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Cathy,
 
-Hi all,
+On Tue, 2020-07-07 at 10:16 +0800, Cathy Zhang wrote:
+> Intel TSX suspend load tracking instructions aim to give a way to
+> choose which memory accesses do not need to be tracked in the TSX
+> read set. Add TSX suspend load tracking CPUID feature flag TSXLDTRK
+> for enumeration.
+> 
+> A processor supports Intel TSX suspend load address tracking if
+> CPUID.0x07.0x0:EDX[16] is present. Two instructions XSUSLDTRK,
+> XRESLDTRK
+> are available when this feature is present.
+> 
+> The CPU feature flag is shown as "tsxldtrk" in /proc/cpuinfo.
+> 
+> Detailed information on the instructions and CPUID feature flag
+> TSXLDTRK
+> can be found in the latest Intel Architecture Instruction Set
+> Extensions
+> and Future Features Programming Reference and Intel 64 and IA-32
+> Architectures Software Developer's Manual.
+> 
+> Signed-off-by: Kyung Min Park <kyung.min.park@intel.com>
+> Signed-off-by: Cathy Zhang <cathy.zhang@intel.com>
+> ---
+>  arch/x86/include/asm/cpufeatures.h | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/x86/include/asm/cpufeatures.h
+> b/arch/x86/include/asm/cpufeatures.h
+> index adf45cf..34b66d7 100644
+> --- a/arch/x86/include/asm/cpufeatures.h
+> +++ b/arch/x86/include/asm/cpufeatures.h
+> @@ -366,6 +366,7 @@
+>  #define X86_FEATURE_MD_CLEAR		(18*32+10) /* VERW clears CPU
+> buffers */
+>  #define X86_FEATURE_TSX_FORCE_ABORT	(18*32+13) /* ""
+> TSX_FORCE_ABORT */
+>  #define X86_FEATURE_SERIALIZE		(18*32+14) /* SERIALIZE
+> instruction */
+> +#define X86_FEATURE_TSX_LDTRK           (18*32+16) /* TSX Suspend
+> Load Address Tracking */
 
-On Tue, 30 Jun 2020 12:54:59 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> On Mon, 22 Jun 2020 11:37:00 +1000 Stephen Rothwell <sfr@canb.auug.org.au=
-> wrote:
-> >
-> > After merging the tip tree, today's linux-next build (x86_64 allmodconf=
-ig)
-> > failed like this:
-> >=20
-> > ERROR: modpost: "sched_setscheduler" [kernel/trace/ring_buffer_benchmar=
-k.ko] undefined!
-> >=20
-> > Caused by commit
-> >=20
-> >   616d91b68cd5 ("sched: Remove sched_setscheduler*() EXPORTs")
-> >=20
-> > Missed one :-)
-> >=20
-> > I have reverted that commit for today. =20
->=20
-> I am still reverting that commit.
+Since you are using the flag name to "TSX_LDTRK", the commit message
+needs to be changed accordingly. The commit message is saying
+"tsxldtrk", not "tsx_ldtrk".
 
-Ditto ...
+>  #define X86_FEATURE_PCONFIG		(18*32+18) /* Intel PCONFIG */
+>  #define X86_FEATURE_SPEC_CTRL		(18*32+26) /* ""
+> Speculation Control (IBRS + IBPB) */
+>  #define X86_FEATURE_INTEL_STIBP		(18*32+27) /* "" Single
+> Thread Indirect Branch Predictors */
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/S9BC0YV_=F5t9ofv3kONcI4
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8D3t0ACgkQAVBC80lX
-0Gw0gAgAh6yoQOwX+Bs5XBBbTuUGJy7bN2esYVysFEbsKKXluWKM7a78sLdzAae2
-57jQRDpghDg1EaA8ShYGFiAmWD4yq0BLZEx1+Cr4jEa13NehXP3+gmblmQ+bpOt1
-nIOahh6FOwAX+NOt9Ijv+F0wDIV1zwLpNrUZuyCxDFqzA+8XhQ3iAzfctz/b8+KI
-HPDvpfnnq90tfvERytlmAFuIGTmXu/RUeYo0WqTKGpLuW1g1m/KrMQ+JWIO6TUgx
-tovMq90ZahXmWsMT18T1pgZT4BT7NrQcPwlu0qsShYsy6ccL6l5l3QVkA0B6t/GG
-+2PB8Z+/6A7Cky7G5ouNAA46qQI1nw==
-=+th2
------END PGP SIGNATURE-----
-
---Sig_/S9BC0YV_=F5t9ofv3kONcI4--
