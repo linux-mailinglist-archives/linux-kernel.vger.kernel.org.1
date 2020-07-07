@@ -2,83 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBE36216C59
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 13:55:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91A95216C5D
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 13:57:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727090AbgGGLy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 07:54:58 -0400
-Received: from mga01.intel.com ([192.55.52.88]:18420 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726839AbgGGLy5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 07:54:57 -0400
-IronPort-SDR: khKurL59450+/kibfTom+kxOIYT4/Kdtu02upNX8GT8WkWQXPGgbTAtyGgcgOyZKtyezeIsz/1
- Qr1ZDyvyFQlw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9674"; a="165653233"
-X-IronPort-AV: E=Sophos;i="5.75,323,1589266800"; 
-   d="scan'208";a="165653233"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2020 04:54:57 -0700
-IronPort-SDR: Q0XzBKzpLoC00gIXad7+vF1LH2FPQ7aV7UOLCWh9gfLBTzfkGKg8kftxLgX0Ju0fnrF7MBy4rR
- Ite9FIYltpUA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,323,1589266800"; 
-   d="scan'208";a="457073880"
-Received: from chenyu-office.sh.intel.com ([10.239.158.173])
-  by orsmga005.jf.intel.com with ESMTP; 07 Jul 2020 04:54:55 -0700
-Date:   Tue, 7 Jul 2020 19:56:21 +0800
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2][RFC] Makes sd->flags sysctl writable
-Message-ID: <20200707115621.GB25765@chenyu-office.sh.intel.com>
-References: <cover.1594062828.git.yu.c.chen@intel.com>
- <20200706200049.GB5523@worktop.programming.kicks-ass.net>
- <jhj7dvg8faj.mognet@arm.com>
+        id S1727079AbgGGL5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 07:57:30 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7819 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726745AbgGGL53 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 07:57:29 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id D659616BD5B4F6A04B78;
+        Tue,  7 Jul 2020 19:57:27 +0800 (CST)
+Received: from [127.0.0.1] (10.174.179.214) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Tue, 7 Jul 2020
+ 19:57:21 +0800
+Subject: Re: [PATCH] ubifs: Fix wrong orphan node deletion in
+ ubifs_jnl_update()
+To:     Richard Weinberger <richard.weinberger@gmail.com>
+CC:     <linux-mtd@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Richard Weinberger <richard@nod.at>,
+        "zhangyi (F)" <yi.zhang@huawei.com>
+References: <20200702152048.1819867-1-chengzhihao1@huawei.com>
+ <CAFLxGvybobVbhS4zQSxSmq3xR40QP=pkyDG8j7jA8a6eOOKfHg@mail.gmail.com>
+From:   Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <37d3628a-1904-bb94-e225-348dfeafe6b1@huawei.com>
+Date:   Tue, 7 Jul 2020 19:57:21 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <jhj7dvg8faj.mognet@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CAFLxGvybobVbhS4zQSxSmq3xR40QP=pkyDG8j7jA8a6eOOKfHg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.214]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Valentin,
-On Mon, Jul 06, 2020 at 11:11:32PM +0100, Valentin Schneider wrote:
-> 
-> On 06/07/20 21:00, Peter Zijlstra wrote:
-> > On Tue, Jul 07, 2020 at 03:36:13AM +0800, Chen Yu wrote:
-> >> It was found that recently the flags of sched domain could
-> >> not be customized via sysctl, which might make it a little
-> >> inconenient for performance tuning/debugging.
-> >
-> > What specific goals do you have? This is a debug interface.
-> 
-> Also, while the update_top_cache_domain() call on sysctl write may work,
-> you're back to square one as soon as you go through a hotplug cycle, which
-> is icky.
-Do you mean, after the hotplug, all the settings of flags are lost? Yes,
-it is, but in our testing environment we do not do hotplug offen : )
-> 
-> That said, I second Peter in that I'm curious as to what you're really
-> using this interface for. Manually hacking the default / arch topology
-> flags is a bit tedious, but it's doable.
-Agree, but since we do monitor performance testings automatically,
-it might save more time for us to not have to reboot everytime we
-change the flags. So I guess we can hack the code to make that
-flags field temporarily writable. I guess the concern here is that it
-looks a little overkilled for us to invoke update_top_cache_domain(),
-I'm okay with current read-only attribute.
+在 2020/7/7 19:52, Richard Weinberger 写道:
+> On Thu, Jul 2, 2020 at 5:21 PM Zhihao Cheng <chengzhihao1@huawei.com> wrote:
+>> There a wrong orphan node deleting in error handling path in
+>> ubifs_jnl_update(), which may cause following error msg:
+>>
+>>    UBIFS error (ubi0:0 pid 1522): ubifs_delete_orphan [ubifs]:
+>>    missing orphan ino 65
+>>
+>> Fix this by checking whether the node has been operated for
+>> adding to orphan list before being deleted,
+>>
+>> Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+>> ---
+>>   fs/ubifs/journal.c | 5 +++--
+>>   1 file changed, 3 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
+>> index e5ec1afe1c66..db0a80dd9d52 100644
+>> --- a/fs/ubifs/journal.c
+>> +++ b/fs/ubifs/journal.c
+>> @@ -539,7 +539,7 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
+>>                       const struct fscrypt_name *nm, const struct inode *inode,
+>>                       int deletion, int xent)
+>>   {
+>> -       int err, dlen, ilen, len, lnum, ino_offs, dent_offs;
+>> +       int err, dlen, ilen, len, lnum, ino_offs, dent_offs, orphan_added = 0;
+>>          int aligned_dlen, aligned_ilen, sync = IS_DIRSYNC(dir);
+>>          int last_reference = !!(deletion && inode->i_nlink == 0);
+>>          struct ubifs_inode *ui = ubifs_inode(inode);
+>> @@ -630,6 +630,7 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
+>>                          goto out_finish;
+>>                  }
+>>                  ui->del_cmtno = c->cmt_no;
+>> +               orphan_added = 1;
+>>          }
+>>
+>>          err = write_head(c, BASEHD, dent, len, &lnum, &dent_offs, sync);
+>> @@ -702,7 +703,7 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
+>>          kfree(dent);
+>>   out_ro:
+>>          ubifs_ro_mode(c, err);
+>> -       if (last_reference)
+>> +       if (last_reference && orphan_added)
+> I think you can just check for orphan_added here.
+> Looks good otherwise, thanks for fixing! :-)
+Sounds reasonable. I will send v2.
 
-Thanks,
-Chenyu
