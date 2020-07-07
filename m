@@ -2,78 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C48982172EA
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:56:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E6092172ED
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:56:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729320AbgGGPqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:46:55 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:59707 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729055AbgGGPqg (ORCPT
+        id S1728955AbgGGPrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:47:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728133AbgGGPr3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:46:36 -0400
-X-UUID: f83b2b00b9224e82a090c1aa6d2915d5-20200707
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=0QW/Y65kX+qJtvLrwd+2vrHj2NORCkDYnjrB6/h++Kg=;
-        b=Sp9Nq6UA7eV4sD8Gdu6UF/IOYWebhYc/zuXbAqLz6RJKi7JL2KtkD8tom2TB0CcFU4aQyq47/LYqDvtqFhsxWVd8pcM2dCfjrmhXm2IT9hL09mxBye8EXdTbXXd6U15f0pf4Gl/9o2xBnomGPZhDbRMGiaB+d3lqbHL3HRRCSC0=;
-X-UUID: f83b2b00b9224e82a090c1aa6d2915d5-20200707
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
-        (envelope-from <dennis-yc.hsieh@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 15148973; Tue, 07 Jul 2020 23:46:29 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 7 Jul 2020 23:46:24 +0800
-Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 7 Jul 2020 23:46:25 +0800
-From:   Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>
-To:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, CK Hu <ck.hu@mediatek.com>,
-        Bibby Hsieh <bibby.hsieh@mediatek.com>,
-        Houlong Wei <houlong.wei@mediatek.com>
-CC:     <dri-devel@lists.freedesktop.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>,
-        HS Liao <hs.liao@mediatek.com>,
-        Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>
-Subject: [PATCH v3 9/9] drm/mediatek: reduce clear event
-Date:   Tue, 7 Jul 2020 23:45:14 +0800
-Message-ID: <1594136714-11650-10-git-send-email-dennis-yc.hsieh@mediatek.com>
-X-Mailer: git-send-email 1.7.9.5
-In-Reply-To: <1594136714-11650-1-git-send-email-dennis-yc.hsieh@mediatek.com>
-References: <1594136714-11650-1-git-send-email-dennis-yc.hsieh@mediatek.com>
+        Tue, 7 Jul 2020 11:47:29 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE609C061755
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 08:47:29 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id e18so20183875pgn.7
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 08:47:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=8OsXhI1ow0ICnQQfygb3TbrMB8HYFWWZMqnOKFYxMt0=;
+        b=WlZmD7dfuVkARO3bbn8Rez6bpySJlZ2m8+d0iTFhuQWQcOrGG8Z8UXAamA1rD1l6oD
+         21M8bAtWrUWfV51OR0gr99MO0ksKYRnCmrZ2hU6iI61AeJogo1ZWmFNBAagHVtMwNMBX
+         eJOGqOo4tg2Lw7NwAKy1Iqa+qHEGUh5oBWHWU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=8OsXhI1ow0ICnQQfygb3TbrMB8HYFWWZMqnOKFYxMt0=;
+        b=QnLBE1xwfZ5w4H2t9BefGM1jyTa6LBdA0yWrl8Pb1H+QtMtOLsXHuQpS3yNo/84OSn
+         fI41uJX6UVpZfB/77UHENbAlMlzDcg/qg8gSLhjeIvnD6hHaV+ZowBBbJl6JJDBvJ5H9
+         yWj2O2Cw0Zl7y5PdSMqB/zByqKbnBAaY5ZTlbFpi1CmkuVjb+F3N6tDHfvLKxEgDKPAy
+         dXTQTmR2GjxHzfezUXhprktec+XGb2CLW8U3T83xJWTCEAqiTohoxfykSobjwp/+o/1R
+         B2caT+8PD3U3ySHy9yG2y1kzXIr4SkU+Y1FQOpOphXdrorCOOkW37czOrMV8IeFdD27S
+         Q1fQ==
+X-Gm-Message-State: AOAM531d92G5qE1YTTBRhobTEH9WUmdOKNf93sfCOmlMd7ct9yuNgYo6
+        jlpj87fc1qnjZaAt+yx3//cO7w==
+X-Google-Smtp-Source: ABdhPJxQxJa1njAaRhDNLuicmcU7WU2v2N9eWIWAAkK6x7NhLBDYZ8Iwn/Vic99qtjC3a+OO4o6k5A==
+X-Received: by 2002:a63:a361:: with SMTP id v33mr41437759pgn.101.1594136849214;
+        Tue, 07 Jul 2020 08:47:29 -0700 (PDT)
+Received: from [10.136.13.65] ([192.19.228.250])
+        by smtp.gmail.com with ESMTPSA id z26sm22712347pfr.187.2020.07.07.08.47.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Jul 2020 08:47:28 -0700 (PDT)
+Subject: Re: [PATCH v2 15/15] mmc: host: sdhci-iproc: Do not define 'struct
+ acpi_device_id' when !CONFIG_ACPI
+To:     Lee Jones <lee.jones@linaro.org>, ulf.hansson@linaro.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com
+References: <20200701124702.908713-1-lee.jones@linaro.org>
+ <20200701124702.908713-16-lee.jones@linaro.org> <20200707064701.GC3500@dell>
+From:   Scott Branden <scott.branden@broadcom.com>
+Message-ID: <78030915-d7a4-d0f1-3ab8-f6e5c8bb59cf@broadcom.com>
+Date:   Tue, 7 Jul 2020 08:47:21 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <20200707064701.GC3500@dell>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tm8gbmVlZCB0byBjbGVhciBldmVudCBhZ2FpbiBzaW5jZSBldmVudCBhbHdheXMgY2xlYXIgYmVm
-b3JlIHdhaXQuDQpUaGlzIGZpeCBkZXBlbmQgb24gcGF0Y2g6DQogICJzb2M6IG1lZGlhdGVrOiBj
-bWRxOiBhZGQgY2xlYXIgb3B0aW9uIGluIGNtZHFfcGt0X3dmZSBhcGkiDQoNCkZpeGVzOiAyZjk2
-NWJlN2Y5MDA4ICgiZHJtL21lZGlhdGVrOiBhcHBseSBDTURRIGNvbnRyb2wgZmxvdyIpDQpTaWdu
-ZWQtb2ZmLWJ5OiBEZW5uaXMgWUMgSHNpZWggPGRlbm5pcy15Yy5oc2llaEBtZWRpYXRlay5jb20+
-DQotLS0NCiBkcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9jcnRjLmMgfCAgICAyICst
-DQogMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pDQoNCmRpZmYg
-LS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9jcnRjLmMgYi9kcml2ZXJz
-L2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9jcnRjLmMNCmluZGV4IGM4NGU3YTE0ZDRhOC4uYmE2
-Y2Y5NTZiMjM5IDEwMDY0NA0KLS0tIGEvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kcm1f
-Y3J0Yy5jDQorKysgYi9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9jcnRjLmMNCkBA
-IC00OTAsNyArNDkwLDcgQEAgc3RhdGljIHZvaWQgbXRrX2RybV9jcnRjX2h3X2NvbmZpZyhzdHJ1
-Y3QgbXRrX2RybV9jcnRjICptdGtfY3J0YykNCiAJCW1ib3hfZmx1c2gobXRrX2NydGMtPmNtZHFf
-Y2xpZW50LT5jaGFuLCAyMDAwKTsNCiAJCWNtZHFfaGFuZGxlID0gY21kcV9wa3RfY3JlYXRlKG10
-a19jcnRjLT5jbWRxX2NsaWVudCwgUEFHRV9TSVpFKTsNCiAJCWNtZHFfcGt0X2NsZWFyX2V2ZW50
-KGNtZHFfaGFuZGxlLCBtdGtfY3J0Yy0+Y21kcV9ldmVudCk7DQotCQljbWRxX3BrdF93ZmUoY21k
-cV9oYW5kbGUsIG10a19jcnRjLT5jbWRxX2V2ZW50LCB0cnVlKTsNCisJCWNtZHFfcGt0X3dmZShj
-bWRxX2hhbmRsZSwgbXRrX2NydGMtPmNtZHFfZXZlbnQsIGZhbHNlKTsNCiAJCW10a19jcnRjX2Rk
-cF9jb25maWcoY3J0YywgY21kcV9oYW5kbGUpOw0KIAkJY21kcV9wa3RfZmluYWxpemUoY21kcV9o
-YW5kbGUpOw0KIAkJY21kcV9wa3RfZmx1c2hfYXN5bmMoY21kcV9oYW5kbGUsIGRkcF9jbWRxX2Ni
-LCBjbWRxX2hhbmRsZSk7DQotLSANCjEuNy45LjUNCg==
+thanks
+
+On 2020-07-06 11:47 p.m., Lee Jones wrote:
+> Since ACPI_PTR() is used to NULLify the value when !CONFIG_ACPI,
+> 'struct sdhci_iproc_acpi_ids' becomes defined but unused.
+>
+> Fixes the following W=1 kernel build warning:
+>
+>   mmc/host/sdhci-iproc.c:297:36: warning: ‘sdhci_iproc_acpi_ids’ defined but not used [-Wunused-const-variable=]
+>
+> Cc: Adrian Hunter <adrian.hunter@intel.com>
+> Cc: Ray Jui <rjui@broadcom.com>
+> Cc: Scott Branden <sbranden@broadcom.com>
+> Cc: bcm-kernel-feedback-list@broadcom.com
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Acked-by: Scott Branden <scott.branden@broadcom.com>
+>
+> diff --git a/drivers/mmc/host/sdhci-iproc.c b/drivers/mmc/host/sdhci-iproc.c
+> index 225603148d7de..e2d8dfe90077e 100644
+> --- a/drivers/mmc/host/sdhci-iproc.c
+> +++ b/drivers/mmc/host/sdhci-iproc.c
+> @@ -294,12 +294,14 @@ static const struct of_device_id sdhci_iproc_of_match[] = {
+>   };
+>   MODULE_DEVICE_TABLE(of, sdhci_iproc_of_match);
+>   
+> +#ifdef CONFIG_ACPI
+>   static const struct acpi_device_id sdhci_iproc_acpi_ids[] = {
+>          { .id = "BRCM5871", .driver_data = (kernel_ulong_t)&iproc_cygnus_data },
+>          { .id = "BRCM5872", .driver_data = (kernel_ulong_t)&iproc_data },
+>          { /* sentinel */ }
+>   };
+>   MODULE_DEVICE_TABLE(acpi, sdhci_iproc_acpi_ids);
+> +#endif
+>   
+>   static int sdhci_iproc_probe(struct platform_device *pdev)
+>   {
 
