@@ -2,79 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D544C21668A
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 08:39:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F48D216692
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 08:40:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728184AbgGGGiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 02:38:51 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:57520 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725825AbgGGGiv (ORCPT
+        id S1728029AbgGGGkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 02:40:47 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:36399 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726788AbgGGGkr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 02:38:51 -0400
-Received: from 61-220-137-37.hinet-ip.hinet.net ([61.220.137.37] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1jshFb-0005om-1g; Tue, 07 Jul 2020 06:38:43 +0000
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-To:     irusskikh@marvell.com
-Cc:     anthony.wong@canonical.com,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Nikita Danilov <ndanilov@marvell.com>,
-        Mark Starovoytov <mstarovoitov@marvell.com>,
-        Dmitry Bezrukov <dmitry.bezrukov@aquantia.com>,
-        netdev@vger.kernel.org (open list:AQUANTIA ETHERNET DRIVER (atlantic)),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] net: atlantic: Add support for firmware v4
-Date:   Tue,  7 Jul 2020 14:38:28 +0800
-Message-Id: <20200707063830.15645-1-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 7 Jul 2020 02:40:47 -0400
+Received: by mail-wr1-f66.google.com with SMTP id k6so43912603wrn.3;
+        Mon, 06 Jul 2020 23:40:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=vI8DxupuUbImB/T0a2XWJhMzabrm5GC5I3y8ZZb7Wpc=;
+        b=XwpY8BrV1HYislsVC67BAFpz4LcONOItkgZsCM8jBr2nh/8qqSnaqNKeIMnPFvUXab
+         2N8FwdMYEOMtZrtRbNW4raO8loPfqkSv1w3UhVvpAmsWEKQzuEi+b0LaqJf6vEwcQlH3
+         SIMnhXWWuibQJAtVm7GMeqNl+U+Fpfkl3Rw676RE7dkeTgOmtzrxN/GA0aW4uDVxDNZ8
+         6enxju5hcARDzG+SuQJvQT2WLEiBoqF7a/g/wdG+9c3kn/Xiyus1G9BvgFETEnglNsno
+         uVL1NGEK/UMI5BHgmz4/9LdvVgbV/1kxeOUmDQxkAaDLyy4VYlcJz8FGcdH090Tz2X2i
+         Lzog==
+X-Gm-Message-State: AOAM530WxtttU8xpF8sI60Kt8b4ui/LLo3QcLovS69afLCuP7oWZrakd
+        uDAqkPMCXqKh25Bm8DHxR7jMCbJz
+X-Google-Smtp-Source: ABdhPJwf2m5P8QA824OMZJouAy2e4BXvU7D1KaqNe3ilQ0V+Q8oQBmWGCE4ZN8AyMiSHZ54kxTticA==
+X-Received: by 2002:adf:9c8c:: with SMTP id d12mr51188746wre.369.1594104044716;
+        Mon, 06 Jul 2020 23:40:44 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.195])
+        by smtp.googlemail.com with ESMTPSA id 207sm2331459wme.13.2020.07.06.23.40.43
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 06 Jul 2020 23:40:44 -0700 (PDT)
+Date:   Tue, 7 Jul 2020 08:40:42 +0200
+From:   'Krzysztof Kozlowski' <krzk@kernel.org>
+To:     Alim Akhtar <alim.akhtar@samsung.com>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        robh+dt@kernel.org
+Subject: Re: [PATCH v1 2/2] arm64: dts: exynos: keep LDO12 always-on
+Message-ID: <20200707064042.GA15031@kozik-lap>
+References: <20200705070918.63531-1-alim.akhtar@samsung.com>
+ <CGME20200705072938epcas5p479f0d040ca34fd44b2ba893a199efb79@epcas5p4.samsung.com>
+ <20200705070918.63531-2-alim.akhtar@samsung.com>
+ <20200705182306.GA13827@kozik-lap>
+ <02e601d653ad$a5734190$f059c4b0$@samsung.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <02e601d653ad$a5734190$f059c4b0$@samsung.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We have a new ethernet card that is supported by the atlantic driver:
-01:00.0 Ethernet controller [0200]: Aquantia Corp. AQC107 NBase-T/IEEE 802.3bz Ethernet Controller [AQtion] [1d6a:07b1] (rev 02)
+On Mon, Jul 06, 2020 at 09:23:49PM +0530, Alim Akhtar wrote:
+> Hi Krzysztof,
+> 
+> > -----Original Message-----
+> > From: Krzysztof Kozlowski <krzk@kernel.org>
+> > Sent: 05 July 2020 23:53
+> > To: Alim Akhtar <alim.akhtar@samsung.com>
+> > Cc: devicetree@vger.kernel.org; linux-arm-kernel@lists.infradead.org; linux-
+> > samsung-soc@vger.kernel.org; linux-kernel@vger.kernel.org;
+> > robh+dt@kernel.org
+> > Subject: Re: [PATCH v1 2/2] arm64: dts: exynos: keep LDO12 always-on
+> > 
+> > On Sun, Jul 05, 2020 at 12:39:18PM +0530, Alim Akhtar wrote:
+> > > LDO12 on exynos7 supply power to VDDQ_UFS20_RESET, in case this
+> > > regulator is OFF, UFS host controller can not send command to UFS
+> > > device. To keep this supply ON, set regulator-always-on property for
+> > > this ldo.
+> > 
+> > Why UFS does not take any supplies? This looks like a workaround for the case
+> > of not implementing any consumer.
+> > 
+> This particular supply is not part of UFS HCI spec and binding documentation, as per binding only one supply for host controller and three others for UFS device are needed. My best guess is, VDDQ_UFS20_RESET supply to reset logic block inside HCI, which might be specific to this controller version (I did not find any such supply in the latest host controller though).
 
-But the driver failed to probe the device:
-kernel: atlantic: Bad FW version detected: 400001e
-kernel: atlantic: probe of 0000:01:00.0 failed with error -95
+The bindings specific to Exynos7 UFS are then incomplete.  Anyway it's
+nothing worth revisiting so I applied both patches.
 
-As a pure guesswork, simply adding the firmware version to the driver
-can make it function. Doing iperf3 as a smoketest doesn't show any
-abnormality either.
-
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
----
- drivers/net/ethernet/aquantia/atlantic/hw_atl/hw_atl_utils.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/drivers/net/ethernet/aquantia/atlantic/hw_atl/hw_atl_utils.c b/drivers/net/ethernet/aquantia/atlantic/hw_atl/hw_atl_utils.c
-index 73c0f41df8d8..0b4cd1c0e022 100644
---- a/drivers/net/ethernet/aquantia/atlantic/hw_atl/hw_atl_utils.c
-+++ b/drivers/net/ethernet/aquantia/atlantic/hw_atl/hw_atl_utils.c
-@@ -46,6 +46,7 @@
- #define HW_ATL_FW_VER_1X 0x01050006U
- #define HW_ATL_FW_VER_2X 0x02000000U
- #define HW_ATL_FW_VER_3X 0x03000000U
-+#define HW_ATL_FW_VER_4X 0x0400001EU
- 
- #define FORCE_FLASHLESS 0
- 
-@@ -81,6 +82,9 @@ int hw_atl_utils_initfw(struct aq_hw_s *self, const struct aq_fw_ops **fw_ops)
- 	} else if (hw_atl_utils_ver_match(HW_ATL_FW_VER_3X,
- 					  self->fw_ver_actual) == 0) {
- 		*fw_ops = &aq_fw_2x_ops;
-+	} else if (hw_atl_utils_ver_match(HW_ATL_FW_VER_4X,
-+					  self->fw_ver_actual) == 0) {
-+		*fw_ops = &aq_fw_2x_ops;
- 	} else {
- 		aq_pr_err("Bad FW version detected: %x\n",
- 			  self->fw_ver_actual);
--- 
-2.17.1
+Best regards,
+Krzysztof
 
