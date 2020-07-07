@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 457D92170D0
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:24:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85A252170F2
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:25:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728441AbgGGPU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:20:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32838 "EHLO mail.kernel.org"
+        id S1729895AbgGGPWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:22:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35166 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729599AbgGGPUv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:20:51 -0400
+        id S1729868AbgGGPWd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 11:22:33 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 41FE42065D;
-        Tue,  7 Jul 2020 15:20:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0F46920773;
+        Tue,  7 Jul 2020 15:22:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594135250;
-        bh=8s2YqL+W4O6wUd7+uw80P/xTp4oSuBVxXG+1zBaMDiQ=;
+        s=default; t=1594135352;
+        bh=4IZmwLBc4b1k4DcYWXQa0y3dm3kYmW1EZ2wcvtA/LKM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sjt6Xgzat7Sgp3rUNkXNJmxJ7yIeTIJ21Xx6GgP/GE5HQItTqikP3RIFWY9c8x4B8
-         8I26QfhUR5i5dyoh4pAwqcC68eMfuZVBOKiUXHlzArDC4ocXWFW7sh791nqcmrNvDe
-         sumI1a9RxX2r1NYB3SizZqP+Z6phj4Hg9tmRvVdw=
+        b=uS2oHvf5SZRPIfLJS/ldsYXww5eZNVVliQCj6S1N9YI8yhb0LRH6J9G1wY/fRQGbS
+         4nkPvzMXF+iI00Uc4ISfHslQ/78PGSkG4U12WJ4OjiqcuVICmNV1AUiSwb/nAemrHX
+         H4l/Gk0q0mCN0vVkWOvTSUG28dnYoqj3kHQ2d0FY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Misono Tomohiro <misono.tomohiro@jp.fujitsu.com>,
-        Guenter Roeck <linux@roeck-us.net>,
+        stable@vger.kernel.org, Michael Kao <michael.kao@mediatek.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 31/65] hwmon: (acpi_power_meter) Fix potential memory leak in acpi_power_meter_add()
-Date:   Tue,  7 Jul 2020 17:17:10 +0200
-Message-Id: <20200707145753.979609221@linuxfoundation.org>
+Subject: [PATCH 5.4 32/65] thermal/drivers/mediatek: Fix bank number settings on mt8183
+Date:   Tue,  7 Jul 2020 17:17:11 +0200
+Message-Id: <20200707145754.017890334@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200707145752.417212219@linuxfoundation.org>
 References: <20200707145752.417212219@linuxfoundation.org>
@@ -45,44 +45,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Misono Tomohiro <misono.tomohiro@jp.fujitsu.com>
+From: Michael Kao <michael.kao@mediatek.com>
 
-[ Upstream commit 8b97f9922211c44a739c5cbd9502ecbb9f17f6d1 ]
+[ Upstream commit 14533a5a6c12e8d7de79d309d4085bf186058fe1 ]
 
-Although it rarely happens, we should call free_capabilities()
-if error happens after read_capabilities() to free allocated strings.
+MT8183_NUM_ZONES should be set to 1
+because MT8183 doesn't have multiple banks.
 
-Fixes: de584afa5e188 ("hwmon driver for ACPI 4.0 power meters")
-Signed-off-by: Misono Tomohiro <misono.tomohiro@jp.fujitsu.com>
-Link: https://lore.kernel.org/r/20200625043242.31175-1-misono.tomohiro@jp.fujitsu.com
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Fixes: a4ffe6b52d27 ("thermal: mediatek: add support for MT8183")
+Signed-off-by: Michael Kao <michael.kao@mediatek.com>
+Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Link: https://lore.kernel.org/r/20200323121537.22697-6-michael.kao@mediatek.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hwmon/acpi_power_meter.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/thermal/mtk_thermal.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/hwmon/acpi_power_meter.c b/drivers/hwmon/acpi_power_meter.c
-index 4cf25458f0b95..740ac0a1b7265 100644
---- a/drivers/hwmon/acpi_power_meter.c
-+++ b/drivers/hwmon/acpi_power_meter.c
-@@ -883,7 +883,7 @@ static int acpi_power_meter_add(struct acpi_device *device)
+diff --git a/drivers/thermal/mtk_thermal.c b/drivers/thermal/mtk_thermal.c
+index acf4854cbb8b8..d6fabd0a7da69 100644
+--- a/drivers/thermal/mtk_thermal.c
++++ b/drivers/thermal/mtk_thermal.c
+@@ -211,6 +211,9 @@ enum {
+ /* The total number of temperature sensors in the MT8183 */
+ #define MT8183_NUM_SENSORS	6
  
- 	res = setup_attrs(resource);
- 	if (res)
--		goto exit_free;
-+		goto exit_free_capability;
++/* The number of banks in the MT8183 */
++#define MT8183_NUM_ZONES               1
++
+ /* The number of sensing points per bank */
+ #define MT8183_NUM_SENSORS_PER_ZONE	 6
  
- 	resource->hwmon_dev = hwmon_device_register(&device->dev);
- 	if (IS_ERR(resource->hwmon_dev)) {
-@@ -896,6 +896,8 @@ static int acpi_power_meter_add(struct acpi_device *device)
+@@ -498,7 +501,7 @@ static const struct mtk_thermal_data mt7622_thermal_data = {
  
- exit_remove:
- 	remove_attrs(resource);
-+exit_free_capability:
-+	free_capabilities(resource);
- exit_free:
- 	kfree(resource);
- exit:
+ static const struct mtk_thermal_data mt8183_thermal_data = {
+ 	.auxadc_channel = MT8183_TEMP_AUXADC_CHANNEL,
+-	.num_banks = MT8183_NUM_SENSORS_PER_ZONE,
++	.num_banks = MT8183_NUM_ZONES,
+ 	.num_sensors = MT8183_NUM_SENSORS,
+ 	.vts_index = mt8183_vts_index,
+ 	.cali_val = MT8183_CALIBRATION,
 -- 
 2.25.1
 
