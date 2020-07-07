@@ -2,90 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01771216B69
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 13:22:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E41BA216B28
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 13:13:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728348AbgGGLWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 07:22:32 -0400
-Received: from mx2.suse.de ([195.135.220.15]:34258 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727097AbgGGLWc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 07:22:32 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DCDAFAD81;
-        Tue,  7 Jul 2020 11:22:30 +0000 (UTC)
-Subject: Re: [PATCH v4 04/11] mm/hugetlb: make hugetlb migration callback CMA
- aware
-To:     js1304@gmail.com, Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        kernel-team@lge.com, Christoph Hellwig <hch@infradead.org>,
-        Roman Gushchin <guro@fb.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-References: <1594107889-32228-1-git-send-email-iamjoonsoo.kim@lge.com>
- <1594107889-32228-5-git-send-email-iamjoonsoo.kim@lge.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <c1cd6e11-08c3-5654-60e7-dec2eb80987a@suse.cz>
-Date:   Tue, 7 Jul 2020 13:22:31 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1728246AbgGGLMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 07:12:52 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:7263 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727827AbgGGLMw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 07:12:52 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id E970C29AF5D6A67F67A2;
+        Tue,  7 Jul 2020 19:12:50 +0800 (CST)
+Received: from kernelci-master.huawei.com (10.175.101.6) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 7 Jul 2020 19:12:43 +0800
+From:   Wei Yongjun <weiyongjun1@huawei.com>
+To:     Hulk Robot <hulkci@huawei.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        Michel Lespinasse <walken@google.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        "Vlastimil Babka" <vbabka@suse.cz>,
+        Colin Ian King <colin.king@canonical.com>,
+        Kees Cook <keescook@chromium.org>,
+        Jason Yan <yanaijie@huawei.com>
+CC:     Wei Yongjun <weiyongjun1@huawei.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] lib/test_lockup.c: make symbol 'test_works' static
+Date:   Tue, 7 Jul 2020 19:22:52 +0800
+Message-ID: <20200707112252.9047-1-weiyongjun1@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <1594107889-32228-5-git-send-email-iamjoonsoo.kim@lge.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.175.101.6]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/7/20 9:44 AM, js1304@gmail.com wrote:
-> From: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-> 
-> new_non_cma_page() in gup.c which try to allocate migration target page
-> requires to allocate the new page that is not on the CMA area.
-> new_non_cma_page() implements it by removing __GFP_MOVABLE flag.  This way
-> works well for THP page or normal page but not for hugetlb page.
-> 
-> hugetlb page allocation process consists of two steps.  First is dequeing
-> from the pool.  Second is, if there is no available page on the queue,
-> allocating from the page allocator.
-> 
-> new_non_cma_page() can control allocation from the page allocator by
-> specifying correct gfp flag.  However, dequeing cannot be controlled until
-> now, so, new_non_cma_page() skips dequeing completely.  It is a suboptimal
-> since new_non_cma_page() cannot utilize hugetlb pages on the queue so this
-> patch tries to fix this situation.
-> 
-> This patch makes the deque function on hugetlb CMA aware and skip CMA
-> pages if newly added skip_cma argument is passed as true.
+Fix sparse build warning:
 
-Hmm, can't you instead change dequeue_huge_page_node_exact() to test the PF_
-flag and avoid adding bool skip_cma everywhere?
+lib/test_lockup.c:403:1: warning:
+ symbol '__pcpu_scope_test_works' was not declared. Should it be static?
 
-I think that's what Michal suggested [1] except he said "the code already does
-by memalloc_nocma_{save,restore} API". It needs extending a bit though, AFAICS.
-__gup_longterm_locked() indeed does the save/restore, but restore comes before
-check_and_migrate_cma_pages() and thus new_non_cma_page() is called, so an
-adjustment is needed there, but that's all?
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+---
+ lib/test_lockup.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Hm the adjustment should be also done because save/restore is done around
-__get_user_pages_locked(), but check_and_migrate_cma_pages() also calls
-__get_user_pages_locked(), and that call not being between nocma save and
-restore is thus also a correctness issue?
+diff --git a/lib/test_lockup.c b/lib/test_lockup.c
+index ff26f36d729f..0f81252837b9 100644
+--- a/lib/test_lockup.c
++++ b/lib/test_lockup.c
+@@ -400,7 +400,7 @@ static void test_lockup(bool master)
+ 	test_unlock(master, true);
+ }
+ 
+-DEFINE_PER_CPU(struct work_struct, test_works);
++static DEFINE_PER_CPU(struct work_struct, test_works);
+ 
+ static void test_work_fn(struct work_struct *work)
+ {
 
-[1] https://lore.kernel.org/r/20200629075510.GA32461@dhcp22.suse.cz
-
-> Acked-by: Mike Kravetz <mike.kravetz@oracle.com>
-> Signed-off-by: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-> ---
->  include/linux/hugetlb.h |  6 ++----
->  mm/gup.c                |  3 ++-
->  mm/hugetlb.c            | 46 ++++++++++++++++++++++++++++++----------------
->  mm/mempolicy.c          |  2 +-
->  mm/migrate.c            |  2 +-
->  5 files changed, 36 insertions(+), 23 deletions(-)
-> 
