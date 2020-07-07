@@ -2,94 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0885F2169D7
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 12:18:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 576C42169F6
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 12:20:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728298AbgGGKR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 06:17:29 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:62255 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726946AbgGGKRM (ORCPT
+        id S1728559AbgGGKSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 06:18:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41382 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728029AbgGGKRB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 06:17:12 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1594117031; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=BXI021rh3NXH5BcDC2Muu+0d+4q5W0LWbpYi2AY+2A4=; b=SDfdxurnYwJm8mP9s52bhnsKVxz9zZVXYnADFasVHWRiQtZIfjQsfrLjT1c35c6HeXV9oQom
- wqS4C9ITvrVTccAbMBFazAejDWeTB9lDkrczE4wCaRxppsIX74A/54vOVtv3tNzEFZu6/7mJ
- Rv0N3AUyUAp3IfamK7q+BqItxNE=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n17.prod.us-west-2.postgun.com with SMTP id
- 5f044b93d8ca07a573e8c852 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 07 Jul 2020 10:16:51
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 70EB7C433CA; Tue,  7 Jul 2020 10:16:51 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.0.15] (unknown [183.83.138.47])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: akashast)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id ACB36C433C6;
-        Tue,  7 Jul 2020 10:16:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org ACB36C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=akashast@codeaurora.org
-Subject: Re: [PATCH 1/3] spi: spi-geni-qcom: Avoid clock setting if not needed
-To:     Douglas Anderson <dianders@chromium.org>,
-        Mark Brown <broonie@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, mkshah@codeaurora.org,
-        swboyd@chromium.org, georgi.djakov@linaro.org,
-        ctheegal@codeaurora.org, mka@chromium.org,
-        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
-References: <20200702004509.2333554-1-dianders@chromium.org>
- <20200701174506.1.Icfdcee14649fc0a6c38e87477b28523d4e60bab3@changeid>
-From:   Akash Asthana <akashast@codeaurora.org>
-Message-ID: <1b9f0313-0e8f-0a75-b0a5-b6a768af0a7a@codeaurora.org>
-Date:   Tue, 7 Jul 2020 15:46:22 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Tue, 7 Jul 2020 06:17:01 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 248FBC061755
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 03:17:01 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id b6so44527310wrs.11
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 03:17:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=YsokizqvcQrYmRK4XFUw9AfpZPmtx9CnTkzjsD5Kh2w=;
+        b=akr9Zsp1R9zCusMjYHj20g4bdfxR2yvSbDS3HgPMMiM7U4jS+e7z+EtZ2c1Ikm6qSJ
+         j50t7qj6FEzIYazt1dQ/z2GMn07rEoyth5ncNZ/VBMThxjPl38ULcQKS+uBtxBd5UUbN
+         2fYZzTWY2o1yX4Xhk//N/CTDnmLeaX8+cCylsZtWLK3/gQLvTJFa0lwDJgeuQCumUB+m
+         Pg2eQBVR27X5w1MuozculYRrSsmF0Iw/Vd7LE93nW7MdOJGe4VWoDyqRQyyWGfpn/LK6
+         LqMF5Thu9gPLoKx5rUeWRdJkOngDQOols03IREwRd6KxBITISTpO+Bmta9r6mlF8pD7W
+         OmmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=YsokizqvcQrYmRK4XFUw9AfpZPmtx9CnTkzjsD5Kh2w=;
+        b=k+HpVuas1wbVH5svzXWBkdFzE7v3SOEVDMrrf84Jzs+MwN/2eUs66QM6vfZP+s+VmF
+         0i2FSO1K/Ojws//ON8jdTqo05/XTYFNWgv4vn+C6ntiLC8F1K7SZVRHyiQl+YhPMQAv9
+         04Lw0a9q8dNkDfAfwU8otEMGkIlUrMdTkwNNVt6TehFSAVm3PNB8JsjmwLLzd28JfNXz
+         +tXaBfyc3EhU2xfwjZ9x7iYOXG9EpaOJlN10S/OzcjBHeAiJLbT1DM1V9frfJvaEaOQq
+         AFQBy0+DTRk1Kw+KNEf3y996y7sywg6LWuIlVZLnQEt7oWbsjCulX6bquCDFJ7HUxpBn
+         tLgw==
+X-Gm-Message-State: AOAM532XKtS0gPr0uAiM4JfIPXzcqjpiwVlw4heDegUNpRQ0CLSjUsn7
+        x3jqCxKas4epbt6VOAiDW4WLCw==
+X-Google-Smtp-Source: ABdhPJyokynAsMCJ9KP59ioOQmggRgChTfyTqf7FPi5nBCxf7ckHFkFUgqw78HQEefo5rpFgheVoXQ==
+X-Received: by 2002:adf:f20a:: with SMTP id p10mr56349271wro.41.1594117019816;
+        Tue, 07 Jul 2020 03:16:59 -0700 (PDT)
+Received: from localhost.localdomain ([2.27.35.206])
+        by smtp.gmail.com with ESMTPSA id z8sm469409wmg.39.2020.07.07.03.16.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Jul 2020 03:16:59 -0700 (PDT)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz,
+        tiwai@suse.com
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org, Lee Jones <lee.jones@linaro.org>,
+        Timur Tabi <timur@kernel.org>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH 09/28] ASoC: fsl: fsl_esai: Fix a bunch of kerneldoc issues
+Date:   Tue,  7 Jul 2020 11:16:23 +0100
+Message-Id: <20200707101642.1747944-10-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200707101642.1747944-1-lee.jones@linaro.org>
+References: <20200707101642.1747944-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20200701174506.1.Icfdcee14649fc0a6c38e87477b28523d4e60bab3@changeid>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Struct headers require a 'struct $NAME' title, all function parameters
+require a description and need to be in the format '@.*:', else the
+checker gets confused.  Also demote one kerneldoc header where no effort
+was made to document any of the function's params.
 
-On 7/2/2020 6:15 AM, Douglas Anderson wrote:
-> Every SPI transfer could have a different clock rate.  The
-> spi-geni-qcom controller code to deal with this was never very well
-> optimized and has always had a lot of code plus some calls into the
-> clk framework which, at the very least, would grab a mutex.  However,
-> until recently, the overhead wasn't _too_ much.  That changed with
-> commit 0e3b8a81f5df ("spi: spi-geni-qcom: Add interconnect support")
-> we're now calling geni_icc_set_bw(), which leads to a bunch of math
-> plus:
->    geni_icc_set_bw()
->      icc_set_bw()
->        apply_constraints()
->          qcom_icc_set()
->            qcom_icc_bcm_voter_commit()
->              rpmh_invalidate()
->              rpmh_write_batch()
-> ...and those rpmh commands can be a bit beefy if you call them too
-> often.
+Fixes the following W=1 kernel build warning(s):
 
-Reviewed-by: Akash Asthana<akashast@codeaurora.org>
+ sound/soc/fsl/fsl_esai.c:30: warning: cannot understand function prototype: 'struct fsl_esai_soc_data '
+ sound/soc/fsl/fsl_esai.c:61: warning: cannot understand function prototype: 'struct fsl_esai '
+ sound/soc/fsl/fsl_esai.c:170: warning: Function parameter or member 'dai' not described in 'fsl_esai_divisor_cal'
+ sound/soc/fsl/fsl_esai.c:265: warning: Function parameter or member 'dai' not described in 'fsl_esai_set_dai_sysclk'
+ sound/soc/fsl/fsl_esai.c:265: warning: Function parameter or member 'clk_id' not described in 'fsl_esai_set_dai_sysclk'
+ sound/soc/fsl/fsl_esai.c:265: warning: Function parameter or member 'freq' not described in 'fsl_esai_set_dai_sysclk'
+ sound/soc/fsl/fsl_esai.c:265: warning: Function parameter or member 'dir' not described in 'fsl_esai_set_dai_sysclk'
+ sound/soc/fsl/fsl_esai.c:265: warning: Excess function parameter 'Parameters' description in 'fsl_esai_set_dai_sysclk'
+ sound/soc/fsl/fsl_esai.c:364: warning: Function parameter or member 'dai' not described in 'fsl_esai_set_bclk'
+ sound/soc/fsl/fsl_esai.c:364: warning: Function parameter or member 'tx' not described in 'fsl_esai_set_bclk'
+ sound/soc/fsl/fsl_esai.c:364: warning: Function parameter or member 'freq' not described in 'fsl_esai_set_bclk'
 
+Cc: Timur Tabi <timur@kernel.org>
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: Xiubo Li <Xiubo.Lee@gmail.com>
+Cc: Fabio Estevam <festevam@gmail.com>
+Cc: linuxppc-dev@lists.ozlabs.org
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ sound/soc/fsl/fsl_esai.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
+
+diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
+index cbcb70d6f8c83..bb3c405df623c 100644
+--- a/sound/soc/fsl/fsl_esai.c
++++ b/sound/soc/fsl/fsl_esai.c
+@@ -22,7 +22,7 @@
+ 				SNDRV_PCM_FMTBIT_S24_LE)
+ 
+ /**
+- * fsl_esai_soc_data: soc specific data
++ * struct fsl_esai_soc_data - soc specific data
+  *
+  * @imx: for imx platform
+  * @reset_at_xrun: flags for enable reset operaton
+@@ -33,7 +33,7 @@ struct fsl_esai_soc_data {
+ };
+ 
+ /**
+- * fsl_esai: ESAI private data
++ * struct fsl_esai - ESAI private data
+  *
+  * @dma_params_rx: DMA parameters for receive channel
+  * @dma_params_tx: DMA parameters for transmit channel
+@@ -160,10 +160,11 @@ static irqreturn_t esai_isr(int irq, void *devid)
+  * This function is used to calculate the divisors of psr, pm, fp and it is
+  * supposed to be called in set_dai_sysclk() and set_bclk().
+  *
++ * @dai: SoC DAI
++ * @tx: current setting is for playback or capture
+  * @ratio: desired overall ratio for the paticipating dividers
+  * @usefp: for HCK setting, there is no need to set fp divider
+  * @fp: bypass other dividers by setting fp directly if fp != 0
+- * @tx: current setting is for playback or capture
+  */
+ static int fsl_esai_divisor_cal(struct snd_soc_dai *dai, bool tx, u32 ratio,
+ 				bool usefp, u32 fp)
+@@ -252,11 +253,11 @@ static int fsl_esai_divisor_cal(struct snd_soc_dai *dai, bool tx, u32 ratio,
+ /**
+  * This function mainly configures the clock frequency of MCLK (HCKT/HCKR)
+  *
+- * @Parameters:
+- * clk_id: The clock source of HCKT/HCKR
++ * @dai: SoC DAI
++ * @clk_id: The clock source of HCKT/HCKR
+  *	  (Input from outside; output from inside, FSYS or EXTAL)
+- * freq: The required clock rate of HCKT/HCKR
+- * dir: The clock direction of HCKT/HCKR
++ * @freq: The required clock rate of HCKT/HCKR
++ * @dir: The clock direction of HCKT/HCKR
+  *
+  * Note: If the direction is input, we do not care about clk_id.
+  */
+@@ -357,7 +358,7 @@ static int fsl_esai_set_dai_sysclk(struct snd_soc_dai *dai, int clk_id,
+ 	return 0;
+ }
+ 
+-/**
++/*
+  * This function configures the related dividers according to the bclk rate
+  */
+ static int fsl_esai_set_bclk(struct snd_soc_dai *dai, bool tx, u32 freq)
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,\na Linux Foundation Collaborative Project
+2.25.1
 
