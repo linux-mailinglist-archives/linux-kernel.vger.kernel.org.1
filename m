@@ -2,139 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7351721719A
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:42:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E28021723C
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:44:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728915AbgGGPWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:22:25 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:39264 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728494AbgGGPWO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:22:14 -0400
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1594135332;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=LxVBy1DoV2t42uekM6oHIWgLJZVcrbHKxbpdNbzHSDs=;
-        b=IunFX7pjGAEVmxnZIas6oJ/9YwdsdmaOA9OE0FtMlOPvlgWFtOaDDqJlHXovnGOiHKnwhQ
-        CwmW+ri3FxF7YregfVsAJREGXSzvsY4ZqHEvUR9G6B9I9JtAaqU5PgJJ+CY671yQs1SrTD
-        CzIbm2ksIhMHNjW5uKURBWLEU48a/ZHAuKJYerMv/bXMxk9Ld5luig3w92mIP8SJh1i0Ix
-        SiEvieSpDZNk90FEqL+pFe3asOgmXnQZQNRkDjN0xsKxmw8UbH87jBHjRX+3gPy/ED+D+S
-        Q1ZCBwYmS2heNzlLDfIlSXcE4nCDwDLEBZvaL6e2zFOI4mpLSyK15kqdRmoxBA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1594135332;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=LxVBy1DoV2t42uekM6oHIWgLJZVcrbHKxbpdNbzHSDs=;
-        b=MchddIYbD4bgGWqwWIU33Se5uTwF1xc1iG+Q9Eqx0+0tI6PBGs9CAVHRdjslaOLlbkkHe1
-        dX8EQH35Pne8orBQ==
-To:     "David S . Miller" <davem@davemloft.net>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] af_packet: TPACKET_V3: replace busy-wait loop
-Date:   Tue,  7 Jul 2020 17:28:04 +0206
-Message-Id: <20200707152204.10314-1-john.ogness@linutronix.de>
+        id S1730230AbgGGPag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:30:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37644 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729592AbgGGPYK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 11:24:10 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B76F3207CD;
+        Tue,  7 Jul 2020 15:24:08 +0000 (UTC)
+Date:   Tue, 7 Jul 2020 11:24:07 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+Subject: Re: [PATCH v2 05/15] tools lib traceevent: Introduced new
+ traceevent API, for adding new plugins directories.
+Message-ID: <20200707112407.746cca77@oasis.local.home>
+In-Reply-To: <CAM9d7chfvJwodpVrHGc5E2J80peRojmYV_fD8x3cpn9HFRUw2g@mail.gmail.com>
+References: <20200702185344.913492689@goodmis.org>
+        <20200702185704.248123446@goodmis.org>
+        <CAM9d7chfvJwodpVrHGc5E2J80peRojmYV_fD8x3cpn9HFRUw2g@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A busy-wait loop is used to implement waiting for bits to be copied
-from the skb to the kernel buffer before retiring a block. This is
-a problem on PREEMPT_RT because the copying task could be preempted
-by the busy-waiting task and thus live lock in the busy-wait loop.
+On Wed, 8 Jul 2020 00:06:38 +0900
+Namhyung Kim <namhyung@kernel.org> wrote:
+> >
+> > +/**
+> > + * tep_add_plugin_path - Add a new plugin directory.
+> > + * @tep: Trace event handler.
+> > + * @path: Path to a directory. All files with extension .so in that  
+> 
+> Is the extension (".so") fixed?  I think a new API has the suffix argument
+> which may change it... ?
 
-Replace the busy-wait logic with an rwlock_t. This provides lockdep
-coverage and makes the code RT ready.
+So this should add a "suffix" argument? NULL for ".so"?
 
-Signed-off-by: John Ogness <john.ogness@linutronix.de>
----
- patch against v5.8-rc4
+> 
+> 
+> > + *       directory will be loaded as plugins.
+> > + *@prio: Load priority of the plugins in that directory.
+> > + *
+> > + * Returns -1 in case of an error, 0 otherwise.
+> > + */
+> > +int tep_add_plugin_path(struct tep_handle *tep, char *path,
+> > +                       enum tep_plugin_load_priority prio)
+> > +{
+> > +       struct tep_plugins_dir *dir;
+> > +
+> > +       if (!tep || !path)
+> > +               return -1;
+> > +
+> > +       dir = calloc(1, sizeof(*dir));
+> > +       if (!dir)
+> > +               return -1;
+> > +
+> > +       dir->path = strdup(path);  
+> 
+> It needs to check the return value..
 
- net/packet/af_packet.c | 20 ++++++++++----------
- net/packet/internal.h  |  2 +-
- 2 files changed, 11 insertions(+), 11 deletions(-)
+Yes it does indeed.
 
-diff --git a/net/packet/af_packet.c b/net/packet/af_packet.c
-index 29bd405adbbd..dd1eec2dd6ef 100644
---- a/net/packet/af_packet.c
-+++ b/net/packet/af_packet.c
-@@ -593,6 +593,7 @@ static void init_prb_bdqc(struct packet_sock *po,
- 						req_u->req3.tp_block_size);
- 	p1->tov_in_jiffies = msecs_to_jiffies(p1->retire_blk_tov);
- 	p1->blk_sizeof_priv = req_u->req3.tp_sizeof_priv;
-+	rwlock_init(&p1->blk_fill_in_prog_lock);
- 
- 	p1->max_frame_len = p1->kblk_size - BLK_PLUS_PRIV(p1->blk_sizeof_priv);
- 	prb_init_ft_ops(p1, req_u);
-@@ -659,10 +660,9 @@ static void prb_retire_rx_blk_timer_expired(struct timer_list *t)
- 	 *
- 	 */
- 	if (BLOCK_NUM_PKTS(pbd)) {
--		while (atomic_read(&pkc->blk_fill_in_prog)) {
--			/* Waiting for skb_copy_bits to finish... */
--			cpu_relax();
--		}
-+		/* Waiting for skb_copy_bits to finish... */
-+		write_lock(&pkc->blk_fill_in_prog_lock);
-+		write_unlock(&pkc->blk_fill_in_prog_lock);
- 	}
- 
- 	if (pkc->last_kactive_blk_num == pkc->kactive_blk_num) {
-@@ -921,10 +921,9 @@ static void prb_retire_current_block(struct tpacket_kbdq_core *pkc,
- 		 * the timer-handler already handled this case.
- 		 */
- 		if (!(status & TP_STATUS_BLK_TMO)) {
--			while (atomic_read(&pkc->blk_fill_in_prog)) {
--				/* Waiting for skb_copy_bits to finish... */
--				cpu_relax();
--			}
-+			/* Waiting for skb_copy_bits to finish... */
-+			write_lock(&pkc->blk_fill_in_prog_lock);
-+			write_unlock(&pkc->blk_fill_in_prog_lock);
- 		}
- 		prb_close_block(pkc, pbd, po, status);
- 		return;
-@@ -944,7 +943,8 @@ static int prb_queue_frozen(struct tpacket_kbdq_core *pkc)
- static void prb_clear_blk_fill_status(struct packet_ring_buffer *rb)
- {
- 	struct tpacket_kbdq_core *pkc  = GET_PBDQC_FROM_RB(rb);
--	atomic_dec(&pkc->blk_fill_in_prog);
-+
-+	read_unlock(&pkc->blk_fill_in_prog_lock);
- }
- 
- static void prb_fill_rxhash(struct tpacket_kbdq_core *pkc,
-@@ -998,7 +998,7 @@ static void prb_fill_curr_block(char *curr,
- 	pkc->nxt_offset += TOTAL_PKT_LEN_INCL_ALIGN(len);
- 	BLOCK_LEN(pbd) += TOTAL_PKT_LEN_INCL_ALIGN(len);
- 	BLOCK_NUM_PKTS(pbd) += 1;
--	atomic_inc(&pkc->blk_fill_in_prog);
-+	read_lock(&pkc->blk_fill_in_prog_lock);
- 	prb_run_all_ft_ops(pkc, ppd);
- }
- 
-diff --git a/net/packet/internal.h b/net/packet/internal.h
-index 907f4cd2a718..fd41ecb7f605 100644
---- a/net/packet/internal.h
-+++ b/net/packet/internal.h
-@@ -39,7 +39,7 @@ struct tpacket_kbdq_core {
- 	char		*nxt_offset;
- 	struct sk_buff	*skb;
- 
--	atomic_t	blk_fill_in_prog;
-+	rwlock_t	blk_fill_in_prog_lock;
- 
- 	/* Default is set to 8ms */
- #define DEFAULT_PRB_RETIRE_TOV	(8)
--- 
-2.20.1
+BTW, since these patches are already in trace-cmd.git, would be OK if
+we just write patches on top of this series to address your concerns.
+This way, we would be also adding them to trace-cmd.git as well.
+
+I eventually want a separate libraries repo on kernel.org that this
+lives in and remove it from the tools/lib directory of the kernel.
+
+-- Steve
+
+
+> 
+> > +       dir->prio = prio;
+> > +       dir->next = tep->plugins_dir;
+> > +       tep->plugins_dir = dir;
+> > +
+> > +       return 0;
+> > +}
+> > +
+> > +void tep_free_plugin_paths(struct tep_handle *tep)
+> > +{
+> > +       struct tep_plugins_dir *dir;
+> > +
+> > +       if (!tep)
+> > +               return;
+> > +
+> > +       dir = tep->plugins_dir;
+> > +       while (dir) {
+> > +               tep->plugins_dir = tep->plugins_dir->next;
+> > +               free(dir->path);
+> > +               free(dir);
+> > +               dir = tep->plugins_dir;
+> > +       }
+> > +}
+> > +
+> >  void
+> >  tep_unload_plugins(struct tep_plugin_list *plugin_list, struct tep_handle *tep)
+> >  {
+> > --
+> > 2.26.2
+> >
+> >  
 
