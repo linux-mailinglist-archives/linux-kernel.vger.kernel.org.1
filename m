@@ -2,211 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74AD1216E1A
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 15:54:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5670216E23
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 15:56:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728029AbgGGNyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 09:54:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46854 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727090AbgGGNyj (ORCPT
+        id S1728121AbgGGN4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 09:56:48 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:43815 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726805AbgGGN4r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 09:54:39 -0400
-Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8DBCC08C5E0
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 06:54:38 -0700 (PDT)
-Received: by mail-vk1-xa41.google.com with SMTP id h1so9343530vkn.12
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 06:54:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=S3jdzOO32cHlgwmkrkbUpdIm/1MzyDL/EIRbxMTEa5A=;
-        b=Z7xophkPQOkh4ARlxVwFuQJQTBEkSwbOlfOmHHyVle/OWVRWv195/0w2f2t+18snII
-         n3FQ2codAubRjrUSwmyf3H/bvuc0OsNnp3dke2n7VO6YXh/6U9sff01yJTCcBXB97N4O
-         6B26hIolpF+/goAhq8UKgXegM8/9vMeegLeLdtHGeuWYpcRucq5jfbOcGwqaVg8ngSrA
-         1JAP0gkX+J8Um4gTC2fymZhoWIPl9qMkepe+SA81ejzI+RbrXNzlK46JX9YIvPugCwKS
-         f8ceM9b+8mKnMjWN+emWh7vUYj6LvvjD7sNWmzfTZebUC506AFLaUOgH5ESXowrLhRpq
-         RYcQ==
+        Tue, 7 Jul 2020 09:56:47 -0400
+Received: by mail-wr1-f66.google.com with SMTP id j4so42824219wrp.10
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 06:56:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=S3jdzOO32cHlgwmkrkbUpdIm/1MzyDL/EIRbxMTEa5A=;
-        b=QRZT2NJG9Go2+D5k/Sv0evp8vl5Oo8Ieilsvf/PdRnnoHWTFIAlM+TqzF43aiA95sV
-         jsCUohqhpSLEWgC2QoishTyeZDaYi79gqpRC7nkoCWeaPEzSiDk6CLJoZaS+v2ulQM4h
-         m/wbQ1uORFVPH3Odf3AXNm5+dDFhT0fpP5hU5qYffxR0+NLcaHRcauCz+sIjQwnNV5wo
-         eEf5V6IIWQqwnQKntlxp4H54BUw3MU68xkxFYcdn8DHT3KZfYEvpaPspiyxot2RQ2Er+
-         XeApD1XcomZVJLKwn6io3+B9aTFu0YIW3jVl3b9wJeLQOG8kuQZeELU5+j3Z725GX81U
-         bPlA==
-X-Gm-Message-State: AOAM531i1rLe8A3FownQXto/4QQmpInaDVSwdtnEwywXvbSk/aQlIGfn
-        bCXLLDa/X1oVogICmlliYXl6ppmhQX2Z6vgRJor6PQ==
-X-Google-Smtp-Source: ABdhPJw9SoRYf79I1P+jKjjZvaJuTnoqHslNrUEV0toooQ5NEaW+6rlt/daKxhkuVtAbPlSqKvED9krSaR3HLLT6Tbw=
-X-Received: by 2002:a1f:1889:: with SMTP id 131mr29817788vky.59.1594130077760;
- Tue, 07 Jul 2020 06:54:37 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=FpuEvCsXRL4/W9jfe5wiH6evdM0ik5cj0/MlbIbZB5Q=;
+        b=lIzzXaif3h6tDA54nQHTOlWMxVF4vohnh3M/OXDpzqGPz26T0tqZg5Pjm7L/o4NbuE
+         UXxtPzXXskv51lsosgesaQDe24BEa2lf0Nv8QGNB7XfEdDGvXqBaQKNhHwQogC7YFrp5
+         FI1zBGk4qQ+XIJaXlcr34O6Rv0Alk2S/wMAwth07IXtel4R+4OR/TMtq0fzZ8WbtPzle
+         666vT+LURwM3sfX+VhJv6CiC91CgAUB5vYZ5JPVjZSAZkZDsMF6LHsDPzlvfK5mnuN1w
+         tX6lpiIBqTG1SISqdAGfNhf0b96YPXN4m+BmQWF5kiRYnHM/T+0lP+HOAk4Lt9EZUNKw
+         aFyg==
+X-Gm-Message-State: AOAM533QLQWzFE1yK3Zi5Y4x5lfMeJcQ9qfIp57ILuBfBfNHcOq1YQWn
+        9euzVGafcqPC26KN48hj7X8=
+X-Google-Smtp-Source: ABdhPJwrH8FLw5jYEp0j5ccSsTyr9QNW1w/6kkEF3mbBOl+PJPAzLwu1mmfbxDSVPfvJ6XpNWcQEbQ==
+X-Received: by 2002:a5d:6846:: with SMTP id o6mr54428442wrw.370.1594130205924;
+        Tue, 07 Jul 2020 06:56:45 -0700 (PDT)
+Received: from localhost (ip-37-188-179-51.eurotel.cz. [37.188.179.51])
+        by smtp.gmail.com with ESMTPSA id u15sm1211094wrm.64.2020.07.07.06.56.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Jul 2020 06:56:45 -0700 (PDT)
+Date:   Tue, 7 Jul 2020 15:56:43 +0200
+From:   Michal Hocko <mhocko@kernel.org>
+To:     Qian Cai <cai@lca.pw>
+Cc:     Feng Tang <feng.tang@intel.com>,
+        kernel test robot <rong.a.chen@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Kees Cook <keescook@chromium.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>, andi.kleen@intel.com,
+        tim.c.chen@intel.com, dave.hansen@intel.com, ying.huang@intel.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org, lkp@lists.01.org
+Subject: Re: [mm] 4e2c82a409: ltp.overcommit_memory01.fail
+Message-ID: <20200707135643.GV5913@dhcp22.suse.cz>
+References: <AF8CFC10-7655-4664-974D-3632793B0710@lca.pw>
+ <20200707120619.GO5913@dhcp22.suse.cz>
+ <20200707130436.GA992@lca.pw>
 MIME-Version: 1.0
-References: <20200624103247.7115-1-daniel.baluta@oss.nxp.com> <20200624103247.7115-2-daniel.baluta@oss.nxp.com>
-In-Reply-To: <20200624103247.7115-2-daniel.baluta@oss.nxp.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 7 Jul 2020 15:54:01 +0200
-Message-ID: <CAPDyKFr8BTkM2W_qbXK1KxtuoZC=uO14_uY9zCWvzfyU0h1a6Q@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] PM / domains: Introduce multi PM domains helpers
-To:     Daniel Baluta <daniel.baluta@oss.nxp.com>
-Cc:     Kevin Hilman <khilman@kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        alsa-devel@alsa-project.org, dl-linux-imx <linux-imx@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200707130436.GA992@lca.pw>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Jun 2020 at 12:33, Daniel Baluta <daniel.baluta@oss.nxp.com> wrote:
->
-> From: Daniel Baluta <daniel.baluta@nxp.com>
->
-> This patch introduces helpers support for multi PM domains.
->
-> API consists of:
->
-> 1) dev_multi_pm_attach - powers up all PM domains associated with a given
-> device. Because we can attach one PM domain per device, we create
-> virtual devices (children of initial device) and associate PM domains
-> one per virtual device.
->
-> 2) dev_multi_pm_detach - detaches all virtual devices from PM domains
-> attached with.
+On Tue 07-07-20 09:04:36, Qian Cai wrote:
+> On Tue, Jul 07, 2020 at 02:06:19PM +0200, Michal Hocko wrote:
+> > On Tue 07-07-20 07:43:48, Qian Cai wrote:
+> > > 
+> > > 
+> > > > On Jul 7, 2020, at 6:28 AM, Michal Hocko <mhocko@kernel.org> wrote:
+> > > > 
+> > > > Would you have any examples? Because I find this highly unlikely.
+> > > > OVERCOMMIT_NEVER only works when virtual memory is not largerly
+> > > > overcommited wrt to real memory demand. And that tends to be more of
+> > > > an exception rather than a rule. "Modern" userspace (whatever that
+> > > > means) tends to be really hungry with virtual memory which is only used
+> > > > very sparsely.
+> > > > 
+> > > > I would argue that either somebody is running an "OVERCOMMIT_NEVER"
+> > > > friendly SW and this is a permanent setting or this is not used at all.
+> > > > At least this is my experience.
+> > > > 
+> > > > So I strongly suspect that LTP test failure is not something we should
+> > > > really lose sleep over. It would be nice to find a way to flush existing
+> > > > batches but I would rather see a real workload that would suffer from
+> > > > this imprecision.
+> > > 
+> > > I hear you many times that you really don’t care about those use
+> > > cases unless you hear exactly people are using in your world.
+> > > 
+> > > For example, when you said LTP oom tests are totally artificial last
+> > > time and how less you care about if they are failing, and I could only
+> > > enjoy their efficiencies to find many issues like race conditions
+> > > and bad error accumulation handling etc that your “real world use
+> > > cases” are going to take ages or no way to flag them.
+> > 
+> > Yes, they are effective at hitting corner cases and that is fine. I
+> > am not dismissing their usefulness. I have tried to explain that many
+> > times but let me try again. Seeing a corner case and think about a
+> > potential fix is one thing. On the other hand it is not really ideal to
+> > treat such a failure a hard regression and consider otherwise useful
+> 
+> Well, terms like "corner cases" and "hard regression" are rather
+> subjective.
 
-Nit pick:
-I suggest to rename the helpers into
-dev_pm_domain_attach|detach_multi(), to be more consistent with
-existing function names. It's a bit long I admit that, but I prefer
-the consistency.
-
->
-> Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
-> ---
->  drivers/base/power/common.c | 93 +++++++++++++++++++++++++++++++++++++
->  include/linux/pm_domain.h   | 19 ++++++++
->  2 files changed, 112 insertions(+)
->
-> diff --git a/drivers/base/power/common.c b/drivers/base/power/common.c
-> index bbddb267c2e6..b0a4d0109810 100644
-> --- a/drivers/base/power/common.c
-> +++ b/drivers/base/power/common.c
-> @@ -228,3 +228,96 @@ void dev_pm_domain_set(struct device *dev, struct dev_pm_domain *pd)
->         device_pm_check_callbacks(dev);
->  }
->  EXPORT_SYMBOL_GPL(dev_pm_domain_set);
-> +
-> +/**
-> + * dev_multi_pm_attach - power up device associated power domains
-> + * @dev: The device used to lookup the PM domains
-> + *
-> + * Parse device's OF node to find all PM domains specifiers. For each power
-> + * domain found, create a virtual device and associate it with the
-> + * current power domain.
-> + *
-> + * This function should typically be invoked by a driver during the
-> + * probe phase, in the case its device requires power management through
-> + * multiple PM domains.
-> + *
-> + * Returns a pointer to @dev_multi_pm_domain_data if successfully attached PM
-> + * domains, NULL when the device doesn't need a PM domain or when single
-> + * power-domains exists for it, else an ERR_PTR() in case of
-> + * failures.
-> + */
-> +struct dev_multi_pm_domain_data *dev_multi_pm_attach(struct device *dev)
-> +{
-> +       struct dev_multi_pm_domain_data *mpd, *retp;
-> +       int num_domains;
-> +       int i;
-> +
-> +       num_domains = of_count_phandle_with_args(dev->of_node, "power-domains",
-> +                                                "#power-domain-cells");
-> +       if (num_domains < 2)
-> +               return NULL;
-
-dev_pm_domain_attach_* is typically wrapper functions, allowing
-different types of PM domains to be supported. For example,
-dev_pm_domain_attach() calls acpi_dev_pm_attach() and
-genpd_dev_pm_attach(). While dev_pm_domain_attach_by_id() only calls
-genpd_dev_pm_attach_by_id(), as there's no corresponding interface for
-the acpi PM domain.
-
-The above said, I don't think another layer should be needed here, but
-there is something missing that makes this consistent with the
-behaviour of the above mentioned functions.
-
-How about adding a genpd OF helper ("of_genpd_num_domains(struct
-device_node *)"), that deals with the above parsing and returns the
-number of domains for the device? In this way, if
-of_genpd_num_domains() returns an error code or zero, it's easier to
-continue to try with other PM domain providers (if/when that is
-supported).
-
-> +
-> +       mpd = devm_kzalloc(dev, sizeof(*mpd), GFP_KERNEL);
-> +       if (!mpd)
-> +               return ERR_PTR(-ENOMEM);
-> +
-> +       mpd->dev = dev;
-> +       mpd->num_domains = num_domains;
-> +
-> +       mpd->virt_devs = devm_kmalloc_array(dev, mpd->num_domains,
-> +                                           sizeof(*mpd->virt_devs),
-> +                                           GFP_KERNEL);
-> +       if (!mpd->virt_devs)
-> +               return ERR_PTR(-ENOMEM);
-> +
-> +       mpd->links = devm_kmalloc_array(dev, mpd->num_domains,
-> +                                       sizeof(*mpd->links), GFP_KERNEL);
-> +       if (!mpd->links)
-> +               return ERR_PTR(-ENOMEM);
-> +
-> +       for (i = 0; i < mpd->num_domains; i++) {
-> +               mpd->virt_devs[i] = dev_pm_domain_attach_by_id(dev, i);
-> +               if (IS_ERR(mpd->virt_devs[i])) {
-> +                       retp = (struct dev_multi_pm_domain_data *)
-> +                               mpd->virt_devs[i];
-> +                       goto exit_unroll_pm;
-> +               }
-> +               mpd->links[i] = device_link_add(dev, mpd->virt_devs[i],
-> +                                               DL_FLAG_STATELESS |
-> +                                               DL_FLAG_PM_RUNTIME |
-> +                                               DL_FLAG_RPM_ACTIVE);
-
-As a suggestion to be a little bit more flexible, perhaps these bits
-should be given as an in-parameter instead. Potentially we could then
-also treat the in-parameter being zero, as that no device link should
-be added.
-
-Although, it's kind of hard to know as the users of this interface
-aren't really widely known yet.
-
-> +               if (!mpd->links[i]) {
-> +                       retp = ERR_PTR(-ENOMEM);
-> +                       dev_pm_domain_detach(mpd->virt_devs[i], false);
-> +                       goto exit_unroll_pm;
-> +               }
-> +       }
-> +       return mpd;
-> +
-> +exit_unroll_pm:
-> +       while (--i >= 0) {
-> +               device_link_del(mpd->links[i]);
-> +               dev_pm_domain_detach(mpd->virt_devs[i], false);
-> +       }
-> +
-> +       return retp;
-> +}
-> +EXPORT_SYMBOL(dev_multi_pm_attach);
-> +
+Existing real life examples really makes them less subjective though.
 
 [...]
 
-Kind regards
-Uffe
+> > LTP is a very useful tool to raise awareness of potential problems but
+> > you shouldn't really follow those results just blindly.
+> 
+> You must think I am a newbie tester to give me this piece of advice
+> then.
+
+Not by even close. I can clearly see your involvement in testing and how
+many good bug reports that results in.
+-- 
+Michal Hocko
+SUSE Labs
