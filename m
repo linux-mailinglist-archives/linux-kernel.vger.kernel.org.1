@@ -2,43 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D29302170D8
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:24:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCE17217141
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:25:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728941AbgGGPVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:21:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33446 "EHLO mail.kernel.org"
+        id S1729000AbgGGPZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:25:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728333AbgGGPVP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:21:15 -0400
+        id S1730219AbgGGPZa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 11:25:30 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 428072065D;
-        Tue,  7 Jul 2020 15:21:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A2E21206F6;
+        Tue,  7 Jul 2020 15:25:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594135274;
-        bh=m3Bg9p0WjwVIantLqzPG6EBi0zosw5xGhOVnfB8M3xI=;
+        s=default; t=1594135530;
+        bh=J3t/S/L7oeGjQsfSZyXk5bZmjtV9IFVrDsi76la7UpQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EjTREqHSPSkwk2dWBHReB7OffPl2ZmRy9u3O3ETDDCeiRSQnFNYYGDkYw3vFXUp5/
-         aCu5U6HFbZCvbqn8cAFOPtHYaSEpM56jJZy7H9tOhWFMIpNhrPGRKEKMcpTlbS4+HK
-         LNpyvTt4IW6p1awsZ+j1BbT7Kr1TB3d6pCQS+sWo=
+        b=IByoKDnqQ0bcMQk1hNvwrdGKP5a2FrhntSaUwkGXD6xa40WRSDdGvniYySqv4gNdh
+         pijadGVMTBY5TdlMF29Ing2kfjXaTNf3jRJ/sGI/0Tqm6vt6tWAwQE3XafckEWzPoT
+         HQEUrNaRwQXpamLGGkdc8aGIvfpwp/3Dgo/SGwSw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        David Howells <dhowells@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 43/65] samples/vfs: avoid warning in statx override
+        stable@vger.kernel.org, Keith Busch <kbusch@kernel.org>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 077/112] nvme: fix identify error status silent ignore
 Date:   Tue,  7 Jul 2020 17:17:22 +0200
-Message-Id: <20200707145754.536471575@linuxfoundation.org>
+Message-Id: <20200707145804.654689887@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200707145752.417212219@linuxfoundation.org>
-References: <20200707145752.417212219@linuxfoundation.org>
+In-Reply-To: <20200707145800.925304888@linuxfoundation.org>
+References: <20200707145800.925304888@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,59 +44,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
+From: Sagi Grimberg <sagi@grimberg.me>
 
-[ Upstream commit c3eeaae9fd736b7f2afbda8d3cbb1cbae06decf3 ]
+[ Upstream commit ea43d9709f727e728e933a8157a7a7ca1a868281 ]
 
-Something changed recently to uncover this warning:
+Commit 59c7c3caaaf8 intended to only silently ignore non retry-able
+errors (DNR bit set) such that we can still identify misbehaving
+controllers, and in the other hand propagate retry-able errors (DNR bit
+cleared) so we don't wrongly abandon a namespace just because it happens
+to be temporarily inaccessible.
 
-  samples/vfs/test-statx.c:24:15: warning: `struct foo' declared inside parameter list will not be visible outside of this definition or declaration
-     24 | #define statx foo
-        |               ^~~
+The goal remains the same as the original commit where this was
+introduced but unfortunately had the logic backwards.
 
-Which is due the use of "struct statx" (here, "struct foo") in a function
-prototype argument list before it has been defined:
-
- int
- # 56 "/usr/include/x86_64-linux-gnu/bits/statx-generic.h"
-    foo
- # 56 "/usr/include/x86_64-linux-gnu/bits/statx-generic.h" 3 4
-          (int __dirfd, const char *__restrict __path, int __flags,
-            unsigned int __mask, struct
- # 57 "/usr/include/x86_64-linux-gnu/bits/statx-generic.h"
-                                       foo
- # 57 "/usr/include/x86_64-linux-gnu/bits/statx-generic.h" 3 4
-                                             *__restrict __buf)
-   __attribute__ ((__nothrow__ , __leaf__)) __attribute__ ((__nonnull__ (2, 5)));
-
-Add explicit struct before #include to avoid warning.
-
-Fixes: f1b5618e013a ("vfs: Add a sample program for the new mount API")
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Cc: Miklos Szeredi <mszeredi@redhat.com>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: David Howells <dhowells@redhat.com>
-Link: http://lkml.kernel.org/r/202006282213.C516EA6@keescook
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 59c7c3caaaf8 ("nvme: fix possible hang when ns scanning fails during error recovery")
+Reported-by: Keith Busch <kbusch@kernel.org>
+Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
+Reviewed-by: Keith Busch <kbusch@kernel.org>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- samples/vfs/test-statx.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/nvme/host/core.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/samples/vfs/test-statx.c b/samples/vfs/test-statx.c
-index a3d68159fb510..507f09c38b49f 100644
---- a/samples/vfs/test-statx.c
-+++ b/samples/vfs/test-statx.c
-@@ -23,6 +23,8 @@
- #include <linux/fcntl.h>
- #define statx foo
- #define statx_timestamp foo_timestamp
-+struct statx;
-+struct statx_timestamp;
- #include <sys/stat.h>
- #undef statx
- #undef statx_timestamp
+diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+index 85ce6c682849e..71d63ed62071e 100644
+--- a/drivers/nvme/host/core.c
++++ b/drivers/nvme/host/core.c
+@@ -1120,10 +1120,16 @@ static int nvme_identify_ns_descs(struct nvme_ctrl *ctrl, unsigned nsid,
+ 		dev_warn(ctrl->device,
+ 			"Identify Descriptors failed (%d)\n", status);
+ 		 /*
+-		  * Don't treat an error as fatal, as we potentially already
+-		  * have a NGUID or EUI-64.
++		  * Don't treat non-retryable errors as fatal, as we potentially
++		  * already have a NGUID or EUI-64.  If we failed with DNR set,
++		  * we want to silently ignore the error as we can still
++		  * identify the device, but if the status has DNR set, we want
++		  * to propagate the error back specifically for the disk
++		  * revalidation flow to make sure we don't abandon the
++		  * device just because of a temporal retry-able error (such
++		  * as path of transport errors).
+ 		  */
+-		if (status > 0 && !(status & NVME_SC_DNR))
++		if (status > 0 && (status & NVME_SC_DNR))
+ 			status = 0;
+ 		goto free_data;
+ 	}
 -- 
 2.25.1
 
