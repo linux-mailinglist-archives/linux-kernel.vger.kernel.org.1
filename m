@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C47F2170CC
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:24:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63923217089
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:24:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729602AbgGGPUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:20:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60948 "EHLO mail.kernel.org"
+        id S1728456AbgGGPSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:18:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57948 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728645AbgGGPUq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:20:46 -0400
+        id S1729214AbgGGPSf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 11:18:35 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D988E20663;
-        Tue,  7 Jul 2020 15:20:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8235520738;
+        Tue,  7 Jul 2020 15:18:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594135245;
-        bh=gZ3+xywpq6HFNvCTLfeu8PDvu8ayxT0YNwIo59vIrgo=;
+        s=default; t=1594135115;
+        bh=5U1H1AKYY4hW52vQBYwss1xVcLPoJ/65EiK7ZaTYNH8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a397CYXU+ZMyxzgeCQ0xUd/CzEK1mPxktUbM7AIedUdn6s4PU38zHImiLUHffu9Dy
-         G2QpZgYwLubKNpFsxD1+rGXoFhNyLopH/EMb1lr9bHOjHJWiFgtMUazuTfXgn/AyOC
-         +klTSKlmKUp4vqsDz9MhOWzgnAif/0mgYOCTDxRc=
+        b=puUAVVKEZKz+cTn4K4VIhUu/jNg8WTL1/bjWJe4GOq14+rL8T9EiY3LmO8Bvq6bCm
+         /AG/T3BDBITiJ2ELD2wd6As2vPBGJeHBN47Dbn1i/xOO/TUYDbjMODaqSo1pSDYFPW
+         /JfWvEuWs6E5yrU4JNBUK1Whk8SlbRKtGNn+VslQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chu Lin <linchuyuan@google.com>,
-        Guenter Roeck <linux@roeck-us.net>,
+        stable@vger.kernel.org,
+        Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 30/65] hwmon: (max6697) Make sure the OVERT mask is set correctly
+Subject: [PATCH 4.19 17/36] cxgb4: use correct type for all-mask IP address comparison
 Date:   Tue,  7 Jul 2020 17:17:09 +0200
-Message-Id: <20200707145753.931334575@linuxfoundation.org>
+Message-Id: <20200707145749.959174058@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200707145752.417212219@linuxfoundation.org>
-References: <20200707145752.417212219@linuxfoundation.org>
+In-Reply-To: <20200707145749.130272978@linuxfoundation.org>
+References: <20200707145749.130272978@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,65 +45,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chu Lin <linchuyuan@google.com>
+From: Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>
 
-[ Upstream commit 016983d138cbe99a5c0aaae0103ee88f5300beb3 ]
+[ Upstream commit f286dd8eaad5a2758750f407ab079298e0bcc8a5 ]
 
-Per the datasheet for max6697, OVERT mask and ALERT mask are different.
-For example, the 7th bit of OVERT is the local channel but for alert
-mask, the 6th bit is the local channel. Therefore, we can't apply the
-same mask for both registers. In addition to that, the max6697 driver
-is supposed to be compatibale with different models. I manually went over
-all the listed chips and made sure all chip types have the same layout.
+Use correct type to check for all-mask exact match IP addresses.
 
-Testing;
-    mask value of 0x9 should map to 0x44 for ALERT and 0x84 for OVERT.
-    I used iotool to read the reg value back to verify. I only tested this
-    change on max6581.
+Fixes following sparse warnings due to big endian value checks
+against 0xffffffff in is_addr_all_mask():
+cxgb4_filter.c:977:25: warning: restricted __be32 degrades to integer
+cxgb4_filter.c:983:37: warning: restricted __be32 degrades to integer
+cxgb4_filter.c:984:37: warning: restricted __be32 degrades to integer
+cxgb4_filter.c:985:37: warning: restricted __be32 degrades to integer
+cxgb4_filter.c:986:37: warning: restricted __be32 degrades to integer
 
-Reference:
-https://datasheets.maximintegrated.com/en/ds/MAX6581.pdf
-https://datasheets.maximintegrated.com/en/ds/MAX6697.pdf
-https://datasheets.maximintegrated.com/en/ds/MAX6699.pdf
-
-Signed-off-by: Chu Lin <linchuyuan@google.com>
-Fixes: 5372d2d71c46e ("hwmon: Driver for Maxim MAX6697 and compatibles")
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Fixes: 3eb8b62d5a26 ("cxgb4: add support to create hash-filters via tc-flower offload")
+Signed-off-by: Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hwmon/max6697.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/hwmon/max6697.c b/drivers/hwmon/max6697.c
-index 743752a2467a2..64122eb38060d 100644
---- a/drivers/hwmon/max6697.c
-+++ b/drivers/hwmon/max6697.c
-@@ -38,8 +38,9 @@ static const u8 MAX6697_REG_CRIT[] = {
-  * Map device tree / platform data register bit map to chip bit map.
-  * Applies to alert register and over-temperature register.
-  */
--#define MAX6697_MAP_BITS(reg)	((((reg) & 0x7e) >> 1) | \
-+#define MAX6697_ALERT_MAP_BITS(reg)	((((reg) & 0x7e) >> 1) | \
- 				 (((reg) & 0x01) << 6) | ((reg) & 0x80))
-+#define MAX6697_OVERT_MAP_BITS(reg) (((reg) >> 1) | (((reg) & 0x01) << 7))
+diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c
+index 7dddb9e748b81..86745f33a252d 100644
+--- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c
++++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c
+@@ -810,16 +810,16 @@ static bool is_addr_all_mask(u8 *ipmask, int family)
+ 		struct in_addr *addr;
  
- #define MAX6697_REG_STAT(n)		(0x44 + (n))
+ 		addr = (struct in_addr *)ipmask;
+-		if (addr->s_addr == 0xffffffff)
++		if (ntohl(addr->s_addr) == 0xffffffff)
+ 			return true;
+ 	} else if (family == AF_INET6) {
+ 		struct in6_addr *addr6;
  
-@@ -562,12 +563,12 @@ static int max6697_init_chip(struct max6697_data *data,
- 		return ret;
- 
- 	ret = i2c_smbus_write_byte_data(client, MAX6697_REG_ALERT_MASK,
--					MAX6697_MAP_BITS(pdata->alert_mask));
-+				MAX6697_ALERT_MAP_BITS(pdata->alert_mask));
- 	if (ret < 0)
- 		return ret;
- 
- 	ret = i2c_smbus_write_byte_data(client, MAX6697_REG_OVERT_MASK,
--				MAX6697_MAP_BITS(pdata->over_temperature_mask));
-+			MAX6697_OVERT_MAP_BITS(pdata->over_temperature_mask));
- 	if (ret < 0)
- 		return ret;
- 
+ 		addr6 = (struct in6_addr *)ipmask;
+-		if (addr6->s6_addr32[0] == 0xffffffff &&
+-		    addr6->s6_addr32[1] == 0xffffffff &&
+-		    addr6->s6_addr32[2] == 0xffffffff &&
+-		    addr6->s6_addr32[3] == 0xffffffff)
++		if (ntohl(addr6->s6_addr32[0]) == 0xffffffff &&
++		    ntohl(addr6->s6_addr32[1]) == 0xffffffff &&
++		    ntohl(addr6->s6_addr32[2]) == 0xffffffff &&
++		    ntohl(addr6->s6_addr32[3]) == 0xffffffff)
+ 			return true;
+ 	}
+ 	return false;
 -- 
 2.25.1
 
