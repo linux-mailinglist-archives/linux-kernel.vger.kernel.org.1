@@ -2,80 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEB34216CFA
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 14:39:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48CEF216CFB
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 14:40:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728088AbgGGMjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 08:39:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35288 "EHLO
+        id S1728127AbgGGMj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 08:39:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726839AbgGGMjf (ORCPT
+        with ESMTP id S1726757AbgGGMjz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 08:39:35 -0400
+        Tue, 7 Jul 2020 08:39:55 -0400
 Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7A04C08C5E0
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 05:39:34 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id t25so45099286lji.12
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 05:39:34 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CABBC061755
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 05:39:55 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id s9so49651398ljm.11
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 05:39:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PR8nQ43YtQ2kzqu7CAHdusW+BG3WkQqUNKXDoqQv2Bc=;
-        b=wOcMzoL9PKOfCE92T5O5jZORfBcPgPzM0JNaF/FGTlzRWnpNx4/Ts9/TwRH1muW1hG
-         NtSdl2AsV52A1f8vNs8jpCg5Sf08q8JmBH+QSIUFvTTXqj6SDODu3YlIz6LgkR5Mml5d
-         uWyGBXz0agObrxeH3HyQv9iCPdwcXOwztAd5URyZolZuy2Ho3Wc8lRh30jBV8yx+UK/s
-         eQlHYQzaoxf+4UtJh1jgFILwyzXqmKHa6EahoUnz0l+tEO8fIGz/n54Hn9A3hN5nxOjh
-         Poymz4VH+xHPQcQ5Evt8qCUXRKk228OpZRp0a3vyuyhgD4Md+wT9iTxnU1xfEifnAe0+
-         bRQw==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=pApQALOixO2NAgpuTRuhg342Yv3qfsa0dJFo4Uz3tkw=;
+        b=gRv0xefhRSAauevmPFxfYqsmD5jfhWe2Y94or7J7zlWqVUi5cM745uMbArdC3qNkL9
+         odIPjRYqx5WQvYaP4O4oTzRMORO8FVXq/m05kvqZkXLycSxHnviClrr6a4kjJhDIhfYP
+         +2caNI0dm7YHjoK+ZyY3hC60RXZ/fsizIFwv1gIYmYryLhjH5asapzgITAj2i9h0yi88
+         eIR3W2efDY3lw8cp0NTYi1EHG1zBvZIO7+DtRmrjEbMRSNtRemula7BJNPFGa+K329on
+         WjoH5UEsSgIwjKHz79ZBEvvQv4GHF4gXgLAsu+8G+zisefrHtxfrGjGduojG9vL/U9Hr
+         umOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PR8nQ43YtQ2kzqu7CAHdusW+BG3WkQqUNKXDoqQv2Bc=;
-        b=kQDTSU+emiWsbqWeeQM1MS+drU5B9koI/0I8wkQ7lRS4nASdkSBF7/COyO3X+jO6N1
-         h2Pe8g5GNnrZb4TCuBMcrCj97JbQ7QCswrCPusSwjgmXEXgphHVhGW+hccV8RklQYIfJ
-         Yd8EaDUBPXmwlzTQkR2RDDVGb776uw6uQau+f5MikpPzlg2IP9F2HujMFhwxjaIiSMv2
-         fEO/4/luu6upAqO783qiIGmHRcvsu4JxtjMk7MpENiBuc8IVXczIIzBXWUfljlafAA+7
-         Ctg6bSDc1BSQxGDQgocrJ59OSujcOVPIU9r4GCSxmy+KjTXyxmNikOoLKSnOsQoedr8G
-         4uYA==
-X-Gm-Message-State: AOAM5317z4S62VO4jLg8KfX6KUNV25u14oaLKc1xKZtlJR7X48QQep58
-        9yCjTwFAyS854VL1A04ZdAVVbAkWGSnCdWk7YbntEg==
-X-Google-Smtp-Source: ABdhPJzLxIIZvKvs0uuMjas/mWF0QR8HShPsPw1tvxHg6ZOg/jx/Zkt6iaQekUaGKH8RYIPUuoMFtXs1GM/t0jP7rH8=
-X-Received: by 2002:a2e:9c3:: with SMTP id 186mr31275956ljj.293.1594125573245;
- Tue, 07 Jul 2020 05:39:33 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=pApQALOixO2NAgpuTRuhg342Yv3qfsa0dJFo4Uz3tkw=;
+        b=alt9eE+jOF6vKta1YpD4JT5uq0Fo7yiz/OyKCTbZEdLvin4pcDTeiS2pFeoSlKC1qG
+         IXd7I78qGSgIEdXPz96DG2RGLcnDjogugt4yVxmqQ+/BGnyoWeYqifd/RjPidLRP16hS
+         2C5QgIKgJmhs75Bs8FyMeafOaO56O4JfrOkXk3QMzrtw4oT8LkQLB82+oIggDVetKEgR
+         rLwfWYKOJ5+Q7k38OGc8eGUzLwDpjf/CxwIDxhjMGRp/OXmPx3ZkdfPIN91V00EFccXy
+         /zK0uq+KofAyX7ZOgCLdX/UtBwYce+A4s6d0hYlcBkPV5gfOkuuAapJsiUlDmEHOWfcR
+         XKag==
+X-Gm-Message-State: AOAM532D843xsABwXCSU7xWV85DDE1z9r+3+eA3FloqlPQFUFqyO8G3q
+        sOWaC5oYO2cgVing5W1ij6VEbCSbAmbIKCiGOc4=
+X-Google-Smtp-Source: ABdhPJy+k74QBB06rTsK92m16auxfjWEZHV68OKQk7bT2HQx+c18CbvhX10IydsMaPohRbhTGeWchCaD6QUXso0V+5w=
+X-Received: by 2002:a2e:9585:: with SMTP id w5mr27412845ljh.58.1594125593758;
+ Tue, 07 Jul 2020 05:39:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200625064619.2775707-1-lee.jones@linaro.org> <20200625064619.2775707-4-lee.jones@linaro.org>
-In-Reply-To: <20200625064619.2775707-4-lee.jones@linaro.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 7 Jul 2020 14:39:22 +0200
-Message-ID: <CACRpkdYTb4MTX9YGAW9_Th1ntcE4Go_N=wGMJ9Po8KpBGehT4w@mail.gmail.com>
-Subject: Re: [PATCH 03/10] mfd: db8500-prcmu: Add description for
- 'reset_reason' in kerneldoc
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>
+Received: by 2002:ab3:6392:0:0:0:0:0 with HTTP; Tue, 7 Jul 2020 05:39:53 -0700 (PDT)
+Reply-To: bankbess@gmail.com
+From:   Mr Anthony Ehimare <neymeogmmailbox@gmail.com>
+Date:   Tue, 7 Jul 2020 12:39:53 +0000
+Message-ID: <CAC32tCaSH8q3A_a97TUiFySuWVKqZM9DYJVpOEAEzM3Cy6Wv=Q@mail.gmail.com>
+Subject: Urgent Attention
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 25, 2020 at 8:46 AM Lee Jones <lee.jones@linaro.org> wrote:
+Good Day,
 
-> Each function parameter should be documented in kerneldoc format.
->
-> Squashes the following W=1 warnings:
->
->  drivers/mfd/db8500-prcmu.c:2281: warning: Function parameter or member 'reset_code' not described in 'db8500_prcmu_system_reset'
->  drivers/mfd/db8500-prcmu.c:3012: warning: Function parameter or member 'pdev' not described in 'db8500_prcmu_probe'
->
-> Cc: <stable@vger.kernel.org>
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+I am Anthony Ehimare a banker I have something very important to
+discuss with you about an unpaid inheritance fund left in my bank for
+a long time by a late customer who has the same last name with you I
+do not know if he was a member of your family.The Lawyer that
+contacted you in the past wanted to play a fast game on me that was
+why I stopped the payment.
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+I will wait for your urgent response for further information.
 
-Yours,
-Linus Walleij
+Regards,
+Anthony Ehimare
+Director,Banque Atlantique
