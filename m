@@ -2,103 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E97EF2168A7
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 10:56:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DCB92168BA
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 11:01:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726883AbgGGI4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 04:56:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57256 "EHLO
+        id S1726911AbgGGJBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 05:01:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725825AbgGGI4n (ORCPT
+        with ESMTP id S1725941AbgGGJBi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 04:56:43 -0400
-Received: from mail-oo1-xc42.google.com (mail-oo1-xc42.google.com [IPv6:2607:f8b0:4864:20::c42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90164C061755;
-        Tue,  7 Jul 2020 01:56:43 -0700 (PDT)
-Received: by mail-oo1-xc42.google.com with SMTP id x2so844409oog.5;
-        Tue, 07 Jul 2020 01:56:43 -0700 (PDT)
+        Tue, 7 Jul 2020 05:01:38 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D22F9C061755;
+        Tue,  7 Jul 2020 02:01:37 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id x9so35372126ila.3;
+        Tue, 07 Jul 2020 02:01:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZZzWL/xc4mBiRyert9mLtVE7SP6XFUEzRJKwc2vJTLo=;
-        b=jphMRn6XES2wHadQ9X4fBtjp8+n0umR28p140tNHzFSURfwd1MVe/wmCIAILZL7jGT
-         p+lW5yC6ATOc2IOYSYMY3m1koCA8cZJV4fStFv5YQu+g+ckpCcyAgqYNCEzoZ8mqc1TC
-         q2V+CJH7Pz04jC2EDKO/Mxo4HKKbaihO51C/HyejKT9ULWcED7zUgjAnaZGV9aVe7UL9
-         ud3e+bJBvh3WL3dMd5Epb2hlSe8thXGzx1dPxWkVByykFkAN13eDvhtpajehOnBCostg
-         5HZ+RRIGghzmxZWg8MYqobGGMltBfQZU0zTh8WSXSgmjeL7K7BX95zJQxSDgHTj31Gda
-         oTuQ==
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=5sZ6sctOprW48prqnqqAPPY0rYJt8Ppe0eVRvN2BoLs=;
+        b=qivHjV75dl8H9nMeZYxcx5YUT1upU7x/F8ZIc3oXMco0H+h3g+A/tVTfpzuGnxSPpd
+         sV/sd+gEoMZPgwx7k7RodpykLiYmoZHRCaTjDdbNTXmg3GF+gR0QfLpXvr+h8p8fVDsk
+         Eny6k4adb/Hbo1zKvQTA9jZkCI5+so7UZcaIWsMH+p7M9ORQZ36m6ZWi/duul9NaNFmD
+         zLxEu5MJlueBB70cWnyPLHNMrOfVr4myhkKnzwk9TaktYxcr3A5FzgybCexhg/RIPxP3
+         Di2erilMSe3kvzKMDmRQl4OVJ3NY4YbAcSaJwxXmcVwN1xVuiAFu8q8n5nUBf8FSu5qs
+         OAYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZZzWL/xc4mBiRyert9mLtVE7SP6XFUEzRJKwc2vJTLo=;
-        b=Zm3d2G0vdLqr52lp8uvj4Hhy9bImH/VFdX7u32Z4YoNOuPeZK7x3UHf4aLdB/65Z4x
-         3rRVZiZHItQhTQAN+nXM6ICZX7RKDRvjnFhW/uXbiXhVOikwu9WJHe2E1iV0nKvdkkim
-         ff3NmCVcuDzNJ84f9HGU2gdLpF0udsmRPNB1UNucIIoVb+n+MZDKGMsf8xCY0RBTHWsa
-         8PVsq5VWXXStbxFz0K28y2T1PZElQv7GMZxfY66GbUSmGvOBb4gdmiHv0+d/yd8OsqHR
-         y1LC0ZRGOgqaXrN2LzXuI7CQAEX42uhgai2S2iVx6XBuAgLpWAi7UGDq3OPdOB3eU8QM
-         eSJw==
-X-Gm-Message-State: AOAM533CQgVuRxBjIr1CXNg86+5eli709CwKViwzsovzOCjUgPQbKJNI
-        obvr5+xD6/GEfiszi/pQe0wJfH+DCdhce342Z8s=
-X-Google-Smtp-Source: ABdhPJxfwqZPXXjIx+FHumcjPYrKlNWZZqej3ICA99IKgp/Wcn7Dr/HgQsD3Hrh6oJ4thvzuIwZ6TqbPQpEITg4w0OM=
-X-Received: by 2002:a4a:b389:: with SMTP id p9mr11582417ooo.39.1594112201814;
- Tue, 07 Jul 2020 01:56:41 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=5sZ6sctOprW48prqnqqAPPY0rYJt8Ppe0eVRvN2BoLs=;
+        b=nnPON1Yim/YHdH8ytJ+ZKsCr1X4eqfuDIO+aYcMkteBdfl3binWq74qq+3qAEA3vQ+
+         are51kus3yCmFVnzEPzQlvdUBN3cpFu/2ssEO4+2+zvSfs8GRQjhINNp3l88HPyFdtK7
+         E/YFsbwGPmqNcrv3KgoImz45L/0Ad/2Ej8oWzA/IV9etCC1UB1WdCW825OJ6dqd8QRwG
+         Ln5A7c9Ln7hNUXABNaG8Z2iU/LOU8zfbFu7mbesv6s9kJz8cr0S02r5Gc051ooa+5/Wy
+         YRR4fLEori3vVdF5ZP1pfN92G30GkIC2sK1tKcYfGolxEqXRfDp/jk54Ty9eNibPYSse
+         9mHA==
+X-Gm-Message-State: AOAM530uNPqDTQcYSj0zTcRByHljqbEGBl/JDI1ReMPaJJyZvf2cRea8
+        4B3Gq8eMPxgspCHNv5fNM+fLUgbb4l+UMFnLDN7+linl7PE=
+X-Google-Smtp-Source: ABdhPJzk/JpcsfV1CIcgIrRuhmCoe1B8NPGz8WVZ/NWh0zHznhv28N2lorRQovW5ZosBXh1XS6mqNulyUDR7OC55uHc=
+X-Received: by 2002:a92:dc09:: with SMTP id t9mr35441821iln.226.1594112496813;
+ Tue, 07 Jul 2020 02:01:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200702174455.282252-1-mlevitsk@redhat.com> <20200702181606.GF3575@linux.intel.com>
- <3793ae0da76fe00036ed0205b5ad8f1653f58ef2.camel@redhat.com>
- <20200707061105.GH5208@linux.intel.com> <7c1d9bbe-5f59-5b86-01e9-43c929b24218@redhat.com>
- <20200707081444.GA7417@linux.intel.com>
-In-Reply-To: <20200707081444.GA7417@linux.intel.com>
-From:   Wanpeng Li <kernellwp@gmail.com>
-Date:   Tue, 7 Jul 2020 16:56:30 +0800
-Message-ID: <CANRm+CwyRPMCWO1wZhu_iv22+9uCE6_L3jnJ2_KEgMnA_Spfhg@mail.gmail.com>
-Subject: Re: [PATCH] kvm: x86: rewrite kvm_spec_ctrl_valid_bits
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        kvm <kvm@vger.kernel.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
+References: <20200707034604.1539157-1-nickrterrell@gmail.com> <CA+icZUXvHWj7rDXNXpGL+kTRqC9UMkeUKuCCGiHJnhG6vP4VRQ@mail.gmail.com>
+In-Reply-To: <CA+icZUXvHWj7rDXNXpGL+kTRqC9UMkeUKuCCGiHJnhG6vP4VRQ@mail.gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Tue, 7 Jul 2020 11:01:25 +0200
+Message-ID: <CA+icZUUXHXXC9C47mZd1JamVnvZhpru-GWmgHQMERF7Y3AQKgw@mail.gmail.com>
+Subject: Re: [GIT PULL][PATCH v6 0/8] Add support for ZSTD-compressed kernel
+ and initramfs
+To:     Nick Terrell <nickrterrell@gmail.com>
+Cc:     Borislav Petkov <bp@alien8.de>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jim Mattson <jmattson@google.com>
+        linux-kernel@vger.kernel.org, Chris Mason <clm@fb.com>,
+        linux-kbuild@vger.kernel.org, x86@kernel.org,
+        gregkh@linuxfoundation.org, Petr Malat <oss@malat.biz>,
+        Kees Cook <keescook@chromium.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        Adam Borowski <kilobyte@angband.pl>,
+        Patrick Williams <patrickw3@fb.com>, rmikey@fb.com,
+        mingo@kernel.org, Patrick Williams <patrick@stwcx.xyz>,
+        Norbert Lange <nolange79@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nick Terrell <terrelln@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 7 Jul 2020 at 16:15, Sean Christopherson
-<sean.j.christopherson@intel.com> wrote:
+On Tue, Jul 7, 2020 at 6:03 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
 >
-> Aren't you supposed to be on vacation? :-)
-
-A long vacation, enjoy!
-
->
-> On Tue, Jul 07, 2020 at 10:04:22AM +0200, Paolo Bonzini wrote:
-> > On 07/07/20 08:11, Sean Christopherson wrote:
-> > > One oddity with this whole thing is that by passing through the MSR, KVM is
-> > > allowing the guest to write bits it doesn't know about, which is definitely
-> > > not normal.  It also means the guest could write bits that the host VMM
-> > > can't.
+> On Tue, Jul 7, 2020 at 5:50 AM Nick Terrell <nickrterrell@gmail.com> wrote:
 > >
-> > That's true.  However, the main purpose of the kvm_spec_ctrl_valid_bits
-> > check is to ensure that host-initiated writes are valid; this way, you
-> > don't get a #GP on the next vmentry's WRMSR to MSR_IA32_SPEC_CTRL.
-> > Checking the guest CPUID bit is not even necessary.
+> > From: Nick Terrell <terrelln@fb.com>
+> >
+> > Please pull from
+> >
+> >   git@github.com:terrelln/linux.git tags/v6-zstd
+> >
+> > to get these changes. Alternatively the patchset is included.
+> >
 >
-> Right, what I'm saying is that rather than try and decipher specs to
-> determine what bits are supported, just throw the value at hardware and
-> go from there.  That's effectively what we end up doing for the guest writes
-> anyways.
+> Hi Nick,
 >
-> Actually, the current behavior will break migration if there are ever legal
-> bits that KVM doesn't recognize, e.g. guest writes a value that KVM doesn't
-> allow and then migration fails when the destination tries to stuff the value
-> into KVM.
+> cool, I just pulled from their.
+> Yesterday, I switched over from Linux v5.7.y to v5.8-rc4.
+> What a good timing :-).
+>
+> I will report later.
+>
+
+Looks good.
+
+$ scripts/diffconfig /boot/config-5.8.0-rc4-3-amd64-llvm11-ias
+/boot/config-5.8.0-rc4-4-amd64-llvm11-ias
+ BUILD_SALT "5.8.0-rc4-3-amd64-llvm11-ias" -> "5.8.0-rc4-4-amd64-llvm11-ias"
+ KERNEL_XZ y -> n
++DECOMPRESS_ZSTD y
++HAVE_KERNEL_ZSTD y
++KERNEL_ZSTD y
++RD_ZSTD y
+
+# du -s -k initrd.img-5.8.0-rc4-3-amd64-llvm11-ias
+initrd.img-5.8.0-rc4-4-amd64-llvm11-ias
+31208   initrd.img-5.8.0-rc4-3-amd64-llvm11-ias <--- GZIP
+24768   initrd.img-5.8.0-rc4-4-amd64-llvm11-ias <--- ZSTD
+
+- Sedat -
+
+> Regards,
+> - Sedat -
+>
+> > Hi all,
+> >
+> > This patch set adds support for a ZSTD-compressed kernel, ramdisk, and
+> > initramfs in the kernel boot process. ZSTD-compressed ramdisk and initramfs
+> > are supported on all architectures. The ZSTD-compressed kernel is only
+> > hooked up to x86 in this patch set.
+> >
+> > Zstandard requires slightly more memory during the kernel decompression
+> > on x86 (192 KB vs 64 KB), and the memory usage is independent of the
+> > window size.
+> >
+> > Zstandard requires memory proprortional to the window size used during
+> > compression for decompressing the ramdisk image, since streaming mode is
+> > used. Newer versions of zstd (1.3.2+) list the window size of a file
+> > with `zstd -lv <file>'. The absolute maximum amount of memory required
+> > is just over 8 MB, but it can be controlled at compression time.
+> >
+> > This patch set has been boot tested with buildroot and QEMU based off
+> > of linux-5.8-rc4.
+> >
+> > On i386 and x86_64 I have tested the following configurations:
+> > * zstd compressed kernel and a separate zstd compressed initramfs
+> > * zstd compressed kernel and a built-in zstd compressed initramfs
+> > * gzip compressed kernel and a separate gzip compressed initramfs
+> > * gzip compressed kernel and a built-in gzip compressed initramfs
+> >
+> > On arm and aarch64 I tested the same configurations, except that the kernel is
+> > always gzip compressed.
+> >
+> > Facebook has been using v1 of these patches on x86_64 devices for more than 6
+> > months. When we switched from a xz compressed initramfs to a zstd compressed
+> > initramfs decompression time shrunk from 12 seconds to 3 seconds. When we
+> > switched from a xz compressed kernel to a zstd compressed kernel we saved 2
+> > seconds of boot time.
+> >
+> > Facebook has been using v2 of these patches on aarch64 devices for a few weeks.
+> > When we switched from an lzma compressed initramfs to a zstd compressed initramfs
+> > decompression time shrunk from 27 seconds to 8 seconds.
+> >
+> > The zstd compressed kernel is smaller than the gzip compressed kernel but larger
+> > than the xz or lzma compressed kernels, and it decompresses faster than
+> > everything except lz4. See the table below for the measurement of an x86_64
+> > kernel ordered by compressed size:
+> >
+> > algo    size
+> > xz       6,509,792
+> > lzma     6,856,576
+> > zstd     7,399,157
+> > gzip     8,522,527
+> > bzip     8,629,603
+> > lzo      9,808,035
+> > lz4     10,705,570
+> > none    32,565,672
+> >
+> > Alex Xu ran benchmarks in https://lkml.org/lkml/2020/7/1/722.
+> >
+> > v1 -> v2:
+> > - Rebase
+> >   - usr/Makefile and init/Kconfig were changed so the patches were updated
+> > - No functional changes except to rebase
+> > - Split the patches up into smaller chunks
+> >
+> > v2 -> v3:
+> > - Add *.zst to the .gitignore in patch 8
+> > - Style nits in patch 3
+> > - Rename the PREBOOT macro to ZSTD_PREBOOT and XXH_PREBOOT in patches
+> >   1 through 3
+> >
+> > v3 -> v4:
+> > - Increase the ZSTD_IOBUF_SIZE from 4KB to 128KB to improve performance.
+> >   With this change I switch from malloc() to large_malloc() for the
+> >   buffers.
+> > - Increase the maximum allowed window size from 8 MB to 128 MB, which is
+> >   the max that zstd in the kernel supports.
+> >
+> > v4 -> v5:
+> > - Update commit message for patch 6 in response to comments
+> > - Rebase onto next-20200408
+> >
+> > v5 -> v6:
+> > - Rebase onto v5.8-rc4
+> >
+> > Best,
+> > Nick Terrell
+> >
+> > Adam Borowski (1):
+> >   .gitignore: add ZSTD-compressed files
+> >
+> > Nick Terrell (7):
+> >   lib: prepare zstd for preboot environment
+> >   lib: prepare xxhash for preboot environment
+> >   lib: add zstd support to decompress
+> >   init: add support for zstd compressed kernel
+> >   usr: add support for zstd compressed initramfs
+> >   x86: bump ZO_z_extra_bytes margin for zstd
+> >   x86: Add support for ZSTD compressed kernel
+> >
+> >  .gitignore                        |   1 +
+> >  Documentation/x86/boot.rst        |   6 +-
+> >  arch/x86/Kconfig                  |   1 +
+> >  arch/x86/boot/compressed/Makefile |   5 +-
+> >  arch/x86/boot/compressed/misc.c   |   4 +
+> >  arch/x86/boot/header.S            |   8 +-
+> >  arch/x86/include/asm/boot.h       |   6 +-
+> >  include/linux/decompress/unzstd.h |  11 +
+> >  init/Kconfig                      |  15 +-
+> >  lib/Kconfig                       |   4 +
+> >  lib/Makefile                      |   1 +
+> >  lib/decompress.c                  |   5 +
+> >  lib/decompress_unzstd.c           | 342 ++++++++++++++++++++++++++++++
+> >  lib/xxhash.c                      |  21 +-
+> >  lib/zstd/decompress.c             |   2 +
+> >  lib/zstd/fse_decompress.c         |   9 +-
+> >  lib/zstd/zstd_internal.h          |  14 +-
+> >  scripts/Makefile.lib              |  15 ++
+> >  usr/Kconfig                       |  20 ++
+> >  usr/Makefile                      |   1 +
+> >  20 files changed, 464 insertions(+), 27 deletions(-)
+> >  create mode 100644 include/linux/decompress/unzstd.h
+> >  create mode 100644 lib/decompress_unzstd.c
+> >
+> > --
+> > 2.27.0
+> >
