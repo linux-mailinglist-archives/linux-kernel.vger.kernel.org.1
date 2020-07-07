@@ -2,47 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE397216E84
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 16:17:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F28C216E85
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 16:17:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728246AbgGGORZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 10:17:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51774 "EHLO mail.kernel.org"
+        id S1728259AbgGGORa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 10:17:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51892 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728225AbgGGORY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 10:17:24 -0400
+        id S1727090AbgGGOR3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 10:17:29 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0FBFA20771;
-        Tue,  7 Jul 2020 14:17:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 09CD920773;
+        Tue,  7 Jul 2020 14:17:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594131444;
-        bh=nqNaTEsJJ1BX5Ar+tPUZJmqbadwF/kx214S3Z0T5Vjk=;
+        s=default; t=1594131449;
+        bh=JvMHWS5oVH4hJWhlbLg3xOagK5SJNSGlwa487H/MIj0=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=hhky3TmYhv5JgVIPZTtSGNTNyit59gQIgJ7yZrPoLAZWcOTEvhyMxTkX/x2jlA+me
-         FRrTV8Y1+s3opu5QE9dLXJbHzhNfgp50H2uXy3ilQLhk2Ny0qXxEQ0kFkAjb4lWuOu
-         M2yrWLlhJebgVEaY/txw4w+NXtGL6LBAWwIN9yuk=
-Date:   Tue, 07 Jul 2020 15:17:20 +0100
+        b=sAfOmiyf8FHFWKOA6FwaxwupDn1VBbapkTzn+i6k/rVy8xYFmWsZn5ZYG3i5u/jm7
+         Ip0g94Gq0sMn6tahJkEelS0HPHNK4BnzNDrUJLNoe4UPdYVDvhfBd2GQIrulNt1aRx
+         atJusenmrdQQCelNdL6Ew9Q0dZLKWmxR1sc4I8AI=
+Date:   Tue, 07 Jul 2020 15:17:25 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
+To:     Nicolin Chen <nicoleotsuka@gmail.com>
+Cc:     timur@tabi.org, shengjiu.wang@nxp.com,
+        linux-kernel@vger.kernel.org, festevam@gmail.com,
+        linuxppc-dev@lists.ozlabs.org, Li.Xiubo@freescale.com,
         alsa-devel@alsa-project.org
-Cc:     Alexander.Deucher@amd.com, Liam Girdwood <lgirdwood@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        hui.wang@canonical.com, Takashi Iwai <tiwai@suse.com>
-In-Reply-To: <1594118813-18689-1-git-send-email-Vijendar.Mukunda@amd.com>
-References: <1594118813-18689-1-git-send-email-Vijendar.Mukunda@amd.com>
-Subject: Re: [PATCH] ASoC: amd: add ACPI dependency check
-Message-Id: <159413142467.34737.8485886141400585716.b4-ty@kernel.org>
+In-Reply-To: <20200702193102.25282-1-nicoleotsuka@gmail.com>
+References: <20200702193102.25282-1-nicoleotsuka@gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: Add Shengjiu to reviewer list of sound/soc/fsl
+Message-Id: <159413142466.34737.11451730915770619660.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 7 Jul 2020 16:16:41 +0530, Vijendar Mukunda wrote:
-> Add ACPI dependency for evaluating DMIC hardware
-> runtime.
+On Thu, 2 Jul 2020 12:31:02 -0700, Nicolin Chen wrote:
+> Add Shengjiu who's actively working on the latest fsl/nxp audio drivers.
 
 Applied to
 
@@ -50,8 +48,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: amd: add ACPI dependency check
-      commit: 68d1abe186d1c865923d3b97414906f4697daf58
+[1/1] MAINTAINERS: Add Shengjiu to reviewer list of sound/soc/fsl
+      commit: 503ed52225ed3d369c8e0dedf13556a7bc1e5c2b
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
