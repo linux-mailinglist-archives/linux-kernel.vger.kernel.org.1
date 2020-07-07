@@ -2,107 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ABBC216428
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 04:52:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 508E0216415
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 04:37:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727942AbgGGCwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 22:52:19 -0400
-Received: from mga07.intel.com ([134.134.136.100]:32557 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726915AbgGGCwT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 22:52:19 -0400
-IronPort-SDR: Td8kwsKDNqcvyySer+GcRKZ+z1318EsHTs8eM7iXQdFHqVUelUU61faC/28b9vMPxCjl+vgBeE
- luB9PgSOOANg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9674"; a="212503036"
-X-IronPort-AV: E=Sophos;i="5.75,321,1589266800"; 
-   d="scan'208";a="212503036"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2020 19:52:18 -0700
-IronPort-SDR: a8RBZppPu1jANqtiX8SwjiqdFbHckyN1+a1iLVXD7cZEqKi3ZWXTHWItstkNMmYrBk4kDC+pL9
- DXnVJ0WyO8Zg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,321,1589266800"; 
-   d="scan'208";a="305502199"
-Received: from km-skylake-client-platform.sc.intel.com ([10.3.52.141])
-  by fmsmga004.fm.intel.com with ESMTP; 06 Jul 2020 19:52:18 -0700
-Message-ID: <89e07361c8f575bc029071a0f7789e19d0431c0b.camel@intel.com>
-Subject: Re: [PATCH v2 2/4] x86/cpufeatures: Enumerate TSX suspend load
- address tracking instructions
-From:   Kyung Min Park <kyung.min.park@intel.com>
-To:     Cathy Zhang <cathy.zhang@intel.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org
-Cc:     pbonzini@redhat.com, sean.j.christopherson@intel.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, hpa@zytor.com, ricardo.neri-calderon@linux.intel.com,
-        jpoimboe@redhat.com, gregkh@linuxfoundation.org,
-        ak@linux.intel.com, dave.hansen@intel.com, tony.luck@intel.com,
-        ravi.v.shankar@intel.com
-Date:   Mon, 06 Jul 2020 19:36:27 -0700
-In-Reply-To: <1594088183-7187-3-git-send-email-cathy.zhang@intel.com>
-References: <1594088183-7187-1-git-send-email-cathy.zhang@intel.com>
-         <1594088183-7187-3-git-send-email-cathy.zhang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S1727793AbgGGChQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 22:37:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55380 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726869AbgGGChQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Jul 2020 22:37:16 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F5ADC061755
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Jul 2020 19:37:16 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id t15so3455994pjq.5
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Jul 2020 19:37:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HHdH3pxc6/1OWdiQ0FLNq8tld/3JYfOlJ1zd1DWvXxE=;
+        b=YYvyv11OhAGE++Y19t/3AOlEmefMaGpenbchC0U1ko+Rz7bK4xMx1lRWXGKPWf7m69
+         Tdnqd51W987csbOwrk//zANgFBaayT7cLz5wEMdRUQucTigjm/JL5op9uVN5DXvzb7U1
+         fRQ5T8jDiN+UTHrTrfQSXIGx5izB2T5kF8GcY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HHdH3pxc6/1OWdiQ0FLNq8tld/3JYfOlJ1zd1DWvXxE=;
+        b=DR9ZJVGhmfGhP7Z14iaMdoniF0TCCDYDkhGdVcznj+ALuJvj+FJj4cv/tI0bDZw9Ee
+         F0WZx8htBbaGB1HuGxio2UpNCrgvYkXk/OBicwXgxnCtq1Q+R2mH5yb1yP0TPHrSGZh2
+         UiIHwf9YwX4r3bvD9O/jnMzz3JOo4Ul0gHlzZjWHb5PDmXc1Z8aA+iceu7boVn8JiYJe
+         zPNyU/HvMM2cWzI299UAHip9uOvOvAMX7RQqKjOIpqxEGZq/hlQ1LNPWkvIMFm/bBqhw
+         k3EbzCduWaqfGik3cB4ixsPr1pohX2sqWH7I6MQyRV51h7ggm+HnMGHK0O1Sqzyr+6it
+         OQYQ==
+X-Gm-Message-State: AOAM532EuVymDobmaEYE87dIZqPz+ruTFzMJYxdhKKXFpPigC0dg7XEj
+        kRTdjueCfmBeT512p1FLRH8AsX4iJ9c=
+X-Google-Smtp-Source: ABdhPJzXGXWo6BaBPsc65IAhDuQF0Km5xLLZpA7PkCz3ErWEQlWg+yVa5og4xutUAjns58+bKNXrDw==
+X-Received: by 2002:a17:90b:3684:: with SMTP id mj4mr2123524pjb.66.1594089435628;
+        Mon, 06 Jul 2020 19:37:15 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id d190sm19730669pfd.199.2020.07.06.19.37.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Jul 2020 19:37:14 -0700 (PDT)
+Date:   Mon, 6 Jul 2020 19:37:13 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Matteo Croce <mcroce@linux.microsoft.com>
+Cc:     Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] pstore/platform: build fix when crypto API are disabled
+Message-ID: <202007061852.5B9A0F9ED@keescook>
+References: <20200706234045.9516-1-mcroce@linux.microsoft.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200706234045.9516-1-mcroce@linux.microsoft.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Cathy,
+On Tue, Jul 07, 2020 at 01:40:45AM +0200, Matteo Croce wrote:
+> From: Matteo Croce <mcroce@microsoft.com>
+> 
+> When building a kernel with CONFIG_PSTORE=y and CONFIG_CRYPTO not set,
+> a build error happens:
+> 
+>     ld: fs/pstore/platform.o: in function `pstore_dump':
+>     platform.c:(.text+0x3f9): undefined reference to `crypto_comp_compress'
+>     ld: fs/pstore/platform.o: in function `pstore_get_backend_records':
+>     platform.c:(.text+0x784): undefined reference to `crypto_comp_decompress'
+> 
+> This because some pstore code uses crypto_comp_(de)compress
+> regardless of the CONFIG_CRYPTO status.
+> Fix it by wrapping the (de)compress usage by IS_ENABLED(CONFIG_PSTORE_COMPRESS)
 
-On Tue, 2020-07-07 at 10:16 +0800, Cathy Zhang wrote:
-> Intel TSX suspend load tracking instructions aim to give a way to
-> choose which memory accesses do not need to be tracked in the TSX
-> read set. Add TSX suspend load tracking CPUID feature flag TSXLDTRK
-> for enumeration.
+I'm surprised this hasn't come up before in a randconfig! But I guess
+it'd require a very lucky config: picking CONFIG_PSTORE but not
+CONFIG_CRYPTO _and_ 0 of the many compression options in pstore. :P
+
+But yes, I can reproduce this with:
+
+# CONFIG_CRYPTO is not set
+CONFIG_PSTORE=y
+# CONFIG_PSTORE_DEFLATE_COMPRESS is not set
+# CONFIG_PSTORE_LZO_COMPRESS is not set
+# CONFIG_PSTORE_LZ4_COMPRESS is not set
+# CONFIG_PSTORE_LZ4HC_COMPRESS is not set
+# CONFIG_PSTORE_842_COMPRESS is not set
+# CONFIG_PSTORE_ZSTD_COMPRESS is not set
+
 > 
-> A processor supports Intel TSX suspend load address tracking if
-> CPUID.0x07.0x0:EDX[16] is present. Two instructions XSUSLDTRK,
-> XRESLDTRK
-> are available when this feature is present.
-> 
-> The CPU feature flag is shown as "tsxldtrk" in /proc/cpuinfo.
-> 
-> Detailed information on the instructions and CPUID feature flag
-> TSXLDTRK
-> can be found in the latest Intel Architecture Instruction Set
-> Extensions
-> and Future Features Programming Reference and Intel 64 and IA-32
-> Architectures Software Developer's Manual.
-> 
-> Signed-off-by: Kyung Min Park <kyung.min.park@intel.com>
-> Signed-off-by: Cathy Zhang <cathy.zhang@intel.com>
+> Signed-off-by: Matteo Croce <mcroce@microsoft.com>
 > ---
->  arch/x86/include/asm/cpufeatures.h | 1 +
->  1 file changed, 1 insertion(+)
+>  fs/pstore/platform.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/arch/x86/include/asm/cpufeatures.h
-> b/arch/x86/include/asm/cpufeatures.h
-> index adf45cf..34b66d7 100644
-> --- a/arch/x86/include/asm/cpufeatures.h
-> +++ b/arch/x86/include/asm/cpufeatures.h
-> @@ -366,6 +366,7 @@
->  #define X86_FEATURE_MD_CLEAR		(18*32+10) /* VERW clears CPU
-> buffers */
->  #define X86_FEATURE_TSX_FORCE_ABORT	(18*32+13) /* ""
-> TSX_FORCE_ABORT */
->  #define X86_FEATURE_SERIALIZE		(18*32+14) /* SERIALIZE
-> instruction */
-> +#define X86_FEATURE_TSX_LDTRK           (18*32+16) /* TSX Suspend
-> Load Address Tracking */
+> diff --git a/fs/pstore/platform.c b/fs/pstore/platform.c
+> index a9e297eefdff..6022d8359f96 100644
+> --- a/fs/pstore/platform.c
+> +++ b/fs/pstore/platform.c
+> @@ -436,7 +436,7 @@ static void pstore_dump(struct kmsg_dumper *dumper,
+>  					  dst_size, &dump_size))
+>  			break;
+>  
+> -		if (big_oops_buf) {
+> +		if (IS_ENABLED(CONFIG_PSTORE_COMPRESS) && big_oops_buf) {
+>  			zipped_len = pstore_compress(dst, psinfo->buf,
+>  						header_size + dump_size,
+>  						psinfo->bufsize);
+> @@ -668,7 +668,7 @@ static void decompress_record(struct pstore_record *record)
+>  	int unzipped_len;
+>  	char *unzipped, *workspace;
+>  
+> -	if (!record->compressed)
+> +	if (!IS_ENABLED(CONFIG_PSTORE_COMPRESS) || !record->compressed)
+>  		return;
+>  
+>  	/* Only PSTORE_TYPE_DMESG support compression. */
+> -- 
+> 2.26.2
 
-Since you are using the flag name to "TSX_LDTRK", the commit message
-needs to be changed accordingly. The commit message is saying
-"tsxldtrk", not "tsx_ldtrk".
+This report also reminds me that I want to stop hard-coding the possible
+compressors[1].
 
->  #define X86_FEATURE_PCONFIG		(18*32+18) /* Intel PCONFIG */
->  #define X86_FEATURE_SPEC_CTRL		(18*32+26) /* ""
-> Speculation Control (IBRS + IBPB) */
->  #define X86_FEATURE_INTEL_STIBP		(18*32+27) /* "" Single
-> Thread Indirect Branch Predictors */
+Regardless, for now, I'd like a slightly different patch, which pokes
+pstore_compress() instead of doing it inline in pstore_dump():
 
+
+diff --git a/fs/pstore/platform.c b/fs/pstore/platform.c
+index a9e297eefdff..36714df37d5d 100644
+--- a/fs/pstore/platform.c
++++ b/fs/pstore/platform.c
+@@ -269,6 +269,9 @@ static int pstore_compress(const void *in, void *out,
+ {
+ 	int ret;
+ 
++	if (!IS_ENABLED(CONFIG_PSTORE_COMPRESSION))
++		return -EINVAL;
++
+ 	ret = crypto_comp_compress(tfm, in, inlen, out, &outlen);
+ 	if (ret) {
+ 		pr_err("crypto_comp_compress failed, ret = %d!\n", ret);
+@@ -668,7 +671,7 @@ static void decompress_record(struct pstore_record *record)
+ 	int unzipped_len;
+ 	char *unzipped, *workspace;
+ 
+-	if (!record->compressed)
++	if (!IS_ENABLED(CONFIG_PSTORE_COMPRESSION) || !record->compressed)
+ 		return;
+ 
+ 	/* Only PSTORE_TYPE_DMESG support compression. */
+
+
+
+Let me know if that works for you (it fixes it on my end).
+
+Thanks!
+
+-Kees
+
+[1] https://lore.kernel.org/lkml/20180802215118.17752-1-keescook@chromium.org/
+
+-- 
+Kees Cook
