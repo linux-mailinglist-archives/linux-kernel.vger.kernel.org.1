@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F87E216F84
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:00:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84DE8216F87
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:00:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728150AbgGGO7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 10:59:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57094 "EHLO
+        id S1728275AbgGGO7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 10:59:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725944AbgGGO7k (ORCPT
+        with ESMTP id S1727936AbgGGO7l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 10:59:40 -0400
+        Tue, 7 Jul 2020 10:59:41 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 762EBC061755
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 07:59:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DC20C061755
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 07:59:41 -0700 (PDT)
 From:   John Ogness <john.ogness@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1594133978;
+        s=2020; t=1594133979;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=LdvL/x2dKuN9iAnoWSsz2ILnlZfZBQJ9bRLZQEL/pxs=;
-        b=yVq47utFIFnT0UDbkP9zxfJk4vzd5h882nKGG99PDKiEt1l2YfbUjley8z8Urqm3wd2v5M
-        371VeJ6NG0eIuT01oVpdYMjVQ2sTsyK/vw1DUC3TUrujCTOHifDzr+0gTfG2f3kjSPRTaC
-        Hr0ZdiVlUuTTDt9qkAWVqRgIaOQQKTpOslf5ko7Av8Co6OVoej1C7kAWSZ9tojUwTnsk3m
-        P3Xw+nDIdAdEv4j8Vb9ovZzco+7OBf9HdeCXd5BCS9YbAn6xXoug90Q0nf24EMzDFzwfop
-        /OLLXWcg+vpt5gKKsOgnjmfmTDFVjyMmXmyROq6hRQIyRzyXzha7p03YgMId8g==
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=W42dHyCRa8fXUYeFJuQuDMETLy5ADl16+A8/qW62pEs=;
+        b=iEvtvxg0AshlWoTvWvS6Mpf4XzFKtjP8Hb3fuVbA+YXh1s/YWMRn27JhBCO6wsg4GC/Jw4
+        zYENzUkYxySH+cOv6zVgKxp5K+wvyS3/PkWR5xTw8AUN5kXrFX4k1t+yY/Q3e7/FBh85aR
+        KQmawGwFpP9NuxOv5nXCr+aukc5zpR6pzzf4vsth0cmp0WZslvfpbVjSq/Um1+9ZYx0ScZ
+        TZ51zD57LtzDdVyMb+mG9Zqv43Z2JSf5ZkXd8Lz4Ap//ilJv00vA5K1owTnsbtKdQ8USIh
+        F+Ngo7ogPWNS2GBr72SQVvI7rxKwvUFDZ3kOdPQjC2P73asTHYdVMSe5WoQUeQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1594133978;
+        s=2020e; t=1594133979;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=LdvL/x2dKuN9iAnoWSsz2ILnlZfZBQJ9bRLZQEL/pxs=;
-        b=T4VeeEwxYXyid87FZyQczDQqXHKDTIfz42dcgEOggnhwF4DlpEhlVKquP74YXl8RSSd7dA
-        +rRIoWEImmIwY5AQ==
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=W42dHyCRa8fXUYeFJuQuDMETLy5ADl16+A8/qW62pEs=;
+        b=vB3xOeJSc2U5GL8GWOfBVn0oYiHRwBGBu8gpZnHRZyTUF91gZstVpK/09CIHBgzkn5Lc4s
+        6WVw4VENSq2S7vCg==
 To:     Petr Mladek <pmladek@suse.com>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
         Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
@@ -46,9 +48,11 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Paul McKenney <paulmck@kernel.org>, kexec@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v4 0/4] printk: replace ringbuffer
-Date:   Tue,  7 Jul 2020 17:05:28 +0206
-Message-Id: <20200707145932.8752-1-john.ogness@linutronix.de>
+Subject: [PATCH v4 1/4] crash: add VMCOREINFO macro to define offset in a struct declared by typedef
+Date:   Tue,  7 Jul 2020 17:05:29 +0206
+Message-Id: <20200707145932.8752-2-john.ogness@linutronix.de>
+In-Reply-To: <20200707145932.8752-1-john.ogness@linutronix.de>
+References: <20200707145932.8752-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -56,116 +60,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+The existing macro VMCOREINFO_OFFSET() can't be used for structures
+declared via typedef because "struct" is not part of type definition.
 
-Here is a v4 for the first series to rework the printk
-subsystem. The v3 is here [0]. This first series
-only replaces the existing ringbuffer implementation. No locking
-is removed. The semantics/behavior of printk are kept the same
-except for a minor optimization that is reverted (patch 3).
+Create another macro for this purpose.
 
-Despite minor changes to the ringbuffer code since v3 (comments,
-function names, very minor refactoring), the ringbuffer logic
-itself has not changed. And, in particular, the memory barriers
-have been exactly preserved from v3. For this reason I deem it
-appropriate to keep Paul's reviewed by tag (patch 2).
+Signed-off-by: John Ogness <john.ogness@linutronix.de>
+Acked-by: Baoquan He <bhe@redhat.com>
+Acked-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Reviewed-by: Petr Mladek <pmladek@suse.com>
+---
+ include/linux/crash_core.h | 3 +++
+ 1 file changed, 3 insertions(+)
 
-RFC patches for various userspace tools to dump the kernel log
-are available: crash [1], makedumpfile [2], kexec-tools [3].
-
-Finally, I would like to thank some people/organizations that
-helped with performing ringbuffer stress tests on big or rare
-hardware that I do not have access to:
-
-- Prarit Bhargava of Red Hat (x86_64, ppc64le power8)
-- Michael Cree of Debian (alpha)
-- Jeff Scheel of OSU Open Source Lab (ppc64le power8 kvm)
-
-These tests were extremely valuable during the memory barrier
-work. Thank you!
-
-This series is based on v5.8-rc4.
-
-The list of changes since v3:
-
-printk_ringbuffer
-=================
-
-- data_alloc(): remove unneeded check for a NULL data ring [4]
-
-- prb_next_seq(): simplified by assuming u64 never overflows [4]
-
-- added prb_for_each_info() macro to iterate record meta-data [5]
-
-- prb_count_lines() renamed to count_lines() and is now a static
-  helper function [5]
-
-- buffers defined by DECLARE_PRINTKRB() now static [6]
-
-- DECLARE_PRINTKRB() renamed to DEFINE_PRINTKRB() because it is
-  defining, not declaring
-
-printk.c
-========
-
-- added a compiler macro test to ensure CONFIG_LOG_BUF_SHIFT
-  is greater than PRB_AVGBITS [7]
-
-- setup_log_buf(): fixed handling of failed allocation of the
-  dictionary data ring [7]
-
-- setup_log_buf(): now verify that no messages were dropped
-  during the transition to the dynamic buffer [7]
-
-- setup_log_buf(): added size checks, comments, and temporary
-  variables to clean up the code [7]
-
-- setup_log_buf(): use ilog2() instead of order_base_2() [8]
-
-- truncate_msg(): no longer truncate dictionary data [9]
-
-- record_print_text(): refactored code and comments [10]
-
-- get_record_text_size() renamed to
-  get_record_print_text_size() [11]
-
-- use prb_for_each_info() instead of prb_count_lines() to get
-  the number of lines in a message (also avoids unnecessarily
-  allocating buffer space and/or copying message text) [5]
-
-- reverted printk optimization to only wake klogd if
-  vprintk_emit() actually produced new printing content [12]
-
-[0] https://lkml.kernel.org/r/20200618144919.9806-1-john.ogness@linutronix.de
-[1] https://github.com/Linutronix/crash.git (printk branch)
-[2] https://github.com/Linutronix/makedumpfile.git (printk branch)
-[3] https://github.com/Linutronix/kexec-tools.git (printk branch)
-[4] https://lkml.kernel.org/r/20200702083518.GB14288@alley
-[5] https://lkml.kernel.org/r/87k0zp8rrn.fsf@jogness.linutronix.de
-[6] https://lkml.kernel.org/r/20200619082919.5d604e58@oasis.local.home
-[7] https://lkml.kernel.org/r/87sgeh3m5j.fsf@jogness.linutronix.de
-[8] https://lkml.kernel.org/r/20200702132758.GD14288@alley
-[9] https://lkml.kernel.org/r/87wo3u2b0l.fsf@jogness.linutronix.de
-[10] https://lkml.kernel.org/r/87k0ztbea9.fsf@jogness.linutronix.de
-[11] https://lkml.kernel.org/r/20200625152523.GJ8444@alley
-[12] https://lkml.kernel.org/r/87o8oznh2c.fsf@jogness.linutronix.de
-
-John Ogness (4):
-  crash: add VMCOREINFO macro to define offset in a struct declared by
-    typedef
-  printk: add lockless ringbuffer
-  Revert "printk: lock/unlock console only for new logbuf entries"
-  printk: use the lockless ringbuffer
-
- include/linux/crash_core.h        |    3 +
- kernel/printk/Makefile            |    1 +
- kernel/printk/printk.c            |  950 ++++++++--------
- kernel/printk/printk_ringbuffer.c | 1676 +++++++++++++++++++++++++++++
- kernel/printk/printk_ringbuffer.h |  399 +++++++
- 5 files changed, 2575 insertions(+), 454 deletions(-)
- create mode 100644 kernel/printk/printk_ringbuffer.c
- create mode 100644 kernel/printk/printk_ringbuffer.h
-
+diff --git a/include/linux/crash_core.h b/include/linux/crash_core.h
+index 525510a9f965..43b51c9df571 100644
+--- a/include/linux/crash_core.h
++++ b/include/linux/crash_core.h
+@@ -53,6 +53,9 @@ phys_addr_t paddr_vmcoreinfo_note(void);
+ #define VMCOREINFO_OFFSET(name, field) \
+ 	vmcoreinfo_append_str("OFFSET(%s.%s)=%lu\n", #name, #field, \
+ 			      (unsigned long)offsetof(struct name, field))
++#define VMCOREINFO_TYPE_OFFSET(name, field) \
++	vmcoreinfo_append_str("OFFSET(%s.%s)=%lu\n", #name, #field, \
++			      (unsigned long)offsetof(name, field))
+ #define VMCOREINFO_LENGTH(name, value) \
+ 	vmcoreinfo_append_str("LENGTH(%s)=%lu\n", #name, (unsigned long)value)
+ #define VMCOREINFO_NUMBER(name) \
 -- 
 2.20.1
 
