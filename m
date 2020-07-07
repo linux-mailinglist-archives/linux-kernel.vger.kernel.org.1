@@ -2,84 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC0CC216C5B
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 13:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBE36216C59
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 13:55:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728088AbgGGLzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 07:55:07 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:59996 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725944AbgGGLzH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 07:55:07 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 2DBA98E528D7DC0EAFEE;
-        Tue,  7 Jul 2020 19:55:05 +0800 (CST)
-Received: from [127.0.0.1] (10.174.179.214) by DGGEMS407-HUB.china.huawei.com
- (10.3.19.207) with Microsoft SMTP Server id 14.3.487.0; Tue, 7 Jul 2020
- 19:54:57 +0800
-Subject: Re: [PATCH] ubifs: Fix a potential space leak problem while linking
- tmpfile
-To:     Richard Weinberger <richard.weinberger@gmail.com>
-CC:     <linux-mtd@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Richard Weinberger <richard@nod.at>,
-        "zhangyi (F)" <yi.zhang@huawei.com>
-References: <20200701112643.726986-1-chengzhihao1@huawei.com>
- <CAFLxGvyO_aXGfgoO0mrNsoGP4Bfh3n6CUQxDx=ecH6o2ZDNYDg@mail.gmail.com>
-From:   Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <082f18e0-d6f0-6389-43af-3159edb244cb@huawei.com>
-Date:   Tue, 7 Jul 2020 19:54:57 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S1727090AbgGGLy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 07:54:58 -0400
+Received: from mga01.intel.com ([192.55.52.88]:18420 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726839AbgGGLy5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 07:54:57 -0400
+IronPort-SDR: khKurL59450+/kibfTom+kxOIYT4/Kdtu02upNX8GT8WkWQXPGgbTAtyGgcgOyZKtyezeIsz/1
+ Qr1ZDyvyFQlw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9674"; a="165653233"
+X-IronPort-AV: E=Sophos;i="5.75,323,1589266800"; 
+   d="scan'208";a="165653233"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2020 04:54:57 -0700
+IronPort-SDR: Q0XzBKzpLoC00gIXad7+vF1LH2FPQ7aV7UOLCWh9gfLBTzfkGKg8kftxLgX0Ju0fnrF7MBy4rR
+ Ite9FIYltpUA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,323,1589266800"; 
+   d="scan'208";a="457073880"
+Received: from chenyu-office.sh.intel.com ([10.239.158.173])
+  by orsmga005.jf.intel.com with ESMTP; 07 Jul 2020 04:54:55 -0700
+Date:   Tue, 7 Jul 2020 19:56:21 +0800
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2][RFC] Makes sd->flags sysctl writable
+Message-ID: <20200707115621.GB25765@chenyu-office.sh.intel.com>
+References: <cover.1594062828.git.yu.c.chen@intel.com>
+ <20200706200049.GB5523@worktop.programming.kicks-ass.net>
+ <jhj7dvg8faj.mognet@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <CAFLxGvyO_aXGfgoO0mrNsoGP4Bfh3n6CUQxDx=ecH6o2ZDNYDg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.214]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <jhj7dvg8faj.mognet@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-在 2020/7/7 19:26, Richard Weinberger 写道:
-> On Wed, Jul 1, 2020 at 1:28 PM Zhihao Cheng <chengzhihao1@huawei.com> wrote:
->> There is a potential space leak problem while linking tmpfile, in which
->> case, inode node (with nlink=0) is valid in tnc (on flash), which leads
->> to space leak. Meanwhile, the corresponding data nodes won't be released
->> from tnc. For example, (A reproducer can be found in Link):
->>
->> $ mount UBIFS
->>    [process A]            [process B]         [TNC]         [orphan area]
->>
->>   ubifs_tmpfile                          inode_A (nlink=0)     inode_A
->>                            do_commit     inode_A (nlink=0)     inode_A
->>                                 ↑
->>        (comment: It makes sure not replay inode_A in next mount)
->>   ubifs_link                             inode_A (nlink=0)     inode_A
->>     ubifs_delete_orphan                  inode_A (nlink=0)
->>                            do_commit     inode_A (nlink=0)
->>                             ---> POWERCUT <---
->>     (ubifs_jnl_update)
->>
->> $ mount UBIFS
->>    inode_A will neither be replayed in ubifs_replay_journal() nor
->>    ubifs_mount_orphans(). inode_A (nlink=0) with its data nodes will
->>    always on tnc, it occupy space but is non-visable for users.
->>
->> Commit ee1438ce5dc4d ("ubifs: Check link count of inodes when killing
->> orphans.") handles problem in mistakenly deleting relinked tmpfile
->> while replaying orphan area. Since that, tmpfile inode should always
->> live in orphan area even it is linked. Fix it by reverting commit
->> 32fe905c17f001 ("ubifs: Fix O_TMPFILE corner case in ubifs_link()").
-> Well, by reverting this commit you re-introduce the issue it fixes. ;-\
->
-Perhaps I misunderstood what commit 32fe905c17f001 ("ubifs: Fix 
-O_TMPFILE corner case in ubifs_link()") wanted to fix.
-I think orphan area is used to remind filesystem don't forget to delete 
-inodes (whose nlink is 0) in next unclean rebooting. Generally, the file 
-system is not corrupted caused by replaying orphan nodes.
-Ralph reported a filesystem corruption in combination with overlayfs. 
-Can you tell me the details about that problem? Thanks.
+Hi Valentin,
+On Mon, Jul 06, 2020 at 11:11:32PM +0100, Valentin Schneider wrote:
+> 
+> On 06/07/20 21:00, Peter Zijlstra wrote:
+> > On Tue, Jul 07, 2020 at 03:36:13AM +0800, Chen Yu wrote:
+> >> It was found that recently the flags of sched domain could
+> >> not be customized via sysctl, which might make it a little
+> >> inconenient for performance tuning/debugging.
+> >
+> > What specific goals do you have? This is a debug interface.
+> 
+> Also, while the update_top_cache_domain() call on sysctl write may work,
+> you're back to square one as soon as you go through a hotplug cycle, which
+> is icky.
+Do you mean, after the hotplug, all the settings of flags are lost? Yes,
+it is, but in our testing environment we do not do hotplug offen : )
+> 
+> That said, I second Peter in that I'm curious as to what you're really
+> using this interface for. Manually hacking the default / arch topology
+> flags is a bit tedious, but it's doable.
+Agree, but since we do monitor performance testings automatically,
+it might save more time for us to not have to reboot everytime we
+change the flags. So I guess we can hack the code to make that
+flags field temporarily writable. I guess the concern here is that it
+looks a little overkilled for us to invoke update_top_cache_domain(),
+I'm okay with current read-only attribute.
 
-
+Thanks,
+Chenyu
