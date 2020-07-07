@@ -2,178 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 608002172DE
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:56:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58ED32172E9
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:56:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728763AbgGGPpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:45:30 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:45991 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726911AbgGGPp3 (ORCPT
+        id S1729301AbgGGPqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:46:51 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:59707 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729131AbgGGPqh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:45:29 -0400
-Received: from ip5f5af08c.dynamic.kabel-deutschland.de ([95.90.240.140] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jspmM-0001C3-Mv; Tue, 07 Jul 2020 15:45:06 +0000
-Date:   Tue, 7 Jul 2020 17:45:04 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
-        Jann Horn <jannh@google.com>
-Cc:     Paul Moore <paul@paul-moore.com>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Adrian Reber <areber@redhat.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Pavel Emelyanov <ovzxemul@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Andrei Vagin <avagin@gmail.com>,
-        =?utf-8?B?TWljaGHFgiBDxYJhcGnFhHNraQ==?= <mclapinski@google.com>,
-        Kamil Yurtsever <kyurtsever@google.com>,
-        Dirk Petersen <dipeit@gmail.com>,
-        Christine Flood <chf@redhat.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Radostin Stoyanov <rstoyanov1@gmail.com>,
-        Cyrill Gorcunov <gorcunov@openvz.org>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "selinux@vger.kernel.org" <selinux@vger.kernel.org>,
-        Eric Paris <eparis@parisplace.org>,
-        Jann Horn <jannh@google.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH v4 3/3] prctl: Allow ptrace capable processes to change
- /proc/self/exe
-Message-ID: <20200707154504.aknxmw6qavpjkr24@wittgenstein>
-References: <20200701064906.323185-1-areber@redhat.com>
- <20200701064906.323185-4-areber@redhat.com>
- <20200702211647.GB3283@mail.hallyn.com>
- <CAHC9VhQZ=cwiOay6OMMdM1UHm69wDaga9HBkyTbx8-1OU=aBvA@mail.gmail.com>
- <a2b4deacfc7541e3adea2f36a6f44262@EXMBDFT11.ad.twosigma.com>
- <20200706174437.zpshxlul7rl3vmmq@wittgenstein>
+        Tue, 7 Jul 2020 11:46:37 -0400
+X-UUID: 74bb7f4f8a944a41bdd876d7a55ca644-20200707
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=KMWcgcPL1XjMD/Va1W+LCp1J+xXGTJ5bSqx6Wn/nPUA=;
+        b=cXHGGEDqx59+r2LSl0F5kJuTyeyqdu1jsUIwwX3006c2f6SqatMaXkkcaSuKEJBYt8d4vrPqXo0thCVIqBLFGCLR7/SSOafx1kCcgrXSLVIwMP4MmQ8zb8J/rfgCxdL+fxrGiZqa2E9r5Jdrw+c1++UP8jw61aR+cQzZvU2bm2c=;
+X-UUID: 74bb7f4f8a944a41bdd876d7a55ca644-20200707
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
+        (envelope-from <dennis-yc.hsieh@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 1677902217; Tue, 07 Jul 2020 23:46:28 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 7 Jul 2020 23:46:23 +0800
+Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 7 Jul 2020 23:46:23 +0800
+From:   Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>
+To:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, CK Hu <ck.hu@mediatek.com>,
+        Bibby Hsieh <bibby.hsieh@mediatek.com>,
+        Houlong Wei <houlong.wei@mediatek.com>
+CC:     <dri-devel@lists.freedesktop.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>,
+        HS Liao <hs.liao@mediatek.com>
+Subject: [PATCH v3 0/9] support cmdq helper function on mt6779 platform
+Date:   Tue, 7 Jul 2020 23:45:05 +0800
+Message-ID: <1594136714-11650-1-git-send-email-dennis-yc.hsieh@mediatek.com>
+X-Mailer: git-send-email 1.7.9.5
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200706174437.zpshxlul7rl3vmmq@wittgenstein>
+Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 06, 2020 at 07:44:38PM +0200, Christian Brauner wrote:
-> On Mon, Jul 06, 2020 at 05:13:35PM +0000, Nicolas Viennot wrote:
-> > > > This is scary.  But I believe it is safe.
-> > > >
-> > > > Reviewed-by: Serge Hallyn <serge@hallyn.com>
-> > > >
-> > > > I am a bit curious about the implications of the selinux patch.
-> > > > IIUC you are using the permission of the tracing process to execute
-> > > > the file without transition, so this is a way to work around the
-> > > > policy which might prevent the tracee from doing so.
-> > > > Given that SELinux wants to be MAC, I'm not *quite* sure that's
-> > > > considered kosher.  You also are skipping the PROCESS__PTRACE to
-> > > > SECCLASS_PROCESS check which selinux_bprm_set_creds does later on.
-> > > > Again I'm just not quite sure what's considered normal there these
-> > > > days.
-> > > >
-> > > > Paul, do you have input there?
-> > >
-> > > I agree, the SELinux hook looks wrong.  Building on what Christian said, this looks more like a ptrace operation than an exec operation.
-> > 
-> > Serge, Paul, Christian,
-> > 
-> > I made a PoC to demonstrate the change of /proc/self/exe without CAP_SYS_ADMIN using only ptrace and execve.
-> > You may find it here: https://github.com/nviennot/run_as_exe
-> > 
-> > What do you recommend to relax the security checks in the kernel when it comes to changing the exe link?
-> 
-> Looks fun! Yeah, so that this is possible is known afaict. But you're
-> not really circumventing the kernel check but are mucking with the EFL
-> by changing the auxv, right?
-> 
-> Originally, you needed to be userns root, i.e. only uid 0 could
-> change the /proc/self/exe link (cf. [1]). This was changed to
-> ns_capable(CAP_SYS_ADMIN) in [2].
-> 
-> The original reasoning in [1] is interesting as it basically already
-> points to your poc:
-> 
-> "Still note that updating exe-file link now doesn't require sys-resource
->  capability anymore, after all there is no much profit in preventing
->  setup own file link (there are a number of ways to execute own code --
->  ptrace, ld-preload, so that the only reliable way to find which exactly
->  code is executed is to inspect running program memory).  Still we
->  require the caller to be at least user-namespace root user."
-> 
-> There were arguments being made that /proc/<pid>/exe needs to be sm that
-> userspace can have a decent amount of trust in but I believe that that's
-> not a great argument.
-> 
-> But let me dig a little into the original discussion and see what the
-> thread-model was.
-> At this point I'm starting to believe that it was people being cautios
-> but better be sure.
+VGhpcyBwYXRjaCBzdXBwb3J0IG1vcmUgZ2NlIGhlbHBlciBmdW5jdGlvbiBvbiBtdDY3NzkgcGxh
+dGZvcm0uDQoNCmRlcGVuZHMgb24gcGF0Y2g6IHN1cHBvcnQgZ2NlIG9uIG10Njc3OSBwbGF0Zm9y
+bQ0KDQphbmQgZGVwZW5kcyBvbiBmb2xsb3dpbmcgYXBwbGllZCBwYXRjaGVzDQpzb2M6IG1lZGlh
+dGVrOiBjbWRxOiBhZGQgc2V0IGV2ZW50IGZ1bmN0aW9uDQpzb2M6IG1lZGlhdGVrOiBjbWRxOiBl
+eHBvcnQgZmluYWxpemUgZnVuY3Rpb24NCnNvYzogbWVkaWF0ZWs6IGNtZHE6IGFkZCBhc3NpZ24g
+ZnVuY3Rpb24NCg0KQ2hhbmdlIHNpbmNlIHYyOg0KLSBLZWVwIGJlaGF2aW9yIGluIGRybSBjcnRj
+IGRyaXZlciBhbmQNCiAgc2VwYXJhdGUgYnVnIGZpeCBjb2RlIGludG8gYW5vdGhlciBwYXRjaC4N
+Cg0KQ2hhbmdlIHNpbmNlIHYxOg0KLSBSZW5hbWUgY21kcV9tYm94X3NoaWZ0KCkgdG8gY21kcV9n
+ZXRfc2hpZnRfcGEoKS4NCg0KDQpEZW5uaXMgWUMgSHNpZWggKDkpOg0KICBzb2M6IG1lZGlhdGVr
+OiBjbWRxOiBhZGQgYWRkcmVzcyBzaGlmdCBpbiBqdW1wDQogIHNvYzogbWVkaWF0ZWs6IGNtZHE6
+IGFkZCB3cml0ZV9zIGZ1bmN0aW9uDQogIHNvYzogbWVkaWF0ZWs6IGNtZHE6IGFkZCB3cml0ZV9z
+X21hc2sgZnVuY3Rpb24NCiAgc29jOiBtZWRpYXRlazogY21kcTogYWRkIHJlYWRfcyBmdW5jdGlv
+bg0KICBzb2M6IG1lZGlhdGVrOiBjbWRxOiBhZGQgd3JpdGVfcyB2YWx1ZSBmdW5jdGlvbg0KICBz
+b2M6IG1lZGlhdGVrOiBjbWRxOiBhZGQgd3JpdGVfc19tYXNrIHZhbHVlIGZ1bmN0aW9uDQogIHNv
+YzogbWVkaWF0ZWs6IGNtZHE6IGFkZCBqdW1wIGZ1bmN0aW9uDQogIHNvYzogbWVkaWF0ZWs6IGNt
+ZHE6IGFkZCBjbGVhciBvcHRpb24gaW4gY21kcV9wa3Rfd2ZlIGFwaQ0KICBkcm0vbWVkaWF0ZWs6
+IHJlZHVjZSBjbGVhciBldmVudA0KDQogZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kcm1f
+Y3J0Yy5jICB8ICAgMiArLQ0KIGRyaXZlcnMvc29jL21lZGlhdGVrL210ay1jbWRxLWhlbHBlci5j
+ICAgfCAxMTMgKysrKysrKysrKysrKysrKysrKysrKy0NCiBpbmNsdWRlL2xpbnV4L21haWxib3gv
+bXRrLWNtZHEtbWFpbGJveC5oIHwgICA2ICstDQogaW5jbHVkZS9saW51eC9zb2MvbWVkaWF0ZWsv
+bXRrLWNtZHEuaCAgICB8ICA5MyArKysrKysrKysrKysrKysrKystDQogNCBmaWxlcyBjaGFuZ2Vk
+LCAyMDYgaW5zZXJ0aW9ucygrKSwgOCBkZWxldGlvbnMoLSkNCg0KLS0gDQoyLjE4LjA=
 
-Ok, so the original patch proposal was presented in [4] in 2014. The
-final version of that patch added the PR_SET_MM_MAP we know today. The
-initial version presented in [4] did not require _any_ privilege.
-
-So the reasoning for only placing the /proc/<pid>/exe link under
-ns_capable(CAP_SYS_ADMIN) is very thin. to quote from [5]:
-
-"Controlling exe_fd without privileges may turn out to be dangerous. At
- least things like tomoyo examine it for making policy decisions (see
- tomoyo_manager())."
-
-So yes, tomoyo_get_exe() is what this was retained for apparently:
-
-const char *tomoyo_get_exe(void)
-{
-	struct file *exe_file;
-	const char *cp;
-	struct mm_struct *mm = current->mm;
-
-	if (!mm)
-		return NULL;
-	exe_file = get_mm_exe_file(mm);
-	if (!exe_file)
-		return NULL;
-
-	cp = tomoyo_realpath_from_path(&exe_file->f_path);
-	fput(exe_file);
-	return cp;
-}
-
-The exe path is literally used in tomoyo_manager() to verify that you
-are allowed to change policy. That seems like a bad idea to me but then
-again, I don't know enough about Tomoyo. In any case, I think that means
-we can't remove CAP_SYS_ADMIN because that would make things worse than
-they are right now for Tomoyo but I also don't see why placing this
-under ns_capable(CAP_SYS_ADMIN) || ns_capable(CAP_CHECKPOINT_RESTORE)
-would make this any worse.
-
-And Cyrill (and later in that thread Andrei) already mentioned it in [6]:
-"@exe_fd is just a hint and as I mentioned if we have ptrace/preload
- rights there damn a lot of ways to inject own code into any program so
- that a user won't even notice ;)"
-
-Another place where the exe file is relevant is for the coredump with
-the -E option. But it only uses the path when generating the coredump
-pattern and if that's a security issue than your poc shows that this can
-already be achieved today.
-
-Christian
-
-> 
-> [1]: f606b77f1a9e ("prctl: PR_SET_MM -- introduce PR_SET_MM_MAP operation")
-> [2]: 4d28df6152aa ("prctl: Allow local CAP_SYS_ADMIN changing exe_file")
-> [3]: https://lore.kernel.org/patchwork/patch/697304/
-
-[4]: https://lore.kernel.org/lkml/20140703151102.842945837@openvz.org/ 
-[5]: https://lore.kernel.org/lkml/CAGXu5jL3exT4j+8rjMv1O54uJWQ5UHL69Z-24b61rhXROqZamQ@mail.gmail.com/
-[6]: https://lore.kernel.org/lkml/20140722203614.GF838@moon/
