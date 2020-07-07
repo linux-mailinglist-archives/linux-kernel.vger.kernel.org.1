@@ -2,102 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9A68216B73
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 13:25:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F01D216B77
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 13:27:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728194AbgGGLZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 07:25:35 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:3217 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727044AbgGGLZf (ORCPT
+        id S1728179AbgGGL1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 07:27:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727044AbgGGL1K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 07:25:35 -0400
-X-UUID: 1a1278ba04a84476844e6203b60a745f-20200707
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=vfvjtfH3Qs6aHOw/QXhcQ51ZF1iRs+TYc8vvEskKgac=;
-        b=a4lwH1jhsqzlod4taTS95VZTNCoYXO3ItijaP8jF5e/2Mimn5KW7Kt4ejWZ5YJVTYxSrKcTDqyHwHVkQR1IjhC36+k6nwULgHw0Y+2+TKSA8Z/plz7na4EqiL20klEDy8HzRe8J+6NO3e/W7TMCUkPabj6i9QQGHrIdSHDTRUPk=;
-X-UUID: 1a1278ba04a84476844e6203b60a745f-20200707
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <hanks.chen@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 522712986; Tue, 07 Jul 2020 19:25:30 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 7 Jul 2020 19:25:25 +0800
-Received: from [172.21.77.33] (172.21.77.33) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 7 Jul 2020 19:25:26 +0800
-Message-ID: <1594121128.20610.9.camel@mtkswgap22>
-Subject: Re: [PATCH v7 0/7] Add basic SoC Support for Mediatek MT6779 SoC
-From:   Hanks Chen <hanks.chen@mediatek.com>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "Michael Turquette" <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sean Wang <sean.wang@kernel.org>,
-        mtk01761 <wendell.lin@mediatek.com>,
-        Andy Teng <andy.teng@mediatek.com>,
-        <linux-gpio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>,
-        CC Hwang <cc.hwang@mediatek.com>,
-        Loda Chou <loda.chou@mediatek.com>
-Date:   Tue, 7 Jul 2020 19:25:28 +0800
-In-Reply-To: <1593694630-26604-2-git-send-email-hanks.chen@mediatek.com>
-References: <1593694630-26604-1-git-send-email-hanks.chen@mediatek.com>
-         <1593694630-26604-2-git-send-email-hanks.chen@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Tue, 7 Jul 2020 07:27:10 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56753C061755
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 04:27:10 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id o38so31398103qtf.6
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 04:27:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=S/3PCAPfoxjGBDIjaZGp6+CalyT9Vs4Hs7aWN08fHIU=;
+        b=NjHjc/P7fmDgZed8pANwRNAML3xmnqNssiiYmOrhnjV/bvIQ22gKhbyes5Vt/TSWmX
+         qQLblKrx3BpyKYTO9NgM4eRsbRyTEv5NEWbMS+a08Vn3kxnEKk3+I0oZaaF0L2W422Nd
+         gx4dX5ZMrSrbOxHKUbCTJq1x1YyD9N3O3OfWdq/1OvO0II6S5C1pkdyOnjKzH6W5OltO
+         /Nfh5kPJn90NcSeCDEyPzBdV5EBoOXWZR6kzVNilIhYQ/B4jQBqnCn1v1XRQbztjT41A
+         syamgNh4AEfLBlpDtx1aNud7umPUhdDCPx2r1geuWq0a6qE+UzBxulPRhiYpDgYRhicA
+         DJCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=S/3PCAPfoxjGBDIjaZGp6+CalyT9Vs4Hs7aWN08fHIU=;
+        b=dKCb2Xtp58sN+G0LklTcp9/x+m+rRJKbkVOUNQC9wREdpPtuWX/iAHy7+4nII6eL4B
+         dIwPSKgZgnHEeUKfVpH/iL0fCxxPS2wQLa6cXwoOrEkT04nHUZfwD9ULVTCrm3yvkDCd
+         w6R2dcqOZNZPyennuXnVZHICVYdjThG7r/+/CaA7VzVCWrSFAxew3o1FisqDppbNieCo
+         AmAAfxvRN5gmiRq1waVzXLaEqXnAkFL4QCXgkUoRXrnL6YKHkaEVpPrmrEng864Yxpp6
+         w/uRcq17//315kNUXFa1fXhZY7hzdlL+CGs0BGFRsQ4QpHy9ovXkTfSb+4Ppb6tVnOb6
+         J2Ow==
+X-Gm-Message-State: AOAM533qNVWZP2/Z++5eY/PB4brjKzdxHqgn+0unM3XoJnhMkJXpzUJY
+        LEy0QmpdR4IxR2VeyqQ15wrZx//umfr3zzqZPEU=
+X-Google-Smtp-Source: ABdhPJzISarwTOC7dTcyKLSH3O194wGhx9+uJw36v4j6vyj/0MSpRT+hObOa20ibKb8uAg/xfOihvN2uV8eq+SFdv/Q=
+X-Received: by 2002:aed:27c7:: with SMTP id m7mr55886324qtg.13.1594121229629;
+ Tue, 07 Jul 2020 04:27:09 -0700 (PDT)
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 054C2A82F4257DC0A2C98A1257360749210D114C218370F82C156C88CC470A042000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <20200701112643.726986-1-chengzhihao1@huawei.com>
+In-Reply-To: <20200701112643.726986-1-chengzhihao1@huawei.com>
+From:   Richard Weinberger <richard.weinberger@gmail.com>
+Date:   Tue, 7 Jul 2020 13:26:58 +0200
+Message-ID: <CAFLxGvyO_aXGfgoO0mrNsoGP4Bfh3n6CUQxDx=ecH6o2ZDNYDg@mail.gmail.com>
+Subject: Re: [PATCH] ubifs: Fix a potential space leak problem while linking tmpfile
+To:     Zhihao Cheng <chengzhihao1@huawei.com>
+Cc:     linux-mtd@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>,
+        Richard Weinberger <richard@nod.at>,
+        "zhangyi (F)" <yi.zhang@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgTWljaGFlbCwgU3RlcGhlbiwgTWF0dGhpYXMgYW5kIGFsbCwNCg0KZ2VudGxlIHBpbmcgZm9y
-IHRoaXMgcGF0Y2ggc2V0DQoNCklmIG5vIG5ldyBjb21tZW50cywgSSB3b3VsZCBsaWtlIHRvIHNl
-bmQgYSBuZXdlciB2ZXJzaW9uIGZvciB0aGUgc2VyaWVzLg0KDQpwYXRjaCBzZXQ6DQpodHRwczov
-L2xrbWwub3JnL2xrbWwvMjAyMC83LzIvNDk3DQoNCg0KVGhhbmtzDQpIYW5rcyBDaGVuDQoNCg0K
-T24gVGh1LCAyMDIwLTA3LTAyIGF0IDIwOjU3ICswODAwLCBIYW5rcyBDaGVuIHdyb3RlOg0KPiAq
-KiogQkxVUkIgSEVSRSAqKioNCj4gDQo+IEFuZHkgVGVuZyAoMSk6DQo+ICAgZHQtYmluZGluZ3M6
-IHBpbmN0cmw6IGFkZCBiaW5kaW5ncyBmb3IgTWVkaWFUZWsgTVQ2Nzc5IFNvQw0KPiANCj4gSGFu
-a3MgQ2hlbiAoNik6DQo+ICAgcGluY3RybDogbWVkaWF0ZWs6IHVwZGF0ZSBwaW5tdXggZGVmaW5p
-dGlvbnMgZm9yIG10Njc3OQ0KPiAgIHBpbmN0cmw6IG1lZGlhdGVrOiBhdm9pZCB2aXJ0dWFsIGdw
-aW8gdHJ5aW5nIHRvIHNldCByZWcNCj4gICBwaW5jdHJsOiBtZWRpYXRlazogYWRkIHBpbmN0cmwg
-c3VwcG9ydCBmb3IgTVQ2Nzc5IFNvQw0KPiAgIHBpbmN0cmw6IG1lZGlhdGVrOiBhZGQgbXQ2Nzc5
-IGVpbnQgc3VwcG9ydA0KPiAgIGNsazogbWVkaWF0ZWs6IGFkZCBVQVJUMCBjbG9jayBzdXBwb3J0
-DQo+ICAgYXJtNjQ6IGR0czogYWRkIGR0cyBub2RlcyBmb3IgTVQ2Nzc5DQo+IA0KPiAgLi4uL2Jp
-bmRpbmdzL3BpbmN0cmwvbWVkaWF0ZWssbXQ2Nzc5LXBpbmN0cmwueWFtbCAgfCAgMjEwICsrDQo+
-ICBhcmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL01ha2VmaWxlICAgICAgICAgICAgICB8ICAg
-IDEgKw0KPiAgYXJjaC9hcm02NC9ib290L2R0cy9tZWRpYXRlay9tdDY3NzktZXZiLmR0cyAgICAg
-ICAgfCAgIDMxICsNCj4gIGFyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ2Nzc5LmR0c2kg
-ICAgICAgICAgIHwgIDI3MSArKysNCj4gIGRyaXZlcnMvY2xrL21lZGlhdGVrL2Nsay1tdDY3Nzku
-YyAgICAgICAgICAgICAgICAgIHwgICAgMiArDQo+ICBkcml2ZXJzL3BpbmN0cmwvbWVkaWF0ZWsv
-S2NvbmZpZyAgICAgICAgICAgICAgICAgICB8ICAgMTIgKw0KPiAgZHJpdmVycy9waW5jdHJsL21l
-ZGlhdGVrL01ha2VmaWxlICAgICAgICAgICAgICAgICAgfCAgICAxICsNCj4gIGRyaXZlcnMvcGlu
-Y3RybC9tZWRpYXRlay9waW5jdHJsLW10Njc3OS5jICAgICAgICAgIHwgIDc4MyArKysrKysrKw0K
-PiAgZHJpdmVycy9waW5jdHJsL21lZGlhdGVrL3BpbmN0cmwtbXRrLWNvbW1vbi12Mi5jICAgfCAg
-IDI1ICsNCj4gIGRyaXZlcnMvcGluY3RybC9tZWRpYXRlay9waW5jdHJsLW10ay1jb21tb24tdjIu
-aCAgIHwgICAgMSArDQo+ICBkcml2ZXJzL3BpbmN0cmwvbWVkaWF0ZWsvcGluY3RybC1tdGstbXQ2
-Nzc5LmggICAgICB8IDIwODUgKysrKysrKysrKysrKysrKysrKysNCj4gIGRyaXZlcnMvcGluY3Ry
-bC9tZWRpYXRlay9waW5jdHJsLXBhcmlzLmMgICAgICAgICAgIHwgICAgNyArDQo+ICBpbmNsdWRl
-L2R0LWJpbmRpbmdzL3BpbmN0cmwvbXQ2Nzc5LXBpbmZ1bmMuaCAgICAgICB8IDEyNDIgKysrKysr
-KysrKysrDQo+ICAxMyBmaWxlcyBjaGFuZ2VkLCA0NjcxIGluc2VydGlvbnMoKykNCj4gIGNyZWF0
-ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcGluY3RybC9t
-ZWRpYXRlayxtdDY3NzktcGluY3RybC55YW1sDQo+ICBjcmVhdGUgbW9kZSAxMDA2NDQgYXJjaC9h
-cm02NC9ib290L2R0cy9tZWRpYXRlay9tdDY3NzktZXZiLmR0cw0KPiAgY3JlYXRlIG1vZGUgMTAw
-NjQ0IGFyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ2Nzc5LmR0c2kNCj4gIGNyZWF0ZSBt
-b2RlIDEwMDY0NCBkcml2ZXJzL3BpbmN0cmwvbWVkaWF0ZWsvcGluY3RybC1tdDY3NzkuYw0KPiAg
-Y3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvcGluY3RybC9tZWRpYXRlay9waW5jdHJsLW10ay1t
-dDY3NzkuaA0KPiAgY3JlYXRlIG1vZGUgMTAwNjQ0IGluY2x1ZGUvZHQtYmluZGluZ3MvcGluY3Ry
-bC9tdDY3NzktcGluZnVuYy5oDQo+IA0KDQo=
+On Wed, Jul 1, 2020 at 1:28 PM Zhihao Cheng <chengzhihao1@huawei.com> wrote=
+:
+>
+> There is a potential space leak problem while linking tmpfile, in which
+> case, inode node (with nlink=3D0) is valid in tnc (on flash), which leads
+> to space leak. Meanwhile, the corresponding data nodes won't be released
+> from tnc. For example, (A reproducer can be found in Link):
+>
+> $ mount UBIFS
+>   [process A]            [process B]         [TNC]         [orphan area]
+>
+>  ubifs_tmpfile                          inode_A (nlink=3D0)     inode_A
+>                           do_commit     inode_A (nlink=3D0)     inode_A
+>                                =E2=86=91
+>       (comment: It makes sure not replay inode_A in next mount)
+>  ubifs_link                             inode_A (nlink=3D0)     inode_A
+>    ubifs_delete_orphan                  inode_A (nlink=3D0)
+>                           do_commit     inode_A (nlink=3D0)
+>                            ---> POWERCUT <---
+>    (ubifs_jnl_update)
+>
+> $ mount UBIFS
+>   inode_A will neither be replayed in ubifs_replay_journal() nor
+>   ubifs_mount_orphans(). inode_A (nlink=3D0) with its data nodes will
+>   always on tnc, it occupy space but is non-visable for users.
+>
+> Commit ee1438ce5dc4d ("ubifs: Check link count of inodes when killing
+> orphans.") handles problem in mistakenly deleting relinked tmpfile
+> while replaying orphan area. Since that, tmpfile inode should always
+> live in orphan area even it is linked. Fix it by reverting commit
+> 32fe905c17f001 ("ubifs: Fix O_TMPFILE corner case in ubifs_link()").
 
+Well, by reverting this commit you re-introduce the issue it fixes. ;-\
+
+--=20
+Thanks,
+//richard
