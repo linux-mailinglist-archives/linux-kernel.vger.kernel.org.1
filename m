@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37A84217082
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:24:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97C0C217085
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:24:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728827AbgGGPS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:18:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57740 "EHLO mail.kernel.org"
+        id S1729203AbgGGPSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:18:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57806 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728414AbgGGPSZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:18:25 -0400
+        id S1728029AbgGGPS2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 11:18:28 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7548520738;
-        Tue,  7 Jul 2020 15:18:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1D18B20773;
+        Tue,  7 Jul 2020 15:18:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594135105;
-        bh=fsPcpWPv1KcnmZ0A+1YF0BjIsP1tJkTQMO0LpTHcD3E=;
+        s=default; t=1594135107;
+        bh=ubO0Us93WcsR+oiR6YXvKi7C+dvY9iYxVE5FbwHNg24=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1ro+EgVAnj8motEjlN09kctN4JNcgmpXoJY7N971J76cXUYO3wySXQXjK8dWqXj0w
-         cidiwUNgwDn35s3hNNaccliDTG6j6/qPgaPbUJMevsplRX18MDfAgGkS7hu0+layzt
-         CxYKUNNmB+NFXyil8umb90hJlFZezYKVEsZmRDKs=
+        b=tFCgn7ltnFNwNz81JdYSiEylRbtp1zjyHSOcNibooYI6DdSaDx8Zx9x4Tx5yhjTnT
+         jcIQd4T4DVQEQylyQ2vt87LoNOiVkVl1y7K6fCRR+efyugVIFYPpbBGzYoiYvMc4sd
+         AtT3R6m8tXgeYxMvPdt59WlY+46ekgdZdZmHbQAM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Brian Moyles <bmoyles@netflix.com>,
-        Mauricio Faria de Oliveira <mfo@canonical.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [PATCH 4.19 13/36] crypto: af_alg - fix use-after-free in af_alg_accept() due to bh_lock_sock()
-Date:   Tue,  7 Jul 2020 17:17:05 +0200
-Message-Id: <20200707145749.760045378@linuxfoundation.org>
+        stable@vger.kernel.org, Chen Tao <chentao107@huawei.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 14/36] drm/msm/dpu: fix error return code in dpu_encoder_init
+Date:   Tue,  7 Jul 2020 17:17:06 +0200
+Message-Id: <20200707145749.796668809@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200707145749.130272978@linuxfoundation.org>
 References: <20200707145749.130272978@linuxfoundation.org>
@@ -44,191 +44,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Herbert Xu <herbert@gondor.apana.org.au>
+From: Chen Tao <chentao107@huawei.com>
 
-commit 34c86f4c4a7be3b3e35aa48bd18299d4c756064d upstream.
+[ Upstream commit aa472721c8dbe1713cf510f56ffbc56ae9e14247 ]
 
-The locking in af_alg_release_parent is broken as the BH socket
-lock can only be taken if there is a code-path to handle the case
-where the lock is owned by process-context.  Instead of adding
-such handling, we can fix this by changing the ref counts to
-atomic_t.
+Fix to return negative error code -ENOMEM with the use of
+ERR_PTR from dpu_encoder_init.
 
-This patch also modifies the main refcnt to include both normal
-and nokey sockets.  This way we don't have to fudge the nokey
-ref count when a socket changes from nokey to normal.
-
-Credits go to Mauricio Faria de Oliveira who diagnosed this bug
-and sent a patch for it:
-
-https://lore.kernel.org/linux-crypto/20200605161657.535043-1-mfo@canonical.com/
-
-Reported-by: Brian Moyles <bmoyles@netflix.com>
-Reported-by: Mauricio Faria de Oliveira <mfo@canonical.com>
-Fixes: 37f96694cf73 ("crypto: af_alg - Use bh_lock_sock in...")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 25fdd5933e4c ("drm/msm: Add SDM845 DPU support")
+Signed-off-by: Chen Tao <chentao107@huawei.com>
+Signed-off-by: Rob Clark <robdclark@chromium.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- crypto/af_alg.c         |   26 +++++++++++---------------
- crypto/algif_aead.c     |    9 +++------
- crypto/algif_hash.c     |    9 +++------
- crypto/algif_skcipher.c |    9 +++------
- include/crypto/if_alg.h |    4 ++--
- 5 files changed, 22 insertions(+), 35 deletions(-)
+ drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/crypto/af_alg.c
-+++ b/crypto/af_alg.c
-@@ -133,21 +133,15 @@ EXPORT_SYMBOL_GPL(af_alg_release);
- void af_alg_release_parent(struct sock *sk)
- {
- 	struct alg_sock *ask = alg_sk(sk);
--	unsigned int nokey = ask->nokey_refcnt;
--	bool last = nokey && !ask->refcnt;
-+	unsigned int nokey = atomic_read(&ask->nokey_refcnt);
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+index ec3fd67378c18..19e2753ffe07c 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+@@ -2412,7 +2412,7 @@ struct drm_encoder *dpu_encoder_init(struct drm_device *dev,
  
- 	sk = ask->parent;
- 	ask = alg_sk(sk);
+ 	dpu_enc = devm_kzalloc(dev->dev, sizeof(*dpu_enc), GFP_KERNEL);
+ 	if (!dpu_enc)
+-		return ERR_PTR(ENOMEM);
++		return ERR_PTR(-ENOMEM);
  
--	local_bh_disable();
--	bh_lock_sock(sk);
--	ask->nokey_refcnt -= nokey;
--	if (!last)
--		last = !--ask->refcnt;
--	bh_unlock_sock(sk);
--	local_bh_enable();
-+	if (nokey)
-+		atomic_dec(&ask->nokey_refcnt);
- 
--	if (last)
-+	if (atomic_dec_and_test(&ask->refcnt))
- 		sock_put(sk);
- }
- EXPORT_SYMBOL_GPL(af_alg_release_parent);
-@@ -192,7 +186,7 @@ static int alg_bind(struct socket *sock,
- 
- 	err = -EBUSY;
- 	lock_sock(sk);
--	if (ask->refcnt | ask->nokey_refcnt)
-+	if (atomic_read(&ask->refcnt))
- 		goto unlock;
- 
- 	swap(ask->type, type);
-@@ -241,7 +235,7 @@ static int alg_setsockopt(struct socket
- 	int err = -EBUSY;
- 
- 	lock_sock(sk);
--	if (ask->refcnt)
-+	if (atomic_read(&ask->refcnt) != atomic_read(&ask->nokey_refcnt))
- 		goto unlock;
- 
- 	type = ask->type;
-@@ -308,12 +302,14 @@ int af_alg_accept(struct sock *sk, struc
- 
- 	sk2->sk_family = PF_ALG;
- 
--	if (nokey || !ask->refcnt++)
-+	if (atomic_inc_return_relaxed(&ask->refcnt) == 1)
- 		sock_hold(sk);
--	ask->nokey_refcnt += nokey;
-+	if (nokey) {
-+		atomic_inc(&ask->nokey_refcnt);
-+		atomic_set(&alg_sk(sk2)->nokey_refcnt, 1);
-+	}
- 	alg_sk(sk2)->parent = sk;
- 	alg_sk(sk2)->type = type;
--	alg_sk(sk2)->nokey_refcnt = nokey;
- 
- 	newsock->ops = type->ops;
- 	newsock->state = SS_CONNECTED;
---- a/crypto/algif_aead.c
-+++ b/crypto/algif_aead.c
-@@ -388,7 +388,7 @@ static int aead_check_key(struct socket
- 	struct alg_sock *ask = alg_sk(sk);
- 
- 	lock_sock(sk);
--	if (ask->refcnt)
-+	if (!atomic_read(&ask->nokey_refcnt))
- 		goto unlock_child;
- 
- 	psk = ask->parent;
-@@ -400,11 +400,8 @@ static int aead_check_key(struct socket
- 	if (crypto_aead_get_flags(tfm->aead) & CRYPTO_TFM_NEED_KEY)
- 		goto unlock;
- 
--	if (!pask->refcnt++)
--		sock_hold(psk);
--
--	ask->refcnt = 1;
--	sock_put(psk);
-+	atomic_dec(&pask->nokey_refcnt);
-+	atomic_set(&ask->nokey_refcnt, 0);
- 
- 	err = 0;
- 
---- a/crypto/algif_hash.c
-+++ b/crypto/algif_hash.c
-@@ -306,7 +306,7 @@ static int hash_check_key(struct socket
- 	struct alg_sock *ask = alg_sk(sk);
- 
- 	lock_sock(sk);
--	if (ask->refcnt)
-+	if (!atomic_read(&ask->nokey_refcnt))
- 		goto unlock_child;
- 
- 	psk = ask->parent;
-@@ -318,11 +318,8 @@ static int hash_check_key(struct socket
- 	if (crypto_ahash_get_flags(tfm) & CRYPTO_TFM_NEED_KEY)
- 		goto unlock;
- 
--	if (!pask->refcnt++)
--		sock_hold(psk);
--
--	ask->refcnt = 1;
--	sock_put(psk);
-+	atomic_dec(&pask->nokey_refcnt);
-+	atomic_set(&ask->nokey_refcnt, 0);
- 
- 	err = 0;
- 
---- a/crypto/algif_skcipher.c
-+++ b/crypto/algif_skcipher.c
-@@ -215,7 +215,7 @@ static int skcipher_check_key(struct soc
- 	struct alg_sock *ask = alg_sk(sk);
- 
- 	lock_sock(sk);
--	if (ask->refcnt)
-+	if (!atomic_read(&ask->nokey_refcnt))
- 		goto unlock_child;
- 
- 	psk = ask->parent;
-@@ -227,11 +227,8 @@ static int skcipher_check_key(struct soc
- 	if (crypto_skcipher_get_flags(tfm) & CRYPTO_TFM_NEED_KEY)
- 		goto unlock;
- 
--	if (!pask->refcnt++)
--		sock_hold(psk);
--
--	ask->refcnt = 1;
--	sock_put(psk);
-+	atomic_dec(&pask->nokey_refcnt);
-+	atomic_set(&ask->nokey_refcnt, 0);
- 
- 	err = 0;
- 
---- a/include/crypto/if_alg.h
-+++ b/include/crypto/if_alg.h
-@@ -34,8 +34,8 @@ struct alg_sock {
- 
- 	struct sock *parent;
- 
--	unsigned int refcnt;
--	unsigned int nokey_refcnt;
-+	atomic_t refcnt;
-+	atomic_t nokey_refcnt;
- 
- 	const struct af_alg_type *type;
- 	void *private;
+ 	rc = drm_encoder_init(dev, &dpu_enc->base, &dpu_encoder_funcs,
+ 			drm_enc_mode, NULL);
+-- 
+2.25.1
+
 
 
