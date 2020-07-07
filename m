@@ -2,117 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D0B0216ADC
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 12:57:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C347216AE7
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 12:59:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727777AbgGGK5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 06:57:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47654 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725941AbgGGK5e (ORCPT
+        id S1728152AbgGGK7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 06:59:05 -0400
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:57372 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725874AbgGGK7E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 06:57:34 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A824C061755
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 03:57:34 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id z15so33386036wrl.8
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 03:57:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=message-id:subject:from:reply-to:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=q8a6HmZPzdfh5fojW+wd4kULWFylxpCdZMDt/VjHsYk=;
-        b=uxBkYCD9cby7tyOPMcSSy0MbnXsqFwdLtTpXFPUTXV2YGHFOu7ohUGwNBvMsQLZjUq
-         2A5DGPfLNwk94DItzTz0uTkhoNYfoXbtNs9RhrRwIGgKW6PZ4rIog4kzuWibWJ6Fqfw7
-         QWTUTgIFcpzvfxKHVQaaVROk6/YH1ADsDVkX83V7E6G5u0/sjNfM/TE3g4w1t4xyHU+T
-         A5cPFy0ci+Qdc8j/76igytJl6jk6E5TAXXNVt3nYhMY6BxErS1HOujQaZJbaUV64IfVT
-         TQoVWa01dB21tc7IbM3dADeQW8ugON44mS3IUvvom4fxcdDu49KdKtZfZevQiMsziijx
-         Mdfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc:date
-         :in-reply-to:references:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=q8a6HmZPzdfh5fojW+wd4kULWFylxpCdZMDt/VjHsYk=;
-        b=ckOTJfu9hZR9rkuVWmz67/MQCH4k0MwEONezj8AaOWTHhXZQmnoo1BZ/4rFDhl8f4i
-         IHF4QfMgjI6TcNU34zKZGUOoQmnZI51WFZwPsDW3VVQ7ErcsCpy+A3WUpqu938L7ttxx
-         5e4OfAsCjWfQyXoTMvL0+RuD7x6uCke89Z40Pr12/ZHkSoBXKSSWroDAgfixOicUhxNM
-         o01+4uQ3JVIkzM2UI026eDCgTDYGBn1/OFvFe/5G/ZIu3C6+8p1JAejcUcBNP/Yx2w2L
-         6S3cbTezgf/jub9pwJa4q1nrdYC2G5hB1dggmPaDBtpAdOZ4H4bgwKCZpkdRmbbnv13D
-         a8vA==
-X-Gm-Message-State: AOAM531EZ7uroA/kXlGdN87/bDa6EJbfv8rrzpmoO+0UIE4W/zeuwRbE
-        GQSiyatURWXLihVrFROFxo0=
-X-Google-Smtp-Source: ABdhPJy72BFvPskKUMxKOLWyFkJtu2+NGdu5Yeow7LK337w+73BbyRgxAdERs3syVzDZOBPHL9LEZQ==
-X-Received: by 2002:a05:6000:1283:: with SMTP id f3mr54061782wrx.106.1594119452809;
-        Tue, 07 Jul 2020 03:57:32 -0700 (PDT)
-Received: from ?IPv6:2a02:8070:bb9:bc00::fc? ([2a02:8070:bb9:bc00::fc])
-        by smtp.gmail.com with ESMTPSA id d201sm529110wmd.34.2020.07.07.03.57.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jul 2020 03:57:32 -0700 (PDT)
-Message-ID: <1c437154873ace65ff738a0ebca511308f1cecc1.camel@googlemail.com>
-Subject: [PATCH] regulator: fan53880: Add support for COMPILE_TEST
-From:   Christoph Fritz <chf.fritz@googlemail.com>
-Reply-To: chf.fritz@googlemail.com
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>, kbuild-all@lists.01.org,
-        clang-built-linux@googlegroups.com,
-        kernel test robot <lkp@intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Tue, 07 Jul 2020 12:57:31 +0200
-In-Reply-To: <20200707102042.GD4870@sirena.org.uk>
-References: <202007071433.Z3bmcgjU%lkp@intel.com>
-         <da3aece9abd23b12837e9abf908ee67f0c2c988c.camel@googlemail.com>
-         <20200707102042.GD4870@sirena.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.30.5-1.1 
+        Tue, 7 Jul 2020 06:59:04 -0400
+Received: from mail-vs1-f48.google.com (mail-vs1-f48.google.com [209.85.217.48]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 067AwmIs021946
+        for <linux-kernel@vger.kernel.org>; Tue, 7 Jul 2020 19:58:49 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 067AwmIs021946
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1594119529;
+        bh=Q7blUsQ9JbN98/2v6PmnTU26WzCTrui/OAXxYYFuhio=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=dLgZqZOb+1s/K5aLOfNDqded0K4JdophwcRkFTTL4Po8yMixKmG+ezypY5cDyonf4
+         2baAVDsHGf9tXnEbJkwAkUxwBjhzElyQYq6jF71BODCtrwzGkQDlhZK+zV5aJ6muWv
+         Otb0oPc/nL3cgndiZ0BQSAr/9aeG1Sy5JYzIMpNB/HffKJxL+r+fxAQ4oEfCYwL92T
+         LG3UHUJiJIPz3P1f9B/s6n/RGQOyFtSzHitUaiR2rwMA/uy6ZTvGI/rJiRmt5c/B6N
+         KHt92Tf5QfGQkq4D9JeqidL8NYp96aajg4loIh+m7/AT8B96bZbBSJemFzbtDhBEqo
+         ZmPN9LuYqhm5Q==
+X-Nifty-SrcIP: [209.85.217.48]
+Received: by mail-vs1-f48.google.com with SMTP id e15so22279646vsc.7
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 03:58:49 -0700 (PDT)
+X-Gm-Message-State: AOAM53138caLwGcbytUJ5/LNjbWQQi1rlbAOoXpkCReInYDC5g6kRBKn
+        XFj9IiD2PHoFWeF2AE2tlwheagP2prWSVKJI1mk=
+X-Google-Smtp-Source: ABdhPJx5C6TC1CTC3ZI4pLzUX4bW+vK98tg3hyw8GkksN3pcaONQiKgWX4RJM4Cxt/R3M5Kza1brZQUcvvb5lnQhBNU=
+X-Received: by 2002:a67:6c84:: with SMTP id h126mr35660734vsc.181.1594119527826;
+ Tue, 07 Jul 2020 03:58:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20200702165901.164100-1-pierre-louis.bossart@linux.intel.com> <20200702165901.164100-9-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20200702165901.164100-9-pierre-louis.bossart@linux.intel.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Tue, 7 Jul 2020 19:58:10 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARV9p=TF+5kPx-MBOsGnE9mafndYTEoaWRAaieqeL5a5A@mail.gmail.com>
+Message-ID: <CAK7LNARV9p=TF+5kPx-MBOsGnE9mafndYTEoaWRAaieqeL5a5A@mail.gmail.com>
+Subject: Re: [PATCH 8/8] ASoC: uniphier: aio-core: fix kernel-doc
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        "moderated list:ARM/UNIPHIER ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds support for COMPILE_TEST while fixing a warning when
-no support for device tree is there.
+On Fri, Jul 3, 2020 at 1:59 AM Pierre-Louis Bossart
+<pierre-louis.bossart@linux.intel.com> wrote:
+>
+> Fix W=1 warning - wrong parameter description and bad format
+>
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> ---
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Christoph Fritz <chf.fritz@googlemail.com>
----
- drivers/regulator/Kconfig    | 2 +-
- drivers/regulator/fan53880.c | 2 ++
- 2 files changed, 3 insertions(+), 1 deletion(-)
+Reviewed-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 
-diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
-index d47055db999d..1cc3c93a9621 100644
---- a/drivers/regulator/Kconfig
-+++ b/drivers/regulator/Kconfig
-@@ -338,7 +338,7 @@ config REGULATOR_FAN53555
- 
- config REGULATOR_FAN53880
- 	tristate "Fairchild FAN53880 Regulator"
--	depends on I2C
-+	depends on I2C && (OF || COMPILE_TEST)
- 	select REGMAP_I2C
- 	help
- 	  This driver supports Fairchild (ON Semiconductor) FAN53880
-diff --git a/drivers/regulator/fan53880.c b/drivers/regulator/fan53880.c
-index 285acc705a55..c45baf581299 100644
---- a/drivers/regulator/fan53880.c
-+++ b/drivers/regulator/fan53880.c
-@@ -152,11 +152,13 @@ static int fan53880_i2c_probe(struct i2c_client *i2c,
- 	return 0;
- }
- 
-+#ifdef CONFIG_OF
- static const struct of_device_id fan53880_dt_ids[] = {
- 	{ .compatible = "onnn,fan53880", },
- 	{}
- };
- MODULE_DEVICE_TABLE(of, fan53880_dt_ids);
-+#endif
- 
- static const struct i2c_device_id fan53880_i2c_id[] = {
- 	{ "fan53880", },
+
+>  sound/soc/uniphier/aio-core.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
+>
+> diff --git a/sound/soc/uniphier/aio-core.c b/sound/soc/uniphier/aio-core.c
+> index 9bcba06ba52e..b8195778953e 100644
+> --- a/sound/soc/uniphier/aio-core.c
+> +++ b/sound/soc/uniphier/aio-core.c
+> @@ -93,9 +93,9 @@ void aio_iecout_set_enable(struct uniphier_aio_chip *chip, bool enable)
+>
+>  /**
+>   * aio_chip_set_pll - set frequency to audio PLL
+> - * @chip  : the AIO chip pointer
+> - * @source: PLL
+> - * @freq  : frequency in Hz, 0 is ignored
+> + * @chip: the AIO chip pointer
+> + * @pll_id: PLL
+> + * @freq: frequency in Hz, 0 is ignored
+>   *
+>   * Sets frequency of audio PLL. This function can be called anytime,
+>   * but it takes time till PLL is locked.
+> @@ -267,7 +267,6 @@ void aio_port_reset(struct uniphier_aio_sub *sub)
+>  /**
+>   * aio_port_set_ch - set channels of LPCM
+>   * @sub: the AIO substream pointer, PCM substream only
+> - * @ch : count of channels
+>   *
+>   * Set suitable slot selecting to input/output port block of AIO.
+>   *
+> --
+> 2.25.1
+>
+
+
 -- 
-2.20.1
-
+Best Regards
+Masahiro Yamada
