@@ -2,133 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25639216CC8
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 14:26:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20D82216CCE
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 14:27:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728183AbgGGMZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 08:25:03 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:4532 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726745AbgGGMZD (ORCPT
+        id S1728020AbgGGM0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 08:26:39 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:59785 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726911AbgGGM0j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 08:25:03 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 067C2LA6109139;
-        Tue, 7 Jul 2020 08:23:56 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32486ctn4y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Jul 2020 08:23:56 -0400
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 067C2MXI109197;
-        Tue, 7 Jul 2020 08:23:55 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32486ctn45-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Jul 2020 08:23:55 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 067CKLgr030286;
-        Tue, 7 Jul 2020 12:23:53 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma03ams.nl.ibm.com with ESMTP id 322hd7udtr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Jul 2020 12:23:52 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 067CNoW012714462
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 7 Jul 2020 12:23:50 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EE447AE045;
-        Tue,  7 Jul 2020 12:23:49 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 75D75AE051;
-        Tue,  7 Jul 2020 12:23:46 +0000 (GMT)
-Received: from localhost.localdomain.com (unknown [9.85.118.59])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  7 Jul 2020 12:23:46 +0000 (GMT)
-From:   Kajol Jain <kjain@linux.ibm.com>
-To:     acme@kernel.org
-Cc:     peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, pc@us.ibm.com,
-        jolsa@redhat.com, namhyung@kernel.org, ak@linux.intel.com,
-        yao.jin@linux.intel.com, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, irogers@google.com,
-        maddy@linux.ibm.com, ravi.bangoria@linux.ibm.com,
-        anju@linux.vnet.ibm.com, kan.liang@linux.intel.com,
-        nasastry@in.ibm.com, kjain@linux.ibm.com
-Subject: [RFC v2 5/5] perf/tools/pmu_events/powerpc: Add hv_24x7 core level metric events
-Date:   Tue,  7 Jul 2020 17:53:14 +0530
-Message-Id: <20200707122314.624400-6-kjain@linux.ibm.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200707122314.624400-1-kjain@linux.ibm.com>
-References: <20200707122314.624400-1-kjain@linux.ibm.com>
+        Tue, 7 Jul 2020 08:26:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594124797;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=5GnSW8x4YngNzy2O2LzK0xxCB+iNUr8imak36u8VDeY=;
+        b=gv6JDYJIpmodO/+n/2Wa4AidhQLabCiqkFN+jwCcMGgczLKElqWNvJgwkvc/UnwqLlvtN+
+        CwqvoZePrk1+a8l5iJkNcD0gYYsLWzrn3N/0Xg+JtoXrvliRBcAibBfmJh/OiwLlCZxb2w
+        X9EtV1ymBepS3SeDEjdtVl9a+h7DYAk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-180-N86uCUT4PreDGAunxSVXnw-1; Tue, 07 Jul 2020 08:26:36 -0400
+X-MC-Unique: N86uCUT4PreDGAunxSVXnw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0E1EE8914B7;
+        Tue,  7 Jul 2020 12:26:12 +0000 (UTC)
+Received: from [10.36.114.87] (ovpn-114-87.ams2.redhat.com [10.36.114.87])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E269B10013D7;
+        Tue,  7 Jul 2020 12:26:08 +0000 (UTC)
+Subject: Re: [PATCH v2 1/3] arm64/numa: export memory_add_physaddr_to_nid as
+ EXPORT_SYMBOL_GPL
+To:     Mike Rapoport <rppt@linux.ibm.com>,
+        Michal Hocko <mhocko@kernel.org>
+Cc:     Jia He <justin.he@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Baoquan He <bhe@redhat.com>,
+        Chuhong Yuan <hslester96@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-nvdimm@lists.01.org,
+        Kaly Xin <Kaly.Xin@arm.com>
+References: <20200707055917.143653-1-justin.he@arm.com>
+ <20200707055917.143653-2-justin.he@arm.com>
+ <20200707115454.GN5913@dhcp22.suse.cz> <20200707121302.GB9411@linux.ibm.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
+ 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
+Organization: Red Hat GmbH
+Message-ID: <474f93e7-c709-1a13-5418-29f1777f614c@redhat.com>
+Date:   Tue, 7 Jul 2020 14:26:08 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-07_07:2020-07-07,2020-07-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- impostorscore=0 mlxscore=0 clxscore=1015 adultscore=0 priorityscore=1501
- mlxlogscore=999 lowpriorityscore=0 suspectscore=1 bulkscore=0 phishscore=0
- cotscore=-2147483648 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2007070090
+In-Reply-To: <20200707121302.GB9411@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds hv_24x7 core level events in nest_metric.json file
-and also add PerChip/PerCore field in metric events.
+On 07.07.20 14:13, Mike Rapoport wrote:
+> On Tue, Jul 07, 2020 at 01:54:54PM +0200, Michal Hocko wrote:
+>> On Tue 07-07-20 13:59:15, Jia He wrote:
+>>> This exports memory_add_physaddr_to_nid() for module driver to use.
+>>>
+>>> memory_add_physaddr_to_nid() is a fallback option to get the nid in case
+>>> NUMA_NO_NID is detected.
+>>>
+>>> Suggested-by: David Hildenbrand <david@redhat.com>
+>>> Signed-off-by: Jia He <justin.he@arm.com>
+>>> ---
+>>>  arch/arm64/mm/numa.c | 5 +++--
+>>>  1 file changed, 3 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/arch/arm64/mm/numa.c b/arch/arm64/mm/numa.c
+>>> index aafcee3e3f7e..7eeb31740248 100644
+>>> --- a/arch/arm64/mm/numa.c
+>>> +++ b/arch/arm64/mm/numa.c
+>>> @@ -464,10 +464,11 @@ void __init arm64_numa_init(void)
+>>>  
+>>>  /*
+>>>   * We hope that we will be hotplugging memory on nodes we already know about,
+>>> - * such that acpi_get_node() succeeds and we never fall back to this...
+>>> + * such that acpi_get_node() succeeds. But when SRAT is not present, the node
+>>> + * id may be probed as NUMA_NO_NODE by acpi, Here provide a fallback option.
+>>>   */
+>>>  int memory_add_physaddr_to_nid(u64 addr)
+>>>  {
+>>> -	pr_warn("Unknown node for memory at 0x%llx, assuming node 0\n", addr);
+>>>  	return 0;
+>>>  }
+>>> +EXPORT_SYMBOL_GPL(memory_add_physaddr_to_nid);
+>>
+>> Does it make sense to export a noop function? Wouldn't make more sense
+>> to simply make it static inline somewhere in a header? I haven't checked
+>> whether there is an easy way to do that sanely bu this just hit my eyes.
+> 
+> We'll need to either add a CONFIG_ option or arch specific callback to
+> make both non-empty (x86, powerpc, ia64) and empty (arm64, sh)
+> implementations coexist ...
 
-Result:
+Note: I have a similar dummy (return 0) patch for s390x lying around here.
 
-power9 platform:
 
-command:# ./perf stat --metric-only -M PowerBUS_Frequency -C 0 -I 1000
-     1.000070601                        1.9                        2.0
-     2.000253881                        2.0                        1.9
-     3.000364810                        2.0                        2.0
-
-Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
----
- .../arch/powerpc/power9/nest_metrics.json       | 17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
-
-diff --git a/tools/perf/pmu-events/arch/powerpc/power9/nest_metrics.json b/tools/perf/pmu-events/arch/powerpc/power9/nest_metrics.json
-index c121e526442a..2a471cb5dd7a 100644
---- a/tools/perf/pmu-events/arch/powerpc/power9/nest_metrics.json
-+++ b/tools/perf/pmu-events/arch/powerpc/power9/nest_metrics.json
-@@ -3,17 +3,26 @@
-         "MetricExpr": "(hv_24x7@PM_MCS01_128B_RD_DISP_PORT01\\,chip\\=?@ + hv_24x7@PM_MCS01_128B_RD_DISP_PORT23\\,chip\\=?@ + hv_24x7@PM_MCS23_128B_RD_DISP_PORT01\\,chip\\=?@ + hv_24x7@PM_MCS23_128B_RD_DISP_PORT23\\,chip\\=?@)",
-         "MetricName": "Memory_RD_BW_Chip",
-         "MetricGroup": "Memory_BW",
--        "ScaleUnit": "1.6e-2MB"
-+        "ScaleUnit": "1.6e-2MB",
-+	"AggregationMode": "PerChip"
-     },
-     {
- 	"MetricExpr": "(hv_24x7@PM_MCS01_128B_WR_DISP_PORT01\\,chip\\=?@ + hv_24x7@PM_MCS01_128B_WR_DISP_PORT23\\,chip\\=?@ + hv_24x7@PM_MCS23_128B_WR_DISP_PORT01\\,chip\\=?@ + hv_24x7@PM_MCS23_128B_WR_DISP_PORT23\\,chip\\=?@ )",
-         "MetricName": "Memory_WR_BW_Chip",
-         "MetricGroup": "Memory_BW",
--        "ScaleUnit": "1.6e-2MB"
-+        "ScaleUnit": "1.6e-2MB",
-+	"AggregationMode": "PerChip"
-     },
-     {
- 	"MetricExpr": "(hv_24x7@PM_PB_CYC\\,chip\\=?@ )",
-         "MetricName": "PowerBUS_Frequency",
--        "ScaleUnit": "2.5e-7GHz"
--    }
-+        "ScaleUnit": "2.5e-7GHz",
-+	"AggregationMode": "PerChip"
-+    },
-+    {
-+	"MetricExpr": "(hv_24x7@CPM_CS_32MHZ_CYC\\,domain\\=3\\,core\\=?@ )",
-+        "MetricName": "CPM_CS_32MHZ_CYC",
-+        "ScaleUnit": "1MHz",
-+	"AggregationMode": "PerCore"
-+     }
- ]
 -- 
-2.26.2
+Thanks,
+
+David / dhildenb
 
