@@ -2,61 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE002217864
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 21:57:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A243D217853
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 21:52:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728793AbgGGT5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 15:57:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728523AbgGGT5Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 15:57:24 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2916DC061755;
-        Tue,  7 Jul 2020 12:57:24 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 0BCD9120F93E0;
-        Tue,  7 Jul 2020 12:57:23 -0700 (PDT)
-Date:   Tue, 07 Jul 2020 12:57:22 -0700 (PDT)
-Message-Id: <20200707.125722.100914573433329091.davem@davemloft.net>
-To:     vaibhavgupta40@gmail.com
-Cc:     helgaas@kernel.org, bhelgaas@google.com, bjorn@helgaas.com,
-        vaibhav.varodek@gmail.com, kuba@kernel.org, sfr@canb.auug.org.au,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        skhan@linuxfoundation.org
-Subject: Re: [PATCH net-next] sun/niu: add __maybe_unused attribute to PM
- functions
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200707074121.230686-1-vaibhavgupta40@gmail.com>
-References: <20200707074121.230686-1-vaibhavgupta40@gmail.com>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Tue, 07 Jul 2020 12:57:23 -0700 (PDT)
+        id S1728731AbgGGTwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 15:52:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34268 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726951AbgGGTwW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 15:52:22 -0400
+Received: from embeddedor (unknown [200.39.26.250])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A36C92067D;
+        Tue,  7 Jul 2020 19:52:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594151541;
+        bh=BCg2O5jFZBlDRc+MF49DFW22EwGVWh89T01WR1/QAyk=;
+        h=Date:From:To:Cc:Subject:From;
+        b=P0+GOtA5+XNYmpksFCVRBIEVNBW3/ffnM5bFqEXHW3Db77YWs0JiCtPjul3JHKXa/
+         9pNhzwj5h9xARmb4DA5JAN96erzS3jTHF5vKWuofCOxAcU48XacsCAMBEWD+a1v25G
+         +ytUhAhKlzTaodKBZM5p4euorN0Ow1ZgQHcp6v6I=
+Date:   Tue, 7 Jul 2020 14:57:47 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Johan Hovold <johan@kernel.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: [PATCH] USB: serial: Use fallthrough pseudo-keyword
+Message-ID: <20200707195747.GA4354@embeddedor>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vaibhav Gupta <vaibhavgupta40@gmail.com>
-Date: Tue,  7 Jul 2020 13:11:22 +0530
+Replace the existing /* fall through */ comments and its variants with
+the new pseudo-keyword macro fallthrough[1]. Also, remove unnecessary
+fall-through markings when it is the case.
 
-> The upgraded .suspend() and .resume() throw
-> "defined but not used [-Wunused-function]" warning for certain
-> configurations.
-> 
-> Mark them with "__maybe_unused" attribute.
-> 
-> Compile-tested only.
-> 
-> Fixes: b0db0cc2f695 ("sun/niu: use generic power management")
-> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
+[1] https://www.kernel.org/doc/html/latest/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
 
-Applied.
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/usb/serial/cypress_m8.c  |    4 ++--
+ drivers/usb/serial/io_edgeport.c |    4 ++--
+ drivers/usb/serial/kobil_sct.c   |    2 +-
+ drivers/usb/serial/upd78f0730.c  |    2 +-
+ 4 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/usb/serial/cypress_m8.c b/drivers/usb/serial/cypress_m8.c
+index 216edd5826ca..53e3051b0a71 100644
+--- a/drivers/usb/serial/cypress_m8.c
++++ b/drivers/usb/serial/cypress_m8.c
+@@ -1046,7 +1046,7 @@ static void cypress_read_int_callback(struct urb *urb)
+ 		return;
+ 	case -EPIPE:
+ 		/* Can't call usb_clear_halt while in_interrupt */
+-		/* FALLS THROUGH */
++		fallthrough;
+ 	default:
+ 		/* something ugly is going on... */
+ 		dev_err(dev, "%s - unexpected nonzero read status received: %d\n",
+@@ -1195,7 +1195,7 @@ static void cypress_write_int_callback(struct urb *urb)
+ 		return;
+ 	case -EPIPE:
+ 		/* Cannot call usb_clear_halt while in_interrupt */
+-		/* FALLTHROUGH */
++		fallthrough;
+ 	default:
+ 		dev_err(dev, "%s - unexpected nonzero write status received: %d\n",
+ 			__func__, status);
+diff --git a/drivers/usb/serial/io_edgeport.c b/drivers/usb/serial/io_edgeport.c
+index 4cca0b836f43..ba5d8df69518 100644
+--- a/drivers/usb/serial/io_edgeport.c
++++ b/drivers/usb/serial/io_edgeport.c
+@@ -1752,7 +1752,7 @@ static void process_rcvd_data(struct edgeport_serial *edge_serial,
+ 				edge_serial->rxState = EXPECT_HDR2;
+ 				break;
+ 			}
+-			/* Fall through */
++			fallthrough;
+ 		case EXPECT_HDR2:
+ 			edge_serial->rxHeader2 = *buffer;
+ 			++buffer;
+@@ -1804,7 +1804,7 @@ static void process_rcvd_data(struct edgeport_serial *edge_serial,
+ 				edge_serial->rxState = EXPECT_DATA;
+ 				break;
+ 			}
+-			/* Fall through */
++			fallthrough;
+ 		case EXPECT_DATA: /* Expect data */
+ 			if (bufferLength < edge_serial->rxBytesRemaining) {
+ 				rxLen = bufferLength;
+diff --git a/drivers/usb/serial/kobil_sct.c b/drivers/usb/serial/kobil_sct.c
+index e9882ba20933..9660c16be56a 100644
+--- a/drivers/usb/serial/kobil_sct.c
++++ b/drivers/usb/serial/kobil_sct.c
+@@ -499,7 +499,7 @@ static void kobil_set_termios(struct tty_struct *tty,
+ 		break;
+ 	default:
+ 		speed = 9600;
+-		/* fall through */
++		fallthrough;
+ 	case 9600:
+ 		urb_val = SUSBCR_SBR_9600;
+ 		break;
+diff --git a/drivers/usb/serial/upd78f0730.c b/drivers/usb/serial/upd78f0730.c
+index 1ba1401d27d7..0a2268c479af 100644
+--- a/drivers/usb/serial/upd78f0730.c
++++ b/drivers/usb/serial/upd78f0730.c
+@@ -332,7 +332,7 @@ static void upd78f0730_set_termios(struct tty_struct *tty,
+ 		tty->termios.c_cflag &= ~CSIZE;
+ 		tty->termios.c_cflag |= CS8;
+ 		dev_warn(dev, "data size is not supported, using 8 bits\n");
+-		/* fall through */
++		fallthrough;
+ 	case CS8:
+ 		request.params |= UPD78F0730_DATA_SIZE_8_BITS;
+ 		dev_dbg(dev, "%s - 8 data bits\n", __func__);
+
