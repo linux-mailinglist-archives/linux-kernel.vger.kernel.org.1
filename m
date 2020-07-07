@@ -2,88 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 039F3217768
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 21:00:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0E532177EE
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 21:26:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728804AbgGGTAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 15:00:18 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:35023 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728029AbgGGTAR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 15:00:17 -0400
-Received: by mail-wr1-f67.google.com with SMTP id z2so24101873wrp.2
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 12:00:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VoyDJTI1cJ/dJyHAL3PoVYED5J0Stt74X8oxEEic8ao=;
-        b=X4fcnEahO6fiCMhc145CKw1SH4xcDyoAajz1XNtBubdJfqXXRHU/zs6B6siuoIBBWH
-         1fCKpnGCob2rbukjccC7gzYn/1Dwbb4OjJRJBmd5BFljlt+vhWrhVQf4cQ5739EsMFyw
-         WlEVVCpG0o9zsBHeL6lBAo5CZ0h6+0N9lZLYIFAqmwMzv+K8fdcE10iJBDuBx3imWQIu
-         nb8Nf7yJBnHUIQZZPnsFViuj+HRJCyg5+HbSWqS3Q/DsnpRcNUqYjKYbEofHxsbq/oUK
-         wadyc2zlBV0bV6f7jVArusHemkhu9zTdvL2Gy6NFxTS3+nfRCZYjcisA2HW9l8c1Gj+i
-         5txg==
-X-Gm-Message-State: AOAM533Px9WgYLDrB7yrfMw/kEoDBzkXPRmujsDRJQO9SgJ1iUpM2T/z
-        bfQPxOJVZFk7yEUjWie47m8=
-X-Google-Smtp-Source: ABdhPJyj3S6v1FPmg4uWREMeTffGzWqJbvJBFUP3wNgeFQT8ldjLochB7WGbW9hEpKcA9NtBo+LvEw==
-X-Received: by 2002:a5d:5441:: with SMTP id w1mr52781033wrv.381.1594148415773;
-        Tue, 07 Jul 2020 12:00:15 -0700 (PDT)
-Received: from localhost (ip-37-188-179-51.eurotel.cz. [37.188.179.51])
-        by smtp.gmail.com with ESMTPSA id h84sm2540887wme.22.2020.07.07.12.00.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jul 2020 12:00:14 -0700 (PDT)
-Date:   Tue, 7 Jul 2020 21:00:13 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     js1304@gmail.com, Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        kernel-team@lge.com, Christoph Hellwig <hch@infradead.org>,
-        Roman Gushchin <guro@fb.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Subject: Re: [PATCH v4 06/11] mm/migrate: make a standard migration target
- allocation function
-Message-ID: <20200707190013.GZ5913@dhcp22.suse.cz>
-References: <1594107889-32228-1-git-send-email-iamjoonsoo.kim@lge.com>
- <1594107889-32228-7-git-send-email-iamjoonsoo.kim@lge.com>
- <409b6e24-d143-a61c-95a3-1a55e1a6008e@suse.cz>
+        id S1728634AbgGGT0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 15:26:45 -0400
+Received: from mga02.intel.com ([134.134.136.20]:56354 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728100AbgGGT0p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 15:26:45 -0400
+IronPort-SDR: vCyU8vc5+RJv7pIQdiH9GpymvcyKudBGKgJWwM17YGTl579gXCpdDQnx+5EtdDP3cAVUr6sAWn
+ ojFkM0KssXZw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9675"; a="135925956"
+X-IronPort-AV: E=Sophos;i="5.75,324,1589266800"; 
+   d="scan'208";a="135925956"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2020 12:26:45 -0700
+IronPort-SDR: PJ2Pr9HKoJiDzpm/sNxhX0XcUkS+HhvcTX+0P0ERPRiYihnaaibWyQwnIrx3s0BYd+UwH1DFjt
+ row3O05nQZsA==
+X-IronPort-AV: E=Sophos;i="5.75,324,1589266800"; 
+   d="scan'208";a="297493428"
+Received: from mrtorger-mobl1.amr.corp.intel.com (HELO [10.254.77.62]) ([10.254.77.62])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2020 12:26:44 -0700
+Subject: Re: [PATCH 03/11] ASoC: q6asm: make commands specific to streams
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        broonie@kernel.org
+Cc:     alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com,
+        tiwai@suse.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
+        vkoul@kernel.org
+References: <20200707163641.17113-1-srinivas.kandagatla@linaro.org>
+ <20200707163641.17113-4-srinivas.kandagatla@linaro.org>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <9ff595b4-1093-36c8-f27f-f097e24657a0@linux.intel.com>
+Date:   Tue, 7 Jul 2020 11:52:33 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <409b6e24-d143-a61c-95a3-1a55e1a6008e@suse.cz>
+In-Reply-To: <20200707163641.17113-4-srinivas.kandagatla@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 07-07-20 16:49:51, Vlastimil Babka wrote:
-> On 7/7/20 9:44 AM, js1304@gmail.com wrote:
-> > From: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-> > 
-> > There are some similar functions for migration target allocation.  Since
-> > there is no fundamental difference, it's better to keep just one rather
-> > than keeping all variants.  This patch implements base migration target
-> > allocation function.  In the following patches, variants will be converted
-> > to use this function.
-> > 
-> > Changes should be mechanical but there are some differences. First, Some
-> > callers' nodemask is assgined to NULL since NULL nodemask will be
-> > considered as all available nodes, that is, &node_states[N_MEMORY].
-> > Second, for hugetlb page allocation, gfp_mask is ORed since a user could
-> > provide a gfp_mask from now on.
-> 
-> I think that's wrong. See how htlb_alloc_mask() determines between
-> GFP_HIGHUSER_MOVABLE and GFP_HIGHUSER, but then you OR it with __GFP_MOVABLE so
-> it's always GFP_HIGHUSER_MOVABLE.
 
-Right you are! Not that it would make any real difference because only
-migrateable hugetlb pages will get __GFP_MOVABLE and so we shouldn't
-really end up here for !movable pages in the first place (not sure about
-soft offlining at this moment). But yeah it would be simply better to
-override gfp mask for hugetlb which we have been doing anyway.
--- 
-Michal Hocko
-SUSE Labs
+
+
+> @@ -184,8 +186,8 @@ static void event_handler(uint32_t opcode, uint32_t token,
+>   	switch (opcode) {
+>   	case ASM_CLIENT_EVENT_CMD_RUN_DONE:
+>   		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+> -			q6asm_write_async(prtd->audio_client,
+> -				   prtd->pcm_count, 0, 0, NO_TIMESTAMP);
+> +			q6asm_write_async(prtd->audio_client, prtd->stream_id,
+> +				   prtd->pcm_count, 0, 0, 0);
+
+sound/soc/qcom/qdsp6/q6asm.h:#define NO_TIMESTAMP    0xFF00
+
+is the change on the previous line intentional?
+
+>   		break;
+>   	case ASM_CLIENT_EVENT_CMD_EOS_DONE:
+>   		prtd->state = Q6ASM_STREAM_STOPPED;
+> @@ -194,8 +196,8 @@ static void event_handler(uint32_t opcode, uint32_t token,
+>   		prtd->pcm_irq_pos += prtd->pcm_count;
+>   		snd_pcm_period_elapsed(substream);
+>   		if (prtd->state == Q6ASM_STREAM_RUNNING)
+> -			q6asm_write_async(prtd->audio_client,
+> -					   prtd->pcm_count, 0, 0, NO_TIMESTAMP);
+> +			q6asm_write_async(prtd->audio_client, prtd->stream_id,
+> +					   prtd->pcm_count, 0, 0, 0);
+
+ditto for the timestamp change?
+
+
+> @@ -501,8 +514,8 @@ static void compress_event_handler(uint32_t opcode, uint32_t token,
+>   	case ASM_CLIENT_EVENT_CMD_RUN_DONE:
+>   		spin_lock_irqsave(&prtd->lock, flags);
+>   		if (!prtd->bytes_sent) {
+> -			q6asm_write_async(prtd->audio_client, prtd->pcm_count,
+> -					  0, 0, NO_TIMESTAMP);
+> +			q6asm_write_async(prtd->audio_client, prtd->stream_id,
+> +					  prtd->pcm_count, 0, 0, 0);
+
+and here as well.
+
+>   			prtd->bytes_sent += prtd->pcm_count;
+>   		}
+>   
+> @@ -527,8 +540,8 @@ static void compress_event_handler(uint32_t opcode, uint32_t token,
+>   		avail = prtd->bytes_received - prtd->bytes_sent;
+>   
+>   		if (avail >= prtd->pcm_count) {
+> -			q6asm_write_async(prtd->audio_client,
+> -					   prtd->pcm_count, 0, 0, NO_TIMESTAMP);
+> +			q6asm_write_async(prtd->audio_client, prtd->stream_id,
+> +					   prtd->pcm_count, 0, 0, 0);
+
+and here.
+
