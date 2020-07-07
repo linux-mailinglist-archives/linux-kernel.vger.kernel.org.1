@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C98C9217183
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:42:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FD5021716F
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:42:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729678AbgGGPVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:21:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33374 "EHLO mail.kernel.org"
+        id S1729381AbgGGPTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:19:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59362 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729673AbgGGPVM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:21:12 -0400
+        id S1729051AbgGGPTg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 11:19:36 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C7A14206F6;
-        Tue,  7 Jul 2020 15:21:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7123820663;
+        Tue,  7 Jul 2020 15:19:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594135272;
-        bh=xNgxuafim4tGyZpEE1Liq7qCviauMv+IL2AhbUrrGCQ=;
+        s=default; t=1594135176;
+        bh=dSaS6VukJ9Y7DdEb7vl9l6SSOIzzZN4BxSsGV00mMdk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BCJdsPn/WbO45Ku5sY/cAbvdIozSNhC/EDb4BGb4Mw4RQNdu4nfAC5/hawoh3QAyg
-         hx+YBstzm+0y8t9D/4e95YPNSBX2nTjnF2YIH2wrzq5aXq3/t23pp1/47mufVIJgS2
-         LGAW/omsEgmGE82QYycbIwv+1qcWXEDRFhIZkzwE=
+        b=K2cHZ5mzL2c6XK3qjUNSuYLdQVdHW6+iV/vIvGVJyH0k24yt9r7sDsd3mfFPXHsou
+         IJJrHnsanz6apww+N9Hcm4d/Q8E1otNo2+GlFbPDlZWynFOPzoDZthpfB6nIyqo1BV
+         jjiURQhmJ73Ej5PrC709O8rKLEPr5bQENtY1nKLA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Avinash M N <Avinash.M.N@wdc.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Max Gurtovoy <maxg@mellanox.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 42/65] nvme: fix a crash in nvme_mpath_add_disk
+        stable@vger.kernel.org, Paul Aurich <paul@darkrain42.org>,
+        Steve French <stfrench@microsoft.com>,
+        Aurelien Aptel <aaptel@suse.com>
+Subject: [PATCH 4.19 29/36] SMB3: Honor seal flag for multiuser mounts
 Date:   Tue,  7 Jul 2020 17:17:21 +0200
-Message-Id: <20200707145754.492490789@linuxfoundation.org>
+Message-Id: <20200707145750.548775360@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200707145752.417212219@linuxfoundation.org>
-References: <20200707145752.417212219@linuxfoundation.org>
+In-Reply-To: <20200707145749.130272978@linuxfoundation.org>
+References: <20200707145749.130272978@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,44 +44,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig <hch@lst.de>
+From: Paul Aurich <paul@darkrain42.org>
 
-[ Upstream commit 72d447113bb751ded97b2e2c38f886e4a4139082 ]
+commit cc15461c73d7d044d56c47e869a215e49bd429c8 upstream.
 
-For private namespaces ns->head_disk is NULL, so add a NULL check
-before updating the BDI capabilities.
+Ensure multiuser SMB3 mounts use encryption for all users' tcons if the
+mount options are configured to require encryption. Without this, only
+the primary tcon and IPC tcons are guaranteed to be encrypted. Per-user
+tcons would only be encrypted if the server was configured to require
+encryption.
 
-Fixes: b2ce4d90690b ("nvme-multipath: set bdi capabilities once")
-Reported-by: Avinash M N <Avinash.M.N@wdc.com>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
-Reviewed-by: Max Gurtovoy <maxg@mellanox.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Paul Aurich <paul@darkrain42.org>
+CC: Stable <stable@vger.kernel.org>
+Signed-off-by: Steve French <stfrench@microsoft.com>
+Reviewed-by: Aurelien Aptel <aaptel@suse.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/nvme/host/multipath.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ fs/cifs/connect.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/nvme/host/multipath.c b/drivers/nvme/host/multipath.c
-index e1eeed5856570..5433aa2f76017 100644
---- a/drivers/nvme/host/multipath.c
-+++ b/drivers/nvme/host/multipath.c
-@@ -673,10 +673,11 @@ void nvme_mpath_add_disk(struct nvme_ns *ns, struct nvme_id_ns *id)
- 	}
+--- a/fs/cifs/connect.c
++++ b/fs/cifs/connect.c
+@@ -4605,6 +4605,7 @@ cifs_construct_tcon(struct cifs_sb_info
+ 	vol_info->linux_ext = master_tcon->posix_extensions;
+ 	vol_info->sectype = master_tcon->ses->sectype;
+ 	vol_info->sign = master_tcon->ses->sign;
++	vol_info->seal = master_tcon->seal;
  
- 	if (bdi_cap_stable_pages_required(ns->queue->backing_dev_info)) {
--		struct backing_dev_info *info =
--					ns->head->disk->queue->backing_dev_info;
-+		struct gendisk *disk = ns->head->disk;
- 
--		info->capabilities |= BDI_CAP_STABLE_WRITES;
-+		if (disk)
-+			disk->queue->backing_dev_info->capabilities |=
-+					BDI_CAP_STABLE_WRITES;
- 	}
- }
- 
--- 
-2.25.1
-
+ 	rc = cifs_set_vol_auth(vol_info, master_tcon->ses);
+ 	if (rc) {
 
 
