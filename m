@@ -2,70 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 862A2216AC9
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 12:52:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88D7A216AC7
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 12:51:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727987AbgGGKwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 06:52:11 -0400
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:47357 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725941AbgGGKwL (ORCPT
+        id S1727789AbgGGKvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 06:51:46 -0400
+Received: from mail.efficios.com ([167.114.26.124]:50334 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725941AbgGGKvp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 06:52:11 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R451e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04397;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0U20Cnyd_1594119126;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U20Cnyd_1594119126)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 07 Jul 2020 18:52:06 +0800
-Subject: Re: [PATCH v14 07/20] mm/thp: narrow lru locking
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
-        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
-        daniel.m.jordan@oracle.com, yang.shi@linux.alibaba.com,
-        hannes@cmpxchg.org, lkp@intel.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        shakeelb@google.com, iamjoonsoo.kim@lge.com,
-        richard.weiyang@gmail.com
-References: <1593752873-4493-1-git-send-email-alex.shi@linux.alibaba.com>
- <1593752873-4493-8-git-send-email-alex.shi@linux.alibaba.com>
- <124eeef1-ff2b-609e-3bf6-a118100c3f2a@linux.alibaba.com>
- <20200706113513.GY25523@casper.infradead.org>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <f52e101c-53a7-6342-a92b-fe12259054e6@linux.alibaba.com>
-Date:   Tue, 7 Jul 2020 18:51:36 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
+        Tue, 7 Jul 2020 06:51:45 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 17D5725B0;
+        Tue,  7 Jul 2020 06:51:45 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id ZPLoVSiFp3tp; Tue,  7 Jul 2020 06:51:44 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id CEC762900;
+        Tue,  7 Jul 2020 06:51:44 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com CEC762900
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1594119104;
+        bh=65U6cZeoHJ0b5uwyqFXxHAmikJcNMvEpm9mPm7idWLY=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=fq9dqb9+7BWAfcO430hyxnqpMmln7WEUOJxaiSvhFT5vjgIiTRME3SMA89I0xOYBo
+         3l1WfNUVziv3M7PJ0PAm2UrR8OZmYz7DFbZZlGKJJxTzA4xOOz33A46RlhPtK1L0/T
+         KfwrtjK1g0e6aog9RyLPwa/SedSVpaVPEtl517OC9NHeIuLP/q3GP4SGMGq9Adw8ud
+         pqrrVg2oIcUXwGmw5hQfZ5+KvK2CzhJI1XcTzju9gkXFCiJtdsDwZw/CYZ58fCN0dS
+         74mk4Op2uv1LeFQGp4s6g1EQWjSQ6S83FO/6v9FjbMdnEUzJ6r1i5kckncUWvuH9Xa
+         bS/VGsbxKiKXA==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 6rXMaviP4Q9e; Tue,  7 Jul 2020 06:51:44 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id BC4FD263A;
+        Tue,  7 Jul 2020 06:51:44 -0400 (EDT)
+Date:   Tue, 7 Jul 2020 06:51:44 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Florian Weimer <fw@deneb.enyo.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        paulmck <paulmck@linux.ibm.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Paul Turner <pjt@google.com>,
+        linux-api <linux-api@vger.kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Neel Natu <neelnatu@google.com>,
+        stable <stable@vger.kernel.org>
+Message-ID: <1513249086.945.1594119104750.JavaMail.zimbra@efficios.com>
+In-Reply-To: <87blkrzssa.fsf@mid.deneb.enyo.de>
+References: <20200706204913.20347-1-mathieu.desnoyers@efficios.com> <20200706204913.20347-2-mathieu.desnoyers@efficios.com> <87blkrzssa.fsf@mid.deneb.enyo.de>
+Subject: Re: [RFC PATCH for 5.8 1/4] sched: Fix unreliable rseq cpu_id for
+ new tasks
 MIME-Version: 1.0
-In-Reply-To: <20200706113513.GY25523@casper.infradead.org>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3955 (ZimbraWebClient - FF78 (Linux)/8.8.15_GA_3953)
+Thread-Topic: sched: Fix unreliable rseq cpu_id for new tasks
+Thread-Index: +EFr9o+gVaPjCkmbkUIMJ25jGoinrQ==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+----- On Jul 7, 2020, at 3:30 AM, Florian Weimer fw@deneb.enyo.de wrote:
 
-
-在 2020/7/6 下午7:35, Matthew Wilcox 写道:
->> Would you like to give some comments or share your concern of this patchset,
->> specialy for THP part? 
-> I don't have the brain space to understand this patch set fully at
-> the moment.  I'll note that the realtime folks are doing their best to
-> stamp out users of local_irq_disable(), so they won't be pleased to see
-> you adding a new one.  Also, you removed the comment explaining why the
-> lock needed to be taken.
+> * Mathieu Desnoyers:
 > 
+>> While integrating rseq into glibc and replacing glibc's sched_getcpu
+>> implementation with rseq, glibc's tests discovered an issue with
+>> incorrect __rseq_abi.cpu_id field value right after the first time
+>> a newly created process issues sched_setaffinity.
+>>
+>> For the records, it triggers after building glibc and running tests, and
+>> then issuing:
+>>
+>>   for x in {1..2000} ; do posix/tst-affinity-static  & done
+>>
+>> and shows up as:
+>>
+>> error: Unexpected CPU 2, expected 0
+>> error: Unexpected CPU 2, expected 0
+>> error: Unexpected CPU 2, expected 0
+>> error: Unexpected CPU 2, expected 0
+>> error: Unexpected CPU 138, expected 0
+>> error: Unexpected CPU 138, expected 0
+>> error: Unexpected CPU 138, expected 0
+>> error: Unexpected CPU 138, expected 0
+> 
+> As far as I can tell, the glibc reproducer no longer shows the issue
+> with this patch applied.
+> 
+> Tested-By: Florian Weimer <fweimer@redhat.com>
 
-Hi Matthew,
+Thanks a lot Florian for your thorough review and testing !
 
-Thanks for response!
+Mathieu
 
-As to the local_irq_disable(), we could use local_irq_save(), but Hugh Dickin
-suggest it's not necessary here. Also there are still much local_irq_disable()
-in code. Hope it would be a big trouble for only one extra.
 
-yes, The lru_lock comments is a bit early to remove, that should do in next 
-TestClearPageLRU part. but since it would be changed soon. It won't be a critical
-thing. Anyway I can change it to back in next version.
-
-Thanks
-Alex
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
