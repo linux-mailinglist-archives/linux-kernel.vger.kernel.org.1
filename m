@@ -2,78 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48A642170C5
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:24:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E406217075
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:24:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729170AbgGGPUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:20:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60528 "EHLO mail.kernel.org"
+        id S1729190AbgGGPRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:17:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56914 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728724AbgGGPUZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:20:25 -0400
+        id S1728335AbgGGPRQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 11:17:16 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BCB6A20663;
-        Tue,  7 Jul 2020 15:20:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 69EA720663;
+        Tue,  7 Jul 2020 15:17:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594135225;
-        bh=aeTibctQUtwyRVzBygrSOoljHRa45dwzMs7gCQgfONA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V5OhS8pcczrXa+NCEPKDS54ka7Ak/jue9QjAkF96Tnv1B9ncz0Bsm3VySTBJ67HgT
-         mGTquXeM+8V8vGPbXb3hndxMfNN0ZpEQfBk5ypw7nYxIZ1dkCj7KT9ddYZa0ks0UwR
-         c+MrF20Rv00oAExnGFmG/SXuX56U4UKS0NBhDJKk=
+        s=default; t=1594135035;
+        bh=z0xVd73LlzIi9Jp12AHZZNXTjQwy1Z8TxR4Az/EGjfQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PZdf3y3KnRo/zH0Vr1xrrcEIZd/IBnVfU1Sc+znNuJ8lrshIqdQD6o1oB/KeyPFwX
+         iIuQUWxJgTlNaakBN4TFzA+wwafAIhEZcRtF/OtXCaP2DIiXXr1XaffoNb+PGVDeCK
+         zLBMuFeWWKOirPSKkXLFahfJebchhINji6M3DSfE=
+Date:   Tue, 7 Jul 2020 17:17:01 +0200
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chen Tao <chentao107@huawei.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 22/65] drm/msm/dpu: fix error return code in dpu_encoder_init
-Date:   Tue,  7 Jul 2020 17:17:01 +0200
-Message-Id: <20200707145753.557090037@linuxfoundation.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200707145752.417212219@linuxfoundation.org>
-References: <20200707145752.417212219@linuxfoundation.org>
-User-Agent: quilt/0.66
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Alexander Tsoy <alexander@tsoy.me>,
+        Sasha Levin <sashal@kernel.org>,
+        Hans de Goede <jwrdegoede@fedoraproject.org>
+Subject: Re: [PATCH 4.4 14/19] Revert "ALSA: usb-audio: Improve frames size
+ computation"
+Message-ID: <20200707151701.GA104827@kroah.com>
+References: <20200707145747.493710555@linuxfoundation.org>
+ <20200707145748.216607526@linuxfoundation.org>
+ <s5hzh8bbbns.wl-tiwai@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <s5hzh8bbbns.wl-tiwai@suse.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chen Tao <chentao107@huawei.com>
+On Tue, Jul 07, 2020 at 05:13:59PM +0200, Takashi Iwai wrote:
+> On Tue, 07 Jul 2020 17:10:17 +0200,
+> Greg Kroah-Hartman wrote:
+> > 
+> > From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > 
+> > This reverts commit 02c56650f3c118d3752122996d96173d26bb13aa which is
+> > commit f0bd62b64016508938df9babe47f65c2c727d25c upstream.
+> > 
+> > It causes a number of reported issues and a fix for it has not hit
+> > Linus's tree yet.
+> 
+> FYI, I'm going to send a pull request to Linus in tomorrow.
+> So the fix will be available in a couple of days.
+> Though...
+> 
+> > Revert this to resolve those problems.
+> 
+> ... I'm not against the revert itself if this needs to be addressed
+> right now.
 
-[ Upstream commit aa472721c8dbe1713cf510f56ffbc56ae9e14247 ]
+It kind of does, I've gotten lots of distro complaints about it.  As the
+original wasn't originally tagged for stable, we should just revert it
+for now so that people have working systems again.
 
-Fix to return negative error code -ENOMEM with the use of
-ERR_PTR from dpu_encoder_init.
+thanks,
 
-Fixes: 25fdd5933e4c ("drm/msm: Add SDM845 DPU support")
-Signed-off-by: Chen Tao <chentao107@huawei.com>
-Signed-off-by: Rob Clark <robdclark@chromium.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-index d82ea994063fa..edf7989d7a8ee 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-@@ -2232,7 +2232,7 @@ struct drm_encoder *dpu_encoder_init(struct drm_device *dev,
- 
- 	dpu_enc = devm_kzalloc(dev->dev, sizeof(*dpu_enc), GFP_KERNEL);
- 	if (!dpu_enc)
--		return ERR_PTR(ENOMEM);
-+		return ERR_PTR(-ENOMEM);
- 
- 	rc = drm_encoder_init(dev, &dpu_enc->base, &dpu_encoder_funcs,
- 			drm_enc_mode, NULL);
--- 
-2.25.1
-
-
-
+greg k-h
