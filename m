@@ -2,172 +2,346 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB6F6217B8E
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 01:05:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46459217B70
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 01:01:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729331AbgGGXEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 19:04:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729241AbgGGXEB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 19:04:01 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E509C061755;
-        Tue,  7 Jul 2020 16:04:01 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id a1so48441840ejg.12;
-        Tue, 07 Jul 2020 16:04:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=TDNee8GVeUeyBsCjyc6danC/ynEOptI+9KXBNHn5gUo=;
-        b=PD50e4vMzFR5le1ao1Ae6vuTHCknkbfKAiLbDT70l8X7nzwML3pjQqA/vBosHSFuHD
-         G/LmYKcCftSPXGToiWf2pSbxg58KVWi8a9p117WWcHau/A7enRJRWV/wGFL9vKWZagej
-         aVVo7PLCLbdnDwnv5hvhukqzop+1wL1PClfZ/fuZE8Z27Mna7vdlk3vbB5yUurj2KXxf
-         piFaUYZZmp5oAUkoR1GPB9tSDp+AbcdaQoIXkRhNNiBiIOjdbUazjlJh0ZtSx0QMpi7x
-         PJp3pV9sVay5rgP9GqI/ABxAKS4wW3STZIWur29NuukyNc4xcJ3Y3XC7CaduhYn5ha1x
-         4sUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=TDNee8GVeUeyBsCjyc6danC/ynEOptI+9KXBNHn5gUo=;
-        b=IhA1Mb+8fub+0mdi5w5rW+VQ2Bkz50wSVIUY7ujpBKrs6+vELFK5dBeafVb4NIY6gO
-         QYzrSP17K+O1BkNKraTLw9ih2FbJLeuzMxILKIIWNF70vOIBknpbZvhV5pP8IbJS+X8Q
-         dw2+/VoWBkrRL65+OBVKj/G3/ygDB48pfH4j6WF3x+hQmgk2mhV6R6A8Azt6YxF+stlu
-         VXp9SsPzGLvvrQvyrioQXIMF6ko6bkkTxeWrKFfUPhbfydcWyd5NBhShScIh3udc9IaN
-         Jj5IxXHUvp9Vtkf7bxg3LGnbaxp1YJvMWoYFknUGewClDdoDfHgyKac8Wv41+OAFwfu2
-         U42Q==
-X-Gm-Message-State: AOAM530DRcx+gomMssPrLly9AEPEkylCDgV590H7G01Apc2vR5XpWAkG
-        CIwYOFylWsJdkqLgxIvaGVY=
-X-Google-Smtp-Source: ABdhPJy5RfHewjT0dnWFda9i0XhBHF0l10D3kiKEqleSJ0mL94SUpk1lTLn4o9t2bQPzn68Xo9d2yw==
-X-Received: by 2002:a17:906:d217:: with SMTP id w23mr38205012ejz.292.1594163039774;
-        Tue, 07 Jul 2020 16:03:59 -0700 (PDT)
-Received: from net.saheed (54007186.dsl.pool.telekom.hu. [84.0.113.134])
-        by smtp.gmail.com with ESMTPSA id f10sm27096310edx.5.2020.07.07.16.03.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jul 2020 16:03:58 -0700 (PDT)
-From:   Saheed Olayemi Bolarinwa <refactormyself@gmail.com>
-To:     helgaas@kernel.org
-Cc:     Bolarinwa Olayemi Saheed <refactormyself@gmail.com>,
-        bjorn@helgaas.com, skhan@linuxfoundation.org,
-        linux-pci@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org, Russell Currey <ruscur@russell.cc>,
-        Sam Bobroff <sbobroff@linux.ibm.com>,
-        "Oliver O'Halloran" <oohall@gmail.com>,
-        linuxppc-dev@lists.ozlabs.org,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>, Lukas Wunner <lukas@wunner.de>,
-        linux-acpi@vger.kernel.org,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        QCA ath9k Development <ath9k-devel@qca.qualcomm.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        Stanislaw Gruszka <stf_xl@wp.pl>
-Subject: [PATCH 13/13] PCI: Remove '*val = 0' from pcie_capability_read_*()
-Date:   Wed,  8 Jul 2020 00:03:24 +0200
-Message-Id: <20200707220324.8425-14-refactormyself@gmail.com>
-X-Mailer: git-send-email 2.18.2
-In-Reply-To: <20200707220324.8425-1-refactormyself@gmail.com>
-References: <20200707220324.8425-1-refactormyself@gmail.com>
+        id S1728335AbgGGW7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 18:59:10 -0400
+Received: from mga05.intel.com ([192.55.52.43]:44289 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728001AbgGGW7K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 18:59:10 -0400
+IronPort-SDR: njiIe/hR6AqryvIbVoNnzpMoTWOieO1vI/1grdc1868UagSVYgfdzFCQMfESYbHCAYRGU/J/ZJ
+ qrsm44IV5uJw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9675"; a="232568651"
+X-IronPort-AV: E=Sophos;i="5.75,325,1589266800"; 
+   d="scan'208";a="232568651"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2020 15:59:10 -0700
+IronPort-SDR: zJTFtT0zBohAXOSTzQGE4XlaG93nyDVLb8PBhgXhcEd/uiDrgUyG2rAC5qqDtpygsRZLRYmLJK
+ LRBohlc9fUvA==
+X-IronPort-AV: E=Sophos;i="5.75,325,1589266800"; 
+   d="scan'208";a="305827517"
+Received: from kcaccard-mobl.amr.corp.intel.com (HELO kcaccard-mobl1.jf.intel.com) ([10.212.104.224])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2020 15:59:03 -0700
+Message-ID: <f34eb868e609a1a8a7f19b77fe5d00bf3555bb00.camel@linux.intel.com>
+Subject: Re: [PATCH v3 09/10] kallsyms: Hide layout
+From:   Kristen Carlson Accardi <kristen@linux.intel.com>
+To:     Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Tony Luck <tony.luck@intel.com>
+Date:   Tue, 07 Jul 2020 15:58:57 -0700
+In-Reply-To: <202006240815.45AAD55@keescook>
+References: <20200623172327.5701-1-kristen@linux.intel.com>
+         <20200623172327.5701-10-kristen@linux.intel.com>
+         <CAG48ez3YHoPOTZvabsNUcr=GP-rX+OXhNT54KcZT9eSQ28Fb8Q@mail.gmail.com>
+         <202006240815.45AAD55@keescook>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.30.5 (3.30.5-1.fc29) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bolarinwa Olayemi Saheed <refactormyself@gmail.com>
+On Wed, 2020-06-24 at 08:18 -0700, Kees Cook wrote:
+> On Wed, Jun 24, 2020 at 12:21:16PM +0200, Jann Horn wrote:
+> > On Tue, Jun 23, 2020 at 7:26 PM Kristen Carlson Accardi
+> > <kristen@linux.intel.com> wrote:
+> > > This patch makes /proc/kallsyms display alphabetically by symbol
+> > > name rather than sorted by address in order to hide the newly
+> > > randomized address layout.
+> > [...]
+> > > +static int sorted_show(struct seq_file *m, void *p)
+> > > +{
+> > > +       struct list_head *list = m->private;
+> > > +       struct kallsyms_iter_list *iter;
+> > > +       int rc;
+> > > +
+> > > +       if (list_empty(list))
+> > > +               return 0;
+> > > +
+> > > +       iter = list_first_entry(list, struct kallsyms_iter_list,
+> > > next);
+> > > +
+> > > +       m->private = iter;
+> > > +       rc = s_show(m, p);
+> > > +       m->private = list;
+> > > +
+> > > +       list_del(&iter->next);
+> > > +       kfree(iter);
+> > 
+> > Does anything like this kfree() happen if someone only reads the
+> > start
+> > of kallsyms and then closes the file? IOW, does "while true; do
+> > head
+> > -n1 /proc/kallsyms; done" leak memory?
+> 
+> Oop, nice catch. It seems the list would need to be walked on s_stop.
+> 
+> > > +       return rc;
+> > > +}
+> > [...]
+> > > +static int kallsyms_list_cmp(void *priv, struct list_head *a,
+> > > +                            struct list_head *b)
+> > > +{
+> > > +       struct kallsyms_iter_list *iter_a, *iter_b;
+> > > +
+> > > +       iter_a = list_entry(a, struct kallsyms_iter_list, next);
+> > > +       iter_b = list_entry(b, struct kallsyms_iter_list, next);
+> > > +
+> > > +       return strcmp(iter_a->iter.name, iter_b->iter.name);
+> > > +}
+> > 
+> > This sorts only by name, but kallsyms prints more information
+> > (module
+> > names and types). This means that if there are elements whose names
+> > are the same, but whose module names or types are different, then
+> > some
+> > amount of information will still be leaked by the ordering of
+> > elements
+> > with the same name. In practice, since list_sort() is stable, this
+> > means you can see the ordering of many modules, and you can see the
+> > ordering of symbols with same name but different visibility (e.g.
+> > "t
+> > user_read" from security/selinux/ss/policydb.c vs "T user_read"
+> > from
+> > security/keys/user_defined.c, and a couple other similar cases).
+> 
+> i.e. sub-sort by visibility?
+> 
+> > [...]
+> > > +#if defined(CONFIG_FG_KASLR)
+> > > +/*
+> > > + * When fine grained kaslr is enabled, we need to
+> > > + * print out the symbols sorted by name rather than by
+> > > + * by address, because this reveals the randomization order.
+> > > + */
+> > > +static int kallsyms_open(struct inode *inode, struct file *file)
+> > > +{
+> > > +       int ret;
+> > > +       struct list_head *list;
+> > > +
+> > > +       list = __seq_open_private(file, &kallsyms_sorted_op,
+> > > sizeof(*list));
+> > > +       if (!list)
+> > > +               return -ENOMEM;
+> > > +
+> > > +       INIT_LIST_HEAD(list);
+> > > +
+> > > +       ret = kallsyms_on_each_symbol(get_all_symbol_name, list);
+> > > +       if (ret != 0)
+> > > +               return ret;
+> > > +
+> > > +       list_sort(NULL, list, kallsyms_list_cmp);
+> > 
+> > This permits running an algorithm (essentially mergesort) with
+> > secret-dependent branches and memory addresses on essentially
+> > secret
+> > data, triggerable and arbitrarily repeatable (although with partly
+> > different addresses on each run) by the attacker, and probably a
+> > fairly low throughput (comparisons go through indirect function
+> > calls,
+> > which are slowed down by retpolines, and linked list iteration
+> > implies
+> > slow pointer chases). Those are fairly favorable conditions for
+> > typical side-channel attacks.
+> > 
+> > Do you have estimates of how hard it would be to leverage such side
+> > channels to recover function ordering (both on old hardware that
+> > only
+> > has microcode fixes for Spectre and such, and on newer hardware
+> > with
+> > enhanced IBRS and such)?
+> 
+> I wonder, instead, if sorting should be just done once per module
+> load/unload? That would make the performance and memory management
+> easier too.
+> 
 
-There are several reasons why a PCI capability read may fail whether the
-device is present or not. If this happens, pcie_capability_read_*() will
-return -EINVAL/PCIBIOS_BAD_REGISTER_NUMBER or PCIBIOS_DEVICE_NOT_FOUND
-and *val is set to 0.
+I've been thinking about something like the below instead - I was
+thinking that there was no reason to sort kallsyms at all, so instead I
+just randomly shuffle an index list. Do you see any issues with this
+approach? (I guess I need to rename my functions at least...)
 
-This behaviour if further ensured by this code inside
-pcie_capability_read_*()
+From 2e8eb63c957f469af047dd4b056e54aa93f6fe35 Mon Sep 17 00:00:00 2001
+From: Kristen Carlson Accardi <kristen@linux.intel.com>
+Date: Mon, 3 Feb 2020 12:06:44 -0800
+Subject: [PATCH 1/2] kallsyms: Hide layout
 
- ret = pci_read_config_dword(dev, pci_pcie_cap(dev) + pos, val);
- /*
-  * Reset *val to 0 if pci_read_config_dword() fails, it may
-  * have been written as 0xFFFFFFFF if hardware error happens
-  * during pci_read_config_dword().
-  */
- if (ret)
-	 *val = 0;
- return ret;
+This patch makes /proc/kallsyms display in a random order, rather
+than sorted by address in order to hide the newly randomized address
+layout.
 
-a) Since all pci_generic_config_read() does is read a register value,
-it may return success after reading a ~0 which *may* have been fabricated
-by the PCI host bridge due to a read timeout. Hence pci_read_config_*() 
-will return success with a fabricated ~0 in *val, indicating a problem.
-In this case, the assumed behaviour of  pcie_capability_read_*() will be
-wrong. To avoid error slipping through, more checks are necessary.
-
-b) pci_read_config_*() will return PCIBIOS_DEVICE_NOT_FOUND only if 
-dev->error_state = pci_channel_io_perm_failure (i.e. 
-pci_dev_is_disconnected()) or if pci_generic_config_read() can't find the
-device. In both cases *val is initially set to ~0 but as shown in the code
-above pcie_capability_read_*() resets it back to 0. Even with this effort,
-drivers still have to perform validation checks more so if 0 is a valid
-value.
-
-Most drivers only consider the case (b) and in some cases, there is the 
-expectation that on timeout *val has a fabricated value of ~0, which *may*
-not always be true as explained in (a).
-
-In any case, checks need to be done to validate the value read and maybe
-confirm which error has occurred. It is better left to the drivers to do.
-
-Remove the reset of *val to 0 when pci_read_config_*() fails.
-
-Suggested-by: Bjorn Helgaas <bjorn@helgaas.com>
-Signed-off-by: Bolarinwa Olayemi Saheed <refactormyself@gmail.com>
+Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
+Tested-by: Tony Luck <tony.luck@intel.com>
 ---
-This patch  depends on all of the preceeding patches in this series,
-otherwise it will introduce bugs as pointed out in the commit message
-of each.
- drivers/pci/access.c | 14 --------------
- 1 file changed, 14 deletions(-)
+ kernel/kallsyms.c | 117 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 117 insertions(+)
 
-diff --git a/drivers/pci/access.c b/drivers/pci/access.c
-index 79c4a2ef269a..ec95edbb1ac8 100644
---- a/drivers/pci/access.c
-+++ b/drivers/pci/access.c
-@@ -413,13 +413,6 @@ int pcie_capability_read_word(struct pci_dev *dev, int pos, u16 *val)
+diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
+index 16c8c605f4b0..7e4939b9ed61 100644
+--- a/kernel/kallsyms.c
++++ b/kernel/kallsyms.c
+@@ -25,6 +25,7 @@
+ #include <linux/filter.h>
+ #include <linux/ftrace.h>
+ #include <linux/compiler.h>
++#include <linux/list_sort.h>
  
- 	if (pcie_capability_reg_implemented(dev, pos)) {
- 		ret = pci_read_config_word(dev, pci_pcie_cap(dev) + pos, val);
--		/*
--		 * Reset *val to 0 if pci_read_config_word() fails, it may
--		 * have been written as 0xFFFF if hardware error happens
--		 * during pci_read_config_word().
--		 */
--		if (ret)
--			*val = 0;
- 		return ret;
+ /*
+  * These will be re-linked against their real values
+@@ -446,6 +447,17 @@ struct kallsym_iter {
+ 	int show_value;
+ };
+ 
++struct kallsyms_iter_list {
++	struct kallsym_iter iter;
++	struct list_head next;
++};
++
++struct kallsyms_sorted_iter {
++	struct kallsym_iter iter;
++	loff_t total_syms;
++	loff_t shuffled_index[];
++};
++
+ int __weak arch_get_kallsym(unsigned int symnum, unsigned long *value,
+ 			    char *type, char *name)
+ {
+@@ -660,6 +672,110 @@ int kallsyms_show_value(void)
  	}
+ }
  
-@@ -448,13 +441,6 @@ int pcie_capability_read_dword(struct pci_dev *dev, int pos, u32 *val)
++static void *sorted_start(struct seq_file *m, loff_t *pos)
++{
++	struct kallsyms_sorted_iter *s_iter = m->private;
++
++	if (*pos >= s_iter->total_syms)
++		return NULL;
++
++	return s_start(m, &s_iter->shuffled_index[*pos]);
++}
++
++static void *sorted_next(struct seq_file *m, void *p, loff_t *pos)
++{
++	struct kallsyms_sorted_iter *s_iter = m->private;
++
++	(*pos)++;
++
++	if (*pos >= s_iter->total_syms)
++		return NULL;
++
++	if (!update_iter(m->private, s_iter->shuffled_index[*pos]))
++		return NULL;
++
++	return p;
++}
++
++static const struct seq_operations kallsyms_sorted_op = {
++	.start = sorted_start,
++	.next = sorted_next,
++	.stop = s_stop,
++	.show = s_show
++};
++
++/*
++ * shuffle_text_list()
++ * Use a Fisher Yates algorithm to shuffle a list of text sections.
++ */
++static void shuffle_index_list(loff_t *indexes, int size)
++{
++	int i;
++	unsigned int j;
++	loff_t temp;
++
++	for (i = size - 1; i > 0; i--) {
++		/* pick a random index from 0 to i */
++		get_random_bytes(&j, sizeof(j));
++		j = j % (i + 1);
++
++		temp = indexes[i];
++		indexes[i] = indexes[j];
++		indexes[j] = temp;
++	}
++}
++
++#if defined(CONFIG_FG_KASLR)
++/*
++ * When fine grained kaslr is enabled, we need to
++ * print out the symbols sorted by name rather than by
++ * by address, because this reveals the randomization order.
++ */
++static int kallsyms_open(struct inode *inode, struct file *file)
++{
++	loff_t pos;
++	struct kallsyms_sorted_iter *sorted_iter;
++	struct kallsym_iter iter;
++
++	/*
++	 * we need to figure out how many extra symbols there are
++	 * to print out past kallsyms_num_syms
++	 */
++	pos = kallsyms_num_syms;
++	reset_iter(&iter, 0);
++	do {
++		if (!update_iter(&iter, pos))
++			break;
++		pos++;
++	} while (1);
++
++	/*
++	 * add storage space for an array of loff_t equal to the size
++	 * of the total number of symbols we need to print
++	 */
++	sorted_iter = __seq_open_private(file, &kallsyms_sorted_op,
++					 sizeof(*sorted_iter) +
++					 (sizeof(pos) * pos));
++	if (!sorted_iter)
++		return -ENOMEM;
++
++	reset_iter(&sorted_iter->iter, 0);
++	sorted_iter->iter.show_value = kallsyms_show_value();
++	sorted_iter->total_syms = pos;
++
++	/*
++	 * initialize the array with all possible pos values, then
++	 * shuffle the array so that the values will display in a
+random
++	 * order.
++	 */
++	for (pos = 0; pos < sorted_iter->total_syms; pos++)
++		sorted_iter->shuffled_index[pos] = pos;
++
++	shuffle_index_list(sorted_iter->shuffled_index, sorted_iter-
+>total_syms);
++
++	return 0;
++}
++#else
+ static int kallsyms_open(struct inode *inode, struct file *file)
+ {
+ 	/*
+@@ -676,6 +792,7 @@ static int kallsyms_open(struct inode *inode,
+struct file *file)
+ 	iter->show_value = kallsyms_show_value();
+ 	return 0;
+ }
++#endif /* CONFIG_FG_KASLR */
  
- 	if (pcie_capability_reg_implemented(dev, pos)) {
- 		ret = pci_read_config_dword(dev, pci_pcie_cap(dev) + pos, val);
--		/*
--		 * Reset *val to 0 if pci_read_config_dword() fails, it may
--		 * have been written as 0xFFFFFFFF if hardware error happens
--		 * during pci_read_config_dword().
--		 */
--		if (ret)
--			*val = 0;
- 		return ret;
- 	}
- 
+ #ifdef	CONFIG_KGDB_KDB
+ const char *kdb_walk_kallsyms(loff_t *pos)
 -- 
-2.18.2
+2.20.1
+
 
