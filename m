@@ -2,98 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 717E5216556
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 06:28:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0844421655E
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 06:28:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726906AbgGGE14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 00:27:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54556 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725825AbgGGE1z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 00:27:55 -0400
-Received: from localhost (unknown [122.182.251.219])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1727120AbgGGE2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 00:28:19 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:11548 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727077AbgGGE2S (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 00:28:18 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1594096097; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=hBwuuK2aRbrgFHjBZz5RaQYAa9SdTOUKi0y8gBqMwBk=; b=xdNQHYrIfPPFcuQWOnScC4l+tD5mkzynZoTgHZJPPwCfBBdCsdwPvmbLpuEb8DGfMGbCm4WH
+ 8fQwD/d56fp4YzwiNKClAqgMdmJJCn+467rVXgC4W3HBiJglWx9Fs7wlTBU7cYEZ4taJf2Cr
+ SMo3Zx8m0ADGAX5192WxIvp2f0A=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n10.prod.us-west-2.postgun.com with SMTP id
+ 5f03f9e00082b2784812b030 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 07 Jul 2020 04:28:16
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 696C6C433A0; Tue,  7 Jul 2020 04:28:16 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.1.11] (unknown [61.3.20.137])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 200EB20702;
-        Tue,  7 Jul 2020 04:27:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594096075;
-        bh=ZrG8zfHtY/JZ5uDmtDxnyc8SoBUayZoOLVZU2bdnJM8=;
-        h=Date:From:To:Cc:Subject:From;
-        b=tK9MhcQwaFqLTvRmvT2fud7OKaMZscPT25ZFmernfHuHARY6D13vLtnwNWd7EzCts
-         8fRop+pAycr1yfZM73q4Og9SdsXsJYKrpGH42jup3AlSHZOTHIJh7pwRsApllEw9w/
-         0crYKJUBvDvB8NeDmlbevGaxQfbH/V36g8w803mo=
-Date:   Tue, 7 Jul 2020 09:57:50 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] soundwire: fixes for 5.8
-Message-ID: <20200707042750.GB676979@vkoul-mobl>
+        (Authenticated sender: rnayak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id CBD46C433C6;
+        Tue,  7 Jul 2020 04:28:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CBD46C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rnayak@codeaurora.org
+Subject: Re: [PATCH v2 2/4] drm/msm: dsi: Use OPP API to set clk/perf state
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     robdclark@gmail.com, sean@poorly.run, agross@kernel.org,
+        bjorn.andersson@linaro.org, dri-devel@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1593688151-22616-1-git-send-email-rnayak@codeaurora.org>
+ <1593688151-22616-3-git-send-email-rnayak@codeaurora.org>
+ <20200706161057.GG3191083@google.com>
+From:   Rajendra Nayak <rnayak@codeaurora.org>
+Message-ID: <7472e916-4cfa-6462-9d16-6d3dc5127a42@codeaurora.org>
+Date:   Tue, 7 Jul 2020 09:58:09 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="+g7M9IMkV8truYOl"
-Content-Disposition: inline
+In-Reply-To: <20200706161057.GG3191083@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---+g7M9IMkV8truYOl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi Greg,
+On 7/6/2020 9:40 PM, Matthias Kaehlcke wrote:
+> On Thu, Jul 02, 2020 at 04:39:09PM +0530, Rajendra Nayak wrote:
+>> On SDM845 and SC7180 DSI needs to express a performance state
+>> requirement on a power domain depending on the clock rates.
+>> Use OPP table from DT to register with OPP framework and use
+>> dev_pm_opp_set_rate() to set the clk/perf state.
+>>
+>> dev_pm_opp_set_rate() is designed to be equivalent to clk_set_rate()
+>> for devices without an OPP table, hence the change works fine
+>> on devices/platforms which only need to set a clock rate.
+>>
+>> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+>> ---
+>>   drivers/gpu/drm/msm/dsi/dsi_host.c | 26 ++++++++++++++++++++++++--
+>>   1 file changed, 24 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/msm/dsi/dsi_host.c b/drivers/gpu/drm/msm/dsi/dsi_host.c
+>> index 11ae5b8..09e16b8 100644
+>> --- a/drivers/gpu/drm/msm/dsi/dsi_host.c
+>> +++ b/drivers/gpu/drm/msm/dsi/dsi_host.c
+>> @@ -14,6 +14,7 @@
+>>   #include <linux/of_graph.h>
+>>   #include <linux/of_irq.h>
+>>   #include <linux/pinctrl/consumer.h>
+>> +#include <linux/pm_opp.h>
+>>   #include <linux/regmap.h>
+>>   #include <linux/regulator/consumer.h>
+>>   #include <linux/spinlock.h>
+>> @@ -111,6 +112,9 @@ struct msm_dsi_host {
+>>   	struct clk *pixel_clk_src;
+>>   	struct clk *byte_intf_clk;
+>>   
+>> +	struct opp_table *opp_table;
+>> +	bool has_opp_table;
+>> +
+>>   	u32 byte_clk_rate;
+>>   	u32 pixel_clk_rate;
+>>   	u32 esc_clk_rate;
+>> @@ -512,9 +516,10 @@ int dsi_link_clk_set_rate_6g(struct msm_dsi_host *msm_host)
+>>   	DBG("Set clk rates: pclk=%d, byteclk=%d",
+>>   		msm_host->mode->clock, msm_host->byte_clk_rate);
+>>   
+>> -	ret = clk_set_rate(msm_host->byte_clk, msm_host->byte_clk_rate);
+>> +	ret = dev_pm_opp_set_rate(&msm_host->pdev->dev,
+>> +				  msm_host->byte_clk_rate);
+>>   	if (ret) {
+>> -		pr_err("%s: Failed to set rate byte clk, %d\n", __func__, ret);
+>> +		pr_err("%s: dev_pm_opp_set_rate failed %d\n", __func__, ret);
+>>   		return ret;
+>>   	}
+>>   
+>> @@ -658,6 +663,8 @@ int dsi_link_clk_enable_v2(struct msm_dsi_host *msm_host)
+>>   
+>>   void dsi_link_clk_disable_6g(struct msm_dsi_host *msm_host)
+>>   {
+>> +	/* Drop the performance state vote */
+>> +	dev_pm_opp_set_rate(&msm_host->pdev->dev, 0);
+>>   	clk_disable_unprepare(msm_host->esc_clk);
+>>   	clk_disable_unprepare(msm_host->pixel_clk);
+>>   	if (msm_host->byte_intf_clk)
+>> @@ -1879,6 +1886,18 @@ int msm_dsi_host_init(struct msm_dsi *msm_dsi)
+>>   		goto fail;
+>>   	}
+>>   
+>> +	msm_host->opp_table = dev_pm_opp_set_clkname(&pdev->dev, "byte");
+>> +	if (IS_ERR(msm_host->opp_table))
+>> +		return PTR_ERR(msm_host->opp_table);
+>> +	/* OPP table is optional */
+>> +	ret = dev_pm_opp_of_add_table(&pdev->dev);
+>> +	if (!ret) {
+>> +		msm_host->has_opp_table = true;
+>> +	} else if (ret != -ENODEV) {
+>> +		dev_err(&pdev->dev, "invalid OPP table in device tree\n");
+> 
+>    		dev_pm_opp_put_clkname(msm_host->opp_table);
+> 
+>> +		return ret;
+>> +	}
+> 
+> With the missing _put_clkname() fixed:
 
-Please pull to receive a single fix for Intel driver
+Thanks, I'll fix and resend.
 
-The following changes since commit b3a9e3b9622ae10064826dccb4f7a52bd88c7407:
+> 
+> Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+> 
 
-  Linux 5.8-rc1 (2020-06-14 12:45:04 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/soundwire.git tags/so=
-undwire-5.8-fixes
-
-for you to fetch changes up to bf6d6e68d2028a2d82f4c106f50ec75cc1e6ef89:
-
-  soundwire: intel: fix memory leak with devm_kasprintf (2020-06-22 17:15:2=
-0 +0530)
-
-----------------------------------------------------------------
-soundwire fixes for v5.8
-
--  Intel driver memory leak fix
-
-----------------------------------------------------------------
-Pierre-Louis Bossart (1):
-      soundwire: intel: fix memory leak with devm_kasprintf
-
- drivers/soundwire/intel.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
---=20
-~Vinod
-
---+g7M9IMkV8truYOl
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEE+vs47OPLdNbVcHzyfBQHDyUjg0cFAl8D+cYACgkQfBQHDyUj
-g0ezRhAAs0bVOhTTYkpgEGm3Jsm2jB/cFjF++LQ/X1uPKUifurcxoLNg5DJVXCF4
-yjyysfzkmgGqiCRkohadr3V1tqaAhmi4K733QC7pm/+VqXKw5QawX9rOoZuqoqH0
-HCMHsgAjgUe7Bg8E+dO8M3bEn+hxfpOs/+6gFycGSWwRKpmvUZUzl1RD5FUddW/M
-/IzKTvxGd7F+sD8Mo50uEaxpc4+nz5LsaU1w94hZ0urD4GIuDzNcsGXSHEyWDSMa
-KAyugvSlnZmRSbbZMwzMAyUvPizGOlaIXgZHbiJRUsvilpTXL6tz5UjnLrlzmlun
-u3vytAEPiMD4s1qHMYHlkY7NmMsEYxZKO5Q4XD8Zk2cGnCTF7hnApjEAK/iqfscQ
-i8YYK3t/eZYt9lrm8ix20Cpa1XYZePIE7q9cN1lfc7t8W4ZWuT3aBM9wG3B/nDyY
-WD2oL3veOgRGMB/4nZF2S4Pg4P9t6IruEOA4Rv2jM/oImtRoulcGC0CHm04HnBz9
-Hi1gdSzNx4t8d2/AOtbmQKFm0L1nxQoKMWEfKQ9QPUB+HvpVSe6DE9Z61OfJQf3v
-onj4zMnhEWkxVuxoeeUC70ZnughBTUtGfLVCfiVNPAGw9JIcL26J3CrhD2eFvPCP
-zgGmIuAReM4GiMaicveRjLcqo1tpUDjpdAJX+7TyxN9YaWKSmCY=
-=pyH1
------END PGP SIGNATURE-----
-
---+g7M9IMkV8truYOl--
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
