@@ -2,90 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DC20216FE5
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:13:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D76C4216FEA
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:13:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728674AbgGGPLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:11:21 -0400
-Received: from smtp8.emailarray.com ([65.39.216.67]:34512 "EHLO
-        smtp8.emailarray.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728661AbgGGPLS (ORCPT
+        id S1728706AbgGGPL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:11:27 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:39732 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728122AbgGGPLY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:11:18 -0400
-Received: (qmail 99413 invoked by uid 89); 7 Jul 2020 15:11:12 -0000
-Received: from unknown (HELO localhost) (amxlbW9uQGZsdWdzdmFtcC5jb21AMTYzLjExNC4xMzIuMw==) (POLARISLOCAL)  
-  by smtp8.emailarray.com with SMTP; 7 Jul 2020 15:11:12 -0000
-Date:   Tue, 7 Jul 2020 08:11:09 -0700
-From:   Jonathan Lemon <jonathan.lemon@gmail.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        iommu@lists.linux-foundation.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] dma-mapping: add a new dma_need_sync API
-Message-ID: <20200707151109.qui5uzzzq4dihfie@bsd-mbp>
-References: <20200629130359.2690853-1-hch@lst.de>
- <20200629130359.2690853-2-hch@lst.de>
- <20200706194227.vfhv5o4lporxjxmq@bsd-mbp.dhcp.thefacebook.com>
- <20200707064730.GA23602@lst.de>
+        Tue, 7 Jul 2020 11:11:24 -0400
+Received: by mail-wm1-f68.google.com with SMTP id w3so34447238wmi.4;
+        Tue, 07 Jul 2020 08:11:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=P5HQjNhCixCjoEKGC+mEwSigDVUlJKQtv6gsV/u680E=;
+        b=orQoXrHBJ67jA8inU9zrJKp1jPrgB33p9/bbz8rE/Rp0iP/1QxTcFuj0a8zxMmZtTr
+         StZYxb/6XTLaZvaV1J4cYf6Xi4AZaiG+uBLm4gusjF/aaRT/RUK2r24LJ7jeZFX6jBrz
+         Kh0ySpjJgfLQevHtIGMs8drMNdOYeLtNgGPBCq4Kp/PJdoLxPUvZ0yx8FLCz4CJl22IB
+         CpXsdgkyOmmh9/TyCnICdeFg7E1OwlKPM0GVs5equ01QQ32c6u7VbS1VvX5LWjGyWYdC
+         EnUXRVmIoiiYUW/pSHl3m4iT5kVpcKOVJQ6Nbsstk5AqGyl7aT8b8pF/ERoDpMrLroa4
+         JQ/w==
+X-Gm-Message-State: AOAM532oOxYQgIDYEQS4GXFpAnHisR78jkzgsoazK8+BhOVwTfU0naIk
+        ITYMuvF7VdVrfdDKPnBkZXiKTcjkwgU+NL5qY08=
+X-Google-Smtp-Source: ABdhPJyQCGg9VpFaZNj2dsCnv1aNhRU0Me+z25bKOzZYWQuHvqUD1GvpUMhPeoP8ERgj++srxuOXiyeQkmBYw1KVhAI=
+X-Received: by 2002:a05:600c:410f:: with SMTP id j15mr4610640wmi.128.1594134681738;
+ Tue, 07 Jul 2020 08:11:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200707064730.GA23602@lst.de>
+References: <20200702185344.913492689@goodmis.org> <20200702185704.559785000@goodmis.org>
+In-Reply-To: <20200702185704.559785000@goodmis.org>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Wed, 8 Jul 2020 00:11:10 +0900
+Message-ID: <CAM9d7cj1LJ=QO8QxhBo_oDM9APpAswX4BbTwge0JhZ3Y4-Bv9w@mail.gmail.com>
+Subject: Re: [PATCH v2 07/15] tools lib traceevent: Optimize pretty_print() function
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 07, 2020 at 08:47:30AM +0200, Christoph Hellwig wrote:
-> On Mon, Jul 06, 2020 at 12:42:27PM -0700, Jonathan Lemon wrote:
-> > On Mon, Jun 29, 2020 at 03:03:56PM +0200, Christoph Hellwig wrote:
-> > > Add a new API to check if calls to dma_sync_single_for_{device,cpu} are
-> > > required for a given DMA streaming mapping.
-> > > 
-> > > +::
-> > > +
-> > > +	bool
-> > > +	dma_need_sync(struct device *dev, dma_addr_t dma_addr);
-> > > +
-> > > +Returns %true if dma_sync_single_for_{device,cpu} calls are required to
-> > > +transfer memory ownership.  Returns %false if those calls can be skipped.
-> > 
-> > Hi Christoph -
-> > 
-> > Thie call above is for a specific dma_addr.  For correctness, would I
-> > need to check every addr, or can I assume that for a specific memory
-> > type (pages returned from malloc), that the answer would be identical?
-> 
-> You need to check every mapping.  E.g. this API pairs with a
-> dma_map_single/page call.  For S/G mappings you'd need to call it for
-> each entry, although if you have a use case for that we really should
-> add a dma_sg_need_sync helper instea of open coding the scatterlist walk.
+On Fri, Jul 3, 2020 at 3:57 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> From: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+>
+> Each time the pretty_print() function is called to print an event,
+> the event's format string is parsed. As this format string does not
+> change, this parsing can be done only once - when the event struct
+> is initialized.
+>
+> Link: https://lore.kernel.org/linux-trace-devel/20200529134929.537110-1-tz.stoyanov@gmail.com
+> Link: http://lore.kernel.org/linux-trace-devel/20200625100516.365338-8-tz.stoyanov@gmail.com
+>
+> Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> ---
+>  tools/lib/traceevent/event-parse-local.h |  17 +
+>  tools/lib/traceevent/event-parse.c       | 672 ++++++++++++++++-------
+>  tools/lib/traceevent/event-parse.h       |   3 +
+>  3 files changed, 495 insertions(+), 197 deletions(-)
+>
+> diff --git a/tools/lib/traceevent/event-parse-local.h b/tools/lib/traceevent/event-parse-local.h
+> index 96a0b0ca0675..e71296a62236 100644
+> --- a/tools/lib/traceevent/event-parse-local.h
+> +++ b/tools/lib/traceevent/event-parse-local.h
+> @@ -85,6 +85,23 @@ struct tep_handle {
+>         struct tep_plugins_dir *plugins_dir;
+>  };
+>
+> +enum tep_print_parse_type {
+> +       PRINT_FMT_STING,
 
-My use case is setting up a pinned memory area, and caching the dma
-mappings.  I'd like to bypass storing the DMA addresses if they aren't
-needed.  For example:
+STRING ?
 
-setup()
-{
-    if (dma_need_sync(dev, addr, len)) {
-        kvmalloc_array(...)
-        cache_dma_mappings(...)
-    }
-
-
-dev_get_dma(page)
-{
-    if (!cache)
-        return page_to_phys(page)
-
-    return dma_cache_lookup(...)
-
-
-
-The reason for doing it this way is that the page in question may be
-backed by either system memory, or device memory such as a GPU.  For the
-latter, the GPU provides a table of DMA addresses where data may be
-accessed, so I'm unable to use the dma_map_page() API.
--- 
-Jonathan
+> +       PRINT_FMT_ARG_DIGIT,
+> +       PRINT_FMT_ARG_POINTER,
+> +       PRINT_FMT_ARG_STRING,
+> +};
