@@ -2,301 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 466EC216F56
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 16:51:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45919216F37
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 16:48:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728290AbgGGOut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 10:50:49 -0400
-Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:29202 "EHLO
-        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728067AbgGGOus (ORCPT
+        id S1728329AbgGGOrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 10:47:37 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:1442 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726805AbgGGOrg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 10:50:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1594133447; x=1625669447;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=sPPawWKOCJ+KeiYfy+BMQZKBX+GVe2sPytsHFts75C8=;
-  b=J2rOFAA7VAFe6AXzylTBqMaK9p6IDKpfvb9qVV7zNKPPhddT0OjWWJ5P
-   Ujmjb1oV18idQPUZoSMSVJ2R8yWwpocNyMvVDob7/fNIivuH1iIJZyZbc
-   cw0d0SiZ9nmjzetyAbn9hK9ZWrZnD0O6HdCtdQhIBmqrxU5EaCg0lmDND
-   c=;
-IronPort-SDR: PSfc9SmJSsmmnz3c++8acCuxf9WSMe1W5waLdPvWIMD5zF2pvqDqvqSWi+tSHglAE/VSSm3SsN
- QuSLTxmIohrA==
-X-IronPort-AV: E=Sophos;i="5.75,324,1589241600"; 
-   d="scan'208";a="49757050"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2a-e7be2041.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 07 Jul 2020 14:50:47 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2a-e7be2041.us-west-2.amazon.com (Postfix) with ESMTPS id E34E6A1E3F;
-        Tue,  7 Jul 2020 14:50:43 +0000 (UTC)
-Received: from EX13D31EUA004.ant.amazon.com (10.43.165.161) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 7 Jul 2020 14:50:43 +0000
-Received: from u886c93fd17d25d.ant.amazon.com (10.43.161.214) by
- EX13D31EUA004.ant.amazon.com (10.43.165.161) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 7 Jul 2020 14:50:25 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     <akpm@linux-foundation.org>
-CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
-        <aarcange@redhat.com>, <acme@kernel.org>,
-        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
-        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
-        <brendanhiggins@google.com>, <cai@lca.pw>,
-        <colin.king@canonical.com>, <corbet@lwn.net>, <david@redhat.com>,
-        <dwmw@amazon.com>, <foersleo@amazon.de>, <irogers@google.com>,
-        <jolsa@redhat.com>, <kirill@shutemov.name>, <mark.rutland@arm.com>,
-        <mgorman@suse.de>, <minchan@kernel.org>, <mingo@redhat.com>,
-        <namhyung@kernel.org>, <peterz@infradead.org>,
-        <rdunlap@infradead.org>, <riel@surriel.com>, <rientjes@google.com>,
-        <rostedt@goodmis.org>, <rppt@kernel.org>, <sblbir@amazon.com>,
-        <shakeelb@google.com>, <shuah@kernel.org>, <sj38.park@gmail.com>,
-        <snu@amazon.de>, <vbabka@suse.cz>, <vdavydov.dev@gmail.com>,
-        <yang.shi@linux.alibaba.com>, <ying.huang@intel.com>,
-        <linux-damon@amazon.com>, <linux-mm@kvack.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [RFC v5 11/11] Docs/damon: Document physical memory monitoring support
-Date:   Tue, 7 Jul 2020 16:45:40 +0200
-Message-ID: <20200707144540.21216-12-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200707144540.21216-1-sjpark@amazon.com>
-References: <20200707144540.21216-1-sjpark@amazon.com>
+        Tue, 7 Jul 2020 10:47:36 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 067EkZcO062253;
+        Tue, 7 Jul 2020 10:47:05 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 324mcamrve-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 07 Jul 2020 10:47:05 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 067EaWja027432;
+        Tue, 7 Jul 2020 14:47:02 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma02fra.de.ibm.com with ESMTP id 322hd83kwj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 07 Jul 2020 14:47:02 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 067Ejj0g61472952
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 7 Jul 2020 14:45:45 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 07247A4055;
+        Tue,  7 Jul 2020 14:45:45 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3CDB2A4057;
+        Tue,  7 Jul 2020 14:45:44 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.148.202.169])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Tue,  7 Jul 2020 14:45:44 +0000 (GMT)
+Date:   Tue, 7 Jul 2020 17:45:42 +0300
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        ksummit <ksummit-discuss@lists.linuxfoundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "tech-board-discuss@lists.linuxfoundation.org" 
+        <tech-board-discuss@lists.linuxfoundation.org>,
+        Chris Mason <clm@fb.clm>
+Subject: Re: [Ksummit-discuss] [Tech-board-discuss] [PATCH] CodingStyle:
+ Inclusive Terminology
+Message-ID: <20200707144542.GD9411@linux.ibm.com>
+References: <159389297140.2210796.13590142254668787525.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <CALCETrXewAK4_fpaJNDHJVDK9mUcjghA5HwYvZFQNYVfC9M+OQ@mail.gmail.com>
+ <202007062234.A90F922DF@keescook>
+ <DM6PR06MB3836FBAD65096AF63ACD3DB3EE660@DM6PR06MB3836.namprd06.prod.outlook.com>
+ <202007070137.3ADBEDC@keescook>
+ <20200707094147.213e0a82@oasis.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.43.161.214]
-X-ClientProxiedBy: EX13D35UWC001.ant.amazon.com (10.43.162.197) To
- EX13D31EUA004.ant.amazon.com (10.43.165.161)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200707094147.213e0a82@oasis.local.home>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-07_08:2020-07-07,2020-07-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ phishscore=0 adultscore=0 clxscore=1015 mlxscore=0 bulkscore=0
+ malwarescore=0 suspectscore=1 mlxlogscore=999 spamscore=0 impostorscore=0
+ cotscore=-2147483648 lowpriorityscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2007070105
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+On Tue, Jul 07, 2020 at 09:41:47AM -0400, Steven Rostedt wrote:
+> On Tue, 7 Jul 2020 01:54:23 -0700
+> Kees Cook <keescook@chromium.org> wrote:
+> 
+> > "I will whitelist the syscall" -- sounds correct to me (same for
+> > "it is whitelisted" or "it is in whitelisting mode").
+> > 
+> > "I will allow-list the syscall" -- sounds wrong to me (same for
+> > "it is allow-listed" or "it is in allow-listing mode").
+> 
+> That's because we can't just make "allow-list" a drop in replacement
+> for "whitelist" as I too (native English speaker) find it awkward. But
+> then we don't need to make it a drop in replacement.
+> 
+> "I will whitelist the syscall" will become "I will add the syscall to
+> the allow-list", which sounds perfectly fine, and even better than
+> saying "I will add the syscall to the whitelist".
 
-This commit adds description for the physical memory monitoring usage in
-the DAMON document.
+I will allow the syscall?
 
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
----
- Documentation/admin-guide/mm/damon/faq.rst    |  7 ++-
- Documentation/admin-guide/mm/damon/index.rst  |  1 -
- .../admin-guide/mm/damon/mechanisms.rst       | 29 +++++-----
- Documentation/admin-guide/mm/damon/plans.rst  |  7 ---
- Documentation/admin-guide/mm/damon/usage.rst  | 53 ++++++++++++++-----
- 5 files changed, 60 insertions(+), 37 deletions(-)
- delete mode 100644 Documentation/admin-guide/mm/damon/plans.rst
+> -- Steve
 
-diff --git a/Documentation/admin-guide/mm/damon/faq.rst b/Documentation/admin-guide/mm/damon/faq.rst
-index f55d1d719999..ff630cf5fce1 100644
---- a/Documentation/admin-guide/mm/damon/faq.rst
-+++ b/Documentation/admin-guide/mm/damon/faq.rst
-@@ -44,10 +44,9 @@ constructions and actual access checks can be implemented and configured on the
- DAMON core by the users.  In this way, DAMON users can monitor any address
- space with any access check technique.
- 
--Nonetheless, DAMON provides a vma tracking and PTE Accessed bit check based
--implementation of the address space dependent functions for the virtual memory
--by default, for a reference and convenient use.  In near future, we will also
--provide that for physical memory address space.
-+Nonetheless, DAMON provides vma/rmap tracking and PTE Accessed bit check based
-+implementations of the address space dependent functions for the virtual memory
-+and the physical memory by default, for a reference and convenient use.
- 
- 
- Can I simply monitor page granularity?
-diff --git a/Documentation/admin-guide/mm/damon/index.rst b/Documentation/admin-guide/mm/damon/index.rst
-index c6e657f8e90c..6e36149053fa 100644
---- a/Documentation/admin-guide/mm/damon/index.rst
-+++ b/Documentation/admin-guide/mm/damon/index.rst
-@@ -32,4 +32,3 @@ workloads and systems.
-    faq
-    mechanisms
-    eval
--   plans
-diff --git a/Documentation/admin-guide/mm/damon/mechanisms.rst b/Documentation/admin-guide/mm/damon/mechanisms.rst
-index 16066477bb2c..fb33d8d8a09c 100644
---- a/Documentation/admin-guide/mm/damon/mechanisms.rst
-+++ b/Documentation/admin-guide/mm/damon/mechanisms.rst
-@@ -25,9 +25,11 @@ files, and backing devices would be supportable.  Also, if some architectures
- or kernel module support special access check primitives for specific address
- space, those will be easily configurable.
- 
--DAMON currently provides an implementation of the primitives for the virtual
--address space.  It uses VMA for the target address range identification and PTE
--Accessed bit for the access check.
-+DAMON currently provides an implementation of the primitives for the physical
-+and virtual address spaces.  The implementation for the physical address space
-+ask users to manually set the monitoring target address ranges while the
-+implementation for the virtual address space uses VMA for the target address
-+range identification.  Both uses PTE Accessed bit for the access check.
- 
- Below four sections describe the address independent core mechanisms and the
- five knobs for tuning, that is, ``sampling interval``, ``aggregation
-@@ -113,26 +115,29 @@ memory mapping changes and applies it to the abstracted target area only for
- each of a user-specified time interval (``regions update interval``).
- 
- 
--Virtual Address Space Specific Low Primitives
--=============================================
-+Address Space Specific Low Primitives
-+=====================================
- 
--This is for the DAMON's reference implementation of the virtual memory address
--specific low level primitive only.
-+This is for the DAMON's reference implementation of the address space specific
-+low level primitive only.
- 
- 
- PTE Accessed-bit Based Access Check
- -----------------------------------
- 
--The implementation uses PTE Accessed-bit for basic access checks.  That is, it
--clears the bit for next sampling target page and checks whether it set again
--after one sampling period.  To avoid disturbing other Accessed bit users such
--as the reclamation logic, this implementation adjusts the ``PG_Idle`` and
--``PG_Young`` appropriately, as same to the 'Idle Page Tracking'.
-+Both of the implementations for physical and virtual address spaces use PTE
-+Accessed-bit for basic access checks.  That is, those clears the bit for next
-+sampling target page and checks whether it set again after one sampling period.
-+To avoid disturbing other Accessed bit users such as the reclamation logic, the
-+implementations adjust the ``PG_Idle`` and ``PG_Young`` appropriately, as same
-+to the 'Idle Page Tracking'.
- 
- 
- VMA-based Target Address Range Construction
- -------------------------------------------
- 
-+This is for the virtual address space specific primitives implementation.
-+
- Only small parts in the super-huge virtual address space of the processes are
- mapped to the physical memory and accessed.  Thus, tracking the unmapped
- address regions is just wasteful.  However, because DAMON can deal with some
-diff --git a/Documentation/admin-guide/mm/damon/plans.rst b/Documentation/admin-guide/mm/damon/plans.rst
-deleted file mode 100644
-index 765344f02eb3..000000000000
---- a/Documentation/admin-guide/mm/damon/plans.rst
-+++ /dev/null
-@@ -1,7 +0,0 @@
--.. SPDX-License-Identifier: GPL-2.0
--
--============
--Future Plans
--============
--
--TBD.
-diff --git a/Documentation/admin-guide/mm/damon/usage.rst b/Documentation/admin-guide/mm/damon/usage.rst
-index 573fcb4c57a7..356281078d4d 100644
---- a/Documentation/admin-guide/mm/damon/usage.rst
-+++ b/Documentation/admin-guide/mm/damon/usage.rst
-@@ -10,15 +10,16 @@ DAMON provides below three interfaces for different users.
-   This is for privileged people such as system administrators who want a
-   just-working human-friendly interface.  Using this, users can use the DAMON’s
-   major features in a human-friendly way.  It may not be highly tuned for
--  special cases, though.  It supports virtual address space monitoring only.
-+  special cases, though.  It supports both virtual and physical address spaces
-+  monitoring.
- - *debugfs interface.*
-   This is for privileged user space programmers who want more optimized use of
-   DAMON.  Using this, users can use DAMON’s major features by reading
-   from and writing to special debugfs files.  Therefore, you can write and use
-   your personalized DAMON debugfs wrapper programs that reads/writes the
-   debugfs files instead of you.  The DAMON user space tool is also a reference
--  implementation of such programs.  It supports virtual address space
--  monitoring only.
-+  implementation of such programs.  It supports both virtual and physical
-+  address spaces monitoring.
- - *Kernel Space Programming Interface.*
-   This is for kernel space programmers.  Using this, users can utilize every
-   feature of DAMON most flexibly and efficiently by writing kernel space
-@@ -48,9 +49,11 @@ Recording Data Access Pattern
- -----------------------------
- 
- The ``record`` subcommand records the data access pattern of target workloads
--in a file (``./damon.data`` by default).  You can specify the target as either
--process id of running target or a command for execution of it.  Below example
--shows a command target usage::
-+in a file (``./damon.data`` by default).  You can specify the target with 1)
-+the command for execution of the monitoring target process, 2) pid of running
-+target process, or 3) the special keyword, 'paddr', if you want to monitor the
-+system's physical memory address space.  Below example shows a command target
-+usage::
- 
-     # cd <kernel>/tools/damon/
-     # damo record "sleep 5"
-@@ -61,6 +64,15 @@ of the process.  Below example shows a pid target usage::
-     # sleep 5 &
-     # damo record `pidof sleep`
- 
-+Finally, below example shows the use of the special keyword, 'paddr'::
-+
-+    # damo record paddr
-+
-+In this case, the monitoring target regions defaults to the largetst 'System
-+RAM' region specified in '/proc/iomem' file.  Note that the initial monitoring
-+target region is maintained rather than dynamically updated like the virtual
-+memory address spaces monitoring case.
-+
- The location of the recorded file can be explicitly set using ``-o`` option.
- You can further tune this by setting the monitoring attributes.  To know about
- the monitoring attributes in detail, please refer to :doc:`mechanisms`.
-@@ -303,15 +315,25 @@ check it again::
- Target PIDs
- -----------
- 
--Users can get and set the pids of monitoring target processes by reading from
--and writing to the ``pids`` file.  For example, below commands set processes
--having pids 42 and 4242 as the processes to be monitored and check it again::
-+To monitor the virtual memory address spaces of specific processes, users can
-+get and set the pids of monitoring target processes by reading from and writing
-+to the ``pids`` file.  For example, below commands set processes having pids 42
-+and 4242 as the processes to be monitored and check it again::
- 
-     # cd <debugfs>/damon
-     # echo 42 4242 > pids
-     # cat pids
-     42 4242
- 
-+Users can also monitor the physical memory address space of the system by
-+writing a special keyword, "``paddr\n``" to the file.  In this case, reading the
-+file will show ``-1``, as below::
-+
-+    # cd <debugfs>/damon
-+    # echo paddr > pids
-+    # cat pids
-+    -1
-+
- Note that setting the pids doesn't start the monitoring.
- 
- 
-@@ -326,6 +348,10 @@ file-mapped area. Or, some users might know the initial access pattern of their
- workloads and therefore want to set optimal initial regions for the 'adaptive
- regions adjustment'.
- 
-+In contrast, DAMON do not automatically sets and updates the monitoring target
-+regions in case of physical memory monitoring.  Therefore, users should set the
-+monitoring target regions by themselves.
-+
- In such cases, users can explicitly set the initial monitoring target regions
- as they want, by writing proper values to the ``init_regions`` file.  Each line
- of the input should represent one region in below form.::
-@@ -344,10 +370,11 @@ region of process 42, and another couple of address ranges, ``20-40`` and
-             4242 20      40
-             4242 50      100" > init_regions
- 
--Note that this sets the initial monitoring target regions only.  DAMON will
--automatically updates the boundary of the regions after one ``regions update
--interval``.  Therefore, users should set the ``regions update interval`` large
--enough.
-+Note that this sets the initial monitoring target regions only.  In case of
-+virtual memory monitoring, DAMON will automatically updates the boundary of the
-+regions after one ``regions update interval``.  Therefore, users should set the
-+``regions update interval`` large enough in this case, if they don't want the
-+update.
- 
- 
- Record
 -- 
-2.17.1
-
+Sincerely yours,
+Mike.
