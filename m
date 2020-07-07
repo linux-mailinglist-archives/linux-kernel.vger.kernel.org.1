@@ -2,166 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F134C217A0D
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 23:14:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F433217A16
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 23:15:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729007AbgGGVOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 17:14:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59208 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728201AbgGGVOy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 17:14:54 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BA78C061755
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 14:14:54 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id l19so17126989qke.6
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 14:14:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=bZmyhAdgaKUq3ObPHZGaFsLGtyML3TDUUaEu5ftDn5s=;
-        b=NpttPX4lE/KU7Nm0bJYE/p4jYzLQMfv+GHpHKNOzf6UyPqa0Gp4+76X3XGeuO+SXTV
-         nxXA/QOjtZHr8zrC18uOgoYZPubDfwhPRExz7mV1sSv/WCDVk7rSil8JAKB82C3+PuX/
-         9PA6gy1V4MjX5usNyjtpTu8Ri0XzAEs/n6bkMZizqZtcIrCsTLio07SKKLIygBOPy8B3
-         yU/R2xvDU9Own06aGUtf9wIQtXBICRWwf/gWlmgMcy/4QfzQJ9zZclq/xmahiZEmhQqE
-         Von6X666O+hyizXf2P7+qN4Ufq6EwWt0d9nz8HKmBL2eGXdFpKA2bQH+jmHDAdvaJtTS
-         63SQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=bZmyhAdgaKUq3ObPHZGaFsLGtyML3TDUUaEu5ftDn5s=;
-        b=BwGpGNoSmhr/Tvh5Qx9IWQtvd0KyeJC9MXEhGR6YuUdoIRLSTsLvBw348othlxA/+q
-         qpVbvJlS4VFxHEhi0KtMGdMOqq7ghFjQiyEHqSFDaTpXeLaRCZCiTx7xnD0QE0Pzz3ao
-         oDsZgv3xciSfjZRoLFOvPWk4VuaBTDle7luhk5VxzKiedwjOlFc9pGd/JG9BSNl9g5oq
-         UrgeOztCiuAhqCUH4fQjhNVz4N7yte04Z4j1OSHGBsqQR2l8/Oa7bhTmCYfb0tq40/Je
-         0rguWwdgWoToyIx89s3KQJU9XKoh+T6cxZMr11SGu9KducgRyAB253Ns+/ZV0wxAN2My
-         lV7A==
-X-Gm-Message-State: AOAM532lkkJTOJ8kkZzVIgM12P5ekrFmWRfIzrVslqvvxWM+TXYGOZKB
-        J65ntCSm5kCfVWoOnh5uo5wg3lNkhm2t
-X-Google-Smtp-Source: ABdhPJz11nAFayeFkeDlsq5u5viuPaf3vPkR1JHcLuMxQm3bAygcsTZwF4wZeLIxLQEz07pF9vLNjfqglMvx
-X-Received: by 2002:ad4:4c09:: with SMTP id bz9mr20609878qvb.210.1594156493566;
- Tue, 07 Jul 2020 14:14:53 -0700 (PDT)
-Date:   Tue,  7 Jul 2020 14:14:49 -0700
-Message-Id: <20200707211449.3868944-1-irogers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.27.0.383.g050319c2ae-goog
-Subject: [PATCH] perf parse-events: report bpf errors
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Leo Yan <leo.yan@linaro.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1729135AbgGGVPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 17:15:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60074 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728201AbgGGVPT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 17:15:19 -0400
+Received: from localhost (mobile-166-175-191-139.mycingular.net [166.175.191.139])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1D5CB2075B;
+        Tue,  7 Jul 2020 21:15:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594156518;
+        bh=1s/robryCgQa82sfCBKNWG/m6UpXwTxp0ZAypBuWLWk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=IchCb4hb83xx8DKThJRMTwMstsiVfgZEEeFqqBFOG3C+1Aq2rpPYsuBLaobwTaGPD
+         bUInFODWCspThMhVQdtN1Z3lDOA6mY5VhF9TYuSKt3+kj4zksrutjtbZRUBzalqVBC
+         oObl6DpyIhX9E+DIYsSFxTQ9kHSrJ8iooI3ls+6k=
+Date:   Tue, 7 Jul 2020 16:15:16 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Vaibhav Gupta <vaibhav.varodek@gmail.com>
+Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, bjorn@helgaas.com,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        skhan@linuxfoundation.org, linux-ide@vger.kernel.org
+Subject: Re: [PATCH v2 2/4] ide: triflex: use generic power management
+Message-ID: <20200707211516.GA385934@bjorn-Precision-5520>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPBsFfCdJkXO-V16yO2eTeAwnQnKJZ49yaJepbsF2dNZjLZFhw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Setting the parse_events_error directly doesn't increment num_errors
-causing the error message not to be displayed. Use the
-parse_events__handle_error function that sets num_errors and handle
-multiple errors.
+On Wed, Jul 08, 2020 at 02:23:22AM +0530, Vaibhav Gupta wrote:
+> On Wed, Jul 8, 2020, 2:12 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > On Fri, Jul 03, 2020 at 01:44:26PM +0530, Vaibhav Gupta wrote:
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/util/parse-events.c | 38 ++++++++++++++++++----------------
- 1 file changed, 20 insertions(+), 18 deletions(-)
+> > > -static int triflex_ide_pci_resume(struct pci_dev *dev)
+> > > +/*
+> > > + * We must not disable or powerdown the device.
+> > > + * APM bios refuses to suspend if IDE is not accessible.
+> > > + */
+> > > +static void triflex_pci_pm_cap_fixup(struct pci_dev *pdev)
+> > >  {
+> > > -     struct ide_host *host = pci_get_drvdata(dev);
+> > > -     int rc;
+> > > -
+> > > -     pci_set_power_state(dev, PCI_D0);
+> > > -
+> > > -     rc = pci_enable_device(dev);
+> > > -     if (rc)
+> > > -             return rc;
+> > > -
+> > > -     pci_restore_state(dev);
+> > > -     pci_set_master(dev);
+> > > -
+> > > -     if (host->init_chipset)
+> > > -             host->init_chipset(dev);
+> > > -
+> > > -     return 0;
+> > > +     dev_info(&pdev->dev, "Disable triflex to be turned off by PCI
+> > CORE\n");
+> >
+> > I would change this message to "Disabling PCI power management" to be
+> > more like existing messages:
+> >
+> >   "PM disabled\n"
+> >   "Disabling PCI power management to avoid bug\n"
+> >   "Disabling PCI power management on camera ISP\n"
+> >
+> > > +     pdev->pm_cap = 0;
+> > >  }
+> > > -#else
+> > > -#define triflex_ide_pci_suspend NULL
+> > > -#define triflex_ide_pci_resume NULL
+> > > -#endif
+> > > +DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_COMPAQ,
+> > > +                     PCI_DEVICE_ID_COMPAQ_TRIFLEX_IDE,
+> > > +                     triflex_pci_pm_cap_fixup);
+> >
+> > I don't think this needs to be a fixup.  This could be done in the
+> > probe routine (triflex_init_one()).
+> >
+> > Doing it as a fixup means the PCI core will check every PCI device
+> > to see if it matches PCI_DEVICE_ID_COMPAQ_TRIFLEX_IDE, which is a
+> > little extra useless overhead and quirks are a little bit magic
+> > because it's not as obvious how they're called.
+> >
+> > But since triflex_init_one() is called only for the devices we care
+> > about, you can just do:
+> >
+> >   static int triflex_init_one(struct pci_dev *dev, const struct
+> > pci_device_id *id)
+> >   {
+> >         dev->pm_cap = 0;
+> >         dev_info(...);
+> >         return ide_pci_init_one(dev, &triflex_device, NULL);
+> >   }
+> >
+> Seems a better approach. And in that case I won't need this extra patch
+> just for triflex. I can put dev->pm_cap=0 change
+> in [Patch 1/1] along with other ide drivers.
 
-diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-index c4906a6a9f1a..e88e4c7a2a9a 100644
---- a/tools/perf/util/parse-events.c
-+++ b/tools/perf/util/parse-events.c
-@@ -767,8 +767,8 @@ int parse_events_load_bpf_obj(struct parse_events_state *parse_state,
- 
- 	return 0;
- errout:
--	parse_state->error->help = strdup("(add -v to see detail)");
--	parse_state->error->str = strdup(errbuf);
-+	parse_events__handle_error(parse_state->error, 0,
-+				strdup(errbuf), strdup("(add -v to see detail)"));
- 	return err;
- }
- 
-@@ -784,36 +784,38 @@ parse_events_config_bpf(struct parse_events_state *parse_state,
- 		return 0;
- 
- 	list_for_each_entry(term, head_config, list) {
--		char errbuf[BUFSIZ];
- 		int err;
- 
- 		if (term->type_term != PARSE_EVENTS__TERM_TYPE_USER) {
--			snprintf(errbuf, sizeof(errbuf),
--				 "Invalid config term for BPF object");
--			errbuf[BUFSIZ - 1] = '\0';
--
--			parse_state->error->idx = term->err_term;
--			parse_state->error->str = strdup(errbuf);
-+			parse_events__handle_error(parse_state->error, term->err_term,
-+						strdup("Invalid config term for BPF object"),
-+						NULL);
- 			return -EINVAL;
- 		}
- 
- 		err = bpf__config_obj(obj, term, parse_state->evlist, &error_pos);
- 		if (err) {
-+			char errbuf[BUFSIZ];
-+			int idx;
-+
- 			bpf__strerror_config_obj(obj, term, parse_state->evlist,
- 						 &error_pos, err, errbuf,
- 						 sizeof(errbuf));
--			parse_state->error->help = strdup(
-+
-+			if (err == -BPF_LOADER_ERRNO__OBJCONF_MAP_VALUE)
-+				idx = term->err_val;
-+			else
-+				idx = term->err_term + error_pos;
-+
-+			parse_events__handle_error(parse_state->error, idx,
-+						strdup(errbuf),
-+						strdup(
- "Hint:\tValid config terms:\n"
- "     \tmap:[<arraymap>].value<indices>=[value]\n"
- "     \tmap:[<eventmap>].event<indices>=[event]\n"
- "\n"
- "     \twhere <indices> is something like [0,3...5] or [all]\n"
--"     \t(add -v to see detail)");
--			parse_state->error->str = strdup(errbuf);
--			if (err == -BPF_LOADER_ERRNO__OBJCONF_MAP_VALUE)
--				parse_state->error->idx = term->err_val;
--			else
--				parse_state->error->idx = term->err_term + error_pos;
-+"     \t(add -v to see detail)"));
- 			return err;
- 		}
- 	}
-@@ -877,8 +879,8 @@ int parse_events_load_bpf(struct parse_events_state *parse_state,
- 						   -err, errbuf,
- 						   sizeof(errbuf));
- 
--		parse_state->error->help = strdup("(add -v to see detail)");
--		parse_state->error->str = strdup(errbuf);
-+		parse_events__handle_error(parse_state->error, 0,
-+					strdup(errbuf), strdup("(add -v to see detail)"));
- 		return err;
- 	}
- 
--- 
-2.27.0.383.g050319c2ae-goog
+Hmm, I just noticed that there are actually *two* drivers (triflex.c
+and pata_triflex.c) for this same device, and they both have this
+comment about "APM BIOS refusing to suspend if IDE is not accessible"
+and therefore preventing suspend of IDE.
 
+At least, the comment seems to imply that calling pci_save_state() is
+a way to prevent suspend of the device.  That seems like a strange way
+to do it, but ...
+
+Anyway, I wonder if a single quirk in drivers/pci/quirks.c would be
+better.  A preliminary patch could add a quirk (keeping the comment)
+and remove the pci_save_state() from both triflex_ide_pci_suspend()
+and triflex_ata_pci_device_suspend().
+
+Then you could proceed with these generic PM changes on top of that.
+
+Maybe make the dev_info() mention that you're disabling PM to avoid an
+APM BIOS suspend defect so users have a clue about why.
+
+Bjorn
