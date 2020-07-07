@@ -2,388 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D42602167BE
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 09:49:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E36632167CB
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 09:51:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728356AbgGGHt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 03:49:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46832 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727058AbgGGHt1 (ORCPT
+        id S1728428AbgGGHvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 03:51:08 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:59019 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726757AbgGGHvH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 03:49:27 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE0A5C061755
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 00:49:26 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id z13so44088446wrw.5
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 00:49:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=x2pxDDruVdpBNY9voLxLtSz3gp0J3oInIn5OFSK9v7g=;
-        b=V3vv2b8DJqkujHE5W2g3BcOMuRt5leIZZWQUW3BHOHP1VckBulL2Fm1CwWk4h41NHl
-         egiQb2Ue5kiZbmrUvSGb4Bsp8Ek2B4waU04kdX2/WD3lkRw+vDHRrYyCwtXPtMTQ6ao0
-         PuoL6aqk2JIGEauVZ4sKcrjoKN+ts+OrlOZKg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=x2pxDDruVdpBNY9voLxLtSz3gp0J3oInIn5OFSK9v7g=;
-        b=LqGKbQRM1z+iFyvONTKSCTi2bE55Vi150fuPOTm502kMHim7CnWqPYJbmHSGvehyiL
-         /i/AAOKgr2Y5QEugo1Oxcxu5s1BmeFGfVhiveX3JebasGvJG3VhRZM9IY6pALxjJo7ru
-         6f+tTDZDcqE2N5zcCLM0s9z2mRiiS5FSdBjN6mK2jsCPKrlYwdTNGmzQGYW3Hfw5AvOs
-         SQzC1jEh0IivPms8V36Oy+2GbS2LWJKEzzfo9lfLMUxnhkN+40XW605kI0oh9nsZeIQh
-         cVzYAnz4gxxGm3qJPeWxHbbHZlghdVzeIv4kRg86lHLAaLoh/eLc8OO3bIHxqcbk1Asu
-         fzFg==
-X-Gm-Message-State: AOAM533XE23myZmLzoAQ+ZEg+GXB6wG7RY6FblBe4+iyklV9jMt0erw0
-        rAPv4EuSEe4LN7NOAEhgZwYTijd4QhZmFSKf0bWz
-X-Google-Smtp-Source: ABdhPJwUXpEEyZQIUtPjkA0NYrN6lp6EdSH5wb8/o1vki+kpP1ntbxG1+7hdZ7llctZAshRg7/imXdwmlN3KVsN6CCI=
-X-Received: by 2002:a5d:62d1:: with SMTP id o17mr51080157wrv.162.1594108165570;
- Tue, 07 Jul 2020 00:49:25 -0700 (PDT)
+        Tue, 7 Jul 2020 03:51:07 -0400
+Received: from ip5f5af08c.dynamic.kabel-deutschland.de ([95.90.240.140] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1jsiNZ-0007LE-Ew; Tue, 07 Jul 2020 07:51:01 +0000
+Date:   Tue, 7 Jul 2020 09:51:00 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     torvalds@linux-foundation.org,
+        ksummit-discuss@lists.linuxfoundation.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org,
+        tech-board-discuss@lists.linuxfoundation.org,
+        Chris Mason <clm@fb.clm>
+Subject: Re: [Ksummit-discuss] [PATCH] CodingStyle: Inclusive Terminology
+Message-ID: <20200707075100.pnznglulr7yjkd65@wittgenstein>
+References: <159389297140.2210796.13590142254668787525.stgit@dwillia2-desk3.amr.corp.intel.com>
 MIME-Version: 1.0
-References: <20200706172609.25965-1-atish.patra@wdc.com> <CAMj1kXG5OxRod_-Z5K55XLXDda2ahfezm0yaRbv=82JmrFRZxw@mail.gmail.com>
-In-Reply-To: <CAMj1kXG5OxRod_-Z5K55XLXDda2ahfezm0yaRbv=82JmrFRZxw@mail.gmail.com>
-From:   Atish Patra <atishp@atishpatra.org>
-Date:   Tue, 7 Jul 2020 00:49:14 -0700
-Message-ID: <CAOnJCU+PzfTGiJc5hegU72+z_RJErO=avYV9dz1zB3zH8_Yzow@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 00/11] Add UEFI support for RISC-V
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Atish Patra <atish.patra@wdc.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Heinrich Schuchardt <xypron.glpk@gmx.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <159389297140.2210796.13590142254668787525.stgit@dwillia2-desk3.amr.corp.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 6, 2020 at 11:41 PM Ard Biesheuvel <ardb@kernel.org> wrote:
->
-> On Mon, 6 Jul 2020 at 20:26, Atish Patra <atish.patra@wdc.com> wrote:
-> >
-> > This series adds UEFI support for RISC-V.
-> >
-> > Linux kernel: 5.8-rc4
-> > U-Boot: master
-> > OpenSBI: master
-> >
-> > Patch 1-6 are preparatory patches that fixes some of the geric efi and riscv issues.
-> >
-> > Patch 7-9 adds the efi stub support for RISC-V which was reviewed few months back.
-> > https://www.spinics.net/lists/linux-efi/msg19144.html
-> >
-> > Patch 10 just renames arm-init code so that it can be used across different
-> > architectures. Patch 11 adds the runtime services for RISC-V.
-> >
-> > The patches can also be found in following git repo.
-> > https://github.com/atishp04/linux/tree/uefi_riscv_5.9_v2
-> >
-> > The patches have been verified on Qemu using bootefi command in U-Boot for both
-> > RV32 and RV64.
-> >
-> > For RV32, maximum allocated memory should be 1G as RISC-V kernel can not map
-> > beyond 1G of physical memory for RV32.
-> >
-> > EDK2 can boot quite far into Linux with current series. Currently, we are seeing
-> > some traps from drivers (spi/network). At first glance, they don't seem to be
-> > caused by efi. I thought it is better to get some early feedback on the series
-> > while EDK2 issue is being debugged.
-> >
-> > That's why uefi runtime services are not actually well tested in RISC-V.
-> > Any suggestions to test the efi run time services are appreciated.
-> >
-> > Changes from v1->v2:
-> > 1. Removed patch 1 as it is already taken into efi-tree.
-> > 2. Fixed compilation issues with patch 9.
-> > 3. Moved few function prototype declaration to header file to keep kbuild happy.
-> >
-> > Changes from previous version:
-> > 1. Added full ioremap support.
-> > 2. Added efi runtime services support.
-> > 3. Fixes mm issues
-> >
->
-> Hi Atish,
->
-> This all looks reasonable to me, so I think we can merge this once you
-> can confirm that the runtime services actually work.
->
-
-Blibbet pointed me towards the Firmware Test Suite (FWTS). I will try
-to use that to verify basic runtime services
-in addition to EDK2 testing (Abner is debugging that).
-
-> Could you explain how you are dealing with the memory map? Are memory
-> nodes in DT ignored entirely as they should be?
-
-Yes. That is handled by the generic code (patch 10 renames arm-init to
-efi-init) in the following path.
-setup_arch->efi_init->reserve_regions()
-
-What about memory
-> reservations?
->
-
-I added patches in U-Boot that parses the /reserved-memory nodes from
-DT and add it to the efi reserved mappings.
-As a result, Linux kernel takes care of memory reservations as per the
-reserved memory regions present in efi memory map.
-I am expecting EDK2 already does that as well.
-
-Here is the relevant boot log:
-----------------------------------------------------------------------------------------------------------------------
-[    0.000000] OF: fdt: Ignoring memory range 0x80000000 - 0x80200000
-
-[    0.000000] earlycon: sbi0 at I/O port 0x0 (options '')
-
-[    0.000000] printk: bootconsole [sbi0] enabled
-
-[    0.000000] efi: Getting UEFI parameters from /chosen in DT:
-
-[    0.000000] efi:   System Table         : 0x00000000bff61528
-
-[    0.000000] efi:   MemMap Address       : 0x00000000bd46e020
-
-[    0.000000] efi:   MemMap Size          : 0x00000000000002d0
-
-[    0.000000] efi:   MemMap Desc. Size    : 0x0000000000000028
-
-[    0.000000] efi:   MemMap Desc. Version : 0x0000000000000001
-
-[    0.000000] efi: EFI v2.80 by Das U-Boot
-
-[    0.000000] efi: RTPROP=0xbe73c020 SMBIOS=0xbe736000 MEMRESERVE=0xbd671020
-
-[    0.000000] memblock_reserve:
-[0x00000000bd671020-0x00000000bd67102f]
-efi_config_parse_tables+0x192/0x1e6
-
-[    0.000000] efi: Processing EFI memory map:
-
-[    0.000000] MEMBLOCK configuration:
-
-[    0.000000]  memory size = 0x000000003fe00000 reserved size =
-0x0000000000000010
-
-[    0.000000]  memory.cnt  = 0x1
-
-[    0.000000]  memory[0x0] [0x0000000080200000-0x00000000bfffffff],
-0x000000003fe00000 bytes flags: 0x0
-
-[    0.000000]  reserved.cnt  = 0x1
-
-[    0.000000]  reserved[0x0] [0x00000000bd671020-0x00000000bd67102f],
-0x0000000000000010 bytes flags: 0x0
-
-[    0.000000] memblock_remove:
-[0x0000000000000000-0xfffffffffffffffe] reserve_regions+0x56/0x134
-
-[    0.000000] efi:   0x000080000000-0x00008003ffff [Reserved
- |   |  |  |  |  |  |  |  |   |WB|  |  |  ]
-
-[    0.000000] OF: fdt: Ignoring memory block 0x80000000 - 0x80040000
-
-[    0.000000] efi:   0x000080040000-0x0000801fffff [Conventional
-Memory|   |  |  |  |  |  |  |  |   |WB|  |  |  ]
-
-[    0.000000] OF: fdt: Ignoring memory range 0x80040000 - 0x80200000
-
-[    0.000000] memblock_add: [0x0000000080200000-0x00000000801fffff]
-early_init_dt_add_memory_arch+0xac/0xbc
-
-[    0.000000] efi:   0x000080200000-0x0000812befff [Loader Data
- |   |  |  |  |  |  |  |  |   |WB|  |  |  ]
-
-[    0.000000] memblock_add: [0x0000000080200000-0x00000000812befff]
-early_init_dt_add_memory_arch+0xac/0xbc
-
-[    0.000000] efi:   0x0000812bf000-0x000087efffff [Conventional
-Memory|   |  |  |  |  |  |  |  |   |WB|  |  |  ]
-
-[    0.000000] memblock_add: [0x00000000812bf000-0x0000000087efffff]
-early_init_dt_add_memory_arch+0xac/0xbc
-
-[    0.000000] efi:   0x000087f00000-0x000087f04fff [ACPI Reclaim
-Memory|   |  |  |  |  |  |  |  |   |WB|  |  |  ]
-
-[    0.000000] memblock_add: [0x0000000087f00000-0x0000000087f04fff]
-early_init_dt_add_memory_arch+0xac/0xbc
-
-[    0.000000] memblock_reserve:
-[0x0000000087f00000-0x0000000087f04fff] reserve_regions+0x110/0x134
-
-[    0.000000] efi:   0x000087f05000-0x0000bd46dfff [Conventional
-Memory|   |  |  |  |  |  |  |  |   |WB|  |  |  ]
-
-[    0.000000] memblock_add: [0x0000000087f05000-0x00000000bd46dfff]
-early_init_dt_add_memory_arch+0xac/0xbc
-
-[    0.000000] efi:   0x0000bd46e000-0x0000bd672fff [Loader Data
- |   |  |  |  |  |  |  |  |   |WB|  |  |  ]
-
-[    0.000000] memblock_add: [0x00000000bd46e000-0x00000000bd672fff]
-early_init_dt_add_memory_arch+0xac/0xbc
-
-[    0.000000] efi:   0x0000bd673000-0x0000be731fff [Loader Code
- |   |  |  |  |  |  |  |  |   |WB|  |  |  ]
-
-[    0.000000] memblock_add: [0x00000000bd673000-0x00000000be731fff]
-early_init_dt_add_memory_arch+0xac/0xbc
-
-[    0.000000] efi:   0x0000be732000-0x0000be734fff [Reserved
- |   |  |  |  |  |  |  |  |   |WB|  |  |  ]
-
-[    0.000000] memblock_add: [0x00000000be732000-0x00000000be734fff]
-early_init_dt_add_memory_arch+0xac/0xbc
-
-[    0.000000] efi:   0x0000be735000-0x0000be735fff [Boot Data
- |   |  |  |  |  |  |  |  |   |WB|  |  |  ]
-
-[    0.000000] memblock_add: [0x00000000be735000-0x00000000be735fff]
-early_init_dt_add_memory_arch+0xac/0xbc
-
-[    0.000000] efi:   0x0000be736000-0x0000be736fff [Runtime Data
- |RUN|  |  |  |  |  |  |  |   |WB|  |  |  ]
-
-[    0.000000] memblock_add: [0x00000000be736000-0x00000000be736fff]
-early_init_dt_add_memory_arch+0xac/0xbc
-
-[    0.000000] efi:   0x0000be737000-0x0000be738fff [Boot Data
- |   |  |  |  |  |  |  |  |   |WB|  |  |  ]
-
-[    0.000000] memblock_add: [0x00000000be737000-0x00000000be738fff]
-early_init_dt_add_memory_arch+0xac/0xbc
-
-[    0.000000] efi:   0x0000be739000-0x0000be739fff [Reserved
- |   |  |  |  |  |  |  |  |   |WB|  |  |  ]
-
-[    0.000000] memblock_add: [0x00000000be739000-0x00000000be739fff]
-early_init_dt_add_memory_arch+0xac/0xbc
-
-[    0.000000] efi:   0x0000be73a000-0x0000be73bfff [Boot Data
- |   |  |  |  |  |  |  |  |   |WB|  |  |  ]
-
-[    0.000000] memblock_add: [0x00000000be73a000-0x00000000be73bfff]
-early_init_dt_add_memory_arch+0xac/0xbc
-
-[    0.000000] efi:   0x0000be73c000-0x0000be73dfff [Runtime Data
- |RUN|  |  |  |  |  |  |  |   |WB|  |  |  ]
-
-[    0.000000] memblock_add: [0x00000000be73c000-0x00000000be73dfff]
-early_init_dt_add_memory_arch+0xac/0xbc
-
-[    0.000000] efi:   0x0000be73e000-0x0000bff60fff [Loader Data
- |   |  |  |  |  |  |  |  |   |WB|  |  |  ]
-
-[    0.000000] memblock_add: [0x00000000be73e000-0x00000000bff60fff]
-early_init_dt_add_memory_arch+0xac/0xbc
-
-[    0.000000] efi:   0x0000bff61000-0x0000bff61fff [Runtime Code
- |RUN|  |  |  |  |  |  |  |   |WB|  |  |  ]
-
-[    0.000000] memblock_add: [0x00000000bff61000-0x00000000bff61fff]
-early_init_dt_add_memory_arch+0xac/0xbc
-
-[    0.000000] efi:   0x0000bff62000-0x0000bfffffff [Loader Data
- |   |  |  |  |  |  |  |  |   |WB|  |  |  ]
-
-[    0.000000] memblock_add: [0x00000000bff62000-0x00000000bfffffff]
-early_init_dt_add_memory_arch+0xac/0xbc
-
-[    0.000000] memblock_reserve:
-[0x00000000bd46e000-0x00000000bd46efff] efi_init+0x132/0x1e6
-
-[    0.000000] memblock_reserve:
-[0x0000000080200000-0x00000000812befff] setup_bootmem+0x98/0x1d0
-
-[    0.000000] initrd not found or empty - disabling initrd
-
-[    0.000000] memblock_reserve:
-[0x0000000080233000-0x00000000802348f7]
-early_init_dt_reserve_memory_arch+0x14/0x1c
-
-[    0.000000] memblock_reserve:
-[0x0000000080000000-0x000000008003ffff]
-early_init_dt_reserve_memory_arch+0x14/0x1c
-
-[    0.000000] MEMBLOCK configuration:
-
-[    0.000000]  memory size = 0x000000003fe00000 reserved size =
-0x0000000001105010
-
-[    0.000000]  memory.cnt  = 0xb
-
-[    0.000000]  memory[0x0] [0x0000000080200000-0x00000000be731fff],
-0x000000003e532000 bytes flags: 0x0
-
-[    0.000000]  memory[0x1] [0x00000000be732000-0x00000000be734fff],
-0x0000000000003000 bytes flags: 0x4
-
-[    0.000000]  memory[0x2] [0x00000000be735000-0x00000000be735fff],
-0x0000000000001000 bytes flags: 0x0
-
-[    0.000000]  memory[0x3] [0x00000000be736000-0x00000000be736fff],
-0x0000000000001000 bytes flags: 0x4
-
-[    0.000000]  memory[0x4] [0x00000000be737000-0x00000000be738fff],
-0x0000000000002000 bytes flags: 0x0
-
-[    0.000000]  memory[0x5] [0x00000000be739000-0x00000000be739fff],
-0x0000000000001000 bytes flags: 0x4
-
-[    0.000000]  memory[0x6] [0x00000000be73a000-0x00000000be73bfff],
-0x0000000000002000 bytes flags: 0x0
-
-[    0.000000]  memory[0x7] [0x00000000be73c000-0x00000000be73dfff],
-0x0000000000002000 bytes flags: 0x4
-
-[    0.000000]  memory[0x8] [0x00000000be73e000-0x00000000bff60fff],
-0x0000000001823000 bytes flags: 0x0
-
-[    0.000000]  memory[0x9] [0x00000000bff61000-0x00000000bff61fff],
-0x0000000000001000 bytes flags: 0x4
-
-[    0.000000]  memory[0xa] [0x00000000bff62000-0x00000000bfffffff],
-0x000000000009e000 bytes flags: 0x0
-
-[    0.000000]  reserved.cnt  = 0x5
-
-[    0.000000]  reserved[0x0] [0x0000000080000000-0x000000008003ffff],
-0x0000000000040000 bytes flags: 0x0
-
-[    0.000000]  reserved[0x1] [0x0000000080200000-0x00000000812befff],
-0x00000000010bf000 bytes flags: 0x0
-
-[    0.000000]  reserved[0x2] [0x0000000087f00000-0x0000000087f04fff],
-0x0000000000005000 bytes flags: 0x0
-
-[    0.000000]  reserved[0x3] [0x00000000bd46e000-0x00000000bd46efff],
-0x0000000000001000 bytes flags: 0x0
-
-[    0.000000]  reserved[0x4] [0x00000000bd671020-0x00000000bd67102f],
-0x0000000000000010 bytes flags: 0x0
-
-----------------------------------------------------------------------------------------------------------------------
-
-Here is the detailed boot log.
-
-https://pastebin.com/4LE2SY4c
-
-> In any case, I will take the first patch as a fix, so it should turn
-> up in mainline in 1~2 weeks.
->
-Thanks.
-
-> Thanks,
-> Ard.
-
-
-
--- 
-Regards,
-Atish
+On Sat, Jul 04, 2020 at 01:02:51PM -0700, Dan Williams wrote:
+> Recent events have prompted a Linux position statement on inclusive
+> terminology. Given that Linux maintains a coding-style and its own
+> idiomatic set of terminology here is a proposal to answer the call to
+> replace non-inclusive terminology.
+> 
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Cc: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Chris Mason <clm@fb.clm>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+> ---
+
+This is the right thing to do.
+
+Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+
+(Imho, I agree with Andy and the historical bits could probably be
+ moved into the changelog.)
+
+>  Documentation/process/coding-style.rst          |   12 ++++
+>  Documentation/process/inclusive-terminology.rst |   64 +++++++++++++++++++++++
+>  Documentation/process/index.rst                 |    1 
+>  3 files changed, 77 insertions(+)
+>  create mode 100644 Documentation/process/inclusive-terminology.rst
+> 
+> diff --git a/Documentation/process/coding-style.rst b/Documentation/process/coding-style.rst
+> index 2657a55c6f12..4b15ab671089 100644
+> --- a/Documentation/process/coding-style.rst
+> +++ b/Documentation/process/coding-style.rst
+> @@ -319,6 +319,18 @@ If you are afraid to mix up your local variable names, you have another
+>  problem, which is called the function-growth-hormone-imbalance syndrome.
+>  See chapter 6 (Functions).
+>  
+> +For symbol names, avoid introducing new usage of the words 'slave' and
+> +'blacklist'. Recommended replacements for 'slave' are: 'secondary',
+> +'subordinate', 'replica', 'responder', 'follower', 'proxy', or
+> +'performer'.  Recommended replacements for blacklist are: 'blocklist' or
+> +'denylist'.
+> +
+> +Exceptions for introducing new usage is to maintain a userspace ABI, or
+> +when updating code for an existing (as of 2020) hardware or protocol
+> +specification that mandates those terms. For new specifications consider
+> +translating specification usage of the terminology to the kernel coding
+> +standard where possible. See :ref:`process/inclusive-terminology.rst
+> +<inclusiveterminology>` for details.
+>  
+>  5) Typedefs
+>  -----------
+> diff --git a/Documentation/process/inclusive-terminology.rst b/Documentation/process/inclusive-terminology.rst
+> new file mode 100644
+> index 000000000000..a8eb26690eb4
+> --- /dev/null
+> +++ b/Documentation/process/inclusive-terminology.rst
+> @@ -0,0 +1,64 @@
+> +.. _inclusiveterminology:
+> +
+> +Linux kernel inclusive terminology
+> +==================================
+> +
+> +The Linux kernel is a global software project, and in 2020 there was a
+> +global reckoning on race relations that caused many organizations to
+> +re-evaluate their policies and practices relative to the inclusion of
+> +people of African descent. This document describes why the 'Naming'
+> +section in :ref:`process/coding-style.rst <codingstyle>` recommends
+> +avoiding usage of 'slave' and 'blacklist' in new additions to the Linux
+> +kernel.
+> +
+> +On the triviality of replacing words
+> +====================================
+> +
+> +The African slave trade was a brutal system of human misery deployed at
+> +global scale. Some word choice decisions in a modern software project
+> +does next to nothing to compensate for that legacy. So why put any
+> +effort into something so trivial in comparison? Because the goal is not
+> +to repair, or erase the past. The goal is to maximize availability and
+> +efficiency of the global developer community to participate in the Linux
+> +kernel development process.
+> +
+> +Word choice and developer efficiency
+> +====================================
+> +
+> +Why does any software project go through the trouble of developing a
+> +document like :ref:`process/coding-style.rst <codingstyle>`? It does so
+> +because a common coding style maximizes the efficiency of both
+> +maintainers and developers. Developers learn common design patterns and
+> +idiomatic expressions while maintainers can spot deviations from those
+> +norms. Even non-compliant whitespace is considered a leading indicator
+> +to deeper problems in a patchset. Coding style violations are known to
+> +take a maintainer "out of the zone" of reviewing code. Maintainers are
+> +also sensitive to word choice across specifications and often choose to
+> +deploy Linux terminology to replace non-idiomatic word-choice in a
+> +specification.
+> +
+> +Non-inclusive terminology has that same distracting effect which is why
+> +it is a style issue for Linux, it injures developer efficiency.
+> +
+> +Of course it is around this point someone jumps in with an etymological
+> +argument about why people should not be offended. Etymological arguments
+> +do not scale. The scope and pace of Linux to reach new developers
+> +exceeds the ability of historical terminology defenders to describe "no,
+> +not that connotation". The revelation of 2020 was that black voices were
+> +heard on a global scale and the Linux kernel project has done its small
+> +part to answer that call as it wants black voices, among all voices, in
+> +its developer community.
+> +
+> +Really, 'blacklist' too?
+> +========================
+> +
+> +While 'slave' has a direct connection to human suffering the etymology
+> +of 'blacklist' is devoid of a historical racial connection. However, one
+> +thought exercise is to consider replacing 'blacklist/whitelist' with
+> +'redlist/greenlist'. Realize that the replacement only makes sense if
+> +you have been socialized with the concepts that 'red/green' implies
+> +'stop/go'. Colors to represent a policy requires an indirection. The
+> +socialization of 'black/white' to have the connotation of
+> +'impermissible/permissible' does not support inclusion.
+> +
+> +Inclusion == global developer community efficiency.
+> diff --git a/Documentation/process/index.rst b/Documentation/process/index.rst
+> index f07c9250c3ac..ed861f6f8d25 100644
+> --- a/Documentation/process/index.rst
+> +++ b/Documentation/process/index.rst
+> @@ -27,6 +27,7 @@ Below are the essential guides that every developer should read.
+>     submitting-patches
+>     programming-language
+>     coding-style
+> +   inclusive-terminology
+>     maintainer-pgp-guide
+>     email-clients
+>     kernel-enforcement-statement
+> 
+> _______________________________________________
+> Ksummit-discuss mailing list
+> Ksummit-discuss@lists.linuxfoundation.org
+> https://lists.linuxfoundation.org/mailman/listinfo/ksummit-discuss
