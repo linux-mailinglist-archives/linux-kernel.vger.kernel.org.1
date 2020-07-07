@@ -2,126 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A243D217853
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 21:52:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D2CF21786B
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 21:58:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728731AbgGGTwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 15:52:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34268 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726951AbgGGTwW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 15:52:22 -0400
-Received: from embeddedor (unknown [200.39.26.250])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A36C92067D;
-        Tue,  7 Jul 2020 19:52:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594151541;
-        bh=BCg2O5jFZBlDRc+MF49DFW22EwGVWh89T01WR1/QAyk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=P0+GOtA5+XNYmpksFCVRBIEVNBW3/ffnM5bFqEXHW3Db77YWs0JiCtPjul3JHKXa/
-         9pNhzwj5h9xARmb4DA5JAN96erzS3jTHF5vKWuofCOxAcU48XacsCAMBEWD+a1v25G
-         +ytUhAhKlzTaodKBZM5p4euorN0Ow1ZgQHcp6v6I=
-Date:   Tue, 7 Jul 2020 14:57:47 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Johan Hovold <johan@kernel.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH] USB: serial: Use fallthrough pseudo-keyword
-Message-ID: <20200707195747.GA4354@embeddedor>
+        id S1728826AbgGGT6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 15:58:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47238 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728721AbgGGT6N (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 15:58:13 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37102C08C5EF
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 12:58:13 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id md7so138613pjb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 12:58:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VzRu+6RTYvmFttwhsiQLXCF6YnU1lg38nqV7v8N7whw=;
+        b=POB0tDdCbNVqmVQZ6yua+ndmhJsgXFLarIJRrzZHpuDGP0B1FODyoxi9lUTM/pG0IL
+         mE1dMIr/gsK64CjizChpcXywJYXY4Vfi25COfLptk3V+mFNHqoasjVtfubvV2ebCtl7a
+         czRuA5AP473VLGgnEz34EgdAlV0QOt3H67RniAnOVC2+In0mdoC9rSRvmlMzUXfZVzt4
+         xGEFUHBxADeMLVRzRAoW7/H0iSwTAcsqnlAtpK24wb/U0fEHrp7KMPF2hLocEXQ4+asp
+         047TKx7zculMEGUVbpwgiExvH3ficDy6d/Wj01wsX8chenP63N6BpBBILOJ6KcW2NDnx
+         OPSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VzRu+6RTYvmFttwhsiQLXCF6YnU1lg38nqV7v8N7whw=;
+        b=hO9BXlettY8suZsWeRP5RpMGgd5xvuSodPCgr9vedRK0h0/wIUqQEsXjzeKIi2tHVG
+         h6qX6ZGVQ5fLP7gV72r/j6zoMiBdCfTx5jEFs/feCkZKhIV9dElQHQO53IJ6I4YyEjNF
+         lY2DoZm7s7+KmNE+92K7nidYQ85MLlUu4IAyuTk2iKzTvu4B+OHE6WOl5IFlICxIH8eY
+         0ARsoBj+4pXDpSOXw8m4PKHiy9McLAZbdtqX08R4lBjG7vyx+9UnWK51r3V7d7byn1AN
+         Ufmqa7KfV/ZdadwoganWZB+D9CkSBGNPKKVJ50C9ifsgcckKGIKtIImH5gX8rfdcM4zQ
+         sdKw==
+X-Gm-Message-State: AOAM531TpXEiAZ5FhIpUTpLtjMWvrAKHK+Dy6bVMF0YeOBIUjjHdDTL8
+        mP81WQhJr8GH0fvLr4rG5kYTRfYoATwjWuFBthEciA==
+X-Google-Smtp-Source: ABdhPJwAgKOW6WJkomMyOukfnt4wP2/V35sf6mYJAhQLNyaosM4LY2uIUq7rKvvPZg70NVApdINfIkTmb6+bTRJLXD0=
+X-Received: by 2002:a17:90b:1296:: with SMTP id fw22mr6086502pjb.20.1594151892296;
+ Tue, 07 Jul 2020 12:58:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200707092117.963394-1-masahiroy@kernel.org>
+In-Reply-To: <20200707092117.963394-1-masahiroy@kernel.org>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Tue, 7 Jul 2020 12:58:01 -0700
+Message-ID: <CAFd5g46eCjZA-e4akYc1K8u29tp94gpmrAOxZ_joZ=9kJtZeuA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] kbuild: introduce ccflags-remove-y and asflags-remove-y
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild <linux-kbuild@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Haren Myneni <haren@us.ibm.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Kosina <jikos@kernel.org>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Paul Mackerras <paulus@samba.org>,
+        Petr Mladek <pmladek@suse.com>, Rich Felker <dalias@libc.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Tal Gilboa <talgi@mellanox.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-crypto@vger.kernel.org,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, linux-sh@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, live-patching@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace the existing /* fall through */ comments and its variants with
-the new pseudo-keyword macro fallthrough[1]. Also, remove unnecessary
-fall-through markings when it is the case.
+On Tue, Jul 7, 2020 at 2:22 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> CFLAGS_REMOVE_<file>.o filters out flags when compiling a particular
+> object, but there is no convenient way to do that for every object in
+> a directory.
+>
+> Add ccflags-remove-y and asflags-remove-y to make it easily.
+>
+> Use ccflags-remove-y to clean up some Makefiles.
+>
+> The add/remove order works as follows:
+>
+>  [1] KBUILD_CFLAGS specifies compiler flags used globally
+>
+>  [2] ccflags-y adds compiler flags for all objects in the
+>      current Makefile
+>
+>  [3] ccflags-remove-y removes compiler flags for all objects in the
+>      current Makefile (New feature)
+>
+>  [4] CFLAGS_<file> adds compiler flags per file.
+>
+>  [5] CFLAGS_REMOVE_<file> removes compiler flags per file.
+>
+> Having [3] before [4] allows us to remove flags from most (but not all)
+> objects in the current Makefile.
+>
+> For example, kernel/trace/Makefile removes $(CC_FLAGS_FTRACE)
+> from all objects in the directory, then adds it back to
+> trace_selftest_dynamic.o and CFLAGS_trace_kprobe_selftest.o
+>
+> Please note ccflags-remove-y has no effect to the sub-directories.
+> In contrast, the previous notation got rid of compiler flags also from
+> all the sub-directories.
+>
+>   arch/arm/boot/compressed/
+>   arch/powerpc/xmon/
+>   arch/sh/
+>   kernel/trace/
+>
+> ... have no sub-directories.
+>
+>   lib/
+>
+> ... has several sub-directories.
+>
+> To keep the behavior, I added ccflags-remove-y to all Makefiles
+> in subdirectories of lib/, except:
+>
+>   lib/vdso/Makefile        - Kbuild does not descend into this Makefile
+>   lib/raid/test/Makefile   - This is not used for the kernel build
+>
+> I think commit 2464a609ded0 ("ftrace: do not trace library functions")
+> excluded too much. In later commit, I will try to remove ccflags-remove-y
+> from sub-directory Makefiles.
+>
+> Suggested-by: Sami Tolvanen <samitolvanen@google.com>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
 
-[1] https://www.kernel.org/doc/html/latest/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
-
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/usb/serial/cypress_m8.c  |    4 ++--
- drivers/usb/serial/io_edgeport.c |    4 ++--
- drivers/usb/serial/kobil_sct.c   |    2 +-
- drivers/usb/serial/upd78f0730.c  |    2 +-
- 4 files changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/usb/serial/cypress_m8.c b/drivers/usb/serial/cypress_m8.c
-index 216edd5826ca..53e3051b0a71 100644
---- a/drivers/usb/serial/cypress_m8.c
-+++ b/drivers/usb/serial/cypress_m8.c
-@@ -1046,7 +1046,7 @@ static void cypress_read_int_callback(struct urb *urb)
- 		return;
- 	case -EPIPE:
- 		/* Can't call usb_clear_halt while in_interrupt */
--		/* FALLS THROUGH */
-+		fallthrough;
- 	default:
- 		/* something ugly is going on... */
- 		dev_err(dev, "%s - unexpected nonzero read status received: %d\n",
-@@ -1195,7 +1195,7 @@ static void cypress_write_int_callback(struct urb *urb)
- 		return;
- 	case -EPIPE:
- 		/* Cannot call usb_clear_halt while in_interrupt */
--		/* FALLTHROUGH */
-+		fallthrough;
- 	default:
- 		dev_err(dev, "%s - unexpected nonzero write status received: %d\n",
- 			__func__, status);
-diff --git a/drivers/usb/serial/io_edgeport.c b/drivers/usb/serial/io_edgeport.c
-index 4cca0b836f43..ba5d8df69518 100644
---- a/drivers/usb/serial/io_edgeport.c
-+++ b/drivers/usb/serial/io_edgeport.c
-@@ -1752,7 +1752,7 @@ static void process_rcvd_data(struct edgeport_serial *edge_serial,
- 				edge_serial->rxState = EXPECT_HDR2;
- 				break;
- 			}
--			/* Fall through */
-+			fallthrough;
- 		case EXPECT_HDR2:
- 			edge_serial->rxHeader2 = *buffer;
- 			++buffer;
-@@ -1804,7 +1804,7 @@ static void process_rcvd_data(struct edgeport_serial *edge_serial,
- 				edge_serial->rxState = EXPECT_DATA;
- 				break;
- 			}
--			/* Fall through */
-+			fallthrough;
- 		case EXPECT_DATA: /* Expect data */
- 			if (bufferLength < edge_serial->rxBytesRemaining) {
- 				rxLen = bufferLength;
-diff --git a/drivers/usb/serial/kobil_sct.c b/drivers/usb/serial/kobil_sct.c
-index e9882ba20933..9660c16be56a 100644
---- a/drivers/usb/serial/kobil_sct.c
-+++ b/drivers/usb/serial/kobil_sct.c
-@@ -499,7 +499,7 @@ static void kobil_set_termios(struct tty_struct *tty,
- 		break;
- 	default:
- 		speed = 9600;
--		/* fall through */
-+		fallthrough;
- 	case 9600:
- 		urb_val = SUSBCR_SBR_9600;
- 		break;
-diff --git a/drivers/usb/serial/upd78f0730.c b/drivers/usb/serial/upd78f0730.c
-index 1ba1401d27d7..0a2268c479af 100644
---- a/drivers/usb/serial/upd78f0730.c
-+++ b/drivers/usb/serial/upd78f0730.c
-@@ -332,7 +332,7 @@ static void upd78f0730_set_termios(struct tty_struct *tty,
- 		tty->termios.c_cflag &= ~CSIZE;
- 		tty->termios.c_cflag |= CS8;
- 		dev_warn(dev, "data size is not supported, using 8 bits\n");
--		/* fall through */
-+		fallthrough;
- 	case CS8:
- 		request.params |= UPD78F0730_DATA_SIZE_8_BITS;
- 		dev_dbg(dev, "%s - 8 data bits\n", __func__);
-
+Acked-by: Brendan Higgins <brendanhiggins@google.com> (KUnit)
