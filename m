@@ -2,114 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A897216AB0
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 12:48:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22604216AC2
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 12:49:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728014AbgGGKsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 06:48:32 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:44450 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725941AbgGGKsb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 06:48:31 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 067AlXf7075713;
-        Tue, 7 Jul 2020 05:47:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1594118854;
-        bh=T+nHlhZOidYOCH29bUqU/Pu9XpetYy0kEACSndhggaU=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=W7I/bYA4P+vOJYQQssbhsAL3EojexiAa+4hA8Ips/b9sVXRZ/lf/JiINNDnpVcyce
-         H9Ag4yjTH4rD48TwtCQnQEMC68gIMgROVFVlMQv/fuv2rMJPGwM3tBNQb9sa95Twlg
-         sMzpFHxXjUXoh1/9xLoHvg3Ag5nFJR5SnOGcWFNI=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 067AlXG4099736
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 7 Jul 2020 05:47:33 -0500
-Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 7 Jul
- 2020 05:47:33 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 7 Jul 2020 05:47:33 -0500
-Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 067AlVc2096354;
-        Tue, 7 Jul 2020 05:47:31 -0500
-Subject: Re: [PATCH 21/28] ASoC: ti: omap-mcbsp-st: Remove set, but unused
- variable 'w'
-To:     Lee Jones <lee.jones@linaro.org>, <broonie@kernel.org>,
-        <lgirdwood@gmail.com>, <perex@perex.cz>, <tiwai@suse.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-        Jarkko Nikula <jarkko.nikula@bitmer.com>,
-        Samuel Ortiz <samuel.ortiz@nokia.com>,
-        <linux-omap@vger.kernel.org>
-References: <20200707101642.1747944-1-lee.jones@linaro.org>
- <20200707101642.1747944-22-lee.jones@linaro.org>
-From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
-X-Pep-Version: 2.0
-Message-ID: <61d554e7-0579-3c6c-b9e1-30b135d5927c@ti.com>
-Date:   Tue, 7 Jul 2020 13:48:34 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728184AbgGGKtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 06:49:40 -0400
+Received: from crapouillou.net ([89.234.176.41]:55324 "EHLO crapouillou.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727090AbgGGKtk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 06:49:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1594118977; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZmDFVd32HVWpn2fLFFX5aBkZfhcHoubKvi/z02gqnBE=;
+        b=YPAO/bHbTjq1Sm6NWJD8vbC8leRKZZL/co7H4rMR+AnM+37r3oae3RMy+uH+OcA1rBYg8P
+        9WH4Y0Qvg9vKpEU8UWt0zuX1MiDJh76iM5kL9ogH3jbYSWZvadOzV5qsGOmc1Q0iB5Ocu5
+        CRije11Vqkq6KZB8MabZLVMumce5eJQ=
+Date:   Tue, 07 Jul 2020 12:49:27 +0200
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH 0/2] remoteproc: Address runtime PM issues
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     ohad@wizery.com, bjorn.andersson@linaro.org, s-anna@ti.com,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-Id: <F2I3DQ.SZMCCDC0DNAD3@crapouillou.net>
+In-Reply-To: <20200630163118.3830422-1-mathieu.poirier@linaro.org>
+References: <20200630163118.3830422-1-mathieu.poirier@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20200707101642.1747944-22-lee.jones@linaro.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lee,
+Hi,
 
-On 07/07/2020 13.16, Lee Jones wrote:
-> Looks like 'w' has remained unchecked since the driver's inception.
+Le mar. 30 juin 2020 =E0 10:31, Mathieu Poirier=20
+<mathieu.poirier@linaro.org> a =E9crit :
+> This set follows the conversation that took place here[1] and provides
+> the "two small patches" I alluded to at the end of the thread.
 >=20
-> Fixes the following W=3D1 kernel build warning(s):
->=20
->  sound/soc/ti/omap-mcbsp-st.c: In function =E2=80=98omap_mcbsp_st_chgai=
-n=E2=80=99:
->  sound/soc/ti/omap-mcbsp-st.c:145:6: warning: variable =E2=80=98w=E2=80=
-=99 set but not used [-Wunused-but-set-variable]
->=20
-> Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> Cc: Jarkko Nikula <jarkko.nikula@bitmer.com>
-> Cc: Samuel Ortiz <samuel.ortiz@nokia.com>
-> Cc: linux-omap@vger.kernel.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  sound/soc/ti/omap-mcbsp-st.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->=20
-> diff --git a/sound/soc/ti/omap-mcbsp-st.c b/sound/soc/ti/omap-mcbsp-st.=
-c
-> index 5a32b54bbf3bb..643ef7eb68fc8 100644
-> --- a/sound/soc/ti/omap-mcbsp-st.c
-> +++ b/sound/soc/ti/omap-mcbsp-st.c
-> @@ -142,10 +142,9 @@ static void omap_mcbsp_st_fir_write(struct omap_mc=
-bsp *mcbsp, s16 *fir)
-> =20
->  static void omap_mcbsp_st_chgain(struct omap_mcbsp *mcbsp)
->  {
-> -	u16 w;
->  	struct omap_mcbsp_st_data *st_data =3D mcbsp->st_data;
-> =20
-> -	w =3D MCBSP_ST_READ(mcbsp, SSELCR);
-> +	MCBSP_ST_READ(mcbsp, SSELCR);
+> Paul Cercueil: patch 1/2 is compile tested only - please see that it=20
+> does what
+> you want.
 
-The read can be removed at the same time.
+Still works fine, so
+Tested-by: Paul Cercueil <paul@crapouillou.net>
 
->  	MCBSP_ST_WRITE(mcbsp, SGAINCR, ST_CH0GAIN(st_data->ch0gain) |
->  		       ST_CH1GAIN(st_data->ch1gain));
+for the patchset.
+
+Cheers,
+-Paul
+
+> Suman Anna: Please test on your side and confirm that it addresses=20
+> the Omap
+> regression.
+>=20
+> Applies on top of rproc-next (7dcef3988eed)
+>=20
+> Thanks,
+> Mathieu
+>=20
+> [1].=20
+> https://lore.kernel.org/linux-remoteproc/20200515104340.10473-1-paul@crap=
+ouillou.net/T/#t
+>=20
+> Mathieu Poirier (2):
+>   remoteproc: ingenic: Move clock handling to prepare/unprepare
+>     callbacks
+>   Revert "remoteproc: Add support for runtime PM"
+>=20
+>  drivers/remoteproc/ingenic_rproc.c   | 84=20
+> +++++++++-------------------
+>  drivers/remoteproc/remoteproc_core.c | 17 +-----
+>  2 files changed, 27 insertions(+), 74 deletions(-)
+>=20
+> --
+> 2.25.1
 >=20
 
-- P=C3=A9ter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
 
