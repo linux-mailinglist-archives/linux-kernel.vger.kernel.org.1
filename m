@@ -2,231 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6951B21707E
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:24:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6779D2170B8
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:24:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728448AbgGGPSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:18:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57496 "EHLO mail.kernel.org"
+        id S1729468AbgGGPUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:20:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59926 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728029AbgGGPSQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:18:16 -0400
+        id S1729456AbgGGPUC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 11:20:02 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D61A720663;
-        Tue,  7 Jul 2020 15:18:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8194820771;
+        Tue,  7 Jul 2020 15:20:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594135095;
-        bh=ilYYFJzYlR8L79QzvjEoYBrKxdaoFfPYh7DDSAojEbA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=0xr/fYkebjvU8sy2L62Dff08aHFz/fPZydMXk1Gt/Quo42+H3HliyfP3L0VV2vKF6
-         k28y2G+IdmGPGxdN5M7GhLIDtqRJGLBETA8usrliVbVC0zipG7sZrLU7sVlo1VU2MG
-         IgKycJYsRrDsCwTTXO6AswI8MWToRYgopH31GbsU=
+        s=default; t=1594135202;
+        bh=dwI23tYRJr8NZdszrh7dwuA5rCvVT6FR0p9deqTAc1c=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=lUuOdGNPCp1Cs8lGezQqeeWoq+VXclQDhF1kuaoLxN8Gok2UEm0CBRf5daRFydN5N
+         DNtmnNF+77yEfduoLnVPaSZuYla89ObfVALEXALx323M5EdrF1Z/UUlTmi89bN2qTm
+         LfQj+i1xE1Ba4RKm6y0zHHpHwzCNyKohEiZ272/Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        stable@vger.kernel.org
-Subject: [PATCH 4.19 00/36] 4.19.132-rc1 review
-Date:   Tue,  7 Jul 2020 17:16:52 +0200
-Message-Id: <20200707145749.130272978@linuxfoundation.org>
+        stable@vger.kernel.org, Anton Eidelman <anton@lightbitslabs.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 14/65] nvme: fix possible deadlock when I/O is blocked
+Date:   Tue,  7 Jul 2020 17:16:53 +0200
+Message-Id: <20200707145753.145545420@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-MIME-Version: 1.0
+In-Reply-To: <20200707145752.417212219@linuxfoundation.org>
+References: <20200707145752.417212219@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.132-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-4.19.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 4.19.132-rc1
-X-KernelTest-Deadline: 2020-07-09T14:57+00:00
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the start of the stable review cycle for the 4.19.132 release.
-There are 36 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
+From: Sagi Grimberg <sagi@grimberg.me>
 
-Responses should be made by Thu, 09 Jul 2020 14:57:34 +0000.
-Anything received after that time might be too late.
+[ Upstream commit 3b4b19721ec652ad2c4fe51dfbe5124212b5f581 ]
 
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.132-rc1.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-and the diffstat can be found below.
+Revert fab7772bfbcf ("nvme-multipath: revalidate nvme_ns_head gendisk
+in nvme_validate_ns")
 
-thanks,
+When adding a new namespace to the head disk (via nvme_mpath_set_live)
+we will see partition scan which triggers I/O on the mpath device node.
+This process will usually be triggered from the scan_work which holds
+the scan_lock. If I/O blocks (if we got ana change currently have only
+available paths but none are accessible) this can deadlock on the head
+disk bd_mutex as both partition scan I/O takes it, and head disk revalidation
+takes it to check for resize (also triggered from scan_work on a different
+path). See trace [1].
 
-greg k-h
+The mpath disk revalidation was originally added to detect online disk
+size change, but this is no longer needed since commit cb224c3af4df
+("nvme: Convert to use set_capacity_revalidate_and_notify") which already
+updates resize info without unnecessarily revalidating the disk (the
+mpath disk doesn't even implement .revalidate_disk fop).
 
--------------
-Pseudo-Shortlog of commits:
+[1]:
+--
+kernel: INFO: task kworker/u65:9:494 blocked for more than 241 seconds.
+kernel:       Tainted: G           OE     5.3.5-050305-generic #201910071830
+kernel: "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+kernel: kworker/u65:9   D    0   494      2 0x80004000
+kernel: Workqueue: nvme-wq nvme_scan_work [nvme_core]
+kernel: Call Trace:
+kernel:  __schedule+0x2b9/0x6c0
+kernel:  schedule+0x42/0xb0
+kernel:  schedule_preempt_disabled+0xe/0x10
+kernel:  __mutex_lock.isra.0+0x182/0x4f0
+kernel:  __mutex_lock_slowpath+0x13/0x20
+kernel:  mutex_lock+0x2e/0x40
+kernel:  revalidate_disk+0x63/0xa0
+kernel:  __nvme_revalidate_disk+0xfe/0x110 [nvme_core]
+kernel:  nvme_revalidate_disk+0xa4/0x160 [nvme_core]
+kernel:  ? evict+0x14c/0x1b0
+kernel:  revalidate_disk+0x2b/0xa0
+kernel:  nvme_validate_ns+0x49/0x940 [nvme_core]
+kernel:  ? blk_mq_free_request+0xd2/0x100
+kernel:  ? __nvme_submit_sync_cmd+0xbe/0x1e0 [nvme_core]
+kernel:  nvme_scan_work+0x24f/0x380 [nvme_core]
+kernel:  process_one_work+0x1db/0x380
+kernel:  worker_thread+0x249/0x400
+kernel:  kthread+0x104/0x140
+kernel:  ? process_one_work+0x380/0x380
+kernel:  ? kthread_park+0x80/0x80
+kernel:  ret_from_fork+0x1f/0x40
+...
+kernel: INFO: task kworker/u65:1:2630 blocked for more than 241 seconds.
+kernel:       Tainted: G           OE     5.3.5-050305-generic #201910071830
+kernel: "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+kernel: kworker/u65:1   D    0  2630      2 0x80004000
+kernel: Workqueue: nvme-wq nvme_scan_work [nvme_core]
+kernel: Call Trace:
+kernel:  __schedule+0x2b9/0x6c0
+kernel:  schedule+0x42/0xb0
+kernel:  io_schedule+0x16/0x40
+kernel:  do_read_cache_page+0x438/0x830
+kernel:  ? __switch_to_asm+0x34/0x70
+kernel:  ? file_fdatawait_range+0x30/0x30
+kernel:  read_cache_page+0x12/0x20
+kernel:  read_dev_sector+0x27/0xc0
+kernel:  read_lba+0xc1/0x220
+kernel:  ? kmem_cache_alloc_trace+0x19c/0x230
+kernel:  efi_partition+0x1e6/0x708
+kernel:  ? vsnprintf+0x39e/0x4e0
+kernel:  ? snprintf+0x49/0x60
+kernel:  check_partition+0x154/0x244
+kernel:  rescan_partitions+0xae/0x280
+kernel:  __blkdev_get+0x40f/0x560
+kernel:  blkdev_get+0x3d/0x140
+kernel:  __device_add_disk+0x388/0x480
+kernel:  device_add_disk+0x13/0x20
+kernel:  nvme_mpath_set_live+0x119/0x140 [nvme_core]
+kernel:  nvme_update_ns_ana_state+0x5c/0x60 [nvme_core]
+kernel:  nvme_set_ns_ana_state+0x1e/0x30 [nvme_core]
+kernel:  nvme_parse_ana_log+0xa1/0x180 [nvme_core]
+kernel:  ? nvme_update_ns_ana_state+0x60/0x60 [nvme_core]
+kernel:  nvme_mpath_add_disk+0x47/0x90 [nvme_core]
+kernel:  nvme_validate_ns+0x396/0x940 [nvme_core]
+kernel:  ? blk_mq_free_request+0xd2/0x100
+kernel:  nvme_scan_work+0x24f/0x380 [nvme_core]
+kernel:  process_one_work+0x1db/0x380
+kernel:  worker_thread+0x249/0x400
+kernel:  kthread+0x104/0x140
+kernel:  ? process_one_work+0x380/0x380
+kernel:  ? kthread_park+0x80/0x80
+kernel:  ret_from_fork+0x1f/0x40
+--
 
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 4.19.132-rc1
+Fixes: fab7772bfbcf ("nvme-multipath: revalidate nvme_ns_head gendisk
+in nvme_validate_ns")
+Signed-off-by: Anton Eidelman <anton@lightbitslabs.com>
+Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/nvme/host/core.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Peter Jones <pjones@redhat.com>
-    efi: Make it possible to disable efivar_ssdt entirely
+diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+index d4b388793f40d..c44c00b9e1d85 100644
+--- a/drivers/nvme/host/core.c
++++ b/drivers/nvme/host/core.c
+@@ -1870,7 +1870,6 @@ static void __nvme_revalidate_disk(struct gendisk *disk, struct nvme_id_ns *id)
+ 	if (ns->head->disk) {
+ 		nvme_update_disk_info(ns->head->disk, ns, id);
+ 		blk_queue_stack_limits(ns->head->disk->queue, ns->queue);
+-		revalidate_disk(ns->head->disk);
+ 	}
+ #endif
+ }
+-- 
+2.25.1
 
-Hou Tao <houtao1@huawei.com>
-    dm zoned: assign max_io_len correctly
-
-Marc Zyngier <maz@kernel.org>
-    irqchip/gic: Atomically update affinity
-
-Hauke Mehrtens <hauke@hauke-m.de>
-    MIPS: Add missing EHB in mtc0 -> mfc0 sequence for DSPen
-
-Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
-    cifs: Fix the target file was deleted when rename failed.
-
-Paul Aurich <paul@darkrain42.org>
-    SMB3: Honor lease disabling for multiuser mounts
-
-Paul Aurich <paul@darkrain42.org>
-    SMB3: Honor persistent/resilient handle flags for multiuser mounts
-
-Paul Aurich <paul@darkrain42.org>
-    SMB3: Honor 'seal' flag for multiuser mounts
-
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Revert "ALSA: usb-audio: Improve frames size computation"
-
-J. Bruce Fields <bfields@redhat.com>
-    nfsd: apply umask on fs without ACL support
-
-Wolfram Sang <wsa+renesas@sang-engineering.com>
-    i2c: mlxcpld: check correct size of maximum RECV_LEN packet
-
-Chris Packham <chris.packham@alliedtelesis.co.nz>
-    i2c: algo-pca: Add 0x78 as SCL stuck low status for PCA9665
-
-Christoph Hellwig <hch@lst.de>
-    nvme: fix a crash in nvme_mpath_add_disk
-
-Paul Aurich <paul@darkrain42.org>
-    SMB3: Honor 'posix' flag for multiuser mounts
-
-Hou Tao <houtao1@huawei.com>
-    virtio-blk: free vblk-vqs in error path of virtblk_probe()
-
-Chen-Yu Tsai <wens@csie.org>
-    drm: sun4i: hdmi: Remove extra HPD polling
-
-Misono Tomohiro <misono.tomohiro@jp.fujitsu.com>
-    hwmon: (acpi_power_meter) Fix potential memory leak in acpi_power_meter_add()
-
-Chu Lin <linchuyuan@google.com>
-    hwmon: (max6697) Make sure the OVERT mask is set correctly
-
-Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>
-    cxgb4: fix SGE queue dump destination buffer context
-
-Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>
-    cxgb4: use correct type for all-mask IP address comparison
-
-Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>
-    cxgb4: parse TC-U32 key values and masks natively
-
-Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>
-    cxgb4: use unaligned conversion for fetching timestamp
-
-Chen Tao <chentao107@huawei.com>
-    drm/msm/dpu: fix error return code in dpu_encoder_init
-
-Herbert Xu <herbert@gondor.apana.org.au>
-    crypto: af_alg - fix use-after-free in af_alg_accept() due to bh_lock_sock()
-
-Douglas Anderson <dianders@chromium.org>
-    kgdb: Avoid suspicious RCU usage warning
-
-Anton Eidelman <anton@lightbitslabs.com>
-    nvme-multipath: fix deadlock between ana_work and scan_work
-
-Sagi Grimberg <sagi@grimberg.me>
-    nvme: fix possible deadlock when I/O is blocked
-
-Keith Busch <kbusch@kernel.org>
-    nvme-multipath: set bdi capabilities once
-
-Christian Borntraeger <borntraeger@de.ibm.com>
-    s390/debug: avoid kernel warning on too large number of pages
-
-Zqiang <qiang.zhang@windriver.com>
-    usb: usbtest: fix missing kfree(dev->buf) in usbtest_disconnect
-
-Qian Cai <cai@lca.pw>
-    mm/slub: fix stack overruns with SLUB_STATS
-
-Dongli Zhang <dongli.zhang@oracle.com>
-    mm/slub.c: fix corrupted freechain in deactivate_slab()
-
-Tuomas Tynkkynen <tuomas.tynkkynen@iki.fi>
-    usbnet: smsc95xx: Fix use-after-free after removal
-
-Borislav Petkov <bp@suse.de>
-    EDAC/amd64: Read back the scrub rate PCI register on F15h
-
-Hugh Dickins <hughd@google.com>
-    mm: fix swap cache node allocation mask
-
-Filipe Manana <fdmanana@suse.com>
-    btrfs: fix a block group ref counter leak after failure to remove block group
-
-
--------------
-
-Diffstat:
-
- Makefile                                           |   4 +-
- arch/mips/kernel/traps.c                           |   1 +
- arch/s390/kernel/debug.c                           |   3 +-
- crypto/af_alg.c                                    |  26 ++---
- crypto/algif_aead.c                                |   9 +-
- crypto/algif_hash.c                                |   9 +-
- crypto/algif_skcipher.c                            |   9 +-
- drivers/block/virtio_blk.c                         |   1 +
- drivers/edac/amd64_edac.c                          |   2 +
- drivers/firmware/efi/Kconfig                       |  11 ++
- drivers/firmware/efi/efi.c                         |   2 +-
- drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c        |   2 +-
- drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c             |   5 +-
- drivers/hwmon/acpi_power_meter.c                   |   4 +-
- drivers/hwmon/max6697.c                            |   7 +-
- drivers/i2c/algos/i2c-algo-pca.c                   |   3 +-
- drivers/i2c/busses/i2c-mlxcpld.c                   |   4 +-
- drivers/irqchip/irq-gic.c                          |  14 +--
- drivers/md/dm-zoned-target.c                       |   2 +-
- drivers/net/ethernet/chelsio/cxgb4/cudbg_lib.c     |   6 +-
- drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c  |  10 +-
- drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_u32.c  |  18 +--
- .../ethernet/chelsio/cxgb4/cxgb4_tc_u32_parse.h    | 122 ++++++++++++++-------
- drivers/net/ethernet/chelsio/cxgb4/sge.c           |   2 +-
- drivers/net/usb/smsc95xx.c                         |   2 +-
- drivers/nvme/host/core.c                           |   1 -
- drivers/nvme/host/multipath.c                      |  33 ++++--
- drivers/usb/misc/usbtest.c                         |   1 +
- fs/btrfs/extent-tree.c                             |  19 ++--
- fs/cifs/connect.c                                  |   9 +-
- fs/cifs/inode.c                                    |  10 +-
- fs/nfsd/vfs.c                                      |   6 +
- include/crypto/if_alg.h                            |   4 +-
- kernel/debug/debug_core.c                          |   4 +
- mm/slub.c                                          |  30 ++++-
- mm/swap_state.c                                    |   3 +-
- sound/usb/card.h                                   |   4 -
- sound/usb/endpoint.c                               |  43 +-------
- sound/usb/endpoint.h                               |   1 -
- sound/usb/pcm.c                                    |   2 -
- 40 files changed, 256 insertions(+), 192 deletions(-)
 
 
