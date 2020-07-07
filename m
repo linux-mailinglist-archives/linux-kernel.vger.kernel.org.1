@@ -2,85 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 704C7216B2C
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 13:13:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F189B216B3B
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 13:15:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728283AbgGGLN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 07:13:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725944AbgGGLN0 (ORCPT
+        id S1728215AbgGGLPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 07:15:03 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:30986 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726745AbgGGLPC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 07:13:26 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15299C061755
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 04:13:26 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id t74so24508779lff.2
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 04:13:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DonQkpNAjPvHVAy79oehvm61+vwAXrm714g+O9PzNZA=;
-        b=TO49RncxH1IHsqYy4SyeMCPtM239Wd3esWklEchNM7cIvvWU8d22p9X+tt275U1fRS
-         QqEEj2tGMso79rUK8yQboBeqO7EOEDIn+AJP6k4nNnwlXsiYqtzfhbrl3kHQPTy/Yg2g
-         BdKs03I3DUY1Wu9v63xIkJx6xZK9ao09gx1KMJokoYvlekJIDtjeHgr9dG6UIXla7Gsl
-         1qM/+lnWDQRPxNzzSitTNYUDJyokjMxbg5R7oC9Hj0K2aB3oCYilUnuLygGZfB7853lR
-         i75e5Pi0QsdbsXzNMqijd5nrzs3k0iaH4atcp+LQy3p3kkBZ8X+jUEYy/7jb9cAt16Ew
-         BiQg==
+        Tue, 7 Jul 2020 07:15:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594120500;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2SkfEvXWOe57lsdbNZpY7pfaCzkWkPb715oD3Syj+e4=;
+        b=VxkEsHGKTerksz5+5AG5XGp6j6VCjPGXo1cXO/WoQLDoTcF2m2zNHqsDT4aYWLQ6zn2SB9
+        UHpRtuuWiY9H17J89zUPsF5UkSxlkw781qRW5VDqjE4NzKptsTThLNuIzrHomCkvCgtfzj
+        Fufrbn+Xv0UHQEG45h77y9QKqrtOKww=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-361-Mdy9FweHOBCXQAfGxBdXrw-1; Tue, 07 Jul 2020 07:14:57 -0400
+X-MC-Unique: Mdy9FweHOBCXQAfGxBdXrw-1
+Received: by mail-wr1-f70.google.com with SMTP id e11so48418196wrs.2
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 04:14:56 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DonQkpNAjPvHVAy79oehvm61+vwAXrm714g+O9PzNZA=;
-        b=eVMpm+jQgQtZP+xWknP4Qb1qzHrhPATuoB0OspsgG7q+jtJzhs2ZjJiLxF1DGQdHIA
-         AdJcBJAlh+P5FGcYgyL1LZ4ULkVs2E8G3RU+vMME+ocsXiHLhRgPT0P3R5LYsXIlOo/5
-         nL7w1Y32oRmU5ntQdZQKD9tn1iwhmYO8/9d3mjAsSJgsoYeEz8O6p2drceDsLTTLxmr+
-         /MRRrV01qXdT3bAIFrq6WUjS97nIMV2SVtI99kFOdJdF6G9vmlZXslboWRxjv7EEjNAq
-         5vEjkKmzCLJVSZ0CoL4t9mU5KCEMOn75Y0pO7uniHNzLq1LGpX4rY0PbeeEOV0Ds9GSr
-         lpWw==
-X-Gm-Message-State: AOAM530CeJlVYBDVVGK7Emj48dne4WYP7cmRkDy4f6EisN4EAaZzr3x6
-        HT1oWikJCVgMJYDhH6sIMwY1gAeZ8HFcO4kP06MtuA==
-X-Google-Smtp-Source: ABdhPJzwS5f0cvxfzHQbNMbpX81A+XQqU02t1sjlsXR6wKo7CCNC6u99RIC3QWt6g9P+mZRBN/2h2q03IPJWnOOnYNU=
-X-Received: by 2002:a19:f20a:: with SMTP id q10mr33042436lfh.89.1594120404530;
- Tue, 07 Jul 2020 04:13:24 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2SkfEvXWOe57lsdbNZpY7pfaCzkWkPb715oD3Syj+e4=;
+        b=BxWqL3TiATuLI+FQpOnVstGmllQkVmX4TrFHxK4pw0RhJs86kVwPMRy3w86dxfO+XR
+         vnZNsCpzgIbxKwXyMwoZ45X8Amx3vIB1yshMJo4ujkw6r4Uj02z9k+qmIKvKISBxFnwm
+         ppciTod+DBvEQMV3stVeSPksv6TuxOr3BF/5xFb+XQ4o2vXpAsNLZhsImG3/y7IIhcgy
+         d+2d4cnsjUs4OvfTU8V1It4uhaMf4svG/pt57byG5ZFV5EPSCAe3KycPqOjOOtnl9AtI
+         3RJPWNLLVyEH4o4rCDcIJzqgA0JvTv+GRDuaeZ50nce8GLxAiJWgW5cjISoE5rk3tih7
+         bYrg==
+X-Gm-Message-State: AOAM531PDMEzXsg+YllhNiImx1QjiCG2WE1aV0xHjWn00xg1O1Q7m73n
+        T0PMcrfgNgFKwkTyMEmlWv588G9vxYMPlAFsp2j5rm/vTdUardWoaNHghG7TChhddK6d7JvIItb
+        U2Za/2shxyhX3d6cX9CvkH2OI
+X-Received: by 2002:adf:de01:: with SMTP id b1mr52165616wrm.305.1594120495907;
+        Tue, 07 Jul 2020 04:14:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxfrgQVHW0xPEz2qK4WxsyK5VqMd4mfiVNX7Uo+QjneR39/UAS7kA8HbpUGWt9XZF4TGRAOtA==
+X-Received: by 2002:adf:de01:: with SMTP id b1mr52165596wrm.305.1594120495667;
+        Tue, 07 Jul 2020 04:14:55 -0700 (PDT)
+Received: from redhat.com (bzq-79-182-109-139.red.bezeqint.net. [79.182.109.139])
+        by smtp.gmail.com with ESMTPSA id 92sm597206wrr.96.2020.07.07.04.14.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Jul 2020 04:14:54 -0700 (PDT)
+Date:   Tue, 7 Jul 2020 07:14:49 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Cornelia Huck <cohuck@redhat.com>
+Cc:     Pierre Morel <pmorel@linux.ibm.com>, linux-kernel@vger.kernel.org,
+        pasic@linux.ibm.com, borntraeger@de.ibm.com, frankja@linux.ibm.com,
+        jasowang@redhat.com, kvm@vger.kernel.org,
+        linux-s390@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, thomas.lendacky@amd.com,
+        david@gibson.dropbear.id.au, linuxram@us.ibm.com,
+        heiko.carstens@de.ibm.com, gor@linux.ibm.com
+Subject: Re: [PATCH v4 2/2] s390: virtio: PV needs VIRTIO I/O device
+ protection
+Message-ID: <20200707060838-mutt-send-email-mst@kernel.org>
+References: <1594111477-15401-1-git-send-email-pmorel@linux.ibm.com>
+ <1594111477-15401-3-git-send-email-pmorel@linux.ibm.com>
+ <20200707114633.68122a00.cohuck@redhat.com>
 MIME-Version: 1.0
-References: <20200617180543.GA4186054@x1>
-In-Reply-To: <20200617180543.GA4186054@x1>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 7 Jul 2020 13:13:13 +0200
-Message-ID: <CACRpkdYN+N8cuFtgqeqk_L4QR0ZMUObYehEBTfnGGe1aR9srBA@mail.gmail.com>
-Subject: Re: [PATCH v2] pinctrl: single: fix function name in documentation
-To:     Drew Fustini <drew@beagleboard.org>
-Cc:     Jiri Kosina <trivial@kernel.org>, Tony Lindgren <tony@atomide.com>,
-        Haojian Zhuang <haojian.zhuang@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux-OMAP <linux-omap@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200707114633.68122a00.cohuck@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 8:05 PM Drew Fustini <drew@beagleboard.org> wrote:
+On Tue, Jul 07, 2020 at 11:46:33AM +0200, Cornelia Huck wrote:
+> On Tue,  7 Jul 2020 10:44:37 +0200
+> Pierre Morel <pmorel@linux.ibm.com> wrote:
+> 
+> > S390, protecting the guest memory against unauthorized host access
+> > needs to enforce VIRTIO I/O device protection through the use of
+> > VIRTIO_F_VERSION_1 and VIRTIO_F_IOMMU_PLATFORM.
+> 
+> Hm... what about:
+> 
+> "If protected virtualization is active on s390, the virtio queues are
+> not accessible to the host, unless VIRTIO_F_IOMMU_PLATFORM has been
+> negotiated. Use the new arch_validate_virtio_features() interface to
+> enforce this."
 
-> Use the correct the function name in the documentation for
-> "pcs_parse_one_pinctrl_entry()".
->
-> "smux_parse_one_pinctrl_entry()" appears to be an artifact from the
-> development of a prior patch series ("simple pinmux driver") which
-> transformed into pinctrl-single.
->
-> Fixes: 8b8b091bf07f ("pinctrl: Add one-register-per-pin type device tree based pinctrl driver")
-> Signed-off-by: Drew Fustini <drew@beagleboard.org>
-> ---
-> v2:
-> - add trivial@kernel.org
-> - add Fixes: tag
+s/enforce this/fail probe if that's not the case, preventing a host error on access attempt/
 
-Patch applied as non-critical fix (v5.9).
 
-Yours,
-Linus Walleij
+
+> > 
+> > Signed-off-by: Pierre Morel <pmorel@linux.ibm.com>
+> > ---
+> >  arch/s390/kernel/uv.c | 25 +++++++++++++++++++++++++
+> >  1 file changed, 25 insertions(+)
+> > 
+> > diff --git a/arch/s390/kernel/uv.c b/arch/s390/kernel/uv.c
+> > index c296e5c8dbf9..106330f6eda1 100644
+> > --- a/arch/s390/kernel/uv.c
+> > +++ b/arch/s390/kernel/uv.c
+> > @@ -14,6 +14,7 @@
+> >  #include <linux/memblock.h>
+> >  #include <linux/pagemap.h>
+> >  #include <linux/swap.h>
+> > +#include <linux/virtio_config.h>
+> >  #include <asm/facility.h>
+> >  #include <asm/sections.h>
+> >  #include <asm/uv.h>
+> > @@ -413,3 +414,27 @@ static int __init uv_info_init(void)
+> >  }
+> >  device_initcall(uv_info_init);
+> >  #endif
+> > +
+> > +/*
+> > + * arch_validate_virtio_iommu_platform
+> 
+> s/arch_validate_virtio_iommu_platform/arch_validate_virtio_features/
+> 
+> > + * @dev: the VIRTIO device being added
+> > + *
+> > + * Return value: returns -ENODEV if any features of the
+> > + *               device breaks the protected virtualization
+> > + *               0 otherwise.
+> 
+> I don't think you need to specify the contract here: that belongs to
+> the definition in the virtio core. What about simply adding a sentence
+> "Return an error if required features are missing on a guest running
+> with protected virtualization." ?
+> 
+> > + */
+> > +int arch_validate_virtio_features(struct virtio_device *dev)
+> > +{
+> 
+> Maybe jump out immediately if the guest is not protected?
+> 
+> > +	if (!virtio_has_feature(dev, VIRTIO_F_VERSION_1)) {
+> > +		dev_warn(&dev->dev, "device must provide VIRTIO_F_VERSION_1\n");
+> > +		return is_prot_virt_guest() ? -ENODEV : 0;
+> > +	}
+> > +
+> > +	if (!virtio_has_feature(dev, VIRTIO_F_IOMMU_PLATFORM)) {
+> > +		dev_warn(&dev->dev,
+> > +			 "device must provide VIRTIO_F_IOMMU_PLATFORM\n");
+> > +		return is_prot_virt_guest() ? -ENODEV : 0;
+> > +	}
+> 
+> if (!is_prot_virt_guest())
+> 	return 0;
+> 
+> if (!virtio_has_feature(dev, VIRTIO_F_VERSION_1)) {
+> 	dev_warn(&dev->dev,
+>                  "legacy virtio is incompatible with protected guests");
+> 	return -ENODEV;
+> }
+> 
+> if (!virtio_has_feature(dev, VIRTIO_F_IOMMU_PLATFORM)) {
+> 	dev_warn(&dev->dev,
+> 		 "device does not work with limited memory access in protected guests");
+> 	return -ENODEV;
+> }
+> 
+> > +
+> > +	return 0;
+> > +}
+
