@@ -2,167 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DA8E216BE2
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 13:43:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26D16216BE5
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 13:43:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727793AbgGGLnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 07:43:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726805AbgGGLnP (ORCPT
+        id S1728225AbgGGLnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 07:43:37 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:37901 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726911AbgGGLnh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 07:43:15 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 099F3C061755
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 04:43:15 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id k5so8849043pjg.3
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 04:43:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ohadtc0L1YoGCqvh2RHLLL9N195SXhq2FPyHHtyTf6I=;
-        b=MXAMCwQC8IL27+0vSF5sDoTYe9kbihNM+TeZqy0WH9RI3hH+SYQ9jVN0g6OCodM1sw
-         5r20dsooDL0hkjMZe2WtW5bpA4xoShUQPLoTZU+tSHKHwa/1fTkLYm7vWA+lmd7OL+3d
-         oFhJHDS3pUCuV07P3UmfJDcaq6ZZlh2rXJfsF1bFXfH4e1lpGbKFtadcaFa532quvoLj
-         McwFQeBEfJ3Iugph62liszwuWDG9lDg6vIDqn0d035p5EoijBbKHkEeUlBqAe0IIy5HM
-         2KOR34BeAXfhVOrcydaGIWDMNNu5Rck5SBvqcytLvw70T/Mn2PAVh9o56amAGiX4f5IV
-         gofg==
+        Tue, 7 Jul 2020 07:43:37 -0400
+Received: by mail-wr1-f68.google.com with SMTP id z13so44805396wrw.5
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 04:43:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=ohadtc0L1YoGCqvh2RHLLL9N195SXhq2FPyHHtyTf6I=;
-        b=hQHZogxYCiGsSDFv+2SuyJ2KDQSvydfHIbKenqkaV9eACDCuifZKhWuMCccvUXxrkG
-         PaAdAcXnekXeRVgPVtTrf0xlTVibjKRqV8eH3LkPa4wlsUC2vhrVf222PBhXsb+sJQ/Z
-         9qouabU0SzaqRVQl8CpCO+TRnBrb+sVULB9zA4JytQ9NdnbhGXjMc5fMGiY5BUfkYxJO
-         rFlAMbf130fqW1P6ug3t4IVfIVNIMq90rEODTcYyW7khZ3I03KoKRLRUwg3pKeZkzll5
-         tVtThEEcTU64u3luxNwGPnu36QX/GirpqQBr3UBXUxNnBdUCzzcmfKW8XN8EgAiqEMGd
-         Lrbg==
-X-Gm-Message-State: AOAM5315MYBzuvFRW0Z3j5m5eamau3pBAjWs4o3QeEU9zSihoPjPPNGa
-        I1YF8OR16JnKGDi+aarrrC4=
-X-Google-Smtp-Source: ABdhPJyuDHicYHOOouJdoIfw6ImZfpUPNRi11nfS3g9x/1Aq5MFh5yUCacafbwTrf61t0Skjc1cAxQ==
-X-Received: by 2002:a17:902:40a:: with SMTP id 10mr23417001ple.260.1594122194607;
-        Tue, 07 Jul 2020 04:43:14 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id o2sm57891pfh.160.2020.07.07.04.43.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Jul 2020 04:43:13 -0700 (PDT)
-Subject: Re: [PATCH] platform/chrome: cros_ec_proto: Convert EC error codes to
- Linux error codes
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc:     Benson Leung <bleung@chromium.org>, linux-kernel@vger.kernel.org,
-        Yu-Hsuan Hsu <yuhsuan@chromium.org>,
-        Prashant Malani <pmalani@chromium.org>
-References: <20200704142607.171400-1-linux@roeck-us.net>
- <7fd5528a-017e-d706-8092-8e1d6b187243@collabora.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <8f9314a2-bd40-4ce0-ca9d-25722c642107@roeck-us.net>
-Date:   Tue, 7 Jul 2020 04:43:12 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0iIJx4zFTm/QekOoPGgV77T4u+IczqF22Iq3ukLcga4=;
+        b=TGHBisSzy1Pkl6qkEi5wWIKr33eGWMDQrANQhxFDERvrh4o/BzR2p9xS982Do4/PVY
+         TbL8zbRQtgMMK9Oy0ImlsK5iI6m6NF+4MsQEV6DcNP/Q+ZO8OoraJdaWqWjbPZztJSJ9
+         3/ETkO1gEmCB4zwAOwUhfpOummsUxxTHY9Y6Mf6RKirT5i6uvRVoJwhf7FVYkkeIb1id
+         mj7I7R77/JR76ZuUEt+WNkZ9KCv2zAHQf8yuEHerQEFwkIWrwFH9yzfKvJ/q7FqRpvJV
+         xNNt6FlSFr2d6ADmCpX88/x3PEna4z95l7XxYxqnwB9C3mPvOrmjujms2/4qywkobOdW
+         saDA==
+X-Gm-Message-State: AOAM532FrDwBR++HAjz9RiYniGOnELxN7hVScghgS0qgzUG+TJC0LtWH
+        S2jcsHIpsA3ExdnB8fsUFTQ=
+X-Google-Smtp-Source: ABdhPJyZha0j+WFnGG6K83ocm94LvbUKPuxWqQOfxKv8yuAbsQkgXBnnQn5TsSjkMoJtG+OkcjaxSg==
+X-Received: by 2002:a5d:630c:: with SMTP id i12mr58870630wru.158.1594122214582;
+        Tue, 07 Jul 2020 04:43:34 -0700 (PDT)
+Received: from localhost (ip-37-188-179-51.eurotel.cz. [37.188.179.51])
+        by smtp.gmail.com with ESMTPSA id d13sm706252wrn.61.2020.07.07.04.43.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Jul 2020 04:43:33 -0700 (PDT)
+Date:   Tue, 7 Jul 2020 13:43:32 +0200
+From:   Michal Hocko <mhocko@kernel.org>
+To:     js1304@gmail.com
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel-team@lge.com,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Christoph Hellwig <hch@infradead.org>,
+        Roman Gushchin <guro@fb.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Subject: Re: [PATCH v4 06/11] mm/migrate: make a standard migration target
+ allocation function
+Message-ID: <20200707114332.GJ5913@dhcp22.suse.cz>
+References: <1594107889-32228-1-git-send-email-iamjoonsoo.kim@lge.com>
+ <1594107889-32228-7-git-send-email-iamjoonsoo.kim@lge.com>
 MIME-Version: 1.0
-In-Reply-To: <7fd5528a-017e-d706-8092-8e1d6b187243@collabora.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1594107889-32228-7-git-send-email-iamjoonsoo.kim@lge.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/7/20 3:10 AM, Enric Balletbo i Serra wrote:
-> Hi Prashant and Guenter,
+On Tue 07-07-20 16:44:44, Joonsoo Kim wrote:
+> From: Joonsoo Kim <iamjoonsoo.kim@lge.com>
 > 
-> Thank you to spend your time on look at this.
+> There are some similar functions for migration target allocation.  Since
+> there is no fundamental difference, it's better to keep just one rather
+> than keeping all variants.  This patch implements base migration target
+> allocation function.  In the following patches, variants will be converted
+> to use this function.
 > 
-> On 4/7/20 16:26, Guenter Roeck wrote:
->> The EC reports a variety of error codes. Most of those, with the exception
->> of EC_RES_INVALID_VERSION, are converted to -EPROTO. As result, the actual
->> error code gets lost. Convert all EC errors to Linux error codes to report
->> a more meaningful error to the caller to aid debugging.
->>
->> Cc: Yu-Hsuan Hsu <yuhsuan@chromium.org>
->> Cc: Prashant Malani <pmalani@chromium.org>
->> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
->> ---
+> Changes should be mechanical but there are some differences. First, Some
+> callers' nodemask is assgined to NULL since NULL nodemask will be
+> considered as all available nodes, that is, &node_states[N_MEMORY].
+> Second, for hugetlb page allocation, gfp_mask is ORed since a user could
+> provide a gfp_mask from now on. Third, if provided node id is NUMA_NO_NODE,
+> node id is set up to the node where migration source lives.
 > 
-> For me the patch looks good as is. Said that, I'd like to discuss a bit more
-> (but not too much) about it :-). My "concerns" are:
+> Note that PageHighmem() call in previous function is changed to open-code
+> "is_highmem_idx()" since it provides more readability.
 > 
-> - It is not clear to me if some EC errors match directly to a linux kernel error
-> codes, the importance of them, and which action should be taken in that case or
-> if just reporting is enough.
-> 
-> - The EC result can be obtained, either, enabling more debug traces or using the
-> linux kernel tracing tools. So, IMO mapping _all_ the errors has very little value.
-> 
-> Right now, the policy I followed is return -EPROTO for all EC errors and
-> introduce/match a new error when someone (another kernel driver or userspace
-> needs to know about it, i.e [1], where some EC drivers do different actions if
-> -ENOTSUPP is returned). We introduced that error because we had a use case for it.
-> 
-> The future, I'd like to maintain this policy if it makes sense to you. And
-> introduce a new error when we have a use case for it. I.e if at some point a
-> kernel driver needs to know when the EC is busy (-EBUSY) because the driver
-> waits and retries again, I'll be fine to introduce this new error/match code.
-> Otherwise, I feel that has no really value.
-> 
-> Said that, if you still feel, that this will help you for debugging purposes, I
-> am completely fine to pick the patch.
-> 
-> Thoughts?
-> 
+> Acked-by: Vlastimil Babka <vbabka@suse.cz>
+> Signed-off-by: Joonsoo Kim <iamjoonsoo.kim@lge.com>
 
-Yes, I did feel it was useful, error codes are never perfect, it is rarely
-possible to enable tracing in situations in which the error that was observed,
-and I think it would have been and would be useful (having it would have saved
-hours of analysis and debugging time), but not for the cost of spending hours
-of argument about it. Please drop.
+Acked-by: Michal Hocko <mhocko@suse.com>
 
-Guenter
+Thanks!
+
+> ---
+>  include/linux/migrate.h |  9 +++++----
+>  mm/internal.h           |  7 +++++++
+>  mm/memory-failure.c     |  7 +++++--
+>  mm/memory_hotplug.c     | 14 +++++++++-----
+>  mm/migrate.c            | 27 +++++++++++++++++----------
+>  mm/page_isolation.c     |  7 +++++--
+>  6 files changed, 48 insertions(+), 23 deletions(-)
+> 
+> diff --git a/include/linux/migrate.h b/include/linux/migrate.h
+> index 1d70b4a..cc56f0d 100644
+> --- a/include/linux/migrate.h
+> +++ b/include/linux/migrate.h
+> @@ -10,6 +10,8 @@
+>  typedef struct page *new_page_t(struct page *page, unsigned long private);
+>  typedef void free_page_t(struct page *page, unsigned long private);
+>  
+> +struct migration_target_control;
+> +
+>  /*
+>   * Return values from addresss_space_operations.migratepage():
+>   * - negative errno on page migration failure;
+> @@ -39,8 +41,7 @@ extern int migrate_page(struct address_space *mapping,
+>  			enum migrate_mode mode);
+>  extern int migrate_pages(struct list_head *l, new_page_t new, free_page_t free,
+>  		unsigned long private, enum migrate_mode mode, int reason);
+> -extern struct page *new_page_nodemask(struct page *page,
+> -		int preferred_nid, nodemask_t *nodemask);
+> +extern struct page *alloc_migration_target(struct page *page, unsigned long private);
+>  extern int isolate_movable_page(struct page *page, isolate_mode_t mode);
+>  extern void putback_movable_page(struct page *page);
+>  
+> @@ -59,8 +60,8 @@ static inline int migrate_pages(struct list_head *l, new_page_t new,
+>  		free_page_t free, unsigned long private, enum migrate_mode mode,
+>  		int reason)
+>  	{ return -ENOSYS; }
+> -static inline struct page *new_page_nodemask(struct page *page,
+> -		int preferred_nid, nodemask_t *nodemask)
+> +static inline struct page *alloc_migration_target(struct page *page,
+> +		unsigned long private)
+>  	{ return NULL; }
+>  static inline int isolate_movable_page(struct page *page, isolate_mode_t mode)
+>  	{ return -EBUSY; }
+> diff --git a/mm/internal.h b/mm/internal.h
+> index dd14c53..0beacf3 100644
+> --- a/mm/internal.h
+> +++ b/mm/internal.h
+> @@ -614,4 +614,11 @@ static inline bool is_migrate_highatomic_page(struct page *page)
+>  
+>  void setup_zone_pageset(struct zone *zone);
+>  extern struct page *alloc_new_node_page(struct page *page, unsigned long node);
+> +
+> +struct migration_target_control {
+> +	int nid;		/* preferred node id */
+> +	nodemask_t *nmask;
+> +	gfp_t gfp_mask;
+> +};
+> +
+>  #endif	/* __MM_INTERNAL_H */
+> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+> index c5e4cee..609d42b6 100644
+> --- a/mm/memory-failure.c
+> +++ b/mm/memory-failure.c
+> @@ -1679,9 +1679,12 @@ EXPORT_SYMBOL(unpoison_memory);
+>  
+>  static struct page *new_page(struct page *p, unsigned long private)
+>  {
+> -	int nid = page_to_nid(p);
+> +	struct migration_target_control mtc = {
+> +		.nid = page_to_nid(p),
+> +		.gfp_mask = GFP_USER | __GFP_MOVABLE | __GFP_RETRY_MAYFAIL,
+> +	};
+>  
+> -	return new_page_nodemask(p, nid, &node_states[N_MEMORY]);
+> +	return alloc_migration_target(p, (unsigned long)&mtc);
+>  }
+>  
+>  /*
+> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+> index cafe65eb..86bc2ad 100644
+> --- a/mm/memory_hotplug.c
+> +++ b/mm/memory_hotplug.c
+> @@ -1267,19 +1267,23 @@ static int scan_movable_pages(unsigned long start, unsigned long end,
+>  
+>  static struct page *new_node_page(struct page *page, unsigned long private)
+>  {
+> -	int nid = page_to_nid(page);
+>  	nodemask_t nmask = node_states[N_MEMORY];
+> +	struct migration_target_control mtc = {
+> +		.nid = page_to_nid(page),
+> +		.nmask = &nmask,
+> +		.gfp_mask = GFP_USER | __GFP_MOVABLE | __GFP_RETRY_MAYFAIL,
+> +	};
+>  
+>  	/*
+>  	 * try to allocate from a different node but reuse this node if there
+>  	 * are no other online nodes to be used (e.g. we are offlining a part
+>  	 * of the only existing node)
+>  	 */
+> -	node_clear(nid, nmask);
+> -	if (nodes_empty(nmask))
+> -		node_set(nid, nmask);
+> +	node_clear(mtc.nid, *mtc.nmask);
+> +	if (nodes_empty(*mtc.nmask))
+> +		node_set(mtc.nid, *mtc.nmask);
+>  
+> -	return new_page_nodemask(page, nid, &nmask);
+> +	return alloc_migration_target(page, (unsigned long)&mtc);
+>  }
+>  
+>  static int
+> diff --git a/mm/migrate.c b/mm/migrate.c
+> index ecd7615..00cd81c 100644
+> --- a/mm/migrate.c
+> +++ b/mm/migrate.c
+> @@ -1531,19 +1531,27 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
+>  	return rc;
+>  }
+>  
+> -struct page *new_page_nodemask(struct page *page,
+> -				int preferred_nid, nodemask_t *nodemask)
+> +struct page *alloc_migration_target(struct page *page, unsigned long private)
+>  {
+> -	gfp_t gfp_mask = GFP_USER | __GFP_MOVABLE | __GFP_RETRY_MAYFAIL;
+> +	struct migration_target_control *mtc;
+> +	gfp_t gfp_mask;
+>  	unsigned int order = 0;
+>  	struct page *new_page = NULL;
+> +	int nid;
+> +	int zidx;
+> +
+> +	mtc = (struct migration_target_control *)private;
+> +	gfp_mask = mtc->gfp_mask;
+> +	nid = mtc->nid;
+> +	if (nid == NUMA_NO_NODE)
+> +		nid = page_to_nid(page);
+>  
+>  	if (PageHuge(page)) {
+>  		struct hstate *h = page_hstate(compound_head(page));
+>  
+> -		gfp_mask = htlb_alloc_mask(h);
+> -		return alloc_huge_page_nodemask(h, preferred_nid,
+> -						nodemask, gfp_mask, false);
+> +		gfp_mask |= htlb_alloc_mask(h);
+> +		return alloc_huge_page_nodemask(h, nid, mtc->nmask,
+> +						gfp_mask, false);
+>  	}
+>  
+>  	if (PageTransHuge(page)) {
+> @@ -1555,12 +1563,11 @@ struct page *new_page_nodemask(struct page *page,
+>  		gfp_mask |= GFP_TRANSHUGE;
+>  		order = HPAGE_PMD_ORDER;
+>  	}
+> -
+> -	if (PageHighMem(page) || (zone_idx(page_zone(page)) == ZONE_MOVABLE))
+> +	zidx = zone_idx(page_zone(page));
+> +	if (is_highmem_idx(zidx) || zidx == ZONE_MOVABLE)
+>  		gfp_mask |= __GFP_HIGHMEM;
+>  
+> -	new_page = __alloc_pages_nodemask(gfp_mask, order,
+> -				preferred_nid, nodemask);
+> +	new_page = __alloc_pages_nodemask(gfp_mask, order, nid, mtc->nmask);
+>  
+>  	if (new_page && PageTransHuge(new_page))
+>  		prep_transhuge_page(new_page);
+> diff --git a/mm/page_isolation.c b/mm/page_isolation.c
+> index aec26d9..f25c66e 100644
+> --- a/mm/page_isolation.c
+> +++ b/mm/page_isolation.c
+> @@ -309,7 +309,10 @@ int test_pages_isolated(unsigned long start_pfn, unsigned long end_pfn,
+>  
+>  struct page *alloc_migrate_target(struct page *page, unsigned long private)
+>  {
+> -	int nid = page_to_nid(page);
+> +	struct migration_target_control mtc = {
+> +		.nid = page_to_nid(page),
+> +		.gfp_mask = GFP_USER | __GFP_MOVABLE | __GFP_RETRY_MAYFAIL,
+> +	};
+>  
+> -	return new_page_nodemask(page, nid, &node_states[N_MEMORY]);
+> +	return alloc_migration_target(page, (unsigned long)&mtc);
+>  }
+> -- 
+> 2.7.4
+
+-- 
+Michal Hocko
+SUSE Labs
