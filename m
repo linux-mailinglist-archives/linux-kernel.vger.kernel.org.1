@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B145217866
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 21:57:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62A06217876
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 21:59:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728801AbgGGT5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 15:57:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36874 "EHLO mail.kernel.org"
+        id S1728382AbgGGT7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 15:59:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38060 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727908AbgGGT5j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 15:57:39 -0400
+        id S1727003AbgGGT7j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 15:59:39 -0400
 Received: from embeddedor (unknown [200.39.26.250])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 593472067D;
-        Tue,  7 Jul 2020 19:57:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2E2E1206F6;
+        Tue,  7 Jul 2020 19:59:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594151857;
-        bh=ZRPqHjrjXQNzTnP+bbUN9VtxVwenujj/0ds3cIqTmts=;
+        s=default; t=1594151977;
+        bh=wBUoZXp791DtM0idK2+sP5gdsYPKyaALxH32+tVv6O0=;
         h=Date:From:To:Cc:Subject:From;
-        b=1119twLO0cx59urQr+pBmRWcDvfwpDvXTEf2PtQuAYUJxRqwR5DrFagQ9Pfg4JgeC
-         w4tKj3uwoS34zw3GkC1SeBlVGWw6ZB/ANjEuSLhBX24VO0L+yJYzrS6RIu3MV8PKl3
-         LQWekwVvaxLvkVMK/Ma0giuXAg/r3za6XvTSTKFs=
-Date:   Tue, 7 Jul 2020 15:03:03 -0500
+        b=Bko9YNNVLC1f6MjlmJnmCwlQ0+04wBUeJIJ0YYZGJp3T7zGsEi902zVRUWGmMpJGd
+         jBcYGTBjwDQPOW2gya1jjjHpmvOce2W5qyE11/XsOQR4ewFHzqDkpxnSb+XHFR1JVZ
+         kjrj4i40iMEtN5JLMO57xnka0hs62fdxLCWooVBM=
+Date:   Tue, 7 Jul 2020 15:05:04 -0500
 From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org
-Cc:     "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        Oleg Nesterov <oleg@redhat.com>,
-        "Gustavo A. R. Silva" <kernel.org@embeddedor>
-Subject: [PATCH] x86: Use fallthrough pseudo-keyword
-Message-ID: <20200707200303.GA4680@embeddedor>
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>,
+        linux-xfs@vger.kernel.org
+Cc:     linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: [PATCH] xfs: Use fallthrough pseudo-keyword
+Message-ID: <20200707200504.GA4796@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -50,329 +48,291 @@ fall-through markings when it is the case.
 
 Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- arch/x86/boot/cmdline.c          |    4 ++--
- arch/x86/boot/compressed/kaslr.c |    2 +-
- arch/x86/kernel/alternative.c    |    3 +--
- arch/x86/kernel/apic/io_apic.c   |    4 ++--
- arch/x86/kernel/apic/probe_32.c  |    2 +-
- arch/x86/kernel/cpu/cacheinfo.c  |    2 +-
- arch/x86/kernel/cpu/mtrr/cyrix.c |    2 +-
- arch/x86/kernel/hw_breakpoint.c  |    2 +-
- arch/x86/kernel/kgdb.c           |    4 ++--
- arch/x86/kernel/mpparse.c        |    4 ++--
- arch/x86/kernel/ptrace.c         |    2 +-
- arch/x86/kernel/reboot.c         |    2 +-
- arch/x86/kernel/signal.c         |    2 +-
- arch/x86/kernel/uprobes.c        |    4 ++--
- arch/x86/lib/cmdline.c           |    8 ++++----
- arch/x86/lib/insn-eval.c         |    7 ++-----
- 16 files changed, 25 insertions(+), 29 deletions(-)
+ fs/xfs/libxfs/xfs_ag_resv.c   |    4 ++--
+ fs/xfs/libxfs/xfs_alloc.c     |    2 +-
+ fs/xfs/libxfs/xfs_da_btree.c  |    2 +-
+ fs/xfs/libxfs/xfs_inode_buf.c |    4 ++--
+ fs/xfs/scrub/bmap.c           |    2 +-
+ fs/xfs/scrub/btree.c          |    2 +-
+ fs/xfs/scrub/common.c         |    6 +++---
+ fs/xfs/scrub/dabtree.c        |    2 +-
+ fs/xfs/scrub/repair.c         |    2 +-
+ fs/xfs/xfs_bmap_util.c        |    2 +-
+ fs/xfs/xfs_export.c           |    4 ++--
+ fs/xfs/xfs_file.c             |    2 +-
+ fs/xfs/xfs_fsmap.c            |    2 +-
+ fs/xfs/xfs_inode.c            |    2 +-
+ fs/xfs/xfs_ioctl.c            |    4 ++--
+ fs/xfs/xfs_iomap.c            |    2 +-
+ fs/xfs/xfs_trans_buf.c        |    2 +-
+ 17 files changed, 23 insertions(+), 23 deletions(-)
 
-diff --git a/arch/x86/boot/cmdline.c b/arch/x86/boot/cmdline.c
-index 4ff01176c1cc..21d56ae83cdf 100644
---- a/arch/x86/boot/cmdline.c
-+++ b/arch/x86/boot/cmdline.c
-@@ -54,7 +54,7 @@ int __cmdline_find_option(unsigned long cmdline_ptr, const char *option, char *b
- 			/* else */
- 			state = st_wordcmp;
- 			opptr = option;
--			/* fall through */
-+			fallthrough;
- 
- 		case st_wordcmp:
- 			if (c == '=' && !*opptr) {
-@@ -129,7 +129,7 @@ int __cmdline_find_option_bool(unsigned long cmdline_ptr, const char *option)
- 			state = st_wordcmp;
- 			opptr = option;
- 			wstart = pos;
--			/* fall through */
-+			fallthrough;
- 
- 		case st_wordcmp:
- 			if (!*opptr)
-diff --git a/arch/x86/boot/compressed/kaslr.c b/arch/x86/boot/compressed/kaslr.c
-index d7408af55738..de7115ff10ca 100644
---- a/arch/x86/boot/compressed/kaslr.c
-+++ b/arch/x86/boot/compressed/kaslr.c
-@@ -185,7 +185,7 @@ parse_memmap(char *p, unsigned long long *start, unsigned long long *size,
- 			}
- 			*size = 0;
- 		}
--		/* Fall through */
-+		fallthrough;
+diff --git a/fs/xfs/libxfs/xfs_ag_resv.c b/fs/xfs/libxfs/xfs_ag_resv.c
+index fdfe6dc0d307..0b061a027e4e 100644
+--- a/fs/xfs/libxfs/xfs_ag_resv.c
++++ b/fs/xfs/libxfs/xfs_ag_resv.c
+@@ -338,7 +338,7 @@ xfs_ag_resv_alloc_extent(
+ 		break;
  	default:
+ 		ASSERT(0);
+-		/* fall through */
++		fallthrough;
+ 	case XFS_AG_RESV_NONE:
+ 		field = args->wasdel ? XFS_TRANS_SB_RES_FDBLOCKS :
+ 				       XFS_TRANS_SB_FDBLOCKS;
+@@ -380,7 +380,7 @@ xfs_ag_resv_free_extent(
+ 		break;
+ 	default:
+ 		ASSERT(0);
+-		/* fall through */
++		fallthrough;
+ 	case XFS_AG_RESV_NONE:
+ 		xfs_trans_mod_sb(tp, XFS_TRANS_SB_FDBLOCKS, (int64_t)len);
+ 		return;
+diff --git a/fs/xfs/libxfs/xfs_alloc.c b/fs/xfs/libxfs/xfs_alloc.c
+index 203e74fa64aa..6b153e6ee342 100644
+--- a/fs/xfs/libxfs/xfs_alloc.c
++++ b/fs/xfs/libxfs/xfs_alloc.c
+@@ -3119,7 +3119,7 @@ xfs_alloc_vextent(
+ 		}
+ 		args->agbno = XFS_FSB_TO_AGBNO(mp, args->fsbno);
+ 		args->type = XFS_ALLOCTYPE_NEAR_BNO;
+-		/* FALLTHROUGH */
++		fallthrough;
+ 	case XFS_ALLOCTYPE_FIRST_AG:
  		/*
- 		 * If w/o offset, only size specified, memmap=nn[KMG] has the
-diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
-index 8fd39ff74a49..22155ac435fa 100644
---- a/arch/x86/kernel/alternative.c
-+++ b/arch/x86/kernel/alternative.c
-@@ -235,8 +235,7 @@ void __init arch_init_ideal_nops(void)
- 			ideal_nops = p6_nops;
- 			return;
- 		}
--
--		/* fall through */
-+		fallthrough;
- 
- 	default:
- #ifdef CONFIG_X86_64
-diff --git a/arch/x86/kernel/apic/io_apic.c b/arch/x86/kernel/apic/io_apic.c
-index ce61e3e7d399..edfe05529fac 100644
---- a/arch/x86/kernel/apic/io_apic.c
-+++ b/arch/x86/kernel/apic/io_apic.c
-@@ -800,7 +800,7 @@ static int irq_polarity(int idx)
- 		return IOAPIC_POL_HIGH;
- 	case MP_IRQPOL_RESERVED:
- 		pr_warn("IOAPIC: Invalid polarity: 2, defaulting to low\n");
--		/* fall through */
-+		fallthrough;
- 	case MP_IRQPOL_ACTIVE_LOW:
- 	default: /* Pointless default required due to do gcc stupidity */
- 		return IOAPIC_POL_LOW;
-@@ -848,7 +848,7 @@ static int irq_trigger(int idx)
- 		return IOAPIC_EDGE;
- 	case MP_IRQTRIG_RESERVED:
- 		pr_warn("IOAPIC: Invalid trigger mode 2 defaulting to level\n");
--		/* fall through */
-+		fallthrough;
- 	case MP_IRQTRIG_LEVEL:
- 	default: /* Pointless default required due to do gcc stupidity */
- 		return IOAPIC_LEVEL;
-diff --git a/arch/x86/kernel/apic/probe_32.c b/arch/x86/kernel/apic/probe_32.c
-index 67b33d67002f..4aea229ef8f4 100644
---- a/arch/x86/kernel/apic/probe_32.c
-+++ b/arch/x86/kernel/apic/probe_32.c
-@@ -148,7 +148,7 @@ void __init default_setup_apic_routing(void)
+ 		 * Rotate through the allocation groups looking for a winner.
+diff --git a/fs/xfs/libxfs/xfs_da_btree.c b/fs/xfs/libxfs/xfs_da_btree.c
+index 897749c41f36..c48beec0c0df 100644
+--- a/fs/xfs/libxfs/xfs_da_btree.c
++++ b/fs/xfs/libxfs/xfs_da_btree.c
+@@ -276,7 +276,7 @@ xfs_da3_node_read_verify(
+ 						__this_address);
  				break;
  			}
- 			/* P4 and above */
 -			/* fall through */
 +			fallthrough;
- 		case X86_VENDOR_HYGON:
- 		case X86_VENDOR_AMD:
- 			def_to_bigsmp = 1;
-diff --git a/arch/x86/kernel/cpu/cacheinfo.c b/arch/x86/kernel/cpu/cacheinfo.c
-index c7503be92f35..57074cf3ad7c 100644
---- a/arch/x86/kernel/cpu/cacheinfo.c
-+++ b/arch/x86/kernel/cpu/cacheinfo.c
-@@ -248,7 +248,7 @@ amd_cpuid4(int leaf, union _cpuid4_leaf_eax *eax,
- 	switch (leaf) {
- 	case 1:
- 		l1 = &l1i;
--		/* fall through */
-+		fallthrough;
- 	case 0:
- 		if (!l1->val)
- 			return;
-diff --git a/arch/x86/kernel/cpu/mtrr/cyrix.c b/arch/x86/kernel/cpu/mtrr/cyrix.c
-index 72182809b333..ca670919b561 100644
---- a/arch/x86/kernel/cpu/mtrr/cyrix.c
-+++ b/arch/x86/kernel/cpu/mtrr/cyrix.c
-@@ -98,7 +98,7 @@ cyrix_get_free_region(unsigned long base, unsigned long size, int replace_reg)
- 	case 7:
- 		if (size < 0x40)
+ 		case XFS_DA_NODE_MAGIC:
+ 			fa = xfs_da3_node_verify(bp);
+ 			if (fa)
+diff --git a/fs/xfs/libxfs/xfs_inode_buf.c b/fs/xfs/libxfs/xfs_inode_buf.c
+index 6f84ea85fdd8..63b0d86ff985 100644
+--- a/fs/xfs/libxfs/xfs_inode_buf.c
++++ b/fs/xfs/libxfs/xfs_inode_buf.c
+@@ -439,8 +439,8 @@ xfs_dinode_verify_forkoff(
+ 		if (dip->di_forkoff != (roundup(sizeof(xfs_dev_t), 8) >> 3))
+ 			return __this_address;
+ 		break;
+-	case XFS_DINODE_FMT_LOCAL:	/* fall through ... */
+-	case XFS_DINODE_FMT_EXTENTS:    /* fall through ... */
++	case XFS_DINODE_FMT_LOCAL:
++	case XFS_DINODE_FMT_EXTENTS:
+ 	case XFS_DINODE_FMT_BTREE:
+ 		if (dip->di_forkoff >= (XFS_LITINO(mp) >> 3))
+ 			return __this_address;
+diff --git a/fs/xfs/scrub/bmap.c b/fs/xfs/scrub/bmap.c
+index 7badd6dfe544..10e8599b34f6 100644
+--- a/fs/xfs/scrub/bmap.c
++++ b/fs/xfs/scrub/bmap.c
+@@ -252,7 +252,7 @@ xchk_bmap_iextent_xref(
+ 	case XFS_DATA_FORK:
+ 		if (xfs_is_reflink_inode(info->sc->ip))
  			break;
--		/* Else, fall through */
+-		/* fall through */
 +		fallthrough;
- 	case 6:
- 	case 5:
- 	case 4:
-diff --git a/arch/x86/kernel/hw_breakpoint.c b/arch/x86/kernel/hw_breakpoint.c
-index 8cdf29ffd95f..b98ff620ba77 100644
---- a/arch/x86/kernel/hw_breakpoint.c
-+++ b/arch/x86/kernel/hw_breakpoint.c
-@@ -349,7 +349,7 @@ static int arch_build_bp_info(struct perf_event *bp,
- 			hw->len = X86_BREAKPOINT_LEN_X;
- 			return 0;
- 		}
+ 	case XFS_ATTR_FORK:
+ 		xchk_xref_is_not_shared(info->sc, agbno,
+ 				irec->br_blockcount);
+diff --git a/fs/xfs/scrub/btree.c b/fs/xfs/scrub/btree.c
+index f52a7b8256f9..990a379fc322 100644
+--- a/fs/xfs/scrub/btree.c
++++ b/fs/xfs/scrub/btree.c
+@@ -43,7 +43,7 @@ __xchk_btree_process_error(
+ 		/* Note the badness but don't abort. */
+ 		sc->sm->sm_flags |= errflag;
+ 		*error = 0;
 -		/* fall through */
 +		fallthrough;
  	default:
- 		return -EINVAL;
- 	}
-diff --git a/arch/x86/kernel/kgdb.c b/arch/x86/kernel/kgdb.c
-index 68acd30c6b87..c2f02f308ecf 100644
---- a/arch/x86/kernel/kgdb.c
-+++ b/arch/x86/kernel/kgdb.c
-@@ -450,7 +450,7 @@ int kgdb_arch_handle_exception(int e_vector, int signo, int err_code,
- 		ptr = &remcomInBuffer[1];
- 		if (kgdb_hex2long(&ptr, &addr))
- 			linux_regs->ip = addr;
--		/* fall through */
-+		fallthrough;
- 	case 'D':
- 	case 'k':
- 		/* clear the trace bit */
-@@ -539,7 +539,7 @@ static int __kgdb_notify(struct die_args *args, unsigned long cmd)
- 			 * a system call which should be ignored
- 			 */
- 			return NOTIFY_DONE;
+ 		if (cur->bc_flags & XFS_BTREE_ROOT_IN_INODE)
+ 			trace_xchk_ifork_btree_op_error(sc, cur, level,
+diff --git a/fs/xfs/scrub/common.c b/fs/xfs/scrub/common.c
+index 18876056e5e0..63f13c8ed8c7 100644
+--- a/fs/xfs/scrub/common.c
++++ b/fs/xfs/scrub/common.c
+@@ -81,7 +81,7 @@ __xchk_process_error(
+ 		/* Note the badness but don't abort. */
+ 		sc->sm->sm_flags |= errflag;
+ 		*error = 0;
 -		/* fall through */
 +		fallthrough;
  	default:
- 		if (user_mode(regs))
- 			return NOTIFY_DONE;
-diff --git a/arch/x86/kernel/mpparse.c b/arch/x86/kernel/mpparse.c
-index afac7ccce72f..55554be6c5e3 100644
---- a/arch/x86/kernel/mpparse.c
-+++ b/arch/x86/kernel/mpparse.c
-@@ -311,7 +311,7 @@ static void __init construct_default_ioirq_mptable(int mpc_default_type)
- 		case 2:
- 			if (i == 0 || i == 13)
- 				continue;	/* IRQ0 & IRQ13 not connected */
+ 		trace_xchk_op_error(sc, agno, bno, *error,
+ 				ret_ip);
+@@ -134,7 +134,7 @@ __xchk_fblock_process_error(
+ 		/* Note the badness but don't abort. */
+ 		sc->sm->sm_flags |= errflag;
+ 		*error = 0;
+-		/* fall through */
++		fallthrough;
+ 	default:
+ 		trace_xchk_file_op_error(sc, whichfork, offset, *error,
+ 				ret_ip);
+@@ -713,7 +713,7 @@ xchk_get_inode(
+ 		if (error)
+ 			return -ENOENT;
+ 		error = -EFSCORRUPTED;
+-		/* fall through */
++		fallthrough;
+ 	default:
+ 		trace_xchk_op_error(sc,
+ 				XFS_INO_TO_AGNO(mp, sc->sm->sm_ino),
+diff --git a/fs/xfs/scrub/dabtree.c b/fs/xfs/scrub/dabtree.c
+index 44b15015021f..238a0cab792c 100644
+--- a/fs/xfs/scrub/dabtree.c
++++ b/fs/xfs/scrub/dabtree.c
+@@ -47,7 +47,7 @@ xchk_da_process_error(
+ 		/* Note the badness but don't abort. */
+ 		sc->sm->sm_flags |= XFS_SCRUB_OFLAG_CORRUPT;
+ 		*error = 0;
+-		/* fall through */
++		fallthrough;
+ 	default:
+ 		trace_xchk_file_op_error(sc, ds->dargs.whichfork,
+ 				xfs_dir2_da_to_db(ds->dargs.geo,
+diff --git a/fs/xfs/scrub/repair.c b/fs/xfs/scrub/repair.c
+index db3cfd12803d..90948ca758a7 100644
+--- a/fs/xfs/scrub/repair.c
++++ b/fs/xfs/scrub/repair.c
+@@ -944,7 +944,7 @@ xrep_ino_dqattach(
+ 			xrep_force_quotacheck(sc, XFS_DQ_GROUP);
+ 		if (XFS_IS_PQUOTA_ON(sc->mp) && !sc->ip->i_pdquot)
+ 			xrep_force_quotacheck(sc, XFS_DQ_PROJ);
+-		/* fall through */
++		fallthrough;
+ 	case -ESRCH:
+ 		error = 0;
+ 		break;
+diff --git a/fs/xfs/xfs_bmap_util.c b/fs/xfs/xfs_bmap_util.c
+index f37f5cc4b19f..035896e81104 100644
+--- a/fs/xfs/xfs_bmap_util.c
++++ b/fs/xfs/xfs_bmap_util.c
+@@ -244,7 +244,7 @@ xfs_bmap_count_blocks(
+ 		 */
+ 		*count += btblocks - 1;
+ 
+-		/* fall through */
++		fallthrough;
+ 	case XFS_DINODE_FMT_EXTENTS:
+ 		*nextents = xfs_bmap_count_leaves(ifp, count);
+ 		break;
+diff --git a/fs/xfs/xfs_export.c b/fs/xfs/xfs_export.c
+index 5a4b0119143a..bc5fcb631c51 100644
+--- a/fs/xfs/xfs_export.c
++++ b/fs/xfs/xfs_export.c
+@@ -84,7 +84,7 @@ xfs_fs_encode_fh(
+ 	case FILEID_INO32_GEN_PARENT:
+ 		fid->i32.parent_ino = XFS_I(parent)->i_ino;
+ 		fid->i32.parent_gen = parent->i_generation;
+-		/*FALLTHRU*/
++		fallthrough;
+ 	case FILEID_INO32_GEN:
+ 		fid->i32.ino = XFS_I(inode)->i_ino;
+ 		fid->i32.gen = inode->i_generation;
+@@ -92,7 +92,7 @@ xfs_fs_encode_fh(
+ 	case FILEID_INO32_GEN_PARENT | XFS_FILEID_TYPE_64FLAG:
+ 		fid64->parent_ino = XFS_I(parent)->i_ino;
+ 		fid64->parent_gen = parent->i_generation;
+-		/*FALLTHRU*/
++		fallthrough;
+ 	case FILEID_INO32_GEN | XFS_FILEID_TYPE_64FLAG:
+ 		fid64->ino = XFS_I(inode)->i_ino;
+ 		fid64->gen = inode->i_generation;
+diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
+index 00db81eac80d..b85d1da85b82 100644
+--- a/fs/xfs/xfs_file.c
++++ b/fs/xfs/xfs_file.c
+@@ -769,7 +769,7 @@ xfs_break_layouts(
+ 			error = xfs_break_dax_layouts(inode, &retry);
+ 			if (error || retry)
+ 				break;
 -			/* fall through */
 +			fallthrough;
- 		default:
- 			if (i == 2)
- 				continue;	/* IRQ2 is never connected */
-@@ -355,7 +355,7 @@ static void __init construct_ioapic_table(int mpc_default_type)
- 	default:
- 		pr_err("???\nUnknown standard configuration %d\n",
- 		       mpc_default_type);
--		/* fall through */
-+		fallthrough;
- 	case 1:
- 	case 5:
- 		memcpy(bus.bustype, "ISA   ", 6);
-diff --git a/arch/x86/kernel/ptrace.c b/arch/x86/kernel/ptrace.c
-index 44130588987f..00b06f5a28a5 100644
---- a/arch/x86/kernel/ptrace.c
-+++ b/arch/x86/kernel/ptrace.c
-@@ -204,7 +204,7 @@ static int set_segment_reg(struct task_struct *task,
- 	case offsetof(struct user_regs_struct, ss):
- 		if (unlikely(value == 0))
- 			return -EIO;
--		/* Else, fall through */
-+		fallthrough;
- 
- 	default:
- 		*pt_regs_access(task_pt_regs(task), offset) = value;
-diff --git a/arch/x86/kernel/reboot.c b/arch/x86/kernel/reboot.c
-index 0ec7ced727fe..a515e2d230b7 100644
---- a/arch/x86/kernel/reboot.c
-+++ b/arch/x86/kernel/reboot.c
-@@ -654,7 +654,7 @@ static void native_machine_emergency_restart(void)
- 
- 		case BOOT_CF9_FORCE:
- 			port_cf9_safe = true;
--			/* Fall through */
-+			fallthrough;
- 
- 		case BOOT_CF9_SAFE:
- 			if (port_cf9_safe) {
-diff --git a/arch/x86/kernel/signal.c b/arch/x86/kernel/signal.c
-index 399f97abee02..9497f96e62ba 100644
---- a/arch/x86/kernel/signal.c
-+++ b/arch/x86/kernel/signal.c
-@@ -725,7 +725,7 @@ handle_signal(struct ksignal *ksig, struct pt_regs *regs)
- 				regs->ax = -EINTR;
- 				break;
- 			}
--		/* fallthrough */
-+			fallthrough;
- 		case -ERESTARTNOINTR:
- 			regs->ax = regs->orig_ax;
- 			regs->ip -= 2;
-diff --git a/arch/x86/kernel/uprobes.c b/arch/x86/kernel/uprobes.c
-index 15e5aad8ac2c..3fdaa042823d 100644
---- a/arch/x86/kernel/uprobes.c
-+++ b/arch/x86/kernel/uprobes.c
-@@ -735,7 +735,7 @@ static int branch_setup_xol_ops(struct arch_uprobe *auprobe, struct insn *insn)
- 		 * OPCODE1() of the "short" jmp which checks the same condition.
- 		 */
- 		opc1 = OPCODE2(insn) - 0x10;
--		/* fall through */
-+		fallthrough;
- 	default:
- 		if (!is_cond_jmp_opcode(opc1))
- 			return -ENOSYS;
-@@ -892,7 +892,7 @@ int arch_uprobe_analyze_insn(struct arch_uprobe *auprobe, struct mm_struct *mm,
- 			fix_ip_or_call = 0;
+ 		case BREAK_WRITE:
+ 			error = xfs_break_leased_layouts(inode, iolock, &retry);
  			break;
- 		}
--		/* fall through */
-+		fallthrough;
- 	default:
- 		riprel_analyze(auprobe, &insn);
- 	}
-diff --git a/arch/x86/lib/cmdline.c b/arch/x86/lib/cmdline.c
-index 4f1719e22d3c..b6da09339308 100644
---- a/arch/x86/lib/cmdline.c
-+++ b/arch/x86/lib/cmdline.c
-@@ -58,7 +58,7 @@ __cmdline_find_option_bool(const char *cmdline, int max_cmdline_size,
- 			state = st_wordcmp;
- 			opptr = option;
- 			wstart = pos;
--			/* fall through */
-+			fallthrough;
- 
- 		case st_wordcmp:
- 			if (!*opptr) {
-@@ -89,7 +89,7 @@ __cmdline_find_option_bool(const char *cmdline, int max_cmdline_size,
- 				break;
- 			}
- 			state = st_wordskip;
--			/* fall through */
-+			fallthrough;
- 
- 		case st_wordskip:
- 			if (!c)
-@@ -151,7 +151,7 @@ __cmdline_find_option(const char *cmdline, int max_cmdline_size,
- 
- 			state = st_wordcmp;
- 			opptr = option;
--			/* fall through */
-+			fallthrough;
- 
- 		case st_wordcmp:
- 			if ((c == '=') && !*opptr) {
-@@ -172,7 +172,7 @@ __cmdline_find_option(const char *cmdline, int max_cmdline_size,
- 				break;
- 			}
- 			state = st_wordskip;
--			/* fall through */
-+			fallthrough;
- 
- 		case st_wordskip:
- 			if (myisspace(c))
-diff --git a/arch/x86/lib/insn-eval.c b/arch/x86/lib/insn-eval.c
-index 31600d851fd8..9c9a58d81ebe 100644
---- a/arch/x86/lib/insn-eval.c
-+++ b/arch/x86/lib/insn-eval.c
-@@ -178,8 +178,7 @@ static int resolve_default_seg(struct insn *insn, struct pt_regs *regs, int off)
- 		/* Need insn to verify address size. */
- 		if (insn->addr_bytes == 2)
- 			return -EINVAL;
--
--		/* fall through */
-+		fallthrough;
- 
- 	case -EDOM:
- 	case offsetof(struct pt_regs, bx):
-@@ -362,7 +361,6 @@ static short get_segment_selector(struct pt_regs *regs, int seg_reg_idx)
- 		case INAT_SEG_REG_GS:
- 			return vm86regs->gs;
- 		case INAT_SEG_REG_IGNORE:
--			/* fall through */
- 		default:
- 			return -EINVAL;
- 		}
-@@ -386,7 +384,6 @@ static short get_segment_selector(struct pt_regs *regs, int seg_reg_idx)
- 		 */
- 		return get_user_gs(regs);
- 	case INAT_SEG_REG_IGNORE:
--		/* fall through */
- 	default:
- 		return -EINVAL;
- 	}
-@@ -786,7 +783,7 @@ int insn_get_code_seg_params(struct pt_regs *regs)
- 		 */
- 		return INSN_CODE_SEG_PARAMS(4, 8);
- 	case 3: /* Invalid setting. CS.L=1, CS.D=1 */
+diff --git a/fs/xfs/xfs_fsmap.c b/fs/xfs/xfs_fsmap.c
+index 4eebcec4aae6..c334550aeea7 100644
+--- a/fs/xfs/xfs_fsmap.c
++++ b/fs/xfs/xfs_fsmap.c
+@@ -100,7 +100,7 @@ xfs_fsmap_owner_to_rmap(
+ 		dest->rm_owner = XFS_RMAP_OWN_COW;
+ 		break;
+ 	case XFS_FMR_OWN_DEFECTIVE:	/* not implemented */
 -		/* fall through */
 +		fallthrough;
  	default:
  		return -EINVAL;
  	}
+diff --git a/fs/xfs/xfs_inode.c b/fs/xfs/xfs_inode.c
+index 9aea7d68d8ab..52ce37ed14de 100644
+--- a/fs/xfs/xfs_inode.c
++++ b/fs/xfs/xfs_inode.c
+@@ -906,7 +906,7 @@ xfs_ialloc(
+ 			if (pip->i_d.di_flags2 & XFS_DIFLAG2_DAX)
+ 				ip->i_d.di_flags2 |= XFS_DIFLAG2_DAX;
+ 		}
+-		/* FALLTHROUGH */
++		fallthrough;
+ 	case S_IFLNK:
+ 		ip->i_df.if_format = XFS_DINODE_FMT_EXTENTS;
+ 		ip->i_df.if_flags = XFS_IFEXTENTS;
+diff --git a/fs/xfs/xfs_ioctl.c b/fs/xfs/xfs_ioctl.c
+index a190212ca85d..ea366a645c8e 100644
+--- a/fs/xfs/xfs_ioctl.c
++++ b/fs/xfs/xfs_ioctl.c
+@@ -557,7 +557,7 @@ xfs_ioc_attrmulti_one(
+ 	case ATTR_OP_REMOVE:
+ 		value = NULL;
+ 		*len = 0;
+-		/* fall through */
++		fallthrough;
+ 	case ATTR_OP_SET:
+ 		error = mnt_want_write_file(parfilp);
+ 		if (error)
+@@ -1660,7 +1660,7 @@ xfs_ioc_getbmap(
+ 	switch (cmd) {
+ 	case XFS_IOC_GETBMAPA:
+ 		bmx.bmv_iflags = BMV_IF_ATTRFORK;
+-		/*FALLTHRU*/
++		fallthrough;
+ 	case XFS_IOC_GETBMAP:
+ 		if (file->f_mode & FMODE_NOCMTIME)
+ 			bmx.bmv_iflags |= BMV_IF_NO_DMAPI_READ;
+diff --git a/fs/xfs/xfs_iomap.c b/fs/xfs/xfs_iomap.c
+index b9a8c3798e08..fc4b65b24fdf 100644
+--- a/fs/xfs/xfs_iomap.c
++++ b/fs/xfs/xfs_iomap.c
+@@ -1002,7 +1002,7 @@ xfs_buffered_write_iomap_begin(
+ 			prealloc_blocks = 0;
+ 			goto retry;
+ 		}
+-		/*FALLTHRU*/
++		fallthrough;
+ 	default:
+ 		goto out_unlock;
+ 	}
+diff --git a/fs/xfs/xfs_trans_buf.c b/fs/xfs/xfs_trans_buf.c
+index 08174ffa2118..ad79065607cc 100644
+--- a/fs/xfs/xfs_trans_buf.c
++++ b/fs/xfs/xfs_trans_buf.c
+@@ -310,7 +310,7 @@ xfs_trans_read_buf_map(
+ 	default:
+ 		if (tp && (tp->t_flags & XFS_TRANS_DIRTY))
+ 			xfs_force_shutdown(tp->t_mountp, SHUTDOWN_META_IO_ERROR);
+-		/* fall through */
++		fallthrough;
+ 	case -ENOMEM:
+ 	case -EAGAIN:
+ 		return error;
 
