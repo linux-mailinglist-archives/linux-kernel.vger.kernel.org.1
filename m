@@ -2,100 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61F1B217402
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 18:34:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4A772173F8
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 18:30:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728256AbgGGQeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 12:34:09 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45520 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727777AbgGGQeI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 12:34:08 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 586C1B001;
-        Tue,  7 Jul 2020 16:34:07 +0000 (UTC)
-Subject: Re: [PATCH v4 11/11] mm/memory_hotplug: remove a wrapper for
- alloc_migration_target()
-To:     js1304@gmail.com, Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        kernel-team@lge.com, Christoph Hellwig <hch@infradead.org>,
-        Roman Gushchin <guro@fb.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-References: <1594107889-32228-1-git-send-email-iamjoonsoo.kim@lge.com>
- <1594107889-32228-12-git-send-email-iamjoonsoo.kim@lge.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <575ab75d-1382-5f12-96df-53c0bb947f8c@suse.cz>
-Date:   Tue, 7 Jul 2020 17:09:16 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1728189AbgGGQam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 12:30:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43078 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726911AbgGGQal (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 12:30:41 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A41DFC061755
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 09:30:41 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id di5so14158843qvb.11
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 09:30:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ti/+hZiOquvF5N2JLhYOzuH+AIpIHJEt/nDYOxccwps=;
+        b=qLP+5VBPQz5ox+9pAMpWmJbxG7qvfMXwFt1ZVAS40taFtFVS2G4AboXtjtfvafVeK7
+         qQjX73lv2CvlbFf0DPfnQTRpbZRXcc2MDuONjES3ebATEyWvXBFjKShxlYc2dFgUp+8O
+         KF45M1p7f8MWV7XroKuY/3a9TwJBofCnqXqG5WK3Tpea5+xXDzcQr32Os+98ZLbFB93z
+         +ZYF1nZimfd6Gr7RDkfDhpXrJe39QcXby4Y55mFEtswkKBelC0/WJenSV8m1ZTwHa+Wo
+         DKc8T+6VbfqNibRIfKBUjl8kjv6AY8brZTM4h/KroBNHslFbOwtRodDbIx4fX8vSLN9B
+         DhoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ti/+hZiOquvF5N2JLhYOzuH+AIpIHJEt/nDYOxccwps=;
+        b=neKXN1n81xMpTNk3WNXnM4pqgFW2xk6EnHQmdPvMY6cKKysmX+GmnyQdpCgZ1v5w+B
+         GkWyY7+o94tOsqJH3A9p+Sd+DhHx10/MM62ZZ1pCGhdix2zAbOj/oB6NXWW726RaF2jF
+         mcHXBSWmHthlxG/AuuMXBp0DAKFAloRNESqisQ1v9a1TbfQ4RXbV5Kz1nt+YJqb9+Y9c
+         qsa5lrZT8vY8vMUPtTD58giU72vqM4faWxzLiJP1Zu8PpfcZZ+f/+ZYwXyh0jI0U26z+
+         K7MRIXlIL/p5VZSDFAep3SncMClByrqIT8LozNj8YXQC5rG/QqD16v37qJeV+3xqoKb5
+         P2nw==
+X-Gm-Message-State: AOAM533XwnspmPlS9i5QFlgzm/8jo09Z+ndEmU7/G+6N65aUrWzHW4v7
+        eFiRb37P+KNxGjdmh/w6JSfElBc0e3riO/i3DQo=
+X-Google-Smtp-Source: ABdhPJzFd5AWBG/kEeF/s9VNCdKXRs9fzrF74RxtC/PKZSPqDvtMtuOPN7uCe5MFF4We5LsuMqNtnbFuNYTdkShwCH8=
+X-Received: by 2002:ad4:4903:: with SMTP id bh3mr53168588qvb.17.1594139440905;
+ Tue, 07 Jul 2020 09:30:40 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1594107889-32228-12-git-send-email-iamjoonsoo.kim@lge.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200619090635.58548-1-lizhe67@huawei.com> <e0d04d70ce674584a71af1a5a00984dd26729891.camel@infinera.com>
+ <dadc539df01b17aa5dc85e7c0f1dbc83591667cc.camel@infinera.com>
+In-Reply-To: <dadc539df01b17aa5dc85e7c0f1dbc83591667cc.camel@infinera.com>
+From:   Richard Weinberger <richard.weinberger@gmail.com>
+Date:   Tue, 7 Jul 2020 18:30:29 +0200
+Message-ID: <CAFLxGvzP3AuZBJ3RugZiRTobxv3Z-kxYKnBUi0rfshwf7GuuCA@mail.gmail.com>
+Subject: Re: [PATCH] jffs2: fix UAF problem
+To:     Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+Cc:     "richard@nod.at" <richard@nod.at>,
+        "lizhe67@huawei.com" <lizhe67@huawei.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+        "dwmw2@infradead.org" <dwmw2@infradead.org>,
+        "zhongjubin@huawei.com" <zhongjubin@huawei.com>,
+        "chenjie6@huawei.com" <chenjie6@huawei.com>,
+        "wangfangpeng1@huawei.com" <wangfangpeng1@huawei.com>,
+        "qiuxi1@huawei.com" <qiuxi1@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/7/20 9:44 AM, js1304@gmail.com wrote:
-> From: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-> 
-> To calculate the correct node to migrate the page for hotplug, we need
-> to check node id of the page. Wrapper for alloc_migration_target() exists
-> for this purpose.
-> 
-> However, Vlastimil informs that all migration source pages come from
-> a single node. In this case, we don't need to check the node id for each
-> page and we don't need to re-set the target nodemask for each page by
-> using the wrapper. Set up the migration_target_control once and use it for
-> all pages.
-> 
-> Signed-off-by: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+On Tue, Jul 7, 2020 at 4:08 PM Joakim Tjernlund
+<Joakim.Tjernlund@infinera.com> wrote:
+>
+> Maintainer ping ?
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Whoops. Applied for fixes.
 
-Thanks! Nitpick below.
-
-> @@ -1345,9 +1324,28 @@ do_migrate_range(unsigned long start_pfn, unsigned long end_pfn)
->  		put_page(page);
->  	}
->  	if (!list_empty(&source)) {
-> -		/* Allocate a new page from the nearest neighbor node */
-> -		ret = migrate_pages(&source, new_node_page, NULL, 0,
-> -					MIGRATE_SYNC, MR_MEMORY_HOTPLUG);
-> +		nodemask_t nmask = node_states[N_MEMORY];
-> +		struct migration_target_control mtc = {
-> +			.nmask = &nmask,
-> +			.gfp_mask = GFP_USER | __GFP_MOVABLE | __GFP_RETRY_MAYFAIL,
-> +		};
-> +
-> +		/*
-> +		 * We have checked that migration range is on a single zone so
-> +		 * we can use the nid of the first page to all the others.
-> +		 */
-> +		mtc.nid = page_to_nid(list_first_entry(&source, struct page, lru));
-> +
-> +		/*
-> +		 * try to allocate from a different node but reuse this node
-> +		 * if there are no other online nodes to be used (e.g. we are
-> +		 * offlining a part of the only existing node)
-> +		 */
-> +		node_clear(mtc.nid, *mtc.nmask);
-> +		if (nodes_empty(*mtc.nmask))
-> +			node_set(mtc.nid, *mtc.nmask);
-
-You could have kept using 'nmask' instead of '*mtc.nmask'. Actually that applies
-to patch 6 too, for less churn.
-
-> +		ret = migrate_pages(&source, alloc_migration_target, NULL,
-> +			(unsigned long)&mtc, MIGRATE_SYNC, MR_MEMORY_HOTPLUG);
->  		if (ret) {
->  			list_for_each_entry(page, &source, lru) {
->  				pr_warn("migrating pfn %lx failed ret:%d ",
-> 
-
+-- 
+Thanks,
+//richard
