@@ -2,368 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 473F3217233
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:44:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51C46217239
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:44:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730282AbgGGPaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:30:01 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:42034 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728955AbgGGP34 (ORCPT
+        id S1730201AbgGGPaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:30:24 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:34031 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729146AbgGGPaP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:29:56 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 067F4UqJ009718;
-        Tue, 7 Jul 2020 11:29:30 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32486d0kaj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Jul 2020 11:29:29 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 067F6VF2016407;
-        Tue, 7 Jul 2020 15:29:27 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma03ams.nl.ibm.com with ESMTP id 322hd7uk2s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Jul 2020 15:29:27 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 067FTPWI41877654
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 7 Jul 2020 15:29:25 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 24A81AE055;
-        Tue,  7 Jul 2020 15:29:25 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 12373AE045;
-        Tue,  7 Jul 2020 15:29:23 +0000 (GMT)
-Received: from pratiks-thinkpad.ibmuc.com (unknown [9.85.70.197])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  7 Jul 2020 15:29:22 +0000 (GMT)
-From:   Pratik Rajesh Sampat <psampat@linux.ibm.com>
-To:     rjw@rjwysocki.net, daniel.lezcano@linaro.org, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, paulus@samba.org, srivatsa@csail.mit.edu,
-        shuah@kernel.org, ego@linux.vnet.ibm.com, svaidy@linux.ibm.com,
-        linux-pm@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: [PATCH 2/2] selftest/cpuidle: Add support for cpuidle latency measurement
-Date:   Tue,  7 Jul 2020 20:59:17 +0530
-Message-Id: <20200707152917.10652-3-psampat@linux.ibm.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20200707152917.10652-1-psampat@linux.ibm.com>
-References: <20200707152917.10652-1-psampat@linux.ibm.com>
+        Tue, 7 Jul 2020 11:30:15 -0400
+Received: by mail-il1-f197.google.com with SMTP id y3so18723185ily.1
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 08:30:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=l5UfEPh6FpvcqMK9z9YCj6DGXnLOftd9sD9CfnuWGio=;
+        b=ZjFvhjITieldz3Eyu5+AmYELpEfSDulUbg06yvsCyppgg95vBuFBvYQeYXjXe8r4bL
+         8qnf+6i3bLnZdT5ndseMAR5m6s1aoJ9kT6pKNbQlmXHhqyJ0/Gjuv8EHm33TS1zO9Fll
+         26SawQcB+6znWEJfcyxEQ7cLsUtl8qz/hEJgsdP+wwRnoVDCQrgs0aLvO7Usd1mIcAUS
+         Qyl7tynJ1gEjxxqev5vKoIU9jRdspM+4TGS/5DHtmewlem3BrQzd9lXb/+uzkYMKa4Lz
+         OJOWnIjBKc0pokcaBK/xsdzZ5jBd6JZJQFpXSzNCVXqj8fn6DSJgJSRdkf1PLOKZwMET
+         D77w==
+X-Gm-Message-State: AOAM531iWd/UnvFcXcH52F1tbQnme2bvLOpw+PfeN64TUaY2ihQComAr
+        RZr3BP5ohPAwZVCZ0j/dEuccbeUM0kZ1+IWrDZgs13eDs0Zu
+X-Google-Smtp-Source: ABdhPJz38T51Ko5sHjG40+v5KRv3EC++gkZunO00fGv8OmSqfw3SsUSP6S8MGjq1G+jBQ8orWn+UoH3rpNWToypbts+u/bx/KU74
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-07_08:2020-07-07,2020-07-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- impostorscore=0 mlxscore=0 clxscore=1015 adultscore=0 priorityscore=1501
- mlxlogscore=999 lowpriorityscore=0 suspectscore=0 bulkscore=0 phishscore=0
- cotscore=-2147483648 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2007070109
+X-Received: by 2002:a05:6602:2c8b:: with SMTP id i11mr31473413iow.139.1594135814367;
+ Tue, 07 Jul 2020 08:30:14 -0700 (PDT)
+Date:   Tue, 07 Jul 2020 08:30:14 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f06edf05a9dbaa44@google.com>
+Subject: general protection fault in batadv_iv_ogm_schedule_buff (2)
+From:   syzbot <syzbot+2eeeb5ad0766b57394d8@syzkaller.appspotmail.com>
+To:     a@unstable.cc, b.a.t.m.a.n@lists.open-mesh.org,
+        davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        mareklindner@neomailbox.ch, netdev@vger.kernel.org,
+        sven@narfation.org, sw@simonwunderlich.de,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds support to trace IPI based and timer based wakeup
-latency from idle states
+Hello,
 
-Latches onto the test-cpuidle_latency kernel module using the debugfs
-interface to send IPIs or schedule a timer based event, which in-turn
-populates the debugfs with the latency measurements.
+syzbot found the following crash on:
 
-Currently for the IPI and timer tests; first disable all idle states
-and then test for latency measurements incrementally enabling each state
+HEAD commit:    7cc2a8ea Merge tag 'block-5.8-2020-07-01' of git://git.ker..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=130b828f100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7be693511b29b338
+dashboard link: https://syzkaller.appspot.com/bug?extid=2eeeb5ad0766b57394d8
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
-Signed-off-by: Pratik Rajesh Sampat <psampat@linux.ibm.com>
+Unfortunately, I don't have any reproducer for this crash yet.
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+2eeeb5ad0766b57394d8@syzkaller.appspotmail.com
+
+general protection fault, probably for non-canonical address 0xdffffc000000000e: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000070-0x0000000000000077]
+CPU: 1 PID: 9126 Comm: kworker/u4:9 Not tainted 5.8.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: bat_events batadv_iv_send_outstanding_bat_ogm_packet
+RIP: 0010:batadv_iv_ogm_schedule_buff+0xd1e/0x1410 net/batman-adv/bat_iv_ogm.c:843
+Code: 80 3c 28 00 0f 85 ee 05 00 00 4d 8b 3f 49 81 ff e0 e9 4e 8d 0f 84 dd 02 00 00 e8 bd 80 ae f9 49 8d 7f 70 48 89 f8 48 c1 e8 03 <42> 80 3c 28 00 0f 85 af 06 00 00 48 8b 44 24 08 49 8b 6f 70 80 38
+RSP: 0018:ffffc90004e97b98 EFLAGS: 00010202
+RAX: 000000000000000e RBX: ffff8880a7471800 RCX: ffffffff87c5394d
+RDX: ffff88804cf02380 RSI: ffffffff87c536a3 RDI: 0000000000000070
+RBP: 0000000000077000 R08: 0000000000000001 R09: ffff8880a875a02b
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000007
+R13: dffffc0000000000 R14: ffff888051ad4c40 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000400200 CR3: 0000000061cac000 CR4: 00000000001426e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ batadv_iv_ogm_schedule net/batman-adv/bat_iv_ogm.c:869 [inline]
+ batadv_iv_ogm_schedule net/batman-adv/bat_iv_ogm.c:862 [inline]
+ batadv_iv_send_outstanding_bat_ogm_packet+0x5c8/0x800 net/batman-adv/bat_iv_ogm.c:1722
+ process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
+ kthread+0x3b5/0x4a0 kernel/kthread.c:291
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
+Modules linked in:
+---[ end trace f5c5eda032070cd1 ]---
+RIP: 0010:batadv_iv_ogm_schedule_buff+0xd1e/0x1410 net/batman-adv/bat_iv_ogm.c:843
+Code: 80 3c 28 00 0f 85 ee 05 00 00 4d 8b 3f 49 81 ff e0 e9 4e 8d 0f 84 dd 02 00 00 e8 bd 80 ae f9 49 8d 7f 70 48 89 f8 48 c1 e8 03 <42> 80 3c 28 00 0f 85 af 06 00 00 48 8b 44 24 08 49 8b 6f 70 80 38
+RSP: 0018:ffffc90004e97b98 EFLAGS: 00010202
+RAX: 000000000000000e RBX: ffff8880a7471800 RCX: ffffffff87c5394d
+RDX: ffff88804cf02380 RSI: ffffffff87c536a3 RDI: 0000000000000070
+RBP: 0000000000077000 R08: 0000000000000001 R09: ffff8880a875a02b
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000007
+R13: dffffc0000000000 R14: ffff888051ad4c40 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000400200 CR3: 000000009480d000 CR4: 00000000001426e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
 ---
- tools/testing/selftests/Makefile           |   1 +
- tools/testing/selftests/cpuidle/Makefile   |   6 +
- tools/testing/selftests/cpuidle/cpuidle.sh | 240 +++++++++++++++++++++
- tools/testing/selftests/cpuidle/settings   |   1 +
- 4 files changed, 248 insertions(+)
- create mode 100644 tools/testing/selftests/cpuidle/Makefile
- create mode 100755 tools/testing/selftests/cpuidle/cpuidle.sh
- create mode 100644 tools/testing/selftests/cpuidle/settings
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
-index 1195bd85af38..ab6cf51f3518 100644
---- a/tools/testing/selftests/Makefile
-+++ b/tools/testing/selftests/Makefile
-@@ -7,6 +7,7 @@ TARGETS += capabilities
- TARGETS += cgroup
- TARGETS += clone3
- TARGETS += cpufreq
-+TARGETS += cpuidle
- TARGETS += cpu-hotplug
- TARGETS += drivers/dma-buf
- TARGETS += efivarfs
-diff --git a/tools/testing/selftests/cpuidle/Makefile b/tools/testing/selftests/cpuidle/Makefile
-new file mode 100644
-index 000000000000..72fd5d2e974d
---- /dev/null
-+++ b/tools/testing/selftests/cpuidle/Makefile
-@@ -0,0 +1,6 @@
-+# SPDX-License-Identifier: GPL-2.0
-+all:
-+
-+TEST_PROGS := cpuidle.sh
-+
-+include ../lib.mk
-diff --git a/tools/testing/selftests/cpuidle/cpuidle.sh b/tools/testing/selftests/cpuidle/cpuidle.sh
-new file mode 100755
-index 000000000000..11666fe47c34
---- /dev/null
-+++ b/tools/testing/selftests/cpuidle/cpuidle.sh
-@@ -0,0 +1,240 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+
-+LOG=cpuidle.log
-+MODULE=/lib/modules/$(uname -r)/kernel/drivers/cpuidle/test-cpuidle_latency.ko
-+
-+helpme()
-+{
-+	printf "Usage: $0 [-h] [-todg args]
-+	[-h <help>]
-+	[-m <location of the module>]
-+	[-o <location of the output>]
-+	\n"
-+	exit 2
-+}
-+
-+parse_arguments()
-+{
-+	while getopts ht:m:o: arg
-+	do
-+		case $arg in
-+			h) # --help
-+				helpme
-+				;;
-+			m) # --mod-file
-+				MODULE=$OPTARG
-+				;;
-+			o) # output log files
-+				LOG=$OPTARG
-+				;;
-+			\?)
-+				helpme
-+				;;
-+		esac
-+	done
-+}
-+
-+ins_mod()
-+{
-+	if [ ! -f "$MODULE" ]; then
-+		printf "$MODULE module does not exist. Exitting\n"
-+		exit 2
-+	fi
-+	printf "Inserting $MODULE module\n\n"
-+	insmod $MODULE
-+	if [ $? != 0 ]; then
-+		printf "Insmod $MODULE failed\n"
-+		exit 2
-+	fi
-+}
-+
-+compute_average()
-+{
-+	arr=("$@")
-+	sum=0
-+	size=${#arr[@]}
-+	for i in "${arr[@]}"
-+	do
-+		sum=$((sum + i))
-+	done
-+	avg=$((sum/size))
-+}
-+
-+# Disable all stop states
-+disable_idle()
-+{
-+	for ((cpu=0; cpu<NUM_CPUS; cpu++))
-+	do
-+		for ((state=0; state<NUM_STATES; state++))
-+		do
-+			echo 1 > /sys/devices/system/cpu/cpu$cpu/cpuidle/state$state/disable
-+		done
-+	done
-+}
-+
-+# Enable the idle state supplied
-+# $1: State to enable
-+enable_state()
-+{
-+	for ((cpu=0; cpu<NUM_CPUS; cpu++))
-+	do
-+		echo 0 > /sys/devices/system/cpu/cpu$cpu/cpuidle/state$1/disable
-+	done
-+}
-+
-+# Extract latency in microseconds and convert to nanoseconds
-+extract_latency()
-+{
-+	for ((state=0; state<NUM_STATES; state++))
-+	do
-+		latency=$(($(cat /sys/devices/system/cpu/cpu0/cpuidle/state$state/latency) * 1000))
-+		latency_arr+=($latency)
-+	done
-+}
-+
-+# Run the IPI test
-+# $1 run for baseline - busy cpu or regular environment
-+# $2 destination cpu
-+ipi_test_once()
-+{
-+        dest_cpu=$2
-+        if [ "$1" = "baseline" ]; then
-+			# Keep the CPU busy
-+			taskset -c $dest_cpu yes "" > /dev/null &
-+			yes_pid=$!
-+        fi
-+        taskset 0x1 echo $dest_cpu > /sys/kernel/debug/latency_test/ipi_cpu_dest
-+        ipi_latency=$(cat /sys/kernel/debug/latency_test/ipi_latency_ns)
-+        src_cpu=$(cat /sys/kernel/debug/latency_test/ipi_cpu_src)
-+        if [ "$1" = "baseline" ]; then
-+			kill $yes_pid
-+			wait $yes_pid 2>/dev/null
-+        fi
-+}
-+
-+# Incrementally Enable idle states one by one and compute the latency
-+run_ipi_tests()
-+{
-+        extract_latency
-+        disable_idle
-+        declare -a avg_arr
-+        declare -a baseline_avg_array
-+
-+        echo -e "--IPI Latency Test---" >> $LOG
-+        for ((state=0; state<NUM_STATES; state++))
-+        do
-+			echo -e "---Enabling state: $state---" >> $LOG
-+			enable_state $state
-+			printf "%s %10s %12s %12s\n" "SRC_CPU" "DEST_CPU" "Base_IPI_Latency(ns)" "IPI_Latency(ns)" >> $LOG
-+			unset avg_arr
-+			unset baseline_avg_arr
-+			for ((cpu=0; cpu<NUM_CPUS; cpu++))
-+			do
-+				# Running IPI test and logging results
-+				ipi_test_once "baseline" $cpu
-+				baseline_ipi_latency=$ipi_latency
-+				ipi_test_once "test" $cpu
-+				printf "%-3s %10s %12s %18s\n" $src_cpu $cpu $baseline_ipi_latency $ipi_latency >> $LOG
-+				avg_arr+=($ipi_latency)
-+				baseline_avg_arr+=($baseline_ipi_latency)
-+			done
-+			compute_average "${avg_arr[@]}"
-+			local avg_latency=$avg
-+			compute_average "${baseline_avg_arr[@]}"
-+			local baseline_avg_latency=$avg
-+			echo -e "Expected IPI latency(ns): ${latency_arr[$state]}" >> $LOG
-+			echo -e "Baseline Average IPI latency(ns): $baseline_avg_latency" >> $LOG
-+			echo -e "Observed Average IPI latency(ns): $avg_latency" >> $LOG
-+        done
-+}
-+
-+# Extract the residency in microseconds and convert to nanoseconds.
-+# Add 100 ns so that the timer stays for a little longer than the residency
-+extract_residency()
-+{
-+	for ((state=0; state<NUM_STATES; state++))
-+	do
-+		residency=$(($(cat /sys/devices/system/cpu/cpu0/cpuidle/state$state/residency) * 1000 + 200))
-+		residency_arr+=($residency)
-+	done
-+}
-+
-+# Run the Timeout test
-+# $1 run for baseline - busy cpu or regular environment
-+# $2 destination cpu
-+# $3 timeout
-+timeout_test_once()
-+{
-+	dest_cpu=$2
-+	if [ "$1" = "baseline" ]; then
-+		# Keep the CPU busy
-+		taskset -c $dest_cpu yes "" > /dev/null &
-+		yes_pid=$!
-+	fi
-+	taskset -c $dest_cpu echo $3 > /sys/kernel/debug/latency_test/timeout_expected_ns
-+	sleep 0.1
-+	timeout_diff=$(cat /sys/kernel/debug/latency_test/timeout_diff_ns)
-+	src_cpu=$(cat /sys/kernel/debug/latency_test/timeout_cpu_src)
-+	if [ "$1" = "baseline" ]; then
-+		kill $yes_pid
-+		wait $yes_pid 2>/dev/null
-+	fi
-+}
-+
-+run_timeout_tests()
-+{
-+	extract_residency
-+	disable_idle
-+	declare -a avg_arr
-+	declare -a baseline_avg_arr
-+	echo -e "\n--Timeout Latency Test--" >> $LOG
-+
-+	for ((state=0; state<NUM_STATES; state++))
-+	do
-+		echo -e "---Enabling state: $state---" >> $LOG
-+		enable_state $state
-+		printf "%s %10s %10s\n" "Wakeup_src" "Baseline_delay(ns)" "Delay(ns)" >> $LOG
-+		unset avg_arr
-+		unset baseline_avg_arr
-+		for ((cpu=0; cpu<NUM_CPUS; cpu++))
-+		do
-+			timeout_test_once "baseline" $cpu ${residency_arr[$state]}
-+			local baseline_timeout_diff=$timeout_diff
-+			timeout_test_once "test" $cpu ${residency_arr[$state]}
-+			printf "%-3s %13s %18s\n" $src_cpu $baseline_timeout_diff $timeout_diff >> $LOG
-+			avg_arr+=($timeout_diff)
-+			baseline_avg_arr+=($baseline_timeout_diff)
-+		done
-+		compute_average "${baseline_avg_arr[@]}"
-+		local baseline_avg=$avg
-+		compute_average "${avg_arr[@]}"
-+		echo -e "Expected timeout(ns): ${residency_arr[$state]}" >> $LOG
-+		echo -e "Baseline Average timeout diff(ns): $baseline_avg" >> $LOG
-+		echo -e "Observed Average timeout diff(ns): $avg" >> $LOG
-+	done
-+}
-+
-+declare -a residency_arr
-+declare -a latency_arr
-+
-+# Parse arguments
-+parse_arguments $@
-+
-+rm -f $LOG
-+touch $LOG
-+NUM_CPUS=$(nproc --all)
-+NUM_STATES=$(ls -1 /sys/devices/system/cpu/cpu0/cpuidle/ | wc -l)
-+
-+# Insert the module
-+ins_mod $MODULE
-+
-+printf "Started IPI latency tests\n"
-+run_ipi_tests
-+
-+printf "Started Timer latency tests\n"
-+run_timeout_tests
-+
-+printf "Removing $MODULE module\n"
-+printf "Output logged at: $LOG\n"
-+rmmod $MODULE
-diff --git a/tools/testing/selftests/cpuidle/settings b/tools/testing/selftests/cpuidle/settings
-new file mode 100644
-index 000000000000..e7b9417537fb
---- /dev/null
-+++ b/tools/testing/selftests/cpuidle/settings
-@@ -0,0 +1 @@
-+timeout=0
--- 
-2.25.4
-
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
