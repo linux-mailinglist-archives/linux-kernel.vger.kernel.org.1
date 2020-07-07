@@ -2,354 +2,543 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37C69217555
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 19:37:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9E87217541
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 19:34:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728486AbgGGRhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 13:37:33 -0400
-Received: from esa4.microchip.iphmx.com ([68.232.154.123]:39361 "EHLO
-        esa4.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727791AbgGGRhc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 13:37:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1594143451; x=1625679451;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=gggAHfxW3j4Qxr/mfxI+aHpCGIQTlLW5ZtBSaZ/WJzY=;
-  b=zv9de83qfg7pGLgcvp4rpUgGruGuXSHXPe1bfho3zX98WQmsc2HTS2sM
-   CD0fjiaCoG87kFqDwSKWF8Ta2RymHJZhAEUY67ffT6rlGpReYnSyONTfp
-   H0L/BSM3tzhzI29syk90WtVww3Jyb55jhR01xeL8rR761wHQc/wrOS5jX
-   KP94mVoOTjNJk1yWJwpkAkasy7hkTkJPT4XRta47zRb5lWS+83Na1FFG5
-   8yu3UGfqJfxLobYT0RM80QKXtV3KiQqOLs7z0dvWek0y4GofkThNWy2aD
-   1hNGjtprU5byQpAzTOmuC39s+tpAr47fB16kEYEYoCyLFwWFd5azEuKTM
-   g==;
-IronPort-SDR: zvKMN8gXad+C5GtwZZR4wbXN0SP8KhsVkCd4gsQX/0w8JQ84GVHliOIwkbfuinBq46ZdjHVWOD
- uOm+4v9MNBcZiP6gjuOQPEoUtlrO9YkdIYiUmZJbrRtxMXc+slK4Z3KMSxAwkGUQ2zPPXSdYzv
- 7lxgOhNa/3Z5DRyUrZlaZ8vuP6J44DkV8xW/cCItifAhoOD3n/Tv7kavqbYc+LnJNncVs1HToZ
- KM+10mD3aIqPjhodKZuhK4ztPnQkXjgUmL8CWTUwDtTQE6RmNJjzm+tM73y80Xg6DMchLr3ZTo
- znI=
-X-IronPort-AV: E=Sophos;i="5.75,324,1589266800"; 
-   d="scan'208";a="79049909"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 07 Jul 2020 10:37:29 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 7 Jul 2020 10:37:29 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3
- via Frontend Transport; Tue, 7 Jul 2020 10:37:29 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=i8bey7CrRFmHXlR110zEYEd0azsB/SGWcGZVoevSIp/fR4Wng+3Y6x35RwrmHhae3MdjKSSWbCjyAPnTJgyLi90TiaEpMlRqCJZ1HIU2030yrOGQa+kr7FWK00zt9bD7NVgre0ai/eH2k77V+j+2v5AE6cxKUzcxwTuW1dlzgOuDfs3zzizCzIWWMCLpaM3NnyEK7orZnrZ75r4hVWmnFG+WAuGSUCqwt7OR/8F/cTcjR0+329bneKOR51hucI84vzHeZsEExIB11dD736dtuJn+HydtP/8rw5zjtLGkmddcALIi1+/BCt/MyZmx6BWdsOg79wnmoo6oGxgrXdImNQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gggAHfxW3j4Qxr/mfxI+aHpCGIQTlLW5ZtBSaZ/WJzY=;
- b=Js8//aPnScH5kNFC7dnctB/jFwbX8UGMppuZZrdjMRH9xVWd5FXrxiITbq1PLjs3ScdJWC48Cz0KCIDG2RsHG7ejmbXFPBo92IVXo2e9eYjl0POny5Wxuy/oMnufwG48D3delmDp0QJRoMIWq3nWZvbZJP67s7x5O+oPjwI1kdaQskUL2tDyfkV1REwW602tlEZR7LU/klyi8Ha0S4hYc3KbPKyAJSLExC1kM5VWYu9aZSo8rR0KokgpEP1lE+N4Y7GvCU6o3iB0Y/fYkz2XKt2Q4VUKGPaA2OSahlWCwon79Q4ogJezW1fraH/S/pBFocFiGPb76Fd72XXqm+o1yw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gggAHfxW3j4Qxr/mfxI+aHpCGIQTlLW5ZtBSaZ/WJzY=;
- b=T7uCh+d3oLCFn60C41EFLKqW1XUJWvPjmjpdt1GTTcE/ya3HJIxB7WChBa13X/ZPcdzvPjdcobc7KSdNa7Gvn9MkXOAavdo9wtepPcMM7jF7yJnyTsURwHRYdStpn9nxPhHFql1S1Sa1BctGS906f8maJrCkPqty5dQzmfmeb3o=
-Received: from BYAPR11MB2856.namprd11.prod.outlook.com (2603:10b6:a02:bd::11)
- by BY5PR11MB3879.namprd11.prod.outlook.com (2603:10b6:a03:18f::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.28; Tue, 7 Jul
- 2020 17:37:26 +0000
-Received: from BYAPR11MB2856.namprd11.prod.outlook.com
- ([fe80::f1d5:60ca:d163:c1b3]) by BYAPR11MB2856.namprd11.prod.outlook.com
- ([fe80::f1d5:60ca:d163:c1b3%3]) with mapi id 15.20.3153.029; Tue, 7 Jul 2020
- 17:37:26 +0000
-From:   <Tudor.Ambarus@microchip.com>
-To:     <p.yadav@ti.com>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
-        <vigneshr@ti.com>, <broonie@kernel.org>,
-        <Nicolas.Ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-        <Ludovic.Desroches@microchip.com>, <matthias.bgg@gmail.com>,
-        <michal.simek@xilinx.com>, <linux-mtd@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-spi@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-CC:     <nsekhar@ti.com>, <boris.brezillon@collabora.com>
-Subject: Re: [PATCH v10 05/17] mtd: spi-nor: add support for DTR protocol
-Thread-Topic: [PATCH v10 05/17] mtd: spi-nor: add support for DTR protocol
-Thread-Index: AQHWVIVGo10ftuQ9H0mpaQ4YA8PU1w==
-Date:   Tue, 7 Jul 2020 17:37:26 +0000
-Message-ID: <fbb3d7e7-75ed-dbf6-a975-2ae871bc9fbf@microchip.com>
-References: <20200623183030.26591-1-p.yadav@ti.com>
- <20200623183030.26591-6-p.yadav@ti.com>
-In-Reply-To: <20200623183030.26591-6-p.yadav@ti.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-authentication-results: ti.com; dkim=none (message not signed)
- header.d=none;ti.com; dmarc=none action=none header.from=microchip.com;
-x-originating-ip: [86.127.52.34]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b642c5a3-24e3-4965-89d8-08d8229c6a0f
-x-ms-traffictypediagnostic: BY5PR11MB3879:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BY5PR11MB3879442F481F54BF0DEB59B2F0660@BY5PR11MB3879.namprd11.prod.outlook.com>
-x-bypassexternaltag: True
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-forefront-prvs: 0457F11EAF
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: yDv4DcNahWwXbv0qk+/GYlgPDO1ll/3X+dwbKBZI+zbYThxOcZ5KdjGNdueajymtIUbx74HXXfKU/r1HwGiGLhpYFjBIOW396AmJRofXaI9t9+i6cV0ObEsmHj/UPogau8RY7BT+NsP7lm0LbqogWmbocM4V18StbN7pWwBDHwDhNREiTuj6u3kRkRTcDSf+Yw0MAp7g+eB7I5pJDFcRDMaJntC/FRzaLmxM1CGnNxhClKxzvKxYjOm1eV1AC2+9SYjl0rTylcwhzRO6DrL9oWLOa4mTCSe6rqMGVAXEY001ggKBqncSVfXg6jUthgeHCEvLs6ygPsVemLHUbsGCQYYmkM4lMiv+lyNIVPCY1l+lPKvwUt9PQb0pWHqtShQn87ZqbhtW3Dlkm2K87oX8uDsAAjsf5wDTwMMdB8//R8YeTH5kX43hfyYXeW5bYnMO1XTUhL965u1HEbqLvcA+rKhStpFtKl4zxYyWioShi8kub0M9Jp1TMuJibcQ06HCk
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2856.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(136003)(376002)(396003)(39850400004)(366004)(346002)(83380400001)(316002)(2616005)(66946007)(6512007)(186003)(4326008)(2906002)(6486002)(26005)(76116006)(110136005)(91956017)(86362001)(31696002)(7416002)(8936002)(966005)(53546011)(8676002)(5660300002)(30864003)(6506007)(71200400001)(478600001)(66556008)(36756003)(31686004)(66446008)(64756008)(54906003)(66476007)(921003)(43740500002)(352734003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: ellkTB6/9jOymSVnp9xpoywq0OUpbvjFwN8azfKATeE1cZE7X6AGQqXKpkGImdNluii1nfdb7deuiiAN3ZEN2d7fkUKqNROTu2nGq+D8Aqyur4bv5OXzOec8gtFFmcFITlKoYcsAHEGFqLp26UMwXhD02RyWQE1NqE6p8GgtWjAa6emgN8bqoGVyYd86j3Uc21BkRxR+yTVYbXODtPrqX/fpehojl7tSThzU7BmyR0S9v+MKYCxLzfCpTnzJjlCjz9GgMy1XBH7VtDRilTzEJq3KDC62GDnNn++Fwrt2hcLKv5OX3xj8ocHgbTTroIRmsVjaaqigETBA0QKogiwsSKW48DjGRpBQEDSN3DTn6wSazgIsZ7rXcYDyOSujURse2AkN8D60P+cUA+JAWY7J+VyGFu3TQFoMWvPYKud9Imq3vSpiaySboW5759v4I34pRu3KvpD5iDkNxno/+h+hViBb+j+63QGV4DCkGMbs+pw=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <D75917625431364887D7C4D5B2F700C3@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1728491AbgGGReS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 13:34:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36354 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727834AbgGGReR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 13:34:17 -0400
+Received: from embeddedor (unknown [200.39.26.250])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7F9DA2075B;
+        Tue,  7 Jul 2020 17:34:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594143256;
+        bh=f0q+fslE607Ea3NuW4EsZfKmqJJ0GPRtpX8NvcJW62I=;
+        h=Date:From:To:Cc:Subject:From;
+        b=DB4DZWfOXSx86zq70rbz3xg78Vn+gS1jsLM2Xf5txSIbwxMYu4w61Dh5sa02w3EY3
+         l0QJuuCteAnabkzPzyQbyVPmd67EQUYUPgoIXqfIz+389VXilwKvnI340/Zfga82cp
+         YyILu+Sc77RwRJogW4YigUTjuNJbcFleIEtEbC9c=
+Date:   Tue, 7 Jul 2020 12:39:42 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: [PATCH][next] IB/hfi1: Use fallthrough pseudo-keyword
+Message-ID: <20200707173942.GA29814@embeddedor>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2856.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b642c5a3-24e3-4965-89d8-08d8229c6a0f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Jul 2020 17:37:26.0402
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Tu5S/subQ6GUPMQTG6ndQOjvatERiV4co3n/AO0TvwvKd+nxuYfhn3Je0pi+GrzjcJ4hXAZqfsezM5bWB4EbcmZJHg0riqMR2XlAgae3gmU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB3879
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksIFByYXR5dXNoLA0KDQpPbiA2LzIzLzIwIDk6MzAgUE0sIFByYXR5dXNoIFlhZGF2IHdyb3Rl
-Og0KPiBFWFRFUk5BTCBFTUFJTDogRG8gbm90IGNsaWNrIGxpbmtzIG9yIG9wZW4gYXR0YWNobWVu
-dHMgdW5sZXNzIHlvdSBrbm93IHRoZSBjb250ZW50IGlzIHNhZmUNCj4gDQo+IERvdWJsZSBUcmFu
-c2ZlciBSYXRlIChEVFIpIGlzIFNQSSBwcm90b2NvbCBpbiB3aGljaCBkYXRhIGlzIHRyYW5zZmVy
-cmVkDQo+IG9uIGVhY2ggY2xvY2sgZWRnZSBhcyBvcHBvc2VkIHRvIG9uIGVhY2ggY2xvY2sgY3lj
-bGUuIE1ha2UNCj4gZnJhbWV3b3JrLWxldmVsIGNoYW5nZXMgdG8gYWxsb3cgc3VwcG9ydGluZyBm
-bGFzaGVzIGluIERUUiBtb2RlLg0KPiANCj4gUmlnaHQgbm93LCBtaXhlZCBEVFIgbW9kZXMgYXJl
-IG5vdCBzdXBwb3J0ZWQuIFNvLCBmb3IgZXhhbXBsZSBhIG1vZGUNCj4gbGlrZSA0Uy00RC00RCB3
-aWxsIG5vdCB3b3JrLiBBbGwgcGhhc2VzIG5lZWQgdG8gYmUgZWl0aGVyIERUUiBvciBTVFIuDQo+
-IA0KPiBTaWduZWQtb2ZmLWJ5OiBQcmF0eXVzaCBZYWRhdiA8cC55YWRhdkB0aS5jb20+DQo+IC0t
-LQ0KPiAgZHJpdmVycy9tdGQvc3BpLW5vci9jb3JlLmMgIHwgMzA1ICsrKysrKysrKysrKysrKysr
-KysrKysrKysrKystLS0tLS0tLSANCj4gIGRyaXZlcnMvbXRkL3NwaS1ub3IvY29yZS5oICB8ICAg
-NiArDQo+ICBkcml2ZXJzL210ZC9zcGktbm9yL3NmZHAuYyAgfCAgIDkgKy0NCj4gIGluY2x1ZGUv
-bGludXgvbXRkL3NwaS1ub3IuaCB8ICA1MSArKysrLS0NCj4gIDQgZmlsZXMgY2hhbmdlZCwgMjk1
-IGluc2VydGlvbnMoKyksIDc2IGRlbGV0aW9ucygtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZl
-cnMvbXRkL3NwaS1ub3IvY29yZS5jIGIvZHJpdmVycy9tdGQvc3BpLW5vci9jb3JlLmMNCj4gaW5k
-ZXggMDM2OWQ5OGIyZDEyLi4yMmEzODMyYjgzYTYgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvbXRk
-L3NwaS1ub3IvY29yZS5jDQo+ICsrKyBiL2RyaXZlcnMvbXRkL3NwaS1ub3IvY29yZS5jDQo+IEBA
-IC00MCw2ICs0MCw3NiBAQA0KPiANCj4gICNkZWZpbmUgU1BJX05PUl9NQVhfQUREUl9XSURUSCA0
-DQo+IA0KPiArLyoqDQo+ICsgKiBzcGlfbm9yX2dldF9jbWRfZXh0KCkgLSBHZXQgdGhlIGNvbW1h
-bmQgb3Bjb2RlIGV4dGVuc2lvbiBiYXNlZCBvbiB0aGUNCj4gKyAqICAgICAgICAgICAgICAgICAg
-ICAgICAgZXh0ZW5zaW9uIHR5cGUuDQo+ICsgKiBAbm9yOiAgICAgICAgICAgICAgIHBvaW50ZXIg
-dG8gYSAnc3RydWN0IHNwaV9ub3InDQo+ICsgKiBAb3A6ICAgICAgICAgICAgICAgICAgICAgICAg
-cG9pbnRlciB0byB0aGUgJ3N0cnVjdCBzcGlfbWVtX29wJyB3aG9zZSBwcm9wZXJ0aWVzDQo+ICsg
-KiAgICAgICAgICAgICAgICAgICAgIG5lZWQgdG8gYmUgaW5pdGlhbGl6ZWQuDQo+ICsgKg0KPiAr
-ICogUmlnaHQgbm93LCBvbmx5ICJyZXBlYXQiIGFuZCAiaW52ZXJ0IiBhcmUgc3VwcG9ydGVkLg0K
-PiArICoNCj4gKyAqIFJldHVybjogVGhlIG9wY29kZSBleHRlbnNpb24uDQo+ICsgKi8NCj4gK3N0
-YXRpYyB1OCBzcGlfbm9yX2dldF9jbWRfZXh0KGNvbnN0IHN0cnVjdCBzcGlfbm9yICpub3IsDQo+
-ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbnN0IHN0cnVjdCBzcGlfbWVtX29wICpv
-cCkNCj4gK3sNCj4gKyAgICAgICBzd2l0Y2ggKG5vci0+Y21kX2V4dF90eXBlKSB7DQo+ICsgICAg
-ICAgY2FzZSBTUElfTk9SX0VYVF9JTlZFUlQ6DQo+ICsgICAgICAgICAgICAgICByZXR1cm4gfm9w
-LT5jbWQub3Bjb2RlOw0KPiArDQo+ICsgICAgICAgY2FzZSBTUElfTk9SX0VYVF9SRVBFQVQ6DQo+
-ICsgICAgICAgICAgICAgICByZXR1cm4gb3AtPmNtZC5vcGNvZGU7DQo+ICsNCj4gKyAgICAgICBk
-ZWZhdWx0Og0KPiArICAgICAgICAgICAgICAgZGV2X2Vycihub3ItPmRldiwgIlVua25vd24gY29t
-bWFuZCBleHRlbnNpb24gdHlwZVxuIik7DQo+ICsgICAgICAgICAgICAgICByZXR1cm4gMDsNCj4g
-KyAgICAgICB9DQo+ICt9DQo+ICsNCj4gKy8qKg0KPiArICogc3BpX25vcl9zcGltZW1fc2V0dXBf
-b3AoKSAtIFNldCB1cCBjb21tb24gcHJvcGVydGllcyBvZiBhIHNwaS1tZW0gb3AuDQo+ICsgKiBA
-bm9yOiAgICAgICAgICAgICAgIHBvaW50ZXIgdG8gYSAnc3RydWN0IHNwaV9ub3InDQo+ICsgKiBA
-b3A6ICAgICAgICAgICAgICAgICAgICAgICAgcG9pbnRlciB0byB0aGUgJ3N0cnVjdCBzcGlfbWVt
-X29wJyB3aG9zZSBwcm9wZXJ0aWVzDQo+ICsgKiAgICAgICAgICAgICAgICAgICAgIG5lZWQgdG8g
-YmUgaW5pdGlhbGl6ZWQuDQo+ICsgKiBAcHJvdG86ICAgICAgICAgICAgIHRoZSBwcm90b2NvbCBm
-cm9tIHdoaWNoIHRoZSBwcm9wZXJ0aWVzIG5lZWQgdG8gYmUgc2V0Lg0KPiArICovDQo+ICt2b2lk
-IHNwaV9ub3Jfc3BpbWVtX3NldHVwX29wKGNvbnN0IHN0cnVjdCBzcGlfbm9yICpub3IsDQo+ICsg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgc3RydWN0IHNwaV9tZW1fb3AgKm9wLA0KPiArICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgIGNvbnN0IGVudW0gc3BpX25vcl9wcm90b2NvbCBwcm90
-bykNCg0KVGhlcmUncyBub3QgbXVjaCB0byBzZXQgZm9yIHRoZSBSRUcgb3BlcmF0aW9ucy4NCg0K
-PiArew0KPiArICAgICAgIHU4IGV4dDsNCj4gKw0KPiArICAgICAgIG9wLT5jbWQuYnVzd2lkdGgg
-PSBzcGlfbm9yX2dldF9wcm90b2NvbF9pbnN0X25iaXRzKHByb3RvKTsNCj4gKw0KPiArICAgICAg
-IGlmIChvcC0+YWRkci5uYnl0ZXMpDQo+ICsgICAgICAgICAgICAgICBvcC0+YWRkci5idXN3aWR0
-aCA9IHNwaV9ub3JfZ2V0X3Byb3RvY29sX2FkZHJfbmJpdHMocHJvdG8pOw0KPiArDQo+ICsgICAg
-ICAgaWYgKG9wLT5kdW1teS5uYnl0ZXMpDQo+ICsgICAgICAgICAgICAgICBvcC0+ZHVtbXkuYnVz
-d2lkdGggPSBzcGlfbm9yX2dldF9wcm90b2NvbF9hZGRyX25iaXRzKHByb3RvKTsNCj4gKw0KPiAr
-ICAgICAgIGlmIChvcC0+ZGF0YS5uYnl0ZXMpDQo+ICsgICAgICAgICAgICAgICBvcC0+ZGF0YS5i
-dXN3aWR0aCA9IHNwaV9ub3JfZ2V0X3Byb3RvY29sX2RhdGFfbmJpdHMocHJvdG8pOw0KDQpIb3cg
-YWJvdXQgZ2V0dGluZyByaWQgb2YgdGhlIGFib3ZlIGFuZA0KDQo+ICsNCj4gKyAgICAgICBpZiAo
-c3BpX25vcl9wcm90b2NvbF9pc19kdHIocHJvdG8pKSB7DQoNCmludHJvZHVjZSBhIHNwaV9ub3Jf
-c3BpbWVtX3NldHVwX2R0cl9vcCgpIGp1c3QgZm9yIHRoZSBib2R5IG9mIHRoaXMgaWY/DQoNCj4g
-KyAgICAgICAgICAgICAgIC8qDQo+ICsgICAgICAgICAgICAgICAgKiBzcGktbWVtIHN1cHBvcnRz
-IG1peGVkIERUUiBtb2RlcywgYnV0IHJpZ2h0IG5vdyB3ZSBjYW4gb25seQ0KPiArICAgICAgICAg
-ICAgICAgICogaGF2ZSBhbGwgcGhhc2VzIGVpdGhlciBEVFIgb3IgU1RSLiBJT1csIHNwaS1tZW0g
-Y2FuIGhhdmUNCm5pdDogU1BJTUVNDQo+ICsgICAgICAgICAgICAgICAgKiBzb21ldGhpbmcgbGlr
-ZSA0Uy00RC00RCwgYnV0IHNwaS1ub3IgY2FuJ3QuIFNvLCBzZXQgYWxsIDQNCm5pdDogU1BJIE5P
-Ug0KPiArICAgICAgICAgICAgICAgICogcGhhc2VzIHRvIGVpdGhlciBEVFIgb3IgU1RSLg0KPiAr
-ICAgICAgICAgICAgICAgICovDQo+ICsgICAgICAgICAgICAgICBvcC0+Y21kLmR0ciA9IG9wLT5h
-ZGRyLmR0ciA9IG9wLT5kdW1teS5kdHINCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ID0gb3AtPmRhdGEuZHRyID0gdHJ1ZTsNCj4gKw0KPiArICAgICAgICAgICAgICAgLyogMiBieXRl
-cyBwZXIgY2xvY2sgY3ljbGUgaW4gRFRSIG1vZGUuICovDQo+ICsgICAgICAgICAgICAgICBvcC0+
-ZHVtbXkubmJ5dGVzICo9IDI7DQo+ICsNCj4gKyAgICAgICAgICAgICAgIGV4dCA9IHNwaV9ub3Jf
-Z2V0X2NtZF9leHQobm9yLCBvcCk7DQo+ICsgICAgICAgICAgICAgICBvcC0+Y21kLm9wY29kZSA9
-IChvcC0+Y21kLm9wY29kZSA8PCA4KSB8IGV4dDsNCj4gKyAgICAgICAgICAgICAgIG9wLT5jbWQu
-bmJ5dGVzID0gMjsNCj4gKyAgICAgICB9DQo+ICt9DQo+ICsNCj4gIC8qKg0KPiAgICogc3BpX25v
-cl9zcGltZW1fYm91bmNlKCkgLSBjaGVjayBpZiBhIGJvdW5jZSBidWZmZXIgaXMgbmVlZGVkIGZv
-ciB0aGUgZGF0YQ0KPiAgICogICAgICAgICAgICAgICAgICAgICAgICAgICB0cmFuc2Zlcg0KPiBA
-QCAtMTA0LDE0ICsxNzQsMTIgQEAgc3RhdGljIHNzaXplX3Qgc3BpX25vcl9zcGltZW1fcmVhZF9k
-YXRhKHN0cnVjdCBzcGlfbm9yICpub3IsIGxvZmZfdCBmcm9tLA0KPiAgICAgICAgIHNzaXplX3Qg
-bmJ5dGVzOw0KPiAgICAgICAgIGludCBlcnJvcjsNCj4gDQo+IC0gICAgICAgLyogZ2V0IHRyYW5z
-ZmVyIHByb3RvY29scy4gKi8NCj4gLSAgICAgICBvcC5jbWQuYnVzd2lkdGggPSBzcGlfbm9yX2dl
-dF9wcm90b2NvbF9pbnN0X25iaXRzKG5vci0+cmVhZF9wcm90byk7DQo+IC0gICAgICAgb3AuYWRk
-ci5idXN3aWR0aCA9IHNwaV9ub3JfZ2V0X3Byb3RvY29sX2FkZHJfbmJpdHMobm9yLT5yZWFkX3By
-b3RvKTsNCj4gLSAgICAgICBvcC5kdW1teS5idXN3aWR0aCA9IG9wLmFkZHIuYnVzd2lkdGg7DQo+
-IC0gICAgICAgb3AuZGF0YS5idXN3aWR0aCA9IHNwaV9ub3JfZ2V0X3Byb3RvY29sX2RhdGFfbmJp
-dHMobm9yLT5yZWFkX3Byb3RvKTsNCj4gKyAgICAgICBzcGlfbm9yX3NwaW1lbV9zZXR1cF9vcChu
-b3IsICZvcCwgbm9yLT5yZWFkX3Byb3RvKTsNCg0KSGVyZSB3ZSB3b3VsZCBrZWVwIHRoZSBjb2Rl
-IGFzIGl0IHdlcmUuDQo+IA0KPiAgICAgICAgIC8qIGNvbnZlcnQgdGhlIGR1bW15IGN5Y2xlcyB0
-byB0aGUgbnVtYmVyIG9mIGJ5dGVzICovDQo+ICAgICAgICAgb3AuZHVtbXkubmJ5dGVzID0gKG5v
-ci0+cmVhZF9kdW1teSAqIG9wLmR1bW15LmJ1c3dpZHRoKSAvIDg7DQo+ICsgICAgICAgaWYgKHNw
-aV9ub3JfcHJvdG9jb2xfaXNfZHRyKG5vci0+cmVhZF9wcm90bykpDQo+ICsgICAgICAgICAgICAg
-ICBvcC5kdW1teS5uYnl0ZXMgKj0gMjsNCg0KQW5kIHJlcGxhY2UgdGhlc2UgMiBsaW5lcyB3aXRo
-Og0KCWlmIChzcGlfbm9yX3Byb3RvY29sX2lzX2R0cihub3ItPnJlYWRfcHJvdG8pKQ0KCQlzcGlf
-bm9yX3NwaW1lbV9zZXR1cF9kdHJfb3Aobm9yLCAmb3AsIG5vci0+cmVhZF9wcm90bykNCj4gDQo+
-ICAgICAgICAgdXNlYm91bmNlYnVmID0gc3BpX25vcl9zcGltZW1fYm91bmNlKG5vciwgJm9wKTsN
-Cj4gDQo+IEBAIC0xNjksMTMgKzIzNywxMSBAQCBzdGF0aWMgc3NpemVfdCBzcGlfbm9yX3NwaW1l
-bV93cml0ZV9kYXRhKHN0cnVjdCBzcGlfbm9yICpub3IsIGxvZmZfdCB0bywNCj4gICAgICAgICBz
-c2l6ZV90IG5ieXRlczsNCj4gICAgICAgICBpbnQgZXJyb3I7DQo+IA0KPiAtICAgICAgIG9wLmNt
-ZC5idXN3aWR0aCA9IHNwaV9ub3JfZ2V0X3Byb3RvY29sX2luc3RfbmJpdHMobm9yLT53cml0ZV9w
-cm90byk7DQo+IC0gICAgICAgb3AuYWRkci5idXN3aWR0aCA9IHNwaV9ub3JfZ2V0X3Byb3RvY29s
-X2FkZHJfbmJpdHMobm9yLT53cml0ZV9wcm90byk7DQo+IC0gICAgICAgb3AuZGF0YS5idXN3aWR0
-aCA9IHNwaV9ub3JfZ2V0X3Byb3RvY29sX2RhdGFfbmJpdHMobm9yLT53cml0ZV9wcm90byk7DQo+
-IC0NCj4gICAgICAgICBpZiAobm9yLT5wcm9ncmFtX29wY29kZSA9PSBTUElOT1JfT1BfQUFJX1dQ
-ICYmIG5vci0+c3N0X3dyaXRlX3NlY29uZCkNCj4gICAgICAgICAgICAgICAgIG9wLmFkZHIubmJ5
-dGVzID0gMDsNCj4gDQo+ICsgICAgICAgc3BpX25vcl9zcGltZW1fc2V0dXBfb3Aobm9yLCAmb3As
-IG5vci0+d3JpdGVfcHJvdG8pOw0KPiArDQo+ICAgICAgICAgaWYgKHNwaV9ub3Jfc3BpbWVtX2Jv
-dW5jZShub3IsICZvcCkpDQo+ICAgICAgICAgICAgICAgICBtZW1jcHkobm9yLT5ib3VuY2VidWYs
-IGJ1Ziwgb3AuZGF0YS5uYnl0ZXMpOw0KPiANCj4gQEAgLTIyNywxMCArMjkzLDE2IEBAIGludCBz
-cGlfbm9yX3dyaXRlX2VuYWJsZShzdHJ1Y3Qgc3BpX25vciAqbm9yKQ0KPiAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIFNQSV9NRU1fT1BfTk9fRFVNTVksDQo+ICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgU1BJX01FTV9PUF9OT19EQVRBKTsNCj4gDQo+ICsgICAg
-ICAgICAgICAgICBzcGlfbm9yX3NwaW1lbV9zZXR1cF9vcChub3IsICZvcCwgbm9yLT5yZWdfcHJv
-dG8pOw0KDQpGb3IgdGhlIHJlZyBvcGVyYXRpb24gd2UgY2FuIGdldCByaWQgb2YgdGhlIGV4dHJh
-IGNoZWNrcyB0aGF0IHdlcmUgaW4NCnNwaV9ub3Jfc3BpbWVtX3NldHVwX29wIGFuZCBzaW1wbHkg
-ZG86DQoNCgkJaWYgKHNwaV9ub3JfcHJvdG9jb2xfaXNfZHRyKHByb3RvKSkNCgkJCXNwaV9ub3Jf
-c3BpbWVtX3NldHVwX2R0cl9vcCgpDQoNCj4gKw0KPiAgICAgICAgICAgICAgICAgcmV0ID0gc3Bp
-X21lbV9leGVjX29wKG5vci0+c3BpbWVtLCAmb3ApOw0KPiAgICAgICAgIH0gZWxzZSB7DQo+IC0g
-ICAgICAgICAgICAgICByZXQgPSBub3ItPmNvbnRyb2xsZXJfb3BzLT53cml0ZV9yZWcobm9yLCBT
-UElOT1JfT1BfV1JFTiwNCj4gLSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICBOVUxMLCAwKTsNCj4gKyAgICAgICAgICAgICAgIGlmIChzcGlfbm9yX3By
-b3RvY29sX2lzX2R0cihub3ItPnJlZ19wcm90bykpDQo+ICsgICAgICAgICAgICAgICAgICAgICAg
-IHJldCA9IC1FTk9UU1VQUDsNCj4gKyAgICAgICAgICAgICAgIGVsc2UNCj4gKyAgICAgICAgICAg
-ICAgICAgICAgICAgcmV0ID0gbm9yLT5jb250cm9sbGVyX29wcy0+d3JpdGVfcmVnKG5vciwNCj4g
-KyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIFNQSU5PUl9PUF9XUkVOLA0KPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgTlVMTCwgMCk7DQoNCldvdWxkIHlvdSBpbnRyb2R1
-Y2UgaGVscGVycyBmb3IgdGhlIGNvbnRyb2xsZXIgb3BzLCBsaWtlIEJvcmlzDQpkaWQgaW4gdGhl
-IGZvbGxvd2luZyBwYXRjaD8NCmh0dHBzOi8vcGF0Y2h3b3JrLm96bGFicy5vcmcvcHJvamVjdC9s
-aW51eC1tdGQvcGF0Y2gvMjAxODEwMTIwODQ4MjUuMjM2OTctMTAtYm9yaXMuYnJlemlsbG9uQGJv
-b3RsaW4uY29tLw0KDQpIb3cgYWJvdXQgc3BpX25vcl9jb250cm9sbGVyX29wc19yZWFkX3JlZygp
-DQphbmQgc3BpX25vcl9jb250cm9sbGVyX29wc193cml0ZV9yZWcoKSBpbnN0ZWFkPw0KDQpjdXQN
-Cg0KPiBAQCAtMTE0NCw3ICsxMjkxLDExIEBAIHN0YXRpYyBpbnQgc3BpX25vcl9lcmFzZV9zZWN0
-b3Ioc3RydWN0IHNwaV9ub3IgKm5vciwgdTMyIGFkZHIpDQo+ICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgU1BJX01FTV9PUF9OT19EVU1NWSwNCj4gICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICBTUElfTUVNX09QX05PX0RBVEEpOw0KPiANCj4gKyAgICAgICAgICAg
-ICAgIHNwaV9ub3Jfc3BpbWVtX3NldHVwX29wKG5vciwgJm9wLCBub3ItPndyaXRlX3Byb3RvKTsN
-Cj4gKw0KPiAgICAgICAgICAgICAgICAgcmV0dXJuIHNwaV9tZW1fZXhlY19vcChub3ItPnNwaW1l
-bSwgJm9wKTsNCj4gKyAgICAgICB9IGVsc2UgaWYgKHNwaV9ub3JfcHJvdG9jb2xfaXNfZHRyKG5v
-ci0+d3JpdGVfcHJvdG8pKSB7DQo+ICsgICAgICAgICAgICAgICByZXR1cm4gLUVOT1RTVVBQOw0K
-PiAgICAgICAgIH0gZWxzZSBpZiAobm9yLT5jb250cm9sbGVyX29wcy0+ZXJhc2UpIHsNCj4gICAg
-ICAgICAgICAgICAgIHJldHVybiBub3ItPmNvbnRyb2xsZXJfb3BzLT5lcmFzZShub3IsIGFkZHIp
-Ow0KPiAgICAgICAgIH0NCg0KaGVyZSB5b3Ugd291bGQgbmVlZCBhIGhlbHBlcjogc3BpX25vcl9j
-b250cm9sbGVyX29wc19lcmFzZSgpDQoNCmN1dA0KDQo+IEBAIC0yMzY4LDEyICsyNTE3LDE2IEBA
-IHNwaV9ub3Jfc3BpbWVtX2FkanVzdF9od2NhcHMoc3RydWN0IHNwaV9ub3IgKm5vciwgdTMyICpo
-d2NhcHMpDQo+ICAgICAgICAgc3RydWN0IHNwaV9ub3JfZmxhc2hfcGFyYW1ldGVyICpwYXJhbXMg
-PSBub3ItPnBhcmFtczsNCj4gICAgICAgICB1bnNpZ25lZCBpbnQgY2FwOw0KPiANCj4gLSAgICAg
-ICAvKiBEVFIgbW9kZXMgYXJlIG5vdCBzdXBwb3J0ZWQgeWV0LCBtYXNrIHRoZW0gYWxsLiAqLw0K
-PiAtICAgICAgICpod2NhcHMgJj0gflNOT1JfSFdDQVBTX0RUUjsNCj4gLQ0KPiAgICAgICAgIC8q
-IFgtWC1YIG1vZGVzIGFyZSBub3Qgc3VwcG9ydGVkIHlldCwgbWFzayB0aGVtIGFsbC4gKi8NCj4g
-ICAgICAgICAqaHdjYXBzICY9IH5TTk9SX0hXQ0FQU19YX1hfWDsNCj4gDQo+ICsgICAgICAgLyoN
-Cj4gKyAgICAgICAgKiBJZiB0aGUgcmVzZXQgbGluZSBpcyBicm9rZW4sIHdlIGRvIG5vdCB3YW50
-IHRvIGVudGVyIGEgc3RhdGVmdWwNCj4gKyAgICAgICAgKiBtb2RlLg0KPiArICAgICAgICAqLw0K
-PiArICAgICAgIGlmIChub3ItPmZsYWdzICYgU05PUl9GX0JST0tFTl9SRVNFVCkNCj4gKyAgICAg
-ICAgICAgICAgICpod2NhcHMgJj0gfihTTk9SX0hXQ0FQU19YX1hfWCB8IFNOT1JfSFdDQVBTX1hf
-WF9YX0RUUik7DQoNCkEgZGVkaWNhdGVkIHJlc2V0IGxpbmUgaXMgbm90IGVub3VnaCBmb3IgZmxh
-c2hlcyB0aGF0IGtlZXAgdGhlaXIgc3RhdGUNCmluIG5vbi12b2xhdGlsZSBiaXRzLiBTaW5jZSB3
-ZSBjYW4ndCBwcm90ZWN0IGZyb20gdW5leHBlY3RlZCBjcmFzaGVzIGluDQp0aGUgbm9uIHZvbGF0
-aWxlIHN0YXRlIGNhc2UsIHdlIHNob3VsZCBlbnRlciB0aGVzZSBtb2RlcyBvbmx5IHdpdGggYW4N
-CmV4cGxpY2l0IHJlcXVlc3QsIGkuZS4gYW4gb3B0aW9uYWwgRFQgcHJvcGVydHk6ICJ1cGRhdGUt
-bm9udm9sYXRpbGUtc3RhdGUiLA0Kb3Igc29tZXRoaW5nIHNpbWlsYXIuDQoNCkZvciB0aGUgdm9s
-YXRpbGUgc3RhdGUgY2FzZSwgd2UgY2FuIHBhcnNlIHRoZSBTRkRQIFNDQ1IgbWFwLCBzYXZlIGlm
-IHdlDQpjYW4gZW50ZXIgc3RhdGVmdWwgbW9kZXMgaW4gYSB2b2xhdGlsZSB3YXksIGFuZCBpZiB5
-ZXMgYWxsb3cgdGhlIGVudGVyaW5nLg0KDQpEbyB0aGUgZmxhc2hlcyB0aGF0IHlvdSBwbGF5ZWQg
-d2l0aCBkZWZpbmUgdGhlIFNGRFAgU0NDUiBtYXA/DQoNCj4gKw0KPiAgICAgICAgIGZvciAoY2Fw
-ID0gMDsgY2FwIDwgc2l6ZW9mKCpod2NhcHMpICogQklUU19QRVJfQllURTsgY2FwKyspIHsNCj4g
-ICAgICAgICAgICAgICAgIGludCByZGlkeCwgcHBpZHg7DQo+IA0KPiBAQCAtMjYyOCw3ICsyNzgx
-LDcgQEAgc3RhdGljIGludCBzcGlfbm9yX2RlZmF1bHRfc2V0dXAoc3RydWN0IHNwaV9ub3IgKm5v
-ciwNCj4gICAgICAgICAgICAgICAgICAqIGNvbnRyb2xsZXIgZGlyZWN0bHkgaW1wbGVtZW50cyB0
-aGUgc3BpX25vciBpbnRlcmZhY2UuDQo+ICAgICAgICAgICAgICAgICAgKiBZZXQgYW5vdGhlciBy
-ZWFzb24gdG8gc3dpdGNoIHRvIHNwaS1tZW0uDQo+ICAgICAgICAgICAgICAgICAgKi8NCj4gLSAg
-ICAgICAgICAgICAgIGlnbm9yZWRfbWFzayA9IFNOT1JfSFdDQVBTX1hfWF9YOw0KPiArICAgICAg
-ICAgICAgICAgaWdub3JlZF9tYXNrID0gU05PUl9IV0NBUFNfWF9YX1ggfCBTTk9SX0hXQ0FQU19Y
-X1hfWF9EVFI7DQo+ICAgICAgICAgICAgICAgICBpZiAoc2hhcmVkX21hc2sgJiBpZ25vcmVkX21h
-c2spIHsNCj4gICAgICAgICAgICAgICAgICAgICAgICAgZGV2X2RiZyhub3ItPmRldiwNCj4gICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAiU1BJIG4tbi1uIHByb3RvY29scyBhcmUgbm90
-IHN1cHBvcnRlZC5cbiIpOw0KPiBAQCAtMjc3NCwxMSArMjkyNywyNSBAQCBzdGF0aWMgdm9pZCBz
-cGlfbm9yX2luZm9faW5pdF9wYXJhbXMoc3RydWN0IHNwaV9ub3IgKm5vcikNCj4gICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgU05PUl9QUk9UT18xXzFfOCk7DQo+ICAg
-ICAgICAgfQ0KPiANCj4gKyAgICAgICBpZiAoaW5mby0+ZmxhZ3MgJiBTUElfTk9SX09DVEFMX0RU
-Ul9SRUFEKSB7DQoNCldoeSBkbyB3ZSBuZWVkIHRoaXMgZmxhZz8gQ2FuJ3Qgd2UgZGV0ZXJtaW5l
-IGlmIHRoZSBmbGFzaCBzdXBwb3J0cw0Kb2N0YWwgRFRSIGJ5IHBhcnNpbmcgU0ZEUD8NCg0KPiAr
-ICAgICAgICAgICAgICAgcGFyYW1zLT5od2NhcHMubWFzayB8PSBTTk9SX0hXQ0FQU19SRUFEXzhf
-OF84X0RUUjsNCj4gKyAgICAgICAgICAgICAgIHNwaV9ub3Jfc2V0X3JlYWRfc2V0dGluZ3MoJnBh
-cmFtcy0+cmVhZHNbU05PUl9DTURfUkVBRF84XzhfOF9EVFJdLA0KPiArICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAwLCAyMCwgU1BJTk9SX09QX1JFQURfRkFTVCwNCj4g
-KyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgU05PUl9QUk9UT184Xzhf
-OF9EVFIpOw0KPiArICAgICAgIH0NCj4gKw0KPiAgICAgICAgIC8qIFBhZ2UgUHJvZ3JhbSBzZXR0
-aW5ncy4gKi8NCj4gICAgICAgICBwYXJhbXMtPmh3Y2Fwcy5tYXNrIHw9IFNOT1JfSFdDQVBTX1BQ
-Ow0KPiAgICAgICAgIHNwaV9ub3Jfc2V0X3BwX3NldHRpbmdzKCZwYXJhbXMtPnBhZ2VfcHJvZ3Jh
-bXNbU05PUl9DTURfUFBdLA0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFNQSU5P
-Ul9PUF9QUCwgU05PUl9QUk9UT18xXzFfMSk7DQo+IA0KPiArICAgICAgIC8qDQo+ICsgICAgICAg
-ICogU2luY2UgeFNQSSBQYWdlIFByb2dyYW0gb3Bjb2RlIGlzIGJhY2t3YXJkIGNvbXBhdGlibGUg
-d2l0aA0KPiArICAgICAgICAqIExlZ2FjeSBTUEksIHVzZSBMZWdhY3kgU1BJIG9wY29kZSB0aGVy
-ZSBhcyB3ZWxsLg0KPiArICAgICAgICAqLw0KPiArICAgICAgIHNwaV9ub3Jfc2V0X3BwX3NldHRp
-bmdzKCZwYXJhbXMtPnBhZ2VfcHJvZ3JhbXNbU05PUl9DTURfUFBfOF84XzhfRFRSXSwNCj4gKyAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBTUElOT1JfT1BfUFAsIFNOT1JfUFJPVE9fOF84
-XzhfRFRSKTsNCj4gKw0KDQpUaGlzIGxvb2tzIGZpc2h5LiBZb3UgaGF2ZW4ndCB1cGRhdGVkIHRo
-ZSBod2NhcHMubWFzaywgdGhlc2UgcHAgc2V0dGluZ3MgbmV2ZXINCmdldCBzZWxlY3RlZD8NCg0K
-PiAgICAgICAgIC8qDQo+ICAgICAgICAgICogU2VjdG9yIEVyYXNlIHNldHRpbmdzLiBTb3J0IEVy
-YXNlIFR5cGVzIGluIGFzY2VuZGluZyBvcmRlciwgd2l0aCB0aGUNCj4gICAgICAgICAgKiBzbWFs
-bGVzdCBlcmFzZSBzaXplIHN0YXJ0aW5nIGF0IEJJVCgwKS4NCj4gQEAgLTI4ODYsNyArMzA1Myw4
-IEBAIHN0YXRpYyBpbnQgc3BpX25vcl9pbml0X3BhcmFtcyhzdHJ1Y3Qgc3BpX25vciAqbm9yKQ0K
-PiANCj4gICAgICAgICBzcGlfbm9yX21hbnVmYWN0dXJlcl9pbml0X3BhcmFtcyhub3IpOw0KPiAN
-Cj4gLSAgICAgICBpZiAoKG5vci0+aW5mby0+ZmxhZ3MgJiAoU1BJX05PUl9EVUFMX1JFQUQgfCBT
-UElfTk9SX1FVQURfUkVBRCkpICYmDQo+ICsgICAgICAgaWYgKChub3ItPmluZm8tPmZsYWdzICYg
-KFNQSV9OT1JfRFVBTF9SRUFEIHwgU1BJX05PUl9RVUFEX1JFQUQgfA0KPiArICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICBTUElfTk9SX09DVEFMX1JFQUQgfCBTUElfTk9SX09DVEFMX0RU
-Ul9SRUFEKSkgJiYNCj4gICAgICAgICAgICAgIShub3ItPmluZm8tPmZsYWdzICYgU1BJX05PUl9T
-S0lQX1NGRFApKQ0KPiAgICAgICAgICAgICAgICAgc3BpX25vcl9zZmRwX2luaXRfcGFyYW1zKG5v
-cik7DQo+IA0KPiBAQCAtMjk0OCw3ICszMTE2LDkgQEAgc3RhdGljIGludCBzcGlfbm9yX2luaXQo
-c3RydWN0IHNwaV9ub3IgKm5vcikNCj4gICAgICAgICAgICAgICAgIHJldHVybiBlcnI7DQo+ICAg
-ICAgICAgfQ0KPiANCj4gLSAgICAgICBpZiAobm9yLT5hZGRyX3dpZHRoID09IDQgJiYgIShub3It
-PmZsYWdzICYgU05PUl9GXzRCX09QQ09ERVMpKSB7DQo+ICsgICAgICAgaWYgKG5vci0+YWRkcl93
-aWR0aCA9PSA0ICYmDQo+ICsgICAgICAgICAgICEobm9yLT5pbmZvLT5mbGFncyAmIFNQSV9OT1Jf
-T0NUQUxfRFRSX1JFQUQpICYmDQoNCldoeSBpcyB0aGUgT2N0YWwgRFRSIHJlYWQgZXhlbXB0ZWQ/
-DQoNCj4gKyAgICAgICAgICAgIShub3ItPmZsYWdzICYgU05PUl9GXzRCX09QQ09ERVMpKSB7DQo+
-ICAgICAgICAgICAgICAgICAvKg0KPiAgICAgICAgICAgICAgICAgICogSWYgdGhlIFJFU0VUIyBw
-aW4gaXNuJ3QgaG9va2VkIHVwIHByb3Blcmx5LCBvciB0aGUgc3lzdGVtDQo+ICAgICAgICAgICAg
-ICAgICAgKiBvdGhlcndpc2UgZG9lc24ndCBwZXJmb3JtIGEgcmVzZXQgY29tbWFuZCBpbiB0aGUg
-Ym9vdA0KPiBAQCAtMzAwNyw2ICszMTc3LDkgQEAgc3RhdGljIGludCBzcGlfbm9yX3NldF9hZGRy
-X3dpZHRoKHN0cnVjdCBzcGlfbm9yICpub3IpDQo+ICB7DQo+ICAgICAgICAgaWYgKG5vci0+YWRk
-cl93aWR0aCkgew0KPiAgICAgICAgICAgICAgICAgLyogYWxyZWFkeSBjb25maWd1cmVkIGZyb20g
-U0ZEUCAqLw0KPiArICAgICAgIH0gZWxzZSBpZiAoc3BpX25vcl9wcm90b2NvbF9pc19kdHIobm9y
-LT5yZWFkX3Byb3RvKSkgew0KPiArICAgICAgICAgICAgICAgIC8qIEFsd2F5cyB1c2UgNC1ieXRl
-IGFkZHJlc3NlcyBpbiBEVFIgbW9kZS4gKi8NCj4gKyAgICAgICAgICAgICAgIG5vci0+YWRkcl93
-aWR0aCA9IDQ7DQoNCldoeT8gRFRSIHdpdGggMyBieXRlIGFkZHIgd2lkdGggc2hvdWxkIGJlIHBv
-c3NpYmxlIHRvby4NCg0KPiAgICAgICAgIH0gZWxzZSBpZiAobm9yLT5pbmZvLT5hZGRyX3dpZHRo
-KSB7DQo+ICAgICAgICAgICAgICAgICBub3ItPmFkZHJfd2lkdGggPSBub3ItPmluZm8tPmFkZHJf
-d2lkdGg7DQo+ICAgICAgICAgfSBlbHNlIGlmIChub3ItPm10ZC5zaXplID4gMHgxMDAwMDAwKSB7
-DQoNCkNoZWVycywNCnRhDQo=
+Replace the existing /* fall through */ comments and its variants with
+the new pseudo-keyword macro fallthrough[1]. Also, remove unnecessary
+fall-through markings when it is the case.
+
+[1] https://www.kernel.org/doc/html/latest/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
+
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/infiniband/hw/hfi1/chip.c     |    8 ++++----
+ drivers/infiniband/hw/hfi1/firmware.c |   16 ----------------
+ drivers/infiniband/hw/hfi1/mad.c      |    9 ++++-----
+ drivers/infiniband/hw/hfi1/pio.c      |    2 +-
+ drivers/infiniband/hw/hfi1/pio_copy.c |   12 ++++++------
+ drivers/infiniband/hw/hfi1/platform.c |   10 +++++-----
+ drivers/infiniband/hw/hfi1/qp.c       |    2 +-
+ drivers/infiniband/hw/hfi1/qsfp.c     |    4 ++--
+ drivers/infiniband/hw/hfi1/rc.c       |   25 ++++++++++++-------------
+ drivers/infiniband/hw/hfi1/sdma.c     |    9 ++++-----
+ drivers/infiniband/hw/hfi1/tid_rdma.c |    4 ++--
+ drivers/infiniband/hw/hfi1/uc.c       |    8 ++++----
+ 12 files changed, 45 insertions(+), 64 deletions(-)
+
+diff --git a/drivers/infiniband/hw/hfi1/chip.c b/drivers/infiniband/hw/hfi1/chip.c
+index 15f9c635f292..132f1df6f23b 100644
+--- a/drivers/infiniband/hw/hfi1/chip.c
++++ b/drivers/infiniband/hw/hfi1/chip.c
+@@ -7320,7 +7320,7 @@ static u16 link_width_to_bits(struct hfi1_devdata *dd, u16 width)
+ 	default:
+ 		dd_dev_info(dd, "%s: invalid width %d, using 4\n",
+ 			    __func__, width);
+-		/* fall through */
++		fallthrough;
+ 	case 4: return OPA_LINK_WIDTH_4X;
+ 	}
+ }
+@@ -7380,7 +7380,7 @@ static void get_link_widths(struct hfi1_devdata *dd, u16 *tx_width,
+ 			dd_dev_err(dd,
+ 				   "%s: unexpected max rate %d, using 25Gb\n",
+ 				   __func__, (int)max_rate);
+-			/* fall through */
++			fallthrough;
+ 		case 1:
+ 			dd->pport[0].link_speed_active = OPA_LINK_SPEED_25G;
+ 			break;
+@@ -12882,7 +12882,7 @@ static u32 chip_to_opa_lstate(struct hfi1_devdata *dd, u32 chip_lstate)
+ 		dd_dev_err(dd,
+ 			   "Unknown logical state 0x%x, reporting IB_PORT_DOWN\n",
+ 			   chip_lstate);
+-		/* fall through */
++		fallthrough;
+ 	case LSTATE_DOWN:
+ 		return IB_PORT_DOWN;
+ 	case LSTATE_INIT:
+@@ -12901,7 +12901,7 @@ u32 chip_to_opa_pstate(struct hfi1_devdata *dd, u32 chip_pstate)
+ 	default:
+ 		dd_dev_err(dd, "Unexpected chip physical state of 0x%x\n",
+ 			   chip_pstate);
+-		/* fall through */
++		fallthrough;
+ 	case PLS_DISABLED:
+ 		return IB_PORTPHYSSTATE_DISABLED;
+ 	case PLS_OFFLINE:
+diff --git a/drivers/infiniband/hw/hfi1/firmware.c b/drivers/infiniband/hw/hfi1/firmware.c
+index 2b57ba70ddd6..0e83d4b61e46 100644
+--- a/drivers/infiniband/hw/hfi1/firmware.c
++++ b/drivers/infiniband/hw/hfi1/firmware.c
+@@ -1868,11 +1868,8 @@ int parse_platform_config(struct hfi1_devdata *dd)
+ 									2;
+ 				break;
+ 			case PLATFORM_CONFIG_RX_PRESET_TABLE:
+-				/* fall through */
+ 			case PLATFORM_CONFIG_TX_PRESET_TABLE:
+-				/* fall through */
+ 			case PLATFORM_CONFIG_QSFP_ATTEN_TABLE:
+-				/* fall through */
+ 			case PLATFORM_CONFIG_VARIABLE_SETTINGS_TABLE:
+ 				pcfgcache->config_tables[table_type].num_table =
+ 							table_length_dwords;
+@@ -1890,15 +1887,10 @@ int parse_platform_config(struct hfi1_devdata *dd)
+ 			/* metadata table */
+ 			switch (table_type) {
+ 			case PLATFORM_CONFIG_SYSTEM_TABLE:
+-				/* fall through */
+ 			case PLATFORM_CONFIG_PORT_TABLE:
+-				/* fall through */
+ 			case PLATFORM_CONFIG_RX_PRESET_TABLE:
+-				/* fall through */
+ 			case PLATFORM_CONFIG_TX_PRESET_TABLE:
+-				/* fall through */
+ 			case PLATFORM_CONFIG_QSFP_ATTEN_TABLE:
+-				/* fall through */
+ 			case PLATFORM_CONFIG_VARIABLE_SETTINGS_TABLE:
+ 				break;
+ 			default:
+@@ -2027,15 +2019,10 @@ static int get_platform_fw_field_metadata(struct hfi1_devdata *dd, int table,
+ 
+ 	switch (table) {
+ 	case PLATFORM_CONFIG_SYSTEM_TABLE:
+-		/* fall through */
+ 	case PLATFORM_CONFIG_PORT_TABLE:
+-		/* fall through */
+ 	case PLATFORM_CONFIG_RX_PRESET_TABLE:
+-		/* fall through */
+ 	case PLATFORM_CONFIG_TX_PRESET_TABLE:
+-		/* fall through */
+ 	case PLATFORM_CONFIG_QSFP_ATTEN_TABLE:
+-		/* fall through */
+ 	case PLATFORM_CONFIG_VARIABLE_SETTINGS_TABLE:
+ 		if (field && field < platform_config_table_limits[table])
+ 			src_ptr =
+@@ -2138,11 +2125,8 @@ int get_platform_config_field(struct hfi1_devdata *dd,
+ 			pcfgcache->config_tables[table_type].table;
+ 		break;
+ 	case PLATFORM_CONFIG_RX_PRESET_TABLE:
+-		/* fall through */
+ 	case PLATFORM_CONFIG_TX_PRESET_TABLE:
+-		/* fall through */
+ 	case PLATFORM_CONFIG_QSFP_ATTEN_TABLE:
+-		/* fall through */
+ 	case PLATFORM_CONFIG_VARIABLE_SETTINGS_TABLE:
+ 		src_ptr = pcfgcache->config_tables[table_type].table;
+ 
+diff --git a/drivers/infiniband/hw/hfi1/mad.c b/drivers/infiniband/hw/hfi1/mad.c
+index 7073f237a949..3222e3acb79c 100644
+--- a/drivers/infiniband/hw/hfi1/mad.c
++++ b/drivers/infiniband/hw/hfi1/mad.c
+@@ -721,7 +721,7 @@ static int check_mkey(struct hfi1_ibport *ibp, struct ib_mad_hdr *mad,
+ 			/* Bad mkey not a violation below level 2 */
+ 			if (ibp->rvp.mkeyprot < 2)
+ 				break;
+-			/* fall through */
++			fallthrough;
+ 		case IB_MGMT_METHOD_SET:
+ 		case IB_MGMT_METHOD_TRAP_REPRESS:
+ 			if (ibp->rvp.mkey_violations != 0xFFFF)
+@@ -1272,7 +1272,7 @@ static int set_port_states(struct hfi1_pportdata *ppd, struct opa_smp *smp,
+ 	case IB_PORT_NOP:
+ 		if (phys_state == IB_PORTPHYSSTATE_NOP)
+ 			break;
+-		/* FALLTHROUGH */
++		fallthrough;
+ 	case IB_PORT_DOWN:
+ 		if (phys_state == IB_PORTPHYSSTATE_NOP) {
+ 			link_state = HLS_DN_DOWNDEF;
+@@ -2300,7 +2300,6 @@ static int __subn_set_opa_vl_arb(struct opa_smp *smp, u32 am, u8 *data,
+ 	 * can be changed from the default values
+ 	 */
+ 	case OPA_VLARB_PREEMPT_ELEMENTS:
+-		/* FALLTHROUGH */
+ 	case OPA_VLARB_PREEMPT_MATRIX:
+ 		smp->status |= IB_SMP_UNSUP_METH_ATTR;
+ 		break;
+@@ -4170,7 +4169,7 @@ static int subn_get_opa_sma(__be16 attr_id, struct opa_smp *smp, u32 am,
+ 			return IB_MAD_RESULT_SUCCESS | IB_MAD_RESULT_CONSUMED;
+ 		if (ibp->rvp.port_cap_flags & IB_PORT_SM)
+ 			return IB_MAD_RESULT_SUCCESS;
+-		/* FALLTHROUGH */
++		fallthrough;
+ 	default:
+ 		smp->status |= IB_SMP_UNSUP_METH_ATTR;
+ 		ret = reply((struct ib_mad_hdr *)smp);
+@@ -4240,7 +4239,7 @@ static int subn_set_opa_sma(__be16 attr_id, struct opa_smp *smp, u32 am,
+ 			return IB_MAD_RESULT_SUCCESS | IB_MAD_RESULT_CONSUMED;
+ 		if (ibp->rvp.port_cap_flags & IB_PORT_SM)
+ 			return IB_MAD_RESULT_SUCCESS;
+-		/* FALLTHROUGH */
++		fallthrough;
+ 	default:
+ 		smp->status |= IB_SMP_UNSUP_METH_ATTR;
+ 		ret = reply((struct ib_mad_hdr *)smp);
+diff --git a/drivers/infiniband/hw/hfi1/pio.c b/drivers/infiniband/hw/hfi1/pio.c
+index 79126b2b14ab..ff864f6f0266 100644
+--- a/drivers/infiniband/hw/hfi1/pio.c
++++ b/drivers/infiniband/hw/hfi1/pio.c
+@@ -86,7 +86,7 @@ void pio_send_control(struct hfi1_devdata *dd, int op)
+ 	switch (op) {
+ 	case PSC_GLOBAL_ENABLE:
+ 		reg |= SEND_CTRL_SEND_ENABLE_SMASK;
+-	/* Fall through */
++		fallthrough;
+ 	case PSC_DATA_VL_ENABLE:
+ 		mask = 0;
+ 		for (i = 0; i < ARRAY_SIZE(dd->vld); i++)
+diff --git a/drivers/infiniband/hw/hfi1/pio_copy.c b/drivers/infiniband/hw/hfi1/pio_copy.c
+index 03024cec78dd..b12e4665c9ab 100644
+--- a/drivers/infiniband/hw/hfi1/pio_copy.c
++++ b/drivers/infiniband/hw/hfi1/pio_copy.c
+@@ -191,22 +191,22 @@ static inline void jcopy(u8 *dest, const u8 *src, u32 n)
+ 	switch (n) {
+ 	case 7:
+ 		*dest++ = *src++;
+-		/* fall through */
++		fallthrough;
+ 	case 6:
+ 		*dest++ = *src++;
+-		/* fall through */
++		fallthrough;
+ 	case 5:
+ 		*dest++ = *src++;
+-		/* fall through */
++		fallthrough;
+ 	case 4:
+ 		*dest++ = *src++;
+-		/* fall through */
++		fallthrough;
+ 	case 3:
+ 		*dest++ = *src++;
+-		/* fall through */
++		fallthrough;
+ 	case 2:
+ 		*dest++ = *src++;
+-		/* fall through */
++		fallthrough;
+ 	case 1:
+ 		*dest++ = *src++;
+ 		/* fall through */
+diff --git a/drivers/infiniband/hw/hfi1/platform.c b/drivers/infiniband/hw/hfi1/platform.c
+index 36593f2efe26..4642d6ceb890 100644
+--- a/drivers/infiniband/hw/hfi1/platform.c
++++ b/drivers/infiniband/hw/hfi1/platform.c
+@@ -668,8 +668,8 @@ static u8 aoc_low_power_setting(struct hfi1_pportdata *ppd)
+ 
+ 	/* active optical cables only */
+ 	switch ((cache[QSFP_MOD_TECH_OFFS] & 0xF0) >> 4) {
+-	case 0x0 ... 0x9: /* fallthrough */
+-	case 0xC: /* fallthrough */
++	case 0x0 ... 0x9: fallthrough;
++	case 0xC: fallthrough;
+ 	case 0xE:
+ 		/* active AOC */
+ 		power_class = get_qsfp_power_class(cache[QSFP_MOD_PWR_OFFS]);
+@@ -899,8 +899,8 @@ static int tune_qsfp(struct hfi1_pportdata *ppd,
+ 
+ 		*ptr_tuning_method = OPA_PASSIVE_TUNING;
+ 		break;
+-	case 0x0 ... 0x9: /* fallthrough */
+-	case 0xC: /* fallthrough */
++	case 0x0 ... 0x9: fallthrough;
++	case 0xC: fallthrough;
+ 	case 0xE:
+ 		ret = tune_active_qsfp(ppd, ptr_tx_preset, ptr_rx_preset,
+ 				       ptr_total_atten);
+@@ -909,7 +909,7 @@ static int tune_qsfp(struct hfi1_pportdata *ppd,
+ 
+ 		*ptr_tuning_method = OPA_ACTIVE_TUNING;
+ 		break;
+-	case 0xD: /* fallthrough */
++	case 0xD: fallthrough;
+ 	case 0xF:
+ 	default:
+ 		dd_dev_warn(ppd->dd, "%s: Unknown/unsupported cable\n",
+diff --git a/drivers/infiniband/hw/hfi1/qp.c b/drivers/infiniband/hw/hfi1/qp.c
+index 0c2ae9f7b3e8..b1175c514cd8 100644
+--- a/drivers/infiniband/hw/hfi1/qp.c
++++ b/drivers/infiniband/hw/hfi1/qp.c
+@@ -312,7 +312,7 @@ int hfi1_setup_wqe(struct rvt_qp *qp, struct rvt_swqe *wqe, bool *call_send)
+ 	switch (qp->ibqp.qp_type) {
+ 	case IB_QPT_RC:
+ 		hfi1_setup_tid_rdma_wqe(qp, wqe);
+-		/* fall through */
++		fallthrough;
+ 	case IB_QPT_UC:
+ 		if (wqe->length > 0x80000000U)
+ 			return -EINVAL;
+diff --git a/drivers/infiniband/hw/hfi1/qsfp.c b/drivers/infiniband/hw/hfi1/qsfp.c
+index b5966991d647..8386c84c2d92 100644
+--- a/drivers/infiniband/hw/hfi1/qsfp.c
++++ b/drivers/infiniband/hw/hfi1/qsfp.c
+@@ -231,7 +231,7 @@ static int i2c_bus_write(struct hfi1_devdata *dd, struct hfi1_i2c_bus *i2c,
+ 		break;
+ 	case 2:
+ 		offset_bytes[1] = (offset >> 8) & 0xff;
+-		/* fall through */
++		fallthrough;
+ 	case 1:
+ 		num_msgs = 2;
+ 		offset_bytes[0] = offset & 0xff;
+@@ -279,7 +279,7 @@ static int i2c_bus_read(struct hfi1_devdata *dd, struct hfi1_i2c_bus *bus,
+ 		break;
+ 	case 2:
+ 		offset_bytes[1] = (offset >> 8) & 0xff;
+-		/* fall through */
++		fallthrough;
+ 	case 1:
+ 		num_msgs = 2;
+ 		offset_bytes[0] = offset & 0xff;
+diff --git a/drivers/infiniband/hw/hfi1/rc.c b/drivers/infiniband/hw/hfi1/rc.c
+index f1734e5e9ac4..1bb5f57152d3 100644
+--- a/drivers/infiniband/hw/hfi1/rc.c
++++ b/drivers/infiniband/hw/hfi1/rc.c
+@@ -141,7 +141,7 @@ static int make_rc_ack(struct hfi1_ibdev *dev, struct rvt_qp *qp,
+ 	case OP(RDMA_READ_RESPONSE_ONLY):
+ 		e = &qp->s_ack_queue[qp->s_tail_ack_queue];
+ 		release_rdma_sge_mr(e);
+-		/* FALLTHROUGH */
++		fallthrough;
+ 	case OP(ATOMIC_ACKNOWLEDGE):
+ 		/*
+ 		 * We can increment the tail pointer now that the last
+@@ -160,7 +160,7 @@ static int make_rc_ack(struct hfi1_ibdev *dev, struct rvt_qp *qp,
+ 			qp->s_acked_ack_queue = next;
+ 		qp->s_tail_ack_queue = next;
+ 		trace_hfi1_rsp_make_rc_ack(qp, e->psn);
+-		/* FALLTHROUGH */
++		fallthrough;
+ 	case OP(SEND_ONLY):
+ 	case OP(ACKNOWLEDGE):
+ 		/* Check for no next entry in the queue. */
+@@ -267,7 +267,7 @@ static int make_rc_ack(struct hfi1_ibdev *dev, struct rvt_qp *qp,
+ 
+ 	case OP(RDMA_READ_RESPONSE_FIRST):
+ 		qp->s_ack_state = OP(RDMA_READ_RESPONSE_MIDDLE);
+-		/* FALLTHROUGH */
++		fallthrough;
+ 	case OP(RDMA_READ_RESPONSE_MIDDLE):
+ 		ps->s_txreq->ss = &qp->s_ack_rdma_sge;
+ 		ps->s_txreq->mr = qp->s_ack_rdma_sge.sge.mr;
+@@ -881,8 +881,7 @@ int hfi1_make_rc_req(struct rvt_qp *qp, struct hfi1_pkt_state *ps)
+ 				goto bail;
+ 			}
+ 			qp->s_num_rd_atomic++;
+-
+-			/* FALLTHROUGH */
++			fallthrough;
+ 		case IB_WR_OPFN:
+ 			if (newreq && !(qp->s_flags & RVT_S_UNLIMITED_CREDIT))
+ 				qp->s_lsn++;
+@@ -946,10 +945,10 @@ int hfi1_make_rc_req(struct rvt_qp *qp, struct hfi1_pkt_state *ps)
+ 		 * See restart_rc().
+ 		 */
+ 		qp->s_len = restart_sge(&qp->s_sge, wqe, qp->s_psn, pmtu);
+-		/* FALLTHROUGH */
++		fallthrough;
+ 	case OP(SEND_FIRST):
+ 		qp->s_state = OP(SEND_MIDDLE);
+-		/* FALLTHROUGH */
++		fallthrough;
+ 	case OP(SEND_MIDDLE):
+ 		bth2 = mask_psn(qp->s_psn++);
+ 		ss = &qp->s_sge;
+@@ -991,10 +990,10 @@ int hfi1_make_rc_req(struct rvt_qp *qp, struct hfi1_pkt_state *ps)
+ 		 * See restart_rc().
+ 		 */
+ 		qp->s_len = restart_sge(&qp->s_sge, wqe, qp->s_psn, pmtu);
+-		/* FALLTHROUGH */
++		fallthrough;
+ 	case OP(RDMA_WRITE_FIRST):
+ 		qp->s_state = OP(RDMA_WRITE_MIDDLE);
+-		/* FALLTHROUGH */
++		fallthrough;
+ 	case OP(RDMA_WRITE_MIDDLE):
+ 		bth2 = mask_psn(qp->s_psn++);
+ 		ss = &qp->s_sge;
+@@ -2901,7 +2900,7 @@ void hfi1_rc_rcv(struct hfi1_packet *packet)
+ 		if (!ret)
+ 			goto rnr_nak;
+ 		qp->r_rcv_len = 0;
+-		/* FALLTHROUGH */
++		fallthrough;
+ 	case OP(SEND_MIDDLE):
+ 	case OP(RDMA_WRITE_MIDDLE):
+ send_middle:
+@@ -2941,7 +2940,7 @@ void hfi1_rc_rcv(struct hfi1_packet *packet)
+ 			goto no_immediate_data;
+ 		if (opcode == OP(SEND_ONLY_WITH_INVALIDATE))
+ 			goto send_last_inv;
+-		/* FALLTHROUGH -- for SEND_ONLY_WITH_IMMEDIATE */
++		fallthrough;	/* for SEND_ONLY_WITH_IMMEDIATE */
+ 	case OP(SEND_LAST_WITH_IMMEDIATE):
+ send_last_imm:
+ 		wc.ex.imm_data = ohdr->u.imm_data;
+@@ -2957,7 +2956,7 @@ void hfi1_rc_rcv(struct hfi1_packet *packet)
+ 		goto send_last;
+ 	case OP(RDMA_WRITE_LAST):
+ 		copy_last = rvt_is_user_qp(qp);
+-		/* fall through */
++		fallthrough;
+ 	case OP(SEND_LAST):
+ no_immediate_data:
+ 		wc.wc_flags = 0;
+@@ -3010,7 +3009,7 @@ void hfi1_rc_rcv(struct hfi1_packet *packet)
+ 
+ 	case OP(RDMA_WRITE_ONLY):
+ 		copy_last = rvt_is_user_qp(qp);
+-		/* fall through */
++		fallthrough;
+ 	case OP(RDMA_WRITE_FIRST):
+ 	case OP(RDMA_WRITE_ONLY_WITH_IMMEDIATE):
+ 		if (unlikely(!(qp->qp_access_flags & IB_ACCESS_REMOTE_WRITE)))
+diff --git a/drivers/infiniband/hw/hfi1/sdma.c b/drivers/infiniband/hw/hfi1/sdma.c
+index c93ea021cf49..04575c9afd61 100644
+--- a/drivers/infiniband/hw/hfi1/sdma.c
++++ b/drivers/infiniband/hw/hfi1/sdma.c
+@@ -2584,7 +2584,7 @@ static void __sdma_process_event(struct sdma_engine *sde,
+ 			 * 7220, e.g.
+ 			 */
+ 			ss->go_s99_running = 1;
+-			/* fall through -- and start dma engine */
++			fallthrough;	/* and start dma engine */
+ 		case sdma_event_e10_go_hw_start:
+ 			/* This reference means the state machine is started */
+ 			sdma_get(&sde->state);
+@@ -2726,7 +2726,6 @@ static void __sdma_process_event(struct sdma_engine *sde,
+ 		case sdma_event_e70_go_idle:
+ 			break;
+ 		case sdma_event_e85_link_down:
+-			/* fall through */
+ 		case sdma_event_e80_hw_freeze:
+ 			sdma_set_state(sde, sdma_state_s80_hw_freeze);
+ 			atomic_dec(&sde->dd->sdma_unfreeze_count);
+@@ -3007,7 +3006,7 @@ static void __sdma_process_event(struct sdma_engine *sde,
+ 		case sdma_event_e60_hw_halted:
+ 			need_progress = 1;
+ 			sdma_err_progress_check_schedule(sde);
+-			/* fall through */
++			fallthrough;
+ 		case sdma_event_e90_sw_halted:
+ 			/*
+ 			* SW initiated halt does not perform engines
+@@ -3021,7 +3020,7 @@ static void __sdma_process_event(struct sdma_engine *sde,
+ 			break;
+ 		case sdma_event_e85_link_down:
+ 			ss->go_s99_running = 0;
+-			/* fall through */
++			fallthrough;
+ 		case sdma_event_e80_hw_freeze:
+ 			sdma_set_state(sde, sdma_state_s80_hw_freeze);
+ 			atomic_dec(&sde->dd->sdma_unfreeze_count);
+@@ -3252,7 +3251,7 @@ void _sdma_txreq_ahgadd(
+ 		tx->num_desc++;
+ 		tx->descs[2].qw[0] = 0;
+ 		tx->descs[2].qw[1] = 0;
+-		/* FALLTHROUGH */
++		fallthrough;
+ 	case SDMA_AHG_APPLY_UPDATE2:
+ 		tx->num_desc++;
+ 		tx->descs[1].qw[0] = 0;
+diff --git a/drivers/infiniband/hw/hfi1/tid_rdma.c b/drivers/infiniband/hw/hfi1/tid_rdma.c
+index 243b4ba0b6f6..62b6c1bf267d 100644
+--- a/drivers/infiniband/hw/hfi1/tid_rdma.c
++++ b/drivers/infiniband/hw/hfi1/tid_rdma.c
+@@ -3227,7 +3227,7 @@ bool hfi1_tid_rdma_wqe_interlock(struct rvt_qp *qp, struct rvt_swqe *wqe)
+ 	case IB_WR_RDMA_READ:
+ 		if (prev->wr.opcode != IB_WR_TID_RDMA_WRITE)
+ 			break;
+-		/* fall through */
++		fallthrough;
+ 	case IB_WR_TID_RDMA_READ:
+ 		switch (prev->wr.opcode) {
+ 		case IB_WR_RDMA_READ:
+@@ -5067,7 +5067,7 @@ int hfi1_make_tid_rdma_pkt(struct rvt_qp *qp, struct hfi1_pkt_state *ps)
+ 		if (priv->s_state == TID_OP(WRITE_REQ))
+ 			hfi1_tid_rdma_restart_req(qp, wqe, &bth2);
+ 		priv->s_state = TID_OP(WRITE_DATA);
+-		/* fall through */
++		fallthrough;
+ 
+ 	case TID_OP(WRITE_DATA):
+ 		/*
+diff --git a/drivers/infiniband/hw/hfi1/uc.c b/drivers/infiniband/hw/hfi1/uc.c
+index 0c77f18120ed..1fb918399da0 100644
+--- a/drivers/infiniband/hw/hfi1/uc.c
++++ b/drivers/infiniband/hw/hfi1/uc.c
+@@ -216,7 +216,7 @@ int hfi1_make_uc_req(struct rvt_qp *qp, struct hfi1_pkt_state *ps)
+ 
+ 	case OP(SEND_FIRST):
+ 		qp->s_state = OP(SEND_MIDDLE);
+-		/* FALLTHROUGH */
++		fallthrough;
+ 	case OP(SEND_MIDDLE):
+ 		len = qp->s_len;
+ 		if (len > pmtu) {
+@@ -241,7 +241,7 @@ int hfi1_make_uc_req(struct rvt_qp *qp, struct hfi1_pkt_state *ps)
+ 
+ 	case OP(RDMA_WRITE_FIRST):
+ 		qp->s_state = OP(RDMA_WRITE_MIDDLE);
+-		/* FALLTHROUGH */
++		fallthrough;
+ 	case OP(RDMA_WRITE_MIDDLE):
+ 		len = qp->s_len;
+ 		if (len > pmtu) {
+@@ -414,7 +414,7 @@ void hfi1_uc_rcv(struct hfi1_packet *packet)
+ 			goto no_immediate_data;
+ 		else if (opcode == OP(SEND_ONLY_WITH_IMMEDIATE))
+ 			goto send_last_imm;
+-		/* FALLTHROUGH */
++		fallthrough;
+ 	case OP(SEND_MIDDLE):
+ 		/* Check for invalid length PMTU or posted rwqe len. */
+ 		/*
+@@ -515,7 +515,7 @@ void hfi1_uc_rcv(struct hfi1_packet *packet)
+ 			wc.ex.imm_data = ohdr->u.rc.imm_data;
+ 			goto rdma_last_imm;
+ 		}
+-		/* FALLTHROUGH */
++		fallthrough;
+ 	case OP(RDMA_WRITE_MIDDLE):
+ 		/* Check for invalid length PMTU or posted rwqe len. */
+ 		if (unlikely(tlen != (hdrsize + pmtu + 4)))
+
