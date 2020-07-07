@@ -2,411 +2,328 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C547216446
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 05:01:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88F4021644F
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 05:03:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727044AbgGGDBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Jul 2020 23:01:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59196 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726434AbgGGDBs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Jul 2020 23:01:48 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B32D8C061755;
-        Mon,  6 Jul 2020 20:01:48 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id 1so101653pfn.9;
-        Mon, 06 Jul 2020 20:01:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=OQCgUwM2ShP0/N0SvzdE3xadrflgQZrSD21eF9YrU/w=;
-        b=daqEG873WEhgL7DYnv/QAZ0dpmVgfZYL4xpK7tZWZuugeu3veuHQ08hXLQXWfrupoL
-         gb/UA4qCEIgL/1SmTJS5FUnNw+9dEAEvtVjjrbLZpci1XScv96d9buXdXySolztmJlCJ
-         hCeF9Xps9K9ZUGrIx3olDIbA2wc5W4j24U6oBHu+tUCEmfyU3JykZlq82a16Zmn+zGF4
-         DV8oJ9foFNVJ9LtvCXQ948Wj9tT19qn6iN48wyawxL3LrkUIX0iMS469Txejatkihect
-         txNroVzN1XGM/BBi3Uu5O8XHazh3mZSgmP4+CVccqsWkjT6fS9Sh2CgyQDFMwll0+ceT
-         JfSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=OQCgUwM2ShP0/N0SvzdE3xadrflgQZrSD21eF9YrU/w=;
-        b=WPVXzPrD4y8qTlje8RaeWJ5FTOwh+G+m2mjGFBkgDgWxLjdhAGyM/cAjyphZaclTbj
-         ka97nosyMX7UD+44p+QZZt4udqCo+sEE8O7QrFNRWBZ/YAknosQEq2rCJBLIieyQJgsk
-         zOZX/SaHlwNxPxiOPyQEb1A991aPxMHrnIwcFfzsr9rPW9ZmkLlLSQ6AFvXAtnb/593k
-         0gChylSHu5GPf2EI4s/AYuaAOtMjVvLFeJ+2VUMIdMSGeLEP/YTnnCTI49+TksAtoJBN
-         ZpmXgugEKjskZpszfVqQOB5I6kJ/RiXiqxMST4WHHix/sPyrTV+4YcX9d5KA8iiLuzQ4
-         olRA==
-X-Gm-Message-State: AOAM532B/HBMblSSQoOzb99jiC69R2bmcX508+kQ7wohX/kCNnsWMLSM
-        yIO3YF87w7p9tBeEky3dlblezeGwri8=
-X-Google-Smtp-Source: ABdhPJyrPvjbAUbN7OSlkamQyjoyKeYpcxILuUspQfP2oTdlhers4m3hooh5MLifh/N7PUePIv0dPw==
-X-Received: by 2002:a63:b90a:: with SMTP id z10mr41143374pge.277.1594090907669;
-        Mon, 06 Jul 2020 20:01:47 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id b4sm732646pjn.38.2020.07.06.20.01.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Jul 2020 20:01:46 -0700 (PDT)
-Subject: Re: [PATCH v3 1/1] hwmon:max6697: Allows max6581 to create
- tempX_offset attributes
-To:     Chu Lin <linchuyuan@google.com>
-Cc:     belgaied@google.com, jasonling@google.com, jdelvare@suse.com,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhongqil@google.com
-References: <20200707011810.2508233-1-linchuyuan@google.com>
- <20200707011810.2508233-2-linchuyuan@google.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <a36fc250-5387-7534-a8ff-2b5d5196d687@roeck-us.net>
-Date:   Mon, 6 Jul 2020 20:01:45 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1728114AbgGGDD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Jul 2020 23:03:26 -0400
+Received: from mga11.intel.com ([192.55.52.93]:35654 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727046AbgGGDDZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Jul 2020 23:03:25 -0400
+IronPort-SDR: Q7BkSphLm2RJgpX57OvBRUsy2zf8drQlKjF0uZfHv2Gs1O8qvKZL4ykTVzuX380R13ya/1KlKp
+ mL822faLbhfg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9674"; a="145631859"
+X-IronPort-AV: E=Sophos;i="5.75,321,1589266800"; 
+   d="scan'208";a="145631859"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2020 20:03:20 -0700
+IronPort-SDR: zHaae2B2lmDaYqxJ2NUBFQYoJqvgPzpk6c8J3lTWLpFv7bq7M+OS6c4ZNxD5VVoL8vFf50ybuw
+ UkvftXUr7mhA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,321,1589266800"; 
+   d="scan'208";a="388368362"
+Received: from apiccion-mobl1.ger.corp.intel.com (HELO localhost) ([10.249.45.178])
+  by fmsmga001.fm.intel.com with ESMTP; 06 Jul 2020 20:03:09 -0700
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     x86@kernel.org, linux-sgx@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
+        chenalexchen@google.com, conradparker@google.com,
+        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
+Subject: [PATCH v34 05/24] x86/sgx: Add wrappers for ENCLS leaf functions
+Date:   Tue,  7 Jul 2020 06:01:45 +0300
+Message-Id: <20200707030204.126021-6-jarkko.sakkinen@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200707030204.126021-1-jarkko.sakkinen@linux.intel.com>
+References: <20200707030204.126021-1-jarkko.sakkinen@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200707011810.2508233-2-linchuyuan@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/6/20 6:18 PM, Chu Lin wrote:
-> Testing:
-> echo 16250 > temp2_offset
-> cat temp2_offset
-> 16250
-> 
-> echo 17500 > temp3_offset
-> cat temp3_offset
-> 17500
-> cat temp4_offset
-> 0
-> cat temp2_offset
-> 17500
-> 
-> echo 0 > temp2_offset
-> cat temp2_offset
-> 0
-> cat temp3_offset
-> 17500
-> 
-> echo -0 > temp2_offset
-> cat temp2_offset
-> 0
-> 
-> echo -100000 > temp2_offset
-> cat temp2_input
-> 4875
-> 
-> echo 10000 > temp2_offset
-> cat temp2_input
-> 47125
-> 
-> echo -2000 > temp2_offset
-> cat temp2_input
-> 34875
-> 
-> echo -0 > temp2_offset
-> cat temp2_input
-> 37000
-> 
-> Signed-off-by: Chu Lin <linchuyuan@google.com>
+ENCLS is a ring 0 instruction, which contains a set of leaf functions for
+managing an enclave. Enclaves are measured and signed software entities,
+which are protected by asserting the outside memory accesses and memory
+encryption.
 
-Technically this is patch v4, but never mind.
+Add a two-layer macro system along with an encoding scheme to allow
+wrappers to return trap numbers along ENCLS-specific error codes. The
+bottom layer of the macro system splits between the leafs that return an
+error code and those that do not. The second layer generates the correct
+input/output annotations based on the number of operands for each leaf
+function.
 
-> ---
->  drivers/hwmon/max6697.c | 92 +++++++++++++++++++++++++++++++++++++++--
->  1 file changed, 88 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/hwmon/max6697.c b/drivers/hwmon/max6697.c
-> index 64122eb38060..6b213e146fbe 100644
-> --- a/drivers/hwmon/max6697.c
-> +++ b/drivers/hwmon/max6697.c
-> @@ -57,6 +57,9 @@ static const u8 MAX6697_REG_CRIT[] = {
->  #define MAX6581_REG_IDEALITY_SELECT	0x4c
->  #define MAX6581_REG_OFFSET		0x4d
->  #define MAX6581_REG_OFFSET_SELECT	0x4e
-> +#define MAX6581_OFFSET_MIN		-31750
-> +#define MAX6581_OFFSET_MAX		31750
-> +
->  
-Pease no double empty lines.
+ENCLS leaf functions are documented in
 
->  #define MAX6697_CONV_TIME		156	/* ms per channel, worst case */
->  
-> @@ -172,6 +175,11 @@ static const struct max6697_chip_data max6697_chip_data[] = {
->  	},
->  };
->  
-> +static inline int max6581_offset_to_millic(int val)
-> +{
-> +	return val & (1 << 7) ? (val | 0xffffff00) * 250 : val * 250;
+  Intel SDM: 36.6 ENCLAVE INSTRUCTIONS AND INTEL®
 
-	return sign_extend32(val, 7) * 250;
+Acked-by: Jethro Beekman <jethro@fortanix.com>
+Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+---
+ arch/x86/kernel/cpu/sgx/encls.h | 238 ++++++++++++++++++++++++++++++++
+ 1 file changed, 238 insertions(+)
+ create mode 100644 arch/x86/kernel/cpu/sgx/encls.h
 
-> +}
-> +
->  static struct max6697_data *max6697_update_device(struct device *dev)
->  {
->  	struct max6697_data *data = dev_get_drvdata(dev);
-> @@ -317,6 +325,61 @@ static ssize_t temp_store(struct device *dev,
->  	return ret < 0 ? ret : count;
->  }
->  
-> +static ssize_t offset_store(struct device *dev,
-> +			    struct device_attribute *devattr, const char *buf,
-> +			    size_t count)
-
-I don't think this needs three lines with the new line length limit.
-
-> +{
-> +	int val, ret, index, select;
-> +	struct max6697_data *data;
-> +	long temp;
-> +
-> +	index = to_sensor_dev_attr(devattr)->index;
-> +	data = dev_get_drvdata(dev);
-> +	select = i2c_smbus_read_byte_data(data->client, MAX6581_REG_OFFSET_SELECT);
-> +	if (select < 0)
-> +		return select;
-
-Unfortunately, this is racy: The select register can be changed by another write
-after it was read here. The kstrtol() can be outside the lock, but the entire
-sequence of i2c reads and writes has to be mutex protected.
-
-> +	ret = kstrtol(buf, 10, &temp);
-> +	if (ret < 0)
-> +		return ret;
-> +	/* disable the offset for channel */
-
-                                          ... if the new offset is 0.
-
-> +	if (temp == 0) {
-
-This now has to be after the assignment of val below, and must be "if (val == 0)".
-
-> +		ret = i2c_smbus_write_byte_data(data->client, MAX6581_REG_OFFSET_SELECT,
-> +						select & ~(1 << (index - 1)));
-> +		return ret < 0 ? ret : count;
-> +	}
-> +	temp = clamp_val(temp, MAX6581_OFFSET_MIN, MAX6581_OFFSET_MAX);
-> +	val = DIV_ROUND_CLOSEST(temp, 250);
-> +	mutex_lock(&data->update_lock);
-> +	ret = i2c_smbus_write_byte_data(data->client, MAX6581_REG_OFFSET_SELECT,> +					select | (1 << (index - 1)));
-
-It might make sense to update the select register only if it actually changes
-its value. The cost for checking this is much less than the cost of the additional
-i2c write.
-
-> +	if (ret < 0)
-> +		return ret;
-
-Forgot to release the lock - needs goto
-
-> +	ret = i2c_smbus_write_byte_data(data->client, MAX6581_REG_OFFSET, val);
-> +	mutex_unlock(&data->update_lock);
-> +	return ret < 0 ? ret : count;
-> +}
-> +
-> +static ssize_t offset_show(struct device *dev, struct device_attribute *devattr,
-> +			   char *buf)
-
-Single line should be sufficient.
-
-> +{
-> +	struct max6697_data *data;
-> +	int select, ret, index;
-> +
-> +	index = to_sensor_dev_attr(devattr)->index;
-> +	data = dev_get_drvdata(dev);
-> +	select = i2c_smbus_read_byte_data(data->client, MAX6581_REG_OFFSET_SELECT);
-> +	if (select < 0)
-> +		return select;
-> +	if (select & (1 << (index - 1))) {
-> +		ret = i2c_smbus_read_byte_data(data->client, MAX6581_REG_OFFSET);
-> +		if (ret < 0)
-> +			return ret;
-> +	} else {
-> +		return sprintf(buf, "%d\n", 0);
-
-Better make this "ret = 0;".
-
-Also, this is racy: select can be changed after the first read.
-Not sure if that matters much, though.
-
-> +	}
-> +	return sprintf(buf, "%d\n", max6581_offset_to_millic(ret));
-> +}
-> +
->  static SENSOR_DEVICE_ATTR_RO(temp1_input, temp_input, 0);
->  static SENSOR_DEVICE_ATTR_2_RW(temp1_max, temp, 0, MAX6697_TEMP_MAX);
->  static SENSOR_DEVICE_ATTR_2_RW(temp1_crit, temp, 0, MAX6697_TEMP_CRIT);
-> @@ -375,6 +438,15 @@ static SENSOR_DEVICE_ATTR_RO(temp6_fault, alarm, 5);
->  static SENSOR_DEVICE_ATTR_RO(temp7_fault, alarm, 6);
->  static SENSOR_DEVICE_ATTR_RO(temp8_fault, alarm, 7);
->  
-> +/* There is no offset for local temperature so starting from temp2 */
-> +static SENSOR_DEVICE_ATTR_RW(temp2_offset, offset, 1);
-> +static SENSOR_DEVICE_ATTR_RW(temp3_offset, offset, 2);
-> +static SENSOR_DEVICE_ATTR_RW(temp4_offset, offset, 3);
-> +static SENSOR_DEVICE_ATTR_RW(temp5_offset, offset, 4);
-> +static SENSOR_DEVICE_ATTR_RW(temp6_offset, offset, 5);
-> +static SENSOR_DEVICE_ATTR_RW(temp7_offset, offset, 6);
-> +static SENSOR_DEVICE_ATTR_RW(temp8_offset, offset, 7);
-> +
->  static DEVICE_ATTR(dummy, 0, NULL, NULL);
->  
->  static umode_t max6697_is_visible(struct kobject *kobj, struct attribute *attr,
-> @@ -383,8 +455,8 @@ static umode_t max6697_is_visible(struct kobject *kobj, struct attribute *attr,
->  	struct device *dev = container_of(kobj, struct device, kobj);
->  	struct max6697_data *data = dev_get_drvdata(dev);
->  	const struct max6697_chip_data *chip = data->chip;
-> -	int channel = index / 6;	/* channel number */
-> -	int nr = index % 6;		/* attribute index within channel */
-> +	int channel = index / 8;	/* channel number */
-> +	int nr = index % 7;		/* attribute index within channel */
-
-Something is wrong here: "/ 6" and "% 6" changed to "/ 8" and "% 7".
-Why "/ 8" ?
-
->  
->  	if (channel >= chip->channels)
->  		return 0;
-> @@ -393,6 +465,10 @@ static umode_t max6697_is_visible(struct kobject *kobj, struct attribute *attr,
->  		return 0;
->  	if (nr == 5 && !(chip->have_fault & (1 << channel)))
->  		return 0;
-> +	/* offset reg is only supported on max6581 remote channels */
-> +	if (nr == 6)
-> +		if (data->type != max6581 || channel == 0)
-> +			return 0;
->  
->  	return attr->mode;
->  }
-> @@ -409,6 +485,7 @@ static struct attribute *max6697_attributes[] = {
->  	&sensor_dev_attr_temp1_crit.dev_attr.attr,
->  	&sensor_dev_attr_temp1_crit_alarm.dev_attr.attr,
->  	&dev_attr_dummy.attr,
-> +	&dev_attr_dummy.attr,
->  
->  	&sensor_dev_attr_temp2_input.dev_attr.attr,
->  	&sensor_dev_attr_temp2_max.dev_attr.attr,
-> @@ -416,6 +493,7 @@ static struct attribute *max6697_attributes[] = {
->  	&sensor_dev_attr_temp2_crit.dev_attr.attr,
->  	&sensor_dev_attr_temp2_crit_alarm.dev_attr.attr,
->  	&sensor_dev_attr_temp2_fault.dev_attr.attr,
-> +	&sensor_dev_attr_temp2_offset.dev_attr.attr,
->  
->  	&sensor_dev_attr_temp3_input.dev_attr.attr,
->  	&sensor_dev_attr_temp3_max.dev_attr.attr,
-> @@ -423,6 +501,7 @@ static struct attribute *max6697_attributes[] = {
->  	&sensor_dev_attr_temp3_crit.dev_attr.attr,
->  	&sensor_dev_attr_temp3_crit_alarm.dev_attr.attr,
->  	&sensor_dev_attr_temp3_fault.dev_attr.attr,
-> +	&sensor_dev_attr_temp3_offset.dev_attr.attr,
->  
->  	&sensor_dev_attr_temp4_input.dev_attr.attr,
->  	&sensor_dev_attr_temp4_max.dev_attr.attr,
-> @@ -430,6 +509,7 @@ static struct attribute *max6697_attributes[] = {
->  	&sensor_dev_attr_temp4_crit.dev_attr.attr,
->  	&sensor_dev_attr_temp4_crit_alarm.dev_attr.attr,
->  	&sensor_dev_attr_temp4_fault.dev_attr.attr,
-> +	&sensor_dev_attr_temp4_offset.dev_attr.attr,
->  
->  	&sensor_dev_attr_temp5_input.dev_attr.attr,
->  	&sensor_dev_attr_temp5_max.dev_attr.attr,
-> @@ -437,6 +517,7 @@ static struct attribute *max6697_attributes[] = {
->  	&sensor_dev_attr_temp5_crit.dev_attr.attr,
->  	&sensor_dev_attr_temp5_crit_alarm.dev_attr.attr,
->  	&sensor_dev_attr_temp5_fault.dev_attr.attr,
-> +	&sensor_dev_attr_temp5_offset.dev_attr.attr,
->  
->  	&sensor_dev_attr_temp6_input.dev_attr.attr,
->  	&sensor_dev_attr_temp6_max.dev_attr.attr,
-> @@ -444,6 +525,7 @@ static struct attribute *max6697_attributes[] = {
->  	&sensor_dev_attr_temp6_crit.dev_attr.attr,
->  	&sensor_dev_attr_temp6_crit_alarm.dev_attr.attr,
->  	&sensor_dev_attr_temp6_fault.dev_attr.attr,
-> +	&sensor_dev_attr_temp6_offset.dev_attr.attr,
->  
->  	&sensor_dev_attr_temp7_input.dev_attr.attr,
->  	&sensor_dev_attr_temp7_max.dev_attr.attr,
-> @@ -451,6 +533,7 @@ static struct attribute *max6697_attributes[] = {
->  	&sensor_dev_attr_temp7_crit.dev_attr.attr,
->  	&sensor_dev_attr_temp7_crit_alarm.dev_attr.attr,
->  	&sensor_dev_attr_temp7_fault.dev_attr.attr,
-> +	&sensor_dev_attr_temp7_offset.dev_attr.attr,
->  
->  	&sensor_dev_attr_temp8_input.dev_attr.attr,
->  	&sensor_dev_attr_temp8_max.dev_attr.attr,
-> @@ -458,6 +541,7 @@ static struct attribute *max6697_attributes[] = {
->  	&sensor_dev_attr_temp8_crit.dev_attr.attr,
->  	&sensor_dev_attr_temp8_crit_alarm.dev_attr.attr,
->  	&sensor_dev_attr_temp8_fault.dev_attr.attr,
-> +	&sensor_dev_attr_temp8_offset.dev_attr.attr,
->  	NULL
->  };
->  
-> @@ -494,8 +578,8 @@ static void max6697_get_config_of(struct device_node *node,
->  	}
->  	prop = of_get_property(node, "transistor-ideality", &len);
->  	if (prop && len == 2 * sizeof(u32)) {
-> -			pdata->ideality_mask = be32_to_cpu(prop[0]);
-> -			pdata->ideality_value = be32_to_cpu(prop[1]);
-> +		pdata->ideality_mask = be32_to_cpu(prop[0]);
-> +		pdata->ideality_value = be32_to_cpu(prop[1]);
-
-Unrelated change. I don't mind if you want to make that change,
-but it would have to be in a separate patch.
-
->  	}
->  }
->  
-> 
+diff --git a/arch/x86/kernel/cpu/sgx/encls.h b/arch/x86/kernel/cpu/sgx/encls.h
+new file mode 100644
+index 000000000000..f716b4328614
+--- /dev/null
++++ b/arch/x86/kernel/cpu/sgx/encls.h
+@@ -0,0 +1,238 @@
++/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
++#ifndef _X86_ENCLS_H
++#define _X86_ENCLS_H
++
++#include <linux/bitops.h>
++#include <linux/err.h>
++#include <linux/io.h>
++#include <linux/rwsem.h>
++#include <linux/types.h>
++#include <asm/asm.h>
++#include <asm/traps.h>
++#include "sgx.h"
++
++enum sgx_encls_leaf {
++	ECREATE	= 0x00,
++	EADD	= 0x01,
++	EINIT	= 0x02,
++	EREMOVE	= 0x03,
++	EDGBRD	= 0x04,
++	EDGBWR	= 0x05,
++	EEXTEND	= 0x06,
++	ELDU	= 0x08,
++	EBLOCK	= 0x09,
++	EPA	= 0x0A,
++	EWB	= 0x0B,
++	ETRACK	= 0x0C,
++};
++
++/**
++ * ENCLS_FAULT_FLAG - flag signifying an ENCLS return code is a trapnr
++ *
++ * ENCLS has its own (positive value) error codes and also generates
++ * ENCLS specific #GP and #PF faults.  And the ENCLS values get munged
++ * with system error codes as everything percolates back up the stack.
++ * Unfortunately (for us), we need to precisely identify each unique
++ * error code, e.g. the action taken if EWB fails varies based on the
++ * type of fault and on the exact SGX error code, i.e. we can't simply
++ * convert all faults to -EFAULT.
++ *
++ * To make all three error types coexist, we set bit 30 to identify an
++ * ENCLS fault.  Bit 31 (technically bits N:31) is used to differentiate
++ * between positive (faults and SGX error codes) and negative (system
++ * error codes) values.
++ */
++#define ENCLS_FAULT_FLAG 0x40000000
++
++/* Retrieve the encoded trapnr from the specified return code. */
++#define ENCLS_TRAPNR(r) ((r) & ~ENCLS_FAULT_FLAG)
++
++/* Issue a WARN() about an ENCLS leaf. */
++#define ENCLS_WARN(r, name) {						  \
++	do {								  \
++		int _r = (r);						  \
++		WARN_ONCE(_r, "%s returned %d (0x%x)\n", (name), _r, _r); \
++	} while (0);							  \
++}
++
++/**
++ * encls_failed() - Check if an ENCLS leaf function failed
++ * @ret:	the return value of an ENCLS leaf function call
++ *
++ * Check if an ENCLS leaf function failed. This happens when the leaf function
++ * causes a fault that is not caused by an EPCM conflict or when the leaf
++ * function returns a non-zero value.
++ */
++static inline bool encls_failed(int ret)
++{
++	int epcm_trapnr;
++
++	if (boot_cpu_has(X86_FEATURE_SGX2))
++		epcm_trapnr = X86_TRAP_PF;
++	else
++		epcm_trapnr = X86_TRAP_GP;
++
++	if (ret & ENCLS_FAULT_FLAG)
++		return ENCLS_TRAPNR(ret) != epcm_trapnr;
++
++	return !!ret;
++}
++
++/**
++ * __encls_ret_N - encode an ENCLS leaf that returns an error code in EAX
++ * @rax:	leaf number
++ * @inputs:	asm inputs for the leaf
++ *
++ * Emit assembly for an ENCLS leaf that returns an error code, e.g. EREMOVE.
++ * And because SGX isn't complex enough as it is, leafs that return an error
++ * code also modify flags.
++ *
++ * Return:
++ *	0 on success,
++ *	SGX error code on failure
++ */
++#define __encls_ret_N(rax, inputs...)				\
++	({							\
++	int ret;						\
++	asm volatile(						\
++	"1: .byte 0x0f, 0x01, 0xcf;\n\t"			\
++	"2:\n"							\
++	".section .fixup,\"ax\"\n"				\
++	"3: orl $"__stringify(ENCLS_FAULT_FLAG)",%%eax\n"	\
++	"   jmp 2b\n"						\
++	".previous\n"						\
++	_ASM_EXTABLE_FAULT(1b, 3b)				\
++	: "=a"(ret)						\
++	: "a"(rax), inputs					\
++	: "memory", "cc");					\
++	ret;							\
++	})
++
++#define __encls_ret_1(rax, rcx)		\
++	({				\
++	__encls_ret_N(rax, "c"(rcx));	\
++	})
++
++#define __encls_ret_2(rax, rbx, rcx)		\
++	({					\
++	__encls_ret_N(rax, "b"(rbx), "c"(rcx));	\
++	})
++
++#define __encls_ret_3(rax, rbx, rcx, rdx)			\
++	({							\
++	__encls_ret_N(rax, "b"(rbx), "c"(rcx), "d"(rdx));	\
++	})
++
++/**
++ * __encls_N - encode an ENCLS leaf that doesn't return an error code
++ * @rax:	leaf number
++ * @rbx_out:	optional output variable
++ * @inputs:	asm inputs for the leaf
++ *
++ * Emit assembly for an ENCLS leaf that does not return an error code,
++ * e.g. ECREATE.  Leaves without error codes either succeed or fault.
++ * @rbx_out is an optional parameter for use by EDGBRD, which returns
++ * the the requested value in RBX.
++ *
++ * Return:
++ *   0 on success,
++ *   trapnr with ENCLS_FAULT_FLAG set on fault
++ */
++#define __encls_N(rax, rbx_out, inputs...)			\
++	({							\
++	int ret;						\
++	asm volatile(						\
++	"1: .byte 0x0f, 0x01, 0xcf;\n\t"			\
++	"   xor %%eax,%%eax;\n"					\
++	"2:\n"							\
++	".section .fixup,\"ax\"\n"				\
++	"3: orl $"__stringify(ENCLS_FAULT_FLAG)",%%eax\n"	\
++	"   jmp 2b\n"						\
++	".previous\n"						\
++	_ASM_EXTABLE_FAULT(1b, 3b)				\
++	: "=a"(ret), "=b"(rbx_out)				\
++	: "a"(rax), inputs					\
++	: "memory");						\
++	ret;							\
++	})
++
++#define __encls_2(rax, rbx, rcx)				\
++	({							\
++	unsigned long ign_rbx_out;				\
++	__encls_N(rax, ign_rbx_out, "b"(rbx), "c"(rcx));	\
++	})
++
++#define __encls_1_1(rax, data, rcx)			\
++	({						\
++	unsigned long rbx_out;				\
++	int ret = __encls_N(rax, rbx_out, "c"(rcx));	\
++	if (!ret)					\
++		data = rbx_out;				\
++	ret;						\
++	})
++
++static inline int __ecreate(struct sgx_pageinfo *pginfo, void *secs)
++{
++	return __encls_2(ECREATE, pginfo, secs);
++}
++
++static inline int __eextend(void *secs, void *addr)
++{
++	return __encls_2(EEXTEND, secs, addr);
++}
++
++static inline int __eadd(struct sgx_pageinfo *pginfo, void *addr)
++{
++	return __encls_2(EADD, pginfo, addr);
++}
++
++static inline int __einit(void *sigstruct, void *token, void *secs)
++{
++	return __encls_ret_3(EINIT, sigstruct, secs, token);
++}
++
++static inline int __eremove(void *addr)
++{
++	return __encls_ret_1(EREMOVE, addr);
++}
++
++static inline int __edbgwr(void *addr, unsigned long *data)
++{
++	return __encls_2(EDGBWR, *data, addr);
++}
++
++static inline int __edbgrd(void *addr, unsigned long *data)
++{
++	return __encls_1_1(EDGBRD, *data, addr);
++}
++
++static inline int __etrack(void *addr)
++{
++	return __encls_ret_1(ETRACK, addr);
++}
++
++static inline int __eldu(struct sgx_pageinfo *pginfo, void *addr,
++			 void *va)
++{
++	return __encls_ret_3(ELDU, pginfo, addr, va);
++}
++
++static inline int __eblock(void *addr)
++{
++	return __encls_ret_1(EBLOCK, addr);
++}
++
++static inline int __epa(void *addr)
++{
++	unsigned long rbx = SGX_PAGE_TYPE_VA;
++
++	return __encls_2(EPA, rbx, addr);
++}
++
++static inline int __ewb(struct sgx_pageinfo *pginfo, void *addr,
++			void *va)
++{
++	return __encls_ret_3(EWB, pginfo, addr, va);
++}
++
++#endif /* _X86_ENCLS_H */
+-- 
+2.25.1
 
