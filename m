@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6A5A217104
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:25:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 198F0217107
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 17:25:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729964AbgGGPXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 11:23:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36276 "EHLO mail.kernel.org"
+        id S1729982AbgGGPX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 11:23:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36384 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729957AbgGGPXS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:23:18 -0400
+        id S1729966AbgGGPXW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 11:23:22 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B6460206F6;
-        Tue,  7 Jul 2020 15:23:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 59F32208C3;
+        Tue,  7 Jul 2020 15:23:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594135397;
-        bh=uIk4ESIW5Mg7M/v0OCJWVJvllWdahzivRGgMbeGe7dw=;
+        s=default; t=1594135401;
+        bh=SDYgL+60Cc5HwO1CKauf2tQ2K13tykHdnW4vG5neRoA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tS7alWj3w8W43903DmvzOKviX+0VNQaf0uU8C+8Ur/DKrzzuKvyzOAmDq+P9oTtNB
-         nzJFfcTMUI2zaPFe1ZfcHNCFYMRq8kZ6EBdTFmzjFEnfBesywbvpv854gloGGYWdt/
-         1q4GM5QqWZ+Pj7F+XWQ6KcDYssKbl1lFXDx1rMyU=
+        b=xwUriVum8ANvfKubgj2O2ubei21euADyHYZTZaEYND0RrBl2oPZkbWCw2HSwqs+dF
+         B8FQom6mu4yhTUKTGdOpqkiwn9dKNsrCyGcT84OrlZ2GpC7v3ny2+EFe0lmB8kiygo
+         VJEpmnsiSfQinBjDKV7LFwv6P1vOEpNB4pvdJL74=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tetsuhiro Kohada <kohada.t2@gmail.com>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        Namjae Jeon <namjae.jeon@samsung.com>,
+        stable@vger.kernel.org,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 004/112] exfat: move setting VOL_DIRTY over exfat_remove_entries()
-Date:   Tue,  7 Jul 2020 17:16:09 +0200
-Message-Id: <20200707145801.142772468@linuxfoundation.org>
+Subject: [PATCH 5.7 006/112] btrfs: block-group: refactor how we delete one block group item
+Date:   Tue,  7 Jul 2020 17:16:11 +0200
+Message-Id: <20200707145801.239600248@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200707145800.925304888@linuxfoundation.org>
 References: <20200707145800.925304888@linuxfoundation.org>
@@ -45,43 +45,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Namjae Jeon <namjae.jeon@samsung.com>
+From: Qu Wenruo <wqu@suse.com>
 
-[ Upstream commit 3bcfb701099acf96b0e883bf5544f96af473aa1d ]
+[ Upstream commit 7357623a7f4beb4ac76005f8fac9fc0230f9a67e ]
 
-Move setting VOL_DIRTY over exfat_remove_entries() to avoid unneeded
-leaving VOL_DIRTY on -ENOTEMPTY.
+When deleting a block group item, it's pretty straight forward, just
+delete the item pointed by the key.  However it will not be that
+straight-forward for incoming skinny block group item.
 
-Fixes: 5f2aa075070c ("exfat: add inode operations")
-Cc: stable@vger.kernel.org # v5.7
-Reported-by: Tetsuhiro Kohada <kohada.t2@gmail.com>
-Reviewed-by: Sungjong Seo <sj1557.seo@samsung.com>
-Signed-off-by: Namjae Jeon <namjae.jeon@samsung.com>
+So refactor the block group item deletion into a new function,
+remove_block_group_item(), also to make the already lengthy
+btrfs_remove_block_group() a little shorter.
+
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/exfat/namei.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/btrfs/block-group.c | 37 +++++++++++++++++++++++++------------
+ 1 file changed, 25 insertions(+), 12 deletions(-)
 
-diff --git a/fs/exfat/namei.c b/fs/exfat/namei.c
-index 3bf1dbadab691..2c9c783177213 100644
---- a/fs/exfat/namei.c
-+++ b/fs/exfat/namei.c
-@@ -984,7 +984,6 @@ static int exfat_rmdir(struct inode *dir, struct dentry *dentry)
- 		goto unlock;
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 0c17f18b47940..d80857d00b0fb 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -863,11 +863,34 @@ static void clear_incompat_bg_bits(struct btrfs_fs_info *fs_info, u64 flags)
  	}
+ }
  
--	exfat_set_vol_flags(sb, VOL_DIRTY);
- 	exfat_chain_set(&clu_to_free, ei->start_clu,
- 		EXFAT_B_TO_CLU_ROUND_UP(i_size_read(inode), sbi), ei->flags);
++static int remove_block_group_item(struct btrfs_trans_handle *trans,
++				   struct btrfs_path *path,
++				   struct btrfs_block_group *block_group)
++{
++	struct btrfs_fs_info *fs_info = trans->fs_info;
++	struct btrfs_root *root;
++	struct btrfs_key key;
++	int ret;
++
++	root = fs_info->extent_root;
++	key.objectid = block_group->start;
++	key.type = BTRFS_BLOCK_GROUP_ITEM_KEY;
++	key.offset = block_group->length;
++
++	ret = btrfs_search_slot(trans, root, &key, path, -1, 1);
++	if (ret > 0)
++		ret = -ENOENT;
++	if (ret < 0)
++		return ret;
++
++	ret = btrfs_del_item(trans, root, path);
++	return ret;
++}
++
+ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
+ 			     u64 group_start, struct extent_map *em)
+ {
+ 	struct btrfs_fs_info *fs_info = trans->fs_info;
+-	struct btrfs_root *root = fs_info->extent_root;
+ 	struct btrfs_path *path;
+ 	struct btrfs_block_group *block_group;
+ 	struct btrfs_free_cluster *cluster;
+@@ -1068,10 +1091,6 @@ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
  
-@@ -1012,6 +1011,7 @@ static int exfat_rmdir(struct inode *dir, struct dentry *dentry)
- 	num_entries++;
- 	brelse(bh);
+ 	spin_unlock(&block_group->space_info->lock);
  
-+	exfat_set_vol_flags(sb, VOL_DIRTY);
- 	err = exfat_remove_entries(dir, &cdir, entry, 0, num_entries);
- 	if (err) {
- 		exfat_msg(sb, KERN_ERR,
+-	key.objectid = block_group->start;
+-	key.type = BTRFS_BLOCK_GROUP_ITEM_KEY;
+-	key.offset = block_group->length;
+-
+ 	mutex_lock(&fs_info->chunk_mutex);
+ 	spin_lock(&block_group->lock);
+ 	block_group->removed = 1;
+@@ -1107,16 +1126,10 @@ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
+ 	if (ret)
+ 		goto out;
+ 
+-	ret = btrfs_search_slot(trans, root, &key, path, -1, 1);
+-	if (ret > 0)
+-		ret = -EIO;
++	ret = remove_block_group_item(trans, path, block_group);
+ 	if (ret < 0)
+ 		goto out;
+ 
+-	ret = btrfs_del_item(trans, root, path);
+-	if (ret)
+-		goto out;
+-
+ 	if (remove_em) {
+ 		struct extent_map_tree *em_tree;
+ 
 -- 
 2.25.1
 
