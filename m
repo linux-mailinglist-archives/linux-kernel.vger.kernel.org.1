@@ -2,77 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4020216BE4
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 13:43:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63EEF216BE8
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Jul 2020 13:45:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728184AbgGGLnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 07:43:23 -0400
-Received: from mga03.intel.com ([134.134.136.65]:30778 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727044AbgGGLnX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 07:43:23 -0400
-IronPort-SDR: cAUUrvW/l+t5jssCsQujWvaimEdGWug7nCaXb2DT9NW+oginVxZCKGkRqd/XPQWl/xsIv1SV6d
- wBTAfBee3tNQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9674"; a="147591448"
-X-IronPort-AV: E=Sophos;i="5.75,323,1589266800"; 
-   d="scan'208";a="147591448"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2020 04:43:22 -0700
-IronPort-SDR: GCuC/FORKkR4Jxrfb3KiRRGaDII+yAnyEk1Dbl1/bBv/VtBTukqSmssBxbnrWxmRXWR4ZL+sxm
- 5sx3H641rS0Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,323,1589266800"; 
-   d="scan'208";a="388489360"
-Received: from chenyu-office.sh.intel.com ([10.239.158.173])
-  by fmsmga001.fm.intel.com with ESMTP; 07 Jul 2020 04:43:19 -0700
-Date:   Tue, 7 Jul 2020 19:44:45 +0800
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2][RFC] Makes sd->flags sysctl writable
-Message-ID: <20200707114445.GA25765@chenyu-office.sh.intel.com>
-References: <cover.1594062828.git.yu.c.chen@intel.com>
- <20200706200049.GB5523@worktop.programming.kicks-ass.net>
+        id S1728185AbgGGLo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 07:44:57 -0400
+Received: from lucky1.263xmail.com ([211.157.147.134]:51130 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725944AbgGGLo5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 07:44:57 -0400
+Received: from localhost (unknown [192.168.167.16])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 86B88C0994;
+        Tue,  7 Jul 2020 19:44:53 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-SKE-CHECKED: 0
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from [172.16.12.76] (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P22500T140639612159744S1594122293842809_;
+        Tue, 07 Jul 2020 19:44:54 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <7ed9b2a78b31790478278814a2e85862>
+X-RL-SENDER: hjc@rock-chips.com
+X-SENDER: hjc@rock-chips.com
+X-LOGIN-NAME: hjc@rock-chips.com
+X-FST-TO: hjc@rock-chips.com
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-DNS-TYPE: 0
+X-System-Flag: 0
+Subject: =?UTF-8?Q?Re=3a_=5bPATCH_v2_1/2=5d_drm=3a_drm=5ffourcc=3a_add_NV20_?=
+ =?UTF-8?B?YW5kIE5WMzAgWVVWIGZvcm1hdHPjgJDor7fms6jmhI/vvIzpgq7ku7bnlLFsaW51?=
+ =?UTF-8?Q?x-rockchip-bounces+sandy=2ehuang=3drock-chips=2ecom=40lists=2einf?=
+ =?UTF-8?B?cmFkZWFkLm9yZ+S7o+WPkeOAkQ==?=
+To:     Jonas Karlman <jonas@kwiboo.se>,
+        =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>
+Cc:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
+        linux-rockchip@lists.infradead.org,
+        dri-devel@lists.freedesktop.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Ben Davis <ben.davis@arm.com>
+References: <20200607202521.18438-1-jonas@kwiboo.se>
+ <20200706223009.1200-1-jonas@kwiboo.se>
+ <20200706223009.1200-2-jonas@kwiboo.se>
+From:   Huang Jiachai <hjc@rock-chips.com>
+Message-ID: <8e4966d3-c57c-735a-d0e0-ca769c2d4f0e@rock-chips.com>
+Date:   Tue, 7 Jul 2020 19:44:53 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200706200049.GB5523@worktop.programming.kicks-ass.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200706223009.1200-2-jonas@kwiboo.se>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
-On Mon, Jul 06, 2020 at 10:00:49PM +0200, Peter Zijlstra wrote:
-> On Tue, Jul 07, 2020 at 03:36:13AM +0800, Chen Yu wrote:
-> > It was found that recently the flags of sched domain could
-> > not be customized via sysctl, which might make it a little
-> > inconenient for performance tuning/debugging.
-> 
-> What specific goals do you have? This is a debug interface.
-The origin motivation is for debugging purpose during daily work,
-I was trying to evaluate the load balance behavior on some specific
-platforms.
-Another motivation was inspired by a previous lkp performance regression
-report that, after the rework of load balance, some workloads might get
-performance downgrading. And it is suspected that the system after the
-rework is more likely to spread tasks onto more CPUs, which brings more
-idle time -> and deeper cstate -> lower performance. So in order to
-evaluate which flag might help mitigate the spreading(disable PREFER_SIBLING?),
-it might be an applicable option to make the flags writable, so lkp could
-launch the workload with different flags settings so we can gather more clues.
-But yes, I'm ok if the flags are kept read-only, and we can hack into
-the code temporarily to turn it into writable for debugging.
+在 2020/7/7 6:30, Jonas Karlman 写道:
 
-thx,
-Chenyu
+> DRM_FORMAT_NV20 and DRM_FORMAT_NV30 formats is the 2x1 and non-subsampled
+> variant of NV15, a 10-bit 2-plane YUV format that has no padding between
+> components. Instead, luminance and chrominance samples are grouped into 4s
+> so that each group is packed into an integer number of bytes:
+>
+> YYYY = UVUV = 4 * 10 bits = 40 bits = 5 bytes
+>
+> The '20' and '30' suffix refers to the optimum effective bits per pixel
+> which is achieved when the total number of luminance samples is a multiple
+> of 4.
+>
+> V2: Added NV30 format
+>
+> Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
+> ---
+>   drivers/gpu/drm/drm_fourcc.c  | 8 ++++++++
+>   include/uapi/drm/drm_fourcc.h | 2 ++
+>   2 files changed, 10 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/drm_fourcc.c b/drivers/gpu/drm/drm_fourcc.c
+> index 722c7ebe4e88..2daf8a304b53 100644
+> --- a/drivers/gpu/drm/drm_fourcc.c
+> +++ b/drivers/gpu/drm/drm_fourcc.c
+> @@ -278,6 +278,14 @@ const struct drm_format_info *__drm_format_info(u32 format)
+>   		  .num_planes = 2, .char_per_block = { 5, 5, 0 },
+>   		  .block_w = { 4, 2, 0 }, .block_h = { 1, 1, 0 }, .hsub = 2,
+>   		  .vsub = 2, .is_yuv = true },
+> +		{ .format = DRM_FORMAT_NV20,		.depth = 0,
+> +		  .num_planes = 2, .char_per_block = { 5, 5, 0 },
+> +		  .block_w = { 4, 2, 0 }, .block_h = { 1, 1, 0 }, .hsub = 2,
+> +		  .vsub = 1, .is_yuv = true },
+> +		{ .format = DRM_FORMAT_NV30,		.depth = 0,
+> +		  .num_planes = 2, .char_per_block = { 5, 5, 0 },
+> +		  .block_w = { 4, 2, 0 }, .block_h = { 1, 1, 0 }, .hsub = 1,
+> +		  .vsub = 1, .is_yuv = true },
+>   		{ .format = DRM_FORMAT_Q410,		.depth = 0,
+>   		  .num_planes = 3, .char_per_block = { 2, 2, 2 },
+>   		  .block_w = { 1, 1, 1 }, .block_h = { 1, 1, 1 }, .hsub = 0,
+> diff --git a/include/uapi/drm/drm_fourcc.h b/include/uapi/drm/drm_fourcc.h
+> index cbf92fdf2712..c8695673295c 100644
+> --- a/include/uapi/drm/drm_fourcc.h
+> +++ b/include/uapi/drm/drm_fourcc.h
+> @@ -242,6 +242,8 @@ extern "C" {
+>    * index 1 = Cr:Cb plane, [39:0] Cr1:Cb1:Cr0:Cb0 little endian
+>    */
+>   #define DRM_FORMAT_NV15		fourcc_code('N', 'V', '1', '5') /* 2x2 subsampled Cr:Cb plane */
+> +#define DRM_FORMAT_NV20		fourcc_code('N', 'V', '2', '0') /* 2x1 subsampled Cr:Cb plane */
+> +#define DRM_FORMAT_NV30		fourcc_code('N', 'V', '3', '0') /* non-subsampled Cr:Cb plane */
+>   
+>   /*
+>    * 2 plane YCbCr MSB aligned
+
+Reviewed-by: Sandy Huang <hjc@rock-chips.com>
+
+-- 
+Best Regard
+
+黄家钗
+Sandy Huang
+Addr: 福州市鼓楼区铜盘路软件大道89号福州软件园A区21号楼(350003)
+       No. 21 Building, A District, No.89,software Boulevard Fuzhou,Fujian,PRC
+Tel：+86 0591-87884919  8690
+E-mail：hjc@rock-chips.com
+
+
+
