@@ -2,91 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AC46217F61
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 08:07:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68709217F67
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 08:07:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729719AbgGHGHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 02:07:18 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:59490 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725298AbgGHGHR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 02:07:17 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 068670fT045761;
-        Wed, 8 Jul 2020 06:07:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2020-01-29;
- bh=BpAejjNrXOGz/rfEwLFUwZE4XzC/WNmhEc3f1yT+1bc=;
- b=egh1QhFJ6ClkNFUGK4O3YKDh9jBOUWEqsg+63pq6xiZDrC6eR9IwihF9NCnWST8ZBocG
- V9x+e7jyuPoRj4apCGbcy7hzMBcltk/rWvBNK9Fb0SMlDATfq1sIUYAIrR/on9sU+kCy
- 1tOaNv8gfU5s3FGP4G8T4Xk1ocPl7HokoMSOqJXUsuHkp+dxc+8e12aG5Le6sJOwHnq6
- qsPqgeA6RRsxKS1ffQTlelPvMp87RwGXSiRUWeJbyOK0i1eCukkn7DXMZyKgRKlgW2Pg
- 4JpXkL5XWAhStzcA9/YPBaKS9IkJPi4n1xBeOVseePGLsXZIw2k2iev1nVfcyuldVXao qw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 322kv6g9hp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 08 Jul 2020 06:07:10 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0685xB2F063801;
-        Wed, 8 Jul 2020 06:07:09 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 3233p4k2sc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 08 Jul 2020 06:07:09 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 068677eq011522;
-        Wed, 8 Jul 2020 06:07:08 GMT
-Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 07 Jul 2020 23:07:07 -0700
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     haiyangz@microsoft.com, kys@microsoft.com, sthemmin@microsoft.com,
-        Andres Beltran <lkmlabelt@gmail.com>, wei.liu@kernel.org
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        mikelley@microsoft.com,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        linux-scsi@vger.kernel.org, parri.andrea@gmail.com,
-        linux-kernel@vger.kernel.org, skarade@microsoft.com,
-        linux-hyperv@vger.kernel.org
-Subject: Re: [PATCH] scsi: storvsc: Add validation for untrusted Hyper-V values
-Date:   Wed,  8 Jul 2020 02:06:52 -0400
-Message-Id: <159418828151.5152.8891996577117678598.b4-ty@oracle.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200706160928.53049-1-lkmlabelt@gmail.com>
-References: <20200706160928.53049-1-lkmlabelt@gmail.com>
+        id S1729752AbgGHGHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 02:07:34 -0400
+Received: from verein.lst.de ([213.95.11.211]:33725 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726472AbgGHGHe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 02:07:34 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 4EEC168AFE; Wed,  8 Jul 2020 08:07:30 +0200 (CEST)
+Date:   Wed, 8 Jul 2020 08:07:30 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: stop using ->read and ->write for kernel access v3
+Message-ID: <20200708060730.GB4919@lst.de>
+References: <20200707174801.4162712-1-hch@lst.de> <CAHk-=wib3BP9AoFzhR_Z0oPRwx7vkcS=zsDuUmx0FbCrtia7CA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9675 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
- mlxscore=0 spamscore=0 bulkscore=0 malwarescore=0 phishscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2007080041
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9675 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 bulkscore=0
- malwarescore=0 suspectscore=0 mlxlogscore=999 phishscore=0 spamscore=0
- priorityscore=1501 clxscore=1011 impostorscore=0 mlxscore=0 adultscore=0
- cotscore=-2147483648 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2007080042
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wib3BP9AoFzhR_Z0oPRwx7vkcS=zsDuUmx0FbCrtia7CA@mail.gmail.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 6 Jul 2020 12:09:28 -0400, Andres Beltran wrote:
+On Tue, Jul 07, 2020 at 01:24:01PM -0700, Linus Torvalds wrote:
+> On Tue, Jul 7, 2020 at 10:48 AM Christoph Hellwig <hch@lst.de> wrote:
+> >
+> > Hi Al and Linus (and Stephen, see below),
+> >
+> > as part of removing set_fs entirely (for which I have a working
+> > prototype), we need to stop calling ->read and ->write with kernel
+> > pointers under set_fs.
+> 
+> I'd be willing to pick up patches 1-6 as trivial and obvious cleanups
+> right now, if you sent those to me as a pull request. That would at
+> least focus the remaining series a bit on the actual changes..
 
-> For additional robustness in the face of Hyper-V errors or malicious
-> behavior, validate all values that originate from packets that
-> Hyper-V has sent to the guest. Ensure that invalid values cannot
-> cause data being copied out of the bounds of the source buffer
-> when calling memcpy. Ensure that outgoing packets do not have any
-> leftover guest memory that has not been zeroed out.
-
-Applied to 5.9/scsi-queue, thanks!
-
-[1/1] scsi: storvsc: Add validation for untrusted Hyper-V values
-      https://git.kernel.org/mkp/scsi/c/0a76566595bf
-
--- 
-Martin K. Petersen	Oracle Linux Engineering
+If we do that we should do 1-7 and 9-12 to include the read side as
+well.  But yes, maybe that way we'll get started.
