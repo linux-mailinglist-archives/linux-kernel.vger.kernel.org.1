@@ -2,96 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6E6A2186BD
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 14:03:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C19D2186D1
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 14:04:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729045AbgGHMDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 08:03:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57570 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729265AbgGHMDd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 08:03:33 -0400
-Received: from gaia (unknown [95.146.230.158])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0567820772;
-        Wed,  8 Jul 2020 12:03:30 +0000 (UTC)
-Date:   Wed, 8 Jul 2020 13:03:28 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     syzbot <syzbot+dec34b033b3479b9ef13@syzkaller.appspotmail.com>,
-        amir73il@gmail.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Subject: Re: memory leak in inotify_update_watch
-Message-ID: <20200708120327.GB6308@gaia>
-References: <000000000000a47ace05a9c7b825@google.com>
- <20200707152411.GD25069@quack2.suse.cz>
+        id S1729298AbgGHMEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 08:04:14 -0400
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:41427 "EHLO
+        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729286AbgGHMEK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 08:04:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1594209849; x=1625745849;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=31WOsdALl/hRE/HiwpNFxdLflG96c00HIMvr9kklsGc=;
+  b=mi0iFHJdbCnEIiinGG+0W2q02pClYHLx5Kn4MgzUAOJ+NQMk4WE4OvmT
+   vHB4prHlsdQ4niv64SjjtZSO46LCDwX0KpYeClp8wGjspSrUgk3DBxDps
+   CZKSsKD2KTEJSKlgIrivZusBz0Jg8MasSQ5iWmlcTdzPCxO21bg1+CObY
+   1p7+n1VpHRhCr1VA5Sz/qV4SDV70vsoTi5dnOIIKccISNIQj9OkwAUL46
+   vjWSAL9ZmwjXEsltSxpCFOgE7EyTcWLBrRvkchvq+3DrOcQUclZKPbwt+
+   sUe804wRFkrxU6w+aeaBwXj0dXZkgG89L1ViC749lBP3ri92tt8maOoDX
+   Q==;
+IronPort-SDR: sA+taxLlKmTAbOvT2X6PA/1F+3+MPpOLNduCJnckav4ALqp4/TtlqjSCpf07LKVqdWrOfrQLhV
+ LGhHURY/3wjas4HDyjdLzTyhWT3gtQ63NRfW44VFvkSuos7Xiw7UBlRrOkyrNYJWD/gP4WlLbI
+ 8Jqock6tEbQ40Nmzb6Y8cksSr3lBQKKB8OVDxSaqhKLUWxu1O9wbJyScPriPIYx9HuWKDUIT7Z
+ lnMUnEEfFT1uYU0C1NcCcqqc3La8vSGlVitbGjkBQIKBOs1q3B3Fcuap7Sy9WHpzCoXdL/ubLA
+ +hU=
+X-IronPort-AV: E=Sophos;i="5.75,327,1589212800"; 
+   d="scan'208";a="143246171"
+Received: from mail-bn7nam10lp2100.outbound.protection.outlook.com (HELO NAM10-BN7-obe.outbound.protection.outlook.com) ([104.47.70.100])
+  by ob1.hgst.iphmx.com with ESMTP; 08 Jul 2020 20:04:08 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MVuDjpI+Tc48dAyLei5soa3vZsIZx65wfL/26M/rcXacJiitp5U5dox2QN+W2smzupZZe7cwiOd98bhNHwk+DP26XiXcyvw31JfXhjIY1bBALLSnHWPF5lIGFThHeWXFN66z95WyQ3H0EDPFrnlMnrW2ottgckQpFoAWAfgnVnjc1Df8HaM8WzX1u0tU8/58EGHBvibmm/iU3w5RAVvF32w5sdyanxEZl+z+3qyS49El28OUbiIs4+i8YIB9bh3opT7iy9g50Fkv2h3+ybw9+zrewjg5QneUCZ1aXTKsV+p0Y1P2k0v3gVKga3ABsvdDyKxX6n2dK6wgqy1s3KCRxg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=31WOsdALl/hRE/HiwpNFxdLflG96c00HIMvr9kklsGc=;
+ b=IK8uE+YHeYPvjKhsLWiAT9kGsd0M5se8Qb2tD1qoriONv10YRY2l4YQR5zQ1K/aXK3DV8BhhApBdVuvbtHyxlFOc1BenUAqqEcQJXMzNgBwpOlWj2h0xe/XTtK80O3FQVmEZC0aQmzq06DzNbrf8t98VvjPc8w19Cpfems09d/3nv8jkI0ESpuyMFz12TGtLgmvr3TQ+KuuoHpOYyi8HcGZeUXgAhw1V5CTvcN6nLP7uEP9EyK9ScJQXeGXlNVTHiLKE3tjkO5B8JOnjvWG+FbmHhbiEN285Aqo+b4SGVyJiDfVl/pmrcNmwwzieddzabXtnqgm5Fgoa0nrWgAumfA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=31WOsdALl/hRE/HiwpNFxdLflG96c00HIMvr9kklsGc=;
+ b=rfRqADEWm48QVgBjMDrmxcNOe2Zj4W12a7MojbyAygtYU+5RL5kMwmcmlkjhQr3NZYZNeBlQW87DIfD/pHcbwFAcAkGViKYh/qIod8CKw7QTCvybiPf9oTnRqrqCYBGjWEppBxXkQdfCvmpFusOWBVKPO9RD/xXvQyyc3Hbr8dc=
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ (2603:10b6:803:47::21) by SN6PR04MB4687.namprd04.prod.outlook.com
+ (2603:10b6:805:aa::22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.22; Wed, 8 Jul
+ 2020 12:04:07 +0000
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::1447:186c:326e:30b2]) by SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::1447:186c:326e:30b2%7]) with mapi id 15.20.3153.031; Wed, 8 Jul 2020
+ 12:04:07 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Lee Jones <lee.jones@linaro.org>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        Hannes Reinecke <hare@suse.de>
+Subject: Re: [PATCH 03/30] scsi: libfc: fc_disc: trivial: Fix spelling mistake
+ of 'discovery'
+Thread-Topic: [PATCH 03/30] scsi: libfc: fc_disc: trivial: Fix spelling
+ mistake of 'discovery'
+Thread-Index: AQHWVR+pi6nQBSqyRkaYFJ9Wxo86QA==
+Date:   Wed, 8 Jul 2020 12:04:07 +0000
+Message-ID: <SN4PR0401MB35986D7CECA87EA6EB9CEFA99B670@SN4PR0401MB3598.namprd04.prod.outlook.com>
+References: <20200708120221.3386672-1-lee.jones@linaro.org>
+ <20200708120221.3386672-4-lee.jones@linaro.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [129.253.240.72]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: d257d037-3ff9-488a-8347-08d82337040e
+x-ms-traffictypediagnostic: SN6PR04MB4687:
+x-microsoft-antispam-prvs: <SN6PR04MB4687F18E6046F680002F5C689B670@SN6PR04MB4687.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:4125;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: eAhv7LYqUCYbAxCq2aFFd3op5TEqaHNj2olWnUNWpZlaJYERdcwUATs0qkApSeKD3F1PDsY5J4t4zCZG68fFsuIN0u+ONAAU0UKopPRKr3fitoK9zroBH+Fcb97YjRZK11ES1rvHl9F17XapIklM/sDvoU3YEiXFJg9gvYch19s4xGq+1Su0nBTjXvzwqkByHz33geQazG9nHY6UCn6YsQs2NlaQu1s93Xzrx5BVgyhQQyY94t2B2qKKaM0J+DoTbBn8NvqnpgkIbBLjgNTEM+yqzmdR6ohZ8/aRE52ItJS1b9ifYP3wZftM+RbpzUUKRCPSMTXimJLCuaYyoqoGEw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(366004)(39860400002)(376002)(346002)(136003)(91956017)(8936002)(6506007)(26005)(186003)(52536014)(4326008)(7696005)(9686003)(86362001)(54906003)(5660300002)(110136005)(8676002)(558084003)(71200400001)(316002)(66946007)(64756008)(66446008)(55016002)(33656002)(2906002)(76116006)(478600001)(66556008)(66476007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: +pxVyklUQjXfiIygJOAQtJkiOJjzpBUMreYKJegdf6B95hjt60QWPrfifJeGhUTXBy27GNrBNUPDcZeeL9F74kJ0JX84lzXLIxQqb/7juQa4qRUXn+02ad8uCCsVNbPznyLOGth80htEV0o+abpP59XrtgsYLR7oOLV0Qr0X8aLcJtO1y0NoqFuc40mHw6KMeCLwnBkyx3CTEOa5tOTVWq73+lXEB2mtSLNzxvMsk2L7Ja6+X2T+vTOkYvLN8Yd3xETqTLp2prcy0aUBwA40yY2uPe/FB/6A3tt2fdh78CW8l6dkTFSyh1r6J1IjOj1gWCWo2H875kqWBp1NO3630nyhPWjB4Qx9DwDRC/XWrJNwkaTCtyqCVEp0rvvgZku4NhprrWzZUpflxh9CWJPW336L4zJzEfX8xdl/YrIT3fUaewwiFAL1Xql1PBsN3WMSWspnU5/3yBEgozAFnEOODTN7No9qv2SL6t9jqY16tcd88MmRpoE8o3wu82dmh1CZ
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200707152411.GD25069@quack2.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d257d037-3ff9-488a-8347-08d82337040e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Jul 2020 12:04:07.0140
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: EMRpTRwlks6JBdR9/+9J6d74U751LVypd/jSvWWU8qqAQle7B7iZKs4vszIvCoVXMTq8/LIS3/NPEHRBojChI41O1/GBPwDNCjNNHLBDAN4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB4687
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 07, 2020 at 05:24:11PM +0200, Jan Kara wrote:
-> On Mon 06-07-20 08:42:24, syzbot wrote:
-> > syzbot found the following crash on:
-> > 
-> > HEAD commit:    7cc2a8ea Merge tag 'block-5.8-2020-07-01' of git://git.ker..
-> > git tree:       upstream
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=17644c05100000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=5ee23b9caef4e07a
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=dec34b033b3479b9ef13
-> > compiler:       gcc (GCC) 10.1.0-syz 20200507
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1478a67b100000
-> > 
-> > IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> > Reported-by: syzbot+dec34b033b3479b9ef13@syzkaller.appspotmail.com
-> > 
-> > BUG: memory leak
-> > unreferenced object 0xffff888115db8480 (size 576):
-> >   comm "systemd-udevd", pid 11037, jiffies 4295104591 (age 56.960s)
-> >   hex dump (first 32 bytes):
-> >     00 04 00 00 00 00 00 00 80 fd e8 15 81 88 ff ff  ................
-> >     a0 02 dd 20 81 88 ff ff b0 81 d0 09 81 88 ff ff  ... ............
-> >   backtrace:
-> >     [<00000000288c0066>] radix_tree_node_alloc.constprop.0+0xc1/0x140 lib/radix-tree.c:252
-> >     [<00000000f80ba6a7>] idr_get_free+0x231/0x3b0 lib/radix-tree.c:1505
-> >     [<00000000ec9ab938>] idr_alloc_u32+0x91/0x120 lib/idr.c:46
-> >     [<00000000aea98d29>] idr_alloc_cyclic+0x84/0x110 lib/idr.c:125
-> >     [<00000000dbad44a4>] inotify_add_to_idr fs/notify/inotify/inotify_user.c:365 [inline]
-> >     [<00000000dbad44a4>] inotify_new_watch fs/notify/inotify/inotify_user.c:578 [inline]
-> >     [<00000000dbad44a4>] inotify_update_watch+0x1af/0x2d0 fs/notify/inotify/inotify_user.c:617
-> >     [<00000000e141890d>] __do_sys_inotify_add_watch fs/notify/inotify/inotify_user.c:755 [inline]
-> >     [<00000000e141890d>] __se_sys_inotify_add_watch fs/notify/inotify/inotify_user.c:698 [inline]
-> >     [<00000000e141890d>] __x64_sys_inotify_add_watch+0x12f/0x180 fs/notify/inotify/inotify_user.c:698
-> >     [<00000000d872d7cc>] do_syscall_64+0x4c/0xe0 arch/x86/entry/common.c:359
-> >     [<000000005c62d8da>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> 
-> I've been looking into this for a while and I don't think this is related
-> to inotify at all. Firstly the reproducer looks totally benign:
-> 
-> prlimit64(0x0, 0xe, &(0x7f0000000280)={0x9, 0x8d}, 0x0)
-> sched_setattr(0x0, &(0x7f00000000c0)={0x38, 0x2, 0x0, 0x0, 0x9}, 0x0)
-> vmsplice(0xffffffffffffffff, 0x0, 0x0, 0x0)
-> perf_event_open(0x0, 0x0, 0xffffffffffffffff, 0xffffffffffffffff, 0x0)
-> clone(0x20000103, 0x0, 0xfffffffffffffffe, 0x0, 0xffffffffffffffff)
-> syz_mount_image$vfat(0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
-> 
-> So we seem to set SCHED_RR class and prio 9 to itself, the rest of syscalls
-> seem to be invalid and should fail. Secondly, the kernel log shows that we
-> hit OOM killer frequently and after one of these kills, many leaked objects
-> (among them this radix tree node from inotify idr) are reported. I'm not
-> sure if it could be the leak detector getting confused (e.g. because it got
-> ENOMEM at some point) or something else... Catalin, any idea?
-
-Just wondering, if this leak is reproducible, could we have some
-condition where inotify_remove_from_idr() is not called in case of a
-forced exit triggered by the OOM kill? Also, can the leak be reproduced
-without the OOM?
-
--- 
-Catalin
+Looks good,=0A=
+=0A=
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
+=0A=
+I think Martin can fold this one into the original one=0A=
