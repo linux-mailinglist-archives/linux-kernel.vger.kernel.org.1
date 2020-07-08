@@ -2,80 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78F802187FF
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 14:49:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 131E3218811
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 14:53:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729337AbgGHMtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 08:49:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53910 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729122AbgGHMtM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 08:49:12 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0B4A620775;
-        Wed,  8 Jul 2020 12:49:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594212552;
-        bh=Uqa5Ixx9A8DkN2H2K4w6mWtGsN4oJbAFIYsvEF105uM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oKbE2oFg2VMewf3p7Ik1zsK0oPUYm+PwxqnkQ3WyNwSaGQ+vK8bZ9pf7YiB1ykQXH
-         XU3WCRTnd/8w1PxUBPh0r2Sq+WwCReWyrIGJMMqt77XDx21WOrQ4qLYv3To6Ef4nbj
-         c5RMeN5svZBNGIr/TZziTEiSoPwEkXfcdR2Eldbs=
-Date:   Wed, 8 Jul 2020 13:49:03 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        akashast@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        mkshah@codeaurora.org, swboyd@chromium.org,
-        georgi.djakov@linaro.org, ctheegal@codeaurora.org,
-        mka@chromium.org, linux-kernel@vger.kernel.org,
-        linux-spi@vger.kernel.org
-Subject: Re: [PATCH 3/3] spi: spi-geni-qcom: Get rid of most overhead in
- prepare_message()
-Message-ID: <20200708124903.GN4655@sirena.org.uk>
-References: <20200702004509.2333554-1-dianders@chromium.org>
- <20200701174506.3.I2b3d7aeb1ea622335482cce60c58d2f8381e61dd@changeid>
+        id S1729025AbgGHMxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 08:53:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728759AbgGHMxy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 08:53:54 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79802C08C5DC
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 05:53:54 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id w17so3685436ply.11
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 05:53:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=nt3qTrfL3Oc3SKltAUjm2R67rDXYlaY4OLtCQF8HQtU=;
+        b=M9dvpCwF3EprLTnDngv6SRlQiNaXkkzP4cAz7UFFE9+R+GfYQmDcMbmKPCPb3ChDkW
+         R0hFwenP4OmSfVCtIVFAWnxYAef0q8Y6Uw5r1PAVtupHREdouUgr4wYmggC4HdD3JF2o
+         koknIR/yb6NymJYc/BuTsniPwv2xVNqHGcwiDvlVbzKZz6zf18EbPtxHYIMhRVaOimix
+         wvN9qLebmT6FOGEfThZLtvONL7Tvje2x5PIdGTIgCopw2fKXRnbuS43Z/fLJDY97khRd
+         lXanwl+XUCb5KuI2WNHXHhouu5EoZYMRu6hMBxUn4vph1kgkH7cvoZlfZI7nbuuLaHx0
+         VHVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nt3qTrfL3Oc3SKltAUjm2R67rDXYlaY4OLtCQF8HQtU=;
+        b=h/xuhmfBtWoBYx7gu2cDyDnucR5ehcPUV7kWCfC3HTvSidFEEUz/CXv/4wobtDItKG
+         spzqDP6or4XBT2n5/2Ooy76jLxefish6VdBIMnCGhnoQjG1ELAn7uKYw0eHafSUD1y2G
+         F2I6JS8BliDiS5pDQwVAEiqst1/Ii5heTLnCKUeo3FjUByWZCnXwZ58csz80i4E4eWhQ
+         S4QzGaue7NkD2x6MGeO4MQUBNqYw2b8+ZkFQv1g/MZjDxH01UQdRpWsspdFn/FWPbupr
+         mRPatzYbPdyQzenwv4rFnSAWgkEfMI8FhC8npCR3XqPehgqNSOvOxxNmq/zmZYc1IW3H
+         aH2A==
+X-Gm-Message-State: AOAM533ot63iIhJS2CSATGh+xCEJvgLPr6g/lnXNfy4vowwWBoSys21z
+        jnrxFjqa9dSDxthzKosLVxI=
+X-Google-Smtp-Source: ABdhPJyM8WLej3ZMu6kK0XIornoquuDGJ5y3XYqLfrwLhFqLBgsBbchjfs3115xlt44xR1uTjW/wPQ==
+X-Received: by 2002:a17:90a:db0b:: with SMTP id g11mr9627045pjv.11.1594212833935;
+        Wed, 08 Jul 2020 05:53:53 -0700 (PDT)
+Received: from mail.google.com ([149.248.10.52])
+        by smtp.gmail.com with ESMTPSA id u19sm26864985pfk.98.2020.07.08.05.53.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Jul 2020 05:53:53 -0700 (PDT)
+Date:   Wed, 8 Jul 2020 20:53:46 +0800
+From:   Changbin Du <changbin.du@gmail.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Changbin Du <changbin.du@gmail.com>, Jiri Olsa <jolsa@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 05/15] perf ftrace: factor out function
+ write_tracing_file_int()
+Message-ID: <20200708125346.vnljbd2ntzuoofwl@mail.google.com>
+References: <20200627133654.64863-1-changbin.du@gmail.com>
+ <20200627133654.64863-6-changbin.du@gmail.com>
+ <20200707120923.26f7e349@oasis.local.home>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Xb8pJpF45Qg/t7GZ"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200701174506.3.I2b3d7aeb1ea622335482cce60c58d2f8381e61dd@changeid>
-X-Cookie: Oh Dad!  We're ALL Devo!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200707120923.26f7e349@oasis.local.home>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jul 07, 2020 at 12:09:23PM -0400, Steven Rostedt wrote:
+> On Sat, 27 Jun 2020 21:36:44 +0800
+> Changbin Du <changbin.du@gmail.com> wrote:
+> 
+> > We will reuse this function later.
+> > 
+> 
+> BTW, trace-cmd.git now has a libtracefs.so library, which I'm hoping
+> within a month to have as a stand alone (probably along with
+> libtraceevent and even a libtracecmd).
+> 
+>   https://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git/tree/lib/tracefs
+> 
+> This is a library made to interact with the tracefs directory to remove
+> reimplementing it all over the place.
+>
+Nice! This will make implementing a tracing tool much simpler. Look forward
+to seeing it appears in most Linux distributions.
 
---Xb8pJpF45Qg/t7GZ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> -- Steve
+> 
+> 
+> 
+> > Signed-off-by: Changbin Du <changbin.du@gmail.com>
+> > ---
+> >  tools/perf/builtin-ftrace.c | 17 ++++++++++++-----
+> >  1 file changed, 12 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/tools/perf/builtin-ftrace.c b/tools/perf/builtin-ftrace.c
+> > index dceae70c3a22..003efa756322 100644
+> > --- a/tools/perf/builtin-ftrace.c
+> > +++ b/tools/perf/builtin-ftrace.c
+> > @@ -166,6 +166,17 @@ static int read_tracing_file_to_stdout(const char *name)
+> >  	return ret;
+> >  }
+> >  
+> > +static int write_tracing_file_int(const char *name, int value)
+> > +{
+> > +	char buf[16];
+> > +
+> > +	snprintf(buf, sizeof(buf), "%d", value);
+> > +	if (write_tracing_file(name, buf) < 0)
+> > +		return -1;
+> > +
+> > +	return 0;
+> > +}
+> > +
+> >  static int reset_tracing_cpu(void);
+> >  static void reset_tracing_filters(void);
+> >  
+> > @@ -296,8 +307,6 @@ static void reset_tracing_filters(void)
+> >  
+> >  static int set_tracing_depth(struct perf_ftrace *ftrace)
+> >  {
+> > -	char buf[16];
+> > -
+> >  	if (ftrace->graph_depth == 0)
+> >  		return 0;
+> >  
+> > @@ -306,9 +315,7 @@ static int set_tracing_depth(struct perf_ftrace *ftrace)
+> >  		return -1;
+> >  	}
+> >  
+> > -	snprintf(buf, sizeof(buf), "%d", ftrace->graph_depth);
+> > -
+> > -	if (write_tracing_file("max_graph_depth", buf) < 0)
+> > +	if (write_tracing_file_int("max_graph_depth", ftrace->graph_depth) < 0)
+> >  		return -1;
+> >  
+> >  	return 0;
+> 
 
-On Wed, Jul 01, 2020 at 05:45:09PM -0700, Douglas Anderson wrote:
-> There's a bunch of overhead in spi-geni-qcom's prepare_message.  Get
-> rid of it.  Before this change spi_geni_prepare_message() took around
-> 14.5 us.  After this change, spi_geni_prepare_message() takes about
-> 1.75 us (as measured by ftrace).
-
-Acked-by: Mark Brown <broonie@kernel.org>
-
---Xb8pJpF45Qg/t7GZ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8FwL4ACgkQJNaLcl1U
-h9D4Rgf/Uva2syJm8KRxZ3zqSrynarhaL0MlZwq4rb26hTPp7LnZs8TIOfboQ2aP
-ReLvfYszSbgQhhIFxtZAnJAVpwEz2twAVROsnO0/K26NmqaV5/p0Z1KyPCPfgQfW
-N7LN4MOtDh97n84llxMtJJG8P8Tqoje0YRAuQdwSIC9LkcRCvNe02yRdJ9cnPMzX
-OTOYc4avIDtmWA+t+K7nyDJ1RoQmAqDyejMsUEy32LO1UmlW64hZ8njrNyZRisUu
-+8XdZqLO/aiQOTxuvxXbTH7ZltyFd+kkwlksVqDVVto2THb5RDJ20/+MdU8arQYF
-sN8xdQTvufuZYgkETqAeW5REBVttHQ==
-=/s94
------END PGP SIGNATURE-----
-
---Xb8pJpF45Qg/t7GZ--
+-- 
+Cheers,
+Changbin Du
