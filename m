@@ -2,83 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E2DB218553
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 12:55:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1E30218558
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 12:58:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728681AbgGHKzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 06:55:39 -0400
-Received: from smtp.al2klimov.de ([78.46.175.9]:60226 "EHLO smtp.al2klimov.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728349AbgGHKzj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 06:55:39 -0400
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id 8F8C0BC0CB;
-        Wed,  8 Jul 2020 10:55:36 +0000 (UTC)
-From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-To:     lenb@kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Subject: [PATCH] Replace HTTP links with HTTPS ones: TURBOSTAT UTILITY
-Date:   Wed,  8 Jul 2020 12:55:30 +0200
-Message-Id: <20200708105530.13993-1-grandmaster@al2klimov.de>
+        id S1728540AbgGHK6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 06:58:09 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:32276 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726110AbgGHK6I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 06:58:08 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 068AYSIa193645;
+        Wed, 8 Jul 2020 06:57:24 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3256x5a8nw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Jul 2020 06:57:24 -0400
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 068AYUP6193911;
+        Wed, 8 Jul 2020 06:57:24 -0400
+Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3256x5a8nn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Jul 2020 06:57:24 -0400
+Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
+        by ppma05wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 068AsS43006562;
+        Wed, 8 Jul 2020 10:57:23 GMT
+Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
+        by ppma05wdc.us.ibm.com with ESMTP id 324yf9w1hy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Jul 2020 10:57:23 +0000
+Received: from b01ledav001.gho.pok.ibm.com (b01ledav001.gho.pok.ibm.com [9.57.199.106])
+        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 068AvNOj41943408
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 8 Jul 2020 10:57:23 GMT
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2507828059;
+        Wed,  8 Jul 2020 10:57:23 +0000 (GMT)
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5F23328058;
+        Wed,  8 Jul 2020 10:57:19 +0000 (GMT)
+Received: from skywalker.linux.ibm.com (unknown [9.102.2.253])
+        by b01ledav001.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed,  8 Jul 2020 10:57:19 +0000 (GMT)
+X-Mailer: emacs 27.0.91 (via feedmail 11-beta-1 I)
+From:   "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+To:     Vlastimil Babka <vbabka@suse.cz>, Michal Hocko <mhocko@kernel.org>,
+        Joonsoo Kim <js1304@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel-team@lge.com,
+        Christoph Hellwig <hch@infradead.org>,
+        Roman Gushchin <guro@fb.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>
+Subject: Re: [PATCH v4 04/11] mm/hugetlb: make hugetlb migration callback
+ CMA aware
+In-Reply-To: <8549326e-7485-dd6d-1fa1-a899228b9b2f@suse.cz>
+References: <1594107889-32228-1-git-send-email-iamjoonsoo.kim@lge.com>
+ <1594107889-32228-5-git-send-email-iamjoonsoo.kim@lge.com>
+ <c1cd6e11-08c3-5654-60e7-dec2eb80987a@suse.cz>
+ <20200708071602.GB16543@js1304-desktop>
+ <20200708074103.GD7271@dhcp22.suse.cz>
+ <8549326e-7485-dd6d-1fa1-a899228b9b2f@suse.cz>
+Date:   Wed, 08 Jul 2020 16:27:16 +0530
+Message-ID: <87h7uil1f7.fsf@linux.ibm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +++++
-X-Spam-Level: *****
-Authentication-Results: smtp.al2klimov.de;
-        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-08_07:2020-07-08,2020-07-08 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
+ suspectscore=0 lowpriorityscore=0 spamscore=0 cotscore=-2147483648
+ adultscore=0 phishscore=0 impostorscore=0 clxscore=1011 mlxlogscore=906
+ bulkscore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2007080073
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rationale:
-Reduces attack surface on kernel devs opening the links for MITM
-as HTTPS traffic is much harder to manipulate.
+Vlastimil Babka <vbabka@suse.cz> writes:
 
-Deterministic algorithm:
-For each file:
-  If not .svg:
-    For each line:
-      If doesn't contain `\bxmlns\b`:
-        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
-            If both the HTTP and HTTPS versions
-            return 200 OK and serve the same content:
-              Replace HTTP with HTTPS.
+> On 7/8/20 9:41 AM, Michal Hocko wrote:
+>> On Wed 08-07-20 16:16:02, Joonsoo Kim wrote:
+>>> On Tue, Jul 07, 2020 at 01:22:31PM +0200, Vlastimil Babka wrote:
+>>> 
+>>> Simply, I call memalloc_nocma_{save,restore} in new_non_cma_page(). It
+>>> would not cause any problem.
+>> 
+>> I believe a proper fix is the following. The scope is really defined for
+>> FOLL_LONGTERM pins and pushing it inside check_and_migrate_cma_pages
+>> will solve the problem as well but it imho makes more sense to do it in
+>> the caller the same way we do for any others. 
+>> 
+>> Fixes: 9a4e9f3b2d73 ("mm: update get_user_pages_longterm to migrate pages allocated from CMA region")
+>
+> Agreed.
+>
+>> 
+>> I am not sure this is worth backporting to stable yet.
+>
+> CC Aneesh.
+>
+> Context: since check_and_migrate_cma_pages() calls __get_user_pages_locked(), it
+> should also be called under memalloc_nocma_save().
 
-Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
----
- Continuing my work started at 93431e0607e5.
- See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
- (Actually letting a shell for loop submit all this stuff for me.)
-
- If there are any URLs to be removed completely or at least not HTTPSified:
- Just clearly say so and I'll *undo my change*.
- See also: https://lkml.org/lkml/2020/6/27/64
-
- If there are any valid, but yet not changed URLs:
- See: https://lkml.org/lkml/2020/6/26/837
-
- If you apply the patch, please let me know.
+But by then we faulted in all relevant pages and migrated them out of
+CMA rea right?
 
 
- tools/power/x86/turbostat/turbostat.8 | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>
+>> diff --git a/mm/gup.c b/mm/gup.c
+>> index de9e36262ccb..75980dd5a2fc 100644
+>> --- a/mm/gup.c
+>> +++ b/mm/gup.c
+>> @@ -1794,7 +1794,6 @@ static long __gup_longterm_locked(struct task_struct *tsk,
+>>  				     vmas_tmp, NULL, gup_flags);
+>>  
+>>  	if (gup_flags & FOLL_LONGTERM) {
+>> -		memalloc_nocma_restore(flags);
+>>  		if (rc < 0)
+>>  			goto out;
+>>  
+>> @@ -1802,11 +1801,13 @@ static long __gup_longterm_locked(struct task_struct *tsk,
+>>  			for (i = 0; i < rc; i++)
+>>  				put_page(pages[i]);
+>>  			rc = -EOPNOTSUPP;
+>> +			memalloc_nocma_restore(flags);
+>>  			goto out;
+>>  		}
+>>  
+>>  		rc = check_and_migrate_cma_pages(tsk, mm, start, rc, pages,
+>>  						 vmas_tmp, gup_flags);
+>> +		memalloc_nocma_restore(flags);
+>>  	}
+>>  
+>>  out:
+>> 
 
-diff --git a/tools/power/x86/turbostat/turbostat.8 b/tools/power/x86/turbostat/turbostat.8
-index a6db83a88e85..f6b7e85b121c 100644
---- a/tools/power/x86/turbostat/turbostat.8
-+++ b/tools/power/x86/turbostat/turbostat.8
-@@ -335,7 +335,7 @@ that they count at TSC rate, which is true on all processors tested to date.
- 
- .SH REFERENCES
- Volume 3B: System Programming Guide"
--http://www.intel.com/products/processor/manuals/
-+https://www.intel.com/products/processor/manuals/
- 
- .SH FILES
- .ta
--- 
-2.27.0
-
+-aneesh
