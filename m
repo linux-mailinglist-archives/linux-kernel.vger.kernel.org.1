@@ -2,116 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3113C217C2B
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 02:24:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A99CC217C34
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 02:25:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728762AbgGHAYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 20:24:55 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:32518 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728208AbgGHAYz (ORCPT
+        id S1729196AbgGHAZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 20:25:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60374 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728208AbgGHAZR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 20:24:55 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06803DgJ167205;
-        Tue, 7 Jul 2020 20:24:39 -0400
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3250bcmryj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Jul 2020 20:24:39 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0680DDAO010229;
-        Wed, 8 Jul 2020 00:24:37 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma06fra.de.ibm.com with ESMTP id 322h1g9xm1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Jul 2020 00:24:36 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0680NDRm62980576
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 8 Jul 2020 00:23:13 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 55FBE52051;
-        Wed,  8 Jul 2020 00:24:34 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.85.200.130])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id CA4565204E;
-        Wed,  8 Jul 2020 00:24:31 +0000 (GMT)
-Message-ID: <1594167871.23056.132.camel@linux.ibm.com>
-Subject: Re: [PATCH v10 2/9] fs: introduce kernel_pread_file* support
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Kees Cook <keescook@chromium.org>,
-        Scott Branden <scott.branden@broadcom.com>
-Cc:     Luis Chamberlain <mcgrof@kernel.org>,
-        Wolfram Sang <wsa@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        David Brown <david.brown@linaro.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Shuah Khan <shuah@kernel.org>, bjorn.andersson@linaro.org,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        Olof Johansson <olof@lixom.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Takashi Iwai <tiwai@suse.de>, linux-kselftest@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Date:   Tue, 07 Jul 2020 20:24:31 -0400
-In-Reply-To: <202007071642.AA705B2A@keescook>
-References: <20200706232309.12010-1-scott.branden@broadcom.com>
-         <20200706232309.12010-3-scott.branden@broadcom.com>
-         <202007071642.AA705B2A@keescook>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.20.5 (3.20.5-1.fc24) 
-Mime-Version: 1.0
+        Tue, 7 Jul 2020 20:25:17 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA054C08C5DC;
+        Tue,  7 Jul 2020 17:25:16 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id 1so1456599pfn.9;
+        Tue, 07 Jul 2020 17:25:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MQus+ljnUwyp1pGiCkRRbhhBIjxiQT+G6Qrn+SpwtG0=;
+        b=GLSrvlvIvN69TV7OxBzuq9TjyN4gshB1BWT6HHdopqFR45I3v4adMYnXsG6If64dYS
+         YuHTDhcAQBnEbQB9pAXgUl6ghLSqOnm0TnXL0YI6+qY4wXmYcXwp01TJWCPNbAD6iBj+
+         VGc7bXfxzDvimXwwLpDAMBl4YIrXaDatxpZsG7p3PltoPZfgwKj5HXOEPNznNxK0Dp6K
+         0Xt4o4UsQ2l5N63MPnaSigl9FWNH7htK4Emo5oByUWoErbPuZ2UH20BbRatBhBFr69un
+         aHD4Fd7Ss8MAzsMadu4ZxeY53UEeqpBCfUAgQQOMO4Q/2pHWJ7Ca+vscusSu8glveb97
+         ZsBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MQus+ljnUwyp1pGiCkRRbhhBIjxiQT+G6Qrn+SpwtG0=;
+        b=Gw+5XKy5eycObooJg9yUFEZOZNwRzNQj4qiZveVNhdnRXK28i4/kEL2EBHt8YT0ITD
+         AUfR8GyQef+ZGSlXH5TkWdnKIinz88VL1SmHF8GSxcHzcngOFmvmdQdWvZpKBMKUbyiH
+         Tv7xkSv6NkFGd2qtUP0P3OAuoy7Y+RfPwrYY0n6Ie1pRcbBkI5fYgqa/1lG6w3IIH2WD
+         qBPHAiFnIg4CRYHQTMVNngqNYM+WQuyqvUqUxklTN6Gzjk7GOYTSAzmmcRdIEtOjdPfS
+         5PYWc5HFN3yje27RpepJr5XQGBdPjvLdd8WebM/B7Kj5pA8GyRSKhN6l6YbWBTd+9BUW
+         IXJg==
+X-Gm-Message-State: AOAM531miJsB01Xxyip4dYD7bvIN+bxQvtSUoeVKQ9z8XzZPJWxx3I3Y
+        TpaCBbZonyShiCxLOt4RiEg=
+X-Google-Smtp-Source: ABdhPJxL/NWGL8FAk9m3PwPtuvoeV3KDtNMvJGoqbcr1lcb+MgvRB1ymTTcfvb646iznVwm3dA3FpA==
+X-Received: by 2002:a63:757:: with SMTP id 84mr47654007pgh.275.1594167916427;
+        Tue, 07 Jul 2020 17:25:16 -0700 (PDT)
+Received: from localhost.localdomain.com ([2605:e000:160b:911f:a2ce:c8ff:fe03:6cb0])
+        by smtp.gmail.com with ESMTPSA id v197sm12430651pfc.35.2020.07.07.17.25.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Jul 2020 17:25:15 -0700 (PDT)
+From:   Chris Healy <cphealy@gmail.com>
+To:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, stefan@agner.ch,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, andrew@lunn.ch
+Cc:     Chris Healy <cphealy@gmail.com>
+Subject: [PATCH v2] ARM: dts: ZII: update MDIO speed and preamble
+Date:   Tue,  7 Jul 2020 17:25:00 -0700
+Message-Id: <20200708002500.4563-1-cphealy@gmail.com>
+X-Mailer: git-send-email 2.21.3
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-07_14:2020-07-07,2020-07-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- mlxlogscore=999 cotscore=-2147483648 priorityscore=1501 phishscore=0
- spamscore=0 bulkscore=0 lowpriorityscore=0 adultscore=0 mlxscore=0
- impostorscore=0 malwarescore=0 clxscore=1011 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2007070158
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-07-07 at 16:56 -0700, Kees Cook wrote:
-> > @@ -951,21 +955,32 @@ int kernel_read_file(struct file *file, void **buf, loff_t *size,
-> >               ret = -EINVAL;
-> >               goto out;
-> >       }
-> > -     if (i_size > SIZE_MAX || (max_size > 0 && i_size > max_size)) {
-> > +
-> > +     /* Default read to end of file */
-> > +     read_end = i_size;
-> > +
-> > +     /* Allow reading partial portion of file */
-> > +     if ((id == READING_FIRMWARE_PARTIAL_READ) &&
-> > +         (i_size > (pos + max_size)))
-> > +             read_end = pos + max_size;
-> 
-> There's no need to involve "id" here. There are other signals about
-> what's happening (i.e. pos != 0, max_size != i_size, etc).
+Update MDIO configuration with ZII devices to fully utilize
+MDIO endpoint capabilities.  All devices support 12.5MHz clock and
+don't require MDIO preable.
 
-Both the pre and post security kernel_read_file hooks are called here,
-but there isn't enough information being passed to the LSM/IMA to be
-able to different which hook is applicable.  One method of providing
-that additional information is by enumeration.  The other option would
-be to pass some additional information.
+Signed-off-by: Chris Healy <cphealy@gmail.com>
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
+---
+v2:
+- Fix subject line to reference ZII:
+- Get rid of "=<1>;" from suppress-preamble lines
 
-For example, on the post kernel_read_file hook, the file is read once
-into memory.  IMA calculates the firmware file hash based on the
-buffer contents.  On the pre kernel_read_file hook, IMA would need to
-read the entire file, calculating the file hash.  Both methods of
-calculating the file hash work, but the post hook is more efficient.
+ arch/arm/boot/dts/imx6qdl-zii-rdu2.dtsi   | 2 ++
+ arch/arm/boot/dts/vf610-zii-cfu1.dts      | 2 ++
+ arch/arm/boot/dts/vf610-zii-dev.dtsi      | 2 ++
+ arch/arm/boot/dts/vf610-zii-spb4.dts      | 2 ++
+ arch/arm/boot/dts/vf610-zii-ssmb-dtu.dts  | 2 ++
+ arch/arm/boot/dts/vf610-zii-ssmb-spu3.dts | 2 ++
+ 6 files changed, 12 insertions(+)
 
-Mimi
+diff --git a/arch/arm/boot/dts/imx6qdl-zii-rdu2.dtsi b/arch/arm/boot/dts/imx6qdl-zii-rdu2.dtsi
+index 20350e803377..58cc421042e1 100644
+--- a/arch/arm/boot/dts/imx6qdl-zii-rdu2.dtsi
++++ b/arch/arm/boot/dts/imx6qdl-zii-rdu2.dtsi
+@@ -720,6 +720,8 @@
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+ 		status = "okay";
++		suppress-preamble;
++		clock-frequency = <12500000>;
+ 
+ 		switch: switch@0 {
+ 			compatible = "marvell,mv88e6085";
+diff --git a/arch/arm/boot/dts/vf610-zii-cfu1.dts b/arch/arm/boot/dts/vf610-zii-cfu1.dts
+index ce1920c052fc..c27cacbe6a73 100644
+--- a/arch/arm/boot/dts/vf610-zii-cfu1.dts
++++ b/arch/arm/boot/dts/vf610-zii-cfu1.dts
+@@ -159,6 +159,8 @@
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+ 		status = "okay";
++		suppress-preamble;
++		clock-frequency = <12500000>;
+ 
+ 		switch0: switch0@0 {
+ 			compatible = "marvell,mv88e6085";
+diff --git a/arch/arm/boot/dts/vf610-zii-dev.dtsi b/arch/arm/boot/dts/vf610-zii-dev.dtsi
+index 95d0060fb56c..9694d3b53607 100644
+--- a/arch/arm/boot/dts/vf610-zii-dev.dtsi
++++ b/arch/arm/boot/dts/vf610-zii-dev.dtsi
+@@ -138,6 +138,8 @@
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+ 		status = "okay";
++		suppress-preamble;
++		clock-frequency = <12500000>;
+ 	};
+ };
+ 
+diff --git a/arch/arm/boot/dts/vf610-zii-spb4.dts b/arch/arm/boot/dts/vf610-zii-spb4.dts
+index 55b4201e27f6..d2ad07ed5318 100644
+--- a/arch/arm/boot/dts/vf610-zii-spb4.dts
++++ b/arch/arm/boot/dts/vf610-zii-spb4.dts
+@@ -120,6 +120,8 @@
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+ 		status = "okay";
++		suppress-preamble;
++		clock-frequency = <12500000>;
+ 
+ 		switch0: switch0@0 {
+ 			compatible = "marvell,mv88e6190";
+diff --git a/arch/arm/boot/dts/vf610-zii-ssmb-dtu.dts b/arch/arm/boot/dts/vf610-zii-ssmb-dtu.dts
+index a6c22a79779e..0bb3dcff0b79 100644
+--- a/arch/arm/boot/dts/vf610-zii-ssmb-dtu.dts
++++ b/arch/arm/boot/dts/vf610-zii-ssmb-dtu.dts
+@@ -106,6 +106,8 @@
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+ 		status = "okay";
++		suppress-preamble;
++		clock-frequency = <12500000>;
+ 
+ 		switch0: switch0@0 {
+ 			compatible = "marvell,mv88e6190";
+diff --git a/arch/arm/boot/dts/vf610-zii-ssmb-spu3.dts b/arch/arm/boot/dts/vf610-zii-ssmb-spu3.dts
+index 3d05c894bdc0..e12e11805b71 100644
+--- a/arch/arm/boot/dts/vf610-zii-ssmb-spu3.dts
++++ b/arch/arm/boot/dts/vf610-zii-ssmb-spu3.dts
+@@ -134,6 +134,8 @@
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+ 		status = "okay";
++		suppress-preamble;
++		clock-frequency = <12500000>;
+ 
+ 		switch0: switch0@0 {
+ 			compatible = "marvell,mv88e6190";
+-- 
+2.21.3
+
