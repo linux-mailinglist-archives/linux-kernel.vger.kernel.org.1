@@ -2,74 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24D7D219484
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 01:43:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0142219488
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 01:46:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726251AbgGHXn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 19:43:26 -0400
-Received: from sonic315-14.consmr.mail.bf2.yahoo.com ([74.6.134.124]:36897
-        "EHLO sonic315-14.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726082AbgGHXnY (ORCPT
+        id S1726119AbgGHXqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 19:46:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51732 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725903AbgGHXqH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 19:43:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1594251803; bh=NajTNMrfMLb6UXcjRhYpYerQX8PtVBLz0oFgaMINSWY=; h=Date:From:Reply-To:Subject:References:From:Subject; b=HN/tC86bgd9/bl0s6IeF7/tTIZBIL2DEL9PrwfD4kVUQ1LMi5I6lm6FBpl/KwSFQtXb2wamnZsFd3+s5GQLHbvZWMPE6bXjI4LmWKNNPYvKpNYd3sAjlI0CyjTzL7o7u1puNU63WnQ1Z8M2eFD+rWQf552GdEtjWNou67aqixJruaCX5ShsT3Z4RDlSHK5DpnRLtjFprtIRwEAypKTAIpUorNSa6zq1lHcRWnnXxxYQ9EbLBfXzINd6YFYAXmFhNLal23cmRn1UKz9oOCp9M6AfdyUoMonpp1c/aM3uh4Jcp4jFAzT1qY+KjeNt92/9HQmgroPrObTyzEMWxbOrsvw==
-X-YMail-OSG: ApNgELwVM1n3OnKggDcyUQbs6uDdswzcjNLrTQsL0FqezVfk.7hmyNK3PaHUDN0
- Fsn_WbNiwszR6kSu31R5FivOmyuuv5HGWx7vVuii.TR2HlbiqUHnb2KlzsMgqhZpOc3bxngF3ZCb
- cRjUjqmEL8x7NK8_4CuBWKPmJONtXQdP6eEwuDdUqOBPmVdR.7ypGNjMG1VPKsScoWSt.7A5yhmA
- J43kLhp5ahK4mBMGvU4.JR_o3BDIyEiyYpP3hYwKLhNZK.D0iQPAM7a4rtxwY_eo1HUr3NkIaPe6
- hHQJnz4C_f5CUkrRKBS0TnQToQZaHceZkWlXIX2BYt67EZOf7exqrdPpkvFKJNNurrFMativbm7X
- mDXGcmqxGMtQO8p73kIrkugcvVcw6pfCffrhiWGa2CLPDzIwnvPrSrl2Dyz2kYJ2B3sMdkxTAzTw
- UFTNsjiosfnJ.muRTIuR463gJ7tynb1k5Z5DIoLMsfL9dDSAvLUE702q_dBjQWU8z9aajFL6CDHT
- AyvbVuTSdgZq0CN5KRXbBvvj7uy6wbMPnx9VyUWk7NAojM1w6lQZFJI.NUthoUq55vNMf3ue3myr
- uxEPLl7ZoENxjrNGXG3iGP1P3AGS96G_cdX9.huM.nOj6zxwcCPQzm03LSrzYfrEQgc_q.4Sw29h
- jaRgIuE4P6Txfrt7l5y78zYidR5.RsJC8yPOW0qLiXET0L_UkE4635ZZ70R2osfK8SXGb4f2ByOO
- Qiq4qs.nhY69m.8HhZirKOGzF3jnx.Gf54jlYPBvtoaHa3Y4d1avdZEWyd_iXIIuyxNSqS0nXIhl
- R7iNuM0QE6INCccjK5ALf1tW2lGzPRzn.wOCu5ySSbaY25yvW9iWs1bnoHCgOcYtvAC6Ku.9_e.H
- .Fqo8q9u34mG.Ww1bEN.DwwPqGsyEULUCHgDKKNlTqacYTYcagUuCGpVLsrXh3Vd5TNpP2bF_tOu
- N_NsaloNmJi3Fcsoqq46HpiAUjUN0sVCqRQjwQR8i9LDWRTPJv0XeLIdvdb8m8pedbVouWwB8iF5
- Mjiol6S3IovfHEv0DTZh2t6wHqLYaYU62.5LKz9LnUIX5zrxV_a_fhNrSJlEKXOTHfiRsQbRo80z
- QAZV6cXio6GnJdpJ4kCPiTI1mjTSsjTESifKh6OaTfQv6XxQEkTd_8eWqcp39icC4_ZN5Y84J6Gi
- 8DNCP5uG8pt.XHkpGgCgH8tIaYmf3oGqfeNRNsXJwKM39QT0VlSQmitMO.GAQgiNj4.MYWZJjSGf
- O1bJiE05RUl6IpfNcgWdLfbcZBBCS8vZ_CJis5oFQSjO3KymQlAYmNw.76xleRyiGZtJHSPx5AG7
- A
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic315.consmr.mail.bf2.yahoo.com with HTTP; Wed, 8 Jul 2020 23:43:23 +0000
-Date:   Wed, 8 Jul 2020 23:43:20 +0000 (UTC)
-From:   Ms lisa Hugh <lisahugh531@gmail.com>
-Reply-To: ms.lisahugh000@gmail.com
-Message-ID: <538527762.4633085.1594251800761@mail.yahoo.com>
-Subject: MASSAGE FROM(Ms Lisa hugh).
+        Wed, 8 Jul 2020 19:46:07 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D31C4C08C5CE
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 16:46:06 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id i14so160599pfu.13
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 16:46:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wjXXLmNasbmFovZrtae0ec77dHFuvWrKDR6UgZkQq1o=;
+        b=X1FU4G1VLFZex+8YiDlXau6+MCCQm8OG7mebpY9uGQDklifI/m4+5Xql3pSiPyk7wI
+         RYBJQUA75gBRMOCLqN/1/4LZs5wbPVYGqQNFaKqo3lGTVQWMw64uQh+BWsjO/eUaFuAL
+         5uUSeZQG+L+RIsEOS6bJ66gWqPlq1K4GAiO4s=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wjXXLmNasbmFovZrtae0ec77dHFuvWrKDR6UgZkQq1o=;
+        b=XEcPxM4aLRsr88NSrLWeXdxUjyCpQ+sATLrV2bNNmM1YmuGDul33Jkwsg8SVkzlTVu
+         fTEFLQ6G0zWiLRKFYxXAsnQ9k1tInJGCxjtgMdzvDtMQgSAAIAERXGxeIqSvAGrDW/np
+         aRUbfaYuva3CYwkMnLa51I0cqkRpgmoVSMGRaq0p15Be32vgZ+KrMEvtriAx3y1OE0kt
+         47I3rxb8VO6gWsDsv1VpTaM0vATxfGOM9ZmxKvIUuYhxgNS8ioK1DCRG44P3JOEQS0OY
+         eicGs5t6DYfAwoAMAsAfHyavLwaWo3jG5kX34DbyTmDWNPHwy6eN5CB9Oo8hrNcqmWxC
+         zMXA==
+X-Gm-Message-State: AOAM5321OAL5HLKsc8kXKRWVMDDty7+UZK9yIU5HeVBdvOlr8cVBzXuq
+        BHkXsGQejZv4e7gIuIhVFtqt7A==
+X-Google-Smtp-Source: ABdhPJzcShw6xLbb9Fq4V0uhaRKl2b8m8iqOu3ZQoUcx4EgzAu79u0+9nu96sxU6kKMTElpnEagW1g==
+X-Received: by 2002:aa7:8e90:: with SMTP id a16mr53417728pfr.84.1594251966115;
+        Wed, 08 Jul 2020 16:46:06 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id v11sm807844pfc.108.2020.07.08.16.46.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Jul 2020 16:46:05 -0700 (PDT)
+Date:   Wed, 8 Jul 2020 16:46:04 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     linux-kernel@vger.kernel.org, Sargun Dhillon <sargun@sargun.me>,
+        Christian Brauner <christian@brauner.io>,
+        Tycho Andersen <tycho@tycho.ws>,
+        David Laight <David.Laight@ACULAB.COM>,
+        Christoph Hellwig <hch@lst.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Matt Denton <mpdenton@google.com>,
+        Jann Horn <jannh@google.com>, Chris Palmer <palmer@google.com>,
+        Robert Sesek <rsesek@google.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>, Shuah Khan <shuah@kernel.org>,
+        netdev@vger.kernel.org, containers@lists.linux-foundation.org,
+        linux-api@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v6 1/7] net/scm: Regularize compat handling of
+ scm_detach_fds()
+Message-ID: <202007081636.5458B0B@keescook>
+References: <20200706201720.3482959-1-keescook@chromium.org>
+ <20200706201720.3482959-2-keescook@chromium.org>
+ <20200707114103.lkfbt3kdtturp42z@wittgenstein>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-References: <538527762.4633085.1594251800761.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16197 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101 Firefox/78.0
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200707114103.lkfbt3kdtturp42z@wittgenstein>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jul 07, 2020 at 01:41:03PM +0200, Christian Brauner wrote:
+> On Mon, Jul 06, 2020 at 01:17:14PM -0700, Kees Cook wrote:
+> > Duplicate the cleanups from commit 2618d530dd8b ("net/scm: cleanup
+> > scm_detach_fds") into the compat code.
+> > 
+> > Move the check added in commit 1f466e1f15cf ("net: cleanly handle kernel
+> > vs user buffers for ->msg_control") to before the compat call, even
+> > though it should be impossible for an in-kernel call to also be compat.
+> > 
+> > Correct the int "flags" argument to unsigned int to match fd_install()
+> > and similar APIs.
+> > 
+> > Regularize any remaining differences, including a whitespace issue,
+> > a checkpatch warning, and add the check from commit 6900317f5eff ("net,
+> > scm: fix PaX detected msg_controllen overflow in scm_detach_fds") which
+> > fixed an overflow unique to 64-bit. To avoid confusion when comparing
+> > the compat handler to the native handler, just include the same check
+> > in the compat handler.
+> > 
+> > Fixes: 48a87cc26c13 ("net: netprio: fd passed in SCM_RIGHTS datagram not set correctly")
+> > Fixes: d84295067fc7 ("net: net_cls: fd passed in SCM_RIGHTS datagram not set correctly")
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > ---
+> 
+> Thanks. Just a comment below.
+> Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
 
+Thanks!
 
-Dear Friend,
+> >  include/net/scm.h |  1 +
+> >  net/compat.c      | 55 +++++++++++++++++++++--------------------------
+> >  net/core/scm.c    | 18 ++++++++--------
+> >  3 files changed, 35 insertions(+), 39 deletions(-)
+> > 
+> > diff --git a/include/net/scm.h b/include/net/scm.h
+> > index 1ce365f4c256..581a94d6c613 100644
+> > --- a/include/net/scm.h
+> > +++ b/include/net/scm.h
+> > @@ -37,6 +37,7 @@ struct scm_cookie {
+> >  #endif
+> >  };
+> >  
+> > +int __scm_install_fd(struct file *file, int __user *ufd, unsigned int o_flags);
+> >  void scm_detach_fds(struct msghdr *msg, struct scm_cookie *scm);
+> >  void scm_detach_fds_compat(struct msghdr *msg, struct scm_cookie *scm);
+> >  int __scm_send(struct socket *sock, struct msghdr *msg, struct scm_cookie *scm);
+> > diff --git a/net/compat.c b/net/compat.c
+> > index 5e3041a2c37d..27d477fdcaa0 100644
+> > --- a/net/compat.c
+> > +++ b/net/compat.c
+> > @@ -281,39 +281,31 @@ int put_cmsg_compat(struct msghdr *kmsg, int level, int type, int len, void *dat
+> >  	return 0;
+> >  }
+> >  
+> > -void scm_detach_fds_compat(struct msghdr *kmsg, struct scm_cookie *scm)
+> > +static int scm_max_fds_compat(struct msghdr *msg)
+> >  {
+> > -	struct compat_cmsghdr __user *cm = (struct compat_cmsghdr __user *) kmsg->msg_control;
+> > -	int fdmax = (kmsg->msg_controllen - sizeof(struct compat_cmsghdr)) / sizeof(int);
+> > -	int fdnum = scm->fp->count;
+> > -	struct file **fp = scm->fp->fp;
+> > -	int __user *cmfptr;
+> > -	int err = 0, i;
+> > +	if (msg->msg_controllen <= sizeof(struct compat_cmsghdr))
+> > +		return 0;
+> > +	return (msg->msg_controllen - sizeof(struct compat_cmsghdr)) / sizeof(int);
+> > +}
+> >  
+> > -	if (fdnum < fdmax)
+> > -		fdmax = fdnum;
+> > +void scm_detach_fds_compat(struct msghdr *msg, struct scm_cookie *scm)
+> > +{
+> > +	struct compat_cmsghdr __user *cm =
+> > +		(struct compat_cmsghdr __user *)msg->msg_control;
+> > +	unsigned int o_flags = (msg->msg_flags & MSG_CMSG_CLOEXEC) ? O_CLOEXEC : 0;
+> > +	int fdmax = min_t(int, scm_max_fds_compat(msg), scm->fp->count);
+> 
+> Just a note that SCM_RIGHTS fd-sending is limited to 253 (SCM_MAX_FD)
+> fds so min_t should never ouput > SCM_MAX_FD here afaict.
+> 
+> > +	int __user *cmsg_data = CMSG_USER_DATA(cm);
+> > +	int err = 0, i;
+> >  
+> > -	for (i = 0, cmfptr = (int __user *) CMSG_COMPAT_DATA(cm); i < fdmax; i++, cmfptr++) {
+> > -		int new_fd;
+> > -		err = security_file_receive(fp[i]);
+> > +	for (i = 0; i < fdmax; i++) {
+> > +		err = __scm_install_fd(scm->fp->fp[i], cmsg_data + i, o_flags);
+> >  		if (err)
+> >  			break;
+> > -		err = get_unused_fd_flags(MSG_CMSG_CLOEXEC & kmsg->msg_flags
+> > -					  ? O_CLOEXEC : 0);
+> > -		if (err < 0)
+> > -			break;
+> > -		new_fd = err;
+> > -		err = put_user(new_fd, cmfptr);
+> > -		if (err) {
+> > -			put_unused_fd(new_fd);
+> > -			break;
+> > -		}
+> > -		/* Bump the usage count and install the file. */
+> > -		fd_install(new_fd, get_file(fp[i]));
+> >  	}
+> >  
+> >  	if (i > 0) {
+> >  		int cmlen = CMSG_COMPAT_LEN(i * sizeof(int));
+> > +
+> >  		err = put_user(SOL_SOCKET, &cm->cmsg_level);
+> >  		if (!err)
+> >  			err = put_user(SCM_RIGHTS, &cm->cmsg_type);
+> > @@ -321,16 +313,19 @@ void scm_detach_fds_compat(struct msghdr *kmsg, struct scm_cookie *scm)
+> >  			err = put_user(cmlen, &cm->cmsg_len);
+> >  		if (!err) {
+> >  			cmlen = CMSG_COMPAT_SPACE(i * sizeof(int));
+> > -			kmsg->msg_control += cmlen;
+> > -			kmsg->msg_controllen -= cmlen;
+> > +			if (msg->msg_controllen < cmlen)
+> > +				cmlen = msg->msg_controllen;
+> > +			msg->msg_control += cmlen;
+> > +			msg->msg_controllen -= cmlen;
+> >  		}
+> >  	}
+> > -	if (i < fdnum)
+> > -		kmsg->msg_flags |= MSG_CTRUNC;
+> > +
+> > +	if (i < scm->fp->count || (scm->fp->count && fdmax <= 0))
+> 
+> I think fdmax can't be < 0 after your changes? scm_max_fds() guarantees
+> that fdmax is always >= 0 and min_t() guarantees that fdmax <= scm->fp->count.
+> So the check should technically be :)
 
-I am Ms Lisa hugh, work with the department of Audit and accounting manager here in the Bank(B.O.A).
+You left our your suggestion! :) But, I think you mean "== 0" ?
 
-Please i need your assistance for the transferring of thIs fund to your bank account for both of us benefit for life time investment, amount (US$4.5M DOLLARS).
+The check actually comes from the refactoring from commit 2618d530dd8b
+("net/scm: cleanup scm_detach_fds") which I mostly copy/pasted into
+compat. However, fdmax is an int, and scm->fp->count is signed so it's
+possible fdmax is < 0 (but I don't think count can actually ever be <
+0), but I don't want to refactor all the types just to fix this boundary
+condition. :)
 
-I have every inquiry details to make the bank believe you and release the fund in within 5 banking working days with your full co-operation with me for success.
-
-Note/ 50% for you why 50% for me after success of the transfer to your bank account.
-
-Below information is what i need from you so will can be reaching each other
-
-1)Full name ...
-2)Private telephone number...
-3)Age...
-4)Nationality...
-5)Occupation ...
-
-
-Thanks.
-
-Ms Lisa hugh.
+-- 
+Kees Cook
