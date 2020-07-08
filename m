@@ -2,208 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D36CB218750
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 14:30:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3F9B218757
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 14:31:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729136AbgGHMaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 08:30:03 -0400
-Received: from foss.arm.com ([217.140.110.172]:37120 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728941AbgGHMaC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 08:30:02 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 38B841FB;
-        Wed,  8 Jul 2020 05:30:02 -0700 (PDT)
-Received: from [192.168.0.14] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 344EE3F68F;
-        Wed,  8 Jul 2020 05:29:59 -0700 (PDT)
-Subject: Re: [PATCH RFC 0/4] Changes to Support *Virtual* CPU Hotplug for
- ARM64
-To:     Salil Mehta <salil.mehta@huawei.com>
-Cc:     "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "will@kernel.org" <will@kernel.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "christoffer.dall@arm.com" <christoffer.dall@arm.com>,
-        "andre.przywara@arm.com" <andre.przywara@arm.com>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
-        "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
-        "qemu-arm@nongnu.org" <qemu-arm@nongnu.org>,
-        "peter.maydell@linaro.org" <peter.maydell@linaro.org>,
-        "richard.henderson@linaro.org" <richard.henderson@linaro.org>,
-        "imammedo@redhat.com" <imammedo@redhat.com>,
-        "mst@redhat.com" <mst@redhat.com>,
-        "drjones@redhat.com" <drjones@redhat.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "gshan@redhat.com" <gshan@redhat.com>,
-        "david@redhat.com" <david@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>,
-        "mehta.salil.lnk@gmail.com" <mehta.salil.lnk@gmail.com>
-References: <20200625133757.22332-1-salil.mehta@huawei.com>
- <8efc4efe284641eda3ffeb2301fcca43@huawei.com>
-From:   James Morse <james.morse@arm.com>
-Message-ID: <cbaa6d68-6143-e010-5f3c-ec62f879ad95@arm.com>
-Date:   Wed, 8 Jul 2020 13:29:43 +0100
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1729053AbgGHMbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 08:31:31 -0400
+Received: from mail-ej1-f65.google.com ([209.85.218.65]:43524 "EHLO
+        mail-ej1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728969AbgGHMbb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 08:31:31 -0400
+Received: by mail-ej1-f65.google.com with SMTP id l12so50261670ejn.10;
+        Wed, 08 Jul 2020 05:31:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ygzArpvH7RPCySBUWiISobL+c+Ql9Y19rwAtWfABm8U=;
+        b=As/H1ov45md0P7YcaeeU9Ma1oYI0Ng0kD8nIvd3Yrf3nvuBq+TIkjmkhinxiax60yN
+         4gdAjgrzQtUrCvq+TZ42SXMKMRMUc5lzL2NxWZVnpdwmRUt4HpXXpagz9/iEdLrSGCNa
+         v8bAj+uxSL+DzVRoOR2StFDYvrUhaIpYDjNb/Ma+ljJx4fC/8t0lwh6qEPPpHDZuECEY
+         Z9T1oQg1Z8zsjp9ap7PTRQABG7xrgn0pyuRi0roBnFwGvilTsouFteZ6xajJAcYhIBMM
+         nN7lSqbxfeQJdL6XuREjdhDLFLAxS8AonmmH+P56PZ2M4hNyjcfahGGNI0R6IbDulo1R
+         X1+Q==
+X-Gm-Message-State: AOAM530yJsZltftkoHvSBFVws3CNrGo94T6iV39oKlsrj3XYRDPDsWng
+        T/Cjvv0IjganSmSWWzbNm5I=
+X-Google-Smtp-Source: ABdhPJx5kRIHY/+y31r0ade1Fiq6aBAnXwe+tb2On86JyklMR4m3oRE71PGbxQPALItMwlHHg+k/VQ==
+X-Received: by 2002:a17:907:1190:: with SMTP id uz16mr50778637ejb.385.1594211489188;
+        Wed, 08 Jul 2020 05:31:29 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.195])
+        by smtp.googlemail.com with ESMTPSA id q3sm23853098eds.41.2020.07.08.05.31.27
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 08 Jul 2020 05:31:28 -0700 (PDT)
+Date:   Wed, 8 Jul 2020 14:31:26 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Anand Moon <linux.amoon@gmail.com>
+Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc@vger.kernel.org,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>, Kukjin Kim <kgene@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: Re: [PATCH v3] phy: samsung: Use readl_poll_timeout function
+Message-ID: <20200708123126.GA29033@kozik-lap>
+References: <20200707095908.372-1-linux.amoon@gmail.com>
+ <20200707113645.GA27280@kozik-lap>
+ <CANAwSgQ_LXx=oHuu1dcHBZqo0zr-mHYWKnVPFJn+_G44JRarPA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <8efc4efe284641eda3ffeb2301fcca43@huawei.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <CANAwSgQ_LXx=oHuu1dcHBZqo0zr-mHYWKnVPFJn+_G44JRarPA@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Salil,
-
-On 07/07/2020 10:52, Salil Mehta wrote:
->> From: Salil Mehta
-
-
-Disambiguation: by cpu-hotplug here, you don't mean
-CONFIG_HOTPLUG_CPU backed by PSCI, which is commonly what we mean in the arm world. You
-mean: package hot-add. A bunch of CPUs (and maybe more) that weren't present at boot have
-turned up.
-
-
->> Changes to support virtual cpu hotplug in QEMU[1] have been introduced to the
->> community as RFC. These are under review.
->>
->> To support virtual cpu hotplug guest kernel must:
-
-Surely number 1 is: know its a virtual machine, and that whatever needs doing/describing
-on a real machine, doesn't need doing or describing here...
-
-We add support for virtual machines after support for the physical machine. Is anyone
-building hardware that supports this?
-
-We can assume some will exist during the lifetime of a stable-kernel. The stable-kernel
-will claim to support this, but in reality it will crash and burn in exciting ways.
-
-(e.g. parts of the interrupt controller in the hot-added package would need configuring.
-We'd either lock up during boot when we try, but its not there ... or not do it when the
-package is added because we assumed this was a VM)
-
-
-I don't think linux can support this for virtual machines until it works for real machines
-too. We don't have a reliable way of determining we are running in a VM.
-
-This at least needs the ACPI spec updating to describe what work the OS has to do when a
-package comes online, and what it can't touch until then.
-I don't think this work would happen without someone building such a system.
-
-
->> 1. Identify disabled/present vcpus and set/unset the present mask of the vcpu
->>    during initialization and hotplug event. It must also set the possible mask
->>    (which includes disabled vcpus) during init of guest kernel.
->> 2. Provide architecture specific ACPI hooks, for example to map/unmap the
->>    logical cpuid to hwids/MPIDR. Linux kernel already has generic ACPI cpu
->>    hotplug framework support.
-
->> Changes introduced in this patch-set also ensures that initialization of the
->> cpus when virtual cpu hotplug is not supported remains un-affected.
-
-But on a platform with physical cpu hotplug, really-bad-things will happen.
-
-
-There is no description here of what problem you are trying to solve. I don't believe 'cpu
-hotlpug' is an end in itself.
-
-~
-
-Aha, its in the qemu cover letter:
-| This allows scaling the guest VM compute capacity on-demand which would be
-| useful for the following example scenarios,
-| 1. Vertical Pod Autoscaling[3][4] in the cloud: Part of the orchestration
-|   framework which could adjust resource requests (CPU and Mem requests) for
-|   the containers in a pod, based on usage.
-|2. Pay-as-you-grow Business Model: Infrastructure provider could allocate and
-|   restrict the total number of compute resources available to the guest VM
-|   according to the SLA(Service Level Agreement). VM owner could request for
-|   more compute to be hot-plugged for some cost.
-
-Controlling CPU time makes perfect sense. But doesn't cgroup already do exactly this?
-
-If a VM is restricted to 1xCPU of cpu-time, it can online as many vcpu as it likes, its
-not going to get more than 1xCPU of cpu-time.
-
-
-I understand that this is how kubernetes reconfigures a VM on x86, but I'm fairly sure x86
-had physical cpu hotplug before, so the firmware/OS responsibilities were well understood.
-
-
-I think this series creates a support nightmare for the future.
-
-
-This has come up before:
-https://lore.kernel.org/kvmarm/82879258-46a7-a6e9-ee54-fc3692c1cdc3@arm.com/
-
-
-Thanks,
-
-James
-
-
->> Repository:
->> (*) Kernel changes are at,
->>      https://github.com/salil-mehta/linux.git virt-cpuhp-arm64/rfc-v1
->> (*) QEMU changes for vcpu hotplug could be cloned from below site,
->>      https://github.com/salil-mehta/qemu.git virt-cpuhp-armv8/rfc-v1
->>
->>
->> THINGS TO DO:
->> 1. Handling of per-cpu variables especially the first-chunk allocations
->>    (which are NUMA aware) when the vcpu is hotplugged needs further attention
->>    and review.
->> 2. NUMA related stuff has not been fully tested both in QEMU and kernel.
->> 3. Comprehensive Testing including when cpu hotplug is not supported.
->> 4. Docs
->>
->> DISCLAIMER:
->> This is not a complete work but an effort to present the arm vcpu hotplug
->> implementation to the community. This RFC is being used as a way to verify
->> the idea mentioned above and to support changes presented for QEMU[1] to
->> support vcpu hotplug. As of now this is *not* a production level code and might
->> have bugs. Only a basic testing has been done on HiSilicon Kunpeng920 ARM64
->> based SoC for Servers to verify the proof-of-concept that has been found working!
->>
->> Best regards
->> Salil.
->>
->> REFERENCES:
->> [1] https://www.mail-archive.com/qemu-devel@nongnu.org/msg712010.html
->> [2] https://lkml.org/lkml/2019/6/28/1157
->> [3] https://lists.cs.columbia.edu/pipermail/kvmarm/2018-July/032316.html
->>
->> Organization of Patches:
->> [Patch 1-3]
->> (*) Changes required during guest boot time to support vcpu hotplug
->> (*) Max cpu overflow checks
->> (*) Changes required to pre-setup cpu-operations even for disabled cpus
->> [Patch 4]
->> (*) Arch changes required by guest kernel ACPI CPU Hotplug framework.
->>
->>
->> Salil Mehta (4):
->>   arm64: kernel: Handle disabled[(+)present] cpus in MADT/GICC during
->>     init
->>   arm64: kernel: Bound the total(present+disabled) cpus with nr_cpu_ids
->>   arm64: kernel: Init cpu operations for all possible vcpus
->>   arm64: kernel: Arch specific ACPI hooks(like logical cpuid<->hwid
->>     etc.)
->>
->>  arch/arm64/kernel/smp.c | 153 ++++++++++++++++++++++++++++++++--------
->>  1 file changed, 123 insertions(+), 30 deletions(-)
->>
->> --
->> 2.17.1
->>
+On Wed, Jul 08, 2020 at 01:59:46PM +0530, Anand Moon wrote:
+> > Still you did not mention that you convert the function to use sleeping
+> > primitive.  You also did not mention whether it is actually allowed in
+> > this context and I am not sure if you investigated it.
+> >
+> OK, I am not sure how to resolve your query.
+> I learned some new things.
 > 
+> So here are some points.
+> -- Yes read_poll_timeout internally used might_sleep if sleep_us != 0
+> under some condition.
+> -- None of the code in phy-exynos5-usbdrd.c is called using kernel
+> synchronization
+>      methods like spinlock / mutex.
 
+More important is rather the call to calibrare() as this is the place
+where affected code is used.
+
+It is not only about synchronisation primitives used in the driver but
+also in the phy core. I guess there should not be a problem. I just
+stated the fact that you did not mention anything about it.
+
+> -- I have checked this function is called non atomic context.
+
+Great!
+
+Best regards,
+Krzysztof
