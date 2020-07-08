@@ -2,86 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AC8A218B39
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 17:29:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BED8218B40
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 17:31:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730146AbgGHP3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 11:29:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43090 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729022AbgGHP3p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 11:29:45 -0400
-Received: from localhost (mobile-166-175-191-139.mycingular.net [166.175.191.139])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BA2C2206DF;
-        Wed,  8 Jul 2020 15:29:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594222185;
-        bh=6hC9q30c9xDVnYxxYrDilxDgNczb3ORs+r460OBIP+M=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=EGgrfeI1EHAMtzzo0VWnxrsOGD8etT8bhWKCIpI2OttNouB4ynv9fsWvY8v4yeJjF
-         0nrbav2LQGzecA9opJiEg/cBGfSS045Psa5zQqmfVCYoNfOar+GfN0/oyRjS7fce1t
-         Z0r+zjLKxcvjOWPo1ICgPjlDi8pp+fzA2ui6rcKE=
-Date:   Wed, 8 Jul 2020 10:29:42 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     wang.yi59@zte.com.cn
-Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, xue.zhihong@zte.com.cn,
-        wang.liang82@zte.com.cn, liao.pingfang@zte.com.cn
-Subject: Re: [PATCH] PCI: Replace kmalloc with kzalloc in the comment/message
-Message-ID: <20200708152942.GA454574@bjorn-Precision-5520>
+        id S1730196AbgGHPbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 11:31:22 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:54733 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729022AbgGHPbV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 11:31:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594222280;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=59uaosHXgT6qmldDLKNeyh6mr1S59liDZ+jRzuKa0uE=;
+        b=PtHjIh2D3jFSiXtSTx40jUKhzbo3G/+QQ2b0XUSjprKiUZMDQyWShCiU1pNtIxIg98Dcd5
+        ZAEc0UQ7Pb9sGWrFoXUWXtAU5hewaP9Q16h9tVseftrDMJTp8taSI2tp6TkE2RiBCDXdrA
+        4bVuWvHKaWCp3cq4WFxtg7jbO2Yi93U=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-416-QOc7kpD8O4Si-HaCi82yOA-1; Wed, 08 Jul 2020 11:31:18 -0400
+X-MC-Unique: QOc7kpD8O4Si-HaCi82yOA-1
+Received: by mail-wm1-f71.google.com with SMTP id c81so2109997wmd.2
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 08:31:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=59uaosHXgT6qmldDLKNeyh6mr1S59liDZ+jRzuKa0uE=;
+        b=jJ5r6/ToUEfe5YMOUDJMJ8ZH1zjmVAKEFYfTkeCLwX8LxuYTnbAUk7H0qmOoishAK5
+         RIkMOzoFldFwZH4ua8ybZLbVveB0Fi4311660GAJRIZywnYZ3O+FNMgvMWCLIr8ug8dh
+         oBKt/YJd3zJ9w3DBRJLVbpDdteQauw1RTcvgheWmc8I4BMN6H2Slk3fRZpTKlnof6qJL
+         wlFAQq4wK8F988ICQnhpRInanteGnlwk3duE576RbNsNcVwlBvqeL7BBWbQIbrhYkJs3
+         EQh9W/OobDLgbmxi6oU8EmYsbV1UXhFtTV+jy5QYxLOzFptWj2tVoQZItV6A9gISSJxa
+         Vsew==
+X-Gm-Message-State: AOAM531EMRxCHNL7ejze95pcthv/CK7ZttNM3qlfxNW1jd0YEYQgPt0v
+        I6Uf3qUHlrA8X+YeSE3zn2RpKKUlfblGyvhP8Y0ZpmVSk2CadnYVh81SdYGyNZGxmBZ2zp+5lq9
+        huqwcBtKz5RFZg2xFr3skIaet
+X-Received: by 2002:a7b:c5c4:: with SMTP id n4mr9638601wmk.67.1594222276521;
+        Wed, 08 Jul 2020 08:31:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzy0WT3rLNI0em+sO8R/UAW8LZSJNdJTXnuAaTTSym1frgpG8b2UGa/jS7r5G1c/YH3r8JJjA==
+X-Received: by 2002:a7b:c5c4:: with SMTP id n4mr9638575wmk.67.1594222276235;
+        Wed, 08 Jul 2020 08:31:16 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:9541:9439:cb0f:89c? ([2001:b07:6468:f312:9541:9439:cb0f:89c])
+        by smtp.gmail.com with ESMTPSA id j15sm426678wrx.69.2020.07.08.08.31.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Jul 2020 08:31:15 -0700 (PDT)
+Subject: Re: [PATCH] KVM/x86: pmu: Fix #GP condition check for RDPMC emulation
+To:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Like Xu <like.xu@linux.intel.com>
+Cc:     kvm@vger.kernel.org, Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Joerg Roedel <joro@8bytes.org>, linux-kernel@vger.kernel.org
+References: <20200708074409.39028-1-like.xu@linux.intel.com>
+ <20200708151824.GA22737@linux.intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <e285ccb3-29bd-dcb8-73d1-eeee11d72198@redhat.com>
+Date:   Wed, 8 Jul 2020 17:31:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202007081722099680673@zte.com.cn>
+In-Reply-To: <20200708151824.GA22737@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 08, 2020 at 05:22:09PM +0800, wang.yi59@zte.com.cn wrote:
-> Hi Bjorn,
+On 08/07/20 17:18, Sean Christopherson wrote:
+> On Wed, Jul 08, 2020 at 03:44:09PM +0800, Like Xu wrote:
+>> in guest protected mode, if the current privilege level
+>> is not 0 and the pce flag in the cr4 register is cleared,
+>> we will inject a #gp for rdpmc usage.
 > 
-> Thanks for your review and patience on the datails :)
+> Wrapping at ~58 characters is a bit aggressive.  checkpatch enforces 75
+> chars, something near that would be prefereable.
 > 
-> > On Fri, May 29, 2020 at 09:01:59AM +0800, Yi Wang wrote:
-> > > From: Liao Pingfang <liao.pingfang@zte.com.cn>
-> > >
-> > > Use kzalloc instead of kmalloc in the comment/message according to
-> > > the previous kzalloc() call.
-> > >
-> > > Signed-off-by: Liao Pingfang <liao.pingfang@zte.com.cn>
-> >
-> > I would be happy to apply this, but this needs to show a connection
-> > between Liao Pingfang and Yi Wang.
-> >
-> > Ideally this patch would be sent directly by Liao Pingfang.  The
-> > sender should at least appear in the Signed-off-by chain.  See
-> > Documentation/process/submitting-patches.rst
+>> Signed-off-by: Like Xu <like.xu@linux.intel.com>
+>> ---
+>>  arch/x86/kvm/pmu.c | 5 +++++
+>>  1 file changed, 5 insertions(+)
+>>
+>> diff --git a/arch/x86/kvm/pmu.c b/arch/x86/kvm/pmu.c
+>> index b86346903f2e..d080d475c808 100644
+>> --- a/arch/x86/kvm/pmu.c
+>> +++ b/arch/x86/kvm/pmu.c
+>> @@ -372,6 +372,11 @@ int kvm_pmu_rdpmc(struct kvm_vcpu *vcpu, unsigned idx, u64 *data)
+>>  	if (!pmc)
+>>  		return 1;
+>>  
+>> +	if ((kvm_x86_ops.get_cpl(vcpu) != 0) &&
+>> +	    !(kvm_read_cr4(vcpu) & X86_CR4_PCE) &&
+>> +	    (kvm_read_cr4(vcpu) & X86_CR0_PE))
 > 
-> According to our company security policy, only a few people have
-> access to send email outside of company, so this patch is sent by
-> Yi Wang and the author is Liao Pingfang actually.
+> This reads CR4 but checks CR0.PE.
+> 
+> And maybe put the X86_CR4_PCE check first so that it's the focus of the
+> statement?
 
-Please take a look at Documentation/process/submitting-patches.rst.
-Specifically, it says:
+I'll squash this to fix it (I'm OOO next week and would like to get kvm/queue
+sorted out these few days that I've left).
 
-  Notably, the last Signed-off-by: must always be that of the
-  developer submitting the patch.
+diff --git a/arch/x86/kvm/pmu.c b/arch/x86/kvm/pmu.c
+index d080d475c808..67741d2a0308 100644
+--- a/arch/x86/kvm/pmu.c
++++ b/arch/x86/kvm/pmu.c
+@@ -372,9 +372,9 @@ int kvm_pmu_rdpmc(struct kvm_vcpu *vcpu, unsigned idx, u64 *data)
+ 	if (!pmc)
+ 		return 1;
+ 
+-	if ((kvm_x86_ops.get_cpl(vcpu) != 0) &&
+-	    !(kvm_read_cr4(vcpu) & X86_CR4_PCE) &&
+-	    (kvm_read_cr4(vcpu) & X86_CR0_PE))
++	if (!(kvm_read_cr4(vcpu) & X86_CR4_PCE) &&
++	    (kvm_x86_ops.get_cpl(vcpu) != 0) &&
++	    (kvm_read_cr0(vcpu) & X86_CR0_PE))
+ 		return 1;
+ 
+ 	*data = pmc_read_counter(pmc) & mask;
 
-You are submitting the patch, but you didn't add a Signed-off-by.
 
-Of course, adding your Signed-off-by means you are agreeing to the
-"Developer's Certificate of Origin" (also in that file), which tells
-me that the patch is licensed correctly and that you have the right to
-submit it.
+The order follows the SDM.  I'm tempted to remove the CR0 check
+altogether, since non-protected-mode always runs at CPL0 AFAIK, but let's
+keep it close to what the manual says.
 
-In addition, your signed-off-by means that if there are issues with
-the patch, I will look to you (and Liao Pingfang, obviously) to help
-resolve them.
+Paolo
 
-So if that is all acceptable to you, just post this again with your
-own signed-off-by below Liao Pingfang's.
-
-Bjorn
