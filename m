@@ -2,83 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B974921867A
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 13:56:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05CED218680
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 13:56:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728960AbgGHL4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 07:56:05 -0400
-Received: from smtp.al2klimov.de ([78.46.175.9]:52184 "EHLO smtp.al2klimov.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728592AbgGHL4E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 07:56:04 -0400
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id 5396EBC107;
-        Wed,  8 Jul 2020 11:56:02 +0000 (UTC)
-From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-To:     stefanr@s5r6.in-berlin.de, linux1394-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Subject: [PATCH] Replace HTTP links with HTTPS ones: FIREWIRE SUBSYSTEM
-Date:   Wed,  8 Jul 2020 13:55:55 +0200
-Message-Id: <20200708115555.14210-1-grandmaster@al2klimov.de>
+        id S1728974AbgGHL4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 07:56:49 -0400
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:39005 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728592AbgGHL4t (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 07:56:49 -0400
+Received: by mail-ot1-f67.google.com with SMTP id 18so36679194otv.6;
+        Wed, 08 Jul 2020 04:56:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Dpcugomj6AYMYKtNzodEy+2KAlXlgaT4b5NSGKQ3XT4=;
+        b=OGKGdtP//Y/fEblGxW1o42HsofHy98C72R6nQJLou9DPq/C6wbGDW6i668jN+AsF6z
+         1IVoulc14TGuvaNWRH+b5EEpEgvq0CdoKM2bmqnyyedju/Cr5wIAcRp+j8D3i5YeTkkl
+         gBXbnsUJcMbFWmN/hmtj/i9o77tz0ANjw716Z2nVAjlIDXppWMkJfElF/iDhmPmYghfo
+         nE8tUtEdm0UmGfo4JstF7BGFyZbZE2GsEImj0XC8unnyfIKuMYJOq1cR4Qwfv/ccOrZB
+         p34uka2ob2P9jDcUNL5PbyRbHzJwrwdS0nGRkbqxCYityq4cFnkCQPe1fnkvn6aJDsYc
+         3sgg==
+X-Gm-Message-State: AOAM532zUcbdAPW+7zVyb6b6v3EP+EDmh01gw4KHeUZB8/zR+L8G8d33
+        DtWVT9po+XQHGE7GbDdcKhZDVn712pogagxpCxE=
+X-Google-Smtp-Source: ABdhPJwdQ4P79u5T3r90DuVhOcAJF327hbBgjsPu58W0mp2gbxlTAv3GZJlx898xJQ9TgmXpvt4cbd/rRi6aPnqabaw=
+X-Received: by 2002:a05:6830:1451:: with SMTP id w17mr37145375otp.250.1594209408609;
+ Wed, 08 Jul 2020 04:56:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +++++
-X-Spam-Level: *****
-Authentication-Results: smtp.al2klimov.de;
-        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+References: <1594138692-16816-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <1594138692-16816-13-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <1594138692-16816-13-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 8 Jul 2020 13:56:37 +0200
+Message-ID: <CAMuHMdVZLMh=YnFaheSC=rhLn4_LMoZUVy4KPaHj-=jHqyt0MQ@mail.gmail.com>
+Subject: Re: [PATCH 14/14] pinctrl: sh-pfc: pfc-r8a77951: Add R8A774E1 PFC support
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rationale:
-Reduces attack surface on kernel devs opening the links for MITM
-as HTTPS traffic is much harder to manipulate.
+On Tue, Jul 7, 2020 at 6:18 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Renesas RZ/G2H (r8a774e1) is pin compatible with R-Car H3 (R8A77951),
+> however it doesn't have several automotive specific peripherals. Add
+> automotive-specific pin groups/functions along with common pin
+> groups/functions for supporting both r8a77951 and r8a774e1 SoC.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-Deterministic algorithm:
-For each file:
-  If not .svg:
-    For each line:
-      If doesn't contain `\bxmlns\b`:
-        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
-            If both the HTTP and HTTPS versions
-            return 200 OK and serve the same content:
-              Replace HTTP with HTTPS.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in sh-pfc-for-v5.9.
 
-Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
----
- Continuing my work started at 93431e0607e5.
- See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
- (Actually letting a shell for loop submit all this stuff for me.)
+Gr{oetje,eeting}s,
 
- If there are any URLs to be removed completely or at least not HTTPSified:
- Just clearly say so and I'll *undo my change*.
- See also: https://lkml.org/lkml/2020/6/27/64
+                        Geert
 
- If there are any valid, but yet not changed URLs:
- See: https://lkml.org/lkml/2020/6/26/837
-
- If you apply the patch, please let me know.
-
-
- drivers/firewire/ohci.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/firewire/ohci.c b/drivers/firewire/ohci.c
-index 54fdc39cd0bc..12703fbb99de 100644
---- a/drivers/firewire/ohci.c
-+++ b/drivers/firewire/ohci.c
-@@ -1827,7 +1827,7 @@ static int initiated_reset(struct fw_ohci *ohci)
- 
- /*
-  * TI TSB82AA2B and TSB12LV26 do not receive the selfID of a locally
-- * attached TSB41BA3D phy; see http://www.ti.com/litv/pdf/sllz059.
-+ * attached TSB41BA3D phy; see https://www.ti.com/litv/pdf/sllz059.
-  * Construct the selfID from phy register contents.
-  */
- static int find_and_insert_self_id(struct fw_ohci *ohci, int self_id_count)
 -- 
-2.27.0
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
