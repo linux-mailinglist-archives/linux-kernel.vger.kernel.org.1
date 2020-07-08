@@ -2,95 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C66212187A2
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 14:34:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2CCC2187B3
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 14:36:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729192AbgGHMe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 08:34:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48440 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728980AbgGHMe0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 08:34:26 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.179.83.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1310020774;
-        Wed,  8 Jul 2020 12:34:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594211666;
-        bh=Ns14gnG/Yfu5X9lDg/bBHsmRgKXr1tZC51P6xAP5XpI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=o2p6YHq8Jq+gqoe/+k0j2k1acnoGBPRFOXxUoC6RumfXKCKjL6vVMUBMLlqPNlUUC
-         G/LegTx9N5b+ay0uZ//g+Wwa7DuE2y3AQzd9a4TBgI4EjcDjvCBxSzA034kVD3iW6o
-         KoC2ZDElyipk4oeR58tF0qyFuR9/LC7pI7wqxHlM=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id CA103405FF; Wed,  8 Jul 2020 09:34:23 -0300 (-03)
-Date:   Wed, 8 Jul 2020 09:34:23 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V7 00/15] perf/x86: Add perf text poke events
-Message-ID: <20200708123423.GL1320@kernel.org>
-References: <20200512121922.8997-1-adrian.hunter@intel.com>
- <bee04840-143c-18bb-df82-5aa58d70730e@intel.com>
- <20200520014001.GF28228@kernel.org>
- <20200520155634.GQ317569@hirez.programming.kicks-ass.net>
- <20200527154716.GC16490@kernel.org>
- <20200527155436.GA706460@hirez.programming.kicks-ass.net>
- <79ca46d6-5d7c-7729-b51e-f9a447abe2a2@intel.com>
+        id S1729171AbgGHMgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 08:36:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60832 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728770AbgGHMgX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 08:36:23 -0400
+Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28181C08C5DC;
+        Wed,  8 Jul 2020 05:36:23 -0700 (PDT)
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id 0C50CBC070;
+        Wed,  8 Jul 2020 12:36:19 +0000 (UTC)
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+To:     jikos@kernel.org, benjamin.tissoires@redhat.com, corbet@lwn.net,
+        linux-usb@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Subject: [PATCH] Replace HTTP links with HTTPS ones: USB HID/HIDBP DRIVERS (USB KEYBOARDS, MICE, REMOTE CONTROLS, ...)
+Date:   Wed,  8 Jul 2020 14:36:13 +0200
+Message-Id: <20200708123613.14368-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <79ca46d6-5d7c-7729-b51e-f9a447abe2a2@intel.com>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: +++++
+X-Spam-Level: *****
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Jul 08, 2020 at 02:55:36PM +0300, Adrian Hunter escreveu:
-> On 27/05/20 6:54 pm, Peter Zijlstra wrote:
-> > On Wed, May 27, 2020 at 12:47:16PM -0300, Arnaldo Carvalho de Melo wrote:
-> >> Em Wed, May 20, 2020 at 05:56:34PM +0200, Peter Zijlstra escreveu:
-> >>> On Tue, May 19, 2020 at 10:40:01PM -0300, Arnaldo Carvalho de Melo wrote:
-> >>>> PeterZ, from what we discussed for the next merge Window, perhaps we
-> >>>> should route the kernel bits via the tip tree while I will push the
-> >>>> tooling bits on my 5.8 merge request to Linus, Ok?
-> >>>
-> >>> Sure, I can take the kernel bits. Thanks!
-> >>
-> >> So, I'm going thru the userpace bits and stopped at the patch copying
-> >> include/uapi/linux/perf_events.h to
-> >> tools/include/uapi/linux/perf_events.h to get the text_poke
-> >> perf_event_attr bit, looked at tip/ and this hasn't landed there yet,
-> >> any issues with the kernel bits?
-> > 
-> > Nah, I was waiting on the 0day robot, but its broken *again* :-(
-> > 
-> > Let me go move things along manually.
-> > 
-> 
-> Hi
-> 
-> The kernel patches are in tip and the remaining tools patches still apply.
-> Remaining patches 11-15 are:
-> 
->       perf tools: Add support for PERF_RECORD_TEXT_POKE
->       perf tools: Add support for PERF_RECORD_KSYMBOL_TYPE_OOL
->       perf intel-pt: Add support for text poke events
->       perf script: Add option --show-text-poke-events
->       perf script: Show text poke address symbol
+Rationale:
+Reduces attack surface on kernel devs opening the links for MITM
+as HTTPS traffic is much harder to manipulate.
 
-Sure, I'll merge those now that the kernel support is in tip, thanks for
-the reminder,
+Deterministic algorithm:
+For each file:
+  If not .svg:
+    For each line:
+      If doesn't contain `\bxmlns\b`:
+        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+            If both the HTTP and HTTPS versions
+            return 200 OK and serve the same content:
+              Replace HTTP with HTTPS.
 
-- Arnaldo
+Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+---
+ Continuing my work started at 93431e0607e5.
+ See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+ (Actually letting a shell for loop submit all this stuff for me.)
+
+ If there are any URLs to be removed completely or at least not HTTPSified:
+ Just clearly say so and I'll *undo my change*.
+ See also: https://lkml.org/lkml/2020/6/27/64
+
+ If there are any valid, but yet not changed URLs:
+ See: https://lkml.org/lkml/2020/6/26/837
+
+ If you apply the patch, please let me know.
+
+
+ Documentation/hid/hiddev.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Documentation/hid/hiddev.rst b/Documentation/hid/hiddev.rst
+index 209e6ba4e019..9b28a97c03e6 100644
+--- a/Documentation/hid/hiddev.rst
++++ b/Documentation/hid/hiddev.rst
+@@ -65,7 +65,7 @@ The HIDDEV API
+ ==============
  
-> Is there anything else I can do for these?
-> 
-> Regards
-> Adrian
-
+ This description should be read in conjunction with the HID
+-specification, freely available from http://www.usb.org, and
++specification, freely available from https://www.usb.org, and
+ conveniently linked of http://www.linux-usb.org.
+ 
+ The hiddev API uses a read() interface, and a set of ioctl() calls.
 -- 
+2.27.0
 
-- Arnaldo
