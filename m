@@ -2,118 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E7E6217E9C
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 06:53:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C8D2217EA3
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 06:53:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729572AbgGHEvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 00:51:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44852 "EHLO
+        id S1729622AbgGHExQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 00:53:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729539AbgGHEvu (ORCPT
+        with ESMTP id S1726102AbgGHExQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 00:51:50 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D76BDC08C5DC
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 21:51:49 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id g10so3093178wmc.1
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 21:51:49 -0700 (PDT)
+        Wed, 8 Jul 2020 00:53:16 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E533C061755
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 21:53:16 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id e8so21088124pgc.5
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 21:53:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=YM0IzGADgX2tl1Mp5AFtyEMSY+GtGZFBS0TzG37PEVo=;
-        b=WUXj1hnghzt3S3Xl8PkHIhKgc4y1+imaFlRTqYId1bXkQETCFWvksi9OaC5IchDWnN
-         /G3tZ3QPpXYdo0LQXnUBTJmqJT9KSLHL1W0ppqEv0GzEoRLMsgv7oAFu9hXuZV3qNwUU
-         EmbTjiaI3Wsm/bQlCldA6nvGa0OVis92xbh6I=
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=n8PnW3sFHAwVEzGZ63D4MDBKW+EPhyK1cLjmjloA+4g=;
+        b=Yc9NoAITE98gAWoI7c21HmGv2cbj4L3Bb0cH5RajuuYQM5zScqrDN8hHcmjxM3CRa2
+         9dvRZKO02Gg5eF33MXy5UvA2TsXjN9GmEZpPBOUUq2HSanFAeS6JB1RXqw2xrppORwdr
+         1FASBv9+T3x25rMUtNu5LljdtFOPx+JMl16xw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=YM0IzGADgX2tl1Mp5AFtyEMSY+GtGZFBS0TzG37PEVo=;
-        b=aB9owTrbYkCr6aFXlIpWWotZkvdmMKBGKSMy1pjYexe3J4g+wsZO3el5I2UkwO64S3
-         wtb4cdQUD641rsPUkLbj1yaY+vLx6cgoRaf8VNHJxzrwzoVYnCZ1ZjD2168O4+yezp2D
-         +YAD7LhR9LkQi6Onk2xcAqwfQyFNqZnlCWlMfHSwDGtOh9eWmrcjJeFKJxreIP28lwYV
-         9M9vG+IPxnS79jreGVes7RNugHMHZURe7EyAojQKvvafBPmOvaOMHeiK5YhRSBMz7fA2
-         9qTk+bx2MWqge914CuxsmVJrLeLiTLLBolQ3NuB8Ebq9RW9IfZGRb1/MKYGo40O9Co8N
-         WRIA==
-X-Gm-Message-State: AOAM530x8TMrQsul22upNAcB5SBYSvOkgIEfc6Gx8U4mbClAq72ylFq7
-        Y2CaRzQbdsyDrynbOfVaKytbAQ==
-X-Google-Smtp-Source: ABdhPJxCmxanR1p+Zv9NtrwZXxJyNGR3oD42FStMXE5QtLw0GpBvXi6oEnvGhedpl11EqTWK1HD1Eg==
-X-Received: by 2002:a1c:ba0b:: with SMTP id k11mr7135332wmf.140.1594183908367;
-        Tue, 07 Jul 2020 21:51:48 -0700 (PDT)
-Received: from [10.136.13.65] ([192.19.228.250])
-        by smtp.gmail.com with ESMTPSA id y7sm3843597wrt.11.2020.07.07.21.51.41
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=n8PnW3sFHAwVEzGZ63D4MDBKW+EPhyK1cLjmjloA+4g=;
+        b=I+rhM1VdwSx9M6OWmVZvlwwnlwTu20xYlyDnyiAM0NOc8YHajeEcRywm3M5m+k2Zyv
+         KpGqh6vGy5/gcNPOQkgWZwsYvJPkFmMVP4z/Iy9DveKuqvfvhSIRPKZEgstnz38rcZI9
+         IOpSAef0S61ugvrCtqU+L/V6KZVGpFHa+ZSPpd9UAwfMYKF9H1ZGLvuIkPUWY0aZkg2C
+         aVaazrfJgoJ6OIRCKI1YSWqazYwO75i+u7w7u+3JvVznMDB9vDWfu2YN6qtKYgMFPdtP
+         QEMZDJ1KYC7UaKQd0bduXE4q5g/ap9wPdmuToQQA830RIwIw9zeY4XiizZjAdnkVIL7m
+         zzTQ==
+X-Gm-Message-State: AOAM533O77vSDJuWVmBz6JXKIW+lDFX8lhoCKT0la0U18Wlc+Zkuz2CW
+        kMLmiHKHYnDcDcuqVRZ/L6kJ28DFzW8=
+X-Google-Smtp-Source: ABdhPJwhKXH+mqUVO+EIkFPLEhWrb+5c8UOe7v4gIa0pfuanGmhuqscsjiC8pQT3xtvqfZ/W72oZ2A==
+X-Received: by 2002:aa7:8d95:: with SMTP id i21mr4807045pfr.240.1594183995606;
+        Tue, 07 Jul 2020 21:53:15 -0700 (PDT)
+Received: from localhost ([2401:fa00:9:14:f693:9fff:fef4:fbcd])
+        by smtp.gmail.com with ESMTPSA id e5sm4020470pjy.26.2020.07.07.21.53.13
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Jul 2020 21:51:47 -0700 (PDT)
-Subject: Re: [PATCH v10 0/9] firmware: add request_partial_firmware_into_buf
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Wolfram Sang <wsa@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        David Brown <david.brown@linaro.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Shuah Khan <shuah@kernel.org>, bjorn.andersson@linaro.org,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     Mimi Zohar <zohar@linux.ibm.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        Olof Johansson <olof@lixom.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Kees Cook <keescook@chromium.org>,
-        Takashi Iwai <tiwai@suse.de>, linux-kselftest@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-References: <20200706232309.12010-1-scott.branden@broadcom.com>
- <c8bbabe6-0b25-a816-f95d-8af63010eaf2@gmail.com>
-From:   Scott Branden <scott.branden@broadcom.com>
-Message-ID: <6c6126cc-6572-b341-7808-5e573d0cfad8@broadcom.com>
-Date:   Tue, 7 Jul 2020 21:51:39 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Tue, 07 Jul 2020 21:53:15 -0700 (PDT)
+From:   Eizan Miyamoto <eizan@chromium.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Eizan Miyamoto <eizan@chromium.org>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>
+Subject: [PATCH v1] platform/chrome: cros_ec_debugfs: conditionally create uptime node
+Date:   Wed,  8 Jul 2020 14:53:00 +1000
+Message-Id: <20200708145215.v1.1.I9d49b374536424fcc98bc6bd935cdab8fac2ae71@changeid>
+X-Mailer: git-send-email 2.27.0.383.g050319c2ae-goog
 MIME-Version: 1.0
-In-Reply-To: <c8bbabe6-0b25-a816-f95d-8af63010eaf2@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Florian,
+Before creating an 'uptime' node in debugfs, this change adds a check to
+see if a EC_CMD_GET_UPTIME_INFO command can be successfully run.
 
-On 2020-07-07 9:38 p.m., Florian Fainelli wrote:
->
-> On 7/6/2020 4:23 PM, Scott Branden wrote:
->> This patch series adds partial read support via a new call
->> request_partial_firmware_into_buf.
->> Such support is needed when the whole file is not needed and/or
->> only a smaller portion of the file will fit into allocated memory
->> at any one time.
->> In order to accept the enhanced API it has been requested that kernel
->> selftests and upstreamed driver utilize the API enhancement and so
->> are included in this patch series.
->>
->> Also in this patch series is the addition of a new Broadcom VK driver
->> utilizing the new request_firmware_into_buf enhanced API.
->>
->> Further comment followed to add IMA support of the partial reads
->> originating from request_firmware_into_buf calls.  And another request
->> to move existing kernel_read_file* functions to its own include file.
-> Do you have any way to separate the VK drivers submission from the
-> request_partial_firmware_into_buf() work that you are doing? It looks
-> like it is going to require quite a few iterations of this patch set for
-> the firmware/fs/IMA part to be ironed out, so if you could get your
-> driver separated out, it might help you achieve partial success here.
-Originally I did not submit the driver.
-But Greg K-H rejected the pread support unless there was an actual user 
-in the kernel.
-Hence the need to submit this all in the patch series.
+If the uptime node is created, userspace programs may periodically poll
+it (e.g., timberslide), causing commands to be sent to the EC each time.
+If the EC doesn't support EC_CMD_GET_UPTIME_INFO, an error will be
+emitted in the EC console, producing noise.
+
+Signed-off-by: Eizan Miyamoto <eizan@chromium.org>
+---
+
+ drivers/platform/chrome/cros_ec_debugfs.c | 35 +++++++++++++++++------
+ 1 file changed, 26 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/platform/chrome/cros_ec_debugfs.c b/drivers/platform/chrome/cros_ec_debugfs.c
+index ecfada00e6c51..8708fe12f8ca8 100644
+--- a/drivers/platform/chrome/cros_ec_debugfs.c
++++ b/drivers/platform/chrome/cros_ec_debugfs.c
+@@ -242,17 +242,14 @@ static ssize_t cros_ec_pdinfo_read(struct file *file,
+ 				       read_buf, p - read_buf);
+ }
+ 
+-static ssize_t cros_ec_uptime_read(struct file *file, char __user *user_buf,
+-				   size_t count, loff_t *ppos)
++static int cros_ec_get_uptime(struct cros_ec_device *ec_dev,
++			      uint32_t *uptime)
+ {
+-	struct cros_ec_debugfs *debug_info = file->private_data;
+-	struct cros_ec_device *ec_dev = debug_info->ec->ec_dev;
+ 	struct {
+ 		struct cros_ec_command cmd;
+ 		struct ec_response_uptime_info resp;
+ 	} __packed msg = {};
+ 	struct ec_response_uptime_info *resp;
+-	char read_buf[32];
+ 	int ret;
+ 
+ 	resp = (struct ec_response_uptime_info *)&msg.resp;
+@@ -264,8 +261,24 @@ static ssize_t cros_ec_uptime_read(struct file *file, char __user *user_buf,
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	ret = scnprintf(read_buf, sizeof(read_buf), "%u\n",
+-			resp->time_since_ec_boot_ms);
++	*uptime = resp->time_since_ec_boot_ms;
++	return 0;
++}
++
++static ssize_t cros_ec_uptime_read(struct file *file, char __user *user_buf,
++				   size_t count, loff_t *ppos)
++{
++	struct cros_ec_debugfs *debug_info = file->private_data;
++	struct cros_ec_device *ec_dev = debug_info->ec->ec_dev;
++	char read_buf[32];
++	int ret;
++	uint32_t uptime;
++
++	ret = cros_ec_get_uptime(ec_dev, &uptime);
++	if (ret < 0)
++		return ret;
++
++	ret = scnprintf(read_buf, sizeof(read_buf), "%u\n", uptime);
+ 
+ 	return simple_read_from_buffer(user_buf, count, ppos, read_buf, ret);
+ }
+@@ -425,6 +438,7 @@ static int cros_ec_debugfs_probe(struct platform_device *pd)
+ 	const char *name = ec_platform->ec_name;
+ 	struct cros_ec_debugfs *debug_info;
+ 	int ret;
++	uint32_t uptime;
+ 
+ 	debug_info = devm_kzalloc(ec->dev, sizeof(*debug_info), GFP_KERNEL);
+ 	if (!debug_info)
+@@ -444,8 +458,11 @@ static int cros_ec_debugfs_probe(struct platform_device *pd)
+ 	debugfs_create_file("pdinfo", 0444, debug_info->dir, debug_info,
+ 			    &cros_ec_pdinfo_fops);
+ 
+-	debugfs_create_file("uptime", 0444, debug_info->dir, debug_info,
+-			    &cros_ec_uptime_fops);
++	if (cros_ec_get_uptime(debug_info->ec->ec_dev, &uptime) >= 0)
++		debugfs_create_file("uptime", 0444, debug_info->dir, debug_info,
++				    &cros_ec_uptime_fops);
++	else
++		dev_dbg(ec->dev, "EC does not provide uptime");
+ 
+ 	debugfs_create_x32("last_resume_result", 0444, debug_info->dir,
+ 			   &ec->ec_dev->last_resume_result);
+-- 
+2.27.0.383.g050319c2ae-goog
 
