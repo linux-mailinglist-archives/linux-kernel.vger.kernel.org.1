@@ -2,89 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 051AC217C8E
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 03:26:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 354AE217C88
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 03:25:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729381AbgGHBZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 21:25:57 -0400
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:51002 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729325AbgGHBZv (ORCPT
+        id S1729289AbgGHBZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 21:25:27 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:15597 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728208AbgGHBZ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 21:25:51 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04397;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0U23pI3U_1594171545;
-Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U23pI3U_1594171545)
+        Tue, 7 Jul 2020 21:25:27 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07484;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0U243BBC_1594171524;
+Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0U243BBC_1594171524)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 08 Jul 2020 09:25:45 +0800
-From:   Wei Yang <richard.weiyang@linux.alibaba.com>
-To:     akpm@linux-foundation.org, kirill.shutemov@linux.intel.com,
-        vbabka@suse.cz, yang.shi@linux.alibaba.com, thomas_os@shipmail.org,
-        anshuman.khandual@arm.com, sean.j.christopherson@intel.com,
-        richard.weiyang@linux.alibaba.com, peterx@redhat.com,
-        aneesh.kumar@linux.ibm.com, willy@infradead.org,
-        thellstrom@vmware.com
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, digetx@gmail.com
-Subject: [Patch v3 4/4] mm/mremap: use pmd_addr_end to simplify the calculate of extent
-Date:   Wed,  8 Jul 2020 09:24:53 +0800
-Message-Id: <20200708012453.36588-5-richard.weiyang@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1 (Apple Git-117)
-In-Reply-To: <20200708012453.36588-1-richard.weiyang@linux.alibaba.com>
-References: <20200708012453.36588-1-richard.weiyang@linux.alibaba.com>
+          Wed, 08 Jul 2020 09:25:25 +0800
+Date:   Wed, 8 Jul 2020 09:25:24 +0800
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+To:     Keith Busch <kbusch@kernel.org>
+Cc:     axboe@fb.com, hch@lst.de, sagi@grimberg.me, baolin.wang7@gmail.com,
+        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/5] nvme-pci: Use standard block status macro
+Message-ID: <20200708012524.GA117160@VM20190228-100.tbsite.net>
+Reply-To: Baolin Wang <baolin.wang@linux.alibaba.com>
+References: <cover.1593743937.git.baolin.wang@linux.alibaba.com>
+ <a14bca482584d912d72209c6edab6b77b1a924f2.1593743937.git.baolin.wang@linux.alibaba.com>
+ <20200707190123.GB1997220@dhcp-10-100-145-180.wdl.wdc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200707190123.GB1997220@dhcp-10-100-145-180.wdl.wdc.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The purpose of this code is to calculate the smaller extent in old and
-new range. Let's leverage pmd_addr_end() to do the calculation.
+On Tue, Jul 07, 2020 at 12:01:23PM -0700, Keith Busch wrote:
+> On Fri, Jul 03, 2020 at 10:49:24AM +0800, Baolin Wang wrote:
+> >  static blk_status_t nvme_map_data(struct nvme_dev *dev, struct request *req,
+> > @@ -844,7 +844,7 @@ static blk_status_t nvme_map_metadata(struct nvme_dev *dev, struct request *req,
+> >  	if (dma_mapping_error(dev->dev, iod->meta_dma))
+> >  		return BLK_STS_IOERR;
+> >  	cmnd->rw.metadata = cpu_to_le64(iod->meta_dma);
+> > -	return 0;
+> > +	return BLK_STS_OK;
+> >  }
+> 
+> This is fine, though it takes knowing that this value is 0 for the
+> subsequent 'if (!ret)' check to make sense. Maybe those should change to
+> 'if (ret != BLK_STS_OK)' so the check uses the same symbol as the
+> return, and will always work in the unlikely event that the defines
+> are reordered.
 
-Hope this would make the code easier to read.
-
-Signed-off-by: Wei Yang <richard.weiyang@linux.alibaba.com>
----
- mm/mremap.c | 16 +++++++---------
- 1 file changed, 7 insertions(+), 9 deletions(-)
-
-diff --git a/mm/mremap.c b/mm/mremap.c
-index f5f17d050617..76e7fdf567c3 100644
---- a/mm/mremap.c
-+++ b/mm/mremap.c
-@@ -237,11 +237,12 @@ unsigned long move_page_tables(struct vm_area_struct *vma,
- 		unsigned long new_addr, unsigned long len,
- 		bool need_rmap_locks)
- {
--	unsigned long extent, next, old_end;
-+	unsigned long extent, old_next, new_next, old_end, new_end;
- 	struct mmu_notifier_range range;
- 	pmd_t *old_pmd, *new_pmd;
- 
- 	old_end = old_addr + len;
-+	new_end = new_addr + len;
- 	flush_cache_range(vma, old_addr, old_end);
- 
- 	mmu_notifier_range_init(&range, MMU_NOTIFY_UNMAP, 0, vma, vma->vm_mm,
-@@ -250,14 +251,11 @@ unsigned long move_page_tables(struct vm_area_struct *vma,
- 
- 	for (; old_addr < old_end; old_addr += extent, new_addr += extent) {
- 		cond_resched();
--		next = (old_addr + PMD_SIZE) & PMD_MASK;
--		/* even if next overflowed, extent below will be ok */
--		extent = next - old_addr;
--		if (extent > old_end - old_addr)
--			extent = old_end - old_addr;
--		next = (new_addr + PMD_SIZE) & PMD_MASK;
--		if (extent > next - new_addr)
--			extent = next - new_addr;
-+
-+		old_next = pmd_addr_end(old_addr, old_end);
-+		new_next = pmd_addr_end(new_addr, new_end);
-+		extent = min((old_next - old_addr), (new_next - new_addr));
-+
- 		old_pmd = get_old_pmd(vma->vm_mm, old_addr);
- 		if (!old_pmd)
- 			continue;
--- 
-2.20.1 (Apple Git-117)
+Okay, I will send another patch to convert to 'if (ret != BLK_STS_OK)'
+validation. Thanks.
 
