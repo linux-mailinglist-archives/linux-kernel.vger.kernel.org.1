@@ -2,341 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FE5C218D30
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 18:41:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77EEC218E0D
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 19:16:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730720AbgGHQk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 12:40:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42258 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730687AbgGHQkW (ORCPT
+        id S1726465AbgGHRQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 13:16:21 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:36310 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726065AbgGHRQT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 12:40:22 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 465BEC061A0B;
-        Wed,  8 Jul 2020 09:40:22 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id j19so15060179pgm.11;
-        Wed, 08 Jul 2020 09:40:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=2hFYm6OvHRRkdolBr7CTxBmKmaA1x9Kh6dL8+ZyZLWA=;
-        b=ri8Ivp39lukMCWEMfIIcUY9ZVs7wHCUwF/mGSIOnWZOYqv6pJhvCxM52IY7Fgr7oUz
-         i2Vm6tGnOth0Xlpo8WEZFrTAErPmakFpwQ+ZNA/c/RTLIGGyUb/OgPYoqT8rr6M2zswN
-         3Oi1JzXM1yY5C4hwpF+P9m14GBs4hxMyZn2/ab/VKwu8AgC74BxiFG4xBO7NOAHJ0Glv
-         iIlJ1jd2TVgSiUpcE9Rks4Y7IHr6zv1pVU/kHYw17RtT1t8VSwCMwroEzYqeLDZ5flkK
-         QK0SQCZtKRoIUvRN8iobypeUpTC+DrFI7GPRJt2DG7xCS4Rj7KHWeF0indVg1BHFHv12
-         sGFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=2hFYm6OvHRRkdolBr7CTxBmKmaA1x9Kh6dL8+ZyZLWA=;
-        b=rxF9Kh0mecLdWfNUkETPuH7l6d/TORMQY1T1ujp0pQ+XA7/6OmyFNOO6BEaPH1fbkA
-         F2bFBrhqmYL+lJ5Db5brr3odq/8X4qG61njYW0InGsIBEdKLD/UAWGdTTRA1CFCoLbRL
-         +4XjJIiJiuvrTKSxOJZ0RC5RfJl1S39ktqV/uh9VpTsvfkzGY2wGs/stlEb7L1Z6fARe
-         4cuZX279pF56akSUiNIt9Q5/oBEYlzm/I1Hg4em0aChEENR1HzTgbTtmtkrM7BnfUBBY
-         KYxcl1afLWlVWm1P4CAffa+Po25uxa0FymZEaP1q3+739bezX/CU8CMin0LAHuenjg7R
-         ELKQ==
-X-Gm-Message-State: AOAM531x0/fTsyHslRpc9JowcEBVz73XzejXHH3mkcIaneQyJhddjLzM
-        bVUCYMEaGAqsGX3/edE0e1I=
-X-Google-Smtp-Source: ABdhPJxFVEEPgalzcLQuvwgu9uvhyKN++bc4iGB9D51hz8rFeomgFRgjG3XgwA5ngQr886hANbfQmw==
-X-Received: by 2002:a63:f90f:: with SMTP id h15mr45513336pgi.53.1594226421825;
-        Wed, 08 Jul 2020 09:40:21 -0700 (PDT)
-Received: from localhost ([89.208.244.139])
-        by smtp.gmail.com with ESMTPSA id e191sm330190pfh.42.2020.07.08.09.40.20
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 08 Jul 2020 09:40:21 -0700 (PDT)
-From:   Dejin Zheng <zhengdejin5@gmail.com>
-To:     kishon@ti.com, lorenzo.pieralisi@arm.com, robh@kernel.org,
-        bhelgaas@google.com, m-karicheri2@ti.com, jingoohan1@gmail.com,
-        gustavo.pimentel@synopsys.com, shawn.guo@linaro.org,
-        songxiaowei@hisilicon.com, svarbanov@mm-sol.com, agross@kernel.org,
-        bjorn.andersson@linaro.org, linux-pci@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Dejin Zheng <zhengdejin5@gmail.com>
-Subject: [PATCH v2] PCI: dwc: convert to devm_platform_ioremap_resource_byname()
-Date:   Thu,  9 Jul 2020 00:40:13 +0800
-Message-Id: <20200708164013.5076-1-zhengdejin5@gmail.com>
-X-Mailer: git-send-email 2.25.0
-In-Reply-To: <20200528161510.31935-1-zhengdejin5@gmail.com>
-References: 
+        Wed, 8 Jul 2020 13:16:19 -0400
+Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20200708171615epoutp03298ad9358dfaf001a88f4c84c49bd959~f1nFzBOPq0336103361epoutp03S
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 17:16:15 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20200708171615epoutp03298ad9358dfaf001a88f4c84c49bd959~f1nFzBOPq0336103361epoutp03S
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1594228575;
+        bh=iu/ByTAkPscUZqkPRdD0G0HENn78kuDflwBS0ALFh9U=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=UHQaxipWQTPNnbNSGiolWjWR6Fnj/0yvFbrUQFtT43aRnVnuSkQ5JYWWR/xPyk6b3
+         SAwIECJnPMeTjdVZdVdfRxONnKih4KajVCaKgRTbyyCRlxMrqcMlCz/SrTvJdvJa9P
+         OjkkBHfYs/e0buWqfPwZEeMJx2QMtPaZ9KkVKsWI=
+Received: from epsmges5p1new.samsung.com (unknown [182.195.42.73]) by
+        epcas5p3.samsung.com (KnoxPortal) with ESMTP id
+        20200708171614epcas5p3d48257257ec9e6214c955dd30f1eec90~f1nElZ67u2341823418epcas5p3i;
+        Wed,  8 Jul 2020 17:16:14 +0000 (GMT)
+Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
+        epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        A9.4B.09467.E5FF50F5; Thu,  9 Jul 2020 02:16:14 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas5p1.samsung.com (KnoxPortal) with ESMTPA id
+        20200708164414epcas5p1ca20bcbd6e0d5756e3703b5ac5d00d3f~f1LIWnxNW3059430594epcas5p1M;
+        Wed,  8 Jul 2020 16:44:14 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200708164414epsmtrp2f0745063e37c839cea2f95e423343b2f~f1LIVtmE21933219332epsmtrp2T;
+        Wed,  8 Jul 2020 16:44:14 +0000 (GMT)
+X-AuditID: b6c32a49-a29ff700000024fb-86-5f05ff5ec399
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        78.1F.08382.ED7F50F5; Thu,  9 Jul 2020 01:44:14 +0900 (KST)
+Received: from test-zns (unknown [107.110.206.5]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20200708164412epsmtip1435031d20639f772168f4826ecd15d23~f1LGGWCIP1586915869epsmtip1j;
+        Wed,  8 Jul 2020 16:44:11 +0000 (GMT)
+Date:   Wed, 8 Jul 2020 22:11:16 +0530
+From:   Kanchan Joshi <joshi.k@samsung.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Jens Axboe <axboe@kernel.dk>, viro@zeniv.linux.org.uk,
+        bcrl@kvack.org, hch@infradead.org, Damien.LeMoal@wdc.com,
+        asml.silence@gmail.com, linux-fsdevel@vger.kernel.org,
+        mb@lightnvm.io, linux-kernel@vger.kernel.org, linux-aio@kvack.org,
+        io-uring@vger.kernel.org, linux-block@vger.kernel.org,
+        Selvakumar S <selvakuma.s1@samsung.com>,
+        Nitesh Shetty <nj.shetty@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>
+Subject: Re: [PATCH v3 4/4] io_uring: add support for zone-append
+Message-ID: <20200708164116.GA26480@test-zns>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200708142251.GQ25523@casper.infradead.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0xTZxjH855z2h4a686qxAcQL5WEy0IVcMtBcVTikgOJmTHBGBeBRk6g
+        G5empVz2YelwyFanEEFGa8cIkXBxc1ltSmF0dqysdqwO0oiJo06xkKwyZFZYswqbp6cmfvs9
+        /+f/vM8lL4lLfxckkqqaOlZTo6ySCcWE7af01MyS/wSl+0bOJdPmYRuir/nbhLRhw0rQLa1r
+        GD3V3ofRyy23CfrRXEhEd3Y1I9px7w163OEhaN+YWUgPjrgI2hb5Cqcfhz1C+rd1t4COhM1C
+        BcWMmvwi5sZgBuPz6hjL00si5vydMGIuWocRE7LsYFqd5zHGEvgLOxZ3SpxXzlap6lnN3rfL
+        xJVD/WFCrZc29q2e1KOwxIBIEqj94HLnG1AcKaW+R+A4l2NA4hf8FMHjPx4J+GANwfWOEMG5
+        uIIvIs5YwoGg55t2jA8WEXhNToxzEVQKeAZWMa6FkEqH6Q4dh1upNFiyZnN2nBrCofuTpeij
+        W6jDEBr1IM4joTJhqXc7J0uo18FjDEQtcdQBGOscEXEcT+0Bp80dbQvUAxKMxiERP9wRcBsN
+        Md4CQbc1xokQWnYIedbCv3OTOF/8KYK7emNss3yYGV+Pzo9TlWCLDGC8ngyXf7ke0zfDhUgg
+        pkvA3vOSd8P9SwsCnrfBw+6rMWZg+p5bxN/3CQ5We1I72ml6ZTnTK+14PgCfrTQLTC9ugVNJ
+        MLBB8pgO347t7UWCYZTAqrXVFaz2TXVWDdsg1yqrtbqaCvmZ2moLiv6/jEI78j9YkU8gjEQT
+        CEhctlWyb7egVCopVzZ9yGpqSzW6KlY7gZJIQrZNIgv/WiKlKpR17Acsq2Y1L7MYGZeox1LW
+        1ScUDQsf/ZD7znjLM9ufzLGCO2VLivqe3KnJ2enG0Wzz5bXQj8HimVrmtj3QD21fv/bs56yz
+        cscF58J63mJqgcCMDjk3qfe7tyekJhQGi+tvTgXevdhonxZ1vtX/fllXwHI6vzFl1560ed/R
+        eG/L800Fwdnkoo2FktTPB6rUqyitqU9V6XgyaNVlFbR3nUq/clLjWin/Eul3Wm33z9zK8HQd
+        aZrN/Ft+WoEX9rY9z/NB7XflfsYVvKE6hLJbLQ/dETZ+vr6uIXf+5kHVrTZ02HNiznVw9OOO
+        Qf/ZYn/3UXNRzq7NG3e9i+OiScdi8z9F4pnjy4qJ9xQ+b87xHTJCW6nMysA1WuX/otRWh+4D
+        AAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprJIsWRmVeSWpSXmKPExsWy7bCSnO6976zxBrcXi1vMWbWN0WL13X42
+        i65/W1gsWtu/MVmcnrCIyeJd6zkWi8d3PrNbTJnWxGix95a2xZ69J1ksLu+aw2axYvsRFott
+        v+czW7z+cZLN4vzf46wWv3/MYXMQ8Ng56y67x+YVWh6Xz5Z6bPo0id2j++oPRo++LasYPT5v
+        kvNoP9DN5LHpyVumAM4oLpuU1JzMstQifbsErowVbyYxFmzir/i4+w5jA+MR7i5GTg4JAROJ
+        6b8PsHYxcnEICexmlJiwtpcFIiEu0XztBzuELSyx8t9zdoiiJ4wSb7fdYAJJsAioSJxc/hXI
+        5uBgE9CUuDC5FMQUEdCQeLPFCKScWWAts8TZ/9OYQcqFBRwlPu88yQhSwyugK/FmgQxIWEjg
+        PbPE12kqIDavgKDEyZlPwE5gFjCTmLf5ITNIObOAtMTyfxwgYU4BK4ldU7aDXSYqoCxxYNtx
+        pgmMgrOQdM9C0j0LoXsBI/MqRsnUguLc9NxiwwLDvNRyveLE3OLSvHS95PzcTYzg2NPS3MG4
+        fdUHvUOMTByMhxglOJiVRHgNFFnjhXhTEiurUovy44tKc1KLDzFKc7AoifPeKFwYJySQnliS
+        mp2aWpBaBJNl4uCUamAqful78e1Rk9g3L6o2LD085fgXlotWKxYK3f8rpDB/Z/e2FXGZinNf
+        mK/++OCV1JesTwfqyqo+K1jp7t3tJf18d/T6Fwe8/K4JW1SUBQhOWfDVwYdRcy5j9ORV3x9M
+        PN+3KLngwXaHVc2l5/3+cu87FpHeXOnDds1Hzqnx476bpq2qlh/+WS87ZHXKN3jOVp6Iy+eW
+        3Qr+9phdvv+5roFkaUp0XejTIldehVPeP+4u5P1d4JZ++g7DBdY9PzQ33ytTPrphP3+9ZZGn
+        /tHXqqqeYc5PRdUUVW/EcApy2gedcUhJNwtMe1p0crp3luUbxqcX1tpZ2/6fueHPbD03ltIr
+        GTIS79zYeG4deKWszfVBiaU4I9FQi7moOBEAtHknCCwDAAA=
+X-CMS-MailID: 20200708164414epcas5p1ca20bcbd6e0d5756e3703b5ac5d00d3f
+X-Msg-Generator: CA
+Content-Type: multipart/mixed;
+        boundary="----FBC7EIImzEv-3WQrgwRbJYn4xAlwhlhWWV1zALX9mq8rjZSB=_e96fa_"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+X-CMS-RootMailID: 20200707223803epcas5p41814360c764d6b5f67fdbf173a8ba64e
+References: <20200706143208.GA25523@casper.infradead.org>
+        <20200707151105.GA23395@test-zns>
+        <20200707155237.GM25523@casper.infradead.org>
+        <20200707202342.GA28364@test-zns>
+        <7a44d9c6-bf7d-0666-fc29-32c3cba9d1d8@kernel.dk>
+        <20200707221812.GN25523@casper.infradead.org>
+        <CGME20200707223803epcas5p41814360c764d6b5f67fdbf173a8ba64e@epcas5p4.samsung.com>
+        <145cc0ad-af86-2d6a-78b3-9ade007aae52@kernel.dk>
+        <20200708125805.GA16495@test-zns>
+        <20200708142251.GQ25523@casper.infradead.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use devm_platform_ioremap_resource_byname() to simplify codes.
-it contains platform_get_resource_byname() and devm_ioremap_resource().
+------FBC7EIImzEv-3WQrgwRbJYn4xAlwhlhWWV1zALX9mq8rjZSB=_e96fa_
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Disposition: inline
 
-Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
-Reviewed-by: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
----
-v1 -> v2:
-	- rebase to pci/dwc branch
-	- add Gustavo and Rob's Reviewed tag
+On Wed, Jul 08, 2020 at 03:22:51PM +0100, Matthew Wilcox wrote:
+>On Wed, Jul 08, 2020 at 06:28:05PM +0530, Kanchan Joshi wrote:
+>> The last thing is about the flag used to trigger this processing. Will it be
+>> fine to intoduce new flag (RWF_APPEND2 or RWF_APPEND_OFFSET)
+>> instead of using RWF_APPEND?
+>>
+>> New flag will do what RWF_APPEND does and will also return the
+>> written-location (and therefore expects pointer setup in application).
+>
+>I think it's simpler to understand if it's called RWF_INDIRECT_OFFSET
+>Then it'd look like:
+>
+>+	rwf_t rwf = READ_ONCE(sqe->rw_flags);
+>...
+>-	iocb->ki_pos = READ_ONCE(sqe->off);
+>+	if (rwf & RWF_INDIRECT_OFFSET) {
+>+		loff_t __user *loffp = u64_to_user_ptr(sqe->addr2);
+>+
+>+		if (get_user(iocb->ki_pos, loffp)
+>+			return -EFAULT;
+>+		iocb->ki_loffp = loffp;
+>+	} else {
+>+		iocb->ki_pos = READ_ONCE(sqe->off);
+>+	}
+>...
+>-	ret = kiocb_set_rw_flags(kiocb, READ_ONCE(sqe->rw_flags));
+>+	ret = kiocb_set_rw_flags(kiocb, rwf);
 
- drivers/pci/controller/dwc/pci-dra7xx.c         | 11 ++++-------
- drivers/pci/controller/dwc/pci-keystone.c       |  7 +++----
- drivers/pci/controller/dwc/pcie-artpec6.c       | 12 ++++--------
- .../pci/controller/dwc/pcie-designware-plat.c   |  3 +--
- drivers/pci/controller/dwc/pcie-histb.c         |  7 ++-----
- drivers/pci/controller/dwc/pcie-intel-gw.c      |  7 ++-----
- drivers/pci/controller/dwc/pcie-kirin.c         | 17 ++++++-----------
- drivers/pci/controller/dwc/pcie-qcom.c          |  6 ++----
- drivers/pci/controller/dwc/pcie-uniphier.c      |  3 +--
- 9 files changed, 25 insertions(+), 48 deletions(-)
+It will sure go like this in io_uring, except I was thinking to use
+io_kiocb rather than iocb for "loffp". 
+I am fine with RWF_INDIRECT_OFFSET, but wondering - whether to build
+this over base-behavior offered by RWF_APPEND.
+This is what I mean in code (I used RWF_APPEND2 here)- 
 
-diff --git a/drivers/pci/controller/dwc/pci-dra7xx.c b/drivers/pci/controller/dwc/pci-dra7xx.c
-index 6184ebc9392d..e5d0c7ac09b9 100644
---- a/drivers/pci/controller/dwc/pci-dra7xx.c
-+++ b/drivers/pci/controller/dwc/pci-dra7xx.c
-@@ -593,13 +593,12 @@ static int __init dra7xx_add_pcie_ep(struct dra7xx_pcie *dra7xx,
- 	ep = &pci->ep;
- 	ep->ops = &pcie_ep_ops;
- 
--	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "ep_dbics");
--	pci->dbi_base = devm_ioremap_resource(dev, res);
-+	pci->dbi_base = devm_platform_ioremap_resource_byname(pdev, "ep_dbics");
- 	if (IS_ERR(pci->dbi_base))
- 		return PTR_ERR(pci->dbi_base);
- 
--	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "ep_dbics2");
--	pci->dbi_base2 = devm_ioremap_resource(dev, res);
-+	pci->dbi_base2 =
-+		devm_platform_ioremap_resource_byname(pdev, "ep_dbics2");
- 	if (IS_ERR(pci->dbi_base2))
- 		return PTR_ERR(pci->dbi_base2);
- 
-@@ -626,7 +625,6 @@ static int __init dra7xx_add_pcie_port(struct dra7xx_pcie *dra7xx,
- 	struct dw_pcie *pci = dra7xx->pci;
- 	struct pcie_port *pp = &pci->pp;
- 	struct device *dev = pci->dev;
--	struct resource *res;
- 
- 	pp->irq = platform_get_irq(pdev, 1);
- 	if (pp->irq < 0) {
-@@ -638,8 +636,7 @@ static int __init dra7xx_add_pcie_port(struct dra7xx_pcie *dra7xx,
- 	if (ret < 0)
- 		return ret;
- 
--	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "rc_dbics");
--	pci->dbi_base = devm_ioremap_resource(dev, res);
-+	pci->dbi_base = devm_platform_ioremap_resource_byname(pdev, "rc_dbics");
- 	if (IS_ERR(pci->dbi_base))
- 		return PTR_ERR(pci->dbi_base);
- 
-diff --git a/drivers/pci/controller/dwc/pci-keystone.c b/drivers/pci/controller/dwc/pci-keystone.c
-index 790679fdfa48..5ffc3b40c4f6 100644
---- a/drivers/pci/controller/dwc/pci-keystone.c
-+++ b/drivers/pci/controller/dwc/pci-keystone.c
-@@ -1228,8 +1228,8 @@ static int __init ks_pcie_probe(struct platform_device *pdev)
- 	if (!pci)
- 		return -ENOMEM;
- 
--	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "app");
--	ks_pcie->va_app_base = devm_ioremap_resource(dev, res);
-+	ks_pcie->va_app_base =
-+		devm_platform_ioremap_resource_byname(pdev, "app");
- 	if (IS_ERR(ks_pcie->va_app_base))
- 		return PTR_ERR(ks_pcie->va_app_base);
- 
-@@ -1323,8 +1323,7 @@ static int __init ks_pcie_probe(struct platform_device *pdev)
- 	}
- 
- 	if (pci->version >= 0x480A) {
--		res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "atu");
--		atu_base = devm_ioremap_resource(dev, res);
-+		atu_base = devm_platform_ioremap_resource_byname(pdev, "atu");
- 		if (IS_ERR(atu_base)) {
- 			ret = PTR_ERR(atu_base);
- 			goto err_get_sync;
-diff --git a/drivers/pci/controller/dwc/pcie-artpec6.c b/drivers/pci/controller/dwc/pcie-artpec6.c
-index 28d5a1095200..7d2cfa288b01 100644
---- a/drivers/pci/controller/dwc/pcie-artpec6.c
-+++ b/drivers/pci/controller/dwc/pcie-artpec6.c
-@@ -455,8 +455,7 @@ static int artpec6_add_pcie_ep(struct artpec6_pcie *artpec6_pcie,
- 	ep = &pci->ep;
- 	ep->ops = &pcie_ep_ops;
- 
--	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "dbi2");
--	pci->dbi_base2 = devm_ioremap_resource(dev, res);
-+	pci->dbi_base2 = devm_platform_ioremap_resource_byname(pdev, "dbi2");
- 	if (IS_ERR(pci->dbi_base2))
- 		return PTR_ERR(pci->dbi_base2);
- 
-@@ -481,8 +480,6 @@ static int artpec6_pcie_probe(struct platform_device *pdev)
- 	struct device *dev = &pdev->dev;
- 	struct dw_pcie *pci;
- 	struct artpec6_pcie *artpec6_pcie;
--	struct resource *dbi_base;
--	struct resource *phy_base;
- 	int ret;
- 	const struct of_device_id *match;
- 	const struct artpec_pcie_of_data *data;
-@@ -512,13 +509,12 @@ static int artpec6_pcie_probe(struct platform_device *pdev)
- 	artpec6_pcie->variant = variant;
- 	artpec6_pcie->mode = mode;
- 
--	dbi_base = platform_get_resource_byname(pdev, IORESOURCE_MEM, "dbi");
--	pci->dbi_base = devm_ioremap_resource(dev, dbi_base);
-+	pci->dbi_base = devm_platform_ioremap_resource_byname(pdev, "dbi");
- 	if (IS_ERR(pci->dbi_base))
- 		return PTR_ERR(pci->dbi_base);
- 
--	phy_base = platform_get_resource_byname(pdev, IORESOURCE_MEM, "phy");
--	artpec6_pcie->phy_base = devm_ioremap_resource(dev, phy_base);
-+	artpec6_pcie->phy_base =
-+		devm_platform_ioremap_resource_byname(pdev, "phy");
- 	if (IS_ERR(artpec6_pcie->phy_base))
- 		return PTR_ERR(artpec6_pcie->phy_base);
- 
-diff --git a/drivers/pci/controller/dwc/pcie-designware-plat.c b/drivers/pci/controller/dwc/pcie-designware-plat.c
-index 73646b677aff..712456f6ce36 100644
---- a/drivers/pci/controller/dwc/pcie-designware-plat.c
-+++ b/drivers/pci/controller/dwc/pcie-designware-plat.c
-@@ -153,8 +153,7 @@ static int dw_plat_add_pcie_ep(struct dw_plat_pcie *dw_plat_pcie,
- 	ep = &pci->ep;
- 	ep->ops = &pcie_ep_ops;
- 
--	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "dbi2");
--	pci->dbi_base2 = devm_ioremap_resource(dev, res);
-+	pci->dbi_base2 = devm_platform_ioremap_resource_byname(pdev, "dbi2");
- 	if (IS_ERR(pci->dbi_base2))
- 		return PTR_ERR(pci->dbi_base2);
- 
-diff --git a/drivers/pci/controller/dwc/pcie-histb.c b/drivers/pci/controller/dwc/pcie-histb.c
-index 811b5c6d62ea..6d3524c39a9b 100644
---- a/drivers/pci/controller/dwc/pcie-histb.c
-+++ b/drivers/pci/controller/dwc/pcie-histb.c
-@@ -304,7 +304,6 @@ static int histb_pcie_probe(struct platform_device *pdev)
- 	struct histb_pcie *hipcie;
- 	struct dw_pcie *pci;
- 	struct pcie_port *pp;
--	struct resource *res;
- 	struct device_node *np = pdev->dev.of_node;
- 	struct device *dev = &pdev->dev;
- 	enum of_gpio_flags of_flags;
-@@ -324,15 +323,13 @@ static int histb_pcie_probe(struct platform_device *pdev)
- 	pci->dev = dev;
- 	pci->ops = &dw_pcie_ops;
- 
--	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "control");
--	hipcie->ctrl = devm_ioremap_resource(dev, res);
-+	hipcie->ctrl = devm_platform_ioremap_resource_byname(pdev, "control");
- 	if (IS_ERR(hipcie->ctrl)) {
- 		dev_err(dev, "cannot get control reg base\n");
- 		return PTR_ERR(hipcie->ctrl);
- 	}
- 
--	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "rc-dbi");
--	pci->dbi_base = devm_ioremap_resource(dev, res);
-+	pci->dbi_base = devm_platform_ioremap_resource_byname(pdev, "rc-dbi");
- 	if (IS_ERR(pci->dbi_base)) {
- 		dev_err(dev, "cannot get rc-dbi base\n");
- 		return PTR_ERR(pci->dbi_base);
-diff --git a/drivers/pci/controller/dwc/pcie-intel-gw.c b/drivers/pci/controller/dwc/pcie-intel-gw.c
-index 2d8dbb318087..c3b3a1d162b5 100644
---- a/drivers/pci/controller/dwc/pcie-intel-gw.c
-+++ b/drivers/pci/controller/dwc/pcie-intel-gw.c
-@@ -253,11 +253,9 @@ static int intel_pcie_get_resources(struct platform_device *pdev)
- 	struct intel_pcie_port *lpp = platform_get_drvdata(pdev);
- 	struct dw_pcie *pci = &lpp->pci;
- 	struct device *dev = pci->dev;
--	struct resource *res;
- 	int ret;
- 
--	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "dbi");
--	pci->dbi_base = devm_ioremap_resource(dev, res);
-+	pci->dbi_base = devm_platform_ioremap_resource_byname(pdev, "dbi");
- 	if (IS_ERR(pci->dbi_base))
- 		return PTR_ERR(pci->dbi_base);
- 
-@@ -291,8 +289,7 @@ static int intel_pcie_get_resources(struct platform_device *pdev)
- 	ret = of_pci_get_max_link_speed(dev->of_node);
- 	lpp->link_gen = ret < 0 ? 0 : ret;
- 
--	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "app");
--	lpp->app_base = devm_ioremap_resource(dev, res);
-+	lpp->app_base = devm_platform_ioremap_resource_byname(pdev, "app");
- 	if (IS_ERR(lpp->app_base))
- 		return PTR_ERR(lpp->app_base);
- 
-diff --git a/drivers/pci/controller/dwc/pcie-kirin.c b/drivers/pci/controller/dwc/pcie-kirin.c
-index c19617a912bd..e5e765038686 100644
---- a/drivers/pci/controller/dwc/pcie-kirin.c
-+++ b/drivers/pci/controller/dwc/pcie-kirin.c
-@@ -147,23 +147,18 @@ static long kirin_pcie_get_clk(struct kirin_pcie *kirin_pcie,
- static long kirin_pcie_get_resource(struct kirin_pcie *kirin_pcie,
- 				    struct platform_device *pdev)
- {
--	struct device *dev = &pdev->dev;
--	struct resource *apb;
--	struct resource *phy;
--	struct resource *dbi;
--
--	apb = platform_get_resource_byname(pdev, IORESOURCE_MEM, "apb");
--	kirin_pcie->apb_base = devm_ioremap_resource(dev, apb);
-+	kirin_pcie->apb_base =
-+		devm_platform_ioremap_resource_byname(pdev, "apb");
- 	if (IS_ERR(kirin_pcie->apb_base))
- 		return PTR_ERR(kirin_pcie->apb_base);
- 
--	phy = platform_get_resource_byname(pdev, IORESOURCE_MEM, "phy");
--	kirin_pcie->phy_base = devm_ioremap_resource(dev, phy);
-+	kirin_pcie->phy_base =
-+		devm_platform_ioremap_resource_byname(pdev, "phy");
- 	if (IS_ERR(kirin_pcie->phy_base))
- 		return PTR_ERR(kirin_pcie->phy_base);
- 
--	dbi = platform_get_resource_byname(pdev, IORESOURCE_MEM, "dbi");
--	kirin_pcie->pci->dbi_base = devm_ioremap_resource(dev, dbi);
-+	kirin_pcie->pci->dbi_base =
-+		devm_platform_ioremap_resource_byname(pdev, "dbi");
- 	if (IS_ERR(kirin_pcie->pci->dbi_base))
- 		return PTR_ERR(kirin_pcie->pci->dbi_base);
- 
-diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-index 73d4eed26f65..b79f7878c993 100644
---- a/drivers/pci/controller/dwc/pcie-qcom.c
-+++ b/drivers/pci/controller/dwc/pcie-qcom.c
-@@ -1405,8 +1405,7 @@ static int qcom_pcie_probe(struct platform_device *pdev)
- 	if (pcie->gen < 0)
- 		pcie->gen = 2;
- 
--	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "parf");
--	pcie->parf = devm_ioremap_resource(dev, res);
-+	pcie->parf = devm_platform_ioremap_resource_byname(pdev, "parf");
- 	if (IS_ERR(pcie->parf)) {
- 		ret = PTR_ERR(pcie->parf);
- 		goto err_pm_runtime_put;
-@@ -1419,8 +1418,7 @@ static int qcom_pcie_probe(struct platform_device *pdev)
- 		goto err_pm_runtime_put;
- 	}
- 
--	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "elbi");
--	pcie->elbi = devm_ioremap_resource(dev, res);
-+	pcie->elbi = devm_platform_ioremap_resource_byname(pdev, "elbi");
- 	if (IS_ERR(pcie->elbi)) {
- 		ret = PTR_ERR(pcie->elbi);
- 		goto err_pm_runtime_put;
-diff --git a/drivers/pci/controller/dwc/pcie-uniphier.c b/drivers/pci/controller/dwc/pcie-uniphier.c
-index a5401a0b1e58..3a7f403b57b8 100644
---- a/drivers/pci/controller/dwc/pcie-uniphier.c
-+++ b/drivers/pci/controller/dwc/pcie-uniphier.c
-@@ -416,8 +416,7 @@ static int uniphier_pcie_probe(struct platform_device *pdev)
- 	if (IS_ERR(priv->pci.dbi_base))
- 		return PTR_ERR(priv->pci.dbi_base);
- 
--	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "link");
--	priv->base = devm_ioremap_resource(dev, res);
-+	priv->base = devm_platform_ioremap_resource_byname(pdev, "link");
- 	if (IS_ERR(priv->base))
- 		return PTR_ERR(priv->base);
- 
--- 
-2.25.0
+static inline int kiocb_set_rw_flags(struct kiocb *ki, rwf_t flags)
+        ki->ki_flags |= (IOCB_DSYNC | IOCB_SYNC);
+        if (flags & RWF_APPEND)
+                ki->ki_flags |= IOCB_APPEND;
++       if (flags & RWF_APPEND2) {
++               /*
++                * RWF_APPEND2 is "file-append + return write-location"
++                * Use IOCB_APPEND for file-append, and new IOCB_ZONE_APPEND
++                * to return where write landed
++                */
++               ki->ki_flags |= IOCB_APPEND;
++               if (ki->ki_filp->f_mode & FMODE_ZONE_APPEND) /*revisit the need*/
++                       ki->ki_flags |= IOCB_ZONE_APPEND;
++       }
++
 
+------FBC7EIImzEv-3WQrgwRbJYn4xAlwhlhWWV1zALX9mq8rjZSB=_e96fa_
+Content-Type: text/plain; charset="utf-8"
+
+
+------FBC7EIImzEv-3WQrgwRbJYn4xAlwhlhWWV1zALX9mq8rjZSB=_e96fa_--
