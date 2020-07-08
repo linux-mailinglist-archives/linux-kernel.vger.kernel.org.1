@@ -2,76 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C017217FC4
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 08:45:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 227CD217FC6
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 08:46:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729810AbgGHGp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 02:45:28 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:46010 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726171AbgGHGp2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 02:45:28 -0400
-Received: by mail-wr1-f68.google.com with SMTP id s10so47586453wrw.12
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 23:45:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kTz766jrS9kLMaLLgdH0q1srs9gRA5HbwAQdKRecpe8=;
-        b=L0UK9y1Nt8ACuZAUQBFhEyz6qt1rEbaIA8Z12AoFjhVSv+lk6v9zfcwjDQpCKaayaj
-         CJeLSXOAuJnAJjC5acOzkU13pEtYj5aMMlGGrrvJ7rc4zLBHGYFq2b20cyRIwH6+lbrk
-         DVlsizOF4vCCyXWQ+t0KTpOgCNMjeObZUtqI2Is+0HvjVSCvlQF91Kz9Lh+5ag+mzPVd
-         LH1uP9tdiMwpmqZ0ZKVz3XWKKTeKFm50LenOpKqEVLYOYNbEKd0VDOEJavGM/vL4tFeS
-         GxJuSQaeDA20zzqv6kDmvfUHB0tbQM5ccSfoabeUr09+U85WoX2um6N1yMDw/r5bwTYx
-         eynA==
-X-Gm-Message-State: AOAM530uDCNnwLq8KzpdZvwaHYnIs1c8nwkUOSrTUZSeBKk2BFjGRnC6
-        UY2p6Mzf9P1vzuNHbRyjWt2Oiram
-X-Google-Smtp-Source: ABdhPJy8zVhJlQAscGLs009kKGfNYnLK/DzOEwXA0PD9XYTGtNiXApHOU2S0+TIDsPJIvfKwiKeZNQ==
-X-Received: by 2002:a05:6000:1182:: with SMTP id g2mr53285426wrx.44.1594190726440;
-        Tue, 07 Jul 2020 23:45:26 -0700 (PDT)
-Received: from localhost (ip-37-188-179-51.eurotel.cz. [37.188.179.51])
-        by smtp.gmail.com with ESMTPSA id 207sm5144885wme.13.2020.07.07.23.45.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jul 2020 23:45:25 -0700 (PDT)
-Date:   Wed, 8 Jul 2020 08:45:24 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Qian Cai <cai@lca.pw>
-Cc:     js1304@gmail.com, Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        kernel-team@lge.com, Vlastimil Babka <vbabka@suse.cz>,
-        Christoph Hellwig <hch@infradead.org>,
-        Roman Gushchin <guro@fb.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Subject: Re: [PATCH v3 7/8] mm/mempolicy: use a standard migration target
- allocation callback
-Message-ID: <20200708064524.GA7271@dhcp22.suse.cz>
-References: <1592892828-1934-1-git-send-email-iamjoonsoo.kim@lge.com>
- <1592892828-1934-8-git-send-email-iamjoonsoo.kim@lge.com>
- <20200708012044.GC992@lca.pw>
+        id S1729637AbgGHGpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 02:45:53 -0400
+Received: from verein.lst.de ([213.95.11.211]:33822 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726171AbgGHGpx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 02:45:53 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 01BA868AFE; Wed,  8 Jul 2020 08:45:50 +0200 (CEST)
+Date:   Wed, 8 Jul 2020 08:45:50 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Subject: Re: [PATCH] scatterlist: protect parameters of the sg_table
+ related macros
+Message-ID: <20200708064550.GA5577@lst.de>
+References: <CGME20200630081613eucas1p2af288e1a5b91c8e62cb8af2901cc45a4@eucas1p2.samsung.com> <20200630081602.30594-1-m.szyprowski@samsung.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200708012044.GC992@lca.pw>
+In-Reply-To: <20200630081602.30594-1-m.szyprowski@samsung.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 07-07-20 21:20:44, Qian Cai wrote:
-[...]
-> migrate_pages() starts failing like this apparently using the new
-> callback on NUMA systems,
-> 
-> [ 6147.019063][T45242] LTP: starting move_pages12
-> [ 6147.475680][T64921] BUG: unable to handle page fault for address: ffffffffffffffe0
+On Tue, Jun 30, 2020 at 10:16:02AM +0200, Marek Szyprowski wrote:
+> Add brackets to protect parameters of the recently added sg_table related
+> macros from side-effects.
 
-Hmm, this looks like -EPIPE (-32) which is unexpected to say the least.
-Does the test pass without this patch applied? Also there has been v4
-posted just yesterday. Does it suffer from the same problem?
-
--- 
-Michal Hocko
-SUSE Labs
+Applied to the dma-mapping tree, thanks.
