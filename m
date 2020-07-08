@@ -2,144 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78E672188EB
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 15:25:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0E1421894E
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 15:38:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729389AbgGHNZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 09:25:32 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:4373 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728148AbgGHNZb (ORCPT
+        id S1729752AbgGHNi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 09:38:56 -0400
+Received: from mailout2.hostsharing.net ([83.223.78.233]:37193 "EHLO
+        mailout2.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728210AbgGHNi4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 09:25:31 -0400
-X-UUID: 88346041bab743b293e7a3a8d908c68d-20200708
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=8MKbH1IX9Wezlb1mLgBVH7giMxWeaQpi+Vzc+0gSWkA=;
-        b=cGKo3kW3IYSKlmYT4j28d6xUrYgMdKii7tGBO0wDzaJyNLW7I9AdjZvi+zVeIVBsiobvgFACOtqZxvAg3dOtvz+Km7j9Y2yAbYj8A4RubWhL4LPuU1aVyuPQSUikF9Hie0goMQaVYoKvwAXIqek1SKGhQbAEvK2IRRZgwm3D/h0=;
-X-UUID: 88346041bab743b293e7a3a8d908c68d-20200708
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
-        (envelope-from <walter-zh.wu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 280638738; Wed, 08 Jul 2020 21:25:27 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs06n2.mediatek.inc (172.21.101.130) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 8 Jul 2020 21:25:19 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 8 Jul 2020 21:25:22 +0800
-From:   Walter Wu <walter-zh.wu@mediatek.com>
-To:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-CC:     <kasan-dev@googlegroups.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        wsd_upstream <wsd_upstream@mediatek.com>,
-        <linux-mediatek@lists.infradead.org>,
-        Walter Wu <walter-zh.wu@mediatek.com>
-Subject: [PATCH v4] kasan: fix KASAN unit tests for tag-based KASAN
-Date:   Wed, 8 Jul 2020 21:25:24 +0800
-Message-ID: <20200708132524.11688-1-walter-zh.wu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: 4FE038726111CFDF32B6454EE1B6840009C597B427D47AC810D59EFB2B7294702000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+        Wed, 8 Jul 2020 09:38:56 -0400
+Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "*.hostsharing.net", Issuer "COMODO RSA Domain Validation Secure Server CA" (not verified))
+        by mailout2.hostsharing.net (Postfix) with ESMTPS id D416B10189C99;
+        Wed,  8 Jul 2020 15:30:00 +0200 (CEST)
+Received: from localhost (unknown [87.130.102.138])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by h08.hostsharing.net (Postfix) with ESMTPSA id 94A936106EC8;
+        Wed,  8 Jul 2020 15:30:00 +0200 (CEST)
+X-Mailbox-Line: From f2d349b5ba67b5ca70cb19577725167642eb69c5 Mon Sep 17 00:00:00 2001
+Message-Id: <cover.1594214103.git.lukas@wunner.de>
+From:   Lukas Wunner <lukas@wunner.de>
+Date:   Wed, 8 Jul 2020 15:27:00 +0200
+Subject: [PATCH 0/3] Fix races on device removal
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-spi@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-V2UgdXNlIHRhZy1iYXNlZCBLQVNBTiwgdGhlbiBLQVNBTiB1bml0IHRlc3RzIGRvbid0IGRldGVj
-dCBvdXQtb2YtYm91bmRzDQptZW1vcnkgYWNjZXNzLiBUaGV5IG5lZWQgdG8gYmUgZml4ZWQuDQoN
-CldpdGggdGFnLWJhc2VkIEtBU0FOLCB0aGUgc3RhdGUgb2YgZWFjaCAxNiBhbGlnbmVkIGJ5dGVz
-IG9mIG1lbW9yeSBpcw0KZW5jb2RlZCBpbiBvbmUgc2hhZG93IGJ5dGUgYW5kIHRoZSBzaGFkb3cg
-dmFsdWUgaXMgdGFnIG9mIHBvaW50ZXIsIHNvDQp3ZSBuZWVkIHRvIHJlYWQgbmV4dCBzaGFkb3cg
-Ynl0ZSwgdGhlIHNoYWRvdyB2YWx1ZSBpcyBub3QgZXF1YWwgdG8gdGFnDQp2YWx1ZSBvZiBwb2lu
-dGVyLCBzbyB0aGF0IHRhZy1iYXNlZCBLQVNBTiB3aWxsIGRldGVjdCBvdXQtb2YtYm91bmRzDQpt
-ZW1vcnkgYWNjZXNzLg0KDQpTaWduZWQtb2ZmLWJ5OiBXYWx0ZXIgV3UgPHdhbHRlci16aC53dUBt
-ZWRpYXRlay5jb20+DQpTdWdnZXN0ZWQtYnk6IERtaXRyeSBWeXVrb3YgPGR2eXVrb3ZAZ29vZ2xl
-LmNvbT4NCkFja2VkLWJ5OiBEbWl0cnkgVnl1a292IDxkdnl1a292QGdvb2dsZS5jb20+DQpSZXZp
-ZXdlZC1ieTogQW5kcmV5IEtvbm92YWxvdiA8YW5kcmV5a252bEBnb29nbGUuY29tPg0KQ2M6IEFu
-ZHJleSBSeWFiaW5pbiA8YXJ5YWJpbmluQHZpcnR1b3p6by5jb20+DQpDYzogQWxleGFuZGVyIFBv
-dGFwZW5rbyA8Z2xpZGVyQGdvb2dsZS5jb20+DQpDYzogTWF0dGhpYXMgQnJ1Z2dlciA8bWF0dGhp
-YXMuYmdnQGdtYWlsLmNvbT4NCkNjOiBBbmRyZXcgTW9ydG9uIDxha3BtQGxpbnV4LWZvdW5kYXRp
-b24ub3JnPg0KLS0tDQoNCmNoYW5nZXMgc2luY2UgdjE6DQotIFJlZHVjZSBhbW91bnQgb2Ygbm9u
-LWNvbXBpbGVkIGNvZGUuDQotIEtVbml0LUtBU0FOIEludGVncmF0aW9uIHBhdGNoc2V0IGlzIG5v
-dCBtZXJnZWQgeWV0LiBNeSBwYXRjaCBzaG91bGQNCiAgaGF2ZSBjb25mbGljdCB3aXRoIGl0LCBp
-ZiBuZWVkZWQsIHdlIGNhbiBjb250aW51ZSB0byB3YWl0IGl0Lg0KDQpjaGFuZ2VzIHNpbmNlIHYy
-Og0KLSBBZGQgb25lIG1hcmNvIHRvIG1ha2UgdW5pdCB0ZXN0cyBtb3JlIHJlYWRhYmlsaXR5Lg0K
-DQpjaGFuZ2VzIHNpbmNlIHYzOg0KLSB1c2UgS0FTQU5fU0hBRE9XX1NDQUxFX1NJWkUgaW5zdGVh
-ZCBvZiAxMy4NCg0KLS0tDQogbGliL3Rlc3Rfa2FzYW4uYyB8IDQ5ICsrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKystLS0tLS0tLS0tLS0tLS0tLQ0KIDEgZmlsZSBjaGFuZ2VkLCAzMiBpbnNl
-cnRpb25zKCspLCAxNyBkZWxldGlvbnMoLSkNCg0KZGlmZiAtLWdpdCBhL2xpYi90ZXN0X2thc2Fu
-LmMgYi9saWIvdGVzdF9rYXNhbi5jDQppbmRleCA2MWEzY2MxMTU1NmYuLjAwM2VhNWI0OWY0YyAx
-MDA2NDQNCi0tLSBhL2xpYi90ZXN0X2thc2FuLmMNCisrKyBiL2xpYi90ZXN0X2thc2FuLmMNCkBA
-IC0yMyw2ICsyMywxMCBAQA0KIA0KICNpbmNsdWRlIDxhc20vcGFnZS5oPg0KIA0KKyNpbmNsdWRl
-ICIuLi9tbS9rYXNhbi9rYXNhbi5oIg0KKw0KKyNkZWZpbmUgT09CX1RBR19PRkYgKElTX0VOQUJM
-RUQoQ09ORklHX0tBU0FOX0dFTkVSSUMpID8gMCA6IEtBU0FOX1NIQURPV19TQ0FMRV9TSVpFKQ0K
-Kw0KIC8qDQogICogTm90ZTogdGVzdCBmdW5jdGlvbnMgYXJlIG1hcmtlZCBub2lubGluZSBzbyB0
-aGF0IHRoZWlyIG5hbWVzIGFwcGVhciBpbg0KICAqIHJlcG9ydHMuDQpAQCAtNDAsNyArNDQsOCBA
-QCBzdGF0aWMgbm9pbmxpbmUgdm9pZCBfX2luaXQga21hbGxvY19vb2JfcmlnaHQodm9pZCkNCiAJ
-CXJldHVybjsNCiAJfQ0KIA0KLQlwdHJbc2l6ZV0gPSAneCc7DQorCXB0cltzaXplICsgT09CX1RB
-R19PRkZdID0gJ3gnOw0KKw0KIAlrZnJlZShwdHIpOw0KIH0NCiANCkBAIC05Miw3ICs5Nyw4IEBA
-IHN0YXRpYyBub2lubGluZSB2b2lkIF9faW5pdCBrbWFsbG9jX3BhZ2VhbGxvY19vb2JfcmlnaHQo
-dm9pZCkNCiAJCXJldHVybjsNCiAJfQ0KIA0KLQlwdHJbc2l6ZV0gPSAwOw0KKwlwdHJbc2l6ZSAr
-IE9PQl9UQUdfT0ZGXSA9IDA7DQorDQogCWtmcmVlKHB0cik7DQogfQ0KIA0KQEAgLTE2Miw3ICsx
-NjgsOCBAQCBzdGF0aWMgbm9pbmxpbmUgdm9pZCBfX2luaXQga21hbGxvY19vb2Jfa3JlYWxsb2Nf
-bW9yZSh2b2lkKQ0KIAkJcmV0dXJuOw0KIAl9DQogDQotCXB0cjJbc2l6ZTJdID0gJ3gnOw0KKwlw
-dHIyW3NpemUyICsgT09CX1RBR19PRkZdID0gJ3gnOw0KKw0KIAlrZnJlZShwdHIyKTsNCiB9DQog
-DQpAQCAtMTgwLDcgKzE4Nyw5IEBAIHN0YXRpYyBub2lubGluZSB2b2lkIF9faW5pdCBrbWFsbG9j
-X29vYl9rcmVhbGxvY19sZXNzKHZvaWQpDQogCQlrZnJlZShwdHIxKTsNCiAJCXJldHVybjsNCiAJ
-fQ0KLQlwdHIyW3NpemUyXSA9ICd4JzsNCisNCisJcHRyMltzaXplMiArIE9PQl9UQUdfT0ZGXSA9
-ICd4JzsNCisNCiAJa2ZyZWUocHRyMik7DQogfQ0KIA0KQEAgLTIxNiw3ICsyMjUsOCBAQCBzdGF0
-aWMgbm9pbmxpbmUgdm9pZCBfX2luaXQga21hbGxvY19vb2JfbWVtc2V0XzIodm9pZCkNCiAJCXJl
-dHVybjsNCiAJfQ0KIA0KLQltZW1zZXQocHRyKzcsIDAsIDIpOw0KKwltZW1zZXQocHRyICsgNyAr
-IE9PQl9UQUdfT0ZGLCAwLCAyKTsNCisNCiAJa2ZyZWUocHRyKTsNCiB9DQogDQpAQCAtMjMyLDcg
-KzI0Miw4IEBAIHN0YXRpYyBub2lubGluZSB2b2lkIF9faW5pdCBrbWFsbG9jX29vYl9tZW1zZXRf
-NCh2b2lkKQ0KIAkJcmV0dXJuOw0KIAl9DQogDQotCW1lbXNldChwdHIrNSwgMCwgNCk7DQorCW1l
-bXNldChwdHIgKyA1ICsgT09CX1RBR19PRkYsIDAsIDQpOw0KKw0KIAlrZnJlZShwdHIpOw0KIH0N
-CiANCkBAIC0yNDksNyArMjYwLDggQEAgc3RhdGljIG5vaW5saW5lIHZvaWQgX19pbml0IGttYWxs
-b2Nfb29iX21lbXNldF84KHZvaWQpDQogCQlyZXR1cm47DQogCX0NCiANCi0JbWVtc2V0KHB0cisx
-LCAwLCA4KTsNCisJbWVtc2V0KHB0ciArIDEgKyBPT0JfVEFHX09GRiwgMCwgOCk7DQorDQogCWtm
-cmVlKHB0cik7DQogfQ0KIA0KQEAgLTI2NSw3ICsyNzcsOCBAQCBzdGF0aWMgbm9pbmxpbmUgdm9p
-ZCBfX2luaXQga21hbGxvY19vb2JfbWVtc2V0XzE2KHZvaWQpDQogCQlyZXR1cm47DQogCX0NCiAN
-Ci0JbWVtc2V0KHB0cisxLCAwLCAxNik7DQorCW1lbXNldChwdHIgKyAxICsgT09CX1RBR19PRkYs
-IDAsIDE2KTsNCisNCiAJa2ZyZWUocHRyKTsNCiB9DQogDQpAQCAtMjgxLDcgKzI5NCw4IEBAIHN0
-YXRpYyBub2lubGluZSB2b2lkIF9faW5pdCBrbWFsbG9jX29vYl9pbl9tZW1zZXQodm9pZCkNCiAJ
-CXJldHVybjsNCiAJfQ0KIA0KLQltZW1zZXQocHRyLCAwLCBzaXplKzUpOw0KKwltZW1zZXQocHRy
-LCAwLCBzaXplICsgNSArIE9PQl9UQUdfT0ZGKTsNCisNCiAJa2ZyZWUocHRyKTsNCiB9DQogDQpA
-QCAtNDE1LDcgKzQyOSw4IEBAIHN0YXRpYyBub2lubGluZSB2b2lkIF9faW5pdCBrbWVtX2NhY2hl
-X29vYih2b2lkKQ0KIAkJcmV0dXJuOw0KIAl9DQogDQotCSpwID0gcFtzaXplXTsNCisJKnAgPSBw
-W3NpemUgKyBPT0JfVEFHX09GRl07DQorDQogCWttZW1fY2FjaGVfZnJlZShjYWNoZSwgcCk7DQog
-CWttZW1fY2FjaGVfZGVzdHJveShjYWNoZSk7DQogfQ0KQEAgLTUxMiwyNSArNTI3LDI1IEBAIHN0
-YXRpYyBub2lubGluZSB2b2lkIF9faW5pdCBjb3B5X3VzZXJfdGVzdCh2b2lkKQ0KIAl9DQogDQog
-CXByX2luZm8oIm91dC1vZi1ib3VuZHMgaW4gY29weV9mcm9tX3VzZXIoKVxuIik7DQotCXVudXNl
-ZCA9IGNvcHlfZnJvbV91c2VyKGttZW0sIHVzZXJtZW0sIHNpemUgKyAxKTsNCisJdW51c2VkID0g
-Y29weV9mcm9tX3VzZXIoa21lbSwgdXNlcm1lbSwgc2l6ZSArIDEgKyBPT0JfVEFHX09GRik7DQog
-DQogCXByX2luZm8oIm91dC1vZi1ib3VuZHMgaW4gY29weV90b191c2VyKClcbiIpOw0KLQl1bnVz
-ZWQgPSBjb3B5X3RvX3VzZXIodXNlcm1lbSwga21lbSwgc2l6ZSArIDEpOw0KKwl1bnVzZWQgPSBj
-b3B5X3RvX3VzZXIodXNlcm1lbSwga21lbSwgc2l6ZSArIDEgKyBPT0JfVEFHX09GRik7DQogDQog
-CXByX2luZm8oIm91dC1vZi1ib3VuZHMgaW4gX19jb3B5X2Zyb21fdXNlcigpXG4iKTsNCi0JdW51
-c2VkID0gX19jb3B5X2Zyb21fdXNlcihrbWVtLCB1c2VybWVtLCBzaXplICsgMSk7DQorCXVudXNl
-ZCA9IF9fY29weV9mcm9tX3VzZXIoa21lbSwgdXNlcm1lbSwgc2l6ZSArIDEgKyBPT0JfVEFHX09G
-Rik7DQogDQogCXByX2luZm8oIm91dC1vZi1ib3VuZHMgaW4gX19jb3B5X3RvX3VzZXIoKVxuIik7
-DQotCXVudXNlZCA9IF9fY29weV90b191c2VyKHVzZXJtZW0sIGttZW0sIHNpemUgKyAxKTsNCisJ
-dW51c2VkID0gX19jb3B5X3RvX3VzZXIodXNlcm1lbSwga21lbSwgc2l6ZSArIDEgKyBPT0JfVEFH
-X09GRik7DQogDQogCXByX2luZm8oIm91dC1vZi1ib3VuZHMgaW4gX19jb3B5X2Zyb21fdXNlcl9p
-bmF0b21pYygpXG4iKTsNCi0JdW51c2VkID0gX19jb3B5X2Zyb21fdXNlcl9pbmF0b21pYyhrbWVt
-LCB1c2VybWVtLCBzaXplICsgMSk7DQorCXVudXNlZCA9IF9fY29weV9mcm9tX3VzZXJfaW5hdG9t
-aWMoa21lbSwgdXNlcm1lbSwgc2l6ZSArIDEgKyBPT0JfVEFHX09GRik7DQogDQogCXByX2luZm8o
-Im91dC1vZi1ib3VuZHMgaW4gX19jb3B5X3RvX3VzZXJfaW5hdG9taWMoKVxuIik7DQotCXVudXNl
-ZCA9IF9fY29weV90b191c2VyX2luYXRvbWljKHVzZXJtZW0sIGttZW0sIHNpemUgKyAxKTsNCisJ
-dW51c2VkID0gX19jb3B5X3RvX3VzZXJfaW5hdG9taWModXNlcm1lbSwga21lbSwgc2l6ZSArIDEg
-KyBPT0JfVEFHX09GRik7DQogDQogCXByX2luZm8oIm91dC1vZi1ib3VuZHMgaW4gc3RybmNweV9m
-cm9tX3VzZXIoKVxuIik7DQotCXVudXNlZCA9IHN0cm5jcHlfZnJvbV91c2VyKGttZW0sIHVzZXJt
-ZW0sIHNpemUgKyAxKTsNCisJdW51c2VkID0gc3RybmNweV9mcm9tX3VzZXIoa21lbSwgdXNlcm1l
-bSwgc2l6ZSArIDEgKyBPT0JfVEFHX09GRik7DQogDQogCXZtX211bm1hcCgodW5zaWduZWQgbG9u
-Zyl1c2VybWVtLCBQQUdFX1NJWkUpOw0KIAlrZnJlZShrbWVtKTsNCi0tIA0KMi4xOC4wDQo=
+Prevent dynamic SPI device addition below a controller which is
+being removed.  To do so, set the controller's "dead" flag using
+kill_device() (patch [3/3]).
+
+Serialize access to a device's "dead" flag with a newly introduced
+rw_semaphore in lieu of the device_lock to avoid deadlocks occurring
+with the new use case (patch [2/3]).
+
+Add a missing check for the "dead" flag upon driver binding
+(patch [1/3]).
+
+
+Lukas Wunner (3):
+  driver core: Avoid binding drivers to dead devices
+  driver core: Use rwsem for kill_device() serialization
+  driver core: Avoid adding children below a dead parent
+
+ drivers/base/base.h  |  2 ++
+ drivers/base/core.c  | 49 ++++++++++++++++++++++++++++++--------------
+ drivers/base/dd.c    | 12 ++++++++++-
+ drivers/nvdimm/bus.c |  8 +-------
+ drivers/spi/spi.c    |  3 +++
+ 5 files changed, 51 insertions(+), 23 deletions(-)
+
+-- 
+2.27.0
 
