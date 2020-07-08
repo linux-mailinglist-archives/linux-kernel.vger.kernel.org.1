@@ -2,72 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2462218573
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 13:03:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4857C21857A
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 13:04:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728712AbgGHLDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 07:03:55 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:41711 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726110AbgGHLDy (ORCPT
+        id S1728742AbgGHLEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 07:04:53 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:34709 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728385AbgGHLEw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 07:03:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594206234;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=X7JqGrX6+FRCRSoYELtArJatwC752X2T97lt6/es+Gg=;
-        b=ZNnzLjcr1WJMYz5qNvBlcrHtqJymhlP64CopFAXQ6ixHKgQk0nuiWWG3CZZXLkoHTrTMRG
-        rqx31CGwyHMwLmurdxDpW3qSwgKwMCqPhsgwXDciWEsKsNIpDVJxleurG3byS22Y0/Cmfe
-        9G+GVe7599b1wvxa54I1rfhYKnYIL4c=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-449-89poVGgePnqb6q3haNmrDw-1; Wed, 08 Jul 2020 07:03:52 -0400
-X-MC-Unique: 89poVGgePnqb6q3haNmrDw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 91EDD8015F5;
-        Wed,  8 Jul 2020 11:03:51 +0000 (UTC)
-Received: from virtlab511.virt.lab.eng.bos.redhat.com (virtlab511.virt.lab.eng.bos.redhat.com [10.19.152.198])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 402DB7848A;
-        Wed,  8 Jul 2020 11:03:51 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: [PATCH] KVM: x86: Make CR4.VMXE reserved for the guest
-Date:   Wed,  8 Jul 2020 07:03:50 -0400
-Message-Id: <20200708110350.848997-1-pbonzini@redhat.com>
+        Wed, 8 Jul 2020 07:04:52 -0400
+Received: by mail-ot1-f66.google.com with SMTP id e90so6082819ote.1;
+        Wed, 08 Jul 2020 04:04:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IHCyGxj1cvpIoNYOX+nc8vjaWSXk9jF7cUyVbUqeMg0=;
+        b=J1Z3boooAV5Cn+Kp5oI8251HzkrPIExYbm/sVOlh+QQ928bqYOra/OSqZGr04bcI+w
+         J4mOTlNJbjg5NPW2ebhNtPgXUBV1nn2E1A2kt0tRiHcXblNv8sofqPYRi32igW30DYCy
+         T3ceyHrQR8P0jFEchMCAEYxR4SMC2W7QrOcicmvkboiCRXP51S/KySy0dzF0RcrQd2yM
+         SdqSgT3FErJobV5rfnu+Ai8Y+iJcNd0K6+1GCcSrBnXu0lULkuqLJuaImk4TXgJeZotu
+         uQm346UwL4D3Trujy5X5UvOKhJ8fJiJL6ItEtF3TQb6a7OMAwC74L6LY6LPIGBQSKuG2
+         nuaw==
+X-Gm-Message-State: AOAM532XKjbVxegZVwmQ62l1oRHGUxqTj60cQDWTDGejuQnoFPgDG0fz
+        Ird13t4uZfkKo8jC1jucH55/6ckdMSiomxwnFbk=
+X-Google-Smtp-Source: ABdhPJx0pYxRbD1A4YMqTXjB55nDwyDRMhKrjXyrUYVPPyCD8Vl+kVThCEsAAO/sNGwFVTx7mhc5bKdEBSapC4H9cgM=
+X-Received: by 2002:a9d:590a:: with SMTP id t10mr12704394oth.262.1594206290904;
+ Wed, 08 Jul 2020 04:04:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+References: <202007080131.3E6D0858@keescook> <CAPDyKFqT4DXr9pn3+mGmsdxTD6nNWfod_Z13fpzpHf0STOt_XQ@mail.gmail.com>
+In-Reply-To: <CAPDyKFqT4DXr9pn3+mGmsdxTD6nNWfod_Z13fpzpHf0STOt_XQ@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 8 Jul 2020 13:04:38 +0200
+Message-ID: <CAJZ5v0iovBAj5-HyD0SA1UEfJ3+mfv=Ke04pEebbmbhH6q7Zsg@mail.gmail.com>
+Subject: Re: [PATCH] genpd: Fix up terminology with leader/follower
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Kieran Bingham <kbingham@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Leonard Crestez <leonard.crestez@nxp.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CR4.VMXE is reserved unless the VMX CPUID bit is set.  On Intel,
-it is also tested by vmx_set_cr4, but AMD relies on kvm_valid_cr4,
-so fix it.
+On Wed, Jul 8, 2020 at 11:04 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+>
+> On Wed, 8 Jul 2020 at 10:35, Kees Cook <keescook@chromium.org> wrote:
+> >
+> > The genpd infrastructure uses the terms master/slave, but such uses have
+> > no external exposures (not even in Documentation/driver-api/pm/*) and are
+> > not mandated by nor associated with any external specifications. Change
+> > the language used through-out to leader/follower.
+>
+> In my opinion this doesn't really make it more clear, but rather the opposite.
+>
+> If we should improve, I suggest using "parent" and "child" instead. As
+> matter of fact, that's already the de-facto terminology that people
+> are using when talking about master/subdomains of genpd.
 
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/x86/kvm/x86.h | 2 ++
- 1 file changed, 2 insertions(+)
+IMO "parent" and "child" would be better indeed, because genpd only
+supports strict hierarchies.
 
-diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
-index 56975c6c1e15..224670d7c245 100644
---- a/arch/x86/kvm/x86.h
-+++ b/arch/x86/kvm/x86.h
-@@ -392,6 +392,8 @@ bool kvm_vcpu_exit_request(struct kvm_vcpu *vcpu);
- 		__reserved_bits |= X86_CR4_LA57;        \
- 	if (!__cpu_has(__c, X86_FEATURE_UMIP))          \
- 		__reserved_bits |= X86_CR4_UMIP;        \
-+	if (!__cpu_has(__c, X86_FEATURE_VMX))           \
-+		__reserved_bits |= X86_CR4_VMXE;        \
- 	__reserved_bits;                                \
- })
- 
--- 
-2.26.2
-
+Thanks!
