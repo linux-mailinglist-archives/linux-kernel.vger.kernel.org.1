@@ -2,20 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12284218435
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 11:51:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FE39218433
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 11:50:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728537AbgGHJvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 05:51:01 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:15557 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728520AbgGHJvA (ORCPT
+        id S1728502AbgGHJuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 05:50:51 -0400
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:60517 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726302AbgGHJut (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 05:51:00 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04427;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0U26MSrC_1594201844;
-Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U26MSrC_1594201844)
+        Wed, 8 Jul 2020 05:50:49 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07488;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0U26VwzS_1594201844;
+Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U26VwzS_1594201844)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 08 Jul 2020 17:50:44 +0800
+          Wed, 08 Jul 2020 17:50:45 +0800
 From:   Wei Yang <richard.weiyang@linux.alibaba.com>
 To:     akpm@linux-foundation.org, kirill.shutemov@linux.intel.com,
         vbabka@suse.cz, yang.shi@linux.alibaba.com, thomas_os@shipmail.org,
@@ -24,9 +24,9 @@ To:     akpm@linux-foundation.org, kirill.shutemov@linux.intel.com,
         aneesh.kumar@linux.ibm.com, willy@infradead.org,
         thellstrom@vmware.com
 Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, digetx@gmail.com
-Subject: [Patch v4 2/4] mm/mremap: calculate extent in one place
-Date:   Wed,  8 Jul 2020 17:50:26 +0800
-Message-Id: <20200708095028.41706-3-richard.weiyang@linux.alibaba.com>
+Subject: [Patch v4 3/4] mm/mremap: start addresses are properly aligned
+Date:   Wed,  8 Jul 2020 17:50:27 +0800
+Message-Id: <20200708095028.41706-4-richard.weiyang@linux.alibaba.com>
 X-Mailer: git-send-email 2.20.1 (Apple Git-117)
 In-Reply-To: <20200708095028.41706-1-richard.weiyang@linux.alibaba.com>
 References: <20200708095028.41706-1-richard.weiyang@linux.alibaba.com>
@@ -37,48 +37,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Page tables is moved on the base of PMD. This requires both source
-and destination range should meet the requirement.
+After previous cleanup, extent is the minimal step for both source and
+destination. This means when extent is HPAGE_PMD_SIZE or PMD_SIZE,
+old_addr and new_addr are properly aligned too.
 
-Current code works well since move_huge_pmd() and move_normal_pmd()
-would check old_addr and new_addr again. And then return to move_ptes()
-if the either of them is not aligned.
-
-In stead of calculating the extent separately, it is better to calculate
-in one place, so we know it is not necessary to try move pmd. By doing
-so, the logic seems a little clear.
+Since these two functions are only invoked in move_page_tables, it is
+safe to remove the check now.
 
 Signed-off-by: Wei Yang <richard.weiyang@linux.alibaba.com>
 Tested-by: Dmitry Osipenko <digetx@gmail.com>
 Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 ---
- mm/mremap.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ mm/huge_memory.c | 3 ---
+ mm/mremap.c      | 3 ---
+ 2 files changed, 6 deletions(-)
 
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index 1e580fdad4d0..462a7dbd6350 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -1729,9 +1729,6 @@ bool move_huge_pmd(struct vm_area_struct *vma, unsigned long old_addr,
+ 	struct mm_struct *mm = vma->vm_mm;
+ 	bool force_flush = false;
+ 
+-	if ((old_addr & ~HPAGE_PMD_MASK) || (new_addr & ~HPAGE_PMD_MASK))
+-		return false;
+-
+ 	/*
+ 	 * The destination pmd shouldn't be established, free_pgtables()
+ 	 * should have release it.
 diff --git a/mm/mremap.c b/mm/mremap.c
-index de27b12c8a5a..a30b3e86cc99 100644
+index a30b3e86cc99..f5f17d050617 100644
 --- a/mm/mremap.c
 +++ b/mm/mremap.c
-@@ -258,6 +258,9 @@ unsigned long move_page_tables(struct vm_area_struct *vma,
- 		extent = next - old_addr;
- 		if (extent > old_end - old_addr)
- 			extent = old_end - old_addr;
-+		next = (new_addr + PMD_SIZE) & PMD_MASK;
-+		if (extent > next - new_addr)
-+			extent = next - new_addr;
- 		old_pmd = get_old_pmd(vma->vm_mm, old_addr);
- 		if (!old_pmd)
- 			continue;
-@@ -301,9 +304,6 @@ unsigned long move_page_tables(struct vm_area_struct *vma,
+@@ -199,9 +199,6 @@ static bool move_normal_pmd(struct vm_area_struct *vma, unsigned long old_addr,
+ 	struct mm_struct *mm = vma->vm_mm;
+ 	pmd_t pmd;
  
- 		if (pte_alloc(new_vma->vm_mm, new_pmd))
- 			break;
--		next = (new_addr + PMD_SIZE) & PMD_MASK;
--		if (extent > next - new_addr)
--			extent = next - new_addr;
- 		move_ptes(vma, old_pmd, old_addr, old_addr + extent, new_vma,
- 			  new_pmd, new_addr, need_rmap_locks);
- 	}
+-	if ((old_addr & ~PMD_MASK) || (new_addr & ~PMD_MASK))
+-		return false;
+-
+ 	/*
+ 	 * The destination pmd shouldn't be established, free_pgtables()
+ 	 * should have release it.
 -- 
 2.20.1 (Apple Git-117)
 
