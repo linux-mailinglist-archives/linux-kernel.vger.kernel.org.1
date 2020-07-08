@@ -2,83 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E55F2193A2
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 00:40:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E29942193A5
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 00:40:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726319AbgGHWkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 18:40:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725915AbgGHWjx (ORCPT
+        id S1726338AbgGHWkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 18:40:51 -0400
+Received: from casper.infradead.org ([90.155.50.34]:45958 "EHLO
+        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725915AbgGHWkj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 18:39:53 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30F24C08C5C1
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 15:39:53 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id k6so279080oij.11
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 15:39:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=hmO9GyPcXh/ZkBPEMHmuX83N/KJmuAIwdfILuua87Rk=;
-        b=CFoep+x6TWhexmScLBEwN6oklVkjGvlzN2go+6OkIjfUGoc1PSZztrC7jQ81wlVExw
-         yP/SQb3RW8J6+XqpfBLGFtdLQzcg5UtKEN+mrHGAYuuVWVOs1o6rPIqj1rY8/uMsYF7F
-         pjQnj8G301EpVG3nGOoxDyAVYLf7aO+btU/NMrsbTdyh7CGi1jQ8PcqM0mI/pGHPRbtb
-         CNpjtS8aar1HwVLW8KmAKGf4mmyfp/ZejOzIfqeANgk6+p012Mb0cXX84047z0xx2Wwz
-         i9xUDUTf1GnlSKp+7P6WUfguw5fOUnhU4r2UtO8OwWHwUjCe1InKaA8oTNVPeAqpK4bj
-         dv6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=hmO9GyPcXh/ZkBPEMHmuX83N/KJmuAIwdfILuua87Rk=;
-        b=E8UeaeJ97zeia/v5SlHoaYVBGaO0kxy9makROlebXbycGtNAJ/63AoUyDrc5Cnbexa
-         w6HLVMU5KbJ99hE1YwB0cunxByu85x6aJfggJ36tUtdlomFYVK5J0oeLFwkosawuda1o
-         M0qdw4rt68PDSHnLrtlhYT8YZLoi7MV7xZ9UuNtnY0Sk1H8ahQ/LTAhRRJ8LYOdFvtSB
-         JugIqMLjln1TqU/xfVqBMDXN9XjwhsQbJ7CCoumyYTQFMFg5JWL68MBSXsjm6B6Ps8Ec
-         CyU0+FVSkzL05AagVMCECjmWGZ9PNsyFOIBbfTterOs3rRrMrtcp509NNc3OjalOzQeV
-         0WVA==
-X-Gm-Message-State: AOAM530A7hyJDzpb2olrgaYZr4SYg2/95oMdcvDGP4S1qLROA14vErDL
-        d6heCusWVMgEy35ftGuW9GkjMHH+/n7DywthxGA=
-X-Google-Smtp-Source: ABdhPJwe5YXTT0fl99QXRsPa9Vvgm87Nw1vMyGCWsGg3gilfFd5km4hmUmTUBKMM3v9j0Y5Nl7xg1kek+Vzdls4QKQA=
-X-Received: by 2002:a05:6808:5d3:: with SMTP id d19mr8489112oij.145.1594247992592;
- Wed, 08 Jul 2020 15:39:52 -0700 (PDT)
+        Wed, 8 Jul 2020 18:40:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=UNmO82B1L6vK/6Ekgs8DFfG07q3A5V9knSP06sf1Q/Y=; b=FWHWswvitMxH1eY7zuhuceHQZq
+        +Abxb2tnwfDZjH8VHbqMU1EYBiLIqBMGixGi1Yuy8/HkOwOvfhaIniw6VPQXjSo7698mZkAW7hAsV
+        NL/iPMIvgni9YGO6C6n0afY2vSF0PW+eNR6Mh/QWwZJndpNBUMAEdy9G6H4KQzMqoBWRxKC8481Se
+        WLERSQNZf9bUkUT8YiMjiEM9yII18sZLBBC97ehQ2EetwbGvqEiFSWanHIbHdW7XytZtHxbY1V4Pt
+        OVx1BrEuOVhcrDbX9Uzj434S/rMrF4LX5QDsKr3MnvPdNF+P8G6adklo342HXGkaRla2y9exzvNRh
+        nO9/1qvQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jtIjy-0006ef-Qq; Wed, 08 Jul 2020 22:40:35 +0000
+Date:   Wed, 8 Jul 2020 23:40:34 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-aio@kvack.org, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Kanchan Joshi <joshi.k@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>
+Subject: Re: [PATCH 1/2] fs: Abstract calling the kiocb completion function
+Message-ID: <20200708224034.GX25523@casper.infradead.org>
+References: <20200708222637.23046-1-willy@infradead.org>
+ <20200708222637.23046-2-willy@infradead.org>
+ <983baa4b-55c6-0988-9e43-6860937957b4@kernel.dk>
 MIME-Version: 1.0
-Received: by 2002:a8a:487:0:0:0:0:0 with HTTP; Wed, 8 Jul 2020 15:39:52 -0700 (PDT)
-From:   Ali Sabyani <alisabyani5@gmail.com>
-Date:   Wed, 8 Jul 2020 15:39:52 -0700
-Message-ID: <CAKdE_2ktP3mqh60bbm0-6HzqUunyHDAkdg3T0nVFhaLGAEQRoQ@mail.gmail.com>
-Subject: GET BACK TO ME URGENTLY
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <983baa4b-55c6-0988-9e43-6860937957b4@kernel.dk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Sir/Madam
+On Wed, Jul 08, 2020 at 04:37:21PM -0600, Jens Axboe wrote:
+> On 7/8/20 4:26 PM, Matthew Wilcox (Oracle) wrote:
+> > diff --git a/crypto/af_alg.c b/crypto/af_alg.c
+> > index b1cd3535c525..590dbbcd0e9f 100644
+> > --- a/crypto/af_alg.c
+> > +++ b/crypto/af_alg.c
+> > @@ -1045,7 +1045,7 @@ void af_alg_async_cb(struct crypto_async_request *_req, int err)
+> >  	af_alg_free_resources(areq);
+> >  	sock_put(sk);
+> >  
+> > -	iocb->ki_complete(iocb, err ? err : (int)resultlen, 0);
+> > +	complete_kiocb(iocb, err ? err : (int)resultlen, 0);
+> 
+> I'd prefer having it called kiocb_complete(), seems more in line with
+> what you'd expect in terms of naming for an exported interface.
 
+Happy to make that change.  It seemed like you preferred the opposite
+way round with is_sync_kiocb() and init_sync_kiocb() already existing.
 
-RE;$15,200,000.00 (FIFTEEN MILLION, TWO HUNDRED THOUSAND U.S DOLLARS)
-INVESTMENT PROJECT.
-
-I wish this proposal will not embarrass you as I had know previous
-correspondence with you.
-
-I am Mr. Ali Sabyani, a Syrian national. My objective is to establish
-a liable business relationship with you. I am Personal Assistant to
-Late General Daoud Rajha (Former Syria Defence Minister) who was
-killed in a mounted bomb explosion on Wednesday, 18th July, 2012
-inside the Syrian National Security headquarters in Damascus which
-targeted Ministers of President Bashar Assad's regime who were meeting
-with Defense Officials.
-
-Whilst I am in a hideout since Wednesday, 18th July, 2012 trying to
-find my way out of Syria territory, from there I got a Muslim Africa
-brother who helped me. In the process of the ongoing war I lost my
-father and mother. In other to proof to you about the genuineity of my
-business, Please contact me on this email address:- alissy1964@gmail.com
-
-Thanks.
-
-Yours Sincerely
-Mr. Ali Sabyani.
+Should I switch register_kiocb_completion and unregister_kiocb_completion
+to kiocb_completion_register or kiocb_register_completion?
