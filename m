@@ -2,101 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5BE22191BC
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 22:44:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D00712191E0
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 22:54:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726184AbgGHUof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 16:44:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726043AbgGHUof (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 16:44:35 -0400
-Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61D9AC061A0B;
-        Wed,  8 Jul 2020 13:44:35 -0700 (PDT)
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id 9A107BC0CB;
-        Wed,  8 Jul 2020 20:44:31 +0000 (UTC)
-From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-To:     mchehab@kernel.org, bp@alien8.de, tony.luck@intel.com,
-        james.morse@arm.com, rrichter@marvell.com,
-        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Subject: [PATCH] EDAC-I7300: Replace HTTP links with HTTPS ones
-Date:   Wed,  8 Jul 2020 22:44:25 +0200
-Message-Id: <20200708204425.22444-1-grandmaster@al2klimov.de>
+        id S1726072AbgGHUyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 16:54:00 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:23189 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725848AbgGHUyA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 16:54:00 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1594241638; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=JXEjENLH7MbraRA/pMvTjsju07jH8KL7dOAaR98y5WU=;
+ b=OakzlWJACtL+f3gMtkppoRF7Stu3tJCB39Xpxuqpxs8Grc9I+2dZUd6AMpoL17wkYFBvD2sY
+ H78lfCLmUhCFlxm1mtiznfp3ti3zz2neTseg6eukapd4qIN9VcVOY8E9dDHJVCeYfNfIHqDB
+ sILv/EHGc+oKFU3eAWMhBfTlc4U=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n16.prod.us-west-2.postgun.com with SMTP id
+ 5f06325da33b1a3dd42fe752 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 08 Jul 2020 20:53:49
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D11E1C433CA; Wed,  8 Jul 2020 20:53:49 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1A121C433C8;
+        Wed,  8 Jul 2020 20:53:49 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +++++
-X-Spam-Level: *****
-Authentication-Results: smtp.al2klimov.de;
-        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 08 Jul 2020 13:53:49 -0700
+From:   bbhatt@codeaurora.org
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm-owner@vger.kernel.org
+Subject: Re: [PATCH v4 3/9] bus: mhi: core: Use helper API to trigger a
+ non-blocking host resume
+In-Reply-To: <20200704144714.GC3066@Mani-XPS-13-9360>
+References: <1593448782-8385-1-git-send-email-bbhatt@codeaurora.org>
+ <1593448782-8385-4-git-send-email-bbhatt@codeaurora.org>
+ <20200704144714.GC3066@Mani-XPS-13-9360>
+Message-ID: <ed30fd4330863c9743a019b6bd89aabd@codeaurora.org>
+X-Sender: bbhatt@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rationale:
-Reduces attack surface on kernel devs opening the links for MITM
-as HTTPS traffic is much harder to manipulate.
+On 2020-07-04 07:47, Manivannan Sadhasivam wrote:
+> On Mon, Jun 29, 2020 at 09:39:36AM -0700, Bhaumik Bhatt wrote:
+>> Autonomous low power mode support requires the MHI host to resume from
+>> multiple places and post a wakeup source to exit system suspend. This
+>> needs to be done in a non-blocking manner. Introduce a helper API to
+>> trigger the host resume for data transfers and other non-blocking use
+>> cases while supporting implementation of autonomous low power modes.
+>> 
+> 
+> Why can't you use pm_wakeup_event() as done in __mhi_device_get_sync()?
+> 
+> Thanks,
+> Mani
+> 
 
-Deterministic algorithm:
-For each file:
-  If not .svg:
-    For each line:
-      If doesn't contain `\bxmlns\b`:
-        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
-            If both the HTTP and HTTPS versions
-            return 200 OK and serve the same content:
-              Replace HTTP with HTTPS.
+I forgot to address the __mhi_device_get_sync() function. Thanks for 
+pointing out.
 
-Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
----
- Continuing my work started at 93431e0607e5.
- See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
- (Actually letting a shell for loop submit all this stuff for me.)
+Is it preferable to always post wakeup source with hard boolean set?
+We do want to wakeup from Suspend-to-Idle if system suspend happens to 
+go that route.
 
- If there are any URLs to be removed completely or at least not HTTPSified:
- Just clearly say so and I'll *undo my change*.
- See also: https://lkml.org/lkml/2020/6/27/64
+As of now, we just by default do regular wakeup event and not hard.
+I figured at some point we might need to distinguish between hard vs 
+regular, hence the option but
+it can be eliminated in favor of one or another.
 
- If there are any valid, but yet not changed URLs:
- See: https://lkml.org/lkml/2020/6/26/837
+Thanks,
+Bhaumik
 
- If you apply the patch, please let me know.
-
-
- drivers/edac/i7300_edac.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/edac/i7300_edac.c b/drivers/edac/i7300_edac.c
-index 2e9bbe56cde9..7d19f88b084b 100644
---- a/drivers/edac/i7300_edac.c
-+++ b/drivers/edac/i7300_edac.c
-@@ -5,10 +5,10 @@
-  * Copyright (c) 2010 by:
-  *	 Mauro Carvalho Chehab
-  *
-- * Red Hat Inc. http://www.redhat.com
-+ * Red Hat Inc. https://www.redhat.com
-  *
-  * Intel 7300 Chipset Memory Controller Hub (MCH) - Datasheet
-- *	http://www.intel.com/Assets/PDF/datasheet/318082.pdf
-+ *	https://www.intel.com/Assets/PDF/datasheet/318082.pdf
-  *
-  * TODO: The chipset allow checking for PCI Express errors also. Currently,
-  *	 the driver covers only memory error errors
-@@ -1206,7 +1206,7 @@ module_exit(i7300_exit);
- 
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Mauro Carvalho Chehab");
--MODULE_AUTHOR("Red Hat Inc. (http://www.redhat.com)");
-+MODULE_AUTHOR("Red Hat Inc. (https://www.redhat.com)");
- MODULE_DESCRIPTION("MC Driver for Intel I7300 memory controllers - "
- 		   I7300_REVISION);
- 
--- 
-2.27.0
-
+>> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+>> ---
+>>  drivers/bus/mhi/core/internal.h |  8 ++++++++
+>>  drivers/bus/mhi/core/main.c     | 21 +++++++--------------
+>>  drivers/bus/mhi/core/pm.c       |  6 ++----
+>>  3 files changed, 17 insertions(+), 18 deletions(-)
+>> 
+>> diff --git a/drivers/bus/mhi/core/internal.h 
+>> b/drivers/bus/mhi/core/internal.h
+>> index bcfa7b6..cb32eaf 100644
+>> --- a/drivers/bus/mhi/core/internal.h
+>> +++ b/drivers/bus/mhi/core/internal.h
+>> @@ -599,6 +599,14 @@ int mhi_queue_state_transition(struct 
+>> mhi_controller *mhi_cntrl,
+>>  int mhi_send_cmd(struct mhi_controller *mhi_cntrl, struct mhi_chan 
+>> *mhi_chan,
+>>  		 enum mhi_cmd_type cmd);
+>> 
+>> +static inline void mhi_trigger_resume(struct mhi_controller 
+>> *mhi_cntrl,
+>> +				      bool hard_wakeup)
+>> +{
+>> +	pm_wakeup_dev_event(&mhi_cntrl->mhi_dev->dev, 0, hard_wakeup);
+>> +	mhi_cntrl->runtime_get(mhi_cntrl);
+>> +	mhi_cntrl->runtime_put(mhi_cntrl);
+>> +}
+>> +
+>>  /* Register access methods */
+>>  void mhi_db_brstmode(struct mhi_controller *mhi_cntrl, struct db_cfg 
+>> *db_cfg,
+>>  		     void __iomem *db_addr, dma_addr_t db_val);
+>> diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
+>> index 1f622ce..8d6ec34 100644
+>> --- a/drivers/bus/mhi/core/main.c
+>> +++ b/drivers/bus/mhi/core/main.c
+>> @@ -909,8 +909,7 @@ void mhi_ctrl_ev_task(unsigned long data)
+>>  		 * process it since we are probably in a suspended state,
+>>  		 * so trigger a resume.
+>>  		 */
+>> -		mhi_cntrl->runtime_get(mhi_cntrl);
+>> -		mhi_cntrl->runtime_put(mhi_cntrl);
+>> +		mhi_trigger_resume(mhi_cntrl, false);
+>> 
+>>  		return;
+>>  	}
+>> @@ -971,10 +970,8 @@ int mhi_queue_skb(struct mhi_device *mhi_dev, 
+>> enum dma_data_direction dir,
+>>  	}
+>> 
+>>  	/* we're in M3 or transitioning to M3 */
+>> -	if (MHI_PM_IN_SUSPEND_STATE(mhi_cntrl->pm_state)) {
+>> -		mhi_cntrl->runtime_get(mhi_cntrl);
+>> -		mhi_cntrl->runtime_put(mhi_cntrl);
+>> -	}
+>> +	if (MHI_PM_IN_SUSPEND_STATE(mhi_cntrl->pm_state))
+>> +		mhi_trigger_resume(mhi_cntrl, false);
+>> 
+>>  	/* Toggle wake to exit out of M2 */
+>>  	mhi_cntrl->wake_toggle(mhi_cntrl);
+>> @@ -1032,10 +1029,8 @@ int mhi_queue_dma(struct mhi_device *mhi_dev, 
+>> enum dma_data_direction dir,
+>>  	}
+>> 
+>>  	/* we're in M3 or transitioning to M3 */
+>> -	if (MHI_PM_IN_SUSPEND_STATE(mhi_cntrl->pm_state)) {
+>> -		mhi_cntrl->runtime_get(mhi_cntrl);
+>> -		mhi_cntrl->runtime_put(mhi_cntrl);
+>> -	}
+>> +	if (MHI_PM_IN_SUSPEND_STATE(mhi_cntrl->pm_state))
+>> +		mhi_trigger_resume(mhi_cntrl, false);
+>> 
+>>  	/* Toggle wake to exit out of M2 */
+>>  	mhi_cntrl->wake_toggle(mhi_cntrl);
+>> @@ -1147,10 +1142,8 @@ int mhi_queue_buf(struct mhi_device *mhi_dev, 
+>> enum dma_data_direction dir,
+>>  	read_lock_irqsave(&mhi_cntrl->pm_lock, flags);
+>> 
+>>  	/* we're in M3 or transitioning to M3 */
+>> -	if (MHI_PM_IN_SUSPEND_STATE(mhi_cntrl->pm_state)) {
+>> -		mhi_cntrl->runtime_get(mhi_cntrl);
+>> -		mhi_cntrl->runtime_put(mhi_cntrl);
+>> -	}
+>> +	if (MHI_PM_IN_SUSPEND_STATE(mhi_cntrl->pm_state))
+>> +		mhi_trigger_resume(mhi_cntrl, false);
+>> 
+>>  	/* Toggle wake to exit out of M2 */
+>>  	mhi_cntrl->wake_toggle(mhi_cntrl);
+>> diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
+>> index 661d704..5e3994e 100644
+>> --- a/drivers/bus/mhi/core/pm.c
+>> +++ b/drivers/bus/mhi/core/pm.c
+>> @@ -1139,10 +1139,8 @@ void mhi_device_put(struct mhi_device *mhi_dev)
+>> 
+>>  	mhi_dev->dev_wake--;
+>>  	read_lock_bh(&mhi_cntrl->pm_lock);
+>> -	if (MHI_PM_IN_SUSPEND_STATE(mhi_cntrl->pm_state)) {
+>> -		mhi_cntrl->runtime_get(mhi_cntrl);
+>> -		mhi_cntrl->runtime_put(mhi_cntrl);
+>> -	}
+>> +	if (MHI_PM_IN_SUSPEND_STATE(mhi_cntrl->pm_state))
+>> +		mhi_trigger_resume(mhi_cntrl, false);
+>> 
+>>  	mhi_cntrl->wake_put(mhi_cntrl, false);
+>>  	read_unlock_bh(&mhi_cntrl->pm_lock);
+>> --
+>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+>> Forum,
+>> a Linux Foundation Collaborative Project
+>> 
