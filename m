@@ -2,100 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FD772181A4
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 09:47:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C7CD2181AE
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 09:48:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727075AbgGHHrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 03:47:45 -0400
-Received: from mga02.intel.com ([134.134.136.20]:60128 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726342AbgGHHrp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 03:47:45 -0400
-IronPort-SDR: jT5qVe74UmxQNsyxaLA7eCCM3lRx7krSug8sOOmMNjsYSKzJl1UwRicUpUc0A4386zjWtT9oZ/
- Rm7hd4mc64iA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9675"; a="135987842"
-X-IronPort-AV: E=Sophos;i="5.75,327,1589266800"; 
-   d="scan'208";a="135987842"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2020 00:47:44 -0700
-IronPort-SDR: 1D/JtnuSfCCoKYN+pqoTcXLFPhiswVea4KFhk0k+3QuBPjKv1PbkOLVv+k1DfHB+ZjvBG3d5UK
- fjJf3XaQ4dmQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,327,1589266800"; 
-   d="scan'208";a="297642967"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga002.jf.intel.com with ESMTP; 08 Jul 2020 00:47:44 -0700
-Received: from [10.249.226.44] (abudanko-mobl.ccr.corp.intel.com [10.249.226.44])
-        by linux.intel.com (Postfix) with ESMTP id 74DC05807FC;
-        Wed,  8 Jul 2020 00:47:42 -0700 (PDT)
-Subject: [PATCH v10 04/15] perf evlist: introduce control file descriptors
-From:   Alexey Budankov <alexey.budankov@linux.intel.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <4af50c95-36f6-7a61-5a22-2949970fe7a5@linux.intel.com>
-Organization: Intel Corp.
-Message-ID: <92aa73c7-4148-a45d-6964-983fe1654d1e@linux.intel.com>
-Date:   Wed, 8 Jul 2020 10:47:41 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727108AbgGHHsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 03:48:25 -0400
+Received: from mail-ej1-f67.google.com ([209.85.218.67]:46751 "EHLO
+        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726044AbgGHHsY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 03:48:24 -0400
+Received: by mail-ej1-f67.google.com with SMTP id p20so49283030ejd.13
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 00:48:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zry+YVLnJazpbmt6mpkdVvSYbOfVb62kd++eIeoVHS4=;
+        b=KSWJHQAWf7P8efzd0BL1J69PcoH2K/QJN8WFjmC8sehRc29WzSHtPF3A1s9Irw4b3x
+         kxAwuoE8DoiLLt6kwv7w3zicO0ccuxrtOI/PBw3MiM5oqWEEQnPzz/d4pN2/NqhbWrkm
+         OVlechoud+ITq8NHsOefEm3os4feixx04++7a5ovjfTGB6uyAsfoscN0WkiVcDE0+4gX
+         hUhAGMpugxfL3w5vHHYT/8ptQPpO6lnRte9s/HAg/OZGL5pRBUK/BIRH1CTqAdaohFL6
+         qwXoPms25GegFmOozp4/mAIoJEHcoGpPVSd1WkUvMlsg4weQ6WR/siKm8ggMBj7CwTn+
+         y5uQ==
+X-Gm-Message-State: AOAM5337Hji15SnpIk7nl5SKdRqP3QblatDT2UswUr9f9Mjr67r5RW8V
+        o/fJNDqY0ggxgTo9jWLTz5Q=
+X-Google-Smtp-Source: ABdhPJwYTvNQiCzblN90hUL+sRhmBKLa163qzpvJPNOECJZNnioVpqTsfuMIhgfngcwgomaL2jfSMg==
+X-Received: by 2002:a17:906:d143:: with SMTP id br3mr48735485ejb.268.1594194502861;
+        Wed, 08 Jul 2020 00:48:22 -0700 (PDT)
+Received: from localhost (ip-37-188-179-51.eurotel.cz. [37.188.179.51])
+        by smtp.gmail.com with ESMTPSA id ay27sm27136473edb.81.2020.07.08.00.48.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Jul 2020 00:48:21 -0700 (PDT)
+Date:   Wed, 8 Jul 2020 09:48:20 +0200
+From:   Michal Hocko <mhocko@kernel.org>
+To:     Joonsoo Kim <js1304@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel-team@lge.com,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Christoph Hellwig <hch@infradead.org>,
+        Roman Gushchin <guro@fb.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>
+Subject: Re: [PATCH v4 05/11] mm/migrate: clear __GFP_RECLAIM for THP
+ allocation for migration
+Message-ID: <20200708074820.GE7271@dhcp22.suse.cz>
+References: <1594107889-32228-1-git-send-email-iamjoonsoo.kim@lge.com>
+ <1594107889-32228-6-git-send-email-iamjoonsoo.kim@lge.com>
+ <20200707114019.GI5913@dhcp22.suse.cz>
+ <20200708071916.GD16543@js1304-desktop>
 MIME-Version: 1.0
-In-Reply-To: <4af50c95-36f6-7a61-5a22-2949970fe7a5@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200708071916.GD16543@js1304-desktop>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed 08-07-20 16:19:17, Joonsoo Kim wrote:
+> On Tue, Jul 07, 2020 at 01:40:19PM +0200, Michal Hocko wrote:
+[...]
+> Subject: [PATCH] mm/migrate: clear __GFP_RECLAIM for THP allocation for
+>  migration
+> 
+> In migration target allocation functions, THP allocations uses different
+> gfp_mask, especially, in regard to the reclaim gfp_mask. There is no
+> reason to use different reclaim gfp_mask for each cases and it is
+> an obstacle to make a common function in order to clean-up migration
+> target allocation functions. This patch fixes this situation by using
+> common reclaim gfp_mask for THP allocation.
 
-Define and initialize control file descriptors.
+I would find the following more understandable, feel free to reuse parts
+that you like:
+"
+new_page_nodemask is a migration callback and it tries to use a common
+gfp flags for the target page allocation whether it is a base page or a
+THP. The later only adds GFP_TRANSHUGE to the given mask. This results
+in the allocation being slightly more aggressive than necessary because
+the resulting gfp mask will contain also __GFP_RECLAIM_KSWAPD. THP
+allocations usually exclude this flag to reduce over eager background
+reclaim during a high THP allocation load which has been seen during
+large mmaps initialization. There is no indication that this is a
+problem for migration as well but theoretically the same might happen
+when migrating large mappings to a different node. Make the migration
+callback consistent with regular THP allocations.
+"
 
-Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
----
- tools/perf/util/evlist.c | 3 +++
- tools/perf/util/evlist.h | 5 +++++
- 2 files changed, 8 insertions(+)
-
-diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
-index bcbe0cb8482e..36eb50aba1f5 100644
---- a/tools/perf/util/evlist.c
-+++ b/tools/perf/util/evlist.c
-@@ -63,6 +63,9 @@ void evlist__init(struct evlist *evlist, struct perf_cpu_map *cpus,
- 	perf_evlist__set_maps(&evlist->core, cpus, threads);
- 	evlist->workload.pid = -1;
- 	evlist->bkw_mmap_state = BKW_MMAP_NOTREADY;
-+	evlist->ctl_fd.fd = -1;
-+	evlist->ctl_fd.ack = -1;
-+	evlist->ctl_fd.pos = -1;
- }
- 
- struct evlist *evlist__new(void)
-diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
-index 38901c0d1599..2caf19fb87a8 100644
---- a/tools/perf/util/evlist.h
-+++ b/tools/perf/util/evlist.h
-@@ -74,6 +74,11 @@ struct evlist {
- 		pthread_t		th;
- 		volatile int		done;
- 	} thread;
-+	struct {
-+		int	fd;
-+		int	ack;
-+		int	pos;
-+	} ctl_fd;
- };
- 
- struct evsel_str_handler {
 -- 
-2.24.1
-
-
+Michal Hocko
+SUSE Labs
