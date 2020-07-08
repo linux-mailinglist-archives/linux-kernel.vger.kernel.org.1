@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46B7A218CDE
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 18:21:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B09B218CDF
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 18:22:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730635AbgGHQVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 12:21:46 -0400
-Received: from mga12.intel.com ([192.55.52.136]:40825 "EHLO mga12.intel.com"
+        id S1730583AbgGHQVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 12:21:42 -0400
+Received: from mga07.intel.com ([134.134.136.100]:56227 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730596AbgGHQVn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 12:21:43 -0400
-IronPort-SDR: rzz2L1C9HfR1DMnOMqMk2ZX+tOIPEvmLOMH9VgYYipl5oG8gHLzo5hrW2Ge5q5MP50VYvKBJSf
- FgoWsK3hlr4Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9676"; a="127441013"
+        id S1730405AbgGHQVm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 12:21:42 -0400
+IronPort-SDR: Ly/jPsgGW2wvQgJqUJRwadpSIKv+jlc6YQ2FQWAWGHaDEEhw93SPAWwTSrK1w4BK9lgC5a9EUa
+ QWjWsjzFibMA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9676"; a="212778630"
 X-IronPort-AV: E=Sophos;i="5.75,327,1589266800"; 
-   d="scan'208";a="127441013"
+   d="scan'208";a="212778630"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2020 09:21:42 -0700
-IronPort-SDR: JHkzLSXTvCFhczTEgM5EfmUiOeB8qAfZmG5Su/z2hdCKcuh6NEtb/aKFXJKga18WC8+IRRQlXJ
- SOVbIdho7lsA==
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2020 09:21:41 -0700
+IronPort-SDR: F1zsg85myPZdee3UeItjeKBEvNc2CdS4v0qj7c2QVA2JC74IQVyekMS7bPl8oD0o50mdfdCVOK
+ 5EhVUH7igfww==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,327,1589266800"; 
-   d="scan'208";a="358152394"
+   d="scan'208";a="322983135"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga001.jf.intel.com with ESMTP; 08 Jul 2020 09:21:39 -0700
+  by FMSMGA003.fm.intel.com with ESMTP; 08 Jul 2020 09:21:39 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id D38FB371; Wed,  8 Jul 2020 19:21:38 +0300 (EEST)
+        id DDD6646B; Wed,  8 Jul 2020 19:21:38 +0300 (EEST)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -36,9 +36,9 @@ To:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
         Marc Zyngier <marc.zyngier@arm.com>,
         Thomas Gleixner <tglx@linutronix.de>
 Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 2/5] irqdomain: Add forward declaration of fwnode_handle
-Date:   Wed,  8 Jul 2020 19:21:32 +0300
-Message-Id: <20200708162135.31010-3-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 3/5] irqdomain: Replace open coded of_node_to_fwnode()
+Date:   Wed,  8 Jul 2020 19:21:33 +0300
+Message-Id: <20200708162135.31010-4-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200708162135.31010-1-andriy.shevchenko@linux.intel.com>
 References: <20200708162135.31010-1-andriy.shevchenko@linux.intel.com>
@@ -49,25 +49,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-irqdomain.h is a user of struct fwnode_handle. Add forward declaration of it.
+We can convert device node to fwnode with of_node_to_fwnode().
+Replace open coded variant of it in of_phandle_args_to_fwspec().
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- include/linux/irqdomain.h | 1 +
- 1 file changed, 1 insertion(+)
+ kernel/irq/irqdomain.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/irqdomain.h b/include/linux/irqdomain.h
-index ad6d2335e980..39bb0c13ac07 100644
---- a/include/linux/irqdomain.h
-+++ b/include/linux/irqdomain.h
-@@ -37,6 +37,7 @@
- #include <linux/radix-tree.h>
+diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
+index a4c2c915511d..d7a762cce8e9 100644
+--- a/kernel/irq/irqdomain.c
++++ b/kernel/irq/irqdomain.c
+@@ -736,7 +736,7 @@ static void of_phandle_args_to_fwspec(struct device_node *np, const u32 *args,
+ {
+ 	int i;
  
- struct device_node;
-+struct fwnode_handle;
- struct irq_domain;
- struct irq_chip;
- struct irq_data;
+-	fwspec->fwnode = np ? &np->fwnode : NULL;
++	fwspec->fwnode = of_node_to_fwnode(np);
+ 	fwspec->param_count = count;
+ 
+ 	for (i = 0; i < count; i++)
 -- 
 2.27.0
 
