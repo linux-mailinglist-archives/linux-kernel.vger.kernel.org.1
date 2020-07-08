@@ -2,79 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6088218B52
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 17:34:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 780F5218B62
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 17:35:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730271AbgGHPef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 11:34:35 -0400
-Received: from foss.arm.com ([217.140.110.172]:47126 "EHLO foss.arm.com"
+        id S1730322AbgGHPfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 11:35:12 -0400
+Received: from verein.lst.de ([213.95.11.211]:35919 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730124AbgGHPee (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 11:34:34 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CB04B1FB;
-        Wed,  8 Jul 2020 08:34:33 -0700 (PDT)
-Received: from [10.57.21.32] (unknown [10.57.21.32])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 75EEA3F237;
-        Wed,  8 Jul 2020 08:34:32 -0700 (PDT)
-Subject: Re: [PATCH] clk: rockchip: mark pclk_uart2 as critical on rk3328
-To:     Johan Jonker <jbx6244@gmail.com>, heiko@sntech.de
-Cc:     sboyd@kernel.org, mturquette@baylibre.com,
-        zhangqing@rock-chips.com, linux-kernel@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20200708144528.20465-1-jbx6244@gmail.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <074d8691-2d88-4520-1e43-8c7eb5b82680@arm.com>
-Date:   Wed, 8 Jul 2020 16:34:31 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1730028AbgGHPfM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 11:35:12 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 45C5168B05; Wed,  8 Jul 2020 17:35:09 +0200 (CEST)
+Date:   Wed, 8 Jul 2020 17:35:09 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        David Rientjes <rientjes@google.com>,
+        linux-rpi-kernel@lists.infradead.org, jeremy.linton@arm.com,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dma-pool: use single atomic pool for both DMA zones
+Message-ID: <20200708153509.GA26743@lst.de>
+References: <20200707122804.21262-1-nsaenzjulienne@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <20200708144528.20465-1-jbx6244@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200707122804.21262-1-nsaenzjulienne@suse.de>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-07-08 15:45, Johan Jonker wrote:
-> The rk3328 uart2 port is used as boot console and to debug.
-> During the boot pclk_uart2 is disabled by a clk_disable_unused
-> initcall. Fix the uart2 function by marking pclk_uart2
-> as critical on rk3328. Also add sclk_uart2 as that is needed
-> for the same DT node.
-
-Hmm, given that those are named in the DT as the "baudclk" and
-"apb_pclk" that dw8250_probe() explicitly claims, they really
-shouldn't be unused :/
-
-On my RK3328 box they appear to be prepared and enabled OK:
-
-[robin@nemulon-9 ~]$ sudo grep uart2 /sys/kernel/debug/clk/clk_summary
-    sclk_uart2                        1        1        0    24000000          0     0  50000
-                   pclk_uart2         1        1        0    75000000          0     0  50000
-...
-
-Robin.
-
-> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
-> ---
->   drivers/clk/rockchip/clk-rk3328.c | 2 ++
->   1 file changed, 2 insertions(+)
+On Tue, Jul 07, 2020 at 02:28:04PM +0200, Nicolas Saenz Julienne wrote:
+> When allocating atomic DMA memory for a device, the dma-pool core
+> queries __dma_direct_optimal_gfp_mask() to check which atomic pool to
+> use. It turns out the GFP flag returned is only an optimistic guess.
+> The pool selected might sometimes live in a zone higher than the
+> device's view of memory.
 > 
-> diff --git a/drivers/clk/rockchip/clk-rk3328.c b/drivers/clk/rockchip/clk-rk3328.c
-> index c186a1985..cb7749cb7 100644
-> --- a/drivers/clk/rockchip/clk-rk3328.c
-> +++ b/drivers/clk/rockchip/clk-rk3328.c
-> @@ -875,6 +875,8 @@ static const char *const rk3328_critical_clocks[] __initconst = {
->   	"aclk_gmac_niu",
->   	"pclk_gmac_niu",
->   	"pclk_phy_niu",
-> +	"pclk_uart2",
-> +	"sclk_uart2",
->   };
->   
->   static void __init rk3328_clk_init(struct device_node *np)
+> As there isn't a way to grantee a mapping between a device's DMA
+> constraints and correct GFP flags this unifies both DMA atomic pools.
+> The resulting pool is allocated in the lower DMA zone available, if any,
+> so as for devices to always get accessible memory while having the
+> flexibility of using dma_pool_kernel for the non constrained ones.
 > 
+> Fixes: c84dc6e68a1d ("dma-pool: add additional coherent pools to map to gfp mask")
+> Reported-by: Jeremy Linton <jeremy.linton@arm.com>
+> Suggested-by: Robin Murphy <robin.murphy@arm.com>
+> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+
+Hmm, this is not what I expected from the previous thread.  I thought
+we'd just use one dma pool based on runtime available of the zones..
