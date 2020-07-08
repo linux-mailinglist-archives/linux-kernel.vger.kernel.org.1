@@ -2,116 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01A552189F4
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 16:18:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FB262189EE
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 16:17:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729744AbgGHOSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 10:18:02 -0400
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:63318 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729468AbgGHOSB (ORCPT
+        id S1729636AbgGHORW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 10:17:22 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:52594 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729468AbgGHORV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 10:18:01 -0400
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 068EFu9J014410;
-        Wed, 8 Jul 2020 07:17:56 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=pfpt0818; bh=D6nmSWfWy5bSBQT2UH7xqHuqon/tMiiTzK5HS5iA6VQ=;
- b=xL8tvX5YfJC3U0OwoLSMyiLLY+M0SGwUYHxDpBdPL4Sp1PlDwDdz6GHDvHo2bNuId+L5
- ZKtpaougK0tSWtAGbfBpRXPjWj2gh4QtSHrwSpU8qblh0lzI9nEoeVqvmN+hC9GBMHmS
- nzguzueEQ/zzjXH/NQ4L09+FqSua45fnqEWM2PJ4Fbkfr/fvTwY7qTwqTof11aEacEqx
- z6yhSZyOzlu+7HsQmnGyE3UYulb7IHtZBgN5hE95ELIHalyT8gRls6b5GajUucdxWA7W
- C9A/e3auaeLQzdrVoLl3qG+E16lZq2zQMAwmKWLcZIS6f9BtyiOTHs1x0SOix11mF7eT EQ== 
-Received: from sc-exch02.marvell.com ([199.233.58.182])
-        by mx0b-0016f401.pphosted.com with ESMTP id 322s9ng6a9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 08 Jul 2020 07:17:56 -0700
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH02.marvell.com
- (10.93.176.82) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 8 Jul
- 2020 07:17:54 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 8 Jul 2020 07:17:54 -0700
-Received: from NN-LT0049.marvell.com (NN-LT0049.marvell.com [10.193.54.6])
-        by maili.marvell.com (Postfix) with ESMTP id 6388F3F703F;
-        Wed,  8 Jul 2020 07:17:51 -0700 (PDT)
-From:   Alexander Lobakin <alobakin@marvell.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-CC:     Igor Russkikh <irusskikh@marvell.com>,
-        Dmitry Bezrukov <dbezrukov@marvell.com>,
-        Mark Starovoytov <mstarovoitov@marvell.com>,
-        "Dmitry Bogdanov" <dbogdanov@marvell.com>,
-        Egor Pomozov <epomozov@marvell.com>,
-        "Sergey Samoilenko" <sergey.samoilenko@marvell.com>,
-        Alexander Lobakin <alobakin@marvell.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH net] net: atlantic: fix ip dst and ipv6 address filters
-Date:   Wed, 8 Jul 2020 17:17:10 +0300
-Message-ID: <20200708141710.758-1-alobakin@marvell.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 8 Jul 2020 10:17:21 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 068E2pkQ169935;
+        Wed, 8 Jul 2020 10:17:20 -0400
+Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 325bew9240-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Jul 2020 10:17:19 -0400
+Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
+        by ppma05wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 068EAQ7B030139;
+        Wed, 8 Jul 2020 14:17:18 GMT
+Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
+        by ppma05wdc.us.ibm.com with ESMTP id 324yf9xa1m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Jul 2020 14:17:18 +0000
+Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
+        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 068EHIaf14877592
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 8 Jul 2020 14:17:18 GMT
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2843EAC05B;
+        Wed,  8 Jul 2020 14:17:18 +0000 (GMT)
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 15779AC059;
+        Wed,  8 Jul 2020 14:17:18 +0000 (GMT)
+Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
+        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed,  8 Jul 2020 14:17:18 +0000 (GMT)
+Subject: Re: [PATCH v9 2/2] tpm: Add support for event log pointer found in
+ TPM2 ACPI table
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     Stefan Berger <stefanb@linux.vnet.ibm.com>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-security-module@vger.kernel.org
+References: <20200706181953.3592084-1-stefanb@linux.vnet.ibm.com>
+ <20200706181953.3592084-3-stefanb@linux.vnet.ibm.com>
+ <20200706230914.GC20770@linux.intel.com>
+ <78ec872f-89b3-6464-6ede-bd0a46fe5c4c@linux.ibm.com>
+ <20200707022416.GC112019@linux.intel.com>
+ <f3e0fb50-8617-da40-1456-158531a070cb@linux.ibm.com>
+ <20200707040325.GB143804@linux.intel.com>
+ <85c27199-df55-eecc-855c-dedcea64f89e@linux.ibm.com>
+ <20200708140753.GC538949@linux.intel.com>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+Message-ID: <e42cb59d-6a3d-12be-bb51-88aa8c5dba23@linux.ibm.com>
+Date:   Wed, 8 Jul 2020 10:17:17 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
+In-Reply-To: <20200708140753.GC538949@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Language: en-US
+X-TM-AS-GCONF: 00
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-08_13:2020-07-08,2020-07-08 signatures=0
+ definitions=2020-07-08_11:2020-07-08,2020-07-08 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=999
+ priorityscore=1501 cotscore=-2147483648 lowpriorityscore=0 suspectscore=0
+ impostorscore=0 mlxscore=0 clxscore=1015 adultscore=0 spamscore=0
+ malwarescore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2007080099
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Bogdanov <dbogdanov@marvell.com>
+On 7/8/20 10:07 AM, Jarkko Sakkinen wrote:
+> On Tue, Jul 07, 2020 at 12:09:11AM -0400, Stefan Berger wrote:
+>> On 7/7/20 12:03 AM, Jarkko Sakkinen wrote:
+>>> On Mon, Jul 06, 2020 at 11:08:12PM -0400, Stefan Berger wrote:
+>>>> On 7/6/20 10:24 PM, Jarkko Sakkinen wrote:
+>>>>> On Mon, Jul 06, 2020 at 07:55:26PM -0400, Stefan Berger wrote:
+>>>>>> On 7/6/20 7:09 PM, Jarkko Sakkinen wrote:
+>>>>>>> On Mon, Jul 06, 2020 at 02:19:53PM -0400, Stefan Berger wrote:
+>>>>>>>> From: Stefan Berger <stefanb@linux.ibm.com>
+>>>>>>>>
+>>>>>>>> In case a TPM2 is attached, search for a TPM2 ACPI table when trying
+>>>>>>>> to get the event log from ACPI. If one is found, use it to get the
+>>>>>>>> start and length of the log area. This allows non-UEFI systems, such
+>>>>>>>> as SeaBIOS, to pass an event log when using a TPM2.
+>>>>>>>>
+>>>>>>>> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+>>>>>>> Do you think that QEMU with TPM 1.2 emulator turned on would be a viable
+>>>>>>> way to test this?
+>>>>>> Yes.
+>>>>> Is the emulator bundled with QEMU or does it have to be installed
+>>>>> separately?
+>>>> It has to be installed separately. On Fedora 31 it would just be a `sudo dnf
+>>>> -y install swtpm-tools` and you should be good to go with libvirt /
+>>>> virt-manager.
+>>> Is there some packaging for Debian/Ubuntu available?
+>>
+>> So far may not be available yet. I had *experimented* with a PPA once:
+>> https://launchpad.net/~stefanberger/+archive/ubuntu/swtpm-focal
+> There is a snap available:
+>
+> name:      swtpm-mvo
+> summary:   Libtpms-based TPM emulator
+> publisher: Michael Vogt (mvo)
+> store-url: https://snapcraft.io/swtpm-mvo
+> license:   unset
+> description: |
+>    Libtpms-based TPM emulator with socket, character device, and Linux
+>    CUSE interface.
+> commands:
+>    - swtpm-mvo.swtpm
+> services:
+>    swtpm-mvo.swtpm-sock: simple, enabled, active
+> snap-id:      HNl1TwHRBk3OtXQ8OriRB93FDZ6vman7
+> tracking:     latest/edge
+> refresh-date: today at 02:05 EEST
+> channels:
+>    latest/stable:    –
+>    latest/candidate: –
+>    latest/beta:      0.1.0 2019-07-26 (11) 3MB -
+>    latest/edge:      0.1.0 2020-07-08 (75) 3MB -
+> installed:          0.1.0            (74) 3MB -
+>
+> This is the version information:
+>
+> ❯ swtpm-mvo.swtpm --version
+> TPM emulator version 0.4.0, Copyright (c) 2014 IBM Corp.
+>
+> However, if I try to run the first example from [*], I get:
+>
+> ❯ swtpm-mvo.swtpm socket --tpmstate dir=/tmp/mytpm1 \
+>    --ctrl type=unixio,path=/tmp/mytpm1/swtpm-sock \
+>    --log level=20
+> swtpm: Could not open UnixIO socket: No such file or directory
 
-This patch fixes ip dst and ipv6 address filters.
-There were 2 mistakes in the code, which led to the issue:
-* invalid register was used for ipv4 dst address;
-* incorrect write order of dwords for ipv6 addresses.
 
-Fixes: 23e7a718a49b ("net: aquantia: add rx-flow filter definitions")
-Signed-off-by: Dmitry Bogdanov <dbogdanov@marvell.com>
-Signed-off-by: Mark Starovoytov <mstarovoitov@marvell.com>
-Signed-off-by: Alexander Lobakin <alobakin@marvell.com>
----
- drivers/net/ethernet/aquantia/atlantic/hw_atl/hw_atl_llh.c    | 4 ++--
- .../ethernet/aquantia/atlantic/hw_atl/hw_atl_llh_internal.h   | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+Did you create the directory '/tmp/mytpm1' ?
 
-diff --git a/drivers/net/ethernet/aquantia/atlantic/hw_atl/hw_atl_llh.c b/drivers/net/ethernet/aquantia/atlantic/hw_atl/hw_atl_llh.c
-index 3c8e8047ea1e..d775b23025c1 100644
---- a/drivers/net/ethernet/aquantia/atlantic/hw_atl/hw_atl_llh.c
-+++ b/drivers/net/ethernet/aquantia/atlantic/hw_atl/hw_atl_llh.c
-@@ -1700,7 +1700,7 @@ void hw_atl_rpfl3l4_ipv6_src_addr_set(struct aq_hw_s *aq_hw, u8 location,
- 	for (i = 0; i < 4; ++i)
- 		aq_hw_write_reg(aq_hw,
- 				HW_ATL_RPF_L3_SRCA_ADR(location + i),
--				ipv6_src[i]);
-+				ipv6_src[3 - i]);
- }
- 
- void hw_atl_rpfl3l4_ipv6_dest_addr_set(struct aq_hw_s *aq_hw, u8 location,
-@@ -1711,7 +1711,7 @@ void hw_atl_rpfl3l4_ipv6_dest_addr_set(struct aq_hw_s *aq_hw, u8 location,
- 	for (i = 0; i < 4; ++i)
- 		aq_hw_write_reg(aq_hw,
- 				HW_ATL_RPF_L3_DSTA_ADR(location + i),
--				ipv6_dest[i]);
-+				ipv6_dest[3 - i]);
- }
- 
- u32 hw_atl_sem_ram_get(struct aq_hw_s *self)
-diff --git a/drivers/net/ethernet/aquantia/atlantic/hw_atl/hw_atl_llh_internal.h b/drivers/net/ethernet/aquantia/atlantic/hw_atl/hw_atl_llh_internal.h
-index 06220792daf1..7430ff025134 100644
---- a/drivers/net/ethernet/aquantia/atlantic/hw_atl/hw_atl_llh_internal.h
-+++ b/drivers/net/ethernet/aquantia/atlantic/hw_atl/hw_atl_llh_internal.h
-@@ -1360,7 +1360,7 @@
-  */
- 
-  /* Register address for bitfield pif_rpf_l3_da0_i[31:0] */
--#define HW_ATL_RPF_L3_DSTA_ADR(filter) (0x000053B0 + (filter) * 0x4)
-+#define HW_ATL_RPF_L3_DSTA_ADR(filter) (0x000053D0 + (filter) * 0x4)
- /* Bitmask for bitfield l3_da0[1F:0] */
- #define HW_ATL_RPF_L3_DSTA_MSK 0xFFFFFFFFu
- /* Inverted bitmask for bitfield l3_da0[1F:0] */
--- 
-2.25.1
+
+> [*] https://www.qemu.org/docs/master/specs/tpm.html
+>
+> /Jarkko
+
 
