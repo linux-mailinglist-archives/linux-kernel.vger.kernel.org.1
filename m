@@ -2,257 +2,370 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15F492182F0
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 10:57:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9612B218303
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 10:59:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728449AbgGHI5m convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 8 Jul 2020 04:57:42 -0400
-Received: from mout.kundenserver.de ([217.72.192.73]:37275 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728327AbgGHI5l (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 04:57:41 -0400
-Received: from mail-qk1-f176.google.com ([209.85.222.176]) by
- mrelayeu.kundenserver.de (mreue108 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1N6KQZ-1kyzRR3CWX-016ibf; Wed, 08 Jul 2020 10:57:37 +0200
-Received: by mail-qk1-f176.google.com with SMTP id k18so40767942qke.4;
-        Wed, 08 Jul 2020 01:57:36 -0700 (PDT)
-X-Gm-Message-State: AOAM53027UkKuFSJEpIFe4YoybEMyzeBDYSzluqaxufLj7f7VHndtumo
-        dEpKxmKeeMg+nSH+0gP+0UtXZ2nBRD3KMuIJQFw=
-X-Google-Smtp-Source: ABdhPJzKe0ldZY51vXLPbQLnhFOs4GKMxEtmMtpTYVrKrkHsesQPcdu9/5x/KOYdqQi57WAW7hH524s3eVnRN1t9las=
-X-Received: by 2002:a37:9dd6:: with SMTP id g205mr57834681qke.352.1594198654977;
- Wed, 08 Jul 2020 01:57:34 -0700 (PDT)
+        id S1728502AbgGHI7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 04:59:24 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:49984 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726795AbgGHI7Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 04:59:24 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1594198762; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: Date: Subject: In-Reply-To: References: Cc:
+ To: From: Sender; bh=AnP4iG40bGlOuYMKU9k6KR4SZ+SwX+sAGMkPobXSsGw=; b=KWSR8c1vU58Eq5MWXyFX6TqqGbs4rsCpt4iRVGVJhOGxSYpH2taniLX+eBpGKGmCYSHGknPE
+ 91m0N9fjw0SJO6QEMQzqdlsLTCnsXN7ZhMoBbf2mRLhWm0dF8wjeUunuF9d+eFcxSVum6kRo
+ 1RWVycvPWhg/n6lVwYosnoxW4IE=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n16.prod.us-east-1.postgun.com with SMTP id
+ 5f058a7d71d7ca1d3a34b83e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 08 Jul 2020 08:57:33
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C913EC433CB; Wed,  8 Jul 2020 08:57:32 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from Pillair (unknown [183.83.71.149])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: pillair)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B358EC433C8;
+        Wed,  8 Jul 2020 08:57:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B358EC433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=pillair@codeaurora.org
+From:   "Rakesh Pillai" <pillair@codeaurora.org>
+To:     "'Douglas Anderson'" <dianders@chromium.org>,
+        <kvalo@codeaurora.org>, <ath10k@lists.infradead.org>
+Cc:     <saiprakash.ranjan@codeaurora.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-wireless@vger.kernel.org>,
+        <kuabhs@google.com>, "'David S. Miller'" <davem@davemloft.net>,
+        "'Jakub Kicinski'" <kuba@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
+References: <20200707101712.1.I4d2f85ffa06f38532631e864a3125691ef5ffe06@changeid>
+In-Reply-To: <20200707101712.1.I4d2f85ffa06f38532631e864a3125691ef5ffe06@changeid>
+Subject: RE: [PATCH] ath10k: Keep track of which interrupts fired, don't poll them
+Date:   Wed, 8 Jul 2020 14:27:23 +0530
+Message-ID: <002901d65505$cf84e980$6e8ebc80$@codeaurora.org>
 MIME-Version: 1.0
-References: <20200707180955.53024-1-mic@digikod.net> <20200707180955.53024-9-mic@digikod.net>
-In-Reply-To: <20200707180955.53024-9-mic@digikod.net>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 8 Jul 2020 10:57:18 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0FkoxFtcQJ2jSqyLbDCOp3R8-1JoY8CWAgbSZ9hH9wdQ@mail.gmail.com>
-Message-ID: <CAK8P3a0FkoxFtcQJ2jSqyLbDCOp3R8-1JoY8CWAgbSZ9hH9wdQ@mail.gmail.com>
-Subject: Re: [PATCH v19 08/12] landlock: Add syscall implementation
-To:     =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        James Morris <jmorris@namei.org>, Jann Horn <jannh@google.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mickael.salaun@ssi.gouv.fr>,
-        Richard Weinberger <richard@nod.at>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Provags-ID: V03:K1:kjH+6vXiogs9pIKFOaZEjKiWABdGeAyzyAwwASv+wWnZdAkXjMN
- nh0yShY138ygGRasKtApmkYsWUu9PrDTplE+DlmjWqEYG7IteOSFVJXxW90jSwidsPbb5O5
- AU2UmQyU1Atx+vxFthc2TnmlTymNTxH3jq0A9gfOvGZr6nCuXDU0y40L+b1XBUD+vNxulhu
- XF3iuS1nLcWdYUbM3g+NQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Zt1Lz36YEuw=:RTq6Uk2vDbuvF4k9ovxlM7
- bujqRutXLNJj1LMWz6YfXKGG5EIf47BV95Eo89Ygf1D1DGZj9dcN/PW4vyQ9j++YCVqcFyhrP
- zdLdRjDQwI7xHBpFf8w08SvKZVrQFrMj/qzcVaal5OIVNSqK0vvOEHdDPA6L6Tdt2kY8WBMFv
- ikwxOkjjgXrJEcMRw6vwblXVNvokeVyLKxJjw1lAAvtm1AyRkIwDCZgP1k8LhMUZyCChTs6oV
- +QEjZ6inMHz/jtalysoaJKsGe8nEA/ME72AfoRQmVP20hBXyY4RHfU4hLT+desu+R3iGgRekq
- rzA2ou/Ai1PwW5zGNqeLwYl/msL9aNI7Wpsxahv1tCHmy1EGCsIXUSq3onwsDKk1vH7WEIa8i
- 8j70sFrP4wf5I9j/rZNzNusSs6cxvWO7rjSB/+I3Zk4MAtim9K02Nn2lnsSVyrXugOH54ibdf
- 8mLilj+KIUbPwVHdzhvyX/VO8uy5vNSN7ZlOHk2zsRrBE5TdmFaAIcJ61Lmp/Y8Fl2sT91WpI
- JBfZAXaQ35duzeuPXN8bEX5etgYk/W8iOrO57WUGGA1ONwSqv2uvlS8ta+GXl2QsRNSVZguAT
- Ji2kroD/hul7biBktrYKjYvNsj/7TNTKyDtHkrZV9V+g63fLVr6C5VwdNF4cmfky0wJ3mG0pZ
- 2a1aKLLoGZkxy+Cm05r8PC3IN81vnEU0EFIyt0weAMl1QRtbHjwTqxKWaM+VUjP1Ps+s60A23
- Ek8BBUkj/2w0Ar42xtQmeHx7696qftmo4KU8Ko6keVS1aL50wGb3n8B0F3aJcKVsLycG6Q0Ah
- ZGuqDZw5VyoBemAyr9QMCN17q7aJhbPNxDP9ftICFw1its5nH9i4FRnWMZ31IncGWiDnFbpgl
- UWZbloDbTRczmyrrMa5H5/8340CtdwC9S9fy7Bq09s+SJhz6iMEMdpj/9t8+9fuBQp05nxCNh
- LHahPBZyjtB0nAdM6kAOqDJHxru2Z3ppd9EUpX5b4EwY1JWrrC7te
+Content-Type: text/plain;
+        charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQFX/AFmGClWM6hRB9/6MNyA6NEWt6n6EwpQ
+Content-Language: en-us
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 7, 2020 at 8:10 PM Mickaël Salaün <mic@digikod.net> wrote:
->
-> This system call, inspired from seccomp(2) and bpf(2), is designed to be
-> used by unprivileged processes to sandbox themselves.  It has the same
-> usage restrictions as seccomp(2): the caller must have the no_new_privs
-> attribute set or have CAP_SYS_ADMIN in the current user namespace.
->
-> Here are the motivations for this new syscall:
-> * A sandboxed process may not have access to file systems, including
->   /dev, /sys or /proc, but it should still be able to add more
->   restrictions to itself.
-> * Neither prctl(2) nor seccomp(2) (which was used in a previous version)
->   fit well with the current definition of a Landlock security policy.
-> * It is quite easy to whitelist this syscall with seccomp-bpf to enable
->   all processes to use it.  It is also easy to filter specific commands
->   or options to restrict a process to a subset of Landlock features.
->
-> There is currently four commands:
-> * LANDLOCK_CMD_GET_FEATURES: Gets the supported features (required for
->   backward and forward compatibility, and best-effort security).
-> * LANDLOCK_CMD_CREATE_RULESET: Creates a ruleset and returns its file
->   descriptor.
-> * LANDLOCK_CMD_ADD_RULE: Adds a rule (e.g. file hierarchy access) to a
->   ruleset, identified by the dedicated file descriptor.
-> * LANDLOCK_CMD_ENFORCE_RULESET: Enforces a ruleset on the current thread
->   and its future children (similar to seccomp).
 
-I never paid attention to the patch series so far, so I'm sorry if this
-has all been discussed before, but I think the syscall prototype needs
-to be different, with *much* less extensibility built in.
 
-> Each command has at least one option, which enables to define the
-> attribute types passed to the syscall.  All attribute types (structures)
-> are checked at build time to ensure that they don't contain holes and
-> that they are aligned the same way for each architecture.  The struct
-> landlock_attr_features contains __u32 options_* fields which is enough
-> to store 32-bits syscall arguments, and __u16 size_attr_* fields which
-> is enough for the maximal struct size (i.e. page size) passed through
-> the landlock syscall.  The other fields can have __u64 type for flags
-> and bitfields, and __s32 type for file descriptors.
->
-> See the user and kernel documentation for more details (provided by a
-> following commit): Documentation/security/landlock/
+> -----Original Message-----
+> From: Douglas Anderson <dianders@chromium.org>
+> Sent: Tuesday, July 7, 2020 10:48 PM
+> To: kvalo@codeaurora.org; ath10k@lists.infradead.org
+> Cc: saiprakash.ranjan@codeaurora.org; linux-arm-msm@vger.kernel.org;
+> linux-wireless@vger.kernel.org; pillair@codeaurora.org;
+> kuabhs@google.com; Douglas Anderson <dianders@chromium.org>; David
+> S. Miller <davem@davemloft.net>; Jakub Kicinski <kuba@kernel.org>; linux-
+> kernel@vger.kernel.org; netdev@vger.kernel.org
+> Subject: [PATCH] ath10k: Keep track of which interrupts fired, don't poll
+> them
+> 
+> If we have a per CE (Copy Engine) IRQ then we have no summary
+> register.  Right now the code generates a summary register by
+> iterating over all copy engines and seeing if they have an interrupt
+> pending.
+> 
+> This has a problem.  Specifically if _none_ if the Copy Engines have
+> an interrupt pending then they might go into low power mode and
+> reading from their address space will cause a full system crash.  This
+> was seen to happen when two interrupts went off at nearly the same
+> time.  Both were handled by a single call of ath10k_snoc_napi_poll()
+> but, because there were two interrupts handled and thus two calls to
+> napi_schedule() there was still a second call to
+> ath10k_snoc_napi_poll() which ran with no interrupts pending.
+> 
+> Instead of iterating over all the copy engines, let's just keep track
+> of the IRQs that fire.  Then we can effectively generate our own
+> summary without ever needing to read the Copy Engines.
+> 
+> Tested-on: WCN3990 SNOC WLAN.HL.3.2.2-00490-QCAHLSWMTPL-1
+> 
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
 
-System calls with their own sub-commands have turned out to be a
-bad idea many times in the past and cause more problems than they
-solve. See sys_ipc, sys_socketcall and sys_futex for common examples.
 
-The first step I would recommend is to split out the individual commands
-into separate syscalls. For each one of those, pick a simple prototype
-that can do what it needs, with one 'flags' argument for extensibility.
+Reviewed-by:  Rakesh Pillai <pillair@codeaurora.org> 
 
-> +/**
-> + * DOC: options_intro
-> + *
-> + * These options may be used as second argument of sys_landlock().  Each
-> + * command have a dedicated set of options, represented as bitmasks.  For two
-> + * different commands, their options may overlap.  Each command have at least
-> + * one option defining the used attribute type.  This also enables to always
-> + * have a usable &struct landlock_attr_features (i.e. filled with bits).
-> + */
-> +
-> +/**
-> + * DOC: options_get_features
-> + *
-> + * Options for ``LANDLOCK_CMD_GET_FEATURES``
-> + * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> + *
-> + * - %LANDLOCK_OPT_GET_FEATURES: the attr type is `struct
-> + *   landlock_attr_features`.
-> + */
-> +#define LANDLOCK_OPT_GET_FEATURES                      (1 << 0)
 
-For each command, you currently have one attribute that is defined
-to have a name directly corresponding to the command, making it
-entirely redundant. I'd suggest just check the 'flags' argument for
-being zero at syscall entry for future extension if you think there may
-be a need to extend it, or completely leave out attributes and flags.
-
-> +static int syscall_create_ruleset(const void __user *const attr_ptr,
-> +               const size_t attr_size)
-> +{
-> +       struct landlock_attr_ruleset attr_ruleset;
-> +       struct landlock_ruleset *ruleset;
-> +       int err, ruleset_fd;
-> +
-> +       /* Copies raw user space buffer. */
-> +       err = copy_struct_if_any_from_user(&attr_ruleset, sizeof(attr_ruleset),
-> +                       offsetofend(typeof(attr_ruleset), handled_access_fs),
-> +                       attr_ptr, attr_size);
-> +       if (err)
-> +               return err;
-> +
-> +       /* Checks content (and 32-bits cast). */
-> +       if ((attr_ruleset.handled_access_fs | _LANDLOCK_ACCESS_FS_MASK) !=
-> +                       _LANDLOCK_ACCESS_FS_MASK)
-> +               return -EINVAL;
-> +
-> +       /* Checks arguments and transforms to kernel struct. */
-> +       ruleset = landlock_create_ruleset(attr_ruleset.handled_access_fs);
-> +       if (IS_ERR(ruleset))
-> +               return PTR_ERR(ruleset);
-> +
-> +       /* Creates anonymous FD referring to the ruleset. */
-> +       ruleset_fd = anon_inode_getfd("landlock-ruleset", &ruleset_fops,
-> +                       ruleset, O_RDWR | O_CLOEXEC);
-> +       if (ruleset_fd < 0)
-> +               landlock_put_ruleset(ruleset);
-> +       return ruleset_fd;
+> ---
+> This patch continues work to try to squash all instances of the crash
+> we've been seeing while reading CE registers and hopefully this patch
+> addresses the true root of the issue.
+> 
+> The first patch that attempted to address these problems landed as
+> commit 8f9ed93d09a9 ("ath10k: Wait until copy complete is actually
+> done before completing").  After that Rakesh Pillai posted ("ath10k:
+> Add interrupt summary based CE processing") [1] and this patch is
+> based atop that one.  Both of those patches significantly reduced the
+> instances of problems but didn't fully eliminate them.  Crossing my
+> fingers that they're all gone now.
+> 
+> [1] https://lore.kernel.org/r/1593193967-29897-1-git-send-email-
+> pillair@codeaurora.org
+> 
+>  drivers/net/wireless/ath/ath10k/ce.c   | 84 ++++++++++----------------
+>  drivers/net/wireless/ath/ath10k/ce.h   | 14 ++---
+>  drivers/net/wireless/ath/ath10k/snoc.c | 18 ++++--
+>  drivers/net/wireless/ath/ath10k/snoc.h |  1 +
+>  4 files changed, 51 insertions(+), 66 deletions(-)
+> 
+> diff --git a/drivers/net/wireless/ath/ath10k/ce.c
+> b/drivers/net/wireless/ath/ath10k/ce.c
+> index 1e16f263854a..84ec80c6d08f 100644
+> --- a/drivers/net/wireless/ath/ath10k/ce.c
+> +++ b/drivers/net/wireless/ath/ath10k/ce.c
+> @@ -481,38 +481,6 @@ static inline void
+> ath10k_ce_engine_int_status_clear(struct ath10k *ar,
+>  	ath10k_ce_write32(ar, ce_ctrl_addr + wm_regs->addr, mask);
+>  }
+> 
+> -static bool ath10k_ce_engine_int_status_check(struct ath10k *ar, u32
+> ce_ctrl_addr,
+> -					      unsigned int mask)
+> -{
+> -	struct ath10k_hw_ce_host_wm_regs *wm_regs = ar->hw_ce_regs-
+> >wm_regs;
+> -
+> -	return ath10k_ce_read32(ar, ce_ctrl_addr + wm_regs->addr) &
+> mask;
+> -}
+> -
+> -u32 ath10k_ce_gen_interrupt_summary(struct ath10k *ar)
+> -{
+> -	struct ath10k_hw_ce_host_wm_regs *wm_regs = ar->hw_ce_regs-
+> >wm_regs;
+> -	struct ath10k_ce_pipe *ce_state;
+> -	struct ath10k_ce *ce;
+> -	u32 irq_summary = 0;
+> -	u32 ctrl_addr;
+> -	u32 ce_id;
+> -
+> -	ce = ath10k_ce_priv(ar);
+> -
+> -	for (ce_id = 0; ce_id < CE_COUNT; ce_id++) {
+> -		ce_state = &ce->ce_states[ce_id];
+> -		ctrl_addr = ce_state->ctrl_addr;
+> -		if (ath10k_ce_engine_int_status_check(ar, ctrl_addr,
+> -						      wm_regs->cc_mask)) {
+> -			irq_summary |= BIT(ce_id);
+> -		}
+> -	}
+> -
+> -	return irq_summary;
+> -}
+> -EXPORT_SYMBOL(ath10k_ce_gen_interrupt_summary);
+> -
+>  /*
+>   * Guts of ath10k_ce_send.
+>   * The caller takes responsibility for any needed locking.
+> @@ -1399,45 +1367,55 @@ static void
+> ath10k_ce_per_engine_handler_adjust(struct ath10k_ce_pipe *ce_state)
+>  	ath10k_ce_watermark_intr_disable(ar, ctrl_addr);
+>  }
+> 
+> -int ath10k_ce_disable_interrupts(struct ath10k *ar)
+> +void ath10k_ce_disable_interrupt(struct ath10k *ar, int ce_id)
+>  {
+>  	struct ath10k_ce *ce = ath10k_ce_priv(ar);
+>  	struct ath10k_ce_pipe *ce_state;
+>  	u32 ctrl_addr;
+> -	int ce_id;
+> 
+> -	for (ce_id = 0; ce_id < CE_COUNT; ce_id++) {
+> -		ce_state  = &ce->ce_states[ce_id];
+> -		if (ce_state->attr_flags & CE_ATTR_POLL)
+> -			continue;
+> +	ce_state  = &ce->ce_states[ce_id];
+> +	if (ce_state->attr_flags & CE_ATTR_POLL)
+> +		return;
+> 
+> -		ctrl_addr = ath10k_ce_base_address(ar, ce_id);
+> +	ctrl_addr = ath10k_ce_base_address(ar, ce_id);
+> 
+> -		ath10k_ce_copy_complete_intr_disable(ar, ctrl_addr);
+> -		ath10k_ce_error_intr_disable(ar, ctrl_addr);
+> -		ath10k_ce_watermark_intr_disable(ar, ctrl_addr);
+> -	}
+> +	ath10k_ce_copy_complete_intr_disable(ar, ctrl_addr);
+> +	ath10k_ce_error_intr_disable(ar, ctrl_addr);
+> +	ath10k_ce_watermark_intr_disable(ar, ctrl_addr);
 > +}
-
-It looks like all you need here today is a single argument bit, plus
-possibly some room for extensibility. I would suggest removing all
-the extra bits and using a syscall like
-
-SYSCALL_DEFINE1(landlock_create_ruleset, u32, flags);
-
-I don't really see how this needs any variable-length arguments,
-it really doesn't do much.
-
-To be on the safe side, you might split up the flags into either the
-upper/lower 16 bits or two u32 arguments, to allow both compatible
-(ignored by older kernels if flag is set) and incompatible (return error
-when an unknown flag is set) bits.
-
-> +struct landlock_attr_path_beneath {
-> +       /**
-> +        * @ruleset_fd: File descriptor tied to the ruleset which should be
-> +        * extended with this new access.
-> +        */
-> +       __s32 ruleset_fd;
-> +       /**
-> +        * @parent_fd: File descriptor, open with ``O_PATH``, which identify
-> +        * the parent directory of a file hierarchy, or just a file.
-> +        */
-> +       __s32 parent_fd;
-> +       /**
-> +        * @allowed_access: Bitmask of allowed actions for this file hierarchy
-> +        * (cf. `Filesystem flags`_).
-> +        */
-> +       __u64 allowed_access;
-> +};
-
-> +static int syscall_add_rule_path_beneath(const void __user *const attr_ptr,
-> +               const size_t attr_size)
+> +EXPORT_SYMBOL(ath10k_ce_disable_interrupt);
+> 
+> -	return 0;
+> +void ath10k_ce_disable_interrupts(struct ath10k *ar)
 > +{
-> +       struct landlock_attr_path_beneath attr_path_beneath;
-> +       struct path path;
-> +       struct landlock_ruleset *ruleset;
-> +       int err;
+> +	int ce_id;
+> +
+> +	for (ce_id = 0; ce_id < CE_COUNT; ce_id++)
+> +		ath10k_ce_disable_interrupt(ar, ce_id);
+>  }
+>  EXPORT_SYMBOL(ath10k_ce_disable_interrupts);
+> 
+> -void ath10k_ce_enable_interrupts(struct ath10k *ar)
+> +void ath10k_ce_enable_interrupt(struct ath10k *ar, int ce_id)
+>  {
+>  	struct ath10k_ce *ce = ath10k_ce_priv(ar);
+> -	int ce_id;
+>  	struct ath10k_ce_pipe *ce_state;
+> 
+> +	ce_state  = &ce->ce_states[ce_id];
+> +	if (ce_state->attr_flags & CE_ATTR_POLL)
+> +		return;
+> +
+> +	ath10k_ce_per_engine_handler_adjust(ce_state);
+> +}
+> +EXPORT_SYMBOL(ath10k_ce_enable_interrupt);
+> +
+> +void ath10k_ce_enable_interrupts(struct ath10k *ar)
+> +{
+> +	int ce_id;
+> +
+>  	/* Enable interrupts for copy engine that
+>  	 * are not using polling mode.
+>  	 */
+> -	for (ce_id = 0; ce_id < CE_COUNT; ce_id++) {
+> -		ce_state  = &ce->ce_states[ce_id];
+> -		if (ce_state->attr_flags & CE_ATTR_POLL)
+> -			continue;
+> -
+> -		ath10k_ce_per_engine_handler_adjust(ce_state);
+> -	}
+> +	for (ce_id = 0; ce_id < CE_COUNT; ce_id++)
+> +		ath10k_ce_enable_interrupt(ar, ce_id);
+>  }
+>  EXPORT_SYMBOL(ath10k_ce_enable_interrupts);
+> 
+> diff --git a/drivers/net/wireless/ath/ath10k/ce.h
+> b/drivers/net/wireless/ath/ath10k/ce.h
+> index a440aaf74aa4..666ce384a1d8 100644
+> --- a/drivers/net/wireless/ath/ath10k/ce.h
+> +++ b/drivers/net/wireless/ath/ath10k/ce.h
+> @@ -255,12 +255,13 @@ int ath10k_ce_cancel_send_next(struct
+> ath10k_ce_pipe *ce_state,
+>  /*==================CE Interrupt Handlers====================*/
+>  void ath10k_ce_per_engine_service_any(struct ath10k *ar);
+>  void ath10k_ce_per_engine_service(struct ath10k *ar, unsigned int ce_id);
+> -int ath10k_ce_disable_interrupts(struct ath10k *ar);
+> +void ath10k_ce_disable_interrupt(struct ath10k *ar, int ce_id);
+> +void ath10k_ce_disable_interrupts(struct ath10k *ar);
+> +void ath10k_ce_enable_interrupt(struct ath10k *ar, int ce_id);
+>  void ath10k_ce_enable_interrupts(struct ath10k *ar);
+>  void ath10k_ce_dump_registers(struct ath10k *ar,
+>  			      struct ath10k_fw_crash_data *crash_data);
+> 
+> -u32 ath10k_ce_gen_interrupt_summary(struct ath10k *ar);
+>  void ath10k_ce_alloc_rri(struct ath10k *ar);
+>  void ath10k_ce_free_rri(struct ath10k *ar);
+> 
+> @@ -376,12 +377,9 @@ static inline u32
+> ath10k_ce_interrupt_summary(struct ath10k *ar)
+>  {
+>  	struct ath10k_ce *ce = ath10k_ce_priv(ar);
+> 
+> -	if (!ar->hw_params.per_ce_irq)
+> -		return
+> CE_WRAPPER_INTERRUPT_SUMMARY_HOST_MSI_GET(
+> -			ce->bus_ops->read32((ar),
+> CE_WRAPPER_BASE_ADDRESS +
+> -			CE_WRAPPER_INTERRUPT_SUMMARY_ADDRESS));
+> -	else
+> -		return ath10k_ce_gen_interrupt_summary(ar);
+> +	return CE_WRAPPER_INTERRUPT_SUMMARY_HOST_MSI_GET(
+> +		ce->bus_ops->read32((ar), CE_WRAPPER_BASE_ADDRESS +
+> +		CE_WRAPPER_INTERRUPT_SUMMARY_ADDRESS));
+>  }
+> 
+>  /* Host software's Copy Engine configuration. */
+> diff --git a/drivers/net/wireless/ath/ath10k/snoc.c
+> b/drivers/net/wireless/ath/ath10k/snoc.c
+> index 354d49b1cd45..2fc4dcbab70a 100644
+> --- a/drivers/net/wireless/ath/ath10k/snoc.c
+> +++ b/drivers/net/wireless/ath/ath10k/snoc.c
+> @@ -3,6 +3,7 @@
+>   * Copyright (c) 2018 The Linux Foundation. All rights reserved.
+>   */
+> 
+> +#include <linux/bits.h>
+>  #include <linux/clk.h>
+>  #include <linux/kernel.h>
+>  #include <linux/module.h>
+> @@ -1158,7 +1159,9 @@ static irqreturn_t
+> ath10k_snoc_per_engine_handler(int irq, void *arg)
+>  		return IRQ_HANDLED;
+>  	}
+> 
+> -	ath10k_snoc_irq_disable(ar);
+> +	ath10k_ce_disable_interrupt(ar, ce_id);
+> +	set_bit(ce_id, ar_snoc->pending_ce_irqs);
+> +
+>  	napi_schedule(&ar->napi);
+> 
+>  	return IRQ_HANDLED;
+> @@ -1167,20 +1170,25 @@ static irqreturn_t
+> ath10k_snoc_per_engine_handler(int irq, void *arg)
+>  static int ath10k_snoc_napi_poll(struct napi_struct *ctx, int budget)
+>  {
+>  	struct ath10k *ar = container_of(ctx, struct ath10k, napi);
+> +	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
+>  	int done = 0;
+> +	int ce_id;
+> 
+>  	if (test_bit(ATH10K_FLAG_CRASH_FLUSH, &ar->dev_flags)) {
+>  		napi_complete(ctx);
+>  		return done;
+>  	}
+> 
+> -	ath10k_ce_per_engine_service_any(ar);
+> +	for (ce_id = 0; ce_id < CE_COUNT; ce_id++)
+> +		if (test_and_clear_bit(ce_id, ar_snoc->pending_ce_irqs)) {
+> +			ath10k_ce_per_engine_service(ar, ce_id);
+> +			ath10k_ce_enable_interrupt(ar, ce_id);
+> +		}
+> +
+>  	done = ath10k_htt_txrx_compl_task(ar, budget);
+> 
+> -	if (done < budget) {
+> +	if (done < budget)
+>  		napi_complete(ctx);
+> -		ath10k_snoc_irq_enable(ar);
+> -	}
+> 
+>  	return done;
+>  }
+> diff --git a/drivers/net/wireless/ath/ath10k/snoc.h
+> b/drivers/net/wireless/ath/ath10k/snoc.h
+> index a3dd06f6ac62..5095d1893681 100644
+> --- a/drivers/net/wireless/ath/ath10k/snoc.h
+> +++ b/drivers/net/wireless/ath/ath10k/snoc.h
+> @@ -78,6 +78,7 @@ struct ath10k_snoc {
+>  	unsigned long flags;
+>  	bool xo_cal_supported;
+>  	u32 xo_cal_data;
+> +	DECLARE_BITMAP(pending_ce_irqs, CE_COUNT_MAX);
+>  };
+> 
+>  static inline struct ath10k_snoc *ath10k_snoc_priv(struct ath10k *ar)
+> --
+> 2.27.0.383.g050319c2ae-goog
 
-Similarly, it looks like this wants to be
 
-SYSCALL_DEFINE3(landlock_add_rule_path_beneath, int, ruleset, int,
-path, __u32, flags)
-
-I don't see any need to extend this in a way that wouldn't already
-be served better by adding another system call. You might argue
-that 'flags' and 'allowed_access' could be separate, with the latter
-being an indirect in/out argument here, like
-
-SYSCALL_DEFINE4(landlock_add_rule_path_beneath, int, ruleset, int, path,
-                           __u64 *, allowed_acces, __u32, flags)
-
-> +static int syscall_enforce_ruleset(const void __user *const attr_ptr,
-> +               const size_t attr_size)
-
-Here it seems like you just need to pass the file descriptor, or maybe
-
-SYSCALL_DEFINE2(landlock_enforce, int, ruleset, __u32 flags);
-
-if you need flags for extensibility.
-
-      Arnd
