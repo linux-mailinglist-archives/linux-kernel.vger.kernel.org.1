@@ -2,107 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4600219030
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 21:08:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD8D4219057
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 21:17:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726538AbgGHTIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 15:08:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726044AbgGHTIM (ORCPT
+        id S1726517AbgGHTRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 15:17:21 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:32750 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726220AbgGHTRG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 15:08:12 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF230C061A0B;
-        Wed,  8 Jul 2020 12:08:11 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id k17so14735592lfg.3;
-        Wed, 08 Jul 2020 12:08:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=eBnxDaT9AjE64adFvCIMAud4hZdVgbhRxh2ErEZ+q0Q=;
-        b=jp4WgtF3hRVv1VwS7F37db0nIBfYYehuilFOceEH65Kz8IX4YMyoKmNPSgYn7NSBaj
-         EhX7n0cxOIGnr01QbBkbf5onbTBoXBNmJmOKMS5yHn4COPLjlFUxKEO1tjAbwvxZb4uA
-         8FuRNSjl4cG16y7zNbOs5DQV5T+ucj1Q4AMc3kB5xQZNOMabWrnHLGsSP+3Ha+msSAeu
-         ZDxMryIHR+TvUSj8N3NrK6qnfG6PWzkJo2yp/UPl9AfDxLFOBqnB7i4yCTzRTYUeNwk/
-         WP5G37jIJBFDHsEmNRGCDLyla9t5feQPriEn4K3MrnB9rF/lVzR53dORFEnJ6CXTjpzi
-         30ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=eBnxDaT9AjE64adFvCIMAud4hZdVgbhRxh2ErEZ+q0Q=;
-        b=HDIoy8DhGyRIwhK/DVA66GgzyyBnYoruC5xB3b7JtWH23Be3Gb+fIew3rEOPU79tUy
-         3EezdyGWI8j7BRSWAt8E3BRa2GSeikxhsw7huSKPRfI5kY5lpyp34nKlCJKVIKqmIASR
-         b375KqKLOq3pISvSfQkMBXOnHUZeDb2ugImw5ELmzZ/5TDDiB1W2C8FccwUK83OARJm4
-         i4dXkD1h+dI1TKbkmbUgqDE6PC5vJoFAn6N372tW0YBETx49WoTHo1XYbGrnAHrlVbvW
-         0AMYT4pCpPWbOoHB+Gw00gYD/3tO8OR6GxvOgeb/c3K6bmxOCVhvm7aDUgCJTDe6np2Z
-         bhlw==
-X-Gm-Message-State: AOAM532TJSA+GJesHRuI3RNjiw5FMYisN+/GcmHvR9dpdl7XARFoQX8h
-        CxZthATgC17jjRhW//ezsF47PWakY7A=
-X-Google-Smtp-Source: ABdhPJz0wNnsqin7oAMEMkHArTLN9I50Eh2YToM/QxeNv3ivY93RB9ft4KXtJa0wYI+nt28uM+/ltQ==
-X-Received: by 2002:a19:c603:: with SMTP id w3mr37402448lff.28.1594235290232;
-        Wed, 08 Jul 2020 12:08:10 -0700 (PDT)
-Received: from localhost.localdomain (h-98-128-228-147.NA.cust.bahnhof.se. [98.128.228.147])
-        by smtp.gmail.com with ESMTPSA id q1sm205026lfp.42.2020.07.08.12.08.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Jul 2020 12:08:09 -0700 (PDT)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-To:     torvalds@linux-foundation.org
-Cc:     akpm@linux-foundation.org, andy.shevchenko@gmail.com,
-        arnd@arndb.de, emil.l.velikov@gmail.com, geert@linux-m68k.org,
-        keescook@chromium.org, linus.walleij@linaro.org,
-        linux-kernel@vger.kernel.org, lkp@intel.com,
-        mm-commits@vger.kernel.org, rikard.falkeborn@gmail.com,
-        syednwaris@gmail.com, vilhelm.gray@gmail.com,
-        yamada.masahiro@socionext.com, michal.lkml@markovi.net,
-        linux-kbuild@vger.kernel.org
-Subject: [PATCH] kbuild: Move -Wtype-limits to W=2
-Date:   Wed,  8 Jul 2020 21:07:56 +0200
-Message-Id: <20200708190756.16810-1-rikard.falkeborn@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <CAHk-=wiKCXEWKJ9dWUimGbrVRo_N2RosESUw8E7m9AEtyZcu=w@mail.gmail.com>
-References: <CAHk-=wiKCXEWKJ9dWUimGbrVRo_N2RosESUw8E7m9AEtyZcu=w@mail.gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Wed, 8 Jul 2020 15:17:06 -0400
+Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
+  by alexa-out.qualcomm.com with ESMTP; 08 Jul 2020 12:11:03 -0700
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 08 Jul 2020 12:11:01 -0700
+Received: from c-sanm-linux.qualcomm.com ([10.206.25.31])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 09 Jul 2020 00:40:31 +0530
+Received: by c-sanm-linux.qualcomm.com (Postfix, from userid 2343233)
+        id 58EE52BFB; Thu,  9 Jul 2020 00:40:30 +0530 (IST)
+From:   Sandeep Maheswaram <sanm@codeaurora.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Sandeep Maheswaram <sanm@codeaurora.org>
+Subject: [PATCH v2 0/3] usb: dwc3: Host wake up support from system suspend 
+Date:   Thu,  9 Jul 2020 00:40:14 +0530
+Message-Id: <1594235417-23066-1-git-send-email-sanm@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--Wtype-limits is included in -Wextra which is added at W=1. It warns
-(among other things) that 'comparison of an unsigned variable `< 0` is
-always false. This causes noisy warnings, especially when used in
-macros, hence it is more suitable for W=2.
+Avoiding phy powerdown in host mode so that it can be wake up by devices.
+Set GENPD_FLAG_ACTIVE_WAKEUP flag to keep usb30_prim gdsc active
+when wakeup capable devices are connected to the host.
+Using PDC interrupts instead of GIC interrupst to support wakeup in
+xo shutdown case.
 
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
----
-See also discussion at https://lore.kernel.org/lkml/CAHk-=wiKCXEWKJ9dWUimGbrVRo_N2RosESUw8E7m9AEtyZcu=w@mail.gmail.com/
+Changes in v2:
+Dropped the patch in clock to set GENPD_FLAG_ACTIVE_WAKEUP flag and 
+setting in usb dwc3 driver.
+Separated the core patch and glue driver patch.
+Made need_phy_for_wakeup flag part of dwc structure and 
+hs_phy_flags as unsgined int.
+Adrressed the comment on device_init_wakeup call.
+Corrected offset for reading portsc register.
+Added pacth to support wakeup in xo shutdown case.
 
- scripts/Makefile.extrawarn | 2 ++
- 1 file changed, 2 insertions(+)
 
-diff --git a/scripts/Makefile.extrawarn b/scripts/Makefile.extrawarn
-index 4aea7cf71d11..62c275685b75 100644
---- a/scripts/Makefile.extrawarn
-+++ b/scripts/Makefile.extrawarn
-@@ -35,6 +35,7 @@ KBUILD_CFLAGS += $(call cc-option, -Wstringop-truncation)
- # The following turn off the warnings enabled by -Wextra
- KBUILD_CFLAGS += -Wno-missing-field-initializers
- KBUILD_CFLAGS += -Wno-sign-compare
-+KBUILD_CFLAGS += -Wno-type-limits
- 
- KBUILD_CPPFLAGS += -DKBUILD_EXTRA_WARN1
- 
-@@ -66,6 +67,7 @@ KBUILD_CFLAGS += -Wshadow
- KBUILD_CFLAGS += $(call cc-option, -Wlogical-op)
- KBUILD_CFLAGS += -Wmissing-field-initializers
- KBUILD_CFLAGS += -Wsign-compare
-+KBUILD_CFLAGS += -Wtype-limits
- KBUILD_CFLAGS += $(call cc-option, -Wmaybe-uninitialized)
- KBUILD_CFLAGS += $(call cc-option, -Wunused-macros)
- 
+
+Sandeep Maheswaram (3):
+  usb: dwc3: core: Host wake up support from system suspend
+  usb: dwc3: qcom: Configure wakeup interrupts and set genpd active
+    wakeup flag
+  arm64: dts: qcom: sc7180: Use pdc interrupts for USB instead of GIC
+    interrupts
+
+ arch/arm64/boot/dts/qcom/sc7180.dtsi |  8 ++--
+ drivers/usb/dwc3/core.c              | 47 +++++++++++++++++++----
+ drivers/usb/dwc3/core.h              |  2 +
+ drivers/usb/dwc3/dwc3-qcom.c         | 73 ++++++++++++++++++++++++++++--------
+ 4 files changed, 103 insertions(+), 27 deletions(-)
+
 -- 
-2.27.0
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
 
