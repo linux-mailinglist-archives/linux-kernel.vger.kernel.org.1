@@ -2,265 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38E582187BF
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 14:38:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E812B2187CA
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 14:41:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729310AbgGHMiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 08:38:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32854 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728920AbgGHMiC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 08:38:02 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8218AC08C5DC
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 05:38:01 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id m9so9655454pfh.0
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 05:38:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kee2YtmMHgv7A7dyVw1lKxR+tADNMGpw4FHY05ErWKs=;
-        b=BUVoyvYmTz8ZDtfycOlc63OWOr6QOq3OdXVIpgIkP+lyMsbeJX2hVgXFqFU9Wl5VBL
-         m0WSTsLYb2NG4ZWkjdfb6HfdcgqQlX2dzr8v1H8Yd/Qqc0uUYY2M92OoEtQg3WlJ+ACF
-         9NyCwxG1S6ozatSQD7Xh0QCwedEpb1CJgNG8WBPReVBIme9WBVscmmELcGThcaAQQTq5
-         CI/SSMcM7QRqukR86O++70R0g4b5EDcdaEMfnBYT4RbP8KctYPJDkLrHDLAdfSeK0ppr
-         xZBR5VQengbMd0Nb1ekdY/vlWEDbbhEF/ZfG8SiFiWDQ+Ar5ktIro3/F+LiDC32dtukA
-         9BZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kee2YtmMHgv7A7dyVw1lKxR+tADNMGpw4FHY05ErWKs=;
-        b=MjNo3cgsQ34UB+NfjaacpERpHporO4EG2oBsb/e4fX5iiRQLqQ6LeZTlno85T/OfUJ
-         iSnptNQONxlyDlmqaC6p8OZwzX72F5omGgpeoh+dEL88tP2Ubvh5satrPb7QYsTpG/yc
-         KBkM/Es4vhj4QMgIWntb0Jv84kl3g0wfN0M0U1WpOeUSIvStbC/Mr8adZc8JDZC1ptwI
-         RdAvXPTwJ3kgMFwFn7UbNJCjjd3LJeDqLmIZJciIGDzknxJ6CleLZuBZ0IAD6cC7bS/1
-         kEBxBLIVcVz5infcH0fRsaLQGC6k/2Mntmxwcm7ilkyUUYiJkV7G3E0sTKsgABBq9vKi
-         6WtA==
-X-Gm-Message-State: AOAM531Q3VLhK4LsWl6BQTjkTH6K3GdAogNVPl/9Azxz/wNIjAv3693c
-        oCSJmQ8Yj7OAVV2OtmTa7X1YU9DR6dnA0CZkK3r3ag==
-X-Google-Smtp-Source: ABdhPJyuLR6QeVaXP6OjKnIrKrqfE0bWlnsaLu7hVpXkSQ6tvUnLVglr7za275US/hzu1ZOvqBp0jWwLbfx/vTSY8U8=
-X-Received: by 2002:a62:52cd:: with SMTP id g196mr53579108pfb.178.1594211880888;
- Wed, 08 Jul 2020 05:38:00 -0700 (PDT)
+        id S1729035AbgGHMkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 08:40:52 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:7270 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728912AbgGHMkv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 08:40:51 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 0F2C12A3B17F5D981EE8;
+        Wed,  8 Jul 2020 20:40:46 +0800 (CST)
+Received: from DESKTOP-KKJBAGG.china.huawei.com (10.174.186.75) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 8 Jul 2020 20:40:38 +0800
+From:   Zhenyu Ye <yezhenyu2@huawei.com>
+To:     <catalin.marinas@arm.com>, <will@kernel.org>,
+        <suzuki.poulose@arm.com>, <maz@kernel.org>, <steven.price@arm.com>,
+        <guohanjun@huawei.com>, <olof@lixom.net>
+CC:     <yezhenyu2@huawei.com>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+        <linux-mm@kvack.org>, <arm@kernel.org>, <xiexiangyou@huawei.com>,
+        <prime.zeng@hisilicon.com>, <zhangshaokun@hisilicon.com>,
+        <kuhn.chenqun@huawei.com>
+Subject: [RFC PATCH v5 0/2] arm64: tlb: add support for TLBI RANGE instructions
+Date:   Wed, 8 Jul 2020 20:40:29 +0800
+Message-ID: <20200708124031.1414-1-yezhenyu2@huawei.com>
+X-Mailer: git-send-email 2.22.0.windows.1
 MIME-Version: 1.0
-References: <20200706115039.16750-1-walter-zh.wu@mediatek.com>
-In-Reply-To: <20200706115039.16750-1-walter-zh.wu@mediatek.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Wed, 8 Jul 2020 14:37:49 +0200
-Message-ID: <CAAeHK+zQDeo5K8D9QTQvdkp4H36s_wPPcGDizJ-ZDD0YAtLeRw@mail.gmail.com>
-Subject: Re: [PATCH v3] kasan: fix KASAN unit tests for tag-based KASAN
-To:     Walter Wu <walter-zh.wu@mediatek.com>
-Cc:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        wsd_upstream <wsd_upstream@mediatek.com>,
-        linux-mediatek@lists.infradead.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.186.75]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 6, 2020 at 1:50 PM Walter Wu <walter-zh.wu@mediatek.com> wrote:
->
-> We use tag-based KASAN, then KASAN unit tests don't detect out-of-bounds
-> memory access. They need to be fixed.
->
-> With tag-based KASAN, the state of each 16 aligned bytes of memory is
-> encoded in one shadow byte and the shadow value is tag of pointer, so
-> we need to read next shadow byte, the shadow value is not equal to tag
-> value of pointer, so that tag-based KASAN will detect out-of-bounds
-> memory access.
->
-> Signed-off-by: Walter Wu <walter-zh.wu@mediatek.com>
-> Suggested-by: Dmitry Vyukov <dvyukov@google.com>
-> Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
-> Cc: Dmitry Vyukov <dvyukov@google.com>
-> Cc: Alexander Potapenko <glider@google.com>
-> Cc: Matthias Brugger <matthias.bgg@gmail.com>
-> Cc: Andrey Konovalov <andreyknvl@google.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> ---
->
-> changes since v1:
-> - Reduce amount of non-compiled code.
-> - KUnit-KASAN Integration patchset is not merged yet. My patch should
->   have conflict with it, if needed, we can continue to wait it.
->
-> changes since v2:
-> - Add one marco to make unit tests more readability.
->
-> ---
->  lib/test_kasan.c | 47 ++++++++++++++++++++++++++++++-----------------
->  1 file changed, 30 insertions(+), 17 deletions(-)
->
-> diff --git a/lib/test_kasan.c b/lib/test_kasan.c
-> index e3087d90e00d..b5049a807e25 100644
-> --- a/lib/test_kasan.c
-> +++ b/lib/test_kasan.c
-> @@ -23,6 +23,8 @@
->
->  #include <asm/page.h>
->
-> +#define OOB_TAG_OFF (IS_ENABLED(CONFIG_KASAN_GENERIC) ? 0 : 13)
+ARMv8.4-TLBI provides TLBI invalidation instruction that apply to a
+range of input addresses. This series add support for this feature.
 
-Let's use KASAN_SHADOW_SCALE_SIZE instead of 13 to make sure the
-access always lands in the next memory granule.
+I tested this feature on a FPGA machine whose cpus support the tlbi range.
+As the page num increases, the performance is improved significantly. When
+page num = 256, the performance is improved by about 10 times.
 
-With that:
+Below is the test data when the stride = PTE:
 
-Reviewed-by: Andrey Konovalov <andreyknvl@google.com>
+	[page num]	[classic]		[tlbi range]
+	1		16051			13524
+	2		11366			11146
+	3		11582			12171
+	4		11694			11101
+	5		12138			12267
+	6		12290			11105
+	7		12400			12002
+	8		12837			11097
+	9		14791			12140
+	10		15461			11087
+	16		18233			11094
+	32		26983			11079
+	64		43840			11092
+	128		77754			11098
+	256		145514			11089
+	512		280932			11111
 
-> +
->  /*
->   * Note: test functions are marked noinline so that their names appear in
->   * reports.
-> @@ -40,7 +42,8 @@ static noinline void __init kmalloc_oob_right(void)
->                 return;
->         }
->
-> -       ptr[size] = 'x';
-> +       ptr[size + OOB_TAG_OFF] = 'x';
-> +
->         kfree(ptr);
->  }
->
-> @@ -92,7 +95,8 @@ static noinline void __init kmalloc_pagealloc_oob_right(void)
->                 return;
->         }
->
-> -       ptr[size] = 0;
-> +       ptr[size + OOB_TAG_OFF] = 0;
-> +
->         kfree(ptr);
->  }
->
-> @@ -162,7 +166,8 @@ static noinline void __init kmalloc_oob_krealloc_more(void)
->                 return;
->         }
->
-> -       ptr2[size2] = 'x';
-> +       ptr2[size2 + OOB_TAG_OFF] = 'x';
-> +
->         kfree(ptr2);
->  }
->
-> @@ -180,7 +185,9 @@ static noinline void __init kmalloc_oob_krealloc_less(void)
->                 kfree(ptr1);
->                 return;
->         }
-> -       ptr2[size2] = 'x';
-> +
-> +       ptr2[size2 + OOB_TAG_OFF] = 'x';
-> +
->         kfree(ptr2);
->  }
->
-> @@ -216,7 +223,8 @@ static noinline void __init kmalloc_oob_memset_2(void)
->                 return;
->         }
->
-> -       memset(ptr+7, 0, 2);
-> +       memset(ptr + 7 + OOB_TAG_OFF, 0, 2);
-> +
->         kfree(ptr);
->  }
->
-> @@ -232,7 +240,8 @@ static noinline void __init kmalloc_oob_memset_4(void)
->                 return;
->         }
->
-> -       memset(ptr+5, 0, 4);
-> +       memset(ptr + 5 + OOB_TAG_OFF, 0, 4);
-> +
->         kfree(ptr);
->  }
->
-> @@ -249,7 +258,8 @@ static noinline void __init kmalloc_oob_memset_8(void)
->                 return;
->         }
->
-> -       memset(ptr+1, 0, 8);
-> +       memset(ptr + 1 + OOB_TAG_OFF, 0, 8);
-> +
->         kfree(ptr);
->  }
->
-> @@ -265,7 +275,8 @@ static noinline void __init kmalloc_oob_memset_16(void)
->                 return;
->         }
->
-> -       memset(ptr+1, 0, 16);
-> +       memset(ptr + 1 + OOB_TAG_OFF, 0, 16);
-> +
->         kfree(ptr);
->  }
->
-> @@ -281,7 +292,8 @@ static noinline void __init kmalloc_oob_in_memset(void)
->                 return;
->         }
->
-> -       memset(ptr, 0, size+5);
-> +       memset(ptr, 0, size + 5 + OOB_TAG_OFF);
-> +
->         kfree(ptr);
->  }
->
-> @@ -415,7 +427,8 @@ static noinline void __init kmem_cache_oob(void)
->                 return;
->         }
->
-> -       *p = p[size];
-> +       *p = p[size + OOB_TAG_OFF];
-> +
->         kmem_cache_free(cache, p);
->         kmem_cache_destroy(cache);
->  }
-> @@ -512,25 +525,25 @@ static noinline void __init copy_user_test(void)
->         }
->
->         pr_info("out-of-bounds in copy_from_user()\n");
-> -       unused = copy_from_user(kmem, usermem, size + 1);
-> +       unused = copy_from_user(kmem, usermem, size + 1 + OOB_TAG_OFF);
->
->         pr_info("out-of-bounds in copy_to_user()\n");
-> -       unused = copy_to_user(usermem, kmem, size + 1);
-> +       unused = copy_to_user(usermem, kmem, size + 1 + OOB_TAG_OFF);
->
->         pr_info("out-of-bounds in __copy_from_user()\n");
-> -       unused = __copy_from_user(kmem, usermem, size + 1);
-> +       unused = __copy_from_user(kmem, usermem, size + 1 + OOB_TAG_OFF);
->
->         pr_info("out-of-bounds in __copy_to_user()\n");
-> -       unused = __copy_to_user(usermem, kmem, size + 1);
-> +       unused = __copy_to_user(usermem, kmem, size + 1 + OOB_TAG_OFF);
->
->         pr_info("out-of-bounds in __copy_from_user_inatomic()\n");
-> -       unused = __copy_from_user_inatomic(kmem, usermem, size + 1);
-> +       unused = __copy_from_user_inatomic(kmem, usermem, size + 1 + OOB_TAG_OFF);
->
->         pr_info("out-of-bounds in __copy_to_user_inatomic()\n");
-> -       unused = __copy_to_user_inatomic(usermem, kmem, size + 1);
-> +       unused = __copy_to_user_inatomic(usermem, kmem, size + 1 + OOB_TAG_OFF);
->
->         pr_info("out-of-bounds in strncpy_from_user()\n");
-> -       unused = strncpy_from_user(kmem, usermem, size + 1);
-> +       unused = strncpy_from_user(kmem, usermem, size + 1 + OOB_TAG_OFF);
->
->         vm_munmap((unsigned long)usermem, PAGE_SIZE);
->         kfree(kmem);
-> --
-> 2.18.0
->
-> --
-> You received this message because you are subscribed to the Google Groups "kasan-dev" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to kasan-dev+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/kasan-dev/20200706115039.16750-1-walter-zh.wu%40mediatek.com.
+See more details in:
+
+https://lore.kernel.org/linux-arm-kernel/504c7588-97e5-e014-fca0-c5511ae0d256@huawei.com/
+
+--
+ChangeList:
+v5:
+- rebase this series on Linux 5.8-rc4.
+- remove the __TG macro.
+- move the odd range_pages check into loop.
+
+v4:
+combine the __flush_tlb_range() and the __directly into the same function
+with a single loop for both.
+
+v3:
+rebase this series on Linux 5.7-rc1.
+
+v2:
+Link: https://lkml.org/lkml/2019/11/11/348
+
+Zhenyu Ye (2):
+  arm64: tlb: Detect the ARMv8.4 TLBI RANGE feature
+  arm64: tlb: Use the TLBI RANGE feature in arm64
+
+ arch/arm64/include/asm/cpucaps.h  |   3 +-
+ arch/arm64/include/asm/sysreg.h   |   3 +
+ arch/arm64/include/asm/tlbflush.h | 101 +++++++++++++++++++++++++-----
+ arch/arm64/kernel/cpufeature.c    |  10 +++
+ 4 files changed, 102 insertions(+), 15 deletions(-)
+
+-- 
+2.19.1
+
+
