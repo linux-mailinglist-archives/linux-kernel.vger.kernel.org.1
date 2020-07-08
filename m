@@ -2,82 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FFC8218D8B
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 18:52:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8063218D91
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 18:54:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730730AbgGHQus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 12:50:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60006 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730634AbgGHQur (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 12:50:47 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 800802063A;
-        Wed,  8 Jul 2020 16:50:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594227047;
-        bh=AqMKtqS/OXQk+rhorj+lXzo8EwOOu2YsoGozE3DRg5U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=g+siRc6bJy6ezH6ZeNdz2UGNlovQfefe94DX3Ol9cFvhEvJwUWscErEJuSZWseQZS
-         esTenErVulATOMRJI3KaxHGJEZgA7pGTm/tJE0yl+fLtEBEDoedT1KdWyg5i+z02jA
-         31gZNcFQy7WDA+YJFJGBMkhp39cfu1zw3ooqG5XE=
-Date:   Wed, 8 Jul 2020 17:50:41 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Rohit kumar <rohitkr@codeaurora.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        robh+dt@kernel.org, plai@codeaurora.org, bgoswami@codeaurora.org,
-        perex@perex.cz, tiwai@suse.com, srinivas.kandagatla@linaro.org,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ajit Pandey <ajitp@codeaurora.org>
-Subject: Re: [PATCH v3 5/8] ASoC: qcom: lpass-platform: Replace card->dev
- with component->dev
-Message-ID: <20200708165041.GX4655@sirena.org.uk>
-References: <1594184896-10629-1-git-send-email-rohitkr@codeaurora.org>
- <1594184896-10629-6-git-send-email-rohitkr@codeaurora.org>
+        id S1730503AbgGHQyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 12:54:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44480 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730339AbgGHQyL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 12:54:11 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54DA5C061A0B
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 09:54:11 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id a6so49750975wrm.4
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 09:54:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=flowbird.group; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WOVkqwckQQd55xs9l2xekP/piuHMiACO9inQRc/624Y=;
+        b=TtGG4LDilrrh105PxPZxfegeCFu329cU+BDYujVlSNPA/eV+N5rQLeSu4f9VNLv4EY
+         jJXnMpeYSsY9v5ysdriB/Hdv7bPmV6ebu0WLsdR5QtuofFwIKWHA25JdHRc8aJmzbtST
+         dkPMA8o+wOk1I1iqtY8N8XkkS8AY9V/RXRrRmMpZhOHeETr6llzVlatZu8t4uIRUziB/
+         pZCHiO5QP8ZfoMsI13oKDv2l5Sao7jE9NVeqdVzNS8i7Sp+FU7KFZsf/qKt9IB8E1irm
+         0YehjaJ5rDST1wEhuW7LtWdNQ/+HKsI9krgqqI7O7wAyVZ2Wm6XV9+9fRTczuXASdmoi
+         Q0Fg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WOVkqwckQQd55xs9l2xekP/piuHMiACO9inQRc/624Y=;
+        b=AbzpUCrNa8839lByWpY/VvJaGJVr/YOSf1i/5xOCO8CNhTdDqpT7ZW6YnQ7VG6aRY2
+         nhhp/w4fp247pz0aRG9g+0rgyOv/BwFa+35BiTX1G+QBf3RpWp2n/7XpurSbg1ha5WOf
+         f4GG9mQW3wmmV524qUMG/7h0viP/vnnu4oewI089cc4cu5HzUVmuwT/kmzp38AmSFTrF
+         klLdoazqWkGpinypeLQSZmRkbKtIjt8L8+ElBcuHIFQ9NYSEjb6squWk11eDyTh+1ni/
+         9ceNrpgBpJwFlaH37kCmj0Viadk9WwCVwPeTnTImQ1zbgZ4DLxjNc1F1Go2OlsxovFzb
+         1eLQ==
+X-Gm-Message-State: AOAM5326vxPOe8uGITHriWh438Q2Qjlo1wWeoHzR/KCM9AktNpEQ8ItM
+        1s8cLON1V8KtjqyBOj06IYMGXdSY74sOWiah8FSFUg==
+X-Google-Smtp-Source: ABdhPJyVCpbbKtoLOEzP8YwwHDnBfwPBOs+phqlZhXQ4uNw+YwtkN1XbsB4wVgHaAUiql5DgdP9vGzDTZQsegl1cvIg=
+X-Received: by 2002:adf:9062:: with SMTP id h89mr55137959wrh.285.1594227249993;
+ Wed, 08 Jul 2020 09:54:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="aBaYPhOdNx+t7mr3"
-Content-Disposition: inline
-In-Reply-To: <1594184896-10629-6-git-send-email-rohitkr@codeaurora.org>
-X-Cookie: Oh Dad!  We're ALL Devo!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <1594137527-15201-1-git-send-email-martin.fuzzey@flowbird.group> <a55b91f01a2e795fe2dd38d860e63a63c8c8871c.camel@pengutronix.de>
+In-Reply-To: <a55b91f01a2e795fe2dd38d860e63a63c8c8871c.camel@pengutronix.de>
+From:   "Fuzzey, Martin" <martin.fuzzey@flowbird.group>
+Date:   Wed, 8 Jul 2020 18:53:59 +0200
+Message-ID: <CANh8QzwEgVG5AvJ4s7ydfPMDKpK5pb0TSaz9i9dgZ+1ZMJw3vQ@mail.gmail.com>
+Subject: Re: [PATCH] drm: imx: Fix occasional screen corruption on modeset.
+To:     Philipp Zabel <p.zabel@pengutronix.de>
+Cc:     Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        ML dri-devel <dri-devel@lists.freedesktop.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Philipp,
 
---aBaYPhOdNx+t7mr3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+thanks for the quick reply.
 
-On Wed, Jul 08, 2020 at 10:38:13AM +0530, Rohit kumar wrote:
-> From: Ajit Pandey <ajitp@codeaurora.org>
->=20
-> We are allocating dma memory for component->dev but trying to mmap
-> such memory for substream->pcm->card->dev. Replace device argument
-> in mmap with component->dev to fix this.
+On Wed, 8 Jul 2020 at 10:31, Philipp Zabel <p.zabel@pengutronix.de> wrote:
 
-This is a bug fix and should've been at the start of the series (or sent
-separately) so that it can be applied without the rest of the series.
+> Could this be just a panel getting confused because the pixel clock is
+> disabled, or is there really an issue with the IPU? Have you tried just
+> keeping clk_di_pixel enabled in ipu_di_disable(), but continuing
+> to disable DI and DC?
+>
 
---aBaYPhOdNx+t7mr3
-Content-Type: application/pgp-signature; name="signature.asc"
+I've  tried that now but still observed the corruption.
 
------BEGIN PGP SIGNATURE-----
+> > The exact reason isn't understood but it seems timing related.
+> >
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8F+WAACgkQJNaLcl1U
-h9DYdwf/TP/V9rRaqchmnuoLr81D+iZWagfBza40aZnj6L9DmzYz9ujUAXhBwLE3
-m0qzU/Y80YabOhh+GByaGdPSPAT+34xYOcFVym6e2Iqq6iJHSIY9OWeChI+ieCKv
-1JxhQzQgOBoHjSLmCG/IM6/DaP8Gcab0uEakRbI6wzuhKbZtQ8TmCLD90Igv2Y36
-bFNfao34+aQxdmGpe1lLqScooepCZzYeL47nFGlVoXFSG9phR0h+Qwj/ed/5alhn
-ntxODL3WdwurRO+1L/TZrPhfrmMolsda9pU0G6Mm4vO2NwXK/bZuYixvckCT7H3S
-5frOF/gMTdki5Wl3SDrE8GDvOrX9/w==
-=exLA
------END PGP SIGNATURE-----
+Also just adding a msleep(2) or a mdelay(20) at the end of
+ipu_crtc_atomic_disable() makes the problem go away too.
+Obviously I'm not suggesting doing that, just that it may help
+understand what is going on.
 
---aBaYPhOdNx+t7mr3--
+>
+> Just removing ipu_di_disable() leaks a clk_prepare_enable refcount on
+> the di->clk_di_pixel clock.
+>
+> Also this is followed by an ipu_dc_disable(), which should remove the DC
+> module's clock if this is the only display. So the DC should be disabled
+> anyway.
+>
+
+True.
+
+How about doing just ipu_crtc_disable_planes() and
+drm_crtc_vblank_off() in the active (modeset) case.
+and in ipu_crtc_atomic_enable() only doing the stuff  (which doesn't
+touch the planes) if old_state->active == false ?
+
+That will fix the clock refcount problem and seems generally better as
+tearing down everything just to do a modeset
+seems a bit heavy handed.
+
+I've tested that and it works too but it's probably better to discuss
+this some more before sending a new patch.
+
+Regards,
+
+Martin
