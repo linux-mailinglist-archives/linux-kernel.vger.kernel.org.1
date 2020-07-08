@@ -2,81 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2580D21824E
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 10:28:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD432218248
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 10:28:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728169AbgGHI2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 04:28:30 -0400
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:57823 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727119AbgGHI23 (ORCPT
+        id S1728108AbgGHI2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 04:28:20 -0400
+Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205]:41316 "EHLO
+        smtp2207-205.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727818AbgGHI2U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 04:28:29 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04427;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0U262FR._1594196902;
-Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0U262FR._1594196902)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 08 Jul 2020 16:28:22 +0800
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-To:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        dhowells@redhat.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@st.com, jmorris@namei.org, serge@hallyn.com,
-        nramas@linux.microsoft.com, tusharsu@linux.microsoft.com,
-        zohar@linux.ibm.com, gilad@benyossef.com, pvanleeuwen@rambus.com
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        keyrings@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org, zhang.jia@linux.alibaba.com,
-        tianjia.zhang@linux.alibaba.com
-Subject: [PATCH v4 5/8] crypto: testmgr - support test with different ciphertext per encryption
-Date:   Wed,  8 Jul 2020 16:28:15 +0800
-Message-Id: <20200708082818.5511-6-tianjia.zhang@linux.alibaba.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200708082818.5511-1-tianjia.zhang@linux.alibaba.com>
-References: <20200708082818.5511-1-tianjia.zhang@linux.alibaba.com>
+        Wed, 8 Jul 2020 04:28:20 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07509368|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.546935-0.000464198-0.452601;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03309;MF=frank@allwinnertech.com;NM=1;PH=DS;RN=10;RT=10;SR=0;TI=SMTPD_---.I-BVxka_1594196890;
+Received: from allwinnertech.com(mailfrom:frank@allwinnertech.com fp:SMTPD_---.I-BVxka_1594196890)
+          by smtp.aliyun-inc.com(10.147.42.198);
+          Wed, 08 Jul 2020 16:28:14 +0800
+From:   Frank Lee <frank@allwinnertech.com>
+To:     mripard@kernel.org, wens@csie.org, robh+dt@kernel.org,
+        tiny.windzz@gmail.com
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, huangshuosheng@allwinnertech.com,
+        liyong@allwinnertech.com, Frank Lee <frank@allwinnertech.com>
+Subject: [PATCH v3 16/16] arm64: allwinner: A100: add support for Allwinner Perf1 board
+Date:   Wed,  8 Jul 2020 16:28:21 +0800
+Message-Id: <20200708082821.13188-1-frank@allwinnertech.com>
+X-Mailer: git-send-email 2.24.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some asymmetric algorithms will get different ciphertext after
-each encryption, such as SM2, and let testmgr support the testing
-of such algorithms.
+A100 perf1 is an Allwinner A100-based SBC, with the following features:
 
-In struct akcipher_testvec, set c and c_size to be empty, skip
-the comparison of the ciphertext, and compare the decrypted
-plaintext with m to achieve the test purpose.
+- 1GiB DDR3 DRAM
+- AXP803 PMIC
+- 2 USB 2.0 ports
+- MicroSD slot and on-board eMMC module
+- on-board Nand flash
+- ···
 
-Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Adds initial support for it, including UART and PMU.
+
+Signed-off-by: Frank Lee <frank@allwinnertech.com>
 ---
- crypto/testmgr.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ arch/arm64/boot/dts/allwinner/Makefile             |   1 +
+ .../dts/allwinner/sun50i-a100-allwinner-perf1.dts  | 180 +++++++++++++++++++++
+ 2 files changed, 181 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-a100-allwinner-perf1.dts
 
-diff --git a/crypto/testmgr.c b/crypto/testmgr.c
-index 6863f911fcee..0dc94461c437 100644
---- a/crypto/testmgr.c
-+++ b/crypto/testmgr.c
-@@ -4025,7 +4025,7 @@ static int test_akcipher_one(struct crypto_akcipher *tfm,
- 		pr_err("alg: akcipher: %s test failed. err %d\n", op, err);
- 		goto free_all;
- 	}
--	if (!vecs->siggen_sigver_test) {
-+	if (!vecs->siggen_sigver_test && c) {
- 		if (req->dst_len != c_size) {
- 			pr_err("alg: akcipher: %s test failed. Invalid output len\n",
- 			       op);
-@@ -4056,6 +4056,11 @@ static int test_akcipher_one(struct crypto_akcipher *tfm,
- 		goto free_all;
- 	}
- 
-+	if (!vecs->siggen_sigver_test && !c) {
-+		c = outbuf_enc;
-+		c_size = req->dst_len;
-+	}
+diff --git a/arch/arm64/boot/dts/allwinner/Makefile b/arch/arm64/boot/dts/allwinner/Makefile
+index e4d3cd0..ab780db 100644
+--- a/arch/arm64/boot/dts/allwinner/Makefile
++++ b/arch/arm64/boot/dts/allwinner/Makefile
+@@ -14,6 +14,7 @@ dtb-$(CONFIG_ARCH_SUNXI) += sun50i-a64-pinephone-1.1.dtb
+ dtb-$(CONFIG_ARCH_SUNXI) += sun50i-a64-pinetab.dtb
+ dtb-$(CONFIG_ARCH_SUNXI) += sun50i-a64-sopine-baseboard.dtb
+ dtb-$(CONFIG_ARCH_SUNXI) += sun50i-a64-teres-i.dtb
++dtb-$(CONFIG_ARCH_SUNXI) += sun50i-a100-allwinner-perf1.dtb
+ dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h5-bananapi-m2-plus.dtb
+ dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h5-bananapi-m2-plus-v1.2.dtb
+ dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h5-emlid-neutis-n5-devboard.dtb
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a100-allwinner-perf1.dts b/arch/arm64/boot/dts/allwinner/sun50i-a100-allwinner-perf1.dts
+new file mode 100644
+index 0000000..38621bb
+--- /dev/null
++++ b/arch/arm64/boot/dts/allwinner/sun50i-a100-allwinner-perf1.dts
+@@ -0,0 +1,180 @@
++// SPDX-License-Identifier: (GPL-2.0+ or MIT)
++/*
++ * Copyright (c) 2020 Frank Lee <frank@allwinnertech.com>
++ */
 +
- 	op = vecs->siggen_sigver_test ? "sign" : "decrypt";
- 	if (WARN_ON(c_size > PAGE_SIZE))
- 		goto free_all;
++/dts-v1/;
++
++#include "sun50i-a100.dtsi"
++
++/{
++	model = "Allwinner A100 Perf1";
++	compatible = "allwinner,a100-perf1", "allwinner,sun50i-a100";
++
++	aliases {
++		serial0 = &uart0;
++	};
++
++	chosen {
++		stdout-path = "serial0:115200n8";
++	};
++};
++
++&pio {
++	vcc-pb-supply = <&reg_dcdc1>;
++	vcc-pc-supply = <&reg_eldo1>;
++	vcc-pd-supply = <&reg_dcdc1>;
++	vcc-pe-supply = <&reg_dldo2>;
++	vcc-pf-supply = <&reg_dcdc1>;
++	vcc-pg-supply = <&reg_dldo1>;
++	vcc-ph-supply = <&reg_dcdc1>;
++};
++
++&r_pio {
++	/*
++	 * FIXME: We can't add that supply for now since it would
++	 * create a circular dependency between pinctrl, the regulator
++	 * and the RSB Bus.
++	 *
++	 * vcc-pl-supply = <&reg_aldo3>;
++	 */
++};
++
++&r_i2c0 {
++	status = "okay";
++
++	axp803: pmic@34 {
++		compatible = "x-powers,axp803";
++		reg = <0x34>;
++		interrupt-parent = <&r_intc>;
++		interrupts = <0 IRQ_TYPE_LEVEL_LOW>;
++		x-powers,drive-vbus-en; /* set N_VBUSEN as output pin */
++	};
++};
++
++#include "axp803.dtsi"
++
++&ac_power_supply {
++	status = "okay";
++};
++
++&reg_aldo1 {
++	regulator-always-on;
++	regulator-min-microvolt = <1800000>;
++	regulator-max-microvolt = <1800000>;
++	regulator-name = "vcc-pll-avcc";
++};
++
++&reg_aldo2 {
++	regulator-always-on;
++	regulator-min-microvolt = <1800000>;
++	regulator-max-microvolt = <1800000>;
++	regulator-name = "vcc-dram-1";
++};
++
++&reg_aldo3 {
++	regulator-always-on;
++	regulator-min-microvolt = <3300000>;
++	regulator-max-microvolt = <3300000>;
++	regulator-name = "vcc-usb-pl";
++};
++
++&reg_dcdc1 {
++	regulator-always-on;
++	regulator-min-microvolt = <3300000>;
++	regulator-max-microvolt = <3300000>;
++	regulator-name = "vcc-pc-io-usb-pd-emmc-nand-card";
++};
++
++&reg_dcdc2 {
++	regulator-always-on;
++	/*
++	 * FIXME: update min and max before support dvfs.
++	 */
++	regulator-min-microvolt = <500000>;
++	regulator-max-microvolt = <1300000>;
++	regulator-name = "vdd-cpux";
++};
++
++/* DCDC3 is polyphased with DCDC2 */
++
++&reg_dcdc4 {
++	regulator-always-on;
++	regulator-min-microvolt = <950000>;
++	regulator-max-microvolt = <950000>;
++	regulator-name = "vdd-sys-usb-dram";
++};
++
++&reg_dcdc5 {
++	regulator-always-on;
++	regulator-min-microvolt = <1500000>;
++	regulator-max-microvolt = <1500000>;
++	regulator-name = "vcc-dram-2";
++};
++
++&reg_dldo1 {
++	regulator-min-microvolt = <3300000>;
++	regulator-max-microvolt = <3300000>;
++	regulator-name = "vcc-pg-dcxo-wifi";
++};
++
++&reg_dldo2 {
++	regulator-min-microvolt = <1800000>;
++	regulator-max-microvolt = <2800000>;
++	regulator-name = "vcc-pe-csi";
++};
++
++&reg_dldo3 {
++	regulator-min-microvolt = <1800000>;
++	regulator-max-microvolt = <3300000>;
++	regulator-name = "ldo-avdd-csi";
++};
++
++&reg_dldo4 {
++	regulator-min-microvolt = <1800000>;
++	regulator-max-microvolt = <2800000>;
++	regulator-name = "avcc-csi";
++};
++
++&reg_eldo1 {
++	regulator-min-microvolt = <1800000>;
++	regulator-max-microvolt = <1800000>;
++	regulator-name = "vcc-pc-lvds-csi-efuse-emmc-nand";
++};
++
++&reg_eldo2 {
++	regulator-min-microvolt = <1200000>;
++	regulator-max-microvolt = <1800000>;
++	regulator-name = "dvdd-csi";
++};
++
++&reg_eldo3 {
++	regulator-min-microvolt = <1800000>;
++	regulator-max-microvolt = <1800000>;
++	regulator-name = "vcc-mipi-lcd";
++};
++
++&reg_fldo1 {
++	regulator-always-on;
++	regulator-min-microvolt = <900000>;
++	regulator-max-microvolt = <900000>;
++	regulator-name = "vdd-cpus-usb";
++};
++
++&reg_ldo_io0 {
++	regulator-min-microvolt = <3300000>;
++	regulator-max-microvolt = <3300000>;
++	regulator-name = "vcc-ctp";
++	status = "okay";
++};
++
++&reg_drivevbus {
++	regulator-name = "usb0-vbus";
++	status = "okay";
++};
++
++&uart0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&uart0_pb_pins>;
++	status = "okay";
++};
 -- 
-2.17.1
+1.9.1
 
