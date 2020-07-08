@@ -2,162 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B322218947
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 15:37:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 460EB21894C
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 15:38:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729848AbgGHNhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 09:37:01 -0400
-Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:37443 "EHLO
-        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729675AbgGHNg6 (ORCPT
+        id S1729809AbgGHNiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 09:38:15 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:39547 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729697AbgGHNiO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 09:36:58 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id 5D6D860B;
-        Wed,  8 Jul 2020 09:36:57 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Wed, 08 Jul 2020 09:36:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:subject:message-id:references:mime-version
-        :content-type:content-transfer-encoding:in-reply-to; s=fm3; bh=P
-        zfHrV4iVkzRgQmQMk6+h0X/sLAgn8pIAagUpIuv7T8=; b=ibfDKMW5rhD3yq18L
-        mVyxmP6EvZnkoJNyNrBpNE9yx2xASmoO7f7L4kcxiUxrTIMjrdprJi5ugbAzHSnp
-        zu56n8+ERDsNyJD1xO9DiWkCB+dHE26NEMzZCHerkSVjgEYesbjiHjmZqelkyRTN
-        dF7yzqYpaxPIcnt0/GQaD7xavAkF4pAKyb8nSVr3DP7S0In6M5OhBpmCqwL6lT+t
-        Wi7Lp7aRp/46KKGwOyLjwNL50rIhXC7dEMVQ1ZiyO9hCH4Vntu/WxFVGlM6bsZto
-        TL5XTSfC28TPSiq1INbkTxli97CfzeSNFE31JhkW3kByg5ETQg+PMxuOWx0djayQ
-        bXUfA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=PzfHrV4iVkzRgQmQMk6+h0X/sLAgn8pIAagUpIuv7
-        T8=; b=dM+0P6Xxl9ilZqNgMIcgwrZuBICK2Bc/91Z+O+JfrhiOFQrU3VqcVso29
-        4twjdjqqPbY25acHFg/oWOKUWQ6//o/cxeaXQKB+5fm5vsP6pbKUX3Nbv+fiFw6G
-        1XM5QZd/ZzStzXOH23fBRWmXL/gfO1vYN0vtHcl40wwLn+2HxYBQj9a7Ow63qnBC
-        pMbfiAAKq6p4JAZuNmp1Z1dfHvFqd0X8+cw3maCWsFZQ0afCwfl2wpWumkh+V5k4
-        CRCoxVOtLfKWsxjTjexZt1AxEZodty0hSUh7gvUIaBwgXor41OHSNpDaeoa4RXAs
-        /spyWCfxtFNi2KOe33qghTiAL5uHQ==
-X-ME-Sender: <xms:-MsFX0kC14Lb2YaTS8fbpH2EEi2tF_YfoZ5KuRuLWd26pZ6EigocyA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudejgdeijecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggugfgjsehtqhertddttdejnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepgfejjeekjedttdethedtfeelteefffduvdevvdfhtdeiudetleejgeelfeef
-    uedvnecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:-MsFXz2r25JtN-kfFjqzz0h7L02SC76IytdNN3oJdVM-Gc_gDUFL8g>
-    <xmx:-MsFXyoP_ZyKegWdOiaWkvDwWXFnCfjHYMN1h4Xj8lj1IvGSlCRYRA>
-    <xmx:-MsFXwmd-t4utxh0vLwOvmy0If57qZQOWLM0B8J8XegndvuZZVpOQw>
-    <xmx:-csFX7l-KmszxWZ6mANu4EnjnITWbJc3DSUN5HcyFMAtJd5eMg1t3Qj3ooU>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id C4592328005A;
-        Wed,  8 Jul 2020 09:36:55 -0400 (EDT)
-Date:   Wed, 8 Jul 2020 15:36:54 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
-        linux-sunxi@googlegroups.com,
-        Vasily Khoruzhick <anarsoul@gmail.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amit.kucheria@verdurent.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        "open list:ALLWINNER THERMAL DRIVER" <linux-pm@vger.kernel.org>,
-        "moderated list:ARM/Allwinner sunXi SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] thermal: sun8i: Be loud when probe fails
-Message-ID: <20200708133654.fp7k4whl2qmn5ygy@gilmour.lan>
-References: <20200708105527.868987-1-megous@megous.com>
- <20200708122542.73o3lbhgvbdw5c4z@gilmour.lan>
- <20200708132924.r6f5id2evprhybec@core.my.home>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200708132924.r6f5id2evprhybec@core.my.home>
+        Wed, 8 Jul 2020 09:38:14 -0400
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200708133812euoutp01063530afb651364a0795eb1509e75864~fyosxV1By3273032730euoutp01M
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 13:38:12 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200708133812euoutp01063530afb651364a0795eb1509e75864~fyosxV1By3273032730euoutp01M
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1594215492;
+        bh=Spljwi04NPz7tPwQDU3ylhpMAcBmPOyA+LcLqOe48yU=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=Vj7XMOqi0NxcchXdWTsCeHfGhTFBmBTugLzD6EPfrdpDsIPUI6hYbucJf+auRAzZr
+         2BlktYAI0O6akoR0FElXVBLbjy27eFFloXED8TIVvnH+inQkdppZpYNU3EwzHKVHVt
+         IuxCtttYJ3dUFKDV26BF/QZ1PSdV8gMZ7tDKvjyY=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20200708133811eucas1p23859cf25cecf8fe7eac4bc597e5354ed~fyosfTTEW0379703797eucas1p2L;
+        Wed,  8 Jul 2020 13:38:11 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id 22.86.06456.34CC50F5; Wed,  8
+        Jul 2020 14:38:11 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20200708133811eucas1p1df7b92d7e0ba512c5a7ecdb948edbfcf~fyor-LiDI1425514255eucas1p1N;
+        Wed,  8 Jul 2020 13:38:11 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200708133811eusmtrp1e04dd234da5007c86c0c63bcdfd07b28~fyor_lDj93178831788eusmtrp1v;
+        Wed,  8 Jul 2020 13:38:11 +0000 (GMT)
+X-AuditID: cbfec7f2-7efff70000001938-55-5f05cc436e60
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id F1.36.06314.34CC50F5; Wed,  8
+        Jul 2020 14:38:11 +0100 (BST)
+Received: from AMDC2765.digital.local (unknown [106.120.51.73]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20200708133810eusmtip182b79244efc0f0790829ab647ea4e761~fyorgZg7g1357913579eusmtip1d;
+        Wed,  8 Jul 2020 13:38:10 +0000 (GMT)
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+To:     linux-usb@vger.kernel.org, linux-samsung-soc@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH RESEND] phy: exynos5-usbdrd: Calibrating makes sense only
+ for USB2.0 PHY
+Date:   Wed,  8 Jul 2020 15:38:00 +0200
+Message-Id: <20200708133800.3336-1-m.szyprowski@samsung.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrPIsWRmVeSWpSXmKPExsWy7djP87rOZ1jjDSbONLTYOGM9q8WFpz1s
+        FufPb2C3uLxrDpvFjPP7mCwWLWtltlh75C67xc47J5gdODw2repk8+jbsorR4/iN7UwenzfJ
+        BbBEcdmkpOZklqUW6dslcGVcOv+bsWAnR8Wzm9/ZGhhXsHcxcnJICJhIXDzQwdjFyMUhJLCC
+        UWLezwY2kISQwBdGiW+LXSASnxkljk+ZAJTgAOu4/jYIIr6cUWLSoXMsEA5Qw48n01hAutkE
+        DCW63naBTRIRcJBYsvQOG0gRs8B3RonuzgtMIAlhgSiJ5T+WgxWxCKhKzP1wkBHE5hWwkfjV
+        c4IZ4j55idUbDjCDNEsI3GaTuPvpECtEwkXi1rGnLBC2sMSr41ugHpKROD25hwWioZlR4uG5
+        tewQTg+jxOWmGYwQVdYSd879AnuIWUBTYv0ufYiwo8SBKUsYIf7kk7jxVhAkzAxkTto2nRki
+        zCvR0SYEUa0mMev4Ori1By9cgrrZQ+J52y1GSDDGSuy/+ZR5AqPcLIRdCxgZVzGKp5YW56an
+        FhvmpZbrFSfmFpfmpesl5+duYgQmg9P/jn/awfj1UtIhRgEORiUe3gkbWOOFWBPLiitzDzFK
+        cDArifA6nT0dJ8SbklhZlVqUH19UmpNafIhRmoNFSZzXeNHLWCGB9MSS1OzU1ILUIpgsEwen
+        FDDqD602vLeQ99fMi7vyfcSl+zaF+d6yN936Y1v+6xNbX4jdDjts+qz+y42H3PnOl00+t82M
+        UwyZ99Z4ad6WlUnBcbdjH07pm7Jyzomntv7Z/xsvRm0sFDov43w6IEipT+ZaWy7Llod57z/W
+        Gc9S4nzZvLs08IU/i7j3jidXly8xzN33sPLF1xluSizFGYmGWsxFxYkA7pFAqAIDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrCLMWRmVeSWpSXmKPExsVy+t/xu7rOZ1jjDZ5PkrTYOGM9q8WFpz1s
+        FufPb2C3uLxrDpvFjPP7mCwWLWtltlh75C67xc47J5gdODw2repk8+jbsorR4/iN7UwenzfJ
+        BbBE6dkU5ZeWpCpk5BeX2CpFG1oY6RlaWugZmVjqGRqbx1oZmSrp29mkpOZklqUW6dsl6GVc
+        Ov+bsWAnR8Wzm9/ZGhhXsHcxcnBICJhIXH8b1MXIxSEksJRR4uyXu2xdjJxAcRmJk9MaWCFs
+        YYk/17rYIIo+MUpMv3SPHSTBJmAo0fW2C6xBRMBJonPtaTCbWeA3o8SBiYYgtrBAhMSnTcvB
+        BrEIqErM/XCQEcTmFbCR+NVzghligbzE6g0HmCcw8ixgZFjFKJJaWpybnltsqFecmFtcmpeu
+        l5yfu4kRGILbjv3cvIPx0sbgQ4wCHIxKPLwvNrHGC7EmlhVX5h5ilOBgVhLhdTp7Ok6INyWx
+        siq1KD++qDQntfgQoynQ8onMUqLJ+cD4yCuJNzQ1NLewNDQ3Njc2s1AS5+0QOBgjJJCeWJKa
+        nZpakFoE08fEwSnVwKhcu/hV2OLtD48eNT/Vz/CjQ+dAwNxgl5nukgnlbS1TbmhVPfxeFH+E
+        l+OPzmJvrzMqnz0PHb91i/P4heCjLWtcijZaGdi//VH/cVNmmuPMI+om99Y+L/k5Wfq3ztWV
+        k1YyTp24al9zYrfr/kWsmxbc8pTZumJBqO0DLmEx5jDt8rP/XN3OLYhRYinOSDTUYi4qTgQA
+        atmfnlcCAAA=
+X-CMS-MailID: 20200708133811eucas1p1df7b92d7e0ba512c5a7ecdb948edbfcf
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200708133811eucas1p1df7b92d7e0ba512c5a7ecdb948edbfcf
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200708133811eucas1p1df7b92d7e0ba512c5a7ecdb948edbfcf
+References: <CGME20200708133811eucas1p1df7b92d7e0ba512c5a7ecdb948edbfcf@eucas1p1.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 08, 2020 at 03:29:24PM +0200, Ond=C5=99ej Jirman wrote:
-> Hello Maxime,
->=20
-> On Wed, Jul 08, 2020 at 02:25:42PM +0200, Maxime Ripard wrote:
-> > Hi,
-> >=20
-> > On Wed, Jul 08, 2020 at 12:55:27PM +0200, Ondrej Jirman wrote:
-> > > I noticed several mobile Linux distributions failing to enable the
-> > > thermal regulation correctly, because the kernel is silent
-> > > when thermal driver fails to probe. Add enough error reporting
-> > > to debug issues and warn users in case thermal sensor is failing
-> > > to probe.
-> > >=20
-> > > Failing to notify users means, that SoC can easily overheat under
-> > > load.
-> > >=20
-> > > Signed-off-by: Ondrej Jirman <megous@megous.com>
-> > > ---
-> > >  drivers/thermal/sun8i_thermal.c | 55 ++++++++++++++++++++++++++-----=
---
-> > >  1 file changed, 43 insertions(+), 12 deletions(-)
-> > >=20
-> > > diff --git a/drivers/thermal/sun8i_thermal.c b/drivers/thermal/sun8i_=
-thermal.c
-> > > index 74d73be16496..9065e79ae743 100644
-> > > --- a/drivers/thermal/sun8i_thermal.c
-> > > +++ b/drivers/thermal/sun8i_thermal.c
-> > > @@ -287,8 +287,12 @@ static int sun8i_ths_calibrate(struct ths_device=
- *tmdev)
-> > > =20
-> > >  	calcell =3D devm_nvmem_cell_get(dev, "calibration");
-> > >  	if (IS_ERR(calcell)) {
-> > > +		dev_err(dev, "Failed to get calibration nvmem cell (%ld)\n",
-> > > +			PTR_ERR(calcell));
-> > > +
-> > >  		if (PTR_ERR(calcell) =3D=3D -EPROBE_DEFER)
-> > >  			return -EPROBE_DEFER;
-> > > +
-> >=20
-> > The rest of the patch makes sense, but we should probably put the error
-> > message after the EPROBE_DEFER return so that we don't print any extra
-> > noise that isn't necessarily useful
->=20
-> I thought about that, but in this case this would have helped, see my oth=
-er
-> e-mail. Though lack of "probe success" message may be enough for me, to
-> debug the issue, I'm not sure the user will notice that a message is miss=
-ing, while
-> he'll surely notice if there's a flood of repeated EPROBE_DEFER messages.
+PHY calibration is needed only for USB2.0 (UTMI) PHY, so skip calling
+calibration code when phy_calibrate() is called for USB3.0 (PIPE3) PHY.
 
-Yeah, but on the other hand, we regularly have people that come up and
-ask if a "legitimate" EPROBE_DEFER error message (as in: the driver
-wasn't there on the first attempt but was there on the second) is a
-cause of concern or not.
+Fixes: d8c80bb3b55b ("phy: exynos5-usbdrd: Calibrate LOS levels for exynos5420/5800")
+Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+---
+ drivers/phy/samsung/phy-exynos5-usbdrd.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-> And people run several distros for 3-4 months without anyone noticing any
-> issues and that thermal regulation doesn't work. So it seems that lack of=
- a
-> success message is not enough.
+diff --git a/drivers/phy/samsung/phy-exynos5-usbdrd.c b/drivers/phy/samsung/phy-exynos5-usbdrd.c
+index 646259bee909..f07edd80d2f3 100644
+--- a/drivers/phy/samsung/phy-exynos5-usbdrd.c
++++ b/drivers/phy/samsung/phy-exynos5-usbdrd.c
+@@ -714,7 +714,9 @@ static int exynos5_usbdrd_phy_calibrate(struct phy *phy)
+ 	struct phy_usb_instance *inst = phy_get_drvdata(phy);
+ 	struct exynos5_usbdrd_phy *phy_drd = to_usbdrd_phy(inst);
+ 
+-	return exynos5420_usbdrd_phy_calibrate(phy_drd);
++	if (inst->phy_cfg->id == EXYNOS5_DRDPHY_UTMI)
++		return exynos5420_usbdrd_phy_calibrate(phy_drd);
++	return 0;
+ }
+ 
+ static const struct phy_ops exynos5_usbdrd_phy_ops = {
+-- 
+2.17.1
 
-I understand what the issue is, but do you really expect phone users to
-monitor the kernel logs every time they boot their phone to see if the
-thermal throttling is enabled?
-
-If anything, it looks like a distro problem, and the notification /
-policy to deal with that should be implemented in userspace.
-
-> Other solution may be to select CONFIG_NVMEM_SUNXI_SID if this driver
-> is enabled. That may get rid of this error scenario of waiting infinitely
-> for calibration data with EPROBE_DEFER. And other potential EPROBE_DEFER =
-sources
-> will probably be quite visible even without this driver telling the user.
-> So this message may not be necessary in that case.
-
-That would only partially solve your issue. If the nvmem driver doesn't
-load for some reason, you would end up in a similar situation.
-
-Maxime
