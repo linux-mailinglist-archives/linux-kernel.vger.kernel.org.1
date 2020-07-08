@@ -2,289 +2,322 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D545E218CF3
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 18:28:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71A25218CFC
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 18:30:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730544AbgGHQ2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 12:28:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730141AbgGHQ2o (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 12:28:44 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40DBFC061A0B;
-        Wed,  8 Jul 2020 09:28:44 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id n26so37286831ejx.0;
-        Wed, 08 Jul 2020 09:28:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=sM1pF2B/Unx9f8bmY4h3t9D1X4mTMrzt35ICJ1QQNqk=;
-        b=rFtzkK0YaD+qR+NIKeHNpM+u06Z2ES+Uv03BNA6s/UuR69KcRJIuXDMVcVHPZkb28D
-         cUtp8IHUgopZfLcn4wBArHYXuoVC2mOyY9ducE8/zBMAxYjW04Q4IyXQVmPZJR9l//E0
-         KKYT/c0iSIm/KI0fl1/ykb6LJ01TaC3bF89NfgwB+XJ21wmDZOJSLhO02w7Krrd4yqqE
-         Zc+B7N0tr/r0tgXlTbMwFsTS13j98tv6D05HN3g5w5EKXJb+uREljE1QVTeuk89TyO7S
-         JL8NQeFSK3JxgZLwHcZefbPfVUpdne8Vk4Us/rd5xAIhgT+x4J9PweY8yPV2D2g6qqR3
-         VwKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=sM1pF2B/Unx9f8bmY4h3t9D1X4mTMrzt35ICJ1QQNqk=;
-        b=aa1kiUG4yPPvVClLflEDyliTMekB+zXepQXlWjrYXI5Xl6VjMu26BGGFffRVUquZSJ
-         BFRP+F8hqXzC2m/4xzvJ2EUFcykKBkukLC9XykZubgehzFGoIg5PvD7F+dkuNgXJJpAH
-         xoh2jM6FIlFFAF7uuRoNB9fZp3melIh10dhKCbGM2YmdZWc1OrEpcBt26ikxa1sBsycV
-         NTgSVH5571pGc92SQ5xanwlYOmL/y+uWwcDIhwhstB+HfNk0Ql+gVW+Y4WyK6NcVwE0l
-         jD2Kxn+zi3zatYk29c1XXGpvsbceer5Xr/TjqGvqacPSNl4DJ1uavvXCtB5iybS3rM/f
-         RywA==
-X-Gm-Message-State: AOAM533FJFCp8hBp8KfYdxko345QA3zgxWHq86UNgSOqImRUsXOqVtXZ
-        SsizIDs05QwFIPCu319yqyk=
-X-Google-Smtp-Source: ABdhPJxc0Taost+GEv3Vr/vhRWkmc56CbIdjdIwr2r3REAeGzr3uiHiyj8sYKj9F6pFSXn5ojLtMIg==
-X-Received: by 2002:a17:906:4942:: with SMTP id f2mr54713676ejt.125.1594225722978;
-        Wed, 08 Jul 2020 09:28:42 -0700 (PDT)
-Received: from [192.168.2.1] (ip51ccf9cd.speed.planet.nl. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id i7sm22187eds.91.2020.07.08.09.28.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Jul 2020 09:28:42 -0700 (PDT)
-Subject: Re: [PATCH] clk: rockchip: mark pclk_uart2 as critical on rk3328
-To:     Robin Murphy <robin.murphy@arm.com>, heiko@sntech.de
-Cc:     sboyd@kernel.org, mturquette@baylibre.com,
-        zhangqing@rock-chips.com, linux-kernel@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20200708144528.20465-1-jbx6244@gmail.com>
- <074d8691-2d88-4520-1e43-8c7eb5b82680@arm.com>
-From:   Johan Jonker <jbx6244@gmail.com>
-Message-ID: <0fccae1f-a62a-13fe-0aba-7bbae597d5c7@gmail.com>
-Date:   Wed, 8 Jul 2020 18:28:40 +0200
-User-Agent: Mozilla/5.0 (X11; Linux i686; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1730614AbgGHQae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 12:30:34 -0400
+Received: from mga12.intel.com ([192.55.52.136]:42117 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730093AbgGHQae (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 12:30:34 -0400
+IronPort-SDR: SNHr6lX6NcnIWHy0WtjyMuWD+KGk4Q1fboLwINSOtXifQhKFX+Ksizaz5QrjO2L+CUFV786CGu
+ Ns+2usAfmkwg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9676"; a="127444899"
+X-IronPort-AV: E=Sophos;i="5.75,327,1589266800"; 
+   d="scan'208";a="127444899"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2020 09:30:33 -0700
+IronPort-SDR: B7HnRkIddyTzOSfKWZWQlCGmB+RPJEuxrogI8obPSK63U4cLqLAQ5A1gkJrx626o8SORN1+cOs
+ hdNNJOqh6bGQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,327,1589266800"; 
+   d="scan'208";a="315925705"
+Received: from jschirra-mobl.ger.corp.intel.com (HELO localhost) ([10.249.47.201])
+  by fmsmga002.fm.intel.com with ESMTP; 08 Jul 2020 09:30:29 -0700
+Date:   Wed, 8 Jul 2020 19:30:27 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Masahisa Kojima <masahisa.kojima@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        ardb@kernel.org, devicetree@vger.kernel.org,
+        linux-integrity@vger.kernel.org, peterhuewe@gmx.de, jgg@ziepe.ca
+Subject: Re: [PATCH v3 1/2] tpm: tis: add support for MMIO TPM on SynQuacer
+Message-ID: <20200708163027.GC549022@linux.intel.com>
+References: <20200708131424.18729-1-masahisa.kojima@linaro.org>
+ <20200708131424.18729-2-masahisa.kojima@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <074d8691-2d88-4520-1e43-8c7eb5b82680@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200708131424.18729-2-masahisa.kojima@linaro.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Robin and others,
-
-Just a clarification.
-Test is done on rk3318 A95X Z2 that uses rk3328.dtsi.
-Almost everything works fine now except for uart2.
-Front display also works now with ported custom vfd driver for the
-SM1628 clone used.
-
-When I include a printk function for debugging in
-clk_disable_unused_subtree I get this list of disabled clocks below.
-Could you list the rk3328 clocks that are turned off? Is there a difference?
-
-boot options including:
-earlycon=uart8250,mmio32,0xff130000,keep
-console=ttyS2,1500000n8
-
-But the real console in which one can type ends up on ttyUSB0.
-Without console defined in the command line it's only usb keyboard and
-hdmi monitor. Output on ttyS2 stops right after:
-
-[    1.309231] C:pclk_uart2 -> pclk_bus
-
-To see more I have to include clk_ignore_unused to the command line.
-In clk-px30.c they also included pclk_uart2 to the critical list.
-Could Elaine Zhang give more info on that?
-
-Kind regards,
-
-Johan Jonker
-
-static void __init clk_disable_unused_subtree(struct clk_core *core)
-{
-	struct clk_core *child;
-	unsigned long flags;
-
-	lockdep_assert_held(&prepare_lock);
-
-	hlist_for_each_entry(child, &core->children, child_node)
-		clk_disable_unused_subtree(child);
-
-	if (core->flags & CLK_OPS_PARENT_ENABLE)
-		clk_core_prepare_enable(core->parent);
-
-	if (clk_pm_runtime_get(core))
-		goto unprepare_out;
-
-	flags = clk_enable_lock();
-
-	if (core->enable_count)
-		goto unlock_out;
-
-	if (core->flags & CLK_IGNORE_UNUSED)
-		goto unlock_out;
-
-	/*
-	 * some gate clocks have special needs during the disable-unused
-	 * sequence.  call .disable_unused if available, otherwise fall
-	 * back to .disable
-	 */
-	if (clk_core_is_enabled(core)) {
-		trace_clk_disable(core);
-
-////////////
-// >>> Include debug here <<<
-
-		printk("C:%s -> %s\n", core->name, core->parent ? core->parent->name :
-"*");
-
-////////////
-		if (core->ops->disable_unused)
-			core->ops->disable_unused(core->hw);
-		else if (core->ops->disable)
-			core->ops->disable(core->hw);
-		trace_clk_disable_complete(core);
-	}
-
-unlock_out:
-	clk_enable_unlock(flags);
-	clk_pm_runtime_put(core);
-unprepare_out:
-	if (core->flags & CLK_OPS_PARENT_ENABLE)
-		clk_core_disable_unprepare(core->parent);
-}
-
-
-label kernel
-    kernel /Image-CLK
-    fdt /rk3318-a95x-z2-CYX-led.dtb
-    append root=/dev/mmcblk0p5 console=tty0 console=ttyUSB0,115200n8
-console=ttyS2,1500000n8 initcall_debug=1 debug drm.debug=0xe
-earlycon=uart8250,mmio32,0xff130000,keep swiotlb=1 kpti=0
-no_console_suspend=1 consoleblank=0 rootwait
-
-
-[    1.282096] calling  clk_disable_unused+0x0/0x110 @ 1
-[    1.282705] C:sclk_timer5 -> xin24m
-[    1.283115] C:sclk_timer4 -> xin24m
-[    1.283524] C:sclk_timer3 -> xin24m
-[    1.283932] C:sclk_timer2 -> xin24m
-[    1.284340] C:sclk_timer1 -> xin24m
-[    1.284748] C:sclk_timer0 -> xin24m
-[    1.285158] C:clk_otp -> xin24m
-[    1.285536] C:aclk_mac2io -> aclk_gmac
-[    1.286035] C:pclk_mac2io -> pclk_gmac
-[    1.286483] C:clk_rga -> gpll
-[    1.286834] C:aclk_gpu -> aclk_gpu_pre
-[    1.287284] C:aclk_tsp -> aclk_bus_pre
-[    1.287723] C:aclk_dcf -> aclk_bus_pre
-[    1.288162] C:pclk_acodecphy -> pclk_phy_pre
-[    1.295372] C:pclk_dcf -> pclk_bus
-[    1.309231] C:pclk_uart2 -> pclk_bus
-[    1.322902] C:pclk_uart1 -> pclk_bus
-[    1.329133] C:pclk_uart0 -> pclk_bus
-[    1.335230] C:pclk_spi -> pclk_bus
-[    1.341538] C:pclk_stimer -> pclk_bus
-[    1.341543] C:pclk_i2c3 -> pclk_bus
-[    1.341547] C:pclk_i2c2 -> pclk_bus
-[    1.341551] C:pclk_i2c1 -> pclk_bus
-[    1.341554] C:pclk_i2c0 -> pclk_bus
-[    1.341562] C:hclk_pdm -> hclk_bus_pre
-[    1.341566] C:hclk_crypto_slv -> hclk_bus_pre
-[    1.341574] C:hclk_crypto_mst -> hclk_bus_pre
-[    1.395518] C:hclk_tsp -> hclk_bus_pre
-[    1.401131] C:hclk_spdif_8ch -> hclk_bus_pre
-[    1.406791] C:hclk_i2s2_2ch -> hclk_bus_pre
-[    1.421229] C:hclk_i2s1_8ch -> hclk_bus_pre
-[    1.426642] C:hclk_i2s0_8ch -> hclk_bus_pre
-[    1.431878] C:clk_wifi -> cpll
-[    1.436987] C:sclk_vdec_core -> cpll
-[    1.442045] C:sclk_vdec_cabac -> cpll
-[    1.446982] C:aclk_rga -> aclk_rga_pre
-[    1.451825] C:aclk_hdcp -> aclk_vio_pre
-[    1.456574] C:aclk_cif -> aclk_vio_pre
-[    1.461226] C:aclk_iep -> aclk_vio_pre
-[    1.465794] C:pclk_hdcp -> hclk_vio_pre
-[    1.470401] C:hclk_hdcp -> hclk_vio_pre
-[    1.470406] C:hclk_rga -> hclk_vio_pre
-[    1.470411] C:hclk_cif -> hclk_vio_pre
-[    1.470415] C:hclk_iep -> hclk_vio_pre
-[    1.470424] C:clk_mac2io_out -> cpll
-[    1.470432] C:clk_mac2io_ref -> clk_mac2io
-[    1.470440] C:clk_mac2io_rx -> clk_mac2io
-[    1.507448] C:clk_mac2io_tx -> clk_mac2io
-[    1.511778] C:clk_mac2io_refout -> clk_mac2io
-[    1.516094] C:clk_mac2io_src -> cpll
-[    1.520315] C:clk_ref_usb3otg_src -> cpll
-[    1.524560] C:clk_sdmmc_ext -> cpll
-[    1.528701] C:hclk_sdmmc_ext -> hclk_peri
-[    1.532850] C:clk_cif_src -> cpll
-[    1.536945] C:sclk_venc_dsp -> cpll
-[    1.541006] C:sclk_venc_core -> cpll
-[    1.544972] C:aclk_h264 -> aclk_rkvenc
-[    1.548936] C:aclk_h265 -> aclk_rkvenc
-[    1.552794] C:hclk_h264 -> hclk_rkvenc
-[    1.556580] C:pclk_h265 -> hclk_rkvenc
-[    1.560373] C:aclk_rkvdec -> aclk_rkvdec_pre
-[    1.564227] C:hclk_rkvdec -> hclk_rkvdec_pre
-[    1.568096] C:clk_spi -> cpll
-[    1.571981] C:clk_crypto -> cpll
-[    1.575897] C:clk_i2c3 -> cpll
-[    1.579795] C:clk_i2c2 -> cpll
-[    1.583657] C:clk_i2c1 -> cpll
-[    1.587521] C:clk_i2c0 -> cpll
-[    1.591357] C:i2s2_out -> clk_i2s2
-[    1.595170] C:clk_i2s2 -> i2s2_pre
-[    1.599020] C:i2s1_out -> clk_i2s1
-[    1.602893] C:clk_i2s1 -> i2s1_pre
-[    1.606749] C:clk_i2s0 -> i2s0_pre
-[    1.610519] C:clk_tsp -> cpll
-[    1.614239] C:clk_pdm -> apll
-[    1.617877] C:clk_hsadc_tsp -> *
-[    1.621718] initcall clk_disable_unused+0x0/0x110 returned 0 after
-331056 usecs
-
-
-On 7/8/20 5:34 PM, Robin Murphy wrote:
-> On 2020-07-08 15:45, Johan Jonker wrote:
->> The rk3328 uart2 port is used as boot console and to debug.
->> During the boot pclk_uart2 is disabled by a clk_disable_unused
->> initcall. Fix the uart2 function by marking pclk_uart2
->> as critical on rk3328. Also add sclk_uart2 as that is needed
->> for the same DT node.
+On Wed, Jul 08, 2020 at 10:14:23PM +0900, Masahisa Kojima wrote:
+> When fitted, the SynQuacer platform exposes its SPI TPM via a MMIO
+> window that is backed by the SPI command sequencer in the SPI bus
+> controller. This arrangement has the limitation that only byte size
+> accesses are supported, and so we'll need to provide a separate module
+> that take this into account.
 > 
-> Hmm, given that those are named in the DT as the "baudclk" and
-> "apb_pclk" that dw8250_probe() explicitly claims, they really
-> shouldn't be unused :/
+> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> Signed-off-by: Masahisa Kojima <masahisa.kojima@linaro.org>
+> ---
+>  drivers/char/tpm/Kconfig             |  12 ++
+>  drivers/char/tpm/Makefile            |   1 +
+>  drivers/char/tpm/tpm_tis_synquacer.c | 196 +++++++++++++++++++++++++++
+>  3 files changed, 209 insertions(+)
+>  create mode 100644 drivers/char/tpm/tpm_tis_synquacer.c
 > 
-> On my RK3328 box they appear to be prepared and enabled OK:
-> 
-> [robin@nemulon-9 ~]$ sudo grep uart2 /sys/kernel/debug/clk/clk_summary
->     sclk_uart2                        1        1        0    24000000          0     0  50000
->                    pclk_uart2         1        1        0    75000000          0     0  50000
-> ...
-> 
-> Robin.
-> 
->> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
->> ---
->>   drivers/clk/rockchip/clk-rk3328.c | 2 ++
->>   1 file changed, 2 insertions(+)
->>
->> diff --git a/drivers/clk/rockchip/clk-rk3328.c b/drivers/clk/rockchip/clk-rk3328.c
->> index c186a1985..cb7749cb7 100644
->> --- a/drivers/clk/rockchip/clk-rk3328.c
->> +++ b/drivers/clk/rockchip/clk-rk3328.c
->> @@ -875,6 +875,8 @@ static const char *const rk3328_critical_clocks[] __initconst = {
->>   	"aclk_gmac_niu",
->>   	"pclk_gmac_niu",
->>   	"pclk_phy_niu",
->> +	"pclk_uart2",
->> +	"sclk_uart2",
->>   };
->>   
->>   static void __init rk3328_clk_init(struct device_node *np)
->>
+> diff --git a/drivers/char/tpm/Kconfig b/drivers/char/tpm/Kconfig
+> index 58b4c573d176..a18c314da211 100644
+> --- a/drivers/char/tpm/Kconfig
+> +++ b/drivers/char/tpm/Kconfig
+> @@ -74,6 +74,18 @@ config TCG_TIS_SPI_CR50
+>  	  If you have a H1 secure module running Cr50 firmware on SPI bus,
+>  	  say Yes and it will be accessible from within Linux.
+>  
+> +config TCG_TIS_SYNQUACER
+> +	tristate "TPM Interface Specification 1.2 Interface / TPM 2.0 FIFO Interface (MMIO - SynQuacer)"
+> +	depends on ARCH_SYNQUACER
+> +	select TCG_TIS_CORE
+> +	help
+> +	  If you have a TPM security chip that is compliant with the
+> +	  TCG TIS 1.2 TPM specification (TPM1.2) or the TCG PTP FIFO
+> +	  specification (TPM2.0) say Yes and it will be accessible from
+> +	  within Linux on Socionext SynQuacer platform.
+> +	  To compile this driver as a module, choose  M here;
+> +	  the module will be called tpm_tis_synquacer.
+> +
+>  config TCG_TIS_I2C_ATMEL
+>  	tristate "TPM Interface Specification 1.2 Interface (I2C - Atmel)"
+>  	depends on I2C
+> diff --git a/drivers/char/tpm/Makefile b/drivers/char/tpm/Makefile
+> index 9567e5197f74..84db4fb3a9c9 100644
+> --- a/drivers/char/tpm/Makefile
+> +++ b/drivers/char/tpm/Makefile
+> @@ -21,6 +21,7 @@ tpm-$(CONFIG_EFI) += eventlog/efi.o
+>  tpm-$(CONFIG_OF) += eventlog/of.o
+>  obj-$(CONFIG_TCG_TIS_CORE) += tpm_tis_core.o
+>  obj-$(CONFIG_TCG_TIS) += tpm_tis.o
+> +obj-$(CONFIG_TCG_TIS_SYNQUACER) += tpm_tis_synquacer.o
+>  
+>  obj-$(CONFIG_TCG_TIS_SPI) += tpm_tis_spi.o
+>  tpm_tis_spi-y := tpm_tis_spi_main.o
+> diff --git a/drivers/char/tpm/tpm_tis_synquacer.c b/drivers/char/tpm/tpm_tis_synquacer.c
+> new file mode 100644
+> index 000000000000..51f0aedcedcc
+> --- /dev/null
+> +++ b/drivers/char/tpm/tpm_tis_synquacer.c
+> @@ -0,0 +1,196 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2020 Linaro Ltd.
+> + *
+> + * This device driver implements MMIO TPM on SynQuacer Platform.
+> + */
+> +#include <linux/init.h>
+> +#include <linux/module.h>
+> +#include <linux/slab.h>
+> +#include <linux/of.h>
+> +#include <linux/of_device.h>
+> +#include <linux/kernel.h>
+> +#include "tpm.h"
+> +#include "tpm_tis_core.h"
+> +
+> +struct tpm_info {
 
+struct tpm_tis_synquacer_info
+
+> +	struct resource res;
+> +	/* irq > 0 means: use irq $irq;
+> +	 * irq = 0 means: autoprobe for an irq;
+> +	 * irq = -1 means: no irq support
+> +	 */
+> +	int irq;
+> +};
+> +
+> +struct tpm_tis_tcg_phy {
+
+struct tpm_tis_synquacer_phy
+
+> +	struct tpm_tis_data priv;
+> +	void __iomem *iobase;
+> +};
+> +
+> +static inline struct tpm_tis_tcg_phy *to_tpm_tis_tcg_phy(struct tpm_tis_data *data)
+> +{
+> +	return container_of(data, struct tpm_tis_tcg_phy, priv);
+> +}
+> +
+> +static int tpm_tcg_read_bytes(struct tpm_tis_data *data, u32 addr, u16 len,
+> +			      u8 *result)
+
+tpm_tis_synquacer_read_bytes (similar suggestions to similar stuff that
+follows).
+
+> +{
+> +	struct tpm_tis_tcg_phy *phy = to_tpm_tis_tcg_phy(data);
+> +
+> +	while (len--)
+> +		*result++ = ioread8(phy->iobase + addr);
+> +
+> +	return 0;
+> +}
+> +
+> +static int tpm_tcg_write_bytes(struct tpm_tis_data *data, u32 addr, u16 len,
+> +			       const u8 *value)
+> +{
+> +	struct tpm_tis_tcg_phy *phy = to_tpm_tis_tcg_phy(data);
+> +
+> +	while (len--)
+> +		iowrite8(*value++, phy->iobase + addr);
+> +
+> +	return 0;
+> +}
+> +
+> +static int tpm_tcg_read16_bw(struct tpm_tis_data *data, u32 addr, u16 *result)
+> +{
+> +	struct tpm_tis_tcg_phy *phy = to_tpm_tis_tcg_phy(data);
+> +
+> +	/*
+> +	 * Due to the limitation of SPI controller on SynQuacer,
+> +	 * 16/32 bits access must be done in byte-wise and descending order.
+> +	 */
+> +	*result = (ioread8(phy->iobase + addr + 1) << 8) |
+> +		  (ioread8(phy->iobase + addr));
+> +
+> +	return 0;
+> +}
+> +
+> +static int tpm_tcg_read32_bw(struct tpm_tis_data *data, u32 addr, u32 *result)
+> +{
+> +	struct tpm_tis_tcg_phy *phy = to_tpm_tis_tcg_phy(data);
+> +
+> +	/*
+> +	 * Due to the limitation of SPI controller on SynQuacer,
+> +	 * 16/32 bits access must be done in byte-wise and descending order.
+> +	 */
+> +	*result = (ioread8(phy->iobase + addr + 3) << 24) |
+> +		  (ioread8(phy->iobase + addr + 2) << 16) |
+> +		  (ioread8(phy->iobase + addr + 1) << 8) |
+> +		  (ioread8(phy->iobase + addr));
+> +
+> +	return 0;
+> +}
+> +
+> +static int tpm_tcg_write32_bw(struct tpm_tis_data *data, u32 addr, u32 value)
+> +{
+> +	struct tpm_tis_tcg_phy *phy = to_tpm_tis_tcg_phy(data);
+> +
+> +	/*
+> +	 * Due to the limitation of SPI controller on SynQuacer,
+> +	 * 16/32 bits access must be done in byte-wise and descending order.
+> +	 */
+> +	iowrite8(value >> 24, phy->iobase + addr + 3);
+> +	iowrite8(value >> 16, phy->iobase + addr + 2);
+> +	iowrite8(value >> 8, phy->iobase + addr + 1);
+> +	iowrite8(value, phy->iobase + addr);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct tpm_tis_phy_ops tpm_tcg_bw = {
+> +	.read_bytes	= tpm_tcg_read_bytes,
+> +	.write_bytes	= tpm_tcg_write_bytes,
+> +	.read16		= tpm_tcg_read16_bw,
+> +	.read32		= tpm_tcg_read32_bw,
+> +	.write32	= tpm_tcg_write32_bw,
+> +};
+> +
+> +static int tpm_tis_synquacer_init(struct device *dev, struct tpm_info *tpm_info)
+> +{
+> +	struct tpm_tis_tcg_phy *phy;
+> +	int irq = -1;
+> +
+> +	phy = devm_kzalloc(dev, sizeof(struct tpm_tis_tcg_phy), GFP_KERNEL);
+> +	if (phy == NULL)
+> +		return -ENOMEM;
+> +
+> +	phy->iobase = devm_ioremap_resource(dev, &tpm_info->res);
+> +	if (IS_ERR(phy->iobase))
+> +		return PTR_ERR(phy->iobase);
+> +
+> +	return tpm_tis_core_init(dev, &phy->priv, irq, &tpm_tcg_bw,
+> +				 ACPI_HANDLE(dev));
+> +}
+> +
+> +static SIMPLE_DEV_PM_OPS(tpm_tis_synquacer_pm, tpm_pm_suspend, tpm_tis_resume);
+> +
+> +static int tpm_tis_synquacer_probe(struct platform_device *pdev)
+> +{
+> +	struct tpm_info tpm_info = {};
+> +	struct resource *res;
+> +
+> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	if (res == NULL) {
+> +		dev_err(&pdev->dev, "no memory resource defined\n");
+> +		return -ENODEV;
+> +	}
+> +	tpm_info.res = *res;
+> +
+> +	tpm_info.irq = -1;
+> +
+> +	return tpm_tis_synquacer_init(&pdev->dev, &tpm_info);
+> +}
+> +
+> +static int tpm_tis_synquacer_remove(struct platform_device *pdev)
+> +{
+> +	struct tpm_chip *chip = dev_get_drvdata(&pdev->dev);
+> +
+> +	tpm_chip_unregister(chip);
+> +	tpm_tis_remove(chip);
+> +
+> +	return 0;
+> +}
+> +
+> +#ifdef CONFIG_OF
+> +static const struct of_device_id tis_synquacer_of_platform_match[] = {
+> +	{.compatible = "socionext,synquacer-tpm-mmio"},
+> +	{},
+> +};
+> +MODULE_DEVICE_TABLE(of, tis_synquacer_of_platform_match);
+> +#endif
+> +
+> +static struct platform_driver tis_synquacer_drv = {
+> +	.probe = tpm_tis_synquacer_probe,
+> +	.remove = tpm_tis_synquacer_remove,
+> +	.driver = {
+> +		.name		= "tpm_tis_synquacer",
+> +		.pm		= &tpm_tis_synquacer_pm,
+> +		.of_match_table = of_match_ptr(tis_synquacer_of_platform_match),
+> +	},
+> +};
+> +
+> +static int __init init_tis_synquacer(void)
+
+tpm_tis_synquacer_module_init
+
+> +{
+> +	int rc;
+> +
+> +	rc = platform_driver_register(&tis_synquacer_drv);
+> +	if (rc)
+> +		return rc;
+> +
+> +	return 0;
+> +}
+> +
+> +static void __exit cleanup_tis_synquacer(void)
+
+tpm_tis_synquacer_module_exit
+
+> +{
+> +	platform_driver_unregister(&tis_synquacer_drv);
+> +}
+> +
+> +module_init(init_tis_synquacer);
+> +module_exit(cleanup_tis_synquacer);
+> +MODULE_AUTHOR("Masahisa Kojima (masahisa.kojima@linaro.org)");
+> +MODULE_DESCRIPTION("TPM MMIO Driver for Socionext SynQuacer platform");
+> +MODULE_VERSION("2.0");
+> +MODULE_LICENSE("GPL");
+> -- 
+> 2.20.1
+> 
+
+/Jarkko
