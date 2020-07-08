@@ -2,76 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9F1D21896A
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 15:45:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63E622188E9
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 15:25:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729766AbgGHNpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 09:45:08 -0400
-Received: from casper.infradead.org ([90.155.50.34]:35430 "EHLO
-        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729288AbgGHNpH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 09:45:07 -0400
-X-Greylist: delayed 1266 seconds by postgrey-1.27 at vger.kernel.org; Wed, 08 Jul 2020 09:45:06 EDT
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ALoTRUWpyoJ5TLvh/u0ihRx9QLx7mqPr8euUVwU9fWg=; b=vz1Ro+dufJWwWA7UmwzBycaTV9
-        /0RiH/WHQ+aVbPep3jyOFfC+FP1u5tkkrzFk3s7JyMNkln5i3pV7RpQjenFkFTWyUGqMRVwvT//JA
-        7Ln8LUzELu+B67MOLF21c7RKpsTDp0q2wmslj7Ntk3r4uH00aI6JobFDMismYfceQWmV8votbz/S4
-        ZQt9RxMwIp7yniwMoRc8Yt83jF6EcSNpJy6aQnT765vpDWP5Pteo+uRvy+NPp2rx6eaewh0NRee7v
-        XZWFjNktt65gVlkKlUHpxi37RmmbPgb+4++oEwChZy60usK+sCyjg2DVm/YCEOAtnEF7FdFI3hTee
-        WeMGORlw==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jtA31-0004Tm-CW; Wed, 08 Jul 2020 13:23:41 +0000
-Date:   Wed, 8 Jul 2020 14:23:38 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        Song Liu <song@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-xtensa@linux-xtensa.org,
-        linux-block@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 1/6] md: switch to ->check_events for media change
- notifications
-Message-ID: <20200708132338.GO25523@casper.infradead.org>
-References: <20200708122546.214579-1-hch@lst.de>
- <20200708122546.214579-2-hch@lst.de>
- <09cd4827-52ae-0e7c-c3d3-e9a6cd27ff2b@cloud.ionos.com>
+        id S1729294AbgGHNZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 09:25:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34910 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728148AbgGHNZ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 09:25:26 -0400
+Received: from gaia (unknown [95.146.230.158])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DFB1820720;
+        Wed,  8 Jul 2020 13:25:22 +0000 (UTC)
+Date:   Wed, 8 Jul 2020 14:25:20 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-mm@kvack.org, justin.he@arm.com, akpm@linux-foundation.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        Will Deacon <will@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-doc@vger.kernel.org,
+        x86@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V4 2/3] mm/sparsemem: Enable vmem_altmap support in
+ vmemmap_alloc_block_buf()
+Message-ID: <20200708132520.GD6308@gaia>
+References: <1594004178-8861-1-git-send-email-anshuman.khandual@arm.com>
+ <1594004178-8861-3-git-send-email-anshuman.khandual@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <09cd4827-52ae-0e7c-c3d3-e9a6cd27ff2b@cloud.ionos.com>
+In-Reply-To: <1594004178-8861-3-git-send-email-anshuman.khandual@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 08, 2020 at 03:17:31PM +0200, Guoqing Jiang wrote:
-> On 7/8/20 2:25 PM, Christoph Hellwig wrote:
-> > -static int md_media_changed(struct gendisk *disk)
-> > -{
-> > -	struct mddev *mddev = disk->private_data;
-> > -
-> > -	return mddev->changed;
-> > -}
+On Mon, Jul 06, 2020 at 08:26:17AM +0530, Anshuman Khandual wrote:
+> There are many instances where vmemap allocation is often switched between
+> regular memory and device memory just based on whether altmap is available
+> or not. vmemmap_alloc_block_buf() is used in various platforms to allocate
+> vmemmap mappings. Lets also enable it to handle altmap based device memory
+> allocation along with existing regular memory allocations. This will help
+> in avoiding the altmap based allocation switch in many places. To summarize
+> there are two different methods to call vmemmap_alloc_block_buf().
 > 
-> Maybe we can remove "changed" from struct mddev since no one reads it
-> after the change.
+> vmemmap_alloc_block_buf(size, node, NULL)   /* Allocate from system RAM */
+> vmemmap_alloc_block_buf(size, node, altmap) /* Allocate from altmap */
+> 
+> This converts altmap_alloc_block_buf() into a static function, drops it's
 
-You missed this hunk:
+s/it's/its/
 
-+static unsigned int md_check_events(struct gendisk *disk, unsigned int clearing)
- {
-        struct mddev *mddev = disk->private_data;
-+	unsigned int ret = 0;
+> entry from the header and updates Documentation/vm/memory-model.rst.
+> 
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> Cc: Paul Mackerras <paulus@samba.org>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: Andy Lutomirski <luto@kernel.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: linux-doc@vger.kernel.org
+> Cc: x86@kernel.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Cc: linux-mm@kvack.org
+> Cc: linux-kernel@vger.kernel.org
+> Tested-by: Jia He <justin.he@arm.com>
+> Suggested-by: Robin Murphy <robin.murphy@arm.com>
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 
-+	if (mddev->changed)
-+               ret = DISK_EVENT_MEDIA_CHANGE;
-        mddev->changed = 0;
--	return 0;
-+	return ret;
- }
+With the fallback argument dropped, the patch looks fine to me.
 
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
