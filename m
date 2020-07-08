@@ -2,114 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BCFC217E85
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 06:45:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BC95217E8A
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 06:49:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728603AbgGHEpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 00:45:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43830 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725968AbgGHEpS (ORCPT
+        id S1728768AbgGHEtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 00:49:08 -0400
+Received: from out02.mta.xmission.com ([166.70.13.232]:54028 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725446AbgGHEtI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 00:45:18 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7E29C061755;
-        Tue,  7 Jul 2020 21:45:17 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id gc9so639229pjb.2;
-        Tue, 07 Jul 2020 21:45:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gLMAmNiCMy+RT8bhIKeBL8qkBrB4WwNlrcJSH73HzN0=;
-        b=p50GyBOZKlfNiyvxDDGngs3VwL9oXRNknv7Af1c/isxdBBP5eWfSksKeEH/4kbYo4Q
-         csIlvswDKMhYBszKDPpyBV0zRaaGXLbtKpnqn/8K7oO9pxxBlyYzURiPh+isYm9N1KR8
-         RkIT3kA0NJ2f/shHMS1RVtfg+6CrTsgcWJAexT2RLuVjDbjn7MR8s7wvzmbf+GOhoVre
-         xJFpJpmt7zgh2EFsih2pLdnWCCPHwelxemfJIw7iPTzNUpviTVTVUg8CdJCeo7hmNU31
-         8vKz/qX64Yi3w///Qb3S2EOtiI7ALSnNUGRK7E0Pb5dFhRwPQ6Xr9CjjL9oWRH1ETAD6
-         qKzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gLMAmNiCMy+RT8bhIKeBL8qkBrB4WwNlrcJSH73HzN0=;
-        b=m/7fdQPZmIgn2tZFKc3sLvYNgpSONsyppN4rbXcytzF2oLcAue3jmKsm+aufsFez8C
-         GjimTERM8KUtRoi6p/SIJp2tvcxiSqk91P9LMyfxhb4Hamy2tHEZb1qBr/VQNK9DnJBU
-         NddnHL9kZMzvj4myFDDxSsMg/t71tlQqcgOCVNyx1vh3M+iSBRGrpxsOW4f7l03bFAzQ
-         HgypTCGQPE0IRgZMl+EyNMY2ZOpXoBrYIZMBUdtJdpK+CIWGhK1wAxvnrNv5JiOPIDIU
-         ZRqXnLWuF5uuBTjIZ58du/HI0woRdKdr7AhIzvTvEUj7MioJPcgNICv0U8233y2Qq3yR
-         Guxw==
-X-Gm-Message-State: AOAM530Uwh+SyeOu1dHSOLavt1Yx1C50mQDcnDZrGb28lNvh73mU5idb
-        CQw1pjlD+c6ffjhFitG1pKh+cy2t
-X-Google-Smtp-Source: ABdhPJyD1Y4B+XDDpURNCpOXp/veAoK0yjPsf5GCHKSZwT3YFUbp65bRQUZtJ5WI4DXgtVQOO8NfxQ==
-X-Received: by 2002:a17:902:d203:: with SMTP id t3mr50095838ply.168.1594183516962;
-        Tue, 07 Jul 2020 21:45:16 -0700 (PDT)
-Received: from localhost.localdomain (ip68-111-84-250.oc.oc.cox.net. [68.111.84.250])
-        by smtp.gmail.com with ESMTPSA id s30sm2425986pgn.34.2020.07.07.21.45.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jul 2020 21:45:16 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        Wed, 8 Jul 2020 00:49:08 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out02.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jt211-0001kS-7J; Tue, 07 Jul 2020 22:49:03 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jt210-0006xn-Av; Tue, 07 Jul 2020 22:49:03 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        linux-kernel@vger.kernel.org, David Miller <davem@davemloft.net>,
+        Greg Kroah-Hartman <greg@kroah.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH net-next] net: dsa: loop: Print when registration is successful
-Date:   Tue,  7 Jul 2020 21:45:13 -0700
-Message-Id: <20200708044513.91534-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <20200625095725.GA3303921@kroah.com>
+        <778297d2-512a-8361-cf05-42d9379e6977@i-love.sakura.ne.jp>
+        <20200625120725.GA3493334@kroah.com>
+        <20200625.123437.2219826613137938086.davem@davemloft.net>
+        <CAHk-=whuTwGHEPjvtbBvneHHXeqJC=q5S09mbPnqb=Q+MSPMag@mail.gmail.com>
+        <87pn9mgfc2.fsf_-_@x220.int.ebiederm.org>
+        <87y2oac50p.fsf@x220.int.ebiederm.org>
+        <87bll17ili.fsf_-_@x220.int.ebiederm.org>
+        <20200629221231.jjc2czk3ul2roxkw@ast-mbp.dhcp.thefacebook.com>
+        <87eepwzqhd.fsf@x220.int.ebiederm.org>
+        <1f4d8b7e-bcff-f950-7dac-76e3c4a65661@i-love.sakura.ne.jp>
+        <87pn9euks9.fsf@x220.int.ebiederm.org>
+        <757f37f8-5641-91d2-be80-a96ebc74cacb@i-love.sakura.ne.jp>
+        <87h7upucqi.fsf@x220.int.ebiederm.org>
+        <d0266a24-dfab-83d0-e178-aa67c9f5ebc0@i-love.sakura.ne.jp>
+        <87lfk0nslu.fsf@x220.int.ebiederm.org>
+        <ec6a6e18-d7aa-3072-c8dc-b925398b8409@i-love.sakura.ne.jp>
+Date:   Tue, 07 Jul 2020 23:46:18 -0500
+In-Reply-To: <ec6a6e18-d7aa-3072-c8dc-b925398b8409@i-love.sakura.ne.jp>
+        (Tetsuo Handa's message of "Sat, 4 Jul 2020 15:57:38 +0900")
+Message-ID: <87o8oqipgl.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-XM-SPF: eid=1jt210-0006xn-Av;;;mid=<87o8oqipgl.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1+sfYvpeMP1lDLTQFoc9fa68JTKvPiHbwU=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong autolearn=disabled
+        version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4976]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa06 0; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: ; sa06 0; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 365 ms - load_scoreonly_sql: 0.08 (0.0%),
+        signal_user_changed: 12 (3.4%), b_tie_ro: 11 (2.9%), parse: 1.52
+        (0.4%), extract_message_metadata: 4.0 (1.1%), get_uri_detail_list:
+        1.18 (0.3%), tests_pri_-1000: 5 (1.4%), tests_pri_-950: 1.40 (0.4%),
+        tests_pri_-900: 1.30 (0.4%), tests_pri_-90: 61 (16.7%), check_bayes:
+        59 (16.2%), b_tokenize: 8 (2.3%), b_tok_get_all: 8 (2.3%),
+        b_comp_prob: 2.5 (0.7%), b_tok_touch_all: 36 (9.8%), b_finish: 1.01
+        (0.3%), tests_pri_0: 259 (71.1%), check_dkim_signature: 0.58 (0.2%),
+        check_dkim_adsp: 2.7 (0.7%), poll_dns_idle: 0.97 (0.3%), tests_pri_10:
+        2.5 (0.7%), tests_pri_500: 8 (2.1%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH v2 00/15] Make the user mode driver code a better citizen
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We have a number of error conditions that can lead to the driver not
-probing successfully, move the print when we are sure
-dsa_register_switch() has suceeded. This avoids repeated prints in case
-of probe deferral for instance.
 
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- drivers/net/dsa/dsa_loop.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+Just to make certain I understand what is going on I instrumented a
+kernel with some print statements.
 
-diff --git a/drivers/net/dsa/dsa_loop.c b/drivers/net/dsa/dsa_loop.c
-index 400207c5c7de..f8bc85a6e670 100644
---- a/drivers/net/dsa/dsa_loop.c
-+++ b/drivers/net/dsa/dsa_loop.c
-@@ -280,13 +280,11 @@ static int dsa_loop_drv_probe(struct mdio_device *mdiodev)
- 	struct dsa_loop_pdata *pdata = mdiodev->dev.platform_data;
- 	struct dsa_loop_priv *ps;
- 	struct dsa_switch *ds;
-+	int ret;
+a) The workqueues and timers start before populate_rootfs.
+
+b) populate_rootfs does indeed happen long before the bpfilter
+   module is intialized.
+
+c) What prevents populate_rootfs and the umd_load_blob from
+   having problems when they call flush_delayed_put is the
+   fact that fput_many does:
+   "schedule_delayed_work(&delayed_fput_work,1)".
+
+   That 1 requests a delay of at least 1 jiffy.  A jiffy is between
+   1ms and 10ms depending on how Linux is configured.
+
+   In my test configuration running a kernel in kvm printing to a serial
+   console I measured 0.8ms between the fput in blob_to_mnt and
+   flush_delayed_fput which immediately follows it.
+
+   So unless the fput becomes incredibly slow there is nothing to worry
+   about in blob_to_mnt.
+
+d) As the same mechanism is used by populate_rootfs.  A but in the
+   mechanism applies to both.
+
+e) No one appears to have reported a problem executing files out of
+   initramfs these last several years since the flush_delayed_fput was
+   introduced.
  
- 	if (!pdata)
- 		return -ENODEV;
- 
--	dev_info(&mdiodev->dev, "%s: 0x%0x\n",
--		 pdata->name, pdata->enabled_ports);
--
- 	ds = devm_kzalloc(&mdiodev->dev, sizeof(*ds), GFP_KERNEL);
- 	if (!ds)
- 		return -ENOMEM;
-@@ -311,7 +309,12 @@ static int dsa_loop_drv_probe(struct mdio_device *mdiodev)
- 
- 	dev_set_drvdata(&mdiodev->dev, ds);
- 
--	return dsa_register_switch(ds);
-+	ret = dsa_register_switch(ds);
-+	if (!ret)
-+		dev_info(&mdiodev->dev, "%s: 0x%0x\n",
-+			 pdata->name, pdata->enabled_ports);
-+
-+	return ret;
- }
- 
- static void dsa_loop_drv_remove(struct mdio_device *mdiodev)
--- 
-2.25.1
+f) The code works for me.  There is real reason to believe the code will
+   work for everyone else, as the exact same logic is used by initramfs.
+   So it should be perfectly fine for the patchset and the
+   usermode_driver code to go ahead as written.
+
+h) If there is something to be fixed it is flush_delayed_fput as that is
+   much more important than anything in the usermode driver code.
+
+Eric
+
+p.s.) When I talked of restarts of the usermode driver code ealier I was
+   referring to the code that restarts the usermode driver if it is
+   killed, the next time the kernel tries to talk to it.
+
+   That could mask an -ETXTBUSY except if it happens on the first exec
+   the net/bfilter/bpfilter_kern.c:load_umh() will return an error.
 
