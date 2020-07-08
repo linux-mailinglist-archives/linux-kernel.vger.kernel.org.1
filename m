@@ -2,111 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A8922189AB
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 16:00:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95B452189BE
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 16:01:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729690AbgGHOAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 10:00:41 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:34936 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729656AbgGHOAk (ORCPT
+        id S1729851AbgGHOBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 10:01:41 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:61480 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729469AbgGHOBl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 10:00:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594216838;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=qPr0eL60h+DsRpfuaobt35zdISOXizza2r3opqrQCz0=;
-        b=KLwi9sL37dbgYv0VA6tG9WfUosYBtuqJRDgYD/HoP4MidTC/LKSJGMuUhIKLQSUyQ09hm/
-        tnnEMxqy88AnLg/pMm9vKAeeAAevzlx745fS4WQfKlt5CVsUiA2JouSQ3JW0hbAWEPxUgM
-        ldWkgSIz6yK+5Kz2ynIvz3yBjYghSbA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-214-EiqG4VkKOCG6ODFfeWtUJg-1; Wed, 08 Jul 2020 10:00:37 -0400
-X-MC-Unique: EiqG4VkKOCG6ODFfeWtUJg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2DA8E8015F7;
-        Wed,  8 Jul 2020 14:00:34 +0000 (UTC)
-Received: from vitty.brq.redhat.com (unknown [10.40.195.35])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3AE6078493;
-        Wed,  8 Jul 2020 14:00:25 +0000 (UTC)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH] KVM: x86: take as_id into account when checking PGD
-Date:   Wed,  8 Jul 2020 16:00:23 +0200
-Message-Id: <20200708140023.1476020-1-vkuznets@redhat.com>
-MIME-Version: 1.0
+        Wed, 8 Jul 2020 10:01:41 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 068E1XME062333;
+        Wed, 8 Jul 2020 10:01:37 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 325d2cde6e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Jul 2020 10:01:37 -0400
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 068E1atN062590;
+        Wed, 8 Jul 2020 10:01:36 -0400
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 325d2cddx2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Jul 2020 10:01:36 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 068E1IDR021113;
+        Wed, 8 Jul 2020 14:01:18 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma04fra.de.ibm.com with ESMTP id 3251dw0d06-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Jul 2020 14:01:18 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 068E1GtW9503062
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 8 Jul 2020 14:01:16 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 084A5AE05D;
+        Wed,  8 Jul 2020 14:01:16 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5D07AAE053;
+        Wed,  8 Jul 2020 14:01:15 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.80.202.84])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed,  8 Jul 2020 14:01:15 +0000 (GMT)
+Message-ID: <1594216873.23056.211.camel@linux.ibm.com>
+Subject: Re: [PATCH ima-evm-utils 1/3] ima-evm-utils: Fix mismatched type
+ checking
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>, vt@altlinux.org,
+        linux-kernel@vger.kernel.org
+Date:   Wed, 08 Jul 2020 10:01:13 -0400
+In-Reply-To: <20200707033548.21640-1-tianjia.zhang@linux.alibaba.com>
+References: <20200707033548.21640-1-tianjia.zhang@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.20.5 (3.20.5-1.fc24) 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-08_11:2020-07-08,2020-07-08 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
+ lowpriorityscore=0 mlxscore=0 clxscore=1015 impostorscore=0 spamscore=0
+ suspectscore=0 cotscore=-2147483648 adultscore=0 mlxlogscore=999
+ bulkscore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2007080099
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-OVMF booted guest running on shadow pages crashes on TRIPLE FAULT after
-enabling paging from SMM. The crash is triggered from mmu_check_root() and
-is caused by kvm_is_visible_gfn() searching through memslots with as_id = 0
-while vCPU may be in a different context (address space).
+On Tue, 2020-07-07 at 11:35 +0800, Tianjia Zhang wrote:
+> Even if imaevm_get_hash_algo() returns an error value of -1, it is
+> forced to be converted to uint8_t type here, resulting in this error
+> not being checked by the if condition. This patch fixes this error.
+> 
+> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 
-Introduce kvm_vcpu_is_visible_gfn() and use it from mmu_check_root().
+Thanks!  This patch is now queued in the next branch.
 
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
----
- arch/x86/kvm/mmu/mmu.c   | 2 +-
- include/linux/kvm_host.h | 1 +
- virt/kvm/kvm_main.c      | 8 ++++++++
- 3 files changed, 10 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 4fd4b5de8996..309024210a35 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -3668,7 +3668,7 @@ static int mmu_check_root(struct kvm_vcpu *vcpu, gfn_t root_gfn)
- {
- 	int ret = 0;
- 
--	if (!kvm_is_visible_gfn(vcpu->kvm, root_gfn)) {
-+	if (!kvm_vcpu_is_visible_gfn(vcpu, root_gfn)) {
- 		kvm_make_request(KVM_REQ_TRIPLE_FAULT, vcpu);
- 		ret = 1;
- 	}
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index d564855243d8..f74d2a5afc26 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -774,6 +774,7 @@ int kvm_clear_guest_page(struct kvm *kvm, gfn_t gfn, int offset, int len);
- int kvm_clear_guest(struct kvm *kvm, gpa_t gpa, unsigned long len);
- struct kvm_memory_slot *gfn_to_memslot(struct kvm *kvm, gfn_t gfn);
- bool kvm_is_visible_gfn(struct kvm *kvm, gfn_t gfn);
-+bool kvm_vcpu_is_visible_gfn(struct kvm_vcpu *vcpu, gfn_t gfn);
- unsigned long kvm_host_page_size(struct kvm_vcpu *vcpu, gfn_t gfn);
- void mark_page_dirty(struct kvm *kvm, gfn_t gfn);
- 
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index a852af5c3214..b131c7da1d12 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -1626,6 +1626,14 @@ bool kvm_is_visible_gfn(struct kvm *kvm, gfn_t gfn)
- }
- EXPORT_SYMBOL_GPL(kvm_is_visible_gfn);
- 
-+bool kvm_vcpu_is_visible_gfn(struct kvm_vcpu *vcpu, gfn_t gfn)
-+{
-+	struct kvm_memory_slot *memslot = kvm_vcpu_gfn_to_memslot(vcpu, gfn);
-+
-+	return kvm_is_visible_memslot(memslot);
-+}
-+EXPORT_SYMBOL_GPL(kvm_vcpu_is_visible_gfn);
-+
- unsigned long kvm_host_page_size(struct kvm_vcpu *vcpu, gfn_t gfn)
- {
- 	struct vm_area_struct *vma;
--- 
-2.25.4
-
+Mimi
