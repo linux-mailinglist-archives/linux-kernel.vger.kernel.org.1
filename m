@@ -2,170 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5680D21897D
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 15:48:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24A9B218977
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 15:48:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729775AbgGHNsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 09:48:23 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:23948 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729288AbgGHNsW (ORCPT
+        id S1729576AbgGHNsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 09:48:04 -0400
+Received: from mail-ed1-f68.google.com ([209.85.208.68]:39412 "EHLO
+        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729288AbgGHNsD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 09:48:22 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 068DXE6K143958;
-        Wed, 8 Jul 2020 09:47:57 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 325brdf91s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Jul 2020 09:47:56 -0400
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 068DcUxh156791;
-        Wed, 8 Jul 2020 09:47:55 -0400
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 325brdf90a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Jul 2020 09:47:55 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 068DaDE2022178;
-        Wed, 8 Jul 2020 13:47:52 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma04fra.de.ibm.com with ESMTP id 3251dw0cts-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Jul 2020 13:47:52 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 068DkSUQ60096810
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 8 Jul 2020 13:46:28 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3C87D42042;
-        Wed,  8 Jul 2020 13:47:50 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B175842041;
-        Wed,  8 Jul 2020 13:47:46 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.80.202.84])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed,  8 Jul 2020 13:47:46 +0000 (GMT)
-Message-ID: <1594216064.23056.208.camel@linux.ibm.com>
-Subject: Re: [PATCH 4/4] module: Add hook for
- security_kernel_post_read_file()
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     James Morris <jmorris@namei.org>, Jessica Yu <jeyu@kernel.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Scott Branden <scott.branden@broadcom.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Matthew Garrett <matthewgarrett@google.com>,
-        David Howells <dhowells@redhat.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        KP Singh <kpsingh@google.com>, Dave Olsthoorn <dave@bewaar.me>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Peter Jones <pjones@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Boyd <stephen.boyd@linaro.org>,
-        Paul Moore <paul@paul-moore.com>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Date:   Wed, 08 Jul 2020 09:47:44 -0400
-In-Reply-To: <202007071951.605F38D43@keescook>
-References: <20200707081926.3688096-1-keescook@chromium.org>
-         <20200707081926.3688096-5-keescook@chromium.org>
-         <1594169240.23056.143.camel@linux.ibm.com>
-         <202007071951.605F38D43@keescook>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.20.5 (3.20.5-1.fc24) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-08_11:2020-07-08,2020-07-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 malwarescore=0
- phishscore=0 clxscore=1015 adultscore=0 cotscore=-2147483648
- suspectscore=0 lowpriorityscore=0 bulkscore=0 mlxlogscore=999
- impostorscore=0 mlxscore=0 priorityscore=1501 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2007080095
+        Wed, 8 Jul 2020 09:48:03 -0400
+Received: by mail-ed1-f68.google.com with SMTP id d18so36231986edv.6;
+        Wed, 08 Jul 2020 06:48:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=wyUXf/Z3LcTCSm83RuiDQ8lmWVjeAVDbwuZYQmWJr+E=;
+        b=eafc9omeFQ1Wbn5gANJkMAbZO+nvlegxp2APCreQpYBujwE9ngbaIz5aG56pgtGqRs
+         puR/dqVNVNPQhDpp5e0adRYaiImD1KZf1B98+SD3GiZhiNzbsqCkiH5GHtQ8ZLPfYcqN
+         dvtMmCTFg87VB6PTchGul8P/yM0jL0I3K3LsxDk93DVesRLFJ/mtnSj8MIfFJGLEN1eO
+         8hyGw+Ga3YjeRRUnBEW3Btn0IowmhdJv55+YEjlaK/MuGRITW+evMlPijElKc/jobnRI
+         WgksL1DQC99yqZtqydPCR7cluMhhRXnd6SAcZ8nFpAqOBRwtbhnV/yWo0am9W91XDuEV
+         BqHg==
+X-Gm-Message-State: AOAM530dwBUx8D6004OUzEPjwbSD7T4lheSenxG2lWe075B9gyklMlkH
+        qeo54pvKHmE0g28mF+dBabwm0a2O
+X-Google-Smtp-Source: ABdhPJzwXfeEilY43pqV9jsF2ZDwSoyFRMe7FBLUUPhwJYjNsfclijWF+S0YyS3tu97JHuZx/91TYw==
+X-Received: by 2002:a05:6402:337:: with SMTP id q23mr68252323edw.63.1594216081602;
+        Wed, 08 Jul 2020 06:48:01 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.195])
+        by smtp.googlemail.com with ESMTPSA id v25sm19466613edr.74.2020.07.08.06.48.00
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 08 Jul 2020 06:48:00 -0700 (PDT)
+Date:   Wed, 8 Jul 2020 15:47:58 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     linux-usb@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Subject: Re: [PATCH RESEND] phy: exynos5-usbdrd: Calibrating makes sense only
+ for USB2.0 PHY
+Message-ID: <20200708134758.GA32497@kozik-lap>
+References: <CGME20200708133811eucas1p1df7b92d7e0ba512c5a7ecdb948edbfcf@eucas1p1.samsung.com>
+ <20200708133800.3336-1-m.szyprowski@samsung.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200708133800.3336-1-m.szyprowski@samsung.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-07-07 at 20:10 -0700, Kees Cook wrote:
-> On Tue, Jul 07, 2020 at 08:47:20PM -0400, Mimi Zohar wrote:
-> > On Tue, 2020-07-07 at 01:19 -0700, Kees Cook wrote:
-> > > Calls to security_kernel_load_data() should be paired with a call to
-> > > security_kernel_post_read_file() with a NULL file argument. Add the
-> > > missing call so the module contents are visible to the LSMs interested
-> > > in measuring the module content. (This also paves the way for moving
-> > > module signature checking out of the module core and into an LSM.)
-> > > 
-> > > Cc: Jessica Yu <jeyu@kernel.org>
-> > > Fixes: c77b8cdf745d ("module: replace the existing LSM hook in init_module")
-> > > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > > ---
-> > >  kernel/module.c | 7 ++++++-
-> > >  1 file changed, 6 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/kernel/module.c b/kernel/module.c
-> > > index 0c6573b98c36..af9679f8e5c6 100644
-> > > --- a/kernel/module.c
-> > > +++ b/kernel/module.c
-> > > @@ -2980,7 +2980,12 @@ static int copy_module_from_user(const void __user *umod, unsigned long len,
-> > >  		return -EFAULT;
-> > >  	}
-> > >  
-> > > -	return 0;
-> > > +	err = security_kernel_post_read_file(NULL, (char *)info->hdr,
-> > > +					     info->len, READING_MODULE);
-> > 
-> > There was a lot of push back on calling security_kernel_read_file()
-> > with a NULL file descriptor here.[1]  The result was defining a new
-> > security hook - security_kernel_load_data - and enumeration -
-> > LOADING_MODULE.  I would prefer calling the same pre and post security
-> > hook.
-> > 
-> > Mimi
-> > 
-> > [1] http://kernsec.org/pipermail/linux-security-module-archive/2018-May/007110.html
+On Wed, Jul 08, 2020 at 03:38:00PM +0200, Marek Szyprowski wrote:
+> PHY calibration is needed only for USB2.0 (UTMI) PHY, so skip calling
+> calibration code when phy_calibrate() is called for USB3.0 (PIPE3) PHY.
 > 
-> Ah yes, thanks for the pointer to the discussion.
-> 
-> I think we have four cases then, for differing LSM hooks:
-> 
-> - no "file", no contents
-> 	e.g. init_module() before copying user buffer
-> 	security_kernel_load_data()
-> - only a "file" available, no contents
-> 	e.g. kernel_read_file() before actually reading anything
-> 	security_kernel_read_file()
-> - "file" and contents
-> 	e.g. kernel_read_file() after reading
-> 	security_kernel_post_read_file()
-> - no "file" available, just the contents
-> 	e.g. firmware platform fallback from EFI space (no "file")
-> 	unimplemented!
-> 
-> If an LSM wants to be able to examine the contents of firmware, modules,
-> kexec, etc, it needs either a "file" or the full contents.
-> 
-> The "file" methods all pass through the kernel_read_file()-family. The
-> others happen via blobs coming from userspace or (more recently) the EFI
-> universe.
-> 
-> So, if a NULL file is unreasonable, we need, perhaps,
-> security_kernel_post_load_data()
-> 
-> ?
+> Fixes: d8c80bb3b55b ("phy: exynos5-usbdrd: Calibrate LOS levels for exynos5420/5800")
+> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> ---
+>  drivers/phy/samsung/phy-exynos5-usbdrd.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 
-Agreed.
+Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-Mimi
+Best regards,
+Krzysztof
