@@ -2,124 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 460EB21894C
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 15:38:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F4DD218951
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 15:39:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729809AbgGHNiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 09:38:15 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:39547 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729697AbgGHNiO (ORCPT
+        id S1729816AbgGHNju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 09:39:50 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:60016 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729610AbgGHNju (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 09:38:14 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200708133812euoutp01063530afb651364a0795eb1509e75864~fyosxV1By3273032730euoutp01M
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 13:38:12 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200708133812euoutp01063530afb651364a0795eb1509e75864~fyosxV1By3273032730euoutp01M
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1594215492;
-        bh=Spljwi04NPz7tPwQDU3ylhpMAcBmPOyA+LcLqOe48yU=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=Vj7XMOqi0NxcchXdWTsCeHfGhTFBmBTugLzD6EPfrdpDsIPUI6hYbucJf+auRAzZr
-         2BlktYAI0O6akoR0FElXVBLbjy27eFFloXED8TIVvnH+inQkdppZpYNU3EwzHKVHVt
-         IuxCtttYJ3dUFKDV26BF/QZ1PSdV8gMZ7tDKvjyY=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20200708133811eucas1p23859cf25cecf8fe7eac4bc597e5354ed~fyosfTTEW0379703797eucas1p2L;
-        Wed,  8 Jul 2020 13:38:11 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id 22.86.06456.34CC50F5; Wed,  8
-        Jul 2020 14:38:11 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20200708133811eucas1p1df7b92d7e0ba512c5a7ecdb948edbfcf~fyor-LiDI1425514255eucas1p1N;
-        Wed,  8 Jul 2020 13:38:11 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200708133811eusmtrp1e04dd234da5007c86c0c63bcdfd07b28~fyor_lDj93178831788eusmtrp1v;
-        Wed,  8 Jul 2020 13:38:11 +0000 (GMT)
-X-AuditID: cbfec7f2-7efff70000001938-55-5f05cc436e60
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id F1.36.06314.34CC50F5; Wed,  8
-        Jul 2020 14:38:11 +0100 (BST)
-Received: from AMDC2765.digital.local (unknown [106.120.51.73]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200708133810eusmtip182b79244efc0f0790829ab647ea4e761~fyorgZg7g1357913579eusmtip1d;
-        Wed,  8 Jul 2020 13:38:10 +0000 (GMT)
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-To:     linux-usb@vger.kernel.org, linux-samsung-soc@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH RESEND] phy: exynos5-usbdrd: Calibrating makes sense only
- for USB2.0 PHY
-Date:   Wed,  8 Jul 2020 15:38:00 +0200
-Message-Id: <20200708133800.3336-1-m.szyprowski@samsung.com>
-X-Mailer: git-send-email 2.17.1
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrPIsWRmVeSWpSXmKPExsWy7djP87rOZ1jjDSbONLTYOGM9q8WFpz1s
-        FufPb2C3uLxrDpvFjPP7mCwWLWtltlh75C67xc47J5gdODw2repk8+jbsorR4/iN7UwenzfJ
-        BbBEcdmkpOZklqUW6dslcGVcOv+bsWAnR8Wzm9/ZGhhXsHcxcnJICJhIXDzQwdjFyMUhJLCC
-        UWLezwY2kISQwBdGiW+LXSASnxkljk+ZAJTgAOu4/jYIIr6cUWLSoXMsEA5Qw48n01hAutkE
-        DCW63naBTRIRcJBYsvQOG0gRs8B3RonuzgtMIAlhgSiJ5T+WgxWxCKhKzP1wkBHE5hWwkfjV
-        c4IZ4j55idUbDjCDNEsI3GaTuPvpECtEwkXi1rGnLBC2sMSr41ugHpKROD25hwWioZlR4uG5
-        tewQTg+jxOWmGYwQVdYSd879AnuIWUBTYv0ufYiwo8SBKUsYIf7kk7jxVhAkzAxkTto2nRki
-        zCvR0SYEUa0mMev4Ori1By9cgrrZQ+J52y1GSDDGSuy/+ZR5AqPcLIRdCxgZVzGKp5YW56an
-        FhvmpZbrFSfmFpfmpesl5+duYgQmg9P/jn/awfj1UtIhRgEORiUe3gkbWOOFWBPLiitzDzFK
-        cDArifA6nT0dJ8SbklhZlVqUH19UmpNafIhRmoNFSZzXeNHLWCGB9MSS1OzU1ILUIpgsEwen
-        FDDqD602vLeQ99fMi7vyfcSl+zaF+d6yN936Y1v+6xNbX4jdDjts+qz+y42H3PnOl00+t82M
-        UwyZ99Z4ad6WlUnBcbdjH07pm7Jyzomntv7Z/xsvRm0sFDov43w6IEipT+ZaWy7Llod57z/W
-        Gc9S4nzZvLs08IU/i7j3jidXly8xzN33sPLF1xluSizFGYmGWsxFxYkA7pFAqAIDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrCLMWRmVeSWpSXmKPExsVy+t/xu7rOZ1jjDZ5PkrTYOGM9q8WFpz1s
-        FufPb2C3uLxrDpvFjPP7mCwWLWtltlh75C67xc47J5gdODw2repk8+jbsorR4/iN7UwenzfJ
-        BbBE6dkU5ZeWpCpk5BeX2CpFG1oY6RlaWugZmVjqGRqbx1oZmSrp29mkpOZklqUW6dsl6GVc
-        Ov+bsWAnR8Wzm9/ZGhhXsHcxcnBICJhIXH8b1MXIxSEksJRR4uyXu2xdjJxAcRmJk9MaWCFs
-        YYk/17rYIIo+MUpMv3SPHSTBJmAo0fW2C6xBRMBJonPtaTCbWeA3o8SBiYYgtrBAhMSnTcvB
-        BrEIqErM/XCQEcTmFbCR+NVzghligbzE6g0HmCcw8ixgZFjFKJJaWpybnltsqFecmFtcmpeu
-        l5yfu4kRGILbjv3cvIPx0sbgQ4wCHIxKPLwvNrHGC7EmlhVX5h5ilOBgVhLhdTp7Ok6INyWx
-        siq1KD++qDQntfgQoynQ8onMUqLJ+cD4yCuJNzQ1NLewNDQ3Njc2s1AS5+0QOBgjJJCeWJKa
-        nZpakFoE08fEwSnVwKhcu/hV2OLtD48eNT/Vz/CjQ+dAwNxgl5nukgnlbS1TbmhVPfxeFH+E
-        l+OPzmJvrzMqnz0PHb91i/P4heCjLWtcijZaGdi//VH/cVNmmuPMI+om99Y+L/k5Wfq3ztWV
-        k1YyTp24al9zYrfr/kWsmxbc8pTZumJBqO0DLmEx5jDt8rP/XN3OLYhRYinOSDTUYi4qTgQA
-        atmfnlcCAAA=
-X-CMS-MailID: 20200708133811eucas1p1df7b92d7e0ba512c5a7ecdb948edbfcf
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200708133811eucas1p1df7b92d7e0ba512c5a7ecdb948edbfcf
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200708133811eucas1p1df7b92d7e0ba512c5a7ecdb948edbfcf
-References: <CGME20200708133811eucas1p1df7b92d7e0ba512c5a7ecdb948edbfcf@eucas1p1.samsung.com>
+        Wed, 8 Jul 2020 09:39:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594215588;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Whg0V+e+iLanotPtqCQ8xZyauguWHsR7nTJtmfu3D5w=;
+        b=BuFzTSBp89r/R7lbop6VlQzgK7R+x0rLNl7Z0NRT9NTet5uu/euuSJSZ/mL/Imp9FAMUPI
+        R3PnJgSTp4mSEp6aaM3m4oVqSXTns+FKR1wlPafsDRNZxW+GiAzCJDDsMys7sweSUYOvTJ
+        lbkTUy8KssAAaA0dHLyScPi95Ef7p6g=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-252-0kgb-8tfNySqU4jQzYne5A-1; Wed, 08 Jul 2020 09:39:44 -0400
+X-MC-Unique: 0kgb-8tfNySqU4jQzYne5A-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4C55080BCA8;
+        Wed,  8 Jul 2020 13:39:43 +0000 (UTC)
+Received: from localhost (ovpn-116-140.gru2.redhat.com [10.97.116.140])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DDE4178485;
+        Wed,  8 Jul 2020 13:39:42 +0000 (UTC)
+Date:   Wed, 8 Jul 2020 10:39:41 -0300
+From:   Bruno Meneguele <bmeneg@redhat.com>
+To:     Nayna <nayna@linux.vnet.ibm.com>
+Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zohar@linux.ibm.com, erichte@linux.ibm.com, nayna@linux.ibm.com,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v4] ima: move APPRAISE_BOOTPARAM dependency on
+ ARCH_POLICY to runtime
+Message-ID: <20200708133941.GA2651@glitch>
+References: <20200703180049.15608-1-bmeneg@redhat.com>
+ <91a81761-1490-7250-8245-4d78d190385f@linux.vnet.ibm.com>
+MIME-Version: 1.0
+In-Reply-To: <91a81761-1490-7250-8245-4d78d190385f@linux.vnet.ibm.com>
+X-PGP-Key: http://keys.gnupg.net/pks/lookup?op=get&search=0x3823031E4660608D
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=bmeneg@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="YiEDa0DAkWCtVeE4"
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PHY calibration is needed only for USB2.0 (UTMI) PHY, so skip calling
-calibration code when phy_calibrate() is called for USB3.0 (PIPE3) PHY.
+--YiEDa0DAkWCtVeE4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Fixes: d8c80bb3b55b ("phy: exynos5-usbdrd: Calibrate LOS levels for exynos5420/5800")
-Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
----
- drivers/phy/samsung/phy-exynos5-usbdrd.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+On Tue, Jul 07, 2020 at 07:56:37PM -0400, Nayna wrote:
+>=20
+> On 7/3/20 2:00 PM, Bruno Meneguele wrote:
+> > APPRAISE_BOOTPARAM has been marked as dependent on !ARCH_POLICY in comp=
+ile
+> > time, enforcing the appraisal whenever the kernel had the arch policy o=
+ption
+> > enabled.
+> >=20
+> > However it breaks systems where the option is set but the system wasn't
+> > booted in a "secure boot" platform. In this scenario, anytime an apprai=
+sal
+> > policy (i.e. ima_policy=3Dappraisal_tcb) is used it will be forced, giv=
+ing no
+> > chance to the user set the 'fix' state (ima_appraise=3Dfix) to actually
+> > measure system's files.
+>=20
+> "measure" is incorrect. It is appraisal.
+>=20
 
-diff --git a/drivers/phy/samsung/phy-exynos5-usbdrd.c b/drivers/phy/samsung/phy-exynos5-usbdrd.c
-index 646259bee909..f07edd80d2f3 100644
---- a/drivers/phy/samsung/phy-exynos5-usbdrd.c
-+++ b/drivers/phy/samsung/phy-exynos5-usbdrd.c
-@@ -714,7 +714,9 @@ static int exynos5_usbdrd_phy_calibrate(struct phy *phy)
- 	struct phy_usb_instance *inst = phy_get_drvdata(phy);
- 	struct exynos5_usbdrd_phy *phy_drd = to_usbdrd_phy(inst);
- 
--	return exynos5420_usbdrd_phy_calibrate(phy_drd);
-+	if (inst->phy_cfg->id == EXYNOS5_DRDPHY_UTMI)
-+		return exynos5420_usbdrd_phy_calibrate(phy_drd);
-+	return 0;
- }
- 
- static const struct phy_ops exynos5_usbdrd_phy_ops = {
--- 
-2.17.1
+Yes, of course, sorry.
+
+> How about changing the statement to "without giving the user the opportun=
+ity
+> to label the filesystem, before enforcing integrity." ?
+>=20
+
+Ack.
+That's better :)
+
+> > diff --git a/security/integrity/ima/ima_appraise.c b/security/integrity=
+/ima/ima_appraise.c
+> > index a9649b04b9f1..4fc83b3fbd5c 100644
+> > --- a/security/integrity/ima/ima_appraise.c
+> > +++ b/security/integrity/ima/ima_appraise.c
+> > @@ -18,14 +18,16 @@
+> >   static int __init default_appraise_setup(char *str)
+> >   {
+> > -#ifdef CONFIG_IMA_APPRAISE_BOOTPARAM
+> > -=09if (strncmp(str, "off", 3) =3D=3D 0)
+> > -=09=09ima_appraise =3D 0;
+> > -=09else if (strncmp(str, "log", 3) =3D=3D 0)
+> > -=09=09ima_appraise =3D IMA_APPRAISE_LOG;
+> > -=09else if (strncmp(str, "fix", 3) =3D=3D 0)
+> > -=09=09ima_appraise =3D IMA_APPRAISE_FIX;
+> > -#endif
+> > +=09if (IS_ENABLED(CONFIG_IMA_APPRAISE_BOOTPARAM) &&
+> > +=09    !arch_ima_get_secureboot()) {
+> > +=09=09if (strncmp(str, "off", 3) =3D=3D 0)
+> > +=09=09=09ima_appraise =3D 0;
+> > +=09=09else if (strncmp(str, "log", 3) =3D=3D 0)
+> > +=09=09=09ima_appraise =3D IMA_APPRAISE_LOG;
+> > +=09=09else if (strncmp(str, "fix", 3) =3D=3D 0)
+> > +=09=09=09ima_appraise =3D IMA_APPRAISE_FIX;
+> > +=09}
+> > +
+> >   =09return 1;
+> >   }
+>=20
+> If secureboot is enabled, it is silently ignoring the boot parameters. It
+> would be helpful if there is a log message notifying user about that.
+>=20
+> Can you please Cc powerpc, s390, and x86 mailing list and maintainers, wh=
+en
+> you post the next version ?
+>=20
+> I would try to test it sometime in this week.
+>=20
+
+Sure. I'm preparing a new version and will post soon.
+
+> Thanks & Regards,
+>=20
+
+Thank you.
+
+--=20
+bmeneg=20
+PGP Key: http://bmeneg.com/pubkey.txt
+
+--YiEDa0DAkWCtVeE4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEdWo6nTbnZdbDmXutYdRkFR+RokMFAl8FzJ0ACgkQYdRkFR+R
+okMq6Af8C2ESthjH/+dcvYY/UHC/wi1UDnVP+n25pPQ5U7Is2K0Xo4Q8wUhBfxVM
++lcoVTkmqED/SVLlqXsStb9y3Qk8HDvlC3LRYfdkD2w7bdIpMkuBB6Ba5MbsPRr+
+NTnIwGC082mwafFxrC3ISUcJ/lOWx1vrUETPttd6evuG3b2ogGI7iEHYntCifAhv
+GPIbKhJaAdyoJx2ynldpYCPYcKwN/4uv6XrOfiwmrGPYbjBqssqqyuqly4wu2s66
+bwmLQtiaCZb88TMVhAXkN4DAJirijPDAEGgt+VrKbpgsBrbTidFAfDoYO+ASf5qQ
+QqI7/t89XIw5EHNNfgkAQxJKcxoaWw==
+=jY7V
+-----END PGP SIGNATURE-----
+
+--YiEDa0DAkWCtVeE4--
 
