@@ -2,82 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0399218959
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 15:42:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6CD121895E
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 15:42:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729436AbgGHNmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 09:42:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39824 "EHLO mail.kernel.org"
+        id S1729660AbgGHNmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 09:42:22 -0400
+Received: from foss.arm.com ([217.140.110.172]:41246 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729136AbgGHNmI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 09:42:08 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 94973206E9;
-        Wed,  8 Jul 2020 13:42:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594215728;
-        bh=R9qdQMVF6jYFLBjnOTlIxsV4VC7X7oeEN/boZFtPUto=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mKU2MkhG1wQA3vAM/QfKJ90toW+lIOZyRe50fYYgLFpYzLij/HvclaJpRakIrEbli
-         WnAKod1055cy4NWEKl26l1rWeaqIcpM7KBa1uYeSgeDISClOZq4Ows/4SxIBhtVvUJ
-         bzIv95p1MbI7Uqvxc9yn652tVyGaKK4v5Z34fYR0=
-Date:   Wed, 8 Jul 2020 14:42:02 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com,
-        tiwai@suse.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
-        vkoul@kernel.org
-Subject: Re: [PATCH 10/11] ASoC: qdsp6-dai: add gapless support
-Message-ID: <20200708134202.GR4655@sirena.org.uk>
-References: <20200707163641.17113-1-srinivas.kandagatla@linaro.org>
- <20200707163641.17113-11-srinivas.kandagatla@linaro.org>
- <62af11d3-db26-a31b-00c8-9d78b11862cc@linux.intel.com>
- <04a7f696-e23d-5563-7cc3-aedfaf2c7636@linaro.org>
- <cf9b2d33-9b63-f3d2-2e51-a88c528dad53@linux.intel.com>
+        id S1729450AbgGHNmR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 09:42:17 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 564B01FB;
+        Wed,  8 Jul 2020 06:42:16 -0700 (PDT)
+Received: from [10.57.21.32] (unknown [10.57.21.32])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 65CF03F237;
+        Wed,  8 Jul 2020 06:42:14 -0700 (PDT)
+Subject: Re: [PATCH] thermal: sun8i: Be loud when probe fails
+To:     =?UTF-8?Q?Ond=c5=99ej_Jirman?= <megous@megous.com>,
+        Frank Lee <tiny.windzz@gmail.com>,
+        linux-sunxi@googlegroups.com,
+        Vasily Khoruzhick <anarsoul@gmail.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amit.kucheria@verdurent.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        "open list:ALLWINNER THERMAL DRIVER" <linux-pm@vger.kernel.org>,
+        "moderated list:ARM/Allwinner sunXi SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20200708105527.868987-1-megous@megous.com>
+ <CAEExFWvR4QnAQsXBnxk3V776P+YVJzs4PU-HWJ7dfo4B6cdtkg@mail.gmail.com>
+ <20200708132124.3b3iaavms43o622g@core.my.home>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <7f7843aa-def2-2bca-fbd4-ae20e4ebb020@arm.com>
+Date:   Wed, 8 Jul 2020 14:42:12 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="EkxpYdHiqGHPYbUt"
-Content-Disposition: inline
-In-Reply-To: <cf9b2d33-9b63-f3d2-2e51-a88c528dad53@linux.intel.com>
-X-Cookie: Oh Dad!  We're ALL Devo!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200708132124.3b3iaavms43o622g@core.my.home>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2020-07-08 14:21, Ondřej Jirman wrote:
+[...]
+>>> @@ -523,10 +547,17 @@ static int sun8i_ths_probe(struct platform_device *pdev)
+>>>          ret = devm_request_threaded_irq(dev, irq, NULL,
+>>>                                          sun8i_irq_thread,
+>>>                                          IRQF_ONESHOT, "ths", tmdev);
+>>> -       if (ret)
+>>> -               return ret;
+>>> +       if (ret) {
+>>> +               dev_err(dev, "Failed to request irq (%d)\n", ret);
+>>> +               goto err_out;
+>>> +       }
+>>>
+>>> +       dev_info(dev, "Thermal sensor ready!\n");
+>>>          return 0;
+>>> +
+>>> +err_out:
+>>> +       dev_err(dev, "Failed to probe thermal sensor (%d)\n", ret);
+>>
+>> When the driver fails, there will be this print. Isn't it superfluous
+>> for you to add these？
+>>
+>> sun8i-thermal: probe of 5070400.thermal-sensor failed with error
+> 
+> There's no such failure message in the case I investigated, which is
+> EPROBE_DEFER failure waiting for nvmem driver that never loads,
+> because it's not configured by the user to build.
 
---EkxpYdHiqGHPYbUt
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Ah, in that case this was a bit misleading, since "probe failure" isn't 
+really the problem at all. As it happens, there's a whole other 
+discussion ongoing around making probe deferral issues easier to debug:
 
-On Wed, Jul 08, 2020 at 08:32:02AM -0500, Pierre-Louis Bossart wrote:
+https://lore.kernel.org/linux-arm-kernel/20200626100103.18879-1-a.hajda@samsung.com/
 
-> To avoid confusion I believe the capabilities would need to be extended so
-> that applications know that gapless playback is supported across unrelated
-> profiles/formats. The point is that you don't want a traditional
-> implementation to use a capability that isn't supported in hardware or will
-> lead to audio issues.
-
-We'd also need error handling in case someone ignores the capability
-checks.
-
---EkxpYdHiqGHPYbUt
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8FzSkACgkQJNaLcl1U
-h9DCkgf+JEC2hdc751A8OHEKoIY50HxlCgLea4x5JZtPeQUrtnridmPh+C1aFQd/
-31k2PwzAM+xJ2nyOK0LYdlfF4f3sTA1r0ltaIr4KCpUQQ3glkkelABrHrblvUea0
-C1cFzPBU4CzQPKO7b3YQ1ORjVt/PxScuK1kxUjITFeaUSGn5bF8+VQbibW/14aO/
-TF1M6LNytypWFB86U7vO4OyhtrKv/s/QQ8wUD6mN4I1Q0ymL/0ekQsjP9UuAEJwH
-Mq3HN9IFb5cQknIZAYpthwk4xeN/Rv6QphZdjtO6aPbpMPpbG/3kFmTP9/QxnPs9
-3CSrUqp9+j06SZ4A65PFB3lf4/+olg==
-=Xb5s
------END PGP SIGNATURE-----
-
---EkxpYdHiqGHPYbUt--
+Robin.
