@@ -2,99 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1B62218C68
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 18:00:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3928218C71
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 18:00:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730531AbgGHQAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 12:00:00 -0400
-Received: from bedivere.hansenpartnership.com ([66.63.167.143]:34698 "EHLO
-        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730179AbgGHP77 (ORCPT
+        id S1730569AbgGHQAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 12:00:37 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:7228 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730179AbgGHQAf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 11:59:59 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 0E5E28EE1D9;
-        Wed,  8 Jul 2020 08:59:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
-        s=20151216; t=1594223998;
-        bh=wqk55O2VC/Slr4lVR3r5mJCWnsiLDjFN52OqFL8PToM=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=B1VYJdPqFQS+fqqY5rdrSizfLkmTMBloNay1fdTmef1GfIr5qSpMaM/9Z2Kwp1Jfl
-         YMOA9nrMyFPKUXP7Q0mZc3G/ORxbR+PhOI9juZpCpHcC7YuQJiLNT5ZFWya4Pb94Xt
-         KheBxppUY/WoSIt0r7n5/YBsx8YjMsH1alNeNEqc=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 4TxuoJRcRocU; Wed,  8 Jul 2020 08:59:57 -0700 (PDT)
-Received: from [153.66.254.194] (unknown [50.35.76.230])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 29F768EE12E;
-        Wed,  8 Jul 2020 08:59:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
-        s=20151216; t=1594223997;
-        bh=wqk55O2VC/Slr4lVR3r5mJCWnsiLDjFN52OqFL8PToM=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=GkIbqh4j2vhdw1VTdraa3DFeRdfvYkxyIsXKasakocl9hy7o6/dksAOmGvDJwcf6q
-         jR6m83Rn8RfzfXbggCzkMrDm88NlYrkPpWE6mzI20MbDO/mwgITLQNskicNzSUcXNf
-         bfsbM5rJ3iskElHX/5K8LlyWYiqKij0UER5blm4Y=
-Message-ID: <1594223995.4349.28.camel@HansenPartnership.com>
-Subject: Re: [Tech-board-discuss] [PATCH v2] CodingStyle: Inclusive
- Terminology
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Joe Perches <joe@perches.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     ksummit-discuss@lists.linuxfoundation.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        SeongJae Park <sjpark@amazon.de>, linux-kernel@vger.kernel.org,
-        tech-board-discuss@lists.linuxfoundation.org,
-        Chris Mason <clm@fb.clm>, Dave Airlie <airlied@redhat.com>,
-        torvalds@linux-foundation.org
-Date:   Wed, 08 Jul 2020 08:59:55 -0700
-In-Reply-To: <b15e2652aba06dbe244f5ed447e6e96f12302198.camel@perches.com>
-References: <159419296487.2464622.863943877093636532.stgit@dwillia2-desk3.amr.corp.intel.com>
-         <b15e2652aba06dbe244f5ed447e6e96f12302198.camel@perches.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.26.6 
-Mime-Version: 1.0
+        Wed, 8 Jul 2020 12:00:35 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 068G0Fvg007327;
+        Wed, 8 Jul 2020 18:00:16 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=SG00orgNi5qahqGwC4U9KWpO6xjL5yxam6QNkjvK9NQ=;
+ b=oqmo0akGAzF7/w5hPqTQrfCmlNV0xosKr5Nu5gKVI6AS9MNCNR5s/+nbVMQshBcjfGZc
+ 87MZ1NV8lLKnhE3+cnwGBMxD/6vJWWWBDvy4K/G0XdN8mWFDT974QteHIn8G+qBwormI
+ +UL+3RPNJ09eNVWpAWi1J29JJkWLgYhGULvZRTHRUMoxCnkmG7Z3tVVNSdprHm+HxrRx
+ iOlJYBaxN5NsRvU5GQmtYNTDw2rKPJS88P8YJEjch7vz8nGuoVbkFiENYfr4+E90mA/n
+ CvEjeIFdgigh7Q8jEDqYLLGOuei4a3JpyNnPBCXOqL/2Yk2auWPGivc8U9fRGzbn2nMI Hg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 322ew9gngq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Jul 2020 18:00:16 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 3D31E100034;
+        Wed,  8 Jul 2020 18:00:08 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 219BA2C7A63;
+        Wed,  8 Jul 2020 18:00:08 +0200 (CEST)
+Received: from lmecxl0995.lme.st.com (10.75.127.44) by SFHDAG3NODE2.st.com
+ (10.75.127.8) with Microsoft SMTP Server (TLS) id 15.0.1347.2; Wed, 8 Jul
+ 2020 18:00:07 +0200
+Subject: Re: [PATCH 1/3] usb: dwc2: override PHY input signals with usb role
+ switch support
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+CC:     Alexandre TORGUE <alexandre.torgue@st.com>,
+        "balbi@kernel.org" <balbi@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Fabrice GASNIER <fabrice.gasnier@st.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "hminas@synopsys.com" <hminas@synopsys.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>
+References: <20200616140717.28465-2-amelie.delaunay@st.com>
+ <20200704174219.612060-1-martin.blumenstingl@googlemail.com>
+ <05a81997-5ddb-ea81-7a89-8078b8a2b610@st.com>
+ <CAFBinCCVYJ=DuKbqhJJ8463Gs+GW0bgxyXSFiLXhUfvWV6AR0Q@mail.gmail.com>
+From:   Amelie DELAUNAY <amelie.delaunay@st.com>
+Message-ID: <ee4ee889-835e-2244-504c-2b1b605d78aa@st.com>
+Date:   Wed, 8 Jul 2020 18:00:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
+MIME-Version: 1.0
+In-Reply-To: <CAFBinCCVYJ=DuKbqhJJ8463Gs+GW0bgxyXSFiLXhUfvWV6AR0Q@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.44]
+X-ClientProxiedBy: SFHDAG5NODE1.st.com (10.75.127.13) To SFHDAG3NODE2.st.com
+ (10.75.127.8)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-08_13:2020-07-08,2020-07-08 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-07-08 at 04:04 -0700, Joe Perches wrote:
-> On Wed, 2020-07-08 at 00:23 -0700, Dan Williams wrote:
-> > Linux maintains a coding-style and its own idiomatic set of
-> > terminology.
-> > Update the style guidelines to recommend replacements for the terms
-> > master/slave and blacklist/whitelist.
-> > 
-> > Link: http://lore.kernel.org/r/159389297140.2210796.135901422546687
-> > 87525.stgit@dwillia2-desk3.amr.corp.intel.com
-> > Cc: Jonathan Corbet <corbet@lwn.net>
-> > Acked-by: Randy Dunlap <rdunlap@infradead.org>
-> > Acked-by: Dave Airlie <airlied@redhat.com>
-> > Acked-by: Kees Cook <keescook@chromium.org>
-> > Acked-by: SeongJae Park <sjpark@amazon.de>
-> > Signed-off-by: Olof Johansson <olof@lixom.net>
-> > Signed-off-by: Chris Mason <clm@fb.clm>
-> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-> > ---
-> > Changes since v1 [1]
-> > - Drop inclusive-terminology.rst, it is in the lore archives if the
-> >   arguments are needed for future debates, but otherwise no
-> > pressing
-> >   need to carry it in the tree (Linus, James)
+Hi Martin,
 
-Acked-by: James Bottomley <James.Bottomley@HansenPartnership.com>
+On 7/7/20 8:55 PM, Martin Blumenstingl wrote:
+> Hi Amelie,
+> 
+> On Tue, Jul 7, 2020 at 6:13 PM Amelie DELAUNAY <amelie.delaunay@st.com> wrote:
+>>
+>> Hi Martin,
+>>
+>> On 7/4/20 7:42 PM, Martin Blumenstingl wrote:
+>>> Hello Amelie,
+>>>
+>>> thank you for this patch - I am hoping that it will help us on Amlogic
+>>> Meson8, Meson8b, Meson8m2 and GXBB SoCs as well.
+>>> On these SoCs the ID detection is performed by the PHY IP and needs to
+>>> be polled.
+>>> I think usb_role_switch is the perfect framework for this on dwc2 side.
+>>> For the PHY driver I'm going to implement the cable state using the
+>>> extcon framework and then having a new usb-conn-extcon driver. This is
+>>> just to give you an overview why I'm interested in this.
+>>>
+>>
+>> I'm wondering, why use extcon framework and not the usb role switch API
+>> ? This patch on dwc2 is tested on STM32MP157C-DK2 board with STUSB160x
+>> Type-C controller driver recently pushed with usb role switch. You can
+>> have a look here https://lore.kernel.org/patchwork/patch/1256238/.
+> one of the boards that I'm working on is for example the Odroid-C1. It
+> has a Micro-USB port and there's no Type-C controller present.
+> 
+> in the next few days I'll try to send my idea as RFC, but this is the
+> .dts I've come up with so far:
+> &usb0 {
+>      dr_mode = "otg";
+>      usb-role-switch;
+> 
+>      connector {
+>          compatible = "extcon-usb-b-connector", "usb-b-connector";
+>          type = "micro";
+>          extcon = <&usb0_phy>;
+>          vbus-supply = <&usb_vbus>;
+>      };
+> };
+> 
+> I did this for two reasons:
+> 1. I think the PHY is not a connector and thus it's driver shouldn't
+> implement any connector specific logic (managing VBUS)
+> 2. without the connector there would be a circular dependency: the USB
+> controller needs the PHY to initialize but the PHY would need the USB
+> controller so it can manage the role switch
+> 
+> (or in other words: the connector replaces the Type-C controller in this case)
+> 
+>>> [...]
+>>>> +static int dwc2_drd_role_sw_set(struct usb_role_switch *sw, enum usb_role role)
+>>>> +{
+>>>> +     struct dwc2_hsotg *hsotg = usb_role_switch_get_drvdata(sw);
+>>>> +     unsigned long flags;
+>>>> +
+>>>> +     /* Skip session not in line with dr_mode */
+>>>> +     if ((role == USB_ROLE_DEVICE && hsotg->dr_mode == USB_DR_MODE_HOST) ||
+>>>> +         (role == USB_ROLE_HOST && hsotg->dr_mode == USB_DR_MODE_PERIPHERAL))
+>>>> +             return -EINVAL;
+>>>> +
+>>>> +     /* Skip session if core is in test mode */
+>>>> +     if (role == USB_ROLE_NONE && hsotg->test_mode) {
+>>>> +             dev_dbg(hsotg->dev, "Core is in test mode\n");
+>>>> +             return -EBUSY;
+>>>> +     }
+>>>> +
+>>>> +     spin_lock_irqsave(&hsotg->lock, flags);
+>>> due to this spin_lock_irqsave() ...
+>>>
+>>>> +     if (role == USB_ROLE_HOST) {
+>>>> +             if (dwc2_ovr_avalid(hsotg, true))
+>>>> +                     goto unlock;
+>>>> +
+>>>> +             if (hsotg->dr_mode == USB_DR_MODE_OTG)
+>>>> +                     /*
+>>>> +                      * This will raise a Connector ID Status Change
+>>>> +                      * Interrupt - connID A
+>>>> +                      */
+>>>> +                     dwc2_force_mode(hsotg, true);
+>>> ... we cannot sleep in here. the call flow is:
+>>> dwc2_drd_role_sw_set
+>>>     spin_lock_irqsave
+>>>     dwc2_force_mode
+>>>       dwc2_wait_for_mode
+>>>         usleep_range
+>>>
+>>
+>> In fact, with the avalid or bvalid overriding + the debounce filter
+>> bypass, GINTSTS_CURMOD is already in the expected mode, so that we exit
+>> the loop directly, without running into usleep_range.
+> on my Amlogic SoC this is not the case:
+> The kernel complains because of that usleep_range from within the
+> spinlock context
+> 
+> Please let me know if/how I can help debug this.
+> 
 
-> Where did Linus publicly state this was unnecessary?
+Could you please test with:
 
-https://lists.linuxfoundation.org/pipermail/tech-board-discuss/2020-July/000412.html
+static int dwc2_drd_role_sw_set(struct device *dev, enum usb_role role)
+{
+	struct dwc2_hsotg *hsotg = dev_get_drvdata(dev);
+	unsigned long flags;
+	int already = 0;
 
-James
+	/* Skip session not in line with dr_mode */
+	if ((role == USB_ROLE_DEVICE && hsotg->dr_mode == USB_DR_MODE_HOST) ||
+	    (role == USB_ROLE_HOST && hsotg->dr_mode == USB_DR_MODE_PERIPHERAL))
+		return -EINVAL;
+
+	/* Skip session if core is in test mode */
+	if (role == USB_ROLE_NONE && hsotg->test_mode) {
+		dev_dbg(hsotg->dev, "Core is in test mode\n");
+		return -EBUSY;
+	}
+
+	spin_lock_irqsave(&hsotg->lock, flags);
+
+	if (role == USB_ROLE_HOST) {
+		already = dwc2_ovr_avalid(hsotg, true);
+	} else if (role == USB_ROLE_DEVICE) {
+		already = dwc2_ovr_bvalid(hsotg, true);
+		/* This clear DCTL.SFTDISCON bit */
+		dwc2_hsotg_core_connect(hsotg);
+	} else {
+		if (dwc2_is_device_mode(hsotg)) {
+		    if (!dwc2_ovr_bvalid(hsotg, false))
+			/* This set DCTL.SFTDISCON bit */
+			dwc2_hsotg_core_disconnect(hsotg);
+		} else {
+			dwc2_ovr_avalid(hsotg, false);
+		}
+	}
+
+	spin_unlock_irqrestore(&hsotg->lock, flags);
+
+	if (!already &&
+	    role != USB_ROLE_NONE && hsotg->dr_mode == USB_DR_MODE_OTG)
+		/* This will raise a Connector ID Status Change Interrupt */
+		dwc2_force_mode(hsotg, role == USB_ROLE_HOST);
+
+	dev_dbg(hsotg->dev, "%s-session valid\n",
+		role == USB_ROLE_NONE ? "No" :
+		role == USB_ROLE_HOST ? "A" : "B");
+
+	return 0;
+}
 
 
+dwc2_force_mode is called outside the spin_lock_irqsave so the kernel 
+should not complain. I've tested on my setup and the behavior seems the 
+same.
+
+Regards,
+Amelie
