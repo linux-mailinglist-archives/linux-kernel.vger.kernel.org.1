@@ -2,104 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59CBD21807C
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 09:09:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FBDE21807F
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 09:11:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730100AbgGHHJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 03:09:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40550 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729805AbgGHHJQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 03:09:16 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 75FFF206DF;
-        Wed,  8 Jul 2020 07:09:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594192156;
-        bh=rHOulDo124Liq2EGXRwvQ6OiyVaGckCmrxScyta+9xA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=d3j/u+u9spT8gnCzMCkgwg/K1QFFKQ0rOx8IRsOUdrSDcFpXoFr8vPcWU5adRpKLu
-         41xusDKZhTnUZv8c7jDpWivTFwLYZhqQ8A5cxlrl0IL6jH9haKF6BZ1RfPtnPQtR11
-         9n9L6L27EEgPwoIhEifE4R8jmy3FXooLo0CbtfFU=
-Date:   Wed, 8 Jul 2020 09:09:12 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Martin Zaharinov <micron10@gmail.com>
-Cc:     "linux-kernel@vger kernel. org" <linux-kernel@vger.kernel.org>,
-        Florian Westphal <fw@strlen.de>,
-        Eric Dumazet <edumazet@google.com>
-Subject: Re: Bug Report High CPU Usage events_power_efficient
-Message-ID: <20200708070912.GA351187@kroah.com>
-References: <E2C5FE67-C85E-469C-9B81-10F7555F836B@gmail.com>
- <91805D0F-2D74-4EA3-A2D7-13E4FBBEAB51@gmail.com>
- <6AD52867-83C1-4C6C-A0AE-4DE0D6C16310@gmail.com>
- <C89D167C-E03F-4116-9647-F50607DF3A45@gmail.com>
+        id S1730054AbgGHHL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 03:11:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38132 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726292AbgGHHL1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 03:11:27 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE1CCC061755
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 00:11:27 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id t11so14706536pfq.11
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 00:11:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+a5Yprqxr4YrC8ddRW3zptpr1c8vgN9ZuXvWQPKlFVg=;
+        b=MFfhw4CakjJVB9f0UmWu8pC0qAsbx035oeNJnZ8AZNdtg7Ji/ZCHbJVR3yXwhItAPs
+         F0QRtUCO6DB/ikQWHkEDO36hf7A63FNsqRaDtQPm3wBHQpkrORRfGYteBm9LFZNjOtFN
+         IT+sXoF6yYRCFgT+8Y9qMWQMJ4r1ku5nRbo+c=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+a5Yprqxr4YrC8ddRW3zptpr1c8vgN9ZuXvWQPKlFVg=;
+        b=dzezYTZiGQC1iaZjoib14+C4KcnWLz4zPXxFnjSWXzV7zTWibIrFBPLbA5Ad3jpced
+         EFbexlqNx8oLam1vapO9IJBor7jc32fSRiY3WIoFupAGYCuUhdEBglN6Fw/AiI89VHmc
+         udYVIcw6wZfDNMJmo8MFqCV+vRXSlVqSQ1xSnT0N80vjTA2Xx7+JnkFEQl5/jWEqul3Y
+         bnnYPkQewtzeTImVi+Z/aKbf16Q7+74SHDSs/KMSTVqUjAKmcxd1pVsi/cr4avQ5aRNl
+         i0GcDPmFJAsXy68bpBegA1vKCICSRzk54r/PzTg96fUiENwwCZokAcpsw8zNO/ZyxAkk
+         g3FA==
+X-Gm-Message-State: AOAM533MvUeGHFw+LZ++reWINBe/TwXiRXXiEkdEHs9oxzcBP6SVK0XO
+        ByMdY/+gQ07P3J394cFqazzAzDglmM4z/g==
+X-Google-Smtp-Source: ABdhPJxPe+FrQXu/yLvuqwBRWqt2yTo1MAuvXoVYQVlzKsLdn7kZhMgTOxEwJgHQeWcJeGRJFQd3jg==
+X-Received: by 2002:aa7:9abc:: with SMTP id x28mr27241417pfi.145.1594192287030;
+        Wed, 08 Jul 2020 00:11:27 -0700 (PDT)
+Received: from localhost ([2401:fa00:1:10:725a:fff:fe46:44eb])
+        by smtp.gmail.com with ESMTPSA id q13sm4694320pjc.21.2020.07.08.00.11.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Jul 2020 00:11:25 -0700 (PDT)
+From:   Yu-Hsuan Hsu <yuhsuan@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Cheng-Yi Chiang <cychiang@chromium.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Tzung-Bi Shih <tzungbi@google.com>,
+        Gwendal Grignou <gwendal@chromium.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Yu-Hsuan Hsu <yuhsuan@chromium.org>,
+        Yicheng Li <yichengli@chromium.org>,
+        alsa-devel@alsa-project.org
+Subject: [PATCH] ASoC: cros_ec_codec: Reset I2S RX when probing
+Date:   Wed,  8 Jul 2020 15:11:17 +0800
+Message-Id: <20200708071117.3070707-1-yuhsuan@chromium.org>
+X-Mailer: git-send-email 2.27.0.383.g050319c2ae-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <C89D167C-E03F-4116-9647-F50607DF3A45@gmail.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 08, 2020 at 09:50:49AM +0300, Martin Zaharinov wrote:
-> Add Greg , Florian, Eric to this bug 
-> 
-> > On 7 Jul 2020, at 22:54, Martin Zaharinov <micron10@gmail.com> wrote:
-> > 
-> > And this is log from /sys/kernel/debug/tracing/trace
-> > 
-> > 
-> > # entries-in-buffer/entries-written: 32410/32410   #P:64
-> > #
-> > #                              _-----=> irqs-off
-> > #                             / _----=> need-resched
-> > #                            | / _---=> hardirq/softirq
-> > #                            || / _--=> preempt-depth
-> > #                            ||| /     delay
-> > #           TASK-PID   CPU#  ||||    TIMESTAMP  FUNCTION
-> > #              | |       |   ||||       |         |
-> >           <...>-57259 [005] .... 29619.680698: workqueue_execute_start: work struct 00000000ef22e4b8: function gc_worker [nf_conntrack]
-> >           <...>-57259 [005] .... 29623.811407: workqueue_execute_end: work struct 00000000ef22e4b8: function gc_worker [nf_conntrack]
-> >           <...>-57259 [005] .... 29623.811410: workqueue_execute_start: work struct 0000000000aeec55: function fb_flashcursor
-> >           <...>-57259 [005] .... 29623.811421: workqueue_execute_end: work struct 0000000000aeec55: function fb_flashcursor
-> >           <...>-57259 [005] .... 29623.811422: workqueue_execute_start: work struct 00000000a6d382bb: function vmstat_update
-> >           <...>-57259 [005] .... 29623.811435: workqueue_execute_end: work struct 00000000a6d382bb: function vmstat_update
-> > 
-> >> On 7 Jul 2020, at 22:44, Martin Zaharinov <micron10@gmail.com> wrote:
-> >> 
-> >> the problem is hear with kernel 5.7.7 
-> >> 
-> >> last work kernel without this problem is 5.6.7
-> >> 
-> >> hear is more info:
-> >> 
-> >> cat /proc/57259/stack
-> >> root@megacableamarilis:~# cat /proc/57259/stack
-> >> [<0>] gc_worker+0x1be/0x380 [nf_conntrack]
-> >> [<0>] process_one_work+0x1bc/0x3b0
-> >> [<0>] worker_thread+0x4d/0x460
-> >> [<0>] kthread+0x10d/0x130
-> >> [<0>] ret_from_fork+0x1f/0x30
-> >> 
-> >> PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND                            57259 root      28   0       0      0      0 R  69.8   0.0  82:42.14 kworker/5:2+events_power_efficient                                                          
-> >> 32 root      21   0       0      0      0 R  31.0   0.0  87:06.33 ksoftirqd/4
-> >> 
-> >> 
-> >> Please help to fix this problem
-> >> 
-> >>> On 22 Apr 2020, at 15:55, Martin Zaharinov <micron10@gmail.com> wrote:
-> >>> 
-> >>> Hello Qian and Greg 
-> >>> With latest 5.6.x kernel have problem with events_power_efficient 28488 root      28   0       0      0      0 R  95.5   0.0 101:38.19 kworker/2:1+events_power_efficient Process start to load machine after 3-4 hour and load not stop only reboot machine remove process . Server runing on AMD EPIC CPU 2x 7301 32Gb Ram Have 2 x 10G card Intel when machine load over 1G traffic machine locked and only restart fix problem to next load . After move traffic and server stop load process still hear and load server ?
-> >>> And after reboot process move to other core .
+It is not guaranteed that I2S RX is disabled when the kernel booting.
+For example, if the kernel crashes while it is enabled, it will keep
+enabled until the next time EC reboots. Reset I2S RX when probing to
+fix this issue.
 
-Have you used 'git bisect' to try to find the offending commit?
+Signed-off-by: Yu-Hsuan Hsu <yuhsuan@chromium.org>
+---
+ include/linux/platform_data/cros_ec_commands.h | 1 +
+ sound/soc/codecs/cros_ec_codec.c               | 7 +++++++
+ 2 files changed, 8 insertions(+)
 
-Without that, it's going to be hard to help you out here.
+diff --git a/include/linux/platform_data/cros_ec_commands.h b/include/linux/platform_data/cros_ec_commands.h
+index 69210881ebac8..11ce917ca924c 100644
+--- a/include/linux/platform_data/cros_ec_commands.h
++++ b/include/linux/platform_data/cros_ec_commands.h
+@@ -4598,6 +4598,7 @@ enum ec_codec_i2s_rx_subcmd {
+ 	EC_CODEC_I2S_RX_SET_SAMPLE_DEPTH = 0x2,
+ 	EC_CODEC_I2S_RX_SET_DAIFMT = 0x3,
+ 	EC_CODEC_I2S_RX_SET_BCLK = 0x4,
++	EC_CODEC_I2S_RX_RESET = 0x5,
+ 	EC_CODEC_I2S_RX_SUBCMD_COUNT,
+ };
+ 
+diff --git a/sound/soc/codecs/cros_ec_codec.c b/sound/soc/codecs/cros_ec_codec.c
+index 8d45c628e988e..5495214e73e68 100644
+--- a/sound/soc/codecs/cros_ec_codec.c
++++ b/sound/soc/codecs/cros_ec_codec.c
+@@ -1034,6 +1034,13 @@ static int cros_ec_codec_platform_probe(struct platform_device *pdev)
+ 	}
+ 	priv->ec_capabilities = r.capabilities;
+ 
++	/* Reset EC codec I2S RX. */
++	p.cmd = EC_CODEC_I2S_RX_RESET;
++	ret = send_ec_host_command(priv->ec_device, EC_CMD_EC_CODEC_I2S_RX,
++				   (uint8_t *)&p, sizeof(p), NULL, 0);
++	if (ret)
++		dev_err(dev, "failed to EC_CODEC_I2S_RESET: %d\n", ret);
++
+ 	platform_set_drvdata(pdev, priv);
+ 
+ 	ret = devm_snd_soc_register_component(dev, &i2s_rx_component_driver,
+-- 
+2.27.0.383.g050319c2ae-goog
 
-thanks,
-
-greg k-h
