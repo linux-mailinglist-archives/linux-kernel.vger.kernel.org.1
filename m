@@ -2,61 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D7582186D6
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 14:04:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3E962186A3
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 14:02:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729306AbgGHMEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 08:04:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55372 "EHLO
+        id S1729041AbgGHMCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 08:02:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729025AbgGHMCg (ORCPT
+        with ESMTP id S1729029AbgGHMCi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 08:02:36 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79D13C08E6DC
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 05:02:36 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id z15so37393219wrl.8
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 05:02:36 -0700 (PDT)
+        Wed, 8 Jul 2020 08:02:38 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 002A5C08C5DC
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 05:02:37 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id f139so2731230wmf.5
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 05:02:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=46IKHC7Ib+3RpYilksHo0J0tVnpqASiueOx9DpvscBA=;
-        b=l3TBC6JaAs3Oj5T2ANAgmLhjgaFoSm80oROvJAm6eo+aJXW4c5H1FV+nwjp8n5QqOd
-         dqM919EV90o7+ViXKxLMIJ8sIANeJnkGz3rSX2oVxho73Bdi3kpXbtgyuJn6TZHYl6OU
-         ELwLqKf9lDeo3NMCDMwB8y6oUKob9loOnZGFcO8NNNvw/GA4SCDot7K84wmf7Rs3ZSj1
-         OnQa+edYrzHvpoXDfrchTC6A5neZP4SFlhSdYPMLN/inQ5RsiVFDxS467VFD5gc9Zyec
-         w5FHNoMNTJtToJA73nkBxmRy2EQcegrcyCGt2ZnSzB6Hj4F/K1hIimrXAz5EKsoPseaI
-         zxLQ==
+        bh=CbDIhrckRx3GTebLwLuoUtbus6UaS40hQs+7mAaRUqY=;
+        b=XHAfQtf1JAQ5VA4lD8a5M0K9xIEd3wjQPYeGkZpVYIRFvwsEfXYnoQAXMbZeDaNi/O
+         UBvXSfjuqJ9gC8B812sv6P0z4WSeIudvXNXDXCkvejh6R152xb26L8EP9bpqk96d3aS5
+         cZvqL0wKjmJA8/HKXKXROPFgujX96fI5EFnhYgDtgPfdPd+2CUCGhZPbkpbxbCxfhajA
+         3w77tgKuLqsqzrz1zQQwWO4PKL50RqAf82qafFw1mDlPd4PYX/A9sygzDpIOpFTSsiSs
+         Kj+5LNN0qfQODixhXraXYrqsM9HMVEm8TZPNr9Q3QtxcO3cq5TBB6x5u2fqy38JhPgUd
+         CEiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=46IKHC7Ib+3RpYilksHo0J0tVnpqASiueOx9DpvscBA=;
-        b=iC9kAcquuQnfXVDpsg+5au5hFJfiy96ZH6DDQndhZtd8FHQA1GFgU8lz4ebeLflL/X
-         xv7po9S6GLn0oXmTnKY/vrKryczl0vMQ2+GWFUSkl2YWqfj5Wnq1fL2x9wx97tSLVx6Z
-         8+A4j0I+Co9JMH+ZnixvJ6wN87yGQ3Ikaxg2I7MXqKvNvyHlKF2EmSNWMsln+TJhZOMV
-         Y2U67OFYB4xOF3XAEaUKUqTySV9ahH6OH5fMXhyBxBlxcXqS7eght/kjmT0Jos8mMUcY
-         BK6qGvaH2U3CJR83TfsTvj//hF04a6dgMFHPLhOaZ6IGDK5Oket12yjgAvvCHvkzphKU
-         prTw==
-X-Gm-Message-State: AOAM532VV9NshwK1YgAHSqmQftsWYeJgZNmt794epgshHYrwdJxtahcd
-        N0ameyGTHdQ17DFgzBKb8xY8/g==
-X-Google-Smtp-Source: ABdhPJx7400FkBTJjZF37J5652hYPclvA4b+wU9dUR9dX0IU/91BKTSabo6ymiYYSVoXlFRmC05wxw==
-X-Received: by 2002:adf:e948:: with SMTP id m8mr59727341wrn.398.1594209755159;
-        Wed, 08 Jul 2020 05:02:35 -0700 (PDT)
+        bh=CbDIhrckRx3GTebLwLuoUtbus6UaS40hQs+7mAaRUqY=;
+        b=V39EzNaOiZDGjQN+4+2G4OdO0ngLgS9uzMy/5WNQ5gu7oHMBrBosghMMoXujrQdIFr
+         lxSErFOyL3ILgb7QFCqmKmjylTHnsE+VJUYiiLj78nAsYyat+pUH8nLlyKcuh8MfB5wc
+         avBg2tqWRzLjmMVTaL1RULeoINIKwT2nx5Bly/BtBUv2Xs/FuYHrT/emFMB+iQkM0qva
+         QO4V9h37+LGaXlfTOfx4K5Lr8luIRkCH5F4NWcMncjRFmLfkyz0je/OlQGwoP2wVRfzH
+         jALyJBa7KJ1aZSDOEYXZth3T/tZYfIAzmq8WaYei8VonODSmgWlTzj1amPn+yZztkPSA
+         AWjw==
+X-Gm-Message-State: AOAM530X9SMWU5bSCzy+3DdwkuIoxW3tKRlg+Hw9eBvz/ei3qepbWAAo
+        QnaG4GcDqpZLll3qaTAOOWN0VQ==
+X-Google-Smtp-Source: ABdhPJy+HB17Q9P1mrRKVGT2FF3j0WmBBb+fLX/6I25X987iIeI1ppamW0cma4BCMtp1nwaoLxHKaA==
+X-Received: by 2002:a1c:1fc2:: with SMTP id f185mr8954863wmf.0.1594209756344;
+        Wed, 08 Jul 2020 05:02:36 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.206])
-        by smtp.gmail.com with ESMTPSA id m62sm3964997wmm.42.2020.07.08.05.02.34
+        by smtp.gmail.com with ESMTPSA id m62sm3964997wmm.42.2020.07.08.05.02.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Jul 2020 05:02:34 -0700 (PDT)
+        Wed, 08 Jul 2020 05:02:35 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     jejb@linux.ibm.com, martin.petersen@oracle.com
 Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
         Lee Jones <lee.jones@linaro.org>,
-        QLogic-Storage-Upstream@qlogic.com,
-        Prakash Gollapudi <bprakash@broadcom.com>
-Subject: [PATCH 07/30] scsi: bnx2fc: bnx2fc_fcoe: Repair a range of kerneldoc issues
-Date:   Wed,  8 Jul 2020 13:01:58 +0100
-Message-Id: <20200708120221.3386672-8-lee.jones@linaro.org>
+        QLogic-Storage-Upstream@cavium.com
+Subject: [PATCH 08/30] scsi: qedf: qedf_main: Demote obvious misuse of kerneldoc to standard comment blocks
+Date:   Wed,  8 Jul 2020 13:01:59 +0100
+Message-Id: <20200708120221.3386672-9-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200708120221.3386672-1-lee.jones@linaro.org>
 References: <20200708120221.3386672-1-lee.jones@linaro.org>
@@ -67,102 +66,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From bitrotted and missing function parameters to misuse of kerneldoc format.
+No attempt has been made to document either of the demoted functions here.
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/scsi/bnx2fc/bnx2fc_fcoe.c:1082: warning: Function parameter or member 'lport' not described in 'bnx2fc_update_src_mac'
- drivers/scsi/bnx2fc/bnx2fc_fcoe.c:1082: warning: Function parameter or member 'addr' not described in 'bnx2fc_update_src_mac'
- drivers/scsi/bnx2fc/bnx2fc_fcoe.c:1082: warning: Excess function parameter 'fip' description in 'bnx2fc_update_src_mac'
- drivers/scsi/bnx2fc/bnx2fc_fcoe.c:1082: warning: Excess function parameter 'old' description in 'bnx2fc_update_src_mac'
- drivers/scsi/bnx2fc/bnx2fc_fcoe.c:1082: warning: Excess function parameter 'new' description in 'bnx2fc_update_src_mac'
- drivers/scsi/bnx2fc/bnx2fc_fcoe.c:1670: warning: Function parameter or member 'netdev' not described in 'bnx2fc_destroy'
- drivers/scsi/bnx2fc/bnx2fc_fcoe.c:1670: warning: Excess function parameter 'buffer' description in 'bnx2fc_destroy'
- drivers/scsi/bnx2fc/bnx2fc_fcoe.c:1670: warning: Excess function parameter 'kp' description in 'bnx2fc_destroy'
- drivers/scsi/bnx2fc/bnx2fc_fcoe.c:2108: warning: Function parameter or member 'netdev' not described in 'bnx2fc_disable'
- drivers/scsi/bnx2fc/bnx2fc_fcoe.c:2236: warning: Function parameter or member 'netdev' not described in 'bnx2fc_enable'
- drivers/scsi/bnx2fc/bnx2fc_fcoe.c:2529: warning: Function parameter or member 'dev' not described in 'bnx2fc_ulp_exit'
- drivers/scsi/bnx2fc/bnx2fc_fcoe.c:2962: warning: cannot understand function prototype: 'struct scsi_host_template bnx2fc_shost_template = '
- drivers/scsi/bnx2fc/bnx2fc_fcoe.c:2996: warning: cannot understand function prototype: 'struct cnic_ulp_ops bnx2fc_cnic_cb = '
+ drivers/scsi/qedf/qedf_main.c:1027: warning: Function parameter or member 'lport' not described in 'qedf_xmit'
+ drivers/scsi/qedf/qedf_main.c:1027: warning: Function parameter or member 'fp' not described in 'qedf_xmit'
+ drivers/scsi/qedf/qedf_main.c:1426: warning: Function parameter or member 'lport' not described in 'qedf_rport_event_handler'
+ drivers/scsi/qedf/qedf_main.c:1426: warning: Function parameter or member 'rdata' not described in 'qedf_rport_event_handler'
+ drivers/scsi/qedf/qedf_main.c:1426: warning: Function parameter or member 'event' not described in 'qedf_rport_event_handler'
 
-Cc: QLogic-Storage-Upstream@qlogic.com
-Cc: Prakash Gollapudi <bprakash@broadcom.com>
+Cc: QLogic-Storage-Upstream@cavium.com
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/scsi/bnx2fc/bnx2fc_fcoe.c | 18 ++++++++----------
- 1 file changed, 8 insertions(+), 10 deletions(-)
+ drivers/scsi/qedf/qedf_main.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/scsi/bnx2fc/bnx2fc_fcoe.c b/drivers/scsi/bnx2fc/bnx2fc_fcoe.c
-index 0e33324e16f51..5cdeeb3539fdc 100644
---- a/drivers/scsi/bnx2fc/bnx2fc_fcoe.c
-+++ b/drivers/scsi/bnx2fc/bnx2fc_fcoe.c
-@@ -1071,9 +1071,8 @@ static int bnx2fc_fip_recv(struct sk_buff *skb, struct net_device *dev,
- /**
-  * bnx2fc_update_src_mac - Update Ethernet MAC filters.
-  *
-- * @fip: FCoE controller.
-- * @old: Unicast MAC address to delete if the MAC is non-zero.
-- * @new: Unicast MAC address to add.
-+ * @lport: The local port
-+ * @addr: Location of data to copy
-  *
-  * Remove any previously-set unicast MAC filter.
-  * Add secondary FCoE MAC address filter for our OUI.
-@@ -1659,8 +1658,7 @@ static void __bnx2fc_destroy(struct bnx2fc_interface *interface)
- /**
-  * bnx2fc_destroy - Destroy a bnx2fc FCoE interface
-  *
-- * @buffer: The name of the Ethernet interface to be destroyed
-- * @kp:     The associated kernel parameter
-+ * @netdev: The net device that the FCoE interface is on
-  *
-  * Called from sysfs.
-  *
-@@ -2101,7 +2099,7 @@ static int __bnx2fc_disable(struct fcoe_ctlr *ctlr)
- 	return 0;
+diff --git a/drivers/scsi/qedf/qedf_main.c b/drivers/scsi/qedf/qedf_main.c
+index 36b1ca2dadbb5..a77a74fad6a7e 100644
+--- a/drivers/scsi/qedf/qedf_main.c
++++ b/drivers/scsi/qedf/qedf_main.c
+@@ -1019,9 +1019,8 @@ static int qedf_xmit_l2_frame(struct qedf_rport *fcport, struct fc_frame *fp)
+ 	return rc;
  }
  
 -/**
 +/*
-  * Deperecated: Use bnx2fc_enabled()
+  * qedf_xmit - qedf FCoE frame transmit function
+- *
   */
- static int bnx2fc_disable(struct net_device *netdev)
-@@ -2229,7 +2227,7 @@ static int __bnx2fc_enable(struct fcoe_ctlr *ctlr)
- 	return 0;
- }
- 
--/**
-+/*
-  * Deprecated: Use bnx2fc_enabled()
-  */
- static int bnx2fc_enable(struct net_device *netdev)
-@@ -2523,7 +2521,7 @@ static struct bnx2fc_hba *bnx2fc_hba_lookup(struct net_device
- /**
-  * bnx2fc_ulp_exit - shuts down adapter instance and frees all resources
-  *
-- * @dev		cnic device handle
-+ * @dev:	cnic device handle
-  */
- static void bnx2fc_ulp_exit(struct cnic_dev *dev)
+ static int qedf_xmit(struct fc_lport *lport, struct fc_frame *fp)
  {
-@@ -2956,7 +2954,7 @@ static struct device_attribute *bnx2fc_host_attrs[] = {
- 	NULL,
- };
+@@ -1415,7 +1414,7 @@ static void qedf_cleanup_fcport(struct qedf_ctx *qedf,
+ 	kref_put(&rdata->kref, fc_rport_destroy);
+ }
  
 -/**
 +/*
-  * scsi_host_template structure used while registering with SCSI-ml
-  */
- static struct scsi_host_template bnx2fc_shost_template = {
-@@ -2989,7 +2987,7 @@ static struct libfc_function_template bnx2fc_libfc_fcn_templ = {
- 	.rport_event_callback	= bnx2fc_rport_event_handler,
- };
- 
--/**
-+/*
-  * bnx2fc_cnic_cb - global template of bnx2fc - cnic driver interface
-  *			structure carrying callback function pointers
-  */
+  * This event_callback is called after successful completion of libfc
+  * initiated target login. qedf can proceed with initiating the session
+  * establishment.
 -- 
 2.25.1
 
