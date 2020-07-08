@@ -2,493 +2,315 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 947222191F3
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 23:10:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AA0A2191F6
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 23:10:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726081AbgGHVKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 17:10:01 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:32049 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725787AbgGHVKB (ORCPT
+        id S1726194AbgGHVKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 17:10:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55890 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725787AbgGHVKP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 17:10:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594242597;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cMkFg65WcVWhHAZNhS/Wx9UvcLXZDDH50bQEnVRsEOE=;
-        b=VcFv5m1m8wDT5ZWNCR4gYxF1ZZ+M+vtuoGsi92vE092u9aWJw2Zwnxm5ujJjIEeIfNlzDJ
-        WELljzpBpvJuzhy1JAcOnoAkzT0UKNbaPH1SAyKVzNqsGno1PfoQ3rDu6enxjX17V6qJ1G
-        7HjCbC7V2sW5e4w/xOJJY1soKmOSY7I=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-426-Kq1Gqdr6Miq_1_OS-_2yFw-1; Wed, 08 Jul 2020 17:09:53 -0400
-X-MC-Unique: Kq1Gqdr6Miq_1_OS-_2yFw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3F0C2107ACCA;
-        Wed,  8 Jul 2020 21:09:52 +0000 (UTC)
-Received: from krava (unknown [10.40.195.124])
-        by smtp.corp.redhat.com (Postfix) with SMTP id DC3B17F8A1;
-        Wed,  8 Jul 2020 21:09:49 +0000 (UTC)
-Date:   Wed, 8 Jul 2020 23:09:48 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc:     Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        Jiri Olsa <jolsa@kernel.org>, alexey.budankov@linux.intel.com,
-        adrian.hunter@intel.com
-Subject: Re: [PATCH 2/2] perf record: Support closing siblings' file
- descriptors
-Message-ID: <20200708210948.GD3581918@krava>
-References: <20200708151635.81239-1-alexander.shishkin@linux.intel.com>
- <20200708151635.81239-3-alexander.shishkin@linux.intel.com>
+        Wed, 8 Jul 2020 17:10:15 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30DCBC061A0B;
+        Wed,  8 Jul 2020 14:10:15 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id f18so4599503wml.3;
+        Wed, 08 Jul 2020 14:10:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=BRdWrZGotFU/V/N69RBCWuEXsKoewH6WQsweVR7ALZI=;
+        b=YbRsINFQuj4rsIvUK1OvMoLvTYf9ohCqUDZGyBsOUBI3xxHIV+sh/Njeh0iTFSfrm7
+         nf2DXUHUvXzafp9O+7dfPtZWLreUJkV7xdBl9yr1xSMjbrDpILgJ7cmk8GUwE45rdFvk
+         7+CIS4sSr7qsGv2SYKoAsRWs1ERetwZ6R2d70aPbkxz3tv7n+UvK2nuSZk4QB+OP5rLb
+         JzTk7d1DU4nNJuvteFyS03a3Y7A1fkarmms0pCRX+2RLyA5oTERnh4J3Y95M3CdfIXWp
+         aLbbh1t0UXAEekvcWViq+7HAn1MfESw1eamf8rR3WjF+ZYAdSXjKU7kiyPaOOwVn1/UT
+         EJ9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :in-reply-to:references:mime-version:content-transfer-encoding;
+        bh=BRdWrZGotFU/V/N69RBCWuEXsKoewH6WQsweVR7ALZI=;
+        b=geybeQ7rhn/aTSoNGX4x7PFEN4Qq/zTVx0YUQTW80veZ+Vlq8vmCDhXigGiyKaWVHZ
+         uS4Vrb47CARp9Xe8g8vaL7KDOnM72v8OB1cRkHATbZIygZ1CZOKymkjlEptZLCGZSMc9
+         6U2fIc/0h75uT5a2j2B525EOzGp51SsLsoElBsLE84bMZUIqVsv7G85Jo1l4W8Nz4hYe
+         JuEXb9bpYDAWtoaLitMk+h7xde8YR3fivPlAHgG8KbRdbtdOrS2qdGxFkoHITA0D8fob
+         TaIBOvGCe2vODJSC8HxkJgpxSwV7pgm9hTNxciSRYioj45RAH3lbP2CJr+rBx8Z7Kj/9
+         XXVA==
+X-Gm-Message-State: AOAM530sLBb17UGtGvc5TzwJSOFBLlwujv8yz40TMrFXj1R9gF8GSDPX
+        nB8Yq3GX3IoEB/Y1gphBXcg=
+X-Google-Smtp-Source: ABdhPJwkstX8Sj2urYCU2SdzhkKIKmrEBrTXDdHq8hml/jbRvgiqZRnT5smUI7pFxM091Bbt5K6WzA==
+X-Received: by 2002:a1c:4804:: with SMTP id v4mr11080060wma.139.1594242613783;
+        Wed, 08 Jul 2020 14:10:13 -0700 (PDT)
+Received: from localhost.localdomain ([80.71.140.73])
+        by smtp.gmail.com with ESMTPSA id u23sm1971515wru.94.2020.07.08.14.10.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Jul 2020 14:10:13 -0700 (PDT)
+From:   Emil Renner Berthing <kernel@esmil.dk>
+To:     linux-riscv@lists.infradead.org
+Cc:     Emil Renner Berthing <kernel@esmil.dk>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 2/2] riscv: Add jump-label implementation
+Date:   Wed,  8 Jul 2020 23:09:48 +0200
+Message-Id: <20200708210948.34197-2-kernel@esmil.dk>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200708210948.34197-1-kernel@esmil.dk>
+References: <20200708210948.34197-1-kernel@esmil.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200708151635.81239-3-alexander.shishkin@linux.intel.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 08, 2020 at 06:16:35PM +0300, Alexander Shishkin wrote:
-> This changes perf record to close siblings' file descriptors after they
-> are created, to reduce the number of open files. The trick is setting up
-> mappings and applying ioctls to these guys before they get closed, which
-> means a slight rework to allow these things to happen in the same loop as
-> evsel creation.
-> 
-> Before:
-> 
-> > $ perf record -e '{dummy,syscalls:*}' -o before.data uname
-> > Error:
-> > Too many events are opened.
-> > Probably the maximum number of open file descriptors has been reached.
-> > Hint: Try again after reducing the number of events.
-> > Hint: Try increasing the limit with 'ulimit -n <limit>'
-> 
-> After:
-> 
-> > $ perf record -e '{dummy,syscalls:*}' -o after.data uname
-> > Couldn't synthesize cgroup events.
-> > Linux
-> > [ perf record: Woken up 5 times to write data ]
-> > [ perf record: Captured and wrote 0.118 MB after.data (62 samples) ]
+Add jump-label implementation based on the ARM64 version
+and add CONFIG_JUMP_LABEL=y to the defconfigs.
 
-hi,
-really nice ;-) some questions/comments below
+Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
+Reviewed-by: Björn Töpel <bjorn.topel@gmail.com>
+---
 
-thanks,
-jirka
+Tested on the HiFive Unleashed board.
 
-> 
-> Signed-off-by: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-> ---
->  tools/include/uapi/linux/perf_event.h   |  1 +
->  tools/lib/perf/evlist.c                 | 30 +++++++++++++++-
->  tools/lib/perf/evsel.c                  | 21 +++++++++++
->  tools/lib/perf/include/internal/evsel.h |  4 +++
->  tools/perf/builtin-record.c             | 48 +++++++++++++++++++------
->  tools/perf/util/cpumap.c                |  4 +++
->  tools/perf/util/evlist.c                |  4 ++-
->  tools/perf/util/evsel.c                 | 17 ++++++++-
->  tools/perf/util/evsel.h                 |  3 ++
->  9 files changed, 119 insertions(+), 13 deletions(-)
-> 
-> diff --git a/tools/include/uapi/linux/perf_event.h b/tools/include/uapi/linux/perf_event.h
-> index 7b2d6fc9e6ed..90238b8ee2ae 100644
-> --- a/tools/include/uapi/linux/perf_event.h
-> +++ b/tools/include/uapi/linux/perf_event.h
-> @@ -1069,6 +1069,7 @@ enum perf_callchain_context {
->  #define PERF_FLAG_FD_OUTPUT		(1UL << 1)
->  #define PERF_FLAG_PID_CGROUP		(1UL << 2) /* pid=cgroup id, per-cpu mode only */
->  #define PERF_FLAG_FD_CLOEXEC		(1UL << 3) /* O_CLOEXEC */
-> +#define PERF_FLAG_ALLOW_CLOSE		(1UL << 4) /* XXX */
->  
->  #if defined(__LITTLE_ENDIAN_BITFIELD)
->  union perf_mem_data_src {
-> diff --git a/tools/lib/perf/evlist.c b/tools/lib/perf/evlist.c
-> index 6a875a0f01bb..8aeb5634bc61 100644
-> --- a/tools/lib/perf/evlist.c
-> +++ b/tools/lib/perf/evlist.c
-> @@ -403,6 +403,7 @@ perf_evlist__mmap_cb_get(struct perf_evlist *evlist, bool overwrite, int idx)
->  }
->  
->  #define FD(e, x, y) (*(int *) xyarray__entry(e->fd, x, y))
-> +#define OUTPUT(e, x, y) (*(int *)xyarray__entry(e->output, x, y))
->  
->  static int
->  perf_evlist__mmap_cb_mmap(struct perf_mmap *map, struct perf_mmap_param *mp,
-> @@ -433,6 +434,11 @@ mmap_per_evsel(struct perf_evlist *evlist, struct perf_evlist_mmap_ops *ops,
->  		bool overwrite = evsel->attr.write_backward;
->  		struct perf_mmap *map;
->  		int *output, fd, cpu;
-> +		bool do_close = false;
-> +
-> +		/* Skip over not yet opened evsels */
-> +		if (!evsel->fd)
-> +			continue;
->  
->  		if (evsel->system_wide && thread)
->  			continue;
-> @@ -454,6 +460,10 @@ mmap_per_evsel(struct perf_evlist *evlist, struct perf_evlist_mmap_ops *ops,
->  		}
->  
->  		fd = FD(evsel, cpu, thread);
-> +		if (OUTPUT(evsel, cpu, thread) >= 0) {
-> +			*output = OUTPUT(evsel, cpu, thread);
-> +			continue;
-> +		}
+Changes since v1:
+- WARN and give up gracefully if the jump offset cannot be
+  represented in a JAL instruction.
+- Add missing braces.
+- Add CONFIG_JUMP_LABEL=y to defconfigs.
 
-this check could be earlier in the loop to save some cycles
+All suggested by Björn Töpel.
 
->  
->  		if (*output == -1) {
->  			*output = fd;
-> @@ -479,6 +489,10 @@ mmap_per_evsel(struct perf_evlist *evlist, struct perf_evlist_mmap_ops *ops,
->  			if (!idx)
->  				perf_evlist__set_mmap_first(evlist, map, overwrite);
->  		} else {
-> +			if (fd < 0) {
-> +				fd = -fd;
-> +				do_close = true;
-> +			}
->  			if (ioctl(fd, PERF_EVENT_IOC_SET_OUTPUT, *output) != 0)
->  				return -1;
->  
-> @@ -487,7 +501,7 @@ mmap_per_evsel(struct perf_evlist *evlist, struct perf_evlist_mmap_ops *ops,
->  
->  		revent = !overwrite ? POLLIN : 0;
->  
-> -		if (!evsel->system_wide &&
-> +		if (!evsel->system_wide && !do_close &&
->  		    perf_evlist__add_pollfd(evlist, fd, map, revent) < 0) {
->  			perf_mmap__put(map);
->  			return -1;
-> @@ -500,6 +514,13 @@ mmap_per_evsel(struct perf_evlist *evlist, struct perf_evlist_mmap_ops *ops,
->  			perf_evlist__set_sid_idx(evlist, evsel, idx, cpu,
->  						 thread);
->  		}
-> +
-> +		if (do_close) {
-> +			close(fd);
-> +			perf_mmap__put(map);
-> +			FD(evsel, cpu, thread) = -1; /* *output */
-> +		}
+Changes since RFC:
+- Use RISCV_PTR and RISCV_LGPTR macros to match struct jump_table
+  also in 32bit kernels.
+- Remove unneeded branch ? 1 : 0, thanks Björn
+- Fix \n\n instead of \n\t mistake
 
-it's also possible to define new callback in perf_evlist_mmap_ops,
-and do the close there.. not sure it'd be nicer
+ .../core/jump-labels/arch-support.txt         |  2 +-
+ arch/riscv/Kconfig                            |  2 +
+ arch/riscv/configs/defconfig                  |  1 +
+ arch/riscv/configs/nommu_k210_defconfig       |  1 +
+ arch/riscv/configs/nommu_virt_defconfig       |  1 +
+ arch/riscv/configs/rv32_defconfig             |  1 +
+ arch/riscv/include/asm/jump_label.h           | 59 +++++++++++++++++++
+ arch/riscv/kernel/Makefile                    |  2 +
+ arch/riscv/kernel/jump_label.c                | 49 +++++++++++++++
+ 9 files changed, 117 insertions(+), 1 deletion(-)
+ create mode 100644 arch/riscv/include/asm/jump_label.h
+ create mode 100644 arch/riscv/kernel/jump_label.c
 
-
-> +		OUTPUT(evsel, cpu, thread) = *output;
->  	}
->  
->  	return 0;
-> @@ -587,10 +608,17 @@ int perf_evlist__mmap_ops(struct perf_evlist *evlist,
->  	evlist->nr_mmaps = perf_evlist__nr_mmaps(evlist);
->  
->  	perf_evlist__for_each_entry(evlist, evsel) {
-> +		/* Skip over not yet opened evsels */
-> +		if (!evsel->fd)
-> +			continue;
-> +
->  		if ((evsel->attr.read_format & PERF_FORMAT_ID) &&
->  		    evsel->sample_id == NULL &&
->  		    perf_evsel__alloc_id(evsel, perf_cpu_map__nr(cpus), threads->nr) < 0)
->  			return -ENOMEM;
-> +		if (evsel->output == NULL &&
-> +		    perf_evsel__alloc_output(evsel, perf_cpu_map__nr(cpus), threads->nr) < 0)
-> +			return -ENOMEM;
->  	}
->  
->  	if (evlist->pollfd.entries == NULL && perf_evlist__alloc_pollfd(evlist) < 0)
-> diff --git a/tools/lib/perf/evsel.c b/tools/lib/perf/evsel.c
-> index 4dc06289f4c7..6661145ca673 100644
-> --- a/tools/lib/perf/evsel.c
-> +++ b/tools/lib/perf/evsel.c
-> @@ -55,6 +55,21 @@ int perf_evsel__alloc_fd(struct perf_evsel *evsel, int ncpus, int nthreads)
->  	return evsel->fd != NULL ? 0 : -ENOMEM;
->  }
->  
-> +int perf_evsel__alloc_output(struct perf_evsel *evsel, int ncpus, int nthreads)
-> +{
-> +	evsel->output = xyarray__new(ncpus, nthreads, sizeof(int));
-> +
-> +	if (evsel->output) {
-> +		int cpu, thread;
-> +		for (cpu = 0; cpu < ncpus; cpu++) {
-> +			for (thread = 0; thread < nthreads; thread++)
-> +				*(int *)xyarray__entry(evsel->output, cpu, thread) = -1;
-> +		}
-> +	}
-> +
-> +	return evsel->output != NULL ? 0 : -ENOMEM;
-> +}
-> +
->  static int
->  sys_perf_event_open(struct perf_event_attr *attr,
->  		    pid_t pid, int cpu, int group_fd,
-> @@ -139,6 +154,12 @@ void perf_evsel__free_fd(struct perf_evsel *evsel)
->  	evsel->fd = NULL;
->  }
->  
-> +void perf_evsel__free_output(struct perf_evsel *evsel)
-> +{
-> +	xyarray__delete(evsel->output);
-> +	evsel->output = NULL;
-> +}
-> +
->  void perf_evsel__close(struct perf_evsel *evsel)
->  {
->  	if (evsel->fd == NULL)
-> diff --git a/tools/lib/perf/include/internal/evsel.h b/tools/lib/perf/include/internal/evsel.h
-> index 1ffd083b235e..9bbbec7d92b1 100644
-> --- a/tools/lib/perf/include/internal/evsel.h
-> +++ b/tools/lib/perf/include/internal/evsel.h
-> @@ -42,6 +42,7 @@ struct perf_evsel {
->  	struct perf_thread_map	*threads;
->  	struct xyarray		*fd;
->  	struct xyarray		*sample_id;
-> +	struct xyarray		*output;
->  	u64			*id;
->  	u32			 ids;
->  
-> @@ -60,4 +61,7 @@ int perf_evsel__apply_filter(struct perf_evsel *evsel, const char *filter);
->  int perf_evsel__alloc_id(struct perf_evsel *evsel, int ncpus, int nthreads);
->  void perf_evsel__free_id(struct perf_evsel *evsel);
->  
-> +int perf_evsel__alloc_output(struct perf_evsel *evsel, int ncpus, int nthreads);
-> +void perf_evsel__free_output(struct perf_evsel *evsel);
-
-introducing these helpers together with the re-entrancy check
-should go to separate patch
-
-> +
->  #endif /* __LIBPERF_INTERNAL_EVSEL_H */
-> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-> index e108d90ae2ed..7dd7db4ff37a 100644
-> --- a/tools/perf/builtin-record.c
-> +++ b/tools/perf/builtin-record.c
-> @@ -837,6 +837,21 @@ static int record__mmap(struct record *rec)
->  	return record__mmap_evlist(rec, rec->evlist);
->  }
->  
-> +static int record__apply_filters(struct record *rec)
-> +{
-> +	struct evsel *pos;
-> +	char msg[BUFSIZ];
-> +
-> +	if (perf_evlist__apply_filters(rec->evlist, &pos)) {
-> +		pr_err("failed to set filter \"%s\" on event %s with %d (%s)\n",
-> +		       pos->filter, evsel__name(pos), errno,
-> +		       str_error_r(errno, msg, sizeof(msg)));
-> +		return -1;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static int record__open(struct record *rec)
->  {
->  	char msg[BUFSIZ];
-> @@ -844,6 +859,7 @@ static int record__open(struct record *rec)
->  	struct evlist *evlist = rec->evlist;
->  	struct perf_session *session = rec->session;
->  	struct record_opts *opts = &rec->opts;
-> +	bool late_mmap = true;
->  	int rc = 0;
->  
->  	/*
-> @@ -894,6 +910,21 @@ static int record__open(struct record *rec)
->  		}
->  
->  		pos->supported = true;
-> +
-> +		if (pos->allow_close) {
-> +			rc = record__mmap(rec);
-> +			if (rc)
-> +				goto out;
-> +			rc = record__apply_filters(rec);
-> +			if (rc)
-> +				goto out;
-> +			late_mmap = false;
-> +		}
-
-I was wondering why to call record__mmap for each evsel,
-and why there are all those new re-entrancy checks..
-
-because we want to close those file descriptors along the way,
-not after all is open.. it could have been mentioned in some
-comment ;-)
-
-with all those re-entrancy checks could we call it just from
-here for both allow_close and not allow_close cases and skip
-the call below?
-
-> +	}
-> +
-> +	evlist__for_each_entry(evlist, pos) {
-> +		if (pos->core.output)
-> +			perf_evsel__free_output(&pos->core);
->  	}
->  
->  	if (symbol_conf.kptr_restrict && !perf_evlist__exclude_kernel(evlist)) {
-> @@ -907,18 +938,15 @@ static int record__open(struct record *rec)
->  "even with a suitable vmlinux or kallsyms file.\n\n");
->  	}
->  
-> -	if (perf_evlist__apply_filters(evlist, &pos)) {
-> -		pr_err("failed to set filter \"%s\" on event %s with %d (%s)\n",
-> -			pos->filter, evsel__name(pos), errno,
-> -			str_error_r(errno, msg, sizeof(msg)));
-> -		rc = -1;
-> -		goto out;
-> +	if (late_mmap) {
-> +		rc = record__mmap(rec);
-> +		if (rc)
-> +			goto out;
-> +		rc = record__apply_filters(rec);
-> +		if (rc)
-> +			goto out;
->  	}
->  
-> -	rc = record__mmap(rec);
-> -	if (rc)
-> -		goto out;
-> -
->  	session->evlist = evlist;
->  	perf_session__set_id_hdr_size(session);
->  out:
-> diff --git a/tools/perf/util/cpumap.c b/tools/perf/util/cpumap.c
-> index dc5c5e6fc502..2eac58ada5ab 100644
-> --- a/tools/perf/util/cpumap.c
-> +++ b/tools/perf/util/cpumap.c
-> @@ -432,6 +432,10 @@ int cpu__setup_cpunode_map(void)
->  	const char *mnt;
->  	int n;
->  
-> +	/* Only do this once */
-> +	if (cpunode_map)
-> +		return 0;
-> +
-
-this should go to separate patch
-
->  	/* initialize globals */
->  	if (init_cpunode_map())
->  		return -1;
-> diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
-> index 173b4f0e0e6e..776a8339df99 100644
-> --- a/tools/perf/util/evlist.c
-> +++ b/tools/perf/util/evlist.c
-> @@ -977,7 +977,7 @@ int perf_evlist__apply_filters(struct evlist *evlist, struct evsel **err_evsel)
->  	int err = 0;
->  
->  	evlist__for_each_entry(evlist, evsel) {
-> -		if (evsel->filter == NULL)
-> +		if (evsel->filter == NULL || evsel->filter_applied)
->  			continue;
->  
->  		/*
-> @@ -989,6 +989,8 @@ int perf_evlist__apply_filters(struct evlist *evlist, struct evsel **err_evsel)
->  			*err_evsel = evsel;
->  			break;
->  		}
-> +
-> +		evsel->filter_applied = true;
->  	}
->  
->  	return err;
-> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-> index 96e5171dce41..696c5d7190e2 100644
-> --- a/tools/perf/util/evsel.c
-> +++ b/tools/perf/util/evsel.c
-> @@ -1172,6 +1172,7 @@ int evsel__set_filter(struct evsel *evsel, const char *filter)
->  	if (new_filter != NULL) {
->  		free(evsel->filter);
->  		evsel->filter = new_filter;
-> +		evsel->filter_applied = false;
->  		return 0;
->  	}
->  
-> @@ -1632,6 +1633,9 @@ static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
->  		pid = evsel->cgrp->fd;
->  	}
->  
-> +	if (evsel->leader != evsel)
-> +		flags |= PERF_FLAG_ALLOW_CLOSE;
-> +
->  fallback_missing_features:
->  	if (perf_missing_features.clockid_wrong)
->  		evsel->core.attr.clockid = CLOCK_MONOTONIC; /* should always work */
-> @@ -1641,6 +1645,8 @@ static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
->  	}
->  	if (perf_missing_features.cloexec)
->  		flags &= ~(unsigned long)PERF_FLAG_FD_CLOEXEC;
-> +	if (perf_missing_features.allow_close)
-> +		flags &= ~(unsigned long)PERF_FLAG_ALLOW_CLOSE;
->  	if (perf_missing_features.mmap2)
->  		evsel->core.attr.mmap2 = 0;
->  	if (perf_missing_features.exclude_guest)
-> @@ -1729,6 +1735,11 @@ static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
->  				err = -EINVAL;
->  				goto out_close;
->  			}
-> +
-> +			if (flags & PERF_FLAG_ALLOW_CLOSE) {
-> +				FD(evsel, cpu, thread) = -fd;
-> +				evsel->allow_close = true;
-
-can't we move allow_close to perf_evsel and use that directly
-instead of that -fd thing?
-
-> +			}
->  		}
->  	}
->  
-> @@ -1766,7 +1777,11 @@ static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
->  	 * Must probe features in the order they were added to the
->  	 * perf_event_attr interface.
->  	 */
-> -        if (!perf_missing_features.cgroup && evsel->core.attr.cgroup) {
-> +	if (!perf_missing_features.allow_close && (flags & PERF_FLAG_ALLOW_CLOSE)) {
-> +		perf_missing_features.allow_close = true;
-> +		pr_debug2("switching off ALLOW_CLOSE support\n");
-> +		goto fallback_missing_features;
-> +	} else if (!perf_missing_features.cgroup && evsel->core.attr.cgroup) {
->  		perf_missing_features.cgroup = true;
->  		pr_debug2_peo("Kernel has no cgroup sampling support, bailing out\n");
->  		goto out_close;
-> diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
-> index 0f963c2a88a5..076a541bb274 100644
-> --- a/tools/perf/util/evsel.h
-> +++ b/tools/perf/util/evsel.h
-> @@ -77,6 +77,8 @@ struct evsel {
->  	bool			forced_leader;
->  	bool			use_uncore_alias;
->  	bool			is_libpfm_event;
-> +	bool			filter_applied;
-
-should go to separate patch
-
-> +	bool			allow_close;
->  	/* parse modifier helper */
->  	int			exclude_GH;
->  	int			sample_read;
-> @@ -130,6 +132,7 @@ struct perf_missing_features {
->  	bool aux_output;
->  	bool branch_hw_idx;
->  	bool cgroup;
-> +	bool allow_close;
->  };
->  
->  extern struct perf_missing_features perf_missing_features;
-> -- 
-> 2.27.0
-> 
+diff --git a/Documentation/features/core/jump-labels/arch-support.txt b/Documentation/features/core/jump-labels/arch-support.txt
+index 632a1c7aefa2..760243d18ed7 100644
+--- a/Documentation/features/core/jump-labels/arch-support.txt
++++ b/Documentation/features/core/jump-labels/arch-support.txt
+@@ -23,7 +23,7 @@
+     |    openrisc: | TODO |
+     |      parisc: |  ok  |
+     |     powerpc: |  ok  |
+-    |       riscv: | TODO |
++    |       riscv: |  ok  |
+     |        s390: |  ok  |
+     |          sh: | TODO |
+     |       sparc: |  ok  |
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index fd639937e251..d2f5c53fdc19 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -46,6 +46,8 @@ config RISCV
+ 	select GENERIC_TIME_VSYSCALL if MMU && 64BIT
+ 	select HANDLE_DOMAIN_IRQ
+ 	select HAVE_ARCH_AUDITSYSCALL
++	select HAVE_ARCH_JUMP_LABEL
++	select HAVE_ARCH_JUMP_LABEL_RELATIVE
+ 	select HAVE_ARCH_KASAN if MMU && 64BIT
+ 	select HAVE_ARCH_KGDB
+ 	select HAVE_ARCH_KGDB_QXFER_PKT
+diff --git a/arch/riscv/configs/defconfig b/arch/riscv/configs/defconfig
+index 4da4886246a4..d58c93efb603 100644
+--- a/arch/riscv/configs/defconfig
++++ b/arch/riscv/configs/defconfig
+@@ -17,6 +17,7 @@ CONFIG_BPF_SYSCALL=y
+ CONFIG_SOC_SIFIVE=y
+ CONFIG_SOC_VIRT=y
+ CONFIG_SMP=y
++CONFIG_JUMP_LABEL=y
+ CONFIG_MODULES=y
+ CONFIG_MODULE_UNLOAD=y
+ CONFIG_NET=y
+diff --git a/arch/riscv/configs/nommu_k210_defconfig b/arch/riscv/configs/nommu_k210_defconfig
+index b48138e329ea..cd1df62b13c7 100644
+--- a/arch/riscv/configs/nommu_k210_defconfig
++++ b/arch/riscv/configs/nommu_k210_defconfig
+@@ -33,6 +33,7 @@ CONFIG_SMP=y
+ CONFIG_NR_CPUS=2
+ CONFIG_CMDLINE="earlycon console=ttySIF0"
+ CONFIG_CMDLINE_FORCE=y
++CONFIG_JUMP_LABEL=y
+ # CONFIG_BLOCK is not set
+ CONFIG_BINFMT_FLAT=y
+ # CONFIG_COREDUMP is not set
+diff --git a/arch/riscv/configs/nommu_virt_defconfig b/arch/riscv/configs/nommu_virt_defconfig
+index cf74e179bf90..f27596e9663e 100644
+--- a/arch/riscv/configs/nommu_virt_defconfig
++++ b/arch/riscv/configs/nommu_virt_defconfig
+@@ -30,6 +30,7 @@ CONFIG_MAXPHYSMEM_2GB=y
+ CONFIG_SMP=y
+ CONFIG_CMDLINE="root=/dev/vda rw earlycon=uart8250,mmio,0x10000000,115200n8 console=ttyS0"
+ CONFIG_CMDLINE_FORCE=y
++CONFIG_JUMP_LABEL=y
+ # CONFIG_BLK_DEV_BSG is not set
+ CONFIG_PARTITION_ADVANCED=y
+ # CONFIG_MSDOS_PARTITION is not set
+diff --git a/arch/riscv/configs/rv32_defconfig b/arch/riscv/configs/rv32_defconfig
+index 05bbf5240569..3a55f0e00d6c 100644
+--- a/arch/riscv/configs/rv32_defconfig
++++ b/arch/riscv/configs/rv32_defconfig
+@@ -17,6 +17,7 @@ CONFIG_BPF_SYSCALL=y
+ CONFIG_SOC_VIRT=y
+ CONFIG_ARCH_RV32I=y
+ CONFIG_SMP=y
++CONFIG_JUMP_LABEL=y
+ CONFIG_MODULES=y
+ CONFIG_MODULE_UNLOAD=y
+ CONFIG_NET=y
+diff --git a/arch/riscv/include/asm/jump_label.h b/arch/riscv/include/asm/jump_label.h
+new file mode 100644
+index 000000000000..d5fb342bfccf
+--- /dev/null
++++ b/arch/riscv/include/asm/jump_label.h
+@@ -0,0 +1,59 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * Copyright (C) 2020 Emil Renner Berthing
++ *
++ * Based on arch/arm64/include/asm/jump_label.h
++ */
++#ifndef __ASM_JUMP_LABEL_H
++#define __ASM_JUMP_LABEL_H
++
++#ifndef __ASSEMBLY__
++
++#include <linux/types.h>
++
++#define JUMP_LABEL_NOP_SIZE 4
++
++static __always_inline bool arch_static_branch(struct static_key *key,
++					       bool branch)
++{
++	asm_volatile_goto(
++		"	.option push				\n\t"
++		"	.option norelax				\n\t"
++		"	.option norvc				\n\t"
++		"1:	nop					\n\t"
++		"	.option pop				\n\t"
++		"	.pushsection	__jump_table, \"aw\"	\n\t"
++		"	.align		" RISCV_LGPTR "		\n\t"
++		"	.long		1b - ., %l[label] - .	\n\t"
++		"	" RISCV_PTR "	%0 - .			\n\t"
++		"	.popsection				\n\t"
++		:  :  "i"(&((char *)key)[branch]) :  : label);
++
++	return false;
++label:
++	return true;
++}
++
++static __always_inline bool arch_static_branch_jump(struct static_key *key,
++						    bool branch)
++{
++	asm_volatile_goto(
++		"	.option push				\n\t"
++		"	.option norelax				\n\t"
++		"	.option norvc				\n\t"
++		"1:	jal		zero, %l[label]		\n\t"
++		"	.option pop				\n\t"
++		"	.pushsection	__jump_table, \"aw\"	\n\t"
++		"	.align		" RISCV_LGPTR "		\n\t"
++		"	.long		1b - ., %l[label] - .	\n\t"
++		"	" RISCV_PTR "	%0 - .			\n\t"
++		"	.popsection				\n\t"
++		:  :  "i"(&((char *)key)[branch]) :  : label);
++
++	return false;
++label:
++	return true;
++}
++
++#endif  /* __ASSEMBLY__ */
++#endif	/* __ASM_JUMP_LABEL_H */
+diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
+index b355cf485671..a5287ab9f7f2 100644
+--- a/arch/riscv/kernel/Makefile
++++ b/arch/riscv/kernel/Makefile
+@@ -53,4 +53,6 @@ endif
+ obj-$(CONFIG_HOTPLUG_CPU)	+= cpu-hotplug.o
+ obj-$(CONFIG_KGDB)		+= kgdb.o
+ 
++obj-$(CONFIG_JUMP_LABEL)	+= jump_label.o
++
+ clean:
+diff --git a/arch/riscv/kernel/jump_label.c b/arch/riscv/kernel/jump_label.c
+new file mode 100644
+index 000000000000..1bab1abc1aa5
+--- /dev/null
++++ b/arch/riscv/kernel/jump_label.c
+@@ -0,0 +1,49 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (C) 2020 Emil Renner Berthing
++ *
++ * Based on arch/arm64/kernel/jump_label.c
++ */
++#include <linux/kernel.h>
++#include <linux/jump_label.h>
++#include <asm/bug.h>
++#include <asm/patch.h>
++
++#define RISCV_INSN_NOP 0x00000013U
++#define RISCV_INSN_JAL 0x0000006fU
++
++void arch_jump_label_transform(struct jump_entry *entry,
++			       enum jump_label_type type)
++{
++	void *addr = (void *)jump_entry_code(entry);
++	u32 insn;
++
++	if (type == JUMP_LABEL_JMP) {
++		long offset = jump_entry_target(entry) - jump_entry_code(entry);
++
++		if (WARN_ON(offset & 1 || offset < -524288 || offset >= 524288))
++			return;
++
++		insn = RISCV_INSN_JAL |
++			(((u32)offset & GENMASK(19, 12)) << (12 - 12)) |
++			(((u32)offset & GENMASK(11, 11)) << (20 - 11)) |
++			(((u32)offset & GENMASK(10,  1)) << (21 -  1)) |
++			(((u32)offset & GENMASK(20, 20)) << (31 - 20));
++	} else {
++		insn = RISCV_INSN_NOP;
++	}
++
++	patch_text_nosync(addr, &insn, sizeof(insn));
++}
++
++void arch_jump_label_transform_static(struct jump_entry *entry,
++				      enum jump_label_type type)
++{
++	/*
++	 * We use the same instructions in the arch_static_branch and
++	 * arch_static_branch_jump inline functions, so there's no
++	 * need to patch them up here.
++	 * The core will call arch_jump_label_transform  when those
++	 * instructions need to be replaced.
++	 */
++}
+-- 
+2.27.0
 
