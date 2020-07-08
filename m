@@ -2,197 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DFB021819B
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 09:46:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1E572181A2
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 09:47:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727038AbgGHHq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 03:46:29 -0400
-Received: from mga07.intel.com ([134.134.136.100]:8907 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726936AbgGHHq2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 03:46:28 -0400
-IronPort-SDR: NWrJJP/gc/V6nq3AeMA4N2Jbaqv1Zpx+YYhTOkgjwSYreeehEKLtz0F+P73qFsdpppaJ5XMZ3o
- 3bmIrEhEfv2Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9675"; a="212697996"
-X-IronPort-AV: E=Sophos;i="5.75,327,1589266800"; 
-   d="scan'208";a="212697996"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2020 00:46:28 -0700
-IronPort-SDR: 262ateI08tZ7kwQk86xiuiDgYWBsZsnu16kmrPUbD+wjZIegTzVS6WHHR7ERJYHU9xEEWksEFC
- edNSm7UWiqDw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,327,1589266800"; 
-   d="scan'208";a="305957785"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga004.fm.intel.com with ESMTP; 08 Jul 2020 00:46:28 -0700
-Received: from [10.249.226.44] (abudanko-mobl.ccr.corp.intel.com [10.249.226.44])
-        by linux.intel.com (Postfix) with ESMTP id AF71F5807FC;
-        Wed,  8 Jul 2020 00:46:25 -0700 (PDT)
-Subject: [PATCH v10 02/15] tools/libperf: add flags to fdarray fds objects
-From:   Alexey Budankov <alexey.budankov@linux.intel.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <4af50c95-36f6-7a61-5a22-2949970fe7a5@linux.intel.com>
-Organization: Intel Corp.
-Message-ID: <4c0e05df-8eb7-306e-033b-47e1a6b06924@linux.intel.com>
-Date:   Wed, 8 Jul 2020 10:46:24 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727061AbgGHHrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 03:47:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726342AbgGHHrP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 03:47:15 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AE73C08C5DC;
+        Wed,  8 Jul 2020 00:47:15 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id b25so49419564ljp.6;
+        Wed, 08 Jul 2020 00:47:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mxS+F39BoFx3/+K2xuOp4+K9JxcDhgJQv7Yws3W7LL4=;
+        b=iXXNW2HwCxD3aES0pvd67VRcY29JZnbbf9Q2xCdrxjaHkYaCwp3XRVhVSnUbIU77Eg
+         sWDPWWaJWXpsxF4QTmM03uMXOi2cGWIB8UQKML7Tg9HiKwfNIHaXPTFYN/FrWVNXIg+m
+         Eph2eS5eGhM+65vGH8bW7R6RqrBj/y+EjuAQOrlIMRe27J+H+vh5d3zteAGYXsFPXIei
+         lzgbtx0yRBjGKk3UV9CxGyHQks+QQeW69UQwev0f9UiQWs7ru7hHatnSBiSQkiz1wcHI
+         Zbex3y0RGb9DTsdt1h+jWIvVtJihxU3utSqLrEkW2H6DXOPYgFofUEsMTzNQHqP9HYBn
+         J+9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mxS+F39BoFx3/+K2xuOp4+K9JxcDhgJQv7Yws3W7LL4=;
+        b=ViCGL+CseEqbQU64xFlvEH6Ly/kCSkVboMyuhC1JHKxh0/QO9jUQVUJ0a5kYG6wtMn
+         TZUgy8O4O59egsChQITqjL6iRi11DDzzP3O0DYEP1cjMGaDT0MqGgVmxPZZHTvbvx4WC
+         Wf7e1E3jsGAQf4It9Xfn476Gm6hgxhm6YL65TZiOwMKAvO6Ue0qsRYYLJ3gf07rhgpvy
+         lKbnw1ft4YPxMipmkzPBY2ECP2eGBYIlJWcUodTVSaSyEDcR1c8uNXjRPOQTbXAQ04Hs
+         +hGKMTXuAiCzOo3PYFvixhv71+OyOiRShtQz7EJ2a+JONH5/3+pPbYt4lKZLVI0npxrH
+         8PGQ==
+X-Gm-Message-State: AOAM532XLqg/wP/YUxWvvlSrjsT0SU7s1y5rILJ0qxzkswSnvOmLcWxz
+        GOgVjtPSQyeGej7owC477WE=
+X-Google-Smtp-Source: ABdhPJw1BOO1Ub9pCHAAIIWaqq9Y+Jk3ciQ9Z5kFnro7GyrHUg+wvMPvJ67mQmD4lu1s6M7VlCIytQ==
+X-Received: by 2002:a2e:8047:: with SMTP id p7mr34213212ljg.414.1594194433815;
+        Wed, 08 Jul 2020 00:47:13 -0700 (PDT)
+Received: from localhost.localdomain (ppp91-79-162-105.pppoe.mtu-net.ru. [91.79.162.105])
+        by smtp.gmail.com with ESMTPSA id f24sm808339ljc.99.2020.07.08.00.47.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Jul 2020 00:47:13 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Prashant Gaikwad <pgaikwad@nvidia.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-tegra@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] clk: tegra: pll: Improve PLLM enable-state detection
+Date:   Wed,  8 Jul 2020 10:46:28 +0300
+Message-Id: <20200708074628.18173-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-In-Reply-To: <4af50c95-36f6-7a61-5a22-2949970fe7a5@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Power Management Controller (PMC) can override the PLLM clock settings,
+including the enable-state. Although PMC could only act as a second level
+gate, meaning that PLLM needs to be enabled by the Clock and Reset
+Controller (CaR) anyways if we want it to be enabled. Hence, when PLLM is
+overridden by PMC, it needs to be enabled by CaR and ungated by PMC in
+order to be functional. Please note that this patch doesn't fix any known
+problem, and thus, it's merely a minor improvement.
 
-Store flags per struct pollfd *entries object in a bitmap of int size.
-Implement fdarray_flag__nonfilterable flag to skip object from counting
-by fdarray__filter().
-
-Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
+Link: https://lore.kernel.org/linux-arm-kernel/20191210120909.GA2703785@ulmo/T/
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- tools/lib/api/fd/array.c                 |  3 ++-
- tools/lib/api/fd/array.h                 | 16 ++++++++++++----
- tools/lib/perf/evlist.c                  |  6 +++---
- tools/lib/perf/include/internal/evlist.h |  2 +-
- tools/perf/tests/fdarray.c               |  2 +-
- tools/perf/util/evlist.c                 |  2 +-
- 6 files changed, 20 insertions(+), 11 deletions(-)
 
-diff --git a/tools/lib/api/fd/array.c b/tools/lib/api/fd/array.c
-index 89f9a2193c2d..37f291e6fc21 100644
---- a/tools/lib/api/fd/array.c
-+++ b/tools/lib/api/fd/array.c
-@@ -69,7 +69,7 @@ void fdarray__delete(struct fdarray *fda)
- 	free(fda);
+Changelog:
+
+v2: - Added clarifying comment to the code.
+
+    - Prettified the code.
+
+ drivers/clk/tegra/clk-pll.c | 22 ++++++++++++++++------
+ 1 file changed, 16 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/clk/tegra/clk-pll.c b/drivers/clk/tegra/clk-pll.c
+index b2d39a66f0fa..f700356efe3e 100644
+--- a/drivers/clk/tegra/clk-pll.c
++++ b/drivers/clk/tegra/clk-pll.c
+@@ -327,20 +327,30 @@ int tegra_pll_wait_for_lock(struct tegra_clk_pll *pll)
+ 	return clk_pll_wait_for_lock(pll);
  }
  
--int fdarray__add(struct fdarray *fda, int fd, short revents)
-+int fdarray__add(struct fdarray *fda, int fd, short revents, enum fdarray_flags flags)
- {
- 	int pos = fda->nr;
- 
-@@ -79,6 +79,7 @@ int fdarray__add(struct fdarray *fda, int fd, short revents)
- 
- 	fda->entries[fda->nr].fd     = fd;
- 	fda->entries[fda->nr].events = revents;
-+	fda->priv[fda->nr].flags = flags;
- 	fda->nr++;
- 	return pos;
- }
-diff --git a/tools/lib/api/fd/array.h b/tools/lib/api/fd/array.h
-index b39557d1a88f..7f517a33af6f 100644
---- a/tools/lib/api/fd/array.h
-+++ b/tools/lib/api/fd/array.h
-@@ -21,19 +21,27 @@ struct fdarray {
- 	int	       nr_alloc;
- 	int	       nr_autogrow;
- 	struct pollfd *entries;
--	union {
--		int    idx;
--		void   *ptr;
-+	struct {
-+		union {
-+			int    idx;
-+			void   *ptr;
-+		};
-+		unsigned int flags;
- 	} *priv;
- };
- 
-+enum fdarray_flags {
-+	fdarray_flag__default	    = 0x00000000,
-+	fdarray_flag__nonfilterable = 0x00000001
-+};
++static bool pllm_pmc_clk_enabled(struct tegra_clk_pll *pll)
++{
++	u32 val = readl_relaxed(pll->pmc + PMC_PLLP_WB0_OVERRIDE);
 +
- void fdarray__init(struct fdarray *fda, int nr_autogrow);
- void fdarray__exit(struct fdarray *fda);
++	return !(val & PMC_PLLP_WB0_OVERRIDE_PLLM_OVERRIDE) ||
++		(val & PMC_PLLP_WB0_OVERRIDE_PLLM_ENABLE);
++}
++
+ static int clk_pll_is_enabled(struct clk_hw *hw)
+ {
+ 	struct tegra_clk_pll *pll = to_clk_pll(hw);
+ 	u32 val;
  
- struct fdarray *fdarray__new(int nr_alloc, int nr_autogrow);
- void fdarray__delete(struct fdarray *fda);
+-	if (pll->params->flags & TEGRA_PLLM) {
+-		val = readl_relaxed(pll->pmc + PMC_PLLP_WB0_OVERRIDE);
+-		if (val & PMC_PLLP_WB0_OVERRIDE_PLLM_OVERRIDE)
+-			return val & PMC_PLLP_WB0_OVERRIDE_PLLM_ENABLE ? 1 : 0;
+-	}
++	/*
++	 * Power Management Controller (PMC) can override the PLLM clock
++	 * settings, including the enable-state. The PLLM is enabled when
++	 * PLLM's CaR state is ON and when PLLM isn't disabled by PMC.
++	 */
++	if ((pll->params->flags & TEGRA_PLLM) && !pllm_pmc_clk_enabled(pll))
++		return 0;
  
--int fdarray__add(struct fdarray *fda, int fd, short revents);
-+int fdarray__add(struct fdarray *fda, int fd, short revents, enum fdarray_flags flags);
- int fdarray__poll(struct fdarray *fda, int timeout);
- int fdarray__filter(struct fdarray *fda, short revents,
- 		    void (*entry_destructor)(struct fdarray *fda, int fd, void *arg),
-diff --git a/tools/lib/perf/evlist.c b/tools/lib/perf/evlist.c
-index 6a875a0f01bb..2208444ecb44 100644
---- a/tools/lib/perf/evlist.c
-+++ b/tools/lib/perf/evlist.c
-@@ -305,9 +305,9 @@ int perf_evlist__alloc_pollfd(struct perf_evlist *evlist)
+ 	val = pll_readl_base(pll);
+ 
+-	return val & PLL_BASE_ENABLE ? 1 : 0;
++	return val & PLL_BASE_ENABLE;
  }
  
- int perf_evlist__add_pollfd(struct perf_evlist *evlist, int fd,
--			    void *ptr, short revent)
-+			    void *ptr, short revent, enum fdarray_flags flags)
- {
--	int pos = fdarray__add(&evlist->pollfd, fd, revent | POLLERR | POLLHUP);
-+	int pos = fdarray__add(&evlist->pollfd, fd, revent | POLLERR | POLLHUP, flags);
- 
- 	if (pos >= 0) {
- 		evlist->pollfd.priv[pos].ptr = ptr;
-@@ -488,7 +488,7 @@ mmap_per_evsel(struct perf_evlist *evlist, struct perf_evlist_mmap_ops *ops,
- 		revent = !overwrite ? POLLIN : 0;
- 
- 		if (!evsel->system_wide &&
--		    perf_evlist__add_pollfd(evlist, fd, map, revent) < 0) {
-+		    perf_evlist__add_pollfd(evlist, fd, map, revent, fdarray_flag__default) < 0) {
- 			perf_mmap__put(map);
- 			return -1;
- 		}
-diff --git a/tools/lib/perf/include/internal/evlist.h b/tools/lib/perf/include/internal/evlist.h
-index 74dc8c3f0b66..2d0fa02b036f 100644
---- a/tools/lib/perf/include/internal/evlist.h
-+++ b/tools/lib/perf/include/internal/evlist.h
-@@ -45,7 +45,7 @@ struct perf_evlist_mmap_ops {
- 
- int perf_evlist__alloc_pollfd(struct perf_evlist *evlist);
- int perf_evlist__add_pollfd(struct perf_evlist *evlist, int fd,
--			    void *ptr, short revent);
-+			    void *ptr, short revent, enum fdarray_flags flags);
- 
- int perf_evlist__mmap_ops(struct perf_evlist *evlist,
- 			  struct perf_evlist_mmap_ops *ops,
-diff --git a/tools/perf/tests/fdarray.c b/tools/perf/tests/fdarray.c
-index d0c8a05aab2f..d9eca8e86a6b 100644
---- a/tools/perf/tests/fdarray.c
-+++ b/tools/perf/tests/fdarray.c
-@@ -112,7 +112,7 @@ int test__fdarray__add(struct test *test __maybe_unused, int subtest __maybe_unu
- 	}
- 
- #define FDA_ADD(_idx, _fd, _revents, _nr)				   \
--	if (fdarray__add(fda, _fd, _revents) < 0) {			   \
-+	if (fdarray__add(fda, _fd, _revents, fdarray_flag__default) < 0) { \
- 		pr_debug("\n%d: fdarray__add(fda, %d, %d) failed!",	   \
- 			 __LINE__,_fd, _revents);			   \
- 		goto out_delete;					   \
-diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
-index 1b884695b4d3..bcbe0cb8482e 100644
---- a/tools/perf/util/evlist.c
-+++ b/tools/perf/util/evlist.c
-@@ -497,7 +497,7 @@ int perf_evlist__enable_event_idx(struct evlist *evlist,
- 
- int evlist__add_pollfd(struct evlist *evlist, int fd)
- {
--	return perf_evlist__add_pollfd(&evlist->core, fd, NULL, POLLIN);
-+	return perf_evlist__add_pollfd(&evlist->core, fd, NULL, POLLIN, fdarray_flag__default);
- }
- 
- int evlist__filter_pollfd(struct evlist *evlist, short revents_and_mask)
+ static void _clk_pll_enable(struct clk_hw *hw)
 -- 
-2.24.1
-
+2.26.0
 
