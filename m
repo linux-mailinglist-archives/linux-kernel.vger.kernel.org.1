@@ -2,100 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B426D218803
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 14:50:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78B312187B7
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 14:37:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729166AbgGHMuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 08:50:17 -0400
-Received: from stargate.chelsio.com ([12.32.117.8]:53652 "EHLO
-        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728803AbgGHMuR (ORCPT
+        id S1729228AbgGHMhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 08:37:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32780 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728998AbgGHMhd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 08:50:17 -0400
-Received: from localhost (scalar.blr.asicdesigners.com [10.193.185.94])
-        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id 068Cnn5v011537;
-        Wed, 8 Jul 2020 05:49:54 -0700
-Date:   Wed, 8 Jul 2020 18:06:57 +0530
-From:   Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Wed, 8 Jul 2020 08:37:33 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A39DFC08C5DC;
+        Wed,  8 Jul 2020 05:37:32 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id r19so2993906ljn.12;
+        Wed, 08 Jul 2020 05:37:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:references:date:in-reply-to:message-id
+         :user-agent:mime-version;
+        bh=LDeWTEvkuS1/QhAV7zh4F+ok/kij8xM7tE+g5IT2QsA=;
+        b=rwMrtEAdih6Ym82MQBl7+Gc4CndgHIxLSbra1TY8UCiscntDudMdupm+1E5sGNWnzv
+         Idg0gptRmGK72ge6eT/uykFuVjKm4PKrvBO3jbhRQ5rmfC+sWXg8JudiN/lKO37CJiwm
+         lKXkki6274fYAeYPGIz421SR8RJOnL1RuQLmAmyrsH6O93kFr+Wz1nWJAV+VBp8szz5u
+         u1Tyd16X+ksS5seUz9qNkiQGNXf4klZDO462rKSZp52XWB7gBu2xUxewLDRWaPRSdL+L
+         oX9GsouxeM4XoIv8lp3qEauFjpzKTJ0tJS2T4tlCf6dhAhxo6JHsJbKMye4oeV+vo0jx
+         3Hag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:references:date:in-reply-to
+         :message-id:user-agent:mime-version;
+        bh=LDeWTEvkuS1/QhAV7zh4F+ok/kij8xM7tE+g5IT2QsA=;
+        b=UIU52V1+ImND23EMaHjXldiYandSi6dDMM31Fxu9AC1aOh3IsrW8v3OoXFTIvDA07b
+         3tyDUsMUD6OmOS9Zp8oQK0MxGwHgW0tRU+uhMR45HITNDlkcoZITWTyFzvWLIYOi+Z9W
+         lWbzG6uk8wMd6s1tFxVvdDacqhOSfCLH7XPB7d+mT4W8vvz+VVWNoYMV4f5g76sBqzdh
+         1p3v5g9JdNymmDK+zAQ48R386e2sf0+J4h4YlNXpF+I+r13T7z5M1GGPi7uA1QjmweUH
+         4OAtvq32y5cgt448+nHchPvxMSFJKJwt5axq8tnMQyMBqtE2vRgpQrqUcwI9RTFWmBHO
+         zCiw==
+X-Gm-Message-State: AOAM5302d6lu9WRUF2tEt6+8koNQ15AOzcZMYoC1jTkajw/h3R25c+IZ
+        ESENQrA83w2k92uGMcrNArQN3ipd
+X-Google-Smtp-Source: ABdhPJzE/jSq7zp7eBoTaHTEEqiSaP986/SMtXBvEttSuHbEQayU/ql4SPwWt3FVs22VqwSaoCVMuA==
+X-Received: by 2002:a2e:8954:: with SMTP id b20mr31637166ljk.262.1594211851205;
+        Wed, 08 Jul 2020 05:37:31 -0700 (PDT)
+Received: from osv.localdomain ([89.175.180.246])
+        by smtp.gmail.com with ESMTPSA id v24sm10344753lfo.4.2020.07.08.05.37.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Jul 2020 05:37:30 -0700 (PDT)
+From:   Sergey Organov <sorganov@gmail.com>
+To:     Richard Cochran <richardcochran@gmail.com>
+Cc:     Vladimir Oltean <olteanv@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Fugang Duan <fugang.duan@nxp.com>,
         "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, nirranjan@chelsio.com
-Subject: Re: [PATCH 4.19 17/36] cxgb4: use correct type for all-mask IP
- address comparison
-Message-ID: <20200708123656.GA13635@chelsio.com>
-References: <20200707145749.130272978@linuxfoundation.org>
- <20200707145749.959174058@linuxfoundation.org>
- <20200707213326.GB11158@amd>
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [PATCH  3/5] net: fec: initialize clock with 0 rather than
+ current kernel time
+References: <20200706142616.25192-1-sorganov@gmail.com>
+        <20200706142616.25192-4-sorganov@gmail.com>
+        <20200706152721.3j54m73bm673zlnj@skbuf> <20200708110444.GD9080@hoboy>
+Date:   Wed, 08 Jul 2020 15:37:29 +0300
+In-Reply-To: <20200708110444.GD9080@hoboy> (Richard Cochran's message of "Wed,
+        8 Jul 2020 04:04:44 -0700")
+Message-ID: <87mu4a9o8m.fsf@osv.gnss.ru>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200707213326.GB11158@amd>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday, July 07/07/20, 2020 at 23:33:26 +0200, Pavel Machek wrote:
-> Hi!
-> 
-> > From: Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>
-> > 
-> > [ Upstream commit f286dd8eaad5a2758750f407ab079298e0bcc8a5 ]
-> > 
-> > Use correct type to check for all-mask exact match IP addresses.
-> > 
-> > Fixes following sparse warnings due to big endian value checks
-> > against 0xffffffff in is_addr_all_mask():
-> > cxgb4_filter.c:977:25: warning: restricted __be32 degrades to integer
-> > cxgb4_filter.c:983:37: warning: restricted __be32 degrades to integer
-> > cxgb4_filter.c:984:37: warning: restricted __be32 degrades to integer
-> > cxgb4_filter.c:985:37: warning: restricted __be32 degrades to integer
-> > cxgb4_filter.c:986:37: warning: restricted __be32 degrades to integer
-> 
-> > diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c
-> > index 7dddb9e748b81..86745f33a252d 100644
-> > --- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c
-> > +++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c
-> > @@ -810,16 +810,16 @@ static bool is_addr_all_mask(u8 *ipmask, int family)
-> >  		struct in_addr *addr;
-> >  
-> >  		addr = (struct in_addr *)ipmask;
-> > -		if (addr->s_addr == 0xffffffff)
-> > +		if (ntohl(addr->s_addr) == 0xffffffff)
-> 
-> Endianity does not really matter for ~0, but can compiler figure it
-> out?
-> 
-> would it be better to do these tests as 
-> 
->       if (foo == htonl(0xffffffff))
-> 
-> to make it clear to the compiler?
-> 
+Richard Cochran <richardcochran@gmail.com> writes:
 
-Sure, I'll update all checks to follow above approach. Will send a
-patch.
+> On Mon, Jul 06, 2020 at 06:27:21PM +0300, Vladimir Oltean wrote:
+>> There's no correct answer, I'm afraid. Whatever the default value of the
+>> clock may be, it's bound to be confusing for some reason, _if_ the
+>> reason why you're investigating it in the first place is a driver bug.
+>> Also, I don't really see how your change to use Jan 1st 1970 makes it
+>> any less confusing.
+>
+> +1
+>
+> For a PHC, the user of the clock must check the PTP stack's
+> synchronization flags via the management interface to know the status
+> of the time signal.
 
-> 
-> >  	} else if (family == AF_INET6) {
-> >  		struct in6_addr *addr6;
-> >  
-> >  		addr6 = (struct in6_addr *)ipmask;
-> > -		if (addr6->s6_addr32[0] == 0xffffffff &&
-> > -		    addr6->s6_addr32[1] == 0xffffffff &&
-> > -		    addr6->s6_addr32[2] == 0xffffffff &&
-> > -		    addr6->s6_addr32[3] == 0xffffffff)
-> > +		if (ntohl(addr6->s6_addr32[0]) == 0xffffffff &&
-> > +		    ntohl(addr6->s6_addr32[1]) == 0xffffffff &&
-> > +		    ntohl(addr6->s6_addr32[2]) == 0xffffffff &&
-> > +		    ntohl(addr6->s6_addr32[3]) == 0xffffffff)
-> >  			return true;
-> >  	}
-> >  	return false;
-> 
+Actually, as I just realized, the right solution for my original problem
+would rather be adding PTP clock ID that time stamped Ethernet packet to
+the Ethernet hardware time stamp (see my previous reply as well).
 
 Thanks,
-Rahul
+-- Sergey
