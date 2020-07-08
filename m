@@ -2,122 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CFB7218B19
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 17:22:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9327E218B22
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 17:23:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730088AbgGHPWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 11:22:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58476 "EHLO
+        id S1730116AbgGHPXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 11:23:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729848AbgGHPWT (ORCPT
+        with ESMTP id S1729206AbgGHPXW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 11:22:19 -0400
-Received: from mail-ua1-x941.google.com (mail-ua1-x941.google.com [IPv6:2607:f8b0:4864:20::941])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55BA3C061A0B
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 08:22:19 -0700 (PDT)
-Received: by mail-ua1-x941.google.com with SMTP id l12so9745191uak.7
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 08:22:19 -0700 (PDT)
+        Wed, 8 Jul 2020 11:23:22 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 246C5C061A0B
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 08:23:22 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id z2so27172391wrp.2
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 08:23:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KO628LRg0KELEzDGxGBW/eAFQb7hOqQ53yrytEwvgvY=;
-        b=hi5oTWy7PCy7YqHRotH3tuH/k2HpctPr7tYVQrxyXCdwfKApDHb6zk8Hv57vOZr7+T
-         uPq3gVmSKLp0lfFLbDvVPJM0L70JoAwZ4cie7WIwJNK8QhE26q9c5evYUjyZgyWdScU1
-         mb2a+uTp0kfIJg7L3WdoAHaG/3DhMm2oR+B2Q=
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=4K7L/GW11mYIN1OtKYlNsLhV4IcqYsnyxX2a+Ockc1I=;
+        b=o8yOtFI6+REhecX7ZnGxb1qEoTgbZBucQLhRZxk+fLSTLGAq8evEqQMryZswQUJU4z
+         4e577wf+wlNaejHt6awzranbAQUZtGblLDbGSEiffSHHFVSzeG/3meDM+xbIwl2HGNji
+         NxtBDO9VdPLh6Mq1T8+nTuJyQkwIltI+xY1sdwygbno1jlz6Cqne+iG0lRZt7V3+pdX8
+         KB1toneZe1KJInzVGpmJLNzfAspke5G5YKhMYHJtcfjmMdWY/IlGOVowOFikvOyElovR
+         0TOrctVohUM/55anrb5TMLbeFd+gYua9EBIg10ZhB7jo7eoT2BAfuc+EjlON5zGY96g4
+         8GqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KO628LRg0KELEzDGxGBW/eAFQb7hOqQ53yrytEwvgvY=;
-        b=Zma1Hu5PJPoU3UDt51qLQkw0DIYKpXOnlU/3maQHaH6Rdfguhi31tM5MyeX32kPKOe
-         TrJmtI4Be7r5b9WI1IN54TtRO62M0vBB45nBUdOfZIB993oeTpjmDae8QSnfyikHrWxX
-         drqeBT0FkWMfFWbPHoAUyWM8FLVCZUIYTZ8NIo6z2jfFhkg8KHuOjiaj2nCBpR2hCdZ9
-         6jwug5m1qYFt1DKWENQzz+t+1ETYpb/dAWOunNHJ86NYmykdduEFaqw581R5B4+1HTNF
-         mSglwf/sAHzpx23rPBvCXYazh+X5DP1oQXzMQ6ns572tZAxv4Kyc5cMQuCSpih0pOghh
-         7sxw==
-X-Gm-Message-State: AOAM533kOdX7VxiCZ6Y+Vami3eihl1Qzh4A30DRkRh2hhluV8/cvQbff
-        TVN3hBeiVimvDxuI5JzPpSUF2CzHzrE=
-X-Google-Smtp-Source: ABdhPJz/nU6GSZ/a9E+tVtfO3bIZncxN8ePnGrbFywQRBFe2AzF53U3L0jYOYk1fx7yAJioCV6lKDA==
-X-Received: by 2002:ab0:6353:: with SMTP id f19mr33360279uap.69.1594221738354;
-        Wed, 08 Jul 2020 08:22:18 -0700 (PDT)
-Received: from mail-ua1-f43.google.com (mail-ua1-f43.google.com. [209.85.222.43])
-        by smtp.gmail.com with ESMTPSA id h10sm18242uah.19.2020.07.08.08.22.17
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Jul 2020 08:22:17 -0700 (PDT)
-Received: by mail-ua1-f43.google.com with SMTP id h18so8467027uao.6
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 08:22:17 -0700 (PDT)
-X-Received: by 2002:ab0:2408:: with SMTP id f8mr34039056uan.91.1594221736757;
- Wed, 08 Jul 2020 08:22:16 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4K7L/GW11mYIN1OtKYlNsLhV4IcqYsnyxX2a+Ockc1I=;
+        b=ngyzaQDQavaHQ0o8QPXqbir0f8JMcOU18BY5MPH8H9DhaywgppLVpdI9Mis+GOxGyX
+         POYktZFKLhAKWriH8bVuZpLBs+1rCcYyy8Tgm9HA4Hrti5mm2NpJEMfHuNPBg6xzbQFz
+         8N1C72HEj9R3ARdCZBJvn1RJbCC2jMDBVC4t+1e6CRzdPN/ZIzTlBaGt+0JBa/iCxZUc
+         7DwPfLV1RUdhIIb/1IYoWfrTVCBaIDPi2EyBgog5qXL/yE9uhapThhp85s1dqJ2cNJ58
+         hli3wJs2pZQXvWT3Md9ppcZeiODYFAGZuamKMGCVYCUwSXHVrbInjP/HSsR+hwNdaAH3
+         EtBA==
+X-Gm-Message-State: AOAM533I2CEogWRpRqZHJN6UGqnWJm5iNbgWYMHqpyyfuJEsDHnlZUiK
+        30URRfJVuDrgKt6SOocC7SnJqw==
+X-Google-Smtp-Source: ABdhPJwkNOp0LosvyzGEmFauWFstpbAEsr7ggYQjTwCu7z1MaeGgvrpsD7efnIo4dNrHpLeov5tveA==
+X-Received: by 2002:adf:c441:: with SMTP id a1mr58320397wrg.130.1594221800814;
+        Wed, 08 Jul 2020 08:23:20 -0700 (PDT)
+Received: from [192.168.86.34] (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
+        by smtp.googlemail.com with ESMTPSA id n16sm425790wrq.39.2020.07.08.08.23.19
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 08 Jul 2020 08:23:20 -0700 (PDT)
+Subject: Re: [PATCH 10/11] ASoC: qdsp6-dai: add gapless support
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        broonie@kernel.org
+Cc:     alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com,
+        tiwai@suse.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
+        vkoul@kernel.org
+References: <20200707163641.17113-1-srinivas.kandagatla@linaro.org>
+ <20200707163641.17113-11-srinivas.kandagatla@linaro.org>
+ <62af11d3-db26-a31b-00c8-9d78b11862cc@linux.intel.com>
+ <04a7f696-e23d-5563-7cc3-aedfaf2c7636@linaro.org>
+ <cf9b2d33-9b63-f3d2-2e51-a88c528dad53@linux.intel.com>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <e6d10009-d01e-d506-1aa3-a915ef42a693@linaro.org>
+Date:   Wed, 8 Jul 2020 16:23:19 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <20200702004509.2333554-1-dianders@chromium.org>
- <20200701174506.1.Icfdcee14649fc0a6c38e87477b28523d4e60bab3@changeid>
- <20200707120812.GA22129@sirena.org.uk> <CAD=FV=U5RHh_QuZ1tv9V5JtcsrhRONSa_CerYwUFsHhDOhEqdA@mail.gmail.com>
- <20200708100110.GB4655@sirena.org.uk>
-In-Reply-To: <20200708100110.GB4655@sirena.org.uk>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 8 Jul 2020 08:22:05 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=UFFN+FQhvs1Cdh7jWBRMzDvfHNiC43M_ZqiVqnWf+Y+g@mail.gmail.com>
-Message-ID: <CAD=FV=UFFN+FQhvs1Cdh7jWBRMzDvfHNiC43M_ZqiVqnWf+Y+g@mail.gmail.com>
-Subject: Re: [PATCH 1/3] spi: spi-geni-qcom: Avoid clock setting if not needed
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Akash Asthana <akashast@codeaurora.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        ctheegal@codeaurora.org, Matthias Kaehlcke <mka@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <cf9b2d33-9b63-f3d2-2e51-a88c528dad53@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Wed, Jul 8, 2020 at 3:01 AM Mark Brown <broonie@kernel.org> wrote:
->
-> On Tue, Jul 07, 2020 at 05:53:01AM -0700, Doug Anderson wrote:
-> > On Tue, Jul 7, 2020 at 5:08 AM Mark Brown <broonie@kernel.org> wrote:
->
-> > > This doesn't apply against current code, please check and resend.
->
-> > As mentioned in the cover letter, I posted this series against the
-> > Qualcomm tree.  The commit that it is fixing landed there with your
-> > Ack so I was hoping this series could land in the Qualcomm tree with
-> > your Ack as well.  Would that be OK?
->
-> So I didn't see this until after the patch I applied was queued...  it's
-> looking like it would be good to have a cross-tree merge with the
-> Qualcomm tree if there's stuff like this - is this on a branch which
-> makes that practical?  Otherwise I guess...
-
-It's not too bad.  Of the 5 patches I've sent out (3 for geni SPI, 2
-for quad SPI) you've landed just one.  Here's the summary:
-
-a) geni SPI 1/3 (Avoid clock setting): Has your Ack.
-b) geni SPI 2/3 (autosuspend delay): Landed in SPI tree
-c) geni SPI 3/3 (overhead in prepare_message): Has your Ack.
-
-d) quad SPI 1/2 (Avoid clock setting): Needs your Ack.
-e) quad SPI 2/2 (autosuspend delay): Needs your Ack.
-
-Since b) has already landed in your tree, let's just leave it there.
-There'll be a bit of a performance hit in the Qualcomm tree, but it'll
-still be usable.
-
-Since the rest haven't landed, it would be nice to just land them in
-the Qualcomm tree.
 
 
-I think there's still more work to make the Geni SPI driver more
-optimized, but I don't think it'll be as urgent as those patches and I
-feel like any more major work could wait a cycle.
+On 08/07/2020 14:32, Pierre-Louis Bossart wrote:
+> 
+>>>> Add support to gapless playback by implementing metadata,
+>>>> next_track, drain and partial drain support.
+>>>>
+>>>> Gapless on Q6ASM is implemented by opening 2 streams in a single asm 
+>>>> stream
+>>>
+>>> What does 'in a single asm stream' means?
+>>
+>>
+>> So in QDSP6 ASM (Audio Stream Manager) terminology we have something 
+>> called "asm session" for each ASoC FE DAI, Each asm session can be 
+>> connected with multiple streams (upto 8 I think). However there will 
+>> be only one active stream at anytime. Also there only single data 
+>> buffer associated with each asm session.
+>>
+>> For Gapless usecase, we can keep two streams open for one asm-session, 
+>> allowing us to fill in data on second stream while first stream is 
+>> playing.
+> 
+> Ah, that's interesting, thanks for the details. So you have one DMA 
+> transfer and the data from the previous and next track are provided in 
+> consecutive bytes in a ring buffer, but at the DSP level you have a 
+> switch that will feed data for the previous and next tracks into 
+> different decoders, yes?
+
+Yes, that's true, we can drain and stop first stream and start next 
+stream which will do the switch!
+
+> 
+> If that is the case, indeed the extension you suggested earlier to 
+> change the profile is valid. You could even change the format I guess.
+> 
+
+Exactly, we did test this patchset along with the extension suggested!
 
 
--Doug
+> To avoid confusion I believe the capabilities would need to be extended 
+> so that applications know that gapless playback is supported across 
+> unrelated profiles/formats. The point is that you don't want a 
+> traditional implementation to use a capability that isn't supported in 
+> hardware or will lead to audio issues.
+>  >>>> and toggling them on next track.
+>>>
+>>> It really seems to me that you have two streams at the lowest level, 
+>>> along with the knowledge of how many samples to remove/insert and 
+>>> hence could do a much better job - including gapless support between 
+>>> unrelated profiles and cross-fading - without the partial drain and 
+>>> next_track mechanism that was defined assuming a single stream/profile.
+>> At the end of the day its a single session with one data buffer but 
+>> with multiple streams.
+>>
+>> Achieving cross fade should be easy with this design.
+> 
+> looks like it indeed.
+> 
+>> We need those hooks for partial drain and next track to allow us to 
+>> switch between streams and pass silence information to respective 
+>> stream ids.
+> 
+> right, but the key point is 'switch between streams'. That means a more 
+> complex/capable implementation that should be advertised as such to 
+> applications. This is not the default behavior assumed initially: to 
+> allow for minimal implementations in memory-constrained devices, we 
+> assumed gapless was supported with a single decoder.
+> 
+> Maybe the right way to do this is extend the snd_compr_caps structure:
+> 
+> /**
+>   * struct snd_compr_caps - caps descriptor
+>   * @codecs: pointer to array of codecs
+>   * @direction: direction supported. Of type snd_compr_direction
+>   * @min_fragment_size: minimum fragment supported by DSP
+>   * @max_fragment_size: maximum fragment supported by DSP
+>   * @min_fragments: min fragments supported by DSP
+>   * @max_fragments: max fragments supported by DSP
+>   * @num_codecs: number of codecs supported
+>   * @reserved: reserved field
+>   */
+> struct snd_compr_caps {
+>      __u32 num_codecs;
+>      __u32 direction;
+>      __u32 min_fragment_size;
+>      __u32 max_fragment_size;
+>      __u32 min_fragments;
+>      __u32 max_fragments;
+>      __u32 codecs[MAX_NUM_CODECS];
+>      __u32 reserved[11];
+> } __attribute__((packed, aligned(4)));
+> 
+> 
+> and use a reserved field to provide info on capabilities, and filter the 
+> set_codec_params() addition based this capability - i.e. return -ENOTSUP 
+> in 'traditional' implementations based on a single 'stream'/decoder 
+> instance.
+Sounds good!
+I will give it a go and see how it ends up!
+
+
+--srini
+
