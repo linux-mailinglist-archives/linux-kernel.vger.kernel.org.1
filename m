@@ -2,93 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E1DA217FE5
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 08:51:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70996217FD8
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 08:51:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729934AbgGHGv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 02:51:27 -0400
-Received: from mga11.intel.com ([192.55.52.93]:5308 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729761AbgGHGvX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 02:51:23 -0400
-IronPort-SDR: Rfpe598RxQYJQrEBqvXsluiE0Y683+HTUx/sJ+xfqWLkejcEEmYvN3jz8lNQFvxVxk0kbxv8PP
- h/lD9JUUWQfQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9675"; a="145852103"
-X-IronPort-AV: E=Sophos;i="5.75,326,1589266800"; 
-   d="scan'208";a="145852103"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2020 23:51:23 -0700
-IronPort-SDR: ejOlX4vhPngvmlx0pwSR2E34lt4h0hLaGRuBaWfv7WLcMTiUHpYA/sxVEifb1Eo9nUbOU8YU4W
- q+GprLcw7yzw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,326,1589266800"; 
-   d="scan'208";a="457399263"
-Received: from lxy-dell.sh.intel.com ([10.239.159.21])
-  by orsmga005.jf.intel.com with ESMTP; 07 Jul 2020 23:51:20 -0700
-From:   Xiaoyao Li <xiaoyao.li@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Jim Mattson <jmattson@google.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Xiaoyao Li <xiaoyao.li@intel.com>
-Subject: [PATCH v3 8/8] KVM: X86: Move kvm_apic_set_version() to kvm_update_vcpu_model()
-Date:   Wed,  8 Jul 2020 14:50:54 +0800
-Message-Id: <20200708065054.19713-9-xiaoyao.li@intel.com>
-X-Mailer: git-send-email 2.18.4
-In-Reply-To: <20200708065054.19713-1-xiaoyao.li@intel.com>
-References: <20200708065054.19713-1-xiaoyao.li@intel.com>
+        id S1729898AbgGHGvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 02:51:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34944 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729877AbgGHGvD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 02:51:03 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C239C08C5DC
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 23:51:03 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id z15so36355535wrl.8
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 23:51:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=UPMya7moYhhnMKKD/72V5a8nk/96x/JX4lIchhXhdNU=;
+        b=ouuuKxdH0sx9kAJcJ0Enu16VyRuKqrXi0g6HpKof7a9Mkp0+zcyU01h7Cbg1JX9Vxt
+         hU03Wo7ok1GAfr4Xc6A1Ze8YB4mYRbeTdjfyT0AehhIa3HCQM8C1+BbcVObqMIn6WXG/
+         O+QvgMsS9GSjm9yRCRi6uC3ALxzJW71EXx2r2JmejsDnJ5OCLnt2wocUfBNT1Jo2nfyP
+         VknRgzVDu44hul58DyV4lNZdz/HG1l/q2fo4n9Fqwlrk0Ra5ey6Qxp9a0UItIU5aWuxG
+         BaPrT5FH+6iVOehi3sR6o4KqlurYQpkEZ0gXL0w42ucDpR8a8yG7U6pOaiAs235ALlFy
+         80mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=UPMya7moYhhnMKKD/72V5a8nk/96x/JX4lIchhXhdNU=;
+        b=D0TLH6tU9xU+UdaT2cIcKlsicRtsf588FuuuusGCqDg0Vd9F+t4rtz0YA54iX84VAw
+         hMhGznY5xB/HmWUApyIQJe+E7yT/zLOZfBa44Gxv1p5elSrW36ox/Horkucq4RehIXpe
+         1iTISfKwk/hiUILp9FhVT3PgNoL6zX1jnfOmOzIGhq7pKwcfKCJLUJLFyrPOMDN6redU
+         wW3S1KLqeHcu9GnAXpqmRWGBdEmVUdNNAKiLUHpnc3XW6jkkg5PCffl52uF3V3US/DWJ
+         xLV3LSc4hZZORw80pyOLdfWTB+1YeXIgRo/SFOWubpEgPhRxTCi8jUf13iRU7UQxP5mG
+         p1hA==
+X-Gm-Message-State: AOAM530Jz6KzJhdu4GclZCIfcVFn6KNrwUSda0HPw8qzw85TCP4lSWO8
+        z+ssDP5yRSSycdvfBrnS8vbHag==
+X-Google-Smtp-Source: ABdhPJzWPqvJRETNtxsc0Gl81kU0pHSXcli4uTnNtAk5HAOUrPJxj7AFF251Tq1oqLcgTnWq742fEg==
+X-Received: by 2002:adf:dd4a:: with SMTP id u10mr56265406wrm.169.1594191062177;
+        Tue, 07 Jul 2020 23:51:02 -0700 (PDT)
+Received: from dell ([2.27.35.206])
+        by smtp.gmail.com with ESMTPSA id u23sm4572650wru.94.2020.07.07.23.51.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Jul 2020 23:51:01 -0700 (PDT)
+Date:   Wed, 8 Jul 2020 07:51:00 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     jejb@linux.ibm.com, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org
+Subject: Re: [PATCH 00/10] Fix a bunch SCSI related W=1 warnings
+Message-ID: <20200708065100.GK3500@dell>
+References: <20200707140055.2956235-1-lee.jones@linaro.org>
+ <159418828150.5152.12521251265216774568.b4-ty@oracle.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <159418828150.5152.12521251265216774568.b4-ty@oracle.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no dependencies between kvm_apic_set_version() and
-kvm_update_cpuid() because kvm_apic_set_version() queries X2APIC CPUID bit,
-which is not touched/changed by kvm_update_cpuid().
+On Wed, 08 Jul 2020, Martin K. Petersen wrote:
 
-Obviously, kvm_apic_set_version() belongs to the category of updating
-vcpu model.
+> On Tue, 7 Jul 2020 15:00:45 +0100, Lee Jones wrote:
+> 
+> > This set is part of a larger effort attempting to clean-up W=1
+> > kernel builds, which are currently overwhelmingly riddled with
+> > niggly little warnings.
+> > 
+> > There are a whole lot more of these.  More fixes to follow.
+> > 
+> > Lee Jones (10):
+> >   scsi: megaraid: megaraid_mm: Strip excess function param description
+> >   scsi: megaraid: megaraid_mbox: Fix some kerneldoc bitrot
+> >   scsi: fdomain: Mark 'fdomain_pm_ops' as __maybe_unused
+> >   scsi: megaraid: megaraid_sas_fusion: Fix-up a whole myriad of
+> >     kerneldoc misdemeanours
+> >   scsi: megaraid: megaraid_sas_base: Provide prototypes for non-static
+> >     functions
+> >   scsi: aha152x: Remove unused variable 'ret'
+> >   scsi: pcmcia: nsp_cs: Use new __printf() format notation
+> >   scsi: pcmcia: nsp_cs: Remove unused variable 'dummy'
+> >   scsi: libfc: fc_disc: Fix-up some incorrectly referenced function
+> >     parameters
+> >   scsi: megaraid: megaraid_sas: Convert forward-declarations to
+> >     prototypes
+> > 
+> > [...]
+> 
+> Applied to 5.9/scsi-queue, thanks!
+> 
+> [03/10] scsi: fdomain: Mark 'fdomain_pm_ops' as __maybe_unused
+>         https://git.kernel.org/mkp/scsi/c/4be1fa2b55a8
+> [06/10] scsi: aha152x: Remove unused variable 'ret'
+>         https://git.kernel.org/mkp/scsi/c/3c011793aca7
+> [07/10] scsi: pcmcia: nsp_cs: Use new __printf() format notation
+>         https://git.kernel.org/mkp/scsi/c/af0b55d06004
+> [08/10] scsi: pcmcia: nsp_cs: Remove unused variable 'dummy'
+>         https://git.kernel.org/mkp/scsi/c/97a33483425d
+> [09/10] scsi: libfc: fc_disc: Fix-up some incorrectly referenced function parameters
+>         https://git.kernel.org/mkp/scsi/c/b1987c884585
 
-Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
----
- arch/x86/kvm/cpuid.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Thanks Martin.
 
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index 89ffd9dccfc6..c183a11dbcff 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -129,6 +129,8 @@ void kvm_update_vcpu_model(struct kvm_vcpu *vcpu)
- 			apic->lapic_timer.timer_mode_mask = 3 << 17;
- 		else
- 			apic->lapic_timer.timer_mode_mask = 1 << 17;
-+
-+		kvm_apic_set_version(vcpu);
- 	}
- 
- 	best = kvm_find_cpuid_entry(vcpu, 0xD, 0);
-@@ -225,7 +227,6 @@ int kvm_vcpu_ioctl_set_cpuid(struct kvm_vcpu *vcpu,
- 	}
- 
- 	cpuid_fix_nx_cap(vcpu);
--	kvm_apic_set_version(vcpu);
- 	kvm_update_cpuid(vcpu);
- 	kvm_update_vcpu_model(vcpu);
- 
-@@ -254,7 +255,6 @@ int kvm_vcpu_ioctl_set_cpuid2(struct kvm_vcpu *vcpu,
- 		goto out;
- 	}
- 
--	kvm_apic_set_version(vcpu);
- 	kvm_update_cpuid(vcpu);
- 	kvm_update_vcpu_model(vcpu);
- out:
+Out of interest, do you know of any other efforts to fix W=1 warnings
+in SCSI?  I was going to clean the whole sub-system, but I really
+would like to avoid duplicating efforts if at all possible.
+
 -- 
-2.18.4
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
