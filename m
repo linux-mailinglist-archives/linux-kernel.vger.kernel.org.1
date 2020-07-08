@@ -2,95 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DAB121828E
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 10:34:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14C4321828B
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 10:33:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727948AbgGHIdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 04:33:37 -0400
-Received: from mga02.intel.com ([134.134.136.20]:64457 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725747AbgGHIdg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 04:33:36 -0400
-IronPort-SDR: HoY8vpWQECYOnt/SCqoVPXz22h3k+dpGOFYWviLFrNBUu21c7N+l0uf/JJwiVoEXSOkn7hYwxu
- HpyZwHkBR4YA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9675"; a="135992104"
-X-IronPort-AV: E=Sophos;i="5.75,327,1589266800"; 
-   d="scan'208";a="135992104"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2020 01:33:36 -0700
-IronPort-SDR: ww1u6wUho2hrOo6VESFNIqGEjfdxdnumbHu5dNDSFnWsXuxUo/0pTRhBQptcoeRCucYwCiF5R6
- 5hcOiswz5ycA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,327,1589266800"; 
-   d="scan'208";a="358040221"
-Received: from zhangj4-mobl1.ccr.corp.intel.com (HELO [10.249.171.75]) ([10.249.171.75])
-  by orsmga001.jf.intel.com with ESMTP; 08 Jul 2020 01:33:30 -0700
-Subject: Re: [PATCH v2 2/4] x86/cpufeatures: Enumerate TSX suspend load
- address tracking instructions
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
-        pbonzini@redhat.com, sean.j.christopherson@intel.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, hpa@zytor.com, ricardo.neri-calderon@linux.intel.com,
-        kyung.min.park@intel.com, jpoimboe@redhat.com, ak@linux.intel.com,
-        dave.hansen@intel.com, tony.luck@intel.com,
-        ravi.v.shankar@intel.com
-References: <1594088183-7187-1-git-send-email-cathy.zhang@intel.com>
- <1594088183-7187-3-git-send-email-cathy.zhang@intel.com>
- <20200707094019.GA2639362@kroah.com>
-From:   "Zhang, Cathy" <cathy.zhang@intel.com>
-Message-ID: <78a3edfe-0a6b-4b23-f41d-cebe7dce67cf@intel.com>
-Date:   Wed, 8 Jul 2020 16:33:29 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+        id S1727046AbgGHIc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 04:32:57 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:48568 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725747AbgGHIc4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 04:32:56 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0688Wjrg052399;
+        Wed, 8 Jul 2020 03:32:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1594197166;
+        bh=im48yA+Olpa0PxVY1qxOgHlM9ULgxzinTKCtMKJsIRM=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=HxawSnpd0qA2WEzkWEjO+vSQPr2aYWM5RkDw8OZvq1IK8Uc72dYdqjt71qknpM0uG
+         ORM7v6ehUlxb7AX/cBAx73xdBZu0UDy4xpt5XB0XoJReGJ+yF7mlZGVqTv2Iede7cS
+         3iHgolg+qxlIsNcsnI3jjecK4Zajs+1E8ikeYekg=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0688WjpO088024
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 8 Jul 2020 03:32:45 -0500
+Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 8 Jul
+ 2020 03:32:45 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 8 Jul 2020 03:32:45 -0500
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0688WhqR095672;
+        Wed, 8 Jul 2020 03:32:43 -0500
+Subject: Re: [PATCH next 0/6] soc: ti: k3-ringacc: updates
+To:     Grygorii Strashko <grygorii.strashko@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>
+CC:     Sekhar Nori <nsekhar@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        <dmaengine@vger.kernel.org>
+References: <20200701103030.29684-1-grygorii.strashko@ti.com>
+From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
+X-Pep-Version: 2.0
+Message-ID: <c281a799-6a56-ff1d-fb87-a54f85fa125a@ti.com>
+Date:   Wed, 8 Jul 2020 11:33:47 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200707094019.GA2639362@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20200701103030.29684-1-grygorii.strashko@ti.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/7/2020 5:40 PM, Greg KH wrote:
-> On Tue, Jul 07, 2020 at 10:16:21AM +0800, Cathy Zhang wrote:
->> Intel TSX suspend load tracking instructions aim to give a way to
->> choose which memory accesses do not need to be tracked in the TSX
->> read set. Add TSX suspend load tracking CPUID feature flag TSXLDTRK
->> for enumeration.
->>
->> A processor supports Intel TSX suspend load address tracking if
->> CPUID.0x07.0x0:EDX[16] is present. Two instructions XSUSLDTRK, XRESLDTRK
->> are available when this feature is present.
->>
->> The CPU feature flag is shown as "tsxldtrk" in /proc/cpuinfo.
->>
->> Detailed information on the instructions and CPUID feature flag TSXLDTRK
->> can be found in the latest Intel Architecture Instruction Set Extensions
->> and Future Features Programming Reference and Intel 64 and IA-32
->> Architectures Software Developer's Manual.
->>
->> Signed-off-by: Kyung Min Park <kyung.min.park@intel.com>
->> Signed-off-by: Cathy Zhang <cathy.zhang@intel.com>
->> ---
->>   arch/x86/include/asm/cpufeatures.h | 1 +
->>   1 file changed, 1 insertion(+)
->>
->> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
->> index adf45cf..34b66d7 100644
->> --- a/arch/x86/include/asm/cpufeatures.h
->> +++ b/arch/x86/include/asm/cpufeatures.h
->> @@ -366,6 +366,7 @@
->>   #define X86_FEATURE_MD_CLEAR		(18*32+10) /* VERW clears CPU buffers */
->>   #define X86_FEATURE_TSX_FORCE_ABORT	(18*32+13) /* "" TSX_FORCE_ABORT */
->>   #define X86_FEATURE_SERIALIZE		(18*32+14) /* SERIALIZE instruction */
->> +#define X86_FEATURE_TSX_LDTRK           (18*32+16) /* TSX Suspend Load Address Tracking */
-> No tabs?
->
-> :(
-Sorry, it's my fault. I wrongly pick up an older kernel patch version, 
-the latest one has no such issue. It will be addressed in next version.
+
+
+On 01/07/2020 13.30, Grygorii Strashko wrote:
+> Hi Santosh,
+>=20
+> This series is a set of non critical  updates for The TI K3 AM654x/J721=
+E
+> Ring Accelerator driver.
+>=20
+> Patch 1 - convert bindings to json-schema
+> Patches 2,3,5 - code reworking
+> Patch 4 - adds new API to request pair of rings k3_ringacc_request_ring=
+s_pair()
+> Patch 6 - updates K3 UDMA to use new API
+
+Reviewed-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+
+> Grygorii Strashko (4):
+>   dt-bindings: soc: ti: k3-ringacc: convert bindings to json-schema
+>   soc: ti: k3-ringacc: add ring's flags to dump
+>   soc: ti: k3-ringacc: add request pair of rings api.
+>   soc: ti: k3-ringacc: separate soc specific initialization
+>=20
+> Peter Ujfalusi (2):
+>   soc: ti: k3-ringacc: Move state tracking variables under a struct
+>   dmaengine: ti: k3-udma: Switch to k3_ringacc_request_rings_pair
+>=20
+>  .../devicetree/bindings/soc/ti/k3-ringacc.txt |  59 ------
+>  .../bindings/soc/ti/k3-ringacc.yaml           | 102 +++++++++
+>  drivers/dma/ti/k3-udma-glue.c                 |  40 ++--
+>  drivers/dma/ti/k3-udma.c                      |  34 +--
+>  drivers/soc/ti/k3-ringacc.c                   | 194 ++++++++++++------=
+
+>  include/linux/soc/ti/k3-ringacc.h             |   4 +
+>  6 files changed, 261 insertions(+), 172 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/soc/ti/k3-ringacc=
+=2Etxt
+>  create mode 100644 Documentation/devicetree/bindings/soc/ti/k3-ringacc=
+=2Eyaml
+>=20
+
+- P=C3=A9ter
+
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+
