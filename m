@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAD9C217E96
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 06:53:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90AC4217E98
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 06:53:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729472AbgGHEvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 00:51:40 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:33712 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729406AbgGHEvi (ORCPT
+        id S1729532AbgGHEvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 00:51:49 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:3176 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725903AbgGHEvt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 00:51:38 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0684hS1i018781;
-        Wed, 8 Jul 2020 00:51:20 -0400
+        Wed, 8 Jul 2020 00:51:49 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0684aKUS149109;
+        Wed, 8 Jul 2020 00:51:22 -0400
 Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3257c5848p-1
+        by mx0b-001b2d01.pphosted.com with ESMTP id 32571fgeey-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Jul 2020 00:51:19 -0400
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0684ihPD020483;
-        Wed, 8 Jul 2020 00:51:19 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3257c5847r-1
+        Wed, 08 Jul 2020 00:51:22 -0400
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0684cbiU154164;
+        Wed, 8 Jul 2020 00:51:22 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 32571fgeeg-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Jul 2020 00:51:19 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0684kTrW005737;
-        Wed, 8 Jul 2020 04:51:17 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma04ams.nl.ibm.com with ESMTP id 322hd7v4bj-1
+        Wed, 08 Jul 2020 00:51:22 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0684l3HK015027;
+        Wed, 8 Jul 2020 04:51:20 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma06ams.nl.ibm.com with ESMTP id 322h1h4257-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Jul 2020 04:51:16 +0000
+        Wed, 08 Jul 2020 04:51:20 +0000
 Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0684pDbD49545370
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0684pHYY54984794
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 8 Jul 2020 04:51:13 GMT
+        Wed, 8 Jul 2020 04:51:17 GMT
 Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 76D4AAE053;
+        by IMSVA (Postfix) with ESMTP id 6EB34AE05A;
+        Wed,  8 Jul 2020 04:51:17 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D85AAAE051;
         Wed,  8 Jul 2020 04:51:13 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B6946AE051;
-        Wed,  8 Jul 2020 04:51:09 +0000 (GMT)
 Received: from bangoria.ibmuc.com (unknown [9.199.51.84])
         by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed,  8 Jul 2020 04:51:09 +0000 (GMT)
+        Wed,  8 Jul 2020 04:51:13 +0000 (GMT)
 From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
 To:     mpe@ellerman.id.au, mikey@neuling.org
 Cc:     ravi.bangoria@linux.ibm.com, apopple@linux.ibm.com,
@@ -54,9 +54,9 @@ Cc:     ravi.bangoria@linux.ibm.com, apopple@linux.ibm.com,
         jolsa@kernel.org, oleg@redhat.com, fweisbec@gmail.com,
         mingo@kernel.org, pedromfc@br.ibm.com, miltonm@us.ibm.com,
         linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 4/9] powerpc/dt_cpu_ftrs: Add feature for 2nd DAWR
-Date:   Wed,  8 Jul 2020 10:20:41 +0530
-Message-Id: <20200708045046.135702-5-ravi.bangoria@linux.ibm.com>
+Subject: [PATCH v3 5/9] powerpc/watchpoint: Set CPU_FTR_DAWR1 based on pa-features bit
+Date:   Wed,  8 Jul 2020 10:20:42 +0530
+Message-Id: <20200708045046.135702-6-ravi.bangoria@linux.ibm.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200708045046.135702-1-ravi.bangoria@linux.ibm.com>
 References: <20200708045046.135702-1-ravi.bangoria@linux.ibm.com>
@@ -65,81 +65,40 @@ Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-07-08_01:2020-07-08,2020-07-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxlogscore=999
- phishscore=0 impostorscore=0 suspectscore=0 priorityscore=1501 mlxscore=0
- bulkscore=0 lowpriorityscore=0 adultscore=0 malwarescore=0
- cotscore=-2147483648 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2007080029
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=999
+ cotscore=-2147483648 lowpriorityscore=0 spamscore=0 clxscore=1015
+ mlxscore=0 malwarescore=0 adultscore=0 suspectscore=0 impostorscore=0
+ bulkscore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2007080024
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add new device-tree feature for 2nd DAWR. If this feature is present,
-2nd DAWR is supported, otherwise not.
+As per the PAPR, bit 0 of byte 64 in pa-features property indicates
+availability of 2nd DAWR registers. i.e. If this bit is set, 2nd
+DAWR is present, otherwise not. Host generally uses "cpu-features",
+which masks "pa-features". But "cpu-features" are still not used for
+guests and thus this change is mostly applicable for guests only.
 
 Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
 ---
- arch/powerpc/include/asm/cputable.h | 7 +++++--
- arch/powerpc/kernel/dt_cpu_ftrs.c   | 7 +++++++
- 2 files changed, 12 insertions(+), 2 deletions(-)
+ arch/powerpc/kernel/prom.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/powerpc/include/asm/cputable.h b/arch/powerpc/include/asm/cputable.h
-index e506d429b1af..3445c86e1f6f 100644
---- a/arch/powerpc/include/asm/cputable.h
-+++ b/arch/powerpc/include/asm/cputable.h
-@@ -214,6 +214,7 @@ static inline void cpu_feature_keys_init(void) { }
- #define CPU_FTR_P9_TLBIE_ERAT_BUG	LONG_ASM_CONST(0x0001000000000000)
- #define CPU_FTR_P9_RADIX_PREFETCH_BUG	LONG_ASM_CONST(0x0002000000000000)
- #define CPU_FTR_ARCH_31			LONG_ASM_CONST(0x0004000000000000)
-+#define CPU_FTR_DAWR1			LONG_ASM_CONST(0x0008000000000000)
- 
- #ifndef __ASSEMBLY__
- 
-@@ -497,14 +498,16 @@ static inline void cpu_feature_keys_init(void) { }
- #define CPU_FTRS_POSSIBLE	\
- 	    (CPU_FTRS_POWER7 | CPU_FTRS_POWER8E | CPU_FTRS_POWER8 | \
- 	     CPU_FTR_ALTIVEC_COMP | CPU_FTR_VSX_COMP | CPU_FTRS_POWER9 | \
--	     CPU_FTRS_POWER9_DD2_1 | CPU_FTRS_POWER9_DD2_2 | CPU_FTRS_POWER10)
-+	     CPU_FTRS_POWER9_DD2_1 | CPU_FTRS_POWER9_DD2_2 | CPU_FTRS_POWER10 | \
-+	     CPU_FTR_DAWR1)
- #else
- #define CPU_FTRS_POSSIBLE	\
- 	    (CPU_FTRS_PPC970 | CPU_FTRS_POWER5 | \
- 	     CPU_FTRS_POWER6 | CPU_FTRS_POWER7 | CPU_FTRS_POWER8E | \
- 	     CPU_FTRS_POWER8 | CPU_FTRS_CELL | CPU_FTRS_PA6T | \
- 	     CPU_FTR_VSX_COMP | CPU_FTR_ALTIVEC_COMP | CPU_FTRS_POWER9 | \
--	     CPU_FTRS_POWER9_DD2_1 | CPU_FTRS_POWER9_DD2_2 | CPU_FTRS_POWER10)
-+	     CPU_FTRS_POWER9_DD2_1 | CPU_FTRS_POWER9_DD2_2 | CPU_FTRS_POWER10 | \
-+	     CPU_FTR_DAWR1)
- #endif /* CONFIG_CPU_LITTLE_ENDIAN */
- #endif
- #else
-diff --git a/arch/powerpc/kernel/dt_cpu_ftrs.c b/arch/powerpc/kernel/dt_cpu_ftrs.c
-index a0edeb391e3e..be694567cebd 100644
---- a/arch/powerpc/kernel/dt_cpu_ftrs.c
-+++ b/arch/powerpc/kernel/dt_cpu_ftrs.c
-@@ -573,6 +573,12 @@ static int __init feat_enable_mma(struct dt_cpu_feature *f)
- 	return 1;
- }
- 
-+static int __init feat_enable_debug_facilities_v31(struct dt_cpu_feature *f)
-+{
-+	cur_cpu_spec->cpu_features |= CPU_FTR_DAWR1;
-+	return 1;
-+}
+diff --git a/arch/powerpc/kernel/prom.c b/arch/powerpc/kernel/prom.c
+index 9cc49f265c86..c76c09b97bc8 100644
+--- a/arch/powerpc/kernel/prom.c
++++ b/arch/powerpc/kernel/prom.c
+@@ -175,6 +175,8 @@ static struct ibm_pa_feature {
+ 	 */
+ 	{ .pabyte = 22, .pabit = 0, .cpu_features = CPU_FTR_TM_COMP,
+ 	  .cpu_user_ftrs2 = PPC_FEATURE2_HTM_COMP | PPC_FEATURE2_HTM_NOSC_COMP },
 +
- struct dt_cpu_feature_match {
- 	const char *name;
- 	int (*enable)(struct dt_cpu_feature *f);
-@@ -648,6 +654,7 @@ static struct dt_cpu_feature_match __initdata
- 	{"wait-v3", feat_enable, 0},
- 	{"prefix-instructions", feat_enable, 0},
- 	{"matrix-multiply-assist", feat_enable_mma, 0},
-+	{"debug-facilities-v31", feat_enable_debug_facilities_v31, 0},
++	{ .pabyte = 64, .pabit = 0, .cpu_features = CPU_FTR_DAWR1 },
  };
  
- static bool __initdata using_dt_cpu_ftrs;
+ static void __init scan_features(unsigned long node, const unsigned char *ftrs,
 -- 
 2.26.2
 
