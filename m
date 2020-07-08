@@ -2,98 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9056218386
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 11:27:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 563AD218389
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 11:27:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727935AbgGHJ1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 05:27:00 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48918 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726144AbgGHJ1A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 05:27:00 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E831EAD4D;
-        Wed,  8 Jul 2020 09:26:58 +0000 (UTC)
-Subject: Re: [PATCH v4 04/11] mm/hugetlb: make hugetlb migration callback CMA
- aware
-To:     Michal Hocko <mhocko@kernel.org>, Joonsoo Kim <js1304@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel-team@lge.com,
-        Christoph Hellwig <hch@infradead.org>,
-        Roman Gushchin <guro@fb.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>
-References: <1594107889-32228-1-git-send-email-iamjoonsoo.kim@lge.com>
- <1594107889-32228-5-git-send-email-iamjoonsoo.kim@lge.com>
- <c1cd6e11-08c3-5654-60e7-dec2eb80987a@suse.cz>
- <20200708071602.GB16543@js1304-desktop>
- <20200708074103.GD7271@dhcp22.suse.cz>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <8549326e-7485-dd6d-1fa1-a899228b9b2f@suse.cz>
-Date:   Wed, 8 Jul 2020 11:26:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1728174AbgGHJ1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 05:27:51 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:35642 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726900AbgGHJ1v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 05:27:51 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id EFDBAB1C5CF60D313BD1;
+        Wed,  8 Jul 2020 17:27:48 +0800 (CST)
+Received: from [127.0.0.1] (10.174.177.253) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Wed, 8 Jul 2020
+ 17:27:46 +0800
+Subject: Re: [PATCH 0/3] clean up some functions in mm/swap_slots.c
+To:     Tim Chen <tim.c.chen@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20200430061143.450-1-thunder.leizhen@huawei.com>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <b5c00915-6735-3519-5623-0837c129a177@huawei.com>
+Date:   Wed, 8 Jul 2020 17:27:45 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <20200708074103.GD7271@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20200430061143.450-1-thunder.leizhen@huawei.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.253]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/8/20 9:41 AM, Michal Hocko wrote:
-> On Wed 08-07-20 16:16:02, Joonsoo Kim wrote:
->> On Tue, Jul 07, 2020 at 01:22:31PM +0200, Vlastimil Babka wrote:
->> 
->> Simply, I call memalloc_nocma_{save,restore} in new_non_cma_page(). It
->> would not cause any problem.
+Hi, all:
+  Are these patches acceptable？
+  All these three patches are "Acked-by: Tim Chen <tim.c.chen@linux.intel.com>" two months ago.
+
+On 2020/4/30 14:11, Zhen Lei wrote:
+> When I studied the code of mm/swap_slots.c, I found some places can be improved.
 > 
-> I believe a proper fix is the following. The scope is really defined for
-> FOLL_LONGTERM pins and pushing it inside check_and_migrate_cma_pages
-> will solve the problem as well but it imho makes more sense to do it in
-> the caller the same way we do for any others. 
+> Zhen Lei (3):
+>   mm/swap: simplify alloc_swap_slot_cache()
+>   mm/swap: simplify enable_swap_slots_cache()
+>   mm/swap: remove redundant check for swap_slot_cache_initialized
 > 
-> Fixes: 9a4e9f3b2d73 ("mm: update get_user_pages_longterm to migrate pages allocated from CMA region")
-
-Agreed.
-
-> 
-> I am not sure this is worth backporting to stable yet.
-
-CC Aneesh.
-
-Context: since check_and_migrate_cma_pages() calls __get_user_pages_locked(), it
-should also be called under memalloc_nocma_save().
-
-> diff --git a/mm/gup.c b/mm/gup.c
-> index de9e36262ccb..75980dd5a2fc 100644
-> --- a/mm/gup.c
-> +++ b/mm/gup.c
-> @@ -1794,7 +1794,6 @@ static long __gup_longterm_locked(struct task_struct *tsk,
->  				     vmas_tmp, NULL, gup_flags);
->  
->  	if (gup_flags & FOLL_LONGTERM) {
-> -		memalloc_nocma_restore(flags);
->  		if (rc < 0)
->  			goto out;
->  
-> @@ -1802,11 +1801,13 @@ static long __gup_longterm_locked(struct task_struct *tsk,
->  			for (i = 0; i < rc; i++)
->  				put_page(pages[i]);
->  			rc = -EOPNOTSUPP;
-> +			memalloc_nocma_restore(flags);
->  			goto out;
->  		}
->  
->  		rc = check_and_migrate_cma_pages(tsk, mm, start, rc, pages,
->  						 vmas_tmp, gup_flags);
-> +		memalloc_nocma_restore(flags);
->  	}
->  
->  out:
+>  mm/swap_slots.c | 45 +++++++++++++++++++++------------------------
+>  1 file changed, 21 insertions(+), 24 deletions(-)
 > 
 
