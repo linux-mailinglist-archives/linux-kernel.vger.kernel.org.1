@@ -2,180 +2,296 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6F0A218151
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 09:36:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05E42218155
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 09:38:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726347AbgGHHgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 03:36:40 -0400
-Received: from mail-am6eur05on2059.outbound.protection.outlook.com ([40.107.22.59]:42049
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726306AbgGHHgi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 03:36:38 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=K+qpoLtFeRc8IWJ9kwp0cYCv3SDfu11u+tZGh7r4qLZTfgQu8+SvnerpG1KxWVIpUhxCA8O+07UmFU+Uc1YpfFNA2t9oqBuKlvT1ApAsyNRXXJMhzrE7I6rrprdLqlfxEvFz9OL8cPSZ+7sFlzGpF3/2bXdUZhn2AlzxCqlolCW0Lg+qFVKz4C1X1Bllhj3o8IZ30udUbjMZxyAwttStxbrLNxaq31KFcpLq4EhLE3Kc7bx6dz+9cBf1hD0DwDxeCqR2UDuBdkM4UMTSi2yiThEwnlAZW6RQe0OxzyxVbPCRfNc3MM9BEX0m43IlLGtREYl+twuQBdFGRmoCKrz2IA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Qx+fvUeueNs7OsvsFQZr7T8aAABL4CCpTJI7Pg02XHA=;
- b=KiKgB/AWh/20WVfn/CTNyDV0XU2f/RD1h639/QB5n+wy/61A2hOj5Xq750/olln19JILWHjcnp17hBZZuK7L+wY44IQNAqvfYJhvgbkXMMktQI+9Rwe69vCS1peRDYE6SNt3UDNKV9bDPvyfOuIYq+0yYMTEjJrwQOcQ7XBcIoQjKj3r+F1YciXkfKWpXeEbl5tTKinzEUJqcTOgIut9arazUJ3pbvibhXTG+GNANV12zuHC7/VLS59kmVyRwyx9gyjaZIesephqe4EUhLO7iTJ8cy5JUa4eHEeb2LebOsHX9jatpQU3ZrhQxl9H2OFKKINZ9yMluDnr4oaLejFSVw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Qx+fvUeueNs7OsvsFQZr7T8aAABL4CCpTJI7Pg02XHA=;
- b=EyXNAWiUubtnd9azdK/AIjhpyrCjc1U5fdPD/NDerC9frQJp6SNRy9smJbA6BATfYZX6HkrmoKKJTTXY75TUooL4KDjG2HGrUnyr4ZyiQhCCcbNoXyzsGt1C5JOxIC9J/8QAu2WEinMkwq95WLW/50HT0Vca9M/IUluslbQmuCM=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=oss.nxp.com;
-Received: from VI1PR0401MB2287.eurprd04.prod.outlook.com
- (2603:10a6:800:2e::19) by VE1PR04MB6734.eurprd04.prod.outlook.com
- (2603:10a6:803:121::33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.21; Wed, 8 Jul
- 2020 07:36:31 +0000
-Received: from VI1PR0401MB2287.eurprd04.prod.outlook.com
- ([fe80::9d5c:685e:4b51:fa60]) by VI1PR0401MB2287.eurprd04.prod.outlook.com
- ([fe80::9d5c:685e:4b51:fa60%3]) with mapi id 15.20.3153.030; Wed, 8 Jul 2020
- 07:36:31 +0000
-From:   Daniel Baluta <daniel.baluta@oss.nxp.com>
-To:     shawnguo@kernel.org, kernel@pengutronix.de
-Cc:     s.hauer@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        linux@rempel-privat.de, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] firmware: imx-dsp: Export functions to request/free channels
-Date:   Wed,  8 Jul 2020 10:35:56 +0300
-Message-Id: <20200708073556.19188-4-daniel.baluta@oss.nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200708073556.19188-1-daniel.baluta@oss.nxp.com>
-References: <20200708073556.19188-1-daniel.baluta@oss.nxp.com>
-Content-Type: text/plain
-X-ClientProxiedBy: AM0PR10CA0067.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:208:15::20) To VI1PR0401MB2287.eurprd04.prod.outlook.com
- (2603:10a6:800:2e::19)
+        id S1726361AbgGHHih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 03:38:37 -0400
+Received: from mga04.intel.com ([192.55.52.120]:3092 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726112AbgGHHih (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 03:38:37 -0400
+IronPort-SDR: mnWoaN62rpDeIBHTTA9UH8ciJu87Et8q85YJzZ3dnH+yMGmjH9+bQBycqUPkDzKcRv3Tra52gp
+ /9PvVIz1ClsQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9675"; a="145255155"
+X-IronPort-AV: E=Sophos;i="5.75,327,1589266800"; 
+   d="scan'208";a="145255155"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2020 00:36:34 -0700
+IronPort-SDR: /fFSoNwMBXbvOW9FtII9tRs3EKmlApovjMkTxY3jJstp8NmURuhe7kCj1W3IbfDT52aCrl5moE
+ BU1o//+XiWKQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,327,1589266800"; 
+   d="scan'208";a="457415384"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga005.jf.intel.com with ESMTP; 08 Jul 2020 00:36:34 -0700
+Received: from [10.249.226.44] (abudanko-mobl.ccr.corp.intel.com [10.249.226.44])
+        by linux.intel.com (Postfix) with ESMTP id C18925807C9;
+        Wed,  8 Jul 2020 00:36:31 -0700 (PDT)
+From:   Alexey Budankov <alexey.budankov@linux.intel.com>
+Subject: [PATCH v10 00/15] perf: support enable and disable commands in stat
+ and record modes
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>
+Cc:     Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Organization: Intel Corp.
+Message-ID: <4af50c95-36f6-7a61-5a22-2949970fe7a5@linux.intel.com>
+Date:   Wed, 8 Jul 2020 10:36:30 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from fsr-ub1864-103.ro-buh02.nxp.com (83.217.231.2) by AM0PR10CA0067.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:15::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.20 via Frontend Transport; Wed, 8 Jul 2020 07:36:30 +0000
-X-Mailer: git-send-email 2.17.1
-X-Originating-IP: [83.217.231.2]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 83be978c-7aad-4f9a-ff30-08d82311a1c0
-X-MS-TrafficTypeDiagnostic: VE1PR04MB6734:
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VE1PR04MB67345392D9932881906E9A32B8670@VE1PR04MB6734.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3631;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0CHu0demtKQnLWfIRI8TKRFC1yIp2v3cjs3whQTmJY3YidIUmK6gEnx8Y6F2v1mcR6asgXFjaiEdnHQS40JqBgZiBPq6JgI9u0P59TSNb5iFuk8JrJeaYTJPqgdq52qcXMXjnx8+OJigi2c67eTdWAJUnJ6D4g9WoY+PDXjoQBHonmHbBfXEoS5oMrofJDJeeaEBByQ2AGWTCGLx+1+wSHoodrsIyd7zsUhz3WwX6ZWjAUGe34eAIHpysQ/xuQoxLbSKvHXtPdnm8aZFRvrnmW5aPd1Tx4P9A+X5RMmpXZ8Z1lMjPhzO9cUmZSiJhSlqEtNV377zk7g+OGAQt3ka5w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0401MB2287.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(346002)(366004)(39860400002)(136003)(376002)(83380400001)(26005)(8936002)(4326008)(186003)(6512007)(16526019)(86362001)(8676002)(66476007)(66556008)(6506007)(6486002)(52116002)(478600001)(316002)(66946007)(1076003)(6666004)(44832011)(956004)(2616005)(5660300002)(2906002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: 18jxE88tqGKa6ukKk65SMz37trM+A/pr+lQiX7sVmRXGewXHG8WSDgKZ/8Rdq9otcj0PCrAF3eppq90MC4MsiFWuo8jozcGPTL0cq9jXYSXpKnf7BTD9LnTqqHO0EFri/GzPPVEYYdJsOX53jyljj3InsDSZFsi7c0LWDit6lfi1hCOPmuI/og+Qn+7+OA/l6DfnP3Wk6oYm4I/G68d7araNnUIKj4pPgWggwAtLkxVvQ1QCwmWpTZlzpCv5+W4ac9N66IurZIALUdTDWD+mDqeeOMqTnfhBCKT+SQi7TvTTx9LDE2T0ZYSkSvCesB4hO6C/W9dZOXxodb1+JM7q3PO6wFpdL5FnKdtBELNmB2XSx9k0ELTMPcsHfw7kUJlAzI+bnSnbe/Obe2ssvz3TY//yLeJKuFh3IaUq8bsaHaT2yDR36qOgaWcYekBU5Ln1xVkrz/tNY29Cyal7VO2enVEkuhGMprK4I4K11vMuexQ=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 83be978c-7aad-4f9a-ff30-08d82311a1c0
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR0401MB2287.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jul 2020 07:36:31.1709
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: T8MFjRQctFMtIEig/WPBv3HN1OIJbAaRzB9wX3yjnDvqrraWjTLLubqLHFTL606FLygPCQGljN6DOabST7K4mg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB6734
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Baluta <daniel.baluta@nxp.com>
 
-In order to save power, we only need to request a channel
-when the communication with the DSP active.
+Changes in v10:
+- reused struct priv, renamed props into flags and used unsigned int type as a storage
+- implemented and adopted usage of evlist__ctlfd_initialized() function
+- updated while condition with checking !(done || stop)
+- implemented compute_tts() to calculate the remainder of timeout to wait in poll()
 
-For this we export the following functions:
-	- imx_dsp_request_channel, gets a channel with a given index
-	- imx_dsp_free_channel, frees a channel with a given index
+v9: https://lore.kernel.org/lkml/a4d5db4a-f25c-38dc-1c41-321a886cb122@linux.intel.com/
 
-Notice that we still request channels at probe to support devices
-that do not have PM callbacks implemented.
+Changes in v9:
+- avoided screwing of fds by fdarray__filter() to fix staleness of pos returned by fdarray__add()
+- implemented notion of properties for fds kept by fdarray object and introduced nonfilterable
+  property for control fd
+- avoided counting of nonfilterable fds by fdarray__filter()
+- replaced strlen() with sizeof(str)-1 for CMD_TAGS
+- avoided mixing timeout and interval processing in one function
+- renamed child to child_exited variable
+- processed time_to_sleep < time_diff condition
+- placed evlist__ctlfd_process() call after evlist__poll() and evlist__filter_pollfd()
+  calls in record mode
 
-More explanations about why requesting a channel has an effect
-on power savings:
- - requesting an mailbox channel will call mailbox's startup
-   function.
- - startup function calls pm_runtime_get_sync which increments device
-   usage count and will keep the device active. Specifically, mailbox
-   clock will be always ON when a mailbox channel is requested.
+v8: https://lore.kernel.org/lkml/0781a077-aa82-5b4a-273e-c17372a72b93@linux.intel.com/
 
-Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+Changes in v8:
+- avoided moving of fds at fdarray__filter() call
+- skipped counting of fds with zeroed revents at fdarray__filter() call
+- converted explicit --ctl-fd[-ack] into --control fd:ctl-fd[,ack-fd option 
+- updated docs to accommodate --control fd:ctl-fd[,ack-fd] option
+
+v7: https://lore.kernel.org/lkml/5de4b954-24f0-1e8d-5a0d-7b12783b8218@linux.intel.com/
+
+Changes in v7:
+- added missing perf-record.txt changes 
+- adjusted docs wording for --ctl-fd,ctl-fd-ack options 
+  to additionally mention --delay=-1 effect
+
+v6: https://lore.kernel.org/lkml/f8e3a714-d9b1-4647-e1d2-9981cbaa83ec@linux.intel.com/
+
+Changes in v6:
+- split re-factoring of events handling loops for stat mode
+  into smaller incremental parts
+- added parts missing at v5
+- corrected v5 runtime issues
+
+v5: https://lore.kernel.org/lkml/e5cac8dd-7aa4-ec7c-671c-07756907acba@linux.intel.com/
+
+Changes in v5:
+- split re-factoring of events handling loops for stat mode
+  into smaller incremental parts
+
+v4: https://lore.kernel.org/lkml/653fe5f3-c986-a841-1ed8-0a7d2fa24c00@linux.intel.com/
+
+Changes in v4:
+- made checking of ctlfd state unconditional in record trace streaming loop
+- introduced static poll fds to keep evlist__filter_pollfd() unaffected
+- handled ret code of evlist__initialize_ctlfd() where need
+- renamed and structured handle_events() function
+- applied anonymous structs where needed
+
+v3: https://lore.kernel.org/lkml/eb38e9e5-754f-d410-1d9b-e26b702d51b7@linux.intel.com/
+
+Changes in v3:
+- renamed functions and types from perf_evlist_ to evlist_ to avoid
+  clash with libperf code;
+- extended commands to be strings of variable length consisting of
+  command name and also possibly including command specific data;
+- merged docs update with the code changes;
+- updated docs for -D,--delay=-1 option for stat and record modes;
+
+v2: https://lore.kernel.org/lkml/d582cc3d-2302-c7e2-70d3-bc7ab6f628c3@linux.intel.com/
+
+Changes in v2:
+- renamed resume and pause commands to enable and disable ones, renamed
+  CTL_CMD_RESUME and CTL_CMD_PAUSE to CTL_CMD_ENABLE and CTL_CMD_DISABLE
+  to fit to the appropriate ioctls and avoid mixing up with PAUSE_OUTPUT
+  ioctl;
+- factored out event handling loop into a handle_events() for stat mode;
+- separated -D,--delay=-1 into separate patches for stat and record modes;
+
+v1: https://lore.kernel.org/lkml/825a5132-b58d-c0b6-b050-5a6040386ec7@linux.intel.com/
+
+repo: tip of git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git perf/core
+
+The patch set implements handling of 'start disabled', 'enable' and 'disable'
+external control commands which can be provided for stat and record modes
+of the tool from an external controlling process. 'start disabled' command
+can be used to postpone enabling of events in the beginning of a monitoring
+session. 'enable' and 'disable' commands can be used to enable and disable
+events correspondingly any time after the start of the session.
+
+The 'start disabled', 'enable' and 'disable' external control commands can be
+used to focus measurement on specially selected time intervals of workload
+execution. Focused measurement reduces tool intrusion and influence on
+workload behavior, reduces distortion and amount of collected and stored
+data, mitigates data accuracy loss because measurement and data capturing
+happen only during intervals of interest.
+
+A controlling process can be a bash shell script [1], native executable or
+any other language program that can directly work with file descriptors,
+e.g. pipes [2], and spawn a process, specially the tool one.
+
+-D,--delay <val> option is extended with -1 value to skip events enabling
+in the beginning of a monitoring session ('start disabled' command).
+--control fd:ctl-fd[,ack-fd] command line option is introduced to provide the
+tool with a pair of file descriptors to listen to control commands and reply
+to the controlling process on the completion of received commands.
+
+The tool reads control command message from ctl-fd descriptor, handles the
+command and optionally replies acknowledgement message to ack-fd descriptor,
+if it is specified on the command line. 'enable' command is recognized as
+'enable' string message and 'disable' command is recognized as 'disable'
+string message both received from ctl-fd descriptor. Completion message is
+'ack\n' and sent to ack-fd descriptor.
+
+Example bash script demonstrating simple use case follows:
+
+#!/bin/bash
+
+ctl_dir=/tmp/
+
+ctl_fifo=${ctl_dir}perf_ctl.fifo
+test -p ${ctl_fifo} && unlink ${ctl_fifo}
+mkfifo ${ctl_fifo} && exec {ctl_fd}<>${ctl_fifo}
+
+ctl_ack_fifo=${ctl_dir}perf_ctl_ack.fifo
+test -p ${ctl_ack_fifo} && unlink ${ctl_ack_fifo}
+mkfifo ${ctl_ack_fifo} && exec {ctl_fd_ack}<>${ctl_ack_fifo}
+
+perf stat -D -1 -e cpu-cycles -a -I 1000       \
+          --control fd:${ctl_fd},${ctl_fd_ack} \
+          -- sleep 40 &
+perf_pid=$!
+
+sleep 5  && echo 'enable' >&${ctl_fd} && read -u ${ctl_fd_ack} e1 && echo "enabled(${e1})"
+sleep 10 && echo 'disable' >&${ctl_fd} && read -u ${ctl_fd_ack} d1 && echo "disabled(${d1})"
+sleep 5  && echo 'enable' >&${ctl_fd} && read -u ${ctl_fd_ack} e2 && echo "enabled(${e2})"
+sleep 10 && echo 'disable' >&${ctl_fd} && read -u ${ctl_fd_ack} d2 && echo "disabled(${d2})"
+
+exec {ctl_fd_ack}>&- && unlink ${ctl_ack_fifo}
+exec {ctl_fd}>&- && unlink ${ctl_fifo}
+
+wait -n ${perf_pid}
+exit $?
+
+
+Script output:
+
+[root@host dir] example
+Events disabled
+#           time             counts unit events
+     1.001101062      <not counted>      cpu-cycles                                                  
+     2.002994944      <not counted>      cpu-cycles                                                  
+     3.004864340      <not counted>      cpu-cycles                                                  
+     4.006727177      <not counted>      cpu-cycles                                                  
+Events enabled
+enabled(ack)
+     4.993808464          3,124,246      cpu-cycles                                                  
+     5.008597004          3,325,624      cpu-cycles                                                  
+     6.010387483         83,472,992      cpu-cycles                                                  
+     7.012266598         55,877,621      cpu-cycles                                                  
+     8.014175695         97,892,729      cpu-cycles                                                  
+     9.016056093         68,461,242      cpu-cycles                                                  
+    10.017937507         55,449,643      cpu-cycles                                                  
+    11.019830154         68,938,167      cpu-cycles                                                  
+    12.021719952         55,164,101      cpu-cycles                                                  
+    13.023627550         70,535,720      cpu-cycles                                                  
+    14.025580995         53,240,125      cpu-cycles                                                  
+disabled(ack)
+    14.997518260         53,558,068      cpu-cycles                                                  
+Events disabled
+    15.027216416      <not counted>      cpu-cycles                                                  
+    16.029052729      <not counted>      cpu-cycles                                                  
+    17.030904762      <not counted>      cpu-cycles                                                  
+    18.032073424      <not counted>      cpu-cycles                                                  
+    19.033805074      <not counted>      cpu-cycles                                                  
+Events enabled
+enabled(ack)
+    20.001279097          3,021,022      cpu-cycles                                                  
+    20.035044381          6,434,367      cpu-cycles                                                  
+    21.036923813         89,358,251      cpu-cycles                                                  
+    22.038825169         72,516,351      cpu-cycles                                                  
+#           time             counts unit events
+    23.040715596         55,046,157      cpu-cycles                                                  
+    24.042643757         78,128,649      cpu-cycles                                                  
+    25.044558535         61,052,428      cpu-cycles                                                  
+    26.046452785         62,142,806      cpu-cycles                                                  
+    27.048353021         74,477,971      cpu-cycles                                                  
+    28.050241286         61,001,623      cpu-cycles                                                  
+    29.052149961         61,653,502      cpu-cycles                                                  
+disabled(ack)
+    30.004980264         82,729,640      cpu-cycles                                                  
+Events disabled
+    30.053516176      <not counted>      cpu-cycles                                                  
+    31.055348366      <not counted>      cpu-cycles                                                  
+    32.057202097      <not counted>      cpu-cycles                                                  
+    33.059040702      <not counted>      cpu-cycles                                                  
+    34.060843288      <not counted>      cpu-cycles                                                  
+    35.000888624      <not counted>      cpu-cycles                                                  
+[root@host dir]# 
+
+[1] http://man7.org/linux/man-pages/man1/bash.1.html
+[2] http://man7.org/linux/man-pages/man2/pipe.2.html
+
 ---
- drivers/firmware/imx/imx-dsp.c   | 25 +++++++++++++++++++++++++
- include/linux/firmware/imx/dsp.h | 10 ++++++++++
- 2 files changed, 35 insertions(+)
+Alexey Budankov (15):
+  tools/libperf: avoid internal moving of fdarray fds
+  tools/libperf: add flags to fdarray fds objects
+  tools/libperf: avoid counting of nonfilterable fdarray fds
+  perf evlist: introduce control file descriptors
+  perf evlist: implement control command handling functions
+  perf stat: factor out body of event handling loop for system wide
+  perf stat: move target check to loop control statement
+  perf stat: factor out body of event handling loop for fork case
+  perf stat: factor out event handling loop into dispatch_events()
+  perf stat: extend -D,--delay option with -1 value
+  perf stat: implement control commands handling
+  perf stat: introduce --control fd:ctl-fd[,ack-fd] options
+  perf record: extend -D,--delay option with -1 value
+  perf record: implement control commands handling
+  perf record: introduce --control fd:ctl-fd[,ack-fd] options
 
-diff --git a/drivers/firmware/imx/imx-dsp.c b/drivers/firmware/imx/imx-dsp.c
-index b6e95d6d34c0..a6c06d7476c3 100644
---- a/drivers/firmware/imx/imx-dsp.c
-+++ b/drivers/firmware/imx/imx-dsp.c
-@@ -60,6 +60,31 @@ static void imx_dsp_handle_rx(struct mbox_client *c, void *msg)
- 	}
- }
- 
-+struct mbox_chan *imx_dsp_request_channel(struct imx_dsp_ipc *dsp_ipc, int idx)
-+{
-+	struct imx_dsp_chan *dsp_chan;
-+
-+	if (idx >= DSP_MU_CHAN_NUM)
-+		return ERR_PTR(-EINVAL);
-+
-+	dsp_chan = &dsp_ipc->chans[idx];
-+	dsp_chan->ch = mbox_request_channel_byname(&dsp_chan->cl, dsp_chan->name);
-+	return dsp_chan->ch;
-+}
-+EXPORT_SYMBOL(imx_dsp_request_channel);
-+
-+void imx_dsp_free_channel(struct imx_dsp_ipc *dsp_ipc, int idx)
-+{
-+	struct imx_dsp_chan *dsp_chan;
-+
-+	if (idx >= DSP_MU_CHAN_NUM)
-+		return;
-+
-+	dsp_chan = &dsp_ipc->chans[idx];
-+	mbox_free_channel(dsp_chan->ch);
-+}
-+EXPORT_SYMBOL(imx_dsp_free_channel);
-+
- static int imx_dsp_setup_channels(struct imx_dsp_ipc *dsp_ipc)
- {
- 	struct device *dev = dsp_ipc->dev;
-diff --git a/include/linux/firmware/imx/dsp.h b/include/linux/firmware/imx/dsp.h
-index 7562099c9e46..4f7895a3b73c 100644
---- a/include/linux/firmware/imx/dsp.h
-+++ b/include/linux/firmware/imx/dsp.h
-@@ -55,6 +55,9 @@ static inline void *imx_dsp_get_data(struct imx_dsp_ipc *ipc)
- 
- int imx_dsp_ring_doorbell(struct imx_dsp_ipc *dsp, unsigned int chan_idx);
- 
-+struct mbox_chan *imx_dsp_request_channel(struct imx_dsp_ipc *ipc, int idx);
-+void imx_dsp_free_channel(struct imx_dsp_ipc *ipc, int idx);
-+
- #else
- 
- static inline int imx_dsp_ring_doorbell(struct imx_dsp_ipc *ipc,
-@@ -63,5 +66,12 @@ static inline int imx_dsp_ring_doorbell(struct imx_dsp_ipc *ipc,
- 	return -ENOTSUPP;
- }
- 
-+struct mbox_chan *imx_dsp_request_channel(struct imx_dsp_ipc *ipc, int idx)
-+{
-+	return ERR_PTR(-EOPNOTSUPP);
-+}
-+
-+void imx_dsp_free_channel(struct imx_dsp_ipc *ipc, int idx) { }
-+
- #endif
- #endif /* _IMX_DSP_IPC_H */
+ tools/lib/api/fd/array.c                 |  17 ++-
+ tools/lib/api/fd/array.h                 |  16 +-
+ tools/lib/perf/evlist.c                  |   6 +-
+ tools/lib/perf/include/internal/evlist.h |   2 +-
+ tools/perf/Documentation/perf-record.txt |  44 +++++-
+ tools/perf/Documentation/perf-stat.txt   |  44 +++++-
+ tools/perf/builtin-record.c              |  65 +++++++-
+ tools/perf/builtin-stat.c                | 183 ++++++++++++++++++-----
+ tools/perf/builtin-trace.c               |   2 +-
+ tools/perf/tests/fdarray.c               |  22 +--
+ tools/perf/util/evlist.c                 | 144 +++++++++++++++++-
+ tools/perf/util/evlist.h                 |  26 ++++
+ tools/perf/util/record.h                 |   4 +-
+ tools/perf/util/stat.h                   |   4 +-
+ 14 files changed, 494 insertions(+), 85 deletions(-)
+
 -- 
-2.17.1
+2.24.1
 
