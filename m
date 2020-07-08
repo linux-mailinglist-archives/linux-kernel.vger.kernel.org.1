@@ -2,94 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27C04217D00
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 04:21:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4AD3217D0A
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 04:29:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729363AbgGHCVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 22:21:09 -0400
-Received: from mga01.intel.com ([192.55.52.88]:45760 "EHLO mga01.intel.com"
+        id S1729296AbgGHC3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 22:29:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40594 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728479AbgGHCVI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 22:21:08 -0400
-IronPort-SDR: tp8Y9Ay7gfrTKdRugr+/M06OD4fs+vQfuqUHDOSbaldMPC83lmVe2JwUZVdY65/aL9SMGZtq+z
- DWXokAkfbvDw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9675"; a="165799719"
-X-IronPort-AV: E=Sophos;i="5.75,326,1589266800"; 
-   d="scan'208";a="165799719"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2020 19:21:08 -0700
-IronPort-SDR: r6XvCwrLv9WYE/FnxZZ9djnmodsPqbOHiTYRleSUeFxLUXJAqn/wuyM151+8ckRjGpPZfVu1Uw
- +XbnWftDgPAA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,326,1589266800"; 
-   d="scan'208";a="283645833"
-Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
-  by orsmga006.jf.intel.com with ESMTP; 07 Jul 2020 19:21:07 -0700
-Date:   Tue, 7 Jul 2020 19:21:02 -0700
-From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Cathy Zhang <cathy.zhang@intel.com>,
-        kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "Christopherson, Sean J" <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Kyung Min Park <kyung.min.park@intel.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>, fenghua.yu@intel.com
-Subject: Re: [PATCH v2 1/4] x86/cpufeatures: Add enumeration for SERIALIZE
- instruction
-Message-ID: <20200708022102.GA25016@ranerica-svr.sc.intel.com>
-References: <1594088183-7187-1-git-send-email-cathy.zhang@intel.com>
- <1594088183-7187-2-git-send-email-cathy.zhang@intel.com>
- <CALCETrWudiF8G8r57r5i4JefuP5biG1kHg==0O8YXb-bYS-0BA@mail.gmail.com>
+        id S1729014AbgGHC3i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 22:29:38 -0400
+Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1A3CF20774;
+        Wed,  8 Jul 2020 02:29:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594175377;
+        bh=xgGx6uwzn9NeaS+l/FPAXpAhoUdDQ2XZYX9DVgRf5YU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ik3+CPSPmGpG2ABntxHOaGn++8Mk0ZxRqeqGC8DMhDNuvYFl6h2xPef1WYY0+Fi8R
+         +ONgL8jclZXHfUWwVBxaAdyk9VXXxmtKAzVd3ETzd6aNdbklKej6bZBq6z18pvxqLd
+         fopJbsNzbONot3a9YpLmVcpfLgBrZ3HqxNvn0qd4=
+Date:   Tue, 7 Jul 2020 22:29:35 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     Pavel Machek <pavel@denx.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Anton Eidelman <anton@lightbitslabs.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH 4.19 10/36] nvme: fix possible deadlock when I/O is
+ blocked
+Message-ID: <20200708022935.GW2722994@sasha-vm>
+References: <20200707145749.130272978@linuxfoundation.org>
+ <20200707145749.639245963@linuxfoundation.org>
+ <20200707181641.GA6290@amd>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <CALCETrWudiF8G8r57r5i4JefuP5biG1kHg==0O8YXb-bYS-0BA@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200707181641.GA6290@amd>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 07, 2020 at 09:36:15AM -0700, Andy Lutomirski wrote:
-> On Mon, Jul 6, 2020 at 7:21 PM Cathy Zhang <cathy.zhang@intel.com> wrote:
-> >
-> > This instruction gives software a way to force the processor to complete
-> > all modifications to flags, registers and memory from previous instructions
-> > and drain all buffered writes to memory before the next instruction is
-> > fetched and executed.
-> >
-> > The same effect can be obtained using the cpuid instruction. However,
-> > cpuid causes modification on the eax, ebx, ecx, and ecx regiters; it
-> > also causes a VM exit.
-> >
-> > A processor supports SERIALIZE instruction if CPUID.0x0x.0x0:EDX[14] is
-> > present. The CPU feature flag is shown as "serialize" in /proc/cpuinfo.
-> >
-> > Detailed information on the instructions and CPUID feature flag SERIALIZE
-> > can be found in the latest Intel Architecture Instruction Set Extensions
-> > and Future Features Programming Reference and Intel 64 and IA-32
-> > Architectures Software Developer's Manual.
-> 
-> Can you also wire this up so sync_core() uses it?
+On Tue, Jul 07, 2020 at 08:16:41PM +0200, Pavel Machek wrote:
+>Hi!
+>
+>> From: Sagi Grimberg <sagi@grimberg.me>
+>>
+>> [ Upstream commit 3b4b19721ec652ad2c4fe51dfbe5124212b5f581 ]
+>>
+>> Revert fab7772bfbcf ("nvme-multipath: revalidate nvme_ns_head gendisk
+>> in nvme_validate_ns")
+>>
+>> When adding a new namespace to the head disk (via nvme_mpath_set_live)
+>> we will see partition scan which triggers I/O on the mpath device node.
+>> This process will usually be triggered from the scan_work which holds
+>> the scan_lock. If I/O blocks (if we got ana change currently have only
+>> available paths but none are accessible) this can deadlock on the head
+>> disk bd_mutex as both partition scan I/O takes it, and head disk revalidation
+>> takes it to check for resize (also triggered from scan_work on a different
+>> path). See trace [1].
+>>
+>> The mpath disk revalidation was originally added to detect online disk
+>> size change, but this is no longer needed since commit cb224c3af4df
+>> ("nvme: Convert to use set_capacity_revalidate_and_notify") which
+>> already
+>
+>AFAICT cb224c3af4df is not applied to 4.19-stable series, so this is
+>not safe according to the changelog.
+>
+>cb224c3af4df is simple enough, but AFAICT
+>set_capacity_revalidate_and_notify() is missing in 4.19.132-rc1.
 
-I am cc'ing Fenghua, who has volunteered to work on this. Addind support
-for SERIALIZE in sync_core() should not block merging these patches,
-correct?
+Good point... It might be the case that e598a72faeb5 ("block/genhd:
+Notify udev about capacity change") is safe to take along with
+cb224c3af4df.
 
-Thanks and BR,
-Ricardo
+I'll look at it once these releases are out, but for now I'll drop this
+commit. Thanks!
+
+-- 
+Thanks,
+Sasha
