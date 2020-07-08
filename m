@@ -2,286 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1C7D218B7D
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 17:39:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F07C9218B2A
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 17:26:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730271AbgGHPjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 11:39:44 -0400
-Received: from casper.infradead.org ([90.155.50.34]:37414 "EHLO
-        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729022AbgGHPjo (ORCPT
+        id S1730088AbgGHP0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 11:26:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59078 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729022AbgGHP0Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 11:39:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=YWMW3K2J8IUvzI1kP8IohAug+CmpewPJUfdbnh0Wntw=; b=Awv94X5LC0od1aO6iiqfINx41h
-        2ztg70rY1xevKISNu8a6NNpryEMxwzKMDhpZNrUz6cW3Zzki2SpLb7SW1pjbnB7fN+89XrPwHbUEI
-        F2+9CQ+b1aSn1ueXLovk8LBQ00lAQdvLuVZ24glSD1MkAUNFDZyBISY4AiT5gAYobVJLW/TdI0uW6
-        iaxu7eGXc5ldvemq9ZchE9XZk12GnQL01sBY+XIFwIse/zuPtE/7V4gyEVVcFuFr5/Dgu9G5wgtUK
-        mEiz6s6MG0By+PY7KJX8TQYrbBgHVGXeLFuBIOOP7CNoZ7B9KThLVw6WWY1sQE35duApqGEDQ7X4K
-        cLAq4RrA==;
-Received: from 213-225-32-40.nat.highway.a1.net ([213.225.32.40] helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jtCAB-0002eQ-Vl; Wed, 08 Jul 2020 15:39:13 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     iommu@lists.linux-foundation.org,
-        Alexey Kardashevskiy <aik@ozlabs.ru>
-Cc:     linuxppc-dev@lists.ozlabs.org, Lu Baolu <baolu.lu@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 5/5] powerpc: use the generic dma_ops_bypass mode
-Date:   Wed,  8 Jul 2020 17:24:49 +0200
-Message-Id: <20200708152449.316476-6-hch@lst.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200708152449.316476-1-hch@lst.de>
-References: <20200708152449.316476-1-hch@lst.de>
+        Wed, 8 Jul 2020 11:26:16 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9FBAC061A0B
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 08:26:15 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id f18so3663261wml.3
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 08:26:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Rs6MPvocUji5XwIYCOn+gelVQBocwRHLVhtpEwxkopg=;
+        b=zHi3NQ6B1pEluj+8pRje9dKHgoKbTqzf12bvtSJLqPgPd1PZ5P/N/fsCC/EByu/GTd
+         ++8Oc6NBX8a3f5/bPCKW7JM4YnUQKD8/hAJR2PJ1Uc9vHLTPnL9e/cFg89VZjBPxvMzA
+         y4BkWh5zSPAoF+FoDDhsEVdd8b6S+E1jCbnRDpAHk4hdpNP3GXOj53AHr5r8yK89s+GP
+         pye/KGXh35xCAojrNnVW13bWLMqwi7ezhX/xSyPxR0U/y3l+I2x14vaCYP+bBk8+3woy
+         zXWpdvdAKra2z194nEkS5/3ll8CQYGCRGxHuQIglF0ZGeS3njAoh8uv9HwlKTkLxnZZH
+         a63Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Rs6MPvocUji5XwIYCOn+gelVQBocwRHLVhtpEwxkopg=;
+        b=PoZ17HDcTO6pdZT02Oo+ja2R6/ekLGkcis+igcCLD9P1c59OYavIt9TyzwoFmRlyHA
+         1pTfSH+Mz4qilfIIeOwOQQG9W2QydTuOzMgxnolpeAQv1Hu7limJDDni8W+9f2r7/OQQ
+         tLGKy1vL6b28Q/0gde1NgtQ1sT0o02S2ve2cC0Sl85+xNfCFUeHFN4O/J53rP809IJ1T
+         rR5c6odTYFLv/aAU3Winsa4Vf978l/7m1gQQkMOQU+SHPdZbCdtsln/KzD8UBUoJpEIy
+         bh8Q9fWAtdQefVUxVpByGZNkrMZbhFkZvFJo3Xn7ujaQQIYgGIGiBw8i678snggSRteo
+         +Xzg==
+X-Gm-Message-State: AOAM532pe33bmbdUXxEn/GFfOtPJ5r1WjBlUWlM1CNFcp4TVR50cxkRf
+        w822NJYXdRj0Lzorb5VJIqmWJg==
+X-Google-Smtp-Source: ABdhPJzwmo/GYeZxAsTWJXB+WycKYqDbjAStLBPyn3jw2SSdLqcjmDlSfW2zCFpuBDE+OXnWOYizbw==
+X-Received: by 2002:a1c:5a41:: with SMTP id o62mr9955647wmb.16.1594221974686;
+        Wed, 08 Jul 2020 08:26:14 -0700 (PDT)
+Received: from [192.168.86.34] (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
+        by smtp.googlemail.com with ESMTPSA id y77sm154483wmd.36.2020.07.08.08.26.13
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 08 Jul 2020 08:26:13 -0700 (PDT)
+Subject: Re: [PATCH 03/11] ASoC: q6asm: make commands specific to streams
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com,
+        tiwai@suse.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
+        vkoul@kernel.org
+References: <20200707163641.17113-1-srinivas.kandagatla@linaro.org>
+ <20200707163641.17113-4-srinivas.kandagatla@linaro.org>
+ <9ff595b4-1093-36c8-f27f-f097e24657a0@linux.intel.com>
+ <4eedae20-903f-77c6-c6e9-fbf3db209bcf@linaro.org>
+ <20200708131307.GO4655@sirena.org.uk>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <863fb181-9814-ee1e-c174-ca58ff6468f1@linaro.org>
+Date:   Wed, 8 Jul 2020 16:26:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20200708131307.GO4655@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the DMA API bypass mechanism for direct window mappings.  This uses
-common code and speed up the direct mapping case by avoiding indirect
-calls just when not using dma ops at all.  It also fixes a problem where
-the sync_* methods were using the bypass check for DMA allocations, but
-those are part of the streaming ops.
 
-Note that this patch loses the DMA_ATTR_WEAK_ORDERING override, which
-has never been well defined, as is only used by a few drivers, which
-IIRC never showed up in the typical Cell blade setups that are affected
-by the ordering workaround.
 
-Fixes: efd176a04bef ("powerpc/pseries/dma: Allow SWIOTLB")
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- arch/powerpc/Kconfig              |  1 +
- arch/powerpc/include/asm/device.h |  5 --
- arch/powerpc/kernel/dma-iommu.c   | 90 ++++---------------------------
- 3 files changed, 10 insertions(+), 86 deletions(-)
+On 08/07/2020 14:13, Mark Brown wrote:
+>> Plan is that the users of these apis will send flags directly instead of
+>> boiler plating this!
+>> This change should go as part of next patch("[PATCH 04/11] ASoC: q6asm: use
+>> flags directly from asm-dai") which would make it much clear!
+> It should be in here.
+> 
+> Please be also consistent in your use of ASM, especially given that asm
+> is a widely used name in the kernel.
 
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index e9b091d3587222..be868bfbe76ecf 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -152,6 +152,7 @@ config PPC
- 	select CLONE_BACKWARDS
- 	select DCACHE_WORD_ACCESS		if PPC64 && CPU_LITTLE_ENDIAN
- 	select DMA_OPS				if PPC64
-+	select DMA_OPS_BYPASS			if PPC64
- 	select DYNAMIC_FTRACE			if FUNCTION_TRACER
- 	select EDAC_ATOMIC_SCRUB
- 	select EDAC_SUPPORT
-diff --git a/arch/powerpc/include/asm/device.h b/arch/powerpc/include/asm/device.h
-index 266542769e4bd1..452402215e1210 100644
---- a/arch/powerpc/include/asm/device.h
-+++ b/arch/powerpc/include/asm/device.h
-@@ -18,11 +18,6 @@ struct iommu_table;
-  * drivers/macintosh/macio_asic.c
-  */
- struct dev_archdata {
--	/*
--	 * Set to %true if the dma_iommu_ops are requested to use a direct
--	 * window instead of dynamically mapping memory.
--	 */
--	bool			iommu_bypass : 1;
- 	/*
- 	 * These two used to be a union. However, with the hybrid ops we need
- 	 * both so here we store both a DMA offset for direct mappings and
-diff --git a/arch/powerpc/kernel/dma-iommu.c b/arch/powerpc/kernel/dma-iommu.c
-index e486d1d78de288..569fecd7b5b234 100644
---- a/arch/powerpc/kernel/dma-iommu.c
-+++ b/arch/powerpc/kernel/dma-iommu.c
-@@ -14,23 +14,6 @@
-  * Generic iommu implementation
-  */
- 
--/*
-- * The coherent mask may be smaller than the real mask, check if we can
-- * really use a direct window.
-- */
--static inline bool dma_iommu_alloc_bypass(struct device *dev)
--{
--	return dev->archdata.iommu_bypass && !iommu_fixed_is_weak &&
--		dma_direct_supported(dev, dev->coherent_dma_mask);
--}
--
--static inline bool dma_iommu_map_bypass(struct device *dev,
--		unsigned long attrs)
--{
--	return dev->archdata.iommu_bypass &&
--		(!iommu_fixed_is_weak || (attrs & DMA_ATTR_WEAK_ORDERING));
--}
--
- /* Allocates a contiguous real buffer and creates mappings over it.
-  * Returns the virtual address of the buffer and sets dma_handle
-  * to the dma address (mapping) of the first page.
-@@ -39,8 +22,6 @@ static void *dma_iommu_alloc_coherent(struct device *dev, size_t size,
- 				      dma_addr_t *dma_handle, gfp_t flag,
- 				      unsigned long attrs)
- {
--	if (dma_iommu_alloc_bypass(dev))
--		return dma_direct_alloc(dev, size, dma_handle, flag, attrs);
- 	return iommu_alloc_coherent(dev, get_iommu_table_base(dev), size,
- 				    dma_handle, dev->coherent_dma_mask, flag,
- 				    dev_to_node(dev));
-@@ -50,11 +31,7 @@ static void dma_iommu_free_coherent(struct device *dev, size_t size,
- 				    void *vaddr, dma_addr_t dma_handle,
- 				    unsigned long attrs)
- {
--	if (dma_iommu_alloc_bypass(dev))
--		dma_direct_free(dev, size, vaddr, dma_handle, attrs);
--	else
--		iommu_free_coherent(get_iommu_table_base(dev), size, vaddr,
--				dma_handle);
-+	iommu_free_coherent(get_iommu_table_base(dev), size, vaddr, dma_handle);
- }
- 
- /* Creates TCEs for a user provided buffer.  The user buffer must be
-@@ -67,9 +44,6 @@ static dma_addr_t dma_iommu_map_page(struct device *dev, struct page *page,
- 				     enum dma_data_direction direction,
- 				     unsigned long attrs)
- {
--	if (dma_iommu_map_bypass(dev, attrs))
--		return dma_direct_map_page(dev, page, offset, size, direction,
--				attrs);
- 	return iommu_map_page(dev, get_iommu_table_base(dev), page, offset,
- 			      size, dma_get_mask(dev), direction, attrs);
- }
-@@ -79,11 +53,8 @@ static void dma_iommu_unmap_page(struct device *dev, dma_addr_t dma_handle,
- 				 size_t size, enum dma_data_direction direction,
- 				 unsigned long attrs)
- {
--	if (!dma_iommu_map_bypass(dev, attrs))
--		iommu_unmap_page(get_iommu_table_base(dev), dma_handle, size,
--				direction,  attrs);
--	else
--		dma_direct_unmap_page(dev, dma_handle, size, direction, attrs);
-+	iommu_unmap_page(get_iommu_table_base(dev), dma_handle, size, direction,
-+			 attrs);
- }
- 
- 
-@@ -91,8 +62,6 @@ static int dma_iommu_map_sg(struct device *dev, struct scatterlist *sglist,
- 			    int nelems, enum dma_data_direction direction,
- 			    unsigned long attrs)
- {
--	if (dma_iommu_map_bypass(dev, attrs))
--		return dma_direct_map_sg(dev, sglist, nelems, direction, attrs);
- 	return ppc_iommu_map_sg(dev, get_iommu_table_base(dev), sglist, nelems,
- 				dma_get_mask(dev), direction, attrs);
- }
-@@ -101,11 +70,8 @@ static void dma_iommu_unmap_sg(struct device *dev, struct scatterlist *sglist,
- 		int nelems, enum dma_data_direction direction,
- 		unsigned long attrs)
- {
--	if (!dma_iommu_map_bypass(dev, attrs))
--		ppc_iommu_unmap_sg(get_iommu_table_base(dev), sglist, nelems,
-+	ppc_iommu_unmap_sg(get_iommu_table_base(dev), sglist, nelems,
- 			   direction, attrs);
--	else
--		dma_direct_unmap_sg(dev, sglist, nelems, direction, attrs);
- }
- 
- static bool dma_iommu_bypass_supported(struct device *dev, u64 mask)
-@@ -113,8 +79,9 @@ static bool dma_iommu_bypass_supported(struct device *dev, u64 mask)
- 	struct pci_dev *pdev = to_pci_dev(dev);
- 	struct pci_controller *phb = pci_bus_to_host(pdev->bus);
- 
--	return phb->controller_ops.iommu_bypass_supported &&
--		phb->controller_ops.iommu_bypass_supported(pdev, mask);
-+	if (iommu_fixed_is_weak || !phb->controller_ops.iommu_bypass_supported)
-+		return false;
-+	return phb->controller_ops.iommu_bypass_supported(pdev, mask);
- }
- 
- /* We support DMA to/from any memory page via the iommu */
-@@ -123,7 +90,7 @@ int dma_iommu_dma_supported(struct device *dev, u64 mask)
- 	struct iommu_table *tbl = get_iommu_table_base(dev);
- 
- 	if (dev_is_pci(dev) && dma_iommu_bypass_supported(dev, mask)) {
--		dev->archdata.iommu_bypass = true;
-+		dev->dma_ops_bypass = true;
- 		dev_dbg(dev, "iommu: 64-bit OK, using fixed ops\n");
- 		return 1;
- 	}
-@@ -141,7 +108,7 @@ int dma_iommu_dma_supported(struct device *dev, u64 mask)
- 	}
- 
- 	dev_dbg(dev, "iommu: not 64-bit, using default ops\n");
--	dev->archdata.iommu_bypass = false;
-+	dev->dma_ops_bypass = false;
- 	return 1;
- }
- 
-@@ -153,47 +120,12 @@ u64 dma_iommu_get_required_mask(struct device *dev)
- 	if (!tbl)
- 		return 0;
- 
--	if (dev_is_pci(dev)) {
--		u64 bypass_mask = dma_direct_get_required_mask(dev);
--
--		if (dma_iommu_bypass_supported(dev, bypass_mask))
--			return bypass_mask;
--	}
--
- 	mask = 1ULL < (fls_long(tbl->it_offset + tbl->it_size) - 1);
- 	mask += mask - 1;
- 
- 	return mask;
- }
- 
--static void dma_iommu_sync_for_cpu(struct device *dev, dma_addr_t addr,
--		size_t size, enum dma_data_direction dir)
--{
--	if (dma_iommu_alloc_bypass(dev))
--		dma_direct_sync_single_for_cpu(dev, addr, size, dir);
--}
--
--static void dma_iommu_sync_for_device(struct device *dev, dma_addr_t addr,
--		size_t sz, enum dma_data_direction dir)
--{
--	if (dma_iommu_alloc_bypass(dev))
--		dma_direct_sync_single_for_device(dev, addr, sz, dir);
--}
--
--extern void dma_iommu_sync_sg_for_cpu(struct device *dev,
--		struct scatterlist *sgl, int nents, enum dma_data_direction dir)
--{
--	if (dma_iommu_alloc_bypass(dev))
--		dma_direct_sync_sg_for_cpu(dev, sgl, nents, dir);
--}
--
--extern void dma_iommu_sync_sg_for_device(struct device *dev,
--		struct scatterlist *sgl, int nents, enum dma_data_direction dir)
--{
--	if (dma_iommu_alloc_bypass(dev))
--		dma_direct_sync_sg_for_device(dev, sgl, nents, dir);
--}
--
- const struct dma_map_ops dma_iommu_ops = {
- 	.alloc			= dma_iommu_alloc_coherent,
- 	.free			= dma_iommu_free_coherent,
-@@ -203,10 +135,6 @@ const struct dma_map_ops dma_iommu_ops = {
- 	.map_page		= dma_iommu_map_page,
- 	.unmap_page		= dma_iommu_unmap_page,
- 	.get_required_mask	= dma_iommu_get_required_mask,
--	.sync_single_for_cpu	= dma_iommu_sync_for_cpu,
--	.sync_single_for_device	= dma_iommu_sync_for_device,
--	.sync_sg_for_cpu	= dma_iommu_sync_sg_for_cpu,
--	.sync_sg_for_device	= dma_iommu_sync_sg_for_device,
- 	.mmap			= dma_common_mmap,
- 	.get_sgtable		= dma_common_get_sgtable,
- };
--- 
-2.26.2
+I agree, I will fix such usage in next patchset!
 
+--srini
