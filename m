@@ -2,147 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63990217FD1
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 08:50:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAA25217FDD
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 08:51:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729845AbgGHGuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 02:50:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726171AbgGHGuy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 02:50:54 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA0F3C061755
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Jul 2020 23:50:53 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id f18so39579763wrs.0
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Jul 2020 23:50:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=zm6LHmqeNQ0tcaxZkaeCIIqRwFN7FjZi4Lduc1JwYJk=;
-        b=fRJR1apC9tP8lVYdn3j4PJ1yriSkx4Mt/WuV+b80+RA5Xq3ntT4+aLgGJ/Uqjhuu4g
-         7p9Mw1I2xkXOBppdQUM6I7EnIn9CzudChZM/tfIIOdv/CtjkGEoXp2PPgDOqmxv/xGwR
-         mI+bT8lPb3qnqIfm1kvu5lm1qhNEtd0Amt/dqtoJIOEZUDSOi/R3Ja8C+BkQHDYY65IY
-         zxusbVJ+N0GvjPkUD6Ow4kxwuOJk6se/RzCw7BM9O8rocL4wFRoG4aWvbMNV3xCm0Ceu
-         ikUUmNmQ/kFzvMOZL8Grj/OFrW63cMbAlRNxIGAyJDwzOFjvnNCargZyG/oJhF/XUFMU
-         EEFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=zm6LHmqeNQ0tcaxZkaeCIIqRwFN7FjZi4Lduc1JwYJk=;
-        b=iJIZ0+JP/Er5pSaWbGW49n7zbA0kDHcWiT0b5kfi1/NjZlnLaxdhZrnBwY6yEvp3ti
-         3zfAwudd6DWJQpsPjharzd/NXBdtiHFSdPAZXy9epRPHfCD4RyxHRr+6t5SViFC3oKut
-         2ZdskscwdnYx2xePzNmN3SxlOGpzvxlbR8uoUqd1KKlxaiQSxP78JOCYkC1ZGCUtxOYG
-         9Gy8bsAZCqXLGMCdgRhyct+cjr8gP41bwQKowGhN8kh6ZsoXIEWgpWjejXQNsakU7rqU
-         X/aUbetIqgVOL3LeH2y6DsNv6FIabA+T8+1DGx8f6WBXzoQegvE7jTTFoCg+u7rdYz4t
-         ZPvA==
-X-Gm-Message-State: AOAM531RGpBg/QUN6wOUIl9VmSAarhmqTHJcrJF8XuCNrG3g+qizz7bl
-        LuiQAPMcdm1FjlgNDOsApzOKVfGN
-X-Google-Smtp-Source: ABdhPJz2R/+cNsDoIeb/g3pbJMV0I/TpK9H1ghfQndVC4WYYtbaXYBA44Liru39lOiaK2EeEVtbLkg==
-X-Received: by 2002:adf:e6c8:: with SMTP id y8mr60478903wrm.40.1594191052272;
-        Tue, 07 Jul 2020 23:50:52 -0700 (PDT)
-Received: from [10.11.11.4] ([178.254.237.20])
-        by smtp.gmail.com with ESMTPSA id q1sm4114745wro.82.2020.07.07.23.50.50
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 07 Jul 2020 23:50:51 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: Re: Bug Report High CPU Usage events_power_efficient
-From:   Martin Zaharinov <micron10@gmail.com>
-In-Reply-To: <6AD52867-83C1-4C6C-A0AE-4DE0D6C16310@gmail.com>
-Date:   Wed, 8 Jul 2020 09:50:49 +0300
-Cc:     gregkh@linuxfoundation.org, Florian Westphal <fw@strlen.de>,
-        Eric Dumazet <edumazet@google.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <C89D167C-E03F-4116-9647-F50607DF3A45@gmail.com>
-References: <E2C5FE67-C85E-469C-9B81-10F7555F836B@gmail.com>
- <91805D0F-2D74-4EA3-A2D7-13E4FBBEAB51@gmail.com>
- <6AD52867-83C1-4C6C-A0AE-4DE0D6C16310@gmail.com>
-To:     "linux-kernel@vger kernel. org" <linux-kernel@vger.kernel.org>
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
+        id S1729915AbgGHGvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 02:51:11 -0400
+Received: from mga11.intel.com ([192.55.52.93]:5284 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729892AbgGHGvJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 02:51:09 -0400
+IronPort-SDR: h4zrsJfYtxpecB3ni5xPoH+BVJd0juJXCv4lk/n5elCkmqURouRVyDCNqnIu5iiI10lxoCi6ic
+ E3DqqyY5HP/w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9675"; a="145852072"
+X-IronPort-AV: E=Sophos;i="5.75,326,1589266800"; 
+   d="scan'208";a="145852072"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2020 23:51:08 -0700
+IronPort-SDR: 4lbBsFV7nN11/3UqXxGLNIutYQjfxSCXVwOOSQKk6g7/LwJnt6kCLz28cNVW88qKeoHHcb2QBg
+ Vgj4fPjZ56ww==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,326,1589266800"; 
+   d="scan'208";a="457399146"
+Received: from lxy-dell.sh.intel.com ([10.239.159.21])
+  by orsmga005.jf.intel.com with ESMTP; 07 Jul 2020 23:51:05 -0700
+From:   Xiaoyao Li <xiaoyao.li@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Jim Mattson <jmattson@google.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Xiaoyao Li <xiaoyao.li@intel.com>
+Subject: [PATCH v3 3/8] KVM: X86: Introduce kvm_check_cpuid()
+Date:   Wed,  8 Jul 2020 14:50:49 +0800
+Message-Id: <20200708065054.19713-4-xiaoyao.li@intel.com>
+X-Mailer: git-send-email 2.18.4
+In-Reply-To: <20200708065054.19713-1-xiaoyao.li@intel.com>
+References: <20200708065054.19713-1-xiaoyao.li@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Greg , Florian, Eric to this bug=20
+Use kvm_check_cpuid() to validate if userspace provides legal cpuid
+settings and call it before KVM updates CPUID.
 
-> On 7 Jul 2020, at 22:54, Martin Zaharinov <micron10@gmail.com> wrote:
->=20
-> And this is log from /sys/kernel/debug/tracing/trace
->=20
->=20
-> # entries-in-buffer/entries-written: 32410/32410   #P:64
-> #
-> #                              _-----=3D> irqs-off
-> #                             / _----=3D> need-resched
-> #                            | / _---=3D> hardirq/softirq
-> #                            || / _--=3D> preempt-depth
-> #                            ||| /     delay
-> #           TASK-PID   CPU#  ||||    TIMESTAMP  FUNCTION
-> #              | |       |   ||||       |         |
->           <...>-57259 [005] .... 29619.680698: =
-workqueue_execute_start: work struct 00000000ef22e4b8: function =
-gc_worker [nf_conntrack]
->           <...>-57259 [005] .... 29623.811407: workqueue_execute_end: =
-work struct 00000000ef22e4b8: function gc_worker [nf_conntrack]
->           <...>-57259 [005] .... 29623.811410: =
-workqueue_execute_start: work struct 0000000000aeec55: function =
-fb_flashcursor
->           <...>-57259 [005] .... 29623.811421: workqueue_execute_end: =
-work struct 0000000000aeec55: function fb_flashcursor
->           <...>-57259 [005] .... 29623.811422: =
-workqueue_execute_start: work struct 00000000a6d382bb: function =
-vmstat_update
->           <...>-57259 [005] .... 29623.811435: workqueue_execute_end: =
-work struct 00000000a6d382bb: function vmstat_update
->=20
->> On 7 Jul 2020, at 22:44, Martin Zaharinov <micron10@gmail.com> wrote:
->>=20
->> the problem is hear with kernel 5.7.7=20
->>=20
->> last work kernel without this problem is 5.6.7
->>=20
->> hear is more info:
->>=20
->> cat /proc/57259/stack
->> root@megacableamarilis:~# cat /proc/57259/stack
->> [<0>] gc_worker+0x1be/0x380 [nf_conntrack]
->> [<0>] process_one_work+0x1bc/0x3b0
->> [<0>] worker_thread+0x4d/0x460
->> [<0>] kthread+0x10d/0x130
->> [<0>] ret_from_fork+0x1f/0x30
->>=20
->> PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ =
-COMMAND                            57259 root      28   0       0      0 =
-     0 R  69.8   0.0  82:42.14 kworker/5:2+events_power_efficient        =
-                                                 =20
->> 32 root      21   0       0      0      0 R  31.0   0.0  87:06.33 =
-ksoftirqd/4
->>=20
->>=20
->> Please help to fix this problem
->>=20
->>> On 22 Apr 2020, at 15:55, Martin Zaharinov <micron10@gmail.com> =
-wrote:
->>>=20
->>> Hello Qian and Greg=20
->>> With latest 5.6.x kernel have problem with events_power_efficient =
-28488 root      28   0       0      0      0 R  95.5   0.0 101:38.19 =
-kworker/2:1+events_power_efficient Process start to load machine after =
-3-4 hour and load not stop only reboot machine remove process . Server =
-runing on AMD EPIC CPU 2x 7301 32Gb Ram Have 2 x 10G card Intel when =
-machine load over 1G traffic machine locked and only restart fix problem =
-to next load . After move traffic and server stop load process still =
-hear and load server ?
->>> And after reboot process move to other core .
->>>=20
->>> Best Regards,
->>> Martin
->>=20
->=20
+Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
+---
+Is the check of virutal address width really necessary?
+KVM doesn't check other bits at all. I guess the policy is that KVM allows
+illegal CPUID settings as long as it doesn't break host kernel. Userspace
+takes the consequences itself if it sets bogus CPUID settings that breaks
+its guest.
+But why vaddr_bits is special? It seems illegal vaddr_bits won't break host
+kernel.
+---
+ arch/x86/kvm/cpuid.c | 54 ++++++++++++++++++++++++++++----------------
+ arch/x86/kvm/cpuid.h |  2 +-
+ 2 files changed, 35 insertions(+), 21 deletions(-)
+
+diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+index 0e3a23c2ea55..a825878b7f84 100644
+--- a/arch/x86/kvm/cpuid.c
++++ b/arch/x86/kvm/cpuid.c
+@@ -54,7 +54,26 @@ static u32 xstate_required_size(u64 xstate_bv, bool compacted)
+ 
+ #define F feature_bit
+ 
+-int kvm_update_cpuid(struct kvm_vcpu *vcpu)
++static int kvm_check_cpuid(struct kvm_vcpu *vcpu)
++{
++	struct kvm_cpuid_entry2 *best;
++
++	/*
++	 * The existing code assumes virtual address is 48-bit or 57-bit in the
++	 * canonical address checks; exit if it is ever changed.
++	 */
++	best = kvm_find_cpuid_entry(vcpu, 0x80000008, 0);
++	if (best) {
++		int vaddr_bits = (best->eax & 0xff00) >> 8;
++
++		if (vaddr_bits != 48 && vaddr_bits != 57 && vaddr_bits != 0)
++			return -EINVAL;
++	}
++
++	return 0;
++}
++
++void kvm_update_cpuid(struct kvm_vcpu *vcpu)
+ {
+ 	struct kvm_cpuid_entry2 *best;
+ 	struct kvm_lapic *apic = vcpu->arch.apic;
+@@ -96,18 +115,6 @@ int kvm_update_cpuid(struct kvm_vcpu *vcpu)
+ 		     cpuid_entry_has(best, X86_FEATURE_XSAVEC)))
+ 		best->ebx = xstate_required_size(vcpu->arch.xcr0, true);
+ 
+-	/*
+-	 * The existing code assumes virtual address is 48-bit or 57-bit in the
+-	 * canonical address checks; exit if it is ever changed.
+-	 */
+-	best = kvm_find_cpuid_entry(vcpu, 0x80000008, 0);
+-	if (best) {
+-		int vaddr_bits = (best->eax & 0xff00) >> 8;
+-
+-		if (vaddr_bits != 48 && vaddr_bits != 57 && vaddr_bits != 0)
+-			return -EINVAL;
+-	}
+-
+ 	best = kvm_find_cpuid_entry(vcpu, KVM_CPUID_FEATURES, 0);
+ 	if (kvm_hlt_in_guest(vcpu->kvm) && best &&
+ 		(best->eax & (1 << KVM_FEATURE_PV_UNHALT)))
+@@ -127,7 +134,6 @@ int kvm_update_cpuid(struct kvm_vcpu *vcpu)
+ 	kvm_mmu_reset_context(vcpu);
+ 
+ 	kvm_pmu_refresh(vcpu);
+-	return 0;
+ }
+ 
+ static int is_efer_nx(void)
+@@ -202,12 +208,16 @@ int kvm_vcpu_ioctl_set_cpuid(struct kvm_vcpu *vcpu,
+ 		vcpu->arch.cpuid_entries[i].padding[2] = 0;
+ 	}
+ 	vcpu->arch.cpuid_nent = cpuid->nent;
++	r = kvm_check_cpuid(vcpu);
++	if (r) {
++		vcpu->arch.cpuid_nent = 0;
++		goto out;
++	}
++
+ 	cpuid_fix_nx_cap(vcpu);
+ 	kvm_apic_set_version(vcpu);
+ 	kvm_x86_ops.cpuid_update(vcpu);
+-	r = kvm_update_cpuid(vcpu);
+-	if (r)
+-		vcpu->arch.cpuid_nent = 0;
++	kvm_update_cpuid(vcpu);
+ 
+ 	kvfree(cpuid_entries);
+ out:
+@@ -228,11 +238,15 @@ int kvm_vcpu_ioctl_set_cpuid2(struct kvm_vcpu *vcpu,
+ 			   cpuid->nent * sizeof(struct kvm_cpuid_entry2)))
+ 		goto out;
+ 	vcpu->arch.cpuid_nent = cpuid->nent;
++	r = kvm_check_cpuid(vcpu);
++	if (r) {
++		vcpu->arch.cpuid_nent = 0;
++		goto out;
++	}
++
+ 	kvm_apic_set_version(vcpu);
+ 	kvm_x86_ops.cpuid_update(vcpu);
+-	r = kvm_update_cpuid(vcpu);
+-	if (r)
+-		vcpu->arch.cpuid_nent = 0;
++	kvm_update_cpuid(vcpu);
+ out:
+ 	return r;
+ }
+diff --git a/arch/x86/kvm/cpuid.h b/arch/x86/kvm/cpuid.h
+index 05434cd9342f..f136de1debad 100644
+--- a/arch/x86/kvm/cpuid.h
++++ b/arch/x86/kvm/cpuid.h
+@@ -9,7 +9,7 @@
+ extern u32 kvm_cpu_caps[NCAPINTS] __read_mostly;
+ void kvm_set_cpu_caps(void);
+ 
+-int kvm_update_cpuid(struct kvm_vcpu *vcpu);
++void kvm_update_cpuid(struct kvm_vcpu *vcpu);
+ struct kvm_cpuid_entry2 *kvm_find_cpuid_entry(struct kvm_vcpu *vcpu,
+ 					      u32 function, u32 index);
+ int kvm_dev_ioctl_get_cpuid(struct kvm_cpuid2 *cpuid,
+-- 
+2.18.4
 
