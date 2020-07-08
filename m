@@ -2,74 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D402A2182BC
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 10:42:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 344EC2182B7
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 10:41:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728306AbgGHIl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 04:41:56 -0400
-Received: from casper.infradead.org ([90.155.50.34]:57892 "EHLO
-        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725789AbgGHIl4 (ORCPT
+        id S1728303AbgGHIlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 04:41:16 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:13680 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726116AbgGHIlQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 04:41:56 -0400
-X-Greylist: delayed 512 seconds by postgrey-1.27 at vger.kernel.org; Wed, 08 Jul 2020 04:41:55 EDT
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=S32XUF0JR40sOoi2lYA1Jt2WlEew0VlzGuJ1gwYbhcU=; b=s35D4xLyvnkYZU4YcWf+9NjRFK
-        qAGphMcWSVhYkoJc8aLz2jh51DodnUkao4ypjVVvtlh5fcEIsMpk6UdXCby8V2qdZA2gSM5VTx11d
-        ejcgbzpQUBqwaR783SFDpecCm7eKgFdgoL4fECk9Qy30bGquxIr924rnywePvDNug5/GOl4mBqpIf
-        yhYDUhFAoVr+rZtcrUHltrwRK7hN7qpv20iSjblFycKsMdUlki/Rvlx96bthlu203IRbVK2rv+Qyz
-        fe6lVWcbvlapeHkqUU1cRfS5tDsGg7qLw6HfdJdLjRTuWghNE1CJUhLCA2Q5UKIbSoK08YZTIcjeG
-        XvtIgbgA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jt5df-0008Ee-Rc; Wed, 08 Jul 2020 08:41:16 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BAE6F304D58;
-        Wed,  8 Jul 2020 10:41:06 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A7CDA203D34DE; Wed,  8 Jul 2020 10:41:06 +0200 (CEST)
-Date:   Wed, 8 Jul 2020 10:41:06 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Nicholas Piggin <npiggin@gmail.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, Waiman Long <longman@redhat.com>,
-        Anton Blanchard <anton@ozlabs.org>,
-        Boqun Feng <boqun.feng@gmail.com>, kvm-ppc@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ingo Molnar <mingo@redhat.com>,
-        virtualization@lists.linux-foundation.org,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH v3 0/6] powerpc: queued spinlocks and rwlocks
-Message-ID: <20200708084106.GE597537@hirez.programming.kicks-ass.net>
-References: <20200706043540.1563616-1-npiggin@gmail.com>
- <24f75d2c-60cd-2766-4aab-1a3b1c80646e@redhat.com>
- <1594101082.hfq9x5yact.astroid@bobo.none>
+        Wed, 8 Jul 2020 04:41:16 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f0586410000>; Wed, 08 Jul 2020 01:39:29 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Wed, 08 Jul 2020 01:41:15 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Wed, 08 Jul 2020 01:41:15 -0700
+Received: from [10.26.73.185] (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 8 Jul
+ 2020 08:41:13 +0000
+Subject: Re: [PATCH 4.19 00/36] 4.19.132-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <ben.hutchings@codethink.co.uk>, <lkft-triage@lists.linaro.org>,
+        <stable@vger.kernel.org>, linux-tegra <linux-tegra@vger.kernel.org>
+References: <20200707145749.130272978@linuxfoundation.org>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <86b10fe5-26e3-f558-d7a5-164324b63a8f@nvidia.com>
+Date:   Wed, 8 Jul 2020 09:41:11 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1594101082.hfq9x5yact.astroid@bobo.none>
+In-Reply-To: <20200707145749.130272978@linuxfoundation.org>
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1594197569; bh=VKbhwdXjIDDXz1oDn5VQ14T1+tFkZjeOflaWDh+tMtY=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=KKW29ot5u4YEq5qWrdGZYZm7y+01R9GA8nwiO4CDDuqYf+FiuTT1rjR/VdnM2/uNE
+         OvEhRo/H4si5UugLCQT/wI1KGegXcXeQ/XtqdV4QykOQcEhBAZmCR1OPOz82X72W1S
+         DTMcW7VXq6ZvKDDt6TjZxfBI9gDl/gNxDBY5UON+Im4ZIimANdvWaNQ4SqggN5uGv8
+         QUtZOMAr85Fhhy2vIgiRyYOHncYmpE80SJRfblPxx3JYCPdHTw7oa8BwgNEz13nmPC
+         iafFvtU+DHn8//IiB5nao3rhgbU/68hF6hdV9FPiYyAXlrSWMIF7wiKkk6b4Yzw/6e
+         n3ERmJeyjQz7Q==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 07, 2020 at 03:57:06PM +1000, Nicholas Piggin wrote:
-> Yes, powerpc could certainly get more performance out of the slow
-> paths, and then there are a few parameters to tune.
 
-Can you clarify? The slow path is already in use on ARM64 which is weak,
-so I doubt there's superfluous serialization present. And Will spend a
-fair amount of time on making that thing guarantee forward progressm, so
-there just isn't too much room to play.
+On 07/07/2020 16:16, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.19.132 release.
+> There are 36 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 09 Jul 2020 14:57:34 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.132-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-> We don't have a good alternate patching for function calls yet, but
-> that would be something to do for native vs pv.
+All tests are passing for Tegra ...
 
-Going by your jump_label implementation, support for static_call should
-be fairly straight forward too, no?
+Test results for stable-v4.19:
+    11 builds:	11 pass, 0 fail
+    22 boots:	22 pass, 0 fail
+    38 tests:	38 pass, 0 fail
 
-  https://lkml.kernel.org/r/20200624153024.794671356@infradead.org
+Linux version:	4.19.132-rc1-g168e2945aaf5
+Boards tested:	tegra124-jetson-tk1, tegra186-p2771-0000,
+                tegra194-p2972-0000, tegra20-ventana,
+                tegra210-p2371-2180, tegra30-cardhu-a04
+
+Cheers
+Jon
+
+-- 
+nvpublic
