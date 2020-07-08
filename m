@@ -2,102 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9073C218704
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 14:16:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F057021870A
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 14:17:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728946AbgGHMQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 08:16:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57552 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728770AbgGHMQO (ORCPT
+        id S1729018AbgGHMRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 08:17:04 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:38138 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728790AbgGHMRE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 08:16:14 -0400
-Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93EBDC08C5DC
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 05:16:14 -0700 (PDT)
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id 88C81BC0D9;
-        Wed,  8 Jul 2020 12:16:10 +0000 (UTC)
-From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-To:     a.hajda@samsung.com, narmstrong@baylibre.com,
-        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
-        jernej.skrabec@siol.net, airlied@linux.ie, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Subject: [PATCH] Replace HTTP links with HTTPS ones: DRM DRIVERS FOR BRIDGE CHIPS
-Date:   Wed,  8 Jul 2020 14:16:04 +0200
-Message-Id: <20200708121604.14292-1-grandmaster@al2klimov.de>
+        Wed, 8 Jul 2020 08:17:04 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 068C0eio107900;
+        Wed, 8 Jul 2020 08:16:42 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 325dp70r9k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Jul 2020 08:16:41 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 068CAH8u002721;
+        Wed, 8 Jul 2020 12:16:40 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma04ams.nl.ibm.com with ESMTP id 322hd7vhgy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Jul 2020 12:16:40 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 068CGbaI36896792
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 8 Jul 2020 12:16:37 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 41927AE055;
+        Wed,  8 Jul 2020 12:16:37 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BA336AE045;
+        Wed,  8 Jul 2020 12:16:36 +0000 (GMT)
+Received: from pomme.local (unknown [9.145.179.233])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed,  8 Jul 2020 12:16:36 +0000 (GMT)
+Subject: Re: [PATCH 2/2] KVM: PPC: Book3S HV: rework secure mem slot dropping
+To:     bharata@linux.ibm.com
+Cc:     linux-kernel@vger.kernel.org, kvm-ppc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, mpe@ellerman.id.au,
+        paulus@samba.org, bauerman@linux.ibm.com, sukadev@linux.ibm.com,
+        sathnaga@linux.vnet.ibm.com, Ram Pai <linuxram@us.ibm.com>,
+        Paul Mackerras <paulus@ozlabs.org>
+References: <20200703155914.40262-1-ldufour@linux.ibm.com>
+ <20200703155914.40262-3-ldufour@linux.ibm.com>
+ <20200708112531.GA7902@in.ibm.com>
+From:   Laurent Dufour <ldufour@linux.ibm.com>
+Message-ID: <0588d16a-8548-0f55-1132-400807a390a1@linux.ibm.com>
+Date:   Wed, 8 Jul 2020 14:16:36 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20200708112531.GA7902@in.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +++++
-X-Spam-Level: *****
-Authentication-Results: smtp.al2klimov.de;
-        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-08_08:2020-07-08,2020-07-08 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ cotscore=-2147483648 phishscore=0 impostorscore=0 priorityscore=1501
+ mlxscore=0 lowpriorityscore=0 malwarescore=0 suspectscore=3 bulkscore=0
+ spamscore=0 mlxlogscore=779 adultscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2007080084
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rationale:
-Reduces attack surface on kernel devs opening the links for MITM
-as HTTPS traffic is much harder to manipulate.
+Le 08/07/2020 à 13:25, Bharata B Rao a écrit :
+> On Fri, Jul 03, 2020 at 05:59:14PM +0200, Laurent Dufour wrote:
+>> When a secure memslot is dropped, all the pages backed in the secure device
+>> (aka really backed by secure memory by the Ultravisor) should be paged out
+>> to a normal page. Previously, this was achieved by triggering the page
+>> fault mechanism which is calling kvmppc_svm_page_out() on each pages.
+>>
+>> This can't work when hot unplugging a memory slot because the memory slot
+>> is flagged as invalid and gfn_to_pfn() is then not trying to access the
+>> page, so the page fault mechanism is not triggered.
+>>
+>> Since the final goal is to make a call to kvmppc_svm_page_out() it seems
+>> simpler to directly calling it instead of triggering such a mechanism. This
+>> way kvmppc_uvmem_drop_pages() can be called even when hot unplugging a
+>> memslot.
+> 
+> Yes, this appears much simpler.
 
-Deterministic algorithm:
-For each file:
-  If not .svg:
-    For each line:
-      If doesn't contain `\bxmlns\b`:
-        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
-            If both the HTTP and HTTPS versions
-            return 200 OK and serve the same content:
-              Replace HTTP with HTTPS.
+Thanks Bharata for reviewing this.
 
-Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
----
- Continuing my work started at 93431e0607e5.
- See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
- (Actually letting a shell for loop submit all this stuff for me.)
+> 
+>>
+>> Since kvmppc_uvmem_drop_pages() is already holding kvm->arch.uvmem_lock,
+>> the call to __kvmppc_svm_page_out() is made.
+>> As __kvmppc_svm_page_out needs the vma pointer to migrate the pages, the
+>> VMA is fetched in a lazy way, to not trigger find_vma() all the time. In
+>> addition, the mmap_sem is help in read mode during that time, not in write
+>> mode since the virual memory layout is not impacted, and
+>> kvm->arch.uvmem_lock prevents concurrent operation on the secure device.
+>>
+>> Cc: Ram Pai <linuxram@us.ibm.com>
+>> Cc: Bharata B Rao <bharata@linux.ibm.com>
+>> Cc: Paul Mackerras <paulus@ozlabs.org>
+>> Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
+>> ---
+>>   arch/powerpc/kvm/book3s_hv_uvmem.c | 54 ++++++++++++++++++++----------
+>>   1 file changed, 37 insertions(+), 17 deletions(-)
+>>
+>> diff --git a/arch/powerpc/kvm/book3s_hv_uvmem.c b/arch/powerpc/kvm/book3s_hv_uvmem.c
+>> index 852cc9ae6a0b..479ddf16d18c 100644
+>> --- a/arch/powerpc/kvm/book3s_hv_uvmem.c
+>> +++ b/arch/powerpc/kvm/book3s_hv_uvmem.c
+>> @@ -533,35 +533,55 @@ static inline int kvmppc_svm_page_out(struct vm_area_struct *vma,
+>>    * fault on them, do fault time migration to replace the device PTEs in
+>>    * QEMU page table with normal PTEs from newly allocated pages.
+>>    */
+>> -void kvmppc_uvmem_drop_pages(const struct kvm_memory_slot *free,
+>> +void kvmppc_uvmem_drop_pages(const struct kvm_memory_slot *slot,
+>>   			     struct kvm *kvm, bool skip_page_out)
+>>   {
+>>   	int i;
+>>   	struct kvmppc_uvmem_page_pvt *pvt;
+>> -	unsigned long pfn, uvmem_pfn;
+>> -	unsigned long gfn = free->base_gfn;
+>> +	struct page *uvmem_page;
+>> +	struct vm_area_struct *vma = NULL;
+>> +	unsigned long uvmem_pfn, gfn;
+>> +	unsigned long addr, end;
+>> +
+>> +	down_read(&kvm->mm->mmap_sem);
+> 
+> You should be using mmap_read_lock(kvm->mm) with recent kernels.
 
- If there are any URLs to be removed completely or at least not HTTPSified:
- Just clearly say so and I'll *undo my change*.
- See also: https://lkml.org/lkml/2020/6/27/64
+Absolutely, shame on me, I reviewed Michel's series about that!
 
- If there are any valid, but yet not changed URLs:
- See: https://lkml.org/lkml/2020/6/26/837
+Paul, Michael, could you fix that when pulling this patch or should I sent a 
+whole new series?
 
- If you apply the patch, please let me know.
+> 
+>> +
+>> +	addr = slot->userspace_addr;
+>> +	end = addr + (slot->npages * PAGE_SIZE);
+>>   
+>> -	for (i = free->npages; i; --i, ++gfn) {
+>> -		struct page *uvmem_page;
+>> +	gfn = slot->base_gfn;
+>> +	for (i = slot->npages; i; --i, ++gfn, addr += PAGE_SIZE) {
+>> +
+>> +		/* Fetch the VMA if addr is not in the latest fetched one */
+>> +		if (!vma || (addr < vma->vm_start || addr >= vma->vm_end)) {
+>> +			vma = find_vma_intersection(kvm->mm, addr, end);
+>> +			if (!vma ||
+>> +			    vma->vm_start > addr || vma->vm_end < end) {
+>> +				pr_err("Can't find VMA for gfn:0x%lx\n", gfn);
+>> +				break;
+>> +			}
+>> +		}
+> 
+> The first find_vma_intersection() was called for the range spanning the
+> entire memslot, but you have code to check if vma remains valid for the
+> new addr in each iteration. Guess you wanted to get vma for one page at
+> a time and use it for subsequent pages until it covers the range?
 
-
- drivers/gpu/drm/bridge/tc358768.c     | 2 +-
- drivers/gpu/drm/bridge/ti-sn65dsi86.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/gpu/drm/bridge/tc358768.c b/drivers/gpu/drm/bridge/tc358768.c
-index 6650fe4cfc20..ac3757ecade6 100644
---- a/drivers/gpu/drm/bridge/tc358768.c
-+++ b/drivers/gpu/drm/bridge/tc358768.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- /*
-- *  Copyright (C) 2020 Texas Instruments Incorporated - http://www.ti.com
-+ *  Copyright (C) 2020 Texas Instruments Incorporated - https://www.ti.com
-  *  Author: Peter Ujfalusi <peter.ujfalusi@ti.com>
-  */
- 
-diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-index 6ad688b320ae..a17f3e3a4157 100644
---- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-+++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-@@ -1,7 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
- /*
-  * Copyright (c) 2018, The Linux Foundation. All rights reserved.
-- * datasheet: http://www.ti.com/lit/ds/symlink/sn65dsi86.pdf
-+ * datasheet: https://www.ti.com/lit/ds/symlink/sn65dsi86.pdf
-  */
- 
- #include <linux/clk.h>
--- 
-2.27.0
-
+That's the goal, fetch the VMA once and no more until we reach its end boundary.
