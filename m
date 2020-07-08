@@ -2,78 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 519C42190AB
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 21:33:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D82D2190AF
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 21:33:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726082AbgGHTdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 15:33:03 -0400
-Received: from rnd-relay.smtp.broadcom.com ([192.19.229.170]:33028 "EHLO
-        rnd-relay.smtp.broadcom.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726129AbgGHTdA (ORCPT
+        id S1726718AbgGHTdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 15:33:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40780 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726129AbgGHTdF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 15:33:00 -0400
-Received: from mail-irv-17.broadcom.com (mail-irv-17.lvn.broadcom.net [10.75.242.48])
-        by rnd-relay.smtp.broadcom.com (Postfix) with ESMTP id 4320730C0C3;
-        Wed,  8 Jul 2020 12:32:59 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 rnd-relay.smtp.broadcom.com 4320730C0C3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-        s=dkimrelay; t=1594236779;
-        bh=9Gyr81B6sm/reB1C1flcMuRw9h2QBtrGtqf4Qah6iLM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=br4LJy5pUKRXhTi7ZhushaG/DwY/xC4RWMw0HMe4NqL5w9Q8WOuEJrcmf7JD/Ol0m
-         9ZkmeRUZ5F9ADgnAyCN5DxLzqUaLpyscf8FjFbQxW1wl4k8rh8jSpH5pbe7+KJigC+
-         XgMUOJa/0q694dQqX0G37sG2j3rO125bzwguJq7k=
-Received: from stbsrv-and-01.and.broadcom.net (stbsrv-and-01.and.broadcom.net [10.28.16.211])
-        by mail-irv-17.broadcom.com (Postfix) with ESMTP id C8E3614008C;
-        Wed,  8 Jul 2020 12:32:57 -0700 (PDT)
-From:   Jim Quinlan <james.quinlan@broadcom.com>
-To:     linux-pci@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-rpi-kernel@lists.infradead.org (moderated list:BROADCOM
-        BCM2711/BCM2835 ARM ARCHITECTURE),
-        linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM
-        BCM2711/BCM2835 ARM ARCHITECTURE),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v7 12/12] PCI: brcmstb: Add bcm7211, bcm7216, bcm7445, bcm7278 to match list
-Date:   Wed,  8 Jul 2020 15:32:05 -0400
-Message-Id: <20200708193219.47134-13-james.quinlan@broadcom.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200708193219.47134-1-james.quinlan@broadcom.com>
-References: <20200708193219.47134-1-james.quinlan@broadcom.com>
+        Wed, 8 Jul 2020 15:33:05 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 643FAC061A0B
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 12:33:05 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id q8so48285415iow.7
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 12:33:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=slImY14f0rNlEWIkm1VGpH6ry5mubIzN1YXFRSQUYYw=;
+        b=EIzmcXfUjvt2TpgoLMvmOT/1wauSIofM4ahX4qssit2mGp/aZJvZpH0CRIzLFtLSzj
+         6kOGwZNSPgSre7jg2e413VgkxMXoVHdCL2ISAnaA7VDlGOgsOXE67V7PkS+g2IrVAPpM
+         4RDM2PSqPHKBq7sucj1es79e+9iuSaSUercAkwFBm+PTQ/TWXGBAfqkJWSkC7i5fA8EX
+         pdC8XtamtPprKBVLrjxBiPVyfIKH9tNEPD1PeHISshRyle6SIZnT9Aa8V131VZ5g48zs
+         59t53fKWZnIRKv8irTmRNGVXDECNokzdTN08hCWuJgj9+wO5jjZcv85b8NjobvZWHKce
+         xrpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=slImY14f0rNlEWIkm1VGpH6ry5mubIzN1YXFRSQUYYw=;
+        b=cWlMkZ9mNfAz3Tp0m2WlJp2fX54AY2fqSrqjejSTB4znAkMbsKbpt7esWejg18pLin
+         f3l9ov658/kMegLeejydNXJd0r5Ds3XK276UictrEJXkUflFzdAfQZ0rlvlY4F1o/gBz
+         Lij7eneWqfF/KDAPL6X+rWqDf44JFfriyc+Gwn77mzH7K2OwvWDOODZbN9HvV5A0EIKk
+         GMfiab2c/YND18oxmHuPqYt9YUPbkRNh+FZwh18vYnKExLuV2AVxniUWoeaUwskY8Nup
+         j2VKkryx4hdr+QPBmbU1+ruKsHmoHwE5QhdiNWphm74c7VI23kq+D/edF/G2TBJ1CJWB
+         yBfw==
+X-Gm-Message-State: AOAM533XSKF/QoMFdyYNuIC+6xmNfTP/swajTWj3GzxQZHbJZMfFnMr/
+        51uO4iBQsWUIy5eqp9dkmLB+dJu9DHfjr/caU5uBBg==
+X-Google-Smtp-Source: ABdhPJzDCnsVGm3VcsqdzLHzVCHdu3/UfHN/Is45+S8jIg9IrJQNXCoiom79Lh+8ZiI4+GAHi9UzpqcSFOyp8/SmOGg=
+X-Received: by 2002:a5e:cb42:: with SMTP id h2mr37795277iok.43.1594236784442;
+ Wed, 08 Jul 2020 12:33:04 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200702221237.2517080-1-abhishekbh@google.com>
+ <e7bc00fc-fe53-800e-8439-f1fbdca5dd26@redhat.com> <CAN_oZf2t+gUqXe19Yo1mTzAgk2xNhssE-9p58EvH-gw5jpuvzA@mail.gmail.com>
+ <CA+noqoj6u9n_KKohZw+QCpD-Qj0EgoCXaPEsryD7ABZ7QpqQfg@mail.gmail.com>
+ <20200703114037.GD2999146@linux.ibm.com> <CAD=FV=XRbrFqSbR619h+9HXNyrYNbqfBF2e-+iUZco9qQ8Wokg@mail.gmail.com>
+ <20200705152304.GE2999146@linux.ibm.com> <5d2ccf3d-b473-cf30-b863-e29bb33b7284@redhat.com>
+ <CA+noqojih03kKsWs33EUMV4H6RkWSRSQD=DHa9pAQ03yiz2GtQ@mail.gmail.com>
+ <48f82669-f1ff-0f5e-e531-ebbd151205f9@redhat.com> <CA+noqoj70jThJ-N9DhWi8wnCLueJNfYKEU72HaMjSsMhJQEzJA@mail.gmail.com>
+ <f8e84764-1cc7-c4e5-4e4f-4b907204a374@redhat.com>
+In-Reply-To: <f8e84764-1cc7-c4e5-4e4f-4b907204a374@redhat.com>
+From:   Abhishek Bhardwaj <abhishekbh@google.com>
+Date:   Wed, 8 Jul 2020 12:32:27 -0700
+Message-ID: <CA+noqoh90h3Mtk_3++bnMGMYyEGmUUq09R1k2WzCUbKX1jgQXQ@mail.gmail.com>
+Subject: Re: [PATCH v3] x86/speculation/l1tf: Add KConfig for setting the L1D
+ cache flush mode
+To:     Waiman Long <longman@redhat.com>
+Cc:     Mike Rapoport <rppt@linux.ibm.com>,
+        Doug Anderson <dianders@google.com>,
+        Anthony Steinhauser <asteinhauser@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tony Luck <tony.luck@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>, kvm@vger.kernel.org,
+        x86 <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that the support is in place with previous commits, we add several
-chips that use the BrcmSTB driver.
+On Mon, Jul 6, 2020 at 8:14 AM Waiman Long <longman@redhat.com> wrote:
+>
+> On 7/5/20 5:51 PM, Abhishek Bhardwaj wrote:
+>
+> That is why I said a comment will have to be added to highlight this
+> dependency. For instance,
+>
+> +/*
+> + * Three of the enums are explicitly assigned as the KVM_VMENTRY_L1D_FLUSH
+> + * config entry in arch/x86/kvm/Kconfig depends on these values.
+> + */
+>   enum vmx_l1d_flush_state {
+>          VMENTER_L1D_FLUSH_AUTO,
+> -       VMENTER_L1D_FLUSH_NEVER,
+> -       VMENTER_L1D_FLUSH_COND,
+> -       VMENTER_L1D_FLUSH_ALWAYS,
+> +       VMENTER_L1D_FLUSH_NEVER = 1,
+> +       VMENTER_L1D_FLUSH_COND = 2,
+> +       VMENTER_L1D_FLUSH_ALWAYS = 3,
+>          VMENTER_L1D_FLUSH_EPT_DISABLED,
+>          VMENTER_L1D_FLUSH_NOT_REQUIRED,
+>   };
+>
+> Of course, this is just a suggestion.
+>
+> I'd rather avoid this dependency. However, if people are okay with the
+> CONFIG option then I am happy to oblige with whatever people agree on.
+> Can a maintainer chime in ? Waiman if you're the final authority on
+> this, will you accept the patch if I incorporated your suggestion ?
+>
+> It is fine if you think this is not what you want.
+>
+> BTW, I am not a maintainer. However, no maintainer will give pre-approval. At least, you have to give the reason why this patch is needed in the patch itself. Before that happens, I don't see how it will get merged upstream.
 
-Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
----
- drivers/pci/controller/pcie-brcmstb.c | 4 ++++
- 1 file changed, 4 insertions(+)
+I just updated the patch with the reasoning in the commit message -
+https://lkml.org/lkml/2020/7/8/1325
 
-diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
-index 7a4e0cead7c2..7e7d695a8620 100644
---- a/drivers/pci/controller/pcie-brcmstb.c
-+++ b/drivers/pci/controller/pcie-brcmstb.c
-@@ -1187,6 +1187,10 @@ static int brcm_pcie_remove(struct platform_device *pdev)
- 
- static const struct of_device_id brcm_pcie_match[] = {
- 	{ .compatible = "brcm,bcm2711-pcie", .data = &bcm2711_cfg },
-+	{ .compatible = "brcm,bcm7211-pcie", .data = &generic_cfg },
-+	{ .compatible = "brcm,bcm7278-pcie", .data = &bcm7278_cfg },
-+	{ .compatible = "brcm,bcm7216-pcie", .data = &bcm7278_cfg },
-+	{ .compatible = "brcm,bcm7445-pcie", .data = &generic_cfg },
- 	{},
- };
- 
+
+>
+> Cheers,
+> Longman
+
+
+
 -- 
-2.17.1
-
+Abhishek
