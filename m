@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCE5D21844C
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 11:52:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68D30218448
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 11:52:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728724AbgGHJw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 05:52:26 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:48046 "EHLO
+        id S1728573AbgGHJwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 05:52:18 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:48176 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728666AbgGHJv5 (ORCPT
+        with ESMTP id S1728678AbgGHJv6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 05:51:57 -0400
-Date:   Wed, 08 Jul 2020 09:51:54 -0000
+        Wed, 8 Jul 2020 05:51:58 -0400
+Date:   Wed, 08 Jul 2020 09:51:55 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1594201914;
+        s=2020; t=1594201916;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Gr+j26DxdOrDysitakG8589IVHPGgKZDR0aXeIRtcgI=;
-        b=qXU+jKwQu+Jy9wjhNYwLM6YbN/Cln3ctk4hdUt8VuumM1z4qamwyo5/QdGj1REmVJT5oc1
-        kprOTCvz7VSj0QZ7pJKW39ozjQ2PNHo+ENczmnITa1V0MOP7YbHDvK6r3Vamk0ooL0xkUo
-        9u2qk1sEnUDETTgcShrjZSBZj0GZAxB1+n28eAK17ISYvTQdJ0Nu4O1ZRbdI6S30MBmLiH
-        Lr+ZUX0H97YMBlejZmdqpYDtbrk3vW7kTCbaDPQNPco1Tr/a4w4zD2R3Uf/7Wx3Fr+m4gz
-        jYG3BEVez5ZNj97YGHE0hML9Li9DZBaBxeEak4ODS8WUvJv1LCBY+4MShXTqGA==
+        bh=ZYBwRaqcxgn+XMoGe3mL1BKkwzTwL8McDCTncXMpY4Y=;
+        b=tI22gLbF2Jb8QflLTiD78wkFexT+0SwmX6jQ9PzKK7q+GS8lS6FOYbh0BaazAXZkFjQkmZ
+        EW9vVZd4u+6sbTeT12a7DuCRLrmBChxnhTM2IgofxB5WIZdlGDNJAwWc99vmKRgqupzvP5
+        o+82zoxem68ck5uFisou5dfnZ9nw+0PwIBSZDepV0+Omtwq3sHYLIUbN8qIQT5Pjwy7Ofc
+        h01zh3Y1fmGkxQ61oKbvopwxIjCqJ0qmsWOVfR1DlymSJA7AAiE6rmQfmTSMAqd6ERjm3t
+        uAJb5wKfty9svsRVeVWq8E+s4f4gJE5jlmIIFfb055znmq1Vd0P5k0Zs340fjA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1594201914;
+        s=2020e; t=1594201916;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Gr+j26DxdOrDysitakG8589IVHPGgKZDR0aXeIRtcgI=;
-        b=q1fv93+Vymmm3f2JhfiP0LMzdxeMdOuCtp85amk+bfvy1CQRSGjHGxL5t3/AU8DP0dlx50
-        5sWW0iE69tohlqDQ==
+        bh=ZYBwRaqcxgn+XMoGe3mL1BKkwzTwL8McDCTncXMpY4Y=;
+        b=sovHU6CWDTn3adq0atjjPoIgNyQrQtf6cZcrzhfpH8HqKlVh1LNW6YEElg5cyHXKkdK29e
+        ctaZ1VVCI79PRHCw==
 From:   "tip-bot2 for Kan Liang" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] perf/x86/intel/lbr: Add the function pointers for
- LBR save and restore
+Subject: [tip: perf/core] x86/cpufeatures: Add Architectural LBRs feature bit
 Cc:     Kan Liang <kan.liang@linux.intel.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <1593780569-62993-5-git-send-email-kan.liang@linux.intel.com>
-References: <1593780569-62993-5-git-send-email-kan.liang@linux.intel.com>
+        Dave Hansen <dave.hansen@intel.com>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <1593780569-62993-2-git-send-email-kan.liang@linux.intel.com>
+References: <1593780569-62993-2-git-send-email-kan.liang@linux.intel.com>
 MIME-Version: 1.0
-Message-ID: <159420191412.4006.8926426477159396711.tip-bot2@tip-bot2>
+Message-ID: <159420191583.4006.10876391642907607745.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -59,203 +59,45 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the perf/core branch of tip:
 
-Commit-ID:     799571bf38fc2b4b744fa448184b5915739b10fd
-Gitweb:        https://git.kernel.org/tip/799571bf38fc2b4b744fa448184b5915739b10fd
+Commit-ID:     bd657aa3dd8514e62486ce7f90b5e484c18d684d
+Gitweb:        https://git.kernel.org/tip/bd657aa3dd8514e62486ce7f90b5e484c18d684d
 Author:        Kan Liang <kan.liang@linux.intel.com>
-AuthorDate:    Fri, 03 Jul 2020 05:49:10 -07:00
+AuthorDate:    Fri, 03 Jul 2020 05:49:07 -07:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Wed, 08 Jul 2020 11:38:52 +02:00
+CommitterDate: Wed, 08 Jul 2020 11:38:51 +02:00
 
-perf/x86/intel/lbr: Add the function pointers for LBR save and restore
+x86/cpufeatures: Add Architectural LBRs feature bit
 
-The MSRs of Architectural LBR are different from previous model-specific
-LBR. Perf has to implement different functions to save and restore them.
+CPUID.(EAX=07H, ECX=0):EDX[19] indicates whether an Intel CPU supports
+Architectural LBRs.
 
-The function pointers for LBR save and restore are introduced. Perf
-should initialize the corresponding functions at boot time.
+The "X86_FEATURE_..., word 18" is already mirrored from CPUID
+"0x00000007:0 (EDX)". Add X86_FEATURE_ARCH_LBR under the "word 18"
+section.
 
-The generic optimizations, e.g. avoiding restore LBR if no one else
-touched them, still apply for Architectural LBRs. The related codes are
-not moved to model-specific functions.
+The feature will appear as "arch_lbr" in /proc/cpuinfo.
 
-Current model-specific LBR functions are set as default.
+The Architectural Last Branch Records (LBR) feature enables recording
+of software path history by logging taken branches and other control
+flows. The feature will be supported in the perf_events subsystem.
 
 Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/1593780569-62993-5-git-send-email-kan.liang@linux.intel.com
+Reviewed-by: Dave Hansen <dave.hansen@intel.com>
+Link: https://lkml.kernel.org/r/1593780569-62993-2-git-send-email-kan.liang@linux.intel.com
 ---
- arch/x86/events/intel/core.c |  4 ++-
- arch/x86/events/intel/lbr.c  | 79 +++++++++++++++++++++--------------
- arch/x86/events/perf_event.h |  6 +++-
- 3 files changed, 59 insertions(+), 30 deletions(-)
+ arch/x86/include/asm/cpufeatures.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-index 6414b47..50cb3c6 100644
---- a/arch/x86/events/intel/core.c
-+++ b/arch/x86/events/intel/core.c
-@@ -3981,6 +3981,8 @@ static __initconst const struct x86_pmu core_pmu = {
- 
- 	.lbr_reset		= intel_pmu_lbr_reset_64,
- 	.lbr_read		= intel_pmu_lbr_read_64,
-+	.lbr_save		= intel_pmu_lbr_save,
-+	.lbr_restore		= intel_pmu_lbr_restore,
- };
- 
- static __initconst const struct x86_pmu intel_pmu = {
-@@ -4029,6 +4031,8 @@ static __initconst const struct x86_pmu intel_pmu = {
- 
- 	.lbr_reset		= intel_pmu_lbr_reset_64,
- 	.lbr_read		= intel_pmu_lbr_read_64,
-+	.lbr_save		= intel_pmu_lbr_save,
-+	.lbr_restore		= intel_pmu_lbr_restore,
- };
- 
- static __init void intel_clovertown_quirk(void)
-diff --git a/arch/x86/events/intel/lbr.c b/arch/x86/events/intel/lbr.c
-index b8943f4..b2b8dc9 100644
---- a/arch/x86/events/intel/lbr.c
-+++ b/arch/x86/events/intel/lbr.c
-@@ -323,31 +323,13 @@ static inline u64 rdlbr_to(unsigned int idx)
- 	return val;
- }
- 
--static void __intel_pmu_lbr_restore(struct x86_perf_task_context *task_ctx)
-+void intel_pmu_lbr_restore(void *ctx)
- {
- 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
-+	struct x86_perf_task_context *task_ctx = ctx;
- 	int i;
- 	unsigned lbr_idx, mask;
--	u64 tos;
--
--	if (task_ctx->lbr_callstack_users == 0 ||
--	    task_ctx->lbr_stack_state == LBR_NONE) {
--		intel_pmu_lbr_reset();
--		return;
--	}
--
--	tos = task_ctx->tos;
--	/*
--	 * Does not restore the LBR registers, if
--	 * - No one else touched them, and
--	 * - Did not enter C6
--	 */
--	if ((task_ctx == cpuc->last_task_ctx) &&
--	    (task_ctx->log_id == cpuc->last_log_id) &&
--	    rdlbr_from(tos)) {
--		task_ctx->lbr_stack_state = LBR_NONE;
--		return;
--	}
-+	u64 tos = task_ctx->tos;
- 
- 	mask = x86_pmu.lbr_nr - 1;
- 	for (i = 0; i < task_ctx->valid_lbrs; i++) {
-@@ -368,24 +350,48 @@ static void __intel_pmu_lbr_restore(struct x86_perf_task_context *task_ctx)
- 	}
- 
- 	wrmsrl(x86_pmu.lbr_tos, tos);
--	task_ctx->lbr_stack_state = LBR_NONE;
- 
- 	if (cpuc->lbr_select)
- 		wrmsrl(MSR_LBR_SELECT, task_ctx->lbr_sel);
- }
- 
--static void __intel_pmu_lbr_save(struct x86_perf_task_context *task_ctx)
-+static void __intel_pmu_lbr_restore(struct x86_perf_task_context *task_ctx)
- {
- 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
--	unsigned lbr_idx, mask;
--	u64 tos, from;
--	int i;
-+	u64 tos;
- 
--	if (task_ctx->lbr_callstack_users == 0) {
-+	if (task_ctx->lbr_callstack_users == 0 ||
-+	    task_ctx->lbr_stack_state == LBR_NONE) {
-+		intel_pmu_lbr_reset();
-+		return;
-+	}
-+
-+	tos = task_ctx->tos;
-+	/*
-+	 * Does not restore the LBR registers, if
-+	 * - No one else touched them, and
-+	 * - Did not enter C6
-+	 */
-+	if ((task_ctx == cpuc->last_task_ctx) &&
-+	    (task_ctx->log_id == cpuc->last_log_id) &&
-+	    rdlbr_from(tos)) {
- 		task_ctx->lbr_stack_state = LBR_NONE;
- 		return;
- 	}
- 
-+	x86_pmu.lbr_restore(task_ctx);
-+
-+	task_ctx->lbr_stack_state = LBR_NONE;
-+}
-+
-+void intel_pmu_lbr_save(void *ctx)
-+{
-+	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
-+	struct x86_perf_task_context *task_ctx = ctx;
-+	unsigned lbr_idx, mask;
-+	u64 tos, from;
-+	int i;
-+
- 	mask = x86_pmu.lbr_nr - 1;
- 	tos = intel_pmu_lbr_tos();
- 	for (i = 0; i < x86_pmu.lbr_nr; i++) {
-@@ -400,13 +406,26 @@ static void __intel_pmu_lbr_save(struct x86_perf_task_context *task_ctx)
- 	}
- 	task_ctx->valid_lbrs = i;
- 	task_ctx->tos = tos;
-+
-+	if (cpuc->lbr_select)
-+		rdmsrl(MSR_LBR_SELECT, task_ctx->lbr_sel);
-+}
-+
-+static void __intel_pmu_lbr_save(struct x86_perf_task_context *task_ctx)
-+{
-+	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
-+
-+	if (task_ctx->lbr_callstack_users == 0) {
-+		task_ctx->lbr_stack_state = LBR_NONE;
-+		return;
-+	}
-+
-+	x86_pmu.lbr_save(task_ctx);
-+
- 	task_ctx->lbr_stack_state = LBR_VALID;
- 
- 	cpuc->last_task_ctx = task_ctx;
- 	cpuc->last_log_id = ++task_ctx->log_id;
--
--	if (cpuc->lbr_select)
--		rdmsrl(MSR_LBR_SELECT, task_ctx->lbr_sel);
- }
- 
- void intel_pmu_lbr_swap_task_ctx(struct perf_event_context *prev,
-diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
-index 312d27f..6d11813 100644
---- a/arch/x86/events/perf_event.h
-+++ b/arch/x86/events/perf_event.h
-@@ -695,6 +695,8 @@ struct x86_pmu {
- 
- 	void		(*lbr_reset)(void);
- 	void		(*lbr_read)(struct cpu_hw_events *cpuc);
-+	void		(*lbr_save)(void *ctx);
-+	void		(*lbr_restore)(void *ctx);
- 
- 	/*
- 	 * Intel PT/LBR/BTS are exclusive
-@@ -1090,6 +1092,10 @@ void intel_pmu_lbr_read_32(struct cpu_hw_events *cpuc);
- 
- void intel_pmu_lbr_read_64(struct cpu_hw_events *cpuc);
- 
-+void intel_pmu_lbr_save(void *ctx);
-+
-+void intel_pmu_lbr_restore(void *ctx);
-+
- void intel_pmu_lbr_init_core(void);
- 
- void intel_pmu_lbr_init_nhm(void);
+diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+index 02dabc9..72ba4c5 100644
+--- a/arch/x86/include/asm/cpufeatures.h
++++ b/arch/x86/include/asm/cpufeatures.h
+@@ -366,6 +366,7 @@
+ #define X86_FEATURE_MD_CLEAR		(18*32+10) /* VERW clears CPU buffers */
+ #define X86_FEATURE_TSX_FORCE_ABORT	(18*32+13) /* "" TSX_FORCE_ABORT */
+ #define X86_FEATURE_PCONFIG		(18*32+18) /* Intel PCONFIG */
++#define X86_FEATURE_ARCH_LBR		(18*32+19) /* Intel ARCH LBR */
+ #define X86_FEATURE_SPEC_CTRL		(18*32+26) /* "" Speculation Control (IBRS + IBPB) */
+ #define X86_FEATURE_INTEL_STIBP		(18*32+27) /* "" Single Thread Indirect Branch Predictors */
+ #define X86_FEATURE_FLUSH_L1D		(18*32+28) /* Flush L1D cache */
