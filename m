@@ -2,119 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E8E7218EB6
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 19:47:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA6EF218ECA
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 19:48:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728447AbgGHRqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 13:46:04 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:46686 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726903AbgGHRqB (ORCPT
+        id S1727785AbgGHRqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 13:46:40 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:35647 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728542AbgGHRq2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 13:46:01 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 068HRmiv143784;
-        Wed, 8 Jul 2020 17:45:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=SGcETknvroZPnOEphS/ri5hHqeOz1JhXChmVZzAmGPI=;
- b=I0bokXCDBqSMX5cA9s+1vma0ijyA+9PpPQmmuUxCgskx6HuvU7hLmDPzvD0VtRL+NPz8
- 3GUcGntxSOpgCIIZmJDcHVY57HNX18uuWbpcgFtwUvHAI3VQnSVOGVkn5J2EYOyrLeR5
- 3PMSsunSyGuJ98OGJ//93ZqvKmqNCqp4CzTUyPZlRdRa/2nF51uFy9k8tazUWnLhsNnp
- B3lfp0vpOU3XKbEZp2cBPQofJ6Eye+waCg5t/blp7FGe6AqRJe1mEIqqlFFUsgNfge5W
- FgGZgj3g/QrmVr+nsbduLxZMBs1YmXkhhXC+KreL3GOmdc6MH4zcXSIJ+vu9ilLkOQWh EQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 323wacr3q0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 08 Jul 2020 17:45:20 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 068HTFsr022300;
-        Wed, 8 Jul 2020 17:45:19 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 3233br7db0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 08 Jul 2020 17:45:19 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 068HjIUk008256;
-        Wed, 8 Jul 2020 17:45:18 GMT
-Received: from [192.168.2.112] (/50.38.35.18)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 08 Jul 2020 10:45:17 -0700
-Subject: Re: [PATCH v3] mm/hugetlb: avoid hardcoding while checking if cma is
- enable
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Barry Song <song.bao.hua@hisilicon.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linuxarm@huawei.com,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Roman Gushchin <guro@fb.com>
-References: <20200707040204.30132-1-song.bao.hua@hisilicon.com>
- <20200707125641.dbd2ccd63f525aa5870069d8@linux-foundation.org>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <9066e009-5ed2-1992-d70d-fd27b4bf5871@oracle.com>
-Date:   Wed, 8 Jul 2020 10:45:16 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Wed, 8 Jul 2020 13:46:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594230386;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZkaID9R3Jhc4tsMAVwPHjs/XB1tI9aBrCq6liU7gBk8=;
+        b=BLYC/3Eb16X7K9CIRnllLaqetTQUAwzdaUPt5DdqqwP2K1gdKZ7x+eESrt3OWbeBGQdHib
+        Bttckp5dRgk2tX93DYDNos6xLVCZanlLAKYIB+N3sYZZzjtRgZRLxykuOkLGWwYZJ9vSfM
+        wUEW4j89upD216S5Gny8ImQ1ztYL/MQ=
+Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
+ [209.85.167.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-345-E69th0-vNwSGo19tI00IWQ-1; Wed, 08 Jul 2020 13:46:18 -0400
+X-MC-Unique: E69th0-vNwSGo19tI00IWQ-1
+Received: by mail-oi1-f200.google.com with SMTP id x7so23657872oif.13
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 10:46:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZkaID9R3Jhc4tsMAVwPHjs/XB1tI9aBrCq6liU7gBk8=;
+        b=XuO/BvqDnUKYZTv5Jswo1/UA7+UleItRg4ZNUFhFt/sR/MW0efST/QmzxepMqZAbgt
+         2OJuQpwgzhWVX6XxuWIRAoG3XMjL56lqNTGXAQSxt4l1XnayEgYbsTTRVT9NUbC5wgu1
+         IDVK7DQ2uYZfGxroiD+oxmvjBxZExkMVrdfzTB6j7MFs+3PEy+c9mWv8EcD86UTKOoJE
+         StEjga8YDOnmziZpGyD0bjRM4wSj5448hkv8owto7q3j6PZKz847oL95TLPgZ+jjs4fg
+         ILeSIowNPtlYKseHviWqBPZBeR7ZUXxJGkNA2ZvGeR+mPi+5hYXBOHnVmhTVKbweDLvb
+         JocA==
+X-Gm-Message-State: AOAM530d3vqE8FvlSn4nzdUjLpaJhiYO77dtfoXsMo1rJC0uEns0FnAP
+        oDyrhcghhcAJoIkrQICsYWHBdwvmFb4xVQ1rDApJ1uiuieii56IC0x5sVsVD91CZQg8UOMicP02
+        q/WxKpGRWvAuO5dBlM9nQnaIUhbIF48W/oOm4Bkk/
+X-Received: by 2002:aca:ecc7:: with SMTP id k190mr7845684oih.92.1594230377648;
+        Wed, 08 Jul 2020 10:46:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzBvnBE7vG7SYjJlNlw8BxUfO77iK66DtTfRnuh/WddAXOJxgxj9SwafZ44RoN1GuiRH4m4WrcdoV7b09jm+5A=
+X-Received: by 2002:aca:ecc7:: with SMTP id k190mr7845656oih.92.1594230377328;
+ Wed, 08 Jul 2020 10:46:17 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200707125641.dbd2ccd63f525aa5870069d8@linux-foundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9676 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxscore=0 adultscore=0
- malwarescore=0 spamscore=0 mlxlogscore=999 bulkscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2007080111
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9676 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 priorityscore=1501
- phishscore=0 spamscore=0 mlxlogscore=999 adultscore=0 cotscore=-2147483648
- suspectscore=0 impostorscore=0 bulkscore=0 mlxscore=0 clxscore=1011
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2007080111
+References: <000000000000b164d505a9c7b802@google.com>
+In-Reply-To: <000000000000b164d505a9c7b802@google.com>
+From:   Jarod Wilson <jarod@redhat.com>
+Date:   Wed, 8 Jul 2020 13:46:06 -0400
+Message-ID: <CAKfmpSdmC1QEmht7BbrDM5FMqyZfwxJXTTt+OJB3qyy5bzucTA@mail.gmail.com>
+Subject: Re: WARNING: suspicious RCU usage in bond_ipsec_add_sa
+To:     syzbot <syzbot+582c98032903dcc04816@syzkaller.appspotmail.com>
+Cc:     Andy Gospodarek <andy@greyhouse.net>,
+        "David S. Miller" <davem@davemloft.net>, j.vosburgh@gmail.com,
+        Jakub Kicinski <kuba@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>, syzkaller-bugs@googlegroups.com,
+        Veaceslav Falico <vfalico@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/7/20 12:56 PM, Andrew Morton wrote:
-> On Tue, 7 Jul 2020 16:02:04 +1200 Barry Song <song.bao.hua@hisilicon.com> wrote:
-> 
->> hugetlb_cma[0] can be NULL due to various reasons, for example, node0 has
->> no memory. so NULL hugetlb_cma[0] doesn't necessarily mean cma is not
->> enabled. gigantic pages might have been reserved on other nodes.
-> 
-> I'm trying to figure out whether this should be backported into 5.7.1,
-> but the changelog doesn't describe any known user-visible effects of
-> the bug.  Are there any?
+On Mon, Jul 6, 2020 at 11:44 AM syzbot
+<syzbot+582c98032903dcc04816@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following crash on:
+>
+> HEAD commit:    e44f65fd xen-netfront: remove redundant assignment to vari..
+> git tree:       net-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=16148f87100000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=829871134ca5e230
+> dashboard link: https://syzkaller.appspot.com/bug?extid=582c98032903dcc04816
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+>
+> Unfortunately, I don't have any reproducer for this crash yet.
+>
+> IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> Reported-by: syzbot+582c98032903dcc04816@syzkaller.appspotmail.com
+>
+> =============================
+> WARNING: suspicious RCU usage
+> 5.8.0-rc2-syzkaller #0 Not tainted
+> -----------------------------
+> drivers/net/bonding/bond_main.c:387 suspicious rcu_dereference_protected() usage!
 
-Barry must have missed this email.  He reported the issue so I was hoping
-he would reply.
+Hm. Access to curr_active_slave in the bonding driver is kind of all
+over the place, between rtnl_dereference, rcu_deference,
+rcu_access_pointer and just reading it without any protections. It
+does look like this is a case where bond_ipsec_add_sa() gets called
+without RTNL being held, so perhaps we should be using rcu_dereference
+here, since we do need to dereference the acquired pointer, but
+probably don't need to be holding RTNL here.
 
-Based on the code changes, I believe the following could happen:
-- Someone uses 'hugetlb_cma=' kernel command line parameter to reserve
-  CMA for gigantic pages.
-- The system topology is such that no memory is on node 0.  Therefore,
-  no CMA can be reserved for gigantic pages on node 0.  CMA is reserved
-  on other nodes.
-- The user also specifies a number of gigantic pages to pre-allocate on
-  the command line with hugepagesz=<gigantic_page_size> hugepages=<N>
-- The routine which allocates gigantic pages from the bootmem allocator
-  will not detect CMA has been reserved as there is no memory on node 0.
-  Therefore, pages will be pre-allocated from bootmem allocator as well
-  as reserved in CMA.
 
-This double allocation (bootmem and CMA) is the worst case scenario.  Not
-sure if this is what Barry saw, and I suspect this would rarely happen.
+> other info that might help us debug this:
+>
+>
+> rcu_scheduler_active = 2, debug_locks = 1
+> 1 lock held by syz-executor.0/5186:
+>  #0: ffff888089791a28 (&net->xfrm.xfrm_cfg_mutex){+.+.}-{3:3}, at: xfrm_netlink_rcv+0x5c/0x90 net/xfrm/xfrm_user.c:2687
+>
+> stack backtrace:
+> CPU: 1 PID: 5186 Comm: syz-executor.0 Not tainted 5.8.0-rc2-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:77 [inline]
+>  dump_stack+0x18f/0x20d lib/dump_stack.c:118
+>  bond_ipsec_add_sa+0x1c8/0x220 drivers/net/bonding/bond_main.c:387
+>  xfrm_dev_state_add+0x2da/0x7b0 net/xfrm/xfrm_device.c:268
+>  xfrm_state_construct net/xfrm/xfrm_user.c:655 [inline]
+>  xfrm_add_sa+0x2166/0x34f0 net/xfrm/xfrm_user.c:684
+>  xfrm_user_rcv_msg+0x414/0x700 net/xfrm/xfrm_user.c:2680
+>  netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2469
+>  xfrm_netlink_rcv+0x6b/0x90 net/xfrm/xfrm_user.c:2688
+>  netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
+>  netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1329
+>  netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1918
+>  sock_sendmsg_nosec net/socket.c:652 [inline]
+>  sock_sendmsg+0xcf/0x120 net/socket.c:672
+>  ____sys_sendmsg+0x6e8/0x810 net/socket.c:2352
+>  ___sys_sendmsg+0xf3/0x170 net/socket.c:2406
+>  __sys_sendmsg+0xe5/0x1b0 net/socket.c:2439
+>  do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:359
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x45cb29
+> Code: Bad RIP value.
+> RSP: 002b:00007ff7e9a92c78 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+> RAX: ffffffffffffffda RBX: 00000000005027e0 RCX: 000000000045cb29
+> RDX: 0000000000000000 RSI: 0000000020000180 RDI: 0000000000000003
+> RBP: 000000000078bf00 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000ffffffff
+> R13: 0000000000000a45 R14: 00000000004cd2c9 R15: 00007ff7e9a936d4
+> bond0: (slave bond_slave_0): Slave does not support ipsec offload
+>
+>
+> ---
+> This bug is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this bug report. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>
 
-After writing this, I started to think that perhaps command line parsing
-should be changed.  If hugetlb_cma= is specified, it makes no sense to
-pre-allocate gigantic pages.  Therefore, the hugepages=<N> paramemter
-should be ignored and flagged with a warning if  hugetlb_cma= is specified.
-This could be checked at parsing time and there would be no need for such
-a check in the allocation code (except for sanity cheching).
 
-Thoughts?  I just cleaned up the parsing code and could make such a change
-quite easily.
 -- 
-Mike Kravetz
+Jarod Wilson
+jarod@redhat.com
+
