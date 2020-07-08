@@ -2,153 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CE40218F8C
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 20:15:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E43AC218FA8
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 20:25:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726420AbgGHSPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 14:15:08 -0400
-Received: from mga11.intel.com ([192.55.52.93]:14653 "EHLO mga11.intel.com"
+        id S1726374AbgGHSZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 14:25:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43812 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725978AbgGHSPI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 14:15:08 -0400
-IronPort-SDR: JHI2Ns+lq2lOaKsb5NxeLdaXS/Zr4Ya0XnSmrI9YAT8J5jPVnjZqoDGU5EJ8NBn2rILWBn9plz
- v1C0Dy6M7rUA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9676"; a="145977497"
-X-IronPort-AV: E=Sophos;i="5.75,328,1589266800"; 
-   d="scan'208";a="145977497"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2020 11:15:07 -0700
-IronPort-SDR: EbGkfRKyLTTPPj6ZVg2YNHXlTbgCs+RgblujjBVP9+gmS/i2X9tnCCJ/7gkqC2YsdP0nBhCZ9R
- UlumYbCNehUw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,328,1589266800"; 
-   d="scan'208";a="280034695"
-Received: from marshy.an.intel.com (HELO [10.122.105.159]) ([10.122.105.159])
-  by orsmga003.jf.intel.com with ESMTP; 08 Jul 2020 11:15:06 -0700
-Subject: Re: [PATCH] fpga: stratix10-soc: make FPGA task un-interruptible
-To:     Dinh Nguyen <dinguyen@kernel.org>, mdf@kernel.org
-Cc:     linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        richard.gong@intel.com
-References: <1594138447-21488-1-git-send-email-richard.gong@linux.intel.com>
- <3e45e4a4-f002-ecf8-110f-bf7d646a5dbe@kernel.org>
-From:   Richard Gong <richard.gong@linux.intel.com>
-Message-ID: <5be15818-9170-b2a5-e92b-bbe6b1fcba21@linux.intel.com>
-Date:   Wed, 8 Jul 2020 13:30:12 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1725937AbgGHSZG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 14:25:06 -0400
+Received: from embeddedor (unknown [201.162.240.161])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6F4362078D;
+        Wed,  8 Jul 2020 18:25:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594232706;
+        bh=M9MY+fWX6+x29R7/l42mVKrvKcjn7f0nCowboASuXE8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bMhYtMoFpRSCBD1jPT24LCNWTQrQSw+82QgcYiQLI0gRA70YcJQT+Ju4VSHdQ0pLI
+         FyLQwsk0fX///QKIxb5z1OCMSBawvXXEW2wcLBbF+Rw0LpmEDMbj/AH/vb0He6Q2Af
+         LdZjwrsMDsGuqOniiyvSdo7GcDQayAzsr8JhGWn0=
+Date:   Wed, 8 Jul 2020 13:30:33 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        Roopa Prabhu <roopa@cumulusnetworks.com>,
+        Nikolay Aleksandrov <nikolay@cumulusnetworks.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        linux-kernel@vger.kernel.org, bridge@lists.linux-foundation.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH][next] netfilter: nf_tables: Use fallthrough
+ pseudo-keyword
+Message-ID: <20200708183033.GG11533@embeddedor>
+References: <20200707194717.GA3596@embeddedor>
+ <20200708160931.GA14715@salvia>
 MIME-Version: 1.0
-In-Reply-To: <3e45e4a4-f002-ecf8-110f-bf7d646a5dbe@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200708160931.GA14715@salvia>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dinh,
-
-
-On 7/8/20 12:08 PM, Dinh Nguyen wrote:
-> Hi
+On Wed, Jul 08, 2020 at 06:09:31PM +0200, Pablo Neira Ayuso wrote:
+> On Tue, Jul 07, 2020 at 02:47:17PM -0500, Gustavo A. R. Silva wrote:
+> > Replace the existing /* fall through */ comments and its variants with
+> > the new pseudo-keyword macro fallthrough[1]. Also, remove unnecessary
+> > fall-through markings when it is the case.
 > 
-> On 7/7/20 11:14 AM, richard.gong@linux.intel.com wrote:
->> From: Richard Gong <richard.gong@intel.com>
->>
->> When CTRL+C occurs during the process of FPGA reconfiguration, the FPGA
->> reconfiguration process stops and the user can't perform a new FPGA
->> reconfiguration properly.
->>
->> Set FPGA complete task to be not interruptible so that the user can
->> properly perform FPGA reconfiguration after CTRL+C event.
->>
->> Signed-off-by: Richard Gong <richard.gong@intel.com>
->> ---
->>   drivers/fpga/stratix10-soc.c | 23 +++--------------------
->>   1 file changed, 3 insertions(+), 20 deletions(-)
->>
->> diff --git a/drivers/fpga/stratix10-soc.c b/drivers/fpga/stratix10-soc.c
->> index 44b7c56..657a70c 100644
->> --- a/drivers/fpga/stratix10-soc.c
->> +++ b/drivers/fpga/stratix10-soc.c
->> @@ -196,17 +196,13 @@ static int s10_ops_write_init(struct fpga_manager *mgr,
->>   	if (ret < 0)
->>   		goto init_done;
->>   
->> -	ret = wait_for_completion_interruptible_timeout(
->> +	ret = wait_for_completion_timeout(
->>   		&priv->status_return_completion, S10_RECONFIG_TIMEOUT);
->>   	if (!ret) {
->>   		dev_err(dev, "timeout waiting for RECONFIG_REQUEST\n");
->>   		ret = -ETIMEDOUT;
->>   		goto init_done;
->>   	}
->> -	if (ret < 0) {
->> -		dev_err(dev, "error (%d) waiting for RECONFIG_REQUEST\n", ret);
->> -		goto init_done;
->> -	}
->>   
->>   	ret = 0;
->>   	if (!test_and_clear_bit(SVC_STATUS_OK, &priv->status)) {
->> @@ -318,7 +314,7 @@ static int s10_ops_write(struct fpga_manager *mgr, const char *buf,
->>   		 */
->>   		wait_status = 1; /* not timed out */
->>   		if (!priv->status)
->> -			wait_status = wait_for_completion_interruptible_timeout(
->> +			wait_status = wait_for_completion_timeout(
->>   				&priv->status_return_completion,
->>   				S10_BUFFER_TIMEOUT);
->>   
->> @@ -340,13 +336,6 @@ static int s10_ops_write(struct fpga_manager *mgr, const char *buf,
->>   			ret = -ETIMEDOUT;
->>   			break;
->>   		}
->> -		if (wait_status < 0) {
->> -			ret = wait_status;
->> -			dev_err(dev,
->> -				"error (%d) waiting for svc layer buffers\n",
->> -				ret);
->> -			break;
->> -		}
->>   	}
->>   
->>   	if (!s10_free_buffers(mgr))
->> @@ -372,7 +361,7 @@ static int s10_ops_write_complete(struct fpga_manager *mgr,
->>   		if (ret < 0)
->>   			break;
->>   
->> -		ret = wait_for_completion_interruptible_timeout(
->> +		ret = wait_for_completion_timeout(
->>   			&priv->status_return_completion, timeout);
->>   		if (!ret) {
->>   			dev_err(dev,
->> @@ -380,12 +369,6 @@ static int s10_ops_write_complete(struct fpga_manager *mgr,
->>   			ret = -ETIMEDOUT;
->>   			break;
->>   		}
->> -		if (ret < 0) {
->> -			dev_err(dev,
->> -				"error (%d) waiting for RECONFIG_COMPLETED\n",
->> -				ret);
->> -			break;
->> -
->>   		/* Not error or timeout, so ret is # of jiffies until timeout */
->>   		timeout = ret;
->>   		ret = 0;
->>
+> I suggest:
 > 
-> Do you need the same change in drivers/fpga/socfpga.c? 
-It is not required.
-Also, you did not
-> include Moritz Fisher on this. He's the maintainer.
+>         netfilter: Use fallthrough pseudo-keyword
 > 
-I did include Moritz Fisher <mdf@kernel.org> in the submission, is 
-something change recently?
+> instead, since this is also updating iptables and ipset codebase.
+> 
 
+Yep; I noticed that, but forgot to change the subject before submitting
+the patch.
 
-Regards,
-Richard
-> Dinh
-> 
+I will address the rest of the comments and send v2, shortly.
+
+Thanks
+--
+Gustavo
+
