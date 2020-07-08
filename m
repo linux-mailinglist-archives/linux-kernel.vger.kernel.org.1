@@ -2,108 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE6E1218923
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 15:33:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96D6921892C
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 15:35:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729677AbgGHNdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 09:33:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729470AbgGHNds (ORCPT
+        id S1729618AbgGHNfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 09:35:05 -0400
+Received: from mx07-00178001.pphosted.com ([62.209.51.94]:1473 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729436AbgGHNfF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 09:33:48 -0400
-Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BE26C061A0B
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 06:33:48 -0700 (PDT)
-Received: by mail-ua1-x942.google.com with SMTP id p6so7301275uaq.12
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 06:33:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=y1GTsvB1sENuLYTitDg+4KJVrg9ZAbmGFqqoF3A8ork=;
-        b=dtWyJuBqyJLR1bSeZKeSipNjWrOFaLi6Et+BtwiwCKDNFw0+FIShvW+J/3Zd9/eNMQ
-         9YJVXSlhQXbXA8jaAqde+sMEJLnyaXWSUoidNhNR+NmVMmPmxA6kF+JBBmh2Ydq8HuEy
-         EmKgvmg8Qjh3GVaZ2Rtl+p2ZbohNCy71uE5htKD2NCCSgiOetnmxfHQyjUYCx3sCvxRe
-         rRoeYQMCKVqz8JnhgKN41bBr3vjWxhJMH0t5Pc0xkEPmQ+UQ+B6D5GMLvfs5XjyqLtt2
-         VnRcoB7+ZHiUYClGpfXYVVTCNBLDg5LARAre3p2R55W91wq/SbA6N2DIn0D5j6l9XqoZ
-         /Dog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=y1GTsvB1sENuLYTitDg+4KJVrg9ZAbmGFqqoF3A8ork=;
-        b=FPYSIbMh+DpTIYUipnpqcL6GvonHsKczUM+ZmWpz4hTUxHJ1q3QYzzKqiCk5dL+UNS
-         YYtZrzLs2wTgYBCDP5d7JVPARFiZZx0LuM7lw84Lx9FBKDkXrKFiS1LdYhm/gLV9i/sz
-         CTK3TfROPh4PL2+hUc57JNmaay3Uz2v10Tvk0HrqDAVgRZV2yBvrfJBWcZJtwV2DQWXI
-         rVZ7efjZGMgXTAeokuXxy+alb7pLuF2o55lYcAP+6SCX+VaYLqS1if7w2Z4AW4L0Uq+5
-         QO8k8yNZdUFKduYzKA/THEmc50pz0gTCeNoUYUIhj1VQ43j2d1SVDeNbz1bQKxHT+o30
-         B+BQ==
-X-Gm-Message-State: AOAM533yXulT6/9F5IqxGUoqSzKWCY+gWGci5JiFKF1urVTs5gGVMvlQ
-        90IOXrJ4uuuQObs6niDYd9qWCGNhMIGIO3WhY8QQVA==
-X-Google-Smtp-Source: ABdhPJw+0z3dQW3AcfspoIM8itefwk3QY2ggPT+DFUkCpMKHpkWyXEKW3t8CCIUcJ8Mn3muqMEBQNOiJv4qt/ZeKuu8=
-X-Received: by 2002:ab0:6f0a:: with SMTP id r10mr49334442uah.100.1594215227202;
- Wed, 08 Jul 2020 06:33:47 -0700 (PDT)
+        Wed, 8 Jul 2020 09:35:05 -0400
+Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 068DRj2o011050;
+        Wed, 8 Jul 2020 15:33:48 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=pjxuwpy57URCV3RNfmG0k+yUDPUR1i8G9e47WhJiwJM=;
+ b=wvQm3G58IY1mGmGiLJFy9yVUMPPMmCcq5JlYvSnKh6rxJ1qnC5sjmJOWt0MLlB8LwgB9
+ vIDMnP1xQ8yOULajq4rQthmSIMpSU4/4lW3nAyQkk3Zs3qUsksmLwLG6/4AgugCP0i2Q
+ c0KK1CZuQ5yiQA7pLsW4uEIfbLoj/wRgPwaErO81wDqg6+ue3xnrZQLwYycdsIyXN6kn
+ al9Lvwija1ialoQc7+C1CQJ0IBHuk6DtwBK6xO0NtGbDohDToQmAWIMlQdV+5CLQbScj
+ Koh/NMNjwoK1X3TI4KBiuAJlB2kWzHOXvzc2QBK525oOrsiO2aGWIj9hgAjaUrTeWNRB hw== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 322fhv7tkx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Jul 2020 15:33:48 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 7370A10002A;
+        Wed,  8 Jul 2020 15:33:47 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 51CFF2BF9B2;
+        Wed,  8 Jul 2020 15:33:47 +0200 (CEST)
+Received: from lmecxl0889.tpe.st.com (10.75.127.46) by SFHDAG3NODE1.st.com
+ (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 8 Jul
+ 2020 15:33:46 +0200
+Subject: Re: [PATCH v3 06/10] ASoC: sti: uniperif: fix 'defined by not used'
+ warning
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+CC:     "tiwai@suse.de" <tiwai@suse.de>,
+        open list <linux-kernel@vger.kernel.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>
+References: <20200707191615.98296-1-pierre-louis.bossart@linux.intel.com>
+ <20200707191615.98296-7-pierre-louis.bossart@linux.intel.com>
+ <a376393a-6a17-2836-204b-0d4ff60729c0@st.com>
+ <31969204-1ada-3775-64da-092ded0bff8f@linux.intel.com>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Message-ID: <b3cebdba-18fc-8df5-0463-a9620ab0224e@st.com>
+Date:   Wed, 8 Jul 2020 15:33:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-References: <1594213888-2780-1-git-send-email-vbadigan@codeaurora.org>
-In-Reply-To: <1594213888-2780-1-git-send-email-vbadigan@codeaurora.org>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 8 Jul 2020 15:33:10 +0200
-Message-ID: <CAPDyKFqiAeQYcqkb=Wv2stgTb9yvGwFfHv-BGtd5VuyJxfJXAA@mail.gmail.com>
-Subject: Re: [PATCH V1] mmc: sdhci-msm: Override DLL_CONFIG only if the valid
- value is supplied
-To:     Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        "Bao D. Nguyen" <nguyenb@codeaurora.org>,
-        Sarthak Garg <sartgarg@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <31969204-1ada-3775-64da-092ded0bff8f@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.75.127.46]
+X-ClientProxiedBy: SFHDAG8NODE2.st.com (10.75.127.23) To SFHDAG3NODE1.st.com
+ (10.75.127.7)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-08_11:2020-07-08,2020-07-08 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 8 Jul 2020 at 15:12, Veerabhadrarao Badiganti
-<vbadigan@codeaurora.org> wrote:
->
-> During DLL initialization, the DLL_CONFIG register value would be
-> updated with the value supplied from the device-tree.
->
-> Override this register only if a valid value is supplied.
->
-> Fixes: 03591160ca19 ("mmc: sdhci-msm: Read and use DLL Config property from device tree file")
-> Signed-off-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+hi
 
-Applied for fixes, thanks!
+On 7/8/20 2:55 PM, Pierre-Louis Bossart wrote:
+> 
+> 
+> On 7/8/20 4:11 AM, Arnaud POULIQUEN wrote:
+>> Hi Pierre-Louis,
+>>
+>> On 7/7/20 9:16 PM, Pierre-Louis Bossart wrote:
+>>> Fix W=1 warning. The table uni_tdm_hw is declared in a header included
+>>> by multiple C file. This isn't really a good practice but for now
+>>> using __maybe_unused makes the following warning go away.
+>>>
+>>> sound/soc/sti/sti_uniperif.c:12:
+>>> sound/soc/sti/uniperif.h:1351:38: warning: ‘uni_tdm_hw’ defined but
+>>> not used [-Wunused-const-variable=]
+>>>   1351 | static const struct snd_pcm_hardware uni_tdm_hw = {
+>>>        |                                      ^~~~~~~~~~
+>>>
+>>> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+>>
+>> Thanks for the patch,
+>> Seems that the same patch has already been proposed by Lee:
+>> https://www.spinics.net/lists/arm-kernel/msg820327.html
+> 
+> that's right, we both fixed the same things, and this is the merged series.
+> Do you mind providing a tag if you're ok with the change?
 
-Kind regards
-Uffe
+Sure, just need to known which one i should tag... I saw that you are discussing with Lee 
+by default i ack both, i let you decide which one will be merged :)
 
+Acked-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 
-> ---
->  drivers/mmc/host/sdhci-msm.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
-> index efd2bae1430c..93d67a3a899f 100644
-> --- a/drivers/mmc/host/sdhci-msm.c
-> +++ b/drivers/mmc/host/sdhci-msm.c
-> @@ -626,8 +626,9 @@ static int msm_init_cm_dll(struct sdhci_host *host)
->         config &= ~CORE_CLK_PWRSAVE;
->         writel_relaxed(config, host->ioaddr + msm_offset->core_vendor_spec);
->
-> -       config = msm_host->dll_config;
-> -       writel_relaxed(config, host->ioaddr + msm_offset->core_dll_config);
-> +       if (msm_host->dll_config)
-> +               writel_relaxed(msm_host->dll_config,
-> +                               host->ioaddr + msm_offset->core_dll_config);
->
->         if (msm_host->use_14lpp_dll_reset) {
->                 config = readl_relaxed(host->ioaddr +
-> --
-> Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc., is a member of Code Aurora Forum, a Linux Foundation Collaborative Project
->
+> 
+>> Regards,
+>> Arnaud
+>>
+>>> ---
+>>>   sound/soc/sti/uniperif.h | 2 +-
+>>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/sound/soc/sti/uniperif.h b/sound/soc/sti/uniperif.h
+>>> index 2dc2da5d458b..a16adeb7c1e9 100644
+>>> --- a/sound/soc/sti/uniperif.h
+>>> +++ b/sound/soc/sti/uniperif.h
+>>> @@ -1348,7 +1348,7 @@ struct sti_uniperiph_data {
+>>>   	struct sti_uniperiph_dai dai_data;
+>>>   };
+>>>   
+>>> -static const struct snd_pcm_hardware uni_tdm_hw = {
+>>> +static __maybe_unused const struct snd_pcm_hardware uni_tdm_hw = {
+>>>   	.info = SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
+>>>   		SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_MMAP |
+>>>   		SNDRV_PCM_INFO_MMAP_VALID,
+>>>
