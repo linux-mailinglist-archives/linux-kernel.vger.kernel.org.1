@@ -2,170 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23A4C2187EF
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 14:45:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92E43218734
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 14:25:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729282AbgGHMpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 08:45:25 -0400
-Received: from casper.infradead.org ([90.155.50.34]:34136 "EHLO
-        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729087AbgGHMpZ (ORCPT
+        id S1729139AbgGHMZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 08:25:48 -0400
+Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:59449 "EHLO
+        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728681AbgGHMZr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 08:45:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=ZXLwtXCaekMdRRvox5c6zlut8/iXO7Z0Y30xZewS4fE=; b=YgPbqUBMtF/cAfdylt5dwWUpDq
-        MkqxxuE4lYsPtaKRbuKTUQNmsY07qp57mapw+GiFtslmQNXoeFtL9Icl+S9PoNEIItZTQebYYK49C
-        uS5HWpbsrGuuhsgAj0WLGCOkJEh7juedqIc0xbKRS9FuMvOnjJOklPP6s0MAU1ejN1j1yjKO/KtEl
-        h6bAthB5uIQOej0XPPEZ/8FyXPCOIjibhSAkEa8MGpVgwiCHgZ5ajtLVIi/SH8PBxp0MN++Z+kscc
-        pmRqidAvIKX2EXfWy76D2A2YTCKb9XYNRO/V9g9m+JGyu0NcgIsVXF5EtgKPHRnLw3IOq7OPYGupf
-        us7EAcgQ==;
-Received: from 213-225-32-40.nat.highway.a1.net ([213.225.32.40] helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jt9DI-0001wu-FA; Wed, 08 Jul 2020 12:30:12 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Song Liu <song@kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-xtensa@linux-xtensa.org,
-        linux-block@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: [PATCH 1/6] md: switch to ->check_events for media change notifications
-Date:   Wed,  8 Jul 2020 14:25:41 +0200
-Message-Id: <20200708122546.214579-2-hch@lst.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200708122546.214579-1-hch@lst.de>
-References: <20200708122546.214579-1-hch@lst.de>
+        Wed, 8 Jul 2020 08:25:47 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id 1B3E4BDC;
+        Wed,  8 Jul 2020 08:25:46 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Wed, 08 Jul 2020 08:25:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:content-transfer-encoding:in-reply-to; s=fm3; bh=W
+        GeLdZevEHRYXhgk2QETUtSKHCbJuo1sBlmhw+I+6SM=; b=ZjjGbP96DMyvdd6x4
+        HmJTMz6u3VBpaq/DrQc64LPyEYenL3og8ol5UevLG3Hjlwr7d+VEAghNB1EJGpo0
+        EnJl/zAiEdcOhJZ9xSq4+Yt6DMkamTVpbR09zulKv59rQloSJ1F4p9cU95XWAs96
+        BIsEiX0a79p/ZbFDL14NtGsXH90mXDO7NGScW6z/1zD46lsfQVd8IxE47n8Z00nH
+        Jgm2DR22vp8LMo91X8Wk9r7nPxRSwBSIv9n1sFsMlwSE1V1ox7TELtR+kfFBpCHg
+        srUQ1/rRY8vQAkXKNS5z9BZKTHMKz42TKZHwLC+ouqaV66uAFb1AuHiedZD2oQfP
+        oYvzg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=WGeLdZevEHRYXhgk2QETUtSKHCbJuo1sBlmhw+I+6
+        SM=; b=NO5deZoxpXKh4YytPuG5YffAbtm/zU7P3iKkyn9F7NJIUuFvPHCW2Oemy
+        O6BFSOtewPk41lTxckKysh6L0m3sbUMj7ps8SQnf4MHIuy7FoN8Y0qx8DW+cHJ/D
+        rVuPnBXQVA4Qk0DGy2u/OVCtoIV6fKiXnle93YPUlxnq2cDGddwrRyOnYBvhc4KT
+        oznAEa2hYXHOkNqaTqBk5YMKJvfBDhF51PsKHqoKGWDZjgqWNnNHWRgs769QNSBv
+        B1NKaLGnkuxjGWvje3z3ysT7Y6is9bBPpoWxIzIkgoG+aCYOyaocbnG0G32AOzCq
+        zUCFaCw1XCL4tZR7DMDfizTmgWz9Q==
+X-ME-Sender: <xms:SLsFXyLOvLkdkAy5uyKf7e6X6is93D0Ks9sPA8IfqSsAcyrJCy7uGg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudejgdehvdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggugfgjsehtqhertddttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepgfejtedtjefggfffvdetuedthedtheegheeuteekfeeghfdtteejkeeludeg
+    vddunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:SLsFX6Js5IFFY6GQtYg9RGjtBFkceXwpfiildcW4SRbTYduO4Elttg>
+    <xmx:SLsFXysllCDMSTHy74Q1CTzqDowUqvZea67-uqG7CNZTLQkoNPSvKA>
+    <xmx:SLsFX3bh_8oOt7Rn96Zv71VlWoc6qToaw7JrEodyGtkov_d5Cc2bWA>
+    <xmx:SbsFX15jqq9xsm4atcXFywdF0Lc1-_Q_JJKQIRt0X5y7xK3HtTUTZYwkGik>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 150273280059;
+        Wed,  8 Jul 2020 08:25:43 -0400 (EDT)
+Date:   Wed, 8 Jul 2020 14:25:42 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Ondrej Jirman <megous@megous.com>
+Cc:     linux-sunxi@googlegroups.com,
+        Vasily Khoruzhick <anarsoul@gmail.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amit.kucheria@verdurent.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        "open list:ALLWINNER THERMAL DRIVER" <linux-pm@vger.kernel.org>,
+        "moderated list:ARM/Allwinner sunXi SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] thermal: sun8i: Be loud when probe fails
+Message-ID: <20200708122542.73o3lbhgvbdw5c4z@gilmour.lan>
+References: <20200708105527.868987-1-megous@megous.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200708105527.868987-1-megous@megous.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-md is the last driver using the legacy media_changed method.  Switch
-it over to (not so) new ->clear_events approach, which also removes the
-need for the ->revalidate_disk method.
+Hi,
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- Documentation/filesystems/locking.rst |  4 +---
- block/genhd.c                         |  7 +------
- drivers/md/md.c                       | 19 ++++++++-----------
- include/linux/blkdev.h                |  2 --
- 4 files changed, 10 insertions(+), 22 deletions(-)
+On Wed, Jul 08, 2020 at 12:55:27PM +0200, Ondrej Jirman wrote:
+> I noticed several mobile Linux distributions failing to enable the
+> thermal regulation correctly, because the kernel is silent
+> when thermal driver fails to probe. Add enough error reporting
+> to debug issues and warn users in case thermal sensor is failing
+> to probe.
+>=20
+> Failing to notify users means, that SoC can easily overheat under
+> load.
+>=20
+> Signed-off-by: Ondrej Jirman <megous@megous.com>
+> ---
+>  drivers/thermal/sun8i_thermal.c | 55 ++++++++++++++++++++++++++-------
+>  1 file changed, 43 insertions(+), 12 deletions(-)
+>=20
+> diff --git a/drivers/thermal/sun8i_thermal.c b/drivers/thermal/sun8i_ther=
+mal.c
+> index 74d73be16496..9065e79ae743 100644
+> --- a/drivers/thermal/sun8i_thermal.c
+> +++ b/drivers/thermal/sun8i_thermal.c
+> @@ -287,8 +287,12 @@ static int sun8i_ths_calibrate(struct ths_device *tm=
+dev)
+> =20
+>  	calcell =3D devm_nvmem_cell_get(dev, "calibration");
+>  	if (IS_ERR(calcell)) {
+> +		dev_err(dev, "Failed to get calibration nvmem cell (%ld)\n",
+> +			PTR_ERR(calcell));
+> +
+>  		if (PTR_ERR(calcell) =3D=3D -EPROBE_DEFER)
+>  			return -EPROBE_DEFER;
+> +
 
-diff --git a/Documentation/filesystems/locking.rst b/Documentation/filesystems/locking.rst
-index 318605de83f33c..17bea12538c32d 100644
---- a/Documentation/filesystems/locking.rst
-+++ b/Documentation/filesystems/locking.rst
-@@ -467,7 +467,6 @@ prototypes::
- 	int (*compat_ioctl) (struct block_device *, fmode_t, unsigned, unsigned long);
- 	int (*direct_access) (struct block_device *, sector_t, void **,
- 				unsigned long *);
--	int (*media_changed) (struct gendisk *);
- 	void (*unlock_native_capacity) (struct gendisk *);
- 	int (*revalidate_disk) (struct gendisk *);
- 	int (*getgeo)(struct block_device *, struct hd_geometry *);
-@@ -483,14 +482,13 @@ release:		yes
- ioctl:			no
- compat_ioctl:		no
- direct_access:		no
--media_changed:		no
- unlock_native_capacity:	no
- revalidate_disk:	no
- getgeo:			no
- swap_slot_free_notify:	no	(see below)
- ======================= ===================
- 
--media_changed, unlock_native_capacity and revalidate_disk are called only from
-+unlock_native_capacity and revalidate_disk are called only from
- check_disk_change().
- 
- swap_slot_free_notify is called with swap_lock and sometimes the page lock
-diff --git a/block/genhd.c b/block/genhd.c
-index 60ae4e1b4d3877..1070da9d4d9a77 100644
---- a/block/genhd.c
-+++ b/block/genhd.c
-@@ -2061,13 +2061,8 @@ unsigned int disk_clear_events(struct gendisk *disk, unsigned int mask)
- 	unsigned int pending;
- 	unsigned int clearing = mask;
- 
--	if (!ev) {
--		/* for drivers still using the old ->media_changed method */
--		if ((mask & DISK_EVENT_MEDIA_CHANGE) &&
--		    bdops->media_changed && bdops->media_changed(disk))
--			return DISK_EVENT_MEDIA_CHANGE;
-+	if (!ev)
- 		return 0;
--	}
- 
- 	disk_block_events(disk);
- 
-diff --git a/drivers/md/md.c b/drivers/md/md.c
-index 8bb69c61afe086..77dfe4765c3111 100644
---- a/drivers/md/md.c
-+++ b/drivers/md/md.c
-@@ -5670,6 +5670,7 @@ static int md_alloc(dev_t dev, char *name)
- 	 * remove it now.
- 	 */
- 	disk->flags |= GENHD_FL_EXT_DEVT;
-+	disk->events |= DISK_EVENT_MEDIA_CHANGE;
- 	mddev->gendisk = disk;
- 	/* As soon as we call add_disk(), another thread could get
- 	 * through to md_open, so make sure it doesn't get too far
-@@ -7806,20 +7807,17 @@ static void md_release(struct gendisk *disk, fmode_t mode)
- 	mddev_put(mddev);
- }
- 
--static int md_media_changed(struct gendisk *disk)
--{
--	struct mddev *mddev = disk->private_data;
--
--	return mddev->changed;
--}
--
--static int md_revalidate(struct gendisk *disk)
-+static unsigned int md_check_events(struct gendisk *disk, unsigned int clearing)
- {
- 	struct mddev *mddev = disk->private_data;
-+	unsigned int ret = 0;
- 
-+	if (mddev->changed)
-+		ret = DISK_EVENT_MEDIA_CHANGE;
- 	mddev->changed = 0;
--	return 0;
-+	return ret;
- }
-+
- static const struct block_device_operations md_fops =
- {
- 	.owner		= THIS_MODULE,
-@@ -7831,8 +7829,7 @@ static const struct block_device_operations md_fops =
- 	.compat_ioctl	= md_compat_ioctl,
- #endif
- 	.getgeo		= md_getgeo,
--	.media_changed  = md_media_changed,
--	.revalidate_disk= md_revalidate,
-+	.check_events	= md_check_events,
- };
- 
- static int md_thread(void *arg)
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index 408eb66a82fdc7..71173a1ffa8b87 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -1781,8 +1781,6 @@ struct block_device_operations {
- 	int (*compat_ioctl) (struct block_device *, fmode_t, unsigned, unsigned long);
- 	unsigned int (*check_events) (struct gendisk *disk,
- 				      unsigned int clearing);
--	/* ->media_changed() is DEPRECATED, use ->check_events() instead */
--	int (*media_changed) (struct gendisk *);
- 	void (*unlock_native_capacity) (struct gendisk *);
- 	int (*revalidate_disk) (struct gendisk *);
- 	int (*getgeo)(struct block_device *, struct hd_geometry *);
--- 
-2.26.2
+The rest of the patch makes sense, but we should probably put the error
+message after the EPROBE_DEFER return so that we don't print any extra
+noise that isn't necessarily useful
 
+Maxime
