@@ -2,82 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DC4221839B
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 11:30:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97EBE2183D4
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 11:31:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728237AbgGHJaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 05:30:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43994 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726847AbgGHJaY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 05:30:24 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 73D792067D;
-        Wed,  8 Jul 2020 09:30:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594200624;
-        bh=rPde1yrtoaYsrjcQMK0JSsdDmzQWg+KzFioOvIlutmY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Sk6tYvQEfMiVVgAqJTvZN0gzFNgeijJ6iBR9KL6jJYQVL3Shb+UhbcJLgK+lU8Wfy
-         OGNAhzYKUK5BNUUSedNX10GZR5U5LaWdOJ/M10ismK95wrc5FUaBgNBKhS0BXTuuQE
-         dXOXCPPxNh7JFrcIP34MVxHXb3nLWYuTJ978Za7Q=
-Date:   Wed, 8 Jul 2020 10:30:18 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     corbet@lwn.net, ksummit-discuss@lists.linuxfoundation.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        SeongJae Park <sjpark@amazon.de>, linux-kernel@vger.kernel.org,
-        tech-board-discuss@lists.linuxfoundation.org,
-        Chris Mason <clm@fb.clm>, Dave Airlie <airlied@redhat.com>,
-        torvalds@linux-foundation.org
-Subject: Re: [Tech-board-discuss] [PATCH v2] CodingStyle: Inclusive
- Terminology
-Message-ID: <20200708093018.GA4655@sirena.org.uk>
-References: <159419296487.2464622.863943877093636532.stgit@dwillia2-desk3.amr.corp.intel.com>
+        id S1728607AbgGHJba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 05:31:30 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:59412 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728576AbgGHJb0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 05:31:26 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0689VHH5103244;
+        Wed, 8 Jul 2020 04:31:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1594200677;
+        bh=ZmLHKDhhFvQEACU9S2JTUSC0cmWio3Xl+uM9GiBjHGs=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=Fd0AXXCBfQwdtXLm2q5HfrV9+m2mNZmCOl4IJxoymw6L686ZeXuFJAroRkt+YWCY+
+         S3g84cd2qfusL6XLlYZTMFYkLfoRZC3jm7CJKM9xBzSeNtJazC0PEMLvcJbcMOe/wF
+         Q8OwPNfFp7DaPQUGtVsEEEUlyjqOI5s/JLMqGgvY=
+Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0689VHUT103753
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 8 Jul 2020 04:31:17 -0500
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 8 Jul
+ 2020 04:31:17 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 8 Jul 2020 04:31:17 -0500
+Received: from a0393678ub.india.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0689UJEV098512;
+        Wed, 8 Jul 2020 04:31:13 -0500
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+To:     Tom Joseph <tjoseph@cadence.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-omap@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH v6 14/14] MAINTAINERS: Add Kishon Vijay Abraham I for TI J721E SoC PCIe
+Date:   Wed, 8 Jul 2020 15:00:18 +0530
+Message-ID: <20200708093018.28474-15-kishon@ti.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200708093018.28474-1-kishon@ti.com>
+References: <20200708093018.28474-1-kishon@ti.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="UlVJffcvxoiEqYs2"
-Content-Disposition: inline
-In-Reply-To: <159419296487.2464622.863943877093636532.stgit@dwillia2-desk3.amr.corp.intel.com>
-X-Cookie: Oh Dad!  We're ALL Devo!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add Kishon Vijay Abraham I as MAINTAINER for TI J721E SoC PCIe.
 
---UlVJffcvxoiEqYs2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Acked-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+---
+ MAINTAINERS | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-On Wed, Jul 08, 2020 at 12:23:59AM -0700, Dan Williams wrote:
-> Linux maintains a coding-style and its own idiomatic set of terminology.
-> Update the style guidelines to recommend replacements for the terms
-> master/slave and blacklist/whitelist.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 5bbc2649566b..bdec73c3069e 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -13119,12 +13119,14 @@ S:	Maintained
+ F:	Documentation/devicetree/bindings/pci/designware-pcie.txt
+ F:	drivers/pci/controller/dwc/*designware*
+ 
+-PCI DRIVER FOR TI DRA7XX
++PCI DRIVER FOR TI DRA7XX/J721E
+ M:	Kishon Vijay Abraham I <kishon@ti.com>
+ L:	linux-omap@vger.kernel.org
+ L:	linux-pci@vger.kernel.org
++L:	linux-arm-kernel@lists.infradead.org
+ S:	Supported
+ F:	Documentation/devicetree/bindings/pci/ti-pci.txt
++F:	drivers/pci/controller/cadence/pci-j721e.c
+ F:	drivers/pci/controller/dwc/pci-dra7xx.c
+ 
+ PCI DRIVER FOR TI KEYSTONE
+-- 
+2.17.1
 
-Reviwed-by: Mark Brown <broonie@kernel.org>
-
-> +'host/{device,proxy}', or 'leader/{performer,follower}'. Recommended
-
-We could have controller as well as host.
-
---UlVJffcvxoiEqYs2
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8FkikACgkQJNaLcl1U
-h9ARbQf/epm0DKg2MJhGxaC8/qYrQcvvk33ZowHtxkiYgMuDA3wdpXst2NAfFJ6Y
-OqyNXN/5toHgj3nYn02sfRpYKQaWtYEQlu70nRkaywJ6o44uhk7RBQ3XZ/QKzp4e
-AhuENeaoPDICp+h+d5bWrJsPZFbhQ1EoAZ6MS+OG0MzSvXbQ3g4AjSjKQyAtnMXm
-m4uI2MOSLrf0IIoo0yPyeds/xVOim1GHZa3IBVaUAu2Aae5HI257nGlkzxO0pVir
-QFhO7f9J0OS9efmHAoPuOFk/0ZvUjn0Yspc8o6sKWXoVX0hgXaRU20nVQ82kRgcs
-G8azFKoSgB2bhv7pozMVift+8Zt9kw==
-=PIk+
------END PGP SIGNATURE-----
-
---UlVJffcvxoiEqYs2--
