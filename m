@@ -2,130 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BEA6219177
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 22:28:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5366C21915E
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 22:24:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726382AbgGHU1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 16:27:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726318AbgGHU1D (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 16:27:03 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C713C061A0B;
-        Wed,  8 Jul 2020 13:27:03 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id d21so27623439lfb.6;
-        Wed, 08 Jul 2020 13:27:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=en+sYWSOs29OqJtnXcDwQbwEqF1PhQMH/OzXlTL2Uro=;
-        b=syTZCHAQomVCO1IcAT05atGNhw1dbfmBOmwVCKjzqEzpZ0yC9TrCcsRcouL6w2rCQi
-         5dwv5avADj2LkceEKIhRx5FSnf5JXb2gFb3376P4VM9g1x0l2aipE3XdjfeUMS0SR9k7
-         JS3ll1n2eYfS6Law1HAu2LwUR3GsAZNz0M/iC72IegGk/wI7d+/7ilXQXlERDn+UI0ZJ
-         odtxjNCB8O4EaD+UvX/J++KNa6g7AitZ886DnrV+q71OPnON2pgBUqbnNOkAn/6eIqPW
-         8AY71jmnFDyWRYn45IbUGM0GvpWjVY14yUWCk8YgvLUx87QvzH/x5DMdEj2KdeAdi9D3
-         Ua6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=en+sYWSOs29OqJtnXcDwQbwEqF1PhQMH/OzXlTL2Uro=;
-        b=UyXOxATomcmYFwODsKc7eyxTFRzoQpwkwrqos30tV5/CWOFoUKzo7RM2oh8fSfSI+3
-         HuJWPxz0MxRaqDoXAb6h823PMxj6n/DpDNbcyvYqfTUeSJkH8nNkFnAYKmyrmFmZhuPT
-         5sdMQVZwhVIgNtVhDnzB4eJf4wmRf7kyZHDAtp1CUjFKT1+MvJjU8nIBPjHvyKCpRDhH
-         krFOH9oPX/nWnW5ujFSU1PuE4yDJqmITIjLQgdOaawYa380IxvBUABKDOAa/DvBwhMSI
-         qHMk4wefp/y8yhRSD6mT8BYMfA2MohS1Q4f9GeM4GNlNvB4Y2aWz5xEOrW3Eo1Q52jm9
-         ObYw==
-X-Gm-Message-State: AOAM533pfignfwF6tv8sSIwzis2q/B5qvTu2+jJyOYM2ZnJ7cqPuiOwv
-        LTivj4h2amNpmPtLWhUCugM=
-X-Google-Smtp-Source: ABdhPJyHmph+5swDJx845ZRsUtuIVexs7pVope807pOxgxk8VdlOWXNEN60vNWtyj1g1o6YBr2hVWg==
-X-Received: by 2002:a19:c214:: with SMTP id l20mr37504635lfc.56.1594240022084;
-        Wed, 08 Jul 2020 13:27:02 -0700 (PDT)
-Received: from localhost.localdomain (ppp91-79-162-105.pppoe.mtu-net.ru. [91.79.162.105])
-        by smtp.gmail.com with ESMTPSA id e29sm252568lfc.51.2020.07.08.13.27.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Jul 2020 13:27:01 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     linux-tegra@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 6/6] gpio: max77620: Initialize hardware state of interrupts
-Date:   Wed,  8 Jul 2020 23:23:55 +0300
-Message-Id: <20200708202355.28507-7-digetx@gmail.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200708202355.28507-1-digetx@gmail.com>
-References: <20200708202355.28507-1-digetx@gmail.com>
+        id S1726100AbgGHUYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 16:24:15 -0400
+Received: from foss.arm.com ([217.140.110.172]:35762 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725848AbgGHUYP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 16:24:15 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5C6E21FB;
+        Wed,  8 Jul 2020 13:24:14 -0700 (PDT)
+Received: from bogus (unknown [10.37.8.63])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 32C033F66E;
+        Wed,  8 Jul 2020 13:24:12 -0700 (PDT)
+Date:   Wed, 8 Jul 2020 21:24:00 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Michael Turquette <mturquette@baylibre.com>,
+        Dien Pham <dien.pham.ry@renesas.com>,
+        Sudeep Holla <sudeep.holla@arm.com>
+Subject: Re: [PATCH 2/2] clk: scmi: Fix min and max rate when registering
+ clocks with discrete rates
+Message-ID: <20200708202349.GA31671@bogus>
+References: <20200708110725.18017-1-sudeep.holla@arm.com>
+ <20200708110725.18017-2-sudeep.holla@arm.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200708110725.18017-2-sudeep.holla@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I noticed on Nexus 7 that after rebooting from downstream kernel to
-upstream, the GPIO interrupt is triggering non-stop despite interrupts
-being disabled for all of GPIOs. This happens because Nexus 7 uses a
-soft-reboot, meaning that bootloader should take care of resetting
-hardware, but the bootloader doesn't do it well. As a result, GPIO
-interrupt may be left ON at a boot time. Let's mask all GPIO interrupts
-at the driver's initialization time in order to resolve the issue.
+On Wed, Jul 08, 2020 at 12:07:25PM +0100, Sudeep Holla wrote:
+> Currently we are not initializing the scmi clock with discrete rates
+> correctly. We fetch the min_rate and max_rate value only for clocks with
+> ranges and ignore the ones with discrete rates. This will lead to wrong
+> initialization of rate range when clock supports discrete rate.
+> 
+> Fix this by using the first and the last rate in the sorted list of the
+> discrete clock rates while registering the clock.
+> 
+> Fixes: 6d6a1d82eaef7 ("clk: add support for clocks provided by SCMI")
+> Reported-by: Dien Pham <dien.pham.ry@renesas.com>
+> Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+> ---
+>  drivers/clk/clk-scmi.c | 22 +++++++++++++++++++---
+>  1 file changed, 19 insertions(+), 3 deletions(-)
+> 
+> Hi Stephen,
+> 
+> If you fine, I can take this via ARM SoC along with the change in firmware
+> driver. But it is fine if you want to merge this independently as it should
+> be fine. Let me know either way.
+> 
+> Regards,
+> Sudeep
+> 
+> diff --git a/drivers/clk/clk-scmi.c b/drivers/clk/clk-scmi.c
+> index c491f5de0f3f..ea65b7bf1408 100644
+> --- a/drivers/clk/clk-scmi.c
+> +++ b/drivers/clk/clk-scmi.c
+> @@ -103,6 +103,8 @@ static const struct clk_ops scmi_clk_ops = {
+>  static int scmi_clk_ops_init(struct device *dev, struct scmi_clk *sclk)
+>  {
+>  	int ret;
+> +	unsigned long min_rate, max_rate;
+> +
+>  	struct clk_init_data init = {
+>  		.flags = CLK_GET_RATE_NOCACHE,
+>  		.num_parents = 0,
+> @@ -112,9 +114,23 @@ static int scmi_clk_ops_init(struct device *dev, struct scmi_clk *sclk)
+> 
+>  	sclk->hw.init = &init;
+>  	ret = devm_clk_hw_register(dev, &sclk->hw);
+> -	if (!ret)
+> -		clk_hw_set_rate_range(&sclk->hw, sclk->info->range.min_rate,
+> -				      sclk->info->range.max_rate);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (sclk->info->rate_discrete) {
+> +		int num_rates = sclk->info->list.num_rates;
+> +
+> +		if (num_rates <= 0)
+> +			return -EINVAL;
+> +
+> +		min_rate = sclk->info->list.rates[0]
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- drivers/gpio/gpio-max77620.c | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+I seem to have sent a version with ; missing above though I fixed but
+sent the old stale version as I had written a note to you 🙁 
 
-diff --git a/drivers/gpio/gpio-max77620.c b/drivers/gpio/gpio-max77620.c
-index 6c516aa7732d..e090979659eb 100644
---- a/drivers/gpio/gpio-max77620.c
-+++ b/drivers/gpio/gpio-max77620.c
-@@ -260,6 +260,30 @@ static int max77620_gpio_set_config(struct gpio_chip *gc, unsigned int offset,
- 	return -ENOTSUPP;
- }
- 
-+static int max77620_gpio_irq_init_hw(struct gpio_chip *gc)
-+{
-+	struct max77620_gpio *gpio = gpiochip_get_data(gc);
-+	unsigned int i;
-+	int err;
-+
-+	/*
-+	 * GPIO interrupts may be left ON after bootloader, hence let's
-+	 * pre-initialize hardware to the expected state by disabling all
-+	 * the interrupts.
-+	 */
-+	for (i = 0; i < MAX77620_GPIO_NR; i++) {
-+		err = regmap_update_bits(gpio->rmap, GPIO_REG_ADDR(i),
-+					 MAX77620_CNFG_GPIO_INT_MASK, 0);
-+		if (err < 0) {
-+			dev_err(gpio->dev,
-+				"failed to disable interrupt: %d\n", err);
-+			return err;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- static int max77620_gpio_probe(struct platform_device *pdev)
- {
- 	struct max77620_chip *chip =  dev_get_drvdata(pdev->dev.parent);
-@@ -295,6 +319,7 @@ static int max77620_gpio_probe(struct platform_device *pdev)
- 	mgpio->gpio_chip.irq.chip = &max77620_gpio_irqchip;
- 	mgpio->gpio_chip.irq.default_type = IRQ_TYPE_NONE;
- 	mgpio->gpio_chip.irq.handler = handle_edge_irq;
-+	mgpio->gpio_chip.irq.init_hw = max77620_gpio_irq_init_hw,
- 	mgpio->gpio_chip.irq.threaded = true;
- 
- 	platform_set_drvdata(pdev, mgpio);
 -- 
-2.26.0
-
+Regards,
+Sudeep
