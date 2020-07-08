@@ -2,231 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 652DD218027
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 09:00:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0868C218056
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 09:07:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730043AbgGHHAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 03:00:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36450 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730032AbgGHHAl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 03:00:41 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17CD4C08C5DC
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 00:00:41 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id t74so26255511lff.2
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 00:00:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=dN7kD7Q1Rq4KZPUzBGzJoKUeTvUT8h427/XLCP0siXE=;
-        b=zXDRP/bICz7BJrvShRWcIw26GN2IeV4EJhuSvEnjTAy8fGHDJV8KtACwYmk6uwEe4r
-         BuCbZShWgCurUdUrAVg0yBebe49q5YgB0ZYlfIEibkTOqyc+fkkU1XdYvhO+j6p4/YDR
-         0O6Pc9OXUo7jXq6D/ezE6ViR0X6dnhWxIwVEqGaApFkYmqiqQIvgzhPF/e2HH1NvUMGq
-         bOL+ZDXnu5M3oMq5CgS2iy4YhR8H+x7cPW0GeObiUWz/5KP2Di4voisye95EOPRWGk5g
-         az5CF/AEiyRTz10mf5WlWOSAj5GNZVpR78xmEaqEQolsfJzEl6QW3uznM2Q1UUGvCXXH
-         SxcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=dN7kD7Q1Rq4KZPUzBGzJoKUeTvUT8h427/XLCP0siXE=;
-        b=IC51N8dDYUdKQsLNDIiDSJsi/uU3DV4h658X3Mllp8TW05R3B3mkVV0keLhigz5hGs
-         ye+cTCTz5Qi0ALUGHZoWMbVsmtEJGLLC4V2QJ3PyrDNOcd1topG8Q7FTYXjiqpyzJeYH
-         eDhFDHr0TNSRSoQF/2bxUeFH4mKPtS7dXTn0qDpdFHadkl4UdHklqWS6mB0/lxHvg5jM
-         LH6StZfPieseKo9wsUsbaJJASRuAt0YTCOs4f+Dt2+0uyIr97Tv+X3qe2kOOTgdP58BH
-         CTuMkM01OY5pGaAL2JEvWiyXWEiEOUbNt1dobsoivEC5ouw/aWRHu+32O39G6XoHeQ5H
-         hR2w==
-X-Gm-Message-State: AOAM533/4v84/1VL+D+vauBj/Y0jn/6Kqnw1AapGLquVxMK3s/wtiSOQ
-        BZgawGsDeCSTpZRmhw/PHBEh+MNhUrGLIg0yhlDujg==
-X-Google-Smtp-Source: ABdhPJxuzf3IPe0k9fpHN75463rwiENlmj8qvoP+ZRpXWAU/gSJBP7lw6ZSMGOHpzAYVc8u9zL18+uCcbANt1lK8rCI=
-X-Received: by 2002:a19:c78d:: with SMTP id x135mr35232317lff.82.1594191639066;
- Wed, 08 Jul 2020 00:00:39 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200707145747.493710555@linuxfoundation.org>
-In-Reply-To: <20200707145747.493710555@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 8 Jul 2020 12:30:27 +0530
-Message-ID: <CA+G9fYsewvEeJF60ANjuz5VqMgR1-PQLn44HVSHjkAh2NL9xxA@mail.gmail.com>
-Subject: Re: [PATCH 4.4 00/19] 4.4.230-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        lkft-triage@lists.linaro.org,
-        linux- stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S1730088AbgGHHHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 03:07:36 -0400
+Received: from smtp21.cstnet.cn ([159.226.251.21]:38524 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729761AbgGHHHg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 03:07:36 -0400
+Received: from localhost (unknown [159.226.5.99])
+        by APP-01 (Coremail) with SMTP id qwCowAAnCeq_bwVf4majBA--.12311S2;
+        Wed, 08 Jul 2020 15:03:28 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     jlayton@kernel.org, idryomov@gmail.com, ceph-devel@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Xu Wang <vulab@iscas.ac.cn>
+Subject: [PATCH] fs: ceph: Remove unnecessary cast in kfree()
+Date:   Wed,  8 Jul 2020 07:03:22 +0000
+Message-Id: <20200708070322.30695-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: qwCowAAnCeq_bwVf4majBA--.12311S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Aw48urykXFyrCFWfAw1fWFg_yoW8GrWxpF
+        12kw48JwsxJF48Wr98J3WrZ34akayktFyDur9Fkws7uF15WryxJry8ZFyUury3Zry8Arn8
+        Ja1Dtw1rJF1av3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkG14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUtVWrXwAv7VC2z280aVAFwI0_Gr1j6F4UJwAm72CE4IkC6x0Yz7v_Jr
+        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8
+        CwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r
+        1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij
+        64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr
+        0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4U
+        MIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUD8n5UUU
+        UU=
+X-Originating-IP: [159.226.5.99]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCAELA102YQ+JuwAAs2
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 7 Jul 2020 at 20:41, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.4.230 release.
-> There are 19 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 09 Jul 2020 14:57:34 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.4.230-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Remove unnecassary casts in the argument to kfree.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+---
+ fs/ceph/xattr.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-Summary
-------------------------------------------------------------------------
+diff --git a/fs/ceph/xattr.c b/fs/ceph/xattr.c
+index 71ee34d160c3..3a733ac33d9b 100644
+--- a/fs/ceph/xattr.c
++++ b/fs/ceph/xattr.c
+@@ -497,10 +497,10 @@ static int __set_xattr(struct ceph_inode_info *ci,
+ 		kfree(*newxattr);
+ 		*newxattr = NULL;
+ 		if (xattr->should_free_val)
+-			kfree((void *)xattr->val);
++			kfree(xattr->val);
+ 
+ 		if (update_xattr) {
+-			kfree((void *)name);
++			kfree(name);
+ 			name = xattr->name;
+ 		}
+ 		ci->i_xattrs.names_size -= xattr->name_len;
+@@ -566,9 +566,9 @@ static void __free_xattr(struct ceph_inode_xattr *xattr)
+ 	BUG_ON(!xattr);
+ 
+ 	if (xattr->should_free_name)
+-		kfree((void *)xattr->name);
++		kfree(xattr->name);
+ 	if (xattr->should_free_val)
+-		kfree((void *)xattr->val);
++		kfree(xattr->val);
+ 
+ 	kfree(xattr);
+ }
+@@ -582,9 +582,9 @@ static int __remove_xattr(struct ceph_inode_info *ci,
+ 	rb_erase(&xattr->node, &ci->i_xattrs.index);
+ 
+ 	if (xattr->should_free_name)
+-		kfree((void *)xattr->name);
++		kfree(xattr->name);
+ 	if (xattr->should_free_val)
+-		kfree((void *)xattr->val);
++		kfree(xattr->val);
+ 
+ 	ci->i_xattrs.names_size -= xattr->name_len;
+ 	ci->i_xattrs.vals_size -= xattr->val_len;
+-- 
+2.17.1
 
-kernel: 4.4.230-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.4.y
-git commit: c19eba6b34341e17e0a49be45b010f483dd95de7
-git describe: v4.4.229-20-gc19eba6b3434
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-4.4-oe/bui=
-ld/v4.4.229-20-gc19eba6b3434
-
-
-No regressions (compared to build v4.4.228-155-gc19eba6b3434)
-
-No fixes (compared to build v4.4.228-155-gc19eba6b3434)
-
-Ran 17904 total tests in the following environments and test suites.
-
-Environments
---------------
-- i386
-- juno-r2 - arm64
-- juno-r2-compat
-- juno-r2-kasan
-- x15 - arm
-- x86_64
-- x86-kasan
-
-Test Suites
------------
-* build
-* kselftest
-* kselftest/drivers
-* kselftest/filesystems
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* network-basic-tests
-* perf
-* v4l2-compliance
-* kvm-unit-tests
-* install-android-platform-tools-r2600
-* install-android-platform-tools-r2800
-* kselftest/net
-* kselftest-vsyscall-mode-native
-* kselftest-vsyscall-mode-native/drivers
-* kselftest-vsyscall-mode-native/filesystems
-* kselftest-vsyscall-mode-none
-* kselftest-vsyscall-mode-none/drivers
-* kselftest-vsyscall-mode-none/filesystems
-
-
-Summary
-------------------------------------------------------------------------
-
-kernel: 4.4.230-rc1
-git repo: https://git.linaro.org/lkft/arm64-stable-rc.git
-git branch: 4.4.230-rc1-hikey-20200707-761
-git commit: 1e4ecd8e5eab1c328ff83cd29d52021eb6035bc8
-git describe: 4.4.230-rc1-hikey-20200707-761
-Test details: https://qa-reports.linaro.org/lkft/linaro-hikey-stable-rc-4.4=
--oe/build/4.4.230-rc1-hikey-20200707-761
-
-
-No regressions (compared to build 4.4.229-rc1-hikey-20200629-759)
-
-
-No fixes (compared to build 4.4.229-rc1-hikey-20200629-759)
-
-Ran 1861 total tests in the following environments and test suites.
-
-Environments
---------------
-- hi6220-hikey - arm64
-
-Test Suites
------------
-* build
-* install-android-platform-tools-r2600
-* kselftest
-* kselftest/drivers
-* kselftest/filesystems
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-cpuhotplug-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* perf
-* spectre-meltdown-checker-test
-* v4l2-compliance
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
