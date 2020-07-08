@@ -2,140 +2,364 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7459E2190BD
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 21:35:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CF2B2190D6
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 21:35:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726893AbgGHTek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 15:34:40 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:35678 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726187AbgGHTeh (ORCPT
+        id S1727005AbgGHTfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 15:35:51 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:60723 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726347AbgGHTfu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 15:34:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594236875;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nwkOICvOQaXOWcko8kpLlTGev7mN/mGmU8J6lWaTsxY=;
-        b=ip3T8f6tccdkxoFoWGtI/tpKytfsNaprv1faEEgTjJoNVQzzCM17UxlC4D/YTyyYB80iWB
-        qvdgF1oX0wm3fYzSJwcpYaqS0pXtp4bOS64UdOX1t1Vtinf/TlbPzlAPlvLNdc9YVqbAuh
-        BPY6EBFLFXp8XahvMcvW4pil+NM7B7I=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-155-p3N6SddKNZWmhcEHDRkPVg-1; Wed, 08 Jul 2020 15:34:33 -0400
-X-MC-Unique: p3N6SddKNZWmhcEHDRkPVg-1
-Received: by mail-qv1-f71.google.com with SMTP id m8so12418358qvv.10
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 12:34:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=nwkOICvOQaXOWcko8kpLlTGev7mN/mGmU8J6lWaTsxY=;
-        b=n7aPQiZpu3lFgUDuEkAIv+wS5TVyI+Jl4CCFEz8ynBd9LyTcB8uP2fdSgAOeGl9d0q
-         HcC75GoMjzZleCp+eUsyFh/y1ApoFM5Rn8RHyJImkODPUBtcf8G6b5LfzV9gcYuCaF2J
-         IVhm7xAHiTeqABuoLpnPOyyJ5vMEMiF20UBU7CY5M5MrNp50kqenqqZLYO3Du1tY7cN3
-         RISSRD/M87e4iJXq6+4NF/jza49YE4/lzHUHzbtNduNiGCnwQHK/6Afh75Pu2fNZoKom
-         n78p+8Ey8i/yxMnS/lT8ZEm6BKanGCAeCxLusSuBM1tObKy2juQLLIXzLJepce88o2ch
-         y4nA==
-X-Gm-Message-State: AOAM533RXj0JlEZ/VCJtCibb9+S/qAOr2rxO7f9sK1Jd5zIgGUWyYQoe
-        PEHlKkjdkZXoM8nXTpDEi/Hv9LLN2YVDjR8UCM7uxf9m7DTSxxv0A/dbXQZuEV1g8wQhog5bdqx
-        SuPyiV40p2bV+wk++d+Ez0jfj
-X-Received: by 2002:ac8:47ce:: with SMTP id d14mr61485539qtr.285.1594236873030;
-        Wed, 08 Jul 2020 12:34:33 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzr9Hn7DgKOB0eSRHWqePldCPb4gTgHpgitkXaRkiQjSqZ7uVPKSjC183UXZv6LE8NZNKN3dg==
-X-Received: by 2002:ac8:47ce:: with SMTP id d14mr61485520qtr.285.1594236872793;
-        Wed, 08 Jul 2020 12:34:32 -0700 (PDT)
-Received: from xz-x1.redhat.com ([2607:9880:19c8:6f::1f4f])
-        by smtp.gmail.com with ESMTPSA id f18sm664884qtc.28.2020.07.08.12.34.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Jul 2020 12:34:32 -0700 (PDT)
-From:   Peter Xu <peterx@redhat.com>
-To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     peterx@redhat.com,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH v11 13/13] KVM: selftests: Add "-c" parameter to dirty log test
-Date:   Wed,  8 Jul 2020 15:34:08 -0400
-Message-Id: <20200708193408.242909-14-peterx@redhat.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200708193408.242909-1-peterx@redhat.com>
-References: <20200708193408.242909-1-peterx@redhat.com>
+        Wed, 8 Jul 2020 15:35:50 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1594236949; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=LC9f74TU7sRenomNvH9Jl50KN/ZMUzl3hwIz8duJSio=; b=tbgVP82Cj+3JCYysg71P9D4AYn0cOJM2a95fu7uiw8pzjM+K2k/MgMNuUEXkzsYGO9Ra36Re
+ UENgSoTKv+P3rpYAZ3+g8YbbR2Ud071rd0gDuvcuhzDgMOvSOX0rAb3y+LCjil01azRh0Vxl
+ 7Ety+x7hj2Qp1pfJ0ZxhwSW/tqY=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n13.prod.us-west-2.postgun.com with SMTP id
+ 5f062014f97e988aabd77a45 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 08 Jul 2020 19:35:48
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id DDFB8C433A1; Wed,  8 Jul 2020 19:35:47 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jcrouse)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 24DA9C433CB;
+        Wed,  8 Jul 2020 19:35:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 24DA9C433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jcrouse@codeaurora.org
+Date:   Wed, 8 Jul 2020 13:35:41 -0600
+From:   Jordan Crouse <jcrouse@codeaurora.org>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     linux-arm-msm@vger.kernel.org, David Airlie <airlied@linux.ie>,
+        Sean Paul <sean@poorly.run>, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        John Stultz <john.stultz@linaro.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        freedreno@lists.freedesktop.org
+Subject: Re: [PATCH v2 4/6] drm/msm: Add support to create a local pagetable
+Message-ID: <20200708193541.GB21059@jcrouse1-lnx.qualcomm.com>
+Mail-Followup-To: Robin Murphy <robin.murphy@arm.com>,
+        linux-arm-msm@vger.kernel.org, David Airlie <airlied@linux.ie>,
+        Sean Paul <sean@poorly.run>, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        John Stultz <john.stultz@linaro.org>,
+        Daniel Vetter <daniel@ffwll.ch>, freedreno@lists.freedesktop.org
+References: <20200626200414.14382-1-jcrouse@codeaurora.org>
+ <20200626200414.14382-5-jcrouse@codeaurora.org>
+ <3feed674-5eb9-ca2f-76a7-f888f431c409@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3feed674-5eb9-ca2f-76a7-f888f431c409@arm.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's only used to override the existing dirty ring size/count.  If
-with a bigger ring count, we test async of dirty ring.  If with a
-smaller ring count, we test ring full code path.  Async is default.
+On Tue, Jul 07, 2020 at 12:36:42PM +0100, Robin Murphy wrote:
+> On 2020-06-26 21:04, Jordan Crouse wrote:
+> >Add support to create a io-pgtable for use by targets that support
+> >per-instance pagetables.  In order to support per-instance pagetables the
+> >GPU SMMU device needs to have the qcom,adreno-smmu compatible string and
+> >split pagetables and auxiliary domains need to be supported and enabled.
+> >
+> >Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
+> >---
+> >
+> >  drivers/gpu/drm/msm/msm_gpummu.c |   2 +-
+> >  drivers/gpu/drm/msm/msm_iommu.c  | 180 ++++++++++++++++++++++++++++++-
+> >  drivers/gpu/drm/msm/msm_mmu.h    |  16 ++-
+> >  3 files changed, 195 insertions(+), 3 deletions(-)
+> >
+> >diff --git a/drivers/gpu/drm/msm/msm_gpummu.c b/drivers/gpu/drm/msm/msm_gpummu.c
+> >index 310a31b05faa..aab121f4beb7 100644
+> >--- a/drivers/gpu/drm/msm/msm_gpummu.c
+> >+++ b/drivers/gpu/drm/msm/msm_gpummu.c
+> >@@ -102,7 +102,7 @@ struct msm_mmu *msm_gpummu_new(struct device *dev, struct msm_gpu *gpu)
+> >  	}
+> >  	gpummu->gpu = gpu;
+> >-	msm_mmu_init(&gpummu->base, dev, &funcs);
+> >+	msm_mmu_init(&gpummu->base, dev, &funcs, MSM_MMU_GPUMMU);
+> >  	return &gpummu->base;
+> >  }
+> >diff --git a/drivers/gpu/drm/msm/msm_iommu.c b/drivers/gpu/drm/msm/msm_iommu.c
+> >index 1b6635504069..f455c597f76d 100644
+> >--- a/drivers/gpu/drm/msm/msm_iommu.c
+> >+++ b/drivers/gpu/drm/msm/msm_iommu.c
+> >@@ -4,15 +4,192 @@
+> >   * Author: Rob Clark <robdclark@gmail.com>
+> >   */
+> >+#include <linux/io-pgtable.h>
+> >  #include "msm_drv.h"
+> >  #include "msm_mmu.h"
+> >  struct msm_iommu {
+> >  	struct msm_mmu base;
+> >  	struct iommu_domain *domain;
+> >+	struct iommu_domain *aux_domain;
+> >  };
+> >+
+> >  #define to_msm_iommu(x) container_of(x, struct msm_iommu, base)
+> >+struct msm_iommu_pagetable {
+> >+	struct msm_mmu base;
+> >+	struct msm_mmu *parent;
+> >+	struct io_pgtable_ops *pgtbl_ops;
+> >+	phys_addr_t ttbr;
+> >+	u32 asid;
+> >+};
+> >+
+> >+static struct msm_iommu_pagetable *to_pagetable(struct msm_mmu *mmu)
+> >+{
+> >+	return container_of(mmu, struct msm_iommu_pagetable, base);
+> >+}
+> >+
+> >+static int msm_iommu_pagetable_unmap(struct msm_mmu *mmu, u64 iova,
+> >+		size_t size)
+> >+{
+> >+	struct msm_iommu_pagetable *pagetable = to_pagetable(mmu);
+> >+	struct io_pgtable_ops *ops = pagetable->pgtbl_ops;
+> >+	size_t unmapped = 0;
+> >+
+> >+	/* Unmap the block one page at a time */
+> >+	while (size) {
+> >+		unmapped += ops->unmap(ops, iova, 4096, NULL);
+> >+		iova += 4096;
+> >+		size -= 4096;
+> >+	}
+> >+
+> >+	iommu_flush_tlb_all(to_msm_iommu(pagetable->parent)->domain);
+> >+
+> >+	return (unmapped == size) ? 0 : -EINVAL;
+> >+}
+> 
+> Remember in patch #1 when you said "Then 'domain' can be used like any other
+> iommu domain to map and unmap iova addresses in the pagetable."?
+> 
+> This appears to be very much not that :/
+ 
+The code changed but the commit log stayed the same.  I'll reword.
 
-It has no use for non-dirty-ring tests.
+Jordan
 
-Reviewed-by: Andrew Jones <drjones@redhat.com>
-Signed-off-by: Peter Xu <peterx@redhat.com>
----
- tools/testing/selftests/kvm/dirty_log_test.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+> Robin.
+> 
+> >+
+> >+static int msm_iommu_pagetable_map(struct msm_mmu *mmu, u64 iova,
+> >+		struct sg_table *sgt, size_t len, int prot)
+> >+{
+> >+	struct msm_iommu_pagetable *pagetable = to_pagetable(mmu);
+> >+	struct io_pgtable_ops *ops = pagetable->pgtbl_ops;
+> >+	struct scatterlist *sg;
+> >+	size_t mapped = 0;
+> >+	u64 addr = iova;
+> >+	unsigned int i;
+> >+
+> >+	for_each_sg(sgt->sgl, sg, sgt->nents, i) {
+> >+		size_t size = sg->length;
+> >+		phys_addr_t phys = sg_phys(sg);
+> >+
+> >+		/* Map the block one page at a time */
+> >+		while (size) {
+> >+			if (ops->map(ops, addr, phys, 4096, prot)) {
+> >+				msm_iommu_pagetable_unmap(mmu, iova, mapped);
+> >+				return -EINVAL;
+> >+			}
+> >+
+> >+			phys += 4096;
+> >+			addr += 4096;
+> >+			size -= 4096;
+> >+			mapped += 4096;
+> >+		}
+> >+	}
+> >+
+> >+	return 0;
+> >+}
+> >+
+> >+static void msm_iommu_pagetable_destroy(struct msm_mmu *mmu)
+> >+{
+> >+	struct msm_iommu_pagetable *pagetable = to_pagetable(mmu);
+> >+
+> >+	free_io_pgtable_ops(pagetable->pgtbl_ops);
+> >+	kfree(pagetable);
+> >+}
+> >+
+> >+/*
+> >+ * Given a parent device, create and return an aux domain. This will enable the
+> >+ * TTBR0 region
+> >+ */
+> >+static struct iommu_domain *msm_iommu_get_aux_domain(struct msm_mmu *parent)
+> >+{
+> >+	struct msm_iommu *iommu = to_msm_iommu(parent);
+> >+	struct iommu_domain *domain;
+> >+	int ret;
+> >+
+> >+	if (iommu->aux_domain)
+> >+		return iommu->aux_domain;
+> >+
+> >+	if (!iommu_dev_has_feature(parent->dev, IOMMU_DEV_FEAT_AUX))
+> >+		return ERR_PTR(-ENODEV);
+> >+
+> >+	domain = iommu_domain_alloc(&platform_bus_type);
+> >+	if (!domain)
+> >+		return ERR_PTR(-ENODEV);
+> >+
+> >+	ret = iommu_aux_attach_device(domain, parent->dev);
+> >+	if (ret) {
+> >+		iommu_domain_free(domain);
+> >+		return ERR_PTR(ret);
+> >+	}
+> >+
+> >+	iommu->aux_domain = domain;
+> >+	return domain;
+> >+}
+> >+
+> >+int msm_iommu_pagetable_params(struct msm_mmu *mmu,
+> >+		phys_addr_t *ttbr, int *asid)
+> >+{
+> >+	struct msm_iommu_pagetable *pagetable;
+> >+
+> >+	if (mmu->type != MSM_MMU_IOMMU_PAGETABLE)
+> >+		return -EINVAL;
+> >+
+> >+	pagetable = to_pagetable(mmu);
+> >+
+> >+	if (ttbr)
+> >+		*ttbr = pagetable->ttbr;
+> >+
+> >+	if (asid)
+> >+		*asid = pagetable->asid;
+> >+
+> >+	return 0;
+> >+}
+> >+
+> >+static const struct msm_mmu_funcs pagetable_funcs = {
+> >+		.map = msm_iommu_pagetable_map,
+> >+		.unmap = msm_iommu_pagetable_unmap,
+> >+		.destroy = msm_iommu_pagetable_destroy,
+> >+};
+> >+
+> >+struct msm_mmu *msm_iommu_pagetable_create(struct msm_mmu *parent)
+> >+{
+> >+	static int next_asid = 16;
+> >+	struct msm_iommu_pagetable *pagetable;
+> >+	struct iommu_domain *aux_domain;
+> >+	struct io_pgtable_cfg cfg;
+> >+	int ret;
+> >+
+> >+	/* Make sure that the parent has a aux domain attached */
+> >+	aux_domain = msm_iommu_get_aux_domain(parent);
+> >+	if (IS_ERR(aux_domain))
+> >+		return ERR_CAST(aux_domain);
+> >+
+> >+	/* Get the pagetable configuration from the aux domain */
+> >+	ret = iommu_domain_get_attr(aux_domain, DOMAIN_ATTR_PGTABLE_CFG, &cfg);
+> >+	if (ret)
+> >+		return ERR_PTR(ret);
+> >+
+> >+	pagetable = kzalloc(sizeof(*pagetable), GFP_KERNEL);
+> >+	if (!pagetable)
+> >+		return ERR_PTR(-ENOMEM);
+> >+
+> >+	msm_mmu_init(&pagetable->base, parent->dev, &pagetable_funcs,
+> >+		MSM_MMU_IOMMU_PAGETABLE);
+> >+
+> >+	cfg.tlb = NULL;
+> >+
+> >+	pagetable->pgtbl_ops = alloc_io_pgtable_ops(ARM_64_LPAE_S1,
+> >+		&cfg, aux_domain);
+> >+
+> >+	if (!pagetable->pgtbl_ops) {
+> >+		kfree(pagetable);
+> >+		return ERR_PTR(-ENOMEM);
+> >+	}
+> >+
+> >+
+> >+	/* Needed later for TLB flush */
+> >+	pagetable->parent = parent;
+> >+	pagetable->ttbr = cfg.arm_lpae_s1_cfg.ttbr;
+> >+
+> >+	pagetable->asid = next_asid;
+> >+	next_asid = (next_asid + 1)  % 255;
+> >+	if (next_asid < 16)
+> >+		next_asid = 16;
+> >+
+> >+	return &pagetable->base;
+> >+}
+> >+
+> >  static int msm_fault_handler(struct iommu_domain *domain, struct device *dev,
+> >  		unsigned long iova, int flags, void *arg)
+> >  {
+> >@@ -40,6 +217,7 @@ static int msm_iommu_map(struct msm_mmu *mmu, uint64_t iova,
+> >  	if (iova & BIT_ULL(48))
+> >  		iova |= GENMASK_ULL(63, 49);
+> >+
+> >  	ret = iommu_map_sg(iommu->domain, iova, sgt->sgl, sgt->nents, prot);
+> >  	WARN_ON(!ret);
+> >@@ -85,7 +263,7 @@ struct msm_mmu *msm_iommu_new(struct device *dev, struct iommu_domain *domain)
+> >  		return ERR_PTR(-ENOMEM);
+> >  	iommu->domain = domain;
+> >-	msm_mmu_init(&iommu->base, dev, &funcs);
+> >+	msm_mmu_init(&iommu->base, dev, &funcs, MSM_MMU_IOMMU);
+> >  	iommu_set_fault_handler(domain, msm_fault_handler, iommu);
+> >  	ret = iommu_attach_device(iommu->domain, dev);
+> >diff --git a/drivers/gpu/drm/msm/msm_mmu.h b/drivers/gpu/drm/msm/msm_mmu.h
+> >index 3a534ee59bf6..61ade89d9e48 100644
+> >--- a/drivers/gpu/drm/msm/msm_mmu.h
+> >+++ b/drivers/gpu/drm/msm/msm_mmu.h
+> >@@ -17,18 +17,26 @@ struct msm_mmu_funcs {
+> >  	void (*destroy)(struct msm_mmu *mmu);
+> >  };
+> >+enum msm_mmu_type {
+> >+	MSM_MMU_GPUMMU,
+> >+	MSM_MMU_IOMMU,
+> >+	MSM_MMU_IOMMU_PAGETABLE,
+> >+};
+> >+
+> >  struct msm_mmu {
+> >  	const struct msm_mmu_funcs *funcs;
+> >  	struct device *dev;
+> >  	int (*handler)(void *arg, unsigned long iova, int flags);
+> >  	void *arg;
+> >+	enum msm_mmu_type type;
+> >  };
+> >  static inline void msm_mmu_init(struct msm_mmu *mmu, struct device *dev,
+> >-		const struct msm_mmu_funcs *funcs)
+> >+		const struct msm_mmu_funcs *funcs, enum msm_mmu_type type)
+> >  {
+> >  	mmu->dev = dev;
+> >  	mmu->funcs = funcs;
+> >+	mmu->type = type;
+> >  }
+> >  struct msm_mmu *msm_iommu_new(struct device *dev, struct iommu_domain *domain);
+> >@@ -41,7 +49,13 @@ static inline void msm_mmu_set_fault_handler(struct msm_mmu *mmu, void *arg,
+> >  	mmu->handler = handler;
+> >  }
+> >+struct msm_mmu *msm_iommu_pagetable_create(struct msm_mmu *parent);
+> >+
+> >  void msm_gpummu_params(struct msm_mmu *mmu, dma_addr_t *pt_base,
+> >  		dma_addr_t *tran_error);
+> >+
+> >+int msm_iommu_pagetable_params(struct msm_mmu *mmu, phys_addr_t *ttbr,
+> >+		int *asid);
+> >+
+> >  #endif /* __MSM_MMU_H__ */
+> >
 
-diff --git a/tools/testing/selftests/kvm/dirty_log_test.c b/tools/testing/selftests/kvm/dirty_log_test.c
-index 4b404dfdc2f9..80c42c87265e 100644
---- a/tools/testing/selftests/kvm/dirty_log_test.c
-+++ b/tools/testing/selftests/kvm/dirty_log_test.c
-@@ -168,6 +168,7 @@ static enum log_mode_t host_log_mode_option = LOG_MODE_ALL;
- /* Logging mode for current run */
- static enum log_mode_t host_log_mode;
- static pthread_t vcpu_thread;
-+static uint32_t test_dirty_ring_count = TEST_DIRTY_RING_COUNT;
- 
- /* Only way to pass this to the signal handler */
- static struct kvm_vm *current_vm;
-@@ -250,7 +251,7 @@ static void dirty_ring_create_vm_done(struct kvm_vm *vm)
- 	 * Switch to dirty ring mode after VM creation but before any
- 	 * of the vcpu creation.
- 	 */
--	vm_enable_dirty_ring(vm, TEST_DIRTY_RING_COUNT *
-+	vm_enable_dirty_ring(vm, test_dirty_ring_count *
- 			     sizeof(struct kvm_dirty_gfn));
- }
- 
-@@ -272,7 +273,7 @@ static uint32_t dirty_ring_collect_one(struct kvm_dirty_gfn *dirty_gfns,
- 	uint32_t count = 0;
- 
- 	while (true) {
--		cur = &dirty_gfns[*fetch_index % TEST_DIRTY_RING_COUNT];
-+		cur = &dirty_gfns[*fetch_index % test_dirty_ring_count];
- 		if (!dirty_gfn_is_dirtied(cur))
- 			break;
- 		TEST_ASSERT(cur->slot == slot, "Slot number didn't match: "
-@@ -778,6 +779,9 @@ static void help(char *name)
- 	printf("usage: %s [-h] [-i iterations] [-I interval] "
- 	       "[-p offset] [-m mode]\n", name);
- 	puts("");
-+	printf(" -c: specify dirty ring size, in number of entries\n");
-+	printf("     (only useful for dirty-ring test; default: %"PRIu32")\n",
-+	       TEST_DIRTY_RING_COUNT);
- 	printf(" -i: specify iteration counts (default: %"PRIu64")\n",
- 	       TEST_HOST_LOOP_N);
- 	printf(" -I: specify interval in ms (default: %"PRIu64" ms)\n",
-@@ -833,8 +837,11 @@ int main(int argc, char *argv[])
- 	guest_mode_init(VM_MODE_P40V48_4K, true, true);
- #endif
- 
--	while ((opt = getopt(argc, argv, "hi:I:p:m:M:")) != -1) {
-+	while ((opt = getopt(argc, argv, "c:hi:I:p:m:M:")) != -1) {
- 		switch (opt) {
-+		case 'c':
-+			test_dirty_ring_count = strtol(optarg, NULL, 10);
-+			break;
- 		case 'i':
- 			iterations = strtol(optarg, NULL, 10);
- 			break;
 -- 
-2.26.2
-
+The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
