@@ -2,89 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B399218940
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 15:36:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9276021893C
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 15:36:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729785AbgGHNgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 09:36:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42100 "EHLO
+        id S1729760AbgGHNgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 09:36:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729762AbgGHNgt (ORCPT
+        with ESMTP id S1729136AbgGHNgn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 09:36:49 -0400
-Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B0E8C08C5CE;
-        Wed,  8 Jul 2020 06:36:49 -0700 (PDT)
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id C5E5DBC06E;
-        Wed,  8 Jul 2020 13:36:44 +0000 (UTC)
-From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-To:     marcel@holtmann.org, johan.hedberg@gmail.com, davem@davemloft.net,
-        kuba@kernel.org, linux-bluetooth@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Subject: [PATCH] Replace HTTP links with HTTPS ones: BLUETOOTH SUBSYSTEM
-Date:   Wed,  8 Jul 2020 15:36:38 +0200
-Message-Id: <20200708133638.14589-1-grandmaster@al2klimov.de>
+        Wed, 8 Jul 2020 09:36:43 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5CD2C061A0B
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 06:36:42 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id o18so46140895eje.7
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 06:36:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=03JonGFN41nMFJlGEFKXl9Bpzl1Ujvr23TaWRry9onc=;
+        b=PTpAiqd5RBCVgLGXWMXrunrli3T+E2DRzw707sA1qaIazkk1zVS3jiycB3+KP5jLb6
+         m5YAmUwQ53ftCOo62gFY/HYloYVnKUhS7Iq5KBCW7w/UDdy9bMPKAXqQwU2jz85e2vGC
+         ALkviGT9PZvm4uM+oxth8Xd38yi3gsX+t8fkglimpP1cl2PmLCsHae2moo7n0uXKfUkC
+         x9jXy10+LnxamCFwmlbp5Z4LbzKA6B2rPgPjXdo+raNSneJhTjdyYqESlCLAcPmbcOL3
+         pF6A9AIhJ+bvbpu/AiGswEK3ZxopazEVxQuVGD9j3jsGzaXppove6apHUkvn5LQRItim
+         kxOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=03JonGFN41nMFJlGEFKXl9Bpzl1Ujvr23TaWRry9onc=;
+        b=CqbpF9W3aA4ygY/p2fF/iq1j3cC30iGCyTGeA/r/sq3jRmZ9Bb0I8NMPXNOlRb4CEx
+         NqhnAcErkgEvw3pVx4uzM4enJ8qbhQPt3h0D8fJm/envKrePkzukzQlgSgSJLV7kYaX3
+         fDz3p933yAcl2/HW1DL7lMbQIxpJo6A5x4uooZ9Jow93sfPHIsGTr0M1WQBAbCUbB8gO
+         7ZaD4BmxFiSQ+AkFUCLE89NKnf9bkRx7wLSlUix/YXOgR3NpaM43djitSz1dorcnYoum
+         pa9mli3fRYbQjhUYxqxcnF+U0ZCFIBRxosv+OZnN/BxsxrZhZAMFB8jNtKA7fXNUc3dP
+         O/9Q==
+X-Gm-Message-State: AOAM533GgLHElFl23o0k5hJrZL+FtNJJSxZuK3LBoylqA4P/7g3W314b
+        myvhfLOcS6TlkZg3GUBMsX+fmw==
+X-Google-Smtp-Source: ABdhPJwVfFoW6iQQ+fqbd7xp/1R/wW/saRz131MOzHu2XUHAvs/Onqzqo2VydVyKgnOzuUcxyR0yLw==
+X-Received: by 2002:a17:906:7b54:: with SMTP id n20mr50913962ejo.144.1594215401541;
+        Wed, 08 Jul 2020 06:36:41 -0700 (PDT)
+Received: from [192.168.178.33] (i5C746C99.versanet.de. [92.116.108.153])
+        by smtp.gmail.com with ESMTPSA id d26sm26632583edz.93.2020.07.08.06.36.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Jul 2020 06:36:41 -0700 (PDT)
+Subject: Re: [PATCH 1/6] md: switch to ->check_events for media change
+ notifications
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        Song Liu <song@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-xtensa@linux-xtensa.org,
+        linux-block@vger.kernel.org, linux-raid@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-fsdevel@vger.kernel.org
+References: <20200708122546.214579-1-hch@lst.de>
+ <20200708122546.214579-2-hch@lst.de>
+ <09cd4827-52ae-0e7c-c3d3-e9a6cd27ff2b@cloud.ionos.com>
+ <20200708132338.GO25523@casper.infradead.org>
+From:   Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
+Message-ID: <69412063-07eb-ddd1-2fee-2d3e1258cecf@cloud.ionos.com>
+Date:   Wed, 8 Jul 2020 15:36:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: ++++++
-X-Spam-Level: ******
-Authentication-Results: smtp.al2klimov.de;
-        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
-X-Spam: Yes
+In-Reply-To: <20200708132338.GO25523@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rationale:
-Reduces attack surface on kernel devs opening the links for MITM
-as HTTPS traffic is much harder to manipulate.
+On 7/8/20 3:23 PM, Matthew Wilcox wrote:
+> On Wed, Jul 08, 2020 at 03:17:31PM +0200, Guoqing Jiang wrote:
+>> On 7/8/20 2:25 PM, Christoph Hellwig wrote:
+>>> -static int md_media_changed(struct gendisk *disk)
+>>> -{
+>>> -	struct mddev *mddev = disk->private_data;
+>>> -
+>>> -	return mddev->changed;
+>>> -}
+>> Maybe we can remove "changed" from struct mddev since no one reads it
+>> after the change.
+> You missed this hunk:
+>
+> +static unsigned int md_check_events(struct gendisk *disk, unsigned int clearing)
+>   {
+>          struct mddev *mddev = disk->private_data;
+> +	unsigned int ret = 0;
+>
+> +	if (mddev->changed)
+> +               ret = DISK_EVENT_MEDIA_CHANGE;
+>          mddev->changed = 0;
+> -	return 0;
+> +	return ret;
+>   }
+>
 
-Deterministic algorithm:
-For each file:
-  If not .svg:
-    For each line:
-      If doesn't contain `\bxmlns\b`:
-        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
-            If both the HTTP and HTTPS versions
-            return 200 OK and serve the same content:
-              Replace HTTP with HTTPS.
+Yes, sorry for the noise.
 
-Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
----
- Continuing my work started at 93431e0607e5.
- See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
- (Actually letting a shell for loop submit all this stuff for me.)
-
- If there are any URLs to be removed completely or at least not HTTPSified:
- Just clearly say so and I'll *undo my change*.
- See also: https://lkml.org/lkml/2020/6/27/64
-
- If there are any valid, but yet not changed URLs:
- See: https://lkml.org/lkml/2020/6/26/837
-
- If you apply the patch, please let me know.
-
-
- net/bluetooth/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/net/bluetooth/Kconfig b/net/bluetooth/Kconfig
-index 1d6d243cdde9..e2497d764e97 100644
---- a/net/bluetooth/Kconfig
-+++ b/net/bluetooth/Kconfig
-@@ -21,7 +21,7 @@ menuconfig BT
- 	  It was designed as a replacement for cables and other short-range
- 	  technologies like IrDA.  Bluetooth operates in personal area range
- 	  that typically extends up to 10 meters.  More information about
--	  Bluetooth can be found at <http://www.bluetooth.com/>.
-+	  Bluetooth can be found at <https://www.bluetooth.com/>.
- 
- 	  Linux Bluetooth subsystem consist of several layers:
- 	     Bluetooth Core
--- 
-2.27.0
+Thanks,
+Guoqing
 
