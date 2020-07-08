@@ -2,373 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 155CD218167
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 09:40:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29C23218171
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 09:41:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726662AbgGHHky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 03:40:54 -0400
-Received: from hostingweb31-40.netsons.net ([89.40.174.40]:49557 "EHLO
-        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726533AbgGHHkw (ORCPT
+        id S1726744AbgGHHlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 03:41:09 -0400
+Received: from mail-ej1-f67.google.com ([209.85.218.67]:44994 "EHLO
+        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726523AbgGHHlH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 03:40:52 -0400
-Received: from [78.134.117.153] (port=41602 helo=melee.fritz.box)
-        by hostingweb31.netsons.net with esmtpa (Exim 4.93)
-        (envelope-from <luca@lucaceresoli.net>)
-        id 1jt4hF-0009Wd-Qd; Wed, 08 Jul 2020 09:40:49 +0200
-From:   Luca Ceresoli <luca@lucaceresoli.net>
-To:     linux-clk@vger.kernel.org
-Cc:     Luca Ceresoli <luca@lucaceresoli.net>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
-        Adam Ford <aford173@gmail.com>
-Subject: [PATCH v2 4/4] dt-bindings: clk: versaclock5: convert to yaml
-Date:   Wed,  8 Jul 2020 09:40:35 +0200
-Message-Id: <20200708074035.31595-4-luca@lucaceresoli.net>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200708074035.31595-1-luca@lucaceresoli.net>
-References: <20200708074035.31595-1-luca@lucaceresoli.net>
+        Wed, 8 Jul 2020 03:41:07 -0400
+Received: by mail-ej1-f67.google.com with SMTP id ga4so49256676ejb.11
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 00:41:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6/A3VQ/K8xvCKHiyxktO8Rg8OAtA4BCJ+I3Yp4ab7mc=;
+        b=NJzm+HIF2hx8/UUUuYmkSUKZ+NW5fJHtFPOu4S88YzzlQQdoafkFhs5Le7U7verTtB
+         oFZwC3+ExXDldatNQV0U2I+OLvM9orHbr/jAhD7esfGpohx+xct2lYBjFi6A69CunYeL
+         4bPc83J8fhfmLbyo58LGcm4tNAVFwhiOzKqHD3JKM2txMywuC02QsL4/m3qpfTtKmllo
+         0OhSe8i8mqbqu6m4we8vJIGbb2V2faumUGsehLfjWmZJjiSko0ZZqcfgunX3VLRgQuqS
+         9Pa5bYEHoo5IHswuf6iayoXLpy3CJmJ3YqJfAX/SSrtDfpMKetGqG7Ktm+AfAQ+xQw2h
+         RSVg==
+X-Gm-Message-State: AOAM533KvzzTg+z5HziQfbG/WaSLetvDpq4UZDa0Vhda2hTocNiuXQFk
+        9mKpQ0Gmc1/10k2g2zkTiUk=
+X-Google-Smtp-Source: ABdhPJykdLeci86uEzWsDP8J/cfe/eHujJtWTsPQHzS01KxobrOSRY5slASSTgDt2Pwhj70aOnSZNA==
+X-Received: by 2002:a17:906:6d49:: with SMTP id a9mr48950522ejt.435.1594194065679;
+        Wed, 08 Jul 2020 00:41:05 -0700 (PDT)
+Received: from localhost (ip-37-188-179-51.eurotel.cz. [37.188.179.51])
+        by smtp.gmail.com with ESMTPSA id dn15sm1605732ejc.26.2020.07.08.00.41.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Jul 2020 00:41:04 -0700 (PDT)
+Date:   Wed, 8 Jul 2020 09:41:03 +0200
+From:   Michal Hocko <mhocko@kernel.org>
+To:     Joonsoo Kim <js1304@gmail.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel-team@lge.com,
+        Christoph Hellwig <hch@infradead.org>,
+        Roman Gushchin <guro@fb.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>
+Subject: Re: [PATCH v4 04/11] mm/hugetlb: make hugetlb migration callback CMA
+ aware
+Message-ID: <20200708074103.GD7271@dhcp22.suse.cz>
+References: <1594107889-32228-1-git-send-email-iamjoonsoo.kim@lge.com>
+ <1594107889-32228-5-git-send-email-iamjoonsoo.kim@lge.com>
+ <c1cd6e11-08c3-5654-60e7-dec2eb80987a@suse.cz>
+ <20200708071602.GB16543@js1304-desktop>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lucaceresoli.net
-X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca+lucaceresoli.net/only user confirmed/virtual account not confirmed
-X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200708071602.GB16543@js1304-desktop>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert to yaml the VersaClock bindings document. The mapping between
-clock specifier and physical pins cannot be described formally in yaml
-schema, then keep it verbatim in the description field.
+On Wed 08-07-20 16:16:02, Joonsoo Kim wrote:
+> On Tue, Jul 07, 2020 at 01:22:31PM +0200, Vlastimil Babka wrote:
+> > On 7/7/20 9:44 AM, js1304@gmail.com wrote:
+> > > From: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+> > > 
+> > > new_non_cma_page() in gup.c which try to allocate migration target page
+> > > requires to allocate the new page that is not on the CMA area.
+> > > new_non_cma_page() implements it by removing __GFP_MOVABLE flag.  This way
+> > > works well for THP page or normal page but not for hugetlb page.
+> > > 
+> > > hugetlb page allocation process consists of two steps.  First is dequeing
+> > > from the pool.  Second is, if there is no available page on the queue,
+> > > allocating from the page allocator.
+> > > 
+> > > new_non_cma_page() can control allocation from the page allocator by
+> > > specifying correct gfp flag.  However, dequeing cannot be controlled until
+> > > now, so, new_non_cma_page() skips dequeing completely.  It is a suboptimal
+> > > since new_non_cma_page() cannot utilize hugetlb pages on the queue so this
+> > > patch tries to fix this situation.
+> > > 
+> > > This patch makes the deque function on hugetlb CMA aware and skip CMA
+> > > pages if newly added skip_cma argument is passed as true.
+> > 
+> > Hmm, can't you instead change dequeue_huge_page_node_exact() to test the PF_
+> > flag and avoid adding bool skip_cma everywhere?
+> 
+> Okay! Please check following patch.
+> > 
+> > I think that's what Michal suggested [1] except he said "the code already does
+> > by memalloc_nocma_{save,restore} API". It needs extending a bit though, AFAICS.
+> > __gup_longterm_locked() indeed does the save/restore, but restore comes before
+> > check_and_migrate_cma_pages() and thus new_non_cma_page() is called, so an
+> > adjustment is needed there, but that's all?
+> > 
+> > Hm the adjustment should be also done because save/restore is done around
+> > __get_user_pages_locked(), but check_and_migrate_cma_pages() also calls
+> > __get_user_pages_locked(), and that call not being between nocma save and
+> > restore is thus also a correctness issue?
+> 
+> Simply, I call memalloc_nocma_{save,restore} in new_non_cma_page(). It
+> would not cause any problem.
 
-Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
----
- .../bindings/clock/idt,versaclock5.txt        | 125 --------------
- .../bindings/clock/idt,versaclock5.yaml       | 160 ++++++++++++++++++
- MAINTAINERS                                   |   1 +
- 3 files changed, 161 insertions(+), 125 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/clock/idt,versaclock5.txt
- create mode 100644 Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
+I believe a proper fix is the following. The scope is really defined for
+FOLL_LONGTERM pins and pushing it inside check_and_migrate_cma_pages
+will solve the problem as well but it imho makes more sense to do it in
+the caller the same way we do for any others. 
 
-diff --git a/Documentation/devicetree/bindings/clock/idt,versaclock5.txt b/Documentation/devicetree/bindings/clock/idt,versaclock5.txt
-deleted file mode 100644
-index 9656d4cf221c..000000000000
---- a/Documentation/devicetree/bindings/clock/idt,versaclock5.txt
-+++ /dev/null
-@@ -1,125 +0,0 @@
--Binding for IDT VersaClock 5,6 programmable i2c clock generators.
--
--The IDT VersaClock 5 and VersaClock 6 are programmable i2c clock
--generators providing from 3 to 12 output clocks.
--
--==I2C device node==
--
--Required properties:
--- compatible:	shall be one of
--		"idt,5p49v5923"
--		"idt,5p49v5925"
--		"idt,5p49v5933"
--		"idt,5p49v5935"
--		"idt,5p49v6901"
--		"idt,5p49v6965"
--- reg:		i2c device address, shall be 0x68 or 0x6a.
--- #clock-cells:	from common clock binding; shall be set to 1.
--- clocks:	from common clock binding; list of parent clock handles,
--		- 5p49v5923 and
--		  5p49v5925 and
--		  5p49v6901: (required) either or both of XTAL or CLKIN
--					reference clock.
--		- 5p49v5933 and
--		- 5p49v5935: (optional) property not present (internal
--					Xtal used) or CLKIN reference
--					clock.
--- clock-names:	from common clock binding; clock input names, can be
--		- 5p49v5923 and
--		  5p49v5925 and
--		  5p49v6901: (required) either or both of "xin", "clkin".
--		- 5p49v5933 and
--		- 5p49v5935: (optional) property not present or "clkin".
--
--For all output ports, a corresponding, optional child node named OUT1,
--OUT2, etc. can represent a each output, and the node can be used to
--specify the following:
--
--- idt,mode: can be one of the following:
--                 - VC5_LVPECL
--                 - VC5_CMOS
--                 - VC5_HCSL33
--                 - VC5_LVDS
--                 - VC5_CMOS2
--                 - VC5_CMOSD
--                 - VC5_HCSL25
--
--- idt,voltage-microvolts:  can be one of the following
--                 - 1800000
--                 - 2500000
--                 - 3300000
---  idt,slew-percent: Percent of normal, can be one of
--                 - 80
--                 - 85
--                 - 90
--                 - 100
--
--==Mapping between clock specifier and physical pins==
--
--When referencing the provided clock in the DT using phandle and
--clock specifier, the following mapping applies:
--
--5P49V5923:
--	0 -- OUT0_SEL_I2CB
--	1 -- OUT1
--	2 -- OUT2
--
--5P49V5933:
--	0 -- OUT0_SEL_I2CB
--	1 -- OUT1
--	2 -- OUT4
--
--5P49V5925 and
--5P49V5935:
--	0 -- OUT0_SEL_I2CB
--	1 -- OUT1
--	2 -- OUT2
--	3 -- OUT3
--	4 -- OUT4
--
--5P49V6901:
--	0 -- OUT0_SEL_I2CB
--	1 -- OUT1
--	2 -- OUT2
--	3 -- OUT3
--	4 -- OUT4
--
--==Example==
--
--/* 25MHz reference crystal */
--ref25: ref25m {
--	compatible = "fixed-clock";
--	#clock-cells = <0>;
--	clock-frequency = <25000000>;
--};
--
--i2c-master-node {
--
--	/* IDT 5P49V5923 i2c clock generator */
--	vc5: clock-generator@6a {
--		compatible = "idt,5p49v5923";
--		reg = <0x6a>;
--		#clock-cells = <1>;
--
--		/* Connect XIN input to 25MHz reference */
--		clocks = <&ref25m>;
--		clock-names = "xin";
--
--		OUT1 {
--			idt,mode = <VC5_CMOS>;
--			idt,voltage-microvolts = <1800000>;
--			idt,slew-percent = <80>;
--		};
--		OUT2 {
--			...
--		};
--		...
--	};
--};
--
--/* Consumer referencing the 5P49V5923 pin OUT1 */
--consumer {
--	...
--	clocks = <&vc5 1>;
--	...
--}
-diff --git a/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml b/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
-new file mode 100644
-index 000000000000..4bdfd6187b48
---- /dev/null
-+++ b/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
-@@ -0,0 +1,160 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/clock/idt,versaclock5.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Binding for IDT VersaClock 5 and 6 programmable I2C clock generators
-+
-+description: |
-+  The IDT VersaClock 5 and VersaClock 6 are programmable I2C
-+  clock generators providing from 3 to 12 output clocks.
-+
-+  When referencing the provided clock in the DT using phandle and clock
-+  specifier, the following mapping applies:
-+
-+  - 5P49V5923:
-+    0 -- OUT0_SEL_I2CB
-+    1 -- OUT1
-+    2 -- OUT2
-+
-+  - 5P49V5933:
-+    0 -- OUT0_SEL_I2CB
-+    1 -- OUT1
-+    2 -- OUT4
-+
-+  - other parts:
-+    0 -- OUT0_SEL_I2CB
-+    1 -- OUT1
-+    2 -- OUT2
-+    3 -- OUT3
-+    4 -- OUT4
-+
-+maintainers:
-+  - Luca Ceresoli <luca@lucaceresoli.net>
-+
-+properties:
-+  compatible:
-+    enum:
-+      - idt,5p49v5923
-+      - idt,5p49v5925
-+      - idt,5p49v5933
-+      - idt,5p49v5935
-+      - idt,5p49v6901
-+      - idt,5p49v6965
-+
-+  reg:
-+    maxItems: 1
-+    description: I2C device address, shall be 0x68 or 0x6a.
-+
-+  '#clock-cells':
-+    const: 1
-+
-+patternProperties:
-+  "^OUT[1-4]$":
-+    type: object
-+    description:
-+      Description of one of the outputs (OUT1..OUT4). See "Clock1 Output
-+      Configuration" in the Versaclock 5/6/6E Family Register Description
-+      and Programming Guide.
-+    properties:
-+      idt,mode:
-+        description:
-+          The output drive mode. Values defined in dt-bindings/clk/versaclock.h
-+        enum:
-+          - VC5_LVPECL
-+          - VC5_CMOS
-+          - VC5_HCSL33
-+          - VC5_LVDS
-+          - VC5_CMOS2
-+          - VC5_CMOSD
-+          - VC5_HCSL25
-+      idt,voltage-microvolts:
-+        description: The output drive voltage.
-+        $ref: /schemas/types.yaml#/definitions/uint32
-+        enum: [ 1800000, 2500000, 3300000 ]
-+      idt,slew-percent:
-+        description: The Slew rate control for CMOS single-ended.
-+        $ref: /schemas/types.yaml#/definitions/uint32
-+        enum: [ 80, 85, 90, 100 ]
-+
-+required:
-+  - compatible
-+  - reg
-+  - '#clock-cells'
-+
-+allOf:
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - idt,5p49v5933
-+              - idt,5p49v5935
-+    then:
-+      # Devices with builtin crystal, optional external input
-+      properties:
-+        clock-names:
-+          const: clkin
-+        clocks:
-+          maxItems: 1
-+    else:
-+      # Devices without builtin crystal
-+      properties:
-+        clock-names:
-+          anyOf:
-+            - required: [ xin ]
-+            - required: [ clkin ]
-+        clocks:
-+          minItems: 1
-+          maxItems: 2
-+      required:
-+        - clock-names
-+        - clocks
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clk/versaclock.h>
-+
-+    /* 25MHz reference crystal */
-+    ref25: ref25m {
-+        compatible = "fixed-clock";
-+        #clock-cells = <0>;
-+        clock-frequency = <25000000>;
-+    };
-+
-+    i2c@0 {
-+        reg = <0x0 0x100>;
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        /* IDT 5P49V5923 I2C clock generator */
-+        vc5: clock-generator@6a {
-+            compatible = "idt,5p49v5923";
-+            reg = <0x6a>;
-+            #clock-cells = <1>;
-+
-+            /* Connect XIN input to 25MHz reference */
-+            clocks = <&ref25m>;
-+            clock-names = "xin";
-+
-+            OUT1 {
-+                idt,drive-mode = <VC5_CMOSD>;
-+                idt,voltage-microvolts = <1800000>;
-+                idt,slew-percent = <80>;
-+            };
-+
-+            OUT4 {
-+                idt,drive-mode = <VC5_LVDS>;
-+            };
-+        };
-+    };
-+
-+    /* Consumer referencing the 5P49V5923 pin OUT1 */
-+    consumer {
-+        /* ... */
-+        clocks = <&vc5 1>;
-+        /* ... */
-+    };
-+
-+...
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 5aa16c245c63..09d6efd1d0d0 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8326,6 +8326,7 @@ F:	drivers/input/misc/ideapad_slidebar.c
- IDT VersaClock 5 CLOCK DRIVER
- M:	Luca Ceresoli <luca@lucaceresoli.net>
- S:	Maintained
-+F:	Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
- F:	drivers/clk/clk-versaclock5.c
+Fixes: 9a4e9f3b2d73 ("mm: update get_user_pages_longterm to migrate pages allocated from CMA region")
+
+I am not sure this is worth backporting to stable yet.
+
+diff --git a/mm/gup.c b/mm/gup.c
+index de9e36262ccb..75980dd5a2fc 100644
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -1794,7 +1794,6 @@ static long __gup_longterm_locked(struct task_struct *tsk,
+ 				     vmas_tmp, NULL, gup_flags);
  
- IEEE 802.15.4 SUBSYSTEM
+ 	if (gup_flags & FOLL_LONGTERM) {
+-		memalloc_nocma_restore(flags);
+ 		if (rc < 0)
+ 			goto out;
+ 
+@@ -1802,11 +1801,13 @@ static long __gup_longterm_locked(struct task_struct *tsk,
+ 			for (i = 0; i < rc; i++)
+ 				put_page(pages[i]);
+ 			rc = -EOPNOTSUPP;
++			memalloc_nocma_restore(flags);
+ 			goto out;
+ 		}
+ 
+ 		rc = check_and_migrate_cma_pages(tsk, mm, start, rc, pages,
+ 						 vmas_tmp, gup_flags);
++		memalloc_nocma_restore(flags);
+ 	}
+ 
+ out:
 -- 
-2.27.0
-
+Michal Hocko
+SUSE Labs
