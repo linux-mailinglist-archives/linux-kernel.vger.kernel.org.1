@@ -2,157 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CD30218C29
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 17:46:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1F05218C2F
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 17:47:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730207AbgGHPpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 11:45:53 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:55267 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730174AbgGHPpv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 11:45:51 -0400
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200708154549euoutp01c6aec94902c14f4733a6feeeb53a32eb~f0YIYeAen0680006800euoutp01H
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 15:45:49 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200708154549euoutp01c6aec94902c14f4733a6feeeb53a32eb~f0YIYeAen0680006800euoutp01H
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1594223149;
-        bh=HMJ3yByH9x8u/WfLOKpCRZRkPGqJDTK6bo8fYkMKWOk=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=Zgu9aTFQI5AqoudAGxXbvvDh1jfSE+Mg/1gY3f3v/50lrX31irRUimTZGab2N5Ky8
-         VNbiRTbvzdGXJrFXrEVYxhKacosCS2xYdNRGbxJlUXRRojtwNA21MEJ4VPv1YChZU4
-         7Knaz/aQ9nuD9mCEqtbqb2YzIzorUg2d3dejpta8=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20200708154549eucas1p192dfbf443e4f9478ff2c7f1e0d9ae060~f0YH11yGo0235002350eucas1p12;
-        Wed,  8 Jul 2020 15:45:49 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id 52.60.05997.D2AE50F5; Wed,  8
-        Jul 2020 16:45:49 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20200708154548eucas1p2de7a70ca8516dc9ce735e7d41cd7e176~f0YHeGl8j1915419154eucas1p2p;
-        Wed,  8 Jul 2020 15:45:48 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200708154548eusmtrp21e0a5faebc277bf84e2fe9b1ac93878a~f0YHXEscj2612426124eusmtrp2R;
-        Wed,  8 Jul 2020 15:45:48 +0000 (GMT)
-X-AuditID: cbfec7f4-65dff7000000176d-4a-5f05ea2dba3c
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id DC.17.06017.C2AE50F5; Wed,  8
-        Jul 2020 16:45:48 +0100 (BST)
-Received: from [106.210.123.115] (unknown [106.210.123.115]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20200708154547eusmtip27ceef9549db8107c1b038000425ba4b9~f0YGtIgUk0555205552eusmtip2V;
-        Wed,  8 Jul 2020 15:45:47 +0000 (GMT)
-Subject: Re: [PATCH 06/11] media: exynos4-is: Properly set JPEG options when
- not using CSIS
-To:     Tomasz Figa <tfiga@chromium.org>,
-        Jonathan Bakker <xc-racer2@live.ca>
-Cc:     kyungmin.park@samsung.com, mchehab@kernel.org, kgene@kernel.org,
-        krzk@kernel.org, linux-media@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-From:   Sylwester Nawrocki <s.nawrocki@samsung.com>
-Message-ID: <e60ff1bb-730a-11b5-f870-61a4f24f6195@samsung.com>
-Date:   Wed, 8 Jul 2020 17:45:47 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
-        Thunderbird/68.10.0
+        id S1730261AbgGHPr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 11:47:26 -0400
+Received: from mout.gmx.net ([212.227.17.20]:45163 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729022AbgGHPrZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 11:47:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1594223208;
+        bh=LU0N738Cta16L6YXG8KR0rGDYWQO7GyOF1FHDDiJg24=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=Cki45PwWYQXuV+25zw+Sl0pjGy0r9ir66J5aJ3ClBXIXKJMSV7qabQS5dl8jY2Stf
+         2xL6jRcsZTrOzKig9oyv4+VfBwNDd317enh4Cj4OLeRV0jYfrwjFWiTivMg7uBPAMq
+         MwfB9oag27ZURwafMW1QZ9d0tt4ORT1/ucEdzcFM=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([80.208.213.58]) by mail.gmx.com
+ (mrgmx104 [212.227.17.168]) with ESMTPSA (Nemesis) id
+ 1MyKDU-1kpIgO2BeG-00yiQp; Wed, 08 Jul 2020 17:46:48 +0200
+From:   Frank Wunderlich <frank-w@public-files.de>
+To:     linux-mediatek@lists.infradead.org
+Cc:     =?UTF-8?q?Ren=C3=A9=20van=20Dorst?= <opensource@vdorst.com>,
+        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Frank Wunderlich <frank-w@public-files.de>
+Subject: [PATCH] net: ethernet: mtk_eth_soc: fix mtu warning
+Date:   Wed,  8 Jul 2020 17:46:34 +0200
+Message-Id: <20200708154634.9565-1-frank-w@public-files.de>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20200707182322.GF2621465@chromium.org>
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SbUhTYRTHe3bv7u5Gk6dpeLDIWIoY+VrUjcIyLBYiSB/6kKgtvankpuz6
-        WoSiJqVOLYhyMxQzrRFpc7nSMhJrlU2TTDRNBUe+5EvijEx7cbtJfvud8/zOPf8DlyZkz4Ue
-        dJI6jdWolclySkI2v1rq8vObEsYGWm0UUzb2lWC6uxtFjDVvWsQYx/qEzIeWSoopaXwkZG52
-        twmYOuOKgFm49Jtieq5+Jg9LFPrcHlJhNFyhFE21OYqagR+kotRkQIoF47ZI6pTkYDybnJTB
-        agJCTksSbVMjKLUeZ03Y35O56Km0CIlpwHugOd9KFiEJLcN3EYzW9P4r7AjejWopvlhA0HTb
-        SKyNFFTMCB0sw/UITPqjvDSPoK//llNyxdHQfnkcOdgNH4e+0ULCIRF4GMGzxftOicJBoH1Z
-        6pSkOAR+zplIB5PYC14XjDt5M46BhkmzgHc2wZsKm7MvXk0xMPHLmYLA7vDJViXg2RPMM5XO
-        ZYC7RDDU+5DiY4fBVJWF5NkVpiwmEc9b4c8Tx7BjIB9BSeugiC/KEYxYqhFvHYChrp+rX6JX
-        V/hCQ0sA3w6F/mEDcrQBu0D/zCY+hAtca75B8G0pXC6U8bYXLBtuCHj2gGLbH7IcyXXrTtOt
-        O0e37hzd/73ViDQgdzadUyWwXLCazfTnlCouXZ3gH5eiMqLV36rzt8X+GLWsnGlHmEbyjdIJ
-        ozBWJlRmcNmqdgQ0IXeTHrF2xsik8crs86wmJVaTnsxy7WgLTcrdpbtrJqNlOEGZxp5j2VRW
-        s/YqoMUeuWjXx9nM6Z4TYZHe8ymDs3r1vdC26+PmC6mHFN7f2+j+6zPD6kNnv4R/K1uZN4Xv
-        a9TWZf2wVB/TXQy8s7Rg3t+anRdUHPdgtLd2OGdrVvDGAXvDPbVnh37HW6zVv8i2Fi7uDTg5
-        Zw7w7dBGLBt9F1Xc9gofn8UIcZS4MrNpQ1fUgJzkEpVBOwkNp/wLi9wPKVIDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrAIsWRmVeSWpSXmKPExsVy+t/xe7o6r1jjDb5dULPof/ya2eL8+Q3s
-        Fmeb3rBbbHp8jdXi8q45bBY9G7ayWsw4v4/JYtmmP0wWn1v/sVlcnHiXxYHLY3bDRRaPTas6
-        2Tw2L6n3WHTzB4tH35ZVjB6fN8kFsEXp2RTll5akKmTkF5fYKkUbWhjpGVpa6BmZWOoZGpvH
-        WhmZKunb2aSk5mSWpRbp2yXoZTx5dZ+xYLlAxYsvF1gaGPfwdjFyckgImEi0zHzLCmILCSxl
-        lNj9Rq6LkQMoLiUxv0UJokRY4s+1LrYuRi6gkveMEhMn9DCBJIQFYiUOdTxnBLFFBDwlrj1o
-        YwYpYha4xyjxdEYDVEc7k8SvX4fANrAJGEr0Hu0D6+AVsJP49X4LC4jNIqAicaLlOZgtKhAn
-        sXzLfHaIGkGJkzOfgMU5gS69+eIv2BxmAXWJP/MuMUPY4hK3nsxngrDlJba/ncM8gVFoFpL2
-        WUhaZiFpmYWkZQEjyypGkdTS4tz03GIjveLE3OLSvHS95PzcTYzA2Nx27OeWHYxd74IPMQpw
-        MCrx8L7YxBovxJpYVlyZe4hRgoNZSYTX6ezpOCHelMTKqtSi/Pii0pzU4kOMpkDPTWSWEk3O
-        B6aNvJJ4Q1NDcwtLQ3Njc2MzCyVx3g6BgzFCAumJJanZqakFqUUwfUwcnFINjK4i1wuSX7lt
-        PbKQ+diF6U4RHW8s7SvUM9ucTtQc0ju4ZNqE+wk7rGPFmNk5Pz2QjmmeVOHqscNU5l6OipLd
-        /r2/xXyDj+6Vybb/ItPBEyT7ZKlNxrHieQ7zo/wdOlL1X1wQvFB2hKnmcsTzRuWzx0UNp7Be
-        2tq+9LWgNLNLuMS3W+uN3woHK7EUZyQaajEXFScCABAvYkvjAgAA
-X-CMS-MailID: 20200708154548eucas1p2de7a70ca8516dc9ce735e7d41cd7e176
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200707182328eucas1p284f1ed2d1d10a67c88e15ce01653885b
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200707182328eucas1p284f1ed2d1d10a67c88e15ce01653885b
-References: <20200426022650.10355-1-xc-racer2@live.ca>
-        <BN6PR04MB06606F63C7ACE765B57331A1A3AE0@BN6PR04MB0660.namprd04.prod.outlook.com>
-        <CGME20200707182328eucas1p284f1ed2d1d10a67c88e15ce01653885b@eucas1p2.samsung.com>
-        <20200707182322.GF2621465@chromium.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:f4eGLoM7b59LlVnF7QAav5q/YJIcx9clM2yM7+NqTv9tBkejQqs
+ au1gdA7QoPd0PPprJTzRKzybOTMmD14heF0qGnjwaABpo+XISVHKv5rw99O2S0ojFe9uDQL
+ Qxu2lOqi+kzvKyOBpfLYcfelq6iI7x0aHD2bo1rK4OYlfxeRe2f4NPCAwZXbWjcYfAUryJJ
+ xAsnWzoMdvXQ0LmII42Zg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:QZLgElE1BP0=:Gqhv8ZkYtw7DnMAyPRXD/X
+ fJu6mohnMnpQAAYTv10zZw8JRMNqC10986RlCPTmKdzhQdheUmQlpzYByPQES1xWVq9/ZLpiJ
+ nE63xOKvJKwimVxIK8rufuTT3ERB5ELpRSWN4Bh6r8ZCGvMAK/FlY0NzZeUUsE+jAprL/qKN4
+ AI2dSf9H+nQEOTzhJ1AF+4URZzWlPL1HYaynWfijqXHenaimeCtP7cQdi/13F0CAkTN1XCPNX
+ WRuheRfGgFeiXmhyhXlVNd4/2gujkPQKn/26b2ucv6cJDhzl1uUs3sGq/c9kkI/LjL3aZQtED
+ gc+br4VzoFlVXavHhQVmnqgWXSL+EA2TrR9stXkiDOI/cyM3MwvVVPZ50TEq2/Q2OAbzZWTqC
+ NsPs6REaRJ17OKkESZFOPNgWu+Ic+pBDDc3nsZXWVZMqdJSM/JJI7id8Xx+DurJ8smNs8oulk
+ 9y+/MZ850QkTnee8j9A6FkCXnBDGJwygDDPQCNJqLAdCPPD/QaHHw/6/Ah3dUfILQ6+sPevQO
+ WwwCJHST3FdSMuCiJCiGLASeIEit2k3dAeL+KivcJPyM3Yame9Zi+CoiCY1rW0qLimxGCtw81
+ VIdfTIYIDCU8EItB3W2jvdmVzkFlgDxwuXGgI1+ige4LUD1zGtcGzaL+PDGNN6YflzYKrcw28
+ +fV5pzvXRJ7Z0h3Fv2FUQrbRn/EA837e+W4VXdAWYwh59XBHd03TTz4NSWu/omcRDa3Khb5+P
+ ESAtYO8iU/yQvq7FB9YBwlj5JdkMW6FyHf8M7cg4IHXlZJI3CnSIK/oOfppeafAsgsS4+2uAX
+ bXOzrchGMjm58CILJfqJ+KLsuggzdT8fmMSnFLnpyVvtWT6VHl+EZhCDY44WR+FLC6b5emPpg
+ tOychoZgk6LNTlFDnVXOshmOiinrWeXVHV63j/dcw4fH6XZDaQ3OzBR68OBPvKZSH1EO5muYM
+ y9x0idwevvzCpNm0FkEt7o1dY+lbwGBpXc70X/opvL51o/JxflVmZnP371AhguXCAV/UYFU3+
+ Y/BUCdCsL7gMBIfLOXlp4Lk4AVX3+5drM35UdAhB3lRDfkmmBCQtahquQh2y+PVdLKigx+XAK
+ Jje0lEOvgFGkQS0Jbi77PO2BTCoVBby4pXdDJs1kdVlRAVEK3/K9ODG8WdvrsLo6n6M5IquA3
+ 1mk+gzN6UbhUJT18/Szb7ULP+oFhp42bjbH2FBY5wU43ihVOlQGJfBEW7FJNBARX1ihjrghqk
+ 8siqjKpS75EovVn3BF1tgkeCRZialzpwFNk4W/A==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Ren=C3=A9 van Dorst <opensource@vdorst.com>
 
-On 07.07.2020 20:23, Tomasz Figa wrote:
-> On Sat, Apr 25, 2020 at 07:26:45PM -0700, Jonathan Bakker wrote:
->> Commit ee7160e57c98 ("[media] s5p-fimc: Add support for JPEG capture")
->> added support for JPEG capture, but missed setting a register when the
->> CSIS device wasn't in use.
+in recent Kernel-Versions there are warnings about incorrect MTU-Size
+like these:
 
-> nit: Since this isn't really about using the CSIS device or not, but
-> rather about the interface that the sensor is connected with, could we
-> instead say "when a parallel interface is used"?
+mt7530 mdio-bus:00: nonfatal error -95 setting MTU on port x
+eth0: mtu greater than device maximum
+mtk_soc_eth 1b100000.ethernet eth0: error -22 setting MTU to include DSA o=
+verhead
 
->> Signed-off-by: Jonathan Bakker <xc-racer2@live.ca>
->> ---
->>  drivers/media/platform/exynos4-is/fimc-reg.c | 7 +++++++
->>  1 file changed, 7 insertions(+)
->>
->> diff --git a/drivers/media/platform/exynos4-is/fimc-reg.c b/drivers/media/platform/exynos4-is/fimc-reg.c
->> index 5ce2bdebd424..269a98fca1e8 100644
->> --- a/drivers/media/platform/exynos4-is/fimc-reg.c
->> +++ b/drivers/media/platform/exynos4-is/fimc-reg.c
->> @@ -606,6 +606,11 @@ int fimc_hw_set_camera_source(struct fimc_dev *fimc,
->>  	switch (source->fimc_bus_type) {
->>  	case FIMC_BUS_TYPE_ITU_601:
->>  	case FIMC_BUS_TYPE_ITU_656:
->> +		if (fimc_fmt_is_user_defined(f->fmt->color)) {
->> +			cfg |= FIMC_REG_CISRCFMT_ITU601_8BIT;
->> +			break;
->> +		}
->> +
->>  		for (i = 0; i < ARRAY_SIZE(pix_desc); i++) {
->>  			if (vc->ci_fmt.code == pix_desc[i].pixelcode) {
->>  				cfg = pix_desc[i].cisrcfmt;
->> @@ -707,6 +712,8 @@ int fimc_hw_set_camera_type(struct fimc_dev *fimc,
->>  	case FIMC_BUS_TYPE_ITU_601...FIMC_BUS_TYPE_ITU_656:
->>  		if (source->mux_id == 0) /* ITU-A, ITU-B: 0, 1 */
->>  			cfg |= FIMC_REG_CIGCTRL_SELCAM_ITU_A;
->> +		if (vid_cap->ci_fmt.code == MEDIA_BUS_FMT_JPEG_1X8)
->> +			cfg |= FIMC_REG_CIGCTRL_CAM_JPEG;
-> 
-> Should we also handle MEDIA_BUS_FMT_S5C_UYVY_JPEG_1X8 as in the CSI
-> case? The S5C73M3 sensor supports the parallel interface as well.
+Signed-off-by: Ren=C3=A9 van Dorst <opensource@vdorst.com>
+Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
 
-The parallel interface has too low bandwidth to transfer image data
-with the maximum supported resolution and frame rate, I doubt anyone would
-ever use S5C73MC in such a configuration.
+Fixes: bfcb813203 ("net: dsa: configure the MTU for switch ports")
+Fixes: 72579e14a1 ("net: dsa: don't fail to probe if we couldn't set the M=
+TU")
+Fixes: 7a4c53bee3 ("net: report invalid mtu value via netlink extack")
+=2D--
+ drivers/net/ethernet/mediatek/mtk_eth_soc.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
--- 
-Regards,
-Sylwester
+diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.c b/drivers/net/eth=
+ernet/mediatek/mtk_eth_soc.c
+index 85735d32ecb0..00e3d70f7d07 100644
+=2D-- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
++++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
+@@ -2891,6 +2891,10 @@ static int mtk_add_mac(struct mtk_eth *eth, struct =
+device_node *np)
+ 	eth->netdev[id]->irq =3D eth->irq[0];
+ 	eth->netdev[id]->dev.of_node =3D np;
+
++	eth->netdev[id]->mtu =3D 1536;
++	eth->netdev[id]->min_mtu =3D ETH_MIN_MTU;
++	eth->netdev[id]->max_mtu =3D 1536;
++
+ 	return 0;
+
+ free_netdev:
+=2D-
+2.25.1
+
