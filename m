@@ -2,195 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93A8821847D
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 11:58:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E05821848C
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 12:01:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728499AbgGHJ6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 05:58:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35918 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726237AbgGHJ6L (ORCPT
+        id S1728518AbgGHKBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 06:01:19 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:55404 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728454AbgGHKBR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 05:58:11 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47771C08C5DC;
-        Wed,  8 Jul 2020 02:58:11 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id e18so21425072pgn.7;
-        Wed, 08 Jul 2020 02:58:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vfd3otyp56vRqiURxmDOZ6Fo0opPnI/s7gjtxv0KznQ=;
-        b=gL2NcQtPyLmGdzNGGNQjTRVRuD8YTehJuNaOsRyQZtacdqttXhiIP5wBwJ7N11ezVs
-         QtIYgsbhXHAliR9T7rDYN8pV+9J5phU56BO6bnC+6h9K6uqG85qvV2Qk6ozQGKVhLG23
-         6unVCTkqfJsITJPcTxxhHiVre1zM49yuVGHKAiH0Zgw49DJBoEz9nw1QMB5kcBn8xiLj
-         pYrV+IAbFiJWWN9Mc9rrcg35W0wp+Umuko1hQpFrUyV91ktzvkQlCJBxlXOAvZbSlPzF
-         LjQXsBjSBvWehbljAS3zv/hzfALFJrCYh+90yl+ZghepmlaqODL+8TkuFYGQfRV3BHWG
-         Rjdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vfd3otyp56vRqiURxmDOZ6Fo0opPnI/s7gjtxv0KznQ=;
-        b=j0xY/z138i3DNkjCehHeSZSq5Q1hYm+wo2cGstrHKEZbwTDKpTgCjyydM4y1MObobs
-         dfagJGiBYkc65xTeV/bezPG1ZZ+k7T0Z6Nads9+rL6YG7q5Lj8qTTKfnZUlUnJyfUrvS
-         HvTzg+Qw4GYB1e2Db1Oxy8O8PHuZjiik7n1iE///GK9GAE/UxRoN5LBp5c/FgtORZa7g
-         cJqFt/pzmCgDnt7on1Fql/sO+Rn0X9IK2GzjdSxrmn4Bcnk26fJ5c6rJyor6sD1dLvtX
-         nAuDPOmn1n8wMqD20ZvCE3qoHukRsPJazpAiCzn2WdLqzegY8zvOU69PIaTtMduyK1R3
-         T2xg==
-X-Gm-Message-State: AOAM531MgEgKt70sOh5Tww3GEh+sBw94or9Rj1zX70O6rklLIkyuHUfC
-        HG8qnBRIxTVN84hpgpiBKiE=
-X-Google-Smtp-Source: ABdhPJxOYlfGjzaVLuvnhyaKrtfL7UXTvUZMzz+Dec8UeVdd/TGCzwBrNgUt8dKQgLU3tCdUNAy8VA==
-X-Received: by 2002:a62:1b4a:: with SMTP id b71mr44869526pfb.9.1594202290717;
-        Wed, 08 Jul 2020 02:58:10 -0700 (PDT)
-Received: from dc803.localdomain (flh2-125-196-131-224.osk.mesh.ad.jp. [125.196.131.224])
-        by smtp.gmail.com with ESMTPSA id q24sm3567971pgg.3.2020.07.08.02.58.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Jul 2020 02:58:10 -0700 (PDT)
-From:   Tetsuhiro Kohada <kohada.t2@gmail.com>
-To:     kohada.t2@gmail.com
-Cc:     kohada.tetsuhiro@dc.mitsubishielectric.co.jp,
-        mori.takahiro@ab.mitsubishielectric.co.jp,
-        motai.hirotaka@aj.mitsubishielectric.co.jp,
-        Namjae Jeon <namjae.jeon@samsung.com>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] exfat: retain 'VolumeFlags' properly
-Date:   Wed,  8 Jul 2020 18:57:45 +0900
-Message-Id: <20200708095746.4179-1-kohada.t2@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 8 Jul 2020 06:01:17 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0689qZ2U071053;
+        Wed, 8 Jul 2020 10:01:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=qGeeqBfb4B3JBrMGyCbTWzEAb8chOA1YYzwiQyLwlCg=;
+ b=HtYdqSj0ofgVpUhnDTpmT0Kd9WoopR4hGOHz2IpnJQLMRChYBFd0z7TGLQw2yv9aopPQ
+ ZpppJF6EbFqWhfOCxhpTdKbpXnhlt2t5/oStHImxj2QoBVgr1Kl2okV8E4WEcq0v4yQO
+ MW6wtKIMcyf7QI0wAjJrdLmJ1cNytx+g4nGh7YAmX+zzfUia7QDwk2QCE8InnrXkX6iv
+ U4Et+JMYoXmEwjXVmo6jxeCh2zaFsgtfFk23qAyjSwOIupc1ERhQCOOPqneABMcihhJw
+ Q3mpKMH50M0JV1AylF1fMjarCjTuo8XyrzUuippeNODE6WlgT9cMx2ulyarHBaZQBdlY HA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 325bgf04v6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 08 Jul 2020 10:01:13 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0689xBMB018147;
+        Wed, 8 Jul 2020 09:59:12 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 3233p50tvu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 08 Jul 2020 09:59:12 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0689xAx2021053;
+        Wed, 8 Jul 2020 09:59:10 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 08 Jul 2020 02:59:09 -0700
+Date:   Wed, 8 Jul 2020 12:59:04 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+Cc:     linux-sparse@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: Sparse improvements & regressions for Linux v5.7-rc1 -> v5.8-rc1
+Message-ID: <20200708095904.GI2549@kadam>
+References: <20200708000651.f5bykhd3mhgsbvk7@ltop.local>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200708000651.f5bykhd3mhgsbvk7@ltop.local>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9675 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
+ mlxscore=0 spamscore=0 bulkscore=0 malwarescore=0 phishscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2007080072
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9675 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 lowpriorityscore=0
+ priorityscore=1501 impostorscore=0 cotscore=-2147483648 clxscore=1011
+ mlxscore=0 spamscore=0 bulkscore=0 suspectscore=0 mlxlogscore=999
+ malwarescore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2007080071
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Retain ActiveFat, MediaFailure and ClearToZero fields.
-And, never clear VolumeDirty, if it is dirty at mount.
+On Wed, Jul 08, 2020 at 02:06:51AM +0200, Luc Van Oostenryck wrote:
+> I've finally written a silly script to easily compare my tests
+> of Sparse on the kernel. So, it's now easy to share those results.
+> 
+> It's a comparison of Sparse's unique warnings between v5.7-rc1 &
+> v5.8-rc1 on x86-64 (defconfig + allyesconfig). The results are
+> quite similar on other architectures.
+> 
+> Note that the differences can be caused by changes in the kernel
+> code or in Sparse code.
+> 
+> Have fun.
+> 
 
-In '3.1.13.3 Media Failure Field' of exfat specification says ...
- If, upon mounting a volume, the value of this field is 1, implementations
- which scan the entire volume for media failures and record all failures as
- "bad" clusters in the FAT (or otherwise resolve media failures) may clear
- the value of this field to 0.
-Therefore, should not clear MediaFailure without scanning volume.
+This is quite fun!  Could you post the raw errors from the v5.8-rc1
+kernel as well?  Probably it's too big for LKML, so it would have to
+be posted to pastebin or something.
 
-In '8.1 Recommended Write Ordering' of exfat specification says ...
- Clear the value of the VolumeDirty field to 0, if its value prior to the
- first step was 0
-Therefore, should not clear VolumeDirty when mounted.
-
-Also, rename ERR_MEDIUM to MED_FAILURE.
-
-Signed-off-by: Tetsuhiro Kohada <kohada.t2@gmail.com>
----
- fs/exfat/exfat_fs.h  |  5 +++--
- fs/exfat/exfat_raw.h |  2 +-
- fs/exfat/super.c     | 22 ++++++++++++++--------
- 3 files changed, 18 insertions(+), 11 deletions(-)
-
-diff --git a/fs/exfat/exfat_fs.h b/fs/exfat/exfat_fs.h
-index cb51d6e83199..3f8dc4ca8109 100644
---- a/fs/exfat/exfat_fs.h
-+++ b/fs/exfat/exfat_fs.h
-@@ -224,7 +224,8 @@ struct exfat_sb_info {
- 	unsigned int num_FAT_sectors; /* num of FAT sectors */
- 	unsigned int root_dir; /* root dir cluster */
- 	unsigned int dentries_per_clu; /* num of dentries per cluster */
--	unsigned int vol_flag; /* volume dirty flag */
-+	unsigned int vol_flags; /* volume flags */
-+	unsigned int vol_flags_noclear; /* volume flags to retain */
- 	struct buffer_head *boot_bh; /* buffer_head of BOOT sector */
- 
- 	unsigned int map_clu; /* allocation bitmap start cluster */
-@@ -380,7 +381,7 @@ static inline int exfat_sector_to_cluster(struct exfat_sb_info *sbi,
- }
- 
- /* super.c */
--int exfat_set_vol_flags(struct super_block *sb, unsigned short new_flag);
-+int exfat_set_vol_flags(struct super_block *sb, unsigned short new_flags);
- 
- /* fatent.c */
- #define exfat_get_next_cluster(sb, pclu) exfat_ent_get(sb, *(pclu), pclu)
-diff --git a/fs/exfat/exfat_raw.h b/fs/exfat/exfat_raw.h
-index 350ce59cc324..d86a8a6b0601 100644
---- a/fs/exfat/exfat_raw.h
-+++ b/fs/exfat/exfat_raw.h
-@@ -16,7 +16,7 @@
- 
- #define VOL_CLEAN		0x0000
- #define VOL_DIRTY		0x0002
--#define ERR_MEDIUM		0x0004
-+#define MED_FAILURE		0x0004
- 
- #define EXFAT_EOF_CLUSTER	0xFFFFFFFFu
- #define EXFAT_BAD_CLUSTER	0xFFFFFFF7u
-diff --git a/fs/exfat/super.c b/fs/exfat/super.c
-index b5bf6dedbe11..c26b0f5a0875 100644
---- a/fs/exfat/super.c
-+++ b/fs/exfat/super.c
-@@ -96,17 +96,22 @@ static int exfat_statfs(struct dentry *dentry, struct kstatfs *buf)
- 	return 0;
- }
- 
--int exfat_set_vol_flags(struct super_block *sb, unsigned short new_flag)
-+int exfat_set_vol_flags(struct super_block *sb, unsigned short new_flags)
- {
- 	struct exfat_sb_info *sbi = EXFAT_SB(sb);
- 	struct boot_sector *p_boot = (struct boot_sector *)sbi->boot_bh->b_data;
- 	bool sync;
- 
-+	if (new_flags == VOL_CLEAN)
-+		new_flags = (sbi->vol_flags & ~VOL_DIRTY) | sbi->vol_flags_noclear;
-+	else
-+		new_flags |= sbi->vol_flags;
-+
- 	/* flags are not changed */
--	if (sbi->vol_flag == new_flag)
-+	if (sbi->vol_flags == new_flags)
- 		return 0;
- 
--	sbi->vol_flag = new_flag;
-+	sbi->vol_flags = new_flags;
- 
- 	/* skip updating volume dirty flag,
- 	 * if this volume has been mounted with read-only
-@@ -114,9 +119,9 @@ int exfat_set_vol_flags(struct super_block *sb, unsigned short new_flag)
- 	if (sb_rdonly(sb))
- 		return 0;
- 
--	p_boot->vol_flags = cpu_to_le16(new_flag);
-+	p_boot->vol_flags = cpu_to_le16(new_flags);
- 
--	if (new_flag == VOL_DIRTY && !buffer_dirty(sbi->boot_bh))
-+	if ((new_flags & VOL_DIRTY) && !buffer_dirty(sbi->boot_bh))
- 		sync = true;
- 	else
- 		sync = false;
-@@ -457,7 +462,8 @@ static int exfat_read_boot_sector(struct super_block *sb)
- 	sbi->dentries_per_clu = 1 <<
- 		(sbi->cluster_size_bits - DENTRY_SIZE_BITS);
- 
--	sbi->vol_flag = le16_to_cpu(p_boot->vol_flags);
-+	sbi->vol_flags = le16_to_cpu(p_boot->vol_flags);
-+	sbi->vol_flags_noclear = sbi->vol_flags & (VOL_DIRTY | MED_FAILURE);
- 	sbi->clu_srch_ptr = EXFAT_FIRST_CLUSTER;
- 	sbi->used_clusters = EXFAT_CLUSTERS_UNTRACKED;
- 
-@@ -472,9 +478,9 @@ static int exfat_read_boot_sector(struct super_block *sb)
- 		exfat_err(sb, "bogus data start sector");
- 		return -EINVAL;
- 	}
--	if (sbi->vol_flag & VOL_DIRTY)
-+	if (sbi->vol_flags & VOL_DIRTY)
- 		exfat_warn(sb, "Volume was not properly unmounted. Some data may be corrupt. Please run fsck.");
--	if (sbi->vol_flag & ERR_MEDIUM)
-+	if (sbi->vol_flags & MED_FAILURE)
- 		exfat_warn(sb, "Medium has reported failures. Some data may be lost.");
- 
- 	/* exFAT file size is limited by a disk volume size */
--- 
-2.25.1
+regards,
+dan carpenter
 
