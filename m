@@ -2,99 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BE0D2182B8
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 10:41:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCE862182C3
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 10:44:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728198AbgGHIli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 04:41:38 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:13089 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726144AbgGHIlh (ORCPT
+        id S1728291AbgGHIo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 04:44:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52696 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726795AbgGHIoZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 04:41:37 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f0586b40000>; Wed, 08 Jul 2020 01:41:24 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Wed, 08 Jul 2020 01:41:37 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Wed, 08 Jul 2020 01:41:37 -0700
-Received: from [10.26.73.185] (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 8 Jul
- 2020 08:41:35 +0000
-Subject: Re: [PATCH 5.4 00/65] 5.4.51-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <ben.hutchings@codethink.co.uk>, <lkft-triage@lists.linaro.org>,
-        <stable@vger.kernel.org>, linux-tegra <linux-tegra@vger.kernel.org>
-References: <20200707145752.417212219@linuxfoundation.org>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <6fbcdd30-68d3-e8c5-d762-7b8a8c48d112@nvidia.com>
-Date:   Wed, 8 Jul 2020 09:41:33 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Wed, 8 Jul 2020 04:44:25 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A01A5C08C5DC;
+        Wed,  8 Jul 2020 01:44:25 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id 1so1969307pfn.9;
+        Wed, 08 Jul 2020 01:44:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ONAKYsQcGLB0KWO9KsZT23jzd5EzR7wWWBqrHyYhthU=;
+        b=Ttqb2LzVr4jdMhwS90PiN3eXEZTPMhLRvHAuB7cIMZTaws+zpoVzQazaOYkWsFEqQJ
+         zFGxMgENxCv0AbyM2d7TXvTvjMqTj7vU3ncb5/zhjujcB1uO8OeYXTmzSoSNatzFQ7eg
+         FbEgnX90VjrUmTiVEFW/J0rVFBFMG8bm8Bex/hPbsLW/gmjkqimsIcK1s+vKvxxfnFYG
+         nnt62ZMExM5g0WbuvIgc22NQ2hE2dKTpOlcd0rPWYaOWyAVmVeIwA9epLe5w1F67Whx2
+         1NiwU9mnLZlij2st55r598GKq0mh6DvewpgZZ7o81RW1mHrwahD14jZXuxMQGr+NshuN
+         BaJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ONAKYsQcGLB0KWO9KsZT23jzd5EzR7wWWBqrHyYhthU=;
+        b=Yud1J7eNUAc0nRQlc8sSgCrnL5l+vu91y1psHKo2jlDu4pvic13aTnLtLuaKx8F0k0
+         hhl9hxdJBRiNTTz6llwch4wsAsoquZd7wERn5iMwQAFM0sAUpu1UE08q+lJM5safg5LE
+         L/HW+zq9xR60FvSewK+Qt1Cr2fHL1jnmsyO0vW+HwQNH02Kjtss778sY8SITZaOoblvE
+         lx1JeC0rmQBGZcbcOcjWNWAYhtLWqiTrkWP8ES5kKoSdhPWWS92ustR/KrHhifGY1QcM
+         zGzc1ok/X8bqOtDtN/5YYh8e1SA9qtPS+DSErIr8wNe0Nq2J/Om46VnFvRUwLy21Ry4d
+         Zf9A==
+X-Gm-Message-State: AOAM5335zBOQf7zOIwl1jhfJ8JMPor6paIM6XC/WbOgSOFXmkBV3OsBs
+        0nUZXPLH0XAx81s+BVkUY1w/HLIsgPbm3LGKNQKnNKAK
+X-Google-Smtp-Source: ABdhPJzuScYlOoIVA8NU8tZY3aB6xmD2tggybXIP8XOeUyJDR6i6kYq7rB12dKLxskNo4NfKE1JkQI7FxMR6NILRIzE=
+X-Received: by 2002:a63:ce41:: with SMTP id r1mr25429559pgi.203.1594197865186;
+ Wed, 08 Jul 2020 01:44:25 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200707145752.417212219@linuxfoundation.org>
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1594197684; bh=OLAVjACBHPac/O+/ibthi0narYKfvDiOAO7o1+ULSHk=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=SJzR81Su2CtlV3w0TQWBW0kD+u6JgEKF1ZUQrK2L26EXrAFOe6LZJ7BYGE8DjHSJf
-         mr51GEceVCZr5wMgYbsB3XpQTlpc3JsnaFqeixxFIIEiYiHEOdJSrp/q3de3d0aAQf
-         ZqbQ4xk62S2FSVTqhAMh8EQRA3ZMDiEDCFswOmP2djUYSC5aUQ8JNp2FptwSuaKqsm
-         3d8TrefUJBxHm87BiJK8wYtCM8bP8eXW8QNa9TaGd1HozXuA6olEO0NwV13OWqbNKO
-         gD9tCQE3TSCpSwUzIGDcC0uDKQvbIjBN7AYC8aiOxZnsZpobnPGEZNmjpwmwNDvyIY
-         LooJIiyPfBW9Q==
+References: <20200708082634.30191-1-digetx@gmail.com> <20200708082634.30191-4-digetx@gmail.com>
+In-Reply-To: <20200708082634.30191-4-digetx@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 8 Jul 2020 11:44:08 +0300
+Message-ID: <CAHp75Vc56D5QeL2WArUj4OGGk4XgkiK37FnFr=5+XsisLpng1A@mail.gmail.com>
+Subject: Re: [PATCH v1 3/5] gpio: max77620: Replace interrupt-enable array
+ with bitmap
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-tegra@vger.kernel.org,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jul 8, 2020 at 11:30 AM Dmitry Osipenko <digetx@gmail.com> wrote:
+>
+> There is no need to dedicate an array where a bitmap could be used.
+> Let's replace the interrupt's enable-array with the enable-mask in order
+> to improve the code a tad.
 
-On 07/07/2020 16:16, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.51 release.
-> There are 65 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 09 Jul 2020 14:57:34 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.51-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+...
 
-All tests are passing for Tegra ...
+> +#include <linux/bitops.h>
 
-Test results for stable-v5.4:
-    11 builds:	11 pass, 0 fail
-    26 boots:	26 pass, 0 fail
-    56 tests:	56 pass, 0 fail
+>         unsigned int            irq_type[MAX77620_GPIO_NR];
+> -       bool                    irq_enabled[MAX77620_GPIO_NR];
+> +       unsigned long           irq_enb_mask;
 
-Linux version:	5.4.51-rc1-g47d410b54275
-Boards tested:	tegra124-jetson-tk1, tegra186-p2771-0000,
-                tegra194-p2972-0000, tegra20-ventana,
-                tegra210-p2371-2180, tegra210-p3450-0000,
-                tegra30-cardhu-a04
-
-Cheers
-Jon
+I would rather to move to DECLARE_BITMAP()
+(the macro is defined in types.h IIRC)
 
 -- 
-nvpublic
+With Best Regards,
+Andy Shevchenko
