@@ -2,64 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5915B218619
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 13:28:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18BDC21861E
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 13:29:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728850AbgGHL22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 07:28:28 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48186 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728385AbgGHL21 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 07:28:27 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CE33FAD4B;
-        Wed,  8 Jul 2020 11:28:26 +0000 (UTC)
-Date:   Wed, 8 Jul 2020 13:28:25 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, Mark Brown <broonie@kernel.org>,
-        Zhang Qiang <qiang.zhang@windriver.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Subject: Re: [PATCH] spi: use kthread_create_worker() helper
-Message-ID: <20200708112825.GC4751@alley>
-References: <CGME20200708070913eucas1p221ca64347d0ca03709eeee86decfd1af@eucas1p2.samsung.com>
- <20200708070900.30380-1-m.szyprowski@samsung.com>
+        id S1728889AbgGHL3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 07:29:41 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:44795 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728385AbgGHL3k (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 07:29:40 -0400
+Received: by mail-ot1-f65.google.com with SMTP id 5so34645064oty.11;
+        Wed, 08 Jul 2020 04:29:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aZWkJZPjmEGu6QkrDQRtpdm9RrmV8YXuY6RJVeoloW8=;
+        b=STCWbR+jcfM8TA721ZniP1oimrI1qnot3QVzWayL41ym8IT+OC6lIHBdRimye2hPi4
+         ILcAIQbucHw4karzYQOuulnXg9WkSqtILho3WayDmSpiGbsSqN8G3kCZnsjtpWxuUWyp
+         9Aeq1+VqLtBaTDb++4PVYJQcL2L1QOdKfAr/jZBC2hYm97mDlzR9sjEEj7aMuHRcU9yP
+         y6mH8hRg+Z7c73Ua80uflv35lQx1VKXtcakxhMH23LFiRhIzlcI4XdceKVIOToLK7kQo
+         vO2228oP9zEi9ePvr3rC1ntiLGceGksg7yZX5nW6rI/aWnF/89kWF0HsBbSa4N6LM/fc
+         p8Ig==
+X-Gm-Message-State: AOAM530Kg9nVeRjQSg2VM/JhSgcj/hzv7NLhDvbjvB5xEq9CDAgImC8I
+        Nm3WY42KLpo89bM0XVALLzdH7SwQPsID1koQTsA=
+X-Google-Smtp-Source: ABdhPJzfw4e0G7JAOL/fQ/heiizmgAtMS6QL3JhbQJM5wIiE1u6EnJgspqcckTPH5Og3nDusyLxev6j7HbyXZXG6Ykg=
+X-Received: by 2002:a9d:2646:: with SMTP id a64mr46434915otb.107.1594207779612;
+ Wed, 08 Jul 2020 04:29:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200708070900.30380-1-m.szyprowski@samsung.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <1594138692-16816-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <1594138692-16816-11-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <1594138692-16816-11-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 8 Jul 2020 13:29:28 +0200
+Message-ID: <CAMuHMdWQHnGJCu6zYQwG16xqQmAaQdBTfyw6T1q2OHF3uR-JQQ@mail.gmail.com>
+Subject: Re: [PATCH 12/14] clk: renesas: cpg-mssr: Add r8a774e1 support
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 2020-07-08 09:09:00, Marek Szyprowski wrote:
-> Since commit 4977caef05aa ("kthread: work could not be queued when worker
-> being destroyed")
+Hi Prabhakar,
 
-This commit should disappear from linux-next soon. We did not expect
-that it would cause these warnings. We first want to fix the callers
-before we put it back.
+On Tue, Jul 7, 2020 at 6:18 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> From: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+>
+> Add support for the RZ/G2H (R8A774E1) SoC to the Renesas Clock
+> Pulse Generator / Module Standby and Software Reset driver.
+>
+> Signed-off-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-> there is a warning when kworker is used without the
-> internal 'task' entry properly initialized. Fix this by using
-> a kthread_create_worker() helper instead of open-coding a kworker
-> initialization.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in clk-renesas-for-v5.9.
 
-But the fix is great and makes sense on its own.
+> --- /dev/null
+> +++ b/drivers/clk/renesas/r8a774e1-cpg-mssr.c
 
-The use of kthread_create_worker() simplifies the code. It uses
-the kthread worker API the right way. It will eventually allow
-to remove the FIXME in kthread_worker_fn() and add more consistency
-checks.
+> +static const unsigned int r8a774e1_crit_mod_clks[] __initconst = {
 
-I would use the above reasoning instead of the backtrace in the commit
-message. And feel free to use:
+As per commit f23f1101ad0ef1ac ("clk: renesas: rcar-gen3: Mark RWDT
+clocks as critical"), I'll add a line
 
-Reviewed-by: Petr Mladek <pmladek@suse.com>
+    MOD_CLK_ID(402),        /* RWDT */
 
-Best Regards,
-Petr Mladek
+while applying.
+
+> +       MOD_CLK_ID(408),        /* INTC-AP (GIC) */
+> +};
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
