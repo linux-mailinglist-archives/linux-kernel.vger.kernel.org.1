@@ -2,88 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2CCC2187B3
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 14:36:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B426D218803
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 14:50:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729171AbgGHMgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 08:36:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60832 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728770AbgGHMgX (ORCPT
+        id S1729166AbgGHMuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 08:50:17 -0400
+Received: from stargate.chelsio.com ([12.32.117.8]:53652 "EHLO
+        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728803AbgGHMuR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 08:36:23 -0400
-Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28181C08C5DC;
-        Wed,  8 Jul 2020 05:36:23 -0700 (PDT)
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id 0C50CBC070;
-        Wed,  8 Jul 2020 12:36:19 +0000 (UTC)
-From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-To:     jikos@kernel.org, benjamin.tissoires@redhat.com, corbet@lwn.net,
-        linux-usb@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Subject: [PATCH] Replace HTTP links with HTTPS ones: USB HID/HIDBP DRIVERS (USB KEYBOARDS, MICE, REMOTE CONTROLS, ...)
-Date:   Wed,  8 Jul 2020 14:36:13 +0200
-Message-Id: <20200708123613.14368-1-grandmaster@al2klimov.de>
+        Wed, 8 Jul 2020 08:50:17 -0400
+Received: from localhost (scalar.blr.asicdesigners.com [10.193.185.94])
+        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id 068Cnn5v011537;
+        Wed, 8 Jul 2020 05:49:54 -0700
+Date:   Wed, 8 Jul 2020 18:06:57 +0530
+From:   Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>
+To:     Pavel Machek <pavel@denx.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>, nirranjan@chelsio.com
+Subject: Re: [PATCH 4.19 17/36] cxgb4: use correct type for all-mask IP
+ address comparison
+Message-ID: <20200708123656.GA13635@chelsio.com>
+References: <20200707145749.130272978@linuxfoundation.org>
+ <20200707145749.959174058@linuxfoundation.org>
+ <20200707213326.GB11158@amd>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +++++
-X-Spam-Level: *****
-Authentication-Results: smtp.al2klimov.de;
-        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200707213326.GB11158@amd>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rationale:
-Reduces attack surface on kernel devs opening the links for MITM
-as HTTPS traffic is much harder to manipulate.
+On Tuesday, July 07/07/20, 2020 at 23:33:26 +0200, Pavel Machek wrote:
+> Hi!
+> 
+> > From: Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>
+> > 
+> > [ Upstream commit f286dd8eaad5a2758750f407ab079298e0bcc8a5 ]
+> > 
+> > Use correct type to check for all-mask exact match IP addresses.
+> > 
+> > Fixes following sparse warnings due to big endian value checks
+> > against 0xffffffff in is_addr_all_mask():
+> > cxgb4_filter.c:977:25: warning: restricted __be32 degrades to integer
+> > cxgb4_filter.c:983:37: warning: restricted __be32 degrades to integer
+> > cxgb4_filter.c:984:37: warning: restricted __be32 degrades to integer
+> > cxgb4_filter.c:985:37: warning: restricted __be32 degrades to integer
+> > cxgb4_filter.c:986:37: warning: restricted __be32 degrades to integer
+> 
+> > diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c
+> > index 7dddb9e748b81..86745f33a252d 100644
+> > --- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c
+> > +++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c
+> > @@ -810,16 +810,16 @@ static bool is_addr_all_mask(u8 *ipmask, int family)
+> >  		struct in_addr *addr;
+> >  
+> >  		addr = (struct in_addr *)ipmask;
+> > -		if (addr->s_addr == 0xffffffff)
+> > +		if (ntohl(addr->s_addr) == 0xffffffff)
+> 
+> Endianity does not really matter for ~0, but can compiler figure it
+> out?
+> 
+> would it be better to do these tests as 
+> 
+>       if (foo == htonl(0xffffffff))
+> 
+> to make it clear to the compiler?
+> 
 
-Deterministic algorithm:
-For each file:
-  If not .svg:
-    For each line:
-      If doesn't contain `\bxmlns\b`:
-        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
-            If both the HTTP and HTTPS versions
-            return 200 OK and serve the same content:
-              Replace HTTP with HTTPS.
+Sure, I'll update all checks to follow above approach. Will send a
+patch.
 
-Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
----
- Continuing my work started at 93431e0607e5.
- See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
- (Actually letting a shell for loop submit all this stuff for me.)
+> 
+> >  	} else if (family == AF_INET6) {
+> >  		struct in6_addr *addr6;
+> >  
+> >  		addr6 = (struct in6_addr *)ipmask;
+> > -		if (addr6->s6_addr32[0] == 0xffffffff &&
+> > -		    addr6->s6_addr32[1] == 0xffffffff &&
+> > -		    addr6->s6_addr32[2] == 0xffffffff &&
+> > -		    addr6->s6_addr32[3] == 0xffffffff)
+> > +		if (ntohl(addr6->s6_addr32[0]) == 0xffffffff &&
+> > +		    ntohl(addr6->s6_addr32[1]) == 0xffffffff &&
+> > +		    ntohl(addr6->s6_addr32[2]) == 0xffffffff &&
+> > +		    ntohl(addr6->s6_addr32[3]) == 0xffffffff)
+> >  			return true;
+> >  	}
+> >  	return false;
+> 
 
- If there are any URLs to be removed completely or at least not HTTPSified:
- Just clearly say so and I'll *undo my change*.
- See also: https://lkml.org/lkml/2020/6/27/64
-
- If there are any valid, but yet not changed URLs:
- See: https://lkml.org/lkml/2020/6/26/837
-
- If you apply the patch, please let me know.
-
-
- Documentation/hid/hiddev.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/Documentation/hid/hiddev.rst b/Documentation/hid/hiddev.rst
-index 209e6ba4e019..9b28a97c03e6 100644
---- a/Documentation/hid/hiddev.rst
-+++ b/Documentation/hid/hiddev.rst
-@@ -65,7 +65,7 @@ The HIDDEV API
- ==============
- 
- This description should be read in conjunction with the HID
--specification, freely available from http://www.usb.org, and
-+specification, freely available from https://www.usb.org, and
- conveniently linked of http://www.linux-usb.org.
- 
- The hiddev API uses a read() interface, and a set of ioctl() calls.
--- 
-2.27.0
-
+Thanks,
+Rahul
