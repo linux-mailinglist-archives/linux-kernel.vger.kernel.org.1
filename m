@@ -2,172 +2,415 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25C2C2190F7
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 21:53:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C60521911E
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 22:04:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726196AbgGHTxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 15:53:25 -0400
-Received: from mga17.intel.com ([192.55.52.151]:40188 "EHLO mga17.intel.com"
+        id S1726357AbgGHUEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 16:04:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33198 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725446AbgGHTxY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 15:53:24 -0400
-IronPort-SDR: C928S17URVCsQLapJk87Mr7jEdakDZe6xpeU9sUkqShrkv4Nwghj0zEDdJgYNM44lIrwio0vR7
- c+t6nY5HWqPQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9676"; a="127964041"
-X-IronPort-AV: E=Sophos;i="5.75,329,1589266800"; 
-   d="scan'208";a="127964041"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2020 12:53:23 -0700
-IronPort-SDR: 8/9ojLLrmGs64bscpeZqOtSm5UVZKahjoTGa2EETs92BK2be3b3HmayslwObv2WdAS4u2AB1cq
- qeVtSJErnXDg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,329,1589266800"; 
-   d="scan'208";a="280057231"
-Received: from marshy.an.intel.com (HELO [10.122.105.159]) ([10.122.105.159])
-  by orsmga003.jf.intel.com with ESMTP; 08 Jul 2020 12:53:23 -0700
-Subject: Re: [PATCH] fpga: stratix10-soc: make FPGA task un-interruptible
-To:     Dinh Nguyen <dinguyen@kernel.org>, mdf@kernel.org
-Cc:     linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        richard.gong@intel.com
-References: <1594138447-21488-1-git-send-email-richard.gong@linux.intel.com>
- <3e45e4a4-f002-ecf8-110f-bf7d646a5dbe@kernel.org>
- <5be15818-9170-b2a5-e92b-bbe6b1fcba21@linux.intel.com>
- <39936d44-a802-8105-7d60-97a1e44c163d@kernel.org>
-From:   Richard Gong <richard.gong@linux.intel.com>
-Message-ID: <09ef73c9-f796-56d1-d9b3-183f7bb3b8b5@linux.intel.com>
-Date:   Wed, 8 Jul 2020 15:08:29 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1725903AbgGHUEN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 16:04:13 -0400
+Received: from embeddedor (unknown [201.162.240.161])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A9D90206C3;
+        Wed,  8 Jul 2020 20:04:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594238651;
+        bh=Rkay5sQa1MMlOxwkpQ8kJAx8f6DDQiOT1CsxeETF97s=;
+        h=Date:From:To:Cc:Subject:From;
+        b=XSddZl6e6Qus+JwGJSrD64ba32HIeAXGpaU0b7/ttx7/8UmibadN23mxqjqPDN8tS
+         8Rg5s8NP+httQ54VQ9PotunHkbZw5J6WwyAh3HKnscfxD1TGKWcCBbxNTE4Sigr+nH
+         NoNBSnBMdXdOeGONtQGzyo2lswYjo/c0OtE1sxNI=
+Date:   Wed, 8 Jul 2020 15:09:39 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        Roopa Prabhu <roopa@cumulusnetworks.com>,
+        Nikolay Aleksandrov <nikolay@cumulusnetworks.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        bridge@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: [PATCH v2][next] netfilter: Use fallthrough pseudo-keyword
+Message-ID: <20200708200939.GA32508@embeddedor>
 MIME-Version: 1.0
-In-Reply-To: <39936d44-a802-8105-7d60-97a1e44c163d@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dinh,
+Replace the existing /* fall through */ comments and its variants with
+the new pseudo-keyword macro fallthrough[1]. Also, remove unnecessary
+fall-through markings when it is the case.
 
-On 7/8/20 1:47 PM, Dinh Nguyen wrote:
-> 
-> 
-> On 7/8/20 1:30 PM, Richard Gong wrote:
->> Hi Dinh,
->>
->>
->> On 7/8/20 12:08 PM, Dinh Nguyen wrote:
->>> Hi
->>>
->>> On 7/7/20 11:14 AM, richard.gong@linux.intel.com wrote:
->>>> From: Richard Gong <richard.gong@intel.com>
->>>>
->>>> When CTRL+C occurs during the process of FPGA reconfiguration, the FPGA
->>>> reconfiguration process stops and the user can't perform a new FPGA
->>>> reconfiguration properly.
->>>>
->>>> Set FPGA complete task to be not interruptible so that the user can
->>>> properly perform FPGA reconfiguration after CTRL+C event.
->>>>
->>>> Signed-off-by: Richard Gong <richard.gong@intel.com>
->>>> ---
->>>>    drivers/fpga/stratix10-soc.c | 23 +++--------------------
->>>>    1 file changed, 3 insertions(+), 20 deletions(-)
->>>>
->>>> diff --git a/drivers/fpga/stratix10-soc.c b/drivers/fpga/stratix10-soc.c
->>>> index 44b7c56..657a70c 100644
->>>> --- a/drivers/fpga/stratix10-soc.c
->>>> +++ b/drivers/fpga/stratix10-soc.c
->>>> @@ -196,17 +196,13 @@ static int s10_ops_write_init(struct
->>>> fpga_manager *mgr,
->>>>        if (ret < 0)
->>>>            goto init_done;
->>>>    -    ret = wait_for_completion_interruptible_timeout(
->>>> +    ret = wait_for_completion_timeout(
->>>>            &priv->status_return_completion, S10_RECONFIG_TIMEOUT);
->>>>        if (!ret) {
->>>>            dev_err(dev, "timeout waiting for RECONFIG_REQUEST\n");
->>>>            ret = -ETIMEDOUT;
->>>>            goto init_done;
->>>>        }
->>>> -    if (ret < 0) {
->>>> -        dev_err(dev, "error (%d) waiting for RECONFIG_REQUEST\n", ret);
->>>> -        goto init_done;
->>>> -    }
->>>>          ret = 0;
->>>>        if (!test_and_clear_bit(SVC_STATUS_OK, &priv->status)) {
->>>> @@ -318,7 +314,7 @@ static int s10_ops_write(struct fpga_manager
->>>> *mgr, const char *buf,
->>>>             */
->>>>            wait_status = 1; /* not timed out */
->>>>            if (!priv->status)
->>>> -            wait_status = wait_for_completion_interruptible_timeout(
->>>> +            wait_status = wait_for_completion_timeout(
->>>>                    &priv->status_return_completion,
->>>>                    S10_BUFFER_TIMEOUT);
->>>>    @@ -340,13 +336,6 @@ static int s10_ops_write(struct fpga_manager
->>>> *mgr, const char *buf,
->>>>                ret = -ETIMEDOUT;
->>>>                break;
->>>>            }
->>>> -        if (wait_status < 0) {
->>>> -            ret = wait_status;
->>>> -            dev_err(dev,
->>>> -                "error (%d) waiting for svc layer buffers\n",
->>>> -                ret);
->>>> -            break;
->>>> -        }
->>>>        }
->>>>          if (!s10_free_buffers(mgr))
->>>> @@ -372,7 +361,7 @@ static int s10_ops_write_complete(struct
->>>> fpga_manager *mgr,
->>>>            if (ret < 0)
->>>>                break;
->>>>    -        ret = wait_for_completion_interruptible_timeout(
->>>> +        ret = wait_for_completion_timeout(
->>>>                &priv->status_return_completion, timeout);
->>>>            if (!ret) {
->>>>                dev_err(dev,
->>>> @@ -380,12 +369,6 @@ static int s10_ops_write_complete(struct
->>>> fpga_manager *mgr,
->>>>                ret = -ETIMEDOUT;
->>>>                break;
->>>>            }
->>>> -        if (ret < 0) {
->>>> -            dev_err(dev,
->>>> -                "error (%d) waiting for RECONFIG_COMPLETED\n",
->>>> -                ret);
->>>> -            break;
->>>> -
->>>>            /* Not error or timeout, so ret is # of jiffies until
->>>> timeout */
->>>>            timeout = ret;
->>>>            ret = 0;
->>>>
->>>
->>> Do you need the same change in drivers/fpga/socfpga.c?
->> It is not required.
-> 
-> Why not?
+[1] https://www.kernel.org/doc/html/latest/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
 
-The original codes doesn't handle the task completion to be signaled, so 
-here it serves the same function as wait_for_completion_timeout call.
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+Changes in v2:
+ - Update subject line.
+ - Remove unnecessary comments.
 
-Regards,
-Richard
+ net/bridge/netfilter/ebtables.c         |  2 +-
+ net/netfilter/ipset/ip_set_core.c       |  2 +-
+ net/netfilter/nf_conntrack_h323_asn1.c  |  6 +++---
+ net/netfilter/nf_conntrack_proto.c      |  2 +-
+ net/netfilter/nf_conntrack_proto_tcp.c  |  2 +-
+ net/netfilter/nf_conntrack_standalone.c |  2 +-
+ net/netfilter/nf_nat_core.c             | 12 ++++++------
+ net/netfilter/nf_synproxy_core.c        |  6 ++----
+ net/netfilter/nf_tables_api.c           |  8 ++++----
+ net/netfilter/nf_tables_core.c          |  2 +-
+ net/netfilter/nfnetlink_cttimeout.c     |  2 +-
+ net/netfilter/nft_cmp.c                 |  4 ++--
+ net/netfilter/nft_ct.c                  |  6 +++---
+ net/netfilter/nft_fib.c                 |  2 +-
+ net/netfilter/nft_payload.c             |  2 +-
+ net/netfilter/utils.c                   |  8 ++++----
+ net/netfilter/x_tables.c                |  2 +-
+ 17 files changed, 34 insertions(+), 36 deletions(-)
 
-> 
->> Also, you did not
->>> include Moritz Fisher on this. He's the maintainer.
->>>
->> I did include Moritz Fisher <mdf@kernel.org> in the submission, is
->> something change recently?
->>
-> 
-> My bad, I didn't see his name in the email.
-> 
-> Dinh
-> 
+diff --git a/net/bridge/netfilter/ebtables.c b/net/bridge/netfilter/ebtables.c
+index b13b49b9f75c..560c8366ccc5 100644
+--- a/net/bridge/netfilter/ebtables.c
++++ b/net/bridge/netfilter/ebtables.c
+@@ -1935,7 +1935,7 @@ static int compat_mtw_from_user(const struct compat_ebt_entry_mwt *mwt,
+ 			size_kern = match_size;
+ 		module_put(match->me);
+ 		break;
+-	case EBT_COMPAT_WATCHER: /* fallthrough */
++	case EBT_COMPAT_WATCHER:
+ 	case EBT_COMPAT_TARGET:
+ 		wt = xt_request_find_target(NFPROTO_BRIDGE, name,
+ 					    mwt->u.revision);
+diff --git a/net/netfilter/ipset/ip_set_core.c b/net/netfilter/ipset/ip_set_core.c
+index 56621d6bfd29..920b7c4331f0 100644
+--- a/net/netfilter/ipset/ip_set_core.c
++++ b/net/netfilter/ipset/ip_set_core.c
+@@ -1644,7 +1644,7 @@ ip_set_dump_do(struct sk_buff *skb, struct netlink_callback *cb)
+ 				goto next_set;
+ 			if (set->variant->uref)
+ 				set->variant->uref(set, cb, true);
+-			/* fall through */
++			fallthrough;
+ 		default:
+ 			ret = set->variant->list(set, skb, cb);
+ 			if (!cb->args[IPSET_CB_ARG0])
+diff --git a/net/netfilter/nf_conntrack_h323_asn1.c b/net/netfilter/nf_conntrack_h323_asn1.c
+index 573cb4481481..e697a824b001 100644
+--- a/net/netfilter/nf_conntrack_h323_asn1.c
++++ b/net/netfilter/nf_conntrack_h323_asn1.c
+@@ -257,15 +257,15 @@ static unsigned int get_uint(struct bitstr *bs, int b)
+ 	case 4:
+ 		v |= *bs->cur++;
+ 		v <<= 8;
+-		/* fall through */
++		fallthrough;
+ 	case 3:
+ 		v |= *bs->cur++;
+ 		v <<= 8;
+-		/* fall through */
++		fallthrough;
+ 	case 2:
+ 		v |= *bs->cur++;
+ 		v <<= 8;
+-		/* fall through */
++		fallthrough;
+ 	case 1:
+ 		v |= *bs->cur++;
+ 		break;
+diff --git a/net/netfilter/nf_conntrack_proto.c b/net/netfilter/nf_conntrack_proto.c
+index a0560d175a7f..95f79980348c 100644
+--- a/net/netfilter/nf_conntrack_proto.c
++++ b/net/netfilter/nf_conntrack_proto.c
+@@ -610,7 +610,7 @@ void nf_ct_netns_put(struct net *net, uint8_t nfproto)
+ 	switch (nfproto) {
+ 	case NFPROTO_BRIDGE:
+ 		nf_ct_netns_do_put(net, NFPROTO_BRIDGE);
+-		/* fall through */
++		fallthrough;
+ 	case NFPROTO_INET:
+ 		nf_ct_netns_do_put(net, NFPROTO_IPV4);
+ 		nf_ct_netns_do_put(net, NFPROTO_IPV6);
+diff --git a/net/netfilter/nf_conntrack_proto_tcp.c b/net/netfilter/nf_conntrack_proto_tcp.c
+index 1926fd56df56..6892e497781c 100644
+--- a/net/netfilter/nf_conntrack_proto_tcp.c
++++ b/net/netfilter/nf_conntrack_proto_tcp.c
+@@ -900,7 +900,7 @@ int nf_conntrack_tcp_packet(struct nf_conn *ct,
+ 				return -NF_REPEAT;
+ 			return NF_DROP;
+ 		}
+-		/* Fall through */
++		fallthrough;
+ 	case TCP_CONNTRACK_IGNORE:
+ 		/* Ignored packets:
+ 		 *
+diff --git a/net/netfilter/nf_conntrack_standalone.c b/net/netfilter/nf_conntrack_standalone.c
+index 6a26299cb064..a604f43e3e6b 100644
+--- a/net/netfilter/nf_conntrack_standalone.c
++++ b/net/netfilter/nf_conntrack_standalone.c
+@@ -60,7 +60,7 @@ print_tuple(struct seq_file *s, const struct nf_conntrack_tuple *tuple,
+ 			   ntohs(tuple->src.u.tcp.port),
+ 			   ntohs(tuple->dst.u.tcp.port));
+ 		break;
+-	case IPPROTO_UDPLITE: /* fallthrough */
++	case IPPROTO_UDPLITE:
+ 	case IPPROTO_UDP:
+ 		seq_printf(s, "sport=%hu dport=%hu ",
+ 			   ntohs(tuple->src.u.udp.port),
+diff --git a/net/netfilter/nf_nat_core.c b/net/netfilter/nf_nat_core.c
+index bfc555fcbc72..ea923f8cf9c4 100644
+--- a/net/netfilter/nf_nat_core.c
++++ b/net/netfilter/nf_nat_core.c
+@@ -408,7 +408,7 @@ static void nf_nat_l4proto_unique_tuple(struct nf_conntrack_tuple *tuple,
+ 	static const unsigned int max_attempts = 128;
+ 
+ 	switch (tuple->dst.protonum) {
+-	case IPPROTO_ICMP: /* fallthrough */
++	case IPPROTO_ICMP:
+ 	case IPPROTO_ICMPV6:
+ 		/* id is same for either direction... */
+ 		keyptr = &tuple->src.u.icmp.id;
+@@ -442,11 +442,11 @@ static void nf_nat_l4proto_unique_tuple(struct nf_conntrack_tuple *tuple,
+ 		}
+ 		goto find_free_id;
+ #endif
+-	case IPPROTO_UDP:	/* fallthrough */
+-	case IPPROTO_UDPLITE:	/* fallthrough */
+-	case IPPROTO_TCP:	/* fallthrough */
+-	case IPPROTO_SCTP:	/* fallthrough */
+-	case IPPROTO_DCCP:	/* fallthrough */
++	case IPPROTO_UDP:
++	case IPPROTO_UDPLITE:
++	case IPPROTO_TCP:
++	case IPPROTO_SCTP:
++	case IPPROTO_DCCP:
+ 		if (maniptype == NF_NAT_MANIP_SRC)
+ 			keyptr = &tuple->src.u.all;
+ 		else
+diff --git a/net/netfilter/nf_synproxy_core.c b/net/netfilter/nf_synproxy_core.c
+index ebcdc8e54476..9cca35d22927 100644
+--- a/net/netfilter/nf_synproxy_core.c
++++ b/net/netfilter/nf_synproxy_core.c
+@@ -704,8 +704,7 @@ ipv4_synproxy_hook(void *priv, struct sk_buff *skb,
+ 		nf_ct_seqadj_init(ct, ctinfo, 0);
+ 		synproxy->tsoff = 0;
+ 		this_cpu_inc(snet->stats->conn_reopened);
+-
+-		/* fall through */
++		fallthrough;
+ 	case TCP_CONNTRACK_SYN_SENT:
+ 		if (!synproxy_parse_options(skb, thoff, th, &opts))
+ 			return NF_DROP;
+@@ -1128,8 +1127,7 @@ ipv6_synproxy_hook(void *priv, struct sk_buff *skb,
+ 		nf_ct_seqadj_init(ct, ctinfo, 0);
+ 		synproxy->tsoff = 0;
+ 		this_cpu_inc(snet->stats->conn_reopened);
+-
+-		/* fall through */
++		fallthrough;
+ 	case TCP_CONNTRACK_SYN_SENT:
+ 		if (!synproxy_parse_options(skb, thoff, th, &opts))
+ 			return NF_DROP;
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index d59b51418fc2..cd532d5588a0 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -4339,7 +4339,7 @@ void nf_tables_deactivate_set(const struct nft_ctx *ctx, struct nft_set *set,
+ 	case NFT_TRANS_ABORT:
+ 	case NFT_TRANS_RELEASE:
+ 		set->use--;
+-		/* fall through */
++		fallthrough;
+ 	default:
+ 		nf_tables_unbind_set(ctx, set, binding,
+ 				     phase == NFT_TRANS_COMMIT);
+@@ -6256,7 +6256,7 @@ void nf_tables_deactivate_flowtable(const struct nft_ctx *ctx,
+ 	case NFT_TRANS_ABORT:
+ 	case NFT_TRANS_RELEASE:
+ 		flowtable->use--;
+-		/* fall through */
++		fallthrough;
+ 	default:
+ 		return;
+ 	}
+@@ -7277,7 +7277,7 @@ static int nf_tables_validate(struct net *net)
+ 		break;
+ 	case NFT_VALIDATE_NEED:
+ 		nft_validate_state_update(net, NFT_VALIDATE_DO);
+-		/* fall through */
++		fallthrough;
+ 	case NFT_VALIDATE_DO:
+ 		list_for_each_entry(table, &net->nft.tables, list) {
+ 			if (nft_table_validate(net, table) < 0)
+@@ -8346,7 +8346,7 @@ static int nft_verdict_init(const struct nft_ctx *ctx, struct nft_data *data,
+ 		default:
+ 			return -EINVAL;
+ 		}
+-		/* fall through */
++		fallthrough;
+ 	case NFT_CONTINUE:
+ 	case NFT_BREAK:
+ 	case NFT_RETURN:
+diff --git a/net/netfilter/nf_tables_core.c b/net/netfilter/nf_tables_core.c
+index 96c74c4c7176..587897a2498b 100644
+--- a/net/netfilter/nf_tables_core.c
++++ b/net/netfilter/nf_tables_core.c
+@@ -213,7 +213,7 @@ nft_do_chain(struct nft_pktinfo *pkt, void *priv)
+ 		jumpstack[stackptr].chain = chain;
+ 		jumpstack[stackptr].rules = rules + 1;
+ 		stackptr++;
+-		/* fall through */
++		fallthrough;
+ 	case NFT_GOTO:
+ 		nft_trace_packet(&info, chain, rule,
+ 				 NFT_TRACETYPE_RULE);
+diff --git a/net/netfilter/nfnetlink_cttimeout.c b/net/netfilter/nfnetlink_cttimeout.c
+index da915c224a82..89a381f7f945 100644
+--- a/net/netfilter/nfnetlink_cttimeout.c
++++ b/net/netfilter/nfnetlink_cttimeout.c
+@@ -451,7 +451,7 @@ static int cttimeout_default_get(struct net *net, struct sock *ctnl,
+ 	case IPPROTO_TCP:
+ 		timeouts = nf_tcp_pernet(net)->timeouts;
+ 		break;
+-	case IPPROTO_UDP: /* fallthrough */
++	case IPPROTO_UDP:
+ 	case IPPROTO_UDPLITE:
+ 		timeouts = nf_udp_pernet(net)->timeouts;
+ 		break;
+diff --git a/net/netfilter/nft_cmp.c b/net/netfilter/nft_cmp.c
+index 8a28c127effc..16f4d84599ac 100644
+--- a/net/netfilter/nft_cmp.c
++++ b/net/netfilter/nft_cmp.c
+@@ -43,7 +43,7 @@ void nft_cmp_eval(const struct nft_expr *expr,
+ 	case NFT_CMP_LT:
+ 		if (d == 0)
+ 			goto mismatch;
+-		/* fall through */
++		fallthrough;
+ 	case NFT_CMP_LTE:
+ 		if (d > 0)
+ 			goto mismatch;
+@@ -51,7 +51,7 @@ void nft_cmp_eval(const struct nft_expr *expr,
+ 	case NFT_CMP_GT:
+ 		if (d == 0)
+ 			goto mismatch;
+-		/* fall through */
++		fallthrough;
+ 	case NFT_CMP_GTE:
+ 		if (d < 0)
+ 			goto mismatch;
+diff --git a/net/netfilter/nft_ct.c b/net/netfilter/nft_ct.c
+index 77258af1fce0..322bd674963e 100644
+--- a/net/netfilter/nft_ct.c
++++ b/net/netfilter/nft_ct.c
+@@ -129,7 +129,7 @@ static void nft_ct_get_eval(const struct nft_expr *expr,
+ 		return;
+ 	}
+ #endif
+-	case NFT_CT_BYTES: /* fallthrough */
++	case NFT_CT_BYTES:
+ 	case NFT_CT_PKTS: {
+ 		const struct nf_conn_acct *acct = nf_conn_acct_find(ct);
+ 		u64 count = 0;
+@@ -1013,8 +1013,8 @@ static int nft_ct_helper_obj_init(const struct nft_ctx *ctx,
+ 		help6 = nf_conntrack_helper_try_module_get(name, family,
+ 							   priv->l4proto);
+ 		break;
+-	case NFPROTO_NETDEV: /* fallthrough */
+-	case NFPROTO_BRIDGE: /* same */
++	case NFPROTO_NETDEV:
++	case NFPROTO_BRIDGE:
+ 	case NFPROTO_INET:
+ 		help4 = nf_conntrack_helper_try_module_get(name, NFPROTO_IPV4,
+ 							   priv->l4proto);
+diff --git a/net/netfilter/nft_fib.c b/net/netfilter/nft_fib.c
+index cfac0964f48d..4dfdaeaf09a5 100644
+--- a/net/netfilter/nft_fib.c
++++ b/net/netfilter/nft_fib.c
+@@ -32,7 +32,7 @@ int nft_fib_validate(const struct nft_ctx *ctx, const struct nft_expr *expr,
+ 	unsigned int hooks;
+ 
+ 	switch (priv->result) {
+-	case NFT_FIB_RESULT_OIF: /* fallthrough */
++	case NFT_FIB_RESULT_OIF:
+ 	case NFT_FIB_RESULT_OIFNAME:
+ 		hooks = (1 << NF_INET_PRE_ROUTING);
+ 		break;
+diff --git a/net/netfilter/nft_payload.c b/net/netfilter/nft_payload.c
+index a7de3a58f553..ed7cb9f747f6 100644
+--- a/net/netfilter/nft_payload.c
++++ b/net/netfilter/nft_payload.c
+@@ -467,7 +467,7 @@ static int nft_payload_l4csum_offset(const struct nft_pktinfo *pkt,
+ 	case IPPROTO_UDP:
+ 		if (!nft_payload_udp_checksum(skb, pkt->xt.thoff))
+ 			return -1;
+-		/* Fall through. */
++		fallthrough;
+ 	case IPPROTO_UDPLITE:
+ 		*l4csum_offset = offsetof(struct udphdr, check);
+ 		break;
+diff --git a/net/netfilter/utils.c b/net/netfilter/utils.c
+index 51b454d8fa9c..cedf47ab3c6f 100644
+--- a/net/netfilter/utils.c
++++ b/net/netfilter/utils.c
+@@ -25,7 +25,7 @@ __sum16 nf_ip_checksum(struct sk_buff *skb, unsigned int hook,
+ 			skb->ip_summed = CHECKSUM_UNNECESSARY;
+ 			break;
+ 		}
+-		/* fall through */
++		fallthrough;
+ 	case CHECKSUM_NONE:
+ 		if (protocol != IPPROTO_TCP && protocol != IPPROTO_UDP)
+ 			skb->csum = 0;
+@@ -51,7 +51,7 @@ static __sum16 nf_ip_checksum_partial(struct sk_buff *skb, unsigned int hook,
+ 	case CHECKSUM_COMPLETE:
+ 		if (len == skb->len - dataoff)
+ 			return nf_ip_checksum(skb, hook, dataoff, protocol);
+-		/* fall through */
++		fallthrough;
+ 	case CHECKSUM_NONE:
+ 		skb->csum = csum_tcpudp_nofold(iph->saddr, iph->daddr, protocol,
+ 					       skb->len - dataoff, 0);
+@@ -79,7 +79,7 @@ __sum16 nf_ip6_checksum(struct sk_buff *skb, unsigned int hook,
+ 			skb->ip_summed = CHECKSUM_UNNECESSARY;
+ 			break;
+ 		}
+-		/* fall through */
++		fallthrough;
+ 	case CHECKSUM_NONE:
+ 		skb->csum = ~csum_unfold(
+ 				csum_ipv6_magic(&ip6h->saddr, &ip6h->daddr,
+@@ -106,7 +106,7 @@ static __sum16 nf_ip6_checksum_partial(struct sk_buff *skb, unsigned int hook,
+ 	case CHECKSUM_COMPLETE:
+ 		if (len == skb->len - dataoff)
+ 			return nf_ip6_checksum(skb, hook, dataoff, protocol);
+-		/* fall through */
++		fallthrough;
+ 	case CHECKSUM_NONE:
+ 		hsum = skb_checksum(skb, 0, dataoff, 0);
+ 		skb->csum = ~csum_unfold(csum_ipv6_magic(&ip6h->saddr,
+diff --git a/net/netfilter/x_tables.c b/net/netfilter/x_tables.c
+index 9ad8f3ff66f5..5549e69c5a36 100644
+--- a/net/netfilter/x_tables.c
++++ b/net/netfilter/x_tables.c
+@@ -1572,7 +1572,7 @@ static void *xt_mttg_seq_next(struct seq_file *seq, void *v, loff_t *ppos,
+ 		trav->curr = trav->curr->next;
+ 		if (trav->curr != trav->head)
+ 			break;
+-		/* fall through */
++		fallthrough;
+ 	default:
+ 		return NULL;
+ 	}
+-- 
+2.27.0
+
