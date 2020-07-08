@@ -2,119 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB89D218AB0
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 17:03:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83615218AB6
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 17:04:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729985AbgGHPDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 11:03:34 -0400
-Received: from casper.infradead.org ([90.155.50.34]:36686 "EHLO
-        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729206AbgGHPDd (ORCPT
+        id S1730048AbgGHPEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 11:04:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729022AbgGHPEu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 11:03:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=zBHCkuCe5RFCedmEBx2CZK7LS4k3WZ+7jOD5fQ9ed9Y=; b=djVZpEIBtWMWxRw3CqqH/NFd4i
-        a4zr7rIrC8/W8xunIZNCpi+Zb8uXFFQqUTfV6c/TR/p3OJCbxCExyLnKLGPBTSyChk2zmQz7wrGYL
-        4W/89zj8RJAInOQYr0SpZry7v5ixoHyXs33qzoOQGhaMjKrQbPpSfHZIfkbY0F+cVsQ/BINFM/fdA
-        TO4zabYCHmemwCzKTU1ar+3trAsn7gMAR5EhPjkoHY3j17LHzQm/prWRt+QM97WXA11zcpZQrTq61
-        MvfXv5S2HGPsOJsW6NmTFLhSFetX+7cit4zXSnl0v8cg9gdsruyvn/+T0AhY5meP7ZEYT3F/OnRnc
-        yfBttG4g==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jtBat-00014u-JD; Wed, 08 Jul 2020 15:02:45 +0000
-Date:   Wed, 8 Jul 2020 16:02:40 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Kanchan Joshi <joshi.k@samsung.com>, viro@zeniv.linux.org.uk,
-        bcrl@kvack.org, hch@infradead.org, Damien.LeMoal@wdc.com,
-        asml.silence@gmail.com, linux-fsdevel@vger.kernel.org,
-        mb@lightnvm.io, linux-kernel@vger.kernel.org, linux-aio@kvack.org,
-        io-uring@vger.kernel.org, linux-block@vger.kernel.org,
-        Selvakumar S <selvakuma.s1@samsung.com>,
-        Nitesh Shetty <nj.shetty@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>
-Subject: Re: [PATCH v3 4/4] io_uring: add support for zone-append
-Message-ID: <20200708150240.GT25523@casper.infradead.org>
-References: <20200707155237.GM25523@casper.infradead.org>
- <20200707202342.GA28364@test-zns>
- <7a44d9c6-bf7d-0666-fc29-32c3cba9d1d8@kernel.dk>
- <20200707221812.GN25523@casper.infradead.org>
- <CGME20200707223803epcas5p41814360c764d6b5f67fdbf173a8ba64e@epcas5p4.samsung.com>
- <145cc0ad-af86-2d6a-78b3-9ade007aae52@kernel.dk>
- <20200708125805.GA16495@test-zns>
- <2962cd68-de34-89be-0464-8b102a3f1d0e@kernel.dk>
- <20200708145826.GS25523@casper.infradead.org>
- <b1c58211-496a-ed85-a9bb-0d0cc56e250c@kernel.dk>
+        Wed, 8 Jul 2020 11:04:50 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A798CC061A0B
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 08:04:50 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id c25so19552845otf.7
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 08:04:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=qAxRhOVTsHpW8y+9qH3bw+T9CM43zkyDmvr5lDcILZg=;
+        b=Q0PaE52LKHUSyakI1IMAGkOYy77ckAvd47pas+mtZs0+gJYxQm8Bme/8rp6wvaKYhg
+         /Ie4EanJit7+tCWnWHHXTX6q+28io2zNYlrzPFHDLPFRvMCc+M7KU68CtxE7Xv0F+C7D
+         cIacLbLGu71ef+aPHkOao4RLriE6cmdr93PHQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qAxRhOVTsHpW8y+9qH3bw+T9CM43zkyDmvr5lDcILZg=;
+        b=Py9b/4PnQMKKr8QJEapYcF7lzz6YQlQWJaf/ldt2GTxjpcP+GQvx6UmEUsDaHF8HQL
+         iQIO9FI5DaUs67Ff9+Ve5XDKUM8oMXR8dD99gdsW1krVDyGhK4fA9pog47qRfPBVg61z
+         eoNdyTCZVGJ7Wp3QAnYNNH7IQCjx3sTld/vkcl7Gw6dQ2sNOlC1NFwP3RJZUowe9tUsl
+         w3Rtz5VQpliVyoTG1b5GWloobpDgggKfVA8E3GzWfWqe922LB1ZaNWNXVAliLGJkTqf4
+         ulv7+AplDenTT6Zb4FdUDn3HUTcLYwrNrUjtS7OMZHWx0E0SlxL+t6gR8SAZiyCIaNj/
+         fFQA==
+X-Gm-Message-State: AOAM533dinmHV0TY7Zh7h77ZMdofq2jn1ERol/ATxH/u8cuI3sg3QNUe
+        bpIipPqN4c/3z4Q5EtPRrxlunA==
+X-Google-Smtp-Source: ABdhPJx5BOOY4zlhbKbICdwG2WXtcJnsE3cai+2+f8I5p5GtkBQnSYmo49sufjqBR0L6PyWQJVAV6Q==
+X-Received: by 2002:a9d:2f0a:: with SMTP id h10mr16227167otb.314.1594220690094;
+        Wed, 08 Jul 2020 08:04:50 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id y7sm20360oov.26.2020.07.08.08.04.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Jul 2020 08:04:49 -0700 (PDT)
+Subject: Re: [PATCH 4.19 00/36] 4.19.132-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        stable@vger.kernel.org, skhan@linuxfoundation.org
+References: <20200707145749.130272978@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <43dbed05-5481-1ca7-6f1b-2354e166d474@linuxfoundation.org>
+Date:   Wed, 8 Jul 2020 09:04:48 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b1c58211-496a-ed85-a9bb-0d0cc56e250c@kernel.dk>
+In-Reply-To: <20200707145749.130272978@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 08, 2020 at 08:59:50AM -0600, Jens Axboe wrote:
-> On 7/8/20 8:58 AM, Matthew Wilcox wrote:
-> > On Wed, Jul 08, 2020 at 08:54:07AM -0600, Jens Axboe wrote:
-> >> On 7/8/20 6:58 AM, Kanchan Joshi wrote:
-> >>>>> +#define IOCB_NO_CMPL		(15 << 28)
-> >>>>>
-> >>>>>  struct kiocb {
-> >>>>> [...]
-> >>>>> -	void (*ki_complete)(struct kiocb *iocb, long ret, long ret2);
-> >>>>> +	loff_t __user *ki_uposp;
-> >>>>> -	int			ki_flags;
-> >>>>> +	unsigned int		ki_flags;
-> >>>>>
-> >>>>> +typedef void ki_cmpl(struct kiocb *, long ret, long ret2);
-> >>>>> +static ki_cmpl * const ki_cmpls[15];
-> >>>>>
-> >>>>> +void ki_complete(struct kiocb *iocb, long ret, long ret2)
-> >>>>> +{
-> >>>>> +	unsigned int id = iocb->ki_flags >> 28;
-> >>>>> +
-> >>>>> +	if (id < 15)
-> >>>>> +		ki_cmpls[id](iocb, ret, ret2);
-> >>>>> +}
-> >>>>>
-> >>>>> +int kiocb_cmpl_register(void (*cb)(struct kiocb *, long, long))
-> >>>>> +{
-> >>>>> +	for (i = 0; i < 15; i++) {
-> >>>>> +		if (ki_cmpls[id])
-> >>>>> +			continue;
-> >>>>> +		ki_cmpls[id] = cb;
-> >>>>> +		return id;
-> >>>>> +	}
-> >>>>> +	WARN();
-> >>>>> +	return -1;
-> >>>>> +}
-> >>>>
-> >>>> That could work, we don't really have a lot of different completion
-> >>>> types in the kernel.
-> >>>
-> >>> Thanks, this looks sorted.
-> >>
-> >> Not really, someone still needs to do that work. I took a quick look, and
-> >> most of it looks straight forward. The only potential complication is
-> >> ocfs2, which does a swap of the completion for the kiocb. That would just
-> >> turn into an upper flag swap. And potential sync kiocb with NULL
-> >> ki_complete. The latter should be fine, I think we just need to reserve
-> >> completion nr 0 for being that.
-> > 
-> > I was reserving completion 15 for that ;-)
-> > 
-> > +#define IOCB_NO_CMPL		(15 << 28)
-> > ...
-> > +	if (id < 15)
-> > +		ki_cmpls[id](iocb, ret, ret2);
-> > 
-> > Saves us one pointer in the array ...
+On 7/7/20 9:16 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.19.132 release.
+> There are 36 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> That works. Are you going to turn this into an actual series of patches,
-> adding the functionality and converting users?
+> Responses should be made by Thu, 09 Jul 2020 14:57:34 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.132-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-I was under the impression Kanchan was going to do that, but I can run it
-off quickly ...
+Compiled and booted on my test system. No dmesg regressions.
+
+thanks,
+-- Shuah
