@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AABC2217EBD
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 07:00:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0C6B217EC4
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 07:00:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729507AbgGHFAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 01:00:21 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:17582 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728542AbgGHFAS (ORCPT
+        id S1729662AbgGHFAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 01:00:33 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:4021 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729375AbgGHFAT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 01:00:18 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f0552d40002>; Tue, 07 Jul 2020 22:00:05 -0700
+        Wed, 8 Jul 2020 01:00:19 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f0552ad0000>; Tue, 07 Jul 2020 21:59:25 -0700
 Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Tue, 07 Jul 2020 22:00:17 -0700
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Tue, 07 Jul 2020 22:00:18 -0700
 X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Tue, 07 Jul 2020 22:00:17 -0700
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 8 Jul
+        by hqpgpgate101.nvidia.com on Tue, 07 Jul 2020 22:00:18 -0700
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 8 Jul
  2020 05:00:13 +0000
-Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
  Transport; Wed, 8 Jul 2020 05:00:13 +0000
 Received: from vdumpa-ubuntu.nvidia.com (Not Verified[172.17.173.140]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5f0552dd0002>; Tue, 07 Jul 2020 22:00:13 -0700
+        id <B5f0552dd000c>; Tue, 07 Jul 2020 22:00:13 -0700
 From:   Krishna Reddy <vdumpa@nvidia.com>
 To:     <joro@8bytes.org>, <will@kernel.org>, <robin.murphy@arm.com>,
         <robh+dt@kernel.org>, <treding@nvidia.com>, <jonathanh@nvidia.com>
@@ -38,9 +38,9 @@ CC:     <devicetree@vger.kernel.org>,
         <bbiswas@nvidia.com>, <mperttunen@nvidia.com>,
         <nicolinc@nvidia.com>, <bhuntsman@nvidia.com>,
         <nicoleotsuka@gmail.com>, Krishna Reddy <vdumpa@nvidia.com>
-Subject: [PATCH v10 1/5] iommu/arm-smmu: move TLB timeout and spin count macros
-Date:   Tue, 7 Jul 2020 22:00:13 -0700
-Message-ID: <20200708050017.31563-2-vdumpa@nvidia.com>
+Subject: [PATCH v10 2/5] iommu/arm-smmu: ioremap smmu mmio region before implementation init
+Date:   Tue, 7 Jul 2020 22:00:14 -0700
+Message-ID: <20200708050017.31563-3-vdumpa@nvidia.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200708050017.31563-1-vdumpa@nvidia.com>
 References: <20200708050017.31563-1-vdumpa@nvidia.com>
@@ -49,57 +49,58 @@ X-NVConfidentiality: public
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1594184405; bh=CtbOxBtDQ8YKkBKoHAd6BN8kEl9MRNPz2T4pyCrciLE=;
+        t=1594184365; bh=PhjkGp3ntJu3QkzUq1sohlnOliXJ0oXruRJvrVkl3CE=;
         h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
          In-Reply-To:References:MIME-Version:X-NVConfidentiality:
          Content-Transfer-Encoding:Content-Type;
-        b=S6qB1hgQ2DEiLBHH/f7WIcQiUQYQRxt91DEFQxDOgvoQNxnTXDcDFQh7pGNGpcMz1
-         2ei+CqcM4vFcCJXbuMOh6FWrlUWk0ZxPmlP3O6d/Gu45Cny/nJhVQ3nya6okn0ezjw
-         6UBXi/z5ZI69RT8Jv8hIv6R2sXx6Ycgzhc/JCKjgT+PirijgYHiIWf7W1AMXZbce/Y
-         1BCV1ZxqDEWRCwyuorr+xc+Qp0n7eZ3+eShXptPsW99c+50n/zhycapM06bytkwPy2
-         V8fYOA4Stl0xV5xbUBrTn7TbpFb3giNKjr/8vcL/cKv0wbV6U75zYx/RqBtwsh3kYT
-         HZ/bvmiw4D5aw==
+        b=T2uiJPq1sUAEUnbU7fpPnCX+OqeOkeDz2nlRats29SF5zVpgEbFlROLDKeD6DKb2W
+         ozBpCAh2EoU4F6GMMmECqXkh2yzeBKET6fHGc/ko+jT8YIhK4t48hIaqpz2nP6ckC0
+         UkXOWBL/BDTQc5zNU++fCpTYoup3Q+KpH2RVzstz+SGBVKSVEC6+JT9vrFeXkp6R+H
+         NA8yO/LFErJJRfxthxcY9XO/0YRnexVWJ4FhTbmDego2oDc+oCvTIptagdV2M2aCtG
+         G/zSa9trpDCkPok0rofHVvixLrFLy3vDMTZtmLcTDdtk2stMI3QMRar7hiWKuIJbE8
+         OywHlFBJFjpDQ==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move TLB timeout and spin count macros to header file to
-allow using the same from vendor specific implementations.
+ioremap smmu mmio region before calling into implementation init.
+This is necessary to allow mapped address available during vendor
+specific implementation init.
 
 Signed-off-by: Krishna Reddy <vdumpa@nvidia.com>
 ---
- drivers/iommu/arm-smmu.c | 3 ---
- drivers/iommu/arm-smmu.h | 2 ++
- 2 files changed, 2 insertions(+), 3 deletions(-)
+ drivers/iommu/arm-smmu.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/iommu/arm-smmu.c b/drivers/iommu/arm-smmu.c
-index 243bc4cb2705..d2054178df35 100644
+index d2054178df35..e03e873d3bca 100644
 --- a/drivers/iommu/arm-smmu.c
 +++ b/drivers/iommu/arm-smmu.c
-@@ -52,9 +52,6 @@
-  */
- #define QCOM_DUMMY_VAL -1
+@@ -2120,10 +2120,6 @@ static int arm_smmu_device_probe(struct platform_dev=
+ice *pdev)
+ 	if (err)
+ 		return err;
 =20
--#define TLB_LOOP_TIMEOUT		1000000	/* 1s! */
--#define TLB_SPIN_COUNT			10
+-	smmu =3D arm_smmu_impl_init(smmu);
+-	if (IS_ERR(smmu))
+-		return PTR_ERR(smmu);
 -
- #define MSI_IOVA_BASE			0x8000000
- #define MSI_IOVA_LENGTH			0x100000
+ 	res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	ioaddr =3D res->start;
+ 	smmu->base =3D devm_ioremap_resource(dev, res);
+@@ -2135,6 +2131,10 @@ static int arm_smmu_device_probe(struct platform_dev=
+ice *pdev)
+ 	 */
+ 	smmu->numpage =3D resource_size(res);
 =20
-diff --git a/drivers/iommu/arm-smmu.h b/drivers/iommu/arm-smmu.h
-index d172c024be61..c7d0122a7c6c 100644
---- a/drivers/iommu/arm-smmu.h
-+++ b/drivers/iommu/arm-smmu.h
-@@ -236,6 +236,8 @@ enum arm_smmu_cbar_type {
- /* Maximum number of context banks per SMMU */
- #define ARM_SMMU_MAX_CBS		128
-=20
-+#define TLB_LOOP_TIMEOUT		1000000	/* 1s! */
-+#define TLB_SPIN_COUNT			10
-=20
- /* Shared driver definitions */
- enum arm_smmu_arch_version {
++	smmu =3D arm_smmu_impl_init(smmu);
++	if (IS_ERR(smmu))
++		return PTR_ERR(smmu);
++
+ 	num_irqs =3D 0;
+ 	while ((res =3D platform_get_resource(pdev, IORESOURCE_IRQ, num_irqs))) {
+ 		num_irqs++;
 --=20
 2.26.2
 
