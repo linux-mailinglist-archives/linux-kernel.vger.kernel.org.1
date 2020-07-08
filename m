@@ -2,102 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E76FF2189F9
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 16:18:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFA2C2189F3
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 16:17:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729780AbgGHOSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 10:18:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48512 "EHLO
+        id S1729694AbgGHOR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 10:17:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729758AbgGHOSE (ORCPT
+        with ESMTP id S1729468AbgGHOR5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 10:18:04 -0400
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CE5DC03541F
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 07:18:04 -0700 (PDT)
-Received: by mail-vs1-xe41.google.com with SMTP id j186so2571258vsd.10
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 07:18:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JRR2oJR1zyC/uavTh/YxuWLenLZLmhhz/A0r+ZwnaDk=;
-        b=OQcW7xbioXHtmAbx/ip/Tlfp4h7QPUYO95fu9t2pWRbGgWlJdeUbVjfnhrlkb8WbDo
-         DuEeB1lMqRZ90j75hQHwVuJhH1GgDEM+TvRUdOlwKpT1wkHK+PCrx4V0ZGYCHmPI+tfN
-         UjLCSsrzM3cM8PCZhcfsK7i12HkvY2TIurjbLgTAttoIL23Ns9/mRuf/CWrbyebP+2kV
-         qm/QnDQEOKyTcB+HUcFdeDJ/vQfWklXSC7fP+5pxnZvWonHtUicImN5rmgxwg57I3UIl
-         nL7HbmxzTse5SSMZ9AoRMyqYF5kLVbJcZ0IFdjtwJa9eMX5SmLx5Qc8Ky0tFlbYpzU2X
-         E2qw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JRR2oJR1zyC/uavTh/YxuWLenLZLmhhz/A0r+ZwnaDk=;
-        b=s95ZBUeT6FooFJxujrbrDco2Q0HsmQZnspjGaUNuLxPsNd4awn0iLLXuIxxZoY+7tD
-         E9q+cYPYBawDy4wUJ4KiSS7fg4xULS4EH4ZOR34UKgAjBDul4bbUbnQreM8HsDJkmbhO
-         f5X9qlj9Tzed4/srBav257Wbl1GoLzmi/TyD1JMpSNJFBlQF5LdVIi4kaRO+t7g9iuKW
-         RrzoWy1lCpPWSFm+8T5NbcQUIN9TjIhmUtLlG1dNUxgesyrMbBvqz4F/Voh87MHkNZ9y
-         esCuCzS2AqGQshuy31htCKpXxQ+Co8sERSfzCfEQtOTIa011cy6Cxv/R9T9cQmqB2FA4
-         5eFA==
-X-Gm-Message-State: AOAM532YDvlg2OlaKUenWcqoYhYYDWJACTJSOTpUqW6riCuYKVGNMTFU
-        FMuZ6ZMwvP09Sv9P7DQiTOgJ/XTjE6y8u7/RvkOeQq6sFA4=
-X-Google-Smtp-Source: ABdhPJxQJp92VWdX5KqTmVPfmOl1A/gpaTfKOYLxSE9CCWw6fdiJ4zs2Ef7rqDQv+aFRiUZRPmlsdiPFBfzPND4QOJE=
-X-Received: by 2002:a67:f888:: with SMTP id h8mr23246530vso.165.1594217883238;
- Wed, 08 Jul 2020 07:18:03 -0700 (PDT)
+        Wed, 8 Jul 2020 10:17:57 -0400
+Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A699C061A0B;
+        Wed,  8 Jul 2020 07:17:57 -0700 (PDT)
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id 36E98BC0D9;
+        Wed,  8 Jul 2020 14:17:54 +0000 (UTC)
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+To:     riku.voipio@iki.fi, jacek.anaszewski@gmail.com, pavel@ucw.cz,
+        dmurphy@ti.com, linux-leds@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Subject: [PATCH] Replace HTTP links with HTTPS ones: PCA9532 LED DRIVER
+Date:   Wed,  8 Jul 2020 16:17:47 +0200
+Message-Id: <20200708141747.14732-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
-References: <20200708122546.214579-1-hch@lst.de> <20200708122546.214579-7-hch@lst.de>
-In-Reply-To: <20200708122546.214579-7-hch@lst.de>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 8 Jul 2020 16:17:26 +0200
-Message-ID: <CAPDyKFr5+LRRGMYhWM2At=O9LQSPmFAp0YuQiwmRiV1a6Tx6=g@mail.gmail.com>
-Subject: Re: [PATCH 6/6] mmc: remove the call to check_disk_change
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jens Axboe <axboe@kernel.dk>, Song Liu <song@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-xtensa@linux-xtensa.org,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-raid@vger.kernel.org,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: ++++++
+X-Spam-Level: ******
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+X-Spam: Yes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 8 Jul 2020 at 14:41, Christoph Hellwig <hch@lst.de> wrote:
->
-> The mmc driver doesn't support event notifications, which means
-> that check_disk_change is a no-op.
->
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+Rationale:
+Reduces attack surface on kernel devs opening the links for MITM
+as HTTPS traffic is much harder to manipulate.
 
-I can queue this via my mmc tree, but perhaps you have plans for some
-additional cleanups on top? In such a case, it may be better that this
-goes through Jens' tree?
+Deterministic algorithm:
+For each file:
+  If not .svg:
+    For each line:
+      If doesn't contain `\bxmlns\b`:
+        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+            If both the HTTP and HTTPS versions
+            return 200 OK and serve the same content:
+              Replace HTTP with HTTPS.
 
-Kind regards
-Uffe
+Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+---
+ Continuing my work started at 93431e0607e5.
+ See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+ (Actually letting a shell for loop submit all this stuff for me.)
 
-> ---
->  drivers/mmc/core/block.c | 3 ---
->  1 file changed, 3 deletions(-)
->
-> diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
-> index 4791c82f8f7c78..fa313b63413547 100644
-> --- a/drivers/mmc/core/block.c
-> +++ b/drivers/mmc/core/block.c
-> @@ -312,10 +312,7 @@ static int mmc_blk_open(struct block_device *bdev, fmode_t mode)
->
->         mutex_lock(&block_mutex);
->         if (md) {
-> -               if (md->usage == 2)
-> -                       check_disk_change(bdev);
->                 ret = 0;
-> -
->                 if ((mode & FMODE_WRITE) && md->read_only) {
->                         mmc_blk_put(md);
->                         ret = -EROFS;
-> --
-> 2.26.2
->
+ If there are any URLs to be removed completely or at least not HTTPSified:
+ Just clearly say so and I'll *undo my change*.
+ See also: https://lkml.org/lkml/2020/6/27/64
+
+ If there are any valid, but yet not changed URLs:
+ See: https://lkml.org/lkml/2020/6/26/837
+
+ If you apply the patch, please let me know.
+
+
+ drivers/leds/leds-pca9532.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/leds/leds-pca9532.c b/drivers/leds/leds-pca9532.c
+index 7d515d5e57bd..74ce273a768d 100644
+--- a/drivers/leds/leds-pca9532.c
++++ b/drivers/leds/leds-pca9532.c
+@@ -5,7 +5,7 @@
+  * Copyright (C) 2011 Jan Weitzel
+  * Copyright (C) 2008 Riku Voipio
+  *
+- * Datasheet: http://www.nxp.com/documents/data_sheet/PCA9532.pdf
++ * Datasheet: https://www.nxp.com/documents/data_sheet/PCA9532.pdf
+  */
+ 
+ #include <linux/module.h>
+-- 
+2.27.0
+
