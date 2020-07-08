@@ -2,84 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20E4F218ADF
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 17:12:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19B32218B11
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 17:20:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730034AbgGHPMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 11:12:21 -0400
-Received: from mga09.intel.com ([134.134.136.24]:38659 "EHLO mga09.intel.com"
+        id S1730166AbgGHPUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 11:20:09 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49388 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729500AbgGHPMU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 11:12:20 -0400
-IronPort-SDR: wn1mD+4u1JrDgQoYhiI3nbFrgItezNjTnCJejeIxoWa6U7FNIn6zNwXId6Ei8S/VmeAHdQi702
- V9kT3QBKe1uQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9676"; a="149325301"
-X-IronPort-AV: E=Sophos;i="5.75,327,1589266800"; 
-   d="scan'208";a="149325301"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2020 08:12:20 -0700
-IronPort-SDR: /MVkUG8GhZH1siJlqEVBaQOSKpuUsBci6rmNU/vkTH1JLRLuD7R56lPhmqa2xMGebYejjce4y/
- KN1FCGXMa4lg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,327,1589266800"; 
-   d="scan'208";a="457534824"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga005.jf.intel.com with ESMTP; 08 Jul 2020 08:12:20 -0700
-Date:   Wed, 8 Jul 2020 08:18:58 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     iommu@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Yi Liu <yi.l.liu@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>, jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH v4 3/5] iommu/uapi: Use named union for user data
-Message-ID: <20200708081858.37091f4b@jacob-builder>
-In-Reply-To: <3b36c219-4120-402b-b03e-62b076db865c@linux.intel.com>
-References: <1594165429-20075-1-git-send-email-jacob.jun.pan@linux.intel.com>
-        <1594165429-20075-4-git-send-email-jacob.jun.pan@linux.intel.com>
-        <3b36c219-4120-402b-b03e-62b076db865c@linux.intel.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+        id S1729910AbgGHPUI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 11:20:08 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 99E97AFF1;
+        Wed,  8 Jul 2020 15:20:07 +0000 (UTC)
+Date:   Wed, 8 Jul 2020 17:20:05 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Paul McKenney <paulmck@kernel.org>, kexec@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 0/4] printk: replace ringbuffer
+Message-ID: <20200708152005.GF4751@alley>
+References: <20200707145932.8752-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200707145932.8752-1-john.ogness@linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 8 Jul 2020 10:17:57 +0800
-Lu Baolu <baolu.lu@linux.intel.com> wrote:
-
-> Hi Jacob,
+On Tue 2020-07-07 17:05:28, John Ogness wrote:
+> Hello,
 > 
-> On 7/8/20 7:43 AM, Jacob Pan wrote:
-> > IOMMU UAPI data size is filled by the user space which must be
-> > validated by ther kernel. To ensure backward compatibility, user
-> > data can only be extended by either re-purpose padding bytes or
-> > extend the variable sized union at the end. No size change is
-> > allowed before the union. Therefore, the minimum size is the offset
-> > of the union.
-> > 
-> > To use offsetof() on the union, we must make it named.
-> > 
-> > Link:https://lkml.org/lkml/2020/6/11/834  
+> Here is a v4 for the first series to rework the printk
+> subsystem. The v3 is here [0]. This first series
+> only replaces the existing ringbuffer implementation. No locking
+> is removed. The semantics/behavior of printk are kept the same
+> except for a minor optimization that is reverted (patch 3).
 > 
-> Please use lore.kernel.org links.
+> Despite minor changes to the ringbuffer code since v3 (comments,
+> function names, very minor refactoring), the ringbuffer logic
+> itself has not changed. And, in particular, the memory barriers
+> have been exactly preserved from v3. For this reason I deem it
+> appropriate to keep Paul's reviewed by tag (patch 2).
 > 
-OK. will do.
+> RFC patches for various userspace tools to dump the kernel log
+> are available: crash [1], makedumpfile [2], kexec-tools [3].
+> 
+> Finally, I would like to thank some people/organizations that
+> helped with performing ringbuffer stress tests on big or rare
+> hardware that I do not have access to:
+> 
+> - Prarit Bhargava of Red Hat (x86_64, ppc64le power8)
+> - Michael Cree of Debian (alpha)
+> - Jeff Scheel of OSU Open Source Lab (ppc64le power8 kvm)
 
-> Best regards,
-> baolu
+OK, I think that we are ready to try this in linux-next.
+I am going to push it there via printk/linux.git.
 
-[Jacob Pan]
+I have a good feeling about the patchset. The great thing is that
+the access is still synchronized using logbuf_lock so that we do not
+have to deal with races for the moment.
+
+Of course, there are still many potential problems. The following comes
+to my mind:
+
+   + Bugs in the algorithm logic or implementation might prevent
+     showing any messages on consoles or via syslog or /dev/kmsg.
+     We did our best to avoid it.
+
+   + Debugging tools accessing the buffer directly would need to
+     understand the new structure. Fortunately John provided
+     patches for the most prominent ones.
+
+   + Small devices might complain about less effective use of memory.
+     Part of descriptors and dictionaries ring buffers might stay
+     unused. But it hopefully could get tuned.
+
+
+This is basically just a start of the journey. I hope that it will be a
+good one.
+
+Best Regards,
+Petr
