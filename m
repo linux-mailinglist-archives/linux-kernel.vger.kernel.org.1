@@ -2,95 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B615218B04
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 17:18:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20E4F218ADF
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 17:12:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730071AbgGHPSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 11:18:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57926 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729022AbgGHPSr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 11:18:47 -0400
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1B88C061A0B
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 08:18:47 -0700 (PDT)
-Received: by mail-oi1-x241.google.com with SMTP id y22so25489821oie.8
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 08:18:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ZuoUzrDuDd0J/oVgMoGWhxlVUdrJuDrqViZgxHnlo/Q=;
-        b=draIj9k8f7stBC5+C3bynh8LM4vQknVR0yAsbyEFMVqoHLAg9lVDQYES2yFYA6G2SW
-         gmRHxGfw9NtoUTmF3rBh3qGYhDYdCljoRZ6JbagyUQBFSuyEJCmdVDPmqs2WY4pblNEN
-         eqkwRVStrD8XXeqn6pDFkCzSBIr4ltf07PpOw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZuoUzrDuDd0J/oVgMoGWhxlVUdrJuDrqViZgxHnlo/Q=;
-        b=mjILGWmawdVyQWoRdxJ4SiSD/rLtfhQ2tFIyE61vy/8xRe+wTS1wakMUzOxuQLUzsL
-         UlrzziqfaXGpW44ymj/4h/0lX7RVlEhv4CR5nXAc9Xd+9V3BzVbV8+vOyrJrUXbW+AmZ
-         XTyXMSU+dlhT/1yJ/Xas0oZijB1ck/lFc0uo/3txlmcB+Ey6SL9TvK2n42Ob2y7zRHgf
-         TRI1nl9xfXWblia0nYdmrJ6yS8CuPjHdtZLvDv/vKVoTixUkO3F4chsnWSXBaLLyH+JU
-         V0OV79aaay44+UWgOS+iDko3sTOZdfwWt2Vc0Hey5Fl9A8Pqf1oL2JXX8mvrxfN1g9lM
-         ZtXw==
-X-Gm-Message-State: AOAM531nHBTHhBaLL0ug04YghV5MALPt3ctPqqAe/XDo+A877SefoEEO
-        3Pwz49WUJxGIymovMAbQJB9ZiA==
-X-Google-Smtp-Source: ABdhPJwADAsqoQhJjqYOqyXMgxuA5fhLeFm5MSaw/twe212+yNaFvolz9pLcFe5Jz0L5EvQGmPTEkg==
-X-Received: by 2002:a05:6808:2:: with SMTP id u2mr7238927oic.173.1594221527159;
-        Wed, 08 Jul 2020 08:18:47 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id r22sm24675ooq.37.2020.07.08.08.18.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Jul 2020 08:18:46 -0700 (PDT)
-Subject: Re: [PATCH 4.4 00/19] 4.4.230-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        stable@vger.kernel.org, skhan@linuxfoundation.org
-References: <20200707145747.493710555@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <e643820b-24e4-6888-7be4-26aab756cf17@linuxfoundation.org>
-Date:   Wed, 8 Jul 2020 09:18:45 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1730034AbgGHPMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 11:12:21 -0400
+Received: from mga09.intel.com ([134.134.136.24]:38659 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729500AbgGHPMU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 11:12:20 -0400
+IronPort-SDR: wn1mD+4u1JrDgQoYhiI3nbFrgItezNjTnCJejeIxoWa6U7FNIn6zNwXId6Ei8S/VmeAHdQi702
+ V9kT3QBKe1uQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9676"; a="149325301"
+X-IronPort-AV: E=Sophos;i="5.75,327,1589266800"; 
+   d="scan'208";a="149325301"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2020 08:12:20 -0700
+IronPort-SDR: /MVkUG8GhZH1siJlqEVBaQOSKpuUsBci6rmNU/vkTH1JLRLuD7R56lPhmqa2xMGebYejjce4y/
+ KN1FCGXMa4lg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,327,1589266800"; 
+   d="scan'208";a="457534824"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga005.jf.intel.com with ESMTP; 08 Jul 2020 08:12:20 -0700
+Date:   Wed, 8 Jul 2020 08:18:58 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     iommu@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Yi Liu <yi.l.liu@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>, jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH v4 3/5] iommu/uapi: Use named union for user data
+Message-ID: <20200708081858.37091f4b@jacob-builder>
+In-Reply-To: <3b36c219-4120-402b-b03e-62b076db865c@linux.intel.com>
+References: <1594165429-20075-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        <1594165429-20075-4-git-send-email-jacob.jun.pan@linux.intel.com>
+        <3b36c219-4120-402b-b03e-62b076db865c@linux.intel.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20200707145747.493710555@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/7/20 9:10 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.4.230 release.
-> There are 19 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 09 Jul 2020 14:57:34 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.230-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+On Wed, 8 Jul 2020 10:17:57 +0800
+Lu Baolu <baolu.lu@linux.intel.com> wrote:
 
-Compiled and booted on my test system. No dmesg regressions.
+> Hi Jacob,
+> 
+> On 7/8/20 7:43 AM, Jacob Pan wrote:
+> > IOMMU UAPI data size is filled by the user space which must be
+> > validated by ther kernel. To ensure backward compatibility, user
+> > data can only be extended by either re-purpose padding bytes or
+> > extend the variable sized union at the end. No size change is
+> > allowed before the union. Therefore, the minimum size is the offset
+> > of the union.
+> > 
+> > To use offsetof() on the union, we must make it named.
+> > 
+> > Link:https://lkml.org/lkml/2020/6/11/834  
+> 
+> Please use lore.kernel.org links.
+> 
+OK. will do.
 
-thanks,
--- Shuah
+> Best regards,
+> baolu
 
+[Jacob Pan]
