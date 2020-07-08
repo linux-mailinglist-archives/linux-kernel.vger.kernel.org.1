@@ -2,72 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78DD321822A
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 10:25:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8611A218233
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 10:27:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726891AbgGHIZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 04:25:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39426 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726081AbgGHIZY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 04:25:24 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3F569206DF;
-        Wed,  8 Jul 2020 08:25:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594196724;
-        bh=Xq8WxMIJ5au6LWJ2NQRhkLUVFSQxA8qnihUYmtBcxPs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BlJsDcswX9/ttFiNhIeYMqGOG2dogoSP4jqNED11NqBSEphw9HOf3aL/99QAyTyHU
-         yqGAoiaAsvtFlOmrXDl/U38HYICnNHfFyrrhiQn2zuUOLa7DJfwDB+FZycGYqhyUum
-         JYdMS5qiS4XCx2cAQS8flqRu7Tf8WLi85c9MQODg=
-Date:   Wed, 8 Jul 2020 09:25:20 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Peng Hao <richard.peng@oppo.com>
-Cc:     catalin.marinas@arm.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, ardb@kernel.org
-Subject: Re: [PATCH] arm64/module-plts: Consider the special case where
- plt_max_entries is 0
-Message-ID: <20200708082519.GA25634@willie-the-truck>
-References: <20200707114608.24197-1-richard.peng@oppo.com>
+        id S1727775AbgGHI1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 04:27:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50100 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726285AbgGHI1t (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 04:27:49 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97D56C08C5DC;
+        Wed,  8 Jul 2020 01:27:48 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id f5so37284069ljj.10;
+        Wed, 08 Jul 2020 01:27:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6Miaa8SoPzdiSzDoIlcAzPHbKCfF0bU4YdLj1kWGR1M=;
+        b=YFg0MyMnPINaoVSvIpWRiBilrX594BmO/FCm9av5ANoQe4KLrWHJ14z6Qm/ZWmvub9
+         o2ffSS59gvRiJHNilGvFEXBEGlUpk6N/9CkFwxPU6XQw9Uloa0tfFvwbPJEw9cgs3mKI
+         QDRFOmO3rxTadCw5EBV1x2J9eK5zy+aRkj30a8T9mqFT81pc0TCwtBhT79d7WmebnM2s
+         1xp/euasOSn5lkOaZ4t20xHQvRp9+dPf3EiPzPLaUVjBHB1hQCcb5t42f6zBMX22H3YW
+         DXkjKMTboqXSVJ+I0XnkrAV0Ynxl80N2uoSoJNUU98Ss1H2JUV9K+NTlxyHp9ey487Hn
+         8gIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6Miaa8SoPzdiSzDoIlcAzPHbKCfF0bU4YdLj1kWGR1M=;
+        b=oiWBF9BBFI8QwEjzHPmNSlVrPzC8fmzs73OkmXVYdiaRVLEUq5VSjffsT7wcmWaex0
+         uroSQcknivooAkOjhq4sR5bmn6khXyjB3DzQ7GGi6yo9c9TwekdRlnDJK7MUI1wudEKp
+         13+oD4YoZ74KYRz4/SuNh8xqfHAQFvCZq4PrVvdFDN0EEyJfnZY4jlnb+kRNzCtiuNhp
+         AdXTRHUIOG6LsJsQJO1NgNtTsjKoJRZdyO0uo3pIiiY00VKO2ne6DBhVX+zWm1E8g3W2
+         7TGPbuq+nP14R5NjvXIh/t4Qb+LLEV1/XMRtt5eItqM2HakUhSGzqO6bV+rUfjbSE6L5
+         /8Yg==
+X-Gm-Message-State: AOAM533jvrGufPNwr3xSBQ8NYqe5sMKH8QaG/Wo6GR7dbTc1gqk4pmI/
+        0udy72wlv9OVuhcHcRk/9wY=
+X-Google-Smtp-Source: ABdhPJyBil27+pSnKjuHOLLHdLn0yACNNRc/K0bc43EGma0+Bnx0Ikvb9anELJU9nxt2MIQhpcP7lg==
+X-Received: by 2002:a05:651c:50d:: with SMTP id o13mr34705414ljp.181.1594196867111;
+        Wed, 08 Jul 2020 01:27:47 -0700 (PDT)
+Received: from localhost.localdomain (ppp91-79-162-105.pppoe.mtu-net.ru. [91.79.162.105])
+        by smtp.gmail.com with ESMTPSA id d2sm737555ljg.6.2020.07.08.01.27.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Jul 2020 01:27:46 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     linux-tegra@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v1 0/5] Improvements for MAX77620 GPIO driver
+Date:   Wed,  8 Jul 2020 11:26:29 +0300
+Message-Id: <20200708082634.30191-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200707114608.24197-1-richard.peng@oppo.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+Ard]
+Hello!
 
-On Tue, Jul 07, 2020 at 07:46:08AM -0400, Peng Hao wrote:
-> If plt_max_entries is 0, a warning is triggered.
-> WARNING: CPU: 200 PID: 3000 at arch/arm64/kernel/module-plts.c:97 module_emit_plt_entry+0xa4/0x150
+This series addresses a problem that I discovered on Nexus 7 device where
+GPIO interrupts may be left enabled after bootloader and the driver isn't
+prepared to this. Secondly, I made few very minor cleanup improvements to
+the code.
 
-Which kernel are you seeing this with? There is a PLT-related change in
-for-next/core, and I'd like to rule if out if possible.
+Dmitry Osipenko (5):
+  gpio: max77620: Initialize interrupts state
+  gpio: max77620: Replace 8 with MAX77620_GPIO_NR
+  gpio: max77620: Replace interrupt-enable array with bitmap
+  gpio: max77620: Don't handle disabled interrupts
+  gpio: max77620: Move variable declaration
 
-> Signed-off-by: Peng Hao <richard.peng@oppo.com>
-> ---
->  arch/arm64/kernel/module-plts.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/kernel/module-plts.c b/arch/arm64/kernel/module-plts.c
-> index 65b08a74aec6..1868c9ac13f2 100644
-> --- a/arch/arm64/kernel/module-plts.c
-> +++ b/arch/arm64/kernel/module-plts.c
-> @@ -79,7 +79,8 @@ u64 module_emit_plt_entry(struct module *mod, Elf64_Shdr *sechdrs,
->  	int i = pltsec->plt_num_entries;
->  	int j = i - 1;
->  	u64 val = sym->st_value + rela->r_addend;
-> -
-> +	if (pltsec->plt_max_entries == 0)
-> +		return 0;
+ drivers/gpio/gpio-max77620.c | 44 ++++++++++++++++++++++++++++--------
+ 1 file changed, 34 insertions(+), 10 deletions(-)
 
-Hmm, but if there aren't any PLTs then how do we end up here?
+-- 
+2.26.0
 
-Will
