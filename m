@@ -2,276 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A687B218DF4
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 19:10:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3617218E12
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 19:16:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730861AbgGHRK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 13:10:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730457AbgGHRK1 (ORCPT
+        id S1726610AbgGHRQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 13:16:32 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:32009 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726374AbgGHRQb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 13:10:27 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A168C08C5DC
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 10:10:27 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id d194so18594856pga.13
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 10:10:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0rEN23cbd1SKA3NGgD72iDuMJC8fxPRHEEwlwQ22hpY=;
-        b=n3f7ckSQTYxY4oOO8C4Z4sELvQoSxfPuNNn5dS5itgz86q7oeo6QAE5dnY3J8ean9i
-         6dvZUT2D5UoOUQYFMRIphN2tg3/E0o0u05fgXWbfYNdG3CZngyfAq7WUJOYeAFMlC0Zd
-         N77A/v1AFDsWhOHGZQ9z/9FmP3EU77jnkVYGxPDCa4WffEdnSowEm+8OqO4TLltztoio
-         b6DPBKGnr/2gByDXf3TsF4fRI+44HDCNThtu2KIhKTXKLKqVFz0RbdfSz6DjYy9nWF43
-         hWKIf1qRkcfvq+So1oikHSAY2Reos3ReB+a+Yu7L00yMWsIWoJOCDTFU0T5jy1NAIZrn
-         CWOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0rEN23cbd1SKA3NGgD72iDuMJC8fxPRHEEwlwQ22hpY=;
-        b=BqR72MrCm72wAZPok5sWDeSCt8Y4KXsiRQLzXU9fWiHj0QF649+FRvEHOrIrJ+fYg1
-         YbaNXQk5c5zDGGL2tORlUrVuVnCH/tXDThJyBQlHg7x8wcg/nVIqcQJm7HQJ13OWc0uj
-         G2WWU0/DahevW8URORDYruCXTyJMLMbmJyOjtUBpbPmlwa3A0arSZ+jlPTFNXjTqPYn6
-         MKbFnUnECgcv5EGqOe9w2g5mCfGaqK/gh+w5CMlQacd5Zj64qoGdGjL8B5ZZ/uNncAzN
-         3zuTxi43YZoa3LgAY17q6OcbTM+chyeh+TMA6eIyxdgVcuYnV2dW3hjpmBKeK+XBeWG9
-         Ra3w==
-X-Gm-Message-State: AOAM532Bp1tC1cxrf/LoluOW47fUrfdwCO0vMNEBejJaLP30+9cYrg6x
-        UuYqlU1Yq0A0V/dDsfqPDsWiUiw7f0w6I9PovtECcg==
-X-Google-Smtp-Source: ABdhPJzv8hmcPMQH68pT1oCrLz0ZeqUbfp5c1EkwtUlJxi7EMIom41s9drUIMd+EWqnR/3xanznSqmzVFWme8WK7OaA=
-X-Received: by 2002:aa7:9303:: with SMTP id 3mr45101796pfj.108.1594228226197;
- Wed, 08 Jul 2020 10:10:26 -0700 (PDT)
+        Wed, 8 Jul 2020 13:16:31 -0400
+Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200708171629epoutp01d21a5e08ff5135b18b2e3aa1c8032197~f1nShYU3n3014730147epoutp01L
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 17:16:29 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200708171629epoutp01d21a5e08ff5135b18b2e3aa1c8032197~f1nShYU3n3014730147epoutp01L
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1594228589;
+        bh=cZw9uZ/B94t2YKJtaGtYKp2wPZ7theQ3oHVkcgqIa8A=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=LORxdn5j8CSVPSOVBEb9zJkzfy/P5yQc+KIQ2qUFrTd3SguIwD6ovDEY+/jY6IepJ
+         jljSEI+g3di9TdZjQ77C5yDDAwem6IP7fa91Z9jN4dKsP/WTVl8n6RzLKB2HN+CTXd
+         TP3FZgxYuSsRtHrmlQiSauhXIZCrjPlQDpG3W++I=
+Received: from epsmges5p1new.samsung.com (unknown [182.195.42.73]) by
+        epcas5p1.samsung.com (KnoxPortal) with ESMTP id
+        20200708171628epcas5p124f3b7ca4c149e7e6c037eb5c8c25458~f1nRz-8Pg2838928389epcas5p1o;
+        Wed,  8 Jul 2020 17:16:28 +0000 (GMT)
+Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
+        epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        2B.4B.09467.C6FF50F5; Thu,  9 Jul 2020 02:16:28 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
+        20200708171600epcas5p4a8494e7dcb887a7f1f39492007b3b78c~f1m3kn-U_0927809278epcas5p4U;
+        Wed,  8 Jul 2020 17:16:00 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200708171600epsmtrp2f9d5e955264893831a5c37846de7cc39~f1m3jsuZ70366303663epsmtrp2Q;
+        Wed,  8 Jul 2020 17:16:00 +0000 (GMT)
+X-AuditID: b6c32a49-a29ff700000024fb-96-5f05ff6ca0f1
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        A8.15.08303.05FF50F5; Thu,  9 Jul 2020 02:16:00 +0900 (KST)
+Received: from test-zns (unknown [107.110.206.5]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20200708171558epsmtip2b1b0a9859675abb5073230211ffdb391~f1m1PKiQU2709227092epsmtip2x;
+        Wed,  8 Jul 2020 17:15:57 +0000 (GMT)
+Date:   Wed, 8 Jul 2020 22:43:02 +0530
+From:   Kanchan Joshi <joshi.k@samsung.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Javier =?utf-8?B?R29uesOhbGV6?= <javier@javigon.com>,
+        viro@zeniv.linux.org.uk, bcrl@kvack.org, hch@infradead.org,
+        damien.lemoal@wdc.com, asml.silence@gmail.com,
+        linux-fsdevel@vger.kernel.org, mb@lightnvm.io,
+        linux-kernel@vger.kernel.org, linux-aio@kvack.org,
+        io-uring@vger.kernel.org, linux-block@vger.kernel.org,
+        Selvakumar S <selvakuma.s1@samsung.com>,
+        Nitesh Shetty <nj.shetty@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>
+Subject: Re: [PATCH v3 4/4] io_uring: add support for zone-append
+Message-ID: <20200708171302.GB26480@test-zns>
 MIME-Version: 1.0
-References: <20200707211642.1106946-1-ndesaulniers@google.com> <bca8cff8-3ffe-e5ab-07a5-2ab29d5e394a@linaro.org>
-In-Reply-To: <bca8cff8-3ffe-e5ab-07a5-2ab29d5e394a@linaro.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 8 Jul 2020 10:10:14 -0700
-Message-ID: <CAKwvOdmtv2EdNQz+c_DZm_47EEibkaXfDW8dGPwNPA3OrcoC9g@mail.gmail.com>
-Subject: Re: [PATCH] bitfield.h: don't compile-time validate _val in FIELD_FIT
-To:     Alex Elder <elder@linaro.org>, Jakub Kicinski <kuba@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        "# 3.4.x" <stable@vger.kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <481e512a-0dd3-ae19-8f32-ed781af28038@kernel.dk>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrIKsWRmVeSWpSXmKPExsWy7bCmum7Of9Z4g6OPVC3mrNrGaLH6bj+b
+        Rde/LSwWre3fmCxOT1jEZPGu9RyLxeM7n9ktOk9fYLKYMq2J0WLvLW2LPXtPslhc3jWHzWLF
+        9iMsFtt+z2e2eP3jJJvF+b/HWS1+/5jD5iDosXPWXXaPzSu0PJoX3GHxuHy21GPTp0nsHt1X
+        fzB69G1ZxejxeZOcR/uBbiaPTU/eMgVwRXHZpKTmZJalFunbJXBlfDmfX7CXv2Lxo2OMDYy3
+        eLoYOTgkBEwkdn8M6GLk4hAS2M0ocevHHHYI5xOjxOL385ghnM+MEn9XbGDqYuQE67h47Toj
+        RGIXo8Sjhy+YIJxnjBJvf9xnBpnLIqAi8WSbEYjJJqApcWFyKUiviICCRM/vlWwg5cwCL5kl
+        mjeDDOLkEBZwlPi88ySYzSugK/Fi6V92CFtQ4uTMJywgNqeArcTOpQfAbFEBZYkD245DHfSD
+        Q+LbAj4I20Xi16S57BC2sMSr41ugbCmJz+/2skHYxRK/7hwF+0xCoINR4nrDTBaIhL3ExT1/
+        mUCOZhbIkOh8UAsRlpWYemod2C5mAT6J3t9PoPbySuyYB2MrStyb9JQVwhaXeDhjCZTtIfF/
+        92xoKK5gktiz6jHzBEb5WUh+m4WwbhbYCiuJzg9NrBC2vETz1tnMECXSEsv/cUCYmhLrd+kv
+        YGRbxSiZWlCcm55abFpgmJdarlecmFtcmpeul5yfu4kRnCq1PHcw3n3wQe8QIxMH4yFGCQ5m
+        JRFeA0XWeCHelMTKqtSi/Pii0pzU4kOM0hwsSuK8Sj/OxAkJpCeWpGanphakFsFkmTg4pRqY
+        Kg+Yvvhz44bfWrvqp/eUXsWZ6Zh5ae+e8rQysrDewW358y9Z361qkkU2L7T5VM606ih3tcWC
+        En7vre08JbGPLpS/Kaz3L4iYyXdlksLiGY0HPN4VfJsRvEk0+BBHJJ/VEiPXzJ1CF/UYkq44
+        r5smyFOUG3T4GPOW6+yT5dzWnvgsWpDy7vw288ln3kbcvZRwKz35wrFFtZdPJF3tmNR8685t
+        3t7uxx8XqRiL3tr+5vWOtAMKvG7SvYfDd6X/Kc4xy2W2dxCuXyR8Kfrd3UCnDI2Ono9Z22/e
+        2JMQ5fpQV1ZDznfT7AkPL3RdiQy58uN1bFeS5RxjhUTJdXO8io4unVAv/8u3d4v8vpMPLIsD
+        lViKMxINtZiLihMBjbWFdAQEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrDIsWRmVeSWpSXmKPExsWy7bCSvG7Af9Z4g8kPpSzmrNrGaLH6bj+b
+        Rde/LSwWre3fmCxOT1jEZPGu9RyLxeM7n9ktOk9fYLKYMq2J0WLvLW2LPXtPslhc3jWHzWLF
+        9iMsFtt+z2e2eP3jJJvF+b/HWS1+/5jD5iDosXPWXXaPzSu0PJoX3GHxuHy21GPTp0nsHt1X
+        fzB69G1ZxejxeZOcR/uBbiaPTU/eMgVwRXHZpKTmZJalFunbJXBl3L3TwlZwjqfiw53qBsYO
+        ri5GTg4JAROJi9euM3YxcnEICexglLhy7CgrREJcovnaD3YIW1hi5b/n7BBFTxglOv8uBurg
+        4GARUJF4ss0IxGQT0JS4MLkUpFxEQEGi5/dKNpByZoH3zBIvzmxhA0kICzhKfN55khHE5hXQ
+        lXix9C/UzBVMEg//zIdKCEqcnPmEBcRmFjCTmLf5ITPIAmYBaYnl/zggwvISzVtnM4PYnAK2
+        EjuXHgArFxVQljiw7TjTBEahWUgmzUIyaRbCpFlIJi1gZFnFKJlaUJybnltsWGCUl1quV5yY
+        W1yal66XnJ+7iREcwVpaOxj3rPqgd4iRiYPxEKMEB7OSCK+BImu8EG9KYmVValF+fFFpTmrx
+        IUZpDhYlcd6vsxbGCQmkJ5akZqemFqQWwWSZODilGpiMV5gJqrxfk7bOYKK6sYn4jU62d9dU
+        dcsbVi9bfNnfhL2Bx35h+uL3ZzgMp03MW3p9/vNXs/1d1ugt9PH+ZHqYbdneIDP+jzG6HD5c
+        fvYLjmptKTXZvVdgfVL5j72tP7Ya8rfdskzYKb0yk6PQVsZw7nct40mKq8OeyNz4a+LuwG0v
+        Ybb4vfNx5y81xxVMnbovh75YXerLt/xfnscHpuSrz68lS0cw634LXb2DeWY+Z+JZ/dveMo68
+        5hNMMipOF17gFa0OnnvO+u3VwM9lLXKT3NoOz/UrPHFalenfmbwAlZNfzpooxG874Ou3Sphh
+        qo5Te8WeB0vOfrbcNPtC9FH5qW5HpMP/GvywehA48YESS3FGoqEWc1FxIgCqDvw8TwMAAA==
+X-CMS-MailID: 20200708171600epcas5p4a8494e7dcb887a7f1f39492007b3b78c
+X-Msg-Generator: CA
+Content-Type: multipart/mixed;
+        boundary="----nai8lIH9ngBNHun9R6qswQcIIemhXBCkNXu5CagZqSM5j8ea=_e97d3_"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+X-CMS-RootMailID: 20200708163850epcas5p36f1f61ee4d77d31dc34c3bbe1d19f6fd
+References: <33b9887b-eaba-c7be-5dfd-fc7e7d416f48@kernel.dk>
+        <36C0AD99-0D75-40D4-B704-507A222AEB81@javigon.com>
+        <20200708163327.GU25523@casper.infradead.org>
+        <CGME20200708163850epcas5p36f1f61ee4d77d31dc34c3bbe1d19f6fd@epcas5p3.samsung.com>
+        <481e512a-0dd3-ae19-8f32-ed781af28038@kernel.dk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 7, 2020 at 3:43 PM Alex Elder <elder@linaro.org> wrote:
+------nai8lIH9ngBNHun9R6qswQcIIemhXBCkNXu5CagZqSM5j8ea=_e97d3_
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+
+On Wed, Jul 08, 2020 at 10:38:44AM -0600, Jens Axboe wrote:
+>On 7/8/20 10:33 AM, Matthew Wilcox wrote:
+>> On Wed, Jul 08, 2020 at 06:08:12PM +0200, Javier González wrote:
+>>>> I just wanted to get clarification there, because to me it sounded like
+>>>> you expected Kanchan to do it, and Kanchan assuming it "was sorted". I'd
+>>>> consider that a prerequisite for the append series as far as io_uring is
+>>>> concerned, hence _someone_ needs to actually do it ;-)
+>>
+>> I don't know that it's a prerequisite in terms of the patches actually
+>> depend on it.  I appreciate you want it first to ensure that we don't bloat
+>> the kiocb.
 >
-> On 7/7/20 4:16 PM, Nick Desaulniers wrote:
-> > From: Jakub Kicinski <kuba@kernel.org>
-> >
-> > When ur_load_imm_any() is inlined into jeq_imm(), it's possible for the
-> > compiler to deduce a case where _val can only have the value of -1 at
-> > compile time. Specifically,
-> >
-> > /* struct bpf_insn: _s32 imm */
-> > u64 imm = insn->imm; /* sign extend */
-> > if (imm >> 32) { /* non-zero only if insn->imm is negative */
-> >   /* inlined from ur_load_imm_any */
-> >   u32 __imm = imm >> 32; /* therefore, always 0xffffffff */
-> >   if (__builtin_constant_p(__imm) && __imm > 255)
-> >     compiletime_assert_XXX()
-> >
-> > This can result in tripping a BUILD_BUG_ON() in __BF_FIELD_CHECK() that
-> > checks that a given value is representable in one byte (interpreted as
-> > unsigned).
-
-Hi Alex,
-Thanks for taking a look. They're good and fair questions.
-
+>Maybe not for the series, but for the io_uring addition it is.
 >
-> Why does FIELD_FIT() pass an unsigned long long value as the second
-> argument to __BF_FIELD_CHECK()?
-
-Was Jakub's suggestion; I don't feel strongly against it either way, though...
-
-> Could it pass (typeof(_mask))0 instead?
-
-...might be nice to avoid implicit promotions and conversions if _mask
-is not the same sizeof _val.
-
-> It wouldn't fix this particular case, because UR_REG_IMM_MAX is also
-> defined with that type.  But (without working through this in more
-> detail) it seems like there might be a solution that preserves the
-> compile-time checking.
-
-I'd argue the point of the patch is to not check at compile time for
-FIELD_FIT, since we have a case in
-drivers/net/ethernet/netronome/nfp/bpf/jit.c (jeq_imm()) that will
-always pass -1 (unintentionally due to compiler optimization).
-
-> A second comment about this is that it might be nice to break
-> __BF_FIELD_CHECK() into the parts that verify the mask (which
-> could be used by FIELD_FIT() here) and the parts that verify
-> other things.
-
-Like so? Jakub, WDYT? Or do you prefer v1+Alex's suggestion about
-using `(typeof(_mask))0` in place of 0ULL?
-
-diff --git a/drivers/net/ethernet/netronome/nfp/nfpcore/nfp_nsp_eth.c
-b/drivers/net/ethernet/netronome/nfp/nfpcore/nfp_nsp_eth.c
-index 311a5be25acb..938fc733fccb 100644
---- a/drivers/net/ethernet/netronome/nfp/nfpcore/nfp_nsp_eth.c
-+++ b/drivers/net/ethernet/netronome/nfp/nfpcore/nfp_nsp_eth.c
-@@ -492,11 +492,12 @@ nfp_eth_set_bit_config(struct nfp_nsp *nsp,
-unsigned int raw_idx,
-        return 0;
- }
-
--#define NFP_ETH_SET_BIT_CONFIG(nsp, raw_idx, mask, val, ctrl_bit)      \
--       ({                                                              \
--               __BF_FIELD_CHECK(mask, 0ULL, val, "NFP_ETH_SET_BIT_CONFIG: "); \
--               nfp_eth_set_bit_config(nsp, raw_idx, mask, __bf_shf(mask), \
--                                      val, ctrl_bit);                  \
-+#define NFP_ETH_SET_BIT_CONFIG(nsp, raw_idx, mask, val, ctrl_bit)
-         \
-+       ({
-         \
-+               __BF_FIELD_CHECK_MASK(mask, "NFP_ETH_SET_BIT_CONFIG:
-");        \
-+               __BF_FIELD_CHECK_VAL(mask, val,
-"NFP_ETH_SET_BIT_CONFIG: ");    \
-+               nfp_eth_set_bit_config(nsp, raw_idx, mask,
-__bf_shf(mask),      \
-+                                      val, ctrl_bit);
-         \
-        })
-
- /**
-diff --git a/include/linux/bitfield.h b/include/linux/bitfield.h
-index 48ea093ff04c..79651867beb3 100644
---- a/include/linux/bitfield.h
-+++ b/include/linux/bitfield.h
-@@ -41,18 +41,26 @@
-
- #define __bf_shf(x) (__builtin_ffsll(x) - 1)
-
--#define __BF_FIELD_CHECK(_mask, _reg, _val, _pfx)                      \
-+#define __BF_FIELD_CHECK_MASK(_mask, _pfx)                             \
-        ({                                                              \
-                BUILD_BUG_ON_MSG(!__builtin_constant_p(_mask),          \
-                                 _pfx "mask is not constant");          \
-                BUILD_BUG_ON_MSG((_mask) == 0, _pfx "mask is zero");    \
-+               __BUILD_BUG_ON_NOT_POWER_OF_2((_mask) +                 \
-+                                             (1ULL << __bf_shf(_mask))); \
-+       })
-+
-+#define __BF_FIELD_CHECK_VAL(_mask, _val, _pfx)
-         \
-+       ({                                                              \
-                BUILD_BUG_ON_MSG(__builtin_constant_p(_val) ?           \
-                                 ~((_mask) >> __bf_shf(_mask)) & (_val) : 0, \
-                                 _pfx "value too large for the field"); \
--               BUILD_BUG_ON_MSG((_mask) > (typeof(_reg))~0ull,         \
-+       })
-+
-+#define __BF_FIELD_CHECK_REG(_mask, _reg, _pfx)
-         \
-+       ({                                                              \
-+               BUILD_BUG_ON_MSG((_mask) > (typeof(_reg))~0ULL,         \
-                                 _pfx "type of reg too small for mask"); \
--               __BUILD_BUG_ON_NOT_POWER_OF_2((_mask) +                 \
--                                             (1ULL << __bf_shf(_mask))); \
-        })
-
- /**
-@@ -64,7 +72,7 @@
-  */
- #define FIELD_MAX(_mask)                                               \
-        ({                                                              \
--               __BF_FIELD_CHECK(_mask, 0ULL, 0ULL, "FIELD_MAX: ");     \
-+               __BF_FIELD_CHECK_MASK(_mask, "FIELD_MAX: ");            \
-                (typeof(_mask))((_mask) >> __bf_shf(_mask));            \
-        })
-
-@@ -77,7 +85,7 @@
-  */
- #define FIELD_FIT(_mask, _val)                                         \
-        ({                                                              \
--               __BF_FIELD_CHECK(_mask, 0ULL, _val, "FIELD_FIT: ");     \
-+               __BF_FIELD_CHECK_MASK(_mask, "FIELD_FIT: ");            \
-                !((((typeof(_mask))_val) << __bf_shf(_mask)) & ~(_mask)); \
-        })
- @@ -91,7 +99,8 @@
-  */
- #define FIELD_PREP(_mask, _val)
-         \
-        ({                                                              \
--               __BF_FIELD_CHECK(_mask, 0ULL, _val, "FIELD_PREP: ");    \
-+               __BF_FIELD_CHECK_MASK(_mask, "FIELD_PREP: ");           \
-+               __BF_FIELD_CHECK_VAL(_mask, _val, "FIELD_PREP: ");      \
-                ((typeof(_mask))(_val) << __bf_shf(_mask)) & (_mask);   \
-        })
-
-@@ -105,7 +114,8 @@
-  */
- #define FIELD_GET(_mask, _reg)                                         \
-        ({                                                              \
--               __BF_FIELD_CHECK(_mask, _reg, 0U, "FIELD_GET: ");       \
-+               __BF_FIELD_CHECK_MASK(_mask, "FIELD_GET: ");            \
-+               __BF_FIELD_CHECK_REG(_mask, _reg,  "FIELD_GET: ");      \
-                (typeof(_mask))(((_reg) & (_mask)) >> __bf_shf(_mask)); \
-        })
-
-
-
+>>> I believe Kanchan meant that now the trade-off we were asking to
+>>> clear out is sorted.
+>>>
+>>> We will send a new version shortly for the current functionality - we
+>>> can see what we are missing on when the uring interface is clear.
+>>
+>> I've started work on a patch series for this.  Mostly just waiting for
+>> compilation now ... should be done in the next few hours.
 >
-> That's all--just questions, I have no problem with the patch...
->
->                                         -Alex
->
->
->
->
-> > FIELD_FIT() should return true or false at runtime for whether a value
-> > can fit for not. Don't break the build over a value that's too large for
-> > the mask. We'd prefer to keep the inlining and compiler optimizations
-> > though we know this case will always return false.
-> >
-> > Cc: stable@vger.kernel.org
-> > Link: https://lore.kernel.org/kernel-hardening/CAK7LNASvb0UDJ0U5wkYYRzTAdnEs64HjXpEUL7d=V0CXiAXcNw@mail.gmail.com/
-> > Reported-by: Masahiro Yamada <masahiroy@kernel.org>
-> > Debugged-by: Sami Tolvanen <samitolvanen@google.com>
-> > Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-> > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> > ---
-> >  include/linux/bitfield.h | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/include/linux/bitfield.h b/include/linux/bitfield.h
-> > index 48ea093ff04c..4e035aca6f7e 100644
-> > --- a/include/linux/bitfield.h
-> > +++ b/include/linux/bitfield.h
-> > @@ -77,7 +77,7 @@
-> >   */
-> >  #define FIELD_FIT(_mask, _val)                                               \
-> >       ({                                                              \
-> > -             __BF_FIELD_CHECK(_mask, 0ULL, _val, "FIELD_FIT: ");     \
-> > +             __BF_FIELD_CHECK(_mask, 0ULL, 0ULL, "FIELD_FIT: ");     \
-> >               !((((typeof(_mask))_val) << __bf_shf(_mask)) & ~(_mask)); \
-> >       })
-> >
-> >
->
+>Great!
+
+Jens, Matthew - I'm sorry for creating the confusion. By "looks sorted"
+I meant the performance-implications and the room-for-pointer. For the
+latter I was thinking to go by your suggestion not to bloat the kiocb, and
+use io_kiocb instead.
+If we keep, there will be two paths to update that pointer, one using
+ki_complete(....,ret2) and another directly - which does not seem good.
+
+On a different note: trimming kiocb by decoupling ki_complete work looks
+too good to be done by me :-)
+
+------nai8lIH9ngBNHun9R6qswQcIIemhXBCkNXu5CagZqSM5j8ea=_e97d3_
+Content-Type: text/plain; charset="utf-8"
 
 
---
-Thanks,
-~Nick Desaulniers
+------nai8lIH9ngBNHun9R6qswQcIIemhXBCkNXu5CagZqSM5j8ea=_e97d3_--
