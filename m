@@ -2,97 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0868C218056
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 09:07:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A686921802E
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 09:04:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730088AbgGHHHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 03:07:36 -0400
-Received: from smtp21.cstnet.cn ([159.226.251.21]:38524 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729761AbgGHHHg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 03:07:36 -0400
-Received: from localhost (unknown [159.226.5.99])
-        by APP-01 (Coremail) with SMTP id qwCowAAnCeq_bwVf4majBA--.12311S2;
-        Wed, 08 Jul 2020 15:03:28 +0800 (CST)
-From:   Xu Wang <vulab@iscas.ac.cn>
-To:     jlayton@kernel.org, idryomov@gmail.com, ceph-devel@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Xu Wang <vulab@iscas.ac.cn>
-Subject: [PATCH] fs: ceph: Remove unnecessary cast in kfree()
-Date:   Wed,  8 Jul 2020 07:03:22 +0000
-Message-Id: <20200708070322.30695-1-vulab@iscas.ac.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: qwCowAAnCeq_bwVf4majBA--.12311S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Aw48urykXFyrCFWfAw1fWFg_yoW8GrWxpF
-        12kw48JwsxJF48Wr98J3WrZ34akayktFyDur9Fkws7uF15WryxJry8ZFyUury3Zry8Arn8
-        Ja1Dtw1rJF1av3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkG14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-        6F4UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUtVWrXwAv7VC2z280aVAFwI0_Gr1j6F4UJwAm72CE4IkC6x0Yz7v_Jr
-        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8
-        CwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r
-        1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij
-        64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr
-        0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4U
-        MIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUD8n5UUU
-        UU=
-X-Originating-IP: [159.226.5.99]
-X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCAELA102YQ+JuwAAs2
+        id S1730048AbgGHHD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 03:03:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729856AbgGHHD6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 03:03:58 -0400
+Received: from smtp-8fad.mail.infomaniak.ch (smtp-8fad.mail.infomaniak.ch [IPv6:2001:1600:3:17::8fad])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 896C3C061755
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 00:03:58 -0700 (PDT)
+Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
+        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4B1qzH2Lhxzlhcqk;
+        Wed,  8 Jul 2020 09:03:55 +0200 (CEST)
+Received: from ns3096276.ip-94-23-54.eu (unknown [94.23.54.103])
+        by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4B1qz772rqzlh8TH;
+        Wed,  8 Jul 2020 09:03:47 +0200 (CEST)
+Subject: Re: [PATCH v19 07/12] landlock: Support filesystem access-control
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        James Morris <jmorris@namei.org>, Jann Horn <jannh@google.com>,
+        Jeff Dike <jdike@addtoit.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mickael.salaun@ssi.gouv.fr>,
+        Richard Weinberger <richard@nod.at>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
+        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-security-module@vger.kernel.org, x86@kernel.org
+References: <20200707180955.53024-1-mic@digikod.net>
+ <20200707180955.53024-8-mic@digikod.net>
+ <6a80b712-a7b9-7b47-083a-08b7769016f8@infradead.org>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <b5d5326f-cf37-36f0-7bce-8494c5a65cb5@digikod.net>
+Date:   Wed, 8 Jul 2020 09:03:46 +0200
+User-Agent: 
+MIME-Version: 1.0
+In-Reply-To: <6a80b712-a7b9-7b47-083a-08b7769016f8@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
+X-Antivirus: Dr.Web (R) for Unix mail servers drweb plugin ver.6.0.2.8
+X-Antivirus-Code: 0x100000
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unnecassary casts in the argument to kfree.
 
-Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
----
- fs/ceph/xattr.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+On 07/07/2020 22:11, Randy Dunlap wrote:
+> Hi--
+> 
+> On 7/7/20 11:09 AM, Mickaël Salaün wrote:
+>> ---
+>>  arch/Kconfig                  |   7 +
+>>  arch/um/Kconfig               |   1 +
+>>  include/uapi/linux/landlock.h |  78 +++++
+>>  security/landlock/Kconfig     |   2 +-
+>>  security/landlock/Makefile    |   2 +-
+>>  security/landlock/fs.c        | 609 ++++++++++++++++++++++++++++++++++
+>>  security/landlock/fs.h        |  60 ++++
+>>  security/landlock/setup.c     |   7 +
+>>  security/landlock/setup.h     |   2 +
+>>  9 files changed, 766 insertions(+), 2 deletions(-)
+>>  create mode 100644 include/uapi/linux/landlock.h
+>>  create mode 100644 security/landlock/fs.c
+>>  create mode 100644 security/landlock/fs.h
+>>
+>> diff --git a/arch/Kconfig b/arch/Kconfig
+>> index 8cc35dc556c7..483b7476ac69 100644
+>> --- a/arch/Kconfig
+>> +++ b/arch/Kconfig
+>> @@ -845,6 +845,13 @@ config COMPAT_32BIT_TIME
+>>  config ARCH_NO_PREEMPT
+>>  	bool
+>>  
+>> +config ARCH_EPHEMERAL_STATES
+>> +	def_bool n
+>> +	help
+>> +	  An arch should select this symbol if it do not keep an internal kernel
+> 
+> 	                                       it does not
+> 
+>> +	  state for kernel objects such as inodes, but instead rely on something
+> 
+> 	                                               instead relies on
+> 
+>> +	  else (e.g. the host kernel for an UML kernel).
+>> +
+>>  config ARCH_SUPPORTS_RT
+>>  	bool
+>>  
+> 
+> thanks.
+> 
 
-diff --git a/fs/ceph/xattr.c b/fs/ceph/xattr.c
-index 71ee34d160c3..3a733ac33d9b 100644
---- a/fs/ceph/xattr.c
-+++ b/fs/ceph/xattr.c
-@@ -497,10 +497,10 @@ static int __set_xattr(struct ceph_inode_info *ci,
- 		kfree(*newxattr);
- 		*newxattr = NULL;
- 		if (xattr->should_free_val)
--			kfree((void *)xattr->val);
-+			kfree(xattr->val);
- 
- 		if (update_xattr) {
--			kfree((void *)name);
-+			kfree(name);
- 			name = xattr->name;
- 		}
- 		ci->i_xattrs.names_size -= xattr->name_len;
-@@ -566,9 +566,9 @@ static void __free_xattr(struct ceph_inode_xattr *xattr)
- 	BUG_ON(!xattr);
- 
- 	if (xattr->should_free_name)
--		kfree((void *)xattr->name);
-+		kfree(xattr->name);
- 	if (xattr->should_free_val)
--		kfree((void *)xattr->val);
-+		kfree(xattr->val);
- 
- 	kfree(xattr);
- }
-@@ -582,9 +582,9 @@ static int __remove_xattr(struct ceph_inode_info *ci,
- 	rb_erase(&xattr->node, &ci->i_xattrs.index);
- 
- 	if (xattr->should_free_name)
--		kfree((void *)xattr->name);
-+		kfree(xattr->name);
- 	if (xattr->should_free_val)
--		kfree((void *)xattr->val);
-+		kfree(xattr->val);
- 
- 	ci->i_xattrs.names_size -= xattr->name_len;
- 	ci->i_xattrs.vals_size -= xattr->val_len;
--- 
-2.17.1
-
+Thanks Randy!
