@@ -2,99 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B940621815B
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 09:40:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69AA821815F
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 09:40:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726408AbgGHHj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 03:39:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726261AbgGHHj5 (ORCPT
+        id S1726479AbgGHHkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 03:40:22 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:46380 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726325AbgGHHkW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 03:39:57 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56143C08E6DC
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 00:39:57 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id f5so37141115ljj.10
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 00:39:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+HxgH6sad3gU6leW7SDh/gf8Hzfs0/fhZcOEjnvGhWs=;
-        b=kf6x43aymox0RXHGLm8aA9SdFQARFjcUUTid1nkeg9ibekZJqFjhwH23OVWjfAOjVS
-         PIyKh85DWMiQQ7vV4MPU9N/PHWMBXsW8ALCT0jUDOBYiRrEm93dNmyBY2QKLC8e59uXU
-         rF/LbFEzhwf7Hh9D0M9LGkfmU1uXbWrbwnSzZ8YxxZR5BL7KxyZLYny+CUf+LF90Q6OB
-         gITnA0TUKecjikeYVz6qOheu9mHlpVGZsqJgXhFyS2gl3mAaueYbWpptMe/oEQAYYllA
-         zsUp2xKjkGd9Lw4e7zUScEK+4AP896Zl4fGx27sAKWpJkoT11s4X/JaSJFPzE8k8XuwU
-         CRkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+HxgH6sad3gU6leW7SDh/gf8Hzfs0/fhZcOEjnvGhWs=;
-        b=Uwy0N4tRzio64kC4XLlvcOGj8Femg1la0RR0ABCuegGPI/G0YaEMDPMNLemDQXk0FS
-         Oc9MvpFdbT6PO8OsiqcuamC1KuG96WTSrq/9L+MSi3d9q//of8bpmmHiitKoI78j6Qc7
-         41i/SM1vEHikErlqWbTxF1uEIlsqsDElbkM3C52M1ru1bX2JdC+Hwu2lq6OIjyWCRCcr
-         cH3sHvhvu/yBlY4oGGiROnyv4ryIAAWYsFrIn9vskadv7OOESMxrCYx6vOqcXmtU856k
-         4hmSBbmRk+ZyQ7WO3WebDXilV4F80yFznzeR1grYrmr5FE6VJrGzJ+yRYZgjZN0gvyO+
-         MzPw==
-X-Gm-Message-State: AOAM530qVnXfy+oGG0uIRSx6Xeqr6nZPsSNj1AUDLirucaOJNbT+BwsD
-        DGOdjLpyIjqFNc1CWbgLMoFqOSu7EtDxFMRRGHaHzg==
-X-Google-Smtp-Source: ABdhPJxTYp6lBnboAKIMoKnmPkXV27lA7iN1d1K5nRqP4hkVKmZacGWC0DDRGgpoKAE/wWfaRt/VjtFi95icB142swA=
-X-Received: by 2002:a2e:9c3:: with SMTP id 186mr33775780ljj.293.1594193995825;
- Wed, 08 Jul 2020 00:39:55 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200706175353.16404-1-michael@walle.cc> <20200706175353.16404-14-michael@walle.cc>
-In-Reply-To: <20200706175353.16404-14-michael@walle.cc>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 8 Jul 2020 09:39:45 +0200
-Message-ID: <CACRpkdaPO7CGNrxmjL5QH1cxP5wqku1oMtQaQgJfeKiKqiGAOg@mail.gmail.com>
-Subject: Re: [PATCH v5 13/13] arm64: dts: freescale: sl28: enable fan support
-To:     Michael Walle <michael@walle.cc>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-hwmon@vger.kernel.org, linux-pwm@vger.kernel.org,
-        LINUXWATCHDOG <linux-watchdog@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Lee Jones <lee.jones@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
+        Wed, 8 Jul 2020 03:40:22 -0400
+From:   Kurt Kanzenbach <kurt@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1594194019;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=deFGfHxYZYgFx9JerGX/g9w6hxTKxOGElkA7QsAXZ3w=;
+        b=WhewwSnEfGMkGBbezfukKi28AdipCum2wKduadjzvIOk+jrBL5e8y8T/hYFJrBJ+6crdbZ
+        hZhqae76KBRhQWKvIxiM8/+G45D4bahl9w/EYMDqDpkVQ2n+vxEDXK2UJXFa1omIr6NdPu
+        GZKDdu4SipOERb1v/l0216WfWacWodvOFRRtEAU0kEExQuAa1Ix5fRIfNqbBLiqKWeiuT2
+        Jz+EPJuMsU135R+GllJirrGDxQe+WncXbgf9TA4e3/mK2mIV/GalUazXC4deue7wiiRtbB
+        jDsYrPgLMilJ7eBOR2s747Hf8EUipgTePQQFaP6K8r556E+W+a+WnWpsW6zfCQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1594194019;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=deFGfHxYZYgFx9JerGX/g9w6hxTKxOGElkA7QsAXZ3w=;
+        b=UXxEHP+lGDBaQFgs7Dq8HysuTS86gLQtlL8hTV3eNdK6Lhb0uGEaSsAfsiAqRrmv0JfK+L
+        1c6panhvNY28iIAA==
+To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Raul Rangel <rrangel@google.com>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "S\, Shirish" <Shirish.S@amd.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: UART/TTY console deadlock
+In-Reply-To: <20200706144314.GB1485@jagdpanzerIV.localdomain>
+References: <20200630102141.GA11587@alley> <20200630105512.GA530@jagdpanzerIV.localdomain> <20200630122239.GD6173@alley> <20200630130534.GB145027@jagdpanzerIV.localdomain> <20200630180255.GD37466@atomide.com> <20200702051213.GB3450@jagdpanzerIV.localdomain> <20200702160514.GK37466@atomide.com> <20200703103241.GB182102@jagdpanzerIV.localdomain> <CAHp75VdvNi_LWv7QhEsm1vQikeiMpi68qmCwoVttjnp7oq0ahg@mail.gmail.com> <877dvg6ft6.fsf@kurt> <20200706144314.GB1485@jagdpanzerIV.localdomain>
+Date:   Wed, 08 Jul 2020 09:40:17 +0200
+Message-ID: <87o8oqa1zy.fsf@kurt>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha512; protocol="application/pgp-signature"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michael,
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-just a drive-by-comment:
-
-On Mon, Jul 6, 2020 at 7:57 PM Michael Walle <michael@walle.cc> wrote:
-
-> Add a pwm-fan mapped to the PWM channel 0 which is connected to the
-> fan connector of the carrier.
+On Mon Jul 06 2020, Sergey Senozhatsky wrote:
+> On (20/07/06 13:31), Kurt Kanzenbach wrote:
+>> >> @@ -2275,6 +2275,7 @@ int serial8250_do_startup(struct uart_port *por=
+t)
+>> >>
+>> >>         if (port->irq && !(up->port.flags & UPF_NO_THRE_TEST)) {
+>> >>                 unsigned char iir1;
+>> >> +
+>> >>                 /*
+>> >>                  * Test for UARTs that do not reassert THRE when the
+>> >>                  * transmitter is idle and the interrupt has already
+>> >> @@ -2284,8 +2285,6 @@ int serial8250_do_startup(struct uart_port *por=
+t)
+>> >>                  * allow register changes to become visible.
+>> >>                  */
+>> >>                 spin_lock_irqsave(&port->lock, flags);
+>> >> -               if (up->port.irqflags & IRQF_SHARED)
+>> >> -                       disable_irq_nosync(port->irq);
+>> >>
+>> >>                 wait_for_xmitr(up, UART_LSR_THRE);
+>> >>                 serial_port_out_sync(port, UART_IER, UART_IER_THRI);
+>> >> @@ -2297,8 +2296,6 @@ int serial8250_do_startup(struct uart_port *por=
+t)
+>> >>                 iir =3D serial_port_in(port, UART_IIR);
+>> >>                 serial_port_out(port, UART_IER, 0);
+>> >>
+>> >> -               if (port->irqflags & IRQF_SHARED)
+>> >> -                       enable_irq(port->irq);
+>> >>                 spin_unlock_irqrestore(&port->lock, flags);
+>> >>
+>> >>                 /*
+>> >
+>> > ...which effectively is a revert of
+>> >
+>> > 768aec0b5bcc ("serial: 8250: fix shared interrupts issues with SMP and
+>> > RT kernels")
+>>=20
+>> Please, don't revert that commit. I've faced the same issue as described
+>> in the commit log. There is hardware available with shared UART
+>> interrupt lines.
 >
-> Signed-off-by: Michael Walle <michael@walle.cc>
+> Will this patch break that hardware?
+> https://lore.kernel.org/lkml/20200702051213.GB3450@jagdpanzerIV.localdoma=
+in/
 
-If you have a cooling device like this, do you also have a temperature
-sensor? In that case it makes sense to add a thermal zone and a
-policy, such as I did for a device in
-6e97f0aaca4ca778905dd1dc667cbf379f4cae15
+I'm not sure how this patch will help with the situation. Because at the
+point of that THRE test the irq handler isn't registered. It's
+registered a few lines below (up->ops->setup_irq()) meaning the irq line
+has to be disabled if shared. Otherwise the kernel might detect a
+spurious irq and disables it. That's at least my understanding of the
+problem (see commit message from 54e53b2e8081 ("tty: serial: 8250: pass
+IRQ shared flag to UART ports")).
 
-Yours,
-Linus Walleij
+Thanks,
+Kurt
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEooWgvezyxHPhdEojeSpbgcuY8KYFAl8FeGEACgkQeSpbgcuY
+8KZFuw//cx3Oy+/kFOtj/m/GQiBhw+JVAJ4ixZ92RmC564AEcTZoGGwpqXE7an70
+FIUvBNKAzmk6w5LR628Mx29Qee4e35n6YMgPcAjbaCwwDiMq5In5tpnkowPEvNwi
+IY5J3dnaLR+MkQxg3NjYu5LBDArW0MugDqOnj1RefUIToqQCQgMb4wEskUlaDvFC
+e7gv9NeOTXMg4etj5MFnWiTRTcdCCBV1HjzZ9NRFeLCm/mKm2Q/KR1MIkZxmM22/
+dGzhrD15Ly7hDyXYoPJY9g4P2+pJsY3kqrZb5FsVrYhjR5ZlGB8DOIVHwJ/f98YV
+bolld/ntOqWlzEeOwrmjYbSgVcW56lBMA+5HV4pOUbq6EcXyEAzWcVa4FaYsZdvJ
+iRxMuC3JjRRve3mBOrITv2egPCktZeSeZExpAXzyuYbQpNwurvVQjjVL+RPJrkpx
+2RnAikQtz5E2EcyxbZmNcS687sweUFRsGhlT/zE7dJ+cOd+pfM0kvrJSnNbdxNC5
+/w//o5y75M5pV2CbNhvfpgB6I/aik/SxATHG6NMF3IojM/SO/gb7lmdFWpYLwP6f
+k45gcwC9FZoTNHmyYzlitbs45kMfgqPQAnKAqYnRJAfl/CgOCnJZhO5DvjiX671K
+32NlT5V0x/5bPcnkkgn1tYK1x68ivgeXDSjj244lns5a7KknF5A=
+=lDDH
+-----END PGP SIGNATURE-----
+--=-=-=--
