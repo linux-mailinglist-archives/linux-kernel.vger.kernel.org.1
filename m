@@ -2,94 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A282218A47
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 16:38:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76B42218A49
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 16:39:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729899AbgGHOiP convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 8 Jul 2020 10:38:15 -0400
-Received: from mail-oln040092004045.outbound.protection.outlook.com ([40.92.4.45]:2631
-        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729809AbgGHOiO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 10:38:14 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GjL7eAy5rtTX1hbZ6aVKavIccRN4e0fdwv2OB4n4cbBI82G1rNQhqWUJ8jRCWx7PHTlAPJGrdp4HhgPouQx5Z7VwsizqzLatlLq37cTj3Ia4a+ELCzHnqP/Wr6X+Idt+7ph80OFN9d6jvAwvP3rgL9cHZiTl9ThucknLRb4dkc1HGnyQzaOnNz7dSw7VvHcQ7PnVN7cNDCt8Jle9wm13mmfWYHCQbr5T0sHWfe7jKdxID6WLk5gDki1hHhCdTsAMJP3RBNwAyPFPm6Y5TiYIflXqTheIcRxCha7KNDeEgYQUqrM+iomZP3gAOpQRcooCq6Mj004khxF6wFpOY26CUQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eaHRm3SQu7r6IiTX5pbcpU1Ab7NYTlK24+BBMC6M8ps=;
- b=ap2v5rqbcoyoBYsfvYT+C+IWvJMxhUItVkmg73PTv79DRyPBTk2c0hBAW3juTemb6aJY1JZYljuvp623GugVvcjUG+3q3RRPmA+td5BfJbivdQdTmRNnwFpi3BDI8dYuXrfjx5P26Z4zuykEi/GmjR6VZKKGY3NaqzPLFVaL3L2yaj9o7+f6y6hL/JQYYZJ4TaoaL33pBWvzVCvCWc/ejw4/+ixC37uYx/807VlCfLslnfvkndM9GdJ2bTV9070mCco+lOhKDCBSLHSyqR8YyV5nn0q86XPOMoXOJBXt7bWdKoPbs2sAY6dhc4GyNehzgKN45PPelVnMb2qExulW+A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-Received: from BL2NAM02FT029.eop-nam02.prod.protection.outlook.com
- (10.152.76.54) by BL2NAM02HT062.eop-nam02.prod.protection.outlook.com
- (10.152.77.39) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.21; Wed, 8 Jul
- 2020 14:38:11 +0000
-Received: from DM5PR1001MB2172.namprd10.prod.outlook.com
- (2a01:111:e400:7e46::45) by BL2NAM02FT029.mail.protection.outlook.com
- (2a01:111:e400:7e46::356) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.21 via Frontend
- Transport; Wed, 8 Jul 2020 14:38:11 +0000
-Received: from DM5PR1001MB2172.namprd10.prod.outlook.com
- ([fe80::5079:8544:1e43:7574]) by DM5PR1001MB2172.namprd10.prod.outlook.com
- ([fe80::5079:8544:1e43:7574%7]) with mapi id 15.20.3174.022; Wed, 8 Jul 2020
- 14:38:11 +0000
-From:   Anne Johnson <Leemarsden123@hotmail.co.uk>
-Subject: 
-Thread-Index: AQHWVTVnqludwHGDckCKsPU0Hhp99w==
-Date:   Wed, 8 Jul 2020 14:38:11 +0000
-Message-ID: <DM5PR1001MB217205D0404F8A6704E4B25BAC670@DM5PR1001MB2172.namprd10.prod.outlook.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-GB
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-incomingtopheadermarker: OriginalChecksum:D8F347C131778BEAAFF0863093C32FA864EF3BC4939D1AE0157248799DAFB473;UpperCasedChecksum:9BF17F8539E27C3591C9990A344302D0DA47D7598BF2DF4798D0624C51CECB2F;SizeAsReceived:7712;Count:39
-x-tmn:  [crLkPEflzvZmnHkwpPs4BQvB1yaa930e]
-x-ms-publictraffictype: Email
-x-incomingheadercount: 39
-x-eopattributedmessage: 0
-x-ms-office365-filtering-correlation-id: 688e7300-ff7a-4b53-b8d7-08d8234c8a58
-x-ms-exchange-slblob-mailprops: 7B6i23oPIUiumUjOcoBWQ1+b+bn3OP0sIti6tbdP9eV24kgD6gOC/V3E5gAsCCvJyp8zxZicrCZVctuk8HDq7Wdzfojes9Y0FIhFmhN2eVtqaVstTdBgx+j/v7mxFVqGILMVnMil389DqoGwWOFSK1U64ZmIA+uZD/suEvmDpHwuUQFjaAOHTKMX3V6ylECTaAII1wgiylwJT8qMIe1GWMwym+qZTLjw6H/GM6O3d4XdMcqJ0S0DnFrEI4azCfp/GsWOBLR8YMFmr37y+lbpEU8rzCDzkDXizwAs/EFZI2UXKrJ7EhW1A4OS34NcX8dI3voG66hthQPJHBX3Nn42bXjB6Tbql6xtjfffkHCqfTnV0q7oYtXBlT8CfFEqHVHo7AEW3gmqqSqFoBXlA5baAONQ4T/HjMuUqKLVEcCTFBzAOZD+OV2okPWac7LWjoUae8A0pVu9+a0JobxMVazV+ZWOlCatlX9bfLhs8Hhg3qyAu1uo7X5F+awPIJye9O3VZXvxflGmkYC6yt3B5tz7xXm1RzxTwx+WsW258v9Wc5QsueuB9RUrqSQFFpENBn0kEpkhifY4GuCgA6NQ0jOXCNkfgLCkrZI82MOsPR7GzmT7C8Fx/hfAAA==
-x-ms-traffictypediagnostic: BL2NAM02HT062:
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: HLu1VNhTMRImevqOuTVTCB9cTay82y9PsdhvlXIIYOvFWACUHG+Hyzu1QM5Zm6UbooN/ya6PJlySb59GdWKiO0tv6bsulTavsvhoylbBGwWPAP58VZESjkxufHiWO8yXMXx0krqpcBa8AaXtSZN66neznz/uQDbG05iW+KEPUzK8+zCJKO24nS5r+IoGYv9UJOK6qNAGwg42dgHfmF5f0g==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:0;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR1001MB2172.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:;DIR:OUT;SFP:1901;
-x-ms-exchange-antispam-messagedata: 88dqbQu+6KbdpoJMVbPyPFXDr8Fh92KVFEwSUBuzCWYuVcbXairiKQ4sz+nwzJW64geldM1AdaM/ZuaTE5rZSuho0I0QkXSfI0PWuhw75GNg2ggYNX5eoozTMclgwdlIsW3PvV3pco2YvOpG9GG1jg==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="Windows-1252"
-Content-Transfer-Encoding: 8BIT
+        id S1729914AbgGHOjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 10:39:24 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:22684 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729720AbgGHOjW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 10:39:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594219160;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5kAbKh4gT6sckOUOu13UxFIyniT4oyc+Q75JU+xCpvM=;
+        b=DJQVrG4b9bGmsf82hCnZrWBPOhwW0B0EKrzxIiTHKzXQXi+ypwUTnOGLDOGnnVX+QMLNsT
+        7QDQzZWRMTXJutVpcKFSzPOmLPQcbLjFiLhHD4QI+NlzdU5TOFgFDkWDcN/cXPmYPgXhi/
+        qi9FBISQujzfVWv/yoTJQtR6w+4Z/pU=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-102-toEotK6FMdCGqbRtBrWA-w-1; Wed, 08 Jul 2020 10:39:18 -0400
+X-MC-Unique: toEotK6FMdCGqbRtBrWA-w-1
+Received: by mail-ej1-f69.google.com with SMTP id q11so44013608eja.3
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 07:39:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=5kAbKh4gT6sckOUOu13UxFIyniT4oyc+Q75JU+xCpvM=;
+        b=UEn6/LLqsHef4QwR+/7/c/2tY0/pbl2VAuLLQBv6qA2m7bdY28+KcMTtpckr1G3/hI
+         lr2NFXGqONgcwlmM+uzk/lRS6cEUySfXaGlIQVW0OTPHYR2c6o4zRzaHBX5w+Wf+pfil
+         Iog73nNCr2TYpnyICS/132F6GZlv/L1V+9LL8BCK7lwjarvu+TV6X4OIrNpRYR4Q/n8t
+         EQEzpiFoijUEi+XH5/V3U4yEaQSLsIDCyYN95QbaDk+bh+nBQLl1jqRwZiUELiumAqoE
+         lLS8WBNjrtUDt/OKK1NxzXCqJtzoFU/u37s+rQnczbvU7m89z/vxMk1MY9QYn1F8neb5
+         VV/w==
+X-Gm-Message-State: AOAM530/pacnQsJu/2+GYbGQSGORRWROfbDgISVEnttKh9pdSwXsgVZ5
+        Eb/Qjhd3sxiVEzcopL3qyeVlGa9LfpaWVizJU9zg1v85UUXDOVvN4vU+Lt2CzrwDL1nxE4dxzE5
+        IQTsPxtXVxQQKCJfffCQgA/UW
+X-Received: by 2002:a17:906:dbe5:: with SMTP id yd5mr52676074ejb.328.1594219156578;
+        Wed, 08 Jul 2020 07:39:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwIx3r6gC9MR8WQxYaKP1dcyHPBhsGUyPQRqWiSjReS9r0fzHOSnBWVo07r5QzzbcLhV1fN6w==
+X-Received: by 2002:a17:906:dbe5:: with SMTP id yd5mr52676047ejb.328.1594219156284;
+        Wed, 08 Jul 2020 07:39:16 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id t25sm2077440ejc.34.2020.07.08.07.39.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Jul 2020 07:39:15 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] KVM: nSVM: properly call kvm_mmu_new_pgd() upon switching to guest
+In-Reply-To: <b7989497-562e-c9a1-3f62-dd5afb9fd3d5@redhat.com>
+References: <20200708093611.1453618-1-vkuznets@redhat.com> <20200708093611.1453618-3-vkuznets@redhat.com> <b7989497-562e-c9a1-3f62-dd5afb9fd3d5@redhat.com>
+Date:   Wed, 08 Jul 2020 16:39:14 +0200
+Message-ID: <87eepmul4d.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-AuthSource: BL2NAM02FT029.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-Network-Message-Id: 688e7300-ff7a-4b53-b8d7-08d8234c8a58
-X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Jul 2020 14:38:11.8062
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Internet
-X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL2NAM02HT062
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Paolo Bonzini <pbonzini@redhat.com> writes:
 
+> On 08/07/20 11:36, Vitaly Kuznetsov wrote:
+>> Undesired triple fault gets injected to L1 guest on SVM when L2 is
+>> launched with certain CR3 values. #TF is raised by mmu_check_root()
+>> check in fast_pgd_switch() and the root cause is that when
+>> kvm_set_cr3() is called from nested_prepare_vmcb_save() with NPT
+>> enabled CR3 points to a nGPA so we can't check it with
+>> kvm_is_visible_gfn().
+>> 
+>> Calling kvm_mmu_new_pgd() with L2's CR3 idea when NPT is in use
+>> seems to be wrong, an acceptable place for it seems to be
+>> kvm_init_shadow_npt_mmu(). This also matches nVMX code.
+>> 
+>> Fixes: 7c390d350f8b ("kvm: x86: Add fast CR3 switch code path")
+>> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+>> ---
+>>  arch/x86/include/asm/kvm_host.h | 7 ++++++-
+>>  arch/x86/kvm/mmu/mmu.c          | 2 ++
+>>  arch/x86/kvm/svm/nested.c       | 2 +-
+>>  arch/x86/kvm/x86.c              | 8 +++++---
+>>  4 files changed, 14 insertions(+), 5 deletions(-)
+>> 
+>> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+>> index be5363b21540..49b62f024f51 100644
+>> --- a/arch/x86/include/asm/kvm_host.h
+>> +++ b/arch/x86/include/asm/kvm_host.h
+>> @@ -1459,7 +1459,12 @@ int kvm_task_switch(struct kvm_vcpu *vcpu, u16 tss_selector, int idt_index,
+>>  		    int reason, bool has_error_code, u32 error_code);
+>>  
+>>  int kvm_set_cr0(struct kvm_vcpu *vcpu, unsigned long cr0);
+>> -int kvm_set_cr3(struct kvm_vcpu *vcpu, unsigned long cr3);
+>> +int __kvm_set_cr3(struct kvm_vcpu *vcpu, unsigned long cr3, bool cr3_is_nested);
+>> +static inline int kvm_set_cr3(struct kvm_vcpu *vcpu, unsigned long cr3)
+>> +{
+>> +	return __kvm_set_cr3(vcpu, cr3, false);
+>> +}
+>> +
+>>  int kvm_set_cr4(struct kvm_vcpu *vcpu, unsigned long cr4);
+>>  int kvm_set_cr8(struct kvm_vcpu *vcpu, unsigned long cr8);
+>>  int kvm_set_dr(struct kvm_vcpu *vcpu, int dr, unsigned long val);
+>> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+>> index 167d12ab957a..ebf0cb3f1ce0 100644
+>> --- a/arch/x86/kvm/mmu/mmu.c
+>> +++ b/arch/x86/kvm/mmu/mmu.c
+>> @@ -4987,6 +4987,8 @@ void kvm_init_shadow_npt_mmu(struct kvm_vcpu *vcpu, u32 cr0, u32 cr4, u32 efer,
+>>  	union kvm_mmu_role new_role =
+>>  		kvm_calc_shadow_mmu_root_page_role(vcpu, false);
+>>  
+>> +	__kvm_mmu_new_pgd(vcpu, nested_cr3, new_role.base, true, true);
+>> +
+>>  	if (new_role.as_u64 != context->mmu_role.as_u64)
+>>  		shadow_mmu_init_context(vcpu, cr0, cr4, efer, new_role);
+>>  }
+>> diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+>> index e424bce13e6c..b467917a9784 100644
+>> --- a/arch/x86/kvm/svm/nested.c
+>> +++ b/arch/x86/kvm/svm/nested.c
+>> @@ -324,7 +324,7 @@ static void nested_prepare_vmcb_save(struct vcpu_svm *svm, struct vmcb *nested_v
+>>  	svm_set_efer(&svm->vcpu, nested_vmcb->save.efer);
+>>  	svm_set_cr0(&svm->vcpu, nested_vmcb->save.cr0);
+>>  	svm_set_cr4(&svm->vcpu, nested_vmcb->save.cr4);
+>> -	(void)kvm_set_cr3(&svm->vcpu, nested_vmcb->save.cr3);
+>> +	(void)__kvm_set_cr3(&svm->vcpu, nested_vmcb->save.cr3, npt_enabled);
+>>  
+>>  	svm->vmcb->save.cr2 = svm->vcpu.arch.cr2 = nested_vmcb->save.cr2;
+>>  	kvm_rax_write(&svm->vcpu, nested_vmcb->save.rax);
+>> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+>> index 3b92db412335..3761135eb052 100644
+>> --- a/arch/x86/kvm/x86.c
+>> +++ b/arch/x86/kvm/x86.c
+>> @@ -1004,7 +1004,7 @@ int kvm_set_cr4(struct kvm_vcpu *vcpu, unsigned long cr4)
+>>  }
+>>  EXPORT_SYMBOL_GPL(kvm_set_cr4);
+>>  
+>> -int kvm_set_cr3(struct kvm_vcpu *vcpu, unsigned long cr3)
+>> +int __kvm_set_cr3(struct kvm_vcpu *vcpu, unsigned long cr3, bool cr3_is_nested)
+>>  {
+>>  	bool skip_tlb_flush = false;
+>>  #ifdef CONFIG_X86_64
+>> @@ -1031,13 +1031,15 @@ int kvm_set_cr3(struct kvm_vcpu *vcpu, unsigned long cr3)
+>>  		 !load_pdptrs(vcpu, vcpu->arch.walk_mmu, cr3))
+>>  		return 1;
+>>  
+>> -	kvm_mmu_new_pgd(vcpu, cr3, skip_tlb_flush, skip_tlb_flush);
+>> +	if (!cr3_is_nested)
+>> +		kvm_mmu_new_pgd(vcpu, cr3, skip_tlb_flush, skip_tlb_flush);
+>> +
+>>  	vcpu->arch.cr3 = cr3;
+>>  	kvm_register_mark_available(vcpu, VCPU_EXREG_CR3);
+>>  
+>>  	return 0;
+>>  }
+>> -EXPORT_SYMBOL_GPL(kvm_set_cr3);
+>> +EXPORT_SYMBOL_GPL(__kvm_set_cr3);
+>>  
+>>  int kvm_set_cr8(struct kvm_vcpu *vcpu, unsigned long cr8)
+>>  {
+>> 
+>
+> Instead of the new argument (which is not really named right since it's
+> never true for !NPT) you could perhaps check vcpu->arch.mmu.  But also,
+> for NPT=1 the kvm_mmu_new_pgd is also unnecessary on vmexit, because the
+> old roots are still valid (or has been invalidated otherwise) while L2
+> was running.
+>
+> I'm also not sure if skip_tlb_flush can use X86_CR3_PCID_NOFLUSH the way
+> kvm_set_cr3 does, so I wouldn't mind duplicating the code completely as
+> is already the case for nested_vmx_load_cr3.  It would introduce some
+> code duplication, but overall the code would be better.  For now, there
+> need not be an equivalent to nested_vmx_transition_mmu_sync, ASID
+> handling can be left for later.
 
+Sounds reasonable,
 
-Dear Friend,
+let's introduce nested_svm_load_cr3() to not mix these two concepts
+together. I'll be back with v3 shortly, thanks!
 
-I'm sorry but happy to inform you about my success in getting those funds transferred under the cooperation of a new partner from Paraguay though I tried my best to involve you in the business but God decided the whole situations. Presently I’m in Paraguay for investment projects with my own share of the total sum. Meanwhile, I didn't forget your past efforts and attempts to assist me in transferring those funds despite with bank of Africa.
+-- 
+Vitaly
 
-Now contact my secretary in Burkina Faso his name is Mr.Mike Moore on his e-mail address below (Mr.MikeMoore@post.com)  Ask him to send you the total sum of $500.000,00 which I kept for your compensation for all the past efforts and attempts to assist me in this matter. 
-
-I appreciated your efforts at that time very much. So feel free and get in touched with my secretary Mr.Mike Moore and instruct him where to send the amount to you. Please do let me know immediately you receive it so that we can share the joy after all the sufferness at that time.
-
-In the moment, I’m very busy here because of the investment projects which I and the new partner are having at hand, finally, remember that I had forwarded instruction to the secretary on your behalf to receive that money, so feel free to get in touch with him.He will send the amount to you without any delay.
-
- Regards,
-
-Anne JOHNSON
