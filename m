@@ -2,70 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C9A8218B32
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 17:28:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12506218B1C
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 17:22:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730072AbgGHP2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 11:28:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42548 "EHLO mail.kernel.org"
+        id S1730136AbgGHPW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 11:22:27 -0400
+Received: from mga02.intel.com ([134.134.136.20]:38714 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729910AbgGHP2F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 11:28:05 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8574C20786;
-        Wed,  8 Jul 2020 15:28:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594222085;
-        bh=q6H2MgomFwB1RePMLnNiDwgJsDS/PcygRl+huPQQ0x8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dC6UhLb1AbGooN9jirdPGALczpea5Ixd0NZpTeVsXEp+e/nWOUycm2jtjJPgDH89d
-         wI75Z1xAFStAHh7V2F4eBfSBsCwPJU2uBONQTtU4NwO2dT8kHpHCvIwcWBgeCXiCS3
-         N6rTEZSxdu3uBdHH3YWFCdZzNnou4lzL0fT4UFDM=
-Date:   Wed, 8 Jul 2020 17:28:00 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, ben.hutchings@codethink.co.uk,
-        lkft-triage@lists.linaro.org, stable@vger.kernel.org
-Subject: Re: [PATCH 5.7 000/112] 5.7.8-rc1 review
-Message-ID: <20200708152800.GA714318@kroah.com>
-References: <20200707145800.925304888@linuxfoundation.org>
- <552f9118-eac9-56cc-c321-dd9b97eff09e@linuxfoundation.org>
+        id S1729915AbgGHPW1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 11:22:27 -0400
+IronPort-SDR: E7/9L/vRGeGTk0dsKmw7uTnatTa40VxW4iH0mjXlJpysKzJaXEjwEm5zXfQmoiDDtLWEwi8MVj
+ HDglnXduxxRg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9676"; a="136057806"
+X-IronPort-AV: E=Sophos;i="5.75,327,1589266800"; 
+   d="scan'208";a="136057806"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2020 08:22:27 -0700
+IronPort-SDR: Bm2u0Vasa2bnwwN+WYUNG+lwMSlKRZ0VAGFlbB/8mL6kec0+obJsV1ZPaOMAL6W2B8XTK94Vnj
+ geu4Bkd0fXwQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,327,1589266800"; 
+   d="scan'208";a="427869822"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga004.jf.intel.com with ESMTP; 08 Jul 2020 08:22:26 -0700
+Date:   Wed, 8 Jul 2020 08:29:05 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     iommu@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Yi Liu <yi.l.liu@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>, jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH v4 1/5] docs: IOMMU user API
+Message-ID: <20200708082905.1b5da847@jacob-builder>
+In-Reply-To: <6d01dac0-aa9d-e22b-9baf-28c2f538871a@linux.intel.com>
+References: <1594165429-20075-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        <1594165429-20075-2-git-send-email-jacob.jun.pan@linux.intel.com>
+        <6d01dac0-aa9d-e22b-9baf-28c2f538871a@linux.intel.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <552f9118-eac9-56cc-c321-dd9b97eff09e@linuxfoundation.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 08, 2020 at 07:05:12AM -0600, Shuah Khan wrote:
-> On 7/7/20 9:16 AM, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 5.7.8 release.
-> > There are 112 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Thu, 09 Jul 2020 14:57:34 +0000.
-> > Anything received after that time might be too late.
-> > 
-> > The whole patch series can be found in one patch at:
-> > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.7.8-rc1.gz
-> > or in the git tree and branch at:
-> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.7.y
-> > and the diffstat can be found below.
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> > 
+On Wed, 8 Jul 2020 10:07:13 +0800
+Lu Baolu <baolu.lu@linux.intel.com> wrote:
+
+> Hi,
 > 
-> Compiled and booted on my test system. No dmesg regressions.
+> On 7/8/20 7:43 AM, Jacob Pan wrote:
+> > +For UAPIs that are shared with in-kernel users, a wrapper function
+> > +is provided to distinguish the callers. For example,
+> > +
+> > +Userspace caller ::
+> > +
+> > +  int iommu_sva_unbind_gpasid(struct iommu_domain *domain, struct
+> > device *dev,
+> > +  void __user *udata)
+> > +
+> > +In-kernel caller ::
+> > +
+> > +  int __iommu_sva_unbind_gpasid(struct iommu_domain *domain,
+> > struct device *dev,
+> > +  struct iommu_gpasid_bind_data *data)  
+> 
+> iommu_page_response() may have the same needs. Can we reach an
+> agreement on the naming rules?
+> 
+Yes iommu_page_response() also has to deal with in-kernel and UAPI
+callers. I left it out because I thought the current VFIO and SVA common
+code is not ready for PRQ yet, I might be reading old news :) argsz
+need to be handled as well.
 
-Thanks for testing all of these and letting me know.
+Perhaps we can wait until this set is settled? Do you have a suggestion
+on the naming rules?
 
-greg k-h
+> Best regards,
+> baolu
+
+[Jacob Pan]
