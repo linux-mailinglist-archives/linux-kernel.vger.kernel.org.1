@@ -2,82 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B183218AF0
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 17:15:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0BA8218AF5
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 17:15:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730095AbgGHPPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 11:15:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38430 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729022AbgGHPPF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 11:15:05 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3F103206DF;
-        Wed,  8 Jul 2020 15:15:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594221304;
-        bh=k+/PyAEzlmPrVB6eVQ5iEPosf+CPVaKBpAALEd84mWw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Z+fRuTcjTJoLSK1xhza1Z4PI4IrxS70ODpo1AnpPvwzQzR1x/7uozfzWuKdCq4qPy
-         vqnosGIpgbdx6XrqsLXqRtp5IIURg84PJaryHAHE9uJMOoxDELN4NdNIwZrifewr70
-         gKmpKmBFX54T7Q/DCO8iC/cup6xOdkO9dT4vXNlo=
-Date:   Wed, 8 Jul 2020 17:15:00 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Jon Hunter <jonathanh@nvidia.com>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, ben.hutchings@codethink.co.uk,
-        lkft-triage@lists.linaro.org, stable@vger.kernel.org,
-        linux-tegra <linux-tegra@vger.kernel.org>
-Subject: Re: [PATCH 5.4 00/65] 5.4.51-rc1 review
-Message-ID: <20200708151500.GA710412@kroah.com>
-References: <20200707145752.417212219@linuxfoundation.org>
- <6fbcdd30-68d3-e8c5-d762-7b8a8c48d112@nvidia.com>
+        id S1730131AbgGHPPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 11:15:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57442 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729848AbgGHPPi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 11:15:38 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4825C08C5CE
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 08:15:37 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id o2so3620739wmh.2
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 08:15:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xWBTRBhMqunHOj4YJ5dV+lc5++IAMIqO7O5wAwFK16E=;
+        b=IBpViC30bmuY0aMeTBgYYE7fYv8dIWFNKFtXOoBOVZX5BvRyQAi9jNc6NcBAS60oXC
+         ODphL7JL5RdJ9Zh+bw0fYs5co8ea7v4yQ+vBc1npq3IWX9LmRNlIKgaqX9k9jDMQs21K
+         n3T28EBBhxmdsV1nGhW9e4MEIPZ7ZakZhQbe0xmeeGU+SwfEy0ImgL90YFmoAc9Y7oQO
+         AiCDDXVRAIsj36X8l6bW72hzJfqB9Ds7zFTf1k8ZzytiETLDcFWj6iUd4qGVVSv+/iFv
+         VQnURlTf9VCYvuIJmRGgT9N3kc+sCvx9JxIN+9QM6OACj9X3t645x9wi6r9W/21eC5Ui
+         e4iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xWBTRBhMqunHOj4YJ5dV+lc5++IAMIqO7O5wAwFK16E=;
+        b=Iab8fjXwvY72DQ75gp7IqdykRX+l931WXoZO4DtagOE69hWaWDp0cfuLEAxL5ShUdX
+         wcbWpg6sqBX0TbdlvxsLOYh60twL4O8CuvikhpVkwxdf/NyHcETZPA/lX1uwoJayw7bl
+         D4EJi7DfTjRyOzPQ89k2tOA7kv+/a8MMAA4iap2jPnzFQD+08sgzPs+wwQrkEeiUAABC
+         T0i1EY8yuAeAQ4W5INgu5dm4g+JjRO1Zug8cQVaQylQzlgswglkN1tx8rmoE+YGVigAw
+         nBipTH6fbSMB0Xx0e3gwKGVG91QZm/7DHOapezONsdMsoVJ0kz/hdbwiiXGjIR7OT61U
+         E+rw==
+X-Gm-Message-State: AOAM530JNrMQWmblogPY0pxFLLoxZUfXIhy4sSyYGygZ5apQ/D+fJ9+W
+        hbqqcXQp6+1rk9CNXTH5z8HFOS+KZmI1TALCYdNIeA==
+X-Google-Smtp-Source: ABdhPJwyogSayFVl8/gyXE4ClQk0n7IxYRyXrGig9XGZYX/+V6UOLYpu3pW1nwtG4w9wbUZO7Rv7Cph2H6Mnhs2szew=
+X-Received: by 2002:a05:600c:2295:: with SMTP id 21mr9554339wmf.87.1594221336191;
+ Wed, 08 Jul 2020 08:15:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6fbcdd30-68d3-e8c5-d762-7b8a8c48d112@nvidia.com>
+References: <20200707211449.3868944-1-irogers@google.com> <20200708111935.GK1320@kernel.org>
+In-Reply-To: <20200708111935.GK1320@kernel.org>
+From:   Ian Rogers <irogers@google.com>
+Date:   Wed, 8 Jul 2020 08:15:24 -0700
+Message-ID: <CAP-5=fXr2xKbiYaNKOGytnwgNYOKYuGK-qT+GYpJZ4tdPb88eA@mail.gmail.com>
+Subject: Re: [PATCH] perf parse-events: report bpf errors
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 08, 2020 at 09:41:33AM +0100, Jon Hunter wrote:
-> 
-> On 07/07/2020 16:16, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 5.4.51 release.
-> > There are 65 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Thu, 09 Jul 2020 14:57:34 +0000.
-> > Anything received after that time might be too late.
-> > 
-> > The whole patch series can be found in one patch at:
-> > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.51-rc1.gz
-> > or in the git tree and branch at:
-> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> > and the diffstat can be found below.
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> 
-> All tests are passing for Tegra ...
-> 
-> Test results for stable-v5.4:
->     11 builds:	11 pass, 0 fail
->     26 boots:	26 pass, 0 fail
->     56 tests:	56 pass, 0 fail
-> 
-> Linux version:	5.4.51-rc1-g47d410b54275
-> Boards tested:	tegra124-jetson-tk1, tegra186-p2771-0000,
->                 tegra194-p2972-0000, tegra20-ventana,
->                 tegra210-p2371-2180, tegra210-p3450-0000,
->                 tegra30-cardhu-a04
+On Wed, Jul 8, 2020 at 4:19 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+>
+> Em Tue, Jul 07, 2020 at 02:14:49PM -0700, Ian Rogers escreveu:
+> > Setting the parse_events_error directly doesn't increment num_errors
+> > causing the error message not to be displayed. Use the
+> > parse_events__handle_error function that sets num_errors and handle
+> > multiple errors.
+>
+> What was the command line you used to exercise the error and then the
+> fix?
 
-Thanks for testing all of these and letting me know.
+You need something to stand in for the BPF event so:
 
-greg k-h
+Before:
+```
+$ /tmp/perf/perf record -e /tmp/perf/util/parse-events.o
+Run 'perf list' for a list of valid events
+
+Usage: perf record [<options>] [<command>]
+   or: perf record [<options>] -- <command> [<options>]
+
+   -e, --event <event>   event selector. use 'perf list' to list available event
+```
+After:
+```
+$ /tmp/perf/perf record -e /tmp/perf/util/parse-events.o
+event syntax error: '/tmp/perf/util/parse-events.o'
+                    \___ Failed to load /tmp/perf/util/parse-events.o:
+BPF object format invalid
+
+(add -v to see detail)
+Run 'perf list' for a list of valid events
+
+Usage: perf record [<options>] [<command>]
+   or: perf record [<options>] -- <command> [<options>]
+
+   -e, --event <event>   event selector. use 'perf list' to list
+available events
+```
+
+Thanks,
+Ian
+
+> - Arnaldo
+>
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+> > ---
+> >  tools/perf/util/parse-events.c | 38 ++++++++++++++++++----------------
+> >  1 file changed, 20 insertions(+), 18 deletions(-)
+> >
+> > diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
+> > index c4906a6a9f1a..e88e4c7a2a9a 100644
+> > --- a/tools/perf/util/parse-events.c
+> > +++ b/tools/perf/util/parse-events.c
+> > @@ -767,8 +767,8 @@ int parse_events_load_bpf_obj(struct parse_events_state *parse_state,
+> >
+> >       return 0;
+> >  errout:
+> > -     parse_state->error->help = strdup("(add -v to see detail)");
+> > -     parse_state->error->str = strdup(errbuf);
+> > +     parse_events__handle_error(parse_state->error, 0,
+> > +                             strdup(errbuf), strdup("(add -v to see detail)"));
+> >       return err;
+> >  }
+> >
+> > @@ -784,36 +784,38 @@ parse_events_config_bpf(struct parse_events_state *parse_state,
+> >               return 0;
+> >
+> >       list_for_each_entry(term, head_config, list) {
+> > -             char errbuf[BUFSIZ];
+> >               int err;
+> >
+> >               if (term->type_term != PARSE_EVENTS__TERM_TYPE_USER) {
+> > -                     snprintf(errbuf, sizeof(errbuf),
+> > -                              "Invalid config term for BPF object");
+> > -                     errbuf[BUFSIZ - 1] = '\0';
+> > -
+> > -                     parse_state->error->idx = term->err_term;
+> > -                     parse_state->error->str = strdup(errbuf);
+> > +                     parse_events__handle_error(parse_state->error, term->err_term,
+> > +                                             strdup("Invalid config term for BPF object"),
+> > +                                             NULL);
+> >                       return -EINVAL;
+> >               }
+> >
+> >               err = bpf__config_obj(obj, term, parse_state->evlist, &error_pos);
+> >               if (err) {
+> > +                     char errbuf[BUFSIZ];
+> > +                     int idx;
+> > +
+> >                       bpf__strerror_config_obj(obj, term, parse_state->evlist,
+> >                                                &error_pos, err, errbuf,
+> >                                                sizeof(errbuf));
+> > -                     parse_state->error->help = strdup(
+> > +
+> > +                     if (err == -BPF_LOADER_ERRNO__OBJCONF_MAP_VALUE)
+> > +                             idx = term->err_val;
+> > +                     else
+> > +                             idx = term->err_term + error_pos;
+> > +
+> > +                     parse_events__handle_error(parse_state->error, idx,
+> > +                                             strdup(errbuf),
+> > +                                             strdup(
+> >  "Hint:\tValid config terms:\n"
+> >  "     \tmap:[<arraymap>].value<indices>=[value]\n"
+> >  "     \tmap:[<eventmap>].event<indices>=[event]\n"
+> >  "\n"
+> >  "     \twhere <indices> is something like [0,3...5] or [all]\n"
+> > -"     \t(add -v to see detail)");
+> > -                     parse_state->error->str = strdup(errbuf);
+> > -                     if (err == -BPF_LOADER_ERRNO__OBJCONF_MAP_VALUE)
+> > -                             parse_state->error->idx = term->err_val;
+> > -                     else
+> > -                             parse_state->error->idx = term->err_term + error_pos;
+> > +"     \t(add -v to see detail)"));
+> >                       return err;
+> >               }
+> >       }
+> > @@ -877,8 +879,8 @@ int parse_events_load_bpf(struct parse_events_state *parse_state,
+> >                                                  -err, errbuf,
+> >                                                  sizeof(errbuf));
+> >
+> > -             parse_state->error->help = strdup("(add -v to see detail)");
+> > -             parse_state->error->str = strdup(errbuf);
+> > +             parse_events__handle_error(parse_state->error, 0,
+> > +                                     strdup(errbuf), strdup("(add -v to see detail)"));
+> >               return err;
+> >       }
+> >
+> > --
+> > 2.27.0.383.g050319c2ae-goog
+> >
+>
+> --
+>
+> - Arnaldo
