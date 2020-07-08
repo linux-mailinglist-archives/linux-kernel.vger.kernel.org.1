@@ -2,97 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF93A21832C
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 11:09:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 298CE218341
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 11:13:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727899AbgGHJJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 05:09:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726121AbgGHJJ5 (ORCPT
+        id S1728157AbgGHJNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 05:13:06 -0400
+Received: from mx07-00178001.pphosted.com ([62.209.51.94]:25120 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728102AbgGHJNA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 05:09:57 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CC64C08C5DC;
-        Wed,  8 Jul 2020 02:09:57 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id d21so26409709lfb.6;
-        Wed, 08 Jul 2020 02:09:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=1gdtgViliRja9rqUjgZFjyZIZrgRR3jloFr5I8HG70w=;
-        b=ip5z9I12KRzGsIweFPgXHt4rHPNxM7v+LKq8Ccfit6iua93R/o7sHR6SWiF9qT55KY
-         baowHqHKjtCoRGaRBtiimXNPT1J6pAsMz+spGlVIPkukXDsipVn+EJyQ8COK3CpbqJdI
-         W+LLAmdJyjl0xEmKT3KLEpu7F8mVdy8kVTRlcTbgUsYSemfG416FHVyUtuDVJ5XxTMZw
-         FhHMRVDrZhjgubxxHAZQRlNzhNaLpLA6jteyr0zBE46YxU/fRn0Owbq+Dsi8/hkqkI6Z
-         mc33llo0T1nPRa/RJ4ee+IufykHbgPdRsB0DshqH+2iIMzKc8KVgrgY+ck9P5/hKXLuY
-         caZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1gdtgViliRja9rqUjgZFjyZIZrgRR3jloFr5I8HG70w=;
-        b=SnVQAdq4xA5+PA0QRKDuBMlIM0X1ucY4CVBJuqfbsIn1MkrEFfFehTtwBx12dNDc78
-         IlEwAQIvWJPE5P1wTA6BIprF0JzoQwUcBSpXwb8glDvb9D5qacfnn+IXZ65CWxHseYpK
-         ED7yuvSRxJXx9d2+Ptsizbkg9zoIQmArsfStqNJpn3yrs/uQwEnJ7gz1IbSJEO3qkJ1D
-         oJTkz0xaDUjDlCP5IjWGUaEprNRyWjAPRZgXIBx/7jmsQ6E9q84QGdILuplCRec6uR9a
-         X5OpFx+kWQPMXRjTFELQlKE3bAlAGy4qobQLk6xfveC0c9UrlOl1aWi3Nye/wA/VwMXH
-         Mp+Q==
-X-Gm-Message-State: AOAM533l1o9n7iL4+ZVgt9T1DqZrLY/q3flepibe9bZXqKkbSsaR43HX
-        +cj4bdJZiRFBhYfwJeKIR5/yaqWa
-X-Google-Smtp-Source: ABdhPJwgl/YmckGYFZNlQjZ1UgVGe49toblQoK1n8mLTRkHQcw7zfygG5rxEVSkeKiZRjGLpkkm4Cw==
-X-Received: by 2002:a19:4f11:: with SMTP id d17mr35562511lfb.2.1594199395461;
-        Wed, 08 Jul 2020 02:09:55 -0700 (PDT)
-Received: from [192.168.2.145] (ppp91-79-162-105.pppoe.mtu-net.ru. [91.79.162.105])
-        by smtp.googlemail.com with ESMTPSA id o201sm10166793lff.8.2020.07.08.02.09.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Jul 2020 02:09:54 -0700 (PDT)
-Subject: Re: [PATCH v1 1/5] gpio: max77620: Initialize interrupts state
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-tegra@vger.kernel.org,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20200708082634.30191-1-digetx@gmail.com>
- <20200708082634.30191-2-digetx@gmail.com>
- <CAHp75VdFVGgKxR+n5TUMuFnWDy_uEmEeG=TvR9s7Xbe=jOdObg@mail.gmail.com>
- <CAHp75VdTw87aOGqnjS-jukiHcMACG7-gDDhDWP6hikSLWpDebQ@mail.gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <e9850c2d-43ea-9c07-19c6-f3e2e096e52a@gmail.com>
-Date:   Wed, 8 Jul 2020 12:09:53 +0300
+        Wed, 8 Jul 2020 05:13:00 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06898mX7031611;
+        Wed, 8 Jul 2020 11:12:06 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=iawSYaeSKNtVm44sgn49UhCmyo15meIegOqh6x74E2M=;
+ b=TO0IWmejSbgi7SHJXFFD9ycY1Yz2bJiFrKk55e7vIsjjYRhwXn01v/NE2Fg6D1XxVL0c
+ cZcHuW4kzDK+uLzkp3S3d7vB9C3sL2wEHr9JnbiBsBboeaLC3kRpPNGJ4dpZOuY5ulQ5
+ JG5Oiz+KAFYspXbJXwZe5SEaDp41aEJJY+GjCoWe/XCM7yWQkUNZDrzdZiWMl0FeRAI0
+ RghVB+2dhAf4tPKbOpJakxQGR7BmLt4s33BDj7vvbl9w0krkboSbqKP+dWD6cj5dVXNF
+ AjAws0bd/3lFDpzkFW2WK9DMR7X/8ts7aDSyyZlC/LF8iXVzRHycrestry/rhxC/hUXb BQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 322f80xfwp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Jul 2020 11:12:06 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 470B910002A;
+        Wed,  8 Jul 2020 11:12:04 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 0A8062222A6;
+        Wed,  8 Jul 2020 11:12:00 +0200 (CEST)
+Received: from lmecxl0889.tpe.st.com (10.75.127.45) by SFHDAG3NODE1.st.com
+ (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 8 Jul
+ 2020 11:11:58 +0200
+Subject: Re: [PATCH v3 06/10] ASoC: sti: uniperif: fix 'defined by not used'
+ warning
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+CC:     "tiwai@suse.de" <tiwai@suse.de>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20200707191615.98296-1-pierre-louis.bossart@linux.intel.com>
+ <20200707191615.98296-7-pierre-louis.bossart@linux.intel.com>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Message-ID: <a376393a-6a17-2836-204b-0d4ff60729c0@st.com>
+Date:   Wed, 8 Jul 2020 11:11:57 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VdTw87aOGqnjS-jukiHcMACG7-gDDhDWP6hikSLWpDebQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20200707191615.98296-7-pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.75.127.45]
+X-ClientProxiedBy: SFHDAG4NODE2.st.com (10.75.127.11) To SFHDAG3NODE1.st.com
+ (10.75.127.7)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-08_04:2020-07-08,2020-07-08 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-08.07.2020 11:53, Andy Shevchenko пишет:
-> On Wed, Jul 8, 2020 at 11:51 AM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
->> On Wed, Jul 8, 2020 at 11:29 AM Dmitry Osipenko <digetx@gmail.com> wrote:
-> 
-> ...
-> 
->>> +       max77620_gpio_initialize(mgpio);
->>
->> I guess we have special callback for that, i.e.
->> https://elixir.bootlin.com/linux/v5.8-rc3/C/ident/init_hw.
-> 
-> Sorry, here is correct link
-> 
-> https://elixir.bootlin.com/linux/v5.8-rc3/source/include/linux/gpio/driver.h#L212
-> 
+Hi Pierre-Louis,
 
-Indeed, I missed the init_hw(), thank you!
+On 7/7/20 9:16 PM, Pierre-Louis Bossart wrote:
+> Fix W=1 warning. The table uni_tdm_hw is declared in a header included
+> by multiple C file. This isn't really a good practice but for now
+> using __maybe_unused makes the following warning go away.
+> 
+> sound/soc/sti/sti_uniperif.c:12:
+> sound/soc/sti/uniperif.h:1351:38: warning: ‘uni_tdm_hw’ defined but
+> not used [-Wunused-const-variable=]
+>  1351 | static const struct snd_pcm_hardware uni_tdm_hw = {
+>       |                                      ^~~~~~~~~~
+> 
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+
+Thanks for the patch, 
+Seems that the same patch has already been proposed by Lee: 
+https://www.spinics.net/lists/arm-kernel/msg820327.html
+
+Regards,
+Arnaud
+
+> ---
+>  sound/soc/sti/uniperif.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/sti/uniperif.h b/sound/soc/sti/uniperif.h
+> index 2dc2da5d458b..a16adeb7c1e9 100644
+> --- a/sound/soc/sti/uniperif.h
+> +++ b/sound/soc/sti/uniperif.h
+> @@ -1348,7 +1348,7 @@ struct sti_uniperiph_data {
+>  	struct sti_uniperiph_dai dai_data;
+>  };
+>  
+> -static const struct snd_pcm_hardware uni_tdm_hw = {
+> +static __maybe_unused const struct snd_pcm_hardware uni_tdm_hw = {
+>  	.info = SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
+>  		SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_MMAP |
+>  		SNDRV_PCM_INFO_MMAP_VALID,
+> 
