@@ -2,141 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29C23218171
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 09:41:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE8D1218179
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 09:42:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726744AbgGHHlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 03:41:09 -0400
-Received: from mail-ej1-f67.google.com ([209.85.218.67]:44994 "EHLO
-        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726523AbgGHHlH (ORCPT
+        id S1726794AbgGHHmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 03:42:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43066 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725787AbgGHHmR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 03:41:07 -0400
-Received: by mail-ej1-f67.google.com with SMTP id ga4so49256676ejb.11
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 00:41:06 -0700 (PDT)
+        Wed, 8 Jul 2020 03:42:17 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AEBCC08C5DC;
+        Wed,  8 Jul 2020 00:42:17 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id u25so26326464lfm.1;
+        Wed, 08 Jul 2020 00:42:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=UqAXpdSgwMr5Q0tv/rDA6Pc9wCXswpuopjQuL6uRINM=;
+        b=Bu3mPkLEMaqO4Ao7xP8BUA3KUqBXVNmZAf4DE4ZuJCF3le9zlxBbYGTFVOnmd1L7Ge
+         o3CuBI/Fg6pPzwYudny138p4gnQlfG0KKclS/FmeuUTLY/R+qoMao+9SOuNFo0QNclQd
+         P+zZbAS+8yjyZIOh3DRV25W+BdU4NgFkun/+Jwn/Lesl1jTkRF//OtKfWpUa4MqRpWih
+         H+fWTffi2g03HL9bc/yg+IJkYSzgMZ0nMQPXEhG/KRYTDi3NGh/AxEm8/2Jpbal+Ns0L
+         SLjnf33opsSSexQOM9aZePS7vlI9Vv/rQXpI7902AczGGBemS+vROO8Bb38mewSEQKtF
+         92VA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6/A3VQ/K8xvCKHiyxktO8Rg8OAtA4BCJ+I3Yp4ab7mc=;
-        b=NJzm+HIF2hx8/UUUuYmkSUKZ+NW5fJHtFPOu4S88YzzlQQdoafkFhs5Le7U7verTtB
-         oFZwC3+ExXDldatNQV0U2I+OLvM9orHbr/jAhD7esfGpohx+xct2lYBjFi6A69CunYeL
-         4bPc83J8fhfmLbyo58LGcm4tNAVFwhiOzKqHD3JKM2txMywuC02QsL4/m3qpfTtKmllo
-         0OhSe8i8mqbqu6m4we8vJIGbb2V2faumUGsehLfjWmZJjiSko0ZZqcfgunX3VLRgQuqS
-         9Pa5bYEHoo5IHswuf6iayoXLpy3CJmJ3YqJfAX/SSrtDfpMKetGqG7Ktm+AfAQ+xQw2h
-         RSVg==
-X-Gm-Message-State: AOAM533KvzzTg+z5HziQfbG/WaSLetvDpq4UZDa0Vhda2hTocNiuXQFk
-        9mKpQ0Gmc1/10k2g2zkTiUk=
-X-Google-Smtp-Source: ABdhPJykdLeci86uEzWsDP8J/cfe/eHujJtWTsPQHzS01KxobrOSRY5slASSTgDt2Pwhj70aOnSZNA==
-X-Received: by 2002:a17:906:6d49:: with SMTP id a9mr48950522ejt.435.1594194065679;
-        Wed, 08 Jul 2020 00:41:05 -0700 (PDT)
-Received: from localhost (ip-37-188-179-51.eurotel.cz. [37.188.179.51])
-        by smtp.gmail.com with ESMTPSA id dn15sm1605732ejc.26.2020.07.08.00.41.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Jul 2020 00:41:04 -0700 (PDT)
-Date:   Wed, 8 Jul 2020 09:41:03 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Joonsoo Kim <js1304@gmail.com>
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel-team@lge.com,
-        Christoph Hellwig <hch@infradead.org>,
-        Roman Gushchin <guro@fb.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>
-Subject: Re: [PATCH v4 04/11] mm/hugetlb: make hugetlb migration callback CMA
- aware
-Message-ID: <20200708074103.GD7271@dhcp22.suse.cz>
-References: <1594107889-32228-1-git-send-email-iamjoonsoo.kim@lge.com>
- <1594107889-32228-5-git-send-email-iamjoonsoo.kim@lge.com>
- <c1cd6e11-08c3-5654-60e7-dec2eb80987a@suse.cz>
- <20200708071602.GB16543@js1304-desktop>
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=UqAXpdSgwMr5Q0tv/rDA6Pc9wCXswpuopjQuL6uRINM=;
+        b=jImctvpayxlDrOhbUrl6ogNO2kG5IUe8b2inAO54IYWq7tSGS+e0gBXwjNAvnGs6QR
+         J7t24a5ost/IOkaPPa1wJSh92jDHiwQ0oAmUsBbpHhnZs0igSOhm49DWXxCx1+TcucLQ
+         IKUedLtAYs1sClbo5l8ga4eBL/k7c8wozNnjRx1Iz0eptOqHGisaxiPV9fvnWB8J2ggp
+         WLggMejsOLCfbMP/l5C4F8D9reMOetVPIxLUmLpIHl18cRFa5o8Rn+cvLZ5OFUqWPRH/
+         FUOYNhIcTeKRCbMxeW9hgQLKF7lstNknK607E0moaaR/HlnnF3cM+zCeVUdH++lMpKYh
+         Bj2A==
+X-Gm-Message-State: AOAM530QidUVbsz1++fVgHy9jrE/8Qo3xyDF8IgU80DkKKFcCpVeAFTA
+        sddaYecVjQJW7GGtlh3IUsQ=
+X-Google-Smtp-Source: ABdhPJwWcVMnG0BK0zdFrpR01ehZhg+qE/pgvLQLB7GCjsQN9LYcX7Yc6M0UYTUGPwEweDgmhKgq+A==
+X-Received: by 2002:a19:c4a:: with SMTP id 71mr35844362lfm.27.1594194135590;
+        Wed, 08 Jul 2020 00:42:15 -0700 (PDT)
+Received: from [192.168.2.145] (ppp91-79-162-105.pppoe.mtu-net.ru. [91.79.162.105])
+        by smtp.googlemail.com with ESMTPSA id v12sm10131186lfp.12.2020.07.08.00.42.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Jul 2020 00:42:15 -0700 (PDT)
+Subject: Re: [PATCH v2 0/9] Summit SMB3xx driver & device-tree
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Sebastian Reichel <sre@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        David Heidelberg <david@ixit.cz>
+Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Jonghwa Lee <jonghwa3.lee@samsung.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Vinay Simha BN <simhavcs@gmail.com>
+References: <20200607144113.10202-1-digetx@gmail.com>
+Message-ID: <8480ea98-778e-d919-18e3-ab04609af914@gmail.com>
+Date:   Wed, 8 Jul 2020 10:42:14 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200708071602.GB16543@js1304-desktop>
+In-Reply-To: <20200607144113.10202-1-digetx@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 08-07-20 16:16:02, Joonsoo Kim wrote:
-> On Tue, Jul 07, 2020 at 01:22:31PM +0200, Vlastimil Babka wrote:
-> > On 7/7/20 9:44 AM, js1304@gmail.com wrote:
-> > > From: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-> > > 
-> > > new_non_cma_page() in gup.c which try to allocate migration target page
-> > > requires to allocate the new page that is not on the CMA area.
-> > > new_non_cma_page() implements it by removing __GFP_MOVABLE flag.  This way
-> > > works well for THP page or normal page but not for hugetlb page.
-> > > 
-> > > hugetlb page allocation process consists of two steps.  First is dequeing
-> > > from the pool.  Second is, if there is no available page on the queue,
-> > > allocating from the page allocator.
-> > > 
-> > > new_non_cma_page() can control allocation from the page allocator by
-> > > specifying correct gfp flag.  However, dequeing cannot be controlled until
-> > > now, so, new_non_cma_page() skips dequeing completely.  It is a suboptimal
-> > > since new_non_cma_page() cannot utilize hugetlb pages on the queue so this
-> > > patch tries to fix this situation.
-> > > 
-> > > This patch makes the deque function on hugetlb CMA aware and skip CMA
-> > > pages if newly added skip_cma argument is passed as true.
-> > 
-> > Hmm, can't you instead change dequeue_huge_page_node_exact() to test the PF_
-> > flag and avoid adding bool skip_cma everywhere?
+07.06.2020 17:41, Dmitry Osipenko пишет:
+> We gathered existing patches, fixed and improved what we could and
+> final result is an working charging driver with device-tree support
+> for Nexus 7.
 > 
-> Okay! Please check following patch.
-> > 
-> > I think that's what Michal suggested [1] except he said "the code already does
-> > by memalloc_nocma_{save,restore} API". It needs extending a bit though, AFAICS.
-> > __gup_longterm_locked() indeed does the save/restore, but restore comes before
-> > check_and_migrate_cma_pages() and thus new_non_cma_page() is called, so an
-> > adjustment is needed there, but that's all?
-> > 
-> > Hm the adjustment should be also done because save/restore is done around
-> > __get_user_pages_locked(), but check_and_migrate_cma_pages() also calls
-> > __get_user_pages_locked(), and that call not being between nocma save and
-> > restore is thus also a correctness issue?
-> 
-> Simply, I call memalloc_nocma_{save,restore} in new_non_cma_page(). It
-> would not cause any problem.
+> At this moment charging works with:
+>  - Nexus 7 2012 (grouper and tilapia)
+>  - Nexus 7 2013 (flo and deb)
+>  - ... and there are more devices equipped with these chargers.
 
-I believe a proper fix is the following. The scope is really defined for
-FOLL_LONGTERM pins and pushing it inside check_and_migrate_cma_pages
-will solve the problem as well but it imho makes more sense to do it in
-the caller the same way we do for any others. 
+Hello Sebastian and everyone!
 
-Fixes: 9a4e9f3b2d73 ("mm: update get_user_pages_longterm to migrate pages allocated from CMA region")
-
-I am not sure this is worth backporting to stable yet.
-
-diff --git a/mm/gup.c b/mm/gup.c
-index de9e36262ccb..75980dd5a2fc 100644
---- a/mm/gup.c
-+++ b/mm/gup.c
-@@ -1794,7 +1794,6 @@ static long __gup_longterm_locked(struct task_struct *tsk,
- 				     vmas_tmp, NULL, gup_flags);
- 
- 	if (gup_flags & FOLL_LONGTERM) {
--		memalloc_nocma_restore(flags);
- 		if (rc < 0)
- 			goto out;
- 
-@@ -1802,11 +1801,13 @@ static long __gup_longterm_locked(struct task_struct *tsk,
- 			for (i = 0; i < rc; i++)
- 				put_page(pages[i]);
- 			rc = -EOPNOTSUPP;
-+			memalloc_nocma_restore(flags);
- 			goto out;
- 		}
- 
- 		rc = check_and_migrate_cma_pages(tsk, mm, start, rc, pages,
- 						 vmas_tmp, gup_flags);
-+		memalloc_nocma_restore(flags);
- 	}
- 
- out:
--- 
-Michal Hocko
-SUSE Labs
+Sebastian, do you have any comments to this series? Will be nice to get
+some progress :)
