@@ -2,121 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BE052190F4
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 21:50:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F8B82190F9
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 21:53:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726211AbgGHTt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 15:49:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43412 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725787AbgGHTt4 (ORCPT
+        id S1726281AbgGHTx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 15:53:28 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:51392 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725446AbgGHTx0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 15:49:56 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72AF1C061A0B
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 12:49:56 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id h16so5120ilj.11
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 12:49:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=I9bO2SvLDKet0zC0FnvNLQImEbF2fhapt4H2nUguyC4=;
-        b=VQMutR39qCwX+rzcpy2tnhenXy7JQ8m0tuhbilG4X7au0sVK1MdJWPjVT1I6rFd/6W
-         LpKtfFBaByCEYDWOL2MDdF9Zyd7eeeORwzRTzNepJvCCMyDv9T7TZRGDNwtRE5DS9ouU
-         aWKzFsbyiwBaAGEKDO2+5uy1AYd8ZkMuQaIYc9d/yUdQoJKhtbGmSGKpDzHWkxkZS9AP
-         r90hG4a6m9XEZMi0Iz8yHPEs00oqG4JYNAMRgNKIC+lW7VShiPEn0JOgrhBLMinkSDHf
-         JkdNPXBIzQmQJfnkq0X+y30oG6/81fjweNvbjVXrd+8OsllzRICCvoyI9bTxiJueNfPG
-         BWEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=I9bO2SvLDKet0zC0FnvNLQImEbF2fhapt4H2nUguyC4=;
-        b=NIT8et2A3g+prmmQfbqWjAHJe+D1MvtKlIa0GZDZQ4T6F7Y7tmGVDIv6cEBQ/Wt//u
-         BSFITOwOgxtQJ72WJI7rn7FJ91MvWJfhL83kBxTnol0AalVJSWEFN34jSBPUIxHuJ+Pr
-         n2Oy5rM0al+3sqO1MIcz7qpdHMVpSDy+NQU2tu5C2ygr8GUOpq3GdO9FuVJ06kA8rKs/
-         b53PfAvCOeHxCWswmU1OQHeFx3VOzC9rthkb8XbrzIFuw5/qaLqvyA0DwyUo0QHB4Sly
-         0HPzZGDNF6qC+0VlPp1s02W54gT6EoqgOeWTLejt2RBdaxxItrbAK1xavpfqyqg/vazP
-         b36w==
-X-Gm-Message-State: AOAM533uJeGgtnbnFTfmycVJk3fmbPfGHdOL53zFGX3Q+ukswJSEiyve
-        3HbRvMLzbUAKxv634YfNAx3/wNnNNtDtQEX8jZilaA==
-X-Google-Smtp-Source: ABdhPJy9DOSdnQPU184rzJ43rhfRWcru5enbc3FbwYxuqR6UthrROMB5kbzwaT6IGXDS+2J3KMXKLi+H8r51JqyLq34=
-X-Received: by 2002:a92:b685:: with SMTP id m5mr43580715ill.118.1594237794192;
- Wed, 08 Jul 2020 12:49:54 -0700 (PDT)
+        Wed, 8 Jul 2020 15:53:26 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 068Jkc4b014971;
+        Wed, 8 Jul 2020 19:53:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=l5kP04TQx9CT6XBndJoPCQt97j3az16WSIoo49ut7H0=;
+ b=Ri/wpHrNAp/87a8ITffVtp7EjnPYPzVXnf++JO8YDZ4h3h6A24ObFmeMUy2urj8JP860
+ WmPB9TfZdQNosk77pShY+mRzraYfQnC2mzkkX/cREpHlmWIkKqf/Tr7xjV8MRyWoj+Z2
+ wLpjbBtMuWD3cCt9wGtAHF2heY6wrDRZseIUIHcPlX7vJe5PzBgYgN+7YEZ1S7SKoeOJ
+ gp4IkGEbBdRa/3g7f7TB79rpRqzIHVNKQ61BW10/nglfUQup6PUM3HyD+eBt46D9wUwc
+ GoX22Ro7BQsFkpWlRO34sK2EdnbFK57XPPIq+iDQXmZaq70ldIidQxYTlN3zix8c4Se3 pw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 325k368j0e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 08 Jul 2020 19:53:15 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 068JnHUe167225;
+        Wed, 8 Jul 2020 19:51:14 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 325k3efsre-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 08 Jul 2020 19:51:14 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 068JpClo018936;
+        Wed, 8 Jul 2020 19:51:12 GMT
+Received: from ca-dmjordan1.us.oracle.com (/10.211.9.48)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 08 Jul 2020 12:51:12 -0700
+Date:   Wed, 8 Jul 2020 15:51:40 -0400
+From:   Daniel Jordan <daniel.m.jordan@oracle.com>
+To:     Nico Pache <npache@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        steffen.klassert@secunet.com, daniel.m.jordan@oracle.com
+Subject: Re: [PATCH v2] Remove __init from padata_do_multithreaded and
+ padata_mt_helper.
+Message-ID: <20200708195140.hioiltf7pwppz6j7@ca-dmjordan1.us.oracle.com>
+References: <20200702155548.14690-1-npache@redhat.com>
 MIME-Version: 1.0
-References: <20200708192546.4068026-1-abhishekbh@google.com> <06f15327-f346-fb8d-cc8e-8e12c398324d@infradead.org>
-In-Reply-To: <06f15327-f346-fb8d-cc8e-8e12c398324d@infradead.org>
-From:   Abhishek Bhardwaj <abhishekbh@google.com>
-Date:   Wed, 8 Jul 2020 12:49:17 -0700
-Message-ID: <CA+noqohUFoCQdRKLTtGXOB=GAKYO5Er=-EVpOMowEufB9dnk_g@mail.gmail.com>
-Subject: Re: [PATCH v4] x86/speculation/l1tf: Add KConfig for setting the L1D
- cache flush mode
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Anthony Steinhauser <asteinhauser@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tony Luck <tony.luck@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Waiman Long <longman@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>, kvm@vger.kernel.org,
-        x86 <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200702155548.14690-1-npache@redhat.com>
+User-Agent: NeoMutt/20180716
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9676 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ phishscore=0 adultscore=0 suspectscore=0 malwarescore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007080119
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9676 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 impostorscore=0 mlxscore=0
+ adultscore=0 spamscore=0 mlxlogscore=999 malwarescore=0 priorityscore=1501
+ suspectscore=0 lowpriorityscore=0 clxscore=1011 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007080119
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 8, 2020 at 12:34 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> Hi again,
->
-> On 7/8/20 12:25 PM, Abhishek Bhardwaj wrote:
-> > diff --git a/arch/x86/kvm/Kconfig b/arch/x86/kvm/Kconfig
-> > index b277a2db62676..1f85374a0b812 100644
-> > --- a/arch/x86/kvm/Kconfig
-> > +++ b/arch/x86/kvm/Kconfig
-> > @@ -107,4 +107,17 @@ config KVM_MMU_AUDIT
-> >        This option adds a R/W kVM module parameter 'mmu_audit', which allows
-> >        auditing of KVM MMU events at runtime.
-> >
-> > +config KVM_VMENTRY_L1D_FLUSH
-> > +     int "L1D cache flush settings (1-3)"
-> > +     range 1 3
-> > +     default "2"
-> > +     depends on KVM && X86_64
-> > +     help
-> > +      This setting determines the L1D cache flush behavior before a VMENTER.
-> > +      This is similar to setting the option / parameter to
-> > +      kvm-intel.vmentry_l1d_flush.
-> > +      1 - Never flush.
-> > +      2 - Conditionally flush.
-> > +      3 - Always flush.
-> > +
-> >  endif # VIRTUALIZATION
->
-> If you do a v5, the help text lines (under "help") should be indented
-> with one tab + 2 spaces according to Documentation/process/coding-style.rst.
+(I was away for a while)
 
-Apologies for missing this. Fixed in v5 -
-https://lkml.org/lkml/2020/7/8/1369
+On Thu, Jul 02, 2020 at 11:55:48AM -0400, Nico Pache wrote:
+> Allow padata_do_multithreaded function to be called after bootstrap.
 
->
-> --
-> ~Randy
->
+The functions are __init because they're currently only needed during boot, and
+using __init allows the text to be freed once it's over, saving some memory.
 
+So this change, in isolation, doesn't make sense.  If there were an enhancement
+you were thinking of making, this patch could then be bundled with it so the
+change is made only when it's used.
 
--- 
-Abhishek
+However, there's still work that needs to be merged before
+padata_do_multithreaded can be called after boot.  See the parts about priority
+adjustments (MAX_NICE/renicing) and concurrency limits in this branch
+
+  https://oss.oracle.com/git/gitweb.cgi?p=linux-dmjordan.git;a=shortlog;h=refs/heads/padata-mt-wip-v0.5
+
+and the ktask discussions from linux-mm/lkml where concerns about these issues
+were raised.  I plan to post these parts fairly soon and can include you if you
+want.
