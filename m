@@ -2,63 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84BAA2180A7
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 09:18:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 110A22180AD
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 09:18:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730184AbgGHHSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 03:18:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39182 "EHLO
+        id S1730205AbgGHHSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 03:18:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729896AbgGHHSA (ORCPT
+        with ESMTP id S1730196AbgGHHSm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 03:18:00 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A743BC061755
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 00:17:59 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id e4so52955735ljn.4
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 00:17:59 -0700 (PDT)
+        Wed, 8 Jul 2020 03:18:42 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA943C08C5DC
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 00:18:41 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id z24so28042339ljn.8
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 00:18:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=cAFIrZ8F/mBJqkJAYIueoajWvUWkQCtRnV1fgyx+lWQ=;
-        b=aq4/cPjLKxizsfEDEFrsZ9DGzsV8/Xzod02YigHVJC6RddJnaepE6YlWiJY9FFJpoC
-         54aDpJB5eued3sHz2mnYw22r4dsoPVbdRXnUuhdPiqFAYguZh3C6B2Ideqix5JIthSS0
-         PlpC1PCg6Wpltv0HD/zgILAzRytUTjKO/gr+Kyic5mSyz0EIpvQAd+p/xK5CE3bMh26O
-         b7cdMK77tPPi9Imv+wDRBZTIALJUzVSkNKQSx+9QaJASHLFc8IW3LVLarMFs3dUJWc68
-         dwtTUUpKJcA2BwQ1sgaZDbmvzkG6jQkIv0iMDa7BmKGEBohIAFop4idQonc4huMd/wzd
-         /PNQ==
+        bh=zIm1nTTtroh3jSlQCc4nRT6z0BXJtM8UPxEVaJ3cdLQ=;
+        b=HbhaqiwehhVEfm4RXj6ezjnjj3skiTF36bLdw0wq3Js0HZ+q47/PQ19bQ9it3Le/ZO
+         kIisM0AyOOAEQMiohpkCTxaAPUL6Dz7zw0xGdJI2gYf+Dy/iLT6rh7HerQ5uaLNAgVfI
+         e69jZzP4+X27rz0je+uDqsReALXKWsHYDVlsVj4cL8RkVMj1rYFxQ0auzpTj5hj22uD8
+         bP4v673Ap9IfGu4wfv8KKuPbOG7KxTOtCt5/2EtRVTupKNy9Cve6LnGGtS/A6a9hCqkx
+         KbhZ55JRq3es6MI/n87mmUjLM53ZKQSENEioEIUNtk2K8ZaskCuKtvMfqFxLAprDv5k8
+         aM0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=cAFIrZ8F/mBJqkJAYIueoajWvUWkQCtRnV1fgyx+lWQ=;
-        b=lEfmZsyp4lsXzHUkE7RNYxbP+dNkymXMPSau2qbATGew8Hm0DCFCh+N+fBufHumA3v
-         ZLyH3SSv5KcJKpgIvFhF6lyJIzwXM1XTOJ8+j0r0s0xi3M96o1O7fj+3c7R4Z5s0G3pk
-         3V7MOfhmYg594wgq4NXRb01BeB/aFIK/8PBZB5+TsTK/F+RosG/oY/oRXzjnwIy0vq89
-         vbpcUWmGOMXCj6CbZsuZXwMRtec0nYx5Vo3SOjuLjcT4X9Z4cYHseDYp/uePZQFtirZc
-         eBsdGNDCZbHNCd5vnS9kvQlM7zjrQavtdPzNpJkyzTv7Vp8Ncwu0A/B5djwusZyktxdD
-         vFSQ==
-X-Gm-Message-State: AOAM531JtdbpIstR/YzEt2uS6eWTExNJZBJ9W2WaFnkuOXSywNfoMNDu
-        UDVHM0ZzaBtgNxj5lF4kVldcZwEWNapijkMTqfD7PWubxAQ=
-X-Google-Smtp-Source: ABdhPJylJBqgZ7fRWLwWIlGt4A5bo/2LK2Oljqk21UeArICbItF5N+VoFDh+vaO83CgV2n/EdrLLeJelnkHFnIetLCI=
-X-Received: by 2002:a2e:8046:: with SMTP id p6mr18618352ljg.100.1594192678178;
- Wed, 08 Jul 2020 00:17:58 -0700 (PDT)
+        bh=zIm1nTTtroh3jSlQCc4nRT6z0BXJtM8UPxEVaJ3cdLQ=;
+        b=UmG+nmiOAeLEvelYzV7pVOYqIFuJ17uITy7j5Zda4RwVXyC9sAzyBg/Yh7XdjSh74r
+         /raNycvdog/WEIQhWm429AVZzpZT9rJhjmKmQQ71DwGV7N+gFA+S0sD/4tY/2/sHiznA
+         RDwKL8I3Y49jYv1sQrroK9/LQMAc9wsnesCXHjm1lWRgPDyeefkYo/8SuoAwIRmXSR8a
+         uK65GmfnLLjLk/d/fS8UUBpAJR6f3cGrkPLNLGL/2XrZKLlOSHjXzRkgVAO0XE4+ElET
+         Ty1dcC4hBoNzbiImjcZ8wPEjyffXx4OW8ofLffPJSM6tttH+s13Cmt76tUUdxTGdG/gz
+         iUhw==
+X-Gm-Message-State: AOAM531rgAEwAem+csFskl2EB0tuxr+JR72HNUuH5M7oWaBAdm1hDxqo
+        F3d53RLlDl+AdjSoJGpM8TFwuwY503oG5mqPfjTM1g==
+X-Google-Smtp-Source: ABdhPJxeR9wevkAjhUg6iANqN39oApGw6BnyXI8B+rYDzmMCbtxZ9tcyP9q2LYQH3/SAsU5Fp4RtftyI9ozwwBiT/ws=
+X-Received: by 2002:a2e:810a:: with SMTP id d10mr26812174ljg.144.1594192720209;
+ Wed, 08 Jul 2020 00:18:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200630133345.2232932-1-lee.jones@linaro.org> <20200630133345.2232932-6-lee.jones@linaro.org>
-In-Reply-To: <20200630133345.2232932-6-lee.jones@linaro.org>
+References: <20200630133345.2232932-1-lee.jones@linaro.org> <20200630133345.2232932-7-lee.jones@linaro.org>
+In-Reply-To: <20200630133345.2232932-7-lee.jones@linaro.org>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 8 Jul 2020 09:17:47 +0200
-Message-ID: <CACRpkdaUQkS5vfkQ1GsssWY7gGgz8N1-Ng6_HugGWMxuQxSysg@mail.gmail.com>
-Subject: Re: [PATCH 05/10] gpio: gpio-sama5d2-piobu: Demote all kerneldoc
- headers to basic comment blocks
+Date:   Wed, 8 Jul 2020 09:18:29 +0200
+Message-ID: <CACRpkdbszVdmRY4V=Z=vVPAdbx4q=26F-OcnZu2w3-BNk+0ohQ@mail.gmail.com>
+Subject: Re: [PATCH 06/10] gpio: gpio-syscon: Fix formatting issues which
+ confuse kerneldoc
 To:     Lee Jones <lee.jones@linaro.org>
 Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
         Linux ARM <linux-arm-kernel@lists.infradead.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Andrei Stefanescu <andrei.stefanescu@microchip.com>
+        Alexander Shiyan <shc_work@mail.ru>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
@@ -67,13 +66,20 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Tue, Jun 30, 2020 at 3:33 PM Lee Jones <lee.jones@linaro.org> wrote:
 
-> No attempt has been made to provide proper descriptions for each of
-> the function arguments throughout the file.  Simply demote all
-> kerneldoc headers to basic function headers.
-(...)
+> Kerneldoc expects struct properties to be documented using the syntax
+> '@.*: ', but no '@' has been provided in 'struct syscon_gpio_data's
+> header.  Add them to stop confusing kerneldoc.
 >
-> Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
-> Cc: Andrei Stefanescu <andrei.stefanescu@microchip.com>
+> Fixes the following W=1 warnings:
+>
+>  drivers/gpio/gpio-syscon.c:48: warning: Function parameter or member 'compatible' not described in 'syscon_gpio_data'
+>  drivers/gpio/gpio-syscon.c:48: warning: Function parameter or member 'flags' not described in 'syscon_gpio_data'
+>  drivers/gpio/gpio-syscon.c:48: warning: Function parameter or member 'bit_count' not described in 'syscon_gpio_data'
+>  drivers/gpio/gpio-syscon.c:48: warning: Function parameter or member 'dat_bit_offset' not described in 'syscon_gpio_data'
+>  drivers/gpio/gpio-syscon.c:48: warning: Function parameter or member 'dir_bit_offset' not described in 'syscon_gpio_data'
+>  drivers/gpio/gpio-syscon.c:48: warning: Function parameter or member 'set' not described in 'syscon_gpio_data'
+>
+> Cc: Alexander Shiyan <shc_work@mail.ru>
 > Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
 Patch applied!
