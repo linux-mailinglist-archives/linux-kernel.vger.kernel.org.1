@@ -2,81 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E50E218E74
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 19:41:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08788218EDE
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 19:48:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726286AbgGHRln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 13:41:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51790 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726072AbgGHRlm (ORCPT
+        id S1727802AbgGHRrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 13:47:31 -0400
+Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:54481 "EHLO
+        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726774AbgGHRnD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 13:41:42 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CE2DC061A0B
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 10:41:42 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id j11so6483524ljo.7
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 10:41:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=syXiCiWQa2sdVvRcXjSBref0DJZkM7sUmvl19hyA1qk=;
-        b=Vp/YUIpWYHS9flQcnaE/dZkic3isoiKZ/gFaGhfFGHYuB/U+6Amt5UTZWbGJv22VCZ
-         49t7gU6N28vhz7Eu9rNXUOR8zMQ9xeUUziCFU1QfwqCrOb+CDhbRQViT+rWEY1hOehwz
-         TwsfzM7pW72HC1+B9ibAmwSuu0q3z42nDCIfp7btvN1y6rrybe/QrTZfPmWj19C440PC
-         6ngmfQfrCfDUk/OEygarVhyp+b7PO3ZRdPCnPKI6Swvy3kxc/nh0snV5ddGEFPQ/AnlK
-         oLXgnzOFUJVt2LSy4AVKyF2jqouzfyiflukqQWFBtqQJhGmN+zZHDRkd6KflveoppJeP
-         N2jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=syXiCiWQa2sdVvRcXjSBref0DJZkM7sUmvl19hyA1qk=;
-        b=tmPkk/Jz6ZM0CGJQO4K10UQvyUCFHjDmVIztkrr3v5im/gq4DSDiOCSNPeOP5YY82M
-         mVmVuydk5MCg1oZAXmqEjxaRNsUqE3tSybHhqfFJajdN+3EsqliWl3WxbvVzZOGQoYnU
-         41BMTB4cuwg7cmFZHWEgVPDzm66TCVZdUwiTiHlMmbmAuCIDFfXp04IEZpZ2KzGFn0M0
-         6lQ9U3X6k6mzh27KtKHBW5tZ/VaP90TJ+yWReXiOG5VAypS8+SDsCJjEXMepTcGtm4JV
-         nOk7VpvFVvJZGkTveP6QlXbNjvYeIQ/DQq+KduXAE6dcHIviXi+anrTjNDFX6EhKpTvS
-         6Bgw==
-X-Gm-Message-State: AOAM532UQOKVJ4/5g/emsLLgD+N9AgPod0MjF8J6k/1yowQW+DFAZvw/
-        /c4N4y5kmb2OXa016aRQ76y4f0TWsqQn26N+nfs=
-X-Google-Smtp-Source: ABdhPJwLrY9WGA/PF+ajgJGK2d5iaouZbqiREdwwJ2fuGuF+sfuPpzWj6A7gtqQqR3dunUpHeLMKsP3gnBHsuyNzXqQ=
-X-Received: by 2002:a2e:a168:: with SMTP id u8mr5462228ljl.178.1594230100990;
- Wed, 08 Jul 2020 10:41:40 -0700 (PDT)
+        Wed, 8 Jul 2020 13:43:03 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id EED85FD0;
+        Wed,  8 Jul 2020 13:43:01 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Wed, 08 Jul 2020 13:43:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding; s=fm3; bh=PXyOrhteRhuIW
+        3gAa3UTeL+v8wa9wTNvkAai0iITr1g=; b=QnD9HeXpBI4112vzPdB+Fcw+vkmZ2
+        ToR7uIAdTpegqZ0Ufy8QvbRi0ILu08S5BcbP3hBtWBqoB12zDrwUTasAOHbCWU2f
+        s2IkjV58BeWvNoB1NrCnuo7w5QNaEX/dDDs35KApVJ1rrdLT3ry0n2A2d+IMQ0UT
+        AZLD3pbc5osrVQvl0YLvObB4xQXs/cmBXv1Fs2cUBhhHCvoul7nn7gNuFxdmDZU8
+        3sxvLZAYZSV83qrWGXJrG1mhzOruBiDNDmsWBDdhe9NXbaOMYTahy+nRXcvj+p19
+        WGFJyXG53e4BbLfmm1AaYpHWcc/bfQmyFHXob9h2dCVTKILKUL/vbze6A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm3; bh=PXyOrhteRhuIW3gAa3UTeL+v8wa9wTNvkAai0iITr1g=; b=BR6M2hXu
+        BEw0yS+B9mXUo2bHdvMcpMacVV2VZjqF6VqXMFTOc+JZc/MubTKUNTFjXPSb2LQA
+        xbBVAH/WF9QaY4bpic8/E1en4qtJShcV+SXKcDqp+yloZ9nMxOvhA8jEWICfytn0
+        7rjp/tiwKTi+e6/ApMX5QQOyAEPCFo4qWwBOa8Bndx3fKHGCsMkhPr8GqSmqWJtl
+        lviu2hx0XV0/UyzuTt/G/y9HW43j7+OBhSA5Nwk6bo2cGCyaa8bOsgi8OynqUEZt
+        kIlrEEW5EgjXc7VIoai3ajGVRm+eSuKjjEgrsli3gwsJsXNMAib8cDODe+FnS5IA
+        AkrSWff5lGSrFA==
+X-ME-Sender: <xms:pQUGXzxlQBAHEaXMtdqROMu1d5ND1im7slR88m5hGwjT68uPdYTKgg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudejgdduudejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepvdekleevfeffkeejhfffueelteelfeduieefheduudfggffhhfffheevveeh
+    hedvnecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgepudelne
+    curfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:pQUGX7QepWn4Xu8m4TutUrwXcRa5KWSbpubHdge-ZeqqgaD6Ooiz0A>
+    <xmx:pQUGX9UiNLKAc9v2wzgACmxm_mpcMvx3ACfJgNacniFRlojhPpd5yw>
+    <xmx:pQUGX9ievc6OxYiIpkD_s8VfOFnnuPJjZcDFQx8GnsQPK-VaoLbQTQ>
+    <xmx:pQUGX_C9I3l_EDjcdGogw7tz-dOczlfA9ooiueSx_49yuIk86-kSrCM_K_s>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 4859D30600B7;
+        Wed,  8 Jul 2020 13:43:01 -0400 (EDT)
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Eric Anholt <eric@anholt.net>
+Cc:     dri-devel@lists.freedesktop.org,
+        linux-rpi-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Maxime Ripard <maxime@cerno.tech>
+Subject: [PATCH v4 21/78] drm/vc4: crtc: Move PV dump to config_pv
+Date:   Wed,  8 Jul 2020 19:41:29 +0200
+Message-Id: <bb369aede3a6d0463805faabeb5f598a369b54bf.1594230107.git-series.maxime@cerno.tech>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <cover.7a1aa1784976093af26cb31fd283cf5b3ed568bb.1594230107.git-series.maxime@cerno.tech>
+References: <cover.7a1aa1784976093af26cb31fd283cf5b3ed568bb.1594230107.git-series.maxime@cerno.tech>
 MIME-Version: 1.0
-References: <1593764337-8267-1-git-send-email-hongxing.zhu@nxp.com>
-In-Reply-To: <1593764337-8267-1-git-send-email-hongxing.zhu@nxp.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Wed, 8 Jul 2020 14:41:29 -0300
-Message-ID: <CAOMZO5AHkBCnd54OZd688gbBnHs1stNAPOfKzpX0KEUUcVRxYg@mail.gmail.com>
-Subject: Re: [PATCH] ARM: dts: imx6qp-sabreauto: enable sata on imx6qp
- sabreauto board
-To:     Richard Zhu <hongxing.zhu@nxp.com>
-Cc:     Shawn Guo <shawnguo@kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Richard,
+Now that we only configure the PixelValve in vc4_crtc_config_pv, it doesn't
+really make much sense to dump its register content in its caller.
 
-In the Subject the board name appears twice, which is redundant.
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+---
+ drivers/gpu/drm/vc4/vc4_crtc.c | 26 ++++++++++++--------------
+ 1 file changed, 12 insertions(+), 14 deletions(-)
 
-It could be made simpler like this:
-
-ARM: dts: imx6qp-sabreauto: enable sata
-
-
-On Fri, Jul 3, 2020 at 5:23 AM Richard Zhu <hongxing.zhu@nxp.com> wrote:
->
-> Enable SATA on iMX6QP SABREAUTO board.
->
-> Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
-
-Reviewed-by: Fabio Estevam <festevam@gmail.com>
+diff --git a/drivers/gpu/drm/vc4/vc4_crtc.c b/drivers/gpu/drm/vc4/vc4_crtc.c
+index c2ab907611e3..181d3fd57bc7 100644
+--- a/drivers/gpu/drm/vc4/vc4_crtc.c
++++ b/drivers/gpu/drm/vc4/vc4_crtc.c
+@@ -290,6 +290,14 @@ static void vc4_crtc_config_pv(struct drm_crtc *crtc)
+ 		       vc4_encoder->type == VC4_ENCODER_TYPE_DSI1);
+ 	u32 format = is_dsi ? PV_CONTROL_FORMAT_DSIV_24 : PV_CONTROL_FORMAT_24;
+ 	u8 ppc = pv_data->pixels_per_clock;
++	bool debug_dump_regs = false;
++
++	if (debug_dump_regs) {
++		struct drm_printer p = drm_info_printer(&vc4_crtc->pdev->dev);
++		dev_info(&vc4_crtc->pdev->dev, "CRTC %d regs before:\n",
++			 drm_crtc_index(crtc));
++		drm_print_regset32(&p, &vc4_crtc->regset);
++	}
+ 
+ 	vc4_crtc_pixelvalve_reset(crtc);
+ 
+@@ -359,30 +367,20 @@ static void vc4_crtc_config_pv(struct drm_crtc *crtc)
+ 		   PV_CONTROL_WAIT_HSTART |
+ 		   VC4_SET_FIELD(vc4_encoder->clock_select,
+ 				 PV_CONTROL_CLK_SELECT));
+-}
+-
+-static void vc4_crtc_mode_set_nofb(struct drm_crtc *crtc)
+-{
+-	struct vc4_crtc *vc4_crtc = to_vc4_crtc(crtc);
+-	bool debug_dump_regs = false;
+ 
+ 	if (debug_dump_regs) {
+ 		struct drm_printer p = drm_info_printer(&vc4_crtc->pdev->dev);
+-		dev_info(&vc4_crtc->pdev->dev, "CRTC %d regs before:\n",
++		dev_info(&vc4_crtc->pdev->dev, "CRTC %d regs after:\n",
+ 			 drm_crtc_index(crtc));
+ 		drm_print_regset32(&p, &vc4_crtc->regset);
+ 	}
++}
+ 
++static void vc4_crtc_mode_set_nofb(struct drm_crtc *crtc)
++{
+ 	vc4_crtc_config_pv(crtc);
+ 
+ 	vc4_hvs_mode_set_nofb(crtc);
+-
+-	if (debug_dump_regs) {
+-		struct drm_printer p = drm_info_printer(&vc4_crtc->pdev->dev);
+-		dev_info(&vc4_crtc->pdev->dev, "CRTC %d regs after:\n",
+-			 drm_crtc_index(crtc));
+-		drm_print_regset32(&p, &vc4_crtc->regset);
+-	}
+ }
+ 
+ static void require_hvs_enabled(struct drm_device *dev)
+-- 
+git-series 0.9.1
