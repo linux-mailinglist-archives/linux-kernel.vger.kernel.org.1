@@ -2,111 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 298CE218341
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 11:13:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 620F521833A
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 11:12:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728157AbgGHJNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 05:13:06 -0400
-Received: from mx07-00178001.pphosted.com ([62.209.51.94]:25120 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728102AbgGHJNA (ORCPT
+        id S1728126AbgGHJMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 05:12:53 -0400
+Received: from casper.infradead.org ([90.155.50.34]:58324 "EHLO
+        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728102AbgGHJMv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 05:13:00 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06898mX7031611;
-        Wed, 8 Jul 2020 11:12:06 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=iawSYaeSKNtVm44sgn49UhCmyo15meIegOqh6x74E2M=;
- b=TO0IWmejSbgi7SHJXFFD9ycY1Yz2bJiFrKk55e7vIsjjYRhwXn01v/NE2Fg6D1XxVL0c
- cZcHuW4kzDK+uLzkp3S3d7vB9C3sL2wEHr9JnbiBsBboeaLC3kRpPNGJ4dpZOuY5ulQ5
- JG5Oiz+KAFYspXbJXwZe5SEaDp41aEJJY+GjCoWe/XCM7yWQkUNZDrzdZiWMl0FeRAI0
- RghVB+2dhAf4tPKbOpJakxQGR7BmLt4s33BDj7vvbl9w0krkboSbqKP+dWD6cj5dVXNF
- AjAws0bd/3lFDpzkFW2WK9DMR7X/8ts7aDSyyZlC/LF8iXVzRHycrestry/rhxC/hUXb BQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 322f80xfwp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Jul 2020 11:12:06 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 470B910002A;
-        Wed,  8 Jul 2020 11:12:04 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 0A8062222A6;
-        Wed,  8 Jul 2020 11:12:00 +0200 (CEST)
-Received: from lmecxl0889.tpe.st.com (10.75.127.45) by SFHDAG3NODE1.st.com
- (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 8 Jul
- 2020 11:11:58 +0200
-Subject: Re: [PATCH v3 06/10] ASoC: sti: uniperif: fix 'defined by not used'
- warning
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-CC:     "tiwai@suse.de" <tiwai@suse.de>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20200707191615.98296-1-pierre-louis.bossart@linux.intel.com>
- <20200707191615.98296-7-pierre-louis.bossart@linux.intel.com>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
-Message-ID: <a376393a-6a17-2836-204b-0d4ff60729c0@st.com>
-Date:   Wed, 8 Jul 2020 11:11:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Wed, 8 Jul 2020 05:12:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=eNfnia1zIEwFXAVe3ArSMXxA9lLI4nhBIytQMA82G40=; b=DAsgmM1CZbQ2E6pa/16EJ1asf2
+        5cVZwcve5zkPSOmP/IVITPHDDsGVjNaY0iSvGrBw5K46ET3EDuaJpDAo0zZVMWt8LumpvDN+aNLeN
+        u3AnWWNkAvj3i4525tx1cnB38jXZE00CEEL8N2IKBpCe3b1TT6iaFarsZSoVHciR3MdFDLdccOviX
+        H72VbRq7NCuDMWBQ4znqzkA2hhMfuinVDA1NQpukg3y51wJmZ4rExdGS1/Vks/U55BTk49R1a9l/Z
+        RggdrElfcx8prsKrzF/EU3XVREpZRoqEtPFBZo8kT6aZOqoIJkj+dwFoJUUMtwcDfkoheI9ag4oyx
+        igTLy5Mg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jt67X-0001G0-KW; Wed, 08 Jul 2020 09:12:05 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D27B7300739;
+        Wed,  8 Jul 2020 11:12:01 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id A5876212325C9; Wed,  8 Jul 2020 11:12:01 +0200 (CEST)
+Date:   Wed, 8 Jul 2020 11:12:01 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Ahmed S. Darwish" <a.darwish@linutronix.de>
+Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 06/20] seqlock: Extend seqcount API with associated
+ locks
+Message-ID: <20200708091201.GP117543@hirez.programming.kicks-ass.net>
+References: <20200630054452.3675847-1-a.darwish@linutronix.de>
+ <20200630054452.3675847-7-a.darwish@linutronix.de>
+ <20200706212148.GE5523@worktop.programming.kicks-ass.net>
+ <20200707084024.GA4097637@debian-buster-darwi.lab.linutronix.de>
+ <20200707130410.GO4800@hirez.programming.kicks-ass.net>
+ <20200707143726.GO117543@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <20200707191615.98296-7-pierre-louis.bossart@linux.intel.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.75.127.45]
-X-ClientProxiedBy: SFHDAG4NODE2.st.com (10.75.127.11) To SFHDAG3NODE1.st.com
- (10.75.127.7)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-08_04:2020-07-08,2020-07-08 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200707143726.GO117543@hirez.programming.kicks-ass.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pierre-Louis,
+On Tue, Jul 07, 2020 at 04:37:26PM +0200, Peter Zijlstra wrote:
+> + * Use the ``_irqsave`` and ``_bh`` variants instead if the read side
+> + * ``_bh`` variant of write_seqlock(). Use only if the read side section
+> + * ``_irq`` variant of write_sequnlock(). The write side section of
+> + * ``_irqsave`` variant of write_seqlock(). Use if the read section of
+> + * ``_irqrestore`` variant of write_sequnlock(). The write section of
+> + * ``_bh`` variant of read_seqlock_excl(). Use this variant if the
+> + * ``_bh`` variant of read_sequnlock_excl(). The closed section must've
+> + * ``_irq`` variant of read_seqlock_excl(). Use this only if the
+> + * ``_irq`` variant of read_sequnlock_excl(). The closed section must've
+> + * ``_irqsave`` variant of read_seqlock_excl(). Use this only if the
+> + * ``_irqrestore`` variant of read_sequnlock_excl(). The closed section
+> + * This is the ``_irqsave`` variant of read_seqbegin_or_lock(). Use if
+> + * This is the ``_irqrestore`` variant of done_seqretry(). The read
 
-On 7/7/20 9:16 PM, Pierre-Louis Bossart wrote:
-> Fix W=1 warning. The table uni_tdm_hw is declared in a header included
-> by multiple C file. This isn't really a good practice but for now
-> using __maybe_unused makes the following warning go away.
-> 
-> sound/soc/sti/sti_uniperif.c:12:
-> sound/soc/sti/uniperif.h:1351:38: warning: ‘uni_tdm_hw’ defined but
-> not used [-Wunused-const-variable=]
->  1351 | static const struct snd_pcm_hardware uni_tdm_hw = {
->       |                                      ^~~~~~~~~~
-> 
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-
-Thanks for the patch, 
-Seems that the same patch has already been proposed by Lee: 
-https://www.spinics.net/lists/arm-kernel/msg820327.html
-
-Regards,
-Arnaud
-
-> ---
->  sound/soc/sti/uniperif.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/sti/uniperif.h b/sound/soc/sti/uniperif.h
-> index 2dc2da5d458b..a16adeb7c1e9 100644
-> --- a/sound/soc/sti/uniperif.h
-> +++ b/sound/soc/sti/uniperif.h
-> @@ -1348,7 +1348,7 @@ struct sti_uniperiph_data {
->  	struct sti_uniperiph_dai dai_data;
->  };
->  
-> -static const struct snd_pcm_hardware uni_tdm_hw = {
-> +static __maybe_unused const struct snd_pcm_hardware uni_tdm_hw = {
->  	.info = SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
->  		SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_MMAP |
->  		SNDRV_PCM_INFO_MMAP_VALID,
-> 
+Can we also get rid of that '' nonsense, the gods of ASCII gifted us "
+for this.
