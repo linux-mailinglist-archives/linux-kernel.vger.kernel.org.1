@@ -2,294 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 130E921841C
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 11:46:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 538A5218426
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 11:48:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728461AbgGHJqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 05:46:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34020 "EHLO
+        id S1728337AbgGHJsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 05:48:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728440AbgGHJqP (ORCPT
+        with ESMTP id S1728180AbgGHJsM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 05:46:15 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9E5DC08C5DC;
-        Wed,  8 Jul 2020 02:46:14 -0700 (PDT)
-Date:   Wed, 08 Jul 2020 09:46:12 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1594201572;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TaBmz5T0gTeKsycZ4iDh9C9kbwRhpKjXaMiaaTz7aMo=;
-        b=2cUH3K4lelhxHTgxALkLotqvSl2FiM8TwUfgRZDxE90MaHpJxbN31hNhs/+0gTHPyDqtqn
-        AFLBvTsrlCY23bK175cxSrACttFWNwixziJbeJMWhT+4eMWsaOUUsrzSguhR9ULDc9L9PO
-        HX4V9Vqp8dOfXcTUovAWHvT5kO1vwgzg5ElZtsdCtXjnGm0A5pMETEBuBGJQ0WOCognoTH
-        42FYuzQ4k1CjEpz/Q7oEnLfjxKA1x3bm0zyfDe32NIfXgpQFq4EZ3ITV1FhIfX/QAG1PS2
-        XNcjXYX2OUF9XmFEgT5/M4RgbZDz5kgXuXLwpU0MIpEnCIluJxaXfU2tTzEGsw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1594201572;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TaBmz5T0gTeKsycZ4iDh9C9kbwRhpKjXaMiaaTz7aMo=;
-        b=DS+K+d6eHDxkt4bT+WRyPV36hcegxkfSoXLV7I/jlY+aJmvhJLwWOLe5CqgnnG8MLv6bgM
-        E+C9ur43/jtiykCQ==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/urgent] sched: Fix loadavg accounting race
-Cc:     Dave Jones <davej@codemonkey.org.uk>,
-        Paul Gortmaker <paul.gortmaker@windriver.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200707102957.GN117543@hirez.programming.kicks-ass.net>
-References: <20200707102957.GN117543@hirez.programming.kicks-ass.net>
+        Wed, 8 Jul 2020 05:48:12 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B86AC08C5DC
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 02:48:12 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id h22so46247303lji.9
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 02:48:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=EorH25W8Yxxi5FY5OnW1g+jshkGYsQppDgKBd1wwZ1k=;
+        b=ihrFGM1ziTDLRncYiMtbhzukF7rJcIYxDSGdN5kiRbNtq9IuS1n5MUXiqVYSraXFyk
+         nJ9BoyiVz4zei3RAyZRw2ByIUkOtvb7p3ZbZeUTWJOxiRvtiz9zKqWfRt+8YGMXvz/1F
+         Yz2GgYndWW05bNlxCb0g7BQ/XzcGX/KqeWzCrUBJTlv2WUCn5Ht3mN5CIGvxBHPY0O7F
+         8IrAVDssLs+mKZmL3YEumddRgCt1lB+LCOCQ8IU40ZilSNenPAutNYq5BSDEYNDa0wp4
+         1edKDNBLjpPvC9DCqgrrqUuqP3eT78CkeopMMcQfMjsf4hXs7HZQb7Y+83QWyIBCQzyp
+         RY4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=EorH25W8Yxxi5FY5OnW1g+jshkGYsQppDgKBd1wwZ1k=;
+        b=VnCeiXKq5MJpHJ7DY772Yx6CML2xdAsmHoObTzOBmc+toY+UW33PTiIIyRklTR/DHw
+         YPoF7tAfjyFgMEpvCzdcOGxep7jx6t9dFcQ1sdFL5ftwuXbDp5srK/QaLl2lQDIJ55eV
+         VZBUWnKe0pN/oSiAns8tcRUz/obM25wmAR+LUgVZsjp7WBIFEA5PQM4rHelT4jDLH1o+
+         x6ui4XiLb8rqxP+il0lGDfEXJaZXOsMZMZifcb4ghT1ETqxNW8fcJ3e+D8iyeVhdJQA7
+         tPUGnzRQcI4O0sTHUMDuXWAqLk1MEcsGG8oj6c86N+adsNY6tQuT/DkHVoae5Tpe+F6X
+         pTug==
+X-Gm-Message-State: AOAM532jNFvipIUPe0kHBXUirHbAeOPaIoLr5mpeEP6PnXY2OIdxttPM
+        j0uE1YlYGJqNhvWZEEIUISgGazNVsFrJPyyCW/aQag==
+X-Google-Smtp-Source: ABdhPJz2gMjFnsDKbFqZPDDFArmkqye10pgeVljvY4vAJonEYlmNuZ3cZbOCCsYr//jzwPdEwL3oHR2klTs1FpqRQT8=
+X-Received: by 2002:a2e:7601:: with SMTP id r1mr34827659ljc.111.1594201690546;
+ Wed, 08 Jul 2020 02:48:10 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <159420157209.4006.10732608050891501703.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20200702144258.19326-1-vincent.guittot@linaro.org> <4198cf3d-308e-feee-91c3-2edfd1748b4c@arm.com>
+In-Reply-To: <4198cf3d-308e-feee-91c3-2edfd1748b4c@arm.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Wed, 8 Jul 2020 11:47:59 +0200
+Message-ID: <CAKfTPtBeRXCEWB3dTC8uOqbQ5xaZqQTAeG1EVGEk+pJcYz00sw@mail.gmail.com>
+Subject: Re: [PATCH] sched/fair: handle case of task_h_load() returning 0
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/urgent branch of tip:
+On Wed, 8 Jul 2020 at 11:45, Dietmar Eggemann <dietmar.eggemann@arm.com> wr=
+ote:
+>
+> On 02/07/2020 16:42, Vincent Guittot wrote:
+> > task_h_load() can return 0 in some situations like running stress-ng
+> > mmapfork, which forks thousands of threads, in a sched group on a 224 c=
+ores
+> > system. The load balance doesn't handle this correctly because
+>
+> I guess the issue here is that 'cfs_rq->h_load' in
+>
+> task_h_load() {
+>     struct cfs_rq *cfs_rq =3D task_cfs_rq(p);
+>     ...
+>     return div64_ul(p->se.avg.load_avg * cfs_rq->h_load,
+>                     cfs_rq_load_avg(cfs_rq) + 1);
+> }
+>
+> is still ~0 (or at least pretty small) compared to se.avg.load_avg being
+> 1024 and cfs_rq_load_avg(cfs_rq) n*1024 in these lb occurrences.
+>
+> > env->imbalance never decreases and it will stop pulling tasks only afte=
+r
+> > reaching loop_max, which can be equal to the number of running tasks of
+> > the cfs. Make sure that imbalance will be decreased by at least 1.
+> >
+> > misfit task is the other feature that doesn't handle correctly such
+> > situation although it's probably more difficult to face the problem
+> > because of the smaller number of CPUs and running tasks on heterogenous
+> > system.
+> >
+> > We can't simply ensure that task_h_load() returns at least one because =
+it
+> > would imply to handle underrun in other places.
+> >
+> > Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+> > ---
+> >  kernel/sched/fair.c | 18 +++++++++++++++++-
+> >  1 file changed, 17 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > index 6fab1d17c575..62747c24aa9e 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -4049,7 +4049,13 @@ static inline void update_misfit_status(struct t=
+ask_struct *p, struct rq *rq)
+> >               return;
+> >       }
+> >
+> > -     rq->misfit_task_load =3D task_h_load(p);
+> > +     /*
+> > +      * Make sure that misfit_task_load will not be null even if
+> > +      * task_h_load() returns 0. misfit_task_load is only used to sele=
+ct
+> > +      * rq with highest load so adding 1 will not modify the result
+> > +      * of the comparison.
+> > +      */
+> > +     rq->misfit_task_load =3D task_h_load(p) + 1;
+> >  }
+> >
+> >  #else /* CONFIG_SMP */
+> > @@ -7664,6 +7670,16 @@ static int detach_tasks(struct lb_env *env)
+> >                           env->sd->nr_balance_failed <=3D env->sd->cach=
+e_nice_tries)
+> >                               goto next;
+> >
+> > +                     /*
+> > +                      * Depending of the number of CPUs and tasks and =
+the
+> > +                      * cgroup hierarchy, task_h_load() can return a n=
+ull
+> > +                      * value. Make sure that env->imbalance decreases
+> > +                      * otherwise detach_tasks() will stop only after
+> > +                      * detaching up to loop_max tasks.
+> > +                      */
+> > +                     if (!load)
+> > +                             load =3D 1;
+> > +
+> >                       env->imbalance -=3D load;
+> >                       break;
+>
+> I assume that this is related to the LKP mail
 
-Commit-ID:     dbfb089d360b1cc623c51a2c7cf9b99eff78e0e7
-Gitweb:        https://git.kernel.org/tip/dbfb089d360b1cc623c51a2c7cf9b99eff78e0e7
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Fri, 03 Jul 2020 12:40:33 +02:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Wed, 08 Jul 2020 11:38:49 +02:00
+I have found this problem while studying the regression raised in the
+email below but it doesn't fix it. At least, it's not enough
 
-sched: Fix loadavg accounting race
-
-The recent commit:
-
-  c6e7bd7afaeb ("sched/core: Optimize ttwu() spinning on p->on_cpu")
-
-moved these lines in ttwu():
-
-	p->sched_contributes_to_load = !!task_contributes_to_load(p);
-	p->state = TASK_WAKING;
-
-up before:
-
-	smp_cond_load_acquire(&p->on_cpu, !VAL);
-
-into the 'p->on_rq == 0' block, with the thinking that once we hit
-schedule() the current task cannot change it's ->state anymore. And
-while this is true, it is both incorrect and flawed.
-
-It is incorrect in that we need at least an ACQUIRE on 'p->on_rq == 0'
-to avoid weak hardware from re-ordering things for us. This can fairly
-easily be achieved by relying on the control-dependency already in
-place.
-
-The second problem, which makes the flaw in the original argument, is
-that while schedule() will not change prev->state, it will read it a
-number of times (arguably too many times since it's marked volatile).
-The previous condition 'p->on_cpu == 0' was sufficient because that
-indicates schedule() has completed, and will no longer read
-prev->state. So now the trick is to make this same true for the (much)
-earlier 'prev->on_rq == 0' case.
-
-Furthermore, in order to make the ordering stick, the 'prev->on_rq = 0'
-assignment needs to he a RELEASE, but adding additional ordering to
-schedule() is an unwelcome proposition at the best of times, doubly so
-for mere accounting.
-
-Luckily we can push the prev->state load up before rq->lock, with the
-only caveat that we then have to re-read the state after. However, we
-know that if it changed, we no longer have to worry about the blocking
-path. This gives us the required ordering, if we block, we did the
-prev->state load before an (effective) smp_mb() and the p->on_rq store
-needs not change.
-
-With this we end up with the effective ordering:
-
-	LOAD p->state           LOAD-ACQUIRE p->on_rq == 0
-	MB
-	STORE p->on_rq, 0       STORE p->state, TASK_WAKING
-
-which ensures the TASK_WAKING store happens after the prev->state
-load, and all is well again.
-
-Fixes: c6e7bd7afaeb ("sched/core: Optimize ttwu() spinning on p->on_cpu")
-Reported-by: Dave Jones <davej@codemonkey.org.uk>
-Reported-by: Paul Gortmaker <paul.gortmaker@windriver.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Tested-by: Dave Jones <davej@codemonkey.org.uk>
-Tested-by: Paul Gortmaker <paul.gortmaker@windriver.com>
-Link: https://lkml.kernel.org/r/20200707102957.GN117543@hirez.programming.kicks-ass.net
----
- include/linux/sched.h |  4 +---
- kernel/sched/core.c   | 67 +++++++++++++++++++++++++++++++-----------
- 2 files changed, 51 insertions(+), 20 deletions(-)
-
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 692e327..6833729 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -114,10 +114,6 @@ struct task_group;
- 
- #define task_is_stopped_or_traced(task)	((task->state & (__TASK_STOPPED | __TASK_TRACED)) != 0)
- 
--#define task_contributes_to_load(task)	((task->state & TASK_UNINTERRUPTIBLE) != 0 && \
--					 (task->flags & PF_FROZEN) == 0 && \
--					 (task->state & TASK_NOLOAD) == 0)
--
- #ifdef CONFIG_DEBUG_ATOMIC_SLEEP
- 
- /*
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index ca5db40..950ac45 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -1311,9 +1311,6 @@ static inline void dequeue_task(struct rq *rq, struct task_struct *p, int flags)
- 
- void activate_task(struct rq *rq, struct task_struct *p, int flags)
- {
--	if (task_contributes_to_load(p))
--		rq->nr_uninterruptible--;
--
- 	enqueue_task(rq, p, flags);
- 
- 	p->on_rq = TASK_ON_RQ_QUEUED;
-@@ -1323,9 +1320,6 @@ void deactivate_task(struct rq *rq, struct task_struct *p, int flags)
- {
- 	p->on_rq = (flags & DEQUEUE_SLEEP) ? 0 : TASK_ON_RQ_MIGRATING;
- 
--	if (task_contributes_to_load(p))
--		rq->nr_uninterruptible++;
--
- 	dequeue_task(rq, p, flags);
- }
- 
-@@ -2236,10 +2230,10 @@ ttwu_do_activate(struct rq *rq, struct task_struct *p, int wake_flags,
- 
- 	lockdep_assert_held(&rq->lock);
- 
--#ifdef CONFIG_SMP
- 	if (p->sched_contributes_to_load)
- 		rq->nr_uninterruptible--;
- 
-+#ifdef CONFIG_SMP
- 	if (wake_flags & WF_MIGRATED)
- 		en_flags |= ENQUEUE_MIGRATED;
- #endif
-@@ -2583,7 +2577,7 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
- 	 * A similar smb_rmb() lives in try_invoke_on_locked_down_task().
- 	 */
- 	smp_rmb();
--	if (p->on_rq && ttwu_remote(p, wake_flags))
-+	if (READ_ONCE(p->on_rq) && ttwu_remote(p, wake_flags))
- 		goto unlock;
- 
- 	if (p->in_iowait) {
-@@ -2592,9 +2586,6 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
- 	}
- 
- #ifdef CONFIG_SMP
--	p->sched_contributes_to_load = !!task_contributes_to_load(p);
--	p->state = TASK_WAKING;
--
- 	/*
- 	 * Ensure we load p->on_cpu _after_ p->on_rq, otherwise it would be
- 	 * possible to, falsely, observe p->on_cpu == 0.
-@@ -2613,8 +2604,20 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
- 	 *
- 	 * Pairs with the LOCK+smp_mb__after_spinlock() on rq->lock in
- 	 * __schedule().  See the comment for smp_mb__after_spinlock().
-+	 *
-+	 * Form a control-dep-acquire with p->on_rq == 0 above, to ensure
-+	 * schedule()'s deactivate_task() has 'happened' and p will no longer
-+	 * care about it's own p->state. See the comment in __schedule().
- 	 */
--	smp_rmb();
-+	smp_acquire__after_ctrl_dep();
-+
-+	/*
-+	 * We're doing the wakeup (@success == 1), they did a dequeue (p->on_rq
-+	 * == 0), which means we need to do an enqueue, change p->state to
-+	 * TASK_WAKING such that we can unlock p->pi_lock before doing the
-+	 * enqueue, such as ttwu_queue_wakelist().
-+	 */
-+	p->state = TASK_WAKING;
- 
- 	/*
- 	 * If the owning (remote) CPU is still in the middle of schedule() with
-@@ -4097,6 +4100,7 @@ static void __sched notrace __schedule(bool preempt)
- {
- 	struct task_struct *prev, *next;
- 	unsigned long *switch_count;
-+	unsigned long prev_state;
- 	struct rq_flags rf;
- 	struct rq *rq;
- 	int cpu;
-@@ -4113,12 +4117,22 @@ static void __sched notrace __schedule(bool preempt)
- 	local_irq_disable();
- 	rcu_note_context_switch(preempt);
- 
-+	/* See deactivate_task() below. */
-+	prev_state = prev->state;
-+
- 	/*
- 	 * Make sure that signal_pending_state()->signal_pending() below
- 	 * can't be reordered with __set_current_state(TASK_INTERRUPTIBLE)
--	 * done by the caller to avoid the race with signal_wake_up().
-+	 * done by the caller to avoid the race with signal_wake_up():
-+	 *
-+	 * __set_current_state(@state)		signal_wake_up()
-+	 * schedule()				  set_tsk_thread_flag(p, TIF_SIGPENDING)
-+	 *					  wake_up_state(p, state)
-+	 *   LOCK rq->lock			    LOCK p->pi_state
-+	 *   smp_mb__after_spinlock()		    smp_mb__after_spinlock()
-+	 *     if (signal_pending_state())	    if (p->state & @state)
- 	 *
--	 * The membarrier system call requires a full memory barrier
-+	 * Also, the membarrier system call requires a full memory barrier
- 	 * after coming from user-space, before storing to rq->curr.
- 	 */
- 	rq_lock(rq, &rf);
-@@ -4129,10 +4143,31 @@ static void __sched notrace __schedule(bool preempt)
- 	update_rq_clock(rq);
- 
- 	switch_count = &prev->nivcsw;
--	if (!preempt && prev->state) {
--		if (signal_pending_state(prev->state, prev)) {
-+	/*
-+	 * We must re-load prev->state in case ttwu_remote() changed it
-+	 * before we acquired rq->lock.
-+	 */
-+	if (!preempt && prev_state && prev_state == prev->state) {
-+		if (signal_pending_state(prev_state, prev)) {
- 			prev->state = TASK_RUNNING;
- 		} else {
-+			prev->sched_contributes_to_load =
-+				(prev_state & TASK_UNINTERRUPTIBLE) &&
-+				!(prev_state & TASK_NOLOAD) &&
-+				!(prev->flags & PF_FROZEN);
-+
-+			if (prev->sched_contributes_to_load)
-+				rq->nr_uninterruptible++;
-+
-+			/*
-+			 * __schedule()			ttwu()
-+			 *   prev_state = prev->state;	  if (READ_ONCE(p->on_rq) && ...)
-+			 *   LOCK rq->lock		    goto out;
-+			 *   smp_mb__after_spinlock();	  smp_acquire__after_ctrl_dep();
-+			 *   p->on_rq = 0;		  p->state = TASK_WAKING;
-+			 *
-+			 * After this, schedule() must not care about p->state any more.
-+			 */
- 			deactivate_task(rq, prev, DEQUEUE_SLEEP | DEQUEUE_NOCLOCK);
- 
- 			if (prev->in_iowait) {
+>
+> https://lkml.kernel.org/r/20200421004749.GC26573@shao2-debian ?
+>
+> I ran the test (5.8.0-rc4 w/o vs. w/ your patch) on 'Intel(R) Xeon(R)
+> CPU E5-2690 v2 @ 3.00GHz' (2*2*10, 40 CPUs).
+> I can't see the changes in the magnitude shown in the email above (they
+> used a 96 CPU system though).
+> I used only scheduler stressor mmapfork in taskgroup /A/B/C:
+>
+>  stress-ng --timeout 1 --times --verify --metrics-brief --sequential 40 -=
+-class scheduler --exclude (all except mmapfork)
+>
+> 5.8.0-rc4-custom-dieegg01-stress-ng-base
+>
+> stress-ng: info:  [3720]  stressor      bogo ops real time  usr time  sys=
+ time   bogo ops/s   bogo ops/s
+> stress-ng: info:  [3720]                           (secs)    (secs)    (s=
+ecs)   (real time) (usr+sys time)
+> stress-ng: info:  [3720]  mmapfork            40      1.98     12.53     =
+71.12        20.21         0.48
+> stress-ng: info:  [5201]  mmapfork            40      2.50     13.10     =
+98.61        16.01         0.36
+> stress-ng: info:  [6682]  mmapfork            40      2.58     14.80     =
+98.63        15.88         0.36
+> stress-ng: info:  [8195]  mmapfork            40      1.79     12.57     =
+61.61        22.31         0.54
+> stress-ng: info:  [9679]  mmapfork            40      2.20     12.17     =
+82.66        18.20         0.42
+> stress-ng: info:  [11164] mmapfork            40      2.61     15.09    1=
+02.86        16.86         0.37
+> stress-ng: info:  [12773] mmapfork            40      1.89     12.32     =
+65.09        21.15         0.52
+> stress-ng: info:  [3883]  mmapfork            40      2.14     12.90     =
+76.73        18.68         0.45
+> stress-ng: info:  [6845]  mmapfork            40      2.25     11.83     =
+84.06        17.80         0.42
+> stress-ng: info:  [8326]  mmapfork            40      1.76     12.93     =
+56.65        22.70         0.57
+>
+>                                                                          =
+       Mean: 18.98 (=CF=83: 2.369)
+> 5.8.0-rc4-custom-dieegg01-stress-ng
+>
+> stress-ng: info:  [3895]  mmapfork            40      2.40     13.56     =
+92.83        16.67         0.38
+> stress-ng: info:  [5379]  mmapfork            40      2.08     13.65     =
+74.11        19.23         0.46
+> stress-ng: info:  [6860]  mmapfork            40      2.15     13.72     =
+80.24        18.62         0.43
+> stress-ng: info:  [8341]  mmapfork            40      2.37     13.74     =
+90.93        16.85         0.38
+> stress-ng: info:  [9822]  mmapfork            40      2.10     12.48     =
+83.85        19.09         0.42
+> stress-ng: info:  [13816] mmapfork            40      2.05     12.13     =
+77.64        19.49         0.45
+> stress-ng: info:  [15297] mmapfork            40      2.53     13.16    1=
+00.26        15.84         0.35
+> stress-ng: info:  [16780] mmapfork            40      2.00     12.10     =
+71.25        20.02         0.48
+> stress-ng: info:  [18262] mmapfork            40      1.73     12.24     =
+57.69        23.09         0.57
+> stress-ng: info:  [19743] mmapfork            40      1.78     12.51     =
+57.89        22.48         0.57
+>
+>                                                                          =
+       Mean: 19.14 (=CF=83: 2.239)
+>
+>
+>
+>
+>
