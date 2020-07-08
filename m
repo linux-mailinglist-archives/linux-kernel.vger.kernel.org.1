@@ -2,92 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF848218872
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 15:06:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 826EE218875
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 15:06:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729243AbgGHNGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 09:06:31 -0400
-Received: from mga17.intel.com ([192.55.52.151]:52885 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728677AbgGHNGb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 09:06:31 -0400
-IronPort-SDR: IcDcEqQvdnqjpkT3TfhxldoXxc1KeFpSZUM6fy/3SYAymJf5r4AD3qPKlM+AwrwHAlXHVcruIz
- wNCxQ2lVqNjw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9675"; a="127868589"
-X-IronPort-AV: E=Sophos;i="5.75,327,1589266800"; 
-   d="scan'208";a="127868589"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2020 06:06:31 -0700
-IronPort-SDR: P5qtq4WPAKu4Jcv7EbkTrZYVMsTvHhoAMjb7Hcm8yODViPeHgSoGywF3dW4kqb/58IvCXubQ3O
- wc9ryDf15Pow==
-X-IronPort-AV: E=Sophos;i="5.75,327,1589266800"; 
-   d="scan'208";a="323873323"
-Received: from sare-mobl.amr.corp.intel.com (HELO [10.251.7.246]) ([10.251.7.246])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2020 06:06:30 -0700
-Subject: Re: [PATCH] regmap: add missing dependency on SoundWire
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org,
-        "open list:REGISTER MAP ABSTRACTION" <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-References: <20200707202628.113142-1-pierre-louis.bossart@linux.intel.com>
- <20200708071428.GA353107@kroah.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <dda765be-b252-98ff-f339-f226a42f4093@linux.intel.com>
-Date:   Wed, 8 Jul 2020 08:06:29 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1729358AbgGHNGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 09:06:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728677AbgGHNGi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 09:06:38 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36632C08E6DC
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 06:06:38 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id l2so3056314wmf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 06:06:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=oLDzCYJWqSNQ9M1Ha7TNoiTF86yo/dq5RVgwN+Hsw1U=;
+        b=njp2qXt1BaQ9kGGg90luhkLagzFxxSHWZIvLMjW4ava2YlPKpTyY1GIKzjAH7bLwrS
+         inHWc6CpR96XN/KM/jhpCmu0rpF5hbLSxq6FrbQCw8CSjwSUKgNw/feC5qcZDyfd6kdm
+         fqSSom5qrymbjRD5NGi9tFXYrB0um5EGRsT7zjfn39+/2jyEmUdHDgiIOKUutaNemg3E
+         qbkBmJquE063NY/LDkwIVbVwAS96Wuup42pGE5Y/2UWyC6zfXwBQ6x+GdBXbbsspgbBD
+         3/0a5CUliPqvgIRb2V8+iVZj3YdbZrXEgme8zlejZWv+NQ9TSPXNC3LTdveW3kJXoBBB
+         VEVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oLDzCYJWqSNQ9M1Ha7TNoiTF86yo/dq5RVgwN+Hsw1U=;
+        b=UEjfjiI9r8/VSp7XTDMPk06HmUadvKNt34RKQsebWEXpLN/HYB8rXtsohXyLWWXpj5
+         cZk6wkGLMzbeXAHFjoMeXOM/GUuVIW35J1lmHn59AYD881ssowNPdymDp3kpvdDYtIVK
+         CVOksasiytlog8qLJ+hhw7l2I1ynZ7nnqYybMYHm4/6mWV194fbSwHWs77LRaJsTTNZ1
+         hDrybAt3kX3dkpSxs3Kif6I9yS/SbO9n8t5JVz+h1c3pBi/zdm3tsfP7poy4ThlvM3jV
+         CV9ZyLNhw0hPt7tbBnb/SuiDglNh3mig7Jl2xvSUGViQ8XBFRoQTRQZouIi50yCBqsQs
+         RYZQ==
+X-Gm-Message-State: AOAM532LLbsMJWAT7oDQVQ9fylI0AypxHGf1XjNEhm6H/nNYBU97IE4H
+        COt59NdSp5VtQe0SUSx6QJLnwA==
+X-Google-Smtp-Source: ABdhPJycffceCLL7aGQilAq3ooqxDBsNO0dVSgTCtQTuz32w5GffuQpcf1XdckbErcpZYECigf7F+A==
+X-Received: by 2002:a1c:81d3:: with SMTP id c202mr9208740wmd.54.1594213596871;
+        Wed, 08 Jul 2020 06:06:36 -0700 (PDT)
+Received: from holly.lan (cpc141214-aztw34-2-0-cust773.18-1.cable.virginm.net. [86.9.19.6])
+        by smtp.gmail.com with ESMTPSA id z10sm6072444wrm.21.2020.07.08.06.06.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Jul 2020 06:06:36 -0700 (PDT)
+Date:   Wed, 8 Jul 2020 14:06:34 +0100
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Gyungoh Yoo <jack.yoo@skyworksinc.com>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org
+Subject: Re: [PATCH 1/1] video: backlight: sky81452-backlight: Fix some
+ kerneldoc issues
+Message-ID: <20200708130634.5tttrzlq2zfx7uho@holly.lan>
+References: <20200708130419.3445042-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20200708071428.GA353107@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200708130419.3445042-1-lee.jones@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 7/8/20 2:14 AM, Greg Kroah-Hartman wrote:
-> On Tue, Jul 07, 2020 at 03:26:28PM -0500, Pierre-Louis Bossart wrote:
->> CONFIG_REGMAP is not selected when no other serial bus is supported.
->> It's largely academic since CONFIG_I2C is usually selected e.g. by
->> DRM, but still this can break randconfig so let's be explicit.
->>
->> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->> ---
->>   drivers/base/regmap/Kconfig | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/base/regmap/Kconfig b/drivers/base/regmap/Kconfig
->> index 0fd6f97ee523..1d1d26b0d279 100644
->> --- a/drivers/base/regmap/Kconfig
->> +++ b/drivers/base/regmap/Kconfig
->> @@ -4,7 +4,7 @@
->>   # subsystems should select the appropriate symbols.
->>   
->>   config REGMAP
->> -	default y if (REGMAP_I2C || REGMAP_SPI || REGMAP_SPMI || REGMAP_W1 || REGMAP_AC97 || REGMAP_MMIO || REGMAP_IRQ || REGMAP_SCCB || REGMAP_I3C)
->> +	default y if (REGMAP_I2C || REGMAP_SPI || REGMAP_SPMI || REGMAP_W1 || REGMAP_AC97 || REGMAP_MMIO || REGMAP_IRQ || REGMAP_SOUNDWIRE || REGMAP_SCCB || REGMAP_I3C)
+On Wed, Jul 08, 2020 at 02:04:19PM +0100, Lee Jones wrote:
+> Firstly, all lines must begin with a '*'.  Secondly, arg descriptions
+> must be spelt correctly, so fix misspelling of 'gpioD_enable' and
+> 'short_detecTion_threshold'
 > 
-> Any reason you didn't add it to the end of the list instead of adding it
-> to the middle?
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/video/backlight/sky81452-backlight.c:46: warning: bad line:                 If it is not defined, default name is lcd-backlight.
+>  drivers/video/backlight/sky81452-backlight.c:64: warning: Function parameter or member 'gpiod_enable' not described in 'sky81452_bl_platform_data'
+>  drivers/video/backlight/sky81452-backlight.c:64: warning: Function parameter or member 'short_detection_threshold' not described in 'sky81452_bl_platform_data'
+> 
+> Cc: Daniel Thompson <daniel.thompson@linaro.org>
+> Cc: Jingoo Han <jingoohan1@gmail.com>
+> Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+> Cc: Gyungoh Yoo <jack.yoo@skyworksinc.com>
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-fbdev@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-yes, I followed the config order in the same file:
+Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
 
-grep config Kconfig
-config REGMAP
-config REGCACHE_COMPRESSED
-config REGMAP_AC97
-config REGMAP_I2C
-config REGMAP_SLIMBUS
-config REGMAP_SPI
-config REGMAP_SPMI
-config REGMAP_W1
-config REGMAP_MMIO
-config REGMAP_IRQ
-config REGMAP_SOUNDWIRE
-config REGMAP_SCCB
-config REGMAP_I3C
+
+Daniel.
