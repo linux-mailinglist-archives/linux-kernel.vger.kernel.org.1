@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57F55217E93
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 06:53:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2391E217E97
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 06:53:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729325AbgGHEvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 00:51:33 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:20444 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725903AbgGHEvc (ORCPT
+        id S1729504AbgGHEvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 00:51:42 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:61170 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725903AbgGHEvj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 00:51:32 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0684Zfga136800;
-        Wed, 8 Jul 2020 00:51:02 -0400
+        Wed, 8 Jul 2020 00:51:39 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0684DRS3043643;
+        Wed, 8 Jul 2020 00:51:06 -0400
 Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3251muysuh-1
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3256x50nm7-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Jul 2020 00:51:02 -0400
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0684j268011419;
-        Wed, 8 Jul 2020 00:51:02 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3251muysts-1
+        Wed, 08 Jul 2020 00:51:06 -0400
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0684X57O095394;
+        Wed, 8 Jul 2020 00:51:06 -0400
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3256x50nks-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Jul 2020 00:51:02 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0684klqX012028;
-        Wed, 8 Jul 2020 04:50:59 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma06ams.nl.ibm.com with ESMTP id 322h1h4252-1
+        Wed, 08 Jul 2020 00:51:05 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0684jLjv007266;
+        Wed, 8 Jul 2020 04:51:04 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma04fra.de.ibm.com with ESMTP id 3251dw04d1-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Jul 2020 04:50:59 +0000
+        Wed, 08 Jul 2020 04:51:04 +0000
 Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0684oumC47579336
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0684nd9c57934322
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 8 Jul 2020 04:50:56 GMT
+        Wed, 8 Jul 2020 04:49:39 GMT
 Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8EB74AE057;
+        by IMSVA (Postfix) with ESMTP id 1851BAE058;
+        Wed,  8 Jul 2020 04:51:01 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F1B02AE04D;
         Wed,  8 Jul 2020 04:50:56 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A96D3AE045;
-        Wed,  8 Jul 2020 04:50:52 +0000 (GMT)
 Received: from bangoria.ibmuc.com (unknown [9.199.51.84])
         by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed,  8 Jul 2020 04:50:52 +0000 (GMT)
+        Wed,  8 Jul 2020 04:50:56 +0000 (GMT)
 From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
 To:     mpe@ellerman.id.au, mikey@neuling.org
 Cc:     ravi.bangoria@linux.ibm.com, apopple@linux.ibm.com,
@@ -54,63 +54,58 @@ Cc:     ravi.bangoria@linux.ibm.com, apopple@linux.ibm.com,
         jolsa@kernel.org, oleg@redhat.com, fweisbec@gmail.com,
         mingo@kernel.org, pedromfc@br.ibm.com, miltonm@us.ibm.com,
         linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 0/9] powerpc/watchpoint: Enable 2nd DAWR on baremetal and powervm
-Date:   Wed,  8 Jul 2020 10:20:37 +0530
-Message-Id: <20200708045046.135702-1-ravi.bangoria@linux.ibm.com>
+Subject: [PATCH v3 1/9] powerpc/watchpoint: Fix 512 byte boundary limit
+Date:   Wed,  8 Jul 2020 10:20:38 +0530
+Message-Id: <20200708045046.135702-2-ravi.bangoria@linux.ibm.com>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200708045046.135702-1-ravi.bangoria@linux.ibm.com>
+References: <20200708045046.135702-1-ravi.bangoria@linux.ibm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-07-08_01:2020-07-08,2020-07-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 clxscore=1011
- mlxscore=0 malwarescore=0 adultscore=0 suspectscore=0 cotscore=-2147483648
- lowpriorityscore=0 bulkscore=0 mlxlogscore=604 priorityscore=1501
- phishscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
+ suspectscore=0 lowpriorityscore=0 spamscore=0 cotscore=-2147483648
+ adultscore=0 phishscore=0 impostorscore=0 clxscore=1015 mlxlogscore=999
+ bulkscore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
  scancount=1 engine=8.12.0-2004280000 definitions=main-2007080024
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Last series[1] was to add basic infrastructure support for more than
-one watchpoint on Book3S powerpc. This series actually enables the 2nd 
-DAWR for baremetal and powervm. Kvm guest is still not supported.
+Milton Miller reported that we are aligning start and end address to
+wrong size SZ_512M. It should be SZ_512. Fix that.
 
-v2: https://lore.kernel.org/linuxppc-dev/20200604033443.70591-1-ravi.bangoria@linux.ibm.com/
+While doing this change I also found a case where ALIGN() comparison
+fails. Within a given aligned range, ALIGN() of two addresses does not
+match when start address is pointing to the first byte and end address
+is pointing to any other byte except the first one. But that's not true
+for ALIGN_DOWN(). ALIGN_DOWN() of any two addresses within that range
+will always point to the first byte. So use ALIGN_DOWN() instead of
+ALIGN().
 
-v2->v3:
- - patch #2 is new. It fixes an issue with DAWR exception constraint
- - Rename dawr1 to debug-facilities-v31 in dt cpu feature, suggested
-   by Nick Piggin.
- - Rebased to powerpc/next
+Fixes: e68ef121c1f4 ("powerpc/watchpoint: Use builtin ALIGN*() macros")
+Reported-by: Milton Miller <miltonm@us.ibm.com>
+Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+---
+ arch/powerpc/kernel/hw_breakpoint.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-[1]: https://lore.kernel.org/linuxppc-dev/20200514111741.97993-1-ravi.bangoria@linux.ibm.com/
-
-Ravi Bangoria (9):
-  powerpc/watchpoint: Fix 512 byte boundary limit
-  powerpc/watchpoint: Fix DAWR exception constraint
-  powerpc/watchpoint: Enable watchpoint functionality on power10 guest
-  powerpc/dt_cpu_ftrs: Add feature for 2nd DAWR
-  powerpc/watchpoint: Set CPU_FTR_DAWR1 based on pa-features bit
-  powerpc/watchpoint: Rename current H_SET_MODE DAWR macro
-  powerpc/watchpoint: Guest support for 2nd DAWR hcall
-  powerpc/watchpoint: Return available watchpoints dynamically
-  powerpc/watchpoint: Remove 512 byte boundary
-
- arch/powerpc/include/asm/cputable.h       | 13 ++-
- arch/powerpc/include/asm/hvcall.h         |  3 +-
- arch/powerpc/include/asm/hw_breakpoint.h  |  5 +-
- arch/powerpc/include/asm/machdep.h        |  2 +-
- arch/powerpc/include/asm/plpar_wrappers.h |  7 +-
- arch/powerpc/kernel/dawr.c                |  2 +-
- arch/powerpc/kernel/dt_cpu_ftrs.c         |  7 ++
- arch/powerpc/kernel/hw_breakpoint.c       | 98 +++++++++++++++--------
- arch/powerpc/kernel/prom.c                |  2 +
- arch/powerpc/kvm/book3s_hv.c              |  2 +-
- arch/powerpc/platforms/pseries/setup.c    |  7 +-
- 11 files changed, 103 insertions(+), 45 deletions(-)
-
+diff --git a/arch/powerpc/kernel/hw_breakpoint.c b/arch/powerpc/kernel/hw_breakpoint.c
+index 0000daf0e1da..031e6defc08e 100644
+--- a/arch/powerpc/kernel/hw_breakpoint.c
++++ b/arch/powerpc/kernel/hw_breakpoint.c
+@@ -419,7 +419,7 @@ static int hw_breakpoint_validate_len(struct arch_hw_breakpoint *hw)
+ 	if (dawr_enabled()) {
+ 		max_len = DAWR_MAX_LEN;
+ 		/* DAWR region can't cross 512 bytes boundary */
+-		if (ALIGN(start_addr, SZ_512M) != ALIGN(end_addr - 1, SZ_512M))
++		if (ALIGN_DOWN(start_addr, SZ_512) != ALIGN_DOWN(end_addr - 1, SZ_512))
+ 			return -EINVAL;
+ 	} else if (IS_ENABLED(CONFIG_PPC_8xx)) {
+ 		/* 8xx can setup a range without limitation */
 -- 
 2.26.2
 
