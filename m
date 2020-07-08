@@ -2,109 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC52E2182A7
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 10:39:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85ABE2182AD
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 10:40:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728206AbgGHIj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 04:39:56 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:29013 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726795AbgGHIjz (ORCPT
+        id S1728266AbgGHIkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 04:40:10 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:59815 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727085AbgGHIkJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 04:39:55 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1594197595; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=4dQVarAM3wGiNoLl2bz5daF0OQcsMFRvodrSI3IQvBk=; b=qwXnmjEV7QnVr62+HaOOb1Nnqh6IiNO1ulk8iqR4SHcLmeckts7k6uNbpJC7DSwM1QMciBxe
- Goin1mLOSAvGpxSVam+Rsfjgfh7BOkNIN9QO6P/1QqcJv8Zh09M9007JOeibc9bb41W4Btqa
- RoGlMzda8QocNkQMpRjFYNCXkbk=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n11.prod.us-west-2.postgun.com with SMTP id
- 5f058655a33b1a3dd481efc7 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 08 Jul 2020 08:39:49
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 39ABDC43387; Wed,  8 Jul 2020 08:39:49 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.1.11] (unknown [61.3.23.187])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 20184C433CA;
-        Wed,  8 Jul 2020 08:39:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 20184C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rnayak@codeaurora.org
-Subject: Re: [PATCH 0/2] spi: spi-qcom-qspi: Avoid some per-transfer overhead
-To:     Douglas Anderson <dianders@chromium.org>,
-        Mark Brown <broonie@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     mka@chromium.org, Akash Asthana <akashast@codeaurora.org>,
-        swboyd@chromium.org, linux-arm-msm@vger.kernel.org,
-        georgi.djakov@linaro.org, ctheegal@codeaurora.org,
-        mkshah@codeaurora.org, linux-kernel@vger.kernel.org,
-        linux-spi@vger.kernel.org
-References: <20200707201641.2030532-1-dianders@chromium.org>
-From:   Rajendra Nayak <rnayak@codeaurora.org>
-Message-ID: <5b62bf01-cb06-abda-aada-8a11b4a3935c@codeaurora.org>
-Date:   Wed, 8 Jul 2020 14:09:42 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 8 Jul 2020 04:40:09 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0688WjMG059558;
+        Wed, 8 Jul 2020 04:40:00 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 325ajv0dx6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Jul 2020 04:40:00 -0400
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0688Y2d1064240;
+        Wed, 8 Jul 2020 04:40:00 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 325ajv0dw6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Jul 2020 04:39:59 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0688dvDw010387;
+        Wed, 8 Jul 2020 08:39:57 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma03ams.nl.ibm.com with ESMTP id 322hd7vbkp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Jul 2020 08:39:57 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0688dtYx54001796
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 8 Jul 2020 08:39:55 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 57CEDA405B;
+        Wed,  8 Jul 2020 08:39:55 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C9486A4040;
+        Wed,  8 Jul 2020 08:39:53 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.148.202.29])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Wed,  8 Jul 2020 08:39:53 +0000 (GMT)
+Date:   Wed, 8 Jul 2020 11:39:51 +0300
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        Michal Hocko <mhocko@kernel.org>, Jia He <justin.he@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Baoquan He <bhe@redhat.com>,
+        Chuhong Yuan <hslester96@gmail.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Kaly Xin <Kaly.Xin@arm.com>
+Subject: Re: [PATCH v2 1/3] arm64/numa: export memory_add_physaddr_to_nid as
+ EXPORT_SYMBOL_GPL
+Message-ID: <20200708083951.GH386073@linux.ibm.com>
+References: <20200707055917.143653-2-justin.he@arm.com>
+ <20200707115454.GN5913@dhcp22.suse.cz>
+ <20200707121302.GB9411@linux.ibm.com>
+ <474f93e7-c709-1a13-5418-29f1777f614c@redhat.com>
+ <20200707180043.GA386073@linux.ibm.com>
+ <CAPcyv4iB-vP8U4pH_3jptfODbiNqJZXoTmA6+7EHoddk9jBgEQ@mail.gmail.com>
+ <20200708052626.GB386073@linux.ibm.com>
+ <9a009cf6-6c30-91ca-a1a5-9aa090c66631@redhat.com>
+ <CAPcyv4jyk_tkDRewTVvRAv0g4LwemEyKYQyuJBXkF4VuYrBdrw@mail.gmail.com>
+ <999ea296-4695-1219-6a4d-a027718f61e5@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20200707201641.2030532-1-dianders@chromium.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <999ea296-4695-1219-6a4d-a027718f61e5@redhat.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-08_04:2020-07-08,2020-07-08 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ adultscore=0 cotscore=-2147483648 spamscore=0 impostorscore=0 mlxscore=0
+ malwarescore=0 bulkscore=0 clxscore=1015 mlxlogscore=999
+ priorityscore=1501 suspectscore=0 phishscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2007080061
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jul 08, 2020 at 10:26:41AM +0200, David Hildenbrand wrote:
+> On 08.07.20 09:50, Dan Williams wrote:
+> > On Wed, Jul 8, 2020 at 12:22 AM David Hildenbrand <david@redhat.com> wrote:
+> >>
+> >>>>>>>> On Tue 07-07-20 13:59:15, Jia He wrote:
+> >>>>>>>>> This exports memory_add_physaddr_to_nid() for module driver to use.
+> >>>>>>>>>
+> >>>>>>>>> memory_add_physaddr_to_nid() is a fallback option to get the nid in case
+> >>>>>>>>> NUMA_NO_NID is detected.
+> >>>>>>>>>
+> >>>>>>>>> Suggested-by: David Hildenbrand <david@redhat.com>
+> >>>>>>>>> Signed-off-by: Jia He <justin.he@arm.com>
+> >>>>>>>>> ---
+> >>>>>>>>>  arch/arm64/mm/numa.c | 5 +++--
+> >>>>>>>>>  1 file changed, 3 insertions(+), 2 deletions(-)
+> >>>>>>>>>
+> >>>>>>>>> diff --git a/arch/arm64/mm/numa.c b/arch/arm64/mm/numa.c
+> >>>>>>>>> index aafcee3e3f7e..7eeb31740248 100644
+> >>>>>>>>> --- a/arch/arm64/mm/numa.c
+> >>>>>>>>> +++ b/arch/arm64/mm/numa.c
+> >>>>>>>>> @@ -464,10 +464,11 @@ void __init arm64_numa_init(void)
+> >>>>>>>>>
+> >>>>>>>>>  /*
+> >>>>>>>>>   * We hope that we will be hotplugging memory on nodes we already know about,
+> >>>>>>>>> - * such that acpi_get_node() succeeds and we never fall back to this...
+> >>>>>>>>> + * such that acpi_get_node() succeeds. But when SRAT is not present, the node
+> >>>>>>>>> + * id may be probed as NUMA_NO_NODE by acpi, Here provide a fallback option.
+> >>>>>>>>>   */
+> >>>>>>>>>  int memory_add_physaddr_to_nid(u64 addr)
+> >>>>>>>>>  {
+> >>>>>>>>> - pr_warn("Unknown node for memory at 0x%llx, assuming node 0\n", addr);
+> >>>>>>>>>   return 0;
+> >>>>>>>>>  }
+> >>>>>>>>> +EXPORT_SYMBOL_GPL(memory_add_physaddr_to_nid);
+> >>>>>>>>
+> >>>>>>>> Does it make sense to export a noop function? Wouldn't make more sense
+> >>>>>>>> to simply make it static inline somewhere in a header? I haven't checked
+> >>>>>>>> whether there is an easy way to do that sanely bu this just hit my eyes.
 
-On 7/8/2020 1:46 AM, Douglas Anderson wrote:
-> 
-> Not to be confused with the similar series I posed for the _other_
-> Qualcomm SPI controller (spi-geni-qcom) [1], this one avoids the
-> overhead on the Quad SPI controller.
-> 
-> It's based atop the current Qualcomm tree including Rajendra's ("spi:
-> spi-qcom-qspi: Use OPP API to set clk/perf state").  As discussed in
-> individual patches, these could ideally land through the Qualcomm tree
-> with Mark's Ack.
-> 
-> Measuring:
-> * Before OPP / Interconnect patches reading all flash takes: ~3.4 seconds
-> * After OPP / Interconnect patches reading all flash takes: ~4.7 seconds
-> * After this patch reading all flash takes: ~3.3 seconds
+> I'd be curious if what we are trying to optimize here is actually worth
+> optimizing. IOW, is there a well-known scenario where the dummy value on
+> arm64 would be problematic and is worth the effort?
 
-Thanks Doug, I saw similar benefit on my setup with these patches. They do help
-reduce the (unnecessary) additional overhead so it makes sense to merge these
-along with the OPP/Interconnect patches in-order to avoid the regression.
+Well, it started with Michal's comment above that EXPORT_SYMBOL_GPL()
+for a stub might be an overkill.
 
-Reviewed-by: Rajendra Nayak <rnayak@codeaurora.org>
-Tested-by: Rajendra Nayak <rnayak@codeaurora.org>
+I think Jia's suggestion [1] with addition of a comment that explains
+why and when the stub will be used, can work for both
+memory_add_physaddr_to_nid() and phys_to_target_node().
 
+But on more theoretical/fundmanetal level, I think we lack a generic
+abstraction similar to e.g. x86 'struct numa_meminfo' that serves as
+translaton of firmware supplied information into data that can be used
+by the generic mm without need to reimplement it for each and every
+arch.
+
+[1] https://lore.kernel.org/lkml/AM6PR08MB406907F9F2B13DA6DC893AD9F7670@AM6PR08MB4069.eurprd08.prod.outlook.com
+
+> I mean, in all performance relevant setups (ignoring
+> hv_balloon/xen-balloon/prove_store(), which also use
+> memory_add_physaddr_to_nid()), we should have a proper PXM/node
+> specified by the hardware on memory hotadd. The fallback of
+> memory_add_physaddr_to_nid() is not relevant in these scenarios.
 > 
-> [1] https://lore.kernel.org/r/20200702004509.2333554-1-dianders@chromium.org
-> [2] https://lore.kernel.org/r/1593769293-6354-2-git-send-email-rnayak@codeaurora.org
+> -- 
+> Thanks,
 > 
-> 
-> Douglas Anderson (2):
->    spi: spi-qcom-qspi: Avoid clock setting if not needed
->    spi: spi-qcom-qspi: Set an autosuspend delay of 250 ms
-> 
->   drivers/spi/spi-qcom-qspi.c | 45 ++++++++++++++++++++++++++++---------
->   1 file changed, 35 insertions(+), 10 deletions(-)
+> David / dhildenb
 > 
 
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+Sincerely yours,
+Mike.
