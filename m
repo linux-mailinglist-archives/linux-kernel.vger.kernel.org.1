@@ -2,77 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 779F1218A0B
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 16:22:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A228218A14
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 16:24:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729763AbgGHOWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 10:22:38 -0400
-Received: from mga11.intel.com ([192.55.52.93]:49688 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729468AbgGHOWi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 10:22:38 -0400
-IronPort-SDR: dCvA5WlVPBnTHtyexhzpKz9ZppxMClHr3vvCBWiVPVtkpRwDUwaCXiNo9WE/1nyasRqZTU4iCb
- EKhWoig0jCyw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9675"; a="145903017"
-X-IronPort-AV: E=Sophos;i="5.75,327,1589266800"; 
-   d="scan'208";a="145903017"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2020 07:22:37 -0700
-IronPort-SDR: ypnSgETFnURfOh2lY/Di1FrVtyy0tX6IzKv3i1woeeu6NNiCW0dbri/bMNjUS49QgLV/4alj1Y
- Sab66rb+t1oA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,327,1589266800"; 
-   d="scan'208";a="322949843"
-Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.255.31.237]) ([10.255.31.237])
-  by FMSMGA003.fm.intel.com with ESMTP; 08 Jul 2020 07:22:34 -0700
-Reply-To: like.xu@intel.com
-Subject: Re: [PATCH] kvm: x86: limit the maximum number of vPMU fixed counters
- to 3
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Like Xu <like.xu@linux.intel.com>, kvm@vger.kernel.org
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, linux-kernel@vger.kernel.org
-References: <20200624015928.118614-1-like.xu@linux.intel.com>
- <8de3f450-7efd-96ab-fdf8-169b3327e5ac@intel.com>
- <9b50db05-759e-c95c-35b2-99fba50e6997@redhat.com>
-From:   "Xu, Like" <like.xu@intel.com>
-Organization: Intel OTC
-Message-ID: <3e849687-67f9-ac53-10ff-2b76d4881de4@intel.com>
-Date:   Wed, 8 Jul 2020 22:22:33 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729792AbgGHOYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 10:24:10 -0400
+Received: from casper.infradead.org ([90.155.50.34]:36036 "EHLO
+        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729467AbgGHOYK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 10:24:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=MrAnEvtYxJ3CG9gxR3loAOZTO73HHraqyOfrOks4hhg=; b=JMJwqmeTQ9cGJpeD9W93Dw1IjO
+        XWotEiYbye0J2WZMFOcGjZcu3WbLV55gbbJHp4tN6THMa9cj8svxx7BtFefMqc5eD0hLPhSeiRHfc
+        dht8oKIrdba3H++FPHoTHrH8o9AQOKTc5hTH/OdDHsBq21QVOWsKJkMnSgzwbdKEGeCAdNafeHIRP
+        HEnmGYkfg5gUtC+4LV/Yixsovv71OLHrATMzHBfgyjOvNVwWFVhR/b96qceLBtbGfR6b7iZywHu96
+        xYgs+G2w1wHc8O/belST07+MM+apfnisUfdTHRfp0HtCEz7f1uB/VtCHjo6wP6mC5f+lUYi8bEbKU
+        1Q3ih66A==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jtAyJ-0007LT-Jr; Wed, 08 Jul 2020 14:22:51 +0000
+Date:   Wed, 8 Jul 2020 15:22:51 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Kanchan Joshi <joshi.k@samsung.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, viro@zeniv.linux.org.uk,
+        bcrl@kvack.org, hch@infradead.org, Damien.LeMoal@wdc.com,
+        asml.silence@gmail.com, linux-fsdevel@vger.kernel.org,
+        mb@lightnvm.io, linux-kernel@vger.kernel.org, linux-aio@kvack.org,
+        io-uring@vger.kernel.org, linux-block@vger.kernel.org,
+        Selvakumar S <selvakuma.s1@samsung.com>,
+        Nitesh Shetty <nj.shetty@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>
+Subject: Re: [PATCH v3 4/4] io_uring: add support for zone-append
+Message-ID: <20200708142251.GQ25523@casper.infradead.org>
+References: <4a9bf73e-f3ee-4f06-7fad-b8f8861b0bc1@kernel.dk>
+ <20200706143208.GA25523@casper.infradead.org>
+ <20200707151105.GA23395@test-zns>
+ <20200707155237.GM25523@casper.infradead.org>
+ <20200707202342.GA28364@test-zns>
+ <7a44d9c6-bf7d-0666-fc29-32c3cba9d1d8@kernel.dk>
+ <20200707221812.GN25523@casper.infradead.org>
+ <CGME20200707223803epcas5p41814360c764d6b5f67fdbf173a8ba64e@epcas5p4.samsung.com>
+ <145cc0ad-af86-2d6a-78b3-9ade007aae52@kernel.dk>
+ <20200708125805.GA16495@test-zns>
 MIME-Version: 1.0
-In-Reply-To: <9b50db05-759e-c95c-35b2-99fba50e6997@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200708125805.GA16495@test-zns>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/7/8 19:09, Paolo Bonzini wrote:
-> On 08/07/20 09:51, Xu, Like wrote:
->> Kindly ping.
->>
->> I think we may need this patch, as we limit the maximum vPMU version to 2:
->>      eax.split.version_id = min(cap.version, 2);
-> I don't think this is a problem.  Are you planning to add support for
-> the fourth counter?
-Yes, we plan to provide this support on the KVM after fully enabling the fourth
-counter (and an accompanying special counter) on the host perf side.
+On Wed, Jul 08, 2020 at 06:28:05PM +0530, Kanchan Joshi wrote:
+> The last thing is about the flag used to trigger this processing. Will it be
+> fine to intoduce new flag (RWF_APPEND2 or RWF_APPEND_OFFSET)
+> instead of using RWF_APPEND?
+> 
+> New flag will do what RWF_APPEND does and will also return the
+> written-location (and therefore expects pointer setup in application).
 
-This may require one or two kernel cycles, so I have to prevent it from
-being exposed to non-linux guest with this fix. Thanks for your support.
+I think it's simpler to understand if it's called RWF_INDIRECT_OFFSET
+Then it'd look like:
 
-Thanks,
-Like Xu
->
-> Paolo
->
++	rwf_t rwf = READ_ONCE(sqe->rw_flags);
+...
+-	iocb->ki_pos = READ_ONCE(sqe->off);
++	if (rwf & RWF_INDIRECT_OFFSET) {
++		loff_t __user *loffp = u64_to_user_ptr(sqe->addr2);
++
++		if (get_user(iocb->ki_pos, loffp)
++			return -EFAULT;
++		iocb->ki_loffp = loffp;
++	} else {
++		iocb->ki_pos = READ_ONCE(sqe->off);
++	}
+...
+-	ret = kiocb_set_rw_flags(kiocb, READ_ONCE(sqe->rw_flags));
++	ret = kiocb_set_rw_flags(kiocb, rwf);
 
