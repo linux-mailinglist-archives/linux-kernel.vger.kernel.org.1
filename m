@@ -2,135 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37AC2218674
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 13:55:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86AB821867B
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 13:56:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728936AbgGHLzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 07:55:22 -0400
-Received: from mail-pj1-f66.google.com ([209.85.216.66]:51891 "EHLO
-        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728592AbgGHLzV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 07:55:21 -0400
-Received: by mail-pj1-f66.google.com with SMTP id ls15so434307pjb.1;
-        Wed, 08 Jul 2020 04:55:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jTBZMKlUFpNmWtFn4HrVodPcCTzQQGJkYgOfgBAYscY=;
-        b=QbWYJMRC1FMBssFToN6lX3FN3Z1KfD1XTPJw9e2bZ+S/oxwWPIW2H4htJ8Vyi3bfMn
-         vRlBj/Lh2nbCGBKA32qcbY4yWqjCXk1qgS0TXuDjxWyXAZu/mhPms5NlkSIAKDSesiZD
-         akXY8SQexPtwibggcsrhBW7B9pdYe8tExmkX/bzB7r7D09ZSRJF4RIs6AIAw4vx+wxMu
-         IyXDAp/8rJsVd9fx/C1XRIACjppI4t8sCCU75AzGoLNsfAEII/M3SNpOgrRKIRo/NmPx
-         QFd/c+gTV07e8eh1XyCnxJk6JGE7GtBcu5oYAQIZfCHi98I5vTBWb3Sdm7LuEaajkHPW
-         XOpQ==
-X-Gm-Message-State: AOAM533OWBpHHWoS1zGcOervFLmOtG4SBM/AJyeQoUKpA8NjIo7nIWYM
-        20Yh5hZQZNfpT8b8i5NnS94=
-X-Google-Smtp-Source: ABdhPJxdjdl5pXFLkToBY02YEqh8lbtVQNFTH37/2AyToUDE4A78TloW0lF97T9BOE0kCq5Z4IZ50w==
-X-Received: by 2002:a17:902:20a:: with SMTP id 10mr22378243plc.127.1594209320371;
-        Wed, 08 Jul 2020 04:55:20 -0700 (PDT)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id 17sm23498716pfv.16.2020.07.08.04.55.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Jul 2020 04:55:18 -0700 (PDT)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id 07E68401AE; Wed,  8 Jul 2020 11:55:18 +0000 (UTC)
-Date:   Wed, 8 Jul 2020 11:55:17 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        James Morris <jmorris@namei.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Scott Branden <scott.branden@broadcom.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jessica Yu <jeyu@kernel.org>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Matthew Garrett <matthewgarrett@google.com>,
-        David Howells <dhowells@redhat.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        KP Singh <kpsingh@google.com>, Dave Olsthoorn <dave@bewaar.me>,
-        Peter Jones <pjones@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Boyd <stephen.boyd@linaro.org>,
-        Paul Moore <paul@paul-moore.com>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Subject: Re: [PATCH 0/4] Fix misused kernel_read_file() enums
-Message-ID: <20200708115517.GF4332@42.do-not-panic.com>
-References: <20200707081926.3688096-1-keescook@chromium.org>
- <3c01073b-c422-dd97-0677-c16fe1158907@redhat.com>
- <f5e65f73-2c94-3614-2479-69b2bfda9775@redhat.com>
+        id S1728963AbgGHL4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 07:56:20 -0400
+Received: from mga02.intel.com ([134.134.136.20]:16973 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728592AbgGHL4U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 07:56:20 -0400
+IronPort-SDR: V5cYHhqw5dMkIVzPyqDcivJICn6TpytbZ3tCJnougu++MHHRoZyy9UuZ1egT5uFDniG3BCiD2n
+ Ez0sff+cFngg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9675"; a="136010711"
+X-IronPort-AV: E=Sophos;i="5.75,327,1589266800"; 
+   d="scan'208";a="136010711"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2020 04:56:19 -0700
+IronPort-SDR: JTmqEsPKG7c2Ui1Jb6NbjcV9xBhXiQKx2WxYM8F1sfEhJZ6YSc/v1OgSvMtv+8hoF7S9Oc75a9
+ xRJW0nFNfsHg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,327,1589266800"; 
+   d="scan'208";a="457478440"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.73]) ([10.237.72.73])
+  by orsmga005.jf.intel.com with ESMTP; 08 Jul 2020 04:56:17 -0700
+Subject: Re: [PATCH V7 00/15] perf/x86: Add perf text poke events
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org
+References: <20200512121922.8997-1-adrian.hunter@intel.com>
+ <bee04840-143c-18bb-df82-5aa58d70730e@intel.com>
+ <20200520014001.GF28228@kernel.org>
+ <20200520155634.GQ317569@hirez.programming.kicks-ass.net>
+ <20200527154716.GC16490@kernel.org>
+ <20200527155436.GA706460@hirez.programming.kicks-ass.net>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <79ca46d6-5d7c-7729-b51e-f9a447abe2a2@intel.com>
+Date:   Wed, 8 Jul 2020 14:55:36 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f5e65f73-2c94-3614-2479-69b2bfda9775@redhat.com>
+In-Reply-To: <20200527155436.GA706460@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 08, 2020 at 01:37:41PM +0200, Hans de Goede wrote:
-> Hi,
+On 27/05/20 6:54 pm, Peter Zijlstra wrote:
+> On Wed, May 27, 2020 at 12:47:16PM -0300, Arnaldo Carvalho de Melo wrote:
+>> Em Wed, May 20, 2020 at 05:56:34PM +0200, Peter Zijlstra escreveu:
+>>> On Tue, May 19, 2020 at 10:40:01PM -0300, Arnaldo Carvalho de Melo wrote:
+>>>> PeterZ, from what we discussed for the next merge Window, perhaps we
+>>>> should route the kernel bits via the tip tree while I will push the
+>>>> tooling bits on my 5.8 merge request to Linus, Ok?
+>>>
+>>> Sure, I can take the kernel bits. Thanks!
+>>
+>> So, I'm going thru the userpace bits and stopped at the patch copying
+>> include/uapi/linux/perf_events.h to
+>> tools/include/uapi/linux/perf_events.h to get the text_poke
+>> perf_event_attr bit, looked at tip/ and this hasn't landed there yet,
+>> any issues with the kernel bits?
 > 
-> On 7/8/20 1:01 PM, Hans de Goede wrote:
-> > Hi,
-> > 
-> > On 7/7/20 10:19 AM, Kees Cook wrote:
-> > > Hi,
-> > > 
-> > > In looking for closely at the additions that got made to the
-> > > kernel_read_file() enums, I noticed that FIRMWARE_PREALLOC_BUFFER
-> > > and FIRMWARE_EFI_EMBEDDED were added, but they are not appropriate
-> > > *kinds* of files for the LSM to reason about. They are a "how" and
-> > > "where", respectively. Remove these improper aliases and refactor the
-> > > code to adapt to the changes.
-> > > 
-> > > Additionally adds in missing calls to security_kernel_post_read_file()
-> > > in the platform firmware fallback path (to match the sysfs firmware
-> > > fallback path) and in module loading. I considered entirely removing
-> > > security_kernel_post_read_file() hook since it is technically unused,
-> > > but IMA probably wants to be able to measure EFI-stored firmware images,
-> > > so I wired it up and matched it for modules, in case anyone wants to
-> > > move the module signature checks out of the module core and into an LSM
-> > > to avoid the current layering violations.
-> > > 
-> > > This touches several trees, and I suspect it would be best to go through
-> > > James's LSM tree.
-> > > 
-> > > Thanks!
-> > 
-> > 
-> > I've done some quick tests on this series to make sure that
-> > the efi embedded-firmware support did not regress.
-> > That still works fine, so this series is;
-> > 
-> > Tested-by: Hans de Goede <hdegoede@redhat.com>
+> Nah, I was waiting on the 0day robot, but its broken *again* :-(
 > 
-> I made a mistake during testing I was not actually running the
-> kernel with the patches added.
+> Let me go move things along manually.
 > 
-> After fixing that I did find a problem, patch 4/4:
-> "module: Add hook for security_kernel_post_read_file()"
-> 
-> Breaks module-loading for me. This is with the 4 patches
-> on top of 5.8.0-rc4, so this might just be because I'm
-> not using the right base.
-> 
-> With patch 4/4 reverted things work fine for me.
-> 
-> So, please only add my Tested-by to patches 1-3.
 
-BTW is there any testing covered by the selftests for the firmware
-laoder which would have caputured this? If not can you extend
-it with something to capture this case you ran into?
+Hi
 
-  Luis
+The kernel patches are in tip and the remaining tools patches still apply.
+Remaining patches 11-15 are:
+
+      perf tools: Add support for PERF_RECORD_TEXT_POKE
+      perf tools: Add support for PERF_RECORD_KSYMBOL_TYPE_OOL
+      perf intel-pt: Add support for text poke events
+      perf script: Add option --show-text-poke-events
+      perf script: Show text poke address symbol
+
+Is there anything else I can do for these?
+
+Regards
+Adrian
