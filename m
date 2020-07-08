@@ -2,94 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97EBE2183D4
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 11:31:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8876D2183DF
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 11:34:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728607AbgGHJba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 05:31:30 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:59412 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728576AbgGHJb0 (ORCPT
+        id S1728103AbgGHJeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 05:34:11 -0400
+Received: from o1.b.az.sendgrid.net ([208.117.55.133]:27840 "EHLO
+        o1.b.az.sendgrid.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726855AbgGHJeK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 05:31:26 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0689VHH5103244;
-        Wed, 8 Jul 2020 04:31:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1594200677;
-        bh=ZmLHKDhhFvQEACU9S2JTUSC0cmWio3Xl+uM9GiBjHGs=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=Fd0AXXCBfQwdtXLm2q5HfrV9+m2mNZmCOl4IJxoymw6L686ZeXuFJAroRkt+YWCY+
-         S3g84cd2qfusL6XLlYZTMFYkLfoRZC3jm7CJKM9xBzSeNtJazC0PEMLvcJbcMOe/wF
-         Q8OwPNfFp7DaPQUGtVsEEEUlyjqOI5s/JLMqGgvY=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0689VHUT103753
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 8 Jul 2020 04:31:17 -0500
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 8 Jul
- 2020 04:31:17 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 8 Jul 2020 04:31:17 -0500
-Received: from a0393678ub.india.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0689UJEV098512;
-        Wed, 8 Jul 2020 04:31:13 -0500
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-To:     Tom Joseph <tjoseph@cadence.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-omap@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH v6 14/14] MAINTAINERS: Add Kishon Vijay Abraham I for TI J721E SoC PCIe
-Date:   Wed, 8 Jul 2020 15:00:18 +0530
-Message-ID: <20200708093018.28474-15-kishon@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200708093018.28474-1-kishon@ti.com>
-References: <20200708093018.28474-1-kishon@ti.com>
+        Wed, 8 Jul 2020 05:34:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiboo.se;
+        h=subject:references:from:mime-version:in-reply-to:to:cc:content-type:
+        content-transfer-encoding;
+        s=001; bh=wTdcKNoDsPfl07/DOE2fNR+ke3gfU5xTSF0Q+OGPwDo=;
+        b=K+0YlWIhBITmcjO7AFqdXuKkE2Rpnfzpy5bTYcyz4ecv00XYs0WqXkWOUdgnAMvQKi9p
+        m7kZ37ZhqQDKaV9sTETxUFMWCISi5a0wAPmlsgANVDLGCsMIKCc1HXX0dT7EfPcv8K+4ve
+        ZGXeeebAI30YJYaME1TEpylEZZndc1WUY=
+Received: by filterdrecv-p3mdw1-75c584b9c6-f64fx with SMTP id filterdrecv-p3mdw1-75c584b9c6-f64fx-19-5F059311-5A
+        2020-07-08 09:34:10.033222676 +0000 UTC m=+1009467.905161444
+Received: from [192.168.1.14] (unknown)
+        by ismtpd0005p1lon1.sendgrid.net (SG) with ESMTP
+        id _qOInuZpSNKc1pja7tIRdQ
+        Wed, 08 Jul 2020 09:34:09.856 +0000 (UTC)
+Subject: Re: [PATCH v2 12/12] media: rkvdec: h264: Support profile and level
+ controls
+References: <20200701215616.30874-1-jonas@kwiboo.se>
+ <20200706215430.22859-1-jonas@kwiboo.se>
+ <20200706215430.22859-13-jonas@kwiboo.se>
+ <97a4c51aa5cfcdef7f4c96fcf84f85bd7c8b3729.camel@collabora.com>
+From:   Jonas Karlman <jonas@kwiboo.se>
+Message-ID: <dc1fcf7a-cc5e-0bee-ae74-d8d1464a1815@kwiboo.se>
+Date:   Wed, 08 Jul 2020 09:34:10 +0000 (UTC)
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <97a4c51aa5cfcdef7f4c96fcf84f85bd7c8b3729.camel@collabora.com>
+X-SG-EID: =?us-ascii?Q?TdbjyGynYnRZWhH+7lKUQJL+ZxmxpowvO2O9SQF5CwCVrYgcwUXgU5DKUU3QxA?=
+ =?us-ascii?Q?fZekEeQsTe+RrMu3cja6a0hxvWe0Hf48kbhzjVr?=
+ =?us-ascii?Q?Ys96KNQJawVSCYaKiFSD8ZVEvLm8Ve05YbSeQZz?=
+ =?us-ascii?Q?fzijREANhnjgYa133r4hrvXKtDCqFTpm2c=2FqfmI?=
+ =?us-ascii?Q?uIpvSdjJ7GGIUhhE+Q4kYOgnDKETrgT9rZkxI9k?=
+ =?us-ascii?Q?48p1SMzPdxeZDumzOIYj3GaotzcD+K4ksDfkrCl?=
+ =?us-ascii?Q?J=2Fb25Z8PPAds8XfWa=2FQIQ=3D=3D?=
+To:     Ezequiel Garcia <ezequiel@collabora.com>,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     Hans Verkuil <hans.verkuil@cisco.com>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Alexandre Courbot <acourbot@chromium.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Language: sv
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Kishon Vijay Abraham I as MAINTAINER for TI J721E SoC PCIe.
+On 2020-07-08 05:19, Ezequiel Garcia wrote:
+> On Mon, 2020-07-06 at 21:54 +0000, Jonas Karlman wrote:
+>> The Rockchip Video Decoder used in RK3399 supports H.264 profiles from
+>> Baseline to High 4:2:2 up to Level 5.1, except for the Extended profile.
+>>
+>> Expose the V4L2_CID_MPEG_VIDEO_H264_PROFILE and the
+>> V4L2_CID_MPEG_VIDEO_H264_LEVEL control, so that userspace can query the
+>> driver for the list of supported profiles and level.
+>>
+>> Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
+>> Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
+>> ---
+>> Changes in v2:
+>> - Moved to end
+>> - Collect r-b tag
+>> ---
+>>  drivers/staging/media/rkvdec/rkvdec.c | 13 +++++++++++++
+>>  1 file changed, 13 insertions(+)
+>>
+>> diff --git a/drivers/staging/media/rkvdec/rkvdec.c b/drivers/staging/media/rkvdec/rkvdec.c
+>> index 4faee9262392..b21031535330 100644
+>> --- a/drivers/staging/media/rkvdec/rkvdec.c
+>> +++ b/drivers/staging/media/rkvdec/rkvdec.c
+>> @@ -144,6 +144,19 @@ static const struct rkvdec_ctrl_desc rkvdec_h264_ctrl_descs[] = {
+>>  		.cfg.def = V4L2_MPEG_VIDEO_H264_START_CODE_ANNEX_B,
+>>  		.cfg.max = V4L2_MPEG_VIDEO_H264_START_CODE_ANNEX_B,
+>>  	},
+>> +	{
+>> +		.cfg.id = V4L2_CID_MPEG_VIDEO_H264_PROFILE,
+>> +		.cfg.min = V4L2_MPEG_VIDEO_H264_PROFILE_BASELINE,
+> 
+> Nicolas recently pointed out to me that our drivers
+> can't support ASO/FMO baseline features, and so
+> seems we need to leave baseline out.
 
-Acked-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
----
- MAINTAINERS | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+I will change min to V4L2_MPEG_VIDEO_H264_PROFILE_CONSTRAINED_BASELINE in v3.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 5bbc2649566b..bdec73c3069e 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -13119,12 +13119,14 @@ S:	Maintained
- F:	Documentation/devicetree/bindings/pci/designware-pcie.txt
- F:	drivers/pci/controller/dwc/*designware*
- 
--PCI DRIVER FOR TI DRA7XX
-+PCI DRIVER FOR TI DRA7XX/J721E
- M:	Kishon Vijay Abraham I <kishon@ti.com>
- L:	linux-omap@vger.kernel.org
- L:	linux-pci@vger.kernel.org
-+L:	linux-arm-kernel@lists.infradead.org
- S:	Supported
- F:	Documentation/devicetree/bindings/pci/ti-pci.txt
-+F:	drivers/pci/controller/cadence/pci-j721e.c
- F:	drivers/pci/controller/dwc/pci-dra7xx.c
- 
- PCI DRIVER FOR TI KEYSTONE
--- 
-2.17.1
+Regards,
+Jonas
 
+> 
+> (Applies to Hantro as well).
+> 
+> Thanks,
+> Ezequiel
+> 
+>> +		.cfg.max = V4L2_MPEG_VIDEO_H264_PROFILE_HIGH_422,
+>> +		.cfg.menu_skip_mask =
+>> +			BIT(V4L2_MPEG_VIDEO_H264_PROFILE_EXTENDED),
+>> +		.cfg.def = V4L2_MPEG_VIDEO_H264_PROFILE_MAIN,
+>> +	},
+>> +	{
+>> +		.cfg.id = V4L2_CID_MPEG_VIDEO_H264_LEVEL,
+>> +		.cfg.min = V4L2_MPEG_VIDEO_H264_LEVEL_1_0,
+>> +		.cfg.max = V4L2_MPEG_VIDEO_H264_LEVEL_5_1,
+>> +	},
+>>  };
+>>  
+>>  static const struct rkvdec_ctrls rkvdec_h264_ctrls = {
+> 
+> 
