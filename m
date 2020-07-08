@@ -2,96 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAA302185D9
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 13:16:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29CCD2185DD
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 13:16:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728853AbgGHLQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 07:16:19 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38504 "EHLO mx2.suse.de"
+        id S1728888AbgGHLQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 07:16:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46300 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725972AbgGHLQS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 07:16:18 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4DCA6B178;
-        Wed,  8 Jul 2020 11:16:17 +0000 (UTC)
-Subject: Re: [PATCH 1/3] mm: memcg/slab: remove unused argument by
- charge_slab_page()
-To:     Roman Gushchin <guro@fb.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>, linux-mm@kvack.org,
-        kernel-team@fb.com, linux-kernel@vger.kernel.org
-References: <20200707173612.124425-1-guro@fb.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <1d31552e-428a-566a-6160-c8dd6f24f0c2@suse.cz>
-Date:   Wed, 8 Jul 2020 13:16:16 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1728779AbgGHLQV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 07:16:21 -0400
+Received: from localhost (unknown [122.182.251.219])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AB00720739;
+        Wed,  8 Jul 2020 11:16:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594206981;
+        bh=FQJDJx+jzPkra8mqaevwhmjfYTTG3AOP9YtcAEP1U7Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kJjTAVthLhpGGe7Qloj3DJObPsodL+zuWuZcE0AShu7qGbnW5Usu/4d/++eBios65
+         3zcs479+NdLkU7bGT2dot/Z+UlXc0mqXCOssSQNyxk4AJh1OBPGxiU7R11zTlud6iq
+         pcFtySW9LVEdjxAsTk4lUi8VDG5ZzaTCSTzssRgs=
+Date:   Wed, 8 Jul 2020 16:46:17 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Cc:     mripard@kernel.org, wens@csie.org, kishon@ti.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] phy: allwinner: phy-sun6i-mipi-dphy: Constify structs
+Message-ID: <20200708111617.GF34333@vkoul-mobl>
+References: <20200629195727.9717-1-rikard.falkeborn@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200707173612.124425-1-guro@fb.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200629195727.9717-1-rikard.falkeborn@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/7/20 7:36 PM, Roman Gushchin wrote:
-> charge_slab_page() is not using the gfp argument anymore,
-> remove it.
+On 29-06-20, 21:57, Rikard Falkeborn wrote:
+> sun6i_dphy_ops and sun6i_dphy_regmap_config are not modified so make them
+> const structs to allow the compiler to put them in read-only memory.
 > 
-> Signed-off-by: Roman Gushchin <guro@fb.com>
-
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
-
-> ---
->  mm/slab.c | 2 +-
->  mm/slab.h | 3 +--
->  mm/slub.c | 2 +-
->  3 files changed, 3 insertions(+), 4 deletions(-)
+> Before:
+>    text    data     bss     dec     hex filename
+>    4407    1944      64    6415    190f drivers/phy/allwinner/phy-sun6i-mipi-dphy.o
 > 
-> diff --git a/mm/slab.c b/mm/slab.c
-> index 2850fe3c5fb8..fafd46877504 100644
-> --- a/mm/slab.c
-> +++ b/mm/slab.c
-> @@ -1379,7 +1379,7 @@ static struct page *kmem_getpages(struct kmem_cache *cachep, gfp_t flags,
->  		return NULL;
->  	}
->  
-> -	charge_slab_page(page, flags, cachep->gfporder, cachep);
-> +	charge_slab_page(page, cachep->gfporder, cachep);
->  	__SetPageSlab(page);
->  	/* Record if ALLOC_NO_WATERMARKS was set when allocating the slab */
->  	if (sk_memalloc_socks() && page_is_pfmemalloc(page))
-> diff --git a/mm/slab.h b/mm/slab.h
-> index ab172dca8ce2..704a65713f81 100644
-> --- a/mm/slab.h
-> +++ b/mm/slab.h
-> @@ -440,8 +440,7 @@ static inline struct kmem_cache *virt_to_cache(const void *obj)
->  	return page->slab_cache;
->  }
->  
-> -static __always_inline void charge_slab_page(struct page *page,
-> -					     gfp_t gfp, int order,
-> +static __always_inline void charge_slab_page(struct page *page, int order,
->  					     struct kmem_cache *s)
->  {
->  	mod_node_page_state(page_pgdat(page), cache_vmstat_idx(s),
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 6769f5f802e9..d9b33a935e58 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -1621,7 +1621,7 @@ static inline struct page *alloc_slab_page(struct kmem_cache *s,
->  		page = __alloc_pages_node(node, flags, order);
->  
->  	if (page)
-> -		charge_slab_page(page, flags, order, s);
-> +		charge_slab_page(page, order, s);
->  
->  	return page;
->  }
-> 
+> After:
+>    text    data     bss     dec     hex filename
+>    4835    1496      64    6395    18fb drivers/phy/allwinner/phy-sun6i-mipi-dphy.o
 
+Applied, thanks
+
+-- 
+~Vinod
