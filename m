@@ -2,76 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23F12217D02
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 04:22:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACC90217CFA
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 04:18:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729385AbgGHCWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Jul 2020 22:22:30 -0400
-Received: from mga03.intel.com ([134.134.136.65]:52699 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729199AbgGHCWa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Jul 2020 22:22:30 -0400
-IronPort-SDR: 8hCCb5PvOScmnDVY8YqKQ9jiBHwEZr9D7IUSCRjkDdx8pAiwKvJzO0tdmDjgr7SXwdCIi3x9T3
- YFFZU5G2uAKA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9675"; a="147733945"
-X-IronPort-AV: E=Sophos;i="5.75,326,1589266800"; 
-   d="scan'208";a="147733945"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2020 19:22:29 -0700
-IronPort-SDR: Dub4eZxS1kKjSuV6NwX9XzDX6FaUagWCkFLSQmolcN99NKKf1q5pwCvp2sUjBA7TVjV7LNC0ut
- yh+Ya6gjxBSw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,326,1589266800"; 
-   d="scan'208";a="457325128"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.139]) ([10.239.159.139])
-  by orsmga005.jf.intel.com with ESMTP; 07 Jul 2020 19:22:26 -0700
-Cc:     baolu.lu@linux.intel.com, David Woodhouse <dwmw2@infradead.org>,
-        Yi Liu <yi.l.liu@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH v4 3/5] iommu/uapi: Use named union for user data
-To:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        iommu@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Alex Williamson <alex.williamson@redhat.com>
-References: <1594165429-20075-1-git-send-email-jacob.jun.pan@linux.intel.com>
- <1594165429-20075-4-git-send-email-jacob.jun.pan@linux.intel.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <3b36c219-4120-402b-b03e-62b076db865c@linux.intel.com>
-Date:   Wed, 8 Jul 2020 10:17:57 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <1594165429-20075-4-git-send-email-jacob.jun.pan@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1729282AbgGHCSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Jul 2020 22:18:16 -0400
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:51135 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728479AbgGHCSQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Jul 2020 22:18:16 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0U24OW9e_1594174692;
+Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0U24OW9e_1594174692)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 08 Jul 2020 10:18:12 +0800
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+To:     kbusch@kernel.org, axboe@fb.com, hch@lst.de, sagi@grimberg.me
+Cc:     baolin.wang@linux.alibaba.com, baolin.wang7@gmail.com,
+        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] nvme-pci: use standard block status symbolic names to check return value
+Date:   Wed,  8 Jul 2020 10:18:01 +0800
+Message-Id: <e993c13466075f6dbae1285e4db55fd16276ff14.1594174565.git.baolin.wang@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jacob,
+It's better to use the same symbol as the return to check return value,
+and will always work in the unlikely event that the defines are reordered.
 
-On 7/8/20 7:43 AM, Jacob Pan wrote:
-> IOMMU UAPI data size is filled by the user space which must be validated
-> by ther kernel. To ensure backward compatibility, user data can only be
-> extended by either re-purpose padding bytes or extend the variable sized
-> union at the end. No size change is allowed before the union. Therefore,
-> the minimum size is the offset of the union.
-> 
-> To use offsetof() on the union, we must make it named.
-> 
-> Link:https://lkml.org/lkml/2020/6/11/834
+Suggested-by: Keith Busch <kbusch@kernel.org>
+Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+---
+ drivers/nvme/host/pci.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Please use lore.kernel.org links.
+diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+index 1ac0717..45cb59c 100644
+--- a/drivers/nvme/host/pci.c
++++ b/drivers/nvme/host/pci.c
+@@ -873,18 +873,18 @@ static blk_status_t nvme_queue_rq(struct blk_mq_hw_ctx *hctx,
+ 		return BLK_STS_IOERR;
+ 
+ 	ret = nvme_setup_cmd(ns, req, &cmnd);
+-	if (ret)
++	if (ret != BLK_STS_OK)
+ 		return ret;
+ 
+ 	if (blk_rq_nr_phys_segments(req)) {
+ 		ret = nvme_map_data(dev, req, &cmnd);
+-		if (ret)
++		if (ret != BLK_STS_OK)
+ 			goto out_free_cmd;
+ 	}
+ 
+ 	if (blk_integrity_rq(req)) {
+ 		ret = nvme_map_metadata(dev, req, &cmnd);
+-		if (ret)
++		if (ret != BLK_STS_OK)
+ 			goto out_unmap_data;
+ 	}
+ 
+-- 
+1.8.3.1
 
-Best regards,
-baolu
