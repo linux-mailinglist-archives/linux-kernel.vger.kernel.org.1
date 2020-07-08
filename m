@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 817022190B9
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 21:34:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 014A52190B6
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 21:34:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726809AbgGHTe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 15:34:28 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:50517 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726785AbgGHTeY (ORCPT
+        id S1726765AbgGHTeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 15:34:21 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:29074 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725446AbgGHTeU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 15:34:24 -0400
+        Wed, 8 Jul 2020 15:34:20 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594236863;
+        s=mimecast20190719; t=1594236858;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=hN7D86/UKZ9ErRoXs9fnrDlDCnq5Xvm3yeUIpEDme08=;
-        b=d3tG82PYhJ0bDf+ex8D5kPfvYomp0TsTQM2gfbXNU9mDFHcH9VcLA0xucFLy65JVksOGkK
-        7jJi8hkzRdLhsPzD31Hyai/m/503HSIzqTQxVRHsfMdIzkXs7jpSOrbvkNYfSXOcruZtIw
-        VnoR/IdvHoqhndRkS6bNDTiy7Neg0wo=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-18-Vil8RRtMMx-iRTncMcbWUg-1; Wed, 08 Jul 2020 15:34:15 -0400
-X-MC-Unique: Vil8RRtMMx-iRTncMcbWUg-1
-Received: by mail-qt1-f197.google.com with SMTP id m25so29350159qtk.1
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 12:34:14 -0700 (PDT)
+        bh=TkLRD+DDZDrATnixnn0V3/wCo2rpmHI/2CPlioZ8aRo=;
+        b=e2a3CyMYzp6ebug5EYhHfKnCwM6u7LmaM+Sdh73YJOzUl8dV035kVXx2u4ztfqe5kFOH62
+        h2bt0gVr7C1M40q999ALsY5tTY7yI41FDX/LR07ovCwZimv4HY7ahcl9/nvoS9ChTRESxP
+        CjotjKyiGC/Mx72jCJhUmLuel+UHdyY=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-499-Ia_UWac4O7Sau3klKssVWA-1; Wed, 08 Jul 2020 15:34:16 -0400
+X-MC-Unique: Ia_UWac4O7Sau3klKssVWA-1
+Received: by mail-qv1-f71.google.com with SMTP id r19so29787528qvz.7
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 12:34:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=hN7D86/UKZ9ErRoXs9fnrDlDCnq5Xvm3yeUIpEDme08=;
-        b=JEnZTVaWD4tODIVCcNB0Trzi3rqapIM4GKumOuxXKKjaiSymgbJQAQiAfti8VNl6T5
-         bE3Ih6HTn5CQf0MWI2Qr2aa9Z5KvB++38yPda40qtrsL/bWqMphSrCgLMmhM6I3ocJSB
-         gVU887PHL6JxqErtdmNmZz/IhC9B7IiYFP2+iSzWLzE/USjUmxV313HxR4vvHk1of0vB
-         e2SOEcx1xsvgCteXbNJxLD+RNNabUwcjWHeMqCpVJAhegaAL8AflDVsx0UtCvnvrmrVi
-         u9HJnQFETX+delel5bg9gMsTq0NXt7V8rysSy1FQhW3rzV497z/rFFYwvRMbHwXWY2z7
-         I/lg==
-X-Gm-Message-State: AOAM5325bzHoGg4YkSdcqxhtb57rBRhYIX1hZJ5E1mDmuRoj8uVJemwU
-        94uj7N1h2GzlI+0Gj7KkB6wwv86JuQnsNV2sfbxzfefY28aC5bJ7xyfHmGH18J3ZBrBQOd8vFsO
-        p3bRspHVA2bpeQqgOSclx2M54
-X-Received: by 2002:a37:b701:: with SMTP id h1mr56064801qkf.335.1594236853828;
-        Wed, 08 Jul 2020 12:34:13 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxd0GzOBMQ1NmDsTj1gJlUvriObJFrFgIgsPO2Y2kMXMZ0+3c7pEyiE7fyyqU0Z8irQDaMDNQ==
-X-Received: by 2002:a37:b701:: with SMTP id h1mr56064782qkf.335.1594236853604;
-        Wed, 08 Jul 2020 12:34:13 -0700 (PDT)
+        bh=TkLRD+DDZDrATnixnn0V3/wCo2rpmHI/2CPlioZ8aRo=;
+        b=M+rM2m3lKm4H3ccJiB+i9yHv3iA7CpCNQZg9whX+OsRtJMNzTSfib8zfNuf8iTC2ub
+         fZrzs9f1frvap4hPFMPk4NOUICuyCWKQeJ9K8r4mJ8PUC2x7MLBgqaoqDcsldn6awVjt
+         QLp6VZ2lsYudSYW159ff+dJxZ0YKo/lkgNq8/9QzgoQs1XJX5mgyuFLpT35fc+ADySbp
+         G/tqhO1UbewniMovn3IrnRVsR/FNh3KASQ7bOQjLsT5M4baTLZpKFICHToutjuXikMpS
+         OZWbntidUkJ7PdQl/f2lKZaVh2gq3rpP8ei8W4Ye2EKxhXbOXy8gQmazgoAseZdjjbiC
+         GQRQ==
+X-Gm-Message-State: AOAM533ypdVXyehRWoyFprluydd7Ivc+ZScn9UlQAPfwMfj2C8VnFD+9
+        EiNUvkacIquy+PEHIdGyoIYQ3BgXzUs19l8z4E73rGmIRSZ6YdW6bLg2AvPqdCFtuuI4SpK4nmd
+        nbEuEJUC1k7qu7ZglrzmIrSL5
+X-Received: by 2002:ad4:504a:: with SMTP id m10mr46587538qvq.172.1594236855869;
+        Wed, 08 Jul 2020 12:34:15 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy/D79s+Ld+nEWu2R/KckxL9qfG3qWYMvxdy97lQlNqeRGd6+I6HCr8J4uVQhG9h0WwI4GKPA==
+X-Received: by 2002:ad4:504a:: with SMTP id m10mr46587508qvq.172.1594236855472;
+        Wed, 08 Jul 2020 12:34:15 -0700 (PDT)
 Received: from xz-x1.redhat.com ([2607:9880:19c8:6f::1f4f])
-        by smtp.gmail.com with ESMTPSA id f18sm664884qtc.28.2020.07.08.12.34.12
+        by smtp.gmail.com with ESMTPSA id f18sm664884qtc.28.2020.07.08.12.34.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Jul 2020 12:34:12 -0700 (PDT)
+        Wed, 08 Jul 2020 12:34:14 -0700 (PDT)
 From:   Peter Xu <peterx@redhat.com>
 To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     peterx@redhat.com,
@@ -58,9 +58,9 @@ Cc:     peterx@redhat.com,
         "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
         Andrew Jones <drjones@redhat.com>,
         Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH v11 01/13] KVM: Cache as_id in kvm_memory_slot
-Date:   Wed,  8 Jul 2020 15:33:56 -0400
-Message-Id: <20200708193408.242909-2-peterx@redhat.com>
+Subject: [PATCH v11 02/13] KVM: X86: Don't track dirty for KVM_SET_[TSS_ADDR|IDENTITY_MAP_ADDR]
+Date:   Wed,  8 Jul 2020 15:33:57 -0400
+Message-Id: <20200708193408.242909-3-peterx@redhat.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200708193408.242909-1-peterx@redhat.com>
 References: <20200708193408.242909-1-peterx@redhat.com>
@@ -71,53 +71,320 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cache the address space ID just like the slot ID.  It will be used in
-order to fill in the dirty ring entries.
+Originally, we have three code paths that can dirty a page without
+vcpu context for X86:
+
+  - init_rmode_identity_map
+  - init_rmode_tss
+  - kvmgt_rw_gpa
+
+init_rmode_identity_map and init_rmode_tss will be setup on
+destination VM no matter what (and the guest cannot even see them), so
+it does not make sense to track them at all.
+
+To do this, allow __x86_set_memory_region() to return the userspace
+address that just allocated to the caller.  Then in both of the
+functions we directly write to the userspace address instead of
+calling kvm_write_*() APIs.
+
+Another trivial change is that we don't need to explicitly clear the
+identity page table root in init_rmode_identity_map() because no
+matter what we'll write to the whole page with 4M huge page entries.
 
 Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
-Suggested-by: Sean Christopherson <sean.j.christopherson@intel.com>
 Signed-off-by: Peter Xu <peterx@redhat.com>
 ---
- include/linux/kvm_host.h | 1 +
- virt/kvm/kvm_main.c      | 6 ++++++
- 2 files changed, 7 insertions(+)
+ arch/x86/include/asm/kvm_host.h |  3 +-
+ arch/x86/kvm/svm/avic.c         |  9 ++--
+ arch/x86/kvm/vmx/vmx.c          | 88 ++++++++++++++++-----------------
+ arch/x86/kvm/x86.c              | 37 +++++++++++---
+ 4 files changed, 81 insertions(+), 56 deletions(-)
 
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index 9edc6fc71a89..346ee5905359 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -346,6 +346,7 @@ struct kvm_memory_slot {
- 	unsigned long userspace_addr;
- 	u32 flags;
- 	short id;
-+	u16 as_id;
- };
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index 97cb005c7aa7..f26bc2bdacf4 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -1647,7 +1647,8 @@ void __kvm_request_immediate_exit(struct kvm_vcpu *vcpu);
  
- static inline unsigned long kvm_dirty_bitmap_bytes(struct kvm_memory_slot *memslot)
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index a852af5c3214..62b7d537e179 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -1191,6 +1191,11 @@ static int kvm_delete_memslot(struct kvm *kvm,
+ int kvm_is_in_guest(void);
  
- 	memset(&new, 0, sizeof(new));
- 	new.id = old->id;
-+	/*
-+	 * This is only for debugging purpose; it should never be referenced
-+	 * for a removed memslot.
-+	 */
-+	new.as_id = as_id;
+-int __x86_set_memory_region(struct kvm *kvm, int id, gpa_t gpa, u32 size);
++void __user *__x86_set_memory_region(struct kvm *kvm, int id, gpa_t gpa,
++				     u32 size);
+ bool kvm_vcpu_is_reset_bsp(struct kvm_vcpu *vcpu);
+ bool kvm_vcpu_is_bsp(struct kvm_vcpu *vcpu);
  
- 	r = kvm_set_memslot(kvm, mem, old, &new, as_id, KVM_MR_DELETE);
- 	if (r)
-@@ -1257,6 +1262,7 @@ int __kvm_set_memory_region(struct kvm *kvm,
- 	if (!mem->memory_size)
- 		return kvm_delete_memslot(kvm, mem, &old, as_id);
+diff --git a/arch/x86/kvm/svm/avic.c b/arch/x86/kvm/svm/avic.c
+index ac830cd50830..f9d665bbfd68 100644
+--- a/arch/x86/kvm/svm/avic.c
++++ b/arch/x86/kvm/svm/avic.c
+@@ -235,7 +235,8 @@ static u64 *avic_get_physical_id_entry(struct kvm_vcpu *vcpu,
+  */
+ static int avic_update_access_page(struct kvm *kvm, bool activate)
+ {
+-	int ret = 0;
++	void __user *ret;
++	int r = 0;
  
-+	new.as_id = as_id;
- 	new.id = id;
- 	new.base_gfn = mem->guest_phys_addr >> PAGE_SHIFT;
- 	new.npages = mem->memory_size >> PAGE_SHIFT;
+ 	mutex_lock(&kvm->slots_lock);
+ 	/*
+@@ -251,13 +252,15 @@ static int avic_update_access_page(struct kvm *kvm, bool activate)
+ 				      APIC_ACCESS_PAGE_PRIVATE_MEMSLOT,
+ 				      APIC_DEFAULT_PHYS_BASE,
+ 				      activate ? PAGE_SIZE : 0);
+-	if (ret)
++	if (IS_ERR(ret)) {
++		r = PTR_ERR(ret);
+ 		goto out;
++	}
+ 
+ 	kvm->arch.apic_access_page_done = activate;
+ out:
+ 	mutex_unlock(&kvm->slots_lock);
+-	return ret;
++	return r;
+ }
+ 
+ static int avic_init_backing_page(struct kvm_vcpu *vcpu)
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 8187ca152ad2..6e5208a735ec 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -3552,42 +3552,33 @@ static bool guest_state_valid(struct kvm_vcpu *vcpu)
+ 	return true;
+ }
+ 
+-static int init_rmode_tss(struct kvm *kvm)
++static int init_rmode_tss(struct kvm *kvm, void __user *ua)
+ {
+-	gfn_t fn;
+-	u16 data = 0;
+-	int idx, r;
++	const void *zero_page = (const void *) __va(page_to_phys(ZERO_PAGE(0)));
++	u16 data;
++	int i;
++
++	for (i = 0; i < 3; i++) {
++		if (__copy_to_user(ua + PAGE_SIZE * i, zero_page, PAGE_SIZE))
++			return -EFAULT;
++	}
+ 
+-	idx = srcu_read_lock(&kvm->srcu);
+-	fn = to_kvm_vmx(kvm)->tss_addr >> PAGE_SHIFT;
+-	r = kvm_clear_guest_page(kvm, fn, 0, PAGE_SIZE);
+-	if (r < 0)
+-		goto out;
+ 	data = TSS_BASE_SIZE + TSS_REDIRECTION_SIZE;
+-	r = kvm_write_guest_page(kvm, fn++, &data,
+-			TSS_IOPB_BASE_OFFSET, sizeof(u16));
+-	if (r < 0)
+-		goto out;
+-	r = kvm_clear_guest_page(kvm, fn++, 0, PAGE_SIZE);
+-	if (r < 0)
+-		goto out;
+-	r = kvm_clear_guest_page(kvm, fn, 0, PAGE_SIZE);
+-	if (r < 0)
+-		goto out;
++	if (__copy_to_user(ua + TSS_IOPB_BASE_OFFSET, &data, sizeof(u16)))
++		return -EFAULT;
++
+ 	data = ~0;
+-	r = kvm_write_guest_page(kvm, fn, &data,
+-				 RMODE_TSS_SIZE - 2 * PAGE_SIZE - 1,
+-				 sizeof(u8));
+-out:
+-	srcu_read_unlock(&kvm->srcu, idx);
+-	return r;
++	if (__copy_to_user(ua + RMODE_TSS_SIZE - 1, &data, sizeof(u8)))
++		return -EFAULT;
++
++	return 0;
+ }
+ 
+ static int init_rmode_identity_map(struct kvm *kvm)
+ {
+ 	struct kvm_vmx *kvm_vmx = to_kvm_vmx(kvm);
+ 	int i, r = 0;
+-	kvm_pfn_t identity_map_pfn;
++	void __user *uaddr;
+ 	u32 tmp;
+ 
+ 	/* Protect kvm_vmx->ept_identity_pagetable_done. */
+@@ -3598,24 +3589,24 @@ static int init_rmode_identity_map(struct kvm *kvm)
+ 
+ 	if (!kvm_vmx->ept_identity_map_addr)
+ 		kvm_vmx->ept_identity_map_addr = VMX_EPT_IDENTITY_PAGETABLE_ADDR;
+-	identity_map_pfn = kvm_vmx->ept_identity_map_addr >> PAGE_SHIFT;
+ 
+-	r = __x86_set_memory_region(kvm, IDENTITY_PAGETABLE_PRIVATE_MEMSLOT,
+-				    kvm_vmx->ept_identity_map_addr, PAGE_SIZE);
+-	if (r < 0)
++	uaddr = __x86_set_memory_region(kvm,
++					IDENTITY_PAGETABLE_PRIVATE_MEMSLOT,
++					kvm_vmx->ept_identity_map_addr,
++					PAGE_SIZE);
++	if (IS_ERR(uaddr)) {
++		r = PTR_ERR(uaddr);
+ 		goto out;
++	}
+ 
+-	r = kvm_clear_guest_page(kvm, identity_map_pfn, 0, PAGE_SIZE);
+-	if (r < 0)
+-		goto out;
+ 	/* Set up identity-mapping pagetable for EPT in real mode */
+ 	for (i = 0; i < PT32_ENT_PER_PAGE; i++) {
+ 		tmp = (i << 22) + (_PAGE_PRESENT | _PAGE_RW | _PAGE_USER |
+ 			_PAGE_ACCESSED | _PAGE_DIRTY | _PAGE_PSE);
+-		r = kvm_write_guest_page(kvm, identity_map_pfn,
+-				&tmp, i * sizeof(tmp), sizeof(tmp));
+-		if (r < 0)
++		if (__copy_to_user(uaddr + i * sizeof(tmp), &tmp, sizeof(tmp))) {
++			r = -EFAULT;
+ 			goto out;
++		}
+ 	}
+ 	kvm_vmx->ept_identity_pagetable_done = true;
+ 
+@@ -3642,19 +3633,22 @@ static void seg_setup(int seg)
+ static int alloc_apic_access_page(struct kvm *kvm)
+ {
+ 	struct page *page;
+-	int r = 0;
++	void __user *hva;
++	int ret = 0;
+ 
+ 	mutex_lock(&kvm->slots_lock);
+ 	if (kvm->arch.apic_access_page_done)
+ 		goto out;
+-	r = __x86_set_memory_region(kvm, APIC_ACCESS_PAGE_PRIVATE_MEMSLOT,
+-				    APIC_DEFAULT_PHYS_BASE, PAGE_SIZE);
+-	if (r)
++	hva = __x86_set_memory_region(kvm, APIC_ACCESS_PAGE_PRIVATE_MEMSLOT,
++				      APIC_DEFAULT_PHYS_BASE, PAGE_SIZE);
++	if (IS_ERR(hva)) {
++		ret = PTR_ERR(hva);
+ 		goto out;
++	}
+ 
+ 	page = gfn_to_page(kvm, APIC_DEFAULT_PHYS_BASE >> PAGE_SHIFT);
+ 	if (is_error_page(page)) {
+-		r = -EFAULT;
++		ret = -EFAULT;
+ 		goto out;
+ 	}
+ 
+@@ -3666,7 +3660,7 @@ static int alloc_apic_access_page(struct kvm *kvm)
+ 	kvm->arch.apic_access_page_done = true;
+ out:
+ 	mutex_unlock(&kvm->slots_lock);
+-	return r;
++	return ret;
+ }
+ 
+ int allocate_vpid(void)
+@@ -4616,7 +4610,7 @@ static int vmx_interrupt_allowed(struct kvm_vcpu *vcpu, bool for_injection)
+ 
+ static int vmx_set_tss_addr(struct kvm *kvm, unsigned int addr)
+ {
+-	int ret;
++	void __user *ret;
+ 
+ 	if (enable_unrestricted_guest)
+ 		return 0;
+@@ -4626,10 +4620,12 @@ static int vmx_set_tss_addr(struct kvm *kvm, unsigned int addr)
+ 				      PAGE_SIZE * 3);
+ 	mutex_unlock(&kvm->slots_lock);
+ 
+-	if (ret)
+-		return ret;
++	if (IS_ERR(ret))
++		return PTR_ERR(ret);
++
+ 	to_kvm_vmx(kvm)->tss_addr = addr;
+-	return init_rmode_tss(kvm);
++
++	return init_rmode_tss(kvm, ret);
+ }
+ 
+ static int vmx_set_identity_map_addr(struct kvm *kvm, u64 ident_addr)
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 09ee54f5e385..65be4977f608 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -9959,7 +9959,32 @@ void kvm_arch_sync_events(struct kvm *kvm)
+ 	kvm_free_pit(kvm);
+ }
+ 
+-int __x86_set_memory_region(struct kvm *kvm, int id, gpa_t gpa, u32 size)
++#define  ERR_PTR_USR(e)  ((void __user *)ERR_PTR(e))
++
++/**
++ * __x86_set_memory_region: Setup KVM internal memory slot
++ *
++ * @kvm: the kvm pointer to the VM.
++ * @id: the slot ID to setup.
++ * @gpa: the GPA to install the slot (unused when @size == 0).
++ * @size: the size of the slot. Set to zero to uninstall a slot.
++ *
++ * This function helps to setup a KVM internal memory slot.  Specify
++ * @size > 0 to install a new slot, while @size == 0 to uninstall a
++ * slot.  The return code can be one of the following:
++ *
++ *   HVA:           on success (uninstall will return a bogus HVA)
++ *   -errno:        on error
++ *
++ * The caller should always use IS_ERR() to check the return value
++ * before use.  Note, the KVM internal memory slots are guaranteed to
++ * remain valid and unchanged until the VM is destroyed, i.e., the
++ * GPA->HVA translation will not change.  However, the HVA is a user
++ * address, i.e. its accessibility is not guaranteed, and must be
++ * accessed via __copy_{to,from}_user().
++ */
++void __user * __x86_set_memory_region(struct kvm *kvm, int id, gpa_t gpa,
++				      u32 size)
+ {
+ 	int i, r;
+ 	unsigned long hva, uninitialized_var(old_npages);
+@@ -9968,12 +9993,12 @@ int __x86_set_memory_region(struct kvm *kvm, int id, gpa_t gpa, u32 size)
+ 
+ 	/* Called with kvm->slots_lock held.  */
+ 	if (WARN_ON(id >= KVM_MEM_SLOTS_NUM))
+-		return -EINVAL;
++		return ERR_PTR_USR(-EINVAL);
+ 
+ 	slot = id_to_memslot(slots, id);
+ 	if (size) {
+ 		if (slot && slot->npages)
+-			return -EEXIST;
++			return ERR_PTR_USR(-EEXIST);
+ 
+ 		/*
+ 		 * MAP_SHARED to prevent internal slot pages from being moved
+@@ -9982,7 +10007,7 @@ int __x86_set_memory_region(struct kvm *kvm, int id, gpa_t gpa, u32 size)
+ 		hva = vm_mmap(NULL, 0, size, PROT_READ | PROT_WRITE,
+ 			      MAP_SHARED | MAP_ANONYMOUS, 0);
+ 		if (IS_ERR((void *)hva))
+-			return PTR_ERR((void *)hva);
++			return (void __user *)hva;
+ 	} else {
+ 		if (!slot || !slot->npages)
+ 			return 0;
+@@ -10001,13 +10026,13 @@ int __x86_set_memory_region(struct kvm *kvm, int id, gpa_t gpa, u32 size)
+ 		m.memory_size = size;
+ 		r = __kvm_set_memory_region(kvm, &m);
+ 		if (r < 0)
+-			return r;
++			return ERR_PTR_USR(r);
+ 	}
+ 
+ 	if (!size)
+ 		vm_munmap(hva, old_npages * PAGE_SIZE);
+ 
+-	return 0;
++	return (void __user *)hva;
+ }
+ EXPORT_SYMBOL_GPL(__x86_set_memory_region);
+ 
 -- 
 2.26.2
 
