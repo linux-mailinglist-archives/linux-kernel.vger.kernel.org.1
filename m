@@ -2,268 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F411C218412
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 11:45:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93493218418
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 11:46:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728396AbgGHJpS convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 8 Jul 2020 05:45:18 -0400
-Received: from mail-yb1-f194.google.com ([209.85.219.194]:41400 "EHLO
-        mail-yb1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726302AbgGHJpS (ORCPT
+        id S1728436AbgGHJqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 05:46:09 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:60752 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726445AbgGHJqJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 05:45:18 -0400
-Received: by mail-yb1-f194.google.com with SMTP id a15so7145332ybs.8;
-        Wed, 08 Jul 2020 02:45:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Z+Hv0F2P4n1XVQheQtChcgxf0BXLLqGWuYKeMgWau8Q=;
-        b=VsL9TocYv82BCKJIesnEwlQYhc8mop/AjwUKGxG3rlMcj/TKP5+NmB/9ZC1garq3IN
-         N8jwUmjW2WRaXFt+9YSErT7PZYHgjhlN9t03DYRRgS3bI+IXVIij24TUvNqgZepC2tl8
-         iWnDV07uBOh3pGI5gDPxhciXi3zWoezvrcvUOXbTwKwrBsIRBep1knHOynUHqYIaOFXn
-         X2Q2Kt6rUHZgXhRaTyFVhNmvRW6g7VVz4gvwktl9RFpYMMZKm95wmxyAaCVdZ1oJglfC
-         bo058XQ3jLVy+ZY6dyyuapzh5rfMCDHNQ5bU6MRLvG63skIpuUn/V60mxVqoz7Tb1Kw/
-         mN2g==
-X-Gm-Message-State: AOAM532HV6x1dt6V7WFRsaLJdkHAsTCS/A1i6ezEet4fLLp/FILp20dV
-        Ck5F1RNgEJJXH2jbV1n8BfBUFaCixpQ5b4J5BMc=
-X-Google-Smtp-Source: ABdhPJzOwfIqr+4z/7B9QDoGIw0IEy7189/mZtWkbnaPZC9pAhoY64cG82Pw+MExWaL250djHHLKXcKLhtQsvCLXlkg=
-X-Received: by 2002:a25:4603:: with SMTP id t3mr85348810yba.471.1594201516575;
- Wed, 08 Jul 2020 02:45:16 -0700 (PDT)
+        Wed, 8 Jul 2020 05:46:09 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0689Y4Aj181016;
+        Wed, 8 Jul 2020 05:45:58 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32584yej66-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Jul 2020 05:45:57 -0400
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0689b92K192578;
+        Wed, 8 Jul 2020 05:45:57 -0400
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32584yej58-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Jul 2020 05:45:57 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0689eLGH026392;
+        Wed, 8 Jul 2020 09:45:55 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma03fra.de.ibm.com with ESMTP id 322hd7t846-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Jul 2020 09:45:54 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0689jqQl11338098
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 8 Jul 2020 09:45:52 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C3C205204E;
+        Wed,  8 Jul 2020 09:45:52 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.148.202.29])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id 2F8345204F;
+        Wed,  8 Jul 2020 09:45:51 +0000 (GMT)
+Date:   Wed, 8 Jul 2020 12:45:49 +0300
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Mike Rapoport <rppt@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Michal Hocko <mhocko@kernel.org>, Jia He <justin.he@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Baoquan He <bhe@redhat.com>,
+        Chuhong Yuan <hslester96@gmail.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Kaly Xin <Kaly.Xin@arm.com>
+Subject: Re: [PATCH v2 1/3] arm64/numa: export memory_add_physaddr_to_nid as
+ EXPORT_SYMBOL_GPL
+Message-ID: <20200708094549.GA781326@linux.ibm.com>
+References: <20200707180043.GA386073@linux.ibm.com>
+ <CAPcyv4iB-vP8U4pH_3jptfODbiNqJZXoTmA6+7EHoddk9jBgEQ@mail.gmail.com>
+ <20200708052626.GB386073@linux.ibm.com>
+ <9a009cf6-6c30-91ca-a1a5-9aa090c66631@redhat.com>
+ <CAPcyv4jyk_tkDRewTVvRAv0g4LwemEyKYQyuJBXkF4VuYrBdrw@mail.gmail.com>
+ <999ea296-4695-1219-6a4d-a027718f61e5@redhat.com>
+ <20200708083951.GH386073@linux.ibm.com>
+ <cdb0510e-4271-1c97-4305-5fd52da282dc@redhat.com>
+ <20200708091520.GE128651@kernel.org>
+ <df0e5f64-10bc-4c3c-a515-288a6f501065@redhat.com>
 MIME-Version: 1.0
-References: <20200707150748.14651-1-kernel@esmil.dk> <CAJ+HfNhYPQByOPu+07v5vstADZPtqakuMeK79_1etJjbV1vBLw@mail.gmail.com>
-In-Reply-To: <CAJ+HfNhYPQByOPu+07v5vstADZPtqakuMeK79_1etJjbV1vBLw@mail.gmail.com>
-From:   Emil Renner Berthing <kernel@esmil.dk>
-Date:   Wed, 8 Jul 2020 11:45:05 +0200
-Message-ID: <CANBLGcxXmZbK7eoa_M5U0vTOFFQQqiQPJOcXK70y0HdWPC+CqQ@mail.gmail.com>
-Subject: Re: [PATCH v1] riscv: Add jump-label implementation
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-doc@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <df0e5f64-10bc-4c3c-a515-288a6f501065@redhat.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-08_07:2020-07-08,2020-07-08 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 cotscore=-2147483648
+ mlxscore=0 lowpriorityscore=0 malwarescore=0 adultscore=0 mlxlogscore=999
+ bulkscore=0 impostorscore=0 suspectscore=1 phishscore=0 priorityscore=1501
+ spamscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2007080069
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 8 Jul 2020 at 09:42, Björn Töpel <bjorn.topel@gmail.com> wrote:
->
-> On Tue, 7 Jul 2020 at 17:08, Emil Renner Berthing <kernel@esmil.dk> wrote:
-> >
-> > Add jump-label implementation based on the ARM64 version.
-> >
-> > Tested on the HiFive Unleashed board.
-> >
->
-> I took your patch for a spin on qemu. The boot selftest
-> (CONFIG_STATIC_KEYS_SELFTEST=y) passes, but the module test
-> (CONFIG_TEST_STATIC_KEYS=m) does not.
->
-> When I run the in "test tools/testing/selftests/static_keys" (this
-> simply loads the test_static_key_base.ko and test_static_keys.ko
-> modules) I get:
->
-> [  134.090464] test_static_keys: Unknown relocation type 36
->
-> 36 is the relocation type R_RISCV_ADD64, which is not handled in
-> arch/riscv/kernel/module.c.
->
-> If you dump the relocation entries for test_static_keys.ko
-> (riscv64-linux-gnu-objdump -r test_static_keys.ko), you'll see that:
->
-> RELOCATION RECORDS FOR [__jump_table]:
-> OFFSET           TYPE              VALUE
-> 0000000000000000 R_RISCV_ADD32     .L1^B1
-> 0000000000000000 R_RISCV_SUB32     .L0
-> 0000000000000004 R_RISCV_ADD32     .L3
-> 0000000000000004 R_RISCV_SUB32     .L0
-> 0000000000000008 R_RISCV_ADD64     old_true_key+0x0000000000000001
-> 0000000000000008 R_RISCV_SUB64     .L0
-> ...
->
-> It would be great if you could add a patch for that as well (separate,
-> same series). R_RISCV_ADD64 *and* R_RISCV_SUB64 are currently
-> unhandled by module.c.
+On Wed, Jul 08, 2020 at 11:25:36AM +0200, David Hildenbrand wrote:
+> On 08.07.20 11:15, Mike Rapoport wrote:
+> >>>>>>
+> >>> But on more theoretical/fundmanetal level, I think we lack a generic
+> >>> abstraction similar to e.g. x86 'struct numa_meminfo' that serves as
+> >>> translaton of firmware supplied information into data that can be used
+> >>> by the generic mm without need to reimplement it for each and every
+> >>> arch.
+> >>
+> >> Right. As I expressed, I am not a friend of using memblock for that, and
+> >> the pgdat node span is tricky.
+> >>
+> >> Maybe abstracting that x86 concept is possible in some way (and we could
+> >> restrict the information to boot-time properties, so we don't have to
+> >> mess with memory hot(un)plug - just as done for numa_meminfo AFAIKS).
+> > 
+> > I agree with pgdat part and disagree about memblock. It already has
+> > non-init physmap, why won't we add memblock.memory to the mix? ;-)
+> 
+> Can we generalize and tweak physmap to contain node info? That's all we
+> need, no? (the special mem= parameter handling should not matter for our
+> use case, where "physmap" and "memory" would differ)
 
-On it! I'll also add the CONFIG_JUMP_LABEL to defconfig to the next version.
+TBH, I have only random vague thoughts at the moment. This might be an
+option. But then we need to enable physmap on !s390, right?
+ 
+> > Now, seriously, memblock already has all the necessary information about
+> > the coldplug memory for several architectures. x86 being an exception
+> > because for some reason the reserved memory is not considered memory
+> > there. The infrastructure for quiering and iterating memory regions is
+> > already there. We just need to leave out the irrelevant parts, like
+> > memblock.reserved and allocation funcions.
+> 
+> I *really* don't want to mess with memblocks on memory hot(un)plug on
+> x86 and s390x (+other architectures in the future). I also thought about
+> stopping to create memblocks for hotplugged memory on arm64, by tweaking
+> pfn_valid() to query memblocks only for early sections.
 >
-> Cheers,
-> Björn
->
-> > Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
-> > ---
-> >
-> > Changes since RFC:
-> > - Use RISCV_PTR and RISCV_LGPTR macros to match struct jump_table
-> >   also in 32bit kernels.
-> > - Remove unneeded branch ? 1 : 0, thanks Björn
-> > - Fix \n\n instead of \n\t mistake
-> >
-> >  .../core/jump-labels/arch-support.txt         |  2 +-
-> >  arch/riscv/Kconfig                            |  2 +
-> >  arch/riscv/include/asm/jump_label.h           | 59 +++++++++++++++++++
-> >  arch/riscv/kernel/Makefile                    |  2 +
-> >  arch/riscv/kernel/jump_label.c                | 44 ++++++++++++++
-> >  5 files changed, 108 insertions(+), 1 deletion(-)
-> >  create mode 100644 arch/riscv/include/asm/jump_label.h
-> >  create mode 100644 arch/riscv/kernel/jump_label.c
-> >
-> > diff --git a/Documentation/features/core/jump-labels/arch-support.txt b/Documentation/features/core/jump-labels/arch-support.txt
-> > index 632a1c7aefa2..760243d18ed7 100644
-> > --- a/Documentation/features/core/jump-labels/arch-support.txt
-> > +++ b/Documentation/features/core/jump-labels/arch-support.txt
-> > @@ -23,7 +23,7 @@
-> >      |    openrisc: | TODO |
-> >      |      parisc: |  ok  |
-> >      |     powerpc: |  ok  |
-> > -    |       riscv: | TODO |
-> > +    |       riscv: |  ok  |
-> >      |        s390: |  ok  |
-> >      |          sh: | TODO |
-> >      |       sparc: |  ok  |
-> > diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> > index fd639937e251..d2f5c53fdc19 100644
-> > --- a/arch/riscv/Kconfig
-> > +++ b/arch/riscv/Kconfig
-> > @@ -46,6 +46,8 @@ config RISCV
-> >         select GENERIC_TIME_VSYSCALL if MMU && 64BIT
-> >         select HANDLE_DOMAIN_IRQ
-> >         select HAVE_ARCH_AUDITSYSCALL
-> > +       select HAVE_ARCH_JUMP_LABEL
-> > +       select HAVE_ARCH_JUMP_LABEL_RELATIVE
-> >         select HAVE_ARCH_KASAN if MMU && 64BIT
-> >         select HAVE_ARCH_KGDB
-> >         select HAVE_ARCH_KGDB_QXFER_PKT
-> > diff --git a/arch/riscv/include/asm/jump_label.h b/arch/riscv/include/asm/jump_label.h
-> > new file mode 100644
-> > index 000000000000..d5fb342bfccf
-> > --- /dev/null
-> > +++ b/arch/riscv/include/asm/jump_label.h
-> > @@ -0,0 +1,59 @@
-> > +/* SPDX-License-Identifier: GPL-2.0-only */
-> > +/*
-> > + * Copyright (C) 2020 Emil Renner Berthing
-> > + *
-> > + * Based on arch/arm64/include/asm/jump_label.h
-> > + */
-> > +#ifndef __ASM_JUMP_LABEL_H
-> > +#define __ASM_JUMP_LABEL_H
-> > +
-> > +#ifndef __ASSEMBLY__
-> > +
-> > +#include <linux/types.h>
-> > +
-> > +#define JUMP_LABEL_NOP_SIZE 4
-> > +
-> > +static __always_inline bool arch_static_branch(struct static_key *key,
-> > +                                              bool branch)
-> > +{
-> > +       asm_volatile_goto(
-> > +               "       .option push                            \n\t"
-> > +               "       .option norelax                         \n\t"
-> > +               "       .option norvc                           \n\t"
-> > +               "1:     nop                                     \n\t"
-> > +               "       .option pop                             \n\t"
-> > +               "       .pushsection    __jump_table, \"aw\"    \n\t"
-> > +               "       .align          " RISCV_LGPTR "         \n\t"
-> > +               "       .long           1b - ., %l[label] - .   \n\t"
-> > +               "       " RISCV_PTR "   %0 - .                  \n\t"
-> > +               "       .popsection                             \n\t"
-> > +               :  :  "i"(&((char *)key)[branch]) :  : label);
-> > +
-> > +       return false;
-> > +label:
-> > +       return true;
-> > +}
-> > +
-> > +static __always_inline bool arch_static_branch_jump(struct static_key *key,
-> > +                                                   bool branch)
-> > +{
-> > +       asm_volatile_goto(
-> > +               "       .option push                            \n\t"
-> > +               "       .option norelax                         \n\t"
-> > +               "       .option norvc                           \n\t"
-> > +               "1:     jal             zero, %l[label]         \n\t"
-> > +               "       .option pop                             \n\t"
-> > +               "       .pushsection    __jump_table, \"aw\"    \n\t"
-> > +               "       .align          " RISCV_LGPTR "         \n\t"
-> > +               "       .long           1b - ., %l[label] - .   \n\t"
-> > +               "       " RISCV_PTR "   %0 - .                  \n\t"
-> > +               "       .popsection                             \n\t"
-> > +               :  :  "i"(&((char *)key)[branch]) :  : label);
-> > +
-> > +       return false;
-> > +label:
-> > +       return true;
-> > +}
-> > +
-> > +#endif  /* __ASSEMBLY__ */
-> > +#endif /* __ASM_JUMP_LABEL_H */
-> > diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
-> > index b355cf485671..a5287ab9f7f2 100644
-> > --- a/arch/riscv/kernel/Makefile
-> > +++ b/arch/riscv/kernel/Makefile
-> > @@ -53,4 +53,6 @@ endif
-> >  obj-$(CONFIG_HOTPLUG_CPU)      += cpu-hotplug.o
-> >  obj-$(CONFIG_KGDB)             += kgdb.o
-> >
-> > +obj-$(CONFIG_JUMP_LABEL)       += jump_label.o
-> > +
-> >  clean:
-> > diff --git a/arch/riscv/kernel/jump_label.c b/arch/riscv/kernel/jump_label.c
-> > new file mode 100644
-> > index 000000000000..55b2d742efe1
-> > --- /dev/null
-> > +++ b/arch/riscv/kernel/jump_label.c
-> > @@ -0,0 +1,44 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/*
-> > + * Copyright (C) 2020 Emil Renner Berthing
-> > + *
-> > + * Based on arch/arm64/kernel/jump_label.c
-> > + */
-> > +#include <linux/kernel.h>
-> > +#include <linux/jump_label.h>
-> > +#include <asm/patch.h>
-> > +
-> > +#define RISCV_INSN_NOP 0x00000013
-> > +#define RISCV_INSN_JAL 0x0000006f
-> > +
-> > +void arch_jump_label_transform(struct jump_entry *entry,
-> > +                              enum jump_label_type type)
-> > +{
-> > +       void *addr = (void *)jump_entry_code(entry);
-> > +       u32 insn;
-> > +
-> > +       if (type == JUMP_LABEL_JMP) {
-> > +               u32 offset = jump_entry_target(entry) - jump_entry_code(entry);
-> > +
-> > +               insn = RISCV_INSN_JAL |
-> > +                       ((offset & GENMASK(19, 12)) << (12 - 12)) |
-> > +                       ((offset & GENMASK(11, 11)) << (20 - 11)) |
-> > +                       ((offset & GENMASK(10,  1)) << (21 -  1)) |
-> > +                       ((offset & GENMASK(20, 20)) << (31 - 20));
-> > +       } else
-> > +               insn = RISCV_INSN_NOP;
-> > +
-> > +       patch_text_nosync(addr, &insn, sizeof(insn));
-> > +}
-> > +
-> > +void arch_jump_label_transform_static(struct jump_entry *entry,
-> > +                                     enum jump_label_type type)
-> > +{
-> > +       /*
-> > +        * We use the same instructions in the arch_static_branch and
-> > +        * arch_static_branch_jump inline functions, so there's no
-> > +        * need to patch them up here.
-> > +        * The core will call arch_jump_label_transform  when those
-> > +        * instructions need to be replaced.
-> > +        */
-> > +}
-> > --
-> > 2.27.0
-> >
+> If "physmem" is not an option, can we at least introduce something like
+> ARCH_UPDTAE_MEMBLOCK_ON_HOTPLUG to avoid doing that on x86 and s390x for
+> now (and later maybe for others)?
+
+I have to do more memory hotplug howework to answer that ;-)
+
+My general point is that we don't have to reinvent the wheel to have
+coldplug memory representation, it's already there. We just need a way
+to use it properly.
+
+> -- 
+> Thanks,
+> 
+> David / dhildenb
+> 
+
+-- 
+Sincerely yours,
+Mike.
