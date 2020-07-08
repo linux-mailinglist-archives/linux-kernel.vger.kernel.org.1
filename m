@@ -2,158 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17284218A4F
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 16:44:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E871A218A5C
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 16:45:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729888AbgGHOoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 10:44:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52544 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729635AbgGHOoA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 10:44:00 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83608C061A0B
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 07:44:00 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id p20so50786769ejd.13
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 07:44:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xb0I2RYd0Xq5lHyYzv75SJprFPpXAlY3yqWxTTq8ERk=;
-        b=Th0XJc6W1FFDmfXlzq1ofFkJvJekBX7zuXGDikGiUjkBMOlogYquNwNS+vDbyRld8C
-         LhmCCn8+R4L8aqvauTPdax14LGVHZlnRbxbFJUFk5kGwgekZ9TMHuaCW0xJelAITcZlc
-         bTkGqQhrOc4opTVDlF0pxBjYG3sq0LPbVZdatyc9330fOkC85GWl8K2dSLV8Jpbs/9cp
-         TsbZP+UEqSPgDclqmwmlP6MwPu3Lle6OFkH2akseeprKhD6GAEX1lQ89u9UnPvr3Meob
-         D7JUXToS++1OjP0Y1tqs8PSm01a73keowt+TJ7L/kCHjHuia/yfaEqeyz1gDG4bd4zoY
-         TpAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xb0I2RYd0Xq5lHyYzv75SJprFPpXAlY3yqWxTTq8ERk=;
-        b=oMMEwWhwoSJFA3pJTN//wAOP9tSqBVEorNwYSaTHaIzAqISzVKOBf3xPfc0t3pWLnE
-         iIGrKkcwqzib0p75oJUrVxa8bgK61OOKBoHESmam2t1loOf7rFw4iPkrstWM6iA3MGsZ
-         ceHarAaggnVE8Di7XfvkhR694Jsq8mc1hIOlyyhFAgepuV5QhnfI8hckPi4DcX12b/9l
-         7XyNqGDFn6IDqu5t624bWqeRP9ECVYeTWe3BNZQLy94Yx01AhNgJH1KdPdPV+z843XqU
-         bxuQnrt2ECvgdRdGHE/jk1/u79F+FAarIPNQEYhNFIm6MdisJ8X/OiXM9C/cbWc3fFXQ
-         EjPw==
-X-Gm-Message-State: AOAM531YLOfjea6GtjKkEhUtfR2O9n4tvACFjcoiocgf63Dy7qbikYK1
-        /kzxfouoLZe9+lfhyy2mc3475pKbpIddyi4XIQYBSw==
-X-Google-Smtp-Source: ABdhPJw+kb55V3s0r2zHR9x2KWpKo58dCyUw71gkL9ZFxqoE83rgP6HV9RmtJmzsq9Lyp7rkyPUBX/xTtQTGt0qr+PM=
-X-Received: by 2002:a17:906:1a54:: with SMTP id j20mr51228103ejf.455.1594219439236;
- Wed, 08 Jul 2020 07:43:59 -0700 (PDT)
+        id S1729947AbgGHOpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 10:45:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55390 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729595AbgGHOpe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 10:45:34 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9595820786;
+        Wed,  8 Jul 2020 14:45:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594219534;
+        bh=cP+F+wz6n3hVoP8aNvSk5AWUDQcuCoNcjaP+vD3mi0c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=p8p1ggFGPnEJteeBB95WXlg92wIy14eUukTWMJ98rTrbqwYdZcJBZGUYN+pWuCINt
+         XKR5p/f/qA4r7A8X87MfvonfgMpiHzjS6QYwHMdhNYNt4sQzTkKwBnR2ZBo6G1r8c6
+         /yDXSsapFaQp6Elc81pa5Frm12+eTa/cFMtCgq50=
+Date:   Wed, 8 Jul 2020 15:45:28 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Rohit kumar <rohitkr@codeaurora.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        robh+dt@kernel.org, plai@codeaurora.org, bgoswami@codeaurora.org,
+        perex@perex.cz, tiwai@suse.com, srinivas.kandagatla@linaro.org,
+        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ajit Pandey <ajitp@codeaurora.org>
+Subject: Re: [PATCH v3 4/8] include: dt-bindings: sound: Add sc7180-lpass
+ bindings header
+Message-ID: <20200708144528.GT4655@sirena.org.uk>
+References: <1594184896-10629-1-git-send-email-rohitkr@codeaurora.org>
+ <1594184896-10629-5-git-send-email-rohitkr@codeaurora.org>
 MIME-Version: 1.0
-References: <159419296487.2464622.863943877093636532.stgit@dwillia2-desk3.amr.corp.intel.com>
- <202007080108.454C937@keescook>
-In-Reply-To: <202007080108.454C937@keescook>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 8 Jul 2020 07:43:48 -0700
-Message-ID: <CAPcyv4hmsjKqKWhYYSyCx6fp9P_5GPr+XSVN5xFHxE6Ft2Q7fw@mail.gmail.com>
-Subject: Re: [PATCH v2] CodingStyle: Inclusive Terminology
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dave Airlie <airlied@redhat.com>,
-        SeongJae Park <sjpark@amazon.de>,
-        Olof Johansson <olof@lixom.net>, Chris Mason <clm@fb.clm>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        tech-board-discuss@lists.linuxfoundation.org,
-        ksummit <ksummit-discuss@lists.linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="e7jIye1Ygp5H0AIi"
+Content-Disposition: inline
+In-Reply-To: <1594184896-10629-5-git-send-email-rohitkr@codeaurora.org>
+X-Cookie: Oh Dad!  We're ALL Devo!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 8, 2020 at 1:22 AM Kees Cook <keescook@chromium.org> wrote:
->
-> On Wed, Jul 08, 2020 at 12:23:59AM -0700, Dan Williams wrote:
-> > Linux maintains a coding-style and its own idiomatic set of terminology.
-> > Update the style guidelines to recommend replacements for the terms
-> > master/slave and blacklist/whitelist.
-> >
-> > Link: http://lore.kernel.org/r/159389297140.2210796.13590142254668787525.stgit@dwillia2-desk3.amr.corp.intel.com
-> > Cc: Jonathan Corbet <corbet@lwn.net>
-> > Acked-by: Randy Dunlap <rdunlap@infradead.org>
-> > Acked-by: Dave Airlie <airlied@redhat.com>
-> > Acked-by: Kees Cook <keescook@chromium.org>
-> > Acked-by: SeongJae Park <sjpark@amazon.de>
-> > Signed-off-by: Olof Johansson <olof@lixom.net>
-> > Signed-off-by: Chris Mason <clm@fb.com>
-> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-> > ---
-> > Changes since v1 [1]
-> > - Drop inclusive-terminology.rst, it is in the lore archives if the
-> >   arguments are needed for future debates, but otherwise no pressing
-> >   need to carry it in the tree (Linus, James)
-> >
-> > - Update the recommended terms to include replacement for 'master' and
-> >   'whitelist' (Kees, Andy)
-> >
-> > - Add 'target' as a replacement (Andy)
-> >
-> > - Add 'device' as a replacement (Mark)
-> >
-> > - Collect acks and signed-off-bys. Yes, the sign-offs are not reflective
-> >   of a submission chain, but I kept "Signed-off-by" if people offered
-> >   it.
->
-> In that case, I will "upgrade" my Ack. ;)
->
-> Signed-off-by: Kees Cook <keescook@chromium.org>
->
-> :)
 
-Noted.
+--e7jIye1Ygp5H0AIi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->
-> > - Non-change: I did not add explicit language as to what to do with
-> >   existing usages. My personal inclination is to prioritize this
-> >   coding-style cleanup higher than others, but the coding-style document
-> >   has typically not indicated policy on how cleanups are handled by
-> >   subsystems. It will be a case by case effort and consideration.
->
-> While I'd like to have published guidance on fixing existing language
-> (which is already underway[1]), I agree: let's start here.
->
-> > [...]
-> > +For symbol names, avoid introducing new usage of 'master/slave' (or
->
-> For symbol names, comments, documentation, and other language, avoid
-> introducing ...
+On Wed, Jul 08, 2020 at 10:38:12AM +0530, Rohit kumar wrote:
+> From: Ajit Pandey <ajitp@codeaurora.org>
+>=20
+> Add header defining dai-id and mclk id for SC7180 lpass soc.
+>=20
+> Signed-off-by: Ajit Pandey <ajitp@codeaurora.org>
+> ---
 
-How about "symbol names and documentation" because I'm struggling to
-think of an example of where this terminology would leak in outside
-those broad categories.
+This one is missing a signoff as well, and I can't seem to see any
+reference to this header in the bindings document patches?
 
-> > +'slave' independent of 'master') and 'blacklist/whitelist'. Recommended
-> > +replacements for 'master/slave' are: 'main/{secondary,subordinate}',
-> > +'primary/replica', '{initiator,requester}/{target,responder}',
->
-> the main and primary should be merged, IMO:
->
->         '{primary,main}/{secondary,replica,subordinate}'
+--e7jIye1Ygp5H0AIi
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Ok.
+-----BEGIN PGP SIGNATURE-----
 
->
-> > +'host/{device,proxy}', or 'leader/{performer,follower}'. Recommended
->
-> leader/performer does not track for me. Split it out?
->
->         'leader/follower', 'director/performer'
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8F3AgACgkQJNaLcl1U
+h9CXIwf/dPOevjBguwkthEqzY8waDrI4Vr76oqQ/VwaDcPs5ms8WZBlIduTiQwHe
+LvggZGwuNjq49n6Yx7+vu+/uOJaTTRf99NF8bJ4FuS4aJK0VaCdUwLwwYE6xuSPq
+tGc5B3e4rzdzrs+FJMmRZZ+a55RNU8MXP3j5LuecI7xlxRMifHIx8Nmn52GSI4RD
+7YtEODCmd4xSh4KAEIydg9yzn8o/zMPqwv/jL8MNOEUol5x20FU4tnD2iRJ6E5Fx
+n+yak8arDbKsLRjZH4xtGxhTrl4pKyeGOVrN12XcbiZupG2dDzmJi6LOR9P3HXQ9
+ElQHfFZxIRiHgX9scCPEWtn0DlKV6Q==
+=qOBi
+-----END PGP SIGNATURE-----
 
-Sounds good.
-
-> I have also seen:
->
->         'controller/worker'
-
-Will add.
-
-Thanks Kees.
+--e7jIye1Ygp5H0AIi--
