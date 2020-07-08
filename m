@@ -2,92 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89923218F99
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 20:20:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4737A218FA1
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 20:22:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726480AbgGHSUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 14:20:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42244 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725949AbgGHSUh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 14:20:37 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-111-31.bvtn.or.frontiernet.net [50.39.111.31])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 84B4720658;
-        Wed,  8 Jul 2020 18:20:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594232436;
-        bh=TonelHlHtWDNOIWLPcZdK8GZofB+N27b/F2Vm9vTRh8=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=ukj3cLrdjnebjlAukmmTASRyw1pa2gMozxAYVE8k3Aal5uTo6H7tEBiy5eJN+QxXL
-         gRJwrI65r1HmPmI3ecywXxV/5VkFMVuEu4tbgwYCZmqCvbTsSU6mGg/xNvJwWULf34
-         9NfF2Ngood+DO+fV+U5vOrrqOFGolG0eKpdqBV2Q=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 503CE3522635; Wed,  8 Jul 2020 11:20:36 -0700 (PDT)
-Date:   Wed, 8 Jul 2020 11:20:36 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Marco Elver <elver@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Jason Wang <jasowang@redhat.com>,
-        virtualization@lists.linux-foundation.org,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Matt Turner <mattst88@gmail.com>,
-        kernel-team <kernel-team@android.com>,
-        Kees Cook <keescook@chromium.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Richard Henderson <rth@twiddle.net>,
-        LKML <linux-kernel@vger.kernel.org>, linux-alpha@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH 18/18] arm64: lto: Strengthen READ_ONCE() to acquire when
- CLANG_LTO=y
-Message-ID: <20200708182036.GR9247@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200701170722.4rte5ssnmrn2uqzg@bakewell.cambridge.arm.com>
- <20200702072301.GA15963@willie-the-truck>
- <20200706160023.GB10992@arm.com>
- <20200706163455.GV9247@paulmck-ThinkPad-P72>
- <20200706170556.GE10992@arm.com>
- <20200706173628.GZ9247@paulmck-ThinkPad-P72>
- <20200707102915.GI10992@arm.com>
- <20200707225122.GJ9247@paulmck-ThinkPad-P72>
- <CAKwvOdkW__H21m8vqqk1-n6-KK67HBk=YbA+MkUS7igxfjV1iw@mail.gmail.com>
- <20200708091620.GF597537@hirez.programming.kicks-ass.net>
+        id S1726247AbgGHSWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 14:22:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726044AbgGHSWG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 14:22:06 -0400
+Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 801D9C061A0B;
+        Wed,  8 Jul 2020 11:22:06 -0700 (PDT)
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id 0842FBC0D4;
+        Wed,  8 Jul 2020 18:22:03 +0000 (UTC)
+Subject: Re: [PATCH] Replace HTTP links with HTTPS ones: YAMA SECURITY MODULE
+To:     Kees Cook <keescook@chromium.org>
+Cc:     corbet@lwn.net, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200708073346.13177-1-grandmaster@al2klimov.de>
+ <202007080103.2DAD857D4C@keescook>
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Message-ID: <2c05c0c3-e72a-7cc6-3391-2e0d3bdf6b2c@al2klimov.de>
+Date:   Wed, 8 Jul 2020 20:22:03 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200708091620.GF597537@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <202007080103.2DAD857D4C@keescook>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+X-Spamd-Bar: /
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 08, 2020 at 11:16:20AM +0200, Peter Zijlstra wrote:
-> On Tue, Jul 07, 2020 at 04:01:28PM -0700, Nick Desaulniers wrote:
-> > I'm trying to put together a Micro Conference for Linux Plumbers
-> > conference focused on "make LLVM slightly less shitty."  Do you all
-> > plan on attending the conference? Would it be worthwhile to hold a
-> > session focused on discussing this (LTO and memory models) be
-> > worthwhile?
-> 
-> I'd love to have a session about compilers and memory ordering with both
-> GCC and CLANG in attendance.
-> 
-> We need a solution for dependent-loads and control-dependencies for both
-> toolchains.
 
-What Peter said!  ;-)
 
-							Thanx, Paul
+Am 08.07.20 um 10:05 schrieb Kees Cook:
+> On Wed, Jul 08, 2020 at 09:33:46AM +0200, Alexander A. Klimov wrote:
+>> Rationale:
+>> Reduces attack surface on kernel devs opening the links for MITM
+>> as HTTPS traffic is much harder to manipulate.
+>>
+>> Deterministic algorithm:
+>> For each file:
+>>    If not .svg:
+>>      For each line:
+>>        If doesn't contain `\bxmlns\b`:
+>>          For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+>> 	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+>>              If both the HTTP and HTTPS versions
+>>              return 200 OK and serve the same content:
+>>                Replace HTTP with HTTPS.
+>>
+>> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+>> ---
+>>   Continuing my work started at 93431e0607e5.
+>>   See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+>>   (Actually letting a shell for loop submit all this stuff for me.)
+>>
+>>   If there are any URLs to be removed completely or at least not HTTPSified:
+>>   Just clearly say so and I'll *undo my change*.
+As written here...
+
+>>   See also: https://lkml.org/lkml/2020/6/27/64
+>>
+>>   If there are any valid, but yet not changed URLs:
+>>   See: https://lkml.org/lkml/2020/6/26/837
+>>
+>>   If you apply the patch, please let me know.
+>>
+>>
+>>   Documentation/admin-guide/LSM/Yama.rst | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/Documentation/admin-guide/LSM/Yama.rst b/Documentation/admin-guide/LSM/Yama.rst
+>> index d0a060de3973..64fd62507ae5 100644
+>> --- a/Documentation/admin-guide/LSM/Yama.rst
+>> +++ b/Documentation/admin-guide/LSM/Yama.rst
+>> @@ -21,7 +21,7 @@ of their attack without resorting to user-assisted phishing.
+>>   
+>>   This is not a theoretical problem. SSH session hijacking
+>>   (http://www.storm.net.nz/projects/7) and arbitrary code injection
+> 
+> This link is dead. It is likely best replaced by:
+... I'd undo this change.
+But as it's the only one here, just forget this patch.
+
+> https://www.blackhat.com/presentations/bh-usa-05/bh-us-05-boileau.pdf
+> (this is the same person, but it seems storm.net.nz is gone)
+> 
+>> -(http://c-skills.blogspot.com/2007/05/injectso.html) attacks already
+>> +(https://c-skills.blogspot.com/2007/05/injectso.html) attacks already
+>>   exist and remain possible if ptrace is allowed to operate as before.
+>>   Since ptrace is not commonly used by non-developers and non-admins, system
+>>   builders should be allowed the option to disable this debugging system.
+> 
+> With that change:
+> 
+> Acked-by: Kees Cook <keescook@chromium.org>
+> 
+> for the docs tree.
+> 
