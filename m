@@ -2,119 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C19D2186D1
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 14:04:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 520652186E1
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 14:05:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729298AbgGHMEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 08:04:14 -0400
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:41427 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729286AbgGHMEK (ORCPT
+        id S1728994AbgGHMFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 08:05:31 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:9010 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728907AbgGHMFa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 08:04:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1594209849; x=1625745849;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=31WOsdALl/hRE/HiwpNFxdLflG96c00HIMvr9kklsGc=;
-  b=mi0iFHJdbCnEIiinGG+0W2q02pClYHLx5Kn4MgzUAOJ+NQMk4WE4OvmT
-   vHB4prHlsdQ4niv64SjjtZSO46LCDwX0KpYeClp8wGjspSrUgk3DBxDps
-   CZKSsKD2KTEJSKlgIrivZusBz0Jg8MasSQ5iWmlcTdzPCxO21bg1+CObY
-   1p7+n1VpHRhCr1VA5Sz/qV4SDV70vsoTi5dnOIIKccISNIQj9OkwAUL46
-   vjWSAL9ZmwjXEsltSxpCFOgE7EyTcWLBrRvkchvq+3DrOcQUclZKPbwt+
-   sUe804wRFkrxU6w+aeaBwXj0dXZkgG89L1ViC749lBP3ri92tt8maOoDX
-   Q==;
-IronPort-SDR: sA+taxLlKmTAbOvT2X6PA/1F+3+MPpOLNduCJnckav4ALqp4/TtlqjSCpf07LKVqdWrOfrQLhV
- LGhHURY/3wjas4HDyjdLzTyhWT3gtQ63NRfW44VFvkSuos7Xiw7UBlRrOkyrNYJWD/gP4WlLbI
- 8Jqock6tEbQ40Nmzb6Y8cksSr3lBQKKB8OVDxSaqhKLUWxu1O9wbJyScPriPIYx9HuWKDUIT7Z
- lnMUnEEfFT1uYU0C1NcCcqqc3La8vSGlVitbGjkBQIKBOs1q3B3Fcuap7Sy9WHpzCoXdL/ubLA
- +hU=
-X-IronPort-AV: E=Sophos;i="5.75,327,1589212800"; 
-   d="scan'208";a="143246171"
-Received: from mail-bn7nam10lp2100.outbound.protection.outlook.com (HELO NAM10-BN7-obe.outbound.protection.outlook.com) ([104.47.70.100])
-  by ob1.hgst.iphmx.com with ESMTP; 08 Jul 2020 20:04:08 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MVuDjpI+Tc48dAyLei5soa3vZsIZx65wfL/26M/rcXacJiitp5U5dox2QN+W2smzupZZe7cwiOd98bhNHwk+DP26XiXcyvw31JfXhjIY1bBALLSnHWPF5lIGFThHeWXFN66z95WyQ3H0EDPFrnlMnrW2ottgckQpFoAWAfgnVnjc1Df8HaM8WzX1u0tU8/58EGHBvibmm/iU3w5RAVvF32w5sdyanxEZl+z+3qyS49El28OUbiIs4+i8YIB9bh3opT7iy9g50Fkv2h3+ybw9+zrewjg5QneUCZ1aXTKsV+p0Y1P2k0v3gVKga3ABsvdDyKxX6n2dK6wgqy1s3KCRxg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=31WOsdALl/hRE/HiwpNFxdLflG96c00HIMvr9kklsGc=;
- b=IK8uE+YHeYPvjKhsLWiAT9kGsd0M5se8Qb2tD1qoriONv10YRY2l4YQR5zQ1K/aXK3DV8BhhApBdVuvbtHyxlFOc1BenUAqqEcQJXMzNgBwpOlWj2h0xe/XTtK80O3FQVmEZC0aQmzq06DzNbrf8t98VvjPc8w19Cpfems09d/3nv8jkI0ESpuyMFz12TGtLgmvr3TQ+KuuoHpOYyi8HcGZeUXgAhw1V5CTvcN6nLP7uEP9EyK9ScJQXeGXlNVTHiLKE3tjkO5B8JOnjvWG+FbmHhbiEN285Aqo+b4SGVyJiDfVl/pmrcNmwwzieddzabXtnqgm5Fgoa0nrWgAumfA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=31WOsdALl/hRE/HiwpNFxdLflG96c00HIMvr9kklsGc=;
- b=rfRqADEWm48QVgBjMDrmxcNOe2Zj4W12a7MojbyAygtYU+5RL5kMwmcmlkjhQr3NZYZNeBlQW87DIfD/pHcbwFAcAkGViKYh/qIod8CKw7QTCvybiPf9oTnRqrqCYBGjWEppBxXkQdfCvmpFusOWBVKPO9RD/xXvQyyc3Hbr8dc=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- (2603:10b6:803:47::21) by SN6PR04MB4687.namprd04.prod.outlook.com
- (2603:10b6:805:aa::22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.22; Wed, 8 Jul
- 2020 12:04:07 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::1447:186c:326e:30b2]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::1447:186c:326e:30b2%7]) with mapi id 15.20.3153.031; Wed, 8 Jul 2020
- 12:04:07 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Lee Jones <lee.jones@linaro.org>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        Hannes Reinecke <hare@suse.de>
-Subject: Re: [PATCH 03/30] scsi: libfc: fc_disc: trivial: Fix spelling mistake
- of 'discovery'
-Thread-Topic: [PATCH 03/30] scsi: libfc: fc_disc: trivial: Fix spelling
- mistake of 'discovery'
-Thread-Index: AQHWVR+pi6nQBSqyRkaYFJ9Wxo86QA==
-Date:   Wed, 8 Jul 2020 12:04:07 +0000
-Message-ID: <SN4PR0401MB35986D7CECA87EA6EB9CEFA99B670@SN4PR0401MB3598.namprd04.prod.outlook.com>
-References: <20200708120221.3386672-1-lee.jones@linaro.org>
- <20200708120221.3386672-4-lee.jones@linaro.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linaro.org; dkim=none (message not signed)
- header.d=none;linaro.org; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [129.253.240.72]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: d257d037-3ff9-488a-8347-08d82337040e
-x-ms-traffictypediagnostic: SN6PR04MB4687:
-x-microsoft-antispam-prvs: <SN6PR04MB4687F18E6046F680002F5C689B670@SN6PR04MB4687.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:4125;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: eAhv7LYqUCYbAxCq2aFFd3op5TEqaHNj2olWnUNWpZlaJYERdcwUATs0qkApSeKD3F1PDsY5J4t4zCZG68fFsuIN0u+ONAAU0UKopPRKr3fitoK9zroBH+Fcb97YjRZK11ES1rvHl9F17XapIklM/sDvoU3YEiXFJg9gvYch19s4xGq+1Su0nBTjXvzwqkByHz33geQazG9nHY6UCn6YsQs2NlaQu1s93Xzrx5BVgyhQQyY94t2B2qKKaM0J+DoTbBn8NvqnpgkIbBLjgNTEM+yqzmdR6ohZ8/aRE52ItJS1b9ifYP3wZftM+RbpzUUKRCPSMTXimJLCuaYyoqoGEw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(366004)(39860400002)(376002)(346002)(136003)(91956017)(8936002)(6506007)(26005)(186003)(52536014)(4326008)(7696005)(9686003)(86362001)(54906003)(5660300002)(110136005)(8676002)(558084003)(71200400001)(316002)(66946007)(64756008)(66446008)(55016002)(33656002)(2906002)(76116006)(478600001)(66556008)(66476007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: +pxVyklUQjXfiIygJOAQtJkiOJjzpBUMreYKJegdf6B95hjt60QWPrfifJeGhUTXBy27GNrBNUPDcZeeL9F74kJ0JX84lzXLIxQqb/7juQa4qRUXn+02ad8uCCsVNbPznyLOGth80htEV0o+abpP59XrtgsYLR7oOLV0Qr0X8aLcJtO1y0NoqFuc40mHw6KMeCLwnBkyx3CTEOa5tOTVWq73+lXEB2mtSLNzxvMsk2L7Ja6+X2T+vTOkYvLN8Yd3xETqTLp2prcy0aUBwA40yY2uPe/FB/6A3tt2fdh78CW8l6dkTFSyh1r6J1IjOj1gWCWo2H875kqWBp1NO3630nyhPWjB4Qx9DwDRC/XWrJNwkaTCtyqCVEp0rvvgZku4NhprrWzZUpflxh9CWJPW336L4zJzEfX8xdl/YrIT3fUaewwiFAL1Xql1PBsN3WMSWspnU5/3yBEgozAFnEOODTN7No9qv2SL6t9jqY16tcd88MmRpoE8o3wu82dmh1CZ
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Wed, 8 Jul 2020 08:05:30 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f05b61f0000>; Wed, 08 Jul 2020 05:03:43 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Wed, 08 Jul 2020 05:05:30 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Wed, 08 Jul 2020 05:05:30 -0700
+Received: from [10.26.73.185] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 8 Jul
+ 2020 12:05:24 +0000
+Subject: Re: [PATCH v10 1/5] iommu/arm-smmu: move TLB timeout and spin count
+ macros
+To:     Krishna Reddy <vdumpa@nvidia.com>, <joro@8bytes.org>,
+        <will@kernel.org>, <robin.murphy@arm.com>, <robh+dt@kernel.org>,
+        <treding@nvidia.com>
+CC:     <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>, <yhsu@nvidia.com>,
+        <snikam@nvidia.com>, <praithatha@nvidia.com>, <talho@nvidia.com>,
+        <bbiswas@nvidia.com>, <mperttunen@nvidia.com>,
+        <nicolinc@nvidia.com>, <bhuntsman@nvidia.com>,
+        <nicoleotsuka@gmail.com>
+References: <20200708050017.31563-1-vdumpa@nvidia.com>
+ <20200708050017.31563-2-vdumpa@nvidia.com>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <f078a879-0779-2bae-19d6-8537493f7124@nvidia.com>
+Date:   Wed, 8 Jul 2020 13:05:22 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d257d037-3ff9-488a-8347-08d82337040e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Jul 2020 12:04:07.0140
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: EMRpTRwlks6JBdR9/+9J6d74U751LVypd/jSvWWU8qqAQle7B7iZKs4vszIvCoVXMTq8/LIS3/NPEHRBojChI41O1/GBPwDNCjNNHLBDAN4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB4687
+In-Reply-To: <20200708050017.31563-2-vdumpa@nvidia.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1594209823; bh=39Xiwm/BPHYEB0uxotS0GtnjIsBpeBmuTtn4lOHl6Js=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=Nf9RGT2xJJ493EJfEKuoILphz9FeltPWfENInDfdF38rOvZ8dpqygPuRM3VIE7GQw
+         hg31ELt6ijAW7k7IOl/NTTS4KDPspvb1Q2VlF6WUH4UpgmG2dQ4lJ0bYK/yQTcydDv
+         cFDzQrlgKNbZU4jotTnM+CAzxR2ZVnEIl+JZ/UX9eoABGYkW4B6UAyS++90FjAotqi
+         OGgycWRgcBM3001e9Ryzs49IlxE4FoPAv7+A4FDz6eFBt50n6OvnPToiMHCeMj6W3l
+         pWqg2DdUa76gPBDOTe39cnNJ2n/8j4Bfai/yMISyyj2mTX0xpUS/rsyocDSXkJMJaF
+         /Sokri/GcxGpw==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks good,=0A=
-=0A=
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
-=0A=
-I think Martin can fold this one into the original one=0A=
+
+On 08/07/2020 06:00, Krishna Reddy wrote:
+> Move TLB timeout and spin count macros to header file to
+> allow using the same from vendor specific implementations.
+> 
+> Signed-off-by: Krishna Reddy <vdumpa@nvidia.com>
+> ---
+>  drivers/iommu/arm-smmu.c | 3 ---
+>  drivers/iommu/arm-smmu.h | 2 ++
+>  2 files changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/iommu/arm-smmu.c b/drivers/iommu/arm-smmu.c
+> index 243bc4cb2705..d2054178df35 100644
+> --- a/drivers/iommu/arm-smmu.c
+> +++ b/drivers/iommu/arm-smmu.c
+> @@ -52,9 +52,6 @@
+>   */
+>  #define QCOM_DUMMY_VAL -1
+>  
+> -#define TLB_LOOP_TIMEOUT		1000000	/* 1s! */
+> -#define TLB_SPIN_COUNT			10
+> -
+>  #define MSI_IOVA_BASE			0x8000000
+>  #define MSI_IOVA_LENGTH			0x100000
+>  
+> diff --git a/drivers/iommu/arm-smmu.h b/drivers/iommu/arm-smmu.h
+> index d172c024be61..c7d0122a7c6c 100644
+> --- a/drivers/iommu/arm-smmu.h
+> +++ b/drivers/iommu/arm-smmu.h
+> @@ -236,6 +236,8 @@ enum arm_smmu_cbar_type {
+>  /* Maximum number of context banks per SMMU */
+>  #define ARM_SMMU_MAX_CBS		128
+>  
+> +#define TLB_LOOP_TIMEOUT		1000000	/* 1s! */
+> +#define TLB_SPIN_COUNT			10
+>  
+>  /* Shared driver definitions */
+>  enum arm_smmu_arch_version {
+> 
+
+
+Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
+
+Thanks!
+Jon
+
+-- 
+nvpublic
