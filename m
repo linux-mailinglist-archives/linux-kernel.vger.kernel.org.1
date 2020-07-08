@@ -2,57 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A7D22180AB
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 09:18:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E8EB2180AE
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 09:18:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730194AbgGHHSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 03:18:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43442 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729896AbgGHHSj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 03:18:39 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9B1C020708;
-        Wed,  8 Jul 2020 07:18:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594192719;
-        bh=sPThglVmMIZyClWpvplfucG+zqHeP8pynV4icATZsA0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CmtAl3LupfRDKm5XHmeJI3cwWuTfRDKVh78GgNYCEw73vFVBSmvkkEkJpFOZb7ObL
-         9YCOzFrKFAbxpB4gl0AT+/kTW8p+RevdzQvlqwusH7nkvwhc+Cnfzk3ofw71dcbGop
-         uC+kDGK8dD+1Eo47zHcyatF2xm4gsBJb0oPOBT7A=
-Date:   Wed, 8 Jul 2020 09:18:35 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESENT] ia64: configs: Remove useless UEVENT_HELPER_PATH
-Message-ID: <20200708071835.GA353684@kroah.com>
-References: <20200707205030.32394-1-krzk@kernel.org>
+        id S1730214AbgGHHSw convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 8 Jul 2020 03:18:52 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:2565 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729972AbgGHHSv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 03:18:51 -0400
+Received: from dggemi404-hub.china.huawei.com (unknown [172.30.72.55])
+        by Forcepoint Email with ESMTP id CE7EC7E3DC7FCAFBC0BD;
+        Wed,  8 Jul 2020 15:18:47 +0800 (CST)
+Received: from DGGEMI525-MBS.china.huawei.com ([169.254.6.177]) by
+ dggemi404-hub.china.huawei.com ([10.3.17.142]) with mapi id 14.03.0487.000;
+ Wed, 8 Jul 2020 15:18:41 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     "liwei (CM)" <liwei213@huawei.com>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "will@kernel.org" <will@kernel.org>
+CC:     fengbaopeng <fengbaopeng2@hisilicon.com>,
+        "nsaenzjulienne@suse.de" <nsaenzjulienne@suse.de>,
+        "steve.capper@arm.com" <steve.capper@arm.com>,
+        "rppt@linux.ibm.com" <rppt@linux.ibm.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        sujunfei <sujunfei2@hisilicon.com>
+Subject: RE: [PATCH] arm64: mm: free unused memmap for sparse memory model
+ that define VMEMMAP
+Thread-Topic: [PATCH] arm64: mm: free unused memmap for sparse memory model
+ that define VMEMMAP
+Thread-Index: AQHWVMrtlX9AbygsxkCkGlEoK5gXXaj9QcNg
+Date:   Wed, 8 Jul 2020 07:18:39 +0000
+Message-ID: <B926444035E5E2439431908E3842AFD255E7A1@DGGEMI525-MBS.china.huawei.com>
+References: <20200708015555.14946-1-liwei213@huawei.com>
+In-Reply-To: <20200708015555.14946-1-liwei213@huawei.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.200.214]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200707205030.32394-1-krzk@kernel.org>
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 07, 2020 at 10:50:30PM +0200, Krzysztof Kozlowski wrote:
-> Remove the CONFIG_UEVENT_HELPER_PATH because:
-> 1. It is disabled since commit 1be01d4a5714 ("driver: base: Disable
->    CONFIG_UEVENT_HELPER by default") as its dependency (UEVENT_HELPER) was
->    made default to 'n',
-> 2. It is not recommended (help message: "This should not be used today
->    [...] creates a high system load") and was kept only for ancient
->    userland,
-> 3. Certain userland specifically requests it to be disabled (systemd
->    README: "Legacy hotplug slows down the system and confuses udev").
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> Acked-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+> -----Original Message-----
+> From: liwei (CM)
+> Sent: Wednesday, July 8, 2020 1:56 PM
+> To: catalin.marinas@arm.com; will@kernel.org
+> Cc: liwei (CM) <liwei213@huawei.com>; fengbaopeng
+> <fengbaopeng2@hisilicon.com>; nsaenzjulienne@suse.de;
+> steve.capper@arm.com; rppt@linux.ibm.com; Song Bao Hua (Barry Song)
+> <song.bao.hua@hisilicon.com>; linux-arm-kernel@lists.infradead.org;
+> linux-kernel@vger.kernel.org; sujunfei <sujunfei2@hisilicon.com>
+> Subject: [PATCH] arm64: mm: free unused memmap for sparse memory model
+> that define VMEMMAP
+> 
+> For the memory hole, sparse memory model that define
+> SPARSEMEM_VMEMMAP do not free the reserved memory for the page map,
+> this patch do it.
+
+Hello Wei,
+Just curious if this patch breaks MEMORY_HOTPLUG?
+
+> 
+> Signed-off-by: Wei Li <liwei213@huawei.com>
+> Signed-off-by: Chen Feng <puck.chen@hisilicon.com>
+> Signed-off-by: Xia Qing <saberlily.xia@hisilicon.com>
+> ---
+>  arch/arm64/mm/init.c | 81
+> +++++++++++++++++++++++++++++++++++++++++++++-------
+>  1 file changed, 71 insertions(+), 10 deletions(-)
+> 
+> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c index
+> 1e93cfc7c47a..d1b56b47d5ba 100644
+> --- a/arch/arm64/mm/init.c
+> +++ b/arch/arm64/mm/init.c
+> @@ -441,7 +441,48 @@ void __init bootmem_init(void)
+>  	memblock_dump_all();
+>  }
+> 
+
+Thanks
+Barry
+
