@@ -2,108 +2,310 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A4C0218498
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 12:03:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2A2E2184A1
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 12:04:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728321AbgGHKDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 06:03:32 -0400
-Received: from mail-eopbgr1310043.outbound.protection.outlook.com ([40.107.131.43]:36509
-        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726196AbgGHKDb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 06:03:31 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VYwXTlZ2eJtH0FqTNo3NSCT/vHvPA9XZsjUUfBQk5OI853Awck6ilOWA7UXBteN3x/FTXlx1pKtPObp01PfAZTORmb59QRRmJ3MBj6BS44/092sQqjHMJTF4izspgLaXRjojsunl9sULcT8RP7ztdbddZvjBJ1eZv1FQVvJ3zaYboTCi6U3tBcXTecBAYjoe6LNjeLm7J1q15X0TzhPC17t4hiYkMGMqNTJvWKCwwxOYkbMa9vbYGoYxpWh3y6RqBmmqX/aDjMdpW6x0Wvzyhn2XrxyvGULywx6UBvJyPkMPZ9jIFxpjNyVIrwp4xgZOXb4cZJ39nrKXLFZqUTlx6g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QK4DFEGMRz2UGxaLw9hL5pkxsR6bM3pSF8IetCs1Hcc=;
- b=UG1eBMnKBZ+ZA8rAPaPIMzCrgZ2OXQzTlmdrpxojL9c7Vlg+0v1Lbrptb1788boIvONIqxXaOgLN5IRG93jRuZR+xKjMicf95hbgFLxpxfxZouag6X1V1mkxzCBT7gaWWbE65lh627ATkYbZPdBimouzlzj1WvNisulgdE+sq5xounxSHRz352VSodIVkzzkpFws4EbX9EM31UNNNPfG0iyGEgrxzWI0KNP+MAqDXXpTKs8fa5S+zA+lNQBbnmybD2x2PQk2sr48qkuP+Uxj0kmj705Kihty60mRW9YUKnsX7VXRUzoP/AW7DQzZLi9P0xuKGOi7oMBSCk2IibZtkw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oppo.com; dmarc=pass action=none header.from=oppo.com;
- dkim=pass header.d=oppo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oppoglobal.onmicrosoft.com; s=selector1-oppoglobal-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QK4DFEGMRz2UGxaLw9hL5pkxsR6bM3pSF8IetCs1Hcc=;
- b=Ub5w/lnSzq0/CTvt2m42HqqslhC2xCygu6ZeFbt0UarbBVyfkDq9PZ0QwZkShP2WEvS6c5vd64fVqOANGmR2HRBNym4K/8ezVCAKyhIEC1V/potgursWJpOu5tT2zLiCfvq/H0mhPhd1azN2Rh2Dp0a3N2DR2tHY0a2mIhiYQ3Q=
-Received: from HKAPR02MB4291.apcprd02.prod.outlook.com (2603:1096:203:d3::12)
- by HK0PR02MB3042.apcprd02.prod.outlook.com (2603:1096:203:37::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.20; Wed, 8 Jul
- 2020 10:03:28 +0000
-Received: from HKAPR02MB4291.apcprd02.prod.outlook.com
- ([fe80::d4d8:820c:6e00:69d2]) by HKAPR02MB4291.apcprd02.prod.outlook.com
- ([fe80::d4d8:820c:6e00:69d2%8]) with mapi id 15.20.3174.021; Wed, 8 Jul 2020
- 10:03:28 +0000
-From:   =?utf-8?B?5b2t5rWpKFJpY2hhcmQp?= <richard.peng@oppo.com>
-To:     Will Deacon <will@kernel.org>
-CC:     "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "linux-arm-kernel@lists.infradead.org" 
+        id S1728633AbgGHKEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 06:04:46 -0400
+Received: from esa3.microchip.iphmx.com ([68.232.153.233]:54890 "EHLO
+        esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726110AbgGHKEp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 06:04:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1594202685; x=1625738685;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=WESo8uRn89dal0Se9yediaMIdWKfPgqlwwQUi0PuOh8=;
+  b=mHigIeQcIAwBuYrHys4E996qQncoOdNwHILJONPG3iKNKbue+U8HScAO
+   aBhgGETWgwbComRHW/fpwpmMDJd+FabwwPmIUHE8Jv7H6/0vce9zhPj0F
+   ZdeWZAraOCA8Vt3wyWkKpf0xPTuwDI8U5ZwjmXc5xRJKBX/v4tc64F/rB
+   NE/Z2JAxHIXGIq7Ql/V3T5PJ6i5U11q1i6k0YmAmpMDh3IgsIU6U/xVzB
+   jKOs2e1cewCsNM1hXo7Zg74UyxZM3MH6ZMMuHkSTnD1X+aJResQc6EDA8
+   Bgxs7eYopOW+D/G8nNexsTzm9nBxses5sNAODGU15J/xoT0eAmfEQdxwh
+   A==;
+IronPort-SDR: Iap92/DhbL9SeP4/bXfxOMjNRrvLV3PF9G0itpbxzdcsllogS/vOZOcdg2G1NICaIkm1IJORLi
+ DIi10cKw2UsxHRsmfllxsUPrDuZHxRPPtu/Gn9DY3HlpW3mMI87cnulgtLChwVleFJJnRP8HYu
+ w++7rS8KFljmeNz8UzfnfweiyM4SWbZXrfeeZXa06NS9WsFEVz9Q/EMU3oSDK4vGVtXx+c0GDU
+ ksp/wgfZ9G2KQ3fmbk5jAbt0DLwxfl95A/ZzFFx/gFrNw0o4ZFUsVA19O3YXJC9Qu2hfH7ocQy
+ ILQ=
+X-IronPort-AV: E=Sophos;i="5.75,327,1589266800"; 
+   d="scan'208";a="82965611"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 08 Jul 2020 03:04:39 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 8 Jul 2020 03:04:12 -0700
+Received: from rob-ult-m19940.microchip.com (10.10.115.15) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Wed, 8 Jul 2020 03:03:53 -0700
+From:   Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+To:     <alsa-devel@alsa-project.org>,
         <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "ardb@kernel.org" <ardb@kernel.org>
-Subject: Re: [PATCH] arm64/module-plts: Consider the special case where
- plt_max_entries is 0
-Thread-Topic: [PATCH] arm64/module-plts: Consider the special case where
- plt_max_entries is 0
-Thread-Index: AdZVDnc5+YpMVDDhTCCDDkk4WgR86A==
-Date:   Wed, 8 Jul 2020 10:03:28 +0000
-Message-ID: <HKAPR02MB4291B970192A023778445B1BE0670@HKAPR02MB4291.apcprd02.prod.outlook.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=oppo.com;
-x-originating-ip: [58.255.79.102]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: f3271dda-4de1-4ac8-ed8f-08d823262996
-x-ms-traffictypediagnostic: HK0PR02MB3042:
-x-microsoft-antispam-prvs: <HK0PR02MB304257527B7ADD4277B74BD2E0670@HK0PR02MB3042.apcprd02.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2331;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: CUMQc3I4jAbO/EiVmOqbbPwpTqf2Q0SH51If7Vy/gNiOMhKPQ5OENwEvpi1wqOGOWZI1JG0fAyYDZjeZ/qcPDlb94CMTChYCWOn7rWMMrrxRgQYCURwaRmChl5CCn4nz0sks7yybEqlufowvsg08eZIYScCOOEtwFD95VROvAUcimib6krvupsivemLepm0TYkTh4+5GfU5DX0f4arbLXxsZbsNZ2FROfoCjj2tcmKEDP9GagsUmeVX783HFHcyMVlFoqwOPFoQU9mMVZRETSAqfcfWXWSCekTBlf+0fJZa+fjNNWDTNqQVz2bsEnPhGtACuXTQje1dQuqC2+AAkrBQaY0L7eFrEiHE7Alzz7A+XxXAcFc8anazQ5vhMo/ZK
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HKAPR02MB4291.apcprd02.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(39860400002)(346002)(376002)(136003)(396003)(366004)(26005)(55016002)(7696005)(66946007)(86362001)(186003)(76116006)(8676002)(85182001)(6506007)(2906002)(8936002)(52536014)(478600001)(83380400001)(316002)(5660300002)(71200400001)(66446008)(4326008)(64756008)(66556008)(66476007)(6916009)(9686003)(54906003)(33656002)(11606004);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: oyZn+OuiWj1wcfUmiG9ZI/B7LqKentyT6y4IPrJ86yWA+T8mr/w9R1MQLzvqeO4eBWAlPaenf8Nvrq3LmzM/TnFUpTs+35uiMoftUTUpuMDZAih2S8ctSFp7Gjj3em8F/SqCgDTa25RZf66BzGpG4a2A1CiAN8ibl+1alaGBk+Szv1EJSUGfQVBcSsQgP+RMIZQWvK9DltToOyc9teEX2gqWkLcWd9lJWIFzG/jlvD8SksYuuVUHdfAFsODi+7IBLYTiPJgV/u1NTcWGWt3Xy6prRJrP1UwSIk0a7s3m8uxyiddbvsnGwRcPI5AjhAYoy7g9R4k7xFeVDyVym7LRihxPOsJiHKHW+OhILS1De57kO0rP1imV/WF9LbcfMb3u0H9nleZa3fg2qUyZVfuvjTxvRFSGLQw3ivjmYlPDa+DXqKuN80gqm/Qn35XBtV8V29YeTs334kKz/cQ9rgAGy3cB+EvzM75bE2nwBTXZ37s=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        <linux-kernel@vger.kernel.org>
+CC:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+        <tiwai@suse.com>, <nicolas.ferre@microchip.com>,
+        <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>,
+        "Codrin Ciubotariu" <codrin.ciubotariu@microchip.com>
+Subject: [PATCH v2] ASoC: atmel-classd: remove codec component
+Date:   Wed, 8 Jul 2020 13:04:09 +0300
+Message-ID: <20200708100409.2625566-1-codrin.ciubotariu@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-OriginatorOrg: oppo.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: HKAPR02MB4291.apcprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f3271dda-4de1-4ac8-ed8f-08d823262996
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Jul 2020 10:03:28.4121
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: f1905eb1-c353-41c5-9516-62b4a54b5ee6
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: xQgb9kWOfkWirfSwwxKXWz8ORFwk8xLykt+B+sMc3MmqeO7zVr9GVE6YNxlpFj1mXdbQ6hi0HS+p4r/bncgwpg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK0PR02MB3042
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQpPbiBUdWUsIEp1bCAwNywgMjAyMCBhdCAwNzo0NjowOEFNIC0wNDAwLCBQZW5nIEhhbyB3cm90
-ZToNCj4+IElmIHBsdF9tYXhfZW50cmllcyBpcyAwLCBhIHdhcm5pbmcgaXMgdHJpZ2dlcmVkLg0K
-Pj4gV0FSTklORzogQ1BVOiAyMDAgUElEOiAzMDAwIGF0IGFyY2gvYXJtNjQva2VybmVsL21vZHVs
-ZS1wbHRzLmM6OTcgbW9kdWxlX2VtaXRfcGx0X2VudHJ5KzB4YTQvMHgxNTANCj4NCj4gV2hpY2gg
-a2VybmVsIGFyZSB5b3Ugc2VlaW5nIHRoaXMgd2l0aD8gVGhlcmUgaXMgYSBQTFQtcmVsYXRlZCBj
-aGFuZ2UgaW4NCj4gZm9yLW5leHQvY29yZSwgYW5kIEknZCBsaWtlIHRvIHJ1bGUgaWYgb3V0IGlm
-IHBvc3NpYmxlLg0KPg0KNS42LjAtcmMzKw0KPj4gU2lnbmVkLW9mZi1ieTogUGVuZyBIYW8gPHJp
-Y2hhcmQucGVuZ0BvcHBvLmNvbT4NCj4+IC0tLQ0KPj4gIGFyY2gvYXJtNjQva2VybmVsL21vZHVs
-ZS1wbHRzLmMgfCAzICsrLQ0KPj4gIDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDEg
-ZGVsZXRpb24oLSkNCj4+IA0KPj4gZGlmZiAtLWdpdCBhL2FyY2gvYXJtNjQva2VybmVsL21vZHVs
-ZS1wbHRzLmMgYi9hcmNoL2FybTY0L2tlcm5lbC9tb2R1bGUtcGx0cy5jDQo+PiBpbmRleCA2NWIw
-OGE3NGFlYzYuLjE4NjhjOWFjMTNmMiAxMDA2NDQNCj4+IC0tLSBhL2FyY2gvYXJtNjQva2VybmVs
-L21vZHVsZS1wbHRzLmMNCj4+ICsrKyBiL2FyY2gvYXJtNjQva2VybmVsL21vZHVsZS1wbHRzLmMN
-Cj4+IEBAIC03OSw3ICs3OSw4IEBAIHU2NCBtb2R1bGVfZW1pdF9wbHRfZW50cnkoc3RydWN0IG1v
-ZHVsZSAqbW9kLCBFbGY2NF9TaGRyICpzZWNoZHJzLA0KPj4gIAlpbnQgaSA9IHBsdHNlYy0+cGx0
-X251bV9lbnRyaWVzOw0KPj4gIAlpbnQgaiA9IGkgLSAxOw0KPj4gIAl1NjQgdmFsID0gc3ltLT5z
-dF92YWx1ZSArIHJlbGEtPnJfYWRkZW5kOw0KPj4gLQ0KPj4gKwlpZiAocGx0c2VjLT5wbHRfbWF4
-X2VudHJpZXMgPT0gMCkNCj4+ICsJCXJldHVybiAwOw0KPg0KPkhtbSwgYnV0IGlmIHRoZXJlIGFy
-ZW4ndCBhbnkgUExUcyB0aGVuIGhvdyBkbyB3ZSBlbmQgdXAgaGVyZT8NCj4NCldlIGFsc28gcmV0
-dXJuZWQgMCB3aGVuIHdhcm5pbmcgd2FzIHRyaWdnZXJlZC4NCj5XaWxsDQo=
+The CPU and the codec both are represented now as components, so for
+CLASS-D we are registering two componenets with the same name. Since
+there is no actual codec, we will merge the codec component into the
+CPU one and use a dummy codec instead, for the DAI link.
+As a bonus, debugfs will no longer report an error when will try to
+create entries for both componenets with the same name.
+
+Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+---
+
+Changes in v2:
+ - removed no longer used ATMEL_CLASSD_CODEC_DAI_NAME macro;
+
+ sound/soc/atmel/atmel-classd.c | 134 ++++++++++++---------------------
+ 1 file changed, 48 insertions(+), 86 deletions(-)
+
+diff --git a/sound/soc/atmel/atmel-classd.c b/sound/soc/atmel/atmel-classd.c
+index e98601eccfa3..24bc93c468af 100644
+--- a/sound/soc/atmel/atmel-classd.c
++++ b/sound/soc/atmel/atmel-classd.c
+@@ -5,7 +5,6 @@
+  *
+  * Author: Songjun Wu <songjun.wu@atmel.com>
+  */
+-
+ #include <linux/of.h>
+ #include <linux/clk.h>
+ #include <linux/module.h>
+@@ -120,39 +119,21 @@ static int atmel_classd_cpu_dai_startup(struct snd_pcm_substream *substream,
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct atmel_classd *dd = snd_soc_card_get_drvdata(rtd->card);
++	int err;
+ 
+ 	regmap_write(dd->regmap, CLASSD_THR, 0x0);
+ 
+-	return clk_prepare_enable(dd->pclk);
+-}
+-
+-static void atmel_classd_cpu_dai_shutdown(struct snd_pcm_substream *substream,
+-					struct snd_soc_dai *cpu_dai)
+-{
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct atmel_classd *dd = snd_soc_card_get_drvdata(rtd->card);
+-
+-	clk_disable_unprepare(dd->pclk);
++	err = clk_prepare_enable(dd->pclk);
++	if (err)
++		return err;
++	err = clk_prepare_enable(dd->gclk);
++	if (err) {
++		clk_disable_unprepare(dd->pclk);
++		return err;
++	}
++	return 0;
+ }
+ 
+-static const struct snd_soc_dai_ops atmel_classd_cpu_dai_ops = {
+-	.startup	= atmel_classd_cpu_dai_startup,
+-	.shutdown	= atmel_classd_cpu_dai_shutdown,
+-};
+-
+-static struct snd_soc_dai_driver atmel_classd_cpu_dai = {
+-	.playback = {
+-		.channels_min	= 1,
+-		.channels_max	= 2,
+-		.rates		= ATMEL_CLASSD_RATES,
+-		.formats	= SNDRV_PCM_FMTBIT_S16_LE,},
+-	.ops = &atmel_classd_cpu_dai_ops,
+-};
+-
+-static const struct snd_soc_component_driver atmel_classd_cpu_dai_component = {
+-	.name = "atmel-classd",
+-};
+-
+ /* platform */
+ static int
+ atmel_classd_platform_configure_dma(struct snd_pcm_substream *substream,
+@@ -306,31 +287,10 @@ static int atmel_classd_component_resume(struct snd_soc_component *component)
+ 	return regcache_sync(dd->regmap);
+ }
+ 
+-static struct snd_soc_component_driver soc_component_dev_classd = {
+-	.probe			= atmel_classd_component_probe,
+-	.resume			= atmel_classd_component_resume,
+-	.controls		= atmel_classd_snd_controls,
+-	.num_controls		= ARRAY_SIZE(atmel_classd_snd_controls),
+-	.idle_bias_on		= 1,
+-	.use_pmdown_time	= 1,
+-	.endianness		= 1,
+-	.non_legacy_dai_naming	= 1,
+-};
+-
+-/* codec dai component */
+-static int atmel_classd_codec_dai_startup(struct snd_pcm_substream *substream,
+-				struct snd_soc_dai *codec_dai)
+-{
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct atmel_classd *dd = snd_soc_card_get_drvdata(rtd->card);
+-
+-	return clk_prepare_enable(dd->gclk);
+-}
+-
+-static int atmel_classd_codec_dai_digital_mute(struct snd_soc_dai *codec_dai,
+-	int mute)
++static int atmel_classd_cpu_dai_digital_mute(struct snd_soc_dai *cpu_dai,
++					     int mute)
+ {
+-	struct snd_soc_component *component = codec_dai->component;
++	struct snd_soc_component *component = cpu_dai->component;
+ 	u32 mask, val;
+ 
+ 	mask = CLASSD_MR_LMUTE_MASK | CLASSD_MR_RMUTE_MASK;
+@@ -373,13 +333,13 @@ static struct {
+ };
+ 
+ static int
+-atmel_classd_codec_dai_hw_params(struct snd_pcm_substream *substream,
+-			    struct snd_pcm_hw_params *params,
+-			    struct snd_soc_dai *codec_dai)
++atmel_classd_cpu_dai_hw_params(struct snd_pcm_substream *substream,
++			       struct snd_pcm_hw_params *params,
++			       struct snd_soc_dai *cpu_dai)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct atmel_classd *dd = snd_soc_card_get_drvdata(rtd->card);
+-	struct snd_soc_component *component = codec_dai->component;
++	struct snd_soc_component *component = cpu_dai->component;
+ 	int fs;
+ 	int i, best, best_val, cur_val, ret;
+ 	u32 mask, val;
+@@ -417,8 +377,8 @@ atmel_classd_codec_dai_hw_params(struct snd_pcm_substream *substream,
+ }
+ 
+ static void
+-atmel_classd_codec_dai_shutdown(struct snd_pcm_substream *substream,
+-			    struct snd_soc_dai *codec_dai)
++atmel_classd_cpu_dai_shutdown(struct snd_pcm_substream *substream,
++			      struct snd_soc_dai *cpu_dai)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct atmel_classd *dd = snd_soc_card_get_drvdata(rtd->card);
+@@ -426,10 +386,10 @@ atmel_classd_codec_dai_shutdown(struct snd_pcm_substream *substream,
+ 	clk_disable_unprepare(dd->gclk);
+ }
+ 
+-static int atmel_classd_codec_dai_prepare(struct snd_pcm_substream *substream,
+-					struct snd_soc_dai *codec_dai)
++static int atmel_classd_cpu_dai_prepare(struct snd_pcm_substream *substream,
++					struct snd_soc_dai *cpu_dai)
+ {
+-	struct snd_soc_component *component = codec_dai->component;
++	struct snd_soc_component *component = cpu_dai->component;
+ 
+ 	snd_soc_component_update_bits(component, CLASSD_MR,
+ 				CLASSD_MR_LEN_MASK | CLASSD_MR_REN_MASK,
+@@ -439,10 +399,10 @@ static int atmel_classd_codec_dai_prepare(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
+-static int atmel_classd_codec_dai_trigger(struct snd_pcm_substream *substream,
+-					int cmd, struct snd_soc_dai *codec_dai)
++static int atmel_classd_cpu_dai_trigger(struct snd_pcm_substream *substream,
++					int cmd, struct snd_soc_dai *cpu_dai)
+ {
+-	struct snd_soc_component *component = codec_dai->component;
++	struct snd_soc_component *component = cpu_dai->component;
+ 	u32 mask, val;
+ 
+ 	mask = CLASSD_MR_LEN_MASK | CLASSD_MR_REN_MASK;
+@@ -468,19 +428,16 @@ static int atmel_classd_codec_dai_trigger(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
+-static const struct snd_soc_dai_ops atmel_classd_codec_dai_ops = {
+-	.digital_mute	= atmel_classd_codec_dai_digital_mute,
+-	.startup	= atmel_classd_codec_dai_startup,
+-	.shutdown	= atmel_classd_codec_dai_shutdown,
+-	.hw_params	= atmel_classd_codec_dai_hw_params,
+-	.prepare	= atmel_classd_codec_dai_prepare,
+-	.trigger	= atmel_classd_codec_dai_trigger,
++static const struct snd_soc_dai_ops atmel_classd_cpu_dai_ops = {
++	.startup        = atmel_classd_cpu_dai_startup,
++	.shutdown       = atmel_classd_cpu_dai_shutdown,
++	.digital_mute	= atmel_classd_cpu_dai_digital_mute,
++	.hw_params	= atmel_classd_cpu_dai_hw_params,
++	.prepare	= atmel_classd_cpu_dai_prepare,
++	.trigger	= atmel_classd_cpu_dai_trigger,
+ };
+ 
+-#define ATMEL_CLASSD_CODEC_DAI_NAME  "atmel-classd-hifi"
+-
+-static struct snd_soc_dai_driver atmel_classd_codec_dai = {
+-	.name = ATMEL_CLASSD_CODEC_DAI_NAME,
++static struct snd_soc_dai_driver atmel_classd_cpu_dai = {
+ 	.playback = {
+ 		.stream_name	= "Playback",
+ 		.channels_min	= 1,
+@@ -488,7 +445,18 @@ static struct snd_soc_dai_driver atmel_classd_codec_dai = {
+ 		.rates		= ATMEL_CLASSD_RATES,
+ 		.formats	= SNDRV_PCM_FMTBIT_S16_LE,
+ 	},
+-	.ops = &atmel_classd_codec_dai_ops,
++	.ops = &atmel_classd_cpu_dai_ops,
++};
++
++static const struct snd_soc_component_driver atmel_classd_cpu_dai_component = {
++	.name			= "atmel-classd",
++	.probe			= atmel_classd_component_probe,
++	.resume			= atmel_classd_component_resume,
++	.controls		= atmel_classd_snd_controls,
++	.num_controls		= ARRAY_SIZE(atmel_classd_snd_controls),
++	.idle_bias_on		= 1,
++	.use_pmdown_time	= 1,
++	.endianness		= 1,
+ };
+ 
+ /* ASoC sound card */
+@@ -517,9 +485,10 @@ static int atmel_classd_asoc_card_init(struct device *dev,
+ 
+ 	dai_link->name			= "CLASSD";
+ 	dai_link->stream_name		= "CLASSD PCM";
+-	dai_link->codecs->dai_name	= ATMEL_CLASSD_CODEC_DAI_NAME;
++	dai_link->codecs->dai_name	= "snd-soc-dummy-dai";
++
+ 	dai_link->cpus->dai_name	= dev_name(dev);
+-	dai_link->codecs->name		= dev_name(dev);
++	dai_link->codecs->name		= "snd-soc-dummy";
+ 	dai_link->platforms->name	= dev_name(dev);
+ 
+ 	card->dai_link	= dai_link;
+@@ -620,13 +589,6 @@ static int atmel_classd_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
+-	ret = devm_snd_soc_register_component(dev, &soc_component_dev_classd,
+-					&atmel_classd_codec_dai, 1);
+-	if (ret) {
+-		dev_err(dev, "could not register component: %d\n", ret);
+-		return ret;
+-	}
+-
+ 	/* register sound card */
+ 	card = devm_kzalloc(dev, sizeof(*card), GFP_KERNEL);
+ 	if (!card) {
+-- 
+2.25.1
+
