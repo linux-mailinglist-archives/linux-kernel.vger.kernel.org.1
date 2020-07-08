@@ -2,84 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC860218FBA
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 20:31:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90498218FAE
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 20:26:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726465AbgGHSb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 14:31:27 -0400
-Received: from smtp.al2klimov.de ([78.46.175.9]:34886 "EHLO smtp.al2klimov.de"
+        id S1726514AbgGHS0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 14:26:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725953AbgGHSb1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 14:31:27 -0400
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id 06A2ABC0CB;
-        Wed,  8 Jul 2020 18:31:23 +0000 (UTC)
-From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-To:     marvin24@gmx.de, gregkh@linuxfoundation.org,
-        ac100@lists.launchpad.net, linux-tegra@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Subject: [PATCH] Staging: nvec: Replace HTTP links with HTTPS ones
-Date:   Wed,  8 Jul 2020 20:31:17 +0200
-Message-Id: <20200708183117.16563-1-grandmaster@al2klimov.de>
-In-Reply-To: <20200708101858.GL2549@kadam>
-References: <20200708101858.GL2549@kadam>
+        id S1725937AbgGHS0r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 14:26:47 -0400
+Received: from embeddedor (unknown [201.162.240.161])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 261E1206F6;
+        Wed,  8 Jul 2020 18:26:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594232806;
+        bh=P4cXOjS7XD3EKQggGz2XzeV426YqZpcn9AX6M313xkw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LJXCmf2cjDCxZnRljodId9rJBikTsGOMlIjDlRQ7f8DigAdE9Rv0nsNrc+0HPNGQb
+         G5yItZnEO9a3TUHzTYDgwPvuqvCjq3zwH+eYbSo4ulPMzrgKgETloyCCw0BWjhcZZw
+         3sdrN/xrED/RSiWoeF04gTc0HQPYmi9cCyxkjFzA=
+Date:   Wed, 8 Jul 2020 13:32:15 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Marcel Holtmann <marcel@holtmann.org>
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH][next] Bluetooth: Use fallthrough pseudo-keyword
+Message-ID: <20200708183215.GI11533@embeddedor>
+References: <20200707203541.GA8972@embeddedor>
+ <AA68478E-A46A-4914-BE62-3AC9989E358D@holtmann.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +++++
-X-Spam-Level: *****
-Authentication-Results: smtp.al2klimov.de;
-        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <AA68478E-A46A-4914-BE62-3AC9989E358D@holtmann.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rationale:
-Reduces attack surface on kernel devs opening the links for MITM
-as HTTPS traffic is much harder to manipulate.
+On Wed, Jul 08, 2020 at 06:49:39AM +0200, Marcel Holtmann wrote:
+> Hi Gustavo,
+> 
+> > Replace the existing /* fall through */ comments and its variants with
+> > the new pseudo-keyword macro fallthrough[1]. Also, remove unnecessary
+> > fall-through markings when it is the case.
+> > 
+> > [1] https://www.kernel.org/doc/html/latest/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
+> > 
+> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> > ---
+> > drivers/bluetooth/bcm203x.c     |  2 +-
+> > drivers/bluetooth/bluecard_cs.c |  2 --
+> > drivers/bluetooth/hci_ll.c      |  2 +-
+> > drivers/bluetooth/hci_qca.c     |  8 +-------
+> > net/bluetooth/hci_event.c       |  4 ++--
+> > net/bluetooth/hci_sock.c        |  3 +--
+> > net/bluetooth/l2cap_core.c      | 19 +++++++++----------
+> > net/bluetooth/l2cap_sock.c      |  4 ++--
+> > net/bluetooth/mgmt.c            |  4 ++--
+> > net/bluetooth/rfcomm/core.c     |  2 +-
+> > net/bluetooth/rfcomm/sock.c     |  2 +-
+> > net/bluetooth/smp.c             |  2 +-
+> > 12 files changed, 22 insertions(+), 32 deletions(-)
+> 
+> can we split these a little bit between drivers, core and rfcomm. Thanks.
+> 
 
-Deterministic algorithm:
-For each file:
-  If not .svg:
-    For each line:
-      If doesn't contain `\bxmlns\b`:
-        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
-            If both the HTTP and HTTPS versions
-            return 200 OK and serve the same content:
-              Replace HTTP with HTTPS.
+Sure thing, no problem. I'll split this up and send again.
 
-Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
----
- Continuing my work started at 93431e0607e5.
- See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
- (Actually letting a shell for loop submit all this stuff for me.)
-
- If there are any URLs to be removed completely or at least not HTTPSified:
- Just clearly say so and I'll *undo my change*.
- See also: https://lkml.org/lkml/2020/6/27/64
-
- If there are any valid, but yet not changed URLs:
- See: https://lkml.org/lkml/2020/6/26/837
-
- If you apply the patch, please let me know.
-
-
- drivers/staging/nvec/README | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/staging/nvec/README b/drivers/staging/nvec/README
-index 0e2d5c4c875f..510e6933f402 100644
---- a/drivers/staging/nvec/README
-+++ b/drivers/staging/nvec/README
-@@ -10,5 +10,5 @@ but the source code[1] of the published nvec reference drivers can be a guide.
- This driver is currently only used by the AC100 project[2], but it is likely,
- that other Tegra boards (not yet mainlined, if ever) also use it.
- 
--[1] e.g. http://nv-tegra.nvidia.com/gitweb/?p=linux-2.6.git;a=tree;f=arch/arm/mach-tegra/nvec;hb=android-tegra-2.6.32
-+[1] e.g. https://nv-tegra.nvidia.com/gitweb/?p=linux-2.6.git;a=tree;f=arch/arm/mach-tegra/nvec;hb=android-tegra-2.6.32
- [2] http://gitorious.org/ac100, http://launchpad.net/ac100
--- 
-2.27.0
-
+Thanks
+--
+Gustavo
