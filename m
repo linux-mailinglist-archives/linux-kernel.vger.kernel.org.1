@@ -2,87 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80B4A218088
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 09:13:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C73C2218090
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 09:14:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730119AbgGHHNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 03:13:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38492 "EHLO
+        id S1729776AbgGHHOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 03:14:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730055AbgGHHNr (ORCPT
+        with ESMTP id S1726320AbgGHHOe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 03:13:47 -0400
-Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DABE6C061755;
-        Wed,  8 Jul 2020 00:13:46 -0700 (PDT)
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id 8480CBC0D4;
-        Wed,  8 Jul 2020 07:13:44 +0000 (UTC)
-From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-To:     mcgrof@kernel.org, shuah@kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Subject: [PATCH] Replace HTTP links with HTTPS ones: KMOD KERNEL MODULE LOADER - USERMODE HELPER
-Date:   Wed,  8 Jul 2020 09:13:37 +0200
-Message-Id: <20200708071337.13108-1-grandmaster@al2klimov.de>
+        Wed, 8 Jul 2020 03:14:34 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05DEFC061755
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 00:14:34 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id c11so26242743lfh.8
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 00:14:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WH0DgEX1doSuthU1GvsRAiz7iRNbEa0pRy0hawnmsIc=;
+        b=rtthwG7wiWOR1Qi7ORtIU4jnvQ9yZ/d0DFpgkczw4QvEK5Xp/6i53GrgMjbQEdtYCI
+         K7Pr1Pimeo6eSz6SW3DJaeH3ePjBx4U80ixTw9EqJ5XuqIFUzVeeV2/7sLQsXJ+VvKWP
+         ziJ6gxcP28rd2cYp8gnub8dNDiQDnbK/Zs6ekIPHApcWZTe9PUyIavwm58V0+kgpk2oO
+         vvTIMDZXIN7AtmE9tHL+IwFOKA6oMmKgD66dzM/NxmbX3U8LPGddFi67S49XX9wv7GD4
+         /SbeGYrAKigrSr1552XWfmZtwao5xB7hOctQftzX/855W/Dpwt01jTPBM7/MnS13ZP09
+         RKNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WH0DgEX1doSuthU1GvsRAiz7iRNbEa0pRy0hawnmsIc=;
+        b=a65LgT0Zomu1idgDJ1RZ4Y2X+otebvEfDcog407/Ig2HFcf378npx1COjmYx+8ltF8
+         xmRRsEy8FsT3A2pdcZZxNlZRO4BuVTTPXhftptWjn8jiwULAEqRnps/1d3LG88SjjUWw
+         RUKVvxNTkJbKT3Mf3nU5N9dKqHSvkx5VpIaNJV8lluiJPv2gX+WESJ02Cno1XBMTUK47
+         QM6ph+i09Hgr6iwerAXpouMQ7BfjvqREsI+cl/kMI/ILFD2dAUEAaJW9UNx9XzFuvHKH
+         y3ModBb88ix+eRkq461FTim4LzQn16hO1dbtyqhh7JZwsmbuwTKAG0ZKTl78kgxvj2Dw
+         BDow==
+X-Gm-Message-State: AOAM5326xFvNsYt1ArHmq7I3EpjvV7QE1nVprU+cO0j3KA1/i6oV+wl5
+        9GLoZlK8fdQNVQG2tOGi19ydUBBUkicECkxJYyBTt7Ygg3E=
+X-Google-Smtp-Source: ABdhPJz+d2lLiVidW9bwPJZrRoLJK8yPDoBv0mfcvl03OB73UAC4v6nNwx4Fd9mVZhiUhmBKQzXOkXBIf7C4LV6QIRs=
+X-Received: by 2002:a19:745:: with SMTP id 66mr35488731lfh.77.1594192472496;
+ Wed, 08 Jul 2020 00:14:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +++++
-X-Spam-Level: *****
-Authentication-Results: smtp.al2klimov.de;
-        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+References: <20200630133345.2232932-1-lee.jones@linaro.org> <20200630133345.2232932-2-lee.jones@linaro.org>
+In-Reply-To: <20200630133345.2232932-2-lee.jones@linaro.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 8 Jul 2020 09:14:21 +0200
+Message-ID: <CACRpkdapTEkYSD_xY3JKHLDTFQ3qPFNMwntiTNWsQPD2ESGgCA@mail.gmail.com>
+Subject: Re: [PATCH 01/10] gpio: gpiolib-of: Provide documentation for of_gpio_spi_cs_get_count()
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Anton Vorontsov <avorontsov@ru.mvista.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rationale:
-Reduces attack surface on kernel devs opening the links for MITM
-as HTTPS traffic is much harder to manipulate.
+On Tue, Jun 30, 2020 at 3:33 PM Lee Jones <lee.jones@linaro.org> wrote:
 
-Deterministic algorithm:
-For each file:
-  If not .svg:
-    For each line:
-      If doesn't contain `\bxmlns\b`:
-        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
-            If both the HTTP and HTTPS versions
-            return 200 OK and serve the same content:
-              Replace HTTP with HTTPS.
+> Descriptions for of_gpio_spi_cs_get_count()'s 2 arguments are
+> missing.  Document both 'dev' and 'con_id'.
+>
+> Fixes the following W=1 kernel build warnings:
+>
+>  drivers/gpio/gpiolib-of.c:36: warning: Function parameter or member 'dev' not described in 'of_gpio_spi_cs_get_count'
+>  drivers/gpio/gpiolib-of.c:36: warning: Function parameter or member 'con_id' not described in 'of_gpio_spi_cs_get_count'
+>
+> Cc: Anton Vorontsov <avorontsov@ru.mvista.com>
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
----
- Continuing my work started at 93431e0607e5.
- See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
- (Actually letting a shell for loop submit all this stuff for me.)
+Patch applied!
 
- If there are any URLs to be removed completely or at least not HTTPSified:
- Just clearly say so and I'll *undo my change*.
- See also: https://lkml.org/lkml/2020/6/27/64
-
- If there are any valid, but yet not changed URLs:
- See: https://lkml.org/lkml/2020/6/26/837
-
- If you apply the patch, please let me know.
-
-
- tools/testing/selftests/kmod/kmod.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/kmod/kmod.sh b/tools/testing/selftests/kmod/kmod.sh
-index 3702dbcc90a7..84409020a40f 100755
---- a/tools/testing/selftests/kmod/kmod.sh
-+++ b/tools/testing/selftests/kmod/kmod.sh
-@@ -128,7 +128,7 @@ test_reqs()
- 	if [[ $KMOD_VERSION  -le 19 ]]; then
- 		echo "$0: You need at least kmod 20" >&2
- 		echo "kmod <= 19 is buggy, for details see:" >&2
--		echo "http://git.kernel.org/cgit/utils/kernel/kmod/kmod.git/commit/libkmod/libkmod-module.c?id=fd44a98ae2eb5eb32161088954ab21e58e19dfc4" >&2
-+		echo "https://git.kernel.org/cgit/utils/kernel/kmod/kmod.git/commit/libkmod/libkmod-module.c?id=fd44a98ae2eb5eb32161088954ab21e58e19dfc4" >&2
- 		exit $ksft_skip
- 	fi
- 
--- 
-2.27.0
-
+Yours,
+Linus Walleij
