@@ -2,90 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA793218E02
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 19:13:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FFC8218D8B
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 18:52:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730884AbgGHRNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 13:13:44 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43606 "EHLO mx2.suse.de"
+        id S1730730AbgGHQus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 12:50:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60006 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725953AbgGHRNn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 13:13:43 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E9F5BAE02;
-        Wed,  8 Jul 2020 16:55:29 +0000 (UTC)
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        David Rientjes <rientjes@google.com>
-Cc:     linux-rpi-kernel@lists.infradead.org, jeremy.linton@arm.com,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] dma-pool: Do not allocate pool memory from CMA
-Date:   Wed,  8 Jul 2020 18:49:39 +0200
-Message-Id: <20200708164936.9340-1-nsaenzjulienne@suse.de>
-X-Mailer: git-send-email 2.27.0
+        id S1730634AbgGHQur (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 12:50:47 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 800802063A;
+        Wed,  8 Jul 2020 16:50:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594227047;
+        bh=AqMKtqS/OXQk+rhorj+lXzo8EwOOu2YsoGozE3DRg5U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=g+siRc6bJy6ezH6ZeNdz2UGNlovQfefe94DX3Ol9cFvhEvJwUWscErEJuSZWseQZS
+         esTenErVulATOMRJI3KaxHGJEZgA7pGTm/tJE0yl+fLtEBEDoedT1KdWyg5i+z02jA
+         31gZNcFQy7WDA+YJFJGBMkhp39cfu1zw3ooqG5XE=
+Date:   Wed, 8 Jul 2020 17:50:41 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Rohit kumar <rohitkr@codeaurora.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        robh+dt@kernel.org, plai@codeaurora.org, bgoswami@codeaurora.org,
+        perex@perex.cz, tiwai@suse.com, srinivas.kandagatla@linaro.org,
+        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ajit Pandey <ajitp@codeaurora.org>
+Subject: Re: [PATCH v3 5/8] ASoC: qcom: lpass-platform: Replace card->dev
+ with component->dev
+Message-ID: <20200708165041.GX4655@sirena.org.uk>
+References: <1594184896-10629-1-git-send-email-rohitkr@codeaurora.org>
+ <1594184896-10629-6-git-send-email-rohitkr@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="aBaYPhOdNx+t7mr3"
+Content-Disposition: inline
+In-Reply-To: <1594184896-10629-6-git-send-email-rohitkr@codeaurora.org>
+X-Cookie: Oh Dad!  We're ALL Devo!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no guarantee to CMA's placement, so allocating a zone specific
-atomic pool from CMA might return memory from a completely different
-memory zone. So stop using it.
 
-Fixes: c84dc6e68a1d ("dma-pool: add additional coherent pools to map to gfp mask")
-Reported-by: Jeremy Linton <jeremy.linton@arm.com>
-Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
----
+--aBaYPhOdNx+t7mr3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-An more costly alternative would be adding an option to
-dma_alloc_from_contiguous() so it fails when the allocation doesn't fall
-in a specific zone.
+On Wed, Jul 08, 2020 at 10:38:13AM +0530, Rohit kumar wrote:
+> From: Ajit Pandey <ajitp@codeaurora.org>
+>=20
+> We are allocating dma memory for component->dev but trying to mmap
+> such memory for substream->pcm->card->dev. Replace device argument
+> in mmap with component->dev to fix this.
 
- kernel/dma/pool.c | 11 ++---------
- 1 file changed, 2 insertions(+), 9 deletions(-)
+This is a bug fix and should've been at the start of the series (or sent
+separately) so that it can be applied without the rest of the series.
 
-diff --git a/kernel/dma/pool.c b/kernel/dma/pool.c
-index 8cfa01243ed2..4bc1c46ae6ef 100644
---- a/kernel/dma/pool.c
-+++ b/kernel/dma/pool.c
-@@ -6,7 +6,6 @@
- #include <linux/debugfs.h>
- #include <linux/dma-direct.h>
- #include <linux/dma-noncoherent.h>
--#include <linux/dma-contiguous.h>
- #include <linux/init.h>
- #include <linux/genalloc.h>
- #include <linux/set_memory.h>
-@@ -69,12 +68,7 @@ static int atomic_pool_expand(struct gen_pool *pool, size_t pool_size,
- 
- 	do {
- 		pool_size = 1 << (PAGE_SHIFT + order);
--
--		if (dev_get_cma_area(NULL))
--			page = dma_alloc_from_contiguous(NULL, 1 << order,
--							 order, false);
--		else
--			page = alloc_pages(gfp, order);
-+		page = alloc_pages(gfp, order);
- 	} while (!page && order-- > 0);
- 	if (!page)
- 		goto out;
-@@ -118,8 +112,7 @@ static int atomic_pool_expand(struct gen_pool *pool, size_t pool_size,
- 	dma_common_free_remap(addr, pool_size);
- #endif
- free_page: __maybe_unused
--	if (!dma_release_from_contiguous(NULL, page, 1 << order))
--		__free_pages(page, order);
-+	__free_pages(page, order);
- out:
- 	return ret;
- }
--- 
-2.27.0
+--aBaYPhOdNx+t7mr3
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8F+WAACgkQJNaLcl1U
+h9DYdwf/TP/V9rRaqchmnuoLr81D+iZWagfBza40aZnj6L9DmzYz9ujUAXhBwLE3
+m0qzU/Y80YabOhh+GByaGdPSPAT+34xYOcFVym6e2Iqq6iJHSIY9OWeChI+ieCKv
+1JxhQzQgOBoHjSLmCG/IM6/DaP8Gcab0uEakRbI6wzuhKbZtQ8TmCLD90Igv2Y36
+bFNfao34+aQxdmGpe1lLqScooepCZzYeL47nFGlVoXFSG9phR0h+Qwj/ed/5alhn
+ntxODL3WdwurRO+1L/TZrPhfrmMolsda9pU0G6Mm4vO2NwXK/bZuYixvckCT7H3S
+5frOF/gMTdki5Wl3SDrE8GDvOrX9/w==
+=exLA
+-----END PGP SIGNATURE-----
+
+--aBaYPhOdNx+t7mr3--
