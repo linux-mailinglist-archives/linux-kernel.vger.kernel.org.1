@@ -2,108 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB86A218970
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 15:46:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5680D21897D
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 15:48:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729467AbgGHNq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 09:46:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43600 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729288AbgGHNqZ (ORCPT
+        id S1729775AbgGHNsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 09:48:23 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:23948 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729288AbgGHNsW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 09:46:25 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A7F8C08C5CE
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 06:46:25 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id y18so26910017lfh.11
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 06:46:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yokX6/GqNfCJVra9vogfMzW7oEaeEABdbokc5LYRIwI=;
-        b=RlNUnYwYCZObU1qK4ULsAxSxIXkTG7mMUyf77VNDSVZC4Xi6DQ4dCOW2m4BXHu+HCL
-         nwfiJhi9CyF7hG35p4U+XBd8E71/Fl/59SCIYtqWsNfPTf5d1rHJSZxd/SYHEHZ8XxPY
-         2rDi6EuVbK0iMGwhD2fvX8QpM5iO9TsO6sUDMGQq0FXnC0MhfaW8NgV+kEABTllp3BKf
-         4n4ZUFiG1Zfj2vk7+ooDH9kOeaugMGbqOzT1unF1S9ydZ/6CWuWeUcbE8l59bZxQiCuR
-         FuMJD9nTgSZ7bN2O5sU1ctPUWsjcmKeDp43MghNoo8oKtgoFYt6OE1wcGaNFhau9/FcW
-         RJUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yokX6/GqNfCJVra9vogfMzW7oEaeEABdbokc5LYRIwI=;
-        b=oxyBoXctaq79c4yQjC3iS+RQndtfWejJjGtBnA6pDaoLHgnjupC+hyegcLLWkYDiTi
-         mtSmrYUnIipuA0s6o8tBXckzaDnR3DoCb+G4drpBGjvvcs2MekCibvMFiZrpLSiFarDT
-         3fWfo+0FFfj6LaJwCyU9GIrZHCa0sojXrUQnPHOaVRV9EZQ+yW3ngfZSML8/tdh5RAm2
-         RBjDj4dhy56jrtaLQL2nTTIgTSoeEtlQ0fyhjodc+aGXdURg5biLWFjfn/N1YJmcAHVe
-         hJT6mB3EDqTbHUkb7O7JFLOx5Dl8+VBqIqezAjthTOZMR+MbFT3fXY4Z0I6wE0xysPMv
-         BnOA==
-X-Gm-Message-State: AOAM531og+9fnURR4wwcb7R2WpHuOGYowJpxJDOOHnpH0S3h0DRZXMvY
-        pFXz3TXhgoRCmP+7wFB6oc4XYg==
-X-Google-Smtp-Source: ABdhPJyWX/2LEyXuL3gCobpVJKTemEzBK880Mx2uxw2/QqlMJrw22x14dTEHFtlA6zdr2cVdoqvECQ==
-X-Received: by 2002:ac2:47e7:: with SMTP id b7mr36026094lfp.68.1594215983911;
-        Wed, 08 Jul 2020 06:46:23 -0700 (PDT)
-Received: from fedora.toya.net.pl (staticline-31-182-130-176.toya.net.pl. [31.182.130.176])
-        by smtp.gmail.com with ESMTPSA id i22sm924902ljb.19.2020.07.08.06.46.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Jul 2020 06:46:23 -0700 (PDT)
-From:   Bartosz Szczepanek <bsz@semihalf.com>
-To:     Matthew Garrett <mjg59@google.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Pandruvada Srinivas <srinivas.pandruvada@linux.intel.com>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amit.kucheria@verdurent.com>,
-        Radoslaw Biernacki <rad@semihalf.com>,
-        Alex Levin <levinale@google.com>,
-        Bartosz Szczepanek <bsz@semihalf.com>
-Subject: [PATCH] thermal/int340x_thermal: Prevent page fault on .set_mode() op
-Date:   Wed,  8 Jul 2020 15:46:13 +0200
-Message-Id: <20200708134613.131555-1-bsz@semihalf.com>
-X-Mailer: git-send-email 2.25.4
-MIME-Version: 1.0
+        Wed, 8 Jul 2020 09:48:22 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 068DXE6K143958;
+        Wed, 8 Jul 2020 09:47:57 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 325brdf91s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Jul 2020 09:47:56 -0400
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 068DcUxh156791;
+        Wed, 8 Jul 2020 09:47:55 -0400
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 325brdf90a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Jul 2020 09:47:55 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 068DaDE2022178;
+        Wed, 8 Jul 2020 13:47:52 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma04fra.de.ibm.com with ESMTP id 3251dw0cts-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Jul 2020 13:47:52 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 068DkSUQ60096810
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 8 Jul 2020 13:46:28 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3C87D42042;
+        Wed,  8 Jul 2020 13:47:50 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B175842041;
+        Wed,  8 Jul 2020 13:47:46 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.80.202.84])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed,  8 Jul 2020 13:47:46 +0000 (GMT)
+Message-ID: <1594216064.23056.208.camel@linux.ibm.com>
+Subject: Re: [PATCH 4/4] module: Add hook for
+ security_kernel_post_read_file()
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     James Morris <jmorris@namei.org>, Jessica Yu <jeyu@kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Scott Branden <scott.branden@broadcom.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Matthew Garrett <matthewgarrett@google.com>,
+        David Howells <dhowells@redhat.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        KP Singh <kpsingh@google.com>, Dave Olsthoorn <dave@bewaar.me>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Peter Jones <pjones@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Boyd <stephen.boyd@linaro.org>,
+        Paul Moore <paul@paul-moore.com>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Date:   Wed, 08 Jul 2020 09:47:44 -0400
+In-Reply-To: <202007071951.605F38D43@keescook>
+References: <20200707081926.3688096-1-keescook@chromium.org>
+         <20200707081926.3688096-5-keescook@chromium.org>
+         <1594169240.23056.143.camel@linux.ibm.com>
+         <202007071951.605F38D43@keescook>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.20.5 (3.20.5-1.fc24) 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-08_11:2020-07-08,2020-07-08 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 malwarescore=0
+ phishscore=0 clxscore=1015 adultscore=0 cotscore=-2147483648
+ suspectscore=0 lowpriorityscore=0 bulkscore=0 mlxlogscore=999
+ impostorscore=0 mlxscore=0 priorityscore=1501 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2007080095
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Starting from commit "thermal/int340x_thermal: Don't require IDSP to
-exist", priv->current_uuid_index is initialized to -1. This value may
-be passed to int3400_thermal_run_osc() from int3400_thermal_set_mode,
-contributing to page fault when accessing int3400_thermal_uuids array
-at index -1.
+On Tue, 2020-07-07 at 20:10 -0700, Kees Cook wrote:
+> On Tue, Jul 07, 2020 at 08:47:20PM -0400, Mimi Zohar wrote:
+> > On Tue, 2020-07-07 at 01:19 -0700, Kees Cook wrote:
+> > > Calls to security_kernel_load_data() should be paired with a call to
+> > > security_kernel_post_read_file() with a NULL file argument. Add the
+> > > missing call so the module contents are visible to the LSMs interested
+> > > in measuring the module content. (This also paves the way for moving
+> > > module signature checking out of the module core and into an LSM.)
+> > > 
+> > > Cc: Jessica Yu <jeyu@kernel.org>
+> > > Fixes: c77b8cdf745d ("module: replace the existing LSM hook in init_module")
+> > > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > > ---
+> > >  kernel/module.c | 7 ++++++-
+> > >  1 file changed, 6 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/kernel/module.c b/kernel/module.c
+> > > index 0c6573b98c36..af9679f8e5c6 100644
+> > > --- a/kernel/module.c
+> > > +++ b/kernel/module.c
+> > > @@ -2980,7 +2980,12 @@ static int copy_module_from_user(const void __user *umod, unsigned long len,
+> > >  		return -EFAULT;
+> > >  	}
+> > >  
+> > > -	return 0;
+> > > +	err = security_kernel_post_read_file(NULL, (char *)info->hdr,
+> > > +					     info->len, READING_MODULE);
+> > 
+> > There was a lot of push back on calling security_kernel_read_file()
+> > with a NULL file descriptor here.[1]  The result was defining a new
+> > security hook - security_kernel_load_data - and enumeration -
+> > LOADING_MODULE.  I would prefer calling the same pre and post security
+> > hook.
+> > 
+> > Mimi
+> > 
+> > [1] http://kernsec.org/pipermail/linux-security-module-archive/2018-May/007110.html
+> 
+> Ah yes, thanks for the pointer to the discussion.
+> 
+> I think we have four cases then, for differing LSM hooks:
+> 
+> - no "file", no contents
+> 	e.g. init_module() before copying user buffer
+> 	security_kernel_load_data()
+> - only a "file" available, no contents
+> 	e.g. kernel_read_file() before actually reading anything
+> 	security_kernel_read_file()
+> - "file" and contents
+> 	e.g. kernel_read_file() after reading
+> 	security_kernel_post_read_file()
+> - no "file" available, just the contents
+> 	e.g. firmware platform fallback from EFI space (no "file")
+> 	unimplemented!
+> 
+> If an LSM wants to be able to examine the contents of firmware, modules,
+> kexec, etc, it needs either a "file" or the full contents.
+> 
+> The "file" methods all pass through the kernel_read_file()-family. The
+> others happen via blobs coming from userspace or (more recently) the EFI
+> universe.
+> 
+> So, if a NULL file is unreasonable, we need, perhaps,
+> security_kernel_post_load_data()
+> 
+> ?
 
-This commit adds a check on uuid value to int3400_thermal_run_osc.
+Agreed.
 
-Signed-off-by: Bartosz Szczepanek <bsz@semihalf.com>
----
- drivers/thermal/intel/int340x_thermal/int3400_thermal.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/thermal/intel/int340x_thermal/int3400_thermal.c b/drivers/thermal/intel/int340x_thermal/int3400_thermal.c
-index 0b3a62655843..12448ccd27f1 100644
---- a/drivers/thermal/intel/int340x_thermal/int3400_thermal.c
-+++ b/drivers/thermal/intel/int340x_thermal/int3400_thermal.c
-@@ -216,11 +216,16 @@ static int int3400_thermal_run_osc(acpi_handle handle,
- 	acpi_status status;
- 	int result = 0;
- 	struct acpi_osc_context context = {
--		.uuid_str = int3400_thermal_uuids[uuid],
-+		.uuid_str = NULL,
- 		.rev = 1,
- 		.cap.length = 8,
- 	};
- 
-+	if (uuid < 0 || uuid >= INT3400_THERMAL_MAXIMUM_UUID)
-+		return -EINVAL;
-+
-+	context.uuid_str = int3400_thermal_uuids[uuid];
-+
- 	buf[OSC_QUERY_DWORD] = 0;
- 	buf[OSC_SUPPORT_DWORD] = enable;
- 
--- 
-2.17.1
-
+Mimi
