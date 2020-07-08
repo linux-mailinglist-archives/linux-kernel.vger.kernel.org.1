@@ -2,56 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91D34218463
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 11:53:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B71E321845B
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 11:52:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728544AbgGHJvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 05:51:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34928 "EHLO
+        id S1728597AbgGHJvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 05:51:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727935AbgGHJvq (ORCPT
+        with ESMTP id S1726900AbgGHJvs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 05:51:46 -0400
+        Wed, 8 Jul 2020 05:51:48 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3508CC08C5DC;
-        Wed,  8 Jul 2020 02:51:46 -0700 (PDT)
-Date:   Wed, 08 Jul 2020 09:51:44 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F168EC08C5DC;
+        Wed,  8 Jul 2020 02:51:47 -0700 (PDT)
+Date:   Wed, 08 Jul 2020 09:51:45 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1594201904;
+        s=2020; t=1594201906;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=TuueGIno4nXC2EQ11JEyPJyj5XATISyTSDKr5FASpdw=;
-        b=D+FCIQK2GkDjNckrL1XWRBs058x3PlNbqE/fkI5tN6HSMPEAyLATL8c5lW7Fcg4Pzxa0aK
-        Nv9FoMDmTMN/AHHdX+qG+YITawR4KjbFKf7RGJ/WaDIfvqy7sEB/YNcW4idlDLG2vm2Q2r
-        ZN0fdv6FTeK2VCaJOhNFylZE8fvLZccypFyCqYzEuJP559HNCcsMi9VMLGXDD09HnH6+pt
-        Dc8xsPjKqp2Jk7lFqruJaP8if5pDNt1oioIKW1YnZqAml/CvzYcUEFjZMFf8mn/RiJBmGJ
-        ZewXCv1oDfKHZTlP25P52IAoF/YuV/t+UoHVfT8f2ywHZ0T/nqQl6878FcC1sQ==
+        bh=JJjUfmuHysNBryM7uHgIfTniU1JPg1OQP686fOVpusw=;
+        b=a1BlMkUFxIqaRuWurkVMGP9lgfy+gqsXBWO+wZ3T0auz/gTw9WzCoyhcBH8EUAbRUM+WUc
+        +sU+jjoxKeTqZHWqlHoIUVWbJp0Qp3tXxo1QrDFCqfyHe47ZxTPdpKjDd7QChfEsUcou3A
+        bnD18faubYBrxqYWJl9a5woTE6wmavAyePNSBU0PKIHBlCC9tsG7ESu55twWjLx5P0NE3z
+        J6AmU+P3BilcMQ6ndkyiZwCuU9shHKipz9x/87KXnS3nTxFgNsMB6hRFejdsUz26wmjKqb
+        Tu7oSG+8oUYFWq7KZvTXAq8GqiMF3E+w1Mm3+5IcCc8kjM4WjVCbE7jTgMKJNA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1594201904;
+        s=2020e; t=1594201906;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=TuueGIno4nXC2EQ11JEyPJyj5XATISyTSDKr5FASpdw=;
-        b=Tzv0zZpIlnLfXoqlVa7naITUQSFfJlt+Tm8RbMIXHfpznIt5sYi5Hxh//JaaWB94cQtBlo
-        bmUbuf+KMPmbjhBA==
+        bh=JJjUfmuHysNBryM7uHgIfTniU1JPg1OQP686fOVpusw=;
+        b=a3Vs5Re05NullXkvauUaddziinmY19WwXlOC9pqC52RjI4gV73xpet1aif8KGKJZpwfOs4
+        nb/Uz8r0mM6bkgDw==
 From:   "tip-bot2 for Kan Liang" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] x86/fpu/xstate: Add helpers for LBR dynamic
- supervisor feature
+Subject: [tip: perf/core] perf/x86: Remove task_ctx_size
 Cc:     Kan Liang <kan.liang@linux.intel.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Dave Hansen <dave.hansen@intel.com>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <1593780569-62993-22-git-send-email-kan.liang@linux.intel.com>
-References: <1593780569-62993-22-git-send-email-kan.liang@linux.intel.com>
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <1593780569-62993-19-git-send-email-kan.liang@linux.intel.com>
+References: <1593780569-62993-19-git-send-email-kan.liang@linux.intel.com>
 MIME-Version: 1.0
-Message-ID: <159420190404.4006.5975896241439512235.tip-bot2@tip-bot2>
+Message-ID: <159420190589.4006.9804478417037329640.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -63,128 +61,85 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the perf/core branch of tip:
 
-Commit-ID:     50f408d96d4d1a945d2c50c5fd8ed400883edf0e
-Gitweb:        https://git.kernel.org/tip/50f408d96d4d1a945d2c50c5fd8ed400883edf0e
+Commit-ID:     5a09928d339f3cf0973991ddc3a2798825c84c99
+Gitweb:        https://git.kernel.org/tip/5a09928d339f3cf0973991ddc3a2798825c84c99
 Author:        Kan Liang <kan.liang@linux.intel.com>
-AuthorDate:    Fri, 03 Jul 2020 05:49:27 -07:00
+AuthorDate:    Fri, 03 Jul 2020 05:49:24 -07:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Wed, 08 Jul 2020 11:38:56 +02:00
+CommitterDate: Wed, 08 Jul 2020 11:38:55 +02:00
 
-x86/fpu/xstate: Add helpers for LBR dynamic supervisor feature
+perf/x86: Remove task_ctx_size
 
-The perf subsystem will only need to save/restore the LBR state.
-However, the existing helpers save all supported supervisor states to a
-kernel buffer, which will be unnecessary. Two helpers are introduced to
-only save/restore requested dynamic supervisor states. The supervisor
-features in XFEATURE_MASK_SUPERVISOR_SUPPORTED and
-XFEATURE_MASK_SUPERVISOR_UNSUPPORTED mask cannot be saved/restored using
-these helpers.
-
-The helpers will be used in the following patch.
+A new kmem_cache method has replaced the kzalloc() to allocate the PMU
+specific data. The task_ctx_size is not required anymore.
 
 Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Dave Hansen <dave.hansen@intel.com>
-Link: https://lkml.kernel.org/r/1593780569-62993-22-git-send-email-kan.liang@linux.intel.com
+Link: https://lkml.kernel.org/r/1593780569-62993-19-git-send-email-kan.liang@linux.intel.com
 ---
- arch/x86/include/asm/fpu/xstate.h |  3 +-
- arch/x86/kernel/fpu/xstate.c      | 72 ++++++++++++++++++++++++++++++-
- 2 files changed, 75 insertions(+)
+ arch/x86/events/core.c      | 1 -
+ arch/x86/events/intel/lbr.c | 1 -
+ include/linux/perf_event.h  | 4 ----
+ kernel/events/core.c        | 4 +---
+ 4 files changed, 1 insertion(+), 9 deletions(-)
 
-diff --git a/arch/x86/include/asm/fpu/xstate.h b/arch/x86/include/asm/fpu/xstate.h
-index 040c4d4..c029fce 100644
---- a/arch/x86/include/asm/fpu/xstate.h
-+++ b/arch/x86/include/asm/fpu/xstate.h
-@@ -106,6 +106,9 @@ int copy_xstate_to_user(void __user *ubuf, struct xregs_state *xsave, unsigned i
- int copy_kernel_to_xstate(struct xregs_state *xsave, const void *kbuf);
- int copy_user_to_xstate(struct xregs_state *xsave, const void __user *ubuf);
- void copy_supervisor_to_kernel(struct xregs_state *xsave);
-+void copy_dynamic_supervisor_to_kernel(struct xregs_state *xstate, u64 mask);
-+void copy_kernel_to_dynamic_supervisor(struct xregs_state *xstate, u64 mask);
-+
+diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
+index d740c86..6b1228a 100644
+--- a/arch/x86/events/core.c
++++ b/arch/x86/events/core.c
+@@ -2371,7 +2371,6 @@ static struct pmu pmu = {
  
- /* Validate an xstate header supplied by userspace (ptrace or sigreturn) */
- int validate_user_xstate_header(const struct xstate_header *hdr);
-diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
-index dcf0624..b0c22b7 100644
---- a/arch/x86/kernel/fpu/xstate.c
-+++ b/arch/x86/kernel/fpu/xstate.c
-@@ -1361,6 +1361,78 @@ void copy_supervisor_to_kernel(struct xregs_state *xstate)
- 	}
+ 	.event_idx		= x86_pmu_event_idx,
+ 	.sched_task		= x86_pmu_sched_task,
+-	.task_ctx_size          = sizeof(struct x86_perf_task_context),
+ 	.swap_task_ctx		= x86_pmu_swap_task_ctx,
+ 	.check_period		= x86_pmu_check_period,
+ 
+diff --git a/arch/x86/events/intel/lbr.c b/arch/x86/events/intel/lbr.c
+index e784c1d..3ad5289 100644
+--- a/arch/x86/events/intel/lbr.c
++++ b/arch/x86/events/intel/lbr.c
+@@ -1672,7 +1672,6 @@ void __init intel_pmu_arch_lbr_init(void)
+ 
+ 	size = sizeof(struct x86_perf_task_context_arch_lbr) +
+ 	       lbr_nr * sizeof(struct lbr_entry);
+-	x86_get_pmu()->task_ctx_size = size;
+ 	x86_get_pmu()->task_ctx_cache = create_lbr_kmem_cache(size, 0);
+ 
+ 	x86_pmu.lbr_from = MSR_ARCH_LBR_FROM_0;
+diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+index 09915ae..3b22db0 100644
+--- a/include/linux/perf_event.h
++++ b/include/linux/perf_event.h
+@@ -419,10 +419,6 @@ struct pmu {
+ 	 */
+ 	void (*sched_task)		(struct perf_event_context *ctx,
+ 					bool sched_in);
+-	/*
+-	 * PMU specific data size
+-	 */
+-	size_t				task_ctx_size;
+ 
+ 	/*
+ 	 * Kmem cache of PMU specific data
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 30d9b31..7c436d7 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -1243,15 +1243,13 @@ static void *alloc_task_ctx_data(struct pmu *pmu)
+ 	if (pmu->task_ctx_cache)
+ 		return kmem_cache_zalloc(pmu->task_ctx_cache, GFP_KERNEL);
+ 
+-	return kzalloc(pmu->task_ctx_size, GFP_KERNEL);
++	return NULL;
  }
  
-+/**
-+ * copy_dynamic_supervisor_to_kernel() - Save dynamic supervisor states to
-+ *                                       an xsave area
-+ * @xstate: A pointer to an xsave area
-+ * @mask: Represent the dynamic supervisor features saved into the xsave area
-+ *
-+ * Only the dynamic supervisor states sets in the mask are saved into the xsave
-+ * area (See the comment in XFEATURE_MASK_DYNAMIC for the details of dynamic
-+ * supervisor feature). Besides the dynamic supervisor states, the legacy
-+ * region and XSAVE header are also saved into the xsave area. The supervisor
-+ * features in the XFEATURE_MASK_SUPERVISOR_SUPPORTED and
-+ * XFEATURE_MASK_SUPERVISOR_UNSUPPORTED are not saved.
-+ *
-+ * The xsave area must be 64-bytes aligned.
-+ */
-+void copy_dynamic_supervisor_to_kernel(struct xregs_state *xstate, u64 mask)
-+{
-+	u64 dynamic_mask = xfeatures_mask_dynamic() & mask;
-+	u32 lmask, hmask;
-+	int err;
-+
-+	if (WARN_ON_FPU(!boot_cpu_has(X86_FEATURE_XSAVES)))
-+		return;
-+
-+	if (WARN_ON_FPU(!dynamic_mask))
-+		return;
-+
-+	lmask = dynamic_mask;
-+	hmask = dynamic_mask >> 32;
-+
-+	XSTATE_OP(XSAVES, xstate, lmask, hmask, err);
-+
-+	/* Should never fault when copying to a kernel buffer */
-+	WARN_ON_FPU(err);
-+}
-+
-+/**
-+ * copy_kernel_to_dynamic_supervisor() - Restore dynamic supervisor states from
-+ *                                       an xsave area
-+ * @xstate: A pointer to an xsave area
-+ * @mask: Represent the dynamic supervisor features restored from the xsave area
-+ *
-+ * Only the dynamic supervisor states sets in the mask are restored from the
-+ * xsave area (See the comment in XFEATURE_MASK_DYNAMIC for the details of
-+ * dynamic supervisor feature). Besides the dynamic supervisor states, the
-+ * legacy region and XSAVE header are also restored from the xsave area. The
-+ * supervisor features in the XFEATURE_MASK_SUPERVISOR_SUPPORTED and
-+ * XFEATURE_MASK_SUPERVISOR_UNSUPPORTED are not restored.
-+ *
-+ * The xsave area must be 64-bytes aligned.
-+ */
-+void copy_kernel_to_dynamic_supervisor(struct xregs_state *xstate, u64 mask)
-+{
-+	u64 dynamic_mask = xfeatures_mask_dynamic() & mask;
-+	u32 lmask, hmask;
-+	int err;
-+
-+	if (WARN_ON_FPU(!boot_cpu_has(X86_FEATURE_XSAVES)))
-+		return;
-+
-+	if (WARN_ON_FPU(!dynamic_mask))
-+		return;
-+
-+	lmask = dynamic_mask;
-+	hmask = dynamic_mask >> 32;
-+
-+	XSTATE_OP(XRSTORS, xstate, lmask, hmask, err);
-+
-+	/* Should never fault when copying from a kernel buffer */
-+	WARN_ON_FPU(err);
-+}
-+
- #ifdef CONFIG_PROC_PID_ARCH_STATUS
- /*
-  * Report the amount of time elapsed in millisecond since last AVX512
+ static void free_task_ctx_data(struct pmu *pmu, void *task_ctx_data)
+ {
+ 	if (pmu->task_ctx_cache && task_ctx_data)
+ 		kmem_cache_free(pmu->task_ctx_cache, task_ctx_data);
+-	else
+-		kfree(task_ctx_data);
+ }
+ 
+ static void free_ctx(struct rcu_head *head)
