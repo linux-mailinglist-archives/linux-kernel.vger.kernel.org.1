@@ -2,134 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1E572181A2
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 09:47:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1557821819D
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 09:46:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727061AbgGHHrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 03:47:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43880 "EHLO
+        id S1727058AbgGHHqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 03:46:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726342AbgGHHrP (ORCPT
+        with ESMTP id S1727021AbgGHHqu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 03:47:15 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AE73C08C5DC;
-        Wed,  8 Jul 2020 00:47:15 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id b25so49419564ljp.6;
-        Wed, 08 Jul 2020 00:47:15 -0700 (PDT)
+        Wed, 8 Jul 2020 03:46:50 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1936CC08C5DC
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 00:46:50 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id f18so1881235wml.3
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 00:46:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mxS+F39BoFx3/+K2xuOp4+K9JxcDhgJQv7Yws3W7LL4=;
-        b=iXXNW2HwCxD3aES0pvd67VRcY29JZnbbf9Q2xCdrxjaHkYaCwp3XRVhVSnUbIU77Eg
-         sWDPWWaJWXpsxF4QTmM03uMXOi2cGWIB8UQKML7Tg9HiKwfNIHaXPTFYN/FrWVNXIg+m
-         Eph2eS5eGhM+65vGH8bW7R6RqrBj/y+EjuAQOrlIMRe27J+H+vh5d3zteAGYXsFPXIei
-         lzgbtx0yRBjGKk3UV9CxGyHQks+QQeW69UQwev0f9UiQWs7ru7hHatnSBiSQkiz1wcHI
-         Zbex3y0RGb9DTsdt1h+jWIvVtJihxU3utSqLrEkW2H6DXOPYgFofUEsMTzNQHqP9HYBn
-         J+9w==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=13tTeGa2nW6X4a+Xzt0nK3tFREb2ehmWIY4bBAwrwkc=;
+        b=OzmhrVMOli7A5hNbR3fGy47aE+V6uJ2r1czZSGk/3KkO421wAC922Giw65d3B2JPWD
+         X/ku26qUfk/i2caIjdfEHpdTsmnPmpPZDPi+XZdivhOS2HkB0BkJCo/6QqYn4vHtnWFA
+         eoQiBiM0yflqSFLfyZ3YkmnQF1pEfYw6kmV6U05L6f9q010QhDxah8ITfFoOr6sr5CkP
+         tNxI9+5c8enZ2T4Rzo0r+LrprvweE6UlGy+PzLm5cjZhpJ6cy5FopH/yZzqTjBK39VDt
+         zCiX2BCn/9M5mMZjvBOGU2fki8enBseW7KJVFwyMCvZKxb+j9k39LnOwrAdvPf7wsz1R
+         9NbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mxS+F39BoFx3/+K2xuOp4+K9JxcDhgJQv7Yws3W7LL4=;
-        b=ViCGL+CseEqbQU64xFlvEH6Ly/kCSkVboMyuhC1JHKxh0/QO9jUQVUJ0a5kYG6wtMn
-         TZUgy8O4O59egsChQITqjL6iRi11DDzzP3O0DYEP1cjMGaDT0MqGgVmxPZZHTvbvx4WC
-         Wf7e1E3jsGAQf4It9Xfn476Gm6hgxhm6YL65TZiOwMKAvO6Ue0qsRYYLJ3gf07rhgpvy
-         lKbnw1ft4YPxMipmkzPBY2ECP2eGBYIlJWcUodTVSaSyEDcR1c8uNXjRPOQTbXAQ04Hs
-         +hGKMTXuAiCzOo3PYFvixhv71+OyOiRShtQz7EJ2a+JONH5/3+pPbYt4lKZLVI0npxrH
-         8PGQ==
-X-Gm-Message-State: AOAM532XLqg/wP/YUxWvvlSrjsT0SU7s1y5rILJ0qxzkswSnvOmLcWxz
-        GOgVjtPSQyeGej7owC477WE=
-X-Google-Smtp-Source: ABdhPJw1BOO1Ub9pCHAAIIWaqq9Y+Jk3ciQ9Z5kFnro7GyrHUg+wvMPvJ67mQmD4lu1s6M7VlCIytQ==
-X-Received: by 2002:a2e:8047:: with SMTP id p7mr34213212ljg.414.1594194433815;
-        Wed, 08 Jul 2020 00:47:13 -0700 (PDT)
-Received: from localhost.localdomain (ppp91-79-162-105.pppoe.mtu-net.ru. [91.79.162.105])
-        by smtp.gmail.com with ESMTPSA id f24sm808339ljc.99.2020.07.08.00.47.12
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=13tTeGa2nW6X4a+Xzt0nK3tFREb2ehmWIY4bBAwrwkc=;
+        b=AurB94454B4d3CzH2liygJRSO5HIc8wPhpBscETETEG49VF5ZSBbJTgzaO/Il7v634
+         ZMhg7MjuEZjTyHRvhBHae9X2MI7306LmYURpE3n7exb2ZKefsFDTMaPhxGCdnUhqQGlV
+         s764G/TGsvaRCY6Tr8a5kGivD8kN/Q93DXSpiZRe9oymIdellmNrjOGEUW4ouaffRjjC
+         8cyAAp8llGEg0IRwn/EdkfLzLfyy5f5jEgQZ+kxAAell6NxHlr4fnhJtGz8hByJe9Sbp
+         6Z6D2flf6raxQj/5z/3aqBj+AE9zYrs7IhmoJEGfudq0wHRR8N9+WirdXxwFyqStPPDh
+         d9mQ==
+X-Gm-Message-State: AOAM530c/tOw7pX6CN+WmYkVafSSOX7b/MF4r48Hr8zTWwuCm3PllW6X
+        14x5M6Mx6FDOFItVlDVEsUPY/g==
+X-Google-Smtp-Source: ABdhPJzbse+FrEgNn3I9Se6w6hg140YTQ1T0f5FheDYB3sZ29GWUzqdNaf8egMfSUzlAtD6+dXiaBA==
+X-Received: by 2002:a1c:44e:: with SMTP id 75mr8078098wme.139.1594194408880;
+        Wed, 08 Jul 2020 00:46:48 -0700 (PDT)
+Received: from dell ([2.27.35.206])
+        by smtp.gmail.com with ESMTPSA id t4sm4873009wmf.4.2020.07.08.00.46.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Jul 2020 00:47:13 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Prashant Gaikwad <pgaikwad@nvidia.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-tegra@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] clk: tegra: pll: Improve PLLM enable-state detection
-Date:   Wed,  8 Jul 2020 10:46:28 +0300
-Message-Id: <20200708074628.18173-1-digetx@gmail.com>
-X-Mailer: git-send-email 2.26.0
+        Wed, 08 Jul 2020 00:46:48 -0700 (PDT)
+Date:   Wed, 8 Jul 2020 08:46:46 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Cc:     "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        Hannes Reinecke <hare@suse.de>
+Subject: Re: [PATCH 09/10] scsi: libfc: fc_disc: Fix-up some incorrectly
+ referenced function parameters
+Message-ID: <20200708074646.GR3500@dell>
+References: <20200707140055.2956235-1-lee.jones@linaro.org>
+ <20200707140055.2956235-10-lee.jones@linaro.org>
+ <SN4PR0401MB359847D89233CFB550531B259B670@SN4PR0401MB3598.namprd04.prod.outlook.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <SN4PR0401MB359847D89233CFB550531B259B670@SN4PR0401MB3598.namprd04.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Power Management Controller (PMC) can override the PLLM clock settings,
-including the enable-state. Although PMC could only act as a second level
-gate, meaning that PLLM needs to be enabled by the Clock and Reset
-Controller (CaR) anyways if we want it to be enabled. Hence, when PLLM is
-overridden by PMC, it needs to be enabled by CaR and ungated by PMC in
-order to be functional. Please note that this patch doesn't fix any known
-problem, and thus, it's merely a minor improvement.
+On Wed, 08 Jul 2020, Johannes Thumshirn wrote:
 
-Link: https://lore.kernel.org/linux-arm-kernel/20191210120909.GA2703785@ulmo/T/
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
+> On 07/07/2020 16:01, Lee Jones wrote:
+> > + * @disc:  The descovery context
+> 
+> s/descovery/discovery
 
-Changelog:
+Ah yes.  I can't even blame copy/paste for this!
 
-v2: - Added clarifying comment to the code.
+I think this patch has been applied.  I will send up a follow-up.
 
-    - Prettified the code.
+Thank you!
 
- drivers/clk/tegra/clk-pll.c | 22 ++++++++++++++++------
- 1 file changed, 16 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/clk/tegra/clk-pll.c b/drivers/clk/tegra/clk-pll.c
-index b2d39a66f0fa..f700356efe3e 100644
---- a/drivers/clk/tegra/clk-pll.c
-+++ b/drivers/clk/tegra/clk-pll.c
-@@ -327,20 +327,30 @@ int tegra_pll_wait_for_lock(struct tegra_clk_pll *pll)
- 	return clk_pll_wait_for_lock(pll);
- }
- 
-+static bool pllm_pmc_clk_enabled(struct tegra_clk_pll *pll)
-+{
-+	u32 val = readl_relaxed(pll->pmc + PMC_PLLP_WB0_OVERRIDE);
-+
-+	return !(val & PMC_PLLP_WB0_OVERRIDE_PLLM_OVERRIDE) ||
-+		(val & PMC_PLLP_WB0_OVERRIDE_PLLM_ENABLE);
-+}
-+
- static int clk_pll_is_enabled(struct clk_hw *hw)
- {
- 	struct tegra_clk_pll *pll = to_clk_pll(hw);
- 	u32 val;
- 
--	if (pll->params->flags & TEGRA_PLLM) {
--		val = readl_relaxed(pll->pmc + PMC_PLLP_WB0_OVERRIDE);
--		if (val & PMC_PLLP_WB0_OVERRIDE_PLLM_OVERRIDE)
--			return val & PMC_PLLP_WB0_OVERRIDE_PLLM_ENABLE ? 1 : 0;
--	}
-+	/*
-+	 * Power Management Controller (PMC) can override the PLLM clock
-+	 * settings, including the enable-state. The PLLM is enabled when
-+	 * PLLM's CaR state is ON and when PLLM isn't disabled by PMC.
-+	 */
-+	if ((pll->params->flags & TEGRA_PLLM) && !pllm_pmc_clk_enabled(pll))
-+		return 0;
- 
- 	val = pll_readl_base(pll);
- 
--	return val & PLL_BASE_ENABLE ? 1 : 0;
-+	return val & PLL_BASE_ENABLE;
- }
- 
- static void _clk_pll_enable(struct clk_hw *hw)
 -- 
-2.26.0
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
