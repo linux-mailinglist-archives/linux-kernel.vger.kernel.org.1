@@ -2,112 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28D27218A58
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 16:45:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0592218A5F
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 16:46:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729923AbgGHOpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 10:45:35 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:37925 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729780AbgGHOpd (ORCPT
+        id S1729987AbgGHOqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 10:46:03 -0400
+Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:58345 "EHLO
+        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729854AbgGHOqD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 10:45:33 -0400
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200708144532euoutp017a142eae82b3aab57fad55e5c9227922~fzjfl0GnE2280122801euoutp01i
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 14:45:32 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200708144532euoutp017a142eae82b3aab57fad55e5c9227922~fzjfl0GnE2280122801euoutp01i
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1594219532;
-        bh=YBwMR+1cTI/+5nGmGVzzQP31lKTZwJfbm6Wde/Ufl4A=;
-        h=Subject:To:From:Date:In-Reply-To:References:From;
-        b=PL5cI5quI6staJfHOmmKGhIaJO34dXKTXMQe6A2lZHo8sFXDG8u7zJvRkt+VBSlCs
-         IwhBQ/9435Q8ni4H/kvNTqhtQBDTKX8NaV99fqbFV3YJrzm+MEHw7fEQ+Pr9on+2qr
-         NEgK9HVKP/L3aoTMx3hIarOCbmR9W1/pHd86ElIw=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20200708144532eucas1p221e9f49e596935cc2446d90228401a3f~fzjfPTn_W1367413674eucas1p2C;
-        Wed,  8 Jul 2020 14:45:32 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id DD.11.06456.C0CD50F5; Wed,  8
-        Jul 2020 15:45:32 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20200708144531eucas1p282845354a7c2be8f70f4ef33a4d6bb1d~fzjej49pg1036510365eucas1p2i;
-        Wed,  8 Jul 2020 14:45:31 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200708144531eusmtrp2ef4e5df9d1dadc6a8f4a07e032e94097~fzjejK8C_2076020760eusmtrp2O;
-        Wed,  8 Jul 2020 14:45:31 +0000 (GMT)
-X-AuditID: cbfec7f2-7efff70000001938-5d-5f05dc0c78d0
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id A5.70.06314.B0CD50F5; Wed,  8
-        Jul 2020 15:45:31 +0100 (BST)
-Received: from [106.210.123.115] (unknown [106.210.123.115]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20200708144530eusmtip2637227708c7bfcdd7c9c536e8be47371~fzjd7MV-g0039100391eusmtip2D;
-        Wed,  8 Jul 2020 14:45:30 +0000 (GMT)
-Subject: Re: [PATCH 01/11] media: exynos4-is: Remove static driver data for
- S5PV210 FIMC variants
-To:     Jonathan Bakker <xc-racer2@live.ca>, kyungmin.park@samsung.com,
-        mchehab@kernel.org, kgene@kernel.org, krzk@kernel.org,
-        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-From:   Sylwester Nawrocki <s.nawrocki@samsung.com>
-Message-ID: <9dae0088-e7ab-8d20-617d-7922d86f0d43@samsung.com>
-Date:   Wed, 8 Jul 2020 16:45:29 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
-        Thunderbird/68.10.0
+        Wed, 8 Jul 2020 10:46:03 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id AB1BBDF2;
+        Wed,  8 Jul 2020 10:46:01 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Wed, 08 Jul 2020 10:46:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm3; bh=4NREBuy0f4ceXTelZ1c05+0MR5
+        Jh1oCebiw4dhTmkwo=; b=mrot4VsbtbIj7r651H0GQW8ozK6aAsVAvln1MX6N54
+        QVtozd2CTIW9mYGPPKm/Je5lqsm8YKbYhBMuNWglTfKizGwOpXN8iIeKESTVKY1s
+        7bp27HpLpRn1K9W/DoKsySCz++H+q20VAeHm3FiQj222DG4R+SXDtOYIXgc5sKfH
+        ODTrtiIzRt6GrFKUEjvWCQ5Il8t+jTuSpYHS/A5ZddupCLMKvwI1rknYYGAQH+J5
+        qOltWUoI8CH6pAq2vClxvTzQ7lYagIscmL5Rnzni/TD3d9Gim6hLEVh/K2stfA/I
+        zxTcasGRdLG8Sdj/iaUwQq9ijk+x6Q15dVW1/0oGJjfw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=4NREBuy0f4ceXTelZ
+        1c05+0MR5Jh1oCebiw4dhTmkwo=; b=AgOptL+0VLoGiDi+SsFyCLLKauc6uq1B0
+        an6opM9PmkFNYtzai5noRLpI+37B3e9mCZT7tYDS5kXElctl9n2+Kf/7nXRFJELf
+        dfikWSf/8ks3ga8pOJwPNMs3DTGicwOZD72ykDH5NwFl2N0H1sJN7opJ5gwQ6lvQ
+        AKgT1+cljjhPvofL0OpiCELOLkiGnql8a157imIcalAefiN+iCJcLnYp48A3AnFW
+        grU2zldwFhUNownecpcNWM3zHhxB+YV89e/yI2aJdLjmzMoPP67UhWryRoePLICV
+        xxT80fD9hYfHMGcINGU+hlhaKYnuiKHZYIRmaKjeERN0GgnOhfPLw==
+X-ME-Sender: <xms:JtwFX97V55PVlIlyO6dbHGZOH_e5AL5nzt3bSUMz4Us28heyXridOg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudejgdekvdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepofgrgihimhgvucft
+    ihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtthgvrh
+    hnpeejffehuddvvddvlefhgeelleffgfeijedvhefgieejtdeiueetjeetfeeukeejgeen
+    ucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurfgrrh
+    grmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:JtwFX66feTj8YlZBr2kQuxlIM311HHmjem0qBUY4pxly-IPAkUOC-Q>
+    <xmx:JtwFX0epB2H0zg_666qv-MO06-YwUlMwlkyT77m-2byocavX5SYURg>
+    <xmx:JtwFX2JJsBYOF-7qKdqFgDp93qCW0fHcEWtTwmRLrKajhqsEbPAIsg>
+    <xmx:KdwFX2pxYtegwssixOJgEGszWwlAeIGYVmXFBnuXM8r9y6-FX9PENzPYfDg>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 30F7D328005D;
+        Wed,  8 Jul 2020 10:45:58 -0400 (EDT)
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Eric Anholt <eric@anholt.net>
+Cc:     dri-devel@lists.freedesktop.org,
+        linux-rpi-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Maxime Ripard <maxime@cerno.tech>
+Subject: [PATCH] drm/vc4: hdmi: Add a name to the codec DAI component
+Date:   Wed,  8 Jul 2020 16:45:55 +0200
+Message-Id: <20200708144555.718404-1-maxime@cerno.tech>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <BN6PR04MB06603A626BB6D54D11CB502CA3AE0@BN6PR04MB0660.namprd04.prod.outlook.com>
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA01Sa0hTYRjmO+dsOw4nx2n5pmI5/ZOUt/xxIhOVfgwiEUoIRW3qQcVrO95D
-        lBQ1L2v6Q1MMTeZai3BMnWaReE+Ws4zsomYwC69kXiKzNOdR8t/zPhfe9/n4SFzcyXMkE1Mz
-        GHmqLFnCFxKG4S3TWetpXrT36CMhfde8hNPj4zoBPXZ7WUDrzZM8+m1PI5+u1HXy6HvjLzBa
-        rf+D0W+qZ4hAK6lee4cvbVcVSFs+/iKkig4tkq7rXUJ54UL/OCY5MYuRewXcECboVWO89Fks
-        Z7tOiRciFVaOrEig/ODloIZfjoSkmNIg0BWXI27YQFB7fwjjhnUEqxq14DAy87nmQHiIwPjA
-        uC+IqR8IJndiLNiOioXabbPAYrKnijD4pqnnWwQ+5QNVQwpkwSIqAAa+LxEWTFDuYJjQ7PPH
-        qChoW+jCOI8tjNbP7XusqEhoNw7iFoxTDvBprgnj8EnoWmnELcuAMghAv9iHuFMvwczzn3wO
-        28HiSMdBBWfYfdqEcYEiBJXPpgTcoEQwO9J8kL4A06bfe2lyb8VpaOvx4uggaH2twCw0UDbw
-        YcWWO8IGagx1OEeLoKxEzLndYVtbd/DYjlAxt0twWAom9TxfiVwbjtRsOFKt4Ui1hv83NCNC
-        ixyYTDYlnmF9UplsT1aWwmamxnvGpqXo0d5nMu6MrHWjzYmYfkSRSGItUup40WKeLIvNTelH
-        QOISe1HwmDFKLIqT5eYx8rRoeWYyw/YjJ5KQOIjOtSxEiql4WQaTxDDpjPxQxUgrx0LkHbGc
-        SLeXDodnjJkHMqkCWzD15VweCMu+svb3lH/32vUTvfNq5abeN9C0FNiuKlw4vlW++PhWx8b7
-        r/l+icVPQi+6+ay+CwlxFURIXaryztdX9970zTdOVkSWBZeuVm+WjLu0Jim01blXS7+EeXgo
-        2VfNztfIMzlBXm6tq074lIRgE2Q+Hriclf0DXTCoDEgDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrNIsWRmVeSWpSXmKPExsVy+t/xe7rcd1jjDe5flrDof/ya2eL8+Q3s
-        Fmeb3rBbbHp8jdXi8q45bBY9G7ayWsw4v4/JYtmmP0wWFyfeZXHg9Ni0qpPNY/OSeo9FN3+w
-        ePRtWcXo8XmTXABrlJ5NUX5pSapCRn5xia1StKGFkZ6hpYWekYmlnqGxeayVkamSvp1NSmpO
-        Zllqkb5dgl7GpiVnWQvuM1X8nj6BuYFxCVMXIyeHhICJxN17k4BsLg4hgaWMEls//wJyOIAS
-        UhLzW5QgaoQl/lzrYoOoec8osXzSbTaQhLBAssS034/ZQRIiAs1MEv+Xb2OBqLrLKNH9+BZY
-        FZuAoUTv0T5GEJtXwE7i8PvXLCA2i4CKxLZLK8DiogJxEsu3zGeHqBGUODnzCVgNp0CsxObT
-        R5hBbGYBdYk/8y5B2eISt57MZ4Kw5SW2v53DPIFRcBaS9llIWmYhaZmFpGUBI8sqRpHU0uLc
-        9NxiQ73ixNzi0rx0veT83E2MwIjbduzn5h2MlzYGH2IU4GBU4uF9sYk1Xog1say4MvcQowQH
-        s5IIr9PZ03FCvCmJlVWpRfnxRaU5qcWHGE2BnpvILCWanA9MBnkl8YamhuYWlobmxubGZhZK
-        4rwdAgdjhATSE0tSs1NTC1KLYPqYODilGhjVMu6LtLdk3ZvdECKTfDuKq5ihe82V1zd1T+x9
-        MVn8V+qx/3aNXB0KTRMncrMYzGmQejRTqWXJiidc4cKHSu+8V9zKpXrO/hsbj8qN300XHukY
-        Lch09eV5Z8CxOJPVoe755WX9b7atK1hbqJP6X6fjw50VYcvrbZ+x+N4I1+ZKEf3q+kjgYo4S
-        S3FGoqEWc1FxIgAxbc5IzgIAAA==
-X-CMS-MailID: 20200708144531eucas1p282845354a7c2be8f70f4ef33a4d6bb1d
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200426022721eucas1p1d5cbdc4946279aeff7d6c11f93a56f74
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200426022721eucas1p1d5cbdc4946279aeff7d6c11f93a56f74
-References: <20200426022650.10355-1-xc-racer2@live.ca>
-        <CGME20200426022721eucas1p1d5cbdc4946279aeff7d6c11f93a56f74@eucas1p1.samsung.com>
-        <BN6PR04MB06603A626BB6D54D11CB502CA3AE0@BN6PR04MB0660.namprd04.prod.outlook.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26.04.2020 04:26, Jonathan Bakker wrote:
-> The S5PV210 platform only supports device tree based booting
-> where the FIMC variant data is parsed directly from
-> the device tree, hence the now unused static data can be removed.
-> 
-> Signed-off-by: Jonathan Bakker <xc-racer2@live.ca>
+Since the components for a given device in ASoC are identified by their
+name, it makes sense to add one even though it's not strictly necessary.
 
-Reviewed-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+---
+ drivers/gpu/drm/vc4/vc4_hdmi.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
+index 15a11cd4de25..a057db0d9baa 100644
+--- a/drivers/gpu/drm/vc4/vc4_hdmi.c
++++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
+@@ -983,6 +983,7 @@ static const struct snd_soc_dapm_route vc4_hdmi_audio_routes[] = {
+ };
+ 
+ static const struct snd_soc_component_driver vc4_hdmi_audio_component_drv = {
++	.name			= "vc4-hdmi-codec-dai-component",
+ 	.controls		= vc4_hdmi_audio_controls,
+ 	.num_controls		= ARRAY_SIZE(vc4_hdmi_audio_controls),
+ 	.dapm_widgets		= vc4_hdmi_audio_widgets,
+-- 
+2.26.2
+
