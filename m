@@ -2,93 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 128BC21887B
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 15:08:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BA9C218892
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 15:12:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729288AbgGHNIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 09:08:39 -0400
-Received: from foss.arm.com ([217.140.110.172]:39262 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728997AbgGHNIi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 09:08:38 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2B4AE1FB;
-        Wed,  8 Jul 2020 06:08:38 -0700 (PDT)
-Received: from e107158-lin (e107158-lin.cambridge.arm.com [10.1.195.21])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B71213F718;
-        Wed,  8 Jul 2020 06:08:35 -0700 (PDT)
-Date:   Wed, 8 Jul 2020 14:08:33 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Quentin Perret <qperret@google.com>,
-        Patrick Bellasi <patrick.bellasi@matbug.net>,
-        Pavan Kondeti <pkondeti@codeaurora.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v6 1/2] sched/uclamp: Add a new sysctl to control RT
- default boost value
-Message-ID: <20200708130831.4oaukv65hbano3j7@e107158-lin>
-References: <20200706142839.26629-1-qais.yousef@arm.com>
- <20200706142839.26629-2-qais.yousef@arm.com>
- <jhj8sfw8wzk.mognet@arm.com>
- <20200707093447.4t6eqjy4fkt747fo@e107158-lin.cambridge.arm.com>
- <jhj36638suv.mognet@arm.com>
- <20200707123640.lahojmq2s4byhkhl@e107158-lin.cambridge.arm.com>
- <jhjwo3e6zd1.mognet@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <jhjwo3e6zd1.mognet@arm.com>
-User-Agent: NeoMutt/20171215
+        id S1729387AbgGHNMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 09:12:30 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:24034 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729299AbgGHNM1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 09:12:27 -0400
+Received: from ironmsg07-lv.qualcomm.com (HELO ironmsg07-lv.qulacomm.com) ([10.47.202.151])
+  by alexa-out.qualcomm.com with ESMTP; 08 Jul 2020 06:12:27 -0700
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg07-lv.qulacomm.com with ESMTP/TLS/AES256-SHA; 08 Jul 2020 06:12:25 -0700
+Received: from vbadigan-linux.qualcomm.com ([10.206.24.109])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 08 Jul 2020 18:42:07 +0530
+Received: by vbadigan-linux.qualcomm.com (Postfix, from userid 76677)
+        id 597A84D31; Wed,  8 Jul 2020 18:42:06 +0530 (IST)
+From:   Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+To:     adrian.hunter@intel.com, ulf.hansson@linaro.org,
+        bjorn.andersson@linaro.org
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        "Bao D. Nguyen" <nguyenb@codeaurora.org>,
+        Sarthak Garg <sartgarg@codeaurora.org>
+Subject: [PATCH V1] mmc: sdhci-msm: Override DLL_CONFIG only if the valid value is supplied
+Date:   Wed,  8 Jul 2020 18:41:19 +0530
+Message-Id: <1594213888-2780-1-git-send-email-vbadigan@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/08/20 12:05, Valentin Schneider wrote:
-> > AFAIU rcu_read_lock() is light weight. So having the protection applied is more
-> > robust against future changes.
-> 
-> So I think the one thing you win by having this dance with mb's and the
-> suggested handling of the task list is that you do not need any
-> rcu_synchronize() anymore. Both approaches have merit, it's just that the
-> way I understood the suggestion to add sched_post_fork() was to simplify
-> the ordering of the update with the aforementioned scheme.
+During DLL initialization, the DLL_CONFIG register value would be
+updated with the value supplied from the device-tree.
 
-The synchronize_rcu() is not for sched_post_fork(). It is to deal with the
-preemption problem.
+Override this register only if a valid value is supplied.
 
-> 
-> >
-> >>
-> >> sched_post_fork() being preempted out is a bit more annoying, but what
-> >> prevents us from making that bit preempt-disabled?
-> >
-> > preempt_disable() is not friendly to RT and heavy handed approach IMO.
-> >
-> 
-> True, but this is both an infrequent and slow sysctl path, so I don't think
-> RT would care much.
+Fixes: 03591160ca19 ("mmc: sdhci-msm: Read and use DLL Config property from device tree file")
+Signed-off-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+---
+ drivers/mmc/host/sdhci-msm.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-There's an easy answer for that. But first I'm not sure what problem are we
-discussing here.
+diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
+index efd2bae1430c..93d67a3a899f 100644
+--- a/drivers/mmc/host/sdhci-msm.c
++++ b/drivers/mmc/host/sdhci-msm.c
+@@ -626,8 +626,9 @@ static int msm_init_cm_dll(struct sdhci_host *host)
+ 	config &= ~CORE_CLK_PWRSAVE;
+ 	writel_relaxed(config, host->ioaddr + msm_offset->core_vendor_spec);
+ 
+-	config = msm_host->dll_config;
+-	writel_relaxed(config, host->ioaddr + msm_offset->core_dll_config);
++	if (msm_host->dll_config)
++		writel_relaxed(msm_host->dll_config,
++				host->ioaddr + msm_offset->core_dll_config);
+ 
+ 	if (msm_host->use_14lpp_dll_reset) {
+ 		config = readl_relaxed(host->ioaddr +
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc., is a member of Code Aurora Forum, a Linux Foundation Collaborative Project
 
-What is the problem with rcu? And how is preempt_disable() fixes it or improves
-on it?
-
-Thanks
-
---
-Qais Yousef
