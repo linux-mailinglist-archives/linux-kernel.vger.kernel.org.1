@@ -2,144 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11F3821915B
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 22:21:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECD5B21917F
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 22:29:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726174AbgGHUVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 16:21:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36490 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725915AbgGHUVW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 16:21:22 -0400
-Received: from embeddedor (unknown [201.162.240.161])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0E9AC206DF;
-        Wed,  8 Jul 2020 20:21:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594239681;
-        bh=UeCNSUIXhUf07hExa3mxpd08ul/F7bP7XImjtU6s0mQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=qpT21zjyUpZRBes6dwkVF7VRpNo7GVmRVSB6Z8LaZTi2JEQxIMzHw64KWRNqB7U7u
-         ltBidmEtNbtwkVXLYf0V/xmUZ+JXRstbLw5hxbqCkpOSgjsqu9XrdlhlkZdCgps4Pu
-         BGa5rraSVTfspfi+I7fjZMP4d9Tkx33lbeEij7ls=
-Date:   Wed, 8 Jul 2020 15:26:50 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>
-Cc:     linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH] Bluetooth: Use fallthrough pseudo-keyword
-Message-ID: <20200708202650.GA3866@embeddedor>
+        id S1726194AbgGHU26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 16:28:58 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:20262 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725964AbgGHU25 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 16:28:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594240136;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tKlR3ZjSGkU94hKtcspH+LSF41vCI5eSTGDezrwB8ao=;
+        b=MNK+SaOC30eAULtpDFpBdLFgVQQHkfFwzwUwaMifWg5GTvFF7BlIr6nXi4HXGnPR1EejzI
+        IMP/zAoMa4La/7C5MCbEy7lLEKsRrukMpU4mUKPDD7jZVXm4bCvTDohnflNaAcpTxkSkSa
+        9mxI949fNhGZAObRuOyAihkzDlz49D8=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-184-OEupbzAyMeaeVqG6FdlxIw-1; Wed, 08 Jul 2020 16:28:54 -0400
+X-MC-Unique: OEupbzAyMeaeVqG6FdlxIw-1
+Received: by mail-wm1-f71.google.com with SMTP id l5so123136wml.7
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 13:28:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=tKlR3ZjSGkU94hKtcspH+LSF41vCI5eSTGDezrwB8ao=;
+        b=X8nZkXbNPCInbxADos41TDl52MYlrROTvVcJhLqkdhPyf84EcTaS2T9xUdWJOcxPSa
+         WYRSnTqTJptaIV1vmuoWLp4xexjVcbFYYIbAfhzCbhaHepwcJ+xaddMCuvQB5227ES4d
+         zwhyughQq+JPdw5sGF7rOxpywhACwwrBOh+MqNrPvzNpJKf3r/dAf4JCjz+d7tTUW3JZ
+         QH8swmQMD6rpVQBNCGrTFAIlCiAbHjU5w3kspD1RxlmoIqteildPk2FMjBHoQrWm/BQw
+         KIFPbH99hVbiYJlq/UOfJ+6FYSocMChBg5jXlGzbV380VV6g+UnCNzgsUMH8XxzgX8ea
+         5slA==
+X-Gm-Message-State: AOAM531KFolwr3FU8oeFIp5rr3WRAZU3ebv2/swTacK64+NlUjyRZyvq
+        +WcEERU7C0VzCbdfbUlUB4TsuyIcOh6MNZbS2xtM4S3jxivGgLT1gtWOMkBsLZW3Fp0UvdyRiGN
+        XshmVszNXzoH5bkPbEJDWMj4i
+X-Received: by 2002:a05:6000:1206:: with SMTP id e6mr29803843wrx.346.1594240133652;
+        Wed, 08 Jul 2020 13:28:53 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJymxGVgiM5r72XA6vzEjzcO7z2KzQpDxACkB5nl5lRy9YvNMCQdsG72gOmEThXjiJuxHh5pBw==
+X-Received: by 2002:a05:6000:1206:: with SMTP id e6mr29803834wrx.346.1594240133412;
+        Wed, 08 Jul 2020 13:28:53 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:ef:39d9:1ecb:6054? ([2001:b07:6468:f312:ef:39d9:1ecb:6054])
+        by smtp.gmail.com with ESMTPSA id v3sm1664758wrq.57.2020.07.08.13.28.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Jul 2020 13:28:52 -0700 (PDT)
+Subject: Re: [patch V2 0/7] x86/kvm: RCU/context tracking and instrumentation
+ protections
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, kvm@vger.kernel.org,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juergen Gross <jgross@suse.com>
+References: <20200708195153.746357686@linutronix.de>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <1b17c3ed-e53c-2e20-2880-882fdc84f622@redhat.com>
+Date:   Wed, 8 Jul 2020 22:28:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200708195153.746357686@linutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace the existing /* fall through */ comments and its variants with
-the new pseudo-keyword macro fallthrough[1]. Also, remove unnecessary
-fall-through markings when it is the case.
+On 08/07/20 21:51, Thomas Gleixner wrote:
+> Folks,
+> 
+> this is a rebased and adopted version of the original series which is
+> available here:
+> 
+>      https://lore.kernel.org/r/20200519203128.773151484@linutronix.de
+>  
+> It deals with the RCU and context tracking state and the protection against
+> instrumentation in sensitive places:
+> 
+>   - Placing the guest_enter/exit() calls at the correct place
+> 
+>   - Moving the sensitive VMENTER/EXIT code into the non-instrumentable code
+>     section.
+> 
+>   - Fixup the tracing code to comply with the non-instrumentation rules
+> 
+>   - Use native functions to access CR2 and the GS base MSR in the critical
+>     code pathes to prevent them from being instrumented.
+> 
+> Thanks,
+> 
+> 	tglx
+> 
 
-[1] https://www.kernel.org/doc/html/latest/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
+Queued, thanks.
 
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/bluetooth/bcm203x.c     | 2 +-
- drivers/bluetooth/bluecard_cs.c | 2 --
- drivers/bluetooth/hci_ll.c      | 2 +-
- drivers/bluetooth/hci_qca.c     | 8 +-------
- 4 files changed, 3 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/bluetooth/bcm203x.c b/drivers/bluetooth/bcm203x.c
-index 3b176257b993..e667933c3d70 100644
---- a/drivers/bluetooth/bcm203x.c
-+++ b/drivers/bluetooth/bcm203x.c
-@@ -106,7 +106,7 @@ static void bcm203x_complete(struct urb *urb)
- 		}
- 
- 		data->state = BCM203X_LOAD_FIRMWARE;
--		/* fall through */
-+		fallthrough;
- 	case BCM203X_LOAD_FIRMWARE:
- 		if (data->fw_sent == data->fw_size) {
- 			usb_fill_int_urb(urb, udev, usb_rcvintpipe(udev, BCM203X_IN_EP),
-diff --git a/drivers/bluetooth/bluecard_cs.c b/drivers/bluetooth/bluecard_cs.c
-index cc6e56223656..36eabf61717f 100644
---- a/drivers/bluetooth/bluecard_cs.c
-+++ b/drivers/bluetooth/bluecard_cs.c
-@@ -295,7 +295,6 @@ static void bluecard_write_wakeup(struct bluecard_info *info)
- 				baud_reg = REG_CONTROL_BAUD_RATE_115200;
- 				break;
- 			case PKT_BAUD_RATE_57600:
--				/* Fall through... */
- 			default:
- 				baud_reg = REG_CONTROL_BAUD_RATE_57600;
- 				break;
-@@ -585,7 +584,6 @@ static int bluecard_hci_set_baud_rate(struct hci_dev *hdev, int baud)
- 		hci_skb_pkt_type(skb) = PKT_BAUD_RATE_115200;
- 		break;
- 	case 57600:
--		/* Fall through... */
- 	default:
- 		cmd[4] = 0x03;
- 		hci_skb_pkt_type(skb) = PKT_BAUD_RATE_57600;
-diff --git a/drivers/bluetooth/hci_ll.c b/drivers/bluetooth/hci_ll.c
-index d9a4c6c691e0..8bfe024d1fcd 100644
---- a/drivers/bluetooth/hci_ll.c
-+++ b/drivers/bluetooth/hci_ll.c
-@@ -219,7 +219,7 @@ static void ll_device_want_to_wakeup(struct hci_uart *hu)
- 		 * perfectly safe to always send one.
- 		 */
- 		BT_DBG("dual wake-up-indication");
--		/* fall through */
-+		fallthrough;
- 	case HCILL_ASLEEP:
- 		/* acknowledge device wake up */
- 		if (send_hcill_cmd(HCILL_WAKE_UP_ACK, hu) < 0) {
-diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
-index 99d14c777105..7e395469ca4f 100644
---- a/drivers/bluetooth/hci_qca.c
-+++ b/drivers/bluetooth/hci_qca.c
-@@ -472,8 +472,6 @@ static void hci_ibs_tx_idle_timeout(struct timer_list *t)
- 
- 	case HCI_IBS_TX_ASLEEP:
- 	case HCI_IBS_TX_WAKING:
--		/* Fall through */
--
- 	default:
- 		BT_ERR("Spurious timeout tx state %d", qca->tx_ibs_state);
- 		break;
-@@ -516,8 +514,6 @@ static void hci_ibs_wake_retrans_timeout(struct timer_list *t)
- 
- 	case HCI_IBS_TX_ASLEEP:
- 	case HCI_IBS_TX_AWAKE:
--		/* Fall through */
--
- 	default:
- 		BT_ERR("Spurious timeout tx state %d", qca->tx_ibs_state);
- 		break;
-@@ -835,8 +831,6 @@ static void device_woke_up(struct hci_uart *hu)
- 		break;
- 
- 	case HCI_IBS_TX_ASLEEP:
--		/* Fall through */
--
- 	default:
- 		BT_ERR("Received HCI_IBS_WAKE_ACK in tx state %d",
- 		       qca->tx_ibs_state);
-@@ -2072,7 +2066,7 @@ static int __maybe_unused qca_suspend(struct device *dev)
- 	switch (qca->tx_ibs_state) {
- 	case HCI_IBS_TX_WAKING:
- 		del_timer(&qca->wake_retrans_timer);
--		/* Fall through */
-+		fallthrough;
- 	case HCI_IBS_TX_AWAKE:
- 		del_timer(&qca->tx_idle_timer);
- 
--- 
-2.27.0
+Paolo
 
