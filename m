@@ -2,112 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ADDD2182FF
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 10:59:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03A12218309
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 11:01:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728487AbgGHI7K convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 8 Jul 2020 04:59:10 -0400
-Received: from mout.kundenserver.de ([212.227.126.130]:44433 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728349AbgGHI7J (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 04:59:09 -0400
-Received: from mail-qk1-f173.google.com ([209.85.222.173]) by
- mrelayeu.kundenserver.de (mreue009 [212.227.15.129]) with ESMTPSA (Nemesis)
- id 1M1HmE-1jvpjt0Vpq-002q2u; Wed, 08 Jul 2020 10:59:07 +0200
-Received: by mail-qk1-f173.google.com with SMTP id 145so38292577qke.9;
-        Wed, 08 Jul 2020 01:59:06 -0700 (PDT)
-X-Gm-Message-State: AOAM5305UJ0SnXMSPNglsrHEvGM+hNgSwSEmNRF/8pbwwYLd0gnTHozI
-        Ceev+fOU1N607fAA9nf8GxOV5jGLjDy6uwvEJ94=
-X-Google-Smtp-Source: ABdhPJzLaMHmQ+d0DaK1+93L/dR3MzlE080J2I9IddvGS9yPpAL+dL55hLQlLBZanWkIYCvrPgtE5STzlyI22smNJzI=
-X-Received: by 2002:a05:620a:1654:: with SMTP id c20mr49067426qko.138.1594198745401;
- Wed, 08 Jul 2020 01:59:05 -0700 (PDT)
+        id S1728411AbgGHJBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 05:01:09 -0400
+Received: from mail-bn8nam11on2123.outbound.protection.outlook.com ([40.107.236.123]:9825
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725789AbgGHJBJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 05:01:09 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IfaDtY3PefrHLfIHKHLD3NzrDJ2xN7ojXughXqqUzAcf3zbbokO+5KaKdKngXjsPusZI+bhfIn58qi1+prTcr96ckDUoa2XtDvteRNAwXLKfVpT+N4ouH436BgKykiGsUc/c2oiYqfW5AT2rIOUl92NcDy2x46jPPlF6dShn+RJYrxoTsgWGeNMzJ1nsYL2crvNuyrknQJYJOz464RNCxpdzConlaohkwxcTazH/ZBiS6HoTS8tFtm289y4a1/OAMnUowLTTgJ3Tg654YgckjgNsEcRKiq3uH5myfFYp4h2VTZUTtdlUaResXzbAIJyRpm5d9yL+sMCKi1W+wBpcog==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zQOZLqjxSfbqZWNqmN7724Narzb9PECHFpapDriZArQ=;
+ b=KZaT5z29A/+IpYtvrVOf96mV0SME3HoEywqTpcQRl5z51H7M3Cvul1heZAgxISDSPaTppJDJPKBEVzqoE9POZMcz9sirk+m0hfypSX2qyENnqDzL38q7sKNVLFsaBgwlFYuf4YSzYGX53hvsL8diswXP5KnDhKuNkGukmtzBUCaNDRG0ubhGVWGCyU1I5sseWvAojCIfyu1vNI12guAuK1r2RtTJdVgdYAqAOnBnpMVm/CdPICeHQgT6F+bOMqV6L86IDrLRGDrsDbwhn585/4aIgQ2IBXfHWX3PcubQ0GSLRJcc5Sob0FuNr5rHC5f3c61ByMvUmMF4Suf2VTs3Og==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=analogixsemi.com; dmarc=pass action=none
+ header.from=analogixsemi.com; dkim=pass header.d=analogixsemi.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=Analogixsemi.onmicrosoft.com; s=selector2-Analogixsemi-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zQOZLqjxSfbqZWNqmN7724Narzb9PECHFpapDriZArQ=;
+ b=pRRJg/QLso13fh/MrydfM7D6NYtPzzV7tkMTTYSo9dfVvblDPfup8smGLmMHwrM45kc10BIqmklRALM+jZVRp72gutAS0cAKYBwgqxlxpqueWP2lCO/ZPjWP23RaOVNIdVY97N/CSOMpvdMu1miVtcqz8dk1XFd2x8k4JByoOnQ=
+Authentication-Results: analogixsemi.com; dkim=none (message not signed)
+ header.d=none;analogixsemi.com; dmarc=none action=none
+ header.from=analogixsemi.com;
+Received: from BY5PR04MB6739.namprd04.prod.outlook.com (2603:10b6:a03:229::8)
+ by BYAPR04MB6150.namprd04.prod.outlook.com (2603:10b6:a03:e3::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.20; Wed, 8 Jul
+ 2020 09:01:04 +0000
+Received: from BY5PR04MB6739.namprd04.prod.outlook.com
+ ([fe80::844e:398b:2165:631b]) by BY5PR04MB6739.namprd04.prod.outlook.com
+ ([fe80::844e:398b:2165:631b%5]) with mapi id 15.20.3153.030; Wed, 8 Jul 2020
+ 09:01:04 +0000
+Date:   Wed, 8 Jul 2020 17:00:55 +0800
+From:   Xin Ji <xji@analogixsemi.com>
+To:     Nicolas Boichat <drinkcat@chromium.org>
+Cc:     devel@driverdev.osuosl.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Pi-Hsun Shih <pihsun@chromium.org>,
+        Sheng Pan <span@analogixsemi.com>
+Subject: Re: [PATCH v13 2/2] drm/bridge: anx7625: Add anx7625 MIPI DSI/DPI to
+ DP
+Message-ID: <20200708090055.GA21256@xin-VirtualBox>
+References: <cover.1591345160.git.xji@analogixsemi.com>
+ <a18316c118c7b8ac201911b0b96d41c84653a00f.1591345160.git.xji@analogixsemi.com>
+ <CANMq1KDnoLSUxxYr82o=1eGBR7E3PxoYUr8h1sEVTyqYyHCC-Q@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANMq1KDnoLSUxxYr82o=1eGBR7E3PxoYUr8h1sEVTyqYyHCC-Q@mail.gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-ClientProxiedBy: HK2PR04CA0050.apcprd04.prod.outlook.com
+ (2603:1096:202:14::18) To BY5PR04MB6739.namprd04.prod.outlook.com
+ (2603:10b6:a03:229::8)
 MIME-Version: 1.0
-References: <20200707180955.53024-1-mic@digikod.net> <20200707180955.53024-10-mic@digikod.net>
- <CAK8P3a0docCqHkEn9C7=e0GC_ieN1dsYgKQ9PbUmSZYxh9MRnw@mail.gmail.com>
- <8d2dab03-289e-2872-db66-ce80ce5c189f@digikod.net> <CAK8P3a3Mf_+-MY5kdeY7sqwUgCUi=PksWz1pGDy+o0ZfgF93Zw@mail.gmail.com>
- <956a05c8-529b-bf97-99ac-8958cceb35f3@digikod.net>
-In-Reply-To: <956a05c8-529b-bf97-99ac-8958cceb35f3@digikod.net>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 8 Jul 2020 10:58:49 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0RKEb0jcisgaXVd6wJU6GaEsDAJp+jDFyJBdMPDE__ZQ@mail.gmail.com>
-Message-ID: <CAK8P3a0RKEb0jcisgaXVd6wJU6GaEsDAJp+jDFyJBdMPDE__ZQ@mail.gmail.com>
-Subject: Re: [PATCH v19 09/12] arch: Wire up landlock() syscall
-To:     =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        James Morris <jmorris@namei.org>, Jann Horn <jannh@google.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mickael.salaun@ssi.gouv.fr>,
-        Richard Weinberger <richard@nod.at>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Provags-ID: V03:K1:xHTn1Z/zs2Cvp/Jis9ADqr2IAejWKErX2VZvYMpCYqk7nN38OGS
- hqnUoA/8tqXaX22IX+Xjh6COX7jWOlGeCZG9zOawyraaVVA3sM+bWf//mEECKw0TJHaa536
- emgPPoxis8hhtPlNxxeEeb1Goft2ZN7njCTaKLYp2KvXOYImAKvNR+oCJUtXuclxk+xiw5p
- 0PxGi/RwzrhVLDK+mdbmA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:GzkeslkO6gE=:kM5RpU6Q+0lHtyoGKEprs5
- sxAllv15rCucfKqU8mXI3zK1iYT9XCeSUlYwH9752GoVt7J0Zpz2Tg9VUAWLPDBOmYzwxeSTt
- Ifpioku+VVsk68jI7OD/eruKHQJcoW05Ey0jJFcttHyPUKRYHpSENXAF6RWxNTLuI4otqWbFY
- o6ubgL8EswGQfaIffXK1kV+JFxBKVd9NZPKoRWoVP8/fXe1KDtnoAdPsQebFwSWc1beN0wRf+
- Dg4DTijMBcy39pGVgdIb8mEusN9xP5Np5798PsP81bIuo0Jr/kLNfmExmU+vSVHQ1eaEpcBJK
- tRfCW5poVhYoONA50kzGlVvj2jghd1iFnWGKZeEvAyjV5pvfqlko37YnFHyc0kcW1goqt239z
- +xMaV3fxspXepCuxwuRysmfiZOs9RNw0dmGevVIW3fajMueAleKwAWAVLwbcDpHm+U5VtVFYU
- yqm3UMSJo6dpDcmudK6+W0axGOhQENhzasfnm9PwzlvsOw7fb3GkUJrp14cfCtOKTUl0RtW1J
- qqNaXcLzjVmBnN5vga/vpSL+zsI7o/gql/jFJMT9RGjEY2YS9dyeLMusbWY1rObpazlsQ3VNL
- WUu5yhqltGZZ818FNnJ90c3cFL3BrmmXHYcRnm+Mevg3S9Gp5IDwz1X0zMqoeA5W0cmWT2nwK
- pf2aGV8896rYBtjF/vNwroH3jxUKTT4xifWoBQbtr3MAqyb68uMmZnY0GH1Zn4rzfaNM8dnCL
- OVeK0Va6WupDozvzLvgKGDKe3gtW5E/pRngw1Pt89CzMq7tlQv26J9Km/IvqFiV/jQuwr8waY
- alHPx5jZsdXbdB5cbe8s0TkEtfpiEH435jS3YZ07RhRGXCCXAebID1JmASw5Z55B65K27gMae
- WyxSPqR9f3Dh1LGFMUXPAojxqv/xoGiIVpm8e3oN5/shl/9skrcCVzh+q0hm6VSMYViCg0Vjy
- DipXxUOLBS6ViaTQI6wtCgIG0FLBFpkFPWhwJezEscPn0InnY25Hj
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from xin-VirtualBox (114.247.245.254) by HK2PR04CA0050.apcprd04.prod.outlook.com (2603:1096:202:14::18) with Microsoft SMTP Server (version=TLS1_0, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.20.3174.21 via Frontend Transport; Wed, 8 Jul 2020 09:01:03 +0000
+X-Originating-IP: [114.247.245.254]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 2b4f2af2-59cf-4d7a-014a-08d8231d71c7
+X-MS-TrafficTypeDiagnostic: BYAPR04MB6150:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR04MB6150A52AE3DFF8CBE7C2954EC7670@BYAPR04MB6150.namprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
+X-Forefront-PRVS: 04583CED1A
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: IGe+cPMhHPGUK9qLwGgH9XH6BVrjIlL+TAQjk232qTRlbvgarpQzHFVuBDGbMd8bz229RmkSIAu7xIjDizIgKP5IxzjULzqCfaiXvneIRHqwOIWiPcec99Ll4QXCWiIlAfB3Hubgvm4Ouul7aSxUFKIG3IebNK+w9zEUCgk1Wf/1Swxl5oroFEDDytXaUrQY1et5hGXGcFblCC1zOvKlqOpu0kvZHK8SEwbonTq4zk7tG8Vul/dVXtFlYNsl9st6WL94ZAVLZrLr9Uz9pIWhoBGswCvChm3nr1gLDYaf9FSkybYBDhZIfXDKFZXQvbxVEkLHXOXlX9cCgl3gFyMPHg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6739.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(396003)(366004)(39840400004)(376002)(136003)(346002)(107886003)(478600001)(26005)(54906003)(186003)(16526019)(6496006)(52116002)(8676002)(4326008)(66946007)(66476007)(66556008)(7416002)(83380400001)(9686003)(33656002)(86362001)(33716001)(53546011)(316002)(1076003)(956004)(6916009)(5660300002)(2906002)(55016002)(6666004)(8936002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: 2kijO3D/ojoPCbtqnEjVgoBnXfciXJsKZS90n1HrWYhLQb8ERkhM3qushxjj9440lyOj7/Ow6XUsnp0vJFR7d8Z8czWXs29kEaZTD7XTTw0lXQlc29qcftCSTRbrPNrJhLt9zd4JxYCX+/jUC017Av5sYCjbhI45uHM4J9iduth8qh57e2IpOAcyT6rlImZWOdOkxo5A0IsVwoD2DujvB2pbKh72jyB3AjMBPJtV6Gu0AChWTTAugOBdftfAd5Uc0hMJ6EOUnJSk5bAg18lOvQWqnL0MpwcXFIuvSZAbxnAfrTGhA3VGn4ZqoSi4SMNFBsN6EN35YDjas54RUIIsW+jMpBMyHSUqYUq99QVznjO7f37V9sjBhugJbUmNL1Ebv+u5TZVyBS7wIzfl6nwKqoPDWTZTCqWkZ0BW6fNvH9ni7ReP5sD6VQOBMWqNu72sI3cT69H3djo7rJhsIdcOqng75sBJshdKqm71VBXZttiZPyUsJjsSkQVEmYRlF4zJ
+X-OriginatorOrg: analogixsemi.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2b4f2af2-59cf-4d7a-014a-08d8231d71c7
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6739.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jul 2020 09:01:04.6520
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: b099b0b4-f26c-4cf5-9a0f-d5be9acab205
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Am/QYnQSOUVEyos+VV7DPcX4FUv1yLzypaxF8A3fOfWbkeCdOEieBXmstyvbW6HNWZSaeav6gw+ypsk2/TEcRQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB6150
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 8, 2020 at 10:23 AM Mickaël Salaün <mic@digikod.net> wrote:
-> On 08/07/2020 09:47, Arnd Bergmann wrote:
-> > On Wed, Jul 8, 2020 at 9:31 AM Mickaël Salaün <mic@digikod.net> wrote:
-> >> On 08/07/2020 09:22, Arnd Bergmann wrote:
-> >>> On Tue, Jul 7, 2020 at 8:10 PM Mickaël Salaün <mic@digikod.net> wrote:
-> >>>
-> >>>> index f4a01305d9a6..a63a411a74d5 100644
-> >>>> --- a/include/uapi/asm-generic/unistd.h
-> >>>> +++ b/include/uapi/asm-generic/unistd.h
-> >>
-> >> OK, I'll rebase the next series on linux-next.
+On Tue, Jul 07, 2020 at 03:01:25PM +0800, Nicolas Boichat wrote:
+
+Hi Nicolas, thanks for the replay.
+
+> On Tue, Jun 9, 2020 at 3:20 PM Xin Ji <xji@analogixsemi.com> wrote:
 > >
-> > Just change the number to the next free one, without actually rebasing.
-> > It's always a bit messy to have multiple syscalls added, but I think that
-> > causes the least confusion.
->
-> OK, but this will lead to two merge conflicts: patch 8 (asmlinkage) and
-> patch 9 (tbl files).
-
-Yes, there isn't really much one can do about that.
-
-> Do you want me to update the tools/perf/arch/*.tbl too?
-
-No, I would leave them unchanged.
-
-     Arnd
+> > The ANX7625 is an ultra-low power 4K Mobile HD Transmitter designed
+> > for portable device. It converts MIPI DSI/DPI to DisplayPort 1.3 4K.
+> >
+> > Signed-off-by: Xin Ji <xji@analogixsemi.com>
+> > ---
+> >  drivers/gpu/drm/bridge/analogix/Kconfig   |    9 +
+> >  drivers/gpu/drm/bridge/analogix/Makefile  |    1 +
+> >  drivers/gpu/drm/bridge/analogix/anx7625.c | 1999 +++++++++++++++++++++++++++++
+> >  drivers/gpu/drm/bridge/analogix/anx7625.h |  397 ++++++
+> >  4 files changed, 2406 insertions(+)
+> >  create mode 100644 drivers/gpu/drm/bridge/analogix/anx7625.c
+> >  create mode 100644 drivers/gpu/drm/bridge/analogix/anx7625.h
+> >
+> > [snip]
+> > +static int anx7625_parse_dt(struct device *dev,
+> > +                           struct anx7625_platform_data *pdata)
+> > +{
+> > +       struct device_node *np = dev->of_node;
+> > +       struct device_node *panel_node, *out_ep;
+> > +
+> > +       pdata->node.mipi_dsi_host_node = of_graph_get_remote_node(np, 0, 0);
+> > +       if (!pdata->node.mipi_dsi_host_node) {
+> > +               DRM_DEV_ERROR(dev, "fail to get internal panel.\n");
+> > +               return -EPROBE_DEFER;
+> 
+> This does not look correct. I don't think of_graph_get_remote_node
+> will ever return NULL if the device tree is configured properly, and
+> it's useless to retry later (EPROBE_DEFER). You should just fail (e.g.
+> return EINVAL).
+OK
+> 
+> > +       }
+> > +
+> > +       of_node_put(pdata->node.mipi_dsi_host_node);
+> 
+> You are using pdata->node.mipi_dsi_host_node in other places in the
+> code, so I don't think it's ok to call of_node_put?
+I'll move the related code to here.
+> 
+> > +       DRM_DEV_DEBUG_DRIVER(dev, "found dsi host node.\n");
+> > +
+> > +       pdata->node.panel_node = of_graph_get_port_by_id(np, 1);
+> > +       if (!pdata->node.panel_node) {
+> > +               DRM_DEV_ERROR(dev, "fail to get panel node.\n");
+> > +               return -EPROBE_DEFER;
+> 
+> -EINVAL.
+OK
+> 
+> > +       }
+> > +
+> > +       of_node_put(pdata->node.panel_node);
+> > +       out_ep = of_get_child_by_name(pdata->node.panel_node,
+> > +                                     "endpoint");
+> > +       if (!out_ep) {
+> > +               DRM_DEV_DEBUG_DRIVER(dev, "cannot get endpoint.\n");
+> 
+> DRM_DEV_ERROR seems more appropriate
+OK, also I'll remove drm_panel based on Sam comment.
+> 
+> > +               return -EPROBE_DEFER;
+> 
+> -EINVAL
+OK
+> 
+> > +       }
+> > +
+> > +       panel_node = of_graph_get_remote_port_parent(out_ep);
+> > +       of_node_put(out_ep);
+> > +       pdata->panel = of_drm_find_panel(panel_node);
+> > +       DRM_DEV_DEBUG_DRIVER(dev, "get panel node.\n");
+> > +
+> > +       of_node_put(panel_node);
+> > +       if (IS_ERR_OR_NULL(pdata->panel))
+> > +               return -EPROBE_DEFER;
+> 
+> of_drm_find_panel cannot return NULL, so, do this instead:
+> 
+> if (IS_ERR(pdata->panel))
+>    return PTR_ERR(pdata->panel);
+> 
+> (which actually _may_ return EPROBE_DEFER)
+I'll remove drm_panel, use panel_bridge.
+> 
+> > +
+> > +       return 0;
+> > +}
+> > [snip]
+> > +static int anx7625_i2c_probe(struct i2c_client *client,
+> > +                            const struct i2c_device_id *id)
+> > +{
+> > +       struct anx7625_data *platform;
+> > +       struct anx7625_platform_data *pdata;
+> > +       int ret = 0;
+> > +       struct device *dev = &client->dev;
+> > +
+> > +       if (!i2c_check_functionality(client->adapter,
+> > +                                    I2C_FUNC_SMBUS_I2C_BLOCK)) {
+> > +               DRM_DEV_ERROR(dev, "anx7625's i2c bus doesn't support\n");
+> > +               return -ENODEV;
+> > +       }
+> > +
+> > +       platform = kzalloc(sizeof(*platform), GFP_KERNEL);
+> > +       if (!platform) {
+> > +               DRM_DEV_ERROR(dev, "fail to allocate driver data\n");
+> > +               return -ENOMEM;
+> > +       }
+> > +
+> > +       pdata = &platform->pdata;
+> > +
+> > +       ret = anx7625_parse_dt(dev, pdata);
+> > +       if (ret) {
+> > +               DRM_DEV_ERROR(dev, "fail to parse devicetree.\n");
+> 
+> Please do not print this error (or at least not if err == -EPROBE_DEFER).
+OK
+> 
+> > +               goto free_platform;
+> > +       }
