@@ -2,282 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25C12217EBE
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 07:00:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C074C217ECA
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 07:08:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729565AbgGHFAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 01:00:23 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:14486 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728530AbgGHFAS (ORCPT
+        id S1726321AbgGHFIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 01:08:32 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:28056 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725298AbgGHFIb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 01:00:18 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f0552770000>; Tue, 07 Jul 2020 21:58:31 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Tue, 07 Jul 2020 22:00:17 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Tue, 07 Jul 2020 22:00:17 -0700
-Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 8 Jul
- 2020 05:00:15 +0000
-Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Wed, 8 Jul 2020 05:00:14 +0000
-Received: from vdumpa-ubuntu.nvidia.com (Not Verified[172.17.173.140]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5f0552de0005>; Tue, 07 Jul 2020 22:00:14 -0700
-From:   Krishna Reddy <vdumpa@nvidia.com>
-To:     <joro@8bytes.org>, <will@kernel.org>, <robin.murphy@arm.com>,
-        <robh+dt@kernel.org>, <treding@nvidia.com>, <jonathanh@nvidia.com>
-CC:     <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <yhsu@nvidia.com>,
-        <snikam@nvidia.com>, <praithatha@nvidia.com>, <talho@nvidia.com>,
-        <bbiswas@nvidia.com>, <mperttunen@nvidia.com>,
-        <nicolinc@nvidia.com>, <bhuntsman@nvidia.com>,
-        <nicoleotsuka@gmail.com>, Krishna Reddy <vdumpa@nvidia.com>
-Subject: [PATCH v10 5/5] iommu/arm-smmu: Add global/context fault implementation hooks
-Date:   Tue, 7 Jul 2020 22:00:17 -0700
-Message-ID: <20200708050017.31563-6-vdumpa@nvidia.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200708050017.31563-1-vdumpa@nvidia.com>
-References: <20200708050017.31563-1-vdumpa@nvidia.com>
-MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1594184311; bh=q+IDg4zKgWthMqXSnjoQk3oNZ+m7q2O5x8AX7ZLlnqg=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
-         In-Reply-To:References:MIME-Version:X-NVConfidentiality:
-         Content-Transfer-Encoding:Content-Type;
-        b=dIptEjAOoiBK+4HTvMHwsp5hs19Pbj6lkBBG7x8xR0H0hcY3FfaWbIpI4sF6756JD
-         XL01AKtmz/SAXTYSmsopdIPIFhs5OCiAbmp9YcpkQZFehzIu0/7gKNf47L3J+4rJ0U
-         u269twEDTF3F9NF4be8mp00bLExWnTNx2bR0VXvT4RRugMHcJ7N0Kt5ihLqs67g3t/
-         fZ/n4P5rlleJ9rd6OcwJ6aJQ0EE7vV7kmPXDUwRSf6tQKAiuKBxme/jvsItXLKmrWo
-         D+u8s2NLD0ZGUzXyvokPtfmSzMHXvxLEAQmvwBTYW2aL/egMlsrYwG+ksO51G+BYoj
-         7QVzk1yaSKyIQ==
+        Wed, 8 Jul 2020 01:08:31 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1594184911; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=J/0rtb7ms4jKYAU3mSlVXiZ7/65ZzPwUSJ72i0ViAwU=; b=ZQK/LuNyqGU77DjrT7w1TyBNO1+7+lyh4SOe0XckxAGUJO/rHnt9lTUbGNUIiv2NHhBgmeWZ
+ dJXBky0FoPFwSzM7dav7eiHKjCIFhFwJC/gUA2H8BPR8dMs4y3Eg2+bhJLG4/Lvitn5Xavv3
+ kmIc1VemBlzyFn0pVaZH7uNcTy0=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n12.prod.us-west-2.postgun.com with SMTP id
+ 5f0554ce0082b278486d6af8 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 08 Jul 2020 05:08:30
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 678F6C43391; Wed,  8 Jul 2020 05:08:30 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from rohkumar-linux.qualcomm.com (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rohitkr)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A2672C433C6;
+        Wed,  8 Jul 2020 05:08:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A2672C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rohitkr@codeaurora.org
+From:   Rohit kumar <rohitkr@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+        srinivas.kandagatla@linaro.org, linux-arm-msm@vger.kernel.org,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Rohit kumar <rohitkr@codeaurora.org>
+Subject: [PATCH v3 0/8] ASoC: qcom: Add support for SC7180 lpass variant
+Date:   Wed,  8 Jul 2020 10:38:08 +0530
+Message-Id: <1594184896-10629-1-git-send-email-rohitkr@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add global/context fault hooks to allow vendor specific implementations
-override default fault interrupt handlers.
+This patch chain add audio support for SC7180 soc by doing the required
+modification in existing common lpass-cpu/lpass-platform driver.
+Below is a brief summary of patch series:
 
-Update NVIDIA implementation to override the default global/context fault
-interrupt handlers and handle interrupts across the two ARM MMU-500s that
-are programmed identically.
+PATCH v3 0001 ... 0005: Update lpass-cpu, lpass-platform drivers to make it more generic
+and support newer soc registers configuration. This also updates existing lpass-apq8096.c
+and lpass-ipq806x.c.
+PATCH v2 0005 ... 0007: Add documentation and platform driver for newer SC7180 SOC variant.
 
-Signed-off-by: Krishna Reddy <vdumpa@nvidia.com>
----
- drivers/iommu/arm-smmu-nvidia.c | 99 +++++++++++++++++++++++++++++++++
- drivers/iommu/arm-smmu.c        | 17 +++++-
- drivers/iommu/arm-smmu.h        |  3 +
- 3 files changed, 117 insertions(+), 2 deletions(-)
+Changes since v2:
+	- Moved yaml conversion of Documentation to the end of patch series
+	- Used REG_FIELD_ID instead of REG_FIELD for DMACTL and I2SCTL registers.
+Move reg_fields to struct lpass_variant as suggested by Srinivas.
 
-diff --git a/drivers/iommu/arm-smmu-nvidia.c b/drivers/iommu/arm-smmu-nvidi=
-a.c
-index 2f55e5793d34..31368057e9be 100644
---- a/drivers/iommu/arm-smmu-nvidia.c
-+++ b/drivers/iommu/arm-smmu-nvidia.c
-@@ -127,6 +127,103 @@ static int nvidia_smmu_reset(struct arm_smmu_device *=
-smmu)
- 	return 0;
- }
-=20
-+static irqreturn_t nvidia_smmu_global_fault_inst(int irq,
-+						 struct arm_smmu_device *smmu,
-+						 int inst)
-+{
-+	u32 gfsr, gfsynr0, gfsynr1, gfsynr2;
-+	void __iomem *gr0_base =3D nvidia_smmu_page(smmu, inst, 0);
-+
-+	gfsr =3D readl_relaxed(gr0_base + ARM_SMMU_GR0_sGFSR);
-+	if (!gfsr)
-+		return IRQ_NONE;
-+
-+	gfsynr0 =3D readl_relaxed(gr0_base + ARM_SMMU_GR0_sGFSYNR0);
-+	gfsynr1 =3D readl_relaxed(gr0_base + ARM_SMMU_GR0_sGFSYNR1);
-+	gfsynr2 =3D readl_relaxed(gr0_base + ARM_SMMU_GR0_sGFSYNR2);
-+
-+	dev_err_ratelimited(smmu->dev,
-+			    "Unexpected global fault, this could be serious\n");
-+	dev_err_ratelimited(smmu->dev,
-+			    "\tGFSR 0x%08x, GFSYNR0 0x%08x, GFSYNR1 0x%08x, GFSYNR2 0x%08x\n",
-+			    gfsr, gfsynr0, gfsynr1, gfsynr2);
-+
-+	writel_relaxed(gfsr, gr0_base + ARM_SMMU_GR0_sGFSR);
-+	return IRQ_HANDLED;
-+}
-+
-+static irqreturn_t nvidia_smmu_global_fault(int irq, void *dev)
-+{
-+	unsigned int inst;
-+	irqreturn_t ret =3D IRQ_NONE;
-+	struct arm_smmu_device *smmu =3D dev;
-+
-+	for (inst =3D 0; inst < NUM_SMMU_INSTANCES; inst++) {
-+		irqreturn_t irq_ret;
-+
-+		irq_ret =3D nvidia_smmu_global_fault_inst(irq, smmu, inst);
-+		if (irq_ret =3D=3D IRQ_HANDLED)
-+			ret =3D IRQ_HANDLED;
-+	}
-+
-+	return ret;
-+}
-+
-+static irqreturn_t nvidia_smmu_context_fault_bank(int irq,
-+						  struct arm_smmu_device *smmu,
-+						  int idx, int inst)
-+{
-+	u32 fsr, fsynr, cbfrsynra;
-+	unsigned long iova;
-+	void __iomem *gr1_base =3D nvidia_smmu_page(smmu, inst, 1);
-+	void __iomem *cb_base =3D nvidia_smmu_page(smmu, inst, smmu->numpage + id=
-x);
-+
-+	fsr =3D readl_relaxed(cb_base + ARM_SMMU_CB_FSR);
-+	if (!(fsr & ARM_SMMU_FSR_FAULT))
-+		return IRQ_NONE;
-+
-+	fsynr =3D readl_relaxed(cb_base + ARM_SMMU_CB_FSYNR0);
-+	iova =3D readq_relaxed(cb_base + ARM_SMMU_CB_FAR);
-+	cbfrsynra =3D readl_relaxed(gr1_base + ARM_SMMU_GR1_CBFRSYNRA(idx));
-+
-+	dev_err_ratelimited(smmu->dev,
-+			    "Unhandled context fault: fsr=3D0x%x, iova=3D0x%08lx, fsynr=3D0x%x,=
- cbfrsynra=3D0x%x, cb=3D%d\n",
-+			    fsr, iova, fsynr, cbfrsynra, idx);
-+
-+	writel_relaxed(fsr, cb_base + ARM_SMMU_CB_FSR);
-+	return IRQ_HANDLED;
-+}
-+
-+static irqreturn_t nvidia_smmu_context_fault(int irq, void *dev)
-+{
-+	int idx;
-+	unsigned int inst;
-+	irqreturn_t ret =3D IRQ_NONE;
-+	struct arm_smmu_device *smmu;
-+	struct iommu_domain *domain =3D dev;
-+	struct arm_smmu_domain *smmu_domain;
-+
-+	smmu_domain =3D container_of(domain, struct arm_smmu_domain, domain);
-+	smmu =3D smmu_domain->smmu;
-+
-+	for (inst =3D 0; inst < NUM_SMMU_INSTANCES; inst++) {
-+		irqreturn_t irq_ret;
-+
-+		/*
-+		 * Interrupt line is shared between all contexts.
-+		 * Check for faults across all contexts.
-+		 */
-+		for (idx =3D 0; idx < smmu->num_context_banks; idx++) {
-+			irq_ret =3D nvidia_smmu_context_fault_bank(irq, smmu,
-+								 idx, inst);
-+			if (irq_ret =3D=3D IRQ_HANDLED)
-+				ret =3D IRQ_HANDLED;
-+		}
-+	}
-+
-+	return ret;
-+}
-+
- static const struct arm_smmu_impl nvidia_smmu_impl =3D {
- 	.read_reg =3D nvidia_smmu_read_reg,
- 	.write_reg =3D nvidia_smmu_write_reg,
-@@ -134,6 +231,8 @@ static const struct arm_smmu_impl nvidia_smmu_impl =3D =
-{
- 	.write_reg64 =3D nvidia_smmu_write_reg64,
- 	.reset =3D nvidia_smmu_reset,
- 	.tlb_sync =3D nvidia_smmu_tlb_sync,
-+	.global_fault =3D nvidia_smmu_global_fault,
-+	.context_fault =3D nvidia_smmu_context_fault,
- };
-=20
- struct arm_smmu_device *nvidia_smmu_impl_init(struct arm_smmu_device *smmu=
-)
-diff --git a/drivers/iommu/arm-smmu.c b/drivers/iommu/arm-smmu.c
-index c123a5814f70..020afddfaa0f 100644
---- a/drivers/iommu/arm-smmu.c
-+++ b/drivers/iommu/arm-smmu.c
-@@ -670,6 +670,7 @@ static int arm_smmu_init_domain_context(struct iommu_do=
-main *domain,
- 	enum io_pgtable_fmt fmt;
- 	struct arm_smmu_domain *smmu_domain =3D to_smmu_domain(domain);
- 	struct arm_smmu_cfg *cfg =3D &smmu_domain->cfg;
-+	irqreturn_t (*context_fault)(int irq, void *dev);
-=20
- 	mutex_lock(&smmu_domain->init_mutex);
- 	if (smmu_domain->smmu)
-@@ -832,7 +833,13 @@ static int arm_smmu_init_domain_context(struct iommu_d=
-omain *domain,
- 	 * handler seeing a half-initialised domain state.
- 	 */
- 	irq =3D smmu->irqs[smmu->num_global_irqs + cfg->irptndx];
--	ret =3D devm_request_irq(smmu->dev, irq, arm_smmu_context_fault,
-+
-+	if (smmu->impl && smmu->impl->context_fault)
-+		context_fault =3D smmu->impl->context_fault;
-+	else
-+		context_fault =3D arm_smmu_context_fault;
-+
-+	ret =3D devm_request_irq(smmu->dev, irq, context_fault,
- 			       IRQF_SHARED, "arm-smmu-context-fault", domain);
- 	if (ret < 0) {
- 		dev_err(smmu->dev, "failed to request context IRQ %d (%u)\n",
-@@ -2105,6 +2112,7 @@ static int arm_smmu_device_probe(struct platform_devi=
-ce *pdev)
- 	struct arm_smmu_device *smmu;
- 	struct device *dev =3D &pdev->dev;
- 	int num_irqs, i, err;
-+	irqreturn_t (*global_fault)(int irq, void *dev);
-=20
- 	smmu =3D devm_kzalloc(dev, sizeof(*smmu), GFP_KERNEL);
- 	if (!smmu) {
-@@ -2191,9 +2199,14 @@ static int arm_smmu_device_probe(struct platform_dev=
-ice *pdev)
- 		smmu->num_context_irqs =3D smmu->num_context_banks;
- 	}
-=20
-+	if (smmu->impl && smmu->impl->global_fault)
-+		global_fault =3D smmu->impl->global_fault;
-+	else
-+		global_fault =3D arm_smmu_global_fault;
-+
- 	for (i =3D 0; i < smmu->num_global_irqs; ++i) {
- 		err =3D devm_request_irq(smmu->dev, smmu->irqs[i],
--				       arm_smmu_global_fault,
-+				       global_fault,
- 				       IRQF_SHARED,
- 				       "arm-smmu global fault",
- 				       smmu);
-diff --git a/drivers/iommu/arm-smmu.h b/drivers/iommu/arm-smmu.h
-index fad63efa1a72..d890a4a968e8 100644
---- a/drivers/iommu/arm-smmu.h
-+++ b/drivers/iommu/arm-smmu.h
-@@ -18,6 +18,7 @@
- #include <linux/io-64-nonatomic-hi-lo.h>
- #include <linux/io-pgtable.h>
- #include <linux/iommu.h>
-+#include <linux/irqreturn.h>
- #include <linux/mutex.h>
- #include <linux/spinlock.h>
- #include <linux/types.h>
-@@ -389,6 +390,8 @@ struct arm_smmu_impl {
- 	void (*tlb_sync)(struct arm_smmu_device *smmu, int page, int sync,
- 			 int status);
- 	int (*def_domain_type)(struct device *dev);
-+	irqreturn_t (*global_fault)(int irq, void *dev);
-+	irqreturn_t (*context_fault)(int irq, void *dev);
- };
-=20
- static inline void __iomem *arm_smmu_page(struct arm_smmu_device *smmu, in=
-t n)
---=20
-2.26.2
+Ajit Pandey (5):
+  ASoC: qcom: Add common array to initialize soc based core clocks
+  include: dt-bindings: sound: Add sc7180-lpass bindings header
+  ASoC: qcom: lpass-platform: Replace card->dev with component->dev
+  ASoC: qcom: lpass-sc7180: Add platform driver for lpass audio
+  dt-bindings: sound: lpass-cpu: Move to yaml format
+
+Rohit kumar (3):
+  ASoC: qcom: lpass-cpu: Move ahbix clk to platform specific function
+  ASoC: qcom: lpass: Use regmap_field for i2sctl and dmactl registers
+  dt-bindings: sound: lpass-cpu: Add sc7180 lpass cpu node
+
+ .../devicetree/bindings/sound/qcom,lpass-cpu.txt   |  79 --------
+ .../devicetree/bindings/sound/qcom,lpass-cpu.yaml  | 154 +++++++++++++++
+ include/dt-bindings/sound/sc7180-lpass.h           |  10 +
+ sound/soc/qcom/Kconfig                             |   5 +
+ sound/soc/qcom/Makefile                            |   2 +
+ sound/soc/qcom/lpass-apq8016.c                     |  86 ++++++--
+ sound/soc/qcom/lpass-cpu.c                         | 193 +++++++++---------
+ sound/soc/qcom/lpass-ipq806x.c                     |  67 +++++++
+ sound/soc/qcom/lpass-lpaif-reg.h                   | 157 ++++++++-------
+ sound/soc/qcom/lpass-platform.c                    | 156 +++++++++++----
+ sound/soc/qcom/lpass-sc7180.c                      | 216 +++++++++++++++++++++
+ sound/soc/qcom/lpass.h                             |  63 +++++-
+ 12 files changed, 886 insertions(+), 302 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
+ create mode 100644 include/dt-bindings/sound/sc7180-lpass.h
+ create mode 100644 sound/soc/qcom/lpass-sc7180.c
+
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
