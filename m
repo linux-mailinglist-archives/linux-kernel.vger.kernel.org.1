@@ -2,119 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBE6221914E
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 22:18:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A248219147
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 22:16:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726371AbgGHUSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 16:18:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35392 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725964AbgGHUSE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 16:18:04 -0400
-Received: from sol.hsd1.ca.comcast.net (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4B8C820672;
-        Wed,  8 Jul 2020 20:18:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594239483;
-        bh=K5Lg+VMXda9w1UJGY2IYhWtxKTo+Uepce6z7xUkDdpo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vqi2sw4jvjVXqJNUckduzP/bJGnZLr0IpJ8RS18LE8x4iSXUc6sPS/bF9Chpy4svu
-         2wpfLl28X3KkiZOxjrragrPUpUnTRSVbf0zqBlYmFCr9tFtMyBSODjD9DUkwbW0sIq
-         /mfMIbEfZBj2f5fvzvKHGuqxptv+gp/Ne7VWX0oA=
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-security-module@vger.kernel.org,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>
-Cc:     syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org,
-        syzbot+e6416dabb497a650da40@syzkaller.appspotmail.com
-Subject: [PATCH] Smack: fix use-after-free in smk_write_relabel_self()
-Date:   Wed,  8 Jul 2020 13:15:20 -0700
-Message-Id: <20200708201520.140376-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <0000000000000279c705a799ae31@google.com>
-References: <0000000000000279c705a799ae31@google.com>
+        id S1726263AbgGHUQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 16:16:04 -0400
+Received: from mail.parknet.co.jp ([210.171.160.6]:46860 "EHLO
+        mail.parknet.co.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725964AbgGHUQE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 16:16:04 -0400
+Received: from ibmpc.myhome.or.jp (server.parknet.ne.jp [210.171.168.39])
+        by mail.parknet.co.jp (Postfix) with ESMTPSA id 2A0EE1B3FDC;
+        Thu,  9 Jul 2020 05:16:03 +0900 (JST)
+Received: from devron.myhome.or.jp (foobar@devron.myhome.or.jp [192.168.0.3])
+        by ibmpc.myhome.or.jp (8.15.2/8.15.2/Debian-19) with ESMTPS id 068KG16U132648
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Thu, 9 Jul 2020 05:16:02 +0900
+Received: from devron.myhome.or.jp (foobar@localhost [127.0.0.1])
+        by devron.myhome.or.jp (8.15.2/8.15.2/Debian-19) with ESMTPS id 068KG1PM561493
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Thu, 9 Jul 2020 05:16:01 +0900
+Received: (from hirofumi@localhost)
+        by devron.myhome.or.jp (8.15.2/8.15.2/Submit) id 068KFvYo561489;
+        Thu, 9 Jul 2020 05:15:57 +0900
+From:   OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] VFAT/FAT/MSDOS FILESYSTEM: Replace HTTP links with
+ HTTPS ones
+References: <20200708200409.22293-1-grandmaster@al2klimov.de>
+Date:   Thu, 09 Jul 2020 05:15:57 +0900
+In-Reply-To: <20200708200409.22293-1-grandmaster@al2klimov.de> (Alexander
+        A. Klimov's message of "Wed, 8 Jul 2020 22:04:09 +0200")
+Message-ID: <87y2ntdapu.fsf@mail.parknet.co.jp>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+"Alexander A. Klimov" <grandmaster@al2klimov.de> writes:
 
-smk_write_relabel_self() frees memory from the task's credentials with
-no locking, which can easily cause a use-after-free because multiple
-tasks can share the same credentials structure.
+> Rationale:
+> Reduces attack surface on kernel devs opening the links for MITM
+> as HTTPS traffic is much harder to manipulate.
+>
+> Deterministic algorithm:
+> For each file:
+>   If not .svg:
+>     For each line:
+>       If doesn't contain `\bxmlns\b`:
+>         For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+> 	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+>             If both the HTTP and HTTPS versions
+>             return 200 OK and serve the same content:
+>               Replace HTTP with HTTPS.
+>
+> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
 
-Fix this by using prepare_creds() and commit_creds() to correctly modify
-the task's credentials.
+Acked-by: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
 
-Reproducer for "BUG: KASAN: use-after-free in smk_write_relabel_self":
+> ---
+>  Continuing my work started at 93431e0607e5.
+>  See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+>  (Actually letting a shell for loop submit all this stuff for me.)
+>
+>  If there are any URLs to be removed completely or at least not HTTPSified:
+>  Just clearly say so and I'll *undo my change*.
+>  See also: https://lkml.org/lkml/2020/6/27/64
+>
+>  If there are any valid, but yet not changed URLs:
+>  See: https://lkml.org/lkml/2020/6/26/837
+>
+>  If you apply the patch, please let me know.
+>
+>
+>  fs/fat/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/fs/fat/Kconfig b/fs/fat/Kconfig
+> index ca31993dcb47..66532a71e8fd 100644
+> --- a/fs/fat/Kconfig
+> +++ b/fs/fat/Kconfig
+> @@ -41,7 +41,7 @@ config MSDOS_FS
+>  	  they are compressed; to access compressed MSDOS partitions under
+>  	  Linux, you can either use the DOS emulator DOSEMU, described in the
+>  	  DOSEMU-HOWTO, available from
+> -	  <http://www.tldp.org/docs.html#howto>, or try dmsdosfs in
+> +	  <https://www.tldp.org/docs.html#howto>, or try dmsdosfs in
+>  	  <ftp://ibiblio.org/pub/Linux/system/filesystems/dosfs/>. If you
+>  	  intend to use dosemu with a non-compressed MSDOS partition, say Y
+>  	  here) and MSDOS floppies. This means that file access becomes
 
-	#include <fcntl.h>
-	#include <pthread.h>
-	#include <unistd.h>
-
-	static void *thrproc(void *arg)
-	{
-		int fd = open("/sys/fs/smackfs/relabel-self", O_WRONLY);
-		for (;;) write(fd, "foo", 3);
-	}
-
-	int main()
-	{
-		pthread_t t;
-		pthread_create(&t, NULL, thrproc, NULL);
-		thrproc(NULL);
-	}
-
-Reported-by: syzbot+e6416dabb497a650da40@syzkaller.appspotmail.com
-Fixes: 38416e53936e ("Smack: limited capability for changing process label")
-Cc: <stable@vger.kernel.org> # v4.4+
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- security/smack/smackfs.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
-
-diff --git a/security/smack/smackfs.c b/security/smack/smackfs.c
-index c21b656b3263..840a192e9337 100644
---- a/security/smack/smackfs.c
-+++ b/security/smack/smackfs.c
-@@ -2720,7 +2720,6 @@ static int smk_open_relabel_self(struct inode *inode, struct file *file)
- static ssize_t smk_write_relabel_self(struct file *file, const char __user *buf,
- 				size_t count, loff_t *ppos)
- {
--	struct task_smack *tsp = smack_cred(current_cred());
- 	char *data;
- 	int rc;
- 	LIST_HEAD(list_tmp);
-@@ -2745,11 +2744,21 @@ static ssize_t smk_write_relabel_self(struct file *file, const char __user *buf,
- 	kfree(data);
- 
- 	if (!rc || (rc == -EINVAL && list_empty(&list_tmp))) {
-+		struct cred *new;
-+		struct task_smack *tsp;
-+
-+		new = prepare_creds();
-+		if (!new) {
-+			rc = -ENOMEM;
-+			goto out;
-+		}
-+		tsp = smack_cred(new);
- 		smk_destroy_label_list(&tsp->smk_relabel);
- 		list_splice(&list_tmp, &tsp->smk_relabel);
-+		commit_creds(new);
- 		return count;
- 	}
--
-+out:
- 	smk_destroy_label_list(&list_tmp);
- 	return rc;
- }
 -- 
-2.27.0
-
+OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
