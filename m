@@ -2,93 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78B312187B7
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 14:37:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38E582187BF
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 14:38:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729228AbgGHMhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 08:37:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32780 "EHLO
+        id S1729310AbgGHMiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 08:38:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728998AbgGHMhd (ORCPT
+        with ESMTP id S1728920AbgGHMiC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 08:37:33 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A39DFC08C5DC;
-        Wed,  8 Jul 2020 05:37:32 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id r19so2993906ljn.12;
-        Wed, 08 Jul 2020 05:37:32 -0700 (PDT)
+        Wed, 8 Jul 2020 08:38:02 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8218AC08C5DC
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 05:38:01 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id m9so9655454pfh.0
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 05:38:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:references:date:in-reply-to:message-id
-         :user-agent:mime-version;
-        bh=LDeWTEvkuS1/QhAV7zh4F+ok/kij8xM7tE+g5IT2QsA=;
-        b=rwMrtEAdih6Ym82MQBl7+Gc4CndgHIxLSbra1TY8UCiscntDudMdupm+1E5sGNWnzv
-         Idg0gptRmGK72ge6eT/uykFuVjKm4PKrvBO3jbhRQ5rmfC+sWXg8JudiN/lKO37CJiwm
-         lKXkki6274fYAeYPGIz421SR8RJOnL1RuQLmAmyrsH6O93kFr+Wz1nWJAV+VBp8szz5u
-         u1Tyd16X+ksS5seUz9qNkiQGNXf4klZDO462rKSZp52XWB7gBu2xUxewLDRWaPRSdL+L
-         oX9GsouxeM4XoIv8lp3qEauFjpzKTJ0tJS2T4tlCf6dhAhxo6JHsJbKMye4oeV+vo0jx
-         3Hag==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kee2YtmMHgv7A7dyVw1lKxR+tADNMGpw4FHY05ErWKs=;
+        b=BUVoyvYmTz8ZDtfycOlc63OWOr6QOq3OdXVIpgIkP+lyMsbeJX2hVgXFqFU9Wl5VBL
+         m0WSTsLYb2NG4ZWkjdfb6HfdcgqQlX2dzr8v1H8Yd/Qqc0uUYY2M92OoEtQg3WlJ+ACF
+         9NyCwxG1S6ozatSQD7Xh0QCwedEpb1CJgNG8WBPReVBIme9WBVscmmELcGThcaAQQTq5
+         CI/SSMcM7QRqukR86O++70R0g4b5EDcdaEMfnBYT4RbP8KctYPJDkLrHDLAdfSeK0ppr
+         xZBR5VQengbMd0Nb1ekdY/vlWEDbbhEF/ZfG8SiFiWDQ+Ar5ktIro3/F+LiDC32dtukA
+         9BZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:references:date:in-reply-to
-         :message-id:user-agent:mime-version;
-        bh=LDeWTEvkuS1/QhAV7zh4F+ok/kij8xM7tE+g5IT2QsA=;
-        b=UIU52V1+ImND23EMaHjXldiYandSi6dDMM31Fxu9AC1aOh3IsrW8v3OoXFTIvDA07b
-         3tyDUsMUD6OmOS9Zp8oQK0MxGwHgW0tRU+uhMR45HITNDlkcoZITWTyFzvWLIYOi+Z9W
-         lWbzG6uk8wMd6s1tFxVvdDacqhOSfCLH7XPB7d+mT4W8vvz+VVWNoYMV4f5g76sBqzdh
-         1p3v5g9JdNymmDK+zAQ48R386e2sf0+J4h4YlNXpF+I+r13T7z5M1GGPi7uA1QjmweUH
-         4OAtvq32y5cgt448+nHchPvxMSFJKJwt5axq8tnMQyMBqtE2vRgpQrqUcwI9RTFWmBHO
-         zCiw==
-X-Gm-Message-State: AOAM5302d6lu9WRUF2tEt6+8koNQ15AOzcZMYoC1jTkajw/h3R25c+IZ
-        ESENQrA83w2k92uGMcrNArQN3ipd
-X-Google-Smtp-Source: ABdhPJzE/jSq7zp7eBoTaHTEEqiSaP986/SMtXBvEttSuHbEQayU/ql4SPwWt3FVs22VqwSaoCVMuA==
-X-Received: by 2002:a2e:8954:: with SMTP id b20mr31637166ljk.262.1594211851205;
-        Wed, 08 Jul 2020 05:37:31 -0700 (PDT)
-Received: from osv.localdomain ([89.175.180.246])
-        by smtp.gmail.com with ESMTPSA id v24sm10344753lfo.4.2020.07.08.05.37.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Jul 2020 05:37:30 -0700 (PDT)
-From:   Sergey Organov <sorganov@gmail.com>
-To:     Richard Cochran <richardcochran@gmail.com>
-Cc:     Vladimir Oltean <olteanv@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Fugang Duan <fugang.duan@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH  3/5] net: fec: initialize clock with 0 rather than
- current kernel time
-References: <20200706142616.25192-1-sorganov@gmail.com>
-        <20200706142616.25192-4-sorganov@gmail.com>
-        <20200706152721.3j54m73bm673zlnj@skbuf> <20200708110444.GD9080@hoboy>
-Date:   Wed, 08 Jul 2020 15:37:29 +0300
-In-Reply-To: <20200708110444.GD9080@hoboy> (Richard Cochran's message of "Wed,
-        8 Jul 2020 04:04:44 -0700")
-Message-ID: <87mu4a9o8m.fsf@osv.gnss.ru>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kee2YtmMHgv7A7dyVw1lKxR+tADNMGpw4FHY05ErWKs=;
+        b=MjNo3cgsQ34UB+NfjaacpERpHporO4EG2oBsb/e4fX5iiRQLqQ6LeZTlno85T/OfUJ
+         iSnptNQONxlyDlmqaC6p8OZwzX72F5omGgpeoh+dEL88tP2Ubvh5satrPb7QYsTpG/yc
+         KBkM/Es4vhj4QMgIWntb0Jv84kl3g0wfN0M0U1WpOeUSIvStbC/Mr8adZc8JDZC1ptwI
+         RdAvXPTwJ3kgMFwFn7UbNJCjjd3LJeDqLmIZJciIGDzknxJ6CleLZuBZ0IAD6cC7bS/1
+         kEBxBLIVcVz5infcH0fRsaLQGC6k/2Mntmxwcm7ilkyUUYiJkV7G3E0sTKsgABBq9vKi
+         6WtA==
+X-Gm-Message-State: AOAM531Q3VLhK4LsWl6BQTjkTH6K3GdAogNVPl/9Azxz/wNIjAv3693c
+        oCSJmQ8Yj7OAVV2OtmTa7X1YU9DR6dnA0CZkK3r3ag==
+X-Google-Smtp-Source: ABdhPJyuLR6QeVaXP6OjKnIrKrqfE0bWlnsaLu7hVpXkSQ6tvUnLVglr7za275US/hzu1ZOvqBp0jWwLbfx/vTSY8U8=
+X-Received: by 2002:a62:52cd:: with SMTP id g196mr53579108pfb.178.1594211880888;
+ Wed, 08 Jul 2020 05:38:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20200706115039.16750-1-walter-zh.wu@mediatek.com>
+In-Reply-To: <20200706115039.16750-1-walter-zh.wu@mediatek.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Wed, 8 Jul 2020 14:37:49 +0200
+Message-ID: <CAAeHK+zQDeo5K8D9QTQvdkp4H36s_wPPcGDizJ-ZDD0YAtLeRw@mail.gmail.com>
+Subject: Re: [PATCH v3] kasan: fix KASAN unit tests for tag-based KASAN
+To:     Walter Wu <walter-zh.wu@mediatek.com>
+Cc:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        linux-mediatek@lists.infradead.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Richard Cochran <richardcochran@gmail.com> writes:
-
-> On Mon, Jul 06, 2020 at 06:27:21PM +0300, Vladimir Oltean wrote:
->> There's no correct answer, I'm afraid. Whatever the default value of the
->> clock may be, it's bound to be confusing for some reason, _if_ the
->> reason why you're investigating it in the first place is a driver bug.
->> Also, I don't really see how your change to use Jan 1st 1970 makes it
->> any less confusing.
+On Mon, Jul 6, 2020 at 1:50 PM Walter Wu <walter-zh.wu@mediatek.com> wrote:
 >
-> +1
+> We use tag-based KASAN, then KASAN unit tests don't detect out-of-bounds
+> memory access. They need to be fixed.
 >
-> For a PHC, the user of the clock must check the PTP stack's
-> synchronization flags via the management interface to know the status
-> of the time signal.
+> With tag-based KASAN, the state of each 16 aligned bytes of memory is
+> encoded in one shadow byte and the shadow value is tag of pointer, so
+> we need to read next shadow byte, the shadow value is not equal to tag
+> value of pointer, so that tag-based KASAN will detect out-of-bounds
+> memory access.
+>
+> Signed-off-by: Walter Wu <walter-zh.wu@mediatek.com>
+> Suggested-by: Dmitry Vyukov <dvyukov@google.com>
+> Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
+> Cc: Dmitry Vyukov <dvyukov@google.com>
+> Cc: Alexander Potapenko <glider@google.com>
+> Cc: Matthias Brugger <matthias.bgg@gmail.com>
+> Cc: Andrey Konovalov <andreyknvl@google.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> ---
+>
+> changes since v1:
+> - Reduce amount of non-compiled code.
+> - KUnit-KASAN Integration patchset is not merged yet. My patch should
+>   have conflict with it, if needed, we can continue to wait it.
+>
+> changes since v2:
+> - Add one marco to make unit tests more readability.
+>
+> ---
+>  lib/test_kasan.c | 47 ++++++++++++++++++++++++++++++-----------------
+>  1 file changed, 30 insertions(+), 17 deletions(-)
+>
+> diff --git a/lib/test_kasan.c b/lib/test_kasan.c
+> index e3087d90e00d..b5049a807e25 100644
+> --- a/lib/test_kasan.c
+> +++ b/lib/test_kasan.c
+> @@ -23,6 +23,8 @@
+>
+>  #include <asm/page.h>
+>
+> +#define OOB_TAG_OFF (IS_ENABLED(CONFIG_KASAN_GENERIC) ? 0 : 13)
 
-Actually, as I just realized, the right solution for my original problem
-would rather be adding PTP clock ID that time stamped Ethernet packet to
-the Ethernet hardware time stamp (see my previous reply as well).
+Let's use KASAN_SHADOW_SCALE_SIZE instead of 13 to make sure the
+access always lands in the next memory granule.
 
-Thanks,
--- Sergey
+With that:
+
+Reviewed-by: Andrey Konovalov <andreyknvl@google.com>
+
+> +
+>  /*
+>   * Note: test functions are marked noinline so that their names appear in
+>   * reports.
+> @@ -40,7 +42,8 @@ static noinline void __init kmalloc_oob_right(void)
+>                 return;
+>         }
+>
+> -       ptr[size] = 'x';
+> +       ptr[size + OOB_TAG_OFF] = 'x';
+> +
+>         kfree(ptr);
+>  }
+>
+> @@ -92,7 +95,8 @@ static noinline void __init kmalloc_pagealloc_oob_right(void)
+>                 return;
+>         }
+>
+> -       ptr[size] = 0;
+> +       ptr[size + OOB_TAG_OFF] = 0;
+> +
+>         kfree(ptr);
+>  }
+>
+> @@ -162,7 +166,8 @@ static noinline void __init kmalloc_oob_krealloc_more(void)
+>                 return;
+>         }
+>
+> -       ptr2[size2] = 'x';
+> +       ptr2[size2 + OOB_TAG_OFF] = 'x';
+> +
+>         kfree(ptr2);
+>  }
+>
+> @@ -180,7 +185,9 @@ static noinline void __init kmalloc_oob_krealloc_less(void)
+>                 kfree(ptr1);
+>                 return;
+>         }
+> -       ptr2[size2] = 'x';
+> +
+> +       ptr2[size2 + OOB_TAG_OFF] = 'x';
+> +
+>         kfree(ptr2);
+>  }
+>
+> @@ -216,7 +223,8 @@ static noinline void __init kmalloc_oob_memset_2(void)
+>                 return;
+>         }
+>
+> -       memset(ptr+7, 0, 2);
+> +       memset(ptr + 7 + OOB_TAG_OFF, 0, 2);
+> +
+>         kfree(ptr);
+>  }
+>
+> @@ -232,7 +240,8 @@ static noinline void __init kmalloc_oob_memset_4(void)
+>                 return;
+>         }
+>
+> -       memset(ptr+5, 0, 4);
+> +       memset(ptr + 5 + OOB_TAG_OFF, 0, 4);
+> +
+>         kfree(ptr);
+>  }
+>
+> @@ -249,7 +258,8 @@ static noinline void __init kmalloc_oob_memset_8(void)
+>                 return;
+>         }
+>
+> -       memset(ptr+1, 0, 8);
+> +       memset(ptr + 1 + OOB_TAG_OFF, 0, 8);
+> +
+>         kfree(ptr);
+>  }
+>
+> @@ -265,7 +275,8 @@ static noinline void __init kmalloc_oob_memset_16(void)
+>                 return;
+>         }
+>
+> -       memset(ptr+1, 0, 16);
+> +       memset(ptr + 1 + OOB_TAG_OFF, 0, 16);
+> +
+>         kfree(ptr);
+>  }
+>
+> @@ -281,7 +292,8 @@ static noinline void __init kmalloc_oob_in_memset(void)
+>                 return;
+>         }
+>
+> -       memset(ptr, 0, size+5);
+> +       memset(ptr, 0, size + 5 + OOB_TAG_OFF);
+> +
+>         kfree(ptr);
+>  }
+>
+> @@ -415,7 +427,8 @@ static noinline void __init kmem_cache_oob(void)
+>                 return;
+>         }
+>
+> -       *p = p[size];
+> +       *p = p[size + OOB_TAG_OFF];
+> +
+>         kmem_cache_free(cache, p);
+>         kmem_cache_destroy(cache);
+>  }
+> @@ -512,25 +525,25 @@ static noinline void __init copy_user_test(void)
+>         }
+>
+>         pr_info("out-of-bounds in copy_from_user()\n");
+> -       unused = copy_from_user(kmem, usermem, size + 1);
+> +       unused = copy_from_user(kmem, usermem, size + 1 + OOB_TAG_OFF);
+>
+>         pr_info("out-of-bounds in copy_to_user()\n");
+> -       unused = copy_to_user(usermem, kmem, size + 1);
+> +       unused = copy_to_user(usermem, kmem, size + 1 + OOB_TAG_OFF);
+>
+>         pr_info("out-of-bounds in __copy_from_user()\n");
+> -       unused = __copy_from_user(kmem, usermem, size + 1);
+> +       unused = __copy_from_user(kmem, usermem, size + 1 + OOB_TAG_OFF);
+>
+>         pr_info("out-of-bounds in __copy_to_user()\n");
+> -       unused = __copy_to_user(usermem, kmem, size + 1);
+> +       unused = __copy_to_user(usermem, kmem, size + 1 + OOB_TAG_OFF);
+>
+>         pr_info("out-of-bounds in __copy_from_user_inatomic()\n");
+> -       unused = __copy_from_user_inatomic(kmem, usermem, size + 1);
+> +       unused = __copy_from_user_inatomic(kmem, usermem, size + 1 + OOB_TAG_OFF);
+>
+>         pr_info("out-of-bounds in __copy_to_user_inatomic()\n");
+> -       unused = __copy_to_user_inatomic(usermem, kmem, size + 1);
+> +       unused = __copy_to_user_inatomic(usermem, kmem, size + 1 + OOB_TAG_OFF);
+>
+>         pr_info("out-of-bounds in strncpy_from_user()\n");
+> -       unused = strncpy_from_user(kmem, usermem, size + 1);
+> +       unused = strncpy_from_user(kmem, usermem, size + 1 + OOB_TAG_OFF);
+>
+>         vm_munmap((unsigned long)usermem, PAGE_SIZE);
+>         kfree(kmem);
+> --
+> 2.18.0
+>
+> --
+> You received this message because you are subscribed to the Google Groups "kasan-dev" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to kasan-dev+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/kasan-dev/20200706115039.16750-1-walter-zh.wu%40mediatek.com.
