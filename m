@@ -2,77 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F31D218D77
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 18:48:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA793218E02
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 19:13:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730838AbgGHQsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 12:48:01 -0400
-Received: from mga03.intel.com ([134.134.136.65]:5694 "EHLO mga03.intel.com"
+        id S1730884AbgGHRNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 13:13:44 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43606 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730349AbgGHQsA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 12:48:00 -0400
-IronPort-SDR: grbue0tLZSA/hSNVDlc9X5v0WG8C/pblu/HZCRslU1ECRiIQQkFvdi330uQdURbA+g8GPinZsf
- p3xFJN4ctXJQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9676"; a="147859201"
-X-IronPort-AV: E=Sophos;i="5.75,328,1589266800"; 
-   d="scan'208";a="147859201"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2020 09:47:59 -0700
-IronPort-SDR: 6MMsL8LobZj0NHElNGCZR9i1cX0Q5HUgnhNzrWmrFw9BeX368h7tv6pHkD8THPX8VxVTuCLjrj
- HtBYQMlWkiJw==
-X-IronPort-AV: E=Sophos;i="5.75,328,1589266800"; 
-   d="scan'208";a="280009112"
-Received: from kcaccard-mobl.amr.corp.intel.com (HELO kcaccard-mobl1.jf.intel.com) ([10.209.55.243])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2020 09:47:57 -0700
-Message-ID: <6cba1bdea35eb19492c5d2674f2a58aae8635155.camel@linux.intel.com>
-Subject: Re: [PATCH v3 09/10] kallsyms: Hide layout
-From:   Kristen Carlson Accardi <kristen@linux.intel.com>
-To:     "Luck, Tony" <tony.luck@intel.com>,
-        Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Date:   Wed, 08 Jul 2020 09:47:55 -0700
-In-Reply-To: <3908561D78D1C84285E8C5FCA982C28F7F68AC3B@ORSMSX115.amr.corp.intel.com>
-References: <20200623172327.5701-1-kristen@linux.intel.com>
-         <20200623172327.5701-10-kristen@linux.intel.com>
-         <CAG48ez3YHoPOTZvabsNUcr=GP-rX+OXhNT54KcZT9eSQ28Fb8Q@mail.gmail.com>
-         <202006240815.45AAD55@keescook>
-         <f34eb868e609a1a8a7f19b77fe5d00bf3555bb00.camel@linux.intel.com>
-         <3908561D78D1C84285E8C5FCA982C28F7F68AC3B@ORSMSX115.amr.corp.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.30.5 (3.30.5-1.fc29) 
+        id S1725953AbgGHRNn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 13:13:43 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E9F5BAE02;
+        Wed,  8 Jul 2020 16:55:29 +0000 (UTC)
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        David Rientjes <rientjes@google.com>
+Cc:     linux-rpi-kernel@lists.infradead.org, jeremy.linton@arm.com,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] dma-pool: Do not allocate pool memory from CMA
+Date:   Wed,  8 Jul 2020 18:49:39 +0200
+Message-Id: <20200708164936.9340-1-nsaenzjulienne@suse.de>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-07-07 at 23:16 +0000, Luck, Tony wrote:
-> > Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
-> > Reviewed-by: Tony Luck <tony.luck@intel.com>
-> > Tested-by: Tony Luck <tony.luck@intel.com>
-> 
-> I'll happily review and test again ... but since you've made
-> substantive
-> changes, you should drop these tags until I do.
+There is no guarantee to CMA's placement, so allocating a zone specific
+atomic pool from CMA might return memory from a completely different
+memory zone. So stop using it.
 
-Will do - thanks! If nobody thinks this is a horrible direction, I'll
-clean up this patch and submit it with the rest as part of v4.
+Fixes: c84dc6e68a1d ("dma-pool: add additional coherent pools to map to gfp mask")
+Reported-by: Jeremy Linton <jeremy.linton@arm.com>
+Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+---
 
-> 
-> FWIW I think random order is a good idea.  Do you shuffle once?
-> Or every time somebody opens /proc/kallsyms?
+An more costly alternative would be adding an option to
+dma_alloc_from_contiguous() so it fails when the allocation doesn't fall
+in a specific zone.
 
-I am shuffling every single time that somebody opens /proc/kallsyms -
-this is because it's possible that somebody has loaded modules or bpf
-stuff and there may be new/different symbols to display.
+ kernel/dma/pool.c | 11 ++---------
+ 1 file changed, 2 insertions(+), 9 deletions(-)
 
+diff --git a/kernel/dma/pool.c b/kernel/dma/pool.c
+index 8cfa01243ed2..4bc1c46ae6ef 100644
+--- a/kernel/dma/pool.c
++++ b/kernel/dma/pool.c
+@@ -6,7 +6,6 @@
+ #include <linux/debugfs.h>
+ #include <linux/dma-direct.h>
+ #include <linux/dma-noncoherent.h>
+-#include <linux/dma-contiguous.h>
+ #include <linux/init.h>
+ #include <linux/genalloc.h>
+ #include <linux/set_memory.h>
+@@ -69,12 +68,7 @@ static int atomic_pool_expand(struct gen_pool *pool, size_t pool_size,
+ 
+ 	do {
+ 		pool_size = 1 << (PAGE_SHIFT + order);
+-
+-		if (dev_get_cma_area(NULL))
+-			page = dma_alloc_from_contiguous(NULL, 1 << order,
+-							 order, false);
+-		else
+-			page = alloc_pages(gfp, order);
++		page = alloc_pages(gfp, order);
+ 	} while (!page && order-- > 0);
+ 	if (!page)
+ 		goto out;
+@@ -118,8 +112,7 @@ static int atomic_pool_expand(struct gen_pool *pool, size_t pool_size,
+ 	dma_common_free_remap(addr, pool_size);
+ #endif
+ free_page: __maybe_unused
+-	if (!dma_release_from_contiguous(NULL, page, 1 << order))
+-		__free_pages(page, order);
++	__free_pages(page, order);
+ out:
+ 	return ret;
+ }
+-- 
+2.27.0
 
