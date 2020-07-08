@@ -2,116 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D48B5218095
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 09:16:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AC30218099
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 09:16:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730055AbgGHHP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 03:15:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38834 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729881AbgGHHP5 (ORCPT
+        id S1730133AbgGHHQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 03:16:15 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:56922 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729881AbgGHHQO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 03:15:57 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDFBEC08C5DC
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 00:15:56 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id n24so34018573otr.13
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 00:15:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rUN87HHcT0D+VYtpGAgTAdZG4A7i97yXdShp42YthWM=;
-        b=M/+llDmnnVb41HXbwGOiq6jmJPUaW8FTQkCNy2QnRSJcNvFQz7To2Zi1x1XHAnSlcW
-         rN5mobyMuuy1YzbBp6BTqhI+EhsEyXpb6bsBmx8xuUAxPfRdmb1/kJsYyQSwF2pR5W7L
-         ku19jswToojrU0/+xLzKSohGM0llFTFrYsyezI+Vp3B93TVjmqqvLUSqbUY4T0bfUXMN
-         V8uy+jzabbSJzuAiBle2nPlVZyitMpOPiPSmzzJKZnxrCPFcszkCdZtKxd9mdvot52z5
-         HaKvIw0BWdmUzd+Cr5U5fPoJRINu0Qj4C+VR0J7bv/yKZrkqf03UcNkhw7GLtzfpib7q
-         2d6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rUN87HHcT0D+VYtpGAgTAdZG4A7i97yXdShp42YthWM=;
-        b=LXGT0znRp4ajyilZmWKfdrh3VFe/vUF7+nPCyHru/K6hGfACLbIfLVBnCZ3VxXy7xG
-         QXvevSmbIKwNkS4cNRdHRWITO0l0KCZM4gLeLmhPBTaV3JRw4XOG3lVlu37unRSvgJHH
-         afsocKI8o4xFAWdpmaqzKglgUDMHnbrbzrDSliux4M/JC+CNsFFr8K6UecGXlZmZsOOi
-         d/+pGpi82ynw093rzqocyG/iixDIKmIkDZ4gmws0JA92YLiEnx/DLe/eMor8725PLM/+
-         c9nQuhKKsrTKqVL1QI3rWmk/qApxnD6qXI8MK9PDspyyGjb7FvQ1EvwkVJqdB4Jzplkz
-         LjXg==
-X-Gm-Message-State: AOAM5317o9tCN/VPyeHz3/wwjFVbZiXXTJwesKklzJBiS64XqwvI/QYp
-        AfsnfT+US0yPMtWRwxNcuga/l9vfARo0UyCSv+9jcQ==
-X-Google-Smtp-Source: ABdhPJyMCCNt8i1Et0DyOsaJ8wbMi3m1E8cveJ16TjMymVl4lnUJDpBklfG7oZetuBRbt8rGyAQ/aXNQNKJmxsfRdtU=
-X-Received: by 2002:a9d:2788:: with SMTP id c8mr32372097otb.251.1594192556026;
- Wed, 08 Jul 2020 00:15:56 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200630173734.14057-1-will@kernel.org> <20200630173734.14057-19-will@kernel.org>
- <20200701170722.4rte5ssnmrn2uqzg@bakewell.cambridge.arm.com>
- <20200702072301.GA15963@willie-the-truck> <20200706160023.GB10992@arm.com>
- <20200706163455.GV9247@paulmck-ThinkPad-P72> <20200706170556.GE10992@arm.com>
- <20200706173628.GZ9247@paulmck-ThinkPad-P72> <20200707102915.GI10992@arm.com>
- <20200707225122.GJ9247@paulmck-ThinkPad-P72> <CAKwvOdkW__H21m8vqqk1-n6-KK67HBk=YbA+MkUS7igxfjV1iw@mail.gmail.com>
-In-Reply-To: <CAKwvOdkW__H21m8vqqk1-n6-KK67HBk=YbA+MkUS7igxfjV1iw@mail.gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Wed, 8 Jul 2020 09:15:44 +0200
-Message-ID: <CANpmjNP8xwyjiDRgzWO13K3rPbxM0gRwTvMvX3Amm-QOWD0_tQ@mail.gmail.com>
-Subject: Re: [PATCH 18/18] arm64: lto: Strengthen READ_ONCE() to acquire when CLANG_LTO=y
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
+        Wed, 8 Jul 2020 03:16:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594192572;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=dx3HZ+yedwYcaidK+QZbCcB6z1aYUQHDgwu6LUEYe/4=;
+        b=UbUNMvUeC/lodaXM+IRgCoHShNxvHrSF53gIVKvQIoDrYDeVbubOTKdW8NJ1UKfE3zkeNd
+        VADa4L6BqTDTb31wrvHGcjzl6uA5wHPRKM9dkuODt9q/1cq6LWLmJVK29s4pebwSEvuCpp
+        EL9VK5UeeqOfy7XUriogwCcgnQEOLCk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-273-g9Z8KC3yNxm1InmXP6I2-g-1; Wed, 08 Jul 2020 03:16:08 -0400
+X-MC-Unique: g9Z8KC3yNxm1InmXP6I2-g-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 078DD107ACCA;
+        Wed,  8 Jul 2020 07:16:06 +0000 (UTC)
+Received: from [10.36.113.117] (ovpn-113-117.ams2.redhat.com [10.36.113.117])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E375A10013D7;
+        Wed,  8 Jul 2020 07:16:02 +0000 (UTC)
+Subject: Re: [PATCH v2 1/3] arm64/numa: export memory_add_physaddr_to_nid as
+ EXPORT_SYMBOL_GPL
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Mike Rapoport <rppt@linux.ibm.com>, Justin He <Justin.He@arm.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Catalin Marinas <Catalin.Marinas@arm.com>,
         Will Deacon <will@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Jason Wang <jasowang@redhat.com>,
-        virtualization@lists.linux-foundation.org,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Matt Turner <mattst88@gmail.com>,
-        kernel-team <kernel-team@android.com>,
-        Kees Cook <keescook@chromium.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Richard Henderson <rth@twiddle.net>,
-        LKML <linux-kernel@vger.kernel.org>, linux-alpha@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-Content-Type: text/plain; charset="UTF-8"
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Baoquan He <bhe@redhat.com>,
+        Chuhong Yuan <hslester96@gmail.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
+        Kaly Xin <Kaly.Xin@arm.com>
+References: <20200707055917.143653-1-justin.he@arm.com>
+ <20200707055917.143653-2-justin.he@arm.com>
+ <20200707115454.GN5913@dhcp22.suse.cz>
+ <AM6PR08MB406907F9F2B13DA6DC893AD9F7670@AM6PR08MB4069.eurprd08.prod.outlook.com>
+ <CAPcyv4ipu4qwKhk4pzJ8nZB2sp+=AndahS8eCgUvFvVP6dEkeA@mail.gmail.com>
+ <AM6PR08MB4069D0D1FD8FB31B6A56DDB5F7670@AM6PR08MB4069.eurprd08.prod.outlook.com>
+ <CAPcyv4ivyJsyzcbkBWcqBYZMx3VdJF7+VPCNs177DU2rYqtz_A@mail.gmail.com>
+ <20200708062217.GE386073@linux.ibm.com>
+ <c4ee0a94-c980-80ca-c43d-15729e1a3663@redhat.com>
+ <CAPcyv4inaZgmv=S36_DofA9prKhWg4KBNPkTvzSALO6Vtb9ddw@mail.gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
+ 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
+Organization: Red Hat GmbH
+Message-ID: <6aae78fa-b505-0f76-087b-d8b2146c62f1@redhat.com>
+Date:   Wed, 8 Jul 2020 09:16:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
+MIME-Version: 1.0
+In-Reply-To: <CAPcyv4inaZgmv=S36_DofA9prKhWg4KBNPkTvzSALO6Vtb9ddw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 8 Jul 2020 at 01:01, Nick Desaulniers <ndesaulniers@google.com> wrote:
->
-> I'm trying to put together a Micro Conference for Linux Plumbers
-> conference focused on "make LLVM slightly less shitty."  Do you all
-> plan on attending the conference? Would it be worthwhile to hold a
-> session focused on discussing this (LTO and memory models) be
-> worthwhile?
+On 08.07.20 09:04, Dan Williams wrote:
+> On Tue, Jul 7, 2020 at 11:59 PM David Hildenbrand <david@redhat.com> wrote:
+>>
+>> On 08.07.20 08:22, Mike Rapoport wrote:
+>>> On Tue, Jul 07, 2020 at 09:27:43PM -0700, Dan Williams wrote:
+>>>> On Tue, Jul 7, 2020 at 9:08 PM Justin He <Justin.He@arm.com> wrote:
+>>>> [..]
+>>>>>> Especially for architectures that use memblock info for numa info
+>>>>>> (which seems to be everyone except x86) why not implement a generic
+>>>>>> memory_add_physaddr_to_nid() that does:
+>>>>>>
+>>>>>> int memory_add_physaddr_to_nid(u64 addr)
+>>>>>> {
+>>>>>>         unsigned long start_pfn, end_pfn, pfn = PHYS_PFN(addr);
+>>>>>>         int nid;
+>>>>>>
+>>>>>>         for_each_online_node(nid) {
+>>>>>>                 get_pfn_range_for_nid(nid, &start_pfn, &end_pfn);
+>>>>>>                 if (pfn >= start_pfn && pfn <= end_pfn)
+>>>>>>                         return nid;
+>>>>>>         }
+>>>>>>         return NUMA_NO_NODE;
+>>>>>> }
+>>>>>
+>>>>> Thanks for your suggestion,
+>>>>> Could I wrap the codes and let memory_add_physaddr_to_nid simply invoke
+>>>>> phys_to_target_node()?
+>>>>
+>>>> I think it needs to be the reverse. phys_to_target_node() should call
+>>>> memory_add_physaddr_to_nid() by default, but fall back to searching
+>>>> reserved memory address ranges in memblock. See phys_to_target_node()
+>>>> in arch/x86/mm/numa.c. That one uses numa_meminfo instead of memblock,
+>>>> but the principle is the same i.e. that a target node may not be
+>>>> represented in memblock.memory, but memblock.reserved. I'm working on
+>>>> a patch to provide a function similar to get_pfn_range_for_nid() that
+>>>> operates on reserved memory.
+>>>
+>>> Do we really need yet another memblock iterator?
+>>> I think only x86 has memory that is not in memblock.memory but only in
+>>> memblock.reserved.
+>>
+>> Reading about abusing the memblock allcoator once again in memory
+>> hotplug paths makes me shiver.
+> 
+> Technical reasoning please?
 
-I would welcome sessions on LLVM, and would try to attend. Apart from
-general improvements to the LLVM ecosystem, we should also emphasize
-the benefits LLVM provides and how we can enable them (one reason we
-want LTO is to get CFI).
+ARCH_KEEP_MEMBLOCK is (AFAIK) only a hack for arm64 to implement
+pfn_valid(), because they zap out individual pages corresponding to
+memory holes of full sections.
 
-Regarding LTO and memory models, I'm not sure. Given the current state
-of things, such a discussion needs to be carefully framed to not go in
-circles, because we're trying to figure out things at the intersection
-of architecture, what the compiler does, the C standard, and the
-kernel wants. And because some of these boxes are difficult to change
-(standard, arch, compiler) or difficult to precisely define behaviour
-(compiler), we might end up going in circles. From what I see there
-are efforts to fix the situation at the root (standard), and we might
-have means to get the compiler to tell us what it's doing. But these
-happen extremely slowly.
+I am not a friend of adding more post-init code to rely on memblock
+data. It just makes it harder to eventually get rid of ARCH_KEEP_MEMBLOCK.
 
-So, if we do this, we need to be careful to not end up re-discussing
-what we discussed here, but rather try and make it a continuation that
-hopefully leads to some constructive output.
+> 
+> arm64 numa information is established from memblock data. It seems
+> counterproductive to ignore that fact if we're already touching
+> memory_add_physaddr_to_nid() and have a use case for a driver to call
+> it.
 
+... and we are trying to handle the "only a single dummy node" case
+(patch #2), or what am I missing? What is there to optimize currently?
+
+-- 
 Thanks,
--- Marco
+
+David / dhildenb
+
