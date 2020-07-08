@@ -2,67 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AB23218ED4
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 19:48:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69593218EF4
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 19:50:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728675AbgGHRq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 13:46:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728547AbgGHRqz (ORCPT
+        id S1727831AbgGHRsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 13:48:39 -0400
+Received: from relmlor1.renesas.com ([210.160.252.171]:48841 "EHLO
+        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725953AbgGHRsj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 13:46:55 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E95E0C061A0B
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 10:46:54 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id w6so51474181ejq.6
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 10:46:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=EJMc/xcXVumWcdAvZFlSMeCrBQVeyLIyiuzzRVYBYfk=;
-        b=iLiJQd2TxXXL+NzKuZA6CUKbcVXBYBGdH9YzLfEKWnoR5drlL91HeOkB/Di48GSTB1
-         +twLeElS2fx4+0kuHjT5DcZOPSAG97K0fzPC7U1LPPEgMViAWDM//NmfOwSX+c+2FdJJ
-         jDatTnJLmdtYWKUsnWGl7+DMfm8EitQ/j2m21/N3WX1ADjZMRvTWIfEo+LUmbGWWx8ts
-         hZ2AYxrOujlXfOhsnl2wpeH60ucsLl56vojwCNYvxR5BYSeXqpxNBBkbsXHSYjtCVNQ3
-         ZMOpJZByPJUdnUy9usPJ1H0MealoSlgVvzr/s5Pf7DQeieF3nu+On9EzN3raFIHUY7Z+
-         2LFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to:content-transfer-encoding;
-        bh=EJMc/xcXVumWcdAvZFlSMeCrBQVeyLIyiuzzRVYBYfk=;
-        b=E14BTkEkZ12sNPz5s/HDzhNYq3Oad3Jxolecj4aAHCdZ2oIoYc8DKgC3gvLw637s4l
-         JYwSaJnZR190oT1BmRbUqCkbQhSlqHj+TDkAAuMrqKWjqbhNPk6vBC0kq3aBRMiU7sLo
-         i0xX5IUidhFhxYObD0gclmYpnsSWC3iQIBT4Kv/HANr0r6h2MDnRzmGP6lT243Rp8j4M
-         uE+NcyXvQpPQnaQYom+GqdwdNCIKJxoofYw0qvqI+43GdDXuMT/EV0waYfM5IkCcVtTf
-         6gDV6uZBlzmwnuIoLHgfcr18br59um4TFGb1okT12rddvIbo8iCjdqs8btcW51CoMlFp
-         R0kw==
-X-Gm-Message-State: AOAM533Xgh3Rt62PK1bPX3HdZMoyeD3UYHcXSCdfWmzLXSyqpKuKt5Fj
-        h51bDnWla8yOCMZr2C8c3/0/iHbcLX0200aCNQk=
-X-Google-Smtp-Source: ABdhPJzPaEkRjkIpKa5qqlfd2Xwt5LlPLnEKL/3twAIzcRP07TTAx/aTa2eiKMCMSyu17MQ3nQOwii3tEZu8i12gvYQ=
-X-Received: by 2002:a17:906:e215:: with SMTP id gf21mr46174293ejb.310.1594230413759;
- Wed, 08 Jul 2020 10:46:53 -0700 (PDT)
-MIME-Version: 1.0
-Received: by 2002:a54:37cd:0:0:0:0:0 with HTTP; Wed, 8 Jul 2020 10:46:53 -0700 (PDT)
-From:   Keen Maxwell <Keenmaxwell19@gmail.com>
-Date:   Wed, 8 Jul 2020 19:46:53 +0200
-X-Google-Sender-Auth: X1iX0kWDGqYme9Ai0bgXlXWIhsE
-Message-ID: <CAAQKjW-Gs__fP91AZ23CwBbi9bBgO5V2LnrpFmjsUY2B2i2vdQ@mail.gmail.com>
-Subject: =?UTF-8?B?16nXnNeV150=?=
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+        Wed, 8 Jul 2020 13:48:39 -0400
+X-IronPort-AV: E=Sophos;i="5.75,328,1589209200"; 
+   d="scan'208";a="51641764"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+  by relmlie5.idc.renesas.com with ESMTP; 09 Jul 2020 02:48:36 +0900
+Received: from localhost.localdomain (unknown [10.226.36.204])
+        by relmlir5.idc.renesas.com (Postfix) with ESMTP id E89474005E3D;
+        Thu,  9 Jul 2020 02:48:32 +0900 (JST)
+From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH 0/8] Add basic DT support for R8A774E1 SoC enabling HiHope RZ/G2H board
+Date:   Wed,  8 Jul 2020 18:48:23 +0100
+Message-Id: <1594230511-24790-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LS0gDQrXkNeg15kg157Xkdeo15og15HXqdedINeZ16nXlS4g15DXoNeZINee16rXoNem15wg15HX
-m9eg15XXqiDXnNec15Ag15DXmdep15XXqNeaINec16TXoNeZINep15DXp9ep16gg15DXmdeq15ou
-INeQ16DXmSDXqNeV16bXlA0K15zXkdeg15XXqiDXkNeZ16rXmiDXp9ep16gg15fXltenINeV16rX
-p9ep15XXqNeqINee16fXldeT15PXqi4g15bXlSDXm9eq15XXkdeqINeU15PXldeQItecINep15zX
-mQ0KKGtlZW5tYXh3ZWxsMTlAZ21haWwuY29tKS4g15DXqdee15cg15zXp9eo15XXkCDXkNeqINeU
-16rXkteV15HXldeqINeU157Xk9eU15nXnteV16og16nXnNeaINeZ16nXmdeo15XXqg0K15zXm9eq
-15XXkdeqINeU15PXldeQItecLiDXnNaw15fWt9eR1rzWtdenDQo=
+Hi All,
+
+This patch series adds basic SOC DT support for RZ/G2H and enabling
+HiHope RZ/G2H board. With these minimalist DT the HiHope RZ/G2H
+board can be booted from initramfs/eMMC.
+
+This patch series is dependent [1].
+
+[1] https://patchwork.kernel.org/project/linux-renesas-soc/list/?series=314235
+
+Cheers,
+Prabhakar
+
+
+Lad Prabhakar (3):
+  dt-bindings: serial: renesas,scif: Document r8a774e1 bindings
+  dt-bindings: serial: renesas,hscif: Document r8a774e1 bindings
+  dt-bindings: mmc: renesas,sdhi: Add r8a774e1 support
+
+Marian-Cristian Rotariu (5):
+  dt-bindings: irqchip: renesas-irqc: Document r8a774e1 bindings
+  arm64: defconfig: Enable R8A774E1 SoC
+  arm64: dts: renesas: Initial r8a774e1 SoC device tree
+  arm64: dts: renesas: Add HiHope RZ/G2H main board support
+  arm64: dts: renesas: Add HiHope RZ/G2H sub board support
+
+ .../interrupt-controller/renesas,irqc.yaml    |   1 +
+ .../devicetree/bindings/mmc/renesas,sdhi.txt  |   1 +
+ .../bindings/serial/renesas,hscif.yaml        |   1 +
+ .../bindings/serial/renesas,scif.yaml         |   1 +
+ arch/arm64/boot/dts/renesas/Makefile          |   2 +
+ .../arm64/boot/dts/renesas/hihope-common.dtsi |   4 +-
+ arch/arm64/boot/dts/renesas/hihope-rev4.dtsi  |   4 +-
+ .../boot/dts/renesas/hihope-rzg2-ex.dtsi      |   2 +-
+ .../dts/renesas/r8a774e1-hihope-rzg2h-ex.dts  |  15 +
+ .../dts/renesas/r8a774e1-hihope-rzg2h.dts     |  26 +
+ arch/arm64/boot/dts/renesas/r8a774e1.dtsi     | 652 ++++++++++++++++++
+ arch/arm64/configs/defconfig                  |   1 +
+ 12 files changed, 705 insertions(+), 5 deletions(-)
+ create mode 100644 arch/arm64/boot/dts/renesas/r8a774e1-hihope-rzg2h-ex.dts
+ create mode 100644 arch/arm64/boot/dts/renesas/r8a774e1-hihope-rzg2h.dts
+ create mode 100644 arch/arm64/boot/dts/renesas/r8a774e1.dtsi
+
+-- 
+2.17.1
+
