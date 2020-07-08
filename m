@@ -2,91 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77F7E217FF9
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 08:52:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0871A217FFE
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 08:54:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730030AbgGHGw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 02:52:28 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37322 "EHLO mx2.suse.de"
+        id S1729882AbgGHGxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 02:53:39 -0400
+Received: from smtp.al2klimov.de ([78.46.175.9]:34890 "EHLO smtp.al2klimov.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729960AbgGHGw1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 02:52:27 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6B597AC1D;
-        Wed,  8 Jul 2020 06:52:25 +0000 (UTC)
-Date:   Wed, 8 Jul 2020 08:52:23 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Haren Myneni <haren@us.ibm.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Jiri Kosina <jikos@kernel.org>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Tal Gilboa <talgi@mellanox.com>, kunit-dev@googlegroups.com,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, live-patching@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] kbuild: trace functions in subdirectories of lib/
-Message-ID: <20200708065223.GA11164@alley>
-References: <20200707092117.963394-1-masahiroy@kernel.org>
- <20200707092117.963394-2-masahiroy@kernel.org>
+        id S1729535AbgGHGxi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 02:53:38 -0400
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id C4DB6BC06E;
+        Wed,  8 Jul 2020 06:53:34 +0000 (UTC)
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+To:     idryomov@gmail.com, jlayton@kernel.org, davem@davemloft.net,
+        kuba@kernel.org, ceph-devel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Subject: [PATCH] Replace HTTP links with HTTPS ones: CEPH COMMON CODE (LIBCEPH)
+Date:   Wed,  8 Jul 2020 08:53:28 +0200
+Message-Id: <20200708065328.13031-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200707092117.963394-2-masahiroy@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: +++++
+X-Spam-Level: *****
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 2020-07-07 18:21:17, Masahiro Yamada wrote:
->   ccflags-remove-$(CONFIG_FUNCTION_TRACER) += $(CC_FLAGS_FTRACE)
-> 
-> exists here in sub-directories of lib/ to keep the behavior of
-> commit 2464a609ded0 ("ftrace: do not trace library functions").
-> 
-> Since that commit, not only the objects in lib/ but also the ones in
-> the sub-directories are excluded from ftrace (although the commit
-> description did not explicitly mention this).
-> 
-> However, most of library functions in sub-directories are not so hot.
-> Re-add them to ftrace.
-> 
-> Going forward, only the objects right under lib/ will be excluded.
+Rationale:
+Reduces attack surface on kernel devs opening the links for MITM
+as HTTPS traffic is much harder to manipulate.
+
+Deterministic algorithm:
+For each file:
+  If not .svg:
+    For each line:
+      If doesn't contain `\bxmlns\b`:
+        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+            If both the HTTP and HTTPS versions
+            return 200 OK and serve the same content:
+              Replace HTTP with HTTPS.
+
+Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+---
+ Continuing my work started at 93431e0607e5.
+ See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+ (Actually letting a shell for loop submit all this stuff for me.)
+
+ If there are any URLs to be removed completely or at least not HTTPSified:
+ Just clearly say so and I'll *undo my change*.
+ See also: https://lkml.org/lkml/2020/6/27/64
+
+ If there are any valid, but yet not changed URLs:
+ See: https://lkml.org/lkml/2020/6/26/837
+
+ If you apply the patch, please let me know.
+
+
+ net/ceph/ceph_hash.c    | 2 +-
+ net/ceph/crush/hash.c   | 2 +-
+ net/ceph/crush/mapper.c | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/net/ceph/ceph_hash.c b/net/ceph/ceph_hash.c
+index 9a5850f264ed..81e1e006c540 100644
+--- a/net/ceph/ceph_hash.c
++++ b/net/ceph/ceph_hash.c
+@@ -4,7 +4,7 @@
  
-> diff --git a/lib/livepatch/Makefile b/lib/livepatch/Makefile
-> index 9abdf615b088..295b94bff370 100644
-> --- a/lib/livepatch/Makefile
-> +++ b/lib/livepatch/Makefile
-> @@ -2,8 +2,6 @@
->  #
->  # Makefile for livepatch test code.
->  
-> -ccflags-remove-$(CONFIG_FUNCTION_TRACER) += $(CC_FLAGS_FTRACE)
-> -
->  obj-$(CONFIG_TEST_LIVEPATCH) += test_klp_atomic_replace.o \
->  				test_klp_callbacks_demo.o \
->  				test_klp_callbacks_demo2.o \
+ /*
+  * Robert Jenkin's hash function.
+- * http://burtleburtle.net/bob/hash/evahash.html
++ * https://burtleburtle.net/bob/hash/evahash.html
+  * This is in the public domain.
+  */
+ #define mix(a, b, c)						\
+diff --git a/net/ceph/crush/hash.c b/net/ceph/crush/hash.c
+index e5cc603cdb17..fe79f6d2d0db 100644
+--- a/net/ceph/crush/hash.c
++++ b/net/ceph/crush/hash.c
+@@ -7,7 +7,7 @@
+ 
+ /*
+  * Robert Jenkins' function for mixing 32-bit values
+- * http://burtleburtle.net/bob/hash/evahash.html
++ * https://burtleburtle.net/bob/hash/evahash.html
+  * a, b = random bits, c = input and output
+  */
+ #define crush_hashmix(a, b, c) do {			\
+diff --git a/net/ceph/crush/mapper.c b/net/ceph/crush/mapper.c
+index 3f323ed9df52..07e5614eb3f1 100644
+--- a/net/ceph/crush/mapper.c
++++ b/net/ceph/crush/mapper.c
+@@ -298,7 +298,7 @@ static __u64 crush_ln(unsigned int xin)
+  *
+  * for reference, see:
+  *
+- * http://en.wikipedia.org/wiki/Exponential_distribution#Distribution_of_the_minimum_of_exponential_random_variables
++ * https://en.wikipedia.org/wiki/Exponential_distribution#Distribution_of_the_minimum_of_exponential_random_variables
+  *
+  */
+ 
+-- 
+2.27.0
 
-With this change it might be possible to remove also the last few
-lines that explicitly added $(CC_FLAGS_FTRACE) for two test modules.
-
-The two modules really needed these flags. But they are fine also
-for the other modules.
-
-We could do this later as a followup patch but it would be nice
-to do so here.
-
-Best Regards,
-Petr
-
-PS: BTW: The livepatch selftests fail in Linus's master now. But it
-seems to be for another reason. I am going to dig into it.
