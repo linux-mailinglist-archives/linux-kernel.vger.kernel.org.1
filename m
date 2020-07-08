@@ -2,129 +2,323 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E14421838D
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 11:28:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7736B218421
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Jul 2020 11:47:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728107AbgGHJ2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 05:28:39 -0400
-Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:4568 "EHLO
-        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726847AbgGHJ2j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 05:28:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1594200519; x=1625736519;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   mime-version;
-  bh=8k3xFwcl091/kPsNDU+9a7EfmTo6sVful4WNwv2afEU=;
-  b=j5XLF8dngnCLNghKfgoMvhgZx+vaZOswGxkjB762qawQ1jBP1MR7vysk
-   fx8VHjgOW8jrCkPrII1NMJEnhJpAdevonbs5nc/rX8CTHkvhRDzZn7y6W
-   TtcL1Jr+GTKjjpII0YXVrkkOl9Vgj6eyOUZe4VuOnlhh9m3CWqh3/BnC9
-   8=;
-IronPort-SDR: F5GDwFAxe1rmJcOwvffYYXyTVHsCSC8yIpnynXc9Fpr3OobacI/7ZdU89zj/U5Qdk3ASRwRwQE
- xBBIN5+og0Og==
-X-IronPort-AV: E=Sophos;i="5.75,327,1589241600"; 
-   d="scan'208";a="42112907"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2b-c300ac87.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 08 Jul 2020 09:28:37 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2b-c300ac87.us-west-2.amazon.com (Postfix) with ESMTPS id 15CA6A322B;
-        Wed,  8 Jul 2020 09:28:35 +0000 (UTC)
-Received: from EX13D31EUA004.ant.amazon.com (10.43.165.161) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 8 Jul 2020 09:28:34 +0000
-Received: from u886c93fd17d25d.ant.amazon.com (10.43.161.146) by
- EX13D31EUA004.ant.amazon.com (10.43.165.161) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 8 Jul 2020 09:28:30 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     Dan Williams <dan.j.williams@intel.com>
-CC:     SeongJae Park <sjpark@amazon.com>,
-        ksummit <ksummit-discuss@lists.linuxfoundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        <tech-board-discuss@lists.linuxfoundation.org>,
-        Chris Mason <clm@fb.clm>
-Subject: Re: Re: [Ksummit-discuss] [PATCH] CodingStyle: Inclusive Terminology
-Date:   Wed, 8 Jul 2020 11:28:12 +0200
-Message-ID: <20200708092812.15647-1-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <CAPcyv4ggm50tMnaCtMZJRz0j6ZO15buNUmTfk4sLf3AYkxS12w@mail.gmail.com> (raw)
+        id S1728205AbgGHJrM convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 8 Jul 2020 05:47:12 -0400
+Received: from mgw-02.mpynet.fi ([82.197.21.91]:59032 "EHLO mgw-02.mpynet.fi"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727775AbgGHJrM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 05:47:12 -0400
+X-Greylist: delayed 1081 seconds by postgrey-1.27 at vger.kernel.org; Wed, 08 Jul 2020 05:47:07 EDT
+Received: from pps.filterd (mgw-02.mpynet.fi [127.0.0.1])
+        by mgw-02.mpynet.fi (8.16.0.42/8.16.0.42) with SMTP id 0689Mosc093817;
+        Wed, 8 Jul 2020 12:28:45 +0300
+Received: from ex13.tuxera.com (ex13.tuxera.com [178.16.184.72])
+        by mgw-02.mpynet.fi with ESMTP id 322dewmgn7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 08 Jul 2020 12:28:44 +0300
+Received: from tuxera-exch.ad.tuxera.com (10.20.48.11) by
+ tuxera-exch.ad.tuxera.com (10.20.48.11) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 8 Jul 2020 12:28:44 +0300
+Received: from tuxera-exch.ad.tuxera.com ([fe80::552a:f9f0:68c3:d789]) by
+ tuxera-exch.ad.tuxera.com ([fe80::552a:f9f0:68c3:d789%12]) with mapi id
+ 15.00.1497.006; Wed, 8 Jul 2020 12:28:44 +0300
+From:   Anton Altaparmakov <anton@tuxera.com>
+To:     Luca Stefani <luca.stefani.ge1@gmail.com>
+CC:     clang-built-linux <clang-built-linux@googlegroups.com>,
+        freak07 <michalechner92@googlemail.com>,
+        "linux-ntfs-dev@lists.sourceforge.net" 
+        <linux-ntfs-dev@lists.sourceforge.net>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [PATCH] ntfs: Fix ntfs_test_inode and ntfs_init_locked_inode
+ function type
+Thread-Topic: [PATCH] ntfs: Fix ntfs_test_inode and ntfs_init_locked_inode
+ function type
+Thread-Index: AQHWTLWIk5EfUBFiEUSTit3kCmYXJajv8dOAgA1Wz4A=
+Date:   Wed, 8 Jul 2020 09:28:43 +0000
+Message-ID: <8CDE123D-68C3-44E9-B8CC-7159E4640762@tuxera.com>
+References: <20200627190230.1191796-1-luca.stefani.ge1@gmail.com>
+ <CAKwvOdk5_tq6hrBMEwssksGniMyAWSMKOSaWbiBsX_bssmmztA@mail.gmail.com>
+In-Reply-To: <CAKwvOdk5_tq6hrBMEwssksGniMyAWSMKOSaWbiBsX_bssmmztA@mail.gmail.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [109.157.43.234]
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <797207C2DA74744289BFE57326571F92@ex13.tuxera.com>
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.161.146]
-X-ClientProxiedBy: EX13D47UWA004.ant.amazon.com (10.43.163.47) To
- EX13D31EUA004.ant.amazon.com (10.43.165.161)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-08_07:2020-07-08,2020-07-08 signatures=0
+X-Proofpoint-Spam-Details: rule=mpy_notspam policy=mpy score=0 suspectscore=0 mlxlogscore=999
+ mlxscore=0 malwarescore=0 spamscore=0 adultscore=0 phishscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2007080068
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 8 Jul 2020 00:12:03 -0700 Dan Williams <dan.j.williams@intel.com> wrote:
+Hi Luca,
 
-> On Mon, Jul 6, 2020 at 11:56 PM SeongJae Park <sjpark@amazon.com> wrote:
-> >
-> > Hello,
-> >
-> > On Sat, 04 Jul 2020 13:02:51 -0700 Dan Williams <dan.j.williams@intel.com> wrote:
-> >
-> > > Recent events have prompted a Linux position statement on inclusive
-> > > terminology. Given that Linux maintains a coding-style and its own
-> > > idiomatic set of terminology here is a proposal to answer the call to
-> > > replace non-inclusive terminology.
-> >
-> > I'm glad to see this patch.
-> >
-> > >
-> > > Cc: Jonathan Corbet <corbet@lwn.net>
-> > > Cc: Kees Cook <keescook@chromium.org>
-> > > Signed-off-by: Chris Mason <clm@fb.clm>
-> > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-> >
-> > Acked-by: SeongJae Park <sjpark@amazon.de>
-> >
-> > > ---
-> > >  Documentation/process/coding-style.rst          |   12 ++++
-> > >  Documentation/process/inclusive-terminology.rst |   64 +++++++++++++++++++++++
-> > >  Documentation/process/index.rst                 |    1
-> > >  3 files changed, 77 insertions(+)
-> > >  create mode 100644 Documentation/process/inclusive-terminology.rst
-> > >
-> > > diff --git a/Documentation/process/coding-style.rst b/Documentation/process/coding-style.rst
-> > > index 2657a55c6f12..4b15ab671089 100644
-> > > --- a/Documentation/process/coding-style.rst
-> > > +++ b/Documentation/process/coding-style.rst
-> > > @@ -319,6 +319,18 @@ If you are afraid to mix up your local variable names, you have another
-> > >  problem, which is called the function-growth-hormone-imbalance syndrome.
-> > >  See chapter 6 (Functions).
-> > >
-> > > +For symbol names, avoid introducing new usage of the words 'slave' and
-> > > +'blacklist'. Recommended replacements for 'slave' are: 'secondary',
-> > > +'subordinate', 'replica', 'responder', 'follower', 'proxy', or
-> > > +'performer'.  Recommended replacements for blacklist are: 'blocklist' or
-> > > +'denylist'.
-> >
-> > I have submitted a couple of patches for automated encouragement of the the
-> > inclusive terms and those merged in the -next tree[1,2] now.  Nonetheless, the
-> > version says only "please consider using 'denylist' and 'allowlist' instead of
-> > 'blacklist' and 'whitelist'" for now.  I think we could add more terms in there
-> > based on this discussion.  I could do that after this patch is merged, or you
-> > could do that yourself in the next spin of this patch.  Please do whatever you
-> > feel comfort.
-> >
-> > [1] https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=7d0bea01dec27195d95d929c1ee49a4a74dd6671
-> > [2] https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=95a94258ceb27052f00b7e51588a128d20bf05ed
-> >
+Apologies for taking this long to respond.  I have to admit I was not familiar with CFI...  Your patch looks good but please could you update the commit message as suggested by Nick to include explanation of CFI?  You can then add:
+
+Acked-by: Anton Altaparmakov <anton@tuxera.com>
+
+When resending please CC: Andrew Morton <akpm@linux-foundation.org> so we can get it merged upstream.
+
+Thanks a lot!
+
+Best regards,
+
+	Anton
+
+> On 29 Jun 2020, at 22:46, Nick Desaulniers <ndesaulniers@google.com> wrote:
 > 
-> Thank you for stepping up to take this on, much appreciated.
+> On Sat, Jun 27, 2020 at 12:02 PM Luca Stefani
+> <luca.stefani.ge1@gmail.com> wrote:
+>> 
+>> If the kernel is built with CFI we hit a __cfi_check_fail
+>> while mounting a partition
 > 
-> I think I'll leave it to you to fixup checkpatch after the final
-> version of this patch is merged. It may be as simple as "See section 4
-> 'Naming' in coding-style for suggested replacements".
+> Luca,
+> Since CFI is not yet upstream (is downstream in Android, blocked on
+> LTO patches currently working their way through upstreaming+code
+> review), it might help explain to reviewers what CFI *even is*.
+> Something like:
+> 
+> """
+> Clang's Control Flow Integrity (CFI) is a security mechanism that can
+> help prevent JOP chains, deployed extensively in downstream kernels
+> used in Android.
+> 
+> It's deployment is hindered by mismatches in function signatures.  For
+> this case, we make callbacks match their intended function signature,
+> and cast parameters within them rather than casting the callback when
+> passed as a parameter.
+> 
+> When running `mount -t ntfs ...` we observe the following trace:
+> """
+> 
+> I also always recommend setting an explicit `--to=` when sending
+> patches; some maintainers only know to take a look at patches if
+> they're in the To: list.  Maybe they have email filters on this.  You
+> can you `./script/get_maintainer.pl` on your patch file, or manually
+> check MAINTAINERS.  In this case, it looks like Anton is cc'ed at
+> least.
+> 
+> Since this patch modifies the type signature of callbacks to the
+> expected type, casting the callback's parameters instead; I'm happy
+> with this patch.  The callbacks never get invoked directly (not
+> explicitly called, only invoked indirectly), there is no argument for
+> loss of type safety (the interfaces are already lossy in that the
+> interface uses void* parameters).  I just would like the commit
+> message beefed up before I sign off.  Are you comfortable sending a
+> V2?
+> 
+> More on JOP/CFI:
+> https://www.comp.nus.edu.sg/~liangzk/papers/asiaccs11.pdf
+>> CFI has not seen wide deployment, likely due to concerns over performance, especially in the case of real-time enforcement.
+> 
+>> 
+>> Call trace:
+>> __cfi_check_fail+0x1c/0x24
+>> name_to_dev_t+0x0/0x404
+>> iget5_locked+0x594/0x5e8
+>> ntfs_fill_super+0xbfc/0x43ec
+>> mount_bdev+0x30c/0x3cc
+>> ntfs_mount+0x18/0x24
+>> mount_fs+0x1b0/0x380
+>> vfs_kern_mount+0x90/0x398
+>> do_mount+0x5d8/0x1a10
+>> SyS_mount+0x108/0x144
+>> el0_svc_naked+0x34/0x38
+>> 
+>> Fixing iget5_locked and ilookup5 callers seems enough
+>> 
+>> Signed-off-by: Luca Stefani <luca.stefani.ge1@gmail.com>
+>> Tested-by: freak07 <michalechner92@googlemail.com>
+>> ---
+>> fs/ntfs/dir.c   |  2 +-
+>> fs/ntfs/inode.c | 23 ++++++++++++-----------
+>> fs/ntfs/inode.h |  4 +---
+>> fs/ntfs/mft.c   |  4 ++--
+>> 4 files changed, 16 insertions(+), 17 deletions(-)
+>> 
+>> diff --git a/fs/ntfs/dir.c b/fs/ntfs/dir.c
+>> index 3c4811469ae8..e278bfc5ee7f 100644
+>> --- a/fs/ntfs/dir.c
+>> +++ b/fs/ntfs/dir.c
+>> @@ -1503,7 +1503,7 @@ static int ntfs_dir_fsync(struct file *filp, loff_t start, loff_t end,
+>>        na.type = AT_BITMAP;
+>>        na.name = I30;
+>>        na.name_len = 4;
+>> -       bmp_vi = ilookup5(vi->i_sb, vi->i_ino, (test_t)ntfs_test_inode, &na);
+>> +       bmp_vi = ilookup5(vi->i_sb, vi->i_ino, ntfs_test_inode, &na);
+> 
+> Looks like the signature of ilookup5 is:
+> 
+> struct inode *ilookup5(struct super_block *sb, unsigned long hashval,
+>     int (*test)(struct inode *, void *), void *data)
+> 
+> while ntfs_test_inode is:
+> 
+> int ntfs_test_inode(struct inode *vi, ntfs_attr *na)
+> 
+> while test_t is defined way below to:
+> 
+> typedef int (*test_t)(struct inode *, void *);
+> 
+> 
+>>        if (bmp_vi) {
+>>                write_inode_now(bmp_vi, !datasync);
+>>                iput(bmp_vi);
+>> diff --git a/fs/ntfs/inode.c b/fs/ntfs/inode.c
+>> index d4359a1df3d5..a5d3bebe7a85 100644
+>> --- a/fs/ntfs/inode.c
+>> +++ b/fs/ntfs/inode.c
+>> @@ -30,7 +30,7 @@
+>> /**
+>>  * ntfs_test_inode - compare two (possibly fake) inodes for equality
+>>  * @vi:                vfs inode which to test
+>> - * @na:                ntfs attribute which is being tested with
+>> + * @data:              data which is being tested with
+>>  *
+>>  * Compare the ntfs attribute embedded in the ntfs specific part of the vfs
+>>  * inode @vi for equality with the ntfs attribute @na.
+>> @@ -43,8 +43,9 @@
+>>  * NOTE: This function runs with the inode_hash_lock spin lock held so it is not
+>>  * allowed to sleep.
+>>  */
+>> -int ntfs_test_inode(struct inode *vi, ntfs_attr *na)
+>> +int ntfs_test_inode(struct inode *vi, void *data)
+>> {
+>> +       ntfs_attr *na = (ntfs_attr *)data;
+>>        ntfs_inode *ni;
+>> 
+>>        if (vi->i_ino != na->mft_no)
+>> @@ -72,7 +73,7 @@ int ntfs_test_inode(struct inode *vi, ntfs_attr *na)
+>> /**
+>>  * ntfs_init_locked_inode - initialize an inode
+>>  * @vi:                vfs inode to initialize
+>> - * @na:                ntfs attribute which to initialize @vi to
+>> + * @data:              data which to initialize @vi to
+>>  *
+>>  * Initialize the vfs inode @vi with the values from the ntfs attribute @na in
+>>  * order to enable ntfs_test_inode() to do its work.
+>> @@ -87,8 +88,9 @@ int ntfs_test_inode(struct inode *vi, ntfs_attr *na)
+>>  * NOTE: This function runs with the inode->i_lock spin lock held so it is not
+>>  * allowed to sleep. (Hence the GFP_ATOMIC allocation.)
+>>  */
+>> -static int ntfs_init_locked_inode(struct inode *vi, ntfs_attr *na)
+>> +static int ntfs_init_locked_inode(struct inode *vi, void *data)
+>> {
+>> +       ntfs_attr *na = (ntfs_attr *)data;
+>>        ntfs_inode *ni = NTFS_I(vi);
+>> 
+>>        vi->i_ino = na->mft_no;
+>> @@ -131,7 +133,6 @@ static int ntfs_init_locked_inode(struct inode *vi, ntfs_attr *na)
+>>        return 0;
+>> }
+>> 
+>> -typedef int (*set_t)(struct inode *, void *);
+>> static int ntfs_read_locked_inode(struct inode *vi);
+>> static int ntfs_read_locked_attr_inode(struct inode *base_vi, struct inode *vi);
+>> static int ntfs_read_locked_index_inode(struct inode *base_vi,
+>> @@ -164,8 +165,8 @@ struct inode *ntfs_iget(struct super_block *sb, unsigned long mft_no)
+>>        na.name = NULL;
+>>        na.name_len = 0;
+>> 
+>> -       vi = iget5_locked(sb, mft_no, (test_t)ntfs_test_inode,
+>> -                       (set_t)ntfs_init_locked_inode, &na);
+>> +       vi = iget5_locked(sb, mft_no, ntfs_test_inode,
+>> +                       ntfs_init_locked_inode, &na);
+>>        if (unlikely(!vi))
+>>                return ERR_PTR(-ENOMEM);
+>> 
+>> @@ -225,8 +226,8 @@ struct inode *ntfs_attr_iget(struct inode *base_vi, ATTR_TYPE type,
+>>        na.name = name;
+>>        na.name_len = name_len;
+>> 
+>> -       vi = iget5_locked(base_vi->i_sb, na.mft_no, (test_t)ntfs_test_inode,
+>> -                       (set_t)ntfs_init_locked_inode, &na);
+>> +       vi = iget5_locked(base_vi->i_sb, na.mft_no, ntfs_test_inode,
+>> +                       ntfs_init_locked_inode, &na);
+>>        if (unlikely(!vi))
+>>                return ERR_PTR(-ENOMEM);
+>> 
+>> @@ -280,8 +281,8 @@ struct inode *ntfs_index_iget(struct inode *base_vi, ntfschar *name,
+>>        na.name = name;
+>>        na.name_len = name_len;
+>> 
+>> -       vi = iget5_locked(base_vi->i_sb, na.mft_no, (test_t)ntfs_test_inode,
+>> -                       (set_t)ntfs_init_locked_inode, &na);
+>> +       vi = iget5_locked(base_vi->i_sb, na.mft_no, ntfs_test_inode,
+>> +                       ntfs_init_locked_inode, &na);
+>>        if (unlikely(!vi))
+>>                return ERR_PTR(-ENOMEM);
+>> 
+>> diff --git a/fs/ntfs/inode.h b/fs/ntfs/inode.h
+>> index 98e670fbdd31..363e4e820673 100644
+>> --- a/fs/ntfs/inode.h
+>> +++ b/fs/ntfs/inode.h
+>> @@ -253,9 +253,7 @@ typedef struct {
+>>        ATTR_TYPE type;
+>> } ntfs_attr;
+>> 
+>> -typedef int (*test_t)(struct inode *, void *);
+>> -
+>> -extern int ntfs_test_inode(struct inode *vi, ntfs_attr *na);
+>> +extern int ntfs_test_inode(struct inode *vi, void *data);
+>> 
+>> extern struct inode *ntfs_iget(struct super_block *sb, unsigned long mft_no);
+>> extern struct inode *ntfs_attr_iget(struct inode *base_vi, ATTR_TYPE type,
+>> diff --git a/fs/ntfs/mft.c b/fs/ntfs/mft.c
+>> index fbb9f1bc623d..0d62cd5bb7f8 100644
+>> --- a/fs/ntfs/mft.c
+>> +++ b/fs/ntfs/mft.c
+>> @@ -958,7 +958,7 @@ bool ntfs_may_write_mft_record(ntfs_volume *vol, const unsigned long mft_no,
+>>                 * dirty code path of the inode dirty code path when writing
+>>                 * $MFT occurs.
+>>                 */
+>> -               vi = ilookup5_nowait(sb, mft_no, (test_t)ntfs_test_inode, &na);
+>> +               vi = ilookup5_nowait(sb, mft_no, ntfs_test_inode, &na);
+>>        }
+>>        if (vi) {
+>>                ntfs_debug("Base inode 0x%lx is in icache.", mft_no);
+>> @@ -1019,7 +1019,7 @@ bool ntfs_may_write_mft_record(ntfs_volume *vol, const unsigned long mft_no,
+>>                vi = igrab(mft_vi);
+>>                BUG_ON(vi != mft_vi);
+>>        } else
+>> -               vi = ilookup5_nowait(sb, na.mft_no, (test_t)ntfs_test_inode,
+>> +               vi = ilookup5_nowait(sb, na.mft_no, ntfs_test_inode,
+>>                                &na);
+>>        if (!vi) {
+>>                /*
+>> --
+>> 2.26.2
+>> 
+>> --
+>> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+>> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+>> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20200627190230.1191796-1-luca.stefani.ge1%40gmail.com.
+> 
+> 
+> 
+> -- 
+> Thanks,
+> ~Nick Desaulniers
 
-Agreed, I will do that :)
 
+-- 
+Anton Altaparmakov <anton at tuxera.com> (replace at with @)
+Lead in File System Development, Tuxera Inc., http://www.tuxera.com/
+Linux NTFS maintainer
 
-Thanks,
-SeongJae Park
