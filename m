@@ -2,108 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53292219AA1
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 10:17:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B06C7219AA5
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 10:18:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726456AbgGIIRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 04:17:16 -0400
-Received: from foss.arm.com ([217.140.110.172]:41852 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726433AbgGIIRO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 04:17:14 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0C5331045;
-        Thu,  9 Jul 2020 01:17:14 -0700 (PDT)
-Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 0D7563F887;
-        Thu,  9 Jul 2020 01:17:12 -0700 (PDT)
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     Sudeep Holla <sudeep.holla@arm.com>, linux-kernel@vger.kernel.org,
-        Michael Turquette <mturquette@baylibre.com>,
-        Dien Pham <dien.pham.ry@renesas.com>
-Subject: [PATCH v2 2/2] clk: scmi: Fix min and max rate when registering clocks with discrete rates
-Date:   Thu,  9 Jul 2020 09:17:05 +0100
-Message-Id: <20200709081705.46084-2-sudeep.holla@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200709081705.46084-1-sudeep.holla@arm.com>
-References: <20200709081705.46084-1-sudeep.holla@arm.com>
+        id S1726506AbgGIISS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 04:18:18 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:40412 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726211AbgGIISR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 04:18:17 -0400
+Received: by mail-wr1-f68.google.com with SMTP id f2so1345026wrp.7
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 01:18:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=sepqVQOjzQvJiSCh/8vOPtsthbitpZEiGbAn8HBa/z8=;
+        b=lhlr3YkEmDqhJ/1u6yXqFKZO0yKBx69vm25gG0Ewt+iBcf46zb3lYiymz0b3kxHnq7
+         xj1KT5ykECsO2TGi26K/MImvMZZp1YW80fcjNeF+DMl4xL9GtMdvvskapsb3M8W3S4qq
+         nipCaxz9jZ/f37WNUjQ+itgdbHzVv1wfSBJKTwYUKD4tR1vy1DTRw/AL1jokEeTfne7G
+         aalJk+pYqBHYX0xTkcfeL/QGkvjpjQJyp9jVJUHGHxvjzzSN+6cdqZouTjWZp6lIXLw+
+         OZ/KE+eQfd2RUP63HI/j3TFtCRKw6wBfa2/mDbcuOvhD+sQjdWutH4VEf0y+8thKfVvS
+         jkcQ==
+X-Gm-Message-State: AOAM533j1St/Tt8sAJ8h1E8NOklDWk2HJFqbTI6UKYvLOucmn4rbqnea
+        U5sEnNi3JWT+6/JvTWYG5AY=
+X-Google-Smtp-Source: ABdhPJx1RzMKlSFTEJXpVfhAum9xG36F8crT8y5bzsVvjlBHnhyyn9NUEXp1RKb0byqUZDSXl9qUXw==
+X-Received: by 2002:adf:94a1:: with SMTP id 30mr31427064wrr.37.1594282695190;
+        Thu, 09 Jul 2020 01:18:15 -0700 (PDT)
+Received: from localhost (ip-37-188-179-51.eurotel.cz. [37.188.179.51])
+        by smtp.gmail.com with ESMTPSA id k20sm3588934wmi.27.2020.07.09.01.18.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Jul 2020 01:18:14 -0700 (PDT)
+Date:   Thu, 9 Jul 2020 10:18:13 +0200
+From:   Michal Hocko <mhocko@kernel.org>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] doc, mm: clarify /proc/<pid>/oom_score value range
+Message-ID: <20200709081813.GD19160@dhcp22.suse.cz>
+References: <20200709062603.18480-1-mhocko@kernel.org>
+ <20200709062603.18480-2-mhocko@kernel.org>
+ <CALOAHbAezHHN58cn0unLNbOjHJyYW=zhzQxpQD8_rD4O7qmYRQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALOAHbAezHHN58cn0unLNbOjHJyYW=zhzQxpQD8_rD4O7qmYRQ@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently we are not initializing the scmi clock with discrete rates
-correctly. We fetch the min_rate and max_rate value only for clocks with
-ranges and ignore the ones with discrete rates. This will lead to wrong
-initialization of rate range when clock supports discrete rate.
+On Thu 09-07-20 15:41:11, Yafang Shao wrote:
+> On Thu, Jul 9, 2020 at 2:26 PM Michal Hocko <mhocko@kernel.org> wrote:
+> >
+> > From: Michal Hocko <mhocko@suse.com>
+> >
+> > The exported value includes oom_score_adj so the range is no [0, 1000]
+> > as described in the previous section but rather [0, 2000]. Mention that
+> > fact explicitly.
+> >
+> > Signed-off-by: Michal Hocko <mhocko@suse.com>
+> > ---
+> >  Documentation/filesystems/proc.rst | 3 +++
+> >  1 file changed, 3 insertions(+)
+> >
+> > diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
+> > index 8e3b5dffcfa8..78a0dec323a3 100644
+> > --- a/Documentation/filesystems/proc.rst
+> > +++ b/Documentation/filesystems/proc.rst
+> > @@ -1673,6 +1673,9 @@ requires CAP_SYS_RESOURCE.
+> >  3.2 /proc/<pid>/oom_score - Display current oom-killer score
+> >  -------------------------------------------------------------
+> >
+> > +Please note that the exported value includes oom_score_adj so it is effectively
+> > +in range [0,2000].
+> > +
+> 
+> [0, 2000] may be not a proper range, see my reply in another thread.[1]
+> As this value hasn't been documented before and nobody notices that, I
+> think there might be no user really care about it before.
+> So we should discuss the proper range if we really think the user will
+> care about this value.
 
-Fix this by using the first and the last rate in the sorted list of the
-discrete clock rates while registering the clock.
+Even if we decide the range should change, I do not really assume this
+will happen, it is good to have the existing behavior clarified.
 
-Link: https://lore.kernel.org/r/20200708110725.18017-2-sudeep.holla@arm.com
-Fixes: 6d6a1d82eaef7 ("clk: add support for clocks provided by SCMI")
-Reported-by: Dien Pham <dien.pham.ry@renesas.com>
-Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
----
- drivers/clk/clk-scmi.c | 22 +++++++++++++++++++---
- 1 file changed, 19 insertions(+), 3 deletions(-)
-
-Hi Stephen,
-
-If you are fine, I can take this via ARM SoC along with the change in
-firmware driver. However it is also fine if you want to merge this
-independently as there is no strict dependency. Let me know either way.
-
-v1[1]->v2:
-	- Fixed the missing ; which was sent by mistake.
-
-Regards,
-Sudeep
-
-[1] https://lore.kernel.org/r/20200708110725.18017-2-sudeep.holla@arm.com
-
-diff --git a/drivers/clk/clk-scmi.c b/drivers/clk/clk-scmi.c
-index c491f5de0f3f..c754dfbb73fd 100644
---- a/drivers/clk/clk-scmi.c
-+++ b/drivers/clk/clk-scmi.c
-@@ -103,6 +103,8 @@ static const struct clk_ops scmi_clk_ops = {
- static int scmi_clk_ops_init(struct device *dev, struct scmi_clk *sclk)
- {
- 	int ret;
-+	unsigned long min_rate, max_rate;
-+
- 	struct clk_init_data init = {
- 		.flags = CLK_GET_RATE_NOCACHE,
- 		.num_parents = 0,
-@@ -112,9 +114,23 @@ static int scmi_clk_ops_init(struct device *dev, struct scmi_clk *sclk)
- 
- 	sclk->hw.init = &init;
- 	ret = devm_clk_hw_register(dev, &sclk->hw);
--	if (!ret)
--		clk_hw_set_rate_range(&sclk->hw, sclk->info->range.min_rate,
--				      sclk->info->range.max_rate);
-+	if (ret)
-+		return ret;
-+
-+	if (sclk->info->rate_discrete) {
-+		int num_rates = sclk->info->list.num_rates;
-+
-+		if (num_rates <= 0)
-+			return -EINVAL;
-+
-+		min_rate = sclk->info->list.rates[0];
-+		max_rate = sclk->info->list.rates[num_rates - 1];
-+	} else {
-+		min_rate = sclk->info->range.min_rate;
-+		max_rate = sclk->info->range.max_rate;
-+	}
-+
-+	clk_hw_set_rate_range(&sclk->hw, min_rate, max_rate);
- 	return ret;
- }
- 
 -- 
-2.17.1
-
+Michal Hocko
+SUSE Labs
