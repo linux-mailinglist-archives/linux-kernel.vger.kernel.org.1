@@ -2,176 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AB75219E75
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 12:58:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4611E219E81
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 12:59:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726831AbgGIK6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 06:58:22 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:17828 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726357AbgGIK6V (ORCPT
+        id S1727082AbgGIK7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 06:59:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726965AbgGIK7N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 06:58:21 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 069AW0dZ137680;
-        Thu, 9 Jul 2020 06:58:17 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 325uqvagwj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 09 Jul 2020 06:58:16 -0400
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 069AWrOs141843;
-        Thu, 9 Jul 2020 06:58:16 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 325uqvaguc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 09 Jul 2020 06:58:16 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 069AtdJV011983;
-        Thu, 9 Jul 2020 10:58:13 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma04ams.nl.ibm.com with ESMTP id 325u410f14-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 09 Jul 2020 10:58:13 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 069AwA1w58065042
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 9 Jul 2020 10:58:10 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 79A01AE045;
-        Thu,  9 Jul 2020 10:58:10 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A4C8FAE04D;
-        Thu,  9 Jul 2020 10:58:09 +0000 (GMT)
-Received: from oc3016276355.ibm.com (unknown [9.145.34.67])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu,  9 Jul 2020 10:58:09 +0000 (GMT)
-Subject: Re: [PATCH v5 2/2] s390: virtio: PV needs VIRTIO I/O device
- protection
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     Cornelia Huck <cohuck@redhat.com>, linux-kernel@vger.kernel.org,
-        borntraeger@de.ibm.com, frankja@linux.ibm.com, mst@redhat.com,
-        jasowang@redhat.com, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, thomas.lendacky@amd.com,
-        david@gibson.dropbear.id.au, linuxram@us.ibm.com,
-        heiko.carstens@de.ibm.com, gor@linux.ibm.com
-References: <1594283959-13742-1-git-send-email-pmorel@linux.ibm.com>
- <1594283959-13742-3-git-send-email-pmorel@linux.ibm.com>
- <20200709105733.6d68fa53.cohuck@redhat.com>
- <20200709115553.2dde6ab1.pasic@linux.ibm.com>
-From:   Pierre Morel <pmorel@linux.ibm.com>
-Message-ID: <12b1ca5c-fc03-18c7-bdca-cedabc5f1e1d@linux.ibm.com>
-Date:   Thu, 9 Jul 2020 12:58:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Thu, 9 Jul 2020 06:59:13 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88629C061A0B;
+        Thu,  9 Jul 2020 03:59:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Wy3SRsF7VDgB6D0qXNwkslDxCCLOyMo8ONtDn/aSD/s=; b=n/qUL+5M+rBeTJFzWOJL9JDwzy
+        4tJ6+FS1DxlA7Drg64uyJG24hR2YB1hWVX6MmBdCptL5sKVlSPFRnPMfMZ+laFqae0ghBsky3bStA
+        vTXxRfkEaDRP5RPBXdh67TENjEJe+lMASlQcaonOvMxgPq66MeCJqt2HUvXgnU4SXMFkUea4pvwAc
+        nzBkDliD+JKOJVbZHjWYV0HFwOL86TqkzVrI5VT43lo86YNDADNdZXJkbhUobDH6goIfaL0kEb1lt
+        KlC2x3h6wZvq47Fhh+ejYoRkV4pOzsvSu1ZSD4L4h3cl0uggnV39o0sZEuXx9O/t9F1Pc20UwRdir
+        h73o8pvg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jtUGj-0003sE-Jd; Thu, 09 Jul 2020 10:59:09 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8ED8D30047A;
+        Thu,  9 Jul 2020 12:59:06 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7CD29235B3D18; Thu,  9 Jul 2020 12:59:06 +0200 (CEST)
+Date:   Thu, 9 Jul 2020 12:59:06 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kaitao Cheng <pilgrimtao@gmail.com>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] kernel/smp: Fix an off by one in csd_lock_wait_toolong()
+Message-ID: <20200709105906.GR597537@hirez.programming.kicks-ass.net>
+References: <20200709104818.GC20875@mwanda>
 MIME-Version: 1.0
-In-Reply-To: <20200709115553.2dde6ab1.pasic@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-09_05:2020-07-09,2020-07-09 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
- lowpriorityscore=0 suspectscore=0 spamscore=0 mlxscore=0 bulkscore=0
- mlxlogscore=999 phishscore=0 clxscore=1015 malwarescore=0
- priorityscore=1501 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2007090079
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200709104818.GC20875@mwanda>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jul 09, 2020 at 01:48:18PM +0300, Dan Carpenter wrote:
+> The __per_cpu_offset[] array has "nr_cpu_ids" elements so change the >
+> >= to prevent a read one element beyond the end of the array.
+> 
+> Fixes: 0504bc41a62c ("kernel/smp: Provide CSD lock timeout diagnostics")
 
+I don't have a copy of that patch in my inbox, even though it says Cc:
+me.
 
-On 2020-07-09 11:55, Halil Pasic wrote:
-> On Thu, 9 Jul 2020 10:57:33 +0200
-> Cornelia Huck <cohuck@redhat.com> wrote:
-> 
->> On Thu,  9 Jul 2020 10:39:19 +0200
->> Pierre Morel <pmorel@linux.ibm.com> wrote:
->>
->>> If protected virtualization is active on s390, the virtio queues are
->>> not accessible to the host, unless VIRTIO_F_IOMMU_PLATFORM has been
->>> negotiated. Use the new arch_validate_virtio_features() interface to
->>> fail probe if that's not the case, preventing a host error on access
->>> attempt
-> 
-> Punctuation at the end?
-> 
-> Also 'that's not the case' refers to the negation
-> 'VIRTIO_F_IOMMU_PLATFORM has been negotiated',
-> arch_validate_virtio_features() is however part of
-> virtio_finalize_features(), which is in turn part of the feature
-> negotiation. But that is details. I'm fine with keeping the message as
-> is.
-> 
->>>
->>> Signed-off-by: Pierre Morel <pmorel@linux.ibm.com>
->>> ---
->>>   arch/s390/mm/init.c | 27 +++++++++++++++++++++++++++
->>>   1 file changed, 27 insertions(+)
->>>
->>> diff --git a/arch/s390/mm/init.c b/arch/s390/mm/init.c
->>> index 6dc7c3b60ef6..b8e6f90117da 100644
->>> --- a/arch/s390/mm/init.c
->>> +++ b/arch/s390/mm/init.c
->>> @@ -45,6 +45,7 @@
->>>   #include <asm/kasan.h>
->>>   #include <asm/dma-mapping.h>
->>>   #include <asm/uv.h>
->>> +#include <linux/virtio_config.h>
->>>   
->>>   pgd_t swapper_pg_dir[PTRS_PER_PGD] __section(.bss..swapper_pg_dir);
->>>   
->>> @@ -161,6 +162,32 @@ bool force_dma_unencrypted(struct device *dev)
->>>   	return is_prot_virt_guest();
->>>   }
->>>   
->>> +/*
->>> + * arch_validate_virtio_features
->>> + * @dev: the VIRTIO device being added
->>> + *
->>> + * Return an error if required features are missing on a guest running
->>> + * with protected virtualization.
->>> + */
->>> +int arch_validate_virtio_features(struct virtio_device *dev)
->>> +{
->>> +	if (!is_prot_virt_guest())
->>> +		return 0;
->>> +
->>> +	if (!virtio_has_feature(dev, VIRTIO_F_VERSION_1)) {
->>> +		dev_warn(&dev->dev, "device must provide VIRTIO_F_VERSION_1\n");
->>
->> I'd probably use "legacy virtio not supported with protected
->> virtualization".
->>
->>> +		return -ENODEV;
->>> +	}
->>> +
->>> +	if (!virtio_has_feature(dev, VIRTIO_F_IOMMU_PLATFORM)) {
->>> +		dev_warn(&dev->dev,
->>> +			 "device must provide VIRTIO_F_IOMMU_PLATFORM\n");
->>
->> "support for limited memory access required for protected
->> virtualization"
->>
->> ?
->>
->> Mentioning the feature flag is shorter in both cases, though.
-> 
-> I liked the messages in v4. Why did we change those? Did somebody
-> complain?
-> 
-> I prefer the old ones, but it any case:
-> 
-> Acked-by: Halil Pasic <pasic@linux.ibm.com>
+Paul, where do you expect that patch to go? The version I see from my
+next tree needs a _lot_ of work.
 
-Thanks,
-Pierre
-
-
--- 
-Pierre Morel
-IBM Lab Boeblingen
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> ---
+>  kernel/smp.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/smp.c b/kernel/smp.c
+> index 78b602cae6c2..f49966713ac3 100644
+> --- a/kernel/smp.c
+> +++ b/kernel/smp.c
+> @@ -171,7 +171,7 @@ static __always_inline bool csd_lock_wait_toolong(call_single_data_t *csd, u64 t
+>  		*bug_id = atomic_inc_return(&csd_bug_count);
+>  	cpu = csd_lock_wait_getcpu(csd);
+>  	smp_mb(); // No stale cur_csd values!
+> -	if (WARN_ONCE(cpu < 0 || cpu > nr_cpu_ids, "%s: cpu = %d\n", __func__, cpu))
+> +	if (WARN_ONCE(cpu < 0 || cpu >= nr_cpu_ids, "%s: cpu = %d\n", __func__, cpu))
+>  		cpu_cur_csd = READ_ONCE(per_cpu(cur_csd, 0));
+>  	else
+>  		cpu_cur_csd = READ_ONCE(per_cpu(cur_csd, cpu));
+> -- 
+> 2.27.0
+> 
