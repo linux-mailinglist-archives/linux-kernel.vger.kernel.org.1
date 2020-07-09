@@ -2,81 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C4AD219BDD
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 11:14:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6B7C219BE6
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 11:18:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726285AbgGIJOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 05:14:44 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7827 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726122AbgGIJOn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 05:14:43 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 19FFA74278D008C4810B;
-        Thu,  9 Jul 2020 17:14:40 +0800 (CST)
-Received: from [127.0.0.1] (10.174.186.75) by DGGEMS403-HUB.china.huawei.com
- (10.3.19.203) with Microsoft SMTP Server id 14.3.487.0; Thu, 9 Jul 2020
- 17:14:29 +0800
-Subject: Re: [PATCH v1 2/2] arm64: tlb: Use the TLBI RANGE feature in arm64
-To:     <catalin.marinas@arm.com>, <will@kernel.org>,
-        <suzuki.poulose@arm.com>, <maz@kernel.org>, <steven.price@arm.com>,
-        <guohanjun@huawei.com>, <olof@lixom.net>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-        <linux-mm@kvack.org>, <arm@kernel.org>, <xiexiangyou@huawei.com>,
-        <prime.zeng@hisilicon.com>, <zhangshaokun@hisilicon.com>,
-        <kuhn.chenqun@huawei.com>
-References: <20200709091054.1698-1-yezhenyu2@huawei.com>
- <20200709091054.1698-3-yezhenyu2@huawei.com>
-From:   Zhenyu Ye <yezhenyu2@huawei.com>
-Message-ID: <362990d2-3948-9820-e2d9-aa1ff1c8b068@huawei.com>
-Date:   Thu, 9 Jul 2020 17:14:28 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
-MIME-Version: 1.0
-In-Reply-To: <20200709091054.1698-3-yezhenyu2@huawei.com>
-Content-Type: text/plain; charset="gbk"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.186.75]
-X-CFilter-Loop: Reflected
+        id S1726442AbgGIJSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 05:18:17 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:39544 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726283AbgGIJSO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 05:18:14 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1594286294; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=PmrYhuAQBZ3Ybqc9tHktn7YgndYRCoWWiaZS9MIjs5Y=; b=Ebu5945L9WKcEI/aJCyx0vw3Wjf647EA921wdaZDsTXlxnYxpSebDVIJYj5i3H2ePclp0FCi
+ X02QpPQ0xb5ft63f0fsYIfCBzki5MjgjzAvYJM8Dj+1Dlc/88/BpyjKFtM3IiAzuQQ0ga26D
+ YYf5/JZ0ndq2MnWq+zRoYwUuhPE=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 5f06e0bccd1b803e179b23ac (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 09 Jul 2020 09:17:48
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B531EC43387; Thu,  9 Jul 2020 09:17:47 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from pillair-linux.qualcomm.com (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: pillair)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 699EAC433C8;
+        Thu,  9 Jul 2020 09:17:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 699EAC433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=pillair@codeaurora.org
+From:   Rakesh Pillai <pillair@codeaurora.org>
+To:     devicetree@vger.kernel.org
+Cc:     dianders@chromium.org, evgreen@chromium.org,
+        Rakesh Pillai <pillair@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: qcom: sc7180: Add missing properties for Wifi node
+Date:   Thu,  9 Jul 2020 14:47:33 +0530
+Message-Id: <1594286253-32244-1-git-send-email-pillair@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/7/9 17:10, Zhenyu Ye wrote:
-> +	/*
-> +	 * When cpu does not support TLBI RANGE feature, we flush the tlb
-> +	 * entries one by one at the granularity of 'stride'.
-> +	 * When cpu supports the TLBI RANGE feature, then:
-> +	 * 1. If pages is odd, flush the first page through non-RANGE
-> +	 *    instruction;
-> +	 * 2. For remaining pages: The minimum range granularity is decided
-> +	 *    by 'scale', so we can not flush all pages by one instruction
-> +	 *    in some cases.
-> +	 *
-> +	 * For example, when the pages = 0xe81a, let's start 'scale' from
-> +	 * maximum, and find right 'num' for each 'scale':
-> +	 *
-> +	 *  When scale = 3, we can flush no pages because the minumum
-> +	 * range is 2^(5*3 + 1) = 0x10000.
-> +	 *  When scale = 2, the minimum range is 2^(5*2 + 1) = 0x800, we can
-> +	 * flush 0xe800 pages this time, the num = 0xe800/0x800 - 1 = 0x1c.
-> +	 * Remain pages is 0x1a;
-> +	 *  When scale = 1, the minimum range is 2^(5*1 + 1) = 0x40, no page
-> +	 * can be flushed.
-> +	 *  When scale = 0, we flush the remaining 0x1a pages, the num =
-> +	 * 0x1a/0x2 - 1 = 0xd.
-> +	 *
-> +	 * However, in most scenarios, the pages = 1 when flush_tlb_range() is
-> +	 * called. Start from scale = 3 or other proper value (such as scale =
-> +	 * ilog2(pages)), will incur extra overhead.
-> +	 * So increase 'scale' from 0 to maximum, the flush order is exactly
-> +	 * opposite to the example.
-> +	 */
+The wlan firmware memory is statically mapped in
+the Trusted Firmware, hence the wlan driver does
+not need to map/unmap this region dynamically.
 
-The comments may be too long, probably should be moved to commit messages.
+Hence add the property to indicate the wlan driver
+to not map/unamp the firmware memory region
+dynamically.
 
-Thanks,
-Zhenyu
+Also add the chain1 voltage supply for wlan.
+
+Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+---
+This patch is created on top of the change by
+Douglas Anderson.
+https://lkml.org/lkml/2020/6/25/817
+
+Also the dt-bindings for the chain1 voltage supply
+is added by the below patch series:
+https://patchwork.kernel.org/project/linux-wireless/list/?series=309137
+---
+ arch/arm64/boot/dts/qcom/sc7180-idp.dts | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/qcom/sc7180-idp.dts b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
+index 472f7f4..4c64bc1 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180-idp.dts
++++ b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
+@@ -391,10 +391,12 @@
+ 
+ &wifi {
+ 	status = "okay";
++	qcom,msa-fixed-perm;
+ 	vdd-0.8-cx-mx-supply = <&vreg_l9a_0p6>;
+ 	vdd-1.8-xo-supply = <&vreg_l1c_1p8>;
+ 	vdd-1.3-rfa-supply = <&vreg_l2c_1p3>;
+ 	vdd-3.3-ch0-supply = <&vreg_l10c_3p3>;
++	vdd-3.3-ch1-supply = <&vreg_l11c_3p3>;
+ 	wifi-firmware {
+ 		iommus = <&apps_smmu 0xc2 0x1>;
+ 	};
+-- 
+2.7.4
 
