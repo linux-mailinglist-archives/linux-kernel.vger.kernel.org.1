@@ -2,156 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 317CE21ABCB
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 01:49:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D42621ABD6
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 01:59:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726227AbgGIXtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 19:49:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49690 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726269AbgGIXtl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 19:49:41 -0400
-Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2D0B62070E;
-        Thu,  9 Jul 2020 23:49:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594338580;
-        bh=AzXu3c72rcQmjaWFefYfgiSM/p782Co8EQspHadBs2E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CZFNAlYR79C7aQjMjGPPoyc/KUEvRwf9EpYnYLiugzjAQlDJW1D6/FSz/Wx7tbmip
-         Y7cg2Zm6mLl4gOnIbsiivv0QlzXV2O1TVRb7yBIg3TvoqJw+T+ERdgY855R81jWlpo
-         5A/94AlR4UfYswXBPFy1pQp2IxPAfIY0eVtxJQSU=
-Date:   Thu, 9 Jul 2020 19:49:39 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Pavel Shilovsky <piastryyy@gmail.com>
-Cc:     Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Stable <stable@vger.kernel.org>,
-        Zhang Xiaoxu <zhangxiaoxu5@huawei.com>,
-        Hulk Robot <hulkci@huawei.com>,
-        Steve French <stfrench@microsoft.com>,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        linux-cifs <linux-cifs@vger.kernel.org>,
-        samba-technical <samba-technical@lists.samba.org>
-Subject: Re: [PATCH AUTOSEL 5.7 37/53] cifs: Fix double add page to memcg
- when cifs_readpages
-Message-ID: <20200709234939.GD2722994@sasha-vm>
-References: <20200702012202.2700645-1-sashal@kernel.org>
- <20200702012202.2700645-37-sashal@kernel.org>
- <CAKywueRGSriwuMGtG53i3Bm_ek_k1LMAK0fojf9++7=ar+6u8Q@mail.gmail.com>
+        id S1726495AbgGIX64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 19:58:56 -0400
+Received: from rcdn-iport-5.cisco.com ([173.37.86.76]:21784 "EHLO
+        rcdn-iport-5.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726227AbgGIX64 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 19:58:56 -0400
+X-Greylist: delayed 425 seconds by postgrey-1.27 at vger.kernel.org; Thu, 09 Jul 2020 19:58:55 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=cisco.com; i=@cisco.com; l=2283; q=dns/txt; s=iport;
+  t=1594339135; x=1595548735;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=tF4pr/5XLKqBBsQkjwuwO6riASGyIFysFx/ut+c98HA=;
+  b=cCuwIOGJNxx3XPF18pAdLlhRAzpx2+5LmhIdJTb5rYP2zUYB7rs5DZF9
+   uaJ8DSYWi4H9LE8P+wXN4qC/2BEM8rlKRCrjW4SWNpYNypLNKhNvVvAkK
+   RiBgB0hUw0OzZZ4qaDBgQekrU8GHdEqrI1/uAqWd7mdeRv5w8fLEOHEkX
+   0=;
+X-IronPort-AV: E=Sophos;i="5.75,332,1589241600"; 
+   d="scan'208";a="532948238"
+Received: from rcdn-core-1.cisco.com ([173.37.93.152])
+  by rcdn-iport-5.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 09 Jul 2020 23:51:50 +0000
+Received: from sjc-ads-2033.cisco.com (sjc-ads-2033.cisco.com [171.70.61.221])
+        by rcdn-core-1.cisco.com (8.15.2/8.15.2) with ESMTP id 069NpoJ5024104;
+        Thu, 9 Jul 2020 23:51:50 GMT
+Received: by sjc-ads-2033.cisco.com (Postfix, from userid 396877)
+        id E14BAC5C; Thu,  9 Jul 2020 16:51:49 -0700 (PDT)
+From:   Julius Hemanth Pitti <jpitti@cisco.com>
+To:     keescook@chromium.org, yzaikin@google.com, mcgrof@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        akpm@linux-foundation.org, mingo@elte.hu, viro@zeniv.linux.org.uk,
+        xe-linux-external@cisco.com,
+        Julius Hemanth Pitti <jpitti@cisco.com>
+Subject: [PATCH] proc/sysctl: make protected_* world readable
+Date:   Thu,  9 Jul 2020 16:51:15 -0700
+Message-Id: <20200709235115.56954-1-jpitti@cisco.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKywueRGSriwuMGtG53i3Bm_ek_k1LMAK0fojf9++7=ar+6u8Q@mail.gmail.com>
+X-Auto-Response-Suppress: DR, OOF, AutoReply
+X-Outbound-SMTP-Client: 171.70.61.221, sjc-ads-2033.cisco.com
+X-Outbound-Node: rcdn-core-1.cisco.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 02, 2020 at 09:08:45AM -0700, Pavel Shilovsky wrote:
->ср, 1 июл. 2020 г. в 18:35, Sasha Levin <sashal@kernel.org>:
->>
->> From: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
->>
->> [ Upstream commit 95a3d8f3af9b0d63b43f221b630beaab9739d13a ]
->>
->> When xfstests generic/451, there is an BUG at mm/memcontrol.c:
->>   page:ffffea000560f2c0 refcount:2 mapcount:0 mapping:000000008544e0ea
->>        index:0xf
->>   mapping->aops:cifs_addr_ops dentry name:"tst-aio-dio-cycle-write.451"
->>   flags: 0x2fffff80000001(locked)
->>   raw: 002fffff80000001 ffffc90002023c50 ffffea0005280088 ffff88815cda0210
->>   raw: 000000000000000f 0000000000000000 00000002ffffffff ffff88817287d000
->>   page dumped because: VM_BUG_ON_PAGE(page->mem_cgroup)
->>   page->mem_cgroup:ffff88817287d000
->>   ------------[ cut here ]------------
->>   kernel BUG at mm/memcontrol.c:2659!
->>   invalid opcode: 0000 [#1] SMP
->>   CPU: 2 PID: 2038 Comm: xfs_io Not tainted 5.8.0-rc1 #44
->>   Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20190727_
->>     073836-buildvm-ppc64le-16.ppc.4
->>   RIP: 0010:commit_charge+0x35/0x50
->>   Code: 0d 48 83 05 54 b2 02 05 01 48 89 77 38 c3 48 c7
->>         c6 78 4a ea ba 48 83 05 38 b2 02 05 01 e8 63 0d9
->>   RSP: 0018:ffffc90002023a50 EFLAGS: 00010202
->>   RAX: 0000000000000000 RBX: ffff88817287d000 RCX: 0000000000000000
->>   RDX: 0000000000000000 RSI: ffff88817ac97ea0 RDI: ffff88817ac97ea0
->>   RBP: ffffea000560f2c0 R08: 0000000000000203 R09: 0000000000000005
->>   R10: 0000000000000030 R11: ffffc900020237a8 R12: 0000000000000000
->>   R13: 0000000000000001 R14: 0000000000000001 R15: ffff88815a1272c0
->>   FS:  00007f5071ab0800(0000) GS:ffff88817ac80000(0000) knlGS:0000000000000000
->>   CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->>   CR2: 000055efcd5ca000 CR3: 000000015d312000 CR4: 00000000000006e0
->>   DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->>   DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->>   Call Trace:
->>    mem_cgroup_charge+0x166/0x4f0
->>    __add_to_page_cache_locked+0x4a9/0x710
->>    add_to_page_cache_locked+0x15/0x20
->>    cifs_readpages+0x217/0x1270
->>    read_pages+0x29a/0x670
->>    page_cache_readahead_unbounded+0x24f/0x390
->>    __do_page_cache_readahead+0x3f/0x60
->>    ondemand_readahead+0x1f1/0x470
->>    page_cache_async_readahead+0x14c/0x170
->>    generic_file_buffered_read+0x5df/0x1100
->>    generic_file_read_iter+0x10c/0x1d0
->>    cifs_strict_readv+0x139/0x170
->>    new_sync_read+0x164/0x250
->>    __vfs_read+0x39/0x60
->>    vfs_read+0xb5/0x1e0
->>    ksys_pread64+0x85/0xf0
->>    __x64_sys_pread64+0x22/0x30
->>    do_syscall_64+0x69/0x150
->>    entry_SYSCALL_64_after_hwframe+0x44/0xa9
->>   RIP: 0033:0x7f5071fcb1af
->>   Code: Bad RIP value.
->>   RSP: 002b:00007ffde2cdb8e0 EFLAGS: 00000293 ORIG_RAX: 0000000000000011
->>   RAX: ffffffffffffffda RBX: 00007ffde2cdb990 RCX: 00007f5071fcb1af
->>   RDX: 0000000000001000 RSI: 000055efcd5ca000 RDI: 0000000000000003
->>   RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000000
->>   R10: 0000000000001000 R11: 0000000000000293 R12: 0000000000000001
->>   R13: 000000000009f000 R14: 0000000000000000 R15: 0000000000001000
->>   Modules linked in:
->>   ---[ end trace 725fa14a3e1af65c ]---
->>
->> Since commit 3fea5a499d57 ("mm: memcontrol: convert page cache to a new
->> mem_cgroup_charge() API") not cancel the page charge, the pages maybe
->> double add to pagecache:
->> thread1                       | thread2
->> cifs_readpages
->> readpages_get_pages
->>  add_to_page_cache_locked(head,index=n)=0
->>                               | readpages_get_pages
->>                               | add_to_page_cache_locked(head,index=n+1)=0
->>  add_to_page_cache_locked(head, index=n+1)=-EEXIST
->>  then, will next loop with list head page's
->>  index=n+1 and the page->mapping not NULL
->> readpages_get_pages
->> add_to_page_cache_locked(head, index=n+1)
->>  commit_charge
->>   VM_BUG_ON_PAGE
->>
->> So, we should not do the next loop when any page add to page cache
->> failed.
->>
->> Reported-by: Hulk Robot <hulkci@huawei.com>
->> Signed-off-by: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
->> Signed-off-by: Steve French <stfrench@microsoft.com>
->> Acked-by: Ronnie Sahlberg <lsahlber@redhat.com>
->> Signed-off-by: Sasha Levin <sashal@kernel.org>
->
->Hi Sasha,
->
->The patch description mentions the commit 3fea5a499d57 that changed
->the behavior and was introduced in v5.8-rc1. I noticed that you are
->targeting this patch for 4.9, 4.14, 4.19, 5.4 and 5.7 stable branches.
->Are you going to backport the commit 3fea5a499d57 as well?
+protected_* files have 600 permissions which prevents
+non-superuser from reading them.
 
-Nope, I'll drop this one. Thanks!
+Container like "AWS greengrass" refuse to launch unless
+protected_hardlinks and protected_symlinks are set. When
+containers like these run with "userns-remap" or "--user"
+mapping container's root to non-superuser on host, they
+fail to run due to denied read access to these files.
 
+As these protections are hardly a secret, and do not
+possess any security risk, making them world readable.
+
+Though above greengrass usecase needs read access to
+only protected_hardlinks and protected_symlinks files,
+setting all other protected_* files to 644 to keep
+consistency.
+
+Fixes: 800179c9b8a1 ("fs: add link restrictions")
+Signed-off-by: Julius Hemanth Pitti <jpitti@cisco.com>
+---
+ kernel/sysctl.c |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+index db1ce7a..aeca2fd 100644
+--- a/kernel/sysctl.c
++++ b/kernel/sysctl.c
+@@ -3223,7 +3223,7 @@ int proc_do_static_key(struct ctl_table *table, int write,
+ 		.procname	= "protected_symlinks",
+ 		.data		= &sysctl_protected_symlinks,
+ 		.maxlen		= sizeof(int),
+-		.mode		= 0600,
++		.mode		= 0644,
+ 		.proc_handler	= proc_dointvec_minmax,
+ 		.extra1		= SYSCTL_ZERO,
+ 		.extra2		= SYSCTL_ONE,
+@@ -3232,7 +3232,7 @@ int proc_do_static_key(struct ctl_table *table, int write,
+ 		.procname	= "protected_hardlinks",
+ 		.data		= &sysctl_protected_hardlinks,
+ 		.maxlen		= sizeof(int),
+-		.mode		= 0600,
++		.mode		= 0644,
+ 		.proc_handler	= proc_dointvec_minmax,
+ 		.extra1		= SYSCTL_ZERO,
+ 		.extra2		= SYSCTL_ONE,
+@@ -3241,7 +3241,7 @@ int proc_do_static_key(struct ctl_table *table, int write,
+ 		.procname	= "protected_fifos",
+ 		.data		= &sysctl_protected_fifos,
+ 		.maxlen		= sizeof(int),
+-		.mode		= 0600,
++		.mode		= 0644,
+ 		.proc_handler	= proc_dointvec_minmax,
+ 		.extra1		= SYSCTL_ZERO,
+ 		.extra2		= &two,
+@@ -3250,7 +3250,7 @@ int proc_do_static_key(struct ctl_table *table, int write,
+ 		.procname	= "protected_regular",
+ 		.data		= &sysctl_protected_regular,
+ 		.maxlen		= sizeof(int),
+-		.mode		= 0600,
++		.mode		= 0644,
+ 		.proc_handler	= proc_dointvec_minmax,
+ 		.extra1		= SYSCTL_ZERO,
+ 		.extra2		= &two,
 -- 
-Thanks,
-Sasha
+1.7.1
+
