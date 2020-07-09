@@ -2,362 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9514421A6D8
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 20:27:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24D2821A6E9
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 20:27:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726889AbgGIS1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 14:27:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55342 "EHLO
+        id S1727782AbgGIS12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 14:27:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726908AbgGIS05 (ORCPT
+        with ESMTP id S1727095AbgGIS1U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 14:26:57 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DB8BC08C5DD
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 11:26:56 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id e8so1331246pgc.5
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 11:26:56 -0700 (PDT)
+        Thu, 9 Jul 2020 14:27:20 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B037FC08C5CE
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 11:27:19 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id k5so1154205plk.13
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 11:27:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=YWZ2OuQizQzGzF3RDi6D4WkV24kF9MLp4QDJR72dZB4=;
-        b=OsdMigTS1TZ7gryM952/sdzg/vSp6wtxWibgkJLGvPmqDjrer0WjNiB9L1FmFTWcjY
-         khB3DYkskNmWM5wLgPkOjeEqFw/hR2hADFK4jSXvi+4ma/PbCm/zjwKQdZdHwu293kEV
-         LdaIQ1GAEa/5HEugszrzpwpASI/+Dbp0095aY=
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CX4+62PhknVXUdLMwiSWKRCmW3vKZehIunEgFfO23pk=;
+        b=wgV+HQ8IzCZw4u85wSWv0uFcdU8JRUHxWUOJw3nUNCJg0V7JtiXq9HGIHvCJwy0rU4
+         5NauoUVqQnXcquFoyXjiIj9oarJ08Xw96QE3ykDMiYPXQSta/D700HWhrKl5Vouwqfic
+         sPIzjXuXy2OHVKPZDZuWVY/AAZvgf67cRjIIL5K3hAq5dYFywytI9E2HLRDqMatjSYHg
+         rKPTbFroPXaZCtHfzKnC5s7krVrLd6GYXc9hQVoorI7+eqTmhCbzW5mX9WMNPAeI3E8T
+         iWh2YarBX1GJP6kJlsBCn1uE476I6PduPB7TPOCtSmgDn2ifoOoUQ6DuhGG3dp14FZsE
+         jHYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=YWZ2OuQizQzGzF3RDi6D4WkV24kF9MLp4QDJR72dZB4=;
-        b=FbTxv5FhZWjeD6Em+Wtwj6lICe+0TN3jEbxe4Y6t01iLx1yUXlH7cYFg0AcpoL3/ss
-         0MEZRW55oe8QeDJ8U2rcI4F7nl8toUpD9KJe56vyPZamJgLG7bY0KrdkIuAZcc6oljj1
-         uTrXXyIa45ycjw3mroJyAfNW4jXe5PcexnECgs3YvCAGcxYhPiVjmkndW44JMCRcb1hR
-         Z+dD+q8HFYPC2jZGAtzr/PeTdqhMNi5kBrZxSLvbxfsrpir2C/a6mGhFoAVCMtwLg/7u
-         2l5LRPcPyK/p04dUDcDYiBiDB914IzMpq5ozv/x5KW3gxatMO97ZqadQkWDJh6hFSG5n
-         STtg==
-X-Gm-Message-State: AOAM532em4xgEdKbOMLfG1o9y9YiBsSZgc3UL2Zp3VYd+LVLTQzE663+
-        haw5cVaQKM0YTq/X8gDyvcR+lA==
-X-Google-Smtp-Source: ABdhPJyqxSVtupX3puECtbZi+bMBfwoIQ/EspFx3WlAJYTyT81T+rTNfAyy7jAcXryqqfjECtHDV+Q==
-X-Received: by 2002:aa7:8edc:: with SMTP id b28mr48226035pfr.230.1594319216060;
-        Thu, 09 Jul 2020 11:26:56 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id d9sm3571541pgv.45.2020.07.09.11.26.50
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=CX4+62PhknVXUdLMwiSWKRCmW3vKZehIunEgFfO23pk=;
+        b=pjP+TcIcn/mtNAfKPCYMhwW+m/lK9YwL0EcRQEn2+g7sMOAOxMlCO0X5bP8+wVT2z0
+         WUcAScDwrWxM4Rh7EJDM3SCZr5CcadMvQfklBvDbrbVpLy23rKBZuvibq+f9eQ7k02QX
+         G3rtuCJWW2zgiu1kSuh0haq876tvxyWO2TBV+xN+fGp9sy4/ceGFq1muvpR9NTXkS1vZ
+         EDisYtfPCsiEWqogj4TACyV62tDwt+U8tKJrCirVxp/JkBenDWqas5AwstA7yrrld6gr
+         6NiEs3ytE/KDmp7zp5FbuGUi1ff6UR344XWIIVOqGjYMkXRVX+NNM9YGWAIf1JZoOPEP
+         qWWg==
+X-Gm-Message-State: AOAM532CkYBLbAXJiW3qQ9OWw/9GQyRrejo9mlyaRwRJvz+Yfaaoz08U
+        KZdsve0cSgW3yfbvHQkh4UR5aw==
+X-Google-Smtp-Source: ABdhPJzxG/jyzCXqn27lyEUywkbLI2zMYmWvsiVaPaozDnjrB06A0bRJUjVKi+RMxTl5smlkIHzqvA==
+X-Received: by 2002:a17:90b:4ace:: with SMTP id mh14mr1423091pjb.139.1594319239021;
+        Thu, 09 Jul 2020 11:27:19 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id s22sm3531604pfm.164.2020.07.09.11.27.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jul 2020 11:26:52 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Kees Cook <keescook@chromium.org>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Christian Brauner <christian@brauner.io>,
-        Tycho Andersen <tycho@tycho.ws>,
-        David Laight <David.Laight@ACULAB.COM>,
-        Christoph Hellwig <hch@lst.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Matt Denton <mpdenton@google.com>,
-        Jann Horn <jannh@google.com>, Chris Palmer <palmer@google.com>,
-        Robert Sesek <rsesek@google.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>, Shuah Khan <shuah@kernel.org>,
-        netdev@vger.kernel.org, containers@lists.linux-foundation.org,
-        linux-api@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH v7 9/9] selftests/seccomp: Test SECCOMP_IOCTL_NOTIF_ADDFD
-Date:   Thu,  9 Jul 2020 11:26:42 -0700
-Message-Id: <20200709182642.1773477-10-keescook@chromium.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200709182642.1773477-1-keescook@chromium.org>
-References: <20200709182642.1773477-1-keescook@chromium.org>
-MIME-Version: 1.0
+        Thu, 09 Jul 2020 11:27:18 -0700 (PDT)
+Date:   Thu, 09 Jul 2020 11:27:18 -0700 (PDT)
+X-Google-Original-Date: Thu, 09 Jul 2020 11:25:29 PDT (-0700)
+Subject:     Re: [PATCH 1/2] riscv: Register System RAM as iomem resources
+In-Reply-To: <063fab26f4c15bf5b833b57fa818749afa7811d4.1592292685.git.zong.li@sifive.com>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        zong.li@sifive.com
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     zong.li@sifive.com
+Message-ID: <mhng-cd7e19bb-859a-45a4-90e8-7851c4fb3083@palmerdabbelt-glaptop1>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sargun Dhillon <sargun@sargun.me>
+On Tue, 16 Jun 2020 00:45:46 PDT (-0700), zong.li@sifive.com wrote:
+> Add System RAM to /proc/iomem, various tools expect it such as kdump.
+> It is also needed for page_is_ram API which checks the specified address
+> whether registered as System RAM in iomem_resource list.
+>
+> Signed-off-by: Zong Li <zong.li@sifive.com>
+> ---
+>  arch/riscv/mm/init.c | 22 ++++++++++++++++++++++
+>  1 file changed, 22 insertions(+)
+>
+> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+> index f4adb3684f3d..bbe816e03b2f 100644
+> --- a/arch/riscv/mm/init.c
+> +++ b/arch/riscv/mm/init.c
+> @@ -517,6 +517,27 @@ void mark_rodata_ro(void)
+>  }
+>  #endif
+>
+> +void __init resource_init(void)
+> +{
+> +	struct memblock_region *region;
+> +
+> +	for_each_memblock(memory, region) {
+> +		struct resource *res;
+> +
+> +		res = memblock_alloc(sizeof(struct resource), SMP_CACHE_BYTES);
+> +		if (!res)
+> +			panic("%s: Failed to allocate %zu bytes\n", __func__,
+> +			      sizeof(struct resource));
+> +
+> +		res->name = "System RAM";
+> +		res->start = __pfn_to_phys(memblock_region_memory_base_pfn(region));
+> +		res->end = __pfn_to_phys(memblock_region_memory_end_pfn(region)) - 1;
+> +		res->flags = IORESOURCE_SYSTEM_RAM | IORESOURCE_BUSY;
 
-Test whether we can add file descriptors in response to notifications.
-This injects the file descriptors via notifications, and then uses kcmp
-to determine whether or not it has been successful.
+Looks like everyone else is checking MEMBLOCK_NOMAP before registering memory
+regions.  I've added that and put this on for-next.  Thanks!
 
-It also includes some basic sanity checking for arguments.
+commit 11dc632bf515874c84887727614e8044452f1f28
+gpg: Signature made Thu 09 Jul 2020 11:24:08 AM PDT
+gpg:                using RSA key 2B3C3747446843B24A943A7A2E1319F35FBB1889
+gpg:                issuer "palmer@dabbelt.com"
+gpg: Good signature from "Palmer Dabbelt <palmer@dabbelt.com>" [ultimate]
+gpg:                 aka "Palmer Dabbelt <palmerdabbelt@google.com>" [ultimate]
+Author: Zong Li <zong.li@sifive.com>
+Date:   Tue Jun 16 15:45:46 2020 +0800
 
-Signed-off-by: Sargun Dhillon <sargun@sargun.me>
-Link: https://lore.kernel.org/r/20200603011044.7972-5-sargun@sargun.me
-Co-developed-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- tools/testing/selftests/seccomp/seccomp_bpf.c | 229 ++++++++++++++++++
- 1 file changed, 229 insertions(+)
+    riscv: Register System RAM as iomem resources
+    
+    Add System RAM to /proc/iomem, various tools expect it such as kdump.
+    It is also needed for page_is_ram API which checks the specified address
+    whether registered as System RAM in iomem_resource list.
+    
+    Signed-off-by: Zong Li <zong.li@sifive.com>
+    [Palmer: check MEMBLOCK_NOMAP]
+    Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 
-diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
-index 4662a25bc9e8..3f41b32b9165 100644
---- a/tools/testing/selftests/seccomp/seccomp_bpf.c
-+++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
-@@ -45,6 +45,7 @@
- #include <sys/socket.h>
- #include <sys/ioctl.h>
- #include <linux/kcmp.h>
-+#include <sys/resource.h>
- 
- #include <unistd.h>
- #include <sys/syscall.h>
-@@ -168,7 +169,9 @@ struct seccomp_metadata {
- 
- #ifndef SECCOMP_FILTER_FLAG_NEW_LISTENER
- #define SECCOMP_FILTER_FLAG_NEW_LISTENER	(1UL << 3)
-+#endif
- 
-+#ifndef SECCOMP_RET_USER_NOTIF
- #define SECCOMP_RET_USER_NOTIF 0x7fc00000U
- 
- #define SECCOMP_IOC_MAGIC		'!'
-@@ -204,6 +207,39 @@ struct seccomp_notif_sizes {
- };
+diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+index f4adb3684f3d..8b78fd23713e 100644
+--- a/arch/riscv/mm/init.c
++++ b/arch/riscv/mm/init.c
+@@ -517,6 +517,32 @@ void mark_rodata_ro(void)
+ }
  #endif
  
-+#ifndef SECCOMP_IOCTL_NOTIF_ADDFD
-+/* On success, the return value is the remote process's added fd number */
-+#define SECCOMP_IOCTL_NOTIF_ADDFD	SECCOMP_IOW(3,	\
-+						struct seccomp_notif_addfd)
++void __init resource_init(void)
++{
++	struct memblock_region *region;
 +
-+/* valid flags for seccomp_notif_addfd */
-+#define SECCOMP_ADDFD_FLAG_SETFD	(1UL << 0) /* Specify remote fd */
++	for_each_memblock(memory, region) {
++		struct resource *res;
 +
-+struct seccomp_notif_addfd {
-+	__u64 id;
-+	__u32 flags;
-+	__u32 srcfd;
-+	__u32 newfd;
-+	__u32 newfd_flags;
-+};
-+#endif
++		res = memblock_alloc(sizeof(struct resource), SMP_CACHE_BYTES);
++		if (!res)
++			panic("%s: Failed to allocate %zu bytes\n", __func__,
++			      sizeof(struct resource));
 +
-+struct seccomp_notif_addfd_small {
-+	__u64 id;
-+	char weird[4];
-+};
-+#define SECCOMP_IOCTL_NOTIF_ADDFD_SMALL	\
-+	SECCOMP_IOW(3, struct seccomp_notif_addfd_small)
++		if (memblock_is_nomap(region) {
++			res->name = "reserved";
++			res->flags = IORESOURCE_MEM;
++		} else {
++			res->name = "System RAM";
++			res->flags = IORESOURCE_SYSTEM_RAM | IORESOURCE_BUSY;
++		}
++		res->start = __pfn_to_phys(memblock_region_memory_base_pfn(region));
++		res->end = __pfn_to_phys(memblock_region_memory_end_pfn(region)) - 1;
 +
-+struct seccomp_notif_addfd_big {
-+	union {
-+		struct seccomp_notif_addfd addfd;
-+		char buf[sizeof(struct seccomp_notif_addfd) + 8];
-+	};
-+};
-+#define SECCOMP_IOCTL_NOTIF_ADDFD_BIG	\
-+	SECCOMP_IOWR(3, struct seccomp_notif_addfd_big)
++		request_resource(&iomem_resource, res);
++	}
++}
 +
- #ifndef PTRACE_EVENTMSG_SYSCALL_ENTRY
- #define PTRACE_EVENTMSG_SYSCALL_ENTRY	1
- #define PTRACE_EVENTMSG_SYSCALL_EXIT	2
-@@ -3740,6 +3776,199 @@ TEST(user_notification_filter_empty_threaded)
- 	EXPECT_GT((pollfd.revents & POLLHUP) ?: 0, 0);
+ void __init paging_init(void)
+ {
+ 	setup_vm_final();
+@@ -524,6 +550,7 @@ void __init paging_init(void)
+ 	sparse_init();
+ 	setup_zero_page();
+ 	zone_sizes_init();
++	resource_init();
  }
  
-+TEST(user_notification_addfd)
-+{
-+	pid_t pid;
-+	long ret;
-+	int status, listener, memfd, fd;
-+	struct seccomp_notif_addfd addfd = {};
-+	struct seccomp_notif_addfd_small small = {};
-+	struct seccomp_notif_addfd_big big = {};
-+	struct seccomp_notif req = {};
-+	struct seccomp_notif_resp resp = {};
-+	/* 100 ms */
-+	struct timespec delay = { .tv_nsec = 100000000 };
-+
-+	memfd = memfd_create("test", 0);
-+	ASSERT_GE(memfd, 0);
-+
-+	ret = prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
-+	ASSERT_EQ(0, ret) {
-+		TH_LOG("Kernel does not support PR_SET_NO_NEW_PRIVS!");
-+	}
-+
-+	/* Check that the basic notification machinery works */
-+	listener = user_notif_syscall(__NR_getppid,
-+				      SECCOMP_FILTER_FLAG_NEW_LISTENER);
-+	ASSERT_GE(listener, 0);
-+
-+	pid = fork();
-+	ASSERT_GE(pid, 0);
-+
-+	if (pid == 0) {
-+		if (syscall(__NR_getppid) != USER_NOTIF_MAGIC)
-+			exit(1);
-+		exit(syscall(__NR_getppid) != USER_NOTIF_MAGIC);
-+	}
-+
-+	ASSERT_EQ(ioctl(listener, SECCOMP_IOCTL_NOTIF_RECV, &req), 0);
-+
-+	addfd.srcfd = memfd;
-+	addfd.newfd = 0;
-+	addfd.id = req.id;
-+	addfd.flags = 0x0;
-+
-+	/* Verify bad newfd_flags cannot be set */
-+	addfd.newfd_flags = ~O_CLOEXEC;
-+	EXPECT_EQ(ioctl(listener, SECCOMP_IOCTL_NOTIF_ADDFD, &addfd), -1);
-+	EXPECT_EQ(errno, EINVAL);
-+	addfd.newfd_flags = O_CLOEXEC;
-+
-+	/* Verify bad flags cannot be set */
-+	addfd.flags = 0xff;
-+	EXPECT_EQ(ioctl(listener, SECCOMP_IOCTL_NOTIF_ADDFD, &addfd), -1);
-+	EXPECT_EQ(errno, EINVAL);
-+	addfd.flags = 0;
-+
-+	/* Verify that remote_fd cannot be set without setting flags */
-+	addfd.newfd = 1;
-+	EXPECT_EQ(ioctl(listener, SECCOMP_IOCTL_NOTIF_ADDFD, &addfd), -1);
-+	EXPECT_EQ(errno, EINVAL);
-+	addfd.newfd = 0;
-+
-+	/* Verify small size cannot be set */
-+	EXPECT_EQ(ioctl(listener, SECCOMP_IOCTL_NOTIF_ADDFD_SMALL, &small), -1);
-+	EXPECT_EQ(errno, EINVAL);
-+
-+	/* Verify we can't send bits filled in unknown buffer area */
-+	memset(&big, 0xAA, sizeof(big));
-+	big.addfd = addfd;
-+	EXPECT_EQ(ioctl(listener, SECCOMP_IOCTL_NOTIF_ADDFD_BIG, &big), -1);
-+	EXPECT_EQ(errno, E2BIG);
-+
-+
-+	/* Verify we can set an arbitrary remote fd */
-+	fd = ioctl(listener, SECCOMP_IOCTL_NOTIF_ADDFD, &addfd);
-+	/*
-+	 * The child has fds 0(stdin), 1(stdout), 2(stderr), 3(memfd),
-+	 * 4(listener), so the newly allocated fd should be 5.
-+	 */
-+	EXPECT_EQ(fd, 5);
-+	EXPECT_EQ(filecmp(getpid(), pid, memfd, fd), 0);
-+
-+	/* Verify we can set an arbitrary remote fd with large size */
-+	memset(&big, 0x0, sizeof(big));
-+	big.addfd = addfd;
-+	fd = ioctl(listener, SECCOMP_IOCTL_NOTIF_ADDFD_BIG, &big);
-+	EXPECT_EQ(fd, 6);
-+
-+	/* Verify we can set a specific remote fd */
-+	addfd.newfd = 42;
-+	addfd.flags = SECCOMP_ADDFD_FLAG_SETFD;
-+	fd = ioctl(listener, SECCOMP_IOCTL_NOTIF_ADDFD, &addfd);
-+	EXPECT_EQ(fd, 42);
-+	EXPECT_EQ(filecmp(getpid(), pid, memfd, fd), 0);
-+
-+	/* Resume syscall */
-+	resp.id = req.id;
-+	resp.error = 0;
-+	resp.val = USER_NOTIF_MAGIC;
-+	EXPECT_EQ(ioctl(listener, SECCOMP_IOCTL_NOTIF_SEND, &resp), 0);
-+
-+	/*
-+	 * This sets the ID of the ADD FD to the last request plus 1. The
-+	 * notification ID increments 1 per notification.
-+	 */
-+	addfd.id = req.id + 1;
-+
-+	/* This spins until the underlying notification is generated */
-+	while (ioctl(listener, SECCOMP_IOCTL_NOTIF_ADDFD, &addfd) != -1 &&
-+	       errno != -EINPROGRESS)
-+		nanosleep(&delay, NULL);
-+
-+	memset(&req, 0, sizeof(req));
-+	ASSERT_EQ(ioctl(listener, SECCOMP_IOCTL_NOTIF_RECV, &req), 0);
-+	ASSERT_EQ(addfd.id, req.id);
-+
-+	resp.id = req.id;
-+	resp.error = 0;
-+	resp.val = USER_NOTIF_MAGIC;
-+	EXPECT_EQ(ioctl(listener, SECCOMP_IOCTL_NOTIF_SEND, &resp), 0);
-+
-+	/* Wait for child to finish. */
-+	EXPECT_EQ(waitpid(pid, &status, 0), pid);
-+	EXPECT_EQ(true, WIFEXITED(status));
-+	EXPECT_EQ(0, WEXITSTATUS(status));
-+
-+	close(memfd);
-+}
-+
-+TEST(user_notification_addfd_rlimit)
-+{
-+	pid_t pid;
-+	long ret;
-+	int status, listener, memfd;
-+	struct seccomp_notif_addfd addfd = {};
-+	struct seccomp_notif req = {};
-+	struct seccomp_notif_resp resp = {};
-+	const struct rlimit lim = {
-+		.rlim_cur	= 0,
-+		.rlim_max	= 0,
-+	};
-+
-+	memfd = memfd_create("test", 0);
-+	ASSERT_GE(memfd, 0);
-+
-+	ret = prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
-+	ASSERT_EQ(0, ret) {
-+		TH_LOG("Kernel does not support PR_SET_NO_NEW_PRIVS!");
-+	}
-+
-+	/* Check that the basic notification machinery works */
-+	listener = user_notif_syscall(__NR_getppid,
-+				      SECCOMP_FILTER_FLAG_NEW_LISTENER);
-+	ASSERT_GE(listener, 0);
-+
-+	pid = fork();
-+	ASSERT_GE(pid, 0);
-+
-+	if (pid == 0)
-+		exit(syscall(__NR_getppid) != USER_NOTIF_MAGIC);
-+
-+
-+	ASSERT_EQ(ioctl(listener, SECCOMP_IOCTL_NOTIF_RECV, &req), 0);
-+
-+	ASSERT_EQ(prlimit(pid, RLIMIT_NOFILE, &lim, NULL), 0);
-+
-+	addfd.srcfd = memfd;
-+	addfd.newfd_flags = O_CLOEXEC;
-+	addfd.newfd = 0;
-+	addfd.id = req.id;
-+	addfd.flags = 0;
-+
-+	/* Should probably spot check /proc/sys/fs/file-nr */
-+	EXPECT_EQ(ioctl(listener, SECCOMP_IOCTL_NOTIF_ADDFD, &addfd), -1);
-+	EXPECT_EQ(errno, EMFILE);
-+
-+	addfd.newfd = 100;
-+	addfd.flags = SECCOMP_ADDFD_FLAG_SETFD;
-+	EXPECT_EQ(ioctl(listener, SECCOMP_IOCTL_NOTIF_ADDFD, &addfd), -1);
-+	EXPECT_EQ(errno, EBADF);
-+
-+	resp.id = req.id;
-+	resp.error = 0;
-+	resp.val = USER_NOTIF_MAGIC;
-+
-+	EXPECT_EQ(ioctl(listener, SECCOMP_IOCTL_NOTIF_SEND, &resp), 0);
-+
-+	/* Wait for child to finish. */
-+	EXPECT_EQ(waitpid(pid, &status, 0), pid);
-+	EXPECT_EQ(true, WIFEXITED(status));
-+	EXPECT_EQ(0, WEXITSTATUS(status));
-+
-+	close(memfd);
-+}
-+
- /*
-  * TODO:
-  * - expand NNP testing
--- 
-2.25.1
+ #ifdef CONFIG_SPARSEMEM_VMEMMAP
 
+
+> +
+> +		request_resource(&iomem_resource, res);
+> +	}
+> +}
+> +
+>  void __init paging_init(void)
+>  {
+>  	setup_vm_final();
+> @@ -524,6 +545,7 @@ void __init paging_init(void)
+>  	sparse_init();
+>  	setup_zero_page();
+>  	zone_sizes_init();
+> +	resource_init();
+>  }
+>
+>  #ifdef CONFIG_SPARSEMEM_VMEMMAP
