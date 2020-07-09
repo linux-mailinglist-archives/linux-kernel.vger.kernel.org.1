@@ -2,97 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55C4F21ABA6
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 01:30:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 487CB21ABBA
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 01:37:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726778AbgGIXaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 19:30:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46688 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726444AbgGIXaw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 19:30:52 -0400
-Received: from embeddedor (unknown [201.162.245.14])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 49A172064B;
-        Thu,  9 Jul 2020 23:30:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594337451;
-        bh=Bv/ub4CQqHwvYCfl+YYJjzybFA59mDcgMIlvajDLMI4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=TovEyNTrcUkiwQ8FzBnAzVv3mTlzmedw6jUKrgrjKJZiS82whlgAyFBh4AX5WtACH
-         m23su+pUhI9nmju/CyONCbYFZ1YwJIldT1MjeM1GZkNj1mMLUKHQyboEzH2NC216W7
-         S9QSkvjSymBGiQZ7CeYfj6rTe5U3VRTFM2dBzha8=
-Date:   Thu, 9 Jul 2020 18:36:23 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH][next] IB/hfi1: Remove unnecessary fall-through markings
-Message-ID: <20200709233623.GA21949@embeddedor>
+        id S1726817AbgGIXhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 19:37:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726775AbgGIXhk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 19:37:40 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DF65C08E806
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 16:37:40 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id t6so1674567pgq.1
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 16:37:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=49nvohObD7NIzUF0BfwI36tqxmTFWboJS8SYsz0QQGI=;
+        b=d1fhruaq3iAgLLhUtayeHvRegHINeqtG7TBQnzxSkGDJxNJfqFuwBJvMmZzBA8RONW
+         3EWhHxsZlCQudvK8/fMc0kPEU+vuxkCxX/cWcbSfPQuI2x2MFgBmsRwJSfUOp2JxxBB7
+         5QyFewNxU0UWUNDkYBxZQ7ozqL4/qf61sjw2M=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=49nvohObD7NIzUF0BfwI36tqxmTFWboJS8SYsz0QQGI=;
+        b=SHvjBtIDsKfA56reN0d0b/XWRH3AIPSXDWvrI5EkppuTQYE0LjPsKgWumIg4MhpezW
+         K2yjLy7ABEKnaqFzVPTDYvsUu8ILLmvG1juRFmel4ORC0BVEzNSTKCcBi/PD9UtOo3sg
+         T/u7lVjW9RFncc9RYtnhrFa5TWS4ijTogtUwT9BbbB6RuieHn7nRcSDJy1puzCyZsw+M
+         c6u0guoTSnmk32U69zFri6u+rjsIS1dP7FUdVQxc2AqT75E6XjMtOJ1dvN/V0cYCAz97
+         1zkzgkUi7wV1ozSDz9828fvYjO/OIMa+Ug4marzK2FE1a7M3JgWbeIekJ0KDKlyxPTE0
+         sbgA==
+X-Gm-Message-State: AOAM530iMGzs7g8cqHN+k3QTM1cE6CDtFnARqjMfkC9FsCdPMMF/+tHY
+        AXxkAynbPGefOYFPajWuKzqRWw==
+X-Google-Smtp-Source: ABdhPJyMVLjQTkrAT893hzGYB34NF584FlAsBE8NVHx+rx9CzStVPpQjoezHz1rmqBiAMWCaH7OGyQ==
+X-Received: by 2002:a63:3c09:: with SMTP id j9mr54205575pga.206.1594337859635;
+        Thu, 09 Jul 2020 16:37:39 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id q20sm3987518pfn.111.2020.07.09.16.37.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Jul 2020 16:37:38 -0700 (PDT)
+Date:   Thu, 9 Jul 2020 16:37:37 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        "Andersen, John" <john.s.andersen@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Liran Alon <liran.alon@oracle.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Kristen Carlson Accardi <kristen@linux.intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Juergen Gross <jgross@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Oliver Neukum <oneukum@suse.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Fenghua Yu <fenghua.yu@intel.com>, reinette.chatre@intel.com,
+        vineela.tummalapalli@intel.com,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        caoj.fnst@cn.fujitsu.com, Baoquan He <bhe@redhat.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Dan Williams <dan.j.williams@intel.com>, eric.auger@redhat.com,
+        aaronlewis@google.com, Peter Xu <peterx@redhat.com>,
+        makarandsonare@google.com,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kvm list <kvm@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>
+Subject: Re: [PATCH 2/4] KVM: x86: Introduce paravirt feature CR0/CR4 pinning
+Message-ID: <202007091634.528B6641@keescook>
+References: <0fa9682e-59d4-75f7-366f-103d6b8e71b8@intel.com>
+ <20200618144314.GB23@258ff54ff3c0>
+ <124a59a3-a603-701b-e3bb-61e83d70b20d@intel.com>
+ <20200707211244.GN20096@linux.intel.com>
+ <19b97891-bbb0-1061-5971-549a386f7cfb@intel.com>
+ <31eb5b00-9e2a-aa10-0f20-4abc3cd35112@redhat.com>
+ <20200709154412.GA25@64c96d3be97b>
+ <af6ac772-318d-aab0-ce5f-55cf92f6e96d@intel.com>
+ <CALCETrWxt0CHUoonWX1fgbM46ydJPQZhj8Q=G+45EG4wW3wZqQ@mail.gmail.com>
+ <6040c3b3-cac9-cc0e-f0de-baaa274920a2@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <6040c3b3-cac9-cc0e-f0de-baaa274920a2@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reorganize the code a bit in a more standard way[1] and remove
-unnecessary fall-through markings.
+On Thu, Jul 09, 2020 at 09:22:09AM -0700, Dave Hansen wrote:
+> On 7/9/20 9:07 AM, Andy Lutomirski wrote:
+> > On Thu, Jul 9, 2020 at 8:56 AM Dave Hansen <dave.hansen@intel.com> wrote:
+> >> On 7/9/20 8:44 AM, Andersen, John wrote:
+> >>>         Bits which are allowed to be pinned default to WP for CR0 and SMEP,
+> >>>         SMAP, and UMIP for CR4.
+> >> I think it also makes sense to have FSGSBASE in this set.
+> >>
+> >> I know it hasn't been tested, but I think we should do the legwork to
+> >> test it.  If not in this set, can we agree that it's a logical next step?
+> > I have no objection to pinning FSGSBASE, but is there a clear
+> > description of the threat model that this whole series is meant to
+> > address?  The idea is to provide a degree of protection against an
+> > attacker who is able to convince a guest kernel to write something
+> > inappropriate to CR4, right?  How realistic is this?
+> 
+> If a quick search can find this:
+> 
+> > https://googleprojectzero.blogspot.com/2017/05/exploiting-linux-kernel-via-packet.html
+> 
+> I'd pretty confident that the guys doing actual bad things have it in
+> their toolbox too.
 
-[1] https://lore.kernel.org/lkml/20200708054703.GR207186@unreal/
+Right, it's common (see my commit log in 873d50d58f67), and having this
+enforced by the hypervisor is WAY better since it'll block gadgets or
+ROP.
 
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/infiniband/hw/hfi1/chip.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/infiniband/hw/hfi1/chip.c b/drivers/infiniband/hw/hfi1/chip.c
-index 15f9c635f292..674c07590af8 100644
---- a/drivers/infiniband/hw/hfi1/chip.c
-+++ b/drivers/infiniband/hw/hfi1/chip.c
-@@ -7317,11 +7317,11 @@ static u16 link_width_to_bits(struct hfi1_devdata *dd, u16 width)
- 	case 1: return OPA_LINK_WIDTH_1X;
- 	case 2: return OPA_LINK_WIDTH_2X;
- 	case 3: return OPA_LINK_WIDTH_3X;
-+	case 4: return OPA_LINK_WIDTH_4X;
- 	default:
- 		dd_dev_info(dd, "%s: invalid width %d, using 4\n",
- 			    __func__, width);
--		/* fall through */
--	case 4: return OPA_LINK_WIDTH_4X;
-+		return OPA_LINK_WIDTH_4X;
- 	}
- }
- 
-@@ -12898,10 +12898,6 @@ u32 chip_to_opa_pstate(struct hfi1_devdata *dd, u32 chip_pstate)
- {
- 	/* look at the HFI meta-states only */
- 	switch (chip_pstate & 0xf0) {
--	default:
--		dd_dev_err(dd, "Unexpected chip physical state of 0x%x\n",
--			   chip_pstate);
--		/* fall through */
- 	case PLS_DISABLED:
- 		return IB_PORTPHYSSTATE_DISABLED;
- 	case PLS_OFFLINE:
-@@ -12914,6 +12910,10 @@ u32 chip_to_opa_pstate(struct hfi1_devdata *dd, u32 chip_pstate)
- 		return IB_PORTPHYSSTATE_LINKUP;
- 	case PLS_PHYTEST:
- 		return IB_PORTPHYSSTATE_PHY_TEST;
-+	default:
-+		dd_dev_err(dd, "Unexpected chip physical state of 0x%x\n",
-+			   chip_pstate);
-+		return IB_PORTPHYSSTATE_DISABLED;
- 	}
- }
- 
 -- 
-2.27.0
-
+Kees Cook
