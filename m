@@ -2,115 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8336721A68B
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 20:01:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7AD121A673
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 19:58:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726736AbgGISBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 14:01:32 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:22363 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726649AbgGISBb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 14:01:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594317690;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RMDjyEYcFI6gdBDQideBKxDS0JZBtvUdaUYhw9E2e5k=;
-        b=NpBWWMz4WjtY4x9hDfADJQLgaHk4NCyu1os8Ne/tUIbfsiO6Q26ES7VOt5B46+v69tMjZ2
-        bhw4kIv0qxCt6QGipxbMyuZK7SjFw0kzTgUegzWtYy4i1mqRAoXMm7RnyiJjnDWAs0Tw0B
-        zlwXHRxntSjrFRX+bKPqWjJG3VnUyWg=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-69-yOW7uibQN6--UuoOM_lurQ-1; Thu, 09 Jul 2020 14:01:28 -0400
-X-MC-Unique: yOW7uibQN6--UuoOM_lurQ-1
-Received: by mail-wm1-f71.google.com with SMTP id v11so2953596wmb.1
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 11:01:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RMDjyEYcFI6gdBDQideBKxDS0JZBtvUdaUYhw9E2e5k=;
-        b=n5GiosLER38S8ma0qOrIB0XEt92jbGunybGDfpz7PNg9bMm6R/HqGlVwbn49KqPzmx
-         uCEtqykrxcOuzST+I0FmYm4UKDwcJE0G+SxXphRJOhJAVAmyGUMdhLIeoev98EI1XXKs
-         w1P7PTVAkvX7Bj5AawFPNuAZg3nz0VFcup+cPpl3XWgSo5L+CowHh2864kkuVdV9/7k4
-         jVriNlkeiIqeykjrrUnCDyePqGeRGae5qhhyWwYaZe+4u8g218eGJfpjfv2waeTHvzFt
-         +/4Ebuu5fgYuggPx1L5I05iivcpp/fsh43JpQcwx5naKH23/5XLsbWeLyG5eqTn6r6Tr
-         WrCA==
-X-Gm-Message-State: AOAM531N1KHBJ5/EGCSH58lyjIqKiiRnuP7DOiRJz+jukmos8Tvp3Ejo
-        Uy4H+kU5pIDWSjYtGVqK1vchcZMtN1IhVCnDgQ8PBNFT9RHjMnwTgWrqwsL8erIPKjhmj9QdQce
-        MsMV/NvQs5aja01xoip5mipcO
-X-Received: by 2002:adf:efc9:: with SMTP id i9mr68299606wrp.77.1594317687695;
-        Thu, 09 Jul 2020 11:01:27 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzry8iHdlGY/tXFHdCmrjjNroFcuFEkfGZh1gKUcbnkdVacPAMWf+y7WZrotWreuoms1y+FXg==
-X-Received: by 2002:adf:efc9:: with SMTP id i9mr68299581wrp.77.1594317687435;
-        Thu, 09 Jul 2020 11:01:27 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:9541:9439:cb0f:89c? ([2001:b07:6468:f312:9541:9439:cb0f:89c])
-        by smtp.gmail.com with ESMTPSA id w17sm6397333wra.42.2020.07.09.11.01.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Jul 2020 11:01:26 -0700 (PDT)
-Subject: Re: [PATCH 12/24] scsi: virtio_scsi: Demote seemingly unintentional
- kerneldoc header
-To:     Lee Jones <lee.jones@linaro.org>, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        virtualization@lists.linux-foundation.org
-References: <20200709174556.7651-1-lee.jones@linaro.org>
- <20200709174556.7651-13-lee.jones@linaro.org>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <ab85392c-2095-4023-4e20-503ee248a538@redhat.com>
-Date:   Thu, 9 Jul 2020 20:01:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1728609AbgGIR6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 13:58:36 -0400
+Received: from mga03.intel.com ([134.134.136.65]:23876 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726615AbgGIR6f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 13:58:35 -0400
+IronPort-SDR: aS+QJROa/Ug7rUY1ifeOg6srILqk04JhVAOwOIwPhOb1JA42rIeaU5wTADepgKSm45RfgNA/pZ
+ fJJF8bGXGyaw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9677"; a="148055029"
+X-IronPort-AV: E=Sophos;i="5.75,332,1589266800"; 
+   d="scan'208";a="148055029"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jul 2020 10:58:34 -0700
+IronPort-SDR: Vb+OfmhMj2iAtUuI5rG8sMS5Hw7OJUYKMj5Ms5QowwyyY9kueZtN3L7Pqgob/yZounxzyaJcHu
+ zwZP6SaQ5daw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,332,1589266800"; 
+   d="scan'208";a="457995504"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga005.jf.intel.com with ESMTP; 09 Jul 2020 10:58:34 -0700
+Date:   Thu, 9 Jul 2020 11:05:13 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     "Liu, Yi L" <yi.l.liu@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Tian, Jun J" <jun.j.tian@intel.com>,
+        "Sun, Yi Y" <yi.y.sun@intel.com>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "peterx@redhat.com" <peterx@redhat.com>,
+        "Wu, Hao" <hao.wu@intel.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH v3 06/14] vfio/type1: Add VFIO_IOMMU_PASID_REQUEST
+ (alloc/free)
+Message-ID: <20200709110513.3ff50f99@jacob-builder>
+In-Reply-To: <20200709082751.320742ab@x1.home>
+References: <1592988927-48009-1-git-send-email-yi.l.liu@intel.com>
+        <1592988927-48009-7-git-send-email-yi.l.liu@intel.com>
+        <20200702151832.048b44d1@x1.home>
+        <CY4PR11MB1432DD97F44EB8AA5CCC87D8C36A0@CY4PR11MB1432.namprd11.prod.outlook.com>
+        <DM5PR11MB1435B159DA10C8301B89A6F0C3670@DM5PR11MB1435.namprd11.prod.outlook.com>
+        <20200708135444.4eac48a4@x1.home>
+        <DM5PR11MB14358A8797E3C02E50B37FFEC3640@DM5PR11MB1435.namprd11.prod.outlook.com>
+        <MWHPR11MB16456D12135AA36BA16CE4208C640@MWHPR11MB1645.namprd11.prod.outlook.com>
+        <DM5PR11MB14357DC99EFCDE7E02944E2EC3640@DM5PR11MB1435.namprd11.prod.outlook.com>
+        <MWHPR11MB1645F822D9267005AE5BCE528C640@MWHPR11MB1645.namprd11.prod.outlook.com>
+        <DM5PR11MB143577F0C21EDB82B82EEB35C3640@DM5PR11MB1435.namprd11.prod.outlook.com>
+        <DM5PR11MB143584D5A0AAE13E0D2D04B7C3640@DM5PR11MB1435.namprd11.prod.outlook.com>
+        <20200709082751.320742ab@x1.home>
+Organization: OTC
+X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20200709174556.7651-13-lee.jones@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/07/20 19:45, Lee Jones wrote:
-> This is the only use of kerneldoc in the sourcefile and no
-> descriptions are provided.
-> 
-> Fixes the following W=1 kernel build warning(s):
-> 
->  drivers/scsi/virtio_scsi.c:109: warning: Function parameter or member 'vscsi' not described in 'virtscsi_complete_cmd'
->  drivers/scsi/virtio_scsi.c:109: warning: Function parameter or member 'buf' not described in 'virtscsi_complete_cmd'
-> 
-> Cc: "Michael S. Tsirkin" <mst@redhat.com>
-> Cc: Jason Wang <jasowang@redhat.com>
-> Cc: Paolo Bonzini <pbonzini@redhat.com>
-> Cc: Stefan Hajnoczi <stefanha@redhat.com>
-> Cc: virtualization@lists.linux-foundation.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/scsi/virtio_scsi.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/scsi/virtio_scsi.c b/drivers/scsi/virtio_scsi.c
-> index 0e0910c5b9424..56875467e4984 100644
-> --- a/drivers/scsi/virtio_scsi.c
-> +++ b/drivers/scsi/virtio_scsi.c
-> @@ -100,7 +100,7 @@ static void virtscsi_compute_resid(struct scsi_cmnd *sc, u32 resid)
->  		scsi_set_resid(sc, resid);
->  }
->  
-> -/**
-> +/*
->   * virtscsi_complete_cmd - finish a scsi_cmd and invoke scsi_done
->   *
->   * Called with vq_lock held.
-> 
+On Thu, 9 Jul 2020 08:27:51 -0600
+Alex Williamson <alex.williamson@redhat.com> wrote:
 
-Acked-by: Paolo Bonzini <pbonzini@redhat.com>
+> > So I'm wondering can we fall back to prior proposal which only free
+> > one PASID for a free request. how about your opinion?  
+> 
+> Doesn't it still seem like it would be a useful user interface to have
+> a mechanism to free all pasids, by calling with exactly [0, MAX_UINT]?
+> I'm not sure if there's another use case for this given than the user
+> doesn't have strict control of the pasid values they get.  Thanks,
 
+Yes, I agree free all pasids of a guest is a useful interface. Since all
+PASIDs under one VM is already tracked by an IOASID set with its XArray,
+I don't see a need to track again in VFIO.
+
+Shall we only free one & free all? IMHO, free range isn't that useful
+and not really symmetric to PASID allocation in that allocation is one
+at a time.
+
+Can we just add a new flag, e.g.  VFIO_IOMMU_FREE_ALL_PASID, and
+ignored th range in free?
