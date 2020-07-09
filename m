@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8653521A1BA
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 16:04:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E6D421A1B1
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 16:04:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728150AbgGIOEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 10:04:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42734 "EHLO
+        id S1728017AbgGIODi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 10:03:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727949AbgGIODd (ORCPT
+        with ESMTP id S1727972AbgGIODf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 10:03:33 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4FEDC08C5CE
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 07:03:33 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id a6so6347696wmm.0
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 07:03:33 -0700 (PDT)
+        Thu, 9 Jul 2020 10:03:35 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9B07C08C5DC
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 07:03:34 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id o11so2502310wrv.9
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 07:03:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ztEfvDOenwmzhW91KrXpwCBICtYWbElja0rQb72V3Pc=;
-        b=CUBY/gohnMihUfeW7hYoZa4qRuiuQR6oligMzAnmkB6qyrwohT837xR+hdTJY71AuN
-         vRGEetbFmM/z0UeTMsaZw5vbs1h/T1iTja3IZz3OP/WiG4AL9OuShqkElaI2f1YXBH8N
-         6XSr/k0UULPgkxEILbww2PnvUk0cDm4MNUDd3kDy63uMWlj8XQ+NflE4Tr3+csuMTxoH
-         l8ylr0QVrmNAiZeWyxQMNGm8S0Nivf79M+AGDQF871Q9Bma1NQwIxANBmPBYsXqHAba1
-         fpLidTdFSDfa/od40aFvbL5kEI8A4z0PPCRZwzq892JpUlG9EDMMRE57RkC/ncskpI5O
-         GmWw==
+        bh=eRj3Oh7sZBJWwDgWc3ORgJ0pvlwZ3+3t0oGyKYtF1AQ=;
+        b=TvqytnKA8EMxKSNy7l2um5FuNdy3SYJ1dCG/7d4j6F6McuYKM8i2ZJD6vKXk0zi0sW
+         iLOnpHvZFdRKvuQ4F/qk2i4hnaCpqz3S+KTaObiu/vxoojV/loemRU+qqb69JvOiKPDP
+         L9xNxHrXw8FYaQ2Qu+2GrfYO2+fFLb7lmV+omk+L5cNjBloyV2TtY/zbzYyBYQnFimYN
+         8AyZi1sj7XAKYvMWS2Bioq/QOag3KODrknXJbFSNxV1V8A4z1fTwFOLHwC1SyhPGv+bZ
+         Ml24pU2qObO2sXH93W147qiqJXbCXO17gVDejiU3pLSkOldsS0DL7DUgMX1yuOwiNtJL
+         7Ltg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ztEfvDOenwmzhW91KrXpwCBICtYWbElja0rQb72V3Pc=;
-        b=rsNGDDHtGWJ85Pd8M+nXDsA8t4ghYukj52DRPFQvFaB8dvE3IhWLlMJb2qFSVVE/Y5
-         Md8lgf8xGCyUPAoB1Ue0JO8o8r1RXXlp0afOJ87su965HUPEbeFRVq5X9gzMkBE7UYzB
-         /E5fePOqdtuE4c6z51SI8KngKaU0yU/2YbeCOASR46MUxutzMDFa0jHwVaAFLyDNMoTn
-         JdKyOQSDY8hinO/oaUbkwJWLxLq/lfvt9ycYSRjWmt/AO8db/HueKXoGXMTbCDzKyO7k
-         RKYZtowj8kXWkPeTcgv6JHgLY3f7nm06brfvp+xDQm9pKSCd2RZmS7Fdnw/EU4WuthxP
-         p1bQ==
-X-Gm-Message-State: AOAM5304nhEqSq1dqVtfUpFbToX/mcAYh6p3pDEYyERPqy9RqaPv2KpK
-        ffj1lGQVPhyKmhUUSI6f4J0=
-X-Google-Smtp-Source: ABdhPJx/ayH+Q5ywOwP/RWCOz75bR/TbNDJfRCtUuCjaJiMQMCnozgskzfgigx+WYPDigoa5e69SWg==
-X-Received: by 2002:a1c:dfc5:: with SMTP id w188mr170663wmg.182.1594303412263;
-        Thu, 09 Jul 2020 07:03:32 -0700 (PDT)
+        bh=eRj3Oh7sZBJWwDgWc3ORgJ0pvlwZ3+3t0oGyKYtF1AQ=;
+        b=ejLOzQ7Jw7c+Acxsd6pCA8lwOCgHZea16jjZdHc8Ni2aa6q5n0+hj7d42KtWt48Txy
+         6pJpxPuCjvD0ibtHkvPNkIOV1+uNKiGJroDDpbE4a8C+NTJ8hGE3fi7UGuIsOivVR4qg
+         aKxC9br2aDi8vsjtKqFaapVaRtXKxtHgq3U5cYo/BvslkiPE4lnljA8dPlBVYJuYm2hD
+         YzSTb6eKkug0k66bf7ALcX1xHj3e/gwS1gYyGCTPA3cjGwm80qXaZ8mRXeSuC0z/wu2d
+         yBMhgJ9iC7qEgE+gwqjUzm3bPay6SERmKsp+9MzuaiN8396fJC7l0zbMQDyA0BcsqZFU
+         JAug==
+X-Gm-Message-State: AOAM532UOMw2yZNh4lN7mZY5tWlqY0dnKQiXihXLjQdROMejuixmG1KH
+        V9TwidpWOYW1J4cBSNql4EA=
+X-Google-Smtp-Source: ABdhPJw84FXJpRMyrNsB+Uk7XKJyvE///uOAMmssgYl7VQxKTPBERcN45fyPtDnuQOC7hHl3ZBZChg==
+X-Received: by 2002:a5d:420e:: with SMTP id n14mr67522767wrq.164.1594303413447;
+        Thu, 09 Jul 2020 07:03:33 -0700 (PDT)
 Received: from clement-Latitude-7490.numericable.fr (213-245-241-245.rev.numericable.fr. [213.245.241.245])
-        by smtp.gmail.com with ESMTPSA id s8sm5545256wru.38.2020.07.09.07.03.31
+        by smtp.gmail.com with ESMTPSA id s8sm5545256wru.38.2020.07.09.07.03.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jul 2020 07:03:31 -0700 (PDT)
+        Thu, 09 Jul 2020 07:03:32 -0700 (PDT)
 From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
 To:     Rob Herring <robh@kernel.org>,
         Tomeu Vizoso <tomeu.vizoso@collabora.com>,
@@ -59,9 +59,9 @@ To:     Rob Herring <robh@kernel.org>,
         Chen-Yu Tsai <wens@csie.org>
 Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
         =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-Subject: [PATCH v3 05/14] drm/panfrost: use spinlock instead of atomic
-Date:   Thu,  9 Jul 2020 16:03:13 +0200
-Message-Id: <20200709140322.131320-6-peron.clem@gmail.com>
+Subject: [PATCH v3 06/14] drm/panfrost: properly handle error in probe
+Date:   Thu,  9 Jul 2020 16:03:14 +0200
+Message-Id: <20200709140322.131320-7-peron.clem@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200709140322.131320-1-peron.clem@gmail.com>
 References: <20200709140322.131320-1-peron.clem@gmail.com>
@@ -73,140 +73,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert busy_count to a simple int protected by spinlock.
+Introduce a boolean to know if opp table has been added.
+
+With this, we can call panfrost_devfreq_fini() in case of error
+and release what has been initialised.
 
 Reviewed-by: Steven Price <steven.price@arm.com>
 Reviewed-by: Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
 Signed-off-by: Clément Péron <peron.clem@gmail.com>
 ---
- drivers/gpu/drm/panfrost/panfrost_devfreq.c | 43 +++++++++++++++------
- drivers/gpu/drm/panfrost/panfrost_devfreq.h |  9 ++++-
- 2 files changed, 40 insertions(+), 12 deletions(-)
+ drivers/gpu/drm/panfrost/panfrost_devfreq.c | 25 ++++++++++++++++-----
+ drivers/gpu/drm/panfrost/panfrost_devfreq.h |  1 +
+ 2 files changed, 20 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/gpu/drm/panfrost/panfrost_devfreq.c b/drivers/gpu/drm/panfrost/panfrost_devfreq.c
-index 962550363391..78753cfb59fb 100644
+index 78753cfb59fb..d9007f44b772 100644
 --- a/drivers/gpu/drm/panfrost/panfrost_devfreq.c
 +++ b/drivers/gpu/drm/panfrost/panfrost_devfreq.c
-@@ -12,16 +12,12 @@
- 
- static void panfrost_devfreq_update_utilization(struct panfrost_devfreq *pfdevfreq)
- {
--	ktime_t now;
--	ktime_t last;
--
--	if (!pfdevfreq->devfreq)
--		return;
-+	ktime_t now, last;
- 
- 	now = ktime_get();
- 	last = pfdevfreq->time_last_update;
- 
--	if (atomic_read(&pfdevfreq->busy_count) > 0)
-+	if (pfdevfreq->busy_count > 0)
- 		pfdevfreq->busy_time += ktime_sub(now, last);
- 	else
- 		pfdevfreq->idle_time += ktime_sub(now, last);
-@@ -59,10 +55,14 @@ static int panfrost_devfreq_get_dev_status(struct device *dev,
- {
- 	struct panfrost_device *pfdev = dev_get_drvdata(dev);
- 	struct panfrost_devfreq *pfdevfreq = &pfdev->pfdevfreq;
-+	unsigned long irqflags;
-+
-+	status->current_frequency = clk_get_rate(pfdev->clock);
-+
-+	spin_lock_irqsave(&pfdevfreq->lock, irqflags);
- 
- 	panfrost_devfreq_update_utilization(pfdevfreq);
- 
--	status->current_frequency = clk_get_rate(pfdev->clock);
- 	status->total_time = ktime_to_ns(ktime_add(pfdevfreq->busy_time,
- 						   pfdevfreq->idle_time));
- 
-@@ -70,6 +70,8 @@ static int panfrost_devfreq_get_dev_status(struct device *dev,
- 
- 	panfrost_devfreq_reset(pfdevfreq);
- 
-+	spin_unlock_irqrestore(&pfdevfreq->lock, irqflags);
-+
- 	dev_dbg(pfdev->dev, "busy %lu total %lu %lu %% freq %lu MHz\n",
- 		status->busy_time, status->total_time,
- 		status->busy_time / (status->total_time / 100),
-@@ -100,6 +102,8 @@ int panfrost_devfreq_init(struct panfrost_device *pfdev)
+@@ -101,6 +101,7 @@ int panfrost_devfreq_init(struct panfrost_device *pfdev)
+ 		return 0;
  	else if (ret)
  		return ret;
++	pfdevfreq->opp_of_table_added = true;
  
-+	spin_lock_init(&pfdevfreq->lock);
-+
- 	panfrost_devfreq_reset(pfdevfreq);
+ 	spin_lock_init(&pfdevfreq->lock);
  
+@@ -109,8 +110,10 @@ int panfrost_devfreq_init(struct panfrost_device *pfdev)
  	cur_freq = clk_get_rate(pfdev->clock);
-@@ -162,15 +166,32 @@ void panfrost_devfreq_suspend(struct panfrost_device *pfdev)
  
- void panfrost_devfreq_record_busy(struct panfrost_devfreq *pfdevfreq)
- {
-+	unsigned long irqflags;
+ 	opp = devfreq_recommended_opp(dev, &cur_freq, 0);
+-	if (IS_ERR(opp))
+-		return PTR_ERR(opp);
++	if (IS_ERR(opp)) {
++		ret = PTR_ERR(opp);
++		goto err_fini;
++	}
+ 
+ 	panfrost_devfreq_profile.initial_freq = cur_freq;
+ 	dev_pm_opp_put(opp);
+@@ -119,8 +122,8 @@ int panfrost_devfreq_init(struct panfrost_device *pfdev)
+ 					  DEVFREQ_GOV_SIMPLE_ONDEMAND, NULL);
+ 	if (IS_ERR(devfreq)) {
+ 		DRM_DEV_ERROR(dev, "Couldn't initialize GPU devfreq\n");
+-		dev_pm_opp_of_remove_table(dev);
+-		return PTR_ERR(devfreq);
++		ret = PTR_ERR(devfreq);
++		goto err_fini;
+ 	}
+ 	pfdevfreq->devfreq = devfreq;
+ 
+@@ -131,15 +134,25 @@ int panfrost_devfreq_init(struct panfrost_device *pfdev)
+ 		pfdevfreq->cooling = cooling;
+ 
+ 	return 0;
 +
-+	if (!pfdevfreq->devfreq)
-+		return;
-+
-+	spin_lock_irqsave(&pfdevfreq->lock, irqflags);
-+
- 	panfrost_devfreq_update_utilization(pfdevfreq);
--	atomic_inc(&pfdevfreq->busy_count);
-+
-+	pfdevfreq->busy_count++;
-+
-+	spin_unlock_irqrestore(&pfdevfreq->lock, irqflags);
++err_fini:
++	panfrost_devfreq_fini(pfdev);
++	return ret;
  }
  
- void panfrost_devfreq_record_idle(struct panfrost_devfreq *pfdevfreq)
+ void panfrost_devfreq_fini(struct panfrost_device *pfdev)
  {
--	int count;
-+	unsigned long irqflags;
-+
-+	if (!pfdevfreq->devfreq)
-+		return;
-+
-+	spin_lock_irqsave(&pfdevfreq->lock, irqflags);
+ 	struct panfrost_devfreq *pfdevfreq = &pfdev->pfdevfreq;
  
- 	panfrost_devfreq_update_utilization(pfdevfreq);
--	count = atomic_dec_if_positive(&pfdevfreq->busy_count);
--	WARN_ON(count < 0);
+-	if (pfdevfreq->cooling)
++	if (pfdevfreq->cooling) {
+ 		devfreq_cooling_unregister(pfdevfreq->cooling);
+-	dev_pm_opp_of_remove_table(&pfdev->pdev->dev);
++		pfdevfreq->cooling = NULL;
++	}
 +
-+	WARN_ON(--pfdevfreq->busy_count < 0);
-+
-+	spin_unlock_irqrestore(&pfdevfreq->lock, irqflags);
++	if (pfdevfreq->opp_of_table_added) {
++		dev_pm_opp_of_remove_table(&pfdev->pdev->dev);
++		pfdevfreq->opp_of_table_added = false;
++	}
  }
+ 
+ void panfrost_devfreq_resume(struct panfrost_device *pfdev)
 diff --git a/drivers/gpu/drm/panfrost/panfrost_devfreq.h b/drivers/gpu/drm/panfrost/panfrost_devfreq.h
-index 0697f8d5aa34..3392df1020be 100644
+index 3392df1020be..210269944687 100644
 --- a/drivers/gpu/drm/panfrost/panfrost_devfreq.h
 +++ b/drivers/gpu/drm/panfrost/panfrost_devfreq.h
-@@ -4,6 +4,7 @@
- #ifndef __PANFROST_DEVFREQ_H__
- #define __PANFROST_DEVFREQ_H__
- 
-+#include <linux/spinlock.h>
- #include <linux/ktime.h>
- 
- struct devfreq;
-@@ -14,10 +15,16 @@ struct panfrost_device;
+@@ -15,6 +15,7 @@ struct panfrost_device;
  struct panfrost_devfreq {
  	struct devfreq *devfreq;
  	struct thermal_cooling_device *cooling;
-+
++	bool opp_of_table_added;
+ 
  	ktime_t busy_time;
  	ktime_t idle_time;
- 	ktime_t time_last_update;
--	atomic_t busy_count;
-+	int busy_count;
-+	/*
-+	 * Protect busy_time, idle_time, time_last_update and busy_count
-+	 * because these can be updated concurrently between multiple jobs.
-+	 */
-+	spinlock_t lock;
- };
- 
- int panfrost_devfreq_init(struct panfrost_device *pfdev);
 -- 
 2.25.1
 
