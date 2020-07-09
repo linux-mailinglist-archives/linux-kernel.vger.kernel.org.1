@@ -2,61 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B7A321A086
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 15:09:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B03D221A08A
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 15:11:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726975AbgGINJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 09:09:28 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:35643 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726358AbgGINJ2 (ORCPT
+        id S1726721AbgGINLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 09:11:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726320AbgGINLp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 09:09:28 -0400
-Received: from ip5f5af08c.dynamic.kabel-deutschland.de ([95.90.240.140] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jtWIm-0001QU-LZ; Thu, 09 Jul 2020 13:09:24 +0000
-Date:   Thu, 9 Jul 2020 15:09:24 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Todd Kjos <tkjos@google.com>,
-        Christian Brauner <christian@brauner.io>,
-        Arve =?utf-8?B?SGrDuG5uZXbDpWc=?= <arve@android.com>,
-        Martijn Coenen <maco@android.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] MAINTAINERS: add Hridya and myself into Android
- driver maintainers list
-Message-ID: <20200709130924.alkcskho5miybvd2@wittgenstein>
-References: <20200708231253.3831497-1-surenb@google.com>
- <20200709081820.GB13487@kroah.com>
- <CAEXW_YQ5VoN6DZcfJH_4u5MnRc0vybY7zYH3Y_WD=j3u-RRVHQ@mail.gmail.com>
+        Thu, 9 Jul 2020 09:11:45 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEF08C061A0B;
+        Thu,  9 Jul 2020 06:11:45 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id j80so1692859qke.0;
+        Thu, 09 Jul 2020 06:11:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=dWD301dE5xQ6+5qgKu4psPrGwvipRdbm7OlZT1KZ6JU=;
+        b=ack7JKYYhSdJlutv2jlpeZ02nv//RKssTA+3I7QJ+Ya9GHO38vGncpMoV30iBzGyz1
+         Of4OrCjTjEy9b4UOshdEPpcRUCOE8baZxNnBmRjcAMjtQN4Nm8VXbXwfEFC0RJHqof1L
+         LElaH0obf8fK4lKeAC0fCSFo6DEFMtHESzjCjlGkywPHpVLp3gfvlJ393XYRKhAMSLGQ
+         PFVMvt3yXxYd3oJIVoQerqr3StWLRgaewKXVj2XjGlTHQjJ9RQMlBP+NmQ904GJdCv7j
+         IdMDjPHUEiI3oktBmkV2juYX0r3cdWCDU+baMnKvQYbvEWULkudNNYaT9/obJgY/UzT8
+         Qrdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=dWD301dE5xQ6+5qgKu4psPrGwvipRdbm7OlZT1KZ6JU=;
+        b=MNEz7aqt+cd60XdkvnNfd7HLZTmLXckmfxwTrONQSIzdmWIVWgUCYXPmSu7PcfYKRd
+         kvRsqjh2sFv5HGLwaFh4vMhfQcar1ZROnqw0lZqS7OSJDbVaQOyMdcxhWTJUO7V1FclY
+         ka3JbOKQaiYLcNnxFURmdcsp8pNu9ReiRyUeqHu/W3ctZ/BfOX8pKcA53FBLij4U0rD8
+         Q2+SJwWnNQ5PRjGgiO1WwJMp4rSZYy6tnlTXEm+8uU+OfVhhczCMxamQcbKuwE4QnFYg
+         feO6zZ7LuGxwBTDkk7vlq87byfiFJi8CLfESk3M46RL4RJeGQmypWiPzAenpXdpBXHw6
+         nHng==
+X-Gm-Message-State: AOAM533SYjjYnWlIZGUnDgipjrnVdWh82sFHvSri98jMCgGjhO53KJMl
+        vB4KurvGfRyCxbXMSlK8byw=
+X-Google-Smtp-Source: ABdhPJxxtkzoREVSjiEzvnWjHLnBczww8te6gbgDX94Nc6SedFIANCnWNgY4+ufc0uakedUkGFPbVw==
+X-Received: by 2002:a37:bcb:: with SMTP id 194mr64430179qkl.103.1594300304961;
+        Thu, 09 Jul 2020 06:11:44 -0700 (PDT)
+Received: from archlaptop.localdomain ([165.166.214.225])
+        by smtp.gmail.com with ESMTPSA id z68sm3537153qke.113.2020.07.09.06.11.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Jul 2020 06:11:43 -0700 (PDT)
+Date:   Thu, 9 Jul 2020 09:11:11 -0400
+From:   Ethan Edwards <ethancarteredwards@gmail.com>
+To:     paul@paul-moore.com
+Cc:     stephen.smalley.work@gmail.com, selinux@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] security: selinux: ss: conditional.c fixed a checkpatch
+ warning
+Message-ID: <20200709131111.4mqrge6vjsbfs7ls@archlaptop.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEXW_YQ5VoN6DZcfJH_4u5MnRc0vybY7zYH3Y_WD=j3u-RRVHQ@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 09, 2020 at 09:03:13AM -0400, Joel Fernandes wrote:
-> On Thu, Jul 9, 2020 at 4:18 AM Greg KH <gregkh@linuxfoundation.org> wrote:
-> > And I thought we were deleting ashmem soon?
-> 
-> This seems harder than initially thought. The Android userspace is
-> intertwined with ashmem in various ways (security policies, apps etc).
-> There were various concerns with old apps using /dev/ashmem directly
-> without going through library layers and that such apps could not be
-> upgraded. Various approaches were tried to work around this by
-> different folks to varying degrees of effect. Also, I am no longer
-> with the Android team at Google, but I continue to work with them
-> upstream.
-> 
-> Fwiw, I will continue reviewing this and other Android code from my
-> side. Thanks.
+`sizeof buf` changed to `sizeof(buf)`
 
-Same.
+Signed-off-by: Ethan Edwards <ethancarteredwards@gmail.com>
+---
+ security/selinux/ss/conditional.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/security/selinux/ss/conditional.c b/security/selinux/ss/conditional.c
+index 0cc7cdd58465..90a2f5927e55 100644
+--- a/security/selinux/ss/conditional.c
++++ b/security/selinux/ss/conditional.c
+@@ -215,7 +215,7 @@ int cond_read_bool(struct policydb *p, struct hashtab *h, void *fp)
+ 	if (!booldatum)
+ 		return -ENOMEM;
+ 
+-	rc = next_entry(buf, fp, sizeof buf);
++	rc = next_entry(buf, fp, sizeof(buf));
+ 	if (rc)
+ 		goto err;
+ 
+@@ -416,7 +416,7 @@ int cond_read_list(struct policydb *p, void *fp)
+ 	u32 i, len;
+ 	int rc;
+ 
+-	rc = next_entry(buf, fp, sizeof buf);
++	rc = next_entry(buf, fp, sizeof(buf));
+ 	if (rc)
+ 		return rc;
+ 
+-- 
+2.27.0
+
