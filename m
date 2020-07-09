@@ -2,92 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4C88219CFD
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 12:07:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 738BC219CF5
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 12:06:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726671AbgGIKHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 06:07:02 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:47763 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726497AbgGIKHA (ORCPT
+        id S1726460AbgGIKGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 06:06:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34084 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726298AbgGIKGf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 06:07:00 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1594289219; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=SN9DQ+QBBeWj7EmgAR6uveFVP41a+vYgqlb4wBPMxK0=; b=jYsPUD+UN9s01KRbuoU9HcX9Zrst/6pkchKEUfInKw6SabeAssAGA14wmcr2zmoW0pRCyzED
- BbTWT5GvQ/3k4jRCT38ccERCgcJIBw2TTOtPfDjR4GEGDy/1s3bvKhOUlwNfd0x4VDmy3Yuh
- TNojwSxgGnRRZ1nWXExe9ix0uf8=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 5f06ec2919b27ae9cea5e30c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 09 Jul 2020 10:06:33
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 65E8CC43391; Thu,  9 Jul 2020 10:06:32 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.0.129] (unknown [183.83.142.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rohitkr)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4F15CC433C6;
-        Thu,  9 Jul 2020 10:06:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4F15CC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rohitkr@codeaurora.org
-Subject: Re: [PATCH v3 4/8] include: dt-bindings: sound: Add sc7180-lpass
- bindings header
-To:     Mark Brown <broonie@kernel.org>
-Cc:     devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
-        bgoswami@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com,
-        robh+dt@kernel.org, bjorn.andersson@linaro.org, agross@kernel.org,
-        srinivas.kandagatla@linaro.org, Ajit Pandey <ajitp@codeaurora.org>,
-        linux-kernel@vger.kernel.org
-References: <1594184896-10629-1-git-send-email-rohitkr@codeaurora.org>
- <1594184896-10629-5-git-send-email-rohitkr@codeaurora.org>
- <20200708144528.GT4655@sirena.org.uk>
-From:   Rohit Kumar <rohitkr@codeaurora.org>
-Message-ID: <29d000ad-cea9-8cee-85f4-5a99a49c00c1@codeaurora.org>
-Date:   Thu, 9 Jul 2020 15:36:19 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 9 Jul 2020 06:06:35 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB6F1C061A0B
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 03:06:34 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id w27so1190966qtb.7
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 03:06:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QYZh0HDct7EvWrh08V2VUFBZGUG8j1YW7X9xdQQstqg=;
+        b=JssfrsI9q4a9e/ZI7loh1iE1EJ89c+4Jo4Vznfaao/PSuhSZ9w59Vea2lkPHoQ1nYy
+         V8yDOr4iTZIkyjgAv9UqD7EZthgTxcTrCXvDv/J85BkD8XAxKPh+Qknl3sG4gfRty+3D
+         Ble9sHQeIfzv27PeL06xqDQbNJt4DT//GJAxwKJBivVfAwY8IueNqVKkaSXU1dfPKjSP
+         0TaPUE/sCknBUPPuYKYUwVq5HKQ78QWoJg0Zii5AdXcXZ938sfGSNPblu0PCMgj+Im2K
+         c1E1xnVG/QSDkJa7j/jm1I89QhJ9Hg5QW0VMhFg3niRinw9sgF55+XKBZKvYdwN+K5RQ
+         akFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QYZh0HDct7EvWrh08V2VUFBZGUG8j1YW7X9xdQQstqg=;
+        b=sXuWWY7Ppql9XGy8deZgOjZ4AQGtWEilpHrd3s1e6uqgag8SlMNjDANup4/6Lw+HTL
+         kVTMJy7T2Y6uWfvU6eerRgictDBQxlkocC7hUQ2ozJvZk7fQnU/qA72rbUlZHJKSqHGu
+         IuxH+Vv+Shi5jnZgFe8ujS/BZoyWQpIob7Z+beFzdu3OQpXIzn6m4ptsM0WeY94KzuRX
+         utIS/sI9utIqACGvd1gKYhQYcIB8NeKTjJW0zZmoowAVoE1IKmoUr7xohojqaPM2oWvL
+         uaXw3M8z6AZKWvAWUjP4i3Ki8ch1GFyqBGZjuJ2+lwO9EfBztB3Om/uopb9qtMy6+p6v
+         eC2Q==
+X-Gm-Message-State: AOAM53111boH3X8n4er2BPDKObIJLrPWKgEeEYdiPZ035rmEA6wAz7Il
+        +v6fNAgLXbujYxq8kdx6PtD/qYi8IYFVipTtJewXmM8s
+X-Google-Smtp-Source: ABdhPJzF1XdYKoYcEH2fBYYgsSptyJ+OeZOdaCdGgxgRYXL/oYNVmi9EN0IelvN/YIe700361hL2bl0v7rxTcpS7Hy4=
+X-Received: by 2002:aed:21da:: with SMTP id m26mr45842495qtc.197.1594289193967;
+ Thu, 09 Jul 2020 03:06:33 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200708144528.GT4655@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20200708041600.768775-1-warthog618@gmail.com> <20200708041600.768775-9-warthog618@gmail.com>
+In-Reply-To: <20200708041600.768775-9-warthog618@gmail.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Thu, 9 Jul 2020 12:06:23 +0200
+Message-ID: <CAMpxmJUbd6tFp12q7+iEW5DUEvLdDKhnNMRChatRUUzvshC=iw@mail.gmail.com>
+Subject: Re: [PATCH 08/17] gpiolib: cdev: use blocking notifier call chain
+ instead of atomic
+To:     Kent Gibson <warthog618@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jul 8, 2020 at 6:19 AM Kent Gibson <warthog618@gmail.com> wrote:
+>
+> Replace usage of atomic_notifier_call_chain with
+> blocking_notifier_call_chain as the notifier function,
+> lineinfo_changed_notify, calls gpio_desc_to_lineinfo,
+> which calls pinctrl_gpio_can_use_line, which can sleep.
+>
+> The chain isn't being called from an atomic context so the
+> the blocking notifier is a suitable substitute.
+>
+> Signed-off-by: Kent Gibson <warthog618@gmail.com>
 
-On 7/8/2020 8:15 PM, Mark Brown wrote:
-> On Wed, Jul 08, 2020 at 10:38:12AM +0530, Rohit kumar wrote:
->> From: Ajit Pandey <ajitp@codeaurora.org>
->>
->> Add header defining dai-id and mclk id for SC7180 lpass soc.
->>
->> Signed-off-by: Ajit Pandey <ajitp@codeaurora.org>
->> ---
-> This one is missing a signoff as well, and I can't seem to see any
-> reference to this header in the bindings document patches?
+In the back of my mind I still think I chose atomic notifiers for a
+reason but I can't remember it now. Anyway, we can apply it and see if
+anything bad happens and potentially just revert it.
 
-Thanks Mark for reviewing. I will add it documentation in next patchset.
-
-Thanks,
-
-Rohit
-
--- 
-Qualcomm INDIA, on behalf of Qualcomm Innovation Center, Inc.is a member
-of the Code Aurora Forum, hosted by the Linux Foundation.
-
+Bart
