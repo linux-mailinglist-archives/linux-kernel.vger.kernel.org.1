@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB59421A1B4
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 16:04:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FD9621A1B8
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 16:04:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728075AbgGIODo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 10:03:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42766 "EHLO
+        id S1728126AbgGIOD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 10:03:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728057AbgGIODl (ORCPT
+        with ESMTP id S1728043AbgGIODm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 10:03:41 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 454D2C08C5DC
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 07:03:41 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id z13so2509375wrw.5
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 07:03:41 -0700 (PDT)
+        Thu, 9 Jul 2020 10:03:42 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65374C08C5CE
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 07:03:42 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id b6so2487189wrs.11
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 07:03:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=dcu4SndGV5Tss4rBZKTNWEr/Y8nrFq0nn6EDq7ivZDo=;
-        b=JeUNWsNgXbbHWdzNwV8DR/fxWrHOaJhAiPJovG4vKr8ythoAoJ08L4/HJE3vSZoGyg
-         miP1i8jMb3TBa58bPs9dzrAL9BNc6hdx6URpUvU0/V1NZ2L/Oe513SIgicQydG031DpV
-         CpZ/mSDZmlpHwRlXHzfAjVcVivLZVX5XZupXuQvFwXbR8jYz39D/si/Vl6GhLR5NVJ8G
-         9y7GrslfmI9yzpEXDIYyQWBcqlGPkHBHT28bFXixZuEA4fuUeYFvJgOqoPP6DvC6ylhG
-         FW9SymR3OTCJ69ldpO8It/zlgwY1BnZlDZS8IQzxxEmfWM7qVnjiJlTOUzOhugB1jhO6
-         BFUg==
+        bh=IGSDRqVm1JOZ64MgS3vkOb+1FLTRNpff/hgpbfnfooY=;
+        b=QltWwipSdHi08KdX6oNOYrCOU3nuRZ2oqlCna2xNWmwU93UXHzqIe6EhlAVKTSoKYg
+         RC12Xg33XJ6+bMKWAoKIhFaPw4BpbWY6BCUiue1z5RTvYl7ilsYPhf1Ceo+Lw0BGFAL9
+         uJTV6imSHnZj/Zsj0nCjEaK50qaHZZ7IcyF84LWWEFTQq53BTWRBjA1DcYAZi3xMMPXj
+         Txr/SOUOwjuRevz5DC4m7GosDUgWqm4YEaCcw9u+TiMgLxMz8bM1U/W+Ocv/6Vf3fyE9
+         J385tuU3tSivLhmwdnC6mFCLKTkdC+kx9kthXrtarIhU/d/5k16B4W1LgC1HekkobzU9
+         iaAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=dcu4SndGV5Tss4rBZKTNWEr/Y8nrFq0nn6EDq7ivZDo=;
-        b=FPVUDJuW2O0wwp+8+rIb9383+O/ZArouCYQ0HfNa5noU1EPqouWYHWrDCXpn/4x2yO
-         pAH1BkzVWRe6hYHZssyWUleCcT5sj8Sg5htM6OScZHvThSTSwXoqX5hBzYDu5zfX/QcH
-         GhO+SVbhE5MJW1s6QYQK+krSIPPcvcbf/1pHv4hEwe9uCQnZPSkvcxvbbBsPyO6LLfTD
-         BW6LbMPcU2NerMOHcgGZqBR4LgkieJGa3/YJ90+45n9YLpOPDOx0tKrXQD3DN/j4mQp7
-         Ey9YBVIZl2YbrJEmTZcle05Kyxd539TJpwZTrv6WS25DP/LgkjV1t93uye8sm82UoPFP
-         6PhA==
-X-Gm-Message-State: AOAM53396TgeoE5skXey8u9kxYm4sr5Z8eAcJcob6t19WeSeEeLasXxP
-        XuL5xFXZLvS8eOisvnlwZ2n66PHCycc=
-X-Google-Smtp-Source: ABdhPJzpkoGDkREmIoP1jIdxUD7tsYkEzzBcGj/mODktAXM4oPSJ2LpVO3mDm+oHE19inD4vm1bLzg==
-X-Received: by 2002:a5d:66ca:: with SMTP id k10mr52588436wrw.244.1594303419826;
-        Thu, 09 Jul 2020 07:03:39 -0700 (PDT)
+        bh=IGSDRqVm1JOZ64MgS3vkOb+1FLTRNpff/hgpbfnfooY=;
+        b=GXaV5y4TNFKO5GlWd7anQ9yqZmCUIGacXWi6CTWhB2QEVNjg6RmIsJTZkPPCkqWNIh
+         BDDqucwLyUSiUyJ6LWANdbanWG+Sf9LI87Uhf8X0oR/dsGIug8dbB7ySe9A8Ck+PZtn0
+         xKptaaz9bkeE+tu9IFrgmgY/PzutZiH6U8AybLVA4W8OBRMkZfXUBf2eqn5BkKJnORrH
+         p8pjQcVSzFeTBgl9iqh9a8p2suCop0+qooIekBaX064HqJCir/5GkLP6yy51j/44wOgv
+         PFSrOd/L+5XvxdSY9j3Lij/pAgPl1ycHL2bawUHXnVmWsKRvZnWb+kRt8fweMxNz44ZO
+         iAQw==
+X-Gm-Message-State: AOAM532rUTmEWoVztCIUMeZ3876sV7/LJZnHJMLdexkdbBBC7hXZ1GbG
+        HEgSsA/AfbkOs7HaztuJm6c=
+X-Google-Smtp-Source: ABdhPJyHqIxm58EdIGIO13FCV6nEuBJUZ9dl18TlYFSgwLEHFySc4yWbcI5jJYl+BM0LfhDROjoK8Q==
+X-Received: by 2002:adf:f34c:: with SMTP id e12mr60699527wrp.46.1594303421047;
+        Thu, 09 Jul 2020 07:03:41 -0700 (PDT)
 Received: from clement-Latitude-7490.numericable.fr (213-245-241-245.rev.numericable.fr. [213.245.241.245])
-        by smtp.gmail.com with ESMTPSA id s8sm5545256wru.38.2020.07.09.07.03.38
+        by smtp.gmail.com with ESMTPSA id s8sm5545256wru.38.2020.07.09.07.03.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jul 2020 07:03:39 -0700 (PDT)
+        Thu, 09 Jul 2020 07:03:40 -0700 (PDT)
 From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
 To:     Rob Herring <robh@kernel.org>,
         Tomeu Vizoso <tomeu.vizoso@collabora.com>,
@@ -59,9 +59,9 @@ To:     Rob Herring <robh@kernel.org>,
         Chen-Yu Tsai <wens@csie.org>
 Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
         =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-Subject: [PATCH v3 11/14] arm64: defconfig: Enable devfreq cooling device
-Date:   Thu,  9 Jul 2020 16:03:19 +0200
-Message-Id: <20200709140322.131320-12-peron.clem@gmail.com>
+Subject: [PATCH v3 12/14] arm64: dts: allwinner: h6: Add cooling map for GPU
+Date:   Thu,  9 Jul 2020 16:03:20 +0200
+Message-Id: <20200709140322.131320-13-peron.clem@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200709140322.131320-1-peron.clem@gmail.com>
 References: <20200709140322.131320-1-peron.clem@gmail.com>
@@ -73,29 +73,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Devfreq cooling device framework is used in Panfrost
-to throttle GPU in order to regulate its temperature.
-
-Enable this driver for ARM64 SoC.
+Add a simple cooling map for the GPU.
 
 Reviewed-by: Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
 Signed-off-by: Clément Péron <peron.clem@gmail.com>
 ---
- arch/arm64/configs/defconfig | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi | 22 ++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 883e8bace3ed..1b7f9ffdc314 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -501,6 +501,7 @@ CONFIG_SENSORS_INA2XX=m
- CONFIG_SENSORS_INA3221=m
- CONFIG_THERMAL_GOV_POWER_ALLOCATOR=y
- CONFIG_CPU_THERMAL=y
-+CONFIG_DEVFREQ_THERMAL=y
- CONFIG_THERMAL_EMULATION=y
- CONFIG_QORIQ_THERMAL=m
- CONFIG_SUN8I_THERMAL=y
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
+index 78b1361dfbb9..8f514a2169aa 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
+@@ -174,6 +174,7 @@ gpu: gpu@1800000 {
+ 			clocks = <&ccu CLK_GPU>, <&ccu CLK_BUS_GPU>;
+ 			clock-names = "core", "bus";
+ 			resets = <&ccu RST_BUS_GPU>;
++			#cooling-cells = <2>;
+ 			status = "disabled";
+ 		};
+ 
+@@ -1012,6 +1013,27 @@ gpu-thermal {
+ 			polling-delay-passive = <0>;
+ 			polling-delay = <0>;
+ 			thermal-sensors = <&ths 1>;
++
++			trips {
++				gpu_alert: gpu-alert {
++					temperature = <85000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++
++				gpu-crit {
++					temperature = <100000>;
++					hysteresis = <0>;
++					type = "critical";
++				};
++			};
++
++			cooling-maps {
++				map0 {
++					trip = <&gpu_alert>;
++					cooling-device = <&gpu THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
++				};
++			};
+ 		};
+ 	};
+ };
 -- 
 2.25.1
 
