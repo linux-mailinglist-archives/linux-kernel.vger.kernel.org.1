@@ -2,66 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A522821991B
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 09:06:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 127B0219977
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 09:10:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726260AbgGIHGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 03:06:07 -0400
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:12609 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726119AbgGIHGF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 03:06:05 -0400
-X-UUID: c11e3528d1124c2485795b03bf731af9-20200709
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=JCdqhnmOrA4bIemjU77tSTchJtgxF3g3bcC1iZfUepU=;
-        b=HPwNJUBfC5mAmkq6ABB39yQCe3NGDKGEbk1VUPa9jI4VaCMy2mBj9KHePSK1DwEMtakTDttKta+WIGVOwIS9uxhjCM76+XHmLW0Sb44trDkjmf9/cTXZi4KPlG0DATBXHmAkmNRteq6fR8+05dKpcWPADMv3bWdlbNwS5im3p74=;
-X-UUID: c11e3528d1124c2485795b03bf731af9-20200709
-Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLS)
-        with ESMTP id 746041579; Thu, 09 Jul 2020 15:06:00 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS33N2.mediatek.inc
- (172.27.4.76) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 9 Jul
- 2020 15:05:59 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 9 Jul 2020 15:05:58 +0800
-Message-ID: <1594278321.23885.26.camel@mhfsdcap03>
-Subject: Re: [V2 PATCH] usb: mtu3: fix NULL pointer dereference
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Felipe Balbi <balbi@kernel.org>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <felipe.balbi@linux.intel.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Markus Elfring <Markus.Elfring@web.de>,
-        <linux-usb@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Date:   Thu, 9 Jul 2020 15:05:21 +0800
-In-Reply-To: <87lfjt6vjm.fsf@kernel.org>
-References: <1593502942-24455-1-git-send-email-chunfeng.yun@mediatek.com>
-         <87lfjt6vjm.fsf@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
-MIME-Version: 1.0
-X-TM-SNTS-SMTP: F3256F28A9F380161FC65DD621C2647F2BB492FBFB0CAC48B3BADA5C9B75167D2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+        id S1726357AbgGIHKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 03:10:16 -0400
+Received: from mga12.intel.com ([192.55.52.136]:2891 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726183AbgGIHKP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 03:10:15 -0400
+IronPort-SDR: 4QnAR8WYFyZvLSQf6sGOIa6d01SEzEoBMwZqqg0X6VuH3EoAhWx5fT4utoXyZIPcIGRvvYcI4N
+ 2p4z0Q1fkbRw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9676"; a="127534960"
+X-IronPort-AV: E=Sophos;i="5.75,331,1589266800"; 
+   d="scan'208";a="127534960"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jul 2020 00:10:14 -0700
+IronPort-SDR: OBw5NJTJ7Znsq61PDeO9m7aYdCc4C2KPfERJMXwybxLxgfoRmIQZ34ipr+P+qESB5G1ZzMXP7x
+ //IoscYm/CEw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,331,1589266800"; 
+   d="scan'208";a="316138822"
+Received: from allen-box.sh.intel.com ([10.239.159.139])
+  by fmsmga002.fm.intel.com with ESMTP; 09 Jul 2020 00:10:12 -0700
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+To:     iommu@lists.linux-foundation.org
+Cc:     Joerg Roedel <joro@8bytes.org>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>, Liu Yi L <yi.l.liu@intel.com>,
+        linux-kernel@vger.kernel.org, Lu Baolu <baolu.lu@linux.intel.com>
+Subject: [PATCH v3 0/4] iommu/vt-d: Add prq report and response support
+Date:   Thu,  9 Jul 2020 15:05:33 +0800
+Message-Id: <20200709070537.18473-1-baolu.lu@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIwLTA3LTA5IGF0IDA5OjQwICswMzAwLCBGZWxpcGUgQmFsYmkgd3JvdGU6DQo+
-IENodW5mZW5nIFl1biA8Y2h1bmZlbmcueXVuQG1lZGlhdGVrLmNvbT4gd3JpdGVzOg0KPiANCj4g
-PiBTb21lIHBvaW50ZXJzIGFyZSBkZXJlZmVyZW5jZWQgYmVmb3JlIHN1Y2Nlc3NmdWwgY2hlY2tz
-Lg0KPiA+DQo+ID4gUmVwb3J0ZWQtYnk6IE1hcmt1cyBFbGZyaW5nIDxNYXJrdXMuRWxmcmluZ0B3
-ZWIuZGU+DQo+ID4gU2lnbmVkLW9mZi1ieTogQ2h1bmZlbmcgWXVuIDxjaHVuZmVuZy55dW5AbWVk
-aWF0ZWsuY29tPg0KPiANCj4gZG8geW91IG5lZWQgYSBGaXhlcyB0YWcgaGVyZT8gUGVyaGFwcyBh
-IENjIHN0YWJsZSB0b28/DQpJdCB3aWxsIG5vdCBjYXVzZSBzb21lcyBpc3N1ZXMsIEkgdGhpbmsg
-bm8gbmVlZCBhZGQgaXQuDQoNCkFjY29yZGluZyB0byBHcmVnJ3MgY29tbWVudCwgSSBndWVzcyBo
-ZSBtZWFucyBubyBuZWVkIGNoZWNrIHRoZXNlDQpwb2ludGVycyBhdCBhbGwsIHNvIEknbGwgc2Vu
-ZCBhIG5ldyB2ZXJzaW9uIHRvIHJlbW92ZSBjaGVja3MuDQoNClRoYW5rIHlvdQ0KDQo+IA0KDQo=
+Hi,
+
+This series adds page request event reporting and response support to
+the Intel IOMMU driver. This is necessary when the page requests must
+be processed by any component other than the vendor IOMMU driver. For
+example, when a guest page table was bound to a PASID through the
+iommu_ops->sva_bind_gpasid() api, the page requests should be routed to
+the guest, and after the page is served, the device should be responded
+with the result.
+
+Your review comments are very appreciated.
+
+Best regards,
+baolu
+
+Change log:
+v2->v3:
+  - Adress Kevin's review comments
+    https://lore.kernel.org/linux-iommu/20200706002535.9381-1-baolu.lu@linux.intel.com/T/#t
+  - Set IOMMU_FAULT_PAGE_RESPONSE_NEEDS_PASID flag
+    https://lore.kernel.org/linux-iommu/20200706002535.9381-1-baolu.lu@linux.intel.com/T/#m0190af2f6cf967217e9def6fa0fed4e0fe5a477e
+
+v1->v2:
+  - v1 posted at https://lkml.org/lkml/2020/6/27/387
+  - Remove unnecessary pci_get_domain_bus_and_slot()
+  - Return error when sdev == NULL in intel_svm_page_response()
+
+Lu Baolu (4):
+  iommu/vt-d: Refactor device_to_iommu() helper
+  iommu/vt-d: Add a helper to get svm and sdev for pasid
+  iommu/vt-d: Report page request faults for guest SVA
+  iommu/vt-d: Add page response ops support
+
+ drivers/iommu/intel/iommu.c |  56 ++----
+ drivers/iommu/intel/svm.c   | 332 ++++++++++++++++++++++++++++--------
+ include/linux/intel-iommu.h |   6 +-
+ 3 files changed, 278 insertions(+), 116 deletions(-)
+
+-- 
+2.17.1
 
