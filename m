@@ -2,85 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73AFE21A3F8
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 17:47:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4EFA21A404
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 17:48:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727910AbgGIPrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 11:47:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58866 "EHLO
+        id S1728119AbgGIPsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 11:48:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726339AbgGIPrQ (ORCPT
+        with ESMTP id S1728099AbgGIPsS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 11:47:16 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CA5CC08C5CE
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 08:47:16 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id dg28so2231236edb.3
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 08:47:16 -0700 (PDT)
+        Thu, 9 Jul 2020 11:48:18 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0375C08C5DC
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 08:48:17 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id e4so2951921ljn.4
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 08:48:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nsxgMEOvyOIleo5nx+Z/u0swN2p6R8hs+S+pjCKL50I=;
-        b=AslfFO8fVFGP9YQxQPQtZ1lx7oCax+DtysbIeuDbh/O/gylusrlOBwCBYEaLzS7Jk9
-         e9bSRehpMeURgHpk67UIXgXJPTxkiv5Z9D/jfQAg5rzh2Wv7qsfsiJlZOt6LLza8x0kX
-         dhN2PXe1ODbESM35YTnNSE4990dJEj/ZWb50mmbZz9MXK6NoWCeLcJHx8VCqo0CCKZdy
-         JcUkrfYY1aZ6v4j8KKYun3R5Kir5QJWWXulr/MfJhbILFOjn4k+sp5TsoWUYMtakeiFi
-         TWJKKaSYCI9ZdT2Fz7eh4t1Vr1xIuZILG+t9QSYJX/lMM2GodEmyQyyCGbD96V1ApE6b
-         +CHA==
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/O6H63+iy27zC2H7F0ueImelp7Ge5SFqvQCCzIgdoPI=;
+        b=fJdsoF0IE+FLEEv9KDqsmMTunmNA1t7ytAqxnRwXZCyUBjvHa+7Feup8NmXZt2RCIu
+         wsgnS324bHVYR7X24SjoapJxe8mrX3K9+2PcjnHWf6rNZtlb7ZolU+tws3K1hH1KVmcm
+         bycKsH6D+8Qh9cjGdW5CUIhYqPa2fotIWVcNMVaZzViZEam/5tBRnUOj9UJO1x+fIc3m
+         O8cVqipLSngqj+FzKufF+G68podLoQIbSZLK6hhNLOGNV82XT9hOnl60iqcAl0Y9sW56
+         rQS8TUjYjEzWJepjjp1cqlqgBm1rgHT/O7QjaC3BjKm630xfivlUM+Jy9Sg0MDc3qNtn
+         ucVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nsxgMEOvyOIleo5nx+Z/u0swN2p6R8hs+S+pjCKL50I=;
-        b=ZrN8sN+YRl6tEBFxTLA4+0pWV4hTMjK6SwlNVs4UiQtvmGMcDq7ErxGFAqlvTxtoSo
-         kp2NI6XHIio6mLPi/dT8cE2SEZxmsbj12llVNxQzBUrZBzPY7t+JX7BsQyI8B1TOb+pc
-         BVmx636sr+iiVCrx+9bkr3TNaiXFLMJosEIbSSaCzyZGGBgRDU9rRiKeArALNIMv+GRC
-         CO1n8XfAJMipqHY+CiuO7jGuCmtyKIRsY4099FBs2w3waE3GLxajBiMpmy+rNJAeTVUH
-         ArKyqVYjkLiUcbGhNqR1tGvMSLKiUPQKrhKjfH0je2B75XlWWEQazzd5+uhg8SHQ9J5A
-         TyfA==
-X-Gm-Message-State: AOAM531wTOAHvC2a00u+fpu49HcSc4mcHqBdhlOCmHSJOb2PidnfdatL
-        qfwAL00ruOkh1JXT60rjYte8HianpNivwiHGg5hr4w==
-X-Google-Smtp-Source: ABdhPJz/v+1l0sIJAcLdXdEngxJHh98+g/FsncCIvnDz8xpK/eFai2qhvlm/mACLnKYJR5a4nGf9b+IdhUb54UKJjhA=
-X-Received: by 2002:a50:c355:: with SMTP id q21mr70106802edb.121.1594309633800;
- Thu, 09 Jul 2020 08:47:13 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/O6H63+iy27zC2H7F0ueImelp7Ge5SFqvQCCzIgdoPI=;
+        b=OR2OdNKJs7DoJQy7DBUSqQ3h4QedMcUHanXYlMD7IbMQr/NuA/dpLAZFWXgS/9BjKb
+         QvbW/yZupQP8Imyme5AWVv8UJHfop//HAcFRiJ6LtxWhUvhp3Zi21wmMoli5FJFohyYw
+         5RT+53XAbRWBlQE1dBMMDKYv44KCCHxtdFFi/u2ljDAztMaEo9rv0lWbrBIaV2zxrSbQ
+         x1S/HcJ6MvMKgTaUBGdmfdDoOOMIq9zfv10/xQ3WTzWAC0QG1XGDhdrzJhFxyMjFd9W0
+         Ua3ifPEMdoXucQpBOV1dwTk1bKTa4GRqaY20SXHWwJ0hiqCFNptDf8otsGwBWdUhafNV
+         e4xw==
+X-Gm-Message-State: AOAM5335PG4Q7amBBRz42UMdkDrRUVi7pgoYzefgee3CDgCUTalsbI12
+        O2+jqijn0aTNig9UkpusfbJN/w==
+X-Google-Smtp-Source: ABdhPJwXJuJPmi0hCIRXh7hOH2stPsHaUlbTEb3sv+IZgUbomityN8CqxmAJv3P/iYDzqj1wj1dh5A==
+X-Received: by 2002:a2e:9144:: with SMTP id q4mr21400278ljg.84.1594309696184;
+        Thu, 09 Jul 2020 08:48:16 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id 83sm1055834lfk.84.2020.07.09.08.48.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Jul 2020 08:48:15 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 8F36210222B; Thu,  9 Jul 2020 18:48:16 +0300 (+03)
+Date:   Thu, 9 Jul 2020 18:48:16 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        akpm@linux-foundation.org, mgorman@techsingularity.net,
+        tj@kernel.org, khlebnikov@yandex-team.ru,
+        daniel.m.jordan@oracle.com, yang.shi@linux.alibaba.com,
+        lkp@intel.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, shakeelb@google.com,
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com
+Subject: Re: [PATCH v14 07/20] mm/thp: narrow lru locking
+Message-ID: <20200709154816.wieg5thfejyv2h2l@box>
+References: <1593752873-4493-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1593752873-4493-8-git-send-email-alex.shi@linux.alibaba.com>
+ <124eeef1-ff2b-609e-3bf6-a118100c3f2a@linux.alibaba.com>
+ <20200706113513.GY25523@casper.infradead.org>
+ <alpine.LSU.2.11.2007062059420.2793@eggly.anvils>
 MIME-Version: 1.0
-References: <20200708231253.3831497-1-surenb@google.com> <20200709081820.GB13487@kroah.com>
-In-Reply-To: <20200709081820.GB13487@kroah.com>
-From:   Todd Kjos <tkjos@google.com>
-Date:   Thu, 9 Jul 2020 08:47:01 -0700
-Message-ID: <CAHRSSEwz4jOWT3Ds8ESNZUcxOYyQkbMy=NoU4=cdb6tYd3BUtw@mail.gmail.com>
-Subject: Re: [PATCH 1/1] MAINTAINERS: add Hridya and myself into Android
- driver maintainers list
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Suren Baghdasaryan <surenb@google.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Christian Brauner <christian@brauner.io>,
-        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
-        Martijn Coenen <maco@android.com>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.LSU.2.11.2007062059420.2793@eggly.anvils>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 9, 2020 at 1:18 AM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Wed, Jul 08, 2020 at 04:12:53PM -0700, Suren Baghdasaryan wrote:
-> > Add new maintainers for ashmem driver to handle related issues.
-> >
-> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+On Mon, Jul 06, 2020 at 09:52:34PM -0700, Hugh Dickins wrote:
+> On Mon, 6 Jul 2020, Matthew Wilcox wrote:
+> > On Mon, Jul 06, 2020 at 05:15:09PM +0800, Alex Shi wrote:
+> > > Hi Kirill & Johannes & Matthew,
+> 
+> Adding Kirill, who was in patch's Cc list but not mail's Cc list.
+> 
+> I asked Alex to direct this one particularly to Kirill and Johannes
+> and Matthew because (and I regret that the commit message still does
+> not make this at all clear) this patch changes the lock ordering:
+> which for years has been lru_lock outside memcg move_lock outside
+> i_pages lock, but here inverted to lru_lock inside i_pages lock.
+> 
+> I don't see a strong reason to have them one way round or the other,
+> and think Alex is right that they can safely be reversed here: but
+> he doesn't actually give any reason for doing so (if cleanup, then
+> I think the cleanup should have been taken further), and no reason
+> for doing so as part of this series.
 
-Acked-by: Todd Kjos <tkjos@google.com>
+I've looked around and changing order of lru_lock wrt. i_pages lock seems
+safe. I don't have much experience with memcg move_lock.
 
->
-> Can I get an ack/reviewed-by/something by the existing maintainers to
-> verify this?  :)
->
-> And I thought we were deleting ashmem soon?
->
-> thanks,
->
-> greg k-h
+Alex, if you are going ahead with the patch, please document the locking
+order. We have some locking orders listed at the beginning of filemap.c
+and rmap.c.
+
+local_irq_disable() also deserves a comment.
+
+-- 
+ Kirill A. Shutemov
