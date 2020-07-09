@@ -2,149 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 162BD219EAE
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 13:05:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34B67219EC4
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 13:07:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726829AbgGILFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 07:05:18 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:57316 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726923AbgGILFP (ORCPT
+        id S1727790AbgGILHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 07:07:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43576 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726446AbgGILHL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 07:05:15 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: gtucker)
-        with ESMTPSA id E33BC2A63B1
-Subject: Re: chrome-platform/for-kernelci bisection:
- baseline.bootrr.rockchip-dp-probed on rk3399-gru-kevin
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <linux@roeck-us.net>, kernelci-results@groups.io
-Cc:     linux-kernel@vger.kernel.org, Benson Leung <bleung@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>
-References: <5f06177f.1c69fb81.ed8e4.1a92@mx.google.com>
- <a79f116f-2c6d-570d-8e06-95082d26d42d@roeck-us.net>
- <55cb5ce6-4ecb-1203-807f-c24648c0e989@collabora.com>
-From:   Guillaume Tucker <guillaume.tucker@collabora.com>
-Message-ID: <6ee59022-ca64-92ab-6ed6-e04115698780@collabora.com>
-Date:   Thu, 9 Jul 2020 12:05:11 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Thu, 9 Jul 2020 07:07:11 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0230C061A0B
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 04:07:10 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id f2so1879684wrp.7
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 04:07:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dj6DLJ5JhwDTZpg1cYa8Jkc5nI2WU1SZemCOoY6JQX8=;
+        b=OqrgBYRSXu4WOjIThWIY9Klk6Hlc6dgDpPB9PYoq4FN8And4dQWC6+puoCGj3yaq75
+         j9q0lGCyqBZQAkZwJg6iiss5/kkNG0TMRYOMDn2LRE9RL0Fe4cbltQomN4Q6xNZ8XM1y
+         re+ahL/J+J6C2CSXl1lvfk3EanLYT8zGvPefqudhF4HJ6ITNyEid5gMvuSetJy9BPj2p
+         3GgCPuRygIdzH8PlHJiavWAC7FfCR4oIxpqWyH1ppd0AiZBBPlD9OJDYggTka8+Dn1Gi
+         U9VYl73QdCyTZ7t6ZlYL5H95Kky8L+P+kd+nXkQdlWraeb6wVviZK9S6pqLqQjH6EMp4
+         hu/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dj6DLJ5JhwDTZpg1cYa8Jkc5nI2WU1SZemCOoY6JQX8=;
+        b=b/iewPC1Zs7SbqFH4jpE0GrVsFHY1Gf+jWhsfbu9u72p+AykLBmGVmxUM1tfEwLszf
+         RzDznIzMWA7bPQowgJ3CFwLk+SQpgNSeeMEu8ylaCk7iWbN+ez39UgpMXS7Z8qRxfc7n
+         +6ecKpXltyF6X8W7yvZCB2UV3Rma4K8NxdmQCEqrMkBrfawAL7viiHnOSFFfXGWb18AT
+         OsYlX+cpq9/3qFjppyXc5pauD9HFt62s74U4NuyJzfmNgkYVFCV0MWjJIwRErACK+X4D
+         dZq4Ntzpe27ctQOkZpw8xSSZQbe7l3UcZczIKPwx/h5IqjcKhRBsYDTdDqSBWrDkVylc
+         qo+A==
+X-Gm-Message-State: AOAM530Gv49tTdHXVHKBCdBq00sUnBlj/UTPTZWebFYz6PH/29lHlcqH
+        6Vbo8jhVLiD7q5DexbsmJd+Bsw==
+X-Google-Smtp-Source: ABdhPJw0n0b9xmJ1DTGx8Qu+06hCLhlnCq+s0l6b+Go1hvpg1cmoxac2TKGjZrYL69bFn2sVkH5Nbw==
+X-Received: by 2002:adf:cc85:: with SMTP id p5mr61842492wrj.273.1594292829308;
+        Thu, 09 Jul 2020 04:07:09 -0700 (PDT)
+Received: from localhost.localdomain ([212.45.67.2])
+        by smtp.googlemail.com with ESMTPSA id q7sm5375578wrs.27.2020.07.09.04.07.07
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 09 Jul 2020 04:07:08 -0700 (PDT)
+From:   Georgi Djakov <georgi.djakov@linaro.org>
+To:     linux-pm@vger.kernel.org
+Cc:     saravanak@google.com, mdtipton@codeaurora.org,
+        okukatla@codeaurora.org, bjorn.andersson@linaro.org,
+        vincent.guittot@linaro.org, georgi.djakov@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/4] Add interconnect sync state support
+Date:   Thu,  9 Jul 2020 14:07:01 +0300
+Message-Id: <20200709110705.30359-1-georgi.djakov@linaro.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <55cb5ce6-4ecb-1203-807f-c24648c0e989@collabora.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/07/2020 10:17, Enric Balletbo i Serra wrote:
-> Hi,
-> 
-> On 8/7/20 22:32, Guenter Roeck wrote:
->> On 7/8/20 11:59 AM, kernelci.org bot wrote:
->>> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
->>> * This automated bisection report was sent to you on the basis  *
->>> * that you may be involved with the breaking commit it has      *
->>> * found.  No manual investigation has been done to verify it,   *
->>> * and the root cause of the problem may be somewhere else.      *
->>> *                                                               *
->>> * If you do send a fix, please include this trailer:            *
->>> *   Reported-by: "kernelci.org bot" <bot@kernelci.org>          *
->>> *                                                               *
->>> * Hope this helps!                                              *
->>> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
->>>
->>> chrome-platform/for-kernelci bisection: baseline.bootrr.rockchip-dp-probed on rk3399-gru-kevin
->>>
->>> Summary:
->>>   Start:      154353417996 KERNELCI: x86_64_defconfig: Enable support for Chromebooks devices
->>>   Plain log:  https://storage.kernelci.org/chrome-platform/for-kernelci/v5.8-rc1-20-g154353417996/arm64/defconfig/gcc-8/lab-collabora/baseline-rk3399-gru-kevin.txt
->>>   HTML log:   https://storage.kernelci.org/chrome-platform/for-kernelci/v5.8-rc1-20-g154353417996/arm64/defconfig/gcc-8/lab-collabora/baseline-rk3399-gru-kevin.html
->>>   Result:     8c9a6ef40bf4 platform/chrome: cros_ec_proto: Convert EC error codes to Linux error codes
->>>
->>> Checks:
->>>   revert:     PASS
->>>   verify:     PASS
->>>
->>> Parameters:
->>>   Tree:       chrome-platform
->>>   URL:        https://git.kernel.org/pub/scm/linux/kernel/git/chrome-platform/linux.git
->>>   Branch:     for-kernelci
->>>   Target:     rk3399-gru-kevin
->>>   CPU arch:   arm64
->>>   Lab:        lab-collabora
->>>   Compiler:   gcc-8
->>>   Config:     defconfig
->>>   Test case:  baseline.bootrr.rockchip-dp-probed
->>>
->>> Breaking commit found:
->>>
->>> -------------------------------------------------------------------------------
->>> commit 8c9a6ef40bf400c64c9907031bd32b59f9d4aea2
->>> Author: Guenter Roeck <linux@roeck-us.net>
->>> Date:   Sat Jul 4 07:26:07 2020 -0700
->>>
->>>     platform/chrome: cros_ec_proto: Convert EC error codes to Linux error codes
->>>     
->>>     The EC reports a variety of error codes. Most of those, with the exception
->>>     of EC_RES_INVALID_VERSION, are converted to -EPROTO. As result, the actual
->>>     error code gets lost. Convert all EC errors to Linux error codes to report
->>>     a more meaningful error to the caller to aid debugging.
->>>     
->>>     Cc: Yu-Hsuan Hsu <yuhsuan@chromium.org>
->>>     Cc: Prashant Malani <pmalani@chromium.org>
->>>     Signed-off-by: Guenter Roeck <linux@roeck-us.net>
->>>     Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
->>>
-> 
-> So, as Guenter pointed I dropped this patch now.
-> 
->>
->> So, just FTR, turns out that there are callers which specifically check for
->> -EPROTO and examine the EC error code if it is returned, or just accept
->> -EPROTO as generic failure (but nothing else). Example is drivers/pwm/pwm-cros-ec.c:
->> cros_ec_num_pwms(). Such commands now fail, in this case because
->> EC_RES_INVALID_PARAM is now returned as -EINVAL and cros_ec_num_pwms()
->> doesn't expect that.
->>
-> 
-> Right, that's interesting, and I'll take in consideration for future reworks of
-> the above patch and also take a deeper look at those specific cases reported.
+Bootloaders often leave some system resources enabled such as clocks,
+regulators, interconnects etc. We want to keep these resources enabled
+until all their consumers are probed. These resources are often shared,
+so we must wait for all the consumers to come up, before deciding
+whether to turn them off or change the configuration. This patchset is
+trying to solve the above problem just for the on-chip interconnects.
 
-This bisection is probably one of the most interesting ones
-indeed.  I should mention it when I finally get round to making
-a "KernelCI bisections hall of fame" blog post.
+The problem is solved by allowing the interconnect providers to specify
+an initial bandwidth value, which is enforced during boot as a floor
+value, while the requests from all consumers are being collected.
+Then the sync_state() callback is used to signal when all consumers have
+been probed, meaning that the floor bandwidth is not needed anymore and
+the framework is ready to re-aggregate and process all requests.
 
-> BTW, Guillaume, I queued that patch to give a try and test 3 days ago. Is the
-> bisection job expected to take that time to run? In this case I think it also
-> took some time to receive the build test, so probably is just a matter of having
-> lot of jobs in the queue?
-> 
-> I am not complaining at all, just curious, and just want to know to improve my
-> maintainer workflow.
+Georgi Djakov (4):
+  interconnect: Add sync state support
+  interconnect: Add get_bw() callback
+  interconnect: qcom: smd845: Use icc_sync_state
+  interconnect: qcom: osm-l3: Use icc_sync_state
 
-I think what you're doing is perfectly fine, there were some
-issues with Jenkins and one build server that caused some
-KernelCI builds to not be run this week.  Also there is an
-intermittent bug in LAVA that causes tests to not run, so I think
-the delay was due to an unfortunate combination of infrastructure
-issues.
-
-We now have a rather fast build server dedicated to bisections,
-so for a maintainer branch like yours where it just takes a
-handful of iterations I would expect this kind of report to be
-sent at most 6h after a git push.  Bisecting linux-next can take
-a few extra hours with typically 10~15 iterations.
-
-Best wishes,
-Guillaume
-
->> drivers/iio/common/cros_ec_sensors/cros_ec_sensors.c has a similar problem;
->> it only accepts -EPROTO as "valid" error, but nothing else. I didn't check
->> for others.
->>
->> Guenter
->>
+ drivers/interconnect/core.c           | 57 +++++++++++++++++++++++++++
+ drivers/interconnect/qcom/osm-l3.c    |  9 +++++
+ drivers/interconnect/qcom/sdm845.c    |  9 +++++
+ include/linux/interconnect-provider.h |  5 +++
+ 4 files changed, 80 insertions(+)
 
