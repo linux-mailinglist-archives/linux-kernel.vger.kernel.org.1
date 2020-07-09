@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0717221A8A3
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 22:08:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE1C421A8A9
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 22:08:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726817AbgGIUIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 16:08:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43032 "EHLO
+        id S1726893AbgGIUIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 16:08:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726787AbgGIUIQ (ORCPT
+        with ESMTP id S1726546AbgGIUIR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 16:08:16 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB288C08C5CE
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 13:08:15 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id p1so1267991pls.4
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 13:08:15 -0700 (PDT)
+        Thu, 9 Jul 2020 16:08:17 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 427F1C08C5CE
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 13:08:17 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id j20so1479344pfe.5
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 13:08:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
         h=subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding:cc:from:to;
-        bh=n3uMLnloJ4eoHyrHmlqZET1T4BdruPnLDoTh0ErPA48=;
-        b=fc4JFaNMdyj0dPO/QlxHDnNGYF06MrbAFpp8sghfIUTy9dRGb9sGKTljAM/dZfdB2J
-         nju7OIrLaeY0xcFvtPbU14enOZWIPr+6Jp7iwm9BOsywiSS4GbXB5LGvfTSgS8MYJQfo
-         wa/5mP4c22pL2wlOc0LmsEZ4Hyno4ztpOYJaIV60LjxDcw2YaB+jn5C7ETt4a7WeT4Jo
-         GgVwqvFwY3RRSLDCxEOH3JoZcD0ps5TN9GS4uQbmuJUr5TmEvqOHSY4u5HtUexKZn2uE
-         xe70ZY3UqKrjiPZd8mUbw8C88c51Lq4w+n/w+kuulNZw/j+fz/5hYb597azr5VWVxm2d
-         1PZg==
+        bh=QnurR7K6BPRfnTLUtwHY4Q88UHUkQ5JhJ6oRLe/Vy2I=;
+        b=mUoQh16LfS76JjXiApvCLtUURIrln8QBy4z4KJ9cxNLpVN1HsGpQr1kBYvlfEpIda/
+         LoU2sTePgiPsVUktY9PLay5T/LWuA3SDlvl4EC+tzu4MnafyF/ciaZHGkNU/HG8T9OpE
+         KVzeCoEIRng2pW5XYTVTkZpES51Xe5P8EaOR57UDK6McQDJBkaQ7s22u07OnYIAhRxj3
+         8Kym3DKDmDIbQhedwXAnH996hmuesUoUcKdZZw2jmgUP8rky9R9IycIEElXJJBJQ9h6D
+         EwVHGVT8826dl07WOOq2aung0LV8qgk3FPr4NBe71Evllt8Mlkwq1HzZ++bm+1vYZdAP
+         KcgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding:cc:from:to;
-        bh=n3uMLnloJ4eoHyrHmlqZET1T4BdruPnLDoTh0ErPA48=;
-        b=COh4Kevlg2AaHF4zsvcCmzuwJGhOK0hSRbCrnGiPTnXuLjfq6Gej0RqH34PNW2H+77
-         KruXa6Ut6XDTRDKZxDR6EcEyesw1H16IjZJoo47XGa+Wej2/zUoZLLB8BQ4VPWMFHN0a
-         6SYypmxIwv4muBTtCKoK6DSheLSG7zD1P/SLIBKksM46jglWfcU4/DFggE1fl6LZOpuP
-         7y1c0vOYJTA65yFe/5IxGbFJkX6f9yjvla871wRvScRae4Jv1Lhf0LSZvxehFNHTB6pe
-         +bn3McARlhdHbQy/cRBc2xUBmw8aeo1YJIUSSv+Xy21m6oRAwTpi93DafjT3eIwaw1HU
-         k0sQ==
-X-Gm-Message-State: AOAM530YEfyXWLJD9SgIhalYezmPNOlULzDYX1lxwr5yjJWruPaIlhUX
-        DKVBun2RsK/gEKZmZlpPXrK2PQ==
-X-Google-Smtp-Source: ABdhPJzPLSTzb969rohb6kFQ0eaLxRBJfCFE9pkdCodyKMGtAcVwwZo/EK1rcCJ/fOCGGMRDDpxRxQ==
-X-Received: by 2002:a17:90a:f981:: with SMTP id cq1mr1890239pjb.173.1594325295201;
-        Thu, 09 Jul 2020 13:08:15 -0700 (PDT)
+        bh=QnurR7K6BPRfnTLUtwHY4Q88UHUkQ5JhJ6oRLe/Vy2I=;
+        b=pAru9GuuCyzWHqsY3v+eh3+9MrQeyg1rbvNsBvOCc7hNojH0XrjUKXkoMOpBO8mhW2
+         VsnGha7Fdm1H1YbOa/z9/6UVj3ZHqJfEWNdmY9sBMgi+NbhyuWES6YMnuPo631kz/4Cm
+         UK/yNINk7/PKEwN+YGKT/hxVGI7nTqUgTlDbPN/o3JL9sE+p8mBs87lTqwrTcf1RKpXI
+         oc4gAiPRKhju5IZYLNYhTdcg0pvd5cL2OkVIyMlFqBzAPKa4kgoGVgokLx82aZ4/YH0z
+         IaOUg2/zyrON70If5QcJPngCqIKHgVaVhhWUHXLvjB2Xd0KUYwe1jmBwGDqLo6zsZS/o
+         y+6w==
+X-Gm-Message-State: AOAM531nSzc4STWZGswSQ+U1HqGfeOBKnCkaFo5lBA4xLP/pzj2DpLvS
+        zfl7tgAi0DRMNXg6gfK0a2ozoQ==
+X-Google-Smtp-Source: ABdhPJxPyfDF7MMhraNjxGcxjmelZhmosqxz9Rr+wxAOwY45CYkRfCLmLvGQVfIwcidfX5xstsKX8g==
+X-Received: by 2002:a62:2c48:: with SMTP id s69mr18582019pfs.63.1594325296622;
+        Thu, 09 Jul 2020 13:08:16 -0700 (PDT)
 Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id u26sm3619193pgo.71.2020.07.09.13.08.14
+        by smtp.gmail.com with ESMTPSA id m9sm3442448pjs.18.2020.07.09.13.08.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jul 2020 13:08:14 -0700 (PDT)
-Subject: [PATCH 2/5] RISC-V: Use the new generic devmem_is_allowed()
-Date:   Thu,  9 Jul 2020 13:05:49 -0700
-Message-Id: <20200709200552.1910298-3-palmer@dabbelt.com>
+        Thu, 09 Jul 2020 13:08:16 -0700 (PDT)
+Subject: [PATCH 3/5] arm: Use the generic devmem_is_allowed()
+Date:   Thu,  9 Jul 2020 13:05:50 -0700
+Message-Id: <20200709200552.1910298-4-palmer@dabbelt.com>
 X-Mailer: git-send-email 2.27.0.383.g050319c2ae-goog
 In-Reply-To: <20200709200552.1910298-1-palmer@dabbelt.com>
 References: <20200709200552.1910298-1-palmer@dabbelt.com>
@@ -87,25 +87,74 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Palmer Dabbelt <palmerdabbelt@google.com>
 
-This allows us to enable STRICT_DEVMEM.
+This is exactly the same as the arm64 version, which I recently copied
+into lib/ for use by the RISC-V port.
+
+[I haven't even build tested this.  The lib/ patch is on riscv/for-next,
+which I'm targeting for 5.9, so this won't work alone.  See the cover
+letter for more details.]
 
 Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 ---
- arch/riscv/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm/Kconfig          |  1 +
+ arch/arm/include/asm/io.h |  1 -
+ arch/arm/mm/mmap.c        | 22 ----------------------
+ 3 files changed, 1 insertion(+), 23 deletions(-)
 
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 089293e4ad46..8ff368a65a07 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -37,6 +37,7 @@ config RISCV
- 	select GENERIC_IOREMAP
- 	select GENERIC_IRQ_MULTI_HANDLER
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index 2ac74904a3ce..0c9da68835c2 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -54,6 +54,7 @@ config ARM
+ 	select GENERIC_IRQ_PROBE
  	select GENERIC_IRQ_SHOW
+ 	select GENERIC_IRQ_SHOW_LEVEL
 +	select GENERIC_LIB_DEVMEM_IS_ALLOWED
  	select GENERIC_PCI_IOMAP
- 	select GENERIC_PTDUMP if MMU
  	select GENERIC_SCHED_CLOCK
+ 	select GENERIC_SMP_IDLE_THREAD
+diff --git a/arch/arm/include/asm/io.h b/arch/arm/include/asm/io.h
+index ab2b654084fa..fc748122f1e0 100644
+--- a/arch/arm/include/asm/io.h
++++ b/arch/arm/include/asm/io.h
+@@ -441,7 +441,6 @@ extern void pci_iounmap(struct pci_dev *dev, void __iomem *addr);
+ #define ARCH_HAS_VALID_PHYS_ADDR_RANGE
+ extern int valid_phys_addr_range(phys_addr_t addr, size_t size);
+ extern int valid_mmap_phys_addr_range(unsigned long pfn, size_t size);
+-extern int devmem_is_allowed(unsigned long pfn);
+ #endif
+ 
+ /*
+diff --git a/arch/arm/mm/mmap.c b/arch/arm/mm/mmap.c
+index b8d912ac9e61..a0f8a0ca0788 100644
+--- a/arch/arm/mm/mmap.c
++++ b/arch/arm/mm/mmap.c
+@@ -165,25 +165,3 @@ int valid_mmap_phys_addr_range(unsigned long pfn, size_t size)
+ {
+ 	return (pfn + (size >> PAGE_SHIFT)) <= (1 + (PHYS_MASK >> PAGE_SHIFT));
+ }
+-
+-#ifdef CONFIG_STRICT_DEVMEM
+-
+-#include <linux/ioport.h>
+-
+-/*
+- * devmem_is_allowed() checks to see if /dev/mem access to a certain
+- * address is valid. The argument is a physical page number.
+- * We mimic x86 here by disallowing access to system RAM as well as
+- * device-exclusive MMIO regions. This effectively disable read()/write()
+- * on /dev/mem.
+- */
+-int devmem_is_allowed(unsigned long pfn)
+-{
+-	if (iomem_is_exclusive(pfn << PAGE_SHIFT))
+-		return 0;
+-	if (!page_is_ram(pfn))
+-		return 1;
+-	return 0;
+-}
+-
+-#endif
 -- 
 2.27.0.383.g050319c2ae-goog
 
