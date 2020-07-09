@@ -2,84 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EB25219CEB
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 12:03:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5776219D00
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 12:07:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727069AbgGIKDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 06:03:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727052AbgGIKDL (ORCPT
+        id S1726688AbgGIKHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 06:07:45 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:46379 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726321AbgGIKHo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 06:03:11 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B816AC061A0B;
-        Thu,  9 Jul 2020 03:03:08 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4B2WvZ3zGxz9sTH;
-        Thu,  9 Jul 2020 20:03:06 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1594288986;
-        bh=gzevlDZNhGR3zBt4oGJSiaOWmNIXxDnq4AJkVnA7ct8=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=FGveEg8q/y3tCFCeSW1FsRbhFSvX8FhcucbFCIXftYTCKPONKTv/40QFtquvhS7Yo
-         PzXwGYKN7bovdbCuMD9lgGZakoYc2SOVrOpgitHHV+kYC3njs0+MPZ+BhyTGB9o+6t
-         jNfCMr6brEGBnannqnY2pUkSB5UZp/XUOHF3PqH++pCffJ9+JixW+/tHMqnaHPCA2p
-         x9T56tPe0+HFuPp06W4+IOZ9S0ZRYFuezORe9sSIH+715fqj7tkhTxHACSUtShzB/r
-         +zGySTRD9bXU5UDoL0fTvXIBwPFr8LToCxfYHvUOi/Uuzt7xvwIge32QyPjtpPZpyI
-         pdmw83qWCiusQ==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Nicholas Piggin <npiggin@gmail.com>, linuxppc-dev@lists.ozlabs.org
-Cc:     Nicholas Piggin <npiggin@gmail.com>, Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Waiman Long <longman@redhat.com>,
-        Anton Blanchard <anton@ozlabs.org>,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, kvm-ppc@vger.kernel.org,
-        linux-arch@vger.kernel.org
-Subject: Re: [PATCH v3 1/6] powerpc/powernv: must include hvcall.h to get PAPR defines
-In-Reply-To: <20200706043540.1563616-2-npiggin@gmail.com>
-References: <20200706043540.1563616-1-npiggin@gmail.com> <20200706043540.1563616-2-npiggin@gmail.com>
-Date:   Thu, 09 Jul 2020 20:05:18 +1000
-Message-ID: <87fta1vw9t.fsf@mpe.ellerman.id.au>
+        Thu, 9 Jul 2020 06:07:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594289262;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XGzQ4h/xdgSnPNt6v8xNLAT0U2pdFmJEzgSG1Adoozc=;
+        b=RY0QX2t2WUz6p8KA/tLxlSe5PLlqmo3VgsFLSwIkvW3dPCZ8SOvd+LoL3EQAXfHxSmzDxd
+        U4HOW/uZlO0xf7hYfmhvI2psruar/2VGaHpv+z9In01UhnI1eX9+sqCCY0HXk+PRollMPj
+        advSBZJxCxWJ02JGU/+TCWWMz4Z7q04=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-213-Z5QVYqCrNYSkZ5msYWkEuQ-1; Thu, 09 Jul 2020 06:07:41 -0400
+X-MC-Unique: Z5QVYqCrNYSkZ5msYWkEuQ-1
+Received: by mail-ej1-f70.google.com with SMTP id q11so2119581eja.3
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 03:07:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=XGzQ4h/xdgSnPNt6v8xNLAT0U2pdFmJEzgSG1Adoozc=;
+        b=pty6xPjSnCLEi1UaP/WbbrgcvYQ9BmTfdjI2rprTmZe+hKf8MHpc850mlWeNhHmki7
+         BjJRdNmq0N2rY6ThT3Fp/VDRCviVSg0UEEJFPY0Vfv2Cs84dXcImFhcGvcgDRyfq2fOX
+         ZVejyJtDwSfoF3rCSyz7BmcxMvEgudVcmgfApTjhSquB8fnVeON5CK2s2qmiq+qorYfH
+         PqH63Me5GqRiRRmJY7+jWD4fDohOZrSXjIROsF7hoSOc6oROHktGTvo8X1FrWrIOpKKH
+         oc5SzkcRGz+ZxI+lVyKZXdpGMntebtly+Py+44iOP/GNKzeZm2wBZSDdW5WE7+alXLPr
+         eJ/g==
+X-Gm-Message-State: AOAM533u4bF6pOYGBqsPMkm2g0uCCKVUHBQ1fv5dC+kKFmpEg27Mw+Bh
+        WamS2S97bQV9EHjQn4ixbsCMQYNlX83Z6GHcCxSt1u5q34cpKoDakTnIstYSWtxEIonO93XwYGk
+        CNUZMPUlJM4VpemKsfKWxzX5H
+X-Received: by 2002:a17:906:7250:: with SMTP id n16mr48439745ejk.290.1594289260120;
+        Thu, 09 Jul 2020 03:07:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwNztlPBh26eUmJzhZ9TTEOzcrkZpDS4/OKI+ILiWU7nscSANXIx0rJYN9g290LETLzlahYhQ==
+X-Received: by 2002:a17:906:7250:: with SMTP id n16mr48439733ejk.290.1594289259929;
+        Thu, 09 Jul 2020 03:07:39 -0700 (PDT)
+Received: from x1.localdomain (83-84-126-242.cable.dynamic.v4.ziggo.nl. [83.84.126.242])
+        by smtp.gmail.com with ESMTPSA id b11sm1657097edw.76.2020.07.09.03.07.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Jul 2020 03:07:39 -0700 (PDT)
+Subject: Re: [PATCH v4] HID: i2c-hid: Enable wakeup capability from
+ Suspend-to-Idle
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>, jikos@kernel.org,
+        benjamin.tissoires@redhat.com
+Cc:     anthony.wong@canonical.com,
+        You-Sheng Yang <vicamo.yang@canonical.com>,
+        Pavel Balan <admin@kryma.net>,
+        Aaron Ma <aaron.ma@canonical.com>,
+        HungNien Chen <hn.chen@weidahitech.com>,
+        Daniel Playfair Cal <daniel.playfair.cal@gmail.com>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20200709075731.5046-1-kai.heng.feng@canonical.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <82be7198-168f-d174-7cf8-10cd420e0bb6@redhat.com>
+Date:   Thu, 9 Jul 2020 12:05:29 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20200709075731.5046-1-kai.heng.feng@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nicholas Piggin <npiggin@gmail.com> writes:
-> An include goes away in future patches which breaks compilation
-> without this.
->
-> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+Hi,
+
+On 7/9/20 9:57 AM, Kai-Heng Feng wrote:
+> Many laptops can be woken up from Suspend-to-Idle by touchpad. This is
+> also the default behavior on other OSes.
+> 
+> However, if touchpad and touchscreen contact to each other when lid is
+> closed, wakeup events can be triggered inadventertly.
+> 
+> So let's disable the wakeup by default, but enable the wakeup capability
+> so users can enable it at their own discretion.
+> 
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+
+Thank you, this version looks good to me:
+
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+
+Regards,
+
+Hans
+
+
 > ---
->  arch/powerpc/platforms/powernv/pci-ioda-tce.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/arch/powerpc/platforms/powernv/pci-ioda-tce.c b/arch/powerpc/platforms/powernv/pci-ioda-tce.c
-> index f923359d8afc..8eba6ece7808 100644
-> --- a/arch/powerpc/platforms/powernv/pci-ioda-tce.c
-> +++ b/arch/powerpc/platforms/powernv/pci-ioda-tce.c
-> @@ -15,6 +15,7 @@
->  
->  #include <asm/iommu.h>
->  #include <asm/tce.h>
-> +#include <asm/hvcall.h> /* share error returns with PAPR */
->  #include "pci.h"
->  
->  unsigned long pnv_ioda_parse_tce_sizes(struct pnv_phb *phb)
-> -- 
-> 2.23.0
+> v4:
+>   - Enable the capability, but disable the wakeup default.
+> 
+> v3:
+>   - Use device_init_wakeup().
+>   - Wording change.
+> 
+> v2:
+>   - Fix compile error when ACPI is not enabled.
+> 
+>   drivers/hid/i2c-hid/i2c-hid-core.c | 12 ++++++++++++
+>   1 file changed, 12 insertions(+)
+> 
+> diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i2c-hid-core.c
+> index 294c84e136d7..c18ca6a6cb3d 100644
+> --- a/drivers/hid/i2c-hid/i2c-hid-core.c
+> +++ b/drivers/hid/i2c-hid/i2c-hid-core.c
+> @@ -931,6 +931,14 @@ static void i2c_hid_acpi_fix_up_power(struct device *dev)
+>   		acpi_device_fix_up_power(adev);
+>   }
+>   
+> +static void i2c_hid_acpi_enable_wakeup(struct device *dev)
+> +{
+> +	if (acpi_gbl_FADT.flags & ACPI_FADT_LOW_POWER_S0) {
+> +		device_set_wakeup_capable(dev, true);
+> +		device_set_wakeup_enable(dev, false);
+> +	}
+> +}
+> +
+>   static const struct acpi_device_id i2c_hid_acpi_match[] = {
+>   	{"ACPI0C50", 0 },
+>   	{"PNP0C50", 0 },
+> @@ -945,6 +953,8 @@ static inline int i2c_hid_acpi_pdata(struct i2c_client *client,
+>   }
+>   
+>   static inline void i2c_hid_acpi_fix_up_power(struct device *dev) {}
+> +
+> +static inline void i2c_hid_acpi_enable_wakeup(struct device *dev) {}
+>   #endif
+>   
+>   #ifdef CONFIG_OF
+> @@ -1072,6 +1082,8 @@ static int i2c_hid_probe(struct i2c_client *client,
+>   
+>   	i2c_hid_acpi_fix_up_power(&client->dev);
+>   
+> +	i2c_hid_acpi_enable_wakeup(&client->dev);
+> +
+>   	device_enable_async_suspend(&client->dev);
+>   
+>   	/* Make sure there is something at this address */
+> 
 
-This isn't needed anymore AFAICS, since:
-
-5f202c1a1d42 ("powerpc/powernv/ioda: Return correct error if TCE level allocation failed")
-
-cheers
