@@ -2,126 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F9E921A687
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 20:01:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7F6F21A675
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 19:59:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728620AbgGISBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 14:01:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726936AbgGISA6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 14:00:58 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C741C08C5CE;
-        Thu,  9 Jul 2020 11:00:58 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: tonyk)
-        with ESMTPSA id 9C1B42A65F9
-From:   =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>
-To:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        peterz@infradead.org
-Cc:     krisman@collabora.com, kernel@collabora.com,
-        andrealmeid@collabora.com, dvhart@infradead.org, mingo@redhat.com,
-        pgriffais@valvesoftware.com, fweimer@redhat.com,
-        libc-alpha@sourceware.org, malteskarupke@web.de,
-        linux-api@vger.kernel.org, arnd@arndb.de
-Subject: [RFC v2 4/4] selftests: futex: Add futex2 wouldblock test
-Date:   Thu,  9 Jul 2020 14:59:21 -0300
-Message-Id: <20200709175921.211387-5-andrealmeid@collabora.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200709175921.211387-1-andrealmeid@collabora.com>
-References: <20200709175921.211387-1-andrealmeid@collabora.com>
+        id S1728211AbgGIR7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 13:59:37 -0400
+Received: from mga03.intel.com ([134.134.136.65]:23953 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726615AbgGIR7h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 13:59:37 -0400
+IronPort-SDR: +tFsXOP94UBMuWy7psc7A0fx68aWM1M6JGWS8vJJLvAJGdcceZsggERalC/bl0VnwkrNRJrS/j
+ 6sVBZ94F6GFQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9677"; a="148055093"
+X-IronPort-AV: E=Sophos;i="5.75,332,1589266800"; 
+   d="scan'208";a="148055093"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jul 2020 10:59:37 -0700
+IronPort-SDR: pugdhxVyIR+ZTz7+RikkSRiRG5MaDlYQ5m4X1hd8XQo9cpWZBV/Nn7Xn5VjU2hTU7P4ldF1lmN
+ dQB7WH5mWCLA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,332,1589266800"; 
+   d="scan'208";a="284237438"
+Received: from tassilo.jf.intel.com (HELO tassilo.localdomain) ([10.7.201.21])
+  by orsmga006.jf.intel.com with ESMTP; 09 Jul 2020 10:59:37 -0700
+Received: by tassilo.localdomain (Postfix, from userid 1000)
+        id 0F2F1301B2A; Thu,  9 Jul 2020 10:59:37 -0700 (PDT)
+Date:   Thu, 9 Jul 2020 10:59:37 -0700
+From:   Andi Kleen <ak@linux.intel.com>
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 11/11] perf intel-pt: Add support for decoding PSB+ only
+Message-ID: <20200709175937.GE1126680@tassilo.jf.intel.com>
+References: <20200709173628.5613-1-adrian.hunter@intel.com>
+ <20200709173628.5613-12-adrian.hunter@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200709173628.5613-12-adrian.hunter@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adapt existing futex wait wouldblock file to test the same mechanism for
-futex2.
+> diff --git a/tools/perf/Documentation/perf-intel-pt.txt b/tools/perf/Documentation/perf-intel-pt.txt
+> index 758295a7e3d6..849474629fe7 100644
+> --- a/tools/perf/Documentation/perf-intel-pt.txt
+> +++ b/tools/perf/Documentation/perf-intel-pt.txt
+> @@ -973,6 +973,9 @@ useful only if the control flow of interest is represented or indicated by FUP,
+>  TIP, TIP.PGE, or TIP.PGD packets.  However the q option could be used to find
+>  time ranges that could then be decoded fully using the --time option.
+>  
+> +Repeating the q option (i.e. qq) decodes only PSB+, getting ip if there is a
+> +FUP packet within PSB+ (i.e. between PSB and PSBEND).
 
-Signed-off-by: André Almeida <andrealmeid@collabora.com>
----
- .../futex/functional/futex_wait_wouldblock.c  | 33 ++++++++++++++++---
- 1 file changed, 29 insertions(+), 4 deletions(-)
+Also need high level description without PT jargon
+(and perhaps also reference how to configure PSB frequency)
 
-diff --git a/tools/testing/selftests/futex/functional/futex_wait_wouldblock.c b/tools/testing/selftests/futex/functional/futex_wait_wouldblock.c
-index 0ae390ff8164..8187f0754cd2 100644
---- a/tools/testing/selftests/futex/functional/futex_wait_wouldblock.c
-+++ b/tools/testing/selftests/futex/functional/futex_wait_wouldblock.c
-@@ -12,6 +12,7 @@
-  *
-  * HISTORY
-  *      2009-Nov-14: Initial version by Gowrishankar <gowrishankar.m@in.ibm.com>
-+ *      2020-Jul-9: Add futex2 test by André <andrealmeid@collabora.com>
-  *
-  *****************************************************************************/
- 
-@@ -21,7 +22,7 @@
- #include <stdlib.h>
- #include <string.h>
- #include <time.h>
--#include "futextest.h"
-+#include "futex2test.h"
- #include "logging.h"
- 
- #define TEST_NAME "futex-wait-wouldblock"
-@@ -39,6 +40,7 @@ void usage(char *prog)
- int main(int argc, char *argv[])
- {
- 	struct timespec to = {.tv_sec = 0, .tv_nsec = timeout_ns};
-+	struct timespec64 to64;
- 	futex_t f1 = FUTEX_INITIALIZER;
- 	int res, ret = RET_PASS;
- 	int c;
-@@ -61,18 +63,41 @@ int main(int argc, char *argv[])
- 	}
- 
- 	ksft_print_header();
--	ksft_set_plan(1);
-+	ksft_set_plan(2);
- 	ksft_print_msg("%s: Test the unexpected futex value in FUTEX_WAIT\n",
- 	       basename(argv[0]));
- 
- 	info("Calling futex_wait on f1: %u @ %p with val=%u\n", f1, &f1, f1+1);
- 	res = futex_wait(&f1, f1+1, &to, FUTEX_PRIVATE_FLAG);
- 	if (!res || errno != EWOULDBLOCK) {
--		fail("futex_wait returned: %d %s\n",
-+		ksft_test_result_fail("futex_wait returned: %d %s\n",
- 		     res ? errno : res, res ? strerror(errno) : "");
- 		ret = RET_FAIL;
-+	} else {
-+		ksft_test_result_pass("futex_wait wouldblock succeeds\n");
- 	}
- 
--	print_result(TEST_NAME, ret);
-+	/* setting absolute timeout for futex2 */
-+	if (gettime64(CLOCK_MONOTONIC, &to64))
-+		error("gettime64 failed\n", errno);
-+
-+	to64.tv_nsec += timeout_ns;
-+
-+	if (to64.tv_nsec >= 1000000000) {
-+		to64.tv_sec++;
-+		to64.tv_nsec -= 1000000000;
-+	}
-+
-+	info("Calling futex2_wait on f1: %u @ %p with val=%u\n", f1, &f1, f1+1);
-+	res = futex2_wait(&f1, f1+1, FUTEX_PRIVATE_FLAG | FUTEX_32, &to64);
-+	if (!res || errno != EWOULDBLOCK) {
-+		ksft_test_result_fail("futex2_wait returned: %d %s\n",
-+		     res ? errno : res, res ? strerror(errno) : "");
-+		ret = RET_FAIL;
-+	} else {
-+		ksft_test_result_pass("futex2_wait wouldblock succeeds\n");
-+	}
-+
-+	ksft_print_cnts();
- 	return ret;
- }
--- 
-2.27.0
+Other than that great feature. I'll be an enthuisastic user :-)
 
+-Andi
+> 
