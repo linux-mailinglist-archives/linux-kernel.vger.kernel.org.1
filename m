@@ -2,139 +2,305 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BED3D219D2D
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 12:12:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E33D219D31
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 12:13:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726828AbgGIKMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 06:12:51 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:31019 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726773AbgGIKMt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726852AbgGIKMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 06:12:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726790AbgGIKMt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 9 Jul 2020 06:12:49 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1594289569; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: To:
- Subject: Sender; bh=wWq91HAC/ZSJGdVzwMRWL+Q0WO0UCK3z/tPDOpaZ6gU=; b=BHTdJH/wFBRn7Jt5WrDIV170lSicBm9FCA+9GWr/KFGnK/d0vPBT+9IGy1Qw1EfCPl/j1BhO
- 2NSwG8ccAulRiKhqJoFWlip9p9cGn6LNzEpYNNR4QPoTgwngZ1b6tjNMQ/tKcluESdtvLGsq
- uXnyeGzRcKQIPLidBsqEujkgkIA=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n19.prod.us-west-2.postgun.com with SMTP id
- 5f06ed9ea33b1a3dd4559642 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 09 Jul 2020 10:12:46
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id BFC65C433C8; Thu,  9 Jul 2020 10:12:45 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.0.129] (unknown [183.83.142.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rohitkr)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 437E9C433C6;
-        Thu,  9 Jul 2020 10:12:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 437E9C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rohitkr@codeaurora.org
-Subject: Re: [PATCH v3 6/8] dt-bindings: sound: lpass-cpu: Add sc7180 lpass
- cpu node
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1594184896-10629-1-git-send-email-rohitkr@codeaurora.org>
- <1594184896-10629-7-git-send-email-rohitkr@codeaurora.org>
- <6b6b0e38-9c04-e065-8a43-ccfec260d60c@linaro.org>
- <430e0d24-c5c2-84ec-fe7b-b6b27192666d@codeaurora.org>
- <de07f84b-40bc-d9ae-932d-623a5e8341e2@linaro.org>
-From:   Rohit Kumar <rohitkr@codeaurora.org>
-Message-ID: <40ca93fe-5bf0-ace3-4f95-90624d29a409@codeaurora.org>
-Date:   Thu, 9 Jul 2020 15:42:38 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4A77C035425
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 03:12:47 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id z2so1738148wrp.2
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 03:12:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=6LUxAcH1p2jd4UOhn99gfFC8uQP4AVfDHydIOJan7II=;
+        b=HjHRha9W1SioA/VVdxgx7QQEEemizC5hZBgXGf0Yo4fjeX3HlT5HwuHt0IFeuAHsFP
+         +mNzogNr7LinVWHee+lNxUrCahz5PsPnQr2GDAua72fE7CkxIG4iJg7KvXHrFlhJWI5N
+         jH23uTHry750zmB+Fc2jxud02uWtn2rVXYmQk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=6LUxAcH1p2jd4UOhn99gfFC8uQP4AVfDHydIOJan7II=;
+        b=RE+9CEFzj4SH+bAuzYe3Nx6N+iAnjE0uz2/3ntOhWAyvcsgFFBu68z1EonLq//9vp9
+         XjSNI59xyl9R0jgDlg2gLdAw6Jrt3I+q4PmZDLnakkMvQ9g6MIp6idgk6kamXvdnmcSL
+         UCxNzr9yeP0MogGGEKZvIx5ibktALOGr7T3LOMChfdy2WEi26O2X2PIWgbFhlu6z90vL
+         5C8l7coBORqkewP9mtvuHgKygD3cL5Qz4zEWHVKVnIS4bfQu5kyT4dwCwdnO7thjIfHb
+         fBDYOvy9owNyf2oNBkexjebj+A8ihSIZSxuU3mwa4Jd2CxXjoGHEXk8Rlio9WP70mnYj
+         2eYw==
+X-Gm-Message-State: AOAM53137wQC5lhcAdD1o/e2djNFj323/kH7ffsK/8B2pOPTa4mHZHuB
+        ArK5LPn0tlkcNOxSYuH7vZwJIt5D3gw=
+X-Google-Smtp-Source: ABdhPJx+jrwPm8Bd1z32bUhszeBSuRM6wkq2Vpj1082tKODOb+94055FulWUr/hGgKA0ny/q2wUG9w==
+X-Received: by 2002:adf:c3c7:: with SMTP id d7mr60583966wrg.51.1594289566246;
+        Thu, 09 Jul 2020 03:12:46 -0700 (PDT)
+Received: from kpsingh.zrh.corp.google.com ([81.6.44.51])
+        by smtp.gmail.com with ESMTPSA id g3sm5538287wrb.59.2020.07.09.03.12.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Jul 2020 03:12:45 -0700 (PDT)
+From:   KP Singh <kpsingh@chromium.org>
+To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Cc:     Andrii Nakryiko <andriin@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
+        Florent Revest <revest@chromium.org>
+Subject: [PATCH bpf-next v4 4/4] bpf: Add selftests for local_storage
+Date:   Thu,  9 Jul 2020 12:12:39 +0200
+Message-Id: <20200709101239.3829793-5-kpsingh@chromium.org>
+X-Mailer: git-send-email 2.27.0.389.gc38d7665816-goog
+In-Reply-To: <20200709101239.3829793-1-kpsingh@chromium.org>
+References: <20200709101239.3829793-1-kpsingh@chromium.org>
 MIME-Version: 1.0
-In-Reply-To: <de07f84b-40bc-d9ae-932d-623a5e8341e2@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: KP Singh <kpsingh@google.com>
 
-On 7/9/2020 3:38 PM, Srinivas Kandagatla wrote:
->
->
-> On 09/07/2020 11:01, Rohit Kumar wrote:
->>
->> On 7/9/2020 2:57 PM, Srinivas Kandagatla wrote:
->>>
->>>
->>> On 08/07/2020 06:08, Rohit kumar wrote:
->>>> Add dt-bindings to support "qcom,lpass-cpu-sc7180" node.
->>>>
->>>> Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
->>>> ---
->>>>   Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt | 3 ++-
->>>>   1 file changed, 2 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git 
->>>> a/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt 
->>>> b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt
->>>> index 32c2cdb..04e34cc 100644
->>>> --- a/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt
->>>> +++ b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt
->>>> @@ -4,7 +4,8 @@ This node models the Qualcomm Technologies 
->>>> Low-Power Audio SubSystem (LPASS).
->>>>     Required properties:
->>>>   -- compatible        : "qcom,lpass-cpu" or "qcom,apq8016-lpass-cpu"
->>>> +- compatible        : "qcom,lpass-cpu" or "qcom,apq8016-lpass-cpu" or
->>>> +              "qcom,lpass-cpu-sc7180"
->>>>   - clocks        : Must contain an entry for each entry in 
->>>> clock-names.
->>>>   - clock-names        : A list which must include the following 
->>>> entries:
->>>>                   * "ahbix-clk"
->>>
->>> Can you also list the clocks that are mandatory for this SoC.
->>>
->>> --srini
->>>
->> Will it be fine if I update it in patch 8 only where we have moved to 
->> yaml format?
->>
-> May be reverse the order, Convert to Yaml first and then add sc7180!
+inode_local_storage:
 
-Actually Mark suggested to keep yaml change at the end of patch series 
-as there
+* Hook to the file_open and inode_unlink LSM hooks.
+* Create and unlink a temporary file.
+* Store some information in the inode's bpf_local_storage during
+  file_open.
+* Verify that this information exists when the file is unlinked.
 
-are pending yaml patch reviews and it might take time. If we keep yaml 
-change before sc7180
+sk_local_storage:
 
-change, then it will get blocked until yaml review. For now, I can 
-update in exisiting
+* Hook to the socket_post_create and socket_bind LSM hooks.
+* Open and bind a socket and set the sk_storage in the
+  socket_post_create hook using the start_server helper.
+* Verify if the information is set in the socket_bind hook.
 
-documentation. Please suggest.
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+Signed-off-by: KP Singh <kpsingh@google.com>
+---
+ .../bpf/prog_tests/test_local_storage.c       |  60 ++++++++
+ .../selftests/bpf/progs/local_storage.c       | 136 ++++++++++++++++++
+ 2 files changed, 196 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_local_storage.c
+ create mode 100644 tools/testing/selftests/bpf/progs/local_storage.c
 
-Thanks
-
->
-> --srini
->> Thanks,
->>
->> Rohit
->>
->>>
->>>>
+diff --git a/tools/testing/selftests/bpf/prog_tests/test_local_storage.c b/tools/testing/selftests/bpf/prog_tests/test_local_storage.c
+new file mode 100644
+index 000000000000..d4ba89195c43
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/test_local_storage.c
+@@ -0,0 +1,60 @@
++// SPDX-License-Identifier: GPL-2.0
++
++/*
++ * Copyright (C) 2020 Google LLC.
++ */
++
++#include <test_progs.h>
++#include <linux/limits.h>
++
++#include "local_storage.skel.h"
++#include "network_helpers.h"
++
++int create_and_unlink_file(void)
++{
++	char fname[PATH_MAX] = "/tmp/fileXXXXXX";
++	int fd;
++
++	fd = mkstemp(fname);
++	if (fd < 0)
++		return fd;
++
++	close(fd);
++	unlink(fname);
++	return 0;
++}
++
++void test_test_local_storage(void)
++{
++	struct local_storage *skel = NULL;
++	int err, duration = 0, serv_sk = -1;
++
++	skel = local_storage__open_and_load();
++	if (CHECK(!skel, "skel_load", "lsm skeleton failed\n"))
++		goto close_prog;
++
++	err = local_storage__attach(skel);
++	if (CHECK(err, "attach", "lsm attach failed: %d\n", err))
++		goto close_prog;
++
++	skel->bss->monitored_pid = getpid();
++
++	err = create_and_unlink_file();
++	if (CHECK(err < 0, "exec_cmd", "err %d errno %d\n", err, errno))
++		goto close_prog;
++
++	CHECK(!skel->bss->inode_storage_result, "inode_storage_result",
++	      "inode_local_storage not set");
++
++	serv_sk = start_server(AF_INET6, SOCK_STREAM, NULL, 0, 0);
++	if (CHECK(serv_sk < 0, "start_server", "failed to start server\n"))
++		goto close_prog;
++
++	CHECK(!skel->bss->sk_storage_result, "sk_storage_result",
++	      "sk_local_storage not set");
++
++	close(serv_sk);
++
++close_prog:
++	local_storage__destroy(skel);
++}
+diff --git a/tools/testing/selftests/bpf/progs/local_storage.c b/tools/testing/selftests/bpf/progs/local_storage.c
+new file mode 100644
+index 000000000000..cb608b7b90f0
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/local_storage.c
+@@ -0,0 +1,136 @@
++// SPDX-License-Identifier: GPL-2.0
++
++/*
++ * Copyright 2020 Google LLC.
++ */
++
++#include <errno.h>
++#include <linux/bpf.h>
++#include <stdbool.h>
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++
++char _license[] SEC("license") = "GPL";
++
++#define DUMMY_STORAGE_VALUE 0xdeadbeef
++
++int monitored_pid = 0;
++bool inode_storage_result = false;
++bool sk_storage_result = false;
++
++struct dummy_storage {
++	__u32 value;
++};
++
++struct {
++	__uint(type, BPF_MAP_TYPE_INODE_STORAGE);
++	__uint(map_flags, BPF_F_NO_PREALLOC);
++	__type(key, int);
++	__type(value, struct dummy_storage);
++} inode_storage_map SEC(".maps");
++
++struct {
++	__uint(type, BPF_MAP_TYPE_SK_STORAGE);
++	__uint(map_flags, BPF_F_NO_PREALLOC | BPF_F_CLONE);
++	__type(key, int);
++	__type(value, struct dummy_storage);
++} sk_storage_map SEC(".maps");
++
++/* TODO Use vmlinux.h once BTF pruning for embedded types is fixed.
++ */
++struct sock {} __attribute__((preserve_access_index));
++struct sockaddr {} __attribute__((preserve_access_index));
++struct socket {
++	struct sock *sk;
++} __attribute__((preserve_access_index));
++
++struct inode {} __attribute__((preserve_access_index));
++struct dentry {
++	struct inode *d_inode;
++} __attribute__((preserve_access_index));
++struct file {
++	struct inode *f_inode;
++} __attribute__((preserve_access_index));
++
++
++SEC("lsm/inode_unlink")
++int BPF_PROG(unlink_hook, struct inode *dir, struct dentry *victim)
++{
++	__u32 pid = bpf_get_current_pid_tgid() >> 32;
++	struct dummy_storage *storage;
++
++	if (pid != monitored_pid)
++		return 0;
++
++	storage = bpf_inode_storage_get(&inode_storage_map, victim->d_inode, 0,
++				     BPF_SK_STORAGE_GET_F_CREATE);
++	if (!storage)
++		return 0;
++
++	if (storage->value == DUMMY_STORAGE_VALUE)
++		inode_storage_result = true;
++
++	return 0;
++}
++
++SEC("lsm/socket_bind")
++int BPF_PROG(socket_bind, struct socket *sock, struct sockaddr *address,
++	     int addrlen)
++{
++	__u32 pid = bpf_get_current_pid_tgid() >> 32;
++	struct dummy_storage *storage;
++
++	if (pid != monitored_pid)
++		return 0;
++
++	storage = bpf_sk_storage_get(&sk_storage_map, sock->sk, 0,
++				     BPF_SK_STORAGE_GET_F_CREATE);
++	if (!storage)
++		return 0;
++
++	if (storage->value == DUMMY_STORAGE_VALUE)
++		sk_storage_result = true;
++
++	return 0;
++}
++
++SEC("lsm/socket_post_create")
++int BPF_PROG(socket_post_create, struct socket *sock, int family, int type,
++	     int protocol, int kern)
++{
++	__u32 pid = bpf_get_current_pid_tgid() >> 32;
++	struct dummy_storage *storage;
++
++	if (pid != monitored_pid)
++		return 0;
++
++	storage = bpf_sk_storage_get(&sk_storage_map, sock->sk, 0,
++				     BPF_SK_STORAGE_GET_F_CREATE);
++	if (!storage)
++		return 0;
++
++	storage->value = DUMMY_STORAGE_VALUE;
++
++	return 0;
++}
++
++SEC("lsm/file_open")
++int BPF_PROG(test_int_hook, struct file *file)
++{
++	__u32 pid = bpf_get_current_pid_tgid() >> 32;
++	struct dummy_storage *storage;
++
++	if (pid != monitored_pid)
++		return 0;
++
++	if (!file->f_inode)
++		return 0;
++
++	storage = bpf_inode_storage_get(&inode_storage_map, file->f_inode, 0,
++				     BPF_LOCAL_STORAGE_GET_F_CREATE);
++	if (!storage)
++		return 0;
++
++	storage->value = DUMMY_STORAGE_VALUE;
++	return 0;
++}
 -- 
-Qualcomm INDIA, on behalf of Qualcomm Innovation Center, Inc.is a member
-of the Code Aurora Forum, hosted by the Linux Foundation.
+2.27.0.389.gc38d7665816-goog
 
