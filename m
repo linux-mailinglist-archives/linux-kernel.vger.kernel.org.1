@@ -2,126 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FF4C219EEA
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 13:11:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3A62219EE7
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 13:11:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727116AbgGILLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 07:11:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36352 "EHLO mail.kernel.org"
+        id S1727826AbgGILLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 07:11:00 -0400
+Received: from ozlabs.org ([203.11.71.1]:37671 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726315AbgGILLj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 07:11:39 -0400
-Received: from coco.lan (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726315AbgGILLA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 07:11:00 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C16B92076A;
-        Thu,  9 Jul 2020 11:11:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594293098;
-        bh=vny+SWwydOWXgQEpMtX94zFAywVQ53nMMZrFLu+KCfE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ylOe5/KHwchiM+tEwXVN+LYL6Znb1MK7HBpvsQgqLWOOmVnaquIrHYwDMyFldYkk2
-         oejy8Ava9G1TXJPWjaj9zMjIDGrPwZWzJp+MkdY/tDNoHp62PAKRJbHEpJBOhOWqd4
-         5rBr9E10yVPBow0R8ZjriiSvK7fXmljt/q79n2OY=
-Date:   Thu, 9 Jul 2020 13:11:33 +0200
-From:   Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     Matthew Wilcox <willy6545@gmail.com>,
-        ksummit <ksummit-discuss@lists.linuxfoundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        tech-board-discuss@lists.linuxfoundation.org,
-        Chris Mason <clm@fb.clm>
-Subject: Re: [Ksummit-discuss] [PATCH] CodingStyle: Inclusive Terminology
-Message-ID: <20200709131133.1bbb9c63@coco.lan>
-In-Reply-To: <10eeae911ab653036554f5599ba34406572acaa9.camel@perches.com>
-References: <159389297140.2210796.13590142254668787525.stgit@dwillia2-desk3.amr.corp.intel.com>
-        <CAFhKne_ZVWVhZX5hNEbeGBfU6BMRN9JKQeTsVYOcMmEH1cd3xg@mail.gmail.com>
-        <87h7ul15le.fsf@notabene.neil.brown.name>
-        <20200706072221.GA1947246@kroah.com>
-        <CAMuHMdWj2d5GF1ZkuhzQxg9teA51zjF0oQQPWcphzK=kJ6-x9Q@mail.gmail.com>
-        <CAFhKne9vswg3Q4mTOz4WP6QWJ8tDH+SNx1Pu7LotLagoNURKgw@mail.gmail.com>
-        <d6f56f5f5e0790ee9c7579eb05c7d92e071ee15a.camel@perches.com>
-        <CAFhKne_p_rKN4adhsuyUyBfrS0YwCtoNFNn-x4aFajPmnkR6iQ@mail.gmail.com>
-        <10eeae911ab653036554f5599ba34406572acaa9.camel@perches.com>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4B2YPq736cz9s1x;
+        Thu,  9 Jul 2020 21:10:55 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1594293057;
+        bh=yRALeo2WWMNouhtOFfAIYKeRGEF0Y6ZN/Bx9xWP4D0s=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=IpJ79hMFe2+vLLkINDkeDK6RAYv0cR8pmYUBehmlLjb0YjfdaR9UMjoaWFGMJlHHz
+         BSioaudAKP6kT+WYJ4q5vXVQtL+U2YbAECpRW6Uw9GJIyg3nRBS7tPB99N0P4MEYz5
+         wqfm5NDYtXUOPayA7mINIrHbSBUJnsShXqlVo5iJyr/hEupBG7DJe84TV9nYf5PsNW
+         F40SWNb1OhAkm5bwg31/w+CyLrrl8zWZ5X8X0+TB8Ch/0roxk+TBs9fXjUoqv4wGej
+         pibM/9dfF/PldVkrus4p5YFKXIEwqT6WCyogX/+WSpQVJKMQAQjMT6A4QK4SOgfpip
+         jqpWxxHSE3cTw==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Laurent Dufour <ldufour@linux.ibm.com>, bharata@linux.ibm.com
+Cc:     linux-kernel@vger.kernel.org, kvm-ppc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, paulus@samba.org,
+        bauerman@linux.ibm.com, sukadev@linux.ibm.com,
+        sathnaga@linux.vnet.ibm.com, Ram Pai <linuxram@us.ibm.com>,
+        Paul Mackerras <paulus@ozlabs.org>
+Subject: Re: [PATCH 2/2] KVM: PPC: Book3S HV: rework secure mem slot dropping
+In-Reply-To: <0588d16a-8548-0f55-1132-400807a390a1@linux.ibm.com>
+References: <20200703155914.40262-1-ldufour@linux.ibm.com> <20200703155914.40262-3-ldufour@linux.ibm.com> <20200708112531.GA7902@in.ibm.com> <0588d16a-8548-0f55-1132-400807a390a1@linux.ibm.com>
+Date:   Thu, 09 Jul 2020 21:13:11 +1000
+Message-ID: <871rllvt4o.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, 06 Jul 2020 06:30:01 -0700
-Joe Perches <joe@perches.com> escreveu:
+Laurent Dufour <ldufour@linux.ibm.com> writes:
+> Le 08/07/2020 =C3=A0 13:25, Bharata B Rao a =C3=A9crit=C2=A0:
+>> On Fri, Jul 03, 2020 at 05:59:14PM +0200, Laurent Dufour wrote:
+>>> When a secure memslot is dropped, all the pages backed in the secure de=
+vice
+>>> (aka really backed by secure memory by the Ultravisor) should be paged =
+out
+>>> to a normal page. Previously, this was achieved by triggering the page
+>>> fault mechanism which is calling kvmppc_svm_page_out() on each pages.
+>>>
+>>> This can't work when hot unplugging a memory slot because the memory sl=
+ot
+>>> is flagged as invalid and gfn_to_pfn() is then not trying to access the
+>>> page, so the page fault mechanism is not triggered.
+>>>
+>>> Since the final goal is to make a call to kvmppc_svm_page_out() it seems
+>>> simpler to directly calling it instead of triggering such a mechanism. =
+This
+>>> way kvmppc_uvmem_drop_pages() can be called even when hot unplugging a
+>>> memslot.
+>>=20
+>> Yes, this appears much simpler.
+>
+> Thanks Bharata for reviewing this.
+>
+>>=20
+>>>
+>>> Since kvmppc_uvmem_drop_pages() is already holding kvm->arch.uvmem_lock,
+>>> the call to __kvmppc_svm_page_out() is made.
+>>> As __kvmppc_svm_page_out needs the vma pointer to migrate the pages, the
+>>> VMA is fetched in a lazy way, to not trigger find_vma() all the time. In
+>>> addition, the mmap_sem is help in read mode during that time, not in wr=
+ite
+>>> mode since the virual memory layout is not impacted, and
+>>> kvm->arch.uvmem_lock prevents concurrent operation on the secure device.
+>>>
+>>> Cc: Ram Pai <linuxram@us.ibm.com>
+>>> Cc: Bharata B Rao <bharata@linux.ibm.com>
+>>> Cc: Paul Mackerras <paulus@ozlabs.org>
+>>> Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
+>>> ---
+>>>   arch/powerpc/kvm/book3s_hv_uvmem.c | 54 ++++++++++++++++++++----------
+>>>   1 file changed, 37 insertions(+), 17 deletions(-)
+>>>
+>>> diff --git a/arch/powerpc/kvm/book3s_hv_uvmem.c b/arch/powerpc/kvm/book=
+3s_hv_uvmem.c
+>>> index 852cc9ae6a0b..479ddf16d18c 100644
+>>> --- a/arch/powerpc/kvm/book3s_hv_uvmem.c
+>>> +++ b/arch/powerpc/kvm/book3s_hv_uvmem.c
+>>> @@ -533,35 +533,55 @@ static inline int kvmppc_svm_page_out(struct vm_a=
+rea_struct *vma,
+>>>    * fault on them, do fault time migration to replace the device PTEs =
+in
+>>>    * QEMU page table with normal PTEs from newly allocated pages.
+>>>    */
+>>> -void kvmppc_uvmem_drop_pages(const struct kvm_memory_slot *free,
+>>> +void kvmppc_uvmem_drop_pages(const struct kvm_memory_slot *slot,
+>>>   			     struct kvm *kvm, bool skip_page_out)
+>>>   {
+>>>   	int i;
+>>>   	struct kvmppc_uvmem_page_pvt *pvt;
+>>> -	unsigned long pfn, uvmem_pfn;
+>>> -	unsigned long gfn =3D free->base_gfn;
+>>> +	struct page *uvmem_page;
+>>> +	struct vm_area_struct *vma =3D NULL;
+>>> +	unsigned long uvmem_pfn, gfn;
+>>> +	unsigned long addr, end;
+>>> +
+>>> +	down_read(&kvm->mm->mmap_sem);
+>>=20
+>> You should be using mmap_read_lock(kvm->mm) with recent kernels.
+>
+> Absolutely, shame on me, I reviewed Michel's series about that!
+>
+> Paul, Michael, could you fix that when pulling this patch or should I sen=
+t a=20
+> whole new series?
 
-> On Mon, 2020-07-06 at 09:04 -0400, Matthew Wilcox wrote:
-> > On Mon, Jul 6, 2020 at 8:59 AM Joe Perches <joe@perches.com> wrote:  
-> > > On Mon, 2020-07-06 at 08:51 -0400, Matthew Wilcox wrote:  
-> > > > In terms of number of lines of code using the word, it's only seventh
-> > > > in drivers/:
-> > > > 
-> > > > $ for i in drivers/*; do c=$(find $i -type f |xargs grep slave |wc
-> > > > -l); echo "$c $i"; done |sort -rn |head
-> > > > 5218 drivers/net
-> > > > 1341 drivers/dma
-> > > > 988 drivers/i2c
-> > > > 695 drivers/gpu
-> > > > 666 drivers/soundwire
-> > > > 665 drivers/spi
-> > > > 559 drivers/w1
-> > > > 461 drivers/infiniband
-> > > > 389 drivers/media
-> > > > 301 drivers/scsi  
-> > > 
-> > > I get rather different and much lower numbers
-> > > 
-> > > $ git grep -i -w slave drivers | \
-> > >   cut -f1,2 -d/ | uniq -c | sort -rn | head -20 | cat -n  
-> > 
-> > That's because you're using grep -w which excludes, for example,
-> > slave_configure in drivers/scsi.  
-> 
-> upper/lower case uses too...  (anyway, there are a lot)
-> 
-> $ git grep -i -w -P '\w*slave\w*' drivers | \
->   cut -f1,2 -d/ | uniq -c | sort -rn | head -20 | cat -n
->      1	   5683 drivers/net
->      2	   2118 drivers/gpu
->      3	   1807 drivers/dma
->      4	   1389 drivers/i2c
->      5	    866 drivers/interconnect
->      6	    835 drivers/soundwire
->      7	    821 drivers/spi
->      8	    698 drivers/w1
->      9	    508 drivers/media
->     10	    481 drivers/infiniband
->     11	    440 drivers/ata
->     12	    317 drivers/scsi
->     13	    267 drivers/fsi
->     14	    240 drivers/tty
->     15	    225 drivers/vme
->     16	    223 drivers/staging
->     17	    157 drivers/mmc
->     18	    155 drivers/usb
->     19	    141 drivers/video
->     20	    140 drivers/char
+Paul will take this series, so up to him.
 
-It sounds that, as soon after this patch gets merged, the mailing lists
-will be flooded by lots of patches replacing such terms with something
-else :-(
-
-Doing a quick look at the media subsystem, it sounds that most terms
-come from I2C master/slave and DiSEqC terminology, as defined by their
-specs (and the others seem to be derived from some hardware vendor 
-specific terminology).
-
-As they're all supported by the current specs, if one would want
-to replace them, it should first ensure that the supporting specs
-should be using a different terminology, as otherwise replacing
-them would just make harder for anyone trying to understand the
-code.
-
-Thanks,
-Mauro
+cheers
