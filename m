@@ -2,101 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6B7C219BE6
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 11:18:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84D60219BE0
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 11:17:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726442AbgGIJSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 05:18:17 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:39544 "EHLO m43-7.mailgun.net"
+        id S1726298AbgGIJRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 05:17:48 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53048 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726283AbgGIJSO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 05:18:14 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1594286294; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=PmrYhuAQBZ3Ybqc9tHktn7YgndYRCoWWiaZS9MIjs5Y=; b=Ebu5945L9WKcEI/aJCyx0vw3Wjf647EA921wdaZDsTXlxnYxpSebDVIJYj5i3H2ePclp0FCi
- X02QpPQ0xb5ft63f0fsYIfCBzki5MjgjzAvYJM8Dj+1Dlc/88/BpyjKFtM3IiAzuQQ0ga26D
- YYf5/JZ0ndq2MnWq+zRoYwUuhPE=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 5f06e0bccd1b803e179b23ac (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 09 Jul 2020 09:17:48
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B531EC43387; Thu,  9 Jul 2020 09:17:47 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from pillair-linux.qualcomm.com (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: pillair)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 699EAC433C8;
-        Thu,  9 Jul 2020 09:17:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 699EAC433C8
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=pillair@codeaurora.org
-From:   Rakesh Pillai <pillair@codeaurora.org>
-To:     devicetree@vger.kernel.org
-Cc:     dianders@chromium.org, evgreen@chromium.org,
-        Rakesh Pillai <pillair@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: qcom: sc7180: Add missing properties for Wifi node
-Date:   Thu,  9 Jul 2020 14:47:33 +0530
-Message-Id: <1594286253-32244-1-git-send-email-pillair@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S1726122AbgGIJRr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 05:17:47 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 411ABADE5;
+        Thu,  9 Jul 2020 09:17:45 +0000 (UTC)
+Subject: Re: [PATCH] efi: avoid error message when booting under Xen
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+To:     xen-devel@lists.xenproject.org, linux-fbdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     Peter Jones <pjones@redhat.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+References: <20200610141052.13258-1-jgross@suse.com>
+ <094be567-2c82-7d5b-e432-288286c6c3fb@suse.com>
+Message-ID: <ec21b883-dc5c-f3fe-e989-7fa13875a4c4@suse.com>
+Date:   Thu, 9 Jul 2020 11:17:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
+MIME-Version: 1.0
+In-Reply-To: <094be567-2c82-7d5b-e432-288286c6c3fb@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The wlan firmware memory is statically mapped in
-the Trusted Firmware, hence the wlan driver does
-not need to map/unmap this region dynamically.
+On 28.06.20 10:50, Jürgen Groß wrote:
+> Ping?
+> 
+> On 10.06.20 16:10, Juergen Gross wrote:
+>> efifb_probe() will issue an error message in case the kernel is booted
+>> as Xen dom0 from UEFI as EFI_MEMMAP won't be set in this case. Avoid
+>> that message by calling efi_mem_desc_lookup() only if EFI_PARAVIRT
+>> isn't set.
+>>
+>> Fixes: 38ac0287b7f4 ("fbdev/efifb: Honour UEFI memory map attributes 
+>> when mapping the FB")
+>> Signed-off-by: Juergen Gross <jgross@suse.com>
+>> ---
+>>   drivers/video/fbdev/efifb.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/video/fbdev/efifb.c b/drivers/video/fbdev/efifb.c
+>> index 65491ae74808..f5eccd1373e9 100644
+>> --- a/drivers/video/fbdev/efifb.c
+>> +++ b/drivers/video/fbdev/efifb.c
+>> @@ -453,7 +453,7 @@ static int efifb_probe(struct platform_device *dev)
+>>       info->apertures->ranges[0].base = efifb_fix.smem_start;
+>>       info->apertures->ranges[0].size = size_remap;
+>> -    if (efi_enabled(EFI_BOOT) &&
+>> +    if (efi_enabled(EFI_BOOT) && !efi_enabled(EFI_PARAVIRT) &&
+>>           !efi_mem_desc_lookup(efifb_fix.smem_start, &md)) {
+>>           if ((efifb_fix.smem_start + efifb_fix.smem_len) >
+>>               (md.phys_addr + (md.num_pages << EFI_PAGE_SHIFT))) {
+>>
+> 
 
-Hence add the property to indicate the wlan driver
-to not map/unamp the firmware memory region
-dynamically.
+In case I see no reaction from the maintainer for another week I'll take
+this patch through the Xen tree.
 
-Also add the chain1 voltage supply for wlan.
 
-Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
----
-This patch is created on top of the change by
-Douglas Anderson.
-https://lkml.org/lkml/2020/6/25/817
-
-Also the dt-bindings for the chain1 voltage supply
-is added by the below patch series:
-https://patchwork.kernel.org/project/linux-wireless/list/?series=309137
----
- arch/arm64/boot/dts/qcom/sc7180-idp.dts | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-idp.dts b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
-index 472f7f4..4c64bc1 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-idp.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
-@@ -391,10 +391,12 @@
- 
- &wifi {
- 	status = "okay";
-+	qcom,msa-fixed-perm;
- 	vdd-0.8-cx-mx-supply = <&vreg_l9a_0p6>;
- 	vdd-1.8-xo-supply = <&vreg_l1c_1p8>;
- 	vdd-1.3-rfa-supply = <&vreg_l2c_1p3>;
- 	vdd-3.3-ch0-supply = <&vreg_l10c_3p3>;
-+	vdd-3.3-ch1-supply = <&vreg_l11c_3p3>;
- 	wifi-firmware {
- 		iommus = <&apps_smmu 0xc2 0x1>;
- 	};
--- 
-2.7.4
-
+Juergen
