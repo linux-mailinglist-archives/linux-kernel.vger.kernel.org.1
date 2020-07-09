@@ -2,138 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBC8321A2C6
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 16:57:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74C6021A2DD
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 16:57:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728314AbgGIO4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 10:56:11 -0400
-Received: from mx0a-002e3701.pphosted.com ([148.163.147.86]:19780 "EHLO
-        mx0a-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728215AbgGIOzo (ORCPT
+        id S1728137AbgGIO5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 10:57:40 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:16147 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727092AbgGIO5k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 10:55:44 -0400
-Received: from pps.filterd (m0134420.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 069EmOSO009746;
-        Thu, 9 Jul 2020 14:54:52 GMT
-Received: from g4t3427.houston.hpe.com (g4t3427.houston.hpe.com [15.241.140.73])
-        by mx0b-002e3701.pphosted.com with ESMTP id 325k1aqgrq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 09 Jul 2020 14:54:52 +0000
-Received: from stormcage.eag.rdlabs.hpecorp.net (stormcage.eag.rdlabs.hpecorp.net [128.162.236.70])
-        by g4t3427.houston.hpe.com (Postfix) with ESMTP id 8B29B7B;
-        Thu,  9 Jul 2020 14:54:51 +0000 (UTC)
-Received: by stormcage.eag.rdlabs.hpecorp.net (Postfix, from userid 200934)
-        id 3585F20203307; Thu,  9 Jul 2020 09:54:49 -0500 (CDT)
-Message-ID: <20200709145449.112770495@hpe.com>
-User-Agent: quilt/0.66
-Date:   Thu, 09 Jul 2020 09:55:00 -0500
-From:   steve.wahl@hpe.com
-To:     Steve Wahl <steve.wahl@hpe.com>, Jonathan Corbet <corbet@lwn.net>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Juergen Gross <jgross@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Oliver Neukum <oneukum@suse.com>,
-        Mike Travis <mike.travis@hpe.com>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Benjamin Thiel <b.thiel@posteo.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        James Morris <jmorris@namei.org>,
-        David Howells <dhowells@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Dave Young <dyoung@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Logan Gunthorpe <logang@deltatee.com>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Austin Kim <austindh.kim@gmail.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-efi@vger.kernel.org
-Cc:     Russ Anderson <rja@hpe.com>
-Subject: [patch v2 13/13] x86: Remove (now unused) EFI_UV1_MEMMAP from efi.h
-References: <20200709145447.549145421@hpe.com>
+        Thu, 9 Jul 2020 10:57:40 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f07302d0000>; Thu, 09 Jul 2020 07:56:45 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Thu, 09 Jul 2020 07:57:39 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Thu, 09 Jul 2020 07:57:39 -0700
+Received: from [10.19.64.157] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 9 Jul
+ 2020 14:57:36 +0000
+Subject: Re: [PATCH v3 2/6] gpio: max77620: Fix missing release of interrupt
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        "Bartosz Golaszewski" <bgolaszewski@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+References: <20200708202355.28507-1-digetx@gmail.com>
+ <20200708202355.28507-3-digetx@gmail.com>
+CC:     <linux-tegra@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+From:   Laxman Dewangan <ldewangan@nvidia.com>
+Message-ID: <80f4d1ff-8096-9060-3cf0-a59448866c40@nvidia.com>
+Date:   Thu, 9 Jul 2020 20:27:04 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:45.0) Gecko/20100101
+ Thunderbird/45.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-09_08:2020-07-09,2020-07-09 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
- mlxscore=0 malwarescore=0 clxscore=1015 mlxlogscore=999 impostorscore=0
- spamscore=0 suspectscore=2 lowpriorityscore=0 priorityscore=1501
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007090111
+In-Reply-To: <20200708202355.28507-3-digetx@gmail.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1594306605; bh=fpFkTV2lUtk91L2bYAU77/7Lg3zTXgUb3k+Hg51MCfQ=;
+        h=X-PGP-Universal:Subject:To:References:CC:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding;
+        b=qQqVLN9wngC//dx2qrXZv//b39BIvaw9zxCJ7yy6+tzGbz/dROUqIQwqz4hjO4JcJ
+         5dBOvT9bW3xx7MbdMprwQfCBQZDEQOcbtq/376FU7W1LP3plg910I5lVBZlKp7FQB1
+         QxQgPxgNvLmbOeOi6nmdxhcr6HtCZn5QjAzPbDqhwd+PHTTewWJJBx0RvAG635GizN
+         xdKZdl5681cPtjx+HEWyygzxWkFOQlaw9y1Fxi24Sq/NNRt9CPesIHzsXepcbRGTfh
+         bMj8fkrXTu0fX81F1K9ac5/dOjzJByHcd7M8+s2KxA1WoyVadTKeNh3SlXRjL721ZQ
+         IME8S/dTBnpBg==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With UV1 support removed, EFI_UV1_MEMMAP is no longer used.
 
-Signed-off-by: Steve Wahl <steve.wahl@hpe.com>
----
- arch/x86/include/asm/efi.h |   20 ++------------------
- 1 file changed, 2 insertions(+), 18 deletions(-)
 
---- linux.orig/arch/x86/include/asm/efi.h	2020-07-07 10:49:49.753511000 -0500
-+++ linux/arch/x86/include/asm/efi.h	2020-07-07 10:56:15.821045006 -0500
-@@ -22,17 +22,7 @@ extern unsigned long efi_fw_vendor, efi_
-  *
-  * This is the main reason why we're doing stable VA mappings for RT
-  * services.
-- *
-- * SGI UV1 machines are known to be incompatible with this scheme, so we
-- * provide an opt-out for these machines via a DMI quirk that sets the
-- * attribute below.
-  */
--#define EFI_UV1_MEMMAP         EFI_ARCH_1
--
--static inline bool efi_have_uv1_memmap(void)
--{
--	return IS_ENABLED(CONFIG_X86_UV) && efi_enabled(EFI_UV1_MEMMAP);
--}
- 
- #define EFI32_LOADER_SIGNATURE	"EL32"
- #define EFI64_LOADER_SIGNATURE	"EL64"
-@@ -122,9 +112,7 @@ struct efi_scratch {
- 	efi_sync_low_kernel_mappings();					\
- 	kernel_fpu_begin();						\
- 	firmware_restrict_branch_speculation_start();			\
--									\
--	if (!efi_have_uv1_memmap())					\
--		efi_switch_mm(&efi_mm);					\
-+	efi_switch_mm(&efi_mm);						\
- })
- 
- #define arch_efi_call_virt(p, f, args...)				\
-@@ -132,9 +120,7 @@ struct efi_scratch {
- 
- #define arch_efi_call_virt_teardown()					\
- ({									\
--	if (!efi_have_uv1_memmap())					\
--		efi_switch_mm(efi_scratch.prev_mm);			\
--									\
-+	efi_switch_mm(efi_scratch.prev_mm);				\
- 	firmware_restrict_branch_speculation_end();			\
- 	kernel_fpu_end();						\
- })
-@@ -176,8 +162,6 @@ extern void efi_delete_dummy_variable(vo
- extern void efi_switch_mm(struct mm_struct *mm);
- extern void efi_recover_from_page_fault(unsigned long phys_addr);
- extern void efi_free_boot_services(void);
--extern pgd_t * __init efi_uv1_memmap_phys_prolog(void);
--extern void __init efi_uv1_memmap_phys_epilog(pgd_t *save_pgd);
- 
- /* kexec external ABI */
- struct efi_setup_data {
+On Thursday 09 July 2020 01:53 AM, Dmitry Osipenko wrote:
+> External email: Use caution opening links or attachments
+>
+>
+> The requested interrupt is never released by the driver. Fix this by
+> using the resource-managed variant of request_threaded_irq().
+>
+> Fixes: ab3dd9cc24d4 ("gpio: max77620: Fix interrupt handling")
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+
+
+Looks good to me.
+Acked-by: Laxman Dewangan <ldewangan@nvidia.com>
+
 
