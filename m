@@ -2,170 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00A8221A06B
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 15:02:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C47F821A06F
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 15:04:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726746AbgGINB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 09:01:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41530 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726358AbgGINB6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 09:01:58 -0400
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 18A602074B;
-        Thu,  9 Jul 2020 13:01:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594299717;
-        bh=svdZb33Y7t1B2vg6ybn6AQgGBJfX7TqitPVoZxOAkL4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Tfp0iRBHR5aRvFS09s+qOKpZQFFKbB2kScnHzox4/rJKRdocXBIsmZ28HBb3wD6CE
-         fKw6nsoiJUi2ZgfsRnVpWaI7fWnNz2BK3OkaPyeUML/jj6UJmVbe7il6EwRsOjeAHl
-         W+g1fWQZWJ2nrfLleVShsmjfFnoDtyXOcL1gBhhc=
-Received: by mail-ed1-f54.google.com with SMTP id n2so1730626edr.5;
-        Thu, 09 Jul 2020 06:01:57 -0700 (PDT)
-X-Gm-Message-State: AOAM531XottZPZ54EVzF+PXn3u8/ydbF+5YVDQ6YqPFAoZzBubK2eANN
-        a87iVplwo2Gv7sMR0YpOrIXSUv7qGWwoOLbdBQ==
-X-Google-Smtp-Source: ABdhPJwXcokw3x2lqWpS4cVqHBkCVCiRJ+sqhgLCVDH335FOjvxmmxIFTWC0erzNbub7XMGUoCnGTGG4fug7NRxffhU=
-X-Received: by 2002:a05:6402:1766:: with SMTP id da6mr69654748edb.48.1594299715658;
- Thu, 09 Jul 2020 06:01:55 -0700 (PDT)
+        id S1726787AbgGINEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 09:04:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33414 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726320AbgGINEJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 09:04:09 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A90CAC061A0B;
+        Thu,  9 Jul 2020 06:04:09 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id e12so1535600qtr.9;
+        Thu, 09 Jul 2020 06:04:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=QGEwhK7+HOB5UDgh/+KiU6/EDHzIv+5VNqxy139wdGM=;
+        b=sdQvfSnDRAJBUsy+ESk4398OyprIdU0M5hUcZa+PA922C/+M4v0Z9UQNrEC4+TYTfA
+         tYneGiD04EOzzYC+Wkznu3Illuf9QZVpbClghcgrU7TSFQQyCuPQpLR/6axtrYtHm8nN
+         LhQNtvhdmlwyLWO1ggwMrTITgwSXREje0yQ7kTRWIE0N7pr1c9LgHgsaetzb0pTI8cA1
+         12xew+zGAloXiRL9HDVvy3Tn8A1y0+bpLIgG0SGtaA8Q89Zyosc3trGCo5iDVkGV3D49
+         TQWx0H/rl1dGETXFQgt7j2/rY/bO/iPkk4a7Qv7syqb8RycQ7I7GRnsXSDomWmElG3Hf
+         ditw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=QGEwhK7+HOB5UDgh/+KiU6/EDHzIv+5VNqxy139wdGM=;
+        b=As9XFwq/lVKGnZ2TyWw8+5TxrsMLQAIpizOaA2q1AC/Q1lZz9T8k6tvIQkqxhc+0/Z
+         /se379FSuEdWNK+uqTSl20r6BuFwA9bhAXKZZ0F+kThs7atMZOAgxQsecEMmCYa2w86C
+         afDk9G7qUt1cOwz7Oxz6kqxX0WFBlROPHcyKMIfFM50JBVGMkmmzgI49R1XMLOA6Dgkp
+         zROAKk14qhTyJgVAvPgDwxuxLXBMbrjXcjBqF8sAiHRKBbdXpcDs4vshAShbiJ1kOGWZ
+         pwQXzPANWIpjBW5328xMnxJr7uqt3OIWsEnC/RmnoPCAusZMdbmrGgcw4v9CUCdLSiiZ
+         Se2Q==
+X-Gm-Message-State: AOAM532etSLmIaRbBg6B4sbDgC0m9XEnnQzRBCDSEgg0VuPoeXS/4bTT
+        lMzYRjxz7IYehC7i9bbU8mOr9wjzsBHa
+X-Google-Smtp-Source: ABdhPJw73GzxPHh95KuS+8iUpcn45BCe3CRu5/OTi7CJ2JO0fCvf4YVaQIXayVOeIH8DOPuKW38axQ==
+X-Received: by 2002:ac8:47d0:: with SMTP id d16mr65906935qtr.349.1594299848927;
+        Thu, 09 Jul 2020 06:04:08 -0700 (PDT)
+Received: from localhost.localdomain (c-76-119-149-155.hsd1.ma.comcast.net. [76.119.149.155])
+        by smtp.gmail.com with ESMTPSA id v62sm3882456qkb.81.2020.07.09.06.04.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Jul 2020 06:04:08 -0700 (PDT)
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>
+Cc:     Peilin Ye <yepeilin.cs@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Subject: [Linux-kernel-mentees] [PATCH v2] net/bluetooth: Fix slab-out-of-bounds read in hci_extended_inquiry_result_evt()
+Date:   Thu,  9 Jul 2020 09:02:24 -0400
+Message-Id: <20200709130224.214204-1-yepeilin.cs@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200709051802.185168-1-yepeilin.cs@gmail.com>
+References: <20200709051802.185168-1-yepeilin.cs@gmail.com>
 MIME-Version: 1.0
-References: <1594285927-1840-1-git-send-email-neal.liu@mediatek.com> <1594285927-1840-3-git-send-email-neal.liu@mediatek.com>
-In-Reply-To: <1594285927-1840-3-git-send-email-neal.liu@mediatek.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Thu, 9 Jul 2020 21:01:44 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_-7PwoPG_0ce2p4BCNQ3rundg40Bsni14XSmVETExkKkw@mail.gmail.com>
-Message-ID: <CAAOTY_-7PwoPG_0ce2p4BCNQ3rundg40Bsni14XSmVETExkKkw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] soc: mediatek: add mtk-devapc driver
-To:     Neal Liu <neal.liu@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        devicetree@vger.kernel.org,
-        wsd_upstream <wsd_upstream@mediatek.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Neal:
+Check upon `num_rsp` is insufficient. A malformed event packet with a
+large `num_rsp` number makes hci_extended_inquiry_result_evt() go out
+of bounds. Fix it.
 
-Neal Liu <neal.liu@mediatek.com> =E6=96=BC 2020=E5=B9=B47=E6=9C=889=E6=97=
-=A5 =E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=885:13=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> MediaTek bus fabric provides TrustZone security support and data
-> protection to prevent slaves from being accessed by unexpected
-> masters.
-> The security violation is logged and sent to the processor for
-> further analysis or countermeasures.
->
-> Any occurrence of security violation would raise an interrupt, and
-> it will be handled by mtk-devapc driver. The violation
-> information is printed in order to find the murderer.
->
-> Signed-off-by: Neal Liu <neal.liu@mediatek.com>
+This patch fixes the following syzbot bug:
 
-[snip]
+    https://syzkaller.appspot.com/bug?id=4bf11aa05c4ca51ce0df86e500fce486552dc8d2
 
-> +
-> +static u32 get_shift_group(struct mtk_devapc_context *devapc_ctx,
-> +                          int slave_type, int vio_idx)
+Reported-by: syzbot+d8489a79b781849b9c46@syzkaller.appspotmail.com
+Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+---
+Changes in v2:
+    - Use `skb->len` instead of `skb->truesize` as the length limit.
+    - Leave `num_rsp` as of type `int`.
 
-vio_idx  is useless, so remove it.
+ net/bluetooth/hci_event.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> +{
-> +       u32 vio_shift_sta;
-> +       void __iomem *reg;
-> +       int bit;
-> +
-> +       reg =3D mtk_devapc_pd_get(devapc_ctx, slave_type, VIO_SHIFT_STA, =
-0);
-> +       vio_shift_sta =3D readl(reg);
-> +
-> +       for (bit =3D 0; bit < 32; bit++) {
-> +               if ((vio_shift_sta >> bit) & 0x1)
-> +                       break;
-> +       }
-> +
-> +       return bit;
-> +}
-> +
+diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+index 03a0759f2fc2..91cb3707d20a 100644
+--- a/net/bluetooth/hci_event.c
++++ b/net/bluetooth/hci_event.c
+@@ -4375,7 +4375,7 @@ static void hci_extended_inquiry_result_evt(struct hci_dev *hdev,
+ 
+ 	BT_DBG("%s num_rsp %d", hdev->name, num_rsp);
+ 
+-	if (!num_rsp)
++	if (!num_rsp || skb->len < num_rsp * sizeof(*info))
+ 		return;
+ 
+ 	if (hci_dev_test_flag(hdev, HCI_PERIODIC_INQ))
+-- 
+2.25.1
 
-[snip]
-
-> +
-> +/*
-> + * devapc_violation_irq - the devapc Interrupt Service Routine (ISR) wil=
-l dump
-> + *                       violation information including which master vi=
-olates
-> + *                       access slave.
-> + */
-> +static irqreturn_t devapc_violation_irq(int irq_number,
-> +                                       struct mtk_devapc_context *devapc=
-_ctx)
-> +{
-> +       const struct mtk_device_info **device_info;
-> +       int slave_type_num;
-> +       int vio_idx =3D -1;
-> +       int slave_type;
-> +
-> +       slave_type_num =3D devapc_ctx->slave_type_num;
-> +       device_info =3D devapc_ctx->device_info;
-> +
-> +       for (slave_type =3D 0; slave_type < slave_type_num; slave_type++)=
- {
-
-If slave_type_num is 1, I think the code should be simpler.
-
-> +               if (!mtk_devapc_dump_vio_dbg(devapc_ctx, slave_type, &vio=
-_idx))
-> +                       continue;
-> +
-> +               /* Ensure that violation info are written before
-> +                * further operations
-> +                */
-> +               smp_mb();
-> +
-> +               mask_module_irq(devapc_ctx, slave_type, vio_idx, true);
-
-Why do you mask irq?
-
-> +
-> +               clear_vio_status(devapc_ctx, slave_type, vio_idx);
-> +
-> +               mask_module_irq(devapc_ctx, slave_type, vio_idx, false);
-> +       }
-> +
-> +       return IRQ_HANDLED;
-> +}
-> +
-> +/*
-> + * start_devapc - initialize devapc status and start receiving interrupt
-> + *               while devapc violation is triggered.
-> + */
-
-[snip]
-
-> +
-> +struct mtk_device_info {
-> +       int sys_index;
-
-Useless, so remove it.
-
-> +       int ctrl_index;
-
-Ditto.
-
-Regards,
-Chun-Kuang.
-
-> +       int vio_index;
-> +};
-> +
