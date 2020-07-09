@@ -2,373 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD796219D5C
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 12:15:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49648219B96
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 10:59:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726932AbgGIKPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 06:15:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726302AbgGIKPj (ORCPT
+        id S1726345AbgGII7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 04:59:06 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:26454 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726140AbgGII7F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 06:15:39 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85797C061A0B
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 03:15:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=I23nMHSe1w8aul/PmmE186Q9cI6Kr/gSpMWnJOJZjj4=; b=m/1K6hxeHR9R260XZ8iyjRYxSi
-        bPPDZ6hikgHaIrCHdg7tvb6z/oLIqHjo1ntTDy3AqJ5tLn7InJwKZ+S6cAIV0mY4sG1jN3yeQlfOj
-        WLAX6u3ofuZgKaHEkHoiZ6xlWtVOQfbJZpPeF6U24AtjXBJklPCYOdRoHRti06gPeZ8yjzLf9E68E
-        yJFxevHlbKlUracXhryuy9ip6vEjUrioUXIpsc5/pyTVPZud9cjVql2VMqcLvlwgAsucsnOnGBJiQ
-        y9Bl2Ya/7coU4t8l3IYQwkCJFiX9jkyoRIjfiGUfmDIpyvTeItlB+CeuST4o0z0qo3S0znTgfISbj
-        IvqwDGBw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jtSO9-0006lT-6e; Thu, 09 Jul 2020 09:08:59 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 03EF53013E5;
-        Thu,  9 Jul 2020 10:58:33 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id CE26B285718EF; Thu,  9 Jul 2020 10:58:33 +0200 (CEST)
-Date:   Thu, 9 Jul 2020 10:58:33 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     x86@kernel.org
-Cc:     linux-kernel@vger.kernel.org, rostedt@goodmis.org,
-        mhiramat@kernel.org, bristot@redhat.com, jbaron@akamai.com,
-        torvalds@linux-foundation.org, tglx@linutronix.de,
-        mingo@kernel.org, namit@vmware.com, hpa@zytor.com, luto@kernel.org,
-        ard.biesheuvel@linaro.org, jpoimboe@redhat.com,
-        pbonzini@redhat.com, mathieu.desnoyers@efficios.com,
-        linux@rasmusvillemoes.dk
-Subject: [PATCH v5.1 16/17] tracepoint: Optimize using static_call()
-Message-ID: <20200709085833.GK597537@hirez.programming.kicks-ass.net>
-References: <20200624153024.794671356@infradead.org>
- <20200624154157.719134212@infradead.org>
+        Thu, 9 Jul 2020 04:59:05 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0698sLp9016309;
+        Thu, 9 Jul 2020 10:59:01 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=AuAHoXnzN38gS14zx/vXMvisoYUc+8Vj5hyXrhj6d/g=;
+ b=MPOeUPjF5Md6YaMmnapkk5OeVe+0pzEd997W7tyLQNHT0BHDNBYRmR3Pm6oFC1vnbnut
+ ehegrugm/ucow3A5cNkf24jR2fHekw7094kFVuI6YmZOt9S/kjPaTMvnNjspoYIaYoj+
+ xS1gfaAQT+oLULuqR9UgkbHuk0JRd++b33wmgg+IqEP6bD1/CqcQ7UVkec+YskkuSYFP
+ OO6fdYqP7/USUaLr4TFptU8rzVn6vh+mTEWKatIAw/yrwwZIUk9dVtpaYcLj/h5CXB2T
+ UsFtDgIPKdcH3w/09eBSOASNuDwzqY9LlmKR8yyyphDkug7DJQ9BHGbMC9HJ6y5Dd+hK 7Q== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 325k403jjp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 09 Jul 2020 10:59:01 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id EDCEA10002A;
+        Thu,  9 Jul 2020 10:58:56 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id E09182AB504;
+        Thu,  9 Jul 2020 10:58:56 +0200 (CEST)
+Received: from lmecxl0889.tpe.st.com (10.75.127.50) by SFHDAG3NODE1.st.com
+ (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 9 Jul
+ 2020 10:58:56 +0200
+Subject: Re: [PATCH v5 9/9] remoteproc: Properly handle firmware name when
+ attaching
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        "ohad@wizery.com" <ohad@wizery.com>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>
+CC:     "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20200707210014.927691-1-mathieu.poirier@linaro.org>
+ <20200707210014.927691-10-mathieu.poirier@linaro.org>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Message-ID: <4cf20bea-6a77-1a1f-b448-a9abad8f1179@st.com>
+Date:   Thu, 9 Jul 2020 10:58:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200624154157.719134212@infradead.org>
+In-Reply-To: <20200707210014.927691-10-mathieu.poirier@linaro.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.50]
+X-ClientProxiedBy: SFHDAG6NODE1.st.com (10.75.127.16) To SFHDAG3NODE1.st.com
+ (10.75.127.7)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-09_04:2020-07-08,2020-07-09 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Subject: tracepoint: Optimize using static_call()
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Date: Fri, 5 Oct 2018 09:31:43 -0400
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Currently the tracepoint site will iterate a vector and issue indirect
-calls to however many handlers are registered (ie. the vector is
-long).
+On 7/7/20 11:00 PM, Mathieu Poirier wrote:
+> This patch prevents the firmware image name from being displayed when
+> the remoteproc core is attaching to a remote processor. This is needed
+> needed since there is no guarantee about the nature of the firmware
+> image that is loaded by the external entity.
+> 
+> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 
-Using static_call() it is possible to optimize this for the common
-case of only having a single handler registered. In this case the
-static_call() can directly call this handler. Otherwise, if the vector
-is longer than 1, call a function that iterates the whole vector like
-the current code.
+Reviewed-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 
-[peterz: updated to new interface]
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- include/linux/tracepoint-defs.h |    5 ++
- include/linux/tracepoint.h      |   86 ++++++++++++++++++++++++++++------------
- include/trace/define_trace.h    |   14 +++---
- kernel/tracepoint.c             |   25 +++++++++--
- 4 files changed, 94 insertions(+), 36 deletions(-)
+Thanks,
+Arnaud
 
---- a/include/linux/tracepoint-defs.h
-+++ b/include/linux/tracepoint-defs.h
-@@ -11,6 +11,8 @@
- #include <linux/atomic.h>
- #include <linux/static_key.h>
- 
-+struct static_call_key;
-+
- struct trace_print_flags {
- 	unsigned long		mask;
- 	const char		*name;
-@@ -30,6 +32,9 @@ struct tracepoint_func {
- struct tracepoint {
- 	const char *name;		/* Tracepoint name */
- 	struct static_key key;
-+	struct static_call_key *static_call_key;
-+	void *static_call_tramp;
-+	void *iterator;
- 	int (*regfunc)(void);
- 	void (*unregfunc)(void);
- 	struct tracepoint_func __rcu *funcs;
---- a/include/linux/tracepoint.h
-+++ b/include/linux/tracepoint.h
-@@ -19,6 +19,7 @@
- #include <linux/cpumask.h>
- #include <linux/rcupdate.h>
- #include <linux/tracepoint-defs.h>
-+#include <linux/static_call.h>
- 
- struct module;
- struct tracepoint;
-@@ -92,7 +93,9 @@ extern int syscall_regfunc(void);
- extern void syscall_unregfunc(void);
- #endif /* CONFIG_HAVE_SYSCALL_TRACEPOINTS */
- 
-+#ifndef PARAMS
- #define PARAMS(args...) args
-+#endif
- 
- #define TRACE_DEFINE_ENUM(x)
- #define TRACE_DEFINE_SIZEOF(x)
-@@ -149,6 +152,12 @@ static inline struct tracepoint *tracepo
- 
- #ifdef TRACEPOINTS_ENABLED
- 
-+#ifdef CONFIG_HAVE_STATIC_CALL
-+#define __DO_TRACE_CALL(name)	static_call(tp_func_##name)
-+#else
-+#define __DO_TRACE_CALL(name)	__tracepoint_iter_##name
-+#endif /* CONFIG_HAVE_STATIC_CALL */
-+
- /*
-  * it_func[0] is never NULL because there is at least one element in the array
-  * when the array itself is non NULL.
-@@ -158,12 +167,11 @@ static inline struct tracepoint *tracepo
-  * has a "void" prototype, then it is invalid to declare a function
-  * as "(void *, void)".
-  */
--#define __DO_TRACE(tp, proto, args, cond, rcuidle)			\
-+#define __DO_TRACE(name, proto, args, cond, rcuidle)			\
- 	do {								\
- 		struct tracepoint_func *it_func_ptr;			\
--		void *it_func;						\
--		void *__data;						\
- 		int __maybe_unused __idx = 0;				\
-+		void *__data;						\
- 									\
- 		if (!(cond))						\
- 			return;						\
-@@ -183,14 +191,11 @@ static inline struct tracepoint *tracepo
- 			rcu_irq_enter_irqson();				\
- 		}							\
- 									\
--		it_func_ptr = rcu_dereference_raw((tp)->funcs);		\
--									\
-+		it_func_ptr =						\
-+			rcu_dereference_raw((&__tracepoint_##name)->funcs); \
- 		if (it_func_ptr) {					\
--			do {						\
--				it_func = (it_func_ptr)->func;		\
--				__data = (it_func_ptr)->data;		\
--				((void(*)(proto))(it_func))(args);	\
--			} while ((++it_func_ptr)->func);		\
-+			__data = (it_func_ptr)->data;			\
-+			__DO_TRACE_CALL(name)(args);			\
- 		}							\
- 									\
- 		if (rcuidle) {						\
-@@ -206,7 +211,7 @@ static inline struct tracepoint *tracepo
- 	static inline void trace_##name##_rcuidle(proto)		\
- 	{								\
- 		if (static_key_false(&__tracepoint_##name.key))		\
--			__DO_TRACE(&__tracepoint_##name,		\
-+			__DO_TRACE(name,				\
- 				TP_PROTO(data_proto),			\
- 				TP_ARGS(data_args),			\
- 				TP_CONDITION(cond), 1);			\
-@@ -228,11 +233,13 @@ static inline struct tracepoint *tracepo
-  * poking RCU a bit.
-  */
- #define __DECLARE_TRACE(name, proto, args, cond, data_proto, data_args) \
-+	extern int __tracepoint_iter_##name(data_proto);		\
-+	DECLARE_STATIC_CALL(tp_func_##name, __tracepoint_iter_##name); \
- 	extern struct tracepoint __tracepoint_##name;			\
- 	static inline void trace_##name(proto)				\
- 	{								\
- 		if (static_key_false(&__tracepoint_##name.key))		\
--			__DO_TRACE(&__tracepoint_##name,		\
-+			__DO_TRACE(name,				\
- 				TP_PROTO(data_proto),			\
- 				TP_ARGS(data_args),			\
- 				TP_CONDITION(cond), 0);			\
-@@ -278,21 +285,50 @@ static inline struct tracepoint *tracepo
-  * structures, so we create an array of pointers that will be used for iteration
-  * on the tracepoints.
-  */
--#define DEFINE_TRACE_FN(name, reg, unreg)				 \
--	static const char __tpstrtab_##name[]				 \
--	__attribute__((section("__tracepoints_strings"))) = #name;	 \
--	struct tracepoint __tracepoint_##name				 \
--	__attribute__((section("__tracepoints"), used)) =		 \
--		{ __tpstrtab_##name, STATIC_KEY_INIT_FALSE, reg, unreg, NULL };\
--	__TRACEPOINT_ENTRY(name);
-+#define DEFINE_TRACE_FN(_name, _reg, _unreg, proto, args)		\
-+	static const char __tpstrtab_##_name[]				\
-+	__attribute__((section("__tracepoints_strings"))) = #_name;	\
-+	extern struct static_call_key STATIC_CALL_KEY(tp_func_##_name);\
-+	int __tracepoint_iter_##_name(void *__data, proto);		\
-+	struct tracepoint __tracepoint_##_name				\
-+	  __attribute__((section("__tracepoints"), used)) = {		\
-+		.name = __tpstrtab_##_name,				\
-+		.key = STATIC_KEY_INIT_FALSE,				\
-+		.static_call_key = &STATIC_CALL_KEY(tp_func_##_name),	\
-+		.static_call_tramp = STATIC_CALL_TRAMP_ADDR(tp_func_##_name), \
-+		.iterator = &__tracepoint_iter_##_name,			\
-+		.regfunc = _reg,					\
-+		.unregfunc = _unreg,					\
-+		.funcs = NULL };					\
-+	__TRACEPOINT_ENTRY(_name);					\
-+	int __tracepoint_iter_##_name(void *__data, proto)		\
-+	{								\
-+		struct tracepoint_func *it_func_ptr;			\
-+		void *it_func;						\
-+									\
-+		it_func_ptr =						\
-+			rcu_dereference_raw((&__tracepoint_##_name)->funcs); \
-+		do {							\
-+			it_func = (it_func_ptr)->func;			\
-+			__data = (it_func_ptr)->data;			\
-+			((void(*)(void *, proto))(it_func))(__data, args); \
-+		} while ((++it_func_ptr)->func);			\
-+		return 0;						\
-+	}								\
-+	DEFINE_STATIC_CALL(tp_func_##_name, __tracepoint_iter_##_name);
- 
--#define DEFINE_TRACE(name)						\
--	DEFINE_TRACE_FN(name, NULL, NULL);
-+#define DEFINE_TRACE(name, proto, args)		\
-+	DEFINE_TRACE_FN(name, NULL, NULL, PARAMS(proto), PARAMS(args));
- 
- #define EXPORT_TRACEPOINT_SYMBOL_GPL(name)				\
--	EXPORT_SYMBOL_GPL(__tracepoint_##name)
-+	EXPORT_SYMBOL_GPL(__tracepoint_##name);				\
-+	EXPORT_SYMBOL_GPL(__tracepoint_iter_##name);			\
-+	EXPORT_STATIC_CALL_GPL(tp_func_##name)
- #define EXPORT_TRACEPOINT_SYMBOL(name)					\
--	EXPORT_SYMBOL(__tracepoint_##name)
-+	EXPORT_SYMBOL(__tracepoint_##name);				\
-+	EXPORT_SYMBOL(__tracepoint_iter_##name);			\
-+	EXPORT_STATIC_CALL(tp_func_##name)
-+
- 
- #else /* !TRACEPOINTS_ENABLED */
- #define __DECLARE_TRACE(name, proto, args, cond, data_proto, data_args) \
-@@ -321,8 +357,8 @@ static inline struct tracepoint *tracepo
- 		return false;						\
- 	}
- 
--#define DEFINE_TRACE_FN(name, reg, unreg)
--#define DEFINE_TRACE(name)
-+#define DEFINE_TRACE_FN(name, reg, unreg, proto, args)
-+#define DEFINE_TRACE(name, proto, args)
- #define EXPORT_TRACEPOINT_SYMBOL_GPL(name)
- #define EXPORT_TRACEPOINT_SYMBOL(name)
- 
---- a/include/trace/define_trace.h
-+++ b/include/trace/define_trace.h
-@@ -25,7 +25,7 @@
- 
- #undef TRACE_EVENT
- #define TRACE_EVENT(name, proto, args, tstruct, assign, print)	\
--	DEFINE_TRACE(name)
-+	DEFINE_TRACE(name, PARAMS(proto), PARAMS(args))
- 
- #undef TRACE_EVENT_CONDITION
- #define TRACE_EVENT_CONDITION(name, proto, args, cond, tstruct, assign, print) \
-@@ -39,12 +39,12 @@
- #undef TRACE_EVENT_FN
- #define TRACE_EVENT_FN(name, proto, args, tstruct,		\
- 		assign, print, reg, unreg)			\
--	DEFINE_TRACE_FN(name, reg, unreg)
-+	DEFINE_TRACE_FN(name, reg, unreg, PARAMS(proto), PARAMS(args))
- 
- #undef TRACE_EVENT_FN_COND
- #define TRACE_EVENT_FN_COND(name, proto, args, cond, tstruct,		\
- 		assign, print, reg, unreg)			\
--	DEFINE_TRACE_FN(name, reg, unreg)
-+	DEFINE_TRACE_FN(name, reg, unreg, PARAMS(proto), PARAMS(args))
- 
- #undef TRACE_EVENT_NOP
- #define TRACE_EVENT_NOP(name, proto, args, struct, assign, print)
-@@ -54,15 +54,15 @@
- 
- #undef DEFINE_EVENT
- #define DEFINE_EVENT(template, name, proto, args) \
--	DEFINE_TRACE(name)
-+	DEFINE_TRACE(name, PARAMS(proto), PARAMS(args))
- 
- #undef DEFINE_EVENT_FN
- #define DEFINE_EVENT_FN(template, name, proto, args, reg, unreg) \
--	DEFINE_TRACE_FN(name, reg, unreg)
-+	DEFINE_TRACE_FN(name, reg, unreg, PARAMS(proto), PARAMS(args))
- 
- #undef DEFINE_EVENT_PRINT
- #define DEFINE_EVENT_PRINT(template, name, proto, args, print)	\
--	DEFINE_TRACE(name)
-+	DEFINE_TRACE(name, PARAMS(proto), PARAMS(args))
- 
- #undef DEFINE_EVENT_CONDITION
- #define DEFINE_EVENT_CONDITION(template, name, proto, args, cond) \
-@@ -70,7 +70,7 @@
- 
- #undef DECLARE_TRACE
- #define DECLARE_TRACE(name, proto, args)	\
--	DEFINE_TRACE(name)
-+	DEFINE_TRACE(name, PARAMS(proto), PARAMS(args))
- 
- #undef TRACE_INCLUDE
- #undef __TRACE_INCLUDE
---- a/kernel/tracepoint.c
-+++ b/kernel/tracepoint.c
-@@ -221,6 +221,20 @@ static void *func_remove(struct tracepoi
- 	return old;
- }
- 
-+static void tracepoint_update_call(struct tracepoint *tp, struct tracepoint_func *tp_funcs)
-+{
-+	void *func = tp->iterator;
-+
-+	/* Synthetic events do not have static call sites */
-+	if (!tp->static_call_key)
-+		return;
-+
-+	if (!tp_funcs[1].func)
-+		func = tp_funcs[0].func;
-+
-+	__static_call_update(tp->static_call_key, tp->static_call_tramp, func);
-+}
-+
- /*
-  * Add the probe function to a tracepoint.
-  */
-@@ -251,8 +265,9 @@ static int tracepoint_add_func(struct tr
- 	 * include/linux/tracepoint.h using rcu_dereference_sched().
- 	 */
- 	rcu_assign_pointer(tp->funcs, tp_funcs);
--	if (!static_key_enabled(&tp->key))
--		static_key_slow_inc(&tp->key);
-+	tracepoint_update_call(tp, tp_funcs);
-+	static_key_enable(&tp->key);
-+
- 	release_probes(old);
- 	return 0;
- }
-@@ -281,9 +296,11 @@ static int tracepoint_remove_func(struct
- 		if (tp->unregfunc && static_key_enabled(&tp->key))
- 			tp->unregfunc();
- 
--		if (static_key_enabled(&tp->key))
--			static_key_slow_dec(&tp->key);
-+		static_key_disable(&tp->key);
-+	} else {
-+		tracepoint_update_call(tp, tp_funcs);
- 	}
-+
- 	rcu_assign_pointer(tp->funcs, tp_funcs);
- 	release_probes(old);
- 	return 0;
+> ---
+>  drivers/remoteproc/remoteproc_core.c  | 18 ++++++++++++++++++
+>  drivers/remoteproc/remoteproc_sysfs.c | 16 ++++++++++++++--
+>  include/linux/remoteproc.h            |  2 ++
+>  3 files changed, 34 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+> index 6b6e4ec8cf3a..099c76ab198f 100644
+> --- a/drivers/remoteproc/remoteproc_core.c
+> +++ b/drivers/remoteproc/remoteproc_core.c
+> @@ -1624,6 +1624,14 @@ static int rproc_stop(struct rproc *rproc, bool crashed)
+>  
+>  	rproc->state = RPROC_OFFLINE;
+>  
+> +	/*
+> +	 * The remote processor has been stopped and is now offline, which means
+> +	 * that the next time it is brought back online the remoteproc core will
+> +	 * be responsible to load its firmware.  As such it is no longer
+> +	 * autonomous.
+> +	 */
+> +	rproc->autonomous = false;
+> +
+>  	dev_info(dev, "stopped remote processor %s\n", rproc->name);
+>  
+>  	return 0;
+> @@ -2142,6 +2150,16 @@ int rproc_add(struct rproc *rproc)
+>  	/* create debugfs entries */
+>  	rproc_create_debug_dir(rproc);
+>  
+> +	/*
+> +	 * Remind ourselves the remote processor has been attached to rather
+> +	 * than booted by the remoteproc core.  This is important because the
+> +	 * RPROC_DETACHED state will be lost as soon as the remote processor
+> +	 * has been attached to.  Used in firmware_show() and reset in
+> +	 * rproc_stop().
+> +	 */
+> +	if (rproc->state == RPROC_DETACHED)
+> +		rproc->autonomous = true;
+> +
+>  	/* if rproc is marked always-on, request it to boot */
+>  	if (rproc->auto_boot) {
+>  		ret = rproc_trigger_auto_boot(rproc);
+> diff --git a/drivers/remoteproc/remoteproc_sysfs.c b/drivers/remoteproc/remoteproc_sysfs.c
+> index 264759713934..eea514cec50e 100644
+> --- a/drivers/remoteproc/remoteproc_sysfs.c
+> +++ b/drivers/remoteproc/remoteproc_sysfs.c
+> @@ -15,8 +15,20 @@ static ssize_t firmware_show(struct device *dev, struct device_attribute *attr,
+>  			  char *buf)
+>  {
+>  	struct rproc *rproc = to_rproc(dev);
+> -
+> -	return sprintf(buf, "%s\n", rproc->firmware);
+> +	const char *firmware = rproc->firmware;
+> +
+> +	/*
+> +	 * If the remote processor has been started by an external
+> +	 * entity we have no idea of what image it is running.  As such
+> +	 * simply display a generic string rather then rproc->firmware.
+> +	 *
+> +	 * Here we rely on the autonomous flag because a remote processor
+> +	 * may have been attached to and currently in a running state.
+> +	 */
+> +	if (rproc->autonomous)
+> +		firmware = "unknown";
+> +
+> +	return sprintf(buf, "%s\n", firmware);
+>  }
+>  
+>  /* Change firmware name via sysfs */
+> diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
+> index bf6a310ba870..cf5e31556780 100644
+> --- a/include/linux/remoteproc.h
+> +++ b/include/linux/remoteproc.h
+> @@ -491,6 +491,7 @@ struct rproc_dump_segment {
+>   * @table_sz: size of @cached_table
+>   * @has_iommu: flag to indicate if remote processor is behind an MMU
+>   * @auto_boot: flag to indicate if remote processor should be auto-started
+> + * @autonomous: true if an external entity has booted the remote processor
+>   * @dump_segments: list of segments in the firmware
+>   * @nb_vdev: number of vdev currently handled by rproc
+>   */
+> @@ -524,6 +525,7 @@ struct rproc {
+>  	size_t table_sz;
+>  	bool has_iommu;
+>  	bool auto_boot;
+> +	bool autonomous;
+>  	struct list_head dump_segments;
+>  	int nb_vdev;
+>  	u8 elf_class;
+> 
