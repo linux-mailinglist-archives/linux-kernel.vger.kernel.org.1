@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 002022197A8
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 07:02:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3387B21979F
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 07:01:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726443AbgGIFCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 01:02:05 -0400
+        id S1726332AbgGIFBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 01:01:48 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725775AbgGIFBm (ORCPT
+        with ESMTP id S1726185AbgGIFBo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 01:01:42 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38C38C08C5DD
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 22:01:42 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id cv18so2902884pjb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 22:01:42 -0700 (PDT)
+        Thu, 9 Jul 2020 01:01:44 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A48FDC061A0B
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 22:01:43 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id u5so487675pfn.7
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 22:01:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=T+6WxJ1O6k89NNQZzhHWgQkm03zUeIAl0iKHL4vPlUk=;
-        b=AOLHWt2GPk9pGPq6HPxBOiLg8IkaE8fySTF+79CaOlFbY/Ii9OChxP90kbGu1Kpp4g
-         1geiQB3FJADTo1pUFgW3Sxa65geoU2CT5za4/L0HfEdsLOAuiS/hjjGJAhLd5WpirmZf
-         FtqNIv1CQKnyDdPXdmuFBCNC6yhLvo2cYc6qSM5QnmTXkmdX5EeDxnIrVvTmG4ZIadtN
-         9Wc0sp5jXMyQsZ3p/wY2QYy7Ht2049b7nCZwdk1eGIpkU//mzH2EjylQGA8lOiKrtshJ
-         LlRfr/5BOfigasYH241F2AoEDk2ymoYdc1UD+9rYiSk5J9TrKnHdKxLfuGL8+sE3Lbxw
-         Lrdg==
+        bh=fL1oj/82czdR0WXUznCgbOV1KIBa6gJW0wdl0Fe8bqk=;
+        b=YQWuQBQH2GSEZE8K4EI/Gew9fg1AI6MpHL0uRHUylnIff9sxijznzxDBhh0+EguiC3
+         nPQaHnHAyeNKdx99gIzgFq3df+1a/ehZVV2I6ySRKyX3IfkQUfRsGNWC0w/WeiKfU6oi
+         yzyYjpbROlG19Zuw4csOp62AY8ifnBblwcGo4ZHdYoUriQ3cGGw8mBKSAk+zOXqPJdFV
+         MLjR1dq/Yv3w3bS11+j4uGeq0PZfwU88ItxE5IY5qbW/nMGO90Mk4xQjbm7W6Y8QozWe
+         E+KYwEDC4Af+CwQl+dbh/ewI/SNpahBBYVME/IKZnlzjYbjUMqBTFdzzERsOBo1iCZuJ
+         p7sQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=T+6WxJ1O6k89NNQZzhHWgQkm03zUeIAl0iKHL4vPlUk=;
-        b=OWDQpDm8XYy+lfdByixMfpRNPZ866PBeao+KLVxb/9iyR4j8Gugm98L0ADDSCV6ekP
-         H8wwSa19zRj8Cr5Aq8VR9ngtbVfNjQ8nBZOrsKBLcuLZ2qMtlAoJjHGpSrNbRORjh/yU
-         41dz0yMSJk0jSaeiBW2Z/+QV+8XIk1qErKL/wt+NdSamFNuLylWQypTdVDTuY2xpyZcz
-         jgJ3aN2ndx0GNAKnPDLMbkFoPCJPsXupj1OT4gVsQ14RGp1Bn3gkkaxmcnjwr3fLmYJH
-         hBK64OMASUvlRsB876pM4qtH3fj4+5eG1jQqMJbPY7ikbw/tdcdT+YSDre3EL/GWw74t
-         LGzg==
-X-Gm-Message-State: AOAM530eqGP+9Gi6lowIwPpKbyqvaErk7igSHgDkxg8tTycf2DdhdTaU
-        tEPBfjR5XfA99I3rE6uaCW6zaQ==
-X-Google-Smtp-Source: ABdhPJxF4d+sWu8w2NwzlZP7r/VFELTU9n5hnbo5rdODjHR0wnwyVgaX97f2R3IqlZFh0Lej268MjA==
-X-Received: by 2002:a17:90b:4d08:: with SMTP id mw8mr12970883pjb.119.1594270901682;
-        Wed, 08 Jul 2020 22:01:41 -0700 (PDT)
+        bh=fL1oj/82czdR0WXUznCgbOV1KIBa6gJW0wdl0Fe8bqk=;
+        b=CeJdpbnGQpY3o7OxLRMrWE0MmXCwIMtsSWblyzm8OxKpy6/0qG/ErnwEuPFwQhzuvJ
+         W3StHkGkkBfikXLDgvVd3u5y7bRLJHS/3hvemiEeZ3EEeklyzoN0Chsiqg2fG/pBcVxa
+         UXmj29ZQDs2QpHOPBbt7d1QleYlZyunLoze69SY9DmdwPwEld3gc5VaAME7Muwa4uSbV
+         sx7YsIAQmZ30nZkCfwrJQ7WeZh7EtiBZD8z0tOcopa5rcQF2H7r05/ez29V+99EfW0Vl
+         A9FpO4hxfIWzZIh+30l6AbTrXg41JTfshM4FVETzZKPFwPhdB3AgGol83RfZpwohRIWH
+         KJ6Q==
+X-Gm-Message-State: AOAM5338FoKY6P7f9co3FS7Y8XIrB/wh0E4LdY2GiwY7HADZlgfnBjLA
+        clXw8lXC02KzivfiOzho6P0oRw==
+X-Google-Smtp-Source: ABdhPJyCvUhg3Z54pWl5PZR4ipfWmNp9zxcFYtuOj/BIJz3aWWsj8AWlwbK8reSTeGRPCPOiYOhZpQ==
+X-Received: by 2002:a05:6a00:807:: with SMTP id m7mr58259929pfk.246.1594270903096;
+        Wed, 08 Jul 2020 22:01:43 -0700 (PDT)
 Received: from localhost.localdomain (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id h15sm999974pjc.14.2020.07.08.22.01.40
+        by smtp.gmail.com with ESMTPSA id h15sm999974pjc.14.2020.07.08.22.01.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Jul 2020 22:01:41 -0700 (PDT)
+        Wed, 08 Jul 2020 22:01:42 -0700 (PDT)
 From:   Bjorn Andersson <bjorn.andersson@linaro.org>
 To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
         Joerg Roedel <joro@8bytes.org>,
@@ -57,9 +57,9 @@ Cc:     linux-arm-kernel@lists.infradead.org,
         iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
         Jonathan Marek <jonathan@marek.ca>,
         linux-arm-msm@vger.kernel.org
-Subject: [PATCH 1/5] iommu/arm-smmu: Make all valid stream mappings BYPASS
-Date:   Wed,  8 Jul 2020 22:01:41 -0700
-Message-Id: <20200709050145.3520931-2-bjorn.andersson@linaro.org>
+Subject: [PATCH 2/5] iommu/arm-smmu: Emulate bypass by using context banks
+Date:   Wed,  8 Jul 2020 22:01:42 -0700
+Message-Id: <20200709050145.3520931-3-bjorn.andersson@linaro.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200709050145.3520931-1-bjorn.andersson@linaro.org>
 References: <20200709050145.3520931-1-bjorn.andersson@linaro.org>
@@ -70,55 +70,125 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Turn all stream mappings marked as valid into BYPASS. This allows the
-platform specific implementation to configure stream mappings to match
-the boot loader's configuration for e.g. display to continue to function
-through the reset of the SMMU.
+Some firmware found on various Qualcomm platforms traps writes to S2CR
+of type BYPASS and writes FAULT into the register. This prevents us from
+marking the streams for the display controller as BYPASS to allow
+continued scanout of the screen through the initialization of the ARM
+SMMU.
 
-Suggested-by: Robin Murphy <robin.murphy@arm.com>
+This adds a Qualcomm specific cfg_probe function, which probes the
+behavior of the S2CR registers and if found faulty enables the related
+quirk. Based on this quirk context banks are allocated for IDENTITY
+domains as well, but with ARM_SMMU_SCTLR_M omitted.
+
+The result is valid stream mappings, without translation.
+
 Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 ---
- drivers/iommu/arm-smmu.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ drivers/iommu/arm-smmu-qcom.c | 21 +++++++++++++++++++++
+ drivers/iommu/arm-smmu.c      | 14 ++++++++++++--
+ drivers/iommu/arm-smmu.h      |  3 +++
+ 3 files changed, 36 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/iommu/arm-smmu.c b/drivers/iommu/arm-smmu.c
-index 243bc4cb2705..2e27cf9815ab 100644
---- a/drivers/iommu/arm-smmu.c
-+++ b/drivers/iommu/arm-smmu.c
-@@ -1924,6 +1924,22 @@ static int arm_smmu_device_cfg_probe(struct arm_smmu_device *smmu)
- 	return 0;
- }
+diff --git a/drivers/iommu/arm-smmu-qcom.c b/drivers/iommu/arm-smmu-qcom.c
+index cf01d0215a39..e8a36054e912 100644
+--- a/drivers/iommu/arm-smmu-qcom.c
++++ b/drivers/iommu/arm-smmu-qcom.c
+@@ -23,6 +23,26 @@ static const struct of_device_id qcom_smmu_client_of_match[] = {
+ 	{ }
+ };
  
-+int arm_smmu_setup_identity(struct arm_smmu_device *smmu)
++static int qcom_smmu_cfg_probe(struct arm_smmu_device *smmu)
 +{
-+	int i;
++	unsigned int last_s2cr = ARM_SMMU_GR0_S2CR(smmu->num_mapping_groups - 1);
++	u32 reg;
 +
-+	for (i = 0; i < smmu->num_mapping_groups; i++) {
-+		if (smmu->smrs[i].valid) {
-+			smmu->s2crs[i].type = S2CR_TYPE_BYPASS;
-+			smmu->s2crs[i].privcfg = S2CR_PRIVCFG_DEFAULT;
-+			smmu->s2crs[i].cbndx = 0xff;
-+			smmu->s2crs[i].count++;
-+		}
-+	}
++	/*
++	 * With some firmware writes to S2CR of type FAULT are ignored, and
++	 * writing BYPASS will end up as FAULT in the register. Perform a write
++	 * to S2CR to detect if this is the case with the current firmware.
++	 */
++	arm_smmu_gr0_write(smmu, last_s2cr, FIELD_PREP(ARM_SMMU_S2CR_TYPE, S2CR_TYPE_BYPASS) |
++					    FIELD_PREP(ARM_SMMU_S2CR_CBNDX, 0xff) |
++					    FIELD_PREP(ARM_SMMU_S2CR_PRIVCFG, S2CR_PRIVCFG_DEFAULT));
++	reg = arm_smmu_gr0_read(smmu, last_s2cr);
++	if (FIELD_GET(ARM_SMMU_S2CR_TYPE, reg) != S2CR_TYPE_BYPASS)
++		smmu->qcom_bypass_quirk = true;
 +
 +	return 0;
 +}
 +
- struct arm_smmu_match_data {
- 	enum arm_smmu_arch_version version;
- 	enum arm_smmu_implementation model;
-@@ -2181,6 +2197,10 @@ static int arm_smmu_device_probe(struct platform_device *pdev)
- 	if (err)
- 		return err;
+ static int qcom_smmu_def_domain_type(struct device *dev)
+ {
+ 	const struct of_device_id *match =
+@@ -61,6 +81,7 @@ static int qcom_smmu500_reset(struct arm_smmu_device *smmu)
+ }
  
-+	err = arm_smmu_setup_identity(smmu);
-+	if (err)
-+		return err;
+ static const struct arm_smmu_impl qcom_smmu_impl = {
++	.cfg_probe = qcom_smmu_cfg_probe,
+ 	.def_domain_type = qcom_smmu_def_domain_type,
+ 	.reset = qcom_smmu500_reset,
+ };
+diff --git a/drivers/iommu/arm-smmu.c b/drivers/iommu/arm-smmu.c
+index 2e27cf9815ab..f33eda3117fa 100644
+--- a/drivers/iommu/arm-smmu.c
++++ b/drivers/iommu/arm-smmu.c
+@@ -654,7 +654,9 @@ static void arm_smmu_write_context_bank(struct arm_smmu_device *smmu, int idx)
+ 
+ 	/* SCTLR */
+ 	reg = ARM_SMMU_SCTLR_CFIE | ARM_SMMU_SCTLR_CFRE | ARM_SMMU_SCTLR_AFE |
+-	      ARM_SMMU_SCTLR_TRE | ARM_SMMU_SCTLR_M;
++	      ARM_SMMU_SCTLR_TRE;
++	if (cfg->m)
++		reg |= ARM_SMMU_SCTLR_M;
+ 	if (stage1)
+ 		reg |= ARM_SMMU_SCTLR_S1_ASIDPNE;
+ 	if (IS_ENABLED(CONFIG_CPU_BIG_ENDIAN))
+@@ -678,7 +680,11 @@ static int arm_smmu_init_domain_context(struct iommu_domain *domain,
+ 	if (smmu_domain->smmu)
+ 		goto out_unlock;
+ 
+-	if (domain->type == IOMMU_DOMAIN_IDENTITY) {
++	/*
++	 * Nothing to do for IDENTITY domains,unless disabled context banks are
++	 * used to emulate bypass mappings on Qualcomm platforms.
++	 */
++	if (domain->type == IOMMU_DOMAIN_IDENTITY && !smmu->qcom_bypass_quirk) {
+ 		smmu_domain->stage = ARM_SMMU_DOMAIN_BYPASS;
+ 		smmu_domain->smmu = smmu;
+ 		goto out_unlock;
+@@ -826,6 +832,10 @@ static int arm_smmu_init_domain_context(struct iommu_domain *domain,
+ 	domain->geometry.aperture_end = (1UL << ias) - 1;
+ 	domain->geometry.force_aperture = true;
+ 
++	/* Enable translation for non-identity context banks */
++	if (domain->type != IOMMU_DOMAIN_IDENTITY)
++		cfg->m = true;
 +
- 	if (smmu->version == ARM_SMMU_V2) {
- 		if (smmu->num_context_banks > smmu->num_context_irqs) {
- 			dev_err(dev,
+ 	/* Initialise the context bank with our page table cfg */
+ 	arm_smmu_init_context_bank(smmu_domain, &pgtbl_cfg);
+ 	arm_smmu_write_context_bank(smmu, cfg->cbndx);
+diff --git a/drivers/iommu/arm-smmu.h b/drivers/iommu/arm-smmu.h
+index d172c024be61..a71d193073e4 100644
+--- a/drivers/iommu/arm-smmu.h
++++ b/drivers/iommu/arm-smmu.h
+@@ -305,6 +305,8 @@ struct arm_smmu_device {
+ 
+ 	/* IOMMU core code handle */
+ 	struct iommu_device		iommu;
++
++	bool				qcom_bypass_quirk;
+ };
+ 
+ enum arm_smmu_context_fmt {
+@@ -323,6 +325,7 @@ struct arm_smmu_cfg {
+ 	};
+ 	enum arm_smmu_cbar_type		cbar;
+ 	enum arm_smmu_context_fmt	fmt;
++	bool				m;
+ };
+ #define ARM_SMMU_INVALID_IRPTNDX	0xff
+ 
 -- 
 2.26.2
 
