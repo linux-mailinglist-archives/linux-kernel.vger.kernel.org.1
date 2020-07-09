@@ -2,86 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9957121A478
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 18:14:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAC0D21A47E
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 18:14:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727081AbgGIQN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 12:13:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55918 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726339AbgGIQN5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 12:13:57 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728211AbgGIQOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 12:14:15 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:64438 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726339AbgGIQOO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 12:14:14 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1594311252; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=/e4a8wMAdSV6hoIv60z68EueAnjMwjfv1t94V3tJoe0=; b=b6CUa+pjio/Ea6YMPG5mSn11wEAJnWmd4n5tFNYvRmvqZ4jKY2TQvfbXVmiuJlQrphS3Gf14
+ B31oCZmeMhayjG9j6ZQQXppsGYuu8sTQVIDADgkcqCIx8pMfnv6v7fcgJhKg5lZK0W+8MzPo
+ 5qQPyi2Ou+XyuNWT5misFR01qYs=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5f074248cd1b803e17b013b4 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 09 Jul 2020 16:14:00
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3AA9BC433B2; Thu,  9 Jul 2020 16:13:59 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D24022078B;
+        (Authenticated sender: jcrouse)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6D8A4C433C6;
         Thu,  9 Jul 2020 16:13:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594311237;
-        bh=nTexoKEy5GLJOg8vAoAgb+Bs+0ul8c1mEWXYw5RR9Mw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2bdq1FJx2Eny+0HsA2RDiWRYOkCzlQFE5NZ33A9DyDuVYMvmGYiQ3dFTXe4alkcdD
-         gdTBcgvnn6F9ZwxgwgCqq1o85OtbZtlxfjCig7UClixChw6Ihhs4rHwMUEwWRsABHM
-         ZXa4dNXY/V260Yw/NUmKvzN7O9jBnunwgGSb+BPM=
-Date:   Thu, 9 Jul 2020 17:13:51 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Tibor Raschko <tibrasch@gmail.com>,
-        ksummit-discuss@lists.linuxfoundation.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org,
-        tech-board-discuss@lists.linuxfoundation.org,
-        Chris Mason <clm@fb.clm>, torvalds@linux-foundation.org
-Subject: Re: [Tech-board-discuss] [Ksummit-discuss] [PATCH] CodingStyle:
- Inclusive Terminology
-Message-ID: <20200709161351.GF4960@sirena.org.uk>
-References: <79214066-3886-e0ef-f26e-8cb3d53404be@linuxfoundation.org>
- <e41ded21-1432-afa8-2e42-e509539281c4@gmail.com>
- <20200709124327.369781a0@coco.lan>
- <93fc3afb-8c3f-0fb9-3b92-adfb6571e060@linuxfoundation.org>
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6D8A4C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jcrouse@codeaurora.org
+Date:   Thu, 9 Jul 2020 10:13:53 -0600
+From:   Jordan Crouse <jcrouse@codeaurora.org>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sean Paul <sean@poorly.run>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Emil Velikov <emil.velikov@collabora.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "Kristian H . Kristensen" <hoegsberg@google.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>
+Subject: Re: [PATCHv3 7/7] drm/msm/a6xx: Add support for using system
+ cache(LLC)
+Message-ID: <20200709161352.GC21059@jcrouse1-lnx.qualcomm.com>
+Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sean Paul <sean@poorly.run>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
+        Emil Velikov <emil.velikov@collabora.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>,
+        "Kristian H . Kristensen" <hoegsberg@google.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>
+References: <cover.1593344119.git.saiprakash.ranjan@codeaurora.org>
+ <449a6544b10f0035d191ac52283198343187c153.1593344120.git.saiprakash.ranjan@codeaurora.org>
+ <20200703133732.GD18953@willie-the-truck>
+ <ecfda7ca80f6d7b4ff3d89b8758f4dc9@codeaurora.org>
+ <CAF6AEGsCROVTsi2R7_aUkmH9Luoc_guMR0w0KUJc2cEgpfj79w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="b8GWCKCLzrXbuNet"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <93fc3afb-8c3f-0fb9-3b92-adfb6571e060@linuxfoundation.org>
-X-Cookie: You will be married within a year.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAF6AEGsCROVTsi2R7_aUkmH9Luoc_guMR0w0KUJc2cEgpfj79w@mail.gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jul 03, 2020 at 09:04:49AM -0700, Rob Clark wrote:
+> On Fri, Jul 3, 2020 at 7:53 AM Sai Prakash Ranjan
+> <saiprakash.ranjan@codeaurora.org> wrote:
+> >
+> > Hi Will,
+> >
+> > On 2020-07-03 19:07, Will Deacon wrote:
+> > > On Mon, Jun 29, 2020 at 09:22:50PM +0530, Sai Prakash Ranjan wrote:
+> > >> diff --git a/drivers/gpu/drm/msm/msm_iommu.c
+> > >> b/drivers/gpu/drm/msm/msm_iommu.c
+> > >> index f455c597f76d..bd1d58229cc2 100644
+> > >> --- a/drivers/gpu/drm/msm/msm_iommu.c
+> > >> +++ b/drivers/gpu/drm/msm/msm_iommu.c
+> > >> @@ -218,6 +218,9 @@ static int msm_iommu_map(struct msm_mmu *mmu,
+> > >> uint64_t iova,
+> > >>              iova |= GENMASK_ULL(63, 49);
+> > >>
+> > >>
+> > >> +    if (mmu->features & MMU_FEATURE_USE_SYSTEM_CACHE)
+> > >> +            prot |= IOMMU_SYS_CACHE_ONLY;
+> > >
+> > > Given that I think this is the only user of IOMMU_SYS_CACHE_ONLY, then
+> > > it
+> > > looks like it should actually be a property on the domain because we
+> > > never
+> > > need to configure it on a per-mapping basis within a domain, and
+> > > therefore
+> > > it shouldn't be exposed by the IOMMU API as a prot flag.
+> > >
+> > > Do you agree?
+> > >
+> >
+> > GPU being the only user is for now, but there are other clients which
+> > can use this.
+> > Plus how do we set the memory attributes if we do not expose this as
+> > prot flag?
+> 
+> It does appear that the downstream kgsl driver sets this for basically
+> all mappings.. well there is some conditional stuff around
+> DOMAIN_ATTR_USE_LLC_NWA but it seems based on the property of the
+> domain.  (Jordan may know more about what that is about.)  But looks
+> like there are a lot of different paths into iommu_map in kgsl so I
+> might have missed something.
 
---b8GWCKCLzrXbuNet
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Downstream does set it universally. There are some theoretical use cases
+where it might be beneficial to set it on a per-mapping basis with a bunch
+of hinting from userspace and nobody has tried to characterize this on real
+hardware so it is not clear to me if it is worth it.
 
-On Thu, Jul 09, 2020 at 10:01:18AM -0600, Shuah Khan wrote:
-> On 7/9/20 4:43 AM, Mauro Carvalho Chehab wrote:
+I think a domain wide attribute works for now but if a compelling per-mapping
+use case does comes down the pipeline we need to have a backup in mind -
+possibly a prot flag to disable NWA?
 
-> > For coherency, if "blacklist/whitelist" won't be used anymore, an
-> > alternative to graylist should also be provided.
+Jordan
 
-> What is "graylist"? Does it mean in between allow/deny?
+> Assuming there isn't some case where we specifically don't want to use
+> the system cache for some mapping, I think it could be a domain
+> attribute that sets an io_pgtable_cfg::quirks flag
+> 
+> BR,
+> -R
 
-Yes.  Typically it's used in situations where you don't want to deny
-something but might for example want to do extra checks to verify that
-things are OK.
-
---b8GWCKCLzrXbuNet
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8HQj8ACgkQJNaLcl1U
-h9DBcQf+K56Y9mlR9Dst9+GDWVZmoi7aO+Tnt+eblgju9NN9sKUNWzJ8YR8GA4vV
-z6deFWJMWOruLvHFhLXOl4s8OZjnoifyGKvUKZkwNEa7ilfpO6A4ShhVgbeU5aqs
-9kalbjk3lIzPqo9L8/qmH1xDyaRMlBeZXzYuc63cCOG3w1NmaQhcSjaBPuTVAF6h
-oAIAt/TYlzDw8/Qaa1swsC3iN+cVIkt4cwLEO7+H6juOW/nOqJ0cOWASYDPrY/Gz
-bGs48U/wFJoesyl2quo8XtyxAQNmvld4Pb0e1+mcrh3Lz3jitp8Jo+j7UwIXglTS
-22KvCX3YVOLc6eQFGhe0Nd17DzHoyQ==
-=M0gt
------END PGP SIGNATURE-----
-
---b8GWCKCLzrXbuNet--
+-- 
+The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
