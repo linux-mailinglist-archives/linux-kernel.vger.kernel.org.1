@@ -2,202 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A49CB219E6A
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 12:55:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1244A219E6D
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 12:55:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727042AbgGIKzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 06:55:16 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:57250 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726965AbgGIKzN (ORCPT
+        id S1726768AbgGIKzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 06:55:46 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:37296 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726440AbgGIKzp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 06:55:13 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id A03852A6391
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-To:     linux-kernel@vger.kernel.org,
-        Collabora Kernel ML <kernel@collabora.com>
-Cc:     narmstrong@baylibre.com, matthias.bgg@gmail.com,
-        drinkcat@chromium.org, hsinyi@chromium.org, a.hajda@samsung.com,
-        boris.brezillon@collabora.com, laurent.pinchart@ideasonboard.com,
-        sam@ravnborg.org, Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH v2 2/2] drm/mediatek: mtk_dpi: Convert to bridge driver
-Date:   Thu,  9 Jul 2020 12:55:01 +0200
-Message-Id: <20200709105501.1465636-3-enric.balletbo@collabora.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200709105501.1465636-1-enric.balletbo@collabora.com>
-References: <20200709105501.1465636-1-enric.balletbo@collabora.com>
+        Thu, 9 Jul 2020 06:55:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594292143;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PTDQffC1tMzQ3lRtufW6bbJO7+lFsHLO2yhqYkX2OD4=;
+        b=QxZTO0MHOjoMsLponAWRcaUZKRRU8DejNe2c02wnHxT49Dr6xUpVPgDyo8CNhcKVNYwFD2
+        valg6tSajevEvp3HV30ACDh/irSOyvW35JqW/+uxHjU2VAaCmwzoq8bTsLyx0H/SIAFezH
+        ZQp1lEe/+YgxEk+jnC/axhzM8igWtpA=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-209-GI69mxv9McWVzaADABOP6Q-1; Thu, 09 Jul 2020 06:55:41 -0400
+X-MC-Unique: GI69mxv9McWVzaADABOP6Q-1
+Received: by mail-wr1-f70.google.com with SMTP id o25so1603944wro.16
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 03:55:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PTDQffC1tMzQ3lRtufW6bbJO7+lFsHLO2yhqYkX2OD4=;
+        b=aB0Zi8+xdlI1P+dowhTzmnYyBz9fqR/idukoKdmA0KVy4h1QLWbgKYdGFuh8VgHLxG
+         Ryj/9RTpYNwuAf0yk70WgnWng7R4JonN3UEChz1as+a+ck3CaK6OgFhuMkY8PN2O1UwX
+         SSk7B2U3YnUwjeqkhqrhmunsM3UKgYnRBV2HV/LzHOEI8lt1JiE9r2QOZld6lybufS/9
+         RUKeCPFaCMaaX8M053NUfpySZ43cfB6HCZa1HeqektWbbbRkoby6uMuvHdfZp1is5Txs
+         YhNWiFdqMiqbUcXrlGatU5uRvfTUJx30pN7RzBBoSMIfZZlMbYhAtnTKTidzDj/a+yxv
+         NBHA==
+X-Gm-Message-State: AOAM530WufdD069StLBtQcWp0bEnMHi6zuQ4m8pJAMixKecKev9MWbh4
+        3wfi9ndruYPRiLbKs+AfqqhrUqRITiN6y5rmuoJPsZ6NMI97XBMyr85nDFdsrxmugNu2yCrARw3
+        /w/VAIKwWHr6TGlwBtpa3nTsy
+X-Received: by 2002:adf:ea0f:: with SMTP id q15mr32647617wrm.113.1594292140037;
+        Thu, 09 Jul 2020 03:55:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw4j0HtIxJr87LdzFPez74tjNG36xLEG2m4Lx3KIWQk4DnBnjXipmFHn/FMzkdbo05bFcQn0w==
+X-Received: by 2002:adf:ea0f:: with SMTP id q15mr32647598wrm.113.1594292139839;
+        Thu, 09 Jul 2020 03:55:39 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:9541:9439:cb0f:89c? ([2001:b07:6468:f312:9541:9439:cb0f:89c])
+        by smtp.gmail.com with ESMTPSA id u74sm4334245wmu.31.2020.07.09.03.55.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Jul 2020 03:55:39 -0700 (PDT)
+Subject: Re: [PATCH v4 2/5] KVM: x86: Extract kvm_update_cpuid_runtime() from
+ kvm_update_cpuid()
+To:     Xiaoyao Li <xiaoyao.li@intel.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200709043426.92712-1-xiaoyao.li@intel.com>
+ <20200709043426.92712-3-xiaoyao.li@intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <27a4c18f-ba14-90f6-7918-f4520e7f3a69@redhat.com>
+Date:   Thu, 9 Jul 2020 12:55:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200709043426.92712-3-xiaoyao.li@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert mtk_dpi to a bridge driver with built-in encoder support for
-compatibility with existing component drivers.
+On 09/07/20 06:34, Xiaoyao Li wrote:
+> Beside called in kvm_vcpu_ioctl_set_cpuid*(), kvm_update_cpuid() is also
+> called 5 places else in x86.c and 1 place else in lapic.c. All those 6
+> places only need the part of updating guest CPUIDs (OSXSAVE, OSPKE, APIC,
+> KVM_FEATURE_PV_UNHALT, ...) based on the runtime vcpu state, so extract
+> them as a separate kvm_update_cpuid_runtime().
 
-Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
----
+I'm not sure KVM_FEATURE_PV_UNHALT counts as one of these, but I guess
+it's not a big deal.
 
-Changes in v2:
-- Maintain error message when attach to bridge fails. (Boris)
-
- drivers/gpu/drm/mediatek/mtk_dpi.c | 71 ++++++++++++++++++------------
- 1 file changed, 42 insertions(+), 29 deletions(-)
-
-diff --git a/drivers/gpu/drm/mediatek/mtk_dpi.c b/drivers/gpu/drm/mediatek/mtk_dpi.c
-index f7372dbdac0e..589ef33a1780 100644
---- a/drivers/gpu/drm/mediatek/mtk_dpi.c
-+++ b/drivers/gpu/drm/mediatek/mtk_dpi.c
-@@ -64,6 +64,7 @@ enum mtk_dpi_out_color_format {
- struct mtk_dpi {
- 	struct mtk_ddp_comp ddp_comp;
- 	struct drm_encoder encoder;
-+	struct drm_bridge bridge;
- 	struct drm_bridge *next_bridge;
- 	void __iomem *regs;
- 	struct device *dev;
-@@ -83,9 +84,9 @@ struct mtk_dpi {
- 	int refcount;
- };
- 
--static inline struct mtk_dpi *mtk_dpi_from_encoder(struct drm_encoder *e)
-+static inline struct mtk_dpi *bridge_to_dpi(struct drm_bridge *b)
- {
--	return container_of(e, struct mtk_dpi, encoder);
-+	return container_of(b, struct mtk_dpi, bridge);
- }
- 
- enum mtk_dpi_polarity {
-@@ -521,50 +522,53 @@ static int mtk_dpi_set_display_mode(struct mtk_dpi *dpi,
- 	return 0;
- }
- 
--static bool mtk_dpi_encoder_mode_fixup(struct drm_encoder *encoder,
--				       const struct drm_display_mode *mode,
--				       struct drm_display_mode *adjusted_mode)
-+static void mtk_dpi_encoder_destroy(struct drm_encoder *encoder)
- {
--	return true;
-+	drm_encoder_cleanup(encoder);
- }
- 
--static void mtk_dpi_encoder_mode_set(struct drm_encoder *encoder,
--				     struct drm_display_mode *mode,
--				     struct drm_display_mode *adjusted_mode)
-+static const struct drm_encoder_funcs mtk_dpi_encoder_funcs = {
-+	.destroy = mtk_dpi_encoder_destroy,
-+};
-+
-+static int mtk_dpi_bridge_attach(struct drm_bridge *bridge,
-+				 enum drm_bridge_attach_flags flags)
- {
--	struct mtk_dpi *dpi = mtk_dpi_from_encoder(encoder);
-+	struct mtk_dpi *dpi = bridge_to_dpi(bridge);
-+
-+	return drm_bridge_attach(bridge->encoder, dpi->next_bridge,
-+				 &dpi->bridge, flags);
-+}
-+
-+static void mtk_dpi_bridge_mode_set(struct drm_bridge *bridge,
-+				const struct drm_display_mode *mode,
-+				const struct drm_display_mode *adjusted_mode)
-+{
-+	struct mtk_dpi *dpi = bridge_to_dpi(bridge);
- 
- 	drm_mode_copy(&dpi->mode, adjusted_mode);
- }
- 
--static void mtk_dpi_encoder_disable(struct drm_encoder *encoder)
-+static void mtk_dpi_bridge_disable(struct drm_bridge *bridge)
- {
--	struct mtk_dpi *dpi = mtk_dpi_from_encoder(encoder);
-+	struct mtk_dpi *dpi = bridge_to_dpi(bridge);
- 
- 	mtk_dpi_power_off(dpi);
- }
- 
--static void mtk_dpi_encoder_enable(struct drm_encoder *encoder)
-+static void mtk_dpi_bridge_enable(struct drm_bridge *bridge)
- {
--	struct mtk_dpi *dpi = mtk_dpi_from_encoder(encoder);
-+	struct mtk_dpi *dpi = bridge_to_dpi(bridge);
- 
- 	mtk_dpi_power_on(dpi);
- 	mtk_dpi_set_display_mode(dpi, &dpi->mode);
- }
- 
--static int mtk_dpi_atomic_check(struct drm_encoder *encoder,
--				struct drm_crtc_state *crtc_state,
--				struct drm_connector_state *conn_state)
--{
--	return 0;
--}
--
--static const struct drm_encoder_helper_funcs mtk_dpi_encoder_helper_funcs = {
--	.mode_fixup = mtk_dpi_encoder_mode_fixup,
--	.mode_set = mtk_dpi_encoder_mode_set,
--	.disable = mtk_dpi_encoder_disable,
--	.enable = mtk_dpi_encoder_enable,
--	.atomic_check = mtk_dpi_atomic_check,
-+static const struct drm_bridge_funcs mtk_dpi_bridge_funcs = {
-+	.attach = mtk_dpi_bridge_attach,
-+	.mode_set = mtk_dpi_bridge_mode_set,
-+	.disable = mtk_dpi_bridge_disable,
-+	.enable = mtk_dpi_bridge_enable,
- };
- 
- static void mtk_dpi_start(struct mtk_ddp_comp *comp)
-@@ -605,12 +609,11 @@ static int mtk_dpi_bind(struct device *dev, struct device *master, void *data)
- 		dev_err(dev, "Failed to initialize decoder: %d\n", ret);
- 		goto err_unregister;
- 	}
--	drm_encoder_helper_add(&dpi->encoder, &mtk_dpi_encoder_helper_funcs);
- 
- 	/* Currently DPI0 is fixed to be driven by OVL1 */
- 	dpi->encoder.possible_crtcs = BIT(1);
- 
--	ret = drm_bridge_attach(&dpi->encoder, dpi->next_bridge, NULL, 0);
-+	ret = drm_bridge_attach(&dpi->encoder, &dpi->bridge, NULL, 0);
- 	if (ret) {
- 		dev_err(dev, "Failed to attach bridge: %d\n", ret);
- 		goto err_cleanup;
-@@ -791,8 +794,15 @@ static int mtk_dpi_probe(struct platform_device *pdev)
- 
- 	platform_set_drvdata(pdev, dpi);
- 
-+	dpi->bridge.funcs = &mtk_dpi_bridge_funcs;
-+	dpi->bridge.of_node = dev->of_node;
-+	dpi->bridge.type = DRM_MODE_CONNECTOR_DPI;
-+
-+	drm_bridge_add(&dpi->bridge);
-+
- 	ret = component_add(dev, &mtk_dpi_component_ops);
- 	if (ret) {
-+		drm_bridge_remove(&dpi->bridge);
- 		dev_err(dev, "Failed to add component: %d\n", ret);
- 		return ret;
- 	}
-@@ -802,7 +812,10 @@ static int mtk_dpi_probe(struct platform_device *pdev)
- 
- static int mtk_dpi_remove(struct platform_device *pdev)
- {
-+	struct mtk_dpi *dpi = platform_get_drvdata(pdev);
-+
- 	component_del(&pdev->dev, &mtk_dpi_component_ops);
-+	drm_bridge_remove(&dpi->bridge);
- 
- 	return 0;
- }
--- 
-2.27.0
+Paolo
 
