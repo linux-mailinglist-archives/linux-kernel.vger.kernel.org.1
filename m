@@ -2,240 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32B7A21A167
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 15:55:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3957A21A13E
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 15:53:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727901AbgGINyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 09:54:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41346 "EHLO
+        id S1727950AbgGINxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 09:53:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728169AbgGINyw (ORCPT
+        with ESMTP id S1727856AbgGINxK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 09:54:52 -0400
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93BA7C08E85B
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 06:54:50 -0700 (PDT)
-Received: by mail-qv1-xf44.google.com with SMTP id el4so929635qvb.13
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 06:54:50 -0700 (PDT)
+        Thu, 9 Jul 2020 09:53:10 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3167AC08C5DC
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 06:53:10 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id c16so2351521ioi.9
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 06:53:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=marek-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=8FsLSSR0MxMIrn21H5ZMps5SE+xvS8TdF2kEFRPFarM=;
-        b=hi8Dc18Z9I05d+21n6Ck++N2RHv0Wj8URmB2+nuntR7cPvkiAbl29uRrJnHDfJj2cm
-         +KDSIHOMvcEOJN/MmCBlfazdirfjDcRGE3LF7XHhoCqzinZHSNtuQPwStUCFiBG3/XMm
-         GIp3LyS1fzpB9Zw5C+yrCpSxCkUsMSe8/JESqvbSCI42FJKr/S/g4kYnm2liYS0x+bfl
-         xHHMBtTo5Ha7zuhTSy4+L5Z3TKbmUCERaV6Ga2tf/YtHabe96q9cXSHeONfll5z2fmXG
-         7kjE7CRpEh2qze6e8E58bPUr0uK2itVYykvFN4tdh/l9vngm0Fva+BgIDVhAet6gqWsA
-         D3Iw==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=MdcBjmP7qGWR1MpBAxRS6pB+OY/RQLdcm4qT/nupz3g=;
+        b=BjWZhcJGYeO/nZp2SRVBsmB5Ei77q8MrUISpXYS8soe+YNMxcSX6beIjMuI3Q05mxL
+         gXY4Bw0kuYaA6GAj4ujXqufV5EipZgKw/jMhE5sCSyg9rMz64OM3LShd71rVSmg1N5ap
+         /WH8FEF0+S2cFsHijeSnwEfnr6m/w8IkO0IUYeyKSmZA3K1VuSYheHIZc0bX4J+miskc
+         s8hGdjjZJl4hLHqJ0RpwJ8bSXyqx7qO5aUtQg9kzDTIEpTDvUrAHjpbO0CVwFCvuc8+M
+         MkAwSdB5SFIDB63Cth1qeUqZr5I+O4JOII0KIJ8lIg/eL3m9KP/hw51WcHviT92cRQky
+         bimQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=8FsLSSR0MxMIrn21H5ZMps5SE+xvS8TdF2kEFRPFarM=;
-        b=a5D7359GWkaEV8dln05NO+P5Oo6HXIwwGdvs69tGAME874ICyNzHli0kRPWGxb3lSQ
-         xUFVSawfqSV0FV4ZwXTkbFNteul/+6tV1KiVBnWkywM+NCPyeyXGx87uwAqxKYv6Kja8
-         r6lFzC9IWXKiORWmVugAcG2E0Ob4Wrhgv8WGjmnwZkBRuzJhVdrS8MRyUbswj2UQldFL
-         DqgGwZj26S+kw9yL7llznxd+RV9eCY0GXdc37laCYN3emHXqtELu6dfF+/m2PH2v3bVE
-         OJg7p9AkbAZLcBXW+5siNnq3w0r/w2CWReJ0C2GNzF1c5mE2a/NFRFthNibBteN5mAtp
-         IEMQ==
-X-Gm-Message-State: AOAM533/6+/qXZAFXBWoWDs634SV4h4Q70+mGLGud6/BzY4naLMU2rhC
-        aJiqLqFTE1sqWbhLly5a+8nhRw==
-X-Google-Smtp-Source: ABdhPJyUJaN8Tn5qtd/PkJVlPM+c9a2L7KjV+uRwH2SXs4MPmMoy8PcUUBJHHO+Lhrdg7Iv3cqP8AA==
-X-Received: by 2002:a0c:bc14:: with SMTP id j20mr36276903qvg.40.1594302889877;
-        Thu, 09 Jul 2020 06:54:49 -0700 (PDT)
-Received: from localhost.localdomain ([147.253.86.153])
-        by smtp.gmail.com with ESMTPSA id 130sm3632735qkn.82.2020.07.09.06.54.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jul 2020 06:54:49 -0700 (PDT)
-From:   Jonathan Marek <jonathan@marek.ca>
-To:     linux-arm-msm@vger.kernel.org
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
-        DEVICE TREE BINDINGS), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v3 14/14] arm64: dts: qcom: add sm8250 GPU nodes
-Date:   Thu,  9 Jul 2020 09:52:45 -0400
-Message-Id: <20200709135251.643-15-jonathan@marek.ca>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200709135251.643-1-jonathan@marek.ca>
-References: <20200709135251.643-1-jonathan@marek.ca>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=MdcBjmP7qGWR1MpBAxRS6pB+OY/RQLdcm4qT/nupz3g=;
+        b=dfQKEwJe+idN02qF3WZgE2zXf77tVfXamA+C8g2nCEB+G03sXOW9VmbqNtnH+4MpDy
+         Kklnaf9shv/apkm7QNaFbBE+lHek6fsgGi2PZr352zyRRM67J3lT2jSUYWhJAF/zbpwM
+         rD6BKdus2JJaIh6bNsRh3UB+gv5OuBEw23TSWTOxa5So5eezoF14N5Zq8jFvNaIMVXou
+         DhwRaEPhIZ3VIF1N+QHO3pyoLfwiz1FisCGHZqYda/G7wtuv6Nwjz6iVk1ao4su62gYP
+         C474F7T5P/mq2HqW3kz1tkZoUrDm8pHvCOSkMTS0tyYv6HUWDbcA/fqIjnDbxKSDopn5
+         BXSA==
+X-Gm-Message-State: AOAM533igT+rPOiQoqigRrJWopAVQVA50CX6sFl36QMB+zqRMeUOJ/v1
+        2Fwqqn0C/Uq6VQ3WkKM/Koym/Q==
+X-Google-Smtp-Source: ABdhPJy39Z382Q5bYeHMpva+0EOk6l7VKjY+mG3CJn9HtsoBPJfb2IFz340kCmDhMrghd/EAVUHtHQ==
+X-Received: by 2002:a02:c6a7:: with SMTP id o7mr74870852jan.7.1594302789510;
+        Thu, 09 Jul 2020 06:53:09 -0700 (PDT)
+Received: from [192.168.1.58] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id 13sm1920029ilj.81.2020.07.09.06.53.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Jul 2020 06:53:08 -0700 (PDT)
+Subject: Re: [PATCH 0/2] Remove kiocb ki_complete
+To:     Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>
+Cc:     linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-aio@kvack.org, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Kanchan Joshi <joshi.k@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>
+References: <20200708222637.23046-1-willy@infradead.org>
+ <20200709101705.GA2095@infradead.org>
+ <20200709111036.GA12769@casper.infradead.org>
+ <20200709132611.GA1382@infradead.org>
+ <20200709133249.GC12769@casper.infradead.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <cac3062d-3779-5c1b-b3f5-07823c198ead@kernel.dk>
+Date:   Thu, 9 Jul 2020 07:53:07 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200709133249.GC12769@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This brings up the GPU. Tested on HDK865 by running vulkan CTS.
+On 7/9/20 7:32 AM, Matthew Wilcox wrote:
+> On Thu, Jul 09, 2020 at 02:26:11PM +0100, Christoph Hellwig wrote:
+>> On Thu, Jul 09, 2020 at 12:10:36PM +0100, Matthew Wilcox wrote:
+>>> On Thu, Jul 09, 2020 at 11:17:05AM +0100, Christoph Hellwig wrote:
+>>>> I really don't like this series at all.  If saves a single pointer
+>>>> but introduces a complicated machinery that just doesn't follow any
+>>>> natural flow.  And there doesn't seem to be any good reason for it to
+>>>> start with.
+>>>
+>>> Jens doesn't want the kiocb to grow beyond a single cacheline, and we
+>>> want the ability to set the loff_t in userspace for an appending write,
+>>> so the plan was to replace the ki_complete member in kiocb with an
+>>> loff_t __user *ki_posp.
+>>>
+>>> I don't think it's worth worrying about growing kiocb, personally,
+>>> but this seemed like the easiest way to make room for a new pointer.
+>>
+>> The user offset pointer has absolutely no business in the the kiocb
+>> itself - it is a io_uring concept which needs to go into the io_kiocb,
+>> which has 14 bytes left in the last cache line in my build.  It would
+>> fit in very well there right next to the result and user pointer.
+> 
+> I agree.  Jens doesn't.
 
-Signed-off-by: Jonathan Marek <jonathan@marek.ca>
----
- arch/arm64/boot/dts/qcom/sm8250.dtsi | 143 +++++++++++++++++++++++++++
- 1 file changed, 143 insertions(+)
+Stop putting words in my mouth, especially when they are totally untrue.
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-index 3564f233064c..636e2196138c 100644
---- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-@@ -5,6 +5,7 @@
- 
- #include <dt-bindings/interrupt-controller/arm-gic.h>
- #include <dt-bindings/clock/qcom,gcc-sm8250.h>
-+#include <dt-bindings/clock/qcom,gpucc-sm8250.h>
- #include <dt-bindings/clock/qcom,rpmh.h>
- #include <dt-bindings/mailbox/qcom-ipcc.h>
- #include <dt-bindings/power/qcom-aoss-qmp.h>
-@@ -1131,6 +1132,148 @@ IPCC_MPROC_SIGNAL_GLINK_QMP
- 			};
- 		};
- 
-+		gpu: gpu@3d00000 {
-+			/*
-+			 * note: the amd,imageon compatible makes it possible
-+			 * to use the drm/msm driver without the display node,
-+			 * make sure to remove it when display node is added
-+			 */
-+			compatible = "qcom,adreno-650.2",
-+				     "qcom,adreno",
-+				     "amd,imageon";
-+			#stream-id-cells = <16>;
-+
-+			reg = <0 0x3d00000 0 0x40000>;
-+			reg-names = "kgsl_3d0_reg_memory";
-+
-+			interrupts = <GIC_SPI 300 IRQ_TYPE_LEVEL_HIGH>;
-+
-+			iommus = <&adreno_smmu 0 0x401>;
-+
-+			operating-points-v2 = <&gpu_opp_table>;
-+
-+			qcom,gmu = <&gmu>;
-+
-+			zap-shader {
-+				memory-region = <&gpu_mem>;
-+			};
-+
-+			/* note: downstream checks gpu binning for 670 Mhz */
-+			gpu_opp_table: opp-table {
-+				compatible = "operating-points-v2";
-+
-+				opp-670000000 {
-+					opp-hz = /bits/ 64 <670000000>;
-+					opp-level = <RPMH_REGULATOR_LEVEL_NOM_L1>;
-+				};
-+
-+				opp-587000000 {
-+					opp-hz = /bits/ 64 <587000000>;
-+					opp-level = <RPMH_REGULATOR_LEVEL_NOM>;
-+				};
-+
-+				opp-525000000 {
-+					opp-hz = /bits/ 64 <525000000>;
-+					opp-level = <RPMH_REGULATOR_LEVEL_SVS_L2>;
-+				};
-+
-+				opp-490000000 {
-+					opp-hz = /bits/ 64 <490000000>;
-+					opp-level = <RPMH_REGULATOR_LEVEL_SVS_L1>;
-+				};
-+
-+				opp-441600000 {
-+					opp-hz = /bits/ 64 <441600000>;
-+					opp-level = <RPMH_REGULATOR_LEVEL_SVS_L0>;
-+				};
-+
-+				opp-400000000 {
-+					opp-hz = /bits/ 64 <400000000>;
-+					opp-level = <RPMH_REGULATOR_LEVEL_SVS>;
-+				};
-+
-+				opp-305000000 {
-+					opp-hz = /bits/ 64 <305000000>;
-+					opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
-+				};
-+			};
-+		};
-+
-+		gmu: gmu@3d6a000 {
-+			compatible="qcom,adreno-gmu-650.2", "qcom,adreno-gmu";
-+
-+			reg = <0 0x3d6a000 0 0x30000>,
-+			      <0 0x3de0000 0 0x10000>,
-+			      <0 0xb290000 0 0x10000>,
-+			      <0 0xb490000 0 0x10000>;
-+			reg-names = "gmu", "rscc", "gmu_pdc", "gmu_pdc_seq";
-+
-+			interrupts = <GIC_SPI 304 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 305 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "hfi", "gmu";
-+
-+			clocks = <&gpucc GPU_CC_AHB_CLK>,
-+				 <&gpucc GPU_CC_CX_GMU_CLK>,
-+			         <&gpucc GPU_CC_CXO_CLK>,
-+				 <&gcc GCC_DDRSS_GPU_AXI_CLK>,
-+				 <&gcc GCC_GPU_MEMNOC_GFX_CLK>;
-+			clock-names = "ahb", "gmu", "cxo", "axi", "memnoc";
-+
-+			power-domains = <&gpucc GPU_CX_GDSC>,
-+					<&gpucc GPU_GX_GDSC>;
-+			power-domain-names = "cx", "gx";
-+
-+			iommus = <&adreno_smmu 5 0x400>;
-+
-+			operating-points-v2 = <&gmu_opp_table>;
-+
-+			gmu_opp_table: opp-table {
-+				compatible = "operating-points-v2";
-+
-+				opp-200000000 {
-+					opp-hz = /bits/ 64 <200000000>;
-+					opp-level = <RPMH_REGULATOR_LEVEL_MIN_SVS>;
-+				};
-+			};
-+		};
-+
-+		gpucc: clock-controller@3d90000 {
-+			compatible = "qcom,sm8250-gpucc";
-+			reg = <0 0x3d90000 0 0x9000>;
-+			clocks = <&rpmhcc RPMH_CXO_CLK>,
-+				 <&gcc GCC_GPU_GPLL0_CLK_SRC>,
-+				 <&gcc GCC_GPU_GPLL0_DIV_CLK_SRC>;
-+			clock-names = "bi_tcxo",
-+				      "gcc_gpu_gpll0_clk_src",
-+				      "gcc_gpu_gpll0_div_clk_src";
-+			#clock-cells = <1>;
-+			#reset-cells = <1>;
-+			#power-domain-cells = <1>;
-+		};
-+
-+		adreno_smmu: iommu@3da0000 {
-+			compatible = "qcom,sm8250-smmu-500", "arm,mmu-500";
-+			reg = <0 0x3da0000 0 0x10000>;
-+			#iommu-cells = <2>;
-+			#global-interrupts = <2>;
-+			interrupts = <GIC_SPI 672 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 673 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 678 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 679 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 680 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 681 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 682 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 683 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 684 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 685 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&gpucc GPU_CC_AHB_CLK>,
-+				 <&gcc GCC_GPU_MEMNOC_GFX_CLK>,
-+				 <&gcc GCC_GPU_SNOC_DVM_GFX_CLK>;
-+			clock-names = "ahb", "bus", "iface";
-+
-+			power-domains = <&gpucc GPU_CX_GDSC>;
-+		};
-+
- 		usb_1_hsphy: phy@88e3000 {
- 			compatible = "qcom,sm8250-usb-hs-phy",
- 				     "qcom,usb-snps-hs-7nm-phy";
+I was opposed to growing struct io_rw in io_uring, which is where the
+extra append variable belonds, beyond a cacheline. You mentioned you
+could probably shave some bits out of struct kiocb, which is how this
+completion handling business came about. If kiocb was shrunk, then io_rw
+has room for the needed variable.
+
+At no point have I said that whatever we need to shove in there for
+io_uring should be in the kiocb, that would not make any sense. I'm
+just opposed to growing the per-op data field in io_kiocb beyond
+a cacheline. And that's especially true for something like append
+writes, which I don't consider super interesting.
+
+
 -- 
-2.26.1
+Jens Axboe
 
