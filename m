@@ -2,92 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A093321A935
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 22:41:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63DE221A846
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 21:59:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726299AbgGIUlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 16:41:44 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:33752 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726183AbgGIUln (ORCPT
+        id S1726268AbgGIT7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 15:59:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41678 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726183AbgGIT7n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 16:41:43 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 069JVwRT053736;
-        Thu, 9 Jul 2020 15:57:11 -0400
-Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 325p3j6uv8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 09 Jul 2020 15:57:10 -0400
-Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
-        by ppma03wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 069Jnhkt030215;
-        Thu, 9 Jul 2020 19:57:09 GMT
-Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
-        by ppma03wdc.us.ibm.com with ESMTP id 325k1r0pge-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 09 Jul 2020 19:57:09 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 069Jv82L46334234
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 9 Jul 2020 19:57:08 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 596B87805F;
-        Thu,  9 Jul 2020 19:57:08 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C906A7805C;
-        Thu,  9 Jul 2020 19:57:07 +0000 (GMT)
-Received: from ghost4.ibm.com (unknown [9.163.54.227])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu,  9 Jul 2020 19:57:07 +0000 (GMT)
-From:   Eddie James <eajames@linux.ibm.com>
-To:     linux-clk@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-aspeed@lists.ozlabs.org,
-        linux-mmc@vger.kernel.org, andrew@aj.id.au, joel@jms.id.au,
-        ulf.hansson@linaro.org, adrian.hunter@intel.com, sboyd@kernel.org,
-        mturquette@baylibre.com, eajames@linux.ibm.com
-Subject: [PATCH 2/2] mmc: sdhci-of-aspeed: Fix clock divider calculation
-Date:   Thu,  9 Jul 2020 14:57:06 -0500
-Message-Id: <20200709195706.12741-3-eajames@linux.ibm.com>
-X-Mailer: git-send-email 2.24.0
-In-Reply-To: <20200709195706.12741-1-eajames@linux.ibm.com>
-References: <20200709195706.12741-1-eajames@linux.ibm.com>
+        Thu, 9 Jul 2020 15:59:43 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AA42C08C5DC
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 12:59:43 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id o22so1579437pjw.2
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 12:59:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=AjdSZHMC9Aa00TM3sQNXFBLg2D2XfJpFuPbq67cqMUA=;
+        b=M+ZVAQaQpRpPNNFiKDC8rhFR/DJW0N1PXeJXLFHlCeZMczjEL/CoIjnDLn/OpNBg9D
+         qPF81bClhRgkxKWSHKlcbmS4ExPv3K779BsforUk0J69a0FjzDHKs6NdBGh9WaDa7tY/
+         SQxwKNRo2wMA2XUITZIWDkxBdaxywE+bqqSoihuMM+XNuXAuH8rayl1kLuBb51zUkrc8
+         3NhUSp2ka434t0mwva84LOw95/966DycuggqcxtZLYVEMHRIAjlO5Pu6zQt7Xnt6DdRu
+         hptLRnRk/V5+BerUJpATB3djRVbSwDR+AVh7X5kDQdhQX1sdKgVoEqiDADVFxIYJUev0
+         fhfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AjdSZHMC9Aa00TM3sQNXFBLg2D2XfJpFuPbq67cqMUA=;
+        b=JRcJUriMRz7+KoRhhEJEgfQ7Jr6XFETrF7aQeX3nAzA5ffbt2qnYaJLfbQFjTb2AxI
+         nyE+Vof09dSHGThP9DrP7LD6/3QtkJqmUGR47NjGqB7X9Iugc8rUXyMHBYGGkZ54AaJS
+         QF1EdNBAJmYU7bOZ26S9I+OmKvFcSccLlTKA86r6eKlt6C4fu+b9htjstGHspJj3kpS1
+         neKQqYJH/oj+8j8FUD7SqIxikYDDEo1ZW2XoRAr0mqyWax/DMyL8UbQ5ghC23wi9XoZA
+         i+RWYA+NQIdV9ESow6VPjX8ZTl+YPFZPL8aIGk32jfpOjFBmf9Vrfc7k96kkUVPC+U9U
+         LcKA==
+X-Gm-Message-State: AOAM533BiLrV5i/b3Sm/4LhfxLIAFWZtzH9MrNuMgW3iJQ+CHvDVYC4o
+        N4qn6gCR+9oChqES6Q1zVKZbzA==
+X-Google-Smtp-Source: ABdhPJxg3OSOq2mVQYV3Pd4pZKXsoR8TebYLjp4G4815IdV1r1spyaxUohoaupTianXe8uemKyH49w==
+X-Received: by 2002:a17:902:eb52:: with SMTP id i18mr16953769pli.298.1594324782359;
+        Thu, 09 Jul 2020 12:59:42 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id w20sm3553376pfn.44.2020.07.09.12.59.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Jul 2020 12:59:41 -0700 (PDT)
+Date:   Thu, 9 Jul 2020 12:57:27 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Laurentiu Tudor <laurentiu.tudor@nxp.com>
+Cc:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        Jonathan Marek <jonathan@marek.ca>,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH 5/5] iommu/arm-smmu: Setup identity domain for boot
+ mappings
+Message-ID: <20200709195727.GY388985@builder.lan>
+References: <20200709050145.3520931-1-bjorn.andersson@linaro.org>
+ <20200709050145.3520931-6-bjorn.andersson@linaro.org>
+ <e68033a8-fc00-e7d9-e95c-1014498ade4f@nxp.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-09_10:2020-07-09,2020-07-09 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 malwarescore=0
- spamscore=0 mlxscore=0 lowpriorityscore=0 clxscore=1015 mlxlogscore=999
- bulkscore=0 phishscore=0 priorityscore=1501 suspectscore=1 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007090131
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e68033a8-fc00-e7d9-e95c-1014498ade4f@nxp.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When calculating the clock divider, start dividing at 2 instead of 1.
-The divider is divided by two at the end of the calculation, so starting
-at 1 may result in a divider of 0, which shouldn't happen.
+On Thu 09 Jul 08:50 PDT 2020, Laurentiu Tudor wrote:
 
-Signed-off-by: Eddie James <eajames@linux.ibm.com>
----
- drivers/mmc/host/sdhci-of-aspeed.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> 
+> On 7/9/2020 8:01 AM, Bjorn Andersson wrote:
+> > With many Qualcomm platforms not having functional S2CR BYPASS a
+> > temporary IOMMU domain, without translation, needs to be allocated in
+> > order to allow these memory transactions.
+> > 
+> > Unfortunately the boot loader uses the first few context banks, so
+> > rather than overwriting a active bank the last context bank is used and
+> > streams are diverted here during initialization.
+> > 
+> > This also performs the readback of SMR registers for the Qualcomm
+> > platform, to trigger the mechanism.
+> > 
+> > This is based on prior work by Thierry Reding and Laurentiu Tudor.
+> > 
+> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > ---
+> >  drivers/iommu/arm-smmu-qcom.c | 11 +++++
+> >  drivers/iommu/arm-smmu.c      | 80 +++++++++++++++++++++++++++++++++--
+> >  drivers/iommu/arm-smmu.h      |  3 ++
+> >  3 files changed, 90 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/drivers/iommu/arm-smmu-qcom.c b/drivers/iommu/arm-smmu-qcom.c
+> > index 86b1917459a4..397df27c1d69 100644
+> > --- a/drivers/iommu/arm-smmu-qcom.c
+> > +++ b/drivers/iommu/arm-smmu-qcom.c
+> > @@ -26,6 +26,7 @@ static const struct of_device_id qcom_smmu_client_of_match[] = {
+> >  static int qcom_smmu_cfg_probe(struct arm_smmu_device *smmu)
+> >  {
+> >  	unsigned int last_s2cr = ARM_SMMU_GR0_S2CR(smmu->num_mapping_groups - 1);
+> > +	u32 smr;
+> >  	u32 reg;
+> >  	int i;
+> >  
+> > @@ -56,6 +57,16 @@ static int qcom_smmu_cfg_probe(struct arm_smmu_device *smmu)
+> >  		}
+> >  	}
+> >  
+> > +	for (i = 0; i < smmu->num_mapping_groups; i++) {
+> > +		smr = arm_smmu_gr0_read(smmu, ARM_SMMU_GR0_SMR(i));
+> > +
+> > +		if (FIELD_GET(ARM_SMMU_SMR_VALID, smr)) {
+> > +			smmu->smrs[i].id = FIELD_GET(ARM_SMMU_SMR_ID, smr);
+> > +			smmu->smrs[i].mask = FIELD_GET(ARM_SMMU_SMR_MASK, smr);
+> > +			smmu->smrs[i].valid = true;
+> > +		}
+> > +	}
+> > +
+> >  	return 0;
+> >  }
+> >  
+> > diff --git a/drivers/iommu/arm-smmu.c b/drivers/iommu/arm-smmu.c
+> > index e2d6c0aaf1ea..a7cb27c1a49e 100644
+> > --- a/drivers/iommu/arm-smmu.c
+> > +++ b/drivers/iommu/arm-smmu.c
+> > @@ -652,7 +652,8 @@ static void arm_smmu_write_context_bank(struct arm_smmu_device *smmu, int idx)
+> >  }
+> >  
+> >  static int arm_smmu_init_domain_context(struct iommu_domain *domain,
+> > -					struct arm_smmu_device *smmu)
+> > +					struct arm_smmu_device *smmu,
+> > +					bool boot_domain)
+> >  {
+> >  	int irq, start, ret = 0;
+> >  	unsigned long ias, oas;
+> > @@ -770,6 +771,15 @@ static int arm_smmu_init_domain_context(struct iommu_domain *domain,
+> >  		ret = -EINVAL;
+> >  		goto out_unlock;
+> >  	}
+> > +
+> > +	/*
+> > +	 * Use the last context bank for identity mappings during boot, to
+> > +	 * avoid overwriting in-use bank configuration while we're setting up
+> > +	 * the new mappings.
+> > +	 */
+> > +	if (boot_domain)
+> > +		start = smmu->num_context_banks - 1;
+> > +
+> >  	ret = __arm_smmu_alloc_bitmap(smmu->context_map, start,
+> >  				      smmu->num_context_banks);
+> >  	if (ret < 0)
+> > @@ -1149,7 +1159,10 @@ static int arm_smmu_attach_dev(struct iommu_domain *domain, struct device *dev)
+> >  	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
+> >  	struct arm_smmu_master_cfg *cfg;
+> >  	struct arm_smmu_device *smmu;
+> > +	bool free_identity_domain = false;
+> > +	int idx;
+> >  	int ret;
+> > +	int i;
+> >  
+> >  	if (!fwspec || fwspec->ops != &arm_smmu_ops) {
+> >  		dev_err(dev, "cannot attach to SMMU, is it on the same bus?\n");
+> > @@ -1174,7 +1187,7 @@ static int arm_smmu_attach_dev(struct iommu_domain *domain, struct device *dev)
+> >  		return ret;
+> >  
+> >  	/* Ensure that the domain is finalised */
+> > -	ret = arm_smmu_init_domain_context(domain, smmu);
+> > +	ret = arm_smmu_init_domain_context(domain, smmu, false);
+> >  	if (ret < 0)
+> >  		goto rpm_put;
+> >  
+> > @@ -1190,9 +1203,34 @@ static int arm_smmu_attach_dev(struct iommu_domain *domain, struct device *dev)
+> >  		goto rpm_put;
+> >  	}
+> >  
+> > +	/* Decrement use counter for any references to the identity domain */
+> > +	mutex_lock(&smmu->stream_map_mutex);
+> > +	if (smmu->identity) {
+> > +		struct arm_smmu_domain *identity = to_smmu_domain(smmu->identity);
+> > +
+> > +		for_each_cfg_sme(cfg, fwspec, i, idx) {
+> > +			dev_err(smmu->dev, "%s() %#x\n", __func__, smmu->smrs[idx].id);
+> 
+> Debug leftovers?
+> 
 
-diff --git a/drivers/mmc/host/sdhci-of-aspeed.c b/drivers/mmc/host/sdhci-of-aspeed.c
-index 56912e30c47e..a1bcc0f4ba9e 100644
---- a/drivers/mmc/host/sdhci-of-aspeed.c
-+++ b/drivers/mmc/host/sdhci-of-aspeed.c
-@@ -68,7 +68,7 @@ static void aspeed_sdhci_set_clock(struct sdhci_host *host, unsigned int clock)
- 	if (WARN_ON(clock > host->max_clk))
- 		clock = host->max_clk;
- 
--	for (div = 1; div < 256; div *= 2) {
-+	for (div = 2; div < 256; div *= 2) {
- 		if ((parent / div) <= clock)
- 			break;
- 	}
--- 
-2.24.0
+Indeed.
 
+> Apart from that I plan to give this a go on some NXP chips. Will keep
+> you updated.
+> 
+
+Thanks, I'm expecting that all you need is the first patch in the series
+and some impl specific cfg_probe that sets up (or read back) the
+relevant SMRs and mark them valid.
+
+Regards,
+Bjorn
+
+> Thanks a lot Bjorn.
+> 
+
+> ---
+> Best Regards, Laurentiu
