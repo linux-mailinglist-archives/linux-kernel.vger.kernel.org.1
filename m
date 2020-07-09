@@ -2,119 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23DC121A904
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 22:31:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9415621A90A
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 22:32:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726506AbgGIUbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 16:31:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47304 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726183AbgGIUbm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 16:31:42 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C471DC08C5CE;
-        Thu,  9 Jul 2020 13:31:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=Koqd6kCw0kFF9cQ+B8QeO0El7U/kaG6Z8/n9tod5TOg=; b=IvgeTeN2x0f/Xu41dh0Jtt43E
-        ab7TM2+A2KH+t+kIXz6OB22IIg/CDFop78jPS70LfusrdJQfLrVK4K42mg+fqKmbW0T9VqwasG526
-        BC/ZzctqVt3zMj2EJCYZLtw6PUoA2ip4gRkjBxil/FBOrz0Rm3UI7HhzuJzGm8sqItDWz8L1/6jIz
-        Jgt8Wh5eSbPHuNaLc0Yz1Uov0lIcnS5XcJMEZSVfozmjzoRi9rLN3XRX20ttGRmC/Skh7UMtA3Ndv
-        81gTPavt8z8Eokby2ne6SXDkBRjmNPYNAtgRCbmF8Yy7fSdvprCxMKclacB/Zqx2WT7uMZvaOZRm7
-        cH2Ipjsyg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:37450)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1jtdCj-0000xj-W6; Thu, 09 Jul 2020 21:31:38 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1jtdCg-0002Xp-Gd; Thu, 09 Jul 2020 21:31:34 +0100
-Date:   Thu, 9 Jul 2020 21:31:34 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Frank Wunderlich <frank-w@public-files.de>, netdev@vger.kernel.org,
-        Sean Wang <sean.wang@mediatek.com>,
-        linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        =?iso-8859-1?Q?Ren=E9?= van Dorst <opensource@vdorst.com>,
-        linux-mediatek@lists.infradead.org,
-        John Crispin <john@phrozen.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        linux-arm-kernel@lists.infradead.org, Felix Fietkau <nbd@nbd.name>
-Subject: Re: [PATCH v2] net: ethernet: mtk_eth_soc: fix mtu warning
-Message-ID: <20200709203134.GI1551@shell.armlinux.org.uk>
-References: <20200709055742.3425-1-frank-w@public-files.de>
- <20200709134115.GK928075@lunn.ch>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200709134115.GK928075@lunn.ch>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1726624AbgGIUcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 16:32:11 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:41004 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726213AbgGIUcK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 16:32:10 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1594326729; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=TrU8hNTYwa4YzIPNRxLRTqakkfcBXoZ+ZLYX4CKeZd8=; b=BYwtosGrCnesA4msGUNU8a079UNnwEX9RnKqHoshkmG4ncy/t+H9ouZK3D5R8xlQQAK3qIl8
+ boFPdjKsfmd7254ZNcqssu9Ix7CDzblwxDYlZJUQ5eXwzjVI6PTjbr033XjweDcazIDd3he9
+ sLqpNfZOHJPSoh8U8arxTw0R2oE=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 5f077ec878e7807b5e5de9c9 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 09 Jul 2020 20:32:08
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 70E77C433C8; Thu,  9 Jul 2020 20:32:07 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from rishabhb-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rishabhb)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E5DCDC433CA;
+        Thu,  9 Jul 2020 20:32:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E5DCDC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rishabhb@codeaurora.org
+From:   Rishabh Bhatnagar <rishabhb@codeaurora.org>
+To:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     bjorn.andersson@linaro.org, mathieu.poirier@linaro.org,
+        tsoni@codeaurora.org, psodagud@codeaurora.org,
+        sidgup@codeaurora.org, Rishabh Bhatnagar <rishabhb@codeaurora.org>
+Subject: [PATCH v7 0/4] Extend coredump functionality
+Date:   Thu,  9 Jul 2020 13:31:52 -0700
+Message-Id: <1594326716-15474-1-git-send-email-rishabhb@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 09, 2020 at 03:41:15PM +0200, Andrew Lunn wrote:
-> On Thu, Jul 09, 2020 at 07:57:42AM +0200, Frank Wunderlich wrote:
-> > From: René van Dorst <opensource@vdorst.com>
-> > 
-> > in recent Kernel-Versions there are warnings about incorrect MTU-Size
-> > like these:
-> > 
-> > mt7530 mdio-bus:00: nonfatal error -95 setting MTU on port x
-> > eth0: mtu greater than device maximum
-> > mtk_soc_eth 1b100000.ethernet eth0: error -22 setting MTU to include DSA overhead
-> > 
-> > Fixes: bfcb813203e6 ("net: dsa: configure the MTU for switch ports")
-> > Fixes: 72579e14a1d3 ("net: dsa: don't fail to probe if we couldn't set the MTU")
-> > Fixes: 7a4c53bee332 ("net: report invalid mtu value via netlink extack")
-> > Signed-off-by: René van Dorst <opensource@vdorst.com>
-> > Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
-> > ---
-> > changes in v2:
-> >   Fixes: tag show 12-chars of sha1 and moved above other tags
-> > ---
-> >  drivers/net/ethernet/mediatek/mtk_eth_soc.c | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> > 
-> > diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.c b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-> > index 85735d32ecb0..00e3d70f7d07 100644
-> > --- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-> > +++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-> > @@ -2891,6 +2891,10 @@ static int mtk_add_mac(struct mtk_eth *eth, struct device_node *np)
-> >  	eth->netdev[id]->irq = eth->irq[0];
-> >  	eth->netdev[id]->dev.of_node = np;
-> > 
-> > +	eth->netdev[id]->mtu = 1536;
-> 
-> Hi Frank
-> 
-> Don't change to MTU from the default. Anybody using this interface for
-> non-DSA traffic expects the default MTU. DSA will change it as needed.
-> 
-> > +	eth->netdev[id]->min_mtu = ETH_MIN_MTU;
-> 
-> No need to set the minimum. ether_setup() will initialize it.
-> 
-> > +	eth->netdev[id]->max_mtu = 1536;
-> 
-> I assume this is enough to make the DSA warning go away, but it is the
-> true max? I have a similar patch for the FEC driver which i should
-> post sometime. Reviewing the FEC code and after some testing, i found
-> the real max was 2K - 64.
+This patch series moves the coredump functionality to a separate
+file and adds "inline" coredump feature. Inline coredump directly
+copies segments from device memory during coredump to userspace.
+This avoids extra memory usage at the cost of speed. Recovery is
+stalled until all data is read by userspace.
+This patchset also includes Sibi Sankar's patch to deal with chunk sizes
+lesser than segment size to make inline coredump work for modem.
+https://patchwork.kernel.org/patch/11637157/
 
-Are there any plans to solve these warnings for Marvell 88e6xxx DSA ports?
+Changelog:
+
+v7 -> v6:
+- Include Sibi's patch as part of this patchset
+- Add a linefeed when displaying coredump conf in debugfs
+- Fix a typo in remoteproc.h
+
+v6 -> v5:
+- Fix unsigned comaprison with negative bug found on gcc-9.3.0
+
+v5 -> v4:
+- Rebase on top of linux-next
+- Modify qcom_q6v5_mss driver as a result of rebasing on latest tip.
+
+v4 -> v3:
+- Write a helper function to copy segment memory for every dump format
+- Change segment dump fn to add offset and size adn covert mss driver
+
+v3 -> v2:
+- Move entire coredump functionality to remoteproc_coredump.c
+- Modify rproc_coredump to perform dump according to conf. set by userspace
+- Move the userspace configuration to debugfs from sysfs.
+- Keep the default coredump implementation as is
+
+v2 -> v1:
+- Introduce new file for coredump.
+- Add userspace sysfs configuration for dump type.
+
+
+Rishabh Bhatnagar (3):
+  remoteproc: Move coredump functionality to a new file
+  remoteproc: Add inline coredump functionality
+  remoteproc: Add coredump debugfs entry
+
+Sibi Sankar (1):
+  remoteproc: qcom_q6v5_mss: Replace mask based tracking with size
+
+ drivers/remoteproc/Makefile              |   1 +
+ drivers/remoteproc/qcom_q6v5_mss.c       |  22 +--
+ drivers/remoteproc/remoteproc_core.c     | 191 ------------------
+ drivers/remoteproc/remoteproc_coredump.c | 326 +++++++++++++++++++++++++++++++
+ drivers/remoteproc/remoteproc_debugfs.c  |  90 +++++++++
+ drivers/remoteproc/remoteproc_internal.h |   4 +
+ include/linux/remoteproc.h               |  21 +-
+ 7 files changed, 451 insertions(+), 204 deletions(-)
+ create mode 100644 drivers/remoteproc/remoteproc_coredump.c
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
