@@ -2,221 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E16C21A971
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 22:59:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52C6821A979
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 23:01:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726449AbgGIU7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 16:59:19 -0400
-Received: from mail-io1-f67.google.com ([209.85.166.67]:36025 "EHLO
-        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726193AbgGIU7S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 16:59:18 -0400
-Received: by mail-io1-f67.google.com with SMTP id y2so3825941ioy.3;
-        Thu, 09 Jul 2020 13:59:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=59KG2c36B73L5TCxEaW5iyr7aT9GnhJz2toja/ityzo=;
-        b=A1DDDAX8Of3VAYBaf5twc9L3XAzTOwb8mXv8uAzBCMGPIAuz7djXDfiiweblJOExEA
-         kPUbdFROFs7zMbzXJQRskMPGTuo9r2RYTePoC938ZqEzIj9e2yPYJucnQKWtzOJ5Rs0e
-         r14HuxWiZ/Kvg95r0FACgJQCkKCt03d/xUd/omx8m4k+pmMB17b4idrkVJzi+qHXvTji
-         m3DX6qgsSBc5y2wqsxXLT7SP0EdbovAt9QfUZM9jYqMSd5Jfc4Bno6Ug+DKS9EDij/w2
-         m7j81Q8Di84WXWOngb/VaQ5Gt4dx50TLwHrdMeUUCfod2M/5sO/zliVjNPU81l8iuxVi
-         ScdA==
-X-Gm-Message-State: AOAM5337FGLQV5VppFRuB+Qpjt6U9OCctpV1r4plx0bIYI1p6K69xziu
-        +XjP7a/VfPcTszb9Go906g==
-X-Google-Smtp-Source: ABdhPJz1XtipgZZTRvbo4upYYiZEu374WcNQ5YcX9yvzP6F343WQAYYz7MPsvmWiJt7sYOukO69ulw==
-X-Received: by 2002:a05:6638:2591:: with SMTP id s17mr23248116jat.23.1594328357549;
-        Thu, 09 Jul 2020 13:59:17 -0700 (PDT)
-Received: from xps15 ([64.188.179.254])
-        by smtp.gmail.com with ESMTPSA id h11sm2372624ilh.69.2020.07.09.13.59.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jul 2020 13:59:16 -0700 (PDT)
-Received: (nullmailer pid 875925 invoked by uid 1000);
-        Thu, 09 Jul 2020 20:59:15 -0000
-Date:   Thu, 9 Jul 2020 14:59:15 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     EastL Lee <EastL.Lee@mediatek.com>
-Cc:     Sean Wang <sean.wang@mediatek.com>, vkoul@kernel.org,
-        mark.rutland@arm.com, matthias.bgg@gmail.com,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
-        wsd_upstream@mediatek.com, cc.hwang@mediatek.com
-Subject: Re: [PATCH v6 1/4] dt-bindings: dmaengine: Add MediaTek
- Command-Queue DMA controller bindings
-Message-ID: <20200709205915.GA865123@bogus>
-References: <1593673564-4425-1-git-send-email-EastL.Lee@mediatek.com>
- <1593673564-4425-2-git-send-email-EastL.Lee@mediatek.com>
+        id S1726324AbgGIVBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 17:01:19 -0400
+Received: from cmta17.telus.net ([209.171.16.90]:53813 "EHLO cmta17.telus.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726196AbgGIVBS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 17:01:18 -0400
+Received: from dougxps ([173.180.45.4])
+        by cmsmtp with SMTP
+        id tdfMjniArYgvrtdfNjUXWn; Thu, 09 Jul 2020 15:01:15 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=telus.net; s=neo;
+        t=1594328475; bh=DO1Bu4NVVoKXFJHl4WRTu15YNf8zO2Urudde2JxqiC8=;
+        h=From:To:Cc:References:In-Reply-To:Subject:Date;
+        b=C4zOU/O3yx44XMRv35z8PHjCaLmnD5r7pb88Sto4Ohe6KkEz+xdWC0tEfu59EuTZ4
+         +diYDwHvSuLSOZCytzGQxWM0mF9jSqYtcoks+x+nmXiwEEAQ2cEYrNlMknVAp//RGw
+         O0ovoppc+NTt5gxX33LQvy8TD/HqBdSFsfpc6pr8bZpZjZd6sKyqIwi5YfG5x2ta/u
+         mMG9in4vpqPNdtc2fj4w6l4KXR0G2t7AeI6wQs5ZGCGi4ojlHK6MLN0fXIADAB3wIs
+         /HZE1e7nXJswRBAiFfn8/a6zj7L1BrACM5Ilawc27Gvbw+F8rKm2qAtz93n8eK5CjA
+         gx/hcxJyquWJg==
+X-Telus-Authed: none
+X-Authority-Analysis: v=2.3 cv=MIQeZ/Rl c=1 sm=1 tr=0
+ a=zJWegnE7BH9C0Gl4FFgQyA==:117 a=zJWegnE7BH9C0Gl4FFgQyA==:17
+ a=Pyq9K9CWowscuQLKlpiwfMBGOR0=:19 a=kj9zAlcOel0A:10 a=QyXUC8HyAAAA:8
+ a=zMdRSeC2V0WUCyk-5DIA:9 a=7Zwj6sZBwVKJAoWSPKxL6X1jA+E=:19 a=CjuIK1q_8ugA:10
+From:   "Doug Smythies" <dsmythies@telus.net>
+To:     "'Rafael J. Wysocki'" <rjw@rjwysocki.net>
+Cc:     "'Srinivas Pandruvada'" <srinivas.pandruvada@linux.intel.com>,
+        "'LKML'" <linux-kernel@vger.kernel.org>,
+        "'Rafael J. Wysocki'" <rafael@kernel.org>,
+        "'Viresh Kumar'" <viresh.kumar@linaro.org>,
+        "'Giovanni Gherdovich'" <ggherdovich@suse.cz>,
+        "'Linux PM'" <linux-pm@vger.kernel.org>
+References: <2016232.ihCVsphvri@kreacher> <2988949.NgUrjYMkJj@kreacher>
+In-Reply-To: <2988949.NgUrjYMkJj@kreacher>
+Subject: RE: [PATCH 2/2] cpufreq: intel_pstate: Use passive mode by default without HWP
+Date:   Thu, 9 Jul 2020 14:01:11 -0700
+Message-ID: <000801d65634$14f0ecb0$3ed2c610$@net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1593673564-4425-2-git-send-email-EastL.Lee@mediatek.com>
+Content-Type: text/plain;
+        charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Office Outlook 12.0
+Content-Language: en-ca
+Thread-Index: AdYFAJargBggJ0TwR7qfhutpuszfMhRKzmYA
+X-CMAE-Envelope: MS4wfFH9BkYFuVxjO56y8+N3Ib/kkgigvoFuwtSboGqrttZaQE488zlSPJzRQlPGcCGGuMCEUEQKYGj6fkyXedT/ukZxD254yCs1DavUvyWAy2689+fu9Lgj
+ m3xHlM7CKmH1BAylD5dLGXco8HrI9ri/eQd1b1zPmAjeIOqOUAJU7hO+iORuwlvSjdcPLFCtRjklPfgXSlzm94m+FdJatqbEcKqXD3WsKrBpI/DjJoDGZY+M
+ bD8FK+YAn8mU4dat+RRr0zNVN6hgJco1iyMN5G2SZT1n24wpJe1+0kMDowY0EzTPPHUAbCrb5DCzsr+QM889C5yOuQMMYcQKgtPPv1MKgaLmY6EIYDHwuL6C
+ ubMbIIqg5MmPsCX05i0anDYokXSPiA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 02, 2020 at 03:06:01PM +0800, EastL Lee wrote:
-> Document the devicetree bindings for MediaTek Command-Queue DMA controller
-> which could be found on MT6779 SoC or other similar Mediatek SoCs.
+Hi Rafael,
+
+As you may or may not recall, I am attempting to untangle
+and separate multiple compounding issues around the
+intel_pstate driver and HWP (or not).
+
+Until everything is figured out, I am using the following rules:
+
+. never use x86_energy_perf_policy.
+. For HWP disabled: never change from active to passive or via versa, but rather do it via boot.
+. after boot always check and reset the various power limit log bits that are set.
+. never compile the kernel (well, until after any tests), which will set those bits again.
+. never run prime95 high heat torture test, which will set those bits again.
+. try to never do anything else that will set those bits again.
+
+On 2020.03.28 05:58 Rafael J. Wysocki wrote:
 > 
-> Signed-off-by: EastL Lee <EastL.Lee@mediatek.com>
+> From: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+> 
+> After recent changes allowing scale-invariant utilization to be
+> used on x86, the schedutil governor on top of intel_pstate in the
+> passive mode should be on par with (or better than) the active mode
+> "powersave" algorithm of intel_pstate on systems in which
+> hardware-managed P-states (HWP) are not used, so it should not be
+> necessary to use the internal scaling algorithm in those cases.
+> 
+> Accordingly, modify intel_pstate to start in the passive mode by
+> default if the processor at hand does not support HWP of if the driver
+> is requested to avoid using HWP through the kernel command line.
+> 
+> Among other things, that will allow utilization clamps and the
+> support for RT/DL tasks in the schedutil governor to be utilized on
+> systems in which intel_pstate is used.
+> 
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 > ---
->  .../devicetree/bindings/dma/mtk-cqdma.yaml         | 113 +++++++++++++++++++++
->  1 file changed, 113 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/dma/mtk-cqdma.yaml
+>  Documentation/admin-guide/pm/intel_pstate.rst | 32 ++++++++++++++++-----------
+>  drivers/cpufreq/intel_pstate.c                |  3 ++-
+>  2 files changed, 21 insertions(+), 14 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/dma/mtk-cqdma.yaml b/Documentation/devicetree/bindings/dma/mtk-cqdma.yaml
-> new file mode 100644
-> index 0000000..83ed742
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/dma/mtk-cqdma.yaml
-> @@ -0,0 +1,113 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/dma/mtk-cqdma.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: MediaTek Command-Queue DMA controller Device Tree Binding
-> +
-> +maintainers:
-> +  - EastL Lee <EastL.Lee@mediatek.com>
-> +
-> +description:
-> +  MediaTek Command-Queue DMA controller (CQDMA) on Mediatek SoC
-> +  is dedicated to memory-to-memory transfer through queue based
-> +  descriptor management.
-> +
-> +allOf:
-> +  - $ref: "dma-controller.yaml#"
-> +
-> +properties:
-> +  "#dma-cells":
-> +    minimum: 1
-> +    maximum: 255
-> +    description:
-> +      Used to provide DMA controller specific information.
+> diff --git a/Documentation/admin-guide/pm/intel_pstate.rst b/Documentation/admin-
+> guide/pm/intel_pstate.rst
+> index ad392f3aee06..39d80bc29ccd 100644
+> --- a/Documentation/admin-guide/pm/intel_pstate.rst
+> +++ b/Documentation/admin-guide/pm/intel_pstate.rst
+> @@ -62,9 +62,10 @@ on the capabilities of the processor.
+>  Active Mode
+>  -----------
+> 
+> -This is the default operation mode of ``intel_pstate``.  If it works in this
+> -mode, the ``scaling_driver`` policy attribute in ``sysfs`` for all ``CPUFreq``
+> -policies contains the string "intel_pstate".
+> +This is the default operation mode of ``intel_pstate`` for processors with
+> +hardware-managed P-states (HWP) support.  If it works in this mode, the
+> +``scaling_driver`` policy attribute in ``sysfs`` for all ``CPUFreq`` policies
+> +contains the string "intel_pstate".
+> 
+>  In this mode the driver bypasses the scaling governors layer of ``CPUFreq`` and
+>  provides its own scaling algorithms for P-state selection.  Those algorithms
+> @@ -138,12 +139,13 @@ internal P-state selection logic to be less performance-focused.
+>  Active Mode Without HWP
+>  ~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> -This is the default operation mode for processors that do not support the HWP
+> -feature.  It also is used by default with the ``intel_pstate=no_hwp`` argument
+> -in the kernel command line.  However, in this mode ``intel_pstate`` may refuse
+> -to work with the given processor if it does not recognize it.  [Note that
+> -``intel_pstate`` will never refuse to work with any processor with the HWP
+> -feature enabled.]
+> +This operation mode is optional for processors that do not support the HWP
+> +feature or when the ``intel_pstate=no_hwp`` argument is passed to the kernel in
+> +the command line.  The active mode is used in those cases if the
+> +``intel_pstate=active`` argument is passed to the kernel in the command line.
 
-No, for a specific binding like this, it should be 1 defined value.
+???
+I can not see anywhere in the code where the kernel command line argument
+"intel_pstate=active" is dealt with.
 
-> +
-> +  compatible:
-> +    oneOf:
-> +      - const: mediatek,mt6765-cqdma
-> +      - const: mediatek,mt6779-cqdma
-> +
-> +  reg:
-> +    minItems: 1
-> +    maxItems: 5
-> +    description:
-> +        A base address of MediaTek Command-Queue DMA controller,
-> +        a channel will have a set of base address.
-> +
-> +  interrupts:
-> +    minItems: 1
-> +    maxItems: 5
-> +    description:
-> +        A interrupt number of MediaTek Command-Queue DMA controller,
-> +        one interrupt number per dma-channels.
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  clock-names:
-> +    const: cqdma
-> +
-> +  dma-channel-mask:
-> +    $ref: /schemas/types.yaml#definitions/uint32
+> +In this mode ``intel_pstate`` may refuse to work with processors that are not
+> +recognized by it.  [Note that ``intel_pstate`` will never refuse to work with
+> +any processor with the HWP feature enabled.]
+> 
+>  In this mode ``intel_pstate`` registers utilization update callbacks with the
+>  CPU scheduler in order to run a P-state selection algorithm, either
+> @@ -188,10 +190,14 @@ is not set.
+>  Passive Mode
+>  ------------
+> 
+> -This mode is used if the ``intel_pstate=passive`` argument is passed to the
+> -kernel in the command line (it implies the ``intel_pstate=no_hwp`` setting too).
+> -Like in the active mode without HWP support, in this mode ``intel_pstate`` may
+> -refuse to work with the given processor if it does not recognize it.
+> +This is the default operation mode of ``intel_pstate`` for processors without
+> +hardware-managed P-states (HWP) support.  It is always used if the
+> +``intel_pstate=passive`` argument is passed to the kernel in the command line
+> +regardless of whether or not the given processor supports HWP.  [Note that the
+> +``intel_pstate=no_hwp`` setting implies ``intel_pstate=passive`` if it is used
+> +without ``intel_pstate=active``.]
 
-Alreay has a type, don't redefine it here.
+??? as above. I can not see where intel_pstate=active is dealt with in 
+the code.
 
-> +    description:
-> +       For DMA capability, We will know the addressing capability of
-> +       MediaTek Command-Queue DMA controller through dma-channel-mask.
+> Like in the active mode without HWP support,
+> +in this mode ``intel_pstate`` may refuse to work with processors that are not
+> +recognized by it.
+> 
+>  If the driver works in this mode, the ``scaling_driver`` policy attribute in
+>  ``sysfs`` for all ``CPUFreq`` policies contains the string "intel_cpufreq".
+> diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
+> index d2297839374d..b24a5c5ec4f9 100644
+> --- a/drivers/cpufreq/intel_pstate.c
+> +++ b/drivers/cpufreq/intel_pstate.c
+> @@ -2769,6 +2769,8 @@ static int __init intel_pstate_init(void)
+>  		pr_info("Invalid MSRs\n");
+>  		return -ENODEV;
+>  	}
+> +	/* Without HWP start in the passive mode. */
+> +	default_driver = &intel_cpufreq;
+> 
+>  hwp_cpu_matched:
+>  	/*
+> @@ -2814,7 +2816,6 @@ static int __init intel_pstate_setup(char *str)
+>  	if (!strcmp(str, "disable")) {
+>  		no_load = 1;
+>  	} else if (!strcmp(str, "passive")) {
+> -		pr_info("Passive mode enabled\n");
+>  		default_driver = &intel_cpufreq;
+>  		no_hwp = 1;
+>  	}
+> --
+> 2.16.4
 
-This sounds like the kernel's DMA masks which is not what this property 
-is.
+Example 1: i5-9600k (hwp capable) (kernel 5.8-rc4):
 
-> +    items:
-> +      minItems: 1
-> +      maxItems: 63
+Grub:
+GRUB_CMDLINE_LINUX_DEFAULT="ipv6.disable=1 consoleblank=450 intel_pstate=active intel_pstate=no_hwp cpuidle_sysfs_switch
+cpuidle.governor=teo"
 
-An array of 63 elements?
+/proc/cmdline:
+BOOT_IMAGE=/boot/vmlinuz-5.8.0-rc4-stock root=UUID=0ac356c1-caa9-4c2e-8229-4408bd998dbd ro ipv6.disable=1 consoleblank=450
+intel_pstate=active intel_pstate=no_hwp cpuidle_sysfs_switch cpuidle.governor=teo
 
-I think you want:
+Result:
 
-minimum: 1
-maximum: 63
+doug@s18:~$ grep . /sys/devices/system/cpu/cpu*/cpufreq/scaling_driver
+/sys/devices/system/cpu/cpu0/cpufreq/scaling_driver:intel_cpufreq
+/sys/devices/system/cpu/cpu1/cpufreq/scaling_driver:intel_cpufreq
+/sys/devices/system/cpu/cpu2/cpufreq/scaling_driver:intel_cpufreq
+/sys/devices/system/cpu/cpu3/cpufreq/scaling_driver:intel_cpufreq
+/sys/devices/system/cpu/cpu4/cpufreq/scaling_driver:intel_cpufreq
+/sys/devices/system/cpu/cpu5/cpufreq/scaling_driver:intel_cpufreq
 
-Or:
+Example 2: i7-2600k (does not have hwp) (kernel 5.8-rc1)
 
-enum: [ 1, 3, 7, 0xf, 0x1f, 0x3f ]
+Grub:
+GRUB_CMDLINE_LINUX_DEFAULT="ipv6.disable=1 consoleblank=300 intel_pstate=active cpuidle_sysfs_switch cpuidle.governor=teo"
 
-(Though if this works, then just 'dma-channels' is enough.)
+/proc/cmdline:
+BOOT_IMAGE=/boot/vmlinuz-5.8.0-rc1-stock root=UUID=bcbc624b-892b-46ca-9e9e-102daf644170 ro ipv6.disable=1 consoleblank=300
+intel_pstate=active cpuidle_sysfs_switch cpuidle.governor=teo
 
-> +
-> +  dma-channels:
-> +    $ref: /schemas/types.yaml#definitions/uint32
-> +    description:
-> +      Number of DMA channels supported by MediaTek Command-Queue DMA
-> +      controller, support up to five.
+Result:
 
-Is it 5 or 6 channels? You're off by one somewhere.
+doug@s15:~$ grep . /sys/devices/system/cpu/cpu*/cpufreq/scaling_driver
+/sys/devices/system/cpu/cpu0/cpufreq/scaling_driver:intel_cpufreq
+/sys/devices/system/cpu/cpu1/cpufreq/scaling_driver:intel_cpufreq
+/sys/devices/system/cpu/cpu2/cpufreq/scaling_driver:intel_cpufreq
+/sys/devices/system/cpu/cpu3/cpufreq/scaling_driver:intel_cpufreq
+/sys/devices/system/cpu/cpu4/cpufreq/scaling_driver:intel_cpufreq
+/sys/devices/system/cpu/cpu5/cpufreq/scaling_driver:intel_cpufreq
+/sys/devices/system/cpu/cpu6/cpufreq/scaling_driver:intel_cpufreq
+/sys/devices/system/cpu/cpu7/cpufreq/scaling_driver:intel_cpufreq
 
-> +    items:
-> +      minItems: 1
-> +      maxItems: 5
-> +
-> +  dma-requests:
-> +    $ref: /schemas/types.yaml#definitions/uint32
-> +    description:
-> +      Number of DMA request (virtual channel) supported by MediaTek
-> +      Command-Queue DMA controller, support up to 32.
-> +    items:
-> +      minItems: 1
-> +      maxItems: 32
+... Doug
 
-You are describing how many elements in an array and this is a scalar.
 
-> +
-> +required:
-> +  - "#dma-cells"
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - clocks
-> +  - clock-names
-> +  - dma-channel-mask
-> +  - dma-channels
-> +  - dma-requests
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    #include <dt-bindings/clock/mt6779-clk.h>
-> +    cqdma: dma-controller@10212000 {
-> +        compatible = "mediatek,mt6779-cqdma";
-> +        reg = <0x10212000 0x80>,
-> +            <0x10212080 0x80>,
-> +            <0x10212100 0x80>;
-> +        interrupts = <GIC_SPI 139 IRQ_TYPE_LEVEL_LOW>,
-> +            <GIC_SPI 140 IRQ_TYPE_LEVEL_LOW>,
-> +            <GIC_SPI 141 IRQ_TYPE_LEVEL_LOW>;
-> +        clocks = <&infracfg_ao CLK_INFRA_CQ_DMA>;
-> +        clock-names = "cqdma";
-> +        dma-channel-mask = <63>;
-> +        dma-channels = <3>;
-> +        dma-requests = <32>;
-> +        #dma-cells = <1>;
-> +    };
-> +
-> +...
-> -- 
-> 1.9.1
