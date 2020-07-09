@@ -2,135 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96D3721AB5B
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 01:19:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67ED221AB29
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 01:04:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726777AbgGIXTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 19:19:20 -0400
-Received: from gateway33.websitewelcome.com ([192.185.145.239]:29814 "EHLO
-        gateway33.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726222AbgGIXTT (ORCPT
+        id S1726821AbgGIXEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 19:04:13 -0400
+Received: from mail-il1-f193.google.com ([209.85.166.193]:39997 "EHLO
+        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726482AbgGIXEN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 19:19:19 -0400
-X-Greylist: delayed 1274 seconds by postgrey-1.27 at vger.kernel.org; Thu, 09 Jul 2020 19:19:19 EDT
-Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
-        by gateway33.websitewelcome.com (Postfix) with ESMTP id A221F610F3
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 17:58:03 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id tfURj2rJLhmVTtfURjdMIc; Thu, 09 Jul 2020 17:58:03 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=+pLQSi4gSGFUZLAlhOhXhgkdvPyTfhNDYAomd0BkvtI=; b=zyd/XYwvTPFJvdpHyV4hpYx92/
-        omLmpyj4MiJBhOrluRwYKaaYzBb3ME7ZBYwNwtvMWpo2wy/4Lj210Itmo8Gf9PvhrLoiXEECuTvuJ
-        0C+F+CWFSCmKbdJVhqA2DX2Atej1mI7vKqWgq8tO7di7fNSSMVq1rS23FpvoQWXYmPCBUsKRlW5eF
-        NCcK3Nt6l1Lb8X802BRchjduBMoQerm6r+2JfydlMhryopdkfEV6CmbvWd8/dZSK7R8JjEAvYug/6
-        tjFwdmXtedaObW6H2DHTDb/QHKRZDdSCFfg8VYTa7Vdz0OYpPkX9/7asMchAFzw8LC8qAfYds/nr1
-        OY+75wdQ==;
-Received: from [201.162.245.14] (port=59252 helo=[192.168.43.132])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1jtfUQ-000CKE-99; Thu, 09 Jul 2020 17:58:02 -0500
-Subject: Re: [PATCH] Documentation/security-bugs: Explain why plain text is
- preferred
-To:     Kees Cook <keescook@chromium.org>, Jonathan Corbet <corbet@lwn.net>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        security@kernel.org, linux-doc@vger.kernel.org,
+        Thu, 9 Jul 2020 19:04:13 -0400
+Received: by mail-il1-f193.google.com with SMTP id e18so3463849ilr.7;
+        Thu, 09 Jul 2020 16:04:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rtaAPiL9q7qGUDFYXyM+6i10yrbGLvC0ihaUk4rwR58=;
+        b=IUPfvhVmpRupGSuQi0URRb7gwpepEt3tL/v+4ZAxAb7nkUgusXljh94BkMM/GNma4j
+         LE5XyLYdPJ1iHJ64HYKeuLyRAD6Bu/81HaLJDLsqMtOyYYp4vB7aWMn548thGyfqndf6
+         84U1r5snIHkX7yUFiBRhGg/VVfZqSureM16nQBnh0ve2TJIo/QlwgPEgQOqALm/OIIjF
+         J6NM7it9AZXyQ7dMHpQgn67mE29JjprOurWj8hvDJvedd4CkzjnMBpZSalvLE3O6pWXx
+         6p7Wk2cHoXsqdL40fQVoKWZxAl+tH+rLlsIJC+xlKDIxowOkSfXY/jwxBTOFMtBeKoXt
+         dxXA==
+X-Gm-Message-State: AOAM530uWSLvgBvD5lCj7NxKOWgRSHJ++0Cn8o1iYDtA8wC5nn0WMVbt
+        5noZjc0q7NfQhGEXSL3TZkE1koV4Cg==
+X-Google-Smtp-Source: ABdhPJzthpu8MazWs5NHvqwNU1OpG2+x92i5Yk1GeUgmVLRH4IDXuVNaA4PDlsQ8jAajcfUwQBEy4Q==
+X-Received: by 2002:a92:da4c:: with SMTP id p12mr20547204ilq.142.1594335851875;
+        Thu, 09 Jul 2020 16:04:11 -0700 (PDT)
+Received: from xps15 ([64.188.179.254])
+        by smtp.gmail.com with ESMTPSA id g1sm2523394ilk.51.2020.07.09.16.04.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Jul 2020 16:04:11 -0700 (PDT)
+Received: (nullmailer pid 1057926 invoked by uid 1000);
+        Thu, 09 Jul 2020 23:04:10 -0000
+Date:   Thu, 9 Jul 2020 17:04:10 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Daniel Palmer <daniel@0x0f.com>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <202007091110.205DC6A9@keescook>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Autocrypt: addr=gustavo@embeddedor.com; keydata=
- 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
- AP7RWS474w==
-Message-ID: <7c8bb93c-89e5-cf56-76cd-1187b54d141d@embeddedor.com>
-Date:   Thu, 9 Jul 2020 18:03:32 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+Subject: Re: [PATCH v4 05/12] dt-bindings: arm: Add mstar YAML schema
+Message-ID: <20200709230410.GA1054276@bogus>
+References: <20200612130032.3905240-2-daniel@0x0f.com>
+ <20200616121525.1409790-1-daniel@0x0f.com>
+ <20200616121525.1409790-6-daniel@0x0f.com>
 MIME-Version: 1.0
-In-Reply-To: <202007091110.205DC6A9@keescook>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 201.162.245.14
-X-Source-L: No
-X-Exim-ID: 1jtfUQ-000CKE-99
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: ([192.168.43.132]) [201.162.245.14]:59252
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 6
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200616121525.1409790-6-daniel@0x0f.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 7/9/20 13:11, Kees Cook wrote:
-> The security contact list gets regular reports contained in archive
-> attachments. This tends to add some back-and-forth delay in dealing with
-> security reports since we have to ask for plain text, etc.
+On Tue, Jun 16, 2020 at 09:15:18PM +0900, Daniel Palmer wrote:
+> This adds some intial boards for Armv7 based mstar platforms.
 > 
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Daniel Palmer <daniel@0x0f.com>
+> ---
+>  .../devicetree/bindings/arm/mstar.yaml        | 34 +++++++++++++++++++
+>  MAINTAINERS                                   |  7 ++++
+>  2 files changed, 41 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/arm/mstar.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/mstar.yaml b/Documentation/devicetree/bindings/arm/mstar.yaml
+> new file mode 100644
+> index 000000000000..7bb91a546b5f
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/arm/mstar.yaml
+> @@ -0,0 +1,34 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/arm/mstar.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: MStar platforms device tree bindings
+> +
+> +maintainers:
+> +  - Daniel Palmer <daniel@thingy.jp>
+> +
+> +properties:
+> +  $nodename:
+> +    const: '/'
+> +  compatible:
+> +    oneOf:
+> +        # infinity boards
 
-Acked-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Make a 'description:' rather than a comment. With that,
 
-Thanks
---
-Gustavo
+Reviewed-by: Rob Herring <robh@kernel.org>
+
+> +        - items:
+> +          - enum:
+> +              - thingyjp,breadbee-crust # thingy.jp BreadBee Crust
+> +              - thingyjp,breadbee-crustx # thingy.jp BreadBee Crustx
+> +          - const: mstar,infinity
+> +
+> +        # infinity3 boards
+> +        - items:
+> +          - enum:
+> +              - thingyjp,breadbee # thingy.jp BreadBee
+> +          - const: mstar,infinity3
+> +
+> +        # mercury5 boards
+> +        - items:
+> +          - enum:
+> +              - 70mai,midrived08 # 70mai midrive d08
+> +          - const: mstar,mercury5
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 68f21d46614c..a8640c1c50cc 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -2117,6 +2117,13 @@ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+>  S:	Maintained
+>  F:	arch/arm/mach-pxa/mioa701.c
+>  
+> +ARM/MStar/Sigmastar Armv7 SoC support
+> +M:	Daniel Palmer <daniel@thingy.jp>
+> +L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+> +S:	Maintained
+> +W:	http://linux-chenxing.org/
+> +F:	Documentation/devicetree/bindings/arm/mstar.yaml
+> +
+>  ARM/NEC MOBILEPRO 900/c MACHINE SUPPORT
+>  M:	Michael Petchkovsky <mkpetch@internode.on.net>
+>  S:	Maintained
+> -- 
+> 2.27.0.rc0
+> 
