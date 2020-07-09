@@ -2,82 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 490A621A93D
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 22:43:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBB4D21A944
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 22:46:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726220AbgGIUnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 16:43:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50336 "EHLO mail.kernel.org"
+        id S1726396AbgGIUq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 16:46:27 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:55996 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726183AbgGIUnB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 16:43:01 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 97238207FC;
-        Thu,  9 Jul 2020 20:42:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594327380;
-        bh=s52lUYo3bCaqqtMG0EJGjLSYvwNj/90/L+8tCDOuFNs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jS2Q2zf5qYaEgh1qOYNnQjxQsQ2D65LKJq6jiXtVuJ/wNM02+5ECrdscx+n5xLr8s
-         acGssbXUqtql5ll6CJz3x78WoPYwIbTxEL7lq9QTGoL/4OJzSOZv8ngdfKK+jJyXO7
-         SDHXemoPBo0s3Oib9WwDEwJoYSsEndDs7btr12kw=
-Date:   Thu, 9 Jul 2020 21:42:56 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        security@kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Documentation/security-bugs: Explain why plain text is
- preferred
-Message-ID: <20200709204255.GA29288@willie-the-truck>
-References: <202007091110.205DC6A9@keescook>
+        id S1726183AbgGIUq0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 16:46:26 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1jtdQz-004NZS-6x; Thu, 09 Jul 2020 22:46:21 +0200
+Date:   Thu, 9 Jul 2020 22:46:21 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Frank Wunderlich <frank-w@public-files.de>, netdev@vger.kernel.org,
+        Sean Wang <sean.wang@mediatek.com>,
+        linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        =?iso-8859-1?Q?Ren=E9?= van Dorst <opensource@vdorst.com>,
+        linux-mediatek@lists.infradead.org,
+        John Crispin <john@phrozen.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        linux-arm-kernel@lists.infradead.org, Felix Fietkau <nbd@nbd.name>
+Subject: Re: [PATCH v2] net: ethernet: mtk_eth_soc: fix mtu warning
+Message-ID: <20200709204621.GC1037260@lunn.ch>
+References: <20200709055742.3425-1-frank-w@public-files.de>
+ <20200709134115.GK928075@lunn.ch>
+ <20200709203134.GI1551@shell.armlinux.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202007091110.205DC6A9@keescook>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200709203134.GI1551@shell.armlinux.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 09, 2020 at 11:11:30AM -0700, Kees Cook wrote:
-> The security contact list gets regular reports contained in archive
-> attachments. This tends to add some back-and-forth delay in dealing with
-> security reports since we have to ask for plain text, etc.
-> 
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->  Documentation/admin-guide/security-bugs.rst | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/admin-guide/security-bugs.rst b/Documentation/admin-guide/security-bugs.rst
-> index dcd6c93c7aac..c32eb786201c 100644
-> --- a/Documentation/admin-guide/security-bugs.rst
-> +++ b/Documentation/admin-guide/security-bugs.rst
-> @@ -21,11 +21,18 @@ understand and fix the security vulnerability.
->  
->  As it is with any bug, the more information provided the easier it
->  will be to diagnose and fix.  Please review the procedure outlined in
-> -admin-guide/reporting-bugs.rst if you are unclear about what
-> +:doc:`reporting-bugs` if you are unclear about what
->  information is helpful.  Any exploit code is very helpful and will not
->  be released without consent from the reporter unless it has already been
->  made public.
->  
-> +Please send plain text emails without attachments where possible.
-> +It is much harder to have a context-quoted discussion about a complex
-> +issue if all the details are hidden away in attachments.  Think of it like a
-> +:doc:`regular patch submission <../process/submitting-patches>`
-> +(even if you don't have a patch yet): describe the problem and impact, list
-> +reproduction steps, and follow it with a proposed fix, all in plain text.
-> +
+> Are there any plans to solve these warnings for Marvell 88e6xxx DSA ports?
 
-Acked-by: Will Deacon <will@kernel.org>
+Hi Russell
 
-Hopefully "plain text" implies unencrypted as much as it does "not html".
+I have patches for FEC + mv88e6xxx. I should post them.
 
-Will
+  Andrew
