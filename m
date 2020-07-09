@@ -2,191 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B3F6219633
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 04:22:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1A1E21962D
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 04:22:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726376AbgGICWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 22:22:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38118 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726347AbgGICWg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 22:22:36 -0400
-Received: from localhost.localdomain (unknown [42.120.72.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8AB8320774;
-        Thu,  9 Jul 2020 02:22:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594261355;
-        bh=RJdV2DIzToOcfncq3WiDl+ziCtwNxeU7mYZYni3MdsQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uXWqGr4ELi5OlcGU6yZzPiZKzHRftBItJhapNhl2oeL4aY3XK+iAwrt2VakejFnYU
-         8L7r54NxTPIzrbK379A7MiUcGh5cdoQ2Qli5yrODEf4mvFykL2+AELoM4aSbcapVdQ
-         TbyQZLQz9Sb2PMpwCb22XrtBVBkEFDd9WiDNPKvE=
-From:   guoren@kernel.org
-To:     palmerdabbelt@google.com, paul.walmsley@sifive.com,
-        anup@brainfault.org, greentime.hu@sifive.com, zong.li@sifive.com,
-        me@packi.ch, bjorn.topel@gmail.com, atish.patra@wdc.com,
-        penberg@kernel.org, mhiramat@kernel.org
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-csky@vger.kernel.org, guoren@kernel.org,
-        Guo Ren <guoren@linux.alibaba.com>
-Subject: [PATCH v2 6/6] riscv: Add KPROBES_ON_FTRACE supported
-Date:   Thu,  9 Jul 2020 02:19:14 +0000
-Message-Id: <1594261154-69745-7-git-send-email-guoren@kernel.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1594261154-69745-1-git-send-email-guoren@kernel.org>
-References: <1594261154-69745-1-git-send-email-guoren@kernel.org>
+        id S1726314AbgGICW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 22:22:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726082AbgGICW0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 22:22:26 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 224ECC08C5CE
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 19:22:26 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id r8so682212oij.5
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 19:22:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kali.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=DRE+AnxDTPA67RRsyblsDnMJP7GCjkB5PLB0tWpdoQE=;
+        b=nCRjBy6rCZO4tPcusHqvk8I+q8WHCq+AFq8rirKjSah3x23m7XVXGu+vNcFW92y9y7
+         xEhpHOfRp6MpBnynd88ykJtbWvcflOLOnsyQWNTRsMqI1CaqRtcF0EnByTqUhJ8sQ8NQ
+         o25Hd8Nz0k8StgQqM7qU9DzS36rrlze9fWOx6SKlUeKXvI5a0kTfjChPAzqA7AvGciKv
+         GV1xFmOHR6xgXdIVx1mk8jQIyTZIwiphkIwY+k0YJaOlWcUgURjjdHKT4iQhbD0KnWJZ
+         wqySEbUIeroyGlYU2KpcCkrPrhgA6L+7SFD12PLRIs1M8dz3Eyb+x19TnUz1EyYzSgpZ
+         pAUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=DRE+AnxDTPA67RRsyblsDnMJP7GCjkB5PLB0tWpdoQE=;
+        b=DIpvUKf5gxKYbOWmkxgkcnBCJZAR2g2Mmdxfp9cAH9dj1QmpiEivUdRKLb8tmZcCGW
+         Iv5pKw8kIoM60g8lha22kadnpcVqVhf7Uuwd3Ot3BEznEvS+jdrqQ59qfuVmIp+s6fW2
+         MIh408pDKomPKsHI58WVr18pgGnogORtkrj3jh8tQE+d5PlsL6IRx7kVT15F+y3b+laj
+         7kpr9Hl8iNj5hHLyu0gYohrnVLe3krBGr4HEp7An+jXrxnPs987BQmtrDDNDc+Qn8VE7
+         A27NlwArqxwqaQVbH8LGukAlSuQWlN2bbupGYQ5z9G7Gt6wkVAMnLhxqNaKJM5Tfv+oY
+         5yNg==
+X-Gm-Message-State: AOAM5303IL4di56JvURv3xYwJFhw5gzYTax1uEpg7AY6UVOzIG6o3WLY
+        te6kzr0EGsXZyn2+aW7GANBmTQ==
+X-Google-Smtp-Source: ABdhPJzZ3KYDuqCl2pBVz6ZKWW75HF5fDGCk1N4x5FT6TuFs7kUO2+NXH3DohJjIcwdkm+vq6Qbhew==
+X-Received: by 2002:aca:3307:: with SMTP id z7mr6660836oiz.171.1594261345319;
+        Wed, 08 Jul 2020 19:22:25 -0700 (PDT)
+Received: from Steevs-MBP.hackershack.net (cpe-173-175-113-3.satx.res.rr.com. [173.175.113.3])
+        by smtp.gmail.com with ESMTPSA id r19sm290459otn.28.2020.07.08.19.22.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Jul 2020 19:22:24 -0700 (PDT)
+Subject: Re: [PATCH v2] arm64: dts: qcom: sdm845: Add cpu OPP tables
+To:     Sibi Sankar <sibis@codeaurora.org>, bjorn.andersson@linaro.org
+Cc:     viresh.kumar@linaro.org, sboyd@kernel.org,
+        georgi.djakov@linaro.org, agross@kernel.org, robh+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, saravanak@google.com,
+        dianders@chromium.org, vincent.guittot@linaro.org,
+        amit.kucheria@linaro.org, robdclark@chromium.org
+References: <20200702204643.25785-1-sibis@codeaurora.org>
+From:   Steev Klimaszewski <steev@kali.org>
+Message-ID: <a61c5656-e21f-f071-1149-a3357fe2684e@kali.org>
+Date:   Wed, 8 Jul 2020 21:22:23 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20200702204643.25785-1-sibis@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guo Ren <guoren@linux.alibaba.com>
 
-This patch adds support for kprobes on ftrace call sites to avoids
-much of the overhead with regular kprobes. Try it with simple
-steps:
+On 7/2/20 3:46 PM, Sibi Sankar wrote:
+> Add OPP tables required to scale DDR/L3 per freq-domain on SDM845 SoCs.
+>
+> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+> ---
 
-1. Get _do_fork ftrace call site.
-Dump of assembler code for function _do_fork:
-   0xffffffe00020af64 <+0>:     addi    sp,sp,-128
-   0xffffffe00020af66 <+2>:     sd      s0,112(sp)
-   0xffffffe00020af68 <+4>:     sd      ra,120(sp)
-   0xffffffe00020af6a <+6>:     addi    s0,sp,128
-   0xffffffe00020af6c <+8>:     sd      s1,104(sp)
-   0xffffffe00020af6e <+10>:    sd      s2,96(sp)
-   0xffffffe00020af70 <+12>:    sd      s3,88(sp)
-   0xffffffe00020af72 <+14>:    sd      s4,80(sp)
-   0xffffffe00020af74 <+16>:    sd      s5,72(sp)
-   0xffffffe00020af76 <+18>:    sd      s6,64(sp)
-   0xffffffe00020af78 <+20>:    sd      s7,56(sp)
-   0xffffffe00020af7a <+22>:    mv      s4,a0
-   0xffffffe00020af7c <+24>:    mv      a0,ra
-   0xffffffe00020af7e <+26>:    nop	<<<<<<<< here!
-   0xffffffe00020af82 <+30>:    nop
-   0xffffffe00020af86 <+34>:    ld      s3,0(s4)
 
-2. Set _do_fork+26 as the kprobe.
-  echo 'p:myprobe _do_fork+26 dfd=%a0 filename=%a1 flags=%a2 mode=+4($stack)' > /sys/kernel/debug/tracing/kprobe_events
-  echo 1 > /sys/kernel/debug/tracing/events/kprobes/enable
-  cat /sys/kernel/debug/tracing/trace
-  tracer: nop
+Hi Sibi,
 
-  entries-in-buffer/entries-written: 3/3   #P:1
 
-                               _-----=> irqs-off
-                              / _----=> need-resched
-                             | / _---=> hardirq/softirq
-                             || / _--=> preempt-depth
-                             ||| /     delay
-            TASK-PID   CPU#  ||||    TIMESTAMP  FUNCTION
-               | |       |   ||||       |         |
-              sh-87    [000] ....   551.557031: myprobe: (_do_fork+0x1a/0x2e6) dfd=0xffffffe00020af7e filename=0xffffffe00020b34e flags=0xffffffe00101e7c0 mode=0x20af86ffffffe0
+Bjorn asked me to give this patch a whirl, and I have to say, I like it
+but I'm not sure if I'm missing a dependency somewhere...
 
-  cat /sys/kernel/debug/kprobes/list
-ffffffe00020af7e  k  _do_fork+0x1a    [FTRACE]
-                                       ^^^^^^
 
-Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Palmer Dabbelt <palmerdabbelt@google.com>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>
-Cc: Björn Töpel <bjorn.topel@gmail.com>
-Cc: Zong Li <zong.li@sifive.com>
-Cc: Pekka Enberg <penberg@kernel.org>
----
- arch/riscv/Kconfig                |  1 +
- arch/riscv/kernel/probes/Makefile |  1 +
- arch/riscv/kernel/probes/ftrace.c | 53 +++++++++++++++++++++++++++++++++++++++
- 3 files changed, 55 insertions(+)
- create mode 100644 arch/riscv/kernel/probes/ftrace.c
+In 5.8.0-rc4, I'm seeing a couple probe defers
 
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index f927a91..91bfc6c 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -58,6 +58,7 @@ config RISCV
- 	select HAVE_FUTEX_CMPXCHG if FUTEX
- 	select HAVE_GENERIC_VDSO if MMU && 64BIT
- 	select HAVE_KPROBES
-+	select HAVE_KPROBES_ON_FTRACE
- 	select HAVE_KRETPROBES
- 	select HAVE_PCI
- 	select HAVE_PERF_EVENTS
-diff --git a/arch/riscv/kernel/probes/Makefile b/arch/riscv/kernel/probes/Makefile
-index cb62991..7f0840d 100644
---- a/arch/riscv/kernel/probes/Makefile
-+++ b/arch/riscv/kernel/probes/Makefile
-@@ -1,5 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- obj-$(CONFIG_KPROBES)		+= kprobes.o decode-insn.o simulate-insn.o
- obj-$(CONFIG_KPROBES)		+= kprobes_trampoline.o
-+obj-$(CONFIG_KPROBES_ON_FTRACE)	+= ftrace.o
- obj-$(CONFIG_UPROBES)		+= uprobes.o decode-insn.o simulate-insn.o
- CFLAGS_REMOVE_simulate-insn.o = $(CC_FLAGS_FTRACE)
-diff --git a/arch/riscv/kernel/probes/ftrace.c b/arch/riscv/kernel/probes/ftrace.c
-new file mode 100644
-index 00000000..08fc1cc
---- /dev/null
-+++ b/arch/riscv/kernel/probes/ftrace.c
-@@ -0,0 +1,53 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/kprobes.h>
-+
-+/* Ftrace callback handler for kprobes -- called under preepmt disabed */
-+void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
-+			   struct ftrace_ops *ops, struct pt_regs *regs)
-+{
-+	struct kprobe *p;
-+	struct kprobe_ctlblk *kcb;
-+
-+	p = get_kprobe((kprobe_opcode_t *)ip);
-+	if (unlikely(!p) || kprobe_disabled(p))
-+		return;
-+
-+	kcb = get_kprobe_ctlblk();
-+	if (kprobe_running()) {
-+		kprobes_inc_nmissed_count(p);
-+	} else {
-+		/*
-+		 * The regs->epc hasn't been saved by SAVE_ALL in mcount-dyn.S
-+		 * So no need to resume it, just for kprobe handler.
-+		 */
-+		instruction_pointer_set(regs, ip);
-+		__this_cpu_write(current_kprobe, p);
-+		kcb->kprobe_status = KPROBE_HIT_ACTIVE;
-+		if (!p->pre_handler || !p->pre_handler(p, regs)) {
-+			/*
-+			 * Emulate singlestep (and also recover regs->pc)
-+			 * as if there is a nop
-+			 */
-+			instruction_pointer_set(regs,
-+				(unsigned long)p->addr + MCOUNT_INSN_SIZE);
-+			if (unlikely(p->post_handler)) {
-+				kcb->kprobe_status = KPROBE_HIT_SSDONE;
-+				p->post_handler(p, regs, 0);
-+			}
-+		}
-+
-+		/*
-+		 * If pre_handler returns !0, it changes regs->pc. We have to
-+		 * skip emulating post_handler.
-+		 */
-+		__this_cpu_write(current_kprobe, NULL);
-+	}
-+}
-+NOKPROBE_SYMBOL(kprobe_ftrace_handler);
-+
-+int arch_prepare_kprobe_ftrace(struct kprobe *p)
-+{
-+	p->ainsn.api.insn = NULL;
-+	return 0;
-+}
--- 
-2.7.4
+[    0.131341] cpu cpu0: _allocate_opp_table: Error finding interconnect
+paths: -517
+
+[    0.132694] cpu cpu4: _allocate_opp_table: Error finding interconnect
+paths: -517
+
+And then a bit later on,
+
+[    0.625837] cpu cpu0: failed to get clock: -2
+
+
+If these aren't anything to worry about, you can throw my Tested-by on
+
+Tested-by: Steev Klimaszewski <steev@kali.org>
 
