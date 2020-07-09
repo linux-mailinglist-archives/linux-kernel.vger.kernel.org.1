@@ -2,141 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D84A721A077
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 15:06:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB8F421A07C
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 15:08:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726606AbgGINGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 09:06:44 -0400
-Received: from foss.arm.com ([217.140.110.172]:57408 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726347AbgGINGn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 09:06:43 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ED4C01FB;
-        Thu,  9 Jul 2020 06:06:42 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B6F983FA00;
-        Thu,  9 Jul 2020 06:06:41 -0700 (PDT)
-References: <20200702144258.19326-1-vincent.guittot@linaro.org>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sched/fair: handle case of task_h_load() returning 0
-In-reply-to: <20200702144258.19326-1-vincent.guittot@linaro.org>
-Date:   Thu, 09 Jul 2020 14:06:35 +0100
-Message-ID: <jhjsge0ltwk.mognet@arm.com>
+        id S1726837AbgGINIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 09:08:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726817AbgGINID (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 09:08:03 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2B0DC061A0B
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 06:08:02 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id mn17so1092824pjb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 06:08:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7Arpvxm12PLtqyJPJz+S0I97EB/5x2ZsWFDQoUmCkco=;
+        b=fznGwjSiO3RaAqXL/JXdh3ChOLhq2OdVXhPfn64QRiA60KjRuareCLb2cQoytqMcEa
+         K9FobADVyXSHHVtQrGjKnEyF54vGaVnQclxT+GC94JjuxOkOv8clflw7elk67iWCkl3I
+         xNzRnbd9gVj0hlkJjZ8OPFFKz3QKZ+jw9bNLARoOmRwmqDLud4O2Szpwve+F+IH49+jj
+         B+bhJdHgplYVe4cKIz8jreKyT/R/otMuJZYANPs2w2YOy+OfUA/SmvpNaG0HbkLrDy93
+         DH8BrW1H7OD1Eg+rdJkh3HxPYDlYrC/UsA2hf8NJrUeroUnstJBiOdgL9U9jn1W6REX0
+         12vQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7Arpvxm12PLtqyJPJz+S0I97EB/5x2ZsWFDQoUmCkco=;
+        b=f0ISTgo6ZzQD+B5n1kUPRLhgXDS+HTvR9UGD4vfjUWMH9IeGVTsfovTUJGgKMnXMKO
+         tO+Zkp8A6mixIdHiG+IluJ86sMB0H+UoeKHY1xHg+G/bZgk0ZHdpCx1nYH7NccQO1JGm
+         icnspnVpLxpfAU2kE6fcoolRDoID/5jDrh68ZyRm8IQa8vkDiSwVh6xZUq41pHl6TvXk
+         Rq9/TL4RNNlQgReHygfGVrdolMKlVZjfZjgHfMmfaz6+0w4gNyu5BH6CxOGntz7q0Ake
+         ofNVpywaZsnXr+ibFU9mJbJdKgifZ/rFAsxNlDeiqYhuLR4+TFKMZOrsj8NZWH5NJadw
+         eZqg==
+X-Gm-Message-State: AOAM533oQFJpkMVp9sY0jCK7jkNrL3m+0moX46WVRADk71ACPY3C/bWJ
+        M1GZQo9jGbStNKC/cGL0GE0=
+X-Google-Smtp-Source: ABdhPJxg8dSvn+lh7WeNszbLKluvKCSn2H8HnmFZerTp+0tmvgQOf/pEWtRsUkDaMkbJcoIjLvChHA==
+X-Received: by 2002:a17:90a:1089:: with SMTP id c9mr15056098pja.180.1594300082504;
+        Thu, 09 Jul 2020 06:08:02 -0700 (PDT)
+Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
+        by smtp.gmail.com with ESMTPSA id 191sm2813150pfw.150.2020.07.09.06.08.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Jul 2020 06:08:01 -0700 (PDT)
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+X-Google-Original-From: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
+Date:   Thu, 9 Jul 2020 22:07:58 +0900
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     John Ogness <john.ogness@linutronix.de>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        kernel test robot <rong.a.chen@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Paul McKenney <paulmck@kernel.org>, kexec@lists.infradead.org,
+        linux-kernel@vger.kernel.org, lkp@lists.01.org
+Subject: Re: [printk] 18a2dc6982: ltp.kmsg01.fail
+Message-ID: <20200709130758.GB4380@jagdpanzerIV.localdomain>
+References: <20200707145932.8752-5-john.ogness@linutronix.de>
+ <20200709071411.GR3874@shao2-debian>
+ <20200709083323.GA572@jagdpanzerIV.localdomain>
+ <874kqhm1v8.fsf@jogness.linutronix.de>
+ <20200709105906.GC11164@alley>
+ <20200709111310.GD11164@alley>
+ <87zh89kkek.fsf@jogness.linutronix.de>
+ <20200709122448.GJ4751@alley>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200709122448.GJ4751@alley>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On (20/07/09 14:25), Petr Mladek wrote:
+> On Thu 2020-07-09 13:23:07, John Ogness wrote:
+> > On 2020-07-09, Petr Mladek <pmladek@suse.com> wrote:
+> > > I though more about it. IMHO, it will be better to modify
+> > > prb_first_seq() to do the same cycle as prb_next_seq()
+> > > and return seq number of the first valid entry.
+> > 
+> > Exactly!
+> > 
+> > Here is a patch that does just that. I added a prb_first_valid_seq()
+> > function and made prb_first_seq() static. (The ringbuffer still needs
+> > prb_first_seq() for itself.)
+> 
+> The fix looks fine to me:
 
-On 02/07/20 15:42, Vincent Guittot wrote:
-> task_h_load() can return 0 in some situations like running stress-ng
-> mmapfork, which forks thousands of threads, in a sched group on a 224 cores
-> system. The load balance doesn't handle this correctly because
-> env->imbalance never decreases and it will stop pulling tasks only after
-> reaching loop_max, which can be equal to the number of running tasks of
-> the cfs. Make sure that imbalance will be decreased by at least 1.
->
-> misfit task is the other feature that doesn't handle correctly such
-> situation although it's probably more difficult to face the problem
-> because of the smaller number of CPUs and running tasks on heterogenous
-> system.
->
-> We can't simply ensure that task_h_load() returns at least one because it
-> would imply to handle underrun in other places.
->
-> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+Yeah, looks right to me as well.
 
-I dug some more into this; if I got my math right, this can be reproduced
-with a single task group below the root. Forked tasks get max load, so this
-can be tried out with either tons of forks or tons of CPU hogs.
+> It means that we have two fixes on top of the original patchset. Could
+> you please send v5 with the two fixes integrated? I would just squash
+> them into the 4th patch.
 
-We need
+I'd prefer v5, if possible.
 
-  p->se.avg.load_avg * cfs_rq->h_load
-  -----------------------------------  < 1
-    cfs_rq_load_avg(cfs_rq) + 1
-
-Assuming homogeneous system with tasks spread out all over (no other tasks
-interfering), that should boil down to
-
-  1024 * (tg.shares / nr_cpus)
-  ---------------------------  < 1
-  1024 * (nr_tasks_on_cpu)
-
-IOW
-
-  tg.shares / nr_cpus < nr_tasks_on_cpu
-
-If we get tasks nicely spread out, a simple condition to hit this should be
-to have more tasks than shares.
-
-I can hit task_h_load=0 with the following on my Juno (pinned to one CPU to
-make things simpler; big.LITTLE doesn't yield equal weights between CPUs):
-
-  cgcreate -g cpu:tg0
-
-  echo 128 > /sys/fs/cgroup/cpu/tg0/cpu.shares
-
-  for ((i=0; i<130; i++)); do
-      # busy loop of your choice
-      taskset -c 0 ./loop.sh &
-      echo $! > /sys/fs/cgroup/cpu/tg0/tasks
-  done
-
-> ---
->  kernel/sched/fair.c | 18 +++++++++++++++++-
->  1 file changed, 17 insertions(+), 1 deletion(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 6fab1d17c575..62747c24aa9e 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -4049,7 +4049,13 @@ static inline void update_misfit_status(struct task_struct *p, struct rq *rq)
->               return;
->       }
->
-> -	rq->misfit_task_load = task_h_load(p);
-> +	/*
-> +	 * Make sure that misfit_task_load will not be null even if
-> +	 * task_h_load() returns 0. misfit_task_load is only used to select
-> +	 * rq with highest load so adding 1 will not modify the result
-> +	 * of the comparison.
-> +	 */
-> +	rq->misfit_task_load = task_h_load(p) + 1;
-
-For here and below; wouldn't it be a tad cleaner to just do
-
-        foo = max(task_h_load(p), 1);
-
-Otherwise, I think I've properly convinced myself we do want to have
-that in one form or another. So either way:
-
-Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-
->  }
->
->  #else /* CONFIG_SMP */
-> @@ -7664,6 +7670,16 @@ static int detach_tasks(struct lb_env *env)
->                           env->sd->nr_balance_failed <= env->sd->cache_nice_tries)
->                               goto next;
->
-> +			/*
-> +			 * Depending of the number of CPUs and tasks and the
-> +			 * cgroup hierarchy, task_h_load() can return a null
-> +			 * value. Make sure that env->imbalance decreases
-> +			 * otherwise detach_tasks() will stop only after
-> +			 * detaching up to loop_max tasks.
-> +			 */
-> +			if (!load)
-> +				load = 1;
-> +
->                       env->imbalance -= load;
->                       break;
+	-ss
