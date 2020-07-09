@@ -2,109 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 632A7219A2B
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 09:41:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2470219A36
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 09:50:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726363AbgGIHlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 03:41:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726313AbgGIHlr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 03:41:47 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93379C061A0B
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 00:41:47 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id y2so1348007ioy.3
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 00:41:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ybapX9dwUgXdpA8lRB7iW1jwbA7bfvk+OO92kUSz9So=;
-        b=eJAzwKErSdND8yQvAjVbkFMN+mP21Epkm7M3ODvXiiaw/5tkwNE498gAicfbklyZA8
-         ciW2LvRm7CAZmUsjNWqepJjKVyIX5eSHyZ5IpQ/F5/My63+YNeebIEtU2dFuL8K7YAtL
-         bGuIAWDJ/BUm7wWRlC1FT9O0UXdkmS+2d5ycLYgiDezVXINwjjgWtVPvzSYl3VLIcrNe
-         HmRw1TUxS3VSGbv3u9lbPzFAqcRO/xng98Ebm7oODcSZiew11NLhuz+eAlJNBj2oNV1O
-         uY+aMSpJJTskjcQvL5i1fWv/k7TIc3DKSFjusa2+RDo7MdvzJAW3POc5/cvBJWLO+Z7v
-         zFqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ybapX9dwUgXdpA8lRB7iW1jwbA7bfvk+OO92kUSz9So=;
-        b=hZcy6ZntT1bGgtcwj4fMkBUqL690/10k1d7F5ud2akNe1Fxwnr0Xwb4AJw13Np052o
-         /Cv0/KhKSI50eGcQSUc5SyJPIsOLe/CW2TUyYAX63XmPvBNGBt7aUIBZ4LztYUOZHKOk
-         G8+J/LKdYLg+kcSlXea5oAI8yVgIAOlPGtdN99AkbxsFNKgTXnUKtMgG5r4qPfSfSpuy
-         yz+pdLMa3WMyePkFKnssBgxLcl7WPi4NagPLr2CW0cHt9xOmBW9inOMrtBp91C07UA+l
-         bb845fkNCm5wUR+rG+rQhl6zBoKxTkOvCb3vm+dTwPBR33+/P6Ag37fN1n2VLr4DX2SD
-         xEwA==
-X-Gm-Message-State: AOAM530ume9SuvInQkNqtHeG8bCHKdrNqFV85SeHEiiPVeI4+jb5OvDc
-        VyaTTqXc2kElItsd0GdAYhi4K786dqj42Wp03Cg=
-X-Google-Smtp-Source: ABdhPJznZggohMXyEmUhVJ7YSeuhvxMLrSKbinlNGmMG9HQ7dy2PuiqPDtU6kHkJzrzCvpVyi+YL4LVSW0Bs/2kOdbg=
-X-Received: by 2002:a05:6602:2dd4:: with SMTP id l20mr40765009iow.13.1594280507020;
- Thu, 09 Jul 2020 00:41:47 -0700 (PDT)
+        id S1726352AbgGIHux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 03:50:53 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:34582 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726187AbgGIHux (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 03:50:53 -0400
+Received: by ajax-webmail-mail.loongson.cn (Coremail) ; Thu, 9 Jul 2020
+ 15:50:47 +0800 (GMT+08:00)
+X-Originating-IP: [113.200.148.30]
+Date:   Thu, 9 Jul 2020 15:50:47 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   "Peng Fan" <fanpeng@loongson.cn>
+To:     "Stephen Rothwell" <sfr@canb.auug.org.au>
+Cc:     "Mark Brown" <broonie@kernel.org>,
+        "Linux Next Mailing List" <linux-next@vger.kernel.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
+Subject: Re: Re: linux-next: build warning after merge of the spi tree
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.10a build 20191018(4c4f6d15)
+ Copyright (c) 2002-2020 www.mailtech.cn .loongson.cn
+In-Reply-To: <31ee871f.3cd.173320cfdfe.Coremail.fanpeng@loongson.cn>
+References: <20200709141054.1b65be9d@canb.auug.org.au>
+ <31ee871f.3cd.173320cfdfe.Coremail.fanpeng@loongson.cn>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-References: <20200709062603.18480-1-mhocko@kernel.org> <20200709062603.18480-2-mhocko@kernel.org>
-In-Reply-To: <20200709062603.18480-2-mhocko@kernel.org>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Thu, 9 Jul 2020 15:41:11 +0800
-Message-ID: <CALOAHbAezHHN58cn0unLNbOjHJyYW=zhzQxpQD8_rD4O7qmYRQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] doc, mm: clarify /proc/<pid>/oom_score value range
-To:     Michal Hocko <mhocko@kernel.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Michal Hocko <mhocko@suse.com>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <7376c15b.48e.173328e36ab.Coremail.fanpeng@loongson.cn>
+X-Coremail-Locale: en_US
+X-CM-TRANSID: AQAAf9DxTx9YzAZf5asAAA--.158W
+X-CM-SenderInfo: xidq1vtqj6z05rqj20fqof0/1tbiAQAMEl3QvL5MuwABsm
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 9, 2020 at 2:26 PM Michal Hocko <mhocko@kernel.org> wrote:
->
-> From: Michal Hocko <mhocko@suse.com>
->
-> The exported value includes oom_score_adj so the range is no [0, 1000]
-> as described in the previous section but rather [0, 2000]. Mention that
-> fact explicitly.
->
-> Signed-off-by: Michal Hocko <mhocko@suse.com>
-> ---
->  Documentation/filesystems/proc.rst | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
-> index 8e3b5dffcfa8..78a0dec323a3 100644
-> --- a/Documentation/filesystems/proc.rst
-> +++ b/Documentation/filesystems/proc.rst
-> @@ -1673,6 +1673,9 @@ requires CAP_SYS_RESOURCE.
->  3.2 /proc/<pid>/oom_score - Display current oom-killer score
->  -------------------------------------------------------------
->
-> +Please note that the exported value includes oom_score_adj so it is effectively
-> +in range [0,2000].
-> +
-
-[0, 2000] may be not a proper range, see my reply in another thread.[1]
-As this value hasn't been documented before and nobody notices that, I
-think there might be no user really care about it before.
-So we should discuss the proper range if we really think the user will
-care about this value.
-
-[1]. https://lore.kernel.org/linux-mm/CALOAHbAvj-gWZMLef=PuKTfDScwfM8gPPX0evzjoref1bG=zwA@mail.gmail.com/T/#m2332c3e6b7f869383cb74ab3a0f7b6c670b3b23b
-
->  This file can be used to check the current score used by the oom-killer is for
->  any given <pid>. Use it together with /proc/<pid>/oom_score_adj to tune which
->  process should be killed in an out-of-memory situation.
-> --
-> 2.27.0
->
-
-
--- 
-Thanks
-Yafang
+SGksIEJyb3dtLCBTdGVwaGVuCiAgICBGaXJzdGx5LCBmZWVsIHNvcnJ5IGZvciB0aGUgcHJvYmxl
+bSBpbnRyb2R1Y2VkIGJ5IG1lLiBJIHRoaW5rIEkgbXVzdCBtb2RpZnkgbXkgYmFkLGJ1dCBzaG91
+bGQgSSBzZW5kIGFub3RoZXIgcGF0Y2ggdG8gZGVsZXRlIHRoZSBsYWJlbCAib3V0X2ZyZWUiIG9y
+IApyZS1zZW5kIHBhdGNoIG9mIHYyKHdoaWNoIG1heWJlIG5lZWQgdG8gZ28gYmFjayk/CiAgICBD
+b3VsZCB5b3UgZ2l2ZSBtZSBzb21lIGFkdmljZXM/IFNvcnJ5IGFnYWluLgoKVGhhbmtzCgomcXVv
+dDtQZW5nIEZhbiZxdW90OyAmbHQ7ZmFucGVuZ0Bsb29uZ3Nvbi5jbiZndDt3cm90ZToKPiBWZXJ5
+IHNvcnJ5IGZvciB0aGF0LCBJIHdpbGwgcmUtc2VuZCB2MiBsYXRlci4NCj4gDQo+ICZxdW90O1N0
+ZXBoZW4gUm90aHdlbGwmcXVvdDsgJmx0O3NmckBjYW5iLmF1dWcub3JnLmF1Jmd0O3dyb3RlOg0K
+PiA+IEhpIGFsbCwNCj4gPiANCj4gPiBBZnRlciBtZXJnaW5nIHRoZSBzcGkgdHJlZSwgdG9kYXkn
+cyBsaW51eC1uZXh0IGJ1aWxkIChhcm0NCj4gPiBtdWx0aV92N19kZWZjb25maWcpIHByb2R1Y2Vk
+IHRoaXMgd2FybmluZzoNCj4gPiANCj4gPiBkcml2ZXJzL3NwaS9zcGktYXRtZWwuYzogSW4gZnVu
+Y3Rpb24gJ2F0bWVsX3NwaV9wcm9iZSc6DQo+ID4gZHJpdmVycy9zcGkvc3BpLWF0bWVsLmM6MTY4
+MDoxOiB3YXJuaW5nOiBsYWJlbCAnb3V0X2ZyZWUnIGRlZmluZWQgYnV0IG5vdCB1c2VkIFstV3Vu
+dXNlZC1sYWJlbF0NCj4gPiAgMTY4MCB8IG91dF9mcmVlOg0KPiA+ICAgICAgIHwgXn5+fn5+fn4N
+Cj4gPiANCj4gPiBJbnRyb2R1Y2VkIGJ5IGNvbW1pdA0KPiA+IA0KPiA+ICAgMmQ5YTc0NDY4NWJj
+ICgic3BpOiBhdG1lbDogTm8gbmVlZCB0byBjYWxsIHNwaV9tYXN0ZXJfcHV0KCkgaWYgc3BpX2Fs
+bG9jX21hc3RlcigpIGZhaWxlZCIpDQo+ID4gDQo+ID4gLS0gDQo+ID4gQ2hlZXJzLA0KPiA+IFN0
+ZXBoZW4gUm90aHdlbGwNCg==
