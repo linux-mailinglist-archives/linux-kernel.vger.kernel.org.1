@@ -2,94 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA06121A1B6
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 16:04:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39E8E21A1C5
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 16:06:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728104AbgGIODu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 10:03:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42782 "EHLO
+        id S1726886AbgGIOFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 10:05:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728084AbgGIODp (ORCPT
+        with ESMTP id S1726517AbgGIOFt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 10:03:45 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4ECAC08C5DC
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 07:03:44 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id z15so2499800wrl.8
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 07:03:44 -0700 (PDT)
+        Thu, 9 Jul 2020 10:05:49 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 462C1C08C5DC
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 07:05:49 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id k6so2117046ili.6
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 07:05:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=DFfhRB3CIFp7+b9HYaYFBTlz+H/vZeZ2FswijDgFipc=;
-        b=G6q0CF1kORRNof0tQD5r5NoQptbBhuWv1c/fs/r9CwDbcexcB/5B+EpnFZAyC0xynB
-         TLPEFz27dI9N6mnQizXEdM5Fx85hbntmmpaI+2qoJOrcf8faPX3GUOfc8IjsUwiW1+3b
-         e7HPabKQZTToNaRmwvKoYF+kLUf8NXXQINYMJsMY3+UQspFvPotKsRqu+FG8QM3B0rVy
-         k4BsagiLGMLuB2NrQwbIOJWhU0B3mQW+5c0kHq9934E0h1meOOVPiGsRPo2IoyKOke+y
-         RtfRN6JZF6a/JdlP/S1xtQkycBz+oVpsx5KYQX5HNSW3NOXCjBlpLyejw1FpK2Wlq1Lg
-         qAAw==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=oMnI/eFxxJ+Rr9dk/y2RZbs/7bqRU/Yv7VYpCv09jjQ=;
+        b=C5rui48LchhJZsNpOpZKkjblQ0CTY2MPXDSz4bmp81soQ7GL+mRU0qziWXkLkqg+Dy
+         lClg6xJDkVIHrL8Byb8utF+/Zz69CsyFMkZixqLUf0DOuUj2n0BQCP4Bk5D2gBsKxhub
+         CBPhvXRkP+8oivA89E8UF3wklQjxODE8+urJ2PPzWPWnLX2tv7Xxejg8j4fifP/zXzHx
+         mBwYe35MwDctRpH4PI4J7EB6hiRDTkPI1JB7SjlZHlxXzRgPIM5VED8dHafaq/fYNO2O
+         4Vqc4dTq6q+GOACFAaLZVj4+gp1Wxs//znqmRO+lqNQcRWZfa/bn2cIi8LnZn7I05H3A
+         LesA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=DFfhRB3CIFp7+b9HYaYFBTlz+H/vZeZ2FswijDgFipc=;
-        b=ZKEz4Wp8opB7jzrxBWemwo6I/X6mKqi9TMbReBh0/4u9JInvm/UCQyQUp/seBkXftM
-         0BFK7Gx4nqpu1mRfRrHRarHfXfGFqnfzZNL0SBW/al/CoZxiCz3OymwnnrQtX5+HhatI
-         iitU9/HmEELoKYGCoaDzRkQNHgEIWFfbASlso40NUNN49c+RecF9qDOGhjgHgfTTGIc1
-         SWLwfOZSeRaqjxt3S7w+Jg5PrkKr+uBZlbw24y8pYpql45Tk2YdNwPjd88oabl6P3xOr
-         RVbNa3Jt9LxP63niFilNcX4umuA67/1jcDDWiBcSeFtQNsltBU4C/SVhkBF8+mtuiXM3
-         rQFw==
-X-Gm-Message-State: AOAM532gZpSU5jRMg+swejlMo3aFELd1gvQ3mbypqoJpIBSXQyXRmCsD
-        5wLIwEj6oE4UtlcpajU38NY=
-X-Google-Smtp-Source: ABdhPJxKsJGmE1cXYIqvgGVcbqQhYNjKkdXWYq3nTtCEanj2piNLMs6tz3AQM8Wn4LqysoxPncAyVA==
-X-Received: by 2002:adf:e884:: with SMTP id d4mr61159232wrm.176.1594303423483;
-        Thu, 09 Jul 2020 07:03:43 -0700 (PDT)
-Received: from clement-Latitude-7490.numericable.fr (213-245-241-245.rev.numericable.fr. [213.245.241.245])
-        by smtp.gmail.com with ESMTPSA id s8sm5545256wru.38.2020.07.09.07.03.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jul 2020 07:03:42 -0700 (PDT)
-From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-To:     Rob Herring <robh@kernel.org>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        Steven Price <steven.price@arm.com>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-Subject: [PATCH v3 14/14] [DO NOT MERGE] arm64: dts: allwinner: force GPU regulator to be always
-Date:   Thu,  9 Jul 2020 16:03:22 +0200
-Message-Id: <20200709140322.131320-15-peron.clem@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200709140322.131320-1-peron.clem@gmail.com>
-References: <20200709140322.131320-1-peron.clem@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=oMnI/eFxxJ+Rr9dk/y2RZbs/7bqRU/Yv7VYpCv09jjQ=;
+        b=Whx3GS3tMKVxtOux8CvN6UfKTyvhxGWG/s2lI37Vi2oKiclS9TUyZj80buSUVfhrtw
+         0frGci6Lwc1F36XDa46qnMvWw9F0SeokB4YK0DarnZA1BvfQc/4aspotouHQpiFhyjgk
+         DeXRD0MO6agy5WkYoUoLqZkAYgouE4iV5aE1RXoZcMfEEkAbfE2LC/DCR/adfxxUe26w
+         j3DTZbxr57e7tKoXqu41zbPJeCd+US35/lr33qlR2QAK9CCoFXhRLVP9tWgbBsCOwB+o
+         PD4BLBD0z3yM466tS+a35wUwF+gHoDcO3KcYCNEVTNB4PfVwSvUTItXzFjShgZsqj8zt
+         YhGA==
+X-Gm-Message-State: AOAM5311oIDhxV/eoipMDc/nF9y8f24G1rDsL+KMU0HCPy2oxqrWktHw
+        0KIL3EU6ysj+C2lr+J2KQ79xLA==
+X-Google-Smtp-Source: ABdhPJya7WxrYyOKxMjO9jamdVLBDLUrjy8VegR37opYbGRoDIWCNtaSbFAkPSzRltHkfkNagHedyg==
+X-Received: by 2002:a92:bb57:: with SMTP id w84mr47025123ili.104.1594303548684;
+        Thu, 09 Jul 2020 07:05:48 -0700 (PDT)
+Received: from [192.168.1.58] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id h11sm1910739ilh.69.2020.07.09.07.05.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Jul 2020 07:05:47 -0700 (PDT)
+Subject: Re: [PATCH v3 4/4] io_uring: add support for zone-append
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Kanchan Joshi <joshi.k@samsung.com>, viro@zeniv.linux.org.uk,
+        bcrl@kvack.org, Damien.LeMoal@wdc.com, asml.silence@gmail.com,
+        linux-fsdevel@vger.kernel.org, mb@lightnvm.io,
+        linux-kernel@vger.kernel.org, linux-aio@kvack.org,
+        io-uring@vger.kernel.org, linux-block@vger.kernel.org,
+        Selvakumar S <selvakuma.s1@samsung.com>,
+        Nitesh Shetty <nj.shetty@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>
+References: <1593974870-18919-1-git-send-email-joshi.k@samsung.com>
+ <CGME20200705185227epcas5p16fba3cb92561794b960184c89fdf2bb7@epcas5p1.samsung.com>
+ <1593974870-18919-5-git-send-email-joshi.k@samsung.com>
+ <fe0066b7-5380-43ee-20b2-c9b17ba18e4f@kernel.dk>
+ <20200709085501.GA64935@infradead.org>
+ <adc14700-8e95-10b2-d914-afa5029ae80c@kernel.dk>
+ <20200709140053.GA7528@infradead.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <2270907f-670c-5182-f4ec-9756dc645376@kernel.dk>
+Date:   Thu, 9 Jul 2020 08:05:46 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200709140053.GA7528@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Clément Péron <peron.clem@gmail.com>
----
- arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts | 1 +
- 1 file changed, 1 insertion(+)
+On 7/9/20 8:00 AM, Christoph Hellwig wrote:
+> On Thu, Jul 09, 2020 at 07:58:04AM -0600, Jens Axboe wrote:
+>>> We don't actually need any new field at all.  By the time the write
+>>> returned ki_pos contains the offset after the write, and the res
+>>> argument to ->ki_complete contains the amount of bytes written, which
+>>> allow us to trivially derive the starting position.
+>>
+>> Then let's just do that instead of jumping through hoops either
+>> justifying growing io_rw/io_kiocb or turning kiocb into a global
+>> completion thing.
+> 
+> Unfortunately that is a totally separate issue - the in-kernel offset
+> can be trivially calculated.  But we still need to figure out a way to
+> pass it on to userspace.  The current patchset does that by abusing
+> the flags, which doesn't really work as the flags are way too small.
+> So we somewhere need to have an address to do the put_user to.
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-index 3f7ceeb1a767..14257f7476b8 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-@@ -245,6 +245,7 @@ reg_dcdca: dcdca {
- 			};
- 
- 			reg_dcdcc: dcdcc {
-+				regulator-always-on;
- 				regulator-enable-ramp-delay = <32000>;
- 				regulator-min-microvolt = <810000>;
- 				regulator-max-microvolt = <1080000>;
+Right, we're just trading the 'append_offset' for a 'copy_offset_here'
+pointer, which are stored in the same spot...
+
 -- 
-2.25.1
+Jens Axboe
 
