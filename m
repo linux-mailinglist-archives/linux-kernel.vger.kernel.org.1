@@ -2,146 +2,626 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E404C219B5D
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 10:46:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59D80219B6B
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 10:48:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726509AbgGIIqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 04:46:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49892 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726465AbgGIIp7 (ORCPT
+        id S1726314AbgGIIsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 04:48:43 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:51572 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726140AbgGIIsm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 04:45:59 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B733CC061A0B;
-        Thu,  9 Jul 2020 01:45:59 -0700 (PDT)
-Date:   Thu, 09 Jul 2020 08:45:57 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1594284358;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hjTJHow2R2XKL/tp30Tx1s7Zv1GQqNVD5CZB7vIOE/s=;
-        b=kcK/laqx/M0C9cBFddVrS2wjjFbjKpMLce2ezvFvs1anLVwgvJCHZ2w5E+OdWCspbT7QEJ
-        EznydsYqVU/wT38BTUsqdwSW+iRqGPzATpM9+PJU24D95ElJYLbXf6LPEi/ELDTTZWxMiO
-        v4vBH3Zy//WeHXA3eSbjg4K5ZsHnBCfNeMQiVFfkrTXnkvA1FxWK3urmCy3yD5QXe8nYyz
-        i17z+EK+I2O5oEsKlC8M7JKgforUeZUv0s2+29Px7l7+Hdc/uPuyMcl19dVs9IZnNHJGkv
-        dOAhhokja4Hlg7tUaVNwO9kzD39eHxasmIqqc3mP/auPiTKP24rJYVcNdY2bFg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1594284358;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hjTJHow2R2XKL/tp30Tx1s7Zv1GQqNVD5CZB7vIOE/s=;
-        b=S1qDs5C/hynlBnpgDM68zB1RDixP4rt5BqTEeE5vY4Fih6snVfcLNqOOTYn/4wOolYxXOH
-        8NifYeGUlqJpjNDQ==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched, vmlinux.lds: Increase STRUCT_ALIGNMENT to 64
- bytes for GCC-4.9
-Cc:     kernel test robot <lkp@intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200630144905.GX4817@hirez.programming.kicks-ass.net>
-References: <20200630144905.GX4817@hirez.programming.kicks-ass.net>
+        Thu, 9 Jul 2020 04:48:42 -0400
+Received: from [192.168.0.20] (cpc89242-aztw30-2-0-cust488.18-1.cable.virginm.net [86.31.129.233])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 48341289;
+        Thu,  9 Jul 2020 10:48:36 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1594284517;
+        bh=ljysORwIu0wbMcv/JcPvlvUqrcS4CxkkQy9vu/k0iDc=;
+        h=Reply-To:Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=ismG07NG1yMxHg8PZuHKDi9oqq/QfzoCyCXrPwjaPSy4fFmJ4bw7WHlqU1/1gpwWo
+         7O1iWY6fNe5j5FFJN7vWrTN/boh8ThdexuvOWaGMWnpTf06vNzxURgodo8FWBeTzBs
+         GiAgFRxIkUeaEQnjLYtc4/98RubZCMWp8iEYHwSc=
+Reply-To: kieran.bingham+renesas@ideasonboard.com
+Subject: Re: [PATCH v2] genpd: Fix up terminology with parent/child
+To:     Kees Cook <keescook@chromium.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Kevin Hilman <khilman@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Len Brown <len.brown@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Leonard Crestez <leonard.crestez@nxp.com>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <202007081629.0840B4CB78@keescook>
+From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Organization: Ideas on Board
+Message-ID: <773f8cff-a2ca-1618-d102-32e74baccd91@ideasonboard.com>
+Date:   Thu, 9 Jul 2020 09:48:33 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Message-ID: <159428435768.4006.17156231921502478446.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <202007081629.0840B4CB78@keescook>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/core branch of tip:
+Hi Kees,
 
-Commit-ID:     85c2ce9104eb93517db2037699471c517e81f9b4
-Gitweb:        https://git.kernel.org/tip/85c2ce9104eb93517db2037699471c517e81f9b4
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Tue, 30 Jun 2020 16:49:05 +02:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Wed, 08 Jul 2020 11:39:00 +02:00
+On 09/07/2020 00:32, Kees Cook wrote:
+> The genpd infrastructure uses the terms master/slave, but such uses have
+> no external exposures (not even in Documentation/driver-api/pm/*) and are
+> not mandated by nor associated with any external specifications. Change
+> the language used through-out to parent/child.
+> 
+> There was one possible exception in the debugfs node
+> "pm_genpd/pm_genpd_summary" but its path has no hits outside of the
+> kernel itself when performing a code search[1], and it seems even this
+> single usage has been non-functional since it was introduced due to a
+> typo in the Python ("apend" instead of correct "append"). Fix the typo
+> while we're at it.
 
-sched, vmlinux.lds: Increase STRUCT_ALIGNMENT to 64 bytes for GCC-4.9
+Good spot
 
-For some mysterious reason GCC-4.9 has a 64 byte section alignment for
-structures, all other GCC versions (and Clang) tested (including 4.8
-and 5.0) are fine with the 32 bytes alignment.
+> 
+> [1] https://codesearch.debian.net/
+> 
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-Getting this right is important for the new SCHED_DATA macro that
-creates an explicitly ordered array of 'struct sched_class' in the
-linker script and expect pointer arithmetic to work.
 
-Fixes: c3a340f7e7ea ("sched: Have sched_class_highest define by vmlinux.lds.h")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20200630144905.GX4817@hirez.programming.kicks-ass.net
----
- include/asm-generic/vmlinux.lds.h | 18 +++++++++++-------
- kernel/sched/sched.h              |  3 ++-
- 2 files changed, 13 insertions(+), 8 deletions(-)
+Parent/child works much better here I think. I wonder if that should be
+suggested as an alternatvie on the coding-style patch too ...
 
-diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-index 66fb84c..3ceb4b7 100644
---- a/include/asm-generic/vmlinux.lds.h
-+++ b/include/asm-generic/vmlinux.lds.h
-@@ -109,6 +109,17 @@
- #endif
- 
- /*
-+ * GCC 4.5 and later have a 32 bytes section alignment for structures.
-+ * Except GCC 4.9, that feels the need to align on 64 bytes.
-+ */
-+#if __GNUC__ == 4 && __GNUC_MINOR__ == 9
-+#define STRUCT_ALIGNMENT 64
-+#else
-+#define STRUCT_ALIGNMENT 32
-+#endif
-+#define STRUCT_ALIGN() . = ALIGN(STRUCT_ALIGNMENT)
-+
-+/*
-  * The order of the sched class addresses are important, as they are
-  * used to determine the order of the priority of each sched class in
-  * relation to each other.
-@@ -123,13 +134,6 @@
- 	*(__stop_sched_class)			\
- 	__end_sched_classes = .;
- 
--/*
-- * Align to a 32 byte boundary equal to the
-- * alignment gcc 4.5 uses for a struct
-- */
--#define STRUCT_ALIGNMENT 32
--#define STRUCT_ALIGN() . = ALIGN(STRUCT_ALIGNMENT)
--
- /* The actual configuration determine if the init/exit sections
-  * are handled as text/data or they can be discarded (which
-  * often happens at runtime)
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 5aa6661..9bef2dd 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -67,6 +67,7 @@
- #include <linux/tsacct_kern.h>
- 
- #include <asm/tlb.h>
-+#include <asm-generic/vmlinux.lds.h>
- 
- #ifdef CONFIG_PARAVIRT
- # include <asm/paravirt.h>
-@@ -1810,7 +1811,7 @@ struct sched_class {
- #ifdef CONFIG_FAIR_GROUP_SCHED
- 	void (*task_change_group)(struct task_struct *p, int type);
- #endif
--} __aligned(32); /* STRUCT_ALIGN(), vmlinux.lds.h */
-+} __aligned(STRUCT_ALIGNMENT); /* STRUCT_ALIGN(), vmlinux.lds.h */
- 
- static inline void put_prev_task(struct rq *rq, struct task_struct *prev)
- {
+> ---
+> v2: leader/follower -> parent/child (ulf, rafael)
+> v1: https://lore.kernel.org/lkml/202007080131.3E6D0858@keescook
+> This is motivated by the recent discussions over coding style:
+> https://lore.kernel.org/lkml/159419296487.2464622.863943877093636532.stgit@dwillia2-desk3.amr.corp.intel.com/
+> ---
+>  drivers/base/power/domain.c          | 194 +++++++++++++--------------
+>  drivers/base/power/domain_governor.c |  12 +-
+>  include/linux/pm_domain.h            |  12 +-
+>  scripts/gdb/linux/genpd.py           |  12 +-
+
+for scripts/gdb/linux/genpd.py:
+
+Reviewed-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
+
+
+>  4 files changed, 115 insertions(+), 115 deletions(-)
+> 
+> diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
+> index 0a01df608849..2cb5e04cf86c 100644
+> --- a/drivers/base/power/domain.c
+> +++ b/drivers/base/power/domain.c
+> @@ -263,18 +263,18 @@ static int _genpd_reeval_performance_state(struct generic_pm_domain *genpd,
+>  	/*
+>  	 * Traverse all sub-domains within the domain. This can be
+>  	 * done without any additional locking as the link->performance_state
+> -	 * field is protected by the master genpd->lock, which is already taken.
+> +	 * field is protected by the parent genpd->lock, which is already taken.
+>  	 *
+>  	 * Also note that link->performance_state (subdomain's performance state
+> -	 * requirement to master domain) is different from
+> -	 * link->slave->performance_state (current performance state requirement
+> +	 * requirement to parent domain) is different from
+> +	 * link->child->performance_state (current performance state requirement
+>  	 * of the devices/sub-domains of the subdomain) and so can have a
+>  	 * different value.
+>  	 *
+>  	 * Note that we also take vote from powered-off sub-domains into account
+>  	 * as the same is done for devices right now.
+>  	 */
+> -	list_for_each_entry(link, &genpd->master_links, master_node) {
+> +	list_for_each_entry(link, &genpd->parent_links, parent_node) {
+>  		if (link->performance_state > state)
+>  			state = link->performance_state;
+>  	}
+> @@ -285,40 +285,40 @@ static int _genpd_reeval_performance_state(struct generic_pm_domain *genpd,
+>  static int _genpd_set_performance_state(struct generic_pm_domain *genpd,
+>  					unsigned int state, int depth)
+>  {
+> -	struct generic_pm_domain *master;
+> +	struct generic_pm_domain *parent;
+>  	struct gpd_link *link;
+> -	int master_state, ret;
+> +	int parent_state, ret;
+>  
+>  	if (state == genpd->performance_state)
+>  		return 0;
+>  
+> -	/* Propagate to masters of genpd */
+> -	list_for_each_entry(link, &genpd->slave_links, slave_node) {
+> -		master = link->master;
+> +	/* Propagate to parents of genpd */
+> +	list_for_each_entry(link, &genpd->child_links, child_node) {
+> +		parent = link->parent;
+>  
+> -		if (!master->set_performance_state)
+> +		if (!parent->set_performance_state)
+>  			continue;
+>  
+> -		/* Find master's performance state */
+> +		/* Find parent's performance state */
+>  		ret = dev_pm_opp_xlate_performance_state(genpd->opp_table,
+> -							 master->opp_table,
+> +							 parent->opp_table,
+>  							 state);
+>  		if (unlikely(ret < 0))
+>  			goto err;
+>  
+> -		master_state = ret;
+> +		parent_state = ret;
+>  
+> -		genpd_lock_nested(master, depth + 1);
+> +		genpd_lock_nested(parent, depth + 1);
+>  
+>  		link->prev_performance_state = link->performance_state;
+> -		link->performance_state = master_state;
+> -		master_state = _genpd_reeval_performance_state(master,
+> -						master_state);
+> -		ret = _genpd_set_performance_state(master, master_state, depth + 1);
+> +		link->performance_state = parent_state;
+> +		parent_state = _genpd_reeval_performance_state(parent,
+> +						parent_state);
+> +		ret = _genpd_set_performance_state(parent, parent_state, depth + 1);
+>  		if (ret)
+>  			link->performance_state = link->prev_performance_state;
+>  
+> -		genpd_unlock(master);
+> +		genpd_unlock(parent);
+>  
+>  		if (ret)
+>  			goto err;
+> @@ -333,26 +333,26 @@ static int _genpd_set_performance_state(struct generic_pm_domain *genpd,
+>  
+>  err:
+>  	/* Encountered an error, lets rollback */
+> -	list_for_each_entry_continue_reverse(link, &genpd->slave_links,
+> -					     slave_node) {
+> -		master = link->master;
+> +	list_for_each_entry_continue_reverse(link, &genpd->child_links,
+> +					     child_node) {
+> +		parent = link->parent;
+>  
+> -		if (!master->set_performance_state)
+> +		if (!parent->set_performance_state)
+>  			continue;
+>  
+> -		genpd_lock_nested(master, depth + 1);
+> +		genpd_lock_nested(parent, depth + 1);
+>  
+> -		master_state = link->prev_performance_state;
+> -		link->performance_state = master_state;
+> +		parent_state = link->prev_performance_state;
+> +		link->performance_state = parent_state;
+>  
+> -		master_state = _genpd_reeval_performance_state(master,
+> -						master_state);
+> -		if (_genpd_set_performance_state(master, master_state, depth + 1)) {
+> +		parent_state = _genpd_reeval_performance_state(parent,
+> +						parent_state);
+> +		if (_genpd_set_performance_state(parent, parent_state, depth + 1)) {
+>  			pr_err("%s: Failed to roll back to %d performance state\n",
+> -			       master->name, master_state);
+> +			       parent->name, parent_state);
+>  		}
+>  
+> -		genpd_unlock(master);
+> +		genpd_unlock(parent);
+>  	}
+>  
+>  	return ret;
+> @@ -552,7 +552,7 @@ static int genpd_power_off(struct generic_pm_domain *genpd, bool one_dev_on,
+>  
+>  		/*
+>  		 * If sd_count > 0 at this point, one of the subdomains hasn't
+> -		 * managed to call genpd_power_on() for the master yet after
+> +		 * managed to call genpd_power_on() for the parent yet after
+>  		 * incrementing it.  In that case genpd_power_on() will wait
+>  		 * for us to drop the lock, so we can call .power_off() and let
+>  		 * the genpd_power_on() restore power for us (this shouldn't
+> @@ -566,22 +566,22 @@ static int genpd_power_off(struct generic_pm_domain *genpd, bool one_dev_on,
+>  	genpd->status = GPD_STATE_POWER_OFF;
+>  	genpd_update_accounting(genpd);
+>  
+> -	list_for_each_entry(link, &genpd->slave_links, slave_node) {
+> -		genpd_sd_counter_dec(link->master);
+> -		genpd_lock_nested(link->master, depth + 1);
+> -		genpd_power_off(link->master, false, depth + 1);
+> -		genpd_unlock(link->master);
+> +	list_for_each_entry(link, &genpd->child_links, child_node) {
+> +		genpd_sd_counter_dec(link->parent);
+> +		genpd_lock_nested(link->parent, depth + 1);
+> +		genpd_power_off(link->parent, false, depth + 1);
+> +		genpd_unlock(link->parent);
+>  	}
+>  
+>  	return 0;
+>  }
+>  
+>  /**
+> - * genpd_power_on - Restore power to a given PM domain and its masters.
+> + * genpd_power_on - Restore power to a given PM domain and its parents.
+>   * @genpd: PM domain to power up.
+>   * @depth: nesting count for lockdep.
+>   *
+> - * Restore power to @genpd and all of its masters so that it is possible to
+> + * Restore power to @genpd and all of its parents so that it is possible to
+>   * resume a device belonging to it.
+>   */
+>  static int genpd_power_on(struct generic_pm_domain *genpd, unsigned int depth)
+> @@ -594,20 +594,20 @@ static int genpd_power_on(struct generic_pm_domain *genpd, unsigned int depth)
+>  
+>  	/*
+>  	 * The list is guaranteed not to change while the loop below is being
+> -	 * executed, unless one of the masters' .power_on() callbacks fiddles
+> +	 * executed, unless one of the parents' .power_on() callbacks fiddles
+>  	 * with it.
+>  	 */
+> -	list_for_each_entry(link, &genpd->slave_links, slave_node) {
+> -		struct generic_pm_domain *master = link->master;
+> +	list_for_each_entry(link, &genpd->child_links, child_node) {
+> +		struct generic_pm_domain *parent = link->parent;
+>  
+> -		genpd_sd_counter_inc(master);
+> +		genpd_sd_counter_inc(parent);
+>  
+> -		genpd_lock_nested(master, depth + 1);
+> -		ret = genpd_power_on(master, depth + 1);
+> -		genpd_unlock(master);
+> +		genpd_lock_nested(parent, depth + 1);
+> +		ret = genpd_power_on(parent, depth + 1);
+> +		genpd_unlock(parent);
+>  
+>  		if (ret) {
+> -			genpd_sd_counter_dec(master);
+> +			genpd_sd_counter_dec(parent);
+>  			goto err;
+>  		}
+>  	}
+> @@ -623,12 +623,12 @@ static int genpd_power_on(struct generic_pm_domain *genpd, unsigned int depth)
+>  
+>   err:
+>  	list_for_each_entry_continue_reverse(link,
+> -					&genpd->slave_links,
+> -					slave_node) {
+> -		genpd_sd_counter_dec(link->master);
+> -		genpd_lock_nested(link->master, depth + 1);
+> -		genpd_power_off(link->master, false, depth + 1);
+> -		genpd_unlock(link->master);
+> +					&genpd->child_links,
+> +					child_node) {
+> +		genpd_sd_counter_dec(link->parent);
+> +		genpd_lock_nested(link->parent, depth + 1);
+> +		genpd_power_off(link->parent, false, depth + 1);
+> +		genpd_unlock(link->parent);
+>  	}
+>  
+>  	return ret;
+> @@ -932,13 +932,13 @@ late_initcall(genpd_power_off_unused);
+>  #ifdef CONFIG_PM_SLEEP
+>  
+>  /**
+> - * genpd_sync_power_off - Synchronously power off a PM domain and its masters.
+> + * genpd_sync_power_off - Synchronously power off a PM domain and its parents.
+>   * @genpd: PM domain to power off, if possible.
+>   * @use_lock: use the lock.
+>   * @depth: nesting count for lockdep.
+>   *
+>   * Check if the given PM domain can be powered off (during system suspend or
+> - * hibernation) and do that if so.  Also, in that case propagate to its masters.
+> + * hibernation) and do that if so.  Also, in that case propagate to its parents.
+>   *
+>   * This function is only called in "noirq" and "syscore" stages of system power
+>   * transitions. The "noirq" callbacks may be executed asynchronously, thus in
+> @@ -963,21 +963,21 @@ static void genpd_sync_power_off(struct generic_pm_domain *genpd, bool use_lock,
+>  
+>  	genpd->status = GPD_STATE_POWER_OFF;
+>  
+> -	list_for_each_entry(link, &genpd->slave_links, slave_node) {
+> -		genpd_sd_counter_dec(link->master);
+> +	list_for_each_entry(link, &genpd->child_links, child_node) {
+> +		genpd_sd_counter_dec(link->parent);
+>  
+>  		if (use_lock)
+> -			genpd_lock_nested(link->master, depth + 1);
+> +			genpd_lock_nested(link->parent, depth + 1);
+>  
+> -		genpd_sync_power_off(link->master, use_lock, depth + 1);
+> +		genpd_sync_power_off(link->parent, use_lock, depth + 1);
+>  
+>  		if (use_lock)
+> -			genpd_unlock(link->master);
+> +			genpd_unlock(link->parent);
+>  	}
+>  }
+>  
+>  /**
+> - * genpd_sync_power_on - Synchronously power on a PM domain and its masters.
+> + * genpd_sync_power_on - Synchronously power on a PM domain and its parents.
+>   * @genpd: PM domain to power on.
+>   * @use_lock: use the lock.
+>   * @depth: nesting count for lockdep.
+> @@ -994,16 +994,16 @@ static void genpd_sync_power_on(struct generic_pm_domain *genpd, bool use_lock,
+>  	if (genpd_status_on(genpd))
+>  		return;
+>  
+> -	list_for_each_entry(link, &genpd->slave_links, slave_node) {
+> -		genpd_sd_counter_inc(link->master);
+> +	list_for_each_entry(link, &genpd->child_links, child_node) {
+> +		genpd_sd_counter_inc(link->parent);
+>  
+>  		if (use_lock)
+> -			genpd_lock_nested(link->master, depth + 1);
+> +			genpd_lock_nested(link->parent, depth + 1);
+>  
+> -		genpd_sync_power_on(link->master, use_lock, depth + 1);
+> +		genpd_sync_power_on(link->parent, use_lock, depth + 1);
+>  
+>  		if (use_lock)
+> -			genpd_unlock(link->master);
+> +			genpd_unlock(link->parent);
+>  	}
+>  
+>  	_genpd_power_on(genpd, false);
+> @@ -1443,12 +1443,12 @@ static void genpd_update_cpumask(struct generic_pm_domain *genpd,
+>  	if (!genpd_is_cpu_domain(genpd))
+>  		return;
+>  
+> -	list_for_each_entry(link, &genpd->slave_links, slave_node) {
+> -		struct generic_pm_domain *master = link->master;
+> +	list_for_each_entry(link, &genpd->child_links, child_node) {
+> +		struct generic_pm_domain *parent = link->parent;
+>  
+> -		genpd_lock_nested(master, depth + 1);
+> -		genpd_update_cpumask(master, cpu, set, depth + 1);
+> -		genpd_unlock(master);
+> +		genpd_lock_nested(parent, depth + 1);
+> +		genpd_update_cpumask(parent, cpu, set, depth + 1);
+> +		genpd_unlock(parent);
+>  	}
+>  
+>  	if (set)
+> @@ -1636,17 +1636,17 @@ static int genpd_add_subdomain(struct generic_pm_domain *genpd,
+>  		goto out;
+>  	}
+>  
+> -	list_for_each_entry(itr, &genpd->master_links, master_node) {
+> -		if (itr->slave == subdomain && itr->master == genpd) {
+> +	list_for_each_entry(itr, &genpd->parent_links, parent_node) {
+> +		if (itr->child == subdomain && itr->parent == genpd) {
+>  			ret = -EINVAL;
+>  			goto out;
+>  		}
+>  	}
+>  
+> -	link->master = genpd;
+> -	list_add_tail(&link->master_node, &genpd->master_links);
+> -	link->slave = subdomain;
+> -	list_add_tail(&link->slave_node, &subdomain->slave_links);
+> +	link->parent = genpd;
+> +	list_add_tail(&link->parent_node, &genpd->parent_links);
+> +	link->child = subdomain;
+> +	list_add_tail(&link->child_node, &subdomain->child_links);
+>  	if (genpd_status_on(subdomain))
+>  		genpd_sd_counter_inc(genpd);
+>  
+> @@ -1660,7 +1660,7 @@ static int genpd_add_subdomain(struct generic_pm_domain *genpd,
+>  
+>  /**
+>   * pm_genpd_add_subdomain - Add a subdomain to an I/O PM domain.
+> - * @genpd: Master PM domain to add the subdomain to.
+> + * @genpd: Leader PM domain to add the subdomain to.
+>   * @subdomain: Subdomain to be added.
+>   */
+>  int pm_genpd_add_subdomain(struct generic_pm_domain *genpd,
+> @@ -1678,7 +1678,7 @@ EXPORT_SYMBOL_GPL(pm_genpd_add_subdomain);
+>  
+>  /**
+>   * pm_genpd_remove_subdomain - Remove a subdomain from an I/O PM domain.
+> - * @genpd: Master PM domain to remove the subdomain from.
+> + * @genpd: Leader PM domain to remove the subdomain from.
+>   * @subdomain: Subdomain to be removed.
+>   */
+>  int pm_genpd_remove_subdomain(struct generic_pm_domain *genpd,
+> @@ -1693,19 +1693,19 @@ int pm_genpd_remove_subdomain(struct generic_pm_domain *genpd,
+>  	genpd_lock(subdomain);
+>  	genpd_lock_nested(genpd, SINGLE_DEPTH_NESTING);
+>  
+> -	if (!list_empty(&subdomain->master_links) || subdomain->device_count) {
+> +	if (!list_empty(&subdomain->parent_links) || subdomain->device_count) {
+>  		pr_warn("%s: unable to remove subdomain %s\n",
+>  			genpd->name, subdomain->name);
+>  		ret = -EBUSY;
+>  		goto out;
+>  	}
+>  
+> -	list_for_each_entry_safe(link, l, &genpd->master_links, master_node) {
+> -		if (link->slave != subdomain)
+> +	list_for_each_entry_safe(link, l, &genpd->parent_links, parent_node) {
+> +		if (link->child != subdomain)
+>  			continue;
+>  
+> -		list_del(&link->master_node);
+> -		list_del(&link->slave_node);
+> +		list_del(&link->parent_node);
+> +		list_del(&link->child_node);
+>  		kfree(link);
+>  		if (genpd_status_on(subdomain))
+>  			genpd_sd_counter_dec(genpd);
+> @@ -1770,8 +1770,8 @@ int pm_genpd_init(struct generic_pm_domain *genpd,
+>  	if (IS_ERR_OR_NULL(genpd))
+>  		return -EINVAL;
+>  
+> -	INIT_LIST_HEAD(&genpd->master_links);
+> -	INIT_LIST_HEAD(&genpd->slave_links);
+> +	INIT_LIST_HEAD(&genpd->parent_links);
+> +	INIT_LIST_HEAD(&genpd->child_links);
+>  	INIT_LIST_HEAD(&genpd->dev_list);
+>  	genpd_lock_init(genpd);
+>  	genpd->gov = gov;
+> @@ -1848,15 +1848,15 @@ static int genpd_remove(struct generic_pm_domain *genpd)
+>  		return -EBUSY;
+>  	}
+>  
+> -	if (!list_empty(&genpd->master_links) || genpd->device_count) {
+> +	if (!list_empty(&genpd->parent_links) || genpd->device_count) {
+>  		genpd_unlock(genpd);
+>  		pr_err("%s: unable to remove %s\n", __func__, genpd->name);
+>  		return -EBUSY;
+>  	}
+>  
+> -	list_for_each_entry_safe(link, l, &genpd->slave_links, slave_node) {
+> -		list_del(&link->master_node);
+> -		list_del(&link->slave_node);
+> +	list_for_each_entry_safe(link, l, &genpd->child_links, child_node) {
+> +		list_del(&link->parent_node);
+> +		list_del(&link->child_node);
+>  		kfree(link);
+>  	}
+>  
+> @@ -2827,12 +2827,12 @@ static int genpd_summary_one(struct seq_file *s,
+>  
+>  	/*
+>  	 * Modifications on the list require holding locks on both
+> -	 * master and slave, so we are safe.
+> +	 * parent and child, so we are safe.
+>  	 * Also genpd->name is immutable.
+>  	 */
+> -	list_for_each_entry(link, &genpd->master_links, master_node) {
+> -		seq_printf(s, "%s", link->slave->name);
+> -		if (!list_is_last(&link->master_node, &genpd->master_links))
+> +	list_for_each_entry(link, &genpd->parent_links, parent_node) {
+> +		seq_printf(s, "%s", link->child->name);
+> +		if (!list_is_last(&link->parent_node, &genpd->parent_links))
+>  			seq_puts(s, ", ");
+>  	}
+>  
+> @@ -2860,7 +2860,7 @@ static int summary_show(struct seq_file *s, void *data)
+>  	struct generic_pm_domain *genpd;
+>  	int ret = 0;
+>  
+> -	seq_puts(s, "domain                          status          slaves\n");
+> +	seq_puts(s, "domain                          status          children\n");
+>  	seq_puts(s, "    /device                                             runtime status\n");
+>  	seq_puts(s, "----------------------------------------------------------------------\n");
+>  
+> @@ -2915,8 +2915,8 @@ static int sub_domains_show(struct seq_file *s, void *data)
+>  	if (ret)
+>  		return -ERESTARTSYS;
+>  
+> -	list_for_each_entry(link, &genpd->master_links, master_node)
+> -		seq_printf(s, "%s\n", link->slave->name);
+> +	list_for_each_entry(link, &genpd->parent_links, parent_node)
+> +		seq_printf(s, "%s\n", link->child->name);
+>  
+>  	genpd_unlock(genpd);
+>  	return ret;
+> diff --git a/drivers/base/power/domain_governor.c b/drivers/base/power/domain_governor.c
+> index daa8c7689f7e..490ed7deb99a 100644
+> --- a/drivers/base/power/domain_governor.c
+> +++ b/drivers/base/power/domain_governor.c
+> @@ -135,8 +135,8 @@ static bool __default_power_down_ok(struct dev_pm_domain *pd,
+>  	 *
+>  	 * All subdomains have been powered off already at this point.
+>  	 */
+> -	list_for_each_entry(link, &genpd->master_links, master_node) {
+> -		struct generic_pm_domain *sd = link->slave;
+> +	list_for_each_entry(link, &genpd->parent_links, parent_node) {
+> +		struct generic_pm_domain *sd = link->child;
+>  		s64 sd_max_off_ns = sd->max_off_time_ns;
+>  
+>  		if (sd_max_off_ns < 0)
+> @@ -217,13 +217,13 @@ static bool default_power_down_ok(struct dev_pm_domain *pd)
+>  	}
+>  
+>  	/*
+> -	 * We have to invalidate the cached results for the masters, so
+> +	 * We have to invalidate the cached results for the parents, so
+>  	 * use the observation that default_power_down_ok() is not
+> -	 * going to be called for any master until this instance
+> +	 * going to be called for any parent until this instance
+>  	 * returns.
+>  	 */
+> -	list_for_each_entry(link, &genpd->slave_links, slave_node)
+> -		link->master->max_off_time_changed = true;
+> +	list_for_each_entry(link, &genpd->child_links, child_node)
+> +		link->parent->max_off_time_changed = true;
+>  
+>  	genpd->max_off_time_ns = -1;
+>  	genpd->max_off_time_changed = false;
+> diff --git a/include/linux/pm_domain.h b/include/linux/pm_domain.h
+> index 9ec78ee53652..574a1fadb1e5 100644
+> --- a/include/linux/pm_domain.h
+> +++ b/include/linux/pm_domain.h
+> @@ -95,8 +95,8 @@ struct generic_pm_domain {
+>  	struct device dev;
+>  	struct dev_pm_domain domain;	/* PM domain operations */
+>  	struct list_head gpd_list_node;	/* Node in the global PM domains list */
+> -	struct list_head master_links;	/* Links with PM domain as a master */
+> -	struct list_head slave_links;	/* Links with PM domain as a slave */
+> +	struct list_head parent_links;	/* Links with PM domain as a parent */
+> +	struct list_head child_links;/* Links with PM domain as a child */
+>  	struct list_head dev_list;	/* List of devices */
+>  	struct dev_power_governor *gov;
+>  	struct work_struct power_off_work;
+> @@ -151,10 +151,10 @@ static inline struct generic_pm_domain *pd_to_genpd(struct dev_pm_domain *pd)
+>  }
+>  
+>  struct gpd_link {
+> -	struct generic_pm_domain *master;
+> -	struct list_head master_node;
+> -	struct generic_pm_domain *slave;
+> -	struct list_head slave_node;
+> +	struct generic_pm_domain *parent;
+> +	struct list_head parent_node;
+> +	struct generic_pm_domain *child;
+> +	struct list_head child_node;
+>  
+>  	/* Sub-domain's per-master domain performance state */
+>  	unsigned int performance_state;
+> diff --git a/scripts/gdb/linux/genpd.py b/scripts/gdb/linux/genpd.py
+> index 6ca93bd2949e..39cd1abd8559 100644
+> --- a/scripts/gdb/linux/genpd.py
+> +++ b/scripts/gdb/linux/genpd.py
+> @@ -49,17 +49,17 @@ Output is similar to /sys/kernel/debug/pm_genpd/pm_genpd_summary'''
+>          else:
+>              status_string = 'off-{}'.format(genpd['state_idx'])
+>  
+> -        slave_names = []
+> +        child_names = []
+>          for link in list_for_each_entry(
+> -                genpd['master_links'],
+> +                genpd['parent_links'],
+>                  device_link_type.get_type().pointer(),
+> -                'master_node'):
+> -            slave_names.apend(link['slave']['name'])
+> +                'parent_node'):
+> +            child_names.append(link['child']['name'])
+>  
+>          gdb.write('%-30s  %-15s %s\n' % (
+>                  genpd['name'].string(),
+>                  status_string,
+> -                ', '.join(slave_names)))
+> +                ', '.join(child_names)))
+>  
+>          # Print devices in domain
+>          for pm_data in list_for_each_entry(genpd['dev_list'],
+> @@ -70,7 +70,7 @@ Output is similar to /sys/kernel/debug/pm_genpd/pm_genpd_summary'''
+>              gdb.write('    %-50s  %s\n' % (kobj_path, rtpm_status_str(dev)))
+>  
+>      def invoke(self, arg, from_tty):
+> -        gdb.write('domain                          status          slaves\n');
+> +        gdb.write('domain                          status          children\n');
+>          gdb.write('    /device                                             runtime status\n');
+>          gdb.write('----------------------------------------------------------------------\n');
+>          for genpd in list_for_each_entry(
+> 
+
