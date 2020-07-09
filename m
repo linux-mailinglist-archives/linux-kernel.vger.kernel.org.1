@@ -2,165 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 073502195AF
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 03:32:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 756B82195BB
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 03:49:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726139AbgGIBcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 21:32:52 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:2538 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726044AbgGIBcw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 21:32:52 -0400
-Received: from dggemi404-hub.china.huawei.com (unknown [172.30.72.54])
-        by Forcepoint Email with ESMTP id 48F362A94E696D956461;
-        Thu,  9 Jul 2020 09:32:49 +0800 (CST)
-Received: from DGGEMI421-HUB.china.huawei.com (10.1.199.150) by
- dggemi404-hub.china.huawei.com (10.3.17.142) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Thu, 9 Jul 2020 09:32:49 +0800
-Received: from DGGEMI525-MBS.china.huawei.com ([169.254.6.177]) by
- dggemi421-hub.china.huawei.com ([10.1.199.150]) with mapi id 14.03.0487.000;
- Thu, 9 Jul 2020 09:32:39 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-CC:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>,
-        "Luis Claudio R . Goncalves" <lgoncalv@redhat.com>,
-        Mahipal Challa <mahipalreddy2006@gmail.com>,
-        Seth Jennings <sjenning@redhat.com>,
-        Dan Streetman <ddstreet@ieee.org>,
-        Vitaly Wool <vitaly.wool@konsulko.com>,
-        "Wangzhou (B)" <wangzhou1@hisilicon.com>,
-        "Colin Ian King" <colin.king@canonical.com>
-Subject: RE: [PATCH v4] mm/zswap: move to use crypto_acomp API for hardware
- acceleration
-Thread-Topic: [PATCH v4] mm/zswap: move to use crypto_acomp API for hardware
- acceleration
-Thread-Index: AQHWVF24fP2q5El5/U63jMMAkQc326j9QfAAgAE0U2A=
-Date:   Thu, 9 Jul 2020 01:32:38 +0000
-Message-ID: <B926444035E5E2439431908E3842AFD25610B7@DGGEMI525-MBS.china.huawei.com>
-References: <20200707125210.33256-1-song.bao.hua@hisilicon.com>
- <20200708145934.4w3qk53mgavyyln7@linutronix.de>
-In-Reply-To: <20200708145934.4w3qk53mgavyyln7@linutronix.de>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.202.83]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1726184AbgGIBtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 21:49:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726118AbgGIBs7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 21:48:59 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86F13C08C5CE
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 18:48:59 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id v6so679711iob.4
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 18:48:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=QF5qDVB9CiXNubN0gxjwlT5anz6G/3fGUWW6m+mjh/M=;
+        b=f4a5EMFnpoEpIOCT2oXlDjcF0b/ZlejeP7WJ0unPCeU8k7RJS2jwqBYY3UchX3MC+R
+         0VIhpfoVspCcxI/FG1mTWDMMsvtquLn6u4ngA0hXDwTItQqCKmAngTdYbuqL5Pp4H9+f
+         IM6g/82klI/9mlc34t4btIqOxh3autPzeHAjKPtcD0PQ6JjklEmO8T0omDi8iMNkc4jz
+         8AxEE04zv3hy4rQNqZHlww897HRtaGZZb//cV8eCIZ4uWUlEtbh5StXFLpxtrqmKhe0p
+         jLzXL5NJCTuqeWGYgH7u0/nDmDp4upIkMXXwu/JV05qszFAgwhyvBH/y3OlDzayL4bnz
+         UzfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QF5qDVB9CiXNubN0gxjwlT5anz6G/3fGUWW6m+mjh/M=;
+        b=JoHpo/7HV8UM9Bne0uegejaKJDHGxsyeSLEMfkW7Kd0W8ZcbSekazKsfXjGycj24UZ
+         uHjwlweFdxYuItGK4ENw66L7K6OLLGml+f3BbSUz9K0CjOYtFJghOdXh13rTBVjgyi6Y
+         baP77K7BMFd+gUxfBTYDPJ9g7+etti0UmLaqBcivjGH53M7SWmusMZd3oDr+Vq0g2mX9
+         hPyynRXxUMU2joRqm3z/qvuAcswN7BI5VJh2yotYHDUaOt5oo9U6GNwpKA2+/iFVIH61
+         4pi2RfBIecoCx28JhlHdKFxXuhcNekMeF0+SnM+wgZs6mY+3fvNc11uE2FgZMGqDXtIq
+         opbA==
+X-Gm-Message-State: AOAM533j9HJ2FJWo3Zv9yYavO7+Wpz1XfoqOJg+dI4E1ustxhwFLkRlw
+        aYEvSZGUMy+IXLqlxoHCqMIA1g==
+X-Google-Smtp-Source: ABdhPJykjsuP8f3ytbr9bj87f8LeVaMs5MpXiLOrth4eoyZLJbgisSTrMtipUQCX3IKpjclikig8iA==
+X-Received: by 2002:a05:6638:240f:: with SMTP id z15mr43237378jat.76.1594259338786;
+        Wed, 08 Jul 2020 18:48:58 -0700 (PDT)
+Received: from [172.22.22.26] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id v16sm1441204iow.19.2020.07.08.18.48.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Jul 2020 18:48:58 -0700 (PDT)
+Subject: Re: [PATCH v2 1/2 net] bitfield.h: don't compile-time validate _val
+ in FIELD_FIT
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        "David S . Miller" <davem@davemloft.net>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, oss-drivers@netronome.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jakub Kicinski <kuba@kernel.org>, stable@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>
+References: <20200708230402.1644819-1-ndesaulniers@google.com>
+ <20200708230402.1644819-2-ndesaulniers@google.com>
+From:   Alex Elder <elder@linaro.org>
+Message-ID: <af1c02b8-3856-dac9-67e9-af27803c2eee@linaro.org>
+Date:   Wed, 8 Jul 2020 20:48:56 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+In-Reply-To: <20200708230402.1644819-2-ndesaulniers@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogbGludXgtY3J5cHRvLW93
-bmVyQHZnZXIua2VybmVsLm9yZw0KPiBbbWFpbHRvOmxpbnV4LWNyeXB0by1vd25lckB2Z2VyLmtl
-cm5lbC5vcmddIE9uIEJlaGFsZiBPZiBTZWJhc3RpYW4gQW5kcnplag0KPiBTaWV3aW9yDQo+IFNl
-bnQ6IFRodXJzZGF5LCBKdWx5IDksIDIwMjAgMzowMCBBTQ0KPiBUbzogU29uZyBCYW8gSHVhIChC
-YXJyeSBTb25nKSA8c29uZy5iYW8uaHVhQGhpc2lsaWNvbi5jb20+DQo+IENjOiBha3BtQGxpbnV4
-LWZvdW5kYXRpb24ub3JnOyBoZXJiZXJ0QGdvbmRvci5hcGFuYS5vcmcuYXU7DQo+IGRhdmVtQGRh
-dmVtbG9mdC5uZXQ7IGxpbnV4LWNyeXB0b0B2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LW1tQGt2YWNr
-Lm9yZzsNCj4gbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsgTGludXhhcm0gPGxpbnV4YXJt
-QGh1YXdlaS5jb20+OyBMdWlzIENsYXVkaW8NCj4gUiAuIEdvbmNhbHZlcyA8bGdvbmNhbHZAcmVk
-aGF0LmNvbT47IE1haGlwYWwgQ2hhbGxhDQo+IDxtYWhpcGFscmVkZHkyMDA2QGdtYWlsLmNvbT47
-IFNldGggSmVubmluZ3MgPHNqZW5uaW5nQHJlZGhhdC5jb20+Ow0KPiBEYW4gU3RyZWV0bWFuIDxk
-ZHN0cmVldEBpZWVlLm9yZz47IFZpdGFseSBXb29sDQo+IDx2aXRhbHkud29vbEBrb25zdWxrby5j
-b20+OyBXYW5nemhvdSAoQikgPHdhbmd6aG91MUBoaXNpbGljb24uY29tPjsNCj4gQ29saW4gSWFu
-IEtpbmcgPGNvbGluLmtpbmdAY2Fub25pY2FsLmNvbT4NCj4gU3ViamVjdDogUmU6IFtQQVRDSCB2
-NF0gbW0venN3YXA6IG1vdmUgdG8gdXNlIGNyeXB0b19hY29tcCBBUEkgZm9yDQo+IGhhcmR3YXJl
-IGFjY2VsZXJhdGlvbg0KPiANCj4gT24gMjAyMC0wNy0wOCAwMDo1MjoxMCBbKzEyMDBdLCBCYXJy
-eSBTb25nIHdyb3RlOg0KPiDigKYNCj4gPiBAQCAtMTI3LDkgKzEyOSwxNyBAQA0KPiBtb2R1bGVf
-cGFyYW1fbmFtZWQoc2FtZV9maWxsZWRfcGFnZXNfZW5hYmxlZCwNCj4gPiB6c3dhcF9zYW1lX2Zp
-bGxlZF9wYWdlc19lbmFibGVkLA0KPiA+ICAqIGRhdGEgc3RydWN0dXJlcw0KPiA+ICAqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqLw0KPiA+DQo+ID4gK3N0cnVjdCBjcnlwdG9fYWNv
-bXBfY3R4IHsNCj4gPiArCXN0cnVjdCBjcnlwdG9fYWNvbXAgKmFjb21wOw0KPiA+ICsJc3RydWN0
-IGFjb21wX3JlcSAqcmVxOw0KPiA+ICsJc3RydWN0IGNyeXB0b193YWl0IHdhaXQ7DQo+ID4gKwl1
-OCAqZHN0bWVtOw0KPiA+ICsJc3RydWN0IG11dGV4IG11dGV4Ow0KPiA+ICt9Ow0KPiDigKYNCj4g
-PiBAQCAtNTYxLDggKzYxNCw5IEBAIHN0YXRpYyBzdHJ1Y3QgenN3YXBfcG9vbCAqenN3YXBfcG9v
-bF9jcmVhdGUoY2hhcg0KPiAqdHlwZSwgY2hhciAqY29tcHJlc3NvcikNCj4gPiAgCXByX2RlYnVn
-KCJ1c2luZyAlcyB6cG9vbFxuIiwgenBvb2xfZ2V0X3R5cGUocG9vbC0+enBvb2wpKTsNCj4gPg0K
-PiA+ICAJc3RybGNweShwb29sLT50Zm1fbmFtZSwgY29tcHJlc3Nvciwgc2l6ZW9mKHBvb2wtPnRm
-bV9uYW1lKSk7DQo+ID4gLQlwb29sLT50Zm0gPSBhbGxvY19wZXJjcHUoc3RydWN0IGNyeXB0b19j
-b21wICopOw0KPiA+IC0JaWYgKCFwb29sLT50Zm0pIHsNCj4gPiArDQo+ID4gKwlwb29sLT5hY29t
-cF9jdHggPSBhbGxvY19wZXJjcHUoc3RydWN0IGNyeXB0b19hY29tcF9jdHggKik7DQo+IA0KPiBD
-YW4ndCB5b3UgYWxsb2NhdGUgdGhlIHdob2xlIHN0cnVjdHVyZSBpbnN0ZWFkIGp1c3QgYSBwb2lu
-dGVyIHRvIGl0PyBUaGUNCj4gc3RydWN0dXJlIGxvb2tzIGp1c3QgbGlrZSBidW5jaCBvZiBwb2lu
-dGVycyBhbnl3YXkuIExlc3MgdGltZSBmb3IgcG9pbnRlcg0KPiBjaGFzaW5nIG1lYW5zIG1vcmUg
-dGltZSBmb3IgZnVuLg0KPiANCj4gPiBAQCAtMTA3NCwxMiArMTEzOCwzMiBAQCBzdGF0aWMgaW50
-IHpzd2FwX2Zyb250c3dhcF9zdG9yZSh1bnNpZ25lZA0KPiB0eXBlLCBwZ29mZl90IG9mZnNldCwN
-Cj4gPiAgCX0NCj4gPg0KPiA+ICAJLyogY29tcHJlc3MgKi8NCj4gPiAtCWRzdCA9IGdldF9jcHVf
-dmFyKHpzd2FwX2RzdG1lbSk7DQo+ID4gLQl0Zm0gPSAqZ2V0X2NwdV9wdHIoZW50cnktPnBvb2wt
-PnRmbSk7DQo+ID4gLQlzcmMgPSBrbWFwX2F0b21pYyhwYWdlKTsNCj4gPiAtCXJldCA9IGNyeXB0
-b19jb21wX2NvbXByZXNzKHRmbSwgc3JjLCBQQUdFX1NJWkUsIGRzdCwgJmRsZW4pOw0KPiA+IC0J
-a3VubWFwX2F0b21pYyhzcmMpOw0KPiA+IC0JcHV0X2NwdV9wdHIoZW50cnktPnBvb2wtPnRmbSk7
-DQo+ID4gKwlhY29tcF9jdHggPSAqdGhpc19jcHVfcHRyKGVudHJ5LT5wb29sLT5hY29tcF9jdHgp
-Ow0KPiA+ICsNCj4gPiArCW11dGV4X2xvY2soJmFjb21wX2N0eC0+bXV0ZXgpOw0KPiA+ICsNCj4g
-PiArCXNyYyA9IGttYXAocGFnZSk7DQo+ID4gKwlkc3QgPSBhY29tcF9jdHgtPmRzdG1lbTsNCj4g
-DQo+IHRoYXQgbXV0ZXggaXMgcGVyLUNQVSwgcGVyLWNvbnRleHQuIFRoZSBkc3RtZW0gcG9pbnRl
-ciBpcyBwZXItQ1BVLiBTbyBpZiBJIHJlYWQNCj4gdGhpcyByaWdodCwgeW91IGNhbiBnZXQgcHJl
-ZW1wdGVkIGFmdGVyIGNyeXB0b193YWl0X3JlcSgpIGFuZCBhbm90aGVyIGNvbnRleHQNCj4gaW4g
-dGhpcyBDUFUgd3JpdGVzIGl0cyBkYXRhIHRvIHRoZSBzYW1lIGRzdG1lbSBhbmQgdGhlbuKApg0K
-PiANCj4gPiArCXNnX2luaXRfb25lKCZpbnB1dCwgc3JjLCBQQUdFX1NJWkUpOw0KPiA+ICsJLyog
-enN3YXBfZHN0bWVtIGlzIG9mIHNpemUgKFBBR0VfU0laRSAqIDIpLiBSZWZsZWN0IHNhbWUgaW4g
-c2dfbGlzdCAqLw0KPiA+ICsJc2dfaW5pdF9vbmUoJm91dHB1dCwgZHN0LCBQQUdFX1NJWkUgKiAy
-KTsNCj4gPiArCWFjb21wX3JlcXVlc3Rfc2V0X3BhcmFtcyhhY29tcF9jdHgtPnJlcSwgJmlucHV0
-LCAmb3V0cHV0LA0KPiBQQUdFX1NJWkUsIGRsZW4pOw0KPiA+ICsJLyoNCj4gPiArCSAqIGl0IG1h
-eWJlIGxvb2tzIGEgbGl0dGxlIGJpdCBzaWxseSB0aGF0IHdlIHNlbmQgYW4gYXN5bmNocm9ub3Vz
-IHJlcXVlc3QsDQo+ID4gKwkgKiB0aGVuIHdhaXQgZm9yIGl0cyBjb21wbGV0aW9uIHN5bmNocm9u
-b3VzbHkuIFRoaXMgbWFrZXMgdGhlIHByb2Nlc3MNCj4gbG9vaw0KPiA+ICsJICogc3luY2hyb25v
-dXMgaW4gZmFjdC4NCj4gPiArCSAqIFRoZW9yZXRpY2FsbHksIGFjb21wIHN1cHBvcnRzIHVzZXJz
-IHNlbmQgbXVsdGlwbGUgYWNvbXAgcmVxdWVzdHMgaW4NCj4gb25lDQo+ID4gKwkgKiBhY29tcCBp
-bnN0YW5jZSwgdGhlbiBnZXQgdGhvc2UgcmVxdWVzdHMgZG9uZSBzaW11bHRhbmVvdXNseS4gYnV0
-IGluDQo+IHRoaXMNCj4gPiArCSAqIGNhc2UsIGZyb250c3dhcCBhY3R1YWxseSBkb2VzIHN0b3Jl
-IGFuZCBsb2FkIHBhZ2UgYnkgcGFnZSwgdGhlcmUgaXMgbm8NCj4gPiArCSAqIGV4aXN0aW5nIG1l
-dGhvZCB0byBzZW5kIHRoZSBzZWNvbmQgcGFnZSBiZWZvcmUgdGhlIGZpcnN0IHBhZ2UgaXMgZG9u
-ZQ0KPiA+ICsJICogaW4gb25lIHRocmVhZCBkb2luZyBmcm9udHN3YXAuDQo+ID4gKwkgKiBidXQg
-aW4gZGlmZmVyZW50IHRocmVhZHMgcnVubmluZyBvbiBkaWZmZXJlbnQgY3B1LCB3ZSBoYXZlIGRp
-ZmZlcmVudA0KPiA+ICsJICogYWNvbXAgaW5zdGFuY2UsIHNvIG11bHRpcGxlIHRocmVhZHMgY2Fu
-IGRvIChkZSljb21wcmVzc2lvbiBpbg0KPiBwYXJhbGxlbC4NCj4gPiArCSAqLw0KPiA+ICsJcmV0
-ID0gY3J5cHRvX3dhaXRfcmVxKGNyeXB0b19hY29tcF9jb21wcmVzcyhhY29tcF9jdHgtPnJlcSks
-DQo+ICZhY29tcF9jdHgtPndhaXQpOw0KPiA+ICsJZGxlbiA9IGFjb21wX2N0eC0+cmVxLT5kbGVu
-Ow0KPiA+ICsJa3VubWFwKHBhZ2UpOw0KPiA+ICsNCj4gPiAgCWlmIChyZXQpIHsNCj4gPiAgCQly
-ZXQgPSAtRUlOVkFMOw0KPiA+ICAJCWdvdG8gcHV0X2RzdG1lbTsNCj4gDQo+IFRoaXMgbG9va3Mg
-dXNpbmcgdGhlIHNhbWUgc3luY2hyb25vdXMgbWVjaGFuaXNtIGFyb3VuZCBhbiBhc3luY2hyb25v
-dXMNCj4gaW50ZXJmYWNlLiBJdCB3b3JrcyBhcyBhIFBvQy4NCj4gDQo+IEFzIGZhciBhcyBJIHJl
-bWVtYmVyIHRoZSBjcnlwdG8gYXN5bmMgaW50ZXJmYWNlLCB0aGUgaW5jb21pbmcgc2ticyB3ZXJl
-IGZlZCB0bw0KPiB0aGUgYXN5bmMgaW50ZXJmYWNlIGFuZCByZXR1cm5lZCB0byB0aGUgY2FsbGVy
-IHNvIHRoZSBOSUMgY291bGQgY29udGludWUNCj4gYWxsb2NhdGUgbmV3IFJYIHNrYnMgYW5kIG1v
-dmUgb24uIE9ubHkgaWYgdGhlIHF1ZXVlIG9mIHJlcXVlc3RzIHdhcyBnZXR0aW5nDQo+IHRvIGxv
-bmcgdGhlIGNvZGUgc3RhcnRlZCB0byB0aHJvdHRsZS4gRXZlbnR1YWxseSB0aGUgYXN5bmMgY3J5
-cHRvIGNvZGUNCj4gY29tcGxldGVkIHRoZSBkZWNyeXB0aW9uIG9wZXJhdGlvbiBpbiBhIGRpZmZl
-cmVudCBjb250ZXh0IGFuZCBmZWQgdGhlDQo+IGRlY3J5cHRlZCBwYWNrZXQocykgaW50byB0aGUg
-c3RhY2suDQo+IA0KPiBGcm9tIGEgcXVpY2sgdmlldywgeW91IHdvdWxkIGhhdmUgdG8gcmV0dXJu
-IC1FSU5QUk9HUkVTUyBoZXJlIGFuZCBoYXZlIGF0DQo+IHRoZSBjYWxsZXIgc2lkZSBzb21ldGhp
-bmcgbGlrZSB0aGF0Og0KPiANCj4gaWZmIC0tZ2l0IGEvbW0vcGFnZV9pby5jIGIvbW0vcGFnZV9p
-by5jDQo+IGluZGV4IGU4NzI2ZjNlMzgyMGIuLjlkMWJhYTQ2ZWMzZWQgMTAwNjQ0DQo+IC0tLSBh
-L21tL3BhZ2VfaW8uYw0KPiArKysgYi9tbS9wYWdlX2lvLmMNCj4gQEAgLTI1MiwxMiArMjUyLDE1
-IEBAIGludCBzd2FwX3dyaXRlcGFnZShzdHJ1Y3QgcGFnZSAqcGFnZSwgc3RydWN0DQo+IHdyaXRl
-YmFja19jb250cm9sICp3YmMpDQo+ICAgICAgICAgICAgICAgICB1bmxvY2tfcGFnZShwYWdlKTsN
-Cj4gICAgICAgICAgICAgICAgIGdvdG8gb3V0Ow0KPiAgICAgICAgIH0NCj4gLSAgICAgICBpZiAo
-ZnJvbnRzd2FwX3N0b3JlKHBhZ2UpID09IDApIHsNCj4gKyAgICAgICByZXQgPSBmcm9udHN3YXBf
-c3RvcmUocGFnZSk7DQo+ICsgICAgICAgaWYgKHJldCA9PSAwKSB7DQo+ICAgICAgICAgICAgICAg
-ICBzZXRfcGFnZV93cml0ZWJhY2socGFnZSk7DQo+ICAgICAgICAgICAgICAgICB1bmxvY2tfcGFn
-ZShwYWdlKTsNCj4gICAgICAgICAgICAgICAgIGVuZF9wYWdlX3dyaXRlYmFjayhwYWdlKTsNCj4g
-ICAgICAgICAgICAgICAgIGdvdG8gb3V0Ow0KPiAgICAgICAgIH0NCj4gKyAgICAgICBpZiAocmV0
-ID0gLUVJTlBST0dSRVNTKQ0KPiArICAgICAgICAgICAgICAgZ290byBvdXQ7DQo+ICAgICAgICAg
-cmV0ID0gX19zd2FwX3dyaXRlcGFnZShwYWdlLCB3YmMsIGVuZF9zd2FwX2Jpb193cml0ZSk7DQo+
-ICBvdXQ6DQo+ICAgICAgICAgcmV0dXJuIHJldDsNCj4gDQpVbmZvcnR1bmF0ZWx5LCB0aGlzIGlz
-IG5vdCB0cnVlIGFuZCB0aGluZ3MgYXJlIG5vdCB0aGF0IHNpbXBsZS4NCg0KV2UgY2FuJ3Qgc2lt
-cGx5IGRlcGVuZCBvbiAtRUlOUFJPR1JFU1MgYW5kIGdvIG91dC4NCldlIGhhdmUgdG8gd2FpdCBm
-b3IgdGhlIHJlc3VsdCBvZiBjb21wcmVzc2lvbiB0byBkZWNpZGUgaWYgd2Ugc2hvdWxkDQpkbyBf
-X3N3YXBfd3JpdGVwYWdlKCkuIEFzIG9uZSBwYWdlIG1pZ2h0IGJlIGNvbXByZXNzZWQgaW50byB0
-d28NCnBhZ2VzLCBpbiB0aGlzIGNhc2UsIHdlIHdpbGwgc3RpbGwgbmVlZCB0byBkbyBfc3dhcF93
-cml0ZXBhZ2UoKS4NCkFzIEkgcmVwbGllZCBpbiB0aGUgbGF0ZXN0IGVtYWlsLCBhbGwgb2YgdGhl
-IGFzeW5jIGltcHJvdmVtZW50IHRvIGZyb250c3dhcA0KbmVlZHMgdmVyeSBjYXJlZnVsIHRoaW5r
-aW5nIGFuZCBiZW5jaG1hcmsuIEl0IGNhbiBvbmx5IGhhcHBlbiBhZnRlcg0Kd2UgYnVpbGQgdGhl
-IGJhc2UgaW4gdGhpcyBwYXRjaCwgZml4aW5nIHRoZSBicm9rZW4gY29ubmVjdGlvbiBiZXR3ZWVu
-DQp6c3dhcCBhbmQgdGhvc2UgbmV3IHppcCBkcml2ZXJzLg0KDQpUaGFua3MNCkJhcnJ5DQo=
+On 7/8/20 6:04 PM, Nick Desaulniers wrote:
+> From: Jakub Kicinski <kuba@kernel.org>
+> 
+> When ur_load_imm_any() is inlined into jeq_imm(), it's possible for the
+> compiler to deduce a case where _val can only have the value of -1 at
+> compile time. Specifically,
+> 
+> /* struct bpf_insn: _s32 imm */
+> u64 imm = insn->imm; /* sign extend */
+> if (imm >> 32) { /* non-zero only if insn->imm is negative */
+>   /* inlined from ur_load_imm_any */
+>   u32 __imm = imm >> 32; /* therefore, always 0xffffffff */
+>   if (__builtin_constant_p(__imm) && __imm > 255)
+>     compiletime_assert_XXX()
+> 
+> This can result in tripping a BUILD_BUG_ON() in __BF_FIELD_CHECK() that
+> checks that a given value is representable in one byte (interpreted as
+> unsigned).
+
+Looking at the 12 other callers of FIELD_FIT(), it's hard to
+tell but it appears most of them don't supply constant _val
+to the macro.  So maybe relaxing this check is no great loss.
+
+I feel like I need to look much more deeply into this to call
+it a review, so:
+
+Acked-by: Alex Elder <elder@linaro.org>
+
+> FIELD_FIT() should return true or false at runtime for whether a value
+> can fit for not. Don't break the build over a value that's too large for
+> the mask. We'd prefer to keep the inlining and compiler optimizations
+> though we know this case will always return false.
+> 
+> Cc: stable@vger.kernel.org
+> Link: https://lore.kernel.org/kernel-hardening/CAK7LNASvb0UDJ0U5wkYYRzTAdnEs64HjXpEUL7d=V0CXiAXcNw@mail.gmail.com/
+> Reported-by: Masahiro Yamada <masahiroy@kernel.org>
+> Debugged-by: Sami Tolvanen <samitolvanen@google.com>
+> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> ---
+> Changes V1->V2:
+> * None
+> 
+>  include/linux/bitfield.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/bitfield.h b/include/linux/bitfield.h
+> index 48ea093ff04c..4e035aca6f7e 100644
+> --- a/include/linux/bitfield.h
+> +++ b/include/linux/bitfield.h
+> @@ -77,7 +77,7 @@
+>   */
+>  #define FIELD_FIT(_mask, _val)						\
+>  	({								\
+> -		__BF_FIELD_CHECK(_mask, 0ULL, _val, "FIELD_FIT: ");	\
+> +		__BF_FIELD_CHECK(_mask, 0ULL, 0ULL, "FIELD_FIT: ");	\
+>  		!((((typeof(_mask))_val) << __bf_shf(_mask)) & ~(_mask)); \
+>  	})
+>  
+> 
+
