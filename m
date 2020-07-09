@@ -2,153 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 200FB21A89F
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 22:08:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B34821A8AE
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 22:09:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726509AbgGIUIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 16:08:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43012 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726196AbgGIUIL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 16:08:11 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7380CC08C5CE
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 13:08:11 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id j19so1430596pgm.11
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 13:08:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pLBedoQfpK2DgMyeYFLuVKUfBSYZwpag97/6iT786IQ=;
-        b=bpm55zllAw8nlwKFmlpsqohQxm+EGW1RynZKF6buhnF4wFWwIploavQVBhMNxTThgZ
-         pPIXgo28wYGMXRTU+PACEPxc+h26RmY8IWB+OHozzHXYyhBiF1S7hDaudJ04X41mqHli
-         liIixSh/td8GVnVZNWIXKRxB5ag9lLKr2aWWAZsW+qbiQKT+s+lxPq1boL27HeCEjFzh
-         vVvOZodoVauBt2UCj1TCW2+4bqGEDwtbNv7Gy/okhNRVvEe4prOUZm8sKf274iuMS/+Y
-         fs0GYwPVAMwzla5KWSAK5Q2E45oh8HWiJpEpt5FffbTzC4otOb2Qu4h1ixxJZMG3Zh1w
-         dL8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=pLBedoQfpK2DgMyeYFLuVKUfBSYZwpag97/6iT786IQ=;
-        b=UtnHYCKCqzr/7T++tBR0KVvRQIuHry6Ej1Q/Zbno9ZRve1GH0gZ/K0650E3V32f+JL
-         fTmZ9riXu4CgDOdiwU95EeVkDnfQsH5jM0OoSDJ/KucgFfWwpyV6KrUfYYdQBZGgecSi
-         214lLwaR85jqp+OYxCnStRAjqAj9cXAwpN3ajbmVVjWZM7JfPPPz9fTIjixxmEuK5I2U
-         Jbu48hJvjvyT0G4r3STgyd2f2FjEHzsAODvI1lp0ztq0DvtnAOATW9hSyhwOB0beitiZ
-         IzV3O1YtAzBfi2ct7GfymAIi5Nfmow9rIU13f280sk6KAEmjiBzgh5enOhV57eUSleWt
-         ddlg==
-X-Gm-Message-State: AOAM531iO5p/2Yt5gJgtuDClqSiqXCOifOr1Ru1joDTH7MoQ2kBlgjy+
-        oNPGPWokyWd385DLT85qlqXisVnkHTcsHw==
-X-Google-Smtp-Source: ABdhPJwH2yZXuMK1v2nxYBAcKR39mYEbzR2YVH8DdjjrdNSd3OZRm+a651q/IpIL/WcPFQJKnzhu0Q==
-X-Received: by 2002:a05:6a00:2bb:: with SMTP id q27mr58904437pfs.176.1594325290692;
-        Thu, 09 Jul 2020 13:08:10 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id b18sm3467144pju.10.2020.07.09.13.08.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jul 2020 13:08:10 -0700 (PDT)
-Date:   Thu, 09 Jul 2020 13:08:10 -0700 (PDT)
-X-Google-Original-Date: Thu, 09 Jul 2020 12:31:05 PDT (-0700)
-Subject:     Re: [PATCH 2/2] riscv: Support CONFIG_STRICT_DEVMEM
-In-Reply-To: <7faa60aa4a606b5c5c1ae374d82a7eee6c764b38.1592292685.git.zong.li@sifive.com>
-CC:     Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        zong.li@sifive.com
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     zong.li@sifive.com
-Message-ID: <mhng-d4637494-2072-41f6-9a8a-1b222d89d6c4@palmerdabbelt-glaptop1>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S1726925AbgGIUJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 16:09:17 -0400
+Received: from smtp.al2klimov.de ([78.46.175.9]:41542 "EHLO smtp.al2klimov.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726220AbgGIUJQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 16:09:16 -0400
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id 648FEBC0C2;
+        Thu,  9 Jul 2020 20:09:09 +0000 (UTC)
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+To:     balbi@kernel.org, gregkh@linuxfoundation.org,
+        alexandre.belloni@bootlin.com, clabbe@baylibre.com, arnd@arndb.de,
+        yanaijie@huawei.com, yuehaibing@huawei.com,
+        chunfeng.yun@mediatek.com, baijiaju1990@gmail.com,
+        swboyd@chromium.org, christophe.jaillet@wanadoo.fr,
+        jaswinder.singh@linaro.org, linux-geode@lists.infradead.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Subject: [PATCH] USB GADGET/PERIPHERAL SUBSYSTEM: Replace HTTP links with HTTPS ones
+Date:   Thu,  9 Jul 2020 22:09:03 +0200
+Message-Id: <20200709200903.27124-1-grandmaster@al2klimov.de>
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: +++++
+X-Spam-Level: *****
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Jun 2020 00:45:47 PDT (-0700), zong.li@sifive.com wrote:
-> Implement the 'devmem_is_allowed()' interface for RISC-V, like some of
-> other architectures have done. It will be called from range_is_allowed()
-> when userpsace attempts to access /dev/mem.
+Rationale:
+Reduces attack surface on kernel devs opening the links for MITM
+as HTTPS traffic is much harder to manipulate.
 
-In fact, it's exactly the same (down to a few words of the comment) to the
-others that I checked.  I'm going to put a generic version in lib/ instead,
-I've sent out the patches.
+Deterministic algorithm:
+For each file:
+  If not .svg:
+    For each line:
+      If doesn't contain `\bxmlns\b`:
+        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+            If both the HTTP and HTTPS versions
+            return 200 OK and serve the same content:
+              Replace HTTP with HTTPS.
 
-> Access to exclusive IOMEM and kernel RAM is denied unless
-> CONFIG_STRICT_DEVMEM is set to 'n'.
->
-> Test it by devmem, the result as follows:
->
->  - CONFIG_STRICT_DEVMEM=y
-> 	$ devmem 0x10010000
-> 	0x00000000
-> 	$ devmem 0x80200000
-> 	0x0000106F
->
->  - CONFIG_STRICT_DEVMEM is not set
-> 	$ devmem 0x10010000
-> 	devmem: mmap: Operation not permitted
-> 	$ devmem 0x80200000
-> 	devmem: mmap: Operation not permitted
->
-> Signed-off-by: Zong Li <zong.li@sifive.com>
-> ---
->  arch/riscv/Kconfig          |  1 +
->  arch/riscv/include/asm/io.h |  2 ++
->  arch/riscv/mm/init.c        | 19 +++++++++++++++++++
->  3 files changed, 22 insertions(+)
->
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index 128192e14ff2..ffd7841ede4c 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -16,6 +16,7 @@ config RISCV
->  	select ARCH_HAS_BINFMT_FLAT
->  	select ARCH_HAS_DEBUG_VIRTUAL if MMU
->  	select ARCH_HAS_DEBUG_WX
-> +	select ARCH_HAS_DEVMEM_IS_ALLOWED
->  	select ARCH_HAS_GCOV_PROFILE_ALL
->  	select ARCH_HAS_GIGANTIC_PAGE
->  	select ARCH_HAS_MMIOWB
-> diff --git a/arch/riscv/include/asm/io.h b/arch/riscv/include/asm/io.h
-> index 3835c3295dc5..04ac65ab93ce 100644
-> --- a/arch/riscv/include/asm/io.h
-> +++ b/arch/riscv/include/asm/io.h
-> @@ -147,4 +147,6 @@ __io_writes_outs(outs, u64, q, __io_pbr(), __io_paw())
->
->  #include <asm-generic/io.h>
->
-> +extern int devmem_is_allowed(unsigned long pfn);
-> +
->  #endif /* _ASM_RISCV_IO_H */
-> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> index bbe816e03b2f..5e7e61519acc 100644
-> --- a/arch/riscv/mm/init.c
-> +++ b/arch/riscv/mm/init.c
-> @@ -517,6 +517,25 @@ void mark_rodata_ro(void)
->  }
->  #endif
->
-> +#ifdef CONFIG_STRICT_DEVMEM
-> +#include <linux/ioport.h>
-> +/*
-> + * devmem_is_allowed() checks to see if /dev/mem access to a certain address
-> + * is valid. The argument is a physical page number.
-> + *
-> + * Disallow access to system RAM as well as device-exclusive MMIO regions.
-> + * This effectively disable read()/write() on /dev/mem.
-> + */
-> +int devmem_is_allowed(unsigned long pfn)
-> +{
-> +	if (iomem_is_exclusive(pfn << PAGE_SHIFT))
-> +		return 0;
-> +	if (!page_is_ram(pfn))
-> +		return 1;
-> +	return 0;
-> +}
-> +#endif
-> +
->  void __init resource_init(void)
->  {
->  	struct memblock_region *region;
+Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+---
+ Continuing my work started at 93431e0607e5.
+ See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+ (Actually letting a shell for loop submit all this stuff for me.)
+
+ If there are any URLs to be removed completely or at least not HTTPSified:
+ Just clearly say so and I'll *undo my change*.
+ See also: https://lkml.org/lkml/2020/6/27/64
+
+ If there are any valid, but yet not changed URLs:
+ See: https://lkml.org/lkml/2020/6/26/837
+
+ If you apply the patch, please let me know.
+
+
+ drivers/usb/gadget/udc/amd5536udc.h     | 2 +-
+ drivers/usb/gadget/udc/amd5536udc_pci.c | 2 +-
+ drivers/usb/gadget/udc/gr_udc.c         | 2 +-
+ drivers/usb/gadget/udc/gr_udc.h         | 2 +-
+ drivers/usb/gadget/udc/max3420_udc.c    | 2 +-
+ drivers/usb/gadget/udc/snps_udc_core.c  | 2 +-
+ 6 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/usb/gadget/udc/amd5536udc.h b/drivers/usb/gadget/udc/amd5536udc.h
+index 0262383f8c79..3296f3fcee48 100644
+--- a/drivers/usb/gadget/udc/amd5536udc.h
++++ b/drivers/usb/gadget/udc/amd5536udc.h
+@@ -2,7 +2,7 @@
+ /*
+  * amd5536.h -- header for AMD 5536 UDC high/full speed USB device controller
+  *
+- * Copyright (C) 2007 AMD (http://www.amd.com)
++ * Copyright (C) 2007 AMD (https://www.amd.com)
+  * Author: Thomas Dahlmann
+  */
+ 
+diff --git a/drivers/usb/gadget/udc/amd5536udc_pci.c b/drivers/usb/gadget/udc/amd5536udc_pci.c
+index 80685e4306f3..a98b54b30882 100644
+--- a/drivers/usb/gadget/udc/amd5536udc_pci.c
++++ b/drivers/usb/gadget/udc/amd5536udc_pci.c
+@@ -2,7 +2,7 @@
+ /*
+  * amd5536udc_pci.c -- AMD 5536 UDC high/full speed USB device controller
+  *
+- * Copyright (C) 2005-2007 AMD (http://www.amd.com)
++ * Copyright (C) 2005-2007 AMD (https://www.amd.com)
+  * Author: Thomas Dahlmann
+  */
+ 
+diff --git a/drivers/usb/gadget/udc/gr_udc.c b/drivers/usb/gadget/udc/gr_udc.c
+index 7164ad9800f1..8fe0b65772b9 100644
+--- a/drivers/usb/gadget/udc/gr_udc.c
++++ b/drivers/usb/gadget/udc/gr_udc.c
+@@ -8,7 +8,7 @@
+  * GRLIB VHDL IP core library.
+  *
+  * Full documentation of the GRUSBDC core can be found here:
+- * http://www.gaisler.com/products/grlib/grip.pdf
++ * https://www.gaisler.com/products/grlib/grip.pdf
+  *
+  * Contributors:
+  * - Andreas Larsson <andreas@gaisler.com>
+diff --git a/drivers/usb/gadget/udc/gr_udc.h b/drivers/usb/gadget/udc/gr_udc.h
+index 417ad2aa2cc7..ac5b3f65adb5 100644
+--- a/drivers/usb/gadget/udc/gr_udc.h
++++ b/drivers/usb/gadget/udc/gr_udc.h
+@@ -8,7 +8,7 @@
+  * GRLIB VHDL IP core library.
+  *
+  * Full documentation of the GRUSBDC core can be found here:
+- * http://www.gaisler.com/products/grlib/grip.pdf
++ * https://www.gaisler.com/products/grlib/grip.pdf
+  *
+  * Contributors:
+  * - Andreas Larsson <andreas@gaisler.com>
+diff --git a/drivers/usb/gadget/udc/max3420_udc.c b/drivers/usb/gadget/udc/max3420_udc.c
+index 23f33946d80c..ea8cf9341dd5 100644
+--- a/drivers/usb/gadget/udc/max3420_udc.c
++++ b/drivers/usb/gadget/udc/max3420_udc.c
+@@ -7,7 +7,7 @@
+  *
+  * Based on:
+  *	o MAX3420E datasheet
+- *		http://datasheets.maximintegrated.com/en/ds/MAX3420E.pdf
++ *		https://datasheets.maximintegrated.com/en/ds/MAX3420E.pdf
+  *	o MAX342{0,1}E Programming Guides
+  *		https://pdfserv.maximintegrated.com/en/an/AN3598.pdf
+  *		https://pdfserv.maximintegrated.com/en/an/AN3785.pdf
+diff --git a/drivers/usb/gadget/udc/snps_udc_core.c b/drivers/usb/gadget/udc/snps_udc_core.c
+index 3fcded31405a..1102077facdc 100644
+--- a/drivers/usb/gadget/udc/snps_udc_core.c
++++ b/drivers/usb/gadget/udc/snps_udc_core.c
+@@ -2,7 +2,7 @@
+ /*
+  * amd5536.c -- AMD 5536 UDC high/full speed USB device controller
+  *
+- * Copyright (C) 2005-2007 AMD (http://www.amd.com)
++ * Copyright (C) 2005-2007 AMD (https://www.amd.com)
+  * Author: Thomas Dahlmann
+  */
+ 
+-- 
+2.27.0
+
