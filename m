@@ -2,227 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C08A8219D58
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 12:15:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A1E3219D3D
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 12:13:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726733AbgGIKPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 06:15:18 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:58912 "EHLO m43-7.mailgun.net"
+        id S1726771AbgGIKNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 06:13:38 -0400
+Received: from ozlabs.org ([203.11.71.1]:57885 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726302AbgGIKPR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 06:15:17 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1594289715; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: To:
- Subject: Sender; bh=R96k3NJkJXHArnjayQMtO7eaVw9xfD/00FOqn9uud7M=; b=Y3ropLhK56zPOGEuvlL/0RVlfIdbARvb73Fc2VSZKXZKtXXDjm3dgficdf66LZ1Lwfx2F6fC
- f4lVUSFlJlOnn5n4dMFXmh+d59A6kujV3qnNLKTpyp6DVxvRbujqfwM9um3M+v3jgPorOx2e
- S7HLvnM98Zxbgk806VInj3LAKFw=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n20.prod.us-west-2.postgun.com with SMTP id
- 5f06ee2c0082b2784837d1ca (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 09 Jul 2020 10:15:08
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 0C0B4C433A1; Thu,  9 Jul 2020 10:15:08 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.0.129] (unknown [183.83.142.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726347AbgGIKNh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 06:13:37 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: rohitkr)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0FFF2C43387;
-        Thu,  9 Jul 2020 10:15:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 0FFF2C43387
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rohitkr@codeaurora.org
-Subject: Re: [PATCH v3 3/8] ASoC: qcom: lpass: Use regmap_field for i2sctl and
- dmactl registers
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1594184896-10629-1-git-send-email-rohitkr@codeaurora.org>
- <1594184896-10629-4-git-send-email-rohitkr@codeaurora.org>
- <a59dc25f-cac2-5540-f1f4-78fd749c65c9@linaro.org>
- <3b849440-091e-bbd3-4944-8a196e181af7@codeaurora.org>
- <ac634d4d-527a-7262-2744-203c04ee0982@linaro.org>
-From:   Rohit Kumar <rohitkr@codeaurora.org>
-Message-ID: <4c5cb96c-9423-67a5-0da6-ee7cf9b1ea32@codeaurora.org>
-Date:   Thu, 9 Jul 2020 15:44:59 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4B2X7g5nVsz9sSd;
+        Thu,  9 Jul 2020 20:13:35 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1594289615;
+        bh=V/UfiEcEJmEZN4U3f8evnqswy/uVMHS/9JdwtGfPUdY=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=nzRAwHg5DWqxnr64TpRTPXGRnE8/0g/MyPqvHEW3TplcuZ3VZBDq81ZBJjsHRPTfO
+         WsF67x5DG9UVg2a+ikk+zlNznorFWPGELSjP7EJNjUETZRVcWnF+6eFUI+sARv0w89
+         XmFkeR/7TehGnZiVKu6YYFKLGW8hNZc/gnQcUwejYBC3byHW8EBZb19YX67mHIQYKc
+         cLm365Y07n+K60Q2nwUmyXjBB4LGBvpb6xIwZgrvc6vJFfdVIO/82FuL9RSpKLGfyo
+         0DKn3B2IBr7N3KP7jsgXda8lowUQ5CSUzWetkPqOxOJ71izeS+acNFfg6Gr0mcz8ci
+         mGMQBP8XgO4aA==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Nicholas Piggin <npiggin@gmail.com>, linuxppc-dev@lists.ozlabs.org
+Cc:     Nicholas Piggin <npiggin@gmail.com>, Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Waiman Long <longman@redhat.com>,
+        Anton Blanchard <anton@ozlabs.org>,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, kvm-ppc@vger.kernel.org,
+        linux-arch@vger.kernel.org
+Subject: Re: [PATCH v3 3/6] powerpc: move spinlock implementation to simple_spinlock
+In-Reply-To: <20200706043540.1563616-4-npiggin@gmail.com>
+References: <20200706043540.1563616-1-npiggin@gmail.com> <20200706043540.1563616-4-npiggin@gmail.com>
+Date:   Thu, 09 Jul 2020 20:15:51 +1000
+Message-ID: <87a709vvs8.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-In-Reply-To: <ac634d4d-527a-7262-2744-203c04ee0982@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Nicholas Piggin <npiggin@gmail.com> writes:
+> To prepare for queued spinlocks. This is a simple rename except to update
+> preprocessor guard name and a file reference.
+>
+> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+> ---
+>  arch/powerpc/include/asm/simple_spinlock.h    | 292 ++++++++++++++++++
+>  .../include/asm/simple_spinlock_types.h       |  21 ++
+>  arch/powerpc/include/asm/spinlock.h           | 285 +----------------
+>  arch/powerpc/include/asm/spinlock_types.h     |  12 +-
+>  4 files changed, 315 insertions(+), 295 deletions(-)
+>  create mode 100644 arch/powerpc/include/asm/simple_spinlock.h
+>  create mode 100644 arch/powerpc/include/asm/simple_spinlock_types.h
+>
+> diff --git a/arch/powerpc/include/asm/simple_spinlock.h b/arch/powerpc/include/asm/simple_spinlock.h
+> new file mode 100644
+> index 000000000000..e048c041c4a9
+> --- /dev/null
+> +++ b/arch/powerpc/include/asm/simple_spinlock.h
+> @@ -0,0 +1,292 @@
+> +/* SPDX-License-Identifier: GPL-2.0-or-later */
+> +#ifndef __ASM_SIMPLE_SPINLOCK_H
+> +#define __ASM_SIMPLE_SPINLOCK_H
 
-On 7/9/2020 3:36 PM, Srinivas Kandagatla wrote:
->
->
-> On 09/07/2020 10:57, Rohit Kumar wrote:
->> Thanks Srini for reviewing.
->>
->> On 7/9/2020 2:56 PM, Srinivas Kandagatla wrote:
->>>
->>>
->>> On 08/07/2020 06:08, Rohit kumar wrote:
->>>> I2SCTL and DMACTL registers has different bits alignment for newer
->>>> LPASS variants of SC7180 soc. Use REG_FIELD_ID() to define the
->>>> reg_fields in platform specific file and removed shifts and mask
->>>> macros for such registers from header file.
->>>>
->>>> Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
->>>
->>> Thanks Rohit for doing this, this looks much better now!
->>> I have few minor comments..
->>>
->>>> ---
->>>>   sound/soc/qcom/lpass-apq8016.c   |  24 ++++++
->>>>   sound/soc/qcom/lpass-cpu.c       | 163 
->>>> +++++++++++++++++++++++----------------
->>>>   sound/soc/qcom/lpass-ipq806x.c   |  24 ++++++
->>>>   sound/soc/qcom/lpass-lpaif-reg.h | 157 
->>>> +++++++++++++++++++------------------
->>>>   sound/soc/qcom/lpass-platform.c  | 151 
->>>> +++++++++++++++++++++++++++---------
->>>>   sound/soc/qcom/lpass.h           |  53 +++++++++++++
->>>>   6 files changed, 398 insertions(+), 174 deletions(-)
->>>>
->>>
->>> index f0c7e93..f358d12 100644
->>>> --- a/sound/soc/qcom/lpass-cpu.c
->>>> +++ b/sound/soc/qcom/lpass-cpu.c
->>>> @@ -29,6 +29,32 @@
->>>>   #define LPASS_CPU_I2S_SD0_1_2_MASK    GENMASK(2, 0)
->>>>   #define LPASS_CPU_I2S_SD0_1_2_3_MASK    GENMASK(3, 0)
->>>
->>>
->>>>   }
->>>>   -static int lpass_cpu_daiops_hw_free(struct snd_pcm_substream 
->>>> *substream,
->>>> -        struct snd_soc_dai *dai)
->>>> -{
->>>> -    struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
->>>> -    int ret;
->>>> -
->>>> -    ret = regmap_write(drvdata->lpaif_map,
->>>> -               LPAIF_I2SCTL_REG(drvdata->variant, dai->driver->id),
->>>> -               0);
->>>> -    if (ret)
->>>> -        dev_err(dai->dev, "error writing to i2sctl reg: %d\n", ret);
->>>> -
->>>> -    return ret;
->>>> -}
->>>
->>> Any particular reason why this function remove
->>
->> This was causing issue in playback/capture concurrency. It sets 
->> I2SCTL register value to 0
->>
->> when usecase ends. However, playback/capture specific bits are 
->> already cleared during trigger() stop
->>
->> function. So, this is not needed.
->
-> This should be sent as separate fix with fixes tag!
-Ok. Will create separate patch with fixes tag and post.
->
->>
->>
->>>
->>>> diff --git a/sound/soc/qcom/lpass-lpaif-reg.h 
->>>> b/sound/soc/qcom/lpass-lpaif-reg.h
->>>> index 72a3e2f..5258e60 100644
->>>> --- a/sound/soc/qcom/lpass-lpaif-reg.h
->>>> +++ b/sound/soc/qcom/lpass-lpaif-reg.h
->>>> @@ -12,15 +12,12 @@
->>> ...
->>>>   #endif /* __LPASS_LPAIF_REG_H__ */
->>>> diff --git a/sound/soc/qcom/lpass-platform.c 
->>>> b/sound/soc/qcom/lpass-platform.c
->>>> index 34f7fd1..445ca193 100644
->>>> --- a/sound/soc/qcom/lpass-platform.c
->>>> +++ b/sound/soc/qcom/lpass-platform.c
->>>> @@ -50,6 +50,53 @@ static const struct snd_pcm_hardware 
->>>> lpass_platform_pcm_hardware = {
->>>>       .fifo_size        =    0,
->>>>   };
->>> ...
->>>>   static int lpass_platform_pcmops_open(struct snd_soc_component 
->>>> *component,
->>>>                         struct snd_pcm_substream *substream)
->>>>   {
->>>> @@ -59,9 +106,9 @@ static int lpass_platform_pcmops_open(struct 
->>>> snd_soc_component *component,
->>>>       struct lpass_data *drvdata = 
->>>> snd_soc_component_get_drvdata(component);
->>>>       struct lpass_variant *v = drvdata->variant;
->>>>       int ret, dma_ch, dir = substream->stream;
->>>> -    struct lpass_pcm_data *data;
->>>> +    struct lpass_pcm_data *data = NULL;
->>>>   -    data = devm_kzalloc(soc_runtime->dev, sizeof(*data), 
->>>> GFP_KERNEL);
->>>> +    data = kzalloc(sizeof(*data), GFP_KERNEL);
->>>
->>> Does this change belong in this patch?
->>
->>
->> As part of this change, I fixed memory leak too by adding kfree() in 
->> close()
->>
->> However, this was causing issue as memory was allocated using 
->> devm_kzalloc().
->>
->> Should I move it to different patch?
->
-> That would be the right thing to do, can also add fixes tag!
+_ASM_POWERPC_SIMPLE_SPINLOCK_H
 
+> +#ifdef __KERNEL__
 
-Sure, Will do that in next spin.
+Shouldn't be necessary.
 
->
->
->>
->>>
->>>>       if (!data)
->>>>           return -ENOMEM;
->>>>   @@ -111,13 +158,13 @@ static int 
->>>> lpass_platform_pcmops_close(struct snd_soc_component *component,
->>>>       struct snd_pcm_runtime *runtime = substream->runtime;
->>>>       struct lpass_data *drvdata = 
->>>> snd_soc_component_get_drvdata(component);
->>>>       struct lpass_variant *v = drvdata->variant;
->
->>>
->>> Above two along with rddma members can be removed, these become 
->>> redundant after adding regmap field!
->>>
->> wrdma_channels is used in alloc_dma_channel() to get the channel id.
->>
->> Also, both are used for other DMA registers such as LPAIF_RDMABASE_REG,
->>
->> LPAIF_RDMABUFF_REG, LPAIF_RDMACURR_REG, etc.
->>
-> Ah I see we are still using this in lpass_cpu_regmap_writeable!
-> ignore my previous comments about removing them!
->
-> --srini
+> +/*
+> + * Simple spin lock operations.  
+> + *
+> + * Copyright (C) 2001-2004 Paul Mackerras <paulus@au.ibm.com>, IBM
+> + * Copyright (C) 2001 Anton Blanchard <anton@au.ibm.com>, IBM
+> + * Copyright (C) 2002 Dave Engebretsen <engebret@us.ibm.com>, IBM
+> + *	Rework to support virtual processors
+> + *
+> + * Type of int is used as a full 64b word is not necessary.
+> + *
+> + * (the type definitions are in asm/simple_spinlock_types.h)
+> + */
+> +#include <linux/irqflags.h>
+> +#include <asm/paravirt.h>
+> +#ifdef CONFIG_PPC64
+> +#include <asm/paca.h>
+> +#endif
 
--- 
-Qualcomm INDIA, on behalf of Qualcomm Innovation Center, Inc.is a member
-of the Code Aurora Forum, hosted by the Linux Foundation.
+I don't think paca.h needs a CONFIG_PPC64 guard, it contains one. I know
+you're just moving the code, but still nice to cleanup slightly along
+the way.
+
+cheers
 
