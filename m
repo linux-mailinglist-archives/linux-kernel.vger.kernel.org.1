@@ -2,126 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAE1921A25C
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 16:44:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E23ED21A275
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 16:50:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726932AbgGIOoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 10:44:05 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:31775 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726353AbgGIOoF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 10:44:05 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1594305844; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=3We4BhHnsmyDDmm6gtgYzv/izpXX1ppdDtsySi/iWzs=;
- b=t8FTN88FNK+i9GbYLS2ecAMUUP2HeaCrYoLcBM4IXpMlS+J33t8RtVK61TLe1yXsame3XEdG
- gt+lvluu9fkXjiiKIuPxdenKxwy1WRtmoiRhLLI90sD1EQeSxurpCN5hWuJKbT7tKilHYPVU
- 4JNl9vfWhvJRGhKTmFGgioDARfw=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n14.prod.us-east-1.postgun.com with SMTP id
- 5f072d269f03943e5ce0ee16 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 09 Jul 2020 14:43:50
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 34F4DC43395; Thu,  9 Jul 2020 14:43:50 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 82D43C433C6;
-        Thu,  9 Jul 2020 14:43:49 +0000 (UTC)
+        id S1726837AbgGIOuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 10:50:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726371AbgGIOuK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 10:50:10 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E32F9C08C5CE
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 07:50:09 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id mn17so1220723pjb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 07:50:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0Kim3CdbxyyOIhVT8nqi+K5F5C7o279gFE7n8I2AhGw=;
+        b=PCMgMMIMPYgEiSOnn0WY5wKtX6cQ7Z+UAnP1iiRucoEQNv/MdRE5U9c5KpDE2lrLCt
+         kkxmc4qkOKMgwTMSCezsgykchuRt1xzNJss9K4+HJBnMdi7Zw5W/8Z+vfTGJXDvz42Q8
+         XIw6BtvVUeg3ghXbZOO7MBapqShWQ1NOc4too=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0Kim3CdbxyyOIhVT8nqi+K5F5C7o279gFE7n8I2AhGw=;
+        b=AptkGjRakr5l9BYuflYdSnR5HQy/PxADCsO9HppGvnapO2bAvOGrSKcYwPiPqM9Cwr
+         iKmOBFDGyMra2gKiW/gMXpiesLbHSaGkKA/RXxM4xlJ2rxA571qW/p5vBXR2hAsbqYaU
+         NkaJ/22MX6ejPBOT0dChxEH2K87ewM4ktR20DOpaiEN+4eXMxNM55Q8vJaLtmbsoLWXS
+         V1nAT57zkRePiuexKwkG3XLEnW7eYm9Q+tHZ/o4uY16TdfWSXi1IiEIg9YrTEe2fQq9b
+         btPFgpNoGPtNWXSBGEGCx2Fw6wvTjTll3fNfgvXBTr1mtd8TMm3KoBHRuOwUzq11Atr+
+         OlKw==
+X-Gm-Message-State: AOAM533oTPTLm8T6mbpm1fLeqjgBPSeHQy+AuBHdhFP6bWoxCZKLP5eO
+        YgMPHMl0Pqwed8VPR8zmCOXbu4ILtbw=
+X-Google-Smtp-Source: ABdhPJw5RNptGzp6gX+Rzq1D1wNbYOgoBqCHIcMeeAnkJmwsBPRWm24APyxOAGQKrhjEPZpObUTk4w==
+X-Received: by 2002:a17:90a:26a4:: with SMTP id m33mr423518pje.124.1594306209193;
+        Thu, 09 Jul 2020 07:50:09 -0700 (PDT)
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com. [209.85.210.176])
+        by smtp.gmail.com with ESMTPSA id u20sm3342154pfk.91.2020.07.09.07.50.08
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Jul 2020 07:50:09 -0700 (PDT)
+Received: by mail-pf1-f176.google.com with SMTP id m9so1132819pfh.0
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 07:50:08 -0700 (PDT)
+X-Received: by 2002:a05:6122:78d:: with SMTP id k13mr41715186vkr.28.1594305878997;
+ Thu, 09 Jul 2020 07:44:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Thu, 09 Jul 2020 20:13:49 +0530
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Steev Klimaszewski <steev@kali.org>, viresh.kumar@linaro.org,
-        sboyd@kernel.org, georgi.djakov@linaro.org, agross@kernel.org,
-        robh+dt@kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        saravanak@google.com, dianders@chromium.org,
-        vincent.guittot@linaro.org, amit.kucheria@linaro.org,
-        robdclark@chromium.org, linux-kernel-owner@vger.kernel.org
-Subject: Re: [PATCH v2] arm64: dts: qcom: sdm845: Add cpu OPP tables
-In-Reply-To: <20200709142918.GA3521288@ripper>
-References: <20200702204643.25785-1-sibis@codeaurora.org>
- <a61c5656-e21f-f071-1149-a3357fe2684e@kali.org>
- <20200709142918.GA3521288@ripper>
-Message-ID: <f36df61af67245c5fe9ca4e7550b8861@codeaurora.org>
-X-Sender: sibis@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20200708163922.1.I0b701fc23eca911a5bde4ae4fa7f97543d7f960e@changeid>
+ <23e53f2b-02b0-2c9b-a165-4ca5a2c84a89@codeaurora.org>
+In-Reply-To: <23e53f2b-02b0-2c9b-a165-4ca5a2c84a89@codeaurora.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Thu, 9 Jul 2020 07:44:26 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=XrD0TMCNG-2JZ6_f67+yU8Z+2ofkqMvp=uA9rB2bS6og@mail.gmail.com>
+Message-ID: <CAD=FV=XrD0TMCNG-2JZ6_f67+yU8Z+2ofkqMvp=uA9rB2bS6og@mail.gmail.com>
+Subject: Re: [PATCH] spi: spi-geni-qcom: Set the clock properly at runtime resume
+To:     Rajendra Nayak <rnayak@codeaurora.org>
+Cc:     Mark Brown <broonie@kernel.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Akash Asthana <akashast@codeaurora.org>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Maulik Shah <mkshah@codeaurora.org>, ctheegal@codeaurora.org,
+        Matthias Kaehlcke <mka@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-07-09 19:59, Bjorn Andersson wrote:
-> On Wed 08 Jul 19:22 PDT 2020, Steev Klimaszewski wrote:
-> 
->> 
->> On 7/2/20 3:46 PM, Sibi Sankar wrote:
->> > Add OPP tables required to scale DDR/L3 per freq-domain on SDM845 SoCs.
->> >
->> > Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
->> > ---
->> 
->> 
->> Hi Sibi,
->> 
->> 
->> Bjorn asked me to give this patch a whirl, and I have to say, I like 
->> it
->> but I'm not sure if I'm missing a dependency somewhere...
->> 
->> 
->> In 5.8.0-rc4, I'm seeing a couple probe defers
->> 
->> [    0.131341] cpu cpu0: _allocate_opp_table: Error finding 
->> interconnect
->> paths: -517
->> 
->> [    0.132694] cpu cpu4: _allocate_opp_table: Error finding 
->> interconnect
->> paths: -517
->> 
->> And then a bit later on,
->> 
->> [    0.625837] cpu cpu0: failed to get clock: -2
->> 
->> 
->> If these aren't anything to worry about, you can throw my Tested-by on
->> 
->> Tested-by: Steev Klimaszewski <steev@kali.org>
->> 
-> 
-> You need to enable:
-> CONFIG_INTERCONNECT=y
-> CONFIG_INTERCONNECT_QCOM=y
-> CONFIG_INTERCONNECT_QCOM_OSM_L3=m
-> CONFIG_INTERCONNECT_QCOM_SDM845=m
+Hi,
 
-Steev had ^^ enabled but he was missing
-the required cpufreq driver changes
-available in linux-next.
+On Thu, Jul 9, 2020 at 1:55 AM Rajendra Nayak <rnayak@codeaurora.org> wrote:
+>
+>
+> On 7/9/2020 5:09 AM, Douglas Anderson wrote:
+> > In the patch ("spi: spi-geni-qcom: Avoid clock setting if not needed")
+> > we avoid a whole pile of clock code.  As part of that, we should have
+> > restored the clock at runtime resume.  Do that.
+> >
+> > It turns out that, at least with today's configurations, this doesn't
+> > actually matter.  That's because none of the current device trees have
+> > an OPP table for geni SPI yet.  That makes dev_pm_opp_set_rate(dev, 0)
+> > a no-op.  This is why it wasn't noticed in the testing of the original
+> > patch.  It's still a good idea to fix, though.
+>
+> good catch, without this (and with OPP tables added) we would end up removing
+> the performance vote on suspend and never put it back unless the rate changes.
+> Perhaps a similar change would be needed for spi-qcom-qspi too?
 
-> 
-> With this I can see the interconnect_summary in debugfs change with the
-> CPU frequency.
-> 
-> Regards,
-> Bjorn
+The quad spi already patch had this fix and it actually mattered
+there.  That's what made me go look back and realize that I needed the
+fix in the geni SPI.  See:
 
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project.
+https://lore.kernel.org/r/20200707131607.1.Ia7cb4f41ce93d37d0a764b47c8a453ce9e9c70ef@changeid
+
+I'll send a v2 of that with Akash's suggestion of checking the return
+value, though.
+
+-Doug
