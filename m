@@ -2,78 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21F4021A06C
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 15:03:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DEFB21A079
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 15:07:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726629AbgGINDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 09:03:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33296 "EHLO
+        id S1726757AbgGINHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 09:07:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726347AbgGINDX (ORCPT
+        with ESMTP id S1726347AbgGINHk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 09:03:23 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEEA0C061A0B
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 06:03:23 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id d18so2236336ion.0
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 06:03:23 -0700 (PDT)
+        Thu, 9 Jul 2020 09:07:40 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 991D1C061A0B
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 06:07:40 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id a32so1570359qtb.5
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 06:07:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fCJEZqPYLwHBRN2tJDDZEnNxnDsfp52exKS71/f+yOI=;
-        b=Y2yQGbGwBev46VHambDCQw9GmVL/N5p1KqynyDZem+EQ/dtbcW1QBUnySaG7hGK1UU
-         jPm3cs6h2/Si01FDBBygM+fZV68SmSuhGM4OnjsP945Jk4ack63URLLKh13U/8t5dgrB
-         I3Ltl39cIUtcukeN3apObdqWfDjnbxmyveNVE=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=5Y98dnFuhKZXUOEw7Gz1NRQLDKcW5Uky8iV/XCzB1Y8=;
+        b=sdqM4NMWO5dzN69yq1MlWY/QKkWthK7J3mCBnPKsOKRjt9khpP/w4nRm7Zd+PMfSsa
+         bUrI7UxN53qcPz8Yg2Nuv2yp9arensG/37Z4I3jeN6fRqrnfuhFVcPng99EGFjioDCkS
+         aT2d1g4vOMb9kjDpa6vg1lKQCGRRzHY8tXcMgu6Zx0E54pqSSUAbiMU71CRb8qylri1R
+         dSlU5Y+GXqub812lb82UGpnmnrxXVg5lV0ImOVRngvNpNk6syIkwu5gWrfO+PMqZRGy3
+         JUNFKhA054OD+9MtABPMMuKhourZJJbdAuTJyG9IJkHYSUXn7s30Cd8kTdN9tU2cND2c
+         OUag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fCJEZqPYLwHBRN2tJDDZEnNxnDsfp52exKS71/f+yOI=;
-        b=YpeCkbOypA4aJgTc/xT7j2ic5LafYelcYY3YDEJi2n5Qi4k8ULRY/Hv33662KlDDwZ
-         OsxfAd4MwrlAXpFArdYKtXLyty/W+JoANPIeyCtLJBX4BJc+y5FR+3WalE2xfWPoJta1
-         L1OqTUN5nk8ZPhPXGO1QseewRwaFqaBvIeSPwgSk2g0Fe+g+jciu3CSkv6ezpHCw3JvR
-         fY3tjqWfe2tP/5fHoFjeLjpng9ztBuSpXrco5+O46wjni7XhJZDBsvc2PsRNw7GQfHKX
-         CjUX0rpRUO7saQnL+B6D24ltv2DOvk8lqhZE8zvQw3KQguEU0T5kabuvKZSetEWVgRBZ
-         Cbuw==
-X-Gm-Message-State: AOAM532qfPUbqXsUKq/9RJwCNytmDN3+zuOJUVpd2eqslbfxOd97c/sc
-        6zmKLw11R2EV7xkRg+HtktBCQqMroLf5nBSDdYOstQ==
-X-Google-Smtp-Source: ABdhPJwEWrpHFoTBKANDXInsuxsAi5TVUpo9DngpjaO3ch6NELsRVOIrX06+UtMl65bw/KAQc8vgqGi2gqpPevMGM3o=
-X-Received: by 2002:a05:6638:16c5:: with SMTP id g5mr10317558jat.92.1594299803121;
- Thu, 09 Jul 2020 06:03:23 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200708231253.3831497-1-surenb@google.com> <20200709081820.GB13487@kroah.com>
-In-Reply-To: <20200709081820.GB13487@kroah.com>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Thu, 9 Jul 2020 09:03:13 -0400
-Message-ID: <CAEXW_YQ5VoN6DZcfJH_4u5MnRc0vybY7zYH3Y_WD=j3u-RRVHQ@mail.gmail.com>
-Subject: Re: [PATCH 1/1] MAINTAINERS: add Hridya and myself into Android
- driver maintainers list
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Suren Baghdasaryan <surenb@google.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Todd Kjos <tkjos@google.com>,
-        Christian Brauner <christian@brauner.io>,
-        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
-        Martijn Coenen <maco@android.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=5Y98dnFuhKZXUOEw7Gz1NRQLDKcW5Uky8iV/XCzB1Y8=;
+        b=qziY/Lxya3WpQ63FGHVaXwJJWt1rdAJ+gKnG7CCnjnwN642a+9lxn1ic1Zh9P8NMUn
+         GaTcMcyEaQQO8cLFg9Ba6+t6/AzZtxaofQCGrslmKuS96rBjk8W9sboVM0giakIyG2wS
+         cFiXX9dhW9I5jWvnZsPJSkPdBYqO/ulPbx5sDvsHvMGTuBrLtRW61ApJdi3giOVqQGx/
+         blCV35pjp4Ojh7CRF+/YbAiy/QVSr5aiqzci8gHlFdYVLi1o4X1S76pj4TxvhIieDDQn
+         GAFQ14dFjnB3i+UNU+KFoec7+t264NXNHPHp0gybQbs6D+HBllpGpG1qjhEt+AilEYXT
+         Sluw==
+X-Gm-Message-State: AOAM5304xu90/qkng99hQ0CnoS7kE9ShXhbUj7RL9IbzA+IQZg65mwh9
+        IlTvnmDuUt/c3655gqLorJY=
+X-Google-Smtp-Source: ABdhPJzz+hrnw2R8tXY5WXXoIDe8IxmQkAb0gLzJiB4xrLY5xP07CqwRf6uGsNMBV2R2FIxE+OIKOw==
+X-Received: by 2002:ac8:7956:: with SMTP id r22mr45428795qtt.359.1594300059916;
+        Thu, 09 Jul 2020 06:07:39 -0700 (PDT)
+Received: from k8s-master ([111.202.144.35])
+        by smtp.gmail.com with ESMTPSA id 125sm3949202qkg.88.2020.07.09.06.07.38
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Thu, 09 Jul 2020 06:07:39 -0700 (PDT)
+From:   qianjun <qianjun.kernel@gmail.com>
+To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org
+Cc:     linux-kernel@vger.kernel.org, qianjun <qianjun@didiglobal.com>
+Subject: [PATCH] perf-c2c: Fix the wrong description.
+Date:   Thu,  9 Jul 2020 21:03:15 +0800
+Message-Id: <1594299795-39394-1-git-send-email-qianjun.kernel@gmail.com>
+X-Mailer: git-send-email 1.8.3.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 9, 2020 at 4:18 AM Greg KH <gregkh@linuxfoundation.org> wrote:
-> And I thought we were deleting ashmem soon?
+From: qianjun <qianjun@didiglobal.com>
 
-This seems harder than initially thought. The Android userspace is
-intertwined with ashmem in various ways (security policies, apps etc).
-There were various concerns with old apps using /dev/ashmem directly
-without going through library layers and that such apps could not be
-upgraded. Various approaches were tried to work around this by
-different folks to varying degrees of effect. Also, I am no longer
-with the Android team at Google, but I continue to work with them
-upstream.
+Use L1Miss to replace L1Hit to describe the correct scene
 
-Fwiw, I will continue reviewing this and other Android code from my
-side. Thanks.
+Signed-off-by: qianjun <qianjun@didiglobal.com>
+---
+ tools/perf/Documentation/perf-c2c.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/perf/Documentation/perf-c2c.txt b/tools/perf/Documentation/perf-c2c.txt
+index 98efdab..083e99a 100644
+--- a/tools/perf/Documentation/perf-c2c.txt
++++ b/tools/perf/Documentation/perf-c2c.txt
+@@ -186,7 +186,7 @@ For each cacheline in the 1) list we display following data:
+   Store Reference - Total, L1Hit, L1Miss
+     Total - all store accesses
+     L1Hit - store accesses that hit L1
+-    L1Hit - store accesses that missed L1
++    L1Miss - store accesses that missed L1
+ 
+   Load Dram
+   - count of local and remote DRAM accesses
+-- 
+1.8.3.1
+
