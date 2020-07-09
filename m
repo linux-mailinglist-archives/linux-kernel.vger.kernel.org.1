@@ -2,158 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D13CB219BB2
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 11:09:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F803219E79
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 12:58:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726353AbgGIJJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 05:09:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726140AbgGIJJQ (ORCPT
+        id S1726970AbgGIK6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 06:58:33 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:26870 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726921AbgGIK6a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 05:09:16 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A592C061A0B
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 02:09:16 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id f16so834657pjt.0
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 02:09:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=dfRkitREAl1cCOBzHtF2sXnD7um5XaadlgUl3USHzOw=;
-        b=vRZqKThIDXkF1WZVYjCd+lAU6Yw2xjVCcYtJIao696XqXbwd91uA7uJ5g1mR35cCFB
-         rZr5VYDRmnjk9boh6Jl5KyqMTPrY2H0G8FIPX9kZMMCJPuMs+cBqkQKxNe1W3lYR78eH
-         FaDvwzxnmHT5f6eztfFL7bkqinHccld+C1fydY+Qf2Rf7XdsUzJs1yIBEsg04ZFanFWe
-         CFTvMh7apsM6QnpAVOUY5cjzNo85yhDwcicI+HX+8QaqeD9tHp0W2Rw4UnVEHSDGHPIR
-         LEpTCKYLqF5yE0phZTENtyuOY4JTQ61JAFBPpDquOfQkBPwEsUM6VfBzbZKzL88cLkdf
-         uAlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=dfRkitREAl1cCOBzHtF2sXnD7um5XaadlgUl3USHzOw=;
-        b=ZmTsgvTVKuC73JCgsRR4Al8wLizMrEgkTDBxyGLlViYzgvTJF9bE52YVAKUd0hLy80
-         c5q7J/qiIcs7Y/YA2AEB14abYDlXqBA/mYXMyPCgW547WiuadIsXefAAZmRxkwtFMmvc
-         chMAl3bQBOSSo3JmbXR2LA/D3X7yBG0ABfUCtmvxnBqLDavBSMH/lPnh60SQu4tvHA9Y
-         /B1wCe/yYlg3U5xP+wF0DHzG7YS4rHUnJv6KH5KwLnHAe3Th9Dj4Id0hqFDmF1uUktY4
-         dfrybN0MUP11sDnDvqxNejhdtAGdbplckSmUSLU12H0YwJ12nExW48mElhQ3No1Yq0K7
-         GBeQ==
-X-Gm-Message-State: AOAM531M1kRoebOpzdKEgSxoOxn/ytVjLMGJgG9g4r2xX9RdQTtGL+vH
-        N9CCV1kABYBBT44bcltrL5ROvw==
-X-Google-Smtp-Source: ABdhPJxrn0x/9eaXzBdCUMoLFcH5nlz8yRsfA6f4zpfmqLIKKts2GJNGLlHeTT9csCf0DTwa8Bx4bA==
-X-Received: by 2002:a17:90a:b00e:: with SMTP id x14mr14377506pjq.57.1594285755440;
-        Thu, 09 Jul 2020 02:09:15 -0700 (PDT)
-Received: from localhost ([122.172.40.201])
-        by smtp.gmail.com with ESMTPSA id u19sm2364195pfk.98.2020.07.09.02.09.14
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 09 Jul 2020 02:09:14 -0700 (PDT)
-Date:   Thu, 9 Jul 2020 14:39:12 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Ionela Voinescu <ionela.voinescu@arm.com>
-Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/8] cpufreq: allow drivers to flag custom support for
- freq invariance
-Message-ID: <20200709090912.vapouiruidgypxzc@vireshk-i7>
-References: <20200701090751.7543-1-ionela.voinescu@arm.com>
- <20200701090751.7543-2-ionela.voinescu@arm.com>
- <20200701094417.ffuvduz6pqknjcks@vireshk-i7>
- <20200701133330.GA32736@arm.com>
- <CAJZ5v0gT+xWwxcx3OZjXBnDLr9i4VOt2Vp3ScWBxbu+NiopkbA@mail.gmail.com>
- <20200702025818.s4oh7rzz3tr6zwqr@vireshk-i7>
- <20200702114425.GB28120@arm.com>
- <389dd87f-fed0-e4ea-81f3-5491fd2a54d1@arm.com>
- <20200709085354.GA5623@arm.com>
+        Thu, 9 Jul 2020 06:58:30 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 069AYSIL095401;
+        Thu, 9 Jul 2020 06:58:03 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 325r2cdv3u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 09 Jul 2020 06:58:03 -0400
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 069Ai6Wj113896;
+        Thu, 9 Jul 2020 06:58:02 -0400
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 325r2cdv3j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 09 Jul 2020 06:58:02 -0400
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 069AtcGn030785;
+        Thu, 9 Jul 2020 10:58:02 GMT
+Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
+        by ppma02dal.us.ibm.com with ESMTP id 325k1nq01m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 09 Jul 2020 10:58:02 +0000
+Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
+        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 069Aw12p53543332
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 9 Jul 2020 10:58:01 GMT
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4F4BE124053;
+        Thu,  9 Jul 2020 10:58:01 +0000 (GMT)
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EE37C124052;
+        Thu,  9 Jul 2020 10:58:00 +0000 (GMT)
+Received: from sofia.ibm.com (unknown [9.199.58.93])
+        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTP;
+        Thu,  9 Jul 2020 10:58:00 +0000 (GMT)
+Received: by sofia.ibm.com (Postfix, from userid 1000)
+        id C896D2E48BA; Thu,  9 Jul 2020 14:39:48 +0530 (IST)
+Date:   Thu, 9 Jul 2020 14:39:48 +0530
+From:   Gautham R Shenoy <ego@linux.vnet.ibm.com>
+To:     Pratik Rajesh Sampat <psampat@linux.ibm.com>
+Cc:     mpe@ellerman.id.au, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, benh@kernel.crashing.org,
+        paulus@samba.org, ego@linux.vnet.ibm.com, svaidy@linux.ibm.com,
+        pratik.r.sampat@gmail.com,
+        Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+Subject: Re: [PATCH 2/2] powerpc/powernv/idle: save-restore DAWR0,DAWRX0 for
+ P10
+Message-ID: <20200709090948.GB24354@in.ibm.com>
+Reply-To: ego@linux.vnet.ibm.com
+References: <20200703124640.42820-1-psampat@linux.ibm.com>
+ <20200703124640.42820-2-psampat@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200709085354.GA5623@arm.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <20200703124640.42820-2-psampat@linux.ibm.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-09_05:2020-07-09,2020-07-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
+ priorityscore=1501 impostorscore=0 spamscore=0 phishscore=0 adultscore=0
+ lowpriorityscore=0 malwarescore=0 clxscore=1011 mlxlogscore=999
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007090084
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09-07-20, 09:53, Ionela Voinescu wrote:
-> On Monday 06 Jul 2020 at 14:14:47 (+0200), Dietmar Eggemann wrote:
-> > Why can't we just move the arch_set_freq_scale() call from cpufreq
-> > driver to cpufreq core w/o introducing a FIE related driver flag?
-> > 
-> > Current scenario for Frequency Invariance Engine (FIE) on arm/arm64.
-> > 
-> > +------------------------------+       +------------------------------+
-> > |                              |       |                              |
-> > | cpufreq core:                |       | arch: (arm, arm64)           |
-> > 
-> > |                              |       |                              |
-> > | weak arch_set_freq_scale() {}|       |                              |
-> > |                              |       |                              |
-> > +------------------------------+       |                              |
-> >                                        |                              |
-> > +------------------------------+       |                              |
-> > |                              |       |                              |
-> > | cpufreq driver:              |       |                              |
-> > |                            +-----------> arch_set_freq_scale()      |
-> > |                              |       |   {                          |
-> > +------------------------------+       |      if (use counters)       |
-> >                                        |        return;               |
-> > +------------------------------+       |      ...                     |
-> > |                              |       |   }                          |
-> > | task scheduler:              |       |                              |
-> > |                            +-----------> arch_scale_freq_tick()*    |
-> > |                              |       |   {                          |
-> > 
-> > |                              |       |      if (!use counters)      |
-> > |                              |       |        return;               |
-> > |                              |       |      ...                     |
-> > |                              |       |   }                          |
-> > +------------------------------+       +------------------------------+
-> > 
-> > * defined as topology_scale_freq_tick() in arm64
-> > 
-> > Only Arm/Arm64 defines arch_set_freq_scale() to get the 'legacy' CPUfreq
-> > based FIE. This would still be the case when we move
-> > arch_set_freq_scale() from individual cpufreq drivers to cpufreq core.
-> > 
-> > Arm64 is the only arch which has to runtime-choose between two different
-> > FIEs. This is currently done by bailing out early in one of the FIE
-> > functions based on 'use counters'.
-> > 
-> > X86 (and others) will continue to not define arch_set_freq_scale().
-> > 
-> > The issue with CONFIG_BL_SWITCHER (vexpress-spc-cpufreq.c) could be
-> > solved arm/arm64 internally (arch_topology.c) by putting
-> > arch_set_freq_scale() under a !CONFIG_BL_SWITCHER guard.
-> > I doubt that there are any arm bL systems out there running it. At least
-> > I'm not aware of any complaints due to missing FIE support in bl
-> > switcher setups so far.
+On Fri, Jul 03, 2020 at 06:16:40PM +0530, Pratik Rajesh Sampat wrote:
+> Additional registers DAWR0, DAWRX0 may be lost on Power 10 for
+> stop levels < 4.
 
-I agree to that.
+Adding Ravi Bangoria <ravi.bangoria@linux.ibm.com> to the cc.
 
-> Thank you Dietmar, for your review.
+> Therefore save the values of these SPRs before entering a  "stop"
+> state and restore their values on wakeup.
 > 
-> I was trying to suggest the same in my other replies.
+> Signed-off-by: Pratik Rajesh Sampat <psampat@linux.ibm.com>
 
-I am sorry, I must have overlooked that part in your replies,
-otherwise I may agreed to it :)
 
-> Rafael, Viresh, would you mind confirming whether you still consider
-> having an 'opt in' flag is preferable here?
+The saving and restoration looks good to me. 
+> ---
+>  arch/powerpc/platforms/powernv/idle.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> diff --git a/arch/powerpc/platforms/powernv/idle.c b/arch/powerpc/platforms/powernv/idle.c
+> index 19d94d021357..471d4a65b1fa 100644
+> --- a/arch/powerpc/platforms/powernv/idle.c
+> +++ b/arch/powerpc/platforms/powernv/idle.c
+> @@ -600,6 +600,8 @@ struct p9_sprs {
+>  	u64 iamr;
+>  	u64 amor;
+>  	u64 uamor;
+> +	u64 dawr0;
+> +	u64 dawrx0;
+>  };
+> 
+>  static unsigned long power9_idle_stop(unsigned long psscr, bool mmu_on)
+> @@ -677,6 +679,10 @@ static unsigned long power9_idle_stop(unsigned long psscr, bool mmu_on)
+>  		sprs.tscr	= mfspr(SPRN_TSCR);
+>  		if (!firmware_has_feature(FW_FEATURE_ULTRAVISOR))
+>  			sprs.ldbar = mfspr(SPRN_LDBAR);
+> +		if (cpu_has_feature(CPU_FTR_ARCH_31)) {
+> +			sprs.dawr0 = mfspr(SPRN_DAWR0);
+> +			sprs.dawrx0 = mfspr(SPRN_DAWRX0);
+> +		}
+>
 
-Well, we wanted an opt-in flag instead of an opt-out one. And no flag
-is certainly better.
 
--- 
-viresh
+But this is within the if condition which says
+
+	if ((psscr & PSSCR_RL_MASK) >= pnv_first_spr_loss_level)
+
+This if condition is meant for stop4 and stop5 since these are stop
+levels that have OPAL_PM_LOSE_HYP_CONTEXT set.
+
+Since we can lose DAWR*, on states that lose limited hypervisor
+context, such as stop0-2, we need to unconditionally save them
+like AMR, IAMR etc.
+
+
+>  		sprs_saved = true;
+> 
+> @@ -792,6 +798,10 @@ static unsigned long power9_idle_stop(unsigned long psscr, bool mmu_on)
+>  	mtspr(SPRN_MMCR2,	sprs.mmcr2);
+>  	if (!firmware_has_feature(FW_FEATURE_ULTRAVISOR))
+>  		mtspr(SPRN_LDBAR, sprs.ldbar);
+> +	if (cpu_has_feature(CPU_FTR_ARCH_31)) {
+> +		mtspr(SPRN_DAWR0, sprs.dawr0);
+> +		mtspr(SPRN_DAWRX0, sprs.dawrx0);
+> +	}
+
+
+Likewise, we need to unconditionally restore these SPRs.
+
+
+> 
+>  	mtspr(SPRN_SPRG3,	local_paca->sprg_vdso);
+> 
+> -- 
+> 2.25.4
+> 
