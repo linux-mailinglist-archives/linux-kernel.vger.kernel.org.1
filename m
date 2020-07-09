@@ -2,88 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B668121A98A
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 23:09:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7671421A965
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 22:55:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726510AbgGIVJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 17:09:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726323AbgGIVJo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 17:09:44 -0400
-Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DE70C08C5CE;
-        Thu,  9 Jul 2020 14:09:44 -0700 (PDT)
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id 6D644BC070;
-        Thu,  9 Jul 2020 21:09:40 +0000 (UTC)
-From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-To:     chenyu56@huawei.com, wangbinghui@hisilicon.com, kishon@ti.com,
-        vkoul@kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Subject: [PATCH] USB IP DRIVER FOR HISILICON KIRIN: Replace HTTP links with HTTPS ones
-Date:   Thu,  9 Jul 2020 23:09:33 +0200
-Message-Id: <20200709210933.27359-1-grandmaster@al2klimov.de>
+        id S1726766AbgGIUzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 16:55:09 -0400
+Received: from mga06.intel.com ([134.134.136.31]:2172 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726213AbgGIUzJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 16:55:09 -0400
+IronPort-SDR: LWOGeAzAlAhrmuL5nF7mn9GzDWA4tEkq3EgW38pgefhtj5UPsOEvVoXBra9RSbdrzTVW6iwZyH
+ 0sai1ZcLHmtA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9677"; a="209632913"
+X-IronPort-AV: E=Sophos;i="5.75,332,1589266800"; 
+   d="scan'208";a="209632913"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jul 2020 13:55:08 -0700
+IronPort-SDR: 31zyjENiltHuZKjrhXOmWxeNIKVfuhcaMufjTfk/WyBFCmSSzFpSpv4+pS2Z/pkelSdoipuS52
+ ky4bJLPLY9aQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,332,1589266800"; 
+   d="scan'208";a="280422688"
+Received: from marshy.an.intel.com (HELO [10.122.105.159]) ([10.122.105.159])
+  by orsmga003.jf.intel.com with ESMTP; 09 Jul 2020 13:55:07 -0700
+Subject: Re: [PATCH] fpga: stratix10-soc: make FPGA task un-interruptible
+To:     Tom Rix <trix@redhat.com>, mdf@kernel.org
+Cc:     linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dinguyen@kernel.org, richard.gong@intel.com
+References: <1594138447-21488-1-git-send-email-richard.gong@linux.intel.com>
+ <926c1117-1f31-5b3d-55af-4216db4f1745@redhat.com>
+From:   Richard Gong <richard.gong@linux.intel.com>
+Message-ID: <283c922f-12a7-ccfc-2165-219fb5fe6999@linux.intel.com>
+Date:   Thu, 9 Jul 2020 16:10:12 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +++++
-X-Spam-Level: *****
-Authentication-Results: smtp.al2klimov.de;
-        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+In-Reply-To: <926c1117-1f31-5b3d-55af-4216db4f1745@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rationale:
-Reduces attack surface on kernel devs opening the links for MITM
-as HTTPS traffic is much harder to manipulate.
+Hi Tom,
 
-Deterministic algorithm:
-For each file:
-  If not .svg:
-    For each line:
-      If doesn't contain `\bxmlns\b`:
-        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
-            If both the HTTP and HTTPS versions
-            return 200 OK and serve the same content:
-              Replace HTTP with HTTPS.
+On 7/9/20 3:01 PM, Tom Rix wrote:
+> Mostly fine, see inline question.
+> 
+> On 7/7/20 9:14 AM, richard.gong@linux.intel.com wrote:
+>> From: Richard Gong <richard.gong@intel.com>
+>>
+>> When CTRL+C occurs during the process of FPGA reconfiguration, the FPGA
+>> reconfiguration process stops and the user can't perform a new FPGA
+>> reconfiguration properly.
+>>
+>> Set FPGA complete task to be not interruptible so that the user can
+>> properly perform FPGA reconfiguration after CTRL+C event.
+>>
+>> Signed-off-by: Richard Gong <richard.gong@intel.com>
+>> ---
+>>   drivers/fpga/stratix10-soc.c | 23 +++--------------------
+>>   1 file changed, 3 insertions(+), 20 deletions(-)
+>>
+>> diff --git a/drivers/fpga/stratix10-soc.c b/drivers/fpga/stratix10-soc.c
+>> index 44b7c56..657a70c 100644
+>> --- a/drivers/fpga/stratix10-soc.c
+>> +++ b/drivers/fpga/stratix10-soc.c
+>> @@ -196,17 +196,13 @@ static int s10_ops_write_init(struct fpga_manager *mgr,
+>>   	if (ret < 0)
+>>   		goto init_done;
+>>   
+>> -	ret = wait_for_completion_interruptible_timeout(
+>> +	ret = wait_for_completion_timeout(
+>>   		&priv->status_return_completion, S10_RECONFIG_TIMEOUT);
+>>   	if (!ret) {
+>>   		dev_err(dev, "timeout waiting for RECONFIG_REQUEST\n");
+>>   		ret = -ETIMEDOUT;
+>>   		goto init_done;
+>>   	}
+>> -	if (ret < 0) {
+>> -		dev_err(dev, "error (%d) waiting for RECONFIG_REQUEST\n", ret);
+>> -		goto init_done;
+>> -	}
+>>   
+>>   	ret = 0;
+>>   	if (!test_and_clear_bit(SVC_STATUS_OK, &priv->status)) {
+>> @@ -318,7 +314,7 @@ static int s10_ops_write(struct fpga_manager *mgr, const char *buf,
+>>   		 */
+>>   		wait_status = 1; /* not timed out */
+>>   		if (!priv->status)
+>> -			wait_status = wait_for_completion_interruptible_timeout(
+>> +			wait_status = wait_for_completion_timeout(
+>>   				&priv->status_return_completion,
+>>   				S10_BUFFER_TIMEOUT);
+>>   
+>> @@ -340,13 +336,6 @@ static int s10_ops_write(struct fpga_manager *mgr, const char *buf,
+>>   			ret = -ETIMEDOUT;
+>>   			break;
+>>   		}
+>> -		if (wait_status < 0) {
+>> -			ret = wait_status;
+>> -			dev_err(dev,
+>> -				"error (%d) waiting for svc layer buffers\n",
+>> -				ret);
+>> -			break;
+>> -		}
+>>   	}
+>>   
+>>   	if (!s10_free_buffers(mgr))
+>> @@ -372,7 +361,7 @@ static int s10_ops_write_complete(struct fpga_manager *mgr,
+> 
+> This part is done in an infinite loop, is the loop still needed 
+The loop is still need. FPGA manager driver need polling the completed 
+status from the lower level firmware. The lower level firmware can 
+return FPGA manager driver with busy, completed or error status.
+> 
+> Reviewed-by: Tom Rix <trix@redhat.com>
+Thanks for your review!
 
-Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
----
- Continuing my work started at 93431e0607e5.
- See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
- (Actually letting a shell for loop submit all this stuff for me.)
-
- If there are any URLs to be removed completely or at least not HTTPSified:
- Just clearly say so and I'll *undo my change*.
- See also: https://lkml.org/lkml/2020/6/27/64
-
- If there are any valid, but yet not changed URLs:
- See: https://lkml.org/lkml/2020/6/26/837
-
- If you apply the patch, please let me know.
-
-
- drivers/phy/hisilicon/phy-hi3660-usb3.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/phy/hisilicon/phy-hi3660-usb3.c b/drivers/phy/hisilicon/phy-hi3660-usb3.c
-index cc0af2c044d0..575c867d13ca 100644
---- a/drivers/phy/hisilicon/phy-hi3660-usb3.c
-+++ b/drivers/phy/hisilicon/phy-hi3660-usb3.c
-@@ -3,7 +3,7 @@
-  * Phy provider for USB 3.0 controller on HiSilicon 3660 platform
-  *
-  * Copyright (C) 2017-2018 Hilisicon Electronics Co., Ltd.
-- *		http://www.huawei.com
-+ *		https://www.huawei.com
-  *
-  * Authors: Yu Chen <chenyu56@huawei.com>
-  */
--- 
-2.27.0
-
+Regards,
+Richard
+> 
+>>   		if (ret < 0)
+>>   			break;
+>>   
+>> -		ret = wait_for_completion_interruptible_timeout(
+>> +		ret = wait_for_completion_timeout(
+>>   			&priv->status_return_completion, timeout);
+>>   		if (!ret) {
+>>   			dev_err(dev,
+>> @@ -380,12 +369,6 @@ static int s10_ops_write_complete(struct fpga_manager *mgr,
+>>   			ret = -ETIMEDOUT;
+>>   			break;
+>>   		}
+>> -		if (ret < 0) {
+>> -			dev_err(dev,
+>> -				"error (%d) waiting for RECONFIG_COMPLETED\n",
+>> -				ret);
+>> -			break;
+>> -		}
+>>   		/* Not error or timeout, so ret is # of jiffies until timeout */
+>>   		timeout = ret;
+>>   		ret = 0;
+> 
