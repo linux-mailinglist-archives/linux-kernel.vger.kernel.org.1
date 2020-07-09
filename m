@@ -2,216 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0673321A7F1
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 21:42:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47B9121A82C
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 21:51:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726299AbgGITm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 15:42:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38958 "EHLO
+        id S1726220AbgGITvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 15:51:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726220AbgGITm2 (ORCPT
+        with ESMTP id S1726396AbgGITuw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 15:42:28 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C331EC08C5DC
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 12:42:28 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id q17so1233842pls.9
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 12:42:28 -0700 (PDT)
+        Thu, 9 Jul 2020 15:50:52 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ACC2C08C5DC
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 12:50:51 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id 145so3019009qke.9
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 12:50:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RioqnPMkVqNkvL0qwtl83DPVR6qY0R22jJG9ZzsK4ps=;
-        b=FoBl5rfNFNF7RvfrMZsfGQpRYnl5VL/d9OqDtLbMx7J82YIVogRqiyjg6viQRbY+2J
-         sTW1A3ir/PtIWNZEM6ULSEO2nNc+yv0S1qyqib1pleNf+mjT5TvR0yZiIUyEcaH0FIcA
-         ioe3ofKBxKlluH6T9my5/Q+TQeGAuzy/JsjtAUjoILV2h+JvxOmISR8UiatNtpihyrEx
-         Y0li6/XqOccp0iEXvWrUkYdnMeokyZYkWJBDqFmSLdNTXJSeHuDXw+WJl4ZBfzWZb45Z
-         BuIIzcn2cSkFtDqq75Cq5AcJzfZq7uM2JUab2iXercNaTm48unxLZIEoKOzu0kc4hztU
-         Tq4g==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jBhiNdJcKWpDIzUtXlvuF+3cyZgX7DpFBBALLEpqqcI=;
+        b=fXZg2ZbhLJFFCCYqF4ZSseLLp6ZerePMTDWKvhEaTTUG5r+0DGuVQTFoOP8tb0qHb4
+         dqKXWN4HmZbbeLhJ333fFkXQ61wZ0cjFfPaOaYXOH4f2GhjGxoYunvWeRvEalalfEx8x
+         5UDB7arIjU/KeYFGsYUxBltjP2CDzR3plB8pM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RioqnPMkVqNkvL0qwtl83DPVR6qY0R22jJG9ZzsK4ps=;
-        b=UTmdicRIcwNEbB2ig+WFfRxjN9y8s0EBvP4hZt3TpRfNT9BAvHVzdrdeObG7yKWqv6
-         86Vfjpq/sR65DkUl7F+/1EISTK7nySJWQquw6G0xU/vtIjgKHx2MyNv1+F/D4KaW57lq
-         ammOdjGwPuvQyr/Nx/qDegCt6BVRrL5Qj6ws2S5c4BrukXARl/ANhLCbZD4BjwQqUw+f
-         R9IvqzshjCh44SwPsf6jD+MwWft8eKJpP6HfMfQBfmlvS2li8KHVrir7g9Of2yr+CMfv
-         5v70lzrPTtxT7qe0AzTqpwQgwXBRaoatYo5OmMENMzNVwYBwa0xSnlqbehMhTEb+sb0E
-         topQ==
-X-Gm-Message-State: AOAM5326l7HjBiSezWRzPWpNk2Kx/kIHFZXlJFzYBbIQdWU1Sp+fVUTp
-        ZapcLuFEYz/ULIh8V3K4bBsx6w==
-X-Google-Smtp-Source: ABdhPJyve4niYHT9cwXeej5Gpn/TePKakafs8sB2QJi42hBXqcwUfp/cv0b8La4DdeVsv0QPYrPoZw==
-X-Received: by 2002:a17:90a:f014:: with SMTP id bt20mr1758584pjb.135.1594323748072;
-        Thu, 09 Jul 2020 12:42:28 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id m16sm3870910pfd.101.2020.07.09.12.42.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jul 2020 12:42:27 -0700 (PDT)
-Date:   Thu, 9 Jul 2020 12:40:12 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 2/5] iommu/arm-smmu: Emulate bypass by using context banks
-Message-ID: <20200709194012.GX388985@builder.lan>
-References: <20200709050145.3520931-1-bjorn.andersson@linaro.org>
- <20200709050145.3520931-3-bjorn.andersson@linaro.org>
- <CAF6AEGugJYmMpeH_9mWXcegq1awzraUzBTa0S1Rqcr3=Bmk0uQ@mail.gmail.com>
- <20200709164833.GR11847@yoga>
- <CAF6AEGvmqSNeQSFhc4SDJ=09x_LMVz=DmzUEb6GGv=s=f8P2aA@mail.gmail.com>
- <CAF6AEGvHjiS8r32FkVs5yK+nk+caEr4dikCnrE205nqToTA4tg@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jBhiNdJcKWpDIzUtXlvuF+3cyZgX7DpFBBALLEpqqcI=;
+        b=SPTZrnLT0qM3Y3keRUmfbdb55slBNKMuRxbwHEhcY5vjsZ6/5e/R08e+hLRnWXLe19
+         0+dkqlKqc8E9OQgHfn315rHwwMP2uNeS85cgUocyfzgK2B3FaWsrUQginiDheEMyozcp
+         /uZezt+zEC0edTIxra7Xe7NkOyv1DrYcifwCLI7oPB9IJjSY1TtO/7STR9QpdvxQaXUQ
+         xVU5mMo1yj9Jv52FuFxeRRgDkwdbK9p513FwVOhulQFdRVZ29mNRObztnrJkJ60Rb1MU
+         7lDhe5plgjNU5YqKW7FWACwbm01v/ossiaECWAnp7VvGPu+EjbTm8YIgKO9NsWSud7om
+         HaRg==
+X-Gm-Message-State: AOAM533eB1Ntz7Fj39mri4TrdDTaLSYz8358kDHYhq/PMXozAnaL99ub
+        PEjL16wqF5OMWWrRJD0gxsy6tCy905s=
+X-Google-Smtp-Source: ABdhPJzT6LW+XnLwbr0i1CTs9EW2gFaozjT1V1EHyV+4wrwSM28SIiAFWA07xanG6AqqFuvywJdQkw==
+X-Received: by 2002:a05:620a:15ca:: with SMTP id o10mr37623620qkm.57.1594324250207;
+        Thu, 09 Jul 2020 12:50:50 -0700 (PDT)
+Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com. [209.85.219.44])
+        by smtp.gmail.com with ESMTPSA id e9sm4554287qtq.70.2020.07.09.12.50.49
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Jul 2020 12:50:49 -0700 (PDT)
+Received: by mail-qv1-f44.google.com with SMTP id ed14so1530432qvb.2
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 12:50:49 -0700 (PDT)
+X-Received: by 2002:a67:ec0f:: with SMTP id d15mr38876582vso.121.1594323788853;
+ Thu, 09 Jul 2020 12:43:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAF6AEGvHjiS8r32FkVs5yK+nk+caEr4dikCnrE205nqToTA4tg@mail.gmail.com>
+References: <20200708194715.4073300-1-abhishekbh@google.com> <87y2ntotah.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <87y2ntotah.fsf@nanos.tec.linutronix.de>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Thu, 9 Jul 2020 12:42:57 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=WCu7o41iyn27vNBWo4f_X_XVy+PPPjBKc+70g5jd5+8w@mail.gmail.com>
+Message-ID: <CAD=FV=WCu7o41iyn27vNBWo4f_X_XVy+PPPjBKc+70g5jd5+8w@mail.gmail.com>
+Subject: Re: [PATCH v5] x86/speculation/l1tf: Add KConfig for setting the L1D
+ cache flush mode
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Abhishek Bhardwaj <abhishekbh@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Anthony Steinhauser <asteinhauser@google.com>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Waiman Long <longman@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>, kvm@vger.kernel.org,
+        x86 <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 09 Jul 11:55 PDT 2020, Rob Clark wrote:
+Hi,
 
-> On Thu, Jul 9, 2020 at 9:56 AM Rob Clark <robdclark@gmail.com> wrote:
+On Thu, Jul 9, 2020 at 3:51 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+> Abhishek Bhardwaj <abhishekbh@google.com> writes:
+> > This change adds a new kernel configuration that sets the l1d cache
+> > flush setting at compile time rather than at run time.
 > >
-> > On Thu, Jul 9, 2020 at 9:48 AM Bjorn Andersson
-> > <bjorn.andersson@linaro.org> wrote:
-> > >
-> > > On Thu 09 Jul 09:17 PDT 2020, Rob Clark wrote:
-> > >
-> > > > On Wed, Jul 8, 2020 at 10:01 PM Bjorn Andersson
-> > > > <bjorn.andersson@linaro.org> wrote:
-> > > [..]
-> > > > > @@ -678,7 +680,11 @@ static int arm_smmu_init_domain_context(struct iommu_domain *domain,
-> > > > >         if (smmu_domain->smmu)
-> > > > >                 goto out_unlock;
-> > > > >
-> > > > > -       if (domain->type == IOMMU_DOMAIN_IDENTITY) {
-> > > > > +       /*
-> > > > > +        * Nothing to do for IDENTITY domains,unless disabled context banks are
-> > > > > +        * used to emulate bypass mappings on Qualcomm platforms.
-> > > > > +        */
-> > > > > +       if (domain->type == IOMMU_DOMAIN_IDENTITY && !smmu->qcom_bypass_quirk) {
-> > > >
-> > > > maybe I'm overlooking something, but I think this would put us back to
-> > > > allocating pgtables (and making iommu->map/unmap() no longer no-ops),
-> > > > which I don't think we want
-> > > >
-> > >
-> > > You're right, we are allocating page tables for these contexts and
-> > > map/unmap would modify the page tables. But afaict traversal is never
-> > > performed, given that the banks are never enabled.
-> > >
-> > > But as drivers probe properly, or the direct mapped drivers sets up
-> > > their iommu domains explicitly with translation this would not be used.
-> > >
-> > > So afaict we're just wasting some memory - for the gain of not
-> > > overcomplicating this function.
+> > The reasons for this change are as follows -
 > >
-> > the problem is that it makes dma_map/unmap less of a no-op than it
-> > should be (for the case where the driver is explicitly managing it's
-> > own domain)..  I was hoping to get rid of the hacks to use dma_sync go
-> > back to dma_map/unmap for cache cleaning
-> 
-> That said, it seems to cause less explosions than before.. either that
-> or I'm not trying hard enough.  Still, I think it would probably
-> result in unnecessary tlb inv's.
-> 
-> Previously, *somehow* we seemed to end up with dma_map/unmap trying to
-> modify the domain that we had attached.
-> 
-
-I might need some help to really understand the plumbing here, but this
-is what I read from the code and can see in my debugging...
-
-
-The display device will upon creation be allocated a default_domain, of
-type IOMMU_DOMAIN_IDENTITY - per the qcom-impl. Then you then allocate a
-new iommu domain on the platform bus in the display driver and attach
-this to the device. This will result in the group's domain being of type
-IOMMU_DOMAIN_UNMANAGED.
-
-But when you then invoke dma_map_single() on the display device, the map
-operation will acquire the iommu_group's default_domain (not domain) and
-as such attempt to map stuff on the IDENTITY domain.
-
-__iommu_map() will however reject this, given that the type does not
-have __IOMMU_DOMAIN_PAGING set. Afaict, this would happen regardless of
-this patch actually setting up a page table for the default_domain or
-not.
-
-
-So, afaict, you can't use dma_map_single()/dma_unmap() to operate your
-page table on a lately attached iommu domain.
-
-This would also imply that the display device consumes two context
-banks, which worries me more than the waste of page tables etc.
-
-Regards,
-Bjorn
-
-> BR,
-> -R
-> 
-> > BR,
-> > -R
+> >  - Kernel command line arguments are getting unwieldy. These parameters
+> >  are not a scalable way to set the kernel config. They're intended as a
+> >  super limited way for the bootloader to pass info to the kernel and
+> >  also as a way for end users who are not compiling the kernel themselves
+> >  to tweak the kernel behavior.
 > >
+> >  - Also, if a user wants this setting from the start. It's a definite
+> >  smell that it deserves to be a compile time thing rather than adding
+> >  extra code plus whatever miniscule time at runtime to pass an
+> >  extra argument.
 > >
-> > >
-> > > Regards,
-> > > Bjorn
-> > >
-> > > > BR,
-> > > > -R
-> > > >
-> > > > >                 smmu_domain->stage = ARM_SMMU_DOMAIN_BYPASS;
-> > > > >                 smmu_domain->smmu = smmu;
-> > > > >                 goto out_unlock;
-> > > > > @@ -826,6 +832,10 @@ static int arm_smmu_init_domain_context(struct iommu_domain *domain,
-> > > > >         domain->geometry.aperture_end = (1UL << ias) - 1;
-> > > > >         domain->geometry.force_aperture = true;
-> > > > >
-> > > > > +       /* Enable translation for non-identity context banks */
-> > > > > +       if (domain->type != IOMMU_DOMAIN_IDENTITY)
-> > > > > +               cfg->m = true;
-> > > > > +
-> > > > >         /* Initialise the context bank with our page table cfg */
-> > > > >         arm_smmu_init_context_bank(smmu_domain, &pgtbl_cfg);
-> > > > >         arm_smmu_write_context_bank(smmu, cfg->cbndx);
-> > > > > diff --git a/drivers/iommu/arm-smmu.h b/drivers/iommu/arm-smmu.h
-> > > > > index d172c024be61..a71d193073e4 100644
-> > > > > --- a/drivers/iommu/arm-smmu.h
-> > > > > +++ b/drivers/iommu/arm-smmu.h
-> > > > > @@ -305,6 +305,8 @@ struct arm_smmu_device {
-> > > > >
-> > > > >         /* IOMMU core code handle */
-> > > > >         struct iommu_device             iommu;
-> > > > > +
-> > > > > +       bool                            qcom_bypass_quirk;
-> > > > >  };
-> > > > >
-> > > > >  enum arm_smmu_context_fmt {
-> > > > > @@ -323,6 +325,7 @@ struct arm_smmu_cfg {
-> > > > >         };
-> > > > >         enum arm_smmu_cbar_type         cbar;
-> > > > >         enum arm_smmu_context_fmt       fmt;
-> > > > > +       bool                            m;
-> > > > >  };
-> > > > >  #define ARM_SMMU_INVALID_IRPTNDX       0xff
-> > > > >
-> > > > > --
-> > > > > 2.26.2
-> > > > >
-> > > > > _______________________________________________
-> > > > > iommu mailing list
-> > > > > iommu@lists.linux-foundation.org
-> > > > > https://lists.linuxfoundation.org/mailman/listinfo/iommu
+> >  - Finally, it doesn't preclude the runtime / kernel command line way.
+> >  Users are free to use those as well.
+>
+> TBH, I don't see why this is a good idea.
+>
+>  1) I'm not following your argumentation that the command line option is
+>     a poor Kconfig replacement. The L1TF mode is a boot time (module
+>     load time) decision and the command line parameter is there to
+>     override the carefully chosen and sensible default behaviour.
+
+When you say that the default behavior is carefully chosen and
+sensible, are you saying that (in your opinion) there would never be a
+good reason for someone distributing a kernel to others to change the
+default?  Certainly I agree that having the kernel command line
+parameter is nice to allow someone to override whatever the person
+building the kernel chose, but IMO it's not a good way to change the
+default built-in to the kernel.
+
+The current plan (as I understand it) is that we'd like to ship
+Chromebook kernels with this option changed from the default that's
+there now.  In your opinion, is that a sane thing to do?
+
+
+>  2) You can add the desired mode to the compiled in (partial) kernel
+>     command line today.
+
+This might be easier on x86 than it is on ARM.  ARM (and ARM64)
+kernels only have two modes: kernel provides cmdline and bootloader
+provides cmdline.  There are out-of-mainline ANDROID patches to
+address this but nothing in mainline.
+
+The patch we're discussing now is x86-only so it's not such a huge
+deal, but the fact that combining the kernel and bootloader
+commandline never landed in mainline for arm/arm64 means that this
+isn't a super common/expected thing to do.
+
+
+>  3) Boot loaders are well capable of handling large kernel command lines
+>     and the extra time spend for reading the parameter does not matter
+>     at all.
+
+Long command lines can still be a bit of a chore for humans to deal
+with.  Many times I've needed to look at "/proc/cmdline" and make
+sense of it.  The longer the command line is and the more cruft
+stuffed into it the more of a chore it is.  Yes, this is just one
+thing to put in the command line, but if 10 different drivers all have
+their "one thing" to put there it gets really long.  If 100 different
+drivers all want their one config option there it gets really really
+long.  IMO the command line should be a last resort place to put
+things and should just contain:
+
+1. Legacy things that _have_ to be in the command line because they've
+always been there.
+
+2. Things that the bootloader/BIOS needs to communicate to the kernel
+and has no better way to communicate.
+
+3. Cases where the person running the kernel needs to override a
+default set by the person compiling the kernel.
+
+
+>  4) It's just a tiny part of the whole speculation maze. If we go there
+>     for L1TF then we open the flood gates for a gazillion other config
+>     options.
+
+It seems like the only options that we'd need CONFIG option for would
+be the ones where it would be sane to change the default compiled into
+the kernel.  Hopefully that's not too many things?
+
+
+>  5) It's completely useless for distro kernels.
+>
+>  6) The implementation is horrible. We have proper choice selectors
+>     which allow to add parseable information instead of random numbers
+>     and a help text.
+
+If my other arguments make sense and Abhishek could just fix #6, would
+that work?
+
+
+Obviously, like many design choices, the above is all subjective.
+It's really your call and if these arguments don't convince you it
+sounds like the way forward is just to use "CONFIG_CMDLINE" and take
+advantage of the fact that on x86 this will get merged with the
+bootloader's command line.
+
+
+-Doug
