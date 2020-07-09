@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C850C2196CF
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 05:45:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A480C2196D3
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 05:46:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726289AbgGIDpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 23:45:24 -0400
-Received: from mga17.intel.com ([192.55.52.151]:24535 "EHLO mga17.intel.com"
+        id S1726318AbgGIDqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 23:46:31 -0400
+Received: from mga07.intel.com ([134.134.136.100]:59229 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726117AbgGIDpY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 23:45:24 -0400
-IronPort-SDR: Q92uF39tImZ3F2Vg3bAtdLM8eCWHU8a9ROGlRirFO60+Ceial9kFrPxD7WS46Sb6m6xqtEGyxT
- 35kwET4f5vlg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9676"; a="128003030"
+        id S1726117AbgGIDqa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 23:46:30 -0400
+IronPort-SDR: a3xOKUYa6BQGOvzxSh4Q8NHoD67aNM3w4IT07yEBQsCjMESrbsdOqDHXf9NvaYkk5cGAZXhx5X
+ //oSNkII/YDA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9676"; a="212850002"
 X-IronPort-AV: E=Sophos;i="5.75,330,1589266800"; 
-   d="scan'208";a="128003030"
+   d="scan'208";a="212850002"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2020 20:45:22 -0700
-IronPort-SDR: jz14ccNU14DSzJri36koI1YUrv01PFdt80xfRPbpCqf8G4kaeWIazyqKo143i5JxTQLT4fPv/Y
- alljt8WxxonQ==
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2020 20:46:30 -0700
+IronPort-SDR: HDUm5QmuV/5aWGurSXu8QguKFjxB2LrrdTwxAVaib/CU2fDXGTBlgVAxDWb3PbNZoRIGwvlG5C
+ bt1dCus2NPwg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,330,1589266800"; 
-   d="scan'208";a="323115014"
+   d="scan'208";a="457746314"
 Received: from lkp-server01.sh.intel.com (HELO 6136dd46483e) ([10.239.97.150])
-  by FMSMGA003.fm.intel.com with ESMTP; 08 Jul 2020 20:45:22 -0700
+  by orsmga005.jf.intel.com with ESMTP; 08 Jul 2020 20:46:28 -0700
 Received: from kbuild by 6136dd46483e with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1jtNUv-0000Op-Q1; Thu, 09 Jul 2020 03:45:21 +0000
-Date:   Thu, 09 Jul 2020 11:45:00 +0800
+        id 1jtNW0-0000P8-A8; Thu, 09 Jul 2020 03:46:28 +0000
+Date:   Thu, 09 Jul 2020 11:45:38 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:sched/urgent] BUILD SUCCESS
- ce3614daabea8a2d01c1dd17ae41d1ec5e5ae7db
-Message-ID: <5f0692bc.60I8c6Nd2EG9WQdN%lkp@intel.com>
+Subject: [tip:perf/core] BUILD SUCCESS
+ c085fb8774671e83f6199a8e838fbc0e57094029
+Message-ID: <5f0692e2.pWEvtdlSLHXyFz9f%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -46,13 +46,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git  sched/urgent
-branch HEAD: ce3614daabea8a2d01c1dd17ae41d1ec5e5ae7db  sched: Fix unreliable rseq cpu_id for new tasks
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git  perf/core
+branch HEAD: c085fb8774671e83f6199a8e838fbc0e57094029  perf/x86/intel/lbr: Support XSAVES for arch LBR read
 
-elapsed time: 727m
+elapsed time: 728m
 
-configs tested: 101
-configs skipped: 2
+configs tested: 102
+configs skipped: 1
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
@@ -76,11 +76,6 @@ xtensa                          iss_defconfig
 sh                           se7343_defconfig
 arm                          ixp4xx_defconfig
 sh                           se7780_defconfig
-m68k                             alldefconfig
-arc                      axs103_smp_defconfig
-arm                          prima2_defconfig
-sh                           sh2007_defconfig
-mips                      maltaaprp_defconfig
 i386                              allnoconfig
 i386                             allyesconfig
 i386                                defconfig
@@ -132,6 +127,12 @@ i386                 randconfig-a006-20200708
 i386                 randconfig-a005-20200708
 i386                 randconfig-a004-20200708
 i386                 randconfig-a003-20200708
+i386                 randconfig-a011-20200708
+i386                 randconfig-a015-20200708
+i386                 randconfig-a014-20200708
+i386                 randconfig-a016-20200708
+i386                 randconfig-a012-20200708
+i386                 randconfig-a013-20200708
 riscv                            allyesconfig
 riscv                             allnoconfig
 riscv                               defconfig
@@ -147,8 +148,8 @@ sparc64                           allnoconfig
 sparc64                          allyesconfig
 sparc64                          allmodconfig
 um                                allnoconfig
-um                               allyesconfig
 um                                  defconfig
+um                               allyesconfig
 um                               allmodconfig
 x86_64                               rhel-7.6
 x86_64                    rhel-7.6-kselftests
