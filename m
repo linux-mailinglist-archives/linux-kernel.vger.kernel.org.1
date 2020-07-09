@@ -2,72 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EE552196C2
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 05:41:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C850C2196CF
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 05:45:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726262AbgGIDlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 23:41:13 -0400
-Received: from smtp23.cstnet.cn ([159.226.251.23]:33098 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726122AbgGIDlN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 23:41:13 -0400
-Received: from localhost (unknown [159.226.5.99])
-        by APP-03 (Coremail) with SMTP id rQCowABn6fhZkQZfXF2pAw--.36772S2;
-        Thu, 09 Jul 2020 11:39:06 +0800 (CST)
-From:   Xu Wang <vulab@iscas.ac.cn>
-To:     colyli@suse.de, kent.overstreet@gmail.com,
-        linux-bcache@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Xu Wang <vulab@iscas.ac.cn>
-Subject: [PATCH] bcache: writeback: Remove unneeded variable ret
-Date:   Thu,  9 Jul 2020 03:39:04 +0000
-Message-Id: <20200709033904.27391-1-vulab@iscas.ac.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: rQCowABn6fhZkQZfXF2pAw--.36772S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrCr4fJw18uw4xXrW3uryDWrg_yoWxXrb_ur
-        1Yqa1vkFWFk3WkXw17A3WfZrWj934DZF10q3WSkr9xKF1Fy34xXrW8Zr4kJr1S9Fy8uF4D
-        Gw12qr4UAr1v9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb4xFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
-        Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
-        0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4UJVWxJr1lOx8S6xCaFVCjc4AY6r
-        1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_
-        Gr4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxV
-        WUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI
-        7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r
-        1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8
-        JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0JU4MKZUUU
-        UU=
-X-Originating-IP: [159.226.5.99]
-X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCAAMA102YRI8CwAAso
+        id S1726289AbgGIDpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 23:45:24 -0400
+Received: from mga17.intel.com ([192.55.52.151]:24535 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726117AbgGIDpY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 23:45:24 -0400
+IronPort-SDR: Q92uF39tImZ3F2Vg3bAtdLM8eCWHU8a9ROGlRirFO60+Ceial9kFrPxD7WS46Sb6m6xqtEGyxT
+ 35kwET4f5vlg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9676"; a="128003030"
+X-IronPort-AV: E=Sophos;i="5.75,330,1589266800"; 
+   d="scan'208";a="128003030"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2020 20:45:22 -0700
+IronPort-SDR: jz14ccNU14DSzJri36koI1YUrv01PFdt80xfRPbpCqf8G4kaeWIazyqKo143i5JxTQLT4fPv/Y
+ alljt8WxxonQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,330,1589266800"; 
+   d="scan'208";a="323115014"
+Received: from lkp-server01.sh.intel.com (HELO 6136dd46483e) ([10.239.97.150])
+  by FMSMGA003.fm.intel.com with ESMTP; 08 Jul 2020 20:45:22 -0700
+Received: from kbuild by 6136dd46483e with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1jtNUv-0000Op-Q1; Thu, 09 Jul 2020 03:45:21 +0000
+Date:   Thu, 09 Jul 2020 11:45:00 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:sched/urgent] BUILD SUCCESS
+ ce3614daabea8a2d01c1dd17ae41d1ec5e5ae7db
+Message-ID: <5f0692bc.60I8c6Nd2EG9WQdN%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unneeded variable ret i.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git  sched/urgent
+branch HEAD: ce3614daabea8a2d01c1dd17ae41d1ec5e5ae7db  sched: Fix unreliable rseq cpu_id for new tasks
 
-Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+elapsed time: 727m
+
+configs tested: 101
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+xtensa                         virt_defconfig
+parisc                            allnoconfig
+mips                      pic32mzda_defconfig
+arm                       netwinder_defconfig
+openrisc                 simple_smp_defconfig
+powerpc                      pasemi_defconfig
+arm                        cerfcube_defconfig
+xtensa                          iss_defconfig
+sh                           se7343_defconfig
+arm                          ixp4xx_defconfig
+sh                           se7780_defconfig
+m68k                             alldefconfig
+arc                      axs103_smp_defconfig
+arm                          prima2_defconfig
+sh                           sh2007_defconfig
+mips                      maltaaprp_defconfig
+i386                              allnoconfig
+i386                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                              allyesconfig
+c6x                               allnoconfig
+openrisc                         allyesconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+arc                              allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+mips                             allyesconfig
+mips                              allnoconfig
+mips                             allmodconfig
+parisc                              defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a002-20200708
+i386                 randconfig-a001-20200708
+i386                 randconfig-a006-20200708
+i386                 randconfig-a005-20200708
+i386                 randconfig-a004-20200708
+i386                 randconfig-a003-20200708
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+um                               allmodconfig
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                                   rhel
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+
 ---
- drivers/md/bcache/writeback.c | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/drivers/md/bcache/writeback.c b/drivers/md/bcache/writeback.c
-index 1cf1e5016cb9..71801c086b82 100644
---- a/drivers/md/bcache/writeback.c
-+++ b/drivers/md/bcache/writeback.c
-@@ -825,10 +825,8 @@ static int bch_dirty_init_thread(void *arg)
- 	struct btree_iter iter;
- 	struct bkey *k, *p;
- 	int cur_idx, prev_idx, skip_nr;
--	int i;
- 
- 	k = p = NULL;
--	i = 0;
- 	cur_idx = prev_idx = 0;
- 
- 	bch_btree_iter_init(&c->root->keys, &iter, NULL);
--- 
-2.17.1
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
