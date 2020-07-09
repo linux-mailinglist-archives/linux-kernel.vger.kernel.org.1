@@ -2,146 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E06F21A13A
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 15:52:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8A2421A149
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 15:54:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727999AbgGINwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 09:52:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40908 "EHLO
+        id S1728022AbgGINy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 09:54:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726660AbgGINwn (ORCPT
+        with ESMTP id S1727124AbgGINy0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 09:52:43 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EAFCC08C5CE
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 06:52:43 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id s9so2457717ljm.11
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 06:52:43 -0700 (PDT)
+        Thu, 9 Jul 2020 09:54:26 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BE1BC08C5DC
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 06:54:26 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id 6so1715420qtt.0
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 06:54:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gGVuo8ujJimg/zW9016fI/nLusAS6eB6X5j2AJ72Jog=;
-        b=npvFezMTC8fOUcAN70TXMU8kzvjWJ2iynpk3U+Bf5E2N6rYnHzVn2idLDJ64d0yIDn
-         idLfET28ODOTABtdRYtCqGmMJKGolCFnKUN+PIe7P0Gjg7dpGIyKAeHBhzyqbn9xOO3g
-         DUkJ6ZCCf/89U8o3cCKCI3wRoLV6G7SFkMlhrzX+xFYOgeVDsdnS/Xa1VpPZanylz7qu
-         UuTcYo4TZOOgh+c9GK3p295TFbpP0nx4m9XhUzRFTXxiwR+X2E7qL2Y4wVIrQO5+DP8+
-         oyN3E96ugzvXaQHIX1og1wNJNI02ilr6dhwoJsLMm3lYvtq3+IwzB0gGaKID6Rkj9b5E
-         BdPg==
+        d=marek-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FoYroevO5aBBa1iVjvsDAiRUR6Hq4gmMuR8nLzos3mw=;
+        b=Z6NRe/KH8bncXG4w++4ecKr3wqovwnlWL54aD5Nzi9+BB7vjICb9LcPIGeiPYFNJVo
+         Y/AQ6/wFhrzsBGDSIqFehClvUY0W6XyunhSG+cdNJhm6FQ6Q0D1+GGGDV5SAGpGvs35X
+         zAq7AyAI7DqKTEHXRzXPVTE56RnZj59V6uUK5lOM+IGn5tAhi9U6Cfyk5g2zpt3KZzaP
+         gq+urnDQkd/kAar89rPeSp5ndT15f7TJwZSdPRcp74qc7i+aIjJ4YF9EFC+us5EiP/NV
+         VX8vfcNp6enxaHd4lSfsIM+qpUnUMnXtYmEoWWC0nTXNwCHAjoB1sA5zEKiLDy2THgFB
+         YG8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gGVuo8ujJimg/zW9016fI/nLusAS6eB6X5j2AJ72Jog=;
-        b=m1se6U2A2pETVReHnqWc+feh2/z06Tp9WXATpeHcxFoHo3RkKvSA308Dr4+IIcwYcr
-         ACj+3BNUM+RfgBFUMisDkbeL6MA7T+wC4hRQWeKi5dAvQax7nc3TdD4FU2k8wloz/DJY
-         H0bBgqlEgHGfIZcA0PAiA0cQXmJ0wRMzXlmViGrLV48CXAkuNX4UGEm5QhoY8rXtpSqD
-         SYsQzE2XgxwKH2M/Z6ULSP7tdXHjWg8lJgFDXv8FtLzOS2C3ut80B87bHDP9XZgAncAY
-         acpOlI3pfxgsHXOwYb6JGe/2KN3b+iowNWdTjEqQ2R29sA1f95ZVzleHjmt5zYEChvd5
-         barw==
-X-Gm-Message-State: AOAM533smSoqBGydFY+FNUXXxCBWv7ETyH5XjuDFsFbPNZu/AmhMFYOH
-        Yg0+nOEId65g7Ox/SEMRlagligStfYM9BnmLuJ3THQ==
-X-Google-Smtp-Source: ABdhPJyQqg3jfxMgebkWLUYMwv5N+RIZKCbN+OV/eVxLE/UvQPOv1OpAHpnmUdBAT2ATHZ+9p+dUPugRYkKtv+xlMb8=
-X-Received: by 2002:a2e:7f10:: with SMTP id a16mr38244974ljd.69.1594302761669;
- Thu, 09 Jul 2020 06:52:41 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FoYroevO5aBBa1iVjvsDAiRUR6Hq4gmMuR8nLzos3mw=;
+        b=ZLA0PzdBTYqotwIHBXMm+MgiK35fm3TfkCzBuQM34/9RS2dTbNqA2yf5I65gkBLPGC
+         6UT0OJO+LjSdTtP4n29yYB1dV5Y7A7gdDgnqEi4gnLzlUSacq0/1ZRxiJPYcu0PjWxln
+         IcAm4sr3uGy9ffqBq1Vfkz4TfrGPsHuz114r9/Cbqtfth4MxDG6TnJrZrwKRDftwBl1b
+         oz1L/K8SxZQsQ6JlSIbUYd7DMY4FMIItG1PwB9/2kSaIQTuQlLwzFxqmCTEkgcErwjyn
+         7Ow10TqB43RTosJeGl84BjowHCkRw8VQiWk79nBe+4VqmH2gEk5U2GO7uYXrlI778MWB
+         8+UQ==
+X-Gm-Message-State: AOAM531lCN6jbHtOI3LS/rjk+SEk/PE0XtCwsXzUZ8udZiytlYKw9j6H
+        azIn6XUAau2JHpgKcD6AFjKotQ==
+X-Google-Smtp-Source: ABdhPJxhiX3tijNbdyq0oIUQJC6u0JCpsZSHVAijeTfA7RTEUJdj+vBHVcFpY3YlG+naGt9YwyptvA==
+X-Received: by 2002:ac8:7208:: with SMTP id a8mr68813599qtp.355.1594302865515;
+        Thu, 09 Jul 2020 06:54:25 -0700 (PDT)
+Received: from localhost.localdomain ([147.253.86.153])
+        by smtp.gmail.com with ESMTPSA id 130sm3632735qkn.82.2020.07.09.06.54.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Jul 2020 06:54:25 -0700 (PDT)
+From:   Jonathan Marek <jonathan@marek.ca>
+To:     linux-arm-msm@vger.kernel.org
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Deepak Katragadda <dkatraga@codeaurora.org>,
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS),
+        linux-clk@vger.kernel.org (open list:COMMON CLK FRAMEWORK),
+        linux-kernel@vger.kernel.org (open list),
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>, Vinod Koul <vkoul@kernel.org>
+Subject: [PATCH v3 00/14] Enable GPU for SM8150 and SM8250
+Date:   Thu,  9 Jul 2020 09:52:31 -0400
+Message-Id: <20200709135251.643-1-jonathan@marek.ca>
+X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
-References: <20200702144258.19326-1-vincent.guittot@linaro.org>
- <4198cf3d-308e-feee-91c3-2edfd1748b4c@arm.com> <CAKfTPtBeRXCEWB3dTC8uOqbQ5xaZqQTAeG1EVGEk+pJcYz00sw@mail.gmail.com>
- <9a282390-1c81-0e77-9567-116c8777f7b5@arm.com>
-In-Reply-To: <9a282390-1c81-0e77-9567-116c8777f7b5@arm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Thu, 9 Jul 2020 15:52:29 +0200
-Message-ID: <CAKfTPtDzsryz=V3WKo5zPkvWSagNAh1tr+ZaV5UwXBr7xMQPUQ@mail.gmail.com>
-Subject: Re: [PATCH] sched/fair: handle case of task_h_load() returning 0
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 9 Jul 2020 at 15:34, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
->
-> On 08/07/2020 11:47, Vincent Guittot wrote:
-> > On Wed, 8 Jul 2020 at 11:45, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
-> >>
-> >> On 02/07/2020 16:42, Vincent Guittot wrote:
-> >>> task_h_load() can return 0 in some situations like running stress-ng
-> >>> mmapfork, which forks thousands of threads, in a sched group on a 224 cores
-> >>> system. The load balance doesn't handle this correctly because
-> >>
-> >> I guess the issue here is that 'cfs_rq->h_load' in
-> >>
-> >> task_h_load() {
-> >>     struct cfs_rq *cfs_rq = task_cfs_rq(p);
-> >>     ...
-> >>     return div64_ul(p->se.avg.load_avg * cfs_rq->h_load,
-> >>                     cfs_rq_load_avg(cfs_rq) + 1);
-> >> }
-> >>
-> >> is still ~0 (or at least pretty small) compared to se.avg.load_avg being
-> >> 1024 and cfs_rq_load_avg(cfs_rq) n*1024 in these lb occurrences.
-> >>
-> >>> env->imbalance never decreases and it will stop pulling tasks only after
-> >>> reaching loop_max, which can be equal to the number of running tasks of
-> >>> the cfs. Make sure that imbalance will be decreased by at least 1.
->
-> Looks like it's bounded by sched_nr_migrate (32 on my E5-2690 v2).
+This series adds the missing clock drivers and dts nodes to enable
+the GPU on both SM8150 and SM8250.
 
-yes
+Note an extra drm/msm patch [1] is required for SM8250.
 
->
-> env.loop_max  = min(sysctl_sched_nr_migrate, busiest->nr_running);
->
-> [...]
->
-> >> I assume that this is related to the LKP mail
-> >
-> > I have found this problem while studying the regression raised in the
-> > email below but it doesn't fix it. At least, it's not enough
-> >
-> >>
-> >> https://lkml.kernel.org/r/20200421004749.GC26573@shao2-debian ?
->
-> I see. It also happens with other workloads but it's most visible
-> at the beginning of a workload (fork).
->
-> Still on E5-2690 v2 (2*2*10, 40 CPUs):
->
-> In the taskgroup cfs_rq->h_load is ~ 1024/40 = 25 so this leads to
-> task_h_load = 0 with cfs_rq->avg.load_avg 40 times higher than the
-> individual task load (1024).
->
-> One incarnation of 20 loops w/o any progress (that's w/o your patch).
->
-> With loop='loop/loop_break/loop_max'
-> and load='p->se.avg.load_avg/cfs_rq->h_load/cfs_rq->avg.load_avg'
->
-> Jul  9 10:41:18 e105613-lin kernel: [73.068844] [stress-ng-mmapf 2907] SMT CPU37->CPU17 imb=8 loop=1/32/32 load=1023/23/43006
-> Jul  9 10:41:18 e105613-lin kernel: [73.068873] [stress-ng-mmapf 3501] SMT CPU37->CPU17 imb=8 loop=2/32/32 load=1022/23/41983
-> Jul  9 10:41:18 e105613-lin kernel: [73.068890] [stress-ng-mmapf 2602] SMT CPU37->CPU17 imb=8 loop=3/32/32 load=1023/23/40960
-> ...
-> Jul  9 10:41:18 e105613-lin kernel: [73.069136] [stress-ng-mmapf 2520] SMT CPU37->CPU17 imb=8 loop=18/32/32 load=1023/23/25613
-> Jul  9 10:41:18 e105613-lin kernel: [73.069144] [stress-ng-mmapf 3107] SMT CPU37->CPU17 imb=8 loop=19/32/32 load=1021/23/24589
-> Jul  9 10:41:18 e105613-lin kernel: [73.069149] [stress-ng-mmapf 2672] SMT CPU37->CPU17 imb=8 loop=20/32/32 load=1024/23/23566
-> ...
->
-> Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> Tested-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+As noted by Dmitry, GMU init fails with newer firmware, needs this patch [2].
 
-Thanks
+[1] https://patchwork.freedesktop.org/series/78968/
+[2] https://git.linaro.org/landing-teams/working/qualcomm/kernel.git/commit/?h=tracking-qcomlt-sm8250&id=01331f2ccbe7e6c4719dbe038a5fb496db32646d
 
->
->
->
->
->
->
->
+Changes in V2:
+* Added "clk: qcom: gcc: fix sm8150 GPU and NPU clocks" to fix the newly added
+  SM8150 GPU gcc clocks
+* Added "Fixes:" tag to "clk: qcom: clk-alpha-pll: remove unused/incorrect PLL_CAL_VAL"
+* Added yaml schemas to gpucc dt-bindings patches
+* Added "clk: qcom: add common gdsc_gx_do_nothing_enable for gpucc drivers" and changed
+  gpucc patches to use it.
+* Removed CLK_IS_CRITICAL from gpu_cc_ahb_clk
+* Added missing rpmh regulator level for sm8250 GPU clock levels
+* Use sm8150/sm8250 iommu compatibles in dts
+* Add gcc_gpu_gpll0_clk_src/gcc_gpu_gpll0_div_clk_src to gpucc clocks in dts
+
+Changes in V3:
+* Combined gpucc yaml bindings into one
+* Removed some unused clocks from gpucc drivers to move closely match other gpucc
+* Use parent_data instead of parent_names
+
+Jonathan Marek (14):
+  clk: qcom: gcc: fix sm8150 GPU and NPU clocks
+  clk: qcom: clk-alpha-pll: remove unused/incorrect PLL_CAL_VAL
+  clk: qcom: clk-alpha-pll: same regs and ops for trion and lucid
+  clk: qcom: clk-alpha-pll: use the right PCAL_DONE value for lucid pll
+  clk: qcom: gcc: remove unnecessary vco_table from SM8150
+  dt-bindings: clock: combine qcom,sdm845-gpucc and qcom,sc7180-gpucc
+  dt-bindings: clock: add SM8150 QCOM Graphics clock bindings
+  dt-bindings: clock: add SM8250 QCOM Graphics clock bindings
+  clk: qcom: add common gdsc_gx_do_nothing_enable for gpucc drivers
+  clk: qcom: Add graphics clock controller driver for SM8150
+  clk: qcom: Add graphics clock controller driver for SM8250
+  dt-bindings: power: Add missing rpmpd rpmh regulator level
+  arm64: dts: qcom: add sm8150 GPU nodes
+  arm64: dts: qcom: add sm8250 GPU nodes
+
+ ...qcom,sdm845-gpucc.yaml => qcom,gpucc.yaml} |  18 +-
+ .../bindings/clock/qcom,sc7180-gpucc.yaml     |  74 ----
+ arch/arm64/boot/dts/qcom/sm8150.dtsi          | 136 +++++++
+ arch/arm64/boot/dts/qcom/sm8250.dtsi          | 143 +++++++
+ drivers/clk/qcom/Kconfig                      |  16 +
+ drivers/clk/qcom/Makefile                     |   2 +
+ drivers/clk/qcom/clk-alpha-pll.c              |  70 ++--
+ drivers/clk/qcom/clk-alpha-pll.h              |  15 +-
+ drivers/clk/qcom/gcc-sm8150.c                 |  26 +-
+ drivers/clk/qcom/gdsc.c                       |  25 ++
+ drivers/clk/qcom/gdsc.h                       |   1 +
+ drivers/clk/qcom/gpucc-sc7180.c               |  27 +-
+ drivers/clk/qcom/gpucc-sdm845.c               |  27 +-
+ drivers/clk/qcom/gpucc-sm8150.c               | 320 ++++++++++++++++
+ drivers/clk/qcom/gpucc-sm8250.c               | 348 ++++++++++++++++++
+ include/dt-bindings/clock/qcom,gpucc-sm8150.h |  33 ++
+ include/dt-bindings/clock/qcom,gpucc-sm8250.h |  34 ++
+ include/dt-bindings/power/qcom-rpmpd.h        |   1 +
+ 18 files changed, 1128 insertions(+), 188 deletions(-)
+ rename Documentation/devicetree/bindings/clock/{qcom,sdm845-gpucc.yaml => qcom,gpucc.yaml} (75%)
+ delete mode 100644 Documentation/devicetree/bindings/clock/qcom,sc7180-gpucc.yaml
+ create mode 100644 drivers/clk/qcom/gpucc-sm8150.c
+ create mode 100644 drivers/clk/qcom/gpucc-sm8250.c
+ create mode 100644 include/dt-bindings/clock/qcom,gpucc-sm8150.h
+ create mode 100644 include/dt-bindings/clock/qcom,gpucc-sm8250.h
+
+-- 
+2.26.1
+
