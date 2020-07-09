@@ -2,165 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF35F219AFA
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 10:38:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36AE5219B14
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 10:39:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726345AbgGIIiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 04:38:14 -0400
-Received: from foss.arm.com ([217.140.110.172]:43062 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726247AbgGIIiO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 04:38:14 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 96DF131B;
-        Thu,  9 Jul 2020 01:38:13 -0700 (PDT)
-Received: from bogus (unknown [10.37.8.63])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D15183F887;
-        Thu,  9 Jul 2020 01:38:11 -0700 (PDT)
-Date:   Thu, 9 Jul 2020 09:38:09 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Dien Pham <dien.pham.ry@renesas.com>
-Cc:     "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>
-Subject: Re: [PATCH 1/2] firmware: arm_scmi: Keep the discrete clock rates
- sorted
-Message-ID: <20200709083808.GB31544@bogus>
-References: <20200708110725.18017-1-sudeep.holla@arm.com>
- <OSBPR01MB4024648DB0F2C680892B442FD1640@OSBPR01MB4024.jpnprd01.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <OSBPR01MB4024648DB0F2C680892B442FD1640@OSBPR01MB4024.jpnprd01.prod.outlook.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1726684AbgGIIjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 04:39:52 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:49138 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726247AbgGIIju (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 04:39:50 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0698ab4u111432;
+        Thu, 9 Jul 2020 04:39:44 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 325r2caevj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 09 Jul 2020 04:39:44 -0400
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0698akDJ112286;
+        Thu, 9 Jul 2020 04:39:43 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 325r2caerd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 09 Jul 2020 04:39:42 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0698a3Dt031648;
+        Thu, 9 Jul 2020 08:39:24 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma03ams.nl.ibm.com with ESMTP id 325k1vgm6b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 09 Jul 2020 08:39:24 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0698dLdR56164776
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 9 Jul 2020 08:39:21 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8869D42056;
+        Thu,  9 Jul 2020 08:39:21 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A6F5642061;
+        Thu,  9 Jul 2020 08:39:20 +0000 (GMT)
+Received: from oc3016276355.ibm.com (unknown [9.145.34.67])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu,  9 Jul 2020 08:39:20 +0000 (GMT)
+From:   Pierre Morel <pmorel@linux.ibm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     pasic@linux.ibm.com, borntraeger@de.ibm.com, frankja@linux.ibm.com,
+        mst@redhat.com, jasowang@redhat.com, cohuck@redhat.com,
+        kvm@vger.kernel.org, linux-s390@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, thomas.lendacky@amd.com,
+        david@gibson.dropbear.id.au, linuxram@us.ibm.com,
+        heiko.carstens@de.ibm.com, gor@linux.ibm.com
+Subject: [PATCH v5 0/2] s390: virtio: let arch validate VIRTIO features
+Date:   Thu,  9 Jul 2020 10:39:17 +0200
+Message-Id: <1594283959-13742-1-git-send-email-pmorel@linux.ibm.com>
+X-Mailer: git-send-email 1.8.3.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-09_04:2020-07-08,2020-07-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
+ priorityscore=1501 impostorscore=0 spamscore=0 phishscore=0 adultscore=0
+ lowpriorityscore=0 malwarescore=0 clxscore=1015 mlxlogscore=975
+ suspectscore=1 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007090064
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dien-san,
+Hi all,
 
-On Thu, Jul 09, 2020 at 08:20:51AM +0000, Dien Pham wrote:
-> Hi Sudeep,
->
-> I share my build warning and some in-line comment below:
->
->   CC      drivers/firmware/arm_scmi/clock.o
-> drivers/firmware/arm_scmi/clock.c: In function 'rate_cmp_func':
-> drivers/firmware/arm_scmi/clock.c:127:12: warning: initialization discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
->   u64 *r1 = _r1, *r2 = _r2;
->             ^~~
-> drivers/firmware/arm_scmi/clock.c:127:23: warning: initialization discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
->   u64 *r1 = _r1, *r2 = _r2;
->                        ^~~
->   CC      arch/arm64/kernel/vdso.o
-> drivers/firmware/arm_scmi/clock.c: In function 'scmi_clock_protocol_init':
-> drivers/firmware/arm_scmi/clock.c:197:3: warning: 'rate' may be used uninitialized in this function [-Wmaybe-uninitialized]
->    sort(rate, tot_rate_cnt, sizeof(*rate), rate_cmp_func, NULL);
->    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->
+The goal of the series is to give a chance to the architecture
+to validate VIRTIO device features.
 
-Sorry for this. I noticed yesterday when I built but strangely I had
-created patches before I fixed these and sent them instead of fixed version.
-My mistake.
+in this respin:
 
-> >-----Original Message-----
-> >From: Sudeep Holla <sudeep.holla@arm.com>
-> >Sent: Wednesday, July 8, 2020 6:07 PM
-> >To: linux-arm-kernel@lists.infradead.org; linux-clk@vger.kernel.org; Stephen Boyd <sboyd@kernel.org>
-> >Cc: Sudeep Holla <sudeep.holla@arm.com>; linux-kernel@vger.kernel.org; Michael Turquette <mturquette@baylibre.com>; Dien Pham <dien.pham.ry@renesas.com>
-> >Subject: [PATCH 1/2] firmware: arm_scmi: Keep the discrete clock rates sorted
-> >
-> >Instead of relying on the firmware to keep the clock rates sorted, let us sort the list. This is not essential for clock layer but it helps to find the min and max rates easily from the list.
-> >
-> >Fixes: 5f6c6430e904 ("firmware: arm_scmi: add initial support for clock protocol")
-> >Reported-by: Dien Pham <dien.pham.ry@renesas.com>
-> >Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
-> >---
-> > drivers/firmware/arm_scmi/clock.c | 13 ++++++++++++-
-> > 1 file changed, 12 insertions(+), 1 deletion(-)
-> >
-> >Hi Dien-san,
-> >
-> >If you could review/test these patches, I can queue them ASAP.
-> >I am planning to send the PR for ARM SoC later this week, so I need your tested-by.
->
-> I applied the patch,
-> Although there are some build warnings, but the patch effect is ok.
->
+1) I kept removed the ack from Jason as I reworked the patch
+   @Jason, the nature and goal of the patch did not really changed
+           please can I get back your acked-by with these changes?
 
-Thanks for testing.
+2) I suppressed the unnecessary verbosity of the architecture
+   specific patch
 
-> >
-> >Regards,
-> >Sudeep
-> >
-> >diff --git a/drivers/firmware/arm_scmi/clock.c b/drivers/firmware/arm_scmi/clock.c
-> >index 4c2227662b26..2dd119cdebf6 100644
-> >--- a/drivers/firmware/arm_scmi/clock.c
-> >+++ b/drivers/firmware/arm_scmi/clock.c
-> >@@ -5,6 +5,8 @@
-> >  * Copyright (C) 2018 ARM Ltd.
-> >  */
-> >
-> >+#include <linux/sort.h>
-> >+
-> > #include "common.h"
-> >
-> > enum scmi_clock_protocol_cmd {
-> >@@ -121,6 +123,13 @@ static int scmi_clock_attributes_get(const struct scmi_handle *handle,
-> > 	return ret;
-> > }
-> >
-> >+static int rate_cmp_func(const void *_r1, const void *_r2) {
-> >+	u64 *r1 = _r1, *r2 = _r2;
->
-> It is better to add 'const' as below to avoid warning.
-> const u64 *r1 = _r1, *r2 = _r2;
->
+3) put back the arch specific code inside arch/s390/mm/init.c
+   after offline discussion with Christian.
 
-Yes, I have this in the correct version which I sent as v2 this morning.
-
-> >+
-> >+	return r1 - r2;
->
-> r1 and r2 are u64, but returned value is 'int' type.
-> Do you think we should improve this ? e.g. return (int)r1 - r2;
->
-
-Not changing to const above must suffice.
-
-> >+}
-> >+
-> > static int
-> > scmi_clock_describe_rates_get(const struct scmi_handle *handle, u32 clk_id,
-> > 			      struct scmi_clock_info *clk)
-> >@@ -184,8 +193,10 @@ scmi_clock_describe_rates_get(const struct scmi_handle *handle, u32 clk_id,
-> > 		 */
-> > 	} while (num_returned && num_remaining);
-> >
-> >-	if (rate_discrete)
-> >+	if (rate_discrete) {
-> > 		clk->list.num_rates = tot_rate_cnt;
-> >+		sort(rate, tot_rate_cnt, sizeof(*rate), rate_cmp_func, NULL);
->
-> About warning of above line, I think it relates to below snip of code:
->                 if (tot_rate_cnt + num_returned > SCMI_MAX_NUM_RATES) {
->                         dev_err(handle->dev, "No. of rates > MAX_NUM_RATES");
->                         break;
->                 }
->
-
-I don't understand your comment and relation to above warning.
-
-> I see that in this case is true, it is not proceeded as error case,
-> If so I think you can update 'rate' for value from 'tot_rate_cnt' to SCMI_MAX_NUM_RATES at here.
-> How do you think ?
->
-
---
 Regards,
-Sudeep
+Pierre
+
+Pierre Morel (2):
+  virtio: let arch validate VIRTIO features
+  s390: virtio: PV needs VIRTIO I/O device protection
+
+ arch/s390/mm/init.c           | 27 +++++++++++++++++++++++++++
+ drivers/virtio/virtio.c       | 19 +++++++++++++++++++
+ include/linux/virtio_config.h |  1 +
+ 3 files changed, 47 insertions(+)
+
+-- 
+2.25.1
+
+Changelog
+
+to v5:
+
+- return directly from S390 arch_validate_virtio_features()
+  when the guest is not protected.
+  (Connie)
+
+- Somme rewording
+  (Connie, Michael)
+
+- moved back code from arch/s390/ ...kernel/uv.c to ...mm/init.c
+  (Christian)
+
+to v4:
+
+- separate virtio and arch code
+  (Pierre)
+
+- moved code from arch/s390/mm/init.c to arch/s390/kernel/uv.c
+  (as interpreted from Heiko's comment)
+
+- moved validation inside the arch code
+  (Connie)
+
+- moved the call to arch validation before VIRTIO_F_1 test
+  (Michael)
+
+to v3:
+
+- add warning
+  (Connie, Christian)
+
+- add comment
+  (Connie)
+
+- change hook name
+  (Halil, Connie)
+
+to v2:
+
+- put the test in virtio_finalize_features()
+  (Connie)
+
+- put the test inside VIRTIO core
+  (Jason)
+
+- pass a virtio device as parameter
+  (Halil)
+
+
