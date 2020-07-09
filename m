@@ -2,194 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47B9121A82C
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 21:51:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BCE721A7F3
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 21:43:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726220AbgGITvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 15:51:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40304 "EHLO
+        id S1726460AbgGITnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 15:43:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726396AbgGITuw (ORCPT
+        with ESMTP id S1726220AbgGITnH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 15:50:52 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ACC2C08C5DC
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 12:50:51 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id 145so3019009qke.9
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 12:50:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jBhiNdJcKWpDIzUtXlvuF+3cyZgX7DpFBBALLEpqqcI=;
-        b=fXZg2ZbhLJFFCCYqF4ZSseLLp6ZerePMTDWKvhEaTTUG5r+0DGuVQTFoOP8tb0qHb4
-         dqKXWN4HmZbbeLhJ333fFkXQ61wZ0cjFfPaOaYXOH4f2GhjGxoYunvWeRvEalalfEx8x
-         5UDB7arIjU/KeYFGsYUxBltjP2CDzR3plB8pM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jBhiNdJcKWpDIzUtXlvuF+3cyZgX7DpFBBALLEpqqcI=;
-        b=SPTZrnLT0qM3Y3keRUmfbdb55slBNKMuRxbwHEhcY5vjsZ6/5e/R08e+hLRnWXLe19
-         0+dkqlKqc8E9OQgHfn315rHwwMP2uNeS85cgUocyfzgK2B3FaWsrUQginiDheEMyozcp
-         /uZezt+zEC0edTIxra7Xe7NkOyv1DrYcifwCLI7oPB9IJjSY1TtO/7STR9QpdvxQaXUQ
-         xVU5mMo1yj9Jv52FuFxeRRgDkwdbK9p513FwVOhulQFdRVZ29mNRObztnrJkJ60Rb1MU
-         7lDhe5plgjNU5YqKW7FWACwbm01v/ossiaECWAnp7VvGPu+EjbTm8YIgKO9NsWSud7om
-         HaRg==
-X-Gm-Message-State: AOAM533eB1Ntz7Fj39mri4TrdDTaLSYz8358kDHYhq/PMXozAnaL99ub
-        PEjL16wqF5OMWWrRJD0gxsy6tCy905s=
-X-Google-Smtp-Source: ABdhPJzT6LW+XnLwbr0i1CTs9EW2gFaozjT1V1EHyV+4wrwSM28SIiAFWA07xanG6AqqFuvywJdQkw==
-X-Received: by 2002:a05:620a:15ca:: with SMTP id o10mr37623620qkm.57.1594324250207;
-        Thu, 09 Jul 2020 12:50:50 -0700 (PDT)
-Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com. [209.85.219.44])
-        by smtp.gmail.com with ESMTPSA id e9sm4554287qtq.70.2020.07.09.12.50.49
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Jul 2020 12:50:49 -0700 (PDT)
-Received: by mail-qv1-f44.google.com with SMTP id ed14so1530432qvb.2
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 12:50:49 -0700 (PDT)
-X-Received: by 2002:a67:ec0f:: with SMTP id d15mr38876582vso.121.1594323788853;
- Thu, 09 Jul 2020 12:43:08 -0700 (PDT)
+        Thu, 9 Jul 2020 15:43:07 -0400
+Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B08D6C08C5CE;
+        Thu,  9 Jul 2020 12:43:07 -0700 (PDT)
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id 710BDBC0C2;
+        Thu,  9 Jul 2020 19:43:03 +0000 (UTC)
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+To:     ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        kuba@kernel.org, hawk@kernel.org, john.fastabend@gmail.com,
+        mchehab+huawei@kernel.org, robh@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Subject: [PATCH] MAINTAINERS: XDP: restrict N: and K:
+Date:   Thu,  9 Jul 2020 21:42:57 +0200
+Message-Id: <20200709194257.26904-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
-References: <20200708194715.4073300-1-abhishekbh@google.com> <87y2ntotah.fsf@nanos.tec.linutronix.de>
-In-Reply-To: <87y2ntotah.fsf@nanos.tec.linutronix.de>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Thu, 9 Jul 2020 12:42:57 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=WCu7o41iyn27vNBWo4f_X_XVy+PPPjBKc+70g5jd5+8w@mail.gmail.com>
-Message-ID: <CAD=FV=WCu7o41iyn27vNBWo4f_X_XVy+PPPjBKc+70g5jd5+8w@mail.gmail.com>
-Subject: Re: [PATCH v5] x86/speculation/l1tf: Add KConfig for setting the L1D
- cache flush mode
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Abhishek Bhardwaj <abhishekbh@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Anthony Steinhauser <asteinhauser@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Waiman Long <longman@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>, kvm@vger.kernel.org,
-        x86 <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+X-Spamd-Bar: /
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Rationale:
+Documentation/arm/ixp4xx.rst contains "xdp" as part of "ixdp465"
+which has nothing to do with XDP.
 
-On Thu, Jul 9, 2020 at 3:51 AM Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> Abhishek Bhardwaj <abhishekbh@google.com> writes:
-> > This change adds a new kernel configuration that sets the l1d cache
-> > flush setting at compile time rather than at run time.
-> >
-> > The reasons for this change are as follows -
-> >
-> >  - Kernel command line arguments are getting unwieldy. These parameters
-> >  are not a scalable way to set the kernel config. They're intended as a
-> >  super limited way for the bootloader to pass info to the kernel and
-> >  also as a way for end users who are not compiling the kernel themselves
-> >  to tweak the kernel behavior.
-> >
-> >  - Also, if a user wants this setting from the start. It's a definite
-> >  smell that it deserves to be a compile time thing rather than adding
-> >  extra code plus whatever miniscule time at runtime to pass an
-> >  extra argument.
-> >
-> >  - Finally, it doesn't preclude the runtime / kernel command line way.
-> >  Users are free to use those as well.
->
-> TBH, I don't see why this is a good idea.
->
->  1) I'm not following your argumentation that the command line option is
->     a poor Kconfig replacement. The L1TF mode is a boot time (module
->     load time) decision and the command line parameter is there to
->     override the carefully chosen and sensible default behaviour.
+Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+---
+ See also: https://lore.kernel.org/lkml/20200709132607.7fb42415@carbon/
 
-When you say that the default behavior is carefully chosen and
-sensible, are you saying that (in your opinion) there would never be a
-good reason for someone distributing a kernel to others to change the
-default?  Certainly I agree that having the kernel command line
-parameter is nice to allow someone to override whatever the person
-building the kernel chose, but IMO it's not a good way to change the
-default built-in to the kernel.
+ MAINTAINERS | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-The current plan (as I understand it) is that we'd like to ship
-Chromebook kernels with this option changed from the default that's
-there now.  In your opinion, is that a sane thing to do?
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 1d4aa7f942de..2bb7feb838af 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -18708,8 +18708,8 @@ F:	include/trace/events/xdp.h
+ F:	kernel/bpf/cpumap.c
+ F:	kernel/bpf/devmap.c
+ F:	net/core/xdp.c
+-N:	xdp
+-K:	xdp
++N:	(?:\b|_)xdp(?:\b|_)
++K:	(?:\b|_)xdp(?:\b|_)
+ 
+ XDP SOCKETS (AF_XDP)
+ M:	Björn Töpel <bjorn.topel@intel.com>
+-- 
+2.27.0
 
-
->  2) You can add the desired mode to the compiled in (partial) kernel
->     command line today.
-
-This might be easier on x86 than it is on ARM.  ARM (and ARM64)
-kernels only have two modes: kernel provides cmdline and bootloader
-provides cmdline.  There are out-of-mainline ANDROID patches to
-address this but nothing in mainline.
-
-The patch we're discussing now is x86-only so it's not such a huge
-deal, but the fact that combining the kernel and bootloader
-commandline never landed in mainline for arm/arm64 means that this
-isn't a super common/expected thing to do.
-
-
->  3) Boot loaders are well capable of handling large kernel command lines
->     and the extra time spend for reading the parameter does not matter
->     at all.
-
-Long command lines can still be a bit of a chore for humans to deal
-with.  Many times I've needed to look at "/proc/cmdline" and make
-sense of it.  The longer the command line is and the more cruft
-stuffed into it the more of a chore it is.  Yes, this is just one
-thing to put in the command line, but if 10 different drivers all have
-their "one thing" to put there it gets really long.  If 100 different
-drivers all want their one config option there it gets really really
-long.  IMO the command line should be a last resort place to put
-things and should just contain:
-
-1. Legacy things that _have_ to be in the command line because they've
-always been there.
-
-2. Things that the bootloader/BIOS needs to communicate to the kernel
-and has no better way to communicate.
-
-3. Cases where the person running the kernel needs to override a
-default set by the person compiling the kernel.
-
-
->  4) It's just a tiny part of the whole speculation maze. If we go there
->     for L1TF then we open the flood gates for a gazillion other config
->     options.
-
-It seems like the only options that we'd need CONFIG option for would
-be the ones where it would be sane to change the default compiled into
-the kernel.  Hopefully that's not too many things?
-
-
->  5) It's completely useless for distro kernels.
->
->  6) The implementation is horrible. We have proper choice selectors
->     which allow to add parseable information instead of random numbers
->     and a help text.
-
-If my other arguments make sense and Abhishek could just fix #6, would
-that work?
-
-
-Obviously, like many design choices, the above is all subjective.
-It's really your call and if these arguments don't convince you it
-sounds like the way forward is just to use "CONFIG_CMDLINE" and take
-advantage of the fact that on x86 this will get merged with the
-bootloader's command line.
-
-
--Doug
