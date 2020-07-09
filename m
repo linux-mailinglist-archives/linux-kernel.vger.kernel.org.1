@@ -2,276 +2,437 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C7D42197A6
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 07:02:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1407A2197AA
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 07:05:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726396AbgGIFBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 01:01:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43762 "EHLO
+        id S1726187AbgGIFFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 01:05:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726327AbgGIFBs (ORCPT
+        with ESMTP id S1725775AbgGIFFf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 01:01:48 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28781C061A0B
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 22:01:48 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id m9so504264pfh.0
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 22:01:48 -0700 (PDT)
+        Thu, 9 Jul 2020 01:05:35 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51803C061A0B
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 22:05:35 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id u185so504700pfu.1
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 22:05:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=fpwjVW7Z+irWop7fAETDGc/ua6yC0KP+NMCvyoQB9RI=;
-        b=sJK6emFsSGA7psgbjAjtw3CRMaGl/+7BOiQ4h4025c9G/rVWUt0A6aJm2gjrW8i7Wy
-         Yrym08TuQl9dY0zvkSbZ2r1/VkMl4GOvHkhCCCatBhYTHgqUtf3X/9W37MpGiTG7Ktqy
-         BbCRqZIA9yjdjCFauiLj1eh/8Zc525Iq225fyNlSNCU3zACQgRcYzKxpgK5hJOf17Juy
-         F/VEaHTOmE4WWQxzVIloHzKMBszVPgWKskOtDFsQo9NG/9EL3K8OFict6ASYJSd0JOfE
-         Wuthn6aw7DFI318hoKqJBVPR0kKzmuVqmDzwrfqlYB1YhNi++hQtjUHpmC8jwlJllPsm
-         X4Hg==
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YbxDnw0+qlfam6sR4jNBa31sCg9Nb1hbdmQkbPiORmo=;
+        b=1uTj6CHzOuxGhdwctrBohPidkkowE22UagYlvX6rhS+yNwFkaEb/xxyu1Q0s2QYui0
+         eOsZefulGC/BxCUCjCI5bps9MngZbOMiuJ8f4lG4s7fXnc+tOeShxtBvl8sYn/PuCzkT
+         sH2hmRd9PoR3YwA0WUYa1nhBMuuBpFBxcA8vj7mfo4D/76vTGzt5xJkx/bEbNnaDCNr+
+         zfw2yIMXqnuHTQLRRbEbMLC395JAKKvogESbW/sFJ+JJKRh0yF4/1+sOESSJb1gHJDFO
+         ZlNcINjiiRAmYsUJt+9gR4V9ci97vxa4pNEzyGWQWpgL77sf58OXVKHXzCtfCJt9aOjl
+         mF1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=fpwjVW7Z+irWop7fAETDGc/ua6yC0KP+NMCvyoQB9RI=;
-        b=J8vv52Xew4pRWEptXl+8ETLBHUQhOxtALoDwTJC0dCw2p1Qn2a7LHyWrw7bcZE7O8K
-         yGWE5g1h6rL6CZTWDGVe1AqXGrG+Qp77PH+t/4W/QAjgdrJqWzFpVRJ9jRbd+O4r849M
-         gbhrUieTDMkw1UH1ygPbQyPI+sNZTBiZpt3Bny9Zo1Fdz6873CdGf80lL1n1MKcQlk/D
-         W+/RmJuXAtmvYX8TUjqm1I+w9gv5RnZQqtfNmEq3St1LziJq8vruKhE/gLZUivTHdMBJ
-         CwMxWvbKvxActP6gBtmD1c3XfbJ/8ND/W2JnXN6yLrI/ZOI9H1PEriUquHnnxrcwUgo4
-         ltzw==
-X-Gm-Message-State: AOAM531hU2iGRBEBZCgc+alwvOG9gp/hmlR5bioMKdHdAq/Ks0prXieQ
-        lF+GjFvtFhsS6poHwGu/Onc/ew==
-X-Google-Smtp-Source: ABdhPJzN6OwP8GTvSH4ENnFiwWNlVHQa4IJ6tTaqVk88twX1CJ1jwT8Jvpf9n9tYDT6X1OX3iMcKTA==
-X-Received: by 2002:a63:e114:: with SMTP id z20mr45873953pgh.300.1594270907500;
-        Wed, 08 Jul 2020 22:01:47 -0700 (PDT)
-Received: from localhost.localdomain (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id h15sm999974pjc.14.2020.07.08.22.01.46
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=YbxDnw0+qlfam6sR4jNBa31sCg9Nb1hbdmQkbPiORmo=;
+        b=p5DNFWSgaKQ28sZSMVdPRQhBDdBtruQZImQSQypfC4KiUVBtWUXnT8zCfmFHo+/P8b
+         tWeNaef0bBgGlOrBPyBaxmqL7FIs1lardihfyMR5+kc4OPnUGK3aLXffgabZf6bWIqfz
+         KOHYQ4f1MPiiPjFCuARBwpDsX1+4iWH8PIkf/mxyXI8lbjQRECPkZT6mlrnQ9z4AkzT1
+         Xjc8iie3BlnOMWiFtnH0bP4o5Et+0lyx1vSz7fuFti3phbYdePTZ6vAwty2HTtwOI2uv
+         pQRiYzQwlVGbQaaRTF5+TlE/3Qo7w/FkhKg1wrIopoYyjPDeo1k/TaDbya0BRz0Kb+I2
+         d+5A==
+X-Gm-Message-State: AOAM532e5/4pqF3iUcT+gr2gYgFhEV4SVLrCFR2MK7Zb/Ikl3Ka/ILCr
+        Ut7wOkmXUC4BvpvmiDkQwmXrhw==
+X-Google-Smtp-Source: ABdhPJzkoLpRHJcvViYZkYmJrm9PCNFDy1mZ43IozWnluCiH8OZq3N1aAV1cJq62fasuMIf8ZaLz/Q==
+X-Received: by 2002:a63:c58:: with SMTP id 24mr50811810pgm.343.1594271134290;
+        Wed, 08 Jul 2020 22:05:34 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id w20sm1289420pfn.44.2020.07.08.22.05.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Jul 2020 22:01:46 -0700 (PDT)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Jonathan Marek <jonathan@marek.ca>,
-        linux-arm-msm@vger.kernel.org
-Subject: [PATCH 5/5] iommu/arm-smmu: Setup identity domain for boot mappings
-Date:   Wed,  8 Jul 2020 22:01:45 -0700
-Message-Id: <20200709050145.3520931-6-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200709050145.3520931-1-bjorn.andersson@linaro.org>
-References: <20200709050145.3520931-1-bjorn.andersson@linaro.org>
-MIME-Version: 1.0
+        Wed, 08 Jul 2020 22:05:33 -0700 (PDT)
+Date:   Wed, 08 Jul 2020 22:05:33 -0700 (PDT)
+X-Google-Original-Date: Wed, 08 Jul 2020 22:05:24 PDT (-0700)
+Subject:     Re: [PATCH v5 1/4] riscv: Move kernel mapping to vmalloc zone
+In-Reply-To: <20200607075949.665-2-alex@ghiti.fr>
+CC:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, Anup Patel <Anup.Patel@wdc.com>,
+        Atish Patra <Atish.Patra@wdc.com>, zong.li@sifive.com,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, alex@ghiti.fr
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     alex@ghiti.fr
+Message-ID: <mhng-831c4073-aefa-4aa0-a583-6a17f9aff9b7@palmerdabbelt-glaptop1>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With many Qualcomm platforms not having functional S2CR BYPASS a
-temporary IOMMU domain, without translation, needs to be allocated in
-order to allow these memory transactions.
+On Sun, 07 Jun 2020 00:59:46 PDT (-0700), alex@ghiti.fr wrote:
+> This is a preparatory patch for relocatable kernel.
+>
+> The kernel used to be linked at PAGE_OFFSET address and used to be loaded
+> physically at the beginning of the main memory. Therefore, we could use
+> the linear mapping for the kernel mapping.
+>
+> But the relocated kernel base address will be different from PAGE_OFFSET
+> and since in the linear mapping, two different virtual addresses cannot
+> point to the same physical address, the kernel mapping needs to lie outside
+> the linear mapping.
 
-Unfortunately the boot loader uses the first few context banks, so
-rather than overwriting a active bank the last context bank is used and
-streams are diverted here during initialization.
+I know it's been a while, but I keep opening this up to review it and just
+can't get over how ugly it is to put the kernel's linear map in the vmalloc
+region.
 
-This also performs the readback of SMR registers for the Qualcomm
-platform, to trigger the mechanism.
+I guess I don't understand why this is necessary at all.  Specifically: why
+can't we just relocate the kernel within the linear map?  That would let the
+bootloader put the kernel wherever it wants, modulo the physical memory size we
+support.  We'd need to handle the regions that are coupled to the kernel's
+execution address, but we could just put them in an explicit memory region
+which is what we should probably be doing anyway.
 
-This is based on prior work by Thierry Reding and Laurentiu Tudor.
+> In addition, because modules and BPF must be close to the kernel (inside
+> +-2GB window), the kernel is placed at the end of the vmalloc zone minus
+> 2GB, which leaves room for modules and BPF. The kernel could not be
+> placed at the beginning of the vmalloc zone since other vmalloc
+> allocations from the kernel could get all the +-2GB window around the
+> kernel which would prevent new modules and BPF programs to be loaded.
 
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
- drivers/iommu/arm-smmu-qcom.c | 11 +++++
- drivers/iommu/arm-smmu.c      | 80 +++++++++++++++++++++++++++++++++--
- drivers/iommu/arm-smmu.h      |  3 ++
- 3 files changed, 90 insertions(+), 4 deletions(-)
+Well, that's not enough to make sure this doesn't happen -- it's just enough to
+make sure it doesn't happen very quickily.  That's the same boat we're already
+in, though, so it's not like it's worse.
 
-diff --git a/drivers/iommu/arm-smmu-qcom.c b/drivers/iommu/arm-smmu-qcom.c
-index 86b1917459a4..397df27c1d69 100644
---- a/drivers/iommu/arm-smmu-qcom.c
-+++ b/drivers/iommu/arm-smmu-qcom.c
-@@ -26,6 +26,7 @@ static const struct of_device_id qcom_smmu_client_of_match[] = {
- static int qcom_smmu_cfg_probe(struct arm_smmu_device *smmu)
- {
- 	unsigned int last_s2cr = ARM_SMMU_GR0_S2CR(smmu->num_mapping_groups - 1);
-+	u32 smr;
- 	u32 reg;
- 	int i;
- 
-@@ -56,6 +57,16 @@ static int qcom_smmu_cfg_probe(struct arm_smmu_device *smmu)
- 		}
- 	}
- 
-+	for (i = 0; i < smmu->num_mapping_groups; i++) {
-+		smr = arm_smmu_gr0_read(smmu, ARM_SMMU_GR0_SMR(i));
-+
-+		if (FIELD_GET(ARM_SMMU_SMR_VALID, smr)) {
-+			smmu->smrs[i].id = FIELD_GET(ARM_SMMU_SMR_ID, smr);
-+			smmu->smrs[i].mask = FIELD_GET(ARM_SMMU_SMR_MASK, smr);
-+			smmu->smrs[i].valid = true;
-+		}
-+	}
-+
- 	return 0;
- }
- 
-diff --git a/drivers/iommu/arm-smmu.c b/drivers/iommu/arm-smmu.c
-index e2d6c0aaf1ea..a7cb27c1a49e 100644
---- a/drivers/iommu/arm-smmu.c
-+++ b/drivers/iommu/arm-smmu.c
-@@ -652,7 +652,8 @@ static void arm_smmu_write_context_bank(struct arm_smmu_device *smmu, int idx)
- }
- 
- static int arm_smmu_init_domain_context(struct iommu_domain *domain,
--					struct arm_smmu_device *smmu)
-+					struct arm_smmu_device *smmu,
-+					bool boot_domain)
- {
- 	int irq, start, ret = 0;
- 	unsigned long ias, oas;
-@@ -770,6 +771,15 @@ static int arm_smmu_init_domain_context(struct iommu_domain *domain,
- 		ret = -EINVAL;
- 		goto out_unlock;
- 	}
-+
-+	/*
-+	 * Use the last context bank for identity mappings during boot, to
-+	 * avoid overwriting in-use bank configuration while we're setting up
-+	 * the new mappings.
-+	 */
-+	if (boot_domain)
-+		start = smmu->num_context_banks - 1;
-+
- 	ret = __arm_smmu_alloc_bitmap(smmu->context_map, start,
- 				      smmu->num_context_banks);
- 	if (ret < 0)
-@@ -1149,7 +1159,10 @@ static int arm_smmu_attach_dev(struct iommu_domain *domain, struct device *dev)
- 	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
- 	struct arm_smmu_master_cfg *cfg;
- 	struct arm_smmu_device *smmu;
-+	bool free_identity_domain = false;
-+	int idx;
- 	int ret;
-+	int i;
- 
- 	if (!fwspec || fwspec->ops != &arm_smmu_ops) {
- 		dev_err(dev, "cannot attach to SMMU, is it on the same bus?\n");
-@@ -1174,7 +1187,7 @@ static int arm_smmu_attach_dev(struct iommu_domain *domain, struct device *dev)
- 		return ret;
- 
- 	/* Ensure that the domain is finalised */
--	ret = arm_smmu_init_domain_context(domain, smmu);
-+	ret = arm_smmu_init_domain_context(domain, smmu, false);
- 	if (ret < 0)
- 		goto rpm_put;
- 
-@@ -1190,9 +1203,34 @@ static int arm_smmu_attach_dev(struct iommu_domain *domain, struct device *dev)
- 		goto rpm_put;
- 	}
- 
-+	/* Decrement use counter for any references to the identity domain */
-+	mutex_lock(&smmu->stream_map_mutex);
-+	if (smmu->identity) {
-+		struct arm_smmu_domain *identity = to_smmu_domain(smmu->identity);
-+
-+		for_each_cfg_sme(cfg, fwspec, i, idx) {
-+			dev_err(smmu->dev, "%s() %#x\n", __func__, smmu->smrs[idx].id);
-+			if (smmu->s2crs[idx].cbndx == identity->cfg.cbndx) {
-+				smmu->num_identity_masters--;
-+				if (smmu->num_identity_masters == 0)
-+					free_identity_domain = true;
-+			}
-+		}
-+	}
-+	mutex_unlock(&smmu->stream_map_mutex);
-+
- 	/* Looks ok, so add the device to the domain */
- 	ret = arm_smmu_domain_add_master(smmu_domain, cfg, fwspec);
- 
-+	/*
-+	 * The last stream map to reference the identity domain has been
-+	 * overwritten, so it's now okay to free it.
-+	 */
-+	if (free_identity_domain) {
-+		arm_smmu_domain_free(smmu->identity);
-+		smmu->identity = NULL;
-+	}
-+
- 	/*
- 	 * Setup an autosuspend delay to avoid bouncing runpm state.
- 	 * Otherwise, if a driver for a suspended consumer device
-@@ -1922,17 +1960,51 @@ static int arm_smmu_device_cfg_probe(struct arm_smmu_device *smmu)
- 
- int arm_smmu_setup_identity(struct arm_smmu_device *smmu)
- {
-+	struct device *dev = smmu->dev;
-+	int cbndx = 0xff;
-+	int type = S2CR_TYPE_BYPASS;
-+	int ret;
- 	int i;
- 
-+	if (smmu->qcom_bypass_quirk) {
-+		/* Create a IDENTITY domain to use for all inherited streams */
-+		smmu->identity = arm_smmu_domain_alloc(IOMMU_DOMAIN_IDENTITY);
-+		if (!smmu->identity) {
-+			dev_err(dev, "failed to create identity domain\n");
-+			return -ENOMEM;
-+		}
-+
-+		smmu->identity->pgsize_bitmap = smmu->pgsize_bitmap;
-+		smmu->identity->type = IOMMU_DOMAIN_IDENTITY;
-+		smmu->identity->ops = &arm_smmu_ops;
-+
-+		ret = arm_smmu_init_domain_context(smmu->identity, smmu, true);
-+		if (ret < 0) {
-+			dev_err(dev, "failed to initialize identity domain: %d\n", ret);
-+			return ret;
-+		}
-+
-+		type = S2CR_TYPE_TRANS;
-+		cbndx = to_smmu_domain(smmu->identity)->cfg.cbndx;
-+	}
-+
- 	for (i = 0; i < smmu->num_mapping_groups; i++) {
- 		if (smmu->smrs[i].valid) {
--			smmu->s2crs[i].type = S2CR_TYPE_BYPASS;
-+			smmu->s2crs[i].type = type;
- 			smmu->s2crs[i].privcfg = S2CR_PRIVCFG_DEFAULT;
--			smmu->s2crs[i].cbndx = 0xff;
-+			smmu->s2crs[i].cbndx = cbndx;
- 			smmu->s2crs[i].count++;
-+
-+			smmu->num_identity_masters++;
- 		}
- 	}
- 
-+	/* If no mappings where found, free the identiy domain again */
-+	if (smmu->identity && !smmu->num_identity_masters) {
-+		arm_smmu_domain_free(smmu->identity);
-+		smmu->identity = NULL;
-+	}
-+
- 	return 0;
- }
- 
-diff --git a/drivers/iommu/arm-smmu.h b/drivers/iommu/arm-smmu.h
-index bcd160d01c53..37257ede86fa 100644
---- a/drivers/iommu/arm-smmu.h
-+++ b/drivers/iommu/arm-smmu.h
-@@ -321,6 +321,9 @@ struct arm_smmu_device {
- 	/* IOMMU core code handle */
- 	struct iommu_device		iommu;
- 
-+	struct iommu_domain		*identity;
-+	unsigned int			num_identity_masters;
-+
- 	bool				qcom_bypass_quirk;
- };
- 
--- 
-2.26.2
+> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
+> Reviewed-by: Zong Li <zong.li@sifive.com>
+> ---
+>  arch/riscv/boot/loader.lds.S     |  3 +-
+>  arch/riscv/include/asm/page.h    | 10 +++++-
+>  arch/riscv/include/asm/pgtable.h | 38 ++++++++++++++-------
+>  arch/riscv/kernel/head.S         |  3 +-
+>  arch/riscv/kernel/module.c       |  4 +--
+>  arch/riscv/kernel/vmlinux.lds.S  |  3 +-
+>  arch/riscv/mm/init.c             | 58 +++++++++++++++++++++++++-------
+>  arch/riscv/mm/physaddr.c         |  2 +-
+>  8 files changed, 88 insertions(+), 33 deletions(-)
+>
+> diff --git a/arch/riscv/boot/loader.lds.S b/arch/riscv/boot/loader.lds.S
+> index 47a5003c2e28..62d94696a19c 100644
+> --- a/arch/riscv/boot/loader.lds.S
+> +++ b/arch/riscv/boot/loader.lds.S
+> @@ -1,13 +1,14 @@
+>  /* SPDX-License-Identifier: GPL-2.0 */
+>
+>  #include <asm/page.h>
+> +#include <asm/pgtable.h>
+>
+>  OUTPUT_ARCH(riscv)
+>  ENTRY(_start)
+>
+>  SECTIONS
+>  {
+> -	. = PAGE_OFFSET;
+> +	. = KERNEL_LINK_ADDR;
+>
+>  	.payload : {
+>  		*(.payload)
+> diff --git a/arch/riscv/include/asm/page.h b/arch/riscv/include/asm/page.h
+> index 2d50f76efe48..48bb09b6a9b7 100644
+> --- a/arch/riscv/include/asm/page.h
+> +++ b/arch/riscv/include/asm/page.h
+> @@ -90,18 +90,26 @@ typedef struct page *pgtable_t;
+>
+>  #ifdef CONFIG_MMU
+>  extern unsigned long va_pa_offset;
+> +extern unsigned long va_kernel_pa_offset;
+>  extern unsigned long pfn_base;
+>  #define ARCH_PFN_OFFSET		(pfn_base)
+>  #else
+>  #define va_pa_offset		0
+> +#define va_kernel_pa_offset	0
+>  #define ARCH_PFN_OFFSET		(PAGE_OFFSET >> PAGE_SHIFT)
+>  #endif /* CONFIG_MMU */
+>
+>  extern unsigned long max_low_pfn;
+>  extern unsigned long min_low_pfn;
+> +extern unsigned long kernel_virt_addr;
+>
+>  #define __pa_to_va_nodebug(x)	((void *)((unsigned long) (x) + va_pa_offset))
+> -#define __va_to_pa_nodebug(x)	((unsigned long)(x) - va_pa_offset)
+> +#define linear_mapping_va_to_pa(x)	((unsigned long)(x) - va_pa_offset)
+> +#define kernel_mapping_va_to_pa(x)	\
+> +	((unsigned long)(x) - va_kernel_pa_offset)
+> +#define __va_to_pa_nodebug(x)		\
+> +	(((x) >= PAGE_OFFSET) ?		\
+> +		linear_mapping_va_to_pa(x) : kernel_mapping_va_to_pa(x))
+>
+>  #ifdef CONFIG_DEBUG_VIRTUAL
+>  extern phys_addr_t __virt_to_phys(unsigned long x);
+> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+> index 35b60035b6b0..94ef3b49dfb6 100644
+> --- a/arch/riscv/include/asm/pgtable.h
+> +++ b/arch/riscv/include/asm/pgtable.h
+> @@ -11,23 +11,29 @@
+>
+>  #include <asm/pgtable-bits.h>
+>
+> -#ifndef __ASSEMBLY__
+> -
+> -/* Page Upper Directory not used in RISC-V */
+> -#include <asm-generic/pgtable-nopud.h>
+> -#include <asm/page.h>
+> -#include <asm/tlbflush.h>
+> -#include <linux/mm_types.h>
+> -
+> -#ifdef CONFIG_MMU
+> +#ifndef CONFIG_MMU
+> +#define KERNEL_VIRT_ADDR	PAGE_OFFSET
+> +#define KERNEL_LINK_ADDR	PAGE_OFFSET
+> +#else
+> +/*
+> + * Leave 2GB for modules and BPF that must lie within a 2GB range around
+> + * the kernel.
+> + */
+> +#define KERNEL_VIRT_ADDR	(VMALLOC_END - SZ_2G + 1)
+> +#define KERNEL_LINK_ADDR	KERNEL_VIRT_ADDR
 
+At a bare minimum this is going to make a mess of the 32-bit port, as
+non-relocatable kernels are now going to get linked at 1GiB which is where user
+code is supposed to live.  That's an easy fix, though, as the 32-bit stuff
+doesn't need any module address restrictions.
+
+>  #define VMALLOC_SIZE     (KERN_VIRT_SIZE >> 1)
+>  #define VMALLOC_END      (PAGE_OFFSET - 1)
+>  #define VMALLOC_START    (PAGE_OFFSET - VMALLOC_SIZE)
+>
+>  #define BPF_JIT_REGION_SIZE	(SZ_128M)
+> -#define BPF_JIT_REGION_START	(PAGE_OFFSET - BPF_JIT_REGION_SIZE)
+> -#define BPF_JIT_REGION_END	(VMALLOC_END)
+> +#define BPF_JIT_REGION_START	PFN_ALIGN((unsigned long)&_end)
+> +#define BPF_JIT_REGION_END	(BPF_JIT_REGION_START + BPF_JIT_REGION_SIZE)
+> +
+> +#ifdef CONFIG_64BIT
+> +#define VMALLOC_MODULE_START	BPF_JIT_REGION_END
+> +#define VMALLOC_MODULE_END	(((unsigned long)&_start & PAGE_MASK) + SZ_2G)
+> +#endif
+>
+>  /*
+>   * Roughly size the vmemmap space to be large enough to fit enough
+> @@ -57,9 +63,16 @@
+>  #define FIXADDR_SIZE     PGDIR_SIZE
+>  #endif
+>  #define FIXADDR_START    (FIXADDR_TOP - FIXADDR_SIZE)
+> -
+>  #endif
+>
+> +#ifndef __ASSEMBLY__
+> +
+> +/* Page Upper Directory not used in RISC-V */
+> +#include <asm-generic/pgtable-nopud.h>
+> +#include <asm/page.h>
+> +#include <asm/tlbflush.h>
+> +#include <linux/mm_types.h>
+> +
+>  #ifdef CONFIG_64BIT
+>  #include <asm/pgtable-64.h>
+>  #else
+> @@ -483,6 +496,7 @@ static inline void __kernel_map_pages(struct page *page, int numpages, int enabl
+>
+>  #define kern_addr_valid(addr)   (1) /* FIXME */
+>
+> +extern char _start[];
+>  extern void *dtb_early_va;
+>  void setup_bootmem(void);
+>  void paging_init(void);
+> diff --git a/arch/riscv/kernel/head.S b/arch/riscv/kernel/head.S
+> index 98a406474e7d..8f5bb7731327 100644
+> --- a/arch/riscv/kernel/head.S
+> +++ b/arch/riscv/kernel/head.S
+> @@ -49,7 +49,8 @@ ENTRY(_start)
+>  #ifdef CONFIG_MMU
+>  relocate:
+>  	/* Relocate return address */
+> -	li a1, PAGE_OFFSET
+> +	la a1, kernel_virt_addr
+> +	REG_L a1, 0(a1)
+>  	la a2, _start
+>  	sub a1, a1, a2
+>  	add ra, ra, a1
+> diff --git a/arch/riscv/kernel/module.c b/arch/riscv/kernel/module.c
+> index 8bbe5dbe1341..1a8fbe05accf 100644
+> --- a/arch/riscv/kernel/module.c
+> +++ b/arch/riscv/kernel/module.c
+> @@ -392,12 +392,10 @@ int apply_relocate_add(Elf_Shdr *sechdrs, const char *strtab,
+>  }
+>
+>  #if defined(CONFIG_MMU) && defined(CONFIG_64BIT)
+> -#define VMALLOC_MODULE_START \
+> -	 max(PFN_ALIGN((unsigned long)&_end - SZ_2G), VMALLOC_START)
+>  void *module_alloc(unsigned long size)
+>  {
+>  	return __vmalloc_node_range(size, 1, VMALLOC_MODULE_START,
+> -				    VMALLOC_END, GFP_KERNEL,
+> +				    VMALLOC_MODULE_END, GFP_KERNEL,
+>  				    PAGE_KERNEL_EXEC, 0, NUMA_NO_NODE,
+>  				    __builtin_return_address(0));
+>  }
+> diff --git a/arch/riscv/kernel/vmlinux.lds.S b/arch/riscv/kernel/vmlinux.lds.S
+> index 0339b6bbe11a..a9abde62909f 100644
+> --- a/arch/riscv/kernel/vmlinux.lds.S
+> +++ b/arch/riscv/kernel/vmlinux.lds.S
+> @@ -4,7 +4,8 @@
+>   * Copyright (C) 2017 SiFive
+>   */
+>
+> -#define LOAD_OFFSET PAGE_OFFSET
+> +#include <asm/pgtable.h>
+> +#define LOAD_OFFSET KERNEL_LINK_ADDR
+>  #include <asm/vmlinux.lds.h>
+>  #include <asm/page.h>
+>  #include <asm/cache.h>
+> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+> index 736de6c8739f..71da78914645 100644
+> --- a/arch/riscv/mm/init.c
+> +++ b/arch/riscv/mm/init.c
+> @@ -22,6 +22,9 @@
+>
+>  #include "../kernel/head.h"
+>
+> +unsigned long kernel_virt_addr = KERNEL_VIRT_ADDR;
+> +EXPORT_SYMBOL(kernel_virt_addr);
+> +
+>  unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)]
+>  							__page_aligned_bss;
+>  EXPORT_SYMBOL(empty_zero_page);
+> @@ -178,8 +181,12 @@ void __init setup_bootmem(void)
+>  }
+>
+>  #ifdef CONFIG_MMU
+> +/* Offset between linear mapping virtual address and kernel load address */
+>  unsigned long va_pa_offset;
+>  EXPORT_SYMBOL(va_pa_offset);
+> +/* Offset between kernel mapping virtual address and kernel load address */
+> +unsigned long va_kernel_pa_offset;
+> +EXPORT_SYMBOL(va_kernel_pa_offset);
+>  unsigned long pfn_base;
+>  EXPORT_SYMBOL(pfn_base);
+>
+> @@ -271,7 +278,7 @@ static phys_addr_t __init alloc_pmd(uintptr_t va)
+>  	if (mmu_enabled)
+>  		return memblock_phys_alloc(PAGE_SIZE, PAGE_SIZE);
+>
+> -	pmd_num = (va - PAGE_OFFSET) >> PGDIR_SHIFT;
+> +	pmd_num = (va - kernel_virt_addr) >> PGDIR_SHIFT;
+>  	BUG_ON(pmd_num >= NUM_EARLY_PMDS);
+>  	return (uintptr_t)&early_pmd[pmd_num * PTRS_PER_PMD];
+>  }
+> @@ -372,14 +379,30 @@ static uintptr_t __init best_map_size(phys_addr_t base, phys_addr_t size)
+>  #error "setup_vm() is called from head.S before relocate so it should not use absolute addressing."
+>  #endif
+>
+> +static uintptr_t load_pa, load_sz;
+> +
+> +static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size)
+> +{
+> +	uintptr_t va, end_va;
+> +
+> +	end_va = kernel_virt_addr + load_sz;
+> +	for (va = kernel_virt_addr; va < end_va; va += map_size)
+> +		create_pgd_mapping(pgdir, va,
+> +				   load_pa + (va - kernel_virt_addr),
+> +				   map_size, PAGE_KERNEL_EXEC);
+> +}
+> +
+>  asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+>  {
+>  	uintptr_t va, end_va;
+> -	uintptr_t load_pa = (uintptr_t)(&_start);
+> -	uintptr_t load_sz = (uintptr_t)(&_end) - load_pa;
+>  	uintptr_t map_size = best_map_size(load_pa, MAX_EARLY_MAPPING_SIZE);
+>
+> +	load_pa = (uintptr_t)(&_start);
+> +	load_sz = (uintptr_t)(&_end) - load_pa;
+> +
+>  	va_pa_offset = PAGE_OFFSET - load_pa;
+> +	va_kernel_pa_offset = kernel_virt_addr - load_pa;
+> +
+>  	pfn_base = PFN_DOWN(load_pa);
+>
+>  	/*
+> @@ -402,26 +425,22 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+>  	create_pmd_mapping(fixmap_pmd, FIXADDR_START,
+>  			   (uintptr_t)fixmap_pte, PMD_SIZE, PAGE_TABLE);
+>  	/* Setup trampoline PGD and PMD */
+> -	create_pgd_mapping(trampoline_pg_dir, PAGE_OFFSET,
+> +	create_pgd_mapping(trampoline_pg_dir, kernel_virt_addr,
+>  			   (uintptr_t)trampoline_pmd, PGDIR_SIZE, PAGE_TABLE);
+> -	create_pmd_mapping(trampoline_pmd, PAGE_OFFSET,
+> +	create_pmd_mapping(trampoline_pmd, kernel_virt_addr,
+>  			   load_pa, PMD_SIZE, PAGE_KERNEL_EXEC);
+>  #else
+>  	/* Setup trampoline PGD */
+> -	create_pgd_mapping(trampoline_pg_dir, PAGE_OFFSET,
+> +	create_pgd_mapping(trampoline_pg_dir, kernel_virt_addr,
+>  			   load_pa, PGDIR_SIZE, PAGE_KERNEL_EXEC);
+>  #endif
+>
+>  	/*
+> -	 * Setup early PGD covering entire kernel which will allows
+> +	 * Setup early PGD covering entire kernel which will allow
+>  	 * us to reach paging_init(). We map all memory banks later
+>  	 * in setup_vm_final() below.
+>  	 */
+> -	end_va = PAGE_OFFSET + load_sz;
+> -	for (va = PAGE_OFFSET; va < end_va; va += map_size)
+> -		create_pgd_mapping(early_pg_dir, va,
+> -				   load_pa + (va - PAGE_OFFSET),
+> -				   map_size, PAGE_KERNEL_EXEC);
+> +	create_kernel_page_table(early_pg_dir, map_size);
+>
+>  	/* Create fixed mapping for early FDT parsing */
+>  	end_va = __fix_to_virt(FIX_FDT) + FIX_FDT_SIZE;
+> @@ -441,6 +460,7 @@ static void __init setup_vm_final(void)
+>  	uintptr_t va, map_size;
+>  	phys_addr_t pa, start, end;
+>  	struct memblock_region *reg;
+> +	static struct vm_struct vm_kernel = { 0 };
+>
+>  	/* Set mmu_enabled flag */
+>  	mmu_enabled = true;
+> @@ -467,10 +487,22 @@ static void __init setup_vm_final(void)
+>  		for (pa = start; pa < end; pa += map_size) {
+>  			va = (uintptr_t)__va(pa);
+>  			create_pgd_mapping(swapper_pg_dir, va, pa,
+> -					   map_size, PAGE_KERNEL_EXEC);
+> +					   map_size, PAGE_KERNEL);
+>  		}
+>  	}
+>
+> +	/* Map the kernel */
+> +	create_kernel_page_table(swapper_pg_dir, PMD_SIZE);
+> +
+> +	/* Reserve the vmalloc area occupied by the kernel */
+> +	vm_kernel.addr = (void *)kernel_virt_addr;
+> +	vm_kernel.phys_addr = load_pa;
+> +	vm_kernel.size = (load_sz + PMD_SIZE - 1) & ~(PMD_SIZE - 1);
+> +	vm_kernel.flags = VM_MAP | VM_NO_GUARD;
+> +	vm_kernel.caller = __builtin_return_address(0);
+> +
+> +	vm_area_add_early(&vm_kernel);
+> +
+>  	/* Clear fixmap PTE and PMD mappings */
+>  	clear_fixmap(FIX_PTE);
+>  	clear_fixmap(FIX_PMD);
+> diff --git a/arch/riscv/mm/physaddr.c b/arch/riscv/mm/physaddr.c
+> index e8e4dcd39fed..35703d5ef5fd 100644
+> --- a/arch/riscv/mm/physaddr.c
+> +++ b/arch/riscv/mm/physaddr.c
+> @@ -23,7 +23,7 @@ EXPORT_SYMBOL(__virt_to_phys);
+>
+>  phys_addr_t __phys_addr_symbol(unsigned long x)
+>  {
+> -	unsigned long kernel_start = (unsigned long)PAGE_OFFSET;
+> +	unsigned long kernel_start = (unsigned long)kernel_virt_addr;
+>  	unsigned long kernel_end = (unsigned long)_end;
+>
+>  	/*
