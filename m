@@ -2,133 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8010219FE9
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 14:22:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66534219FEE
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 14:24:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726746AbgGIMWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 08:22:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54564 "EHLO mail.kernel.org"
+        id S1726874AbgGIMYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 08:24:06 -0400
+Received: from mga17.intel.com ([192.55.52.151]:9232 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726327AbgGIMWL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 08:22:11 -0400
-Received: from pali.im (pali.im [31.31.79.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DF662206DF;
-        Thu,  9 Jul 2020 12:22:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594297331;
-        bh=qOFNT6tblN8CGBYOHgoyMwlCS9ntBDtTAmhooTF7pYU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KtxyWHHx+5ZItqJHRCkusAhW3YrwOy/2Y2xyNkI/pV3lEuRrgm+jS66grgjwvUf3l
-         9zwjAReLz1PRnsqUI7uu/bdBdiBVOERfDDyfKHwQNj28ljL4aqeNYexV+tZ35fJf8W
-         4UUg6xfkT59gMsoFAHOFOtpQuRcYBTDQeC40WSdg=
-Received: by pali.im (Postfix)
-        id A25CE15A1; Thu,  9 Jul 2020 14:22:08 +0200 (CEST)
-Date:   Thu, 9 Jul 2020 14:22:08 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Andrew Murray <amurray@thegoodpenguin.co.uk>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Marek =?utf-8?B?QmVow7pu?= <marek.behun@nic.cz>,
-        Remi Pommarel <repk@triplefau.lt>,
-        Tomasz Maciej Nowak <tmn505@gmail.com>,
-        Xogium <contact@xogium.me>, linux-pci@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] PCI: aardvark: Don't touch PCIe registers if no card
- connected
-Message-ID: <20200709122208.rmfeuu6zgbwh3fr5@pali>
-References: <20200528143141.29956-1-pali@kernel.org>
- <20200702083036.12230-1-pali@kernel.org>
- <20200709113509.GB19638@e121166-lin.cambridge.arm.com>
+        id S1726327AbgGIMYF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 08:24:05 -0400
+IronPort-SDR: RiZqg/TZoIsx8K3kehihIpnYtvk2jFUwAmrLfVZixk6GKfbaVbQ8DHSG2ax1Pu97xKRdlrEasI
+ fAw86KDxbugw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9676"; a="128052799"
+X-IronPort-AV: E=Sophos;i="5.75,331,1589266800"; 
+   d="scan'208";a="128052799"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jul 2020 05:24:05 -0700
+IronPort-SDR: y4vJ4FSs9Z6jcJbUsoaKk2oiO26qlStbYq75/4DVBLgd7FD/0d0q/yAHnvQa53UgJnyEX3cm2y
+ JZvKe7vq82Gw==
+X-IronPort-AV: E=Sophos;i="5.75,331,1589266800"; 
+   d="scan'208";a="484256280"
+Received: from unknown (HELO dalessan-mobl1.ir.intel.com) ([10.252.6.39])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jul 2020 05:24:01 -0700
+Message-ID: <491f994c6f87a542e49fe37c8a75ab46f1b3712b.camel@linux.intel.com>
+Subject: Re: [PATCH 2/7] mailbox: keembay-scmi-mailbox: Add support for Keem
+ Bay mailbox
+From:   Daniele Alessandrelli <daniele.alessandrelli@linux.intel.com>
+To:     Sudeep Holla <sudeep.holla@arm.com>, paul.j.murphy@linux.intel.com
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        Paul Murphy <paul.j.murphy@intel.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Date:   Thu, 09 Jul 2020 13:23:56 +0100
+In-Reply-To: <20200708203428.GB31671@bogus>
+References: <20200616155613.121242-1-daniele.alessandrelli@linux.intel.com>
+         <20200616155613.121242-3-daniele.alessandrelli@linux.intel.com>
+         <20200708203428.GB31671@bogus>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200709113509.GB19638@e121166-lin.cambridge.arm.com>
-User-Agent: NeoMutt/20180716
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 09 July 2020 12:35:09 Lorenzo Pieralisi wrote:
-> On Thu, Jul 02, 2020 at 10:30:36AM +0200, Pali Rohár wrote:
-> > When there is no PCIe card connected and advk_pcie_rd_conf() or
-> > advk_pcie_wr_conf() is called for PCI bus which doesn't belong to emulated
-> > root bridge, the aardvark driver throws the following error message:
+Hi Sudeep,
+
+Thanks for your review.
+
+On Wed, 2020-07-08 at 21:34 +0100, Sudeep Holla wrote:
+> On Tue, Jun 16, 2020 at 04:56:08PM +0100, Daniele Alessandrelli
+> wrote:
+> > From: Paul Murphy <paul.j.murphy@intel.com>
 > > 
-> >   advk-pcie d0070000.pcie: config read/write timed out
+> > Keem Bay SoC has a ARM trusted firmware-based secure monitor which
+> > acts
+> > as the SCP for the purposes of power management over SCMI.
 > > 
-> > Obviously accessing PCIe registers of disconnected card is not possible.
+> > This driver implements the transport layer for SCMI to function.
 > > 
-> > Extend check in advk_pcie_valid_device() function for validating
-> > availability of PCIe bus. If PCIe link is down, then the device is marked
-> > as Not Found and the driver does not try to access these registers.
-> > 
-> > This is just an optimization to prevent accessing PCIe registers when card
-> > is disconnected. Trying to access PCIe registers of disconnected card does
-> > not cause any crash, kernel just needs to wait for a timeout. So if card
-> > disappear immediately after checking for PCIe link (before accessing PCIe
-> > registers), it does not cause any problems.
-> > 
-> > Signed-off-by: Pali Rohár <pali@kernel.org>
-> > 
-> > ---
-> > Changes in V3:
-> > * Add comment to the code
-> > Changes in V2:
-> > * Update commit message, mention that this is optimization
-> > ---
-> >  drivers/pci/controller/pci-aardvark.c | 7 +++++++
-> >  1 file changed, 7 insertions(+)
-> > 
-> > diff --git a/drivers/pci/controller/pci-aardvark.c b/drivers/pci/controller/pci-aardvark.c
-> > index 90ff291c24f0..d18f389b36a1 100644
-> > --- a/drivers/pci/controller/pci-aardvark.c
-> > +++ b/drivers/pci/controller/pci-aardvark.c
-> > @@ -644,6 +644,13 @@ static bool advk_pcie_valid_device(struct advk_pcie *pcie, struct pci_bus *bus,
-> >  	if ((bus->number == pcie->root_bus_nr) && PCI_SLOT(devfn) != 0)
-> >  		return false;
-> >  
-> > +	/*
-> > +	 * If the link goes down after we check for link-up, nothing bad
-> > +	 * happens but the config access times out.
-> > +	 */
-> > +	if (bus->number != pcie->root_bus_nr && !advk_pcie_link_up(pcie))
-> > +		return false;
-> > +
-> >  	return true;
-> >  }
 > 
-> Question: this basically means that you can only effectively enumerate
-> bus number == root_bus_nr and AFAICS if at probe the link did not
-> come up it will never do, will it ?
+> Please use the smc transport support in
+> driver/firmware/arm_scmi/smc.c
+> for this. You don't need mailbox support for SMC/HVC. Basically you
+> don't need this driver at all and you have everything you need to
+> support
+> what you want.
 > 
-> Isn't this equivalent to limiting the bus numbers the bridge is capable
-> of handling ?
+> Let me know if you face issues.
 > 
-> Reworded: if in advk_pcie_setup_hw() the link does not come up, what's
-> the point of trying to enumerate the bus hierarchy below the root bus ?
 
-Hello Lorenzo!
+Sorry, we didn't know about the SMC transport support for SCMI. Looks
+like it was added only recently, while our driver was already developed
+and waiting to be upstreamed.
 
-PCIe link can theoretically come up even after boot, but aardvark driver
-currently does not support link detection at runtime. So it checks and
-enumerate device only at probe time.
+I agree that we can drop this driver and switch to the SMC transport as
+you suggested, but I think we'll have to modify our bootloader SiP
+service slightly. Paul, can you elaborate?
 
-I do not know if hardware has some mechanism to inform kernel that PCIe
-link come up (or down) and re-enumeration is required. Or the only
-option is polling via advk_pcie_link_up().
+Regards,
+Daniele
 
-So if device is not visible at the probe time then it would not appear
-in system and cannot be used. This is current state.
 
-Just to note that our hardware does not support physical hotplug of
-mPCIe cards. You need to connect card when board is powered off.
-
-So if at the aardvark probe time PCIe link is not up then trying to
-enumerate devices under (software) root bridge is not needed. But it is
-needed to register/enumerate software root bridge device and currently
-both is done by one (recursive) call pci_host_probe().
