@@ -2,150 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7671421A965
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 22:55:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54B5621A98F
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 23:12:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726766AbgGIUzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 16:55:09 -0400
-Received: from mga06.intel.com ([134.134.136.31]:2172 "EHLO mga06.intel.com"
+        id S1726645AbgGIVMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 17:12:55 -0400
+Received: from mga14.intel.com ([192.55.52.115]:48641 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726213AbgGIUzJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 16:55:09 -0400
-IronPort-SDR: LWOGeAzAlAhrmuL5nF7mn9GzDWA4tEkq3EgW38pgefhtj5UPsOEvVoXBra9RSbdrzTVW6iwZyH
- 0sai1ZcLHmtA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9677"; a="209632913"
+        id S1726193AbgGIVMy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 17:12:54 -0400
+IronPort-SDR: zYmXNkegbqZW8ttBVqW+Fb9OPMitK+9NJngz/+TbgxgVnoU3D8mdRsJjjFX5DF5hHeWbfAUSwC
+ L4phwt6RBvPQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9677"; a="147200600"
 X-IronPort-AV: E=Sophos;i="5.75,332,1589266800"; 
-   d="scan'208";a="209632913"
+   d="scan'208";a="147200600"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jul 2020 13:55:08 -0700
-IronPort-SDR: 31zyjENiltHuZKjrhXOmWxeNIKVfuhcaMufjTfk/WyBFCmSSzFpSpv4+pS2Z/pkelSdoipuS52
- ky4bJLPLY9aQ==
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jul 2020 14:12:53 -0700
+IronPort-SDR: HL1NxPNKrlVgGsyiHBtUvZOy7JZ9ONOwA/QDyK5kyklSsh/Edk5Q8Scsc3DgwBI0El5KtpVVxg
+ uqD2y2SHHsOg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,332,1589266800"; 
-   d="scan'208";a="280422688"
-Received: from marshy.an.intel.com (HELO [10.122.105.159]) ([10.122.105.159])
-  by orsmga003.jf.intel.com with ESMTP; 09 Jul 2020 13:55:07 -0700
-Subject: Re: [PATCH] fpga: stratix10-soc: make FPGA task un-interruptible
-To:     Tom Rix <trix@redhat.com>, mdf@kernel.org
-Cc:     linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dinguyen@kernel.org, richard.gong@intel.com
-References: <1594138447-21488-1-git-send-email-richard.gong@linux.intel.com>
- <926c1117-1f31-5b3d-55af-4216db4f1745@redhat.com>
-From:   Richard Gong <richard.gong@linux.intel.com>
-Message-ID: <283c922f-12a7-ccfc-2165-219fb5fe6999@linux.intel.com>
-Date:   Thu, 9 Jul 2020 16:10:12 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+   d="scan'208";a="358569577"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
+  by orsmga001.jf.intel.com with ESMTP; 09 Jul 2020 14:12:53 -0700
+Date:   Thu, 9 Jul 2020 14:12:53 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Xiong Zhang <xiong.y.zhang@intel.com>,
+        Wayne Boyer <wayne.boyer@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Jun Nakajima <jun.nakajima@intel.com>
+Subject: Re: [PATCH] KVM: x86/mmu: Add capability to zap only sptes for the
+ affected memslot
+Message-ID: <20200709211253.GW24919@linux.intel.com>
+References: <20200703025047.13987-1-sean.j.christopherson@intel.com>
+ <51637a13-f23b-8b76-c93a-76346b4cc982@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <926c1117-1f31-5b3d-55af-4216db4f1745@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <51637a13-f23b-8b76-c93a-76346b4cc982@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tom,
+On Wed, Jul 08, 2020 at 06:08:24PM +0200, Paolo Bonzini wrote:
+> On 03/07/20 04:50, Sean Christopherson wrote:
+> > Introduce a new capability, KVM_CAP_MEMSLOT_ZAP_CONTROL, to allow
+> > userspace to control the memslot zapping behavior on a per-VM basis.
+> > x86's default behavior is to zap all SPTEs, including the root shadow
+> > page, across all memslots.  While effective, the nuke and pave approach
+> > isn't exactly performant, especially for large VMs and/or VMs that
+> > heavily utilize RO memslots for MMIO devices, e.g. option ROMs.
+> > 
+> > On a vanilla VM with 6gb of RAM, the targeted zap reduces the number of
+> > EPT violations during boot by ~14% with THP enabled in the host, and by
+> > ~7% with THP disabled in the host.  On a much more custom VM with 32gb
+> > and a significant amount of memslot zapping, this can reduce the number
+> > of EPT violations by 50% during guest boot, and improve boot time by
+> > as much as 25%.
+> > 
+> > Keep the current x86 memslot zapping behavior as the default, as there's
+> > an unresolved bug that pops up when zapping only the affected memslot,
+> > and the exact conditions that trigger the bug are not fully known.  See
+> > https://patchwork.kernel.org/patch/10798453 for details.
+> > 
+> > Implement the capability as a set of flags so that other architectures
+> > might be able to use the capability without having to conform to x86's
+> > semantics.
+> 
+> It's bad that we have no clue what's causing the bad behavior, but I
+> don't think it's wise to have a bug that is known to happen when you
+> enable the capability. :/
 
-On 7/9/20 3:01 PM, Tom Rix wrote:
-> Mostly fine, see inline question.
-> 
-> On 7/7/20 9:14 AM, richard.gong@linux.intel.com wrote:
->> From: Richard Gong <richard.gong@intel.com>
->>
->> When CTRL+C occurs during the process of FPGA reconfiguration, the FPGA
->> reconfiguration process stops and the user can't perform a new FPGA
->> reconfiguration properly.
->>
->> Set FPGA complete task to be not interruptible so that the user can
->> properly perform FPGA reconfiguration after CTRL+C event.
->>
->> Signed-off-by: Richard Gong <richard.gong@intel.com>
->> ---
->>   drivers/fpga/stratix10-soc.c | 23 +++--------------------
->>   1 file changed, 3 insertions(+), 20 deletions(-)
->>
->> diff --git a/drivers/fpga/stratix10-soc.c b/drivers/fpga/stratix10-soc.c
->> index 44b7c56..657a70c 100644
->> --- a/drivers/fpga/stratix10-soc.c
->> +++ b/drivers/fpga/stratix10-soc.c
->> @@ -196,17 +196,13 @@ static int s10_ops_write_init(struct fpga_manager *mgr,
->>   	if (ret < 0)
->>   		goto init_done;
->>   
->> -	ret = wait_for_completion_interruptible_timeout(
->> +	ret = wait_for_completion_timeout(
->>   		&priv->status_return_completion, S10_RECONFIG_TIMEOUT);
->>   	if (!ret) {
->>   		dev_err(dev, "timeout waiting for RECONFIG_REQUEST\n");
->>   		ret = -ETIMEDOUT;
->>   		goto init_done;
->>   	}
->> -	if (ret < 0) {
->> -		dev_err(dev, "error (%d) waiting for RECONFIG_REQUEST\n", ret);
->> -		goto init_done;
->> -	}
->>   
->>   	ret = 0;
->>   	if (!test_and_clear_bit(SVC_STATUS_OK, &priv->status)) {
->> @@ -318,7 +314,7 @@ static int s10_ops_write(struct fpga_manager *mgr, const char *buf,
->>   		 */
->>   		wait_status = 1; /* not timed out */
->>   		if (!priv->status)
->> -			wait_status = wait_for_completion_interruptible_timeout(
->> +			wait_status = wait_for_completion_timeout(
->>   				&priv->status_return_completion,
->>   				S10_BUFFER_TIMEOUT);
->>   
->> @@ -340,13 +336,6 @@ static int s10_ops_write(struct fpga_manager *mgr, const char *buf,
->>   			ret = -ETIMEDOUT;
->>   			break;
->>   		}
->> -		if (wait_status < 0) {
->> -			ret = wait_status;
->> -			dev_err(dev,
->> -				"error (%d) waiting for svc layer buffers\n",
->> -				ret);
->> -			break;
->> -		}
->>   	}
->>   
->>   	if (!s10_free_buffers(mgr))
->> @@ -372,7 +361,7 @@ static int s10_ops_write_complete(struct fpga_manager *mgr,
-> 
-> This part is done in an infinite loop, is the loop still needed 
-The loop is still need. FPGA manager driver need polling the completed 
-status from the lower level firmware. The lower level firmware can 
-return FPGA manager driver with busy, completed or error status.
-> 
-> Reviewed-by: Tom Rix <trix@redhat.com>
-Thanks for your review!
+I don't necessarily disagree, but at the same time it's entirely possible
+it's a Qemu bug.  If the bad behavior doesn't occur with other VMMs, those
+other VMMs shouldn't be penalized because we can't figure out what Qemu is
+getting wrong.
 
-Regards,
-Richard
-> 
->>   		if (ret < 0)
->>   			break;
->>   
->> -		ret = wait_for_completion_interruptible_timeout(
->> +		ret = wait_for_completion_timeout(
->>   			&priv->status_return_completion, timeout);
->>   		if (!ret) {
->>   			dev_err(dev,
->> @@ -380,12 +369,6 @@ static int s10_ops_write_complete(struct fpga_manager *mgr,
->>   			ret = -ETIMEDOUT;
->>   			break;
->>   		}
->> -		if (ret < 0) {
->> -			dev_err(dev,
->> -				"error (%d) waiting for RECONFIG_COMPLETED\n",
->> -				ret);
->> -			break;
->> -		}
->>   		/* Not error or timeout, so ret is # of jiffies until timeout */
->>   		timeout = ret;
->>   		ret = 0;
-> 
+Even if this is a kernel bug, I'm fairly confident at this point that it's
+not a KVM bug.  Or rather, if it's a KVM "bug", then there's a fundamental
+dependency in memslot management that needs to be rooted out and documented.
+
+And we're kind of in a catch-22; it'll be extremely difficult to narrow down
+exactly who is breaking what without being able to easily test the optimized
+zapping with other VMMs and/or setups.
