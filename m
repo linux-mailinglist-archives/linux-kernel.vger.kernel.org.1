@@ -2,91 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 926DD21A261
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 16:45:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B7D021A24D
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 16:41:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726710AbgGIOp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 10:45:27 -0400
-Received: from one.firstfloor.org ([193.170.194.197]:36224 "EHLO
-        one.firstfloor.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726475AbgGIOp1 (ORCPT
+        id S1727871AbgGIOlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 10:41:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726617AbgGIOlJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 10:45:27 -0400
-X-Greylist: delayed 510 seconds by postgrey-1.27 at vger.kernel.org; Thu, 09 Jul 2020 10:45:26 EDT
-Received: by one.firstfloor.org (Postfix, from userid 503)
-        id 1F20E867DA; Thu,  9 Jul 2020 16:37:43 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=firstfloor.org;
-        s=mail; t=1594305464;
-        bh=xxUNKBrT5+W3Ou+a/E3ro6XLN+oqaa1s44HJ/vlvdBw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IJ4zxh3w+Tq38/dHIP9kanA5fiNbMVg1gnjueNWa54vaIP6/g5a2DMqJjEOScQYTd
-         J26R5ONYpQhZgG238dAftGchgMr/jLtSzXpC79xCaeHU5jx9/HlqyvvFxcW70GwTOf
-         M+xO3IiJxC4E1QhXU+Fv1iD+EiiWHspe0pZ0GORo=
-Date:   Thu, 9 Jul 2020 07:37:43 -0700
-From:   Andi Kleen <andi@firstfloor.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        linux-kernel@vger.kernel.org, Andi Kleen <andi@firstfloor.org>,
-        Andi Kleen <ak@linux.intel.com>
-Subject: Re: [PATCH 2/4] perf-probe: Fix wrong variable warning when the
- probe point is not found
-Message-ID: <20200709143743.gux2xsfq4wo2xeo3@two.firstfloor.org>
-References: <159428201109.56570.3802208017109058146.stgit@devnote2>
- <159428203219.56570.8289435784233418736.stgit@devnote2>
+        Thu, 9 Jul 2020 10:41:09 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B629BC08C5DD
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 07:41:09 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id s26so1113275pfm.4
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 07:41:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=k8RzlfTCja4h/a013n6RoUclRSB2CwQ+pZ4EWD7ck5E=;
+        b=LEKP3/O57jFeDUPqAXE0gJKigfdznHmRdVNJrp0qV7k3f/45Q59oQxM6R3X6Iv+CjY
+         pfYutbH9JUw/5GclUB1wLxWANHu3MPlJo5mGClpqogYr6GYTrP0gpKjPviBE/tr7yePK
+         6w8a2sTh0yI2WCfrNyBgXyixKMMv7kngi7Kog=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=k8RzlfTCja4h/a013n6RoUclRSB2CwQ+pZ4EWD7ck5E=;
+        b=PE6lbagiQmGHwWL4zztlPo5d7jWekbmuBQODF4az/LzddS3TSAyIulgGOu1hJRJzIM
+         moKutn5WFaw0G3E3+NmHKHUz1diE+9x2STXRKgHAgDzLeExvBhLgRvnab+uWIrCawzK8
+         ykcoSefJmesx+W90NMJcnFXEUzY1o9CbnTj+jhYa4Vu1yaqhNEyWDTdfk+yZ4WPxYmPO
+         X1gL4rnO2WihOYHgMoE2vOonXnd7u2PSklSA6eEFiCtbyVmr7eAKk5Qr6T45wa0EBYp5
+         DtG3fSwiZ2a1X8yPOR2pJZ14ykQe5/SxLwzG521gMlKEvNvHAVIeF7UfgFQDEyCa2oz2
+         PPwg==
+X-Gm-Message-State: AOAM530PBlVKDHV+z50Yf1cHneaEjEBCmNoS8aPX+pDFxDZ0ewU4CAD1
+        hc6vO8gXGLTgjdkXDlNCFJn8tg==
+X-Google-Smtp-Source: ABdhPJx7OjhT6rpGtDr81vmAzXRNHs+d6R9lyl8dtGIdqsLzjw07GYd/mwsesp6pTXfI5ocIHc5PUg==
+X-Received: by 2002:a62:7847:: with SMTP id t68mr51401847pfc.112.1594305669025;
+        Thu, 09 Jul 2020 07:41:09 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
+        by smtp.gmail.com with ESMTPSA id kx3sm2849731pjb.32.2020.07.09.07.41.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Jul 2020 07:41:08 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Mark Brown <broonie@kernel.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     mkshah@codeaurora.org, georgi.djakov@linaro.org,
+        Akash Asthana <akashast@codeaurora.org>, swboyd@chromium.org,
+        linux-arm-msm@vger.kernel.org, mka@chromium.org,
+        ctheegal@codeaurora.org, Rajendra Nayak <rnayak@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
+Subject: [PATCH v2] spi: spi-geni-qcom: Set the clock properly at runtime resume
+Date:   Thu,  9 Jul 2020 07:40:49 -0700
+Message-Id: <20200709074037.v2.1.I0b701fc23eca911a5bde4ae4fa7f97543d7f960e@changeid>
+X-Mailer: git-send-email 2.27.0.383.g050319c2ae-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <159428203219.56570.8289435784233418736.stgit@devnote2>
-User-Agent: NeoMutt/20170113 (1.7.2)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 09, 2020 at 05:07:12PM +0900, Masami Hiramatsu wrote:
-> Fix a wrong "variable not found" warning when the probe point is
-> not found in the debuginfo.
-> Since the debuginfo__find_probes() can return 0 even if it does not
-> find given probe point in the debuginfo, fill_empty_trace_arg() can
-> be called with tf.ntevs == 0 and it can warn a wrong warning.
-> To fix this, reject ntevs == 0 in fill_empty_trace_arg().
-> 
-> E.g. without this patch;
-> 
->   # perf probe -x /lib64/libc-2.30.so -a "memcpy arg1=%di"
->   Failed to find the location of the '%di' variable at this address.
->    Perhaps it has been optimized out.
->    Use -V with the --range option to show '%di' location range.
->   Added new events:
->     probe_libc:memcpy    (on memcpy in /usr/lib64/libc-2.30.so with arg1=%di)
->     probe_libc:memcpy    (on memcpy in /usr/lib64/libc-2.30.so with arg1=%di)
-> 
->   You can now use it in all perf tools, such as:
-> 
->   	perf record -e probe_libc:memcpy -aR sleep 1
-> 
-> With this;
-> 
->   # perf probe -x /lib64/libc-2.30.so -a "memcpy arg1=%di"
->   Added new events:
->     probe_libc:memcpy    (on memcpy in /usr/lib64/libc-2.30.so with arg1=%di)
->     probe_libc:memcpy    (on memcpy in /usr/lib64/libc-2.30.so with arg1=%di)
-> 
->   You can now use it in all perf tools, such as:
-> 
->   	perf record -e probe_libc:memcpy -aR sleep 1
-> 
-> 
-> Reported-by: Andi Kleen <andi@firstfloor.org>
-> Fixes: cb4027308570 ("perf probe: Trace a magic number if variable is not found")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+In the patch ("spi: spi-geni-qcom: Avoid clock setting if not needed")
+we avoid a whole pile of clock code.  As part of that, we should have
+restored the clock at runtime resume.  Do that.
 
-Tested-by: Andi Kleen <ak@linux.intel.com>
+It turns out that, at least with today's configurations, this doesn't
+actually matter.  That's because none of the current device trees have
+an OPP table for geni SPI yet.  That makes dev_pm_opp_set_rate(dev, 0)
+a no-op.  This is why it wasn't noticed in the testing of the original
+patch.  It's still a good idea to fix, though.
 
-Except for the minor nit on the message all patches look good to me.
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Acked-by: Mark Brown <broonie@kernel.org>
+---
+Sending this as a separate patch even though I think the patch it's
+fixing [1] hasn't landed yet.  I'd be happy if this was squashed into
+that patch when landing if that suits everyone, but it could land on
+its own too.
 
--Andi
+Like the patch it's fixing, this needs to target the Qualcomm tree in
+order to avoid merge conflicts.
+
+[1] https://lore.kernel.org/r/20200701174506.1.Icfdcee14649fc0a6c38e87477b28523d4e60bab3@changeid
+
+Changes in v2:
+- Return error from runtime resume if dev_pm_opp_set_rate() fails.
+
+ drivers/spi/spi-geni-qcom.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/spi/spi-geni-qcom.c b/drivers/spi/spi-geni-qcom.c
+index 97fac5ea6afd..0e11a90490ff 100644
+--- a/drivers/spi/spi-geni-qcom.c
++++ b/drivers/spi/spi-geni-qcom.c
+@@ -79,6 +79,7 @@ struct spi_geni_master {
+ 	u32 tx_wm;
+ 	u32 last_mode;
+ 	unsigned long cur_speed_hz;
++	unsigned long cur_sclk_hz;
+ 	unsigned int cur_bits_per_word;
+ 	unsigned int tx_rem_bytes;
+ 	unsigned int rx_rem_bytes;
+@@ -116,6 +117,9 @@ static int get_spi_clk_cfg(unsigned int speed_hz,
+ 	ret = dev_pm_opp_set_rate(mas->dev, sclk_freq);
+ 	if (ret)
+ 		dev_err(mas->dev, "dev_pm_opp_set_rate failed %d\n", ret);
++	else
++		mas->cur_sclk_hz = sclk_freq;
++
+ 	return ret;
+ }
+ 
+@@ -670,7 +674,11 @@ static int __maybe_unused spi_geni_runtime_resume(struct device *dev)
+ 	if (ret)
+ 		return ret;
+ 
+-	return geni_se_resources_on(&mas->se);
++	ret = geni_se_resources_on(&mas->se);
++	if (ret)
++		return ret;
++
++	return dev_pm_opp_set_rate(mas->dev, mas->cur_sclk_hz);
+ }
+ 
+ static int __maybe_unused spi_geni_suspend(struct device *dev)
+-- 
+2.27.0.383.g050319c2ae-goog
+
