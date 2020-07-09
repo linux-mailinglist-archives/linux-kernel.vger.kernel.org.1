@@ -2,104 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 950CF21A94A
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 22:48:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D8D321A952
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 22:50:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726449AbgGIUsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 16:48:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726196AbgGIUsH (ORCPT
+        id S1726725AbgGIUum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 16:50:42 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:42362 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726196AbgGIUum (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 16:48:07 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 274BAC08C5CE
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 13:48:07 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id z3so1496966pfn.12
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 13:48:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jTCvng34NAGF7sMyc3FbW/vYJ5gq3hAUCGDsqstPZWo=;
-        b=YmgJb4OEbddjH0aFgvWclH8eux8u4VwcyedrNoJtrVQkfpTtpBm5hdY++YaXJujf75
-         VbLGwBST0wWJ/+Rim4vPOWS+12yWlSQg+e/oV909bcXY9p2ivYnUl9iR1boNfefgAVMV
-         vBS4/oLaiqntS4cu4W8SI9wkHy1Bb5CP0SljRkgeFIUaa2Pbw2h1sbt/Q6zAUqV0//nz
-         PLo4PhVxOgUa3fGrGYML2CFqfL9W+yL49TBBzB01/r10q2/e5kuFdnVWNe+jc84HSqjV
-         EMuCacfRJqDZ2WkUykLBKaKwOLoJ9PlSTwlO9qobcn4hogY4uyP+SbVYmSKHght1Q8hX
-         Vf/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=jTCvng34NAGF7sMyc3FbW/vYJ5gq3hAUCGDsqstPZWo=;
-        b=eeOLsypwY42+Q2eTuBFv4MnI5RYSRi5HVrCE5x0GrxuvhothHIrfz5IM/se+rNu17k
-         wsJerk0wBs8ScBIFXGhErL5EVwTXzB8A66K7S7GzsOjeor7IyjlVl2bu/GtLk9HGFQkR
-         Kw0yc98rYMUwDNCTm77BxwSqle0tMZXtOZcNL8S9ygJy1CATqr/p93Xv8Lgxn1rS1OgS
-         3LMp7USyyAGELeDa23SsWAs+3mboAAyBREOGTLg5X5UlB+1HHnqmfaWUKWbajPcUOYoK
-         5/9YBnjqqeoaakuEpsQYMYmx7ImIPWUsbus4mf5hvCweuy0M9cgVGcTEXOvTmOKwXgXY
-         S6eg==
-X-Gm-Message-State: AOAM532cz8qZFonmKm49hzjILp7bcXrCpIbUA/xR7tTRqYMiDpe/tXtu
-        x7OwfaVOlbPGYwoTVXtyLihi8g==
-X-Google-Smtp-Source: ABdhPJzD08leG5+HDEW9JWrbjTdvca8V3V6gw8P3OjNQsMeXQUduJQNOkbwOIjqGHIZryWcZESievw==
-X-Received: by 2002:a63:4d3:: with SMTP id 202mr55805628pge.14.1594327686420;
-        Thu, 09 Jul 2020 13:48:06 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id r191sm3631054pfr.181.2020.07.09.13.48.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jul 2020 13:48:05 -0700 (PDT)
-Date:   Thu, 09 Jul 2020 13:48:05 -0700 (PDT)
-X-Google-Original-Date: Thu, 09 Jul 2020 13:47:53 PDT (-0700)
-Subject:     Re: [PATCH 0/3] Dynamic CPU frequency switching for the HiFive
-In-Reply-To: <mvmtuylcb4h.fsf@suse.de>
-CC:     yash.shah@sifive.com, david.abdurachmanov@gmail.com,
-        devicetree@vger.kernel.org, aou@eecs.berkeley.edu,
-        Atish Patra <Atish.Patra@wdc.com>, anup@brainfault.org,
-        lollivier@baylibre.com, linux-kernel@vger.kernel.org,
-        green.wan@sifive.com, sachin.ghadi@sifive.com, robh+dt@kernel.org,
-        deepa.kernel@gmail.com, Paul Walmsley <paul.walmsley@sifive.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        linux-riscv@lists.infradead.org, bmeng.cn@gmail.com
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     schwab@suse.de
-Message-ID: <mhng-da95d8d4-c593-4c23-a543-bfe9d8c8e40b@palmerdabbelt-glaptop1>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        Thu, 9 Jul 2020 16:50:42 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 069KZM6E090986;
+        Thu, 9 Jul 2020 16:49:34 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32637twb3u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 09 Jul 2020 16:49:34 -0400
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 069KZM9B090993;
+        Thu, 9 Jul 2020 16:49:33 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32637twb2q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 09 Jul 2020 16:49:33 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 069Kg1WF002260;
+        Thu, 9 Jul 2020 20:49:30 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma04ams.nl.ibm.com with ESMTP id 325u410wps-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 09 Jul 2020 20:49:30 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 069KnSoq10748324
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 9 Jul 2020 20:49:28 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EA81E11C04A;
+        Thu,  9 Jul 2020 20:49:27 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A38E211C052;
+        Thu,  9 Jul 2020 20:49:23 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.148.204.222])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Thu,  9 Jul 2020 20:49:23 +0000 (GMT)
+Date:   Thu, 9 Jul 2020 23:49:21 +0300
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     linux-riscv@lists.infradead.org, zong.li@sifive.com,
+        linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, gxt@pku.edu.cn,
+        Arnd Bergmann <arnd@arndb.de>, akpm@linux-foundation.org,
+        linus.walleij@linaro.org, mchehab+samsung@kernel.org,
+        gregory.0xf0@gmail.com, masahiroy@kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        bgolaszewski@baylibre.com, tglx@linutronix.de, steve@sk2.org,
+        keescook@chromium.org, mcgrof@kernel.org, alex@ghiti.fr,
+        mark.rutland@arm.com, james.morse@arm.com,
+        andriy.shevchenko@linux.intel.com, alex.shi@linux.alibaba.com,
+        davem@davemloft.net, rdunlap@infradead.org, broonie@kernel.org,
+        uwe@kleine-koenig.org, rostedt@goodmis.org,
+        dan.j.williams@intel.com, mhiramat@kernel.org,
+        matti.vaittinen@fi.rohmeurope.com, zaslonko@linux.ibm.com,
+        krzk@kernel.org, willy@infradead.org, paulmck@kernel.org,
+        pmladek@suse.com, glider@google.com, elver@google.com,
+        davidgow@google.com, ardb@kernel.org, takahiro.akashi@linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, kernel-team@android.com,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Subject: Re: [PATCH 1/5] lib: Add a generic version of devmem_is_allowed()
+Message-ID: <20200709204921.GJ781326@linux.ibm.com>
+References: <20200709200552.1910298-1-palmer@dabbelt.com>
+ <20200709200552.1910298-2-palmer@dabbelt.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200709200552.1910298-2-palmer@dabbelt.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-09_11:2020-07-09,2020-07-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=1
+ mlxlogscore=999 bulkscore=0 phishscore=0 impostorscore=0 spamscore=0
+ clxscore=1011 mlxscore=0 priorityscore=1501 adultscore=0
+ lowpriorityscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2007090139
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 06 Jul 2020 01:15:42 PDT (-0700), schwab@suse.de wrote:
-> On Jul 03 2020, Yash Shah wrote:
->
->> Yes, you are right. The userspace governor is the only one supported.
->
-> That doesn't make sense to me.  How is the userspace governor different
-> from any other governor?
+Hi Palmer,
 
-It's not.
+On Thu, Jul 09, 2020 at 01:05:48PM -0700, Palmer Dabbelt wrote:
+> From: Palmer Dabbelt <palmerdabbelt@google.com>
+> 
+> As part of adding support for STRICT_DEVMEM to the RISC-V port, Zong
+> provided a devmem_is_allowed() implementation that's exactly the same as
+> all the others I checked.  Instead I'm adding a generic version, which
+> will soon be used.
+> 
+> Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+> ---
+>  include/asm-generic/io.h |  4 ++++
+>  lib/Kconfig              |  4 ++++
+>  lib/Makefile             |  2 ++
+>  lib/devmem_is_allowed.c  | 27 +++++++++++++++++++++++++++
+>  4 files changed, 37 insertions(+)
+>  create mode 100644 lib/devmem_is_allowed.c
+> 
+> diff --git a/include/asm-generic/io.h b/include/asm-generic/io.h
+> index 8b1e020e9a03..69e3db65fba0 100644
+> --- a/include/asm-generic/io.h
+> +++ b/include/asm-generic/io.h
+> @@ -1122,6 +1122,10 @@ static inline void memcpy_toio(volatile void __iomem *addr, const void *buffer,
+>  }
+>  #endif
+>  
+> +#ifndef CONFIG_GENERIC_DEVMEM_IS_ALLOWED
+> +extern int devmem_is_allowed(unsigned long pfn);
+> +#endif
+> +
+>  #endif /* __KERNEL__ */
+>  
+>  #endif /* __ASM_GENERIC_IO_H */
+> diff --git a/lib/Kconfig b/lib/Kconfig
+> index df3f3da95990..3b1b6481e073 100644
+> --- a/lib/Kconfig
+> +++ b/lib/Kconfig
+> @@ -676,3 +676,7 @@ config GENERIC_LIB_CMPDI2
+>  
+>  config GENERIC_LIB_UCMPDI2
+>  	bool
+> +
+> +config GENERIC_LIB_DEVMEM_IS_ALLOWED
+> +	bool
+> +	select ARCH_HAS_DEVMEM_IS_ALLOWED
 
-The issue here is that pretty much everything is on one clock, including all
-the cores and the simple IO devices.  These IO devices have programmable clock
-dividers that need to mesh up with the input clock rate in order to operate
-correctly.  There's no way to do that atomicly WRT the device's clock, so we
-have to pause device IO while messing with the clocks.
+This seems to work the other way around from the usual Kconfig chains.
+In the most cases ARCH_HAS_SOMETHING selects GENERIC_SOMETHING.
 
-I bet there's some issue with 4cbd7814bbd5 ("tty: sifive: Finish transmission
-before changing the clock") that's causing the serial to get corrupted, and I
-guess I'd start with all the issues I pointed out in the patch text :).
-Presumably we need to fix the SPI driver as well, in much the same fashion
-(though hopefully with fewer hardware surprises to work around).  I'd be way
-more worried about ChipLink, as I don't know how that's clocked.  IIRC Ethernet
-has its own clock so it should be safe.
+I believe nicer way would be to make 
 
-I'd be very skeptical about turning on dynamic frequency scaling for the HiFive
-Unleashed, as it's probably just not worth chasing the long tail of bugs.  Even
-allowing the userspace governor is a bit sketchy, but given that it's a very
-early dev board I assume these sorts of problems are expected.
+config STRICT_DEVMEM
+	bool "Filter access to /dev/mem"
+	depends on MMU && DEVMEM
+	depends on ARCH_HAS_DEVMEM_IS_ALLOWED || GENERIC_LIB_DEVMEM_IS_ALLOWED
 
-If we do ever turn dynamic frequency scaling on it's not going to default to
-allowing 1.4GHz, from what I saw speeds much over 1GHz don't work for most
-people.
+config GENERIC_LIB_DEVMEM_IS_ALLOWED
+	bool
+
+and then s/select ARCH_HAS_DEVMEM_IS_ALLOWED/select GENERIC_LIB_DEVMEM_IS_ALLOWED/
+in the arch Kconfigs and drop ARCH_HAS_DEVMEM_IS_ALLOWED in the end.
+
+> diff --git a/lib/Makefile b/lib/Makefile
+> index b1c42c10073b..554ef14f9be5 100644
+> --- a/lib/Makefile
+> +++ b/lib/Makefile
+> @@ -318,3 +318,5 @@ obj-$(CONFIG_OBJAGG) += objagg.o
+>  # KUnit tests
+>  obj-$(CONFIG_LIST_KUNIT_TEST) += list-test.o
+>  obj-$(CONFIG_LINEAR_RANGES_TEST) += test_linear_ranges.o
+> +
+> +obj-$(CONFIG_GENERIC_LIB_DEVMEM_IS_ALLOWED) += devmem_is_allowed.o
+> diff --git a/lib/devmem_is_allowed.c b/lib/devmem_is_allowed.c
+> new file mode 100644
+> index 000000000000..c0d67c541849
+> --- /dev/null
+> +++ b/lib/devmem_is_allowed.c
+> @@ -0,0 +1,27 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * A generic version of devmem_is_allowed.
+> + *
+> + * Based on arch/arm64/mm/mmap.c
+> + *
+> + * Copyright (C) 2020 Google, Inc.
+> + * Copyright (C) 2012 ARM Ltd.
+> + */
+> +
+> +#include <linux/mm.h>
+> +#include <linux/ioport.h>
+> +
+> +/*
+> + * devmem_is_allowed() checks to see if /dev/mem access to a certain address
+> + * is valid. The argument is a physical page number.  We mimic x86 here by
+> + * disallowing access to system RAM as well as device-exclusive MMIO regions.
+> + * This effectively disable read()/write() on /dev/mem.
+> + */
+> +int devmem_is_allowed(unsigned long pfn)
+> +{
+> +	if (iomem_is_exclusive(pfn << PAGE_SHIFT))
+> +		return 0;
+> +	if (!page_is_ram(pfn))
+> +		return 1;
+> +	return 0;
+> +}
+> -- 
+> 2.27.0.383.g050319c2ae-goog
+> 
+
+-- 
+Sincerely yours,
+Mike.
