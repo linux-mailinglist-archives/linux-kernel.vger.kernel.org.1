@@ -2,109 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E08B219699
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 05:26:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DC822196AD
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 05:31:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726314AbgGID0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 23:26:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726107AbgGID0j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 23:26:39 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 000EEC061A0B
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 20:26:38 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id h17so383278qvr.0
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 20:26:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=SqfR0yyd/akPVv8fPW8XhDfR8IeowNBbxqDF+5ncZTQ=;
-        b=ixRBRPBaHHksvrmGxXr5jpB4f/EWHMghO4zMqkhWithmAAzyOsYKfBgbl4Hy0IHHaa
-         fYBa6gwzHiLUVlxVqQzDF7wGS51vPzJxceYsKkOhA5pnSHxmvH5ePJt2IUUSQaVPNPVn
-         u61YPKMxNO0yD5Srjbl1GnULDf6ziFj2HlhalTxsTWsepBryXnJ9CUS8Q49z2/uzHh8f
-         UfJ0Fk5ZjRSh9yBGqgPG3ocrb4hozkCDjraOcqsULLHo8UniAk4QXL4JGlZj6AF9mps3
-         Q5Ut5Jc8nka4I5RMA6uSHFLeD8Ye4GHAy4eMb2FP6kL6Je8XXGOIW21gKid1EFertY7q
-         DlDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=SqfR0yyd/akPVv8fPW8XhDfR8IeowNBbxqDF+5ncZTQ=;
-        b=BlQaZpyXhki2cDu8wexfkBzMZ10QUldH9bUxZAMVCDmOLtUoPynPvLOTI2hguLgjUC
-         aDzv7hYHBvJJ+k6YSu2b7j6Pd5oEwzBAI6Dh9F2nvuj7Nk1v871XIpDyO7Ao3IKBqkay
-         ki0uXJNp350Wf6PCm94V3iLtg0h8wSYBhsOf4vZ/6z8GK0PjaGgQSr6n91fdCSRUDRV4
-         +Y/QLRqmKMpOGL5uLC/OWG4piDzH3g0ZzcD+c2JTKRLMu/LuC2ZrNzU0rOHbDechBsq4
-         ZnEgWoUVDEtqA2tXaUsEGcF4HwhSxs5hADqFXznpRpoBfFNlXhpNnRgc62zNQ5pK9mqL
-         hw8Q==
-X-Gm-Message-State: AOAM531m55V4YebYyBIjI1Se7diC/qKn3R9FjfRYBRxSlml8vzzoGkF/
-        ljLp6v0ueHihKp7PXJ/3OdUCjsBBfWi0WE1/9Mc=
-X-Google-Smtp-Source: ABdhPJw2ZKl7RX7AQLafTxj7lp5YLbaZmJNNPzsnPCWA97cPgrkgCH2aCd+qAFEovniiV0ktv6/eYdDCHp0mpgGCNPc=
-X-Received: by 2002:ad4:4732:: with SMTP id l18mr58016937qvz.208.1594265198224;
- Wed, 08 Jul 2020 20:26:38 -0700 (PDT)
+        id S1726281AbgGIDa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 23:30:57 -0400
+Received: from foss.arm.com ([217.140.110.172]:56588 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726107AbgGIDa4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 23:30:56 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0042E31B;
+        Wed,  8 Jul 2020 20:30:56 -0700 (PDT)
+Received: from [192.168.0.129] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0BF133F887;
+        Wed,  8 Jul 2020 20:30:46 -0700 (PDT)
+Subject: Re: [PATCH V4 0/3] arm64: Enable vmemmap mapping from device memory
+To:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>
+Cc:     justin.he@arm.com, catalin.marinas@arm.com,
+        akpm@linux-foundation.org, Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michal Hocko <mhocko@suse.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        linux-riscv@lists.infradead.org, x86@kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <1594004178-8861-1-git-send-email-anshuman.khandual@arm.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <a9157943-d033-f9a8-87fc-dce78540df78@arm.com>
+Date:   Thu, 9 Jul 2020 09:00:17 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-References: <1594107889-32228-1-git-send-email-iamjoonsoo.kim@lge.com>
- <1594107889-32228-6-git-send-email-iamjoonsoo.kim@lge.com>
- <20200707114019.GI5913@dhcp22.suse.cz> <20200708071916.GD16543@js1304-desktop>
- <20200708074820.GE7271@dhcp22.suse.cz>
-In-Reply-To: <20200708074820.GE7271@dhcp22.suse.cz>
-From:   Joonsoo Kim <js1304@gmail.com>
-Date:   Thu, 9 Jul 2020 12:26:30 +0900
-Message-ID: <CAAmzW4PdjSa0qO3EJwCEBTrLyCpCXKSZbV1b-ptPORDKqO4AvA@mail.gmail.com>
-Subject: Re: [PATCH v4 05/11] mm/migrate: clear __GFP_RECLAIM for THP
- allocation for migration
-To:     Michal Hocko <mhocko@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, kernel-team@lge.com,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Christoph Hellwig <hch@infradead.org>,
-        Roman Gushchin <guro@fb.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1594004178-8861-1-git-send-email-anshuman.khandual@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2020=EB=85=84 7=EC=9B=94 8=EC=9D=BC (=EC=88=98) =EC=98=A4=ED=9B=84 4:48, Mi=
-chal Hocko <mhocko@kernel.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
->
-> On Wed 08-07-20 16:19:17, Joonsoo Kim wrote:
-> > On Tue, Jul 07, 2020 at 01:40:19PM +0200, Michal Hocko wrote:
-> [...]
-> > Subject: [PATCH] mm/migrate: clear __GFP_RECLAIM for THP allocation for
-> >  migration
-> >
-> > In migration target allocation functions, THP allocations uses differen=
-t
-> > gfp_mask, especially, in regard to the reclaim gfp_mask. There is no
-> > reason to use different reclaim gfp_mask for each cases and it is
-> > an obstacle to make a common function in order to clean-up migration
-> > target allocation functions. This patch fixes this situation by using
-> > common reclaim gfp_mask for THP allocation.
->
-> I would find the following more understandable, feel free to reuse parts
-> that you like:
-> "
-> new_page_nodemask is a migration callback and it tries to use a common
-> gfp flags for the target page allocation whether it is a base page or a
-> THP. The later only adds GFP_TRANSHUGE to the given mask. This results
-> in the allocation being slightly more aggressive than necessary because
-> the resulting gfp mask will contain also __GFP_RECLAIM_KSWAPD. THP
-> allocations usually exclude this flag to reduce over eager background
-> reclaim during a high THP allocation load which has been seen during
-> large mmaps initialization. There is no indication that this is a
-> problem for migration as well but theoretically the same might happen
-> when migrating large mappings to a different node. Make the migration
-> callback consistent with regular THP allocations.
-> "
 
-Looks good!
-I will use this description.
 
-Thanks.
+On 07/06/2020 08:26 AM, Anshuman Khandual wrote:
+> This series enables vmemmap backing memory allocation from device memory
+> ranges on arm64. But before that, it enables vmemmap_populate_basepages()
+> and vmemmap_alloc_block_buf() to accommodate struct vmem_altmap based
+> alocation requests.
+> 
+> This series applies on 5.8-rc4.
+> 
+> Changes in V4:
+> 
+> - Dropped 'fallback' from vmemmap_alloc_block_buf() per Catalin
+
+Hello Andrew,
+
+This series has been a long running one :) Now that all the three patches
+here have been reviewed, could you please consider this series for merging
+towards 5.9-rc1. Catalin had suggested earlier [1] that it should go via
+the MM tree instead, as it touches multiple architecture. Thank you.
+
+[1] https://patchwork.kernel.org/patch/11611103/
+
+- Anshuman
