@@ -2,264 +2,345 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5877221A355
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 17:19:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2703921A36C
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 17:22:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728349AbgGIPTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 11:19:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54402 "EHLO
+        id S1728090AbgGIPWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 11:22:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727978AbgGIPSa (ORCPT
+        with ESMTP id S1726806AbgGIPWS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 11:18:30 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 227A9C08C5DD;
-        Thu,  9 Jul 2020 08:18:30 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id k71so1264357pje.0;
-        Thu, 09 Jul 2020 08:18:30 -0700 (PDT)
+        Thu, 9 Jul 2020 11:22:18 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ED1FC08C5DD
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 08:22:18 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id x8so960070plm.10
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 08:22:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=5xl0XyGLiz621Hz7NTFNPX+jPGcTEmSc0n3IjULBj8o=;
-        b=UZLds2df4+X4jjeJPcbXn87fx7lQomos6EyS0RzhIhBqJ0WGNjcWX3/OFgSg4QI42a
-         JElxWtMJjnladNZIZsH9KyefLGsDvKP4Bb7hFtagJsGawKmJKnPhjVG2YvH5t4rDf+J2
-         x0zgNFxCJmvLE1/2qmEYZh5cIm6g++4YeltyMuwmi4R3eDX1q1F0FyO5YDB7eUPNjAr9
-         auFEISZQI7ShmR/O4vf56n4gjqHu+ZBf78QUhdapm8qgE1hZWfbMvF/STp1RnC1fM3WX
-         eY4mJUmTczLAm5zJKx0S4Ed9npFRo0bQYOGJ0t6kQ3DBH6/WbM3khrRFw0VNmXPhW4mD
-         QNDw==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iPn8blZ0MEVGwJOKZlXuKDvgNAX2ZB0tniABOvwydt4=;
+        b=TQGUZh7EoHg8jws9SB2X0XtLZsN7heT0VB1CToeiHcLnv2CpjnSXWnZ0bOOmf/1C3q
+         +y+Qzn7TxzdvNYdqhHluSuEIfotCSaSH7fxRy2Y83ti5cUChmnpJhAHu+A1bQmj4sj/y
+         M0uu20clAR3Z6ljIwF+P+j+Pgfr8uofpC27hg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=5xl0XyGLiz621Hz7NTFNPX+jPGcTEmSc0n3IjULBj8o=;
-        b=URpwf4dFsZDK4H1mdfjyi8Qa3da6YYujTnmKlxUDz9zGhhW/g0/qAU/W2nAtvyo9O4
-         qvVI4yQ3pUbZIdV2IxxfDGcjKovABgFd5fByXQgHSYsjmU8BZ5TOMm9gg4eniMnsZaju
-         st4gqtii9wwBmMP5UVOYeMO4B5XnECfdAO9kHuYOceZ4SsX76RAU4dpuPA1R2Ljz8lgt
-         iLkRhLQe0RY1KjXCoBH+HgzONKxIRPMe+lDhZ13bSAs/HM7LA45OQyFtp6GVtTuOnxV9
-         /NMP4QGKXR1w/mIs96TQGWN88v/01LTIIxo4YH4Rs34UKWtGAIUe7KJbGzzBmmmjCV5J
-         N9Ow==
-X-Gm-Message-State: AOAM532EhTwLc8YyYztTppqVFTP32yXy61XLXcCoIk2nBvXcNR7/D02A
-        slaof2LSL1oR0Hwcx121p4yH5AwPf98=
-X-Google-Smtp-Source: ABdhPJw9Xl+8cevWRbwvodD7EwmFDvHxHyD3cFLKJC0/OnFN9mFcWxDnqyzz0z7Nb9WHcdx2bgvFLg==
-X-Received: by 2002:a17:90a:a608:: with SMTP id c8mr527657pjq.114.1594307909539;
-        Thu, 09 Jul 2020 08:18:29 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id o12sm3241489pfu.188.2020.07.09.08.18.27
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 09 Jul 2020 08:18:28 -0700 (PDT)
-Date:   Thu, 9 Jul 2020 08:18:27 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Marius Zachmann <mail@mariuszachmann.de>
-Cc:     Jean Delvare <jdelvare@suse.com>, Jonathan Corbet <corbet@lwn.net>,
-        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] hwmon: corsair-cpro: add fan_target
-Message-ID: <20200709151827.GA77769@roeck-us.net>
-References: <20200709141413.30790-1-mail@mariuszachmann.de>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iPn8blZ0MEVGwJOKZlXuKDvgNAX2ZB0tniABOvwydt4=;
+        b=iLxnhice7XsqwGkiJa1vDx3HHH5Fuzt4I4BqZLqIB6eFDxdINqCAxYUqx8hXW+W5gM
+         JN6yU/P0ZzUdWG0feae2XFl1ffWwQNY/1r1+Wjq8aF8xowUo02caOM+dwU4SEGhFI4y/
+         s0RhVwmxW5YIHLySNyrzdnPQGFwzZh9MHPlwIhARYS2x0lE42ctFtJoCD5bCKBw6ZSOr
+         pYc5aSQrexg+FXimWX6g1QG+OFSfhPtMAOvBXrtxYUqx78WPRvdwdnLJ3xrI5FZLdUqW
+         aO4cP//7MAmfn3ta0iVrTAdnRKT9zr1PEnpvsyxZAJXQcYmgCKAOXpR0lu8armVUeQGG
+         zwOA==
+X-Gm-Message-State: AOAM530uOJE+JZcQIEmFbYUBZowXwEihgxfcepIMrrvPh4V0CVzcr2Q+
+        35G2be/Xiy0DROBJqGEK/9HmPg==
+X-Google-Smtp-Source: ABdhPJzWGR47KGZbrDdKZ6xW5mFoNnppI1YbxfLxw02K2xq/J0qpOtAkOCDvC6skJDqJWMKJqQvFKA==
+X-Received: by 2002:a17:90a:8009:: with SMTP id b9mr612654pjn.190.1594308137502;
+        Thu, 09 Jul 2020 08:22:17 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
+        by smtp.gmail.com with ESMTPSA id 137sm3116462pgg.72.2020.07.09.08.22.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Jul 2020 08:22:16 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     kvalo@codeaurora.org, ath10k@lists.infradead.org
+Cc:     linux-arm-msm@vger.kernel.org, briannorris@chromium.org,
+        saiprakash.ranjan@codeaurora.org, linux-wireless@vger.kernel.org,
+        pillair@codeaurora.org, kuabhs@google.com,
+        Douglas Anderson <dianders@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH v2 1/2] ath10k: Keep track of which interrupts fired, don't poll them
+Date:   Thu,  9 Jul 2020 08:21:04 -0700
+Message-Id: <20200709082024.v2.1.I4d2f85ffa06f38532631e864a3125691ef5ffe06@changeid>
+X-Mailer: git-send-email 2.27.0.383.g050319c2ae-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200709141413.30790-1-mail@mariuszachmann.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 09, 2020 at 04:14:13PM +0200, Marius Zachmann wrote:
-> This adds fan_target entries to the corsair-cpro driver.
-> Reading the attribute from the device does not seem possible, so
-> it returns the last set value. (same as pwm)
-> 
-> send_usb_cmd now has one more argument, which is needed for the
->   fan_target command.
-> 
-> Signed-off-by: Marius Zachmann <mail@mariuszachmann.de>
+If we have a per CE (Copy Engine) IRQ then we have no summary
+register.  Right now the code generates a summary register by
+iterating over all copy engines and seeing if they have an interrupt
+pending.
 
-Applied.
+This has a problem.  Specifically if _none_ if the Copy Engines have
+an interrupt pending then they might go into low power mode and
+reading from their address space will cause a full system crash.  This
+was seen to happen when two interrupts went off at nearly the same
+time.  Both were handled by a single call of ath10k_snoc_napi_poll()
+but, because there were two interrupts handled and thus two calls to
+napi_schedule() there was still a second call to
+ath10k_snoc_napi_poll() which ran with no interrupts pending.
 
-Thanks,
-Guenter
+Instead of iterating over all the copy engines, let's just keep track
+of the IRQs that fire.  Then we can effectively generate our own
+summary without ever needing to read the Copy Engines.
 
-> ---
-> Change from v1:
-> - use clamp_val instead of bounds checking
-> 
-> ---
->  Documentation/hwmon/corsair-cpro.rst |  3 ++
->  drivers/hwmon/corsair-cpro.c         | 61 ++++++++++++++++++++++------
->  2 files changed, 52 insertions(+), 12 deletions(-)
-> 
-> --
-> 2.27.0
-> 
-> diff --git a/Documentation/hwmon/corsair-cpro.rst b/Documentation/hwmon/corsair-cpro.rst
-> index 5913e23d764c..78820156f07d 100644
-> --- a/Documentation/hwmon/corsair-cpro.rst
-> +++ b/Documentation/hwmon/corsair-cpro.rst
-> @@ -33,6 +33,9 @@ in2_input		Voltage on SATA 3.3v
->  temp[1-4]_input		Temperature on connected temperature sensors
->  fan[1-6]_input		Connected fan rpm.
->  fan[1-6]_label		Shows fan type as detected by the device.
-> +fan[1-6]_target		Sets fan speed target rpm.
-> +			When reading, it reports the last value if it was set by the driver.
-> +			Otherwise returns 0.
->  pwm[1-6]		Sets the fan speed. Values from 0-255.
->  			When reading, it reports the last value if it was set by the driver.
->  			Otherwise returns 0.
-> diff --git a/drivers/hwmon/corsair-cpro.c b/drivers/hwmon/corsair-cpro.c
-> index a22583acc229..fe625190e3a1 100644
-> --- a/drivers/hwmon/corsair-cpro.c
-> +++ b/drivers/hwmon/corsair-cpro.c
-> @@ -5,8 +5,8 @@
->   */
-> 
->  #include <linux/bitops.h>
-> -#include <linux/kernel.h>
->  #include <linux/hwmon.h>
-> +#include <linux/kernel.h>
->  #include <linux/module.h>
->  #include <linux/mutex.h>
->  #include <linux/slab.h>
-> @@ -51,6 +51,12 @@
->  					 * send: byte 1 is fan number
->  					 * send: byte 2 is percentage from 0 - 100
->  					 */
-> +#define CTL_SET_FAN_TARGET	0x24	/*
-> +					 * set target rpm
-> +					 * send: byte 1 is fan number
-> +					 * send: byte 2-3 is target
-> +					 * device accepts all values from 0x00 - 0xFFFF
-> +					 */
-> 
->  #define NUM_FANS		6
->  #define NUM_TEMP_SENSORS	4
-> @@ -60,13 +66,14 @@ struct ccp_device {
->  	struct mutex mutex; /* whenever buffer is used, lock before send_usb_cmd */
->  	u8 *buffer;
->  	int pwm[6];
-> +	int target[6];
->  	DECLARE_BITMAP(temp_cnct, NUM_TEMP_SENSORS);
->  	DECLARE_BITMAP(fan_cnct, NUM_FANS);
->  	char fan_label[6][LABEL_LENGTH];
->  };
-> 
->  /* send command, check for error in response, response in ccp->buffer */
-> -static int send_usb_cmd(struct ccp_device *ccp, u8 command, u8 byte1, u8 byte2)
-> +static int send_usb_cmd(struct ccp_device *ccp, u8 command, u8 byte1, u8 byte2, u8 byte3)
->  {
->  	int actual_length;
->  	int ret;
-> @@ -75,6 +82,7 @@ static int send_usb_cmd(struct ccp_device *ccp, u8 command, u8 byte1, u8 byte2)
->  	ccp->buffer[0] = command;
->  	ccp->buffer[1] = byte1;
->  	ccp->buffer[2] = byte2;
-> +	ccp->buffer[3] = byte3;
-> 
->  	ret = usb_bulk_msg(ccp->udev, usb_sndintpipe(ccp->udev, 2), ccp->buffer, OUT_BUFFER_SIZE,
->  			   &actual_length, 1000);
-> @@ -103,7 +111,7 @@ static int get_data(struct ccp_device *ccp, int command, int channel)
-> 
->  	mutex_lock(&ccp->mutex);
-> 
-> -	ret = send_usb_cmd(ccp, command, channel, 0);
-> +	ret = send_usb_cmd(ccp, command, channel, 0, 0);
->  	if (ret)
->  		goto out_unlock;
-> 
-> @@ -128,7 +136,22 @@ static int set_pwm(struct ccp_device *ccp, int channel, long val)
-> 
->  	mutex_lock(&ccp->mutex);
-> 
-> -	ret = send_usb_cmd(ccp, CTL_SET_FAN_FPWM, channel, val);
-> +	ret = send_usb_cmd(ccp, CTL_SET_FAN_FPWM, channel, val, 0);
-> +
-> +	mutex_unlock(&ccp->mutex);
-> +	return ret;
-> +}
-> +
-> +static int set_target(struct ccp_device *ccp, int channel, long val)
-> +{
-> +	int ret;
-> +
-> +	val = clamp_val(val, 0, 0xFFFF);
-> +	ccp->target[channel] = val;
-> +
-> +	mutex_lock(&ccp->mutex);
-> +
-> +	ret = send_usb_cmd(ccp, CTL_SET_FAN_TARGET, channel, val >> 8, val);
-> 
->  	mutex_unlock(&ccp->mutex);
->  	return ret;
-> @@ -183,6 +206,11 @@ static int ccp_read(struct device *dev, enum hwmon_sensor_types type,
->  				return ret;
->  			*val = ret;
->  			return 0;
-> +		case hwmon_fan_target:
-> +			/* how to read target values from the device is unknown */
-> +			/* driver returns last set value or 0			*/
-> +			*val = ccp->target[channel];
-> +			return 0;
->  		default:
->  			break;
->  		}
-> @@ -231,6 +259,13 @@ static int ccp_write(struct device *dev, enum hwmon_sensor_types type,
->  			break;
->  		}
->  		break;
-> +	case hwmon_fan:
-> +		switch (attr) {
-> +		case hwmon_fan_target:
-> +			return set_target(ccp, channel, val);
-> +		default:
-> +			break;
-> +		}
->  	default:
->  		break;
->  	}
-> @@ -266,6 +301,8 @@ static umode_t ccp_is_visible(const void *data, enum hwmon_sensor_types type,
->  			return 0444;
->  		case hwmon_fan_label:
->  			return 0444;
-> +		case hwmon_fan_target:
-> +			return 0644;
->  		default:
->  			break;
->  		}
-> @@ -313,12 +350,12 @@ static const struct hwmon_channel_info *ccp_info[] = {
->  			   HWMON_T_INPUT
->  			   ),
->  	HWMON_CHANNEL_INFO(fan,
-> -			   HWMON_F_INPUT | HWMON_F_LABEL,
-> -			   HWMON_F_INPUT | HWMON_F_LABEL,
-> -			   HWMON_F_INPUT | HWMON_F_LABEL,
-> -			   HWMON_F_INPUT | HWMON_F_LABEL,
-> -			   HWMON_F_INPUT | HWMON_F_LABEL,
-> -			   HWMON_F_INPUT | HWMON_F_LABEL
-> +			   HWMON_F_INPUT | HWMON_F_LABEL | HWMON_F_TARGET,
-> +			   HWMON_F_INPUT | HWMON_F_LABEL | HWMON_F_TARGET,
-> +			   HWMON_F_INPUT | HWMON_F_LABEL | HWMON_F_TARGET,
-> +			   HWMON_F_INPUT | HWMON_F_LABEL | HWMON_F_TARGET,
-> +			   HWMON_F_INPUT | HWMON_F_LABEL | HWMON_F_TARGET,
-> +			   HWMON_F_INPUT | HWMON_F_LABEL | HWMON_F_TARGET
->  			   ),
->  	HWMON_CHANNEL_INFO(pwm,
->  			   HWMON_PWM_INPUT,
-> @@ -348,7 +385,7 @@ static int get_fan_cnct(struct ccp_device *ccp)
->  	int mode;
->  	int ret;
-> 
-> -	ret = send_usb_cmd(ccp, CTL_GET_FAN_CNCT, 0, 0);
-> +	ret = send_usb_cmd(ccp, CTL_GET_FAN_CNCT, 0, 0, 0);
->  	if (ret)
->  		return ret;
-> 
-> @@ -385,7 +422,7 @@ static int get_temp_cnct(struct ccp_device *ccp)
->  	int mode;
->  	int ret;
-> 
-> -	ret = send_usb_cmd(ccp, CTL_GET_TMP_CNCT, 0, 0);
-> +	ret = send_usb_cmd(ccp, CTL_GET_TMP_CNCT, 0, 0, 0);
->  	if (ret)
->  		return ret;
+Tested-on: WCN3990 SNOC WLAN.HL.3.2.2-00490-QCAHLSWMTPL-1
+
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Reviewed-by: Rakesh Pillai <pillair@codeaurora.org>
+Reviewed-by: Brian Norris <briannorris@chromium.org>
+---
+This patch continues work to try to squash all instances of the crash
+we've been seeing while reading CE registers and hopefully this patch
+addresses the true root of the issue.
+
+The first patch that attempted to address these problems landed as
+commit 8f9ed93d09a9 ("ath10k: Wait until copy complete is actually
+done before completing").  After that Rakesh Pillai posted ("ath10k:
+Add interrupt summary based CE processing") [1] and this patch is
+based atop that one.  Both of those patches significantly reduced the
+instances of problems but didn't fully eliminate them.  Crossing my
+fingers that they're all gone now.
+
+[1] https://lore.kernel.org/r/1593193967-29897-1-git-send-email-pillair@codeaurora.org
+
+Changes in v2:
+- Add bitmap_clear() in ath10k_snoc_hif_start().
+
+ drivers/net/wireless/ath/ath10k/ce.c   | 84 ++++++++++----------------
+ drivers/net/wireless/ath/ath10k/ce.h   | 14 ++---
+ drivers/net/wireless/ath/ath10k/snoc.c | 19 ++++--
+ drivers/net/wireless/ath/ath10k/snoc.h |  1 +
+ 4 files changed, 52 insertions(+), 66 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
+index 1e16f263854a..84ec80c6d08f 100644
+--- a/drivers/net/wireless/ath/ath10k/ce.c
++++ b/drivers/net/wireless/ath/ath10k/ce.c
+@@ -481,38 +481,6 @@ static inline void ath10k_ce_engine_int_status_clear(struct ath10k *ar,
+ 	ath10k_ce_write32(ar, ce_ctrl_addr + wm_regs->addr, mask);
+ }
+ 
+-static bool ath10k_ce_engine_int_status_check(struct ath10k *ar, u32 ce_ctrl_addr,
+-					      unsigned int mask)
+-{
+-	struct ath10k_hw_ce_host_wm_regs *wm_regs = ar->hw_ce_regs->wm_regs;
+-
+-	return ath10k_ce_read32(ar, ce_ctrl_addr + wm_regs->addr) & mask;
+-}
+-
+-u32 ath10k_ce_gen_interrupt_summary(struct ath10k *ar)
+-{
+-	struct ath10k_hw_ce_host_wm_regs *wm_regs = ar->hw_ce_regs->wm_regs;
+-	struct ath10k_ce_pipe *ce_state;
+-	struct ath10k_ce *ce;
+-	u32 irq_summary = 0;
+-	u32 ctrl_addr;
+-	u32 ce_id;
+-
+-	ce = ath10k_ce_priv(ar);
+-
+-	for (ce_id = 0; ce_id < CE_COUNT; ce_id++) {
+-		ce_state = &ce->ce_states[ce_id];
+-		ctrl_addr = ce_state->ctrl_addr;
+-		if (ath10k_ce_engine_int_status_check(ar, ctrl_addr,
+-						      wm_regs->cc_mask)) {
+-			irq_summary |= BIT(ce_id);
+-		}
+-	}
+-
+-	return irq_summary;
+-}
+-EXPORT_SYMBOL(ath10k_ce_gen_interrupt_summary);
+-
+ /*
+  * Guts of ath10k_ce_send.
+  * The caller takes responsibility for any needed locking.
+@@ -1399,45 +1367,55 @@ static void ath10k_ce_per_engine_handler_adjust(struct ath10k_ce_pipe *ce_state)
+ 	ath10k_ce_watermark_intr_disable(ar, ctrl_addr);
+ }
+ 
+-int ath10k_ce_disable_interrupts(struct ath10k *ar)
++void ath10k_ce_disable_interrupt(struct ath10k *ar, int ce_id)
+ {
+ 	struct ath10k_ce *ce = ath10k_ce_priv(ar);
+ 	struct ath10k_ce_pipe *ce_state;
+ 	u32 ctrl_addr;
+-	int ce_id;
+ 
+-	for (ce_id = 0; ce_id < CE_COUNT; ce_id++) {
+-		ce_state  = &ce->ce_states[ce_id];
+-		if (ce_state->attr_flags & CE_ATTR_POLL)
+-			continue;
++	ce_state  = &ce->ce_states[ce_id];
++	if (ce_state->attr_flags & CE_ATTR_POLL)
++		return;
+ 
+-		ctrl_addr = ath10k_ce_base_address(ar, ce_id);
++	ctrl_addr = ath10k_ce_base_address(ar, ce_id);
+ 
+-		ath10k_ce_copy_complete_intr_disable(ar, ctrl_addr);
+-		ath10k_ce_error_intr_disable(ar, ctrl_addr);
+-		ath10k_ce_watermark_intr_disable(ar, ctrl_addr);
+-	}
++	ath10k_ce_copy_complete_intr_disable(ar, ctrl_addr);
++	ath10k_ce_error_intr_disable(ar, ctrl_addr);
++	ath10k_ce_watermark_intr_disable(ar, ctrl_addr);
++}
++EXPORT_SYMBOL(ath10k_ce_disable_interrupt);
+ 
+-	return 0;
++void ath10k_ce_disable_interrupts(struct ath10k *ar)
++{
++	int ce_id;
++
++	for (ce_id = 0; ce_id < CE_COUNT; ce_id++)
++		ath10k_ce_disable_interrupt(ar, ce_id);
+ }
+ EXPORT_SYMBOL(ath10k_ce_disable_interrupts);
+ 
+-void ath10k_ce_enable_interrupts(struct ath10k *ar)
++void ath10k_ce_enable_interrupt(struct ath10k *ar, int ce_id)
+ {
+ 	struct ath10k_ce *ce = ath10k_ce_priv(ar);
+-	int ce_id;
+ 	struct ath10k_ce_pipe *ce_state;
+ 
++	ce_state  = &ce->ce_states[ce_id];
++	if (ce_state->attr_flags & CE_ATTR_POLL)
++		return;
++
++	ath10k_ce_per_engine_handler_adjust(ce_state);
++}
++EXPORT_SYMBOL(ath10k_ce_enable_interrupt);
++
++void ath10k_ce_enable_interrupts(struct ath10k *ar)
++{
++	int ce_id;
++
+ 	/* Enable interrupts for copy engine that
+ 	 * are not using polling mode.
+ 	 */
+-	for (ce_id = 0; ce_id < CE_COUNT; ce_id++) {
+-		ce_state  = &ce->ce_states[ce_id];
+-		if (ce_state->attr_flags & CE_ATTR_POLL)
+-			continue;
+-
+-		ath10k_ce_per_engine_handler_adjust(ce_state);
+-	}
++	for (ce_id = 0; ce_id < CE_COUNT; ce_id++)
++		ath10k_ce_enable_interrupt(ar, ce_id);
+ }
+ EXPORT_SYMBOL(ath10k_ce_enable_interrupts);
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/ce.h b/drivers/net/wireless/ath/ath10k/ce.h
+index a440aaf74aa4..666ce384a1d8 100644
+--- a/drivers/net/wireless/ath/ath10k/ce.h
++++ b/drivers/net/wireless/ath/ath10k/ce.h
+@@ -255,12 +255,13 @@ int ath10k_ce_cancel_send_next(struct ath10k_ce_pipe *ce_state,
+ /*==================CE Interrupt Handlers====================*/
+ void ath10k_ce_per_engine_service_any(struct ath10k *ar);
+ void ath10k_ce_per_engine_service(struct ath10k *ar, unsigned int ce_id);
+-int ath10k_ce_disable_interrupts(struct ath10k *ar);
++void ath10k_ce_disable_interrupt(struct ath10k *ar, int ce_id);
++void ath10k_ce_disable_interrupts(struct ath10k *ar);
++void ath10k_ce_enable_interrupt(struct ath10k *ar, int ce_id);
+ void ath10k_ce_enable_interrupts(struct ath10k *ar);
+ void ath10k_ce_dump_registers(struct ath10k *ar,
+ 			      struct ath10k_fw_crash_data *crash_data);
+ 
+-u32 ath10k_ce_gen_interrupt_summary(struct ath10k *ar);
+ void ath10k_ce_alloc_rri(struct ath10k *ar);
+ void ath10k_ce_free_rri(struct ath10k *ar);
+ 
+@@ -376,12 +377,9 @@ static inline u32 ath10k_ce_interrupt_summary(struct ath10k *ar)
+ {
+ 	struct ath10k_ce *ce = ath10k_ce_priv(ar);
+ 
+-	if (!ar->hw_params.per_ce_irq)
+-		return CE_WRAPPER_INTERRUPT_SUMMARY_HOST_MSI_GET(
+-			ce->bus_ops->read32((ar), CE_WRAPPER_BASE_ADDRESS +
+-			CE_WRAPPER_INTERRUPT_SUMMARY_ADDRESS));
+-	else
+-		return ath10k_ce_gen_interrupt_summary(ar);
++	return CE_WRAPPER_INTERRUPT_SUMMARY_HOST_MSI_GET(
++		ce->bus_ops->read32((ar), CE_WRAPPER_BASE_ADDRESS +
++		CE_WRAPPER_INTERRUPT_SUMMARY_ADDRESS));
+ }
+ 
+ /* Host software's Copy Engine configuration. */
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
+index 354d49b1cd45..1ef5fdb8248b 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.c
++++ b/drivers/net/wireless/ath/ath10k/snoc.c
+@@ -3,6 +3,7 @@
+  * Copyright (c) 2018 The Linux Foundation. All rights reserved.
+  */
+ 
++#include <linux/bits.h>
+ #include <linux/clk.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+@@ -923,6 +924,7 @@ static int ath10k_snoc_hif_start(struct ath10k *ar)
+ {
+ 	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
+ 
++	bitmap_clear(ar_snoc->pending_ce_irqs, 0, CE_COUNT_MAX);
+ 	napi_enable(&ar->napi);
+ 	ath10k_snoc_irq_enable(ar);
+ 	ath10k_snoc_rx_post(ar);
+@@ -1158,7 +1160,9 @@ static irqreturn_t ath10k_snoc_per_engine_handler(int irq, void *arg)
+ 		return IRQ_HANDLED;
+ 	}
+ 
+-	ath10k_snoc_irq_disable(ar);
++	ath10k_ce_disable_interrupt(ar, ce_id);
++	set_bit(ce_id, ar_snoc->pending_ce_irqs);
++
+ 	napi_schedule(&ar->napi);
+ 
+ 	return IRQ_HANDLED;
+@@ -1167,20 +1171,25 @@ static irqreturn_t ath10k_snoc_per_engine_handler(int irq, void *arg)
+ static int ath10k_snoc_napi_poll(struct napi_struct *ctx, int budget)
+ {
+ 	struct ath10k *ar = container_of(ctx, struct ath10k, napi);
++	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
+ 	int done = 0;
++	int ce_id;
+ 
+ 	if (test_bit(ATH10K_FLAG_CRASH_FLUSH, &ar->dev_flags)) {
+ 		napi_complete(ctx);
+ 		return done;
+ 	}
+ 
+-	ath10k_ce_per_engine_service_any(ar);
++	for (ce_id = 0; ce_id < CE_COUNT; ce_id++)
++		if (test_and_clear_bit(ce_id, ar_snoc->pending_ce_irqs)) {
++			ath10k_ce_per_engine_service(ar, ce_id);
++			ath10k_ce_enable_interrupt(ar, ce_id);
++		}
++
+ 	done = ath10k_htt_txrx_compl_task(ar, budget);
+ 
+-	if (done < budget) {
++	if (done < budget)
+ 		napi_complete(ctx);
+-		ath10k_snoc_irq_enable(ar);
+-	}
+ 
+ 	return done;
+ }
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.h b/drivers/net/wireless/ath/ath10k/snoc.h
+index a3dd06f6ac62..5095d1893681 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.h
++++ b/drivers/net/wireless/ath/ath10k/snoc.h
+@@ -78,6 +78,7 @@ struct ath10k_snoc {
+ 	unsigned long flags;
+ 	bool xo_cal_supported;
+ 	u32 xo_cal_data;
++	DECLARE_BITMAP(pending_ce_irqs, CE_COUNT_MAX);
+ };
+ 
+ static inline struct ath10k_snoc *ath10k_snoc_priv(struct ath10k *ar)
+-- 
+2.27.0.383.g050319c2ae-goog
+
