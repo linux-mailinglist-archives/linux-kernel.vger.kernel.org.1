@@ -2,261 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7EE2219BCC
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 11:11:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E8F0219BC8
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 11:11:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726600AbgGIJL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 05:11:26 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:39342 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726320AbgGIJLU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 05:11:20 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 801CA51447FBE10B460E;
-        Thu,  9 Jul 2020 17:11:15 +0800 (CST)
-Received: from DESKTOP-KKJBAGG.china.huawei.com (10.174.186.75) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 9 Jul 2020 17:11:05 +0800
-From:   Zhenyu Ye <yezhenyu2@huawei.com>
-To:     <catalin.marinas@arm.com>, <will@kernel.org>,
-        <suzuki.poulose@arm.com>, <maz@kernel.org>, <steven.price@arm.com>,
-        <guohanjun@huawei.com>, <olof@lixom.net>
-CC:     <yezhenyu2@huawei.com>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-        <linux-mm@kvack.org>, <arm@kernel.org>, <xiexiangyou@huawei.com>,
-        <prime.zeng@hisilicon.com>, <zhangshaokun@hisilicon.com>,
-        <kuhn.chenqun@huawei.com>
-Subject: [PATCH v1 2/2] arm64: tlb: Use the TLBI RANGE feature in arm64
-Date:   Thu, 9 Jul 2020 17:10:54 +0800
-Message-ID: <20200709091054.1698-3-yezhenyu2@huawei.com>
-X-Mailer: git-send-email 2.22.0.windows.1
-In-Reply-To: <20200709091054.1698-1-yezhenyu2@huawei.com>
-References: <20200709091054.1698-1-yezhenyu2@huawei.com>
+        id S1726538AbgGIJLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 05:11:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53800 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726509AbgGIJLR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 05:11:17 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17624C061A0B;
+        Thu,  9 Jul 2020 02:11:17 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4B2Vlh6qk4z9sDX;
+        Thu,  9 Jul 2020 19:11:12 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1594285873;
+        bh=eKKoa9UiaTun/mZu3cBLZr4GwLJ5z0u8yViLMEtWqZ8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=tF7Q2jEXpsygtx14D8Or+ZZEAh9Llz+lMJv1ssVoPiFfuiesY2pszLOFgG+gKhn/A
+         rNL0lL0SB8p903FzlYpUB7EKsa5Jh/oYzVkSGl4dZ+EE539wop1QWQitNi0hIUYmmw
+         4fOTtbNjWOK/iH9kobAnR+h8KpcWpnBXutUY9/CT4wYWEE46GleZ0WAAgEv+fRWvHD
+         D9S+sgcVKF22oOixIeKjtQyFhpaAMlrTKmPlpE9u71hXBt2tKGq176d3faNqk1mrW/
+         Y/7BSr+olfkvsKl9o3JBu7VAIBHFDTFSyoJ0c1SolNwsUVvk4giIe0trgfhzQtqckM
+         KMB/8UP9/esaw==
+Date:   Thu, 9 Jul 2020 19:11:11 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Barry Song <song.bao.hua@hisilicon.com>
+Subject: linux-next: build warning after merge of the akpm-current tree
+Message-ID: <20200709191111.0b63f84d@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.186.75]
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; boundary="Sig_/bw8uQ8Y4eFgkGjZ4vGn6bcG";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add __TLBI_VADDR_RANGE macro and rewrite __flush_tlb_range().
+--Sig_/bw8uQ8Y4eFgkGjZ4vGn6bcG
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Zhenyu Ye <yezhenyu2@huawei.com>
----
- arch/arm64/include/asm/tlbflush.h | 156 ++++++++++++++++++++++++------
- 1 file changed, 126 insertions(+), 30 deletions(-)
+Hi all,
 
-diff --git a/arch/arm64/include/asm/tlbflush.h b/arch/arm64/include/asm/tlbflush.h
-index 39aed2efd21b..30e52eae973b 100644
---- a/arch/arm64/include/asm/tlbflush.h
-+++ b/arch/arm64/include/asm/tlbflush.h
-@@ -60,6 +60,31 @@
- 		__ta;						\
- 	})
- 
-+/*
-+ * Get translation granule of the system, which is decided by
-+ * PAGE_SIZE.  Used by TTL.
-+ *  - 4KB	: 1
-+ *  - 16KB	: 2
-+ *  - 64KB	: 3
-+ */
-+#define TLBI_TTL_TG_4K		1
-+#define TLBI_TTL_TG_16K		2
-+#define TLBI_TTL_TG_64K		3
-+
-+static inline unsigned long get_trans_granule(void)
-+{
-+	switch (PAGE_SIZE) {
-+	case SZ_4K:
-+		return TLBI_TTL_TG_4K;
-+	case SZ_16K:
-+		return TLBI_TTL_TG_16K;
-+	case SZ_64K:
-+		return TLBI_TTL_TG_64K;
-+	default:
-+		return 0;
-+	}
-+}
-+
- /*
-  * Level-based TLBI operations.
-  *
-@@ -73,29 +98,15 @@
-  * in asm/stage2_pgtable.h.
-  */
- #define TLBI_TTL_MASK		GENMASK_ULL(47, 44)
--#define TLBI_TTL_TG_4K		1
--#define TLBI_TTL_TG_16K		2
--#define TLBI_TTL_TG_64K		3
- 
- #define __tlbi_level(op, addr, level) do {				\
- 	u64 arg = addr;							\
- 									\
- 	if (cpus_have_const_cap(ARM64_HAS_ARMv8_4_TTL) &&		\
-+	    !cpus_have_const_cap(ARM64_HAS_TLBI_RANGE) &&		\
- 	    level) {							\
- 		u64 ttl = level & 3;					\
--									\
--		switch (PAGE_SIZE) {					\
--		case SZ_4K:						\
--			ttl |= TLBI_TTL_TG_4K << 2;			\
--			break;						\
--		case SZ_16K:						\
--			ttl |= TLBI_TTL_TG_16K << 2;			\
--			break;						\
--		case SZ_64K:						\
--			ttl |= TLBI_TTL_TG_64K << 2;			\
--			break;						\
--		}							\
--									\
-+		ttl |= get_trans_granule() << 2;			\
- 		arg &= ~TLBI_TTL_MASK;					\
- 		arg |= FIELD_PREP(TLBI_TTL_MASK, ttl);			\
- 	}								\
-@@ -108,6 +119,49 @@
- 		__tlbi_level(op, (arg | USER_ASID_FLAG), level);	\
- } while (0)
- 
-+#define __tlbi_last_level(op1, op2, arg, last_level, tlb_level) do {	\
-+	if (last_level)	{						\
-+		__tlbi_level(op1, arg, tlb_level);			\
-+		__tlbi_user_level(op1, arg, tlb_level);			\
-+	} else {							\
-+		__tlbi_level(op2, arg, tlb_level);			\
-+		__tlbi_user_level(op2, arg, tlb_level);			\
-+	}								\
-+} while (0)
-+
-+/*
-+ * This macro creates a properly formatted VA operand for the TLBI RANGE.
-+ * The value bit assignments are:
-+ *
-+ * +----------+------+-------+-------+-------+----------------------+
-+ * |   ASID   |  TG  | SCALE |  NUM  |  TTL  |        BADDR         |
-+ * +-----------------+-------+-------+-------+----------------------+
-+ * |63      48|47  46|45   44|43   39|38   37|36                   0|
-+ *
-+ * The address range is determined by below formula:
-+ * [BADDR, BADDR + (NUM + 1) * 2^(5*SCALE + 1) * PAGESIZE)
-+ *
-+ */
-+#define __TLBI_VADDR_RANGE(addr, asid, scale, num, ttl)		\
-+	({							\
-+		unsigned long __ta = (addr) >> PAGE_SHIFT;	\
-+		__ta &= GENMASK_ULL(36, 0);			\
-+		__ta |= (unsigned long)(ttl) << 37;		\
-+		__ta |= (unsigned long)(num) << 39;		\
-+		__ta |= (unsigned long)(scale) << 44;		\
-+		__ta |= get_trans_granule() << 46;		\
-+		__ta |= (unsigned long)(asid) << 48;		\
-+		__ta;						\
-+	})
-+
-+/* These macros are used by the TLBI RANGE feature. */
-+#define __TLBI_RANGE_PAGES(num, scale)	(((num) + 1) << (5 * (scale) + 1))
-+#define MAX_TLBI_RANGE_PAGES		__TLBI_RANGE_PAGES(31, 3)
-+
-+#define TLBI_RANGE_MASK			GENMASK_ULL(4, 0)
-+#define __TLBI_RANGE_NUM(range, scale)	\
-+	(((range) >> (5 * (scale) + 1)) & TLBI_RANGE_MASK)
-+
- /*
-  *	TLB Invalidation
-  *	================
-@@ -232,32 +286,74 @@ static inline void __flush_tlb_range(struct vm_area_struct *vma,
- 				     unsigned long stride, bool last_level,
- 				     int tlb_level)
- {
-+	int num = 0;
-+	int scale = 0;
- 	unsigned long asid = ASID(vma->vm_mm);
- 	unsigned long addr;
-+	unsigned long pages;
- 
- 	start = round_down(start, stride);
- 	end = round_up(end, stride);
-+	pages = (end - start) >> PAGE_SHIFT;
- 
--	if ((end - start) >= (MAX_TLBI_OPS * stride)) {
-+	if ((!cpus_have_const_cap(ARM64_HAS_TLBI_RANGE) &&
-+	    (end - start) >= (MAX_TLBI_OPS * stride)) ||
-+	    pages >= MAX_TLBI_RANGE_PAGES) {
- 		flush_tlb_mm(vma->vm_mm);
- 		return;
- 	}
- 
--	/* Convert the stride into units of 4k */
--	stride >>= 12;
--
--	start = __TLBI_VADDR(start, asid);
--	end = __TLBI_VADDR(end, asid);
--
- 	dsb(ishst);
--	for (addr = start; addr < end; addr += stride) {
--		if (last_level) {
--			__tlbi_level(vale1is, addr, tlb_level);
--			__tlbi_user_level(vale1is, addr, tlb_level);
--		} else {
--			__tlbi_level(vae1is, addr, tlb_level);
--			__tlbi_user_level(vae1is, addr, tlb_level);
-+
-+	/*
-+	 * When cpu does not support TLBI RANGE feature, we flush the tlb
-+	 * entries one by one at the granularity of 'stride'.
-+	 * When cpu supports the TLBI RANGE feature, then:
-+	 * 1. If pages is odd, flush the first page through non-RANGE
-+	 *    instruction;
-+	 * 2. For remaining pages: The minimum range granularity is decided
-+	 *    by 'scale', so we can not flush all pages by one instruction
-+	 *    in some cases.
-+	 *
-+	 * For example, when the pages = 0xe81a, let's start 'scale' from
-+	 * maximum, and find right 'num' for each 'scale':
-+	 *
-+	 *  When scale = 3, we can flush no pages because the minumum
-+	 * range is 2^(5*3 + 1) = 0x10000.
-+	 *  When scale = 2, the minimum range is 2^(5*2 + 1) = 0x800, we can
-+	 * flush 0xe800 pages this time, the num = 0xe800/0x800 - 1 = 0x1c.
-+	 * Remain pages is 0x1a;
-+	 *  When scale = 1, the minimum range is 2^(5*1 + 1) = 0x40, no page
-+	 * can be flushed.
-+	 *  When scale = 0, we flush the remaining 0x1a pages, the num =
-+	 * 0x1a/0x2 - 1 = 0xd.
-+	 *
-+	 * However, in most scenarios, the pages = 1 when flush_tlb_range() is
-+	 * called. Start from scale = 3 or other proper value (such as scale =
-+	 * ilog2(pages)), will incur extra overhead.
-+	 * So increase 'scale' from 0 to maximum, the flush order is exactly
-+	 * opposite to the example.
-+	 */
-+	while (pages > 0) {
-+		if (cpus_have_const_cap(ARM64_HAS_TLBI_RANGE) &&
-+		    pages % 2 == 0) {
-+			num = __TLBI_RANGE_NUM(pages, scale) - 1;
-+			if (num >= 0) {
-+				addr = __TLBI_VADDR_RANGE(start, asid, scale,
-+							  num, tlb_level);
-+				__tlbi_last_level(rvale1is, rvae1is, addr,
-+						  last_level, tlb_level);
-+				start += __TLBI_RANGE_PAGES(num, scale) << PAGE_SHIFT;
-+				pages -= __TLBI_RANGE_PAGES(num, scale);
-+			}
-+			scale++;
-+			continue;
- 		}
-+
-+		addr = __TLBI_VADDR(start, asid);
-+		__tlbi_last_level(vale1is, vae1is, addr, last_level, tlb_level);
-+		start += stride;
-+		pages -= stride >> PAGE_SHIFT;
- 	}
- 	dsb(ish);
- }
--- 
-2.19.1
+After merging the akpm-current tree, today's linux-next build (i386
+defconfig) produced this warning:
 
+mm/hugetlb.c:49:20: warning: 'hugetlb_cma' defined but not used [-Wunused-v=
+ariable]
+   49 | static struct cma *hugetlb_cma[MAX_NUMNODES];
+      |                    ^~~~~~~~~~~
 
+Maybe introduced by commit
+
+  c70205bf186e ("mm/hugetlb: avoid hardcoding while checking if cma is enab=
+le")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/bw8uQ8Y4eFgkGjZ4vGn6bcG
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8G3y8ACgkQAVBC80lX
+0Gy56AgAlijdLI9UPsK1qR2wEj+EEko4wpIMBUfOtLvKC1ab3hxe04eyMc70lgfn
+C2PZFn4a3fZMmi+f6EaeeVami/TghWs7Y5Q2I73i43GFFc1+wFV5QTo3BXUdlZNp
+zXood1FciSdxQHkC8BBgwPSxFCkalSf//6/xwe9hlplRO6h4c0cW/ZOAN0Eb5dma
+H1rxtnyaSHF5845di0JIj22/SsfxtS9E6YLdDhfHPLd3sDDksx1bgCoGGxGEDiij
+w871U91pQJA6AIh5LupBaew0p6qq67dpvrJttcE+bJstUFuoxiYK8Jj6DxqE12gQ
+dhsG+67CDUTFJtwit1Hw9OdB/T7fBg==
+=HWiM
+-----END PGP SIGNATURE-----
+
+--Sig_/bw8uQ8Y4eFgkGjZ4vGn6bcG--
