@@ -2,219 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA2FC21A2DA
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 16:57:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E9C821A2E1
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 16:59:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728122AbgGIO5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 10:57:18 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:41066 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726729AbgGIO5R (ORCPT
+        id S1727092AbgGIO7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 10:59:30 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:7111 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726371AbgGIO7a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 10:57:17 -0400
-Received: from 89-64-83-236.dynamic.chello.pl (89.64.83.236) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.415)
- id 6f4b9f3a7ac1aaf9; Thu, 9 Jul 2020 16:57:14 +0200
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     linux-nvdimm@lists.01.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        Len Brown <len.brown@intel.com>, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 11/12] PM, libnvdimm: Add 'mem-quiet' state and callback for firmware activation
-Date:   Thu, 09 Jul 2020 16:57:12 +0200
-Message-ID: <23449996.3uVv1d17cZ@kreacher>
-In-Reply-To: <159408717289.2385045.14094866475168644020.stgit@dwillia2-desk3.amr.corp.intel.com>
-References: <159408711335.2385045.2567600405906448375.stgit@dwillia2-desk3.amr.corp.intel.com> <159408717289.2385045.14094866475168644020.stgit@dwillia2-desk3.amr.corp.intel.com>
+        Thu, 9 Jul 2020 10:59:30 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f0730660000>; Thu, 09 Jul 2020 07:57:42 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Thu, 09 Jul 2020 07:59:30 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Thu, 09 Jul 2020 07:59:30 -0700
+Received: from [10.19.64.157] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 9 Jul
+ 2020 14:59:25 +0000
+Subject: Re: [PATCH v3 3/6] gpio: max77620: Don't set of_node
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        "Bartosz Golaszewski" <bgolaszewski@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+References: <20200708202355.28507-1-digetx@gmail.com>
+ <20200708202355.28507-4-digetx@gmail.com>
+CC:     <linux-tegra@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+From:   Laxman Dewangan <ldewangan@nvidia.com>
+Message-ID: <19c30bda-e1bd-7f24-dcd0-337d76abd6fc@nvidia.com>
+Date:   Thu, 9 Jul 2020 20:28:53 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:45.0) Gecko/20100101
+ Thunderbird/45.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <20200708202355.28507-4-digetx@gmail.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1594306662; bh=hKixGSb3cb49P/FLh50x6vu2LbncCdYZA1numUuCA+M=;
+        h=X-PGP-Universal:Subject:To:References:CC:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding;
+        b=bZJLHdKcmPygPxKev8etJRbK/J3vdh3ZNNAJrdKtjsZws4HBNzW2SeQY/hhGVqp4O
+         gDQfOUl8FEigOW3YM/skB+HaXoNxfsQdWllnIk3x44eppSHPUkV8rQnyHx7VRbyRqo
+         tCn055RGrKj/S3+3taVyFTtNzU9GqCUF6mAksjHcjYpJkx7SdhglzV/87HKfir/dbg
+         WT+I/kdOtHGlVM9t3RdXJwZ+pXKi24mv2Vq0askC4USzhNuu0YzrtgLCp1aglMRgnr
+         T/GG8dL7BgudFCLSEhOAJFj5Iwqr0kNNRZoEDzY9mJdginK7zMm0J+mt0UWANYD5mC
+         yPyX7yjngI4bg==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday, July 7, 2020 3:59:32 AM CEST Dan Williams wrote:
-> The runtime firmware activation capability of Intel NVDIMM devices
-> requires memory transactions to be disabled for 100s of microseconds.
-> This timeout is large enough to cause in-flight DMA to fail and other
-> application detectable timeouts. Arrange for firmware activation to be
-> executed while the system is "quiesced", all processes and device-DMA
-> frozen.
-> 
-> It is already required that invoking device ->freeze() callbacks is
-> sufficient to cease DMA. A device that continues memory writes outside
-> of user-direction violates expectations of the PM core to be to
-> establish a coherent hibernation image.
-> 
-> That said, RDMA devices are an example of a device that access memory
-> outside of user process direction. RDMA drivers also typically assume
-> the system they are operating in will never be hibernated. A solution
-> for RDMA collisions with firmware activation is outside the scope of
-> this change and may need to rely on being able to survive the platform
-> imposed memory controller quiesce period.
-
-Thanks for following my suggestion to use the hibernation infrastructure
-rather than the suspend one, but I think it would be better to go a bit
-further with that.
-
-Namely, after thinking about this a bit more I have come to the conclusion
-that what is needed is an ability to execute a function, inside of the
-kernel, in a "quiet" environment in which memory updates are unlikely.
-
-While the hibernation infrastructure as is can be used for that, kind of, IMO
-it would be cleaner to introduce a helper for that, like in the (untested)
-patch below, so if the "quiet execution environment" is needed, whoever
-needs it may simply pass a function to hibernate_quiet_exec() and provide
-whatever user-space I/F is suitable on top of that.
-
-Please let me know what you think.
-
-Cheers!
-
----
- include/linux/suspend.h  |    6 ++
- kernel/power/hibernate.c |   97 +++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 103 insertions(+)
-
-Index: linux-pm/kernel/power/hibernate.c
-===================================================================
---- linux-pm.orig/kernel/power/hibernate.c
-+++ linux-pm/kernel/power/hibernate.c
-@@ -795,6 +795,103 @@ int hibernate(void)
- 	return error;
- }
- 
-+/**
-+ * hibernate_quiet_exec - Execute a function with all devices frozen.
-+ * @func: Function to execute.
-+ * @data: Data pointer to pass to @func.
-+ *
-+ * Return the @func return value or an error code if it cannot be executed.
-+ */
-+int hibernate_quiet_exec(int (*func)(void *data), void *data)
-+{
-+	int error, nr_calls = 0;
-+
-+	lock_system_sleep();
-+
-+	if (!hibernate_acquire()) {
-+		error = -EBUSY;
-+		goto unlock;
-+	}
-+
-+	pm_prepare_console();
-+
-+	error = __pm_notifier_call_chain(PM_HIBERNATION_PREPARE, -1, &nr_calls);
-+	if (error) {
-+		nr_calls--;
-+		goto exit;
-+	}
-+
-+	error = freeze_processes();
-+	if (error)
-+		goto exit;
-+
-+	lock_device_hotplug();
-+
-+	pm_suspend_clear_flags();
-+
-+	error = platform_begin(true);
-+	if (error)
-+		goto thaw;
-+
-+	error = freeze_kernel_threads();
-+	if (error)
-+		goto thaw;
-+
-+	error = dpm_prepare(PMSG_FREEZE);
-+	if (error)
-+		goto dpm_complete;
-+
-+	suspend_console();
-+
-+	error = dpm_suspend(PMSG_FREEZE);
-+	if (error)
-+		goto dpm_resume;
-+
-+	error = dpm_suspend_end(PMSG_FREEZE);
-+	if (error)
-+		goto dpm_resume;
-+
-+	error = platform_pre_snapshot(true);
-+	if (error)
-+		goto skip;
-+
-+	error = func(data);
-+
-+skip:
-+	platform_finish(true);
-+
-+	dpm_resume_start(PMSG_THAW);
-+
-+dpm_resume:
-+	dpm_resume(PMSG_THAW);
-+
-+	resume_console();
-+
-+dpm_complete:
-+	dpm_complete(PMSG_THAW);
-+
-+	thaw_kernel_threads();
-+
-+thaw:
-+	platform_end(true);
-+
-+	unlock_device_hotplug();
-+
-+	thaw_processes();
-+
-+exit:
-+	__pm_notifier_call_chain(PM_POST_HIBERNATION, nr_calls, NULL);
-+
-+	pm_restore_console();
-+
-+	hibernate_release();
-+
-+unlock:
-+	unlock_system_sleep();
-+
-+	return error;
-+}
-+EXPORT_SYMBOL_GPL(hibernate_quiet_exec);
- 
- /**
-  * software_resume - Resume from a saved hibernation image.
-Index: linux-pm/include/linux/suspend.h
-===================================================================
---- linux-pm.orig/include/linux/suspend.h
-+++ linux-pm/include/linux/suspend.h
-@@ -453,6 +453,8 @@ extern bool hibernation_available(void);
- asmlinkage int swsusp_save(void);
- extern struct pbe *restore_pblist;
- int pfn_is_nosave(unsigned long pfn);
-+
-+int hibernate_quiet_exec(int (*func)(void *data), void *data);
- #else /* CONFIG_HIBERNATION */
- static inline void register_nosave_region(unsigned long b, unsigned long e) {}
- static inline void register_nosave_region_late(unsigned long b, unsigned long e) {}
-@@ -464,6 +466,10 @@ static inline void hibernation_set_ops(c
- static inline int hibernate(void) { return -ENOSYS; }
- static inline bool system_entering_hibernation(void) { return false; }
- static inline bool hibernation_available(void) { return false; }
-+
-+static inline hibernate_quiet_exec(int (*func)(void *data), void *data) {
-+	return -ENOTSUPP;
-+}
- #endif /* CONFIG_HIBERNATION */
- 
- #ifdef CONFIG_HIBERNATION_SNAPSHOT_DEV
 
 
+On Thursday 09 July 2020 01:53 AM, Dmitry Osipenko wrote:
+> External email: Use caution opening links or attachments
+>
+>
+> The gpiochip_add_data() takes care of setting the of_node to the parent's
+> device of_node, hence there is no need to do it manually in the driver's
+> code. This patch corrects the parent's device pointer and removes the
+> unnecessary setting of the of_node.
+>
+> Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>
+
+
+Looks good to me.
+Acked-by: Laxman Dewangan <ldewangan@nvidia.com>
 
