@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3810221A5EB
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 19:37:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 037A621A5F5
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 19:37:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728445AbgGIRhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 13:37:17 -0400
-Received: from mga09.intel.com ([134.134.136.24]:35024 "EHLO mga09.intel.com"
+        id S1728590AbgGIRhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 13:37:50 -0400
+Received: from mga09.intel.com ([134.134.136.24]:35028 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728306AbgGIRhO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 13:37:14 -0400
-IronPort-SDR: QFJt/rp+MOShVNfqfQmvsZ7+dEdRwGnV/QRJ/o8nKxU+XYmEzInMdDenJ1BQKREo/ACtsVJ01F
- fIFT5EnfCXIQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9677"; a="149537103"
+        id S1728398AbgGIRhQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 13:37:16 -0400
+IronPort-SDR: pBZO6JDcm570SfIVwA/WuOPRBmQ2FlveFpdmhHBcN/xvQYMNeakf5uMIKko3DI5aw6oTlM4ejV
+ Jdad/ANS2Mlg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9677"; a="149537109"
 X-IronPort-AV: E=Sophos;i="5.75,332,1589266800"; 
-   d="scan'208";a="149537103"
+   d="scan'208";a="149537109"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jul 2020 10:37:14 -0700
-IronPort-SDR: 3R1c+nKbaCem1ySBfUTk6scLZ01GfHkNzzblc/AOx5C3skAUkO+t23WfAl5uePo5EHW3B9m3qv
- B0lbVahmuWzw==
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jul 2020 10:37:16 -0700
+IronPort-SDR: tPzh02zc/A+ExKzN+NbLgM1H9JyR/9Uq344Pp+2wgkj9MIDi9dEvN21rodV3JHL8RCPz2cavpe
+ Q8SariMjisCA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,332,1589266800"; 
-   d="scan'208";a="324292508"
+   d="scan'208";a="324292511"
 Received: from ahunter-desktop.fi.intel.com ([10.237.72.73])
-  by orsmga007.jf.intel.com with ESMTP; 09 Jul 2020 10:37:12 -0700
+  by orsmga007.jf.intel.com with ESMTP; 09 Jul 2020 10:37:14 -0700
 From:   Adrian Hunter <adrian.hunter@intel.com>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 02/11] perf intel-pt: Fix duplicate branch after CBR
-Date:   Thu,  9 Jul 2020 20:36:19 +0300
-Message-Id: <20200709173628.5613-3-adrian.hunter@intel.com>
+Subject: [PATCH 03/11] perf tools: Improve aux_output not supported error
+Date:   Thu,  9 Jul 2020 20:36:20 +0300
+Message-Id: <20200709173628.5613-4-adrian.hunter@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200709173628.5613-1-adrian.hunter@intel.com>
 References: <20200709173628.5613-1-adrian.hunter@intel.com>
@@ -43,69 +43,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CBR events can result in a duplicate branch event, because the state type
-defaults to a branch. Fix by clearing the state type.
-
-Example: trace 'sleep' and hope for a frequency change
-
+For example:
  Before:
-
-   $ perf record -e intel_pt//u sleep 0.1
-   [ perf record: Woken up 1 times to write data ]
-   [ perf record: Captured and wrote 0.034 MB perf.data ]
-   $ perf script --itrace=bpe > before.txt
-
+   $ perf record -e '{intel_pt/branch=0/,branch-loads/aux-output/ppp}' -- ls -l
+   Error:
+   branch-loads: PMU Hardware doesn't support sampling/overflow-interrupts. Try 'perf stat'
  After:
-
-   $ perf script --itrace=bpe > after.txt
-   $ diff -u before.txt after.txt
-   --- before.txt  2020-07-07 14:42:18.191508098 +0300
-   +++ after.txt   2020-07-07 14:42:36.587891753 +0300
-   @@ -29673,7 +29673,6 @@
-               sleep 93431 [007] 15411.619905:          1  branches:u:                 0 [unknown] ([unknown]) =>     7f0818abb2e0 clock_nanosleep@@GLIBC_2.17+0x0 (/usr/lib/x86_64-linux-gnu/libc-2.31.so)
-               sleep 93431 [007] 15411.619905:          1  branches:u:      7f0818abb30c clock_nanosleep@@GLIBC_2.17+0x2c (/usr/lib/x86_64-linux-gnu/libc-2.31.so) =>                0 [unknown] ([unknown])
-               sleep 93431 [007] 15411.720069:         cbr:  cbr: 15 freq: 1507 MHz ( 56%)         7f0818abb30c clock_nanosleep@@GLIBC_2.17+0x2c (/usr/lib/x86_64-linux-gnu/libc-2.31.so)
-   -           sleep 93431 [007] 15411.720069:          1  branches:u:      7f0818abb30c clock_nanosleep@@GLIBC_2.17+0x2c (/usr/lib/x86_64-linux-gnu/libc-2.31.so) =>                0 [unknown] ([unknown])
-               sleep 93431 [007] 15411.720076:          1  branches:u:                 0 [unknown] ([unknown]) =>     7f0818abb30e clock_nanosleep@@GLIBC_2.17+0x2e (/usr/lib/x86_64-linux-gnu/libc-2.31.so)
-               sleep 93431 [007] 15411.720077:          1  branches:u:      7f0818abb323 clock_nanosleep@@GLIBC_2.17+0x43 (/usr/lib/x86_64-linux-gnu/libc-2.31.so) =>     7f0818ac0eb7 __nanosleep+0x17 (/usr/lib/x86_64-linux-gnu/libc-2.31.so)
-               sleep 93431 [007] 15411.720077:          1  branches:u:      7f0818ac0ebf __nanosleep+0x1f (/usr/lib/x86_64-linux-gnu/libc-2.31.so) =>     55cb7e4c2827 rpl_nanosleep+0x97 (/usr/bin/sleep)
+   $ perf record -e '{intel_pt/branch=0/,branch-loads/aux-output/ppp}' -- ls -l
+   Error:
+   branch-loads: PMU Hardware doesn't support 'aux_output' feature
 
 Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-Fixes: 91de8684f1cff ("perf intel-pt: Cater for CBR change in PSB+")
-Fixes: abe5a1d3e4bee ("perf intel-pt: Decoder to output CBR changes immediately")
-Cc: stable@vger.kernel.org
 ---
- tools/perf/util/intel-pt-decoder/intel-pt-decoder.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ tools/perf/util/evsel.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c b/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c
-index 75c4bd74d521..7ffcbd6fcd1a 100644
---- a/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c
-+++ b/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c
-@@ -1977,8 +1977,10 @@ static int intel_pt_walk_trace(struct intel_pt_decoder *decoder)
- 			 * possibility of another CBR change that gets caught up
- 			 * in the PSB+.
- 			 */
--			if (decoder->cbr != decoder->cbr_seen)
-+			if (decoder->cbr != decoder->cbr_seen) {
-+				decoder->state.type = 0;
- 				return 0;
-+			}
- 			break;
- 
- 		case INTEL_PT_PIP:
-@@ -2019,8 +2021,10 @@ static int intel_pt_walk_trace(struct intel_pt_decoder *decoder)
- 
- 		case INTEL_PT_CBR:
- 			intel_pt_calc_cbr(decoder);
--			if (decoder->cbr != decoder->cbr_seen)
-+			if (decoder->cbr != decoder->cbr_seen) {
-+				decoder->state.type = 0;
- 				return 0;
-+			}
- 			break;
- 
- 		case INTEL_PT_MODE_EXEC:
+diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+index 9aa51a65593d..9c5c72094112 100644
+--- a/tools/perf/util/evsel.c
++++ b/tools/perf/util/evsel.c
+@@ -2533,6 +2533,10 @@ int evsel__open_strerror(struct evsel *evsel, struct target *target,
+ 	 "No such device - did you specify an out-of-range profile CPU?");
+ 		break;
+ 	case EOPNOTSUPP:
++		if (evsel->core.attr.aux_output)
++			return scnprintf(msg, size,
++	"%s: PMU Hardware doesn't support 'aux_output' feature",
++					 evsel__name(evsel));
+ 		if (evsel->core.attr.sample_period != 0)
+ 			return scnprintf(msg, size,
+ 	"%s: PMU Hardware doesn't support sampling/overflow-interrupts. Try 'perf stat'",
 -- 
 2.25.1
 
