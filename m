@@ -2,108 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19A5B21A69B
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 20:07:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CE0421A69E
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 20:09:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726788AbgGISHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 14:07:43 -0400
-Received: from smtp.al2klimov.de ([78.46.175.9]:34832 "EHLO smtp.al2klimov.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726339AbgGISHn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 14:07:43 -0400
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id 33970BC0FF;
-        Thu,  9 Jul 2020 18:07:40 +0000 (UTC)
-From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-To:     vigneshr@ti.com, miquel.raynal@bootlin.com, richard@nod.at,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Subject: [PATCH] HYPERBUS SUPPORT: Replace HTTP links with HTTPS ones
-Date:   Thu,  9 Jul 2020 20:07:33 +0200
-Message-Id: <20200709180733.24647-1-grandmaster@al2klimov.de>
+        id S1726816AbgGISJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 14:09:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52492 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726660AbgGISJC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 14:09:02 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E01BC08C5CE
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 11:09:02 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id u25so1713544lfm.1
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 11:09:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PLUY2+cROQWDH9LIMjuUg8XLSdiwCev/lP1hc9DwpHE=;
+        b=Xw17pp3QVH4SLTeelEhTcbB9WI56tYv4leZAltXzvEIWNs50TewZI2tfSpQ7QZMxH6
+         5F3rhBO6EWtqhrcf2t3KoUtkNyWFvvLaN2SzNstCrzohcqjTqUHBNcOnAIhq1Jin6fEG
+         t49EF28LHN/k7FfZi6olVrtLnJMu540l0OAEo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PLUY2+cROQWDH9LIMjuUg8XLSdiwCev/lP1hc9DwpHE=;
+        b=qJeKrP32B6oUngjG9BzbJrcVEBf2ozOhq0FjXEeV0VFkqnGnNNGLGOuCnnlzUtvt41
+         5IRr+htczIBiO8ddONaHJ24uNoN24JFc+TyXQvQp2w2QHKA0mIie0feWWIAzfnaQzTBo
+         rGjue4uIGHWVpENRd3CgSwm9MmZX7u1o9axT8jCP3Ryx3qUd6hISETJhqUmYHr2fCjB3
+         t2XIHfRu7HsVUc/a4G8ZCiTq6SMIRN1hRkIRyFAWdU6T+BAb91rcrXDTYo6rSz/vJbVD
+         usjoGtrDFZ8wTkme0ClgR42jplPKC5f4tBeNsieu2d1UuuC76R20qvjYfDPzY0bhrexc
+         jOSQ==
+X-Gm-Message-State: AOAM532wZrDo3Wp++fRi5M+Z9B8lYcM++zAis8NKopLQM7jcDxL1P8tZ
+        95FAiIUYvdQzKqYp1HfC/mC5EFPm5MA=
+X-Google-Smtp-Source: ABdhPJzEOmBJmf8RgK6zibC9ElzVLx0ZZ5G6pbLKaD/PDNAOeEK1zP21J6gv9w5W5XwoVB+T7PbIUA==
+X-Received: by 2002:ac2:57c6:: with SMTP id k6mr40780193lfo.179.1594318140304;
+        Thu, 09 Jul 2020 11:09:00 -0700 (PDT)
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com. [209.85.208.175])
+        by smtp.gmail.com with ESMTPSA id q3sm730896ljm.22.2020.07.09.11.08.59
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Jul 2020 11:08:59 -0700 (PDT)
+Received: by mail-lj1-f175.google.com with SMTP id z24so3439053ljn.8
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 11:08:59 -0700 (PDT)
+X-Received: by 2002:a2e:9b42:: with SMTP id o2mr36562158ljj.102.1594318138800;
+ Thu, 09 Jul 2020 11:08:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +++++
-X-Spam-Level: *****
-Authentication-Results: smtp.al2klimov.de;
-        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+References: <20200709151814.110422-1-hch@lst.de>
+In-Reply-To: <20200709151814.110422-1-hch@lst.de>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 9 Jul 2020 11:08:42 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wibathZJc6oSfgBdw7qhW75eF1ukg9y3bMXFfmp5t_uig@mail.gmail.com>
+Message-ID: <CAHk-=wibathZJc6oSfgBdw7qhW75eF1ukg9y3bMXFfmp5t_uig@mail.gmail.com>
+Subject: Re: decruft the early init / initrd / initramfs code v2
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Song Liu <song@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, linux-raid@vger.kernel.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rationale:
-Reduces attack surface on kernel devs opening the links for MITM
-as HTTPS traffic is much harder to manipulate.
+On Thu, Jul 9, 2020 at 8:18 AM Christoph Hellwig <hch@lst.de> wrote:
+>
+> There is no really good tree for this, so if there are no objections
+> I'd like to set up a new one for linux-next.
 
-Deterministic algorithm:
-For each file:
-  If not .svg:
-    For each line:
-      If doesn't contain `\bxmlns\b`:
-        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
-            If both the HTTP and HTTPS versions
-            return 200 OK and serve the same content:
-              Replace HTTP with HTTPS.
+All looks good to me. I had a wish-list change for one of the patches
+that I sent a reply out for, but even without that it's clearly an
+improvement.
 
-Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
----
- Continuing my work started at 93431e0607e5.
- See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
- (Actually letting a shell for loop submit all this stuff for me.)
+Of course, I just looked at the patches for sanity, rather than
+testing anything. Maybe there's something stupid in there. But it all
+looked straightforward. So Ack from me, with the hope that you'd do
+that "vfs_chown/chmod()" thing.
 
- If there are any URLs to be removed completely or at least not HTTPSified:
- Just clearly say so and I'll *undo my change*.
- See also: https://lkml.org/lkml/2020/6/27/64
-
- If there are any valid, but yet not changed URLs:
- See: https://lkml.org/lkml/2020/6/26/837
-
- If you apply the patch, please let me know.
-
-
- drivers/mtd/hyperbus/hbmc-am654.c    | 2 +-
- drivers/mtd/hyperbus/hyperbus-core.c | 2 +-
- include/linux/mtd/hyperbus.h         | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/mtd/hyperbus/hbmc-am654.c b/drivers/mtd/hyperbus/hbmc-am654.c
-index f350a0809f88..e0e33f6bf513 100644
---- a/drivers/mtd/hyperbus/hbmc-am654.c
-+++ b/drivers/mtd/hyperbus/hbmc-am654.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- //
--// Copyright (C) 2019 Texas Instruments Incorporated - http://www.ti.com/
-+// Copyright (C) 2019 Texas Instruments Incorporated - https://www.ti.com/
- // Author: Vignesh Raghavendra <vigneshr@ti.com>
- 
- #include <linux/err.h>
-diff --git a/drivers/mtd/hyperbus/hyperbus-core.c b/drivers/mtd/hyperbus/hyperbus-core.c
-index 32685e8dd278..2f9fc4e17d53 100644
---- a/drivers/mtd/hyperbus/hyperbus-core.c
-+++ b/drivers/mtd/hyperbus/hyperbus-core.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- //
--// Copyright (C) 2019 Texas Instruments Incorporated - http://www.ti.com/
-+// Copyright (C) 2019 Texas Instruments Incorporated - https://www.ti.com/
- // Author: Vignesh Raghavendra <vigneshr@ti.com>
- 
- #include <linux/err.h>
-diff --git a/include/linux/mtd/hyperbus.h b/include/linux/mtd/hyperbus.h
-index 2dfe65964f6e..2129f7d3b6eb 100644
---- a/include/linux/mtd/hyperbus.h
-+++ b/include/linux/mtd/hyperbus.h
-@@ -1,6 +1,6 @@
- /* SPDX-License-Identifier: GPL-2.0
-  *
-- * Copyright (C) 2019 Texas Instruments Incorporated - http://www.ti.com/
-+ * Copyright (C) 2019 Texas Instruments Incorporated - https://www.ti.com/
-  */
- 
- #ifndef __LINUX_MTD_HYPERBUS_H__
--- 
-2.27.0
-
+                Linus
