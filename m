@@ -2,83 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CEF42197E3
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 07:30:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51CFD2197ED
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 07:32:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726471AbgGIFau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 01:30:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48184 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726064AbgGIFau (ORCPT
-        <rfc822;Linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 01:30:50 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BFAEC061A0B;
-        Wed,  8 Jul 2020 22:30:50 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id d10so370824pll.3;
-        Wed, 08 Jul 2020 22:30:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hgH0s8PPXpzC+u6KlQUY0OheSaLFAPTeW98tNqYnm3U=;
-        b=HOxiNM1ARlxshyRYYVhTy3rNVffABjy6YgB+s3BXI/Yw8YfTPqNd0ys9DynUnaqiml
-         R+e4LZcQdVAihE3rdN9H78ifdPJQsJDlBjDXQ4XXqfhPMtgft/GdrN/JYGJlwn+bVEZI
-         BJtEWox+pYIvXHAcPeOIEqvnrFldNAerCHeiwEHFSuR+YZIrF2wyO4UD0ai9QupbDzAX
-         BJ/YjH1StGEcRxnrhtPLSQZcCDRDi5QStoM2hHSYFmA8au2K9Ye8hRCDGXXrF64Sb7V2
-         7e/ooGKsr8O3mTYoLvA9B3vzbMZ0/HM/w94EJn8GVLfF/5/TR7GRKbOTLXdcQNRLRJSJ
-         Vovw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hgH0s8PPXpzC+u6KlQUY0OheSaLFAPTeW98tNqYnm3U=;
-        b=pYEKhkD7wSYTrU/9KQMOANBEWLPbuTB8j66tQM8PID3IdpzWs058iB8DKYTuR7FpXB
-         tS256JxS9mIUNIW0ptja5ELh3YWZMKydoCMF3McDJTZb+fFzsLWIKz0iMh5A9ga0rJ7A
-         mvaAxz6zowVW8/wT/Akz4S1g4jPdcSDY90Z29WN9mlzBj3H20jFDXLxRWudFa5/yHOcs
-         /H9uNlbw3egXERFAfDptGHOF9Le4I+cz4IyZC4iRHus0QSF+FcDThr6TXDSov7B9DCWb
-         ftPUo/JT2H0seLQLebdmEieOvoeNbBeS4xiZPG9FbHcPGkEweW9xsoC0ydgW/HsIy300
-         wV6Q==
-X-Gm-Message-State: AOAM530QQ7zM/TO7UTypDY1UoHw7HklIu5QVqS3hpCE+hE442ugt5wFN
-        WzWoxnxbOQSyPFNAOcen/lPO6pcV
-X-Google-Smtp-Source: ABdhPJxR58Gn3XcuylHelgitVxt+imlv8A6URI94zT33yJ7dG8TpyzL2qZdixb95GG5Rc08MiafsGA==
-X-Received: by 2002:a17:902:d698:: with SMTP id v24mr22269143ply.163.1594272649431;
-        Wed, 08 Jul 2020 22:30:49 -0700 (PDT)
-Received: from dtor-ws ([100.99.132.186])
-        by smtp.gmail.com with ESMTPSA id z6sm1341951pfn.173.2020.07.08.22.30.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Jul 2020 22:30:48 -0700 (PDT)
-Date:   Wed, 8 Jul 2020 22:30:46 -0700
-From:   'Dmitry Torokhov' <dmitry.torokhov@gmail.com>
-To:     "Dave.Wang" <dave.wang@emc.com.tw>
-Cc:     Linux-kernel@vger.kernel.org, Linux-input@vger.kernel.org,
-        jingle.wu@emc.com.tw,
-        'Benjamin Tissoires' <benjamin.tissoires@redhat.com>
-Subject: Re: [PATCH] Input: elan_i2c - Add more hardware ID for Lenovo laptop
-Message-ID: <20200709053046.GH3273837@dtor-ws>
-References: <001e01d5a368$24946950$6dbd3bf0$@emc.com.tw>
- <20191202010253.GO248138@dtor-ws>
- <000201d5a8bd$9fead3f0$dfc07bd0$@emc.com.tw>
+        id S1726538AbgGIFcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 01:32:16 -0400
+Received: from relay2-d.mail.gandi.net ([217.70.183.194]:53513 "EHLO
+        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726091AbgGIFcP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 01:32:15 -0400
+X-Originating-IP: 90.112.45.105
+Received: from [192.168.1.11] (lfbn-gre-1-325-105.w90-112.abo.wanadoo.fr [90.112.45.105])
+        (Authenticated sender: alex@ghiti.fr)
+        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 6345740007;
+        Thu,  9 Jul 2020 05:32:06 +0000 (UTC)
+Subject: Re: [PATCH] riscv: Enable ELF-ASLR for riscv
+To:     guoren@kernel.org, palmerdabbelt@google.com,
+        paul.walmsley@sifive.com, anup@brainfault.org,
+        greentime.hu@sifive.com, zong.li@sifive.com, me@packi.ch,
+        bjorn.topel@gmail.com, atish.patra@wdc.com
+Cc:     Guo Ren <guoren@linux.alibaba.com>, linux-kernel@vger.kernel.org,
+        linux-csky@vger.kernel.org, Greentime Hu <green.hu@gmail.com>,
+        linux-riscv@lists.infradead.org
+References: <1594269511-13340-1-git-send-email-guoren@kernel.org>
+From:   Alex Ghiti <alex@ghiti.fr>
+Message-ID: <5c7e9eb0-d811-2e08-87c4-12de9b869b79@ghiti.fr>
+Date:   Thu, 9 Jul 2020 01:32:06 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000201d5a8bd$9fead3f0$dfc07bd0$@emc.com.tw>
+In-Reply-To: <1594269511-13340-1-git-send-email-guoren@kernel.org>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 02, 2019 at 11:07:26AM +0800, Dave.Wang wrote:
-> Hi Dmitry,
-> 
-> List device with its corresponding hardware ID as below patch,
-> Please check , thanks!
-> 
-> Add more hardware ID for Lenovo laptop.
-> 
-> Signed-off-by: Dave Wang <dave.wang@emc.com.tw>
+Hi Guo,
 
-Applied, thank you.
+Le 7/9/20 à 12:38 AM, guoren@kernel.org a écrit :
+> From: Guo Ren <guoren@linux.alibaba.com>
+> 
+> Let riscv enable randomizes the stack, heap and binary images of
+> ELF binaries. Seems it's ok at all after qemu & chip test and
+> there is no founded side effect.
+> 
+> So just simply select ARCH_HAS_ELF_RANDOMIZE :)
+> 
+> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> Cc: Palmer Dabbelt <palmerdabbelt@google.com>
+> Cc: Paul Walmsley <paul.walmsley@sifive.com>
+> Cc: Zong Li <zong.li@sifive.com>
+> Cc: Greentime Hu <green.hu@gmail.com>
+> ---
+>   arch/riscv/Kconfig | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index 91bfc6c..eed6647 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -20,6 +20,7 @@ config RISCV
+>   	select ARCH_HAS_GIGANTIC_PAGE
+>   	select ARCH_HAS_MMIOWB
+>   	select ARCH_HAS_PTE_SPECIAL
+> +	select ARCH_HAS_ELF_RANDOMIZE
+>   	select ARCH_HAS_SET_DIRECT_MAP
+>   	select ARCH_HAS_SET_MEMORY
+>   	select ARCH_HAS_STRICT_KERNEL_RWX if MMU
+> 
 
--- 
-Dmitry
+Actually it is already the case: ARCH_HAS_ELF_RANDOMIZE is already 
+selected by ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT.
+
+Thanks,
+
+Alex
