@@ -2,122 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6678C21A61E
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 19:46:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 335FD21A636
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 19:47:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728696AbgGIRqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 13:46:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728670AbgGIRq2 (ORCPT
+        id S1728792AbgGIRrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 13:47:15 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:39048 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728679AbgGIRrN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 13:46:28 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0D73C08C5DD
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 10:46:27 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id w3so2746603wmi.4
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 10:46:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=fm6ETESXIB5CrW3r789w0mlqtcsT6pJud5uFiJPthig=;
-        b=oeuXKq7HqPRnLj58gfRQ92ze1bM1Z3F9QjlMoXsNrjDPb5+LgZjLmHMGMg9nlXeSSL
-         AQGJCce4MIKurfddPFWOI/N/XA6ap7w4N1SwjBbDxlW02uNnVolEOoAMvlU56F/tBFQX
-         5tahbBo0hpUw2O55vC147HvoBSwOXZ81MtUjMbWCWCc/wHZs6uaviinNlAWipv0W6ZSA
-         1TVTKnneRLOojR2tkRBYWO9vLojr+ajMw3IS90LOwy8fkYpy/ULuIX/68/P8yjqV3I66
-         KenUeJR74DsbeUMWcDEZJSEgNl9Sb3EXYEJBXg53i7cLvkcZJ6mrqEnUJ5ZXcBnUm45V
-         OOvw==
+        Thu, 9 Jul 2020 13:47:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594316831;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tQEZ/X60w4Dr4Yx057tjgU0MuPGoc8zws3NdcP5xzU0=;
+        b=IxDs99KS/vPtVEJ9ywdxFYS61v+fbsUXCrn9xgWGljWEFe9Uvt4U1EAncIJZraHuL/Tygi
+        fr7wQkyAjmtBDhYzZcq/vgET8doxz9GuREd3nGU+iCz1yJEZ2Sz0bCHaMdDpsfuVvDdFDg
+        pqleWg7PsfxdWXR7gohIWT4gszNgors=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-98--Re0OQwkNeqCA8xihz34sQ-1; Thu, 09 Jul 2020 13:47:10 -0400
+X-MC-Unique: -Re0OQwkNeqCA8xihz34sQ-1
+Received: by mail-wr1-f72.google.com with SMTP id b14so2649312wrp.0
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 10:47:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=fm6ETESXIB5CrW3r789w0mlqtcsT6pJud5uFiJPthig=;
-        b=gfha+8yqiMhEmu0jFCLO0/CpjxKbZXP4UvNEC1CIX+1i77ikhTHUak5PgwIcbHLHJv
-         fKwF43rhFL6wd8V+oYq54fazbueqMarL8JPEd8Ywrjf87iftbsRfCcj9h6NaI22r7i/W
-         w37INj3mObyCYv2bi2pyKPlhvLcr0KoKKpGiAQJhD4n3z7mOdKxpl7TgQ/eL0uSaNuIL
-         BY0XFcSHSgXip0m95qP9ZwyAao9TR0I+TElIlZ4QeMiXmUIlxWhitEjo3u4SNhYdIJhp
-         ULsDkt7wkXNcZAnA3+69f+2VjbZ4c92amiFU6taarnU9tRmKPNHnR61X4qM5o0LH0rVf
-         Jj1g==
-X-Gm-Message-State: AOAM5311QIotLcnrKFPpG5yrSu/UJJAc1PNSJyuxd5FhnoYKNRB4vs1f
-        2a2NiuwC6GH+0L2dlHI4C3mbxA==
-X-Google-Smtp-Source: ABdhPJwygWu8lbFdwwJ4gwEoQEio21Iuq/YTLu1tXqfO8ctAmIZoVF901pwyTr5oWZIGC+9znNEkzA==
-X-Received: by 2002:a7b:c8c2:: with SMTP id f2mr1057654wml.57.1594316786678;
-        Thu, 09 Jul 2020 10:46:26 -0700 (PDT)
-Received: from localhost.localdomain ([2.27.35.206])
-        by smtp.gmail.com with ESMTPSA id f15sm6063854wrx.91.2020.07.09.10.46.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jul 2020 10:46:25 -0700 (PDT)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     jejb@linux.ibm.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Hannes Reinecke <hare@suse.com>
-Subject: [PATCH 24/24] scsi: aic7xxx: aic79xx_osm: Remove set but unused variabes 'saved_scsiid' and 'saved_modes'
-Date:   Thu,  9 Jul 2020 18:45:56 +0100
-Message-Id: <20200709174556.7651-25-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200709174556.7651-1-lee.jones@linaro.org>
-References: <20200709174556.7651-1-lee.jones@linaro.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=tQEZ/X60w4Dr4Yx057tjgU0MuPGoc8zws3NdcP5xzU0=;
+        b=ipSVj2FGpGiOQw9UAwTbXu71XN6SjiTpLTh9b4pWtbjyRIUf1lTF3THm6uoqz9Qt29
+         kMOoaAVZT+qw4tjihzFe2KJ1jUf7+l9J01i3DWWenS06LxxtvetOSZHDip5j60CHgOPN
+         RxEAyf+EqlN/7tCqws9qBPVfTgB+CR5qUvn7s4Ve7PAjY9pRkeKGyWFY4AcW0gkPShAO
+         v7+TBiETmTw2OxODXSvn1W1Gj2/DkrGRBxwpf01ZDf6iUcV0HUwOfjliuG8NKfXNvQYn
+         hSRXW5bAgpFB33chDqEwyetUbPGam3/+syBykXNtH44KYrEhYhYXndYcgjS/26M2P7N1
+         1tdg==
+X-Gm-Message-State: AOAM531J7sYpQzyslYf1fDznBvNQsD0u/qSPCdLKWStI2gTeQRMDpTVW
+        XCM3cGxhv3KgpGcwYE8mTVHtCSTr3EwA6rLQRESSDOAxHe0TsexoVMBbpVUIJIQrvXgdIo9q9fq
+        woX7jFkXdqGOeDHzU3doWO+Rm
+X-Received: by 2002:adf:ec42:: with SMTP id w2mr65079442wrn.269.1594316828757;
+        Thu, 09 Jul 2020 10:47:08 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzzKy2sg6Y5Mw1xuBaOwDSwnR6MCjcqFzdAlEFQ64OSxQdEBmpqMG1KLCfhQXYJsbmlYAJtCw==
+X-Received: by 2002:adf:ec42:: with SMTP id w2mr65079426wrn.269.1594316828506;
+        Thu, 09 Jul 2020 10:47:08 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:9541:9439:cb0f:89c? ([2001:b07:6468:f312:9541:9439:cb0f:89c])
+        by smtp.gmail.com with ESMTPSA id f15sm6067638wrx.91.2020.07.09.10.47.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Jul 2020 10:47:08 -0700 (PDT)
+Subject: Re: [PATCH v3 2/9] KVM: nSVM: stop dereferencing vcpu->arch.mmu to
+ get the context in kvm_init_shadow{,_npt}_mmu()
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        linux-kernel@vger.kernel.org
+References: <20200709145358.1560330-1-vkuznets@redhat.com>
+ <20200709145358.1560330-3-vkuznets@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <1c6999b7-1eae-4b26-7220-6e3e68457511@redhat.com>
+Date:   Thu, 9 Jul 2020 19:47:06 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
+In-Reply-To: <20200709145358.1560330-3-vkuznets@redhat.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Haven't been used since 2006.
+On 09/07/20 16:53, Vitaly Kuznetsov wrote:
+> Now as kvm_init_shadow_npt_mmu() is separated from kvm_init_shadow_mmu()
+> we always know the MMU context we need to use so there is no need to
+> dereference vcpu->arch.mmu pointer.
+> 
+> Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
+> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> ---
+>  arch/x86/kvm/mmu/mmu.c | 15 +++++++--------
+>  1 file changed, 7 insertions(+), 8 deletions(-)
+> 
 
-Fixes the following W=1 kernel build warning(s):
+This is actually true of all init functions, so we can squash this in too
+(my fault for being too concise):
 
- drivers/scsi/aic7xxx/aic79xx_osm.c: In function ‘ahd_linux_queue_abort_cmd’:
- drivers/scsi/aic7xxx/aic79xx_osm.c:2155:17: warning: variable ‘saved_modes’ set but not used [-Wunused-but-set-variable]
- drivers/scsi/aic7xxx/aic79xx_osm.c:2148:9: warning: variable ‘saved_scsiid’ set but not used [-Wunused-but-set-variable]
-
-Cc: Hannes Reinecke <hare@suse.com>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/scsi/aic7xxx/aic79xx_osm.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/scsi/aic7xxx/aic79xx_osm.c b/drivers/scsi/aic7xxx/aic79xx_osm.c
-index 3782a20d58885..b0c6701f64a83 100644
---- a/drivers/scsi/aic7xxx/aic79xx_osm.c
-+++ b/drivers/scsi/aic7xxx/aic79xx_osm.c
-@@ -2141,14 +2141,12 @@ ahd_linux_queue_abort_cmd(struct scsi_cmnd *cmd)
- 	u_int  saved_scbptr;
- 	u_int  active_scbptr;
- 	u_int  last_phase;
--	u_int  saved_scsiid;
- 	u_int  cdb_byte;
- 	int    retval;
- 	int    was_paused;
- 	int    paused;
- 	int    wait;
- 	int    disconnected;
--	ahd_mode_state saved_modes;
- 	unsigned long flags;
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index 2c4fb5684782..78c88e8aecfa 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -4850,7 +4850,7 @@ kvm_calc_tdp_mmu_root_page_role(struct kvm_vcpu *vcpu, bool base_only)
  
- 	pending_scb = NULL;
-@@ -2239,7 +2237,7 @@ ahd_linux_queue_abort_cmd(struct scsi_cmnd *cmd)
- 		goto done;
- 	}
+ static void init_kvm_tdp_mmu(struct kvm_vcpu *vcpu)
+ {
+-	struct kvm_mmu *context = vcpu->arch.mmu;
++	struct kvm_mmu *context = &vcpu->arch.root_mmu;
+ 	union kvm_mmu_role new_role =
+ 		kvm_calc_tdp_mmu_root_page_role(vcpu, false);
  
--	saved_modes = ahd_save_modes(ahd);
-+	ahd_save_modes(ahd);
- 	ahd_set_modes(ahd, AHD_MODE_SCSI, AHD_MODE_SCSI);
- 	last_phase = ahd_inb(ahd, LASTPHASE);
- 	saved_scbptr = ahd_get_scbptr(ahd);
-@@ -2257,7 +2255,7 @@ ahd_linux_queue_abort_cmd(struct scsi_cmnd *cmd)
- 	 * passed in command.  That command is currently active on the
- 	 * bus or is in the disconnected state.
- 	 */
--	saved_scsiid = ahd_inb(ahd, SAVED_SCSIID);
-+	ahd_inb(ahd, SAVED_SCSIID);
- 	if (last_phase != P_BUSFREE
- 	    && SCB_GET_TAG(pending_scb) == active_scbptr) {
+@@ -4989,7 +4989,7 @@ kvm_calc_shadow_ept_root_page_role(struct kvm_vcpu *vcpu, bool accessed_dirty,
+ void kvm_init_shadow_ept_mmu(struct kvm_vcpu *vcpu, bool execonly,
+ 			     bool accessed_dirty, gpa_t new_eptp)
+ {
+-	struct kvm_mmu *context = vcpu->arch.mmu;
++	struct kvm_mmu *context = &vcpu->arch.guest_mmu;
+ 	u8 level = vmx_eptp_page_walk_level(new_eptp);
+ 	union kvm_mmu_role new_role =
+ 		kvm_calc_shadow_ept_root_page_role(vcpu, accessed_dirty,
+@@ -5023,7 +5023,7 @@ EXPORT_SYMBOL_GPL(kvm_init_shadow_ept_mmu);
  
--- 
-2.25.1
+ static void init_kvm_softmmu(struct kvm_vcpu *vcpu)
+ {
+-	struct kvm_mmu *context = vcpu->arch.mmu;
++	struct kvm_mmu *context = &vcpu->arch.root_mmu;
+ 
+ 	kvm_init_shadow_mmu(vcpu,
+ 			    kvm_read_cr0_bits(vcpu, X86_CR0_PG),
+
+
+(BTW, a patch to rename nested_mmu to nested_walk_mmu and guest_mmu to
+nested_tdp_mmu would be welcome).
+
+Paolo
 
