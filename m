@@ -2,187 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FC9B219D73
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 12:17:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEA50219D89
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 12:18:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726801AbgGIKRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 06:17:38 -0400
-Received: from foss.arm.com ([217.140.110.172]:48602 "EHLO foss.arm.com"
+        id S1726661AbgGIKSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 06:18:12 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:48913 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726340AbgGIKRh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 06:17:37 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 986C331B;
-        Thu,  9 Jul 2020 03:17:36 -0700 (PDT)
-Received: from localhost (unknown [10.1.198.53])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 397913F887;
-        Thu,  9 Jul 2020 03:17:36 -0700 (PDT)
-Date:   Thu, 9 Jul 2020 11:17:34 +0100
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: topology: Don't support AMU without cpufreq
-Message-ID: <20200709101734.GB5623@arm.com>
-References: <a710fc4e4e0f1d2e561320130b99bcb5167d73b4.1594277563.git.viresh.kumar@linaro.org>
+        id S1726313AbgGIKSL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 06:18:11 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4B2XDx5w9fz9sSd;
+        Thu,  9 Jul 2020 20:18:09 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1594289889;
+        bh=ou5GvH7X+W5XkenHcVbChXPfY+zWQZQPug6Gv9qz3HE=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=Vq+WB38V5Vr/85nXNhGqpqupy+34Vv3WSzVEQwoNCfqjMOzALtdReOZo98sRNdF4v
+         sGsRiBQZQRt9C10DozPjdUV+RVnAD+xtRpukIAyztq9aHvkQ7/XJdsPUAl3LuHK+wj
+         I+iQuTB21OEn2hVajUA+VVaiYzvot5nUEtDX3PWAK0rNKp94aOfUACCnwCPfDJHTD/
+         KdBs6WLMY5gzQ3OaXS2KwOuuu+1z1BuTcE9hZDf/FSr1zbkU2zqJX99Vfvgk6YPtuA
+         Jd7OYgdjaDbdWZq1nwUULVHLrRzs0jKC70v2D3AgBk59KBxHS6YKhIhksR5MJn+pvZ
+         8f7eEgvbfiJuA==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Nicholas Piggin <npiggin@gmail.com>, linuxppc-dev@lists.ozlabs.org
+Cc:     Nicholas Piggin <npiggin@gmail.com>, Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Waiman Long <longman@redhat.com>,
+        Anton Blanchard <anton@ozlabs.org>,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, kvm-ppc@vger.kernel.org,
+        linux-arch@vger.kernel.org
+Subject: Re: [PATCH v3 4/6] powerpc/64s: implement queued spinlocks and rwlocks
+In-Reply-To: <20200706043540.1563616-5-npiggin@gmail.com>
+References: <20200706043540.1563616-1-npiggin@gmail.com> <20200706043540.1563616-5-npiggin@gmail.com>
+Date:   Thu, 09 Jul 2020 20:20:25 +1000
+Message-ID: <877dvdvvkm.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a710fc4e4e0f1d2e561320130b99bcb5167d73b4.1594277563.git.viresh.kumar@linaro.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Viresh,
+Nicholas Piggin <npiggin@gmail.com> writes:
+> These have shown significantly improved performance and fairness when
+> spinlock contention is moderate to high on very large systems.
+>
+>  [ Numbers hopefully forthcoming after more testing, but initial
+>    results look good ]
 
-On Thursday 09 Jul 2020 at 12:22:45 (+0530), Viresh Kumar wrote:
-> The commit cd0ed03a8903 ("arm64: use activity monitors for frequency
-> invariance"), mentions that:
-> 
->   "if CONFIG_CPU_FREQ is not enabled, the use of counters is
->    enabled on all CPUs only if all possible CPUs correctly support
->    the necessary counters"
-> 
+Would be good to have something here, even if it's preliminary.
 
-Yes, this part of the commit message is wrong. I could go easy on myself
-and say that the comment in the code is correct, but it would not make
-this part of the commit message less wrong. 
-
-So the "if CONFIG_CPU_FREQ is not enabled" should have been replaced by
-"if we are not restricted by cpufreq policies", which is different,
-as described below.
-
-Comment in code:
-"""
-* If we are not restricted by cpufreq policies, we only enable
-* the use of the AMU feature for FIE if all CPUs support AMU.
-"""
-
-> But that's not really true as validate_cpu_freq_invariance_counters()
-> fails if max_freq_hz is returned as 0 (in case there is no policy for
-> the CPU). And the AMUs won't be supported in that case.
-> 
-> Make the code reflect this reality.
-> 
-
-It seems to me that validate_cpu_freq_invariance_counters() already does
-this filtering. max_freq_hz would need to have a valid value before AMUs
-can be marked as supported.
-
-Functionally, what would happen, is the following:
-
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> Thanks to the fast path, single threaded performance is not noticably
+> hurt.
+>
+> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
 > ---
->  arch/arm64/kernel/topology.c | 19 +++----------------
->  1 file changed, 3 insertions(+), 16 deletions(-)
-> 
-> diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
-> index 0801a0f3c156..b7da372819fc 100644
-> --- a/arch/arm64/kernel/topology.c
-> +++ b/arch/arm64/kernel/topology.c
-> @@ -187,14 +187,13 @@ static int validate_cpu_freq_invariance_counters(int cpu)
->  	return 0;
->  }
+>  arch/powerpc/Kconfig                      | 13 ++++++++++++
+>  arch/powerpc/include/asm/Kbuild           |  2 ++
+>  arch/powerpc/include/asm/qspinlock.h      | 25 +++++++++++++++++++++++
+>  arch/powerpc/include/asm/spinlock.h       |  5 +++++
+>  arch/powerpc/include/asm/spinlock_types.h |  5 +++++
+>  arch/powerpc/lib/Makefile                 |  3 +++
+
+>  include/asm-generic/qspinlock.h           |  2 ++
+
+Who's ack do we need for that part?
+
+> diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+> index 24ac85c868db..17663ea57697 100644
+> --- a/arch/powerpc/Kconfig
+> +++ b/arch/powerpc/Kconfig
+> @@ -492,6 +494,17 @@ config HOTPLUG_CPU
 >  
-> -static inline bool
-> -enable_policy_freq_counters(int cpu, cpumask_var_t valid_cpus)
-> +static inline void update_amu_fie_cpus(int cpu, cpumask_var_t valid_cpus)
->  {
->  	struct cpufreq_policy *policy = cpufreq_cpu_get(cpu);
+>  	  Say N if you are unsure.
 >  
->  	if (!policy) {
->  		pr_debug("CPU%d: No cpufreq policy found.\n", cpu);
-> -		return false;
-> +		return;
->  	}
->  
->  	if (cpumask_subset(policy->related_cpus, valid_cpus))
-> @@ -202,8 +201,6 @@ enable_policy_freq_counters(int cpu, cpumask_var_t valid_cpus)
->  			   amu_fie_cpus);
->  
->  	cpufreq_cpu_put(policy);
-> -
-> -	return true;
->  }
->  
->  static DEFINE_STATIC_KEY_FALSE(amu_fie_key);
-> @@ -212,7 +209,6 @@ static DEFINE_STATIC_KEY_FALSE(amu_fie_key);
->  static int __init init_amu_fie(void)
->  {
->  	cpumask_var_t valid_cpus;
-> -	bool have_policy = false;
->  	int ret = 0;
->  	int cpu;
->  
-> @@ -228,18 +224,9 @@ static int __init init_amu_fie(void)
->  		if (validate_cpu_freq_invariance_counters(cpu))
->  			continue;
+> +config PPC_QUEUED_SPINLOCKS
+> +	bool "Queued spinlocks"
+> +	depends on SMP
+> +	default "y" if PPC_BOOK3S_64
 
-If max_freq_hz happens to be 0 (either !CONFIG_CPU_FREQ or
-CONFIG_CPU_FREQ=y && !policy, etc),
-validate_cpu_freq_invariance_counters(cpu) will return -EINVAL,
-so we'll continue with the next CPU, without adding this cpu to
-valid_cpus.
+Not sure about default y? At least until we've got a better idea of the
+perf impact on a range of small/big new/old systems.
 
-Therefore it would not be marked as a valid AMU supporting CPU, so we
-won't call enable_policy_freq_counters() for it.
+> +	help
+> +	  Say Y here to use to use queued spinlocks which are more complex
+> +	  but give better salability and fairness on large SMP and NUMA
+> +	  systems.
+> +
+> +	  If unsure, say "Y" if you have lots of cores, otherwise "N".
 
->  		cpumask_set_cpu(cpu, valid_cpus);
-> -		have_policy |= enable_policy_freq_counters(cpu, valid_cpus);
-> +		update_amu_fie_cpus(cpu, valid_cpus);
+Would be nice if we could give a range for "lots".
 
-I see this as two different pieces of functionality:
- - (1) validate_cpu_freq_invariance_counters(cpu) has the job of validating
-   the CPU support, including max_freq_hz.
- - (2) enable_policy_freq_counters() has the job to restrict AMU enablement
-   for the CPUs in a policy if all CPUs in the policy support AMUs.
+> diff --git a/arch/powerpc/include/asm/Kbuild b/arch/powerpc/include/asm/Kbuild
+> index dadbcf3a0b1e..1dd8b6adff5e 100644
+> --- a/arch/powerpc/include/asm/Kbuild
+> +++ b/arch/powerpc/include/asm/Kbuild
+> @@ -6,5 +6,7 @@ generated-y += syscall_table_spu.h
+>  generic-y += export.h
+>  generic-y += local64.h
+>  generic-y += mcs_spinlock.h
+> +generic-y += qrwlock.h
+> +generic-y += qspinlock.h
 
-So both of them, separately, support the case of !CONFIG_CPU_FREQ.
+The 2nd line spits a warning about a redundant entry. I think you want
+to just drop it.
 
->  	}
->  
-> -	/*
-> -	 * If we are not restricted by cpufreq policies, we only enable
-> -	 * the use of the AMU feature for FIE if all CPUs support AMU.
-> -	 * Otherwise, enable_policy_freq_counters has already enabled
-> -	 * policy cpus.
-> -	 */
-> -	if (!have_policy && cpumask_equal(valid_cpus, cpu_present_mask))
 
-This is meant to have the following logic: if for some reason we're not
-restricted by policies (according to 2), but all AMU validation was
-successful (according to 1), there is no reason not to enable fully AMU
-enabled frequency invariance.
-
-I agree that this happening is a cornercase and a reason for which
-cpufreq_get_hw_max_freq() was made weak. If some platform has entirely
-firmware driven frequency control, but it enables CONFIG_CPU_FREQ
-(as is the default) and it defines its own cpufreq_get_hw_max_freq(),
-it could benefit from AMU use.
-
-So I did believe it was best for these checks to be decoupled, for this
-reason, and potential other reasons in the future, involving more
-decoupling from cpufreq.
-
-I do have code in progress to clean the overall interaction between
-cpufreq and AMUs, started at [1]. Bear with me on this, it is all
-connected :).
-
-[1]
-https://lore.kernel.org/lkml/20200701090751.7543-1-ionela.voinescu@arm.com/
-
-Regards,
-Ionela.
-
-> -		cpumask_or(amu_fie_cpus, amu_fie_cpus, valid_cpus);
-> -
->  	if (!cpumask_empty(amu_fie_cpus)) {
->  		pr_info("CPUs[%*pbl]: counters will be used for FIE.",
->  			cpumask_pr_args(amu_fie_cpus));
-> -- 
-> 2.25.0.rc1.19.g042ed3e048af
-> 
+cheers
