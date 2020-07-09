@@ -2,107 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7333221AAD4
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 00:46:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB8A521AAC9
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 00:46:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727865AbgGIWqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 18:46:43 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:48198 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727081AbgGIWqU (ORCPT
+        id S1727839AbgGIWqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 18:46:36 -0400
+Received: from mail-io1-f65.google.com ([209.85.166.65]:44044 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726482AbgGIWq3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 18:46:20 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 0413180045E5;
-        Thu,  9 Jul 2020 22:46:17 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id MRoD_kFL0_oL; Fri, 10 Jul 2020 01:46:16 +0300 (MSK)
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Vinod Koul <vkoul@kernel.org>, Viresh Kumar <vireshk@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>
-CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <dmaengine@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v7 11/11] dmaengine: dw: Initialize max_sg_nents capability
-Date:   Fri, 10 Jul 2020 01:45:50 +0300
-Message-ID: <20200709224550.15539-12-Sergey.Semin@baikalelectronics.ru>
-In-Reply-To: <20200709224550.15539-1-Sergey.Semin@baikalelectronics.ru>
-References: <20200709224550.15539-1-Sergey.Semin@baikalelectronics.ru>
+        Thu, 9 Jul 2020 18:46:29 -0400
+Received: by mail-io1-f65.google.com with SMTP id i4so4030742iov.11;
+        Thu, 09 Jul 2020 15:46:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QXFKaIMVMvoCqLqiHJ2gAavHpO+CjG0ilPbgcK2+QFs=;
+        b=OVGZQIbQF1+vcqb1L6GeXRw5pW1d/A4vcjQJ4Pa55elc44WgLSmpAr0OKEARSNABvc
+         cvy1bqKiHOHxWeAW3n38IhZE7ExDPKsvzybq59ClQ+5k0myaCqAF0F+Giv3IvzYoahHw
+         SEp4m7LVxZuEpB6TUPs915bqoKH/qn/jQZuxwlTuKgnp/+7VvFU7AMFXmZOC8IdpJE9C
+         561QMBsMsAYTOih+NNDPejoQtODTUewVmkzkOOfg6G5kFowDxujK4/9cGh578eXUQgmc
+         Mq8fRicWY2w+Um1ItpUgDhKuWr/Omcf5SUuXuDQrcaCPNiPoiKjgZ3jlDWhRcm9O5tNo
+         rLTA==
+X-Gm-Message-State: AOAM530Pv4zObmmMqn+GHEh4jPsI2V8VSEbVXGTgbmWTVdWI5Lwr4krw
+        E+/RxiApbmVZBVU/S7TEmQ==
+X-Google-Smtp-Source: ABdhPJyKXp0NnPd3+aWgOm1nwSaG7xmAY38yYWlsy/z8UNBc0kMfraXWzB4Dxdq1HDX525Ov/1rOuw==
+X-Received: by 2002:a05:6602:1544:: with SMTP id h4mr45081721iow.24.1594334788520;
+        Thu, 09 Jul 2020 15:46:28 -0700 (PDT)
+Received: from xps15 ([64.188.179.254])
+        by smtp.gmail.com with ESMTPSA id g8sm2510122ilq.49.2020.07.09.15.46.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Jul 2020 15:46:27 -0700 (PDT)
+Received: (nullmailer pid 1029281 invoked by uid 1000);
+        Thu, 09 Jul 2020 22:46:26 -0000
+Date:   Thu, 9 Jul 2020 16:46:26 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Wesley Cheng <wcheng@codeaurora.org>
+Cc:     lgirdwood@gmail.com, mark.rutland@arm.com, agross@kernel.org,
+        broonie@kernel.org, heikki.krogerus@linux.intel.com,
+        gregkh@linuxfoundation.org, bjorn.andersson@linaro.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jackp@codeaurora.org, rdunlap@infradead.org,
+        bryan.odonoghue@linaro.org
+Subject: Re: [PATCH v5 2/6] dt-bindings: usb: Add Qualcomm PMIC type C
+ controller dt-binding
+Message-ID: <20200709224626.GA1021653@bogus>
+References: <20200703015102.27295-1-wcheng@codeaurora.org>
+ <20200703015102.27295-3-wcheng@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200703015102.27295-3-wcheng@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Multi-block support provides a way to map the kernel-specific SG-table so
-the DW DMA device would handle it as a whole instead of handling the
-SG-list items or so called LLP block items one by one. So if true LLP
-list isn't supported by the DW DMA engine, then soft-LLP mode will be
-utilized to load and execute each LLP-block one by one. The soft-LLP mode
-of the DMA transactions execution might not work well for some DMA
-consumers like SPI due to its Tx and Rx buffers inter-dependency. Let's
-initialize the max_sg_nents DMA channels capability based on the nollp
-flag state. If it's true, no hardware accelerated LLP is available and
-max_sg_nents should be set with 1, which means that the DMA engine
-can handle only a single SG list entry at a time. If noLLP is set to
-false, then hardware accelerated LLP is supported and the DMA engine
-can handle infinite number of SG entries in a single DMA transaction.
+On Thu, Jul 02, 2020 at 06:50:58PM -0700, Wesley Cheng wrote:
+> Introduce the dt-binding for enabling USB type C orientation and role
+> detection using the PM8150B.  The driver will be responsible for receiving
+> the interrupt at a state change on the CC lines, reading the orientation/role,
+> and communicating this information to the remote clients, which can include
+> a role switch node and a type C switch.
+> 
+> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+> ---
+>  .../bindings/usb/qcom,pmic-typec.yaml         | 130 ++++++++++++++++++
+>  1 file changed, 130 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/usb/qcom,pmic-typec.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/usb/qcom,pmic-typec.yaml b/Documentation/devicetree/bindings/usb/qcom,pmic-typec.yaml
+> new file mode 100644
+> index 000000000000..735b1f74664b
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/usb/qcom,pmic-typec.yaml
+> @@ -0,0 +1,130 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/usb/qcom,pmic-typec.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +
+> +title: Qualcomm PMIC based USB type C Detection Driver
+> +
+> +maintainers:
+> +  - Wesley Cheng <wcheng@codeaurora.org>
+> +
+> +description: |
+> +  Qualcomm PMIC Type C Detect
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - qcom,pm8150b-usb-typec
+> +
+> +  reg:
+> +    maxItems: 1
+> +    description: Type C base address
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +    description: CC change interrupt from PMIC
+> +
+> +  connector:
+> +    description: Connector type for remote endpoints
+> +    type: object
+> +    $ref: /schemas/connector/usb-connector.yaml#
 
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: linux-mips@vger.kernel.org
-Cc: devicetree@vger.kernel.org
+Why is all the connector schema duplicated here? You only need things 
+that are further constrained like 'compatible'.
 
----
+> +
+> +    properties:
+> +      compatible:
+> +        enum:
+> +          - usb-c-connector
+> +
+> +      power-role:
+> +       enum:
+> +         - dual
+> +         - source
+> +         - sink
+> +
+> +      data-role:
+> +        enum:
+> +          - dual
+> +          - host
+> +          - device
+> +
+> +      ports:
+> +        description: Remote endpoint connections
+> +        type: object
+> +
+> +        properties:
+> +          port@0:
+> +            description: Remote endpoints for the High Speed path
+> +            type: object
+> +
+> +          port@1:
+> +            description: Remote endpoints for the Super Speed path
+> +            type: object
+> +
+> +            properties:
+> +              endpoint@0:
+> +                description: Connection to USB type C mux node
+> +                type: object
+> +
+> +                properties:
+> +                  remote-endpoint:
+> +                    maxItems: 1
 
-Changelog v3:
-- This is a new patch created as a result of the discussion with Vinud and
-  Andy in the framework of DW DMA burst and LLP capabilities.
+'remote-endpoint' in not an array.
 
-Changelog v4:
-- Use explicit if-else statement when assigning the max_sg_nents field.
----
- drivers/dma/dw/core.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+> +                    description: Node reference to the type C mux
+> +
+> +              endpoint@1:
+> +                description: Connection to role switch node
+> +                type: object
+> +
+> +                properties:
+> +                  remote-endpoint:
+> +                    maxItems: 1
+> +                    description: Node reference to the role switch node
 
-diff --git a/drivers/dma/dw/core.c b/drivers/dma/dw/core.c
-index 588b9bae827c..9dee5fa65153 100644
---- a/drivers/dma/dw/core.c
-+++ b/drivers/dma/dw/core.c
-@@ -1059,6 +1059,18 @@ static void dwc_caps(struct dma_chan *chan, struct dma_slave_caps *caps)
- 	struct dw_dma_chan *dwc = to_dw_dma_chan(chan);
- 
- 	caps->max_burst = dwc->max_burst;
-+
-+	/*
-+	 * It might be crucial for some devices to have the hardware
-+	 * accelerated multi-block transfers supported, aka LLPs in DW DMAC
-+	 * notation. So if LLPs are supported then max_sg_nents is set to
-+	 * zero which means unlimited number of SG entries can be handled in a
-+	 * single DMA transaction, otherwise it's just one SG entry.
-+	 */
-+	if (dwc->nollp)
-+		caps->max_sg_nents = 1;
-+	else
-+		caps->max_sg_nents = 0;
- }
- 
- int do_dma_probe(struct dw_dma_chip *chip)
--- 
-2.26.2
+So USB-SS data can come from 'type C mux' or 'role switch node'? That 
+seems odd.
 
+Rob
