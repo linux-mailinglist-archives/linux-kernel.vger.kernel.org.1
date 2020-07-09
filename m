@@ -2,150 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92B82219D3F
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 12:14:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1C31219D4D
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 12:14:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726880AbgGIKN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 06:13:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35272 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726315AbgGIKN5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 06:13:57 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3752C061A0B
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 03:13:57 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id dm12so675798qvb.9
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 03:13:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5WjZTjs02fu7fnerdCk5ET/PatSUJYyYJSI5RutPAEE=;
-        b=ChllgYMfz/gmomQEI81iWspGrHDfWjgdo049A6gjgs5gi5KNYSYCwEgjIseBF5/czl
-         MNGBJ6+DVdAc6+oj5PiyJfmsKUj5Qm8Fyr4LEu+9t8t4xYvRG422l+iZOCXsq7+9jXio
-         BYgSYG5zXDb47xF6x4pMuBPKcsLiz4dvsC5Ck/mfLB/TLLN9Z0J1bT6YSlESOzZupMjC
-         GyNQYuRLhsbwuHWfYlGmLF6EuEmxaybjxPCbuZU0zPt6DyU1kJptJeu9GYnZ5PArw2hk
-         qjLcI6OskqSR6O/3cr/gmXa5rWQ8IUX5c+/ufeeGQWQaEkMqpWkiZi6QXBsTimNAtXDj
-         bT8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5WjZTjs02fu7fnerdCk5ET/PatSUJYyYJSI5RutPAEE=;
-        b=C/EyhEs70SJ0lKzLqrROC7B9vvoJIO9Nuv9Dg9qeEWmItwxKtHGqqPnFO7OrGaTQrA
-         vtS82tH5d9oPd3RX2i65ZVlG3HWvtuDhetxxISeNWoEVVepibLk3VMA6ZAp/BOKPaGbh
-         5PQA5b1B5fO4FnmZLFRCRKvV4aucXW8DseSnLCvHWPae9ViW3R/1FHWn2an9UAxiVMo6
-         S6boa7bjknf2yQ4+InwljRZf/euqTiOTGluxtPGttiEie7xS5eXPuXIFmgRnCH7uz6Lw
-         bL7gI5/S2dDZImFNFDZCxwKZmvwQW/DIVBtSTnIPa52kfbzZN0mVdROWpWstE+FzdU6w
-         Q4Bw==
-X-Gm-Message-State: AOAM5328TYwAmnK1Ii7ltrXG+XgXOfumac6/VltKCKEsXDFuBveqjilk
-        gFnz/MTgF7Tvt56lceUBi/CuzSD2xQd6qfTrrdWF0g==
-X-Google-Smtp-Source: ABdhPJxNEPKDrORg/ebJJ7z/FfGLGRvapcU7zAzxAl8u7hZxdNGaLgvgGX/ZCH4aT91R7HBzM3kZqB0OQk4j2wMorkg=
-X-Received: by 2002:a0c:dc07:: with SMTP id s7mr62810191qvk.122.1594289636572;
- Thu, 09 Jul 2020 03:13:56 -0700 (PDT)
+        id S1727005AbgGIKOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 06:14:32 -0400
+Received: from mga02.intel.com ([134.134.136.20]:21900 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726955AbgGIKOY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 06:14:24 -0400
+IronPort-SDR: jKjKQKijU88SU4nWFA2ZN4xxp8G4rNxUbGxFuSGmZhTqJtoK7Wr6pBNN3cwarCobs860IMazLQ
+ O8WWlfu0Pz1w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9676"; a="136195882"
+X-IronPort-AV: E=Sophos;i="5.75,331,1589266800"; 
+   d="scan'208";a="136195882"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jul 2020 03:14:21 -0700
+IronPort-SDR: 2e1UV1lYBoHM0FE94X48mHA7nqMvdq5n6m0VjfoURsaQrk0w8bWy83iEV6Mr7N9qPevMtWVJtH
+ X4gsSfRpBzjg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,331,1589266800"; 
+   d="scan'208";a="457854466"
+Received: from orsmsx104.amr.corp.intel.com ([10.22.225.131])
+  by orsmga005.jf.intel.com with ESMTP; 09 Jul 2020 03:14:21 -0700
+Received: from orsmsx111.amr.corp.intel.com (10.22.240.12) by
+ ORSMSX104.amr.corp.intel.com (10.22.225.131) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Thu, 9 Jul 2020 03:14:20 -0700
+Received: from ORSEDG001.ED.cps.intel.com (10.7.248.4) by
+ ORSMSX111.amr.corp.intel.com (10.22.240.12) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Thu, 9 Jul 2020 03:14:20 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.171)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Thu, 9 Jul 2020 03:14:20 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cJa8sE6d/64mfcJPbbLX1l31X/Ns1VJ2sTyUL7c2MFtcl0xybI+auIvjR5SdltiZydhSB3owJAbm/oBY8dedPmqv9LfNuum0r7fGSfItKFDvU9YiRFHki9nhTKIiKyO2cs5P/08PvtHtU7YeKDFJsMTrMZvshM3lpV4k150/J3zS3VHXDdL6yp/yx+RaucMeQ4dMIYDOtrHTjquXNLR32KAUsumeTePms1EfuB+UPmwCrVDS3PQvrnF+GVLT1oXZYcGfqdE3Tr9u7FBz1tQPe4WBrSm4v62Wc0BLKPZel8umVNE0vyI5mY8Pnrt4I3tLRKFyMJsph5TY7VBOWziJRg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HTklAgqCGmi/DoH1uFoBiE3CNy6qOx4AD3JLj/CN/Ew=;
+ b=Zc9U91T4fW0VYj3yjdcaaVuIxOby8TolZngmiWPFp7cdl4k5PTUlGSA1TYfmfWlezCRc5/EDwGOc7O1aoNUxLavIZuFPCXXTwD6YLP/pRz7xu2CyehtHHAu16zvclEZ59h4d4/0zxIlCMdjCeig5e7NFk97/+SimpJDU3TBUteeNeZiFuMHpZPmb/4Z09aBt5hi5eYpbF4mFA5Ip3z7WNQyBOZyP65QdSRpTg4A76UMVC+cU9On1P2Q1ffsaSvCJ6LNjg5C8iPK7zkSKIbtdWTS3U58hdXTdBHUqKp79AztDO8yULvFuPBwKSA67hxpqV0yq0pcptg/QOwVbkqldpw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HTklAgqCGmi/DoH1uFoBiE3CNy6qOx4AD3JLj/CN/Ew=;
+ b=CLcNAi0lihaB+I+exyepCVaLIdjtyS1FhxmGP0DWSmqZuVraXHrns5izbOxfnMrscwVdz2KzslFzaHxwBvcmGYUQj3fyyQvevK9sXbfUuLv6xAkJloGReqD/M1O+fjM1EUEJXV5dyWbPhhu0dJhh3a9J5R4FojrGva6m0TNR2I8=
+Received: from DM6PR11MB3819.namprd11.prod.outlook.com (2603:10b6:5:13f::31)
+ by DM5PR11MB1770.namprd11.prod.outlook.com (2603:10b6:3:10d::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.21; Thu, 9 Jul
+ 2020 10:14:17 +0000
+Received: from DM6PR11MB3819.namprd11.prod.outlook.com
+ ([fe80::c1c1:6930:f17d:a80a]) by DM6PR11MB3819.namprd11.prod.outlook.com
+ ([fe80::c1c1:6930:f17d:a80a%4]) with mapi id 15.20.3153.031; Thu, 9 Jul 2020
+ 10:14:17 +0000
+From:   "Wu, Hao" <hao.wu@intel.com>
+To:     "Xu, Yilun" <yilun.xu@intel.com>
+CC:     "mdf@kernel.org" <mdf@kernel.org>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "trix@redhat.com" <trix@redhat.com>,
+        "lgoncalv@redhat.com" <lgoncalv@redhat.com>,
+        Matthew Gerlach <matthew.gerlach@linux.intel.com>,
+        "Weight, Russell H" <russell.h.weight@intel.com>
+Subject: RE: [PATCH] fpga: dfl: pci: add device id for Intel FPGA PAC N3000
+Thread-Topic: [PATCH] fpga: dfl: pci: add device id for Intel FPGA PAC N3000
+Thread-Index: AQHWVcomDnRuf5Ios0uozSMTJLBb7aj+8y7ggAAJzICAAAjeAA==
+Date:   Thu, 9 Jul 2020 10:14:16 +0000
+Message-ID: <DM6PR11MB3819D07348C347B5BB8F86C085640@DM6PR11MB3819.namprd11.prod.outlook.com>
+References: <1594282705-32289-1-git-send-email-yilun.xu@intel.com>
+ <DM6PR11MB3819117029F124067F7EA8B985640@DM6PR11MB3819.namprd11.prod.outlook.com>
+ <20200709093527.GA32541@yilunxu-OptiPlex-7050>
+In-Reply-To: <20200709093527.GA32541@yilunxu-OptiPlex-7050>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.2.0.6
+authentication-results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [192.198.147.192]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: cb6b1101-420b-4b8a-f134-08d823f0d67d
+x-ms-traffictypediagnostic: DM5PR11MB1770:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM5PR11MB1770F1A275D8EC8FC4ED2E5D85640@DM5PR11MB1770.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 5pk8EBfNpkUr06ALKIJhpNuiH37JZFeSYIpms2TBG3bT0FVU+A40EyTvjC9+8V9SMvOcW2pguyrulJOBnXB4A53vPm9UXPFx3iVex9D0mptxf0koyq3JWaCrv8JiSzkyWsAorGxPB8H4OJNDHCWLOruaBuG51Y+4IPlPnEoxy1/anAbt/ikJyusBypfYK0nlGCNyV2ROxdvuastnmSGyv0YPEaSRxtuDb+rkLT8ecxcN5niuQ3hNB3b07j13+PjEYRciBkyZ+pRtbAz8eY+3wUQD2hLXw1zxtaKdaxq8fT3jd9mPbpPYxgJy/v2QrakqbjAiJLOK87xoaJzLeqmK0g==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3819.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(346002)(39860400002)(396003)(366004)(136003)(54906003)(9686003)(7696005)(86362001)(186003)(55016002)(6636002)(71200400001)(6862004)(33656002)(66476007)(5660300002)(4326008)(66446008)(66556008)(76116006)(64756008)(6506007)(66946007)(2906002)(478600001)(52536014)(26005)(316002)(8676002)(8936002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: jT8oKyXOYl77DH/0ZgVGidV5cpGTAPkcwjH3qRMtKDrzKIG7UXpDJw7BrA5PHhDnbEsWwsv7vbVx0ssT5yF0QeZ+hEMahgKFt7MLgFBfJLFSjEe0He7o6k6KkzpKWSCfBm17CaVyrC7xfv77ktvyzpL88oDh0gm+mei9oUFOtWxGTGSulu6toK7/DjoPgAalRvH52KStAq5F6ynVGZg7eTbB0GU/PRMU/UsjQtM7CBTzrsdPBmvGHVr/4aA44/V/WVmnFuLy6WC+B606gLV/EldgTLsgLXvbwNLw51MZBqSOaAim12EhI+YrcJFdf3nb0BS4jvbEf5YA9EnmyW6VHVWwKcz2Vzjszz7deaVQ7JpQelvW/r3h97AM56cOER3hEgF2ihE79Y7UoISE7VPiLPLREp/AcKXdROjvpxK9x32w+cmX2QPjt3ymFvINTeVoOSfvdoS52byuzzaXmT+HVXFU8VUXyuDqlV0vpZWtB5ICX0641DPsmsBVtmSvGsu1
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <00000000000042f21905a991ecea@google.com> <20200704164522.GO9247@paulmck-ThinkPad-P72>
- <CACT4Y+Zs4TO9-XSZ7cRXFZVqRakS8WuSno2=dac6Gv2XmExbkA@mail.gmail.com>
- <CACT4Y+aMJRwQANQZ5Fr1RPZ6EOZ2zEPaZwMTndKJ+mTJ8o6b7Q@mail.gmail.com> <20200707162610.GY9247@paulmck-ThinkPad-P72>
-In-Reply-To: <20200707162610.GY9247@paulmck-ThinkPad-P72>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Thu, 9 Jul 2020 12:13:44 +0200
-Message-ID: <CACT4Y+Z8yErbDWPxv5tX0hnw7cTa6nJjg5f=MWMYS-2X91TZ9w@mail.gmail.com>
-Subject: Re: KASAN: stack-out-of-bounds Read in csd_lock_record
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     syzbot <syzbot+0f719294463916a3fc0e@syzkaller.appspotmail.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3819.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cb6b1101-420b-4b8a-f134-08d823f0d67d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Jul 2020 10:14:16.9447
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: qtlgWAAuIhJ6sLzAm9J+vscVDsqLaL14isVzmXw8YuUaenRl+H7VwplFht66Q2rGYVRFQ1lCD4nTRa1BiV75OQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR11MB1770
+X-OriginatorOrg: intel.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 7, 2020 at 6:26 PM Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> On Tue, Jul 07, 2020 at 05:51:48PM +0200, Dmitry Vyukov wrote:
-> > On Sat, Jul 4, 2020 at 8:34 PM Dmitry Vyukov <dvyukov@google.com> wrote:
+> On Thu, Jul 09, 2020 at 05:10:49PM +0800, Wu, Hao wrote:
+> > > Subject: [PATCH] fpga: dfl: pci: add device id for Intel FPGA PAC N30=
+00
 > > >
-> > > On Sat, Jul 4, 2020 at 6:45 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > >
-> > > > On Fri, Jul 03, 2020 at 04:31:22PM -0700, syzbot wrote:
-> > > > > Hello,
-> > > > >
-> > > > > syzbot found the following crash on:
-> > > > >
-> > > > > HEAD commit:    9e50b94b Add linux-next specific files for 20200703
-> > > > > git tree:       linux-next
-> > > > > console output: https://syzkaller.appspot.com/x/log.txt?x=1024b405100000
-> > > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=f99cc0faa1476ed6
-> > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=0f719294463916a3fc0e
-> > > > > compiler:       gcc (GCC) 10.1.0-syz 20200507
-> > > > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16dc490f100000
-> > > > >
-> > > > > IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> > > > > Reported-by: syzbot+0f719294463916a3fc0e@syzkaller.appspotmail.com
-> > > >
-> > > > Good catch!  A call to csd_lock_record() was on the wrong side of a
-> > > > call to csd_unlock().
+> > > Add PCIe Device ID for Intel FPGA PAC N3000.
 > > >
-> > > Thanks for taking a look.
+> > > Signed-off-by: Wu Hao <hao.wu@intel.com>
+> > > Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+> > > Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+> > > Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+> > > ---
+> > >  drivers/fpga/dfl-pci.c | 2 ++
+> > >  1 file changed, 2 insertions(+)
 > > >
-> > > > But is folded into another commit for bisectability reasons, so
-> > > > "Reported-by" would not make sense.  I have instead added this to the
-> > > > commit log:
-> > > >
-> > > > [ paulmck: Fix for syzbot+0f719294463916a3fc0e@syzkaller.appspotmail.com ]
-> > > > Link: https://lore.kernel.org/lkml/00000000000042f21905a991ecea@google.com
-> > > > Link: https://lore.kernel.org/lkml/0000000000002ef21705a9933cf3@google.com
-> > >
-> > > This should work, as far as I remember sybot looks for the email+hash
-> > > anywhere in the commit.
-> > > FWIW Tested-by can make sense as well.
+> > > diff --git a/drivers/fpga/dfl-pci.c b/drivers/fpga/dfl-pci.c
+> > > index 73b5153..824aecf 100644
+> > > --- a/drivers/fpga/dfl-pci.c
+> > > +++ b/drivers/fpga/dfl-pci.c
+> > > @@ -64,6 +64,7 @@ static void cci_pci_free_irq(struct pci_dev *pcidev=
+)
+> > >  #define PCIE_DEVICE_ID_PF_INT_5_X0xBCBD
+> > >  #define PCIE_DEVICE_ID_PF_INT_6_X0xBCC0
+> > >  #define PCIE_DEVICE_ID_PF_DSC_1_X0x09C4
+> > > +#define PCIE_DEVICE_ID_PF_PAC_N3000 0x0B30
 > >
-> > Paul, there is also some spike of stalls in smp_call_function,
-> > if you look at the top ones at:
-> > https://syzkaller.appspot.com/upstream#open
-> >
-> > Can these be caused by the same root cause?
-> > I am not sure what trees the bug was/is present... This seems to only
-> > happen on linux-next and nowhere else. But these stalls equally happen
-> > on mainline...
->
-> I would be surprised, given that the csd_unlock() was before the faulting
-> reference.  But then again, I have been surprised before.
+> > Should we drop _PF_ here? and also do you want _INTEL_ here?
+>=20
+> I think we could keep _PF_, also there is no need to support VF of pac
+> n3000 in product now, but it does exist (ID: 0x0b31).
+>=20
+> And add _INTEL_ is good to me.
+>=20
+> Then how about this one:
+>   #define PCIE_DEVICE_ID_PF_INTEL_PAC_N3000	0x0B30
 
-Yes, it seems unrelated.
-It looks like something broken in the kernel recently and now instead
-of diagnosing a stall on one CPU, it diagnoses it as a stall in
-smp_call_function on another CPU. This produces large number of
-assorted stall reports which are not too actionable...
+I am just considering the alignment with ids defined in include/linux/pci_i=
+ds.h
+So drop _PF_ before _INTEL_ would be better? : )
 
-
-> You aren't running scftorture with its longwait parameter set to a
-> non-zero value, are you?  In that case, stalls are expected behavior.
-> This is to support test the CSD lock diagnostics in -rcu.  Which isn't
-> in mainline yet, so maybe I am asking a stupid question.
-
-Since I don't know what is scftorture/longwait, I guess I am not running it :)
-
-> If these are repeatable, one thing to try is to build the kernel with
-> CSD_LOCK_WAIT_DEBUG=y.  This requires c6c67d89c059 ("smp: Add source and
-> destination CPUs to __call_single_data") and 216d15e0d870 ("kernel/smp:
-> Provide CSD lock timeout diagnostics") from the -rcu tree's "dev" branch.
-> This will dump out the smp_call_function() function that was to be
-> invoked, on the off-chance that the problem is something like lock
-> contention in that function.
-
-Here are some with reproducers:
-https://syzkaller.appspot.com/bug?id=8a1e95291152ce5afea43c103a1fd62a257fcf4b
-https://syzkaller.appspot.com/bug?id=5e3ac329b6304aacc6304cfaab1a514bca12ce82
-https://syzkaller.appspot.com/bug?id=a01b4478f89e19cee91531f7c2b7751f0caf8c0c
-https://syzkaller.appspot.com/bug?id=e4caef9fc41d0c019c532a4257faec129699a42e
-
-But the question is if this CSD_LOCK_WAIT_DEBUG=y is useful in
-general? Should we enable it all the time?
+Thanks
+Hao
