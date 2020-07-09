@@ -2,87 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C71621AE3F
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 06:55:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4B3D21AA4C
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 00:11:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726787AbgGJEzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 00:55:12 -0400
-Received: from mcegress-30-lw-30.correio.biz ([191.252.30.30]:8810 "EHLO
-        mcegress-30-lw-30.correio.biz" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725919AbgGJEzM (ORCPT
+        id S1726546AbgGIWLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 18:11:11 -0400
+Received: from mail-io1-f65.google.com ([209.85.166.65]:38032 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726213AbgGIWLK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 00:55:12 -0400
-X-Greylist: delayed 7540 seconds by postgrey-1.27 at vger.kernel.org; Fri, 10 Jul 2020 00:55:09 EDT
-X-Sender-Id: x-authuser|cesarb@cesarb.eti.br
-Received: from mcbain0007.email.locaweb.com.br (unknown [10.30.225.41])
-        by mcrelay.correio.biz (Postfix) with ESMTP id 55D2230F8FD3;
-        Thu,  9 Jul 2020 19:11:24 -0300 (-03)
-X-Sender-Id: x-authuser|cesarb@cesarb.eti.br
-Received: from mcbain0007.email.locaweb.com.br
- (mcbain0007.email.locaweb.com.br [10.30.224.225])
-        by 0.0.0.0:2500 (trex/5.9.14);
-        Thu, 09 Jul 2020 19:11:24 -0300
-X-LW-Relay: Bad
-X-LW-SenderId: x-authuser|cesarb@cesarb.eti.br
-Received: from mcbain0007.email.locaweb.com.br (localhost [127.0.0.1])
-        by mcbain0007.email.locaweb.com.br (Postfix) with ESMTP id B8D245C035F;
-        Thu,  9 Jul 2020 19:11:30 -0300 (-03)
-Received: from proxy.email-ssl.com.br (bartf0025.email.locaweb.com.br [10.31.120.57])
-        by mcbain0007.email.locaweb.com.br (Postfix) with ESMTP id A2BCA280069;
-        Thu,  9 Jul 2020 19:11:29 -0300 (-03)
-x-locaweb-id: 5II90qkwcFl608adNSKU11Mhs1xf0MgAzPC-CIfMoteOMOLYZkorw41aZgtgCBGiz7JOWdNt-MIUbUFIqc5n_VfP5aYHWPJEum0HS-HjJOtj1caloRxiqgYbvP8P_wgmHwNblfkvCn6jCrhDIqFSGQeTZBx1E5oXeQ9zDDTUEye5I0CEEbtBqmQRdepJK3-NFd2BYMkda9wzmP4HD7U6VQ== NjM2NTczNjE3MjYyNDA2MzY1NzM2MTcyNjIyZTY1NzQ2OTJlNjI3Mg==
-x-locaweb-id: 5II90qkwcFl608adNSKU11Mhs1xf0MgAzPC-CIfMoteOMOLYZkorw41aZgtgCBGiz7JOWdNt-MIUbUFIqc5n_VfP5aYHWPJEum0HS-HjJOtj1caloRxiqgYbvP8P_wgmHwNblfkvCn6jCrhDIqFSGQeTZBx1E5oXeQ9zDDTUEye5I0CEEbtBqmQRdepJK3-NFd2BYMkda9wzmP4HD7U6VQ== NjM2NTczNjE3MjYyNDA2MzY1NzM2MTcyNjIyZTY1NzQ2OTJlNjI3Mg==
-x-locaweb-id: 5II90qkwcFl608adNSKU11Mhs1xf0MgAzPC-CIfMoteOMOLYZkorw41aZgtgCBGiz7JOWdNt-MIUbUFIqc5n_VfP5aYHWPJEum0HS-HjJOtj1caloRxiqgYbvP8P_wgmHwNblfkvCn6jCrhDIqFSGQeTZBx1E5oXeQ9zDDTUEye5I0CEEbtBqmQRdepJK3-NFd2BYMkda9wzmP4HD7U6VQ== NjM2NTczNjE3MjYyNDA2MzY1NzM2MTcyNjIyZTY1NzQ2OTJlNjI3Mg==
-X-LocaWeb-COR: locaweb_2009_x-mail
-X-AuthUser: cesarb@cesarb.eti.br
-Received: from cesarb-5490.home.cesarb.net (unknown [200.187.118.13])
-        (Authenticated sender: cesarb@cesarb.eti.br)
-        by proxy.email-ssl.com.br (Postfix) with ESMTPSA id 4A356C017A;
-        Thu,  9 Jul 2020 19:11:19 -0300 (-03)
-From:   Cesar Eduardo Barros <cesarb@cesarb.eti.br>
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org,
-        Cesar Eduardo Barros <cesarb@cesarb.eti.br>
-Subject: [PATCH] Restore gcc check in mips asm/unroll.h
-Date:   Thu,  9 Jul 2020 19:11:02 -0300
-Message-Id: <20200709221102.323356-1-cesarb@cesarb.eti.br>
-X-Mailer: git-send-email 2.26.2
+        Thu, 9 Jul 2020 18:11:10 -0400
+Received: by mail-io1-f65.google.com with SMTP id l1so4004090ioh.5;
+        Thu, 09 Jul 2020 15:11:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=bT3++BEYrjJIhXhzxTXtHnkKclhpqH+T88s6CFRclJo=;
+        b=CswQIaPFF7yO7s2kqmjnqUNEjLtZBue0XA50JduhAGmpTial2flxV8NnZ53tiVBq3K
+         6qwhM/zRC7S7hrBe3AqBVrWXlOD+LBYYF2X5qmHuxr/TRlqK+8G4UGVcvo8j6aaUlnrm
+         NmAH2IsUPNa/fwDp86q/xvUEe0ofY27oCr4aLopOAr96Urr4wXlnmFFXhfjKFlp5/ABP
+         fE4FIlBkZpWLoTUAiTYkzI2RPyr3q1nbVNYZcG1gplFT0EW7+u7UzpHrbV7KsDjtuw+p
+         K7IhLvbfRuE9AwEEBOEm/DOW6TLdowr7HePw03uqR7q4o+Vk62RZYsSCdxkqjGHL6D1F
+         eJ2A==
+X-Gm-Message-State: AOAM5329/S4wBhbcB5eD5saL2zCOx+kh016WwI0AYTJLHtZyVm1TNU3a
+        5qngspslNEycPcutt6NmFA==
+X-Google-Smtp-Source: ABdhPJz4lRiz70zmxalQUoUYbGE8Rm547bR48XMoyyuw4D0hqYCx9U1AiTKXy2iCcGXC/viEMPy/cA==
+X-Received: by 2002:a02:b0d5:: with SMTP id w21mr63608081jah.27.1594332669694;
+        Thu, 09 Jul 2020 15:11:09 -0700 (PDT)
+Received: from xps15 ([64.188.179.254])
+        by smtp.gmail.com with ESMTPSA id o7sm2824483ioo.4.2020.07.09.15.11.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Jul 2020 15:11:09 -0700 (PDT)
+Received: (nullmailer pid 982246 invoked by uid 1000);
+        Thu, 09 Jul 2020 22:11:05 -0000
+Date:   Thu, 9 Jul 2020 16:11:05 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     =?iso-8859-1?Q?=C1lvaro_Fern=E1ndez?= Rojas <noltari@gmail.com>
+Cc:     simon@fire.lp0.eu, jonas.gorski@gmail.com, kishon@ti.com,
+        vkoul@kernel.org, f.fainelli@gmail.com,
+        bcm-kernel-feedback-list@broadcom.com, p.zabel@pengutronix.de,
+        krzk@kernel.org, gregkh@linuxfoundation.org, alcooperx@gmail.com,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v5 1/2] dt-bindings: phy: add bcm63xx-usbh bindings
+Message-ID: <20200709221105.GA976808@bogus>
+References: <20200619100035.4032596-1-noltari@gmail.com>
+ <20200619100035.4032596-2-noltari@gmail.com>
 MIME-Version: 1.0
-X-Outbound-RspamD: yes
-X-MC:   yes
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200619100035.4032596-2-noltari@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While raising the gcc version requirement to 4.9, the compile-time check
-in the unroll macro was accidentally changed from being used on gcc and
-clang to being used on clang only.
+On Fri, Jun 19, 2020 at 12:00:34PM +0200, Álvaro Fernández Rojas wrote:
+> Document BCM63xx USBH PHY bindings.
+> 
+> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
+> Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+> ---
+>  v5: no changes.
+>  v4: conditionally require 1/2 clocks and fix clock/reset values.
+>  v3: no changes.
+>  v2: phy-cells changed to 1.
+> 
+>  .../bindings/phy/brcm,bcm63xx-usbh-phy.yaml   | 84 +++++++++++++++++++
+>  1 file changed, 84 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/phy/brcm,bcm63xx-usbh-phy.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/phy/brcm,bcm63xx-usbh-phy.yaml b/Documentation/devicetree/bindings/phy/brcm,bcm63xx-usbh-phy.yaml
+> new file mode 100644
+> index 000000000000..f267da6193a9
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/phy/brcm,bcm63xx-usbh-phy.yaml
+> @@ -0,0 +1,84 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/phy/brcm,bcm63xx-usbh-phy.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +
+> +title: BCM63xx USBH PHY
+> +
+> +maintainers:
+> +  - Álvaro Fernández Rojas <noltari@gmail.com>
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - brcm,bcm6318-usbh-phy
+> +      - brcm,bcm6328-usbh-phy
+> +      - brcm,bcm6358-usbh-phy
+> +      - brcm,bcm6362-usbh-phy
+> +      - brcm,bcm6368-usbh-phy
+> +      - brcm,bcm63268-usbh-phy
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  clock-names:
+> +    const: usbh
+> +
+> +  resets:
+> +    maxItems: 1
+> +
+> +  "#phy-cells":
+> +    const: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - clock-names
+> +  - resets
+> +  - "#phy-cells"
 
-Restore the gcc check, changing it from "gcc >=3D 4.7" to "all gcc".
+You need:
 
-Fixes: 6ec4476ac825 ("Raise gcc version requirement to 4.9")
-Signed-off-by: Cesar Eduardo Barros <cesarb@cesarb.eti.br>
----
- arch/mips/include/asm/unroll.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+additionalProperties: false
 
-diff --git a/arch/mips/include/asm/unroll.h b/arch/mips/include/asm/unrol=
-l.h
-index 8ed660adc84f..49009319ac2c 100644
---- a/arch/mips/include/asm/unroll.h
-+++ b/arch/mips/include/asm/unroll.h
-@@ -25,7 +25,8 @@
- 	 * generate reasonable code for the switch statement,	\
- 	 * so we skip the sanity check for those compilers.	\
- 	 */							\
--	BUILD_BUG_ON((CONFIG_CLANG_VERSION >=3D 80000) &&		\
-+	BUILD_BUG_ON((CONFIG_CC_IS_GCC ||			\
-+		      CONFIG_CLANG_VERSION >=3D 80000) &&		\
- 		     !__builtin_constant_p(times));		\
- 								\
- 	switch (times) {					\
---=20
-2.26.2
+> +
+> +allOf:
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          enum:
+> +            - brcm,bcm6318-usbh-phy
+> +            - brcm,bcm63268-usbh-phy
+> +    then:
+> +      properties:
+> +        clocks:
+> +          maxItems: 2
 
+This doesn't work. The main schema will also be applied and it says 
+there's 1. The main schema has to cover all the cases and then if/then 
+schemas add constraints.
+
+> +        clock-names:
+> +          items:
+> +            - const: usbh
+> +            - const: usb_ref
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          enum:
+> +            - brcm,bcm6318-usbh-phy
+> +            - brcm,bcm6328-usbh-phy
+> +            - brcm,bcm6362-usbh-phy
+> +            - brcm,bcm63268-usbh-phy
+> +    then:
+> +      properties:
+> +        power-domains:
+> +          maxItems: 1
+> +      required:
+> +        - power-domains
+> +
+> +examples:
+> +  - |
+> +    usbh: usb-phy@10001700 {
+> +      compatible = "brcm,bcm6368-usbh-phy";
+> +      reg = <0x10001700 0x38>;
+> +      clocks = <&periph_clk 15>;
+> +      clock-names = "usbh";
+> +      resets = <&periph_rst 12>;
+> +      #phy-cells = <1>;
+> +    };
+> -- 
+> 2.27.0
+> 
