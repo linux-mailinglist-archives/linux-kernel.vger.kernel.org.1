@@ -2,76 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAABB21959B
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 03:27:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0D842195B5
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 03:40:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726185AbgGIB1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 21:27:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49566 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725982AbgGIB1h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 21:27:37 -0400
-Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 70D9D20739;
-        Thu,  9 Jul 2020 01:27:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594258056;
-        bh=rgIJIT6h9+jSvr31lBXUMHr0PI7lL+rZsPS91ImM10s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kxan13qQ4EfocnnjcutzbdSSn39uvQii+R5/Dz9zjeXrdOxYkhLxu9teH2j3bjXmr
-         MIhXXogtpxPJBTK+IcXc1dn0S0cCMhDrn6ywwf8JsKa3Jnm+fs2AXlItgccnOm+J3q
-         4PfG/l9NeLLrsg9S8fpIAvjb49VASwMgLGvhVX8Q=
-Date:   Wed, 8 Jul 2020 21:27:35 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Mimi Zohar <zohar@linux.ibm.com>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Maurizio Drocco <maurizio.drocco@ibm.com>,
-        Bruno Meneguele <bmeneg@redhat.com>,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.7 03/30] ima: extend boot_aggregate with kernel
- measurements
-Message-ID: <20200709012735.GX2722994@sasha-vm>
-References: <20200708154116.3199728-1-sashal@kernel.org>
- <20200708154116.3199728-3-sashal@kernel.org>
- <1594224793.23056.251.camel@linux.ibm.com>
+        id S1726139AbgGIBkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 21:40:03 -0400
+Received: from regular1.263xmail.com ([211.150.70.199]:58194 "EHLO
+        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726081AbgGIBkD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 21:40:03 -0400
+X-Greylist: delayed 468 seconds by postgrey-1.27 at vger.kernel.org; Wed, 08 Jul 2020 21:40:02 EDT
+Received: from localhost (unknown [192.168.167.32])
+        by regular1.263xmail.com (Postfix) with ESMTP id A14ADF1B;
+        Thu,  9 Jul 2020 09:32:06 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-SKE-CHECKED: 1
+X-ABS-CHECKED: 1
+Received: from [172.16.12.236] (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P14852T139810280818432S1594258325506381_;
+        Thu, 09 Jul 2020 09:32:06 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <c13d51af5d7d2fabafb533b54b30220b>
+X-RL-SENDER: zhangqing@rock-chips.com
+X-SENDER: zhangqing@rock-chips.com
+X-LOGIN-NAME: zhangqing@rock-chips.com
+X-FST-TO: linux-kernel@vger.kernel.org
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-DNS-TYPE: 0
+X-System-Flag: 0
+Subject: Re: [PATCH] clk: rockchip: mark pclk_uart2 as critical on rk3328
+To:     Johan Jonker <jbx6244@gmail.com>, heiko@sntech.de
+Cc:     mturquette@baylibre.com, sboyd@kernel.org,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20200708144528.20465-1-jbx6244@gmail.com>
+From:   "elaine.zhang" <zhangqing@rock-chips.com>
+Organization: rockchip
+Message-ID: <2f58b9df-9bcd-5639-65cc-306a6d36b310@rock-chips.com>
+Date:   Thu, 9 Jul 2020 09:32:05 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Disposition: inline
+In-Reply-To: <20200708144528.20465-1-jbx6244@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1594224793.23056.251.camel@linux.ibm.com>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 08, 2020 at 12:13:13PM -0400, Mimi Zohar wrote:
->Hi Sasha,
+在 2020/7/8 下午10:45, Johan Jonker 写道:
+> The rk3328 uart2 port is used as boot console and to debug.
+> During the boot pclk_uart2 is disabled by a clk_disable_unused
+> initcall. Fix the uart2 function by marking pclk_uart2
+> as critical on rk3328. Also add sclk_uart2 as that is needed
+> for the same DT node.
 >
->On Wed, 2020-07-08 at 11:40 -0400, Sasha Levin wrote:
->> From: Maurizio Drocco <maurizio.drocco@ibm.com>
->>
->> [ Upstream commit 20c59ce010f84300f6c655d32db2610d3433f85c ]
->>
->> Registers 8-9 are used to store measurements of the kernel and its
->> command line (e.g., grub2 bootloader with tpm module enabled). IMA
->> should include them in the boot aggregate. Registers 8-9 should be
->> only included in non-SHA1 digests to avoid ambiguity.
+> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+> ---
+>   drivers/clk/rockchip/clk-rk3328.c | 2 ++
+>   1 file changed, 2 insertions(+)
 >
->Prior to Linux 5.8, the SHA1 template data hashes were padded before
->being extended into the TPM. �Support for calculating and extending
->the per TPM bank template data digests is only being upstreamed in
->Linux 5.8.
->
->How will attestation servers know whether to include PCRs 8 & 9 in the
->the boot_aggregate calculation? �Now, there is a direct relationship
->between the template data SHA1 padded digest not including PCRs 8 & 9,
->and the new per TPM bank template data digest including them.
+> diff --git a/drivers/clk/rockchip/clk-rk3328.c b/drivers/clk/rockchip/clk-rk3328.c
+> index c186a1985..cb7749cb7 100644
+> --- a/drivers/clk/rockchip/clk-rk3328.c
+> +++ b/drivers/clk/rockchip/clk-rk3328.c
+> @@ -875,6 +875,8 @@ static const char *const rk3328_critical_clocks[] __initconst = {
+>   	"aclk_gmac_niu",
+>   	"pclk_gmac_niu",
+>   	"pclk_phy_niu",
+> +	"pclk_uart2",
+> +	"sclk_uart2",
+>   };
+>   
 
-Got it, I'll drop it then, thank you!
+Not need to mark the uart2 as critical clocks, the uart clk will enabled 
+by uart driver probe(dw8250_probe()).
 
--- 
-Thanks,
-Sasha
+For your question,  Please check the uart2 dts node "status = okay".
+
+Or You can send me the complete log, I check the status of uart2.
+
+>   static void __init rk3328_clk_init(struct device_node *np)
+
+
