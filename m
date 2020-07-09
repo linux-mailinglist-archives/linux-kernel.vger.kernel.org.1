@@ -2,26 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6213621A262
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 16:45:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 926DD21A261
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 16:45:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727042AbgGIOp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1726710AbgGIOp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 9 Jul 2020 10:45:27 -0400
-Received: from one.firstfloor.org ([193.170.194.197]:36222 "EHLO
+Received: from one.firstfloor.org ([193.170.194.197]:36224 "EHLO
         one.firstfloor.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726410AbgGIOp1 (ORCPT
+        with ESMTP id S1726475AbgGIOp1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 9 Jul 2020 10:45:27 -0400
+X-Greylist: delayed 510 seconds by postgrey-1.27 at vger.kernel.org; Thu, 09 Jul 2020 10:45:26 EDT
 Received: by one.firstfloor.org (Postfix, from userid 503)
-        id C9F5F86731; Thu,  9 Jul 2020 16:36:54 +0200 (CEST)
+        id 1F20E867DA; Thu,  9 Jul 2020 16:37:43 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=firstfloor.org;
-        s=mail; t=1594305414;
-        bh=NFHVOQuc740DsnU3hI4JnpmsluKHMe7JTI/h4WcX4yw=;
+        s=mail; t=1594305464;
+        bh=xxUNKBrT5+W3Ou+a/E3ro6XLN+oqaa1s44HJ/vlvdBw=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qxKpfZaR0f/XvTQvLBiUw9glLNQyIZoHiwSIQMsKSbL7iQYwANOkTAC1AJ/Xd+yf9
-         tbSaJDdmto+SmTfAQE1xS8nHgMyp+AKZ3sHuC0JE9QIJCjtcK0soNeleJWv9WoXwFd
-         gGQbA3CPGu3owN5v8RcgGEqAWD415NIJDNaVvWT8=
-Date:   Thu, 9 Jul 2020 07:36:54 -0700
+        b=IJ4zxh3w+Tq38/dHIP9kanA5fiNbMVg1gnjueNWa54vaIP6/g5a2DMqJjEOScQYTd
+         J26R5ONYpQhZgG238dAftGchgMr/jLtSzXpC79xCaeHU5jx9/HlqyvvFxcW70GwTOf
+         M+xO3IiJxC4E1QhXU+Fv1iD+EiiWHspe0pZ0GORo=
+Date:   Thu, 9 Jul 2020 07:37:43 -0700
 From:   Andi Kleen <andi@firstfloor.org>
 To:     Masami Hiramatsu <mhiramat@kernel.org>
 Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -30,38 +31,62 @@ Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
         linux-kernel@vger.kernel.org, Andi Kleen <andi@firstfloor.org>,
         Andi Kleen <ak@linux.intel.com>
-Subject: Re: [PATCH 4/4] perf-probe: Warn if the target function is GNU
- Indirect function
-Message-ID: <20200709143654.pw2maoxivsjho6op@two.firstfloor.org>
+Subject: Re: [PATCH 2/4] perf-probe: Fix wrong variable warning when the
+ probe point is not found
+Message-ID: <20200709143743.gux2xsfq4wo2xeo3@two.firstfloor.org>
 References: <159428201109.56570.3802208017109058146.stgit@devnote2>
- <159428205174.56570.17588311835868886287.stgit@devnote2>
+ <159428203219.56570.8289435784233418736.stgit@devnote2>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <159428205174.56570.17588311835868886287.stgit@devnote2>
+In-Reply-To: <159428203219.56570.8289435784233418736.stgit@devnote2>
 User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> diff --git a/tools/perf/util/probe-event.c b/tools/perf/util/probe-event.c
-> index 1e95a336862c..671176d39569 100644
-> --- a/tools/perf/util/probe-event.c
-> +++ b/tools/perf/util/probe-event.c
-> @@ -379,6 +379,11 @@ static int find_alternative_probe_point(struct debuginfo *dinfo,
->  			address = sym->start;
->  		else
->  			address = map->unmap_ip(map, sym->start) - map->reloc;
-> +		if (sym->type == STT_GNU_IFUNC) {
-> +			pr_warning("Warning: The probe address (0x%lx) is in a GNU indirect function.\n"
-> +				"This may not work as you expected unless you intend to probe the indirect function.\n",
+On Thu, Jul 09, 2020 at 05:07:12PM +0900, Masami Hiramatsu wrote:
+> Fix a wrong "variable not found" warning when the probe point is
+> not found in the debuginfo.
+> Since the debuginfo__find_probes() can return 0 even if it does not
+> find given probe point in the debuginfo, fill_empty_trace_arg() can
+> be called with tf.ntevs == 0 and it can warn a wrong warning.
+> To fix this, reject ntevs == 0 in fill_empty_trace_arg().
+> 
+> E.g. without this patch;
+> 
+>   # perf probe -x /lib64/libc-2.30.so -a "memcpy arg1=%di"
+>   Failed to find the location of the '%di' variable at this address.
+>    Perhaps it has been optimized out.
+>    Use -V with the --range option to show '%di' location range.
+>   Added new events:
+>     probe_libc:memcpy    (on memcpy in /usr/lib64/libc-2.30.so with arg1=%di)
+>     probe_libc:memcpy    (on memcpy in /usr/lib64/libc-2.30.so with arg1=%di)
+> 
+>   You can now use it in all perf tools, such as:
+> 
+>   	perf record -e probe_libc:memcpy -aR sleep 1
+> 
+> With this;
+> 
+>   # perf probe -x /lib64/libc-2.30.so -a "memcpy arg1=%di"
+>   Added new events:
+>     probe_libc:memcpy    (on memcpy in /usr/lib64/libc-2.30.so with arg1=%di)
+>     probe_libc:memcpy    (on memcpy in /usr/lib64/libc-2.30.so with arg1=%di)
+> 
+>   You can now use it in all perf tools, such as:
+> 
+>   	perf record -e probe_libc:memcpy -aR sleep 1
+> 
+> 
+> Reported-by: Andi Kleen <andi@firstfloor.org>
+> Fixes: cb4027308570 ("perf probe: Trace a magic number if variable is not found")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 
-I would say something like this.
+Tested-by: Andi Kleen <ak@linux.intel.com>
 
-Consider identifying the final function used at run time and set the
-probe directly on that.
-
-I think that's more useful to the user.
+Except for the minor nit on the message all patches look good to me.
 
 -Andi
