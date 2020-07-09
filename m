@@ -2,96 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E7052198E5
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 08:52:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B25A82198DF
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 08:51:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726361AbgGIGwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 02:52:31 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:57722 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726119AbgGIGw3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 02:52:29 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1594277548; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=FduXKrGEYtQxuGDpvIdMVnnvzBix5AEgLPzAi4lPSHU=; b=tTqe9fN63EH6h5pGYjg7qE69GUE2IaBHOuXjBCPVMioA6EdDW+duqHKXVI3mmUH14rQP6IxR
- W2MOR2T/XhdngA3MnFNRnzKhaPRNve89ZKxCouURxzMAZkiVb9I3lwgva1EFw08HgAUsvpx9
- OhmjYoWbMwhi5UIfvSg8jTKhwEk=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n18.prod.us-east-1.postgun.com with SMTP id
- 5f06bea9d07c135855367008 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 09 Jul 2020 06:52:25
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 7BF49C433C6; Thu,  9 Jul 2020 06:52:24 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.0.104] (unknown [123.201.173.133])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: msavaliy)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E9713C433CA;
-        Thu,  9 Jul 2020 06:51:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E9713C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=msavaliy@codeaurora.org
-Subject: Re: [PATCH 0/2] spi: spi-qcom-qspi: Avoid some per-transfer overhead
-To:     Douglas Anderson <dianders@chromium.org>,
-        Mark Brown <broonie@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     mka@chromium.org, Akash Asthana <akashast@codeaurora.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>, swboyd@chromium.org,
-        linux-arm-msm@vger.kernel.org, georgi.djakov@linaro.org,
-        ctheegal@codeaurora.org, mkshah@codeaurora.org,
-        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
-References: <20200707201641.2030532-1-dianders@chromium.org>
-From:   "Mukesh, Savaliya" <msavaliy@codeaurora.org>
-Message-ID: <d5d10877-d24d-3e60-afa9-78d00b6c07a7@codeaurora.org>
-Date:   Thu, 9 Jul 2020 12:20:58 +0530
+        id S1726263AbgGIGvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 02:51:19 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7825 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726119AbgGIGvT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 02:51:19 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 1BB15177614AC0946EA4;
+        Thu,  9 Jul 2020 14:51:16 +0800 (CST)
+Received: from [127.0.0.1] (10.174.186.75) by DGGEMS413-HUB.china.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Thu, 9 Jul 2020
+ 14:51:07 +0800
+Subject: Re: [RFC PATCH v5 2/2] arm64: tlb: Use the TLBI RANGE feature in
+ arm64
+To:     Catalin Marinas <catalin.marinas@arm.com>
+CC:     <will@kernel.org>, <suzuki.poulose@arm.com>, <maz@kernel.org>,
+        <steven.price@arm.com>, <guohanjun@huawei.com>, <olof@lixom.net>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+        <linux-mm@kvack.org>, <arm@kernel.org>, <xiexiangyou@huawei.com>,
+        <prime.zeng@hisilicon.com>, <zhangshaokun@hisilicon.com>,
+        <kuhn.chenqun@huawei.com>
+References: <20200708124031.1414-1-yezhenyu2@huawei.com>
+ <20200708124031.1414-3-yezhenyu2@huawei.com> <20200708182451.GF6308@gaia>
+From:   Zhenyu Ye <yezhenyu2@huawei.com>
+Message-ID: <27a4d364-d967-c644-83ed-805ba75f13f6@huawei.com>
+Date:   Thu, 9 Jul 2020 14:51:05 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-In-Reply-To: <20200707201641.2030532-1-dianders@chromium.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20200708182451.GF6308@gaia>
+Content-Type: text/plain; charset="gbk"
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+X-Originating-IP: [10.174.186.75]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2020/7/9 2:24, Catalin Marinas wrote:
+> On Wed, Jul 08, 2020 at 08:40:31PM +0800, Zhenyu Ye wrote:
+>> Add __TLBI_VADDR_RANGE macro and rewrite __flush_tlb_range().
+>>
+>> In this patch, we only use the TLBI RANGE feature if the stride == PAGE_SIZE,
+>> because when stride > PAGE_SIZE, usually only a small number of pages need
+>> to be flushed and classic tlbi intructions are more effective.
+> 
+> Why are they more effective? I guess a range op would work on this as
+> well, say unmapping a large THP range. If we ignore this stride ==
+> PAGE_SIZE, it could make the code easier to read.
+> 
 
-On 7/8/2020 1:46 AM, Douglas Anderson wrote:
-> Not to be confused with the similar series I posed for the _other_
-> Qualcomm SPI controller (spi-geni-qcom) [1], this one avoids the
-> overhead on the Quad SPI controller.
->
-> It's based atop the current Qualcomm tree including Rajendra's ("spi:
-> spi-qcom-qspi: Use OPP API to set clk/perf state").  As discussed in
-> individual patches, these could ideally land through the Qualcomm tree
-> with Mark's Ack.
->
-> Measuring:
-> * Before OPP / Interconnect patches reading all flash takes: ~3.4 seconds
-> * After OPP / Interconnect patches reading all flash takes: ~4.7 seconds
-> * After this patch reading all flash takes: ~3.3 seconds
->
-> [1] https://lore.kernel.org/r/20200702004509.2333554-1-dianders@chromium.org
-> [2] https://lore.kernel.org/r/1593769293-6354-2-git-send-email-rnayak@codeaurora.org
->
->
-> Douglas Anderson (2):
->    spi: spi-qcom-qspi: Avoid clock setting if not needed
->    spi: spi-qcom-qspi: Set an autosuspend delay of 250 ms
->
->   drivers/spi/spi-qcom-qspi.c | 45 ++++++++++++++++++++++++++++---------
->   1 file changed, 35 insertions(+), 10 deletions(-)
+OK, I will remove the stride == PAGE_SIZE here.
 
-Reviewed-by: Mukesh Kumar Savaliya <msavaliy@codeaurora.org>
+>> We can also use 'end - start < threshold number' to decide which way
+>> to go, however, different hardware may have different thresholds, so
+>> I'm not sure if this is feasible.
+>>
+>> Signed-off-by: Zhenyu Ye <yezhenyu2@huawei.com>
+>> ---
+>>  arch/arm64/include/asm/tlbflush.h | 104 ++++++++++++++++++++++++++----
+>>  1 file changed, 90 insertions(+), 14 deletions(-)
+> 
+> Could you please rebase these patches on top of the arm64 for-next/tlbi
+> branch:
+> 
+> git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-next/tlbi
+> 
+
+OK, I will send a formal version patch of this series soon.
+
+>>  
+>> -	if ((end - start) >= (MAX_TLBI_OPS * stride)) {
+>> +	if ((!cpus_have_const_cap(ARM64_HAS_TLBI_RANGE) &&
+>> +	    (end - start) >= (MAX_TLBI_OPS * stride)) ||
+>> +	    range_pages >= MAX_TLBI_RANGE_PAGES) {
+>>  		flush_tlb_mm(vma->vm_mm);
+>>  		return;
+>>  	}
+> 
+> Is there any value in this range_pages check here? What's the value of
+> MAX_TLBI_RANGE_PAGES? If we have TLBI range ops, we make a decision here
+> but without including the stride. Further down we use the stride to skip
+> the TLBI range ops.
+> 
+
+MAX_TLBI_RANGE_PAGES is defined as __TLBI_RANGE_PAGES(31, 3), which is
+decided by ARMv8.4 spec. The address range is determined by below formula:
+
+	[BADDR, BADDR + (NUM + 1) * 2^(5*SCALE + 1) * PAGESIZE)
+
+Which has nothing to do with the stride.  After removing the stride ==
+PAGE_SIZE below, there will be more clear.
+
+
+>>  }
+> 
+> I think the algorithm is correct, though I need to work it out on a
+> piece of paper.
+> 
+> The code could benefit from some comments (above the loop) on how the
+> range is built and the right scale found.
+> 
+
+OK.
+
+Thanks,
+Zhenyu
+
