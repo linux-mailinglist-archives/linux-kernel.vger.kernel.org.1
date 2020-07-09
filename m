@@ -2,118 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFD2821A435
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 17:59:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1158A21A444
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 18:01:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728037AbgGIP71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 11:59:27 -0400
-Received: from foss.arm.com ([217.140.110.172]:38296 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726519AbgGIP71 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 11:59:27 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D4C5131B;
-        Thu,  9 Jul 2020 08:59:26 -0700 (PDT)
-Received: from [192.168.1.84] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 048743F792;
-        Thu,  9 Jul 2020 08:59:24 -0700 (PDT)
-Subject: Re: [PATCH] drm/panfrost: fix ref count leak in
- panfrost_job_hw_submit
-To:     Rob Herring <robh@kernel.org>,
-        Navid Emamdoost <navid.emamdoost@gmail.com>
-Cc:     Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Navid Emamdoost <emamd001@umn.edu>, wu000273@umn.edu,
-        kjlu@umn.edu, Stephen McCamant <smccaman@umn.edu>
-References: <20200614062730.46489-1-navid.emamdoost@gmail.com>
- <CAL_JsqL=+ToP1w3m8GdK0K0o8ER2eYSiM5ffuFVxyMsZns4gqA@mail.gmail.com>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <30c2031a-4975-43d0-c8ca-8664969e5df3@arm.com>
-Date:   Thu, 9 Jul 2020 16:59:13 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <CAL_JsqL=+ToP1w3m8GdK0K0o8ER2eYSiM5ffuFVxyMsZns4gqA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+        id S1728234AbgGIQA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 12:00:58 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:45050 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728118AbgGIQA4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 12:00:56 -0400
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 09 Jul 2020 09:00:55 -0700
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 09 Jul 2020 09:00:54 -0700
+Received: from c-sanm-linux.qualcomm.com ([10.206.25.31])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 09 Jul 2020 21:30:25 +0530
+Received: by c-sanm-linux.qualcomm.com (Postfix, from userid 2343233)
+        id BA8BB2C1E; Thu,  9 Jul 2020 21:30:24 +0530 (IST)
+From:   Sandeep Maheswaram <sanm@codeaurora.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Sandeep Maheswaram <sanm@codeaurora.org>
+Subject: [PATCH v8 0/2] ADD interconnect support for Qualcomm DWC3 driver
+Date:   Thu,  9 Jul 2020 21:30:10 +0530
+Message-Id: <1594310413-14577-1-git-send-email-sanm@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/07/2020 16:44, Rob Herring wrote:
-> On Sun, Jun 14, 2020 at 12:27 AM Navid Emamdoost
-> <navid.emamdoost@gmail.com> wrote:
->>
->> in panfrost_job_hw_submit, pm_runtime_get_sync is called which
->> increments the counter even in case of failure, leading to incorrect
->> ref count. In case of failure, decrement the ref count before returning.
->>
->> Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
->> ---
->>   drivers/gpu/drm/panfrost/panfrost_job.c | 8 +++++---
->>   1 file changed, 5 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/panfrost/panfrost_job.c b/drivers/gpu/drm/panfrost/panfrost_job.c
->> index 7914b1570841..89ac84667eb1 100644
->> --- a/drivers/gpu/drm/panfrost/panfrost_job.c
->> +++ b/drivers/gpu/drm/panfrost/panfrost_job.c
->> @@ -147,11 +147,10 @@ static void panfrost_job_hw_submit(struct panfrost_job *job, int js)
->>
->>          ret = pm_runtime_get_sync(pfdev->dev);
->>          if (ret < 0)
->> -               return;
->> +               goto out;
-> 
-> If the get failed, I don't think we want to do a put.
+This path series aims to add interconnect support in
+dwc3-qcom driver on SDM845 and SC7180 SoCs.
 
-The pm_runtime_get_sync() does actually always increment the reference 
-(even when returning a failure), but actually I don't think we want it 
-here anyway, as I think I explained before[1].
-  [1] 
-https://lore.kernel.org/dri-devel/272650ba-2c44-9084-7829-b04023eba723@arm.com
-> 
->>
->>          if (WARN_ON(job_read(pfdev, JS_COMMAND_NEXT(js)))) {
->> -               pm_runtime_put_sync_autosuspend(pfdev->dev);
+Changes from v7 -> v8
+  > Only driver change is pending all other patches are merged so dropped
+    from the series.
+  > Removed the device_is_bound call and getting speed from device tree
+    and rearranged interconnect functions to avoid forward declarations.	
+  > Added patch to specify maximum speed for dwc3 DT node.
 
-This is a correct change - we don't want the put here. (Although this 
-should never happen).
+Changes from v6 -> v7
+  > [PATCH 2/4] Fixed review comments from Matthias in DWC3 driver.
+  > Other patches remain unchanged.
 
->> -               return;
->> +               goto out;
->>          }
->>
->>          cfg = panfrost_mmu_as_get(pfdev, &job->file_priv->mmu);
->> @@ -184,6 +183,9 @@ static void panfrost_job_hw_submit(struct panfrost_job *job, int js)
->>                                  job, js, jc_head);
->>
->>          job_write(pfdev, JS_COMMAND_NEXT(js), JS_COMMAND_START);
-> 
-> So we start the job here and then...
-> 
->> +out:
->> +       pm_runtime_put_sync_autosuspend(pfdev->dev);
-> 
-> ...turn off clocks/power here. Typically, you'd be fine as autosuspend
-> has a delay by default, but userspace is free to change the delay to
-> 0.
-> 
->> +       return;
+Changes from v5 -> v6
+  > [PATCH 1/4] Addressed comments from Rob.
+  > [PATCH 2/4] Fixed review comments from Matthias in DWC3 driver.
+  > [PATCH 3/4] Ignoring 80 char limit in defining interconnect paths.
+  > Added [PATCH 4/4] in this series. Adding interconnect nodes for SC7180.
+    Depends on patch https://patchwork.kernel.org/patch/11417989/.	
 
-A return at the end of the function with no argument is pointless.
+Changes from v4 -> v5
+  > [PATCH 1/3] Added the interconnect properties in yaml. This patch depends
+    on series https://patchwork.kernel.org/cover/11372641/.
+  > [PATCH 2/3] Fixed review comments from Matthias in DWC3 driver.
+  > [PATCH 3/3] Modified as per the new interconnect nodes in sdm845. Depends
+    on series https://patchwork.kernel.org/cover/11372211/. 
 
-Steve
 
->>   }
->>
->>   static void panfrost_acquire_object_fences(struct drm_gem_object **bos,
->> --
->> 2.17.1
->>
+Changes from v3 -> v4
+  > Fixed review comments from Matthias
+  > [PATCH 1/3] and [PATCH 3/3] remains unchanged
+
+Changes from v2 -> v3
+  > Fixed review comments from Matthias and Manu
+  > changed the functions prefix from usb_* to dwc3_qcom_*
+
+Changes since V1:
+  > Comments by Georgi Djakov on "[PATCH 2/3]" addressed
+  > [PATCH 1/3] and [PATCH 3/3] remains unchanged
+
+Sandeep Maheswaram (2):
+  usb: dwc3: qcom: Add interconnect support in dwc3 driver
+  arm64: dts: qcom: sc7180: Add maximum speed property for DWC3 USB node
+
+ arch/arm64/boot/dts/qcom/sc7180.dtsi |   1 +
+ drivers/usb/dwc3/dwc3-qcom.c         | 127 ++++++++++++++++++++++++++++++++++-
+ 2 files changed, 126 insertions(+), 2 deletions(-)
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
 
