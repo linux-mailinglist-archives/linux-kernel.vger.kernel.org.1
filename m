@@ -2,143 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0AE1219ADD
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 10:33:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 263E8219AE2
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 10:33:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726408AbgGIIc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 04:32:57 -0400
-Received: from mx07-00178001.pphosted.com ([62.209.51.94]:56139 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726193AbgGIIc4 (ORCPT
+        id S1726502AbgGIId2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 04:33:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47972 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726260AbgGIId0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 04:32:56 -0400
-Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0698TmA4019421;
-        Thu, 9 Jul 2020 10:32:53 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=W2Iv6Br/F8a/XpQJdQSfkI1+6W8aMHIof4Dwn81Y06I=;
- b=uGkiyGUY4AoGwwW0yy5r/Pb2V5LYzbTTwZCIQtbXZFVOzjeVm7KY0Qj7gaaZ8UFOTMar
- T1QRa/KlB3TKpcJQCcLTwDxQHDsYKUwFBeyV1ECzX+SYHTOSjVFxjRiv+g/kR/FkKK+A
- sIv/mHtoZS4ywT6GS1EjVtBc22ny0VofG9n1My2UOcJvRc8DnNnakvpvRyqAyl4n+D1k
- /aUOj+6S5Qzqr5EUvL4P2ONfgY1CqG+PL26AnhgG52zDJEdVZYe1a8dFsJlOwil2CSYv
- bbcGOI8T04kFkvi7wSiO1lnkKShMBugFvPVnuh5GD657+nrMTOOBJlDHCG7Ptvt+JJAf vQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 325k3vuf8u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 09 Jul 2020 10:32:53 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 3FD3C10002A;
-        Thu,  9 Jul 2020 10:32:53 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 3198E2A934B;
-        Thu,  9 Jul 2020 10:32:53 +0200 (CEST)
-Received: from lmecxl0889.tpe.st.com (10.75.127.51) by SFHDAG3NODE1.st.com
- (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 9 Jul
- 2020 10:32:52 +0200
-Subject: Re: [PATCH v5 5/9] remoteproc: Introducing function rproc_validate()
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        "ohad@wizery.com" <ohad@wizery.com>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>
-CC:     "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20200707210014.927691-1-mathieu.poirier@linaro.org>
- <20200707210014.927691-6-mathieu.poirier@linaro.org>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
-Message-ID: <5f81f8cb-bf29-40cb-57e1-918e0d997431@st.com>
-Date:   Thu, 9 Jul 2020 10:32:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Thu, 9 Jul 2020 04:33:26 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD227C061A0B
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 01:33:26 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id ch3so784008pjb.5
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 01:33:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Em239ZuAPE3JLveEebWL4wI5B1YGKhUb+MumEq3w2Wg=;
+        b=WydzTG9x/LsiCaECMuBiMO39LwIj0KNOMzvd9sQ17HMcErmiPP9L4MnrK0FyjPdGMm
+         nPBYgFwLiaipvvNG742rksAaAG5a2lWcs+0KAbhOK+BS/EeXq81rqUQnmcuccc1gWU8u
+         fhj6EsV/v7lDKvS2CJDm3uGDmOOLC+TCwmEXOlIfkHJ9RFgf5gulFstR65GSQsETNT7O
+         0wcnlLbPO44RTZLlDDf6zpgUAj9hg2p8oinbQGNAYNM8aHau9uQ5BUEGTqXMjnT1Qqm+
+         zWQ27qvGrrSjfatOhjzZlKUAyOJ3p/XVR9XfgdRqLHdYdgS723ihpG2tFQ0W219defcb
+         FIug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Em239ZuAPE3JLveEebWL4wI5B1YGKhUb+MumEq3w2Wg=;
+        b=VrLnve0LDmXnHpwDwgKJZSGdFwov8ufVl/zbNBt/uInbev/7UgHsEZeEvUflEuPhkX
+         lRb1JojGr5c22CTbOFuaqzm/aSKn8wNL2fhPckV2tqVI8WN1MviRImqBfha9RCq03/S7
+         FBKRI+6sxEqNSzh6OU/S2hGVMkCZ0Muq4bVXYZ8EFkcd2WDufyL+uruTDMMvKMzfEan8
+         CXufDlQmE4g+xtWMZ0ICTBX+1CzRdCQgPspP1naS5nirMHiuCGYOxL/qcNAw7P7TBUpW
+         y0v0s2yUv1wggGRNhW2jAdQbiL3mYsCMJPLOgr3GePNNE6xpxoSEveyLX02YNoQBjejJ
+         FxbQ==
+X-Gm-Message-State: AOAM532uiJifsH5U1s76vxUzqg85A3lYnnczBbe4kQt+qC1o9SOiHF++
+        HW7RpUD5eeHfQUDsDYul0dU=
+X-Google-Smtp-Source: ABdhPJx1/PNZIBJLRPe5BfqVCbVqL7U7YO0ZdoOiGJ9vvQ83LBHFATG8SEFnbwpHc+2Ho6M2yKwKLA==
+X-Received: by 2002:a17:902:c408:: with SMTP id k8mr54921087plk.279.1594283606219;
+        Thu, 09 Jul 2020 01:33:26 -0700 (PDT)
+Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
+        by smtp.gmail.com with ESMTPSA id nl8sm1915963pjb.13.2020.07.09.01.33.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Jul 2020 01:33:25 -0700 (PDT)
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+X-Google-Original-From: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
+Date:   Thu, 9 Jul 2020 17:33:23 +0900
+To:     kernel test robot <rong.a.chen@intel.com>
+Cc:     John Ogness <john.ogness@linutronix.de>,
+        Petr Mladek <pmladek@suse.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Paul McKenney <paulmck@kernel.org>, kexec@lists.infradead.org,
+        linux-kernel@vger.kernel.org, lkp@lists.01.org
+Subject: Re: [printk] 18a2dc6982: ltp.kmsg01.fail
+Message-ID: <20200709083323.GA572@jagdpanzerIV.localdomain>
+References: <20200707145932.8752-5-john.ogness@linutronix.de>
+ <20200709071411.GR3874@shao2-debian>
 MIME-Version: 1.0
-In-Reply-To: <20200707210014.927691-6-mathieu.poirier@linaro.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.51]
-X-ClientProxiedBy: SFHDAG6NODE3.st.com (10.75.127.18) To SFHDAG3NODE1.st.com
- (10.75.127.7)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-09_04:2020-07-08,2020-07-09 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200709071411.GR3874@shao2-debian>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On (20/07/09 15:14), kernel test robot wrote:
+[..]
 
+Took me a while to find the FAIL-ed test:
 
-On 7/7/20 11:00 PM, Mathieu Poirier wrote:
-> Add a new function to assert the general health of the remote
-> processor before handing it to the remoteproc core.
-> 
-> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> kmsg01.c:393: INFO: TEST: read returns EPIPE when messages get overwritten
+> kmsg01.c:398: INFO: first seqno: 0
+> kmsg01.c:411: INFO: first seqno now: 881
+> kmsg01.c:425: FAIL: read returned: 77: SUCCESS (0)
 
-Reviewed-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+So this is seq number related
+https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/logging/kmsg/kmsg01.c#L383
 
-Thanks,
-Arnaud
+LTP writes a gazillion (roughly, maybe a bit less than that)
+filler messages to /dev/kmsg in order to cause logbuf overlap:
+...
+19490 [  172.301584] LTP kmsg01 FILLER MESSAGE TO OVERWRITE OTHERS
+19491 [  172.308730] LTP kmsg01 FILLER MESSAGE TO OVERWRITE OTHERS
+19492 [  172.313852] LTP kmsg01 FILLER MESSAGE TO OVERWRITE OTHERS
+19493 [  172.320988] LTP kmsg01 FILLER MESSAGE TO OVERWRITE OTHERS
+19494 [  172.325618] LTP kmsg01 FILLER MESSAGE TO OVERWRITE OTHERS
+...
 
-> ---
->  drivers/remoteproc/remoteproc_core.c | 41 ++++++++++++++++++++++++++++
->  1 file changed, 41 insertions(+)
-> 
-> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-> index fd424662801f..ad500c291d5f 100644
-> --- a/drivers/remoteproc/remoteproc_core.c
-> +++ b/drivers/remoteproc/remoteproc_core.c
-> @@ -2040,6 +2040,43 @@ struct rproc *rproc_get_by_phandle(phandle phandle)
->  #endif
->  EXPORT_SYMBOL(rproc_get_by_phandle);
->  
-> +static int rproc_validate(struct rproc *rproc)
-> +{
-> +	switch (rproc->state) {
-> +	case RPROC_OFFLINE:
-> +		/*
-> +		 * An offline processor without a start()
-> +		 * function makes no sense.
-> +		 */
-> +		if (!rproc->ops->start)
-> +			return -EINVAL;
-> +		break;
-> +	case RPROC_DETACHED:
-> +		/*
-> +		 * A remote processor in a detached state without an
-> +		 * attach() function makes not sense.
-> +		 */
-> +		if (!rproc->ops->attach)
-> +			return -EINVAL;
-> +		/*
-> +		 * When attaching to a remote processor the device memory
-> +		 * is already available and as such there is no need to have a
-> +		 * cached table.
-> +		 */
-> +		if (rproc->cached_table)
-> +			return -EINVAL;
-> +		break;
-> +	default:
-> +		/*
-> +		 * When adding a remote processor, the state of the device
-> +		 * can be offline or detached, nothing else.
-> +		 */
-> +		return -EINVAL;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  /**
->   * rproc_add() - register a remote processor
->   * @rproc: the remote processor handle to register
-> @@ -2069,6 +2106,10 @@ int rproc_add(struct rproc *rproc)
->  	if (ret < 0)
->  		return ret;
->  
-> +	ret = rproc_validate(rproc);
-> +	if (ret < 0)
-> +		return ret;
-> +
->  	dev_info(dev, "%s is available\n", rproc->name);
->  
->  	/* create debugfs entries */
-> 
+	-ss
