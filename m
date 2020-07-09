@@ -2,81 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DAD4219D0E
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 12:09:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 317A221960F
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 04:12:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726693AbgGIKJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 06:09:19 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:43361 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726323AbgGIKJS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 06:09:18 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4B2X2f6tyhz9sSd;
-        Thu,  9 Jul 2020 20:09:14 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1594289355;
-        bh=B+pvOdRR00uR6MW/d9Tg/MIy1GpvfDv7HP5aB55eLMw=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=kxRBUjVzQLmCVjdHJKK+OcMHo6neU1RQex6N/x2BrSSEzz8iH/g7k4DoVMlUhjVk7
-         qjlMzJqNzIPeCAL4m8bkMuCl1Dr7W0UwucYzh02G9a/78uSyNSp/rFzURUfJIof5xH
-         rvrxbDJUq5MJV/BQwK0VcLmyEvCImjHGLb+/cWWbDQYBeOaA4oQ2CL3X3APXF6/y2J
-         D2L/vyTlEu1jwKOp2V1ztZHSpC9pxYI9LfxuGcgX3zR3P6RAS/67QId4q+XfV3yQtt
-         K7ocKhOlTOWEa7eB+mqmgAgCqXAnWX3PTuHX9vuE8pgXODpslKd4pTMDt2KQ2hnq7g
-         Rlwx0t1IcWGFQ==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Nicholas Piggin <npiggin@gmail.com>, linuxppc-dev@lists.ozlabs.org
-Cc:     Nicholas Piggin <npiggin@gmail.com>, Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Waiman Long <longman@redhat.com>,
-        Anton Blanchard <anton@ozlabs.org>,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, kvm-ppc@vger.kernel.org,
-        linux-arch@vger.kernel.org
-Subject: Re: [PATCH v3 2/6] powerpc/pseries: move some PAPR paravirt functions to their own file
-In-Reply-To: <20200706043540.1563616-3-npiggin@gmail.com>
-References: <20200706043540.1563616-1-npiggin@gmail.com> <20200706043540.1563616-3-npiggin@gmail.com>
-Date:   Thu, 09 Jul 2020 20:11:29 +1000
-Message-ID: <87d055vvzi.fsf@mpe.ellerman.id.au>
+        id S1726320AbgGICMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 22:12:45 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:60244 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726118AbgGICMo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Jul 2020 22:12:44 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 772BA91C3703B6672BBD;
+        Thu,  9 Jul 2020 10:12:43 +0800 (CST)
+Received: from huawei.com (10.175.124.27) by DGGEMS403-HUB.china.huawei.com
+ (10.3.19.203) with Microsoft SMTP Server id 14.3.487.0; Thu, 9 Jul 2020
+ 10:12:41 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <io-uring@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <axboe@kernel.dk>
+Subject: [PATCH] io_uring: fix memleak in __io_sqe_files_update()
+Date:   Thu, 9 Jul 2020 10:11:41 +0000
+Message-ID: <20200709101141.3261977-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.124.27]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nicholas Piggin <npiggin@gmail.com> writes:
->
+I got a memleak report when doing some fuzz test:
 
-Little bit of changelog would be nice :D
+BUG: memory leak
+unreferenced object 0xffff888113e02300 (size 488):
+comm "syz-executor401", pid 356, jiffies 4294809529 (age 11.954s)
+hex dump (first 32 bytes):
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+a0 a4 ce 19 81 88 ff ff 60 ce 09 0d 81 88 ff ff ........`.......
+backtrace:
+[<00000000129a84ec>] kmem_cache_zalloc include/linux/slab.h:659 [inline]
+[<00000000129a84ec>] __alloc_file+0x25/0x310 fs/file_table.c:101
+[<000000003050ad84>] alloc_empty_file+0x4f/0x120 fs/file_table.c:151
+[<000000004d0a41a3>] alloc_file+0x5e/0x550 fs/file_table.c:193
+[<000000002cb242f0>] alloc_file_pseudo+0x16a/0x240 fs/file_table.c:233
+[<00000000046a4baa>] anon_inode_getfile fs/anon_inodes.c:91 [inline]
+[<00000000046a4baa>] anon_inode_getfile+0xac/0x1c0 fs/anon_inodes.c:74
+[<0000000035beb745>] __do_sys_perf_event_open+0xd4a/0x2680 kernel/events/core.c:11720
+[<0000000049009dc7>] do_syscall_64+0x56/0xa0 arch/x86/entry/common.c:359
+[<00000000353731ca>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
-> ---
->  arch/powerpc/include/asm/paravirt.h | 61 +++++++++++++++++++++++++++++
->  arch/powerpc/include/asm/spinlock.h | 24 +-----------
->  arch/powerpc/lib/locks.c            | 12 +++---
->  3 files changed, 68 insertions(+), 29 deletions(-)
->  create mode 100644 arch/powerpc/include/asm/paravirt.h
->
-> diff --git a/arch/powerpc/include/asm/paravirt.h b/arch/powerpc/include/asm/paravirt.h
-> new file mode 100644
-> index 000000000000..7a8546660a63
-> --- /dev/null
-> +++ b/arch/powerpc/include/asm/paravirt.h
-> @@ -0,0 +1,61 @@
-> +/* SPDX-License-Identifier: GPL-2.0-or-later */
-> +#ifndef __ASM_PARAVIRT_H
-> +#define __ASM_PARAVIRT_H
+BUG: memory leak
+unreferenced object 0xffff8881152dd5e0 (size 16):
+comm "syz-executor401", pid 356, jiffies 4294809529 (age 11.954s)
+hex dump (first 16 bytes):
+01 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00 ................
+backtrace:
+[<0000000074caa794>] kmem_cache_zalloc include/linux/slab.h:659 [inline]
+[<0000000074caa794>] lsm_file_alloc security/security.c:567 [inline]
+[<0000000074caa794>] security_file_alloc+0x32/0x160 security/security.c:1440
+[<00000000c6745ea3>] __alloc_file+0xba/0x310 fs/file_table.c:106
+[<000000003050ad84>] alloc_empty_file+0x4f/0x120 fs/file_table.c:151
+[<000000004d0a41a3>] alloc_file+0x5e/0x550 fs/file_table.c:193
+[<000000002cb242f0>] alloc_file_pseudo+0x16a/0x240 fs/file_table.c:233
+[<00000000046a4baa>] anon_inode_getfile fs/anon_inodes.c:91 [inline]
+[<00000000046a4baa>] anon_inode_getfile+0xac/0x1c0 fs/anon_inodes.c:74
+[<0000000035beb745>] __do_sys_perf_event_open+0xd4a/0x2680 kernel/events/core.c:11720
+[<0000000049009dc7>] do_syscall_64+0x56/0xa0 arch/x86/entry/common.c:359
+[<00000000353731ca>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Should be _ASM_POWERPC_PARAVIRT_H
+If io_sqe_file_register() failed, we need put the file that get by fget()
+to avoid the memleak.
 
-> +#ifdef __KERNEL__
+Fixes: c3a31e605620 ("io_uring: add support for IORING_REGISTER_FILES_UPDATE")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+ fs/io_uring.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-We shouldn't need __KERNEL__ in here, it's not a uapi header.
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index e507737f044e..5c2487d954b2 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -6814,8 +6814,10 @@ static int __io_sqe_files_update(struct io_ring_ctx *ctx,
+ 			}
+ 			table->files[index] = file;
+ 			err = io_sqe_file_register(ctx, file, i);
+-			if (err)
++			if (err) {
++				fput(file);
+ 				break;
++			}
+ 		}
+ 		nr_args--;
+ 		done++;
+-- 
+2.17.1
 
-cheers
