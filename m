@@ -2,329 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6908421AB44
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 01:12:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7946821AB4A
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 01:13:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726912AbgGIXMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 19:12:46 -0400
-Received: from v6.sk ([167.172.42.174]:36644 "EHLO v6.sk"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726222AbgGIXMq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 19:12:46 -0400
-Received: from localhost (v6.sk [IPv6:::1])
-        by v6.sk (Postfix) with ESMTP id 6948C60D25;
-        Thu,  9 Jul 2020 23:12:43 +0000 (UTC)
-From:   Lubomir Rintel <lkundrak@v3.sk>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, Lubomir Rintel <lkundrak@v3.sk>
-Subject: [PATCH v6 2/2] mfd: ene-kb3930: Add driver for ENE KB3930 Embedded Controller
-Date:   Fri, 10 Jul 2020 01:12:28 +0200
-Message-Id: <20200709231228.11564-3-lkundrak@v3.sk>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200709231228.11564-1-lkundrak@v3.sk>
-References: <20200709231228.11564-1-lkundrak@v3.sk>
+        id S1726725AbgGIXNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 19:13:41 -0400
+Received: from mail-il1-f194.google.com ([209.85.166.194]:35461 "EHLO
+        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726222AbgGIXNl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 19:13:41 -0400
+Received: by mail-il1-f194.google.com with SMTP id t18so3516962ilh.2;
+        Thu, 09 Jul 2020 16:13:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qVYJSmIH5pGs/4dhKNiiY1TOXTho3Eq5GDRG0ULpRKU=;
+        b=V7XIFnZuJH+UNp/ReoPeWYAQHb6LdWLXvZeDMdtKNiMUlRge1jaW1bXoM0ITCWcxG2
+         +jpR95Lhc7erG2uOnJlt84dYIwdKWoonrILoBSn4BAx03uVlfUJJfQKoO94Xeerd6tHL
+         5pppKFazt0qP6wWwBi+bIQeYWf9zsfQ+dIyYpfgtUN8FrB0FWxQhVE/AOvkRK1SupYw9
+         CiL+kVYBuauActX8WucXRjzff/qFcWZFAt3759VJF97B6dRG0Zbt8GGeRfXPMv7TrXNm
+         GnRQzsycGh0v4/2YHIN+vdlmDlJZLZp9dNxUsEcqGfKsRT/mSa6qarvJCetkmAkTHyKn
+         8qiQ==
+X-Gm-Message-State: AOAM5330fP7NFfbSlo72vGjKPh4DW/Gu24PIlxCM8NNbMTTPHrzdqPMc
+        /msfaRxlWJWkAflGOB3rUg==
+X-Google-Smtp-Source: ABdhPJwSaf8vHd4K9Dyi8pY6+VkhDEivCPd1Hgh2whPHR6+/lCW9ltyoN1fWo70Xj5XWqmqCNSCjJQ==
+X-Received: by 2002:a92:cece:: with SMTP id z14mr19176614ilq.120.1594336420385;
+        Thu, 09 Jul 2020 16:13:40 -0700 (PDT)
+Received: from xps15 ([64.188.179.254])
+        by smtp.gmail.com with ESMTPSA id p84sm2739075ill.64.2020.07.09.16.13.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Jul 2020 16:13:39 -0700 (PDT)
+Received: (nullmailer pid 1073745 invoked by uid 1000);
+        Thu, 09 Jul 2020 23:13:38 -0000
+Date:   Thu, 9 Jul 2020 17:13:38 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Lars Povlsen <lars.povlsen@microchip.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>
+Subject: Re: [PATCH v4 1/3] dt-bindings: hwmon: Add Sparx5 temperature sensor
+Message-ID: <20200709231338.GA1073694@bogus>
+References: <20200618135951.25441-1-lars.povlsen@microchip.com>
+ <20200618135951.25441-2-lars.povlsen@microchip.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200618135951.25441-2-lars.povlsen@microchip.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver provides access to the EC RAM of said embedded controller
-attached to the I2C bus as well as optionally supporting its slightly weird
-power-off/restart protocol.
+On Thu, 18 Jun 2020 15:59:49 +0200, Lars Povlsen wrote:
+> This add the DT binding specification for the Sparx5 temperature
+> sensor.
+> 
+> Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
+> ---
+>  .../bindings/hwmon/microchip,sparx5-temp.yaml | 44 +++++++++++++++++++
+>  1 file changed, 44 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/hwmon/microchip,sparx5-temp.yaml
+> 
 
-A particular implementation of the EC firmware can be identified by a
-model byte. If this driver identifies the Dell Ariel platform, it
-registers the appropriate cells.
-
-Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
-
----
-Changes since v5:
-- Clarify the command in kb3930_off()
-- Remove an extraneous comment above the call to devm_mfd_add_devices()
-- s/pm_power_off == NULL/!pm_power_off/
-
-Changes since v3:
-- Clarify that the power-off function is provided by this driver while
-  LEDS_ARIEL is necessary to drive the leds in Kconfig help text
-- s/kb3930_power_off/kb3930_pm_power_off/, s/global_kb3930/kb3930_power_off/
-- Don't fail with -EEXIST with more than one instance
-- s/ret < 0/ret/ for devm_mfd_add_devices() return value
-- Drop a \n between struct i2c_driver and module_i2c_driver()
-
-Changes since v2:
-- Sort the includes
-- s/EC_MODEL_ID/EC_MODEL/
-- Add a couple of clarifying comments
-- Use #defines for values used in poweroff routine
-- Remove priority from a restart notifier block
-- s/priv/ddata/
-- s/ec_ram/ram_regmap/ for the regmap name
-- Fix the error handling when getting off gpios was not successful
-- Remove a useless dev_info at the end of probe()
-- Use i2c probe_new() callback, drop i2c_device_id
-- Modify the logic in checking the model ID
----
- drivers/mfd/Kconfig      |  11 ++
- drivers/mfd/Makefile     |   1 +
- drivers/mfd/ene-kb3930.c | 212 +++++++++++++++++++++++++++++++++++++++
- 3 files changed, 224 insertions(+)
- create mode 100644 drivers/mfd/ene-kb3930.c
-
-diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-index a37d7d1713820..7569f1d1703e3 100644
---- a/drivers/mfd/Kconfig
-+++ b/drivers/mfd/Kconfig
-@@ -398,6 +398,17 @@ config MFD_DLN2
- 	  etc. must be enabled in order to use the functionality of
- 	  the device.
- 
-+config MFD_ENE_KB3930
-+	tristate "ENE KB3930 Embedded Controller support"
-+	depends on I2C
-+	depends on MACH_MMP3_DT || COMPILE_TEST
-+	select MFD_CORE
-+	help
-+	  This adds support for the power-off functionality and access to
-+	  the registers that control LEDS and USB port power on ENE KB3930
-+	  Embedded Controller. To use the LED functionality LEDS_ARIEL must
-+	  be enabled.
-+
- config MFD_EXYNOS_LPASS
- 	tristate "Samsung Exynos SoC Low Power Audio Subsystem"
- 	depends on ARCH_EXYNOS || COMPILE_TEST
-diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
-index 9367a92f795a6..11085a6968398 100644
---- a/drivers/mfd/Makefile
-+++ b/drivers/mfd/Makefile
-@@ -14,6 +14,7 @@ obj-$(CONFIG_ARCH_BCM2835)	+= bcm2835-pm.o
- obj-$(CONFIG_MFD_BCM590XX)	+= bcm590xx.o
- obj-$(CONFIG_MFD_BD9571MWV)	+= bd9571mwv.o
- obj-$(CONFIG_MFD_CROS_EC_DEV)	+= cros_ec_dev.o
-+obj-$(CONFIG_MFD_ENE_KB3930)	+= ene-kb3930.o
- obj-$(CONFIG_MFD_EXYNOS_LPASS)	+= exynos-lpass.o
- obj-$(CONFIG_MFD_GATEWORKS_GSC)	+= gateworks-gsc.o
- 
-diff --git a/drivers/mfd/ene-kb3930.c b/drivers/mfd/ene-kb3930.c
-new file mode 100644
-index 0000000000000..1c32ff586816b
---- /dev/null
-+++ b/drivers/mfd/ene-kb3930.c
-@@ -0,0 +1,212 @@
-+// SPDX-License-Identifier: BSD-2-Clause OR GPL-2.0-or-later
-+/*
-+ * ENE KB3930 Embedded Controller Driver
-+ *
-+ * Copyright (C) 2020 Lubomir Rintel
-+ */
-+
-+#include <linux/delay.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/i2c.h>
-+#include <linux/mfd/core.h>
-+#include <linux/module.h>
-+#include <linux/reboot.h>
-+#include <linux/regmap.h>
-+
-+/* I2C registers that are multiplexing access to the EC RAM. */
-+enum {
-+	EC_DATA_IN	= 0x00,
-+	EC_RAM_OUT	= 0x80,
-+	EC_RAM_IN	= 0x81,
-+};
-+
-+/* EC RAM registers. */
-+enum {
-+	EC_MODEL	= 0x30,
-+	EC_VERSION_MAJ	= 0x31,
-+	EC_VERSION_MIN	= 0x32,
-+};
-+
-+struct kb3930 {
-+	struct i2c_client *client;
-+	struct regmap *ram_regmap;
-+	struct gpio_descs *off_gpios;
-+};
-+
-+struct kb3930 *kb3930_power_off;
-+
-+#define EC_GPIO_WAVE		0
-+#define EC_GPIO_OFF_MODE	1
-+
-+#define EC_OFF_MODE_REBOOT	0
-+#define EC_OFF_MODE_POWER	1
-+
-+static void kb3930_off(struct kb3930 *ddata, int off_mode)
-+{
-+	gpiod_direction_output(ddata->off_gpios->desc[EC_GPIO_OFF_MODE],
-+			       off_mode);
-+
-+	/*
-+	 * This creates a 10 Hz wave on EC_GPIO_WAVE that signals a
-+	 * shutdown request to the EC. Once the EC detects it, it will
-+	 * proceed to turn the power off or reset the board depending on
-+	 * the value of EC_GPIO_OFF_MODE.
-+	 */
-+	while (1) {
-+		mdelay(50);
-+		gpiod_direction_output(ddata->off_gpios->desc[EC_GPIO_WAVE], 0);
-+		mdelay(50);
-+		gpiod_direction_output(ddata->off_gpios->desc[EC_GPIO_WAVE], 1);
-+	}
-+}
-+
-+static int kb3930_restart(struct notifier_block *this,
-+			  unsigned long mode, void *cmd)
-+{
-+	kb3930_off(kb3930_power_off, EC_OFF_MODE_REBOOT);
-+	return NOTIFY_DONE;
-+}
-+
-+static void kb3930_pm_power_off(void)
-+{
-+	kb3930_off(kb3930_power_off, EC_OFF_MODE_POWER);
-+}
-+
-+static struct notifier_block kb3930_restart_nb = {
-+	.notifier_call = kb3930_restart,
-+};
-+
-+static const struct mfd_cell ariel_ec_cells[] = {
-+	{ .name = "dell-wyse-ariel-led", },
-+	{ .name = "dell-wyse-ariel-power", },
-+};
-+
-+static int kb3930_ec_ram_reg_write(void *context, unsigned int reg,
-+				   unsigned int val)
-+{
-+	struct kb3930 *ddata = context;
-+
-+	return i2c_smbus_write_word_data(ddata->client, EC_RAM_OUT,
-+					 (val << 8) | reg);
-+}
-+
-+static int kb3930_ec_ram_reg_read(void *context, unsigned int reg,
-+				  unsigned int *val)
-+{
-+	struct kb3930 *ddata = context;
-+	int ret;
-+
-+	ret = i2c_smbus_write_word_data(ddata->client, EC_RAM_IN, reg);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = i2c_smbus_read_word_data(ddata->client, EC_DATA_IN);
-+	if (ret < 0)
-+		return ret;
-+
-+	*val = ret >> 8;
-+	return 0;
-+}
-+
-+static const struct regmap_config kb3930_ram_regmap_config = {
-+	.name = "ec_ram",
-+	.reg_bits = 8,
-+	.val_bits = 8,
-+	.reg_stride = 1,
-+	.max_register = 0xff,
-+	.reg_write = kb3930_ec_ram_reg_write,
-+	.reg_read = kb3930_ec_ram_reg_read,
-+	.fast_io = false,
-+};
-+
-+static int kb3930_probe(struct i2c_client *client)
-+{
-+	struct device *dev = &client->dev;
-+	struct device_node *np = dev->of_node;
-+	struct kb3930 *ddata;
-+	unsigned int model;
-+	int ret;
-+
-+	ddata = devm_kzalloc(dev, sizeof(*ddata), GFP_KERNEL);
-+	if (!ddata)
-+		return -ENOMEM;
-+
-+	kb3930_power_off = ddata;
-+	ddata->client = client;
-+	i2c_set_clientdata(client, ddata);
-+
-+	ddata->ram_regmap = devm_regmap_init(dev, NULL, ddata,
-+					     &kb3930_ram_regmap_config);
-+	if (IS_ERR(ddata->ram_regmap))
-+		return PTR_ERR(ddata->ram_regmap);
-+
-+	ret = regmap_read(ddata->ram_regmap, EC_MODEL, &model);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Currently we only support the cells present on Dell Ariel model. */
-+	if (model != 'J') {
-+		dev_err(dev, "unknown board model: %02x\n", model);
-+		return -ENODEV;
-+	}
-+
-+	ret = devm_mfd_add_devices(dev, PLATFORM_DEVID_AUTO,
-+				   ariel_ec_cells,
-+				   ARRAY_SIZE(ariel_ec_cells),
-+				   NULL, 0, NULL);
-+	if (ret)
-+		return ret;
-+
-+	if (of_property_read_bool(np, "system-power-controller")) {
-+		ddata->off_gpios =
-+			devm_gpiod_get_array_optional(dev, "off", GPIOD_IN);
-+		if (IS_ERR(ddata->off_gpios))
-+			return PTR_ERR(ddata->off_gpios);
-+		if (ddata->off_gpios->ndescs < 2) {
-+			dev_err(dev, "invalid off-gpios property\n");
-+			return -EINVAL;
-+		}
-+	}
-+
-+	if (ddata->off_gpios) {
-+		register_restart_handler(&kb3930_restart_nb);
-+		if (!pm_power_off)
-+			pm_power_off = kb3930_pm_power_off;
-+	}
-+
-+	return 0;
-+}
-+
-+static int kb3930_remove(struct i2c_client *client)
-+{
-+	struct kb3930 *ddata = i2c_get_clientdata(client);
-+
-+	if (ddata->off_gpios) {
-+		if (pm_power_off == kb3930_pm_power_off)
-+			pm_power_off = NULL;
-+		unregister_restart_handler(&kb3930_restart_nb);
-+	}
-+	kb3930_power_off = NULL;
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id kb3930_dt_ids[] = {
-+	{ .compatible = "ene,kb3930" },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, kb3930_dt_ids);
-+
-+static struct i2c_driver kb3930_driver = {
-+	.probe_new = kb3930_probe,
-+	.remove = kb3930_remove,
-+	.driver = {
-+		.name = "ene-kb3930",
-+		.of_match_table = of_match_ptr(kb3930_dt_ids),
-+	},
-+};
-+module_i2c_driver(kb3930_driver);
-+
-+MODULE_AUTHOR("Lubomir Rintel <lkundrak@v3.sk>");
-+MODULE_DESCRIPTION("ENE KB3930 Embedded Controller Driver");
-+MODULE_LICENSE("Dual BSD/GPL");
--- 
-2.26.2
-
+Reviewed-by: Rob Herring <robh@kernel.org>
