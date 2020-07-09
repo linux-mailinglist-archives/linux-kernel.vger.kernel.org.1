@@ -2,154 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93B9521A752
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 20:52:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 875F521A74A
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 20:51:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726660AbgGISw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 14:52:28 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:46850 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726163AbgGISw1 (ORCPT
+        id S1726409AbgGISvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 14:51:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726222AbgGISvh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 14:52:27 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 069IpeZp058636;
-        Thu, 9 Jul 2020 13:51:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1594320700;
-        bh=GtWtWQHKdBXB3CLNnasO+bNWYTz+NerPnNTBio+tRkU=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=QhS++ITnV6S47j8LNZmwdw3dbtxLzP4GSKKOfA5cXwjYgSbCszdTooHYUWXpncK3W
-         dqNm4Ok89JXwaT8iKBDYQsa9G3U2C60Ecff8u0pFRBqrMUijlnXWFLFq1aX7AxUCdZ
-         Ei2cqFpe5MJ0aaV0iE/Ub7Wsjr2Pl7gSCnUtbKrI=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 069IpeE8060318
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 9 Jul 2020 13:51:40 -0500
-Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 9 Jul
- 2020 13:51:40 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 9 Jul 2020 13:51:40 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 069Ipdbw009667;
-        Thu, 9 Jul 2020 13:51:40 -0500
-From:   Dan Murphy <dmurphy@ti.com>
-To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
-        <tiwai@suse.com>
-CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        Dan Murphy <dmurphy@ti.com>
-Subject: [PATCH 2/2] ASoC: tlv320adcx140: Add tx offset slot programming
-Date:   Thu, 9 Jul 2020 13:51:29 -0500
-Message-ID: <20200709185129.10505-2-dmurphy@ti.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200709185129.10505-1-dmurphy@ti.com>
-References: <20200709185129.10505-1-dmurphy@ti.com>
+        Thu, 9 Jul 2020 14:51:37 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72928C08C5CE
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 11:51:37 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id q17so1184664pls.9
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 11:51:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=DUAnAB1O1U5HTun6r8ahSdEu6tOLSHOah+bK2fkko5s=;
+        b=K1Y/+Q/83Xk5X187BG8LiM6FTXuxO4382G+rWSxzkl9XZP0mrloSul4PYGI9oNtxKi
+         JM9v3ajjTLlTubL8C/m3hInPk3uid85beWL8fY0ycrWxJnMBoNwePuYTdyFrRVwayUQY
+         QERAbNM2UlYwonrlEOWW5w2J6AlJbKMpA/fhU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=DUAnAB1O1U5HTun6r8ahSdEu6tOLSHOah+bK2fkko5s=;
+        b=sSDiPMeUu089wQqnhg61vXS5XOmLLKUicmzjxBC4oEVm2CsdGHiq3ky0o0eA1kbKRz
+         l06vM1CVFx6gkbW4GMg96O4NpIiD6JJ6sLYzPdFnEIrnjlLnogvYfaGLzvEU2sXU8NaR
+         /+faxeyM76+glmDBA/1w4ewvbXyl1W8gXGr9S1DSVSZ5a6zluUA/H9UlDINJ5Umr1SRU
+         DK2jPg9oGwm1a7x1B+QBZSGF2c379EirVDT2Duzp0ojh/NZoIDEeDrULoBHYBDFd460D
+         qBFS6/K7P2C+8/OnyHQAa0oBONNpS76d9FHoiHr/VZXDn8jlQjjMcE+4Eesnu2oVzNFW
+         1Z5g==
+X-Gm-Message-State: AOAM533BXg62BaxlxsXyF/kMy3MPZ/KG4sq6cYHGLcvtUQrgiUP+cVjH
+        ue5C/9MwSgN/TWiDGLPPIxoMgg==
+X-Google-Smtp-Source: ABdhPJzvtnZrznMl2tRk1z011k29OqQdwV+YAqxrjR9BJNucrcWWqyOT0gXYauRNk/mxEdKLsLyPHQ==
+X-Received: by 2002:a17:902:b093:: with SMTP id p19mr21824068plr.161.1594320696912;
+        Thu, 09 Jul 2020 11:51:36 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id 190sm3320718pfz.41.2020.07.09.11.51.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Jul 2020 11:51:36 -0700 (PDT)
+Date:   Thu, 9 Jul 2020 11:51:35 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] doc: yama: Swap HTTP for HTTPS and replace dead link
+Message-ID: <202007091141.C008B89EC@keescook>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the TX offset slot programming.  There is no RX offset slot
-register.
+Replace one dead link for the same person's original presentation on the
+topic and swap an HTTP URL with HTTPS. While here, linkify the text to
+make it more readable when rendered.
 
-Since there is no RX offset the check for slot symmetry can be removed.
-
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
+Link: https://lore.kernel.org/lkml/20200708073346.13177-1-grandmaster@al2klimov.de/
+Co-developed-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- sound/soc/codecs/tlv320adcx140.c | 40 ++++++++------------------------
- 1 file changed, 10 insertions(+), 30 deletions(-)
+v2:
+- replace storm.net.nz url (kees)
+- refactor with descriptive text (kees)
+v1: https://lore.kernel.org/lkml/20200708073346.13177-1-grandmaster@al2klimov.de/
+---
+ Documentation/admin-guide/LSM/Yama.rst | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/tlv320adcx140.c b/sound/soc/codecs/tlv320adcx140.c
-index f884abdb576e..d900af967f8c 100644
---- a/sound/soc/codecs/tlv320adcx140.c
-+++ b/sound/soc/codecs/tlv320adcx140.c
-@@ -646,6 +646,8 @@ static int adcx140_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 	struct adcx140_priv *adcx140 = snd_soc_component_get_drvdata(component);
- 	u8 iface_reg1 = 0;
- 	u8 iface_reg2 = 0;
-+	int offset = 0;
-+	int width = adcx140->slot_width;
+diff --git a/Documentation/admin-guide/LSM/Yama.rst b/Documentation/admin-guide/LSM/Yama.rst
+index d0a060de3973..d9cd937ebd2d 100644
+--- a/Documentation/admin-guide/LSM/Yama.rst
++++ b/Documentation/admin-guide/LSM/Yama.rst
+@@ -19,9 +19,10 @@ attach to other running processes (e.g. Firefox, SSH sessions, GPG agent,
+ etc) to extract additional credentials and continue to expand the scope
+ of their attack without resorting to user-assisted phishing.
  
- 	/* set master/slave audio interface */
- 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-@@ -688,7 +690,10 @@ static int adcx140_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 		iface_reg1 |= ADCX140_LEFT_JUST_BIT;
- 		break;
- 	case SND_SOC_DAIFMT_DSP_A:
-+		offset += (adcx140->tdm_delay * width + 1);
-+		break;
- 	case SND_SOC_DAIFMT_DSP_B:
-+		offset += adcx140->tdm_delay * width;
- 		break;
- 	default:
- 		dev_err(component->dev, "Invalid DAI interface format\n");
-@@ -705,6 +710,11 @@ static int adcx140_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 	snd_soc_component_update_bits(component, ADCX140_MST_CFG0,
- 				      ADCX140_BCLK_FSYNC_MASTER, iface_reg2);
- 
-+	/* Configure data offset */
-+	snd_soc_component_update_bits(component, ADCX140_ASI_CFG1,
-+				      ADCX140_TX_OFFSET_MASK, offset);
-+
-+
- 	return 0;
- }
- 
-@@ -716,11 +726,6 @@ static int adcx140_set_dai_tdm_slot(struct snd_soc_dai *codec_dai,
- 	struct adcx140_priv *adcx140 = snd_soc_component_get_drvdata(component);
- 	unsigned int lsb;
- 
--	if (tx_mask != rx_mask) {
--		dev_err(component->dev, "tx and rx masks must be symmetric\n");
--		return -EINVAL;
--	}
--
- 	/* TDM based on DSP mode requires slots to be adjacent */
- 	lsb = __ffs(tx_mask);
- 	if ((lsb + 1) != __fls(tx_mask)) {
-@@ -745,34 +750,9 @@ static int adcx140_set_dai_tdm_slot(struct snd_soc_dai *codec_dai,
- 	return 0;
- }
- 
--static int adcx140_prepare(struct snd_pcm_substream *substream,
--			 struct snd_soc_dai *dai)
--{
--	struct snd_soc_component *component = dai->component;
--	struct adcx140_priv *adcx140 = snd_soc_component_get_drvdata(component);
--	int offset = 0;
--	int width = adcx140->slot_width;
--
--	if (!width)
--		width = substream->runtime->sample_bits;
--
--	/* TDM slot selection only valid in DSP_A/_B mode */
--	if (adcx140->dai_fmt == SND_SOC_DAIFMT_DSP_A)
--		offset += (adcx140->tdm_delay * width + 1);
--	else if (adcx140->dai_fmt == SND_SOC_DAIFMT_DSP_B)
--		offset += adcx140->tdm_delay * width;
--
--	/* Configure data offset */
--	snd_soc_component_update_bits(component, ADCX140_ASI_CFG1,
--				      ADCX140_TX_OFFSET_MASK, offset);
--
--	return 0;
--}
--
- static const struct snd_soc_dai_ops adcx140_dai_ops = {
- 	.hw_params	= adcx140_hw_params,
- 	.set_fmt	= adcx140_set_dai_fmt,
--	.prepare	= adcx140_prepare,
- 	.set_tdm_slot	= adcx140_set_dai_tdm_slot,
- };
- 
+-This is not a theoretical problem. SSH session hijacking
+-(http://www.storm.net.nz/projects/7) and arbitrary code injection
+-(http://c-skills.blogspot.com/2007/05/injectso.html) attacks already
++This is not a theoretical problem. `SSH session hijacking
++<https://www.blackhat.com/presentations/bh-usa-05/bh-us-05-boileau.pdf>`_
++and `arbitrary code injection
++<https://c-skills.blogspot.com/2007/05/injectso.html>`_ attacks already
+ exist and remain possible if ptrace is allowed to operate as before.
+ Since ptrace is not commonly used by non-developers and non-admins, system
+ builders should be allowed the option to disable this debugging system.
 -- 
-2.27.0
+2.25.1
 
+
+-- 
+Kees Cook
