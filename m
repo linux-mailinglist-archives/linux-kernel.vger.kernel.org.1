@@ -2,187 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E43421A90E
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 22:32:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9B7021A91D
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 22:37:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726770AbgGIUcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 16:32:18 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:50207 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726710AbgGIUcO (ORCPT
+        id S1726449AbgGIUhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 16:37:21 -0400
+Received: from mail-io1-f66.google.com ([209.85.166.66]:42325 "EHLO
+        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726220AbgGIUhU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 16:32:14 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1594326734; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=1rpXmEWvCJyqKMfiP9F5IHO6YCUM60TQpaCQg27rMa4=; b=BkOorkfvEwKNPvrBaNf6UKpJf23zixPDHyCLHUnwqtymfoOu0eUAPIVXGAsqhncuyt/6deDY
- +vGkuUF5jmF7v4CuQRUIAAwAZhBxEU0nRLxCN5xwQaL7nz9KZjzLrsc2+iFm2ObMeldLo/EB
- Dwy2rK79/FPmkF5ZMzw+WQlcDPg=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n10.prod.us-east-1.postgun.com with SMTP id
- 5f077eca78e7807b5e5defae (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 09 Jul 2020 20:32:10
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 43B83C43391; Thu,  9 Jul 2020 20:32:09 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from rishabhb-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rishabhb)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 61D2DC43395;
-        Thu,  9 Jul 2020 20:32:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 61D2DC43395
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rishabhb@codeaurora.org
-From:   Rishabh Bhatnagar <rishabhb@codeaurora.org>
-To:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     bjorn.andersson@linaro.org, mathieu.poirier@linaro.org,
-        tsoni@codeaurora.org, psodagud@codeaurora.org,
-        sidgup@codeaurora.org, Rishabh Bhatnagar <rishabhb@codeaurora.org>
-Subject: [PATCH v7 4/4] remoteproc: Add coredump debugfs entry
-Date:   Thu,  9 Jul 2020 13:31:56 -0700
-Message-Id: <1594326716-15474-5-git-send-email-rishabhb@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1594326716-15474-1-git-send-email-rishabhb@codeaurora.org>
-References: <1594326716-15474-1-git-send-email-rishabhb@codeaurora.org>
+        Thu, 9 Jul 2020 16:37:20 -0400
+Received: by mail-io1-f66.google.com with SMTP id c16so3736559ioi.9;
+        Thu, 09 Jul 2020 13:37:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zYVtac9Zi8Ea45Dv/JsLDGweT3Jj92BXMb3jivMTATc=;
+        b=kVPjSnwCAg311sBi3lHCyqmE4UhJN1LrBKJOZdTCC/5VyextoYgu+J9wM+uID5YYHw
+         R+QuvU+FFgGoGKlUePa1U+YgDibaYXptK327Z2Y1f6HCmteLBwQjW6tkqZlzNGurszjJ
+         xua3HReQTME1vVnj4u0lK3i4ichUa4uxlCTAL+GVfBNOodnehEoihcSgTWgY4sPFLnEU
+         FaL8aVeBYEIcv+Ff0S/iiZ4pRK4BN51Y/0OuOwdj5dI/FnO70a0VZU2q9487EKXTRuVO
+         lgY2fkicjtVnNqharm+Pp75IHwxuIGN1XVoSFgyxJ4eidN27cHBLDnO4nsj47PvoDqYP
+         gnjg==
+X-Gm-Message-State: AOAM5323GwomK/MIuIxQPg41+orQ78JJ0YzgZyS5V0XlQ9VUHplwLE54
+        anIvWLSLQT7H94tEvn51vA==
+X-Google-Smtp-Source: ABdhPJzQBLgQu0/F5feMhyP/ZARue5TvyvtGE6/nGRA3cx1winlPMxKdNtL0DNf3bejnqdNjMXZpcg==
+X-Received: by 2002:a05:6638:e93:: with SMTP id p19mr56572629jas.67.1594327039832;
+        Thu, 09 Jul 2020 13:37:19 -0700 (PDT)
+Received: from xps15 ([64.188.179.254])
+        by smtp.gmail.com with ESMTPSA id i188sm2677380ioa.33.2020.07.09.13.37.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Jul 2020 13:37:19 -0700 (PDT)
+Received: (nullmailer pid 846237 invoked by uid 1000);
+        Thu, 09 Jul 2020 20:37:18 -0000
+Date:   Thu, 9 Jul 2020 14:37:18 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Benjamin Gaignard <benjamin.gaignard@st.com>
+Cc:     hugues.fruchet@st.com, mchehab@kernel.org,
+        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
+        linux-media@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        vincent.guittot@linaro.org, valentin.schneider@arm.com,
+        rjw@rjwysocki.net, devicetree@vger.kernel.org
+Subject: Re: [PATCH v7 1/3] dt-bindings: media: stm32-dcmi: Add DCMI min
+ frequency property
+Message-ID: <20200709203718.GA837160@bogus>
+References: <20200701130129.30961-1-benjamin.gaignard@st.com>
+ <20200701130129.30961-2-benjamin.gaignard@st.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200701130129.30961-2-benjamin.gaignard@st.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add coredump debugfs entry to configure the type of dump that will
-be collected during recovery. User can select between default or
-inline coredump functionality. Also coredump collection can be
-disabled through this interface.
-This functionality can be configured differently for different
-remote processors.
+On Wed, Jul 01, 2020 at 03:01:27PM +0200, Benjamin Gaignard wrote:
+> Document st,stm32-dcmi-min-frequency property which is used to
+> request CPUs minimum frequency when streaming frames.
+> 
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@st.com>
+> ---
+>  Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml b/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
+> index 3fe778cb5cc3..05ca85a2411a 100644
+> --- a/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
+> +++ b/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
+> @@ -44,6 +44,13 @@ properties:
+>        bindings defined in
+>        Documentation/devicetree/bindings/media/video-interfaces.txt.
+>  
+> +  st,stm32-dcmi-min-frequency:
+> +    description: DCMI minimum CPUs frequency requirement (in KHz).
+> +    allOf:
+> +      - $ref: /schemas/types.yaml#/definitions/uint32
+> +      - minimum: 0
+> +      - default: 0
 
-Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-Tested-by: Sibi Sankar <sibis@codeaurora.org>
-Reviewed-by: Sibi Sankar <sibis@codeaurora.org>
----
- drivers/remoteproc/remoteproc_debugfs.c | 90 +++++++++++++++++++++++++++++++++
- 1 file changed, 90 insertions(+)
+I think this is questionable to be in DT and if it is, it's something 
+that's hardly specific to ST or this block. IIRC, we already have a way 
+to specify minimum OPPs.
 
-diff --git a/drivers/remoteproc/remoteproc_debugfs.c b/drivers/remoteproc/remoteproc_debugfs.c
-index 732770e..16a4196 100644
---- a/drivers/remoteproc/remoteproc_debugfs.c
-+++ b/drivers/remoteproc/remoteproc_debugfs.c
-@@ -28,6 +28,94 @@
- static struct dentry *rproc_dbg;
- 
- /*
-+ * A coredump-configuration-to-string lookup table, for exposing a
-+ * human readable configuration via debugfs. Always keep in sync with
-+ * enum rproc_coredump_mechanism
-+ */
-+static const char * const rproc_coredump_str[] = {
-+	[RPROC_COREDUMP_DEFAULT]	= "default",
-+	[RPROC_COREDUMP_INLINE]		= "inline",
-+	[RPROC_COREDUMP_DISABLED]	= "disabled",
-+};
-+
-+/* Expose the current coredump configuration via debugfs */
-+static ssize_t rproc_coredump_read(struct file *filp, char __user *userbuf,
-+				   size_t count, loff_t *ppos)
-+{
-+	struct rproc *rproc = filp->private_data;
-+	char buf[20];
-+	int len;
-+
-+	len = scnprintf(buf, sizeof(buf), "%s\n",
-+			rproc_coredump_str[rproc->dump_conf]);
-+
-+	return simple_read_from_buffer(userbuf, count, ppos, buf, len);
-+}
-+
-+/*
-+ * By writing to the 'coredump' debugfs entry, we control the behavior of the
-+ * coredump mechanism dynamically. The default value of this entry is "default".
-+ *
-+ * The 'coredump' debugfs entry supports these commands:
-+ *
-+ * default:	This is the default coredump mechanism. When the remoteproc
-+ *		crashes the entire coredump will be copied to a separate buffer
-+ *		and exposed to userspace.
-+ *
-+ * inline:	The coredump will not be copied to a separate buffer and the
-+ *		recovery process will have to wait until data is read by
-+ *		userspace. But this avoid usage of extra memory.
-+ *
-+ * disabled:	This will disable coredump. Recovery will proceed without
-+ *		collecting any dump.
-+ */
-+static ssize_t rproc_coredump_write(struct file *filp,
-+				    const char __user *user_buf, size_t count,
-+				    loff_t *ppos)
-+{
-+	struct rproc *rproc = filp->private_data;
-+	int ret, err = 0;
-+	char buf[20];
-+
-+	if (count > sizeof(buf))
-+		return -EINVAL;
-+
-+	ret = copy_from_user(buf, user_buf, count);
-+	if (ret)
-+		return -EFAULT;
-+
-+	/* remove end of line */
-+	if (buf[count - 1] == '\n')
-+		buf[count - 1] = '\0';
-+
-+	if (rproc->state == RPROC_CRASHED) {
-+		dev_err(&rproc->dev, "can't change coredump configuration\n");
-+		err = -EBUSY;
-+		goto out;
-+	}
-+
-+	if (!strncmp(buf, "disable", count)) {
-+		rproc->dump_conf = RPROC_COREDUMP_DISABLED;
-+	} else if (!strncmp(buf, "inline", count)) {
-+		rproc->dump_conf = RPROC_COREDUMP_INLINE;
-+	} else if (!strncmp(buf, "default", count)) {
-+		rproc->dump_conf = RPROC_COREDUMP_DEFAULT;
-+	} else {
-+		dev_err(&rproc->dev, "Invalid coredump configuration\n");
-+		err = -EINVAL;
-+	}
-+out:
-+	return err ? err : count;
-+}
-+
-+static const struct file_operations rproc_coredump_fops = {
-+	.read = rproc_coredump_read,
-+	.write = rproc_coredump_write,
-+	.open = simple_open,
-+	.llseek = generic_file_llseek,
-+};
-+
-+/*
-  * Some remote processors may support dumping trace logs into a shared
-  * memory buffer. We expose this trace buffer using debugfs, so users
-  * can easily tell what's going on remotely.
-@@ -337,6 +425,8 @@ void rproc_create_debug_dir(struct rproc *rproc)
- 			    rproc, &rproc_rsc_table_fops);
- 	debugfs_create_file("carveout_memories", 0400, rproc->dbg_dir,
- 			    rproc, &rproc_carveouts_fops);
-+	debugfs_create_file("coredump", 0600, rproc->dbg_dir,
-+			    rproc, &rproc_coredump_fops);
- }
- 
- void __init rproc_init_debugfs(void)
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+Rob
