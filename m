@@ -2,128 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A74B219E62
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 12:53:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 053F9219E38
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 12:51:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726928AbgGIKxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 06:53:18 -0400
-Received: from mga12.intel.com ([192.55.52.136]:25233 "EHLO mga12.intel.com"
+        id S1726606AbgGIKvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 06:51:06 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:34817 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726513AbgGIKxS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 06:53:18 -0400
-IronPort-SDR: 5bAOzo8vPO0qiBySoGeyAmQc8XplNZo/kY3UwKt35RYS3ppVxSc0OH3KJzWSDiK4rPMsyiMwdw
- dBVkqq9dSqjw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9676"; a="127557441"
-X-IronPort-AV: E=Sophos;i="5.75,331,1589266800"; 
-   d="scan'208";a="127557441"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jul 2020 03:53:17 -0700
-IronPort-SDR: P4hWY/sye1VYuLTzDCkFtKV52yM7tKk5/vXcJpES3ptC2WS01pmaVpqjBuZ+rp+5rbNRAgTcIZ
- 5oWMsWZ+jzpw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,331,1589266800"; 
-   d="scan'208";a="323208484"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by FMSMGA003.fm.intel.com with ESMTP; 09 Jul 2020 03:53:15 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1000)
-        id 9D3E01EA; Thu,  9 Jul 2020 13:53:14 +0300 (EEST)
-From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Jann Horn <jannh@google.com>, stable@vger.kernel.org,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>
-Subject: [PATCH] mm: Close race between munmap() and expand_upwards()/downwards()
-Date:   Thu,  9 Jul 2020 13:53:09 +0300
-Message-Id: <20200709105309.42495-1-kirill.shutemov@linux.intel.com>
-X-Mailer: git-send-email 2.27.0
+        id S1726339AbgGIKvG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 06:51:06 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4B2Xyv3zTwz9sQt;
+        Thu,  9 Jul 2020 20:51:03 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1594291864;
+        bh=VI4aFN/tvbsGFEJ4xA4/0VeUoMRZZnfq/gpr3pAx8G0=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=IKD2ten4BhzVwExubvn3K93mtWqnC3WWAZoRzc+c3H8YbG4WdsqsYIsWtHE7Mr0GH
+         nGpjcBK6Dan3kZ/RMkJ8HleBBVOarl2j8GlhAGagpMFmLzOUokO9woJyZe4KB9Tvwf
+         0gHMuKiiBQ3KcLbW84Ee0saFgPCykKlyofIbboYWIBK9RSlMTJJFeFiEwRu+zC4apq
+         bE4ngiBaxW+gJCjWBfPK2R/oK0LL8F7QhMQriTR0TsdOezFACf1z9JYBLvElvotO+B
+         y9apR0IOzs3WlCA9v8OvGe3t3FZaAfE4Haq+4aFUFiz6O2rlfWYCuDwrQiPGASWc69
+         zr4ZnuPJOXulA==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Nicholas Piggin <npiggin@gmail.com>, linuxppc-dev@lists.ozlabs.org
+Cc:     Nicholas Piggin <npiggin@gmail.com>, Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Waiman Long <longman@redhat.com>,
+        Anton Blanchard <anton@ozlabs.org>,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, kvm-ppc@vger.kernel.org,
+        linux-arch@vger.kernel.org
+Subject: Re: [PATCH v3 5/6] powerpc/pseries: implement paravirt qspinlocks for SPLPAR
+In-Reply-To: <20200706043540.1563616-6-npiggin@gmail.com>
+References: <20200706043540.1563616-1-npiggin@gmail.com> <20200706043540.1563616-6-npiggin@gmail.com>
+Date:   Thu, 09 Jul 2020 20:53:16 +1000
+Message-ID: <874kqhvu1v.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VMA with VM_GROWSDOWN or VM_GROWSUP flag set can change their size under
-mmap_read_lock(). It can lead to race with __do_munmap():
+Nicholas Piggin <npiggin@gmail.com> writes:
 
-	Thread A			Thread B
-__do_munmap()
-  detach_vmas_to_be_unmapped()
-  mmap_write_downgrade()
-				expand_downwards()
-				  vma->vm_start = address;
-				  // The VMA now overlaps with
-				  // VMAs detached by the Thread A
-				// page fault populates expanded part
-				// of the VMA
-  unmap_region()
-    // Zaps pagetables partly
-    // populated by Thread B
+> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+> ---
+>  arch/powerpc/include/asm/paravirt.h           | 28 ++++++++
+>  arch/powerpc/include/asm/qspinlock.h          | 66 +++++++++++++++++++
+>  arch/powerpc/include/asm/qspinlock_paravirt.h |  7 ++
+>  arch/powerpc/platforms/pseries/Kconfig        |  5 ++
+>  arch/powerpc/platforms/pseries/setup.c        |  6 +-
+>  include/asm-generic/qspinlock.h               |  2 +
 
-Similar race exists for expand_upwards().
+Another ack?
 
-The fix is to avoid downgrading mmap_lock in __do_munmap() if detached
-VMAs are next to VM_GROWSDOWN or VM_GROWSUP VMA.
+> diff --git a/arch/powerpc/include/asm/paravirt.h b/arch/powerpc/include/asm/paravirt.h
+> index 7a8546660a63..f2d51f929cf5 100644
+> --- a/arch/powerpc/include/asm/paravirt.h
+> +++ b/arch/powerpc/include/asm/paravirt.h
+> @@ -45,6 +55,19 @@ static inline void yield_to_preempted(int cpu, u32 yield_count)
+>  {
+>  	___bad_yield_to_preempted(); /* This would be a bug */
+>  }
+> +
+> +extern void ___bad_yield_to_any(void);
+> +static inline void yield_to_any(void)
+> +{
+> +	___bad_yield_to_any(); /* This would be a bug */
+> +}
 
-Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Reported-by: Jann Horn <jannh@google.com>
-Fixes: dd2283f2605e ("mm: mmap: zap pages with read mmap_sem in munmap")
-Cc: <stable@vger.kernel.org> # 4.20
-Cc: Yang Shi <yang.shi@linux.alibaba.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>
-Cc: Oleg Nesterov <oleg@redhat.com>
-Cc: Matthew Wilcox <willy@infradead.org>
----
- mm/mmap.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+Why do we do that rather than just not defining yield_to_any() at all
+and letting the build fail on that?
 
-diff --git a/mm/mmap.c b/mm/mmap.c
-index 59a4682ebf3f..71df4b36b42a 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -2620,7 +2620,7 @@ static void unmap_region(struct mm_struct *mm,
-  * Create a list of vma's touched by the unmap, removing them from the mm's
-  * vma list as we go..
-  */
--static void
-+static bool
- detach_vmas_to_be_unmapped(struct mm_struct *mm, struct vm_area_struct *vma,
- 	struct vm_area_struct *prev, unsigned long end)
- {
-@@ -2645,6 +2645,17 @@ detach_vmas_to_be_unmapped(struct mm_struct *mm, struct vm_area_struct *vma,
- 
- 	/* Kill the cache */
- 	vmacache_invalidate(mm);
+There's a condition somewhere that we know will false at compile time
+and drop the call before linking?
+
+> diff --git a/arch/powerpc/include/asm/qspinlock_paravirt.h b/arch/powerpc/include/asm/qspinlock_paravirt.h
+> new file mode 100644
+> index 000000000000..750d1b5e0202
+> --- /dev/null
+> +++ b/arch/powerpc/include/asm/qspinlock_paravirt.h
+> @@ -0,0 +1,7 @@
+> +/* SPDX-License-Identifier: GPL-2.0-or-later */
+> +#ifndef __ASM_QSPINLOCK_PARAVIRT_H
+> +#define __ASM_QSPINLOCK_PARAVIRT_H
+
+_ASM_POWERPC_QSPINLOCK_PARAVIRT_H please.
+
+> +
+> +EXPORT_SYMBOL(__pv_queued_spin_unlock);
+
+Why's that in a header? Should that (eventually) go with the generic implementation?
+
+> diff --git a/arch/powerpc/platforms/pseries/Kconfig b/arch/powerpc/platforms/pseries/Kconfig
+> index 24c18362e5ea..756e727b383f 100644
+> --- a/arch/powerpc/platforms/pseries/Kconfig
+> +++ b/arch/powerpc/platforms/pseries/Kconfig
+> @@ -25,9 +25,14 @@ config PPC_PSERIES
+>  	select SWIOTLB
+>  	default y
+>  
+> +config PARAVIRT_SPINLOCKS
+> +	bool
+> +	default n
+
+default n is the default.
+
+> diff --git a/arch/powerpc/platforms/pseries/setup.c b/arch/powerpc/platforms/pseries/setup.c
+> index 2db8469e475f..747a203d9453 100644
+> --- a/arch/powerpc/platforms/pseries/setup.c
+> +++ b/arch/powerpc/platforms/pseries/setup.c
+> @@ -771,8 +771,12 @@ static void __init pSeries_setup_arch(void)
+>  	if (firmware_has_feature(FW_FEATURE_LPAR)) {
+>  		vpa_init(boot_cpuid);
+>  
+> -		if (lppaca_shared_proc(get_lppaca()))
+> +		if (lppaca_shared_proc(get_lppaca())) {
+>  			static_branch_enable(&shared_processor);
+> +#ifdef CONFIG_PARAVIRT_SPINLOCKS
+> +			pv_spinlocks_init();
+> +#endif
+> +		}
+
+We could avoid the ifdef with this I think?
+
+diff --git a/arch/powerpc/include/asm/spinlock.h b/arch/powerpc/include/asm/spinlock.h
+index 434615f1d761..6ec72282888d 100644
+--- a/arch/powerpc/include/asm/spinlock.h
++++ b/arch/powerpc/include/asm/spinlock.h
+@@ -10,5 +10,9 @@
+ #include <asm/simple_spinlock.h>
+ #endif
+
++#ifndef CONFIG_PARAVIRT_SPINLOCKS
++static inline void pv_spinlocks_init(void) { }
++#endif
 +
-+	/*
-+	 * Do not downgrade mmap_sem if we are next to VM_GROWSDOWN or
-+	 * VM_GROWSUP VMA. Such VMAs can change their size under
-+	 * down_read(mmap_sem) and collide with the VMA we are about to unmap.
-+	 */
-+	if (vma && (vma->vm_flags & VM_GROWSDOWN))
-+		return false;
-+	if (prev && (prev->vm_flags & VM_GROWSUP))
-+		return false;
-+	return true;
- }
- 
- /*
-@@ -2825,7 +2836,8 @@ int __do_munmap(struct mm_struct *mm, unsigned long start, size_t len,
- 	}
- 
- 	/* Detach vmas from rbtree */
--	detach_vmas_to_be_unmapped(mm, vma, prev, end);
-+	if (!detach_vmas_to_be_unmapped(mm, vma, prev, end))
-+		downgrade = false;
- 
- 	if (downgrade)
- 		mmap_write_downgrade(mm);
--- 
-2.26.2
+ #endif /* __KERNEL__ */
+ #endif /* __ASM_SPINLOCK_H */
 
+
+cheers
