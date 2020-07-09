@@ -2,127 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F5CF21A6C6
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 20:22:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1823121A6CB
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 20:23:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726352AbgGISW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 14:22:27 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:30502 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726163AbgGISW0 (ORCPT
+        id S1726765AbgGISX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 14:23:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54738 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726671AbgGISXZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 14:22:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594318945;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=aPXiyCrH7oXeBX9QLi0so8nbm8S4tmPS8K/PlqOIwFU=;
-        b=i3i/GC0FddMzUEOol9uWfQJ64H9CEGBs1NWR308YhbaMChJ5yfJBh7IO62UcVIP1Mkv/P+
-        vbhgmEjuh+cshR33I1eu9NK3ROyk00KUrt1zwA6+T2WSen+H9REOc7aL9BqX2PyWVqz18j
-        pOpy9b/H1giPyazgsKwNyWF7KsI8GKY=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-278-gKDWHFzVNLOiFUGFamhIww-1; Thu, 09 Jul 2020 14:22:23 -0400
-X-MC-Unique: gKDWHFzVNLOiFUGFamhIww-1
-Received: by mail-qk1-f198.google.com with SMTP id g12so2424838qko.19
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 11:22:23 -0700 (PDT)
+        Thu, 9 Jul 2020 14:23:25 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B299DC08C5CE
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 11:23:23 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id e4so3508246ljn.4
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 11:23:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QBK34QmOm7rGagdq+y/pFHeLmBKGPoe57/dqNXAHGsw=;
+        b=E41Qu6K2EXG6IW9nxZNyd9nff5Sg9XWoTihHNGOyqwH57TnGAezxJygQRAw0a5fPFn
+         E0iTIgSbCcZhaVhOSAlxzVIDJdXSvOJlGcYzwHlw+oMGcRa8VxVwijJnbsBL8MNol8Oi
+         r7PZqhXkTu6KRUsNghrwQbZ/XTNJNQBklIUzQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=aPXiyCrH7oXeBX9QLi0so8nbm8S4tmPS8K/PlqOIwFU=;
-        b=k0XXvVb9C0ngcvdJu9MzXi+qSazXUX83NtnIfHq0W8rImyD7/tMGQyG2u9Y82+mlfb
-         TTGYTmsolfUc3YMyki1ISexiFZIHl+LokHhfjvj2iQD0Vzv5nunqjLsypG4RZC/ZqhHX
-         SX54gARXPwj+nkVXnz/84vAHA9E3kzSfdZo6vHOg+Pq4x6nxbvrYIHJFGHRo/4AGC/OS
-         sTWQC3r9M8EON/O2ONV++q8593zzX9SAp8ua/h9U1VjGa6PLzRv3UatMv950XkKw2E9N
-         bcW9TbO8JErhmO/4mSIt9mOn/qJJQmE59RuVfa3pDrZuP34q1eURhUqMekJ1hJjOtv3t
-         tM7A==
-X-Gm-Message-State: AOAM5336CAm4/+kQnfwdR252KpZXS9W4QxYj2kG19lWuE2QYGS1kCNyM
-        Dm4w2T+Ubb1nKedQPhkX2GnmapUqanfrxb7FLCwKdFq3HbYHVbVxEpZVduQeSwVw/kq6h9H5juy
-        XghkVWy1B8jf0ZaPd0pIGR8h6
-X-Received: by 2002:aed:2a36:: with SMTP id c51mr39636232qtd.264.1594318943270;
-        Thu, 09 Jul 2020 11:22:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxqsYywhmXTQRogPqAPHeaEeyc9RZJ23AF7MNu+3uBKa8vxZOosdZtq4sQ4TcPk5Z1Polevwg==
-X-Received: by 2002:aed:2a36:: with SMTP id c51mr39636203qtd.264.1594318942990;
-        Thu, 09 Jul 2020 11:22:22 -0700 (PDT)
-Received: from xz-x1 ([2607:9880:19c8:6f::1f4f])
-        by smtp.gmail.com with ESMTPSA id y40sm4756253qtc.29.2020.07.09.11.22.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jul 2020 11:22:22 -0700 (PDT)
-Date:   Thu, 9 Jul 2020 14:22:20 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, Vitaly Kuznetsov <vkuznets@redhat.com>
-Subject: Re: [PATCH 1/2] KVM: X86: Move ignore_msrs handling upper the stack
-Message-ID: <20200709182220.GG199122@xz-x1>
-References: <20200622220442.21998-1-peterx@redhat.com>
- <20200622220442.21998-2-peterx@redhat.com>
- <20200625061544.GC2141@linux.intel.com>
- <1cebc562-89e9-3806-bb3c-771946fc64f3@redhat.com>
- <20200625162540.GC3437@linux.intel.com>
- <20200626180732.GB175520@xz-x1>
- <20200626181820.GG6583@linux.intel.com>
- <47b90b77-cf03-6087-b25f-fcd2fd313165@redhat.com>
- <20200630154726.GD7733@linux.intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QBK34QmOm7rGagdq+y/pFHeLmBKGPoe57/dqNXAHGsw=;
+        b=csG1KbngvVdPMHmTcJBUz9Drc5PXyieQ01dVjd9f5dwqpsfYdawbOOtb7zg9kRfYsO
+         tRD4Wq3L9zcmx7bLGe+xv5kX5Vz9gqHs8VRtpuk4pCKio6JLbR5OM9fYcveZyDzNG/Sy
+         ii+o2QyCuoXtZxBn+kjWQBzyzH8PZdydyZYL3P9IsXROGM1BiCF3U+GiLm9v9+oUdMqx
+         C1Z2/bIf4Pn6CzSyBsTmWakOU18tQ2q63VKoC84gSKC4tj8rOVIAhW6wml0YHdLGzraA
+         2C88pJ2ITWXNuut+/PRiClp2p913GAdWobagVXmdVPB+4zFAQkUFt5tbd4Qc8ffb2zf4
+         M+cg==
+X-Gm-Message-State: AOAM532wr9jaCP47mPFFzd4kB2OrIPbQGMEC6bglMCPixXWk6FXzh3e/
+        KGe39TlXmpGiChoArcr1fO+fHRcDPzs=
+X-Google-Smtp-Source: ABdhPJxqAttJ/dteZU4FnAL5W2BFAljWVhF9ZghsAGGy+km7oslOK+sA1si8IO4A3xtuadldfprQyA==
+X-Received: by 2002:a2e:910c:: with SMTP id m12mr15794245ljg.274.1594319001463;
+        Thu, 09 Jul 2020 11:23:21 -0700 (PDT)
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com. [209.85.208.173])
+        by smtp.gmail.com with ESMTPSA id f13sm1201140lfs.29.2020.07.09.11.23.20
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Jul 2020 11:23:20 -0700 (PDT)
+Received: by mail-lj1-f173.google.com with SMTP id r19so3474555ljn.12
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 11:23:20 -0700 (PDT)
+X-Received: by 2002:a2e:9b42:: with SMTP id o2mr36586914ljj.102.1594319000060;
+ Thu, 09 Jul 2020 11:23:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200630154726.GD7733@linux.intel.com>
+References: <20200709151814.110422-1-hch@lst.de> <20200709151814.110422-16-hch@lst.de>
+ <CAHk-=whXq_149rcDv9ENkKeKpcEQ93MAvcmAOAbU8=bWG55X2A@mail.gmail.com> <20200709181227.GA20954@lst.de>
+In-Reply-To: <20200709181227.GA20954@lst.de>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 9 Jul 2020 11:23:03 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgXtjWb_sVfaSGTaCToHZmxRs4EHpQ1ck=6B=zGTLuQdQ@mail.gmail.com>
+Message-ID: <CAHk-=wgXtjWb_sVfaSGTaCToHZmxRs4EHpQ1ck=6B=zGTLuQdQ@mail.gmail.com>
+Subject: Re: [PATCH 15/17] initramfs: switch initramfs unpacking to struct
+ file based APIs
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Song Liu <song@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, linux-raid@vger.kernel.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 30, 2020 at 08:47:26AM -0700, Sean Christopherson wrote:
-> On Sat, Jun 27, 2020 at 04:24:34PM +0200, Paolo Bonzini wrote:
-> > On 26/06/20 20:18, Sean Christopherson wrote:
-> > >> Btw, would it be more staightforward to check "vcpu->arch.arch_capabilities &
-> > >> ARCH_CAP_TSX_CTRL_MSR" rather than "*ebx | (F(RTM) | F(HLE))" even if we want
-> > >> to have such a fix?
-> > > Not really, That ends up duplicating the check in vmx_get_msr().  From an
-> > > emulation perspective, this really is a "guest" access to the MSR, in the
-> > > sense that it the virtual CPU is in the guest domain, i.e. not a god-like
-> > > entity that gets to break the rules of emulation.
-> > 
-> > But if you wrote a guest that wants to read MSR_IA32_TSX_CTRL, there are
-> > two choices:
-> > 
-> > 1) check ARCH_CAPABILITIES first
-> > 
-> > 2) blindly access it and default to 0.
-> > 
-> > Both are fine, because we know MSR_IA32_TSX_CTRL has no
-> > reserved/must-be-one bits.  Calling __kvm_get_msr and checking for an
-> > invalid MSR through the return value is not breaking the rules of
-> > emulation, it is "faking" a #GP handler.
-> 
-> "guest" was the wrong choice of word.  My point was that, IMO, emulation
-> should never set host_initiated=true.
-> 
-> To me, accessing MSRs with host_initiated is the equivalent of loading a
-> ucode patch, i.e. it's super duper special stuff that deliberately turns
-> off all safeguards and can change the fundamental behavior of the (virtual)
-> CPU.
+On Thu, Jul 9, 2020 at 11:12 AM Christoph Hellwig <hch@lst.de> wrote:
+>
+> On Thu, Jul 09, 2020 at 11:07:08AM -0700, Linus Torvalds wrote:
+> > On Thu, Jul 9, 2020 at 8:18 AM Christoph Hellwig <hch@lst.de> wrote:
+> > >
+> > > There is no good reason to mess with file descriptors from in-kernel
+> > > code, switch the initramfs unpacking to struct file based write
+> > > instead.  As we don't have nice helper for chmod or chown on a struct
+> > > file or struct path use the pathname based ones instead there.  This
+> > > causes additional (cached) lookups, but keeps the code much simpler.
+> >
+> > This is the only one I'm not a huge fan of.
+> >
+> > I agree about moving to 'struct file'. But then you could just do the
+> > chown/chmod using chown/chmod_common() on file->f_path.
+> >
+> > That would keep the same semantics, and it feels like a more
+> > straightforward patch.
+> >
+> > It would still remove the nasty ksys_fchmod/fchmod, it would just
+> > require our - already existing - *_common() functions to be non-static
+> > (and maybe renamed to "vfs_chown/chmod()" instead, that "*_common()"
+> > naming looks a bit odd compared to all our other "vfs_operation()"
+> > helpers).
+>
+> Sure, we can do that.  It requires a little more boilerplate that I
+> thought we could just skip.
 
-This seems to be an orthogonal change against what this series tried to do.  We
-use host_initiated=true in current code, and this series won't change that fact
-either.  As I mentioned in the other thread, at least the rdmsr warning is
-ambiguous when it's not initiated from the guest if without this patchset, and
-this series could address that.
+Yeah, it makes the patch perhaps a bit larger (or rather, it adds one
+new patch to do that "introduce new names for *_common() and add them
+to the headers"), but just looking at your current patch:
 
-> 
-> > So I think Peter's patch is fine, but (possibly on top as a third patch)
-> > __must_check should be added to MSR getters and setters.  Also one
-> > possibility is to return -EINVAL for invalid MSRs.
++                       ksys_chown(collected, uid, gid);
++                       ksys_chmod(collected, mode);
++                       if (body_len)
++                               vfs_truncate(&wfile->f_path, body_len);
 
-Yeah I can add another patch for that.  Also if to repost, I tend to also
-introduce KVM_MSR_RET_[OK|ERROR] too, which seems to be cleaner when we had
-KVM_MSR_RET_INVALID.
+and I go "wouldn't that look a _lot_ more regular something like this":
 
-Any objections before I repost?
++                       vfs_chown(&wfile->f_path, uid, gid);
++                       vfs_chmod(&wfile->f_path, mode);
++                       if (body_len)
++                               vfs_truncate(&wfile->f_path, body_len);
 
--- 
-Peter Xu
+so I think that I'd prefer it simply because it makes all our
+interfaces much more natural.
 
+I note that we still need that ksys_chown() because of disgusting
+issues with the legacy 16-bit uid support. Which is likely not used
+any more now that a.out support is gone (well, alpha and m68k still
+define HAVE_AOUT, so it's not "gone" gone, but it's gone).
+
+I can't imagine that anybody would have ELF and 16-bit uid's.
+
+Except users are crazy. So who knows. But it might definitely be time
+to deprecate UID16.
+
+That's a separate issue, though, it just came up because of that ksys_chown().
+
+                Linus
