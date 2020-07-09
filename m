@@ -2,84 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DEFB21A079
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 15:07:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F60621A072
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 15:04:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726757AbgGINHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 09:07:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33946 "EHLO
+        id S1726809AbgGINEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 09:04:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726347AbgGINHk (ORCPT
+        with ESMTP id S1726347AbgGINEu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 09:07:40 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 991D1C061A0B
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 06:07:40 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id a32so1570359qtb.5
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 06:07:40 -0700 (PDT)
+        Thu, 9 Jul 2020 09:04:50 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03BB2C08C5CE
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 06:04:50 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id s10so2231202wrw.12
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 06:04:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=5Y98dnFuhKZXUOEw7Gz1NRQLDKcW5Uky8iV/XCzB1Y8=;
-        b=sdqM4NMWO5dzN69yq1MlWY/QKkWthK7J3mCBnPKsOKRjt9khpP/w4nRm7Zd+PMfSsa
-         bUrI7UxN53qcPz8Yg2Nuv2yp9arensG/37Z4I3jeN6fRqrnfuhFVcPng99EGFjioDCkS
-         aT2d1g4vOMb9kjDpa6vg1lKQCGRRzHY8tXcMgu6Zx0E54pqSSUAbiMU71CRb8qylri1R
-         dSlU5Y+GXqub812lb82UGpnmnrxXVg5lV0ImOVRngvNpNk6syIkwu5gWrfO+PMqZRGy3
-         JUNFKhA054OD+9MtABPMMuKhourZJJbdAuTJyG9IJkHYSUXn7s30Cd8kTdN9tU2cND2c
-         OUag==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=cxtZhw5woxZcTsV2Wp7psLUxcb5BFmsKDAfOagUL4sY=;
+        b=xvuz8I1/hkEAiRYpSqTwmKttCmZEzyBHvj9s7cdjEb9XBydQo+eWsCkwcy+B4QGHzf
+         ORyAyKCcTWkDyxB/xjNv9enVy/G4Lj20CJBQF3Y5YkYSn2BYUnOyuX3wdGtcC1y2b2a4
+         1cxExy1THorxVzUmG6rcc5Z5PpcJ/pHiXqzvxseggwm2ltJTTs0RfAdZbusZ5peXzjOm
+         Ris1ljd2C2PabKM7u+pIGQy5a6IL+doDBM4r0tjJrhmA/19pHxhthE0U0o9hlXMcQSzY
+         zXlOYRQipjTDlu0i8pEis/wGoAm5I5FvPWFNSYIvQyNzaM+n50VWGqxgpjEP/cMmPkqL
+         TcMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=5Y98dnFuhKZXUOEw7Gz1NRQLDKcW5Uky8iV/XCzB1Y8=;
-        b=qziY/Lxya3WpQ63FGHVaXwJJWt1rdAJ+gKnG7CCnjnwN642a+9lxn1ic1Zh9P8NMUn
-         GaTcMcyEaQQO8cLFg9Ba6+t6/AzZtxaofQCGrslmKuS96rBjk8W9sboVM0giakIyG2wS
-         cFiXX9dhW9I5jWvnZsPJSkPdBYqO/ulPbx5sDvsHvMGTuBrLtRW61ApJdi3giOVqQGx/
-         blCV35pjp4Ojh7CRF+/YbAiy/QVSr5aiqzci8gHlFdYVLi1o4X1S76pj4TxvhIieDDQn
-         GAFQ14dFjnB3i+UNU+KFoec7+t264NXNHPHp0gybQbs6D+HBllpGpG1qjhEt+AilEYXT
-         Sluw==
-X-Gm-Message-State: AOAM5304xu90/qkng99hQ0CnoS7kE9ShXhbUj7RL9IbzA+IQZg65mwh9
-        IlTvnmDuUt/c3655gqLorJY=
-X-Google-Smtp-Source: ABdhPJzz+hrnw2R8tXY5WXXoIDe8IxmQkAb0gLzJiB4xrLY5xP07CqwRf6uGsNMBV2R2FIxE+OIKOw==
-X-Received: by 2002:ac8:7956:: with SMTP id r22mr45428795qtt.359.1594300059916;
-        Thu, 09 Jul 2020 06:07:39 -0700 (PDT)
-Received: from k8s-master ([111.202.144.35])
-        by smtp.gmail.com with ESMTPSA id 125sm3949202qkg.88.2020.07.09.06.07.38
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Thu, 09 Jul 2020 06:07:39 -0700 (PDT)
-From:   qianjun <qianjun.kernel@gmail.com>
-To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org
-Cc:     linux-kernel@vger.kernel.org, qianjun <qianjun@didiglobal.com>
-Subject: [PATCH] perf-c2c: Fix the wrong description.
-Date:   Thu,  9 Jul 2020 21:03:15 +0800
-Message-Id: <1594299795-39394-1-git-send-email-qianjun.kernel@gmail.com>
-X-Mailer: git-send-email 1.8.3.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=cxtZhw5woxZcTsV2Wp7psLUxcb5BFmsKDAfOagUL4sY=;
+        b=SupWdw8V1a8ub18AKJBGFa7tF0j+eUm/UhNdH1zblYr6vYJMB7ViVXdua/cxgsgdfj
+         YL+RbkvlPPN6htgSlVmb+Ec3+GsJvatqLyqAcxM7FSk5RXlYVhDjG++eSzK4LlsLswvM
+         cGyix1/i7sTLjc+xBaoGLhr3/5JXiB59AMMg3Eb1zC9J+gQl+8Aqb+grUlW5H9gsQYwD
+         BwynHLXf7vI5bYtVR04rzqloOjaM7HPta2MTICH+hWu1jXJcJVmsXF7S4jiwSl4BJDIX
+         AuqBgiKtzVnB+ZSRWo+kC/VVVKcxlBLd8OtVCZjYlVQrWD1AGBwkqKYC9K+cJoS1ZrQn
+         rhXw==
+X-Gm-Message-State: AOAM533Pwc2etPkVnMsjPUF4OBhjnkZdVtw1EKhrW8nLQHCK/j/3u7ki
+        GTGhXdHKdlRLR4CCHf9h+f1/nw==
+X-Google-Smtp-Source: ABdhPJwbPXvCrytr2Xz5PfX6gJk8BmG2mp3z1oRGxvVN/kb8c0RGAvXpnd2AiEII9ZyPibJ1FqawSg==
+X-Received: by 2002:adf:fe85:: with SMTP id l5mr60035990wrr.333.1594299888650;
+        Thu, 09 Jul 2020 06:04:48 -0700 (PDT)
+Received: from dell ([2.27.35.206])
+        by smtp.gmail.com with ESMTPSA id j16sm5450209wrt.7.2020.07.09.06.04.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Jul 2020 06:04:47 -0700 (PDT)
+Date:   Thu, 9 Jul 2020 14:04:45 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     gregkh@linuxfoundation.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        Guenter Roeck <linux@roeck-us.net>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Subject: Re: [PATCH 08/32] usb: typec: tcpm: tcpm: Remove dangling unused
+ 'struct tcpm_altmode_ops'
+Message-ID: <20200709130445.GZ3500@dell>
+References: <20200706133341.476881-1-lee.jones@linaro.org>
+ <20200706133341.476881-9-lee.jones@linaro.org>
+ <ca14707c-7d40-07ac-da1d-ca27a2e93dcd@redhat.com>
+ <20200706142051.GA3500@dell>
+ <f2fdead0-9fac-dad3-5d76-41308d5c689d@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f2fdead0-9fac-dad3-5d76-41308d5c689d@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: qianjun <qianjun@didiglobal.com>
+On Thu, 09 Jul 2020, Hans de Goede wrote:
 
-Use L1Miss to replace L1Hit to describe the correct scene
+> Hi,
+> 
+> On 7/6/20 4:20 PM, Lee Jones wrote:
+> > On Mon, 06 Jul 2020, Hans de Goede wrote:
+> > 
+> > > Hi,
+> > > 
+> > > On 7/6/20 3:33 PM, Lee Jones wrote:
+> > > > Looks as though a079973f462a3 ("usb: typec: tcpm: Remove tcpc_config
+> > > > configuration mechanism") pulled out the only use of 'tcpm_altmode_ops'
+> > > > last year.  No need to keep it around.
+> > > > 
+> > > > Fixes the following W=1 kernel build warning(s):
+> > > > 
+> > > >    drivers/usb/typec/tcpm/tcpm.c:1551:39: warning: ‘tcpm_altmode_ops’ defined but not used [-Wunused-const-variable=]
+> > > >    1551 | static const struct typec_altmode_ops tcpm_altmode_ops = {
+> > > >    | ^~~~~~~~~~~~~~~~
+> > > > 
+> > > > Cc: Guenter Roeck <linux@roeck-us.net>
+> > > > Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> > > > Cc: Hans de Goede <hdegoede@redhat.com>
+> > > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > > 
+> > > This is necessary for adding Display port over Type-C support
+> > > on devices using the tcpm code, rather then firmware, to do
+> > > the Type-C alt-mode negotiation.
+> > > 
+> > > I have a local patch in my tree which adds support for this.
+> > > 
+> > > But Heikki did not like my approach, so that patch
+> > > (which needs the bits you are removing) never landed
+> > > upstream:
+> > > 
+> > > https://patchwork.kernel.org/patch/11199517/
+> > > 
+> > > Which is somewhat old now.
+> > 
+> > Yes, that's a just a little old now.
+> > 
+> > If it drags on for much longer, perhaps consider taking it out for the
+> > time being and adding it back when you start to make use of it again?
+> > 
+> > > Heikki said he would look into an approach to this more to
+> > > his liking. Heikki an progress on this area?
+> 
+> Just a little headsup that I'm making some time now to take a look
+> at solving this in the previously discussed better way, with the hope
+> of that we can get that upstream. So hopefully I will have some
+> patches for this ready during the upcoming weekend.
 
-Signed-off-by: qianjun <qianjun@didiglobal.com>
----
- tools/perf/Documentation/perf-c2c.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Sounds good.  Thanks for the update.
 
-diff --git a/tools/perf/Documentation/perf-c2c.txt b/tools/perf/Documentation/perf-c2c.txt
-index 98efdab..083e99a 100644
---- a/tools/perf/Documentation/perf-c2c.txt
-+++ b/tools/perf/Documentation/perf-c2c.txt
-@@ -186,7 +186,7 @@ For each cacheline in the 1) list we display following data:
-   Store Reference - Total, L1Hit, L1Miss
-     Total - all store accesses
-     L1Hit - store accesses that hit L1
--    L1Hit - store accesses that missed L1
-+    L1Miss - store accesses that missed L1
- 
-   Load Dram
-   - count of local and remote DRAM accesses
 -- 
-1.8.3.1
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
