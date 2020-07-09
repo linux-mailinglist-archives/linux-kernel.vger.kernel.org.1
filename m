@@ -2,76 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C079219D45
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 12:14:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0342E219D43
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 12:14:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726893AbgGIKOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 06:14:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35296 "EHLO
+        id S1726905AbgGIKON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 06:14:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726313AbgGIKOF (ORCPT
+        with ESMTP id S1726821AbgGIKOI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 06:14:05 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAA37C08C5CE
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 03:14:05 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id gc9so904305pjb.2
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 03:14:05 -0700 (PDT)
+        Thu, 9 Jul 2020 06:14:08 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D172C061A0B
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 03:14:08 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id k5so640127plk.13
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 03:14:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=t7zJbzd7I0qjlOh1AsM0WBkxDNAEKcLGWWurw0dHxg8=;
-        b=Wzb2c1z1qzrLVrgXLiLFowpIvwPzkNoY4wUDZk5bFzC9C5jZRUCZDoI7DhRVwdiKf4
-         Yh/4b/7hKzqRD0HIFBH7U3BHCfn/mDEBDoOwwQwB9lhE51yBS8ZkU0oZZiTQqxdG2Wjf
-         j9K+S5yx/XfkxgeFUN4B+hR0NfZQsulQwgIkiGV9v9Shdnj/NKMJeBiTJkUPN704jXi2
-         vUOSGlD75ObH5TpHEeD6mSrWh4Nb2M5MtgVr0hY/Gk6Va/ksCgW1Sz1bZyl6TLqxDZVh
-         pDrMu1EKxma+h4gUhileiX4EH8frlCZkgB9N6GhCFZfY8NaWFTsPV0ePgQX6bxCqc9Lp
-         yqpA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=WERQI4vx6F5VSTK4bYtw80Xem66EpKMMios6baMMwa0=;
+        b=KuPYL7m8Uh7NSA/5J+KV4azQCkpwPrcOWfCvWD6oaM9p1gssUwN3jQWCSWbRErgIPG
+         Z3F31SQcxapgS+qZr0wEIXthq6Unt9YOjhuFbFD61QC2v1DlNWOuljjD21uCVdXMATFh
+         n0Dh4kzp/lCCbUqIeCEbVewIcHhPa4opRZnK5uoKTaMtV5PxjZ6RwpsH++pGmNM8Eu6x
+         STN7i5l1Fqnwj6VWxCubDmbvzh0RXeWMpubaPUJApbvWpVXT0RLZB0fxw7ioJDTB4cKq
+         I3SPXOvm2q7aZd5nM1BkG+jeiE5crgU9HDswSmnrPoKIBdq4/lEwSUsZrs+lIWOXkZ5K
+         fq8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=t7zJbzd7I0qjlOh1AsM0WBkxDNAEKcLGWWurw0dHxg8=;
-        b=atVZe50aVSkAjYuUeZVqwZPdkFMz4HPDvVoqFWZTSU1oKT1nL4NMXUvAKtGq3k4h6Q
-         udF8ZJlQGMV+O7GkYlsOMFjkAY5/ZWDYNDfUxZifvSQ+NcjHjR14A+69YxV/xcv92O6z
-         VkAA39ptqtk5NbNdbS1Rtc1soa+5ozgRskDEcLTJgkvMGcCYH64kyKkkmu6nC7p6ccfN
-         +NfzwHr6SiPu0+Oq9pw+v7NRXXyHDNX72w6mXOkypMlZ/sOEi0V+vQx2gNxeS0F+5NkC
-         gH7g6BJtBg4tPH2lnoF6GzJyvj5ma7Pbt12yI4Bx0fHymgVu9NTCCzFUxqBcwv5URJ3/
-         uA1g==
-X-Gm-Message-State: AOAM531q8LlyfaasiS4N68rxmuNEXN8J73YrZzddNXCgIW/0ayA2GP25
-        tmT8o9PF1PVgEr17VrHmToBoug==
-X-Google-Smtp-Source: ABdhPJx+nWnxi594yoD2CfrDxx754RW3BBZ0Apz2JK7s/LWAodsbqVutddC1PmDdT2gAarFJeCbD6Q==
-X-Received: by 2002:a17:90a:84:: with SMTP id a4mr9758381pja.110.1594289643321;
-        Thu, 09 Jul 2020 03:14:03 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=WERQI4vx6F5VSTK4bYtw80Xem66EpKMMios6baMMwa0=;
+        b=huqzNhx6LBJaaDekkXe2axFfmGVeYFOFIT9gsCXsJmFMYt/tv+7afiZDyWoNOdlZju
+         KuVSAIsVguD2xRbRZhQInscQoMpcMSAhdPx0lDshAldaZd8mus6iX72DwxhF41t4XzrE
+         1THGR1eBSZesQdk5oK3xMnSrabmSwbz+nVrh3GaW5CdPvJmBmJXZ0XSrbQlLU5s5MSp6
+         51ImuzjVGuY4NmABuRj6jBwWHe5nZ+QIFrS20xLQomQ0kntOn+V9KO1I3ubiFSolI5gJ
+         yCPV+c4XquEJGQFf4PAHsLc4XxdWqnOWd+CnKgRQotKH7stRJQZ9MSfDFe1o5Pj09Sdd
+         pITg==
+X-Gm-Message-State: AOAM530isbtDDeK6m0I+tYpfzSh+VHcfUEtduc5HSuPFcv/25nH73miN
+        oqN7e6Q0+pRADp8CJ7p3GCaDGw==
+X-Google-Smtp-Source: ABdhPJyD5D4wQ3AEbgkO7obMmfy/iLRvycFB4eWrx780dkivmT+OKlyJ7b2yYKFm2jxkqaitum0vKg==
+X-Received: by 2002:a17:90b:1c12:: with SMTP id oc18mr14114371pjb.160.1594289647985;
+        Thu, 09 Jul 2020 03:14:07 -0700 (PDT)
 Received: from localhost ([122.172.40.201])
-        by smtp.gmail.com with ESMTPSA id fh12sm2026352pjb.5.2020.07.09.03.14.01
+        by smtp.gmail.com with ESMTPSA id 15sm2157222pjs.8.2020.07.09.03.14.07
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 09 Jul 2020 03:14:02 -0700 (PDT)
+        Thu, 09 Jul 2020 03:14:07 -0700 (PDT)
 From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Ben Segall <bsegall@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
+To:     Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>
-Cc:     Ionela Voinescu <ionela.voinescu@arm.com>,
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Ionela Voinescu <ionela.voinescu@arm.com>,
         Peter Puhov <peter.puhov@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: [RFC 0/3] cpufreq: cppc: Add support for frequency invariance
-Date:   Thu,  9 Jul 2020 15:43:32 +0530
-Message-Id: <cover.1594289009.git.viresh.kumar@linaro.org>
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [RFC 1/3] arm64: topology: Add amu_counters_supported() helper
+Date:   Thu,  9 Jul 2020 15:43:33 +0530
+Message-Id: <f4b69674ee35cbec102857218d8409249c8f26c7.1594289009.git.viresh.kumar@linaro.org>
 X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
+In-Reply-To: <cover.1594289009.git.viresh.kumar@linaro.org>
+References: <cover.1594289009.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -79,45 +69,192 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+We would need to know earlier during the boot cycle if AMUs are
+supported or not for all the CPUs, export a routine for that and move
+code around to make it more readable.
 
-CPPC cpufreq driver is used for ARM servers and this patch series tries
-to provide frequency invariance support for them. The same is also
-provided using a specific hardware extension, known as AMU (Activity
-Monitors Unit), but that is optional for platforms and at least few of
-them don't have it.
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+---
+ arch/arm64/kernel/topology.c | 108 ++++++++++++++++++-----------------
+ 1 file changed, 56 insertions(+), 52 deletions(-)
 
-This patchset allows multiple parts of the kernel to provide the same
-functionality, by registering with the topology core.
-
-This is tested with some hacks, as I didn't have access to the right
-hardware, on the ARM64 hikey board to check the overall functionality
-and that works fine.
-
-Ionela/Peter Puhov, it would be nice if you guys can give this a shot.
-
-This is based of my cpufreq/arm/linux-next branch (should work on
-linux-next too) + a cleanup patch [1] that i sent this morning.
-
---
-viresh
-
-[1] https://lore.kernel.org/lkml/a710fc4e4e0f1d2e561320130b99bcb5167d73b4.1594277563.git.viresh.kumar@linaro.org/
-
-Viresh Kumar (3):
-  arm64: topology: Add amu_counters_supported() helper
-  topology: Provide generic implementation of
-    arch_freq_counters_available()
-  cpufreq: cppc: Add support for frequency invariance
-
- arch/arm64/include/asm/topology.h |   7 --
- arch/arm64/kernel/topology.c      | 165 +++++++++++++++---------------
- drivers/base/arch_topology.c      |  43 +++++++-
- drivers/cpufreq/cppc_cpufreq.c    | 138 ++++++++++++++++++++++++-
- include/linux/arch_topology.h     |   5 +-
- kernel/sched/core.c               |   1 +
- 6 files changed, 263 insertions(+), 96 deletions(-)
-
+diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
+index b7da372819fc..74fde35b56ef 100644
+--- a/arch/arm64/kernel/topology.c
++++ b/arch/arm64/kernel/topology.c
+@@ -130,6 +130,9 @@ static DEFINE_PER_CPU_READ_MOSTLY(unsigned long, arch_max_freq_scale);
+ static DEFINE_PER_CPU(u64, arch_const_cycles_prev);
+ static DEFINE_PER_CPU(u64, arch_core_cycles_prev);
+ static cpumask_var_t amu_fie_cpus;
++static cpumask_var_t valid_cpus;
++static DEFINE_STATIC_KEY_FALSE(amu_fie_key);
++#define amu_freq_invariant() static_branch_unlikely(&amu_fie_key)
+ 
+ /* Initialize counter reference per-cpu variables for the current CPU */
+ void init_cpu_freq_invariance_counters(void)
+@@ -140,26 +143,14 @@ void init_cpu_freq_invariance_counters(void)
+ 		       read_sysreg_s(SYS_AMEVCNTR0_CONST_EL0));
+ }
+ 
+-static int validate_cpu_freq_invariance_counters(int cpu)
++static void setup_freq_invariance(int cpu)
+ {
+-	u64 max_freq_hz, ratio;
+-
+-	if (!cpu_has_amu_feat(cpu)) {
+-		pr_debug("CPU%d: counters are not supported.\n", cpu);
+-		return -EINVAL;
+-	}
+-
+-	if (unlikely(!per_cpu(arch_const_cycles_prev, cpu) ||
+-		     !per_cpu(arch_core_cycles_prev, cpu))) {
+-		pr_debug("CPU%d: cycle counters are not enabled.\n", cpu);
+-		return -EINVAL;
+-	}
++	struct cpufreq_policy *policy = cpufreq_cpu_get(cpu);
++	u64 ratio;
+ 
+-	/* Convert maximum frequency from KHz to Hz and validate */
+-	max_freq_hz = cpufreq_get_hw_max_freq(cpu) * 1000;
+-	if (unlikely(!max_freq_hz)) {
+-		pr_debug("CPU%d: invalid maximum frequency.\n", cpu);
+-		return -EINVAL;
++	if (!policy) {
++		pr_debug("CPU%d: No cpufreq policy found.\n", cpu);
++		return;
+ 	}
+ 
+ 	/*
+@@ -176,69 +167,75 @@ static int validate_cpu_freq_invariance_counters(int cpu)
+ 	 * be unlikely).
+ 	 */
+ 	ratio = (u64)arch_timer_get_rate() << (2 * SCHED_CAPACITY_SHIFT);
+-	ratio = div64_u64(ratio, max_freq_hz);
++	ratio = div64_u64(ratio, policy->cpuinfo.max_freq * 1000);
+ 	if (!ratio) {
+ 		WARN_ONCE(1, "System timer frequency too low.\n");
+-		return -EINVAL;
++		goto out;
+ 	}
+ 
+ 	per_cpu(arch_max_freq_scale, cpu) = (unsigned long)ratio;
+ 
+-	return 0;
+-}
+-
+-static inline void update_amu_fie_cpus(int cpu, cpumask_var_t valid_cpus)
+-{
+-	struct cpufreq_policy *policy = cpufreq_cpu_get(cpu);
+-
+-	if (!policy) {
+-		pr_debug("CPU%d: No cpufreq policy found.\n", cpu);
+-		return;
+-	}
+-
+ 	if (cpumask_subset(policy->related_cpus, valid_cpus))
+-		cpumask_or(amu_fie_cpus, policy->related_cpus,
+-			   amu_fie_cpus);
++		cpumask_or(amu_fie_cpus, policy->related_cpus, amu_fie_cpus);
+ 
++out:
+ 	cpufreq_cpu_put(policy);
+ }
+ 
+-static DEFINE_STATIC_KEY_FALSE(amu_fie_key);
+-#define amu_freq_invariant() static_branch_unlikely(&amu_fie_key)
++bool amu_counters_supported(void)
++{
++	return likely(cpumask_available(valid_cpus)) &&
++		cpumask_equal(valid_cpus, cpu_present_mask);
++}
+ 
+-static int __init init_amu_fie(void)
++static int __init early_init_amu_fie(void)
+ {
+-	cpumask_var_t valid_cpus;
+-	int ret = 0;
+ 	int cpu;
+ 
+ 	if (!zalloc_cpumask_var(&valid_cpus, GFP_KERNEL))
+ 		return -ENOMEM;
+ 
+-	if (!zalloc_cpumask_var(&amu_fie_cpus, GFP_KERNEL)) {
+-		ret = -ENOMEM;
+-		goto free_valid_mask;
+-	}
+-
+ 	for_each_present_cpu(cpu) {
+-		if (validate_cpu_freq_invariance_counters(cpu))
++		if (!cpu_has_amu_feat(cpu)) {
++			pr_debug("CPU%d: counters are not supported.\n", cpu);
++			continue;
++		}
++
++		if (unlikely(!per_cpu(arch_const_cycles_prev, cpu) ||
++			     !per_cpu(arch_core_cycles_prev, cpu))) {
++			pr_debug("CPU%d: cycle counters are not enabled.\n", cpu);
+ 			continue;
++		}
++
+ 		cpumask_set_cpu(cpu, valid_cpus);
+-		update_amu_fie_cpus(cpu, valid_cpus);
+ 	}
+ 
++	return 0;
++}
++core_initcall_sync(early_init_amu_fie);
++
++static int __init late_init_amu_fie(void)
++{
++	int cpu;
++
++	if (!cpumask_available(valid_cpus))
++		return -ENOMEM;
++
++	if (!zalloc_cpumask_var(&amu_fie_cpus, GFP_KERNEL))
++		return -ENOMEM;
++
++	for_each_present_cpu(cpu)
++		setup_freq_invariance(cpu);
++
+ 	if (!cpumask_empty(amu_fie_cpus)) {
+ 		pr_info("CPUs[%*pbl]: counters will be used for FIE.",
+ 			cpumask_pr_args(amu_fie_cpus));
+ 		static_branch_enable(&amu_fie_key);
+ 	}
+ 
+-free_valid_mask:
+-	free_cpumask_var(valid_cpus);
+-
+-	return ret;
++	return 0;
+ }
+-late_initcall_sync(init_amu_fie);
++late_initcall_sync(late_init_amu_fie);
+ 
+ bool arch_freq_counters_available(struct cpumask *cpus)
+ {
+@@ -272,7 +269,7 @@ void topology_scale_freq_tick(void)
+ 	 * scale =  ------- * --------------------
+ 	 *	    /\const   SCHED_CAPACITY_SCALE
+ 	 *
+-	 * See validate_cpu_freq_invariance_counters() for details on
++	 * See setup_freq_invariance() for details on
+ 	 * arch_max_freq_scale and the use of SCHED_CAPACITY_SHIFT.
+ 	 */
+ 	scale = core_cnt - prev_core_cnt;
+@@ -287,4 +284,11 @@ void topology_scale_freq_tick(void)
+ 	this_cpu_write(arch_core_cycles_prev, core_cnt);
+ 	this_cpu_write(arch_const_cycles_prev, const_cnt);
+ }
++#else
++bool amu_counters_supported(void)
++{
++	return false;
++}
+ #endif /* CONFIG_ARM64_AMU_EXTN */
++
++EXPORT_SYMBOL_GPL(amu_counters_supported);
 -- 
 2.25.0.rc1.19.g042ed3e048af
 
