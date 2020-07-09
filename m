@@ -2,106 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E11AF21A884
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 22:03:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 348EE21A892
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 22:05:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726948AbgGIUCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 16:02:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42172 "EHLO
+        id S1726582AbgGIUFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 16:05:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726262AbgGIUCr (ORCPT
+        with ESMTP id S1726275AbgGIUFr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 16:02:47 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D096DC08C5CE
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 13:02:47 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id f2so1257204plr.8
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 13:02:47 -0700 (PDT)
+        Thu, 9 Jul 2020 16:05:47 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C2CFC08C5DD
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 13:05:47 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id t7so1534813qvl.8
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 13:05:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2VF7eJrZIbjXtY34qIPtFXhMtxmmt28w7rrxhSng8oY=;
-        b=mIyW8zZOWOY1pVXYX/2zNQFllS1xgMrpixZbYUPUyWHOZ6IlW8z95tLUpzi8JiW48R
-         7wlKto0aIRL/lggyxOGdZuOWJpSvH5vRS0WbAz1cvUNNAMP4TgDSp7aLxVIuBL0zUnyR
-         QiF6K9DF2QwoRsxqwDlvXq+eh1l1djghBCJjMwcogQ6HwLreSqgMFv8POKDy18zyR4Gb
-         751DZz4Bhjg0wAaRs2YK1ZjBly1oTt0N2PNdTfAYzIxn2HXpXkHZHESHOHcbJP9VUdp4
-         mc6uUFW7KPrMhLj9H4BwJ3/v2QN5OoaFfEmTfZ8r5lyGRjEYD7mBb2LGrMGVizRqRpdG
-         bkJQ==
+        d=marek-ca.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=PycHeytyEXnAfxuN7qqf3DZk4rAs+Sr/OQVpihKvwZY=;
+        b=AhNQ3fbwpzkEIcm+5ODN2ebHaNffsSaihE9J64OOIAKCSrPOSi8UTKlTBg+IOFXo9t
+         5bjjk0weUCuGjLom8mO3n25mxkCZmksLojflbh+6QCihWuuzCh0ut7Do9/4MUH9uccBR
+         bBPDd5Twd+Cbygxijcpwr3A11Rjp0BYBxDFWkVNH+XYp6OstTJeK2RnMGDUNmPdn9/pC
+         C5py86ce/WHUUfwQNnkMrv0D5p/H4i/o21HHeP9NzG5bCDisxZgP7a9fEfN1lP29epEn
+         E5qBcFQSAVhLpxnKd+CBvjfwNG6AgFsvOtC7UZuWlI5TTwoOj9pJVUXPhZS7mVHl0uAX
+         sd+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2VF7eJrZIbjXtY34qIPtFXhMtxmmt28w7rrxhSng8oY=;
-        b=HSO63fA4nGzeJXyPMqwXP9mSrj1vpA2yOp4sBXejOZh++N4Z2OYXrf1pY/nA+UmTdH
-         MWofEPEZJjzfiaW7EG3Yf0qP16QbJZYtNfiygCSJK+06DVlqlQWE7c0K7BVoHRwQqc/h
-         RZc8SbA0R/Yk4EOiq32L9CSbu5TUxwxV4JrCSf37y4iKtbiT4bboQ8maohlnr/bg9LYY
-         ii6cHFRLGUlrsuSPBVZa/IYaehh72Wczqj9UWyg1Ct6x5xfDmI0Yehx0pJn3bstAdlqd
-         B1+jeTIQKoNja/cBsznPOVorTnGOqQTzql1VOtxTSZ33dzWZ52S4fNpYHSZpC2yKielG
-         X5HA==
-X-Gm-Message-State: AOAM5312W3QOleuIXdeuAZf9eZyB3/13L/UlwzC3YiQ91dx6PPwFtCU2
-        SbomEv5EIFVCqJPQCagtSfk6vUTvE2OG1crqjkCUeA==
-X-Google-Smtp-Source: ABdhPJwaZaJ+u5RMaS3HRspVE6liBbxnKyRa6B6ssKDIkoaASfmGaGbdWDCMdFhzpm1ErlOjqfFKvkpfi9hhufy+8YE=
-X-Received: by 2002:a17:90a:21ef:: with SMTP id q102mr1866229pjc.101.1594324967094;
- Thu, 09 Jul 2020 13:02:47 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PycHeytyEXnAfxuN7qqf3DZk4rAs+Sr/OQVpihKvwZY=;
+        b=NWWB6clXEN8W/MgVwgSz4v60v4nbxT95K1htuLU8P5U6q7kUzP5bYMF5akR5hScHN0
+         /YFn8Z9CuVpQGOVaC645LljtespEaOeRUlTIqqrNx+kGeylmsUco4OK7BhWG4D1j7Fzq
+         tD9sQUjjEvjC5d4o+Db1FCjOXWPJ9VgkZ01tHLe0+23gJ3Qti0mljMJq6b4Ej1fqW4y6
+         y2SOrlpUdH1xd13c3P6ggdewFVAxQpiKRAr/Ka77ZKUJA5bOCxe26d1aR5L5UeTNc+I3
+         vh7UaGQ/6JXKVLL6zpNkmVtUk3v2ASEmmls6x0jTomg8mGRa617gUWnNhb1NWrynKu85
+         N43g==
+X-Gm-Message-State: AOAM5318lCwlTii6jPu7Ys039yHvu09N9Ev9ln/a/fTc31vtsS/0mHDw
+        bIYom86zanA0q7Y9hFuJ6xIY6w==
+X-Google-Smtp-Source: ABdhPJxcQip3en72uHZuZNYNwMWZgp8T1yNScrJF7eAeMu6gqoKUSdmJo+0p2Tl8FLdWhxkvOaeMpQ==
+X-Received: by 2002:a0c:fa84:: with SMTP id o4mr64584468qvn.186.1594325146682;
+        Thu, 09 Jul 2020 13:05:46 -0700 (PDT)
+Received: from [192.168.0.189] ([147.253.86.153])
+        by smtp.gmail.com with ESMTPSA id a185sm4702422qkg.3.2020.07.09.13.05.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Jul 2020 13:05:46 -0700 (PDT)
+Subject: Re: [PATCH v4 3/7] drm: msm: a6xx: set gpu freq through hfi
+To:     Akhil P Oommen <akhilpo@codeaurora.org>,
+        freedreno@lists.freedesktop.org
+Cc:     dri-devel@freedesktop.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jcrouse@codeaurora.org,
+        smasetty@codeaurora.org, devicetree@vger.kernel.org,
+        mka@chromium.org, saravanak@google.com, sibis@codeaurora.org,
+        viresh.kumar@linaro.org
+References: <1594324828-9571-1-git-send-email-akhilpo@codeaurora.org>
+ <1594324828-9571-4-git-send-email-akhilpo@codeaurora.org>
+From:   Jonathan Marek <jonathan@marek.ca>
+Message-ID: <322c921f-7c8f-7052-b191-44f0dade742e@marek.ca>
+Date:   Thu, 9 Jul 2020 16:04:31 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-References: <20200530221127.459704-1-brgerst@gmail.com> <CAKwvOdn7Ugu_687b9CnOnL8RA9hbi+ONCb10gS=3VqtkTsmduw@mail.gmail.com>
- <CAKwvOdm4gMe_-DcB_H4mDGm8Yy++_7G20sg9xuZoom-rF2j1Sw@mail.gmail.com>
-In-Reply-To: <CAKwvOdm4gMe_-DcB_H4mDGm8Yy++_7G20sg9xuZoom-rF2j1Sw@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 9 Jul 2020 13:02:35 -0700
-Message-ID: <CAKwvOd=0pD2-h_777SjG8dPqw3HYGkmS3UJ2tCWVqmsCL1cZ=w@mail.gmail.com>
-Subject: Re: [PATCH v2 00/10] x86: Clean up percpu operations
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Brian Gerst <brgerst@gmail.com>,
-        Dmitry Golovin <dima@golovin.in>,
-        Alistair Delva <adelva@google.com>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1594324828-9571-4-git-send-email-akhilpo@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 8, 2020 at 12:36 PM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> On Mon, Jun 1, 2020 at 2:00 PM Nick Desaulniers <ndesaulniers@google.com> wrote:
-> >
-> > On Sat, May 30, 2020 at 3:11 PM Brian Gerst <brgerst@gmail.com> wrote:
-> > >
-> > > The core percpu operations already have a switch on the width of the
-> > > data type, which resulted in an extra amount of dead code being
-> > > generated with the x86 operations having another switch.  This patch set
-> > > rewrites the x86 ops to remove the switch.  Additional cleanups are to
-> > > use named assembly operands, and to cast variables to the width used in
-> > > the assembly to make Clang happy.
-> >
-> > Thanks for all of the work that went into this series.  I think I've
-> > reviewed all of them.
-> > With this series plus this hunk:
-> > https://github.com/ClangBuiltLinux/continuous-integration/blob/master/patches/llvm-all/linux-next/x86/x86-support-i386-with-Clang.patch#L219-L237
-> > I can build and boot i386_defconfig with Clang! So for the series:
-> >
-> > Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-> > Tested-by: Nick Desaulniers <ndesaulniers@google.com>
->
-> tglx, Ingo, Boris, Linus,
-> Do you all have thoughts on this series?  I can understand "let
-> sleeping dogs lie" but some Android folks are really interested in
-> i386 testing, and randconfigs/allnoconfigs are doing i386 builds which
-> are currently broken w/ Clang. This series gets us closer to having
-> test coverage of this ISA with another toolchain, FWIW.
+On 7/9/20 4:00 PM, Akhil P Oommen wrote:
+> Newer targets support changing gpu frequency through HFI. So
+> use that wherever supported instead of the legacy method.
+> 
 
-Oh, was https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=6ec4476ac825
-alluding to this, perchance?
+It was already using HFI on newer targets. Don't break it in one commit 
+then fix it in the next.
 
--- 
-Thanks,
-~Nick Desaulniers
+> Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
+> ---
+>   drivers/gpu/drm/msm/adreno/a6xx_gmu.c | 11 +++++++----
+>   1 file changed, 7 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+> index 233afea..b547339 100644
+> --- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+> @@ -121,6 +121,12 @@ void a6xx_gmu_set_freq(struct msm_gpu *gpu, struct dev_pm_opp *opp)
+>   		if (gpu_freq == gmu->gpu_freqs[perf_index])
+>   			break;
+>   
+> +	if (!gmu->legacy) {
+> +		a6xx_hfi_set_freq(gmu, gmu->current_perf_index);
+> +		icc_set_bw(gpu->icc_path, 0, MBps_to_icc(7216));
+> +		return;
+> +	}
+> +
+>   	gmu->current_perf_index = perf_index;
+>   	gmu->freq = gmu->gpu_freqs[perf_index];
+>   
+> @@ -893,10 +899,7 @@ int a6xx_gmu_resume(struct a6xx_gpu *a6xx_gpu)
+>   	enable_irq(gmu->hfi_irq);
+>   
+>   	/* Set the GPU to the current freq */
+> -	if (gmu->legacy)
+> -		a6xx_gmu_set_initial_freq(gpu, gmu);
+> -	else
+> -		a6xx_hfi_set_freq(gmu, gmu->current_perf_index);
+> +	a6xx_gmu_set_initial_freq(gpu, gmu);
+>   
+>   	/*
+>   	 * "enable" the GX power domain which won't actually do anything but it
+> 
