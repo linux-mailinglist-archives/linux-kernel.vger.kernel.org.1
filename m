@@ -2,106 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81ADF21A450
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 18:05:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84B0021A45B
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 18:06:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727856AbgGIQFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 12:05:16 -0400
-Received: from relay8-d.mail.gandi.net ([217.70.183.201]:54543 "EHLO
-        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726357AbgGIQFQ (ORCPT
+        id S1726844AbgGIQGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 12:06:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33584 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726357AbgGIQG3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 12:05:16 -0400
-Received: from webmail.gandi.net (webmail15.sd4.0x35.net [10.200.201.15])
-        (Authenticated sender: contact@artur-rojek.eu)
-        by relay8-d.mail.gandi.net (Postfix) with ESMTPA id 9DA5B1BF20B;
-        Thu,  9 Jul 2020 16:05:11 +0000 (UTC)
+        Thu, 9 Jul 2020 12:06:29 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82558C08C5CE;
+        Thu,  9 Jul 2020 09:06:29 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id z5so1168505pgb.6;
+        Thu, 09 Jul 2020 09:06:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=a9l+tYk/85riUuxTuUt4kuJT2J7SexvNZ2Qs7Rkx7Yo=;
+        b=UIMYWZNGO9j/+zxVwaG/pEaMhgQBDOz4sVQUc96onnh3Km64D+wPEh6h63Qz4TWSP2
+         XsRY+ISPSZbxWrsDHzOqVd3DwO+jn13q7r7UYZokOo3s1FiG2nwMwWwZmqd5bFtKwxQ+
+         7min4joP/kLnjFue26kvH4McDc7c5GblSG7uorFlGZ1P99NsSe0V1sqwQJZB4X76mdCu
+         i6xYF2pb+ijEansklByBwX3lMG37FMLYsZDj5qGeE1VcWDp4k58yGsiDHg61qtsqLdZf
+         yX2vc1mZYM0hIQBguHbDQseqkSVx1Y72XZwWvUrLszIzAplDVdOmRTluucejQGA4GE03
+         8YdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=a9l+tYk/85riUuxTuUt4kuJT2J7SexvNZ2Qs7Rkx7Yo=;
+        b=GtX/uKXrSAitsAhJEefctt6eFVW8OGo/Dqc4bwKTr6vqnw37IBlSaeso6gF4AeuEV7
+         fB9kwjhBLwgH/Ym/kdzoAZjuwj5rI/HT94aFhHJ3Y0v9fqDU6hlyONVWSt4aWZcHjgLy
+         sXmUSdM1Qt6NQEczZpaJmYdD8ow8BIwjdncRSWRjgiyawBG93FAXdFvplGhYhtnefRwf
+         MJE0dtXAuLkJjBQ4kw2DznBr38BDBCrg17cKcGJ4XBZEaXiKHP2wHquSCgxuZL8Yk3oW
+         QYbre/xONnt4SP7xWbI1ug0wvHgOc7ry+SdRXn9i9nJLLreuuc59awri9NFfuIAV6za0
+         Pf/Q==
+X-Gm-Message-State: AOAM533AkOdLiMd3mF504GE6mRL2L7YnOXzD0Rr6zPDUg0bLhsc1bfm7
+        QVKUTJLplXbdJ4Y5VrclU7loj58sqccTrMNq3YIiWdw/
+X-Google-Smtp-Source: ABdhPJw90IfU29sKTmXTJq8bdQnP0yZs7hx9knd5n/D85O14jgfWNCfjuyKFo/9tQ7e8RF9+ZB+nLooFp1k14LQoezE=
+X-Received: by 2002:a62:7657:: with SMTP id r84mr56878331pfc.130.1594310789004;
+ Thu, 09 Jul 2020 09:06:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 09 Jul 2020 18:05:11 +0200
-From:   Artur Rojek <contact@artur-rojek.eu>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
+References: <20200601091851.5491-1-vadimp@mellanox.com> <20200601091851.5491-2-vadimp@mellanox.com>
+In-Reply-To: <20200601091851.5491-2-vadimp@mellanox.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 9 Jul 2020 19:06:13 +0300
+Message-ID: <CAHp75VfFdf=ZxuURpVR6LRaDm+x4VQsPgR6FLrcZPhLMn8MOpw@mail.gmail.com>
+Subject: Re: [PATCH platform-next v1 1/8] platform/mellanox: mlxreg-hotplug:
+ Use capability register for attribute creation
+To:     Vadim Pasternak <vadimp@mellanox.com>
+Cc:     Andy Shevchenko <andy@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v8 0/6] iio/adc: ingenic: Cleanups & add touchscreen mode.
-In-Reply-To: <CAHp75VcwgL8pH+pH9TnsuwbWr=wSFu37sX8sTkbkfk+iBv7Jng@mail.gmail.com>
-References: <20200709152200.10039-1-contact@artur-rojek.eu>
- <CAHp75VcwgL8pH+pH9TnsuwbWr=wSFu37sX8sTkbkfk+iBv7Jng@mail.gmail.com>
-Message-ID: <9865deba48fdb1b5bb522ae7cabef7bc@artur-rojek.eu>
-X-Sender: contact@artur-rojek.eu
-User-Agent: Roundcube Webmail/1.3.13
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Andy,
+On Mon, Jun 1, 2020 at 12:19 PM Vadim Pasternak <vadimp@mellanox.com> wrote:
+>
+> Create the 'sysfs' attributes according to configuration provided
+> through the capability register, which purpose is to indicate the
+> actual number of the components within the particular group.
+> Such components could be, for example the FAN or power supply units.
+> The motivation is to avoid adding a new code in the future in order to
+> distinct between the systems types supported different number of the
 
-On 2020-07-09 17:43, Andy Shevchenko wrote:
-> On Thu, Jul 9, 2020 at 6:22 PM Artur Rojek <contact@artur-rojek.eu> 
-> wrote:
->> 
->> Hi all,
->> 
->> v8 of this patchset introduces some structural changes, which I deemed
->> worthy highlighting here:
-> 
-> Can you remind me if I gave you tags on the previous version?
-I received no tags from you on this patchset so far.
+supported -> supporting a
 
-Cheers,
-Artur
+> components like power supplies, FANs, ASICs, line cards.
 
-> If so, is the above the reason to drop them?
-> 
->> 
->>  - adc-joystick related changes have been dropped from this patchset 
->> and
->>    will be upstreamed separately. Their only connection to this 
->> patchset
->>    was that they used INGENIC_ADC_TOUCH_* defines in the DTS example,
->>    causing trouble to Rob's scripts.
->> 
->>  - Integrated Paul's changes, which introduce an ADCMD low-level 
->> command
->>    feature. These changes affect patches 5/6 and 6/6, with the former
->>    requiring Rob to re-ack.
->> 
->> Cheers,
->> Artur
->> 
->> Artur Rojek (5):
->>   dt-bindings: iio/adc: Convert ingenic-adc docs to YAML.
->>   IIO: Ingenic JZ47xx: Error check clk_enable calls.
->>   IIO: Ingenic JZ47xx: Add xlate cb to retrieve correct channel idx
->>   dt-bindings: iio/adc: Add touchscreen idx for JZ47xx SoC ADC
->>   IIO: Ingenic JZ47xx: Add touchscreen mode.
->> 
->> Paul Cercueil (1):
->>   iio/adc: ingenic: Retrieve channels list from soc data struct
->> 
->>  .../bindings/iio/adc/ingenic,adc.txt          |  49 ---
->>  .../bindings/iio/adc/ingenic,adc.yaml         |  71 ++++
->>  drivers/iio/adc/Kconfig                       |   1 +
->>  drivers/iio/adc/ingenic-adc.c                 | 386 
->> ++++++++++++++++--
->>  include/dt-bindings/iio/adc/ingenic,adc.h     |   6 +
->>  5 files changed, 426 insertions(+), 87 deletions(-)
->>  delete mode 100644 
->> Documentation/devicetree/bindings/iio/adc/ingenic,adc.txt
->>  create mode 100644 
->> Documentation/devicetree/bindings/iio/adc/ingenic,adc.yaml
->> 
->> --
->> 2.27.0
->> 
+...
+
+>                 /* Go over all units within the item. */
+> -               for (j = 0; j < item->count; j++, data++, id++) {
+> +               for (j = 0, k = 0; j < item->count; j++, data++) {
+> +                       /* Skip if bit in mask is not set. */
+> +                       if (!(item->mask & BIT(j)))
+> +                               continue;
+
+Instead of splitted comments and this code, perhaps
+
+/* Go over all unmasked units within item */
+for_each_set_bit(j, &item->mask, item->count) {
+...
+}
+
+It might require a mask defined as unsigned long, though. Or temporary
+variables.
+
+>                 }
+> +               num_attrs += k;
+>         }
+
+-- 
+With Best Regards,
+Andy Shevchenko
