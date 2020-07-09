@@ -2,186 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B77FF21A239
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 16:36:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C7C021A243
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 16:39:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727107AbgGIOgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 10:36:22 -0400
-Received: from mail-dm6nam11on2083.outbound.protection.outlook.com ([40.107.223.83]:48032
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726410AbgGIOgV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 10:36:21 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gw33PucJhruzS/nfYRDKTNxgH4Bi9Yom04vGhtkDWJEtZ9QdR89lC+Kxe4NVsGgU1yvgIn/byNTpD7cfGSGj7Tls/q5rnf9WbftpjlQ8NpH8YKB5pH9i51WZgCRIb+Rbecmb4ncdtDj3Xyj3iasYB62TpQFInFzmFEpDA/kALk72lfbmfC7pXjvgxeHII45iLJqaaUKanUOLBjhnp3y+eDIAD+99NeE4QL25ilT+vSMoYyi/ctnCUnSuTTpr/9xEw2zofv0IuG2LAt+n5vJDK+C0dtLH7mULs88S1A4jdlTZ7vamcxY5qUI0OdqncojHf3WmPosKFRuN8I5C2OGL4g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DyOse/Ihu1Isqnq4QGGC77Bkk5Rzdu75WPP5MAxn9wc=;
- b=mJvswcjRNuX4dxUiC6vSSNgZpneM6YhnQmXuBmssub/EqEbgDGJ/vlFSlhfiJltWaKRYg7KnMPar1y+QEqa2MY/mgJSGvNgIf6RMtPaLjHCjNmr4wZ2JxZyVM6twppXzOXuQEtGtt+9sqULkyybxUmZMRlyDjsH7lwyAUVEKFCpt/MKqfvUIIzHUIWYNSKJ4PmydvUC3Ti1pUD30u/Ij84FrFictVOe8+tCVjtPMyRX+jvMgAxgTEb+Fun/C/i4B5gLs7EjkKt1ljuw6gcYD5q6O34CFStezlwwIbWTYtwPCRBG7UKl2n++aVsq9n2j1wyEy4b01t6it4B+UwoHzMQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.60.83) smtp.rcpttodomain=ni.com smtp.mailfrom=xilinx.com;
- dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
- not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DyOse/Ihu1Isqnq4QGGC77Bkk5Rzdu75WPP5MAxn9wc=;
- b=jgbO+G5mOTYzGuk7dxV1ifERinl1negiQOxb33b9HDFP+UAYJHrrso6Tj4DJk9WOqmZTpfGexKekNfqs28i0FGVsnDRCWC4T38ku+0Vxzm24tqIRtb0Le+WaHWJGVvTQ3UJSQKrVbXBBF4cewYCt6JhoCCZr7J/pIjSjn8EokWQ=
-Received: from CY4PR22CA0042.namprd22.prod.outlook.com (2603:10b6:903:ed::28)
- by MN2PR02MB6880.namprd02.prod.outlook.com (2603:10b6:208:1f7::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.20; Thu, 9 Jul
- 2020 14:36:17 +0000
-Received: from CY1NAM02FT017.eop-nam02.prod.protection.outlook.com
- (2603:10b6:903:ed:cafe::37) by CY4PR22CA0042.outlook.office365.com
- (2603:10b6:903:ed::28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.21 via Frontend
- Transport; Thu, 9 Jul 2020 14:36:17 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.60.83)
- smtp.mailfrom=xilinx.com; ni.com; dkim=none (message not signed)
- header.d=none;ni.com; dmarc=bestguesspass action=none header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.60.83 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.60.83; helo=xsj-pvapsmtpgw01;
-Received: from xsj-pvapsmtpgw01 (149.199.60.83) by
- CY1NAM02FT017.mail.protection.outlook.com (10.152.75.181) with Microsoft SMTP
- Server id 15.20.3174.21 via Frontend Transport; Thu, 9 Jul 2020 14:36:16
- +0000
-Received: from [149.199.38.66] (port=43251 helo=xsj-pvapsmtp01)
-        by xsj-pvapsmtpgw01 with esmtp (Exim 4.90)
-        (envelope-from <michal.simek@xilinx.com>)
-        id 1jtXdJ-00032r-Oq; Thu, 09 Jul 2020 07:34:41 -0700
-Received: from [127.0.0.1] (helo=localhost)
-        by xsj-pvapsmtp01 with smtp (Exim 4.63)
-        (envelope-from <michal.simek@xilinx.com>)
-        id 1jtXeq-0006op-Ab; Thu, 09 Jul 2020 07:36:16 -0700
-Received: from [172.30.17.109]
-        by xsj-pvapsmtp01 with esmtp (Exim 4.63)
-        (envelope-from <michals@xilinx.com>)
-        id 1jtXeh-0006jd-MU; Thu, 09 Jul 2020 07:36:07 -0700
-Subject: Re: [PATCH 0/2] i2c: cadence: HOLD bit manipulation
-To:     Raviteja Narayanam <raviteja.narayanam@xilinx.com>,
-        linux-i2c@vger.kernel.org
-Cc:     michal.simek@xilinx.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, git@xilinx.com, kyle.roeschley@ni.com
-References: <1593784480-20308-1-git-send-email-raviteja.narayanam@xilinx.com>
-From:   Michal Simek <michal.simek@xilinx.com>
-Autocrypt: addr=michals@xilinx.com; keydata=
- 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
- 0Z1MQlmNcq2bhOMzTxuXX2NDzUZs4aqEyZQ=
-Message-ID: <bd57e344-b1ad-f610-7a52-0f8be16cf981@xilinx.com>
-Date:   Thu, 9 Jul 2020 16:36:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727780AbgGIOjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 10:39:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48232 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726410AbgGIOjK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 10:39:10 -0400
+Received: from mout1.freenet.de (mout1.freenet.de [IPv6:2001:748:100:40::2:3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 614EEC08C5CE;
+        Thu,  9 Jul 2020 07:39:10 -0700 (PDT)
+Received: from [195.4.92.163] (helo=mjail0.freenet.de)
+        by mout1.freenet.de with esmtpa (ID viktor.jaegerskuepper@freenet.de) (port 25) (Exim 4.92 #3)
+        id 1jtXhY-0000fE-Jj; Thu, 09 Jul 2020 16:39:04 +0200
+Received: from localhost ([::1]:43698 helo=mjail0.freenet.de)
+        by mjail0.freenet.de with esmtpa (ID viktor.jaegerskuepper@freenet.de) (Exim 4.92 #3)
+        id 1jtXhY-0001zB-HJ; Thu, 09 Jul 2020 16:39:04 +0200
+Received: from sub4.freenet.de ([195.4.92.123]:55558)
+        by mjail0.freenet.de with esmtpa (ID viktor.jaegerskuepper@freenet.de) (Exim 4.92 #3)
+        id 1jtXf7-0000ot-KE; Thu, 09 Jul 2020 16:36:33 +0200
+Received: from p200300e7072d05009530c91dafb9c844.dip0.t-ipconnect.de ([2003:e7:72d:500:9530:c91d:afb9:c844]:35596 helo=[127.0.0.1])
+        by sub4.freenet.de with esmtpsa (ID viktor.jaegerskuepper@freenet.de) (TLSv1.2:ECDHE-RSA-CHACHA20-POLY1305:256) (port 465) (Exim 4.92 #3)
+        id 1jtXf7-0006kg-GW; Thu, 09 Jul 2020 16:36:33 +0200
+Subject: Re: [PATCH] Revert "ath9k: Fix general protection fault in
+ ath9k_hif_usb_rx_cb"
+To:     Kalle Valo <kvalo@codeaurora.org>
+Cc:     Roman Mamedov <rm@romanrm.net>, Qiujun Huang <hqjagain@gmail.com>,
+        ath9k-devel@qca.qualcomm.com, davem@davemloft.net,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, anenbupt@gmail.com,
+        syzkaller-bugs@googlegroups.com
+References: <20200404041838.10426-1-hqjagain@gmail.com>
+ <20200404041838.10426-6-hqjagain@gmail.com> <20200621020428.6417d6fb@natsu>
+ <87lfkff9qe.fsf@codeaurora.org>
+ <53940af0-d156-3117-ac86-2f3ccaee9513@freenet.de>
+ <87imf6beo0.fsf@codeaurora.org>
+From:   =?UTF-8?B?VmlrdG9yIErDpGdlcnNrw7xwcGVy?= 
+        <viktor_jaegerskuepper@freenet.de>
+Message-ID: <abb99acd-e001-6e80-4d46-fae5ad3887f6@freenet.de>
+Date:   Thu, 9 Jul 2020 16:36:24 +0200
 MIME-Version: 1.0
-In-Reply-To: <1593784480-20308-1-git-send-email-raviteja.narayanam@xilinx.com>
+In-Reply-To: <87imf6beo0.fsf@codeaurora.org>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-Product-Ver: IMSS-7.1.0.1224-8.2.0.1013-23620.005
-X-TM-AS-User-Approved-Sender: Yes;Yes
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-Forefront-Antispam-Report: CIP:149.199.60.83;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapsmtpgw01;PTR:unknown-60-83.xilinx.com;CAT:NONE;SFTY:;SFS:(376002)(136003)(39860400002)(346002)(396003)(46966005)(4744005)(81166007)(2616005)(2906002)(44832011)(5660300002)(9786002)(8936002)(4326008)(83380400001)(47076004)(336012)(426003)(186003)(26005)(82310400002)(82740400003)(70206006)(31686004)(356005)(70586007)(8676002)(31696002)(36756003)(478600001)(316002)(43740500002);DIR:OUT;SFP:1101;
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0fab088a-1f5d-40dd-11a4-08d824157021
-X-MS-TrafficTypeDiagnostic: MN2PR02MB6880:
-X-Microsoft-Antispam-PRVS: <MN2PR02MB6880D448DD779EC0F9E756DFC6640@MN2PR02MB6880.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: K0IGhIWI9/eQI6EiRJ81ZMmuIJpHxSR+zziPyjiNSvj6jGF974h2BfnGWWTTrp7+Cb+QuUQpnWcbqrdBttp5XTKUCbkEfuufBcXEfeBRrtE3X+9XP9mj0Dd8Egi3eWyBukFWJRYRMoOeH+KaSlJOVu7z+5JbBF3WypWFy0PUCQGJ/+yFotoxd2PIvqy8UgJx+ITgIaEH+mLei8IisQ688WmR1ZTbzEK7kNFPaI6DOaGagklWF82KPASOHpwzzl+RjcwJbLFf81iVZRnnh7jcQ2S/1MwVDTqEctb6dAvHEreKEUyPANPbFaJUAgi/gA1QrlaaURJ1W6uMAOcIqJbuwou2iwmXy74AclF80E6KPyuO7gGxcQHVE2SwrGxp7vK7wGkRcxSDQFadLSfgDQsa0H4rb80eZ35+s3RZxReGXs8eONS832xIi+ArvHbm/O4A
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jul 2020 14:36:16.6773
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0fab088a-1f5d-40dd-11a4-08d824157021
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.60.83];Helo=[xsj-pvapsmtpgw01]
-X-MS-Exchange-CrossTenant-AuthSource: CY1NAM02FT017.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR02MB6880
+Content-Language: en-US-large
+Content-Transfer-Encoding: 8bit
+X-Originated-At: 2003:e7:72d:500:9530:c91d:afb9:c844!35596
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 03. 07. 20 15:54, Raviteja Narayanam wrote:
-> This patch series clears the HOLD bit at right time.
+Kalle Valo wrote:
+> Viktor Jägersküpper <viktor_jaegerskuepper@freenet.de> writes:
 > 
-> Raviteja Narayanam (2):
->   Revert "i2c: cadence: Fix the hold bit setting"
->   i2c: cadence: Clear HOLD bit at correct time in Rx path
+>> Kalle Valo writes:
+>>> Roman Mamedov <rm@romanrm.net> writes:
+>>>
+>>>> On Sat,  4 Apr 2020 12:18:38 +0800
+>>>> Qiujun Huang <hqjagain@gmail.com> wrote:
+>>>>
+>>>>> In ath9k_hif_usb_rx_cb interface number is assumed to be 0.
+>>>>> usb_ifnum_to_if(urb->dev, 0)
+>>>>> But it isn't always true.
+>>>>>
+>>>>> The case reported by syzbot:
+>>>>> https://lore.kernel.org/linux-usb/000000000000666c9c05a1c05d12@google.com
+>>>>> usb 2-1: new high-speed USB device number 2 using dummy_hcd
+>>>>> usb 2-1: config 1 has an invalid interface number: 2 but max is 0
+>>>>> usb 2-1: config 1 has no interface number 0
+>>>>> usb 2-1: New USB device found, idVendor=0cf3, idProduct=9271, bcdDevice=
+>>>>> 1.08
+>>>>> usb 2-1: New USB device strings: Mfr=1, Product=2, SerialNumber=3
+>>>>> general protection fault, probably for non-canonical address
+>>>>> 0xdffffc0000000015: 0000 [#1] SMP KASAN
+>>>>> KASAN: null-ptr-deref in range [0x00000000000000a8-0x00000000000000af]
+>>>>> CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.6.0-rc5-syzkaller #0
+>>>>>
+>>>>> Call Trace
+>>>>> __usb_hcd_giveback_urb+0x29a/0x550 drivers/usb/core/hcd.c:1650
+>>>>> usb_hcd_giveback_urb+0x368/0x420 drivers/usb/core/hcd.c:1716
+>>>>> dummy_timer+0x1258/0x32ae drivers/usb/gadget/udc/dummy_hcd.c:1966
+>>>>> call_timer_fn+0x195/0x6f0 kernel/time/timer.c:1404
+>>>>> expire_timers kernel/time/timer.c:1449 [inline]
+>>>>> __run_timers kernel/time/timer.c:1773 [inline]
+>>>>> __run_timers kernel/time/timer.c:1740 [inline]
+>>>>> run_timer_softirq+0x5f9/0x1500 kernel/time/timer.c:1786
+>>>>> __do_softirq+0x21e/0x950 kernel/softirq.c:292
+>>>>> invoke_softirq kernel/softirq.c:373 [inline]
+>>>>> irq_exit+0x178/0x1a0 kernel/softirq.c:413
+>>>>> exiting_irq arch/x86/include/asm/apic.h:546 [inline]
+>>>>> smp_apic_timer_interrupt+0x141/0x540 arch/x86/kernel/apic/apic.c:1146
+>>>>> apic_timer_interrupt+0xf/0x20 arch/x86/entry/entry_64.S:829
+>>>>>
+>>>>> Reported-and-tested-by: syzbot+40d5d2e8a4680952f042@syzkaller.appspotmail.com
+>>>>> Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
+>>>>
+>>>> This causes complete breakage of ath9k operation across all the stable kernel
+>>>> series it got backported to, and I guess the mainline as well. Please see:
+>>>> https://bugzilla.kernel.org/show_bug.cgi?id=208251
+>>>> https://bugzilla.redhat.com/show_bug.cgi?id=1848631
+>>>
+>>> So there's no fix for this? I was under impression that someone fixed
+>>> this, but maybe I'm mixing with something else.
+>>>
+>>> If this is not fixed can someone please submit a patch to revert the
+>>> offending commit (or commits) so that we get ath9k working again?
+>>>
+>>
+>> This reverts commit 2bbcaaee1fcbd83272e29f31e2bb7e70d8c49e05 ("ath9k: Fix general protection fault
+>> in ath9k_hif_usb_rx_cb") because the driver gets stuck like this:
+>>
+>>   [    5.778803] usb 1-5: Manufacturer: ATHEROS
+>>   [   21.697488] usb 1-5: ath9k_htc: Firmware ath9k_htc/htc_9271-1.4.0.fw requested
+>>   [   21.701377] usbcore: registered new interface driver ath9k_htc
+>>   [   22.053705] usb 1-5: ath9k_htc: Transferred FW: ath9k_htc/htc_9271-1.4.0.fw, size: 51008
+>>   [   22.306182] ath9k_htc 1-5:1.0: ath9k_htc: HTC initialized with 33 credits
+>>   [  115.708513] ath9k_htc: Failed to initialize the device
+>>   [  115.708683] usb 1-5: ath9k_htc: USB layer deinitialized
+>>
+>> Reported-by: Roman Mamedov <rm@romanrm.net>
+>> Ref: https://bugzilla.kernel.org/show_bug.cgi?id=208251
+>> Fixes: 2bbcaaee1fcb ("ath9k: Fix general protection fault in ath9k_hif_usb_rx_cb")
+>> Tested-by: Viktor Jägersküpper <viktor_jaegerskuepper@freenet.de>
+>> Signed-off-by: Viktor Jägersküpper <viktor_jaegerskuepper@freenet.de>
+>> ---
+>>
+>> I couldn't find any fix for this, so here is the patch which reverts the
+>> offending commit. I have tested it with 5.8.0-rc3 and with 5.7.4.
+>>
+>> Feel free to change the commit message if it is necessary or appropriate, I am
+>> just a user affected by this bug.
 > 
->  drivers/i2c/busses/i2c-cadence.c | 28 ++++++++++++----------------
->  1 file changed, 12 insertions(+), 16 deletions(-)
+> This was badly formatted:
+> 
+> https://patchwork.kernel.org/patch/11636783/
+> 
+> But v2 looks correct:
+> 
+> https://patchwork.kernel.org/patch/11637341/
+> 
+> Thanks, I'll take a closer look at this as soon as I can.
 > 
 
-Kyle: Can you please test these 2 patches on your platform to see if
-this is fine?
+Hi Kalle,
+
+it seems you didn't have time for this so far. If you don't have time at the
+moment, is there someone else who can fix this? Reverting the commit is just the
+first and easy option and fixing this properly can be done after that.
 
 Thanks,
-Michal
+Viktor
