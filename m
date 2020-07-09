@@ -2,96 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9968421ABC5
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 01:45:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E60721ABC9
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 01:48:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726664AbgGIXpq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 19:45:46 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:2569 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726433AbgGIXpq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 19:45:46 -0400
-Received: from dggemi402-hub.china.huawei.com (unknown [172.30.72.57])
-        by Forcepoint Email with ESMTP id 40CF658EE18A1E123377;
-        Fri, 10 Jul 2020 07:45:43 +0800 (CST)
-Received: from DGGEMI525-MBS.china.huawei.com ([169.254.6.177]) by
- dggemi402-hub.china.huawei.com ([10.3.17.135]) with mapi id 14.03.0487.000;
- Fri, 10 Jul 2020 07:45:34 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Roman Gushchin <guro@fb.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>,
-        "Jonathan Cameron" <jonathan.cameron@huawei.com>
-Subject: RE: [PATCH v3] mm/hugetlb: avoid hardcoding while checking if cma
- is enable
-Thread-Topic: [PATCH v3] mm/hugetlb: avoid hardcoding while checking if cma
- is enable
-Thread-Index: AQHWVBOoulIbQRW0JUWzWUpoYRXjrqj8AzOAgAFtnQCAABEKgIAAvWLggADYSICAANMYAA==
-Date:   Thu, 9 Jul 2020 23:45:33 +0000
-Message-ID: <B926444035E5E2439431908E3842AFD256460F@DGGEMI525-MBS.china.huawei.com>
-References: <20200707040204.30132-1-song.bao.hua@hisilicon.com>
- <20200707125641.dbd2ccd63f525aa5870069d8@linux-foundation.org>
- <9066e009-5ed2-1992-d70d-fd27b4bf5871@oracle.com>
- <20200708184615.GA251665@carbon.dhcp.thefacebook.com>
- <B926444035E5E2439431908E3842AFD2560E41@DGGEMI525-MBS.china.huawei.com>
- <b2a98ab7-0a36-ad3d-f40d-1cc9216c7961@oracle.com>
-In-Reply-To: <b2a98ab7-0a36-ad3d-f40d-1cc9216c7961@oracle.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.200.68]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+        id S1726773AbgGIXsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 19:48:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726227AbgGIXsK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 19:48:10 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53426C08C5CE
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 16:48:10 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id dp18so4060915ejc.8
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 16:48:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=4xu/k9KIUZy/F6SCVHcHGIjUpI7dLkyDH+p59q0O9WM=;
+        b=vZUhq/Z4uZvslDYIAquT+iNsmF1DpdZK2XMlkWehxx6gmbNDOUQDUSeY5jzYOpYfE6
+         1KvvnHRk8Hf6Sydug+levQZeaA7x1dqrxjKwiAnkV4po3alJoSmR+1TqXuq5R0uJ5nfn
+         4WzfNNxOP2aFN8/hWuecfvF6PhDEjXXFtgy9W98YqzT4rxAaTKib642tOvvj2ovvOdjF
+         f/OWxp9GU8GmK2daZ4z/+hGTopbImIbsV3mWGm3h9AefDufwgZ4kj5cCziyc3O59j2R1
+         XLuIjqKiAs2LBoyTqWEd9ZEOOuxasDwcn8W8Ksi+8rpM0r/gHkEPanpbOa0XaAYyH4OJ
+         suEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=4xu/k9KIUZy/F6SCVHcHGIjUpI7dLkyDH+p59q0O9WM=;
+        b=bRQR2bLQCWMV2xtwK48/x8IkWlu2zATuxEBQRM2/4o/gShX4JwvfGGZUph2lQSOJR0
+         2agqMYbDTKEMQeaHuo8Li8NGCKya9Ju4SO1PkCd9e7ghdIu9AFI6i4uNLRnG5SwWE0HG
+         alH6Dy87MZLBc1r+459dtVH1UClzJjyZILOJb5ZzBEJ7EoYGw87D1L/WP3Qlxg5bjjom
+         U9JlXlnuE422goOZL0iQolM93TjJ27hSLTYRtT93gLgWhp6vAojf4TFW9+ElrYCIqpWo
+         dbtrUvgyX1rZS6XlHVbH4lhG6xv8XPcaJafTl6tCOsiebEjnA+eBwpt2gcR2OfuRrBJw
+         lgfg==
+X-Gm-Message-State: AOAM532K4S0C/aPLJtEn+qcxq9x9E0jwIr3DtGBZHfTMh5hUbqKBJDB0
+        fcF/2rDRUprEo+pMmTpmvOE=
+X-Google-Smtp-Source: ABdhPJzZKQVNqdGfySAXmjjI14KqFO2pZ+lN9NOmBQY5T6A42NwmOA6yf/BXIyuPxngBexv1BMVPfA==
+X-Received: by 2002:a17:906:2e83:: with SMTP id o3mr55641867eji.261.1594338489042;
+        Thu, 09 Jul 2020 16:48:09 -0700 (PDT)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id x19sm2874426eds.43.2020.07.09.16.48.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Jul 2020 16:48:08 -0700 (PDT)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com (maintainer:BROADCOM
+        BCM281XX/BCM11XXX/BCM216XX ARM ARCHITE...),
+        Russell King <linux@armlinux.org.uk>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] ARM: bcm: Enable BCM7038_L1_IRQ for ARCH_BRCMSTB
+Date:   Thu,  9 Jul 2020 16:45:56 -0700
+Message-Id: <20200709234557.5380-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTWlrZSBLcmF2ZXR6IFtt
-YWlsdG86bWlrZS5rcmF2ZXR6QG9yYWNsZS5jb21dDQo+IFNlbnQ6IEZyaWRheSwgSnVseSAxMCwg
-MjAyMCA2OjU4IEFNDQo+IFRvOiBTb25nIEJhbyBIdWEgKEJhcnJ5IFNvbmcpIDxzb25nLmJhby5o
-dWFAaGlzaWxpY29uLmNvbT47IFJvbWFuDQo+IEd1c2hjaGluIDxndXJvQGZiLmNvbT4NCj4gQ2M6
-IEFuZHJldyBNb3J0b24gPGFrcG1AbGludXgtZm91bmRhdGlvbi5vcmc+OyBsaW51eC1tbUBrdmFj
-ay5vcmc7DQo+IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IExpbnV4YXJtIDxsaW51eGFy
-bUBodWF3ZWkuY29tPjsgSm9uYXRoYW4NCj4gQ2FtZXJvbiA8am9uYXRoYW4uY2FtZXJvbkBodWF3
-ZWkuY29tPg0KPiBTdWJqZWN0OiBSZTogW1BBVENIIHYzXSBtbS9odWdldGxiOiBhdm9pZCBoYXJk
-Y29kaW5nIHdoaWxlIGNoZWNraW5nIGlmIGNtYQ0KPiBpcyBlbmFibGUNCj4gDQo+IExvb2tzIGxp
-a2UgdGhpcyBwcm9kdWNlZCBhIHdhcm5pbmcgaW4gbGludXgtbmV4dC4gIEkgc3VzcGVjdCBpdCBp
-cyBkdWUgdG8gdGhlDQo+IGNvbWJpbmF0aW9uIENPTkZJR19IVUdFVExCX1BBR0UgJiYgIUNPTkZJ
-R19DTUEuDQo+IA0KPiBJbnN0ZWFkIG9mIGFkZGluZyB0aGUgcm91dGluZSBodWdldGxiX2NtYV9l
-bmFibGVkKCkgdG8gc2NhbiB0aGUgaHVnZXRsYl9jbWENCj4gYXJyYXksIGNvdWxkIHdlIGp1c3Qg
-dXNlIGEgYm9vbGVhbiBhcyBmb2xsb3dzPyAgSXQgY2FuIHNpbXBseSBiZSBzZXQgaW4NCj4gaHVn
-ZXRsYl9jbWFfcmVzZXJ2ZSB3aGVuIHdlIHJlc2VydmUgQ01BLg0KDQpNYXliZSBqdXN0IHVzZSBo
-dWdldGxiX2NtYV9zaXplPyBJZiBodWdldGxiX2NtYV9zaXplIGlzIG5vdCAwLCBzb21lb25lIGlz
-IHRyeWluZyB0byB1c2UNCmNtYSwgdGhlbiBib290bWVtIGZvciBnaWdhbnRpYyBwYWdlcyB3aWxs
-IGJlIHRvdGFsbHkgaWdub3JlZCBhY2NvcmRpbmcgdG8gZGlzY3Vzc2lvbiBoZXJlOg0KaHR0cHM6
-Ly9sa21sLm9yZy9sa21sLzIwMjAvNy84LzEyODgNCg0KaWYgc29tZWJvZHkgc2V0cyBhIHdyb25n
-IGh1Z2V0bGJfY21hX3NpemUgd2hpY2ggY2F1c2VzIHRoYXQgY21hIGlzIG5vdCByZXNlcnZlZC4g
-DQpJdCBpcyB0aGUgZmF1bHQgb2YgdXNlcnM/IFdlIGp1c3QgbmVlZCB0byBkb2N1bWVudCBodWdl
-dGxiX2NtYSB3aWxsIG92ZXJ3cml0ZSBib290bWVtDQpyZXNlcnZhdGlvbnM/DQoNCj4gLS0NCj4g
-TWlrZSBLcmF2ZXR6DQo+IA0KPiBkaWZmIC0tZ2l0IGEvbW0vaHVnZXRsYi5jIGIvbW0vaHVnZXRs
-Yi5jDQo+IGluZGV4IGZhYjQ0ODViOWU1Mi4uOTJjYjg4MmNmMjg3IDEwMDY0NA0KPiAtLS0gYS9t
-bS9odWdldGxiLmMNCj4gKysrIGIvbW0vaHVnZXRsYi5jDQo+IEBAIC00Niw2ICs0Niw3IEBAIHVu
-c2lnbmVkIGludCBkZWZhdWx0X2hzdGF0ZV9pZHg7DQo+ICBzdHJ1Y3QgaHN0YXRlIGhzdGF0ZXNb
-SFVHRV9NQVhfSFNUQVRFXTsNCj4gDQo+ICBzdGF0aWMgc3RydWN0IGNtYSAqaHVnZXRsYl9jbWFb
-TUFYX05VTU5PREVTXTsNCj4gK3N0YXRpYyBib29sIGh1Z2V0bGJfY21hX2VuYWJsZWQgPSBmYWxz
-ZTsNCj4gDQo+ICAvKg0KPiAgICogTWluaW11bSBwYWdlIG9yZGVyIGFtb25nIHBvc3NpYmxlIGh1
-Z2VwYWdlIHNpemVzLCBzZXQgdG8gYSBwcm9wZXIgdmFsdWUNCj4gQEAgLTI1NzEsNyArMjU3Miw3
-IEBAIHN0YXRpYyB2b2lkIF9faW5pdCBodWdldGxiX2hzdGF0ZV9hbGxvY19wYWdlcyhzdHJ1Y3QN
-Cj4gaHN0YXRlICpoKQ0KPiANCj4gIAlmb3IgKGkgPSAwOyBpIDwgaC0+bWF4X2h1Z2VfcGFnZXM7
-ICsraSkgew0KPiAgCQlpZiAoaHN0YXRlX2lzX2dpZ2FudGljKGgpKSB7DQo+IC0JCQlpZiAoSVNf
-RU5BQkxFRChDT05GSUdfQ01BKSAmJiBodWdldGxiX2NtYVswXSkgew0KPiArCQkJaWYgKGh1Z2V0
-bGJfY21hX2VuYWJsZWQpIHsNCj4gIAkJCQlwcl93YXJuX29uY2UoIkh1Z2VUTEI6IGh1Z2V0bGJf
-Y21hIGlzIGVuYWJsZWQsIHNraXANCj4gYm9vdCB0aW1lIGFsbG9jYXRpb25cbiIpOw0KPiAgCQkJ
-CWJyZWFrOw0KPiAgCQkJfQ0KPiBAQCAtNTcwOCw2ICs1NzA5LDcgQEAgdm9pZCBfX2luaXQgaHVn
-ZXRsYl9jbWFfcmVzZXJ2ZShpbnQgb3JkZXIpDQo+ICAJCXJlc2VydmVkICs9IHNpemU7DQo+ICAJ
-CXByX2luZm8oImh1Z2V0bGJfY21hOiByZXNlcnZlZCAlbHUgTWlCIG9uIG5vZGUgJWRcbiIsDQo+
-ICAJCQlzaXplIC8gU1pfMU0sIG5pZCk7DQo+ICsJCWh1Z2V0bGJfY21hX2VuYWJsZWQgPSB0cnVl
-Ow0KPiANCj4gIAkJaWYgKHJlc2VydmVkID49IGh1Z2V0bGJfY21hX3NpemUpDQo+ICAJCQlicmVh
-azsNCg0KVGhhbmtzDQpCYXJyeQ0KDQo=
+ARCH_BRCMSTB makes use of the irq-bcm7038-l1.c irqchip driver, enable
+it.
+
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+---
+ arch/arm/mach-bcm/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm/mach-bcm/Kconfig b/arch/arm/mach-bcm/Kconfig
+index 6aa938b949db..52ce6febf6ea 100644
+--- a/arch/arm/mach-bcm/Kconfig
++++ b/arch/arm/mach-bcm/Kconfig
+@@ -207,6 +207,7 @@ config ARCH_BRCMSTB
+ 	select ARM_GIC
+ 	select ARM_ERRATA_798181 if SMP
+ 	select HAVE_ARM_ARCH_TIMER
++	select BCM7038_L1_IRQ
+ 	select BRCMSTB_L2_IRQ
+ 	select BCM7120_L2_IRQ
+ 	select ARCH_HAS_HOLES_MEMORYMODEL
+-- 
+2.17.1
+
