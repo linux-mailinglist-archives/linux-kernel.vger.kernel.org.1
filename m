@@ -2,103 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 317A221960F
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 04:12:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2150B219D20
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 12:12:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726320AbgGICMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 22:12:45 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:60244 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726118AbgGICMo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 22:12:44 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 772BA91C3703B6672BBD;
-        Thu,  9 Jul 2020 10:12:43 +0800 (CST)
-Received: from huawei.com (10.175.124.27) by DGGEMS403-HUB.china.huawei.com
- (10.3.19.203) with Microsoft SMTP Server id 14.3.487.0; Thu, 9 Jul 2020
- 10:12:41 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <io-uring@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <axboe@kernel.dk>
-Subject: [PATCH] io_uring: fix memleak in __io_sqe_files_update()
-Date:   Thu, 9 Jul 2020 10:11:41 +0000
-Message-ID: <20200709101141.3261977-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        id S1726534AbgGIKMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 06:12:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726327AbgGIKMC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 06:12:02 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CC13C061A0B
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 03:12:02 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id h19so1703865ljg.13
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 03:12:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=F5zNt+/8MBcTXKU9z4OwwwuHVh/xb7W+PbDlLB2EagE=;
+        b=iFvTtZ48V/yaOIEbYkXdI0HKKlz6RCzGER6BnahE31Yn/db0impJzhrBzVIYRm/3L3
+         1agPr01Fh1YgtAL4IFgTN7lthuktGbSwocZGrnI9TfHagClLILGiUWb0H4rCXUXQWfOI
+         AzdYq4Uqv/mvGkSa9tRa9ngaGfqR2qTVDZhPuTF1WUQkGDmhr3hXc2IXx+t+IelZPuQF
+         oDPINYknsUZDCcadQjLwV+7Cx8tvgAiWrJhK9utwtzfhbdAkshiW1W4++jQ0lVt9g90l
+         hHdoTdrqK2qGwXtUDGGRVavACPUZAFImlpNq4GGKjJuzd7f0SQx2iyXD4wVV+tQKRFoo
+         0Ekw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=F5zNt+/8MBcTXKU9z4OwwwuHVh/xb7W+PbDlLB2EagE=;
+        b=qg57VhZAc7GWhsdu/Byqh1ZHaHBJkQHBbfyJg6j41zFFZgCWX+S53e4gTFhW001Aac
+         UXrU5erzvjKd84x7ZTPyruKicp9NuG0mF/NvZBh3zp5TnXz8rBmwtQRPnj9pUblVzMJH
+         7+fh80ptKuY/j0ZShS+dEbqFuxAe7f68KooJ2ndtbSsAB51lX9WV6RGAzu174+cKb8kG
+         EfHKrPCTZI1ooRaG5fZVaooM6FTj4iwcyOAVI4Cs5CSig0R33JP1qlYOYjLMjm9GsOEF
+         NHK2gJutPESWWAW0anRiKt4CfLvX/3MTyuvUTPZ1upqFyNgE7g/G+j9LoJfgx5Ek60FJ
+         qZRg==
+X-Gm-Message-State: AOAM530aFVhKdwllzdHV+r/jfNlOuv1Yb9W2Kk5edqct78zw58l6EBVs
+        adHAJO5S5ImrKEwN/Lu1F4ZlpAXy9B2L7hbwn2Nt6Q==
+X-Google-Smtp-Source: ABdhPJzj6Diqwvs3reLM3+wt1t1+EMyEMuQNIhfCqqpVzpgUnEoOweySkXy2zZXnJ54IFhejXlWS8FRlHGEryjWdjFk=
+X-Received: by 2002:a2e:8992:: with SMTP id c18mr28126507lji.388.1594289520704;
+ Thu, 09 Jul 2020 03:12:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.124.27]
-X-CFilter-Loop: Reflected
+References: <20200709191818.338158f4@canb.auug.org.au>
+In-Reply-To: <20200709191818.338158f4@canb.auug.org.au>
+From:   Anders Roxell <anders.roxell@linaro.org>
+Date:   Thu, 9 Jul 2020 12:11:49 +0200
+Message-ID: <CADYN=9KMqfsh1P1suS=UN=3B+RkwQ65iCa=tbugQAwaL6Jc=eg@mail.gmail.com>
+Subject: Re: linux-next: Tree for Jul 9
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I got a memleak report when doing some fuzz test:
+On Thu, 9 Jul 2020 at 11:18, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> Changes since 20200708:
+>
+> My fixes tree contains:
+>
+>   dbf24e30ce2e ("device_cgroup: Fix RCU list debugging warning")
+>   b236d81d9e4f ("powerpc/boot/dts: Fix dtc "pciex" warnings")
+>
+> The kbuild tree still had its build failure for which I reverted a commit=
+.
+>
+> The scmi tree gained a build failure so I used the version from
+> next-20200708;
+>
+> The net-next tree gained a conflict against the pci tree.
+>
+> The block tree gained conflicts against the btrfs and fscrypt trees.
+>
+> The device-mapper tree gained a conflict against the block tree.
+>
+> The security tree still had its build failure for which I applied a patch=
+.
+>
+> The tip tree still had one build failure for which I reverted a commit.
+>
+> The akpm-current tree gained a conflict against the userns tree and a
+> build failure for which I reverted 2 commits.
+>
+> The akpm tree lost a patch that turned up elsewhere.
+>
+> Non-merge commits (relative to Linus' tree): 5915
+>  6780 files changed, 362395 insertions(+), 141614 deletions(-)
+>
 
-BUG: memory leak
-unreferenced object 0xffff888113e02300 (size 488):
-comm "syz-executor401", pid 356, jiffies 4294809529 (age 11.954s)
-hex dump (first 32 bytes):
-00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
-a0 a4 ce 19 81 88 ff ff 60 ce 09 0d 81 88 ff ff ........`.......
-backtrace:
-[<00000000129a84ec>] kmem_cache_zalloc include/linux/slab.h:659 [inline]
-[<00000000129a84ec>] __alloc_file+0x25/0x310 fs/file_table.c:101
-[<000000003050ad84>] alloc_empty_file+0x4f/0x120 fs/file_table.c:151
-[<000000004d0a41a3>] alloc_file+0x5e/0x550 fs/file_table.c:193
-[<000000002cb242f0>] alloc_file_pseudo+0x16a/0x240 fs/file_table.c:233
-[<00000000046a4baa>] anon_inode_getfile fs/anon_inodes.c:91 [inline]
-[<00000000046a4baa>] anon_inode_getfile+0xac/0x1c0 fs/anon_inodes.c:74
-[<0000000035beb745>] __do_sys_perf_event_open+0xd4a/0x2680 kernel/events/core.c:11720
-[<0000000049009dc7>] do_syscall_64+0x56/0xa0 arch/x86/entry/common.c:359
-[<00000000353731ca>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Today's tag doesn't build on arm64.
+I think this patch e76b573f11d1 ("arm64: mte: Add
+PTRACE_{PEEK,POKE}MTETAGS support")
+broke the build due to this patch was included also
+dc766e66c2b3 ("mm/gup: remove task_struct pointer for all gup code")...
 
-BUG: memory leak
-unreferenced object 0xffff8881152dd5e0 (size 16):
-comm "syz-executor401", pid 356, jiffies 4294809529 (age 11.954s)
-hex dump (first 16 bytes):
-01 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00 ................
-backtrace:
-[<0000000074caa794>] kmem_cache_zalloc include/linux/slab.h:659 [inline]
-[<0000000074caa794>] lsm_file_alloc security/security.c:567 [inline]
-[<0000000074caa794>] security_file_alloc+0x32/0x160 security/security.c:1440
-[<00000000c6745ea3>] __alloc_file+0xba/0x310 fs/file_table.c:106
-[<000000003050ad84>] alloc_empty_file+0x4f/0x120 fs/file_table.c:151
-[<000000004d0a41a3>] alloc_file+0x5e/0x550 fs/file_table.c:193
-[<000000002cb242f0>] alloc_file_pseudo+0x16a/0x240 fs/file_table.c:233
-[<00000000046a4baa>] anon_inode_getfile fs/anon_inodes.c:91 [inline]
-[<00000000046a4baa>] anon_inode_getfile+0xac/0x1c0 fs/anon_inodes.c:74
-[<0000000035beb745>] __do_sys_perf_event_open+0xd4a/0x2680 kernel/events/core.c:11720
-[<0000000049009dc7>] do_syscall_64+0x56/0xa0 arch/x86/entry/common.c:359
-[<00000000353731ca>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+/srv/src/kernel/next/arch/arm64/kernel/mte.c: In function
+=E2=80=98__access_remote_tags=E2=80=99:
+/srv/src/kernel/next/arch/arm64/kernel/mte.c:224:31: error: passing
+argument 1 of =E2=80=98get_user_pages_remote=E2=80=99 from incompatible poi=
+nter type
+[-Werror=3Dincompatible-pointer-types]
+  224 |   ret =3D get_user_pages_remote(tsk, mm, addr, 1, gup_flags,
+      |                               ^~~
+      |                               |
+      |                               struct task_struct *
+In file included from /srv/src/kernel/next/arch/arm64/kernel/mte.c:8:
+/srv/src/kernel/next/include/linux/mm.h:1707:46: note: expected
+=E2=80=98struct mm_struct *=E2=80=99 but argument is of type =E2=80=98struc=
+t task_struct *=E2=80=99
+ 1707 | long get_user_pages_remote(struct mm_struct *mm,
+      |                            ~~~~~~~~~~~~~~~~~~^~
+/srv/src/kernel/next/arch/arm64/kernel/mte.c:224:36: warning: passing
+argument 2 of =E2=80=98get_user_pages_remote=E2=80=99 makes integer from po=
+inter
+without a cast [-Wint-conversion]
+  224 |   ret =3D get_user_pages_remote(tsk, mm, addr, 1, gup_flags,
+      |                                    ^~
+      |                                    |
+      |                                    struct mm_struct *
+In file included from /srv/src/kernel/next/arch/arm64/kernel/mte.c:8:
+/srv/src/kernel/next/include/linux/mm.h:1708:22: note: expected =E2=80=98lo=
+ng
+unsigned int=E2=80=99 but argument is of type =E2=80=98struct mm_struct *=
+=E2=80=99
+ 1708 |        unsigned long start, unsigned long nr_pages,
+      |        ~~~~~~~~~~~~~~^~~~~
+/srv/src/kernel/next/arch/arm64/kernel/mte.c:224:49: warning: passing
+argument 5 of =E2=80=98get_user_pages_remote=E2=80=99 makes pointer from in=
+teger
+without a cast [-Wint-conversion]
+  224 |   ret =3D get_user_pages_remote(tsk, mm, addr, 1, gup_flags,
+      |                                                 ^~~~~~~~~
+      |                                                 |
+      |                                                 unsigned int
+In file included from /srv/src/kernel/next/arch/arm64/kernel/mte.c:8:
+/srv/src/kernel/next/include/linux/mm.h:1709:46: note: expected
+=E2=80=98struct page **=E2=80=99 but argument is of type =E2=80=98unsigned =
+int=E2=80=99
+ 1709 |        unsigned int gup_flags, struct page **pages,
+      |                                ~~~~~~~~~~~~~~^~~~~
+/srv/src/kernel/next/arch/arm64/kernel/mte.c:225:10: error: passing
+argument 6 of =E2=80=98get_user_pages_remote=E2=80=99 from incompatible poi=
+nter type
+[-Werror=3Dincompatible-pointer-types]
+  225 |          &page, &vma, NULL);
+      |          ^~~~~
+      |          |
+      |          struct page **
+In file included from /srv/src/kernel/next/arch/arm64/kernel/mte.c:8:
+/srv/src/kernel/next/include/linux/mm.h:1710:32: note: expected
+=E2=80=98struct vm_area_struct **=E2=80=99 but argument is of type =E2=80=
+=98struct page **=E2=80=99
+ 1710 |        struct vm_area_struct **vmas, int *locked);
+      |        ~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+/srv/src/kernel/next/arch/arm64/kernel/mte.c:225:17: error: passing
+argument 7 of =E2=80=98get_user_pages_remote=E2=80=99 from incompatible poi=
+nter type
+[-Werror=3Dincompatible-pointer-types]
+  225 |          &page, &vma, NULL);
+      |                 ^~~~
+      |                 |
+      |                 struct vm_area_struct **
+In file included from /srv/src/kernel/next/arch/arm64/kernel/mte.c:8:
+/srv/src/kernel/next/include/linux/mm.h:1710:43: note: expected =E2=80=98in=
+t
+*=E2=80=99 but argument is of type =E2=80=98struct vm_area_struct **=E2=80=
+=99
+ 1710 |        struct vm_area_struct **vmas, int *locked);
+      |                                      ~~~~~^~~~~~
+/srv/src/kernel/next/arch/arm64/kernel/mte.c:224:9: error: too many
+arguments to function =E2=80=98get_user_pages_remote=E2=80=99
+  224 |   ret =3D get_user_pages_remote(tsk, mm, addr, 1, gup_flags,
+      |         ^~~~~~~~~~~~~~~~~~~~~
+In file included from /srv/src/kernel/next/arch/arm64/kernel/mte.c:8:
+/srv/src/kernel/next/include/linux/mm.h:1707:6: note: declared here
+ 1707 | long get_user_pages_remote(struct mm_struct *mm,
+      |      ^~~~~~~~~~~~~~~~~~~~~
+cc1: some warnings being treated as errors
+make[3]: *** [/srv/src/kernel/next/scripts/Makefile.build:280:
+arch/arm64/kernel/mte.o] Error 1
+make[3]: Target '__build' not remade because of errors.
+make[2]: *** [/srv/src/kernel/next/scripts/Makefile.build:497:
+arch/arm64/kernel] Error 2
+make[2]: Target '__build' not remade because of errors.
+make[1]: *** [/srv/src/kernel/next/Makefile:1764: arch/arm64] Error 2
 
-If io_sqe_file_register() failed, we need put the file that get by fget()
-to avoid the memleak.
+This change made it build again:
 
-Fixes: c3a31e605620 ("io_uring: add support for IORING_REGISTER_FILES_UPDATE")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- fs/io_uring.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+index 934639ab225d..11e558b02a05 100644
+--- a/arch/arm64/kernel/mte.c
++++ b/arch/arm64/kernel/mte.c
+@@ -221,7 +221,7 @@ static int __access_remote_tags(struct task_struct
+*tsk, struct mm_struct *mm,
+  void *maddr;
+  struct page *page =3D NULL;
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index e507737f044e..5c2487d954b2 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -6814,8 +6814,10 @@ static int __io_sqe_files_update(struct io_ring_ctx *ctx,
- 			}
- 			table->files[index] = file;
- 			err = io_sqe_file_register(ctx, file, i);
--			if (err)
-+			if (err) {
-+				fput(file);
- 				break;
-+			}
- 		}
- 		nr_args--;
- 		done++;
--- 
-2.17.1
+- ret =3D get_user_pages_remote(tsk, mm, addr, 1, gup_flags,
++ ret =3D get_user_pages_remote(mm, addr, 1, gup_flags,
+     &page, &vma, NULL);
+  if (ret <=3D 0)
+  break;
 
+Cheers,
+Anders
