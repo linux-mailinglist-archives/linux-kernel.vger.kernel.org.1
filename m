@@ -2,105 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E92BF21A4B8
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 18:24:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 839FC21A4D9
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 18:32:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728430AbgGIQYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 12:24:04 -0400
-Received: from mga17.intel.com ([192.55.52.151]:37078 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728410AbgGIQYC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 12:24:02 -0400
-IronPort-SDR: 6upNIkT02t1HNUvA+4oV0O4HpgjHvhERxGE7c9CvaR7GG+sSWjY0cY+LnAA88aj6j7V0yF8zdz
- tEnV532czmBQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9677"; a="128100634"
-X-IronPort-AV: E=Sophos;i="5.75,331,1589266800"; 
-   d="scan'208";a="128100634"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jul 2020 09:24:00 -0700
-IronPort-SDR: 5JAzNT2lO/ogbhTrmzaK5lxtIVpAI3zjIQspC5bYWj+dhG/S0QKmBMEfIJjsbgesKdHB5cNnh+
- I8UQrS4A2Cew==
-X-IronPort-AV: E=Sophos;i="5.75,331,1589266800"; 
-   d="scan'208";a="280353107"
-Received: from mdcoakle-mobl.amr.corp.intel.com (HELO pbossart-mobl3.amr.corp.intel.com) ([10.255.231.43])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jul 2020 09:24:00 -0700
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To:     alsa-devel@alsa-project.org
-Cc:     tiwai@suse.de, broonie@kernel.org,
-        Lee Jones <lee.jones@linaro.org>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Junichi Wakasugi <wakasugi.jb@om.asahi-kasei.co.jp>,
-        Mihai Serban <mihai.serban@nxp.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v4 10/10] ASoC: codecs: ak4458: Remove set but never checked variable 'ret'
-Date:   Thu,  9 Jul 2020 11:23:27 -0500
-Message-Id: <20200709162328.259586-11-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200709162328.259586-1-pierre-louis.bossart@linux.intel.com>
-References: <20200709162328.259586-1-pierre-louis.bossart@linux.intel.com>
+        id S1727061AbgGIQcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 12:32:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37574 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726408AbgGIQce (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 12:32:34 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F8B9C08C5CE;
+        Thu,  9 Jul 2020 09:32:34 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id j19so1185500pgm.11;
+        Thu, 09 Jul 2020 09:32:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Mds9JnL5+YNLjwOOXncrDDf4ATysP7TR1qNQc1p6UDk=;
+        b=fCreMSX9EhBerl+2TyxRKjDaEWa+JLTGXeNDKhvWlwcUMmvEU4iOBJ1hETBBaoIXY+
+         3wGaamvx0qGsqNTVreuH1ejdGCJDiPEcB2eAm9QUsFNVM4NL4b8jSFsKlSdKhuT6WIbs
+         BqEriVLsFwIIaXEmGJHEAfWi/GvaWm0/I7gLpt83Yk4Hl/RggpY1LX1mZBxA2tJcRyeX
+         vrWdojyiXqa5aIQjG3W40pVoMxpj3KaNhnJJVXMGIOTxx8l/hfsh6sqUlP3CNhSLL51+
+         BOi8gRSuXFlXnnk2d56lugrqmXpvdmnpbgfDCe4uSvgKeYoGdb5uQN4OCHY7lfa64bD2
+         SG6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Mds9JnL5+YNLjwOOXncrDDf4ATysP7TR1qNQc1p6UDk=;
+        b=TaBBRE/BVk3egnZzd3DqxZs5mByj7WedO2j8tPNaD5WCSP5ZeMNznBCkR7S4u7LayK
+         G/Wo2ce0lRLwp1LflJPy7GNBNoszb8gDhk5acX6Sgf3JS4XdIEoFBO1LkwQHT8y427nS
+         Wk2LPB03REUts9EVXzJ2KyOMFkk4PfTqiCkUtorgptVCuce6FAWPlnpNjfwVjKbc8/3E
+         juUcM8WlSBzqgsgabFe8eamezj/dDqaZLRQGH4kQNGvE51ehjO5rRaiffDEpiwLwaddw
+         AEWkjJU4TjOrbUQoJ+C8gc6jXI91l9GfFDDFL+/Cce6XcxcBgyjFUvJGXt9CX5UJnXfy
+         PZJw==
+X-Gm-Message-State: AOAM530mbT0ReTus3jD288aCOQjw0yXnWd1svpkENiXImxOEuHlxSHlO
+        LEWN+1RexnioE7jLVOSR2Nr5hf4KtA5rNWrdUU0=
+X-Google-Smtp-Source: ABdhPJwEDObaYpjZKatGt4CVCe8DGRH/+UZeqYJ47OTcz/gffgUl65HJoQvqw/MGNTXOyb7Ko2oxd8cS3euVMSG5BLY=
+X-Received: by 2002:a05:6a00:790:: with SMTP id g16mr23259445pfu.36.1594312353918;
+ Thu, 09 Jul 2020 09:32:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20200601091851.5491-1-vadimp@mellanox.com> <20200601091851.5491-3-vadimp@mellanox.com>
+In-Reply-To: <20200601091851.5491-3-vadimp@mellanox.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 9 Jul 2020 19:32:17 +0300
+Message-ID: <CAHp75VfXPxoQjeOTMRmO=Yf3YSsGJh2xRRSm9U7wTpRx9N8Bgw@mail.gmail.com>
+Subject: Re: [PATCH platform-next v1 2/8] platform/mellanox: mlxreg-hotplug:
+ Add environmental data to uevent
+To:     Vadim Pasternak <vadimp@mellanox.com>
+Cc:     Andy Shevchenko <andy@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lee Jones <lee.jones@linaro.org>
+On Mon, Jun 1, 2020 at 12:19 PM Vadim Pasternak <vadimp@mellanox.com> wrote:
+>
+> Send "udev" event with environmental data in order to allow handling
+> "ENV{}" variables in "udev" rules.
 
-Looks as though the result of snd_soc_update_bits() has never been checked.
+...
 
-Fixes the following W=1 kernel build warning(s):
+> +static int
+> +mlxreg_hotplug_udev_event_send(struct kobject *kobj,
+> +                              struct mlxreg_core_data *data, bool action)
+> +{
+> +       char event_str[MLXREG_CORE_LABEL_MAX_SIZE + 2];
+> +       char label[MLXREG_CORE_LABEL_MAX_SIZE] = { 0 };
+> +       int i;
+> +
+> +       mlxreg_hotplug_udev_envp[0] = event_str;
 
-sound/soc/codecs/ak4458.c: In function ‘ak4458_set_dai_mute’:
-sound/soc/codecs/ak4458.c:408:16: warning: variable ‘ret’ set but not
-used [-Wunused-but-set-variable]
+> +       for (i = 0; data->label[i]; i++)
+> +               label[i] = toupper(data->label[i]);
 
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Junichi Wakasugi <wakasugi.jb@om.asahi-kasei.co.jp>
-Cc: Mihai Serban <mihai.serban@nxp.com>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/codecs/ak4458.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Sounds like a candidate to be in string_helpers.h
 
-diff --git a/sound/soc/codecs/ak4458.c b/sound/soc/codecs/ak4458.c
-index f180cb5dfe4f..39ae089dcd1d 100644
---- a/sound/soc/codecs/ak4458.c
-+++ b/sound/soc/codecs/ak4458.c
-@@ -405,7 +405,7 @@ static int ak4458_set_dai_mute(struct snd_soc_dai *dai, int mute)
- {
- 	struct snd_soc_component *component = dai->component;
- 	struct ak4458_priv *ak4458 = snd_soc_component_get_drvdata(component);
--	int nfs, ndt, ret, reg;
-+	int nfs, ndt, reg;
- 	int ats;
- 
- 	nfs = ak4458->fs;
-@@ -416,14 +416,14 @@ static int ak4458_set_dai_mute(struct snd_soc_dai *dai, int mute)
- 	ndt = att_speed[ats] / (nfs / 1000);
- 
- 	if (mute) {
--		ret = snd_soc_component_update_bits(component, AK4458_01_CONTROL2,  0x01, 1);
-+		snd_soc_component_update_bits(component, AK4458_01_CONTROL2,  0x01, 1);
- 		mdelay(ndt);
- 		if (ak4458->mute_gpiod)
- 			gpiod_set_value_cansleep(ak4458->mute_gpiod, 1);
- 	} else {
- 		if (ak4458->mute_gpiod)
- 			gpiod_set_value_cansleep(ak4458->mute_gpiod, 0);
--		ret = snd_soc_component_update_bits(component, AK4458_01_CONTROL2, 0x01, 0);
-+		snd_soc_component_update_bits(component, AK4458_01_CONTROL2, 0x01, 0);
- 		mdelay(ndt);
- 	}
- 
+#include <ctype.h>
+...
+static inline void string_upper(char *dst, const char *src)
+{
+  do {
+    *dst++ = toupper(*src);
+  } while (*src++);
+}
+
+// similar for tolower
+...
+
+There are plenty existing users that can benefit and I can imagine how
+many more will come.
+So, If you add the first patch in the series to bring this in, I will take it.
+
+> +       if (action)
+> +               snprintf(event_str, MLXREG_CORE_LABEL_MAX_SIZE, "%s=1", label);
+> +       else
+> +               snprintf(event_str, MLXREG_CORE_LABEL_MAX_SIZE, "%s=0", label);
+
+Wouldn't be easier to have
+
+..."%s=%d" ... !!action...
+
+?
+
+> +
+> +       return kobject_uevent_env(kobj, KOBJ_CHANGE, mlxreg_hotplug_udev_envp);
+> +}
+
 -- 
-2.25.1
-
+With Best Regards,
+Andy Shevchenko
