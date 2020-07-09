@@ -2,251 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 934FD21AAB2
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 00:44:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7427721AABC
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 00:46:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726945AbgGIWoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 18:44:14 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:52880 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726832AbgGIWoN (ORCPT
+        id S1727085AbgGIWqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 18:46:18 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:48058 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726856AbgGIWqQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 18:44:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594334651;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0pRvRbjVFo2K1Flclf5DF7wx+UyM877Wq0TJd7EOegs=;
-        b=X2SawVNZXgt0l+shZr5ZkpOtioGP6N0DWoIz9EqNYHhh8MJEMwVSLc1BZ4MwPWQCJlH0cc
-        y8bj/oKtqRPbWEXrBjci8k7B8DcQtNukiIP0XJgW/B3IxvfyI4W/xtZCTXtFPglowXQbI3
-        3tJXvK/clq5SkBXg85sQF74mlj55TtM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-187-44xQFelVOIG0wKywaBWRbA-1; Thu, 09 Jul 2020 18:44:08 -0400
-X-MC-Unique: 44xQFelVOIG0wKywaBWRbA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D4269107ACCA;
-        Thu,  9 Jul 2020 22:44:06 +0000 (UTC)
-Received: from x1.home (ovpn-112-71.phx2.redhat.com [10.3.112.71])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 594D66FEE7;
-        Thu,  9 Jul 2020 22:44:06 +0000 (UTC)
-Date:   Thu, 9 Jul 2020 16:44:03 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Diana Craciun <diana.craciun@oss.nxp.com>
-Cc:     kvm@vger.kernel.org, bharatb.linux@gmail.com,
-        linux-kernel@vger.kernel.org, laurentiu.tudor@nxp.com,
-        Bharat Bhushan <Bharat.Bhushan@nxp.com>
-Subject: Re: [PATCH v3 2/9] vfio/fsl-mc: Scan DPRC objects on vfio-fsl-mc
- driver bind
-Message-ID: <20200709164403.18659708@x1.home>
-In-Reply-To: <20200706154153.11477-3-diana.craciun@oss.nxp.com>
-References: <20200706154153.11477-1-diana.craciun@oss.nxp.com>
-        <20200706154153.11477-3-diana.craciun@oss.nxp.com>
-Organization: Red Hat
+        Thu, 9 Jul 2020 18:46:16 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 18E80803202B;
+        Thu,  9 Jul 2020 22:46:09 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id btefBCv6s2ER; Fri, 10 Jul 2020 01:46:07 +0300 (MSK)
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Vinod Koul <vkoul@kernel.org>, Viresh Kumar <vireshk@kernel.org>
+CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Maxim Kaurkin <Maxim.Kaurkin@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
+        Ekaterina Skachko <Ekaterina.Skachko@baikalelectronics.ru>,
+        Vadim Vlasov <V.Vlasov@baikalelectronics.ru>,
+        Alexey Kolotnikov <Alexey.Kolotnikov@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
+        <dmaengine@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH RESEND v7 00/11] dmaengine: dw: Take Baikal-T1 SoC DW DMAC peculiarities into account
+Date:   Fri, 10 Jul 2020 01:45:39 +0300
+Message-ID: <20200709224550.15539-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon,  6 Jul 2020 18:41:46 +0300
-Diana Craciun <diana.craciun@oss.nxp.com> wrote:
+In the previous patchset I've written the next message:
 
-> The DPRC (Data Path Resource Container) device is a bus device and has
-> child devices attached to it. When the vfio-fsl-mc driver is probed
-> the DPRC is scanned and the child devices discovered and initialized.
-> 
-> Signed-off-by: Bharat Bhushan <Bharat.Bhushan@nxp.com>
-> Signed-off-by: Diana Craciun <diana.craciun@oss.nxp.com>
-> ---
->  drivers/vfio/fsl-mc/vfio_fsl_mc.c         | 106 ++++++++++++++++++++++
->  drivers/vfio/fsl-mc/vfio_fsl_mc_private.h |   1 +
->  2 files changed, 107 insertions(+)
-> 
-> diff --git a/drivers/vfio/fsl-mc/vfio_fsl_mc.c b/drivers/vfio/fsl-mc/vfio_fsl_mc.c
-> index 8b53c2a25b32..ad8d06cceb71 100644
-> --- a/drivers/vfio/fsl-mc/vfio_fsl_mc.c
-> +++ b/drivers/vfio/fsl-mc/vfio_fsl_mc.c
-> @@ -15,6 +15,8 @@
->  
->  #include "vfio_fsl_mc_private.h"
->  
-> +static struct fsl_mc_driver vfio_fsl_mc_driver;
-> +
->  static int vfio_fsl_mc_open(void *device_data)
->  {
->  	if (!try_module_get(THIS_MODULE))
-> @@ -84,6 +86,69 @@ static const struct vfio_device_ops vfio_fsl_mc_ops = {
->  	.mmap		= vfio_fsl_mc_mmap,
->  };
->  
-> +static int vfio_fsl_mc_bus_notifier(struct notifier_block *nb,
-> +				    unsigned long action, void *data)
-> +{
-> +	struct vfio_fsl_mc_device *vdev = container_of(nb,
-> +					struct vfio_fsl_mc_device, nb);
-> +	struct device *dev = data;
-> +	struct fsl_mc_device *mc_dev = to_fsl_mc_device(dev);
-> +	struct fsl_mc_device *mc_cont = to_fsl_mc_device(mc_dev->dev.parent);
-> +
-> +	if (action == BUS_NOTIFY_ADD_DEVICE &&
-> +	    vdev->mc_dev == mc_cont) {
-> +		mc_dev->driver_override = kasprintf(GFP_KERNEL, "%s",
-> +						    vfio_fsl_mc_ops.name);
+> Folks, note I've removed the next patches from the series:
+> [PATCH v7 04/11] dmaengine: Introduce max SG list entries capability
+> [PATCH v7 11/11] dmaengine: dw: Initialize max_sg_nents capability
+> It turns out the problem with the asynchronous handling of Tx- and Rx-
+> SPI transfers interrupts is more complex than I expected. So in order to
+> solve the problem it isn't enough to split the SG list entries submission
+> up based on the max_sg_nents capability setting (though the synchronous
+> one-by-one SG list entries handling does fix a part of the problem). So
+> if and when I get to find a comprehensive solution for it I'll submit a
+> new series with fixups. Until then please consider to merge the patchset
+> in without those patches.
 
-I notice the vfio-pci code that this is modeled from also doesn't check
-this allocation for NULL.  Maybe both should print a dev_warn on the
-ultra slim chance it would fail.
+Those patches are returned back to the series. I've found a solution, which
+fixes the problem for our hardware. A new patchset with several fixes for the
+DW DMAC driver will be sent shortly after this one is merged in. Note the same
+concerns the DW APB SPI driver. So please review and merge in as soon as
+possible.
 
-> +		dev_info(dev, "Setting driver override for device in dprc %s\n",
-> +			 dev_name(&mc_cont->dev));
-> +	} else if (action == BUS_NOTIFY_BOUND_DRIVER &&
-> +		vdev->mc_dev == mc_cont) {
-> +		struct fsl_mc_driver *mc_drv = to_fsl_mc_driver(dev->driver);
-> +
-> +		if (mc_drv && mc_drv != &vfio_fsl_mc_driver)
-> +			dev_warn(dev, "Object %s bound to driver %s while DPRC bound to vfio-fsl-mc\n",
-> +				 dev_name(dev), mc_drv->driver.name);
-> +		}
+Regarding the patchset. Baikal-T1 SoC has an DW DMAC on-board to provide a
+Mem-to-Mem, low-speed peripherals Dev-to-Mem and Mem-to-Dev functionality.
+Mostly it's compatible with currently implemented in the kernel DW DMAC
+driver, but there are some peculiarities which must be taken into account
+in order to have the device fully supported.
 
-Nit, } is over-indented, should be aligned to the previous 'else if'.
+First of all traditionally we replaced the legacy plain text-based dt-binding
+file with yaml-based one. Secondly Baikal-T1 DW DMA Controller provides eight
+channels, which alas have different max burst length configuration.
+In particular first two channels may burst up to 128 bits (16 bytes) at a time
+while the rest of them just up to 32 bits. We must make sure that the DMA
+subsystem doesn't set values exceeding these limitations otherwise the
+controller will hang up. In third currently we discovered the problem in using
+the DW APB SPI driver together with DW DMAC. The problem happens if there is no
+natively implemented multi-block LLP transfers support and the SPI-transfer
+length exceeds the max lock size. In this case due to asynchronous handling of
+Tx- and Rx- SPI transfers interrupt we might end up with DW APB SSI Rx FIFO
+overflow. So if DW APB SSI (or any other DMAC service consumer) intends to use
+the DMAC to asynchronously execute the transfers we'd have to at least warn
+the user of the possible errors. In forth it's worth to set the DMA device max
+segment size with max block size config specific to the DW DMA controller. It
+shall help the DMA clients to create size-optimized SG-list items for the
+controller. This in turn will cause less dw_desc allocations, less LLP
+reinitializations, better DMA device performance.
 
-> +
-> +	return 0;
-> +}
-> +
-> +static int vfio_fsl_mc_init_device(struct vfio_fsl_mc_device *vdev)
-> +{
-> +	struct fsl_mc_device *mc_dev = vdev->mc_dev;
-> +	int ret;
-> +
-> +	/* Non-dprc devices share mc_io from parent */
-> +	if (!is_fsl_mc_bus_dprc(mc_dev)) {
-> +		struct fsl_mc_device *mc_cont = to_fsl_mc_device(mc_dev->dev.parent);
-> +
-> +		mc_dev->mc_io = mc_cont->mc_io;
-> +		return 0;
-> +	}
-> +
-> +	vdev->nb.notifier_call = vfio_fsl_mc_bus_notifier;
-> +	ret = bus_register_notifier(&fsl_mc_bus_type, &vdev->nb);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* open DPRC, allocate a MC portal */
-> +	ret = dprc_setup(mc_dev);
-> +	if (ret < 0) {
-> +		dev_err(&mc_dev->dev, "Failed to setup DPRC (error = %d)\n", ret);
-> +		bus_unregister_notifier(&fsl_mc_bus_type, &vdev->nb);
-> +		return ret;
-> +	}
-> +
-> +	ret = dprc_scan_container(mc_dev, false);
-> +	if (ret < 0) {
-> +		dev_err(&mc_dev->dev, "Container scanning failed: %d\n", ret);
-> +		bus_unregister_notifier(&fsl_mc_bus_type, &vdev->nb);
-> +		dprc_cleanup(mc_dev);
+Finally there is a bug in the algorithm of the nollp flag detection.
+In particular even if DW DMAC parameters state the multi-block transfers
+support there is still HC_LLP (hardcode LLP) flag, which if set makes expected
+by the driver true multi-block LLP functionality unusable. This happens cause'
+if HC_LLP flag is set the LLP registers will be hardcoded to zero so the
+contiguous multi-block transfers will be only supported. We must take the
+flag into account when detecting the LLP support otherwise the driver just
+won't work correctly.
 
-All else being equal, should these be reversed to mirror the setup?
+This patchset is rebased and tested on the mainline Linux kernel 5.7-rc4:
+base-commit: 0e698dfa2822 ("Linux 5.7-rc4")
+tag: v5.7-rc4
 
-> +	}
-> +
-> +	return ret;
-> +}
-> +
->  static int vfio_fsl_mc_probe(struct fsl_mc_device *mc_dev)
->  {
->  	struct iommu_group *group;
-> @@ -112,9 +177,42 @@ static int vfio_fsl_mc_probe(struct fsl_mc_device *mc_dev)
->  		return ret;
->  	}
->  
-> +	ret = vfio_fsl_mc_init_device(vdev);
-> +	if (ret < 0) {
-> +		vfio_iommu_group_put(group, dev);
-> +		return ret;
-> +	}
-> +
->  	return ret;
->  }
->  
-> +static int vfio_fsl_mc_device_remove(struct device *dev, void *data)
-> +{
-> +	struct fsl_mc_device *mc_dev;
-> +
-> +	WARN_ON(!dev);
-> +	mc_dev = to_fsl_mc_device(dev);
-> +	if (WARN_ON(!mc_dev))
-> +		return -ENODEV;
-> +
-> +	kfree(mc_dev->driver_override);
-> +	mc_dev->driver_override = NULL;
+Changelog v2:
+- Rearrange SoBs.
+- Move $ref to the root level of the properties. So do do with the
+  constraints in the DT binding.
+- Replace "additionalProperties: false" with "unevaluatedProperties: false"
+  property in the DT binding file.
+- Discard default settings defined out of property enum constraint.
+- Set default max-burst-len to 256 TR-WIDTH words in the DT binding.
+- Discard noLLP and block_size accessors.
+- Set max segment size of the DMA device structure with the DW DMA block size
+  config.
+- Print warning if noLLP flag is set.
+- Discard max burst length accessor.
+- Add comment about why hardware accelerated LLP list support depends
+  on both MBLK_EN and HC_LLP configs setting.
+- Use explicit bits state comparison operator in noLLP flag setting.
 
-This is out of scope, all other buses that support a driver_override
-free this is the bus driver code.  Why isn't it sufficient that it's
-done in fsl_mc_device_remove()?
+Link: https://lore.kernel.org/dmaengine/20200508105304.14065-1-Sergey.Semin@baikalelectronics.ru/
+Changelog v3:
+- Use the block_size found for the very first channel instead of looking for
+  the maximum of maximum block sizes.
+- Don't define device-specific device_dma_parameters object, since it has
+  already been defined by the platform device core.
+- Add more details into the property description about what limitations
+  snps,max-burst-len defines.
+- Move commit fb7e3bbfc830 ("dmaengine: dw: Take HC_LLP flag into account for
+  noLLP auto-config") to the head of the series.
+- Add a new patch "dmaengine: Introduce min burst length capability" as a
+  result of the discussion with Vinod and Andy regarding the burst length
+  capability.
+- Add a new patch "dmaengine: Introduce max SG list entries capability"
+  suggested by Andy.
+- Add a new patch "dmaengine: Introduce DMA-device device_caps callback" as
+  a result of the discussion with Vinud and Andy in the framework of DW DMA
+  burst and LLP capabilities.
+- Add a new patch "dmaengine: dw: Add dummy device_caps callback" as a
+  preparation commit before setting the max_burst and max_sg_nents
+  DW DMA capabilities.
+- Override the slave channel max_burst capability instead of calculating
+  the minimum value of max burst lengths and setting the DMA-device
+  generic capability.
+- Add a new patch "dmaengine: dw: Initialize max_sg_nents with nollp flag".
+  This is required to fix the DW APB SSI issue of the Tx and Rx DMA
+  channels de-synchronization.
 
-> +
-> +	/*
-> +	 * The device-specific remove callback will get invoked by device_del()
-> +	 */
-> +	device_del(&mc_dev->dev);
-> +	put_device(&mc_dev->dev);
+Link: https://lore.kernel.org/dmaengine/20200526225022.20405-1-Sergey.Semin@baikalelectronics.ru/
+Changelog v4:
+- Use explicit if-else statement when assigning the max_sg_nents field.
+- Clamp the dst and src burst lengths in the generic dwc_config() method
+  instead of doing that in the encode_maxburst() callback.
+- Define max_burst with u32 type in struct dw_dma_platform_data.
+- Perform of_property_read_u32_array() with the platform data
+  max_burst member passed directly.
+- Add a new patch "dmaengine: dw: Initialize min_burst capability",
+  which initializes the min_burst capability with 1.
+- Fix of->if typo. It should be definitely "of" in the max_sg_list
+  capability description.
 
-In fact, why are we doing any of this?  I think these devices were
-created via dprc_scan_container(), so shouldn't there be a dprc
-callback to remove them?  What happens if one of them did get bound to
-another driver, haven't we just deleted the device out from under them?
-In vfio-pci for instance, we call pci_disable_sriov() to remove any
-vfs.  Thanks,
+Link: https://lore.kernel.org/dmaengine/20200528222401.26941-1-Sergey.Semin@baikalelectronics.ru
+Changelog v5:
+- Introduce macro with extreme min and max burst lengths supported by the
+  DW DMA controller. Define them in the patch with default min and max burst
+  length iintializations.
+- Initialize max_burst length capability with extreme burst length supported
+  by the DW DMAC IP-core.
+- Move DW_DMA_MAX_BURST macro definition to the patch "dmaengine: dw:
+  Initialize min and max burst DMA device capability".
+- Add in-line comment at the point of the device_caps callback invocation.
+- Add doc-comment for the device_caps member of struct dma_device
 
-Alex
+Link: https://lore.kernel.org/dmaengine/20200529144054.4251-1-Sergey.Semin@baikalelectronics.ru
+Changelog v6:
+- Discard patches:
+  [PATCH v5 04/11] dmaengine: Introduce max SG list entries capability
+  [PATCH v5 11/11] dmaengine: dw: Initialize max_sg_nents capability
+  since for now it's not enough to have them merged in to provide the SPI
+  Rx FIFO overrun error fix. They will be included into another series.
 
-> +
-> +	return 0;
-> +}
-> +
-> +static void vfio_fsl_mc_cleanup_dprc(struct fsl_mc_device *mc_dev)
-> +{
-> +	device_for_each_child(&mc_dev->dev, NULL, vfio_fsl_mc_device_remove);
-> +	dprc_cleanup(mc_dev);
-> +}
-> +
->  static int vfio_fsl_mc_remove(struct fsl_mc_device *mc_dev)
->  {
->  	struct vfio_fsl_mc_device *vdev;
-> @@ -124,6 +222,14 @@ static int vfio_fsl_mc_remove(struct fsl_mc_device *mc_dev)
->  	if (!vdev)
->  		return -EINVAL;
->  
-> +	if (vdev->nb.notifier_call)
-> +		bus_unregister_notifier(&fsl_mc_bus_type, &vdev->nb);
-> +
-> +	if (is_fsl_mc_bus_dprc(mc_dev))
-> +		vfio_fsl_mc_cleanup_dprc(vdev->mc_dev);
-> +
-> +	mc_dev->mc_io = NULL;
-> +
->  	vfio_iommu_group_put(mc_dev->dev.iommu_group, dev);
->  
->  	return 0;
-> diff --git a/drivers/vfio/fsl-mc/vfio_fsl_mc_private.h b/drivers/vfio/fsl-mc/vfio_fsl_mc_private.h
-> index e79cc116f6b8..37d61eaa58c8 100644
-> --- a/drivers/vfio/fsl-mc/vfio_fsl_mc_private.h
-> +++ b/drivers/vfio/fsl-mc/vfio_fsl_mc_private.h
-> @@ -9,6 +9,7 @@
->  
->  struct vfio_fsl_mc_device {
->  	struct fsl_mc_device		*mc_dev;
-> +	struct notifier_block        nb;
->  };
->  
->  #endif /* VFIO_FSL_MC_PRIVATE_H */
+Link: https://lore.kernel.org/dmaengine/20200617234028.25808-1-Sergey.Semin@baikalelectronics.ru
+Changelog v7:
+- Get the patches:
+  [PATCH v5 04/11] dmaengine: Introduce max SG list entries capability
+  [PATCH v5 11/11] dmaengine: dw: Initialize max_sg_nents capability
+  back.
+
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+Cc: Maxim Kaurkin <Maxim.Kaurkin@baikalelectronics.ru>
+Cc: Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>
+Cc: Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>
+Cc: Ekaterina Skachko <Ekaterina.Skachko@baikalelectronics.ru>
+Cc: Vadim Vlasov <V.Vlasov@baikalelectronics.ru>
+Cc: Alexey Kolotnikov <Alexey.Kolotnikov@baikalelectronics.ru>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: linux-mips@vger.kernel.org
+Cc: dmaengine@vger.kernel.org
+Cc: devicetree@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+
+Serge Semin (11):
+  dt-bindings: dma: dw: Convert DW DMAC to DT binding
+  dt-bindings: dma: dw: Add max burst transaction length property
+  dmaengine: Introduce min burst length capability
+  dmaengine: Introduce max SG list entries capability
+  dmaengine: Introduce DMA-device device_caps callback
+  dmaengine: dw: Take HC_LLP flag into account for noLLP auto-config
+  dmaengine: dw: Set DMA device max segment size parameter
+  dmaengine: dw: Add dummy device_caps callback
+  dmaengine: dw: Initialize min and max burst DMA device capability
+  dmaengine: dw: Introduce max burst length hw config
+  dmaengine: dw: Initialize max_sg_nents capability
+
+ .../bindings/dma/snps,dma-spear1340.yaml      | 176 ++++++++++++++++++
+ .../devicetree/bindings/dma/snps-dma.txt      |  69 -------
+ drivers/dma/dmaengine.c                       |  12 ++
+ drivers/dma/dw/core.c                         |  48 ++++-
+ drivers/dma/dw/of.c                           |   5 +
+ drivers/dma/dw/regs.h                         |   3 +
+ include/linux/dmaengine.h                     |  16 ++
+ include/linux/platform_data/dma-dw.h          |   5 +
+ 8 files changed, 264 insertions(+), 70 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/dma/snps,dma-spear1340.yaml
+ delete mode 100644 Documentation/devicetree/bindings/dma/snps-dma.txt
+
+-- 
+2.26.2
 
