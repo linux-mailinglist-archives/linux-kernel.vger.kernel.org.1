@@ -2,105 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A1E3219D3D
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 12:13:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 246A8219D63
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 12:16:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726771AbgGIKNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 06:13:38 -0400
-Received: from ozlabs.org ([203.11.71.1]:57885 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726347AbgGIKNh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 06:13:37 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4B2X7g5nVsz9sSd;
-        Thu,  9 Jul 2020 20:13:35 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1594289615;
-        bh=V/UfiEcEJmEZN4U3f8evnqswy/uVMHS/9JdwtGfPUdY=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=nzRAwHg5DWqxnr64TpRTPXGRnE8/0g/MyPqvHEW3TplcuZ3VZBDq81ZBJjsHRPTfO
-         WsF67x5DG9UVg2a+ikk+zlNznorFWPGELSjP7EJNjUETZRVcWnF+6eFUI+sARv0w89
-         XmFkeR/7TehGnZiVKu6YYFKLGW8hNZc/gnQcUwejYBC3byHW8EBZb19YX67mHIQYKc
-         cLm365Y07n+K60Q2nwUmyXjBB4LGBvpb6xIwZgrvc6vJFfdVIO/82FuL9RSpKLGfyo
-         0DKn3B2IBr7N3KP7jsgXda8lowUQ5CSUzWetkPqOxOJ71izeS+acNFfg6Gr0mcz8ci
-         mGMQBP8XgO4aA==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Nicholas Piggin <npiggin@gmail.com>, linuxppc-dev@lists.ozlabs.org
-Cc:     Nicholas Piggin <npiggin@gmail.com>, Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Waiman Long <longman@redhat.com>,
-        Anton Blanchard <anton@ozlabs.org>,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, kvm-ppc@vger.kernel.org,
-        linux-arch@vger.kernel.org
-Subject: Re: [PATCH v3 3/6] powerpc: move spinlock implementation to simple_spinlock
-In-Reply-To: <20200706043540.1563616-4-npiggin@gmail.com>
-References: <20200706043540.1563616-1-npiggin@gmail.com> <20200706043540.1563616-4-npiggin@gmail.com>
-Date:   Thu, 09 Jul 2020 20:15:51 +1000
-Message-ID: <87a709vvs8.fsf@mpe.ellerman.id.au>
+        id S1726789AbgGIKQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 06:16:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726140AbgGIKQN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 06:16:13 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 337FAC061A0B;
+        Thu,  9 Jul 2020 03:16:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=+4y1tH7JgQGg/m4Y2HPNpPcl0NpQqyVNAfEoubft9uY=; b=kfAlLVsRpqnbZQEAK40SMcQERa
+        AJ3dkC/7hx9RCDtrf0/3gke1gSrkFxyJf+EkHzqRSG2oK+901gljldEXBKdkGbomGpYn1EapFRu6Q
+        HtpsebXW3mT3AJ7A/iUdncW27w3voAXB1ykeDfelYyIfxvgjmF32l4dB+dqkg6GDU3HVaDCf1B3VM
+        hl9DInOwoFkeAlr6t+Hz9maFrGkMHr+BcG6SApp1XiUze3uBczRlS9d45yOfyfdaQ8BymLq8TlYfV
+        Bp9/pC3nrvuEJg/IaqP0CHEfyJgNA9ZAl4XPHDXNx6u58PfGJvJfsmDwELO/eD2GabcXZTwTR2gff
+        AFhDMLkg==;
+Received: from [2001:4bb8:188:5f50:7053:304b:bf82:82cf] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jtTax-0000ZA-F3; Thu, 09 Jul 2020 10:15:59 +0000
+Date:   Thu, 9 Jul 2020 12:15:59 +0200
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Kanchan Joshi <joshi.k@samsung.com>, viro@zeniv.linux.org.uk,
+        bcrl@kvack.org, hch@infradead.org, Damien.LeMoal@wdc.com,
+        asml.silence@gmail.com, linux-fsdevel@vger.kernel.org,
+        mb@lightnvm.io, linux-kernel@vger.kernel.org, linux-aio@kvack.org,
+        io-uring@vger.kernel.org, linux-block@vger.kernel.org,
+        Selvakumar S <selvakuma.s1@samsung.com>,
+        Nitesh Shetty <nj.shetty@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>
+Subject: Re: [PATCH v3 4/4] io_uring: add support for zone-append
+Message-ID: <20200709085501.GA64935@infradead.org>
+References: <1593974870-18919-1-git-send-email-joshi.k@samsung.com>
+ <CGME20200705185227epcas5p16fba3cb92561794b960184c89fdf2bb7@epcas5p1.samsung.com>
+ <1593974870-18919-5-git-send-email-joshi.k@samsung.com>
+ <fe0066b7-5380-43ee-20b2-c9b17ba18e4f@kernel.dk>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fe0066b7-5380-43ee-20b2-c9b17ba18e4f@kernel.dk>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nicholas Piggin <npiggin@gmail.com> writes:
-> To prepare for queued spinlocks. This is a simple rename except to update
-> preprocessor guard name and a file reference.
->
-> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
-> ---
->  arch/powerpc/include/asm/simple_spinlock.h    | 292 ++++++++++++++++++
->  .../include/asm/simple_spinlock_types.h       |  21 ++
->  arch/powerpc/include/asm/spinlock.h           | 285 +----------------
->  arch/powerpc/include/asm/spinlock_types.h     |  12 +-
->  4 files changed, 315 insertions(+), 295 deletions(-)
->  create mode 100644 arch/powerpc/include/asm/simple_spinlock.h
->  create mode 100644 arch/powerpc/include/asm/simple_spinlock_types.h
->
-> diff --git a/arch/powerpc/include/asm/simple_spinlock.h b/arch/powerpc/include/asm/simple_spinlock.h
-> new file mode 100644
-> index 000000000000..e048c041c4a9
-> --- /dev/null
-> +++ b/arch/powerpc/include/asm/simple_spinlock.h
-> @@ -0,0 +1,292 @@
-> +/* SPDX-License-Identifier: GPL-2.0-or-later */
-> +#ifndef __ASM_SIMPLE_SPINLOCK_H
-> +#define __ASM_SIMPLE_SPINLOCK_H
+On Sun, Jul 05, 2020 at 03:00:47PM -0600, Jens Axboe wrote:
+> > diff --git a/fs/io_uring.c b/fs/io_uring.c
+> > index 155f3d8..cbde4df 100644
+> > --- a/fs/io_uring.c
+> > +++ b/fs/io_uring.c
+> > @@ -402,6 +402,8 @@ struct io_rw {
+> >  	struct kiocb			kiocb;
+> >  	u64				addr;
+> >  	u64				len;
+> > +	/* zone-relative offset for append, in sectors */
+> > +	u32			append_offset;
+> >  };
+> 
+> I don't like this very much at all. As it stands, the first cacheline
+> of io_kiocb is set aside for request-private data. io_rw is already
+> exactly 64 bytes, which means that you're now growing io_rw beyond
+> a cacheline and increasing the size of io_kiocb as a whole.
+> 
+> Maybe you can reuse io_rw->len for this, as that is only used on the
+> submission side of things.
 
-_ASM_POWERPC_SIMPLE_SPINLOCK_H
-
-> +#ifdef __KERNEL__
-
-Shouldn't be necessary.
-
-> +/*
-> + * Simple spin lock operations.  
-> + *
-> + * Copyright (C) 2001-2004 Paul Mackerras <paulus@au.ibm.com>, IBM
-> + * Copyright (C) 2001 Anton Blanchard <anton@au.ibm.com>, IBM
-> + * Copyright (C) 2002 Dave Engebretsen <engebret@us.ibm.com>, IBM
-> + *	Rework to support virtual processors
-> + *
-> + * Type of int is used as a full 64b word is not necessary.
-> + *
-> + * (the type definitions are in asm/simple_spinlock_types.h)
-> + */
-> +#include <linux/irqflags.h>
-> +#include <asm/paravirt.h>
-> +#ifdef CONFIG_PPC64
-> +#include <asm/paca.h>
-> +#endif
-
-I don't think paca.h needs a CONFIG_PPC64 guard, it contains one. I know
-you're just moving the code, but still nice to cleanup slightly along
-the way.
-
-cheers
-
+We don't actually need any new field at all.  By the time the write
+returned ki_pos contains the offset after the write, and the res
+argument to ->ki_complete contains the amount of bytes written, which
+allow us to trivially derive the starting position.
