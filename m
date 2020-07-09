@@ -2,79 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F83521A72F
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 20:42:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC49521A733
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 20:43:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726790AbgGISmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 14:42:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57688 "EHLO
+        id S1726751AbgGISnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 14:43:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726269AbgGISmA (ORCPT
+        with ESMTP id S1726116AbgGISno (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 14:42:00 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 692B6C08C5CE
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 11:42:00 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id x8so1175603plm.10
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 11:42:00 -0700 (PDT)
+        Thu, 9 Jul 2020 14:43:44 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6E1BC08C5CE;
+        Thu,  9 Jul 2020 11:43:43 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id a14so1397366pfi.2;
+        Thu, 09 Jul 2020 11:43:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=nyJ6z6/Z5uBD4mzn7e7w/X29e4m5Kuuz07q/2+OOWkI=;
-        b=HfKOiwdqbD/fjaZoy0riDrCalOgfIQV63UyvPwuwvAgp1xv5G8CfX0kcRTUutyWmzm
-         fWJWzWKI8K0I3tFmmz3vC+ilDbcuvog6yohGM29AEQ5c/U2rOaqdSG4L46Qvvj592Iln
-         +8mLlSW8rDZ6Yq9ee8Y2t6Fj2tfyDfDMkGl3ZTSWbPWx7Tvocu2UsIDxXT5QtzTmwrec
-         QsWRglGTt7dMC37tGBEIG1XJ65cIWhmLukici9fE8zvbRCxmJKsJr26iZWjNlodYvRdC
-         3n3WrqzTJzAQCoswLdP1BD5T2PlbLBmitHk6wkz2LyfHWAHkkQDBrHxECZATFbPs4HOM
-         5fpw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zrAh6RYH46bGf89a0AIXAF4lgmMCYC94Zg5yeKwIb90=;
+        b=K5VfzWBrCKorOTK9sywIZ2ezQEBFSf68ClRpb62R75JqyiSC0cigFG4M12kwfnkZJB
+         YS1znwCzMogJ9A4CzZoFJ4PzglUzTeS/cav8KLyh83v2x/jGKPR+biiouY7Sys8W5PO+
+         U5nFN3YHXYehFlg/d3nwC51Qy8CrQ5m10Yp7zaNraD4ZvUM0nNYVEnjGkJkdqmsIzj9g
+         4ARnHW87kYuL/IJCgIjC5rERRzRry1K1uFIPXvp2gO4k+Nxf3S25yOMZ6Qju4XtPox5w
+         W3CtPIsuRPGQ9KMr8k0ZLossjF5TXKsGlKeGvhaXQ7arERslDeEkWFY6SNdeLUGIBwJD
+         KdSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=nyJ6z6/Z5uBD4mzn7e7w/X29e4m5Kuuz07q/2+OOWkI=;
-        b=f5miiePyhV3rZTC3rCbRf/j2+MWJmAo4ljNojVx4fFuE5tRWKUVgVa82kJE4IFoQBN
-         HJwbF2B3rGj9knKxOE8dkF4lIkxjiLmYp2cMuqaQdX2rAuV1CCt2X8miOnNO/eMIE3Zl
-         auaWCKuaftYyqW/lqcZXOjvptiz9+GuylczFdzOk4Z/b7QRThy5QWL4oKGjOW5EQmvjl
-         trMe/LPcKx8gcmjUEx1O9jOGw0U0cLAJVxdLWILYZpjGjD2b8tmJuOOjm+Ipa23+Zgpg
-         IVLWi8dPFsUJyRd+BSw3Fa5RWJ8WC1HpB9PL9/sgDFrmlKjB+v68CK87tL2RvnBHPf2S
-         OVcw==
-X-Gm-Message-State: AOAM533MIVFozL1DqEXUsW+fxKjYcazucVLGl19d8HRNfI49ET6leH4d
-        xDBKdrpjzcx+4voQwtTtuj+jc0E1pZVNqA6CJFx4MA==
-X-Google-Smtp-Source: ABdhPJzSVDHolNIoahj22gXF9IUGjlqR8byYLHahwGm0WhTKF8Ls73bT/En9lv4otFG5mSjAx5U2lpEbTwE9iwRZYhU=
-X-Received: by 2002:a17:90a:21ef:: with SMTP id q102mr1524895pjc.101.1594320119549;
- Thu, 09 Jul 2020 11:41:59 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zrAh6RYH46bGf89a0AIXAF4lgmMCYC94Zg5yeKwIb90=;
+        b=jponwZNtfzbSYb3ofS6TcelvnPE13oHKNBRjCSVSh2VQqBxzSB5lkpwknslhn/Jh9K
+         jmg8gkUHF/P9A1u4Dovx4dyG3YYE2v/XlWaMpVJtN0RoLsMCTEJFD4Goh/ko9kYvhz18
+         YvTPdl/dtCYwF8Ggcw2IJxn92vHj+I4m5B6yTyu68KkBnpHxY6KPQkW/S8gF3Riq8wF2
+         /OymuNLnSceiEGWkFK+Tgtxs7KnOTvqHeWSzW4DfeC6PRxdr7Gk4gyGJ30LMxDsI85Qe
+         B98thCC2WzODZsryVhKwOVDeObBPnkf5VXZCLwYwhUWozcdZDSBCJ8URTmk+vYY7hMHX
+         9eiQ==
+X-Gm-Message-State: AOAM5303UXb3Q/1Cf+IzITu+8EwIrEqymTs2az10viNUysoLUWZxVdmU
+        +ORqE2Wh06SD1FyBD4EINcU=
+X-Google-Smtp-Source: ABdhPJwu5oDS2DXNshKPqNoq+4Y55IgTBjP8/9OTn6H0r/sEvI8hDdQDCjjuDo8uACUiWYd5RoHW5A==
+X-Received: by 2002:a65:4c0b:: with SMTP id u11mr53908414pgq.383.1594320223339;
+        Thu, 09 Jul 2020 11:43:43 -0700 (PDT)
+Received: from localhost.localdomain.com ([2605:e000:160b:911f:a2ce:c8ff:fe03:6cb0])
+        by smtp.gmail.com with ESMTPSA id s22sm3553999pfm.164.2020.07.09.11.43.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Jul 2020 11:43:42 -0700 (PDT)
+From:   Chris Healy <cphealy@gmail.com>
+To:     andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Chris Healy <cphealy@gmail.com>
+Subject: [PATCH net-next] net: dsa: mv88e6xxx: Add serdes read/write dynamic debug
+Date:   Thu,  9 Jul 2020 11:43:18 -0700
+Message-Id: <20200709184318.4192-1-cphealy@gmail.com>
+X-Mailer: git-send-email 2.21.3
 MIME-Version: 1.0
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 9 Jul 2020 11:41:47 -0700
-Message-ID: <CAKwvOdmuYc8rW_H4aQG4DsJzho=F+djd68fp7mzmBp3-wY--Uw@mail.gmail.com>
-Subject: Linux kernel in-tree Rust support
-To:     alex.gaynor@gmail.com, geofft@ldpreload.com, jbaublitz@redhat.com,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello folks,
-I'm working on putting together an LLVM "Micro Conference" for the
-upcoming Linux Plumbers Conf
-(https://www.linuxplumbersconf.org/event/7/page/47-attend).  It's not
-solidified yet, but I would really like to run a session on support
-for Rust "in tree."  I suspect we could cover technical aspects of
-what that might look like (I have a prototype of that, was trivial to
-wire up KBuild support), but also a larger question of "should we do
-this?" or "how might we place limits on where this can be used?"
+Add deb_dbg print statements in both serdes_read and serdes_write
+functions.
 
-Question to folks explicitly in To:, are you planning on attending plumbers?
+Signed-off-by: Chris Healy <cphealy@gmail.com>
+---
+ drivers/net/dsa/mv88e6xxx/serdes.c | 27 +++++++++++++++++++++++++--
+ 1 file changed, 25 insertions(+), 2 deletions(-)
 
-If so, would this be an interesting topic that you'd participate in?
+diff --git a/drivers/net/dsa/mv88e6xxx/serdes.c b/drivers/net/dsa/mv88e6xxx/serdes.c
+index 9c07b4f3d345..756b34343547 100644
+--- a/drivers/net/dsa/mv88e6xxx/serdes.c
++++ b/drivers/net/dsa/mv88e6xxx/serdes.c
+@@ -20,14 +20,25 @@
+ static int mv88e6352_serdes_read(struct mv88e6xxx_chip *chip, int reg,
+ 				 u16 *val)
+ {
+-	return mv88e6xxx_phy_page_read(chip, MV88E6352_ADDR_SERDES,
++	int err;
++
++	err =  mv88e6xxx_phy_page_read(chip, MV88E6352_ADDR_SERDES,
+ 				       MV88E6352_SERDES_PAGE_FIBER,
+ 				       reg, val);
++
++	if (err)
++		return err;
++
++	dev_dbg(chip->dev, "serdes <- reg: 0x%.2x val: 0x%.2x\n", reg, *val);
++
++	return 0;
+ }
+ 
+ static int mv88e6352_serdes_write(struct mv88e6xxx_chip *chip, int reg,
+ 				  u16 val)
+ {
++	dev_dbg(chip->dev, "serdes -> reg: 0x%.2x val: 0x%.2x\n", reg, val);
++
+ 	return mv88e6xxx_phy_page_write(chip, MV88E6352_ADDR_SERDES,
+ 					MV88E6352_SERDES_PAGE_FIBER,
+ 					reg, val);
+@@ -37,8 +48,17 @@ static int mv88e6390_serdes_read(struct mv88e6xxx_chip *chip,
+ 				 int lane, int device, int reg, u16 *val)
+ {
+ 	int reg_c45 = MII_ADDR_C45 | device << 16 | reg;
++	int err;
++
++	err = mv88e6xxx_phy_read(chip, lane, reg_c45, val);
++	if (err)
++		return err;
++
++	dev_dbg(chip->dev, "serdes <- lane: %.2d device: 0x%.2x reg_c45: 0x%.4x val: 0x%.4x\n",
++		lane, device, reg_c45, *val);
++
++	return 0;
+ 
+-	return mv88e6xxx_phy_read(chip, lane, reg_c45, val);
+ }
+ 
+ static int mv88e6390_serdes_write(struct mv88e6xxx_chip *chip,
+@@ -46,6 +66,9 @@ static int mv88e6390_serdes_write(struct mv88e6xxx_chip *chip,
+ {
+ 	int reg_c45 = MII_ADDR_C45 | device << 16 | reg;
+ 
++	dev_dbg(chip->dev, "serdes -> lane: %.2d device: 0x%.2x reg_c45: 0x%.4x val: 0x%.4x\n",
++		lane, device, reg_c45, val);
++
+ 	return mv88e6xxx_phy_write(chip, lane, reg_c45, val);
+ }
+ 
 -- 
-Thanks,
-~Nick Desaulniers
+2.21.3
+
