@@ -2,171 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F6B5219F86
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 14:01:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD93C219F95
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 14:05:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727796AbgGIMB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 08:01:57 -0400
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:41371 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726327AbgGIMB4 (ORCPT
+        id S1726865AbgGIME4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 08:04:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52466 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726327AbgGIME4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 08:01:56 -0400
-Received: by mail-oi1-f194.google.com with SMTP id y22so1637967oie.8;
-        Thu, 09 Jul 2020 05:01:56 -0700 (PDT)
+        Thu, 9 Jul 2020 08:04:56 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEF14C061A0B;
+        Thu,  9 Jul 2020 05:04:55 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id lx13so2002271ejb.4;
+        Thu, 09 Jul 2020 05:04:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=0zImYmeVH2cb5ZKZAWLVklettku0gl+82cmF9xIzIxc=;
+        b=Oz9/FrdYqRRn8i0zwob8qJNoewkLGHF/55gRHywFIp6s8QpbqYCLHc657OVkO8xlqe
+         +GPUnF4hQSerKpxB2QgaeOIxQUN1L8oty3gXG1qc1wcbAPVo3vOICqd3wakjp/Nk348z
+         7NRwy2m1h8z/V/Umxpi9my+ViWqlu7bBXM2KZkkDXsuYciM/+2FT+mhEDPpcZWdlRt1n
+         klrrK9fF/Gim6Ao9WT7UpHaIV/JIdSGVpRRx3dWWg9HyplMjuDgziRGIBLX0W0GLWz1P
+         li2WTT+0wTl+B85xHlIEee08IKSzXcWJdRz2sreqC8XSj8n62Ecas2ExC2ecBbCaSIc0
+         /MNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=arGB3qPgvw7a+4/UTLYjhwxhE2h0cMITMWEpR/EppSw=;
-        b=uBsTAjL0aPJAYww5WDd40Mr+Kb/BoFcsie8Swc9NxfoAJZOWypqKGuXWhP9+c/pbu6
-         nAORn6sZlxeobItXKwsfxKu9BEv/f5svBcPkv5MIWIqtnZvgC1dFJOFPX/pALwdk9hE1
-         zNAe/g13uAMmrNtlsVJuqMmtJCX5pkLvRZ4XwPQ0uu6I6yUGiVZLbE4zvBK6SWK6+AqO
-         VOmI5sSLAfG1ZjVzRsCM6rVFGeKb6H6LveZRJDcVn+H3iT14ChjWGv1duWrWcjTOdp+/
-         feSx378mjhOiQiFuUhWyZ1JJraCwkpy5bfJ3axinEtVjfIM3BWh4THT+U8weM5PJMYBG
-         sFkA==
-X-Gm-Message-State: AOAM530cJJVruX889HBaeiazC02MqS30HE/+rCvqQ1F8oiDbaMuHaWb4
-        vMTLiMhFhzOAd6szaKh/vil35DmUXcIAhopj5FU=
-X-Google-Smtp-Source: ABdhPJy6fX4MP9HJD0Gd7VfPZSItTZzRNbcG1ycT8hK+IFW7DY5nj7Y1e2OaWwINKmHEs44NyiS85mr4klvr/IAZcsM=
-X-Received: by 2002:aca:4a89:: with SMTP id x131mr11350502oia.103.1594296115512;
- Thu, 09 Jul 2020 05:01:55 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=0zImYmeVH2cb5ZKZAWLVklettku0gl+82cmF9xIzIxc=;
+        b=L01N78OStyivScWmMbJXG+GnM9CK3uSv0SIo164poELK/AFkB0vTb5CKRlD+MPUpqA
+         2oKAI9Lpu+4hRVMub2eliU/r997mUSsDha5+TyMarT69UMaP8V5knqpg7mFbML8+1Ibl
+         c6YRxOR9lIGLzSU8H8qXp8EEVowg9MPxlY/T1W0JshVvVO2zaiaHH2/IUgPUn72RE7EA
+         rS3/SScuV9NZ3ZyqvSKjubOW85ZpSMkTWW2k1vTSQ1eGm+jviB2XgRUNfjKrK5tnlaaM
+         U5IGR86CeFjIO8yOeJSLSP6eB/rRHir/DjO/UfHw6aJmXocmB+7Yko7Q9xspxsaeY5db
+         5B5g==
+X-Gm-Message-State: AOAM532F76doOmVM5vREdFjZ/wIabBw+b1E4vponRuEh5RODEi8sK26W
+        fYEHCXBQIpqor0KugX6inOr5jj0ue1M=
+X-Google-Smtp-Source: ABdhPJwMt1uac/fO7xYUSf/Fv6CBZwDYVGcxGtSHD48eVkRoL6aGBpsYAkRI/YRFUxMwbmOvMLzocQ==
+X-Received: by 2002:a17:906:2b52:: with SMTP id b18mr57784048ejg.158.1594296294559;
+        Thu, 09 Jul 2020 05:04:54 -0700 (PDT)
+Received: from [192.168.2.1] (ip51ccf9cd.speed.planet.nl. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id v3sm1888683edj.89.2020.07.09.05.04.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Jul 2020 05:04:54 -0700 (PDT)
+Subject: Re: [PATCH] clk: rockchip: mark pclk_uart2 as critical on rk3328
+To:     "elaine.zhang" <zhangqing@rock-chips.com>, heiko@sntech.de
+Cc:     mturquette@baylibre.com, sboyd@kernel.org,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Robin Murphy <robin.murphy@arm.com>
+References: <20200708144528.20465-1-jbx6244@gmail.com>
+ <2f58b9df-9bcd-5639-65cc-306a6d36b310@rock-chips.com>
+From:   Johan Jonker <jbx6244@gmail.com>
+Message-ID: <68073138-1f94-9d5b-ad48-e82bc538c915@gmail.com>
+Date:   Thu, 9 Jul 2020 14:04:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux i686; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-References: <20200413134611.478441-1-enric.balletbo@collabora.com>
- <CAJZ5v0gWZ27_DwWQadsJOUxLo4a0rAMe45d4AWXS2gHJZfgfKg@mail.gmail.com>
- <a2953d50-da22-279a-f1e4-faa796d815b1@collabora.com> <10490419.gsntqH5CaE@kreacher>
- <4e7f8bf3-b72b-d418-ec95-e1f8c3d61261@collabora.com>
-In-Reply-To: <4e7f8bf3-b72b-d418-ec95-e1f8c3d61261@collabora.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 9 Jul 2020 14:01:43 +0200
-Message-ID: <CAJZ5v0hH5MFRWuJX=UjevXo1rHh=ca=skHazasKiEZxOVUw1VA@mail.gmail.com>
-Subject: Re: [PATCH v4] platform: x86: Add ACPI driver for ChromeOS
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Benson Leung <bleung@chromium.org>,
-        Dmitry Torokhov <dtor@chromium.org>,
-        Gwendal Grignou <gwendal@chromium.org>, vbendeb@chromium.org,
-        Andy Shevchenko <andy@infradead.org>,
-        Ayman Bagabas <ayman.bagabas@gmail.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        =?UTF-8?Q?Bla=C5=BE_Hrastnik?= <blaz@mxxn.io>,
-        Darren Hart <dvhart@infradead.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Jeremy Soller <jeremy@system76.com>,
-        Mattias Jacobsson <2pi@mok.nu>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Rajat Jain <rajatja@google.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <2f58b9df-9bcd-5639-65cc-306a6d36b310@rock-chips.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 10, 2020 at 11:21 PM Enric Balletbo i Serra
-<enric.balletbo@collabora.com> wrote:
->
-> Hi Rafael,
->
-> Many thanks for your feedback. See my answers inline.
->
-> On 5/6/20 13:17, Rafael J. Wysocki wrote:
-> > On Tuesday, April 14, 2020 4:35:38 PM CEST Enric Balletbo i Serra wrote:
-> >> Hi Rafael,
-> >>
-> >> On 13/4/20 22:41, Rafael J. Wysocki wrote:
-> >>> On Mon, Apr 13, 2020 at 3:46 PM Enric Balletbo i Serra
-> >>> <enric.balletbo@collabora.com> wrote:
-> >>>>
-> >>>> This driver attaches to the ChromeOS ACPI device and then exports the values
-> >>>> reported by the ACPI in a sysfs directory. These values are not exported
-> >>>> via the standard ACPI tables, hence a specific driver is needed to do
-> >>>> it.
-> >>>
-> >>> So how exactly are they exported?
-> >>>
-> >>
-> >> They are exported through sysfs.
-> >>
-> >>>> The ACPI values are presented in the string form (numbers as decimal
-> >>>> values) or binary blobs, and can be accessed as the contents of the
-> >>>> appropriate read only files in the standard ACPI devices sysfs directory tree.
-> >>>
-> >>> My understanding based on a cursory look at the patch is that there is
-> >>> an ACPI device with _HID equal to "GGL0001"  and one or more special
-> >>> methods under it that return values which you want to export over
-> >>> sysfs as binary attributes.  They appear to be read-only.
-> >>>
-> >>
-> >> Exactly, there is an ACPI device equal to "GGL0001" and one special method
-> >> called MLST that returns a list of the other control methods supported by the
-> >> Chrome OS hardware device. The driver calls the special MLST method and goes
-> >> through the list.
-> >>
-> >>> I guess that these data are to be consubed by user space?
-> >>>
-> >>
-> >> Yes, this is used by user space, to be more specific ChromeOS userspace uses it.
-> >
-> > Well, let me start over.
-> >
-> > The subject and changelog of this patch are not precise enough IMO and there is
-> > not enough information in the latter.
-> >
->
-> Ok, I can improve that.
+Hi Elaine, Robin,
 
-Please do.
+Thank you for your help!
+This patch can go in the garbage bin.
+It turns out that with SERIAL_8250 also SERIAL_8250_DW must be
+selected... ;)
 
-> > It is not clear what "ACPI driver for ChromeOS" means.  There may be many ACPI
-> > drivers in a Linux-based system as a rule.
-> >
-> > It is unclear what the ChromeOS ACPI device is and why it is there.  Is there
-> > any documentation of it you can point me to?
-> >
->
-> I'm afraid, I don't think there is any documentation, I'll ask around.
->
-> > It is unclear what you mean by "These values are not exported via the standard
-> > ACPI tables".
-> >
-> > It looks like (but it is not actually documented in any way) the idea is to
-> > get to the ACPI device object with _HID returning "GGL0001", evaluate the
-> > MLST method under it and then evaluate the methods listed by it and export the
-> > data returned by them via sysfs, under the "GGL0001" device on the "acpi" bus.
-> > Is this correct?
-> >
->
-> Yes, this is correct.
->
-> > If so, there is a couple of issues here.
-> >
-> > First off, GGL0001 is not a valid ACPI device ID, because the GGL prefix is not
+It's not in the Kconfig help description.
+Shouldn't that be automatically be included for Rockchip?
+Example:
 
-[cut]
+config SERIAL_8250
+	tristate "8250/16550 and compatible serial support"
+	depends on !S390
+	select SERIAL_CORE
+	select SERIAL_MCTRL_GPIO if GPIOLIB
+	select SERIAL_8250_DW if ARCH_ROCKCHIP
 
-> > Next, device attributes in sysfs are part of the kernel ABI and once defined,
-> > they cannot change (exceptions happen, but rarely), so you must guarantee
-> > that whatever appears in there, will always be present for devices with the
-> > given device ID in the future in the same format.
-> >
-> > Can you actually guarantee that?  If so, what is that guarantee based on?
-> >
->
-> Although is not really documented, can we say that this is a standard "de facto"
-> assuming that there are lots of devices in the field and for a long time with
-> that? Can this be a guarantee?
+Thank Robin for the introduction to FTRACE!
 
-I would like the firmware interface to be documented in
-Documentation/firmware-guide/acpi/ in the first place, given the lack
-of any existing documentation of it that can be pointed to.
+mount -t tracefs tracefs /sys/kernel/tracing
 
-Thanks!
+cd /sys/kernel/tracing
+
+# Without SERIAL_8250_DW
+
+/sys/kernel/tracing # cat trace | grep uart2
+          <idle>-0     [000] d..2     0.000000: clk_enable: clk_uart2_div
+          <idle>-0     [000] d..2     0.000000: clk_enable: clk_uart2_frac
+          <idle>-0     [000] d..2     0.000000: clk_disable: clk_uart2_frac
+          <idle>-0     [000] d..2     0.000000: clk_disable: clk_uart2_div
+       swapper/0-1     [002] d..1     1.916746: clk_disable: pclk_uart2
+
+
+/sys/kernel/tracing # cat trace | grep uart
+          <idle>-0     [000] d..2     0.000000: clk_enable: clk_uart2_div
+          <idle>-0     [000] d..2     0.000000: clk_enable: clk_uart2_frac
+          <idle>-0     [000] d..2     0.000000: clk_disable: clk_uart2_frac
+          <idle>-0     [000] d..2     0.000000: clk_disable: clk_uart2_div
+          <idle>-0     [000] d..2     0.000000: clk_enable: clk_uart1_div
+          <idle>-0     [000] d..2     0.000000: clk_enable: clk_uart1_frac
+          <idle>-0     [000] d..2     0.000000: clk_disable: clk_uart1_frac
+          <idle>-0     [000] d..2     0.000000: clk_disable: clk_uart1_div
+          <idle>-0     [000] d..2     0.000000: clk_enable: clk_uart0_div
+          <idle>-0     [000] d..2     0.000000: clk_enable: clk_uart0_frac
+          <idle>-0     [000] d..2     0.000000: clk_disable: clk_uart0_frac
+          <idle>-0     [000] d..2     0.000000: clk_disable: clk_uart0_div
+       swapper/0-1     [002] d..1     1.916746: clk_disable: pclk_uart2
+       swapper/0-1     [002] d..1     1.923959: clk_disable: pclk_uart1
+       swapper/0-1     [002] d..1     1.930741: clk_disable: pclk_uart0
+
+# With SERIAL_8250_DW
+
+/sys/kernel/tracing # cat trace | grep uart2
+          <idle>-0     [000] d..2     0.000000: clk_enable: clk_uart2_div
+          <idle>-0     [000] d..2     0.000000: clk_enable: clk_uart2_frac
+          <idle>-0     [000] d..2     0.000000: clk_disable: clk_uart2_frac
+          <idle>-0     [000] d..2     0.000000: clk_disable: clk_uart2_div
+       swapper/0-1     [002] d..1     0.923180: clk_enable: sclk_uart2
+       swapper/0-1     [002] d..1     0.923224: clk_enable: pclk_uart2
+       swapper/0-1     [002] d..1     0.925259: clk_disable: sclk_uart2
+       swapper/0-1     [002] d..1     0.925295: clk_enable: sclk_uart2
+       swapper/0-1     [003] d..1     2.208605: clk_disable: sclk_uart2
+       swapper/0-1     [003] d..1     2.208646: clk_enable: sclk_uart2
+
+/sys/kernel/tracing # cat trace | grep uart
+          <idle>-0     [000] d..2     0.000000: clk_enable: clk_uart2_div
+          <idle>-0     [000] d..2     0.000000: clk_enable: clk_uart2_frac
+          <idle>-0     [000] d..2     0.000000: clk_disable: clk_uart2_frac
+          <idle>-0     [000] d..2     0.000000: clk_disable: clk_uart2_div
+          <idle>-0     [000] d..2     0.000000: clk_enable: clk_uart1_div
+          <idle>-0     [000] d..2     0.000000: clk_enable: clk_uart1_frac
+          <idle>-0     [000] d..2     0.000000: clk_disable: clk_uart1_frac
+          <idle>-0     [000] d..2     0.000000: clk_disable: clk_uart1_div
+          <idle>-0     [000] d..2     0.000000: clk_enable: clk_uart0_div
+          <idle>-0     [000] d..2     0.000000: clk_enable: clk_uart0_frac
+          <idle>-0     [000] d..2     0.000000: clk_disable: clk_uart0_frac
+          <idle>-0     [000] d..2     0.000000: clk_disable: clk_uart0_div
+       swapper/0-1     [002] d..1     0.920034: clk_enable: sclk_uart0
+       swapper/0-1     [002] d..1     0.920085: clk_enable: pclk_uart0
+     kworker/2:1-32    [002] d..1     0.922596: clk_disable: sclk_uart0
+     kworker/2:1-32    [002] d..1     0.922613: clk_disable: pclk_uart0
+       swapper/0-1     [002] d..1     0.923180: clk_enable: sclk_uart2
+       swapper/0-1     [002] d..1     0.923224: clk_enable: pclk_uart2
+       swapper/0-1     [002] d..1     0.925259: clk_disable: sclk_uart2
+       swapper/0-1     [002] d..1     0.925295: clk_enable: sclk_uart2
+       swapper/0-1     [003] d..1     1.914158: clk_disable: pclk_uart1
+       swapper/0-1     [003] d..1     2.208605: clk_disable: sclk_uart2
+       swapper/0-1     [003] d..1     2.208646: clk_enable: sclk_uart2
+
+
+
+On 7/9/20 3:32 AM, elaine.zhang wrote:
+> 在 2020/7/8 下午10:45, Johan Jonker 写道:
+>> The rk3328 uart2 port is used as boot console and to debug.
+>> During the boot pclk_uart2 is disabled by a clk_disable_unused
+>> initcall. Fix the uart2 function by marking pclk_uart2
+>> as critical on rk3328. Also add sclk_uart2 as that is needed
+>> for the same DT node.
+>>
+>> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+>> ---
+>>   drivers/clk/rockchip/clk-rk3328.c | 2 ++
+>>   1 file changed, 2 insertions(+)
+>>
+>> diff --git a/drivers/clk/rockchip/clk-rk3328.c
+>> b/drivers/clk/rockchip/clk-rk3328.c
+>> index c186a1985..cb7749cb7 100644
+>> --- a/drivers/clk/rockchip/clk-rk3328.c
+>> +++ b/drivers/clk/rockchip/clk-rk3328.c
+>> @@ -875,6 +875,8 @@ static const char *const rk3328_critical_clocks[]
+>> __initconst = {
+>>       "aclk_gmac_niu",
+>>       "pclk_gmac_niu",
+>>       "pclk_phy_niu",
+>> +    "pclk_uart2",
+>> +    "sclk_uart2",
+>>   };
+>>   
+> 
+> Not need to mark the uart2 as critical clocks, the uart clk will enabled
+> by uart driver probe(dw8250_probe()).
+> 
+> For your question,  Please check the uart2 dts node "status = okay".
+> 
+> Or You can send me the complete log, I check the status of uart2.
+> 
+>>   static void __init rk3328_clk_init(struct device_node *np)
+> 
+> 
+
