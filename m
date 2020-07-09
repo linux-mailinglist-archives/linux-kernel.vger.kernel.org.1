@@ -2,63 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBE62219569
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 02:57:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1290219574
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 02:59:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726306AbgGIA5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Jul 2020 20:57:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34472 "EHLO
+        id S1726281AbgGIA7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Jul 2020 20:59:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726247AbgGIA5D (ORCPT
+        with ESMTP id S1726116AbgGIA7h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Jul 2020 20:57:03 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D194DC035423
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 17:57:02 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id f7so518589wrw.1
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 17:57:02 -0700 (PDT)
+        Wed, 8 Jul 2020 20:59:37 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82772C08C5C1
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 17:59:37 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id u8so224117qvj.12
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 17:59:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=6LUxAcH1p2jd4UOhn99gfFC8uQP4AVfDHydIOJan7II=;
-        b=VEPpOvKVaaGIO6ll0jLBZoQTx9mHMVlH9xuAIBP1yTosHkOx851zxu1lzn4ZoUfClw
-         TkBVbYAOsSa+hB2Xyn1fpHjgnqykKXSnk16BNNCsX5bEcmCiQehbMRcW0Stp2wWriqpf
-         9hPwK5Cz5htTUUSLMJhbegnnf/jShGSaagelI=
+        d=ndufresne-ca.20150623.gappssmtp.com; s=20150623;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=Lwy/TUmMO5Z/1GlX8cJ31apZHSAxwS7d7SzRutu1MJ0=;
+        b=ET/M19TQjjEkmefFj2CMQwprybD/BLQRr97CSRxnIaNeqxpWggWTX79xfT98AbQksA
+         Itn1U3XblGbyN5j01FOIE4COxzij3/ecEXBQ28/B3+CkSLP6156pYvXrcd9CPuCCrBf8
+         n0mDyma6G/7AKmGDpNpG26QB2tYJpdGGDyjw5QnUSGIHsgk0KzHNRGSYODCLhHp9Botr
+         CYYMkVsktfwHvdQP20FXID0+qLH/uu6vuahRLeJp0cwqJ9cUy/pOJwRPdRx1rm0mrVcs
+         Q3bAcXL4kZRewbwjGVA2WDWRgVSfv/FkqzbwSk7U4je+rx/wZK5QqNKnHREnvbRWQbyC
+         SCSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=6LUxAcH1p2jd4UOhn99gfFC8uQP4AVfDHydIOJan7II=;
-        b=oYEAZyOLz/KJ/5h8jSQ6OR6WTfO4sUCB/m81GU9e18MtfHRD3nkU6SdrG64oTPfgN1
-         Jb8krV+Y2HR13KIbSmMsN1jAJayd02mFUiQs3elUhuXBOWBvWPX7lKCDp4vdI0rW6cKp
-         mkw8cQpk6T9EDbIWkzHw3iDi63gMDCDazNIfH+8xOlkWbMQ0MZD+HjZTPQeeSN/H8EoD
-         wLCBEk1z36/PifaH9ZiNwudxhjWlHlehb+RcyC9M3MTVjNoY70n6pvA5aUCoggvyLs5V
-         xWhryLLAIyL4nv4MRmgIxjREtU8ZadSJv0nUt7MSkn9DmQf+1Ivk8SwzN5TLahJN6ptp
-         S/Zw==
-X-Gm-Message-State: AOAM530q+IKfSGCdWBIjnxJXtA/4B3J6jj4AxOpl7spuk2cgmVB6KMYg
-        eZA0JhAkhB7igp99A5jmhzoMcTk1rwI=
-X-Google-Smtp-Source: ABdhPJzyI+jXLPf7mqmyDALcYSrJOmkImq+nqECTtOymvxaH5xzR5NKIa783yY11NP4prI0whh+aRQ==
-X-Received: by 2002:adf:e3c5:: with SMTP id k5mr61130323wrm.121.1594256221301;
-        Wed, 08 Jul 2020 17:57:01 -0700 (PDT)
-Received: from kpsingh.zrh.corp.google.com ([81.6.44.51])
-        by smtp.gmail.com with ESMTPSA id f15sm2465498wrx.91.2020.07.08.17.57.00
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=Lwy/TUmMO5Z/1GlX8cJ31apZHSAxwS7d7SzRutu1MJ0=;
+        b=PSEhW0Sj7IxCwcXO/hIWM5X3wyKpIB8C1Q1TZw5mtnuI7giQQoS2dIywDUEYNlFTep
+         ePTMbqGYwbWY4zfBdM/zSU4DNzckFpTNMReeoFVAOwzr6a6rzG5bnACqokq3kIG41HgL
+         JkyS9rOP2sry/bv0CkSFuqPMUDb73YY9QJPn1hzgOah0ZGvIoZUXM6VcWcE28kxMuYTg
+         YdqMoOcs81lAcqFqWh6WxjJFhyS7HNkehnk1W1wlxCIO9er2qP7bG0NXzUT44zrHzznQ
+         L9RavBCHUbsC1cl6Uv5S5B/eUFBmJVBHmUhhFTK7KbJ9svRcVw+OiE+1QDMr+dE0P7E7
+         zxUw==
+X-Gm-Message-State: AOAM5319K1hFtKILwDQLepaSRDh35hPSH4dmnzd0jHoieLpVXhZCdhiK
+        YZEKqPPJGW6U/rlTLm/AXsO5jw==
+X-Google-Smtp-Source: ABdhPJy0dhosaYd4+tncZ23pF3TfazXsuH+2tE7yu4vVoTb7EieibAGJOCdi09ESkIvxyCpS/aQFVA==
+X-Received: by 2002:ad4:57c7:: with SMTP id y7mr61409102qvx.124.1594256376656;
+        Wed, 08 Jul 2020 17:59:36 -0700 (PDT)
+Received: from skullcanyon ([192.222.193.21])
+        by smtp.gmail.com with ESMTPSA id g17sm1593649qto.73.2020.07.08.17.59.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Jul 2020 17:57:00 -0700 (PDT)
-From:   KP Singh <kpsingh@chromium.org>
-To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Cc:     Andrii Nakryiko <andriin@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
-        Florent Revest <revest@chromium.org>
-Subject: [PATCH bpf-next v3 4/4] bpf: Add selftests for local_storage
-Date:   Thu,  9 Jul 2020 02:56:54 +0200
-Message-Id: <20200709005654.3324272-5-kpsingh@chromium.org>
-X-Mailer: git-send-email 2.27.0.389.gc38d7665816-goog
-In-Reply-To: <20200709005654.3324272-1-kpsingh@chromium.org>
-References: <20200709005654.3324272-1-kpsingh@chromium.org>
+        Wed, 08 Jul 2020 17:59:35 -0700 (PDT)
+Message-ID: <f485930bb8d8a5506e9ffd6804d08945920fce61.camel@ndufresne.ca>
+Subject: Re: [PATCH 1/3] media: uapi: h264: update reference lists
+From:   Nicolas Dufresne <nicolas@ndufresne.ca>
+To:     Jernej =?UTF-8?Q?=C5=A0krabec?= <jernej.skrabec@siol.net>,
+        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Cc:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        linux-media <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        devel@driverdev.osuosl.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Date:   Wed, 08 Jul 2020 20:59:34 -0400
+In-Reply-To: <3602665.eG79kSnugm@jernej-laptop>
+References: <20200604185745.23568-1-jernej.skrabec@siol.net>
+         <20200604185745.23568-2-jernej.skrabec@siol.net>
+         <CAAEAJfAx4=RGJBVPccVFNYxNUqom7tkQD=J9oMfqajGxn6k+Zg@mail.gmail.com>
+         <3602665.eG79kSnugm@jernej-laptop>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -66,240 +79,230 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: KP Singh <kpsingh@google.com>
+Le mercredi 08 juillet 2020 à 17:57 +0200, Jernej Škrabec a écrit :
+> Hi!
+> 
+> Dne sreda, 08. julij 2020 ob 15:28:52 CEST je Ezequiel Garcia napisal(a):
+> > Hello Jernej,
+> > 
+> > I'd like to post a new H264 uAPI cleanup series soon,
+> > would you mind resending this, or otherwise do you
+> > mind if I include this patch in the series?
+> 
+> I don't mind at all. Currently my focus was elsewhere...
+> 
+> > See below for a tiny comment.
+> > 
+> > On Thu, 4 Jun 2020 at 15:55, Jernej Skrabec <jernej.skrabec@siol.net> wrote:
+> > > When dealing with with interlaced frames, reference lists must tell if
+> > > each particular reference is meant for top or bottom field. This info
+> > > is currently not provided at all in the H264 related controls.
+> > > 
+> > > Make reference lists hold a structure which will also hold flags along
+> > > index into DPB array. Flags will tell if reference is meant for top or
+> > > bottom field.
+> > > 
+> > > Currently the only user of these lists is Cedrus which is just compile
+> > > fixed here. Actual usage of newly introduced flags will come in
+> > > following commit.
+> > > 
+> > > Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+> > > ---
+> > > 
+> > >  .../media/v4l/ext-ctrls-codec.rst             | 40 ++++++++++++++++++-
+> > >  .../staging/media/sunxi/cedrus/cedrus_h264.c  |  6 +--
+> > >  include/media/h264-ctrls.h                    | 12 +++++-
+> > >  3 files changed, 51 insertions(+), 7 deletions(-)
+> > > 
+> > > diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> > > b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst index
+> > > d0d506a444b1..6c36d298db20 100644
+> > > --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> > > +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> > > @@ -1843,10 +1843,10 @@ enum v4l2_mpeg_video_h264_hierarchical_coding_type
+> > > -> 
+> > >      * - __u32
+> > >      
+> > >        - ``slice_group_change_cycle``
+> > >        -
+> > > 
+> > > -    * - __u8
+> > > +    * - struct :c:type:`v4l2_h264_reference`
+> > > 
+> > >        - ``ref_pic_list0[32]``
+> > >        - Reference picture list after applying the per-slice modifications
+> > > 
+> > > -    * - __u8
+> > > +    * - struct :c:type:`v4l2_h264_reference`
+> > > 
+> > >        - ``ref_pic_list1[32]``
+> > >        - Reference picture list after applying the per-slice modifications
+> > >      
+> > >      * - __u32
+> > > 
+> > > @@ -1926,6 +1926,42 @@ enum v4l2_mpeg_video_h264_hierarchical_coding_type
+> > > -
+> > > 
+> > >        - ``chroma_offset[32][2]``
+> > >        -
+> > > 
+> > > +``Picture Reference``
+> > > +
+> > > +.. c:type:: v4l2_h264_reference
+> > > +
+> > > +.. cssclass:: longtable
+> > > +
+> > > +.. flat-table:: struct v4l2_h264_reference
+> > > +    :header-rows:  0
+> > > +    :stub-columns: 0
+> > > +    :widths:       1 1 2
+> > > +
+> > > +    * - __u16
+> > > +      - ``flags``
+> > > +      - See :ref:`Picture Reference Flags <h264_reference_flags>`
+> > > +    * - __u8
+> > > +      - ``index``
+> > > +      -
+> > > +
+> > > +.. _h264_reference_flags:
+> > > +
+> > > +``Picture Reference Flags``
+> > > +
+> > > +.. cssclass:: longtable
+> > > +
+> > > +.. flat-table::
+> > > +    :header-rows:  0
+> > > +    :stub-columns: 0
+> > > +    :widths:       1 1 2
+> > > +
+> > > +    * - ``V4L2_H264_REFERENCE_FLAG_TOP_FIELD``
+> > > +      - 0x00000001
+> > > +      -
+> > > +    * - ``V4L2_H264_REFERENCE_FLAG_BOTTOM_FIELD``
+> > > +      - 0x00000002
+> > > +      -
+> > > +
+> > > 
+> > >  ``V4L2_CID_MPEG_VIDEO_H264_DECODE_PARAMS (struct)``
+> > >  
+> > >      Specifies the decode parameters (as extracted from the bitstream)
+> > >      for the associated H264 slice data. This includes the necessary
+> > > 
+> > > diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_h264.c
+> > > b/drivers/staging/media/sunxi/cedrus/cedrus_h264.c index
+> > > 54ee2aa423e2..cce527bbdf86 100644
+> > > --- a/drivers/staging/media/sunxi/cedrus/cedrus_h264.c
+> > > +++ b/drivers/staging/media/sunxi/cedrus/cedrus_h264.c
+> > > @@ -166,8 +166,8 @@ static void cedrus_write_frame_list(struct cedrus_ctx
+> > > *ctx,> 
+> > >  static void _cedrus_write_ref_list(struct cedrus_ctx *ctx,
+> > >  
+> > >                                    struct cedrus_run *run,
+> > > 
+> > > -                                  const u8 *ref_list, u8 num_ref,
+> > > -                                  enum cedrus_h264_sram_off sram)
+> > > +                                  const struct v4l2_h264_reference
+> > > *ref_list, +                                  u8 num_ref, enum
+> > > cedrus_h264_sram_off sram)> 
+> > >  {
+> > >  
+> > >         const struct v4l2_ctrl_h264_decode_params *decode =
+> > >         run->h264.decode_params; struct vb2_queue *cap_q;
+> > > 
+> > > @@ -188,7 +188,7 @@ static void _cedrus_write_ref_list(struct cedrus_ctx
+> > > *ctx,> 
+> > >                 int buf_idx;
+> > >                 u8 dpb_idx;
+> > > 
+> > > -               dpb_idx = ref_list[i];
+> > > +               dpb_idx = ref_list[i].index;
+> > > 
+> > >                 dpb = &decode->dpb[dpb_idx];
+> > >                 
+> > >                 if (!(dpb->flags & V4L2_H264_DPB_ENTRY_FLAG_ACTIVE))
+> > > 
+> > > diff --git a/include/media/h264-ctrls.h b/include/media/h264-ctrls.h
+> > > index 080fd1293c42..9b1cbc9bc38e 100644
+> > > --- a/include/media/h264-ctrls.h
+> > > +++ b/include/media/h264-ctrls.h
+> > > @@ -140,6 +140,14 @@ struct v4l2_h264_pred_weight_table {
+> > > 
+> > >  #define V4L2_H264_SLICE_FLAG_DIRECT_SPATIAL_MV_PRED    0x04
+> > >  #define V4L2_H264_SLICE_FLAG_SP_FOR_SWITCH             0x08
+> > > 
+> > > +#define V4L2_H264_REFERENCE_FLAG_TOP_FIELD             0x01
+> > > +#define V4L2_H264_REFERENCE_FLAG_BOTTOM_FIELD          0x02
+> > > +
+> > > +struct v4l2_h264_reference {
+> > > +       __u8 flags;
+> > > +       __u8 index;
+> > > +};
+> > > +
+> > > 
+> > >  struct v4l2_ctrl_h264_slice_params {
+> > >  
+> > >         /* Size in bytes, including header */
+> > >         __u32 size;
+> > > 
+> > > @@ -182,8 +190,8 @@ struct v4l2_ctrl_h264_slice_params {
+> > > 
+> > >          * Entries on each list are indices into
+> > >          * v4l2_ctrl_h264_decode_params.dpb[].
+> > >          */
+> > > 
+> > > -       __u8 ref_pic_list0[32];
+> > > -       __u8 ref_pic_list1[32];
+> > > +       struct v4l2_h264_reference ref_pic_list0[32];
+> > > +       struct v4l2_h264_reference ref_pic_list1[32];
+> > 
+> > Could we use a macro for "32" here? Something like:
+> > 
+> > #define V4L2_H264_REF_PIC_LIST_LEN (V4L2_H264_NUM_DPB_ENTRIES * 2).
+> > 
+> > Does it make sense to add a comment as well?
+> > 
+> > I was thinking something along these lines:
+> > 
+> > """
+> > Pictures in the DPB can be a frame, a complementary field pair or a
+> > single field.
+> 
+> To be honest, I don't know if user has a free choice to select same or 
+> different destination (capture) buffer for another field. I never tested it and 
+> I'm not sure how to test it with ffmpeg. HW deinterlacing cores on Allwinner 
+> SoCs support only interleaved fields as a input, that's why I never though 
+> about separate fields.
 
-inode_local_storage:
+When setting the format, one will choose V4L2_FIELD_INTERLACED_TB/BT.
+Most driver will support that, but if not, they can update field in the
+structure. Interlaced being very common, I think it's fine to only
+support that, but the drive must enforce this field value.
 
-* Hook to the file_open and inode_unlink LSM hooks.
-* Create and unlink a temporary file.
-* Store some information in the inode's bpf_local_storage during
-  file_open.
-* Verify that this information exists when the file is unlinked.
+But I know the Xilinx ZynqMP will do ALTERNATE instead, which would be
+each field get decoded in it's own buffer. That, to be honest, I
+haven't though about. The tricky part is for H264, since it means 1
+slice may populate two capture buffers and I don't know if we can
+support this right now.
 
-sk_local_storage:
+For now I'd say we should just ensure that whatever userspace ask, we
+enforce V4L2_FIELD_INTERLACED_TB/BT appropriately. That is likely not
+complete, just look at how interlacing is signal in the bitstream.
 
-* Hook to the socket_post_create and socket_bind LSM hooks.
-* Open and bind a socket and set the sk_storage in the
-  socket_post_create hook using the start_server helper.
-* Verify if the information is set in the socket_bind hook.
-
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-Signed-off-by: KP Singh <kpsingh@google.com>
----
- .../bpf/prog_tests/test_local_storage.c       |  60 ++++++++
- .../selftests/bpf/progs/local_storage.c       | 136 ++++++++++++++++++
- 2 files changed, 196 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/test_local_storage.c
- create mode 100644 tools/testing/selftests/bpf/progs/local_storage.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_local_storage.c b/tools/testing/selftests/bpf/prog_tests/test_local_storage.c
-new file mode 100644
-index 000000000000..d4ba89195c43
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/test_local_storage.c
-@@ -0,0 +1,60 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/*
-+ * Copyright (C) 2020 Google LLC.
-+ */
-+
-+#include <test_progs.h>
-+#include <linux/limits.h>
-+
-+#include "local_storage.skel.h"
-+#include "network_helpers.h"
-+
-+int create_and_unlink_file(void)
-+{
-+	char fname[PATH_MAX] = "/tmp/fileXXXXXX";
-+	int fd;
-+
-+	fd = mkstemp(fname);
-+	if (fd < 0)
-+		return fd;
-+
-+	close(fd);
-+	unlink(fname);
-+	return 0;
-+}
-+
-+void test_test_local_storage(void)
-+{
-+	struct local_storage *skel = NULL;
-+	int err, duration = 0, serv_sk = -1;
-+
-+	skel = local_storage__open_and_load();
-+	if (CHECK(!skel, "skel_load", "lsm skeleton failed\n"))
-+		goto close_prog;
-+
-+	err = local_storage__attach(skel);
-+	if (CHECK(err, "attach", "lsm attach failed: %d\n", err))
-+		goto close_prog;
-+
-+	skel->bss->monitored_pid = getpid();
-+
-+	err = create_and_unlink_file();
-+	if (CHECK(err < 0, "exec_cmd", "err %d errno %d\n", err, errno))
-+		goto close_prog;
-+
-+	CHECK(!skel->bss->inode_storage_result, "inode_storage_result",
-+	      "inode_local_storage not set");
-+
-+	serv_sk = start_server(AF_INET6, SOCK_STREAM, NULL, 0, 0);
-+	if (CHECK(serv_sk < 0, "start_server", "failed to start server\n"))
-+		goto close_prog;
-+
-+	CHECK(!skel->bss->sk_storage_result, "sk_storage_result",
-+	      "sk_local_storage not set");
-+
-+	close(serv_sk);
-+
-+close_prog:
-+	local_storage__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/local_storage.c b/tools/testing/selftests/bpf/progs/local_storage.c
-new file mode 100644
-index 000000000000..cb608b7b90f0
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/local_storage.c
-@@ -0,0 +1,136 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/*
-+ * Copyright 2020 Google LLC.
-+ */
-+
-+#include <errno.h>
-+#include <linux/bpf.h>
-+#include <stdbool.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+#define DUMMY_STORAGE_VALUE 0xdeadbeef
-+
-+int monitored_pid = 0;
-+bool inode_storage_result = false;
-+bool sk_storage_result = false;
-+
-+struct dummy_storage {
-+	__u32 value;
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_INODE_STORAGE);
-+	__uint(map_flags, BPF_F_NO_PREALLOC);
-+	__type(key, int);
-+	__type(value, struct dummy_storage);
-+} inode_storage_map SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_SK_STORAGE);
-+	__uint(map_flags, BPF_F_NO_PREALLOC | BPF_F_CLONE);
-+	__type(key, int);
-+	__type(value, struct dummy_storage);
-+} sk_storage_map SEC(".maps");
-+
-+/* TODO Use vmlinux.h once BTF pruning for embedded types is fixed.
-+ */
-+struct sock {} __attribute__((preserve_access_index));
-+struct sockaddr {} __attribute__((preserve_access_index));
-+struct socket {
-+	struct sock *sk;
-+} __attribute__((preserve_access_index));
-+
-+struct inode {} __attribute__((preserve_access_index));
-+struct dentry {
-+	struct inode *d_inode;
-+} __attribute__((preserve_access_index));
-+struct file {
-+	struct inode *f_inode;
-+} __attribute__((preserve_access_index));
-+
-+
-+SEC("lsm/inode_unlink")
-+int BPF_PROG(unlink_hook, struct inode *dir, struct dentry *victim)
-+{
-+	__u32 pid = bpf_get_current_pid_tgid() >> 32;
-+	struct dummy_storage *storage;
-+
-+	if (pid != monitored_pid)
-+		return 0;
-+
-+	storage = bpf_inode_storage_get(&inode_storage_map, victim->d_inode, 0,
-+				     BPF_SK_STORAGE_GET_F_CREATE);
-+	if (!storage)
-+		return 0;
-+
-+	if (storage->value == DUMMY_STORAGE_VALUE)
-+		inode_storage_result = true;
-+
-+	return 0;
-+}
-+
-+SEC("lsm/socket_bind")
-+int BPF_PROG(socket_bind, struct socket *sock, struct sockaddr *address,
-+	     int addrlen)
-+{
-+	__u32 pid = bpf_get_current_pid_tgid() >> 32;
-+	struct dummy_storage *storage;
-+
-+	if (pid != monitored_pid)
-+		return 0;
-+
-+	storage = bpf_sk_storage_get(&sk_storage_map, sock->sk, 0,
-+				     BPF_SK_STORAGE_GET_F_CREATE);
-+	if (!storage)
-+		return 0;
-+
-+	if (storage->value == DUMMY_STORAGE_VALUE)
-+		sk_storage_result = true;
-+
-+	return 0;
-+}
-+
-+SEC("lsm/socket_post_create")
-+int BPF_PROG(socket_post_create, struct socket *sock, int family, int type,
-+	     int protocol, int kern)
-+{
-+	__u32 pid = bpf_get_current_pid_tgid() >> 32;
-+	struct dummy_storage *storage;
-+
-+	if (pid != monitored_pid)
-+		return 0;
-+
-+	storage = bpf_sk_storage_get(&sk_storage_map, sock->sk, 0,
-+				     BPF_SK_STORAGE_GET_F_CREATE);
-+	if (!storage)
-+		return 0;
-+
-+	storage->value = DUMMY_STORAGE_VALUE;
-+
-+	return 0;
-+}
-+
-+SEC("lsm/file_open")
-+int BPF_PROG(test_int_hook, struct file *file)
-+{
-+	__u32 pid = bpf_get_current_pid_tgid() >> 32;
-+	struct dummy_storage *storage;
-+
-+	if (pid != monitored_pid)
-+		return 0;
-+
-+	if (!file->f_inode)
-+		return 0;
-+
-+	storage = bpf_inode_storage_get(&inode_storage_map, file->f_inode, 0,
-+				     BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	if (!storage)
-+		return 0;
-+
-+	storage->value = DUMMY_STORAGE_VALUE;
-+	return 0;
-+}
--- 
-2.27.0.389.gc38d7665816-goog
+> 
+> Best regards,
+> Jernej
+> 
+> > Therefore, reference pictures lists need twice as much entries, so it
+> > can reference
+> > either field of a field pair.
+> > """
+> > 
+> > While it doesn't replace proper H264 specification reading,
+> > it would add some clarity.
+> > 
+> > Thanks,
+> > Ezequiel
+> 
+> 
+> 
 
