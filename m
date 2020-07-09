@@ -2,86 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2B9521A83F
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 21:56:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3723321A8E0
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 22:24:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726345AbgGIT4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 15:56:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726220AbgGITzN (ORCPT
+        id S1726759AbgGIUYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 16:24:24 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:57756 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726222AbgGIUYW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 15:55:13 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6FFFC08C5CE;
-        Thu,  9 Jul 2020 12:55:11 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id x11so1250507plo.7;
-        Thu, 09 Jul 2020 12:55:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=f87FobS5tphZ53TIg74HP41DCxPjF/CnQ052D76Odw8=;
-        b=A/WomoT7zM/utL6mitFJEdY5DidT6+KDI5BDIeU4+tvRX22K48TRyogqwhkY2bMMT3
-         5g1DJy4N/9IcSZRX5mqraUxJfzV49gjBdzptVGAeyNPzoq/OF9LEnAFzpZo0Q6YkraOs
-         2gxrnlm3zGD21YB0jkL0vtwIoc2hXezDHT9ksvWSmUFFq9khY4KuwX+y/73ghuKsRr4o
-         qKjqrqlxk2hjR90GYCdp95CdfyYwV1vqA7zxgjV3+vUcXYfW0ti+sUAvzjj0yphbXQm1
-         MnCuklsI3U2FxXdBZZ+0ShsAMZ1jJ1IxTbe0PssGYr3hD4K+SKtobrGbpgszXA93EZuK
-         +z+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=f87FobS5tphZ53TIg74HP41DCxPjF/CnQ052D76Odw8=;
-        b=JcU6JRSdhiu76xcSneLCUGvHAmykejd/MjQHpZWs0MHn1FI+gJLphrR2oVAGvkTTUQ
-         7RvXrcjiWIjDiwvb4FYG8HnBpzxyLN/gK+QSqq7cc0zAFi9CNOoxDsXa/emCe8mzs1f6
-         WuO00QE67WMVwMIguEGTiQ/TQ03uxjnB4G/m9ftf1N50HZ8TLbtzgJl++rWlEzUHjjEs
-         f8ykRN/RPHV3NuVPdOUu+ReKsSUaxE2OUS5OmJ/ffjfHlBKkK+b75lpEhf2qRXSyBYf9
-         JmqPQrQE4q3iAdpMm/ac88arDJXfwQqNON1aGheXMi830i951eO5P6ZlqeVcSJBpYp5K
-         ALNQ==
-X-Gm-Message-State: AOAM532hPWSLzb9sujvln8RoD7mycLp1ZsPjnVmo9SA6O88yYNQhzbWN
-        O+1v2bfy2BN47UyCOPxARt/VcZZ0X+GiS7LcnBA=
-X-Google-Smtp-Source: ABdhPJzzpHNljQSLJRqWviX5BN4OFyh+arip2qjIx0kJw4q5bpS8BMzu0J5dgHTJodnrU0rzBsU1kveAm2qMGJAg0Jk=
-X-Received: by 2002:a17:90b:1b52:: with SMTP id nv18mr1862373pjb.129.1594324511348;
- Thu, 09 Jul 2020 12:55:11 -0700 (PDT)
+        Thu, 9 Jul 2020 16:24:22 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 069JVc1F116185;
+        Thu, 9 Jul 2020 15:57:09 -0400
+Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 325r2pr0fv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 09 Jul 2020 15:57:09 -0400
+Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
+        by ppma02wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 069Jo3og005672;
+        Thu, 9 Jul 2020 19:57:08 GMT
+Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
+        by ppma02wdc.us.ibm.com with ESMTP id 325k1vgpmx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 09 Jul 2020 19:57:08 +0000
+Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
+        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 069Jv5TQ28508432
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 9 Jul 2020 19:57:05 GMT
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1BB7178066;
+        Thu,  9 Jul 2020 19:57:07 +0000 (GMT)
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 896287805C;
+        Thu,  9 Jul 2020 19:57:06 +0000 (GMT)
+Received: from ghost4.ibm.com (unknown [9.163.54.227])
+        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Thu,  9 Jul 2020 19:57:06 +0000 (GMT)
+From:   Eddie James <eajames@linux.ibm.com>
+To:     linux-clk@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-aspeed@lists.ozlabs.org,
+        linux-mmc@vger.kernel.org, andrew@aj.id.au, joel@jms.id.au,
+        ulf.hansson@linaro.org, adrian.hunter@intel.com, sboyd@kernel.org,
+        mturquette@baylibre.com, eajames@linux.ibm.com
+Subject: [PATCH 0/2] clk: Aspeed: Fix eMMC clock speeds
+Date:   Thu,  9 Jul 2020 14:57:04 -0500
+Message-Id: <20200709195706.12741-1-eajames@linux.ibm.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-References: <1591357094-39850-1-git-send-email-luwei32@huawei.com>
-In-Reply-To: <1591357094-39850-1-git-send-email-luwei32@huawei.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 9 Jul 2020 22:54:55 +0300
-Message-ID: <CAHp75Vci3KCT0J_E9S2odgTr0aDXcjRe=s=-rZGGzrbUV3N+5A@mail.gmail.com>
-Subject: Re: [PATCH v2] ACPI / platform: Fix return value check in check_acpi_dev()
-To:     Lu Wei <luwei32@huawei.com>
-Cc:     Alex Hung <alex.hung@canonical.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        AceLan Kao <acelan.kao@canonical.com>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-09_09:2020-07-09,2020-07-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=1 clxscore=1011
+ bulkscore=0 lowpriorityscore=0 adultscore=0 priorityscore=1501 mlxscore=0
+ malwarescore=0 mlxlogscore=605 impostorscore=0 spamscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007090131
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 5, 2020 at 2:42 PM Lu Wei <luwei32@huawei.com> wrote:
->
-> In the function check_acpi_dev(), if it fails to create
-> platform device, the return value is ERR_PTR() or NULL. Thus it must
-> use IS_ERR_OR_NULL to check return value.
->
+There were two problems affecting clock speeds to the eMMC chip. Firstly, the
+AST2600 clock was not muxed correctly to be derived from the MPLL. Secondly,
+the SDHCI clock control divider was not calculated correctly. This series
+addresses these problems.
 
-Thanks!
+Eddie James (2):
+  clk: AST2600: Add mux for EMMC clock
+  mmc: sdhci-of-aspeed: Fix clock divider calculation
 
-> Fixes: ecc83e52b28c (intel-hid: new hid event driver for hotkeys)
-
-This is not the correct format. Please, fix it in the next version, thanks!
-
->  drivers/platform/x86/intel-hid.c  | 2 +-
->  drivers/platform/x86/intel-vbtn.c | 2 +-
-
-Please, split per driver.
+ drivers/clk/clk-ast2600.c          | 49 +++++++++++++++++++++++++-----
+ drivers/mmc/host/sdhci-of-aspeed.c |  2 +-
+ 2 files changed, 42 insertions(+), 9 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
+2.24.0
+
