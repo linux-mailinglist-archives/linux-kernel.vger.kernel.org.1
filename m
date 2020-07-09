@@ -2,119 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D42621ABD6
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 01:59:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EF4621ABC8
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 01:47:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726495AbgGIX64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 19:58:56 -0400
-Received: from rcdn-iport-5.cisco.com ([173.37.86.76]:21784 "EHLO
-        rcdn-iport-5.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726227AbgGIX64 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 19:58:56 -0400
-X-Greylist: delayed 425 seconds by postgrey-1.27 at vger.kernel.org; Thu, 09 Jul 2020 19:58:55 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=2283; q=dns/txt; s=iport;
-  t=1594339135; x=1595548735;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=tF4pr/5XLKqBBsQkjwuwO6riASGyIFysFx/ut+c98HA=;
-  b=cCuwIOGJNxx3XPF18pAdLlhRAzpx2+5LmhIdJTb5rYP2zUYB7rs5DZF9
-   uaJ8DSYWi4H9LE8P+wXN4qC/2BEM8rlKRCrjW4SWNpYNypLNKhNvVvAkK
-   RiBgB0hUw0OzZZ4qaDBgQekrU8GHdEqrI1/uAqWd7mdeRv5w8fLEOHEkX
-   0=;
-X-IronPort-AV: E=Sophos;i="5.75,332,1589241600"; 
-   d="scan'208";a="532948238"
-Received: from rcdn-core-1.cisco.com ([173.37.93.152])
-  by rcdn-iport-5.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 09 Jul 2020 23:51:50 +0000
-Received: from sjc-ads-2033.cisco.com (sjc-ads-2033.cisco.com [171.70.61.221])
-        by rcdn-core-1.cisco.com (8.15.2/8.15.2) with ESMTP id 069NpoJ5024104;
-        Thu, 9 Jul 2020 23:51:50 GMT
-Received: by sjc-ads-2033.cisco.com (Postfix, from userid 396877)
-        id E14BAC5C; Thu,  9 Jul 2020 16:51:49 -0700 (PDT)
-From:   Julius Hemanth Pitti <jpitti@cisco.com>
-To:     keescook@chromium.org, yzaikin@google.com, mcgrof@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        akpm@linux-foundation.org, mingo@elte.hu, viro@zeniv.linux.org.uk,
-        xe-linux-external@cisco.com,
-        Julius Hemanth Pitti <jpitti@cisco.com>
-Subject: [PATCH] proc/sysctl: make protected_* world readable
-Date:   Thu,  9 Jul 2020 16:51:15 -0700
-Message-Id: <20200709235115.56954-1-jpitti@cisco.com>
-X-Mailer: git-send-email 2.19.1
+        id S1726816AbgGIXrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 19:47:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49432 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726433AbgGIXrT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 19:47:19 -0400
+Received: from embeddedor (unknown [201.162.245.14])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1E7FB2070E;
+        Thu,  9 Jul 2020 23:47:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594338438;
+        bh=OT96AVW7dJpU8dtXiPhq8DRD9xyjEQQqqS2i/k1BEV4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=OCtKc7u0PsBM4vy6AqblDDEdsjTNBLqx2j8dj+Owo+rjakAKcKVv0vhgD3xaDink8
+         I0n6/1U9mqtsjcRuJN7lfDx7iqz9sx5KlB4Rhbtexo7VPdUNJVdCROvaIUjrje4Myf
+         dqM5/eDuxFdc9FLK31uAu7GIqoRdIe0NkFhBQUHI=
+Date:   Thu, 9 Jul 2020 18:52:50 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: [PATCH v2][next] IB/hfi1: Remove unnecessary fall-through markings
+Message-ID: <20200709235250.GA26678@embeddedor>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Auto-Response-Suppress: DR, OOF, AutoReply
-X-Outbound-SMTP-Client: 171.70.61.221, sjc-ads-2033.cisco.com
-X-Outbound-Node: rcdn-core-1.cisco.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-protected_* files have 600 permissions which prevents
-non-superuser from reading them.
+Reorganize the code a bit in a more standard way[1] and remove
+unnecessary fall-through markings.
 
-Container like "AWS greengrass" refuse to launch unless
-protected_hardlinks and protected_symlinks are set. When
-containers like these run with "userns-remap" or "--user"
-mapping container's root to non-superuser on host, they
-fail to run due to denied read access to these files.
+[1] https://lore.kernel.org/lkml/20200708054703.GR207186@unreal/
 
-As these protections are hardly a secret, and do not
-possess any security risk, making them world readable.
-
-Though above greengrass usecase needs read access to
-only protected_hardlinks and protected_symlinks files,
-setting all other protected_* files to 644 to keep
-consistency.
-
-Fixes: 800179c9b8a1 ("fs: add link restrictions")
-Signed-off-by: Julius Hemanth Pitti <jpitti@cisco.com>
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- kernel/sysctl.c |    8 ++++----
- 1 files changed, 4 insertions(+), 4 deletions(-)
+Changes in v2:
+ - Remove additional overlooked fall-through markings.
 
-diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-index db1ce7a..aeca2fd 100644
---- a/kernel/sysctl.c
-+++ b/kernel/sysctl.c
-@@ -3223,7 +3223,7 @@ int proc_do_static_key(struct ctl_table *table, int write,
- 		.procname	= "protected_symlinks",
- 		.data		= &sysctl_protected_symlinks,
- 		.maxlen		= sizeof(int),
--		.mode		= 0600,
-+		.mode		= 0644,
- 		.proc_handler	= proc_dointvec_minmax,
- 		.extra1		= SYSCTL_ZERO,
- 		.extra2		= SYSCTL_ONE,
-@@ -3232,7 +3232,7 @@ int proc_do_static_key(struct ctl_table *table, int write,
- 		.procname	= "protected_hardlinks",
- 		.data		= &sysctl_protected_hardlinks,
- 		.maxlen		= sizeof(int),
--		.mode		= 0600,
-+		.mode		= 0644,
- 		.proc_handler	= proc_dointvec_minmax,
- 		.extra1		= SYSCTL_ZERO,
- 		.extra2		= SYSCTL_ONE,
-@@ -3241,7 +3241,7 @@ int proc_do_static_key(struct ctl_table *table, int write,
- 		.procname	= "protected_fifos",
- 		.data		= &sysctl_protected_fifos,
- 		.maxlen		= sizeof(int),
--		.mode		= 0600,
-+		.mode		= 0644,
- 		.proc_handler	= proc_dointvec_minmax,
- 		.extra1		= SYSCTL_ZERO,
- 		.extra2		= &two,
-@@ -3250,7 +3250,7 @@ int proc_do_static_key(struct ctl_table *table, int write,
- 		.procname	= "protected_regular",
- 		.data		= &sysctl_protected_regular,
- 		.maxlen		= sizeof(int),
--		.mode		= 0600,
-+		.mode		= 0644,
- 		.proc_handler	= proc_dointvec_minmax,
- 		.extra1		= SYSCTL_ZERO,
- 		.extra2		= &two,
+ drivers/infiniband/hw/hfi1/chip.c | 27 ++++++++++++++-------------
+ 1 file changed, 14 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/infiniband/hw/hfi1/chip.c b/drivers/infiniband/hw/hfi1/chip.c
+index 15f9c635f292..7eaf99538216 100644
+--- a/drivers/infiniband/hw/hfi1/chip.c
++++ b/drivers/infiniband/hw/hfi1/chip.c
+@@ -7317,11 +7317,11 @@ static u16 link_width_to_bits(struct hfi1_devdata *dd, u16 width)
+ 	case 1: return OPA_LINK_WIDTH_1X;
+ 	case 2: return OPA_LINK_WIDTH_2X;
+ 	case 3: return OPA_LINK_WIDTH_3X;
++	case 4: return OPA_LINK_WIDTH_4X;
+ 	default:
+ 		dd_dev_info(dd, "%s: invalid width %d, using 4\n",
+ 			    __func__, width);
+-		/* fall through */
+-	case 4: return OPA_LINK_WIDTH_4X;
++		return OPA_LINK_WIDTH_4X;
+ 	}
+ }
+ 
+@@ -7376,12 +7376,13 @@ static void get_link_widths(struct hfi1_devdata *dd, u16 *tx_width,
+ 		case 0:
+ 			dd->pport[0].link_speed_active = OPA_LINK_SPEED_12_5G;
+ 			break;
++		case 1:
++			dd->pport[0].link_speed_active = OPA_LINK_SPEED_25G;
++			break;
+ 		default:
+ 			dd_dev_err(dd,
+ 				   "%s: unexpected max rate %d, using 25Gb\n",
+ 				   __func__, (int)max_rate);
+-			/* fall through */
+-		case 1:
+ 			dd->pport[0].link_speed_active = OPA_LINK_SPEED_25G;
+ 			break;
+ 		}
+@@ -12878,11 +12879,6 @@ static int init_cntrs(struct hfi1_devdata *dd)
+ static u32 chip_to_opa_lstate(struct hfi1_devdata *dd, u32 chip_lstate)
+ {
+ 	switch (chip_lstate) {
+-	default:
+-		dd_dev_err(dd,
+-			   "Unknown logical state 0x%x, reporting IB_PORT_DOWN\n",
+-			   chip_lstate);
+-		/* fall through */
+ 	case LSTATE_DOWN:
+ 		return IB_PORT_DOWN;
+ 	case LSTATE_INIT:
+@@ -12891,6 +12887,11 @@ static u32 chip_to_opa_lstate(struct hfi1_devdata *dd, u32 chip_lstate)
+ 		return IB_PORT_ARMED;
+ 	case LSTATE_ACTIVE:
+ 		return IB_PORT_ACTIVE;
++	default:
++		dd_dev_err(dd,
++			   "Unknown logical state 0x%x, reporting IB_PORT_DOWN\n",
++			   chip_lstate);
++		return IB_PORT_DOWN;
+ 	}
+ }
+ 
+@@ -12898,10 +12899,6 @@ u32 chip_to_opa_pstate(struct hfi1_devdata *dd, u32 chip_pstate)
+ {
+ 	/* look at the HFI meta-states only */
+ 	switch (chip_pstate & 0xf0) {
+-	default:
+-		dd_dev_err(dd, "Unexpected chip physical state of 0x%x\n",
+-			   chip_pstate);
+-		/* fall through */
+ 	case PLS_DISABLED:
+ 		return IB_PORTPHYSSTATE_DISABLED;
+ 	case PLS_OFFLINE:
+@@ -12914,6 +12911,10 @@ u32 chip_to_opa_pstate(struct hfi1_devdata *dd, u32 chip_pstate)
+ 		return IB_PORTPHYSSTATE_LINKUP;
+ 	case PLS_PHYTEST:
+ 		return IB_PORTPHYSSTATE_PHY_TEST;
++	default:
++		dd_dev_err(dd, "Unexpected chip physical state of 0x%x\n",
++			   chip_pstate);
++		return IB_PORTPHYSSTATE_DISABLED;
+ 	}
+ }
+ 
 -- 
-1.7.1
+2.27.0
 
