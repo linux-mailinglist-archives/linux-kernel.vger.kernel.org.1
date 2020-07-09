@@ -2,141 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB08121AB8C
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 01:27:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57A4421ABA9
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 01:32:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726795AbgGIX1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 19:27:50 -0400
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:60196 "EHLO
-        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726222AbgGIX1u (ORCPT
+        id S1726509AbgGIXcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 19:32:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46920 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726222AbgGIXcW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 19:27:50 -0400
-Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 2093A8011F;
-        Fri, 10 Jul 2020 11:27:40 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1594337260;
-        bh=4uO0FQkJ2bMOYbPCP2S5T13rQBHTrhp3SnMQYNhrvdk=;
-        h=From:To:Cc:Subject:Date;
-        b=xKFOKNrqfHbNw21332QWpopQoe7q4ydV3nkXrvBq+WaoKQF3aN2Y5czIhKPZoxcqD
-         RsVgQPKyMeiPAjoMUIDwcYTPymRkRloVA0D74RFR4cnnWs0c2Rn/r54msO9+tH5Ruw
-         MOIi5zEXKUzaeGMiylmT6KTklLau6ftzWrPMXA9D+84LHfqqtFO0XUY9R5drjV7bU2
-         Qh5SMFLUNrqwrxwMQBnSDzs/yYHSScAak56n2gg3AtrMTKoV/M7JuZ+angY2UTcg2W
-         aK3lL9NzroMqXf9DBeP7+Itfumd2hFgAPRgwJdNoXtVIr7cMw/Te20BpFJr+t0sR4m
-         7ygaPapI4yZSw==
-Received: from smtp (Not Verified[10.32.16.33]) by mmarshal3.atlnz.lc with Trustwave SEG (v7,5,8,10121)
-        id <B5f07a7eb0000>; Fri, 10 Jul 2020 11:27:40 +1200
-Received: from markto-dl.ws.atlnz.lc (markto-dl.ws.atlnz.lc [10.33.23.25])
-        by smtp (Postfix) with ESMTP id 6E29F13EEAA;
-        Fri, 10 Jul 2020 11:27:38 +1200 (NZST)
-Received: by markto-dl.ws.atlnz.lc (Postfix, from userid 1155)
-        id 134B73410D1; Fri, 10 Jul 2020 11:27:39 +1200 (NZST)
-From:   Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
-To:     davem@davemloft.net, kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org,
-        kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
-Subject: [PATCH] ipv6: Support more than 32 MIFS
-Date:   Fri, 10 Jul 2020 11:27:34 +1200
-Message-Id: <20200709232734.12814-1-mark.tomlinson@alliedtelesis.co.nz>
-X-Mailer: git-send-email 2.27.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-x-atlnz-ls: pat
+        Thu, 9 Jul 2020 19:32:22 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 858C4C08C5CE
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 16:32:22 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id n2so3164357edr.5
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 16:32:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=eHdc0RwCyYc05fwyou4V97bhyi7abJndZKMy/fLO/JA=;
+        b=OnylnDhIwv5IuKd7WhncjUcCmtg6GK79nI0OpL00wKLlnIQyQH8ddEvdL7RmSlDkmZ
+         KGGcfE9GtLVyoWwBdEP3b2/Tb7sz+EvixPzk2CVLfNdquLSX+nRFHg9ssZT/3Uh6zZYv
+         J3yJq0pAoTaGQv/n5NovxMWvfcrnqs2Ukajv0A33BixiJs9JeTtiFVVgrJj5exXhWHjW
+         sRhxYA9caKiPVkUAP17LT7z7zr/HNXK24vT6+K3tqoFP8HCKqHL3ddubKpYQu5jSDZHk
+         /YXv9hCsfassUkBGOkSqc7aC3SXCA5PtK9DWo1HW6dpR/iv5cWdPqqy2+nAlP6BRrkkj
+         vxHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=eHdc0RwCyYc05fwyou4V97bhyi7abJndZKMy/fLO/JA=;
+        b=e6F/qWREEJRuVT0UqaoDq6GvkLfe/LK/B7yfnyoyd6M3IgW2uTKLJLffyNgGH0M9dX
+         w57SQEwB780ccq1ZNNeizXHsFSBbCsv7+ygz2JKkavh0MD/IF8ViAg7Gc5LxBtbUepNE
+         0VY+jrxN2xabaJZp26xNm9rxMMAPpNTfJT3bZ2AX+fIZK/GW0S3KunF/qYe84Mvfxl/W
+         1D0dQLrNwahfPbqdCqLn8I13I32bl7x4eQBFgvG2jr4TI1/20xTbDoyDasIknMokbQoL
+         Ey3xxPDOzS3HwFwoME10o7KYogERA7TXrftTHQjWWojgDa7Wkd0Z1OD+Btv9En2OBJPF
+         GL8Q==
+X-Gm-Message-State: AOAM533seqJnwWTbc5pMT/RvaJrX5jw9pcQRDr9JECu6zPk1gIwU5bVn
+        X0Sd6qI9hFB4keU8uT4vTqtkdjR5
+X-Google-Smtp-Source: ABdhPJw3pSN2FEH4F4m6013+KarO9fvPGJXwwXf5VjjVj0238tMsBilLVLvvNgLpTj+b4Rimopo35w==
+X-Received: by 2002:a05:6402:354:: with SMTP id r20mr76812229edw.32.1594337541255;
+        Thu, 09 Jul 2020 16:32:21 -0700 (PDT)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id s21sm3007847edw.37.2020.07.09.16.32.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Jul 2020 16:32:20 -0700 (PDT)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com (maintainer:BROADCOM BCM7XXX ARM
+        ARCHITECTURE), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] bus: brcmstb_gisb: Shorten prints
+Date:   Thu,  9 Jul 2020 16:27:46 -0700
+Message-Id: <20200709232746.6141-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function ip6mr_mfc_add() declared an array of ttls. If MAXMIFS is
-large, this would create a large stack frame. This is fixed, and made
-more efficient, by passing mf6cc_ifset to ip6mr_update_thresholds().
+Do not print the full function name (brcmstb_gisb_arb_decode_addr) which
+is quite long, and reduces our chances to printing a full line, instead
+just use "GISB: " as a prefix for these prints.
 
-Signed-off-by: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 ---
+ drivers/bus/brcmstb_gisb.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-As background to this patch, we have MAXMIFS set to 1025 in our kernel.
-This creates other issues apart from what this patch fixes, but this
-change does make the IPv4 and IPv6 code look more similar, and reduces
-total amount of code. Without the double handling of TTLs, I think it is
-also easier to understand. Hence I thought it could still become part of
-the main kernel.
-
- net/ipv6/ip6mr.c | 20 ++++++--------------
- 1 file changed, 6 insertions(+), 14 deletions(-)
-
-diff --git a/net/ipv6/ip6mr.c b/net/ipv6/ip6mr.c
-index 1f4d20e97c07..7123849d201b 100644
---- a/net/ipv6/ip6mr.c
-+++ b/net/ipv6/ip6mr.c
-@@ -836,7 +836,7 @@ static void ipmr_expire_process(struct timer_list *t)
-=20
- static void ip6mr_update_thresholds(struct mr_table *mrt,
- 				    struct mr_mfc *cache,
--				    unsigned char *ttls)
-+				    struct if_set *ifset)
- {
- 	int vifi;
-=20
-@@ -845,9 +845,8 @@ static void ip6mr_update_thresholds(struct mr_table *=
-mrt,
- 	memset(cache->mfc_un.res.ttls, 255, MAXMIFS);
-=20
- 	for (vifi =3D 0; vifi < mrt->maxvif; vifi++) {
--		if (VIF_EXISTS(mrt, vifi) &&
--		    ttls[vifi] && ttls[vifi] < 255) {
--			cache->mfc_un.res.ttls[vifi] =3D ttls[vifi];
-+		if (VIF_EXISTS(mrt, vifi) && IF_ISSET(vifi, ifset)) {
-+			cache->mfc_un.res.ttls[vifi] =3D 1;
- 			if (cache->mfc_un.res.minvif > vifi)
- 				cache->mfc_un.res.minvif =3D vifi;
- 			if (cache->mfc_un.res.maxvif <=3D vifi)
-@@ -1406,21 +1405,14 @@ void ip6_mr_cleanup(void)
- static int ip6mr_mfc_add(struct net *net, struct mr_table *mrt,
- 			 struct mf6cctl *mfc, int mrtsock, int parent)
- {
--	unsigned char ttls[MAXMIFS];
- 	struct mfc6_cache *uc, *c;
- 	struct mr_mfc *_uc;
- 	bool found;
--	int i, err;
-+	int err;
-=20
- 	if (mfc->mf6cc_parent >=3D MAXMIFS)
- 		return -ENFILE;
-=20
--	memset(ttls, 255, MAXMIFS);
--	for (i =3D 0; i < MAXMIFS; i++) {
--		if (IF_ISSET(i, &mfc->mf6cc_ifset))
--			ttls[i] =3D 1;
--	}
--
- 	/* The entries are added/deleted only under RTNL */
- 	rcu_read_lock();
- 	c =3D ip6mr_cache_find_parent(mrt, &mfc->mf6cc_origin.sin6_addr,
-@@ -1429,7 +1421,7 @@ static int ip6mr_mfc_add(struct net *net, struct mr=
-_table *mrt,
- 	if (c) {
- 		write_lock_bh(&mrt_lock);
- 		c->_c.mfc_parent =3D mfc->mf6cc_parent;
--		ip6mr_update_thresholds(mrt, &c->_c, ttls);
-+		ip6mr_update_thresholds(mrt, &c->_c, &mfc->mf6cc_ifset);
- 		if (!mrtsock)
- 			c->_c.mfc_flags |=3D MFC_STATIC;
- 		write_unlock_bh(&mrt_lock);
-@@ -1450,7 +1442,7 @@ static int ip6mr_mfc_add(struct net *net, struct mr=
-_table *mrt,
- 	c->mf6c_origin =3D mfc->mf6cc_origin.sin6_addr;
- 	c->mf6c_mcastgrp =3D mfc->mf6cc_mcastgrp.sin6_addr;
- 	c->_c.mfc_parent =3D mfc->mf6cc_parent;
--	ip6mr_update_thresholds(mrt, &c->_c, ttls);
-+	ip6mr_update_thresholds(mrt, &c->_c, &mfc->mf6cc_ifset);
- 	if (!mrtsock)
- 		c->_c.mfc_flags |=3D MFC_STATIC;
-=20
---=20
-2.27.0
+diff --git a/drivers/bus/brcmstb_gisb.c b/drivers/bus/brcmstb_gisb.c
+index ec1004c858b8..7579439971e3 100644
+--- a/drivers/bus/brcmstb_gisb.c
++++ b/drivers/bus/brcmstb_gisb.c
+@@ -210,8 +210,8 @@ static int brcmstb_gisb_arb_decode_addr(struct brcmstb_gisb_arb_device *gdev,
+ 		m_name = m_fmt;
+ 	}
+ 
+-	pr_crit("%s: %s at 0x%llx [%c %s], core: %s\n",
+-		__func__, reason, arb_addr,
++	pr_crit("GISB: %s at 0x%llx [%c %s], core: %s\n",
++		reason, arb_addr,
+ 		cap_status & ARB_ERR_CAP_STATUS_WRITE ? 'W' : 'R',
+ 		cap_status & ARB_ERR_CAP_STATUS_TIMEOUT ? "timeout" : "",
+ 		m_name);
+-- 
+2.17.1
 
