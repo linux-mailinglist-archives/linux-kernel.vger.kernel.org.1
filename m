@@ -2,226 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2194B219D33
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 12:13:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BED3D219D2D
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 12:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726864AbgGIKNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 06:13:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35092 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726777AbgGIKMt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726828AbgGIKMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 06:12:51 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:31019 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726773AbgGIKMt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 9 Jul 2020 06:12:49 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D401FC035422
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 03:12:46 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id r12so1690029wrj.13
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 03:12:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=p6F4vN9gejgjxw89ADeOeELjqWjWfdA4d7KsgDXKleE=;
-        b=eew5zVjJu4diolgsc6S2biBl82wPJ0uR0K4eJDLhd2KSX7hlD5GaR2kcF5/vq2VXaM
-         LHKM/9sPr8XUj9nHd5xbZScfkKkfZm+FZ2poVYochrMTYihKTSZ23JXPbKs2tRBUghP/
-         eD7wuQGEbbztCUziW9a4iNotQneaxNQYci308=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=p6F4vN9gejgjxw89ADeOeELjqWjWfdA4d7KsgDXKleE=;
-        b=j9TxBphZFtXnOHcBXriei4zv+Qv7ZMf8wN9Ni+ugzcvctUI/h4PO+sGWT2RESJW1FW
-         8fe1hQ9RW6umFGPbmVQ7P0+Wjy8B2iOnhDwG4auVix9hxDoRbQJIDz7QaGkn0G5qIv7w
-         vUP/VQ8OT9xXW5FnTQCipe9cDPkv04seE1gSEBTCIpIsZ+wzI9TBG4ndAay8f8xvZYPe
-         VfuEl2fWdqcr07ACziCIPCz6ErRs/EsdBCbeXadGTFNYOOmLz4xBmC8QLqJa6kxLtEmo
-         qOBf8hEfpy2CMY4yxZgnppw0nqNQdYrBbKDmVP5QLzPSDxOb6IaB0xPPe2tBEgbYJaac
-         kRnQ==
-X-Gm-Message-State: AOAM531aSNR4m6iE+8sPxzpdn44+fO8XgJWSGzBgqNai+Zv3g9XoZ4sr
-        AeIxiCL1ZWpCfp88HfDC0zRL6eBxlHc=
-X-Google-Smtp-Source: ABdhPJzYuT/Ll/HeZbelZjSyyDm422EL7qOwZ2zlFzSYQVvK6MRCl5CMIs2JvND6Hsjm9WLPg3/EmQ==
-X-Received: by 2002:a5d:474f:: with SMTP id o15mr59888815wrs.306.1594289565334;
-        Thu, 09 Jul 2020 03:12:45 -0700 (PDT)
-Received: from kpsingh.zrh.corp.google.com ([81.6.44.51])
-        by smtp.gmail.com with ESMTPSA id g3sm5538287wrb.59.2020.07.09.03.12.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jul 2020 03:12:44 -0700 (PDT)
-From:   KP Singh <kpsingh@chromium.org>
-To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
-        Florent Revest <revest@chromium.org>
-Subject: [PATCH bpf-next v4 3/4] bpf: Allow local storage to be used from LSM programs
-Date:   Thu,  9 Jul 2020 12:12:38 +0200
-Message-Id: <20200709101239.3829793-4-kpsingh@chromium.org>
-X-Mailer: git-send-email 2.27.0.389.gc38d7665816-goog
-In-Reply-To: <20200709101239.3829793-1-kpsingh@chromium.org>
-References: <20200709101239.3829793-1-kpsingh@chromium.org>
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1594289569; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: To:
+ Subject: Sender; bh=wWq91HAC/ZSJGdVzwMRWL+Q0WO0UCK3z/tPDOpaZ6gU=; b=BHTdJH/wFBRn7Jt5WrDIV170lSicBm9FCA+9GWr/KFGnK/d0vPBT+9IGy1Qw1EfCPl/j1BhO
+ 2NSwG8ccAulRiKhqJoFWlip9p9cGn6LNzEpYNNR4QPoTgwngZ1b6tjNMQ/tKcluESdtvLGsq
+ uXnyeGzRcKQIPLidBsqEujkgkIA=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n19.prod.us-west-2.postgun.com with SMTP id
+ 5f06ed9ea33b1a3dd4559642 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 09 Jul 2020 10:12:46
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id BFC65C433C8; Thu,  9 Jul 2020 10:12:45 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.0.129] (unknown [183.83.142.110])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rohitkr)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 437E9C433C6;
+        Thu,  9 Jul 2020 10:12:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 437E9C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rohitkr@codeaurora.org
+Subject: Re: [PATCH v3 6/8] dt-bindings: sound: lpass-cpu: Add sc7180 lpass
+ cpu node
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1594184896-10629-1-git-send-email-rohitkr@codeaurora.org>
+ <1594184896-10629-7-git-send-email-rohitkr@codeaurora.org>
+ <6b6b0e38-9c04-e065-8a43-ccfec260d60c@linaro.org>
+ <430e0d24-c5c2-84ec-fe7b-b6b27192666d@codeaurora.org>
+ <de07f84b-40bc-d9ae-932d-623a5e8341e2@linaro.org>
+From:   Rohit Kumar <rohitkr@codeaurora.org>
+Message-ID: <40ca93fe-5bf0-ace3-4f95-90624d29a409@codeaurora.org>
+Date:   Thu, 9 Jul 2020 15:42:38 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <de07f84b-40bc-d9ae-932d-623a5e8341e2@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: KP Singh <kpsingh@google.com>
 
-Adds support for both bpf_{sk, inode}_storage_{get, delete} to be used
-in LSM programs. These helpers are not used for tracing programs
-(currently) as their usage is tied to the life-cycle of the object and
-should only be used where the owning object won't be freed (when the
-owning object is passed as an argument to the LSM hook). Thus, they
-are safer to use in LSM hooks than tracing. Usage of local storage in
-tracing programs will probably follow a per function based whitelist
-approach.
+On 7/9/2020 3:38 PM, Srinivas Kandagatla wrote:
+>
+>
+> On 09/07/2020 11:01, Rohit Kumar wrote:
+>>
+>> On 7/9/2020 2:57 PM, Srinivas Kandagatla wrote:
+>>>
+>>>
+>>> On 08/07/2020 06:08, Rohit kumar wrote:
+>>>> Add dt-bindings to support "qcom,lpass-cpu-sc7180" node.
+>>>>
+>>>> Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
+>>>> ---
+>>>>   Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt | 3 ++-
+>>>>   1 file changed, 2 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git 
+>>>> a/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt 
+>>>> b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt
+>>>> index 32c2cdb..04e34cc 100644
+>>>> --- a/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt
+>>>> +++ b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt
+>>>> @@ -4,7 +4,8 @@ This node models the Qualcomm Technologies 
+>>>> Low-Power Audio SubSystem (LPASS).
+>>>>     Required properties:
+>>>>   -- compatible        : "qcom,lpass-cpu" or "qcom,apq8016-lpass-cpu"
+>>>> +- compatible        : "qcom,lpass-cpu" or "qcom,apq8016-lpass-cpu" or
+>>>> +              "qcom,lpass-cpu-sc7180"
+>>>>   - clocks        : Must contain an entry for each entry in 
+>>>> clock-names.
+>>>>   - clock-names        : A list which must include the following 
+>>>> entries:
+>>>>                   * "ahbix-clk"
+>>>
+>>> Can you also list the clocks that are mandatory for this SoC.
+>>>
+>>> --srini
+>>>
+>> Will it be fine if I update it in patch 8 only where we have moved to 
+>> yaml format?
+>>
+> May be reverse the order, Convert to Yaml first and then add sc7180!
 
-Since the UAPI helper signature for bpf_sk_storage expect a bpf_sock,
-it, leads to a compilation warning for LSM programs, it's also updated
-to accept a void * pointer instead.
+Actually Mark suggested to keep yaml change at the end of patch series 
+as there
 
-Signed-off-by: KP Singh <kpsingh@google.com>
----
- include/net/bpf_sk_storage.h   |  2 ++
- include/uapi/linux/bpf.h       |  4 ++--
- kernel/bpf/bpf_lsm.c           | 21 ++++++++++++++++++++-
- net/core/bpf_sk_storage.c      | 22 ++++++++++++++++++++++
- tools/include/uapi/linux/bpf.h |  4 ++--
- 5 files changed, 48 insertions(+), 5 deletions(-)
+are pending yaml patch reviews and it might take time. If we keep yaml 
+change before sc7180
 
-diff --git a/include/net/bpf_sk_storage.h b/include/net/bpf_sk_storage.h
-index 5036c94c0503..d231da1b57ca 100644
---- a/include/net/bpf_sk_storage.h
-+++ b/include/net/bpf_sk_storage.h
-@@ -9,6 +9,8 @@ void bpf_sk_storage_free(struct sock *sk);
- 
- extern const struct bpf_func_proto bpf_sk_storage_get_proto;
- extern const struct bpf_func_proto bpf_sk_storage_delete_proto;
-+extern const struct bpf_func_proto sk_storage_get_btf_proto;
-+extern const struct bpf_func_proto sk_storage_delete_btf_proto;
- 
- struct bpf_sk_storage_diag;
- struct sk_buff;
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 42fc442f4586..3d2859ccc7ae 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -2787,7 +2787,7 @@ union bpf_attr {
-  *
-  *		**-ERANGE** if resulting value was out of range.
-  *
-- * void *bpf_sk_storage_get(struct bpf_map *map, struct bpf_sock *sk, void *value, u64 flags)
-+ * void *bpf_sk_storage_get(struct bpf_map *map, void *sk, void *value, u64 flags)
-  *	Description
-  *		Get a bpf-local-storage from a *sk*.
-  *
-@@ -2815,7 +2815,7 @@ union bpf_attr {
-  *		**NULL** if not found or there was an error in adding
-  *		a new bpf-local-storage.
-  *
-- * long bpf_sk_storage_delete(struct bpf_map *map, struct bpf_sock *sk)
-+ * long bpf_sk_storage_delete(struct bpf_map *map, void *sk)
-  *	Description
-  *		Delete a bpf-local-storage from a *sk*.
-  *	Return
-diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
-index fb278144e9fd..9cd1428c7199 100644
---- a/kernel/bpf/bpf_lsm.c
-+++ b/kernel/bpf/bpf_lsm.c
-@@ -11,6 +11,8 @@
- #include <linux/bpf_lsm.h>
- #include <linux/kallsyms.h>
- #include <linux/bpf_verifier.h>
-+#include <net/bpf_sk_storage.h>
-+#include <linux/bpf_local_storage.h>
- 
- /* For every LSM hook that allows attachment of BPF programs, declare a nop
-  * function where a BPF program can be attached.
-@@ -45,10 +47,27 @@ int bpf_lsm_verify_prog(struct bpf_verifier_log *vlog,
- 	return 0;
- }
- 
-+static const struct bpf_func_proto *
-+bpf_lsm_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
-+{
-+	switch (func_id) {
-+	case BPF_FUNC_inode_storage_get:
-+		return &bpf_inode_storage_get_proto;
-+	case BPF_FUNC_inode_storage_delete:
-+		return &bpf_inode_storage_delete_proto;
-+	case BPF_FUNC_sk_storage_get:
-+		return &sk_storage_get_btf_proto;
-+	case BPF_FUNC_sk_storage_delete:
-+		return &sk_storage_delete_btf_proto;
-+	default:
-+		return tracing_prog_func_proto(func_id, prog);
-+	}
-+}
-+
- const struct bpf_prog_ops lsm_prog_ops = {
- };
- 
- const struct bpf_verifier_ops lsm_verifier_ops = {
--	.get_func_proto = tracing_prog_func_proto,
-+	.get_func_proto = bpf_lsm_func_proto,
- 	.is_valid_access = btf_ctx_access,
- };
-diff --git a/net/core/bpf_sk_storage.c b/net/core/bpf_sk_storage.c
-index a2b00a09d843..ed0a07e0bb67 100644
---- a/net/core/bpf_sk_storage.c
-+++ b/net/core/bpf_sk_storage.c
-@@ -456,6 +456,28 @@ const struct bpf_func_proto bpf_sk_storage_delete_proto = {
- 	.arg2_type	= ARG_PTR_TO_SOCKET,
- };
- 
-+static int sk_storage_get_btf_ids[4];
-+const struct bpf_func_proto sk_storage_get_btf_proto = {
-+	.func		= bpf_sk_storage_get,
-+	.gpl_only	= false,
-+	.ret_type	= RET_PTR_TO_MAP_VALUE_OR_NULL,
-+	.arg1_type	= ARG_CONST_MAP_PTR,
-+	.arg2_type	= ARG_PTR_TO_BTF_ID,
-+	.arg3_type	= ARG_PTR_TO_MAP_VALUE_OR_NULL,
-+	.arg4_type	= ARG_ANYTHING,
-+	.btf_id		= sk_storage_get_btf_ids,
-+};
-+
-+static int sk_storage_delete_btf_ids[2];
-+const struct bpf_func_proto sk_storage_delete_btf_proto = {
-+	.func		= bpf_sk_storage_delete,
-+	.gpl_only	= false,
-+	.ret_type	= RET_INTEGER,
-+	.arg1_type	= ARG_CONST_MAP_PTR,
-+	.arg2_type	= ARG_PTR_TO_BTF_ID,
-+	.btf_id		= sk_storage_delete_btf_ids,
-+};
-+
- struct bpf_sk_storage_diag {
- 	u32 nr_maps;
- 	struct bpf_map *maps[];
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 42fc442f4586..3d2859ccc7ae 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -2787,7 +2787,7 @@ union bpf_attr {
-  *
-  *		**-ERANGE** if resulting value was out of range.
-  *
-- * void *bpf_sk_storage_get(struct bpf_map *map, struct bpf_sock *sk, void *value, u64 flags)
-+ * void *bpf_sk_storage_get(struct bpf_map *map, void *sk, void *value, u64 flags)
-  *	Description
-  *		Get a bpf-local-storage from a *sk*.
-  *
-@@ -2815,7 +2815,7 @@ union bpf_attr {
-  *		**NULL** if not found or there was an error in adding
-  *		a new bpf-local-storage.
-  *
-- * long bpf_sk_storage_delete(struct bpf_map *map, struct bpf_sock *sk)
-+ * long bpf_sk_storage_delete(struct bpf_map *map, void *sk)
-  *	Description
-  *		Delete a bpf-local-storage from a *sk*.
-  *	Return
+change, then it will get blocked until yaml review. For now, I can 
+update in exisiting
+
+documentation. Please suggest.
+
+Thanks
+
+>
+> --srini
+>> Thanks,
+>>
+>> Rohit
+>>
+>>>
+>>>>
 -- 
-2.27.0.389.gc38d7665816-goog
+Qualcomm INDIA, on behalf of Qualcomm Innovation Center, Inc.is a member
+of the Code Aurora Forum, hosted by the Linux Foundation.
 
