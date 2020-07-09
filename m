@@ -2,159 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96B8121A9AA
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 23:20:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59DD421A9AF
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 23:23:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726820AbgGIVUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 17:20:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726778AbgGIVUf (ORCPT
+        id S1726509AbgGIVXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 17:23:31 -0400
+Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:47907 "EHLO
+        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726196AbgGIVXa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 17:20:35 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5C93C08C5DC
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 14:20:34 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id md7so1660294pjb.1
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 14:20:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding:cc:from:to;
-        bh=mwiqaheWU8Sd0guj2IwnvydGK+iHxoHpd+MuCk0aqII=;
-        b=Uw061yOt7OeddQFKqaypRf5R2yIYdjOMOco3/+7Alxe2a1baKGudlPSVh2eRLk7Agm
-         8GH7xetKjHjyKvOR1maVuUSTL0g9axXGDOKBsrj6j4djlKTpJrtJOkuLosO1YBecrWNf
-         mKLBekf+OdiRN2/d4pLs5meFRu2mTzSdTIh2kYwSOvbK5XV6Qdk9hzMsOvWyOEwph0lY
-         nZXbVUMuQnzuoK6DHvluQhnGwVAysRvICuO3JkkOnD44v6VSohj7e0RNS5pkqkHtbs4h
-         VoMPZBsazXY/0R9hYqmSNyVteIruHr5UH6yb0Dbke9x+lreLXrYB9DXqqVEfOe+lUtGc
-         GUGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding:cc:from:to;
-        bh=mwiqaheWU8Sd0guj2IwnvydGK+iHxoHpd+MuCk0aqII=;
-        b=WlOE4aeAL1TaijM+aUKyqSZ5QGcaZua1G7VdVnAYZ8sGb5QRntzRCKLuYCDKt+Mjhz
-         Yp8wHNb2alocUMd7HL08b4ILCxUOfQHGdCXuU4VFvChatuG736w/amBMs5ITNNQ+PZvk
-         HIl8l9UIKI6S/YhY+QtvsHLDu8KqQ6vlQdpOMN4gGE5NZk3a9HKetmyc8kPy6VUKERg2
-         3E62Dbdt6iOXG6Brmcqgv8ZbZU8KSoRtj9g28vTyEIXu9p5YK1APPj13H5X8ZVzQ/JkV
-         kFtveCBAN9if/RmWY2p8rpeV7cdxCGAJ7k7mF4vK4ftJazynOzsydtlW1L4HiR9C5eXQ
-         8KIA==
-X-Gm-Message-State: AOAM532O8fbOxBzY1VePpsZhxKRuquMvxFhdzVC8eMLvqMIVzVKGPKNj
-        37+QdY0LgB0AoWpfCQpdtdQbpA==
-X-Google-Smtp-Source: ABdhPJzLsRo3etfu0HhpC+DBT4gHVQ7ocsi70IQCb8hFwx9+nia8o+Hy+mBoiPb4zdhaZgAHcr7OEg==
-X-Received: by 2002:a17:90a:eac7:: with SMTP id ev7mr1955691pjb.21.1594329634168;
-        Thu, 09 Jul 2020 14:20:34 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id x7sm3694230pfp.96.2020.07.09.14.20.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jul 2020 14:20:32 -0700 (PDT)
-Subject: [PATCH v2 5/5] unicore32: Use the generic devmem_is_allowed()
-Date:   Thu,  9 Jul 2020 14:19:25 -0700
-Message-Id: <20200709211925.1926557-6-palmer@dabbelt.com>
-X-Mailer: git-send-email 2.27.0.383.g050319c2ae-goog
-In-Reply-To: <20200709211925.1926557-1-palmer@dabbelt.com>
-References: <20200709211925.1926557-1-palmer@dabbelt.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc:     linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>, aou@eecs.berkeley.edu,
-        gxt@pku.edu.cn, Arnd Bergmann <arnd@arndb.de>,
-        linus.walleij@linaro.org, akpm@linux-foundation.org,
-        mchehab+samsung@kernel.org, gregory.0xf0@gmail.com,
-        masahiroy@kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
-        bgolaszewski@baylibre.com, steve@sk2.org, tglx@linutronix.de,
-        keescook@chromium.org, alex@ghiti.fr, mcgrof@kernel.org,
-        mark.rutland@arm.com, james.morse@arm.com,
-        alex.shi@linux.alibaba.com, andriy.shevchenko@linux.intel.com,
-        broonie@kernel.org, rdunlap@infradead.org, davem@davemloft.net,
-        rostedt@goodmis.org, dan.j.williams@intel.com, mhiramat@kernel.org,
-        krzk@kernel.org, zaslonko@linux.ibm.com,
-        matti.vaittinen@fi.rohmeurope.com, uwe@kleine-koenig.org,
-        clabbe@baylibre.com, changbin.du@intel.com,
-        Greg KH <gregkh@linuxfoundation.org>, paulmck@kernel.org,
-        pmladek@suse.com, brendanhiggins@google.com, glider@google.com,
-        elver@google.com, davidgow@google.com, ardb@kernel.org,
-        takahiro.akashi@linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-arch@vger.kernel.org, kernel-team@android.com,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     zong.li@sifive.com, linux-riscv@lists.infradead.org,
-        rppt@linux.ibm.com
+        Thu, 9 Jul 2020 17:23:30 -0400
+Received: from unknown (HELO ironmsg03-sd.qualcomm.com) ([10.53.140.143])
+  by alexa-out-sd-01.qualcomm.com with ESMTP; 09 Jul 2020 14:23:29 -0700
+Received: from gurus-linux.qualcomm.com ([10.46.162.81])
+  by ironmsg03-sd.qualcomm.com with ESMTP; 09 Jul 2020 14:23:14 -0700
+Received: by gurus-linux.qualcomm.com (Postfix, from userid 383780)
+        id 853C216B3; Thu,  9 Jul 2020 14:23:09 -0700 (PDT)
+From:   Guru Das Srinagesh <gurus@codeaurora.org>
+To:     Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org
+Cc:     Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
+        David Collins <collinsd@codeaurora.org>,
+        linux-kernel@vger.kernel.org,
+        Guru Das Srinagesh <gurus@codeaurora.org>
+Subject: [PATCH v1 1/2] thermal: qcom-spmi-temp-alarm: add support for GEN2 rev 1 PMIC peripherals
+Date:   Thu,  9 Jul 2020 14:23:07 -0700
+Message-Id: <d8b145ca2147e366c1d0fd2fd718dc355cc73483.1594329558.git.gurus@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Palmer Dabbelt <palmerdabbelt@google.com>
+From: David Collins <collinsd@codeaurora.org>
 
-Aside from being inlineable, this is exactly the same as the arm64
-version, which I recently copied into lib/ for use by the RISC-V port.
+Add support for TEMP_ALARM GEN2 PMIC peripherals with digital
+major revision 1.  This revision utilizes a different temperature
+threshold mapping than earlier revisions.
 
-[I haven't even build tested this.  The lib/ patch is on riscv/for-next,
-which I'm targeting for 5.9, so this won't work alone.  See the cover
-letter for more details.]
-
-Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Signed-off-by: David Collins <collinsd@codeaurora.org>
+Signed-off-by: Guru Das Srinagesh <gurus@codeaurora.org>
 ---
- arch/unicore32/Kconfig          |  2 +-
- arch/unicore32/include/asm/io.h | 23 -----------------------
- 2 files changed, 1 insertion(+), 24 deletions(-)
+ drivers/thermal/qcom/qcom-spmi-temp-alarm.c | 91 +++++++++++++++++++----------
+ 1 file changed, 61 insertions(+), 30 deletions(-)
 
-diff --git a/arch/unicore32/Kconfig b/arch/unicore32/Kconfig
-index 11ba1839d198..7610571044f4 100644
---- a/arch/unicore32/Kconfig
-+++ b/arch/unicore32/Kconfig
-@@ -2,7 +2,6 @@
- config UNICORE32
- 	def_bool y
- 	select ARCH_32BIT_OFF_T
--	select ARCH_HAS_DEVMEM_IS_ALLOWED
- 	select ARCH_HAS_KEEPINITRD
- 	select ARCH_MIGHT_HAVE_PC_PARPORT
- 	select ARCH_MIGHT_HAVE_PC_SERIO
-@@ -12,6 +11,7 @@ config UNICORE32
- 	select HAVE_KERNEL_LZO
- 	select HAVE_KERNEL_LZMA
- 	select HAVE_PCI
-+	select GENERIC_LIB_DEVMEM_IS_ALLOWED
- 	select VIRT_TO_BUS
- 	select ARCH_HAVE_CUSTOM_GPIO_H
- 	select GENERIC_FIND_FIRST_BIT
-diff --git a/arch/unicore32/include/asm/io.h b/arch/unicore32/include/asm/io.h
-index bd4e7c332f85..4560d2531655 100644
---- a/arch/unicore32/include/asm/io.h
-+++ b/arch/unicore32/include/asm/io.h
-@@ -42,28 +42,5 @@ extern void __uc32_iounmap(volatile void __iomem *addr);
- #define PIO_MASK		(unsigned int)(IO_SPACE_LIMIT)
- #define PIO_RESERVED		(PIO_OFFSET + PIO_MASK + 1)
+diff --git a/drivers/thermal/qcom/qcom-spmi-temp-alarm.c b/drivers/thermal/qcom/qcom-spmi-temp-alarm.c
+index bf7bae4..05a9601 100644
+--- a/drivers/thermal/qcom/qcom-spmi-temp-alarm.c
++++ b/drivers/thermal/qcom/qcom-spmi-temp-alarm.c
+@@ -17,6 +17,7 @@
  
--#ifdef CONFIG_STRICT_DEVMEM
--
--#include <linux/ioport.h>
--#include <linux/mm.h>
--
+ #include "../thermal_core.h"
+ 
++#define QPNP_TM_REG_DIG_MAJOR		0x01
+ #define QPNP_TM_REG_TYPE		0x04
+ #define QPNP_TM_REG_SUBTYPE		0x05
+ #define QPNP_TM_REG_STATUS		0x08
+@@ -38,26 +39,30 @@
+ 
+ #define ALARM_CTRL_FORCE_ENABLE		BIT(7)
+ 
 -/*
-- * devmem_is_allowed() checks to see if /dev/mem access to a certain
-- * address is valid. The argument is a physical page number.
-- * We mimic x86 here by disallowing access to system RAM as well as
-- * device-exclusive MMIO regions. This effectively disable read()/write()
-- * on /dev/mem.
-- */
--static inline int devmem_is_allowed(unsigned long pfn)
--{
--	if (iomem_is_exclusive(pfn << PAGE_SHIFT))
--		return 0;
--	if (!page_is_ram(pfn))
--		return 1;
--	return 0;
--}
--
--#endif /* CONFIG_STRICT_DEVMEM */
--
- #endif	/* __KERNEL__ */
- #endif	/* __UNICORE_IO_H__ */
+- * Trip point values based on threshold control
+- * 0 = {105 C, 125 C, 145 C}
+- * 1 = {110 C, 130 C, 150 C}
+- * 2 = {115 C, 135 C, 155 C}
+- * 3 = {120 C, 140 C, 160 C}
+-*/
+-#define TEMP_STAGE_STEP			20000	/* Stage step: 20.000 C */
+-#define TEMP_STAGE_HYSTERESIS		2000
++#define THRESH_COUNT			4
++#define STAGE_COUNT			3
++
++/* Over-temperature trip point values in mC */
++static const long temp_map_gen1[THRESH_COUNT][STAGE_COUNT] = {
++	{105000, 125000, 145000},
++	{110000, 130000, 150000},
++	{115000, 135000, 155000},
++	{120000, 140000, 160000},
++};
++
++static const long temp_map_gen2_v1[THRESH_COUNT][STAGE_COUNT] = {
++	{ 90000, 110000, 140000},
++	{ 95000, 115000, 145000},
++	{100000, 120000, 150000},
++	{105000, 125000, 155000},
++};
+ 
+-#define TEMP_THRESH_MIN			105000	/* Threshold Min: 105 C */
+-#define TEMP_THRESH_STEP		5000	/* Threshold step: 5 C */
++#define TEMP_THRESH_STEP		5000 /* Threshold step: 5 C */
+ 
+ #define THRESH_MIN			0
+ #define THRESH_MAX			3
+ 
+-/* Stage 2 Threshold Min: 125 C */
+-#define STAGE2_THRESHOLD_MIN		125000
+-/* Stage 2 Threshold Max: 140 C */
+-#define STAGE2_THRESHOLD_MAX		140000
++#define TEMP_STAGE_HYSTERESIS		2000
+ 
+ /* Temperature in Milli Celsius reported during stage 0 if no ADC is present */
+ #define DEFAULT_TEMP			37000
+@@ -77,6 +82,7 @@ struct qpnp_tm_chip {
+ 	bool				initialized;
+ 
+ 	struct iio_channel		*adc;
++	const long			(*temp_map)[THRESH_COUNT][STAGE_COUNT];
+ };
+ 
+ /* This array maps from GEN2 alarm state to GEN1 alarm stage */
+@@ -101,6 +107,23 @@ static int qpnp_tm_write(struct qpnp_tm_chip *chip, u16 addr, u8 data)
+ }
+ 
+ /**
++ * qpnp_tm_decode_temp() - return temperature in mC corresponding to the
++ *		specified over-temperature stage
++ * @chip:		Pointer to the qpnp_tm chip
++ * @stage:		Over-temperature stage
++ *
++ * Return: temperature in mC
++ */
++static long qpnp_tm_decode_temp(struct qpnp_tm_chip *chip, unsigned int stage)
++{
++	if (!chip->temp_map || chip->thresh >= THRESH_COUNT || stage == 0
++	    || stage > STAGE_COUNT)
++		return 0;
++
++	return (*chip->temp_map)[chip->thresh][stage - 1];
++}
++
++/**
+  * qpnp_tm_get_temp_stage() - return over-temperature stage
+  * @chip:		Pointer to the qpnp_tm chip
+  *
+@@ -149,14 +172,12 @@ static int qpnp_tm_update_temp_no_adc(struct qpnp_tm_chip *chip)
+ 
+ 	if (stage_new > stage_old) {
+ 		/* increasing stage, use lower bound */
+-		chip->temp = (stage_new - 1) * TEMP_STAGE_STEP +
+-			     chip->thresh * TEMP_THRESH_STEP +
+-			     TEMP_STAGE_HYSTERESIS + TEMP_THRESH_MIN;
++		chip->temp = qpnp_tm_decode_temp(chip, stage_new)
++				+ TEMP_STAGE_HYSTERESIS;
+ 	} else if (stage_new < stage_old) {
+ 		/* decreasing stage, use upper bound */
+-		chip->temp = stage_new * TEMP_STAGE_STEP +
+-			     chip->thresh * TEMP_THRESH_STEP -
+-			     TEMP_STAGE_HYSTERESIS + TEMP_THRESH_MIN;
++		chip->temp = qpnp_tm_decode_temp(chip, stage_new + 1)
++				- TEMP_STAGE_HYSTERESIS;
+ 	}
+ 
+ 	chip->stage = stage;
+@@ -199,26 +220,28 @@ static int qpnp_tm_get_temp(void *data, int *temp)
+ static int qpnp_tm_update_critical_trip_temp(struct qpnp_tm_chip *chip,
+ 					     int temp)
+ {
+-	u8 reg;
++	long stage2_threshold_min = (*chip->temp_map)[THRESH_MIN][1];
++	long stage2_threshold_max = (*chip->temp_map)[THRESH_MAX][1];
+ 	bool disable_s2_shutdown = false;
++	u8 reg;
+ 
+ 	WARN_ON(!mutex_is_locked(&chip->lock));
+ 
+ 	/*
+ 	 * Default: S2 and S3 shutdown enabled, thresholds at
+-	 * 105C/125C/145C, monitoring at 25Hz
++	 * lowest threshold set, monitoring at 25Hz
+ 	 */
+ 	reg = SHUTDOWN_CTRL1_RATE_25HZ;
+ 
+ 	if (temp == THERMAL_TEMP_INVALID ||
+-	    temp < STAGE2_THRESHOLD_MIN) {
++	    temp < stage2_threshold_min) {
+ 		chip->thresh = THRESH_MIN;
+ 		goto skip;
+ 	}
+ 
+-	if (temp <= STAGE2_THRESHOLD_MAX) {
++	if (temp <= stage2_threshold_max) {
+ 		chip->thresh = THRESH_MAX -
+-			((STAGE2_THRESHOLD_MAX - temp) /
++			((stage2_threshold_max - temp) /
+ 			 TEMP_THRESH_STEP);
+ 		disable_s2_shutdown = true;
+ 	} else {
+@@ -326,9 +349,7 @@ static int qpnp_tm_init(struct qpnp_tm_chip *chip)
+ 		? chip->stage : alarm_state_map[chip->stage];
+ 
+ 	if (stage)
+-		chip->temp = chip->thresh * TEMP_THRESH_STEP +
+-			     (stage - 1) * TEMP_STAGE_STEP +
+-			     TEMP_THRESH_MIN;
++		chip->temp = qpnp_tm_decode_temp(chip, stage);
+ 
+ 	crit_temp = qpnp_tm_get_critical_trip_temp(chip);
+ 	ret = qpnp_tm_update_critical_trip_temp(chip, crit_temp);
+@@ -350,7 +371,7 @@ static int qpnp_tm_probe(struct platform_device *pdev)
+ {
+ 	struct qpnp_tm_chip *chip;
+ 	struct device_node *node;
+-	u8 type, subtype;
++	u8 type, subtype, dig_major;
+ 	u32 res;
+ 	int ret, irq;
+ 
+@@ -400,6 +421,12 @@ static int qpnp_tm_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
++	ret = qpnp_tm_read(chip, QPNP_TM_REG_DIG_MAJOR, &dig_major);
++	if (ret < 0) {
++		dev_err(&pdev->dev, "could not read dig_major\n");
++		return ret;
++	}
++
+ 	if (type != QPNP_TM_TYPE || (subtype != QPNP_TM_SUBTYPE_GEN1
+ 				     && subtype != QPNP_TM_SUBTYPE_GEN2)) {
+ 		dev_err(&pdev->dev, "invalid type 0x%02x or subtype 0x%02x\n",
+@@ -408,6 +435,10 @@ static int qpnp_tm_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	chip->subtype = subtype;
++	if (subtype == QPNP_TM_SUBTYPE_GEN2 && dig_major >= 1)
++		chip->temp_map = &temp_map_gen2_v1;
++	else
++		chip->temp_map = &temp_map_gen1;
+ 
+ 	/*
+ 	 * Register the sensor before initializing the hardware to be able to
 -- 
-2.27.0.383.g050319c2ae-goog
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
