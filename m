@@ -2,179 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51864219B55
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 10:43:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D511A219B65
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 10:46:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726376AbgGIInO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 04:43:14 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:51536 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726193AbgGIInO (ORCPT
+        id S1726321AbgGIIp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 04:45:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726193AbgGIIp5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 04:43:14 -0400
-Received: from [192.168.0.20] (cpc89242-aztw30-2-0-cust488.18-1.cable.virginm.net [86.31.129.233])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id EC265289;
-        Thu,  9 Jul 2020 10:43:10 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1594284191;
-        bh=/VoKmI/DiBrtBJiaTvk1IXoOMWdrKG9Lxw4goxipK6Y=;
-        h=Subject:To:References:From:Reply-To:Date:In-Reply-To:From;
-        b=ETwEaFeE4nHWgv3yOt5Q4Pa0ZjXfQiEIGfmQS9Emqs3f7vG43WziN/s4rARiu64pZ
-         C3Fnbv0mo3jdm2Q6gyqO61f9Yhe/WHPSbcjWCYy8RC1pRQIO7EXtbwr/mPrNreK2WG
-         JDQKA6ntcmaqms3+Qz6DTJ55pyTiy+9nCxJn6Wbc=
-Subject: Re: [PATCH] TI DAVINCI SERIES MEDIA DRIVER: Replace HTTP links with
- HTTPS ones
-To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        prabhakar.csengg@gmail.com, mchehab@kernel.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200709072814.24218-1-grandmaster@al2klimov.de>
-From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Reply-To: kieran.bingham+renesas@ideasonboard.com
-Organization: Ideas on Board
-Message-ID: <dab6510d-4b3a-7439-bff0-e927ddd2622f@ideasonboard.com>
-Date:   Thu, 9 Jul 2020 09:43:07 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Thu, 9 Jul 2020 04:45:57 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07430C061A0B;
+        Thu,  9 Jul 2020 01:45:56 -0700 (PDT)
+Date:   Thu, 09 Jul 2020 08:45:54 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1594284355;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=I+4xw1FSYGQyoZLx5QjbtHpvgVDoCI4Cv4NTYFd7k8g=;
+        b=tETY/41W2ET4kly+IcMGpZJasqrMcSpb81BFcLB4+nMFwA9orjRfd5uzFwQ/9dtbfuTx0D
+        BbiSwiu8VlILvqYkhRL1ebHS4NkDPkKhD4VZBys0+s/SD4M5dAbMJTW2Z2Sw2vzI2dzz1u
+        6WSY6DxbkAWU425z1rITE1ZBLo7udpeke/y705/FE5LDAKFLor3E7RYbuSUKkP/til6AEe
+        BMazKUulkdNYa8aMW1mMhJXy8W0o5GNEMZWcVQqkaNIM9gpH+3jwg+kPcUHPDVrjWTYS9r
+        ycWVNvKUMPAfhMrk7gKb4X+WDdCArKtEErgnwtaEWA3GUXaB+gbD+6qhlXGbjg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1594284355;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=I+4xw1FSYGQyoZLx5QjbtHpvgVDoCI4Cv4NTYFd7k8g=;
+        b=1uc8lLRsIcUoGYraaIwoyuUk19dsM/NBHkabzvzN5Ekd75ZnagWVQZ2fLObD0roVmHcdn6
+        Gf9Tv4gXxNSoY9Bg==
+From:   "tip-bot2 for Phil Auld" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/core] sched: Add a tracepoint to track rq->nr_running
+Cc:     Phil Auld <pauld@redhat.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200629192303.GC120228@lorien.usersys.redhat.com>
+References: <20200629192303.GC120228@lorien.usersys.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20200709072814.24218-1-grandmaster@al2klimov.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
+Message-ID: <159428435423.4006.2008200578767650522.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alexander,
+The following commit has been merged into the sched/core branch of tip:
 
-On 09/07/2020 08:28, Alexander A. Klimov wrote:
-> Rationale:
-> Reduces attack surface on kernel devs opening the links for MITM
-> as HTTPS traffic is much harder to manipulate.
-> 
-> Deterministic algorithm:
-> For each file:
->   If not .svg:
->     For each line:
->       If doesn't contain `\bxmlns\b`:
->         For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-> 	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
->             If both the HTTP and HTTPS versions
->             return 200 OK and serve the same content:
->               Replace HTTP with HTTPS.
-> 
-> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+Commit-ID:     9d246053a69196c7c27068870e9b4b66ac536f68
+Gitweb:        https://git.kernel.org/tip/9d246053a69196c7c27068870e9b4b66ac536f68
+Author:        Phil Auld <pauld@redhat.com>
+AuthorDate:    Mon, 29 Jun 2020 15:23:03 -04:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Wed, 08 Jul 2020 11:39:02 +02:00
 
-This non-https link redirects to the https link already with a 301, so
-the content is expectedly the same.
+sched: Add a tracepoint to track rq->nr_running
 
-I doubt many people click on these links, as I guess they're usually
-rendered as text so it depends on the editor, I expect as much as
-anything it's 'advertising' or confirmation of the copyright notice.
+Add a bare tracepoint trace_sched_update_nr_running_tp which tracks
+->nr_running CPU's rq. This is used to accurately trace this data and
+provide a visualization of scheduler imbalances in, for example, the
+form of a heat map.  The tracepoint is accessed by loading an external
+kernel module. An example module (forked from Qais' module and including
+the pelt related tracepoints) can be found at:
 
-But still, I've just clicked on them ... and I think this is a
-reasonable step.
+  https://github.com/auldp/tracepoints-helpers.git
 
-Reviewed-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
+A script to turn the trace-cmd report output into a heatmap plot can be
+found at:
 
-> ---
->  Continuing my work started at 93431e0607e5.
->  See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
->  (Actually letting a shell for loop submit all this stuff for me.)
-> 
->  If there are any URLs to be removed completely or at least not HTTPSified:
->  Just clearly say so and I'll *undo my change*.
->  See also: https://lkml.org/lkml/2020/6/27/64
-> 
->  If there are any valid, but yet not changed URLs:
->  See: https://lkml.org/lkml/2020/6/26/837
-> 
->  If you apply the patch, please let me know.
-> 
-> 
->  drivers/media/platform/davinci/vpbe_display.c | 2 +-
->  drivers/media/platform/davinci/vpif.c         | 2 +-
->  drivers/media/platform/davinci/vpif.h         | 2 +-
->  drivers/media/platform/davinci/vpif_display.c | 2 +-
->  drivers/media/platform/davinci/vpif_display.h | 2 +-
->  include/media/davinci/vpbe_display.h          | 2 +-
->  6 files changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/media/platform/davinci/vpbe_display.c b/drivers/media/platform/davinci/vpbe_display.c
-> index 7ab13eb7527d..d19bad997f30 100644
-> --- a/drivers/media/platform/davinci/vpbe_display.c
-> +++ b/drivers/media/platform/davinci/vpbe_display.c
-> @@ -1,6 +1,6 @@
->  // SPDX-License-Identifier: GPL-2.0-only
->  /*
-> - * Copyright (C) 2010 Texas Instruments Incorporated - http://www.ti.com/
-> + * Copyright (C) 2010 Texas Instruments Incorporated - https://www.ti.com/
->   */
->  #include <linux/kernel.h>
->  #include <linux/init.h>
-> diff --git a/drivers/media/platform/davinci/vpif.c b/drivers/media/platform/davinci/vpif.c
-> index df66461f5d4f..e9794c9fc7fe 100644
-> --- a/drivers/media/platform/davinci/vpif.c
-> +++ b/drivers/media/platform/davinci/vpif.c
-> @@ -5,7 +5,7 @@
->   * The hardware supports SDTV, HDTV formats, raw data capture.
->   * Currently, the driver supports NTSC and PAL standards.
->   *
-> - * Copyright (C) 2009 Texas Instruments Incorporated - http://www.ti.com/
-> + * Copyright (C) 2009 Texas Instruments Incorporated - https://www.ti.com/
->   *
->   * This program is free software; you can redistribute it and/or
->   * modify it under the terms of the GNU General Public License as
-> diff --git a/drivers/media/platform/davinci/vpif.h b/drivers/media/platform/davinci/vpif.h
-> index 2466c7c77deb..c6d1d890478a 100644
-> --- a/drivers/media/platform/davinci/vpif.h
-> +++ b/drivers/media/platform/davinci/vpif.h
-> @@ -1,7 +1,7 @@
->  /*
->   * VPIF header file
->   *
-> - * Copyright (C) 2009 Texas Instruments Incorporated - http://www.ti.com/
-> + * Copyright (C) 2009 Texas Instruments Incorporated - https://www.ti.com/
->   *
->   * This program is free software; you can redistribute it and/or
->   * modify it under the terms of the GNU General Public License as
-> diff --git a/drivers/media/platform/davinci/vpif_display.c b/drivers/media/platform/davinci/vpif_display.c
-> index 7d55fd45240e..46afc029138f 100644
-> --- a/drivers/media/platform/davinci/vpif_display.c
-> +++ b/drivers/media/platform/davinci/vpif_display.c
-> @@ -2,7 +2,7 @@
->   * vpif-display - VPIF display driver
->   * Display driver for TI DaVinci VPIF
->   *
-> - * Copyright (C) 2009 Texas Instruments Incorporated - http://www.ti.com/
-> + * Copyright (C) 2009 Texas Instruments Incorporated - https://www.ti.com/
->   * Copyright (C) 2014 Lad, Prabhakar <prabhakar.csengg@gmail.com>
->   *
->   * This program is free software; you can redistribute it and/or
-> diff --git a/drivers/media/platform/davinci/vpif_display.h b/drivers/media/platform/davinci/vpif_display.h
-> index af2765fdcea8..f731a65eefd6 100644
-> --- a/drivers/media/platform/davinci/vpif_display.h
-> +++ b/drivers/media/platform/davinci/vpif_display.h
-> @@ -1,7 +1,7 @@
->  /*
->   * VPIF display header file
->   *
-> - * Copyright (C) 2009 Texas Instruments Incorporated - http://www.ti.com/
-> + * Copyright (C) 2009 Texas Instruments Incorporated - https://www.ti.com/
->   *
->   * This program is free software; you can redistribute it and/or
->   * modify it under the terms of the GNU General Public License as
-> diff --git a/include/media/davinci/vpbe_display.h b/include/media/davinci/vpbe_display.h
-> index 56d05a855140..6d2a93740130 100644
-> --- a/include/media/davinci/vpbe_display.h
-> +++ b/include/media/davinci/vpbe_display.h
-> @@ -1,6 +1,6 @@
->  /* SPDX-License-Identifier: GPL-2.0-only */
->  /*
-> - * Copyright (C) 2010 Texas Instruments Incorporated - http://www.ti.com/
-> + * Copyright (C) 2010 Texas Instruments Incorporated - https://www.ti.com/
->   */
->  #ifndef VPBE_DISPLAY_H
->  #define VPBE_DISPLAY_H
-> 
+  https://github.com/jirvoz/plot-nr-running
 
+The tracepoints are added to add_nr_running() and sub_nr_running() which
+are in kernel/sched/sched.h. In order to avoid CREATE_TRACE_POINTS in
+the header a wrapper call is used and the trace/events/sched.h include
+is moved before sched.h in kernel/sched/core.
+
+Signed-off-by: Phil Auld <pauld@redhat.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20200629192303.GC120228@lorien.usersys.redhat.com
+---
+ include/linux/sched.h        |  1 +
+ include/trace/events/sched.h |  4 ++++
+ kernel/sched/core.c          | 13 +++++++++----
+ kernel/sched/fair.c          |  8 ++++++--
+ kernel/sched/pelt.c          |  2 --
+ kernel/sched/sched.h         | 10 ++++++++++
+ 6 files changed, 30 insertions(+), 8 deletions(-)
+
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index 6833729..12b10ce 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -2044,6 +2044,7 @@ const struct sched_avg *sched_trace_rq_avg_dl(struct rq *rq);
+ const struct sched_avg *sched_trace_rq_avg_irq(struct rq *rq);
+ 
+ int sched_trace_rq_cpu(struct rq *rq);
++int sched_trace_rq_nr_running(struct rq *rq);
+ 
+ const struct cpumask *sched_trace_rd_span(struct root_domain *rd);
+ 
+diff --git a/include/trace/events/sched.h b/include/trace/events/sched.h
+index 04f9a4c..0d5ff09 100644
+--- a/include/trace/events/sched.h
++++ b/include/trace/events/sched.h
+@@ -642,6 +642,10 @@ DECLARE_TRACE(sched_util_est_se_tp,
+ 	TP_PROTO(struct sched_entity *se),
+ 	TP_ARGS(se));
+ 
++DECLARE_TRACE(sched_update_nr_running_tp,
++	TP_PROTO(struct rq *rq, int change),
++	TP_ARGS(rq, change));
++
+ #endif /* _TRACE_SCHED_H */
+ 
+ /* This part must be outside protection */
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 4cf30e4..ff05195 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -6,6 +6,10 @@
+  *
+  *  Copyright (C) 1991-2002  Linus Torvalds
+  */
++#define CREATE_TRACE_POINTS
++#include <trace/events/sched.h>
++#undef CREATE_TRACE_POINTS
++
+ #include "sched.h"
+ 
+ #include <linux/nospec.h>
+@@ -23,9 +27,6 @@
+ #include "pelt.h"
+ #include "smp.h"
+ 
+-#define CREATE_TRACE_POINTS
+-#include <trace/events/sched.h>
+-
+ /*
+  * Export tracepoints that act as a bare tracehook (ie: have no trace event
+  * associated with them) to allow external modules to probe them.
+@@ -38,6 +39,7 @@ EXPORT_TRACEPOINT_SYMBOL_GPL(pelt_se_tp);
+ EXPORT_TRACEPOINT_SYMBOL_GPL(sched_overutilized_tp);
+ EXPORT_TRACEPOINT_SYMBOL_GPL(sched_util_est_cfs_tp);
+ EXPORT_TRACEPOINT_SYMBOL_GPL(sched_util_est_se_tp);
++EXPORT_TRACEPOINT_SYMBOL_GPL(sched_update_nr_running_tp);
+ 
+ DEFINE_PER_CPU_SHARED_ALIGNED(struct rq, runqueues);
+ 
+@@ -8195,4 +8197,7 @@ const u32 sched_prio_to_wmult[40] = {
+  /*  15 */ 119304647, 148102320, 186737708, 238609294, 286331153,
+ };
+ 
+-#undef CREATE_TRACE_POINTS
++void call_trace_sched_update_nr_running(struct rq *rq, int count)
++{
++        trace_sched_update_nr_running_tp(rq, count);
++}
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 6fab1d1..3213cb2 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -22,8 +22,6 @@
+  */
+ #include "sched.h"
+ 
+-#include <trace/events/sched.h>
+-
+ /*
+  * Targeted preemption latency for CPU-bound tasks:
+  *
+@@ -11296,3 +11294,9 @@ const struct cpumask *sched_trace_rd_span(struct root_domain *rd)
+ #endif
+ }
+ EXPORT_SYMBOL_GPL(sched_trace_rd_span);
++
++int sched_trace_rq_nr_running(struct rq *rq)
++{
++        return rq ? rq->nr_running : -1;
++}
++EXPORT_SYMBOL_GPL(sched_trace_rq_nr_running);
+diff --git a/kernel/sched/pelt.c b/kernel/sched/pelt.c
+index 11bea3b..2c613e1 100644
+--- a/kernel/sched/pelt.c
++++ b/kernel/sched/pelt.c
+@@ -28,8 +28,6 @@
+ #include "sched.h"
+ #include "pelt.h"
+ 
+-#include <trace/events/sched.h>
+-
+ /*
+  * Approximate:
+  *   val * y^n,    where y^32 ~= 0.5 (~1 scheduling period)
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index b1432f6..65b72e0 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -76,6 +76,8 @@
+ #include "cpupri.h"
+ #include "cpudeadline.h"
+ 
++#include <trace/events/sched.h>
++
+ #ifdef CONFIG_SCHED_DEBUG
+ # define SCHED_WARN_ON(x)	WARN_ONCE(x, #x)
+ #else
+@@ -97,6 +99,7 @@ extern atomic_long_t calc_load_tasks;
+ extern void calc_global_load_tick(struct rq *this_rq);
+ extern long calc_load_fold_active(struct rq *this_rq, long adjust);
+ 
++extern void call_trace_sched_update_nr_running(struct rq *rq, int count);
+ /*
+  * Helpers for converting nanosecond timing to jiffy resolution
+  */
+@@ -1973,6 +1976,9 @@ static inline void add_nr_running(struct rq *rq, unsigned count)
+ 	unsigned prev_nr = rq->nr_running;
+ 
+ 	rq->nr_running = prev_nr + count;
++	if (trace_sched_update_nr_running_tp_enabled()) {
++		call_trace_sched_update_nr_running(rq, count);
++	}
+ 
+ #ifdef CONFIG_SMP
+ 	if (prev_nr < 2 && rq->nr_running >= 2) {
+@@ -1987,6 +1993,10 @@ static inline void add_nr_running(struct rq *rq, unsigned count)
+ static inline void sub_nr_running(struct rq *rq, unsigned count)
+ {
+ 	rq->nr_running -= count;
++	if (trace_sched_update_nr_running_tp_enabled()) {
++		call_trace_sched_update_nr_running(rq, count);
++	}
++
+ 	/* Check if we still need preemption */
+ 	sched_update_tick_dependency(rq);
+ }
