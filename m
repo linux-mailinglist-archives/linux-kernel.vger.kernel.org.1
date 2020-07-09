@@ -2,105 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 755F921A65E
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 19:57:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BF5F21A67F
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 20:00:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728436AbgGIR5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 13:57:25 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:31996 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726758AbgGIR5Y (ORCPT
+        id S1728500AbgGISAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 14:00:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51204 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726793AbgGISAk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 13:57:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594317443;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rtpxiZIC9DpP6xJFiIycdqh94KkxS8BGOIOnHFuI6lM=;
-        b=Ue9UWeIhkv9ff//+nOOcXUDv98oX4GwdFePVx90Wx/66XqEto8k4J5AobFUFgU00jNG6cN
-        Z9/fcAJlGbbH40aiBZ8c1rsjtAkVeCCPNV0Y/MG4uqryMCJzXssvK39v+zfJfgEdpW8DCH
-        +Sf0h6UL2FyNsiNXu2vm0duFsfWvJIU=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-256-bUlZyC7qO0mZhk5axrFJxA-1; Thu, 09 Jul 2020 13:57:21 -0400
-X-MC-Unique: bUlZyC7qO0mZhk5axrFJxA-1
-Received: by mail-wr1-f71.google.com with SMTP id f5so2599510wrv.22
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 10:57:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rtpxiZIC9DpP6xJFiIycdqh94KkxS8BGOIOnHFuI6lM=;
-        b=njfsUguMaZoO9iQTFpGhpPxnSCRNGC3V8Ff1EGiuT5RnuX5fnxBK60J17IuTn5JVzV
-         DHOv9VBGBebAS5Utci/mOYY+jFWFyLqrUP/NUSLbew31mixLsZ97eaSgCOiId+fM0N0l
-         iTQQEDFm08f7w0P1OlUiUJIMScaohxyglH2dXgn3nVNf3fLCiYtUvGiF2BBfn7UwfZT0
-         3x1Vu/TUVkTDl+/0BaO/wsd+E54ziDdgOFgYbQxiEcvmxDl32Z5YwiLJvH7uB1xnwyfK
-         KmbsOG2QcijX+SHZBzFOxRP9j2uj8gNoofSN/2OAb5LazEvwCV5BKV/t+PhRKJOztQ7q
-         0jiA==
-X-Gm-Message-State: AOAM533onTgomE/NXzwE6pf6fhJMYb0pPzxs/NXoi9cm91B41IU6AeYq
-        MNhh+C/461Ssfi0KXgI4wylwqD3VEiJWS5tFsJpheb52fSbOqXdUPalSOhSjzBiuLPWIBxb9VlB
-        CydjYzBBDfdBQDjOt6doAXjZx
-X-Received: by 2002:a7b:cc85:: with SMTP id p5mr1178744wma.18.1594317440359;
-        Thu, 09 Jul 2020 10:57:20 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx816lR7V68tmogTqyiFqHKuAvOPgpQwxxuTWOciDQGLYuS7UzzPPkmPiIBoJAvQFDceCtG9w==
-X-Received: by 2002:a7b:cc85:: with SMTP id p5mr1178730wma.18.1594317440116;
-        Thu, 09 Jul 2020 10:57:20 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:9541:9439:cb0f:89c? ([2001:b07:6468:f312:9541:9439:cb0f:89c])
-        by smtp.gmail.com with ESMTPSA id w128sm5899563wmb.19.2020.07.09.10.57.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Jul 2020 10:57:19 -0700 (PDT)
-Subject: Re: [PATCH v3 7/9] KVM: nSVM: implement nested_svm_load_cr3() and use
- it for host->guest switch
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        linux-kernel@vger.kernel.org
-References: <20200709145358.1560330-1-vkuznets@redhat.com>
- <20200709145358.1560330-8-vkuznets@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <4d3f5b01-72d9-c2c5-08e8-c2b1e0046e5e@redhat.com>
-Date:   Thu, 9 Jul 2020 19:57:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Thu, 9 Jul 2020 14:00:40 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8AB1C08C5CE;
+        Thu,  9 Jul 2020 11:00:40 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: tonyk)
+        with ESMTPSA id C5E122A65E7
+From:   =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>
+To:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        peterz@infradead.org
+Cc:     krisman@collabora.com, kernel@collabora.com,
+        andrealmeid@collabora.com, dvhart@infradead.org, mingo@redhat.com,
+        pgriffais@valvesoftware.com, fweimer@redhat.com,
+        libc-alpha@sourceware.org, malteskarupke@web.de,
+        linux-api@vger.kernel.org, arnd@arndb.de
+Subject: [RFC v2 0/4] futex2: Add new futex interface
+Date:   Thu,  9 Jul 2020 14:59:17 -0300
+Message-Id: <20200709175921.211387-1-andrealmeid@collabora.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20200709145358.1560330-8-vkuznets@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/07/20 16:53, Vitaly Kuznetsov wrote:
-> +	if (nested_npt_enabled(svm))
-> +		nested_svm_init_mmu_context(&svm->vcpu);
-> +
->  	ret = nested_svm_load_cr3(&svm->vcpu, nested_vmcb->save.cr3,
->  				  nested_npt_enabled(svm));
+Hello,
 
-This needs to be done in svm_set_nested_state, so my suggestion is that
-the previous patch includes a call to nested_svm_load_cr3 in
-svm_set_nested_state, and this one adds the "if" inside
-nested_svm_load_cr3 itself.
+This RFC is a followup to the previous discussion initiated from my last
+patch "futex: Implement mechanism to wait on any of several futexes"[1].
+As stated in the thread, the correct approach to move forward with the
+wait multiple operation would be to create a new syscall that would have
+all new cool features.
 
-Paolo
+The first patch adds the new interface and just translate the call for
+the old interface, without implementing new features. The goal here is
+to establish the interface and to check if everyone is happy with this
+API. The rest of patches are selftests to show the interface in action.
+I have the following questions:
 
-> @@ -364,13 +388,6 @@ static int nested_prepare_vmcb_save(struct vcpu_svm *svm, struct vmcb *nested_vm
->  static void nested_prepare_vmcb_control(struct vcpu_svm *svm)
->  {
->  	const u32 mask = V_INTR_MASKING_MASK | V_GIF_ENABLE_MASK | V_GIF_MASK;
-> -	if (nested_npt_enabled(svm))
-> -		nested_svm_init_mmu_context(&svm->vcpu);
-> -
-> -	/* Guest paging mode is active - reset mmu */
-> -	kvm_mmu_reset_context(&svm->vcpu);
-> -
-> -	svm_flush_tlb(&svm->vcpu);
->  
+- What suggestions do you have to implement this? Start from scratch or
+  reuse the most code possible?
+
+- The interface seems correct and implements the requirements asked by you?
+
+Those are the cool new features that this syscall should address some
+day:
+
+- Operate with variable bit size futexes, not restricted to 32:
+  8, 16 and 64
+
+- Wait on multiple futexes, using the following semantics:
+
+  struct futex_wait {
+	void *uaddr;
+	unsigned long val;
+	unsigned long flags;
+  };
+
+  sys_futex_waitv(struct futex_wait *waiters, unsigned int nr_waiters,
+		  unsigned long flags, struct __kernel_timespec *timo);
+
+- Have NUMA optimizations: if FUTEX_NUMA_FLAG is set, the `void *uaddr`
+  argument won't be a value of type u{8, 16, 32, 64} anymore, but a struct
+  containing a NUMA node hint:
+
+  struct futex32_numa {
+	  u32 value __attribute__ ((aligned (8)));
+	  u32 hint;
+  };
+
+  struct futex64_numa {
+	  u64 value __attribute__ ((aligned (16)));
+	  u64 hint;
+  };
+
+Thanks,
+	André
+
+Changes since v1:
+ - The timeout argument now uses __kernel_timespec as type
+ - time32 interface was removed
+ v1: https://lore.kernel.org/patchwork/cover/1255437/
+
+[1] https://lore.kernel.org/patchwork/patch/1194339/
+
+André Almeida (4):
+  futex2: Add new futex interface
+  selftests: futex: Add futex2 wake/wait test
+  selftests: futex: Add futex2 timeout test
+  selftests: futex: Add futex2 wouldblock test
+
+ MAINTAINERS                                   |   2 +-
+ arch/x86/entry/syscalls/syscall_32.tbl        |   2 +
+ arch/x86/entry/syscalls/syscall_64.tbl        |   2 +
+ include/linux/syscalls.h                      |   7 ++
+ include/uapi/asm-generic/unistd.h             |   8 +-
+ include/uapi/linux/futex.h                    |  10 ++
+ init/Kconfig                                  |   7 ++
+ kernel/Makefile                               |   1 +
+ kernel/futex2.c                               |  73 ++++++++++++
+ kernel/sys_ni.c                               |   4 +
+ tools/include/uapi/asm-generic/unistd.h       |   7 +-
+ .../selftests/futex/functional/.gitignore     |   1 +
+ .../selftests/futex/functional/Makefile       |   4 +-
+ .../selftests/futex/functional/futex2_wait.c  | 111 ++++++++++++++++++
+ .../futex/functional/futex_wait_timeout.c     |  38 ++++--
+ .../futex/functional/futex_wait_wouldblock.c  |  33 +++++-
+ .../testing/selftests/futex/functional/run.sh |   3 +
+ .../selftests/futex/include/futex2test.h      |  77 ++++++++++++
+ 18 files changed, 373 insertions(+), 17 deletions(-)
+ create mode 100644 kernel/futex2.c
+ create mode 100644 tools/testing/selftests/futex/functional/futex2_wait.c
+ create mode 100644 tools/testing/selftests/futex/include/futex2test.h
+
+-- 
+2.27.0
 
