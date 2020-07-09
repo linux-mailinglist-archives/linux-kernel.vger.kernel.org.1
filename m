@@ -2,78 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA69B21A77A
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 21:05:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 599A621A78A
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 21:08:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726347AbgGITFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 15:05:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45996 "EHLO mail.kernel.org"
+        id S1726309AbgGITIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 15:08:14 -0400
+Received: from smtp.al2klimov.de ([78.46.175.9]:51798 "EHLO smtp.al2klimov.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726116AbgGITFq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 15:05:46 -0400
-Received: from localhost (unknown [104.132.1.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DF65E2078B;
-        Thu,  9 Jul 2020 19:05:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594321546;
-        bh=bxaXBOmDH6ga++Cg4fHewftn6tf7p8Mbj208rLVhETE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vACCLOd6Ey1c+lPIOv9tvzjCp2nWY9H/mINVAWRatkjnWj0nmiCo5WqtDGMeEpFvY
-         DVyyN0wL9QOhFY4UTcLVyJugUw/wo9880M2any/esVzJZN4I0YWr8YX3PNEZciuE97
-         boYR+uUwOqvp/j43ODA41NfO2GbQ4I+ke4keXuK8=
-Date:   Thu, 9 Jul 2020 12:05:45 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
-Subject: Re: [f2fs-dev] [PATCH] f2fs: don't skip writeback of quota data
-Message-ID: <20200709190545.GA3001066@google.com>
-References: <20200709053027.351974-1-jaegeuk@kernel.org>
- <2f4207db-57d1-5b66-f1ee-3532feba5d1f@huawei.com>
+        id S1726163AbgGITIO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 15:08:14 -0400
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id 768BCBC06F;
+        Thu,  9 Jul 2020 19:08:11 +0000 (UTC)
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+To:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Subject: [PATCH] FILESYSTEMS (VFS and infrastructure): Replace HTTP links with HTTPS ones
+Date:   Thu,  9 Jul 2020 21:08:05 +0200
+Message-Id: <20200709190805.25095-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2f4207db-57d1-5b66-f1ee-3532feba5d1f@huawei.com>
+Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: +++++
+X-Spam-Level: *****
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/09, Chao Yu wrote:
-> On 2020/7/9 13:30, Jaegeuk Kim wrote:
-> > It doesn't need to bypass flushing quota data in background.
-> 
-> The condition is used to flush quota data in batch to avoid random
-> small-sized udpate, did you hit any problem here?
+Rationale:
+Reduces attack surface on kernel devs opening the links for MITM
+as HTTPS traffic is much harder to manipulate.
 
-I suspect this causes fault injection test being stuck by waiting for inode
-writeback completion. With this patch, it has been running w/o any issue so far.
-I keep an eye on this.
+Deterministic algorithm:
+For each file:
+  If not .svg:
+    For each line:
+      If doesn't contain `\bxmlns\b`:
+        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+            If both the HTTP and HTTPS versions
+            return 200 OK and serve the same content:
+              Replace HTTP with HTTPS.
 
-Thanks,
+Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+---
+ Continuing my work started at 93431e0607e5.
+ See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+ (Actually letting a shell for loop submit all this stuff for me.)
 
-> 
-> Thanks,
-> 
-> > 
-> > Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-> > ---
-> >  fs/f2fs/data.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-> > index 44645f4f914b6..72e8b50e588c1 100644
-> > --- a/fs/f2fs/data.c
-> > +++ b/fs/f2fs/data.c
-> > @@ -3148,7 +3148,7 @@ static int __f2fs_write_data_pages(struct address_space *mapping,
-> >  	if (unlikely(is_sbi_flag_set(sbi, SBI_POR_DOING)))
-> >  		goto skip_write;
-> >  
-> > -	if ((S_ISDIR(inode->i_mode) || IS_NOQUOTA(inode)) &&
-> > +	if (S_ISDIR(inode->i_mode) &&
-> >  			wbc->sync_mode == WB_SYNC_NONE &&
-> >  			get_dirty_pages(inode) < nr_pages_to_skip(sbi, DATA) &&
-> >  			f2fs_available_free_memory(sbi, DIRTY_DENTS))
-> > 
+ If there are any URLs to be removed completely or at least not HTTPSified:
+ Just clearly say so and I'll *undo my change*.
+ See also: https://lkml.org/lkml/2020/6/27/64
+
+ If there are any valid, but yet not changed URLs:
+ See: https://lkml.org/lkml/2020/6/26/837
+
+ If you apply the patch, please let me know.
+
+
+ fs/Kconfig.binfmt | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/fs/Kconfig.binfmt b/fs/Kconfig.binfmt
+index 885da6d983b4..ab548f38c0dd 100644
+--- a/fs/Kconfig.binfmt
++++ b/fs/Kconfig.binfmt
+@@ -20,7 +20,7 @@ config BINFMT_ELF
+ 	  want to say Y here.
+ 
+ 	  Information about ELF is contained in the ELF HOWTO available from
+-	  <http://www.tldp.org/docs.html#howto>.
++	  <https://www.tldp.org/docs.html#howto>.
+ 
+ 	  If you find that after upgrading from Linux kernel 1.2 and saying Y
+ 	  here, you still can't run any ELF binaries (they just crash), then
+@@ -188,7 +188,7 @@ config BINFMT_MISC
+ 	  programs that need an interpreter to run like Java, Python, .NET or
+ 	  Emacs-Lisp. It's also useful if you often run DOS executables under
+ 	  the Linux DOS emulator DOSEMU (read the DOSEMU-HOWTO, available from
+-	  <http://www.tldp.org/docs.html#howto>). Once you have
++	  <https://www.tldp.org/docs.html#howto>). Once you have
+ 	  registered such a binary class with the kernel, you can start one of
+ 	  those programs simply by typing in its name at a shell prompt; Linux
+ 	  will automatically feed it to the correct interpreter.
+-- 
+2.27.0
+
