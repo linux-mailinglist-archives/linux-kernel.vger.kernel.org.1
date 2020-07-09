@@ -2,149 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A70E021A60E
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 19:46:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D20EF21A64C
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 19:48:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728456AbgGIRqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 13:46:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48878 "EHLO
+        id S1728863AbgGIRrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 13:47:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728108AbgGIRqC (ORCPT
+        with ESMTP id S1728401AbgGIRqD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 13:46:02 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6135EC08C5CE
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 10:46:02 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id q5so3293190wru.6
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 10:46:02 -0700 (PDT)
+        Thu, 9 Jul 2020 13:46:03 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52C4DC08C5DC
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 10:46:03 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id k6so3302714wrn.3
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 10:46:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=xTqXVtAy6STm+CsKD82SFXkbTZ9Yyt2OGjfREOk+wxw=;
-        b=S9JQfJkt74EhytPvboT0wPEsWVg4OmCFYcNqHiChFX9Ce69gEUSsHaVYbxBjlOfqzF
-         /Z5WmgD7mCxQg5qL9vEsu+Ok+V/Rsrryoi6l02scA1Hp6owww0VU8y3sEvSqqbaLHtkP
-         p6A5jxcrfRIPw+t5kSrT+MbLgovNOInkeVtQL5FfEA7GEXtlnQSsvBYSvh6mj9QH+MsL
-         47WOD0IDDYXu9eIBYe1IR1i8tupG8AKOP6Qr5ERENBCFo5mnzFykllrvh1WHaW52QNaR
-         Y9fZjksMUNTw+KXQ8rJtik2x8pxjCka8wpUJCN4CbVDDeCbC+b2mR/Dt9z04/sYrfpu2
-         doyw==
+        bh=z87wYd9sTBTgWM4PfTqIXybXjZhO9Ay2HDdpb30MaC4=;
+        b=jRYy5lBldTck93hbAO3wZOubSpIDvgxm3p1B5mF4K1ZUKb6VnlFqm/ru/Al4l+4Cp6
+         OfVsOsS549wwYMyKyt46/ZPKciS+cIHAYULljGRITq61EvjFy3fScyXk8bVuVG3k+h/y
+         uZhg8NaPwvGFFwT3L3XsoExEgiFYFAp71MrF65x1/NttAniy2EUVaGlP0QPsNKl3Z7Td
+         eNndREpoHeiexDIf8YAnVnHJjNu5eZZxycDg0ixlToq/M94/6xP5pJ7xMaDJHiE+6Dq/
+         r1lXHBi3y26nN2Q7Wg8WF2049yUL9eWi6Ao2dodogn55PmiaLKxuFqltNGNBZLuCBbAS
+         zQdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=xTqXVtAy6STm+CsKD82SFXkbTZ9Yyt2OGjfREOk+wxw=;
-        b=d98E9a8mEP2UZ+Z5zkKJWAuDflFDghqKgC/DAtryJjJ4vFG4vtIAhlViM5yylF8Dcr
-         IK7LuP1OPRmLhBwE+GzErSzX6l/ZWUzmYzy1ssMt0XxpwD3GPEo6sO1DRDPnF1INlLqz
-         NC8SHY5e/Uos05iIen+nJyscWjOgBfH9Jx1bvaHaccPylHTtfiHLg/knbLyUKo27/B0h
-         KB9boFcOBS4xSEUQUN0fSGoi96oTfodoDAnqgZUPpDW+AS42IRLjwduOjx1fE7VwZ1zp
-         vZIQKPiZrMAVqdYOcBj2jn3DfU8e3SdHZ+9C1o0/tkCPqL7QCIaWMoN3HU3ZO9FAqtY0
-         MMpQ==
-X-Gm-Message-State: AOAM533993+pHtnM13YormG8oEWFKYsn5YbBGAPmlxiZ+YstBV7jVZ2n
-        VwBsQ2w9bWnlHMNF2Miv0un4yg==
-X-Google-Smtp-Source: ABdhPJwmxoKBk0V1ybPQdpN3mHBUNT+ChaQuAGzu5i0BAePdNB2eXh4C37EVHiTyJIFG4bMLogHgiw==
-X-Received: by 2002:a5d:55c9:: with SMTP id i9mr63242054wrw.404.1594316761133;
-        Thu, 09 Jul 2020 10:46:01 -0700 (PDT)
+        bh=z87wYd9sTBTgWM4PfTqIXybXjZhO9Ay2HDdpb30MaC4=;
+        b=mf8JiNWTB+s8ldO8BMw0Abgcp9jGO/W5ijN3lkQz44e1MmJFIlO7rhODkXwfQLBQgj
+         +hHMGRhHUFGiBdRjSNaaEuOQG10cLdY49DfNIAf+VxdSz3EYHNHJoZq9URwKjDm9i61M
+         5TBEopIV6KUAlhExiH77GBopL+m0e/j5xQrDHg7xb2xTT8WqMhqTEWByzaePt9wOsNhA
+         cLEXQiv5JY/ysd2G6Q3K6bTzckCzOJuCM8boLrLG9srD6VWFSVdx3+0lEgR6lOzrpotO
+         095Kb5RNKaKJ9+NFZL0XvVLYYcxJDTi94ViUE0z0cJ8dlLWu+wK7bjCnros3Ds680CT7
+         4lxw==
+X-Gm-Message-State: AOAM531jaqy58CDFPRqKlxELHVXkMQKk5IyzKAotdSqMLmwzen6UsDku
+        0VUucA3oQtyG72DZbnd9ydSbSw==
+X-Google-Smtp-Source: ABdhPJw74IIpxGu451wZhiSLooPNuUzLwpOCg3k0jbl/8Kuhol8fCf1eck9BWLR34bAFfo6cdNGNKQ==
+X-Received: by 2002:adf:ef89:: with SMTP id d9mr68461569wro.124.1594316762040;
+        Thu, 09 Jul 2020 10:46:02 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.206])
-        by smtp.gmail.com with ESMTPSA id f15sm6063854wrx.91.2020.07.09.10.45.59
+        by smtp.gmail.com with ESMTPSA id f15sm6063854wrx.91.2020.07.09.10.46.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jul 2020 10:46:00 -0700 (PDT)
+        Thu, 09 Jul 2020 10:46:01 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     jejb@linux.ibm.com, martin.petersen@oracle.com,
         linux-scsi@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
         Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
         "PMC-Sierra, Inc" <aacraid@pmc-sierra.com>
-Subject: [PATCH 02/24] scsi: aacraid: commctrl: Fix a few kerneldoc issues
-Date:   Thu,  9 Jul 2020 18:45:34 +0100
-Message-Id: <20200709174556.7651-3-lee.jones@linaro.org>
+Subject: [PATCH 03/24] scsi: aacraid: dpcsup: Fix logical bug when !DBG
+Date:   Thu,  9 Jul 2020 18:45:35 +0100
+Message-Id: <20200709174556.7651-4-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200709174556.7651-1-lee.jones@linaro.org>
 References: <20200709174556.7651-1-lee.jones@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Functions must follow imediately after the header documenting them and
-all parameters must be present.
+When DBG is not enabled FIB_COUNTER_INCREMENT() results in an
+empty statement, leaving the contents of if() and else() empty.
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/scsi/aacraid/commctrl.c:43: warning: Excess function parameter 'dev' description in 'AAC_DEBUG_PREAMBLE'
- drivers/scsi/aacraid/commctrl.c:43: warning: Excess function parameter 'arg' description in 'AAC_DEBUG_PREAMBLE'
- drivers/scsi/aacraid/commctrl.c:167: warning: Function parameter or member 'dev' not described in 'open_getadapter_fib'
- drivers/scsi/aacraid/commctrl.c:167: warning: Function parameter or member 'arg' not described in 'open_getadapter_fib'
- drivers/scsi/aacraid/commctrl.c:458: warning: Cannot understand  *
- on line 458 - I thought it was a doc line
+ drivers/scsi/aacraid/dpcsup.c: In function ‘aac_response_normal’:
+ drivers/scsi/aacraid/dpcsup.c:105:50: warning: suggest braces around empty body in an ‘else’ statement [-Wempty-body]
+ 105 | FIB_COUNTER_INCREMENT(aac_config.AsyncRecved);
+ | ^
+ drivers/scsi/aacraid/dpcsup.c: In function ‘aac_intr_normal’:
+ drivers/scsi/aacraid/dpcsup.c:411:30: warning: suggest braces around empty body in an ‘else’ statement [-Wempty-body]
+ 411 | aac_config.AsyncRecved);
+ | ^
 
 Cc: Adaptec OEM Raid Solutions <aacraid@microsemi.com>
 Cc: "PMC-Sierra, Inc" <aacraid@pmc-sierra.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/scsi/aacraid/commctrl.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ drivers/scsi/aacraid/dpcsup.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/scsi/aacraid/commctrl.c b/drivers/scsi/aacraid/commctrl.c
-index 34e65dea992e4..59e82a832042f 100644
---- a/drivers/scsi/aacraid/commctrl.c
-+++ b/drivers/scsi/aacraid/commctrl.c
-@@ -32,6 +32,8 @@
- 
- #include "aacraid.h"
- 
-+# define AAC_DEBUG_PREAMBLE	KERN_INFO
-+# define AAC_DEBUG_POSTAMBLE
- /**
-  *	ioctl_send_fib	-	send a FIB from userspace
-  *	@dev:	adapter is being processed
-@@ -40,9 +42,6 @@
-  *	This routine sends a fib to the adapter on behalf of a user level
-  *	program.
-  */
--# define AAC_DEBUG_PREAMBLE	KERN_INFO
--# define AAC_DEBUG_POSTAMBLE
--
- static int ioctl_send_fib(struct aac_dev * dev, void __user *arg)
- {
- 	struct hw_fib * kfib;
-@@ -158,11 +157,12 @@ static int ioctl_send_fib(struct aac_dev * dev, void __user *arg)
- 
- /**
-  *	open_getadapter_fib	-	Get the next fib
-+ *	@dev:	adapter is being processed
-+ *	@arg:	arguments to the open call
-  *
-  *	This routine will get the next Fib, if available, from the AdapterFibContext
-  *	passed in from the user.
-  */
--
- static int open_getadapter_fib(struct aac_dev * dev, void __user *arg)
- {
- 	struct aac_fib_context * fibctx;
-@@ -234,7 +234,6 @@ static int open_getadapter_fib(struct aac_dev * dev, void __user *arg)
-  *	This routine will get the next Fib, if available, from the AdapterFibContext
-  *	passed in from the user.
-  */
--
- static int next_getadapter_fib(struct aac_dev * dev, void __user *arg)
- {
- 	struct fib_ioctl f;
-@@ -455,11 +454,10 @@ static int check_revision(struct aac_dev *dev, void __user *arg)
- 
- 
- /**
-- *
-  * aac_send_raw_scb
-- *
-+ *	@dev:	adapter is being processed
-+ *	@arg:	arguments to the send call
-  */
--
- static int aac_send_raw_srb(struct aac_dev* dev, void __user * arg)
- {
- 	struct fib* srbfib;
+diff --git a/drivers/scsi/aacraid/dpcsup.c b/drivers/scsi/aacraid/dpcsup.c
+index a557aa629827e..25ebb94368f2c 100644
+--- a/drivers/scsi/aacraid/dpcsup.c
++++ b/drivers/scsi/aacraid/dpcsup.c
+@@ -99,10 +99,11 @@ unsigned int aac_response_normal(struct aac_queue * q)
+ 		}
+ 		if (hwfib->header.XferState & cpu_to_le32(NoResponseExpected | Async)) 
+ 		{
+-	        	if (hwfib->header.XferState & cpu_to_le32(NoResponseExpected))
++			if (hwfib->header.XferState & cpu_to_le32(NoResponseExpected)) {
+ 				FIB_COUNTER_INCREMENT(aac_config.NoResponseRecved);
+-			else 
++			} else {
+ 				FIB_COUNTER_INCREMENT(aac_config.AsyncRecved);
++			}
+ 			/*
+ 			 *	NOTE:  we cannot touch the fib after this
+ 			 *	    call, because it may have been deallocated.
+@@ -403,12 +404,13 @@ unsigned int aac_intr_normal(struct aac_dev *dev, u32 index, int isAif,
+ 			if (hwfib->header.XferState &
+ 				cpu_to_le32(NoResponseExpected | Async)) {
+ 				if (hwfib->header.XferState & cpu_to_le32(
+-					NoResponseExpected))
++					NoResponseExpected)) {
+ 					FIB_COUNTER_INCREMENT(
+ 						aac_config.NoResponseRecved);
+-				else
++				} else {
+ 					FIB_COUNTER_INCREMENT(
+ 						aac_config.AsyncRecved);
++				}
+ 				start_callback = 1;
+ 			} else {
+ 				unsigned long flagv;
 -- 
 2.25.1
 
