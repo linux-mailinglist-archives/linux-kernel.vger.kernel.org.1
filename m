@@ -2,94 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DBE4219E7C
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 12:59:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E4B7219E8E
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 13:01:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727059AbgGIK7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 06:59:09 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59602 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726387AbgGIK7J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 06:59:09 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id AE140AE2D;
-        Thu,  9 Jul 2020 10:59:06 +0000 (UTC)
-Date:   Thu, 9 Jul 2020 12:59:06 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        kernel test robot <rong.a.chen@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Paul McKenney <paulmck@kernel.org>, kexec@lists.infradead.org,
-        linux-kernel@vger.kernel.org, lkp@lists.01.org
-Subject: Re: [printk] 18a2dc6982: ltp.kmsg01.fail
-Message-ID: <20200709105906.GC11164@alley>
-References: <20200707145932.8752-5-john.ogness@linutronix.de>
- <20200709071411.GR3874@shao2-debian>
- <20200709083323.GA572@jagdpanzerIV.localdomain>
- <874kqhm1v8.fsf@jogness.linutronix.de>
+        id S1726914AbgGILBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 07:01:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42664 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726302AbgGILBM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 07:01:12 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EB0BC061A0B
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 04:01:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=QzgcO9zT0nQ3JkZsYLfaohKLlobA0w2kWRQELU810mI=; b=j/UBLJYf6Qkcz6KaazMXp8JGO2
+        cMe3Vu7DUIPLVlDiT2fYpUgaUsoF4SvFsopWQTHrOCASIOqVs04PlUr/BGyVsQCcBNAnaBKjPkdsS
+        MDXT2PhqYFIyg57W2e3VwkoBO6jrm9CL3kIxTwMTUoLbTfWHVZFfGYinWEBOSY+NWi8bchuQawDDx
+        00cmTzT3gXieLqbCxWfz4WgeJuiQj1VvN/0CF8t6LtLMC4zr0BZIlZjqfa/JkvkJqpJ2WXE/voXWD
+        fllAVhkf5yABzpJy4LrE25A8KDy371F47cr/g+JY2evbT1yi4XSFSGCaQN4f6Z4QxrCOOE/QyXF9L
+        kzxu0ojw==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jtUIe-0003Fl-1B; Thu, 09 Jul 2020 11:01:08 +0000
+Date:   Thu, 9 Jul 2020 12:01:07 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     sanggil2.kim@samsung.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: kernel: Add module symbols _text, _etext.
+Message-ID: <20200709110107.GA12046@infradead.org>
+References: <CGME20200709082408epcas2p4369fa8f06a57c7358be38282aae0f501@epcas2p4.samsung.com>
+ <1594283025-4166-1-git-send-email-sanggil2.kim@samsung.com>
+ <20200709094950.GA28361@willie-the-truck>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <874kqhm1v8.fsf@jogness.linutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200709094950.GA28361@willie-the-truck>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 2020-07-09 12:20:35, John Ogness wrote:
-> On 2020-07-09, Sergey Senozhatsky <sergey.senozhatsky@gmail.com> wrote:
-> > On (20/07/09 15:14), kernel test robot wrote:
-> > [..]
-> >
-> > Took me a while to find the FAIL-ed test:
-> >
-> >> kmsg01.c:393: INFO: TEST: read returns EPIPE when messages get overwritten
-> >> kmsg01.c:398: INFO: first seqno: 0
-> >> kmsg01.c:411: INFO: first seqno now: 881
-> >> kmsg01.c:425: FAIL: read returned: 77: SUCCESS (0)
-> >
-> > So this is seq number related
-> > https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/logging/kmsg/kmsg01.c#L383
+On Thu, Jul 09, 2020 at 10:49:51AM +0100, Will Deacon wrote:
+> On Thu, Jul 09, 2020 at 05:23:45PM +0900, sanggil2.kim@samsung.com wrote:
+> > From: Sanggil Kim <sanggil2.kim@samsung.com>
+> > 
+> > We have a solution to protect kernel code section(autually from _text to
+> > _etext) by not MMU. In order to do this, we have to know the addresses
+> > of _text and _etext at runtime.
 > 
-> Excellent test.
-> 
-> Since the messages are above the expected average size, the dataring is
-> wrapping before the descriptor ring. This means that the initial
-> descriptors are still there, but their data is gone. Initially I would
-> generate an EPIPE for this, but it was changed. Here is the thread [0]
-> we had about this.
+> Interesting! Can you post patches so that we can implement this solution
+> upstream? Without an in-tree user, we won't be exporting these symbols.
 
-I see. IMHO, the following should do the job. The check is done only
-when the above prb_read_valid() succeeded. Therefore the printk_record
-has to include a valid value. And it must be the first valid record
-when some messages were lost.
-
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index 62fc1abd9c4d..5d4760b5c671 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -775,9 +775,9 @@ static ssize_t devkmsg_read(struct file *file, char __user *buf,
- 		logbuf_lock_irq();
- 	}
- 
--	if (user->seq < prb_first_seq(prb)) {
-+	if (user->seq < r->info->seq) {
- 		/* our last seen message is gone, return error and reset */
--		user->seq = prb_first_seq(prb);
-+		user->seq = r->info->seq;
- 		ret = -EPIPE;
- 		logbuf_unlock_irq();
- 		goto out;
-
-
-Best Regards,
-Petr
+And even with that I'm pretty sure the code doing the 'protection'
+should be built-in and not modular..
