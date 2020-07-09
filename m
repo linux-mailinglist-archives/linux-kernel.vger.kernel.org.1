@@ -2,203 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC422219AD9
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 10:31:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1EED219ADF
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 10:33:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726435AbgGIIbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 04:31:46 -0400
-Received: from esa1.hgst.iphmx.com ([68.232.141.245]:18358 "EHLO
-        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726151AbgGIIbo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 04:31:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1594283503; x=1625819503;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=zN+PWKWQe1nG0DCjSwHPCJGWXTse1m7kMC/gehbmMSk=;
-  b=ohXOT6fCGWagwxLw0T9lcMqMFKi6W0vOfORP9S97WvwQTW/WmnbuHjs8
-   qDhkTPbCAoqzPIZnqv4tBDzyhXD+gYSr6Ea110wO6eVIcwX5mTkHgTuSp
-   uMVF+6YGxAkcFX+5u2mxHLxgT2a+S62pUedrPI+Bl7KMqqMG/dQ++tLDR
-   FzZPGc11kBkriYDGEyhE0PvfreRo7DaTJwbhv3VyCsQHi32FHxHJf82c6
-   oaQFJhMfeI+WZgVYXh9Zu7K/HnBnrcjUopLgJsBC16Zr5axf+ncLHWT4d
-   giz/WVfTuBjJ+Ev2yJNRzYd/XZwxnrfQnBbsASivh45EFkt7mvZ0JMpBE
-   w==;
-IronPort-SDR: 01I4le7/6eVQ3Wcz8/5ZZusEbJI+sFHJayrkWGjiikz3KfiTaTqDUDA3fQw+KZ0a2kdmo/KIRR
- T2usj/11XrqZCqGu8M5nW+W76/gt9E7pDqqBOew9UJaZxhtypfteCdftySDk/3wo5+GS+ljQmu
- An9JkxjTXuhb5XvYSY0GjX0NFaGxrYNKJOoCnSeW18aPioTsRb0UeA81WSWRzOElrx2tSbaHDJ
- QW0HpmAuN2feHqQwI2oYjp77Uq+qk/vV4clicYuEYZRVocQx0dvfPxYq6W/iq39ygCnwxhPV1B
- GJk=
-X-IronPort-AV: E=Sophos;i="5.75,331,1589212800"; 
-   d="scan'208";a="251244665"
-Received: from mail-bn8nam12lp2172.outbound.protection.outlook.com (HELO NAM12-BN8-obe.outbound.protection.outlook.com) ([104.47.55.172])
-  by ob1.hgst.iphmx.com with ESMTP; 09 Jul 2020 16:31:40 +0800
+        id S1726465AbgGIIdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 04:33:08 -0400
+Received: from mail-bn8nam11on2116.outbound.protection.outlook.com ([40.107.236.116]:57017
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726260AbgGIIdE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 04:33:04 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=C/xSqEoiYlO9mtv7iEmQMfcD+Io3Wfyhp71M/lO6lzPMKM3pFFozYbNDG2Xpbf1vXIj9Zw+fgEFMwRkTHaRicRPPkdboOtlmI5i2sG66zHgrOo33/hqFxgC8481+2M68qPVkbgLZyEfFwKFkMWoc24CDOz8alNny1WkQEOZuKn6OnEfVpas04Jg3y9BCHuO3Vo4ljpEuHtY17m7SpPu5WAuYSUtuyk5ob4+S0GQaeoy2IRwpzD4717LHM5ntuSgcsQ2sUTKZ4EhhbB/dEe9RCnwkpiUNoxyLiJbiml4HoW/Z0VRPzREKPCvGXMD57rrvkw6qwisrtakglS+ClaCfrw==
+ b=WgaGqlUxuhaXsYfc0Yz/HjpFfSrOd8W3YReIbLmKGvhALZN6vXpunGD4V+T2NsOqmNS8WRLaYn2nMlIs+YISAO01bJ12fEJmXUe+q28TaXGoM7ctdVkVgDnE13MRqLWy5v8MwkFA0WvzKDYwU5ELUnineqp5NMwd5Tr94bKuVaarwXak5cqHuecljaQ14BEKaJoIp+MfTe9nzSZNm2GcUj1pNRbGPD5hOB3R2ydRg5zEHNOuCDDv/P6sf40DRadxd/Z2EJcTNLOFo7cvPZ7eoCBkpnYeDQLafdOz2wHE55XGGIrxCkyzTlT5JXu9mgui2fMQVvTNmTxMcfbGz8UXBQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ekkzpRgnrr8/JLPd/gdts79eI2n9NWKRFSIIMpVuMv4=;
- b=RVt1ImSCkwTHxr4VWXyzkkMEc3P1fWgLOOn6QZ0lUwsVZLROUZm6R050QtL7H0Mw5B2szf/PRUHCZz41PZmw8YHN9AX0+4qLQKbJSzKWkxRRHb3thnpu6iwYj6KVQsdGxj5NW+CUj5rLBuEm1M+85vvu7LZPd0W8RHNfD/DXqnqgt+ZbU9HmIu9Eu5RkA0nB38r3fzju3y9TR/fhPGebDv4rkmWFdF8OqYbv7hJXLw6nitmm8gyzcfKr7pwrY3MMiO+l/97Lx6V//Y/++MWH9l7yzRrHJtd1hYGOFQ1c6moeu5C0GBqxn6YI9FPki4u15cJAXzF/5bVTd0brlEG+OA==
+ bh=g2l02bwqOJcFgzvXOM1FKabFhPQkV7mDdw5aOX8Ym6k=;
+ b=J4+p5EGNOg+vpjQi3pPA2HBRNoXvIecyeVt6pK0PCGFFGMSw7JqGWpoEY8MCWxmLSOyUSzuSs2VcC9lg60Adk38B4hfDs9FEl9Tbts1QSVn40d7/XO0mBD0T06I2YqAZAxmk72+whTflVYDGhvXYNYZhFR1QjT7GvxFS8y6LQSM/6byOhDsqZ3NRghVOW14ipNYXEClJjWqPDarOhu4wMNUmxoopQTYeOfw8x0eJFSVXHmso7jlTnQrj9GoTIQHXgOhkvsT1DgtG+qw2f+w6cj0jeK7HaxDkn0E9UQENLSsg/XdeMDHAFPApW+pZ/VQ85SN4d6svrkr5gJZc/Gv4Qw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+ smtp.mailfrom=analogixsemi.com; dmarc=pass action=none
+ header.from=analogixsemi.com; dkim=pass header.d=analogixsemi.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ d=Analogixsemi.onmicrosoft.com; s=selector2-Analogixsemi-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ekkzpRgnrr8/JLPd/gdts79eI2n9NWKRFSIIMpVuMv4=;
- b=cKrV6/jFVI71MJPWTOpj/ISDHUfC2SYAL4fU2x9UDyfEniJD4AZgrPVHOC8jgcyas1xUr7gphw+gHmqF+2TPlyDvtDUaP14f7ezdvIBGSj5og54OOm/fHh9sgpgFJCiDn1iv0KPPeTWIL+ivDGT4vzjI8FHzzYRECDS1sdVsc/w=
-Received: from SN6PR04MB4640.namprd04.prod.outlook.com (2603:10b6:805:a4::19)
- by SN6PR04MB3997.namprd04.prod.outlook.com (2603:10b6:805:40::10) with
+ bh=g2l02bwqOJcFgzvXOM1FKabFhPQkV7mDdw5aOX8Ym6k=;
+ b=qx8oAUQuF38RMPaZATu6zZg7B2SnH8eMhyv4fiP5g9B4AnJteGibZ5JQ7S2iV2VTMwJ1WrvZjsFtSsbUhrnRwp1ZrpWC4jAn9xdKGeZEoPF+/j42k1A7Kbyc4Co/RicreUTdA4/Oo1TgdQXMZWtTZwiMNd4bQHMhqlcfF2ity48=
+Authentication-Results: analogixsemi.com; dkim=none (message not signed)
+ header.d=none;analogixsemi.com; dmarc=none action=none
+ header.from=analogixsemi.com;
+Received: from BY5PR04MB6739.namprd04.prod.outlook.com (2603:10b6:a03:229::8)
+ by BYAPR04MB5462.namprd04.prod.outlook.com (2603:10b6:a03:c4::19) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.22; Thu, 9 Jul
- 2020 08:31:39 +0000
-Received: from SN6PR04MB4640.namprd04.prod.outlook.com
- ([fe80::1c80:dad0:4a83:2ef2]) by SN6PR04MB4640.namprd04.prod.outlook.com
- ([fe80::1c80:dad0:4a83:2ef2%4]) with mapi id 15.20.3153.031; Thu, 9 Jul 2020
- 08:31:39 +0000
-From:   Avri Altman <Avri.Altman@wdc.com>
-To:     Stanley Chu <stanley.chu@mediatek.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>
-CC:     "beanhuo@micron.com" <beanhuo@micron.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kuohong.wang@mediatek.com" <kuohong.wang@mediatek.com>,
-        "peter.wang@mediatek.com" <peter.wang@mediatek.com>,
-        "chun-hung.wu@mediatek.com" <chun-hung.wu@mediatek.com>,
-        "andy.teng@mediatek.com" <andy.teng@mediatek.com>,
-        "chaotian.jing@mediatek.com" <chaotian.jing@mediatek.com>,
-        "cc.chou@mediatek.com" <cc.chou@mediatek.com>
-Subject: RE: [PATCH v3] scsi: ufs: Cleanup completed request without interrupt
- notification
-Thread-Topic: [PATCH v3] scsi: ufs: Cleanup completed request without
- interrupt notification
-Thread-Index: AQHWU5heDqJFApuOo0yQOIjuO+/O36j+4j7g
-Date:   Thu, 9 Jul 2020 08:31:38 +0000
-Message-ID: <SN6PR04MB4640BEAFE18BDC933FC7EC95FC640@SN6PR04MB4640.namprd04.prod.outlook.com>
-References: <20200706132113.21096-1-stanley.chu@mediatek.com>
-In-Reply-To: <20200706132113.21096-1-stanley.chu@mediatek.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: mediatek.com; dkim=none (message not signed)
- header.d=none;mediatek.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [212.25.79.133]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 665e6441-f06d-4590-f60a-08d823e28001
-x-ms-traffictypediagnostic: SN6PR04MB3997:
-x-microsoft-antispam-prvs: <SN6PR04MB399775926FA2C72C1F31482BFC640@SN6PR04MB3997.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:1751;
-x-forefront-prvs: 04599F3534
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: MTkVQOORCQ+ItNsMGoLA+xuw7LF1bDYRp+iyxbgS3U22JqvUBvxIgcicDMlihE8Ud+3oROmHC6/LkSeZbLSf38EQ9YJr59UmEerTy3ApOlFJ2hlHHKvmAWEOi3wRmJMkco/VPcZ3OpfycvDk0rubeLRn/Y53Hgz+YBbJ5GILgY91uzVf4Su9Y27Kkg73y6GUzya8a49CYslp9IXIejjyJ7xAwv0Uu6cH3yDwjPI1ckyBuNh0xQRp6l99lpzUAhqlS2Te2eO4tWXMWC8ZnJbmHeUFIGhngmJkclU1rbC+byMZ1GzAind3asy0eol/wcxZgB0CltHgfqtWXtNDw4WxRA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR04MB4640.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(366004)(396003)(346002)(376002)(136003)(8936002)(7416002)(186003)(6506007)(478600001)(52536014)(5660300002)(66556008)(66446008)(66476007)(64756008)(66946007)(76116006)(7696005)(26005)(4326008)(33656002)(55016002)(9686003)(8676002)(110136005)(86362001)(54906003)(316002)(83380400001)(2906002)(71200400001)(15650500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: VB7j0/TJzQVR6fomZg8zgSw2HNqIn0PNt1thFo7ijLLYY2XFOBjlQeqjGMm6EXMVVeeAqHkoRVSwwOj6zo3ICVtfdTQtzRrfUUMikrbEn5MymvEX3orIjhq/xRZI61GJujBXNSkIw2ZR8zSz49auqHwN8BJEtuh3RjaWt2SpF1iSyfw5bKUWR6GrRZKxoAcMPes6suQDXIMt4yvNwLfSYB6+/RFAFDyJD5R+xOUgj7T3oFbiTpIpBlNpSMxWSYmJxEPD97wSUvm6pGKzXbtliaFmVHxNDwEMTK3mdM5YhY3tk+btsrr49jAb/Bq/ypd42KI5EUWp3jeNwQDRDxpRIfh75XuofTMxx61H2JkSaj8F43Wh3FZrZsO0t96hOnAq5Wo8o4eweN54iB3fibC7K4ETuh1wD7sDbf4hdCircb5BUsGyJXKjsldMyaV0503pUWww4a1+7XtZZSn+RbQrmXtRaXUUjqBiiM7LbNJzDhA=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.28; Thu, 9 Jul
+ 2020 08:33:01 +0000
+Received: from BY5PR04MB6739.namprd04.prod.outlook.com
+ ([fe80::844e:398b:2165:631b]) by BY5PR04MB6739.namprd04.prod.outlook.com
+ ([fe80::844e:398b:2165:631b%5]) with mapi id 15.20.3153.031; Thu, 9 Jul 2020
+ 08:33:01 +0000
+Date:   Thu, 9 Jul 2020 16:32:51 +0800
+From:   Xin Ji <xji@analogixsemi.com>
+To:     devicetree@vger.kernel.org, devel@driverdev.osuosl.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Nicolas Boichat <drinkcat@google.com>,
+        Sam Ravnborg <sam@ravnborg.org>
+Cc:     Neil Armstrong <narmstrong@baylibre.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Pi-Hsun Shih <pihsun@chromium.org>,
+        Sheng Pan <span@analogixsemi.com>
+Subject: [PATCH v14 1/2] dt-bindings: drm/bridge: anx7625: MIPI to DP
+ transmitter DT schema
+Message-ID: <eb234492d16805c9b3a1f5a56b161dc50be3ba17.1594283160.git.xji@analogixsemi.com>
+References: <cover.1594283160.git.xji@analogixsemi.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1594283160.git.xji@analogixsemi.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-ClientProxiedBy: HK2PR02CA0138.apcprd02.prod.outlook.com
+ (2603:1096:202:16::22) To BY5PR04MB6739.namprd04.prod.outlook.com
+ (2603:10b6:a03:229::8)
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from xin-VirtualBox (114.247.245.254) by HK2PR02CA0138.apcprd02.prod.outlook.com (2603:1096:202:16::22) with Microsoft SMTP Server (version=TLS1_0, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.20.3174.21 via Frontend Transport; Thu, 9 Jul 2020 08:33:00 +0000
+X-Originating-IP: [114.247.245.254]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e86a5e0a-b30e-4824-8daa-08d823e2b103
+X-MS-TrafficTypeDiagnostic: BYAPR04MB5462:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR04MB54629A7DE6A4DF9CFEA182D2C7640@BYAPR04MB5462.namprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2733;
+X-Forefront-PRVS: 04599F3534
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: a2j+eHRozwxO6dz2641rmk/89mzF/xPfbKAb1J0zNKqU/pqgHIn8ShuMy9PdenTSOhW/e/95+c2QKIM4ktcUSkOviM3qoeryTbRgVz/ws/ZAY45Kelnqw2NxG9CSSYl/ey8B2DzBnOcgzjqfmcIyVaIhImgD0Tk35iTHBM2m30OQWHt+e1kMnrOhiI7ddjY7rFl2n4+MmZRMLGfm7ovUC6CBDAQoFKPC2BvdJ8zHTdDvtyvMwDg31IQrHxmHHo7uyMrt7O4uyUwfYm52N1jAKMGIyNLFP9Vs+auVbb6/NpNI0VjpWcb6ChXVXLRmRgphk7dbv4Inb1Kgn0tEC/UTlbd+6NTvI+ffUYqmTJ1kM/OAYhL0Porr6okEJtCz/NHUUiNRjX6zGyqbQS0jYwxblg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6739.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(376002)(346002)(396003)(366004)(136003)(39840400004)(54906003)(110136005)(316002)(6666004)(8676002)(6486002)(2906002)(36756003)(5660300002)(66476007)(52116002)(16526019)(66556008)(186003)(66946007)(26005)(4326008)(6496006)(8936002)(107886003)(478600001)(956004)(86362001)(7416002)(2616005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: IcA3BILt2uXCimQ5QdQUeQrSP3yjXZc0MboJKXcACzOjnhob89mJJgkVZ9UJD/KbDbftkTSiVgZBsenQETSgfy3iPxJ84MWh0HrIeixl2upT2Gm9dzqAAQoqrBmvFpxLgTn3QIn06hXQ1WzlEFl1JV7ydwOAdTLYHOmVlKSiXyUxQ4ttLSb3014NT9E5baG93Ho3fPNQ4tF+nUB+yxAP2VeyTDYUkrBcKCATVhXMUny0pRlqjz1Z/c7jVAs1y7Cd/WsR8iAbVhxz81VJ8bWg3YHc2QQXsJGVjJRu3t+m74HSVrPn/7t2r4GyNFoQTWrsFARTOWzf1s58yFzY9Ev0vAo64TPt++Eit6w/9bvBppscWnXS6ypObLj54DKJYCcKgV60J5HV97TWYiL76TMT+rDK8UG79StoD+ldXAqYvqjSJIxUGFYXwT1Cp+UZ0i7Dry7GM4gfcHWoiOJXvjbsvhLeEQTQenH4BSbMbSDeMjzfAGyVj1QV9U+5o6kbdJLn
+X-OriginatorOrg: analogixsemi.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e86a5e0a-b30e-4824-8daa-08d823e2b103
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6739.namprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR04MB4640.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 665e6441-f06d-4590-f60a-08d823e28001
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Jul 2020 08:31:38.8429
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jul 2020 08:33:01.5721
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 2cq1zmKEfR9AqZypCwZzRcsU2LIeDFUYQcaCsBQHhFDuXdQ6trcxb+lNRtWAEm8Fr0zG5EVBQ8bOvK+uXIU02w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB3997
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: b099b0b4-f26c-4cf5-9a0f-d5be9acab205
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 6tnTuxp8IAfA6OQcqe2hWIHgA/igfmmL/OyOebIcLSryvhwvXpAgcwOejgaUbEEfi4N6FhM9F5nAVoQvoZHzGw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB5462
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-=20
->=20
-> If somehow no interrupt notification is raised for a completed request
-> and its doorbell bit is cleared by host, UFS driver needs to cleanup
-> its outstanding bit in ufshcd_abort().
-Theoretically, this case is already accounted for -=20
-See line 6407: a proper error is issued and eventually outstanding req is c=
-leared.
+anx7625: MIPI to DP transmitter DT schema
 
-Can you go over the scenario you are attending line by line,
-And explain why ufshcd_abort does not account for it?
+Signed-off-by: Xin Ji <xji@analogixsemi.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+---
+ .../bindings/display/bridge/analogix,anx7625.yaml  | 95 ++++++++++++++++++++++
+ 1 file changed, 95 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
 
->=20
-> Otherwise, system may crash by below abnormal flow:
->=20
-> After this request is requeued by SCSI layer with its
-> outstanding bit set, the next completed request will trigger
-> ufshcd_transfer_req_compl() to handle all "completed outstanding
-> bits". In this time, the "abnormal outstanding bit" will be detected
-> and the "requeued request" will be chosen to execute request
-> post-processing flow. This is wrong and blk_finish_request() will
-> BUG_ON because this request is still "alive".
->=20
-> It is worth mentioning that before ufshcd_abort() cleans the timed-out
-> request, driver need to check again if this request is really not
-> handled by __ufshcd_transfer_req_compl() yet because it may be
-> possible that the interrupt comes very lately before the cleaning.
-What do you mean? Why checking the outstanding reqs isn't enough?
+diff --git a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+new file mode 100644
+index 0000000..60585a4
+--- /dev/null
++++ b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+@@ -0,0 +1,95 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++# Copyright 2019 Analogix Semiconductor, Inc.
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/display/bridge/analogix,anx7625.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++
++title: Analogix ANX7625 SlimPort (4K Mobile HD Transmitter)
++
++maintainers:
++  - Xin Ji <xji@analogixsemi.com>
++
++description: |
++  The ANX7625 is an ultra-low power 4K Mobile HD Transmitter
++  designed for portable devices.
++
++properties:
++  compatible:
++    items:
++      - const: analogix,anx7625
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    description: used for interrupt pin B8.
++    maxItems: 1
++
++  enable-gpios:
++    description: used for power on chip control, POWER_EN pin D2.
++    maxItems: 1
++
++  reset-gpios:
++    description: used for reset chip control, RESET_N pin B7.
++    maxItems: 1
++
++  ports:
++    type: object
++
++    properties:
++      port@0:
++        type: object
++        description:
++          Video port for MIPI DSI input.
++
++      port@1:
++        type: object
++        description:
++          Video port for panel or connector.
++
++    required:
++        - port@0
++        - port@1
++
++required:
++  - compatible
++  - reg
++  - ports
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++
++    i2c0 {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        encoder@58 {
++            compatible = "analogix,anx7625";
++            reg = <0x58>;
++            enable-gpios = <&pio 45 GPIO_ACTIVE_HIGH>;
++            reset-gpios = <&pio 73 GPIO_ACTIVE_HIGH>;
++
++            ports {
++                #address-cells = <1>;
++                #size-cells = <0>;
++
++                mipi2dp_bridge_in: port@0 {
++                    reg = <0>;
++                    anx7625_in: endpoint {
++                        remote-endpoint = <&mipi_dsi>;
++                    };
++                };
++
++                mipi2dp_bridge_out: port@1 {
++                    reg = <1>;
++                    anx7625_out: endpoint {
++                        remote-endpoint = <&panel_in>;
++                    };
++                };
++            };
++        };
++    };
+-- 
+2.7.4
 
->=20
-> Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
-> ---
->  drivers/scsi/ufs/ufshcd.c | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index 8603b07045a6..f23fb14df9f6 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -6462,7 +6462,7 @@ static int ufshcd_abort(struct scsi_cmnd *cmd)
->                         /* command completed already */
->                         dev_err(hba->dev, "%s: cmd at tag %d successfully=
- cleared from
-> DB.\n",
->                                 __func__, tag);
-> -                       goto out;
-> +                       goto cleanup;
-But you've arrived here only if (!(test_bit(tag, &hba->outstanding_reqs))) =
--=20
-See line 6400.=20
-
->                 } else {
->                         dev_err(hba->dev,
->                                 "%s: no response from device. tag =3D %d,=
- err %d\n",
-> @@ -6496,9 +6496,14 @@ static int ufshcd_abort(struct scsi_cmnd *cmd)
->                 goto out;
->         }
->=20
-> +cleanup:
-> +       spin_lock_irqsave(host->host_lock, flags);
-> +       if (!test_bit(tag, &hba->outstanding_reqs)) {
-> +               spin_unlock_irqrestore(host->host_lock, flags);
-> +               goto out;
-> +       }
->         scsi_dma_unmap(cmd);
->=20
-> -       spin_lock_irqsave(host->host_lock, flags);
->         ufshcd_outstanding_req_clear(hba, tag);
->         hba->lrb[tag].cmd =3D NULL;
->         spin_unlock_irqrestore(host->host_lock, flags);
-> --
-> 2.18.0
