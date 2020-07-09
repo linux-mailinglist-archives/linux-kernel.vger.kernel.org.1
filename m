@@ -2,93 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6473921A6B3
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 20:13:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38A7621A6B6
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 20:14:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726786AbgGISNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 14:13:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726684AbgGISNv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 14:13:51 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72177C08C5DC
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 11:13:51 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id f5so3450627ljj.10
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 11:13:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QQ4MFwKX0KeW+zmPJf6dh6Z4HEUniPj2BzYhpEhaY5c=;
-        b=H4yZEP+ReHmnQ8pPy85R6Z5AGImyoEWgzVC2r2MdX2eTlEN06eDA4bs8kmZRPf8ir7
-         nONwubENi3D4CIY0RGHiJrUqJ5uDrjE78F1DvfhsN5lZUpuci6eD15V+qTw0bDmuQk3U
-         UFPBqV2teYZxvPtlwDGq03SOGObHpMBpQnzm0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QQ4MFwKX0KeW+zmPJf6dh6Z4HEUniPj2BzYhpEhaY5c=;
-        b=KGn91q1nOGObu8AQ5s2wyFtLaklcwNTPOKT0n/L9NOswh8SVR5QUrQYYovq5eG6JTf
-         glPFyP720jclfMbqUPXA3MFmLLEah8AoMDd8EoQbl8Tiu52k5eUnRCRh45ChNFFBXiNx
-         wZlQwKOamqxorv2z2YHDJsklCG3/e8SV0ydo6RijtVOKmkRbUj5K5TcVT1VrRy9u6bZh
-         TEWPLTo8Md4j0r/OylxtgO568eUPD56s3hc5wR34c2g2wQNVcRfI4bCc8FXYU7tapJqB
-         qqpo+yE2tM9b9VdwPxQgQmgQKjykenqyEhKRAu6t5gI++5lJ5LvrqC7v6bqgH0q0GJDD
-         nObA==
-X-Gm-Message-State: AOAM531DCxzrXFfBsUkfKkXp2YWSAffQwqoGGYv+aAFle4j3jwrWbuWK
-        hn8ngcixycwvM46dEtp6KGQiccvqrF0=
-X-Google-Smtp-Source: ABdhPJzfBBq3zOlHbJiK/OhtPWrTi/60jIrqO7imUBlMCt5YvX5X81647l30eTokJZDaznOSYoZBPA==
-X-Received: by 2002:a2e:80cc:: with SMTP id r12mr32459160ljg.344.1594318429631;
-        Thu, 09 Jul 2020 11:13:49 -0700 (PDT)
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com. [209.85.167.51])
-        by smtp.gmail.com with ESMTPSA id w4sm1048172ljw.16.2020.07.09.11.13.47
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Jul 2020 11:13:48 -0700 (PDT)
-Received: by mail-lf1-f51.google.com with SMTP id k17so1720851lfg.3
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 11:13:47 -0700 (PDT)
-X-Received: by 2002:a05:6512:3f1:: with SMTP id n17mr40988629lfq.125.1594318427258;
- Thu, 09 Jul 2020 11:13:47 -0700 (PDT)
+        id S1726989AbgGISOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 14:14:22 -0400
+Received: from mga05.intel.com ([192.55.52.43]:55994 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726684AbgGISOW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 14:14:22 -0400
+IronPort-SDR: PyMEWeA7NzssZmOeKHCRKmZjhc9Lg4zfvSn+qCpS8WiQgPcB6/JQ4I9DhTHNmdMcVJlCPN1STL
+ vfyFGKl/WB8Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9677"; a="232939657"
+X-IronPort-AV: E=Sophos;i="5.75,332,1589266800"; 
+   d="scan'208";a="232939657"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jul 2020 11:14:21 -0700
+IronPort-SDR: mFl7tvzao2b3S+WOOm7EWaDgKCEOqP556h7rRjXy2n17GoOlSWUOaMw7fqxanx3U7Jnj7m54xx
+ 2CgmiOdsFUdg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,332,1589266800"; 
+   d="scan'208";a="458000250"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.73]) ([10.237.72.73])
+  by orsmga005.jf.intel.com with ESMTP; 09 Jul 2020 11:14:20 -0700
+Subject: Re: [PATCH 05/11] perf intel-pt: Use itrace error flags to suppress
+ some errors
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org
+References: <20200709173628.5613-1-adrian.hunter@intel.com>
+ <20200709173628.5613-6-adrian.hunter@intel.com>
+ <20200709175046.GA1126680@tassilo.jf.intel.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <3271e2cf-490b-5391-19e0-e1b019bfba1f@intel.com>
+Date:   Thu, 9 Jul 2020 21:13:38 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
 MIME-Version: 1.0
-References: <20200621054210.14804-1-rikard.falkeborn@gmail.com> <20200709123011.GA18734@gondor.apana.org.au>
-In-Reply-To: <20200709123011.GA18734@gondor.apana.org.au>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 9 Jul 2020 11:13:31 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wibAAcH2+hk+X9mBp0h1B6oYv+Pjzq1XB+EXJhgshu-Xg@mail.gmail.com>
-Message-ID: <CAHk-=wibAAcH2+hk+X9mBp0h1B6oYv+Pjzq1XB+EXJhgshu-Xg@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] linux/bits.h: fix unsigned less than zero warnings
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Emil Velikov <emil.l.velikov@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Kees Cook <keescook@chromium.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>,
-        Syed Nayyar Waris <syednwaris@gmail.com>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200709175046.GA1126680@tassilo.jf.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 9, 2020 at 5:30 AM Herbert Xu <herbert@gondor.apana.org.au> wrote:
->
-> I'm still getting the same warning even with the patch, for example:
+On 9/07/20 8:50 pm, Andi Kleen wrote:
+> On Thu, Jul 09, 2020 at 08:36:22PM +0300, Adrian Hunter wrote:
+>> The itrace "e" option may be followed by a number which has the
+>> following effect for Intel PT:
+>> 	1	Suppress overflow events
+>> 	2	Suppress trace data lost events
+>> The values may be combined by bitwise OR'ing them.
+>>
+>> Suppressing those errors can be useful for testing and debugging
+>> because they are not due to decoding.
+> 
+> I suspect it will be useful to more than just decoding and debugging.
+> 
+> But the number is not a nice user interface.
+> 
+> How about e[....] 
+> 
+> like e[ol] 
 
-Are you building with W=1?
+Do you mean literally square-brackets? If you were really unlucky you might
+get pathname expansion with that.
 
-There's a patch to move that broken -Wtype-limits thing to W=2.
+> 
+> Also it's a bit unusual that this disables instead of enables, but ok.
+> 
+> -Andi
+> 
 
-    https://lore.kernel.org/lkml/20200708190756.16810-1-rikard.falkeborn@gmail.com/
-
-does that work for you?
-
-              Linus
