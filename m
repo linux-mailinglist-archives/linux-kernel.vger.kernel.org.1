@@ -2,200 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1107321997F
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 09:10:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 584DA219966
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 09:08:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726442AbgGIHK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 03:10:29 -0400
-Received: from mga12.intel.com ([192.55.52.136]:2905 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726418AbgGIHKX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 03:10:23 -0400
-IronPort-SDR: gyyR7ErQkUsaVo/5jOSs1rP0+FHZLfW3Bcc57AHLlxn0CBvJeuj8ZWWclayz8snj371XJmt2Ge
- SWgjRagAut8w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9676"; a="127534985"
-X-IronPort-AV: E=Sophos;i="5.75,331,1589266800"; 
-   d="scan'208";a="127534985"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jul 2020 00:10:23 -0700
-IronPort-SDR: I/ofxX7zYBrYPBi08sw74pOhJ67UUZru+4Ohb9gIbf7nmb+SeCKQz8lhEFnmyKwwO3rjwXq+8p
- 5R9MoD6aLN+w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,331,1589266800"; 
-   d="scan'208";a="316138858"
-Received: from allen-box.sh.intel.com ([10.239.159.139])
-  by fmsmga002.fm.intel.com with ESMTP; 09 Jul 2020 00:10:21 -0700
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-To:     iommu@lists.linux-foundation.org
-Cc:     Joerg Roedel <joro@8bytes.org>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>, Liu Yi L <yi.l.liu@intel.com>,
-        linux-kernel@vger.kernel.org, Lu Baolu <baolu.lu@linux.intel.com>
-Subject: [PATCH v3 4/4] iommu/vt-d: Add page response ops support
-Date:   Thu,  9 Jul 2020 15:05:37 +0800
-Message-Id: <20200709070537.18473-5-baolu.lu@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200709070537.18473-1-baolu.lu@linux.intel.com>
-References: <20200709070537.18473-1-baolu.lu@linux.intel.com>
+        id S1726263AbgGIHIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 03:08:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34920 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726119AbgGIHIP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 03:08:15 -0400
+Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2678AC061A0B;
+        Thu,  9 Jul 2020 00:08:15 -0700 (PDT)
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id 66F7ABC06E;
+        Thu,  9 Jul 2020 07:08:10 +0000 (UTC)
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+To:     mchehab@kernel.org, bp@alien8.de, tony.luck@intel.com,
+        james.morse@arm.com, rrichter@marvell.com,
+        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Subject: [PATCH] EDAC-GHES: Replace HTTP links with HTTPS ones
+Date:   Thu,  9 Jul 2020 09:08:04 +0200
+Message-Id: <20200709070804.24135-1-grandmaster@al2klimov.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: +++++
+X-Spam-Level: *****
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After page requests are handled, software must respond to the device
-which raised the page request with the result. This is done through
-the iommu ops.page_response if the request was reported to outside of
-vendor iommu driver through iommu_report_device_fault(). This adds the
-VT-d implementation of page_response ops.
+Rationale:
+Reduces attack surface on kernel devs opening the links for MITM
+as HTTPS traffic is much harder to manipulate.
 
-Co-developed-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
-Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
-Co-developed-by: Liu Yi L <yi.l.liu@intel.com>
-Signed-off-by: Liu Yi L <yi.l.liu@intel.com>
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+Deterministic algorithm:
+For each file:
+  If not .svg:
+    For each line:
+      If doesn't contain `\bxmlns\b`:
+        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+            If both the HTTP and HTTPS versions
+            return 200 OK and serve the same content:
+              Replace HTTP with HTTPS.
+
+Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
 ---
- drivers/iommu/intel/iommu.c |   1 +
- drivers/iommu/intel/svm.c   | 100 ++++++++++++++++++++++++++++++++++++
- include/linux/intel-iommu.h |   3 ++
- 3 files changed, 104 insertions(+)
+ Continuing my work started at 93431e0607e5.
+ See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+ (Actually letting a shell for loop submit all this stuff for me.)
 
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index 4a6b6960fc32..98390a6d8113 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -6057,6 +6057,7 @@ const struct iommu_ops intel_iommu_ops = {
- 	.sva_bind		= intel_svm_bind,
- 	.sva_unbind		= intel_svm_unbind,
- 	.sva_get_pasid		= intel_svm_get_pasid,
-+	.page_response		= intel_svm_page_response,
- #endif
- };
+ If there are any URLs to be removed completely or at least not HTTPSified:
+ Just clearly say so and I'll *undo my change*.
+ See also: https://lkml.org/lkml/2020/6/27/64
+
+ If there are any valid, but yet not changed URLs:
+ See: https://lkml.org/lkml/2020/6/26/837
+
+ If you apply the patch, please let me know.
+
+
+ drivers/edac/ghes_edac.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/edac/ghes_edac.c b/drivers/edac/ghes_edac.c
+index cb3dab56a875..e019319d7c2d 100644
+--- a/drivers/edac/ghes_edac.c
++++ b/drivers/edac/ghes_edac.c
+@@ -4,7 +4,7 @@
+  *
+  * Copyright (c) 2013 by Mauro Carvalho Chehab
+  *
+- * Red Hat Inc. http://www.redhat.com
++ * Red Hat Inc. https://www.redhat.com
+  */
  
-diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
-index d24e71bac8db..839d2af377b6 100644
---- a/drivers/iommu/intel/svm.c
-+++ b/drivers/iommu/intel/svm.c
-@@ -1082,3 +1082,103 @@ int intel_svm_get_pasid(struct iommu_sva *sva)
- 
- 	return pasid;
- }
-+
-+int intel_svm_page_response(struct device *dev,
-+			    struct iommu_fault_event *evt,
-+			    struct iommu_page_response *msg)
-+{
-+	struct iommu_fault_page_request *prm;
-+	struct intel_svm_dev *sdev = NULL;
-+	struct intel_svm *svm = NULL;
-+	struct intel_iommu *iommu;
-+	bool private_present;
-+	bool pasid_present;
-+	bool last_page;
-+	u8 bus, devfn;
-+	int ret = 0;
-+	u16 sid;
-+
-+	if (!dev || !dev_is_pci(dev))
-+		return -ENODEV;
-+
-+	iommu = device_to_iommu(dev, &bus, &devfn);
-+	if (!iommu)
-+		return -ENODEV;
-+
-+	if (!msg || !evt)
-+		return -EINVAL;
-+
-+	mutex_lock(&pasid_mutex);
-+
-+	prm = &evt->fault.prm;
-+	sid = PCI_DEVID(bus, devfn);
-+	pasid_present = prm->flags & IOMMU_FAULT_PAGE_REQUEST_PASID_VALID;
-+	private_present = prm->flags & IOMMU_FAULT_PAGE_REQUEST_PRIV_DATA;
-+	last_page = prm->flags & IOMMU_FAULT_PAGE_REQUEST_LAST_PAGE;
-+
-+	if (pasid_present) {
-+		if (prm->pasid == 0 || prm->pasid >= PASID_MAX) {
-+			ret = -EINVAL;
-+			goto out;
-+		}
-+
-+		ret = pasid_to_svm_sdev(dev, prm->pasid, &svm, &sdev);
-+		if (ret || !sdev) {
-+			ret = -ENODEV;
-+			goto out;
-+		}
-+
-+		/*
-+		 * For responses from userspace, need to make sure that the
-+		 * pasid has been bound to its mm.
-+		*/
-+		if (svm->flags & SVM_FLAG_GUEST_MODE) {
-+			struct mm_struct *mm;
-+
-+			mm = get_task_mm(current);
-+			if (!mm) {
-+				ret = -EINVAL;
-+				goto out;
-+			}
-+
-+			if (mm != svm->mm) {
-+				ret = -ENODEV;
-+				mmput(mm);
-+				goto out;
-+			}
-+
-+			mmput(mm);
-+		}
-+	} else {
-+		pr_err_ratelimited("Invalid page response: no pasid\n");
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	/*
-+	 * Per VT-d spec. v3.0 ch7.7, system software must respond
-+	 * with page group response if private data is present (PDP)
-+	 * or last page in group (LPIG) bit is set. This is an
-+	 * additional VT-d requirement beyond PCI ATS spec.
-+	 */
-+	if (last_page || private_present) {
-+		struct qi_desc desc;
-+
-+		desc.qw0 = QI_PGRP_PASID(prm->pasid) | QI_PGRP_DID(sid) |
-+				QI_PGRP_PASID_P(pasid_present) |
-+				QI_PGRP_PDP(private_present) |
-+				QI_PGRP_RESP_CODE(msg->code) |
-+				QI_PGRP_RESP_TYPE;
-+		desc.qw1 = QI_PGRP_IDX(prm->grpid) | QI_PGRP_LPIG(last_page);
-+		desc.qw2 = 0;
-+		desc.qw3 = 0;
-+		if (private_present)
-+			memcpy(&desc.qw2, prm->private_data,
-+			       sizeof(prm->private_data));
-+
-+		qi_submit_sync(iommu, &desc, 1, 0);
-+	}
-+out:
-+	mutex_unlock(&pasid_mutex);
-+	return ret;
-+}
-diff --git a/include/linux/intel-iommu.h b/include/linux/intel-iommu.h
-index fc2cfc3db6e1..bf6009a344f5 100644
---- a/include/linux/intel-iommu.h
-+++ b/include/linux/intel-iommu.h
-@@ -741,6 +741,9 @@ struct iommu_sva *intel_svm_bind(struct device *dev, struct mm_struct *mm,
- 				 void *drvdata);
- void intel_svm_unbind(struct iommu_sva *handle);
- int intel_svm_get_pasid(struct iommu_sva *handle);
-+int intel_svm_page_response(struct device *dev, struct iommu_fault_event *evt,
-+			    struct iommu_page_response *msg);
-+
- struct svm_dev_ops;
- 
- struct intel_svm_dev {
+ #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 -- 
-2.17.1
+2.27.0
 
