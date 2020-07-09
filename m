@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A60E21A61F
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 19:46:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D931D21A628
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 19:46:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728666AbgGIRqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 13:46:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48984 "EHLO
+        id S1728731AbgGIRqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 13:46:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728644AbgGIRqW (ORCPT
+        with ESMTP id S1728647AbgGIRqW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 9 Jul 2020 13:46:22 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01E7BC08C5DD
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 10:46:21 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id w3so2746241wmi.4
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 10:46:20 -0700 (PDT)
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1760AC08C5CE
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 10:46:22 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id s10so3253923wrw.12
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 10:46:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=9ZgkQ7bdc1wuAXRYHhS8n4ys9/FLwMulTL97bGrK6Pg=;
-        b=THHFlyDNfbGhREe2Mth1t3vCdRUQD4ki7iIZalNoQuNJfu8+DSo3uQh/JnGFL1A7pB
-         r6my4q+nRSD/YT8Kj7W7qiyUu4sCcRaeitRb9gqIgzTzXOrEgeNR5c2j7v0DiGPCTj/r
-         GZ+R+hesfOrz8Xx88SDf0a9ZLtrXI9KyTVwM0Fc7itFpMLeGE/H4H7vnS5jdMQ1PSsm4
-         XwPKiJQJdEbzq0enhc1XJN7KBC/Y8fJ6m1pTP34kg0vZIfkB5QtC1DGJoSUpWzHqjYHW
-         KJevbzy75tsf6JdnjP+mG/Zt1RE5Ad862YUbB6B6NXn3g7lsp51hDsB9mOCnx+t38PoO
-         1poQ==
+        bh=XHlEfo3tdu7fpK4dx4b1MtHnaLwguM9Twh58pG6oyd8=;
+        b=VesfxsaFFBKFlk9a9thYrVO38tZFUIsXefQpeuQaw8W8zrnsJ6vUqOtgK2Ak4YziVP
+         SAMUUQZT8+evcb3M8m1ZVqmUtNYL8Rnkub3E3tFQUMxT+MJd1UFZrrynIrBhOJC/OCUR
+         iif8eqkIRWByhR4s1B2m/awq1KuBDP5E9pjlGmzfhv3hq78ZpFA6jmfuJxb1Xowjx8qC
+         /f4Z+MhPjjAI7u2iGyboKKcpmTG5YzMnYT1OSWxNGuOg2y5YfkUo9eOK+x2fEmeaPSxQ
+         onsYPfz7Ong2fnJtK8U0qd6zZddcDgvw9vgobA377uZw6ps0DoKK21yIP3eA5NXb3iuO
+         sPZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=9ZgkQ7bdc1wuAXRYHhS8n4ys9/FLwMulTL97bGrK6Pg=;
-        b=NQ4wkySdsQFdYsWFhJX5qcRXc7CQcKDwqdcTPwfptWpAWkh7rdRQgPwCEJMbnFQrSG
-         689MFF3BCxt/H6FXhS74S6nAPbpqPYHmY8sR+eVLVoe6SGQFlGbQ6iR5o3PuCciia/Ur
-         Y5BWxin+MEbeHxUxMPOlkgMV7S0f9c9zp7CN743y8B06IrIGuLSFRxnVoUSxEjsbq8Fy
-         zE+tjR/6nqLzCYVrFUUP7kK2YtNRoT+LHoNqj3JdL4OehbP7Yv20/uJP5u2lXKqO52EN
-         VNdeM4nrWcLdUphFdXXxUR1o7PPkyzCM5p1YNTLDtfqGLGkiSlcdstsBrU/1sMtQeh9D
-         EdLQ==
-X-Gm-Message-State: AOAM5324N2aDiorHdLZ8mY8WFJPZx8UdDe7tof9PaEJX94GWKRW7OIFa
-        B6/K8g2lQ2Bj3+63r39E+OykWQ==
-X-Google-Smtp-Source: ABdhPJxVsZiWV2GSjBwMelb7G5gDpGItFQpB6cjPyhX5+TFpX2QA4i7Wi5YMnZ42voh/y6eviZADJw==
-X-Received: by 2002:a1c:49d4:: with SMTP id w203mr1191513wma.13.1594316779758;
-        Thu, 09 Jul 2020 10:46:19 -0700 (PDT)
+        bh=XHlEfo3tdu7fpK4dx4b1MtHnaLwguM9Twh58pG6oyd8=;
+        b=Hbq+FHOyKZZPlQEerR38nXEtUHxqtCzFQozFg+v+LfSjnow4Big0r4qb0ec3dKhmBa
+         pMqeni9QaOOMhnYdwnfyDB6BKBDAjEwbgrncAIBlOzpj+0LcLxseJYOPGlWMWn9kir6B
+         4taYuBiwNC0GNhm1PUktHXt5bRL9ylU4XvoHxKd4ce5VFKVqQPsEE/wCZhdGwzKdO4kQ
+         1nyyEPLW7eqxcq/RjeZwpXRiDaGqLDg4FuhRmGkCN4y3BkksWrZbOlAkWNWwYxdFqX5H
+         o/pKdx82N+jioC5ZBwyaVtKIZYaQYF5P/p6+nMa0VixoikEvs7NtU/3g8vNvARIjGK7x
+         G9zA==
+X-Gm-Message-State: AOAM5318n/LMikL2C5qKFaujFytbSpSvEWeqjldm3VLHv3fUajGyJv6K
+        6hk7njo4bQ+WoGAbheA5JIxP2dtgTb8=
+X-Google-Smtp-Source: ABdhPJzy5HBCuvGp2iVQ86W6+Mz0CNvvbimic6tKdTb+zeyOYZkAgFLlD+bWSTCF7ehNYJab+WbGFg==
+X-Received: by 2002:a5d:6987:: with SMTP id g7mr63785648wru.79.1594316780854;
+        Thu, 09 Jul 2020 10:46:20 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.206])
-        by smtp.gmail.com with ESMTPSA id f15sm6063854wrx.91.2020.07.09.10.46.18
+        by smtp.gmail.com with ESMTPSA id f15sm6063854wrx.91.2020.07.09.10.46.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jul 2020 10:46:19 -0700 (PDT)
+        Thu, 09 Jul 2020 10:46:20 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     jejb@linux.ibm.com, martin.petersen@oracle.com,
         linux-scsi@vger.kernel.org
@@ -56,9 +56,9 @@ Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
         Ketan Mukadam <ketan.mukadam@broadcom.com>,
         Jitendra Bhivare <jitendra.bhivare@broadcom.com>,
         linux-drivers@broadcom.com
-Subject: [PATCH 18/24] scsi: be2iscsi: be_main: Fix misdocumentation of 'pcontext'
-Date:   Thu,  9 Jul 2020 18:45:50 +0100
-Message-Id: <20200709174556.7651-19-lee.jones@linaro.org>
+Subject: [PATCH 19/24] scsi: be2iscsi: be_mgmt: Add missing function parameter description
+Date:   Thu,  9 Jul 2020 18:45:51 +0100
+Message-Id: <20200709174556.7651-20-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200709174556.7651-1-lee.jones@linaro.org>
 References: <20200709174556.7651-1-lee.jones@linaro.org>
@@ -69,16 +69,11 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Also demote unintentional kerneldoc header.
+Also promote fully documented function header to kerneldoc.
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/scsi/be2iscsi/be_main.c:986: warning: Function parameter or member 'pcontext' not described in 'alloc_wrb_handle'
- drivers/scsi/be2iscsi/be_main.c:986: warning: Excess function parameter 'pwrb_context' description in 'alloc_wrb_handle'
- drivers/scsi/be2iscsi/be_main.c:1409: warning: Function parameter or member 'beiscsi_conn' not described in 'beiscsi_complete_pdu'
- drivers/scsi/be2iscsi/be_main.c:1409: warning: Function parameter or member 'phdr' not described in 'beiscsi_complete_pdu'
- drivers/scsi/be2iscsi/be_main.c:1409: warning: Function parameter or member 'pdata' not described in 'beiscsi_complete_pdu'
- drivers/scsi/be2iscsi/be_main.c:1409: warning: Function parameter or member 'dlen' not described in 'beiscsi_complete_pdu'
+ drivers/scsi/be2iscsi/be_mgmt.c:112: warning: Function parameter or member 'phba' not described in 'mgmt_open_connection'
 
 Cc: Subbu Seetharaman <subbu.seetharaman@broadcom.com>
 Cc: Ketan Mukadam <ketan.mukadam@broadcom.com>
@@ -86,31 +81,30 @@ Cc: Jitendra Bhivare <jitendra.bhivare@broadcom.com>
 Cc: linux-drivers@broadcom.com
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/scsi/be2iscsi/be_main.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/scsi/be2iscsi/be_mgmt.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/be2iscsi/be_main.c b/drivers/scsi/be2iscsi/be_main.c
-index 9b81cfbbc5c53..8dc2e0824ad78 100644
---- a/drivers/scsi/be2iscsi/be_main.c
-+++ b/drivers/scsi/be2iscsi/be_main.c
-@@ -977,7 +977,7 @@ beiscsi_get_wrb_handle(struct hwi_wrb_context *pwrb_context,
-  * alloc_wrb_handle - To allocate a wrb handle
-  * @phba: The hba pointer
-  * @cid: The cid to use for allocation
-- * @pwrb_context: ptr to ptr to wrb context
-+ * @pcontext: ptr to ptr to wrb context
-  *
-  * This happens under session_lock until submission to chip
-  */
-@@ -1394,7 +1394,7 @@ static void hwi_complete_cmd(struct beiscsi_conn *beiscsi_conn,
- 	spin_unlock_bh(&session->back_lock);
+diff --git a/drivers/scsi/be2iscsi/be_mgmt.c b/drivers/scsi/be2iscsi/be_mgmt.c
+index a2d69b287c7bb..96d6e384b2b25 100644
+--- a/drivers/scsi/be2iscsi/be_mgmt.c
++++ b/drivers/scsi/be2iscsi/be_mgmt.c
+@@ -97,6 +97,7 @@ unsigned int mgmt_vendor_specific_fw_cmd(struct be_ctrl_info *ctrl,
+ 
+ /**
+  * mgmt_open_connection()- Establish a TCP CXN
++ * @phba: driver priv structure
+  * @dst_addr: Destination Address
+  * @beiscsi_ep: ptr to device endpoint struct
+  * @nonemb_cmd: ptr to memory allocated for command
+@@ -209,7 +210,7 @@ int mgmt_open_connection(struct beiscsi_hba *phba,
+ 	return tag;
  }
  
--/**
-+/*
-  * ASYNC PDUs include
-  * a. Unsolicited NOP-In (target initiated NOP-In)
-  * b. ASYNC Messages
+-/*
++/**
+  * beiscsi_exec_nemb_cmd()- execute non-embedded MBX cmd
+  * @phba: driver priv structure
+  * @nonemb_cmd: DMA address of the MBX command to be issued
 -- 
 2.25.1
 
