@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B59E21A5F3
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 19:37:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3810221A5EB
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 19:37:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726793AbgGIRhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 13:37:16 -0400
-Received: from mga09.intel.com ([134.134.136.24]:35018 "EHLO mga09.intel.com"
+        id S1728445AbgGIRhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 13:37:17 -0400
+Received: from mga09.intel.com ([134.134.136.24]:35024 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726758AbgGIRhN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 13:37:13 -0400
-IronPort-SDR: vA6BgWem8Rf5J/1LOYl+5ZsaF5FqlpFocjZM2owV8xhAbGCrFuUeJYUo/ES02/AKhXyzrrvp4M
- 4GkAOy2BQgbQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9677"; a="149537098"
+        id S1728306AbgGIRhO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 13:37:14 -0400
+IronPort-SDR: QFJt/rp+MOShVNfqfQmvsZ7+dEdRwGnV/QRJ/o8nKxU+XYmEzInMdDenJ1BQKREo/ACtsVJ01F
+ fIFT5EnfCXIQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9677"; a="149537103"
 X-IronPort-AV: E=Sophos;i="5.75,332,1589266800"; 
-   d="scan'208";a="149537098"
+   d="scan'208";a="149537103"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jul 2020 10:37:12 -0700
-IronPort-SDR: Pr6ccG+MTpvcImtoBJ2lOccHxffcxodl/M4Q8ZpjUWi2i85pUD6f0FLQwOiZ9yZIiYPrhXpiz2
- gx2zSZl8sEnQ==
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jul 2020 10:37:14 -0700
+IronPort-SDR: 3R1c+nKbaCem1ySBfUTk6scLZ01GfHkNzzblc/AOx5C3skAUkO+t23WfAl5uePo5EHW3B9m3qv
+ B0lbVahmuWzw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,332,1589266800"; 
-   d="scan'208";a="324292500"
+   d="scan'208";a="324292508"
 Received: from ahunter-desktop.fi.intel.com ([10.237.72.73])
-  by orsmga007.jf.intel.com with ESMTP; 09 Jul 2020 10:37:11 -0700
+  by orsmga007.jf.intel.com with ESMTP; 09 Jul 2020 10:37:12 -0700
 From:   Adrian Hunter <adrian.hunter@intel.com>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 01/11] perf intel-pt: Fix FUP packet state
-Date:   Thu,  9 Jul 2020 20:36:18 +0300
-Message-Id: <20200709173628.5613-2-adrian.hunter@intel.com>
+Subject: [PATCH 02/11] perf intel-pt: Fix duplicate branch after CBR
+Date:   Thu,  9 Jul 2020 20:36:19 +0300
+Message-Id: <20200709173628.5613-3-adrian.hunter@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200709173628.5613-1-adrian.hunter@intel.com>
 References: <20200709173628.5613-1-adrian.hunter@intel.com>
@@ -43,69 +43,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While walking code towards a FUP ip, the packet state is
-INTEL_PT_STATE_FUP or INTEL_PT_STATE_FUP_NO_TIP. That was mishandled
-resulting in the state becoming INTEL_PT_STATE_IN_SYNC prematurely.
-The result was an occasional lost EXSTOP event.
+CBR events can result in a duplicate branch event, because the state type
+defaults to a branch. Fix by clearing the state type.
+
+Example: trace 'sleep' and hope for a frequency change
+
+ Before:
+
+   $ perf record -e intel_pt//u sleep 0.1
+   [ perf record: Woken up 1 times to write data ]
+   [ perf record: Captured and wrote 0.034 MB perf.data ]
+   $ perf script --itrace=bpe > before.txt
+
+ After:
+
+   $ perf script --itrace=bpe > after.txt
+   $ diff -u before.txt after.txt
+   --- before.txt  2020-07-07 14:42:18.191508098 +0300
+   +++ after.txt   2020-07-07 14:42:36.587891753 +0300
+   @@ -29673,7 +29673,6 @@
+               sleep 93431 [007] 15411.619905:          1  branches:u:                 0 [unknown] ([unknown]) =>     7f0818abb2e0 clock_nanosleep@@GLIBC_2.17+0x0 (/usr/lib/x86_64-linux-gnu/libc-2.31.so)
+               sleep 93431 [007] 15411.619905:          1  branches:u:      7f0818abb30c clock_nanosleep@@GLIBC_2.17+0x2c (/usr/lib/x86_64-linux-gnu/libc-2.31.so) =>                0 [unknown] ([unknown])
+               sleep 93431 [007] 15411.720069:         cbr:  cbr: 15 freq: 1507 MHz ( 56%)         7f0818abb30c clock_nanosleep@@GLIBC_2.17+0x2c (/usr/lib/x86_64-linux-gnu/libc-2.31.so)
+   -           sleep 93431 [007] 15411.720069:          1  branches:u:      7f0818abb30c clock_nanosleep@@GLIBC_2.17+0x2c (/usr/lib/x86_64-linux-gnu/libc-2.31.so) =>                0 [unknown] ([unknown])
+               sleep 93431 [007] 15411.720076:          1  branches:u:                 0 [unknown] ([unknown]) =>     7f0818abb30e clock_nanosleep@@GLIBC_2.17+0x2e (/usr/lib/x86_64-linux-gnu/libc-2.31.so)
+               sleep 93431 [007] 15411.720077:          1  branches:u:      7f0818abb323 clock_nanosleep@@GLIBC_2.17+0x43 (/usr/lib/x86_64-linux-gnu/libc-2.31.so) =>     7f0818ac0eb7 __nanosleep+0x17 (/usr/lib/x86_64-linux-gnu/libc-2.31.so)
+               sleep 93431 [007] 15411.720077:          1  branches:u:      7f0818ac0ebf __nanosleep+0x1f (/usr/lib/x86_64-linux-gnu/libc-2.31.so) =>     55cb7e4c2827 rpl_nanosleep+0x97 (/usr/bin/sleep)
 
 Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+Fixes: 91de8684f1cff ("perf intel-pt: Cater for CBR change in PSB+")
+Fixes: abe5a1d3e4bee ("perf intel-pt: Decoder to output CBR changes immediately")
 Cc: stable@vger.kernel.org
 ---
- .../util/intel-pt-decoder/intel-pt-decoder.c  | 21 +++++++------------
- 1 file changed, 7 insertions(+), 14 deletions(-)
+ tools/perf/util/intel-pt-decoder/intel-pt-decoder.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
 diff --git a/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c b/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c
-index f8ccfd6be0ee..75c4bd74d521 100644
+index 75c4bd74d521..7ffcbd6fcd1a 100644
 --- a/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c
 +++ b/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c
-@@ -1164,6 +1164,7 @@ static int intel_pt_walk_fup(struct intel_pt_decoder *decoder)
- 			return 0;
- 		if (err == -EAGAIN ||
- 		    intel_pt_fup_with_nlip(decoder, &intel_pt_insn, ip, err)) {
-+			decoder->pkt_state = INTEL_PT_STATE_IN_SYNC;
- 			if (intel_pt_fup_event(decoder))
+@@ -1977,8 +1977,10 @@ static int intel_pt_walk_trace(struct intel_pt_decoder *decoder)
+ 			 * possibility of another CBR change that gets caught up
+ 			 * in the PSB+.
+ 			 */
+-			if (decoder->cbr != decoder->cbr_seen)
++			if (decoder->cbr != decoder->cbr_seen) {
++				decoder->state.type = 0;
  				return 0;
- 			return -EAGAIN;
-@@ -1942,17 +1943,13 @@ static int intel_pt_walk_trace(struct intel_pt_decoder *decoder)
- 			}
- 			if (decoder->set_fup_mwait)
- 				no_tip = true;
-+			if (no_tip)
-+				decoder->pkt_state = INTEL_PT_STATE_FUP_NO_TIP;
-+			else
-+				decoder->pkt_state = INTEL_PT_STATE_FUP;
- 			err = intel_pt_walk_fup(decoder);
--			if (err != -EAGAIN) {
--				if (err)
--					return err;
--				if (no_tip)
--					decoder->pkt_state =
--						INTEL_PT_STATE_FUP_NO_TIP;
--				else
--					decoder->pkt_state = INTEL_PT_STATE_FUP;
--				return 0;
--			}
-+			if (err != -EAGAIN)
-+				return err;
- 			if (no_tip) {
- 				no_tip = false;
- 				break;
-@@ -2599,15 +2596,11 @@ const struct intel_pt_state *intel_pt_decode(struct intel_pt_decoder *decoder)
- 			err = intel_pt_walk_tip(decoder);
++			}
  			break;
- 		case INTEL_PT_STATE_FUP:
--			decoder->pkt_state = INTEL_PT_STATE_IN_SYNC;
- 			err = intel_pt_walk_fup(decoder);
- 			if (err == -EAGAIN)
- 				err = intel_pt_walk_fup_tip(decoder);
--			else if (!err)
--				decoder->pkt_state = INTEL_PT_STATE_FUP;
+ 
+ 		case INTEL_PT_PIP:
+@@ -2019,8 +2021,10 @@ static int intel_pt_walk_trace(struct intel_pt_decoder *decoder)
+ 
+ 		case INTEL_PT_CBR:
+ 			intel_pt_calc_cbr(decoder);
+-			if (decoder->cbr != decoder->cbr_seen)
++			if (decoder->cbr != decoder->cbr_seen) {
++				decoder->state.type = 0;
+ 				return 0;
++			}
  			break;
- 		case INTEL_PT_STATE_FUP_NO_TIP:
--			decoder->pkt_state = INTEL_PT_STATE_IN_SYNC;
- 			err = intel_pt_walk_fup(decoder);
- 			if (err == -EAGAIN)
- 				err = intel_pt_walk_trace(decoder);
+ 
+ 		case INTEL_PT_MODE_EXEC:
 -- 
 2.25.1
 
