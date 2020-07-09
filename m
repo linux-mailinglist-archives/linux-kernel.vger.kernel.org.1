@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EBB221A5EE
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 19:37:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89CC921A5F4
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 19:37:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728507AbgGIRhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 13:37:25 -0400
-Received: from mga09.intel.com ([134.134.136.24]:35028 "EHLO mga09.intel.com"
+        id S1728578AbgGIRhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 13:37:43 -0400
+Received: from mga09.intel.com ([134.134.136.24]:35049 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728485AbgGIRhV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 13:37:21 -0400
-IronPort-SDR: NaBNvyy9SJw/p94hOmx7DJnP9Ze/nzoy0n45xvbSoM+eLpaCanLGU7DoVvMLtuyDZKVs8yZdf0
- tXd2y1KCz12g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9677"; a="149537118"
+        id S1728491AbgGIRhY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 13:37:24 -0400
+IronPort-SDR: 9tV5OWgi0b+lb5GrqdI80F3Mn0RvxQVWKO7yyTcOObAQWiHsBWxCbw6vvKQ+8GzHaMBF0RoWRS
+ sivc+QO6SJRQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9677"; a="149537119"
 X-IronPort-AV: E=Sophos;i="5.75,332,1589266800"; 
-   d="scan'208";a="149537118"
+   d="scan'208";a="149537119"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jul 2020 10:37:21 -0700
-IronPort-SDR: VVZjKTB7Khs3H5RS1BMHr+63/B0NwTPHJHvZVFy5QmpQAKa4gogC/OGRZsAayi1eFXxtNcXFPf
- JQOlMndslzqQ==
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jul 2020 10:37:23 -0700
+IronPort-SDR: MyOIw6DR4grQCECVCxcasxesRdxlEbN5j6ffOXjQWPmLwgOge6otTvbkqKQsqvPHoH1BLqSQ2Z
+ lORKUYtaPV5A==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,332,1589266800"; 
-   d="scan'208";a="324292526"
+   d="scan'208";a="324292536"
 Received: from ahunter-desktop.fi.intel.com ([10.237.72.73])
-  by orsmga007.jf.intel.com with ESMTP; 09 Jul 2020 10:37:20 -0700
+  by orsmga007.jf.intel.com with ESMTP; 09 Jul 2020 10:37:21 -0700
 From:   Adrian Hunter <adrian.hunter@intel.com>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 06/11] perf auxtrace: Add optional log flags to the itrace 'd' option
-Date:   Thu,  9 Jul 2020 20:36:23 +0300
-Message-Id: <20200709173628.5613-7-adrian.hunter@intel.com>
+Subject: [PATCH 07/11] perf intel-pt: Use itrace debug log flags to suppress some messages
+Date:   Thu,  9 Jul 2020 20:36:24 +0300
+Message-Id: <20200709173628.5613-8-adrian.hunter@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200709173628.5613-1-adrian.hunter@intel.com>
 References: <20200709173628.5613-1-adrian.hunter@intel.com>
@@ -43,60 +43,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow the 'd' option to be followed by an architecture-specific number
-which flags what kind of debug messages will or will not be logged.
+The "d" option may be followed by a number which has the following effect:
+	1	Suppress logging of perf events
+
+Suppressing perf events is useful for decreasing the size of the log.
 
 Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
 ---
- tools/perf/Documentation/itrace.txt | 3 +++
- tools/perf/util/auxtrace.c          | 2 ++
- tools/perf/util/auxtrace.h          | 2 ++
- 3 files changed, 7 insertions(+)
+ tools/perf/Documentation/perf-intel-pt.txt |  4 +++-
+ tools/perf/util/intel-pt.c                 | 19 ++++++++++++-------
+ 2 files changed, 15 insertions(+), 8 deletions(-)
 
-diff --git a/tools/perf/Documentation/itrace.txt b/tools/perf/Documentation/itrace.txt
-index 34864b4047ed..3dd8fddb8b1b 100644
---- a/tools/perf/Documentation/itrace.txt
-+++ b/tools/perf/Documentation/itrace.txt
-@@ -50,3 +50,6 @@
+diff --git a/tools/perf/Documentation/perf-intel-pt.txt b/tools/perf/Documentation/perf-intel-pt.txt
+index 0fcd8ad897b0..85a2ff804900 100644
+--- a/tools/perf/Documentation/perf-intel-pt.txt
++++ b/tools/perf/Documentation/perf-intel-pt.txt
+@@ -879,7 +879,9 @@ The values may be combined by bitwise OR'ing them.
  
- 	The 'e' option may be followed by an architecture-specific number which
- 	flags what kind of errors will or will not be reported.
+ The "d" option will cause the creation of a file "intel_pt.log" containing all
+ decoded packets and instructions.  Note that this option slows down the decoder
+-and that the resulting file may be very large.
++and that the resulting file may be very large.  The "d" option may be followed
++by a number which has the following effect:
++	1	Suppress logging of perf events
+ 
+ In addition, the period of the "instructions" event can be specified. e.g.
+ 
+diff --git a/tools/perf/util/intel-pt.c b/tools/perf/util/intel-pt.c
+index a8e8e8acbcc8..d90375659244 100644
+--- a/tools/perf/util/intel-pt.c
++++ b/tools/perf/util/intel-pt.c
+@@ -49,6 +49,8 @@
+ #define INTEL_PT_ERR_SUPPRESS_OVF	1
+ #define INTEL_PT_ERR_SUPPRESS_LOST	2
+ 
++#define INTEL_PT_LOG_SUPPRESS_EV	1
 +
-+	If supported, The 'd' option may be followed by an architecture-specific
-+	number which flags what kind of debug messages will or will not be logged.
-diff --git a/tools/perf/util/auxtrace.c b/tools/perf/util/auxtrace.c
-index 5cfc0b12b2b3..3f806c2881c9 100644
---- a/tools/perf/util/auxtrace.c
-+++ b/tools/perf/util/auxtrace.c
-@@ -1441,6 +1441,8 @@ int itrace_parse_synth_opts(const struct option *opt, const char *str,
- 			break;
- 		case 'd':
- 			synth_opts->log = true;
-+			synth_opts->log_flags = strtoul(p, &endptr, 0);
-+			p = endptr;
- 			break;
- 		case 'c':
- 			synth_opts->branches = true;
-diff --git a/tools/perf/util/auxtrace.h b/tools/perf/util/auxtrace.h
-index a04475f41f28..f41dbdc98175 100644
---- a/tools/perf/util/auxtrace.h
-+++ b/tools/perf/util/auxtrace.h
-@@ -92,6 +92,7 @@ enum itrace_period_type {
-  * @ptime_range: time intervals to trace or NULL
-  * @range_num: number of time intervals to trace
-  * @error_flags: arch-specific flags to affect what errors are reported
-+ * @log_flags: arch-specific flags to affect what is logged
-  */
- struct itrace_synth_opts {
- 	bool			set;
-@@ -126,6 +127,7 @@ struct itrace_synth_opts {
- 	struct perf_time_interval *ptime_range;
- 	int			range_num;
- 	unsigned int		error_flags;
-+	unsigned int		log_flags;
- };
+ struct range {
+ 	u64 start;
+ 	u64 end;
+@@ -252,6 +254,11 @@ static void intel_pt_dump_sample(struct perf_session *session,
+ 	intel_pt_dump(pt, sample->aux_sample.data, sample->aux_sample.size);
+ }
  
- /**
++static bool intel_pt_log_events(struct intel_pt *pt)
++{
++	return !(pt->synth_opts.log_flags & INTEL_PT_LOG_SUPPRESS_EV);
++}
++
+ static int intel_pt_do_fix_overlap(struct intel_pt *pt, struct auxtrace_buffer *a,
+ 				   struct auxtrace_buffer *b)
+ {
+@@ -2589,10 +2596,6 @@ static int intel_pt_context_switch(struct intel_pt *pt, union perf_event *event,
+ 		return -EINVAL;
+ 	}
+ 
+-	intel_pt_log("context_switch: cpu %d pid %d tid %d time %"PRIu64" tsc %#"PRIx64"\n",
+-		     cpu, pid, tid, sample->time, perf_time_to_tsc(sample->time,
+-		     &pt->tc));
+-
+ 	ret = intel_pt_sync_switch(pt, cpu, tid, sample->time);
+ 	if (ret <= 0)
+ 		return ret;
+@@ -2749,9 +2752,11 @@ static int intel_pt_process_event(struct perf_session *session,
+ 	if (!err && event->header.type == PERF_RECORD_TEXT_POKE)
+ 		err = intel_pt_text_poke(pt, event);
+ 
+-	intel_pt_log("event %u: cpu %d time %"PRIu64" tsc %#"PRIx64" ",
+-		     event->header.type, sample->cpu, sample->time, timestamp);
+-	intel_pt_log_event(event);
++	if (intel_pt_enable_logging && intel_pt_log_events(pt)) {
++		intel_pt_log("event %u: cpu %d time %"PRIu64" tsc %#"PRIx64" ",
++			     event->header.type, sample->cpu, sample->time, timestamp);
++		intel_pt_log_event(event);
++	}
+ 
+ 	return err;
+ }
 -- 
 2.25.1
 
