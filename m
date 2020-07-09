@@ -2,119 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86BC3219DBC
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 12:28:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5EAD219DD7
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 12:30:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726788AbgGIK2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 06:28:09 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:41138 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726343AbgGIK2H (ORCPT
+        id S1726471AbgGIKac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 06:30:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726298AbgGIKab (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 06:28:07 -0400
-Received: by mail-wr1-f68.google.com with SMTP id z15so1762550wrl.8
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 03:28:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=vhfRd/Xz8WpuPSonhW0aG9Xlw1wwnrJlWi7lZcteXaM=;
-        b=S75mO0S6CjNG4WwrjeAlmSJcF+KUF5J7bKBqCA4vGOxWErNWhe4zxLp9HKI+3gZqrI
-         cAsuhIWI90VcrG36HKs+dKrTGLK5ppPlD9Nuwo8xw6dLYYVqvnZ+ak/sO5PAFb5Cjl//
-         p6a71sfLjf3a0ZlAv+j0yVVyKO/4kv/292ap9Py4hT4aoj2auEJQHOuPXnDwrG/kNprn
-         w3huaT0xS1Wh1gV+05gSO68bAtPftOR5ta5b+o22G1O4uunjWQzDTppS7Ur0TvMe/hgu
-         mMa3gsPVe1C69GaJuBwF3x1gVa8RU5Bgu14D47DdK3WNVhAIKLiA55udhQpGdKBWVwBW
-         8YvQ==
-X-Gm-Message-State: AOAM5315GmJ1i6LglgebluDoKo8Bx/bLYo1kWmFEj5nOVPygCrDJBuQ/
-        X1toBStAQx/qJu5tj7Dc0tU=
-X-Google-Smtp-Source: ABdhPJxcmx3Lx6wndlpfqk3KIOiLTmInXeRHGpBBRxv1uHl97R8fkaA7/H4YSMEhkpYj1mv9iEtkVQ==
-X-Received: by 2002:adf:f546:: with SMTP id j6mr61821883wrp.167.1594290484936;
-        Thu, 09 Jul 2020 03:28:04 -0700 (PDT)
-Received: from localhost (ip-37-188-179-51.eurotel.cz. [37.188.179.51])
-        by smtp.gmail.com with ESMTPSA id o21sm4026136wmh.18.2020.07.09.03.28.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jul 2020 03:28:04 -0700 (PDT)
-Date:   Thu, 9 Jul 2020 12:28:03 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Joonsoo Kim <js1304@gmail.com>
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, kernel-team@lge.com,
-        Christoph Hellwig <hch@infradead.org>,
-        Roman Gushchin <guro@fb.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Subject: Re: [PATCH v4 06/11] mm/migrate: make a standard migration target
- allocation function
-Message-ID: <20200709102803.GF19160@dhcp22.suse.cz>
-References: <1594107889-32228-1-git-send-email-iamjoonsoo.kim@lge.com>
- <1594107889-32228-7-git-send-email-iamjoonsoo.kim@lge.com>
- <409b6e24-d143-a61c-95a3-1a55e1a6008e@suse.cz>
- <20200707190013.GZ5913@dhcp22.suse.cz>
- <CAAmzW4PVp_PX-PySjy5axMzyy5n_4cHmzrhfT=tFH2VEzxVFRQ@mail.gmail.com>
+        Thu, 9 Jul 2020 06:30:31 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76938C061A0B
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 03:30:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=GZFLWUIyc3VG2hyuIp/fo+DHwBuH9gLfwaAJrXrF8Lo=; b=IzCvvhpv/zodeGhHERmZaR/roF
+        sM2uulpe7QzslQvx6aNZEz4EhJ+1v48k0nSb6cogOmrZn1CJTtYB2cdxb2fosp5Hj6RmaZyRgyA2L
+        quHDeaThqukQOc3ax8WkeZvkfxsOrWWwYvhZ66gKkFlfwCcmuDAuTN9aYQZPyDdHZYCI51dQ+Hrd/
+        zYABFz7vou6OBxgf4+wyAsOfrBfE/Yzaizbmlx0WaE6tXBNqDTMtvUV0l1Fe56HzALGyHxKCxoLSd
+        B0421IaM4tfFe3nIBzOuCMBfvricC/vRNS/LgNWmVZmqP1XjmV7Wm7H+UBxu9AecaPpKdRqPB4oU0
+        Yb6OS5nA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jtTov-00025D-Rm; Thu, 09 Jul 2020 10:30:27 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B547630047A;
+        Thu,  9 Jul 2020 12:30:24 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id A1EE2285718DD; Thu,  9 Jul 2020 12:30:24 +0200 (CEST)
+Date:   Thu, 9 Jul 2020 12:30:24 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Brian Gerst <brgerst@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [PATCH v2 02/10] x86/percpu: Clean up percpu_to_op()
+Message-ID: <20200709103024.GO597537@hirez.programming.kicks-ass.net>
+References: <20200530221127.459704-1-brgerst@gmail.com>
+ <20200530221127.459704-3-brgerst@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAAmzW4PVp_PX-PySjy5axMzyy5n_4cHmzrhfT=tFH2VEzxVFRQ@mail.gmail.com>
+In-Reply-To: <20200530221127.459704-3-brgerst@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 09-07-20 16:15:07, Joonsoo Kim wrote:
-> 2020년 7월 8일 (수) 오전 4:00, Michal Hocko <mhocko@kernel.org>님이 작성:
-> >
-> > On Tue 07-07-20 16:49:51, Vlastimil Babka wrote:
-> > > On 7/7/20 9:44 AM, js1304@gmail.com wrote:
-> > > > From: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-> > > >
-> > > > There are some similar functions for migration target allocation.  Since
-> > > > there is no fundamental difference, it's better to keep just one rather
-> > > > than keeping all variants.  This patch implements base migration target
-> > > > allocation function.  In the following patches, variants will be converted
-> > > > to use this function.
-> > > >
-> > > > Changes should be mechanical but there are some differences. First, Some
-> > > > callers' nodemask is assgined to NULL since NULL nodemask will be
-> > > > considered as all available nodes, that is, &node_states[N_MEMORY].
-> > > > Second, for hugetlb page allocation, gfp_mask is ORed since a user could
-> > > > provide a gfp_mask from now on.
-> > >
-> > > I think that's wrong. See how htlb_alloc_mask() determines between
-> > > GFP_HIGHUSER_MOVABLE and GFP_HIGHUSER, but then you OR it with __GFP_MOVABLE so
-> > > it's always GFP_HIGHUSER_MOVABLE.
-> 
-> Indeed.
-> 
-> > Right you are! Not that it would make any real difference because only
-> > migrateable hugetlb pages will get __GFP_MOVABLE and so we shouldn't
-> > really end up here for !movable pages in the first place (not sure about
-> > soft offlining at this moment). But yeah it would be simply better to
-> > override gfp mask for hugetlb which we have been doing anyway.
-> 
-> Override gfp mask doesn't work since some users will call this function with
-> __GFP_THISNODE.
+On Sat, May 30, 2020 at 06:11:19PM -0400, Brian Gerst wrote:
+> +	if (0) {		                                        \
+> +		typeof(_var) pto_tmp__;					\
+> +		pto_tmp__ = (_val);					\
+> +		(void)pto_tmp__;					\
+> +	}								\
 
-> I will use hugepage_movable_supported() here and
-> clear __GFP_MOVABLE if needed.
+This is repeated at least once more; and it looks very similar to
+__typecheck() and typecheck() but is yet another variant afaict.
 
-hugepage_movable_supported is really an implementation detail, do not
-use it here. I think it would be better to add
-
-gfp_t htlb_modify_alloc_mask(struct hstate *h, gfp_t mask)
-{
-	gfp_t default_mask = htlb_alloc_mask(h);
-
-	/* Some callers might want to enforce node */
-	return default_mask | (mask & __GFP_THISNODE);
-}
-
-If we need to special case others, eg reclaim restrictions there would
-be a single place to do so.
--- 
-Michal Hocko
-SUSE Labs
