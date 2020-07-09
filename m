@@ -2,132 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2496C21A583
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 19:12:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 824F721A592
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 19:13:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728332AbgGIRMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 13:12:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43722 "EHLO
+        id S1728442AbgGIRND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 13:13:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728110AbgGIRMo (ORCPT
+        with ESMTP id S1727091AbgGIRNC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 13:12:44 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5821BC08C5CE;
-        Thu,  9 Jul 2020 10:12:44 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id h19so3221664ljg.13;
-        Thu, 09 Jul 2020 10:12:44 -0700 (PDT)
+        Thu, 9 Jul 2020 13:13:02 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 249C8C08C5DC
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 10:13:02 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id i18so2656296ilk.10
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 10:13:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=NUzStD0JlDE1+lpeM+4rnfbYioBhG7w/IUJEkdm0/Vw=;
-        b=DKU3CMKH/guvcv3nfGgGymRWfTw3P7mw/dEdLUiHeq1wNhKqBxXuKQsEOfJgeBRO65
-         5P3Z9zsSVaybXf9pY+SNVzD/Bn5Agev7/tMieza0uUyAfb0mUmpuYhtrrPiINM4z22b/
-         qpV22FW4SilWASZY/MXlAkCh0M9PU+rKHf8sJ/lPS1gOLImiM0Pco6wgFCrBhtOavrvi
-         Iw8TkYAywqEbxa7Ky0Ao1BycccozFxm1bLuyyk66zi0tu9HDsZrW0dHsbTyq+HDUp+5l
-         8SEF2imCZpJuXSCNfbUMMEVFp4Mvl7qqO2GfnqR2HQ0v/ii91XOYgNPEjSHip55D7e/V
-         +aBw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QO9IvrvbdFbIKVhCbtd7ASpLnMxeM4m98MgJitQIbbM=;
+        b=gSQofJDz/xtC3LY7CHzehbvYXFf8x2QKBUjKyVSTLKCjJLkgB0FkC7RWx2bpt7S9yF
+         nZRhB1Sf/zjf4V4rI0AgecBncWsepMGOCtF2RkK7eYiTfmVY63TuujpmbHzfWwoC8K2Q
+         slRXybq4eTpBGXaGeRP1mF/pKXKK4hCQby2KJYK51GTq8PxDflwr1419KwYCSL5R2M+t
+         3BX73E/XD/fheLb7KhX9lvzGwqnPnoUXZXaFFmpHXA0VF+knCT9MlLeZBsPqRN0x4Wug
+         FXzoGeD1e3r2Px6IoEhBniy9/bkBGVB01lLqKuLwb4iAd6s2JzmCfGel8wtU9H1GNGBQ
+         0dfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=NUzStD0JlDE1+lpeM+4rnfbYioBhG7w/IUJEkdm0/Vw=;
-        b=ry1eo/AX43/9Z04d/J5XmSYyfYvEm9CNiJvhmCZ2j6yoZ4w0gaJmCYcQWDi0p8De8v
-         lrt54O7ltc0/U8TkmhtXO45IB+hUEDJ9rT/en673kBflRxclMQNeaYQfLAwpLVeJ9MqX
-         XTBugG93eveU5yBbDbRwIIzakFdVRQPkIdV/1Wc6gbmMnUcdxyqS2QMICGEZl+kBvyMG
-         jYw2BnIt14ASAoaz+Ae5E8iypBhMLj6eePFJqGQVNB7hNYB0t9xAEGh1X0YHL4eU+SA/
-         LjI0P95GRbmhK/BWoPaxonfE3UlvwcMEpWdge4sZ27RWaFNtd6g/NuUf9kgDpkhqLyF6
-         xNXQ==
-X-Gm-Message-State: AOAM5309s4U5Bw7jKP1TpsAfs3hhrPuXko/Kjnfi9UXBK4fawYsy9ymz
-        e7iteN31KPZ1XymSKKuUP1g=
-X-Google-Smtp-Source: ABdhPJwaQ99lPcWRXF96Ez8T787FoH+S6jQcqAmeZzmGoAr/zqbL62PN2IiIPwE04RUUCzzIPXNQCQ==
-X-Received: by 2002:a2e:7a03:: with SMTP id v3mr33520604ljc.141.1594314762811;
-        Thu, 09 Jul 2020 10:12:42 -0700 (PDT)
-Received: from localhost.localdomain (ppp91-79-162-105.pppoe.mtu-net.ru. [91.79.162.105])
-        by smtp.gmail.com with ESMTPSA id y22sm998314ljn.2.2020.07.09.10.12.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jul 2020 10:12:42 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     linux-tegra@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 6/6] gpio: max77620: Initialize hardware state of interrupts
-Date:   Thu,  9 Jul 2020 20:12:03 +0300
-Message-Id: <20200709171203.12950-7-digetx@gmail.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200709171203.12950-1-digetx@gmail.com>
-References: <20200709171203.12950-1-digetx@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QO9IvrvbdFbIKVhCbtd7ASpLnMxeM4m98MgJitQIbbM=;
+        b=XW2UrfL7l6RJ5lIf4bvxTmAom8SlF/1PLMubNI3iGpG30pvDeGovA2U90y6Y/x21BV
+         /+4FLKzgOM3uWpZx58yMARV79ksSe5rlLOsPzgKYvnvcY79bQYYDX1e856gYKMBt3PB4
+         VUMGHLbR79+C3nieRACOc7j80dA0SIwoYXW2hHQt7qpAYxdSpWLI+jL26Sb9SuOPxLMM
+         H6p+KZ+WF3Dc2h0Eyg3tQ5LcURmph2Ljd/b3wM8H6TCmSowzyuVdsY1bufOq2cKvgygu
+         /nlqv3Ey4a5S8ToibZozyqW/6dHwlxJyDkNAT7bBw5f9/sl52t5vI2DTARBo4M3RrnU0
+         6YKg==
+X-Gm-Message-State: AOAM53296NMdgb2U7lLvhgI1iaK6LE7180cN1p9rOjNLxbJyC/tZc/hn
+        zpbUg7UV7OyDZ1yRuhWIyuiveL1KD2EHCnnXBSROMw==
+X-Google-Smtp-Source: ABdhPJxa4dFEbhQpI8FUCI9c4RTZ/KqESl+J/S5E5+jrfkm0yt9foFGwK9W9gn7Ks2MUKg5pWO1OYTddy9xukrw/XGo=
+X-Received: by 2002:a05:6e02:de6:: with SMTP id m6mr47104980ilj.296.1594314781244;
+ Thu, 09 Jul 2020 10:13:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200709095525.907771-1-pbonzini@redhat.com>
+In-Reply-To: <20200709095525.907771-1-pbonzini@redhat.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Thu, 9 Jul 2020 10:12:50 -0700
+Message-ID: <CALMp9eREY4e7kb22CxReNV83HwR7D_tBkn2i5LUbGLGe_yw5nQ@mail.gmail.com>
+Subject: Re: [PATCH] KVM: nSVM: vmentry ignores EFER.LMA and possibly RFLAGS.VM
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm list <kvm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I noticed on Nexus 7 that after rebooting from downstream kernel to
-upstream, the GPIO interrupt is triggering non-stop despite interrupts
-being disabled for all of GPIOs. This happens because Nexus 7 uses a
-soft-reboot, meaning that bootloader should take care of resetting
-hardware, but the bootloader doesn't do it well. As a result, GPIO
-interrupt may be left ON at a boot time. Let's mask all GPIO interrupts
-at the driver's initialization time in order to resolve the issue.
+On Thu, Jul 9, 2020 at 2:55 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
+>
+> AMD doesn't specify (unlike Intel) that EFER.LME, CR0.PG and
+> EFER.LMA must be consistent, and for SMM state restore they say that
+> "The EFER.LMA register bit is set to the value obtained by logically
+> ANDing the SMRAM values of EFER.LME, CR0.PG, and CR4.PAE".  It turns
+> out that this is also true for vmentry: the EFER.LMA value in the VMCB
+> is completely ignored, and so is EFLAGS.VM if the processor is in
+> long mode or real mode.
+>
+> Implement these quirks; the EFER.LMA part is needed because svm_set_efer
+> looks at the LMA bit in order to support EFER.NX=0, while the EFLAGS.VM
+> part is just because we can.
+>
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> ---
+>  arch/x86/kvm/svm/nested.c | 20 +++++++++++++++++++-
+>  1 file changed, 19 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+> index 402ea5b412f0..1c82a1789e0e 100644
+> --- a/arch/x86/kvm/svm/nested.c
+> +++ b/arch/x86/kvm/svm/nested.c
+> @@ -337,6 +337,24 @@ static void nested_vmcb_save_pending_event(struct vcpu_svm *svm,
+>
+>  static void nested_prepare_vmcb_save(struct vcpu_svm *svm, struct vmcb *nested_vmcb)
+>  {
+> +       u64 efer = nested_vmcb->save.efer;
+> +
+> +       /* The processor ignores EFER.LMA, but svm_set_efer needs it.  */
+> +       efer &= ~EFER_LMA;
+> +       if ((nested_vmcb->save.cr0 & X86_CR0_PG)
+> +           && (nested_vmcb->save.cr4 & X86_CR4_PAE)
+> +           && (efer & EFER_LME))
+> +               efer |= EFER_LMA;
 
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Acked-by: Laxman Dewangan <ldewangan@nvidia.com>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- drivers/gpio/gpio-max77620.c | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+The CR4.PAE check is unnecessary, isn't it? The combination CR0.PG=1,
+EFER.LMA=1, and CR4.PAE=0 is not a legal processor state.
 
-diff --git a/drivers/gpio/gpio-max77620.c b/drivers/gpio/gpio-max77620.c
-index 6c516aa7732d..e090979659eb 100644
---- a/drivers/gpio/gpio-max77620.c
-+++ b/drivers/gpio/gpio-max77620.c
-@@ -260,6 +260,30 @@ static int max77620_gpio_set_config(struct gpio_chip *gc, unsigned int offset,
- 	return -ENOTSUPP;
- }
- 
-+static int max77620_gpio_irq_init_hw(struct gpio_chip *gc)
-+{
-+	struct max77620_gpio *gpio = gpiochip_get_data(gc);
-+	unsigned int i;
-+	int err;
-+
-+	/*
-+	 * GPIO interrupts may be left ON after bootloader, hence let's
-+	 * pre-initialize hardware to the expected state by disabling all
-+	 * the interrupts.
-+	 */
-+	for (i = 0; i < MAX77620_GPIO_NR; i++) {
-+		err = regmap_update_bits(gpio->rmap, GPIO_REG_ADDR(i),
-+					 MAX77620_CNFG_GPIO_INT_MASK, 0);
-+		if (err < 0) {
-+			dev_err(gpio->dev,
-+				"failed to disable interrupt: %d\n", err);
-+			return err;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- static int max77620_gpio_probe(struct platform_device *pdev)
- {
- 	struct max77620_chip *chip =  dev_get_drvdata(pdev->dev.parent);
-@@ -295,6 +319,7 @@ static int max77620_gpio_probe(struct platform_device *pdev)
- 	mgpio->gpio_chip.irq.chip = &max77620_gpio_irqchip;
- 	mgpio->gpio_chip.irq.default_type = IRQ_TYPE_NONE;
- 	mgpio->gpio_chip.irq.handler = handle_edge_irq;
-+	mgpio->gpio_chip.irq.init_hw = max77620_gpio_irq_init_hw,
- 	mgpio->gpio_chip.irq.threaded = true;
- 
- 	platform_set_drvdata(pdev, mgpio);
--- 
-2.26.0
+According to the SDM,
 
+* IA32_EFER.LME cannot be modified while paging is enabled (CR0.PG =
+1). Attempts to do so using WRMSR cause a general-protection exception
+(#GP(0)).
+* Paging cannot be enabled (by setting CR0.PG to 1) while CR4.PAE = 0
+and IA32_EFER.LME = 1. Attempts to do so using MOV to CR0 cause a
+general-protection exception (#GP(0)).
+* CR4.PAE and CR4.LA57 cannot be modified while either 4-level paging
+or 5-level paging is in use (when CR0.PG = 1 and IA32_EFER.LME = 1).
+Attempts to do so using MOV to CR4 cause a general-protection
+exception (#GP(0)).
+
+> +
+> +       /*
+> +        * Likewise RFLAGS.VM is cleared if inconsistent with other processor
+> +        * state.  This is sort-of documented in "10.4 Leaving SMM" but applies
+> +        * to SVM as well.
+> +        */
+> +       if (!(nested_vmcb->save.cr0 & X86_CR0_PE)
+> +           || (efer & EFER_LMA))
+> +               nested_vmcb->save.rflags &= ~X86_EFLAGS_VM;
+> +
+>         /* Load the nested guest state */
+>         svm->vmcb->save.es = nested_vmcb->save.es;
+>         svm->vmcb->save.cs = nested_vmcb->save.cs;
+> @@ -345,7 +363,7 @@ static void nested_prepare_vmcb_save(struct vcpu_svm *svm, struct vmcb *nested_v
+>         svm->vmcb->save.gdtr = nested_vmcb->save.gdtr;
+>         svm->vmcb->save.idtr = nested_vmcb->save.idtr;
+>         kvm_set_rflags(&svm->vcpu, nested_vmcb->save.rflags);
+> -       svm_set_efer(&svm->vcpu, nested_vmcb->save.efer);
+> +       svm_set_efer(&svm->vcpu, efer);
+>         svm_set_cr0(&svm->vcpu, nested_vmcb->save.cr0);
+>         svm_set_cr4(&svm->vcpu, nested_vmcb->save.cr4);
+>         (void)kvm_set_cr3(&svm->vcpu, nested_vmcb->save.cr3);
+> --
+> 2.26.2
+>
