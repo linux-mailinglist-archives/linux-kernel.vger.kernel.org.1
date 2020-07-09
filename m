@@ -2,146 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2327D2198E7
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 08:52:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 176462198EC
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 08:55:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726372AbgGIGwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 02:52:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726260AbgGIGwy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 02:52:54 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF60CC061A0B
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Jul 2020 23:52:54 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id o13so574759pgf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 23:52:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xi0IjXZT0vlAn+aLE/RD/PtWZze7khXZnjoaecCKN1M=;
-        b=jJWpSWZ0U1zA1yILc3YaBGQs7u1fLp3eg6M+JC6uPvP26eNchIerrsO8/U0B7XZKc5
-         3nHVMfK78KaQSwJsKScWm/1BI0cBmhgknmhpfvtHN8luFokG5nMn7gEG7MD8n8xSVvMt
-         nu4Fs40ttO/wMoOti/Cuwqk1ZH4IDhoKTKSPlmDNk9ykwC5vH/1G/fo0Jm1YgBO4xKsU
-         Q62jQpaDESE46iJpl2Y5n7aBPLWYlo5HcwnKlAyLtbB9ttMCG8BAMcHCl+Cv4I7SaBd7
-         AfGeE5vufhYP5jAKVMFk7OUw3IIlASsJikFyLu+nD7uS6F/f63y+7YGvggxOuFE/fCXJ
-         /BvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xi0IjXZT0vlAn+aLE/RD/PtWZze7khXZnjoaecCKN1M=;
-        b=CIkcKoXCsYa+YUvDRw2fjoeYtmGBEQbhc8LzGQCs+NWCjzdLf+fX4M9PPen/qA9+cR
-         yhIEpwv/M9oInu5twXkuV3XEDL1nAf2M5xTDqZIkvB22zWVvxOgGeye37myQ3Vhq9ge5
-         q3by7UHTxHFV0Ge2btClAlopIJtdURzButJO+hKtYeizCFXLL3LES6rMadBdsw3riAgn
-         R1AJQ4fhlMep1cHUJbLo3rChPhAnBGX2rHSwFnjwNxsU085MTtY6Q8il9J2mNx/w0qJg
-         W+WOLG+jXyeP6XIHLRcbSRS5b2ZJ0qy56HWzYyQjeeJl6Y6ewNm4vSoRb/jn0JJFjx0z
-         Mx6A==
-X-Gm-Message-State: AOAM532xblOxSd6m21/sgS0/TWst7khzZ+zlJ6Oz5ohxMHxe4WkTydUS
-        mzFOLsISvawgMWOTBcM6LVh5yO8JBIQ=
-X-Google-Smtp-Source: ABdhPJyakv2z/Yj0ViE4yrP6D4rSzJtc+69r45BNRWe9J9ut1E1xICUdWAeLHyU5Zig+MEgceti5Zw==
-X-Received: by 2002:a63:20d:: with SMTP id 13mr53135099pgc.166.1594277574260;
-        Wed, 08 Jul 2020 23:52:54 -0700 (PDT)
-Received: from localhost ([122.172.40.201])
-        by smtp.gmail.com with ESMTPSA id p127sm1710281pfb.17.2020.07.08.23.52.53
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 08 Jul 2020 23:52:53 -0700 (PDT)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Ionela Voinescu <ionela.voinescu@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: topology: Don't support AMU without cpufreq
-Date:   Thu,  9 Jul 2020 12:22:45 +0530
-Message-Id: <a710fc4e4e0f1d2e561320130b99bcb5167d73b4.1594277563.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
+        id S1726269AbgGIGzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 02:55:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53420 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726006AbgGIGzs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 02:55:48 -0400
+Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7ED172065D
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 06:55:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594277747;
+        bh=0qnpvvOZ2ouMPWabm2r0fZNRG344s4R3ra9at+9Szr4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=0BJ/s2ur1C0tGBHUScgrUPTUDAedxmw1oV9wtOfbUB/oDtFRYPEGvBBjWBt41aSI7
+         niuJtyLcD4TPlc74Rr8vHUtgkSP7mNH1k7tSjrabgkUfat5SUVj1cfc8SKcM+wVnpk
+         idhHXaWZuGfYv5yWJbyKVK6cMenGhMXovW+39H0Q=
+Received: by mail-ot1-f51.google.com with SMTP id e90so1003349ote.1
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Jul 2020 23:55:47 -0700 (PDT)
+X-Gm-Message-State: AOAM533feXPQJ9kcUo6+3XLlNK+Fgf7+dkAL/lOw4xSSUc7HohdIvviJ
+        ePbC664EpnDzJch8GAHJoiUnun/Pg2gHNjxQs/w=
+X-Google-Smtp-Source: ABdhPJx7BX00j0I/RdFxi452b9LxUoul9y9tcHXUMYbwEUodWJY43CuHz8AlSXVbR30IoBYp8sU9PpMfs1ubvARRRJQ=
+X-Received: by 2002:a9d:6e85:: with SMTP id a5mr11940861otr.90.1594277746780;
+ Wed, 08 Jul 2020 23:55:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <HKAPR02MB42915BECBD71F5ABA0890533E0640@HKAPR02MB4291.apcprd02.prod.outlook.com>
+In-Reply-To: <HKAPR02MB42915BECBD71F5ABA0890533E0640@HKAPR02MB4291.apcprd02.prod.outlook.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Thu, 9 Jul 2020 09:55:35 +0300
+X-Gmail-Original-Message-ID: <CAMj1kXFPUPEtgMJPVj-ZANpPSgkcCxuOmhJR-sTV-JK3F4_cVg@mail.gmail.com>
+Message-ID: <CAMj1kXFPUPEtgMJPVj-ZANpPSgkcCxuOmhJR-sTV-JK3F4_cVg@mail.gmail.com>
+Subject: Re: [PATCH] arm64/module-plts: Consider the special case where
+ plt_max_entries is 0
+To:     =?UTF-8?B?5b2t5rWpKFJpY2hhcmQp?= <richard.peng@oppo.com>
+Cc:     Will Deacon <will@kernel.org>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commit cd0ed03a8903 ("arm64: use activity monitors for frequency
-invariance"), mentions that:
+On Thu, 9 Jul 2020 at 09:50, =E5=BD=AD=E6=B5=A9(Richard) <richard.peng@oppo=
+.com> wrote:
+>
+> On Wed, 8 Jul 2020 at 13:03, =E5=BD=AD=E6=B5=A9(Richard) <richard.peng@op=
+po.com> wrote:
+> >>
+> >>
+> >> On Tue, Jul 07, 2020 at 07:46:08AM -0400, Peng Hao wrote:
+> >> >> If plt_max_entries is 0, a warning is triggered.
+> >> >> WARNING: CPU: 200 PID: 3000 at arch/arm64/kernel/module-plts.c:97 m=
+odule_emit_plt_entry+0xa4/0x150
+> >> >
+> >> > Which kernel are you seeing this with? There is a PLT-related change=
+ in
+> >> > for-next/core, and I'd like to rule if out if possible.
+> >> >
+> >> 5.6.0-rc3+
+> >> >> Signed-off-by: Peng Hao <richard.peng@oppo.com>
+> >> >> ---
+> >> >>  arch/arm64/kernel/module-plts.c | 3 ++-
+> >> >>  1 file changed, 2 insertions(+), 1 deletion(-)
+> >> >>
+> >> >> diff --git a/arch/arm64/kernel/module-plts.c b/arch/arm64/kernel/mo=
+dule-plts.c
+> >> >> index 65b08a74aec6..1868c9ac13f2 100644
+> >> >> --- a/arch/arm64/kernel/module-plts.c
+> >> >> +++ b/arch/arm64/kernel/module-plts.c
+> >> >> @@ -79,7 +79,8 @@ u64 module_emit_plt_entry(struct module *mod, Elf=
+64_Shdr *sechdrs,
+> >> >>      int i =3D pltsec->plt_num_entries;
+> >> >>      int j =3D i - 1;
+> >> >>      u64 val =3D sym->st_value + rela->r_addend;
+> >> >> -
+> >> >> +    if (pltsec->plt_max_entries =3D=3D 0)
+> >> >> +            return 0;
+> >> >
+> >> >Hmm, but if there aren't any PLTs then how do we end up here?
+> >> >
+> >> We also returned 0 when warning was triggered.
+> >
+> >That doesn't really answer the question.
+> >
+> >Apparently, you are hitting a R_AARCH64_JUMP26 or R_AARCH64_CALL26
+> >relocation that operates on a b or bl instruction that is more than
+> >128 megabytes away from its target.
+> >
+> My understanding is that a module that calls functions that are not part =
+of the module will use PLT.
+> Plt_max_entries =3D0 May occur if a module does not depend on other modul=
+e functions.
+>
 
-  "if CONFIG_CPU_FREQ is not enabled, the use of counters is
-   enabled on all CPUs only if all possible CPUs correctly support
-   the necessary counters"
+A PLT slot is allocated for each b or bl instruction that refers to a
+symbol that lives in a different section, either of the same module
+(e.g., bl in .init calling into .text), of another module, or of the
+core kernel.
 
-But that's not really true as validate_cpu_freq_invariance_counters()
-fails if max_freq_hz is returned as 0 (in case there is no policy for
-the CPU). And the AMUs won't be supported in that case.
+I don't see how you end up with plt_max_entries in this case, though.
+Are you sure you have CONFIG_RANDOMIZE_BASE enabled?
 
-Make the code reflect this reality.
+> >In module_frob_arch_sections(), we count all such relocations that
+> >point to other sections, and allocate a PLT slot for each (and update
+> >plt_max_entries) accordingly. So this means that the relocation in
+> >question was disregarded, and this could happen for only two reasons:
+> >- the branch instruction and its target are both in the same section,
+> >in which case this section is *really* large,
+> >- CONFIG_RANDOMIZE_BASE is disabled, but you are still ending up in a
+> >situation where the modules are really far away from the core kernel
+> >or from other modules.
+> >
+> >Do you have a lot of [large] modules loaded when this happens?
+> I don=E2=80=99t think I have [large] modules.  I'll trace which module ca=
+used this warning.
 
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
- arch/arm64/kernel/topology.c | 19 +++----------------
- 1 file changed, 3 insertions(+), 16 deletions(-)
-
-diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
-index 0801a0f3c156..b7da372819fc 100644
---- a/arch/arm64/kernel/topology.c
-+++ b/arch/arm64/kernel/topology.c
-@@ -187,14 +187,13 @@ static int validate_cpu_freq_invariance_counters(int cpu)
- 	return 0;
- }
- 
--static inline bool
--enable_policy_freq_counters(int cpu, cpumask_var_t valid_cpus)
-+static inline void update_amu_fie_cpus(int cpu, cpumask_var_t valid_cpus)
- {
- 	struct cpufreq_policy *policy = cpufreq_cpu_get(cpu);
- 
- 	if (!policy) {
- 		pr_debug("CPU%d: No cpufreq policy found.\n", cpu);
--		return false;
-+		return;
- 	}
- 
- 	if (cpumask_subset(policy->related_cpus, valid_cpus))
-@@ -202,8 +201,6 @@ enable_policy_freq_counters(int cpu, cpumask_var_t valid_cpus)
- 			   amu_fie_cpus);
- 
- 	cpufreq_cpu_put(policy);
--
--	return true;
- }
- 
- static DEFINE_STATIC_KEY_FALSE(amu_fie_key);
-@@ -212,7 +209,6 @@ static DEFINE_STATIC_KEY_FALSE(amu_fie_key);
- static int __init init_amu_fie(void)
- {
- 	cpumask_var_t valid_cpus;
--	bool have_policy = false;
- 	int ret = 0;
- 	int cpu;
- 
-@@ -228,18 +224,9 @@ static int __init init_amu_fie(void)
- 		if (validate_cpu_freq_invariance_counters(cpu))
- 			continue;
- 		cpumask_set_cpu(cpu, valid_cpus);
--		have_policy |= enable_policy_freq_counters(cpu, valid_cpus);
-+		update_amu_fie_cpus(cpu, valid_cpus);
- 	}
- 
--	/*
--	 * If we are not restricted by cpufreq policies, we only enable
--	 * the use of the AMU feature for FIE if all CPUs support AMU.
--	 * Otherwise, enable_policy_freq_counters has already enabled
--	 * policy cpus.
--	 */
--	if (!have_policy && cpumask_equal(valid_cpus, cpu_present_mask))
--		cpumask_or(amu_fie_cpus, amu_fie_cpus, valid_cpus);
--
- 	if (!cpumask_empty(amu_fie_cpus)) {
- 		pr_info("CPUs[%*pbl]: counters will be used for FIE.",
- 			cpumask_pr_args(amu_fie_cpus));
--- 
-2.25.0.rc1.19.g042ed3e048af
-
+Yes please.
