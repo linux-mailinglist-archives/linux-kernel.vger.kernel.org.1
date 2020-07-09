@@ -2,120 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 839FC21A4D9
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 18:32:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DBF821A4DD
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 18:33:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727061AbgGIQcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 12:32:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726408AbgGIQce (ORCPT
+        id S1727972AbgGIQdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 12:33:01 -0400
+Received: from bedivere.hansenpartnership.com ([66.63.167.143]:49050 "EHLO
+        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726408AbgGIQdA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 12:32:34 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F8B9C08C5CE;
-        Thu,  9 Jul 2020 09:32:34 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id j19so1185500pgm.11;
-        Thu, 09 Jul 2020 09:32:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Mds9JnL5+YNLjwOOXncrDDf4ATysP7TR1qNQc1p6UDk=;
-        b=fCreMSX9EhBerl+2TyxRKjDaEWa+JLTGXeNDKhvWlwcUMmvEU4iOBJ1hETBBaoIXY+
-         3wGaamvx0qGsqNTVreuH1ejdGCJDiPEcB2eAm9QUsFNVM4NL4b8jSFsKlSdKhuT6WIbs
-         BqEriVLsFwIIaXEmGJHEAfWi/GvaWm0/I7gLpt83Yk4Hl/RggpY1LX1mZBxA2tJcRyeX
-         vrWdojyiXqa5aIQjG3W40pVoMxpj3KaNhnJJVXMGIOTxx8l/hfsh6sqUlP3CNhSLL51+
-         BOi8gRSuXFlXnnk2d56lugrqmXpvdmnpbgfDCe4uSvgKeYoGdb5uQN4OCHY7lfa64bD2
-         SG6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Mds9JnL5+YNLjwOOXncrDDf4ATysP7TR1qNQc1p6UDk=;
-        b=TaBBRE/BVk3egnZzd3DqxZs5mByj7WedO2j8tPNaD5WCSP5ZeMNznBCkR7S4u7LayK
-         G/Wo2ce0lRLwp1LflJPy7GNBNoszb8gDhk5acX6Sgf3JS4XdIEoFBO1LkwQHT8y427nS
-         Wk2LPB03REUts9EVXzJ2KyOMFkk4PfTqiCkUtorgptVCuce6FAWPlnpNjfwVjKbc8/3E
-         juUcM8WlSBzqgsgabFe8eamezj/dDqaZLRQGH4kQNGvE51ehjO5rRaiffDEpiwLwaddw
-         AEWkjJU4TjOrbUQoJ+C8gc6jXI91l9GfFDDFL+/Cce6XcxcBgyjFUvJGXt9CX5UJnXfy
-         PZJw==
-X-Gm-Message-State: AOAM530mbT0ReTus3jD288aCOQjw0yXnWd1svpkENiXImxOEuHlxSHlO
-        LEWN+1RexnioE7jLVOSR2Nr5hf4KtA5rNWrdUU0=
-X-Google-Smtp-Source: ABdhPJwEDObaYpjZKatGt4CVCe8DGRH/+UZeqYJ47OTcz/gffgUl65HJoQvqw/MGNTXOyb7Ko2oxd8cS3euVMSG5BLY=
-X-Received: by 2002:a05:6a00:790:: with SMTP id g16mr23259445pfu.36.1594312353918;
- Thu, 09 Jul 2020 09:32:33 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200601091851.5491-1-vadimp@mellanox.com> <20200601091851.5491-3-vadimp@mellanox.com>
-In-Reply-To: <20200601091851.5491-3-vadimp@mellanox.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 9 Jul 2020 19:32:17 +0300
-Message-ID: <CAHp75VfXPxoQjeOTMRmO=Yf3YSsGJh2xRRSm9U7wTpRx9N8Bgw@mail.gmail.com>
-Subject: Re: [PATCH platform-next v1 2/8] platform/mellanox: mlxreg-hotplug:
- Add environmental data to uevent
-To:     Vadim Pasternak <vadimp@mellanox.com>
-Cc:     Andy Shevchenko <andy@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 9 Jul 2020 12:33:00 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 7282A8EE2B9;
+        Thu,  9 Jul 2020 09:32:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1594312379;
+        bh=+o15DNSiZ8Sr9PsZmCDjs8laU8OpdoFNPKkvUnrn3w4=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=ImfLOYPiXanR4Li+u0eqxVAkMNOpoOHx8W8yy/PXgdyxrnqFIXh1GHL1dP+EvhNeC
+         nIqctrQPMTxAvypO5hbSmxQJV9wSV4yCG+qQIxpDuK1U68i5QTsPI/ykdp60NIB34e
+         QAf6YQuGIrsnj1yZZxLavmM8NXIB7/sLzs8GFqSA=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id WXVlrLr6uDsZ; Thu,  9 Jul 2020 09:32:59 -0700 (PDT)
+Received: from [153.66.254.194] (unknown [50.35.76.230])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 6FDC18EE116;
+        Thu,  9 Jul 2020 09:32:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1594312378;
+        bh=+o15DNSiZ8Sr9PsZmCDjs8laU8OpdoFNPKkvUnrn3w4=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=Pg957yMR5J0H5kKGQbp+8OVHyS0RtnK3Uw+tWVlPRzPH3/V2ixOY6++uv51M84E95
+         AA5Hv5ARWfb7ue7KIh0OEFy9FTA2RbUCtHXXqD/EN4Z5mLIIciRGerGCLVmmlDuR7M
+         n3hvgHj151uNJ6y9Ab/m59OtsSmZ7jxO+5Dd8tzg=
+Message-ID: <1594312370.10411.9.camel@HansenPartnership.com>
+Subject: Re: [Ksummit-discuss] [Tech-board-discuss] [PATCH] CodingStyle:
+ Inclusive Terminology
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Cc:     ksummit-discuss@lists.linuxfoundation.org,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org,
+        tech-board-discuss@lists.linuxfoundation.org,
+        Chris Mason <clm@fb.clm>, Tibor Raschko <tibrasch@gmail.com>
+Date:   Thu, 09 Jul 2020 09:32:50 -0700
+In-Reply-To: <20200709161351.GF4960@sirena.org.uk>
+References: <79214066-3886-e0ef-f26e-8cb3d53404be@linuxfoundation.org>
+         <e41ded21-1432-afa8-2e42-e509539281c4@gmail.com>
+         <20200709124327.369781a0@coco.lan>
+         <93fc3afb-8c3f-0fb9-3b92-adfb6571e060@linuxfoundation.org>
+         <20200709161351.GF4960@sirena.org.uk>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-zROEZHrj0k+UJe0IHmv7"
+X-Mailer: Evolution 3.26.6 
+Mime-Version: 1.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 1, 2020 at 12:19 PM Vadim Pasternak <vadimp@mellanox.com> wrote:
->
-> Send "udev" event with environmental data in order to allow handling
-> "ENV{}" variables in "udev" rules.
 
-...
+--=-zROEZHrj0k+UJe0IHmv7
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> +static int
-> +mlxreg_hotplug_udev_event_send(struct kobject *kobj,
-> +                              struct mlxreg_core_data *data, bool action)
-> +{
-> +       char event_str[MLXREG_CORE_LABEL_MAX_SIZE + 2];
-> +       char label[MLXREG_CORE_LABEL_MAX_SIZE] = { 0 };
-> +       int i;
-> +
-> +       mlxreg_hotplug_udev_envp[0] = event_str;
+On Thu, 2020-07-09 at 17:13 +0100, Mark Brown wrote:
+> On Thu, Jul 09, 2020 at 10:01:18AM -0600, Shuah Khan wrote:
+> > On 7/9/20 4:43 AM, Mauro Carvalho Chehab wrote:
+> > > For coherency, if "blacklist/whitelist" won't be used anymore, an
+> > > alternative to graylist should also be provided.
+> > What is "graylist"? Does it mean in between allow/deny?
+>=20
+> Yes.  Typically it's used in situations where you don't want to deny
+> something but might for example want to do extra checks to verify
+> that things are OK.
 
-> +       for (i = 0; data->label[i]; i++)
-> +               label[i] = toupper(data->label[i]);
+greylisting was originally pioneered by email.  It's where you
+initially reject an email but remember you did so and then let it
+through if the retries follow an RFC mandated pattern.  The technical
+use spread from there since the technique (treating something as
+untrusted until it proves trust) is very useful.  It has its origin in
+the English idiom "grey area" expressing doubt or lack of clarity.
 
-Sounds like a candidate to be in string_helpers.h
+The etymology of "grey area" is a grey area, but I'd bet it has to do
+with not having the clarity of black and white ... but is equally
+likely to be tied to Yin and Yang.  Grey is also used in England to
+describe the lack of clarity given by mist or fog (he woke up and saw
+the world was very grey).  I'd say we just leave it alone as too
+distantly related to any problematic uses.
 
-#include <ctype.h>
-...
-static inline void string_upper(char *dst, const char *src)
-{
-  do {
-    *dst++ = toupper(*src);
-  } while (*src++);
-}
+James
 
-// similar for tolower
-...
+--=-zROEZHrj0k+UJe0IHmv7
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-There are plenty existing users that can benefit and I can imagine how
-many more will come.
-So, If you add the first patch in the series to bring this in, I will take it.
+-----BEGIN PGP SIGNATURE-----
 
-> +       if (action)
-> +               snprintf(event_str, MLXREG_CORE_LABEL_MAX_SIZE, "%s=1", label);
-> +       else
-> +               snprintf(event_str, MLXREG_CORE_LABEL_MAX_SIZE, "%s=0", label);
+iHUEABMIAB0WIQTnYEDbdso9F2cI+arnQslM7pishQUCXwdGsgAKCRDnQslM7pis
+hWRRAQDBaOwf4fMhuRZ2OzU+UXPjddWGvKKqosk34PrEH9p73gD+POAP0bN+oRJt
+IPmwxHhJaiP4NL/+tFCzSl96XdprHnQ=
+=M6ph
+-----END PGP SIGNATURE-----
 
-Wouldn't be easier to have
+--=-zROEZHrj0k+UJe0IHmv7--
 
-..."%s=%d" ... !!action...
-
-?
-
-> +
-> +       return kobject_uevent_env(kobj, KOBJ_CHANGE, mlxreg_hotplug_udev_envp);
-> +}
-
--- 
-With Best Regards,
-Andy Shevchenko
