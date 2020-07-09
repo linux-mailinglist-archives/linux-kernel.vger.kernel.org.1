@@ -2,92 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23002219C56
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 11:32:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21966219C70
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 11:39:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726733AbgGIJb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 05:31:56 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:35372 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726287AbgGIJb4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 05:31:56 -0400
-Date:   Thu, 9 Jul 2020 11:31:51 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1594287114;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Tuvfl4lp33mBSrKFJ/WLHd+knY1GDMg47O2dd0IKQZE=;
-        b=3VV0Yy2WZ5KQ0MWtljWkVUa4AKf/Ua4rWCCtmsqoO4Gt+KopdJ4HHaUSiPE0Hl9wpAXcmV
-        JbSwavg1LDn5jE1t/e5R4KFhtG72UiikOvT963BcCc9oXoboQvVvjgIk1JigHHSXpC5qfh
-        VqTUlZQI3nHdyW33g/XX5keagaLWeSZTOC0r9QLX4C3JiJ7r7rSbl2BaIMF31X2WqT/XlT
-        S1GNaz4x4kfOX/N5Zhfa1lNNI8VdY6h86LtGNsxdkxidmOTAkd7AESeCnrP9NGTuG4IEcJ
-        +md1GawMYIhVrqMObROCqkY5BkrvvBrodNKIi6vOCuMGbzsyT02kH98PBxdxdA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1594287114;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Tuvfl4lp33mBSrKFJ/WLHd+knY1GDMg47O2dd0IKQZE=;
-        b=oNat9XoYL5AZf51a+7Yod57UPOska9x7/QETpTN2n3+SvV+hH3nHuznkSK2w4LGXgTIUgR
-        pPGyLBXIeQCO/ADA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Daniel Wagner <dwagner@suse.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        John Kacur <jkacur@redhat.com>,
-        Tom Zanussi <tom.zanussi@linux.intel.com>,
-        Clark Williams <williams@redhat.com>,
-        Pavel Machek <pavel@denx.de>
-Subject: Re: [ANNOUNCE] 4.4.229-rt200
-Message-ID: <20200709093151.o6ea5lqc753pxdr7@linutronix.de>
-References: <159423384250.24491.10602573106875114227@beryllium>
+        id S1726347AbgGIJjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 05:39:33 -0400
+Received: from mga07.intel.com ([134.134.136.100]:32124 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726261AbgGIJjc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 05:39:32 -0400
+IronPort-SDR: FRQBPIUQbBYqHnGi2xhlRCOw8AjWBG3k81KFebQ/RLaWlifM2O3y2VP/DEj524y/DwnQrjLEko
+ dNfS9pgfA1xg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9676"; a="212882877"
+X-IronPort-AV: E=Sophos;i="5.75,331,1589266800"; 
+   d="scan'208";a="212882877"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jul 2020 02:39:31 -0700
+IronPort-SDR: G0DDcW5MkFbaqHHnb6bsxH2Lg7sOHpQA5T1pGyDFgvaBnFhlznBkmjPjfx42yK2l4ak7tqJynu
+ cWl8pDDgqVeg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,331,1589266800"; 
+   d="scan'208";a="483735217"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
+  by fmsmga006.fm.intel.com with ESMTP; 09 Jul 2020 02:39:29 -0700
+Date:   Thu, 9 Jul 2020 17:35:27 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     "Wu, Hao" <hao.wu@intel.com>
+Cc:     "mdf@kernel.org" <mdf@kernel.org>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "trix@redhat.com" <trix@redhat.com>,
+        "lgoncalv@redhat.com" <lgoncalv@redhat.com>,
+        Matthew Gerlach <matthew.gerlach@linux.intel.com>,
+        "Weight, Russell H" <russell.h.weight@intel.com>
+Subject: Re: [PATCH] fpga: dfl: pci: add device id for Intel FPGA PAC N3000
+Message-ID: <20200709093527.GA32541@yilunxu-OptiPlex-7050>
+References: <1594282705-32289-1-git-send-email-yilun.xu@intel.com>
+ <DM6PR11MB3819117029F124067F7EA8B985640@DM6PR11MB3819.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <159423384250.24491.10602573106875114227@beryllium>
+In-Reply-To: <DM6PR11MB3819117029F124067F7EA8B985640@DM6PR11MB3819.namprd11.prod.outlook.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-07-08 18:44:02 [-0000], Daniel Wagner wrote:
-> I'm pleased to announce the 4.4.229-rt200 stable release.
+On Thu, Jul 09, 2020 at 05:10:49PM +0800, Wu, Hao wrote:
+> > Subject: [PATCH] fpga: dfl: pci: add device id for Intel FPGA PAC N3000
+> >
+> > Add PCIe Device ID for Intel FPGA PAC N3000.
+> >
+> > Signed-off-by: Wu Hao <hao.wu@intel.com>
+> > Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+> > Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+> > Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+> > ---
+> >  drivers/fpga/dfl-pci.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/drivers/fpga/dfl-pci.c b/drivers/fpga/dfl-pci.c
+> > index 73b5153..824aecf 100644
+> > --- a/drivers/fpga/dfl-pci.c
+> > +++ b/drivers/fpga/dfl-pci.c
+> > @@ -64,6 +64,7 @@ static void cci_pci_free_irq(struct pci_dev *pcidev)
+> >  #define PCIE_DEVICE_ID_PF_INT_5_X0xBCBD
+> >  #define PCIE_DEVICE_ID_PF_INT_6_X0xBCC0
+> >  #define PCIE_DEVICE_ID_PF_DSC_1_X0x09C4
+> > +#define PCIE_DEVICE_ID_PF_PAC_N30000x0B30
 > 
-> This release is just an update to the new stable 4.4.215 version.
+> Should we drop _PF_ here? and also do you want _INTEL_ here?
 
-Your template is off here.
+I think we could keep _PF_, also there is no need to support VF of pac
+n3000 in product now, but it does exist (ID: 0x0b31).
 
-> Note: This update required dealing with a conflict in net/core/dev.c, where
-> devnet_rename_seq was moved from a seqence count to an RWSEM and renamed
-> to devnet_rename_sem. If you encounter runtime issues that show tracebacks
-> in net/core/dev.c, please let me know.
->
-> Patch "net: Add a mutex around devnet_rename_seq" dropped in favour of
-> 602c47fbf46b ("net: core: device_rename: Use rwsem instead of a seqcount")
+And add _INTEL_ is good to me.
 
-Yes, this was the intention of the exercise :)
- 
-> Known issues:
+Then how about this one:
+  #define PCIE_DEVICE_ID_PF_INTEL_PAC_N3000	0x0B30
+
 > 
->   sigwaittest with hackbench as workload is able to trigger a crash on x86_64,
->   the same as reported for the v4.4.220-rt196 release. The crash seems to
->   be triggered by a BPF program. IIRC, BPF was never supported in v4.4-rt
->   and I just forgot to disable in my configuration.
-
-In v5.4.3-rt1 there is
-    fe18e9e08e25d ("BPF: Disable on PREEMPT_RT")
-
-so maybe backport this across the stable kernels. Fixing it is a way
-larger queue. If the intention is to keep it disabled it could be
-enforced via Kconfig so it is not enabled by accident (or by using
-oldconfig on a distro config which has it enabled).
-
-> Enjoy!
-> Daniel
-
-Sebastian
+> Thanks
+> Hao
