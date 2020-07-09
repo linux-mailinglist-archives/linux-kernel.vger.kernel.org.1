@@ -2,124 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 125E72198A1
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 08:28:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF2052198B3
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 08:31:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726575AbgGIG14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 02:27:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726476AbgGIG14 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 02:27:56 -0400
-Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 550F8C061A0B;
-        Wed,  8 Jul 2020 23:27:56 -0700 (PDT)
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id E82AFBC070;
-        Thu,  9 Jul 2020 06:27:53 +0000 (UTC)
-From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-To:     m@bues.ch, linux-wireless@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Subject: [PATCH] SONICS SILICON BACKPLANE DRIVER (SSB): Replace HTTP links with HTTPS ones
-Date:   Thu,  9 Jul 2020 08:27:47 +0200
-Message-Id: <20200709062747.23948-1-grandmaster@al2klimov.de>
+        id S1726321AbgGIGbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 02:31:31 -0400
+Received: from mail.zju.edu.cn ([61.164.42.155]:61914 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725787AbgGIGbb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 02:31:31 -0400
+Received: by ajax-webmail-mail-app2 (Coremail) ; Thu, 9 Jul 2020 14:31:17
+ +0800 (GMT+08:00)
+X-Originating-IP: [210.32.144.65]
+Date:   Thu, 9 Jul 2020 14:31:17 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   dinghao.liu@zju.edu.cn
+To:     "Lorenzo Pieralisi" <lorenzo.pieralisi@arm.com>
+Cc:     kjlu@umn.edu, "Marek Vasut" <marek.vasut+renesas@gmail.com>,
+        "Yoshihiro Shimoda" <yoshihiro.shimoda.uh@renesas.com>,
+        "Rob Herring" <robh@kernel.org>,
+        "Bjorn Helgaas" <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: Re: [PATCH] [v2] PCI: rcar: Fix runtime PM imbalance on error
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.10 build 20190906(84e8bf8f)
+ Copyright (c) 2002-2020 www.mailtech.cn zju.edu.cn
+In-Reply-To: <20200707111622.GA14935@e121166-lin.cambridge.arm.com>
+References: <20200607093134.6393-1-dinghao.liu@zju.edu.cn>
+ <20200707111622.GA14935@e121166-lin.cambridge.arm.com>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +++++
-X-Spam-Level: *****
-Authentication-Results: smtp.al2klimov.de;
-        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+Message-ID: <390ac334.1fb2.17332456bae.Coremail.dinghao.liu@zju.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: by_KCgBnEJ61uQZfvqQOAA--.2391W
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgwNBlZdtO+R4gAHsh
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJTRUUUbGCS07vEb7Iv0x
+        C_Xr1lV2xY67kC6x804xWlV2xY67CY07I20VC2zVCF04k26cxKx2IYs7xG6rWj6s0DMIAI
+        bVAFxVCF77xC64kEw24lV2xY67C26IkvcIIF6IxKo4kEV4ylV2xY628lY4IE4IxF12IF4w
+        CS07vE84x0c7CEj48ve4kI8wCS07vE84ACjcxK6xIIjxv20xvE14v26w1j6s0DMIAIbVA2
+        z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJr0_GcWlV2xY628EF7xvwVC2z280aVAFwI0_Gc
+        CE3s1lV2xY628EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wCS07vEe2I262IYc4CY6c8I
+        j28IcVAaY2xG8wCS07vE5I8CrVACY4xI64kE6c02F40Ex7xfMIAIbVAv7VC0I7IYx2IY67
+        AKxVWUJVWUGwCS07vEYx0Ex4A2jsIE14v26r1j6r4UMIAIbVAm72CE4IkC6x0Yz7v_Jr0_
+        Gr1lV2xY6x02cVAKzwCS07vEc2xSY4AK67AK6r47MIAIbVCY0x0Ix7I2Y4AK64vIr41lV2
+        xY6xAIw28IcVCjz48v1sIEY20_GFWkJr1UJwCS07vE4x8a6x804xWlV2xY6xC20s026xCa
+        FVCjc4AY6r1j6r4UMIAIbVC20s026c02F40E14v26r1j6r18MIAIbVC20s026x8GjcxK67
+        AKxVWUGVWUWwCS07vEx4CE17CEb7AF67AKxVWUtVW8ZwCS07vEIxAIcVC0I7IYx2IY67AK
+        xVWUJVWUCwCS07vEIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIAIbVCI42IY6xAIw2
+        0EY4v20xvaj40_WFyUJVCq3wCS07vEIxAIcVC2z280aVAFwI0_Jr0_Gr1lV2xY6IIF0xvE
+        x4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUU==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rationale:
-Reduces attack surface on kernel devs opening the links for MITM
-as HTTPS traffic is much harder to manipulate.
-
-Deterministic algorithm:
-For each file:
-  If not .svg:
-    For each line:
-      If doesn't contain `\bxmlns\b`:
-        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
-            If both the HTTP and HTTPS versions
-            return 200 OK and serve the same content:
-              Replace HTTP with HTTPS.
-
-Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
----
- Continuing my work started at 93431e0607e5.
- See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
- (Actually letting a shell for loop submit all this stuff for me.)
-
- If there are any URLs to be removed completely or at least not HTTPSified:
- Just clearly say so and I'll *undo my change*.
- See also: https://lkml.org/lkml/2020/6/27/64
-
- If there are any valid, but yet not changed URLs:
- See: https://lkml.org/lkml/2020/6/26/837
-
- If you apply the patch, please let me know.
-
-
- drivers/ssb/driver_chipcommon.c     | 4 ++--
- drivers/ssb/driver_chipcommon_pmu.c | 2 +-
- drivers/ssb/sprom.c                 | 2 +-
- 3 files changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/ssb/driver_chipcommon.c b/drivers/ssb/driver_chipcommon.c
-index 3861cb659cb9..85542bfd7715 100644
---- a/drivers/ssb/driver_chipcommon.c
-+++ b/drivers/ssb/driver_chipcommon.c
-@@ -238,7 +238,7 @@ static void chipco_powercontrol_init(struct ssb_chipcommon *cc)
- 	}
- }
- 
--/* http://bcm-v4.sipsolutions.net/802.11/PmuFastPwrupDelay */
-+/* https://bcm-v4.sipsolutions.net/802.11/PmuFastPwrupDelay */
- static u16 pmu_fast_powerup_delay(struct ssb_chipcommon *cc)
- {
- 	struct ssb_bus *bus = cc->dev->bus;
-@@ -255,7 +255,7 @@ static u16 pmu_fast_powerup_delay(struct ssb_chipcommon *cc)
- 	}
- }
- 
--/* http://bcm-v4.sipsolutions.net/802.11/ClkctlFastPwrupDelay */
-+/* https://bcm-v4.sipsolutions.net/802.11/ClkctlFastPwrupDelay */
- static void calc_fast_powerup_delay(struct ssb_chipcommon *cc)
- {
- 	struct ssb_bus *bus = cc->dev->bus;
-diff --git a/drivers/ssb/driver_chipcommon_pmu.c b/drivers/ssb/driver_chipcommon_pmu.c
-index 0f60e90ded26..888069e10659 100644
---- a/drivers/ssb/driver_chipcommon_pmu.c
-+++ b/drivers/ssb/driver_chipcommon_pmu.c
-@@ -513,7 +513,7 @@ static void ssb_pmu_resources_init(struct ssb_chipcommon *cc)
- 		chipco_write32(cc, SSB_CHIPCO_PMU_MAXRES_MSK, max_msk);
- }
- 
--/* http://bcm-v4.sipsolutions.net/802.11/SSB/PmuInit */
-+/* https://bcm-v4.sipsolutions.net/802.11/SSB/PmuInit */
- void ssb_pmu_init(struct ssb_chipcommon *cc)
- {
- 	u32 pmucap;
-diff --git a/drivers/ssb/sprom.c b/drivers/ssb/sprom.c
-index 42d620cee8a9..7cd553127861 100644
---- a/drivers/ssb/sprom.c
-+++ b/drivers/ssb/sprom.c
-@@ -186,7 +186,7 @@ int ssb_fill_sprom_with_fallback(struct ssb_bus *bus, struct ssb_sprom *out)
- 	return get_fallback_sprom(bus, out);
- }
- 
--/* http://bcm-v4.sipsolutions.net/802.11/IsSpromAvailable */
-+/* https://bcm-v4.sipsolutions.net/802.11/IsSpromAvailable */
- bool ssb_is_sprom_available(struct ssb_bus *bus)
- {
- 	/* status register only exists on chipcomon rev >= 11 and we need check
--- 
-2.27.0
-
+PiBPbiBTdW4sIEp1biAwNywgMjAyMCBhdCAwNTozMTozM1BNICswODAwLCBEaW5naGFvIExpdSB3
+cm90ZToKPiA+IHBtX3J1bnRpbWVfZ2V0X3N5bmMoKSBpbmNyZW1lbnRzIHRoZSBydW50aW1lIFBN
+IHVzYWdlIGNvdW50ZXIgZXZlbgo+ID4gdGhlIGNhbGwgcmV0dXJucyBhbiBlcnJvciBjb2RlLiBU
+aHVzIGEgY29ycmVzcG9uZGluZyBkZWNyZW1lbnQgaXMKPiA+IG5lZWRlZCBvbiB0aGUgZXJyb3Ig
+aGFuZGxpbmcgcGF0aCB0byBrZWVwIHRoZSBjb3VudGVyIGJhbGFuY2VkLgo+ID4gCj4gPiBTaWdu
+ZWQtb2ZmLWJ5OiBEaW5naGFvIExpdSA8ZGluZ2hhby5saXVAemp1LmVkdS5jbj4KPiA+IC0tLQo+
+ID4gCj4gPiBDaGFuZ2Vsb2c6Cj4gPiAKPiA+IHYyOiAtIFJlbW92ZSB1bm5lY2Vzc2FyeSAnZXJy
+X3BtX3B1dCcgbGFiZWwuCj4gPiAgICAgICBSZWZpbmUgY29tbWl0IG1lc3NhZ2UuCj4gPiAtLS0K
+PiA+ICBkcml2ZXJzL3BjaS9jb250cm9sbGVyL3BjaWUtcmNhci5jIHwgNiArKy0tLS0KPiA+ICAx
+IGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQo+IAo+IENhbiB5
+b3UgcmViYXNlIGl0IG9uIHRvcCBvZiB2NS44LXJjMSBhbmQgcmVzZW5kIGl0IHdpdGggWW9zaGlo
+aXJvJ3MgdGFncwo+IHBsZWFzZSA/Cj4gCgpTdXJlLCBJIHdpbGwgcmVzZW5kIGl0IHNvb24uCgpS
+ZWdhcmRzLApEaW5naGFvCg==
