@@ -2,193 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E63721A9F8
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 23:52:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3373C21AA0F
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 23:57:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727070AbgGIVwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 17:52:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726989AbgGIVv4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 17:51:56 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66D7EC08C5DC;
-        Thu,  9 Jul 2020 14:51:56 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id d15so2997801edm.10;
-        Thu, 09 Jul 2020 14:51:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ItfQ8L/Er3Hk4c2uSxofOAEu4o/bM64EAYLfz2K5ECQ=;
-        b=ZxPgT4AUp2+vo6mZ57j8c7IbaQnpm3m6ie3CigiT9z5eT/38nTYREAtriLTnkq8Lwf
-         4GpfBUCR+F4TwwtJDKmTMikAA1mYDkCtZnvenE0cd5r25is63mIL2oMDAwCJfIi7kttm
-         J/1DTMkeonJSRMV9ua+TFSTSS1Y8Qjsr5GUALrcsfDmNmX1QW7LyP6AxMSx3wp04RxdP
-         nTHeNyEh7Yd7TMelPlk+WfgjOwiAjrEYG2zHWnWX+mIMjXc7maFTPWUgQnKpQMV70x+o
-         IYPo6KlxpBxCqrrTZAcNZconvzQTlE3xHJpZbTfvic42kgu5iYu35H+grluIU4UdG/M8
-         DvgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ItfQ8L/Er3Hk4c2uSxofOAEu4o/bM64EAYLfz2K5ECQ=;
-        b=oDoHhkjQIHTQzV/vPY3ZGXH0mFSut5L6Jumyy9ANpZmhdiKPYw93K5ZqsZoYXCXdTx
-         fwGYNtRyFX/+2InFzypRkV0VyB3EFZ8X8geuVSC5pPvmKrfw7h79bUmvkxgcrKGyVCHT
-         5hSIgTJ0Sx7o+1QAObc22j31L7l/+dYdDfV4bTNLXez3tys+Tgz9sZfSziWrxokYhSVu
-         io5FJGii7O+jADOGTVYMH2CQFatFBHg7ZNjTPNRKOWs51Xtpp8VWHVyn+7MnNwk8rqtk
-         S+sTIPnlIjao0/WaXkO/mUp97Cqx5DWIZkaLH34fImEmaoAKF84n/yTM+hQKE5HeSghx
-         kIsQ==
-X-Gm-Message-State: AOAM531wbWz/FEjk/K2ZyfLJTRndWVT8aUcxFYJOj0fCTjUS+tsEV3fg
-        qZuIsBbV/CvaYVdtuiPvlME=
-X-Google-Smtp-Source: ABdhPJz3P5Adz2dZxyYUEZXHp3Fcl0wTBk1V3i80J7DWD2gRIAxKKfpvDMvc+IKU01B3QLekYTH+sA==
-X-Received: by 2002:aa7:d285:: with SMTP id w5mr46413518edq.174.1594331515142;
-        Thu, 09 Jul 2020 14:51:55 -0700 (PDT)
-Received: from Ansuel-XPS.localdomain (host-87-16-250-164.retail.telecomitalia.it. [87.16.250.164])
-        by smtp.googlemail.com with ESMTPSA id e16sm2498260ejt.14.2020.07.09.14.51.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jul 2020 14:51:54 -0700 (PDT)
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Amit Kucheria <amit.kucheria@linaro.org>
-Cc:     Ansuel Smith <ansuelsmth@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 6/6] drivers: thermal: tsens: add set_trip support for 8960
-Date:   Thu,  9 Jul 2020 23:51:36 +0200
-Message-Id: <20200709215136.28044-7-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200709215136.28044-1-ansuelsmth@gmail.com>
-References: <20200709215136.28044-1-ansuelsmth@gmail.com>
+        id S1726446AbgGIV5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 17:57:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42634 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726196AbgGIV5l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 17:57:41 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D032520672;
+        Thu,  9 Jul 2020 21:57:40 +0000 (UTC)
+Date:   Thu, 9 Jul 2020 17:57:39 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Wei Yang <richard.weiyang@linux.alibaba.com>
+Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/5] tracing: use union to simplify the
+ trace_event_functions initialization
+Message-ID: <20200709175739.4c628f38@oasis.local.home>
+In-Reply-To: <20200703020612.12930-1-richard.weiyang@linux.alibaba.com>
+References: <20200703020612.12930-1-richard.weiyang@linux.alibaba.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add custom set_trip function for 8960 needed to set trip point to the
-tsens driver for 8960 driver.
+On Fri,  3 Jul 2020 10:06:08 +0800
+Wei Yang <richard.weiyang@linux.alibaba.com> wrote:
 
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
----
- drivers/thermal/qcom/tsens-8960.c | 78 +++++++++++++++++++++++++++++++
- 1 file changed, 78 insertions(+)
+> There are for 4 fields in trace_event_functions with the same type of
+> trace_print_func. Initialize them in register_trace_event() one by one
+> looks redundant.
 
-diff --git a/drivers/thermal/qcom/tsens-8960.c b/drivers/thermal/qcom/tsens-8960.c
-index 2dc670206896..321791b8aabf 100644
---- a/drivers/thermal/qcom/tsens-8960.c
-+++ b/drivers/thermal/qcom/tsens-8960.c
-@@ -93,6 +93,15 @@
- 						TSENS_8064_SENSOR9_EN | \
- 						TSENS_8064_SENSOR10_EN)
- 
-+/* Trips: from very hot to very cold */
-+enum tsens_trip_type {
-+	TSENS_TRIP_STAGE3 = 0,
-+	TSENS_TRIP_STAGE2,
-+	TSENS_TRIP_STAGE1,
-+	TSENS_TRIP_STAGE0,
-+	TSENS_TRIP_NUM,
-+};
-+
- u32 tsens_8960_slope[] = {
- 			1176, 1176, 1154, 1176,
- 			1111, 1132, 1132, 1199,
-@@ -110,6 +119,16 @@ static inline int code_to_mdegC(u32 adc_code, const struct tsens_sensor *s)
- 	return adc_code * slope + offset;
- }
- 
-+static int mdegC_to_code(int degC, const struct tsens_sensor *s)
-+{
-+	int slope, offset;
-+
-+	slope = thermal_zone_get_slope(s->tzd);
-+	offset = CAL_MDEGC - slope * s->offset;
-+
-+	return degC / slope - offset;
-+}
-+
- static void notify_uspace_tsens_fn(struct work_struct *work)
- {
- 	struct tsens_sensor *s = container_of(work, struct tsens_sensor,
-@@ -442,6 +461,64 @@ static int get_temp_8960(const struct tsens_sensor *s, int *temp)
- 	return -ETIMEDOUT;
- }
- 
-+static int set_trip_temp_ipq8064(void *data, int trip, int temp)
-+{
-+	unsigned int reg_th, reg_cntl;
-+	int ret, code, code_chk, hi_code, lo_code;
-+	const struct tsens_sensor *s = data;
-+	struct tsens_priv *priv = s->priv;
-+
-+	code = mdegC_to_code(temp, s);
-+	code_chk = code;
-+
-+	if (code < THRESHOLD_MIN_CODE || code > THRESHOLD_MAX_CODE)
-+		return -EINVAL;
-+
-+	ret = regmap_read(priv->tm_map, STATUS_CNTL_ADDR_8064, &reg_cntl);
-+	if (ret)
-+		return ret;
-+
-+	ret = regmap_read(priv->tm_map, THRESHOLD_ADDR, &reg_th);
-+	if (ret)
-+		return ret;
-+
-+	hi_code = (reg_th & THRESHOLD_UPPER_LIMIT_MASK)
-+			>> THRESHOLD_UPPER_LIMIT_SHIFT;
-+	lo_code = (reg_th & THRESHOLD_LOWER_LIMIT_MASK)
-+			>> THRESHOLD_LOWER_LIMIT_SHIFT;
-+
-+	switch (trip) {
-+	case TSENS_TRIP_STAGE3:
-+		code <<= THRESHOLD_MAX_LIMIT_SHIFT;
-+		reg_th &= ~THRESHOLD_MAX_LIMIT_MASK;
-+		break;
-+	case TSENS_TRIP_STAGE2:
-+		if (code_chk <= lo_code)
-+			return -EINVAL;
-+		code <<= THRESHOLD_UPPER_LIMIT_SHIFT;
-+		reg_th &= ~THRESHOLD_UPPER_LIMIT_MASK;
-+		break;
-+	case TSENS_TRIP_STAGE1:
-+		if (code_chk >= hi_code)
-+			return -EINVAL;
-+		code <<= THRESHOLD_LOWER_LIMIT_SHIFT;
-+		reg_th &= ~THRESHOLD_LOWER_LIMIT_MASK;
-+		break;
-+	case TSENS_TRIP_STAGE0:
-+		code <<= THRESHOLD_MIN_LIMIT_SHIFT;
-+		reg_th &= ~THRESHOLD_MIN_LIMIT_MASK;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	ret = regmap_write(priv->tm_map, THRESHOLD_ADDR, reg_th | code);
-+	if (ret)
-+		return ret;
-+
-+	return 0;
-+}
-+
- static const struct tsens_ops ops_8960 = {
- 	.init		= init_8960,
- 	.calibrate	= calibrate_8960,
-@@ -450,6 +527,7 @@ static const struct tsens_ops ops_8960 = {
- 	.disable	= disable_8960,
- 	.suspend	= suspend_8960,
- 	.resume		= resume_8960,
-+	.set_trip_temp	= set_trip_temp_ipq8064,
- };
- 
- struct tsens_plat_data data_8960 = {
--- 
-2.27.0
+I have mixed emotions about this patch. Yeah, it consolidates it a bit,
+but it also makes it less easy to know what it is doing.
+
+All this patch is doing is optimizing the initialization path, which is
+done once when an event is registered. It's error prone, as you would
+need to make sure to map the array with the functions. Something like
+this is only reasonable if it is used more often, which here it's a
+single spot.
+
+So no, I can't take this patch.
+
+-- Steve
+
+
+
+> 
+> Let's take advantage of union to simplify the procedure.
+> 
+> Signed-off-by: Wei Yang <richard.weiyang@linux.alibaba.com>
+> ---
+>  include/linux/trace_events.h | 13 +++++++++----
+>  kernel/trace/trace_output.c  | 14 +++++---------
+>  2 files changed, 14 insertions(+), 13 deletions(-)
+> 
+> diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
+> index 5c6943354049..1a421246f4a2 100644
+> --- a/include/linux/trace_events.h
+> +++ b/include/linux/trace_events.h
+> @@ -122,10 +122,15 @@ typedef enum print_line_t (*trace_print_func)(struct trace_iterator *iter,
+>  				      int flags, struct trace_event *event);
+>  
+>  struct trace_event_functions {
+> -	trace_print_func	trace;
+> -	trace_print_func	raw;
+> -	trace_print_func	hex;
+> -	trace_print_func	binary;
+> +	union {
+> +		struct {
+> +			trace_print_func	trace;
+> +			trace_print_func	raw;
+> +			trace_print_func	hex;
+> +			trace_print_func	binary;
+> +		};
+> +		trace_print_func print_funcs[4];
+> +	};
+>  };
+>  
+>  struct trace_event {
+> diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
+> index 73976de7f8cc..47bf9f042b97 100644
+> --- a/kernel/trace/trace_output.c
+> +++ b/kernel/trace/trace_output.c
+> @@ -728,7 +728,7 @@ void trace_event_read_unlock(void)
+>  int register_trace_event(struct trace_event *event)
+>  {
+>  	unsigned key;
+> -	int ret = 0;
+> +	int i, ret = 0;
+>  
+>  	down_write(&trace_event_sem);
+>  
+> @@ -770,14 +770,10 @@ int register_trace_event(struct trace_event *event)
+>  			goto out;
+>  	}
+>  
+> -	if (event->funcs->trace == NULL)
+> -		event->funcs->trace = trace_nop_print;
+> -	if (event->funcs->raw == NULL)
+> -		event->funcs->raw = trace_nop_print;
+> -	if (event->funcs->hex == NULL)
+> -		event->funcs->hex = trace_nop_print;
+> -	if (event->funcs->binary == NULL)
+> -		event->funcs->binary = trace_nop_print;
+> +	for (i = 0; i < ARRAY_SIZE(event->funcs->print_funcs); i++) {
+> +		if (!event->funcs->print_funcs[i])
+> +			event->funcs->print_funcs[i] = trace_nop_print;
+> +	}
+>  
+>  	key = event->type & (EVENT_HASHSIZE - 1);
+>  
 
