@@ -2,155 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61B64219EBD
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 13:06:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 162BD219EAE
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 13:05:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726806AbgGILGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 07:06:24 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:44374 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726510AbgGILGW (ORCPT
+        id S1726829AbgGILFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 07:05:18 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:57316 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726923AbgGILFP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 07:06:22 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1594292781; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=yxKB+f0iO9CExiHd4llgeNv4VdmTVWRtzF0m4fF95jk=; b=CIvd6ZbhTDS1igoUe0iN63BVw297gih4+3uu6SnVGvjULEsW6wUNXowA1k6cdK4LizX9KLmb
- SPVdRtUuBBHsjZdEPAK2JsPQb2W++IK9Tg+UNd0IqmjlWBIpHpG8HdN0WGXqnPpDzkonc/QQ
- cwpHo3Feg0br15qHeiFkLOibrMc=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n14.prod.us-west-2.postgun.com with SMTP id
- 5f06f9e8f97e988aab0f76b5 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 09 Jul 2020 11:05:12
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 65DE7C4339C; Thu,  9 Jul 2020 11:05:12 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-173.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D95EAC433CA;
-        Thu,  9 Jul 2020 11:05:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D95EAC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rnayak@codeaurora.org
-From:   Rajendra Nayak <rnayak@codeaurora.org>
-To:     robdclark@gmail.com, sean@poorly.run, agross@kernel.org,
-        bjorn.andersson@linaro.org
-Cc:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mka@chromium.org, Rajendra Nayak <rnayak@codeaurora.org>
-Subject: [PATCH v3 4/4] arm64: dts: sc7180: Add DSI and MDP OPP tables and power-domains
-Date:   Thu,  9 Jul 2020 16:34:34 +0530
-Message-Id: <1594292674-15632-5-git-send-email-rnayak@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1594292674-15632-1-git-send-email-rnayak@codeaurora.org>
-References: <1594292674-15632-1-git-send-email-rnayak@codeaurora.org>
+        Thu, 9 Jul 2020 07:05:15 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: gtucker)
+        with ESMTPSA id E33BC2A63B1
+Subject: Re: chrome-platform/for-kernelci bisection:
+ baseline.bootrr.rockchip-dp-probed on rk3399-gru-kevin
+To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <linux@roeck-us.net>, kernelci-results@groups.io
+Cc:     linux-kernel@vger.kernel.org, Benson Leung <bleung@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>
+References: <5f06177f.1c69fb81.ed8e4.1a92@mx.google.com>
+ <a79f116f-2c6d-570d-8e06-95082d26d42d@roeck-us.net>
+ <55cb5ce6-4ecb-1203-807f-c24648c0e989@collabora.com>
+From:   Guillaume Tucker <guillaume.tucker@collabora.com>
+Message-ID: <6ee59022-ca64-92ab-6ed6-e04115698780@collabora.com>
+Date:   Thu, 9 Jul 2020 12:05:11 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
+MIME-Version: 1.0
+In-Reply-To: <55cb5ce6-4ecb-1203-807f-c24648c0e989@collabora.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the OPP tables for DSI and MDP based on the perf state/clk
-requirements, and add the power-domains property to specify the
-scalable power domain.
+On 09/07/2020 10:17, Enric Balletbo i Serra wrote:
+> Hi,
+> 
+> On 8/7/20 22:32, Guenter Roeck wrote:
+>> On 7/8/20 11:59 AM, kernelci.org bot wrote:
+>>> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+>>> * This automated bisection report was sent to you on the basis  *
+>>> * that you may be involved with the breaking commit it has      *
+>>> * found.  No manual investigation has been done to verify it,   *
+>>> * and the root cause of the problem may be somewhere else.      *
+>>> *                                                               *
+>>> * If you do send a fix, please include this trailer:            *
+>>> *   Reported-by: "kernelci.org bot" <bot@kernelci.org>          *
+>>> *                                                               *
+>>> * Hope this helps!                                              *
+>>> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+>>>
+>>> chrome-platform/for-kernelci bisection: baseline.bootrr.rockchip-dp-probed on rk3399-gru-kevin
+>>>
+>>> Summary:
+>>>   Start:      154353417996 KERNELCI: x86_64_defconfig: Enable support for Chromebooks devices
+>>>   Plain log:  https://storage.kernelci.org/chrome-platform/for-kernelci/v5.8-rc1-20-g154353417996/arm64/defconfig/gcc-8/lab-collabora/baseline-rk3399-gru-kevin.txt
+>>>   HTML log:   https://storage.kernelci.org/chrome-platform/for-kernelci/v5.8-rc1-20-g154353417996/arm64/defconfig/gcc-8/lab-collabora/baseline-rk3399-gru-kevin.html
+>>>   Result:     8c9a6ef40bf4 platform/chrome: cros_ec_proto: Convert EC error codes to Linux error codes
+>>>
+>>> Checks:
+>>>   revert:     PASS
+>>>   verify:     PASS
+>>>
+>>> Parameters:
+>>>   Tree:       chrome-platform
+>>>   URL:        https://git.kernel.org/pub/scm/linux/kernel/git/chrome-platform/linux.git
+>>>   Branch:     for-kernelci
+>>>   Target:     rk3399-gru-kevin
+>>>   CPU arch:   arm64
+>>>   Lab:        lab-collabora
+>>>   Compiler:   gcc-8
+>>>   Config:     defconfig
+>>>   Test case:  baseline.bootrr.rockchip-dp-probed
+>>>
+>>> Breaking commit found:
+>>>
+>>> -------------------------------------------------------------------------------
+>>> commit 8c9a6ef40bf400c64c9907031bd32b59f9d4aea2
+>>> Author: Guenter Roeck <linux@roeck-us.net>
+>>> Date:   Sat Jul 4 07:26:07 2020 -0700
+>>>
+>>>     platform/chrome: cros_ec_proto: Convert EC error codes to Linux error codes
+>>>     
+>>>     The EC reports a variety of error codes. Most of those, with the exception
+>>>     of EC_RES_INVALID_VERSION, are converted to -EPROTO. As result, the actual
+>>>     error code gets lost. Convert all EC errors to Linux error codes to report
+>>>     a more meaningful error to the caller to aid debugging.
+>>>     
+>>>     Cc: Yu-Hsuan Hsu <yuhsuan@chromium.org>
+>>>     Cc: Prashant Malani <pmalani@chromium.org>
+>>>     Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+>>>     Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+>>>
+> 
+> So, as Guenter pointed I dropped this patch now.
+> 
+>>
+>> So, just FTR, turns out that there are callers which specifically check for
+>> -EPROTO and examine the EC error code if it is returned, or just accept
+>> -EPROTO as generic failure (but nothing else). Example is drivers/pwm/pwm-cros-ec.c:
+>> cros_ec_num_pwms(). Such commands now fail, in this case because
+>> EC_RES_INVALID_PARAM is now returned as -EINVAL and cros_ec_num_pwms()
+>> doesn't expect that.
+>>
+> 
+> Right, that's interesting, and I'll take in consideration for future reworks of
+> the above patch and also take a deeper look at those specific cases reported.
 
-Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
-Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
----
- arch/arm64/boot/dts/qcom/sc7180.dtsi | 49 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 49 insertions(+)
+This bisection is probably one of the most interesting ones
+indeed.  I should mention it when I finally get round to making
+a "KernelCI bisections hall of fame" blog post.
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-index 2be81a2..1ce895f 100644
---- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-@@ -2642,6 +2642,8 @@
- 						       <19200000>,
- 						       <19200000>,
- 						       <19200000>;
-+				operating-points-v2 = <&mdp_opp_table>;
-+				power-domains = <&rpmhpd SC7180_CX>;
- 
- 				interrupt-parent = <&mdss>;
- 				interrupts = <0 IRQ_TYPE_LEVEL_HIGH>;
-@@ -2659,6 +2661,31 @@
- 						};
- 					};
- 				};
-+
-+				mdp_opp_table: mdp-opp-table {
-+					compatible = "operating-points-v2";
-+
-+					opp-200000000 {
-+						opp-hz = /bits/ 64 <200000000>;
-+						required-opps = <&rpmhpd_opp_low_svs>;
-+					};
-+
-+					opp-300000000 {
-+						opp-hz = /bits/ 64 <300000000>;
-+						required-opps = <&rpmhpd_opp_svs>;
-+					};
-+
-+					opp-345000000 {
-+						opp-hz = /bits/ 64 <345000000>;
-+						required-opps = <&rpmhpd_opp_svs_l1>;
-+					};
-+
-+					opp-460000000 {
-+						opp-hz = /bits/ 64 <460000000>;
-+						required-opps = <&rpmhpd_opp_nom>;
-+					};
-+				};
-+
- 			};
- 
- 			dsi0: dsi@ae94000 {
-@@ -2682,6 +2709,9 @@
- 					      "iface",
- 					      "bus";
- 
-+				operating-points-v2 = <&dsi_opp_table>;
-+				power-domains = <&rpmhpd SC7180_CX>;
-+
- 				phys = <&dsi_phy>;
- 				phy-names = "dsi";
- 
-@@ -2707,6 +2737,25 @@
- 						};
- 					};
- 				};
-+
-+				dsi_opp_table: dsi-opp-table {
-+					compatible = "operating-points-v2";
-+
-+					opp-187500000 {
-+						opp-hz = /bits/ 64 <187500000>;
-+						required-opps = <&rpmhpd_opp_low_svs>;
-+					};
-+
-+					opp-300000000 {
-+						opp-hz = /bits/ 64 <300000000>;
-+						required-opps = <&rpmhpd_opp_svs>;
-+					};
-+
-+					opp-358000000 {
-+						opp-hz = /bits/ 64 <358000000>;
-+						required-opps = <&rpmhpd_opp_svs_l1>;
-+					};
-+				};
- 			};
- 
- 			dsi_phy: dsi-phy@ae94400 {
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+> BTW, Guillaume, I queued that patch to give a try and test 3 days ago. Is the
+> bisection job expected to take that time to run? In this case I think it also
+> took some time to receive the build test, so probably is just a matter of having
+> lot of jobs in the queue?
+> 
+> I am not complaining at all, just curious, and just want to know to improve my
+> maintainer workflow.
+
+I think what you're doing is perfectly fine, there were some
+issues with Jenkins and one build server that caused some
+KernelCI builds to not be run this week.  Also there is an
+intermittent bug in LAVA that causes tests to not run, so I think
+the delay was due to an unfortunate combination of infrastructure
+issues.
+
+We now have a rather fast build server dedicated to bisections,
+so for a maintainer branch like yours where it just takes a
+handful of iterations I would expect this kind of report to be
+sent at most 6h after a git push.  Bisecting linux-next can take
+a few extra hours with typically 10~15 iterations.
+
+Best wishes,
+Guillaume
+
+>> drivers/iio/common/cros_ec_sensors/cros_ec_sensors.c has a similar problem;
+>> it only accepts -EPROTO as "valid" error, but nothing else. I didn't check
+>> for others.
+>>
+>> Guenter
+>>
 
