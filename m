@@ -2,124 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFB05219D1E
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 12:11:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D088219D24
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Jul 2020 12:12:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726497AbgGIKLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 06:11:53 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58286 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726327AbgGIKLw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 06:11:52 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 738F3B04C;
-        Thu,  9 Jul 2020 10:11:50 +0000 (UTC)
-Received: by lion.mk-sys.cz (Postfix, from userid 1000)
-        id 65DBB60567; Thu,  9 Jul 2020 12:11:50 +0200 (CEST)
-From:   Michal Kubecek <mkubecek@suse.cz>
-Subject: [PATCH net] ethtool: fix genlmsg_put() failure handling in
- ethnl_default_dumpit()
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Message-Id: <20200709101150.65DBB60567@lion.mk-sys.cz>
-Date:   Thu,  9 Jul 2020 12:11:50 +0200 (CEST)
+        id S1726684AbgGIKML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 06:12:11 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:58881 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726327AbgGIKMK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 06:12:10 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1jtTX9-0007mJ-I9; Thu, 09 Jul 2020 10:12:03 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Mark Brown <broonie@kernel.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Peng Fan <fanpeng@loongson.cn>, linux-spi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] spi: atmel: remove redundant label out_free
+Date:   Thu,  9 Jul 2020 11:12:03 +0100
+Message-Id: <20200709101203.1374117-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the genlmsg_put() call in ethnl_default_dumpit() fails, we bail out
-without checking if we already have some messages in current skb like we do
-with ethnl_default_dump_one() failure later. Therefore if existing messages
-almost fill up the buffer so that there is not enough space even for
-netlink and genetlink header, we lose all prepared messages and return and
-error.
+From: Colin Ian King <colin.king@canonical.com>
 
-Rather than duplicating the skb->len check, move the genlmsg_put(),
-genlmsg_cancel() and genlmsg_end() calls into ethnl_default_dump_one().
-This is also more logical as all message composition will be in
-ethnl_default_dump_one() and only iteration logic will be left in
-ethnl_default_dumpit().
+The error exit label out_free is no longer being used, it is redundant
+and can be removed.
 
-Fixes: 728480f12442 ("ethtool: default handlers for GET requests")
-Reported-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Michal Kubecek <mkubecek@suse.cz>
+Cleans up warning:
+drivers/spi/spi-atmel.c:1680:1: warning: label ‘out_free’ defined but not used [-Wunused-label]
+
+Fixes: 2d9a744685bc ("spi: atmel: No need to call spi_master_put() if spi_alloc_master() failed")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- net/ethtool/netlink.c | 27 +++++++++++++--------------
- 1 file changed, 13 insertions(+), 14 deletions(-)
+ drivers/spi/spi-atmel.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/net/ethtool/netlink.c b/net/ethtool/netlink.c
-index 88fd07f47040..dd8a1c1dc07d 100644
---- a/net/ethtool/netlink.c
-+++ b/net/ethtool/netlink.c
-@@ -376,10 +376,17 @@ static int ethnl_default_doit(struct sk_buff *skb, struct genl_info *info)
- }
- 
- static int ethnl_default_dump_one(struct sk_buff *skb, struct net_device *dev,
--				  const struct ethnl_dump_ctx *ctx)
-+				  const struct ethnl_dump_ctx *ctx,
-+				  struct netlink_callback *cb)
- {
-+	void *ehdr;
- 	int ret;
- 
-+	ehdr = genlmsg_put(skb, NETLINK_CB(cb->skb).portid, cb->nlh->nlmsg_seq,
-+			   &ethtool_genl_family, 0, ctx->ops->reply_cmd);
-+	if (!ehdr)
-+		return -EMSGSIZE;
-+
- 	ethnl_init_reply_data(ctx->reply_data, ctx->ops, dev);
- 	rtnl_lock();
- 	ret = ctx->ops->prepare_data(ctx->req_info, ctx->reply_data, NULL);
-@@ -395,6 +402,10 @@ static int ethnl_default_dump_one(struct sk_buff *skb, struct net_device *dev,
- 	if (ctx->ops->cleanup_data)
- 		ctx->ops->cleanup_data(ctx->reply_data);
- 	ctx->reply_data->dev = NULL;
-+	if (ret < 0)
-+		genlmsg_cancel(skb, ehdr);
-+	else
-+		genlmsg_end(skb, ehdr);
+diff --git a/drivers/spi/spi-atmel.c b/drivers/spi/spi-atmel.c
+index 6ed7abdcf74a..2cfe6253a784 100644
+--- a/drivers/spi/spi-atmel.c
++++ b/drivers/spi/spi-atmel.c
+@@ -1677,7 +1677,6 @@ static int atmel_spi_probe(struct platform_device *pdev)
+ 	clk_disable_unprepare(clk);
+ out_free_irq:
+ out_unmap_regs:
+-out_free:
+ 	spi_master_put(master);
  	return ret;
  }
- 
-@@ -411,7 +422,6 @@ static int ethnl_default_dumpit(struct sk_buff *skb,
- 	int s_idx = ctx->pos_idx;
- 	int h, idx = 0;
- 	int ret = 0;
--	void *ehdr;
- 
- 	rtnl_lock();
- 	for (h = ctx->pos_hash; h < NETDEV_HASHENTRIES; h++, s_idx = 0) {
-@@ -431,26 +441,15 @@ static int ethnl_default_dumpit(struct sk_buff *skb,
- 			dev_hold(dev);
- 			rtnl_unlock();
- 
--			ehdr = genlmsg_put(skb, NETLINK_CB(cb->skb).portid,
--					   cb->nlh->nlmsg_seq,
--					   &ethtool_genl_family, 0,
--					   ctx->ops->reply_cmd);
--			if (!ehdr) {
--				dev_put(dev);
--				ret = -EMSGSIZE;
--				goto out;
--			}
--			ret = ethnl_default_dump_one(skb, dev, ctx);
-+			ret = ethnl_default_dump_one(skb, dev, ctx, cb);
- 			dev_put(dev);
- 			if (ret < 0) {
--				genlmsg_cancel(skb, ehdr);
- 				if (ret == -EOPNOTSUPP)
- 					goto lock_and_cont;
- 				if (likely(skb->len))
- 					ret = skb->len;
- 				goto out;
- 			}
--			genlmsg_end(skb, ehdr);
- lock_and_cont:
- 			rtnl_lock();
- 			if (net->dev_base_seq != seq) {
 -- 
 2.27.0
 
