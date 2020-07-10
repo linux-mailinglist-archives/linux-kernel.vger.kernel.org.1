@@ -2,190 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A9B321C0C5
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 01:32:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3984B21C0CE
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 01:37:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727070AbgGJXcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 19:32:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38904 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726328AbgGJXcb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 19:32:31 -0400
-Received: from localhost (mobile-166-175-191-139.mycingular.net [166.175.191.139])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5BC232077D;
-        Fri, 10 Jul 2020 23:32:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594423950;
-        bh=qZFv1CX9d18PwooaFPG3Jn4rphAd/kDDIDOqrn0KUvE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=0gruNDRG210kwjnDK21/f2TTB84PP+1SoJzPn2oHQjCi5tKSmk9riPN1Myy0i3I5S
-         YWdS/bxoFGEx24/CerkDpFJtz6mgMM5kk328PHgXMiZWCtcCUR3yjvCF34MA8YJhpj
-         C8GLha9a3p03gOkAEoDi5hHNz3yANGR8dPMazz7Q=
-Date:   Fri, 10 Jul 2020 18:32:29 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Rajat Jain <rajatja@google.com>
-Cc:     "Raj, Ashok" <ashok.raj@intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        "open list:AMD IOMMU (AMD-VI)" <iommu@lists.linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "Krishnakumar, Lalithambika" <lalithambika.krishnakumar@intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Prashant Malani <pmalani@google.com>,
-        Benson Leung <bleung@google.com>,
-        Todd Broch <tbroch@google.com>,
-        Alex Levin <levinale@google.com>,
-        Mattias Nissler <mnissler@google.com>,
-        Rajat Jain <rajatxjain@gmail.com>,
-        Bernie Keany <bernie.keany@intel.com>,
-        Aaron Durbin <adurbin@google.com>,
-        Diego Rivas <diegorivas@google.com>,
-        Duncan Laurie <dlaurie@google.com>,
-        Furquan Shaikh <furquan@google.com>,
-        Jesse Barnes <jsbarnes@google.com>,
-        Christian Kellner <christian@kellner.me>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Oliver O'Halloran <oohall@gmail.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Subject: Re: [PATCH v4 4/4] PCI/ACS: Enable PCI_ACS_TB for
- untrusted/external-facing devices
-Message-ID: <20200710233229.GA92058@bjorn-Precision-5520>
+        id S1726829AbgGJXhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 19:37:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44084 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726328AbgGJXhF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 19:37:05 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3E15C08C5DC
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 16:37:04 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id p3so3201891pgh.3
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 16:37:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=M5HYE9/oTgOIRT3zwZ3pJYw3eOk8J4scLkJbJEU3a0s=;
+        b=hLQNyhsfo3P3aiZPEk6EUW9Qho68hqFUIrArr6Wt7Bkc/rDv9E2zUOPgKTXqPW2llF
+         hZmnnFasG39O9zPqp+uyQqrlQ0EHQegQWkMbxVqa+WkV3MUEprO6xxo07u8XOrCrM+RV
+         KmIYjZ/O7NSfO3wh+ofhPRxidZ2PfxDAqGxhE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=M5HYE9/oTgOIRT3zwZ3pJYw3eOk8J4scLkJbJEU3a0s=;
+        b=mNat3KalLu7T5VijA2s2gAYy7VglitSdY4M8aD5xbrbdVmAYsp5aU/WWP1vpRDl6rN
+         uzGx5Gu/NUPYKmFI1VL+3vD8/EOmH1dF2xgma7OpqcwDiPO4LZo6UH1Owvv7asgRY51C
+         jd6bHIMlqVgy6sTxdZIAdZjswhsuomZINlwBVzVuIo/BR4qvrp87XHPJLpPxAa885+nx
+         bg+tV5UqMXyfGnkD0ff64dhzarJvRybaMdDYvm1HS2vD24W7HUlq0L7Bg6WLdP2ndh8t
+         6aJI4CblzckHf/JKiDxWHT5BM/Kt/RdqGFrbkETK+MGU2IXKtGzOfEER6Hf3FXIdSl0M
+         ny4A==
+X-Gm-Message-State: AOAM532Eg7isbWqnMviPgWLdX3YooParluQDvZnxoa72S8lgt03SzLx+
+        IsVP6uLWKSHokrbPuWFw6j/TEA==
+X-Google-Smtp-Source: ABdhPJxEN9sfN7LGaL7s5SBwtbiWlG5R/He18NE/GtGNMYwKECUttin0lySQUNsIHCl3WvIjhRhTRg==
+X-Received: by 2002:a63:6fcd:: with SMTP id k196mr38245663pgc.251.1594424224453;
+        Fri, 10 Jul 2020 16:37:04 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id c1sm6384803pgi.52.2020.07.10.16.37.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Jul 2020 16:37:03 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACK8Z6F-8OZNJU8wqWuZq=moCaOi+3W=CzBeppfO31VZnkqBrg@mail.gmail.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1594351856-876-1-git-send-email-chunfeng.yun@mediatek.com>
+References: <1594351856-876-1-git-send-email-chunfeng.yun@mediatek.com>
+Subject: Re: [PATCH] usb: gadget: bdc: use readl_poll_timeout() to simplify code
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>,
+        linux-kernel@vger.kernel.org,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        linux-mediatek@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-arm-kernel@lists.infradead.org
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Felipe Balbi <balbi@kernel.org>
+Date:   Fri, 10 Jul 2020 16:37:02 -0700
+Message-ID: <159442422281.1987609.11864731950347548589@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 03:53:59PM -0700, Rajat Jain wrote:
-> On Fri, Jul 10, 2020 at 2:29 PM Raj, Ashok <ashok.raj@intel.com> wrote:
-> > On Fri, Jul 10, 2020 at 03:29:22PM -0500, Bjorn Helgaas wrote:
-> > > On Tue, Jul 07, 2020 at 03:46:04PM -0700, Rajat Jain wrote:
-> > > > When enabling ACS, enable translation blocking for external facing ports
-> > > > and untrusted devices.
-> > > >
-> > > > Signed-off-by: Rajat Jain <rajatja@google.com>
-> > > > ---
-> > > > v4: Add braces to avoid warning from kernel robot
-> > > >     print warning for only external-facing devices.
-> > > > v3: print warning if ACS_TB not supported on external-facing/untrusted ports.
-> > > >     Minor code comments fixes.
-> > > > v2: Commit log change
-> > > >
-> > > >  drivers/pci/pci.c    |  8 ++++++++
-> > > >  drivers/pci/quirks.c | 15 +++++++++++++++
-> > > >  2 files changed, 23 insertions(+)
-> > > >
-> > > > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> > > > index 73a8627822140..a5a6bea7af7ce 100644
-> > > > --- a/drivers/pci/pci.c
-> > > > +++ b/drivers/pci/pci.c
-> > > > @@ -876,6 +876,14 @@ static void pci_std_enable_acs(struct pci_dev *dev)
-> > > >     /* Upstream Forwarding */
-> > > >     ctrl |= (cap & PCI_ACS_UF);
-> > > >
-> > > > +   /* Enable Translation Blocking for external devices */
-> > > > +   if (dev->external_facing || dev->untrusted) {
-> > > > +           if (cap & PCI_ACS_TB)
-> > > > +                   ctrl |= PCI_ACS_TB;
-> > > > +           else if (dev->external_facing)
-> > > > +                   pci_warn(dev, "ACS: No Translation Blocking on external-facing dev\n");
-> > > > +   }
-> > >
-> > > IIUC, this means that external devices can *never* use ATS
-> > and can
-> > > never cache translations.
-> 
-> Yes, but it already exists today (and this patch doesn't change that):
-> 521376741b2c2 "PCI/ATS: Only enable ATS for trusted devices"
+Quoting Chunfeng Yun (2020-07-09 20:30:56)
+> diff --git a/drivers/usb/gadget/udc/bdc/bdc_core.c b/drivers/usb/gadget/u=
+dc/bdc/bdc_core.c
+> index 02a3a77..fa173de 100644
+> --- a/drivers/usb/gadget/udc/bdc/bdc_core.c
+> +++ b/drivers/usb/gadget/udc/bdc/bdc_core.c
+> @@ -32,21 +33,14 @@
+>  static int poll_oip(struct bdc *bdc, int usec)
 
-If you get in the habit of using the commit reference style from
-Documentation/process/submitting-patches.rst it saves me the trouble
-of fixing them.  I use this:
+Can we change usec to unsigned? Not sure why negative time is important.
 
-  gsr is aliased to `git --no-pager show -s --abbrev-commit --abbrev=12 --pretty=format:"%h (\"%s\")%n"'
+>  {
+>         u32 status;
+> -       /* Poll till STS!=3D OIP */
+> -       while (usec) {
+> -               status =3D bdc_readl(bdc->regs, BDC_BDCSC);
+> -               if (BDC_CSTS(status) !=3D BDC_OIP) {
+> -                       dev_dbg(bdc->dev,
+> -                               "poll_oip complete status=3D%d",
+> -                               BDC_CSTS(status));
 
-> IMHO any external device trying to send ATS traffic despite having
-> ATS disabled should count as a bad intent. And this patch is trying
-> to plug that loophole, by blocking the AT traffic from devices that
-> we do not expect to see AT from anyway.
+This debug message was lost in the conversion. Any reason?
 
-That's exactly the sort of assertion I was looking for.  If we can get
-something like this explanation into the commit log, and if Ashok and
-Alex are OK with this, we'll be much closer.
+> -                       return 0;
+> -               }
+> -               udelay(10);
+> -               usec -=3D 10;
+> -       }
+> -       dev_err(bdc->dev, "Err: operation timedout BDCSC: 0x%08x\n", stat=
+us);
+> +       int ret;
+> =20
+> -       return -ETIMEDOUT;
+> +       ret =3D readl_poll_timeout(bdc->regs + BDC_BDCSC, status,
+> +               (BDC_CSTS(status) !=3D BDC_OIP), 10, usec);
+> +       if (ret)
+> +               dev_err(bdc->dev, "Err: operation timedout BDCSC: 0x%08x\=
+n", status);
 
-It sounds like this is just enforcing a restriction we already have,
-i.e., enabling PCI_ACS_TB blocks translated requests from devices that
-aren't supposed to be generating them.
+Please drop "Err:" as we have kernel log levels (i.e. dev_err() used
+here) for that.
 
-> Do you see any case where this is not true?
-> 
-> >  And (I guess, I'm not an expert) it can
-> > > also never use the Page Request Services?
-> >
-> > Yep, sounds like it.
-> 
-> Yes, from spec "Address Translation Services" Rev 1.1:
-> "...a device that supports ATS need not support PRI, but PRI is
-> dependent on ATS’s capabilities."
-> (So no ATS = No PRI).
-> 
-> > > Is this what we want?  Do we have any idea how many external
-> > > devices this will affect or how much of a performance impact
-> > > they will see?
-> > >
-> > > Do we need some kind of override or mechanism to authenticate
-> > > certain devices so they can use ATS and PRI?
-> >
-> > Sounds like we would need some form of an allow-list to start with
-> > so we can have something in the interim.
-> 
-> I assume what is being referred to, is an escape hatch to enable ATS
-> on certain given "external-facing" ports (and devices downstream on
-> that port). Do we really think a *per-port* control for ATS may be
-> needed? I can add if there is consensus about this.
-> 
-> > I suppose a future platform might have a facilty to ensure ATS is
-> > secure and authenticated we could enable for all of devices in the
-> > system, in addition to PCI CMA/IDE.
-> >
-> > I think having a global override to enable all devices so platform
-> > can switch to current behavior, or maybe via a cmdline switch.. as
-> > much as we have a billion of those, it still gives an option in
-> > case someone needs it.
-> 
-> Currently:
-> 
-> pci.noats => No ATS on all PCI devices.
-> (Absense of pci.noats): ATS on all PCI devices, EXCEPT external devices.
-
-You mean the "pci=noats" kernel command line parameter, right?
-
-> I can look to add another parameter that is synonymous to
-> "trust-external-pci-devices" that can keep ATS enabled on external
-> ports as well. I think this is better than an allow-list of only
-> certain ports, because most likely an admin will trust all its
-> external ports, or not. Also, we can add this global override and
-> may be add a more granular control later, if and when really needed.
-
-I think this would be new functionality that we don't have today, and
-we don't have anything that actually *needs* it AFAIK, so I wouldn't
-bother.
-
-Bjorn
+> +
+> +       return ret;
+>  }
