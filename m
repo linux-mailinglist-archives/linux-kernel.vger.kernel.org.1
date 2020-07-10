@@ -2,53 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FC9E21BBAB
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 18:56:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 751FB21BBAD
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 18:56:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728769AbgGJQzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 12:55:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33914 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728449AbgGJQzH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 12:55:07 -0400
-Subject: Re: [GIT PULL] dma-mapping fixes for 5.8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594400107;
-        bh=mAA3/ZBpex/kNKkUh0yoZh5GkI0zJQevobe/c/a6Fa8=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=wS3tWl/JsQrt6FEbjdidM/c9it1ewDCY00nkXtZ9UlcaeJVkDN4iv3ODGxOCFPFbG
-         bgmZpklFNhpvFfhoh6P8blC8dUV1Y3HdWUU3kEzYp7rtUcBki3dUMdII/O3USUWIFp
-         Yvlf07hoH/x0nqcLJ5KLhlNicOnPjP7X95WDflnk=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200710154506.GA540305@infradead.org>
-References: <20200710154506.GA540305@infradead.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200710154506.GA540305@infradead.org>
-X-PR-Tracked-Remote: git://git.infradead.org/users/hch/dma-mapping.git
- tags/dma-mapping-5.8-5
-X-PR-Tracked-Commit-Id: 68d237056e007c88031d80900cdba0945121a287
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 1bfde037425d91d1d615d30ec362f5f5c1ca0dd2
-Message-Id: <159440010718.18761.15336646128679822312.pr-tracker-bot@kernel.org>
-Date:   Fri, 10 Jul 2020 16:55:07 +0000
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
+        id S1728362AbgGJQ4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 12:56:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727097AbgGJQ4b (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 12:56:31 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84B19C08C5DC
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 09:56:30 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id u5so2784768pfn.7
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 09:56:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=B2X5QFPcvgrAboSg6Ax5Zdcay4B6bTN36cXi/Syr5yY=;
+        b=orobF3YIzCp0gPmGredIbnPemO/2BXqQA8D51eMgBqgC4wU1bZoLntj/vqLw706pGR
+         A5EKYR5icv15YbAs6VYST8prgmXsSchbLc4Ibm2kOV9Nydh+LtrB7lamIjRV4Dv3wODJ
+         7dGiCGy6dNFL+tRalZmSFSTYNiKVFwmPE9yGCLe8vVyT28/HFz0miIVnvpNg1Nkw6vXw
+         egIudBZMyQHk7bFULT7t73v2QzK4gTbrHB7OM6M4bZuhlULhcnGQzLBWCUDN+tMextEw
+         Y8ekfp+DfGZV3YWey9k1NBAYm1bgBrk1PbaWV/bSQ0K5iKffznm+AbdELiZajAD3q7li
+         l4rQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=B2X5QFPcvgrAboSg6Ax5Zdcay4B6bTN36cXi/Syr5yY=;
+        b=JhQnbDDKAm+H2cQjbCJptaTSeFjlXcBgkhY2mUMQY05AuBzhruRaDHc7VZvoHU3sr5
+         gHM6kpQ4B5pasz8R+VUHcITbD1ze+mF9sgYwKD+/aV5T35c7WWXa5GUSggV9bhcuUsRg
+         as3qZbYJ/IekUXl5U5RETZURyOVt3pQu4VgjDrep+/PbwgtaHyXj4ER0K+N1+Sejk4L6
+         tbIhbZHuMSEluXNat5S35mdR0VOtqjwuY8FZBHqRb0Jjkx8CavMIhjmHsWZfrlpXk5q6
+         JhYSzhU8c8Wh7HxXl1OpgSq7m6lPRLIvYQqhiCk8Ylx/7sAX0wwBBgoH6IV9lZh+S9nQ
+         uBWQ==
+X-Gm-Message-State: AOAM532cQ++7uB54MZ/owiWxLzmYf5Xwz9fWCYL2hWWL0xpF5LTGWLi7
+        coE5nSpSAnEOiJnmy37OJjQH5eHjeGv2uk2d+GrYUFR1tnA=
+X-Google-Smtp-Source: ABdhPJw2rLethbQ+9SPY9ZJb2r5ZLWLuVxGIZ3sa/C8ITw8MldYPGx0iArmeHYqjvhP+sGcWlSXBkyqrtdRcx79w9o0=
+X-Received: by 2002:a63:7e55:: with SMTP id o21mr60676922pgn.263.1594400189668;
+ Fri, 10 Jul 2020 09:56:29 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200530221127.459704-1-brgerst@gmail.com> <20200530221127.459704-3-brgerst@gmail.com>
+ <20200709103024.GO597537@hirez.programming.kicks-ass.net> <CAMzpN2i3TPxpf5ktaQgb5EmB9wd84V+J5U6=_MuihtXx1-cp+A@mail.gmail.com>
+ <20200710085327.GW4800@hirez.programming.kicks-ass.net>
+In-Reply-To: <20200710085327.GW4800@hirez.programming.kicks-ass.net>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Fri, 10 Jul 2020 09:56:16 -0700
+Message-ID: <CAKwvOdkccfLX59iCH0tFrwbG2Qd0XeOtKuupih+iosE5xwP0BQ@mail.gmail.com>
+Subject: Re: [PATCH v2 02/10] x86/percpu: Clean up percpu_to_op()
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Brian Gerst <brgerst@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 10 Jul 2020 17:45:06 +0200:
+On Fri, Jul 10, 2020 at 1:53 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Fri, Jul 10, 2020 at 12:38:23AM -0400, Brian Gerst wrote:
+> > On Thu, Jul 9, 2020 at 6:30 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> > >
+> > > On Sat, May 30, 2020 at 06:11:19PM -0400, Brian Gerst wrote:
+> > > > +     if (0) {                                                        \
+> > > > +             typeof(_var) pto_tmp__;                                 \
+> > > > +             pto_tmp__ = (_val);                                     \
+> > > > +             (void)pto_tmp__;                                        \
+> > > > +     }                                                               \
+> > >
+> > > This is repeated at least once more; and it looks very similar to
+> > > __typecheck() and typecheck() but is yet another variant afaict.
+> >
+> > The problem with typecheck() is that it will complain about a mismatch
+> > between unsigned long and u64 (defined as unsigned long long) even
+> > though both are 64-bits wide on x86-64.  Cleaning that mess up is
+> > beyond the scope of this series, so I kept the existing checks.
+>
+> Fair enough; thanks for explaining.
 
-> git://git.infradead.org/users/hch/dma-mapping.git tags/dma-mapping-5.8-5
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/1bfde037425d91d1d615d30ec362f5f5c1ca0dd2
-
-Thank you!
-
+I brought up the same point in v1, for more context:
+https://lore.kernel.org/lkml/CAKwvOdnCcpS_9A2y9tMqeiAg2NfcVx=gNeA2V=+zHknit7wGkg@mail.gmail.com/
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+Thanks,
+~Nick Desaulniers
