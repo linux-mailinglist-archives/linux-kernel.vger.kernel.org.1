@@ -2,66 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A445321ACB3
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 03:57:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4651F21ACC9
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 03:58:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727844AbgGJB5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 21:57:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727827AbgGJB5l (ORCPT
+        id S1727943AbgGJB6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 21:58:09 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:61278 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727911AbgGJB6H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 21:57:41 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34484C08C5CE;
-        Thu,  9 Jul 2020 18:57:41 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id p1so1598363pls.4;
-        Thu, 09 Jul 2020 18:57:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=cuNVeJNgy5mpkucMC/444QKJa8KYGoy9AAUByxslVr0=;
-        b=BoASjg5DuB0JgJ/G9iM75j5066TvHrMOt03o2xV9i6pMNokjvc39C4RRiktgpOGDpj
-         doX11205IDJ2VrLi+hwng0m6ABgVjNKqpQL8fhFw5B2J1gLI2JIoG704T6+BP64xHFiV
-         oC1niasIHgPNHKmcbXkkm7jg1TSu+PYvG91YB+PNqEYITyWlWT4Td2P7rbTyPIeOSQ1p
-         UhyJv744LdKzZvGoLMLwHiZ3d7BK5HhwyAmV8z/WA1ssGO44c/ay+9U5Tj75XkrkfkzJ
-         E9mOxkFL6p9WWJnJl2n0ivM3zsrbM75wwFMUskppQkK7tJ4l0oImoRAKuPxJfJI9rV4E
-         QqDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=cuNVeJNgy5mpkucMC/444QKJa8KYGoy9AAUByxslVr0=;
-        b=EyVt68uqBGGVM0b9G/jTevJDicJ36LdVoyQuMSV5B+qq8wkQSvLyLNgaiyTJK7lTsw
-         U5YBam8kQDB1aqhr+IqrIdbuzWdho2gw/bnqI6iHgTdnnYKFcHvKJL8WaO60sT1VucjN
-         mXWgOt2PqJuVkg0B/RXvV//bbJ9oS98qFvl+qcuEqVh1Zr7RPZF8rU+QpBov2rudTXrk
-         5F9BB0brC8rKj/NJIeVE4+qe5gY4Sag8s7JvusSfPj2VGfMm7MDhnvwzy4HTkGu72bJ3
-         34zRKpqlQdEXJ1csVYBvzQ5DPaDGqq7ps7+WGMyudS0CPSf5p4ZzUOnS4EDAwMcLhYch
-         SD7g==
-X-Gm-Message-State: AOAM5310FQoNSNnAfvF7BLOsRQ+X5CdeNuH3RJ1pJCgaVtbeEodeQ3TG
-        vbLsxfDYUHnIuslzmYoWAetpBZN/
-X-Google-Smtp-Source: ABdhPJyO+w0HBiEzqfRNFqWFAjyLUpISZ9zKyiEOCRhCmyS9AmC4eBitlltoelxlr5SRAGfnZKpe8g==
-X-Received: by 2002:a17:902:6194:: with SMTP id u20mr58629926plj.333.1594346260530;
-        Thu, 09 Jul 2020 18:57:40 -0700 (PDT)
-Received: from bobo.ozlabs.ibm.com (220-245-19-62.static.tpgi.com.au. [220.245.19.62])
-        by smtp.gmail.com with ESMTPSA id 7sm3912834pgw.85.2020.07.09.18.57.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jul 2020 18:57:40 -0700 (PDT)
-From:   Nicholas Piggin <npiggin@gmail.com>
-To:     linux-arch@vger.kernel.org
-Cc:     Nicholas Piggin <npiggin@gmail.com>, x86@kernel.org,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-mm@kvack.org, Anton Blanchard <anton@ozlabs.org>
-Subject: [RFC PATCH 7/7] lazy tlb: shoot lazies, a non-refcounting lazy tlb option
-Date:   Fri, 10 Jul 2020 11:56:46 +1000
-Message-Id: <20200710015646.2020871-8-npiggin@gmail.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20200710015646.2020871-1-npiggin@gmail.com>
-References: <20200710015646.2020871-1-npiggin@gmail.com>
+        Thu, 9 Jul 2020 21:58:07 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1594346287; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=skG1sNc6a9bKW7iRy/ErFo7Z5EjunK0kUA/gn4pjeGg=; b=gw45VV3n050dgtru5ObkYysqpbm8+gkVcWAtccAMjejADDP4X9UEjk+CQ5h3Dzo8//J5Gk76
+ VweuRNpBNnlmAGxA74sLJsC6yM18Oaqauo9pDPzq3XiyD+NYPclm1xyO6Ej5Y3CmC5UelXPH
+ bZ5HIuEfWVTQ21axuudZS448cNo=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n16.prod.us-east-1.postgun.com with SMTP id
+ 5f07caf278e7807b5eecf9fd (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 10 Jul 2020 01:57:06
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 70C59C433C8; Fri, 10 Jul 2020 01:57:05 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mdtipton-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: mdtipton)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A72B2C433C6;
+        Fri, 10 Jul 2020 01:57:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A72B2C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=mdtipton@codeaurora.org
+From:   Mike Tipton <mdtipton@codeaurora.org>
+To:     georgi.djakov@linaro.org
+Cc:     bjorn.andersson@linaro.org, agross@kernel.org,
+        linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mike Tipton <mdtipton@codeaurora.org>
+Subject: [PATCH v2 0/6] interconnect: qcom: Misc bcm-voter changes and fixes
+Date:   Thu,  9 Jul 2020 18:56:46 -0700
+Message-Id: <20200710015652.19206-1-mdtipton@codeaurora.org>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -69,151 +59,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On big systems, the mm refcount can become highly contented when doing
-a lot of context switching with threaded applications (particularly
-switching between the idle thread and an application thread).
+These changes are mostly unrelated, but there are some dependencies
+between them.
 
-Abandoning lazy tlb slows switching down quite a bit in the important
-user->idle->user cases, so so instead implement a non-refcounted scheme
-that causes __mmdrop() to IPI all CPUs in the mm_cpumask and shoot down
-any remaining lazy ones.
+v2:
+- New patch for generic qcom,icc.h bindings
+- New patch for documenting qcom,tcs-wait property
+- Update bcm_div() 'base' parameter from u64 to u32
 
-On a 16-socket 192-core POWER8 system, a context switching benchmark
-with as many software threads as CPUs (so each switch will go in and
-out of idle), upstream can achieve a rate of about 1 million context
-switches per second. After this patch it goes up to 118 million.
+Mike Tipton (6):
+  dt-bindings: interconnect: Add generic qcom bindings
+  dt-bindings: interconnect: Add property to set BCM TCS wait behavior
+  interconnect: qcom: Support bcm-voter-specific TCS wait behavior
+  interconnect: qcom: Only wait for completion in AMC/WAKE by default
+  interconnect: qcom: Add support for per-BCM scaling factors
+  interconnect: qcom: Fix small BW votes being truncated to zero
 
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
----
- arch/Kconfig             | 16 ++++++++++++++++
- arch/powerpc/Kconfig     |  1 +
- include/linux/sched/mm.h |  6 +++---
- kernel/fork.c            | 39 +++++++++++++++++++++++++++++++++++++++
- 4 files changed, 59 insertions(+), 3 deletions(-)
+ .../bindings/interconnect/qcom,bcm-voter.yaml | 13 ++++
+ drivers/interconnect/qcom/bcm-voter.c         | 63 ++++++++++++-------
+ drivers/interconnect/qcom/icc-rpmh.c          |  3 +
+ drivers/interconnect/qcom/icc-rpmh.h          | 20 ++----
+ include/dt-bindings/interconnect/qcom,icc.h   | 26 ++++++++
+ 5 files changed, 88 insertions(+), 37 deletions(-)
+ create mode 100644 include/dt-bindings/interconnect/qcom,icc.h
 
-diff --git a/arch/Kconfig b/arch/Kconfig
-index 2daf8fe6146a..edf69437a971 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -418,6 +418,22 @@ config MMU_LAZY_TLB
- 	help
- 	  Enable "lazy TLB" mmu context switching for kernel threads.
- 
-+config MMU_LAZY_TLB_REFCOUNT
-+	def_bool y
-+	depends on MMU_LAZY_TLB
-+	depends on !MMU_LAZY_TLB_SHOOTDOWN
-+
-+config MMU_LAZY_TLB_SHOOTDOWN
-+	bool
-+	depends on MMU_LAZY_TLB
-+	help
-+	  Instead of refcounting the "lazy tlb" mm struct, which can cause
-+	  contention with multi-threaded apps on large multiprocessor systems,
-+	  this option causes __mmdrop to IPI all CPUs in the mm_cpumask and
-+	  switch to init_mm if they were using the to-be-freed mm as the lazy
-+	  tlb. Architectures which do not track all possible lazy tlb CPUs in
-+	  mm_cpumask can not use this (without modification).
-+
- config ARCH_HAVE_NMI_SAFE_CMPXCHG
- 	bool
- 
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index 920c4e3ca4ef..24ac85c868db 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -225,6 +225,7 @@ config PPC
- 	select HAVE_PERF_USER_STACK_DUMP
- 	select MMU_GATHER_RCU_TABLE_FREE
- 	select MMU_GATHER_PAGE_SIZE
-+	select MMU_LAZY_TLB_SHOOTDOWN
- 	select HAVE_REGS_AND_STACK_ACCESS_API
- 	select HAVE_RELIABLE_STACKTRACE		if PPC_BOOK3S_64 && CPU_LITTLE_ENDIAN
- 	select HAVE_SYSCALL_TRACEPOINTS
-diff --git a/include/linux/sched/mm.h b/include/linux/sched/mm.h
-index 2c2b20e2ccc7..1067af8039bd 100644
---- a/include/linux/sched/mm.h
-+++ b/include/linux/sched/mm.h
-@@ -53,19 +53,19 @@ void mmdrop(struct mm_struct *mm);
- /* Helpers for lazy TLB mm refcounting */
- static inline void mmgrab_lazy_tlb(struct mm_struct *mm)
- {
--	if (IS_ENABLED(CONFIG_MMU_LAZY_TLB))
-+	if (IS_ENABLED(CONFIG_MMU_LAZY_TLB_REFCOUNT))
- 		mmgrab(mm);
- }
- 
- static inline void mmdrop_lazy_tlb(struct mm_struct *mm)
- {
--	if (IS_ENABLED(CONFIG_MMU_LAZY_TLB))
-+	if (IS_ENABLED(CONFIG_MMU_LAZY_TLB_REFCOUNT))
- 		mmdrop(mm);
- }
- 
- static inline void mmdrop_lazy_tlb_smp_mb(struct mm_struct *mm)
- {
--	if (IS_ENABLED(CONFIG_MMU_LAZY_TLB))
-+	if (IS_ENABLED(CONFIG_MMU_LAZY_TLB_REFCOUNT))
- 		mmdrop(mm); /* This depends on mmdrop providing a full smp_mb() */
- 	else
- 		smp_mb();
-diff --git a/kernel/fork.c b/kernel/fork.c
-index 142b23645d82..da0fba9e6079 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -685,6 +685,40 @@ static void check_mm(struct mm_struct *mm)
- #define allocate_mm()	(kmem_cache_alloc(mm_cachep, GFP_KERNEL))
- #define free_mm(mm)	(kmem_cache_free(mm_cachep, (mm)))
- 
-+static void do_shoot_lazy_tlb(void *arg)
-+{
-+	struct mm_struct *mm = arg;
-+
-+	if (current->active_mm == mm) {
-+		BUG_ON(current->mm);
-+		switch_mm(mm, &init_mm, current);
-+		current->active_mm = &init_mm;
-+	}
-+}
-+
-+static void do_check_lazy_tlb(void *arg)
-+{
-+	struct mm_struct *mm = arg;
-+
-+	BUG_ON(current->active_mm == mm);
-+}
-+
-+static void shoot_lazy_tlbs(struct mm_struct *mm)
-+{
-+	if (IS_ENABLED(CONFIG_MMU_LAZY_TLB_SHOOTDOWN)) {
-+		smp_call_function_many(mm_cpumask(mm), do_shoot_lazy_tlb, (void *)mm, 1);
-+		do_shoot_lazy_tlb(mm);
-+	}
-+}
-+
-+static void check_lazy_tlbs(struct mm_struct *mm)
-+{
-+	if (IS_ENABLED(CONFIG_DEBUG_VM)) {
-+		smp_call_function(do_check_lazy_tlb, (void *)mm, 1);
-+		do_check_lazy_tlb(mm);
-+	}
-+}
-+
- /*
-  * Called when the last reference to the mm
-  * is dropped: either by a lazy thread or by
-@@ -695,6 +729,11 @@ void __mmdrop(struct mm_struct *mm)
- 	BUG_ON(mm == &init_mm);
- 	WARN_ON_ONCE(mm == current->mm);
- 	WARN_ON_ONCE(mm == current->active_mm);
-+
-+	/* Ensure no CPUs are using this as their lazy tlb mm */
-+	shoot_lazy_tlbs(mm);
-+	check_lazy_tlbs(mm);
-+
- 	mm_free_pgd(mm);
- 	destroy_context(mm);
- 	mmu_notifier_subscriptions_destroy(mm);
 -- 
-2.23.0
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
