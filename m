@@ -2,108 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD41121B973
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 17:27:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7294221B97B
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 17:29:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728053AbgGJP1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 11:27:38 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56972 "EHLO mx2.suse.de"
+        id S1727975AbgGJP3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 11:29:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52136 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728013AbgGJP1h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 11:27:37 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 502F9AC24;
-        Fri, 10 Jul 2020 15:27:36 +0000 (UTC)
-Date:   Fri, 10 Jul 2020 17:27:35 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Shuah Khan <shuah@kernel.org>, live-patching@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] selftests/livepatch: adopt to newer sysctl error format
-Message-ID: <20200710152735.GA20226@alley>
-References: <20200710051043.899291-1-kamalesh@linux.vnet.ibm.com>
+        id S1726832AbgGJP3N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 11:29:13 -0400
+Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5DABB2078B;
+        Fri, 10 Jul 2020 15:29:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594394952;
+        bh=A+5H0viLCweISXKhZ8vukjCT/YthyI0T6G22a0E9wP0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=mJsAbAS7bLMR4MIKisf/3VlNypxyehVH+9BwAL4A4vgISOkEiO6mGXdKX087waoJM
+         fyUO+PMEDS/T576yL6+oEmzLMT21Vq1DkfIV7JjxQFNTP3kaUzxAWsgrpi1PQNmyPC
+         jsxswVgDNeMI9i5IR6BIIRWOGeip8p5Yl6Flv5Os=
+Received: by mail-ot1-f49.google.com with SMTP id w17so4484408otl.4;
+        Fri, 10 Jul 2020 08:29:12 -0700 (PDT)
+X-Gm-Message-State: AOAM533Aq/iK9eQH0XZXrhV8qwP7QjNqV2XkdVEMpAeHXBi50pNdC2aV
+        ae/T9hr6SlPvkQans2HoeSRhMxYVu8y3upULtA==
+X-Google-Smtp-Source: ABdhPJxgp0IgRa0RKnSG7bJrUjnRw1wt0F8ZA2+d85ACmCNg+Fh7mRY7d4DZzaL2DFznGG81bchkn3CjCx5gorcXI3Y=
+X-Received: by 2002:a05:6830:3104:: with SMTP id b4mr59510659ots.192.1594394951793;
+ Fri, 10 Jul 2020 08:29:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200710051043.899291-1-kamalesh@linux.vnet.ibm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <ce0d7561-ff93-d267-b57a-6505014c728c@infradead.org>
+In-Reply-To: <ce0d7561-ff93-d267-b57a-6505014c728c@infradead.org>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Fri, 10 Jul 2020 09:28:59 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq+AWo6xP1vC1NubFcdWzoX4hVvSW4KGry1NhOXUieDrSA@mail.gmail.com>
+Message-ID: <CAL_Jsq+AWo6xP1vC1NubFcdWzoX4hVvSW4KGry1NhOXUieDrSA@mail.gmail.com>
+Subject: Re: [PATCH -next] <linux/of.h>: add stub for of_get_next_parent() to
+ fix qcom build error
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        "linux-next@vger.kernel.org" <linux-next@vger.kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        devicetree@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 2020-07-10 10:40:43, Kamalesh Babulal wrote:
-> With procfs v3.3.16, the sysctl command doesn't prints the set key and
-> value on error.  This change breaks livepatch selftest test-ftrace.sh,
-> that tests the interaction of sysctl ftrace_enabled:
-> 
->  # selftests: livepatch: test-ftrace.sh
->  # TEST: livepatch interaction with ftrace_enabled sysctl ... not ok
->  #
->  # --- expected
->  # +++ result
->  # @@ -16,7 +16,7 @@ livepatch: 'test_klp_livepatch': initial
->  #  livepatch: 'test_klp_livepatch': starting patching transition
->  #  livepatch: 'test_klp_livepatch': completing patching transition
->  #  livepatch: 'test_klp_livepatch': patching complete
->  # -livepatch: sysctl: setting key "kernel.ftrace_enabled": Device or
->     resource busy kernel.ftrace_enabled = 0
->  # +livepatch: sysctl: setting key "kernel.ftrace_enabled": Device or
->     resource busy
->  #  % echo 0 > /sys/kernel/livepatch/test_klp_livepatch/enabled
->  #  livepatch: 'test_klp_livepatch': initializing unpatching transition
->  #  livepatch: 'test_klp_livepatch': starting unpatching transition
->  #
->  # ERROR: livepatch kselftest(s) failed
-> 
-> on setting sysctl kernel.ftrace_enabled={0,1} value successfully, the
-> set key and value is displayed.
-> 
-> This patch fixes it by limiting the output from both the cases to eight
-> words, that includes the error message or set key and value on failure
-> and success. The upper bound of eight words is enough to display the
-> only tracked error message. Also, adjust the check_result string in
-> test-ftrace.sh to match the expected output.
+On Mon, Jun 29, 2020 at 10:43 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+>
+> From: Randy Dunlap <rdunlap@infradead.org>
+>
+> Fix a (COMPILE_TEST) build error when CONFIG_OF is not set/enabled
+> by adding a stub for of_get_next_parent().
+>
+> ../drivers/soc/qcom/qcom-geni-se.c:819:11: error: implicit declaration of function 'of_get_next_parent'; did you mean 'of_get_parent'? [-Werror=implicit-function-declaration]
+> ../drivers/soc/qcom/qcom-geni-se.c:819:9: warning: assignment makes pointer from integer without a cast [-Wint-conversion]
+>
 
-This looks really tricky.
+Fixes tag?
 
-I wonder if we could use "sysctl -q" to refuse printing the value
-even with older versions. The following patch works here with
-sysctl 3.3.15:
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: Frank Rowand <frowand.list@gmail.com>
+> Cc: devicetree@vger.kernel.org
+> Cc: Andy Gross <agross@kernel.org>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: linux-arm-msm@vger.kernel.org
+> ---
+>  include/linux/of.h |    5 +++++
+>  1 file changed, 5 insertions(+)
 
-diff --git a/tools/testing/selftests/livepatch/functions.sh b/tools/testing/selftests/livepatch/functions.sh
-index 2aab9791791d..47aa4c762bb4 100644
---- a/tools/testing/selftests/livepatch/functions.sh
-+++ b/tools/testing/selftests/livepatch/functions.sh
-@@ -64,7 +64,8 @@ function set_dynamic_debug() {
- }
- 
- function set_ftrace_enabled() {
--	result=$(sysctl kernel.ftrace_enabled="$1" 2>&1 | paste --serial --delimiters=' ')
-+	result=$(sysctl -q kernel.ftrace_enabled="$1" 2>&1 && \
-+		 sysctl kernel.ftrace_enabled 2>&1)
- 	echo "livepatch: $result" > /dev/kmsg
- }
- 
-diff --git a/tools/testing/selftests/livepatch/test-ftrace.sh b/tools/testing/selftests/livepatch/test-ftrace.sh
-index e2a76887f40a..aa967c5d0558 100755
---- a/tools/testing/selftests/livepatch/test-ftrace.sh
-+++ b/tools/testing/selftests/livepatch/test-ftrace.sh
-@@ -53,7 +53,7 @@ livepatch: '$MOD_LIVEPATCH': initializing patching transition
- livepatch: '$MOD_LIVEPATCH': starting patching transition
- livepatch: '$MOD_LIVEPATCH': completing patching transition
- livepatch: '$MOD_LIVEPATCH': patching complete
--livepatch: sysctl: setting key \"kernel.ftrace_enabled\": Device or resource busy kernel.ftrace_enabled = 0
-+livepatch: sysctl: setting key \"kernel.ftrace_enabled\": Device or resource busy
- % echo 0 > /sys/kernel/livepatch/$MOD_LIVEPATCH/enabled
- livepatch: '$MOD_LIVEPATCH': initializing unpatching transition
- livepatch: '$MOD_LIVEPATCH': starting unpatching transition
+I'm assuming this will be applied to the tree that introduced the problem.
 
-
-Best Regards,
-Petr
+Acked-by: Rob Herring <robh@kernel.org>
