@@ -2,345 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC48921BDFE
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 21:46:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 995E521BDEA
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 21:46:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728632AbgGJTqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 15:46:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36390 "EHLO
+        id S1728516AbgGJTqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 15:46:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728552AbgGJTqP (ORCPT
+        with ESMTP id S1726942AbgGJTqA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 15:46:15 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A852CC08C5DC;
-        Fri, 10 Jul 2020 12:46:14 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id l12so7289259ejn.10;
-        Fri, 10 Jul 2020 12:46:14 -0700 (PDT)
+        Fri, 10 Jul 2020 15:46:00 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE9E9C08C5DC
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 12:45:59 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id q7so7787643ljm.1
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 12:45:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=rujU6IuUKyP/qpmu9fxGZQc5R/2dPvNSFc6+rG5kang=;
-        b=qJDGtpsHkdF9sdjuRhmodvwWZCOnF/D1iW+KcIZ/G97kQcWxAUQQ6FbvdntbcDppxg
-         QUKHOa76nVuncDuqQcgWKPTxbUlb7Bk3O3GhflzbvUwBV63zB/YTG9h1u8ytcU2BJ7Gv
-         +i82XsE3idK3Pktog5jKIn5N5WshSqztxzNAiKsk0doleC2LQ0iy1yQw57NEIkkrmWVT
-         6nNPTzBxNELQTiZFRWKgo6xpGrLSqeIJlGyN2ewsYGs0SodHmeTbT9pFR+0CxQJgAi2t
-         y5OprsIyFf3nNHHOROXcykdQ+4z8OVtJv7QiQniDCINtTVHDJVIf1RYb+evkYtvKCNfw
-         50sw==
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=YsEdL4Wd97W3DlnP1Te2AUyy9smqbbkh6KPYk2RXB3c=;
+        b=Gzf2CJUim5sG7TrQY85OnHYWWs6amw4TNWPXbUbP0IrPdpmJQ/aqlclLyKqPvsP2mc
+         plnD10WrvlJEBsh0J8PFRAtiSUW949sWLEMyMbHq4DvM9mV2StAMKBWM/KzMUy+VGpYH
+         IN/lbJ2B9HZ+dNUS/qgSLnmYXC1C9+G99bGvqfnFyGBP3A+HTRo7j1xmbJIfbcJEKvTb
+         suz+ZESyv5MNiuiAzJYqFbHfSBPReQXftZoMidbrhHFzqJmKyUVVJKzVNbyyVjr0Vo1Q
+         lgHOSpbkij9T+464Cfle3ClqzYUmij30IY5XRjXwQL32+T/8TgEtOBPC2fLiZejWVVel
+         pCcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=rujU6IuUKyP/qpmu9fxGZQc5R/2dPvNSFc6+rG5kang=;
-        b=pvtN+H7NrIUSyzH66/s8JxxA2vjC/Uq4SW8QUEHFjNMYHZz59owe1qUmGo+QZrdx7x
-         79CObwlpw0+rik77+/XqeqcwGSbrCkbWENxIXrp0p3GTORJSTYnLin4/ObCdv02x2xNt
-         qdeaXjqUf3ibkw5cpxswjQhkuAhwto74vLQ0I/zYGef8DWYEnMinZ9BZ+rx6A7BySfbB
-         IMXlp3YAOhQjDsJFBduCLBNb6a8zaQIccxk6leziwcxZtf7tfBIFLOy5ZZ0tp1UCnNTp
-         bLSIs1RJ8bpD4YCfNbgcDq3P7kdZ3CSQhjZY4nkYNq8aJLXKf8SIZY96BGA8DFdgfLzW
-         puBw==
-X-Gm-Message-State: AOAM530r57EbeM/a3OGXS3Xe1UhhddHz50Br1reGY/k1EmqoD0Gryq8t
-        teIh0cr1v8My1Ip5GBndtaY=
-X-Google-Smtp-Source: ABdhPJw5qRU7e8mITfuQa57XmZonNT5IJKsE4n9E5ekJ0sXeJmzLfE0zkbCSHn8UIocnjMHE08uXuw==
-X-Received: by 2002:a17:906:f20d:: with SMTP id gt13mr38231087ejb.117.1594410373307;
-        Fri, 10 Jul 2020 12:46:13 -0700 (PDT)
-Received: from Ansuel-XPS.localdomain (host-87-16-250-164.retail.telecomitalia.it. [87.16.250.164])
-        by smtp.googlemail.com with ESMTPSA id kt4sm4155768ejb.48.2020.07.10.12.46.11
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=YsEdL4Wd97W3DlnP1Te2AUyy9smqbbkh6KPYk2RXB3c=;
+        b=FJseyWjBQ88BRBf3U8g/EzRjYD291AbZMAtc6cUaQ7mEPbGj1K6/TcBh2g0eNoFGr6
+         pqJcKJ6wbGUMRf9QKw0Cp/bqT9GfoqRYjZ63JxfeWZ6nOg4AqAuA3VJkldWnDMtXBDFv
+         12mkQtCA/VP6Z6tFzRQWomCqy9ebdnUOJjPaLoQb+IyFHE9Xf+K18/Gmgxhn03BzQLLk
+         ZtPAvLvDI+BXyqFnB8T9mGzHwQTaPfeVa2s2Kx172YHQcDT0oLYB8UskfIQ5G7y60DzN
+         gnLDooZei5Pr6yPMDL2eIkGf7/t+e2BrpFCIm2ME03bWDtQ200gGM4gja1/+48FcqvEp
+         /RNA==
+X-Gm-Message-State: AOAM530AFtS3Gc0+L9fKHaZAJt2yILLAhvF6Yo4xyx8eo/5l3b7HdT+Z
+        hS2whf6e/mfblow1BWSpUz0=
+X-Google-Smtp-Source: ABdhPJyT1p7T8M2Y/pSLh9354KzgmUTn3XrOx7NSbqfWHs0mRgfdJcZdj8CQzpEpTUcNufU0UuoNxQ==
+X-Received: by 2002:a2e:780e:: with SMTP id t14mr38311610ljc.444.1594410358462;
+        Fri, 10 Jul 2020 12:45:58 -0700 (PDT)
+Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
+        by smtp.gmail.com with ESMTPSA id j2sm2212234lji.115.2020.07.10.12.45.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jul 2020 12:46:12 -0700 (PDT)
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Amit Kucheria <amit.kucheria@linaro.org>
-Cc:     Ansuel Smith <ansuelsmth@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 4/6] drivers: thermal: tsens: add interrupt support for 9860 driver
+        Fri, 10 Jul 2020 12:45:57 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
 Date:   Fri, 10 Jul 2020 21:45:55 +0200
-Message-Id: <20200710194558.26487-5-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200710194558.26487-1-ansuelsmth@gmail.com>
-References: <20200710194558.26487-1-ansuelsmth@gmail.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Hillf Danton <hdanton@sina.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH 1/1] mm/vmalloc.c: Add an error message if two areas
+ overlap
+Message-ID: <20200710194555.GA19487@pc636>
+References: <20200710194042.2510-1-urezki@gmail.com>
+ <20200710194406.GP12769@casper.infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200710194406.GP12769@casper.infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add interrupt support for 9860 tsens driver used to set thermal trip
-point for the system.
+On Fri, Jul 10, 2020 at 08:44:06PM +0100, Matthew Wilcox wrote:
+> On Fri, Jul 10, 2020 at 09:40:42PM +0200, Uladzislau Rezki (Sony) wrote:
+> > Before triggering a BUG() it would be useful to understand
+> > how two areas overlap between each other. Print information
+> > about start/end addresses of both VAs and their addresses.
+> > 
+> > For example if both are identical it could mean double free.
+> > 
+> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > ---
+> >  mm/vmalloc.c | 10 +++++++++-
+> >  1 file changed, 9 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> > index 5a2b55c8dd9a..1679b01febcd 100644
+> > --- a/mm/vmalloc.c
+> > +++ b/mm/vmalloc.c
+> > @@ -549,8 +549,13 @@ find_va_links(struct vmap_area *va,
+> >  		else if (va->va_end > tmp_va->va_start &&
+> >  				va->va_start >= tmp_va->va_end)
+> >  			link = &(*link)->rb_right;
+> > -		else
+> > +		else {
+> > +			pr_err("Overlaps: 0x%px(0x%lx-0x%lx), 0x%px(0x%lx-0x%lx)\n",
+> > +				va, va->va_start, va->va_end, tmp_va,
+> > +				tmp_va->va_start, tmp_va->va_end);
+> 
+> It might be helpful to have a "vmalloc:" prefix to that string to indicate
+> where to start searching.  And I don't think we're supposed to use %px
+> without a really good justification these days.
+> 
+> Can we do without the BUG()?  Maybe just break out and decline to insert
+> the conflicting range?
+> 
+> >  			BUG();
+> > +		}
+> >  	} while (*link);
+> >  
+> >  	*parent = &tmp_va->rb_node;
+> > @@ -1993,6 +1998,9 @@ static void vmap_init_free_space(void)
+> >  			insert_vmap_area_augment(free, NULL,
+> >  				&free_vmap_area_root,
+> >  					&free_vmap_area_list);
+> > +			insert_vmap_area_augment(free, NULL,
+> > +				&free_vmap_area_root,
+> > +					&free_vmap_area_list);
+> 
+> This is surely testing code that you forgot to delete?
+Matthew, you are super fast!!! :)
 
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
----
- drivers/thermal/qcom/tsens-8960.c | 196 +++++++++++++++++++++++++++---
- drivers/thermal/qcom/tsens.h      |   1 +
- 2 files changed, 183 insertions(+), 14 deletions(-)
-
-diff --git a/drivers/thermal/qcom/tsens-8960.c b/drivers/thermal/qcom/tsens-8960.c
-index 890baf1b5542..2dc670206896 100644
---- a/drivers/thermal/qcom/tsens-8960.c
-+++ b/drivers/thermal/qcom/tsens-8960.c
-@@ -8,6 +8,7 @@
- #include <linux/bitops.h>
- #include <linux/regmap.h>
- #include <linux/mfd/syscon.h>
-+#include <linux/interrupt.h>
- #include <linux/thermal.h>
- #include "tsens.h"
- 
-@@ -27,7 +28,6 @@
- /* CNTL_ADDR bitmasks */
- #define EN			BIT(0)
- #define SW_RST			BIT(1)
--#define SENSOR0_EN		BIT(3)
- #define SLP_CLK_ENA		BIT(26)
- #define SLP_CLK_ENA_8660	BIT(24)
- #define MEASURE_PERIOD		1
-@@ -41,14 +41,26 @@
- 
- #define THRESHOLD_ADDR		0x3624
- /* THRESHOLD_ADDR bitmasks */
-+#define THRESHOLD_MAX_CODE		0x20000
-+#define THRESHOLD_MIN_CODE		0
- #define THRESHOLD_MAX_LIMIT_SHIFT	24
- #define THRESHOLD_MIN_LIMIT_SHIFT	16
- #define THRESHOLD_UPPER_LIMIT_SHIFT	8
- #define THRESHOLD_LOWER_LIMIT_SHIFT	0
-+#define THRESHOLD_MAX_LIMIT_MASK	(THRESHOLD_MAX_CODE << \
-+						THRESHOLD_MAX_LIMIT_SHIFT)
-+#define THRESHOLD_MIN_LIMIT_MASK	(THRESHOLD_MAX_CODE << \
-+						THRESHOLD_MIN_LIMIT_SHIFT)
-+#define THRESHOLD_UPPER_LIMIT_MASK	(THRESHOLD_MAX_CODE << \
-+						THRESHOLD_UPPER_LIMIT_SHIFT)
-+#define THRESHOLD_LOWER_LIMIT_MASK	(THRESHOLD_MAX_CODE << \
-+						THRESHOLD_LOWER_LIMIT_SHIFT)
- 
- /* Initial temperature threshold values */
--#define LOWER_LIMIT_TH		0x50
--#define UPPER_LIMIT_TH		0xdf
-+#define LOWER_LIMIT_TH_8960	0x50
-+#define UPPER_LIMIT_TH_8960	0xdf
-+#define LOWER_LIMIT_TH_8064	0x9d /* 95C */
-+#define UPPER_LIMIT_TH_8064	0xa6 /* 105C */
- #define MIN_LIMIT_TH		0x0
- #define MAX_LIMIT_TH		0xff
- 
-@@ -57,6 +69,169 @@
- #define TRDY_MASK		BIT(7)
- #define TIMEOUT_US		100
- 
-+#define TSENS_EN		BIT(0)
-+#define TSENS_SW_RST		BIT(1)
-+#define TSENS_ADC_CLK_SEL	BIT(2)
-+#define SENSOR0_EN		BIT(3)
-+#define SENSOR1_EN		BIT(4)
-+#define SENSOR2_EN		BIT(5)
-+#define SENSOR3_EN		BIT(6)
-+#define SENSOR4_EN		BIT(7)
-+#define SENSORS_EN		(SENSOR0_EN | SENSOR1_EN | \
-+				SENSOR2_EN | SENSOR3_EN | SENSOR4_EN)
-+#define TSENS_8064_SENSOR5_EN				BIT(8)
-+#define TSENS_8064_SENSOR6_EN				BIT(9)
-+#define TSENS_8064_SENSOR7_EN				BIT(10)
-+#define TSENS_8064_SENSOR8_EN				BIT(11)
-+#define TSENS_8064_SENSOR9_EN				BIT(12)
-+#define TSENS_8064_SENSOR10_EN				BIT(13)
-+#define TSENS_8064_SENSORS_EN				(SENSORS_EN | \
-+						TSENS_8064_SENSOR5_EN | \
-+						TSENS_8064_SENSOR6_EN | \
-+						TSENS_8064_SENSOR7_EN | \
-+						TSENS_8064_SENSOR8_EN | \
-+						TSENS_8064_SENSOR9_EN | \
-+						TSENS_8064_SENSOR10_EN)
-+
-+u32 tsens_8960_slope[] = {
-+			1176, 1176, 1154, 1176,
-+			1111, 1132, 1132, 1199,
-+			1132, 1199, 1132
-+			};
-+
-+/* Temperature on y axis and ADC-code on x-axis */
-+static inline int code_to_mdegC(u32 adc_code, const struct tsens_sensor *s)
-+{
-+	int slope, offset;
-+
-+	slope = thermal_zone_get_slope(s->tzd);
-+	offset = CAL_MDEGC - slope * s->offset;
-+
-+	return adc_code * slope + offset;
-+}
-+
-+static void notify_uspace_tsens_fn(struct work_struct *work)
-+{
-+	struct tsens_sensor *s = container_of(work, struct tsens_sensor,
-+								notify_work);
-+
-+	sysfs_notify(&s->tzd->device.kobj, NULL, "type");
-+}
-+
-+static void tsens_scheduler_fn(struct work_struct *work)
-+{
-+	struct tsens_priv *priv =
-+		container_of(work, struct tsens_priv, tsens_work);
-+	unsigned int threshold, threshold_low, code, reg, sensor, mask;
-+	bool upper_th_x, lower_th_x;
-+	int ret;
-+
-+	ret = regmap_read(priv->tm_map, STATUS_CNTL_ADDR_8064, &reg);
-+	if (ret)
-+		return;
-+	reg = reg | LOWER_STATUS_CLR | UPPER_STATUS_CLR;
-+	ret = regmap_write(priv->tm_map, STATUS_CNTL_ADDR_8064, reg);
-+	if (ret)
-+		return;
-+
-+	mask = ~(LOWER_STATUS_CLR | UPPER_STATUS_CLR);
-+	ret = regmap_read(priv->tm_map, THRESHOLD_ADDR, &threshold);
-+	if (ret)
-+		return;
-+	threshold_low = (threshold & THRESHOLD_LOWER_LIMIT_MASK) >>
-+			THRESHOLD_LOWER_LIMIT_SHIFT;
-+	threshold = (threshold & THRESHOLD_UPPER_LIMIT_MASK) >>
-+		    THRESHOLD_UPPER_LIMIT_SHIFT;
-+
-+	ret = regmap_read(priv->tm_map, STATUS_CNTL_ADDR_8064, &reg);
-+	if (ret)
-+		return;
-+
-+	ret = regmap_read(priv->tm_map, CNTL_ADDR, &sensor);
-+	if (ret)
-+		return;
-+	sensor &= (uint32_t)TSENS_8064_SENSORS_EN;
-+	sensor >>= SENSOR0_SHIFT;
-+
-+	/* Constraint: There is only 1 interrupt control register for all
-+	 * 11 temperature sensor. So monitoring more than 1 sensor based
-+	 * on interrupts will yield inconsistent result. To overcome this
-+	 * issue we will monitor only sensor 0 which is the master sensor.
-+	 */
-+
-+	/* Skip if the sensor is disabled */
-+	if (sensor & 1) {
-+		ret = regmap_read(priv->tm_map, priv->sensor[0].status, &code);
-+		if (ret)
-+			return;
-+		upper_th_x = code >= threshold;
-+		lower_th_x = code <= threshold_low;
-+		if (upper_th_x)
-+			mask |= UPPER_STATUS_CLR;
-+		if (lower_th_x)
-+			mask |= LOWER_STATUS_CLR;
-+		if (upper_th_x || lower_th_x) {
-+			/* Notify user space */
-+			schedule_work(&priv->sensor[0].notify_work);
-+			pr_debug("Trigger (%d degrees) for sensor %d\n",
-+				 code_to_mdegC(code, &priv->sensor[0]), 0);
-+		}
-+	}
-+	regmap_write(priv->tm_map, STATUS_CNTL_ADDR_8064, reg & mask);
-+}
-+
-+static irqreturn_t tsens_isr(int irq, void *data)
-+{
-+	struct tsens_priv *priv = data;
-+
-+	schedule_work(&priv->tsens_work);
-+	return IRQ_HANDLED;
-+}
-+
-+static void hw_init(struct tsens_priv *priv)
-+{
-+	int ret;
-+	unsigned int reg_cntl = 0, reg_cfg = 0, reg_thr = 0;
-+	unsigned int reg_status_cntl = 0;
-+
-+	regmap_read(priv->tm_map, CNTL_ADDR, &reg_cntl);
-+	regmap_write(priv->tm_map, CNTL_ADDR, reg_cntl | TSENS_SW_RST);
-+
-+	reg_cntl |= SLP_CLK_ENA | (MEASURE_PERIOD << 18) |
-+		    (((1 << priv->num_sensors) - 1) << SENSOR0_SHIFT);
-+	regmap_write(priv->tm_map, CNTL_ADDR, reg_cntl);
-+	regmap_read(priv->tm_map, STATUS_CNTL_ADDR_8064, &reg_status_cntl);
-+	reg_status_cntl |= LOWER_STATUS_CLR | UPPER_STATUS_CLR |
-+			   MIN_STATUS_MASK | MAX_STATUS_MASK;
-+	regmap_write(priv->tm_map, STATUS_CNTL_ADDR_8064, reg_status_cntl);
-+	reg_cntl |= TSENS_EN;
-+	regmap_write(priv->tm_map, CNTL_ADDR, reg_cntl);
-+
-+	regmap_read(priv->tm_map, CONFIG_ADDR, &reg_cfg);
-+	if (priv->num_sensors > 1)
-+		reg_cfg = (reg_cfg & ~CONFIG_MASK) | CONFIG;
-+	else
-+		reg_cfg = (reg_cfg & ~CONFIG_MASK) |
-+			  (CONFIG << CONFIG_SHIFT_8660);
-+	regmap_write(priv->tm_map, CONFIG_ADDR, reg_cfg);
-+
-+	reg_thr |= (LOWER_LIMIT_TH_8064 << THRESHOLD_LOWER_LIMIT_SHIFT) |
-+		   (UPPER_LIMIT_TH_8064 << THRESHOLD_UPPER_LIMIT_SHIFT) |
-+		   (MIN_LIMIT_TH << THRESHOLD_MIN_LIMIT_SHIFT) |
-+		   (MAX_LIMIT_TH << THRESHOLD_MAX_LIMIT_SHIFT);
-+
-+	regmap_write(priv->tm_map, THRESHOLD_ADDR, reg_thr);
-+
-+	ret = devm_request_irq(priv->dev, priv->tsens_irq, tsens_isr,
-+			       IRQF_TRIGGER_RISING, "tsens_interrupt", priv);
-+	if (ret < 0) {
-+		dev_err(priv->dev, "request_irq FAIL: %d", ret);
-+		return;
-+	}
-+
-+	INIT_WORK(&priv->tsens_work, tsens_scheduler_fn);
-+}
-+
- static int suspend_8960(struct tsens_priv *priv)
- {
- 	int ret;
-@@ -186,6 +361,8 @@ static int init_8960(struct tsens_priv *priv)
- 		if (i >= 5)
- 			priv->sensor[i].status = S0_STATUS_ADDR + 40;
- 		priv->sensor[i].status += i * 4;
-+		priv->sensor[i].slope = tsens_8960_slope[i];
-+		INIT_WORK(&priv->sensor[i].notify_work, notify_uspace_tsens_fn);
- 	}
- 
- 	reg_cntl = SW_RST;
-@@ -236,18 +413,9 @@ static int calibrate_8960(struct tsens_priv *priv)
- 
- 	kfree(data);
- 
--	return 0;
--}
--
--/* Temperature on y axis and ADC-code on x-axis */
--static inline int code_to_mdegC(u32 adc_code, const struct tsens_sensor *s)
--{
--	int slope, offset;
-+	hw_init(priv);
- 
--	slope = thermal_zone_get_slope(s->tzd);
--	offset = CAL_MDEGC - slope * s->offset;
--
--	return adc_code * slope + offset;
-+	return 0;
- }
- 
- static int get_temp_8960(const struct tsens_sensor *s, int *temp)
-diff --git a/drivers/thermal/qcom/tsens.h b/drivers/thermal/qcom/tsens.h
-index 59d01162c66a..2f145001e4d5 100644
---- a/drivers/thermal/qcom/tsens.h
-+++ b/drivers/thermal/qcom/tsens.h
-@@ -48,6 +48,7 @@ enum tsens_irq_type {
- struct tsens_sensor {
- 	struct tsens_priv		*priv;
- 	struct thermal_zone_device	*tzd;
-+	struct work_struct		notify_work;
- 	int				offset;
- 	unsigned int			hw_id;
- 	int				slope;
--- 
-2.27.0
-
+--
+Vlad Rezki
