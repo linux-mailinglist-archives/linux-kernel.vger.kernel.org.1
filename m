@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 129BE21B5F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 15:11:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2023321B5F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 15:11:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728043AbgGJNL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 09:11:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49626 "EHLO mail.kernel.org"
+        id S1728058AbgGJNLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 09:11:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49718 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727074AbgGJNL2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 09:11:28 -0400
+        id S1727074AbgGJNLi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 09:11:38 -0400
 Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E69A52077D;
-        Fri, 10 Jul 2020 13:11:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EC1E8206A5;
+        Fri, 10 Jul 2020 13:11:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594386688;
-        bh=C69RMc7t7guHcL8gGCtB5Yz+90nRiphCbSaewJtAEx4=;
+        s=default; t=1594386698;
+        bh=GC5XQdwAmbxeL9BiSSJkx+9P/hI7PVaj2CeNYPfjtfU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FXCnfgN969rGm3NzjCjYAWKQVUN1/ZxuaLc64AxHfmLchZzkRWNWj5tnEsnOnGxZM
-         dJl5nvtdFi0uP+2kjhLyxwiK00nQB+N4p7D3CCq7xyCS5TahQJQPnlTyup5ZpYTQ1r
-         4Sb6WRNkBslA4y94ZVsE3cplkC3yoNNr9Pkp48Nw=
+        b=mM3h7HiZQqDTsv53FcQ0OjcaR3Ca6HCDUi4kNA44YS9kkKF7oEyBJOWWUcxC6USyl
+         zTPxpB7z1THWGYhf5WewgNzaN64SqyZZ5BuvanSJ7h87hhA74nuickZgMSyTkGqAXn
+         UWqbiSlp/5cDecVQXl62DxQ7vaiG/5G5tW91e6CM=
 From:   Masami Hiramatsu <mhiramat@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Arnaldo Carvalho de Melo <acme@redhat.com>
@@ -31,9 +31,9 @@ Cc:     Oleg Nesterov <oleg@redhat.com>,
         linux-kernel@vger.kernel.org, mhiramat@kernel.org,
         Andi Kleen <andi@firstfloor.org>,
         Andi Kleen <ak@linux.intel.com>
-Subject: [PATCH v2 3/4] perf-probe: Fix memory leakage when the probe point is not found
-Date:   Fri, 10 Jul 2020 22:11:23 +0900
-Message-Id: <159438668346.62703.10887420400718492503.stgit@devnote2>
+Subject: [PATCH v2 4/4] perf-probe: Warn if the target function is GNU Indirect function
+Date:   Fri, 10 Jul 2020 22:11:33 +0900
+Message-Id: <159438669349.62703.5978345670436126948.stgit@devnote2>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <159438665389.62703.13848613271334658629.stgit@devnote2>
 References: <159438665389.62703.13848613271334658629.stgit@devnote2>
@@ -46,38 +46,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the memory leakage in debuginfo__find_trace_events() when the probe
-point is not found in the debuginfo. If there is no probe point found in
-the debuginfo, debuginfo__find_probes() will NOT return -ENOENT, but 0.
-Thus the caller of debuginfo__find_probes() must check the tf.ntevs and
-release the allocated memory for the array of struct probe_trace_event.
+Warn if the probe target function is GNU indirect function (GNU_IFUNC)
+because it may not what the user want to probe.
 
-The current code releases the memory only if the debuginfo__find_probes()
-hits an error but not checks tf.ntevs. In the result, the memory allocated
-on *tevs are not released if tf.ntevs == 0.
+The GNU indirect function ( https://sourceware.org/glibc/wiki/GNU_IFUNC )
+is the dynamic solved symbol at runtime. IFUNC function is a selector
+which is invoked from the elf loader, but the symbol address of the
+function which will be modified by the IFUNC is same as the IFUNC in
+the symbol table. This can confuse users who is trying to probe on
+such functions.
 
-This fixes the memory leakage by checking tf.ntevs == 0 in addition to
-ret < 0.
+For example, the memcpy is one of IFUNC.
 
-Fixes: ff741783506c ("perf probe: Introduce debuginfo to encapsulate dwarf information")
-Cc: stable@vger.kernel.org
+# perf probe -x /lib64/libc-2.30.so -a memcpy
+# perf probe -l
+  probe_libc:memcpy    (on __new_memcpy_ifunc@x86_64/multiarch/memcpy.c in /usr/lib64/libc-2.30.so)
+
+the probe is put on a IFUNC.
+
+# perf record -e probe_libc:memcpy --call-graph dwarf -aR ./perf
+# perf script
+perf  1742 [000] 26201.715632: probe_libc:memcpy: (7fdaa53824c0)
+            7fdaa53824c0 __new_memcpy_ifunc+0x0 (inlined)
+            7fdaa5d4a980 elf_machine_rela+0x6c0 (inlined)
+            7fdaa5d4a980 elf_dynamic_do_Rela+0x6c0 (inlined)
+            7fdaa5d4a980 _dl_relocate_object+0x6c0 (/usr/lib64/ld-2.30.so)
+            7fdaa5d42155 dl_main+0x1cc5 (/usr/lib64/ld-2.30.so)
+            7fdaa5d5831a _dl_sysdep_start+0x54a (/usr/lib64/ld-2.30.so)
+            7fdaa5d3ffeb _dl_start_final+0x25b (inlined)
+            7fdaa5d3ffeb _dl_start+0x25b (/usr/lib64/ld-2.30.so)
+            7fdaa5d3f117 .annobin_rtld.c+0x7 (inlined)
+...
+
+And the event is invoked from the elf loader instead of the target
+program's main code.
+
+
+Moreover, at this moment, we can not probe on the function which will
+be selected by the IFUNC, because it is determined at runtime. But
+uprobe will be prepared before running the target binary.
+
+Thus, I decided to warn user when the perf probe detects the probe point
+is on the GNU IFUNC symbol. Someone who wants to probe an IFUNC symbol to
+debug the IFUNC function, they can ignore this warning.
+
+Reported-by: Andi Kleen <andi@firstfloor.org>
 Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-Reviewed-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
 ---
- tools/perf/util/probe-finder.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+  Changes in v2:
+   - Check GNU_IFUNC only for uprobe
+   - Show function name instead of the address.
+   - Update the warning message according to Andi's comment.
+---
+ tools/perf/util/probe-event.c |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/tools/perf/util/probe-finder.c b/tools/perf/util/probe-finder.c
-index 9963e4e8ea20..659024342e9a 100644
---- a/tools/perf/util/probe-finder.c
-+++ b/tools/perf/util/probe-finder.c
-@@ -1467,7 +1467,7 @@ int debuginfo__find_trace_events(struct debuginfo *dbg,
- 	if (ret >= 0 && tf.pf.skip_empty_arg)
- 		ret = fill_empty_trace_arg(pev, tf.tevs, tf.ntevs);
+diff --git a/tools/perf/util/probe-event.c b/tools/perf/util/probe-event.c
+index 8cd1224e5f4c..679447f13c20 100644
+--- a/tools/perf/util/probe-event.c
++++ b/tools/perf/util/probe-event.c
+@@ -375,9 +375,13 @@ static int find_alternative_probe_point(struct debuginfo *dinfo,
  
--	if (ret < 0) {
-+	if (ret < 0 || tf.ntevs == 0) {
- 		for (i = 0; i < tf.ntevs; i++)
- 			clear_probe_trace_event(&tf.tevs[i]);
- 		zfree(tevs);
+ 	/* Find the address of given function */
+ 	map__for_each_symbol_by_name(map, pp->function, sym) {
+-		if (uprobes)
++		if (uprobes) {
+ 			address = sym->start;
+-		else
++			if (sym->type == STT_GNU_IFUNC)
++				pr_warning("Warning: The probe function (%s) is a GNU indirect function.\n"
++					   "Consider identifying the final function used at run time and set the probe directly on that.\n",
++					   pp->function);
++		} else
+ 			address = map->unmap_ip(map, sym->start) - map->reloc;
+ 		break;
+ 	}
 
