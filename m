@@ -2,161 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76DA121C016
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 00:45:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 140E021C026
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 00:52:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726736AbgGJWpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 18:45:44 -0400
-Received: from mail.codeweavers.com ([50.203.203.244]:48538 "EHLO
-        mail.codeweavers.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726465AbgGJWpo (ORCPT
+        id S1726581AbgGJWwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 18:52:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726262AbgGJWwl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 18:45:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=codeweavers.com; s=6377696661; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=yfpklkI0Uly04vToX/pHdtTu+UTS4eaBLrvZbAHOPmk=; b=TmqySOYTTQGIPLD1sUww08Ijk5
-        C0NMmGEIhicVx2C+JFTUHWV4O0e/kmG5QqKp+MlWcF/ZLZI5l0meDwr6eZC07Co4v9iuB8EvPeGdL
-        Gg48OyeARxA8TBk5wW08ARVUddvtqCbUmx11Uy21PoosR2n2g1QWOXgliGEhWTk17+0Y=;
-Received: from cpe-107-184-2-226.socal.res.rr.com ([107.184.2.226] helo=zen.bslabs.net)
-        by mail.codeweavers.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <bshanks@codeweavers.com>)
-        id 1ju1lx-0006qf-7t; Fri, 10 Jul 2020 17:45:40 -0500
-From:   Brendan Shanks <bshanks@codeweavers.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     ricardo.neri-calderon@linux.intel.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, x86@kernel.org,
-        ebiederm@xmission.com, andi@notmuch.email, Babu.Moger@amd.com,
-        Brendan Shanks <bshanks@codeweavers.com>
-Subject: [PATCH v5] x86/umip: Add emulation/spoofing for SLDT and STR instructions
-Date:   Fri, 10 Jul 2020 15:45:25 -0700
-Message-Id: <20200710224525.21966-1-bshanks@codeweavers.com>
-X-Mailer: git-send-email 2.26.2
+        Fri, 10 Jul 2020 18:52:41 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 814D7C08C5DC
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 15:52:41 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id x8so2830753plm.10
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 15:52:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=gX6YgcMfSykw3J9R6ZTzJu/j6sgShmyRfXIsXkOHBlY=;
+        b=FjiqjH9k77nNIvYx9JltNxNXqW1sklSIL+l3o/ZEJWxqMRU22TIW5BUVRtBVPVWYO0
+         ZpIEamJ/+0PlfnjjMLwhgX+EGHduhPTT4EawVUVRNNpCyc4jGxS7RiaXGoEHef8Xwbqn
+         cSDqyCEeHG6PNgkWHan8+RKDP6XgPY2cGnGGI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gX6YgcMfSykw3J9R6ZTzJu/j6sgShmyRfXIsXkOHBlY=;
+        b=e6QTtxWcq0R+KJWcv/o7AlYOLTT/8crYZSgP/s0aFi9wzTmljviRLWN2YK65GfNLsi
+         WykkkkSqIpXuCbs5b5RQ9EJCuRwW65nPuxTrx6zIWzEjjNb6AzoF2gGzukKuuCssalSb
+         NBOooTrn0JmBckylopP9Y++/S35eCAOAO9BOs4M+PE6FUNQEM89vlsdR681d3ULzM48F
+         wOC8Y8MfqpljP7A98Qa2HBPZ2tveyOxhUcb3a5ER985vhc78Ldq88KtZ+8i+0W7ZLXZt
+         EjmYUKzzGF1OHByNG2OuoQE57qdXY6pq2R0Lvy4g+Zo8bJA1a9cLZRPpuMhAZ3tJrU4D
+         GTfQ==
+X-Gm-Message-State: AOAM531hTo37T2NnzWS960HHBr4ytX/MacL85hi0LP/1rCxHXB2ifSCO
+        TO/29rgihoZtKPcoRJk2dVxsZg==
+X-Google-Smtp-Source: ABdhPJyjD+MX9/tUbhYu/hHqC62kKTUtC0c5Keo979l3OQm7+syZHI2OCgg9mIAvOjzRnLigqpYaTw==
+X-Received: by 2002:a17:902:6b87:: with SMTP id p7mr56254761plk.275.1594421561099;
+        Fri, 10 Jul 2020 15:52:41 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id f207sm7340205pfa.107.2020.07.10.15.52.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Jul 2020 15:52:39 -0700 (PDT)
+Date:   Fri, 10 Jul 2020 15:52:38 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Tycho Andersen <tycho@tycho.ws>
+Cc:     Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH for-next/seccomp 1/2] selftests/seccomp: Add SKIPs for
+ failed unshare()
+Message-ID: <202007101551.E001F7B1CE@keescook>
+References: <20200710185156.2437687-1-keescook@chromium.org>
+ <20200710185156.2437687-2-keescook@chromium.org>
+ <20200710191023.GA2700617@cisco>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Score: -25.8
-X-Spam-Report: Spam detection software, running on the system "mail.codeweavers.com",
- has NOT identified this incoming email as spam.  The original
- message has been attached to this so you can view it or label
- similar future email.  If you have any questions, see
- the administrator of that system for details.
- Content preview:  Add emulation/spoofing of SLDT and STR for both 32- and 64-bit
-    processes. Wine users have found a small number of Windows apps using SLDT
-    that were crashing when run on UMIP-enabled systems. Reported-by: Andreas
-    Rammhold <andi@notmuch.email> Originally-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-    Signed-off-by: Brendan Shanks <bshanks@codeweavers.com> --- 
- Content analysis details:   (-25.8 points, 5.0 required)
-  pts rule name              description
- ---- ---------------------- --------------------------------------------------
-  -20 USER_IN_WHITELIST      From: address is in the user's white-list
- -6.0 ALL_TRUSTED            Passed through trusted hosts only via SMTP
- -0.5 BAYES_00               BODY: Bayes spam probability is 0 to 1%
-                             [score: 0.0000]
-  0.7 AWL                    AWL: Adjusted score from AWL reputation of From: address
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200710191023.GA2700617@cisco>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add emulation/spoofing of SLDT and STR for both 32- and 64-bit
-processes.
+On Fri, Jul 10, 2020 at 01:10:23PM -0600, Tycho Andersen wrote:
+> On Fri, Jul 10, 2020 at 11:51:55AM -0700, Kees Cook wrote:
+> > Running the seccomp tests as a regular user shouldn't just fail tests
+> > that require CAP_SYS_ADMIN (for getting a PID namespace). Instead,
+> > detect those cases and SKIP them.
+> 
+> But if we unshare NEWUSER at the same time as NEWPID, shouldn't we
+> always be ns_capable(CAP_SYS_ADMIN)?
 
-Wine users have found a small number of Windows apps using SLDT that
-were crashing when run on UMIP-enabled systems.
+Oh! Yes, you're quite right. :)
 
-Reported-by: Andreas Rammhold <andi@notmuch.email>
-Originally-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-Signed-off-by: Brendan Shanks <bshanks@codeweavers.com>
----
+Instead I guess I should actually check for EINVAL if CONFIG_USER_NS is
+missing.
 
-v5: Capitalize instruction names in comments.
-
- arch/x86/kernel/umip.c | 40 +++++++++++++++++++++++++++-------------
- 1 file changed, 27 insertions(+), 13 deletions(-)
-
-diff --git a/arch/x86/kernel/umip.c b/arch/x86/kernel/umip.c
-index 8d5cbe1bbb3b..2c304fd0bb1a 100644
---- a/arch/x86/kernel/umip.c
-+++ b/arch/x86/kernel/umip.c
-@@ -45,11 +45,12 @@
-  * value that, lies close to the top of the kernel memory. The limit for the GDT
-  * and the IDT are set to zero.
-  *
-- * Given that SLDT and STR are not commonly used in programs that run on WineHQ
-- * or DOSEMU2, they are not emulated.
-- *
-- * The instruction smsw is emulated to return the value that the register CR0
-+ * The instruction SMSW is emulated to return the value that the register CR0
-  * has at boot time as set in the head_32.
-+ * SLDT and STR are emulated to return the values that the kernel programmatically
-+ * assigns:
-+ * - SLDT returns (GDT_ENTRY_LDT * 8) if an LDT has been set, 0 if not.
-+ * - STR returns (GDT_ENTRY_TSS * 8).
-  *
-  * Emulation is provided for both 32-bit and 64-bit processes.
-  *
-@@ -244,16 +245,34 @@ static int emulate_umip_insn(struct insn *insn, int umip_inst,
- 		*data_size += UMIP_GDT_IDT_LIMIT_SIZE;
- 		memcpy(data, &dummy_limit, UMIP_GDT_IDT_LIMIT_SIZE);
- 
--	} else if (umip_inst == UMIP_INST_SMSW) {
--		unsigned long dummy_value = CR0_STATE;
-+	} else if (umip_inst == UMIP_INST_SMSW || umip_inst == UMIP_INST_SLDT ||
-+		   umip_inst == UMIP_INST_STR) {
-+		unsigned long dummy_value;
-+
-+		if (umip_inst == UMIP_INST_SMSW) {
-+			dummy_value = CR0_STATE;
-+		} else if (umip_inst == UMIP_INST_STR) {
-+			dummy_value = GDT_ENTRY_TSS * 8;
-+		} else if (umip_inst == UMIP_INST_SLDT) {
-+#ifdef CONFIG_MODIFY_LDT_SYSCALL
-+			down_read(&current->mm->context.ldt_usr_sem);
-+			if (current->mm->context.ldt)
-+				dummy_value = GDT_ENTRY_LDT * 8;
-+			else
-+				dummy_value = 0;
-+			up_read(&current->mm->context.ldt_usr_sem);
-+#else
-+			dummy_value = 0;
-+#endif
-+		}
- 
- 		/*
--		 * Even though the CR0 register has 4 bytes, the number
-+		 * For these 3 instructions, the number
- 		 * of bytes to be copied in the result buffer is determined
- 		 * by whether the operand is a register or a memory location.
- 		 * If operand is a register, return as many bytes as the operand
- 		 * size. If operand is memory, return only the two least
--		 * siginificant bytes of CR0.
-+		 * siginificant bytes.
- 		 */
- 		if (X86_MODRM_MOD(insn->modrm.value) == 3)
- 			*data_size = insn->opnd_bytes;
-@@ -261,7 +280,6 @@ static int emulate_umip_insn(struct insn *insn, int umip_inst,
- 			*data_size = 2;
- 
- 		memcpy(data, &dummy_value, *data_size);
--	/* STR and SLDT  are not emulated */
- 	} else {
- 		return -EINVAL;
- 	}
-@@ -383,10 +401,6 @@ bool fixup_umip_exception(struct pt_regs *regs)
- 	umip_pr_warn(regs, "%s instruction cannot be used by applications.\n",
- 			umip_insns[umip_inst]);
- 
--	/* Do not emulate (spoof) SLDT or STR. */
--	if (umip_inst == UMIP_INST_STR || umip_inst == UMIP_INST_SLDT)
--		return false;
--
- 	umip_pr_warn(regs, "For now, expensive software emulation returns the result.\n");
- 
- 	if (emulate_umip_insn(&insn, umip_inst, dummy_data, &dummy_data_size,
 -- 
-2.26.2
-
+Kees Cook
