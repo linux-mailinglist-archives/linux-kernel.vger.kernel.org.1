@@ -2,65 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F03FD21B3EF
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 13:28:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9C5921BD00
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 20:31:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727919AbgGJL21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 07:28:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726820AbgGJL2K (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 07:28:10 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57CE6C08C5CE;
-        Fri, 10 Jul 2020 04:28:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=3D7HcbVvasTwDLZD4YAaihs84eO23KPCl16ZChSDu2M=; b=R+thKef1a76pE65/41vHX+3lv3
-        8rKgvdJkIb+n1O571lv2KUon0j/BUoUWCdRGZPxW7CeOtjVXoqp0bnXVreGM6reSeE3fLmkaILdkX
-        g/X09WiEsiacoldznMOBN8qu7deTd7tWYPGj0PBsD2TjtLae5TOBfR+WG2WVLfShipAU2zfEeRkku
-        9OREHHOza/y6f/p/Wy/AYo5sVBRXv7FS86PNDt/l7g3U3wbWLM/CZdtQTGMCvezJVZ2onIQ7H2AfD
-        8QOthqDQ3vmQbXubYLzXvB1L79kj6oZ3mYAsLg8sekkCCzA8PwvZOFvU4t0tc9MRyfmh3yOgvg3G7
-        V3oHT3nw==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jtrCF-0006JB-S9; Fri, 10 Jul 2020 11:28:04 +0000
-Date:   Fri, 10 Jul 2020 12:28:03 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Changming Liu <charley.ashbringer@gmail.com>,
-        keescook@chromium.org, mcgrof@kernel.org, yzaikin@google.com,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH] sysctl: add bound to panic_timeout to prevent overflow
-Message-ID: <20200710112803.GI12769@casper.infradead.org>
-References: <1594351343-11811-1-git-send-email-charley.ashbringer@gmail.com>
- <b50e8198-ca2e-eb44-ed71-e4ca27f48232@infradead.org>
+        id S1727986AbgGJSa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 14:30:58 -0400
+Received: from outboundhk.mxmail.xiaomi.com ([207.226.244.123]:53391 "EHLO
+        xiaomi.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726872AbgGJSa6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 14:30:58 -0400
+Received: from CNBOX13.mioffice.cn (10.237.8.153) by hkbox2.mioffice.cn
+ (10.56.8.142) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 10 Jul
+ 2020 19:28:14 +0800
+Received: from CNBOX07.mioffice.cn (10.237.8.127) by cnbox13.mioffice.cn
+ (10.237.8.153) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 10 Jul
+ 2020 19:28:13 +0800
+Received: from CNBOX07.mioffice.cn ([10.237.8.127]) by CNBOX07.mioffice.cn
+ ([10.237.8.127]) with mapi id 15.00.1497.006; Fri, 10 Jul 2020 19:28:13 +0800
+From:   =?gb2312?B?RmVpMSBKaWFuZyC9r7fJ?= <jiangfei1@xiaomi.com>
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Qiwu Huang <yanziily@gmail.com>
+CC:     "sre@kernel.org" <sre@kernel.org>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        =?gb2312?B?u8bG5M7k?= <huangqiwu@xiaomi.com>
+Subject: =?gb2312?B?tPC4tDogW0V4dGVybmFsIE1haWxdUmU6IFtQQVRDSCAyLzVdIHBvd2VyOiBz?=
+ =?gb2312?B?dXBwbHk6IGNvcmU6IGFkZCB3aXJlbGVzcyBjaGFyZ2VyIGFkYXB0ZXIgdHlw?=
+ =?gb2312?Q?e_property?=
+Thread-Topic: [External Mail]Re: [PATCH 2/5] power: supply: core: add wireless
+ charger adapter type property
+Thread-Index: AQHWVqD0zsJp6UOKY0iRxmhQr3LJaKkAq+mt
+Date:   Fri, 10 Jul 2020 11:28:13 +0000
+Message-ID: <1594380492771.51916@xiaomi.com>
+References: <20200710084841.1933254-1-yanziily@gmail.com>
+ <20200710084841.1933254-2-yanziily@gmail.com>,<20200710100037.GB1197607@kroah.com>
+In-Reply-To: <20200710100037.GB1197607@kroah.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.237.8.11]
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b50e8198-ca2e-eb44-ed71-e4ca27f48232@infradead.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 09, 2020 at 08:31:39PM -0700, Randy Dunlap wrote:
-> > +/* this is needed for setting boundery for panic_timeout to prevent it from overflow*/
-> 
->                                  boundary (or max value)                       overflow */
-> 
-> > +static int panic_time_max = INT_MAX / 1000;
-
-Or just simplify the comment.
-
-/* Prevent overflow in panic() */
-
-Or perhaps better, fix panic() to not overflow.
-
--		for (i = 0; i < panic_timeout * 1000; i += PANIC_TIMER_STEP) {
-+		for (i = 0; i / 1000 < panic_timeout; i += PANIC_TIMER_STEP) {
-
-you probably also want to change i to be a long long or the loop may never
-terminate.
+SGkgR3JlZywNCg0KT3VyIG5ldyBzaXggcG93ZXIgc3VwcGx5IHByb3BlcnRpZXMgIHJldHVybiB2
+YWx1ZXMgYXJlIGFsbCBpbnRlZ2VyLCBzbyBwbGVhc2UNCg0KYWRkIHRoZW0gYWJvdmUgIlByb3Bl
+cnRpZXMgb2YgdHlwZSBgY29uc3QgY2hhciIgY29tbWVudA0KeHh4DQouLi4NCi8qIFByb3BlcnRp
+ZXMgb2YgdHlwZSBgY29uc3QgY2hhciAqJyAqLw0KDQoNClRoYW5rcyENCg0KQiZSDQpGZWkgSmlh
+bmcNCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCreivP7IyzogR3Jl
+ZyBLSCA8Z3JlZ2toQGxpbnV4Zm91bmRhdGlvbi5vcmc+DQq3osvNyrG85DogMjAyMMTqN9TCMTDI
+1SAxODowMA0KytW8/sjLOiBRaXd1IEh1YW5nDQqzrcvNOiBzcmVAa2VybmVsLm9yZzsgbGludXgt
+cG1Admdlci5rZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBGZWkxIEpp
+YW5nIL2vt8k7ILvGxuTO5A0K1vfM4jogW0V4dGVybmFsIE1haWxdUmU6IFtQQVRDSCAyLzVdIHBv
+d2VyOiBzdXBwbHk6IGNvcmU6IGFkZCB3aXJlbGVzcyBjaGFyZ2VyIGFkYXB0ZXIgdHlwZSBwcm9w
+ZXJ0eQ0KDQpPbiBGcmksIEp1bCAxMCwgMjAyMCBhdCAwNDo0ODozOFBNICswODAwLCBRaXd1IEh1
+YW5nIHdyb3RlOg0KPiBGcm9tOiBRaXd1IEh1YW5nIDxodWFuZ3Fpd3VAeGlhb21pLmNvbT4NCj4N
+Cj4gUmVwb3J0cyB3aGF0IHR5cGUgb2Ygd2lyZWxlc3MgYWRhcHRlciBjb25uZWN0aW9uIGlzDQo+
+IGN1cnJlbnRseSBhY3RpdmUgZm9ydGhlIHN1cHBseS4NCj4gZm9yIGV4YW1wbGUgaXQgY2FuIHNo
+b3cgaWYgQURBUFRFUl9QRCBjYXBhYmxlIHNvdXJjZSBpcyBhdHRhY2hlZC4NCj4NCj4gU2lnbmVk
+LW9mZi1ieTogUWl3dSBIdWFuZyA8aHVhbmdxaXd1QHhpYW9taS5jb20+DQo+IC0tLQ0KPiAgRG9j
+dW1lbnRhdGlvbi9BQkkvdGVzdGluZy9zeXNmcy1jbGFzcy1wb3dlciB8IDEzICsrKysrKysrKysr
+KysNCj4gIGRyaXZlcnMvcG93ZXIvc3VwcGx5L3Bvd2VyX3N1cHBseV9zeXNmcy5jICAgfCAgMSAr
+DQo+ICBpbmNsdWRlL2xpbnV4L3Bvd2VyX3N1cHBseS5oICAgICAgICAgICAgICAgIHwgIDEgKw0K
+PiAgMyBmaWxlcyBjaGFuZ2VkLCAxNSBpbnNlcnRpb25zKCspDQo+DQo+IGRpZmYgLS1naXQgYS9E
+b2N1bWVudGF0aW9uL0FCSS90ZXN0aW5nL3N5c2ZzLWNsYXNzLXBvd2VyIGIvRG9jdW1lbnRhdGlv
+bi9BQkkvdGVzdGluZy9zeXNmcy1jbGFzcy1wb3dlcg0KPiBpbmRleCAwZDlkNmI0NmUyMzkuLjIw
+OTljZjE5NGE4OSAxMDA2NDQNCj4gLS0tIGEvRG9jdW1lbnRhdGlvbi9BQkkvdGVzdGluZy9zeXNm
+cy1jbGFzcy1wb3dlcg0KPiArKysgYi9Eb2N1bWVudGF0aW9uL0FCSS90ZXN0aW5nL3N5c2ZzLWNs
+YXNzLXBvd2VyDQo+IEBAIC03MTgsMyArNzE4LDE2IEBAIENvbnRhY3Q6IEZlaSBKaWFuZyA8amlh
+bmdmZWkxQHhpYW9taS5jb20+DQo+ICAgICAgICAgICAgICAgQWNjZXNzOiBSZWFkLU9ubHkNCj4g
+ICAgICAgICAgICAgICBWYWxpZCB2YWx1ZXM6ICJRVUlDS19DSEFSR0VfTk9STUFMIiwgIlFVSUNL
+X0NIQVJHRV9GQVNUIiwgIlFVSUNLX0NIQVJHRV9GTEFTSCIsDQo+ICAgICAgICAgICAgICAgIlFV
+SUNLX0NIQVJHRV9UVVJCRSIsICJRVUlDS19DSEFSR0VfU1VQRVIiLg0KPiArDQo+ICs9PT09PSBX
+aXJlbGVzcyBDaGFyZ2VyIFByb3BlcnRpZXMgPT09PT0NCj4gK1doYXQ6ICAgICAgICAgICAgICAg
+IC9zeXMvY2xhc3MvcG93ZXJfc3VwcGx5LzxzdXBwbHlfbmFtZT4vdHhfYWRhcHRlcg0KPiArRGF0
+ZTogICAgICAgICAgICAgICAgSnVsIDIwMjANCj4gK0NvbnRhY3Q6ICAgICBGZWkgSmlhbmcgPGpp
+YW5nZmVpMUB4aWFvbWkuY29tPg0KPiArRGVzY3JpcHRpb246DQo+ICsgICAgICAgICAgICAgUmVw
+b3J0cyB3aGF0IHR5cGUgb2Ygd2lyZWxlc3MgYWRhcHRlciBjb25uZWN0aW9uIGlzIGN1cnJlbnRs
+eSBhY3RpdmUgZm9yDQo+ICsgICAgICAgICAgICAgdGhlIHN1cHBseSwgZm9yIGV4YW1wbGUgaXQg
+Y2FuIHNob3cgaWYgQURBUFRFUl9QRCBjYXBhYmxlIHNvdXJjZQ0KPiArICAgICAgICAgICAgIGlz
+IGF0dGFjaGVkLg0KPiArDQo+ICsgICAgICAgICAgICAgQWNjZXNzOiBSZWFkLU9ubHkNCj4gKyAg
+ICAgICAgICAgICBWYWxpZCB2YWx1ZXM6ICJBREFQVEVSX05PTkUiLCAiQURBUFRFUl9TRFAiLCAi
+QURBUFRFUl9EQ1AiLCAiQURBUFRFUl9DRFAiLA0KPiArICAgICAgICAgICAgICJBREFQVEVSX1FD
+MiIsICJBREFQVEVSX1FDMyIsICJBREFQVEVSX1BEIiBvciBvdGhlciBwcml2YXRlIGFkYXB0ZXIu
+DQoNCldoeSBhcmUgdGhlc2Ugc3RyaW5ncyBub3QgaW4gdGhlIHBhdGNoIGFzIHdlbGw/DQoNCj4g
+XCBObyBuZXdsaW5lIGF0IGVuZCBvZiBmaWxlDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3Bvd2Vy
+L3N1cHBseS9wb3dlcl9zdXBwbHlfc3lzZnMuYyBiL2RyaXZlcnMvcG93ZXIvc3VwcGx5L3Bvd2Vy
+X3N1cHBseV9zeXNmcy5jDQo+IGluZGV4IGY5NTU3NGM0MTg5OC4uYzg2NGExNDgyOWVjIDEwMDY0
+NA0KPiAtLS0gYS9kcml2ZXJzL3Bvd2VyL3N1cHBseS9wb3dlcl9zdXBwbHlfc3lzZnMuYw0KPiAr
+KysgYi9kcml2ZXJzL3Bvd2VyL3N1cHBseS9wb3dlcl9zdXBwbHlfc3lzZnMuYw0KPiBAQCAtMjA3
+LDYgKzIwNyw3IEBAIHN0YXRpYyBzdHJ1Y3QgcG93ZXJfc3VwcGx5X2F0dHIgcG93ZXJfc3VwcGx5
+X2F0dHJzW10gPSB7DQo+ICAgICAgIFBPV0VSX1NVUFBMWV9BVFRSKE1BTlVGQUNUVVJFUiksDQo+
+ICAgICAgIFBPV0VSX1NVUFBMWV9BVFRSKFNFUklBTF9OVU1CRVIpLA0KPiAgICAgICBQT1dFUl9T
+VVBQTFlfQVRUUihxdWlja19jaGFyZ2VfdHlwZSksDQo+ICsgICAgIFBPV0VSX1NVUFBMWV9BVFRS
+KHR4X2FkYXB0ZXIpLA0KDQp1cHBlciBjYXNlPw0KDQp0aGFua3MsDQoNCmdyZWcgay1oDQojLyoq
+KioqKrG+08q8/rywxuS4vbz+uqzT0NChw9e5q8u+tcSxo8Pc0MXPoqOsvfbP3tPat6LLzbj4yc/D
+5rXY1rfW0MHQs/a1xLj2yMu78si61+mho7371rnIzrrOxuTL+8jL0tTIzrrO0M7Kvcq508OjqLD8
+wKi1q7K7z97T2sirsr+78rK/t9a12NC5wrahori01sahorvyyaK3oqOpsb7Tyrz+1tC1xNDFz6Kh
+o8jnufvE+rTtytXBy7G+08q8/qOsx+vE+sGivLS157uwu/LTyrz+zajWqreivP7Iy7Kiyb6z/bG+
+08q8/qOhIFRoaXMgZS1tYWlsIGFuZCBpdHMgYXR0YWNobWVudHMgY29udGFpbiBjb25maWRlbnRp
+YWwgaW5mb3JtYXRpb24gZnJvbSBYSUFPTUksIHdoaWNoIGlzIGludGVuZGVkIG9ubHkgZm9yIHRo
+ZSBwZXJzb24gb3IgZW50aXR5IHdob3NlIGFkZHJlc3MgaXMgbGlzdGVkIGFib3ZlLiBBbnkgdXNl
+IG9mIHRoZSBpbmZvcm1hdGlvbiBjb250YWluZWQgaGVyZWluIGluIGFueSB3YXkgKGluY2x1ZGlu
+ZywgYnV0IG5vdCBsaW1pdGVkIHRvLCB0b3RhbCBvciBwYXJ0aWFsIGRpc2Nsb3N1cmUsIHJlcHJv
+ZHVjdGlvbiwgb3IgZGlzc2VtaW5hdGlvbikgYnkgcGVyc29ucyBvdGhlciB0aGFuIHRoZSBpbnRl
+bmRlZCByZWNpcGllbnQocykgaXMgcHJvaGliaXRlZC4gSWYgeW91IHJlY2VpdmUgdGhpcyBlLW1h
+aWwgaW4gZXJyb3IsIHBsZWFzZSBub3RpZnkgdGhlIHNlbmRlciBieSBwaG9uZSBvciBlbWFpbCBp
+bW1lZGlhdGVseSBhbmQgZGVsZXRlIGl0ISoqKioqKi8jDQo=
