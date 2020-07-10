@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E91A221B6CA
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 15:44:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDBCC21B6CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 15:44:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728086AbgGJNoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 09:44:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36846 "EHLO
+        id S1728098AbgGJNo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 09:44:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727782AbgGJNoU (ORCPT
+        with ESMTP id S1727993AbgGJNoZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 09:44:20 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32EBBC08C5CE
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 06:44:20 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id j19so2536551pgm.11
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 06:44:20 -0700 (PDT)
+        Fri, 10 Jul 2020 09:44:25 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55974C08C5CE
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 06:44:25 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id m16so1070604pls.5
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 06:44:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=pavF98LD7+jNsjoyI0607wzIfZUnyLOlxLx/tyVR/oE=;
-        b=Bq/LLgCI7WK7/TndjNqEApHEOmFwnp7ZZJL3ekfQ7aqnZ7W5hzbtnS18qOAGafJjzk
-         suN+OqY7XkktkYuKLf9EHvZu/9nvp8bn9/qCZaLRxvhZCo8sCdRrKVqXEfza13J1UGwg
-         TsWkYx2jgc1ghSmZTlKgFLGWxK5tR7JnOxPCj/LpsRLj6hdOD3xrWvRqdlB1LZveFNjU
-         AOv+DUGg4/i5+PWEhfMCJxBrGtB+RjwUXohxPaznT7jbZV9YnDGgR0sUHSdLczGLSzVs
-         YrKoONnJEMmZ8WMDMwLVaJaaVQuq85Mq8bAg2+onbr8NZ8u9W0ZYWZFpq5C/kkkYBkv5
-         onjg==
+        bh=bTGTULWmfso35E7FYKTL1i0ulA/qmTVO7U/T6LRAxiQ=;
+        b=JikiFCyJ4hGHBnvEheOKj9yRxNXyEf6KAG1N7ewyPo6nKWDxVwUkKisqavF6xayu0w
+         4BOJPVh++hATAczbVhn7FdxrOILymOUAmFvkQtr4a4SBb11y/qDu3FI+1QcZdj9Yug9O
+         Pn4X9Dkkh53ON1BCPpvpZkWiphrOM6UZFN1x4TzZ5w/iIZ6rPhrhJS1VDo4IesHayBWj
+         x+SKOUdCZwDXWg0v8CU+A3oRjUO3bwCO3jHgZMQRu2a5y8G5pMAQyAh/loLmrxH7orSE
+         cgOGpy2kABTc3LM+HuMGhE0nBCg+Z0zuA9Jq31ghyon9XP/PBye782iNqCWE8iolD0Bb
+         6D/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=pavF98LD7+jNsjoyI0607wzIfZUnyLOlxLx/tyVR/oE=;
-        b=F2UAb7BuksJNkyyYcdel6d3uZt9tphZ5+kDn2vkPwVSEI4ESO4m6iKORu83n4kv09J
-         lowg/OMJhXV6ViC9e4BWo0h99SSVLJQ9Ctq0deAGerET8wHaZG803ucD7ENMj/pqqtKw
-         YcCqpsUPVmE5w4sb2NrZ3qs5EAB6eGM41X+8S5VqsTH8C9RuFI3+rWuNB+WDgBDbYv9y
-         ZkVdIAfQDinS4lKYJ1MvPE3KCVCAkrSDOnpepayG6IQr1SwUXk4QE/fJJ6r6KLvMVR4I
-         4+HTnqOPYCsslpsjWv7pMyoZMpVeB3eVsmbo0LQiI3csejvoAi5r9piQWxz4eZky/tPa
-         hgug==
-X-Gm-Message-State: AOAM531k1L63m4ROClVjWjqhDgky8HlE64vPtWmePWFHOp8THQ0DZ1yX
-        urL6CX2Fg2R+aVBFrqRQoxg=
-X-Google-Smtp-Source: ABdhPJyYvy88LY4rmbZX4Ccg/MinCIMFxx1K0tiAJ7hJDxBMBsAryBSUzj1dbWdUqXxTNlza+0VUiQ==
-X-Received: by 2002:a65:6650:: with SMTP id z16mr61583930pgv.161.1594388659788;
-        Fri, 10 Jul 2020 06:44:19 -0700 (PDT)
+        bh=bTGTULWmfso35E7FYKTL1i0ulA/qmTVO7U/T6LRAxiQ=;
+        b=jMotseZqb8HCRypXxe40xSsisciYU4fdL3rrWPkLGHZLPEMfN0EY0R4zhkazbmz+s4
+         OKEo57sf6frzoYLQ7BiYcWJsnA7gco4rtl6GwkRVUQfhbbH6SUgJTPxOnjuch9FkRBV6
+         xD7oEG7xqV5K3CKB8e2wlMOelmVX+7WSSlp2cEvL/6rAX+5hkI4bupxPOIo2wtnZizVx
+         Xkat0ARA1pezUX0pVJlDiCUU/y+P8wQTI+Q6fbeAEg3C9xrW67nxLPuSomS0pNy/tQ52
+         8RUwj0gLfJ/q/FEZWaeyhIj2XL/OfI1Nrsizpcq0tzWLMlukq5wGsFWH3XOjcPnZFJpK
+         UxSg==
+X-Gm-Message-State: AOAM532+0x9SQ6You0B5OHagplcQGR6HM0ka2IpybdmisYyeKcpwOrLA
+        7Nva5X61vWiSbCANBLMWH0A=
+X-Google-Smtp-Source: ABdhPJyQAhT8dPQBBhmngRbuKrTNC1nuHjTawVWUe6KwzXtJ0pD3kFNdjHx+s6ufolBqmIKp3yCGUw==
+X-Received: by 2002:a17:90a:db8a:: with SMTP id h10mr5932910pjv.197.1594388664979;
+        Fri, 10 Jul 2020 06:44:24 -0700 (PDT)
 Received: from vultr.guest ([149.248.10.52])
-        by smtp.gmail.com with ESMTPSA id 198sm6297363pfb.27.2020.07.10.06.44.12
+        by smtp.gmail.com with ESMTPSA id 198sm6297363pfb.27.2020.07.10.06.44.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jul 2020 06:44:19 -0700 (PDT)
+        Fri, 10 Jul 2020 06:44:24 -0700 (PDT)
 From:   Changbin Du <changbin.du@gmail.com>
 To:     Jiri Olsa <jolsa@redhat.com>,
         Arnaldo Carvalho de Melo <acme@kernel.org>
@@ -56,9 +56,9 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Namhyung Kim <namhyung@kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         linux-kernel@vger.kernel.org, Changbin Du <changbin.du@gmail.com>
-Subject: [PATCH v4 05/17] perf ftrace: add option '-m/--buffer-size' to set per-cpu buffer size
-Date:   Fri, 10 Jul 2020 21:43:10 +0800
-Message-Id: <20200710134322.15400-6-changbin.du@gmail.com>
+Subject: [PATCH v4 06/17] perf ftrace: show trace column header
+Date:   Fri, 10 Jul 2020 21:43:11 +0800
+Message-Id: <20200710134322.15400-7-changbin.du@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200710134322.15400-1-changbin.du@gmail.com>
 References: <20200710134322.15400-1-changbin.du@gmail.com>
@@ -69,136 +69,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds an option '-m/--buffer-size' to allow us set the size of per-cpu
-tracing buffer.
+This makes perf-ftrace display column header before printing trace.
+
+  $ sudo perf ftrace
+  # tracer: function
+  #
+  # entries-in-buffer/entries-written: 0/0   #P:8
+  #
+  #            TASK-PID     CPU#   TIMESTAMP  FUNCTION
+  #              | |         |       |         |
+             <...>-9246  [006]  10726.262760: mutex_unlock <-rb_simple_write
+             <...>-9246  [006]  10726.262764: __fsnotify_parent <-vfs_write
+             <...>-9246  [006]  10726.262765: fsnotify <-vfs_write
+             <...>-9246  [006]  10726.262766: __sb_end_write <-vfs_write
+             <...>-9246  [006]  10726.262767: fpregs_assert_state_consistent <-do_syscall_64
 
 Signed-off-by: Changbin Du <changbin.du@gmail.com>
-
 ---
-v2: support units as a suffix.
----
- tools/perf/Documentation/perf-ftrace.txt |  5 +++
- tools/perf/builtin-ftrace.c              | 56 +++++++++++++++++++++++-
- 2 files changed, 60 insertions(+), 1 deletion(-)
+ tools/perf/builtin-ftrace.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/tools/perf/Documentation/perf-ftrace.txt b/tools/perf/Documentation/perf-ftrace.txt
-index e204bf6d50d8..98fe01d354d1 100644
---- a/tools/perf/Documentation/perf-ftrace.txt
-+++ b/tools/perf/Documentation/perf-ftrace.txt
-@@ -56,6 +56,11 @@ OPTIONS
- 	Ranges of CPUs are specified with -: 0-2.
- 	Default is to trace on all online CPUs.
- 
-+-m::
-+--buffer-size::
-+	Set the size of per-cpu tracing buffer, <size> is expected to
-+	be a number with appended unit character - B/K/M/G.
-+
- -T::
- --trace-funcs=::
- 	Only trace functions given by the argument.  Multiple functions
 diff --git a/tools/perf/builtin-ftrace.c b/tools/perf/builtin-ftrace.c
-index 342861a1d152..348e2d960987 100644
+index 348e2d960987..887e78b23a82 100644
 --- a/tools/perf/builtin-ftrace.c
 +++ b/tools/perf/builtin-ftrace.c
-@@ -26,7 +26,7 @@
- #include "thread_map.h"
- #include "util/cap.h"
- #include "util/config.h"
--
-+#include "util/units.h"
+@@ -430,6 +430,9 @@ static int __cmd_ftrace(struct perf_ftrace *ftrace, int argc, const char **argv)
+ 	fcntl(trace_fd, F_SETFL, O_NONBLOCK);
+ 	pollfd.fd = trace_fd;
  
- struct perf_ftrace {
- 	struct evlist		*evlist;
-@@ -38,6 +38,7 @@ struct perf_ftrace {
- 	struct list_head	graph_funcs;
- 	struct list_head	nograph_funcs;
- 	int			graph_depth;
-+	unsigned long		percpu_buffer_size;
- };
- 
- struct filter_entry {
-@@ -320,6 +321,21 @@ static int set_tracing_depth(struct perf_ftrace *ftrace)
- 	return 0;
- }
- 
-+static int set_tracing_percpu_buffer_size(struct perf_ftrace *ftrace)
-+{
-+	int ret;
++	/* display column headers */
++	read_tracing_file_to_stdout("trace");
 +
-+	if (ftrace->percpu_buffer_size == 0)
-+		return 0;
-+
-+	ret = write_tracing_file_int("buffer_size_kb",
-+				     ftrace->percpu_buffer_size / 1024);
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
-+}
-+
- static int __cmd_ftrace(struct perf_ftrace *ftrace, int argc, const char **argv)
- {
- 	char *trace_file;
-@@ -384,6 +400,11 @@ static int __cmd_ftrace(struct perf_ftrace *ftrace, int argc, const char **argv)
- 		goto out_reset;
- 	}
- 
-+	if (set_tracing_percpu_buffer_size(ftrace) < 0) {
-+		pr_err("failed to set tracing per-cpu buffer size\n");
-+		goto out_reset;
-+	}
-+
- 	if (write_tracing_file("current_tracer", ftrace->tracer) < 0) {
- 		pr_err("failed to set current_tracer to %s\n", ftrace->tracer);
- 		goto out_reset;
-@@ -503,6 +524,37 @@ static void delete_filter_func(struct list_head *head)
- 	}
- }
- 
-+static int parse_buffer_size(const struct option *opt,
-+			     const char *str, int unset)
-+{
-+	unsigned long *s = (unsigned long *)opt->value;
-+	static struct parse_tag tags_size[] = {
-+		{ .tag  = 'B', .mult = 1       },
-+		{ .tag  = 'K', .mult = 1 << 10 },
-+		{ .tag  = 'M', .mult = 1 << 20 },
-+		{ .tag  = 'G', .mult = 1 << 30 },
-+		{ .tag  = 0 },
-+	};
-+	unsigned long val;
-+
-+	if (unset) {
-+		*s = 0;
-+		return 0;
-+	}
-+
-+	val = parse_tag_value(str, tags_size);
-+	if (val != (unsigned long) -1) {
-+		if (val < 1024) {
-+			pr_err("buffer size too small, must larger than 1KB.");
-+			return -1;
-+		}
-+		*s = val;
-+		return 0;
-+	}
-+
-+	return -1;
-+}
-+
- int cmd_ftrace(int argc, const char **argv)
- {
- 	int ret;
-@@ -542,6 +594,8 @@ int cmd_ftrace(int argc, const char **argv)
- 		     "Set nograph filter on given functions", parse_filter_func),
- 	OPT_INTEGER('D', "graph-depth", &ftrace.graph_depth,
- 		    "Max depth for function graph tracer"),
-+	OPT_CALLBACK('m', "buffer-size", &ftrace.percpu_buffer_size, "size",
-+		     "size of per cpu buffer", parse_buffer_size),
- 	OPT_END()
- 	};
- 
+ 	if (write_tracing_file("tracing_on", "1") < 0) {
+ 		pr_err("can't enable tracing\n");
+ 		goto out_close_fd;
 -- 
 2.25.1
 
