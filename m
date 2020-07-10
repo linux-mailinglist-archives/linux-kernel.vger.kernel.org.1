@@ -2,192 +2,333 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7553B21B9ED
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 17:49:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE56421B9E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 17:49:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728315AbgGJPtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 11:49:04 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:33155 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728293AbgGJPsx (ORCPT
+        id S1728288AbgGJPsv convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 10 Jul 2020 11:48:51 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:52222 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728199AbgGJPsr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 11:48:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594396131;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FfpxmN5laAl/y/N2q1Y7cTgVN6qGZtCHt/1dR+y0tY8=;
-        b=EzA9Xw2i/ytLPHHnyK2jpuwfINOKceYrO1xqKn+869A2D5zzs5vT4AHeXiRn0FNq8Ioy+H
-        PtgANBwBDHR/m8+P9mlsp0ViduYgjw8fo+4CI7Dlhspd1r9Yk0v14Zp7gB/PUoavPzph/Z
-        IqgUa1kfWFQZrJ2BWj1HTXWnQcOKljc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-148-l2N29321O0ieKsqQhVWYWQ-1; Fri, 10 Jul 2020 11:48:48 -0400
-X-MC-Unique: l2N29321O0ieKsqQhVWYWQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 67BBF1083;
-        Fri, 10 Jul 2020 15:48:46 +0000 (UTC)
-Received: from localhost.localdomain.com (ovpn-114-235.ams2.redhat.com [10.36.114.235])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 33A265BAC3;
-        Fri, 10 Jul 2020 15:48:44 +0000 (UTC)
-From:   Mohammed Gamal <mgamal@redhat.com>
-To:     kvm@vger.kernel.org, pbonzini@redhat.com
-Cc:     linux-kernel@vger.kernel.org, vkuznets@redhat.com,
-        sean.j.christopherson@intel.com, wanpengli@tencent.com,
-        jmattson@google.com, joro@8bytes.org,
-        Mohammed Gamal <mgamal@redhat.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Babu Moger <babu.moger@amd.com>
-Subject: [PATCH v3 9/9] KVM: x86: SVM: VMX: Make GUEST_MAXPHYADDR < HOST_MAXPHYADDR support configurable
-Date:   Fri, 10 Jul 2020 17:48:11 +0200
-Message-Id: <20200710154811.418214-10-mgamal@redhat.com>
-In-Reply-To: <20200710154811.418214-1-mgamal@redhat.com>
-References: <20200710154811.418214-1-mgamal@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+        Fri, 10 Jul 2020 11:48:47 -0400
+Received: from mail-pl1-f200.google.com ([209.85.214.200])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1jtvGT-0003gk-Ro
+        for linux-kernel@vger.kernel.org; Fri, 10 Jul 2020 15:48:42 +0000
+Received: by mail-pl1-f200.google.com with SMTP id 59so3678856pla.12
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 08:48:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=N1xGiQms8sbgC2BixU7VSPSHisiTFHwPd+ZKrKX0wTI=;
+        b=DTtM/mWv9TSPkJkl3Py8Uyu7DNCkplN9rqr+OHUxuAOaaTTFGCmTQcpb8UI9FSH4vT
+         yF2ihVhiGjA+fHfhJvcyCUQmH465aU28OccbRWMIhGsPuf7g+gV4IibojiPLDx0Gs7MQ
+         uNmvZXYGLFNYQFOIKayorXTaruvM7onyO3nOMEGf0nn6wfJCySjo/UZNZyZDR5tCg/GD
+         c2i8Qyjyg8Uv/Rcv2OErvXczls9nHgMC48WiJEd/5kSV932PJgq1E/MkZFk2DQd0G88i
+         wVoTQUw8Cjn+Pz7Z6rCK8CJj9C2GlKjeBiCYxJ++SfJqEWVGlaMFFzr4MprHBMx9U8eH
+         EXeQ==
+X-Gm-Message-State: AOAM532uPwElcPWnbPl2X2PYZx8vU+VI21HBPqwbkfSgfjkjrAM6BizG
+        AoNKELAby4fKgsZrH+gIJrmpQ91wdzherEiil/kRe5eOUPZYqYMmqUhRiovaYHfW63ebTABQf0Y
+        2ztBl4s3+lLUbV9ZlFq5MZbJDEptc/yleE3K+vGJkrg==
+X-Received: by 2002:a17:902:b185:: with SMTP id s5mr15558621plr.211.1594396120348;
+        Fri, 10 Jul 2020 08:48:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxFahFk0g8OPWuiV8TvEMjbyHgjf+qYUHmdMGTSGo5KdPouoaisemlLCTjJK1SXI7HTqA1msQ==
+X-Received: by 2002:a17:902:b185:: with SMTP id s5mr15558589plr.211.1594396119788;
+        Fri, 10 Jul 2020 08:48:39 -0700 (PDT)
+Received: from [192.168.1.208] (220-133-187-190.HINET-IP.hinet.net. [220.133.187.190])
+        by smtp.gmail.com with ESMTPSA id lx2sm6394653pjb.16.2020.07.10.08.48.36
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 10 Jul 2020 08:48:39 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
+Subject: Re: [PATCH v6] drm/i915: Init lspcon after HPD in intel_dp_detect()
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+In-Reply-To: <21A619C1-627F-49CC-B2F4-9B533F351DF3@canonical.com>
+Date:   Fri, 10 Jul 2020 23:48:34 +0800
+Cc:     Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        =?utf-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
+        =?utf-8?Q?Jos=C3=A9_Roberto_de_Souza?= <jose.souza@intel.com>,
+        Imre Deak <imre.deak@intel.com>,
+        Lucas De Marchi <lucas.demarchi@intel.com>,
+        Manasi Navare <manasi.d.navare@intel.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Gwan-gyeong Mun <gwan-gyeong.mun@intel.com>,
+        Ramalingam C <ramalingam.c@intel.com>,
+        Uma Shankar <uma.shankar@intel.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        intel-gfx@lists.freedesktop.org,
+        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <F9B12234-5D1D-4081-BFCF-2FFF2694CBD4@canonical.com>
+References: <20200610075542.12882-1-kai.heng.feng@canonical.com>
+ <21A619C1-627F-49CC-B2F4-9B533F351DF3@canonical.com>
+To:     Jani Nikula <jani.nikula@linux.intel.com>
+X-Mailer: Apple Mail (2.3608.80.23.2.2)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The reason behind including this patch is unexpected behaviour we see
-with NPT vmexit handling in AMD processor.
 
-With previous patch ("KVM: SVM: Add guest physical address check in
-NPF/PF interception") we see the followning error multiple times in
-the 'access' test in kvm-unit-tests:
 
-            test pte.p pte.36 pde.p: FAIL: pte 2000021 expected 2000001
-            Dump mapping: address: 0x123400000000
-            ------L4: 24c3027
-            ------L3: 24c4027
-            ------L2: 24c5021
-            ------L1: 1002000021
+> On Jun 30, 2020, at 16:37, Kai-Heng Feng <kai.heng.feng@canonical.com> wrote:
+> 
+> 
+>> On Jun 10, 2020, at 15:55, Kai-Heng Feng <kai.heng.feng@canonical.com> wrote:
+>> 
+>> On HP 800 G4 DM, if HDMI cable isn't plugged before boot, the HDMI port
+>> becomes useless and never responds to cable hotplugging:
+>> [    3.031904] [drm:lspcon_init [i915]] *ERROR* Failed to probe lspcon
+>> [    3.031945] [drm:intel_ddi_init [i915]] *ERROR* LSPCON init failed on port D
+>> 
+>> Seems like the lspcon chip on the system only gets powered after the
+>> cable is plugged.
+>> 
+>> Consilidate lspcon_init() into lspcon_resume() to dynamically init
+>> lspcon chip, and make HDMI port work.
+>> 
+>> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> 
+> A gentle ping...
 
-This shows that the PTE's accessed bit is apparently being set by
-the CPU hardware before the NPF vmexit. This completely handled by
-hardware and can not be fixed in software.
+Another gentle ping...
 
-This patch introduces a workaround. We add a boolean variable:
-'allow_smaller_maxphyaddr'
-Which is set individually by VMX and SVM init routines. On VMX it's
-always set to true, on SVM it's only set to true when NPT is not
-enabled.
-
-We also add a new capability KVM_CAP_SMALLER_MAXPHYADDR which
-allows userspace to query if the underlying architecture would
-support GUEST_MAXPHYADDR < HOST_MAXPHYADDR and hence act accordingly
-(e.g. qemu can decide if it would ignore the -cpu ..,phys-bits=X)
-
-CC: Tom Lendacky <thomas.lendacky@amd.com>
-CC: Babu Moger <babu.moger@amd.com>
-Signed-off-by: Mohammed Gamal <mgamal@redhat.com>
----
- arch/x86/include/asm/kvm_host.h |  2 +-
- arch/x86/kvm/svm/svm.c          | 15 +++++++++++++++
- arch/x86/kvm/vmx/vmx.c          |  7 +++++++
- arch/x86/kvm/x86.c              |  6 ++++++
- include/uapi/linux/kvm.h        |  1 +
- 5 files changed, 30 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index bb4044ffb7b7..26002e1b47f7 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1304,7 +1304,7 @@ struct kvm_arch_async_pf {
- };
- 
- extern u64 __read_mostly host_efer;
--
-+extern bool __read_mostly allow_smaller_maxphyaddr;
- extern struct kvm_x86_ops kvm_x86_ops;
- 
- #define __KVM_HAVE_ARCH_VM_ALLOC
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 79c33b3539f0..f3d7ae26875c 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -924,6 +924,21 @@ static __init int svm_hardware_setup(void)
- 
- 	svm_set_cpu_caps();
- 
-+	/*
-+	 * It seems that on AMD processors PTE's accessed bit is
-+	 * being set by the CPU hardware before the NPF vmexit.
-+	 * This is not expected behaviour and our tests fail because
-+	 * of it.
-+	 * A workaround here is to disable support for
-+	 * GUEST_MAXPHYADDR < HOST_MAXPHYADDR if NPT is enabled.
-+	 * In this case userspace can know if there is support using
-+	 * KVM_CAP_SMALLER_MAXPHYADDR extension and decide how to handle
-+	 * it
-+	 * If future AMD CPU models change the behaviour described above,
-+	 * this variable can be changed accordingly
-+	 */
-+	allow_smaller_maxphyaddr = !npt_enabled;
-+
- 	return 0;
- 
- err:
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 0cebc4832805..8a8e85e6c529 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -8294,6 +8294,13 @@ static int __init vmx_init(void)
- #endif
- 	vmx_check_vmcs12_offsets();
- 
-+	/*
-+	 * Intel processors don't have problems with
-+	 * GUEST_MAXPHYADDR < HOST_MAXPHYADDR so enable
-+	 * it for VMX by default
-+	 */
-+	allow_smaller_maxphyaddr = true;
-+
- 	return 0;
- }
- module_init(vmx_init);
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 03c401963062..167becd6a634 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -187,6 +187,9 @@ static struct kvm_shared_msrs __percpu *shared_msrs;
- u64 __read_mostly host_efer;
- EXPORT_SYMBOL_GPL(host_efer);
- 
-+bool __read_mostly allow_smaller_maxphyaddr;
-+EXPORT_SYMBOL_GPL(allow_smaller_maxphyaddr);
-+
- static u64 __read_mostly host_xss;
- u64 __read_mostly supported_xss;
- EXPORT_SYMBOL_GPL(supported_xss);
-@@ -3538,6 +3541,9 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
- 	case KVM_CAP_HYPERV_ENLIGHTENED_VMCS:
- 		r = kvm_x86_ops.nested_ops->enable_evmcs != NULL;
- 		break;
-+	case KVM_CAP_SMALLER_MAXPHYADDR:
-+		r = (int) allow_smaller_maxphyaddr;
-+		break;
- 	default:
- 		break;
- 	}
-diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-index 4fdf30316582..68cd3a0af9bb 100644
---- a/include/uapi/linux/kvm.h
-+++ b/include/uapi/linux/kvm.h
-@@ -1031,6 +1031,7 @@ struct kvm_ppc_resize_hpt {
- #define KVM_CAP_PPC_SECURE_GUEST 181
- #define KVM_CAP_HALT_POLL 182
- #define KVM_CAP_ASYNC_PF_INT 183
-+#define KVM_CAP_SMALLER_MAXPHYADDR 184
- 
- #ifdef KVM_CAP_IRQ_ROUTING
- 
--- 
-2.26.2
+> 
+>> ---
+>> v6:
+>> - Rebase on latest for-linux-next.
+>> 
+>> v5:
+>> - Consolidate lspcon_resume() with lspcon_init().
+>> - Move more logic into lspcon code.
+>> 
+>> v4:
+>> - Trust VBT in intel_infoframe_init().
+>> - Init lspcon in intel_dp_detect().
+>> 
+>> v3:
+>> - Make sure it's handled under long HPD case.
+>> 
+>> v2: 
+>> - Move lspcon_init() inside of intel_dp_hpd_pulse().
+>> 
+>> drivers/gpu/drm/i915/display/intel_ddi.c    | 19 +------
+>> drivers/gpu/drm/i915/display/intel_dp.c     | 10 ++--
+>> drivers/gpu/drm/i915/display/intel_hdmi.c   |  3 +-
+>> drivers/gpu/drm/i915/display/intel_lspcon.c | 63 ++++++++++++---------
+>> drivers/gpu/drm/i915/display/intel_lspcon.h |  3 +-
+>> 5 files changed, 43 insertions(+), 55 deletions(-)
+>> 
+>> diff --git a/drivers/gpu/drm/i915/display/intel_ddi.c b/drivers/gpu/drm/i915/display/intel_ddi.c
+>> index aa22465bb56e..af755b1aa24b 100644
+>> --- a/drivers/gpu/drm/i915/display/intel_ddi.c
+>> +++ b/drivers/gpu/drm/i915/display/intel_ddi.c
+>> @@ -4805,7 +4805,7 @@ void intel_ddi_init(struct drm_i915_private *dev_priv, enum port port)
+>> {
+>> 	struct intel_digital_port *intel_dig_port;
+>> 	struct intel_encoder *encoder;
+>> -	bool init_hdmi, init_dp, init_lspcon = false;
+>> +	bool init_hdmi, init_dp;
+>> 	enum phy phy = intel_port_to_phy(dev_priv, port);
+>> 
+>> 	init_hdmi = intel_bios_port_supports_dvi(dev_priv, port) ||
+>> @@ -4819,7 +4819,6 @@ void intel_ddi_init(struct drm_i915_private *dev_priv, enum port port)
+>> 		 * is initialized before lspcon.
+>> 		 */
+>> 		init_dp = true;
+>> -		init_lspcon = true;
+>> 		init_hdmi = false;
+>> 		drm_dbg_kms(&dev_priv->drm, "VBT says port %c has lspcon\n",
+>> 			    port_name(port));
+>> @@ -4904,22 +4903,6 @@ void intel_ddi_init(struct drm_i915_private *dev_priv, enum port port)
+>> 			goto err;
+>> 	}
+>> 
+>> -	if (init_lspcon) {
+>> -		if (lspcon_init(intel_dig_port))
+>> -			/* TODO: handle hdmi info frame part */
+>> -			drm_dbg_kms(&dev_priv->drm,
+>> -				    "LSPCON init success on port %c\n",
+>> -				    port_name(port));
+>> -		else
+>> -			/*
+>> -			 * LSPCON init faied, but DP init was success, so
+>> -			 * lets try to drive as DP++ port.
+>> -			 */
+>> -			drm_err(&dev_priv->drm,
+>> -				"LSPCON init failed on port %c\n",
+>> -				port_name(port));
+>> -	}
+>> -
+>> 	if (INTEL_GEN(dev_priv) >= 11) {
+>> 		if (intel_phy_is_tc(dev_priv, phy))
+>> 			intel_dig_port->connected = intel_tc_port_connected;
+>> diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
+>> index ed9e53c373a7..398a104158a8 100644
+>> --- a/drivers/gpu/drm/i915/display/intel_dp.c
+>> +++ b/drivers/gpu/drm/i915/display/intel_dp.c
+>> @@ -5962,15 +5962,14 @@ static enum drm_connector_status
+>> intel_dp_detect_dpcd(struct intel_dp *intel_dp)
+>> {
+>> 	struct drm_i915_private *i915 = dp_to_i915(intel_dp);
+>> -	struct intel_lspcon *lspcon = dp_to_lspcon(intel_dp);
+>> +	struct intel_digital_port *dig_port = dp_to_dig_port(intel_dp);
+>> 	u8 *dpcd = intel_dp->dpcd;
+>> 	u8 type;
+>> 
+>> 	if (WARN_ON(intel_dp_is_edp(intel_dp)))
+>> 		return connector_status_connected;
+>> 
+>> -	if (lspcon->active)
+>> -		lspcon_resume(lspcon);
+>> +	lspcon_resume(dig_port);
+>> 
+>> 	if (!intel_dp_get_dpcd(intel_dp))
+>> 		return connector_status_disconnected;
+>> @@ -7056,14 +7055,13 @@ void intel_dp_encoder_reset(struct drm_encoder *encoder)
+>> {
+>> 	struct drm_i915_private *dev_priv = to_i915(encoder->dev);
+>> 	struct intel_dp *intel_dp = enc_to_intel_dp(to_intel_encoder(encoder));
+>> -	struct intel_lspcon *lspcon = dp_to_lspcon(intel_dp);
+>> +	struct intel_digital_port *dig_port = dp_to_dig_port(intel_dp);
+>> 	intel_wakeref_t wakeref;
+>> 
+>> 	if (!HAS_DDI(dev_priv))
+>> 		intel_dp->DP = intel_de_read(dev_priv, intel_dp->output_reg);
+>> 
+>> -	if (lspcon->active)
+>> -		lspcon_resume(lspcon);
+>> +	lspcon_resume(dig_port);
+>> 
+>> 	intel_dp->reset_link_params = true;
+>> 
+>> diff --git a/drivers/gpu/drm/i915/display/intel_hdmi.c b/drivers/gpu/drm/i915/display/intel_hdmi.c
+>> index 010f37240710..643ad2127931 100644
+>> --- a/drivers/gpu/drm/i915/display/intel_hdmi.c
+>> +++ b/drivers/gpu/drm/i915/display/intel_hdmi.c
+>> @@ -3155,7 +3155,8 @@ void intel_infoframe_init(struct intel_digital_port *intel_dig_port)
+>> 		intel_dig_port->set_infoframes = g4x_set_infoframes;
+>> 		intel_dig_port->infoframes_enabled = g4x_infoframes_enabled;
+>> 	} else if (HAS_DDI(dev_priv)) {
+>> -		if (intel_dig_port->lspcon.active) {
+>> +		if (intel_bios_is_lspcon_present(dev_priv,
+>> +						 intel_dig_port->base.port)) {
+>> 			intel_dig_port->write_infoframe = lspcon_write_infoframe;
+>> 			intel_dig_port->read_infoframe = lspcon_read_infoframe;
+>> 			intel_dig_port->set_infoframes = lspcon_set_infoframes;
+>> diff --git a/drivers/gpu/drm/i915/display/intel_lspcon.c b/drivers/gpu/drm/i915/display/intel_lspcon.c
+>> index 6ff7b226f0a1..e3dde4c25604 100644
+>> --- a/drivers/gpu/drm/i915/display/intel_lspcon.c
+>> +++ b/drivers/gpu/drm/i915/display/intel_lspcon.c
+>> @@ -525,44 +525,17 @@ u32 lspcon_infoframes_enabled(struct intel_encoder *encoder,
+>> 	return 0;
+>> }
+>> 
+>> -void lspcon_resume(struct intel_lspcon *lspcon)
+>> -{
+>> -	enum drm_lspcon_mode expected_mode;
+>> -
+>> -	if (lspcon_wake_native_aux_ch(lspcon)) {
+>> -		expected_mode = DRM_LSPCON_MODE_PCON;
+>> -		lspcon_resume_in_pcon_wa(lspcon);
+>> -	} else {
+>> -		expected_mode = DRM_LSPCON_MODE_LS;
+>> -	}
+>> -
+>> -	if (lspcon_wait_mode(lspcon, expected_mode) == DRM_LSPCON_MODE_PCON)
+>> -		return;
+>> -
+>> -	if (lspcon_change_mode(lspcon, DRM_LSPCON_MODE_PCON))
+>> -		DRM_ERROR("LSPCON resume failed\n");
+>> -	else
+>> -		DRM_DEBUG_KMS("LSPCON resume success\n");
+>> -}
+>> -
+>> void lspcon_wait_pcon_mode(struct intel_lspcon *lspcon)
+>> {
+>> 	lspcon_wait_mode(lspcon, DRM_LSPCON_MODE_PCON);
+>> }
+>> 
+>> -bool lspcon_init(struct intel_digital_port *intel_dig_port)
+>> +static bool lspcon_init(struct intel_digital_port *intel_dig_port)
+>> {
+>> 	struct intel_dp *dp = &intel_dig_port->dp;
+>> 	struct intel_lspcon *lspcon = &intel_dig_port->lspcon;
+>> -	struct drm_device *dev = intel_dig_port->base.base.dev;
+>> -	struct drm_i915_private *dev_priv = to_i915(dev);
+>> 	struct drm_connector *connector = &dp->attached_connector->base;
+>> 
+>> -	if (!HAS_LSPCON(dev_priv)) {
+>> -		DRM_ERROR("LSPCON is not supported on this platform\n");
+>> -		return false;
+>> -	}
+>> -
+>> 	lspcon->active = false;
+>> 	lspcon->mode = DRM_LSPCON_MODE_INVALID;
+>> 
+>> @@ -586,3 +559,37 @@ bool lspcon_init(struct intel_digital_port *intel_dig_port)
+>> 	DRM_DEBUG_KMS("Success: LSPCON init\n");
+>> 	return true;
+>> }
+>> +
+>> +void lspcon_resume(struct intel_digital_port *intel_dig_port)
+>> +{
+>> +	struct intel_lspcon *lspcon = &intel_dig_port->lspcon;
+>> +	struct drm_device *dev = intel_dig_port->base.base.dev;
+>> +	struct drm_i915_private *dev_priv = to_i915(dev);
+>> +	enum drm_lspcon_mode expected_mode;
+>> +
+>> +	if (!intel_bios_is_lspcon_present(dev_priv, intel_dig_port->base.port))
+>> +		return;
+>> +
+>> +	if (!lspcon->active) {
+>> +		if (!lspcon_init(intel_dig_port)) {
+>> +			DRM_ERROR("LSPCON init failed on port %c\n",
+>> +				  port_name(intel_dig_port->base.port));
+>> +			return;
+>> +		}
+>> +	}
+>> +
+>> +	if (lspcon_wake_native_aux_ch(lspcon)) {
+>> +		expected_mode = DRM_LSPCON_MODE_PCON;
+>> +		lspcon_resume_in_pcon_wa(lspcon);
+>> +	} else {
+>> +		expected_mode = DRM_LSPCON_MODE_LS;
+>> +	}
+>> +
+>> +	if (lspcon_wait_mode(lspcon, expected_mode) == DRM_LSPCON_MODE_PCON)
+>> +		return;
+>> +
+>> +	if (lspcon_change_mode(lspcon, DRM_LSPCON_MODE_PCON))
+>> +		DRM_ERROR("LSPCON resume failed\n");
+>> +	else
+>> +		DRM_DEBUG_KMS("LSPCON resume success\n");
+>> +}
+>> diff --git a/drivers/gpu/drm/i915/display/intel_lspcon.h b/drivers/gpu/drm/i915/display/intel_lspcon.h
+>> index 37cfddf8a9c5..169db35db13e 100644
+>> --- a/drivers/gpu/drm/i915/display/intel_lspcon.h
+>> +++ b/drivers/gpu/drm/i915/display/intel_lspcon.h
+>> @@ -15,8 +15,7 @@ struct intel_digital_port;
+>> struct intel_encoder;
+>> struct intel_lspcon;
+>> 
+>> -bool lspcon_init(struct intel_digital_port *intel_dig_port);
+>> -void lspcon_resume(struct intel_lspcon *lspcon);
+>> +void lspcon_resume(struct intel_digital_port *intel_dig_port);
+>> void lspcon_wait_pcon_mode(struct intel_lspcon *lspcon);
+>> void lspcon_write_infoframe(struct intel_encoder *encoder,
+>> 			    const struct intel_crtc_state *crtc_state,
+>> -- 
+>> 2.17.1
+>> 
+> 
 
