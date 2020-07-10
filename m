@@ -2,60 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BFC821B169
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 10:34:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A50CC21B163
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 10:31:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727837AbgGJIeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 04:34:09 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:38484 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726768AbgGJIeI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 04:34:08 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id D60DA201248;
-        Fri, 10 Jul 2020 10:34:06 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 188C92002A0;
-        Fri, 10 Jul 2020 10:34:04 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 51FA9402D3;
-        Fri, 10 Jul 2020 16:34:00 +0800 (SGT)
-From:   Richard Zhu <hongxing.zhu@nxp.com>
-To:     shawnguo@kernel.org, festevam@gmail.com
-Cc:     linux-imx@nxp.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Richard Zhu <hongxing.zhu@nxp.com>
-Subject: [PATCH] ARM: dts: imx6qp-sabresd: enable sata
-Date:   Fri, 10 Jul 2020 16:30:48 +0800
-Message-Id: <1594369848-28627-2-git-send-email-hongxing.zhu@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1594369848-28627-1-git-send-email-hongxing.zhu@nxp.com>
-References: <1594369848-28627-1-git-send-email-hongxing.zhu@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1727850AbgGJIbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 04:31:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726536AbgGJIbh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 04:31:37 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3998C08C5CE
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 01:31:36 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=localhost)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <l.stach@pengutronix.de>)
+        id 1jtoRT-0000yE-Jw; Fri, 10 Jul 2020 10:31:35 +0200
+Message-ID: <58ef264448eb3ea75f846513210a5430b75b44c6.camel@pengutronix.de>
+Subject: Re: [PATCH 0/4] Add support for GPU load values
+From:   Lucas Stach <l.stach@pengutronix.de>
+To:     Christian Gmeiner <christian.gmeiner@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     cphealy@gmail.com, Russell King <linux+etnaviv@armlinux.org.uk>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, etnaviv@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Date:   Fri, 10 Jul 2020 10:31:33 +0200
+In-Reply-To: <20200710074143.306787-1-christian.gmeiner@gmail.com>
+References: <20200710074143.306787-1-christian.gmeiner@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: l.stach@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable SATA on iMX6QP SABRESD board.
+Hi Christian,
 
-Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
-Reviewed-by: Fabio Estevam <festevam@gmail.com>
----
- arch/arm/boot/dts/imx6qp-sabresd.dts | 4 ++++
- 1 file changed, 4 insertions(+)
+Am Freitag, den 10.07.2020, 09:41 +0200 schrieb Christian Gmeiner:
+> This patch series add support for loadavg values for GPU
+> sub-components. I am adding a SMA algorithm as I was not
+> really sure if EWMA would be a good fit for this use case.
 
-diff --git a/arch/arm/boot/dts/imx6qp-sabresd.dts b/arch/arm/boot/dts/imx6qp-sabresd.dts
-index f1b9cb104fdd..480e73183f6b 100644
---- a/arch/arm/boot/dts/imx6qp-sabresd.dts
-+++ b/arch/arm/boot/dts/imx6qp-sabresd.dts
-@@ -53,3 +53,7 @@
- &pcie {
- 	status = "disabled";
- };
-+
-+&sata {
-+	status = "okay";
-+};
--- 
-2.17.1
+1 second is a pretty long window in GPU time. Why do you feel that a
+simple moving average is more appropriate than a exponentially
+weighted one here? Note that I haven't given this any thought myself
+and haven't made up my mind yet, so this is a honest question to
+understand the reasoning behind your choice.
+
+Regards,
+Lucas
+
+> Christian Gmeiner (4):
+>   drm/etnaviv: add simple moving average (SMA)
+>   drm/etnaviv: add loadavg accounting
+>   drm/etnaviv: show loadavg in debugfs
+>   drm/etnaviv: export loadavg via perfmon
+> 
+>  drivers/gpu/drm/etnaviv/etnaviv_drv.c     | 14 ++++
+>  drivers/gpu/drm/etnaviv/etnaviv_gpu.c     | 44 ++++++++++++-
+>  drivers/gpu/drm/etnaviv/etnaviv_gpu.h     | 29 +++++++++
+>  drivers/gpu/drm/etnaviv/etnaviv_perfmon.c | 79 +++++++++++++++++++++++
+>  drivers/gpu/drm/etnaviv/etnaviv_sma.h     | 53 +++++++++++++++
+>  5 files changed, 218 insertions(+), 1 deletion(-)
+>  create mode 100644 drivers/gpu/drm/etnaviv/etnaviv_sma.h
+> 
 
