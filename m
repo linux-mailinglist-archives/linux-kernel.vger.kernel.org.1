@@ -2,143 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84D2521BA68
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 18:11:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 496F321BA6E
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 18:11:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728099AbgGJQLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 12:11:11 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:1586 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728053AbgGJQLH (ORCPT
+        id S1728172AbgGJQLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 12:11:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59680 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727943AbgGJQLG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 12:11:07 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f0892ae0000>; Fri, 10 Jul 2020 09:09:18 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Fri, 10 Jul 2020 09:11:07 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Fri, 10 Jul 2020 09:11:07 -0700
-Received: from [10.26.72.135] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 10 Jul
- 2020 16:11:05 +0000
-Subject: Re: [PATCH v2 4/6] devres: handle zero size in devm_kmalloc()
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-CC:     Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>,
-        linux-doc <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        <linux-hwmon@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-References: <20200629065008.27620-1-brgl@bgdev.pl>
- <20200629065008.27620-5-brgl@bgdev.pl>
- <5c2e7514-b6d0-1331-37b0-d17a0cdb9693@nvidia.com>
- <CAMRc=Mf1Laqa65hEOG3iLSQu6J-u5yHmrMNh8NMJmt3amw2A6Q@mail.gmail.com>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <9cd4521b-aba0-616b-8957-8f21b9ba3068@nvidia.com>
-Date:   Fri, 10 Jul 2020 17:11:02 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Fri, 10 Jul 2020 12:11:06 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DBB3C08C5DD
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 09:11:06 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id k71so2818575pje.0
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 09:11:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3EszjAuKdLbRnLB9pftKo+oJnCDcBS1AwarADCNsweE=;
+        b=PHEEFw8FOundyfqG7JLa9MXMuK6G9bG7jR0cukBcJ09z6qm4KnexC3gg/iT6blS98N
+         mkC3YbIW/7Pmzw2t14kgOnIQD+8e0dDhCPfGLjCARjpogHk+qsgU0f2fKSladHEfzbCY
+         7+Uy/5bRQPCKIawnMf4jcUp1vQQ9aTTrBhYtQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3EszjAuKdLbRnLB9pftKo+oJnCDcBS1AwarADCNsweE=;
+        b=WQ750Lyaa4PteNYiMrFQhr7ee/KlPW9l5eKIMZPmfIvuDPpXh3iP6xqNpGBQ6cEe45
+         XkJ0drzrLQQze1Ni0t6GRSEfSFL4bl2BQLIWOrXNmaF1NiFgtTbT+qZlbNIj9my+qBFl
+         XF8FZPqLo2eMEXG/QjocvQ9Va4Pj5NHUTV84tpvooamH91LpnS4G6chxVd6eMJTMTJNS
+         Qa/2NkPO1A3asHEVeSe2f0FIM9dYnp9NDbqUbf8Oljlb/XJfQVqx/jWBshvG+B2754SD
+         GxMdwi1koAN4TkejcBLjDvm2hBgRNNbYlU+muSmPM42a7JX2WpckKGTx8I5+2XlpmUOA
+         BhdQ==
+X-Gm-Message-State: AOAM531U33c+OcSsE/U75W6C7kYZ2QnqxixvqwfegF45ERmi5+zABxqk
+        LUMri5msddRR8wVB20JsJGdkhD1kG0o=
+X-Google-Smtp-Source: ABdhPJwBZWBRUiVm74i+SNKREYZliBSAgKh8do9o20x4bZ5qPhfKMpuRyev1GYSUF/IyzDwxG+x0Dw==
+X-Received: by 2002:a17:902:b40f:: with SMTP id x15mr22554817plr.329.1594397465470;
+        Fri, 10 Jul 2020 09:11:05 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id q24sm6669112pfg.34.2020.07.10.09.11.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Jul 2020 09:11:04 -0700 (PDT)
+Date:   Fri, 10 Jul 2020 09:11:03 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     Keno Fischer <keno@juliacomputing.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        Oleg Nesterov <oleg@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH for-next/seccomp 0/3] Check ENOSYS under tracing
+Message-ID: <202007100910.79661A4@keescook>
+References: <20200705061232.4151319-1-keescook@chromium.org>
+ <20200710124033.GA30458@willie-the-truck>
 MIME-Version: 1.0
-In-Reply-To: <CAMRc=Mf1Laqa65hEOG3iLSQu6J-u5yHmrMNh8NMJmt3amw2A6Q@mail.gmail.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1594397358; bh=37GibReic1eAmzIGr99yNGskjoHn0RX7lIZ5PnIec+I=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=NEduGS65Web3MkJIb7aFBdcebALGdw9f8SNbQn89SQwXxg6rFVvt1dtEIopjfhNp1
-         R2EFGBmWotyKN+LYeWUHdJRp08cl8wcGz10W3MxIEjAJIMJ19chpkmhUnBADvJWH9I
-         XCcH4rOx1K5tdDD4LKCvmgwqNeaM3HytP40kcyUOEBd/R3bbL3/G/jfyHr4sWUCFPU
-         DKH1LjHNGWI/qGSnpLfK8NHoYUw2tg9zLxVwxQbPKu8PlVwi/0M79b0EV5GUGIaDPu
-         3j0RtWi8Q1oEUyijwNFyck25EVpQY/Zbjki5OKcETIK/Yjxb+u/t8DAYqAkFLAOsK6
-         so8qAfbpa6vQA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200710124033.GA30458@willie-the-truck>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 10/07/2020 17:03, Bartosz Golaszewski wrote:
-> On Fri, Jul 10, 2020 at 3:46 PM Jon Hunter <jonathanh@nvidia.com> wrote:
->>
->> Hi Bartosz,
->>
->> On 29/06/2020 07:50, Bartosz Golaszewski wrote:
->>> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
->>>
->>> Make devm_kmalloc() behave similarly to non-managed kmalloc(): return
->>> ZERO_SIZE_PTR when requested size is 0. Update devm_kfree() to handle
->>> this case.
->>>
->>> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
->>> ---
->>>  drivers/base/devres.c | 9 ++++++---
->>>  1 file changed, 6 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/drivers/base/devres.c b/drivers/base/devres.c
->>> index 1df1fb10b2d9..ed615d3b9cf1 100644
->>> --- a/drivers/base/devres.c
->>> +++ b/drivers/base/devres.c
->>> @@ -819,6 +819,9 @@ void *devm_kmalloc(struct device *dev, size_t size, gfp_t gfp)
->>>  {
->>>       struct devres *dr;
->>>
->>> +     if (unlikely(!size))
->>> +             return ZERO_SIZE_PTR;
->>> +
->>>       /* use raw alloc_dr for kmalloc caller tracing */
->>>       dr = alloc_dr(devm_kmalloc_release, size, gfp, dev_to_node(dev));
->>>       if (unlikely(!dr))
->>> @@ -950,10 +953,10 @@ void devm_kfree(struct device *dev, const void *p)
->>>       int rc;
->>>
->>>       /*
->>> -      * Special case: pointer to a string in .rodata returned by
->>> -      * devm_kstrdup_const().
->>> +      * Special cases: pointer to a string in .rodata returned by
->>> +      * devm_kstrdup_const() or NULL/ZERO ptr.
->>>        */
->>> -     if (unlikely(is_kernel_rodata((unsigned long)p)))
->>> +     if (unlikely(is_kernel_rodata((unsigned long)p) || ZERO_OR_NULL_PTR(p)))
->>>               return;
->>>
->>>       rc = devres_destroy(dev, devm_kmalloc_release,
->>
->>
->> This change caught a bug in one of our Tegra drivers, which I am in the
->> process of fixing. Once I bisected to this commit it was easy to track
->> down, but I am wondering if there is any reason why we don't add a
->> WARN_ON() if size is 0 in devm_kmalloc? It was essentially what I ended
->> up doing to find the bug.
->>
->> Jon
->>
->> --
->> nvpublic
+On Fri, Jul 10, 2020 at 01:40:33PM +0100, Will Deacon wrote:
+> On Sat, Jul 04, 2020 at 11:12:29PM -0700, Kees Cook wrote:
+> > This expands the seccomp selftest to poke a architectural behavior corner
+> > that Keno Fischer noticed[1]. In the process, I took the opportunity
+> > to do the kselftest harness variant refactoring I'd been meaning to do,
+> > which made adding this test much nicer.
+> > 
+> > I'd prefer this went via the seccomp tree, as it builds on top of the
+> > other recent seccomp feature addition tests. Testing and reviews are
+> > welcome! :)
 > 
-> Hi Jon,
-> 
-> this is in line with what the regular kmalloc() does. If size is zero,
-> it returns ZERO_SIZE_PTR. It's not an error condition. Actually in
-> user-space malloc() does a similar thing: for size == 0 it allocates
-> one-byte and returns a pointer to it (at least in glibc).
+> Thanks! I tested these on arm64 (qemu) and they helped me to find a bug
+> in some patches I was writing.
 
+Hurray for tests! :)
 
-Yes that's fine, I was just wondering if there is any reason not to WARN
-as well?
+> Tested-by: Will Deacon <will@kernel.org>
 
-Cheers
-Jon
+Thanks!
 
 -- 
-nvpublic
+Kees Cook
