@@ -2,70 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE20D21B890
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 16:25:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A3B721B88A
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 16:24:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728658AbgGJOY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 10:24:57 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:59150 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727941AbgGJOY5 (ORCPT
+        id S1728640AbgGJOYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 10:24:37 -0400
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:37008 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728379AbgGJOYD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 10:24:57 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04397;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0U2Io76-_1594391084;
-Received: from IT-FVFX43SYHV2H.lan(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U2Io76-_1594391084)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 10 Jul 2020 22:24:45 +0800
-Subject: Re: a question of split_huge_page
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Hugh Dickins <hughd@google.com>
-References: <df2597f6-af21-5547-d39c-94c02ad17adb@linux.alibaba.com>
- <20200709155002.GF12769@casper.infradead.org>
- <20200709160750.utl46xvavceuvnom@box>
- <f761007f-4663-f72e-b0da-fc3ce9486b4b@linux.alibaba.com>
- <20200710103318.bm2gp743lagiajao@box>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <f6ce8cbe-9645-4b33-d699-663e68118bcd@linux.alibaba.com>
-Date:   Fri, 10 Jul 2020 22:23:57 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
+        Fri, 10 Jul 2020 10:24:03 -0400
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20200710142402euoutp02a087270e86ffc9645bd85c57a2e1744a~gajSaos5R0760207602euoutp02M
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 14:24:02 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20200710142402euoutp02a087270e86ffc9645bd85c57a2e1744a~gajSaos5R0760207602euoutp02M
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1594391042;
+        bh=l4VBuZvttMg9X1rfHnqvoDtZuYsXdOmFYOnhfYffc90=;
+        h=From:Subject:To:Cc:Date:In-Reply-To:References:From;
+        b=pBitfaOfJvFT/H15szQ+oNtjo19lpzxtjAsDxaewp6a9rrG1esC9sIUeMum0odQGN
+         DoqvRgF451nIUaKSJJWTPbpm4Jz1V2jyvDbx9zJxPsV64j+031L0dsVsvIP9IKVhUr
+         PILlyddTLKHgzoC4Zjx3Ulc+wuLJ7zi7nNw/TENQ=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20200710142401eucas1p122911df0f80e22f29983dcb2770ee682~gajSB78Qw0594505945eucas1p1a;
+        Fri, 10 Jul 2020 14:24:01 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id BE.DE.06318.10A780F5; Fri, 10
+        Jul 2020 15:24:01 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200710142401eucas1p2e485a1a728dafeee04170cdcdff98402~gajRVrIO62124221242eucas1p2r;
+        Fri, 10 Jul 2020 14:24:01 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200710142401eusmtrp293ccb06dff50233137963dce4ff2e2e1~gajRVCl_01267512675eusmtrp2A;
+        Fri, 10 Jul 2020 14:24:01 +0000 (GMT)
+X-AuditID: cbfec7f5-38bff700000018ae-50-5f087a01949e
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 69.71.06017.00A780F5; Fri, 10
+        Jul 2020 15:24:01 +0100 (BST)
+Received: from [106.120.51.71] (unknown [106.120.51.71]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20200710142400eusmtip154c098a924e20c1290d928662ad67b81~gajQzr7663244132441eusmtip1a;
+        Fri, 10 Jul 2020 14:24:00 +0000 (GMT)
+From:   Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Subject: Re: [PATCH] fbdev: da8xx-fb: go to proper label on error handling
+ paths in probe
+To:     Evgeny Novikov <novikov@ispras.ru>
+Cc:     Sekhar Nori <nsekhar@ti.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jani Nikula <jani.nikula@intel.com>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org
+Message-ID: <8f2d2497-2fd3-f3db-32b6-f74736b1ea2e@samsung.com>
+Date:   Fri, 10 Jul 2020 16:24:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+        Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20200710103318.bm2gp743lagiajao@box>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200702160540.24546-1-novikov@ispras.ru>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA01Se0hTcRjld+/d3d1q8nMafiwxGmkYOAsLLxVSEbh/tAwK6aHNvKmk03bV
+        mkgtSfPRSyU0MZoN1CJ109C0paXUssegspBypfbUJVY+erpq3kn+d75zzsd3DnwMKe8RKZgU
+        bSan02pSlbSUar37wx6Ccpj4laVFIezkhfsUWzPkINm+qXGatQ44EVtXUkyx905/FrFPO6pp
+        1tRpELNdp8zEBol6vD9frL45baTUJusIoa50nUPqAeeMSP26xEaobf1thHqiOWArs1O6PpFL
+        TcnmdKERe6XJNvtLUUbbgsMFTsqAaiTFSMIAXg19hhGyGEkZOa5HMGy6QQnDJILa+8cIYZhA
+        8KXITM2t1BobPCt1CJ4Pv/G4xhDUX/9Gul00XgulJ64gN/bBu8DyzjnL++IgMOT3zt4gsZGA
+        X45psVuQ4QhwlVr/CQxD4UBwOlLd9CIcC18He0SCxRt6z7+dTSHB4WBvqSDcmMR+8OLtRQ9e
+        Am1j1aSQ9JUYqlv3C3gztEwaxAL2gVHbNQ/2hz/tF2cLAG5EMFP4kRSGNgR15S5acK2DAftP
+        2h2OxMHQ1BEq0BuhcLqSdNOAvaB/zFvI4AVlrRUeWgaFBXLBHQTmWjM9d7a4/TJ5Fimr5jWr
+        mtemal6bqv93jYi6gvy4LD4tiePDtNwhFa9J47O0Sap96WnN6N9rPXDZpq6jzt8J3QgzSLlQ
+        ZtQw8XKRJpvXp3UjYEilr2zTowdxclmiRp/D6dLjdVmpHN+NFjOU0k8WdmlkjxwnaTK5AxyX
+        wenmVIKRKAwoPDbg6ERr5LMMxpG3pffy1cC4qRjrp+NJ0fV21eTzHEXU9+3R4zmbRXrVji4x
+        H/lZdicuuONjwrZRMY0VLiJG5dPU+MaUvEbv35A7bfHODZHn1Q5BdGLUsvBbD5uuNR+5bVlO
+        v3zyPqvPUb40UCF5fHD9IcvgmewSbddu35MfypQUn6xZtYLU8Zq/qM740VYDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrKIsWRmVeSWpSXmKPExsVy+t/xu7qMVRzxBr+OMVp8mXuKxWLhw7vM
+        Fle+vmez2HPnNaPF8u4uFosTfR9YLS7vmsNmsXhfA7vF/t4NTA6cHu9vtLJ77P22gMVj8Z6X
+        TB4z/k1l9Ljz+i+rx/3u40wex29sZ/L4vEkugCNKz6Yov7QkVSEjv7jEVina0MJIz9DSQs/I
+        xFLP0Ng81srIVEnfziYlNSezLLVI3y5BL+P4udusBdu5K9peszQwLuTsYuTkkBAwkVi2YC1z
+        FyMXh5DAUkaJ53NvMXUxcgAlZCSOry+DqBGW+HOtiw2i5jWjxN8jX9lAEmwCVhIT21cxgtjC
+        AtESG5++ZgaxRQTUJBpaT7KANDALLGCSWLVvKQtEdxejxNUZC8C6eQXsJP5N3MMCso1FQFXi
+        9d0ckLCoQITE4R2zGCFKBCVOznzCAmJzCphLnNs8nQnEZhZQl/gz7xIzhC0ucevJfKi4vMT2
+        t3OYJzAKzULSPgtJyywkLbOQtCxgZFnFKJJaWpybnltspFecmFtcmpeul5yfu4kRGKXbjv3c
+        soOx613wIUYBDkYlHt4FiRzxQqyJZcWVuYcYJTiYlUR4nc6ejhPiTUmsrEotyo8vKs1JLT7E
+        aAr020RmKdHkfGACySuJNzQ1NLewNDQ3Njc2s1AS5+0QOBgjJJCeWJKanZpakFoE08fEwSnV
+        wMjr4qxe8X7m7DydT/dEj+V7XglSvHDu89uicomELQeWSKhvWNs/79627BvXjj4911Tn0N96
+        7Etfs6lU9+YiuRUClqcr4iYeOfEl9Fgu6wvbfOFf7R57f/zf8ruC0cf54kSjjLWchjGnuH66
+        dpv8D11rW341zuqjP+OkzGMzrIPi/E9fjveq3aXEUpyRaKjFXFScCADoZLw96AIAAA==
+X-CMS-MailID: 20200710142401eucas1p2e485a1a728dafeee04170cdcdff98402
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200702160546eucas1p1b722eb071cdab13a7bfd47bd98a7d670
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200702160546eucas1p1b722eb071cdab13a7bfd47bd98a7d670
+References: <CGME20200702160546eucas1p1b722eb071cdab13a7bfd47bd98a7d670@eucas1p1.samsung.com>
+        <20200702160540.24546-1-novikov@ispras.ru>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-
-在 2020/7/10 下午6:33, Kirill A. Shutemov 写道:
-> On Fri, Jul 10, 2020 at 12:51:58PM +0800, Alex Shi wrote:
->>
->>
->> 在 2020/7/10 上午12:07, Kirill A. Shutemov 写道:
->>> Right, and it's never got removed from LRU during the split. The tail
->>> pages have to be added to LRU because they now separate from the tail
->>> page.
->>>
->> According to the explaination, looks like we could remove the code path,
->> since it's never got into. (base on my v15 patchset). Any comments?
+On 7/2/20 6:05 PM, Evgeny Novikov wrote:
+> fb_probe() can successfully allocate a new frame buffer, but then fail
+> to perform some operations with regulator. In these cases fb_probe()
+> goes to label err_pm_runtime_disable where the frame buffer is not
+> released. The patch makes fb_probe() to go to label err_release_fb on
+> corresponding error handling paths.
 > 
-> Yes. But why? It's reasonable failsafe that gives chance to recover if
-> something goes wrong.
+> Found by Linux Driver Verification project (linuxtesting.org).
 > 
+> Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
 
-Hi Kirill,
+Applied to drm-misc-next tree, thanks.
 
-Sorry, I didn't get your points. IMHO, this fallback cann't work well,
-since the head page isn't and shouldn't be added to lru. like the iommu issue
-if a dma page added into lru list, it may be reclaim and lost. So, sorry, I
-still don't know how this path could fix some wrong.
+Best regards,
+--
+Bartlomiej Zolnierkiewicz
+Samsung R&D Institute Poland
+Samsung Electronics
 
-Thanks
-Alex
+> ---
+>  drivers/video/fbdev/da8xx-fb.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/video/fbdev/da8xx-fb.c b/drivers/video/fbdev/da8xx-fb.c
+> index 73c3c4c8cc12..e38c0e3f9c61 100644
+> --- a/drivers/video/fbdev/da8xx-fb.c
+> +++ b/drivers/video/fbdev/da8xx-fb.c
+> @@ -1402,14 +1402,14 @@ static int fb_probe(struct platform_device *device)
+>  	if (IS_ERR(par->lcd_supply)) {
+>  		if (PTR_ERR(par->lcd_supply) == -EPROBE_DEFER) {
+>  			ret = -EPROBE_DEFER;
+> -			goto err_pm_runtime_disable;
+> +			goto err_release_fb;
+>  		}
+>  
+>  		par->lcd_supply = NULL;
+>  	} else {
+>  		ret = regulator_enable(par->lcd_supply);
+>  		if (ret)
+> -			goto err_pm_runtime_disable;
+> +			goto err_release_fb;
+>  	}
+>  
+>  	fb_videomode_to_var(&da8xx_fb_var, lcdc_info);
+> 
