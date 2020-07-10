@@ -2,62 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D20F21B63B
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 15:23:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6984321B67A
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 15:33:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727969AbgGJNXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 09:23:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56114 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726774AbgGJNXB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 09:23:01 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1727871AbgGJNdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 09:33:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35112 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726908AbgGJNdR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 09:33:17 -0400
+X-Greylist: delayed 595 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 10 Jul 2020 06:33:17 PDT
+Received: from vulcan.natalenko.name (vulcan.natalenko.name [IPv6:2001:19f0:6c00:8846:5400:ff:fe0c:dfa0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78511C08C5CE;
+        Fri, 10 Jul 2020 06:33:17 -0700 (PDT)
+Received: from mail.natalenko.name (vulcan.natalenko.name [IPv6:fe80::5400:ff:fe0c:dfa0])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 833DD207BB;
-        Fri, 10 Jul 2020 13:23:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594387381;
-        bh=bhlHLCb1ySZyILLIEsxxf9GTIzuQnttE8Q6Ag4vALUU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CHgLdpX4u5DuI8bCQ6snOUUnot74rgglQtIuJ90uAHzttg57o9FVJH/682aUhutAI
-         VgKW4FVIqQCrvco9XlYPCr64VY/Jj+HChSlMAc7rAFjvCEKMcTk04B8+kJHLYQCV3A
-         MZCP3faIijjFjHyufOZwGCChT8HATeoOlv41sz7E=
-Date:   Fri, 10 Jul 2020 15:23:05 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Android Kernel Team <kernel-team@android.com>
-Subject: Re: [PATCH v3 0/3] driver core: Add device link related sysfs files
-Message-ID: <20200710132305.GA1920995@kroah.com>
-References: <20200521191800.136035-1-saravanak@google.com>
- <CAGETcx8UGps6bz1YhYcbjCAAXenBuR6XDT0qv5WED5zbyfzNFw@mail.gmail.com>
- <20200529123025.GA1710508@kroah.com>
- <CAGETcx-QiAysfd7AVV2Y7_GWRd2sj4N=8KwQ_T4fUZ5gVaV8Jw@mail.gmail.com>
- <CAGETcx94Os7o+xZPSs3vVOQAzGtESAGFXtUNdrEAK9iya05s1w@mail.gmail.com>
+        by vulcan.natalenko.name (Postfix) with ESMTPSA id 3E94A7C1278;
+        Fri, 10 Jul 2020 15:23:17 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+        s=dkim-20170712; t=1594387397;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=T0a47GLKOaTiWzGq8XsdXklDdSZ4NNZ9YA/m4rMqQRc=;
+        b=J1TuL69JeYwZWoKtV+F+2RVX5EevU5myizrh5IdpnW0CZBoYkIc+cRqFm9tfHZQIMvyc8i
+        RVVUJLIXbz6tZI6C8PVx9hQamgWTx4PVGtGauA6p1syNbUYu8PiNQYtRhCuQlSuAwJeJTb
+        hVde8USor0K+SSvZ3ACV4y31kMERGpY=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGETcx94Os7o+xZPSs3vVOQAzGtESAGFXtUNdrEAK9iya05s1w@mail.gmail.com>
+Date:   Fri, 10 Jul 2020 15:23:17 +0200
+From:   Oleksandr Natalenko <oleksandr@natalenko.name>
+To:     =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@collabora.com>
+Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        peterz@infradead.org, krisman@collabora.com, kernel@collabora.com,
+        dvhart@infradead.org, mingo@redhat.com,
+        pgriffais@valvesoftware.com, fweimer@redhat.com,
+        libc-alpha@sourceware.org, malteskarupke@web.de,
+        linux-api@vger.kernel.org, arnd@arndb.de
+Subject: Re: [RFC v2 0/4] futex2: Add new futex interface
+In-Reply-To: <20200709175921.211387-1-andrealmeid@collabora.com>
+References: <20200709175921.211387-1-andrealmeid@collabora.com>
+User-Agent: Roundcube Webmail/1.4.6
+Message-ID: <4d9163924224d4265c280fc2ca6481c3@natalenko.name>
+X-Sender: oleksandr@natalenko.name
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 06, 2020 at 03:45:02PM -0700, Saravana Kannan wrote:
-> On Tue, Jun 16, 2020 at 8:45 PM Saravana Kannan <saravanak@google.com> wrote:
-> >
-> > On Fri, May 29, 2020 at 5:30 AM Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org> wrote:
-> > > Looks semi-sane, but it's too close to the merge window at the moment
-> > > for me to take this.  If there's no objections by the time 5.8-rc1 is
-> > > out, I'll queue it up in my tree for 5.9-rc1.
-> >
-> > Another friendly reminder :)
-> 
-> *nudge* *nudge*
+Hello.
 
-Looks sane, given no objections, let's see what linux-next thinks about
-it...
+On 09.07.2020 19:59, André Almeida wrote:
+> This RFC is a followup to the previous discussion initiated from my 
+> last
+> patch "futex: Implement mechanism to wait on any of several 
+> futexes"[1].
+> As stated in the thread, the correct approach to move forward with the
+> wait multiple operation would be to create a new syscall that would 
+> have
+> all new cool features.
+> 
+> The first patch adds the new interface and just translate the call for
+> the old interface, without implementing new features. The goal here is
+> to establish the interface and to check if everyone is happy with this
+> API. The rest of patches are selftests to show the interface in action.
+> I have the following questions:
+> 
+> - What suggestions do you have to implement this? Start from scratch or
+>   reuse the most code possible?
+> 
+> - The interface seems correct and implements the requirements asked by 
+> you?
+> 
+> Those are the cool new features that this syscall should address some
+> day:
+> 
+> - Operate with variable bit size futexes, not restricted to 32:
+>   8, 16 and 64
+> 
+> - Wait on multiple futexes, using the following semantics:
+> 
+>   struct futex_wait {
+> 	void *uaddr;
+> 	unsigned long val;
+> 	unsigned long flags;
+>   };
+> 
+>   sys_futex_waitv(struct futex_wait *waiters, unsigned int nr_waiters,
+> 		  unsigned long flags, struct __kernel_timespec *timo);
+> 
+> - Have NUMA optimizations: if FUTEX_NUMA_FLAG is set, the `void *uaddr`
+>   argument won't be a value of type u{8, 16, 32, 64} anymore, but a 
+> struct
+>   containing a NUMA node hint:
+> 
+>   struct futex32_numa {
+> 	  u32 value __attribute__ ((aligned (8)));
+> 	  u32 hint;
+>   };
+> 
+>   struct futex64_numa {
+> 	  u64 value __attribute__ ((aligned (16)));
+> 	  u64 hint;
+>   };
+> 
+> Thanks,
+> 	André
+> 
+> Changes since v1:
+>  - The timeout argument now uses __kernel_timespec as type
+>  - time32 interface was removed
+>  v1: https://lore.kernel.org/patchwork/cover/1255437/
+> 
+> [1] https://lore.kernel.org/patchwork/patch/1194339/
+> 
+> André Almeida (4):
+>   futex2: Add new futex interface
+>   selftests: futex: Add futex2 wake/wait test
+>   selftests: futex: Add futex2 timeout test
+>   selftests: futex: Add futex2 wouldblock test
+> 
+>  MAINTAINERS                                   |   2 +-
+>  arch/x86/entry/syscalls/syscall_32.tbl        |   2 +
+>  arch/x86/entry/syscalls/syscall_64.tbl        |   2 +
+>  include/linux/syscalls.h                      |   7 ++
+>  include/uapi/asm-generic/unistd.h             |   8 +-
+>  include/uapi/linux/futex.h                    |  10 ++
+>  init/Kconfig                                  |   7 ++
+>  kernel/Makefile                               |   1 +
+>  kernel/futex2.c                               |  73 ++++++++++++
+>  kernel/sys_ni.c                               |   4 +
+>  tools/include/uapi/asm-generic/unistd.h       |   7 +-
+>  .../selftests/futex/functional/.gitignore     |   1 +
+>  .../selftests/futex/functional/Makefile       |   4 +-
+>  .../selftests/futex/functional/futex2_wait.c  | 111 ++++++++++++++++++
+>  .../futex/functional/futex_wait_timeout.c     |  38 ++++--
+>  .../futex/functional/futex_wait_wouldblock.c  |  33 +++++-
+>  .../testing/selftests/futex/functional/run.sh |   3 +
+>  .../selftests/futex/include/futex2test.h      |  77 ++++++++++++
+>  18 files changed, 373 insertions(+), 17 deletions(-)
+>  create mode 100644 kernel/futex2.c
+>  create mode 100644 
+> tools/testing/selftests/futex/functional/futex2_wait.c
+>  create mode 100644 tools/testing/selftests/futex/include/futex2test.h
+
+What branch/tag this submission is based on please? It seems it is not a 
+5.8 but rather 5.7 since the second patch misses faccessat2() syscall 
+and fails to be applied cleanly.
+
+Thanks.
+
+-- 
+   Oleksandr Natalenko (post-factum)
