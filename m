@@ -2,113 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC82A21B6E7
+	by mail.lfdr.de (Postfix) with ESMTP id 1DE8D21B6E6
 	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 15:45:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728370AbgGJNpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 09:45:54 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:23204 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728347AbgGJNps (ORCPT
+        id S1728354AbgGJNpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 09:45:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37112 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726942AbgGJNpo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 09:45:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594388747;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=lPlpIEpm5oUE43hFAFoTmnj/BXFQuZwXgNqQp7AmsxA=;
-        b=eV1HUoAvb1X79Ymyh13c9/loyeraqd5ry/YzwGjjeyCLgIzMEnBqSJ3af6aFpYyBcAjiXg
-        MUnt9QNa8iCSy8rEiX84MSgfyQB2bXm9W4kOWhpLcWBTQDyIb3P7+rJRPQungpt3A9q9/q
-        3Q9An4R62d8Ho4KUsqNkiTbvnwWWjlw=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-2-h2ma22ChNaW4BtyYDU5DmQ-1; Fri, 10 Jul 2020 09:45:45 -0400
-X-MC-Unique: h2ma22ChNaW4BtyYDU5DmQ-1
-Received: by mail-qv1-f70.google.com with SMTP id j18so3703488qvk.1
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 06:45:45 -0700 (PDT)
+        Fri, 10 Jul 2020 09:45:44 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80541C08C5CE
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 06:45:44 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id q7so6538113ljm.1
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 06:45:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=Ermy1NiTIasCWgG8l4eJfsbME3tGp4LPfrJcemoGPXM=;
+        b=KwyEeodt5NpEMJq67fztoSxejY3rRcicqAiurh9lc72Cg5Ikpu26p2wVaQGvfoljnj
+         83gkOAzdgb2aGHuW44nzRzMIkT1efKtlsV00Iiho5AMFMAwX+mCweGEIa15yvNmTJvg7
+         6UHxoilcxq+PEubjb8kD8dw6BKqzZXWcXaaevZu9o71tiU7UZPhy9qCIo9hrsIuj/F/O
+         G/O0xg5oLTGXJ6UX0/u8+NKWs47dVwckSRicO+xDS6y79M6NZCuk+4EnQe9QZjnsewLq
+         IsLO59TwzeXeEgJ0rLb9bf0+qihOsn9J30sTyFJJj9Nrq29gUyRIJUaJthzVBL/cl/R6
+         DN9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=lPlpIEpm5oUE43hFAFoTmnj/BXFQuZwXgNqQp7AmsxA=;
-        b=trvslSsHBiSCYO7p1lusyg+4oiWy5zKBNzDAgy3gXoLsnFKEm+IGsKquz0N9X7nbhm
-         IX+isXDTlW58LjOK66vvo/MR8pt+e4703smmp8VUXAMHI+oQxINRnkOlVjhmK/kxj/mc
-         hvCYfvXmM/iDi1cARGx+2LTJ8yc62EH/PR6GSqtWj3hlpUr1IswTZs+II1PQvVBVf8QY
-         gsxxNdiCwTEdJs0yTnqk8geYvuCo2cyMlEvn1OFpzPC8OQQGrRXwZ36QYnYav6/zoVAW
-         XjUvXICO3q3jl0U7R3UfGLuMbPPRhTnGtOB36k98erjRt8xkh/E/33jU576vVeZpxKoD
-         rkbQ==
-X-Gm-Message-State: AOAM532QUd0J6CCJ7P84pjfOMiFSprlLEWC3ta0EFEWUh+msUkX/Y+tP
-        Gij8guUO6iOu4hVwk4NhItOo6qHzbgHkh5pgnIMntCdVTYebWumQQ0Tb2XAfHnM1sZKOmSej727
-        cDS8QEf28f4Qrvy1ykQNIAPTG
-X-Received: by 2002:a37:9c51:: with SMTP id f78mr32001856qke.60.1594388744832;
-        Fri, 10 Jul 2020 06:45:44 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwljFDiZqQSkAeAYfMmOidn6SEJGK6KdJbZ8RNJcV62h3bEKS3lxdeCTcgI/Er7wU4nz0Ue+A==
-X-Received: by 2002:a37:9c51:: with SMTP id f78mr32001825qke.60.1594388744570;
-        Fri, 10 Jul 2020 06:45:44 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id o12sm7258887qtl.48.2020.07.10.06.45.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jul 2020 06:45:43 -0700 (PDT)
-From:   trix@redhat.com
-To:     robin@protonic.nl, linux@rempel-privat.de, kernel@pengutronix.de,
-        socketcan@hartkopp.net, mkl@pengutronix.de, davem@davemloft.net,
-        kuba@kernel.org, ecathinds@gmail.com, lkp@intel.com,
-        bst@pengutronix.de, maxime.jayat@mobile-devices.fr
-Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
-Subject: [PATCH] can: j1939: fix double free in j1939_netdev_start
-Date:   Fri, 10 Jul 2020 06:45:36 -0700
-Message-Id: <20200710134536.4399-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.1
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=Ermy1NiTIasCWgG8l4eJfsbME3tGp4LPfrJcemoGPXM=;
+        b=ewwvG1GXAQG4p0SW1Ei34YRqeYp1E18+qeUnPkqFA8bXyGiFF2lPfVc89N4VorpQhL
+         tP1VbbW0QimtXKgsKqSby7ElYuUOEhGl0PTun7DKn7sEeLu0AZ2ivmEevYLZ7DAd822s
+         ENILYk442y8aR+Mk8EDPgQP16jqOFhcRtEONWCRLvaJFu+9K6c+PVlRU2EcjGTXB8xRz
+         3fPSGxqQNiVfeyr54yD6Q76pV52S+tN9eCcnwVY2/uKUPNzfV9pbmlAm39oScelZDPFz
+         f4h/g34VY8x6i2BMlxgpd4126iZMpHr/sfxjpUqlxWIIper5ObhhvUXp3I5DQ/tv9OC1
+         1H2A==
+X-Gm-Message-State: AOAM533172o56163vAfFAZg4heAaCh4PEIQAzp95MKqc57ezGHfOi6r6
+        NmsN4TWn8rthW37/BCm53gA=
+X-Google-Smtp-Source: ABdhPJzDAXSMmQbiDz211yKlpNny0wSp8Rj9t2dBvyUNJmVxp4Pqdj6NKm6Hw1sjGZOphNEUTFIUqg==
+X-Received: by 2002:a2e:9996:: with SMTP id w22mr2932963lji.446.1594388742977;
+        Fri, 10 Jul 2020 06:45:42 -0700 (PDT)
+Received: from [127.0.0.1] (84-10-202-70.dynamic.chello.pl. [84.10.202.70])
+        by smtp.gmail.com with ESMTPSA id m9sm2213915lfb.5.2020.07.10.06.45.41
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 10 Jul 2020 06:45:42 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
+Subject: Re: [PATCH v3 13/14] [DO NOT MERGE] arm64: dts: allwinner: h6: Add
+ GPU OPP table
+From:   Piotr Oniszczuk <piotr.oniszczuk@gmail.com>
+In-Reply-To: <20200709140322.131320-14-peron.clem@gmail.com>
+Date:   Fri, 10 Jul 2020 15:45:40 +0200
+Cc:     Rob Herring <robh@kernel.org>,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        Steven Price <steven.price@arm.com>,
+        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        "wens@csie.org" <wens@csie.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dri-devel@lists.freedesktop.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <0A3B73FE-0732-4024-9729-1FCE02006C27@gmail.com>
+References: <20200709140322.131320-1-peron.clem@gmail.com>
+ <20200709140322.131320-14-peron.clem@gmail.com>
+To:     =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
+X-Mailer: Apple Mail (2.3608.80.23.2.2)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
 
-clang static analysis flags this error
 
-j1939/main.c:292:2: warning: Attempt to free released memory [unix.Malloc]
-        kfree(priv);
-        ^~~~~~~~~~~
+> Wiadomo=C5=9B=C4=87 napisana przez Cl=C3=A9ment P=C3=A9ron =
+<peron.clem@gmail.com> w dniu 09.07.2020, o godz. 16:03:
+>=20
+> Add an Operating Performance Points table for the GPU to
+> enable Dynamic Voltage & Frequency Scaling on the H6.
+>=20
+> The voltage range is set with minival voltage set to the target
+> and the maximal voltage set to 1.2V. This allow DVFS framework to
+> work properly on board with fixed regulator.
+>=20
+> Signed-off-by: Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail.com>
+> ---
+> arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi | 80 ++++++++++++++++++++
+> 1 file changed, 80 insertions(+)
+>=20
+> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi =
+b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
+> index 8f514a2169aa..a69f9e09a829 100644
+> --- a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
+> +++ b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
+> @@ -174,6 +174,7 @@ gpu: gpu@1800000 {
+> 			clocks =3D <&ccu CLK_GPU>, <&ccu CLK_BUS_GPU>;
+> 			clock-names =3D "core", "bus";
+> 			resets =3D <&ccu RST_BUS_GPU>;
+> +			operating-points-v2 =3D <&gpu_opp_table>;
+> 			#cooling-cells =3D <2>;
+> 			status =3D "disabled";
+> 		};
+> @@ -1036,4 +1037,83 @@ map0 {
+> 			};
+> 		};
+> 	};
+> +
+> +	gpu_opp_table: gpu-opp-table {
+> +		compatible =3D "operating-points-v2";
+> +
+> +		opp@216000000 {
+> +			opp-hz =3D /bits/ 64 <216000000>;
+> +			opp-microvolt =3D <810000 810000 1200000>;
+> +		};
+> +
+> +		opp@264000000 {
+> +			opp-hz =3D /bits/ 64 <264000000>;
+> +			opp-microvolt =3D <810000 810000 1200000>;
+> +		};
+> +
+> +		opp@312000000 {
+> +			opp-hz =3D /bits/ 64 <312000000>;
+> +			opp-microvolt =3D <810000 810000 1200000>;
+> +		};
+> +
+> +		opp@336000000 {
+> +			opp-hz =3D /bits/ 64 <336000000>;
+> +			opp-microvolt =3D <810000 810000 1200000>;
+> +		};
+> +
+> +		opp@360000000 {
+> +			opp-hz =3D /bits/ 64 <360000000>;
+> +			opp-microvolt =3D <820000 820000 1200000>;
+> +		};
+> +
+> +		opp@384000000 {
+> +			opp-hz =3D /bits/ 64 <384000000>;
+> +			opp-microvolt =3D <830000 830000 1200000>;
+> +		};
+> +
+> +		opp@408000000 {
+> +			opp-hz =3D /bits/ 64 <408000000>;
+> +			opp-microvolt =3D <840000 840000 1200000>;
+> +		};
+> +
+> +		opp@420000000 {
+> +			opp-hz =3D /bits/ 64 <420000000>;
+> +			opp-microvolt =3D <850000 850000 1200000>;
+> +		};
+> +
+> +		opp@432000000 {
+> +			opp-hz =3D /bits/ 64 <432000000>;
+> +			opp-microvolt =3D <860000 860000 1200000>;
+> +		};
+> +
+> +		opp@456000000 {
+> +			opp-hz =3D /bits/ 64 <456000000>;
+> +			opp-microvolt =3D <870000 870000 1200000>;
+> +		};
+> +
+> +		opp@504000000 {
+> +			opp-hz =3D /bits/ 64 <504000000>;
+> +			opp-microvolt =3D <890000 890000 1200000>;
+> +		};
+> +
+> +		opp@540000000 {
+> +			opp-hz =3D /bits/ 64 <540000000>;
+> +			opp-microvolt =3D <910000 910000 1200000>;
+> +		};
+> +
+> +		opp@576000000 {
+> +			opp-hz =3D /bits/ 64 <576000000>;
+> +			opp-microvolt =3D <930000 930000 1200000>;
+> +		};
+> +
+> +		opp@624000000 {
+> +			opp-hz =3D /bits/ 64 <624000000>;
+> +			opp-microvolt =3D <950000 950000 1200000>;
+> +		};
+> +
+> +		opp@756000000 {
+> +			opp-hz =3D /bits/ 64 <756000000>;
+> +			opp-microvolt =3D <1040000 1040000 1200000>;
+> +		};
+> +	};
+> };
 
-The problem block of code is
+Clement,
 
-	ret = j1939_can_rx_register(priv);
-	if (ret < 0)
-		goto out_priv_put;
+I gave run for v3 on H6 GS1 TVbox and what i discovered:=20
 
-	return priv;
+1. I have frequent hard hangs if DVFS is enabled (hard reset required),
 
- out_priv_put:
-	j1939_priv_set(ndev, NULL);
-	dev_put(ndev);
-	kfree(priv);
+2. hangs seems to be related to operating points changing - as limiting =
+OPP table to any single entry (tested on 5 highest OPP ) makes my GS1 =
+stable working,
 
-When j1939_can_rx_register fails, it frees priv via the
-j1939_priv_put release function __j1939_priv_release.
+3. hang seems to be exactly related to OPP changes as having OPP table =
+even with just 2 entries already gives hangs,
 
-Since j1939_priv_put is used widely, remove the second
-free from j1939_netdev_start.
+4. tunings with <regulator-ramp-delay> makes no difference (tested with =
+0, 2500 and 25000). Also increasing <regulator-enable-ramp-delay> 2 =
+times up (to 64000) makes no change.
 
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+Now I have 2 hypothesis:=20
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- net/can/j1939/main.c | 1 -
- 1 file changed, 1 deletion(-)
+a. issue is SW related: software operations in DVFS are somehow "unsafe" =
+at touching hardware (is it possible we have i.e. concurrency issue =
+here?);=20
 
-diff --git a/net/can/j1939/main.c b/net/can/j1939/main.c
-index 137054bff9ec..991a74bc491b 100644
---- a/net/can/j1939/main.c
-+++ b/net/can/j1939/main.c
-@@ -289,7 +289,6 @@ struct j1939_priv *j1939_netdev_start(struct net_device *ndev)
-  out_priv_put:
- 	j1939_priv_set(ndev, NULL);
- 	dev_put(ndev);
--	kfree(priv);
- 
- 	return ERR_PTR(ret);
- }
--- 
-2.18.1
+b. issue is HW related: i.e. in steep-up OPP, time between sending =
+change Vdd-gpu command to HW for increasing Vdd and sending command to =
+HW for increasing GPU freq is too short.
 
+To investigate further I done following test: limit OPP table to 4 =
+entries+all 4 entries have the same Vdd.=20
+
+If this test will pass the we know issue is b\.=20
+If it will fail - then issue is a\.=20
+
+And on my GS1 this test fails....so for me issue is a\ likely=E2=80=A6.
+
+let me know how i can help!
+
+br=
