@@ -2,95 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FA3421B436
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 13:43:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E932E21B43C
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 13:46:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728010AbgGJLnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 07:43:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45584 "EHLO mail.kernel.org"
+        id S1727092AbgGJLqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 07:46:24 -0400
+Received: from mga09.intel.com ([134.134.136.24]:19721 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726840AbgGJLnl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 07:43:41 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.179.81.62])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4388A20748;
-        Fri, 10 Jul 2020 11:43:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594381420;
-        bh=5jcdvmxdzuS8au/dYCdnb38PExsciucKDn1UmbzwNlA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=I2kHl9POXKnZPeHMbMfXjnnyYAZsq5aS8WrmhXttAKJ+H2GYCK5g4Whl3vojm51Q0
-         +gfvP1Bq8RfpN5KWs/uX4Mvikl9mmjqxvQ5/oDguf/I6Ep5i25i27W5gQEVDtwfmFo
-         op9jInWewhfdPKVGhDYxqg1tBtPNtk8D1uiOIUns=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 01953405FF; Fri, 10 Jul 2020 08:43:37 -0300 (-03)
-Date:   Fri, 10 Jul 2020 08:43:37 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V7 00/15] perf/x86: Add perf text poke events
-Message-ID: <20200710114337.GB22500@kernel.org>
-References: <20200512121922.8997-1-adrian.hunter@intel.com>
- <bee04840-143c-18bb-df82-5aa58d70730e@intel.com>
- <20200520014001.GF28228@kernel.org>
- <20200520155634.GQ317569@hirez.programming.kicks-ass.net>
- <20200527154716.GC16490@kernel.org>
- <20200527155436.GA706460@hirez.programming.kicks-ass.net>
- <79ca46d6-5d7c-7729-b51e-f9a447abe2a2@intel.com>
- <20200708123423.GL1320@kernel.org>
+        id S1726757AbgGJLqX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 07:46:23 -0400
+IronPort-SDR: FSIaHJk/SSQs14a67gHdGc5VCA1suTwuA0jmcYv3QNz0t5xgSXLoU1dlBcIgjayGlTO9mkXkl2
+ 1J+mebwCxMHQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9677"; a="149652834"
+X-IronPort-AV: E=Sophos;i="5.75,335,1589266800"; 
+   d="scan'208";a="149652834"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jul 2020 04:46:23 -0700
+IronPort-SDR: 3kkvFIOEyUAJ/q83noeOkqKBJYC2Nk8LtP/UQ/ZtIRuC3T+zYZv9xMeRI7hETnswjFAJaeOqMQ
+ 69/iJ2uH4m6w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,335,1589266800"; 
+   d="scan'208";a="358814673"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga001.jf.intel.com with ESMTP; 10 Jul 2020 04:46:21 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1jtrTy-0012uw-Uv; Fri, 10 Jul 2020 14:46:22 +0300
+Date:   Fri, 10 Jul 2020 14:46:22 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH v1] regmap: Switch to use fwnode instead of OF one
+Message-ID: <20200710114622.GJ3703480@smile.fi.intel.com>
+References: <20200708161232.17914-1-andriy.shevchenko@linux.intel.com>
+ <20200708162117.GV4655@sirena.org.uk>
+ <20200710100558.GI3703480@smile.fi.intel.com>
+ <20200710110132.GA5653@sirena.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200708123423.GL1320@kernel.org>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20200710110132.GA5653@sirena.org.uk>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Jul 08, 2020 at 09:34:23AM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Wed, Jul 08, 2020 at 02:55:36PM +0300, Adrian Hunter escreveu:
-> > On 27/05/20 6:54 pm, Peter Zijlstra wrote:
-> > > On Wed, May 27, 2020 at 12:47:16PM -0300, Arnaldo Carvalho de Melo wrote:
-> > >> Em Wed, May 20, 2020 at 05:56:34PM +0200, Peter Zijlstra escreveu:
-> > >>> On Tue, May 19, 2020 at 10:40:01PM -0300, Arnaldo Carvalho de Melo wrote:
-> > >>>> PeterZ, from what we discussed for the next merge Window, perhaps we
-> > >>>> should route the kernel bits via the tip tree while I will push the
-> > >>>> tooling bits on my 5.8 merge request to Linus, Ok?
-> > >>>
-> > >>> Sure, I can take the kernel bits. Thanks!
-> > >>
-> > >> So, I'm going thru the userpace bits and stopped at the patch copying
-> > >> include/uapi/linux/perf_events.h to
-> > >> tools/include/uapi/linux/perf_events.h to get the text_poke
-> > >> perf_event_attr bit, looked at tip/ and this hasn't landed there yet,
-> > >> any issues with the kernel bits?
-> > > 
-> > > Nah, I was waiting on the 0day robot, but its broken *again* :-(
-> > > 
-> > > Let me go move things along manually.
-> > > 
-> > 
-> > Hi
-> > 
-> > The kernel patches are in tip and the remaining tools patches still apply.
-> > Remaining patches 11-15 are:
-> > 
-> >       perf tools: Add support for PERF_RECORD_TEXT_POKE
-> >       perf tools: Add support for PERF_RECORD_KSYMBOL_TYPE_OOL
-> >       perf intel-pt: Add support for text poke events
-> >       perf script: Add option --show-text-poke-events
-> >       perf script: Show text poke address symbol
+On Fri, Jul 10, 2020 at 12:01:32PM +0100, Mark Brown wrote:
+> On Fri, Jul 10, 2020 at 01:05:58PM +0300, Andy Shevchenko wrote:
 > 
-> Sure, I'll merge those now that the kernel support is in tip, thanks for
-> the reminder,
+> > Hmm... Can you point out to where is it? I have rebased my branches on top of
+> > Linux Next daily and my patch still valid.
+> 
+> It's in the regmap tree, -next only gets built once per day so you might
+> not see something in there for two days.
 
-Done, now I need to build a kernel from tip/perf/core and test with the
-tooling from acme/perf/core, will do later today.
+You mean it's being synchronised with git.kernel.org, but not yet contains that
+patch? Okay, I will monitor the regmap tree (as of now I didn't see any update).
 
-So far what I have is in my repo at the tmp.perf/core branch, if anyone
-wants to test before I do test it with the kernel with these features
-and the usual container build tests.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-- Arnaldo
+
