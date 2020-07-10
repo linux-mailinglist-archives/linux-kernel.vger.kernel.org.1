@@ -2,94 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB6F321B2BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 11:54:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00C1221B2C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 11:54:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727992AbgGJJyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 05:54:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727899AbgGJJya (ORCPT
+        id S1728065AbgGJJyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 05:54:54 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:12443 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726962AbgGJJyX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 05:54:30 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A524BC08E6DC
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 02:54:30 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id f18so5320041wrs.0
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 02:54:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=DFfhRB3CIFp7+b9HYaYFBTlz+H/vZeZ2FswijDgFipc=;
-        b=LkAG+JzIcrjWk6wsbbvoJiQ+Dhzfbf1ff68EZ4/MAk9dKnXdHGf5arbiMI5gEIKidJ
-         jVLBKwoToirkaWTw8Gymu76RGj5XKW7rDwOKBs9QNf06BqMfOEjBw1kvsOElM+nBV4o2
-         9tnPETwBjUFaMKuv4fkTS28qs3Z2qNp4EwUdt/k5gb+/o7aCikBb88sDGxc5aVaGQdvQ
-         qSP07OBrupatkzVU+UukYqu2O1THtQAZEg2KKpuXBBLaDjKLWFoZEw/ugKH4jxf3mZ8h
-         7XN+0HflMjzoV0c87Bg35XLqlJeC8Hjngypjmw5TzjavELK5bDrnoEPZJQD4RiATXL5l
-         BniA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=DFfhRB3CIFp7+b9HYaYFBTlz+H/vZeZ2FswijDgFipc=;
-        b=j5Azg9WnnbvsSjQ7IygpXsLmGgdwdoSQa0KzD0kWqHKoW7+Et61BxcdANoET8VK9sO
-         0YPFqD1ej2sAJiUD14uleSvhF2PhJqjkvzVBRS0YU+fF8CuZr8848O24W5c76f/4ca7M
-         61xSIn24o6x3L3N9Gs+sMeDm0tGHtiuUsGJJ+jHf+0TJorbXS+VVKK+WA0koL8QPzQ0F
-         w2e9nCxml+Vni6DQ5/BvBx8fnJ0muOgAmy02BrLbaGEgKNvtY+AWCpN0nh9WQEYh1Ko2
-         3dWc80bxAbPFtH6yagGNXtIaOUMOV/9/xRM5yIn8lqnVy1dCBk3w4laLfRKQXMaNrzIb
-         W6FQ==
-X-Gm-Message-State: AOAM5335VqgmLvhxifO4MP87Uf4btjSkfUxEAkrwYSU5SHTa8Q0iCnbW
-        wlh+Rw0oNTlPtk8FayA9NxY=
-X-Google-Smtp-Source: ABdhPJweU8vHChcfF7n6zCNGPvYpioyH/JYFNiQfISKnR8gO0ao1GlphavbGVRCAyGh9bV0XTNYxKg==
-X-Received: by 2002:a05:6000:1006:: with SMTP id a6mr64201904wrx.332.1594374869330;
-        Fri, 10 Jul 2020 02:54:29 -0700 (PDT)
-Received: from clement-Latitude-7490.numericable.fr (213-245-241-245.rev.numericable.fr. [213.245.241.245])
-        by smtp.gmail.com with ESMTPSA id u23sm10176092wru.94.2020.07.10.02.54.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jul 2020 02:54:28 -0700 (PDT)
-From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-To:     Rob Herring <robh@kernel.org>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        Steven Price <steven.price@arm.com>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-Subject: [PATCH v5 14/14] [DO NOT MERGE] arm64: dts: allwinner: force GPU regulator to be always
-Date:   Fri, 10 Jul 2020 11:54:09 +0200
-Message-Id: <20200710095409.407087-15-peron.clem@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200710095409.407087-1-peron.clem@gmail.com>
-References: <20200710095409.407087-1-peron.clem@gmail.com>
+        Fri, 10 Jul 2020 05:54:23 -0400
+X-UUID: 854289983ac2406f8d1ffcb0d27085af-20200710
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=Fvop1Xi8e3CCer4hzPo+dzNj1YEbgfsUqzHs+K07MU8=;
+        b=bkVT7c8kI2Ki1B9auzjEfqdWDuXsHIaEEtnCoi9kYIJ2iE1Qw3zyXsrNmW3iAcsLa5L5dAdQHqD3MJBlS4cU3U3eEtbZaHaBlFdx69Z2iI6M7kZE9W0qXX4+pgJJjeuB3lmf9sM6tHx8sPp08Z5jWiv0+hmgAnVwNj6sk+5JKGo=;
+X-UUID: 854289983ac2406f8d1ffcb0d27085af-20200710
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <henry.yen@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 1191701866; Fri, 10 Jul 2020 17:54:19 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 10 Jul 2020 17:54:17 +0800
+Received: from [172.21.84.99] (172.21.84.99) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 10 Jul 2020 17:54:17 +0800
+Message-ID: <1594374857.4941.2.camel@mtksdccf07>
+Subject: [RESEND] Mediatek thermal driver update
+From:   mtk17045 <henry.yen@mediatek.com>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Amit Kucheria <amit.kucheria@verdurent.com>,
+        Zhang Rui <rui.zhang@intel.com>
+CC:     <linux-pm@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        "Steven Liu" <steven.liu@mediatek.com>,
+        Michael Kao <michael.kao@mediatek.com>
+Date:   Fri, 10 Jul 2020 17:54:17 +0800
+In-Reply-To: <1588238074-19338-1-git-send-email-henry.yen@mediatek.com>
+References: <1588238074-19338-1-git-send-email-henry.yen@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-TM-SNTS-SMTP: FDD4EEAC6AF5878663B9D9568B8EF0AF65527131D094D04143DF25D416B81CBA2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Clément Péron <peron.clem@gmail.com>
----
- arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-index 3f7ceeb1a767..14257f7476b8 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-@@ -245,6 +245,7 @@ reg_dcdca: dcdca {
- 			};
- 
- 			reg_dcdcc: dcdcc {
-+				regulator-always-on;
- 				regulator-enable-ramp-delay = <32000>;
- 				regulator-min-microvolt = <810000>;
- 				regulator-max-microvolt = <1080000>;
--- 
-2.25.1
+T24gVGh1LCAyMDIwLTA0LTMwIGF0IDE3OjE0ICswODAwLCBIZW5yeSBZZW4gd3JvdGU6DQo+IE1l
+ZGlhdGVrIG93bnMgdHdvIHRoZXJtYWwgc3lzdGVtcywgd2hpY2ggYXJlIGFsbW9zdCB0aGUgc2Ft
+ZSBleGNlcHQgZm9yDQo+IHRoZSB3YXkgb2YgcmVhZGluZyBjYWxpYnJhdGlvbiBkYXRhIGFuZCBj
+b252ZXJ0aW5nIHRlbXBlcmF0dXJlLg0KPiBNVDgxNzMsIE1UODE4MywgTVQyNzAxIGFuZCBNVDI3
+MTIgYmVsb25ncyB0byB2ZXJzaW9uIDEgdGhlcm1hbCBzeXN0ZW0sDQo+IGFuZCBNVDc2MjIgYmVs
+b25ncyB0byB2ZXJzaW9uIDIuIFRoZSBjdXJyZW50IGNvZGUgaGFzIGFscmVhZHkgc3VwcG9ydGVk
+DQo+IHZlcnNpb24gMSBzeXN0ZW0uIFRoZW4gdGhpcyBwYXRjaHNldCB3aWxsIGFkZCB0aGUgc3Vw
+cG9ydCBmb3IgYW5vdGhlcg0KPiBwbGF0Zm9ybSAoZS5nLiwgTVQ3NjIyIFNvQykuDQo+IA0KPiBD
+aGFuZ2Vsb2c6DQo+IA0KPiB2MjoNCj4gKiByZW9yZ2FuaXplIHRoZSBvcmRlciBvZiB0aGUgdHdv
+IHBhdGNoZXMNCj4gKiByZW1vdmUgdW5uZWNlc3NhcnkgLmV4dHJhY3QgYW5kIC5jb252ZXJ0IGNh
+bGxiYWNrcw0KPiAqIGFkZCBmaXhlcyB0YWcNCj4gDQo+IHYxOg0KPiAqIGluaXRpYWwgcG9zdA0K
+PiANCj4gSGVucnkgWWVuICgyKToNCj4gICB0aGVybWFsOiBtZWRpYXRlazogcHJlcGFyZSB0byBh
+ZGQgc3VwcG9ydCBmb3Igb3RoZXIgcGxhdGZvcm1zDQo+ICAgdGhlcm1hbDogbWVkaWF0ZWs6IGFk
+ZCB0c2Vuc29yIHN1cHBvcnQgZm9yIFYyIHRoZXJtYWwgc3lzdGVtDQo+IA0KPiAgZHJpdmVycy90
+aGVybWFsL210a190aGVybWFsLmMgfCAyMzQgKysrKysrKysrKysrKysrKysrKysrKysrKystLS0t
+LS0tLQ0KPiAgMSBmaWxlIGNoYW5nZWQsIDE4MSBpbnNlcnRpb25zKCspLCA1MyBkZWxldGlvbnMo
+LSkNCj4gDQpKdXN0IGdlbnRseSBwaW5nLiAgICANCk1hbnkgdGhhbmtzLg0K
 
