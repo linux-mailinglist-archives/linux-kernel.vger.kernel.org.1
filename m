@@ -2,92 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7042A21C007
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 00:41:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E285221BF5A
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 23:45:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726736AbgGJWlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 18:41:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35246 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726496AbgGJWlu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 18:41:50 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A29AC08C5DC;
-        Fri, 10 Jul 2020 15:41:50 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id k6so7384932wrn.3;
-        Fri, 10 Jul 2020 15:41:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=HEbLwZa+8AgiE1sTsi+5dmebuA2XCkZOdthvMWC9zb4=;
-        b=KP7CW5tAuKK2GLWkOhXixaxYhsLkIgmqDx373gqHEaQImwUaqRQCypSp6iHYmH9Jtd
-         1YXpx2tazlWq7QgppjaERv9NSIQMi005ctyW41gNTMGdmjf4+Fpdpi0i5y2aYuihHJFM
-         I97j0UWfMjdaU0Xg2oqh5NzPfVGg7kFrEs9rJlx7D6ndUaAGAjhi1B+TYoxoQKDKMnho
-         mX7dXuGi60EQwiyEnS7h2ZXy5vH6Ne+JSKe0sRQeqCCEvA+RszvUurijLoujOUczcR/F
-         47QYFii59lD9xEiJ0fp2UKvOi7jIXW4Fh8myLQ2gvqieINF6Vk+0nFpvF1YxE8lHYvrj
-         BNxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=HEbLwZa+8AgiE1sTsi+5dmebuA2XCkZOdthvMWC9zb4=;
-        b=qSobkf/Q85zEnJ/2sBc6rrMT2XUAG2NEEhRMj0RTkBv1mM6mOZvxeDPrcfw4pW4jk+
-         D/FOzKPKR6vhS1uRAD++RBjXDb3yaO9y5MCUTkNPWWQmH5FxE2a1wLJoE35dyOBYqRvy
-         kj8KIUBPQTxdNPn1tN/Q97/UPx+7Falr06j6QX9kDAL5cAcyq9LLlu74ZOS0Fkgt9E4n
-         /zE1wU5+cqC8kEYrBLH4cN76vDKo2bDHsCjKXGcg2MNasjoLeWAy0w3MyVwJkPHJ4z0x
-         NuwtPPRSCamVSstgNbXxm/9fbmPlwxE4KPaaOTDBFQCmgakjdVJomG5eJGX9zxXuix14
-         Dsig==
-X-Gm-Message-State: AOAM530tWMYe1Lhzms88xQgxdj7Uyy6Od3Wb1e3K0xoCUMjQwATVaLuC
-        CEkunkTnG1H2uXgTV5BzE+0sVqTqDRi98w==
-X-Google-Smtp-Source: ABdhPJzFJUGBCPAOYmLYSDS91PNlB5l/NXZG/EQGYdtnFen+q7UFpF7WUfEaLVIXb9q4EI1/CogbAQ==
-X-Received: by 2002:adf:ce90:: with SMTP id r16mr68475674wrn.408.1594420908598;
-        Fri, 10 Jul 2020 15:41:48 -0700 (PDT)
-Received: from net.saheed (54007186.dsl.pool.telekom.hu. [84.0.113.134])
-        by smtp.gmail.com with ESMTPSA id c25sm10626843wml.18.2020.07.10.15.41.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Jul 2020 15:41:48 -0700 (PDT)
-Subject: Re: [PATCH 5/11 RFC] PCI: pciehp: Make "Power On" the default
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     bjorn@helgaas.com, skhan@linuxfoundation.org,
-        linux-pci@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-References: <20200710001406.GA30420@bjorn-Precision-5520>
-From:   Saheed Bolarinwa <refactormyself@gmail.com>
-Message-ID: <ee4e0e13-baed-9800-8ff7-a91186bf1f8a@gmail.com>
-Date:   Fri, 10 Jul 2020 23:42:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726385AbgGJVpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 17:45:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46142 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726251AbgGJVpC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 17:45:02 -0400
+Received: from localhost (lfbn-ncy-1-317-216.w83-196.abo.wanadoo.fr [83.196.152.216])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3556A2075D;
+        Fri, 10 Jul 2020 21:45:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594417501;
+        bh=YPf8decqeTT5W5+yubykZEGeTB9T3V/vPIkboQrsm0s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=phamNT+hkGwlLJAHZAUTUbwrxG3ovabV307+U2JfBrlm0sUPqKr5bEAbNZhEs17bE
+         UYjaPLOp0Dvgv1WsWrMlZgeRz5YSbwx2eO48QWF4zMbS9ECBjq37v4zn1IYLL2c/91
+         a91xtqw07d/l2QMpHeXRnNPiebl7E4htCdHxToHo=
+Date:   Fri, 10 Jul 2020 23:44:59 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH] timers: Use only bucket expiry for base->next_expiry
+ value
+Message-ID: <20200710214458.GA31351@lenoir>
+References: <20200710154622.14989-1-anna-maria@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20200710001406.GA30420@bjorn-Precision-5520>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200710154622.14989-1-anna-maria@linutronix.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Anna-Maria,
 
-On 7/10/20 2:14 AM, Bjorn Helgaas wrote:
-> On Mon, Jul 06, 2020 at 11:31:15AM +0200, Saheed Olayemi Bolarinwa wrote:
->> From: Bolarinwa Olayemi Saheed <refactormyself@gmail.com>
->>
->> The default case of the switch statement is redundant since
->> PCI_EXP_SLTCTL_PCC is only a single bit. pcie_capability_read_word()
->> currently causes "On" value to be set if it fails. Patch 11/11
->> changes the behaviour of pcie_capability_read_word() so on falure the
->> "Off" value will be set.
-> s/falure/failure/
->
-> Split this into two patches.  The removal of the default case should
-> be in its own patch to make it trivial to review.
->
-Thank you for the review. It is now split into two in the version 3 
-which I just sent.
+Nice change, it indeed makes more sense that way.
+Just a few details below:
 
-- Saheed
+On Fri, Jul 10, 2020 at 05:46:22PM +0200, Anna-Maria Behnsen wrote:
+> The bucket expiry time is the effective expriy time of timers and is
+> greater than or equal to the requested timer expiry time. This is due
+> to the guarantee that timers never expire early and the reduced expiry
+> granularity in the secondary wheel levels.
+> 
+> When a timer is enqueued, trigger_dyntick_cpu() checks whether the
+> timer is the new first timer. This check compares next_expiry with
+> the requested timer expiry value and not with the effective expiry
+> value of the bucket into which the timer was queued.
+> 
+> Storing the requested timer expiry value in base->next_expiry can lead
+> to base->clk going backwards if the requested timer expiry value is
+> smaller than base->clk. Commit 30c66fc30ee7 ("timer: Prevent base->clk
+> from moving backward") worked around this by preventing the store when
+> timer->expiry is before base->clk, but did not fix the underlying
+> problem.
+> 
+> Use the expiry value of the bucket into which the timer is queued to
+> do the new first timer check. This fixes the base->clk going backward
+> problem and also prevents unnecessary softirq invocations when the
+> timer->expiry is not equal to the bucket expiry time in case of a new
+> first timer which is queued in a secondary wheel level.
 
+I think there shouldn't be such unecessary softirq invocations. Either they
+fire at the bucket expiry time or the timer expiry time, it doesn't make
+much difference.
+
+More important below:
+
+> -static int calc_wheel_index(unsigned long expires, unsigned long clk)
+> +static int calc_wheel_index(unsigned long expires, unsigned long clk,
+> +			    unsigned long *bucket_expiry)
+>  {
+>  	unsigned long delta = expires - clk;
+>  	unsigned int idx;
+>  
+>  	if (delta < LVL_START(1)) {
+> -		idx = calc_index(expires, 0);
+> +		idx = calc_index(expires, 0, bucket_expiry);
+>  	} else if (delta < LVL_START(2)) {
+> -		idx = calc_index(expires, 1);
+> +		idx = calc_index(expires, 1, bucket_expiry);
+>  	} else if (delta < LVL_START(3)) {
+> -		idx = calc_index(expires, 2);
+> +		idx = calc_index(expires, 2, bucket_expiry);
+>  	} else if (delta < LVL_START(4)) {
+> -		idx = calc_index(expires, 3);
+> +		idx = calc_index(expires, 3, bucket_expiry);
+>  	} else if (delta < LVL_START(5)) {
+> -		idx = calc_index(expires, 4);
+> +		idx = calc_index(expires, 4, bucket_expiry);
+>  	} else if (delta < LVL_START(6)) {
+> -		idx = calc_index(expires, 5);
+> +		idx = calc_index(expires, 5, bucket_expiry);
+>  	} else if (delta < LVL_START(7)) {
+> -		idx = calc_index(expires, 6);
+> +		idx = calc_index(expires, 6, bucket_expiry);
+>  	} else if (LVL_DEPTH > 8 && delta < LVL_START(8)) {
+> -		idx = calc_index(expires, 7);
+> +		idx = calc_index(expires, 7, bucket_expiry);
+>  	} else if ((long) delta < 0) {
+>  		idx = clk & LVL_MASK;
+
+You also need to handle that part. That's in fact the critical one  :)
+
+I'll rebase my series on top of that.
+
+Thanks!
