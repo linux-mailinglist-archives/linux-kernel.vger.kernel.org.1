@@ -2,156 +2,319 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A698021BDA6
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 21:30:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FA5F21BDB3
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 21:32:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728066AbgGJTaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 15:30:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57162 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726867AbgGJTaH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 15:30:07 -0400
-Received: from pali.im (pali.im [31.31.79.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728339AbgGJTcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 15:32:07 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:24796 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726908AbgGJTcG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 15:32:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594409523;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HTJcxh8CccGfjD+APjh4gj7gkHRF/TKds8h3KugZMhA=;
+        b=T5riczDa1L19yfs/4FWJWQPeAlNeZsDSSMePxN6c+NCfCtkZ39P/Sndq4s3rUCXw/tago6
+        5A9h0cwXBvKoWQLkazcb9IXemeVaY9SNeCNmxHXu3GLAflK9xWXd9I4c2LG8OVRll7GSX5
+        elh87zN2tN18yZGi+WlDtOkzLWa8PsE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-357-xw9CjLx0MGeLuYNMZIMslA-1; Fri, 10 Jul 2020 15:31:57 -0400
+X-MC-Unique: xw9CjLx0MGeLuYNMZIMslA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 637F72076A;
-        Fri, 10 Jul 2020 19:30:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594409406;
-        bh=HKUsObJTxAzGIdEMpdjrd4x7q3Pjx/3zWOsbyKi8J8I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=b4lsMVUp03tGaCM4yusSTbgfcwdNY0Vg1sMxofe1XOXmiemJxVvz40mZTTs1U2y65
-         +zn9BzjIgGMIGogaR4VxJVPj5Im+hbb95iECFrVENJHa5RO0Umio8o5mW7fJSzS/yv
-         +KA5KmHrdV96d3kzJdUIUpj2irSPpLGB7Q7mBbbc=
-Received: by pali.im (Postfix)
-        id 2019A1514; Fri, 10 Jul 2020 21:30:04 +0200 (CEST)
-Date:   Fri, 10 Jul 2020 21:30:03 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Andrew Murray <amurray@thegoodpenguin.co.uk>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Marek =?utf-8?B?QmVow7pu?= <marek.behun@nic.cz>,
-        Remi Pommarel <repk@triplefau.lt>,
-        Tomasz Maciej Nowak <tmn505@gmail.com>,
-        Xogium <contact@xogium.me>, linux-pci@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] PCI: aardvark: Don't touch PCIe registers if no card
- connected
-Message-ID: <20200710193003.2lt3i5ocy5kk3b3p@pali>
-References: <20200710154458.bntk7cgewvxmubf4@pali>
- <20200710160828.GA63389@bjorn-Precision-5520>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2398D100CCC0;
+        Fri, 10 Jul 2020 19:31:55 +0000 (UTC)
+Received: from Whitewolf.redhat.com (ovpn-112-154.rdu2.redhat.com [10.10.112.154])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0630C1002391;
+        Fri, 10 Jul 2020 19:31:52 +0000 (UTC)
+From:   Lyude Paul <lyude@redhat.com>
+To:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
+Cc:     Lee Shawn C <shawn.c.lee@intel.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v3 1/2] drm/probe_helper: Add drm_connector_helper_funcs.mode_valid_ctx
+Date:   Fri, 10 Jul 2020 15:31:43 -0400
+Message-Id: <20200710193144.94751-2-lyude@redhat.com>
+In-Reply-To: <20200710193144.94751-1-lyude@redhat.com>
+References: <20200710193144.94751-1-lyude@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200710160828.GA63389@bjorn-Precision-5520>
-User-Agent: NeoMutt/20180716
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday 10 July 2020 11:08:28 Bjorn Helgaas wrote:
-> On Fri, Jul 10, 2020 at 05:44:58PM +0200, Pali Rohár wrote:
-> > I can reproduce following issue: Connect Compex WLE900VX card, configure
-> > aardvark to gen2 mode. And then card is detected only after the first
-> > link training. If kernel tries to retrain link again (e.g. via ASPM
-> > code) then card is not detected anymore. 
-> 
-> Somebody should go over the ASPM retrain link code and the PCIe spec
-> with a fine-toothed comb.  Maybe we're doing something wrong there.
+This is just an atomic version of mode_valid, which is intended to be
+used for situations where a driver might need to check the atomic state
+of objects other than the connector itself. One such example is with
+MST, where the maximum possible bandwidth on a connector can change
+dynamically irregardless of the display configuration.
 
-I think this is not ASPM related as card simply disappear just after
-flipping PCI_EXP_LNKCTL_RL bit second time without changing ASPM bits.
+Changes since v1:
+* Use new drm logging functions
+* Make some corrections in the mode_valid_ctx kdoc
+* Return error codes or 0 from ->mode_valid_ctx() on fail, and store the
+  drm_mode_status in an additional function parameter
+Changes since v2:
+* Don't accidentally assign ret to mode->status on success, or we'll
+  squash legitimate mode validation results
+* Don't forget to assign MODE_OK to status in drm_connector_mode_valid()
+  if we have no callbacks
+* Drop leftover hunk in drm_modes.h around enum drm_mode_status
 
-> Or maybe aardvark has some hardware issue and we need some sort of
-> quirk to work around it.
+Signed-off-by: Lyude Paul <lyude@redhat.com>
+Cc: Lee Shawn C <shawn.c.lee@intel.com>
+---
+ drivers/gpu/drm/drm_crtc_helper_internal.h |  7 +-
+ drivers/gpu/drm/drm_probe_helper.c         | 94 ++++++++++++++--------
+ include/drm/drm_modeset_helper_vtables.h   | 42 ++++++++++
+ 3 files changed, 109 insertions(+), 34 deletions(-)
 
-It is possible that this is aardvark issue. As I said I really do not
-know.
+diff --git a/drivers/gpu/drm/drm_crtc_helper_internal.h b/drivers/gpu/drm/drm_crtc_helper_internal.h
+index f0a66ef47e5ad..25ce42e799952 100644
+--- a/drivers/gpu/drm/drm_crtc_helper_internal.h
++++ b/drivers/gpu/drm/drm_crtc_helper_internal.h
+@@ -73,8 +73,11 @@ enum drm_mode_status drm_crtc_mode_valid(struct drm_crtc *crtc,
+ 					 const struct drm_display_mode *mode);
+ enum drm_mode_status drm_encoder_mode_valid(struct drm_encoder *encoder,
+ 					    const struct drm_display_mode *mode);
+-enum drm_mode_status drm_connector_mode_valid(struct drm_connector *connector,
+-					      struct drm_display_mode *mode);
++int
++drm_connector_mode_valid(struct drm_connector *connector,
++			 struct drm_display_mode *mode,
++			 struct drm_modeset_acquire_ctx *ctx,
++			 enum drm_mode_status *status);
+ 
+ struct drm_encoder *
+ drm_connector_get_single_encoder(struct drm_connector *connector);
+diff --git a/drivers/gpu/drm/drm_probe_helper.c b/drivers/gpu/drm/drm_probe_helper.c
+index e0ed58d291ed9..f7bd1d35aa805 100644
+--- a/drivers/gpu/drm/drm_probe_helper.c
++++ b/drivers/gpu/drm/drm_probe_helper.c
+@@ -86,17 +86,19 @@ drm_mode_validate_flag(const struct drm_display_mode *mode,
+ 	return MODE_OK;
+ }
+ 
+-static enum drm_mode_status
++static int
+ drm_mode_validate_pipeline(struct drm_display_mode *mode,
+-			    struct drm_connector *connector)
++			   struct drm_connector *connector,
++			   struct drm_modeset_acquire_ctx *ctx,
++			   enum drm_mode_status *status)
+ {
+ 	struct drm_device *dev = connector->dev;
+-	enum drm_mode_status ret = MODE_OK;
+ 	struct drm_encoder *encoder;
++	int ret;
+ 
+ 	/* Step 1: Validate against connector */
+-	ret = drm_connector_mode_valid(connector, mode);
+-	if (ret != MODE_OK)
++	ret = drm_connector_mode_valid(connector, mode, ctx, status);
++	if (ret || *status != MODE_OK)
+ 		return ret;
+ 
+ 	/* Step 2: Validate against encoders and crtcs */
+@@ -104,8 +106,8 @@ drm_mode_validate_pipeline(struct drm_display_mode *mode,
+ 		struct drm_bridge *bridge;
+ 		struct drm_crtc *crtc;
+ 
+-		ret = drm_encoder_mode_valid(encoder, mode);
+-		if (ret != MODE_OK) {
++		*status = drm_encoder_mode_valid(encoder, mode);
++		if (*status != MODE_OK) {
+ 			/* No point in continuing for crtc check as this encoder
+ 			 * will not accept the mode anyway. If all encoders
+ 			 * reject the mode then, at exit, ret will not be
+@@ -114,10 +116,10 @@ drm_mode_validate_pipeline(struct drm_display_mode *mode,
+ 		}
+ 
+ 		bridge = drm_bridge_chain_get_first_bridge(encoder);
+-		ret = drm_bridge_chain_mode_valid(bridge,
+-						  &connector->display_info,
+-						  mode);
+-		if (ret != MODE_OK) {
++		*status = drm_bridge_chain_mode_valid(bridge,
++						      &connector->display_info,
++						      mode);
++		if (*status != MODE_OK) {
+ 			/* There is also no point in continuing for crtc check
+ 			 * here. */
+ 			continue;
+@@ -127,8 +129,8 @@ drm_mode_validate_pipeline(struct drm_display_mode *mode,
+ 			if (!drm_encoder_crtc_ok(encoder, crtc))
+ 				continue;
+ 
+-			ret = drm_crtc_mode_valid(crtc, mode);
+-			if (ret == MODE_OK) {
++			*status = drm_crtc_mode_valid(crtc, mode);
++			if (*status == MODE_OK) {
+ 				/* If we get to this point there is at least
+ 				 * one combination of encoder+crtc that works
+ 				 * for this mode. Lets return now. */
+@@ -198,16 +200,26 @@ enum drm_mode_status drm_encoder_mode_valid(struct drm_encoder *encoder,
+ 	return encoder_funcs->mode_valid(encoder, mode);
+ }
+ 
+-enum drm_mode_status drm_connector_mode_valid(struct drm_connector *connector,
+-					      struct drm_display_mode *mode)
++int
++drm_connector_mode_valid(struct drm_connector *connector,
++			 struct drm_display_mode *mode,
++			 struct drm_modeset_acquire_ctx *ctx,
++			 enum drm_mode_status *status)
+ {
+ 	const struct drm_connector_helper_funcs *connector_funcs =
+ 		connector->helper_private;
+ 
+-	if (!connector_funcs || !connector_funcs->mode_valid)
+-		return MODE_OK;
++	if (!connector_funcs)
++		*status = MODE_OK;
++	else if (connector_funcs->mode_valid_ctx)
++		return connector_funcs->mode_valid_ctx(connector, mode, ctx,
++						       status);
++	else if (connector_funcs->mode_valid)
++		*status = connector_funcs->mode_valid(connector, mode);
++	else
++		*status = MODE_OK;
+ 
+-	return connector_funcs->mode_valid(connector, mode);
++	return 0;
+ }
+ 
+ #define DRM_OUTPUT_POLL_PERIOD (10*HZ)
+@@ -385,8 +397,9 @@ EXPORT_SYMBOL(drm_helper_probe_detect);
+  *      (if specified)
+  *    - drm_mode_validate_flag() checks the modes against basic connector
+  *      capabilities (interlace_allowed,doublescan_allowed,stereo_allowed)
+- *    - the optional &drm_connector_helper_funcs.mode_valid helper can perform
+- *      driver and/or sink specific checks
++ *    - the optional &drm_connector_helper_funcs.mode_valid or
++ *      &drm_connector_helper_funcs.mode_valid_ctx helpers can perform driver
++ *      and/or sink specific checks
+  *    - the optional &drm_crtc_helper_funcs.mode_valid,
+  *      &drm_bridge_funcs.mode_valid and &drm_encoder_helper_funcs.mode_valid
+  *      helpers can perform driver and/or source specific checks which are also
+@@ -517,22 +530,39 @@ int drm_helper_probe_single_connector_modes(struct drm_connector *connector,
+ 		mode_flags |= DRM_MODE_FLAG_3D_MASK;
+ 
+ 	list_for_each_entry(mode, &connector->modes, head) {
+-		if (mode->status == MODE_OK)
+-			mode->status = drm_mode_validate_driver(dev, mode);
++		if (mode->status != MODE_OK)
++			continue;
+ 
+-		if (mode->status == MODE_OK)
+-			mode->status = drm_mode_validate_size(mode, maxX, maxY);
++		mode->status = drm_mode_validate_driver(dev, mode);
++		if (mode->status != MODE_OK)
++			continue;
+ 
+-		if (mode->status == MODE_OK)
+-			mode->status = drm_mode_validate_flag(mode, mode_flags);
++		mode->status = drm_mode_validate_size(mode, maxX, maxY);
++		if (mode->status != MODE_OK)
++			continue;
++
++		mode->status = drm_mode_validate_flag(mode, mode_flags);
++		if (mode->status != MODE_OK)
++			continue;
+ 
+-		if (mode->status == MODE_OK)
+-			mode->status = drm_mode_validate_pipeline(mode,
+-								  connector);
++		ret = drm_mode_validate_pipeline(mode, connector, &ctx,
++						 &mode->status);
++		if (ret) {
++			drm_dbg_kms(dev,
++				    "drm_mode_validate_pipeline failed: %d\n",
++				    ret);
++
++			if (drm_WARN_ON_ONCE(dev, ret != -EDEADLK)) {
++				mode->status = MODE_ERROR;
++			} else {
++				drm_modeset_backoff(&ctx);
++				goto retry;
++			}
++		}
+ 
+-		if (mode->status == MODE_OK)
+-			mode->status = drm_mode_validate_ycbcr420(mode,
+-								  connector);
++		if (mode->status != MODE_OK)
++			continue;
++		mode->status = drm_mode_validate_ycbcr420(mode, connector);
+ 	}
+ 
+ prune:
+diff --git a/include/drm/drm_modeset_helper_vtables.h b/include/drm/drm_modeset_helper_vtables.h
+index 421a30f084631..4efec30f8badc 100644
+--- a/include/drm/drm_modeset_helper_vtables.h
++++ b/include/drm/drm_modeset_helper_vtables.h
+@@ -968,6 +968,48 @@ struct drm_connector_helper_funcs {
+ 	 */
+ 	enum drm_mode_status (*mode_valid)(struct drm_connector *connector,
+ 					   struct drm_display_mode *mode);
++
++	/**
++	 * @mode_valid_ctx:
++	 *
++	 * Callback to validate a mode for a connector, irrespective of the
++	 * specific display configuration.
++	 *
++	 * This callback is used by the probe helpers to filter the mode list
++	 * (which is usually derived from the EDID data block from the sink).
++	 * See e.g. drm_helper_probe_single_connector_modes().
++	 *
++	 * This function is optional, and is the atomic version of
++	 * &drm_connector_helper_funcs.mode_valid.
++	 *
++	 * To allow for accessing the atomic state of modesetting objects, the
++	 * helper libraries always call this with ctx set to a valid context,
++	 * and &drm_mode_config.connection_mutex will always be locked with
++	 * the ctx parameter set to @ctx. This allows for taking additional
++	 * locks as required.
++	 *
++	 * Even though additional locks may be acquired, this callback is
++	 * still expected not to take any constraints into account which would
++	 * be influenced by the currently set display state - such constraints
++	 * should be handled in the driver's atomic check. For example, if a
++	 * connector shares display bandwidth with other connectors then it
++	 * would be ok to validate the minimum bandwidth requirement of a mode
++	 * against the maximum possible bandwidth of the connector. But it
++	 * wouldn't be ok to take the current bandwidth usage of other
++	 * connectors into account, as this would change depending on the
++	 * display state.
++	 *
++	 * Returns:
++	 * 0 if &drm_connector_helper_funcs.mode_valid_ctx succeeded and wrote
++	 * the &enum drm_mode_status value to @status, or a negative error
++	 * code otherwise.
++	 *
++	 */
++	int (*mode_valid_ctx)(struct drm_connector *connector,
++			      struct drm_display_mode *mode,
++			      struct drm_modeset_acquire_ctx *ctx,
++			      enum drm_mode_status *status);
++
+ 	/**
+ 	 * @best_encoder:
+ 	 *
+-- 
+2.26.2
 
-In aardvark driver there is already merged workaround for this issue:
-driver force gen1 aardvark mode for gen1 card.
-
-> > Another issue which happens for WLE900VX, WLE600VX and WLE1216VS-20 (but
-> > not for WLE200VX): Linux kernel can detect these cards only if it issues
-> > card reset via PERST# signal and start link training (via standard pcie
-> > endpoint register PCI_EXP_LNKCTL/PCI_EXP_LNKCTL_RL)
-> 
-> I think you mean "downstream port" (not "endpoint") register?
-
-Yes.
-
-> PCI_EXP_LNKCTL_RL is only applicable to *downstream ports* (root ports
-> or switch downstream ports) and is reserved for endpoints.
-> 
-> > immediately after
-> > enable link training in aardvark (via aardvark specific LINK_TRAINING_EN
-> > bit). If there is e.g. 100ms delay between enabling link training and
-> > setting PCI_EXP_LNKCTL_RL bit then these cards are not detected.
-> 
-> This sounds problematic.  Hardware should not be dependent on the
-> software being "fast enough".  In general we should be able to insert
-> arbitrary delays at any point without breaking anything.
-
-Yes, it is problematic. For example following commit broke those cards:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=f4c7d053d7f77cd5c1a1ba7c7ce085ddba13d1d7
-
-And this commit fixed it (just msleep was moved to different stage):
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=6964494582f56a3882c2c53b0edbfe99eb32b2e1
-
-But we somehow need to deal with it until we find root cause.
-
-Basically additional sleep in aardvark init phase can break WLE900VX
-cards, but not WLE200VX.
-
-And because WLE900VX works fine with pci-mvebu and WLE200VX works fine
-with pci-aardvark we cannot deduce from it if problem for combination of
-WLE900VX and aardvark is in WLE900VX or in aardvark.
-
-> But I have the impression that aardvark requires more software
-> hand-holding that most hardware does.  If it imposes timing
-> requirements on the software, that *should* be documented in the
-> aardvark spec.
-
-There is absolutely nothing regarding to timings in documentation which
-I saw. In documentation are just instructions/steps how to init PCI
-subsystem and it is basically advk_pcie_setup_hw() function.
-
-> > I read in kernel bugzilla that WLE600VX and WLE900VX cards are buggy and
-> > more people have problems with them. But issues described in kernel
-> > bugzilla (like card is reporting incorrect PCI device id) I'm not
-> > observing.
-> 
-> Pointer?
-
-Hm... I cannot find right now pointer to bugzilla, but I have pointer to
-ath9k-devel mailing list with that incorrect device id:
-
-https://www.mail-archive.com/ath9k-devel@lists.ath9k.org/msg07529.html
-
-> Is the incorrect device ID 0xffff?
-
-No, incorrect device ID in that case is 0xabcd and vendor ID is correct
-(Qualcomm).
-
-> That could be a symptom
-> of a PCIe error.  If we read a device ID that's something other than
-> 0, 0xffff, or the correct ID, that would be really weird.  Even 0
-> would be really strange.
-
-It is strange and also reason why discussion on that list is long.
-
-As I said, I'm not seeing that problem with wrong device ID.
-
-But I know people who are observing same problem on different boards
-(which do not use aardvark) as described in above mailing list thread
-with Compex ath10k cards.
-
-> I suspect these wifi cards are a little special because they probably
-> play unusual games with power for airplane mode and the like.
-
-This is another/different problem and is already "documented" in kernel
-bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=84821#c52
