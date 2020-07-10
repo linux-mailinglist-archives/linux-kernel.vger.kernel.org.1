@@ -2,76 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB2C221B2B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 11:51:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1BB721B2B4
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 11:52:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726912AbgGJJvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 05:51:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57426 "EHLO
+        id S1727076AbgGJJwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 05:52:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726560AbgGJJvx (ORCPT
+        with ESMTP id S1726560AbgGJJwh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 05:51:53 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D878C08C5CE
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 02:51:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=G4BQT5YZ6inbLMuZQGrLBTNmes4SMbEIAYTL3fFnjd8=; b=nL1GgAFk6IYwBe46ttmYv8O7nG
-        rvYyF+J4PaTz0D//ecTD3ylx6iQsEMH40ZQVIQnOT5shMx9mlu4Qkp1+y41jDZTy3TSugnuWrQWwa
-        VaYPREM9p8qY0Yeva7s5Q3XifD25hLBngkCeixWsKCX0ulLyBJw2KFPJTEXanblmaKvPeNce4GBFb
-        rnqejhBoZgr62cr7KiT7SSERVKhauR6NGMdmMgeqwZP5m0LfXSBDxd/z4joIO8E/DDVf8sS5UFo3c
-        AyxwnW8EMLFYScEGknbWt5edrDAoKvodIM9MDrgtsaeFOHG2PdeQddBALrD50EBwKcm/iYx7P1zHw
-        tpJduwNw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jtph3-0007iQ-Tm; Fri, 10 Jul 2020 09:51:46 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 793083003E5;
-        Fri, 10 Jul 2020 11:51:44 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0C3802B515301; Fri, 10 Jul 2020 11:51:44 +0200 (CEST)
-Date:   Fri, 10 Jul 2020 11:51:44 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Kan Liang <kan.liang@linux.intel.com>, x86 <x86@kernel.org>
-Subject: Re: [tip: perf/core] x86/cpufeatures: Add Architectural LBRs feature
- bit
-Message-ID: <20200710095144.GC4800@hirez.programming.kicks-ass.net>
-References: <1593780569-62993-2-git-send-email-kan.liang@linux.intel.com>
- <159420191583.4006.10876391642907607745.tip-bot2@tip-bot2>
- <e231263a-76f8-326a-ae47-0ae785137c9a@intel.com>
+        Fri, 10 Jul 2020 05:52:37 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6946AC08C5CE
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 02:52:37 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1594374755;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Km6vAwuriX6Tn2g2G/7pxWYSZJCjiixivHALQxnghlQ=;
+        b=gaLtMBfMEd91QUFpoqap5H/jH3FpE7bQVpw8ur1R95T2341r1c4G4nO81uY1zPYPwBbvke
+        IVGkmj03jUHIVQYrpx2jUNRp5n4/wO4rhY6jjeecveHiPOmE4Pi5k9ZNFei46LjyXQwQeT
+        e1bkk4mG365cR5JIPFdVEwupi8RZTCvMILWfvzhRJ1oBhguT9gC7L1LSyYMJqplL1c93Pf
+        uHQfF6XN1zOvnq1+TyF/Mhbtg9Z8vp19NvcFUPzYNagFlKQPjFedxqK/tdrEssRQ4HnO5E
+        FsDy0PxoreFh7Jx+ou6ijnGz3kvRSWXW6sciLUDrUM5qoW/XtUYOuk0+S8q2aA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1594374755;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Km6vAwuriX6Tn2g2G/7pxWYSZJCjiixivHALQxnghlQ=;
+        b=Oi8TokTjd6ow2X0eetNqW38Nez1o6+drTO1F6JdSqZgYaGXrEl9yjUQ4ybNWPduDFRKSIJ
+        oTwbGFtrNuCuqvDA==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Paul McKenney <paulmck@kernel.org>, kexec@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 0/4] printk: replace ringbuffer
+In-Reply-To: <20200710091137.GN4751@alley>
+References: <20200707145932.8752-1-john.ogness@linutronix.de> <20200708152005.GF4751@alley> <87wo3d9nlo.fsf@jogness.linutronix.de> <20200710091137.GN4751@alley>
+Date:   Fri, 10 Jul 2020 11:58:34 +0206
+Message-ID: <87o8onhf31.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e231263a-76f8-326a-ae47-0ae785137c9a@intel.com>
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 09, 2020 at 04:00:48PM -0700, Dave Hansen wrote:
-> On 7/8/20 2:51 AM, tip-bot2 for Kan Liang wrote:
-> > diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-> > index 02dabc9..72ba4c5 100644
-> > --- a/arch/x86/include/asm/cpufeatures.h
-> > +++ b/arch/x86/include/asm/cpufeatures.h
-> > @@ -366,6 +366,7 @@
-> >  #define X86_FEATURE_MD_CLEAR		(18*32+10) /* VERW clears CPU buffers */
-> >  #define X86_FEATURE_TSX_FORCE_ABORT	(18*32+13) /* "" TSX_FORCE_ABORT */
-> >  #define X86_FEATURE_PCONFIG		(18*32+18) /* Intel PCONFIG */
-> > +#define X86_FEATURE_ARCH_LBR		(18*32+19) /* Intel ARCH LBR */
-> >  #define X86_FEATURE_SPEC_CTRL		(18*32+26) /* "" Speculation Control (IBRS + IBPB) */
-> >  #define X86_FEATURE_INTEL_STIBP		(18*32+27) /* "" Single Thread Indirect Branch Predictors */
-> >  #define X86_FEATURE_FLUSH_L1D		(18*32+28) /* Flush L1D cache */
-> 
-> Are architectural LBRs useful *without* XSAVE?  If not, should we add an
-> entry in arch/x86/kernel/cpu/cpuid-deps.c::cpuid_deps[] for this?
+On 2020-07-10, Petr Mladek <pmladek@suse.com> wrote:
+>> The next series in the printk-rework (move LOG_CONT handling from
+>> writers to readers) makes some further changes that, while not
+>> incompatible, could affect the output of existing tools. It may be a
+>> good idea to let the new ringbuffer sit in linux-next until the next
+>> series has been discussed/reviewed/merged. After the next series,
+>> everything will be in place (with regard to userspace tools) to
+>> finish the rework.
+>
+> I know that it might be premature question. But I wonder what kind
+> of changes are expected because of the continuous lines.
 
-Yes, look at patch 22, without the XSAVE thing it'll fall back to poking
-at MSRs lots.
+I will be posting the next series quite soon, so I think it will be
+better to discuss it when we have a working example in front of us.
+
+> Do you expect some changes in the ring buffer structures so that
+> the debugging tools would need yet another update to actually
+> access the data?
+
+The next series will be modifying the ringbuffer to allow data-less
+records. This is necessary to support the thousands of
+
+    pr_cont("\n");
+
+calls in the kernel code. Failed dataring allocations will still be
+detected because the message flags for those records will be 0. For the
+above pr_cont() line, they will be LOG_NEWLINE|LOG_CONT.
+
+Since the dump tools need to make changes for the new ringbuffer anyway,
+I think it would be good to hammer out the accepted LOG_CONT
+implementation first, just in case we do need to make any subtle
+internal changes.
+
+> Or do you expect backward compatible changes that would allow
+> to pass related parts of the continuous lines via syslog/dev_kmsg
+> interface and join them later in userspace?
+
+For users of console, non-extended netconsole, syslog, and kmsg_dump,
+there will be no external changes whatsoever. These interfaces have no
+awareness of sequence numbers, which will allow the kernel to
+re-assemble the LOG_CONT messages for them.
+
+Users of /dev/kmsg and extended netconsole see sequence numbers. Offlist
+we discussed various hacks how to get around this without causing errors
+for existing software, but it was all ugly.
+
+IMHO users of these sequence number interfaces need to see all the
+records individually and reassemble the LOG_CONT messages themselves if
+they want to. I believe that is the only sane path forward. To do this,
+the caller id will no longer be optional to the sequence number output
+since that is vital information to re-assemble the LOG_CONT messages.
+
+Keep in mind that current software already needs to be able to handle
+the caller id being shown. Also, currently in mainline there is no
+guarantee that LOG_CONT messages are contiguous. So current software
+must also be ready to accept broken up LOG_CONT messages. This is why I
+think it would be acceptable to make this change for /dev/kmsg and
+extended netconsole. But I understand it is controversial since tools
+like systemd and dmesg use /dev/kmsg. Until they are modified to
+re-assemble LOG_CONT messages, they will present the user with the
+ugliness of LOG_CONT pieces (always, rather than as is now rarely).
+
+John Ogness
