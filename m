@@ -2,95 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28EED21BF55
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 23:41:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7042A21C007
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 00:41:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726440AbgGJVlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 17:41:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54162 "EHLO
+        id S1726736AbgGJWlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 18:41:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726251AbgGJVlW (ORCPT
+        with ESMTP id S1726496AbgGJWlu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 17:41:22 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77E47C08C5DC;
-        Fri, 10 Jul 2020 14:41:22 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id di5so3270563qvb.11;
-        Fri, 10 Jul 2020 14:41:22 -0700 (PDT)
+        Fri, 10 Jul 2020 18:41:50 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A29AC08C5DC;
+        Fri, 10 Jul 2020 15:41:50 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id k6so7384932wrn.3;
+        Fri, 10 Jul 2020 15:41:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Da2tkZhxp36WWIM5SU4wWRnWrL+fbZs7REwsgJam7ZQ=;
-        b=VHhl70xJKGvDmkqn9+GFeBcUZmC518WJVEFdfy8ur5HqlFExf0rxCQqHtur+CxOaqb
-         iC/aDjq4YILIXcE9snn6uUpJEJSctpWWeSIcBd1gpIwKFbv+erXR9MKTWreSo0dOQKMo
-         +S2JOme4t+ViPdBBTh2LgOFP78FdMRVZa/KvKW3P12B3HMV4vmIDdLoL79AnN3/2ZMDp
-         GI/pYYdntjQ8qmt2ICS6qw2mjW85VFeM86w2EtTA4jwe+uQ4Zgt9eXxcDc8W1JL+247M
-         SDWh+bYC/tB5vjOXT2GObQ3uC1A7k3UDT3aCQI4VnJ9IcFq51Wrp+jeuyastgyymV+A4
-         D/QQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=HEbLwZa+8AgiE1sTsi+5dmebuA2XCkZOdthvMWC9zb4=;
+        b=KP7CW5tAuKK2GLWkOhXixaxYhsLkIgmqDx373gqHEaQImwUaqRQCypSp6iHYmH9Jtd
+         1YXpx2tazlWq7QgppjaERv9NSIQMi005ctyW41gNTMGdmjf4+Fpdpi0i5y2aYuihHJFM
+         I97j0UWfMjdaU0Xg2oqh5NzPfVGg7kFrEs9rJlx7D6ndUaAGAjhi1B+TYoxoQKDKMnho
+         mX7dXuGi60EQwiyEnS7h2ZXy5vH6Ne+JSKe0sRQeqCCEvA+RszvUurijLoujOUczcR/F
+         47QYFii59lD9xEiJ0fp2UKvOi7jIXW4Fh8myLQ2gvqieINF6Vk+0nFpvF1YxE8lHYvrj
+         BNxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Da2tkZhxp36WWIM5SU4wWRnWrL+fbZs7REwsgJam7ZQ=;
-        b=JO7KY24cK6qlP+MaJXUMypghc1aH8DTWDqJLMAP2hSUm1CP0JyM00cFr0dWO8fj6yx
-         MKpLOCnbRDRvajPppP/Zn9I2bjdwpGs5SJxIsQ+PyMra93TKxP3CYUe93B2tnwSA24hP
-         yNsQ+c6mCAVIE+/OPEeCAM9Oax20Hbi6sUtLDhCfiWqC24ZGpBQzonFUYmLM7Oo/m/97
-         6qqcFvNKG/KSsrqLC767tnsHZ7FS9THuhabQY3QGDlbaQqJ09WaQr06VhBINpXwFRMQb
-         4hDEZwxNlEfoA9pvPDlviFD954YryCcULumfG1S0+VPGpQTd68UujzgTMxftE9nOAZqN
-         08bg==
-X-Gm-Message-State: AOAM532jxGiq47B/utf5vJ2tVW+v/3GLPyBqqRnreKq81c9dnGhcc0Gm
-        eK+CggF9QIpAEFKJ1k0kZw==
-X-Google-Smtp-Source: ABdhPJwg0Bs8T3eqvmOkVd+YCSi+G7i0B+ClGVozwdpkm7Ok6mUVGyf25q1e54in3JRQd8S88Lf8gg==
-X-Received: by 2002:a0c:ab55:: with SMTP id i21mr71409390qvb.139.1594417281580;
-        Fri, 10 Jul 2020 14:41:21 -0700 (PDT)
-Received: from localhost.localdomain (c-76-119-149-155.hsd1.ma.comcast.net. [76.119.149.155])
-        by smtp.gmail.com with ESMTPSA id 2sm8652249qka.42.2020.07.10.14.41.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jul 2020 14:41:21 -0700 (PDT)
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>
-Cc:     Peilin Ye <yepeilin.cs@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=HEbLwZa+8AgiE1sTsi+5dmebuA2XCkZOdthvMWC9zb4=;
+        b=qSobkf/Q85zEnJ/2sBc6rrMT2XUAG2NEEhRMj0RTkBv1mM6mOZvxeDPrcfw4pW4jk+
+         D/FOzKPKR6vhS1uRAD++RBjXDb3yaO9y5MCUTkNPWWQmH5FxE2a1wLJoE35dyOBYqRvy
+         kj8KIUBPQTxdNPn1tN/Q97/UPx+7Falr06j6QX9kDAL5cAcyq9LLlu74ZOS0Fkgt9E4n
+         /zE1wU5+cqC8kEYrBLH4cN76vDKo2bDHsCjKXGcg2MNasjoLeWAy0w3MyVwJkPHJ4z0x
+         NuwtPPRSCamVSstgNbXxm/9fbmPlwxE4KPaaOTDBFQCmgakjdVJomG5eJGX9zxXuix14
+         Dsig==
+X-Gm-Message-State: AOAM530tWMYe1Lhzms88xQgxdj7Uyy6Od3Wb1e3K0xoCUMjQwATVaLuC
+        CEkunkTnG1H2uXgTV5BzE+0sVqTqDRi98w==
+X-Google-Smtp-Source: ABdhPJzFJUGBCPAOYmLYSDS91PNlB5l/NXZG/EQGYdtnFen+q7UFpF7WUfEaLVIXb9q4EI1/CogbAQ==
+X-Received: by 2002:adf:ce90:: with SMTP id r16mr68475674wrn.408.1594420908598;
+        Fri, 10 Jul 2020 15:41:48 -0700 (PDT)
+Received: from net.saheed (54007186.dsl.pool.telekom.hu. [84.0.113.134])
+        by smtp.gmail.com with ESMTPSA id c25sm10626843wml.18.2020.07.10.15.41.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Jul 2020 15:41:48 -0700 (PDT)
+Subject: Re: [PATCH 5/11 RFC] PCI: pciehp: Make "Power On" the default
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     bjorn@helgaas.com, skhan@linuxfoundation.org,
+        linux-pci@vger.kernel.org,
         linux-kernel-mentees@lists.linuxfoundation.org,
         linux-kernel@vger.kernel.org
-Subject: [Linux-kernel-mentees] [PATCH 1/2] net/bluetooth: Prevent out-of-bounds read in hci_inquiry_result_evt()
-Date:   Fri, 10 Jul 2020 17:39:18 -0400
-Message-Id: <3f69f09d6eb0bc1430cae2894c635252a1cb09e1.1594414498.git.yepeilin.cs@gmail.com>
-X-Mailer: git-send-email 2.25.1
+References: <20200710001406.GA30420@bjorn-Precision-5520>
+From:   Saheed Bolarinwa <refactormyself@gmail.com>
+Message-ID: <ee4e0e13-baed-9800-8ff7-a91186bf1f8a@gmail.com>
+Date:   Fri, 10 Jul 2020 23:42:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200710001406.GA30420@bjorn-Precision-5520>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Check `num_rsp` before using it as for-loop counter.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
----
- net/bluetooth/hci_event.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 7/10/20 2:14 AM, Bjorn Helgaas wrote:
+> On Mon, Jul 06, 2020 at 11:31:15AM +0200, Saheed Olayemi Bolarinwa wrote:
+>> From: Bolarinwa Olayemi Saheed <refactormyself@gmail.com>
+>>
+>> The default case of the switch statement is redundant since
+>> PCI_EXP_SLTCTL_PCC is only a single bit. pcie_capability_read_word()
+>> currently causes "On" value to be set if it fails. Patch 11/11
+>> changes the behaviour of pcie_capability_read_word() so on falure the
+>> "Off" value will be set.
+> s/falure/failure/
+>
+> Split this into two patches.  The removal of the default case should
+> be in its own patch to make it trivial to review.
+>
+Thank you for the review. It is now split into two in the version 3 
+which I just sent.
 
-diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-index 03a0759f2fc2..8b3736c83b8e 100644
---- a/net/bluetooth/hci_event.c
-+++ b/net/bluetooth/hci_event.c
-@@ -2517,7 +2517,7 @@ static void hci_inquiry_result_evt(struct hci_dev *hdev, struct sk_buff *skb)
- 
- 	BT_DBG("%s num_rsp %d", hdev->name, num_rsp);
- 
--	if (!num_rsp)
-+	if (!num_rsp || skb->len < num_rsp * sizeof(*info) + 1)
- 		return;
- 
- 	if (hci_dev_test_flag(hdev, HCI_PERIODIC_INQ))
--- 
-2.25.1
+- Saheed
 
