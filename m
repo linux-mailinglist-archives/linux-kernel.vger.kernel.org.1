@@ -2,165 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75CD021BC8C
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 19:47:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BC2D21BC6A
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 19:40:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727844AbgGJRrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 13:47:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726820AbgGJRrB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 13:47:01 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07FB1C08C5DC
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 10:47:01 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id t9so3677796lfl.5
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 10:47:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=m/CMHk4w6+cNFzgYJXIzp3UU76Y8y9UeHEGOkUVbXTU=;
-        b=ILDYVm0LcXLZZrfmAxtURkQprTX9skjAShvhFipQKJAKbFGyoFEeZfJniL4uh1sJtQ
-         6GQsddyIJ/M36EE7v0/XiEEynwtBixNj1dz7zWXkp46lP3Sbmpdp/lJneh5gVSnuRIoP
-         uDZ95SWe4tPPb6v31ajhDIGF2FUlWNiVlWd+8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=m/CMHk4w6+cNFzgYJXIzp3UU76Y8y9UeHEGOkUVbXTU=;
-        b=rl3Cu49tVxkL9WOTXYkVAcObu5RjIRQKg/LNai6ojRrKujAo/PAuDQ1dYwCkg5sYjU
-         SXor94IQt01WpFz657ieCExxJrD6S3IHXqnWYNwA3h2QnD//SPsF4HFt/uNcG8G8ynb1
-         8vfEDAkUq/eiPv9QwvHLngae7oqvvHRb2MuVz9Tul5rfX8hS0ytu8A/Stg2Js15wYRri
-         qf4g6uWz5Sdu9kdY3fFLXpI+irQXfGjLiMtR8FyK/3XoO1lTv3vwSLkUUZtaPfJ7BLGX
-         baPLw1oErXQrwzqGIeRPRI29kMCXc9RjBPmIzT4fSCFBUZE3b3xAX2o1RoA39ocE+4N7
-         OLbg==
-X-Gm-Message-State: AOAM5306LkAIuXDY5vr8ZjKozxK072ui3n2X7HlQ0M8aWqZ2bIXOqPQW
-        dNFSOQPUzgHb6QX/qK6uTpjq91t8UX8=
-X-Google-Smtp-Source: ABdhPJzmcWNZP3D/rIuLnAIW9QBcxwfOqxYmdGBYY8+wrNchYFNnrHuHTdpHxrFzbLOmMM7XbAP/SA==
-X-Received: by 2002:a19:83c7:: with SMTP id f190mr44731849lfd.14.1594403219184;
-        Fri, 10 Jul 2020 10:46:59 -0700 (PDT)
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
-        by smtp.gmail.com with ESMTPSA id e10sm2101663ljb.118.2020.07.10.10.46.58
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Jul 2020 10:46:58 -0700 (PDT)
-Received: by mail-lj1-f169.google.com with SMTP id h19so7364747ljg.13
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 10:46:58 -0700 (PDT)
-X-Received: by 2002:ac2:44b2:: with SMTP id c18mr42517426lfm.99.1594402767378;
- Fri, 10 Jul 2020 10:39:27 -0700 (PDT)
+        id S1728294AbgGJRjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 13:39:48 -0400
+Received: from smtp.al2klimov.de ([78.46.175.9]:60576 "EHLO smtp.al2klimov.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727866AbgGJRjr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 13:39:47 -0400
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id 1CD87BC078;
+        Fri, 10 Jul 2020 17:39:43 +0000 (UTC)
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+To:     valentina.manea.m@gmail.com, shuah@kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Subject: [PATCH] USB OVER IP DRIVER: Replace HTTP links with HTTPS ones
+Date:   Fri, 10 Jul 2020 19:39:31 +0200
+Message-Id: <20200710173931.29270-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
-References: <20200626200033.1528052-1-dianders@chromium.org> <20200626125844.2.Iabd56347670b9e4e916422773aba5b27943d19ee@changeid>
-In-Reply-To: <20200626125844.2.Iabd56347670b9e4e916422773aba5b27943d19ee@changeid>
-From:   Evan Green <evgreen@chromium.org>
-Date:   Fri, 10 Jul 2020 10:38:50 -0700
-X-Gmail-Original-Message-ID: <CAE=gft504BAm2sr0S32kSO2xoQWhjrXLXa9+uqgkcPO6wjNhrg@mail.gmail.com>
-Message-ID: <CAE=gft504BAm2sr0S32kSO2xoQWhjrXLXa9+uqgkcPO6wjNhrg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] serial: qcom_geni_serial: Always use 4 bytes per TX
- FIFO word
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        daniel.thompson@linaro.org,
-        Akash Asthana <akashast@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        kgdb-bugreport@lists.sourceforge.net,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        sumit.garg@linaro.org, Vivek Gautam <vivek.gautam@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Jiri Slaby <jslaby@suse.com>,
-        LKML <linux-kernel@vger.kernel.org>, linux-serial@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: ++++++
+X-Spam-Level: ******
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+X-Spam: Yes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 26, 2020 at 1:01 PM Douglas Anderson <dianders@chromium.org> wrote:
->
-> The geni serial driver had a rule that we'd only use 1 byte per FIFO
-> word for the TX FIFO if we were being used for the serial console.
-> This is ugly and a bit of a pain.  It's not too hard to fix, so fix
-> it.
->
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
->
->  drivers/tty/serial/qcom_geni_serial.c | 57 +++++++++++++++++----------
->  1 file changed, 37 insertions(+), 20 deletions(-)
->
-> diff --git a/drivers/tty/serial/qcom_geni_serial.c b/drivers/tty/serial/qcom_geni_serial.c
-> index 4610e391e886..583d903321b5 100644
-> --- a/drivers/tty/serial/qcom_geni_serial.c
-> +++ b/drivers/tty/serial/qcom_geni_serial.c
-> @@ -103,12 +103,18 @@
->  #define DEFAULT_IO_MACRO_IO2_IO3_MASK          GENMASK(15, 4)
->  #define IO_MACRO_IO2_IO3_SWAP          0x4640
->
-> +/* We always configure 4 bytes per FIFO word */
-> +#define BYTES_PER_FIFO_WORD            4
-> +
->  struct qcom_geni_private_data {
->         /* NOTE: earlycon port will have NULL here */
->         struct uart_driver *drv;
->
->         u32 poll_cached_bytes;
->         unsigned int poll_cached_bytes_cnt;
-> +
-> +       u32 write_cached_bytes;
-> +       unsigned int write_cached_bytes_cnt;
->  };
->
->  struct qcom_geni_serial_port {
-> @@ -121,8 +127,6 @@ struct qcom_geni_serial_port {
->         bool setup;
->         int (*handle_rx)(struct uart_port *uport, u32 bytes, bool drop);
->         unsigned int baud;
-> -       unsigned int tx_bytes_pw;
-> -       unsigned int rx_bytes_pw;
->         void *rx_fifo;
->         u32 loopback;
->         bool brk;
-> @@ -390,13 +394,25 @@ static void qcom_geni_serial_poll_put_char(struct uart_port *uport,
->  #ifdef CONFIG_SERIAL_QCOM_GENI_CONSOLE
->  static void qcom_geni_serial_wr_char(struct uart_port *uport, int ch)
->  {
-> -       writel(ch, uport->membase + SE_GENI_TX_FIFOn);
-> +       struct qcom_geni_private_data *private_data = uport->private_data;
-> +
-> +       private_data->write_cached_bytes =
-> +               (private_data->write_cached_bytes >> 8) | (ch << 24);
-> +       private_data->write_cached_bytes_cnt++;
-> +
-> +       if (private_data->write_cached_bytes_cnt == BYTES_PER_FIFO_WORD) {
-> +               writel(private_data->write_cached_bytes,
-> +                      uport->membase + SE_GENI_TX_FIFOn);
-> +               private_data->write_cached_bytes_cnt = 0;
-> +       }
->  }
->
->  static void
->  __qcom_geni_serial_console_write(struct uart_port *uport, const char *s,
->                                  unsigned int count)
->  {
-> +       struct qcom_geni_private_data *private_data = uport->private_data;
-> +
->         int i;
->         u32 bytes_to_send = count;
->
-> @@ -431,6 +447,15 @@ __qcom_geni_serial_console_write(struct uart_port *uport, const char *s,
->                                                         SE_GENI_M_IRQ_CLEAR);
->                 i += chars_to_write;
->         }
-> +
-> +       if (private_data->write_cached_bytes_cnt) {
-> +               private_data->write_cached_bytes >>= BITS_PER_BYTE *
-> +                       (BYTES_PER_FIFO_WORD - private_data->write_cached_bytes_cnt);
-> +               writel(private_data->write_cached_bytes,
-> +                      uport->membase + SE_GENI_TX_FIFOn);
-> +               private_data->write_cached_bytes_cnt = 0;
-> +       }
+Rationale:
+Reduces attack surface on kernel devs opening the links for MITM
+as HTTPS traffic is much harder to manipulate.
 
-How does this not end up sending stray zeros? In other words, how does
-the hardware know which bytes of this word are valid?
+Deterministic algorithm:
+For each file:
+  If not .svg:
+    For each line:
+      If doesn't contain `\bxmlns\b`:
+        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+            If both the HTTP and HTTPS versions
+            return 200 OK and serve the same content:
+              Replace HTTP with HTTPS.
+
+Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+---
+ Continuing my work started at 93431e0607e5.
+ See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+ (Actually letting a shell for loop submit all this stuff for me.)
+
+ If there are any URLs to be removed completely or at least not HTTPSified:
+ Just clearly say so and I'll *undo my change*.
+ See also: https://lkml.org/lkml/2020/6/27/64
+
+ If there are any valid, but yet not changed URLs:
+ See: https://lkml.org/lkml/2020/6/26/837
+
+ If you apply the patch, please let me know.
+
+
+ tools/usb/usbip/vudc/vudc_server_example.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/usb/usbip/vudc/vudc_server_example.sh b/tools/usb/usbip/vudc/vudc_server_example.sh
+index 2736be64f203..fed53f51ee01 100755
+--- a/tools/usb/usbip/vudc/vudc_server_example.sh
++++ b/tools/usb/usbip/vudc/vudc_server_example.sh
+@@ -24,7 +24,7 @@
+ # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ # OTHER DEALINGS IN THE SOFTWARE.
+ #
+-# For more information, please refer to <http://unlicense.org/>
++# For more information, please refer to <https://unlicense.org/>
+ ################################################################################
+ 
+ ################################################################################
+-- 
+2.27.0
+
