@@ -2,73 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB50B21B9D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 17:47:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 902B321B9C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 17:45:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728037AbgGJPrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 11:47:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726820AbgGJPrV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 11:47:21 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2C3CC08C5CE
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 08:47:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=vCsywWVyci9HlOV4imkRZosCZdjmA3MYbicJkkOvp3w=; b=XJBiP+/bOFSCF5Jy4+oXiTpcf/
-        GfMLG7vgyn7RjT7wuZPO8EsK9vVW7VtCui1m4vtMZAQdBruj/JiBXv7AFFNjDEDGLGjDH6d2k/DR4
-        cQlTbrXt2FbA4yBDNeXJ6lWyyxsFbExvrx45MCi7plNEPHHN+/8Yj1yolOrDVIKoC44gayFlMF5U9
-        j8UZ1oPrmmT/sJHAPzkcvQDhLuqfa9cTKyEFr17FCcqDaND4r2xEjp+Ty6H/6Rp58TUJfUdWijSiM
-        oQfVYCo1N21McJfzmukC9lMz/NJTrA2/Z6kMPw+miERDkz2u3sRTaz2LZY7mjMDDIiWWAEvD/m4FU
-        RmQcc/eQ==;
-Received: from 089144201169.atnat0010.highway.a1.net ([89.144.201.169] helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jtvF7-0001vd-8z; Fri, 10 Jul 2020 15:47:17 +0000
-Date:   Fri, 10 Jul 2020 17:45:06 +0200
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
-Subject: [GIT PULL] dma-mapping fixes for 5.8
-Message-ID: <20200710154506.GA540305@infradead.org>
+        id S1727990AbgGJPpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 11:45:30 -0400
+Received: from foss.arm.com ([217.140.110.172]:53414 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726820AbgGJPpa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 11:45:30 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9EA7C1FB;
+        Fri, 10 Jul 2020 08:45:29 -0700 (PDT)
+Received: from [10.37.12.58] (unknown [10.37.12.58])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4BBB63F8F8;
+        Fri, 10 Jul 2020 08:45:26 -0700 (PDT)
+Subject: Re: [PATCH 1/2] memory: samsung: exynos5422-dmc: Adjust polling
+ interval and uptreshold
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, willy.mh.wolff.ml@gmail.com,
+        k.konieczny@samsung.com, b.zolnierkie@samsung.com,
+        chanwoo@kernel.org, myungjoo.ham@samsung.com,
+        kyungmin.park@samsung.com, s.nawrocki@samsung.com, kgene@kernel.org
+References: <20200708153420.29484-1-lukasz.luba@arm.com>
+ <CGME20200708153448epcas1p438fae2327ac69fcc1a78d9c73cfda501@epcas1p4.samsung.com>
+ <20200708153420.29484-2-lukasz.luba@arm.com>
+ <fa3f651a-3c2b-188b-e2dc-4fd05ce4a1b7@samsung.com>
+ <a676fc18-6f1f-8502-e8d5-5ad1ccf0eec6@arm.com>
+ <c016e256-65a6-8075-d88d-c3fad4815b4d@samsung.com>
+ <20200710131921.GA23039@pi3> <4bfa227e-3a6b-dfe2-140b-b402dea52231@arm.com>
+ <20200710144947.GB23140@pi3>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <df121ab9-a84e-41ac-057a-e7e9d0cbab48@arm.com>
+Date:   Fri, 10 Jul 2020 16:45:24 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20200710144947.GB23140@pi3>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 9ebcfadb0610322ac537dd7aa5d9cbc2b2894c68:
 
-  Linux 5.8-rc3 (2020-06-28 15:00:24 -0700)
 
-are available in the Git repository at:
+On 7/10/20 3:49 PM, Krzysztof Kozlowski wrote:
+> On Fri, Jul 10, 2020 at 02:41:28PM +0100, Lukasz Luba wrote:
+>>
+>>
+>> On 7/10/20 2:19 PM, Krzysztof Kozlowski wrote:
+>>> On Fri, Jul 10, 2020 at 03:13:18PM +0200, Marek Szyprowski wrote:
+>   > In such case, maybe as you said, let's switch to polling mode
+>>> unconditionally?
+>>
+>> I can make happen that the polling mode will be unconditionally
+>> set as default.
+>>
+>> Do you think that the interrupt mode code can still stay in the
+>> driver, because maybe in future could be fixed?
+> 
+> How interrupt mode would exist in such case? Or rather: how would it be
+> used? There is no point to keep dead code and code once removed, can be
+> easily brought back.
 
-  git://git.infradead.org/users/hch/dma-mapping.git tags/dma-mapping-5.8-5
+I can make a module param i.e. irq-mode=1, while in default where
+the user don't provide param, we use polling mode. Then I don't have to
+remove DT interrupts and the related code from the driver.
 
-for you to fetch changes up to 68d237056e007c88031d80900cdba0945121a287:
-
-  scatterlist: protect parameters of the sg_table related macros (2020-07-06 16:07:25 +0200)
-
-----------------------------------------------------------------
-dma-mapping fixes for 5.8
-
- - add a warning when the atomic pool is depleted (David Rientjes)
- - protect the parameters of the new scatterlist helper macros
-   (Marek Szyprowski )
-
-----------------------------------------------------------------
-David Rientjes (1):
-      dma-mapping: warn when coherent pool is depleted
-
-Marek Szyprowski (1):
-      scatterlist: protect parameters of the sg_table related macros
-
- include/linux/scatterlist.h | 8 ++++----
- kernel/dma/pool.c           | 6 +++++-
- 2 files changed, 9 insertions(+), 5 deletions(-)
+Regards,
+Lukasz
