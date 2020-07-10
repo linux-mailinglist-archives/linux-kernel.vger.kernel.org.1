@@ -2,105 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A02521AF80
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 08:34:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06E7E21AF6F
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 08:31:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727915AbgGJGeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 02:34:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727871AbgGJGd7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 02:33:59 -0400
-Received: from vultr.net.flygoat.com (vultr.net.flygoat.com [IPv6:2001:19f0:6001:3633:5400:2ff:fe8c:553])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6C08C08C5CE
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 23:33:59 -0700 (PDT)
-Received: from localhost.localdomain (unknown [IPv6:2001:da8:20f:4430:250:56ff:fe9a:7470])
-        by vultr.net.flygoat.com (Postfix) with ESMTPSA id EED5E1FF18;
-        Fri, 10 Jul 2020 06:33:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com; s=vultr;
-        t=1594362838; bh=k4tTRKe0YcW9MuCAbiRePPA3r0/yfJjA+o3AHhYVve0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Hx7glFFaP226ppsZTavLI+KYfcucuncxjrYH3DHF6fg+JZspH/AV0K4mDoLoCjyii
-         pX89roUu8CB8UCCSo1Rs37Xf6qbIHfodqpNoUkGM5tRKoOUUi/mX/ZjRO/yn7mTPaE
-         zP/FY3rqQ5qREF31tnubfVBnD32BvOWBecQkYytS5wQLrqBQgPkPOSDrQ+2O+2toyI
-         /h6S/l9a/PQCTk5g6htWa5h/h+n2di1BG4VsvZf7OCIgI7l8iScduZ2ESr61OyFsso
-         21/QFSwehpOrkBxXlARXmtNzTRaJmAWYizJhrMqQQyhc2ghKSMXYcP3hcACvnzjIEz
-         YMKwj/+L0D1Vw==
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-To:     linux-mips@vger.kernel.org
-Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Paul Burton <paulburton@kernel.org>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Huacai Chen <chenhc@lemote.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: [RFC PATCH 3/3] MIPS: KVM: Remove outdated README
-Date:   Fri, 10 Jul 2020 14:30:18 +0800
-Message-Id: <20200710063047.154611-4-jiaxun.yang@flygoat.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200710063047.154611-1-jiaxun.yang@flygoat.com>
-References: <20200710063047.154611-1-jiaxun.yang@flygoat.com>
+        id S1727003AbgGJGbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 02:31:12 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:7287 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725851AbgGJGbL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 02:31:11 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 65F1A16FA19CD90A6785;
+        Fri, 10 Jul 2020 14:31:07 +0800 (CST)
+Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server (TLS) id 14.3.487.0; Fri, 10 Jul
+ 2020 14:31:05 +0800
+Subject: Re: [f2fs-dev] [PATCH] f2fs: change the way of handling range.len in
+ F2FS_IOC_SEC_TRIM_FILE
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+CC:     Daeho Jeong <daeho43@gmail.com>,
+        Daeho Jeong <daehojeong@google.com>, <kernel-team@android.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>
+References: <20200710021505.2405872-1-daeho43@gmail.com>
+ <20200710030246.GA545837@google.com>
+ <62c9dd7a-5d18-8bb6-8e43-c055fcff51cc@huawei.com>
+ <20200710033100.GE545837@google.com>
+ <ede6620c-6fc9-797d-e3ea-e630eb76b309@huawei.com>
+ <20200710035215.GI545837@google.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <34cad197-75eb-d7c2-4465-261d5debfd3b@huawei.com>
+Date:   Fri, 10 Jul 2020 14:31:03 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200710035215.GI545837@google.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.134.22.195]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This file was created long ago and information inside is
-obviously outdated.
+On 2020/7/10 11:52, Jaegeuk Kim wrote:
+> On 07/10, Chao Yu wrote:
+>> On 2020/7/10 11:31, Jaegeuk Kim wrote:
+>>> On 07/10, Chao Yu wrote:
+>>>> On 2020/7/10 11:02, Jaegeuk Kim wrote:
+>>>>> On 07/10, Daeho Jeong wrote:
+>>>>>> From: Daeho Jeong <daehojeong@google.com>
+>>>>>>
+>>>>>> Changed the way of handling range.len of F2FS_IOC_SEC_TRIM_FILE.
+>>>>>>  1. Added -1 value support for range.len to signify the end of file.
+>>>>>>  2. If the end of the range passes over the end of file, it means until
+>>>>>>     the end of file.
+>>>>>>  3. ignored the case of that range.len is zero to prevent the function
+>>>>>>     from making end_addr zero and triggering different behaviour of
+>>>>>>     the function.
+>>>>>>
+>>>>>> Signed-off-by: Daeho Jeong <daehojeong@google.com>
+>>>>>> ---
+>>>>>>  fs/f2fs/file.c | 16 +++++++---------
+>>>>>>  1 file changed, 7 insertions(+), 9 deletions(-)
+>>>>>>
+>>>>>> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+>>>>>> index 368c80f8e2a1..1c4601f99326 100644
+>>>>>> --- a/fs/f2fs/file.c
+>>>>>> +++ b/fs/f2fs/file.c
+>>>>>> @@ -3813,21 +3813,19 @@ static int f2fs_sec_trim_file(struct file *filp, unsigned long arg)
+>>>>>>  	file_start_write(filp);
+>>>>>>  	inode_lock(inode);
+>>>>>>  
+>>>>>> -	if (f2fs_is_atomic_file(inode) || f2fs_compressed_file(inode)) {
+>>>>>> +	if (f2fs_is_atomic_file(inode) || f2fs_compressed_file(inode) ||
+>>>>>> +			range.start >= inode->i_size) {
+>>>>>>  		ret = -EINVAL;
+>>>>>>  		goto err;
+>>>>>>  	}
+>>>>>>  
+>>>>>> -	if (range.start >= inode->i_size) {
+>>>>>> -		ret = -EINVAL;
+>>>>>> +	if (range.len == 0)
+>>>>>>  		goto err;
+>>>>>> -	}
+>>>>>>  
+>>>>>> -	if (inode->i_size - range.start < range.len) {
+>>>>>> -		ret = -E2BIG;
+>>>>>> -		goto err;
+>>>>>> -	}
+>>>>>> -	end_addr = range.start + range.len;
+>>>>>> +	if (range.len == (u64)-1 || inode->i_size - range.start < range.len)
+>>>>>> +		end_addr = inode->i_size;
+>>>>
+>>>> We can remove 'range.len == (u64)-1' condition since later condition can cover
+>>>> this?
+>>>>
+>>>>>
+>>>>> Hmm, what if there are blocks beyond i_size? Do we need to check i_blocks for
+>>>>
+>>>> The blocks beyond i_size will never be written, there won't be any valid message
+>>>> there, so we don't need to worry about that.
+>>>
+>>> I don't think we have a way to guarantee the order of i_size and block
+>>> allocation in f2fs. See f2fs_write_begin and f2fs_write_end.
+>>
+>> However, write_begin & write_end are covered by inode_lock, it could not be
+>> racy with inode size check in f2fs_sec_trim_file() as it hold inode_lock as
+>> well?
+> 
+> Like Daeho said, write_begin -> checkpoint -> power-cut can give bigger i_blocks
+> than i_size.
 
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
----
- arch/mips/kvm/00README.txt | 31 -------------------------------
- 1 file changed, 31 deletions(-)
- delete mode 100644 arch/mips/kvm/00README.txt
+The path won't, cp only persists reserved block in dnode rather than written
+data block in segment, because data will be copied to page cache after write_begin.
 
-diff --git a/arch/mips/kvm/00README.txt b/arch/mips/kvm/00README.txt
-deleted file mode 100644
-index 51617e481aa3..000000000000
---- a/arch/mips/kvm/00README.txt
-+++ /dev/null
-@@ -1,31 +0,0 @@
--KVM/MIPS Trap & Emulate Release Notes
--=====================================
--
--(1) KVM/MIPS should support MIPS32R2 and beyond. It has been tested on the following platforms:
--    Malta Board with FPGA based 34K
--    Sigma Designs TangoX board with a 24K based 8654 SoC.
--    Malta Board with 74K @ 1GHz
--
--(2) Both Guest kernel and Guest Userspace execute in UM.
--    Guest User address space:   0x00000000 -> 0x40000000
--    Guest Kernel Unmapped:      0x40000000 -> 0x60000000
--    Guest Kernel Mapped:        0x60000000 -> 0x80000000
--
--    Guest Usermode virtual memory is limited to 1GB.
--
--(2) 16K Page Sizes: Both Host Kernel and Guest Kernel should have the same page size, currently at least 16K.
--    Note that due to cache aliasing issues, 4K page sizes are NOT supported.
--
--(3) No HugeTLB Support
--    Both the host kernel and Guest kernel should have the page size set to 16K.
--    This will be implemented in a future release.
--
--(4) KVM/MIPS does not have support for SMP Guests
--    Linux-3.7-rc2 based SMP guest hangs due to the following code sequence in the generated TLB handlers:
--	LL/TLBP/SC.  Since the TLBP instruction causes a trap the reservation gets cleared
--	when we ERET back to the guest. This causes the guest to hang in an infinite loop.
--	This will be fixed in a future release.
--
--(5) Use Host FPU
--    Currently KVM/MIPS emulates a 24K CPU without a FPU.
--    This will be fixed in a future release
--- 
-2.27.0
+I think truncation path could as Daeho said:
 
+1. truncate -> i_size update however blocks wasn't truncated yet -> checkpoint -> recovery
+2. truncate failed -> i_size update however partial blocks was truncated -> fsync
+
+> 
+>>
+>>>
+>>>>
+>>>> Thanks,
+>>>>
+>>>>> ending criteria?
+>>>>>
+>>>>>> +	else
+>>>>>> +		end_addr = range.start + range.len;
+>>>>>>  
+>>>>>>  	to_end = (end_addr == inode->i_size);
+>>>>>>  	if (!IS_ALIGNED(range.start, F2FS_BLKSIZE) ||
+>>>>>> -- 
+>>>>>> 2.27.0.383.g050319c2ae-goog
+>>>>>>
+>>>>>>
+>>>>>>
+>>>>>> _______________________________________________
+>>>>>> Linux-f2fs-devel mailing list
+>>>>>> Linux-f2fs-devel@lists.sourceforge.net
+>>>>>> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+>>>>>
+>>>>>
+>>>>> _______________________________________________
+>>>>> Linux-f2fs-devel mailing list
+>>>>> Linux-f2fs-devel@lists.sourceforge.net
+>>>>> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+>>>>> .
+>>>>>
+>>> .
+>>>
+> .
+> 
