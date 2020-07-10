@@ -2,126 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4FD221B6DC
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 15:45:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4069921B6DD
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 15:45:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728277AbgGJNpN convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 10 Jul 2020 09:45:13 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:20362 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728260AbgGJNpF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 09:45:05 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06AD2jma124518;
-        Fri, 10 Jul 2020 09:44:57 -0400
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 326bpsd2yq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 10 Jul 2020 09:44:57 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06ADYktp029804;
-        Fri, 10 Jul 2020 13:44:55 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma05fra.de.ibm.com with ESMTP id 326bc90auh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 10 Jul 2020 13:44:55 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06ADiroA63308182
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 10 Jul 2020 13:44:53 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 17B18A405C;
-        Fri, 10 Jul 2020 13:44:53 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A2F2BA4054;
-        Fri, 10 Jul 2020 13:44:52 +0000 (GMT)
-Received: from localhost (unknown [9.102.22.220])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 10 Jul 2020 13:44:52 +0000 (GMT)
-Date:   Fri, 10 Jul 2020 19:14:47 +0530
-From:   "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
-Subject: Re: [PATCH] Replace HTTP links with HTTPS ones: kprobes
-To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     anil.s.keshavamurthy@intel.com, corbet@lwn.net,
-        davem@davemloft.net, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Ananth N Mavinakayanahalli <ananth@linux.ibm.com>
-References: <20200707194959.52487-1-grandmaster@al2klimov.de>
-        <20200708184201.611d929ae6017c87ea98b114@kernel.org>
-In-Reply-To: <20200708184201.611d929ae6017c87ea98b114@kernel.org>
+        id S1728301AbgGJNpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 09:45:23 -0400
+Received: from mail-eopbgr30125.outbound.protection.outlook.com ([40.107.3.125]:50564
+        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728256AbgGJNpU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 09:45:20 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZI/ORH2CYU8q1lk95q/06d7ZBlIf3Sh2H9zwna+gCmCNjeEMzHNnw6WPXOuwHfuyhQ7OoNUOKmCRUBWHpj+tiNuQyGMdgPeKKR5vao4L0OFli+pmuI35Mo5XZnWAXVDHrEbrlNdf1LF7lr3Iqmtb7jbWN+7ZMt6NGYZjGlGwJlSq/gxD+kqgV+SMoTPwDaNQxVTwXvWOWY2s1l21O5nmDYHZhrlxQ7aoqXQ/ZL7xo4bKzDzAImETMBe8FLrxfiXyStz4KHQLNgrh1VsyQ/l3SAvDP9y0EU0fcr84UtZi3wt6BD2kn/tyC4XdAQ70NIwnX8KSAcnQjEzFHwac6MQk4Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Qpd2uUPaqSozCmyeKhLS97Zygta7MdhckfKU9sl//Cw=;
+ b=goaczf3lur0KkDlpLiE3e6qYY0qwRPkDWOT8OHTZFJ6mMsQ27ILuAggUvEiQSzdZ5FPr2PBaZf20ettUFubsqLbgVNvno6N2ZOMn9hnvFUNvlCvPnp9EoyPLVkmx6tdyL2xx5iLk/fJpFVv7y+lQ7uKJO5GZCxNOrssXrdv7RX1+MEiPusqBeNddyitq8ZzryePnjw6h2k4HpDMOFvEgGVDdTHr4wc2j76g6157Lg96SXaRuflfjU53RtzhAj/6qIhCuBgqf3NV4N9KN9jOAQAZ4i8x9936VT2/xQOA2tTo0NNWbVN17ErQkETrfegm0Fe00tmznSgWFLNEDEgltfg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=toradex.com; dmarc=pass action=none header.from=toradex.com;
+ dkim=pass header.d=toradex.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=toradex.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Qpd2uUPaqSozCmyeKhLS97Zygta7MdhckfKU9sl//Cw=;
+ b=Vl8XVPArPuMVTBoEmhLo7GvHx0UBYKT1pKUVHd5rqxoUPyeP4sqgEYfOTjfH8K0+zQy9ONViVN+nrHj3RjW5+fpzYh/uXkg367Svut91uPq2RSSI0sLpWe5kWNTngPEiRx2SFLb9shV+CioZGP6xsy8ykesxX5/Ed24NlhpQPLU=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=toradex.com;
+Received: from AM0PR05MB6002.eurprd05.prod.outlook.com (2603:10a6:208:129::19)
+ by AM4PR05MB3363.eurprd05.prod.outlook.com (2603:10a6:205:10::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.21; Fri, 10 Jul
+ 2020 13:45:15 +0000
+Received: from AM0PR05MB6002.eurprd05.prod.outlook.com
+ ([fe80::343d:a818:80a7:3e6]) by AM0PR05MB6002.eurprd05.prod.outlook.com
+ ([fe80::343d:a818:80a7:3e6%7]) with mapi id 15.20.3174.022; Fri, 10 Jul 2020
+ 13:45:15 +0000
+X-Gm-Message-State: AOAM532P03WdI2WDjcKr5RMNJ44/lV8XuuQAoEYfioR/5ftYfKX9RJj/
+        8nKETKCYW22nKZHzvY4wjAM7Dpte2Oeu3rbAv00=
+X-Google-Smtp-Source: ABdhPJzrVZzrQQ3IreQoVEx9rLcjQ0aExSWAX3ApSKTQcIwqwcSYN1KQaIzIn3gNdGu2IzP5JfEDnDDPguLD1Phr5FA=
+X-Received: by 2002:ac8:4b4f:: with SMTP id e15mr74159750qts.305.1594388711736;
+ Fri, 10 Jul 2020 06:45:11 -0700 (PDT)
+References: <20200710132423.497230-1-philippe.schenker@toradex.com> <20200710132423.497230-2-philippe.schenker@toradex.com>
+In-Reply-To: <20200710132423.497230-2-philippe.schenker@toradex.com>
+From:   Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
+Date:   Fri, 10 Jul 2020 16:45:00 +0300
+X-Gmail-Original-Message-ID: <CAGgjyvE2DX0ntVDtM0_dDRE1j-VWofNXNkoccuDXuk1Q6A7ytw@mail.gmail.com>
+Message-ID: <CAGgjyvE2DX0ntVDtM0_dDRE1j-VWofNXNkoccuDXuk1Q6A7ytw@mail.gmail.com>
+Subject: Re: [PATCH 2/3] ARM: dts: colibri-imx6: add usb dual-role switch capability
+To:     Philippe Schenker <philippe.schenker@toradex.com>
+Cc:     devicetree@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-ClientProxiedBy: MN2PR19CA0009.namprd19.prod.outlook.com
+ (2603:10b6:208:178::22) To AM0PR05MB6002.eurprd05.prod.outlook.com
+ (2603:10a6:208:129::19)
 MIME-Version: 1.0
-User-Agent: astroid/v0.15-13-gb675b421
- (https://github.com/astroidmail/astroid)
-Message-Id: <1594388442.4mjtjyic5z.naveen@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8BIT
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-10_07:2020-07-10,2020-07-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 spamscore=0
- mlxlogscore=999 impostorscore=0 priorityscore=1501 lowpriorityscore=0
- bulkscore=0 malwarescore=0 mlxscore=0 phishscore=0 adultscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007100093
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mail-qt1-f178.google.com (209.85.160.178) by MN2PR19CA0009.namprd19.prod.outlook.com (2603:10b6:208:178::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.20 via Frontend Transport; Fri, 10 Jul 2020 13:45:15 +0000
+Received: by mail-qt1-f178.google.com with SMTP id e12so4379253qtr.9;        Fri, 10 Jul 2020 06:45:15 -0700 (PDT)
+X-Gm-Message-State: AOAM532P03WdI2WDjcKr5RMNJ44/lV8XuuQAoEYfioR/5ftYfKX9RJj/
+        8nKETKCYW22nKZHzvY4wjAM7Dpte2Oeu3rbAv00=
+X-Google-Smtp-Source: ABdhPJzrVZzrQQ3IreQoVEx9rLcjQ0aExSWAX3ApSKTQcIwqwcSYN1KQaIzIn3gNdGu2IzP5JfEDnDDPguLD1Phr5FA=
+X-Received: by 2002:ac8:4b4f:: with SMTP id
+ e15mr74159750qts.305.1594388711736; Fri, 10 Jul 2020 06:45:11 -0700 (PDT)
+X-Gmail-Original-Message-ID: <CAGgjyvE2DX0ntVDtM0_dDRE1j-VWofNXNkoccuDXuk1Q6A7ytw@mail.gmail.com>
+X-Originating-IP: [209.85.160.178]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c2d85eb8-a256-459f-e523-08d824d779cd
+X-MS-TrafficTypeDiagnostic: AM4PR05MB3363:
+X-Microsoft-Antispam-PRVS: <AM4PR05MB336348B002C41BF3342B01E0F9650@AM4PR05MB3363.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 3m6jKf3Rxsnmw+ftRgTSVdU/MZ2DUpf3hVuC7xzIveCV9t9of3MxEBfBWAzoZtEWzN8Ay99jy5nltYuxY2AQdmo/RWIVWFFTUJC0RSL4cZ/CIisEm2xIH1qHbsK4PDc86v4aMjKXAms7xemFc7ZM2U1RD6j5l7ArvtQd7EcNHIH9Xy5nFGleUg8+nR+s/We89tab4bEe9+O98BBREq9JfYJZaw1BpmwQGea3DNGkK49JHhRDklf/e0YHwol7/RfqNkM2twqtRrbrXuOroJUhtI0Gvf8k33Mlqr0HnvCddA3rDT9lU69Nu0wz3C83QWqA
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR05MB6002.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(39850400004)(346002)(366004)(136003)(376002)(450100002)(8936002)(8676002)(5660300002)(4326008)(9686003)(83380400001)(6862004)(6666004)(6636002)(66556008)(66476007)(66946007)(86362001)(44832011)(53546011)(2906002)(478600001)(55446002)(26005)(52116002)(42186006)(55236004)(54906003)(186003)(316002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: 5V0n1qkI6ItKaq/qgEN7tJLJUaEZ5tXlZxdCNfDnR0sE22RCAtcn/WmYkG4dZBsEFkAD8MnQWzXsktBgCBwVsxeTWBGe2FKK1NT1XVoQMc6+po84IeqFdw4F2SPrS1tVa32hxMuODWY5g6Li2QqpQcNvIIQo9cB4xZIb5aC+J5kovOXWbOGtN2ZmwUjlkpm5IYXMYkXREPGw5638wz3zd6lqUurzyxte0Av78fZHa1p2ookC3y4QGyDqZEbaP+F2ZLnB+gPQyGg0H+dL7KZ6gjB6hIy7OSo8rDviNDYQiGk8fnrpO6Nb2jJymmAbLNe5yuTjJ4Ig5A1uY5NIYG+7m3YqSa/DI6TMxOUzNZzJj62GI938wY0Q16MGRfILWLdzts50f+FuCd8YWM+UwOU4P3wRfZ9BmxXsvQYRngGbMjpR3WmVsLFvjQT7L2SdbH5D648RBYWGk27bLVkOBNB58/PWqlu637xrDw/TSD73H/E=
+X-OriginatorOrg: toradex.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c2d85eb8-a256-459f-e523-08d824d779cd
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR05MB6002.eurprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jul 2020 13:45:15.4449
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: d9995866-0d9b-4251-8315-093f062abab4
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: kem6mo+twIM22dm3+VtY2I06Ww7a7YDcg96YArnf8Wmmsnch1pMyC3CXvCn5rcpgSlm2vvqEhKNjc/hgFNQP1IlCNFbNWWKAFQiVGsT4AQg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM4PR05MB3363
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Masami Hiramatsu wrote:
-> On Tue,  7 Jul 2020 21:49:59 +0200
-> "Alexander A. Klimov" <grandmaster@al2klimov.de> wrote:
-> 
->> Rationale:
->> Reduces attack surface on kernel devs opening the links for MITM
->> as HTTPS traffic is much harder to manipulate.
->> 
->> Deterministic algorithm:
->> For each file:
->>   If not .svg:
->>     For each line:
->>       If doesn't contain `\bxmlns\b`:
->>         For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
->>           If both the HTTP and HTTPS versions
->>           return 200 OK and serve the same content:
->>             Replace HTTP with HTTPS.
-> 
-> OK, but it seems that some of them are disappeared :(
-> 
->  http://www-106.ibm.com/developerworks/library/l-kprobes.html?ca=dgr-lnxw42Kprobe
-> 
->  -> https://www.ibm.com/developerworks/library/l-kprobes/index.html
+On Fri, Jul 10, 2020 at 4:26 PM Philippe Schenker
+<philippe.schenker@toradex.com> wrote:
+>
+> Since the runtime-pm wakeup bug was fixed in
+> drivers/usb/chipidea/core.c usb dual-role host/device switching is
+> working. So make use of it.
+>
+> Signed-off-by: Philippe Schenker <philippe.schenker@toradex.com>
 
-That looks right.
+Reviewed-by: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
 
-> 
->  http://www.redhat.com/magazine/005mar05/features/kprobes/
-> 
->  -> I can not find that.
+> ---
+>
+>  arch/arm/boot/dts/imx6dl-colibri-eval-v3.dts | 8 ++++++++
+>  arch/arm/boot/dts/imx6qdl-colibri.dtsi       | 2 +-
+>  2 files changed, 9 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/arm/boot/dts/imx6dl-colibri-eval-v3.dts b/arch/arm/boot/dts/imx6dl-colibri-eval-v3.dts
+> index 65359aece950..c978b3f19a2d 100644
+> --- a/arch/arm/boot/dts/imx6dl-colibri-eval-v3.dts
+> +++ b/arch/arm/boot/dts/imx6dl-colibri-eval-v3.dts
+> @@ -45,6 +45,13 @@ clk16m: clock-16m {
+>                 clock-output-names = "clk16m";
+>         };
+>
+> +       extcon_usbc_det: usbc_det {
+> +               compatible = "linux,extcon-usb-gpio";
+> +               id-gpio = <&gpio7 12 GPIO_ACTIVE_HIGH>;
+> +               pinctrl-names = "default";
+> +               pinctrl-0 = <&pinctrl_usbc_det>;
+> +       };
+> +
+>         gpio-keys {
+>                 compatible = "gpio-keys";
+>                 pinctrl-names = "default";
+> @@ -220,6 +227,7 @@ &usbh1 {
+>  };
+>
+>  &usbotg {
+> +       extcon = <0>, <&extcon_usbc_det>;
+>         status = "okay";
+>  };
+>
+> diff --git a/arch/arm/boot/dts/imx6qdl-colibri.dtsi b/arch/arm/boot/dts/imx6qdl-colibri.dtsi
+> index a4a54c82e28f..de49f9faa426 100644
+> --- a/arch/arm/boot/dts/imx6qdl-colibri.dtsi
+> +++ b/arch/arm/boot/dts/imx6qdl-colibri.dtsi
+> @@ -363,7 +363,7 @@ &uart3 {
+>
+>  &usbotg {
+>         disable-over-current;
+> -       dr_mode = "peripheral";
+> +       dr_mode = "otg";
+>         status = "disabled";
+>  };
+>
+> --
+> 2.27.0
+>
 
-Ditto, we should drop that.
 
-> 
->>  - http://www-users.cs.umn.edu/~boutcher/kprobes/
->>  - http://www.linuxsymposium.org/2006/linuxsymposium_procv2.pdf (pages 101-115)
-> 
-> Both are not found.
+-- 
+Best regards
 
-It looks like the first link is gone, but there seems to be a copy in 
-the web archive:
-https://web.archive.org/web/20061106154519/http://www-users.cs.umn.edu/~boutcher/kprobes/
+Oleksandr Suvorov
+cryosay@gmail.com
 
-I suppose we can drop that link.
+-- 
+Best regards
+Oleksandr Suvorov
 
-> 
-> (OT, it seems http://www.linuxsymposium.org/ has been left from historical
->  Linux Symposium, we must remove it asap)
-
-Indeed, I think that link pointed to the Kprobes paper:
-https://www.kernel.org/doc/ols/2006/ols2006v2-pages-109-124.pdf
-
-
-- Naveen
-
+Toradex AG
+Ebenaustrasse 10 | 6048 Horw | Switzerland | T: +41 41 500 48 00
