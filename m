@@ -2,46 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E677421B6E5
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 15:45:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4FD221B6DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 15:45:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728339AbgGJNpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 09:45:39 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:57222 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728135AbgGJNou (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 09:44:50 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1jttKV-004TE6-SY; Fri, 10 Jul 2020 15:44:43 +0200
-Date:   Fri, 10 Jul 2020 15:44:43 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Philippe Schenker <philippe.schenker@toradex.com>
-Subject: Re: [PATCH net-next v1 1/5] net: phy: micrel: use consistent
- indention after define
-Message-ID: <20200710134443.GG1014141@lunn.ch>
-References: <20200710120851.28984-1-o.rempel@pengutronix.de>
- <20200710120851.28984-2-o.rempel@pengutronix.de>
+        id S1728277AbgGJNpN convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 10 Jul 2020 09:45:13 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:20362 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728260AbgGJNpF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 09:45:05 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06AD2jma124518;
+        Fri, 10 Jul 2020 09:44:57 -0400
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 326bpsd2yq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 10 Jul 2020 09:44:57 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06ADYktp029804;
+        Fri, 10 Jul 2020 13:44:55 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma05fra.de.ibm.com with ESMTP id 326bc90auh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 10 Jul 2020 13:44:55 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06ADiroA63308182
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 10 Jul 2020 13:44:53 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 17B18A405C;
+        Fri, 10 Jul 2020 13:44:53 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A2F2BA4054;
+        Fri, 10 Jul 2020 13:44:52 +0000 (GMT)
+Received: from localhost (unknown [9.102.22.220])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 10 Jul 2020 13:44:52 +0000 (GMT)
+Date:   Fri, 10 Jul 2020 19:14:47 +0530
+From:   "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
+Subject: Re: [PATCH] Replace HTTP links with HTTPS ones: kprobes
+To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     anil.s.keshavamurthy@intel.com, corbet@lwn.net,
+        davem@davemloft.net, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Ananth N Mavinakayanahalli <ananth@linux.ibm.com>
+References: <20200707194959.52487-1-grandmaster@al2klimov.de>
+        <20200708184201.611d929ae6017c87ea98b114@kernel.org>
+In-Reply-To: <20200708184201.611d929ae6017c87ea98b114@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200710120851.28984-2-o.rempel@pengutronix.de>
+User-Agent: astroid/v0.15-13-gb675b421
+ (https://github.com/astroidmail/astroid)
+Message-Id: <1594388442.4mjtjyic5z.naveen@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8BIT
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-10_07:2020-07-10,2020-07-10 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 spamscore=0
+ mlxlogscore=999 impostorscore=0 priorityscore=1501 lowpriorityscore=0
+ bulkscore=0 malwarescore=0 mlxscore=0 phishscore=0 adultscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007100093
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 02:08:47PM +0200, Oleksij Rempel wrote:
-> This patch changes the indention to one space between "#define" and the
-> macro.
+Masami Hiramatsu wrote:
+> On Tue,  7 Jul 2020 21:49:59 +0200
+> "Alexander A. Klimov" <grandmaster@al2klimov.de> wrote:
 > 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+>> Rationale:
+>> Reduces attack surface on kernel devs opening the links for MITM
+>> as HTTPS traffic is much harder to manipulate.
+>> 
+>> Deterministic algorithm:
+>> For each file:
+>>   If not .svg:
+>>     For each line:
+>>       If doesn't contain `\bxmlns\b`:
+>>         For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+>>           If both the HTTP and HTTPS versions
+>>           return 200 OK and serve the same content:
+>>             Replace HTTP with HTTPS.
+> 
+> OK, but it seems that some of them are disappeared :(
+> 
+>  http://www-106.ibm.com/developerworks/library/l-kprobes.html?ca=dgr-lnxw42Kprobe
+> 
+>  -> https://www.ibm.com/developerworks/library/l-kprobes/index.html
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+That looks right.
 
-    Andrew
+> 
+>  http://www.redhat.com/magazine/005mar05/features/kprobes/
+> 
+>  -> I can not find that.
+
+Ditto, we should drop that.
+
+> 
+>>  - http://www-users.cs.umn.edu/~boutcher/kprobes/
+>>  - http://www.linuxsymposium.org/2006/linuxsymposium_procv2.pdf (pages 101-115)
+> 
+> Both are not found.
+
+It looks like the first link is gone, but there seems to be a copy in 
+the web archive:
+https://web.archive.org/web/20061106154519/http://www-users.cs.umn.edu/~boutcher/kprobes/
+
+I suppose we can drop that link.
+
+> 
+> (OT, it seems http://www.linuxsymposium.org/ has been left from historical
+>  Linux Symposium, we must remove it asap)
+
+Indeed, I think that link pointed to the Kprobes paper:
+https://www.kernel.org/doc/ols/2006/ols2006v2-pages-109-124.pdf
+
+
+- Naveen
+
