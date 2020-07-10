@@ -2,362 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3352821B6EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 15:46:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3783221B6A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 15:38:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727828AbgGJNqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 09:46:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727932AbgGJNod (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 09:44:33 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A442BC08C5DC
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 06:44:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=DCeGmMIutx+7JL5yFGAwkEsJ/2/eH+8wgUgvI1srLwE=; b=IcBiz9/c5+LJnH5Q8EP0EabfE+
-        6eOO97e6iHs+pzh2n0JdkRBtd4IfgnXcXFcmWBJJziBlAmNGPNARij9653FRFvPs6lSlpSjNL92dB
-        0/vIpXDkdaFkS+tXpW3awMG5j/tfBpJ8q1sIjk+j4IW8Z/MIrYQF6qFGHsZWYbSZbA2ur+hXweDCe
-        gT3tucv4yEQmaNsXCP+PIjif/FmJcOf9Kp1DNcuG2V6ofaHQ20WlMEbBK1EgGgIIGngQa9lrQk3nW
-        IVe5BEYx4hk1JcPLfnHyopw1x37m2tGqyNdihEsYnKv+IUcefV27noNWmy0FqBDYxvdRgtKdn1i/a
-        NZglU8HQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jttK2-000187-Si; Fri, 10 Jul 2020 13:44:15 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E0AA23079A2;
-        Fri, 10 Jul 2020 15:44:10 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 21FBA2B7A733F; Fri, 10 Jul 2020 15:44:10 +0200 (CEST)
-Message-ID: <20200710134337.159551341@infradead.org>
-User-Agent: quilt/0.66
-Date:   Fri, 10 Jul 2020 15:38:48 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     x86@kernel.org
-Cc:     peterz@infradead.org, linux-kernel@vger.kernel.org,
-        rostedt@goodmis.org, mhiramat@kernel.org, bristot@redhat.com,
-        jbaron@akamai.com, torvalds@linux-foundation.org,
-        tglx@linutronix.de, mingo@kernel.org, namit@vmware.com,
-        hpa@zytor.com, luto@kernel.org, ard.biesheuvel@linaro.org,
-        jpoimboe@redhat.com, pbonzini@redhat.com,
-        mathieu.desnoyers@efficios.com, linux@rasmusvillemoes.dk
-Subject: [PATCH v6 17/17] x86/perf, static_call: Optimize x86_pmu methods
-References: <20200710133831.943894387@infradead.org>
+        id S1727086AbgGJNix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 09:38:53 -0400
+Received: from mx2.suse.de ([195.135.220.15]:57954 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726832AbgGJNix (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 09:38:53 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id EAE72AC9F;
+        Fri, 10 Jul 2020 13:38:51 +0000 (UTC)
+Subject: Re: [PATCH] efi: avoid error message when booting under Xen
+To:     Ard Biesheuvel <ardb@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Cc:     xen-devel@lists.xenproject.org, linux-fbdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Jones <pjones@redhat.com>,
+        linux-efi <linux-efi@vger.kernel.org>
+References: <20200610141052.13258-1-jgross@suse.com>
+ <094be567-2c82-7d5b-e432-288286c6c3fb@suse.com>
+ <CGME20200709091750eucas1p18003b0c8127600369485c62c1e587c22@eucas1p1.samsung.com>
+ <ec21b883-dc5c-f3fe-e989-7fa13875a4c4@suse.com>
+ <170e01b1-220d-5cb7-03b2-c70ed3ae58e4@samsung.com>
+ <CAMj1kXGE52Y6QQhGLU6r_9x6TVftZqfS7zyLCiDusZhV4tbhjg@mail.gmail.com>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Message-ID: <b4e60a2f-e761-d9ad-88ad-fe041109c063@suse.com>
+Date:   Fri, 10 Jul 2020 15:38:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <CAMj1kXGE52Y6QQhGLU6r_9x6TVftZqfS7zyLCiDusZhV4tbhjg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace many of the indirect calls with static_call().
+On 10.07.20 15:27, Ard Biesheuvel wrote:
+> On Fri, 10 Jul 2020 at 13:17, Bartlomiej Zolnierkiewicz
+> <b.zolnierkie@samsung.com> wrote:
+>>
+>>
+>> [ added EFI Maintainer & ML to Cc: ]
+>>
+>> Hi,
+>>
+>> On 7/9/20 11:17 AM, Jürgen Groß wrote:
+>>> On 28.06.20 10:50, Jürgen Groß wrote:
+>>>> Ping?
+>>>>
+>>>> On 10.06.20 16:10, Juergen Gross wrote:
+>>>>> efifb_probe() will issue an error message in case the kernel is booted
+>>>>> as Xen dom0 from UEFI as EFI_MEMMAP won't be set in this case. Avoid
+>>>>> that message by calling efi_mem_desc_lookup() only if EFI_PARAVIRT
+>>>>> isn't set.
+>>>>>
+> 
+> Why not test for EFI_MEMMAP instead of EFI_BOOT?
 
-The average PMI time, as measured by perf_sample_event_took()*:
-
-PRE:    3283.03 [ns]
-POST:   3145.12 [ns]
-
-Which is a ~138 [ns] win per PMI, or a ~4.2% decrease.
-
-[*] on an IVB-EP, using: 'perf record -a -e cycles -- make O=defconfig-build/ -j80'
-
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- arch/x86/events/core.c |  140 +++++++++++++++++++++++++++++++++++--------------
- 1 file changed, 100 insertions(+), 40 deletions(-)
-
---- a/arch/x86/events/core.c
-+++ b/arch/x86/events/core.c
-@@ -28,6 +28,7 @@
- #include <linux/bitops.h>
- #include <linux/device.h>
- #include <linux/nospec.h>
-+#include <linux/static_call.h>
- 
- #include <asm/apic.h>
- #include <asm/stacktrace.h>
-@@ -52,6 +53,34 @@ DEFINE_PER_CPU(struct cpu_hw_events, cpu
- DEFINE_STATIC_KEY_FALSE(rdpmc_never_available_key);
- DEFINE_STATIC_KEY_FALSE(rdpmc_always_available_key);
- 
-+/*
-+ * This here uses DEFINE_STATIC_CALL_NULL() to get a static_call defined
-+ * from just a typename, as opposed to an actual function.
-+ */
-+DEFINE_STATIC_CALL_NULL(x86_pmu_handle_irq,  *x86_pmu.handle_irq);
-+DEFINE_STATIC_CALL_NULL(x86_pmu_disable_all, *x86_pmu.disable_all);
-+DEFINE_STATIC_CALL_NULL(x86_pmu_enable_all,  *x86_pmu.enable_all);
-+DEFINE_STATIC_CALL_NULL(x86_pmu_enable,	     *x86_pmu.enable);
-+DEFINE_STATIC_CALL_NULL(x86_pmu_disable,     *x86_pmu.disable);
-+
-+DEFINE_STATIC_CALL_NULL(x86_pmu_add,  *x86_pmu.add);
-+DEFINE_STATIC_CALL_NULL(x86_pmu_del,  *x86_pmu.del);
-+DEFINE_STATIC_CALL_NULL(x86_pmu_read, *x86_pmu.read);
-+
-+DEFINE_STATIC_CALL_NULL(x86_pmu_schedule_events,       *x86_pmu.schedule_events);
-+DEFINE_STATIC_CALL_NULL(x86_pmu_get_event_constraints, *x86_pmu.get_event_constraints);
-+DEFINE_STATIC_CALL_NULL(x86_pmu_put_event_constraints, *x86_pmu.put_event_constraints);
-+
-+DEFINE_STATIC_CALL_NULL(x86_pmu_start_scheduling,  *x86_pmu.start_scheduling);
-+DEFINE_STATIC_CALL_NULL(x86_pmu_commit_scheduling, *x86_pmu.commit_scheduling);
-+DEFINE_STATIC_CALL_NULL(x86_pmu_stop_scheduling,   *x86_pmu.stop_scheduling);
-+
-+DEFINE_STATIC_CALL_NULL(x86_pmu_sched_task,    *x86_pmu.sched_task);
-+DEFINE_STATIC_CALL_NULL(x86_pmu_swap_task_ctx, *x86_pmu.swap_task_ctx);
-+
-+DEFINE_STATIC_CALL_NULL(x86_pmu_drain_pebs,   *x86_pmu.drain_pebs);
-+DEFINE_STATIC_CALL_NULL(x86_pmu_pebs_aliases, *x86_pmu.pebs_aliases);
-+
- u64 __read_mostly hw_cache_event_ids
- 				[PERF_COUNT_HW_CACHE_MAX]
- 				[PERF_COUNT_HW_CACHE_OP_MAX]
-@@ -660,7 +695,7 @@ static void x86_pmu_disable(struct pmu *
- 	cpuc->enabled = 0;
- 	barrier();
- 
--	x86_pmu.disable_all();
-+	static_call(x86_pmu_disable_all)();
- }
- 
- void x86_pmu_enable_all(int added)
-@@ -907,8 +942,7 @@ int x86_schedule_events(struct cpu_hw_ev
- 	if (cpuc->txn_flags & PERF_PMU_TXN_ADD)
- 		n0 -= cpuc->n_txn;
- 
--	if (x86_pmu.start_scheduling)
--		x86_pmu.start_scheduling(cpuc);
-+	static_call_cond(x86_pmu_start_scheduling)(cpuc);
- 
- 	for (i = 0, wmin = X86_PMC_IDX_MAX, wmax = 0; i < n; i++) {
- 		c = cpuc->event_constraint[i];
-@@ -925,7 +959,7 @@ int x86_schedule_events(struct cpu_hw_ev
- 		 * change due to external factors (sibling state, allow_tfa).
- 		 */
- 		if (!c || (c->flags & PERF_X86_EVENT_DYNAMIC)) {
--			c = x86_pmu.get_event_constraints(cpuc, i, cpuc->event_list[i]);
-+			c = static_call(x86_pmu_get_event_constraints)(cpuc, i, cpuc->event_list[i]);
- 			cpuc->event_constraint[i] = c;
- 		}
- 
-@@ -1008,8 +1042,7 @@ int x86_schedule_events(struct cpu_hw_ev
- 	if (!unsched && assign) {
- 		for (i = 0; i < n; i++) {
- 			e = cpuc->event_list[i];
--			if (x86_pmu.commit_scheduling)
--				x86_pmu.commit_scheduling(cpuc, i, assign[i]);
-+			static_call_cond(x86_pmu_commit_scheduling)(cpuc, i, assign[i]);
- 		}
- 	} else {
- 		for (i = n0; i < n; i++) {
-@@ -1018,15 +1051,13 @@ int x86_schedule_events(struct cpu_hw_ev
- 			/*
- 			 * release events that failed scheduling
- 			 */
--			if (x86_pmu.put_event_constraints)
--				x86_pmu.put_event_constraints(cpuc, e);
-+			static_call_cond(x86_pmu_put_event_constraints)(cpuc, e);
- 
- 			cpuc->event_constraint[i] = NULL;
- 		}
- 	}
- 
--	if (x86_pmu.stop_scheduling)
--		x86_pmu.stop_scheduling(cpuc);
-+	static_call_cond(x86_pmu_stop_scheduling)(cpuc);
- 
- 	return unsched ? -EINVAL : 0;
- }
-@@ -1217,7 +1248,7 @@ static void x86_pmu_enable(struct pmu *p
- 	cpuc->enabled = 1;
- 	barrier();
- 
--	x86_pmu.enable_all(added);
-+	static_call(x86_pmu_enable_all)(added);
- }
- 
- static DEFINE_PER_CPU(u64 [X86_PMC_IDX_MAX], pmc_prev_left);
-@@ -1338,7 +1369,7 @@ static int x86_pmu_add(struct perf_event
- 	if (cpuc->txn_flags & PERF_PMU_TXN_ADD)
- 		goto done_collect;
- 
--	ret = x86_pmu.schedule_events(cpuc, n, assign);
-+	ret = static_call(x86_pmu_schedule_events)(cpuc, n, assign);
- 	if (ret)
- 		goto out;
- 	/*
-@@ -1356,13 +1387,11 @@ static int x86_pmu_add(struct perf_event
- 	cpuc->n_added += n - n0;
- 	cpuc->n_txn += n - n0;
- 
--	if (x86_pmu.add) {
--		/*
--		 * This is before x86_pmu_enable() will call x86_pmu_start(),
--		 * so we enable LBRs before an event needs them etc..
--		 */
--		x86_pmu.add(event);
--	}
-+	/*
-+	 * This is before x86_pmu_enable() will call x86_pmu_start(),
-+	 * so we enable LBRs before an event needs them etc..
-+	 */
-+	static_call_cond(x86_pmu_add)(event);
- 
- 	ret = 0;
- out:
-@@ -1390,7 +1419,7 @@ static void x86_pmu_start(struct perf_ev
- 	cpuc->events[idx] = event;
- 	__set_bit(idx, cpuc->active_mask);
- 	__set_bit(idx, cpuc->running);
--	x86_pmu.enable(event);
-+	static_call(x86_pmu_enable)(event);
- 	perf_event_update_userpage(event);
- }
- 
-@@ -1460,7 +1489,7 @@ void x86_pmu_stop(struct perf_event *eve
- 	struct hw_perf_event *hwc = &event->hw;
- 
- 	if (test_bit(hwc->idx, cpuc->active_mask)) {
--		x86_pmu.disable(event);
-+		static_call(x86_pmu_disable)(event);
- 		__clear_bit(hwc->idx, cpuc->active_mask);
- 		cpuc->events[hwc->idx] = NULL;
- 		WARN_ON_ONCE(hwc->state & PERF_HES_STOPPED);
-@@ -1510,8 +1539,7 @@ static void x86_pmu_del(struct perf_even
- 	if (i >= cpuc->n_events - cpuc->n_added)
- 		--cpuc->n_added;
- 
--	if (x86_pmu.put_event_constraints)
--		x86_pmu.put_event_constraints(cpuc, event);
-+	static_call_cond(x86_pmu_put_event_constraints)(cpuc, event);
- 
- 	/* Delete the array entry. */
- 	while (++i < cpuc->n_events) {
-@@ -1524,13 +1552,12 @@ static void x86_pmu_del(struct perf_even
- 	perf_event_update_userpage(event);
- 
- do_del:
--	if (x86_pmu.del) {
--		/*
--		 * This is after x86_pmu_stop(); so we disable LBRs after any
--		 * event can need them etc..
--		 */
--		x86_pmu.del(event);
--	}
-+
-+	/*
-+	 * This is after x86_pmu_stop(); so we disable LBRs after any
-+	 * event can need them etc..
-+	 */
-+	static_call_cond(x86_pmu_del)(event);
- }
- 
- int x86_pmu_handle_irq(struct pt_regs *regs)
-@@ -1608,7 +1635,7 @@ perf_event_nmi_handler(unsigned int cmd,
- 		return NMI_DONE;
- 
- 	start_clock = sched_clock();
--	ret = x86_pmu.handle_irq(regs);
-+	ret = static_call(x86_pmu_handle_irq)(regs);
- 	finish_clock = sched_clock();
- 
- 	perf_sample_event_took(finish_clock - start_clock);
-@@ -1821,6 +1848,38 @@ ssize_t x86_event_sysfs_show(char *page,
- static struct attribute_group x86_pmu_attr_group;
- static struct attribute_group x86_pmu_caps_group;
- 
-+static void x86_pmu_static_call_update(void)
-+{
-+	static_call_update(x86_pmu_handle_irq, x86_pmu.handle_irq);
-+	static_call_update(x86_pmu_disable_all, x86_pmu.disable_all);
-+	static_call_update(x86_pmu_enable_all, x86_pmu.enable_all);
-+	static_call_update(x86_pmu_enable, x86_pmu.enable);
-+	static_call_update(x86_pmu_disable, x86_pmu.disable);
-+
-+	static_call_update(x86_pmu_add, x86_pmu.add);
-+	static_call_update(x86_pmu_del, x86_pmu.del);
-+	static_call_update(x86_pmu_read, x86_pmu.read);
-+
-+	static_call_update(x86_pmu_schedule_events, x86_pmu.schedule_events);
-+	static_call_update(x86_pmu_get_event_constraints, x86_pmu.get_event_constraints);
-+	static_call_update(x86_pmu_put_event_constraints, x86_pmu.put_event_constraints);
-+
-+	static_call_update(x86_pmu_start_scheduling, x86_pmu.start_scheduling);
-+	static_call_update(x86_pmu_commit_scheduling, x86_pmu.commit_scheduling);
-+	static_call_update(x86_pmu_stop_scheduling, x86_pmu.stop_scheduling);
-+
-+	static_call_update(x86_pmu_sched_task, x86_pmu.sched_task);
-+	static_call_update(x86_pmu_swap_task_ctx, x86_pmu.swap_task_ctx);
-+
-+	static_call_update(x86_pmu_drain_pebs, x86_pmu.drain_pebs);
-+	static_call_update(x86_pmu_pebs_aliases, x86_pmu.pebs_aliases);
-+}
-+
-+static void _x86_pmu_read(struct perf_event *event)
-+{
-+	x86_perf_event_update(event);
-+}
-+
- static int __init init_hw_perf_events(void)
- {
- 	struct x86_pmu_quirk *quirk;
-@@ -1889,6 +1948,11 @@ static int __init init_hw_perf_events(vo
- 	pr_info("... fixed-purpose events:   %d\n",     x86_pmu.num_counters_fixed);
- 	pr_info("... event mask:             %016Lx\n", x86_pmu.intel_ctrl);
- 
-+	if (!x86_pmu.read)
-+		x86_pmu.read = _x86_pmu_read;
-+
-+	x86_pmu_static_call_update();
-+
- 	/*
- 	 * Install callbacks. Core will call them for each online
- 	 * cpu.
-@@ -1925,11 +1989,9 @@ static int __init init_hw_perf_events(vo
- }
- early_initcall(init_hw_perf_events);
- 
--static inline void x86_pmu_read(struct perf_event *event)
-+static void x86_pmu_read(struct perf_event *event)
- {
--	if (x86_pmu.read)
--		return x86_pmu.read(event);
--	x86_perf_event_update(event);
-+	static_call(x86_pmu_read)(event);
- }
- 
- /*
-@@ -2006,7 +2068,7 @@ static int x86_pmu_commit_txn(struct pmu
- 	if (!x86_pmu_initialized())
- 		return -EAGAIN;
- 
--	ret = x86_pmu.schedule_events(cpuc, n, assign);
-+	ret = static_call(x86_pmu_schedule_events)(cpuc, n, assign);
- 	if (ret)
- 		return ret;
- 
-@@ -2299,15 +2361,13 @@ static const struct attribute_group *x86
- 
- static void x86_pmu_sched_task(struct perf_event_context *ctx, bool sched_in)
- {
--	if (x86_pmu.sched_task)
--		x86_pmu.sched_task(ctx, sched_in);
-+	static_call_cond(x86_pmu_sched_task)(ctx, sched_in);
- }
- 
- static void x86_pmu_swap_task_ctx(struct perf_event_context *prev,
- 				  struct perf_event_context *next)
- {
--	if (x86_pmu.swap_task_ctx)
--		x86_pmu.swap_task_ctx(prev, next);
-+	static_call_cond(x86_pmu_swap_task_ctx)(prev, next);
- }
- 
- void perf_check_microcode(void)
+Honestly I'm not sure EFI_BOOT is always set in that case. If you tell
+me it is fine to just replace the test to check for EFI_MEMMAP I'm fine
+to modify my patch.
 
 
+Juergen
