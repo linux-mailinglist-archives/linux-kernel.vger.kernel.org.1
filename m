@@ -2,252 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E553D21B950
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 17:20:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 106E621B948
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 17:20:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728154AbgGJPUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 11:20:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51604 "EHLO
+        id S1728125AbgGJPUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 11:20:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727820AbgGJPTe (ORCPT
+        with ESMTP id S1727906AbgGJPTw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 11:19:34 -0400
+        Fri, 10 Jul 2020 11:19:52 -0400
 Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A60CC08C5CE;
-        Fri, 10 Jul 2020 08:19:04 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id 22so6560964wmg.1;
-        Fri, 10 Jul 2020 08:19:04 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDBE7C08E763
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 08:19:51 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id 22so6563742wmg.1
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 08:19:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=XrzFqDjZylNG+KL47kJnNsuvtb+1kxd+FPY+/i5mZt4=;
-        b=UNtM+doYl8G3EzvIWbXAfCydIYtbFtA/G65jpu8mwF5//qs+MAlXc3y9qszbPU687D
-         CYDVzXa2j2Q3IkfrxO+d/sRFSUEpP+FtA6lJISsji6Kx7ufcEJGzD4Ej6oO94KwzB63u
-         sO1yqQuF4Fta7foJsA5tYSNCrtdbZX8Mb5V8VrM8/Yl+m88PJBesCAhnrkKOstjyODIf
-         qjNHQsapydA7qW5u/AB0Etram1VzVzJL+zLiSZhH3ZXB84kpS/C756PaUXH24wtYfULd
-         nOACW/fPGEPhSjHnfgROOQ1pGrgfesos7KeIznyfbEJVkxM6M8RpkkxOlnKHrtS/OkGg
-         kZmA==
+        d=secretlab.ca; s=google;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kxnyGnMwxTRwHtpgKXQFv4Sp6EsduZoxQF9xvlfrbr8=;
+        b=ZRVe/ibOcbNKEM/ckw2d45EAviU8Pdos52byPUPcHAF0KcH9B9qASluESjw4KaH4Yg
+         gBkMUVeA1w+53smdKc/n0mMXp8ja0j3tKCB99dT5ELfcmTBVz/0PIEcqwf9AD2yrL8er
+         PY1kyYvl0PYqsDEk51ZVOmlJCnfONwb34Yym1ASVdaVRgYExPRp2Y3zXG/wT4X8+Nosi
+         WXeFcMTadVk1AeJs7OmMT/m29gdv4Ev/PzKgJYP1/nA0q7mFScCBEyass+jmBB4cgKJE
+         iMAW7Rj1l5WQ57KkxmxPz2NC3QjhP/w9B1s0khMrEXmosFgOecRkp0W0udq1Wt4sttst
+         fihQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XrzFqDjZylNG+KL47kJnNsuvtb+1kxd+FPY+/i5mZt4=;
-        b=h+bMnpbWZNTg3eZ8/f53VZY3pvP4T27rM2wNBEPKDcKHKbmr+xT7IqKqI8QjZj7p+K
-         s0l5AWwbpaCuiKeO2Fg5wqdp6mUjdTW6IIw1zkf2+vmP4BnhhbzkV1oqIOFf6QwQuO9h
-         KyB9Iqo+c33aXqVRpKT75AW1+dTZU/SV5oHIuRgA//xE6kM5XXLefEkgS62npCx1Rhj+
-         9YUqK4lBJ6vl54ESBn+1wYWX4bEwpsaFGt8jqvhO63tBDlBwwSc9p4+e/h8YyBSqHLkP
-         WG1NjcucgqqLtIgCzsbTsB6hyhkgaz6IPqRKWkPwkexxnbA8vL7mBwS2I+/OsnlgwHU3
-         KepQ==
-X-Gm-Message-State: AOAM532bmRWwCZxym3qyjlImHVsP4Prf0GiT/T3FWl3cGx8t02tjpoeT
-        VIIgbAtfQ7+y/lmTJPpdzzpG1tHENak=
-X-Google-Smtp-Source: ABdhPJzCkcfkGK+ERXI385yQy9ajXHjD/934EyflpmvQE2QG2B1P+YuyDCKd9EOc/U3LBtnDAZ1wBQ==
-X-Received: by 2002:a1c:28c4:: with SMTP id o187mr5420848wmo.62.1594394343258;
-        Fri, 10 Jul 2020 08:19:03 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.114.245])
-        by smtp.gmail.com with ESMTPSA id r10sm10531744wrm.17.2020.07.10.08.19.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Jul 2020 08:19:02 -0700 (PDT)
-Subject: Re: [PATCH v2 1/2] thermal: mediatek: prepare to add support for
- other platforms
-To:     Henry Yen <henry.yen@mediatek.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amit.kucheria@verdurent.com>
-Cc:     linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Steven Liu <steven.liu@mediatek.com>,
-        Michael Kao <michael.kao@mediatek.com>
-References: <1588238074-19338-1-git-send-email-henry.yen@mediatek.com>
- <1588238074-19338-2-git-send-email-henry.yen@mediatek.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <94d81c8a-2710-98a1-4cae-040e9b51fcd9@gmail.com>
-Date:   Fri, 10 Jul 2020 17:19:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=kxnyGnMwxTRwHtpgKXQFv4Sp6EsduZoxQF9xvlfrbr8=;
+        b=WWlryurFRfrvvp+d39fmqiiQlcyAMMbcouj62pZLJQixlrWhDkWxFTd7RzcyNeBWmZ
+         L876D9xUDV0FgcUOdJTTZQMa2+fkl6VsrVoYpp26Bn9fw7U+cQUcmRsZl659xcLpmO7s
+         xOCS4z6fkGdmPGWhCIEAcTWAKqqjyAoCjLGTE5CN8E3SH3ZKs2ospTisHUvmX7EWbgHF
+         WThpZD7Jw7ko0vWuLRalAJvV64W46Dyn52hIuiA8EF1D7dn9iZq5KCgs1Arlw3N4ZuUC
+         kTxWqoVl8XS8NoK9XYYS9vsmAGtkQ4WXEii/PTtfV1/0FtSKtKZcXNZ4wlrx07HX6btk
+         kFmQ==
+X-Gm-Message-State: AOAM531Be8R/pBgbTOml+bVupd7HxIkPA812Chz/x7kD8oAwrmgcQR6Q
+        /77hquuXC7e/b7QoR93ECw8s/YNIbYuJIyz6
+X-Google-Smtp-Source: ABdhPJzXzqIMMMApQjKWDU1z5QkbzF8CAES3zC4qQ+Oqh5yRVV9kfEvVTZWzmZDin+QTicbt2ad4Cw==
+X-Received: by 2002:a1c:790e:: with SMTP id l14mr5587090wme.65.1594394389624;
+        Fri, 10 Jul 2020 08:19:49 -0700 (PDT)
+Received: from moist.secretlab.ca (188.28.146.46.threembb.co.uk. [188.28.146.46])
+        by smtp.gmail.com with ESMTPSA id d13sm10400297wrn.61.2020.07.10.08.19.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Jul 2020 08:19:49 -0700 (PDT)
+From:   Grant Likely <grant.likely@secretlab.ca>
+X-Google-Original-From: Grant Likely <grant.likely@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        Grant Likely <grant.likely@arm.com>,
+        Grant Likely <grant.likely@secretlab.ca>,
+        Darren Hart <darren@dvhart.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        stable@vger.kernel.org
+Subject: [PATCH] hid-input: Fix devices that return multiple bytes in battery report
+Date:   Fri, 10 Jul 2020 16:19:39 +0100
+Message-Id: <20200710151939.4894-1-grant.likely@arm.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <1588238074-19338-2-git-send-email-henry.yen@mediatek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Some devices, particularly the 3DConnexion Spacemouse wireless 3D
+controllers, return more than just the battery capacity in the battery
+report. The Spacemouse devices return an additional byte with a device
+specific field. However, hidinput_query_battery_capacity() only
+requests a 2 byte transfer.
 
+When a spacemouse is connected via USB (direct wire, no wireless dongle)
+and it returns a 3 byte report instead of the assumed 2 byte battery
+report the larger transfer confuses and frightens the USB subsystem
+which chooses to ignore the transfer. Then after 2 seconds assume the
+device has stopped responding and reset it. This can be reproduced
+easily by using a wired connection with a wireless spacemouse. The
+Spacemouse will enter a loop of resetting every 2 seconds which can be
+observed in dmesg.
 
-On 30/04/2020 11:14, Henry Yen wrote:
-> It is known that Mediatek owns two thermal systems, which only differ
-> in the way of reading calibration data and converting temperature.
-> MT8173, MT8183, MT2701 and MT2712 belongs to version 1 thermal
-> system, and MT7622 belongs to version 2.
-> 
-> In order to handle both systems, the suffix _V1 is appended to the
-> current code, and then the second patch will add _V2 functions with
-> the same purpose but different implementation.
-> 
-> Signed-off-by: Henry Yen <henry.yen@mediatek.com>
+This patch solves the problem by increasing the transfer request to 4
+bytes instead of 2. The fix isn't particularly elegant, but it is simple
+and safe to backport to stable kernels. A further patch will follow to
+more elegantly handle battery reports that contain additional data.
 
-Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
+Signed-off-by: Grant Likely <grant.likely@secretlab.ca>
+Cc: Darren Hart <darren@dvhart.com>
+Cc: Jiri Kosina <jikos@kernel.org>
+Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc: stable@vger.kernel.org
+---
+ drivers/hid/hid-input.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-> ---
->   drivers/thermal/mtk_thermal.c | 114 ++++++++++++++++++----------------
->   1 file changed, 62 insertions(+), 52 deletions(-)
-> 
-> diff --git a/drivers/thermal/mtk_thermal.c b/drivers/thermal/mtk_thermal.c
-> index 76e30603d4d5..10107d9d56a8 100644
-> --- a/drivers/thermal/mtk_thermal.c
-> +++ b/drivers/thermal/mtk_thermal.c
-> @@ -120,18 +120,18 @@
->    * MT2701 has 3 sensors and needs 3 VTS calibration data.
->    * MT2712 has 4 sensors and needs 4 VTS calibration data.
->    */
-> -#define CALIB_BUF0_VALID		BIT(0)
-> -#define CALIB_BUF1_ADC_GE(x)		(((x) >> 22) & 0x3ff)
-> -#define CALIB_BUF0_VTS_TS1(x)		(((x) >> 17) & 0x1ff)
-> -#define CALIB_BUF0_VTS_TS2(x)		(((x) >> 8) & 0x1ff)
-> -#define CALIB_BUF1_VTS_TS3(x)		(((x) >> 0) & 0x1ff)
-> -#define CALIB_BUF2_VTS_TS4(x)		(((x) >> 23) & 0x1ff)
-> -#define CALIB_BUF2_VTS_TS5(x)		(((x) >> 5) & 0x1ff)
-> -#define CALIB_BUF2_VTS_TSABB(x)		(((x) >> 14) & 0x1ff)
-> -#define CALIB_BUF0_DEGC_CALI(x)		(((x) >> 1) & 0x3f)
-> -#define CALIB_BUF0_O_SLOPE(x)		(((x) >> 26) & 0x3f)
-> -#define CALIB_BUF0_O_SLOPE_SIGN(x)	(((x) >> 7) & 0x1)
-> -#define CALIB_BUF1_ID(x)		(((x) >> 9) & 0x1)
-> +#define CALIB_BUF0_VALID_V1		BIT(0)
-> +#define CALIB_BUF1_ADC_GE_V1(x)		(((x) >> 22) & 0x3ff)
-> +#define CALIB_BUF0_VTS_TS1_V1(x)	(((x) >> 17) & 0x1ff)
-> +#define CALIB_BUF0_VTS_TS2_V1(x)	(((x) >> 8) & 0x1ff)
-> +#define CALIB_BUF1_VTS_TS3_V1(x)	(((x) >> 0) & 0x1ff)
-> +#define CALIB_BUF2_VTS_TS4_V1(x)	(((x) >> 23) & 0x1ff)
-> +#define CALIB_BUF2_VTS_TS5_V1(x)	(((x) >> 5) & 0x1ff)
-> +#define CALIB_BUF2_VTS_TSABB_V1(x)	(((x) >> 14) & 0x1ff)
-> +#define CALIB_BUF0_DEGC_CALI_V1(x)	(((x) >> 1) & 0x3f)
-> +#define CALIB_BUF0_O_SLOPE_V1(x)	(((x) >> 26) & 0x3f)
-> +#define CALIB_BUF0_O_SLOPE_SIGN_V1(x)	(((x) >> 7) & 0x1)
-> +#define CALIB_BUF1_ID_V1(x)		(((x) >> 9) & 0x1)
->   
->   enum {
->   	VTS1,
-> @@ -525,7 +525,7 @@ static const struct mtk_thermal_data mt8183_thermal_data = {
->    * This converts the raw ADC value to mcelsius using the SoC specific
->    * calibration constants
->    */
-> -static int raw_to_mcelsius(struct mtk_thermal *mt, int sensno, s32 raw)
-> +static int raw_to_mcelsius_v1(struct mtk_thermal *mt, int sensno, s32 raw)
->   {
->   	s32 tmp;
->   
-> @@ -594,9 +594,9 @@ static int mtk_thermal_bank_temperature(struct mtk_thermal_bank *bank)
->   		raw = readl(mt->thermal_base +
->   			    conf->msr[conf->bank_data[bank->id].sensors[i]]);
->   
-> -		temp = raw_to_mcelsius(mt,
-> -				       conf->bank_data[bank->id].sensors[i],
-> -				       raw);
-> +		temp = raw_to_mcelsius_v1(mt,
-> +					  conf->bank_data[bank->id].sensors[i],
-> +					  raw);
->   
->   		/*
->   		 * The first read of a sensor often contains very high bogus
-> @@ -758,6 +758,51 @@ static u64 of_get_phys_base(struct device_node *np)
->   	return of_translate_address(np, regaddr_p);
->   }
->   
-> +static int mtk_thermal_extract_efuse_v1(struct mtk_thermal *mt, u32 *buf)
-> +{
-> +	int i;
-> +
-> +	if (!(buf[0] & CALIB_BUF0_VALID_V1))
-> +		return -EINVAL;
-> +
-> +	mt->adc_ge = CALIB_BUF1_ADC_GE_V1(buf[1]);
-> +
-> +	for (i = 0; i < mt->conf->num_sensors; i++) {
-> +		switch (mt->conf->vts_index[i]) {
-> +		case VTS1:
-> +			mt->vts[VTS1] = CALIB_BUF0_VTS_TS1_V1(buf[0]);
-> +			break;
-> +		case VTS2:
-> +			mt->vts[VTS2] = CALIB_BUF0_VTS_TS2_V1(buf[0]);
-> +			break;
-> +		case VTS3:
-> +			mt->vts[VTS3] = CALIB_BUF1_VTS_TS3_V1(buf[1]);
-> +			break;
-> +		case VTS4:
-> +			mt->vts[VTS4] = CALIB_BUF2_VTS_TS4_V1(buf[2]);
-> +			break;
-> +		case VTS5:
-> +			mt->vts[VTS5] = CALIB_BUF2_VTS_TS5_V1(buf[2]);
-> +			break;
-> +		case VTSABB:
-> +			mt->vts[VTSABB] =
-> +				CALIB_BUF2_VTS_TSABB_V1(buf[2]);
-> +			break;
-> +		default:
-> +			break;
-> +		}
-> +	}
-> +
-> +	mt->degc_cali = CALIB_BUF0_DEGC_CALI_V1(buf[0]);
-> +	if (CALIB_BUF1_ID_V1(buf[1]) &
-> +	    CALIB_BUF0_O_SLOPE_SIGN_V1(buf[0]))
-> +		mt->o_slope = -CALIB_BUF0_O_SLOPE_V1(buf[0]);
-> +	else
-> +		mt->o_slope = CALIB_BUF0_O_SLOPE_V1(buf[0]);
-> +
-> +	return 0;
-> +}
-> +
->   static int mtk_thermal_get_calibration_data(struct device *dev,
->   					    struct mtk_thermal *mt)
->   {
-> @@ -793,43 +838,8 @@ static int mtk_thermal_get_calibration_data(struct device *dev,
->   		goto out;
->   	}
->   
-> -	if (buf[0] & CALIB_BUF0_VALID) {
-> -		mt->adc_ge = CALIB_BUF1_ADC_GE(buf[1]);
-> -
-> -		for (i = 0; i < mt->conf->num_sensors; i++) {
-> -			switch (mt->conf->vts_index[i]) {
-> -			case VTS1:
-> -				mt->vts[VTS1] = CALIB_BUF0_VTS_TS1(buf[0]);
-> -				break;
-> -			case VTS2:
-> -				mt->vts[VTS2] = CALIB_BUF0_VTS_TS2(buf[0]);
-> -				break;
-> -			case VTS3:
-> -				mt->vts[VTS3] = CALIB_BUF1_VTS_TS3(buf[1]);
-> -				break;
-> -			case VTS4:
-> -				mt->vts[VTS4] = CALIB_BUF2_VTS_TS4(buf[2]);
-> -				break;
-> -			case VTS5:
-> -				mt->vts[VTS5] = CALIB_BUF2_VTS_TS5(buf[2]);
-> -				break;
-> -			case VTSABB:
-> -				mt->vts[VTSABB] = CALIB_BUF2_VTS_TSABB(buf[2]);
-> -				break;
-> -			default:
-> -				break;
-> -			}
-> -		}
-> -
-> -		mt->degc_cali = CALIB_BUF0_DEGC_CALI(buf[0]);
-> -		if (CALIB_BUF1_ID(buf[1]) &
-> -		    CALIB_BUF0_O_SLOPE_SIGN(buf[0]))
-> -			mt->o_slope = -CALIB_BUF0_O_SLOPE(buf[0]);
-> -		else
-> -			mt->o_slope = CALIB_BUF0_O_SLOPE(buf[0]);
-> -	} else {
-> +	if (mtk_thermal_extract_efuse_v1(mt, buf))
->   		dev_info(dev, "Device not calibrated, using default calibration values\n");
-> -	}
->   
->   out:
->   	kfree(buf);
-> 
+diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
+index dea9cc65bf80..e8641ce677e4 100644
+--- a/drivers/hid/hid-input.c
++++ b/drivers/hid/hid-input.c
+@@ -350,13 +350,13 @@ static int hidinput_query_battery_capacity(struct hid_device *dev)
+ 	u8 *buf;
+ 	int ret;
+ 
+-	buf = kmalloc(2, GFP_KERNEL);
++	buf = kmalloc(4, GFP_KERNEL);
+ 	if (!buf)
+ 		return -ENOMEM;
+ 
+-	ret = hid_hw_raw_request(dev, dev->battery_report_id, buf, 2,
++	ret = hid_hw_raw_request(dev, dev->battery_report_id, buf, 4,
+ 				 dev->battery_report_type, HID_REQ_GET_REPORT);
+-	if (ret != 2) {
++	if (ret < 2) {
+ 		kfree(buf);
+ 		return -ENODATA;
+ 	}
+-- 
+2.20.1
+
