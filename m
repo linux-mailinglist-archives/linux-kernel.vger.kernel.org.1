@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85DB021B06B
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 09:42:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 989A721B069
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 09:42:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727935AbgGJHmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 03:42:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37300 "EHLO
+        id S1727924AbgGJHmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 03:42:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727814AbgGJHmR (ORCPT
+        with ESMTP id S1727844AbgGJHmT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 03:42:17 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83389C08C5DD
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 00:42:16 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id z2so4898625wrp.2
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 00:42:16 -0700 (PDT)
+        Fri, 10 Jul 2020 03:42:19 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 675BEC08C5CE
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 00:42:19 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id w3so4784769wmi.4
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 00:42:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ESrGnYPx0hSksCrKaceiqnAKbnGzRGDWTCCV2K4s+Pg=;
-        b=VQHJq+34R+TMtTGTYpPadh6I9+8mqXycEMpwSNSX0RqfbFcY5XwNqat/i0zTR1XEcT
-         zLgyGAlMHvRBXOiQZjlmAon1yHt4p5kTImnhPTHZLyNNAnq6HK7/saTDQYqxNr57Xv8n
-         geUVFM79g8XS5JYAKww+STAoGRqVk9SkpcdgHE4XITI9MeHyEu//HToKb0sTby8MCG/E
-         1qfsMLKY1o3uRo+Nk5Un1Z9KxQgCwOZUnKJMWH4cw1nBJ0IDKITE7uKb5ZSyLMOde9gM
-         On4Y3AG2wYy45+BYwaSUm/YEuF3IBrXy4B1TvFaEnlGpcrmtKOHBX6mT/TKiWUpHPO56
-         XSzQ==
+        bh=CmGuoYcAtPZ/mwhFHqovUeVuw6/BJFRsIKd+l37OEGU=;
+        b=VfyLfbWP1nT6ap53jH9hZ73gBJpfdAREdVk0UxjpRM7XM1HSVzVzMl0fSJIMDjiuwm
+         p3Ywibmdl0v5HFxKnoa74FTxoD8IDl3S2RIoD95Oj0+oJxC86gAuQfCdVgbflFjepLr8
+         eOxv42yK92L7KB38sSHljx7gIpyGD5/yY0ncgtJYZ7ynA/fYeiguTgE9g4rsI6gebkHh
+         xqtKxp7AjDX/Nyh3AGZx3WpYlwziL5a7FIf0JEwrWyqwjjoMSB1bVnBgD4OayS0KZ0wQ
+         JHtfpV0oide6/QfIkpDQyHVhG7C/nWzqKVBCdm2mG10xMbyWymTL6ZsQ4axOq0jaMzvY
+         DkUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ESrGnYPx0hSksCrKaceiqnAKbnGzRGDWTCCV2K4s+Pg=;
-        b=N4OZvZ0IauhObsQdcgvAQecXPqaooRzWvZLEvPrmDxhmHAKKw3IjryOMec+SC8z2v6
-         rd4IpyvL7UdWc1JJhYNZhqr5ixJVXmCD63f76JB8KDM6NppltCVfCSuAI1kQNyx/6JHl
-         20qHtm+5Os/QO0o4FNZQ/i4Yfnnd1wVsxx9w2f2wlSSzC6lCFxU9ij9XZwQTmSOUvuzh
-         45soJCRYtRGXWA6Nld1pib9VNR0PjZB/Eo/68EuUm8sgWz0Y/XA6riIR9U5PG6yOU83L
-         QJ9tMs1cTR9lzJrtoqkbp1jA8yboJ8089tfc4uMFrifNabqKvWyLoX5m84FI/Rwver65
-         t0WA==
-X-Gm-Message-State: AOAM533MUDjxooF5ibltiGlSITi2tSQRWpEk9TCZgyXoHjNn+IpoDINy
-        fEc7cchPe+axK2bHNhwcYkLU2OQgvGk=
-X-Google-Smtp-Source: ABdhPJz/m7lvGEi/JaCh7Zc/xkKPZnrjRbmfEYFb02fxjeTKUgeShYF/9yDasVnsu01jy5FdbQ98GA==
-X-Received: by 2002:a5d:474f:: with SMTP id o15mr64152576wrs.306.1594366934055;
-        Fri, 10 Jul 2020 00:42:14 -0700 (PDT)
+        bh=CmGuoYcAtPZ/mwhFHqovUeVuw6/BJFRsIKd+l37OEGU=;
+        b=mGtUHT0V5IBZVxCT9BEs49uD/R7NfCpY4yrirUA6fNExl2kSGJEoKuuDuSlxHk17jH
+         mJBDc3C5ETgfCEpK6yl9gnpUk3TYExodxq/4/MA9w8bfTQXG5FaWlNY5rLQ+pDWsV7Pc
+         sd0s79eayOEBg8fY6brY9SC8cctMjDTkE2qQmJ5eSlNeiqRTm4l8P4YRDwMsA+XJcDtn
+         U64f5HgXN+Ocj35lsAlmPyGqYxHDG3PcB/QsLCRJ8wDiXqisvBH1HfaNJ81EfvA5eExp
+         wuicUh06Afjai/XWzYjQ0nSX86FpW5m8tAXD7r4Fxu3rp+uiSUtu+OxRSznmbbz9MHdc
+         CNSQ==
+X-Gm-Message-State: AOAM5319U/UFY1zc/pA30ZSKkYfRlWsAUH/BT35o1oH0xQjR+CQjwrsT
+        5FfVLeirbPvPcf3Xjd29hfP0MnevdaY=
+X-Google-Smtp-Source: ABdhPJz0aa7Gl6MEMJnk8e6Nu68bbbEgkcDVJGuvuCl9kvQNPXYdfoPMqa28QnqeviP+yiB1gIV76Q==
+X-Received: by 2002:a7b:c7d2:: with SMTP id z18mr3912062wmk.149.1594366937949;
+        Fri, 10 Jul 2020 00:42:17 -0700 (PDT)
 Received: from localhost.localdomain ([62.178.82.229])
-        by smtp.gmail.com with ESMTPSA id p17sm7951375wma.47.2020.07.10.00.42.12
+        by smtp.gmail.com with ESMTPSA id p17sm7951375wma.47.2020.07.10.00.42.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jul 2020 00:42:13 -0700 (PDT)
+        Fri, 10 Jul 2020 00:42:17 -0700 (PDT)
 From:   Christian Gmeiner <christian.gmeiner@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     cphealy@gmail.com, Christian Gmeiner <christian.gmeiner@gmail.com>,
@@ -56,9 +56,9 @@ Cc:     cphealy@gmail.com, Christian Gmeiner <christian.gmeiner@gmail.com>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>, etnaviv@lists.freedesktop.org,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH 3/4] drm/etnaviv: show loadavg in debugfs
-Date:   Fri, 10 Jul 2020 09:41:26 +0200
-Message-Id: <20200710074143.306787-4-christian.gmeiner@gmail.com>
+Subject: [PATCH 4/4] drm/etnaviv: export loadavg via perfmon
+Date:   Fri, 10 Jul 2020 09:41:27 +0200
+Message-Id: <20200710074143.306787-5-christian.gmeiner@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200710074143.306787-1-christian.gmeiner@gmail.com>
 References: <20200710074143.306787-1-christian.gmeiner@gmail.com>
@@ -69,43 +69,111 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Might be helpful to see the loadavg in debugfs.
+Make it possible to access the sub-GPU component load value from
+user space with the perfmon infrastructure.
 
 Signed-off-by: Christian Gmeiner <christian.gmeiner@gmail.com>
 ---
- drivers/gpu/drm/etnaviv/etnaviv_gpu.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/etnaviv/etnaviv_perfmon.c | 79 +++++++++++++++++++++++
+ 1 file changed, 79 insertions(+)
 
-diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gpu.c b/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
-index 1f0eb7e00657..82fe4aafed57 100644
---- a/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
-+++ b/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
-@@ -884,7 +884,7 @@ int etnaviv_gpu_debugfs(struct etnaviv_gpu *gpu, struct seq_file *m)
- {
- 	struct dma_debug debug;
- 	u32 dma_lo, dma_hi, axi, idle;
--	int ret;
-+	int ret, i;
+diff --git a/drivers/gpu/drm/etnaviv/etnaviv_perfmon.c b/drivers/gpu/drm/etnaviv/etnaviv_perfmon.c
+index 75f9db8f7bec..614d86e2802d 100644
+--- a/drivers/gpu/drm/etnaviv/etnaviv_perfmon.c
++++ b/drivers/gpu/drm/etnaviv/etnaviv_perfmon.c
+@@ -98,6 +98,19 @@ static u32 hi_total_idle_cycle_read(struct etnaviv_gpu *gpu,
+ 	return gpu_read(gpu, reg);
+ }
  
- 	seq_printf(m, "%s Status:\n", dev_name(gpu->dev));
- 
-@@ -1002,6 +1002,16 @@ int etnaviv_gpu_debugfs(struct etnaviv_gpu *gpu, struct seq_file *m)
- 	if (idle & VIVS_HI_IDLE_STATE_AXI_LP)
- 		seq_puts(m, "\t AXI low power mode\n");
- 
-+	seq_printf(m, "\tload:\n");
++static u32 load_read(struct etnaviv_gpu *gpu,
++	const struct etnaviv_pm_domain *domain,
++	const struct etnaviv_pm_signal *signal)
++{
++	u32 load;
++
 +	spin_lock_bh(&gpu->loadavg_spinlock);
-+
-+	for (i = 0; i < ARRAY_SIZE(etna_idle_module_names); i++)
-+		seq_printf(m, "\t %s: %u%%\n",
-+				  etna_idle_module_names[i].name,
-+				  gpu->loadavg_percentage[i]);
-+
++	load = gpu->loadavg_percentage[signal->data];
 +	spin_unlock_bh(&gpu->loadavg_spinlock);
 +
- 	if (gpu->identity.features & chipFeatures_DEBUG_MODE) {
- 		u32 read0 = gpu_read(gpu, VIVS_MC_DEBUG_READ0);
- 		u32 read1 = gpu_read(gpu, VIVS_MC_DEBUG_READ1);
++	return load;
++}
++
+ static const struct etnaviv_pm_domain doms_3d[] = {
+ 	{
+ 		.name = "HI",
+@@ -387,6 +400,72 @@ static const struct etnaviv_pm_domain doms_3d[] = {
+ 				&perf_reg_read
+ 			}
+ 		}
++	},
++	{
++		.name = "LOAD",
++		.nr_signals = 12,
++		.signal = (const struct etnaviv_pm_signal[]) {
++			{
++				"FE",
++				0,
++				&load_read
++			},
++			{
++				"DE",
++				1,
++				&load_read
++			},
++			{
++				"PE",
++				2,
++				&load_read
++			},
++			{
++				"SH",
++				3,
++				&load_read
++			},
++			{
++				"PA",
++				4,
++				&load_read
++			},
++			{
++				"SE",
++				5,
++				&load_read
++			},
++			{
++				"RA",
++				6,
++				&load_read
++			},
++			{
++				"TX",
++				7,
++				&load_read
++			},
++			{
++				"VG",
++				8,
++				&load_read
++			},
++			{
++				"IM",
++				9,
++				&load_read
++			},
++			{
++				"FP",
++				10,
++				&load_read
++			},
++			{
++				"TS",
++				11,
++				&load_read
++			}
++		}
+ 	}
+ };
+ 
 -- 
 2.26.2
 
