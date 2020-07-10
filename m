@@ -2,70 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C56921AC9D
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 03:56:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B020321ACA8
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 03:57:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726773AbgGJB4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 21:56:32 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:55107 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726323AbgGJB4c (ORCPT
+        id S1727065AbgGJB5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 21:57:25 -0400
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:46122 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726856AbgGJB5U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 21:56:32 -0400
-Received: from [114.250.191.34] (helo=localhost.localdomain)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <aaron.ma@canonical.com>)
-        id 1jtiH0-0000mo-4R; Fri, 10 Jul 2020 01:56:23 +0000
-From:   Aaron Ma <aaron.ma@canonical.com>
-To:     aaron.ma@canonical.com, mapengyu@gmail.com, ibm-acpi@hmh.eng.br,
-        dvhart@infradead.org, andy@infradead.org,
-        ibm-acpi-devel@lists.sourceforge.net,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [v3][PATCH] platform/x86: thinkpad_acpi: not loading brightness_init when _BCL invalid
-Date:   Fri, 10 Jul 2020 09:56:14 +0800
-Message-Id: <20200710015614.3854-1-aaron.ma@canonical.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200702085520.16901-1-aaron.ma@canonical.com>
-References: <20200702085520.16901-1-aaron.ma@canonical.com>
+        Thu, 9 Jul 2020 21:57:20 -0400
+Received: from mail-ua1-f49.google.com (mail-ua1-f49.google.com [209.85.222.49]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 06A1v2Y1028227;
+        Fri, 10 Jul 2020 10:57:03 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 06A1v2Y1028227
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1594346223;
+        bh=uO2lDE1kilvU2pB4wwi5Hz6kjCZnaiBVrjicmeG0AOk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=qoNopYMTIJRGEQaL+l6jI1z2ziQtxoUtdqc4M+ebYQQlE4ullLJ1j7/ruuXIVOXwJ
+         We86cIxqvtYHl4BvMah6Huk6SwYPj6BeSU0fjUfo/W2EjyJq+j78IvnJrKYXMjveGH
+         YGT6qjC4i0xLwpW2oKMmEpvRpNWPojzYhKfeB27oBQxz5MUKXJdrK8RlR4O6Tg5qUZ
+         S5pNRxIzEPwgtGAhJoaDvGHCwzRlANLU8k9Y8hV/PVoYtavUzKpx8u1+VGV2g8Hpuv
+         NrGerYUkWZmaRi8PuOMI+7xAORFDv0A2FU3ULO/Te8Ta5orZeXzI8VgDERI3J6s7JA
+         wYI61twCOBRFA==
+X-Nifty-SrcIP: [209.85.222.49]
+Received: by mail-ua1-f49.google.com with SMTP id c7so1348438uap.0;
+        Thu, 09 Jul 2020 18:57:03 -0700 (PDT)
+X-Gm-Message-State: AOAM532EQeau/smtVwoSUrGOYCj1EOKgF4Ei4HvBakwwhDD7GHDq+q6V
+        1ew485LeiDEAjLXO6kPc0vNYCFtCH5aR404heOU=
+X-Google-Smtp-Source: ABdhPJx2dxGT5lyml19QVwxhhUAvR6nwXJ8INt5lZOEojSS14wiISMBP4Ld/J+OTZCDid1Pn8kEfFawQTzijpmN5tiQ=
+X-Received: by 2002:ab0:21c6:: with SMTP id u6mr31465767uan.109.1594346222029;
+ Thu, 09 Jul 2020 18:57:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1594198578-29238-1-git-send-email-hayashi.kunihiko@socionext.com>
+In-Reply-To: <1594198578-29238-1-git-send-email-hayashi.kunihiko@socionext.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 10 Jul 2020 10:56:25 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQdrqGmCDwEfd2GUYJrteNHs-PrTYmzKZO9v6y5a0ZHLQ@mail.gmail.com>
+Message-ID: <CAK7LNAQdrqGmCDwEfd2GUYJrteNHs-PrTYmzKZO9v6y5a0ZHLQ@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: uniphier: Add missing clock-names and
+ reset-names to pcie-phy
+To:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When _BCL invalid, disable thinkpad_acpi backlight brightness control.
+On Wed, Jul 8, 2020 at 5:56 PM Kunihiko Hayashi
+<hayashi.kunihiko@socionext.com> wrote:
+>
+> This adds missing clock-names and reset-names to pcie-phy node according to
+> Documentation/devicetree/bindings/phy/socionext,uniphier-pcie.yaml.
 
-brightness_enable is already checked at the beginning.
-Most new thinkpads are using GPU driver to control brightness now,
-print notice when enabled brightness control even when brightness_enable = 1.
 
-Signed-off-by: Aaron Ma <aaron.ma@canonical.com>
----
- drivers/platform/x86/thinkpad_acpi.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+Applied, but I tend to consider
+b36a2472539293bcab0521bcbc284d6be0448d4b
+was a misconversion (or intentional breakage)
+because the original uniphier-pcie-phy.txt
+did not require clock/reset-names
+for ld20, pxs3.
 
-diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
-index ff7f0a4f2475..2b36d5416a3b 100644
---- a/drivers/platform/x86/thinkpad_acpi.c
-+++ b/drivers/platform/x86/thinkpad_acpi.c
-@@ -6955,10 +6955,13 @@ static int __init brightness_init(struct ibm_init_struct *iibm)
- 			pr_warn("Cannot enable backlight brightness support, ACPI is already handling it.  Refer to the acpi_backlight kernel parameter.\n");
- 			return 1;
- 		}
--	} else if (tp_features.bright_acpimode && brightness_enable > 1) {
--		pr_notice("Standard ACPI backlight interface not available, thinkpad_acpi native brightness control enabled\n");
-+	} else if (!tp_features.bright_acpimode) {
-+		pr_notice("ACPI backlight interface not available\n");
-+		return 1;
- 	}
- 
-+	pr_notice("ACPI native brightness control enabled\n");
-+
- 	/*
- 	 * Check for module parameter bogosity, note that we
- 	 * init brightness_mode to TPACPI_BRGHT_MODE_MAX in order to be
--- 
-2.26.2
 
+
+> Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+> ---
+>  arch/arm64/boot/dts/socionext/uniphier-ld20.dtsi | 2 ++
+>  arch/arm64/boot/dts/socionext/uniphier-pxs3.dtsi | 2 ++
+>  2 files changed, 4 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/socionext/uniphier-ld20.dtsi b/arch/arm64/boot/dts/socionext/uniphier-ld20.dtsi
+> index f4a56b2..a87b8a6 100644
+> --- a/arch/arm64/boot/dts/socionext/uniphier-ld20.dtsi
+> +++ b/arch/arm64/boot/dts/socionext/uniphier-ld20.dtsi
+> @@ -936,7 +936,9 @@
+>                         compatible = "socionext,uniphier-ld20-pcie-phy";
+>                         reg = <0x66038000 0x4000>;
+>                         #phy-cells = <0>;
+> +                       clock-names = "link";
+>                         clocks = <&sys_clk 24>;
+> +                       reset-names = "link";
+>                         resets = <&sys_rst 24>;
+>                         socionext,syscon = <&soc_glue>;
+>                 };
+> diff --git a/arch/arm64/boot/dts/socionext/uniphier-pxs3.dtsi b/arch/arm64/boot/dts/socionext/uniphier-pxs3.dtsi
+> index 72f1688..0e52dadf 100644
+> --- a/arch/arm64/boot/dts/socionext/uniphier-pxs3.dtsi
+> +++ b/arch/arm64/boot/dts/socionext/uniphier-pxs3.dtsi
+> @@ -833,7 +833,9 @@
+>                         compatible = "socionext,uniphier-pxs3-pcie-phy";
+>                         reg = <0x66038000 0x4000>;
+>                         #phy-cells = <0>;
+> +                       clock-names = "link";
+>                         clocks = <&sys_clk 24>;
+> +                       reset-names = "link";
+>                         resets = <&sys_rst 24>;
+>                         socionext,syscon = <&soc_glue>;
+>                 };
+> --
+> 2.7.4
+>
+
+
+--
+Best Regards
+Masahiro Yamada
