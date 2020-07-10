@@ -2,161 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6984321B67A
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 15:33:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C8D921B63F
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 15:24:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727871AbgGJNdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 09:33:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35112 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726908AbgGJNdR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 09:33:17 -0400
-X-Greylist: delayed 595 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 10 Jul 2020 06:33:17 PDT
-Received: from vulcan.natalenko.name (vulcan.natalenko.name [IPv6:2001:19f0:6c00:8846:5400:ff:fe0c:dfa0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78511C08C5CE;
-        Fri, 10 Jul 2020 06:33:17 -0700 (PDT)
-Received: from mail.natalenko.name (vulcan.natalenko.name [IPv6:fe80::5400:ff:fe0c:dfa0])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vulcan.natalenko.name (Postfix) with ESMTPSA id 3E94A7C1278;
-        Fri, 10 Jul 2020 15:23:17 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
-        s=dkim-20170712; t=1594387397;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=T0a47GLKOaTiWzGq8XsdXklDdSZ4NNZ9YA/m4rMqQRc=;
-        b=J1TuL69JeYwZWoKtV+F+2RVX5EevU5myizrh5IdpnW0CZBoYkIc+cRqFm9tfHZQIMvyc8i
-        RVVUJLIXbz6tZI6C8PVx9hQamgWTx4PVGtGauA6p1syNbUYu8PiNQYtRhCuQlSuAwJeJTb
-        hVde8USor0K+SSvZ3ACV4y31kMERGpY=
-MIME-Version: 1.0
-Date:   Fri, 10 Jul 2020 15:23:17 +0200
-From:   Oleksandr Natalenko <oleksandr@natalenko.name>
-To:     =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@collabora.com>
-Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        peterz@infradead.org, krisman@collabora.com, kernel@collabora.com,
-        dvhart@infradead.org, mingo@redhat.com,
-        pgriffais@valvesoftware.com, fweimer@redhat.com,
-        libc-alpha@sourceware.org, malteskarupke@web.de,
-        linux-api@vger.kernel.org, arnd@arndb.de
-Subject: Re: [RFC v2 0/4] futex2: Add new futex interface
-In-Reply-To: <20200709175921.211387-1-andrealmeid@collabora.com>
-References: <20200709175921.211387-1-andrealmeid@collabora.com>
-User-Agent: Roundcube Webmail/1.4.6
-Message-ID: <4d9163924224d4265c280fc2ca6481c3@natalenko.name>
-X-Sender: oleksandr@natalenko.name
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
+        id S1727038AbgGJNYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 09:24:47 -0400
+Received: from mail-vi1eur05on2110.outbound.protection.outlook.com ([40.107.21.110]:11584
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726774AbgGJNYr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 09:24:47 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oKgAJrm7BLzMmAv6pPakt9JJctJfcSUtSmc6SQR9subM4dTvBaGiGJT4lx5ed7rzVqKwMTQAJUWcP+ZALos2Zq6XRxSWWJHoreGG80BeD1zbB2evSp6MkNlaIeJsPRpm01LwmVY3sn/94NCaRpkYcA8klOtUcrP8Cxc9yJVmfXKimJ8yKzz7jjWm28J3UUZ6MTpVgTGQyCrIsUt99FDhFZFlBgWUSAF84vl6IgC4bXGm1Ko2dZd8qvKxA7Ra7Yox6hJQOqt7tzq/SDdi9p8OgI7mp5ZDmFwNSStPTJeg6clUcQGOqUPFoQ9OVOmkkWyzJ9RJu64orqqT5qwgGw732w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CaJt5SCXOUjbaWST4hkoOW6E0B1nZRjBFKK2dgdhhLo=;
+ b=gNAf9cMRrBG+TY/Ntf0YD2kb3QQINdg4HdX/MTRGIkxTQ9jbTNSwe38Fp0atohza5PImgQITHct+B3Mu26BZIIK7y46U4/i7E3gqq0s4RbT1ZzMDojWHNvtcx9LvHHw0pnDZNfcs8aup/q5F2gPfYOS3IOsJ/IJy/XZ8wjB9nF9KP4GhGWGt2TLS2W7g4XOz/upOpgHikds9wC7y9Gb2T8nQe1N6cTz2KR3u3+ZWKXL/S4oue2nQV65uO/0KuoGGvOyQB40E9DeHpZo4mgzd7g8BxtMaXATfRxTklvqT1ZG2u10FbDCfARoMw88RPctR+F7y+s3mpu8QE7Bz7btyOw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=toradex.com; dmarc=pass action=none header.from=toradex.com;
+ dkim=pass header.d=toradex.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=toradex.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CaJt5SCXOUjbaWST4hkoOW6E0B1nZRjBFKK2dgdhhLo=;
+ b=tmUvUyDme4iMhlhPlQDl6hXy77FGUtTRIXj0TfcRDTqML5P4Jxd5scA0Bc5zPfe8eXCq04dOqm96tlafEOM/PjlwUlpzcScUOpLtW5zCqZ2bV89NByBodmdMkihc0OnmERa1PTCnAGZiO+btHkflMGkRxnw9ZNEvyOxL0RWRyC0=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=toradex.com;
+Received: from AM6PR05MB6120.eurprd05.prod.outlook.com (2603:10a6:20b:a8::25)
+ by AM6PR05MB4821.eurprd05.prod.outlook.com (2603:10a6:20b:2::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.28; Fri, 10 Jul
+ 2020 13:24:43 +0000
+Received: from AM6PR05MB6120.eurprd05.prod.outlook.com
+ ([fe80::1d81:6a9b:8c26:3b7d]) by AM6PR05MB6120.eurprd05.prod.outlook.com
+ ([fe80::1d81:6a9b:8c26:3b7d%4]) with mapi id 15.20.3174.023; Fri, 10 Jul 2020
+ 13:24:43 +0000
+From:   Philippe Schenker <philippe.schenker@toradex.com>
+To:     devicetree@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>
+Cc:     Philippe Schenker <philippe.schenker@toradex.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/3] ARM: dts: colibri-imx6: remove pinctrl-names orphan
+Date:   Fri, 10 Jul 2020 15:24:21 +0200
+Message-Id: <20200710132423.497230-1-philippe.schenker@toradex.com>
+X-Mailer: git-send-email 2.27.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: ZR0P278CA0015.CHEP278.PROD.OUTLOOK.COM
+ (2603:10a6:910:16::25) To AM6PR05MB6120.eurprd05.prod.outlook.com
+ (2603:10a6:20b:a8::25)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from philippe-pc.toradex.int (31.10.206.124) by ZR0P278CA0015.CHEP278.PROD.OUTLOOK.COM (2603:10a6:910:16::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.20 via Frontend Transport; Fri, 10 Jul 2020 13:24:41 +0000
+X-Mailer: git-send-email 2.27.0
+X-Originating-IP: [31.10.206.124]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e84ed454-8822-4ace-e57a-08d824d49a99
+X-MS-TrafficTypeDiagnostic: AM6PR05MB4821:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM6PR05MB4821BB2503DE8B70B6CFC3FAF4650@AM6PR05MB4821.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:608;
+X-Forefront-PRVS: 046060344D
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: TQbuA3O0Yc/wmBffTAvxc9NCbCU1O9cbF4+djCCUTeAW//7S7+4RKKcQr34R2zAybwxmb5b4o7Cege2PrcgHvuhuoV0hYYJUgF0XShTf6Kw8+M5x+asLYn8qKdXI6V3+4bEQWXrd7wrMmGuRn0+cLfNoPmdctAyBNfLGSm8y7aYkZk4/KIqqLzmyGUopN2pnUlpmqOMOxDp1VhyFeACErjORIfP40l0+r8F4v9UqPDdEFJa0unMN9vgNP/IUU38KmwmE/Zk8OmSRkRVcF2YcSulunVkVGLH6uEjISzlTMmSERDvQOwxagHvvUQE26Aoo74uwuwctqnv7AKmmvPn/txsM1Z0vrRNoBxwTbJ7LWd1zyDAz4UjIUKXx2kxt9ajj
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR05MB6120.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(136003)(396003)(39850400004)(346002)(376002)(4744005)(1076003)(66476007)(66556008)(83380400001)(6506007)(26005)(6512007)(8936002)(54906003)(44832011)(4326008)(2906002)(316002)(6486002)(66946007)(2616005)(956004)(86362001)(5660300002)(6916009)(478600001)(8676002)(186003)(36756003)(52116002)(6666004)(16526019)(16060500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: nWw2g7GvdKy3DmAHRQxNnFzK6xopqX4e57Nd8NXMc4jOrASfHDZc1eLodyDA1MVZbqtpVxq1wslIfeJ9ura67i8Zwk1Zdb7qALOUwySxWkU88+0GFuGRn7uUsprKuh7Muw9rhJ0C44R2SBlxMBZUWKYunARPJl/4BddGJq5eaSYcjAnW4sZhPXRgMFjFuy4kF2LHHJUPNsPgEdAbCGCzt7G5iJmvqkT7qgqMcPkZp+j3zXoxDLBAhPUBkjERkiOgjBltQtOUVO2JlXRFs8KdTpb/5d9BXlSC6Z0/biVBciqWFBON59yst56rjobvoSL9JvElJQ1Lgku/k0OTdxwBxqz6Uq0lcUl7DoLV/zE5HcWyOBJTJJNCur9MjC3khWjW/EpGBrHxcm9FPb7gbinGlHAtpNjkWNTiaGdb6j9Z5SCzH/LJGAiV+ZgsoSGJ6lD2tB5phi3Ey+scYHm944LrZlv0FTjRlTXF63WyUCXFYZw=
+X-OriginatorOrg: toradex.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e84ed454-8822-4ace-e57a-08d824d49a99
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR05MB6120.eurprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jul 2020 13:24:43.1501
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: d9995866-0d9b-4251-8315-093f062abab4
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: WuNn5BtjsQL3LXrtbidmMY5Cy9nPL6wPWeq378Ne0JCgpVIX44QPvCA6accOX3ETq2ECYZ+r1ht5iXiBMP34k0BYxkc6NtyycTDV3yzhgdw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR05MB4821
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello.
+This is not necessary without a pinctrl-0 statement. Remove this
+orphan.
 
-On 09.07.2020 19:59, André Almeida wrote:
-> This RFC is a followup to the previous discussion initiated from my 
-> last
-> patch "futex: Implement mechanism to wait on any of several 
-> futexes"[1].
-> As stated in the thread, the correct approach to move forward with the
-> wait multiple operation would be to create a new syscall that would 
-> have
-> all new cool features.
-> 
-> The first patch adds the new interface and just translate the call for
-> the old interface, without implementing new features. The goal here is
-> to establish the interface and to check if everyone is happy with this
-> API. The rest of patches are selftests to show the interface in action.
-> I have the following questions:
-> 
-> - What suggestions do you have to implement this? Start from scratch or
->   reuse the most code possible?
-> 
-> - The interface seems correct and implements the requirements asked by 
-> you?
-> 
-> Those are the cool new features that this syscall should address some
-> day:
-> 
-> - Operate with variable bit size futexes, not restricted to 32:
->   8, 16 and 64
-> 
-> - Wait on multiple futexes, using the following semantics:
-> 
->   struct futex_wait {
-> 	void *uaddr;
-> 	unsigned long val;
-> 	unsigned long flags;
->   };
-> 
->   sys_futex_waitv(struct futex_wait *waiters, unsigned int nr_waiters,
-> 		  unsigned long flags, struct __kernel_timespec *timo);
-> 
-> - Have NUMA optimizations: if FUTEX_NUMA_FLAG is set, the `void *uaddr`
->   argument won't be a value of type u{8, 16, 32, 64} anymore, but a 
-> struct
->   containing a NUMA node hint:
-> 
->   struct futex32_numa {
-> 	  u32 value __attribute__ ((aligned (8)));
-> 	  u32 hint;
->   };
-> 
->   struct futex64_numa {
-> 	  u64 value __attribute__ ((aligned (16)));
-> 	  u64 hint;
->   };
-> 
-> Thanks,
-> 	André
-> 
-> Changes since v1:
->  - The timeout argument now uses __kernel_timespec as type
->  - time32 interface was removed
->  v1: https://lore.kernel.org/patchwork/cover/1255437/
-> 
-> [1] https://lore.kernel.org/patchwork/patch/1194339/
-> 
-> André Almeida (4):
->   futex2: Add new futex interface
->   selftests: futex: Add futex2 wake/wait test
->   selftests: futex: Add futex2 timeout test
->   selftests: futex: Add futex2 wouldblock test
-> 
->  MAINTAINERS                                   |   2 +-
->  arch/x86/entry/syscalls/syscall_32.tbl        |   2 +
->  arch/x86/entry/syscalls/syscall_64.tbl        |   2 +
->  include/linux/syscalls.h                      |   7 ++
->  include/uapi/asm-generic/unistd.h             |   8 +-
->  include/uapi/linux/futex.h                    |  10 ++
->  init/Kconfig                                  |   7 ++
->  kernel/Makefile                               |   1 +
->  kernel/futex2.c                               |  73 ++++++++++++
->  kernel/sys_ni.c                               |   4 +
->  tools/include/uapi/asm-generic/unistd.h       |   7 +-
->  .../selftests/futex/functional/.gitignore     |   1 +
->  .../selftests/futex/functional/Makefile       |   4 +-
->  .../selftests/futex/functional/futex2_wait.c  | 111 ++++++++++++++++++
->  .../futex/functional/futex_wait_timeout.c     |  38 ++++--
->  .../futex/functional/futex_wait_wouldblock.c  |  33 +++++-
->  .../testing/selftests/futex/functional/run.sh |   3 +
->  .../selftests/futex/include/futex2test.h      |  77 ++++++++++++
->  18 files changed, 373 insertions(+), 17 deletions(-)
->  create mode 100644 kernel/futex2.c
->  create mode 100644 
-> tools/testing/selftests/futex/functional/futex2_wait.c
->  create mode 100644 tools/testing/selftests/futex/include/futex2test.h
+Signed-off-by: Philippe Schenker <philippe.schenker@toradex.com>
+---
 
-What branch/tag this submission is based on please? It seems it is not a 
-5.8 but rather 5.7 since the second patch misses faccessat2() syscall 
-and fails to be applied cleanly.
+ arch/arm/boot/dts/imx6qdl-colibri.dtsi | 1 -
+ 1 file changed, 1 deletion(-)
 
-Thanks.
-
+diff --git a/arch/arm/boot/dts/imx6qdl-colibri.dtsi b/arch/arm/boot/dts/imx6qdl-colibri.dtsi
+index 240b86d2eb71..a4a54c82e28f 100644
+--- a/arch/arm/boot/dts/imx6qdl-colibri.dtsi
++++ b/arch/arm/boot/dts/imx6qdl-colibri.dtsi
+@@ -362,7 +362,6 @@ &uart3 {
+ };
+ 
+ &usbotg {
+-	pinctrl-names = "default";
+ 	disable-over-current;
+ 	dr_mode = "peripheral";
+ 	status = "disabled";
 -- 
-   Oleksandr Natalenko (post-factum)
+2.27.0
+
