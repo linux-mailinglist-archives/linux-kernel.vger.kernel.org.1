@@ -2,137 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4B5B21B8C8
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 16:36:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C443B21B8C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 16:35:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728112AbgGJOf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 10:35:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727907AbgGJOfq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 10:35:46 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41895C08C5CE
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 07:35:46 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id k4so2315603pld.12
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 07:35:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Un87GvVkLmhF1eD8x6P9VVT98h6gpLaIkLYOlmueJo8=;
-        b=AqOuod1fwoFP8Tl3n4oeOceJUx+4OJE8UasSb6dQjuRAapdz1DxX6akUzAv3oQPDft
-         EbSf0sKCrk6VrDSDmXxnGhmenTmbuQS3xhrf52FYTv2aBS6h5g6sBtCfXQDYAfYY0+y6
-         95bW4mM0b8sJuOBccqDzwwcSw7gCY3DfSkok4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Un87GvVkLmhF1eD8x6P9VVT98h6gpLaIkLYOlmueJo8=;
-        b=jVyfwdPi0hCLOOXv4ZyLyXxTfOf8g5elaDcmkIUtj8DvCWetKltwKv60UGIKekl86X
-         cRTgm8TARY3HztEelyiVuKjtBpOy4IuBYIZaiSyRG4Fy4uaV+er9MNJT0vHL9skGJJ6T
-         SJIRQiYYVIAO/RvYVH+BWKBPj2AaFzkdOLNRWn+c6HcwLrpfNFvGoxuoLCDElTkEO4DW
-         fCfZtCa05I9qYOrwm9pI7ucFYCC0MbMGttAHvt9FXYNtgI/m+dE3SIkT3vJmOz31C/K+
-         FdPyEeGp8lphVD9s1qpYihY5fnE04o8sHlJrVN1t76jmWDIcmJhwuIk6+fFX0wj7Kn+s
-         Ctbg==
-X-Gm-Message-State: AOAM532zunB3sEy2B2Tw8HPOz7Q8jjWRrlMWvKUoxKc2k49ddMlOmvNq
-        ENUhmA1JdlAY/rQK9+g+3upZvA==
-X-Google-Smtp-Source: ABdhPJyDmDg0FdGBTycWUOByl/yrczi2w0sew0nGDK/z8a2DzZ8JeG1QKYFxbFhxOgBU6mTFElxGqQ==
-X-Received: by 2002:a17:90a:158f:: with SMTP id m15mr5996876pja.93.1594391745744;
-        Fri, 10 Jul 2020 07:35:45 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
-        by smtp.gmail.com with ESMTPSA id gn5sm5951284pjb.23.2020.07.10.07.35.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jul 2020 07:35:45 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>
-Cc:     sparate@codeaurora.org, saiprakash.ranjan@codeaurora.org,
-        mturney@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        Jeffrey Hugo <jhugo@codeaurora.org>, dhavalp@codeaurora.org,
-        rnayak@codeaurora.org, mkurumel@codeaurora.org,
-        Ravi Kumar Bokka <rbokka@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v5 4/4] arm64: dts: qcom: sc7180: Add properties to qfprom for fuse blowing
-Date:   Fri, 10 Jul 2020 07:35:20 -0700
-Message-Id: <20200710073439.v5.4.I70c17309f8b433e900656d7c53a2e6b61888bb68@changeid>
-X-Mailer: git-send-email 2.27.0.383.g050319c2ae-goog
-In-Reply-To: <20200710143520.1206846-1-dianders@chromium.org>
-References: <20200710143520.1206846-1-dianders@chromium.org>
+        id S1728054AbgGJOfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 10:35:51 -0400
+Received: from mga05.intel.com ([192.55.52.43]:48386 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727978AbgGJOfs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 10:35:48 -0400
+IronPort-SDR: PW4+0tFsmVEEFTCWe//jRB175Uahgbsqz5wIsSVeBp4oDjbB6FqhpfDvtRqbOiliMbjJ4UzpD1
+ w2XZV8d02QvQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9678"; a="233069546"
+X-IronPort-AV: E=Sophos;i="5.75,336,1589266800"; 
+   d="scan'208";a="233069546"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jul 2020 07:35:30 -0700
+IronPort-SDR: ECrrrkzvxc1YOLs1Tb1e4wtm6FjeWPUDFojMs/DsVc0DN6EH988x/HW76rC0HZqsRYezxxIYJh
+ UOfNiwB0J9YQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,336,1589266800"; 
+   d="scan'208";a="316620225"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga002.fm.intel.com with ESMTP; 10 Jul 2020 07:35:28 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1jtu7d-0014Ir-O8; Fri, 10 Jul 2020 17:35:29 +0300
+Date:   Fri, 10 Jul 2020 17:35:29 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH v1] regmap: Switch to use fwnode instead of OF one
+Message-ID: <20200710143529.GR3703480@smile.fi.intel.com>
+References: <20200708161232.17914-1-andriy.shevchenko@linux.intel.com>
+ <20200708162117.GV4655@sirena.org.uk>
+ <20200710100558.GI3703480@smile.fi.intel.com>
+ <20200710110132.GA5653@sirena.org.uk>
+ <20200710114622.GJ3703480@smile.fi.intel.com>
+ <20200710120856.GD5653@sirena.org.uk>
+ <20200710133233.GF5653@sirena.org.uk>
+ <CAHp75VeWmWU6=ybDmQmv7ymwaHG+FxNBzZM9eBxp2Oie6MrZQw@mail.gmail.com>
+ <CAHp75VcKSRem-eHi2FY89Y0yZcJrMVX_p_-OnF8+NuCrBSZfuA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHp75VcKSRem-eHi2FY89Y0yZcJrMVX_p_-OnF8+NuCrBSZfuA@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ravi Kumar Bokka <rbokka@codeaurora.org>
+On Fri, Jul 10, 2020 at 05:15:27PM +0300, Andy Shevchenko wrote:
+> On Fri, Jul 10, 2020 at 5:13 PM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+> >
+> > On Fri, Jul 10, 2020 at 4:36 PM Mark Brown <broonie@kernel.org> wrote:
+> > >
+> > > On Fri, Jul 10, 2020 at 01:08:56PM +0100, Mark Brown wrote:
+> > > > On Fri, Jul 10, 2020 at 02:46:22PM +0300, Andy Shevchenko wrote:
+> > >
+> > > > > You mean it's being synchronised with git.kernel.org, but not yet contains that
+> > > > > patch? Okay, I will monitor the regmap tree (as of now I didn't see any update).
+> > >
+> > > > 5cc2013bfeee756a1ee6da9bfbe42e52b4695035
+> > >
+> > > Oh, I see your patch covered a different bit of code without covering
+> > > the stuff in regmap-irq (which I'd just handled when your patch came in)
+> > > for some reason so the changelog made it sound like the same code, and
+> > > at the time you submitted it the patch was incomplete.
+> >
+> > Should I do anything to improve it?
+> 
+> Actually I think we can completely get rid of fwnode by switching to
+> device properties.
+> I'll send v2 soon.
 
-This patch adds properties to the qfprom node to enable fuse blowing.
+Oops, I have looked into this and see that either way we would need an
+additional conditional and fwnode approach looks better. So, if you agree with
+v1, please apply.
 
-Signed-off-by: Ravi Kumar Bokka <rbokka@codeaurora.org>
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
-Presumably this patch to the device tree file should go through the
-Qualcomm tree.  Now that bindings have been reviewed by Rob it could
-probably land any time.
-
-Changes in v5: None
-Changes in v4:
-- Clock name is "core", not "sec".
-
-Changes in v3:
-- Name is now 'efuse' to match what schema checker wants.
-- Reorganized ranges to match driver/bindings changes.
-- Added 4th range as per driver/binding changes.
-- No more reg-names as per driver/binding changes.
-- Clock name is now just "sec" as per driver/binding changes.
-
- arch/arm64/boot/dts/qcom/sc7180-idp.dts |  4 ++++
- arch/arm64/boot/dts/qcom/sc7180.dtsi    | 10 ++++++++--
- 2 files changed, 12 insertions(+), 2 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-idp.dts b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
-index 4e9149d82d09..2a9224e2083f 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-idp.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
-@@ -287,6 +287,10 @@ vreg_bob: bob {
- 	};
- };
- 
-+&qfprom {
-+	vcc-supply = <&vreg_l11a_1p8>;
-+};
-+
- &qspi {
- 	status = "okay";
- 	pinctrl-names = "default";
-diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-index 31b9217bb5bf..fbf9554f1e3a 100644
---- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-@@ -498,9 +498,15 @@ gcc: clock-controller@100000 {
- 			#power-domain-cells = <1>;
- 		};
- 
--		qfprom@784000 {
-+		qfprom: efuse@784000 {
- 			compatible = "qcom,qfprom";
--			reg = <0 0x00784000 0 0x8ff>;
-+			reg = <0 0x00784000 0 0x8ff>,
-+			      <0 0x00780000 0 0x7a0>,
-+			      <0 0x00782000 0 0x100>,
-+			      <0 0x00786000 0 0x1fff>;
-+
-+			clocks = <&gcc GCC_SEC_CTRL_CLK_SRC>;
-+			clock-names = "core";
- 			#address-cells = <1>;
- 			#size-cells = <1>;
- 
 -- 
-2.27.0.383.g050319c2ae-goog
+With Best Regards,
+Andy Shevchenko
+
 
