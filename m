@@ -2,172 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC64621B8CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 16:37:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A190521B8C0
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 16:35:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728162AbgGJOhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 10:37:02 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:59992 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726908AbgGJOhC (ORCPT
+        id S1727065AbgGJOfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 10:35:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726925AbgGJOfk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 10:37:02 -0400
-Received: from fsav305.sakura.ne.jp (fsav305.sakura.ne.jp [153.120.85.136])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 06AEaVwI076432;
-        Fri, 10 Jul 2020 23:36:31 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav305.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav305.sakura.ne.jp);
- Fri, 10 Jul 2020 23:36:31 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav305.sakura.ne.jp)
-Received: from localhost.localdomain (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 06AEaLY2076229
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Fri, 10 Jul 2020 23:36:30 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jslaby@suse.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>, linux-kernel@vger.kernel.org,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        syzbot <syzbot+017265e8553724e514e8@syzkaller.appspotmail.com>
-Subject: [PATCH v2] vt: Reject zero-sized screen buffer size.
-Date:   Fri, 10 Jul 2020 23:34:55 +0900
-Message-Id: <20200710143455.3438-1-penguin-kernel@I-love.SAKURA.ne.jp>
-X-Mailer: git-send-email 2.18.4
-In-Reply-To: <20200710113658.GA1238355@kroah.com>
-References: <20200710113658.GA1238355@kroah.com>
+        Fri, 10 Jul 2020 10:35:40 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1F34C08C5DD
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 07:35:40 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id q17so2321492pls.9
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 07:35:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=R9HrHqPUSzITIW7yfyMtrSSs67bqVARez79+kQQRCiU=;
+        b=eOhC/yfyGAev8w7mTmTopkakwjlcvNp3mGfa3evSenT6qvF2LqWIivBh3wtRbTUpv5
+         DRqO84KXN4dJ2+f+0hDhvW8AzOuD42V/VAcjnS0pe5yWeQH1pQ4sxcsHpgY2cbJ5vhZi
+         skem5KBZ7ICCVRqEzP7OXeP/hU6ZdDU2jATNk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=R9HrHqPUSzITIW7yfyMtrSSs67bqVARez79+kQQRCiU=;
+        b=uOFmlZ7m8VEP63Dy3oHBPJREdZkPxVm+2mAmAUhOWFwjo3MPxKpysU4VoArfsfEzsa
+         fdb3dACLg8q0opNI4gaoQSQfh+JBF7R+n6PxzHRtFsdbzPGnzv4jbmDF5XRBWB99N8nz
+         ZtYj6eAiMR9y0Zoc3AIvlO3R+/Ia5v585MrbhDtvPoHfvAF51W7CXE+J4ERBi4TTEihD
+         9gFsf5FccPqyAQlVQF3PBotUN0lq5BoSkQQP2uexgcMM2dlUSkr9+o8NdtzB0O35Su2e
+         VUQGhlk9fQPCu+L+VsWswolNRyYryIc46sVms/Qwa1XjDiNFuNTKp0XUf9IYG4sMmuOV
+         sSng==
+X-Gm-Message-State: AOAM5300AEgAcZZps9eCh5tOn7Mw9xKqc1XxWhX+ba7w5SpZIeIfalUi
+        1dke4mlFwggCWELI4LN5oa4tFw==
+X-Google-Smtp-Source: ABdhPJxzIjZr+pig7oEHSaoBQa6MCG0kHzq8V3evp9Xib8/oPodkV6Ju7eNFbEfQeSLtp/6jyAOYQg==
+X-Received: by 2002:a17:90a:ac14:: with SMTP id o20mr6082153pjq.185.1594391739990;
+        Fri, 10 Jul 2020 07:35:39 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
+        by smtp.gmail.com with ESMTPSA id gn5sm5951284pjb.23.2020.07.10.07.35.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Jul 2020 07:35:39 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>
+Cc:     sparate@codeaurora.org, saiprakash.ranjan@codeaurora.org,
+        mturney@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        Jeffrey Hugo <jhugo@codeaurora.org>, dhavalp@codeaurora.org,
+        rnayak@codeaurora.org, mkurumel@codeaurora.org,
+        Ravi Kumar Bokka <rbokka@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v5 0/4] nvmem: qfprom: Patches for fuse blowing on Qualcomm SoCs
+Date:   Fri, 10 Jul 2020 07:35:16 -0700
+Message-Id: <20200710143520.1206846-1-dianders@chromium.org>
+X-Mailer: git-send-email 2.27.0.383.g050319c2ae-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot is reporting general protection fault in do_con_write() [1] caused
-by vc->vc_screenbuf == ZERO_SIZE_PTR caused by vc->vc_screenbuf_size == 0
-caused by vc->vc_cols == vc->vc_rows == vc->vc_size_row == 0 being passed
-to ioctl(FBIOPUT_VSCREENINFO) request on /dev/fb0 , for gotoxy(vc, 0, 0)
- from reset_terminal() from vc_init() from vc_allocate() on such console
-causes vc->vc_pos == 0x10000000e due to
-((unsigned long) ZERO_SIZE_PTR) + -1U * 0 + (-1U << 1).
+This series enables blowing of fuses on Qualcomm SoCs by extending the
+existing qfprom driver with write support.
 
-I don't think that a console with 0 column and/or 0 row makes sense, and
-I think that we can reject such bogus arguments in fb_set_var() from
-ioctl(FBIOPUT_VSCREENINFO). Regardless, I think that it is safer to also
-check vc->vc_screenbuf_size when allocating vc->vc_screenbuf from
-vc_allocate() from con_install() from tty_init_dev() from tty_open().
+A few notes:
+- Though I don't have any firsthand knowledge of it, it's my
+  understanding that these changes could be used on any Qualcomm SoC.
+  However, it's likely not very useful on most boards because the
+  bootloader protects against this.  Thus the write support here is
+  likely only useful with a cooperating bootloader.
+- Blowing fuses is truly a one-way process.  If you mess around with
+  this and do something wrong you could irreparably brick your chip.
+  You have been warned.
 
-Theoretically, cols and rows can be any range as long as
-0 < cols * rows * 2 <= KMALLOC_MAX_SIZE is satisfied (e.g.
-cols == 1048576 && rows == 2 is possible) because of
+Versions 1 and 2 of this series were posted by Ravi Kumar Bokka.  I
+posted version 3 containing my changes / fixups with his consent.  I
+have left authorship as Ravi but added my own Signed-off-by.
 
-  vc->vc_size_row = vc->vc_cols << 1;
-  vc->vc_screenbuf_size = vc->vc_rows * vc->vc_size_row;
+Version 4 is a minor spin over version 3.
 
-in visual_init() and kzalloc(vc->vc_screenbuf_size) in vc_allocate().
+Version 5 is an even more minor spin and just bumps up some timings to
+fix a failure reported by Ravi on one device.  I've collected Rob
+Herring's reviews and (as far as I know) this is ready to land.
 
-But since vc_do_resize() requires cols <= 32767 and rows <= 32767,
-applying 1 <= cols <= 32767 and 1 <= rows <= 32767 requirements to
-vc_allocate() will be practically fine. (cols != 0 && rows != 0 is
-implicitly checked via screenbuf_size != 0.)
+Changes in v5:
+- QFPROM_FUSE_BLOW_POLL_US 10 => 100
+- QFPROM_FUSE_BLOW_TIMEOUT_US 100 => 1000
 
-This patch does not touch con_init(), for returning -EINVAL there
-does not help when we are not returning -ENOMEM.
+Changes in v4:
+- Maintainer now listed as Srinivas.
+- Example under "soc" to get #address-cells and #size-cells.
+- Clock name is "core", not "sec".
+- Example under "soc" to get #address-cells and #size-cells.
+- Only get clock/regulator if all address ranges are provided.
+- Don't use optional version of clk_get now.
+- Clock name is "core", not "sec".
+- Cleaned up error message if couldn't get clock.
+- Fixed up minor version mask.
+- Use GENMASK to generate masks.
+- Clock name is "core", not "sec".
 
-[1] https://syzkaller.appspot.com/bug?extid=017265e8553724e514e8
+Changes in v3:
+- Split conversion to yaml into separate patch new in v3.
+- Use 'const' for compatible instead of a 1-entry enum.
+- Changed filename to match compatible string.
+- Add #address-cells and #size-cells to list of properties.
+- Fixed up example.
+- Add an extra reg range (at 0x6000 offset for SoCs checked)
+- Define two options for reg: 1 item or 4 items.
+- No reg-names.
+- Add "clocks" and "clock-names" to list of properties.
+- Clock is now "sec", not "secclk".
+- Add "vcc-supply" to list of properties.
+- Fixed up example.
+- Don't provide "reset" value for things; just save/restore.
+- Use the major/minor version read from 0x6000.
+- Reading should still read "corrected", not "raw".
+- Added a sysfs knob to allow you to read "raw" instead of "corrected"
+- Simplified the SoC data structure.
+- No need for quite so many levels of abstraction for clocks/regulator.
+- Don't set regulator voltage.  Rely on device tree to make sure it's right.
+- Properly undo things in the case of failure.
+- Don't just keep enabling the regulator over and over again.
+- Enable / disable the clock each time
+- Polling every 100 us but timing out in 10 us didn't make sense; swap.
+- No reason for 100 us to be SoC specific.
+- No need for reg-names.
+- We shouldn't be creating two separate nvmem devices.
+- Name is now 'efuse' to match what schema checker wants.
+- Reorganized ranges to match driver/bindings changes.
+- Added 4th range as per driver/binding changes.
+- No more reg-names as per driver/binding changes.
+- Clock name is now just "sec" as per driver/binding changes.
 
-Reported-by: syzbot <syzbot+017265e8553724e514e8@syzkaller.appspotmail.com>
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
----
- drivers/tty/vt/vt.c | 29 ++++++++++++++++++-----------
- 1 file changed, 18 insertions(+), 11 deletions(-)
+Ravi Kumar Bokka (4):
+  dt-bindings: nvmem: qfprom: Convert to yaml
+  dt-bindings: nvmem: Add properties needed for blowing fuses
+  nvmem: qfprom: Add fuse blowing support
+  arm64: dts: qcom: sc7180: Add properties to qfprom for fuse blowing
 
-diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
-index 48a8199f7845..42d8c67a481f 100644
---- a/drivers/tty/vt/vt.c
-+++ b/drivers/tty/vt/vt.c
-@@ -1092,10 +1092,19 @@ static const struct tty_port_operations vc_port_ops = {
- 	.destruct = vc_port_destruct,
- };
- 
-+/*
-+ * Change # of rows and columns (0 means unchanged/the size of fg_console)
-+ * [this is to be used together with some user program
-+ * like resize that changes the hardware videomode]
-+ */
-+#define VC_MAXCOL (32767)
-+#define VC_MAXROW (32767)
-+
- int vc_allocate(unsigned int currcons)	/* return 0 on success */
- {
- 	struct vt_notifier_param param;
- 	struct vc_data *vc;
-+	int err;
- 
- 	WARN_CONSOLE_UNLOCKED();
- 
-@@ -1125,6 +1134,11 @@ int vc_allocate(unsigned int currcons)	/* return 0 on success */
- 	if (!*vc->vc_uni_pagedir_loc)
- 		con_set_default_unimap(vc);
- 
-+	err = -EINVAL;
-+	if (vc->vc_cols > VC_MAXCOL || vc->vc_rows > VC_MAXROW ||
-+	    vc->vc_screenbuf_size > KMALLOC_MAX_SIZE || !vc->vc_screenbuf_size)
-+		goto err_free;
-+	err = -ENOMEM;
- 	vc->vc_screenbuf = kzalloc(vc->vc_screenbuf_size, GFP_KERNEL);
- 	if (!vc->vc_screenbuf)
- 		goto err_free;
-@@ -1143,7 +1157,7 @@ int vc_allocate(unsigned int currcons)	/* return 0 on success */
- 	visual_deinit(vc);
- 	kfree(vc);
- 	vc_cons[currcons].d = NULL;
--	return -ENOMEM;
-+	return err;
- }
- 
- static inline int resize_screen(struct vc_data *vc, int width, int height,
-@@ -1158,14 +1172,6 @@ static inline int resize_screen(struct vc_data *vc, int width, int height,
- 	return err;
- }
- 
--/*
-- * Change # of rows and columns (0 means unchanged/the size of fg_console)
-- * [this is to be used together with some user program
-- * like resize that changes the hardware videomode]
-- */
--#define VC_RESIZE_MAXCOL (32767)
--#define VC_RESIZE_MAXROW (32767)
--
- /**
-  *	vc_do_resize	-	resizing method for the tty
-  *	@tty: tty being resized
-@@ -1201,7 +1207,7 @@ static int vc_do_resize(struct tty_struct *tty, struct vc_data *vc,
- 	user = vc->vc_resize_user;
- 	vc->vc_resize_user = 0;
- 
--	if (cols > VC_RESIZE_MAXCOL || lines > VC_RESIZE_MAXROW)
-+	if (cols > VC_MAXCOL || lines > VC_MAXROW)
- 		return -EINVAL;
- 
- 	new_cols = (cols ? cols : vc->vc_cols);
-@@ -1212,7 +1218,7 @@ static int vc_do_resize(struct tty_struct *tty, struct vc_data *vc,
- 	if (new_cols == vc->vc_cols && new_rows == vc->vc_rows)
- 		return 0;
- 
--	if (new_screen_size > KMALLOC_MAX_SIZE)
-+	if (new_screen_size > KMALLOC_MAX_SIZE || !new_screen_size)
- 		return -EINVAL;
- 	newscreen = kzalloc(new_screen_size, GFP_USER);
- 	if (!newscreen)
-@@ -3393,6 +3399,7 @@ static int __init con_init(void)
- 		INIT_WORK(&vc_cons[currcons].SAK_work, vc_SAK);
- 		tty_port_init(&vc->port);
- 		visual_init(vc, currcons, 1);
-+		/* Assuming vc->vc_{cols,rows,screenbuf_size} are sane here. */
- 		vc->vc_screenbuf = kzalloc(vc->vc_screenbuf_size, GFP_NOWAIT);
- 		vc_init(vc, vc->vc_rows, vc->vc_cols,
- 			currcons || !vc->vc_sw->con_save_screen);
+ .../bindings/nvmem/qcom,qfprom.yaml           |  96 ++++++
+ .../devicetree/bindings/nvmem/qfprom.txt      |  35 --
+ arch/arm64/boot/dts/qcom/sc7180-idp.dts       |   4 +
+ arch/arm64/boot/dts/qcom/sc7180.dtsi          |  10 +-
+ drivers/nvmem/qfprom.c                        | 314 +++++++++++++++++-
+ 5 files changed, 411 insertions(+), 48 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
+ delete mode 100644 Documentation/devicetree/bindings/nvmem/qfprom.txt
+
 -- 
-2.18.4
+2.27.0.383.g050319c2ae-goog
 
