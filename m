@@ -2,116 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A72221BF60
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 23:47:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 586F421BF5D
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 23:46:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726545AbgGJVrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 17:47:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55100 "EHLO
+        id S1726342AbgGJVqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 17:46:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726251AbgGJVrZ (ORCPT
+        with ESMTP id S1726251AbgGJVqb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 17:47:25 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BA0BC08C5DC;
-        Fri, 10 Jul 2020 14:47:25 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id a14so3294100qvq.6;
-        Fri, 10 Jul 2020 14:47:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=H4BIXM/X/4TDwBaDfHH2qeLVBAs7PCGQrZDucm3WMQA=;
-        b=lXA0dnkhWEzo+ZcE67jH+G1OgotEBlFxSKDTrTSdVqYCG25rP2YQDQjX8ZX2ow1Q1/
-         XlzIEgUG9K6iyMLvNZFTuxDS7VSBtmGBdcVsjPM+2I8UX3K5VAsatr9rnxB9FfBvjsJq
-         hABIVqaZYYjcKtikl3YtQSstw1Iv512kGKS/L21/Yro9jRmyD8t/OtRiByiwvlFiixgz
-         9C1CnWBNmZQfAm3+g2JVCaxPmzfqZIPr2DvRSCA3EonhzUW4Z3W1oS46s/06jAky2TW1
-         IH0hvL3WhTD98VFnr3vKykPgI2eZVcLjZz8PgsVx1H7itedHXLhQm2hRbCUkxOqFFFll
-         6KaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=H4BIXM/X/4TDwBaDfHH2qeLVBAs7PCGQrZDucm3WMQA=;
-        b=UyFu8h6Y7gp8UktsR9xP2HnmBHHEITCOT5ivZ1aFfuvLQg/bQmpDf4KQCisW8kM+KN
-         UGrbh42GqOjXrvE0TYku82v9qB/vhTLN8vq7q3RxUYTlBLYEFaNuxQfe5OeXlrVaNDH4
-         3izTCPBbYPz38aXUABKBfz4Qyy5KPjU/iWM810WRt8JsRwrYxEJmKglYGGvBbnuDeoK8
-         kn6gW1jSQYyDpvL6avbD+8ofxdp3ibj1i7PPi0AqPgFyAvIPCBA9ozIveZeBYoT3bQoC
-         clYR5d0hgN/aKGSNiiRPbTTX1ptnkN6oh0CDd0ruV6LW1Gq9flIN+rCg4wP0hEdV4A4w
-         n6xg==
-X-Gm-Message-State: AOAM532170PK2l+vuyoXpM1AilKWqKowti22fmSXjB1dhOTNYPw9343Q
-        1ES3DSVmIg6PQ5eDBcjHKw==
-X-Google-Smtp-Source: ABdhPJy+8ouNnOFsAjWlZGUPZPhMenwY4SizL6H6mf4dXiIltgFw3gi7pzw+NnH3gWcRNGhFtiNNMA==
-X-Received: by 2002:a0c:f109:: with SMTP id i9mr66510402qvl.154.1594417644040;
-        Fri, 10 Jul 2020 14:47:24 -0700 (PDT)
-Received: from localhost.localdomain (c-76-119-149-155.hsd1.ma.comcast.net. [76.119.149.155])
-        by smtp.gmail.com with ESMTPSA id p66sm8930426qkf.58.2020.07.10.14.47.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jul 2020 14:47:23 -0700 (PDT)
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>
-Cc:     Peilin Ye <yepeilin.cs@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
+        Fri, 10 Jul 2020 17:46:31 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEE31C08C5DC
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 14:46:31 -0700 (PDT)
+Received: from lwn.net (localhost [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 113C52D7;
+        Fri, 10 Jul 2020 21:46:31 +0000 (UTC)
+Date:   Fri, 10 Jul 2020 15:46:30 -0600
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Cc:     torvalds@linux-foundation.org, davej@codemonkey.org.uk,
+        kvalo@codeaurora.org, luis.f.correia@gmail.com, cyphar@cyphar.com,
+        paulburton@kernel.org, ribalda@kernel.org, martink@posteo.de,
+        geert+renesas@glider.be, mchehab+samsung@kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [Linux-kernel-mentees] [PATCH 2/2] net/bluetooth: Prevent out-of-bounds read in hci_inquiry_result_with_rssi_evt()
-Date:   Fri, 10 Jul 2020 17:45:26 -0400
-Message-Id: <82c4e719b7615f5333444bdc2b5cc243a693eeb1.1594414498.git.yepeilin.cs@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <3f69f09d6eb0bc1430cae2894c635252a1cb09e1.1594414498.git.yepeilin.cs@gmail.com>
-References: <3f69f09d6eb0bc1430cae2894c635252a1cb09e1.1594414498.git.yepeilin.cs@gmail.com>
+Subject: Re: [PATCH] CREDITS: replace HTTP links with HTTPS ones and add
+ myself
+Message-ID: <20200710154630.31521104@lwn.net>
+In-Reply-To: <20200710194342.33107-1-grandmaster@al2klimov.de>
+References: <20200710194342.33107-1-grandmaster@al2klimov.de>
+Organization: LWN.net
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Check `num_rsp` before using it as for-loop counter. Add `unlock` label.
+On Fri, 10 Jul 2020 21:43:42 +0200
+"Alexander A. Klimov" <grandmaster@al2klimov.de> wrote:
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
----
- net/bluetooth/hci_event.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+> Regarding the links:
+> 
+> Rationale:
+> Reduces attack surface on kernel devs opening the links for MITM
+> as HTTPS traffic is much harder to manipulate.
+> 
+> Deterministic algorithm:
+> For each file:
+>   If not .svg:
+>     For each line:
+>       If doesn't contain `\bxmlns\b`:
+>         For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+>           If both the HTTP and HTTPS versions
+>           return 200 OK and serve the same content:
+>             Replace HTTP with HTTPS.
+> 
+> Regarding the addition of myself:
 
-diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-index 8b3736c83b8e..f9f4262414b3 100644
---- a/net/bluetooth/hci_event.c
-+++ b/net/bluetooth/hci_event.c
-@@ -4159,6 +4159,9 @@ static void hci_inquiry_result_with_rssi_evt(struct hci_dev *hdev,
- 		struct inquiry_info_with_rssi_and_pscan_mode *info;
- 		info = (void *) (skb->data + 1);
- 
-+		if (skb->len < num_rsp * sizeof(*info) + 1)
-+			goto unlock;
-+
- 		for (; num_rsp; num_rsp--, info++) {
- 			u32 flags;
- 
-@@ -4180,6 +4183,9 @@ static void hci_inquiry_result_with_rssi_evt(struct hci_dev *hdev,
- 	} else {
- 		struct inquiry_info_with_rssi *info = (void *) (skb->data + 1);
- 
-+		if (skb->len < num_rsp * sizeof(*info) + 1)
-+			goto unlock;
-+
- 		for (; num_rsp; num_rsp--, info++) {
- 			u32 flags;
- 
-@@ -4200,6 +4206,7 @@ static void hci_inquiry_result_with_rssi_evt(struct hci_dev *hdev,
- 		}
- 	}
- 
-+unlock:
- 	hci_dev_unlock(hdev);
- }
- 
--- 
-2.25.1
+A couple of things here...
 
+> Rationale:
+> * 93431e0607e5
+
+This is ... not particularly self-explanatory.  Is that meant to be a
+commit reference?  If so, you would want to use the normal format.
+
+> * the replaced links in this patch
+
+If you are going to do something like make an addition to the file, you
+need to do that separately from a cleanup patch.
+
+But somebody has to say this: I don't think we have any sort of laid-down
+policy for what it takes to be mentioned in CREDITS, but I don't think that
+your work thus far clears whatever bar we might set.  We don't immortalize
+every person who submits some cleanup patches, or this file would be a long
+one indeed.  If you would like to be remembered for your kernel work, I
+would respectfully suggest that you move beyond mechanical cleanups into
+higher-level work.
+
+One other little thing that jumped out at me:
+
+>  N: Alan Cox
+> -W: http://www.linux.org.uk/diary/
+> +W: https://www.linux.org.uk/diary/
+>  D: Linux Networking (0.99.10->2.0.29)
+>  D: Original Appletalk, AX.25, and IPX code
+>  D: 3c501 hacker
+
+That link just redirects to linux.com, which is probably not what Alan had
+in mind.  Replacing the link with one into the wayback machine (or perhaps
+just removing it entirely) would seem like a more useful change than adding
+HTTPS to a link that clearly does not reach the intended destination.
+
+Thanks,
+
+jon
