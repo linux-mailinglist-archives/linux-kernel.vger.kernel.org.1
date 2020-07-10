@@ -2,86 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91DA821B715
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 15:50:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89AB021B718
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 15:50:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727966AbgGJNuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 09:50:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37774 "EHLO
+        id S1728099AbgGJNu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 09:50:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726725AbgGJNuC (ORCPT
+        with ESMTP id S1726496AbgGJNuZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 09:50:02 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BCD5C08C5CE
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 06:50:02 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id d17so6529819ljl.3
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 06:50:01 -0700 (PDT)
+        Fri, 10 Jul 2020 09:50:25 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 404E0C08C5CE
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 06:50:25 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id s21so5106158ilk.5
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 06:50:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=3+t1FJBai3MN8X36lR9GDBEz4WelHJVPns0+ZhtUct0=;
-        b=jA23ncizNlqSIf+H6bc/jICF+AF8OgUYhA4tpQ9PVgl5Z96Jy3w5bblIYwTEhY1Zsl
-         tCa23GrDnLtVZdstCMJsfsMxYplVybyr9qQ2pvsEr7gEeIRJMpv2I/+lu3ZT4FgAV/Iy
-         Tyr248STPS1LuELqZ/yOQZPGUg47TwUmRgQgs2yOv4aJ2p6rD63jvIemUiQ8hGBF3cs+
-         f5sjwlJajoPd0GX85mXvkuf3lHdPWCFCQNaevFBC1A7dthU2b6CgF/Rqjc178aIVIC8g
-         GMsNCWZCa4DKDP6dpnXH2NFmIwH+hpo5ccRtn/gLWFuCl8WeMT+CMdGJrgHrhS/6TbJY
-         ZAow==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=/3UnV27QADhQv0SSK2DekSxwBQ7A5c5J8GoAwl8+0Nc=;
+        b=Gxs9tKVAuA01c/9RSUxhuNnkHl8mzbiB9hHgi6pWCskdZ9pN27Wh3UVWs2jhyCYSAP
+         TrzgS2fRi4EUodskRdDtdNQcRV4zCRkBIEa0NtyfR2KHVpUNQ5f5vnQnaMyhLUU9FK1w
+         PxM+3NfRmALiDxm3E3AHHxCPaNSY0DmBCBCUoe0DLsDEMuV3RqFCuUKNyq0+smJblbDy
+         hBKPUsL5zUb69gwYlLmpNNCqVu88umP9DnF0UTVdKYR2dWVMqJ4XELNgZdQZeoB41PHF
+         qnNMxuG/etfsiFcERwXYyF4hJxudEkkG+RmIH4CFDsEWeSBGdmmzr8JupGAJw4c/4HKb
+         3mRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=3+t1FJBai3MN8X36lR9GDBEz4WelHJVPns0+ZhtUct0=;
-        b=aDomeeGr1x1x+t7+tPDKw0DZQRcW4KUoJgA9HsMQClwjHIlrk3vI3Q7c+ja3jM6p0a
-         e1hoUI2/VLtwMegnUQ4YX5v32unRs/aYQJsQbMpPortIu3UqjF3GhVD1piKOd+tgM84g
-         yhVgV/xyBnP2ozGATBB/cxv9SUOtANqbokbm6rjKkoYv8biV2Q7fbiWwYOZ3rTolv4tT
-         Dx5h6bPslhMLJXOwjw8VJQIXE3jnS0mCi7sJcXUn5BOWgBds9eRHhTqnMUm/EW1nenFU
-         ENy2xM/lsnNw5ynU6efx8XSovN+3mEuSajroJZQiqFvyV0uoakqxqVKs6jjapUI6Wez6
-         Q33g==
-X-Gm-Message-State: AOAM5316MwojK3gH0MfB3RFPMXfq2btddwbWUG1y7aMYouGFOdP0ueev
-        XCQAleq+I8dbYGqfDOF7VoE=
-X-Google-Smtp-Source: ABdhPJzSWBbYtX7hpYL2c5BfJVOpZx1iPV/QFc7eHwtKBsNjOPBFS1izv/YSHe5lPqVNSUuFiqiUTw==
-X-Received: by 2002:a2e:a413:: with SMTP id p19mr29908100ljn.145.1594389000380;
-        Fri, 10 Jul 2020 06:50:00 -0700 (PDT)
-Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id g2sm2763463ljj.90.2020.07.10.06.49.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jul 2020 06:49:58 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Fri, 10 Jul 2020 15:49:56 +0200
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Tian Tao <tiantao6@hisilicon.com>, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linuxarm@huawei.com
-Subject: Re: [PATCH v3] vmalloc: Add the right hint when vmalloc failed
-Message-ID: <20200710134956.GA14549@pc636>
-References: <1594383472-52983-1-git-send-email-tiantao6@hisilicon.com>
- <20200710124323.GJ12769@casper.infradead.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=/3UnV27QADhQv0SSK2DekSxwBQ7A5c5J8GoAwl8+0Nc=;
+        b=dTkA3cKIFlYmib/vu+RMXkVrOjsGLPdpZKORjoq5LByEqIfCCZtfZwy6qkbxHBx75k
+         5EFVOvqNKxA15NoDM+DhOwpyqpIkVX78qL7c1q+lDJNxwII+Kpvf2Nvmxm2L3CEPsli7
+         rX5Gn798qHvM8HrsZW8+jHeuqmh9xDNpqGxdRK6xrYEWlFm1Qc7GnThsoup5ecDhLqX5
+         aXFVtUG5TuBvfLJF0kL8CLQBCvqTcHD2nzDPqU7SLYSGr7vW+CzKilOcUKNfrVsOLBMc
+         SnTE9ZVpaK/FRQXWS8wzuMzd/SSzBFVVr5k8zkBv3zCrIRnjZQzraUruz7e+85ewV1i0
+         iNcw==
+X-Gm-Message-State: AOAM532aYji0sAZmETRzmtSGeQrXPD14Jk8bG6vvLxhCIaCdCufZRMDZ
+        cLP87ALyfzCyNXQdSCUy6cu7TcLRJe11yuLtbf0=
+X-Google-Smtp-Source: ABdhPJzM7lPjNbOyPCZgsf8+Pd1yeNO5/Gz2XEbcHgsfDDQIiS1ATNkZu68Vf1RdAjOZ7ADlNCpsAe5lWqnbeDi5cZs=
+X-Received: by 2002:a92:52:: with SMTP id 79mr47808521ila.59.1594389024385;
+ Fri, 10 Jul 2020 06:50:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200710124323.GJ12769@casper.infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200709140322.131320-1-peron.clem@gmail.com> <20200709140322.131320-14-peron.clem@gmail.com>
+ <0A3B73FE-0732-4024-9729-1FCE02006C27@gmail.com>
+In-Reply-To: <0A3B73FE-0732-4024-9729-1FCE02006C27@gmail.com>
+From:   =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
+Date:   Fri, 10 Jul 2020 15:50:13 +0200
+Message-ID: <CAJiuCcfnsFyOzFyNo78Etqv=apN-dnrF+gCOiwe-=d6ips8ZgQ@mail.gmail.com>
+Subject: Re: [PATCH v3 13/14] [DO NOT MERGE] arm64: dts: allwinner: h6: Add
+ GPU OPP table
+To:     Piotr Oniszczuk <piotr.oniszczuk@gmail.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        Steven Price <steven.price@arm.com>,
+        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        "wens@csie.org" <wens@csie.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-sunxi <linux-sunxi@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Fri, Jul 10, 2020 at 08:17:52PM +0800, Tian Tao wrote:
-> > In fact "vmalloc=<size>" cmdline option is not available on many
-> > platforms.When the user encounters this error, add the correct
-> > hint to prevent misleading.
-> 
-> i don't think this is an improvement.
+Hi,
+
+On Fri, 10 Jul 2020 at 15:45, Piotr Oniszczuk <piotr.oniszczuk@gmail.com> w=
+rote:
 >
-Matthew, maybe it should not be considered as improvements?
+>
+>
+> > Wiadomo=C5=9B=C4=87 napisana przez Cl=C3=A9ment P=C3=A9ron <peron.clem@=
+gmail.com> w dniu 09.07.2020, o godz. 16:03:
+> >
+> > Add an Operating Performance Points table for the GPU to
+> > enable Dynamic Voltage & Frequency Scaling on the H6.
+> >
+> > The voltage range is set with minival voltage set to the target
+> > and the maximal voltage set to 1.2V. This allow DVFS framework to
+> > work properly on board with fixed regulator.
+> >
+> > Signed-off-by: Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail.com>
+> > ---
+> > arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi | 80 ++++++++++++++++++++
+> > 1 file changed, 80 insertions(+)
+> >
+> > diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi b/arch/arm64/=
+boot/dts/allwinner/sun50i-h6.dtsi
+> > index 8f514a2169aa..a69f9e09a829 100644
+> > --- a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
+> > +++ b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
+> > @@ -174,6 +174,7 @@ gpu: gpu@1800000 {
+> >                       clocks =3D <&ccu CLK_GPU>, <&ccu CLK_BUS_GPU>;
+> >                       clock-names =3D "core", "bus";
+> >                       resets =3D <&ccu RST_BUS_GPU>;
+> > +                     operating-points-v2 =3D <&gpu_opp_table>;
+> >                       #cooling-cells =3D <2>;
+> >                       status =3D "disabled";
+> >               };
+> > @@ -1036,4 +1037,83 @@ map0 {
+> >                       };
+> >               };
+> >       };
+> > +
+> > +     gpu_opp_table: gpu-opp-table {
+> > +             compatible =3D "operating-points-v2";
+> > +
+> > +             opp@216000000 {
+> > +                     opp-hz =3D /bits/ 64 <216000000>;
+> > +                     opp-microvolt =3D <810000 810000 1200000>;
+> > +             };
+> > +
+> > +             opp@264000000 {
+> > +                     opp-hz =3D /bits/ 64 <264000000>;
+> > +                     opp-microvolt =3D <810000 810000 1200000>;
+> > +             };
+> > +
+> > +             opp@312000000 {
+> > +                     opp-hz =3D /bits/ 64 <312000000>;
+> > +                     opp-microvolt =3D <810000 810000 1200000>;
+> > +             };
+> > +
+> > +             opp@336000000 {
+> > +                     opp-hz =3D /bits/ 64 <336000000>;
+> > +                     opp-microvolt =3D <810000 810000 1200000>;
+> > +             };
+> > +
+> > +             opp@360000000 {
+> > +                     opp-hz =3D /bits/ 64 <360000000>;
+> > +                     opp-microvolt =3D <820000 820000 1200000>;
+> > +             };
+> > +
+> > +             opp@384000000 {
+> > +                     opp-hz =3D /bits/ 64 <384000000>;
+> > +                     opp-microvolt =3D <830000 830000 1200000>;
+> > +             };
+> > +
+> > +             opp@408000000 {
+> > +                     opp-hz =3D /bits/ 64 <408000000>;
+> > +                     opp-microvolt =3D <840000 840000 1200000>;
+> > +             };
+> > +
+> > +             opp@420000000 {
+> > +                     opp-hz =3D /bits/ 64 <420000000>;
+> > +                     opp-microvolt =3D <850000 850000 1200000>;
+> > +             };
+> > +
+> > +             opp@432000000 {
+> > +                     opp-hz =3D /bits/ 64 <432000000>;
+> > +                     opp-microvolt =3D <860000 860000 1200000>;
+> > +             };
+> > +
+> > +             opp@456000000 {
+> > +                     opp-hz =3D /bits/ 64 <456000000>;
+> > +                     opp-microvolt =3D <870000 870000 1200000>;
+> > +             };
+> > +
+> > +             opp@504000000 {
+> > +                     opp-hz =3D /bits/ 64 <504000000>;
+> > +                     opp-microvolt =3D <890000 890000 1200000>;
+> > +             };
+> > +
+> > +             opp@540000000 {
+> > +                     opp-hz =3D /bits/ 64 <540000000>;
+> > +                     opp-microvolt =3D <910000 910000 1200000>;
+> > +             };
+> > +
+> > +             opp@576000000 {
+> > +                     opp-hz =3D /bits/ 64 <576000000>;
+> > +                     opp-microvolt =3D <930000 930000 1200000>;
+> > +             };
+> > +
+> > +             opp@624000000 {
+> > +                     opp-hz =3D /bits/ 64 <624000000>;
+> > +                     opp-microvolt =3D <950000 950000 1200000>;
+> > +             };
+> > +
+> > +             opp@756000000 {
+> > +                     opp-hz =3D /bits/ 64 <756000000>;
+> > +                     opp-microvolt =3D <1040000 1040000 1200000>;
+> > +             };
+> > +     };
+> > };
+>
+> Clement,
+>
+> I gave run for v3 on H6 GS1 TVbox and what i discovered:
+>
+> 1. I have frequent hard hangs if DVFS is enabled (hard reset required),
+>
+> 2. hangs seems to be related to operating points changing - as limiting O=
+PP table to any single entry (tested on 5 highest OPP ) makes my GS1 stable=
+ working,
+>
+> 3. hang seems to be exactly related to OPP changes as having OPP table ev=
+en with just 2 entries already gives hangs,
+>
+> 4. tunings with <regulator-ramp-delay> makes no difference (tested with 0=
+, 2500 and 25000). Also increasing <regulator-enable-ramp-delay> 2 times up=
+ (to 64000) makes no change.
+>
+> Now I have 2 hypothesis:
+>
+> a. issue is SW related: software operations in DVFS are somehow "unsafe" =
+at touching hardware (is it possible we have i.e. concurrency issue here?);
+>
+> b. issue is HW related: i.e. in steep-up OPP, time between sending change=
+ Vdd-gpu command to HW for increasing Vdd and sending command to HW for inc=
+reasing GPU freq is too short.
+>
+> To investigate further I done following test: limit OPP table to 4 entrie=
+s+all 4 entries have the same Vdd.
+>
+> If this test will pass the we know issue is b\.
+> If it will fail - then issue is a\.
+>
+> And on my GS1 this test fails....so for me issue is a\ likely=E2=80=A6.
+>
+> let me know how i can help!
 
-It is rather an extra information that indicates that your
-ARCH may not support "vmalloc" early parameter.
+Yes it definitely helps, thanks !
 
-Thanks!
++CC linux-sunxi
 
---
-Vlad Rezki
+If someone wants to have a look at the sunxi-ng clk driver.
+
+Regards,
+Clement
+
+>
+> br
