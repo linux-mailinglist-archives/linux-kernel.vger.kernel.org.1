@@ -2,103 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60CA321B547
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 14:43:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FE4C21B54D
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 14:43:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727840AbgGJMm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 08:42:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37828 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726820AbgGJMm6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 08:42:58 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0053420772;
-        Fri, 10 Jul 2020 12:42:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594384978;
-        bh=xRBtzclHlMuakub8GY8QxjRYcXXc0+XpksOWyODqDVs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=g9TPmzN1z6IrexQ84CPBYnNFt6sF+IyyWq4/DpzSu7Iqos/jXzh+ld+I67sPG/TCh
-         hIpdCWv1RAJblEeF7FdjeCnnj+jUvQK3oVnO3oEwCnGBlE3N0vtW/TARSjjqKqbW6H
-         YuGUDYZbYf0qzjxfoVljEGxjWtOp32tjL0LMXdHI=
-Date:   Fri, 10 Jul 2020 13:42:54 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Keno Fischer <keno@juliacomputing.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>
-Subject: Re: ptrace: seccomp: Return value when the call was already invalid
-Message-ID: <20200710124253.GB30458@willie-the-truck>
-References: <CABV8kRxA9mXPZwtYrjbAfOfFewhABHddipccgk-LQJO+ZYu4Xg@mail.gmail.com>
- <20200703083914.GA18516@willie-the-truck>
- <202007030815.744AAB35D@keescook>
- <20200703154426.GA19406@willie-the-truck>
- <202007030851.D11F1EFA@keescook>
- <20200704123355.GA21185@willie-the-truck>
- <202007042132.DAFA2C2@keescook>
+        id S1727944AbgGJMni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 08:43:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55698 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726896AbgGJMnh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 08:43:37 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 030D1C08C5CE
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 05:43:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=e5B4cspuVVjW1c32qyp3lTOvelP3lNpucgNRz7GOy+c=; b=KcAca0KLudjx37wfFcUtfa6T3n
+        zeBg3It/XatvnU5AZWsWxucozUvZVDOY8+/9UuSrXL9Ut7AqquB+e033XMWMpHoGj08umrqpbT9rd
+        IANHNMZNeO6s3rwpDxLRQ1PmgyzYtu09f+NRZpcBaeh4kiZtnk9LJkOmRjBhu/bLcJxNfekZNFpad
+        2u5N6+sD/OK5S7z8nc4+YAeIhQGqFzEpeUu2IF8J4eg83jXlvBqLvDkkz6dd3GByhGBpCPAv6jAI6
+        ZvXQxoZKQBIdyLB6XSXB+Q/opVsKCMeJsDm8/+Xs+7/4tuu3atl26HxsaGq/aWF3DBQxRrD9R4Iqp
+        jJ2XrN9Q==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jtsN9-0000uM-H0; Fri, 10 Jul 2020 12:43:24 +0000
+Date:   Fri, 10 Jul 2020 13:43:23 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Tian Tao <tiantao6@hisilicon.com>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linuxarm@huawei.com
+Subject: Re: [PATCH v3] vmalloc: Add the right hint when vmalloc failed
+Message-ID: <20200710124323.GJ12769@casper.infradead.org>
+References: <1594383472-52983-1-git-send-email-tiantao6@hisilicon.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202007042132.DAFA2C2@keescook>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1594383472-52983-1-git-send-email-tiantao6@hisilicon.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 04, 2020 at 09:56:50PM -0700, Kees Cook wrote:
-> On Sat, Jul 04, 2020 at 01:33:56PM +0100, Will Deacon wrote:
-> > On Fri, Jul 03, 2020 at 08:52:05AM -0700, Kees Cook wrote:
-> > > On Fri, Jul 03, 2020 at 04:44:27PM +0100, Will Deacon wrote:
-> > > > On Fri, Jul 03, 2020 at 08:17:19AM -0700, Kees Cook wrote:
-> > > > > On Fri, Jul 03, 2020 at 09:39:14AM +0100, Will Deacon wrote:
-> > > > > > diff --git a/arch/arm64/kernel/syscall.c b/arch/arm64/kernel/syscall.c
-> > > > > > index 5f5b868292f5..a13661f44818 100644
-> > > > > > --- a/arch/arm64/kernel/syscall.c
-> > > > > > +++ b/arch/arm64/kernel/syscall.c
-> > > > > > @@ -121,12 +121,10 @@ static void el0_svc_common(struct pt_regs *regs, int scno, int sc_nr,
-> > > > > >  	user_exit();
-> > > > > >  
-> > > > > >  	if (has_syscall_work(flags)) {
-> > > > > > -		/* set default errno for user-issued syscall(-1) */
-> > > > > > -		if (scno == NO_SYSCALL)
-> > > > > > -			regs->regs[0] = -ENOSYS;
-> > > > > > -		scno = syscall_trace_enter(regs);
-> > > > > > -		if (scno == NO_SYSCALL)
-> > > > > > +		if (syscall_trace_enter(regs))
-> > > > > >  			goto trace_exit;
-> > > > > > +
-> > > > > > +		scno = regs->syscallno;
-> > > > > >  	}
-> > > > > >  
-> > > > > >  	invoke_syscall(regs, scno, sc_nr, syscall_table);
-> > > > > 
-> > > > > What effect do either of these patches have on the existing seccomp
-> > > > > selftests: tools/testing/selftests/seccomp/seccomp_bpf ?
-> > > > 
-> > > > Tests! Thanks, I'll have a look.
-> > > 
-> > > Thanks!
-> > > 
-> > > (And either way, that this behavioral difference went unnoticed means we
-> > > need to add a test to the selftests for this patch.)
-> > 
-> > Unsurprisingly, I don't think the tests go near this. I get 75/77 passes
-> > on arm64 defconfig with or without these changes.
-> 
-> (What doesn't pass for you? I tried to go find kernelci.org test output,
-> but it doesn't appear to actually run selftests yet?)
+On Fri, Jul 10, 2020 at 08:17:52PM +0800, Tian Tao wrote:
+> In fact "vmalloc=<size>" cmdline option is not available on many
+> platforms.When the user encounters this error, add the correct
+> hint to prevent misleading.
 
-Sorry, realised I forgot to reply to this point. I was seeing assertion
-failures in 'global.user_notification_with_tsync' and
-'user_notification_sibling_pid_ns'. I started looking into the first one,
-saw an -EACCESS kicking around, re-ran the tests as root and now they all
-pass.
-
-Are they expected to pass as a normal user?
-
-Will
+i don't think this is an improvement.
