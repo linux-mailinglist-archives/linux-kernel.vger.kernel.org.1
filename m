@@ -2,139 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50F0021B884
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 16:24:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A175421B892
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 16:25:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728625AbgGJOYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 10:24:24 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:55224 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728550AbgGJOYI (ORCPT
+        id S1728121AbgGJOZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 10:25:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726832AbgGJOZ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 10:24:08 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200710142406euoutp01c6c28150a997532977adc05d509a9161~gajWfuw8k3221032210euoutp01c
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 14:24:06 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200710142406euoutp01c6c28150a997532977adc05d509a9161~gajWfuw8k3221032210euoutp01c
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1594391046;
-        bh=PJaw4qA6aoVbSe+NmWHswntCdkvYkMsimoVlG4G6jVg=;
-        h=From:Subject:To:Cc:Date:In-Reply-To:References:From;
-        b=AuwiE49ecbGMxnfmFmEauXqDbuaFLWSjFkACjlKuUQPB7uLFmOxX0wN+cM2Trl7Cr
-         qNb3mMIz3Fw87hDNvdv7uhB2RMZbWFLcjJCTrVz2uWPNJSkw5zQ9l+4koWW0sfG+CM
-         OutqCkgK3zp6J3LPzboQroN1TFkbEGoWF3TKh7nQ=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20200710142406eucas1p2c2986735d9cb892535dbd1e04b2b0ea4~gajWO485K0956909569eucas1p2I;
-        Fri, 10 Jul 2020 14:24:06 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id EF.DE.06318.60A780F5; Fri, 10
-        Jul 2020 15:24:06 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20200710142406eucas1p16bb32654aa14bf6f6b6b2cb7bb64521c~gajWA9VJa0592905929eucas1p1j;
-        Fri, 10 Jul 2020 14:24:06 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200710142406eusmtrp182d50e203d03256a2d8f59c7c8210ce3~gajWAPcGB1135411354eusmtrp1u;
-        Fri, 10 Jul 2020 14:24:06 +0000 (GMT)
-X-AuditID: cbfec7f5-38bff700000018ae-58-5f087a06baf9
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id B4.E1.06314.60A780F5; Fri, 10
-        Jul 2020 15:24:06 +0100 (BST)
-Received: from [106.120.51.71] (unknown [106.120.51.71]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200710142405eusmtip126ac62dd2a90a7172719131e8ae07076~gajVp85MC0341503415eusmtip1V;
-        Fri, 10 Jul 2020 14:24:05 +0000 (GMT)
-From:   Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Subject: Re: [PATCH] fbdev: sm712fb: set error code in probe
-To:     Evgeny Novikov <novikov@ispras.ru>
-Cc:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Teddy Wang <teddy.wang@siliconmotion.com>,
-        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org
-Message-ID: <6f500a1e-96d8-2238-ad26-99a39dca61ec@samsung.com>
-Date:   Fri, 10 Jul 2020 16:24:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
-        Thunderbird/60.8.0
+        Fri, 10 Jul 2020 10:25:26 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B7ABC08C5CE
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 07:25:26 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id q5so6158259wru.6
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 07:25:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=J2TSVXXxCrTLY4NrTstCcWcFdBTWUGySy01vayP2bug=;
+        b=Kh/kxXRH/GEtgV9DtbuSQvl6bi8+nr5NoUiKjZvT2mwAx0kw7PUBc+dKtaDXIpMj9u
+         +0LeqXHZEx0f3DAhy/N/wlZx6RLlOBZLsopWYGpUMb61BWTtg1WeMC+h9e1VQTPc8454
+         Laaw2eMrQ+SuMcZf+zrBZpakhXkNnqwsi6jFZi8uTaRGQge9jFMUuQzP8fIA7CCamag6
+         KA0iZOFxg9JWGVneGDaX3CJ4mlyYh6AEP8KOypKCU0iPVO/U2Y7gXbIWdYs/9YN2GSeb
+         eEfaMqxU0FMe4yINqY4dUNf5aPsMdR2cSgRd80NV4jtMBzgWp0JfT4Kf/YY4MpBIZQXq
+         1O2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=J2TSVXXxCrTLY4NrTstCcWcFdBTWUGySy01vayP2bug=;
+        b=Pj+TJHjCHsnzv6DfDTA/bP8tCCRn47gOTG4W5HXNtJfSH/cgJ/AD1DRJ6gqepLVmaA
+         eYmH9GcbRsGcUndPOb7yWRBUrujyXDMXf8fDQDixYrYO3I9hdhIfs0y++Z+ZbGttu8rj
+         baRoesb8FDMaS9RIuPtd92ro6ns+dp9PnC9gxM+nvlRvBp5LszbwYlDMQaOkEAm51L/0
+         rW9YHkNsfaIG55m5mwwAO+l7udVPy0bUivexzgnD/n95BvO+WA65glsp/eO5lBIhbD8f
+         lXmPQ9Zp6jT2rfBL0ncEDVIzX09cuNhWMk5SunprPnICUeCPYVH48OgiN/llbu6hsFsE
+         Rbrg==
+X-Gm-Message-State: AOAM533QjhZbUusbDRQlGIiE+lnFY5ORJeABDuIta9GtUmOKnI2+odJA
+        p88DzqpX98yMmbksj08kA4Q=
+X-Google-Smtp-Source: ABdhPJzpZ+aplToWnYe5A8tOusuTfhg+dlCf/JDDNEaD96yPyy2zwuPkJBHGPTp5yt6O2xlLKPTiJA==
+X-Received: by 2002:adf:dc90:: with SMTP id r16mr68810902wrj.264.1594391125277;
+        Fri, 10 Jul 2020 07:25:25 -0700 (PDT)
+Received: from ziggy.stardust ([213.195.114.245])
+        by smtp.gmail.com with ESMTPSA id g13sm10429136wro.84.2020.07.10.07.25.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Jul 2020 07:25:24 -0700 (PDT)
+Subject: Re: [PATCH 3/4] mfd: mt6360: Fix flow which is used to check ic exist
+To:     Gene Chen <gene.chen.richtek@gmail.com>, lee.jones@linaro.org
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        gene_chen@richtek.com, shufan_lee@richtek.com,
+        cy_huang@richtek.com, benjamin.chao@mediatek.com
+References: <1594117856-14343-1-git-send-email-gene.chen.richtek@gmail.com>
+ <1594117856-14343-4-git-send-email-gene.chen.richtek@gmail.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <3205bb9b-c7b4-c99a-2673-f3a56cc0addf@gmail.com>
+Date:   Fri, 10 Jul 2020 16:25:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <20200706155328.8396-1-novikov@ispras.ru>
+In-Reply-To: <1594117856-14343-4-git-send-email-gene.chen.richtek@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0iTYRTHe/Ze9jqavE7Ng0bBJKXIG0YME8sI25coP2WS6dIXtdwmm1r6
-        aUJemGnmvSF5S2e2vE5NSa1FLR1JWamUooSyWcqsKaE4yflO8tvvXP7P/5zDQ2GCLsKbSpVl
-        MAqZJE1I8vC+dxvjAWQOFR+sa3YXfVm3kiJtkRoXvS9ZJUSfB2tJUdOwiit6ZarARLonL9E5
-        rnhAM8sV12xXIvHMLzshnisycsTmuUVSbOs+coWM5YUnMWmpWYwiKCKBl1JhHEfpDdRdTUcZ
-        pkKTpBq5UECfgirLGKFGPEpAtyJ4UGx2BmsI/rY1OQMbAl3dV86epLtxFLEFLYKRgUYOG6wg
-        sG1tch1dJB0GDwvakIPd6XCYap7DHexB+4Eqb3SXMfo7gqFFPwfz6QjomqjCHIzTx0BX3Us4
-        2JOOgT/zbwi2xw1GHy3sal3o02D5WEOw73jBt4U6DstHoX+lFnMMBLSBC0VWs3PsCzCf14hY
-        doefRj2X5cNgKr+Ps4J2BPZCi1Pdj0Bbvu280xmYGd/cYWrH4jh0DAax6UhomGxFjjTQrjC9
-        4sYO4QplfdUYm+ZDYb6A7faDzpZOcs9WPfAUK0VCzb7VNPvW0exbR/Pftx7hbciLyVRKkxll
-        qIy5E6iUSJWZsuTARLm0G+18JNO2cf0FGt66aUA0hYQH+fUSKl5ASLKU2VIDAgoTevDPfzDd
-        EPCTJNk5jEIer8hMY5QG5EPhQi9+aONSnIBOlmQwtxkmnVHsVTmUi7cKBT5r9TDhg7/7YrT2
-        5xexzcjo6E5bm8yeqxsqM10eS054HdH+Vn8yv/fTyFV/7+XSgKUDqz9ibWfNes9rSf6bURZt
-        2PXZiUTfQ6uufqEFLYTvgn+xj1VumLo1HzW9cS9P3mGNU/Toaxq2mJURfkhwydLj9OVK81pP
-        lcHNNzP3khBXpkhCTmAKpeQfy74840QDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrMIsWRmVeSWpSXmKPExsVy+t/xu7psVRzxBpd3MFtc+fqezWJ5dxeL
-        xYm+D6wWl3fNYbNYvK+B3eLA6SnMFmuW7GF0YPfYOesuu8eMf1MZPe68/svqcb/7OJPH8/tP
-        2Tw+b5ILYIvSsynKLy1JVcjILy6xVYo2tDDSM7S00DMysdQzNDaPtTIyVdK3s0lJzcksSy3S
-        t0vQy5hy/BxjwUKOilnrJzE3MF5j62Lk5JAQMJHYtOgkYxcjF4eQwFJGiRsNu1i7GDmAEjIS
-        x9eXQdQIS/y51sUGUfOaUeLF0UeMIAk2ASuJie2rwGxhARuJ60vvs4DYIgJqEg2tJ1lAGpgF
-        bjNKtK56DbWhk1HizP1WdpAqXgE7iY2XpjGD2CwCqhJrpm9lBbFFBSIkDu+YxQhRIyhxcuYT
-        sKmcAmYSLy7MAKthFlCX+DPvEjOELS5x68l8JghbXmL72znMExiFZiFpn4WkZRaSlllIWhYw
-        sqxiFEktLc5Nzy021CtOzC0uzUvXS87P3cQIjMBtx35u3sF4aWPwIUYBDkYlHt4FiRzxQqyJ
-        ZcWVuYcYJTiYlUR4nc6ejhPiTUmsrEotyo8vKs1JLT7EaAr03ERmKdHkfGByyCuJNzQ1NLew
-        NDQ3Njc2s1AS5+0QOBgjJJCeWJKanZpakFoE08fEwSnVwFiyP81zr8ZzDuvGlMbfqhv+Vj/f
-        tsY2OD3q1LoWXn2L1aarPdfVBEWXTOQrXFzmF821bP3C2Pk778nutTmxu3PxV+vTX0MPasZV
-        fdwy4cmB9gbbhrkJPEc+RcR9uvp95cQpV+rmRSyVObZTfvKMdqepPr9djETPXhDsTpTQ/LV4
-        poD0gnlvSiWUWIozEg21mIuKEwEFZxT+1gIAAA==
-X-CMS-MailID: 20200710142406eucas1p16bb32654aa14bf6f6b6b2cb7bb64521c
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200706155341eucas1p2081ccd8bd81c097272e13e7fe84244ee
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200706155341eucas1p2081ccd8bd81c097272e13e7fe84244ee
-References: <CGME20200706155341eucas1p2081ccd8bd81c097272e13e7fe84244ee@eucas1p2.samsung.com>
-        <20200706155328.8396-1-novikov@ispras.ru>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 7/6/20 5:53 PM, Evgeny Novikov wrote:
-> If smtcfb_pci_probe() does not detect a valid chip it cleans up
-> everything and returns 0. This can result in various bad things later.
-> The patch sets the error code on the corresponding path.
+
+On 07/07/2020 12:30, Gene Chen wrote:
+> From: Gene Chen <gene_chen@richtek.com>
 > 
-> Found by Linux Driver Verification project (linuxtesting.org).
+> Fix flow which is used to check ic exist
 > 
-> Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
-
-Applied to drm-misc-next tree, thanks.
-
-Best regards,
---
-Bartlomiej Zolnierkiewicz
-Samsung R&D Institute Poland
-Samsung Electronics
-
+> Signed-off-by: Gene Chen <gene_chen@richtek.com>
 > ---
->  drivers/video/fbdev/sm712fb.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>   drivers/mfd/mt6360-core.c  | 28 +++++++++++++++++++---------
+>   include/linux/mfd/mt6360.h |  8 ++++----
+>   2 files changed, 23 insertions(+), 13 deletions(-)
 > 
-> diff --git a/drivers/video/fbdev/sm712fb.c b/drivers/video/fbdev/sm712fb.c
-> index 6a1b4a853d9e..fbe97340b8e0 100644
-> --- a/drivers/video/fbdev/sm712fb.c
-> +++ b/drivers/video/fbdev/sm712fb.c
-> @@ -1614,7 +1614,7 @@ static int smtcfb_pci_probe(struct pci_dev *pdev,
->  	default:
->  		dev_err(&pdev->dev,
->  			"No valid Silicon Motion display chip was detected!\n");
+> diff --git a/drivers/mfd/mt6360-core.c b/drivers/mfd/mt6360-core.c
+> index 2dd5918..4bb2949 100644
+> --- a/drivers/mfd/mt6360-core.c
+> +++ b/drivers/mfd/mt6360-core.c
+> @@ -293,6 +293,23 @@ static const struct mfd_cell mt6360_devs[] = {
+>   		    NULL, 0, 0, "mediatek,mt6360-tcpc"),
+>   };
+>   
+> +static int mt6360_check_vendor_info(struct mt6360_data *data)
+> +{
+> +	u32 info;
+> +	int ret;
+> +
+> +	ret = regmap_read(data->regmap, MT6360_REG_PMU_DEVINFO, &info);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	if ((info & MT6360_CHIPVEN_MASK) != MT6360_CHIPVEN_VAL)
+> +		return -ENODEV;
+> +
+> +	data->chip_rev = info & MT6360_CHIPREV_MASK;
+> +
+> +	return 0;
+> +}
+> +
+>   static const unsigned short mt6360_slave_addr[MT6360_SLAVE_MAX] = {
+>   	MT6360_PMU_SLAVEID,
+>   	MT6360_PMIC_SLAVEID,
+> @@ -303,7 +320,6 @@ static const unsigned short mt6360_slave_addr[MT6360_SLAVE_MAX] = {
+>   static int mt6360_probe(struct i2c_client *client)
+>   {
+>   	struct mt6360_data *data;
+> -	unsigned int reg_data;
+>   	int i, ret;
+>   
+>   	data = devm_kzalloc(&client->dev, sizeof(*data), GFP_KERNEL);
+> @@ -319,16 +335,10 @@ static int mt6360_probe(struct i2c_client *client)
+>   		return PTR_ERR(data->regmap);
+>   	}
+>   
+> -	ret = regmap_read(data->regmap, MT6360_PMU_DEV_INFO, &reg_data);
+> +	ret = mt6360_check_vendor_info(data);
+>   	if (ret) {
+> -		dev_err(&client->dev, "Device not found\n");
+> -		return ret;
+> -	}
 > -
-> +		err = -ENODEV;
->  		goto failed_fb;
->  	}
->  
+> -	data->chip_rev = reg_data & CHIP_REV_MASK;
+> -	if (data->chip_rev != CHIP_VEN_MT6360) {
+
+Why not only applying the MASK here instead of put this all in a new function?
+
+>   		dev_err(&client->dev, "Device not supported\n");
+> -		return -ENODEV;
+> +		return ret;
+>   	}
+>   
+>   	ret = devm_regmap_add_irq_chip(&client->dev, data->regmap, client->irq,
+> diff --git a/include/linux/mfd/mt6360.h b/include/linux/mfd/mt6360.h
+> index 9fc6718..5ec0f5d 100644
+> --- a/include/linux/mfd/mt6360.h
+> +++ b/include/linux/mfd/mt6360.h
+> @@ -30,7 +30,7 @@ struct mt6360_data {
+>   };
+>   
+>   /* PMU register defininition */
+> -#define MT6360_PMU_DEV_INFO			(0x00)
+> +#define MT6360_REG_PMU_DEVINFO			(0x00)
+>   #define MT6360_PMU_CORE_CTRL1			(0x01)
+>   #define MT6360_PMU_RST1				(0x02)
+>   #define MT6360_PMU_CRCEN			(0x03)
+> @@ -233,8 +233,8 @@ struct mt6360_data {
+>   #define MT6360_IRQ_REGNUM	16
+>   #define MT6360_IRQ_RETRIG	BIT(2)
+>   
+> -#define CHIP_VEN_MASK				(0xF0)
+> -#define CHIP_VEN_MT6360				(0x50)
+> -#define CHIP_REV_MASK				(0x0F)
+> +#define MT6360_CHIPVEN_MASK			(0xF0)
+> +#define MT6360_CHIPVEN_VAL			(0x50)
+> +#define MT6360_CHIPREV_MASK			(0x0F)
+
+Same here as in the other patches. Don't just rename defines if there is no good 
+reason.
+
+Regards,
+Matthias
+
+>   
+>   #endif /* __MT6360_H__ */
 > 
