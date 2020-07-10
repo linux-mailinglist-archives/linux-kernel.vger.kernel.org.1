@@ -2,108 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBD3821B3A4
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 13:07:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC7DF21B39E
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 13:07:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727942AbgGJLHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 07:07:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52882 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727910AbgGJLHq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 07:07:46 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BB8C52076A;
-        Fri, 10 Jul 2020 11:07:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594379266;
-        bh=ZupbQMi/trtErw5kflVvFFpVwndB+ssCP+SNaqCL4rc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=F9Un2HgrXYZEZVwYS3UFCu2ZkTlAib8sNzP2Pxn77/F28frjlzbmLYs7/dTfwIr/v
-         cfH+b0ibGDtF1payrlIqOtEumturq22IAWlJOuZzsfL9myoOnDXVIAJaf4zywO0qLW
-         CiK3RWcBIAEOMZu0+m34Mi3k0+TRfqHSyilli+Jg=
-Date:   Fri, 10 Jul 2020 12:07:40 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Andrzej Hajda <a.hajda@samsung.com>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: Re: [PATCH v6 2/4] driver core: add deferring probe reason to
- devices_deferred property
-Message-ID: <20200710110740.GB5653@sirena.org.uk>
-References: <CGME20200626100110eucas1p2c5b91f2c98a5c6e5739f5af3207d192e@eucas1p2.samsung.com>
- <20200626100103.18879-3-a.hajda@samsung.com>
- <5f159e00-44fd-515b-dd8c-4db9845dc9e6@ti.com>
- <7e3c924b-c025-a829-6868-78e2935c70eb@samsung.com>
- <66faa188-5ef6-d449-07fe-28c8be5e559c@ti.com>
- <21f5ec9c-2d1d-5f28-5aeb-ac0db144a55e@samsung.com>
- <CAKdAkRRLBLCLGH2qhEjaVnt8wNjoyGAfQimNWHZUvzx2m6Mwng@mail.gmail.com>
- <e6057292-39de-831c-0b8d-b3f0b66937dc@samsung.com>
- <20200707041442.GE3273837@dtor-ws>
- <8b228571-d124-e5e2-2f53-57ea4b46b904@samsung.com>
+        id S1727091AbgGJLHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 07:07:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40792 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726369AbgGJLHL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 07:07:11 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A844C08C5CE;
+        Fri, 10 Jul 2020 04:07:11 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id 207so2408729pfu.3;
+        Fri, 10 Jul 2020 04:07:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GuGEjhXorgGIUJW+rnjz22Ly0/e/4bfXGQk4qdpqCog=;
+        b=hJIKXNjnUq7FbRtap6nVEA3V/OaX0NY/6iRkcCXAl3wRHxoar9YXQZ4JLeKHy1Bso5
+         I6zwqIHthMkuqdc9jDn8CqEdQCXpuH2jfkqgana8/kJPSWqEIHbazFRJljh10QhgKyhK
+         k4j9y2i9ZUj/rDfX6sga3N+hjKyc75HC4F1KRnDAnQ6f9OWgzYQPaJDDheYsaETI1iNS
+         RHzjBFN2kINezfZmGp4hFFr74SP2H0qK0YMGUVvusNGwY2CmDY6jrTdds58giKqf2U0n
+         de49Ov4FsaMMIt7UQNGGEFSA9CWjbAS3hhivQHz8oDqEGNJxPuuw407kVjb0uYW01YD1
+         aZ+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GuGEjhXorgGIUJW+rnjz22Ly0/e/4bfXGQk4qdpqCog=;
+        b=RMgZhwqyRYGlfhVbzl+7LNxwLVCMDe7ip4uPy9TEykkINBMvLwAVW46Aij5F04Ax+W
+         BXQiiIP4fwawrYjb94Rj+F7ZJUSPSlOfEgpd1o55lEYgmgk5YSnYhCWCN/YDZ/e8q4TG
+         nc8o0JqBMgEgY/ED0Nwcmv2TCncRCHKETSc0beptrhp4Br8OqjP22AE/zQiOnsRY/Euk
+         qBn/p1fgfDjWvGzTVI/lAvP+llT4bF65XW+DyybqDnyO0Vc5tOvbnU7NDHFxdZc+0QHW
+         J9Dy/dnUI8N/fqbqOde9rYzqvH2VR5qxS+kKRBnNNGrx57NI8+M9KR3xed8uLopgpz2A
+         s1mg==
+X-Gm-Message-State: AOAM533Bg1xtBccpm4lt/JV2PKSyKNNngcZHpdswTxWv4mGNGmZMeLk7
+        uU3AjIxz6fOF28zwxA3ydibGnj1G
+X-Google-Smtp-Source: ABdhPJzKPq0Ch2b71+XGzwUAWG6n3vLOdULLtginDGQQ9qUgCYbf62DE4IVC7VqBOc0lXPAkKl9KOg==
+X-Received: by 2002:a62:1c8b:: with SMTP id c133mr24481584pfc.134.1594379231037;
+        Fri, 10 Jul 2020 04:07:11 -0700 (PDT)
+Received: from gli-arch.genesyslogic.com.tw (60-251-58-169.HINET-IP.hinet.net. [60.251.58.169])
+        by smtp.gmail.com with ESMTPSA id x23sm5553409pfn.4.2020.07.10.04.07.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Jul 2020 04:07:10 -0700 (PDT)
+From:   Ben Chuang <benchuanggli@gmail.com>
+To:     adrian.hunter@intel.com, ulf.hansson@linaro.org
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ben.chuang@genesyslogic.com.tw, takahiro.akashi@linaro.org,
+        greg.tu@genesyslogic.com.tw, Ben Chuang <benchuanggli@gmail.com>
+Subject: [RFC PATCH V3 00/21] Add support UHS-II for GL9755
+Date:   Fri, 10 Jul 2020 19:07:52 +0800
+Message-Id: <20200710110752.28853-1-benchuanggli@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="9zSXsLTf0vkW971A"
-Content-Disposition: inline
-In-Reply-To: <8b228571-d124-e5e2-2f53-57ea4b46b904@samsung.com>
-X-Cookie: Use only in a well-ventilated area.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Summary
+=======
+These patches[1] support UHS-II and fix GL9755 UHS-II compatibility.
 
---9zSXsLTf0vkW971A
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+About UHS-II, roughly deal with the following three parts:
+1) A UHS-II detection and initialization:
+- Host setup to support UHS-II (Section 3.13.1 Host Controller Setup Sequence
+  [2]).
+- Detect a UHS-II I/F (Section 3.13.2 Card Interface Detection Sequence[2]).
+- In step(9) of Section 3.13.2 in [2], UHS-II initialization is include Section
+  3.13.3 UHS-II Card Initialization and Section 3.13.4 UHS-II Setting Register
+  Setup Sequence.
 
-On Fri, Jul 10, 2020 at 09:42:49AM +0200, Andrzej Hajda wrote:
+2) Send Legacy SD command through SD-TRAN
+- Encapsulated SD packets are defined in SD-TRAN in order to ensure Legacy SD
+  compatibility and preserve Legacy SD infrastructures (Section 7.1.1 Packet
+  Types and Format Overview[3]).
+- Host issue a UHS-II CCMD packet or a UHS-II DCMD (Section 3.13.5 UHS-II
+  CCMD Packet issuing and Section 3.13.6 UHS-II DCMD Packet issuing[2]).
 
-> But the provider does not know if *get is called in probe context or=20
-> not, so it is not able to differentiate it.
+3) UHS-II Interrupt
+- Except for UHS-II error interrupts, most interrupts share the original 
+  interrupt registers.
 
-> So the whole idea is for me suspicious/wrong. Kind of proof:
+Patch structure
+===============
+patch#1-#7: for core
+patch#8-#17: for sdhci
+patch#18-#21: for GL9755
 
-> 1. If you insist that provider's EPROBE_ERROR must be always propagated=
-=20
-> to driver core then.
+Tests
+=====
+Ran 'dd' command to evaluate the performance:
+(SanDisk UHS-II card on GL9755 controller)
+                             Read    Write
+UHS-II disabled (UHS-I): 88.3MB/s 60.7MB/s
+UHS-II enabled         :  206MB/s   80MB/s
 
-> 2. You must enforce that resources can be gathered only from probe.
+TODO
+====
+- replace some define with BIT macro
 
-> 3. But this is against current practice, even if majority of drivers=20
-> does it from probe, there are many which doesn't.
+Reference
+=========
+[1] https://gitlab.com/ben.chuang/linux-uhs2-gl9755.git
+[2] SD Host Controller Simplified Specification 4.20
+[3] UHS-II Simplified Addendum 1.02
 
-Those drivers are probably buggy anyway at this point given probe
-deferral.
+Changes in v3 (Jul. 10, 2020)
+* rebased to v5.8-rc4
+* add copyright notice
+* reorganize the patch set and split some commits into smaller ones
+* separate uhs-2 headers from others
+* correct wrong spellings
+* fix most of checkpatch warnings/errors
+* remove all k[cz]alloc() from the code
+* guard sdhci-uhs2 specific code with
+      'if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2))'
+* make sdhci-uhs2.c as a module
+* trivial changes, including
+  - rename back sdhci-core.c to sdhci.c
+  - allow vendor code to disable uhs2 if v4_mode == 0
+      in __sdhci_add_host()
+  - merge uhs2_power_up() into mmc_power_up()
+  - remove flag_uhs2 from mmc_attach_sd()
+  - add function descriptions to EXPORT'ed functions
+  - other minor code optimization
 
---9zSXsLTf0vkW971A
-Content-Type: application/pgp-signature; name="signature.asc"
+Changes in v2 (Jan. 9, 2020)
+* rebased to v5.5-rc5
 
------BEGIN PGP SIGNATURE-----
+AKASHI Takahiro (15):
+  mmc: core: UHS-II support, modify power-up sequence
+  mmc: core: UHS-II support, skip set_chip_select()
+  mmc: core: UHS-II support, skip TMODE setup in some cases
+  mmc: core: UHS-II support, generate UHS-II SD command packet
+  mmc: core: UHS-II support, set APP_CMD bit if necessary
+  mmc: sdhci: add a kernel configuration for enabling UHS-II support
+  mmc: sdhci: add UHS-II related definitions in headers
+  mmc: sdhci: UHS-II support, dump UHS-II registers
+  mmc: sdhci: UHS-II support, export host operations to core
+  mmc: sdhci: UHS-II support, skip signal_voltage_switch()
+  mmc: sdhci: UHS-II support, handle vdd2 in case of power-off
+  mmc: sdhci: UHS-II support, modify set_power() to handle vdd2
+  mmc: sdhci: UHS-II support, export helper functions to a module
+  mmc: sdhci: UHS-II support, implement operations as a module
+  mmc: core: add post-mmc_attach_sd hook
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8IS/sACgkQJNaLcl1U
-h9CDlgf/czDS3TuzSg439iB93bfCxxvcHFqdaQ01xmcPSXS88+JplUZh9Mg0FzK0
-5xFnzBmfpIUWbn9/4zRjimnp5qSwljIPBZvIJErny55gneAsZE2e3L78FBMTqz6a
-s/l3e09KTuGG1tBfczy/03t6wxe+ks9t95cm6xJpj5qShpq26bVG3rNKB+/vd5us
-+xYIqPuomBa8Q9zY8WDQ83p1d5T6x+RH03/fafT82DMwE2pLXz7DT8yWEUpUD7kg
-iZA4zesvOMvSrDlTPVbMZjUu/BBlxpNBWpet41UW0dlklaUZCzmuegxOeFE86Zz5
-D7yzP9yl92PPggknrdY7qZGrsTKtTg==
-=B8/S
------END PGP SIGNATURE-----
+Ben Chuang (6):
+  mmc: add UHS-II related definitions in public headers
+  mmc: core: UHS-II support, try to select UHS-II interface
+  mmc: sdhci: UHS-II support, add hooks for additional operations
+  mmc: sdhci-uhs2: add pre-detect_init hook
+  mmc: sdhci-uhs2: add post-mmc_attach_sd hook
+  mmc: sdhci-pci-gli: enable UHS-II mode for GL9755
 
---9zSXsLTf0vkW971A--
+ drivers/mmc/core/Makefile         |   2 +-
+ drivers/mmc/core/block.c          |   7 +-
+ drivers/mmc/core/bus.c            |   5 +-
+ drivers/mmc/core/core.c           | 119 +++-
+ drivers/mmc/core/regulator.c      |  14 +
+ drivers/mmc/core/sd.c             |  32 ++
+ drivers/mmc/core/sd_ops.c         |  12 +
+ drivers/mmc/core/uhs2.c           | 874 ++++++++++++++++++++++++++++++
+ drivers/mmc/core/uhs2.h           |  21 +
+ drivers/mmc/host/Kconfig          |  10 +
+ drivers/mmc/host/Makefile         |   1 +
+ drivers/mmc/host/sdhci-omap.c     |   2 +-
+ drivers/mmc/host/sdhci-pci-core.c |   4 +-
+ drivers/mmc/host/sdhci-pci-gli.c  | 361 +++++++++++-
+ drivers/mmc/host/sdhci-pxav3.c    |   4 +-
+ drivers/mmc/host/sdhci-uhs2.c     | 797 +++++++++++++++++++++++++++
+ drivers/mmc/host/sdhci-uhs2.h     | 215 ++++++++
+ drivers/mmc/host/sdhci-xenon.c    |   4 +-
+ drivers/mmc/host/sdhci.c          | 321 +++++++++--
+ drivers/mmc/host/sdhci.h          | 113 +++-
+ include/linux/mmc/card.h          |   1 +
+ include/linux/mmc/core.h          |   6 +
+ include/linux/mmc/host.h          |  31 ++
+ include/linux/mmc/uhs2.h          | 268 +++++++++
+ 24 files changed, 3151 insertions(+), 73 deletions(-)
+ create mode 100644 drivers/mmc/core/uhs2.c
+ create mode 100644 drivers/mmc/core/uhs2.h
+ create mode 100644 drivers/mmc/host/sdhci-uhs2.c
+ create mode 100644 drivers/mmc/host/sdhci-uhs2.h
+ create mode 100644 include/linux/mmc/uhs2.h
+
+-- 
+2.27.0
+
