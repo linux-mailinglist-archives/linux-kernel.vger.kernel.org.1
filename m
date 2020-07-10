@@ -2,198 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CAEC21BECD
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 22:55:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 352FB21BECF
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 22:56:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728155AbgGJUze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 16:55:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47110 "EHLO
+        id S1728069AbgGJU4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 16:56:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726832AbgGJUze (ORCPT
+        with ESMTP id S1726832AbgGJUzx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 16:55:34 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1205C08C5DC;
-        Fri, 10 Jul 2020 13:55:33 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id d4so3044043pgk.4;
-        Fri, 10 Jul 2020 13:55:33 -0700 (PDT)
+        Fri, 10 Jul 2020 16:55:53 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1990C08C5DC;
+        Fri, 10 Jul 2020 13:55:53 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id e11so6655850qkm.3;
+        Fri, 10 Jul 2020 13:55:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=/IeedtVo9DeN49CtT7pbMYwdvgsRdStvloLi91WmBE0=;
-        b=vFx9IzyVFWpakJMGflH4Wb0FxC0gawU+cXW4Tt74bRynlkGa1yZ3TLDOL8xCQgNavX
-         DNOuc1Vi1+Y17OBNcfE9v6inXL3YRN59hsyog2IZxEmlKxRAhKaLvgFzMQaodWRVjGpL
-         fpL2ZBP7hz6WqDy+C04Vw2JmtWTmsq6Sw1C+XzzZlZR3PEZTBRo4ttfs807Frdi2Rj+l
-         5bxxWLB52JjeqtZeD4kSxSqaciC52stwxRmlIKEnYLFNtkDoLln1cN0R+eEaUJJIp22I
-         iCo0bi+0ztQ+grQEi/gLyI/XjRUEsJQYV7JtLZRpG71lZcFXTrU4NGoAaiLxaZ+hBmTD
-         MgIw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=umxzZ9l+zQBonEiIpx0tLenM6i//HJK3uk8ryAmYO6Y=;
+        b=IOKxiaGo3+r6vUQQY+pFq+PCP3gGqfYI8u28d8jT68pc7ASmi9ypo/72ZBbwbZEy7z
+         j/cqyqzx2h3OpdDCnDhvNe1jmVeNN+atM/KLzvK+swqIOD0/HSQw2qE00khhWaCBX/JN
+         OKQEMlACX2AcFIeIvbmgX42Y1OaiTy2RQvEGXM1WRkd6nJV3XAg+VTFPlSgKEKYzf/wD
+         0carPgvw1UTFCG6vIJWrXabmSBomeu+F1jM1jDTnvEi7XW9tFZAvnktZ3bHsAFlgextV
+         Li1E3HzNGLnDI78D5n3LgSHW/Z79RphQhm0hB9oIYbU7BIVdImsbae9Y93xXFUzR4yBw
+         b7oQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=/IeedtVo9DeN49CtT7pbMYwdvgsRdStvloLi91WmBE0=;
-        b=ZTloM+DRM5T+klfJNaU5r5lpu1Fj4a/fh0UDdaxrK037zJJBUBzpfjA/r9h+bH6yqd
-         IYkUmt11Oaw1vI0tr4oOGU1oUrTYgy3h2otPC5PrI59DFBihJOgXoqW3WRbtoq7lB9dv
-         oyWKngaNaqlXhT6NQqqT63GTmjD7+YkFMvFDJXvrAwEhwkgvOXNPn8zmNJrj5ydVaNQD
-         wAwT1v5RSKbi/QJYXdb9jNwBHB6bSv6Dhub3dIGnCCNOiDZXQ3cJPowm6dkzc3LAJjur
-         GtUivRbnekR+/dE/axq0J2VMhA7SlGbyvtGnYtnxWHyq63JCzG75y09FE8JUkvq4WB6S
-         V6Lw==
-X-Gm-Message-State: AOAM532HfM4idInI14cGmOwIwDv21Kut/vorN91ivi8aL7+UXDbdZcU0
-        2TzjdXT0dc93I1VPQt7qkU3jGyP1
-X-Google-Smtp-Source: ABdhPJwNA8jOJwp6sx82kaUAP/CD0h6o8y5A1LwHFkOYe7OYFX/ZwP04Na9ZREox9l4UpD/6ZQSvbw==
-X-Received: by 2002:a62:cfc2:: with SMTP id b185mr29727550pfg.125.1594414533325;
-        Fri, 10 Jul 2020 13:55:33 -0700 (PDT)
-Received: from localhost (g175.219-103-161.ppp.wakwak.ne.jp. [219.103.161.175])
-        by smtp.gmail.com with ESMTPSA id f14sm6488625pjq.36.2020.07.10.13.55.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jul 2020 13:55:32 -0700 (PDT)
-Date:   Sat, 11 Jul 2020 05:55:30 +0900
-From:   Stafford Horne <shorne@gmail.com>
-To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, stern@rowland.harvard.edu,
-        linux-usb@vger.kernel.org, usb-storage@lists.one-eyed-alien.net,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        David Miller <davem@davemloft.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH] Replace HTTP links with HTTPS ones: USB MASS STORAGE
- DRIVER
-Message-ID: <20200710205530.GC437393@lianli.shorne-pla.net>
-References: <20200708095500.13694-1-grandmaster@al2klimov.de>
- <20200708103928.GC585606@kroah.com>
- <6b78a3fd-04b9-fc8e-b5c6-f03372a4cd31@al2klimov.de>
- <20200709061409.GA130260@kroah.com>
- <20200710103621.GA437393@lianli.shorne-pla.net>
- <53342e1a-8430-2557-94c7-1da979a79e68@al2klimov.de>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=umxzZ9l+zQBonEiIpx0tLenM6i//HJK3uk8ryAmYO6Y=;
+        b=fGEr8+uLJb0QFBGcQfXZhXc/sMVEcgjhQq2eMwbc2alxi86pjt34uqg9tSIWCS47+N
+         QOC062u2II1T58m7AC+pjLe42WmtSx038zDtmAgl1Sv0kE/PW+wb0RQ4+BX8bAuG1BqX
+         lkbm/X910E7286pWTpoj/ztK9WieKPz9Fn9HizATgiTOG/KeFWwI4VR+7wUJA1wUKNR6
+         pLe/qAJiyO3w25OyfMxt9+jMMO++g/NzCOSVWzp64wCrRGmyOAlsmBvA9m4jknV+zUQw
+         jgMeWl5fMo56+/VlyPE4OO4AZa6xU0GfzMxeYRyAlkwsqdpgWPqkhRAiayGgxDK8SPA4
+         Rzaw==
+X-Gm-Message-State: AOAM532m0bNpOA3PaPQSRrcoLxVKuGGz6hsxruTOqJPMBonYB3PzqjJt
+        2vMJmSdeLPM5b+mm0I8jkFihuVTl13omrJUPUzijfoJA
+X-Google-Smtp-Source: ABdhPJzjNRIbTmxWF6b67i0FEABG0rtnFThtdCrOIHhzY52R63JviI5RQ7RYTS+b/7LuBpE6xn99Nux9ryyTRI57MWY=
+X-Received: by 2002:a37:7683:: with SMTP id r125mr67674733qkc.39.1594414552906;
+ Fri, 10 Jul 2020 13:55:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <53342e1a-8430-2557-94c7-1da979a79e68@al2klimov.de>
+References: <1594390953-31757-1-git-send-email-alan.maguire@oracle.com> <1594390953-31757-2-git-send-email-alan.maguire@oracle.com>
+In-Reply-To: <1594390953-31757-2-git-send-email-alan.maguire@oracle.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 10 Jul 2020 13:55:41 -0700
+Message-ID: <CAEf4BzbYk_kmqMEDS6BZR-jYbPNHpSCQFxaG5uSwzkKmMO8UbA@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 1/2] bpf: use dedicated bpf_trace_printk event
+ instead of trace_printk()
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 09:36:03PM +0200, Alexander A. Klimov wrote:
-> 
-> 
-> Am 10.07.20 um 12:36 schrieb Stafford Horne:
-> > On Thu, Jul 09, 2020 at 08:14:09AM +0200, Greg KH wrote:
-> > > On Wed, Jul 08, 2020 at 08:41:54PM +0200, Alexander A. Klimov wrote:
-> > > > 
-> > > > 
-> > > > Am 08.07.20 um 12:39 schrieb Greg KH:
-> > > > > On Wed, Jul 08, 2020 at 11:55:00AM +0200, Alexander A. Klimov wrote:
-> > > > > > Rationale:
-> > > > > > Reduces attack surface on kernel devs opening the links for MITM
-> > > > > > as HTTPS traffic is much harder to manipulate.
-> > > > > > 
-> > > > > > Deterministic algorithm:
-> > > > > > For each file:
-> > > > > >     If not .svg:
-> > > > > >       For each line:
-> > > > > >         If doesn't contain `\bxmlns\b`:
-> > > > > >           For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-> > > > > > 	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
-> > > > > >               If both the HTTP and HTTPS versions
-> > > > > >               return 200 OK and serve the same content:
-> > > > > >                 Replace HTTP with HTTPS.
-> > > > > > 
-> > > > > > Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
-> > > > > 
-> > > > > Your subject lines are very odd compared to all patches for this
-> > > > > subsystem, as well as all other kernel subsystems.  Any reason you are
-> > > > > doing it this way and not the normal and standard method of:
-> > > > > 	USB: storage: replace http links with https
-> > > > > 
-> > > > > That would look more uniform as well as not shout at anyone.
-> > 
-> > I would agree.  The OpenRISC patch for this series says:
-> >    "OPENRISC ARCHITECTURE:..."
-> > 
-> > Here it would just be "openrisc:..." I think fixing the whole series is needed.
-> > Greg is not the only on complaining.
-> > 
-> > Ideally, I think, it would be good to have this sent out as a series i.e [PATCH 3/55]
-> > rather than individual patches so this could be discussed as a whole.
-> 1) To who? As right now? As right now plus Torvalds, KH, Miller, etc.?
->    As right now, but all-to-all?
+On Fri, Jul 10, 2020 at 7:25 AM Alan Maguire <alan.maguire@oracle.com> wrote:
+>
+> The bpf helper bpf_trace_printk() uses trace_printk() under the hood.
+> This leads to an alarming warning message originating from trace
+> buffer allocation which occurs the first time a program using
+> bpf_trace_printk() is loaded.
+>
+> We can instead create a trace event for bpf_trace_printk() and enable
+> it in-kernel when/if we encounter a program using the
+> bpf_trace_printk() helper.  With this approach, trace_printk()
+> is not used directly and no warning message appears.
+>
+> This work was started by Steven (see Link) and finished by Alan; added
+> Steven's Signed-off-by with his permission.
+>
+> Link: https://lore.kernel.org/r/20200628194334.6238b933@oasis.local.home
+> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> ---
 
-Make sure you have a cover letter explaining what you expect.
+LGTM.
 
-You can ask maintainers to pick up individual patches by mentioning that in the
-cover letter.
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-You can use `git send-email --cc-cmd` so each patch goes only to the
-maintainers, for example:
+>  kernel/trace/Makefile    |  2 ++
+>  kernel/trace/bpf_trace.c | 41 ++++++++++++++++++++++++++++++++++++-----
+>  kernel/trace/bpf_trace.h | 34 ++++++++++++++++++++++++++++++++++
+>  3 files changed, 72 insertions(+), 5 deletions(-)
+>  create mode 100644 kernel/trace/bpf_trace.h
+>
 
-  send-email --to linux-kernel@vger.kernel.org --cc-cmd scripts/get_maintainers.pl`
-
-> 2) Apropos "series" and "as whole"... I stumbled over
-
-I stumble over "apropos". :)
-
->    `git log --oneline |grep -Fwe treewide`
->    and am wondering:
->    *Shouldn't all of these patches even begin with "treewide: "?*
->    E.g.: "treewide: Replace HTTP links with HTTPS ones: GCC PLUGINS"
-
-As Greg said that is not what patch subjects loo like.
-
-  - GCC PLUGINS: is not correct, remove it.
-  - treewide: may work, but as you want individual maintainers to pick up the patches put
-    a subsystem in the subject as maintainers like.
-  - The rest of the text should be lowercase "replace http links with https"
-
-Have a look at other patch subject lines based on the file you are editing.  For example:
-
-  $ git log --oneline -- Documentation/kbuild/gcc-plugins.rst
-  2020-03-10 2b4cbd5c9505 Jonathan Corbet  docs: move gcc-plugins to the kbuild manual
-
-  $ git log --oneline -- scripts/Makefile.gcc-plugins
-  2019-03-04 81a56f6dcd20 Kees Cook        gcc-plugins: structleak: Generalize to all variable types
-  2018-12-29 668c35f69cc7 Linus Torvalds   Merge tag 'kbuild-v4.21' of git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild
-  2018-12-12 189af4657186 Ard Biesheuvel   ARM: smp: add support for per-task stack canaries
-  2018-12-01 ce2fd53a10c7 Masahiro Yamada  kbuild: descend into scripts/gcc-plugins/ via scripts/Makefile
-  2018-09-04 10e9ae9fabaf Alexander Popov  gcc-plugins: Add STACKLEAK plugin for tracking the kernel stack
-  2018-07-24 7ccb95e8fe91 Kees Cook        gcc-plugins: Regularize Makefile.gcc-plugins
-  2018-07-02 c17d6179ad5a Masahiro Yamada  gcc-plugins: remove unused GCC_PLUGIN_SUBDIR
-  2018-06-11 59f53855babf Masahiro Yamada  gcc-plugins: test plugin support in Kconfig and clean up Makefile
-  2018-06-11 8034c2fb1225 Masahiro Yamada  gcc-plugins: move GCC version check for PowerPC to Kconfig
-  2018-06-11 5aadfdeb8de0 Masahiro Yamada  kcov: test compiler capability in Kconfig and correct dependency
-
-
-So you will have:
-
-  docs: replace http links with https
-  gcc-plugins: replace http links with https
-
--Stafford
-
-> > 
-> > -Stafford
-> > 
-> > > > > thanks,
-> > > > > 
-> > > > > greg k-h
-> > > > > 
-> > > > Hi,
-> > > > 
-> > > > I'm very sorry.
-> > > > 
-> > > > As Torvalds has merged 93431e0607e5 and many of you devs (including big
-> > > > maintainers like David Miller) just applied this stuff, I assumed that's OK.
-> > > > 
-> > > > And now I've rolled out tens of patches via shell loop... *sigh*
-> > > > 
-> > > > As this is the third (I think) change request like this, I assume this rule
-> > > > applies to all subsystems – right?
-> > > 
-> > > Yes, you should try to emulate what the subsystem does, look at other
-> > > patches for the same files, but the format I suggested is almost always
-> > > the correct one.  If not, I'm sure maintainers will be glad to tell you
-> > > otherwise :)
-> > 
-> > 
+[...]
