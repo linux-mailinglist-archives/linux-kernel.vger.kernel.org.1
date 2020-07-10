@@ -2,80 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD87E21B671
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 15:31:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BCD021B677
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 15:32:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727046AbgGJNbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 09:31:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33540 "EHLO mail.kernel.org"
+        id S1727840AbgGJNck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 09:32:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33992 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726820AbgGJNbj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 09:31:39 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        id S1727031AbgGJNck (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 09:32:40 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4EE8620578;
-        Fri, 10 Jul 2020 13:31:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5CD1820748;
+        Fri, 10 Jul 2020 13:32:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594387898;
-        bh=roVKF9WachsmsskcJZjXabT8G0JYpFRwtH55QGG8Ys8=;
+        s=default; t=1594387959;
+        bh=LvFpSzqSKplJUBC4M+6P3hI6hqjY33Q33k8lxTdHleU=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0ovFL5uznNZwgSUCQqQuc49b3L2yB3zwOqRg1TS2fda5WJPfTXSySKVdluS6kFtKN
-         07MFLtqfnOmOQ5Uawwt/84sGSEpq6JEHsJ+njKN+vIMFwxKzYUMtBJKb38CwLzT4hj
-         ZpK+Zy7lAui02JYNYC8edVnp2a50pKcidY4K1t6M=
-Date:   Fri, 10 Jul 2020 15:31:43 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Andrzej Hajda <a.hajda@samsung.com>
-Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        andy.shevchenko@gmail.com, Mark Brown <broonie@kernel.org>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>
-Subject: Re: [PATCH v8 2/5] driver core: add deferring probe reason to
- devices_deferred property
-Message-ID: <20200710133143.GA2085030@kroah.com>
-References: <CAHp75VegHLG5tgVFjwmpmDfSqELqNXcb9dFSM4jLRx+anW7Lsw@mail.gmail.com>
- <CGME20200702134434eucas1p233a3f66f5bdb4b97f4f49d2d43d45297@eucas1p2.samsung.com>
- <20200702134421.6412-1-a.hajda@samsung.com>
+        b=BBbOiE5hhOsBivO33CLPtIU5TOtJfk+tBMFKLSF2X16VVkk/+wcPWHpsudr4+EugE
+         llAdtz76rk6lGxBV8gi6lc7Dn8xKcXOQca0TwaOCABidwlXXVByqREpv1zqhoIq+k2
+         bkljtQSz+u5p9RdemV0/q30rEZRUaG0q92coJ/oU=
+Date:   Fri, 10 Jul 2020 14:32:33 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH v1] regmap: Switch to use fwnode instead of OF one
+Message-ID: <20200710133233.GF5653@sirena.org.uk>
+References: <20200708161232.17914-1-andriy.shevchenko@linux.intel.com>
+ <20200708162117.GV4655@sirena.org.uk>
+ <20200710100558.GI3703480@smile.fi.intel.com>
+ <20200710110132.GA5653@sirena.org.uk>
+ <20200710114622.GJ3703480@smile.fi.intel.com>
+ <20200710120856.GD5653@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="H4SyuGOnfnj3aJqJ"
 Content-Disposition: inline
-In-Reply-To: <20200702134421.6412-1-a.hajda@samsung.com>
+In-Reply-To: <20200710120856.GD5653@sirena.org.uk>
+X-Cookie: Use only in a well-ventilated area.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 02, 2020 at 03:44:21PM +0200, Andrzej Hajda wrote:
-> /sys/kernel/debug/devices_deferred property contains list of deferred devices.
-> This list does not contain reason why the driver deferred probe, the patch
-> improves it.
-> The natural place to set the reason is dev_err_probe function introduced
-> recently, ie. if dev_err_probe will be called with -EPROBE_DEFER instead of
-> printk the message will be attached to a deferred device and printed when user
-> reads devices_deferred property.
-> 
-> Signed-off-by: Andrzej Hajda <a.hajda@samsung.com>
-> Reviewed-by: Mark Brown <broonie@kernel.org>
-> Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Reviewed-by: Rafael J. Wysocki <rafael@kernel.org>
-> ---
-> v8:
-> - improved commit message
 
-I'm totally confused by this series.  Can you resend the whole thing,
-as a full series, not just random individual patches in the series
-incremented?  It's a pain to try to fish them all out as to which is the
-"latest" with all of the needed reviewed by lines :(
+--H4SyuGOnfnj3aJqJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-thanks,
+On Fri, Jul 10, 2020 at 01:08:56PM +0100, Mark Brown wrote:
+> On Fri, Jul 10, 2020 at 02:46:22PM +0300, Andy Shevchenko wrote:
 
-greg k-h
+> > You mean it's being synchronised with git.kernel.org, but not yet contains that
+> > patch? Okay, I will monitor the regmap tree (as of now I didn't see any update).
+
+> 5cc2013bfeee756a1ee6da9bfbe42e52b4695035
+
+Oh, I see your patch covered a different bit of code without covering
+the stuff in regmap-irq (which I'd just handled when your patch came in)
+for some reason so the changelog made it sound like the same code, and
+at the time you submitted it the patch was incomplete.
+
+
+--H4SyuGOnfnj3aJqJ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8IbfEACgkQJNaLcl1U
+h9D8IAf/VP45nyPEwll3Z25cy3/wht5HFrNOUs744RQ7vWr9oS+b4vbibjm+WX4t
+gFAheMYtBrSnMyxzmloQE5kwkrcxBtnxFMMxjk83LMM4P5N0vxHsF5u5w30Rf7+v
+/4qBxTBx/+kPRqoEO4sM/qvUvTmHPRjlKcz7k9r8aM/hYzdflv/YUPQQH0GMZveQ
+pljk5YHkLtIfoHbp+B9Zh7+quJvT1msNJuLvoTC+9tDO4ks1HjvdlfssBmqJRQSs
+vH8FuRv0Vh9emTW7d+JBhUn4jFtXfxvn3znVf1Y9qIzYU/6avE7AfIx0qeaouL2V
+i11CB9utaDLxPDXUGUndr6mnmnKHgg==
+=1MOn
+-----END PGP SIGNATURE-----
+
+--H4SyuGOnfnj3aJqJ--
