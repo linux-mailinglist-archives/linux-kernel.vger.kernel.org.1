@@ -2,174 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6FED21BCDC
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 20:19:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8054821BCE6
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 20:26:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728005AbgGJSTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 14:19:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49620 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726925AbgGJSTi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 14:19:38 -0400
-Received: from embeddedor (unknown [200.39.25.189])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ADB6B20720;
-        Fri, 10 Jul 2020 18:19:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594405177;
-        bh=jyHA0gIMMF6FTPrsLIO6MkWeFwzHovi1nfENOm+wlVY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XYUi+JotslbQqHG2PJyCY2sH6+hkQlDsII0AkZNAr0/sk2wq04BdpdtXWmXHJoRDl
-         H3VZptzQtEXlVIGIQaKCYE+/LUHBIeRUkOwNSDUV2hhZofmiZAWxz8tCiGeOEBoCUd
-         A0YA6BImvzf2l3t6DxsokJZI7vLZHRpEE4HMPo8g=
-Date:   Fri, 10 Jul 2020 13:25:12 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] dmaengine: ti: k3-udma: Use struct_size() in
- kzalloc()
-Message-ID: <20200710182512.GB21202@embeddedor>
-References: <20200619224334.GA7857@embeddedor>
- <20200624055535.GX2324254@vkoul-mobl>
- <3a5514c9-d966-c332-84ba-f418c26fa74c@embeddedor.com>
- <98426221-8bff-25df-a062-9ec1ca4e8f26@ti.com>
- <20200626132944.GA26003@embeddedor>
- <04a5fb89-37eb-2cf7-d085-aaa4c9ed284d@ti.com>
+        id S1727910AbgGJS0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 14:26:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726872AbgGJSZ7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 14:25:59 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1204DC08C5DC
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 11:25:59 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id z17so5367337edr.9
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 11:25:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mxvJ+Fty4K+1j3Y1eh6Bkx0XaBM+d2fy42IQC4UlRuo=;
+        b=NXWKXJ6GQCKHQi13Z7gjc88eeS0hvvz4tGk2iYMcV5QSgNUJNYTnmS7BTx0yqrNtsz
+         SFUJc1wRLVwL2p3HNbsfUm1WbLedW+TT+PyxxvwRydpPFVDDdOKPgKD0UySUkBqJrz5O
+         bQrGlYWFWDaiujnsTzPboDZpoTdVs7RiQSGNM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mxvJ+Fty4K+1j3Y1eh6Bkx0XaBM+d2fy42IQC4UlRuo=;
+        b=MZORuV9KYg0pzDIEYeOynpSk4yCnYof4O2IyPgKa4Yko9FbgX0rg7gLiz3Do+VCII6
+         ko83xJxj+EL8ZtIE3zbrFmkastigAlT/cI9gSVl26Oes4MHUYp12XdCBEiH2idAz9Y9z
+         c15jJPiWteAiDpFQ9Gv4WfQ+FWxPheSDAW+Ok7QYiw51WQM7oGAw6RsBA8NglKwmsx0i
+         Z2aZQA6cTKTb4WbhQyA5J5QeEMWNTjCWJDcAloHc3t7ufAj90jwbw/f+ZWeZP7klNfdI
+         E7TXPAsyAMK+crCpxKoMovJQSG3KmdYrfwzB9GyRfXFwA1RtY9+SJ6XToToZ4NJFUEjB
+         HD2Q==
+X-Gm-Message-State: AOAM531deAnfOOmBYM3I0lWth7Vqrw4Oggf/vvnPXo/+lpyqAyhslasp
+        HoefC+S7g7iiZqXaTHQ510kq43tIhu8=
+X-Google-Smtp-Source: ABdhPJxsGAXlzB/A8ePob32XWMtDYaq14NPcBRvYeMjZ7EczPxbgrw5SoiGXlZl0Xir6LdVh+YUuHw==
+X-Received: by 2002:a50:9f6a:: with SMTP id b97mr76752417edf.322.1594405557473;
+        Fri, 10 Jul 2020 11:25:57 -0700 (PDT)
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com. [209.85.218.41])
+        by smtp.gmail.com with ESMTPSA id gu15sm4089614ejb.111.2020.07.10.11.25.56
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Jul 2020 11:25:56 -0700 (PDT)
+Received: by mail-ej1-f41.google.com with SMTP id w16so7114882ejj.5
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 11:25:56 -0700 (PDT)
+X-Received: by 2002:a17:906:c04d:: with SMTP id bm13mr53490468ejb.321.1594405555807;
+ Fri, 10 Jul 2020 11:25:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <04a5fb89-37eb-2cf7-d085-aaa4c9ed284d@ti.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200710002209.6757-1-apronin@chromium.org> <20200710114000.GD2614@linux.intel.com>
+In-Reply-To: <20200710114000.GD2614@linux.intel.com>
+From:   Andrey Pronin <apronin@chromium.org>
+Date:   Fri, 10 Jul 2020 11:25:44 -0700
+X-Gmail-Original-Message-ID: <CAP7wa8LfEtEATbENjr18jTXShT+YmrAoDt4k9FK1SLpxVqViog@mail.gmail.com>
+Message-ID: <CAP7wa8LfEtEATbENjr18jTXShT+YmrAoDt4k9FK1SLpxVqViog@mail.gmail.com>
+Subject: Re: [PATCH] tpm: avoid accessing cleared ops during shutdown
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     peterhuewe@gmx.de, jgg@ziepe.ca, linux-integrity@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Guenter Roeck <groeck@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+On Fri, Jul 10, 2020 at 4:40 AM Jarkko Sakkinen
+<jarkko.sakkinen@linux.intel.com> wrote:
+>
+> On Thu, Jul 09, 2020 at 05:22:09PM -0700, Andrey Pronin wrote:
+> > This patch prevents NULL dereferencing when using chip->ops while
+> > sending TPM2_Shutdown command if both tpm_class_shutdown handler and
+> > tpm_del_char_device are called during system shutdown.
+> >
+> > Both these handlers set chip->ops to NULL but don't check if it's
+> > already NULL when they are called before using it.
+> >
+> > This issue was revealed in Chrome OS after a recent set of changes
+> > to the unregister order for spi controllers, such as:
+> >   b4c6230bb0ba spi: Fix controller unregister order
+> >   f40913d2dca1 spi: pxa2xx: Fix controller unregister order
+> > and similar for other controllers.
+>
+> I'm not sure I fully understand the scenario. When does thi happen?
 
-Friendly ping: who can take this, please?
+This happens during system shutdown.
+Here a sample stack trace from the panic:
 
-Thanks
---
-Gustavo
+BUG: unable to handle kernel NULL pointer dereference at 0000000000000058
+...
+Call Trace:
+ tpm_transmit_cmd+0x21/0x7f
+ tpm2_shutdown+0x84/0xc6
+ tpm_chip_unregister+0xa2/0xb9
+ cr50_spi_remove+0x19/0x26
+ spi_drv_remove+0x2a/0x42
+ device_release_driver_internal+0x123/0x1ec
+ bus_remove_device+0xe8/0x111
+ device_del+0x1bf/0x319
+ ? spi_unregister_controller+0xfc/0xfc
+ device_unregister+0x12/0x28
+ __unregister+0xe/0x12
+ device_for_each_child+0x79/0xb8
+ spi_unregister_controller+0x27/0xfc
+ pxa2xx_spi_remove+0x45/0xb4
+ device_shutdown+0x181/0x1d3
+ kernel_restart+0x12/0x56
+ SyS_reboot+0x16a/0x1e7
+ do_syscall_64+0x6b/0xf7
+ entry_SYSCALL_64_after_hwframe+0x41/0xa6
 
-On Mon, Jun 29, 2020 at 09:43:26AM +0300, Peter Ujfalusi wrote:
-> 
-> 
-> On 26/06/2020 16.29, Gustavo A. R. Silva wrote:
-> > Hi Peter,
-> > 
-> > Please, see my comments below...
-> > 
-> > On Fri, Jun 26, 2020 at 10:30:37AM +0300, Peter Ujfalusi wrote:
-> >>
-> >>
-> >> On 24/06/2020 20.12, Gustavo A. R. Silva wrote:
-> >>> Hi Vinod,
-> >>>
-> >>> On 6/24/20 00:55, Vinod Koul wrote:
-> >>>> On 19-06-20, 17:43, Gustavo A. R. Silva wrote:
-> >>>>> Make use of the struct_size() helper instead of an open-coded version
-> >>>>> in order to avoid any potential type mistakes.
-> >>>>>
-> >>>>> This code was detected with the help of Coccinelle and, audited and
-> >>>>> fixed manually.
-> >>>>>
-> >>>>> Addresses-KSPP-ID: https://github.com/KSPP/linux/issues/83
-> >>>>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> >>>>> ---
-> >>>>>  drivers/dma/ti/k3-udma.c | 4 ++--
-> >>>>>  1 file changed, 2 insertions(+), 2 deletions(-)
-> >>>>>
-> >>>>> diff --git a/drivers/dma/ti/k3-udma.c b/drivers/dma/ti/k3-udma.c
-> >>>>> index 0d5fb154b8e2..411c54b86ba8 100644
-> >>>>> --- a/drivers/dma/ti/k3-udma.c
-> >>>>> +++ b/drivers/dma/ti/k3-udma.c
-> >>>>> @@ -2209,7 +2209,7 @@ udma_prep_slave_sg_pkt(struct udma_chan *uc, struct scatterlist *sgl,
-> >>>>>  	u32 ring_id;
-> >>>>>  	unsigned int i;
-> >>>>>  
-> >>>>> -	d = kzalloc(sizeof(*d) + sglen * sizeof(d->hwdesc[0]), GFP_NOWAIT);
-> >>>>> +	d = kzalloc(struct_size(d, hwdesc, sglen), GFP_NOWAIT);
-> >>>>
-> >>>> struct_size() is a * b + c but here we need, a + b * c.. the trailing
-> >>>> struct is N times here..
-> >>>>
-> >>>
-> >>> struct_size() works exactly as expected in this case. :)
-> >>> Please, see:
-> >>>
-> >>> include/linux/overflow.h:314:
-> >>> 314 #define struct_size(p, member, count)                                   \
-> >>> 315         __ab_c_size(count,                                              \
-> >>> 316                     sizeof(*(p)->member) + __must_be_array((p)->member),\
-> >>> 317                     sizeof(*(p)))
-> >>
-> >> True, struct_size is for this sort of things.
-> >>
-> >> Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> >>
-> >> While looking it up in include/linux/overflow.h I have noticed your
-> >> commit in linux-next, which adds flex_array_size()
-> >>
-> >> The example in the commit message contradicts with what the helper
-> > 
-> > There is no contradiction here.
-> > 
-> >> does imho. To be correct it should have been:
-> >>
-> >> struct something {
-> >> 	size_t count;
-> >> 	struct foo items[];
-> >> };
-> >>
-> >> - struct something *instance;
-> >> + struct something instance;
-> >>
-> >> - instance = kmalloc(struct_size(instance, items, count), GFP_KERNEL);
-> >> + instance.items = kmalloc(struct_size(instance, items, count), GFP_KERNEL);
-> >> instance->count = count;
-> >> memcpy(instance->items, src, flex_array_size(instance, items, instance->count));
-> >>
-> > 
-> > This is all wrong. Please, double check how struct_size() works.
-> 
-> Yes, I got it mixed up, I know how struct_size works... For some reason
-> I just overlooked it's use in the kmalloc().
-> 
-> > 
-> > Thanks
+> Why does not tpm_del_char_device need this?
+
+"Not" is a typo in the sentence above, right? tpm_del_char_device *does*
+need the fix. When tpm_class_shutdown is called it sets chip->ops to
+NULL. If tpm_del_char_device is called after that, it doesn't check if
+chip->ops is NULL (normal kernel API and char device API calls go
+through tpm_try_get_ops, but tpm_del_char_device doesn't) and proceeds to
+call tpm2_shutdown(), which tries sending the command and dereferences
+chip->ops.
+
+> The changes listed tell
+> me nothing. Why they have this effect?
+
+"spi: pxa2xx: Fix controller unregister order" adds a spi_unregister_controller
+call to pxa2xx_spi_remove, which internally calls tpm_del_char_device, which
+results in the stack trace leading to the panic above.
+
+>
+> I'm just trying to understand whether this could be a regression or
+> not.
+>
+> I neither understand what you mean by "and similar for other
+> controllers."
+
+There was a series of spi unregister order changes for various
+spi controllers, including the following:
+1c6221b430a0 spi: bcm2835: Fix controller unregister order
+f40913d2dca1 spi: pxa2xx: Fix controller unregister order
+b4c6230bb0ba spi: Fix controller unregister order
+54000d2e15e9 spi: dw: Fix controller unregister order
+c8f309db490e spi: bcm2835aux: Fix controller unregister order
+
+>
+> NAK for the reason that I don't understand what I'm merging.
+>
+> /Jarkko
+>
+> >
+> > Signed-off-by: Andrey Pronin <apronin@chromium.org>
+> > ---
+> >  drivers/char/tpm/tpm-chip.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
+> > index 8c77e88012e9..a410ca40a3c5 100644
+> > --- a/drivers/char/tpm/tpm-chip.c
+> > +++ b/drivers/char/tpm/tpm-chip.c
+> > @@ -296,7 +296,7 @@ static int tpm_class_shutdown(struct device *dev)
+> >       struct tpm_chip *chip = container_of(dev, struct tpm_chip, dev);
+> >
+> >       down_write(&chip->ops_sem);
+> > -     if (chip->flags & TPM_CHIP_FLAG_TPM2) {
+> > +     if (chip->ops && (chip->flags & TPM_CHIP_FLAG_TPM2)) {
+> >               if (!tpm_chip_start(chip)) {
+> >                       tpm2_shutdown(chip, TPM2_SU_CLEAR);
+> >                       tpm_chip_stop(chip);
+> > @@ -479,7 +479,7 @@ static void tpm_del_char_device(struct tpm_chip *chip)
+> >
+> >       /* Make the driver uncallable. */
+> >       down_write(&chip->ops_sem);
+> > -     if (chip->flags & TPM_CHIP_FLAG_TPM2) {
+> > +     if (chip->ops && (chip->flags & TPM_CHIP_FLAG_TPM2)) {
+> >               if (!tpm_chip_start(chip)) {
+> >                       tpm2_shutdown(chip, TPM2_SU_CLEAR);
+> >                       tpm_chip_stop(chip);
 > > --
-> > Gustavo
-> > 
-> >>>>>  	if (!d)
-> >>>>>  		return NULL;
-> >>>>>  
-> >>>>> @@ -2525,7 +2525,7 @@ udma_prep_dma_cyclic_pkt(struct udma_chan *uc, dma_addr_t buf_addr,
-> >>>>>  	if (period_len >= SZ_4M)
-> >>>>>  		return NULL;
-> >>>>>  
-> >>>>> -	d = kzalloc(sizeof(*d) + periods * sizeof(d->hwdesc[0]), GFP_NOWAIT);
-> >>>>> +	d = kzalloc(struct_size(d, hwdesc, periods), GFP_NOWAIT);
-> >>>>>  	if (!d)
-> >>>>>  		return NULL;
-> >>>>>  
-> >>>>> -- 
-> >>>>> 2.27.0
-> >>>>
-> >>
-> >> - Péter
-> >>
-> >> Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
-> >>
-> 
-> - Péter
-> 
-> Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-> Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
-> 
+> > 2.25.1
+> >
+
+
+
+-- 
+Andrey
