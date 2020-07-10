@@ -2,89 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C96B021BAF0
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 18:31:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19DB121BAF4
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 18:31:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728282AbgGJQbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 12:31:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726920AbgGJQbH (ORCPT
+        id S1728301AbgGJQbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 12:31:23 -0400
+Received: from mail-io1-f66.google.com ([209.85.166.66]:43357 "EHLO
+        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726920AbgGJQbW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 12:31:07 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24006C08C5CE
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 09:31:07 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id e64so6632879iof.12
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 09:31:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=L5x+RXQcTKt3brgLCNXmzu/Q4sL3Ui6tQW0Y7yTVLkY=;
-        b=B6/Y2AU3K+d29kPJXoL4LW3xcHmtRXC6hGouqLD94eTzfrcaV3Fglva7FhbL4FBWcn
-         7CNit1lq96RQZfb339mk7OObuhLv9SvsOopZ5KKDqxtyUP5OkUl3So/xWJuSYxFPAnD0
-         M+cC9gw93b5yvVZkCiPNJBcka2dTkqqMjjpN1B8/fJ/d2uYNUOhQbv2l2wjmIHMZJiV7
-         JKgQOz8OPcH4mfjfFUrRPX+wgE/dFIBA7R+ynDnnOb99sDUc/8fY2mu0lZJMQGXNi5SM
-         mdf35MSYI92URNmkPnr9bRMUTfCVa5SC6EUlRv+V61BsDiSWajXEiDX+k1gstuu/tsOB
-         p2hA==
+        Fri, 10 Jul 2020 12:31:22 -0400
+Received: by mail-io1-f66.google.com with SMTP id k23so6631962iom.10;
+        Fri, 10 Jul 2020 09:31:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=L5x+RXQcTKt3brgLCNXmzu/Q4sL3Ui6tQW0Y7yTVLkY=;
-        b=QPwBIma8SuHGY/0Y/nU19x+U56gYBqg9gXOPCF7uZzxT1xwkDmFAKhCUYHjyxuKY+s
-         CMQhajcOkGLMgmpVBdiv8CSi9OGVkRst2AA/+otUkWNfTsEy9iwbSdFMRMKmRyWoi91n
-         HuJ6d4iD03GalScophooIBoMJLpvLE/BIu1cdJwzXB3L5Voeqq75+wQdAHPGOnhU+bNy
-         wCu5XQHUY6hgZqT5CU3q72CN/u0785ArL9XwMaPA0VcNM11XNQqpcl7iu12qyIH5aQbg
-         GJesM/Xfi61Yh0OXnbvjn5zUzhI4rysLtUTxYsZuRR0H8IbrGlvdOvddnrHQYaNhmrHv
-         l2aw==
-X-Gm-Message-State: AOAM5324SZuJ36ABayv/FJ7grnZLxYqCNz/sNEcmnV8dd+9X4JC0OJfK
-        FgE8vwsEtljDyqkmk2v6iGYQZwJmIe/XUrqRXsrc2KZs
-X-Google-Smtp-Source: ABdhPJz4f+wmTdCN8HsvGt2xu/V0GtBoahjoaJjauggHLbwoRMsmtNf5nAOu00p52lQl8ZVL2r2qaIf0UU+lXGLR09U=
-X-Received: by 2002:a5e:c311:: with SMTP id a17mr18924402iok.12.1594398666301;
- Fri, 10 Jul 2020 09:31:06 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ri5Ju8/pmRRLLJvGOFF2lCmuUcpkIXlf+EO6oa9lkeg=;
+        b=nqA8jhOyMWl6zDz1D/rGpo03eDm1D3IS/FdHuyF1LPT26sjCt792sMeuNcIO7mOvL2
+         OUme2VhRUu2LUw5xB/KIpJTaSDWxKohp/V32eTKEb9MBnBcn2tUyyyzpizmNYhZZYG1O
+         22L1C11jZKSJ85zgzMqp2/8NhieoBucz8bLIdfjrHWadipzweQie9XiPB72eHY71kb9h
+         r2t68aE26ZIrP4KdYJtrj5XtPOr9X3iRn3BMf1LV1mbvH+oaBZv984BV0sQcaOGi5Sca
+         70x0K8HnQNPXXdctyZ7Q26RH2MUaxHPybRG0ckrYP1guNH9A7kpKgXuQrF1fdnmfAvE7
+         ykTA==
+X-Gm-Message-State: AOAM532UptoJOIU/48bAvz08dzheXFh6VdzoZlzsLAZkisG5KOc1Bb5i
+        yX66bbthYC/CoHiJp8auAZ6HPfnLCJ9E
+X-Google-Smtp-Source: ABdhPJzvLnRx24MgOhUZQEp05+U4gq81sv1JxrEdwFInJenxWlUIT/AyApoNCnP+LtIFrZS4Zidw3A==
+X-Received: by 2002:a6b:9042:: with SMTP id s63mr49394517iod.195.1594398681647;
+        Fri, 10 Jul 2020 09:31:21 -0700 (PDT)
+Received: from xps15 ([64.188.179.254])
+        by smtp.gmail.com with ESMTPSA id a5sm3706284ilt.71.2020.07.10.09.31.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Jul 2020 09:31:20 -0700 (PDT)
+Received: (nullmailer pid 2759342 invoked by uid 1000);
+        Fri, 10 Jul 2020 16:31:19 -0000
+Date:   Fri, 10 Jul 2020 10:31:19 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Mike Tipton <mdtipton@codeaurora.org>
+Cc:     georgi.djakov@linaro.org, bjorn.andersson@linaro.org,
+        agross@kernel.org, linux-pm@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/6] dt-bindings: interconnect: Add property to set
+ BCM TCS wait behavior
+Message-ID: <20200710163119.GA2753833@bogus>
+References: <20200710015652.19206-1-mdtipton@codeaurora.org>
+ <20200710015652.19206-3-mdtipton@codeaurora.org>
 MIME-Version: 1.0
-References: <20200710154811.418214-1-mgamal@redhat.com>
-In-Reply-To: <20200710154811.418214-1-mgamal@redhat.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Fri, 10 Jul 2020 09:30:55 -0700
-Message-ID: <CALMp9eRfZ50iyrED0-LU75VWhHu_kVoB2Qw55VzEFzZ=0QCGow@mail.gmail.com>
-Subject: Re: [PATCH v3 0/9] KVM: Support guest MAXPHYADDR < host MAXPHYADDR
-To:     Mohammed Gamal <mgamal@redhat.com>
-Cc:     kvm list <kvm@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200710015652.19206-3-mdtipton@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 8:48 AM Mohammed Gamal <mgamal@redhat.com> wrote:
->
-> When EPT is enabled, KVM does not really look at guest physical
-> address size. Address bits above maximum physical memory size are reserved.
-> Because KVM does not look at these guest physical addresses, it currently
-> effectively supports guest physical address sizes equal to the host.
->
-> This can be problem when having a mixed setup of machines with 5-level page
-> tables and machines with 4-level page tables, as live migration can change
-> MAXPHYADDR while the guest runs, which can theoretically introduce bugs.
+On Thu, Jul 09, 2020 at 06:56:48PM -0700, Mike Tipton wrote:
+> Add "qcom,tcs-wait" property to set which TCS should wait for completion
+> when triggering.
+> 
+> Signed-off-by: Mike Tipton <mdtipton@codeaurora.org>
+> ---
+>  .../bindings/interconnect/qcom,bcm-voter.yaml       | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/interconnect/qcom,bcm-voter.yaml b/Documentation/devicetree/bindings/interconnect/qcom,bcm-voter.yaml
+> index 5971fc1df08d..f0c3d6b01831 100644
+> --- a/Documentation/devicetree/bindings/interconnect/qcom,bcm-voter.yaml
+> +++ b/Documentation/devicetree/bindings/interconnect/qcom,bcm-voter.yaml
+> @@ -21,6 +21,16 @@ properties:
+>      enum:
+>        - qcom,bcm-voter
+>  
+> +  qcom,tcs-wait:
+> +    description: |
+> +      Optional mask of which TCSs (Triggered Command Sets) wait for completion
+> +      upon triggering. In most cases, it's necessary to wait in both the AMC
+> +      and WAKE sets to ensure resources are available before use. If a specific
+> +      RSC and its use cases can ensure sufficient delay by other means, then
+> +      this can be overridden to reduce latencies.
 
-Huh? Changing MAXPHYADDR while the guest runs should be illegal. Or
-have I missed some peculiarity of LA57 that makes MAXPHYADDR a dynamic
-CPUID information field?
+I have no idea what any of this means to provide any meaningful comment.
 
-> In this patch series we add checks on guest physical addresses in EPT
-> violation/misconfig and NPF vmexits and if needed inject the proper
-> page faults in the guest.
->
-> A more subtle issue is when the host MAXPHYADDR is larger than that of the
-> guest. Page faults caused by reserved bits on the guest won't cause an EPT
-> violation/NPF and hence we also check guest MAXPHYADDR and add PFERR_RSVD_MASK
-> error code to the page fault if needed.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    default: QCOM_ICC_TAG_ACTIVE_ONLY
+
+Can't use defines here.
+
+> +
+>  required:
+>    - compatible
+>  
+> @@ -39,7 +49,10 @@ examples:
+>    # as defined in Documentation/devicetree/bindings/soc/qcom/rpmh-rsc.txt
+>    - |
+>  
+> +    #include <dt-bindings/interconnect/qcom,icc.h>
+> +
+>      disp_bcm_voter: bcm_voter {
+>          compatible = "qcom,bcm-voter";
+> +        qcom,tcs-wait = <QCOM_ICC_TAG_AMC>;
+>      };
+>  ...
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
