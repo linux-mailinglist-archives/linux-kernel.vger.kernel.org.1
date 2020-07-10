@@ -2,68 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59EE821B3F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 13:29:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D7F921B3FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 13:31:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728002AbgGJL3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 07:29:10 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:44692 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727902AbgGJL24 (ORCPT
+        id S1728013AbgGJLbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 07:31:25 -0400
+Received: from mailomta10-sa.btinternet.com ([213.120.69.16]:49431 "EHLO
+        sa-prd-fep-045.btinternet.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727901AbgGJLbZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 07:28:56 -0400
-Received: from ip5f5af08c.dynamic.kabel-deutschland.de ([95.90.240.140] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jtrD1-0005TR-0A; Fri, 10 Jul 2020 11:28:51 +0000
-Date:   Fri, 10 Jul 2020 13:28:48 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Sargun Dhillon <sargun@sargun.me>,
-        Christian Brauner <christian@brauner.io>,
-        Tycho Andersen <tycho@tycho.ws>,
-        David Laight <David.Laight@ACULAB.COM>,
-        Christoph Hellwig <hch@lst.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Matt Denton <mpdenton@google.com>,
-        Jann Horn <jannh@google.com>, Chris Palmer <palmer@google.com>,
-        Robert Sesek <rsesek@google.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>, Shuah Khan <shuah@kernel.org>,
-        netdev@vger.kernel.org, containers@lists.linux-foundation.org,
-        linux-api@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v7 1/9] net/compat: Add missing sock updates for
- SCM_RIGHTS
-Message-ID: <20200710112848.ict5lbpyq35jj4qm@wittgenstein>
-References: <20200709182642.1773477-1-keescook@chromium.org>
- <20200709182642.1773477-2-keescook@chromium.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200709182642.1773477-2-keescook@chromium.org>
+        Fri, 10 Jul 2020 07:31:25 -0400
+Received: from sa-prd-rgout-004.btmx-prd.synchronoss.net ([10.2.38.7])
+          by sa-prd-fep-045.btinternet.com with ESMTP
+          id <20200710113121.LAUG4112.sa-prd-fep-045.btinternet.com@sa-prd-rgout-004.btmx-prd.synchronoss.net>;
+          Fri, 10 Jul 2020 12:31:21 +0100
+Authentication-Results: btinternet.com;
+    auth=pass (LOGIN) smtp.auth=j.oldman998@btinternet.com
+X-Originating-IP: [31.53.71.41]
+X-OWM-Source-IP: 31.53.71.41 (GB)
+X-OWM-Env-Sender: j.oldman998@btinternet.com
+X-VadeSecure-score: verdict=clean score=0/300, class=clean
+X-RazorGate-Vade: gggruggvucftvghtrhhoucdtuddrgeduiedrvddugdeggecutefuodetggdotefrodftvfcurfhrohhfihhlvgemuceutffkvffkuffjvffgnffgvefqofdpqfgfvfenuceurghilhhouhhtmecufedtudenucenucfjughrpefhvffufffkofestddtredtredttdenucfhrhhomheplfhohhhnucfqlhgumhgrnhcuoehjohhhnhdrohhlughmrghnsehpohhlvghhihhllhdrtghordhukheqnecuggftrfgrthhtvghrnhepgeeftdfhfeeuiefhgfekfeethedutddtfeduteevleevfedvfefhjeeijefhgffgnecukfhppeefuddrheefrdejuddrgedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehhvghlohephhgvnhhrhidrhhhomhgvpdhinhgvthepfedurdehfedrjedurdeguddpmhgrihhlfhhrohhmpeeojhhohhhnrdholhgumhgrnhesphholhgvhhhilhhlrdgtohdruhhkqedprhgtphhtthhopeeonfgrrhhrhidrhfhinhhgvghrsehlfihfihhnghgvrhdrnhgvtheqpdhrtghpthhtohepoeguvghvvghlsegurhhivhgvrhguvghvrdhoshhuohhslhdrohhrgheqpdhrtghpthhtohepoehflhhorhhirghnrdgtrdhstghhihhlhhgrsggvlhesghhoohhglhgvmhgrihhlrdgtohhmqedprhgtphhtthhopeeoghhrvghgkhhhsehlihhnuhigfhhouhhnuggrthhiohhnrdhorhhgqedprhgtphhtthhopeeojhhohhhnrdholhgumhgrnhesphholhgvhhhilhhlrdgtohdruhhkqedprhgt
+        phhtthhopeeolhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgqe
+X-RazorGate-Vade-Verdict: clean 0
+X-RazorGate-Vade-Classification: clean
+Received: from henry.home (31.53.71.41) by sa-prd-rgout-004.btmx-prd.synchronoss.net (5.8.340) (authenticated as j.oldman998@btinternet.com)
+        id 5ED9B66106110673; Fri, 10 Jul 2020 12:31:21 +0100
+From:   John Oldman <john.oldman@polehill.co.uk>
+To:     gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        John Oldman <john.oldman@polehill.co.uk>
+Subject: [PATCH] staging: rtl8712/: Using comparison to true is error prone
+Date:   Fri, 10 Jul 2020 12:31:13 +0100
+Message-Id: <20200710113113.1648-1-john.oldman@polehill.co.uk>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 09, 2020 at 11:26:34AM -0700, Kees Cook wrote:
-> Add missed sock updates to compat path via a new helper, which will be
-> used more in coming patches. (The net/core/scm.c code is left as-is here
-> to assist with -stable backports for the compat path.)
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 48a87cc26c13 ("net: netprio: fd passed in SCM_RIGHTS datagram not set correctly")
-> Fixes: d84295067fc7 ("net: net_cls: fd passed in SCM_RIGHTS datagram not set correctly")
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
+clear below issues reported by checkpatch.pl:
 
-Thanks!
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+CHECK: Using comparison to true is error prone
+CHECK: Comparison to NULL should be written "!oldest"
+
+Signed-off-by: John Oldman <john.oldman@polehill.co.uk>
+---
+ drivers/staging/rtl8712/rtl871x_mlme.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/staging/rtl8712/rtl871x_mlme.c b/drivers/staging/rtl8712/rtl871x_mlme.c
+index 9ee1bfac0763..2ccd49032206 100644
+--- a/drivers/staging/rtl8712/rtl871x_mlme.c
++++ b/drivers/staging/rtl8712/rtl871x_mlme.c
+@@ -264,13 +264,13 @@ struct	wlan_network *r8712_get_oldest_wlan_network(
+ 	phead = &scanned_queue->queue;
+ 	plist = phead->next;
+ 	while (1) {
+-		if (end_of_queue_search(phead, plist) ==  true)
++		if (end_of_queue_search(phead, plist))
+ 			break;
+ 		pwlan = container_of(plist, struct wlan_network, list);
+-		if (pwlan->fixed != true) {
+-			if (oldest == NULL ||
++		if (!pwlan->fixed) {
++			if (!oldest ||
+ 			    time_after((unsigned long)oldest->last_scanned,
+-			    (unsigned long)pwlan->last_scanned))
++				       (unsigned long)pwlan->last_scanned))
+ 				oldest = pwlan;
+ 		}
+ 		plist = plist->next;
+--
+2.17.1
+
