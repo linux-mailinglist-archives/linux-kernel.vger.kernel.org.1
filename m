@@ -2,113 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B696321BA6F
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 18:11:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BD3521BA61
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 18:10:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726496AbgGJQLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 12:11:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59678 "EHLO
+        id S1727969AbgGJQKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 12:10:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727915AbgGJQLG (ORCPT
+        with ESMTP id S1726496AbgGJQKJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 12:11:06 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0286DC08C5DC;
-        Fri, 10 Jul 2020 09:11:05 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id k18so4804257qtm.10;
-        Fri, 10 Jul 2020 09:11:05 -0700 (PDT)
+        Fri, 10 Jul 2020 12:10:09 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31366C08C5CE
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 09:10:09 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id q17so2431521pls.9
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 09:10:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=y861TMCTvpy5racGqaIyx07iIXHTPCR4jkREHmo0X5A=;
-        b=Wo/NdRrrqJwONxOj542PxpeohJSIuPR2d8D8UJ1NhigILOhHqNScqYXo4FuVZW2m3/
-         4RPeZrUFgFC2r6OcczdiXafs3KAFyuFac9hPAx3VIFAquc2YLN5wZfJR2/AZuPOe/1IB
-         80KfxaoKKw1yQV2CGz+SqD5mNjW2/O6nfzxTVu+Rj1AiYHvNEG5AMiv3ZGINdzhcZQFi
-         i24JSldDuvZ+7xCh4BqUniylYKz/mZrnfDtPiG32tlf5xy6WYBzVSuI3/TBYee1hqDwc
-         kYBrYUkhB0uSwY/2RQ0g13WfbTUrqPAhz991mdMZprIDnTXUlkHEb6evurkptYXEuxON
-         7XdA==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zmW8ec5Dt+lImhfBII8mb3lOzcmhvKNb+zPkMO/QQ5Q=;
+        b=eMbg0eTOumM5whjWlh4jJJ2moWaLNrdk7fajRjcV0NUxfmgQdadlIMcveXpHNJ3BeI
+         1KPfI8EJiyYo9QvAvd/oFk0RcejN7Jb8P79mFtROpbyUDCWnIwwJtshcMQDuxEwadmdY
+         JV4N9nCePXytoVXO4Bl8RkQ6aGHwPkZ8NsLBA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=y861TMCTvpy5racGqaIyx07iIXHTPCR4jkREHmo0X5A=;
-        b=J+QlFEn0nDg0PmFFtiooI0TqHzzfeonzKbATDgoqyNfi72egORJrFMmsbueit2S7pz
-         TmZQy/oDow4zkGl4gdlYU+/J8nbPHgUFW63LxJt3pGSxekN6vxyMsC+DJJhMaZbv6/tG
-         noaJnMSzPt0au+B9KYEYk27nroLKBpeqZTO4LhpQU5DYDVZe4hLNRoSy7iQsoQFlg8bw
-         1P7wEPnkUTKeq87TPSy06kiUrgaRqfXzfYub1Wq/se3uiywFv2ETUuigfcqFtUY3fqdq
-         L+JSu3C/5ZY1kf95j/bzUqaxezJj43s8lZm56xhr6VxbCSHN5wcrhlh0UwyhR6l3fDDw
-         /iPg==
-X-Gm-Message-State: AOAM5337nmwuiiVT+cjxBGrO2GMRuMunhj9Q4X00PSRfnpRdVK81wXhx
-        hQi+7bCJ8VPIbZehsxN5G5o1ZoJpiioU
-X-Google-Smtp-Source: ABdhPJzpzxl71N47ydC8eo3OOanW2bRGZsq9dHQ51PlHyGRFUZjTOqsaik7xr3g2ncxiofZqEgzKxA==
-X-Received: by 2002:ac8:7454:: with SMTP id h20mr26634878qtr.84.1594397465192;
-        Fri, 10 Jul 2020 09:11:05 -0700 (PDT)
-Received: from localhost.localdomain (c-76-119-149-155.hsd1.ma.comcast.net. [76.119.149.155])
-        by smtp.gmail.com with ESMTPSA id o18sm7360586qkk.91.2020.07.10.09.11.03
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zmW8ec5Dt+lImhfBII8mb3lOzcmhvKNb+zPkMO/QQ5Q=;
+        b=SX6DskIu+matL1exGEcOCvMmHvmEl78d7DTvmym+SwxyVZVzVe42oAlZUyeFqV9CFT
+         UJR13tMFtVkon44xD/xZdk6qTIl/M9PFYI7h1lolVnoKlMvyyQuMbWFwrzBwqet2EAjz
+         Sm7V7yisPyRFCkj2RDL2YolUD0mvMD1gWTyYF034YjKAEmFGAsjMx49bnwqdcQDImvZO
+         ckQMFvWB4cVJULtwVpKIgWLKFjc963cSUiMxTzVROfM1hxGaqp69X880ZVJUQDLvSr84
+         50IrNxox6HNjOksK+4xkXPdspUIYpCFW9I6zUtgUKySgcQu5HlQSjGp/No+eOBi5hEKw
+         Mz9g==
+X-Gm-Message-State: AOAM533Ax/Cbs5BgRqjtTHNQSJiipxkmDbAuAAVRbEf25acMcpynrieJ
+        W3S6IcJbetTuoVbMY5/o36LVlQ==
+X-Google-Smtp-Source: ABdhPJw4yMztQBG9o5biOtOd11XxFqhNJMYreXhVKUHho/zJskPlZr2UflkydhW/fZLZNTKXqRjZSg==
+X-Received: by 2002:a17:902:9f96:: with SMTP id g22mr15261428plq.306.1594397408754;
+        Fri, 10 Jul 2020 09:10:08 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id lx9sm1412890pjb.52.2020.07.10.09.10.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jul 2020 09:11:04 -0700 (PDT)
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>
-Cc:     Peilin Ye <yepeilin.cs@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-Subject: [Linux-kernel-mentees] [PATCH v3] net/bluetooth: Fix slab-out-of-bounds read in hci_extended_inquiry_result_evt()
-Date:   Fri, 10 Jul 2020 12:09:15 -0400
-Message-Id: <20200710160915.228980-1-yepeilin.cs@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200709130224.214204-1-yepeilin.cs@gmail.com>
-References: <20200709130224.214204-1-yepeilin.cs@gmail.com>
+        Fri, 10 Jul 2020 09:10:07 -0700 (PDT)
+Date:   Fri, 10 Jul 2020 09:10:06 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>, alex.gaynor@gmail.com,
+        Greg KH <gregkh@linuxfoundation.org>, geofft@ldpreload.com,
+        jbaublitz@redhat.com, Masahiro Yamada <masahiroy@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Subject: Re: Linux kernel in-tree Rust support
+Message-ID: <202007100905.94A79A7A76@keescook>
+References: <CAKwvOdmuYc8rW_H4aQG4DsJzho=F+djd68fp7mzmBp3-wY--Uw@mail.gmail.com>
+ <20200710062803.GA1071395@kroah.com>
+ <20200710125022.alry7wkymalmv3ge@wittgenstein>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200710125022.alry7wkymalmv3ge@wittgenstein>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Check upon `num_rsp` is insufficient. A malformed event packet with a
-large `num_rsp` number makes hci_extended_inquiry_result_evt() go out
-of bounds. Fix it.
+On Fri, Jul 10, 2020 at 02:50:22PM +0200, Christian Brauner wrote:
+> On Fri, Jul 10, 2020 at 08:28:03AM +0200, Greg KH wrote:
+> > On Thu, Jul 09, 2020 at 11:41:47AM -0700, Nick Desaulniers wrote:
+> > > Hello folks,
+> > > I'm working on putting together an LLVM "Micro Conference" for the
+> > > upcoming Linux Plumbers Conf
+> > > (https://www.linuxplumbersconf.org/event/7/page/47-attend).  It's not
+> > > solidified yet, but I would really like to run a session on support
+> > > for Rust "in tree."  I suspect we could cover technical aspects of
+> > > what that might look like (I have a prototype of that, was trivial to
+> > > wire up KBuild support), but also a larger question of "should we do
+> > > this?" or "how might we place limits on where this can be used?"
+> > > 
+> > > Question to folks explicitly in To:, are you planning on attending plumbers?
+> > > 
+> > > If so, would this be an interesting topic that you'd participate in?
+> > 
+> > Yes, I'll be there.
+> 
+> We actually had this dicussion a while back and there were some more
+> people interested in this. I'd be interested to attend this and I've
+> spoken with Kees and a few others about this topic at last Plumbers (I
+> think Greg might have been around for this informal discussion as well.
+> But I might be imagining things.).
 
-This patch fixes the following syzbot bug:
+I'm quite interested in this topic still, yes. :) (And will be attending
+Plumbers.)
 
-    https://syzkaller.appspot.com/bug?id=4bf11aa05c4ca51ce0df86e500fce486552dc8d2
+We had interesting discussions with the LSS 2019 "Rust in the kernel"[1]
+speakers, and I know Nick has reviewed their work[2] too. Perhaps we should
+reach out to them as well?
 
-Reported-by: syzbot+d8489a79b781849b9c46@syzkaller.appspotmail.com
-Cc: stable@vger.kernel.org
-Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
----
-Change in v3:
-    - Minimum `skb->len` requirement was 1 byte inaccurate since `info`
-      starts from `skb->data + 1`. Fix it.
+-Kees
 
-Changes in v2:
-    - Use `skb->len` instead of `skb->truesize` as the length limit.
-    - Leave `num_rsp` as of type `int`.
+[1] https://ldpreload.com/p/kernel-modules-in-rust-lssna2019.pdf
+[2] https://github.com/fishinabarrel/linux-kernel-module-rust
 
- net/bluetooth/hci_event.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-index 03a0759f2fc2..13d8802b8137 100644
---- a/net/bluetooth/hci_event.c
-+++ b/net/bluetooth/hci_event.c
-@@ -4375,7 +4375,7 @@ static void hci_extended_inquiry_result_evt(struct hci_dev *hdev,
- 
- 	BT_DBG("%s num_rsp %d", hdev->name, num_rsp);
- 
--	if (!num_rsp)
-+	if (!num_rsp || skb->len < num_rsp * sizeof(*info) + 1)
- 		return;
- 
- 	if (hci_dev_test_flag(hdev, HCI_PERIODIC_INQ))
 -- 
-2.25.1
-
+Kees Cook
