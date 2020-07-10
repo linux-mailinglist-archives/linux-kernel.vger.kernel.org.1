@@ -2,120 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9971A21BC87
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 19:44:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C0E521BC8E
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 19:48:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728116AbgGJRod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 13:44:33 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:27832 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726977AbgGJRod (ORCPT
+        id S1727989AbgGJRsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 13:48:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726920AbgGJRsS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 13:44:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594403072;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=qc023nhny6w6wkYHyPdwfmXQH84TOjG2Gsy5/9ekYpU=;
-        b=WiBDVzlU3yxiEk6cwF0/3LUSfQsDjxnE7jGb7Z3pCcsBlrHYvHzFfx72Tn1QWjVKx/DGdr
-        fnNgqg6UwzKadlhAA6EF2tTztrq08dSgaSq4WiuOaHXbr6/KLqp2l4Nmd3wWphA5BlRj71
-        m75hK9k8gQVuFy0hocC7qt0HZvpDR/Q=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-131-HcDM24aXMsKzcTD7-6iUIg-1; Fri, 10 Jul 2020 13:44:30 -0400
-X-MC-Unique: HcDM24aXMsKzcTD7-6iUIg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4CB68800FEB;
-        Fri, 10 Jul 2020 17:44:29 +0000 (UTC)
-Received: from localhost (ovpn-116-13.gru2.redhat.com [10.97.116.13])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D68766FEF8;
-        Fri, 10 Jul 2020 17:44:25 +0000 (UTC)
-From:   Bruno Meneguele <bmeneg@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     pmladek@suse.com, sergey.senozhatsky@gmail.com,
-        torvalds@linux-foundation.org, Jason@zx2c4.com,
-        Bruno Meneguele <bmeneg@redhat.com>
-Subject: [PATCH v2] doc:kmsg: explictly state the return value in case of SEEK_CUR
-Date:   Fri, 10 Jul 2020 14:44:23 -0300
-Message-Id: <20200710174423.10480-1-bmeneg@redhat.com>
+        Fri, 10 Jul 2020 13:48:18 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6E90C08C5DD
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 10:48:17 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id u25so3691666lfm.1
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 10:48:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QGH/1ehoZFwfhkJOgaIaTubnPetz+f4biA6QGk/2Uyo=;
+        b=c7JFXD/A4EOhJwcLKu31TlBZ9abJajqaRKQlVWu/avrgpYDKmq8FSwvFK0J5HLnvNj
+         Qp7Uz4blgJRqRqgOUAc3ruSqMZJRakazZjRrjHpru1thFep0tt+PjNMVb0JiBOzDfdjQ
+         SuqVlOh3YkcyPvVxX1f0dOPQTLXNyaVDx5KQopfd2MKsDPz40FavPXF/hmuRMZO3jAGB
+         vGbPXs71UGM5Kmg+G/NYtoVmh6Bu8+1CDVAlE/XIEnXprO6B2cVS4F/Ym2a9WvYAQELb
+         0EYa1Xo7BZCpJDCcnQgtSMyut2weoOJrX99Q1Xm2rhAz9w0bQeFMaPeCc4CaPDFP0wOc
+         N9EA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QGH/1ehoZFwfhkJOgaIaTubnPetz+f4biA6QGk/2Uyo=;
+        b=Xc+8VYCh9LE/gaTIsRzEOT8Q3l6M29Odu3/PUMVbyNQzI625mmqfY0yIM+IhmCNAGO
+         xvXEnX9RSQgUQ8Cz0+NHYoqgc6yvpZlqhsiN5ahtX6g02cZ1j4WnqWcHt95VbbXKe/OZ
+         0Xy68fyihMS8869T0U39FwCGBYd4lYJrj3PmMaJA2HNVVjOejQ2KkVRRxyYXz6hYj2DO
+         NnI3kZVuKuwXHobQvCzCBXR+Ga4mtKYO3NYFZOCdF843HFaauHqhv8gzR5Qn4u03cZz7
+         5Ke0qmo7zjHgOtoXbVYZMzibkpS7Xw9vrbAW9DjEhFnhhO8ekeUSqxpKvgqjcy1+s1M0
+         H42A==
+X-Gm-Message-State: AOAM532FDsfkTSFtofLL77Cu33DkdC/PlcvQlmhRlI7P6d3TWyRYgKSa
+        hwnzzurFsqpU5+LJxUz38cjZbZD3NB6jD6YvqM+hCw==
+X-Google-Smtp-Source: ABdhPJyCpqQFIy3eX/eFjtB9ld/zDOw4OnCM+wpMSQlR21gzdFLeVumVkGcJ/4fP4kY2YEfNFw8cH/ItJI+rohXmENc=
+X-Received: by 2002:a19:4285:: with SMTP id p127mr42097847lfa.74.1594403295614;
+ Fri, 10 Jul 2020 10:48:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+References: <CA+G9fYt+6OeibZMD0fP=O3nqFbcN3O4xcLkjq0mpQbZJ2uxB9w@mail.gmail.com>
+ <CAHk-=wgRcFSnQt=T95S+1dPkyvCuVAVGQ37JDvRg41h8hRqO3Q@mail.gmail.com>
+ <CA+G9fYuL=xJPLbQJVzDfXB8uNiCWdXpL=joDsnATEFCzyFh_1g@mail.gmail.com> <CAHk-=wgB6Ds6yqbZZmscKNuAiNR2J0Pf3a8UrbdfewYxHE7SbA@mail.gmail.com>
+In-Reply-To: <CAHk-=wgB6Ds6yqbZZmscKNuAiNR2J0Pf3a8UrbdfewYxHE7SbA@mail.gmail.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 10 Jul 2020 23:18:03 +0530
+Message-ID: <CA+G9fYudT63yZrkWG+mfKHTcn5mP+Ay6hraEQy3G_4jufztrrA@mail.gmail.com>
+Subject: Re: WARNING: at mm/mremap.c:211 move_page_tables in i386
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux- stable <stable@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@kernel.org>,
+        lkft-triage@lists.linaro.org, Chris Down <chris@chrisdown.name>,
+        Michel Lespinasse <walken@google.com>,
+        Fan Yang <Fan_Yang@sjtu.edu.cn>,
+        Brian Geffon <bgeffon@google.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>, pugaowei@gmail.com,
+        Jerome Glisse <jglisse@redhat.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Hugh Dickins <hughd@google.com>,
+        Al Viro <viro@zeniv.linux.org.uk>, Tejun Heo <tj@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commit 625d3449788f ("Revert "kernel/printk: add kmsg SEEK_CUR
-handling"") reverted a change done to the return value in case a SEEK_CUR
-operation was performed for kmsg buffer based on the fact that different
-userspace apps were handling the new return value (-ESPIPE) in different
-ways, breaking them.
+On Fri, 10 Jul 2020 at 10:55, Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Thu, Jul 9, 2020 at 9:29 PM Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+> >
+> > Your patch applied and re-tested.
+> > warning triggered 10 times.
+> >
+> > old: bfe00000-c0000000 new: bfa00000 (val: 7d530067)
+>
+> Hmm.. It's not even the overlapping case, it's literally just "move
+> exactly 2MB of page tables exactly one pmd down". Which should be the
+> nice efficient case where we can do it without modifying the lower
+> page tables at all, we just move the PMD entry.
+>
+> There shouldn't be anything in the new address space from bfa00000-bfdfffff.
+>
+> That PMD value obviously says differently, but it looks like a nice
+> normal PMD value, nothing bad there.
+>
+> I'm starting to think that the issue might be that this is because the
+> stack segment is special. Not only does it have the growsdown flag,
+> but that whole thing has the magic guard page logic.
+>
+> So I wonder if we have installed a guard page _just_ below the old
+> stack, so that we have populated that pmd because of that.
+>
+> We used to have an _actual_ guard page and then play nasty games with
+> vm_start logic. We've gotten rid of that, though, and now we have that
+> "stack_guard_gap" logic that _should_ mean that vm_start is always
+> exact and proper (and that pgtbales_free() should have emptied it, but
+> maybe we have some case we forgot about.
+>
+> > [  741.511684] WARNING: CPU: 1 PID: 15173 at mm/mremap.c:211 move_page_tables.cold+0x0/0x2b
+> > [  741.598159] Call Trace:
+> > [  741.600694]  setup_arg_pages+0x22b/0x310
+> > [  741.621687]  load_elf_binary+0x31e/0x10f0
+> > [  741.633839]  __do_execve_file+0x5a8/0xbf0
+> > [  741.637893]  __ia32_sys_execve+0x2a/0x40
+> > [  741.641875]  do_syscall_32_irqs_on+0x3d/0x2c0
+> > [  741.657660]  do_fast_syscall_32+0x60/0xf0
+> > [  741.661691]  do_SYSENTER_32+0x15/0x20
+> > [  741.665373]  entry_SYSENTER_32+0x9f/0xf2
+> > [  741.734151]  old: bfe00000-c0000000 new: bfa00000 (val: 7d530067)
+>
+> Nothing looks bad, and the ELF loading phase memory map should be
+> really quite simple.
+>
+> The only half-way unusual thing is that you have basically exactly 2MB
+> of stack at execve time (easy enough to tune by just setting argv/env
+> right), and it's moved down by exactly 2MB.
+>
+> And that latter thing is just due to randomization, see
+> arch_align_stack() in arch/x86/kernel/process.c.
+>
+> So that would explain why it doesn't happen every time.
+>
+> What happens if you apply the attached patch to *always* force the 2MB
+> shift (rather than moving the stack by a random amount), and then run
+> the other program (t.c -> compiled to "a.out").
 
-At the same time -ESPIPE was the wrong decision because kmsg /does support/
-seek() but doesn't follow the "normal" behavior userspace is used to.
-Because of that and also considering the time -EINVAL has been used, it was
-decided to keep this way to avoid more userspace breakage.
+I have applied your patch and test started in a loop for a million times
+but the test ran for 35 times. Seems like the test got a timeout after 1 hour.
+kernel messages printed while testing a.out
 
-This patch adds an official statement to the kmsg documentation pointing to
-the current return value for SEEK_CUR, -EINVAL, thus userspace libraries
-and apps can refer to it for a definitive guide on what to expect.
+a.out (480) used greatest stack depth: 4872 bytes left
 
-Signed-off-by: Bruno Meneguele <bmeneg@redhat.com>
----
-Changelog:
-v2:
-	- Changed wording to Documentation/ file and also added some doc
-	directly to the code (suggested by Petr)
+On other device
+kworker/dying (172) used greatest stack depth: 5044 bytes left
 
- Documentation/ABI/testing/dev-kmsg | 11 +++++++++++
- kernel/printk/printk.c             |  8 ++++++++
- 2 files changed, 19 insertions(+)
+Re-running test with long timeouts 4 hours and will share findings.
 
-diff --git a/Documentation/ABI/testing/dev-kmsg b/Documentation/ABI/testing/dev-kmsg
-index f307506eb54c..79f007cdcd41 100644
---- a/Documentation/ABI/testing/dev-kmsg
-+++ b/Documentation/ABI/testing/dev-kmsg
-@@ -56,6 +56,17 @@ Description:	The /dev/kmsg character device node provides userspace access
- 		  seek after the last record available at the time
- 		  the last SYSLOG_ACTION_CLEAR was issued.
- 
-+		Other seek operations or offsets are not supported because of
-+		the special behavior this device has. The device allows to read
-+		or write only whole variable lenght messages (records) that are
-+		stored in a ring buffer.
-+
-+		Because of the non-standard behavior also the error values are
-+		non-standard. -ESPIPE is returned for non-zero offset. -EINVAL
-+		is returned for other operations, e.g. SEEK_CUR. This behavior
-+		and values are historical and could not be modified without the
-+		risk of breaking userspace.
-+
- 		The output format consists of a prefix carrying the syslog
- 		prefix including priority and facility, the 64 bit message
- 		sequence number and the monotonic timestamp in microseconds,
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index b71eaf5f5a86..4c3a0822b705 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -943,6 +943,14 @@ static ssize_t devkmsg_read(struct file *file, char __user *buf,
- 	return ret;
- }
- 
-+/*
-+ * Be careful when modifying this function!!!
-+ *
-+ * Only few operations are supported because the device works only with the
-+ * entire variable length messages (records). Non-standard values are
-+ * returned in the other cases and has been this way for quite some time.
-+ * User space applications might depend on this behavior.
-+ */
- static loff_t devkmsg_llseek(struct file *file, loff_t offset, int whence)
- {
- 	struct devkmsg_user *user = file->private_data;
--- 
-2.26.2
+ref:
+https://lkft.validation.linaro.org/scheduler/job/1555132#L1515
 
+- Naresh
