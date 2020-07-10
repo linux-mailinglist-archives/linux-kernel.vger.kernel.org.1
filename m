@@ -2,171 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 043B921BEE6
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 23:01:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEBE821BEBD
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 22:48:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726369AbgGJVBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 17:01:37 -0400
-Received: from gateway30.websitewelcome.com ([192.185.197.25]:30798 "EHLO
-        gateway30.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726319AbgGJVBe (ORCPT
+        id S1728042AbgGJUsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 16:48:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45998 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726828AbgGJUsU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 17:01:34 -0400
-X-Greylist: delayed 1336 seconds by postgrey-1.27 at vger.kernel.org; Fri, 10 Jul 2020 17:01:33 EDT
-Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
-        by gateway30.websitewelcome.com (Postfix) with ESMTP id 48A638D5F
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 15:39:17 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id tznhjuX2oBb5dtznhjtb4z; Fri, 10 Jul 2020 15:39:17 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:Subject:From:References:Cc:To:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=AOm7EjCoPF0xc+v+nCfS/QJQ5dx+KqUYST18V/slAK0=; b=DzgpsBQDzudchhwqdvkKil/yLg
-        g1wtYxq9dQywkERaWJtGV1GJA6KnU9NeDl7FAMEq5X9jQaa5pPifpzWy7FnNZ3vzT8psDkcP8iva4
-        ZO3Z6KAoBJmWsIfmvW7vdB1T9f7FUR96ewZQ89i0tM9JVa+fi9qbSnB86clcDzOnU4AMVU6rB9GVb
-        ne2saweKQ8Q+PIF9Ms4R9SHeyP0UCm8elIBeSiNbHvLfacpWi9r24csFTAKaztNC1DpZ9LglR0GRv
-        2lLK6HwRHobBvxDsKaAPSsYkDANMtdzzH+pv1Ear3BFTrdVA7W+BH+5ccq+tGjfpOOGRnexoj70y/
-        fR5OORGA==;
-Received: from [200.39.25.189] (port=13347 helo=[192.168.43.132])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1jtzng-003181-SB; Fri, 10 Jul 2020 15:39:17 -0500
-To:     John Oldman <john.oldman@polehill.co.uk>,
-        gregkh@linuxfoundation.org
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-References: <20200710201643.27322-1-john.oldman@polehill.co.uk>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Autocrypt: addr=gustavo@embeddedor.com; keydata=
- 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
- AP7RWS474w==
-Subject: Re: [PATCH] staging: rtl8723bs: core: Using comparison to true is
- error prone
-Message-ID: <69bf7931-7df2-a0f8-8329-929ccb6a2c20@embeddedor.com>
-Date:   Fri, 10 Jul 2020 15:44:53 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Fri, 10 Jul 2020 16:48:20 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A7CAC08C5DC
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 13:48:20 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id k5so2712704plk.13
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 13:48:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FumEoV8e5N9kqFLqhqQhuIzaAQuhZkshnLb7x6jq7DA=;
+        b=LX9f2FDpoxDy98TWHQ6HnyjBlxL0kuIHShuw4m7uIhtAFv3ReAGO7qiSFIM/vVxuos
+         zJZ/s7/D3Y7MyPty+QmjhHqcDJ0LvC6laLWYcQ0I/qkaIYYx0hsDOqSJtFi+i1DBWmIC
+         L5TY9HZveJGjmnz9rR/JWgX9f9NQhCPjqKuWZV/OYO8IrO3UrtgEijAMjxDvtUW8ZX3J
+         OzqST9xp6xdpCKuszOqsUHbvHebn7ZGXNdTRBVH5mnxdXu6uiuih+XRtDxxGFJZveTum
+         MsDA6e3bo/kyposjDrAPLP3t4mfYQ5z2/UFiEker7aNAOd92QkTtdYDc+0HZeB6G4oza
+         qGTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FumEoV8e5N9kqFLqhqQhuIzaAQuhZkshnLb7x6jq7DA=;
+        b=CMcvpqi/vKExWsdypCAIeGn7lS8Iv1mK3wQqfkU82qiwfEVgPkQTpUp2mfxf4DWrjc
+         9Obv/k7JqGXsHARo8om3DFajV4DwU+EZIjxFeTuELgnTF/ZXaF+BhdMB3P7OOBqHFMId
+         cRscah9vRKX0vN7dxYoAtJ1pATChOf3WbCcdQzoTgNnX5xhW2vYLydNYXAnzXgrOLYGC
+         32jNMCbKWoaBR55HUmH31KMIx6LogrZmTRvRALYd0em4CaAFNvUKvD4ICjA/I7x/qsoR
+         OcM0a8y1IPhxHpUoFBCEsxFKk3UDirpEDOMrGN6ldWYbMS3JzhZhj7Gwgn2CaTSbwNdi
+         9piw==
+X-Gm-Message-State: AOAM533w4UWJa/Ant+7k6NJHBi7/IuUPd62g+TSTRoQebueIAxrCE90Y
+        vKpbCQqCYyJX+W3KkgAZY3fy/lmG84WurKFajXEebTjXGhs=
+X-Google-Smtp-Source: ABdhPJzuEK1wSL1JctoSTszHagXjlkrLDRHZjevcnPycfweJWKeUxwrH9A+sKJArjq/ZyPlq7jcaRAejd79t7cbK2tI=
+X-Received: by 2002:a17:902:9305:: with SMTP id bc5mr18687695plb.21.1594414099779;
+ Fri, 10 Jul 2020 13:48:19 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200710201643.27322-1-john.oldman@polehill.co.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 200.39.25.189
-X-Source-L: No
-X-Exim-ID: 1jtzng-003181-SB
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: ([192.168.43.132]) [200.39.25.189]:13347
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 5
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+References: <CAGETcx9iLH8fBEA0a9=iPsObzaePg9Zj0A9T_7NSKH6KSq3vFg@mail.gmail.com>
+ <CAJZ5v0iONFBX00NqzUaZ9kNWr6yLBNtLnA+sF-Ge-QNtY9qSug@mail.gmail.com>
+ <CAGETcx-YqJDnc6fNu5dncc=DSHwS_=-uOMHvR8V=b-QQJ7HOcA@mail.gmail.com>
+ <CAJZ5v0ju58LxvRckv2T=H0D=aDooGUoGfqFze5zWQ1ARAAJcag@mail.gmail.com>
+ <CAGETcx8KknvzZxfW4o=siswB__c9yeh=1wOVyvtM2112WEBizQ@mail.gmail.com>
+ <CAMuHMdXbzXnWQSaQ44p-cL9TA=ng20UB=vjscRDjpf7N=S4fjg@mail.gmail.com>
+ <CAJZ5v0joi2YDgAPrPhT8SMXTu-Va7s9DXVs7YDYf87JY_ntONQ@mail.gmail.com>
+ <20200630153850.GE1785141@kroah.com> <CAJZ5v0jQYK8LHaaJ4-GeJpzGdGY2Csmp_jmHfgc7BOaXyfsZCg@mail.gmail.com>
+ <CAGETcx9xCvjZiht4Z_pnFVdaYp9vLPybwZTKNZ9wHGRRCi6VuA@mail.gmail.com> <20200710132138.GA1866890@kroah.com>
+In-Reply-To: <20200710132138.GA1866890@kroah.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Fri, 10 Jul 2020 13:47:43 -0700
+Message-ID: <CAGETcx9LXbsUOQ2TL+=qcQV5Wp0qVL3OG8VwXoA4tUgXNKMoYw@mail.gmail.com>
+Subject: Re: [PATCH v1] driver core: Fix suspend/resume order issue with
+ deferred probe
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jul 10, 2020 at 6:21 AM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Tue, Jun 30, 2020 at 10:11:01AM -0700, Saravana Kannan wrote:
+> > I already have a patch to avoid deferred probe during batch fwnode
+> > parsing. I'm trying to do a few more tests before I send it out. So,
+> > it'd be nice if we don't revert it right now and give me some time to
+> > finish testing.
+>
+> So this series is no longer needed given your other series that I just
+> took?
 
+This series is no longer needed to fix the issue with fw_devlink
+optimization that Geert was seeing. The other series you pulled in
+takes care of Geert's issue.
 
-On 7/10/20 15:16, John Oldman wrote:
-> clear below issues reported by checkpatch.pl:
-> 
-> CHECK: Using comparison to true is error prone
-> 
-> Signed-off-by: John Oldman <john.oldman@polehill.co.uk>
-> ---
->  drivers/staging/rtl8723bs/core/rtw_ieee80211.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/staging/rtl8723bs/core/rtw_ieee80211.c b/drivers/staging/rtl8723bs/core/rtw_ieee80211.c
-> index ca98274ae390..d9bdd4fb9dc3 100644
-> --- a/drivers/staging/rtl8723bs/core/rtw_ieee80211.c
-> +++ b/drivers/staging/rtl8723bs/core/rtw_ieee80211.c
-> @@ -363,8 +363,9 @@ int rtw_generate_ie(struct registry_priv *pregistrypriv)
->  	}
->  
->  	/* HT Cap. */
-> -	if (((pregistrypriv->wireless_mode&WIRELESS_11_5N) || (pregistrypriv->wireless_mode&WIRELESS_11_24N))
-> -		&& (pregistrypriv->ht_enable == true)) {
-> +	if (((pregistrypriv->wireless_mode & WIRELESS_11_5N)
-> +	      || (pregistrypriv->wireless_mode & WIRELESS_11_24N))
-> +	      && (pregistrypriv->ht_enable)) {
-		 ^			  ^
-The enclosing parentheses are unnecessary.
+But deferred probe can still break suspend/resume ordering (example
+mentioned in the commit text). So I think we should fix that (version
+X of this patch).
 
-Also, if you run checkpatch.pl on your patch, you'll see
-the following:
+Rafael was concerned about some of the extra work v1 will cause for
+cases that work fine today. So, we need to find a compromise where we
+can fix the issue and optimize the fix as much as possible.
 
-CHECK: Logical continuations should be on the previous line
-#12: FILE: drivers/staging/rtl8723bs/core/rtw_ieee80211.c:367:
-+	if (((pregistrypriv->wireless_mode & WIRELESS_11_5N)
-+	      || (pregistrypriv->wireless_mode & WIRELESS_11_24N))
+One optimization we can do is to call device_pm_move_to_tail(dev) in
+really_probe() only after deferred probe is triggered (as in the
+thread gets to run) for the first time. Until then, really_probe()
+wouldn't have to call device_pm_move_to_tail(dev);
 
-CHECK: Logical continuations should be on the previous line
-#13: FILE: drivers/staging/rtl8723bs/core/rtw_ieee80211.c:368:
-+	      || (pregistrypriv->wireless_mode & WIRELESS_11_24N))
-+	      && (pregistrypriv->ht_enable)) {
-
-
-It'd be nice to fix the above, too. :)
-
---
-Gustavo
-
->  		/* todo: */
->  	}
->  
-> 
+-Saravana
