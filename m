@@ -2,160 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0215821BCBD
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 20:03:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F50A21BCC5
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 20:05:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728269AbgGJSDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 14:03:50 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:43803 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728129AbgGJSDu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 14:03:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594404228;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XN24PGjpaeX+61Yzd0yY+PTaQgU43gwsWj3Uzow6ocE=;
-        b=gMuDc4HLeuzzON83UD4BZ09Tz3U3eKNRJ9sFsD9y+h+AzZN2yi0vi1ADplxRUsNcST9Sww
-        mP4bRtmFAfZ9XmDRtcmjaPXMe+H9uev225v8q3FTcxFe0hiGquxhAJMyrKJFy60CS/aITl
-        zK0CL4bfI7bL2lC/+b8Un+ptkT0S+kk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-90-_VnW-mdIMea6fAcU4Rjghg-1; Fri, 10 Jul 2020 14:03:41 -0400
-X-MC-Unique: _VnW-mdIMea6fAcU4Rjghg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1728053AbgGJSEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 14:04:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43220 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727059AbgGJSEy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 14:04:54 -0400
+Received: from localhost (c-67-180-165-146.hsd1.ca.comcast.net [67.180.165.146])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D4A628027E4;
-        Fri, 10 Jul 2020 18:03:39 +0000 (UTC)
-Received: from localhost (ovpn-116-13.gru2.redhat.com [10.97.116.13])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 518907EF89;
-        Fri, 10 Jul 2020 18:03:39 +0000 (UTC)
-Date:   Fri, 10 Jul 2020 15:03:38 -0300
-From:   Bruno Meneguele <bmeneg@redhat.com>
-To:     Mimi Zohar <zohar@linux.ibm.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        linux-integrity@vger.kernel.org, erichte@linux.ibm.com,
-        nayna@linux.ibm.com, stable@vger.kernel.org
-Subject: Re: [PATCH v5] ima: move APPRAISE_BOOTPARAM dependency on
- ARCH_POLICY to runtime
-Message-ID: <20200710180338.GA10547@glitch>
-References: <20200709164647.45153-1-bmeneg@redhat.com>
- <1594401804.14405.8.camel@linux.ibm.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 1490A2076A;
+        Fri, 10 Jul 2020 18:04:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594404294;
+        bh=BuGVKM7rrsUCZjTvAdy2HByYM2r2OiEDWrLNJoH0UjU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=EAhxjKT01Wmfvs25rU5P5FvNC5R7IdOhaemCWQm7R9286cKrGR/bFaj13K3G80UEw
+         WH2C6X4jk4fO1A6XYy4AxgoiAlYBWKci/8sYV1zJm5Au8ZOUJJE1Ge+7toUM0LXTx1
+         J62tU8gILHTkJjqlc//RCL1JqyAKA9LcbUgZ3meM=
+From:   Andy Lutomirski <luto@kernel.org>
+To:     Michael Kerrisk <mtk.manpages@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Jann Horn <jannh@google.com>,
+        Andy Lutomirski <luto@kernel.org>
+Subject: [PATCH] seccomp.2: Improve x32 and nr truncation notes
+Date:   Fri, 10 Jul 2020 11:04:51 -0700
+Message-Id: <4c7e1cfa3978de83713b71a3f29c8c5f250cf0c6.1594404029.git.luto@kernel.org>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-In-Reply-To: <1594401804.14405.8.camel@linux.ibm.com>
-X-PGP-Key: http://keys.gnupg.net/pks/lookup?op=get&search=0x3823031E4660608D
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=bmeneg@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="IS0zKkzwUGydFO0o"
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---IS0zKkzwUGydFO0o
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Andy Lutomirski <luto@kernel.org>
+---
+ man2/seccomp.2 | 44 +++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 33 insertions(+), 11 deletions(-)
 
-On Fri, Jul 10, 2020 at 01:23:24PM -0400, Mimi Zohar wrote:
-> On Thu, 2020-07-09 at 13:46 -0300, Bruno Meneguele wrote:
-> > APPRAISE_BOOTPARAM has been marked as dependent on !ARCH_POLICY in comp=
-ile
-> > time, enforcing the appraisal whenever the kernel had the arch policy o=
-ption
-> > enabled.
->=20
-> > However it breaks systems where the option is set but the system didn't
-> > boot in a "secure boot" platform. In this scenario, anytime an appraisa=
-l
-> > policy (i.e. ima_policy=3Dappraisal_tcb) is used it will be forced, wit=
-hout
-> > giving the user the opportunity to label the filesystem, before enforci=
-ng
-> > integrity.
-> >=20
-> > Considering the ARCH_POLICY is only effective when secure boot is actua=
-lly
-> > enabled this patch remove the compile time dependency and move it to a
-> > runtime decision, based on the secure boot state of that platform.
->=20
-> Perhaps we could simplify this patch description a bit?
->=20
-> The IMA_APPRAISE_BOOTPARAM config allows enabling different
-> "ima_appraise=3D" modes - log, fix, enforce - at run time, but not when
-> IMA architecture specific policies are enabled. =A0This prevents
-> properly labeling the filesystem on systems where secure boot is
-> supported, but not enabled on the platform. =A0Only when secure boot is
-> enabled, should these IMA appraise modes be disabled.
->=20
-> This patch removes the compile time dependency and makes it a runtime
-> decision, based on the secure boot state of that platform.
->=20
-
-Sounds good to me.
-
-> <snip>
->=20
-> > diff --git a/security/integrity/ima/ima_appraise.c b/security/integrity=
-/ima/ima_appraise.c
-> > index a9649b04b9f1..884de471b38a 100644
-> > --- a/security/integrity/ima/ima_appraise.c
-> > +++ b/security/integrity/ima/ima_appraise.c
-> > @@ -19,6 +19,11 @@
-> >  static int __init default_appraise_setup(c
->=20
-> > har *str)
-> >  {
-> >  #ifdef CONFIG_IMA_APPRAISE_BOOTPARAM
-> > +=09if (arch_ima_get_secureboot()) {
-> > +=09=09pr_info("appraise boot param ignored: secure boot enabled");
->=20
-> Instead of a generic statement, is it possible to include the actual
-> option being denied? =A0Perhaps something like: "Secure boot enabled,
-> ignoring %s boot command line option"
->=20
-> Mimi
->=20
-
-Yes, sure.
-
-Thanks!
-
-> > +=09=09return 1;
-> > +=09}
-> > +
-> >  =09if (strncmp(str, "off", 3) =3D=3D 0)
-> >  =09=09ima_appraise =3D 0;
-> >  =09else if (strncmp(str, "log", 3) =3D=3D 0)
->=20
-
---=20
-bmeneg=20
-PGP Key: http://bmeneg.com/pubkey.txt
-
---IS0zKkzwUGydFO0o
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEdWo6nTbnZdbDmXutYdRkFR+RokMFAl8IrXoACgkQYdRkFR+R
-okMw7wf/QLnOgC+jQhpff5dmbxQXCG/rSbdtVKMUjIej817eUaAGovHn4XwicYqn
-xCg2qIqTHuF4e5aYOsVB+kRIVdNZI2GVL27O0SArwFrPgvvOan3CKK5nStQkXRr9
-XsLBEsgLKDV91xaQxBXrxWSslJWln5YFZNZYxvOsrhiRLwt4m7P0eSIForfL4UI2
-OoJhwTCuBBMEi906mhlmOQwFyTi9/NMQluwf2iB+moJzRMo79cfFU6D//rP9RfoP
-yttKBvpWqWUbPQ3cAVHkke+Yqr06Cz8BDYT3hP0oRJaludvY2Q/xVjBIOi3sX0gI
-dx8A3npnWwj0SUi90M+u4rIHQm9vCA==
-=X95t
------END PGP SIGNATURE-----
-
---IS0zKkzwUGydFO0o--
+diff --git a/man2/seccomp.2 b/man2/seccomp.2
+index a1b1a28db9bf..e491825600e8 100644
+--- a/man2/seccomp.2
++++ b/man2/seccomp.2
+@@ -342,16 +342,38 @@ is used on the system call number to tell the two ABIs apart.
+ .\"     an extra instruction in system_call to mask off the extra bit,
+ .\"     so that the syscall table indexing still works.
+ .PP
+-This means that in order to create a seccomp-based
+-deny-list for system calls performed through the x86-64 ABI,
+-it is necessary to not only check that
+-.IR arch
+-equals
+-.BR AUDIT_ARCH_X86_64 ,
+-but also to explicitly reject all system calls that contain
++This means that a policy must either deny all syscalls with
+ .BR __X32_SYSCALL_BIT
+-in
+-.IR nr .
++or it must recognize syscalls with and without
++.BR __X32_SYSCALL_BIT
++set.  A list of syscalls to be denied based on
++.IR nr
++that does not also contain
++.IR nr
++values with
++.BR __X32_SYSCALL_BIT
++set can be bypassed by a malicious program that sets
++.BR __X32_SYSCALL_BIT .
++.PP
++Additionally, kernels prior to 5.4 incorrectly permitted
++.IR nr
++in the ranges 512-547 as well as the corresponding non-x32 syscalls ored
++with
++.BR __X32_SYSCALL_BIT .
++For example,
++.IR nr
++== 521 and
++.IR nr
++== (101 |
++.BR __X32_SYSCALL_BIT )
++would result in invocations of
++.BR ptrace (2)
++with potentially confused x32-vs-x86_64 semantics in the kernel.
++Policies intended to work on kernels before 5.4 must ensure that they
++deny or otherwise correctly handle these system calls.  On kernels
++5.4 and newer, such system calls will return -ENOSYS without doing
++anything.
++.\" commit 6365b842aae4490ebfafadfc6bb27a6d3cc54757
+ .PP
+ The
+ .I instruction_pointer
+@@ -368,8 +390,8 @@ and
+ system calls to prevent the program from subverting such checks.)
+ .PP
+ When checking values from
+-.IR args
+-against a deny-list, keep in mind that arguments are often
++.IR args,
++keep in mind that arguments are often
+ silently truncated before being processed, but after the seccomp check.
+ For example, this happens if the i386 ABI is used on an
+ x86-64 kernel: although the kernel will normally not look beyond
+-- 
+2.25.4
 
