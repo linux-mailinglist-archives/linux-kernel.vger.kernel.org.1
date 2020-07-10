@@ -2,185 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B93EF21BE0C
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 21:48:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92F8D21BDD5
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 21:40:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726725AbgGJTqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 15:46:54 -0400
-Received: from nat-hk.nvidia.com ([203.18.50.4]:21890 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728374AbgGJTqw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 15:46:52 -0400
-Received: from hkpgpgate101.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f08c5a90001>; Sat, 11 Jul 2020 03:46:49 +0800
-Received: from HKMAIL103.nvidia.com ([10.18.16.12])
-  by hkpgpgate101.nvidia.com (PGP Universal service);
-  Fri, 10 Jul 2020 12:46:49 -0700
-X-PGP-Universal: processed;
-        by hkpgpgate101.nvidia.com on Fri, 10 Jul 2020 12:46:49 -0700
-Received: from HKMAIL101.nvidia.com (10.18.16.10) by HKMAIL103.nvidia.com
- (10.18.16.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 10 Jul
- 2020 19:46:49 +0000
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.107)
- by HKMAIL101.nvidia.com (10.18.16.10) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Fri, 10 Jul 2020 19:46:49 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WhtFuL/eDFdu539TWWzQXczpvdqh1d5USJRaHEpCaRQjGGYTloN633WXjL6IMEI4CMw4pOmEzlBJnefDZkkksfFjSBAwZo1tHs+IiAM0hdv8lWMUCqwxf6MDjLbaQGMZFl5HD+j/eBUbkaAmwli/YYaASj6hzmrLR1FUycQRXaGpeOzrY5KmsH7m3iI+b0PV2+dPd8XxtvuHFdIZBR1FcchGE7UNXsabV1taWGpmbDHVjdKElvLYHGe2Rm+ahvlJtCUlhCpGiXqjtHmQ13ijD2KrutJSGQQkO8HerrsG5iYge34mkJ6oQX438qsSRef7XZy1S0oJYKeKx3Bc6tbBpA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gucwkIyCDXSu0JYyH7fyHyQvwX/jC87Co5KXwFQFprQ=;
- b=fQNGRjcxdTghhLaZ2HG/2VxIfDTWur1PnY2+KIwtB53Hg5OxVQO9lHsiA19/2p73IItRWedQeH7ASJgaklycmIQ0yESqgmqJ7ghKXXelTm1JeK5EtQqzXbQQylrDy1/2njeHhpEJP8xQa9Eyks9EgoePiXqmfXsA7pVsf+ep1PMlAP2B1O1Xc5x0jQ5MrYoAOVHrR/DmLAnrq1DiUahIKVqDndyyf1pwqS9CmZrnICf/+06mWBGqG4rrkGSQQrJQl2OWcj7jCRNLkguVnpvZ7n9P/pL0iFy6i6NFuTLRj8OJaRI+zUcrH7QzEbNymndNljLcwxaIw5px5Z3Gzw2cWw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Authentication-Results: nvidia.com; dkim=none (message not signed)
- header.d=none;nvidia.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3513.namprd12.prod.outlook.com (2603:10b6:5:18a::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.28; Fri, 10 Jul
- 2020 19:46:46 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1d53:7cb4:c3d7:2b54]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1d53:7cb4:c3d7:2b54%6]) with mapi id 15.20.3174.023; Fri, 10 Jul 2020
- 19:46:46 +0000
-Date:   Fri, 10 Jul 2020 16:39:39 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Ralph Campbell <rcampbell@nvidia.com>
-CC:     <linux-rdma@vger.kernel.org>, <linux-mm@kvack.org>,
-        <nouveau@lists.freedesktop.org>, <kvm-ppc@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Jerome Glisse <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>, Ben Skeggs <bskeggs@redhat.com>,
-        Bharata B Rao <bharata@linux.ibm.com>
-Subject: Re: [PATCH 3/5] mm/notifier: add migration invalidation type
-Message-ID: <20200710193939.GA2129070@nvidia.com>
-References: <20200706222347.32290-1-rcampbell@nvidia.com>
- <20200706222347.32290-4-rcampbell@nvidia.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200706222347.32290-4-rcampbell@nvidia.com>
-X-ClientProxiedBy: MN2PR01CA0050.prod.exchangelabs.com (2603:10b6:208:23f::19)
- To DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+        id S1728188AbgGJTka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 15:40:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35488 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726908AbgGJTka (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 15:40:30 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C8DBC08C5DC
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 12:40:30 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id b92so3036178pjc.4
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 12:40:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xViBTlv9cSoxxlcOtJ3GbtHVyweRCXfn0dWGulD2yKY=;
+        b=Dc5a20YRN25bSCamOxJU2/YZhDhvasjQGjQvtSknIWDQDKYJ2FtYiWNrgDIdpGG/TN
+         /eHR8897jGCDqVU03FQ5/YKPC14TYaupxdXsKb0oQeWwI+9y/tHaddKW6JgWJO1DxYiw
+         FnWkoxj/E7r52WCaRng9QkkE0AUbYNTtaKQLg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xViBTlv9cSoxxlcOtJ3GbtHVyweRCXfn0dWGulD2yKY=;
+        b=lrKdUihh5XjnGnroS5J++ZMWWda3P4nionrJKbucn+fomrPrhn7qw8fDDzQMojqJjN
+         cCM4U499JOiBQj8fzlMAkIBL4ZmQ0ACBAHfTcrI7B93WyosWGZr/LMO4mw0dRzw4i93M
+         iT0ZTdhMc5LopV+5mNVzUbpryQ/uMe9rVCd+f+HvLosb9SsXCjs6/ayPvqSi8AgXM8d0
+         +afJWlxytstzLNacWN561wworpu8WedWb6YWT3XQE0UOL9jKdTwgZcArHERxEFuwMYfQ
+         Ppr31HrJU6ccSPGUbdfsPx/SHglM30dW+g+n+FdcLIo9nG/s5FPSGd063kGcgfBZI/R7
+         Gf9Q==
+X-Gm-Message-State: AOAM531XQMr1avc0HcJ3CgJljNyLKQF4Sw8hZKFF1zV+fgIHmy2pqG5B
+        Fu2r0rt9B64OxwTwhjq2XJFzDqu0tAo=
+X-Google-Smtp-Source: ABdhPJysro8RMzbm1UHy2FSuzcgSyEneB6jUV1oe7UEMoN+NfD3TN3IQvnDDzA7ff1n/8svfZJyq5A==
+X-Received: by 2002:a17:902:6b45:: with SMTP id g5mr12137494plt.42.1594410029166;
+        Fri, 10 Jul 2020 12:40:29 -0700 (PDT)
+Received: from pmalani2.mtv.corp.google.com ([100.99.132.145])
+        by smtp.gmail.com with ESMTPSA id m68sm6669845pje.24.2020.07.10.12.40.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Jul 2020 12:40:28 -0700 (PDT)
+From:   Prashant Malani <pmalani@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     rajmohan.mani@intel.com,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Prashant Malani <pmalani@chromium.org>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>
+Subject: [PATCH v2] platform/chrome: cros_ec_typec: USB4 support
+Date:   Fri, 10 Jul 2020 12:40:17 -0700
+Message-Id: <20200710194017.1126000-1-pmalani@chromium.org>
+X-Mailer: git-send-email 2.27.0.383.g050319c2ae-goog
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR01CA0050.prod.exchangelabs.com (2603:10b6:208:23f::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.21 via Frontend Transport; Fri, 10 Jul 2020 19:46:46 +0000
-Received: from jgg by mlx with local (Exim 4.93)        (envelope-from <jgg@nvidia.com>)        id 1jtyrz-008w3l-9i; Fri, 10 Jul 2020 16:39:39 -0300
-X-Originating-IP: [156.34.48.30]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 447da61e-e281-45e4-795c-08d82509fa80
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3513:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR12MB3513D79D91250B7BF05F574CC2650@DM6PR12MB3513.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
-X-Forefront-PRVS: 046060344D
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 72DVomoZXYAFEx9df9CWCBMiQUGi+zQYLI6Oz1gY3UFMHDspyLHJXvvk46dCiQrz3EBEQ90PQpvXCgO3Urdcq8VG0PhrXj9CkIIRsraNLJfb3rz3DFqRUweyL7WWdBF6wwBksaQQ2NuWXCUM2M+UnU93oLWSNQgbvxPhyF9/tUxNYVAhWQnbssQtu4noyzmG2QYel1JmdYlKYKiLtxJRN4/5l16ReLviBVIH7UwJGPe7QR82jlAS1BW5CZYEcBGeOfoZKeQcH2lPbjXfIKy8+m37hOvy4z13qvfX/8p6bizoO4Rqf+NmmOVGElDroS6UzxiFRbU57MCuYoFft2b32A==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(39860400002)(396003)(346002)(136003)(366004)(83380400001)(2906002)(4326008)(1076003)(33656002)(316002)(66556008)(66476007)(54906003)(66946007)(5660300002)(37006003)(186003)(6862004)(26005)(9786002)(9746002)(478600001)(7416002)(8936002)(8676002)(36756003)(2616005)(426003)(6636002)(86362001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: QRKCsBNsZB/WaEPiyRj/hLbOxKlruZ0Ln+l9TvVj2Zid8qcDmDUH0mmEJht1fBu0iUbHkFoIAJJXyIhshzLjtm6+P9o4H9ofq5HfowDHDp4Spo0q/oHdPTDgZzRNYvPicjQf+yFrBlDy3IPnP607v71bR9Sj0xRK4ggMk9JkUW3i8C9CCGLjy0ednDFctetjGLsm0TvR+PY2xomL6FQ3XHGpp7M53q8ngrX3ATMZUKCxorEZytIO+hVuYbAyR7CoqF5NGZ4isSkhz6hF0SDeJQvPagH2nlqm5fgIzlQSwn5JYRc9KsbGw+DoYKcP86P+nwIEbsBw0vMD+msq5W2u12FuCDiSXvpeZ+9NBXS0p/IJsqr6bfZAvLFBbVyuEgjxWLa2dgmUefcIAL4b3PqRiyzLbjtsqAPFy75PfgIM4yvxxHo42qcqoOK8chi8QNyU5yX8EAMbh3QuBX0FvT37hFDG7YqD87vpzVutOCqkxIc=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 447da61e-e281-45e4-795c-08d82509fa80
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jul 2020 19:46:46.3160
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: HqLHHSB48fwLvB+on+tdn+7acp53ZJdwQ5wzP7iHOBfnZeXUFGV1bHxUJ+EGKgZl
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3513
-X-OriginatorOrg: Nvidia.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1594410409; bh=gucwkIyCDXSu0JYyH7fyHyQvwX/jC87Co5KXwFQFprQ=;
-        h=X-PGP-Universal:ARC-Seal:ARC-Message-Signature:
-         ARC-Authentication-Results:Authentication-Results:Date:From:To:CC:
-         Subject:Message-ID:References:Content-Type:Content-Disposition:
-         In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-Originating-IP:
-         X-MS-PublicTrafficType:X-MS-Office365-Filtering-Correlation-Id:
-         X-MS-TrafficTypeDiagnostic:X-MS-Exchange-Transport-Forked:
-         X-Microsoft-Antispam-PRVS:X-MS-Oob-TLC-OOBClassifiers:
-         X-Forefront-PRVS:X-MS-Exchange-SenderADCheck:X-Microsoft-Antispam:
-         X-Microsoft-Antispam-Message-Info:X-Forefront-Antispam-Report:
-         X-MS-Exchange-AntiSpam-MessageData:
-         X-MS-Exchange-CrossTenant-Network-Message-Id:
-         X-MS-Exchange-CrossTenant-AuthSource:
-         X-MS-Exchange-CrossTenant-AuthAs:
-         X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-         X-MS-Exchange-CrossTenant-FromEntityHeader:
-         X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
-         X-MS-Exchange-CrossTenant-UserPrincipalName:
-         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
-        b=k2XWTDeT0LOaHg9fhgse4ppB2GkIgdGak5lf6v00KqGegXT5WQmuwo4gf4UWPeF0f
-         N8ppOPHMePputfzjOqGblonB+e6r0myoyBMYRg5+fi6owMiCWeRT4RH0pv5448XkQ0
-         nUnRV606oddNuu3LjCN0Q2MMXD7WiuvXJ3y7au7dhG3OfCwbh0cg+68RF155CuHnTN
-         ZMtNc71M43S7cULQaJoDw+RDhbacpdvgWVdWguCsp71yLUgfylkCLQl8SeKySNBxuZ
-         qtC7YYdVexCadRNL0Q1/4EO+DyA6Pyb+xYlp3xMkkE0j2YcBvlXZUuwZQJZUK30LTZ
-         e2JXr3Bn1fC0w==
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 06, 2020 at 03:23:45PM -0700, Ralph Campbell wrote:
-> Currently migrate_vma_setup() calls mmu_notifier_invalidate_range_start()
-> which flushes all device private page mappings whether or not a page
-> is being migrated to/from device private memory. In order to not disrupt
-> device mappings that are not being migrated, shift the responsibility
-> for clearing device private mappings to the device driver and leave
-> CPU page table unmapping handled by migrate_vma_setup(). To support
-> this, the caller of migrate_vma_setup() should always set struct
-> migrate_vma::src_owner to a non NULL value that matches the device
-> private page->pgmap->owner. This value is then passed to the struct
-> mmu_notifier_range with a new event type which the driver's invalidation
-> function can use to avoid device MMU invalidations.
-> 
-> Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
->  include/linux/mmu_notifier.h | 7 +++++++
->  mm/migrate.c                 | 8 +++++++-
->  2 files changed, 14 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/mmu_notifier.h b/include/linux/mmu_notifier.h
-> index fc68f3570e19..bd0b34dbe4de 100644
-> +++ b/include/linux/mmu_notifier.h
-> @@ -38,6 +38,10 @@ struct mmu_interval_notifier;
->   *
->   * @MMU_NOTIFY_RELEASE: used during mmu_interval_notifier invalidate to signal
->   * that the mm refcount is zero and the range is no longer accessible.
-> + *
-> + * @MMU_NOTIFY_MIGRATE: used during migrate_vma_collect() invalidate to signal
-> + * a device driver to possibly ignore the invalidation if the src_own
-> + * field matches.
->   */
->  enum mmu_notifier_event {
->  	MMU_NOTIFY_UNMAP = 0,
-> @@ -46,6 +50,7 @@ enum mmu_notifier_event {
->  	MMU_NOTIFY_PROTECTION_PAGE,
->  	MMU_NOTIFY_SOFT_DIRTY,
->  	MMU_NOTIFY_RELEASE,
-> +	MMU_NOTIFY_MIGRATE,
->  };
->  
->  #define MMU_NOTIFIER_RANGE_BLOCKABLE (1 << 0)
-> @@ -264,6 +269,7 @@ struct mmu_notifier_range {
->  	unsigned long end;
->  	unsigned flags;
->  	enum mmu_notifier_event event;
-> +	void *data;
->  };
+From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-This generic member usually ends up a bit ugly, can we do a tagged
-union instead?
+With USB4 mode the mux driver needs the Enter_USB Data
+Object (EUDO) that was used when the USB mode was entered.
+Though the object is not available in the driver, it is
+possible to construct it from the information we have.
 
-union
-{
-     void *migrate_pgmap_owner;
-};
+Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Signed-off-by: Prashant Malani <pmalani@chromium.org>
+---
 
-and probably drop the union until we actually need two things here.
+This patch depends on latest usb-next from Greg KH, this commit in
+particular:
+https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git/commit/?h=usb-next&id=ad8db94d6813dc659bd4de0531a8a1150559eafb
 
-Jason
+Changes in v2:
+- Removed EUDO bits for cable current and tunneling support.
+
+ drivers/platform/chrome/cros_ec_typec.c | 33 ++++++++++++++++++++++++-
+ 1 file changed, 32 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
+index 0c041b79cbba..a9700275a851 100644
+--- a/drivers/platform/chrome/cros_ec_typec.c
++++ b/drivers/platform/chrome/cros_ec_typec.c
+@@ -13,6 +13,7 @@
+ #include <linux/platform_data/cros_ec_proto.h>
+ #include <linux/platform_data/cros_usbpd_notify.h>
+ #include <linux/platform_device.h>
++#include <linux/usb/pd.h>
+ #include <linux/usb/typec.h>
+ #include <linux/usb/typec_altmode.h>
+ #include <linux/usb/typec_dp.h>
+@@ -494,6 +495,34 @@ static int cros_typec_enable_dp(struct cros_typec_data *typec,
+ 	return typec_mux_set(port->mux, &port->state);
+ }
+ 
++static int cros_typec_enable_usb4(struct cros_typec_data *typec,
++				  int port_num,
++				  struct ec_response_usb_pd_control_v2 *pd_ctrl)
++{
++	struct cros_typec_port *port = typec->ports[port_num];
++	struct enter_usb_data data;
++
++	data.eudo = EUDO_USB_MODE_USB4 << EUDO_USB_MODE_SHIFT;
++
++	/* Cable Speed */
++	data.eudo |= pd_ctrl->cable_speed << EUDO_CABLE_SPEED_SHIFT;
++
++	/* Cable Type */
++	if (pd_ctrl->control_flags & USB_PD_CTRL_OPTICAL_CABLE)
++		data.eudo |= EUDO_CABLE_TYPE_OPTICAL << EUDO_CABLE_TYPE_SHIFT;
++	else if (pd_ctrl->control_flags & USB_PD_CTRL_ACTIVE_CABLE)
++		data.eudo |= EUDO_CABLE_TYPE_RE_TIMER << EUDO_CABLE_TYPE_SHIFT;
++
++	data.active_link_training = !!(pd_ctrl->control_flags &
++				       USB_PD_CTRL_ACTIVE_LINK_UNIDIR);
++
++	port->state.alt = NULL;
++	port->state.data = &data;
++	port->state.mode = TYPEC_MODE_USB4;
++
++	return typec_mux_set(port->mux, &port->state);
++}
++
+ static int cros_typec_configure_mux(struct cros_typec_data *typec, int port_num,
+ 				uint8_t mux_flags,
+ 				struct ec_response_usb_pd_control_v2 *pd_ctrl)
+@@ -514,7 +543,9 @@ static int cros_typec_configure_mux(struct cros_typec_data *typec, int port_num,
+ 	if (ret)
+ 		return ret;
+ 
+-	if (mux_flags & USB_PD_MUX_TBT_COMPAT_ENABLED) {
++	if (mux_flags & USB_PD_MUX_USB4_ENABLED) {
++		ret = cros_typec_enable_usb4(typec, port_num, pd_ctrl);
++	} else if (mux_flags & USB_PD_MUX_TBT_COMPAT_ENABLED) {
+ 		ret = cros_typec_enable_tbt(typec, port_num, pd_ctrl);
+ 	} else if (mux_flags & USB_PD_MUX_DP_ENABLED) {
+ 		ret = cros_typec_enable_dp(typec, port_num, pd_ctrl);
+-- 
+2.27.0.383.g050319c2ae-goog
+
