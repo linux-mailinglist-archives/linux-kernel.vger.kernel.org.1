@@ -2,238 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B789421C07C
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 01:04:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6570721C084
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 01:05:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727812AbgGJXES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 19:04:18 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:60320 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726519AbgGJXER (ORCPT
+        id S1727044AbgGJXFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 19:05:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726948AbgGJXFf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 19:04:17 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06AN3B24130519;
-        Fri, 10 Jul 2020 18:03:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1594422191;
-        bh=ub1+3l989W7mhZEj/I2ppqT5GtSi7nEJv2DHiEKNTsI=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=sxEL6JcHWOB90ZiF98uA+dnOLNJqIhGWjmu2u+pC6gH0R2vT5KLDlxKuxEu4pC/fX
-         G4oMyPeUkc3IiwKheb9KJS1SC7u4/NRrEJXV7vdzSM5lSzHSsR3vrKe59DVsbRo0r+
-         Z/uYWam3khgNv9oq002dgqRLzCrbqM4PP3FJoPM0=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 06AN3BvQ064771
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 10 Jul 2020 18:03:11 -0500
-Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 10
- Jul 2020 18:03:11 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 10 Jul 2020 18:03:10 -0500
-Received: from [10.250.34.57] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06AN3AG1093664;
-        Fri, 10 Jul 2020 18:03:10 -0500
-Subject: Re: [PATCHv3 2/6] irqchip/irq-pruss-intc: Add a PRUSS irqchip driver
- for PRUSS interrupts
-To:     Marc Zyngier <maz@kernel.org>,
-        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-CC:     <tglx@linutronix.de>, <jason@lakedaemon.net>, <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-omap@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <david@lechnology.com>,
-        "Mills, William" <wmills@ti.com>, "Andrew F . Davis" <afd@ti.com>,
-        Roger Quadros <rogerq@ti.com>
-References: <1593699479-1445-1-git-send-email-grzegorz.jaszczyk@linaro.org>
- <1593699479-1445-3-git-send-email-grzegorz.jaszczyk@linaro.org>
- <f0d3f3224a1b8fa2be668dd2b8d9d84e@kernel.org>
- <CAMxfBF6A9702-rBOo0jHtfn4Ds1_G+nWG4O9-urNqU00dFXeww@mail.gmail.com>
- <12db6d22c12369b6d64f410aa2434b03@kernel.org>
- <CAMxfBF7pbH1LLE4fJnnCPnrqnQ-tdO+_xfoN1VerJcQ-ZyYM9Q@mail.gmail.com>
- <53d39d8fbd63c6638dbf0584c7016ee0@kernel.org>
- <CAMxfBF6Th+zKOmogA5phkh21tSUzutokCgU+pv0Eh-sDk=1Hbg@mail.gmail.com>
- <f11097c321b62e7f8ba904dc2907d4e0@kernel.org>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <3501f3a6-0613-df1c-2c6d-5ac4610a226d@ti.com>
-Date:   Fri, 10 Jul 2020 18:03:10 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Fri, 10 Jul 2020 19:05:35 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 534A5C08C5DD
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 16:05:35 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id w27so5755590qtb.7
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 16:05:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=marek-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=v6ivPqrjMDDr3TRNG96DmIieKD3MH/IuhTJHVemdvZo=;
+        b=mD4rNTBvdE5KXuYC4b6PGIVTtIxAYQyogmsrVl9FyzpE/jLzFTlKgPK60wOz/OqYyy
+         v2mTDwGgr9R9AHjgkMGkYmylnK9XZQwPUjJL7taIeoqjtLXWIdOPZOjroLYHpdmJVjib
+         Dlb684ctSVhWjtAJ2ZXA/fso/BAjBuK2xUiQEg0dT5uvpAl7f8h6iRDhZ8OKZMLhVCIF
+         hPWbN/85q+cxHa8dcGFcLZduJbrtIAPipHA7VkMVJsOE29/nsU0wUFUthA/sXZ67Xf1K
+         XfynEAeHeix30IZF3doAyKYVOg9D3dVHquKmzdvpDjJtsCL6CQu83cRn8v4Rl9n/HL8V
+         pPqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=v6ivPqrjMDDr3TRNG96DmIieKD3MH/IuhTJHVemdvZo=;
+        b=o8mMcNTnBc8qWLdZE07odt5hhqC5iSYDQ+M7hGYdMUklOmVed4BgZOnJ44BNmpulmb
+         GBIVE0Tg9vSRKCOOR6pJo1TLWTIreNco2l0xhC4LKq21SzcwiYeR/X6joNKIXgTHqSAo
+         OTFSFQMHrZ62E77UPHKGi4CxkiwrieNDBE0aaI4590T1hsXe5QAxGJ2JHGg9Y2xNKFi3
+         qAoes6WiPNB0eZk9IpkoyKHkUWgHIdqomgag8Uu5z9xzxQyZzIyHKXPbP5+Nj5ybkLSd
+         Y8ojmoPfZsE7IQZa/ylrYnkYE1YwNtXR+1/97Rm+4GHvGWHYgCNOv5MM0KW0oabXn5uv
+         WbPg==
+X-Gm-Message-State: AOAM532dunIjvUC0Gz2fCo3g3ziD3pbSb3F6JIfrsXJqUZQLvC2i52gM
+        QbFHFddXCz0DuJevCYwKH5rq8A==
+X-Google-Smtp-Source: ABdhPJyUvIKbE5/BA3PRSmr94uSUG08duLAoCKW3CvonbUAJmLs93BI2H3hmv2nKUdMg7RgpyuPIYg==
+X-Received: by 2002:ac8:44d6:: with SMTP id b22mr73349830qto.391.1594422334354;
+        Fri, 10 Jul 2020 16:05:34 -0700 (PDT)
+Received: from localhost.localdomain ([147.253.86.153])
+        by smtp.gmail.com with ESMTPSA id l1sm9513541qtk.18.2020.07.10.16.05.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Jul 2020 16:05:33 -0700 (PDT)
+From:   Jonathan Marek <jonathan@marek.ca>
+To:     freedreno@lists.freedesktop.org
+Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        Shawn Guo <shawn.guo@linaro.org>,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        Wambui Karuga <wambui.karugax@gmail.com>,
+        Brian Masney <masneyb@onstation.org>,
+        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
+        dri-devel@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
+        GPU), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2 1/2] drm/msm/a6xx: hwcg tables in gpulist
+Date:   Fri, 10 Jul 2020 19:04:09 -0400
+Message-Id: <20200710230413.2944-1-jonathan@marek.ca>
+X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
-In-Reply-To: <f11097c321b62e7f8ba904dc2907d4e0@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
+This will allow supporting different hwcg tables for a6xx.
 
-On 7/8/20 5:47 AM, Marc Zyngier wrote:
-> On 2020-07-08 08:04, Grzegorz Jaszczyk wrote:
->> On Sun, 5 Jul 2020 at 22:45, Marc Zyngier <maz@kernel.org> wrote:
->>>
->>> On 2020-07-05 14:26, Grzegorz Jaszczyk wrote:
->>> > On Sat, 4 Jul 2020 at 11:39, Marc Zyngier <maz@kernel.org> wrote:
->>> >>
->>> >> On 2020-07-03 15:28, Grzegorz Jaszczyk wrote:
->>>
->>> [...]
->>>
->>> >> It still begs the question: if the HW can support both edge and level
->>> >> triggered interrupts, why isn't the driver supporting this diversity?
->>> >> I appreciate that your HW may only have level interrupts so far, but
->>> >> what guarantees that this will forever be true? It would imply a
->>> >> change
->>> >> in the DT binding, which isn't desirable.
->>> >
->>> > Ok, I've got your point. I will try to come up with something later
->>> > on. Probably extending interrupt-cells by one and passing interrupt
->>> > type will be enough for now. Extending this driver to actually support
->>> > it can be handled later if needed. Hope it works for you.
->>>
->>> Writing a set_type callback to deal with this should be pretty easy.
->>> Don't delay doing the right thing.
->>
->> Ok.
+Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+---
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.c      | 25 ++++++++++------------
+ drivers/gpu/drm/msm/adreno/adreno_device.c |  1 +
+ drivers/gpu/drm/msm/adreno/adreno_gpu.h    |  8 +++++++
+ 3 files changed, 20 insertions(+), 14 deletions(-)
 
-Sorry for the typo in my comment causing this confusion.
-
-The h/w actually doesn't support the edge-interrupts. Likewise, the 
-polarity is always high. The individual register bit descriptions 
-mention what the bit values 0 and 1 mean, but there is additional 
-description in the TRMs on all the SoCs that says
-"always write 1 to the bits of this register" for PRUSS_INTC_SIPR(x) and
-"always write 0 to the bits of this register" for PRUSS_INTC_SITR(x).
-FWIW, these are also the reset values.
-
-Eg: AM335x TRM - https://www.ti.com/lit/pdf/spruh73
-Please see Section 4.4.2.5 and the register descriptions in 4.5.3.49, 
-4.5.3.51. Please also see Section 4.4.2.3 that explains the PRUSS INTC 
-methodology.
-
->>
->>>
->>> [...]
->>>
->>> >> >> > +             hwirq = hipir & GENMASK(9, 0);
->>> >> >> > +             virq = irq_linear_revmap(intc->domain, hwirq);
->>> >> >>
->>> >> >> And this is where I worry. You seems to have a single irqdomain
->>> >> >> for all the muxes. Are you guaranteed that you will have no
->>> >> >> overlap between muxes? And please use irq_find_mapping(), as
->>> >> >> I have top-secret plans to kill irq_linear_revmap().
->>> >> >
->>> >> > Regarding irq_find_mapping - sure.
->>> >> >
->>> >> > Regarding irqdomains:
->>> >> > It is a single irqdomain since the hwirq (system event) can be 
->>> mapped
->>> >> > to different irq_host (muxes). Patch #6
->>> >> > https://lkml.org/lkml/2020/7/2/616 implements and describes how 
->>> input
->>> >> > events can be mapped to some output host interrupts through 2 
->>> levels
->>> >> > of many-to-one mapping i.e. events to channel mapping and 
->>> channels to
->>> >> > host interrupts. Mentioned implementation ensures that specific 
->>> system
->>> >> > event (hwirq) can be mapped through PRUSS specific channel into a
->>> >> > single host interrupt.
->>> >>
->>> >> Patch #6 is a nightmare of its own, and I haven't fully groked it 
->>> yet.
->>> >> Also, this driver seems to totally ignore the 2-level routing. Where
->>> >> is it set up? map/unmap in this driver do exactly *nothing*, so
->>> >> something somewhere must set it up.
->>> >
->>> > The map/unmap is updated in patch #6 and it deals with those 2-level
->>> > routing setup. Map is responsible for programming the Channel Map
->>> > Registers (CMRx) and Host-Interrupt Map Registers (HMRx) basing on
->>> > provided configuration from the one parsed in the xlate function.
->>> > Unmap undo whatever was done on the map. More details can be found in
->>> > patch #6.
->>> >
->>> > Maybe it would be better to squash patch #6 with this one so it would
->>> > be less confusing. What is your advice?
->>>
->>> So am I right in understanding that without patch #6, this driver does
->>> exactly nothing? If so, it has been a waste of review time.
->>>
->>> Please split patch #6 so that this driver does something useful
->>> for Linux, without any of the PRU interrupt routing stuff. I want
->>> to see a Linux-only driver that works and doesn't rely on any other
->>> exotic feature.
->>>
->>
->> Patch #6 provides PRU specific 2-level routing setup. This step is
->> required and it is part of the entire patch-set. Theoretically routing
->> setup could be done by other platform driver (not irq one) or e.g. by
->> PRU firmware. In such case this driver would be functional without
->> patch #6 but I do not think it would be proper.
-> 
-> Then this whole driver is non-functional until the last patch that
-> comes with the PRU-specific "value-add".
-
-It is all moot actually and the interrupts work only when the PRU 
-remoteproc/clients have invoked the irq_create_fwspec_mapping()
-for all of the desired system events. It does not make much difference 
-if it was a separate patch or squashed in, patch #6 is a replacement for 
-the previous logic, and since it was complex, it was done in a separate 
-patch to better explain the usage (same reason on v1 and v2 as well).
-
-> 
-> [...]
-> 
->> I am open to any suggestion if there is a better way of handling
->> 2-level routing. I will also appreciate if you could elaborate about
->> issues that you see with patch #6.
-> 
-> The two level routing has to be part of this (or another) irqchip
-> driver (specially given that it appears to me like another set of
-> crossbar). There should only be a *single* binding for all interrupts,
-> including those targeting the PRU (you seem to have two).
-> 
-
-Yeah, there hasn't been a clean way of doing this. Our previous attempt 
-was to do this through custom exported functions so that the PRU 
-remoteproc driver can set these up correctly, but that was shot down and 
-this is the direction we are pointed to.
-
-We do want to leverage the "interrupts" property in the PRU user nodes 
-instead of inventing our own paradigm through a non-irqchip driver, and 
-at the same time, be able to configure this at the run time only when 
-that PRU driver is running, and remove the mappings once that driver is 
-removed allowing another PRU application/driver. We treat PRUs as an 
-exclusive resource, so everything needs to go along with an appropriate 
-client user.
-
-> And the non-CPU interrupt code has to be in its own patch, because
-> it is pretty borderline anyway (I'm still not completely convinced
-> this is Linux's job).
-
-The logic for non-CPU interrupt code is exactly the same as the CPU 
-interrupt code, as they are all setup through the 
-irq_create_fwspec_mapping(). The CPU-specific pieces are primarily the 
-chained interrupt handling.
-
-We have already argued internally about the last part, but our firmware 
-developers literally don't have any IRAM space (we have a lot of 
-Industrial protocols working out of 4K/8K memory), and have pushed all 
-one-time setup to the OS running (Linux or otherwise) on the main ARM 
-core, and INTC is one among the other many such settings. Every word in 
-Instruction RAM was crucial for them.
-
-So, we are all ears if there is still an elegant way of doing this. Look 
-forward to any suggestions you may have.
-
-And thank you for all your review comments.
-
-regards
-Suman
+diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+index 3397e5e00d1c..ddcbc57ac25d 100644
+--- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
++++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+@@ -151,10 +151,7 @@ static void a6xx_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit,
+ 	a6xx_flush(gpu, ring);
+ }
+ 
+-static const struct {
+-	u32 offset;
+-	u32 value;
+-} a6xx_hwcg[] = {
++const struct adreno_reglist a630_hwcg[] = {
+ 	{REG_A6XX_RBBM_CLOCK_CNTL_SP0, 0x22222222},
+ 	{REG_A6XX_RBBM_CLOCK_CNTL_SP1, 0x22222222},
+ 	{REG_A6XX_RBBM_CLOCK_CNTL_SP2, 0x22222222},
+@@ -259,7 +256,8 @@ static const struct {
+ 	{REG_A6XX_RBBM_CLOCK_MODE_HLSQ, 0x00002222},
+ 	{REG_A6XX_RBBM_CLOCK_CNTL_GMU_GX, 0x00000222},
+ 	{REG_A6XX_RBBM_CLOCK_DELAY_GMU_GX, 0x00000111},
+-	{REG_A6XX_RBBM_CLOCK_HYST_GMU_GX, 0x00000555}
++	{REG_A6XX_RBBM_CLOCK_HYST_GMU_GX, 0x00000555},
++	{},
+ };
+ 
+ static void a6xx_set_hwcg(struct msm_gpu *gpu, bool state)
+@@ -267,9 +265,13 @@ static void a6xx_set_hwcg(struct msm_gpu *gpu, bool state)
+ 	struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
+ 	struct a6xx_gpu *a6xx_gpu = to_a6xx_gpu(adreno_gpu);
+ 	struct a6xx_gmu *gmu = &a6xx_gpu->gmu;
++	const struct adreno_reglist *reg;
+ 	unsigned int i;
+ 	u32 val;
+ 
++	if (!adreno_gpu->info->hwcg)
++		return;
++
+ 	val = gpu_read(gpu, REG_A6XX_RBBM_CLOCK_CNTL);
+ 
+ 	/* Don't re-program the registers if they are already correct */
+@@ -279,9 +281,8 @@ static void a6xx_set_hwcg(struct msm_gpu *gpu, bool state)
+ 	/* Disable SP clock before programming HWCG registers */
+ 	gmu_rmw(gmu, REG_A6XX_GPU_GMU_GX_SPTPRAC_CLOCK_CONTROL, 1, 0);
+ 
+-	for (i = 0; i < ARRAY_SIZE(a6xx_hwcg); i++)
+-		gpu_write(gpu, a6xx_hwcg[i].offset,
+-			state ? a6xx_hwcg[i].value : 0);
++	for (i = 0; (reg = &adreno_gpu->info->hwcg[i], reg->offset); i++)
++		gpu_write(gpu, reg->offset, state ? reg->value : 0);
+ 
+ 	/* Enable SP clock */
+ 	gmu_rmw(gmu, REG_A6XX_GPU_GMU_GX_SPTPRAC_CLOCK_CONTROL, 0, 1);
+@@ -437,12 +438,8 @@ static int a6xx_hw_init(struct msm_gpu *gpu)
+ 	gpu_write(gpu, REG_A6XX_TPL1_ADDR_MODE_CNTL, 0x1);
+ 	gpu_write(gpu, REG_A6XX_RBBM_SECVID_TSB_ADDR_MODE_CNTL, 0x1);
+ 
+-	/*
+-	 * enable hardware clockgating
+-	 * For now enable clock gating only for a630
+-	 */
+-	if (adreno_is_a630(adreno_gpu))
+-		a6xx_set_hwcg(gpu, true);
++	/* enable hardware clockgating */
++	a6xx_set_hwcg(gpu, true);
+ 
+ 	/* VBIF/GBIF start*/
+ 	if (adreno_is_a640(adreno_gpu) || adreno_is_a650(adreno_gpu)) {
+diff --git a/drivers/gpu/drm/msm/adreno/adreno_device.c b/drivers/gpu/drm/msm/adreno/adreno_device.c
+index 7732f03d9e3a..97996e7fc668 100644
+--- a/drivers/gpu/drm/msm/adreno/adreno_device.c
++++ b/drivers/gpu/drm/msm/adreno/adreno_device.c
+@@ -200,6 +200,7 @@ static const struct adreno_info gpulist[] = {
+ 		.inactive_period = DRM_MSM_INACTIVE_PERIOD,
+ 		.init = a6xx_gpu_init,
+ 		.zapfw = "a630_zap.mdt",
++		.hwcg = a630_hwcg,
+ 	}, {
+ 		.rev = ADRENO_REV(6, 4, 0, ANY_ID),
+ 		.revn = 640,
+diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.h b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+index 2f5d2c3acc3a..426cabd374bb 100644
+--- a/drivers/gpu/drm/msm/adreno/adreno_gpu.h
++++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+@@ -68,6 +68,13 @@ struct adreno_gpu_funcs {
+ 	int (*get_timestamp)(struct msm_gpu *gpu, uint64_t *value);
+ };
+ 
++struct adreno_reglist {
++	u32 offset;
++	u32 value;
++};
++
++extern const struct adreno_reglist a630_hwcg[];
++
+ struct adreno_info {
+ 	struct adreno_rev rev;
+ 	uint32_t revn;
+@@ -78,6 +85,7 @@ struct adreno_info {
+ 	struct msm_gpu *(*init)(struct drm_device *dev);
+ 	const char *zapfw;
+ 	u32 inactive_period;
++	const struct adreno_reglist *hwcg;
+ };
+ 
+ const struct adreno_info *adreno_info(struct adreno_rev rev);
+-- 
+2.26.1
 
