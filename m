@@ -2,88 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE7E621AC60
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 03:08:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 508DA21AC62
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 03:10:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726664AbgGJBIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 21:08:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726265AbgGJBIL (ORCPT
+        id S1726793AbgGJBKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 21:10:16 -0400
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:43533 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726265AbgGJBKQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 21:08:11 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7450C08C5CE
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 18:08:10 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id s26so1786108pfm.4
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 18:08:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eELyJYiCJuXcCWvhr7zSAoIfBQ9kYnYZydQBgDVJFPA=;
-        b=tp233Z04wNYzls8ZtvlLs/QlFqTndj/k4NahcX3K9o+n5FI3Wkh/A+BeTKPIbiZsz8
-         t1CQtDyBcKUxY+Y1LxdBBLStdFn6mngBLKGqcKcokldZfMCnDosXLqX74AzNmPmqkFmQ
-         5R5SOKgXmnO4nSlpeQJhyqhe14K1h6vHXMrX1GSs9xO3TQ5y/5Ytmnx0CAon2iVkdWdl
-         N6DBsVogqbn+AbbZ4M/AhNfYiyjlQb6HnMiU/w4r0BGK7WnI/fgLDEFHx+JcbEgCvH+L
-         IuWRoYmKdn5NbGOIIVdIRyD/fMShvPsj8Uj875LanQ13myFtmbsuno0Jtb1pqnbPlkts
-         0yjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eELyJYiCJuXcCWvhr7zSAoIfBQ9kYnYZydQBgDVJFPA=;
-        b=WZo7p94ErPCC0W4Z4uoRuSZtYCz76KkCdTflb7s6NS+GIHgAZpDEXlq1tBf25I6xIg
-         k+aNDlka0Mk7x7VmMploM63zT1Ktjygd+QlsPa7Pjjxk4VGfJnRaGsjewTKsF48JiLt1
-         lTAu/13LVB42MfnwnMzNctOxswHN+DOZ9Ku0nOTst1WLE9QTNBALTvENmy8TaJkztKdH
-         VzwLTY7DzEMwzJ0qrf32mUzB/VYCrK4oV5CdrDM732aaqg95unwKe0ybM+WAcQbs94lr
-         k6bZpDxULibJobDHmTKyBiumz0oApk59/gHVbYnwurRFyANqamAl9jTbsJReSIDlXnTH
-         xL1A==
-X-Gm-Message-State: AOAM532wv4nsdKV46sVEZukQPf0wK6K05FA3xBX2HO0mAtHZXHDCyrfO
-        n3llOkPuc8PXuTvbWvA1yRGLeSFuEIx6p9kAtUIDeQ==
-X-Google-Smtp-Source: ABdhPJzjGcR2gsMVLx4wPO2RkI0hzaqwxSWwi+VFlOSgTRZJa+6v0fC/OAgPuCp+rtNO3zhS/p7RznBRXTk/lTNzC4c=
-X-Received: by 2002:a63:9dcd:: with SMTP id i196mr55227165pgd.378.1594343290280;
- Thu, 09 Jul 2020 18:08:10 -0700 (PDT)
+        Thu, 9 Jul 2020 21:10:16 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R941e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04427;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0U2EumI3_1594343413;
+Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U2EumI3_1594343413)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 10 Jul 2020 09:10:13 +0800
+Date:   Fri, 10 Jul 2020 09:10:13 +0800
+From:   Wei Yang <richard.weiyang@linux.alibaba.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Wei Yang <richard.weiyang@linux.alibaba.com>, mingo@redhat.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/5] tracing: use union to simplify the
+ trace_event_functions initialization
+Message-ID: <20200710011013.GA51939@L-31X9LVDL-1304.local>
+Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
+References: <20200703020612.12930-1-richard.weiyang@linux.alibaba.com>
+ <20200709175739.4c628f38@oasis.local.home>
 MIME-Version: 1.0
-References: <202007100326.PBTF6fLW%lkp@intel.com>
-In-Reply-To: <202007100326.PBTF6fLW%lkp@intel.com>
-From:   Max Filippov <jcmvbkbc@gmail.com>
-Date:   Thu, 9 Jul 2020 18:07:58 -0700
-Message-ID: <CAMo8BfK70RcT-WBiabyVM7mOu2qALULh4sGdB12K0-=5ANfRzQ@mail.gmail.com>
-Subject: Re: xtensa-linux-ld: section .start VMA overlaps section .image VMA
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200709175739.4c628f38@oasis.local.home>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 9, 2020 at 12:37 PM kernel test robot <lkp@intel.com> wrote:
+On Thu, Jul 09, 2020 at 05:57:39PM -0400, Steven Rostedt wrote:
+>On Fri,  3 Jul 2020 10:06:08 +0800
+>Wei Yang <richard.weiyang@linux.alibaba.com> wrote:
 >
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   0bddd227f3dc55975e2b8dfa7fc6f959b062a2c7
-> commit: 5e4417f921238b5acf101bfcd59a7b3463fb2dbd xtensa: reorganize vectors placement
-> date:   5 months ago
-> config: xtensa-randconfig-r014-20200709 (attached as .config)
-> compiler: xtensa-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         git checkout 5e4417f921238b5acf101bfcd59a7b3463fb2dbd
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=xtensa
+>> There are for 4 fields in trace_event_functions with the same type of
+>> trace_print_func. Initialize them in register_trace_event() one by one
+>> looks redundant.
 >
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
+>I have mixed emotions about this patch. Yeah, it consolidates it a bit,
+>but it also makes it less easy to know what it is doing.
 >
-> All errors (new ones prefixed by >>):
+>All this patch is doing is optimizing the initialization path, which is
+>done once when an event is registered. It's error prone, as you would
+>need to make sure to map the array with the functions. Something like
+>this is only reasonable if it is used more often, which here it's a
+>single spot.
 >
-> >> xtensa-linux-ld: section .start VMA [00000000d1000000,00000000d1000007] overlaps section .image VMA [00000000d0003000,00000000d1646087]
+>So no, I can't take this patch.
+>
 
-The config has CONFIG_XIP_KERNEL=y, so make xipImage
-should be used, and it works correctly.
+Sure, I think you get the point.
+
+>-- Steve
+>
+>
+>
+>> 
+>> Let's take advantage of union to simplify the procedure.
+>> 
+>> Signed-off-by: Wei Yang <richard.weiyang@linux.alibaba.com>
+>> ---
+>>  include/linux/trace_events.h | 13 +++++++++----
+>>  kernel/trace/trace_output.c  | 14 +++++---------
+>>  2 files changed, 14 insertions(+), 13 deletions(-)
+>> 
+>> diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
+>> index 5c6943354049..1a421246f4a2 100644
+>> --- a/include/linux/trace_events.h
+>> +++ b/include/linux/trace_events.h
+>> @@ -122,10 +122,15 @@ typedef enum print_line_t (*trace_print_func)(struct trace_iterator *iter,
+>>  				      int flags, struct trace_event *event);
+>>  
+>>  struct trace_event_functions {
+>> -	trace_print_func	trace;
+>> -	trace_print_func	raw;
+>> -	trace_print_func	hex;
+>> -	trace_print_func	binary;
+>> +	union {
+>> +		struct {
+>> +			trace_print_func	trace;
+>> +			trace_print_func	raw;
+>> +			trace_print_func	hex;
+>> +			trace_print_func	binary;
+>> +		};
+>> +		trace_print_func print_funcs[4];
+>> +	};
+>>  };
+>>  
+>>  struct trace_event {
+>> diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
+>> index 73976de7f8cc..47bf9f042b97 100644
+>> --- a/kernel/trace/trace_output.c
+>> +++ b/kernel/trace/trace_output.c
+>> @@ -728,7 +728,7 @@ void trace_event_read_unlock(void)
+>>  int register_trace_event(struct trace_event *event)
+>>  {
+>>  	unsigned key;
+>> -	int ret = 0;
+>> +	int i, ret = 0;
+>>  
+>>  	down_write(&trace_event_sem);
+>>  
+>> @@ -770,14 +770,10 @@ int register_trace_event(struct trace_event *event)
+>>  			goto out;
+>>  	}
+>>  
+>> -	if (event->funcs->trace == NULL)
+>> -		event->funcs->trace = trace_nop_print;
+>> -	if (event->funcs->raw == NULL)
+>> -		event->funcs->raw = trace_nop_print;
+>> -	if (event->funcs->hex == NULL)
+>> -		event->funcs->hex = trace_nop_print;
+>> -	if (event->funcs->binary == NULL)
+>> -		event->funcs->binary = trace_nop_print;
+>> +	for (i = 0; i < ARRAY_SIZE(event->funcs->print_funcs); i++) {
+>> +		if (!event->funcs->print_funcs[i])
+>> +			event->funcs->print_funcs[i] = trace_nop_print;
+>> +	}
+>>  
+>>  	key = event->type & (EVENT_HASHSIZE - 1);
+>>  
 
 -- 
-Thanks.
--- Max
+Wei Yang
+Help you, Help me
