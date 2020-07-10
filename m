@@ -2,81 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61B8B21BF5E
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 23:46:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4D8021BF63
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 23:48:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726497AbgGJVqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 17:46:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54998 "EHLO
+        id S1726602AbgGJVsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 17:48:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726251AbgGJVqp (ORCPT
+        with ESMTP id S1726251AbgGJVsb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 17:46:45 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ECDBC08C5DC
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 14:46:45 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id l12so7553622ejn.10
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 14:46:45 -0700 (PDT)
+        Fri, 10 Jul 2020 17:48:31 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F61BC08C5DC
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 14:48:31 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id b15so5713190edy.7
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 14:48:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=intel-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=A4VTlerwbUNoSt2XThLD+6dlusu4El/U42eSnUsX6n4=;
-        b=ouw7PqH/fd8RGpSOHN4Mf9hQW5R4Y18NG0VUofEAKvSp8zxVfLxlcyWHs6/BawgCtQ
-         Wu9E+0/yRuuOxqZBIymVEUbDrr7izwaHEnnrSOzaYCCakeKdQXptNiTmqjGnvoQ/j7aZ
-         Y5DsRdkkGJRcE9gYVv2USPQcehf0mDfFbQ1Nw8kcBHf5+d4OvU+Gc0/4/nZlfSshnh77
-         pAe4uFiIoeXSGaPPnlJszgorOVd/NkWtv+XzqK5VwrCbxx/3QIFTRWcMyGHXHKVs7fhM
-         vJU4VuUZ8O+RUPgjoLvIsLIwmXPZQEH0MwDrplvv70LdG6KC6ooH26ncHDvoGNbd9PJE
-         50UA==
+        bh=lUIt310w+rKIAAlks2WRt+7uT8NARjs7Y0eCqqZJf2U=;
+        b=BHwRYb78vowORyVP/n4chHoNe7CPo7i/RG9zILzfXiNvGgfgK88kGYQrCbjF+qN7ms
+         PU8cAeDYvJPQ3NOIOsR7F50xSpNDF/kQU8KKfd6cCzdNw9Ynsnf8ViAiO9poo9le0mpI
+         C21BfAQRvQsFhOW8j/uqlBDuqO1mRKsJe1NiN17k0rIjOgUCof1w1QPQH1pbkaiMCWHt
+         GV4z0E0gG9uV37pmtqshOduDAnwA06bU2RI2/wT3grOfZ6h9YYtTisHqCDfnJSRApb73
+         CZFYi2bmMOn3dj5jr0hjO8hLk8Ff56tR0Bf38ksycHvQgFHvghRnTETBTSPLLImHcWVN
+         cZag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=A4VTlerwbUNoSt2XThLD+6dlusu4El/U42eSnUsX6n4=;
-        b=iUpjYu0/D8rVqK5JCsFgSEJphgIo2Znp7ACzz5aMA00vNLAwwEAQaeaD1jRQEAYyDM
-         wRRkJOa0lqmF7/wvUwW3KX4Nf7l97Z+HkdHZ5YKKohyBXVJV+FwYoS0HrcFc+Sr1JcJi
-         5HixUg/b7dpqUhGtlFxSzALMKWU99MrEUYLbB21/LMHpZVoyhsXafCJ/N8fydjAl0NaR
-         oKQouZs/FDbcSpPEZLUb+kUibRPGRH9HQmhSsNIpUGAUGEcgZgd7ktRBrIbh26ZYa5Kc
-         7pyAPAFy7JbPom6vntkwIvSs+3N36X6XxoV6mwqwD5iSzS6AcXoNvRQYRbX9VF+KUEGn
-         hLRw==
-X-Gm-Message-State: AOAM531Vz2Vs2DPAvDgeBquxp6S/O3BCRk+k8kD4RlDbZ/Vi11D/e7e2
-        aYj1bApEPA7Zpm498eOYVKynj4rZmDoBACPqLYm2+A==
-X-Google-Smtp-Source: ABdhPJxLaVOXj7Cfq7OFeW3FAbbjCqcQic4yp5DelaumYpXwZLQLJubKiaDXlv2Z7to/Tyc2BK9z0MZe48Rnok/Xx4c=
-X-Received: by 2002:a17:906:b888:: with SMTP id hb8mr62470722ejb.124.1594417604353;
- Fri, 10 Jul 2020 14:46:44 -0700 (PDT)
+        bh=lUIt310w+rKIAAlks2WRt+7uT8NARjs7Y0eCqqZJf2U=;
+        b=cUwGAN1iQul9OsuvV+Q3+kuVpoNKaUqzGQA8m982kVw1y94tItkCo5XbBNRVDtjIkN
+         m3mCUuMuNY4qNmvSdMc0ZCFaQZRNxZC2deoEyADCDdpo7JaIQGVXcHi//OiyoOHGzl3+
+         jujvrKRC6zfSj+9mcVO1IqEy5N5hMebYhMvj3eRDYWCsFAtrSYMrKk2cncCmH+2LtJeh
+         tjCIQnYLn5NOb217xSpvfSrSST/gXeV4cq8lT+rER7aMrVz0/kS5IzsLhHomoeWG+ALY
+         lNMEJhKoGbw30o98COlnsMTK6vHdtOLvNv/rlSLzsQCh0TF2fAP49ogxSu6CPUxSzcAQ
+         V/Ag==
+X-Gm-Message-State: AOAM532ArCcz3GQ2vpF8liTg7mEj5RsndI1hbskSDV4bkiXdxRRW3/M0
+        odXOyPaImH0ZMcDsOj/G+3iJG/PNxqi+fqIEPn1ejw==
+X-Google-Smtp-Source: ABdhPJwWWnbhpZs3ka1RooYvoRDcsQuQWgeCkvZ6c9xxca909Gu1Z/nB6d4LnB2raQ02AMoXB9+2GYTltV6dLu2ajQU=
+X-Received: by 2002:a50:d9cb:: with SMTP id x11mr76240842edj.93.1594417709895;
+ Fri, 10 Jul 2020 14:48:29 -0700 (PDT)
 MIME-Version: 1.0
 References: <159423201991.2466245.8461410729774664077.stgit@dwillia2-desk3.amr.corp.intel.com>
- <CALCETrVufhJTh3LweQqqH1OHc2rTsGkMcmTzCq6kKh1ETY0arw@mail.gmail.com>
-In-Reply-To: <CALCETrVufhJTh3LweQqqH1OHc2rTsGkMcmTzCq6kKh1ETY0arw@mail.gmail.com>
+ <97c24e99-9f49-f094-acfb-705c2da12a76@labbott.name>
+In-Reply-To: <97c24e99-9f49-f094-acfb-705c2da12a76@labbott.name>
 From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Fri, 10 Jul 2020 14:46:33 -0700
-Message-ID: <CAPcyv4iCJfzggmOXpmWUWcFPay5DauWzzBWjECYr2f9vCxLZWg@mail.gmail.com>
-Subject: Re: [Ksummit-discuss] [PATCH v3] CodingStyle: Inclusive Terminology
-To:     Andy Lutomirski <luto@amacapital.net>
+Date:   Fri, 10 Jul 2020 14:48:18 -0700
+Message-ID: <CAPcyv4hpBN=KA54YY96MG2tuKKH7=hyX+rA1t3CUFLL76aNTtg@mail.gmail.com>
+Subject: Re: [PATCH v3] CodingStyle: Inclusive Terminology
+To:     Laura Abbott <laura@labbott.name>
 Cc:     Jonathan Corbet <corbet@lwn.net>,
-        ksummit <ksummit-discuss@lists.linuxfoundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        SeongJae Park <sjpark@amazon.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        tech-board-discuss@lists.linuxfoundation.org,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
         Dave Airlie <airlied@redhat.com>,
+        SeongJae Park <sjpark@amazon.de>,
         Christian Brauner <christian.brauner@ubuntu.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Mark Brown <broonie@kernel.org>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Kees Cook <keescook@chromium.org>,
+        Olof Johansson <olof@lixom.net>, Chris Mason <clm@fb.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        tech-board-discuss@lists.linuxfoundation.org,
+        ksummit <ksummit-discuss@lists.linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 2:12 PM Andy Lutomirski <luto@amacapital.net> wrote:
+On Fri, Jul 10, 2020 at 2:13 PM Laura Abbott <laura@labbott.name> wrote:
 >
-> On Wed, Jul 8, 2020 at 11:30 AM Dan Williams <dan.j.williams@intel.com> wrote:
-> >
+> On 7/8/20 2:14 PM, Dan Williams wrote:
 > > Linux maintains a coding-style and its own idiomatic set of terminology.
 > > Update the style guidelines to recommend replacements for the terms
 > > master/slave and blacklist/whitelist.
->
-> Acked-by: Andy Lutomirski <luto@kernel.org>
+> >
+[..]
+> Acked-by: Laura Abbott <laura@labbott.name>
 
-Thanks, Andy.
+Thanks, Laura.
