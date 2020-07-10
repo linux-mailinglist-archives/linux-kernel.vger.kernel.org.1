@@ -2,60 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CBCA21ACF4
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 04:15:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31C4521ACFA
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 04:15:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726958AbgGJCPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 22:15:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43628 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726920AbgGJCPN (ORCPT
+        id S1727038AbgGJCPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 22:15:40 -0400
+Received: from server-x.ipv4.hkg02.ds.network ([27.111.83.178]:50802 "EHLO
+        mail.gtsys.com.hk" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
+        with ESMTP id S1726796AbgGJCPk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 22:15:13 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AE4CC08C5CE
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 19:15:13 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id e18so1828172pgn.7
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 19:15:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QkQSECiHHKjY2wMf5WdW+4+ngmPLR5hshwDsZDOZ0qY=;
-        b=Ax9JFe+xCSrnS5iZU07rdj4BMegbKRHByEA8KIB170r2p1prZMYiQAksTM9eePOgkC
-         KARvN11mXFlZAJDSrxVeHL1H6nMIPbDpWBOuv4n43DtfSn7p9IvAScA6o20QG66Y7R4W
-         jxn2azc1m+a04Ntx+D8JD+Eczob/PWHJnVxQ6SDWIGNzbPMzrsL/h6aQ0H6zqyC7smwM
-         Tg8GNZFODhVFkwp0XnLWkGl9aTqy/89dr29vGrZmftswi8hiOYYAKOMEnQbDCVlHM78v
-         llSDRikRevxxx8UoFfKBhrPXZrOvsV9oHK9MGC0mid+jFw7AbHue6UZvt3viR06NewKZ
-         QORw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QkQSECiHHKjY2wMf5WdW+4+ngmPLR5hshwDsZDOZ0qY=;
-        b=XITLGbE0M3SGW8zBThGvsY21MUVjNzoSXOrarFzsLM7ZyKHdVn77nm1q/BKe9wxV6K
-         uNKbE7GBcomcG/sjtA20zNGCRkryfWHRkMkp6MaQbexWNq5p+zUmdqjRxvWei+MBpeV6
-         PZwCgT9327ND4ahSuYEIa23yxO/3OEvpUz+GZQ5wK3XvubRgZDKt7dpfHWHHHzCMvI0S
-         aI8UEptTgB9ohmDpapXIGD/7MHeOwif2j9TONlMCjVumPbueOG3d61O1WlKMatRIOllc
-         R1RxkItfKuTfHu6BxJeUm0SQNH+vv1mi0heYb4pTEu6GBju1BVw1G26AdjgqjQwCeCRI
-         tRig==
-X-Gm-Message-State: AOAM5327s/2F+Z2uW76dx+yrQhHL2quCWstfNxFyhmH036nR9uhQNo5I
-        i6EDlCwsi93cKTTkYiN9ZKqReou3D+U=
-X-Google-Smtp-Source: ABdhPJwpYkmZ/KMKHhtbV3Hu1nYb4/nC7sN7C42DNAWlijZqn0K49dgejQ93gXTEHUhacz5lDin4Lg==
-X-Received: by 2002:a62:e206:: with SMTP id a6mr53727039pfi.24.1594347312716;
-        Thu, 09 Jul 2020 19:15:12 -0700 (PDT)
-Received: from daehojeong1.seo.corp.google.com ([172.30.115.29])
-        by smtp.gmail.com with ESMTPSA id y18sm4190687pff.10.2020.07.09.19.15.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jul 2020 19:15:11 -0700 (PDT)
-From:   Daeho Jeong <daeho43@gmail.com>
-To:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
-Cc:     Daeho Jeong <daehojeong@google.com>
-Subject: [PATCH] f2fs: change the way of handling range.len in F2FS_IOC_SEC_TRIM_FILE
-Date:   Fri, 10 Jul 2020 11:15:05 +0900
-Message-Id: <20200710021505.2405872-1-daeho43@gmail.com>
-X-Mailer: git-send-email 2.27.0.383.g050319c2ae-goog
+        Thu, 9 Jul 2020 22:15:40 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.gtsys.com.hk (Postfix) with ESMTP id CFFD020160C8;
+        Fri, 10 Jul 2020 10:15:37 +0800 (HKT)
+X-Virus-Scanned: Debian amavisd-new at gtsys.com.hk
+Received: from mail.gtsys.com.hk ([127.0.0.1])
+        by localhost (mail.gtsys.com.hk [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id j_CSdWE8rvp2; Fri, 10 Jul 2020 10:15:37 +0800 (HKT)
+Received: from s01.gtsys.com.hk (unknown [10.128.4.2])
+        by mail.gtsys.com.hk (Postfix) with ESMTP id ADCC020160B5;
+        Fri, 10 Jul 2020 10:15:37 +0800 (HKT)
+Received: from armhf2.gtsys.com.hk (unknown [10.128.4.15])
+        by s01.gtsys.com.hk (Postfix) with ESMTP id A0373C01FBA;
+        Fri, 10 Jul 2020 10:15:37 +0800 (HKT)
+Received: by armhf2.gtsys.com.hk (Postfix, from userid 1000)
+        id 6A1C8202299; Fri, 10 Jul 2020 10:15:37 +0800 (HKT)
+From:   Chris Ruehl <chris.ruehl@gtsys.com.hk>
+To:     Chris Ruehl <chris.ruehl@gtsys.com.hk>
+Cc:     Jack Lo <jack.lo@gtsys.com.hk>, devicetree@vger.kernel.org,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v5 0/2] shtc1: add support for device tree bindings
+Date:   Fri, 10 Jul 2020 10:15:33 +0800
+Message-Id: <20200710021536.27544-1-chris.ruehl@gtsys.com.hk>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -63,54 +44,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daeho Jeong <daehojeong@google.com>
+Add support for DTS bindings to the shtc driver
+The patches add the compatible table and of_property_read_bool to the
+shtc1.c. Newly created Yaml document has been released to the
+Documentation/devicetree/hwmon/sensirion,shtc1.yaml
 
-Changed the way of handling range.len of F2FS_IOC_SEC_TRIM_FILE.
- 1. Added -1 value support for range.len to signify the end of file.
- 2. If the end of the range passes over the end of file, it means until
-    the end of file.
- 3. ignored the case of that range.len is zero to prevent the function
-    from making end_addr zero and triggering different behaviour of
-    the function.
-
-Signed-off-by: Daeho Jeong <daehojeong@google.com>
+Signed-off-by: Chris Ruehl <chris.ruehl@gtsys.com.hk>
 ---
- fs/f2fs/file.c | 16 +++++++---------
- 1 file changed, 7 insertions(+), 9 deletions(-)
-
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index 368c80f8e2a1..1c4601f99326 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -3813,21 +3813,19 @@ static int f2fs_sec_trim_file(struct file *filp, unsigned long arg)
- 	file_start_write(filp);
- 	inode_lock(inode);
- 
--	if (f2fs_is_atomic_file(inode) || f2fs_compressed_file(inode)) {
-+	if (f2fs_is_atomic_file(inode) || f2fs_compressed_file(inode) ||
-+			range.start >= inode->i_size) {
- 		ret = -EINVAL;
- 		goto err;
- 	}
- 
--	if (range.start >= inode->i_size) {
--		ret = -EINVAL;
-+	if (range.len == 0)
- 		goto err;
--	}
- 
--	if (inode->i_size - range.start < range.len) {
--		ret = -E2BIG;
--		goto err;
--	}
--	end_addr = range.start + range.len;
-+	if (range.len == (u64)-1 || inode->i_size - range.start < range.len)
-+		end_addr = inode->i_size;
-+	else
-+		end_addr = range.start + range.len;
- 
- 	to_end = (end_addr == inode->i_size);
- 	if (!IS_ALIGNED(range.start, F2FS_BLKSIZE) ||
--- 
-2.27.0.383.g050319c2ae-goog
-
+ Version 5
+    devicetree/driver-source: name conversion sensirion,low-precision sensirion,blocking-io
+	use const: 0x70 with the reg:
+ Version 4
+	Fix errors report by make dt_binding_check (devicetree)
+	Set maintainers for the yaml document to my own.
+ Version 3
+	Fix errors report with checkpatch.pl
+	Correct logic, add (!) when check for sensirion,low_precision
+ Version 2
+	remove the #ifdef CONFIG_OF
+	ignore platform data if dev->of_node is valid
+	use boolean only therefor use sensirion,low_precise to fit the logic
+	add missing driver.of_match_table entry
+ Version 1
+	initial version
