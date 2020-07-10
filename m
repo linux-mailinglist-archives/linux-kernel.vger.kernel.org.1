@@ -2,156 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CEF321BDA9
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 21:30:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A698021BDA6
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 21:30:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728274AbgGJTaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 15:30:18 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:59976 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726867AbgGJTaQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 15:30:16 -0400
-Received: from sequoia.work.tihix.com (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 5D7BA20B4908;
-        Fri, 10 Jul 2020 12:30:14 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5D7BA20B4908
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1594409415;
-        bh=M5dLai7mNPTd3Wnd//DTj/dm1yHRr0oCnAgp9ujOkD8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=YKZiudmmJuux776Gb7yQajdAQBsRCOW9jSfLOtuGDBimDfr16dcP7wKxKlh1pfVnR
-         zXv6BvtTcdmAc1TLEdlP+BdqQ5ysWYwSkUPZhK24zsl3qp9zpBY6rPQwCPxoX8FEUo
-         RAbZXYzjfCVhZzojdfIul0DSPnRoxpBlGHcIOBTU=
-From:   Tyler Hicks <tyhicks@linux.microsoft.com>
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Ard Biesheuvel <ardb@kernel.org>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Petr Vandrovec <petr@vmware.com>,
-        Nayna Jain <nayna@linux.ibm.com>,
-        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
-        linux-integrity@vger.kernel.org, linux-efi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Peter Jones <pjones@redhat.com>
-Subject: [PATCH v2] tpm: Require that all digests are present in TCG_PCR_EVENT2 structures
-Date:   Fri, 10 Jul 2020 14:29:55 -0500
-Message-Id: <20200710192955.23333-1-tyhicks@linux.microsoft.com>
-X-Mailer: git-send-email 2.25.1
+        id S1728066AbgGJTaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 15:30:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57162 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726867AbgGJTaH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 15:30:07 -0400
+Received: from pali.im (pali.im [31.31.79.79])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 637F72076A;
+        Fri, 10 Jul 2020 19:30:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594409406;
+        bh=HKUsObJTxAzGIdEMpdjrd4x7q3Pjx/3zWOsbyKi8J8I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=b4lsMVUp03tGaCM4yusSTbgfcwdNY0Vg1sMxofe1XOXmiemJxVvz40mZTTs1U2y65
+         +zn9BzjIgGMIGogaR4VxJVPj5Im+hbb95iECFrVENJHa5RO0Umio8o5mW7fJSzS/yv
+         +KA5KmHrdV96d3kzJdUIUpj2irSPpLGB7Q7mBbbc=
+Received: by pali.im (Postfix)
+        id 2019A1514; Fri, 10 Jul 2020 21:30:04 +0200 (CEST)
+Date:   Fri, 10 Jul 2020 21:30:03 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Andrew Murray <amurray@thegoodpenguin.co.uk>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Marek =?utf-8?B?QmVow7pu?= <marek.behun@nic.cz>,
+        Remi Pommarel <repk@triplefau.lt>,
+        Tomasz Maciej Nowak <tmn505@gmail.com>,
+        Xogium <contact@xogium.me>, linux-pci@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] PCI: aardvark: Don't touch PCIe registers if no card
+ connected
+Message-ID: <20200710193003.2lt3i5ocy5kk3b3p@pali>
+References: <20200710154458.bntk7cgewvxmubf4@pali>
+ <20200710160828.GA63389@bjorn-Precision-5520>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200710160828.GA63389@bjorn-Precision-5520>
+User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Require that the TCG_PCR_EVENT2.digests.count value strictly matches the
-value of TCG_EfiSpecIdEvent.numberOfAlgorithms in the event field of the
-TCG_PCClientPCREvent event log header. Also require that
-TCG_EfiSpecIdEvent.numberOfAlgorithms is non-zero.
+On Friday 10 July 2020 11:08:28 Bjorn Helgaas wrote:
+> On Fri, Jul 10, 2020 at 05:44:58PM +0200, Pali Rohár wrote:
+> > I can reproduce following issue: Connect Compex WLE900VX card, configure
+> > aardvark to gen2 mode. And then card is detected only after the first
+> > link training. If kernel tries to retrain link again (e.g. via ASPM
+> > code) then card is not detected anymore. 
+> 
+> Somebody should go over the ASPM retrain link code and the PCIe spec
+> with a fine-toothed comb.  Maybe we're doing something wrong there.
 
-The TCG PC Client Platform Firmware Profile Specification section 9.1
-(Family "2.0", Level 00 Revision 1.04) states:
+I think this is not ASPM related as card simply disappear just after
+flipping PCI_EXP_LNKCTL_RL bit second time without changing ASPM bits.
 
- For each Hash algorithm enumerated in the TCG_PCClientPCREvent entry,
- there SHALL be a corresponding digest in all TCG_PCR_EVENT2 structures.
- Note: This includes EV_NO_ACTION events which do not extend the PCR.
+> Or maybe aardvark has some hardware issue and we need some sort of
+> quirk to work around it.
 
-Section 9.4.5.1 provides this description of
-TCG_EfiSpecIdEvent.numberOfAlgorithms:
+It is possible that this is aardvark issue. As I said I really do not
+know.
 
- The number of Hash algorithms in the digestSizes field. This field MUST
- be set to a value of 0x01 or greater.
+In aardvark driver there is already merged workaround for this issue:
+driver force gen1 aardvark mode for gen1 card.
 
-Enforce these restrictions, as required by the above specification, in
-order to better identify and ignore invalid sequences of bytes at the
-end of an otherwise valid TPM2 event log. Firmware doesn't always have
-the means necessary to inform the kernel of the actual event log size so
-the kernel's event log parsing code should be stringent when parsing the
-event log for resiliency against firmware bugs. This is true, for
-example, when firmware passes the event log to the kernel via a reserved
-memory region described in device tree.
+> > Another issue which happens for WLE900VX, WLE600VX and WLE1216VS-20 (but
+> > not for WLE200VX): Linux kernel can detect these cards only if it issues
+> > card reset via PERST# signal and start link training (via standard pcie
+> > endpoint register PCI_EXP_LNKCTL/PCI_EXP_LNKCTL_RL)
+> 
+> I think you mean "downstream port" (not "endpoint") register?
 
-POWER and some ARM systems use the "linux,sml-base" and "linux,sml-size"
-device tree properties to describe the memory region used to pass the
-event log from firmware to the kernel. Unfortunately, the
-"linux,sml-size" property describes the size of the entire reserved
-memory region rather than the size of the event long within the memory
-region and the event log format does not include information describing
-the size of the event log.
+Yes.
 
-tpm_read_log_of(), in drivers/char/tpm/eventlog/of.c, is where the
-"linux,sml-size" property is used. At the end of that function,
-log->bios_event_log_end is pointing at the end of the reserved memory
-region. That's typically 0x10000 bytes offset from "linux,sml-base",
-depending on what's defined in the device tree source.
+> PCI_EXP_LNKCTL_RL is only applicable to *downstream ports* (root ports
+> or switch downstream ports) and is reserved for endpoints.
+> 
+> > immediately after
+> > enable link training in aardvark (via aardvark specific LINK_TRAINING_EN
+> > bit). If there is e.g. 100ms delay between enabling link training and
+> > setting PCI_EXP_LNKCTL_RL bit then these cards are not detected.
+> 
+> This sounds problematic.  Hardware should not be dependent on the
+> software being "fast enough".  In general we should be able to insert
+> arbitrary delays at any point without breaking anything.
 
-The firmware event log only fills a portion of those 0x10000 bytes and
-the rest of the memory region should be zeroed out by firmware. Even in
-the case of a properly zeroed bytes in the remainder of the memory
-region, the only thing allowing the kernel's event log parser to detect
-the end of the event log is the following conditional in
-__calc_tpm2_event_size():
+Yes, it is problematic. For example following commit broke those cards:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=f4c7d053d7f77cd5c1a1ba7c7ce085ddba13d1d7
 
-        if (event_type == 0 && event_field->event_size == 0)
-                size = 0;
+And this commit fixed it (just msleep was moved to different stage):
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=6964494582f56a3882c2c53b0edbfe99eb32b2e1
 
-If that wasn't there, __calc_tpm2_event_size() would think that a 16
-byte sequence of zeroes, following an otherwise valid event log, was
-a valid event.
+But we somehow need to deal with it until we find root cause.
 
-However, problems can occur if a single bit is set in the offset
-corresponding to either the TCG_PCR_EVENT2.eventType or
-TCG_PCR_EVENT2.eventSize fields, after the last valid event log entry.
-This could confuse the parser into thinking that an additional entry is
-present in the event log and exposing this invalid entry to userspace in
-the /sys/kernel/security/tpm0/binary_bios_measurements file. Such
-problems have been seen if firmware does not fully zero the memory
-region upon a warm reboot.
+Basically additional sleep in aardvark init phase can break WLE900VX
+cards, but not WLE200VX.
 
-This patch significantly raises the bar on how difficult it is for
-stale/invalid memory to confuse the kernel's event log parser but
-there's still, ultimately, a reliance on firmware to properly initialize
-the remainder of the memory region reserved for the event log as the
-parser cannot be expected to detect a stale but otherwise properly
-formatted firmware event log entry.
+And because WLE900VX works fine with pci-mvebu and WLE200VX works fine
+with pci-aardvark we cannot deduce from it if problem for combination of
+WLE900VX and aardvark is in WLE900VX or in aardvark.
 
-Fixes: fd5c78694f3f ("tpm: fix handling of the TPM 2.0 event logs")
-Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
----
+> But I have the impression that aardvark requires more software
+> hand-holding that most hardware does.  If it imposes timing
+> requirements on the software, that *should* be documented in the
+> aardvark spec.
 
-* v2
-  - Rebase the patch on top of the TPM next branch, commit 786a2aa281f4
-    ("Revert commit e918e570415c ("tpm_tis: Remove the HID IFX0102")")
-  - Expand on the technical reasoning for needing strict event
-    validation in the commit message
-  - Improve the inline comment explaining the need for detecting
-    malformed events
+There is absolutely nothing regarding to timings in documentation which
+I saw. In documentation are just instructions/steps how to init PCI
+subsystem and it is basically advk_pcie_setup_hw() function.
 
- include/linux/tpm_eventlog.h | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+> > I read in kernel bugzilla that WLE600VX and WLE900VX cards are buggy and
+> > more people have problems with them. But issues described in kernel
+> > bugzilla (like card is reporting incorrect PCI device id) I'm not
+> > observing.
+> 
+> Pointer?
 
-diff --git a/include/linux/tpm_eventlog.h b/include/linux/tpm_eventlog.h
-index 64356b199e94..739ba9a03ec1 100644
---- a/include/linux/tpm_eventlog.h
-+++ b/include/linux/tpm_eventlog.h
-@@ -211,9 +211,16 @@ static inline int __calc_tpm2_event_size(struct tcg_pcr_event2_head *event,
- 
- 	efispecid = (struct tcg_efi_specid_event_head *)event_header->event;
- 
--	/* Check if event is malformed. */
-+	/*
-+	 * Perform validation of the event in order to identify malformed
-+	 * events. This function may be asked to parse arbitrary byte sequences
-+	 * immediately following a valid event log. The caller expects this
-+	 * function to recognize that the byte sequence is not a valid event
-+	 * and to return an event size of 0.
-+	 */
- 	if (memcmp(efispecid->signature, TCG_SPECID_SIG,
--		   sizeof(TCG_SPECID_SIG)) || count > efispecid->num_algs) {
-+		   sizeof(TCG_SPECID_SIG)) ||
-+	    !efispecid->num_algs || count != efispecid->num_algs) {
- 		size = 0;
- 		goto out;
- 	}
--- 
-2.25.1
+Hm... I cannot find right now pointer to bugzilla, but I have pointer to
+ath9k-devel mailing list with that incorrect device id:
 
+https://www.mail-archive.com/ath9k-devel@lists.ath9k.org/msg07529.html
+
+> Is the incorrect device ID 0xffff?
+
+No, incorrect device ID in that case is 0xabcd and vendor ID is correct
+(Qualcomm).
+
+> That could be a symptom
+> of a PCIe error.  If we read a device ID that's something other than
+> 0, 0xffff, or the correct ID, that would be really weird.  Even 0
+> would be really strange.
+
+It is strange and also reason why discussion on that list is long.
+
+As I said, I'm not seeing that problem with wrong device ID.
+
+But I know people who are observing same problem on different boards
+(which do not use aardvark) as described in above mailing list thread
+with Compex ath10k cards.
+
+> I suspect these wifi cards are a little special because they probably
+> play unusual games with power for airplane mode and the like.
+
+This is another/different problem and is already "documented" in kernel
+bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=84821#c52
