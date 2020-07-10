@@ -2,113 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 126D821B426
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 13:37:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C4C521B428
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 13:39:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728186AbgGJLhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 07:37:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42208 "EHLO mail.kernel.org"
+        id S1727031AbgGJLjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 07:39:41 -0400
+Received: from mga07.intel.com ([134.134.136.100]:38773 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727060AbgGJLgy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 07:36:54 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9E9EF2077D;
-        Fri, 10 Jul 2020 11:36:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594381013;
-        bh=HbvkzCXrQUvGGQRjHnWmV8if5AoIJw8vGs4laXuFHZw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bEgWNTxVkgi8WvHpvkba9nE4pNtwzhI+cTB5YCep38j+eU0aWu/HbG5MUqY/81wzU
-         47GWmopSyrkM/dm7bcpztJZRcJFINRc3DbaQWS6sInHjvcw8BNjNXq/xZa96PPOe/R
-         lZ1PoQAoNZW3oTZ/TIVQceCYk81CIynY8hR0M6dQ=
-Date:   Fri, 10 Jul 2020 13:36:58 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     Jiri Slaby <jslaby@suse.com>, Dmitry Vyukov <dvyukov@google.com>,
-        linux-kernel@vger.kernel.org,
-        syzbot <syzbot+017265e8553724e514e8@syzkaller.appspotmail.com>
-Subject: Re: [PATCH] vt: Reject zero-sized screen buffer size.
-Message-ID: <20200710113658.GA1238355@kroah.com>
-References: <20200710055329.3759-1-penguin-kernel@I-love.SAKURA.ne.jp>
- <20200710105500.GA1232395@kroah.com>
- <7adf8aee-9bdd-8184-6cbe-291357677edd@i-love.sakura.ne.jp>
+        id S1726828AbgGJLjl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 07:39:41 -0400
+IronPort-SDR: U020MTDseJVQP2XmF3sdgYuIT45t9U2H627FiVBWE2KZZMWYdh7kSyTjnM/DkvjGHJUi4OmyMu
+ gcsoDJ900PpA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9677"; a="213069824"
+X-IronPort-AV: E=Sophos;i="5.75,335,1589266800"; 
+   d="scan'208";a="213069824"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jul 2020 04:39:39 -0700
+IronPort-SDR: nmSW/1qXDTwTPG2HtnjUC5giB701dq8DaNbi0+MuCjvYRGMVvUPWhPFBnfJ2XrBXNNKJbRtV1r
+ LKiX2geot3Lw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,335,1589266800"; 
+   d="scan'208";a="389502671"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.73]) ([10.237.72.73])
+  by fmsmga001.fm.intel.com with ESMTP; 10 Jul 2020 04:39:35 -0700
+Subject: Re: [PATCH V7 15/15] perf script: Show text poke address symbol
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>, Jiri Olsa <jolsa@redhat.com>,
+        linux-kernel@vger.kernel.org
+References: <20200512121922.8997-1-adrian.hunter@intel.com>
+ <20200512121922.8997-16-adrian.hunter@intel.com>
+ <20200710113415.GA22500@kernel.org>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <b68c6133-6079-43ef-fd98-9d0054ecc1c8@intel.com>
+Date:   Fri, 10 Jul 2020 14:38:54 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7adf8aee-9bdd-8184-6cbe-291357677edd@i-love.sakura.ne.jp>
+In-Reply-To: <20200710113415.GA22500@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 08:31:42PM +0900, Tetsuo Handa wrote:
-> On 2020/07/10 19:55, Greg Kroah-Hartman wrote:
-> >> diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
-> >> index 48a8199f7845..8497e9206607 100644
-> >> --- a/drivers/tty/vt/vt.c
-> >> +++ b/drivers/tty/vt/vt.c
-> >> @@ -1126,7 +1126,7 @@ int vc_allocate(unsigned int currcons)	/* return 0 on success */
-> >>  		con_set_default_unimap(vc);
-> >>  
-> >>  	vc->vc_screenbuf = kzalloc(vc->vc_screenbuf_size, GFP_KERNEL);
-> >> -	if (!vc->vc_screenbuf)
-> >> +	if (ZERO_OR_NULL_PTR(vc->vc_screenbuf))
-> > 
-> > No, let's check this before we do kzalloc() please, that's just an odd
-> > way of doing an allocation we shouldn't have had to do.
+On 10/07/20 2:34 pm, Arnaldo Carvalho de Melo wrote:
+> Em Tue, May 12, 2020 at 03:19:22PM +0300, Adrian Hunter escreveu:
+>> It is generally more useful to show the symbol with an address. In this
+>> case, the print function requires the 'machine' which means changing
+>> callers to provide it as a parameter. It is optional because most events
+>> do not need it and the callers that matter can provide it.
 > 
-> OK. I can change to
+> I'm just inverting the order of the parameters for
+> perf_event__fprintf(), to keep as the first arg the pointer to the type
+> that is the prefix for the function, i.e. instead of:
 > 
-> +	if (vc->vc_screenbuf_size > KMALLOC_MAX_SIZE || !vc->vc_screenbuf_size)
-> +		goto err_free;
->  	vc->vc_screenbuf = kzalloc(vc->vc_screenbuf_size, GFP_KERNEL);
->  	if (!vc->vc_screenbuf)
->  		goto err_free;
+> size_t perf_event__fprintf_text_poke(struct machine *machine,
+> 				     union perf_event *event, FILE *fp)
 > 
-> like vc_do_resize() does. But I'm currently waiting for syzbot to test this patch, for
-> I don't have an environment for reproducing this problem.
+> I'll make it be:
+> 
+> size_t perf_event__fprintf_text_poke(union perf_event *event,
+> 				     struct machine *machine,FILE *fp)
+> 
+> Ok?
 
-That looks much more sane, thanks.
-
-
-> 
-> > 
-> >>  		goto err_free;
-> >>  
-> >>  	/* If no drivers have overridden us and the user didn't pass a
-> >> @@ -1212,7 +1212,7 @@ static int vc_do_resize(struct tty_struct *tty, struct vc_data *vc,
-> >>  	if (new_cols == vc->vc_cols && new_rows == vc->vc_rows)
-> >>  		return 0;
-> >>  
-> >> -	if (new_screen_size > KMALLOC_MAX_SIZE)
-> >> +	if (new_screen_size > KMALLOC_MAX_SIZE || !new_screen_size)
-> >>  		return -EINVAL;
-> >>  	newscreen = kzalloc(new_screen_size, GFP_USER);
-> >>  	if (!newscreen)
-> >> @@ -3393,6 +3393,7 @@ static int __init con_init(void)
-> >>  		INIT_WORK(&vc_cons[currcons].SAK_work, vc_SAK);
-> >>  		tty_port_init(&vc->port);
-> >>  		visual_init(vc, currcons, 1);
-> >> +		/* Assuming vc->vc_screenbuf_size is sane here, for this is __init code. */
-> > 
-> > Shouldn't we also check this here, or before we get here, too?
-> 
-> This is an __init function. Can we somehow pass column=0 or row=0 ?
-
-You could, it's much less likely, but why not catch this if you can?
-
-> > Just checking the values and rejecting that as a valid screen size
-> > should be sufficient.
-> 
-> Hmm, where are we checking that column * row does not exceed UINT_MAX, given that
-> "struct vc_data"->vc_{cols,rows,screenbuf_size} are "unsigned int" and we do
-> 
->   vc->vc_size_row = vc->vc_cols << 1;
->   vc->vc_screenbuf_size = vc->vc_rows * vc->vc_size_row;
-> 
-> in visual_init() ? Don't we need to reject earlier?
-
-Probably, it's some twisty code :(
-
+Yup! Thank you!
