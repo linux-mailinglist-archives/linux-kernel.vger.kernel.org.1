@@ -2,67 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFB5221AF67
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 08:28:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DECF21AF8C
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 08:38:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726908AbgGJG2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 02:28:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41238 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725851AbgGJG17 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 02:27:59 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3EA672072E;
-        Fri, 10 Jul 2020 06:27:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594362478;
-        bh=H0eG/s1lyQ6sGKykTdhmRGHO9rgBoUeZDW5jJ3sAsmw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=txiTPIjP7EudtwFFn2YASO02jf6cgq/0rtL5MoTYHZAIdyuF4w0LA9lL93NoFVq9Z
-         LZGcvlkTF3hScD2f6C2C5Wea2oJGht379bfES+OFi4ulUp5FNwovbNxDFVnkPqwjH4
-         hBnrMQ+ZJy7bLi8Q3iET28YzUrjvicIXswH/LVe4=
-Date:   Fri, 10 Jul 2020 08:28:03 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     alex.gaynor@gmail.com, geofft@ldpreload.com, jbaublitz@redhat.com,
+        id S1726832AbgGJGiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 02:38:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725966AbgGJGip (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 02:38:45 -0400
+Received: from vultr.net.flygoat.com (vultr.net.flygoat.com [IPv6:2001:19f0:6001:3633:5400:2ff:fe8c:553])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38BA4C08C5CE
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 23:38:45 -0700 (PDT)
+Received: from localhost.localdomain (unknown [IPv6:2001:da8:20f:4430:250:56ff:fe9a:7470])
+        by vultr.net.flygoat.com (Postfix) with ESMTPSA id 589A51FF13;
+        Fri, 10 Jul 2020 06:32:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com; s=vultr;
+        t=1594362747; bh=mKcRZRz0SOJEYqGXRTX5Rcjg9hStrtnxlG5utBmVrdg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=b/lZnQyFE1L7HDw+cKy7OX6z/eFeKFaGpm1RK7vM2GpP3vcshS4KDW/4JGRvh8upL
+         xCNI8u4vSLmFHipoNd+5WOXa5IGzpuJ6vIrIkR43LvQWLc3fKBXSyh4f79ZNffYLlE
+         IJun9AO8nktgZdm/ThbuOYyU9rEepnd6ThkzkPTzzWXTnvQlUs/9EGhMb1mvnKzDSN
+         Fx7wK5lgokP2S2qCglv3OmBHrwWCVM2Sh10d1eVWZHF+cKLDrGxdwj2Qi609pfRHIg
+         KwgfYTyIKuh7ujoGTcvpPaiqJw66TFIRcNy0O/i+dTQnuvtXrJQLTkM7TBQu0Q5MfH
+         BfvOQBCQkP1Rw==
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+To:     linux-mips@vger.kernel.org
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Masahiro Yamada <masahiroy@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: Re: Linux kernel in-tree Rust support
-Message-ID: <20200710062803.GA1071395@kroah.com>
-References: <CAKwvOdmuYc8rW_H4aQG4DsJzho=F+djd68fp7mzmBp3-wY--Uw@mail.gmail.com>
+        Michal Simek <michal.simek@xilinx.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Huacai Chen <chenhc@lemote.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Paul Burton <paulburton@kernel.org>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: [RFC PATCH 0/3] MIPS KVM related clean-ups
+Date:   Fri, 10 Jul 2020 14:30:15 +0800
+Message-Id: <20200710063047.154611-1-jiaxun.yang@flygoat.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKwvOdmuYc8rW_H4aQG4DsJzho=F+djd68fp7mzmBp3-wY--Uw@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 09, 2020 at 11:41:47AM -0700, Nick Desaulniers wrote:
-> Hello folks,
-> I'm working on putting together an LLVM "Micro Conference" for the
-> upcoming Linux Plumbers Conf
-> (https://www.linuxplumbersconf.org/event/7/page/47-attend).  It's not
-> solidified yet, but I would really like to run a session on support
-> for Rust "in tree."  I suspect we could cover technical aspects of
-> what that might look like (I have a prototype of that, was trivial to
-> wire up KBuild support), but also a larger question of "should we do
-> this?" or "how might we place limits on where this can be used?"
-> 
-> Question to folks explicitly in To:, are you planning on attending plumbers?
-> 
-> If so, would this be an interesting topic that you'd participate in?
+Retire some features that never worked in the real world.
 
-Yes, I'll be there.
+Also I wonder if there are any actual user of TE KVM.
+Will Huacai or Alexsander take care relevant code?
 
-thanks,
+Thanks.
 
-greg k-h
+Jiaxun Yang (3):
+  MIPS: Retire kvm paravirt
+  MIPS: KVM: Limit Trap-and-Emulate to MIPS32R2 only
+  MIPS: KVM: Remove outdated README
+
+ arch/mips/Kbuild.platforms                |   1 -
+ arch/mips/Kconfig                         |  20 +-
+ arch/mips/configs/mips_paravirt_defconfig |  98 ------
+ arch/mips/include/asm/Kbuild              |   1 +
+ arch/mips/include/asm/kvm_para.h          | 115 -------
+ arch/mips/include/uapi/asm/Kbuild         |   2 +
+ arch/mips/include/uapi/asm/kvm_para.h     |   5 -
+ arch/mips/kvm/00README.txt                |  31 --
+ arch/mips/kvm/Kconfig                     |   3 +-
+ arch/mips/paravirt/Kconfig                |   7 -
+ arch/mips/paravirt/Makefile               |  14 -
+ arch/mips/paravirt/Platform               |   7 -
+ arch/mips/paravirt/paravirt-irq.c         | 368 ----------------------
+ arch/mips/paravirt/paravirt-smp.c         | 145 ---------
+ arch/mips/paravirt/serial.c               |  39 ---
+ arch/mips/paravirt/setup.c                |  67 ----
+ arch/mips/pci/Makefile                    |   1 -
+ arch/mips/pci/pci-virtio-guest.c          | 131 --------
+ 18 files changed, 6 insertions(+), 1049 deletions(-)
+ delete mode 100644 arch/mips/configs/mips_paravirt_defconfig
+ delete mode 100644 arch/mips/include/asm/kvm_para.h
+ delete mode 100644 arch/mips/include/uapi/asm/kvm_para.h
+ delete mode 100644 arch/mips/kvm/00README.txt
+ delete mode 100644 arch/mips/paravirt/Kconfig
+ delete mode 100644 arch/mips/paravirt/Makefile
+ delete mode 100644 arch/mips/paravirt/Platform
+ delete mode 100644 arch/mips/paravirt/paravirt-irq.c
+ delete mode 100644 arch/mips/paravirt/paravirt-smp.c
+ delete mode 100644 arch/mips/paravirt/serial.c
+ delete mode 100644 arch/mips/paravirt/setup.c
+ delete mode 100644 arch/mips/pci/pci-virtio-guest.c
+
+-- 
+2.27.0
+
