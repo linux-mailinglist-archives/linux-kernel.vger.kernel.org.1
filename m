@@ -2,116 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E45B21B7E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 16:10:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85BDA21B7EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 16:11:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728116AbgGJOKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 10:10:31 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48432 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726832AbgGJOK3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 10:10:29 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id BBBD9AD6A;
-        Fri, 10 Jul 2020 14:10:27 +0000 (UTC)
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     hch@lst.de, Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        David Rientjes <rientjes@google.com>
-Cc:     linux-rpi-kernel@lists.infradead.org, jeremy.linton@arm.com,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] dma-pool: Only allocate from CMA when in same memory zone
-Date:   Fri, 10 Jul 2020 16:10:15 +0200
-Message-Id: <20200710141016.15495-1-nsaenzjulienne@suse.de>
-X-Mailer: git-send-email 2.27.0
+        id S1728005AbgGJOLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 10:11:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726496AbgGJOLr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 10:11:47 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 048F7C08C5CE;
+        Fri, 10 Jul 2020 07:11:47 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id o8so6312650wmh.4;
+        Fri, 10 Jul 2020 07:11:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VGeeR8+VbNtB7URPLqfeyF8R/0u0wMAauszGUX1N1UI=;
+        b=fk0BU7iaq6X8TwybCHTvJwUCTakRRnB6bs6MI80jO2k/15kDhIIIoHZt5ZVGA7a6nv
+         hV6Yh9e81iPov/qajATCsYe/c6NeRIcS20LNg52siwqUX6u3VxeNYDkHCaYpXDz3sesR
+         3Ulry/Xu+YcNYFGogM36GHBVr/nLyKWwB8yN+B4JOfNdNDvsgl6Xyx9sHtC8js15nxNc
+         nklaZ6IT1IayDupdAOiUuueQIAip22AQGlYBr81JJttcMam+vf9cCdSbd7Dr0GbPPo8S
+         WuCA8IGNqtAVATytmAJ1Fk+OlPI//tMI5/RRQlUAb47OVCI6/1nGJ7E0n7Scdyv45XhO
+         GJUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VGeeR8+VbNtB7URPLqfeyF8R/0u0wMAauszGUX1N1UI=;
+        b=abY8ydoh2znbR3wVQPv5/cy10JYdkWgKdo+75Z2CEXQ12HV6M6tB22Zc5gNoGoG6cc
+         i2KArNk9Y2xlAb8HNcpFZe6ZyKCWeDfw8WacJpVx5C+P5chbY1TXRx6DAGXdvJDl7mpp
+         8ZYnUdhv8ZNpM6f7e5sizuMZeuCaMYLS/aZa4obbEl5oqWoErlRRupzFs24+3uUJbooO
+         3G8YwshUZ6GfdFvzCJr9egWuzBxX57S8dQUUN+ZgAhegksfUHoPo7DpWvGldqFoiAVUn
+         dOxqsscScMDmG9apCoPtAVP13Dda8giMUiONEYgl7ovpma4lcqbqhlmPpeH160EFXMIr
+         qkiQ==
+X-Gm-Message-State: AOAM533kd7eKPkaZRLA2DrS+Eqq/y+pkNlMAgPqDZ0YcWsKQK3CRgS/T
+        F0SSyQVIxsMI9zoANrcL+MGLBC7lox5CBwCZoeM=
+X-Google-Smtp-Source: ABdhPJysoJRlQ8UFaxjIgEOwBzA5N40n6EBPhXu9a+0n6/TXYajVrD/1a1tH7ji3ATsg3D0/tZUikVlkV5IOILYSjyk=
+X-Received: by 2002:a1c:9e45:: with SMTP id h66mr5276012wme.15.1594390305664;
+ Fri, 10 Jul 2020 07:11:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200709085501.GA64935@infradead.org> <adc14700-8e95-10b2-d914-afa5029ae80c@kernel.dk>
+ <20200709140053.GA7528@infradead.org> <2270907f-670c-5182-f4ec-9756dc645376@kernel.dk>
+ <CA+1E3r+H7WEyfTufNz3xBQQynOVV-uD3myYynkfp7iU+D=Svuw@mail.gmail.com>
+ <f5e3e931-ef1b-2eb6-9a03-44dd5589c8d3@kernel.dk> <CA+1E3rLna6VVuwMSHVVEFmrgsTyJN=U4CcZtxSGWYr_UYV7AmQ@mail.gmail.com>
+ <20200710131054.GB7491@infradead.org> <20200710134824.GK12769@casper.infradead.org>
+ <20200710134932.GA16257@infradead.org> <20200710135119.GL12769@casper.infradead.org>
+In-Reply-To: <20200710135119.GL12769@casper.infradead.org>
+From:   Kanchan Joshi <joshiiitr@gmail.com>
+Date:   Fri, 10 Jul 2020 19:41:19 +0530
+Message-ID: <CA+1E3rKOZUz7oZ_DGW6xZPQaDu+T5iEKXctd+gsJw05VwpGQSQ@mail.gmail.com>
+Subject: Re: [PATCH v3 4/4] io_uring: add support for zone-append
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Kanchan Joshi <joshi.k@samsung.com>, viro@zeniv.linux.org.uk,
+        bcrl@kvack.org, Damien.LeMoal@wdc.com, asml.silence@gmail.com,
+        linux-fsdevel@vger.kernel.org, "Matias Bj??rling" <mb@lightnvm.io>,
+        linux-kernel@vger.kernel.org, linux-aio@kvack.org,
+        io-uring@vger.kernel.org, linux-block@vger.kernel.org,
+        Selvakumar S <selvakuma.s1@samsung.com>,
+        Nitesh Shetty <nj.shetty@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no guarantee to CMA's placement, so allocating a zone specific
-atomic pool from CMA might return memory from a completely different
-memory zone. To get around this double check CMA's placement before
-allocating from it.
+On Fri, Jul 10, 2020 at 7:21 PM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Fri, Jul 10, 2020 at 02:49:32PM +0100, Christoph Hellwig wrote:
+> > On Fri, Jul 10, 2020 at 02:48:24PM +0100, Matthew Wilcox wrote:
+> > > If we're going to go the route of changing the CQE, how about:
+> > >
+> > >  struct io_uring_cqe {
+> > >          __u64   user_data;      /* sqe->data submission passed back */
+> > > -        __s32   res;            /* result code for this event */
+> > > -        __u32   flags;
+> > > +   union {
+> > > +           struct {
+> > > +                   __s32   res;            /* result code for this event */
+> > > +                   __u32   flags;
+> > > +           };
+> > > +           __s64   res64;
+> > > +   };
+> > >  };
+> > >
+> > > then we don't need to change the CQE size and it just depends on the SQE
+> > > whether the CQE for it uses res+flags or res64.
+> >
+> > How do you return a status code or short write when you just have
+> > a u64 that is needed for the offset?
+>
+> it's an s64 not a u64 so you can return a negative errno.  i didn't
+> think we allowed short writes for objects-which-have-a-pos.
 
-Fixes: c84dc6e68a1d ("dma-pool: add additional coherent pools to map to gfp mask")
-Reported-by: Jeremy Linton <jeremy.linton@arm.com>
-Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
----
+If we are doing this for zone-append (and not general cases), "__s64
+res64" should work -.
+64 bits = 1 (sign) + 23 (bytes-copied: cqe->res) + 40
+(written-location: chunk_sector bytes limit)
 
-This is a code intensive alternative to "dma-pool: Do not allocate pool
-memory from CMA"[1].
-
-[1] https://lkml.org/lkml/2020/7/8/1108
-
- kernel/dma/pool.c | 36 +++++++++++++++++++++++++++++++++++-
- 1 file changed, 35 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/dma/pool.c b/kernel/dma/pool.c
-index 8cfa01243ed2..ccf3eeb77e00 100644
---- a/kernel/dma/pool.c
-+++ b/kernel/dma/pool.c
-@@ -3,6 +3,7 @@
-  * Copyright (C) 2012 ARM Ltd.
-  * Copyright (C) 2020 Google LLC
-  */
-+#include <linux/cma.h>
- #include <linux/debugfs.h>
- #include <linux/dma-direct.h>
- #include <linux/dma-noncoherent.h>
-@@ -56,6 +57,39 @@ static void dma_atomic_pool_size_add(gfp_t gfp, size_t size)
- 		pool_size_kernel += size;
- }
- 
-+static bool cma_in_zone(gfp_t gfp)
-+{
-+	u64 zone_dma_end, zone_dma32_end;
-+	phys_addr_t base, end;
-+	unsigned long size;
-+	struct cma *cma;
-+
-+	cma = dev_get_cma_area(NULL);
-+	if (!cma)
-+		return false;
-+
-+	size = cma_get_size(cma);
-+	if (!size)
-+		return false;
-+	base = cma_get_base(cma) - memblock_start_of_DRAM();
-+	end = base + size - 1;
-+
-+	zone_dma_end = IS_ENABLED(CONFIG_ZONE_DMA) ? DMA_BIT_MASK(zone_dma_bits) : 0;
-+	zone_dma32_end = IS_ENABLED(CONFIG_ZONE_DMA32) ? DMA_BIT_MASK(32) : 0;
-+
-+	/* CMA can't cross zone boundaries, see cma_activate_area() */
-+	if (IS_ENABLED(CONFIG_ZONE_DMA) && gfp & GFP_DMA &&
-+	   end <= zone_dma_end)
-+		return true;
-+	else if (IS_ENABLED(CONFIG_ZONE_DMA32) && gfp & GFP_DMA32 &&
-+		base > zone_dma_end && end <= zone_dma32_end)
-+		return true;
-+	else if (base > zone_dma32_end)
-+		return true;
-+
-+	return false;
-+}
-+
- static int atomic_pool_expand(struct gen_pool *pool, size_t pool_size,
- 			      gfp_t gfp)
- {
-@@ -70,7 +104,7 @@ static int atomic_pool_expand(struct gen_pool *pool, size_t pool_size,
- 	do {
- 		pool_size = 1 << (PAGE_SHIFT + order);
- 
--		if (dev_get_cma_area(NULL))
-+		if (cma_in_zone(gfp))
- 			page = dma_alloc_from_contiguous(NULL, 1 << order,
- 							 order, false);
- 		else
 -- 
-2.27.0
-
+Joshi
