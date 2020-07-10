@@ -2,84 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F01EF21B263
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 11:37:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0758121B269
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 11:38:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727090AbgGJJhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 05:37:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726288AbgGJJhj (ORCPT
+        id S1727777AbgGJJiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 05:38:23 -0400
+Received: from mx07-00178001.pphosted.com ([62.209.51.94]:54072 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726288AbgGJJiW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 05:37:39 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38D8FC08C5CE;
-        Fri, 10 Jul 2020 02:37:39 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id r19so5673070ljn.12;
-        Fri, 10 Jul 2020 02:37:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=/dUk3o7WmxeQ+s81BEUdkgQmyRruCHvFWBCU6KJpmRE=;
-        b=AygFhQyh7GIEUNYRy1O7/Ymb+5SKSUz6bVA1Js7C/JQDnOZd/ufSlMgXrJPJsM4sLb
-         pCqLzyJqMCDE1R8lFz3p+dHtw1TwR0JFhBkbUflOVI7vsbKVPvudTqKpR/6afvz3EtvW
-         0MWUOC8hXf0JRHoGzU5mYK2AmwuSGqVQVuBv2/+HBXfW8x02g5akvkg//mlumE/qgAu+
-         ZZeLWpyNDYyW/qkQ8RTg4aSFsADbk9U0ZlOc+t3rxVU2/8znP1QgK3tHdV6TlqYO7e9f
-         iifAuyzBIADOld7NFMvbG5aqVy7VL/tohaX2hGKtvEX+QxuJmhhR85T23Q7MZEnnzgD+
-         Mn/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=/dUk3o7WmxeQ+s81BEUdkgQmyRruCHvFWBCU6KJpmRE=;
-        b=kFaBf8+5laDdCNz3xO9lUl6VEEPUXMei1SmpyIZMdA1jAE1YMEziC4ASEB8hck/9XU
-         4h0dnWt4pV6xjZRS6Zp6SEKat97S6JcTkFO7savkMkg4giM7HcpPWLAEDTrZxPQ0N2VG
-         gIpBmByqih99lcpfQLZcp3nHQirjDpke6kzg1yK34ggCOKEikW0yv4uVwld6HAZavcc7
-         0Vmgrm+mO+MX4NAV3s09PkU0hZ3QJ5UUpvrFYCYPWbfZKo8R8fm7uutxU4LZjKr6RbLA
-         +m4MkglKo2x9FLPHHtCpddxRtyWbPY0acj1JY+EHLyEHcKijPM1wqJxy2jTpXWS7om4t
-         5ifw==
-X-Gm-Message-State: AOAM531OQtyt3tECLC9staGmdElyzdOVwpe+TbUQ4Z2AmGsGVWKBLNLz
-        UkxYYaScOV4ZebzIVzaS0Cw=
-X-Google-Smtp-Source: ABdhPJybV+JbVVnw8nmfjWW8qMld2U8+yROVI1SkLaVx3cdnNUtMWCE+sD3lXdtVt6xOaBiIQ0E6cA==
-X-Received: by 2002:a2e:1502:: with SMTP id s2mr25083480ljd.236.1594373857641;
-        Fri, 10 Jul 2020 02:37:37 -0700 (PDT)
-Received: from grain.localdomain ([5.18.102.224])
-        by smtp.gmail.com with ESMTPSA id 24sm1965112lfy.59.2020.07.10.02.37.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jul 2020 02:37:25 -0700 (PDT)
-Received: by grain.localdomain (Postfix, from userid 1000)
-        id E6A561A007B; Fri, 10 Jul 2020 12:37:21 +0300 (MSK)
-Date:   Fri, 10 Jul 2020 12:37:21 +0300
-From:   Cyrill Gorcunov <gorcunov@gmail.com>
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] kcmp: add separate Kconfig symbol for kcmp syscall
-Message-ID: <20200710093721.GE1999@grain>
-References: <20200710075632.14661-1-linux@rasmusvillemoes.dk>
- <20200710083025.GD1999@grain>
- <14b4a1f0-3caf-75e4-600a-3de877a92950@rasmusvillemoes.dk>
+        Fri, 10 Jul 2020 05:38:22 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06A9V1sg031341;
+        Fri, 10 Jul 2020 11:37:50 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=TdO/QId43zO1OJNo5MpmTUM7DAp5Luky5pxs0JsWi0I=;
+ b=YiZrqZhwdFv/DANckpIXL+ISrrXCT7DT441u8ltqPXaOVWED/6+Orqb59R8IZoyvBXDV
+ cf916W17upvyT+ueoRJ9x4IGYEVljTTthXoqkytH3AQ+tz7ymYh8WoFjj7IXN6FYojxB
+ zzk78b+aHTWPDbIqMypycCSQM1cxWwL8pL1HqadtCmg+EVOh9d6f6S85y19A4NcbDleK
+ qYAps7bquR1g4KtBSXI/oBVjxPwd94pOQ1EVRCHyu+NczBClmIUb/INVy0hFFzJXKrUM
+ M6hU2wznb5qwpeCPiTJXleWJc85BfTdGQmB7JHwu9c5n5xfrPZFuoD/JQxZipcxVbpHB cw== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 325k4d2fcu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 10 Jul 2020 11:37:50 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 55A8D10002A;
+        Fri, 10 Jul 2020 11:37:49 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 234172AE6DF;
+        Fri, 10 Jul 2020 11:37:49 +0200 (CEST)
+Received: from lmecxl0912.lme.st.com (10.75.127.51) by SFHDAG3NODE2.st.com
+ (10.75.127.8) with Microsoft SMTP Server (TLS) id 15.0.1347.2; Fri, 10 Jul
+ 2020 11:37:48 +0200
+Subject: Re: [PATCH] irqchip/stm32-exti: map direct event to irq parent
+To:     Marc Zyngier <maz@kernel.org>, kernel test robot <lkp@intel.com>
+CC:     Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>, <kbuild-all@lists.01.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>, <marex@denx.de>
+References: <20200706081106.25125-1-alexandre.torgue@st.com>
+ <202007081232.bA2RH80f%lkp@intel.com> <87imevemwg.wl-maz@kernel.org>
+From:   Alexandre Torgue <alexandre.torgue@st.com>
+Message-ID: <69fb49b4-6a41-edf4-fea3-3f10934817ca@st.com>
+Date:   Fri, 10 Jul 2020 11:37:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <14b4a1f0-3caf-75e4-600a-3de877a92950@rasmusvillemoes.dk>
-User-Agent: Mutt/1.14.5 (2020-06-23)
+In-Reply-To: <87imevemwg.wl-maz@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.51]
+X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG3NODE2.st.com
+ (10.75.127.8)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-10_03:2020-07-10,2020-07-10 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 11:05:11AM +0200, Rasmus Villemoes wrote:
-> >> I deliberately drop the ifdef in the eventpoll.h header rather than
-> >> replace with KCMP_SYSCALL; it's harmless to declare a function that
-> >> isn't defined anywhere.
-> > 
-> > Could you please point why setting #fidef KCMP_SYSCALL in eventpoll.h
-> > is not suitable?
-> 
-> It's just from a general "avoid ifdef clutter if possible" POV. The
-> conditional declaration of the function doesn't really serve any
-> purpose.
+Hi Marc,
 
-OK, thanks for explanation.
+On 7/10/20 11:31 AM, Marc Zyngier wrote:
+> Alexandre,
+> 
+> On Wed, 08 Jul 2020 05:57:24 +0100,
+> kernel test robot <lkp@intel.com> wrote:
+>>
+>> [1  <text/plain; us-ascii (7bit)>]
+>> Hi Alexandre,
+>>
+>> I love your patch! Perhaps something to improve:
+>>
+>> [auto build test WARNING on stm32/stm32-next]
+>> [also build test WARNING on soc/for-next v5.8-rc4 next-20200707]
+>> [If your patch is applied to the wrong git tree, kindly drop us a note.
+>> And when submitting patch, we suggest to use  as documented in
+>> https://git-scm.com/docs/git-format-patch]
+>>
+>> url:    https://github.com/0day-ci/linux/commits/Alexandre-Torgue/irqchip-stm32-exti-map-direct-event-to-irq-parent/20200706-161327
+>> base:   https://git.kernel.org/pub/scm/linux/kernel/git/atorgue/stm32.git stm32-next
+>> config: arm-randconfig-s031-20200707 (attached as .config)
+>> compiler: arm-linux-gnueabi-gcc (GCC) 9.3.0
+>> reproduce:
+>>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>>          chmod +x ~/bin/make.cross
+>>          # apt-get install sparse
+>>          # sparse version: v0.6.2-31-gabbfd661-dirty
+>>          # save the attached .config to linux build tree
+>>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=arm
+>>
+>> If you fix the issue, kindly add following tag as appropriate
+>> Reported-by: kernel test robot <lkp@intel.com>
+>>
+>> All warnings (new ones prefixed by >>):
+>>
+>>     In file included from include/linux/build_bug.h:5,
+>>                      from include/linux/bits.h:23,
+>>                      from include/linux/bitops.h:5,
+>>                      from drivers/irqchip/irq-stm32-exti.c:8:
+>>     drivers/irqchip/irq-stm32-exti.c: In function 'stm32_exti_h_domain_alloc':
+>>     drivers/irqchip/irq-stm32-exti.c:683:23: warning: comparison of unsigned expression >= 0 is always true [-Wtype-limits]
+>>       683 |  if (desc->irq_parent >= 0) {
+>>           |                       ^~
+>>     include/linux/compiler.h:58:52: note: in definition of macro '__trace_if_var'
+>>        58 | #define __trace_if_var(cond) (__builtin_constant_p(cond) ? (cond) : __trace_if_value(cond))
+>>           |                                                    ^~~~
+>>>> drivers/irqchip/irq-stm32-exti.c:683:2: note: in expansion of macro 'if'
+>>       683 |  if (desc->irq_parent >= 0) {
+> 
+> Do you plan to address this? Looks like an actual bug to me.
+
+I'll fix it in v2, I was just waiting for other comments before sending 
+a v2. Do you prefer I send a v2 with this fix, and you'll do your review 
+on this v2 ?
+
+regards
+alex
+
+> 
+> 	M.
+> 
