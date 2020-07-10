@@ -2,127 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 995E521BDEA
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 21:46:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4095C21BDFD
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 21:46:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728516AbgGJTqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 15:46:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36342 "EHLO
+        id S1728618AbgGJTq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 15:46:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726942AbgGJTqA (ORCPT
+        with ESMTP id S1728565AbgGJTqR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 15:46:00 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE9E9C08C5DC
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 12:45:59 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id q7so7787643ljm.1
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 12:45:59 -0700 (PDT)
+        Fri, 10 Jul 2020 15:46:17 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00355C08C5DD;
+        Fri, 10 Jul 2020 12:46:16 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id o18so7299047eje.7;
+        Fri, 10 Jul 2020 12:46:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=YsEdL4Wd97W3DlnP1Te2AUyy9smqbbkh6KPYk2RXB3c=;
-        b=Gzf2CJUim5sG7TrQY85OnHYWWs6amw4TNWPXbUbP0IrPdpmJQ/aqlclLyKqPvsP2mc
-         plnD10WrvlJEBsh0J8PFRAtiSUW949sWLEMyMbHq4DvM9mV2StAMKBWM/KzMUy+VGpYH
-         IN/lbJ2B9HZ+dNUS/qgSLnmYXC1C9+G99bGvqfnFyGBP3A+HTRo7j1xmbJIfbcJEKvTb
-         suz+ZESyv5MNiuiAzJYqFbHfSBPReQXftZoMidbrhHFzqJmKyUVVJKzVNbyyVjr0Vo1Q
-         lgHOSpbkij9T+464Cfle3ClqzYUmij30IY5XRjXwQL32+T/8TgEtOBPC2fLiZejWVVel
-         pCcQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=JK4Zw9j/9Nb+LcGFZ1W5eUWt8QvNlgcbGlicFgmNlgc=;
+        b=vOj8521AV5oaaZIf2WBazwLsx5p+P2CorVOQn+HmMAgo/KDGQdE6bEzeLtjO/Uj/QT
+         sSN6DOXolgFODVcsk/kjdOjppaX0+fqR9jBcEMu655NuPvERrqZm2QMzc5ssBZO2vQqK
+         VgRvUeaMZPoXvGgTBxdPoh+lHlyDntpN+LYgNJU8z7lH5Ay9LTiJ6q9smZQ50xvHHXXy
+         nYJs2ZwIAttzyFHu48xbZ43klmWK9hrzsiASsQZWoVEJU9JPZhv2TbfRy/imkejlLt+K
+         pPqwRn5lxYhX9+GOg/SMKyGVoalMnm78IEIuD92rhSojMcBcp6ljCyR+Wl6iQlQK7qqH
+         vAWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=YsEdL4Wd97W3DlnP1Te2AUyy9smqbbkh6KPYk2RXB3c=;
-        b=FJseyWjBQ88BRBf3U8g/EzRjYD291AbZMAtc6cUaQ7mEPbGj1K6/TcBh2g0eNoFGr6
-         pqJcKJ6wbGUMRf9QKw0Cp/bqT9GfoqRYjZ63JxfeWZ6nOg4AqAuA3VJkldWnDMtXBDFv
-         12mkQtCA/VP6Z6tFzRQWomCqy9ebdnUOJjPaLoQb+IyFHE9Xf+K18/Gmgxhn03BzQLLk
-         ZtPAvLvDI+BXyqFnB8T9mGzHwQTaPfeVa2s2Kx172YHQcDT0oLYB8UskfIQ5G7y60DzN
-         gnLDooZei5Pr6yPMDL2eIkGf7/t+e2BrpFCIm2ME03bWDtQ200gGM4gja1/+48FcqvEp
-         /RNA==
-X-Gm-Message-State: AOAM530AFtS3Gc0+L9fKHaZAJt2yILLAhvF6Yo4xyx8eo/5l3b7HdT+Z
-        hS2whf6e/mfblow1BWSpUz0=
-X-Google-Smtp-Source: ABdhPJyT1p7T8M2Y/pSLh9354KzgmUTn3XrOx7NSbqfWHs0mRgfdJcZdj8CQzpEpTUcNufU0UuoNxQ==
-X-Received: by 2002:a2e:780e:: with SMTP id t14mr38311610ljc.444.1594410358462;
-        Fri, 10 Jul 2020 12:45:58 -0700 (PDT)
-Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id j2sm2212234lji.115.2020.07.10.12.45.57
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=JK4Zw9j/9Nb+LcGFZ1W5eUWt8QvNlgcbGlicFgmNlgc=;
+        b=KSFKdXu5hS8wF6c6ncn3JOigfhvJyYSKVGst1/ZuXKTdpQYpymJVQfXn8INwCe3cRi
+         rgGwJeONzgBNUMePE+iCtzKqwxoJwauyBGP+wYE8odULhIai23nYgxmNYJsrnbfUa3OH
+         A3KISjONX3Rh2+4SjRpDdAn+g309mr9WhkBQpFpPc/u5i0Q+Cd6kJf4rM3mW8s7ntjQD
+         mQSPFmWve+LCXxXcTD4iPDkddsPzYy8gjr7nKEDizp/oywTySUHkDeWOSXcyaOtOoaH/
+         s7wLb/Z+zYQrF0bUaSvqwx3cNTJveskIXvXbx7/SN/efyDP0gkKxjO61UZQ21TaQVyKQ
+         3n2g==
+X-Gm-Message-State: AOAM533e5cLTGQusyqr+aL8nRkpexntMBrQTMjSsq7YS598qXyDv+tAI
+        dVCm6LxXEax02wtZ8Cdr2I9/5/+x/B0=
+X-Google-Smtp-Source: ABdhPJyiiXwYOhH58M2Om00ssr1q0Y23/QKrEMP4DLNk331/RDUX4MOzfTU6dRYXy8krRcjBGn9fIA==
+X-Received: by 2002:a17:906:dbcf:: with SMTP id yc15mr51899560ejb.222.1594410375681;
+        Fri, 10 Jul 2020 12:46:15 -0700 (PDT)
+Received: from Ansuel-XPS.localdomain (host-87-16-250-164.retail.telecomitalia.it. [87.16.250.164])
+        by smtp.googlemail.com with ESMTPSA id kt4sm4155768ejb.48.2020.07.10.12.46.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jul 2020 12:45:57 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Fri, 10 Jul 2020 21:45:55 +0200
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Hillf Danton <hdanton@sina.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH 1/1] mm/vmalloc.c: Add an error message if two areas
- overlap
-Message-ID: <20200710194555.GA19487@pc636>
-References: <20200710194042.2510-1-urezki@gmail.com>
- <20200710194406.GP12769@casper.infradead.org>
+        Fri, 10 Jul 2020 12:46:14 -0700 (PDT)
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     Amit Kucheria <amit.kucheria@linaro.org>
+Cc:     Ansuel Smith <ansuelsmth@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 5/6] drivers: thermal: tsens: add support for custom set_trip function
+Date:   Fri, 10 Jul 2020 21:45:56 +0200
+Message-Id: <20200710194558.26487-6-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200710194558.26487-1-ansuelsmth@gmail.com>
+References: <20200710194558.26487-1-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200710194406.GP12769@casper.infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 08:44:06PM +0100, Matthew Wilcox wrote:
-> On Fri, Jul 10, 2020 at 09:40:42PM +0200, Uladzislau Rezki (Sony) wrote:
-> > Before triggering a BUG() it would be useful to understand
-> > how two areas overlap between each other. Print information
-> > about start/end addresses of both VAs and their addresses.
-> > 
-> > For example if both are identical it could mean double free.
-> > 
-> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > ---
-> >  mm/vmalloc.c | 10 +++++++++-
-> >  1 file changed, 9 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> > index 5a2b55c8dd9a..1679b01febcd 100644
-> > --- a/mm/vmalloc.c
-> > +++ b/mm/vmalloc.c
-> > @@ -549,8 +549,13 @@ find_va_links(struct vmap_area *va,
-> >  		else if (va->va_end > tmp_va->va_start &&
-> >  				va->va_start >= tmp_va->va_end)
-> >  			link = &(*link)->rb_right;
-> > -		else
-> > +		else {
-> > +			pr_err("Overlaps: 0x%px(0x%lx-0x%lx), 0x%px(0x%lx-0x%lx)\n",
-> > +				va, va->va_start, va->va_end, tmp_va,
-> > +				tmp_va->va_start, tmp_va->va_end);
-> 
-> It might be helpful to have a "vmalloc:" prefix to that string to indicate
-> where to start searching.  And I don't think we're supposed to use %px
-> without a really good justification these days.
-> 
-> Can we do without the BUG()?  Maybe just break out and decline to insert
-> the conflicting range?
-> 
-> >  			BUG();
-> > +		}
-> >  	} while (*link);
-> >  
-> >  	*parent = &tmp_va->rb_node;
-> > @@ -1993,6 +1998,9 @@ static void vmap_init_free_space(void)
-> >  			insert_vmap_area_augment(free, NULL,
-> >  				&free_vmap_area_root,
-> >  					&free_vmap_area_list);
-> > +			insert_vmap_area_augment(free, NULL,
-> > +				&free_vmap_area_root,
-> > +					&free_vmap_area_list);
-> 
-> This is surely testing code that you forgot to delete?
-Matthew, you are super fast!!! :)
+8960 tsens driver have a custom implementation to set set_trip function.
+Permit the generic driver to use the custom function if provided.
 
---
-Vlad Rezki
+Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+---
+ drivers/thermal/qcom/tsens.c | 4 ++++
+ drivers/thermal/qcom/tsens.h | 2 ++
+ 2 files changed, 6 insertions(+)
+
+diff --git a/drivers/thermal/qcom/tsens.c b/drivers/thermal/qcom/tsens.c
+index 2985a064a0d1..2b55b34d66fb 100644
+--- a/drivers/thermal/qcom/tsens.c
++++ b/drivers/thermal/qcom/tsens.c
+@@ -530,6 +530,10 @@ static int tsens_set_trips(void *_sensor, int low, int high)
+ 	int high_val, low_val, cl_high, cl_low;
+ 	u32 hw_id = s->hw_id;
+ 
++	// Use the driver set_trips if present
++	if (priv->ops->set_trip_temp)
++		return priv->ops->set_trip_temp(_sensor, low, high);
++
+ 	dev_dbg(dev, "[%u] %s: proposed thresholds: (%d:%d)\n",
+ 		hw_id, __func__, low, high);
+ 
+diff --git a/drivers/thermal/qcom/tsens.h b/drivers/thermal/qcom/tsens.h
+index 2f145001e4d5..c27fae39d542 100644
+--- a/drivers/thermal/qcom/tsens.h
++++ b/drivers/thermal/qcom/tsens.h
+@@ -65,6 +65,7 @@ struct tsens_sensor {
+  * @suspend: Function to suspend the tsens device
+  * @resume: Function to resume the tsens device
+  * @get_trend: Function to get the thermal/temp trend
++ * @set_trip_temp: Function to get trip temp
+  */
+ struct tsens_ops {
+ 	/* mandatory callbacks */
+@@ -77,6 +78,7 @@ struct tsens_ops {
+ 	int (*suspend)(struct tsens_priv *priv);
+ 	int (*resume)(struct tsens_priv *priv);
+ 	int (*get_trend)(struct tsens_sensor *s, enum thermal_trend *trend);
++	int (*set_trip_temp)(void *data, int trip, int temp);
+ };
+ 
+ #define REG_FIELD_FOR_EACH_SENSOR11(_name, _offset, _startbit, _stopbit) \
+-- 
+2.27.0
+
