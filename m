@@ -2,149 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5DF821BD5C
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 21:09:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8139A21BD62
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 21:10:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727990AbgGJTJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 15:09:33 -0400
-Received: from smtp.al2klimov.de ([78.46.175.9]:57874 "EHLO smtp.al2klimov.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726725AbgGJTJc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 15:09:32 -0400
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id 2BE6DBC06E;
-        Fri, 10 Jul 2020 19:09:25 +0000 (UTC)
-From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-To:     balbi@kernel.org, gregkh@linuxfoundation.org,
-        alexandre.belloni@bootlin.com, grandmaster@al2klimov.de,
-        clabbe@baylibre.com, arnd@arndb.de, yuehaibing@huawei.com,
-        yanaijie@huawei.com, baijiaju1990@gmail.com,
-        chunfeng.yun@mediatek.com, swboyd@chromium.org,
-        christophe.jaillet@wanadoo.fr, jaswinder.singh@linaro.org,
-        linux-geode@lists.infradead.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] usb: gadget: Replace HTTP links with HTTPS ones
-Date:   Fri, 10 Jul 2020 21:09:19 +0200
-Message-Id: <20200710190919.31464-1-grandmaster@al2klimov.de>
-In-Reply-To: <20200710065939.GA1153760@kroah.com>
-References: <20200710065939.GA1153760@kroah.com>
+        id S1728059AbgGJTK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 15:10:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59112 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726725AbgGJTK1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 15:10:27 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 212EBC08C5DC
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 12:10:26 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id t18so4955261otq.5
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 12:10:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tycho-ws.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=582VRj/VJwwb7prbjaxkyll1K6MbDwCmO8P8dCgcGHc=;
+        b=bQJO4WQEKPqHrwFpYLeO5L7XONJQ3KUqs0G4Ot2TTtpdaEsCc4wVPrntpu7OuemSk0
+         eDeaWvMLEAk2tUVuyf3Rz3BZpl8lAbohLHulkSzwRNdyLU9FIUOkBsOI9laZFBV4QGJg
+         FydYJdwXx5lPNUTI8BIqUAF69MGUX1Kh9/Y1QedNWc+T20JRkwRRBgtCiELvllbU+1pV
+         HR9K9myJtZFfLWOjikHe/xbXSKT7O7JaEDV+II3YBC8jvC0D4Xe1Wn3c9+ZkKK9LdScq
+         lpbGdcl46l06TkTCOnWbJ2MwHW93Lsh9Lq7rFs0OFCsFM2nx6ez7JGfmr5cYASOJIHFp
+         alsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=582VRj/VJwwb7prbjaxkyll1K6MbDwCmO8P8dCgcGHc=;
+        b=EWNKmIGXKVDt4XJ1MzqWdOVZc3XrZ2vnLniWD6mHIx0eCsvPok7hZMkz09Y4BlNRuW
+         ruTfw10osd6yKBJO95sVDTenioncnIKP1uRkj+/G/4gahHOhcQ8mG/UINrUCzb+5YLdY
+         qUF+rSC6ebuf6OZB5N3CQZelaHNuy8Cs7ALazh4DbbdTIzPFRka2/RQDLJae6/yxproy
+         lkhSykJfxsYtK3N9Vy/iv4//Ony6SAO9eW3UGWLcHwZgbU9fpAwp5BTkafZJ1ydkUYmg
+         4d2UJu88tSle9dLfm/PCbXTkFR1DM9lYbbNTFrVa0ulXkiql0rtndfwSEW4VnQwbv7I/
+         4oqA==
+X-Gm-Message-State: AOAM531wQiS1CUKjZwufVP1Z3ARGedgT4RuQBElWbHrSnCGWRBmI+5au
+        q8p/0xcBew+otaIjEz4rM5YhmzI4hto=
+X-Google-Smtp-Source: ABdhPJzb+u+7Aqgas4ui2CrbiQNbmXbnsYxw/Uuj5nQ+Y2QdqO9tdn4UwufdGsTqafS9qKiCnDt9Tg==
+X-Received: by 2002:a05:6830:1acb:: with SMTP id r11mr17224349otc.311.1594408225394;
+        Fri, 10 Jul 2020 12:10:25 -0700 (PDT)
+Received: from cisco ([2601:282:902:b340:dd70:9e19:5b5e:7f32])
+        by smtp.gmail.com with ESMTPSA id t10sm1234852otd.78.2020.07.10.12.10.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Jul 2020 12:10:24 -0700 (PDT)
+Date:   Fri, 10 Jul 2020 13:10:23 -0600
+From:   Tycho Andersen <tycho@tycho.ws>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH for-next/seccomp 1/2] selftests/seccomp: Add SKIPs for
+ failed unshare()
+Message-ID: <20200710191023.GA2700617@cisco>
+References: <20200710185156.2437687-1-keescook@chromium.org>
+ <20200710185156.2437687-2-keescook@chromium.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +++++
-X-Spam-Level: *****
-Authentication-Results: smtp.al2klimov.de;
-        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200710185156.2437687-2-keescook@chromium.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rationale:
-Reduces attack surface on kernel devs opening the links for MITM
-as HTTPS traffic is much harder to manipulate.
+On Fri, Jul 10, 2020 at 11:51:55AM -0700, Kees Cook wrote:
+> Running the seccomp tests as a regular user shouldn't just fail tests
+> that require CAP_SYS_ADMIN (for getting a PID namespace). Instead,
+> detect those cases and SKIP them.
 
-Deterministic algorithm:
-For each file:
-  If not .svg:
-    For each line:
-      If doesn't contain `\bxmlns\b`:
-        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
-            If both the HTTP and HTTPS versions
-            return 200 OK and serve the same content:
-              Replace HTTP with HTTPS.
+But if we unshare NEWUSER at the same time as NEWPID, shouldn't we
+always be ns_capable(CAP_SYS_ADMIN)?
 
-Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
----
- Sorry, my mistake.
- Now better?
-
- drivers/usb/gadget/udc/amd5536udc.h     | 2 +-
- drivers/usb/gadget/udc/amd5536udc_pci.c | 2 +-
- drivers/usb/gadget/udc/gr_udc.c         | 2 +-
- drivers/usb/gadget/udc/gr_udc.h         | 2 +-
- drivers/usb/gadget/udc/max3420_udc.c    | 2 +-
- drivers/usb/gadget/udc/snps_udc_core.c  | 2 +-
- 6 files changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/usb/gadget/udc/amd5536udc.h b/drivers/usb/gadget/udc/amd5536udc.h
-index 0262383f8c79..3296f3fcee48 100644
---- a/drivers/usb/gadget/udc/amd5536udc.h
-+++ b/drivers/usb/gadget/udc/amd5536udc.h
-@@ -2,7 +2,7 @@
- /*
-  * amd5536.h -- header for AMD 5536 UDC high/full speed USB device controller
-  *
-- * Copyright (C) 2007 AMD (http://www.amd.com)
-+ * Copyright (C) 2007 AMD (https://www.amd.com)
-  * Author: Thomas Dahlmann
-  */
- 
-diff --git a/drivers/usb/gadget/udc/amd5536udc_pci.c b/drivers/usb/gadget/udc/amd5536udc_pci.c
-index 80685e4306f3..a98b54b30882 100644
---- a/drivers/usb/gadget/udc/amd5536udc_pci.c
-+++ b/drivers/usb/gadget/udc/amd5536udc_pci.c
-@@ -2,7 +2,7 @@
- /*
-  * amd5536udc_pci.c -- AMD 5536 UDC high/full speed USB device controller
-  *
-- * Copyright (C) 2005-2007 AMD (http://www.amd.com)
-+ * Copyright (C) 2005-2007 AMD (https://www.amd.com)
-  * Author: Thomas Dahlmann
-  */
- 
-diff --git a/drivers/usb/gadget/udc/gr_udc.c b/drivers/usb/gadget/udc/gr_udc.c
-index 7164ad9800f1..8fe0b65772b9 100644
---- a/drivers/usb/gadget/udc/gr_udc.c
-+++ b/drivers/usb/gadget/udc/gr_udc.c
-@@ -8,7 +8,7 @@
-  * GRLIB VHDL IP core library.
-  *
-  * Full documentation of the GRUSBDC core can be found here:
-- * http://www.gaisler.com/products/grlib/grip.pdf
-+ * https://www.gaisler.com/products/grlib/grip.pdf
-  *
-  * Contributors:
-  * - Andreas Larsson <andreas@gaisler.com>
-diff --git a/drivers/usb/gadget/udc/gr_udc.h b/drivers/usb/gadget/udc/gr_udc.h
-index 417ad2aa2cc7..ac5b3f65adb5 100644
---- a/drivers/usb/gadget/udc/gr_udc.h
-+++ b/drivers/usb/gadget/udc/gr_udc.h
-@@ -8,7 +8,7 @@
-  * GRLIB VHDL IP core library.
-  *
-  * Full documentation of the GRUSBDC core can be found here:
-- * http://www.gaisler.com/products/grlib/grip.pdf
-+ * https://www.gaisler.com/products/grlib/grip.pdf
-  *
-  * Contributors:
-  * - Andreas Larsson <andreas@gaisler.com>
-diff --git a/drivers/usb/gadget/udc/max3420_udc.c b/drivers/usb/gadget/udc/max3420_udc.c
-index 23f33946d80c..ea8cf9341dd5 100644
---- a/drivers/usb/gadget/udc/max3420_udc.c
-+++ b/drivers/usb/gadget/udc/max3420_udc.c
-@@ -7,7 +7,7 @@
-  *
-  * Based on:
-  *	o MAX3420E datasheet
-- *		http://datasheets.maximintegrated.com/en/ds/MAX3420E.pdf
-+ *		https://datasheets.maximintegrated.com/en/ds/MAX3420E.pdf
-  *	o MAX342{0,1}E Programming Guides
-  *		https://pdfserv.maximintegrated.com/en/an/AN3598.pdf
-  *		https://pdfserv.maximintegrated.com/en/an/AN3785.pdf
-diff --git a/drivers/usb/gadget/udc/snps_udc_core.c b/drivers/usb/gadget/udc/snps_udc_core.c
-index 3fcded31405a..1102077facdc 100644
---- a/drivers/usb/gadget/udc/snps_udc_core.c
-+++ b/drivers/usb/gadget/udc/snps_udc_core.c
-@@ -2,7 +2,7 @@
- /*
-  * amd5536.c -- AMD 5536 UDC high/full speed USB device controller
-  *
-- * Copyright (C) 2005-2007 AMD (http://www.amd.com)
-+ * Copyright (C) 2005-2007 AMD (https://www.amd.com)
-  * Author: Thomas Dahlmann
-  */
- 
--- 
-2.27.0
-
+Tycho
