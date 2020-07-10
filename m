@@ -2,109 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19DB121BAF4
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 18:31:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6B1021BAFF
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 18:32:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728301AbgGJQbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 12:31:23 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:43357 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726920AbgGJQbW (ORCPT
+        id S1728391AbgGJQb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 12:31:57 -0400
+Received: from mail-io1-f67.google.com ([209.85.166.67]:41206 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728317AbgGJQb4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 12:31:22 -0400
-Received: by mail-io1-f66.google.com with SMTP id k23so6631962iom.10;
-        Fri, 10 Jul 2020 09:31:22 -0700 (PDT)
+        Fri, 10 Jul 2020 12:31:56 -0400
+Received: by mail-io1-f67.google.com with SMTP id o5so6616733iow.8;
+        Fri, 10 Jul 2020 09:31:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=ri5Ju8/pmRRLLJvGOFF2lCmuUcpkIXlf+EO6oa9lkeg=;
-        b=nqA8jhOyMWl6zDz1D/rGpo03eDm1D3IS/FdHuyF1LPT26sjCt792sMeuNcIO7mOvL2
-         OUme2VhRUu2LUw5xB/KIpJTaSDWxKohp/V32eTKEb9MBnBcn2tUyyyzpizmNYhZZYG1O
-         22L1C11jZKSJ85zgzMqp2/8NhieoBucz8bLIdfjrHWadipzweQie9XiPB72eHY71kb9h
-         r2t68aE26ZIrP4KdYJtrj5XtPOr9X3iRn3BMf1LV1mbvH+oaBZv984BV0sQcaOGi5Sca
-         70x0K8HnQNPXXdctyZ7Q26RH2MUaxHPybRG0ckrYP1guNH9A7kpKgXuQrF1fdnmfAvE7
-         ykTA==
-X-Gm-Message-State: AOAM532UptoJOIU/48bAvz08dzheXFh6VdzoZlzsLAZkisG5KOc1Bb5i
-        yX66bbthYC/CoHiJp8auAZ6HPfnLCJ9E
-X-Google-Smtp-Source: ABdhPJzvLnRx24MgOhUZQEp05+U4gq81sv1JxrEdwFInJenxWlUIT/AyApoNCnP+LtIFrZS4Zidw3A==
-X-Received: by 2002:a6b:9042:: with SMTP id s63mr49394517iod.195.1594398681647;
-        Fri, 10 Jul 2020 09:31:21 -0700 (PDT)
+        bh=k6x2zODly9ZYHpv6ACDhH5er/SlGtQVdII9NFL5Jqko=;
+        b=WTEO9DKG8+PgmKbLlujPtcq9LjY2YU4djHXitggrgwCe3lr18FswqXH/yrmySIz/vX
+         nJVAPXjAZCbp29XCxtpUmLzV76WIKQzZe6xNpZNv2yNCprkcY2Y3DgQ9JGuxssw3pB0y
+         KyobWOBizJ/LbQfUlGXOfq34pfr/msFTAbJhGkPC6mYbg9ap/f4/PykgqJKosNfFPt1c
+         8hPZni6e0LTF+/3kVXYD8ScRZ8cNwzi8Vh1/6WVRUtTQdSeiVsWUAa2Z9jnMfEKJtPjD
+         FwTWAYHm+i+/boc7ZLcMQHFiYr8q2ojU9cYoDglBuMSsgb6saf1bQkBb3dnDUVcc5MOd
+         UEsw==
+X-Gm-Message-State: AOAM532pdzgB2XZNARhL2UrgtFyf1BoCwiXDiEwxKhxtMP4K0u98mw7o
+        6ljwTjoA6BfkN2LQ8T/JyA==
+X-Google-Smtp-Source: ABdhPJxmfCqmpVl/CfTyQglNJOGk8o6upZI4VxpOAAKUQn90PZPu6KLSnHJXoTze3QrCQrvSol79Bw==
+X-Received: by 2002:a05:6638:1187:: with SMTP id f7mr79554526jas.58.1594398715148;
+        Fri, 10 Jul 2020 09:31:55 -0700 (PDT)
 Received: from xps15 ([64.188.179.254])
-        by smtp.gmail.com with ESMTPSA id a5sm3706284ilt.71.2020.07.10.09.31.20
+        by smtp.gmail.com with ESMTPSA id z9sm3680512ilb.41.2020.07.10.09.31.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jul 2020 09:31:20 -0700 (PDT)
-Received: (nullmailer pid 2759342 invoked by uid 1000);
-        Fri, 10 Jul 2020 16:31:19 -0000
-Date:   Fri, 10 Jul 2020 10:31:19 -0600
+        Fri, 10 Jul 2020 09:31:54 -0700 (PDT)
+Received: (nullmailer pid 2760588 invoked by uid 1000);
+        Fri, 10 Jul 2020 16:31:53 -0000
+Date:   Fri, 10 Jul 2020 10:31:53 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Mike Tipton <mdtipton@codeaurora.org>
-Cc:     georgi.djakov@linaro.org, bjorn.andersson@linaro.org,
-        agross@kernel.org, linux-pm@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/6] dt-bindings: interconnect: Add property to set
- BCM TCS wait behavior
-Message-ID: <20200710163119.GA2753833@bogus>
-References: <20200710015652.19206-1-mdtipton@codeaurora.org>
- <20200710015652.19206-3-mdtipton@codeaurora.org>
+To:     Chris Ruehl <chris.ruehl@gtsys.com.hk>
+Cc:     Guenter Roeck <linux@roeck-us.net>, Jack Lo <jack.lo@gtsys.com.hk>,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>, devicetree@vger.kernel.org
+Subject: Re: [PATCH v5 2/2] devicetree: hwmon: shtc1: Add sensirion,shtc1.yaml
+Message-ID: <20200710163153.GA2760091@bogus>
+References: <20200710021536.27544-1-chris.ruehl@gtsys.com.hk>
+ <20200710021536.27544-3-chris.ruehl@gtsys.com.hk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200710015652.19206-3-mdtipton@codeaurora.org>
+In-Reply-To: <20200710021536.27544-3-chris.ruehl@gtsys.com.hk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 09, 2020 at 06:56:48PM -0700, Mike Tipton wrote:
-> Add "qcom,tcs-wait" property to set which TCS should wait for completion
-> when triggering.
+On Fri, 10 Jul 2020 10:15:35 +0800, Chris Ruehl wrote:
+> Add documentation for the newly added DTS support in the shtc1 driver.
+> To align with the drivers logic to have high precision by default
+> a boolean sensirion,low_precision is used to switch to low precision.
 > 
-> Signed-off-by: Mike Tipton <mdtipton@codeaurora.org>
+> Signed-off-by: Chris Ruehl <chris.ruehl@gtsys.com.hk>
 > ---
->  .../bindings/interconnect/qcom,bcm-voter.yaml       | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
+>  .../bindings/hwmon/sensirion,shtc1.yaml       | 57 +++++++++++++++++++
+>  1 file changed, 57 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/hwmon/sensirion,shtc1.yaml
 > 
-> diff --git a/Documentation/devicetree/bindings/interconnect/qcom,bcm-voter.yaml b/Documentation/devicetree/bindings/interconnect/qcom,bcm-voter.yaml
-> index 5971fc1df08d..f0c3d6b01831 100644
-> --- a/Documentation/devicetree/bindings/interconnect/qcom,bcm-voter.yaml
-> +++ b/Documentation/devicetree/bindings/interconnect/qcom,bcm-voter.yaml
-> @@ -21,6 +21,16 @@ properties:
->      enum:
->        - qcom,bcm-voter
->  
-> +  qcom,tcs-wait:
-> +    description: |
-> +      Optional mask of which TCSs (Triggered Command Sets) wait for completion
-> +      upon triggering. In most cases, it's necessary to wait in both the AMC
-> +      and WAKE sets to ensure resources are available before use. If a specific
-> +      RSC and its use cases can ensure sufficient delay by other means, then
-> +      this can be overridden to reduce latencies.
 
-I have no idea what any of this means to provide any meaningful comment.
 
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    default: QCOM_ICC_TAG_ACTIVE_ONLY
+My bot found errors running 'make dt_binding_check' on your patch:
 
-Can't use defines here.
+Error: Documentation/devicetree/bindings/hwmon/sensirion,shtc1.example.dts:25.13-14 syntax error
+FATAL ERROR: Unable to parse input tree
+scripts/Makefile.lib:315: recipe for target 'Documentation/devicetree/bindings/hwmon/sensirion,shtc1.example.dt.yaml' failed
+make[1]: *** [Documentation/devicetree/bindings/hwmon/sensirion,shtc1.example.dt.yaml] Error 1
+make[1]: *** Waiting for unfinished jobs....
+Makefile:1347: recipe for target 'dt_binding_check' failed
+make: *** [dt_binding_check] Error 2
 
-> +
->  required:
->    - compatible
->  
-> @@ -39,7 +49,10 @@ examples:
->    # as defined in Documentation/devicetree/bindings/soc/qcom/rpmh-rsc.txt
->    - |
->  
-> +    #include <dt-bindings/interconnect/qcom,icc.h>
-> +
->      disp_bcm_voter: bcm_voter {
->          compatible = "qcom,bcm-voter";
-> +        qcom,tcs-wait = <QCOM_ICC_TAG_AMC>;
->      };
->  ...
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+
+See https://patchwork.ozlabs.org/patch/1326414
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure dt-schema is up to date:
+
+pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
+
+Please check and re-submit.
+
