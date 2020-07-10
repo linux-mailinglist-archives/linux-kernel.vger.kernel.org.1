@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7980A21BB5B
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 18:52:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D009121BB60
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 18:52:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728309AbgGJQw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 12:52:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59116 "EHLO mail.kernel.org"
+        id S1728346AbgGJQwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 12:52:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59220 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726977AbgGJQwY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 12:52:24 -0400
+        id S1726977AbgGJQw2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 12:52:28 -0400
 Received: from localhost.localdomain (236.31.169.217.in-addr.arpa [217.169.31.236])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4CAB02078B;
-        Fri, 10 Jul 2020 16:52:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 48A7A207FC;
+        Fri, 10 Jul 2020 16:52:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594399943;
-        bh=JFRVnikzffyM0kLIyVXv4/ggOBXeIFkHnh4eBvBnBLY=;
+        s=default; t=1594399947;
+        bh=d0j8xTVNaWzbdalED8evYOHQSCzMCpX3VtGAAmbbWA0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Xzei/k6DhRwA4CoPU2JfT1d96J4vveAm+XAaAkU1cr+BOf+32Tcx/dccl4I4ZPmCx
-         sc4qnD19m1gpde2WR6qzwhjbcO9OZkyoPamVFAOYW5xvGZKM61oOqpDPK2n2MMzllD
-         RXU/MDbaz/SgCunQxxoQ5llZ5g8r2qCnuIoyKmpk=
+        b=B+7j4w0T7dCr6eH6S9BAocvfzG6/Tjc0v3yKs9qc1Zjaooz79j6aYr2jAVRzbOl0K
+         WBnOPFM1MT/8ZC20VDG6kYtmeGDVy2jwvBrptx3+G/2AyI1MnsSh/EleWzmiDfP6hU
+         phbkIC5Yr2bdnu87psM7ERyhP9gqpIZgEDJewmlg=
 From:   Will Deacon <will@kernel.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Will Deacon <will@kernel.org>, Joel Fernandes <joelaf@google.com>,
@@ -44,9 +44,9 @@ Cc:     Will Deacon <will@kernel.org>, Joel Fernandes <joelaf@google.com>,
         Mark Rutland <mark.rutland@arm.com>,
         linux-arm-kernel@lists.infradead.org, linux-alpha@vger.kernel.org,
         virtualization@lists.linux-foundation.org, kernel-team@android.com
-Subject: [PATCH v3 03/19] asm/rwonce: Allow __READ_ONCE to be overridden by the architecture
-Date:   Fri, 10 Jul 2020 17:51:47 +0100
-Message-Id: <20200710165203.31284-4-will@kernel.org>
+Subject: [PATCH v3 04/19] alpha: Override READ_ONCE() with barriered implementation
+Date:   Fri, 10 Jul 2020 17:51:48 +0100
+Message-Id: <20200710165203.31284-5-will@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200710165203.31284-1-will@kernel.org>
 References: <20200710165203.31284-1-will@kernel.org>
@@ -57,32 +57,135 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The meat and potatoes of READ_ONCE() is defined by the __READ_ONCE()
-macro, which uses a volatile casts in an attempt to avoid tearing of
-byte, halfword, word and double-word accesses. Allow this to be
-overridden by the architecture code in the case that things like memory
-barriers are also required.
+Rather then relying on the core code to use smp_read_barrier_depends()
+as part of the READ_ONCE() definition, instead override __READ_ONCE()
+in the Alpha code so that it generates the required mb() and then
+implement smp_load_acquire() using the new macro to avoid redundant
+back-to-back barriers from the generic implementation.
 
 Acked-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Will Deacon <will@kernel.org>
 ---
- include/asm-generic/rwonce.h | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/alpha/include/asm/barrier.h | 59 +++-----------------------------
+ arch/alpha/include/asm/rwonce.h  | 35 +++++++++++++++++++
+ 2 files changed, 40 insertions(+), 54 deletions(-)
+ create mode 100644 arch/alpha/include/asm/rwonce.h
 
-diff --git a/include/asm-generic/rwonce.h b/include/asm-generic/rwonce.h
-index 92cc2f223cb3..f9dfa88fc04d 100644
---- a/include/asm-generic/rwonce.h
-+++ b/include/asm-generic/rwonce.h
-@@ -33,7 +33,9 @@
-  * atomicity or dependency ordering guarantees. Note that this may result
-  * in tears!
-  */
-+#ifndef __READ_ONCE
- #define __READ_ONCE(x)	(*(const volatile __unqual_scalar_typeof(x) *)&(x))
-+#endif
+diff --git a/arch/alpha/include/asm/barrier.h b/arch/alpha/include/asm/barrier.h
+index 92ec486a4f9e..c56bfffc9918 100644
+--- a/arch/alpha/include/asm/barrier.h
++++ b/arch/alpha/include/asm/barrier.h
+@@ -2,64 +2,15 @@
+ #ifndef __BARRIER_H
+ #define __BARRIER_H
  
- #define __READ_ONCE_SCALAR(x)						\
- ({									\
+-#include <asm/compiler.h>
+-
+ #define mb()	__asm__ __volatile__("mb": : :"memory")
+ #define rmb()	__asm__ __volatile__("mb": : :"memory")
+ #define wmb()	__asm__ __volatile__("wmb": : :"memory")
+ 
+-/**
+- * read_barrier_depends - Flush all pending reads that subsequents reads
+- * depend on.
+- *
+- * No data-dependent reads from memory-like regions are ever reordered
+- * over this barrier.  All reads preceding this primitive are guaranteed
+- * to access memory (but not necessarily other CPUs' caches) before any
+- * reads following this primitive that depend on the data return by
+- * any of the preceding reads.  This primitive is much lighter weight than
+- * rmb() on most CPUs, and is never heavier weight than is
+- * rmb().
+- *
+- * These ordering constraints are respected by both the local CPU
+- * and the compiler.
+- *
+- * Ordering is not guaranteed by anything other than these primitives,
+- * not even by data dependencies.  See the documentation for
+- * memory_barrier() for examples and URLs to more information.
+- *
+- * For example, the following code would force ordering (the initial
+- * value of "a" is zero, "b" is one, and "p" is "&a"):
+- *
+- * <programlisting>
+- *	CPU 0				CPU 1
+- *
+- *	b = 2;
+- *	memory_barrier();
+- *	p = &b;				q = p;
+- *					read_barrier_depends();
+- *					d = *q;
+- * </programlisting>
+- *
+- * because the read of "*q" depends on the read of "p" and these
+- * two reads are separated by a read_barrier_depends().  However,
+- * the following code, with the same initial values for "a" and "b":
+- *
+- * <programlisting>
+- *	CPU 0				CPU 1
+- *
+- *	a = 2;
+- *	memory_barrier();
+- *	b = 3;				y = b;
+- *					read_barrier_depends();
+- *					x = a;
+- * </programlisting>
+- *
+- * does not enforce ordering, since there is no data dependency between
+- * the read of "a" and the read of "b".  Therefore, on some CPUs, such
+- * as Alpha, "y" could be set to 3 and "x" to 0.  Use rmb()
+- * in cases like this where there are no data dependencies.
+- */
+-#define read_barrier_depends() __asm__ __volatile__("mb": : :"memory")
++#define __smp_load_acquire(p)						\
++({									\
++	compiletime_assert_atomic_type(*p);				\
++	__READ_ONCE(*p);						\
++})
+ 
+ #ifdef CONFIG_SMP
+ #define __ASM_SMP_MB	"\tmb\n"
+diff --git a/arch/alpha/include/asm/rwonce.h b/arch/alpha/include/asm/rwonce.h
+new file mode 100644
+index 000000000000..35542bcf92b3
+--- /dev/null
++++ b/arch/alpha/include/asm/rwonce.h
+@@ -0,0 +1,35 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Copyright (C) 2019 Google LLC.
++ */
++#ifndef __ASM_RWONCE_H
++#define __ASM_RWONCE_H
++
++#ifdef CONFIG_SMP
++
++#include <asm/barrier.h>
++
++/*
++ * Alpha is apparently daft enough to reorder address-dependent loads
++ * on some CPU implementations. Knock some common sense into it with
++ * a memory barrier in READ_ONCE().
++ *
++ * For the curious, more information about this unusual reordering is
++ * available in chapter 15 of the "perfbook":
++ *
++ *  https://kernel.org/pub/linux/kernel/people/paulmck/perfbook/perfbook.html
++ *
++ */
++#define __READ_ONCE(x)							\
++({									\
++	__unqual_scalar_typeof(x) __x =					\
++		(*(volatile typeof(__x) *)(&(x)));			\
++	mb();								\
++	(typeof(x))__x;							\
++})
++
++#endif /* CONFIG_SMP */
++
++#include <asm-generic/rwonce.h>
++
++#endif /* __ASM_RWONCE_H */
 -- 
 2.27.0.383.g050319c2ae-goog
 
