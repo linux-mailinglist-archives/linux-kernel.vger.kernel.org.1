@@ -2,81 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B14C21B801
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 16:13:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BA9321B7F5
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 16:12:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728271AbgGJONE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 10:13:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41258 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728131AbgGJOMM (ORCPT
+        id S1728306AbgGJOMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 10:12:30 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:56862 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728208AbgGJOM2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 10:12:12 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A91CBC08C5CE
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 07:12:12 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id 72so2313628ple.0
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 07:12:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=muBce3IUa+wPFXJgVmo9e/4Gh0cu3fqX5sLtUd9ccC8=;
-        b=kj+qoxxB8his39iWNt78qr7SHRjZO4qqyfgzR32JD5Ukjyv9eBAVEo0otUiZCyN0/r
-         HW7JdE9b+FAMo3/8urdtbNzVKwVNzjDotfvqZT5NPaEozSeNVtg7fOUexuOgoNs6GNFD
-         xfJO38tqRwaNcwlkROvdMyeFzlNcDq9fRJZuR86yCJGPaR1kS1wQkpFtS5OFVW02mEwk
-         hwUrHayp5yntid/HqVQLnUYGDjDRLVZ1E0FhfYVxPepnCvJzuaDIMQxsNYZ7Lt8a8wpO
-         LN+YDY8Y4gtGkE1MkOsCa18/sHHDksvlPQfmyYiF/pCDzFPOKOSknkiQgORgm7LNzduw
-         rdZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=muBce3IUa+wPFXJgVmo9e/4Gh0cu3fqX5sLtUd9ccC8=;
-        b=VqJYiOl2HBmYjpAuo2rdn4EQKX9fWiC1Gah4QBN+kXYHLPzOqgZg0DZ0JS6Vi7lDwi
-         SpqpKGKsLIvwVtkgB7ZobH3kukg2tVUxu8obAbEeBmPKPzwISUg4s/TmABHQQ1KFuhpY
-         0Oez34+8iTJB10Hfu2npwMesIgiGsrnU0LZmtLFMQI/6RXc1qDmnnQtTrAD5jjK5Fran
-         FOc0pKZZo3vAxrXR+NsKXJtg4QWocPmDIXGCt2coDnSu7ayUee7AUkUSoxEHFQKFif2y
-         6295lKgAzMybb2ECAyzLrJGCTJH5mrk71z2xJorJkLgVOF8OHLiQ4Ff7qY++n6uH9bjR
-         l41g==
-X-Gm-Message-State: AOAM530FK9cdvMd8W9Ru/p5ktld0asu/few4931Y+HzeigTTP6jLIwgT
-        MEyAhpxOr3rSHM84nDcTfIFdOY7BYWVJgaTjqLcPHo3B
-X-Google-Smtp-Source: ABdhPJz/2bKSVq1xkbn40jQlOqhNk/US3g2ZzhXFBwphGuL5/g1M5agcvZ2HiAPWX6fMIGx5byxozBhKyZ+PsdBhMk4=
-X-Received: by 2002:a17:90b:3547:: with SMTP id lt7mr5865262pjb.181.1594390332149;
- Fri, 10 Jul 2020 07:12:12 -0700 (PDT)
+        Fri, 10 Jul 2020 10:12:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594390346;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XmvusRmRBvAWHNl6x2vdSNs3ESLbQ79QZieDa9NwqUw=;
+        b=NvN591YeLKK8FMw2IoZZbFw/C6KLduCLOYWoutSD2NmWRxkLuDbv1jltEJXpEMxANlvh36
+        CBipFi/lWHBavRcyRfzCUpt/iN0GB5LKtQ9UOQrDQ6yy7efx2Nq+fytEKQLv/YuIrvVud3
+        umooTUQ8lWiPlJCWyi81kbNdLVsfHP8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-99-sh3p7GSJOGCcPKFg0z6B8w-1; Fri, 10 Jul 2020 10:12:25 -0400
+X-MC-Unique: sh3p7GSJOGCcPKFg0z6B8w-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C48251080;
+        Fri, 10 Jul 2020 14:12:23 +0000 (UTC)
+Received: from vitty.brq.redhat.com (unknown [10.40.195.35])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D4AC81CA;
+        Fri, 10 Jul 2020 14:12:19 +0000 (UTC)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4 8/9] KVM: nSVM: use nested_svm_load_cr3() on guest->host switch
+Date:   Fri, 10 Jul 2020 16:11:56 +0200
+Message-Id: <20200710141157.1640173-9-vkuznets@redhat.com>
+In-Reply-To: <20200710141157.1640173-1-vkuznets@redhat.com>
+References: <20200710141157.1640173-1-vkuznets@redhat.com>
 MIME-Version: 1.0
-References: <20200708161232.17914-1-andriy.shevchenko@linux.intel.com>
- <20200708162117.GV4655@sirena.org.uk> <20200710100558.GI3703480@smile.fi.intel.com>
- <20200710110132.GA5653@sirena.org.uk> <20200710114622.GJ3703480@smile.fi.intel.com>
- <20200710120856.GD5653@sirena.org.uk>
-In-Reply-To: <20200710120856.GD5653@sirena.org.uk>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 10 Jul 2020 17:11:55 +0300
-Message-ID: <CAHp75VfukDNXksxZPeLHccn66ZsTwG99Vetmyp71WJGFTC5Ngw@mail.gmail.com>
-Subject: Re: [PATCH v1] regmap: Switch to use fwnode instead of OF one
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 3:11 PM Mark Brown <broonie@kernel.org> wrote:
->
-> On Fri, Jul 10, 2020 at 02:46:22PM +0300, Andy Shevchenko wrote:
->
-> > You mean it's being synchronised with git.kernel.org, but not yet contains that
-> > patch? Okay, I will monitor the regmap tree (as of now I didn't see any update).
->
-> 5cc2013bfeee756a1ee6da9bfbe42e52b4695035
+Make nSVM code resemble nVMX where nested_vmx_load_cr3() is used on
+both guest->host and host->guest transitions. Also, we can now
+eliminate unconditional kvm_mmu_reset_context() and speed things up.
 
-And how is it the same as the proposed patch?
+Note, nVMX has two different paths: load_vmcs12_host_state() and
+nested_vmx_restore_host_state() and the later is used to restore from
+'partial' switch to L2, it always uses kvm_mmu_reset_context().
+nSVM doesn't have this yet. Also, nested_svm_vmexit()'s return value
+is almost always ignored nowadays.
 
+Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+---
+ arch/x86/kvm/svm/nested.c | 15 ++++++---------
+ 1 file changed, 6 insertions(+), 9 deletions(-)
 
+diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+index 219871752dc5..434e527096b7 100644
+--- a/arch/x86/kvm/svm/nested.c
++++ b/arch/x86/kvm/svm/nested.c
+@@ -317,7 +317,7 @@ static inline bool nested_npt_enabled(struct vcpu_svm *svm)
+ }
+ 
+ /*
+- * Load guest's cr3 at nested entry. @nested_npt is true if we are
++ * Load guest's/host's cr3 at nested entry. @nested_npt is true if we are
+  * emulating VM-Entry into a guest with NPT enabled.
+  */
+ static int nested_svm_load_cr3(struct kvm_vcpu *vcpu, unsigned long cr3,
+@@ -651,15 +651,12 @@ int nested_svm_vmexit(struct vcpu_svm *svm)
+ 
+ 	nested_svm_uninit_mmu_context(&svm->vcpu);
+ 
+-	if (npt_enabled) {
+-		svm->vmcb->save.cr3 = hsave->save.cr3;
+-		svm->vcpu.arch.cr3 = hsave->save.cr3;
+-	} else {
+-		(void)kvm_set_cr3(&svm->vcpu, hsave->save.cr3);
+-	}
++	rc = nested_svm_load_cr3(&svm->vcpu, hsave->save.cr3, false);
++	if (rc)
++		return 1;
+ 
+-	kvm_mmu_reset_context(&svm->vcpu);
+-	kvm_mmu_load(&svm->vcpu);
++	if (npt_enabled)
++		svm->vmcb->save.cr3 = hsave->save.cr3;
+ 
+ 	/*
+ 	 * Drop what we picked up for L2 via svm_complete_interrupts() so it
 -- 
-With Best Regards,
-Andy Shevchenko
+2.25.4
+
