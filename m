@@ -2,135 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6854721B661
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 15:29:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B41AD21B66A
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 15:30:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727814AbgGJN3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 09:29:41 -0400
-Received: from mail-eopbgr70047.outbound.protection.outlook.com ([40.107.7.47]:18369
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726774AbgGJN3l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 09:29:41 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cAhrTOy2mWqOy9r/vX+RhtQOnwjWC6COfOWXe5W8l8BIvpP6bZv9+DTsRGIjQw0EBJUlW22n7DxBGlZI0o2a5lNC8jFEDmP9vpOHgrb2gUH+4q1Avutl/zzQWI/ZSx8MpZd2bQl4ArcHb7xiDzhMGXnN5gSyMVa8vM41NtoAVBrKoOlUvYwjyIy/VACVO1QJk1L329z+tFbrTu4p/uJUCOx/xfbQT4e6HRN8HBv8S/3Jlw9ul+n71FGAw0XuDbsjzYrTpEDbdysZICoLHf3PL4XDLWwXgG9/UstFmJIQJVhR9y0TAPwC4qlfmrXoQLw/y0bpgRnzuKOgiSKOSPt2Yg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VkC1NPCG2vM+bzuh3AqM7CH5bh+DnMSPjVTjlUnDEho=;
- b=a1kDQtu8a3v+IoesK17T3KL4IjrJXcYw1Rj6BezoCHflQ9XhFwqG76TY2Pv5Du992nwuvE05wHDy6pwwa/NGO1GDfJEzJKjMldBGs+MHreUCE4qO3D1vNgBlgvWnE3nuE/x3NbtxAgIr850cUcu10DD2K+cBjjFGztQiztYMPtQLImypK1Pir1GSegufqq1c6YtuDUu5urY3T0+NPXOg00YI3X6IQk/7llIJxGHqFcaOFZIs1WcRt4w5kLJjHD+CqO2cCB99EDSoK4//2E0L/9f7Qgc5ut7IBt1YMhxOD9UxIlhSgXURrh3bwhIydb8Jd5jXrgz8sULhM2KNR9/YYw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VkC1NPCG2vM+bzuh3AqM7CH5bh+DnMSPjVTjlUnDEho=;
- b=oNs76qPjNK2Lw2hu/+ICyMyEjFP+VDvDvkL+Fz2I6NFuSQEQP7ELxQu/FHYIUWzo8SgopBba1wndTfpEMYjsS4ccCpGt7kVw3kDfaP4hMaOmZG5c8qGO6kjkjJtUHvF0aVEc9GNgLomJ2afHkaAtPw6yY60UhEKayrLe/6TApmc=
-Received: from DB3PR0402MB3916.eurprd04.prod.outlook.com (2603:10a6:8:10::18)
- by DB8PR04MB7177.eurprd04.prod.outlook.com (2603:10a6:10:127::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.23; Fri, 10 Jul
- 2020 13:29:37 +0000
-Received: from DB3PR0402MB3916.eurprd04.prod.outlook.com
- ([fe80::1dab:b68c:e028:acb3]) by DB3PR0402MB3916.eurprd04.prod.outlook.com
- ([fe80::1dab:b68c:e028:acb3%6]) with mapi id 15.20.3174.022; Fri, 10 Jul 2020
- 13:29:37 +0000
-From:   Anson Huang <anson.huang@nxp.com>
-To:     Andreas Kemnade <andreas@kemnade.info>
-CC:     "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-        "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>,
-        "oleksandr.suvorov@toradex.com" <oleksandr.suvorov@toradex.com>,
-        "aford173@gmail.com" <aford173@gmail.com>,
-        "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
-        Leo Li <leoyang.li@nxp.com>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        "geert+renesas@glider.be" <geert+renesas@glider.be>,
-        "olof@lixom.net" <olof@lixom.net>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-Subject: RE: [PATCH 3/3] ARM: imx_v6_v7_defconfig: Build in CONFIG_GPIO_MXC by
- default
-Thread-Topic: [PATCH 3/3] ARM: imx_v6_v7_defconfig: Build in CONFIG_GPIO_MXC
- by default
-Thread-Index: AQHWVLZf1P1D6v4l+EGvf4we2g/NU6kArZAAgAAk0AA=
-Date:   Fri, 10 Jul 2020 13:29:37 +0000
-Message-ID: <DB3PR0402MB3916C86F35D601A44FB03133F5650@DB3PR0402MB3916.eurprd04.prod.outlook.com>
-References: <1594164323-14920-1-git-send-email-Anson.Huang@nxp.com>
-        <1594164323-14920-3-git-send-email-Anson.Huang@nxp.com>
- <20200710131435.38f1f8a0@kemnade.info>
-In-Reply-To: <20200710131435.38f1f8a0@kemnade.info>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kemnade.info; dkim=none (message not signed)
- header.d=none;kemnade.info; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [183.192.22.69]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 1fcab664-7a47-490f-6025-08d824d54aae
-x-ms-traffictypediagnostic: DB8PR04MB7177:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DB8PR04MB7177A23349232960916DA389F5650@DB8PR04MB7177.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5516;
-x-forefront-prvs: 046060344D
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: jttIRCBAS7pez9XssB+kp/R3oDzLLp6LBAIm1feZv5N6Kkmp26BghEfc+uw1N9yP/JjR8ZoSV1Juh7mhbIroFLWT7GnPvYSWt2LFqnI8EXccVGsjMTlXCfyY46vLBhbUHCVZyOUQXMXMhATR1ZC5poKxdF0yjUq68DJCKVZZDHsY9/Dc1NwEaGzu6JsHczPRYuej8KG3kdnGKaibD8NyHv3KLINpulTuBA/jaDBVsKxUjZeiCj8rA3k0Ebyx0CuPxlZ5PoZ4crT1jMQluOhKdAlFcr5u7rml+zeKGMWJn/ExNr4aEnc69QSYYA+7I4rb
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB3PR0402MB3916.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(39860400002)(346002)(366004)(396003)(136003)(6916009)(4326008)(86362001)(71200400001)(6506007)(8936002)(478600001)(186003)(7416002)(33656002)(8676002)(316002)(54906003)(26005)(44832011)(7696005)(66946007)(66556008)(55016002)(9686003)(5660300002)(76116006)(66446008)(52536014)(66476007)(64756008)(4744005)(2906002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: BoWYTXKBojr9ufX/ekm7/WMipCBYthvsZhH6kA2EQT1D3JuLR+U7dzeWWRD7inYi1nGV9+YUtjeI1wWDQuQPGgdnFBYPdv6DY2Jm8HYKPa9REwOmW5lNqVtSc/3WcnExFT3mskGjIwJ700fPHrOWviIm0wvOAgGZvLzDkbdhAk6knjJIzvpf98fkCvdNLnShr0HaapHhJ3lTE5YbSgLSyJK/iKFQNMkWLM/nV5DtXv2S8zjCsotDdfmeQSv5UvzL+07ij5UDS/1UMf53jm52sKFpgQYcZ2zFoNtfmKEa+SDKvJxyp+rm8XeimV/l8qeKw9t7QlbE+hRncHuZxDlrTSJ21hAsgP+v+iHO4jCz857DL4wn5dAnRlbPVLFMLsTjw6O1QL7GULJDiQZhoi9R1VC3qC9Q6CkOY57qlvSoIZ3upWto07H6/b919r3boCwaMXXcjXd7HgBN4sON4DsMyw8hksT58+qsesIUcLu0Qwc=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1727851AbgGJNaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 09:30:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34646 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726774AbgGJNaN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 09:30:13 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E0E1C08C5CE;
+        Fri, 10 Jul 2020 06:30:13 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id f18so5929094wml.3;
+        Fri, 10 Jul 2020 06:30:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Lae28X5NqcxG2FkZllIwJ7rLXNOqpJ0hcVAbxGcaJfo=;
+        b=KcwrI94ePdRwkKKuRogJd8GJW5bDThOJjUI7BVmH6y23YIeZAxnzrTIJ8aYRPDmkc1
+         +FIzAob5CZY0gvuCboQ/YlM0icsgy6oaztKFcopRxRuXuXpBxAPVfc/Jykb2trIlyV65
+         EQM2Zxb967Z+HD7G5XpF0GzM4TvfcqiCEwYE1EeuSMdfeyUVtEBhxqU+toyhzmFCnbf2
+         S3o1k7vViI85Rxsq6y9HQDzuWrqXfHwVjPxumG8I3jZZg0oceB02T4e0O7eUGLuvcdLa
+         9bO9qwRoot5hjvxXmk3y1awkmnn0kg4QeJDkzVLchkWVtGf0nux2hmglYpva45PAFfR6
+         876g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Lae28X5NqcxG2FkZllIwJ7rLXNOqpJ0hcVAbxGcaJfo=;
+        b=nnN7lFH1HYsY46JT/Spb5+oThT7GJN3oB8mCY4FwvPvJkQdpwwssBxbd5O2kTBM1ex
+         i4ISQISo7zHfdJ95Nzmra2HYJLxoPpegO9X7l4qn68Yn5YrRfy2LjYfa2YOlM3WlW9Zm
+         /fTe0c6PhccleszEeNFMuRSqsDyzWKBRyf4eH4QBvlo4ZRgjc5TKniWl+mGohuwnj5L3
+         QTnha61SOqPQnWRPA70CblcmDP1ipkJlZY2cW9h6oJwpee2XFvgqMDc2pdzak3uF8OfD
+         OpCDJrHyDbkKWZeMrhzbbEfnX9H36wdRW5SkF5mcs2BJ1sjOByB3nXMoWQZ6a7eYcv4g
+         hJnA==
+X-Gm-Message-State: AOAM531rYXUuBN8xusyef0pBj2FEpq3dEs6I9x8JNzNPPeZ3mMxMbrra
+        eu6OCEJDEgHxwzpbHfoA5V/ckMWu6ImXpT9+6Dc=
+X-Google-Smtp-Source: ABdhPJxV6sZDd/duo2t8dOTY3pdMfPW0OzsDpz5mQA4e2iT3L9zXWuR/crJcD3LQi6MzOrxc+eK7xqhsbYwEDDNTizk=
+X-Received: by 2002:a7b:cc92:: with SMTP id p18mr5455500wma.4.1594387811885;
+ Fri, 10 Jul 2020 06:30:11 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB3PR0402MB3916.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1fcab664-7a47-490f-6025-08d824d54aae
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Jul 2020 13:29:37.1171
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Ok7Z2DwlzndBLKp/BLtYpzVpipQ+HmKrAWbEgcdxTZgqDoYIuY9zNG8HCU1zCu49wsLndNqm6ZUPZl7Z8HtxOQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB7177
+References: <1593974870-18919-1-git-send-email-joshi.k@samsung.com>
+ <CGME20200705185227epcas5p16fba3cb92561794b960184c89fdf2bb7@epcas5p1.samsung.com>
+ <1593974870-18919-5-git-send-email-joshi.k@samsung.com> <fe0066b7-5380-43ee-20b2-c9b17ba18e4f@kernel.dk>
+ <20200709085501.GA64935@infradead.org> <adc14700-8e95-10b2-d914-afa5029ae80c@kernel.dk>
+ <20200709140053.GA7528@infradead.org> <2270907f-670c-5182-f4ec-9756dc645376@kernel.dk>
+ <CA+1E3r+H7WEyfTufNz3xBQQynOVV-uD3myYynkfp7iU+D=Svuw@mail.gmail.com>
+ <f5e3e931-ef1b-2eb6-9a03-44dd5589c8d3@kernel.dk> <20200710130912.GA7491@infradead.org>
+In-Reply-To: <20200710130912.GA7491@infradead.org>
+From:   Kanchan Joshi <joshiiitr@gmail.com>
+Date:   Fri, 10 Jul 2020 18:59:45 +0530
+Message-ID: <CA+1E3rJSiS58TE=hHv5wVv-umJ19_7zKv-JqZTNzD=xi3MoX1g@mail.gmail.com>
+Subject: Re: [PATCH v3 4/4] io_uring: add support for zone-append
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Jens Axboe <axboe@kernel.dk>, Kanchan Joshi <joshi.k@samsung.com>,
+        viro@zeniv.linux.org.uk, bcrl@kvack.org, Damien.LeMoal@wdc.com,
+        asml.silence@gmail.com, linux-fsdevel@vger.kernel.org,
+        "Matias Bj??rling" <mb@lightnvm.io>, linux-kernel@vger.kernel.org,
+        linux-aio@kvack.org, io-uring@vger.kernel.org,
+        linux-block@vger.kernel.org,
+        Selvakumar S <selvakuma.s1@samsung.com>,
+        Nitesh Shetty <nj.shetty@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Andreas
-
-
-> Subject: Re: [PATCH 3/3] ARM: imx_v6_v7_defconfig: Build in
-> CONFIG_GPIO_MXC by default
->=20
-> Hi,
->=20
-> On Wed,  8 Jul 2020 07:25:23 +0800
-> Anson Huang <Anson.Huang@nxp.com> wrote:
->=20
-> > i.MX GPIO is NOT default enabled now, so select CONFIG_GPIO_MXC as
-> > built-in manually.
+On Fri, Jul 10, 2020 at 6:39 PM Christoph Hellwig <hch@infradead.org> wrote:
+>
+> On Thu, Jul 09, 2020 at 12:50:27PM -0600, Jens Axboe wrote:
+> > It might, if you have IRQ context for the completion. task_work isn't
+> > expensive, however. It's not like a thread offload.
 > >
-> > Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
-> > ---
-> >  arch/arm/configs/imx_v6_v7_defconfig | 1 +
-> >  1 file changed, 1 insertion(+)
+> > > Using flags have not been liked here, but given the upheaval involved so
+> > > far I have begun to feel - it was keeping things simple. Should it be
+> > > reconsidered?
 > >
-> shouldn't this be done also in the multi_v7_defconfig?
+> > It's definitely worth considering, especially since we can use cflags
+> > like Pavel suggested upfront and not need any extra storage. But it
+> > brings us back to the 32-bit vs 64-bit discussion, and then using blocks
+> > instead of bytes. Which isn't exactly super pretty.
+>
+> block doesn't work for the case of writes to files that don't have
+> to be aligned in any way.  And that I think is the more broadly
+> applicable use case than zone append on block devices.
 
-OK, I will add it in V2.
+But when can it happen that we do zone-append on a file (zonefs I
+asssume), and device returns a location (write-pointer essentially)
+which is not in multiple of 512b?
 
-Thanks,
-Anson
+
+-- 
+Joshi
