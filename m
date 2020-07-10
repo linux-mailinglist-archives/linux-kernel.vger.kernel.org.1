@@ -2,110 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4182F21B764
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 15:58:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF17221B742
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 15:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728245AbgGJN6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 09:58:39 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:26866 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728212AbgGJN6f (ORCPT
+        id S1727947AbgGJN5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 09:57:25 -0400
+Received: from out28-125.mail.aliyun.com ([115.124.28.125]:49219 "EHLO
+        out28-125.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727810AbgGJN5U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 09:58:35 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06ADW5d1006613;
-        Fri, 10 Jul 2020 09:58:33 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 326bpr3yq7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 10 Jul 2020 09:58:33 -0400
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06ADW6Mr006663;
-        Fri, 10 Jul 2020 09:58:32 -0400
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 326bpr3ynx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 10 Jul 2020 09:58:32 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06ADt0H8004646;
-        Fri, 10 Jul 2020 13:58:29 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma02fra.de.ibm.com with ESMTP id 326bcf0p7h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 10 Jul 2020 13:58:29 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06ADvBjQ59638268
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 10 Jul 2020 13:57:11 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8F7DFAE053;
-        Fri, 10 Jul 2020 13:57:11 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 38F08AE055;
-        Fri, 10 Jul 2020 13:57:11 +0000 (GMT)
-Received: from osiris (unknown [9.171.65.223])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Fri, 10 Jul 2020 13:57:11 +0000 (GMT)
-Date:   Fri, 10 Jul 2020 15:57:09 +0200
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-mm@kvack.org, Christian Borntraeger <borntraeger@de.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Subject: Re: [PATCH v1 0/9] s390: implement and optimize vmemmap_free()
-Message-ID: <20200710135709.GB14845@osiris>
-References: <20200703133917.39045-1-david@redhat.com>
- <20200707120849.GB12303@osiris>
- <f4a87c47-4987-e3f8-8c06-ff6dd60f6a39@redhat.com>
- <51813747-a2d6-03a4-fe61-b8d62dbca05b@redhat.com>
- <13549874-c33b-c47a-adbd-d625c83cc87d@redhat.com>
+        Fri, 10 Jul 2020 09:57:20 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.08971941|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0141494-0.000549441-0.985301;FP=0|0|0|0|0|-1|-1|-1;HT=e01a16367;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=12;RT=12;SR=0;TI=SMTPD_---.I.g.h-B_1594389435;
+Received: from 192.168.10.205(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.I.g.h-B_1594389435)
+          by smtp.aliyun-inc.com(10.147.41.178);
+          Fri, 10 Jul 2020 21:57:16 +0800
+Subject: Re: [PATCH v5 1/2] dt-bindings: timer: Add Ingenic X1000 OST
+ bindings.
+To:     Rob Herring <robh@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        tglx@linutronix.de, daniel.lezcano@linaro.org,
+        paul@crapouillou.net, dongsheng.qiu@ingenic.com,
+        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
+        yanfei.li@ingenic.com, sernia.zhou@foxmail.com,
+        zhenwenjin@gmail.com
+References: <20200705140353.53093-1-zhouyanjie@wanyeetech.com>
+ <20200705140353.53093-2-zhouyanjie@wanyeetech.com>
+ <20200709224923.GA1029808@bogus>
+From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
+Message-ID: <d3d239df-cbd3-e495-a3c2-af3407bfaf73@wanyeetech.com>
+Date:   Fri, 10 Jul 2020 21:57:10 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.3.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <13549874-c33b-c47a-adbd-d625c83cc87d@redhat.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-10_07:2020-07-10,2020-07-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
- lowpriorityscore=0 clxscore=1011 priorityscore=1501 mlxlogscore=759
- malwarescore=0 adultscore=0 bulkscore=0 suspectscore=1 mlxscore=0
- impostorscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2007100093
+In-Reply-To: <20200709224923.GA1029808@bogus>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 08, 2020 at 02:16:39PM +0200, David Hildenbrand wrote:
-> >>> Hmm.. I really would like to see if there would be only a single page
-> >>> table walker left in vmem.c, which handles both adding and removing
-> >>> things.
-> >>> Now we end up with two different page table walk implementations
-> >>> within the same file. However not sure if it is worth the effort to
-> >>> unify them though.
-> >>
-> >> I tried to unify vmemmap_populate() and vmem_add_range() already and
-> >> didn't like the end result ... so, unifying these along with the removal
-> >> part won't be any better - most probably. Open for suggestions :)
-> >>
-> >> (at least arm64 and x86-64 handle it similarly)
-> >>
-> > 
-> > I'll play with something like
-> > 
-> > static void modify_pagetable(unsigned long start, unsigned long end,
-> > 			     bool direct, bool add)
-> > 
-> > and see how it turns out.
-> > 
-> 
-> Did a quick hack. With a single walker (modify_pagetable) I get
-> 
->  arch/s390/mm/vmem.c | 628 ++++++++++++++++++++++++++++++--------------
->  1 file changed, 434 insertions(+), 194 deletions(-)
-> 
-> Overall looks cleaner, only modify_pte_table() and modify_pmd_table()
-> are a little more involved ...
+Hi Rob,
 
-Would you mind to resend the series with this integrated?
+在 2020/7/10 上午6:49, Rob Herring 写道:
+> On Sun, Jul 05, 2020 at 10:03:52PM +0800, 周琰杰 (Zhou Yanjie) wrote:
+>> Add the OST bindings for the X10000 SoC from Ingenic.
+>>
+>> Tested-by: 周正 (Zhou Zheng) <sernia.zhou@foxmail.com>
+>> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+>> Reviewed-by: Paul Cercueil <paul@crapouillou.net>
+>> ---
+>>
+>> Notes:
+>>      v1->v2:
+>>      No change.
+>>      
+>>      v2->v3:
+>>      Fix wrong parameters in "clocks".
+>>      
+>>      v3->v4:
+>>      1.Rename "ingenic,ost.yaml" to "ingenic,sysost.yaml".
+>>      2.Rename "ingenic,ost.h" to "ingenic,sysost.h".
+>>      3.Modify the description in "ingenic,sysost.yaml".
+>>      
+>>      v4->v5:
+>>      No change.
+>>
+>>   .../devicetree/bindings/timer/ingenic,sysost.yaml  | 60 ++++++++++++++++++++++
+>>   include/dt-bindings/clock/ingenic,sysost.h         | 12 +++++
+>>   2 files changed, 72 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/timer/ingenic,sysost.yaml
+>>   create mode 100644 include/dt-bindings/clock/ingenic,sysost.h
+>>
+>> diff --git a/Documentation/devicetree/bindings/timer/ingenic,sysost.yaml b/Documentation/devicetree/bindings/timer/ingenic,sysost.yaml
+>> new file mode 100644
+>> index 000000000000..03257ed806fc
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/timer/ingenic,sysost.yaml
+>> @@ -0,0 +1,60 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/timer/ingenic,sysost.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Bindings for SYSOST in Ingenic XBurst family SoCs
+>> +
+>> +maintainers:
+>> +  - 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+>> +
+>> +description:
+>> +  The SYSOST in an Ingenic SoC provides one 64bit timer for clocksource
+>> +  and one or more 32bit timers for clockevent.
+>> +
+>> +properties:
+>> +  compatible:
+>> +    oneOf:
+>> +
+>> +      - enum:
+> Only 1 entry, drop 'oneOf' and the blank line.
+
+
+Sure.
+
+
+>> +          - ingenic,x1000-ost
+>> +          - ingenic,x2000-ost
+>> +
+>> +  reg:
+>> +    maxItems: 1
+>> +
+>> +  clocks:
+>> +    maxItems: 1
+>> +
+>> +  clock-names:
+>> +    const: ost
+>> +
+>> +  interrupts:
+>> +    maxItems: 1
+>> +
+>> +required:
+>> +  - "#clock-cells"
+>> +  - compatible
+>> +  - reg
+>> +  - clocks
+>> +  - clock-names
+>> +  - interrupts
+> additionalProperties: false
+
+
+Sure.
+
+Thanks and best regards!
+
+
+>> +
+>> +examples:
+>> +  - |
+>> +    #include <dt-bindings/clock/x1000-cgu.h>
+>> +
+>> +    ost: timer@12000000 {
+>> +    		compatible = "ingenic,x1000-ost";
+>> +    		reg = <0x12000000 0x3c>;
+>> +
+>> +    		#clock-cells = <1>;
+>> +
+>> +    		clocks = <&cgu X1000_CLK_OST>;
+>> +    		clock-names = "ost";
+>> +
+>> +    		interrupt-parent = <&cpuintc>;
+>> +    		interrupts = <3>;
+>> +    	};
+>> +...
+>> diff --git a/include/dt-bindings/clock/ingenic,sysost.h b/include/dt-bindings/clock/ingenic,sysost.h
+>> new file mode 100644
+>> index 000000000000..9ac88e90babf
+>> --- /dev/null
+>> +++ b/include/dt-bindings/clock/ingenic,sysost.h
+>> @@ -0,0 +1,12 @@
+>> +/* SPDX-License-Identifier: GPL-2.0 */
+>> +/*
+>> + * This header provides clock numbers for the ingenic,tcu DT binding.
+>> + */
+>> +
+>> +#ifndef __DT_BINDINGS_CLOCK_INGENIC_OST_H__
+>> +#define __DT_BINDINGS_CLOCK_INGENIC_OST_H__
+>> +
+>> +#define OST_CLK_PERCPU_TIMER	0
+>> +#define OST_CLK_GLOBAL_TIMER	1
+>> +
+>> +#endif /* __DT_BINDINGS_CLOCK_INGENIC_OST_H__ */
+>> -- 
+>> 2.11.0
+>>
