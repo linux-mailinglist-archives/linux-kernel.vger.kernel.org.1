@@ -2,297 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 748C021B4B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 14:09:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8987421B4B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 14:09:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727935AbgGJMJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 08:09:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50350 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726840AbgGJMJF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 08:09:05 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5745C08C5CE
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 05:09:04 -0700 (PDT)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1jtrpu-00080e-8G; Fri, 10 Jul 2020 14:09:02 +0200
-Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1jtrpq-0007ZG-Px; Fri, 10 Jul 2020 14:08:58 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Philippe Schenker <philippe.schenker@toradex.com>
-Subject: [PATCH net-next v1 5/5] net: phy: micrel: ksz886x/ksz8081: add cabletest support
-Date:   Fri, 10 Jul 2020 14:08:51 +0200
-Message-Id: <20200710120851.28984-6-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200710120851.28984-1-o.rempel@pengutronix.de>
-References: <20200710120851.28984-1-o.rempel@pengutronix.de>
+        id S1727085AbgGJMJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 08:09:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54394 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726840AbgGJMJC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 08:09:02 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A73D820748;
+        Fri, 10 Jul 2020 12:09:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594382942;
+        bh=C6ZrFNaSgsStk6Vp4QuuZS4cHOzAtYmi7kHPu0LQ2dY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=zEIlI/nG1fAyNQ9z/oMsdrcXmpExPGJwsmAUSAldCzMxRvg47aKJAIQQZM2rmpvQH
+         g7ZzOl/jmJQnvPlWiKsoMC+NluW2L80OUensyQt9ClqkU8uexr7U7u/u3m2EjKqDUY
+         /vVda5f6nap9xY9p3kaTxMRnwLIDru7mG5a5l7UQ=
+Date:   Fri, 10 Jul 2020 13:08:56 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH v1] regmap: Switch to use fwnode instead of OF one
+Message-ID: <20200710120856.GD5653@sirena.org.uk>
+References: <20200708161232.17914-1-andriy.shevchenko@linux.intel.com>
+ <20200708162117.GV4655@sirena.org.uk>
+ <20200710100558.GI3703480@smile.fi.intel.com>
+ <20200710110132.GA5653@sirena.org.uk>
+ <20200710114622.GJ3703480@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="VV4b6MQE+OnNyhkM"
+Content-Disposition: inline
+In-Reply-To: <20200710114622.GJ3703480@smile.fi.intel.com>
+X-Cookie: Use only in a well-ventilated area.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch support for cable test for the ksz886x switches and the
-ksz8081 PHY.
 
-The patch was tested on a KSZ8873RLL switch with following results:
+--VV4b6MQE+OnNyhkM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-- port 1:
-  - cannot detect any distance
-  - provides inverted values
-    (Errata: DS80000830A: "LinkMD does not work on Port 1",
-     http://ww1.microchip.com/downloads/en/DeviceDoc/KSZ8873-Errata-DS80000830A.pdf)
-    - Reports "short" on open or ok.
-    - Reports "ok" on short.
+On Fri, Jul 10, 2020 at 02:46:22PM +0300, Andy Shevchenko wrote:
 
-- port 2:
-  - can detect distance
-  - can detect open on each wire of pair A (wire 1 and 2)
-  - can detect open only on one wire of pair B (only wire 3)
-  - can detect short between wires of a pair (wires 1 + 2 or 3 + 6)
-  - short between pairs is detected as open.
-    For example short between wires 2 + 3 is detected as open.
+> You mean it's being synchronised with git.kernel.org, but not yet contains that
+> patch? Okay, I will monitor the regmap tree (as of now I didn't see any update).
 
-In order to work around the errata for port 1, the ksz8795 switch driver
-should be extended to provide proper device tree support for the related
-PHY nodes. So we can set a DT property to mark the port 1 as affected by
-the errata.
+5cc2013bfeee756a1ee6da9bfbe42e52b4695035
 
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
----
- drivers/net/phy/micrel.c | 175 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 175 insertions(+)
+--VV4b6MQE+OnNyhkM
+Content-Type: application/pgp-signature; name="signature.asc"
 
-diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
-index 221ba661645f..0c86ab2e483e 100644
---- a/drivers/net/phy/micrel.c
-+++ b/drivers/net/phy/micrel.c
-@@ -20,6 +20,7 @@
-  */
- 
- #include <linux/bitfield.h>
-+#include <linux/ethtool_netlink.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/phy.h>
-@@ -62,6 +63,18 @@
- #define KSZPHY_INTCS_ALL			(KSZPHY_INTCS_LINK_UP |\
- 						KSZPHY_INTCS_LINK_DOWN)
- 
-+/* LinkMD Control/Status */
-+#define KSZ8081_LMD				0x1d
-+#define KSZ8081_LMD_ENABLE_TEST			BIT(15)
-+#define KSZ8081_LMD_STAT_NORMAL			0
-+#define KSZ8081_LMD_STAT_OPEN			1
-+#define KSZ8081_LMD_STAT_SHORT			2
-+#define KSZ8081_LMD_STAT_FAIL			3
-+#define KSZ8081_LMD_STAT_MASK			GENMASK(14, 13)
-+/* Short cable (<10 meter) has been detected by LinkMD */
-+#define KSZ8081_LMD_SHORT_INDICATOR		BIT(12)
-+#define KSZ8081_LMD_DELTA_TIME_MASK		GENMASK(8, 0)
-+
- /* PHY Control 1 */
- #define MII_KSZPHY_CTRL_1			0x1e
- #define KSZ8081_CTRL1_MDIX_STAT			BIT(4)
-@@ -1358,6 +1371,164 @@ static int kszphy_probe(struct phy_device *phydev)
- 	return 0;
- }
- 
-+static int ksz886x_cable_test_start(struct phy_device *phydev)
-+{
-+	/* If autoneg is enabled, we won't be able to test cross pair
-+	 * short. In this case, the PHY will "detect" a link and
-+	 * confuse the internal state machine - disable auto neg here.
-+	 * If autoneg is disabled, we should set the speed to 10mbit.
-+	 */
-+	return phy_clear_bits(phydev, MII_BMCR, BMCR_ANENABLE | BMCR_SPEED100);
-+}
-+
-+static int ksz886x_cable_test_result_trans(u16 status)
-+{
-+	switch (FIELD_GET(KSZ8081_LMD_STAT_MASK, status)) {
-+	case KSZ8081_LMD_STAT_NORMAL:
-+		return ETHTOOL_A_CABLE_RESULT_CODE_OK;
-+	case KSZ8081_LMD_STAT_SHORT:
-+		return ETHTOOL_A_CABLE_RESULT_CODE_SAME_SHORT;
-+	case KSZ8081_LMD_STAT_OPEN:
-+		return ETHTOOL_A_CABLE_RESULT_CODE_OPEN;
-+	case KSZ8081_LMD_STAT_FAIL:
-+		/* fall through */
-+	default:
-+		return ETHTOOL_A_CABLE_RESULT_CODE_UNSPEC;
-+	}
-+}
-+
-+static bool ksz886x_cable_test_failed(u16 status)
-+{
-+	return FIELD_GET(KSZ8081_LMD_STAT_MASK, status) ==
-+		KSZ8081_LMD_STAT_FAIL;
-+}
-+
-+static bool ksz886x_cable_test_fault_length_valid(u16 status)
-+{
-+	switch (FIELD_GET(KSZ8081_LMD_STAT_MASK, status)) {
-+	case KSZ8081_LMD_STAT_OPEN:
-+		/* fall through */
-+	case KSZ8081_LMD_STAT_SHORT:
-+		return true;
-+	}
-+	return false;
-+}
-+
-+static int ksz886x_cable_test_fault_length(u16 status)
-+{
-+	int dt;
-+
-+	/* According to the data sheet the distance to the fault is
-+	 * DELTA_TIME * 0.4 meters.
-+	 */
-+	dt = FIELD_GET(KSZ8081_LMD_DELTA_TIME_MASK, status);
-+
-+	return (dt * 400) / 10;
-+}
-+
-+static int ksz886x_cable_test_wait_for_completion(struct phy_device *phydev)
-+{
-+	int val, ret;
-+
-+	ret = phy_read_poll_timeout(phydev, KSZ8081_LMD, val,
-+				    !(val & KSZ8081_LMD_ENABLE_TEST),
-+				    30000, 100000, true);
-+
-+	return ret < 0 ? ret : 0;
-+}
-+
-+static int ksz886x_cable_test_one_pair(struct phy_device *phydev, int pair)
-+{
-+	static const int ethtool_pair[] = {
-+		ETHTOOL_A_CABLE_PAIR_A,
-+		ETHTOOL_A_CABLE_PAIR_B,
-+	};
-+	int ret, val, mdix;
-+
-+	/* There is no way to choice the pair, like we do one ksz9031.
-+	 * We can workaround this limitation by using the MDI-X functionality.
-+	 */
-+	if (pair == 0)
-+		mdix = ETH_TP_MDI;
-+	else
-+		mdix = ETH_TP_MDI_X;
-+
-+	switch (phydev->phy_id & MICREL_PHY_ID_MASK) {
-+	case PHY_ID_KSZ8081:
-+		ret = ksz8081_config_mdix(phydev, mdix);
-+		break;
-+	case PHY_ID_KSZ886X:
-+		ret = ksz886x_config_mdix(phydev, mdix);
-+		break;
-+	default:
-+		ret = -ENODEV;
-+	}
-+
-+	if (ret)
-+		return ret;
-+
-+	/* Now we are ready to fire. This command will send a 100ns pulse
-+	 * to the pair.
-+	 */
-+	ret = phy_write(phydev, KSZ8081_LMD, KSZ8081_LMD_ENABLE_TEST);
-+	if (ret)
-+		return ret;
-+
-+	ret = ksz886x_cable_test_wait_for_completion(phydev);
-+	if (ret)
-+		return ret;
-+
-+	val = phy_read(phydev, KSZ8081_LMD);
-+	if (val < 0)
-+		return val;
-+
-+	if (ksz886x_cable_test_failed(val))
-+		return -EAGAIN;
-+
-+	ret = ethnl_cable_test_result(phydev, ethtool_pair[pair],
-+				      ksz886x_cable_test_result_trans(val));
-+	if (ret)
-+		return ret;
-+
-+	if (!ksz886x_cable_test_fault_length_valid(val))
-+		return 0;
-+
-+	return ethnl_cable_test_fault_length(phydev, ethtool_pair[pair],
-+					     ksz886x_cable_test_fault_length(val));
-+}
-+
-+static int ksz886x_cable_test_get_status(struct phy_device *phydev,
-+					 bool *finished)
-+{
-+	unsigned long pair_mask = 0x3;
-+	int retries = 20;
-+	int pair, ret;
-+
-+	*finished = false;
-+
-+	/* Try harder if link partner is active */
-+	while (pair_mask && retries--) {
-+		for_each_set_bit(pair, &pair_mask, 4) {
-+			ret = ksz886x_cable_test_one_pair(phydev, pair);
-+			if (ret == -EAGAIN)
-+				continue;
-+			if (ret < 0)
-+				return ret;
-+			clear_bit(pair, &pair_mask);
-+		}
-+		/* If link partner is in autonegotiation mode it will send 2ms
-+		 * of FLPs with at least 6ms of silence.
-+		 * Add 2ms sleep to have better chances to hit this silence.
-+		 */
-+		if (pair_mask)
-+			msleep(2);
-+	}
-+
-+	*finished = true;
-+
-+	return 0;
-+}
-+
- static struct phy_driver ksphy_driver[] = {
- {
- 	.phy_id		= PHY_ID_KS8737,
-@@ -1477,6 +1648,8 @@ static struct phy_driver ksphy_driver[] = {
- 	.get_stats	= kszphy_get_stats,
- 	.suspend	= kszphy_suspend,
- 	.resume		= kszphy_resume,
-+	.cable_test_start	= ksz886x_cable_test_start,
-+	.cable_test_get_status	= ksz886x_cable_test_get_status,
- }, {
- 	.phy_id		= PHY_ID_KSZ8061,
- 	.name		= "Micrel KSZ8061",
-@@ -1558,6 +1731,8 @@ static struct phy_driver ksphy_driver[] = {
- 	.read_status	= ksz886x_read_status,
- 	.suspend	= genphy_suspend,
- 	.resume		= ksz886x_resume,
-+	.cable_test_start	= ksz886x_cable_test_start,
-+	.cable_test_get_status	= ksz886x_cable_test_get_status,
- }, {
- 	.name		= "Micrel KSZ87XX Switch",
- 	/* PHY_BASIC_FEATURES */
--- 
-2.27.0
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8IWlcACgkQJNaLcl1U
+h9B4ogf/TR7eSMOw53H7tkoNjFNyQl2ypT8fAdYrxWEXTmohVGy31YaprJmWu4bk
+kr4rK3xlAnRNtnh8GCEvoeSCzBnW2S+0tug5kpydkLfkgSVPo/BjYzMTnjCwSs1C
+/xpqJ893N8TY6Vfyl9Vjb8icB17uPG3ele1gQAxDCxV9CFbWpvl5B48xXpsdCnXE
+Z0xvV0/z8qEXzMSrxWMO4wgYV+yRNfnZ52nIJSRrFNYOHWPp7u1QxkJSi3xAF9NY
+rClsWskXhfLTAXcF81wgH7bhyOVqO0r6IFBPkoBo+PU9aG6FdrqrD4o+mPhT8pvu
+DgujO9jG7VNvmlERCJrEYDoCr6QowQ==
+=NjL8
+-----END PGP SIGNATURE-----
+
+--VV4b6MQE+OnNyhkM--
